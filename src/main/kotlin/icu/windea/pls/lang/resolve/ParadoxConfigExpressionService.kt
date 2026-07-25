@@ -137,7 +137,7 @@ object ParadoxConfigExpressionService {
                     val resolvedDefinitionInfo = resolved.definitionInfo ?: return null
                     val primaryImageConfigs = resolvedDefinitionInfo.primaryImages
                     if (primaryImageConfigs.isEmpty()) return null // 没有或者规则不完善
-                    return withRecursionGuard {
+                    return withRecursionGuard({}.javaClass.name) {
                         withRecursionCheck("${resolvedDefinitionInfo.name}:${resolvedDefinitionInfo.type}") {
                             primaryImageConfigs.firstNotNullOfOrNull { primaryImageConfig ->
                                 val primaryLocationExpression = primaryImageConfig.locationExpression
@@ -186,7 +186,7 @@ object ParadoxConfigExpressionService {
                 }
                 val primaryImageConfigs = resolvedDefinitionInfo.primaryImages
                 if (primaryImageConfigs.isEmpty()) return null // 没有或者规则不完善
-                return withRecursionGuard {
+                return withRecursionGuard({}.javaClass.name) {
                     withRecursionCheck("${resolvedDefinitionInfo.name}:${resolvedDefinitionInfo.type}") {
                         primaryImageConfigs.firstNotNullOfOrNull { primaryImageConfig ->
                             val primaryLocationExpression = primaryImageConfig.locationExpression

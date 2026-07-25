@@ -18,6 +18,7 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.aliasConfig
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
+import icu.windea.pls.config.config.delegated.CwtEnumConfig
 import icu.windea.pls.config.config.delegated.CwtMacroConfig
 import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.config.delegated.CwtUnionConfig
@@ -38,7 +39,6 @@ import icu.windea.pls.core.util.values.singletonList
 import icu.windea.pls.core.util.values.singletonListOrEmpty
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.core.withDependencyItems
-import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.cwt.CwtFileType
 import icu.windea.pls.cwt.CwtLanguage
 import icu.windea.pls.cwt.psi.CwtFile
@@ -173,16 +173,20 @@ object CwtConfigManager {
         }
     }
 
-    inline fun processUnionCandidates(config: CwtUnionConfig, processor: (CwtValueConfig) -> Boolean): Boolean {
+    inline fun processCandidateConfigs(config: CwtEnumConfig, processor: (candidateConfig: CwtValueConfig) -> Boolean): Boolean {
+        if (config.valueConfigMap.isEmpty()) return true
+        config.valueConfigMap.values.forEach { valueConfig ->
+            val r = processor(valueConfig)
+            if (!r) return false
+        }
+        return true
+    }
+
+    inline fun processCandidateConfigs(config: CwtUnionConfig, processor: (candidateConfig: CwtValueConfig) -> Boolean): Boolean {
         if (config.valueConfigs.isEmpty()) return true
-        withRecursionGuard("processUnionCandidates") { // 这里需要防止递归
-            withRecursionCheck(config.name) {
-                config.valueConfigs.forEachFast { valueConfig ->
-                    ProgressManager.checkCanceled()
-                    val r = processor(valueConfig)
-                    if (!r) return false
-                }
-            }
+        config.valueConfigs.forEachFast { valueConfig ->
+            val r = processor(valueConfig)
+            if (!r) return false
         }
         return true
     }

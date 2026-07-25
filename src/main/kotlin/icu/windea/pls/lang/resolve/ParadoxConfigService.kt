@@ -170,7 +170,7 @@ object ParadoxConfigService {
         }
         val rootFile = selectRootFile(context.element) ?: return emptyList()
         val cache = context.configGroup.configsCache.value.get(rootFile)
-        val cached = withRecursionGuard {
+        val cached = withRecursionGuard({}.javaClass.name) {
             withRecursionCheck(cacheKey) {
                 val resolvingStack = ChronicleThreadContext.resolvingConfigContextStack.getOrSet { ArrayDeque() }
                 resolvingStack.addLast(context)

@@ -18,7 +18,6 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
  *
  * 用于实现代码高亮、引用解析、代码补全等语言功能。
  *
- *
  * @see ParadoxExpressionElement
  * @see ParadoxLocalisationExpressionElement
  */
@@ -27,7 +26,7 @@ interface ParadoxLocalisationExpressionSupport {
     fun supports(element: ParadoxExpressionElement): Boolean
 
     fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, holder: AnnotationHolder) {
-
+        // by default nothing
     }
 
     fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String): PsiElement? {
@@ -43,7 +42,7 @@ interface ParadoxLocalisationExpressionSupport {
     }
 
     fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
-
+        // by default nothing
     }
 
     companion object INSTANCE {

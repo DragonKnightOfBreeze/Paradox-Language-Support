@@ -7,6 +7,7 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtMemberType
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
+import icu.windea.pls.config.config.delegated.CwtEnumConfig
 import icu.windea.pls.config.config.delegated.CwtUnionConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
@@ -25,12 +26,16 @@ inline val CwtFilePathMatchableConfig<*>.filePathPatterns: Set<String> get() = C
 
 inline val CwtFilePathMatchableConfig<*>.filePathPatternsForPriority: Set<String> get() = CwtConfigManager.getFilePathPatternsForPriority(this)
 
-inline fun CwtUnionConfig.processUnionCandidates(processor: (CwtValueConfig) -> Boolean): Boolean {
-    return CwtConfigManager.processUnionCandidates(this, processor)
-}
-
 inline fun <T> Collection<T>.sortedByPriority(crossinline expressionProvider: (T) -> CwtDataExpression?, crossinline configGroupProvider: (T) -> CwtConfigGroup): List<T> {
     return CwtConfigManager.sortedByPriority(this, expressionProvider, configGroupProvider)
+}
+
+inline fun CwtEnumConfig.processCandidateConfigs(processor: (candidateConfig: CwtValueConfig) -> Boolean): Boolean {
+    return CwtConfigManager.processCandidateConfigs(this, processor)
+}
+
+inline fun CwtUnionConfig.processCandidateConfigs(processor: (candidateConfig: CwtValueConfig) -> Boolean): Boolean {
+    return CwtConfigManager.processCandidateConfigs(this, processor)
 }
 
 @Suppress("NOTHING_TO_INLINE", "UNCHECKED_CAST")

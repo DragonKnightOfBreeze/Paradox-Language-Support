@@ -94,7 +94,7 @@ class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInfer
         ProgressManager.checkCanceled()
         val project = configGroup.project
         val gameType = configGroup.gameType
-        return withRecursionGuard {
+        return withRecursionGuard({}.javaClass.name) {
             withRecursionCheck("${definitionInfo.name}:${definitionInfo.type}") {
                 val indexInfoType = ParadoxIndexInfoTypes.InferredScopeContextAwareDefinition
                 ChronicleIndexService.processAllFileDataWithKey(indexInfoType, project, searchScope, gameType) p@{ _, infos ->
@@ -202,7 +202,7 @@ class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInfe
         ProgressManager.checkCanceled()
         val project = configGroup.project
         val gameType = configGroup.gameType
-        return withRecursionGuard {
+        return withRecursionGuard({}.javaClass.name) {
             if (depth == 1) stackTrace.addLast(thisEventName)
 
             val indexInfoType = ParadoxIndexInfoTypes.EventInOnAction
@@ -313,7 +313,7 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
         ProgressManager.checkCanceled()
         val project = configGroup.project
         val gameType = configGroup.gameType
-        return withRecursionGuard {
+        return withRecursionGuard({}.javaClass.name) {
             if (depth == 1) stackTrace.addLast(thisEventName)
 
             val toRef = "from".repeat(depth)
@@ -466,7 +466,7 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
         ProgressManager.checkCanceled()
         val project = configGroup.project
         val gameType = configGroup.gameType
-        return withRecursionGuard {
+        return withRecursionGuard({}.javaClass.name) {
             if (depth == 1) stackTrace.addLast(thisOnActionName)
 
             val toRef = "from".repeat(depth)

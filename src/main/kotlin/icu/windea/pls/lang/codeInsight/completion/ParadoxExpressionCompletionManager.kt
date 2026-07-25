@@ -11,11 +11,12 @@ import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.resolved
-import icu.windea.pls.config.processUnionCandidates
+import icu.windea.pls.config.processCandidateConfigs
 import icu.windea.pls.core.codeInsight.LimitedCompletionProcessor
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.processAsync
 import icu.windea.pls.core.runSmartReadAction
+import icu.windea.pls.core.runWithRecursionGuard
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.util.values.singletonListOrEmpty
 import icu.windea.pls.core.util.values.to
@@ -275,29 +276,35 @@ object ParadoxExpressionCompletionManager {
         }
     }
 
-    fun completeCsvUnionValue(context: ParadoxCompletionContext, result: CompletionResultSet) {
-        ProgressManager.checkCanceled()
-        val configGroup = context.configGroup
-        val config = context.config ?: return
-        val unionName = config.configExpression?.metadata?.value ?: return
-        val unionConfig = configGroup.unions[unionName] ?: return
-        unionConfig.processUnionCandidates { valueConfig ->
-            val context = context.copy(config = valueConfig, configs = setOf(valueConfig))
-            completeCsvExpression(context, result)
-            true
-        }
-    }
-
     fun completeScriptUnionValue(context: ParadoxCompletionContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
         val configGroup = context.configGroup
         val config = context.config ?: return
         val unionName = config.configExpression?.metadata?.value ?: return
         val unionConfig = configGroup.unions[unionName] ?: return
-        unionConfig.processUnionCandidates { valueConfig ->
-            val context = context.copy(config = valueConfig, configs = setOf(valueConfig))
-            completeScriptExpression(context, result)
-            true
+        // NOTE 3.0.1 recursion guard is required here
+        runWithRecursionGuard("scriptExpression.complete.union", unionName) {
+            unionConfig.processCandidateConfigs { valueConfig ->
+                val context = context.copy(config = valueConfig, configs = setOf(valueConfig))
+                completeScriptExpression(context, result)
+                true
+            }
+        }
+    }
+
+    fun completeCsvUnionValue(context: ParadoxCompletionContext, result: CompletionResultSet) {
+        ProgressManager.checkCanceled()
+        val configGroup = context.configGroup
+        val config = context.config ?: return
+        val unionName = config.configExpression?.metadata?.value ?: return
+        val unionConfig = configGroup.unions[unionName] ?: return
+        // NOTE 3.0.1 recursion guard is required here
+        runWithRecursionGuard("csvExpression.complete.union", unionName) {
+            unionConfig.processCandidateConfigs { valueConfig ->
+                val context = context.copy(config = valueConfig, configs = setOf(valueConfig))
+                completeCsvExpression(context, result)
+                true
+            }
         }
     }
 
@@ -363,9 +370,12 @@ object ParadoxExpressionCompletionManager {
         val config = context.config ?: return
         val aliasName = config.configExpression?.metadata?.value ?: return
         val aliasGroup = configGroup.aliasGroups[aliasName] ?: return
-        for (aliasConfigs in aliasGroup.values) {
-            val context = context.copy(config = aliasConfigs.first(), configs = aliasConfigs)
-            completeScriptExpression(context, result)
+        // NOTE 3.0.1 recursion guard is required here
+        runWithRecursionGuard("scriptExpression.complete.alias", aliasName) {
+            for (aliasConfigs in aliasGroup.values) {
+                val context = context.copy(config = aliasConfigs.first(), configs = aliasConfigs)
+                completeScriptExpression(context, result)
+            }
         }
     }
 

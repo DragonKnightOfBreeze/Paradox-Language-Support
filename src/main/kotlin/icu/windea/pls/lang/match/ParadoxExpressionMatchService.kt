@@ -6,9 +6,10 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.processUnionCandidates
+import icu.windea.pls.config.processCandidateConfigs
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.forEachFast
+import icu.windea.pls.core.runWithRecursionGuard
 import icu.windea.pls.ep.match.expression.ParadoxCsvExpressionMatcher
 import icu.windea.pls.ep.match.expression.ParadoxScriptExpressionMatcher
 import icu.windea.pls.model.expressions.ParadoxExpression
@@ -55,9 +56,12 @@ object ParadoxExpressionMatchService {
             CwtDataTypes.UnionValue -> {
                 val unionName = configExpression.metadata.value ?: return false
                 val unionConfig = configGroup.unions[unionName] ?: return false
-                unionConfig.processUnionCandidates { valueConfig ->
-                    if (matchesConstant(expression, valueConfig.configExpression, configGroup)) return true
-                    true
+                // NOTE 3.0.1 recursion guard is required here
+                runWithRecursionGuard("exprssion.matchesConstant", unionName) {
+                    unionConfig.processCandidateConfigs { valueConfig ->
+                        if (matchesConstant(expression, valueConfig.configExpression, configGroup)) return true
+                        true
+                    }
                 }
                 false
             }
@@ -80,7 +84,8 @@ object ParadoxExpressionMatchService {
 
     fun getMatchedScriptUnionCandidate(element: PsiElement, expression: ParadoxExpression, unionName: String, configGroup: CwtConfigGroup, options: ParadoxMatchOptions? = null): CwtValueConfig? {
         val unionConfig = configGroup.unions[unionName] ?: return null
-        unionConfig.processUnionCandidates { valueConfig ->
+        // NOTE 3.0.1 recursion guard is not directly required here
+        unionConfig.processCandidateConfigs { valueConfig ->
             val configExpression = valueConfig.configExpression
             val context = ParadoxScriptExpressionMatchContext(element, expression, configExpression, valueConfig, configGroup, options)
             if (matchScriptExpression(context).get(options)) return valueConfig
@@ -91,7 +96,8 @@ object ParadoxExpressionMatchService {
 
     fun getMatchedCsvUnionCandidate(element: PsiElement, expression: ParadoxExpression, unionName: String, configGroup: CwtConfigGroup): CwtValueConfig? {
         val unionConfig = configGroup.unions[unionName] ?: return null
-        unionConfig.processUnionCandidates { valueConfig ->
+        // NOTE 3.0.1 recursion guard is not directly required here
+        unionConfig.processCandidateConfigs { valueConfig ->
             val configExpression = valueConfig.configExpression
             val context = ParadoxCsvExpressionMatchContext(element, expression, configExpression, configGroup)
             if (matchCsvExpression(context).get()) return valueConfig

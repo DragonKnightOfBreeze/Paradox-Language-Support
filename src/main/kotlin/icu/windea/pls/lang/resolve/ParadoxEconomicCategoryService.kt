@@ -128,7 +128,7 @@ object ParadoxEconomicCategoryService {
 
     private fun processParentDataRecursively(contextElement: PsiElement, data: StellarisEconomicCategoryData, processor: Processor<StellarisEconomicCategoryData>): Boolean {
         val parent = data.parent?.orNull() ?: return true
-        return withRecursionGuard {
+        return withRecursionGuard({}.javaClass.name) {
             withRecursionCheck(parent) {
                 val selector = ParadoxDefinitionSearch.selector(contextElement.project, contextElement).contextSensitive()
                 ParadoxDefinitionSearch.searchProperty(parent, ParadoxDefinitionTypes.economicCategory, selector).process p@{

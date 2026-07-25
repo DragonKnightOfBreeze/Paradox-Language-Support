@@ -31,7 +31,7 @@ interface ParadoxCsvExpressionSupport {
     fun supports(config: CwtValueConfig, configExpression: CwtDataExpression): Boolean
 
     fun annotate(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, text: String, config: CwtValueConfig, holder: AnnotationHolder) {
-
+        // by default nothing
     }
 
     fun resolve(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, text: String, config: CwtValueConfig): PsiElement? {
@@ -43,7 +43,7 @@ interface ParadoxCsvExpressionSupport {
     }
 
     fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
-
+        // by default nothing
     }
 
     companion object INSTANCE {

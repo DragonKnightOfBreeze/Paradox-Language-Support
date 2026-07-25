@@ -237,7 +237,7 @@ class ParadoxInlineMathExpressionEvaluator(
                         when (resolvedValueElement) {
                             is ParadoxScriptInlineMath -> {
                                 val expressionElement = resolvedValueElement.inlineMathExpression ?: throw IllegalStateException("Cannot evaluate: empty inline math expression in '$expression'.")
-                                withRecursionGuard {
+                                withRecursionGuard({}.javaClass.name) {
                                     withRecursionCheck("sv:${argument.id}") {
                                         evaluateInternal(expressionElement, args)
                                     } ?: throw IllegalArgumentException("Recursive scripted variable reference '$expression'.")

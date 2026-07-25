@@ -117,8 +117,8 @@ object CwtConfigManipulationService {
     }
 
     private fun injectConfigsForDeepCopy(parentConfig: CwtMemberConfig<*>, containerConfig: CwtMemberConfig<*>, result: MutableList<CwtMemberConfig<*>>): Boolean? {
-        // NOTE 2.1.1 对于目前的深拷贝规则的逻辑，仅需在注入规则时使用递归守卫（根据分析结果，无需使用命名递归守卫）
-        return withRecursionGuard {
+        // NOTE 2.1.1 对于目前的深拷贝规则的逻辑，仅需在注入规则时使用递归守卫
+        return withRecursionGuard("CwtConfigManipulationService.injectConfigsForDeepCopy") {
             val key = getKeyForDeepCopy(parentConfig)
             withRecursionCheck(key) {
                 CwtConfigService.injectConfigs(parentConfig, containerConfig, result)

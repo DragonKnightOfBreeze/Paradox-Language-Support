@@ -10,7 +10,7 @@ object ParadoxInlineService {
      */
     fun getInlinedElement(element: ParadoxScriptMember): ParadoxScriptMember? {
         // NOTE recursion guard is required here
-        return withRecursionGuard {
+        return withRecursionGuard({}.javaClass.name) {
             ParadoxInlineSupport.EP_NAME.extensionList.firstNotNullOfOrNull { ep ->
                 ep.getInlinedElement(element)
             }?.also { recursionCheck(it) }

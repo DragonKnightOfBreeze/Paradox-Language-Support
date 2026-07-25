@@ -130,14 +130,11 @@ object ParadoxParameterService {
      * @see ParadoxParameterInferredConfigProvider.getContextConfigs
      */
     fun getContextConfigs(parameterInfo: ParadoxParameterContextInfo.Parameter, parameterContextInfo: ParadoxParameterContextInfo): List<CwtMemberConfig<*>>? {
-        // NOTE recursion guard is required here
         val gameType = parameterContextInfo.gameType
-        return withRecursionGuard {
-            ParadoxParameterInferredConfigProvider.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-                if (!ChronicleAnnotationService.check(ep, gameType)) return@f null
-                if (!ep.supports(parameterInfo, parameterContextInfo)) return@f null
-                ep.getContextConfigs(parameterInfo, parameterContextInfo).orNull()
-            }
+        return ParadoxParameterInferredConfigProvider.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
+            if (!ChronicleAnnotationService.check(ep, gameType)) return@f null
+            if (!ep.supports(parameterInfo, parameterContextInfo)) return@f null
+            ep.getContextConfigs(parameterInfo, parameterContextInfo).orNull()
         }
     }
 
@@ -205,11 +202,12 @@ object ParadoxParameterService {
     }
 
     fun getInferredContextConfigsFromUsages(parameterElement: ParadoxParameterLightElement, fast: Boolean = true): List<CwtMemberConfig<*>> {
-        return withRecursionGuard {
+        withRecursionGuard({}.javaClass.name) {
             withRecursionCheck(parameterElement) {
-                doGetInferredContextConfigsFromUsages(parameterElement, fast)
+                return doGetInferredContextConfigsFromUsages(parameterElement, fast)
             }
-        } ?: emptyList()
+        }
+        return emptyList()
     }
 
     private fun doGetInferredContextConfigsFromUsages(parameterElement: ParadoxParameterLightElement, fast: Boolean): List<CwtMemberConfig<*>> {

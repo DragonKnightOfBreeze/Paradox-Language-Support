@@ -9,6 +9,7 @@ import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.core.isLeftQuoted
+import icu.windea.pls.core.runWithRecursionGuard
 import icu.windea.pls.core.unquote
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
@@ -99,31 +100,44 @@ class ParadoxCsvUnionValueExpressionSupport : ParadoxCsvExpressionSupportBase() 
         return dataType == CwtDataTypes.UnionValue
     }
 
+    // NOTE 3.0.1 recursion guard is required here for various operations
+
     override fun annotate(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, text: String, config: CwtValueConfig, holder: AnnotationHolder) {
         val configGroup = config.configGroup
         val unionName = config.configExpression.metadata.value ?: return
-        val quoted = element.text.isLeftQuoted()
-        val expression = ParadoxExpression.resolve(text, quoted)
-        val valueConfig = ParadoxExpressionMatchService.getMatchedCsvUnionCandidate(element, expression, unionName, configGroup) ?: return
-        ParadoxExpressionService.annotateCsvExpression(element, rangeInElement, text, valueConfig, holder)
+        // NOTE 3.0.1 recursion guard is required here
+        runWithRecursionGuard("csvExpression.annotate.union", unionName) {
+            val quoted = element.text.isLeftQuoted()
+            val expression = ParadoxExpression.resolve(text, quoted)
+            val valueConfig = ParadoxExpressionMatchService.getMatchedCsvUnionCandidate(element, expression, unionName, configGroup) ?: return
+            ParadoxExpressionService.annotateCsvExpression(element, rangeInElement, text, valueConfig, holder)
+        }
     }
 
     override fun resolve(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, text: String, config: CwtValueConfig): PsiElement? {
         val configGroup = config.configGroup
         val unionName = config.configExpression.metadata.value ?: return null
-        val quoted = element.text.isLeftQuoted()
-        val expression = ParadoxExpression.resolve(text, quoted)
-        val valueConfig = ParadoxExpressionMatchService.getMatchedCsvUnionCandidate(element, expression, unionName, configGroup) ?: return null
-        return ParadoxExpressionManager.resolveCsvExpression(element, rangeInElement, valueConfig)
+        // NOTE 3.0.1 recursion guard is required here
+        runWithRecursionGuard("csvExpression.resolve.union", unionName) {
+            val quoted = element.text.isLeftQuoted()
+            val expression = ParadoxExpression.resolve(text, quoted)
+            val valueConfig = ParadoxExpressionMatchService.getMatchedCsvUnionCandidate(element, expression, unionName, configGroup) ?: return null
+            return ParadoxExpressionManager.resolveCsvExpression(element, rangeInElement, valueConfig)
+        }
+        return null
     }
 
     override fun resolveAll(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, text: String, config: CwtValueConfig): List<PsiElement> {
         val configGroup = config.configGroup
         val unionName = config.configExpression.metadata.value ?: return emptyList()
-        val quoted = element.text.isLeftQuoted()
-        val expression = ParadoxExpression.resolve(text, quoted)
-        val valueConfig = ParadoxExpressionMatchService.getMatchedCsvUnionCandidate(element, expression, unionName, configGroup) ?: return emptyList()
-        return ParadoxExpressionManager.resolveAllCsvExpression(element, rangeInElement, valueConfig)
+        // NOTE 3.0.1 recursion guard is required here
+        runWithRecursionGuard("csvExpression.resolveAll.union", unionName) {
+            val quoted = element.text.isLeftQuoted()
+            val expression = ParadoxExpression.resolve(text, quoted)
+            val valueConfig = ParadoxExpressionMatchService.getMatchedCsvUnionCandidate(element, expression, unionName, configGroup) ?: return emptyList()
+            return ParadoxExpressionManager.resolveAllCsvExpression(element, rangeInElement, valueConfig)
+        }
+        return emptyList()
     }
 
     override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {

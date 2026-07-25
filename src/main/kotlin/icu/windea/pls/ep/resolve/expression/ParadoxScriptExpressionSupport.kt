@@ -29,7 +29,7 @@ interface ParadoxScriptExpressionSupport {
     fun supports(config: CwtConfig<*>, configExpression: CwtDataExpression): Boolean
 
     fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, holder: AnnotationHolder) {
-
+        // by default nothing
     }
 
     fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
@@ -45,7 +45,7 @@ interface ParadoxScriptExpressionSupport {
     }
 
     fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
-
+        // by default nothing
     }
 
     companion object INSTANCE {

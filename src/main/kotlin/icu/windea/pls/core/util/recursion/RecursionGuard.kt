@@ -6,7 +6,7 @@ import java.util.*
 /**
  * 递归守卫。
  */
-class RecursionGuard(val name: Any) {
+class RecursionGuard(val name: String) {
     val stackTrace = ArrayDeque<Any>() // 来自 GPT：小深度用线性结构（数组/栈）线性扫，往往比哈希集合更快（分支预测友好、少间接寻址）
 
     /**

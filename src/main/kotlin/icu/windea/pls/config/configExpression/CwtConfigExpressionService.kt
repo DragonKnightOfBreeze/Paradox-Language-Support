@@ -3,7 +3,7 @@ package icu.windea.pls.config.configExpression
 import com.intellij.util.Processor
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.processUnionCandidates
+import icu.windea.pls.config.processCandidateConfigs
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.process
@@ -65,20 +65,28 @@ object CwtConfigExpressionService {
             CwtDataTypes.UnionValue -> {
                 val name = configExpression.metadata.value ?: return
                 val unionConfig = configGroup.unions[name] ?: return
-                unionConfig.processUnionCandidates { valueConfig ->
-                    val e = valueConfig.configExpression
-                    collectLiterals(e, configGroup, result)
-                    true
+                // NOTE 3.0.1 recursion guard is required here
+                withRecursionGuard("CwtConfigExpressionService.collectLiterals") {
+                    unionConfig.processCandidateConfigs { valueConfig ->
+                        val e = valueConfig.configExpression
+                        withRecursionCheck(e) {
+                            collectLiterals(e, configGroup, result)
+                        }
+                        true
+                    }
                 }
             }
             CwtDataTypes.AliasKeysField, CwtDataTypes.AliasName -> {
                 val name = configExpression.metadata.value ?: return
                 val aliasConfigGroup = configGroup.aliasGroups[name] ?: return
-                withRecursionGuard { // 这里需要防止递归
-                    for (aliasConfigs in aliasConfigGroup.values) {
-                        val e = aliasConfigs.firstOrNull()?.configExpression ?: continue
-                        withRecursionCheck(e) {
-                            collectLiterals(e, configGroup, result)
+                // NOTE 3.0.1 recursion guard is required here
+                withRecursionGuard("CwtConfigExpressionService.collectLiterals") {
+                    withRecursionCheck(name) {
+                        for (aliasConfigs in aliasConfigGroup.values) {
+                            val e = aliasConfigs.firstOrNull()?.configExpression ?: continue
+                            withRecursionCheck(e) {
+                                collectLiterals(e, configGroup, result)
+                            }
                         }
                     }
                 }
@@ -86,7 +94,8 @@ object CwtConfigExpressionService {
             CwtDataTypes.SingleAliasRight -> {
                 val name = configExpression.metadata.value ?: return
                 val singleAliasConfig = configGroup.singleAliases[name] ?: return
-                withRecursionGuard { // 这里需要防止递归
+                // NOTE 3.0.1 recursion guard is required here
+                withRecursionGuard("CwtConfigExpressionService.collectLiterals") {
                     val e = singleAliasConfig.config.valueExpression
                     withRecursionCheck(e) {
                         collectLiterals(e, configGroup, result)

@@ -3,7 +3,7 @@ package icu.windea.pls.ep.resolve.definition
 import icu.windea.pls.base.annotations.WithGameType
 import icu.windea.pls.config.config.CwtSubtypeGroup
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
-import icu.windea.pls.core.withRecursionGuard
+import icu.windea.pls.core.runWithRecursionGuard
 import icu.windea.pls.ep.util.data.StellarisEventData
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.getDefinitionData
@@ -34,16 +34,14 @@ class ParadoxSwappedTypeInheritSupport : ParadoxDefinitionInheritSupport {
     }
 
     private fun getSuperDefinition(definitionInfo: ParadoxDefinitionInfo, baseType: String): ParadoxDefinitionElement? {
-        val result = withRecursionGuard {
-            withRecursionCheck(baseType) a@{
-                val superDefinition = selectScope { definitionInfo.element?.queryParent(withSelf = false) }
-                if (superDefinition !is ParadoxDefinitionElement) return@a null
-                val superDefinitionInfo = superDefinition.definitionInfo ?: return@a null
-                if (!ParadoxDefinitionTypeExpression.resolve(baseType).matches(superDefinitionInfo)) return@a null
-                superDefinition
-            }
+        runWithRecursionGuard("definitionInherit.swappedType.superDefinition", baseType) {
+            val superDefinition = selectScope { definitionInfo.element?.queryParent(withSelf = false) }
+            if (superDefinition !is ParadoxDefinitionElement) return null
+            val superDefinitionInfo = superDefinition.definitionInfo ?: return null
+            if (!ParadoxDefinitionTypeExpression.resolve(baseType).matches(superDefinitionInfo)) return null
+            return superDefinition
         }
-        return result
+        return null
     }
 }
 
@@ -92,22 +90,20 @@ class StellarisEventInheritSupport : ParadoxDefinitionInheritSupport {
     }
 
     private fun getSuperDefinition(definitionInfo: ParadoxDefinitionInfo, baseName: String, subtypeConfigs: List<CwtSubtypeConfig>): ParadoxDefinitionElement? {
-        val result = withRecursionGuard {
-            withRecursionCheck(baseName) a@{
-                val element = definitionInfo.element ?: return@a null
-                val selector = ParadoxDefinitionSearch.selector(definitionInfo.project, element).contextSensitive()
-                val superDefinition = ParadoxDefinitionSearch.searchElement(baseName, T.event, selector).find() ?: return@a null
-                val superDefinitionInfo = superDefinition.definitionInfo ?: return@a null
+        runWithRecursionGuard("definitionInherit.event.superDefinition", baseName) {
+            val element = definitionInfo.element ?: return null
+            val selector = ParadoxDefinitionSearch.selector(definitionInfo.project, element).contextSensitive()
+            val superDefinition = ParadoxDefinitionSearch.searchElement(baseName, T.event, selector).find() ?: return null
+            val superDefinitionInfo = superDefinition.definitionInfo ?: return null
 
-                // 事件类型不匹配 - 不处理
-                val eventType = subtypeConfigs.find { it in CwtSubtypeGroup.EventType }?.name
-                val superEventType = superDefinitionInfo.subtypeConfigs.find { it in CwtSubtypeGroup.EventType }?.name
-                if (eventType != superEventType) return@a null
+            // 事件类型不匹配 - 不处理
+            val eventType = subtypeConfigs.find { it in CwtSubtypeGroup.EventType }?.name
+            val superEventType = superDefinitionInfo.subtypeConfigs.find { it in CwtSubtypeGroup.EventType }?.name
+            if (eventType != superEventType) return null
 
-                superDefinition
-            }
+            return superDefinition
         }
-        return result
+        return null
     }
 
     // TODO 2.0.7+ （按条件）使用父事件的标题、描述和图片

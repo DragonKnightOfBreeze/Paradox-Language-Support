@@ -4,11 +4,12 @@ import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
-import icu.windea.pls.config.processUnionCandidates
+import icu.windea.pls.config.processCandidateConfigs
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.matchesAntPattern
 import icu.windea.pls.core.matchesPattern
 import icu.windea.pls.core.matchesRegex
+import icu.windea.pls.core.runWithRecursionGuard
 import icu.windea.pls.lang.isParameterAwareIdentifier
 import icu.windea.pls.lang.match.ParadoxExpressionMatchService
 import icu.windea.pls.lang.match.ParadoxMatchProvider
@@ -203,11 +204,14 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
     private fun matchUnionValue(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
         val unionName = context.configExpression.metadata.value ?: return ParadoxMatchResult.NotMatch // null -> invalid config
         val unionConfig = context.configGroup.unions[unionName] ?: return ParadoxMatchResult.NotMatch // null -> not match
-        unionConfig.processUnionCandidates { valueConfig ->
-            val nextContext = context.copy(configExpression = valueConfig.configExpression)
-            val r = ParadoxExpressionMatchService.matchScriptExpression(nextContext)
-            if (r.get(context.options)) return r
-            true
+        // NOTE 3.0.1 recursion guard is required here
+        runWithRecursionGuard("scriptExpression.match.union", unionName) {
+            unionConfig.processCandidateConfigs { valueConfig ->
+                val nextContext = context.copy(configExpression = valueConfig.configExpression)
+                val r = ParadoxExpressionMatchService.matchScriptExpression(nextContext)
+                if (r.get(context.options)) return r
+                true
+            }
         }
         return ParadoxMatchResult.NotMatch
     }

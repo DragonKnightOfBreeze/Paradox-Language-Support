@@ -18,6 +18,7 @@ import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.normalizePath
+import icu.windea.pls.core.runWithRecursionGuard
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.core.unquote
@@ -290,41 +291,58 @@ class ParadoxScriptUnionValueExpressionSupport : ParadoxScriptExpressionSupportB
         return dataType == CwtDataTypes.UnionValue
     }
 
+    // NOTE 3.0.1 recursion guard is required here for various operations
+
     override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, holder: AnnotationHolder) {
         val configGroup = config.configGroup
         val unionName = config.configExpression?.metadata?.value ?: return
-        val quoted = element.text.isLeftQuoted()
-        val expression = ParadoxExpression.resolve(text, quoted)
-        val valueConfig = ParadoxExpressionMatchService.getMatchedScriptUnionCandidate(element, expression, unionName, configGroup) ?: return
-        ParadoxExpressionService.annotateScriptExpression(element, rangeInElement, text, valueConfig, holder)
+        // NOTE 3.0.1 recursion guard is required here
+        runWithRecursionGuard("scriptExpression.annotate.union", unionName) {
+            val quoted = element.text.isLeftQuoted()
+            val expression = ParadoxExpression.resolve(text, quoted)
+            val valueConfig = ParadoxExpressionMatchService.getMatchedScriptUnionCandidate(element, expression, unionName, configGroup) ?: return
+            ParadoxExpressionService.annotateScriptExpression(element, rangeInElement, text, valueConfig, holder)
+        }
     }
 
     override fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
         val configGroup = config.configGroup
         val unionName = config.configExpression?.metadata?.value ?: return null
-        val quoted = element.text.isLeftQuoted()
-        val expression = ParadoxExpression.resolve(text, quoted)
-        val valueConfig = ParadoxExpressionMatchService.getMatchedScriptUnionCandidate(element, expression, unionName, configGroup) ?: return null
-        return ParadoxExpressionService.resolveScriptExpression(element, rangeInElement, text, valueConfig, role)
+        // NOTE 3.0.1 recursion guard is required here
+        runWithRecursionGuard("scriptExpression.resolve.union", unionName) {
+            val quoted = element.text.isLeftQuoted()
+            val expression = ParadoxExpression.resolve(text, quoted)
+            val valueConfig = ParadoxExpressionMatchService.getMatchedScriptUnionCandidate(element, expression, unionName, configGroup) ?: return null
+            return ParadoxExpressionService.resolveScriptExpression(element, rangeInElement, text, valueConfig, role)
+        }
+        return null
     }
 
     override fun resolveAll(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiElement> {
         val configGroup = config.configGroup
         val unionName = config.configExpression?.metadata?.value ?: return emptyList()
-        val quoted = element.text.isLeftQuoted()
-        val expression = ParadoxExpression.resolve(text, quoted)
-        val valueConfig = ParadoxExpressionMatchService.getMatchedScriptUnionCandidate(element, expression, unionName, configGroup) ?: return emptyList()
-        return ParadoxExpressionService.resolveAllScriptExpression(element, rangeInElement, text, valueConfig, role)
+        // NOTE 3.0.1 recursion guard is required here
+        runWithRecursionGuard("scriptExpression.resolveAll.union", unionName) {
+            val quoted = element.text.isLeftQuoted()
+            val expression = ParadoxExpression.resolve(text, quoted)
+            val valueConfig = ParadoxExpressionMatchService.getMatchedScriptUnionCandidate(element, expression, unionName, configGroup) ?: return emptyList()
+            return ParadoxExpressionService.resolveAllScriptExpression(element, rangeInElement, text, valueConfig, role)
+        }
+        return emptyList()
     }
 
     override fun getReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiReference> {
         // #374 `union[x]` 同样需要兼容这里，目前来说，这是和 `alias_keys_field[x]` 不同的地方（例如，对于 `union[test_union] = { value[test_flag] }`，其中的 `value[test_flag]` 可以匹配多个节点）
         val configGroup = config.configGroup
         val unionName = config.configExpression?.metadata?.value ?: return emptyList()
-        val quoted = element.text.isLeftQuoted()
-        val expression = ParadoxExpression.resolve(text, quoted)
-        val valueConfig = ParadoxExpressionMatchService.getMatchedScriptUnionCandidate(element, expression, unionName, configGroup) ?: return emptyList()
-        return ParadoxExpressionService.getScriptExpressionReferences(element, rangeInElement, text, valueConfig, role)
+        // NOTE 3.0.1 recursion guard is required here
+        runWithRecursionGuard("scriptExpression.getReferences.union", unionName) {
+            val quoted = element.text.isLeftQuoted()
+            val expression = ParadoxExpression.resolve(text, quoted)
+            val valueConfig = ParadoxExpressionMatchService.getMatchedScriptUnionCandidate(element, expression, unionName, configGroup) ?: return emptyList()
+            return ParadoxExpressionService.getScriptExpressionReferences(element, rangeInElement, text, valueConfig, role)
+        }
+        return emptyList()
     }
 
     override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
@@ -342,38 +360,51 @@ class ParadoxScriptAliasNameExpressionSupport : ParadoxScriptExpressionSupportBa
         return dataType == CwtDataTypes.AliasKeysField || dataType == CwtDataTypes.AliasName
     }
 
+    // NOTE 3.0.1 recursion guard is required here for various operations
+
     override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, holder: AnnotationHolder) {
         val configGroup = config.configGroup
         val configExpression = config.configExpression
         val aliasName = configExpression?.metadata?.value ?: return
         val aliasGroup = configGroup.aliasGroups.get(aliasName) ?: return
-        val quoted = element.text.isLeftQuoted()
-        val aliasExpression = ParadoxExpression.resolve(text, quoted)
-        val aliasSubName = ParadoxExpressionMatchService.getMatchedAliasKey(element, aliasExpression, aliasName, configGroup) ?: return
-        val aliasConfig = aliasGroup[aliasSubName]?.first() ?: return
-        ParadoxExpressionService.annotateScriptExpression(element, rangeInElement, text, aliasConfig, holder)
+        // NOTE 3.0.1 recursion guard is required here
+        runWithRecursionGuard("scriptExpression.annotate.alias", aliasName) {
+            val quoted = element.text.isLeftQuoted()
+            val aliasExpression = ParadoxExpression.resolve(text, quoted)
+            val aliasSubName = ParadoxExpressionMatchService.getMatchedAliasKey(element, aliasExpression, aliasName, configGroup) ?: return
+            val aliasConfig = aliasGroup[aliasSubName]?.first() ?: return
+            ParadoxExpressionService.annotateScriptExpression(element, rangeInElement, text, aliasConfig, holder)
+        }
     }
 
     override fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
-        val aliasName = config.configExpression?.metadata?.value ?: return null
         val configGroup = config.configGroup
+        val aliasName = config.configExpression?.metadata?.value ?: return null
         val aliasGroup = configGroup.aliasGroups[aliasName] ?: return null
-        val quoted = element.text.isLeftQuoted()
-        val aliasExpression = ParadoxExpression.resolve(text, quoted, role)
-        val aliasSubName = ParadoxExpressionMatchService.getMatchedAliasKey(element, aliasExpression, aliasName, configGroup) ?: return null
-        val aliasConfig = aliasGroup[aliasSubName]?.firstOrNull() ?: return null
-        return ParadoxExpressionService.resolveScriptExpression(element, rangeInElement, text, aliasConfig, role)
+        // NOTE 3.0.1 recursion guard is required here
+        runWithRecursionGuard("scriptExpression.resolve.alias", aliasName) {
+            val quoted = element.text.isLeftQuoted()
+            val aliasExpression = ParadoxExpression.resolve(text, quoted, role)
+            val aliasSubName = ParadoxExpressionMatchService.getMatchedAliasKey(element, aliasExpression, aliasName, configGroup) ?: return null
+            val aliasConfig = aliasGroup[aliasSubName]?.firstOrNull() ?: return null
+            return ParadoxExpressionService.resolveScriptExpression(element, rangeInElement, text, aliasConfig, role)
+        }
+        return null
     }
 
     override fun resolveAll(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiElement> {
-        val aliasName = config.configExpression?.metadata?.value ?: return emptyList()
         val configGroup = config.configGroup
+        val aliasName = config.configExpression?.metadata?.value ?: return emptyList()
         val aliasGroup = configGroup.aliasGroups[aliasName] ?: return emptyList()
-        val quoted = element.text.isLeftQuoted()
-        val aliasExpression = ParadoxExpression.resolve(text, quoted, role)
-        val aliasSubName = ParadoxExpressionMatchService.getMatchedAliasKey(element, aliasExpression, aliasName, configGroup) ?: return emptyList()
-        val aliasConfig = aliasGroup[aliasSubName]?.firstOrNull() ?: return emptyList()
-        return ParadoxExpressionService.resolveAllScriptExpression(element, rangeInElement, text, aliasConfig, role)
+        // NOTE 3.0.1 recursion guard is required here
+        runWithRecursionGuard("scriptExpression.resolveAll.alias", aliasName) {
+            val quoted = element.text.isLeftQuoted()
+            val aliasExpression = ParadoxExpression.resolve(text, quoted, role)
+            val aliasSubName = ParadoxExpressionMatchService.getMatchedAliasKey(element, aliasExpression, aliasName, configGroup) ?: return emptyList()
+            val aliasConfig = aliasGroup[aliasSubName]?.firstOrNull() ?: return emptyList()
+            return ParadoxExpressionService.resolveAllScriptExpression(element, rangeInElement, text, aliasConfig, role)
+        }
+        return emptyList()
     }
 
     override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {

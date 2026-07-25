@@ -17,7 +17,6 @@ import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.isEmpty
 import icu.windea.pls.core.util.values.singletonListOrEmpty
 import icu.windea.pls.core.util.values.to
-import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.ep.resolve.expression.ParadoxCsvExpressionSupport
 import icu.windea.pls.ep.resolve.expression.ParadoxLocalisationExpressionSupport
@@ -47,8 +46,6 @@ object ParadoxExpressionService {
 
     // region Script Expression Related
 
-    // NOTE recursion guard is required for script expressions (ep + text)
-
     /**
      * @see ParadoxScriptExpressionSupport.annotate
      */
@@ -56,15 +53,11 @@ object ParadoxExpressionService {
         if (text.isEmpty()) return // skip if expression is empty
         val configExpression = config.configExpression ?: return
         val gameType = config.configGroup.gameType
-        withRecursionGuard {
-            ParadoxScriptExpressionSupport.EP_NAME.extensionList.forEach f@{ ep ->
-                ProgressManager.checkCanceled()
-                if (!ep.supports(config, configExpression)) return@f
-                if (!ChronicleAnnotationService.check(ep, gameType)) return@f
-                withRecursionCheck("${ep.javaClass.name}@a@${text}") {
-                    ep.annotate(element, rangeInElement, text, config, holder)
-                }
-            }
+        ParadoxScriptExpressionSupport.EP_NAME.extensionList.forEach f@{ ep ->
+            ProgressManager.checkCanceled()
+            if (!ep.supports(config, configExpression)) return@f
+            if (!ChronicleAnnotationService.check(ep, gameType)) return@f
+            ep.annotate(element, rangeInElement, text, config, holder)
         }
     }
 
@@ -75,15 +68,11 @@ object ParadoxExpressionService {
         if (text.isEmpty()) return null // ignore if expression is empty
         val configExpression = config.configExpression ?: return null
         val gameType = config.configGroup.gameType
-        val result = withRecursionGuard {
-            ParadoxScriptExpressionSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-                ProgressManager.checkCanceled()
-                if (!ep.supports(config, configExpression)) return@f null
-                if (!ChronicleAnnotationService.check(ep, gameType)) return@f null
-                withRecursionCheck("${ep.javaClass.name}@r@${text}") {
-                    ep.resolve(element, rangeInElement, text, config, role)
-                }
-            }
+        val result = ParadoxScriptExpressionSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
+            ProgressManager.checkCanceled()
+            if (!ep.supports(config, configExpression)) return@f null
+            if (!ChronicleAnnotationService.check(ep, gameType)) return@f null
+            ep.resolve(element, rangeInElement, text, config, role)
         }
         if (result != null) return result
         if (configExpression.isKey) return getResolvedConfigElement(element, config, config.configGroup)
@@ -97,15 +86,11 @@ object ParadoxExpressionService {
         if (text.isEmpty()) return emptyList() // ignore if expression is empty
         val configExpression = config.configExpression ?: return emptyList()
         val gameType = config.configGroup.gameType
-        val result = withRecursionGuard {
-            ParadoxScriptExpressionSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-                ProgressManager.checkCanceled()
-                if (!ep.supports(config, configExpression)) return@f null
-                if (!ChronicleAnnotationService.check(ep, gameType)) return@f null
-                withRecursionCheck("${ep.javaClass.name}@ra@${text}") {
-                    ep.resolveAll(element, rangeInElement, text, config, role).orNull()
-                }
-            }
+        val result = ParadoxScriptExpressionSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
+            ProgressManager.checkCanceled()
+            if (!ep.supports(config, configExpression)) return@f null
+            if (!ChronicleAnnotationService.check(ep, gameType)) return@f null
+            ep.resolveAll(element, rangeInElement, text, config, role).orNull()
         }.orEmpty()
         if (result.isNotEmpty()) return result
         if (configExpression.isKey) return getResolvedConfigElement(element, config, config.configGroup).to.singletonListOrEmpty()
@@ -119,15 +104,11 @@ object ParadoxExpressionService {
         if (text.isEmpty()) return emptyList() // ignore if expression is empty
         val configExpression = config.configExpression ?: return emptyList()
         val gameType = config.configGroup.gameType
-        return withRecursionGuard {
-            ParadoxScriptExpressionSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-                ProgressManager.checkCanceled()
-                if (!ep.supports(config, configExpression)) return@f null
-                if (!ChronicleAnnotationService.check(ep, gameType)) return@f null
-                withRecursionCheck("${ep.javaClass.name}@gr@${text}") {
-                    ep.getReferences(element, rangeInElement, text, config, role).orNull()
-                }
-            }
+        return ParadoxScriptExpressionSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
+            ProgressManager.checkCanceled()
+            if (!ep.supports(config, configExpression)) return@f null
+            if (!ChronicleAnnotationService.check(ep, gameType)) return@f null
+            ep.getReferences(element, rangeInElement, text, config, role).orNull()
         }.orEmpty()
     }
 
@@ -138,15 +119,11 @@ object ParadoxExpressionService {
         val config = context.config ?: return
         val configExpression = config.configExpression ?: return
         val gameType = config.configGroup.gameType
-        withRecursionGuard {
-            ParadoxScriptExpressionSupport.EP_NAME.extensionList.forEach f@{ ep ->
-                ProgressManager.checkCanceled()
-                if (!ep.supports(config, configExpression)) return@f
-                if (!ChronicleAnnotationService.check(ep, gameType)) return@f
-                withRecursionCheck("${ep.javaClass.name}@c@${context.keyword}") {
-                    ep.complete(context, result)
-                }
-            }
+        ParadoxScriptExpressionSupport.EP_NAME.extensionList.forEach f@{ ep ->
+            ProgressManager.checkCanceled()
+            if (!ep.supports(config, configExpression)) return@f
+            if (!ChronicleAnnotationService.check(ep, gameType)) return@f
+            ep.complete(context, result)
         }
     }
 
