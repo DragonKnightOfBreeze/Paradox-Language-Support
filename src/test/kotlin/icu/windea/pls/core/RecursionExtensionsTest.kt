@@ -18,7 +18,7 @@ class RecursionExtensionsTest {
         return withRecursionGuard({}.javaClass.name) { name }
     }
 
-    private fun methodB() : String?{
+    private fun methodB(): String? {
         return withRecursionGuard({}.javaClass.name) { name }
     }
 }
