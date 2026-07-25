@@ -26,15 +26,16 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
         assertEquals("", ek.expressionString)
         assertTrue(ek.isKey)
         assertEquals(CwtDataTypes.Constant, ek.type)
-        assertEquals("", ek.metadata.value)
+        assertEquals("", ek.expressionString)
+        assertNull(ek.metadata.value) // since 3.0.1
         assertEquals(ek, CwtDataExpression.resolve("", true))
         assertSame(ek, CwtDataExpression.resolveEmpty(true))
 
         val ev = CwtDataExpression.resolveEmpty(false)
-        assertEquals("", ev.expressionString)
         assertFalse(ev.isKey)
         assertEquals(CwtDataTypes.Constant, ev.type)
-        assertEquals("", ev.metadata.value)
+        assertEquals("", ev.expressionString)
+        assertNull(ev.metadata.value) // since 3.0.1
         assertEquals(ev, CwtDataExpression.resolve("", false))
         assertSame(ev, CwtDataExpression.resolveEmpty(false))
 
@@ -58,12 +59,14 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
         val s = "hello"
         val ek = CwtDataExpression.resolve(s, true)
         assertEquals(CwtDataTypes.Constant, ek.type)
-        assertEquals(s, ek.metadata.value)
+        assertEquals(s, ek.expressionString)
+        assertNull(ek.metadata.value) // since 3.0.1
         assertTrue(ek.isKey)
 
         val ev = CwtDataExpression.resolve(s, false)
         assertEquals(CwtDataTypes.Constant, ev.type)
-        assertEquals(s, ev.metadata.value)
+        assertEquals(s, ev.expressionString)
+        assertNull(ev.metadata.value) // since 3.0.1
         assertFalse(ev.isKey)
 
         // equals by expressionString only, but instances differ by cache bucket (key/value)
@@ -361,7 +364,8 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
             return
         }
         assertEquals(CwtDataTypes.TemplateExpression, e.type)
-        assertEquals(s, e.metadata.value)
+        assertEquals(s, e.expressionString)
+        assertNull(e.metadata.value) // since 3.0.1
         assertEquals(e, CwtDataExpression.resolve(s, false))
     }
 
@@ -376,7 +380,8 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
         run {
             val e = CwtDataExpression.resolveTemplate("abc")
             assertEquals(CwtDataTypes.Constant, e.type)
-            assertEquals("abc", e.metadata.value)
+            assertEquals("abc", e.expressionString)
+            assertNull(e.metadata.value) // since 3.0.1
         }
     }
 

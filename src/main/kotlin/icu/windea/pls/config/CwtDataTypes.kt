@@ -843,6 +843,9 @@ object CwtDataTypes {
      * 对应的数据表达式的格式：
      * - 直接使用常量值作为数据表达式字符串本身，如 `yes`、`10`、`trigger` 等。
      *
+     * 备注：
+     * - 对于此类型的数据表达式，需要通过 `expressionString` 而非 `metadata.value` 获取常量字符串（等同于原始的表达式字符串）。
+     *
      * > CWTools 兼容性：兼容。
      */
     val Constant = CwtDataType.builder("Constant").patternAware().build {
@@ -853,6 +856,9 @@ object CwtDataTypes {
      *
      * 由常量文本片段和引用片段交替组成的模式。
      * 匹配时将脚本表达式按模板结构拆分，逐个验证各引用片段。
+     *
+     * 备注：
+     * - 对于此类型的数据表达式，需要通过 `expressionString` 而非 `metadata.value` 获取模板字符串（等同于原始的表达式字符串）。
      *
      * > CWTools 兼容性：部分兼容。拥有不同的解析和处理逻辑。
      *

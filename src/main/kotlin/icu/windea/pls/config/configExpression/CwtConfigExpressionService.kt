@@ -53,7 +53,7 @@ object CwtConfigExpressionService {
                 result += "no"
             }
             CwtDataTypes.Constant -> {
-                val v = configExpression.metadata.value ?: return
+                val v = configExpression.expressionString
                 result += v
             }
             CwtDataTypes.EnumValue -> {

@@ -102,8 +102,8 @@ private object CwtDataExpressionResolver {
     private val cacheForValue = CacheBuilder("expireAfterAccess=30m").build<String, CwtDataExpression> { doResolve(it, false) }
     private val cacheForTemplate = CacheBuilder("expireAfterAccess=30m").build<String, CwtDataExpression> { doResolveTemplate(it) }
 
-    private val emptyKeyExpression = CwtDataExpressionImplWithMetadata("", true, CwtDataTypes.Constant).apply { value = "" }
-    private val emptyValueExpression = CwtDataExpressionImplWithMetadata("", false, CwtDataTypes.Constant).apply { value = "" }
+    private val emptyKeyExpression = CwtDataExpressionImplWithMetadata("", true, CwtDataTypes.Constant)
+    private val emptyValueExpression = CwtDataExpressionImplWithMetadata("", false, CwtDataTypes.Constant)
     private val blockExpression = create(ChronicleStrings.blockFolder, false, CwtDataTypes.Block)
 
     fun create(expressionString: String, isKey: Boolean, type: CwtDataType, metadataBuilder: CwtDataExpressionMetadataBuilder? = null): CwtDataExpression {
@@ -140,13 +140,11 @@ private object CwtDataExpressionResolver {
     }
 
     private fun doResolve(expressionString: String, isKey: Boolean): CwtDataExpression {
-        return CwtConfigExpressionService.resolve(expressionString, isKey)
-            ?: create(expressionString, isKey, CwtDataTypes.Constant) { value = expressionString }
+        return CwtConfigExpressionService.resolve(expressionString, isKey) ?: create(expressionString, isKey, CwtDataTypes.Constant)
     }
 
     private fun doResolveTemplate(expressionString: String): CwtDataExpression {
-        return CwtConfigExpressionService.resolveTemplate(expressionString)
-            ?: create(expressionString, false, CwtDataTypes.Constant) { value = expressionString }
+        return CwtConfigExpressionService.resolveTemplate(expressionString) ?: create(expressionString, false, CwtDataTypes.Constant)
     }
 }
 

@@ -115,7 +115,7 @@ class CwtConstantDataExpressionSupport : CwtDataExpressionSupport {
 
     override fun resolve(expressionString: String, isKey: Boolean): CwtDataExpression? {
         if (expressionString.any { c -> c in excludeCharacters } && !forceRegex.matches(expressionString)) return null
-        return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.Constant) { value = expressionString }
+        return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.Constant)
     }
 
     override fun resolveTemplate(expressionString: String): CwtDataExpression? {
@@ -126,7 +126,7 @@ class CwtConstantDataExpressionSupport : CwtDataExpressionSupport {
 class CwtTemplateDataExpressionSupport : CwtDataExpressionSupport {
     override fun resolve(expressionString: String, isKey: Boolean): CwtDataExpression? {
         if (CwtTemplateExpression.resolve(expressionString).expressionString.isEmpty()) return null
-        return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.TemplateExpression) { value = expressionString }
+        return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.TemplateExpression)
     }
 
     override fun resolveTemplate(expressionString: String): CwtDataExpression? {

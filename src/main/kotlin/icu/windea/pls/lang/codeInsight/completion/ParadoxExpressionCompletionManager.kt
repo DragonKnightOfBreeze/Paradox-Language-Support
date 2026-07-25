@@ -373,11 +373,12 @@ object ParadoxExpressionCompletionManager {
         ProgressManager.checkCanceled()
         val config = context.config ?: return
         val configExpression = config.configExpression ?: return
+        if (configExpression.type != CwtDataTypes.Constant) return
         val icon = when {
             configExpression.isKey -> ChronicleIcons.Nodes.Property
             else -> ChronicleIcons.Nodes.Value
         }
-        val name = configExpression.metadata.value ?: return
+        val name = configExpression.expressionString
         if (!configExpression.isKey) {
             // 常量的值也可能是yes/no
             if (name == "yes") {
