@@ -54,7 +54,7 @@ class ChronicleScopedTest : BasePlatformTestCase(), ChronicleTestScope {
 
     @Test
     fun test_the_waked() {
-        // `<caret>` should be after `@` in following text
+        // `<caret>` should be after `@`
         markFileInfo(ParadoxGameType.Stellaris, "common/tests/greetings/01_greetings.txt")
         myFixture.configureByText("01_greetings.txt", """
             @value = 42

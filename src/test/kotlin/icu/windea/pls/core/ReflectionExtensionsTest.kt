@@ -10,19 +10,19 @@ class ReflectionExtensionsTest {
         private var _foo: String? = null
         private var _active: Boolean = false
 
-        fun test_getFoo(): String? = _foo
-        fun test_setFoo(v: String?) {
+        fun getFoo(): String? = _foo
+        fun setFoo(v: String?) {
             _foo = v
         }
 
-        fun test_isActive(): Boolean = _active
-        fun test_setActive(v: Boolean) {
+        fun isActive(): Boolean = _active
+        fun setActive(v: Boolean) {
             _active = v
         }
 
         // Non-accessor methods
-        fun test_getValueX() = 1
-        fun test_setValueX(x: Int) {}
+        fun getValueX() = 1
+        fun setValueX(x: Int) {}
     }
 
     open class GenericHolder : ArrayList<String>()
