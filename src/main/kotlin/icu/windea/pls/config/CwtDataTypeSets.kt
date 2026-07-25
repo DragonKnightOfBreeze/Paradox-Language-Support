@@ -1,7 +1,5 @@
 package icu.windea.pls.config
 
-import icu.windea.pls.config.CwtDataTypeSets.Expandable
-
 
 /**
  * 数据类型的分组。
