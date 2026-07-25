@@ -12,7 +12,7 @@ import icu.windea.pls.script.psi.ParadoxDefinitionElement
 /**
  * 用于在重命名定义时，自动重命名相关图片（重命名文件名，如果存在且需要）。
  */
-class AutomaticDefinitionRelatedImagesRenamerFactory : AutomaticRenamerFactory {
+class ParadoxDefinitionRelatedImagesAutomaticRenamerFactory : AutomaticRenamerFactory {
     override fun isApplicable(element: PsiElement): Boolean {
         if (element !is ParadoxDefinitionElement) return false
         val definitionInfo = element.definitionInfo ?: return false
@@ -32,6 +32,6 @@ class AutomaticDefinitionRelatedImagesRenamerFactory : AutomaticRenamerFactory {
     }
 
     override fun createRenamer(element: PsiElement, newName: String, usages: MutableCollection<UsageInfo>?): AutomaticRenamer {
-        return AutomaticDefinitionRelatedImagesRenamer(element, newName)
+        return ParadoxDefinitionRelatedImagesAutomaticRenamer(element, newName)
     }
 }

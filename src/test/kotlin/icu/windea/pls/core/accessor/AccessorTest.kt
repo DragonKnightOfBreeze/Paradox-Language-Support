@@ -3,7 +3,9 @@ package icu.windea.pls.core.accessor
 import org.junit.*
 import java.util.*
 
-/** @see Accessor */
+/**
+ * @see Accessor
+ */
 class AccessorTest {
     // 1. 不能直接测试 Java 类，否则可能报错：java.lang.reflect.InaccessibleObjectException
     // 2. Kotlin 类的伴生对象的私有成员，不视为该类的静态成员

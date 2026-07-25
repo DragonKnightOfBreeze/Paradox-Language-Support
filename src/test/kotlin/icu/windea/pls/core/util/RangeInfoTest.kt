@@ -11,9 +11,9 @@ import org.junit.Test
  * - contains(...) 包含判断（开/闭边界、无下界/无上界、双无界、start>end 情况）
  * - expression/toString 一致性
  *
- * @see RangeInfos
+ * @see RangeInfo
  */
-class RangeInfosPureTest {
+class RangeInfoTest {
     // --------------- IntRangeInfo.from ---------------
 
     @Test

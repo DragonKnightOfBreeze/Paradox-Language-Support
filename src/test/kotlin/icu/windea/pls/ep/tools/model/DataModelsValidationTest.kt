@@ -17,7 +17,6 @@ import java.util.*
 import kotlin.io.path.createDirectories
 import kotlin.io.path.exists
 
-/** @see DataModels */
 class DataModelsValidationTest {
     @Test
     fun parsePlaylistV2_fromResources() {

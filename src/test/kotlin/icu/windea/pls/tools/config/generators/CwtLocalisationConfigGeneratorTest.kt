@@ -1,18 +1,12 @@
 package icu.windea.pls.tools.config.generators
 
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.test.ChronicleAssume
-import org.junit.Before
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
 
-@RunWith(JUnit4::class)
-/** @see CwtLocalisationConfigGenerator */
+/**
+ * @see CwtLocalisationConfigGenerator
+ */
 class CwtLocalisationConfigGeneratorTest : CwtConfigGeneratorTest() {
-    @Before
-    fun doSetUp() = ChronicleAssume.includeConfigGenerator()
-
     @Test
     fun generate_forStellaris() {
         val version = latestStellarisVersion

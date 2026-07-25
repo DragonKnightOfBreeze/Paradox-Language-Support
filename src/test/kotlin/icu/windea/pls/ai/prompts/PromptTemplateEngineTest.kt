@@ -3,7 +3,9 @@ package icu.windea.pls.ai.prompts
 import org.junit.Assert.*
 import org.junit.Test
 
-/** @see PromptTemplateEngine */
+/**
+ * @see PromptTemplateEngine
+ */
 class PromptTemplateEngineTest {
     private val engine = PromptTemplateEngine()
 

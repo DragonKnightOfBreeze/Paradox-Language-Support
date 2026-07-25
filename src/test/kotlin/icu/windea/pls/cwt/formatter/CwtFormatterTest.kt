@@ -11,7 +11,10 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
-/** @see CwtFormattingModelBuilder @see CwtCodeStyleSettings */
+/**
+ * @see CwtFormattingModelBuilder
+ * @see CwtCodeStyleSettings
+ */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
 class CwtFormatterTest : BasePlatformTestCase() {
@@ -347,9 +350,9 @@ class CwtFormatterTest : BasePlatformTestCase() {
     fun testEdge_dollarSignInValue() {
         getCustomSettings().SPACE_AROUND_PROPERTY_SEPARATOR = true
         // `$` 在 CWT 值中是有效字符，常用于本地化名称模板
-        val before = "name=\"\$\""
+        val before = "name=\"$\""
         val after = reformat(before)
-        assertEquals("name = \"\$\"", after)
+        assertEquals("name = \"$\"", after)
     }
 
     // endregion

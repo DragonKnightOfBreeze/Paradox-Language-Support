@@ -7,7 +7,9 @@ import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 import org.junit.runners.Parameterized.*
 
-/** @see SimilarityMatchService */
+/**
+ * @see SimilarityMatchService
+ */
 @RunWith(Enclosed::class)
 class SimilarityMatchServiceExtraTest {
     @RunWith(Parameterized::class)
@@ -35,7 +37,6 @@ class SimilarityMatchServiceExtraTest {
     @RunWith(Parameterized::class)
     class TriggeredPlanetModifier(val input: String) {
         companion object {
-            @Suppress("SpellCheckingInspection")
             @Parameters(name = "{0}")
             @JvmStatic
             fun data() = arrayOf(

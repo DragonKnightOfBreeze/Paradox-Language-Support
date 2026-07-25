@@ -14,7 +14,7 @@ import icu.windea.pls.script.psi.ParadoxDefinitionElement
 /**
  * 用于在重命名定义时，自动重命名由其生成的修正（如果存在）。
  */
-class AutomaticDefinitionGeneratedModifiersRenamer(element: PsiElement, newName: String) : AutomaticRenamer() {
+class ParadoxDefinitionGeneratedModifiersAutomaticRenamer(element: PsiElement, newName: String) : AutomaticRenamer() {
     init {
         val allRenames = mutableMapOf<PsiNamedElement, String>()
         prepareRenaming(element, newName, allRenames)

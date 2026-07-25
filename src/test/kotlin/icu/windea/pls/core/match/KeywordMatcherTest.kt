@@ -3,7 +3,9 @@ package icu.windea.pls.core.match
 import org.junit.Assert
 import org.junit.Test
 
-/** @see KeywordMatcher */
+/**
+ * @see KeywordMatcher
+ */
 class KeywordMatcherTest {
     @Test
     fun matches_string_exact_and_ignoreCase() {

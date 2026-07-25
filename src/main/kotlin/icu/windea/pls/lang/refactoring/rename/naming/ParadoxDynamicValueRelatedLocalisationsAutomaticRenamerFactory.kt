@@ -6,35 +6,35 @@ import com.intellij.refactoring.rename.naming.AutomaticRenamerFactory
 import com.intellij.usageView.UsageInfo
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.orNull
-import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueLightElement
+import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
 import icu.windea.pls.lang.refactoring.ParadoxRefactoringSettings
-import icu.windea.pls.lang.util.ParadoxComplexEnumValueManager
+import icu.windea.pls.lang.util.ParadoxDynamicValueManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 
 /**
- * 用于在重命名复杂枚举值时，自动重命名相关本地化（如果存在且需要）。
+ * 用于在重命名动态值时，自动重命名相关本地化（如果存在且需要）。
  */
-class AutomaticComplexEnumValueRelatedLocalisationsRenamerFactory : AutomaticRenamerFactory {
+class ParadoxDynamicValueRelatedLocalisationsAutomaticRenamerFactory : AutomaticRenamerFactory {
     override fun isApplicable(element: PsiElement): Boolean {
-        if (element !is ParadoxComplexEnumValueLightElement) return false
+        if (element !is ParadoxDynamicValueLightElement) return false
         val name = element.name.orNull() ?: return false
         val locale = ParadoxLocaleManager.getPreferredLocaleConfig()
-        return ParadoxComplexEnumValueManager.getNameLocalisations(name, element, locale).isNotEmpty()
+        return ParadoxDynamicValueManager.getNameLocalisations(name, element, locale).isNotEmpty()
     }
 
     override fun getOptionName(): String {
-        return ChronicleBundle.message("rename.complexEnumValue.relatedLocalisations")
+        return ChronicleBundle.message("rename.dynamicValue.relatedLocalisations")
     }
 
     override fun isEnabled(): Boolean {
-        return ParadoxRefactoringSettings.getInstance().renameRelatedLocalisationsForComplexEnumValues
+        return ParadoxRefactoringSettings.getInstance().renameRelatedLocalisationsForDynamicValues
     }
 
     override fun setEnabled(enabled: Boolean) {
-        ParadoxRefactoringSettings.getInstance().renameRelatedLocalisationsForComplexEnumValues = enabled
+        ParadoxRefactoringSettings.getInstance().renameRelatedLocalisationsForDynamicValues = enabled
     }
 
     override fun createRenamer(element: PsiElement, newName: String, usages: MutableCollection<UsageInfo>?): AutomaticRenamer {
-        return AutomaticComplexEnumValueRelatedLocalisationsRenamer(element, newName)
+        return ParadoxDynamicValueRelatedLocalisationsAutomaticRenamer(element, newName)
     }
 }

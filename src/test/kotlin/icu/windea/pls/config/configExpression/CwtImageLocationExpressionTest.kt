@@ -3,7 +3,9 @@ package icu.windea.pls.config.configExpression
 import org.junit.Assert.*
 import org.junit.Test
 
-/** @see CwtImageLocationExpression */
+/**
+ * @see CwtImageLocationExpression
+ */
 class CwtImageLocationExpressionTest {
     @Test
     fun resolveEmpty() {

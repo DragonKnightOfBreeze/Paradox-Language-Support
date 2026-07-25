@@ -4,11 +4,21 @@ import com.intellij.platform.ide.progress.runWithModalProgressBlocking
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.intellij.util.io.createParentDirectories
 import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.test.ChronicleAssume
+import org.junit.Before
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 import java.nio.file.Path
 import kotlin.io.path.writeText
 
-/** @see CwtConfigGenerator */
+/**
+ * @see CwtConfigGenerator
+ */
+@RunWith(JUnit4::class)
 abstract class CwtConfigGeneratorTest : BasePlatformTestCase() {
+    @Before
+    fun doSetUp() = ChronicleAssume.includeConfigGenerator()
+
     val latestStellarisVersion = "v4.1.5"
 
     protected fun generate(

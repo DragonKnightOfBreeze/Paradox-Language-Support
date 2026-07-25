@@ -3,10 +3,9 @@ package icu.windea.pls.core
 import org.junit.Assert
 import org.junit.Test
 
-/** @see ComparisonExtensions */
 class ComparisonExtensionsTest {
     @Test
-    fun thenPossible_basic() {
+    fun test_thenPossible_basic() {
         val byLength = Comparator<String> { a, b -> a.length - b.length }
         val byLex = Comparator<String> { a, b -> a.compareTo(b) }
 
@@ -22,7 +21,7 @@ class ComparisonExtensionsTest {
     }
 
     @Test
-    fun complexCompareBy_pinned_and_nulls() {
+    fun test_complexCompareBy_pinned_and_nulls() {
         val list = listOf(3, null, 2, 42, 5)
         val comp = complexCompareBy<Int?, Int, Int>(
             selector = { it },
@@ -34,7 +33,7 @@ class ComparisonExtensionsTest {
     }
 
     @Test
-    fun complexCompareByDescending_pinned_and_order() {
+    fun test_complexCompareByDescending_pinned_and_order() {
         val list = listOf(3, null, 2, 42, 5)
         val comp = complexCompareByDescending<Int?, Int, Int>(
             selector = { it },

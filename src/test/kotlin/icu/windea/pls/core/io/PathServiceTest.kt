@@ -16,7 +16,9 @@ import kotlin.io.path.writeText
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-/** @see PathService */
+/**
+ * @see PathService
+ */
 class PathServiceTest {
     private val root: Path = Paths.get("build/tmp/test-path")
 

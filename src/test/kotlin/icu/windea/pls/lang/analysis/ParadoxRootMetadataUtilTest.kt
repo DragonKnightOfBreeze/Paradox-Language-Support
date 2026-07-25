@@ -1,5 +1,6 @@
 package icu.windea.pls.lang.analysis
 
+import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.orNull
@@ -10,8 +11,11 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import kotlin.io.path.toPath
 
-/** @see ParadoxRootMetadataUtil */
+/**
+ * @see ParadoxRootMetadataUtil
+ */
 @RunWith(JUnit4::class)
+@TestDataPath("\$CONTENT_ROOT/testData")
 class ParadoxRootMetadataUtilTest : BasePlatformTestCase() {
     @Test
     fun getLauncherSettingsJsonInfo() {

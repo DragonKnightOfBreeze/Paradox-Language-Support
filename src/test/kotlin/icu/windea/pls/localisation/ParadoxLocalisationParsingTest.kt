@@ -9,7 +9,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
-/** @see ParadoxLocalisationParserDefinition */
+/**
+ * @see ParadoxLocalisationParserDefinition
+ */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
 class ParadoxLocalisationParsingTest : ParsingTestCase("localisation/syntax", "test.yml", ParadoxLocalisationParserDefinition()), ChronicleTestScope {

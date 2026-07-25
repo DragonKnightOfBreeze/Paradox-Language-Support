@@ -4,7 +4,9 @@ import com.intellij.openapi.util.TextRange
 import org.junit.Assert
 import org.junit.Test
 
-/** @see ParadoxExpressionManager */
+/**
+ * @see ParadoxExpressionManager
+ */
 class ParadoxExpressionManagerTest {
     @Test
     fun getParameterRangesTest() {

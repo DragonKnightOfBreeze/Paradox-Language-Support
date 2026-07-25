@@ -1,5 +1,6 @@
 package icu.windea.pls.config.configExpression
 
+import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.ep.config.configExpression.CwtDataExpressionSupport
@@ -8,8 +9,11 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
-/** @see CwtTemplateExpression */
+/**
+ * @see CwtTemplateExpression
+ */
 @RunWith(JUnit4::class)
+@TestDataPath("\$CONTENT_ROOT/testData")
 class CwtTemplateExpressionTest : BasePlatformTestCase() {
     private fun hasEp(): Boolean = try {
         CwtDataExpressionSupport.EP_NAME.extensionList.isNotEmpty()

@@ -11,9 +11,11 @@ import org.junit.runner.RunWith
 import java.net.HttpURLConnection
 import java.net.URI
 
-/** @see SpecialUrlService */
-@Suppress("UnstableApiUsage")
+/**
+ * @see SpecialUrlService
+ */
 @RunWith(ParallelMethodRunner::class)
+@Suppress("UnstableApiUsage")
 class SpecialUrlServiceTest {
     private val service = SpecialUrlServiceImpl()
     private val gameTypes = ParadoxGameType.getAllSpecific()

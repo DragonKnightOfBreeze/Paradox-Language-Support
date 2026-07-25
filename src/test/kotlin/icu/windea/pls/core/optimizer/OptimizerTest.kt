@@ -7,9 +7,13 @@ import icu.windea.pls.core.ReadWriteAccess
 import org.junit.Assert.*
 import org.junit.Test
 
-/** @see Optimizer */
+/**
+ * @see Optimizer
+ * @see OptimizerFactory
+ */
 class OptimizerTest {
-    // ========== String ==========
+    // region String
+
     @Test
     fun testStringOptimizer_equivalentInstancesInterned() {
         val optimizer = OptimizerFactory.forString()
@@ -40,7 +44,10 @@ class OptimizerTest {
         assertEquals(0, r.length)
     }
 
-    // ========== List ==========
+    // endregion
+
+    // region List
+
     @Test
     fun testListOptimizer_emptyLists_valueEquality_only() {
         val optimizer = OptimizerFactory.forList<String>()
@@ -80,7 +87,10 @@ class OptimizerTest {
         assertSame("ImmutableList input should be returned as-is", input, result)
     }
 
-    // ========== Set ==========
+    // endregion
+
+    // region Set
+
     @Test
     fun testSetOptimizer_emptySets_valueEquality_only() {
         val optimizer = OptimizerFactory.forSet<String>()
@@ -112,7 +122,10 @@ class OptimizerTest {
         assertSame("ImmutableSet input should be returned as-is", input, result)
     }
 
-    // ========== Map ==========
+    // endregion
+
+    // region Map
+
     @Test
     fun testMapOptimizer_emptyMaps_valueEquality_only() {
         val optimizer = OptimizerFactory.forMap<String, Int>()
@@ -144,7 +157,10 @@ class OptimizerTest {
         assertSame("ImmutableMap input should be returned as-is", input, result)
     }
 
-    // ========== String List (small-size interning) ==========
+    // endregion
+
+    // region String List (small-size interning)
+
     @Test
     fun testStringListOptimizer_smallLists_interned_referenceEqual() {
         val optimizer = OptimizerFactory.forStringList()
@@ -168,7 +184,10 @@ class OptimizerTest {
         assertEquals(9, result.size)
     }
 
-    // ========== String Set (small-size interning) ==========
+    // endregion
+
+    // region String Set (small-size interning)
+
     @Test
     fun testStringSetOptimizer_smallSets_interned_referenceEqual() {
         val optimizer = OptimizerFactory.forStringSet()
@@ -192,9 +211,12 @@ class OptimizerTest {
         assertEquals(9, result.size)
     }
 
-    // ========== Platform Access ==========
+    // endregion
+
+    // region Platform
+
     @Test
-    fun testAccessOptimizer_roundTrip_andValues() {
+    fun testReadWriteAccessOptimizer_roundTrip_andValues() {
         val optimizer = OptimizerFactory.forReadWriteAccess()
 
         val read = ReadWriteAccess.Read
@@ -215,9 +237,11 @@ class OptimizerTest {
     }
 
     @Test
-    fun testAccessOptimizer_deoptimize_unknownByte_fallsBackToReadWrite() {
+    fun testReadWriteAccessOptimizer_deoptimize_unknownByte_fallsBackToReadWrite() {
         val optimizer = OptimizerFactory.forReadWriteAccess()
         val result = optimizer.deoptimize(100.toByte())
         assertEquals(ReadWriteAccess.ReadWrite, result)
     }
+
+    // endregion
 }

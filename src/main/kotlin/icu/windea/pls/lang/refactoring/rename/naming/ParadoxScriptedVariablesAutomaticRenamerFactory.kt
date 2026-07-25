@@ -12,7 +12,7 @@ import icu.windea.pls.lang.refactoring.ParadoxRefactoringSettings
 import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
-class AutomaticScriptedVariablesRenamerFactory : AutomaticRenamerFactory {
+class ParadoxScriptedVariablesAutomaticRenamerFactory : AutomaticRenamerFactory {
     override fun isApplicable(element: PsiElement): Boolean {
         if (element !is ParadoxScriptScriptedVariable) return false
         val name = element.name?.orNull() ?: return false
@@ -38,6 +38,6 @@ class AutomaticScriptedVariablesRenamerFactory : AutomaticRenamerFactory {
     }
 
     override fun createRenamer(element: PsiElement, newName: String, usages: MutableCollection<UsageInfo>?): AutomaticRenamer {
-        return AutomaticScriptedVariablesRenamer(element, newName)
+        return ParadoxScriptedVariablesAutomaticRenamer(element, newName)
     }
 }

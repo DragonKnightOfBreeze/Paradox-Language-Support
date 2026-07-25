@@ -12,7 +12,9 @@ import org.junit.runners.JUnit4
 import org.junit.runners.Parameterized
 import kotlin.io.path.isDirectory
 
-/** @see ParadoxAnalysisService */
+/**
+ * @see ParadoxAnalysisService
+ */
 @RunWith(JUnit4::class)
 class ParadoxAnalysisServiceTest : BasePlatformTestCase() {
     @Test
