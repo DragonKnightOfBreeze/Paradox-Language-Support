@@ -126,7 +126,7 @@ Key `ChronicleTestScope` methods:
 
 For the showcase test demonstrating `ChronicleTestScope` usage, see:
 
-- `icu.windea.pls.test.chronicle.ChronicleScopedTest`
+- `icu.windea.pls.test.chronicle.ChronicleScopedTest` - checkout it if your task involves to platform tests.
 
 Notes:
 - The marked config directory SHOULD NOT directly contain config files, place them in the `core` (or some game type id like `stellaris`, see `ParadoxGameType` for details about game types) subdirectory.
