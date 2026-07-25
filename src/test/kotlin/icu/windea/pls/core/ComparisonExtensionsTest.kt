@@ -5,7 +5,7 @@ import org.junit.Test
 
 class ComparisonExtensionsTest {
     @Test
-    fun test_thenPossible_basic() {
+    fun thenPossible_basic_test() {
         val byLength = Comparator<String> { a, b -> a.length - b.length }
         val byLex = Comparator<String> { a, b -> a.compareTo(b) }
 
@@ -21,7 +21,7 @@ class ComparisonExtensionsTest {
     }
 
     @Test
-    fun test_complexCompareBy_pinned_and_nulls() {
+    fun complexCompareBy_pinned_and_nulls_test() {
         val list = listOf(3, null, 2, 42, 5)
         val comp = complexCompareBy<Int?, Int, Int>(
             selector = { it },
@@ -33,7 +33,7 @@ class ComparisonExtensionsTest {
     }
 
     @Test
-    fun test_complexCompareByDescending_pinned_and_order() {
+    fun complexCompareByDescending_pinned_and_order_test() {
         val list = listOf(3, null, 2, 42, 5)
         val comp = complexCompareByDescending<Int?, Int, Int>(
             selector = { it },

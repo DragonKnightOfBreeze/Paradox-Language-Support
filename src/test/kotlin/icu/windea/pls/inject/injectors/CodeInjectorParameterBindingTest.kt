@@ -70,7 +70,7 @@ class CodeInjectorParameterBindingTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun test_argsCount_lessThanTarget() {
+    fun argsCount_lessThanTarget_test() {
         makeTargetClass(
             TARGET_LESS_ARGS,
             listOf(
@@ -100,7 +100,7 @@ class CodeInjectorParameterBindingTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun test_argsCount_equalToTarget() {
+    fun argsCount_equalToTarget_test() {
         makeTargetClass(
             TARGET_EQUAL_ARGS,
             listOf(
@@ -125,7 +125,7 @@ class CodeInjectorParameterBindingTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun test_argsCount_moreThanTarget_notApplied() {
+    fun argsCount_moreThanTarget_notApplied_test() {
         makeTargetClass(
             TARGET_MORE_ARGS,
             listOf(
@@ -150,7 +150,7 @@ class CodeInjectorParameterBindingTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun test_argsType_mismatch_notApplied() {
+    fun argsType_mismatch_notApplied_test() {
         makeTargetClass(
             TARGET_MISMATCH_TYPES,
             listOf(
@@ -176,7 +176,7 @@ class CodeInjectorParameterBindingTest : BasePlatformTestCase() {
 
     @Suppress("RedundantSuspendModifier")
     @Test
-    fun test_suspendTarget_and_suspendInjectMethod() {
+    fun suspendTarget_and_suspendInjectMethod_test() {
         makeTargetClass(
             TARGET_SUSPEND,
             listOf(
@@ -211,7 +211,7 @@ class CodeInjectorParameterBindingTest : BasePlatformTestCase() {
 
     @Suppress("RemoveRedundantQualifierName", "PLATFORM_CLASS_MAPPED_TO_KOTLIN")
     @Test
-    fun test_primitiveTarget_boxedInjectMethod_shouldApply() {
+    fun primitiveTarget_boxedInjectMethod_shouldApply_test() {
         makeTargetClass(
             TARGET_PRIMITIVE_TARGET_BOXED_INJECT,
             listOf(
@@ -239,7 +239,7 @@ class CodeInjectorParameterBindingTest : BasePlatformTestCase() {
 
     @Suppress("RemoveRedundantQualifierName", "PLATFORM_CLASS_MAPPED_TO_KOTLIN")
     @Test
-    fun test_boxedTarget_primitiveInjectMethod_shouldApply() {
+    fun boxedTarget_primitiveInjectMethod_shouldApply_test() {
         makeTargetClass(
             TARGET_BOXED_TARGET_PRIMITIVE_INJECT,
             listOf(
@@ -266,7 +266,7 @@ class CodeInjectorParameterBindingTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun test_arrayParameter_match_intArray() {
+    fun arrayParameter_match_intArray_test() {
         makeTargetClass(
             TARGET_ARRAY_INT,
             listOf(
@@ -294,7 +294,7 @@ class CodeInjectorParameterBindingTest : BasePlatformTestCase() {
 
     @Suppress("BoxArray")
     @Test
-    fun test_arrayParameter_mismatch_shouldNotApply() {
+    fun arrayParameter_mismatch_shouldNotApply_test() {
         makeTargetClass(
             TARGET_ARRAY_OBJECT,
             listOf(

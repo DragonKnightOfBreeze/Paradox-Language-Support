@@ -26,7 +26,7 @@ class ReplaceScriptedVariableReferenceWithResolvedValueIntentionTest : BasePlatf
     fun doTearDown() = clearIntegrationTest()
 
     @Test
-    fun test_smoke() {
+    fun smoke_test() {
         val intentionName = ChronicleBundle.message("intention.replaceScriptedVariableReferenceWithResolvedValue")
 
         markFileInfo(ParadoxGameType.Stellaris, "common/test/scripted_variable_references.test.txt")
@@ -37,7 +37,7 @@ class ReplaceScriptedVariableReferenceWithResolvedValueIntentionTest : BasePlatf
     }
 
     @Test
-    fun test_unresolved_notAvailable() {
+    fun unresolved_notAvailable_test() {
         val intentionName = ChronicleBundle.message("intention.replaceScriptedVariableReferenceWithResolvedValue")
 
         markFileInfo(ParadoxGameType.Stellaris, "common/test/scripted_variable_references.test.txt")

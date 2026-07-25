@@ -6,7 +6,7 @@ import java.util.*
 
 class CollectionBuildersTest {
     @Test
-    fun test_mutableSet_without_comparator() {
+    fun mutableSet_without_comparator_test() {
         val s = MutableSet<Int>()
         s.addAll(listOf(3, 1, 2, 2))
         // uniqueness
@@ -14,7 +14,7 @@ class CollectionBuildersTest {
     }
 
     @Test
-    fun test_mutableSet_with_comparator_tree_order() {
+    fun mutableSet_with_comparator_tree_order_test() {
         val s = MutableSet(Comparator.naturalOrder<Int>())
         s.addAll(listOf(3, 1, 2))
         // Should be TreeSet when comparator is provided
@@ -23,7 +23,7 @@ class CollectionBuildersTest {
     }
 
     @Test
-    fun test_merge_and_mergeTo_skip_null_or_empty() {
+    fun merge_and_mergeTo_skip_null_or_empty_test() {
         val a = listOf(1, 2)
         val b = emptyList<Int>()
         val c: List<Int>? = null

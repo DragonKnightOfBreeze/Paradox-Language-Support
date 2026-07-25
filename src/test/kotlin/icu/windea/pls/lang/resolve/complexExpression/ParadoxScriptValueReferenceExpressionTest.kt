@@ -34,7 +34,7 @@ class ParadoxScriptValueReferenceExpressionTest : ParadoxComplexExpressionTest()
     }
 
     @Test
-    fun test_basic() {
+    fun basic_test() {
         val s = "some_sv"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -45,7 +45,7 @@ class ParadoxScriptValueReferenceExpressionTest : ParadoxComplexExpressionTest()
     }
 
     @Test
-    fun test_basic_withSimpleArg() {
+    fun basic_withSimpleArg_test() {
         val s = "some_sv|PARAM|VALUE|"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -61,7 +61,7 @@ class ParadoxScriptValueReferenceExpressionTest : ParadoxComplexExpressionTest()
     }
 
     @Test
-    fun test_basic_withMultipleArgs() {
+    fun basic_withMultipleArgs_test() {
         val s = "some_sv|P1|V1|P2|V2"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -80,7 +80,7 @@ class ParadoxScriptValueReferenceExpressionTest : ParadoxComplexExpressionTest()
     }
 
     @Test
-    fun test_trailingPipe1_accepted() {
+    fun trailingPipe1_accepted_test() {
         val s = "some_sv|"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -92,7 +92,7 @@ class ParadoxScriptValueReferenceExpressionTest : ParadoxComplexExpressionTest()
     }
 
     @Test
-    fun test_trailingPipe2_accepted() {
+    fun trailingPipe2_accepted_test() {
         val s = "some_sv|P|"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -106,7 +106,7 @@ class ParadoxScriptValueReferenceExpressionTest : ParadoxComplexExpressionTest()
     }
 
     @Test
-    fun test_empty() {
+    fun empty_test() {
         Assert.assertNull(resolve("", ParadoxGameType.Stellaris, incomplete = false))
         val exp = resolve("", ParadoxGameType.Stellaris, incomplete = true)!!
         exp.renderAndPrintln()

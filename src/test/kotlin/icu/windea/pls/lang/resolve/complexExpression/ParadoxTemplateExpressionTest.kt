@@ -35,7 +35,7 @@ class ParadoxTemplateExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_template_job_placeholder() {
+    fun template_job_placeholder_test() {
         val gameType = ParadoxGameType.Stellaris
         val config = pickModifierWithTemplate(gameType) { it.template.expressionString.contains("<") }
         Assume.assumeTrue("No modifier with <placeholder> template found", config != null)
@@ -55,7 +55,7 @@ class ParadoxTemplateExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_template_enum_placeholder_dumpOnly() {
+    fun template_enum_placeholder_dumpOnly_test() {
         val gameType = ParadoxGameType.Stellaris
         val config = pickModifierWithTemplate(gameType) { it.template.expressionString.contains("enum[") }
         Assume.assumeTrue("No modifier with enum[...] in template found", config != null)

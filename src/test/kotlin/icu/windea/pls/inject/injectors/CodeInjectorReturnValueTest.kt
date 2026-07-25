@@ -56,7 +56,7 @@ class CodeInjectorReturnValueTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun test_returnValue_atStart() {
+    fun returnValue_atStart_test() {
         makeTargetClass(
             TARGET_RV_AT_START,
             listOf(
@@ -83,7 +83,7 @@ class CodeInjectorReturnValueTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun test_returnValue_atMiddle() {
+    fun returnValue_atMiddle_test() {
         makeTargetClass(
             TARGET_RV_AT_MIDDLE,
             listOf(
@@ -110,7 +110,7 @@ class CodeInjectorReturnValueTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun test_returnValue_atEnd() {
+    fun returnValue_atEnd_test() {
         makeTargetClass(
             TARGET_RV_AT_END,
             listOf(
@@ -137,7 +137,7 @@ class CodeInjectorReturnValueTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun test_returnValue_voidTarget_shouldBeNull() {
+    fun returnValue_voidTarget_shouldBeNull_test() {
         makeTargetClass(
             TARGET_VOID_RV_NULL,
             listOf(

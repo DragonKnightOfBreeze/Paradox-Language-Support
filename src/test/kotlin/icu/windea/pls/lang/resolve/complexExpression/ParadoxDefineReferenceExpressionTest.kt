@@ -35,7 +35,7 @@ class ParadoxDefineReferenceExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_basic() {
+    fun basic_test() {
         val s = "Namespace|Name"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -48,14 +48,14 @@ class ParadoxDefineReferenceExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_missingPipe() {
+    fun missingPipe_test() {
         val s = "Namespace"
         val exp = resolve(s, ParadoxGameType.Stellaris)
         assertNull(exp)
     }
 
     @Test
-    fun test_missingPipe_incomplete() {
+    fun missingPipe_incomplete_test() {
         val s = "Namespace"
         val exp = resolve(s, ParadoxGameType.Stellaris, incomplete = true)!!
         exp.renderAndPrintln()
@@ -66,7 +66,7 @@ class ParadoxDefineReferenceExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_trailingPipe1() {
+    fun trailingPipe1_test() {
         val s = "Namespace|"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -79,7 +79,7 @@ class ParadoxDefineReferenceExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_trailingPipe1_incomplete() {
+    fun trailingPipe1_incomplete_test() {
         val s = "Namespace|"
         val exp = resolve(s, ParadoxGameType.Stellaris, incomplete = true)!!
         exp.renderAndPrintln()
@@ -92,7 +92,7 @@ class ParadoxDefineReferenceExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_empty() {
+    fun empty_test() {
         Assert.assertNull(resolve("", ParadoxGameType.Stellaris, incomplete = false))
         val exp = resolve("", ParadoxGameType.Stellaris, incomplete = true)!!
         exp.renderAndPrintln()

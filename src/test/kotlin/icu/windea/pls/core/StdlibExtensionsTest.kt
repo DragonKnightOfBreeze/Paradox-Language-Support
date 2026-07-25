@@ -5,7 +5,7 @@ import org.junit.Test
 
 class StdlibExtensionsTest {
     @Test
-    fun test_isQuotedTest() {
+    fun isQuotedTest_test() {
         Assert.assertFalse("123".isRightQuoted())
         Assert.assertTrue("123\"".isRightQuoted())
         Assert.assertFalse("123\\\"".isRightQuoted())
@@ -14,7 +14,7 @@ class StdlibExtensionsTest {
     }
 
     @Test
-    fun test_quoteAndUnquoteTest() {
+    fun quoteAndUnquoteTest_test() {
         Assert.assertEquals("""" abc\"abc """", """ abc"abc """.quote())
         Assert.assertEquals("""" abc\"abc """", """ abc\"abc """.quote())
         Assert.assertEquals("""" abc\\\"abc """", """ abc\\"abc """.quote())
@@ -35,7 +35,7 @@ class StdlibExtensionsTest {
     }
 
     @Test
-    fun test_isEscapedCharAt() {
+    fun isEscapedCharAt_test() {
         Assert.assertFalse("abcd".isEscapedCharAt(3))
         Assert.assertTrue("ab\\d".isEscapedCharAt(3))
         Assert.assertFalse("a\\\\d".isEscapedCharAt(3))
@@ -43,7 +43,7 @@ class StdlibExtensionsTest {
     }
 
     @Test
-    fun test_escapeBlankTest() {
+    fun escapeBlankTest_test() {
         Assert.assertEquals("abc", "abc".escapeBlank())
         Assert.assertEquals("abc&nbsp;", "abc ".escapeBlank())
         Assert.assertEquals("abc&nbsp;&nbsp;", "abc  ".escapeBlank())
@@ -52,7 +52,7 @@ class StdlibExtensionsTest {
     }
 
     @Test
-    fun test_quote_unquote_and_escape() {
+    fun quote_unquote_and_escape_test() {
         val s = "ab\"c"
         val quoted = s.quote()
         val unquoted = quoted.unquote()
@@ -68,7 +68,7 @@ class StdlibExtensionsTest {
     }
 
     @Test
-    fun test_substringIn_variants() {
+    fun substringIn_variants_test() {
         Assert.assertEquals("x", "a[x]b".substringIn('[', ']'))
         Assert.assertEquals("a[x]b", "a[x]b".substringIn('<', '>'))
         Assert.assertEquals("foo", "a<foo>b".substringIn("<", ">"))
@@ -78,7 +78,7 @@ class StdlibExtensionsTest {
     }
 
     @Test
-    fun test_split_and_contains_blank_lines() {
+    fun split_and_contains_blank_lines_test() {
         Assert.assertEquals(listOf("a", "b", "c"), "a  b\tc".splitByBlank())
         Assert.assertTrue("a b".containsBlank())
         Assert.assertTrue("a\r\nb".containsLineBreak())
@@ -86,27 +86,27 @@ class StdlibExtensionsTest {
     }
 
     @Test
-    fun test_splitToPair() {
+    fun splitToPair_test() {
         // Assert.assertEquals(listOf("A", "b", "c"), " A, ,b; c ".splitOptimized(',', ';'))
         Assert.assertEquals("a" to "b", "a=b".splitToPair('='))
         Assert.assertNull("a".splitToPair('='))
     }
 
     @Test
-    fun test_truncate_and_keep_quotes() {
+    fun truncate_and_keep_quotes_test() {
         Assert.assertEquals("abc...", "abcdef".truncate(3))
         Assert.assertEquals("\"abc...\"", "\"abcdef\"".truncateAndKeepQuotes(3))
     }
 
     @Test
-    fun test_capitalization_and_words() {
+    fun capitalization_and_words_test() {
         Assert.assertEquals("Foo", "foo".capitalized())
         Assert.assertEquals("bar", "Bar".decapitalized())
         Assert.assertEquals("Hello world foo bar", "hello_world-FOO.bar".toCapitalizedWords())
     }
 
     @Test
-    fun test_indicesOf_and_comma_delimited() {
+    fun indicesOf_and_comma_delimited_test() {
         Assert.assertEquals(listOf(0, 2, 4), "ababa".indicesOf('a'))
         Assert.assertEquals("a,b,c", listOf("a", "b", "c").toCommaDelimitedString())
         Assert.assertEquals(listOf("a", "b", "c"), "a,b,, c".toCommaDelimitedStringList())
@@ -114,7 +114,7 @@ class StdlibExtensionsTest {
     }
 
     @Test
-    fun test_indicesOf_string_overloads() {
+    fun indicesOf_string_overloads_test() {
         // String overload, overlapping matches supported
         Assert.assertEquals(listOf(0, 2), "ababa".indicesOf("aba"))
         // ignoreCase
@@ -128,7 +128,7 @@ class StdlibExtensionsTest {
     }
 
     @Test
-    fun test_matchesPath_basic_and_strict() {
+    fun matchesPath_basic_and_strict_test() {
         // equal
         Assert.assertTrue("/a/b".matchesPath("/a/b", acceptSelf = true))
         Assert.assertFalse("/a/b".matchesPath("/a/b", acceptSelf = false))
@@ -144,7 +144,7 @@ class StdlibExtensionsTest {
     }
 
     @Test
-    fun test_matchesPath_trim() {
+    fun matchesPath_trim_test() {
         // when trim=true, only the receiver is trimmed
         Assert.assertTrue("a/b/".matchesPath("a/b/c", trim = true))
         Assert.assertTrue("a/b".matchesPath("a/b/c", trim = false))
@@ -152,14 +152,14 @@ class StdlibExtensionsTest {
     }
 
     @Test
-    fun test_normalizePath_unify_separators_and_trim_tail() {
+    fun normalizePath_unify_separators_and_trim_tail_test() {
         Assert.assertEquals("a/b/c", "a//b\\c/".normalizePath())
         Assert.assertEquals("", "".normalizePath())
         Assert.assertEquals("a", "a////".normalizePath())
     }
 
     @Test
-    fun test_regex_and_ant_wrappers() {
+    fun regex_and_ant_wrappers_test() {
         Assert.assertTrue("foo/bar".matchesAntPattern("foo/**"))
         Assert.assertTrue("abc".matchesRegex("[a-z]+"))
         Assert.assertFalse("abc".matchesRegex("[0-9]+"))

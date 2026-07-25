@@ -37,7 +37,7 @@ class ParadoxTagsExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_basic() {
+    fun basic_test() {
         val s = "tag1,tag2"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -51,7 +51,7 @@ class ParadoxTagsExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_single() {
+    fun single_test() {
         val s = "tag1"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -62,7 +62,7 @@ class ParadoxTagsExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_multiple() {
+    fun multiple_test() {
         val s = "tag1,tag2,tag3"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -77,7 +77,7 @@ class ParadoxTagsExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_inverted() {
+    fun inverted_test() {
         val s = "tag1,not(tag2)"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -96,7 +96,7 @@ class ParadoxTagsExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_invertedAll() {
+    fun invertedAll_test() {
         val s = "not(tag1),not(tag2)"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -119,7 +119,7 @@ class ParadoxTagsExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_inverted_withBlank() {
+    fun inverted_withBlank_test() {
         val s = "tag1,not (   tag2 )"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -140,7 +140,7 @@ class ParadoxTagsExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_missingTag() {
+    fun missingTag_test() {
         val s = "tag,,not(tag2)"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -160,7 +160,7 @@ class ParadoxTagsExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_onlyCommas() {
+    fun onlyCommas_test() {
         val s = ", ,   , "
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -178,7 +178,7 @@ class ParadoxTagsExpressionTest : ParadoxComplexExpressionTest() {
 
 
     @Test
-    fun test_withBlank() {
+    fun withBlank_test() {
         val s = "tag1,   not( tag2  ),tag3"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -201,7 +201,7 @@ class ParadoxTagsExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_empty() {
+    fun empty_test() {
         Assert.assertNull(resolve("", ParadoxGameType.Stellaris, incomplete = false))
         val exp = resolve("", ParadoxGameType.Stellaris, incomplete = true)!!
         exp.renderAndPrintln()
@@ -212,7 +212,7 @@ class ParadoxTagsExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_empty_incomplete_1() {
+    fun empty_incomplete_1_test() {
         val exp = resolve("", ParadoxGameType.Stellaris, incomplete = true)!!
         exp.renderAndPrintln()
         val dsl = buildComplexExpression<ParadoxTagsExpression>("", 0, 0) {
@@ -222,7 +222,7 @@ class ParadoxTagsExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_empty_incomplete_2() {
+    fun empty_incomplete_2_test() {
         val exp = resolve(",", ParadoxGameType.Stellaris, incomplete = true)!!
         exp.renderAndPrintln()
         val dsl = buildComplexExpression<ParadoxTagsExpression>(",", 0, 1) {
@@ -234,7 +234,7 @@ class ParadoxTagsExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_empty_incomplete_3() {
+    fun empty_incomplete_3_test() {
         val exp = resolve(",not(),,", ParadoxGameType.Stellaris, incomplete = true)!!
         exp.renderAndPrintln()
         val dsl = buildComplexExpression<ParadoxTagsExpression>(",not(),,", 0, 8) {

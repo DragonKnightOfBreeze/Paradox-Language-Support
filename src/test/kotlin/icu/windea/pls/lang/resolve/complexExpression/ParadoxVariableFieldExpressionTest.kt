@@ -35,7 +35,7 @@ class ParadoxVariableFieldExpressionTest : ParadoxComplexExpressionTest(), Chron
     }
 
     @Test
-    fun test_basic_chain() {
+    fun basic_chain_test() {
         val s = "root.owner.some_variable"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -50,7 +50,7 @@ class ParadoxVariableFieldExpressionTest : ParadoxComplexExpressionTest(), Chron
     }
 
     @Test
-    fun test_barrier_noFurtherSplit() {
+    fun barrier_noFurtherSplit_test() {
         val s = "root.owner|x.y"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -63,7 +63,7 @@ class ParadoxVariableFieldExpressionTest : ParadoxComplexExpressionTest(), Chron
     }
 
     @Test
-    fun test_empty() {
+    fun empty_test() {
         Assert.assertNull(resolve("", ParadoxGameType.Stellaris, incomplete = false))
         val exp = resolve("", ParadoxGameType.Stellaris, incomplete = true)!!
         exp.renderAndPrintln()
@@ -74,7 +74,7 @@ class ParadoxVariableFieldExpressionTest : ParadoxComplexExpressionTest(), Chron
     }
 
     @Test
-    fun test_nestedDynamicValueExpression_simple() {
+    fun nestedDynamicValueExpression_simple_test() {
         val s = "this.event_target:target"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -87,7 +87,7 @@ class ParadoxVariableFieldExpressionTest : ParadoxComplexExpressionTest(), Chron
     }
 
     @Test
-    fun test_nestedDynamicValueExpression_withScope() {
+    fun nestedDynamicValueExpression_withScope_test() {
         val s = "this.event_target:target@root.var"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -113,7 +113,7 @@ class ParadoxVariableFieldExpressionTest : ParadoxComplexExpressionTest(), Chron
     }
 
     @Test
-    fun test_nestedDynamicValueExpression_withScope_in_middle() {
+    fun nestedDynamicValueExpression_withScope_in_middle_test() {
         val s = "this.event_target:target@root.var"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -139,7 +139,7 @@ class ParadoxVariableFieldExpressionTest : ParadoxComplexExpressionTest(), Chron
     }
 
     @Test
-    fun test_nestedDynamicValueExpression_withScope_inMiddle() {
+    fun nestedDynamicValueExpression_withScope_inMiddle_test() {
         val s = "this.event_target:target@root.owner.var"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -167,7 +167,7 @@ class ParadoxVariableFieldExpressionTest : ParadoxComplexExpressionTest(), Chron
     }
 
     @Test
-    fun test_nestedDynamicValueExpression_withFollowingAt() {
+    fun nestedDynamicValueExpression_withFollowingAt_test() {
         val s = "this.event_target:target@.var"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -191,7 +191,7 @@ class ParadoxVariableFieldExpressionTest : ParadoxComplexExpressionTest(), Chron
     }
 
     @Test
-    fun test_nestedDynamicValueExpression_withFollowingAt_inMiddle() {
+    fun nestedDynamicValueExpression_withFollowingAt_inMiddle_test() {
         val s = "this.event_target:target@.owner.var"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()

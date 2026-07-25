@@ -5,7 +5,7 @@ import org.junit.Test
 
 class SequenceExtensionsTest {
     @Test
-    fun test_filterIsInstance_and_findIsInstance() {
+    fun filterIsInstance_and_findIsInstance_test() {
         val seq1: Sequence<Any?> = sequenceOf(1, "a", null, "abc", 2)
         val onlyOneChar = seq1.filterIsInstance<String> { it.length == 1 }.toList()
         assertEquals(listOf("a"), onlyOneChar)
@@ -20,7 +20,7 @@ class SequenceExtensionsTest {
     }
 
     @Test
-    fun test_process_test() {
+    fun process_test() {
         val seq = sequenceOf(1, 2, 3)
         var sum = 0
         val cont = seq.process {

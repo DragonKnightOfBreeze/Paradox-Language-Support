@@ -41,7 +41,7 @@ class InlinedDelegateFieldCodeInjectorsTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun test_inlinedDelegateFields_forDataHolders() {
+    fun inlinedDelegateFields_forDataHolders_test() {
         val classLoader = this::class.java.classLoader
 
         val optionBaseClassName = "icu.windea.pls.config.option.CwtOptionDataHolderBase"

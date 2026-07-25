@@ -34,7 +34,7 @@ class ParadoxDatabaseObjectExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_basic_twoSegments() {
+    fun basic_twoSegments_test() {
         val s = "civic:some_civic"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -49,7 +49,7 @@ class ParadoxDatabaseObjectExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_basic_threeSegments() {
+    fun basic_threeSegments_test() {
         val s = "civic:some_civic:some_swapped_civic"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -68,7 +68,7 @@ class ParadoxDatabaseObjectExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_basic_job() {
+    fun basic_job_test() {
         val s = "job:job_soldier"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -83,7 +83,7 @@ class ParadoxDatabaseObjectExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_empty() {
+    fun empty_test() {
         Assert.assertNull(resolve("", ParadoxGameType.Stellaris, incomplete = false))
         val exp = resolve("", ParadoxGameType.Stellaris, incomplete = true)!!
         exp.renderAndPrintln()

@@ -38,7 +38,7 @@ class ChronicleScopedTest : BasePlatformTestCase(), ChronicleTestScope {
     fun doTearDown() = clearIntegrationTest()
 
     @Test
-    fun test_the_waker() {
+    fun the_waker_test() {
         markFileInfo(ParadoxGameType.Stellaris, "common/tests/greetings/00_greetings.txt")
         myFixture.configureByText("00_greetings.txt", """
             the_waker = {
@@ -53,7 +53,7 @@ class ChronicleScopedTest : BasePlatformTestCase(), ChronicleTestScope {
     }
 
     @Test
-    fun test_the_waked() {
+    fun the_waked_test() {
         // `<caret>` should be after `@`
         markFileInfo(ParadoxGameType.Stellaris, "common/tests/greetings/01_greetings.txt")
         myFixture.configureByText("01_greetings.txt", """
@@ -72,7 +72,7 @@ class ChronicleScopedTest : BasePlatformTestCase(), ChronicleTestScope {
     }
 
     @Test
-    fun test_the_waked_highlighting() {
+    fun the_waked_highlighting_test() {
         myFixture.enableInspections(DuplicateScriptedVariablesInspection::class.java)
 
         val tag = ChronicleBundle.message("inspection.script.duplicateScriptedVariables.desc", "value").toWarningTag()

@@ -36,7 +36,7 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_basic_empire1() {
+    fun basic_empire1_test() {
         val s = "{<eater_adj> {<patron_noun>}}"
         val exp = resolve(s, "empire", ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -65,7 +65,7 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_basic_empire2() {
+    fun basic_empire2_test() {
         val s = "{AofB{<imperial_mil> [This.GetCapitalSystemNameOrRandom]}}"
         val exp = resolve(s, "empire", ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -99,7 +99,7 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_basic_empire3() {
+    fun basic_empire3_test() {
         val s = "{<home_planet> Fleet}"
         val exp = resolve(s, "empire", ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -120,7 +120,7 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_basic_federation() {
+    fun basic_federation_test() {
         val s = "{<union_adj> Council}"
         val exp = resolve(s, "federation", ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -141,7 +141,7 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_empty() {
+    fun empty_test() {
         Assert.assertNull(resolve("", "empire", ParadoxGameType.Stellaris, incomplete = false))
         val exp = resolve("", "empire", ParadoxGameType.Stellaris, incomplete = true)!!
         exp.renderAndPrintln()
@@ -152,7 +152,7 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
     // Strict DSL checks — ensure Marker vs ErrorToken are strictly distinguished
 
     @Test
-    fun test_strict_braces_empty() {
+    fun strict_braces_empty_test() {
         val s = "{}"
         val exp = resolve(s, "empire", ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -166,7 +166,7 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_strict_localisation_simple() {
+    fun strict_localisation_simple_test() {
         val s = "{alpha}"
         val exp = resolve(s, "empire", ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -181,7 +181,7 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_strict_definition_simple() {
+    fun strict_definition_simple_test() {
         val s = "{<x> y}"
         val exp = resolve(s, "empire", ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -202,7 +202,7 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_strict_command_simple() {
+    fun strict_command_simple_test() {
         val s = "{[Root.GetName]}"
         val exp = resolve(s, "empire", ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -225,7 +225,7 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_strict_nested_mixed() {
+    fun strict_nested_mixed_test() {
         val s = "{X{<Y> [Root.GetName]}}"
         val exp = resolve(s, "empire", ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -259,7 +259,7 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_strict_error_unmatched_angle() {
+    fun strict_error_unmatched_angle_test() {
         // NOTE 顶层与闭包层的“空错误节点”逻辑是幂等的：若子层已在当前层末位放置了错误节点（例如 [ 未闭合导致的当前层末尾空错误），则闭包层不会再重复添加。
 
         val s = "{<abc"
@@ -279,7 +279,7 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_strict_error_unmatched_bracket() {
+    fun strict_error_unmatched_bracket_test() {
         // NOTE 顶层与闭包层的“空错误节点”逻辑是幂等的：若子层已在当前层末位放置了错误节点（例如 [ 未闭合导致的当前层末尾空错误），则闭包层不会再重复添加。
 
         val s = "{[Root."
@@ -307,7 +307,7 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_strict_text_and_blanks() {
+    fun strict_text_and_blanks_test() {
         val s = "{Alpha Beta}"
         val exp = resolve(s, "empire", ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -324,7 +324,7 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_strict_top_level_blanks_and_closure() {
+    fun strict_top_level_blanks_and_closure_test() {
         val s = "   { <x> y  }   "
         val exp = resolve(s, "empire", ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -349,7 +349,7 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_strict_top_level_errors_and_closure() {
+    fun strict_top_level_errors_and_closure_test() {
         val s = "foo { <x> y  } <bar> "
         val exp = resolve(s, "empire", ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -377,7 +377,7 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_strict_no_open_brace_whole_error() {
+    fun strict_no_open_brace_whole_error_test() {
         val s = "<x> y} "
         val exp = resolve(s, "empire", ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -389,7 +389,7 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_strict_stray_close_in_closure() {
+    fun strict_stray_close_in_closure_test() {
         val s = "{x> y}"
         val exp = resolve(s, "empire", ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -407,7 +407,7 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_strict_extra_close_top_level() {
+    fun strict_extra_close_top_level_test() {
         val s = "{<x>> y}}"
         val exp = resolve(s, "empire", ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -430,7 +430,7 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_strict_empty_command_in_closure() {
+    fun strict_empty_command_in_closure_test() {
         val s = "{[]}"
         val exp = resolve(s, "empire", ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -449,7 +449,7 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_strict_empty_definition_in_closure() {
+    fun strict_empty_definition_in_closure_test() {
         val s = "{<>}"
         val exp = resolve(s, "empire", ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -468,7 +468,7 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_strict_unmatched_angle_stop_at_space() {
+    fun strict_unmatched_angle_stop_at_space_test() {
         val s = "{<abc y}"
         val exp = resolve(s, "empire", ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -489,7 +489,7 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_strict_unmatched_bracket_stop_at_space() {
+    fun strict_unmatched_bracket_stop_at_space_test() {
         val s = "{[Root. y}"
         val exp = resolve(s, "empire", ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -518,7 +518,7 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_strict_stray_close_bracket_in_closure() {
+    fun strict_stray_close_bracket_in_closure_test() {
         val s = "{x] y}"
         val exp = resolve(s, "empire", ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -536,7 +536,7 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_strict_top_level_after_closure_text() {
+    fun strict_top_level_after_closure_text_test() {
         val s = "{x}y"
         val exp = resolve(s, "empire", ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -552,7 +552,7 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_strict_braces_blank_inside() {
+    fun strict_braces_blank_inside_test() {
         val s = "{ }"
         val exp = resolve(s, "empire", ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -567,7 +567,7 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_strict_command_adjacent_no_space() {
+    fun strict_command_adjacent_no_space_test() {
         val s = "{x[Root.GetName]}"
         val exp = resolve(s, "empire", ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()

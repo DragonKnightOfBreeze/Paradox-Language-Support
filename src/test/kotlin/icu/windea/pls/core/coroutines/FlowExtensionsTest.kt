@@ -8,13 +8,13 @@ import org.junit.Test
 
 class FlowExtensionsTest {
     @Test
-    fun test_chunked_basic_and_tail() = runBlocking {
+    fun chunked_basic_and_tail_test() = runBlocking {
         val result = (1..5).asFlow().chunked(2).toList()
         assertEquals(listOf(listOf(1, 2), listOf(3, 4), listOf(5)), result)
     }
 
     @Test
-    fun test_chunked_invalid_size() {
+    fun chunked_invalid_size_test() {
         assertThrows(IllegalArgumentException::class.java) {
             runBlocking {
                 (1..3).asFlow().chunked(0).toList()
@@ -23,13 +23,13 @@ class FlowExtensionsTest {
     }
 
     @Test
-    fun test_toLineFlow_basic_join() = runBlocking {
+    fun toLineFlow_basic_join_test() = runBlocking {
         val output = listOf("a", "b\nc", "d\n", "\n", "e").asFlow().toLineFlow().toList()
         assertEquals(listOf("ab", "cd", "", "e"), output)
     }
 
     @Test
-    fun test_toLineFlow_trailing_without_newline() = runBlocking {
+    fun toLineFlow_trailing_without_newline_test() = runBlocking {
         val output = listOf("x", "y").asFlow().toLineFlow().toList()
         assertEquals(listOf("xy"), output)
     }

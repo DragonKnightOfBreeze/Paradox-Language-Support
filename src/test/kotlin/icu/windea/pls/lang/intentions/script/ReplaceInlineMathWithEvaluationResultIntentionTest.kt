@@ -26,7 +26,7 @@ class ReplaceInlineMathWithEvaluationResultIntentionTest : BasePlatformTestCase(
     fun doTearDown() = clearIntegrationTest()
 
     @Test
-    fun test_constant() {
+    fun constant_test() {
         val intentionName = ChronicleBundle.message("intention.replaceInlineMathWithEvaluationResult")
         myFixture.configureByText("inline_maths.test.txt", "key = <caret>@[ 1 + 1 ]")
         val intention = myFixture.findSingleIntention(intentionName)
@@ -35,7 +35,7 @@ class ReplaceInlineMathWithEvaluationResultIntentionTest : BasePlatformTestCase(
     }
 
     @Test
-    fun test_parameterWithDefaultValue() {
+    fun parameterWithDefaultValue_test() {
         val intentionName = ChronicleBundle.message("intention.replaceInlineMathWithEvaluationResult")
         myFixture.configureByText("inline_maths.test.txt", "key = <caret>@[ 1 + ${p("NUM", "1")} ]")
         val intention = myFixture.findSingleIntention(intentionName)
@@ -44,7 +44,7 @@ class ReplaceInlineMathWithEvaluationResultIntentionTest : BasePlatformTestCase(
     }
 
     @Test
-    fun test_dynamic_notAvailable() {
+    fun dynamic_notAvailable_test() {
         val intentionName = ChronicleBundle.message("intention.replaceInlineMathWithEvaluationResult")
         myFixture.configureByText("inline_maths.test.txt", "key = <caret>@[ 1 + ${p("NUM")} ]")
         assertThrows(AssertionError::class.java) { myFixture.findSingleIntention(intentionName) }
