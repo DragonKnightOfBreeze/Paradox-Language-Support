@@ -17,7 +17,7 @@ import icu.windea.pls.core.orNull
 import icu.windea.pls.core.toClasspathUrl
 import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.core.toVirtualFile
-import icu.windea.pls.lang.analysis.ParadoxAnalysisDataService
+import icu.windea.pls.lang.analysis.ParadoxAnalysisInjectionManager
 import icu.windea.pls.model.ParadoxGameType
 
 abstract class CwtConfigGroupFileProviderBase : CwtConfigGroupFileProvider {
@@ -40,7 +40,7 @@ abstract class CwtConfigGroupFileProviderBase : CwtConfigGroupFileProvider {
     }
 
     protected fun processFilesInRootDirectory(configGroup: CwtConfigGroup, rootDirectory: VirtualFile, consumer: (String, VirtualFile) -> Boolean) {
-        if (!isEnabled && source != CwtConfigGroupFileSource.BuiltIn) return
+        if (!isEnabled() && source != CwtConfigGroupFileSource.BuiltIn) return
         if (!rootDirectory.isDirectory) return
         val gameType = configGroup.gameType
         val project = configGroup.project
@@ -50,7 +50,7 @@ abstract class CwtConfigGroupFileProviderBase : CwtConfigGroupFileProvider {
             processFilesInConfigDirectory(coreDirectory, consumer)
         }
         run {
-            if (!isEnabled || gameType == ParadoxGameType.Core) return@run
+            if (!isEnabled() || gameType == ParadoxGameType.Core) return@run
             val directoryName = getDirectoryName(project, gameType) ?: return@run
             val directory = rootDirectory.findChild(directoryName) ?: return@run
             processFilesInConfigDirectory(directory, consumer)
@@ -87,7 +87,7 @@ abstract class CwtConfigGroupFileProviderBase : CwtConfigGroupFileProvider {
             else -> ChronicleBundle.message("configGroup.notification", messageIndex, gameType.title)
         }
         val message = when {
-            isEnabled || (isBuiltIn && isGeneral) -> ChronicleBundle.message("configGroup.notification.enabled", notification)
+            isEnabled() || (isBuiltIn && isGeneral) -> ChronicleBundle.message("configGroup.notification.enabled", notification)
             else -> ChronicleBundle.message("configGroup.notification.disabled", notification)
         }
         return message
@@ -111,7 +111,10 @@ class CwtBuiltInConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
 
     override val source get() = CwtConfigGroupFileSource.BuiltIn
 
-    override val isEnabled get() = ChronicleConfigSettings.getInstance().state.enableBuiltInConfigGroups
+    override fun isEnabled(): Boolean {
+        if (ParadoxAnalysisInjectionManager.useOnlyInjectedConfigFiles()) return false
+        return ChronicleConfigSettings.getInstance().state.enableBuiltInConfigGroups
+    }
 
     override fun getRootDirectory(project: Project): VirtualFile? {
         return rootDirectory
@@ -143,7 +146,11 @@ class CwtBuiltInConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
 class CwtRemoteConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
     override val source get() = CwtConfigGroupFileSource.Remote
 
-    override val isEnabled get() = ChronicleConfigSettings.getInstance().state.enableRemoteConfigGroups
+    override fun isEnabled(): Boolean {
+        if (ParadoxAnalysisInjectionManager.useOnlyBuiltInAndInjectedConfigFiles()) return false
+        if (ParadoxAnalysisInjectionManager.useOnlyInjectedConfigFiles()) return false
+        return ChronicleConfigSettings.getInstance().state.enableRemoteConfigGroups
+    }
 
     override fun getRootDirectory(project: Project): VirtualFile? {
         return doGetRootDirectory()
@@ -189,7 +196,11 @@ class CwtRemoteConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
 class CwtLocalConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
     override val source get() = CwtConfigGroupFileSource.Local
 
-    override val isEnabled get() = ChronicleConfigSettings.getInstance().state.enableLocalConfigGroups
+    override fun isEnabled(): Boolean {
+        if (ParadoxAnalysisInjectionManager.useOnlyBuiltInAndInjectedConfigFiles()) return false
+        if (ParadoxAnalysisInjectionManager.useOnlyInjectedConfigFiles()) return false
+        return ChronicleConfigSettings.getInstance().state.enableLocalConfigGroups
+    }
 
     override fun getRootDirectory(project: Project): VirtualFile? {
         return doGetRootDirectory()
@@ -215,9 +226,14 @@ class CwtLocalConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
  * - `{gameType}` 为游戏类型 ID，对于通用的规则分组则为 `core`。
  */
 class CwtProjectLocalConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
+
     override val source get() = CwtConfigGroupFileSource.Local
 
-    override val isEnabled get() = ChronicleConfigSettings.getInstance().state.enableProjectLocalConfigGroups
+    override fun isEnabled(): Boolean {
+        if (ParadoxAnalysisInjectionManager.useOnlyBuiltInAndInjectedConfigFiles()) return false
+        if (ParadoxAnalysisInjectionManager.useOnlyInjectedConfigFiles()) return false
+        return ChronicleConfigSettings.getInstance().state.enableProjectLocalConfigGroups
+    }
 
     override fun getRootDirectory(project: Project): VirtualFile? {
         return doGetRootDirectory(project)
@@ -241,21 +257,21 @@ class CwtProjectLocalConfigGroupFileProvider : CwtConfigGroupFileProviderBase() 
  * - `{injectedConfigDirectory}` 需要在加载规则数据前，预先手动指定。
  * - `{gameType}` 为游戏类型 ID，对于通用的规则分组则为 `core`。
  *
- * @see ParadoxAnalysisDataService.markedConfigDirectory
+ * @see ParadoxAnalysisInjectionManager
  */
 class CwtInjectedConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
-    private val dataService get() = ParadoxAnalysisDataService.getInstance()
-
     override val source get() = CwtConfigGroupFileSource.Injected
 
-    override val isEnabled get() = with(dataService) { markedConfigDirectory != null }
+    override fun isEnabled(): Boolean {
+        return ParadoxAnalysisInjectionManager.getMarkedConfigDirectory() != null
+    }
 
     override fun getRootDirectory(project: Project): VirtualFile? {
         return doGetRootDirectory()
     }
 
     private fun doGetRootDirectory(): VirtualFile? {
-        val path = with(dataService) { markedConfigDirectory } ?: return null
+        val path = ParadoxAnalysisInjectionManager.getMarkedConfigDirectory() ?: return null
         val file = path.toVirtualFile(refreshIfNeed = true)
         return file?.takeIf { it.isDirectory }
     }
@@ -265,7 +281,7 @@ class CwtInjectedConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
         if (fs.protocol == "temp") {
             // NOTE 2.1.3 一些地方（如规则符号的索引的集成测试）会用到
             if (!file.path.startsWith("/src/")) return null
-            val relPath = with(dataService) { markedConfigPath } ?: return null
+            val relPath = ParadoxAnalysisInjectionManager.getMarkedConfigPath() ?: return null
             val tempRootDirectory = fs.findFileByPath("/src/${relPath}") ?: return null
             return getContainingConfigGroupFromRootDirectory(file, project, tempRootDirectory)
         }

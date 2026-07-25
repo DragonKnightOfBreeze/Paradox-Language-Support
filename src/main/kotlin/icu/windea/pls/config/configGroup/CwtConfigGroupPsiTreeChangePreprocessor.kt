@@ -29,7 +29,7 @@ class CwtConfigGroupPsiTreeChangePreprocessor : PsiTreeChangePreprocessor {
         val configGroupsToChange = mutableSetOf<CwtConfigGroup>()
         fileProviders.forEach f@{ fileProvider ->
             if (fileProvider is CwtBuiltInConfigGroupFileProvider) return@f
-            if (!fileProvider.isEnabled) return@f // 如果未启用则不要把规则分组标记为已更改
+            if (!fileProvider.isEnabled()) return@f // 如果未启用则不要把规则分组标记为已更改
             val configGroup = fileProvider.getContainingConfigGroup(vFile, project) ?: return@f
             if (!configGroup.changed) configGroupsToChange += configGroup
             if (configGroup.gameType != ParadoxGameType.Core) return@f

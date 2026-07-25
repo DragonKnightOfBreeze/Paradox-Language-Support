@@ -13,7 +13,10 @@ import icu.windea.pls.model.ParadoxGameType
 interface CwtConfigGroupFileProvider {
     val source: CwtConfigGroupFileSource
 
-    val isEnabled: Boolean
+    /**
+     * 是否启用。主要取决于插件设置以及注入的上下文信息。通用的内置规则分组最终总是会被启用。
+     */
+    fun isEnabled(): Boolean
 
     /**
      * 得到规则的根目录，其中所有规则分组目录的父目录。

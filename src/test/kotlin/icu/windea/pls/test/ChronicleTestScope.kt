@@ -15,7 +15,6 @@ import icu.windea.pls.model.ParadoxFileGroup
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.analysis.ParadoxGameTypeMetadata
-import kotlinx.coroutines.runBlocking
 import java.io.File
 import java.nio.file.Path
 
@@ -79,8 +78,8 @@ interface ChronicleTestScope {
      * 启用仅用于平台测试的特殊行为。这会启用从文件名推断文件类型和游戏类型。
      */
     fun markIntegrationTest() {
-        ParadoxAnalysisInjectionManager.configureUseDefaultFileExtensions(true)
-        ParadoxAnalysisInjectionManager.configureUseGameTypeInference(true)
+        ParadoxAnalysisInjectionManager.useDefaultFileExtensions(true)
+        ParadoxAnalysisInjectionManager.useGameTypeInference(true)
 
         addAdditionalAllowedRoots(PathManager.getPluginsDir()) // Why should I add this? So unreasonable.
     }
@@ -89,8 +88,8 @@ interface ChronicleTestScope {
      * 关闭仅用于平台测试的特殊行为。这会一并清空注入状态。
      */
     fun clearIntegrationTest() {
-        ParadoxAnalysisInjectionManager.configureUseDefaultFileExtensions(false)
-        ParadoxAnalysisInjectionManager.configureUseGameTypeInference(false)
+        ParadoxAnalysisInjectionManager.useDefaultFileExtensions(false)
+        ParadoxAnalysisInjectionManager.useGameTypeInference(false)
         ParadoxAnalysisInjectionManager.clearMarkedRootInfo()
         ParadoxAnalysisInjectionManager.clearMarkedFileInfo()
         ParadoxAnalysisInjectionManager.clearMarkedRootDirectory()
@@ -198,16 +197,25 @@ interface ChronicleTestScope {
      *
      * 说明：
      * - 使用注入的和内置的规则文件。
-     * - 通用的内置规则分组总是会被初始化。
+     * - 通用的规则分组总是会被初始化。
      */
     fun initConfigGroups(project: Project, vararg gameTypes: ParadoxGameType) {
-        val configGroupService = CwtConfigGroupService.getInstance(project)
-        val configGroups = configGroupService.getConfigGroups().values
-            .filter { it.gameType == ParadoxGameType.Core || (gameTypes.isEmpty() || it.gameType in gameTypes) }
-        runBlocking {
-            configGroupService.refreshBuiltInConfigFiles()
-            configGroupService.initConfigGroups(configGroups)
-        }
+        ParadoxAnalysisInjectionManager.useOnlyBuiltInAndInjectedConfigFiles(true)
+        ChronicleTestManager.initConfigGroups(project, *gameTypes)
+        ParadoxAnalysisInjectionManager.useOnlyBuiltInAndInjectedConfigFiles(false)
+    }
+
+    /**
+     * 为指定的一组游戏类型初始化规则分组。
+     *
+     * 说明：
+     * - 仅使用注入的的规则文件。
+     * - 通用的规则分组总是会被初始化。
+     */
+    fun initInjectedConfigGroups(project: Project, vararg gameTypes: ParadoxGameType) {
+        ParadoxAnalysisInjectionManager.useOnlyBuiltInAndInjectedConfigFiles(true)
+        ChronicleTestManager.initInjectedConfigGroups(project, *gameTypes)
+        ParadoxAnalysisInjectionManager.useOnlyBuiltInAndInjectedConfigFiles(false)
     }
 
     /**

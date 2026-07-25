@@ -56,6 +56,22 @@ object ParadoxAnalysisInjectionManager {
         return dataService.markedFileInfo
     }
 
+    fun getMarkedConfigPath() : String? {
+        return dataService.markedConfigPath
+    }
+
+    fun getMarkedConfigDirectory(): Path? {
+        return dataService.markedConfigDirectory
+    }
+
+    fun useOnlyBuiltInAndInjectedConfigFiles(): Boolean {
+        return dataService.useOnlyBuiltInAndInjectedConfigFiles
+    }
+
+    fun useOnlyInjectedConfigFiles(): Boolean {
+        return dataService.useOnlyInjectedConfigFiles
+    }
+
     // endregion
 
     // region Manipulation Methods
@@ -93,11 +109,11 @@ object ParadoxAnalysisInjectionManager {
         return true
     }
 
-    fun configureUseDefaultFileExtensions(value: Boolean) {
+    fun useDefaultFileExtensions(value: Boolean) {
         dataService.useDefaultFileExtensions = value
     }
 
-    fun configureUseGameTypeInference(value: Boolean) {
+    fun useGameTypeInference(value: Boolean) {
         dataService.useGameTypeInference = value
     }
 
@@ -143,6 +159,14 @@ object ParadoxAnalysisInjectionManager {
     fun clearMarkedConfigDirectory() {
         dataService.markedConfigPath = null
         dataService.markedConfigDirectory = null
+    }
+
+    fun useOnlyBuiltInAndInjectedConfigFiles(value: Boolean) {
+        dataService.useOnlyBuiltInAndInjectedConfigFiles = value
+    }
+
+    fun useOnlyInjectedConfigFiles(value: Boolean) {
+        dataService.useOnlyInjectedConfigFiles = value
     }
 
     // endregion

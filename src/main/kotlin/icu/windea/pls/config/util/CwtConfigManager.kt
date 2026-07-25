@@ -25,7 +25,6 @@ import icu.windea.pls.config.config.inlineConfig
 import icu.windea.pls.config.config.singleAliasConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.configGroup.CwtConfigGroupFileSource
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.toListOrThis
 import icu.windea.pls.core.optimized
@@ -45,7 +44,6 @@ import icu.windea.pls.cwt.CwtLanguage
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.cwt.psi.CwtMember
 import icu.windea.pls.cwt.psi.CwtRootBlock
-import icu.windea.pls.ep.config.configGroup.CwtConfigGroupFileProvider
 import icu.windea.pls.model.paths.CwtConfigPath
 import kotlin.io.path.name
 
@@ -75,12 +73,6 @@ object CwtConfigManager {
         CwtConfigService.getContainingConfigGroupForRepo(file, project)?.let { return it }
 
         return null
-    }
-
-    fun getBuiltInConfigRootDirectories(project: Project): List<VirtualFile> {
-        return CwtConfigGroupFileProvider.EP_NAME.extensionList
-            .filter { it.source == CwtConfigGroupFileSource.BuiltIn }
-            .mapNotNull { it.getRootDirectory(project) }
     }
 
     fun isInternalFile(file: PsiFile): Boolean {

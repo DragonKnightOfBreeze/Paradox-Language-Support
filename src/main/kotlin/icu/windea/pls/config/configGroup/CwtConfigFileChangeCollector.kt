@@ -80,7 +80,7 @@ class CwtConfigFileChangeCollector {
             val configGroupsToChange = mutableSetOf<CwtConfigGroup>()
             fileProviders.forEachFast f2@{ fileProvider ->
                 if (fileProvider is CwtBuiltInConfigGroupFileProvider) return@f2
-                if (!fileProvider.isEnabled) return@f2 // 如果未启用则不要把规则分组标记为已更改
+                if (!fileProvider.isEnabled()) return@f2 // 如果未启用则不要把规则分组标记为已更改
                 contextDirectories.forEach f3@{ contextDirectory ->
                     val configGroup = fileProvider.getContainingConfigGroup(contextDirectory, project) ?: return@f3
                     if (!configGroup.changed) configGroupsToChange += configGroup

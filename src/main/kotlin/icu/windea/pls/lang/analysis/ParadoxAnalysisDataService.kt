@@ -35,6 +35,7 @@ class ParadoxAnalysisDataService : Disposable {
     @Volatile var useDefaultFileExtensions: Boolean = false
     /** 是否从文件名推断游戏类型（[ParadoxGameType]）。可用于集成测试。 */
     @Volatile var useGameTypeInference: Boolean = false
+
     /** 接下来需要注入的根信息。可用于集成测试。 */
     @Volatile var markedRootInfo: ParadoxRootInfo? = null
     /** 接下来需要注入的文件信息。需要匹配可能的规则分组（[ParadoxFileGroup]）。可用于集成测试。 */
@@ -47,6 +48,11 @@ class ParadoxAnalysisDataService : Disposable {
     @Volatile var markedConfigPath: String? = null
     /** 接下来需要注入的规则目录。需要在加载规则数据前预先手动指定。可用于集成测试。 */
     @Volatile var markedConfigDirectory: Path? = null
+
+    /** 初始化规则分组时，是否仅使用内置的和注入的规则文件。 */
+    @Volatile var useOnlyBuiltInAndInjectedConfigFiles: Boolean = false
+    /** 初始化规则分组时，是否仅使用注入的规则文件。 */
+    @Volatile var useOnlyInjectedConfigFiles: Boolean = false
 
     // 直接保存到文件级别的用户数据（注意：尝试获取时不会立即初始化）
 

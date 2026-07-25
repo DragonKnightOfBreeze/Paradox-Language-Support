@@ -35,7 +35,7 @@ class CwtConfigDirectoryElementNode(
         val gameType = value.gameType
         val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
         fileProviders.forEach f@{ fileProvider ->
-            if (!fileProvider.isEnabled) return@f
+            if (!fileProvider.isEnabled()) return@f
             val rootDirectory = fileProvider.getRootDirectory(project) ?: return@f
             val directoryName = fileProvider.getDirectoryName(project, gameType) ?: return@f
             val relativePaths = "$directoryName/${value.path}".split('/').toTypedArray()
@@ -50,7 +50,7 @@ class CwtConfigDirectoryElementNode(
         val gameType = value.gameType
         val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
         fileProviders.forEach f@{ fileProvider ->
-            if (!fileProvider.isEnabled) return@f
+            if (!fileProvider.isEnabled()) return@f
             val rootDirectory = fileProvider.getRootDirectory(project) ?: return@f
             val directoryName = fileProvider.getDirectoryName(project, gameType) ?: return@f
             val relativePaths = "$directoryName/${value.path}".split('/').toTypedArray()
@@ -68,7 +68,7 @@ class CwtConfigDirectoryElementNode(
         val directoryNames = mutableSetOf<String>()
         val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
         fileProviders.forEach f@{ fileProvider ->
-            if (!fileProvider.isEnabled) return@f
+            if (!fileProvider.isEnabled()) return@f
             val rootDirectory = fileProvider.getRootDirectory(project) ?: return@f
             val directoryName = fileProvider.getDirectoryName(project, gameType) ?: return@f
             val relativePaths = "$directoryName/${value.path}".split('/').toTypedArray()
@@ -94,7 +94,7 @@ class CwtConfigDirectoryElementNode(
         val gameType = value.gameType
         val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
         fileProviders.forEach f@{ fileProvider ->
-            if (!fileProvider.isEnabled) return@f
+            if (!fileProvider.isEnabled()) return@f
             val rootDirectory = fileProvider.getRootDirectory(project) ?: return@f
             val directoryName = fileProvider.getDirectoryName(project, gameType) ?: return@f
             val relativePaths = "$directoryName/${value.path}".split('/').toTypedArray()
