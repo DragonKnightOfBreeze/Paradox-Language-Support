@@ -1,0 +1,18 @@
+types = {
+	type[map_setup_scenario] = {
+		path = "game/map/setup_scenarios"
+		name_field = name
+		path_extension = .txt
+		localisation = {
+			name = $
+		}
+	}
+}
+
+map_setup_scenario = {
+	name = localisation
+	priority = int
+	num_stars = int
+	radius = float
+    # ...
+}

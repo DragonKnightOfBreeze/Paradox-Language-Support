@@ -1,0 +1,12 @@
+types = {
+	type[prescripted_country] = {
+		path = "game/prescripted_countries"
+		path_extension = .txt
+	}
+}
+
+prescripted_country = {
+	name = localisation
+	adjective = localisation
+    # ...
+}

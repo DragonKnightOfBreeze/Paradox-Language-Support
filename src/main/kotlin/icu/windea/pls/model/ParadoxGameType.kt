@@ -28,7 +28,7 @@ enum class ParadoxGameType(
     val gameId: String,
     val steamId: String,
 ) {
-    /** 通用游戏类型。用于对应共享的规则分组。 */
+    /** 通用游戏类型。用于对应通用的规则分组。 */
     Core("core", "Core", "", ""),
     /** [Stellaris](https://store.steampowered.com/app/281990) */
     Stellaris("stellaris", "Stellaris", "stellaris", "281990"),

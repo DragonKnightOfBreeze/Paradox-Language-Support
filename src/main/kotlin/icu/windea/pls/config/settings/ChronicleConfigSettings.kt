@@ -22,7 +22,7 @@ class ChronicleConfigSettings : SimplePersistentStateComponent<ChronicleConfigSe
     }
 
     /**
-     * @property enableBuiltInConfigGroups 是否启用内置规则分组（共享的内置规则分组总是会被启用）。
+     * @property enableBuiltInConfigGroups 是否启用内置规则分组（通用内置规则分组总是会被启用）。
      * @property enableRemoteConfigGroups 是否启用远程规则分组（不建议与内置规则分组同时启用）。
      * @property enableLocalConfigGroups 是否启用全局的本地规则分组。
      * @property enableProjectLocalConfigGroups 是否启用项目的本地规则分组。

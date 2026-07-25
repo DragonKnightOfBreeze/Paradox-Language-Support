@@ -93,7 +93,7 @@ abstract class CwtConfigGroupFileProviderBase : CwtConfigGroupFileProvider {
         return message
     }
 
-    protected open fun getMessageIndex(): Int = -1
+    protected open fun getMessageIndex(): Int = 0
 }
 
 /**
@@ -102,9 +102,9 @@ abstract class CwtConfigGroupFileProviderBase : CwtConfigGroupFileProvider {
  * 位置：`config/{gameType}`
  *
  * - 位于插件压缩包中的插件 jar 包中。
- * - `{gameType}` 为游戏类型 ID，对于共享的规则分组则为 `core`。
+ * - `{gameType}` 为游戏类型 ID，对于通用的规则分组则为 `core`。
  *
- * 注意：共享的内置规则分组总是会被启用。
+ * 注意：通用的内置规则分组总是会被启用。
  */
 class CwtBuiltInConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
     private val rootDirectory by lazy { doGetRootDirectory() }
@@ -133,7 +133,7 @@ class CwtBuiltInConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
  * 位置：`{remoteConfigDirectory}/{directoryName}`
  *
  * - `{remoteConfigDirectory}` 可以配置。
- * - `{directoryName}` 为仓库目录的名字，对于共享的规则分组则为 `core`。
+ * - `{directoryName}` 为仓库目录的名字，对于通用的规则分组则为 `core`。
  *
  * 更改配置后，插件会自动从配置的远程仓库中克隆和拉取这些规则分组。
  * 在自动或手动同步后，才允许刷新规则分组数据。
@@ -184,7 +184,7 @@ class CwtRemoteConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
  * 位置：`{localConfigDirectory}/{gameType}`
  *
  * - `{localConfigDirectory}` 可以配置。
- * - `{gameType}` 为游戏类型 ID，对于共享的规则分组则为 `core`。
+ * - `{gameType}` 为游戏类型 ID，对于通用的规则分组则为 `core`。
  */
 class CwtLocalConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
     override val source get() = CwtConfigGroupFileSource.Local
@@ -212,7 +212,7 @@ class CwtLocalConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
  * 位置：`{projectLocalConfigDirectoryName}/{gameType}`
  *
  * - `{projectLocalConfigDirectoryName}` 位于项目根目录中，且可以配置。
- * - `{gameType}` 为游戏类型 ID，对于共享的规则分组则为 `core`。
+ * - `{gameType}` 为游戏类型 ID，对于通用的规则分组则为 `core`。
  */
 class CwtProjectLocalConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
     override val source get() = CwtConfigGroupFileSource.Local
@@ -239,14 +239,14 @@ class CwtProjectLocalConfigGroupFileProvider : CwtConfigGroupFileProviderBase() 
  * 位置：`{injectedConfigDirectory}/{gameType}`
  *
  * - `{injectedConfigDirectory}` 需要在加载规则数据前，预先手动指定。
- * - `{gameType}` 为游戏类型 ID，对于共享的规则分组则为 `core`。
+ * - `{gameType}` 为游戏类型 ID，对于通用的规则分组则为 `core`。
  *
  * @see ParadoxAnalysisDataService.markedConfigDirectory
  */
 class CwtInjectedConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
     private val dataService get() = ParadoxAnalysisDataService.getInstance()
 
-    override val source get() = CwtConfigGroupFileSource.BuiltIn
+    override val source get() = CwtConfigGroupFileSource.Injected
 
     override val isEnabled get() = with(dataService) { markedConfigDirectory != null }
 
@@ -271,4 +271,6 @@ class CwtInjectedConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
         }
         return super.getContainingConfigGroup(file, project)
     }
+
+    override fun getMessageIndex() = 4
 }

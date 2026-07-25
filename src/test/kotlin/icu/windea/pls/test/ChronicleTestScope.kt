@@ -116,7 +116,7 @@ interface ChronicleTestScope {
      *
      * 说明：
      * - 传入的路径相对于测试数据目录（`src/test/testData`）。
-     * - 规则文件应位于这个目录的特定子目录中（而不是直接位于这个目录中）。例如共享的规则文件应位于 `core` 子目录中，Stellaris 的规则文件应位于 `stellaris` 子目录中。
+     * - 规则文件应位于这个目录的特定子目录中（而不是直接位于这个目录中）。例如通用的规则文件应位于 `core` 子目录中，Stellaris 的规则文件应位于 `stellaris` 子目录中。
      *
      * @see ParadoxGameType
      */
@@ -194,11 +194,11 @@ interface ChronicleTestScope {
     // region Config Related Methods
 
     /**
-     * 为指定的一组游戏类型初始化内置规则分组。
+     * 为指定的一组游戏类型初始化规则分组。
      *
      * 说明：
-     * - 注入的规则文件也视为属于内置规则分组。
-     * - 共享的内置规则分组总是会被初始化。
+     * - 使用注入的和内置的规则文件。
+     * - 通用的内置规则分组总是会被初始化。
      */
     fun initConfigGroups(project: Project, vararg gameTypes: ParadoxGameType) {
         val configGroupService = CwtConfigGroupService.getInstance(project)
@@ -214,7 +214,7 @@ interface ChronicleTestScope {
      * 得到指定游戏类型的规则分组。
      *
      * 说明：
-     * - 默认使用 [ParadoxGameType.Core]，对应共享的规则分组。
+     * - 默认使用 [ParadoxGameType.Core]，对应通用的规则分组。
      */
     fun getConfigGroup(project: Project, gameType: ParadoxGameType = ParadoxGameType.Core): CwtConfigGroup {
         val configGroupService = CwtConfigGroupService.getInstance(project)

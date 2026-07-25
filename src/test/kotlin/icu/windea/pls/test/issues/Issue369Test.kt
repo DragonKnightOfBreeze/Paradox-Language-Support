@@ -61,7 +61,7 @@ class Issue369Test : BasePlatformTestCase(), ChronicleTestScope {
     }
 
     @Test
-    fun testCompletion_1() {
+    fun testCompletion() {
         markFileInfo(ParadoxGameType.Stellaris, "prescripted_countries/test_countries.txt")
         myFixture.configureByFile("issues/369/prescripted_countries/test_countries.txt")
 
