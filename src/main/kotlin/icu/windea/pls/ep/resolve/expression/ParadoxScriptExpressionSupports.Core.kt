@@ -4,6 +4,7 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiReference
 import com.intellij.psi.util.startOffset
 import icu.windea.pls.config.CwtDataType
 import icu.windea.pls.config.CwtDataTypeSets
@@ -304,7 +305,7 @@ class ParadoxScriptUnionValueExpressionSupport : ParadoxScriptExpressionSupportB
         val quoted = element.text.isLeftQuoted()
         val expression = ParadoxExpression.resolve(text, quoted)
         val valueConfig = ParadoxExpressionMatchService.getMatchedScriptUnionCandidate(element, expression, unionName, configGroup) ?: return null
-        return ParadoxExpressionManager.resolveScriptExpression(element, rangeInElement, valueConfig, role)
+        return ParadoxExpressionService.resolveScriptExpression(element, rangeInElement, text, valueConfig, role)
     }
 
     override fun resolveAll(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiElement> {
@@ -313,7 +314,17 @@ class ParadoxScriptUnionValueExpressionSupport : ParadoxScriptExpressionSupportB
         val quoted = element.text.isLeftQuoted()
         val expression = ParadoxExpression.resolve(text, quoted)
         val valueConfig = ParadoxExpressionMatchService.getMatchedScriptUnionCandidate(element, expression, unionName, configGroup) ?: return emptyList()
-        return ParadoxExpressionManager.resolveAllScriptExpression(element, rangeInElement, valueConfig, role)
+        return ParadoxExpressionService.resolveAllScriptExpression(element, rangeInElement, text, valueConfig, role)
+    }
+
+    override fun getReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiReference> {
+        // #374 `union[x]` 同样需要兼容这里，目前来说，这是和 `alias_keys_field[x]` 不同的地方（例如，对于 `union[test_union] = { value[test_flag] }`，其中的 `value[test_flag]` 可以匹配多个节点）
+        val configGroup = config.configGroup
+        val unionName = config.configExpression?.metadata?.value ?: return emptyList()
+        val quoted = element.text.isLeftQuoted()
+        val expression = ParadoxExpression.resolve(text, quoted)
+        val valueConfig = ParadoxExpressionMatchService.getMatchedScriptUnionCandidate(element, expression, unionName, configGroup) ?: return emptyList()
+        return ParadoxExpressionService.getScriptExpressionReferences(element, rangeInElement, text, valueConfig, role)
     }
 
     override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
@@ -323,8 +334,8 @@ class ParadoxScriptUnionValueExpressionSupport : ParadoxScriptExpressionSupportB
 }
 
 /**
- * @see CwtDataTypes.AliasName
  * @see CwtDataTypes.AliasKeysField
+ * @see CwtDataTypes.AliasName
  */
 class ParadoxScriptAliasNameExpressionSupport : ParadoxScriptExpressionSupportBase() {
     override fun supports(dataType: CwtDataType): Boolean {
@@ -351,7 +362,7 @@ class ParadoxScriptAliasNameExpressionSupport : ParadoxScriptExpressionSupportBa
         val aliasExpression = ParadoxExpression.resolve(text, quoted, role)
         val aliasSubName = ParadoxExpressionMatchService.getMatchedAliasKey(element, aliasExpression, aliasName, configGroup) ?: return null
         val aliasConfig = aliasGroup[aliasSubName]?.firstOrNull() ?: return null
-        return ParadoxExpressionManager.resolveScriptExpression(element, rangeInElement, aliasConfig, role)
+        return ParadoxExpressionService.resolveScriptExpression(element, rangeInElement, text, aliasConfig, role)
     }
 
     override fun resolveAll(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiElement> {
@@ -362,7 +373,7 @@ class ParadoxScriptAliasNameExpressionSupport : ParadoxScriptExpressionSupportBa
         val aliasExpression = ParadoxExpression.resolve(text, quoted, role)
         val aliasSubName = ParadoxExpressionMatchService.getMatchedAliasKey(element, aliasExpression, aliasName, configGroup) ?: return emptyList()
         val aliasConfig = aliasGroup[aliasSubName]?.firstOrNull() ?: return emptyList()
-        return ParadoxExpressionManager.resolveAllScriptExpression(element, rangeInElement, aliasConfig, role)
+        return ParadoxExpressionService.resolveAllScriptExpression(element, rangeInElement, text, aliasConfig, role)
     }
 
     override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {

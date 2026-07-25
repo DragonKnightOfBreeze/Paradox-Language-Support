@@ -21,13 +21,9 @@ import com.intellij.psi.util.PsiModificationTracker
 import com.intellij.psi.util.startOffset
 import com.intellij.util.text.TextRangeUtil
 import icu.windea.pls.config.config.CwtConfig
-import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtValueConfig
-import icu.windea.pls.config.config.resolved
-import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collectReferences
-import icu.windea.pls.core.isEmpty
 import icu.windea.pls.core.isEscapedCharAt
 import icu.windea.pls.core.isIdentifierChar
 import icu.windea.pls.core.isLeftQuoted
@@ -40,8 +36,6 @@ import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
-import icu.windea.pls.core.util.values.singletonListOrEmpty
-import icu.windea.pls.core.util.values.to
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
@@ -54,7 +48,6 @@ import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.isComplexExpression
 import icu.windea.pls.lang.psi.isDefinitionTypeKey
 import icu.windea.pls.lang.psi.isResolvableLiteralExpression
-import icu.windea.pls.lang.psi.light.CwtMemberConfigLightElement
 import icu.windea.pls.lang.references.ParadoxComplexEnumValuePsiReference
 import icu.windea.pls.lang.references.csv.ParadoxCsvExpressionPsiReference
 import icu.windea.pls.lang.references.localisation.ParadoxLocalisationExpressionPsiReference
@@ -411,46 +404,24 @@ object ParadoxExpressionManager {
      * @see ParadoxExpressionService.resolveScriptExpression
      */
     fun resolveScriptExpression(element: ParadoxExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
-        val configExpression = config.configExpression ?: return null
+        if (config.configExpression == null) return null
         val expressionText = getExpressionText(element, rangeInElement)
         if (expressionText.isParameterized()) return null // 排除文本带参数的情况
 
         ProgressManager.checkCanceled()
-        val result = ParadoxExpressionService.resolveScriptExpression(element, rangeInElement, expressionText, config, role)
-        if (result != null) return result
-
-        if (configExpression.isKey) return getResolvedConfigElement(element, config, config.configGroup)
-
-        return null
+        return ParadoxExpressionService.resolveScriptExpression(element, rangeInElement, expressionText, config, role)
     }
 
     /**
      * @see ParadoxExpressionService.resolveAllScriptExpression
      */
     fun resolveAllScriptExpression(element: ParadoxExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiElement> {
-        val configExpression = config.configExpression ?: return emptyList()
+        if (config.configExpression == null) return emptyList()
         val expressionText = getExpressionText(element, rangeInElement)
         if (expressionText.isParameterized()) return emptyList() // 排除文本带参数的情况
 
         ProgressManager.checkCanceled()
-        val result = ParadoxExpressionService.resolveAllScriptExpression(element, rangeInElement, expressionText, config, role)
-        if (result.isNotEmpty()) return result
-
-        if (configExpression.isKey) return getResolvedConfigElement(element, config, config.configGroup).to.singletonListOrEmpty()
-
-        return emptyList()
-    }
-
-    private fun getResolvedConfigElement(element: ParadoxExpressionElement, config: CwtConfig<*>, configGroup: CwtConfigGroup): PsiElement? {
-        val resolvedConfig = config.resolved()
-        if (resolvedConfig is CwtMemberConfig<*> && resolvedConfig.pointer.isEmpty()) {
-            // 特殊处理合成的规则
-            val gameType = configGroup.gameType
-            val project = configGroup.project
-            return CwtMemberConfigLightElement(element, resolvedConfig, gameType, project)
-        }
-
-        return resolvedConfig.pointer.element
+        return ParadoxExpressionService.resolveAllScriptExpression(element, rangeInElement, expressionText, config, role)
     }
 
     /**

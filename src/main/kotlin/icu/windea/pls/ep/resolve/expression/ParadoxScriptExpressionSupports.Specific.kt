@@ -68,12 +68,12 @@ class ParadoxScriptTechnologyWithLevelExpressionSupport : ParadoxScriptExpressio
         }
     }
 
-    override fun getReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiReference> {
+    override fun getReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiReference> {
         if (element !is ParadoxScriptStringExpressionElement) return emptyList()
-        val separatorIndex = expressionText.indexOf('@')
+        val separatorIndex = text.indexOf('@')
         if (separatorIndex == -1) return emptyList() // no `@` -> ignore
         if (separatorIndex == 0) return emptyList() // no tech node -> ignore
-        val range = rangeInElement ?: TextRange.create(0, expressionText.length).unquote(expressionText)
+        val range = rangeInElement ?: TextRange.create(0, text.length).unquote(text)
         val referenceRange = range.let { TextRange.create(it.startOffset, it.startOffset + separatorIndex) }
         val referenceConfigs = listOf(CwtValueConfig.createMock(config.configGroup, typeExpression))
         val referenceRole = ParadoxExpressionRole.Other

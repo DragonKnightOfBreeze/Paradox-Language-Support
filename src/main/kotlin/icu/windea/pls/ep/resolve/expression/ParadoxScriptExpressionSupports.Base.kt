@@ -31,10 +31,10 @@ abstract class ParadoxScriptComplexExpressionSupportBase : ParadoxScriptExpressi
         ParadoxExpressionManager.annotateComplexExpression(element, complexExpression, holder, config)
     }
 
-    override fun getReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiReference> {
+    override fun getReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiReference> {
         if (element !is ParadoxScriptStringExpressionElement) return emptyList()
         val configGroup = config.configGroup
-        val complexExpression = ParadoxComplexExpression.resolveByConfig(expressionText, null, configGroup, config) ?: return emptyList()
+        val complexExpression = ParadoxComplexExpression.resolveByConfig(text, null, configGroup, config) ?: return emptyList()
         val references = complexExpression.getAllReferences(element)
         if (references.isEmpty()) return emptyList()
         return references

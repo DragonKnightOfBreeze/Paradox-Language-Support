@@ -40,7 +40,7 @@ interface ParadoxScriptExpressionSupport {
         return resolve(element, rangeInElement, text, config, role).to.singletonListOrEmpty()
     }
 
-    fun getReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiReference> {
+    fun getReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiReference> {
         return emptyList()
     }
 

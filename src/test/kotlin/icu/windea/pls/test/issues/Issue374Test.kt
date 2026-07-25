@@ -1,10 +1,12 @@
 package icu.windea.pls.test.issues
 
 import com.intellij.codeInsight.completion.CompletionType
+import com.intellij.testFramework.IndexingTestUtil
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.core.quote
+import icu.windea.pls.cwt.psi.CwtValue
 import icu.windea.pls.lang.inspections.script.expression.UnresolvedExpressionInspection
+import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.ChronicleTestScope
 import org.junit.After
@@ -29,24 +31,23 @@ class Issue374Test : BasePlatformTestCase(), ChronicleTestScope {
         markRootDirectory("issues/374")
         markConfigDirectory("issues/374/.config")
         initInjectedConfigGroups(project, ParadoxGameType.Stellaris) // on demand
-        myFixture.enableInspections(UnresolvedExpressionInspection::class.java)
     }
 
     @After
     fun doTearDown() = clearIntegrationTest()
 
     @Test
-    fun test() {
+    fun testInspection() {
+        myFixture.enableInspections(UnresolvedExpressionInspection::class.java)
+
         markFileInfo(ParadoxGameType.Stellaris, "common/test_entities/test_entities.txt")
         myFixture.configureByText("test_entities.txt", """
             test_entity = {
-                setup_scenario = no_spaces
-                setup_scenario = "no_spaces"
-                setup_scenario = "spaced out"
-
-                country = no_spaces
-                country = "no_spaces"
-                country = "spaced out"
+                id = some_id
+                name = some_name
+                value = 1
+                value = some_flag
+                value = v1
             }
         """.trimIndent())
 
@@ -55,23 +56,83 @@ class Issue374Test : BasePlatformTestCase(), ChronicleTestScope {
     }
 
     @Test
-    fun testCompletion() {
-        markFileInfo(ParadoxGameType.Stellaris, "prescripted_countries/test_countries.txt")
-        myFixture.configureByFile("issues/374/prescripted_countries/test_countries.txt")
-
-        markFileInfo(ParadoxGameType.Stellaris, "map/setup_scenarios/test_setup_scenarios.txt")
-        myFixture.configureByFile("issues/374/map/setup_scenarios/test_setup_scenarios.txt")
-
+    fun testReferenceResolution_Enum() {
         markFileInfo(ParadoxGameType.Stellaris, "common/test_entities/test_entities.txt")
         myFixture.configureByText("test_entities.txt", """
             test_entity = {
-                setup_scenario = <caret>
-                # ...
+                id = some_id
+                name = some_name
+                value = <caret>v1
+            }
+        """.trimIndent())
+
+        val reference = myFixture.findReferenceAtCaret()!!
+        val resolved = reference.resolve()!!
+        assertTrue(resolved is CwtValue && resolved.name == "v1")
+
+        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile) // necessary
+        myFixture.checkHighlighting()
+    }
+
+    @Test
+    fun testReferenceResolution_DynamicValue() {
+        markFileInfo(ParadoxGameType.Stellaris, "common/test_entities/test_entities.txt")
+        myFixture.configureByText("test_entities.txt", """
+            test_entity = {
+                id = some_id
+                name = some_name
+                value = <caret>some_flag
+            }
+        """.trimIndent())
+
+        val reference = myFixture.findReferenceAtCaret()!!
+        val resolved = reference.resolve()!!
+        assertTrue(resolved is ParadoxDynamicValueLightElement && resolved.name == "some_flag" && resolved.presentableType == "test_flag")
+
+        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile) // necessary
+        myFixture.checkHighlighting()
+    }
+
+    @Test
+    fun testCompletion_Enum() {
+        markFileInfo(ParadoxGameType.Stellaris, "common/test_entities/test_entities.txt")
+        myFixture.configureByText("test_entities.txt", """
+            test_entity = {
+                id = some_id
+                name = some_name
+                value = <caret>
             }
         """.trimIndent())
 
         myFixture.complete(CompletionType.BASIC)
         val lookupElementStrings: List<String> = myFixture.lookupElementStrings!!
-        assertSameElements(lookupElementStrings, "no_spaces", "spaced out".quote()) // should be quoted if is blank or contains blank
+        assertSameElements(lookupElementStrings, "v1", "v2")
+    }
+
+    @Test
+    fun testCompletion_DynamicValue() {
+        markFileInfo(ParadoxGameType.Stellaris, "common/test_entities/00_entities.txt")
+        myFixture.configureByText("00_entities.txt", """
+            test_entity = {
+                id = some_id
+                name = some_name
+                value = some_flag
+            }
+        """.trimIndent())
+
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+
+        markFileInfo(ParadoxGameType.Stellaris, "common/test_entities/test_entities.txt")
+        myFixture.configureByText("test_entities.txt", """
+            test_entity = {
+                id = some_id
+                name = some_name
+                value = some_<caret>
+            }
+        """.trimIndent())
+
+        myFixture.complete(CompletionType.BASIC)
+        val lookupElementStrings: List<String> = myFixture.lookupElementStrings!!
+        assertSameElements(lookupElementStrings, "some_flag")
     }
 }

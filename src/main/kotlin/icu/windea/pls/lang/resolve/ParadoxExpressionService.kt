@@ -8,9 +8,15 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import icu.windea.pls.base.annotations.ChronicleAnnotationService
 import icu.windea.pls.config.config.CwtConfig
+import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtValueConfig
+import icu.windea.pls.config.config.resolved
+import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.orNull
+import icu.windea.pls.core.isEmpty
+import icu.windea.pls.core.util.values.singletonListOrEmpty
+import icu.windea.pls.core.util.values.to
 import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.ep.resolve.expression.ParadoxCsvExpressionSupport
@@ -18,13 +24,30 @@ import icu.windea.pls.ep.resolve.expression.ParadoxLocalisationExpressionSupport
 import icu.windea.pls.ep.resolve.expression.ParadoxScriptExpressionSupport
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
+import icu.windea.pls.lang.psi.light.CwtMemberConfigLightElement
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.model.type.ParadoxExpressionRole
 
 object ParadoxExpressionService {
-    // NOTE recursion guard is required for script expression resolution
+    // region Common Methods
+
+    fun getResolvedConfigElement(element: ParadoxExpressionElement, config: CwtConfig<*>, configGroup: CwtConfigGroup): PsiElement? {
+        val resolvedConfig = config.resolved()
+        if (resolvedConfig is CwtMemberConfig<*> && resolvedConfig.pointer.isEmpty()) {
+            // 特殊处理合成的规则
+            val gameType = configGroup.gameType
+            val project = configGroup.project
+            return CwtMemberConfigLightElement(element, resolvedConfig, gameType, project)
+        }
+
+        return resolvedConfig.pointer.element
+    }
+
+    // endregion
 
     // region Script Expression Related
+
+    // NOTE recursion guard is required for script expressions (ep + text)
 
     /**
      * @see ParadoxScriptExpressionSupport.annotate
@@ -33,7 +56,6 @@ object ParadoxExpressionService {
         if (text.isEmpty()) return // skip if expression is empty
         val configExpression = config.configExpression ?: return
         val gameType = config.configGroup.gameType
-        // NOTE recursion guard is required here
         withRecursionGuard {
             ParadoxScriptExpressionSupport.EP_NAME.extensionList.forEach f@{ ep ->
                 ProgressManager.checkCanceled()
@@ -53,8 +75,7 @@ object ParadoxExpressionService {
         if (text.isEmpty()) return null // ignore if expression is empty
         val configExpression = config.configExpression ?: return null
         val gameType = config.configGroup.gameType
-        // NOTE recursion guard is required here
-        return withRecursionGuard {
+        val result = withRecursionGuard {
             ParadoxScriptExpressionSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
                 ProgressManager.checkCanceled()
                 if (!ep.supports(config, configExpression)) return@f null
@@ -64,6 +85,9 @@ object ParadoxExpressionService {
                 }
             }
         }
+        if (result != null) return result
+        if (configExpression.isKey) return getResolvedConfigElement(element, config, config.configGroup)
+        return null
     }
 
     /**
@@ -73,8 +97,7 @@ object ParadoxExpressionService {
         if (text.isEmpty()) return emptyList() // ignore if expression is empty
         val configExpression = config.configExpression ?: return emptyList()
         val gameType = config.configGroup.gameType
-        // NOTE recursion guard is required here
-        return withRecursionGuard {
+        val result = withRecursionGuard {
             ParadoxScriptExpressionSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
                 ProgressManager.checkCanceled()
                 if (!ep.supports(config, configExpression)) return@f null
@@ -84,6 +107,9 @@ object ParadoxExpressionService {
                 }
             }
         }.orEmpty()
+        if (result.isNotEmpty()) return result
+        if (configExpression.isKey) return getResolvedConfigElement(element, config, config.configGroup).to.singletonListOrEmpty()
+        return emptyList()
     }
 
     /**
@@ -93,7 +119,6 @@ object ParadoxExpressionService {
         if (text.isEmpty()) return emptyList() // ignore if expression is empty
         val configExpression = config.configExpression ?: return emptyList()
         val gameType = config.configGroup.gameType
-        // NOTE recursion guard is required here
         return withRecursionGuard {
             ParadoxScriptExpressionSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
                 ProgressManager.checkCanceled()
@@ -113,7 +138,6 @@ object ParadoxExpressionService {
         val config = context.config ?: return
         val configExpression = config.configExpression ?: return
         val gameType = config.configGroup.gameType
-        // NOTE recursion guard is required here
         withRecursionGuard {
             ParadoxScriptExpressionSupport.EP_NAME.extensionList.forEach f@{ ep ->
                 ProgressManager.checkCanceled()

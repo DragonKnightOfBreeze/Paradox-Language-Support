@@ -15,8 +15,6 @@ import org.junit.runners.JUnit4
 
 /**
  * See: [#369](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/369)
- *
- * @see UnresolvedExpressionInspection
  */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
@@ -28,15 +26,16 @@ class Issue369Test : BasePlatformTestCase(), ChronicleTestScope {
         markIntegrationTest()
         markRootDirectory("issues/369")
         markConfigDirectory("issues/369/.config")
-        initConfigGroups(project, ParadoxGameType.Stellaris)
-        myFixture.enableInspections(UnresolvedExpressionInspection::class.java)
+        initInjectedConfigGroups(project, ParadoxGameType.Stellaris) // on demand
     }
 
     @After
     fun doTearDown() = clearIntegrationTest()
 
     @Test
-    fun test() {
+    fun testInspection() {
+        myFixture.enableInspections(UnresolvedExpressionInspection::class.java)
+
         markFileInfo(ParadoxGameType.Stellaris, "prescripted_countries/test_countries.txt")
         myFixture.configureByFile("issues/369/prescripted_countries/test_countries.txt")
 
