@@ -175,6 +175,7 @@ object CwtConfigManager {
 
     inline fun processCandidateConfigs(config: CwtEnumConfig, processor: (candidateConfig: CwtValueConfig) -> Boolean): Boolean {
         if (config.valueConfigMap.isEmpty()) return true
+        // NOTE 3.0.1 recursion guard should not be directly used here, since the context may be different
         config.valueConfigMap.values.forEach { valueConfig ->
             val r = processor(valueConfig)
             if (!r) return false
@@ -184,6 +185,7 @@ object CwtConfigManager {
 
     inline fun processCandidateConfigs(config: CwtUnionConfig, processor: (candidateConfig: CwtValueConfig) -> Boolean): Boolean {
         if (config.valueConfigs.isEmpty()) return true
+        // NOTE 3.0.1 recursion guard should not be directly used here, since the context may be different
         config.valueConfigs.forEachFast { valueConfig ->
             val r = processor(valueConfig)
             if (!r) return false

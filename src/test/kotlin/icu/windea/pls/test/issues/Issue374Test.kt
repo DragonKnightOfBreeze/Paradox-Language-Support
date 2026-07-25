@@ -1,7 +1,6 @@
 package icu.windea.pls.test.issues
 
 import com.intellij.codeInsight.completion.CompletionType
-import com.intellij.testFramework.IndexingTestUtil
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.cwt.psi.CwtValue
@@ -100,39 +99,43 @@ class Issue374Test : BasePlatformTestCase(), ChronicleTestScope {
             test_entity = {
                 id = some_id
                 name = some_name
+            }
+
+            test_entity = {
+                id = some_other_id
+                name = some_name
                 value = <caret>
             }
         """.trimIndent())
 
         myFixture.complete(CompletionType.BASIC)
-        val lookupElementStrings: List<String> = myFixture.lookupElementStrings!!
+        val lookupElementStrings = myFixture.lookupElementStrings!!
         assertSameElements(lookupElementStrings, "v1", "v2")
     }
 
     @Test
     fun testCompletion_DynamicValue() {
-        markFileInfo(ParadoxGameType.Stellaris, "common/test_entities/00_entities.txt")
-        myFixture.configureByText("00_entities.txt", """
-            test_entity = {
-                id = some_id
-                name = some_name
-                value = some_flag
-            }
-        """.trimIndent())
-
-        IndexingTestUtil.waitUntilIndexesAreReady(project)
+        // NOTE 3.0.1 如果这里不另外加上一行 `value = some_other_flag`，以至于只有唯一一个候选项，调用 `myFixture.complete` 后会直接插入这个候选项，并且修改 PSI。
+        //  这会导致意外报错：PSI and index do not match.
 
         markFileInfo(ParadoxGameType.Stellaris, "common/test_entities/test_entities.txt")
         myFixture.configureByText("test_entities.txt", """
             test_entity = {
                 id = some_id
                 name = some_name
+                value = some_flag
+                value = some_other_flag
+            }
+
+            test_entity = {
+                id = some_other_id
+                name = some_name
                 value = some_<caret>
             }
         """.trimIndent())
 
         myFixture.complete(CompletionType.BASIC)
-        val lookupElementStrings: List<String> = myFixture.lookupElementStrings!!
-        assertSameElements(lookupElementStrings, "some_flag")
+        val lookupElementStrings = myFixture.lookupElementStrings!!
+        assertSameElements(lookupElementStrings, "some_flag", "some_other_flag")
     }
 }
