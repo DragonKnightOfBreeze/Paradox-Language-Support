@@ -16,7 +16,7 @@ import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 object ParadoxLocalisationService {
-    fun resolveLocalizedText(element: ParadoxLocalisationProperty): String? {
+    fun resolvePresentableText(element: ParadoxLocalisationProperty): String? {
         return ParadoxLocalisationTextPlainRenderer().render(element).orNull()
     }
 

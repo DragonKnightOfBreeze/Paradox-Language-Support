@@ -246,7 +246,7 @@ object ParadoxModifierManager {
                 .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
                 .withConstraint(ParadoxLocalisationIndexConstraint.Modifier)
             val nameLocalisations = ParadoxLocalisationSearch.searchNormal(key, selector).findAll()
-            nameLocalisations.mapNotNull { ParadoxLocalisationManager.getLocalizedText(it) }.toSet().orNull()
+            nameLocalisations.mapNotNull { ParadoxLocalisationManager.getPresentableText(it) }.toSet().orNull()
         }.orEmpty()
     }
 

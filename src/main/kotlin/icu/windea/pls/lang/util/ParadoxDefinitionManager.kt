@@ -130,12 +130,12 @@ object ParadoxDefinitionManager {
 
     fun getPresentableName(element: ParadoxDefinitionElement): String? {
         val primaryLocalisation = getPrimaryLocalisation(element)
-        return primaryLocalisation?.let { ParadoxLocalisationManager.getLocalizedText(it) }
+        return primaryLocalisation?.let { ParadoxLocalisationManager.getPresentableText(it) }
     }
 
     fun getPresentableNames(element: ParadoxDefinitionElement): Set<String> {
         val primaryLocalisations = getPrimaryLocalisations(element)
-        return primaryLocalisations.mapNotNull { ParadoxLocalisationManager.getLocalizedText(it) }.toSet()
+        return primaryLocalisations.mapNotNull { ParadoxLocalisationManager.getPresentableText(it) }.toSet()
     }
 
     fun getPrimaryLocalisationKey(element: ParadoxDefinitionElement): String? {

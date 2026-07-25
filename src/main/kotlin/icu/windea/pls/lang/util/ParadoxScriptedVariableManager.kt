@@ -45,13 +45,13 @@ object ParadoxScriptedVariableManager {
     fun getPresentableName(element: ParadoxScriptScriptedVariable, locale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig()): String? {
         val name = element.name?.orNull() ?: return null
         val nameLocalisation = getNameLocalisation(name, element, locale)
-        return nameLocalisation?.let { ParadoxLocalisationManager.getLocalizedText(it) }
+        return nameLocalisation?.let { ParadoxLocalisationManager.getPresentableText(it) }
     }
 
     fun getPresentableNames(element: ParadoxScriptScriptedVariable, locale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig()): Set<String> {
         val name = element.name?.orNull() ?: return emptySet()
         val nameLocalisation = getNameLocalisations(name, element, locale)
-        return nameLocalisation.mapNotNull { ParadoxLocalisationManager.getLocalizedText(it) }.toSet()
+        return nameLocalisation.mapNotNull { ParadoxLocalisationManager.getPresentableText(it) }.toSet()
     }
 
     fun getNameLocalisation(name: String, contextElement: PsiElement, locale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig()): ParadoxLocalisationProperty? {

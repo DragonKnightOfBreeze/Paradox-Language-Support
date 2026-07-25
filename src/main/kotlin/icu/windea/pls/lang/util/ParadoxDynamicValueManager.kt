@@ -54,12 +54,12 @@ object ParadoxDynamicValueManager {
 
     fun getPresentableName(name: String, contextElement: PsiElement, locale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig()): String? {
         val nameLocalisation = getNameLocalisation(name, contextElement, locale)
-        return nameLocalisation?.let { ParadoxLocalisationManager.getLocalizedText(it) }
+        return nameLocalisation?.let { ParadoxLocalisationManager.getPresentableText(it) }
     }
 
     fun getPresentableNames(name: String, contextElement: PsiElement, locale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig()): Set<String> {
         val nameLocalisation = getNameLocalisations(name, contextElement, locale)
-        return nameLocalisation.mapNotNull { ParadoxLocalisationManager.getLocalizedText(it) }.toSet()
+        return nameLocalisation.mapNotNull { ParadoxLocalisationManager.getPresentableText(it) }.toSet()
     }
 
     fun getNameLocalisation(name: String, contextElement: PsiElement, locale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig()): ParadoxLocalisationProperty? {

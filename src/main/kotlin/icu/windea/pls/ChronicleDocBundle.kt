@@ -75,7 +75,7 @@ object ChronicleDocBundle {
                 .withGameType(gameType)
                 .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
             val localisation = ParadoxLocalisationSearch.searchNormal(name.uppercase(), selector).find() ?: return@run
-            val text = ParadoxLocalisationManager.getLocalizedText(localisation) ?: return@run
+            val text = ParadoxLocalisationManager.getPresentableText(localisation) ?: return@run
             return text
         }
 
@@ -91,7 +91,7 @@ object ChronicleDocBundle {
             val selector = ParadoxDefinitionSearch.selector(project, context).contextSensitive().withGameType(gameType)
             val definition = ParadoxDefinitionSearch.searchProperty(name, ParadoxDefinitionTypes.technologyCategory, selector).find() ?: return@run
             val localisation = ParadoxDefinitionManager.getPrimaryLocalisation(definition) ?: return@run
-            val text = ParadoxLocalisationManager.getLocalizedText(localisation) ?: return@run
+            val text = ParadoxLocalisationManager.getPresentableText(localisation) ?: return@run
             return text
         }
 
