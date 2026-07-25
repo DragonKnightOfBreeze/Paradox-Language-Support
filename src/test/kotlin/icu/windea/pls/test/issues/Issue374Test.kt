@@ -28,7 +28,7 @@ class Issue374Test : BasePlatformTestCase(), ChronicleTestScope {
         markIntegrationTest()
         markRootDirectory("issues/374")
         markConfigDirectory("issues/374/.config")
-        initConfigGroups(project, ParadoxGameType.Stellaris)
+        initInjectedConfigGroups(project, ParadoxGameType.Stellaris) // on demand
         myFixture.enableInspections(UnresolvedExpressionInspection::class.java)
     }
 
