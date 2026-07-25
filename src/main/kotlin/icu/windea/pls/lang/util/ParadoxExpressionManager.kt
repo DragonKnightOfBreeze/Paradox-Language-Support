@@ -25,9 +25,11 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.resolved
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collectReferences
 import icu.windea.pls.core.isEmpty
 import icu.windea.pls.core.isEscapedCharAt
+import icu.windea.pls.core.isIdentifierChar
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.processChild
@@ -87,6 +89,15 @@ object ParadoxExpressionManager {
 
     // region Common Methods
 
+    /**
+     * 检查 [text] 是否携带参数。
+     *
+     * 说明：
+     * - “携带参数”意味着使用到了其中一种或多种高级插值语法：参数（形如 `a_$PARAM$_b`）和条件块（形如 `a_[[PARAM]b]_c`）。
+     * - 快速判断，不检查携带参数后的语法是否合法。
+     * - 仅接受长度大于2的字符串。
+     */
+    @Optimized
     fun isParameterized(text: String, conditionBlock: Boolean = true, full: Boolean = false): Boolean {
         // 快速判断，不检测带参数后的语法是否合法
         if (text.length < 2) return false
@@ -103,9 +114,19 @@ object ParadoxExpressionManager {
         return false
     }
 
+    /**
+     * 得到 [text] 中携带的参数的一组文本范围。
+     *
+     * 说明：
+     * - “携带参数”意味着使用到了其中一种或多种高级插值语法：参数（形如 `a_$PARAM$_b`）和条件块（形如 `a_[[PARAM]b]_c`）。
+     * - 快速判断，不检查携带参数后的语法是否合法。
+     * - 仅接受长度大于2的字符串，否则直接返回空列表。
+     */
+    @Optimized
     fun getParameterRanges(text: String, conditionBlock: Boolean = true): List<TextRange> {
-        // 比较复杂的实现逻辑
-        val ranges = mutableListOf<TextRange>()
+        // 优化：仅在必要时创建列表
+        if (text.length < 2) return emptyList()
+        var parameterRanges: MutableList<TextRange>? = null
         // `a_$PARAM$_b` - 高级插值语法 A - 深度计数
         var depth1 = 0
         // `a_[[PARAM]b]_c` - 高级插值语法 B - 深度计数
@@ -121,13 +142,15 @@ object ParadoxExpressionManager {
                     depth1++
                 } else {
                     endIndex = i
-                    ranges += TextRange.create(startIndex, endIndex + 1)
+                    if (parameterRanges == null) parameterRanges = ArrayList()
+                    parameterRanges += TextRange.create(startIndex, endIndex + 1)
                     depth1--
 
                 }
             } else if (conditionBlock && c == '[' && !text.isEscapedCharAt(i)) {
                 if (depth1 > 0) continue
                 if (depth2 == 0) {
+                    if (i == text.length - 1 || text[i + 1] != '[') continue // 仅接受 `[[`
                     startIndex = i
                     endIndex = -1
                 }
@@ -138,14 +161,39 @@ object ParadoxExpressionManager {
                 depth2--
                 if (depth2 == 0) {
                     endIndex = i
-                    ranges += TextRange.create(startIndex, endIndex + 1)
+                    if (parameterRanges == null) parameterRanges = ArrayList()
+                    parameterRanges += TextRange.create(startIndex, endIndex + 1)
                 }
             }
         }
         if (startIndex != -1 && endIndex == -1) {
-            ranges += TextRange.create(startIndex, text.length)
+            if (parameterRanges == null) parameterRanges = ArrayList()
+            parameterRanges += TextRange.create(startIndex, text.length)
         }
-        return ranges
+        return parameterRanges ?: emptyList()
+    }
+
+    /**
+     * 检查 [text] 是否为允许携带参数的有效的标识符（字符串）。
+     *
+     * 说明：
+     * - “携带参数”意味着使用到了其中一种或多种高级插值语法：参数（形如 `a_$PARAM$_b`）和条件块（形如 `a_[[PARAM]b]_c`）。
+     * - 快速判断，不检查携带参数后的语法是否合法。
+     * - 通过 [extraChars] 指定额外接受的字符。不接受空字符串。
+     * - 不接受空字符串。
+     */
+    @Optimized
+    fun isParameterAwareIdentifier(text: String, extraChars: String = ""): Boolean {
+        // 优化：仅在必要时创建列表
+        if (text.isEmpty()) return false
+        var parameterRanges: List<TextRange>? = null
+        for ((i, c) in text.withIndex()) {
+            if (c.isIdentifierChar(extraChars)) continue
+            if (parameterRanges == null) parameterRanges = getParameterRanges(text)
+            if (parameterRanges.any { it.contains(i) }) continue
+            return false
+        }
+        return true
     }
 
     private val regex1 = """(?<!\\)\$.*?\$""".toRegex()

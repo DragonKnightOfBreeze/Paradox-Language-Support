@@ -8,10 +8,10 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.isEscapedCharAt
 import icu.windea.pls.core.isQuoted
+import icu.windea.pls.lang.getParameterRanges
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDynamicValueExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxValueFieldExpression
-import icu.windea.pls.lang.util.ParadoxExpressionManager
 
 class ParadoxScopeValueNode(
     override val text: String,
@@ -24,7 +24,7 @@ class ParadoxScopeValueNode(
         @JvmStatic
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, linkConfigs: List<CwtLinkConfig>): ParadoxScopeValueNode {
             val incomplete = ChronicleThreadContext.incompleteComplexExpression.get() ?: false
-            val parameterRanges = ParadoxExpressionManager.getParameterRanges(text)
+            val parameterRanges = text.getParameterRanges()
             val separatorChar = if (linkConfigs.any { it.argumentSeparator.usePipe() }) '|' else ','
 
             val nodes = mutableListOf<ParadoxComplexExpressionNode>()

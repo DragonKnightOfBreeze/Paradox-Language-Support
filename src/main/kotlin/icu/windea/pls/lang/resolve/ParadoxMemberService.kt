@@ -135,16 +135,16 @@ object ParadoxMemberService {
      * - 如果定义来自脚本属性，则使用属性名（需要检查是否合法）。
      */
     fun getTypeKey(element: ParadoxDefinitionElement, elementName: String = element.name): String? {
-        if (elementName.isEmpty()) return null // 不期望
+        if (elementName.isEmpty()) return null // empty -> unexpected
         return when (element) {
             is ParadoxScriptFile -> {
                 elementName.substringBeforeLast('.') // trim file extension
             }
             is ParadoxScriptProperty -> {
                 // if (!elementName.isIdentifier(".-")) return null // #369 can also be any (valid) string literals
+                if (elementName.isParameterized()) return null // skip if is parameterized
                 if (ParadoxInlineScriptManager.isMatched(elementName, element)) return null // skip if is inline script usage
                 if (ParadoxDefinitionInjectionManager.isMatched(elementName, element)) return null // skip if is definition injection usage
-                if (elementName.isParameterized()) return null // skip if is parameterized
                 elementName
             }
             else -> elementName

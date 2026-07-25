@@ -4,8 +4,118 @@ import org.junit.Assert
 import org.junit.Test
 
 class StdlibExtensionsTest {
+    // region isIdentifierChar
+
     @Test
-    fun isQuotedTest_test() {
+    fun isIdentifierChar_basic() {
+        Assert.assertTrue('a'.isIdentifierChar())
+        Assert.assertTrue('Z'.isIdentifierChar())
+        Assert.assertTrue('1'.isIdentifierChar())
+        Assert.assertTrue('_'.isIdentifierChar())
+    }
+
+    @Test
+    fun isIdentifierChar_nonJavaIdentifier() {
+        Assert.assertFalse('@'.isIdentifierChar())
+        Assert.assertFalse('#'.isIdentifierChar())
+        Assert.assertFalse('!'.isIdentifierChar())
+        Assert.assertFalse(' '.isIdentifierChar())
+        Assert.assertFalse('-'.isIdentifierChar())
+        Assert.assertFalse('+'.isIdentifierChar())
+        Assert.assertFalse('/'.isIdentifierChar())
+        Assert.assertFalse('\\'.isIdentifierChar())
+        Assert.assertFalse('\t'.isIdentifierChar())
+        Assert.assertFalse('\n'.isIdentifierChar())
+    }
+
+    @Test
+    fun isIdentifierChar_extraChars() {
+        Assert.assertTrue('.'.isIdentifierChar("."))
+        Assert.assertTrue('-'.isIdentifierChar("-"))
+        Assert.assertTrue('@'.isIdentifierChar("@"))
+        Assert.assertTrue('#'.isIdentifierChar("#"))
+        // 将非标识符字符放入 extraChars 则视为有效
+        Assert.assertTrue('/'.isIdentifierChar("/"))
+        Assert.assertTrue(' '.isIdentifierChar(" "))
+        // 多个 extraChars
+        Assert.assertTrue('.'.isIdentifierChar(".@#"))
+        Assert.assertTrue('@'.isIdentifierChar(".@#"))
+        Assert.assertTrue('#'.isIdentifierChar(".@#"))
+        // 不在 extraChars 中的非标识符字符仍无效
+        Assert.assertFalse('!'.isIdentifierChar(".@#"))
+    }
+
+    @Test
+    fun isIdentifierChar_dollar() {
+        // '$' 是合法的 Java 标识符部分（与预期一致）
+        Assert.assertTrue('$'.isIdentifierChar())
+    }
+
+    @Test
+    fun isIdentifierChar_emptyExtraChars() {
+        // extraChars 为空时等价于无参数
+        Assert.assertTrue('a'.isIdentifierChar(""))
+        Assert.assertFalse('@'.isIdentifierChar(""))
+    }
+
+    // endregion
+
+    // region isIdentifier
+
+    @Test
+    fun isIdentifier_basic() {
+        Assert.assertTrue("a".isIdentifier())
+        Assert.assertTrue("Z".isIdentifier())
+        Assert.assertTrue("1".isIdentifier())
+        Assert.assertTrue("_".isIdentifier())
+        Assert.assertTrue("abc123".isIdentifier())
+        Assert.assertTrue("hello_world".isIdentifier())
+    }
+
+    @Test
+    fun isIdentifier_empty() {
+        Assert.assertFalse("".isIdentifier())
+    }
+
+    @Test
+    fun isIdentifier_nonIdentifier() {
+        Assert.assertFalse("@".isIdentifier())
+        Assert.assertFalse("a@b".isIdentifier())
+        Assert.assertFalse("a b".isIdentifier())
+        Assert.assertFalse("a-b".isIdentifier())
+        Assert.assertFalse("hello world".isIdentifier())
+        Assert.assertFalse("key=value".isIdentifier())
+    }
+
+    @Test
+    fun isIdentifier_extraChars() {
+        Assert.assertTrue(".".isIdentifier("."))
+        Assert.assertTrue("a.b".isIdentifier("."))
+        Assert.assertTrue("a-b".isIdentifier("-"))
+        Assert.assertTrue("a@b".isIdentifier("@"))
+        Assert.assertTrue("a/b".isIdentifier("/"))
+        Assert.assertFalse("a!b".isIdentifier("."))
+        Assert.assertFalse("a!b".isIdentifier(".-"))
+    }
+
+    @Test
+    fun isIdentifier_dollar() {
+        // 与 isIdentifierChar 一致，'$' 是合法标识符字符
+        Assert.assertTrue("$".isIdentifier())
+        Assert.assertTrue("\$abc$".isIdentifier())
+        Assert.assertTrue("a\$b\$c".isIdentifier())
+    }
+
+    @Test
+    fun isIdentifier_mixedWithExtraChars() {
+        Assert.assertTrue("a.b-c@d".isIdentifier(".-@"))
+        Assert.assertFalse("a.b!c".isIdentifier(".-@"))
+    }
+
+    // endregion
+
+    @Test
+    fun isQuoted_test() {
         Assert.assertFalse("123".isRightQuoted())
         Assert.assertTrue("123\"".isRightQuoted())
         Assert.assertFalse("123\\\"".isRightQuoted())
@@ -14,7 +124,7 @@ class StdlibExtensionsTest {
     }
 
     @Test
-    fun quoteAndUnquoteTest_test() {
+    fun quoteAndUnquote_test() {
         Assert.assertEquals("""" abc\"abc """", """ abc"abc """.quote())
         Assert.assertEquals("""" abc\"abc """", """ abc\"abc """.quote())
         Assert.assertEquals("""" abc\\\"abc """", """ abc\\"abc """.quote())
@@ -43,7 +153,7 @@ class StdlibExtensionsTest {
     }
 
     @Test
-    fun escapeBlankTest_test() {
+    fun escapeBlank_test() {
         Assert.assertEquals("abc", "abc".escapeBlank())
         Assert.assertEquals("abc&nbsp;", "abc ".escapeBlank())
         Assert.assertEquals("abc&nbsp;&nbsp;", "abc  ".escapeBlank())

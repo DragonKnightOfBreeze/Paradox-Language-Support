@@ -7,16 +7,16 @@ import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.mockScriptValueConfig
 import icu.windea.pls.core.cast
+import icu.windea.pls.core.isIdentifier
 import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.core.util.tupleOf
-import icu.windea.pls.lang.isIdentifier
+import icu.windea.pls.lang.getParameterRanges
 import icu.windea.pls.lang.isParameterAwareIdentifier
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionErrors
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionValidatorScope
-import icu.windea.pls.lang.util.ParadoxExpressionManager
 
 /**
  * 脚本值引用表达式。
@@ -74,7 +74,7 @@ private object ParadoxScriptValueReferenceExpressionResolver {
         val incomplete = ChronicleThreadContext.incompleteComplexExpression.get() ?: false
         if (!incomplete && text.isEmpty()) return null
 
-        val parameterRanges = ParadoxExpressionManager.getParameterRanges(text)
+        val parameterRanges = text.getParameterRanges()
 
         val config = configGroup.mockScriptValueConfig
         val nodes = mutableListOf<ParadoxComplexExpressionNode>()

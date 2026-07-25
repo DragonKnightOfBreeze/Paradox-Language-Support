@@ -11,8 +11,8 @@ import icu.windea.pls.config.config.CwtIdMatchableConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.manipulation.CwtConfigManipulationService
 import icu.windea.pls.config.util.CwtConfigResolverScope
+import icu.windea.pls.core.isIdentifier
 import icu.windea.pls.cwt.psi.CwtProperty
-import icu.windea.pls.lang.isIdentifier
 import icu.windea.pls.model.expressions.ParadoxDefinitionSubtypeExpression
 
 /**

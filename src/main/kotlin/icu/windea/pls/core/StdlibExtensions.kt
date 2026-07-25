@@ -269,6 +269,21 @@ fun Char.isExactWord(): Boolean {
     return this == '_' || isExactLetter() || isExactDigit()
 }
 
+/** 是否为有效的标识符字符。通过 [extraChars] 指定额外接受的字符。允许 `$`。 */
+fun Char.isIdentifierChar(extraChars: String = ""): Boolean {
+    return StringUtil.isJavaIdentifierPart(this) || extraChars.isNotEmpty() && this in extraChars
+}
+
+/** 是否为是有效的标识符字符串。通过 [extraChars] 指定额外接受的字符。允许 `$`。不接受空字符串。 */
+fun String.isIdentifier(extraChars: String = ""): Boolean {
+    if (isEmpty()) return false
+    for ((_, c) in this.withIndex()) {
+        if (c.isIdentifierChar(extraChars)) continue
+        return false
+    }
+    return true
+}
+
 /** 是否以 [quote] 起始。 */
 fun String.isLeftQuoted(quote: Char = '"'): Boolean {
     return startsWith(quote)
@@ -325,9 +340,7 @@ fun String.quoteIfNeeded(quote: Char = '"', containAnyChar: String = "", contain
     return if (shouldQuote) this.quote(quote) else this
 }
 
-/**
- * 判断当前字符串中的指定索引 [index] 的字符是否被转义（在前面有连续的奇数个反斜线）。
- */
+/** 判断当前字符串中的指定索引 [index] 的字符是否被转义（在前面有连续的奇数个反斜线）。 */
 fun CharSequence.isEscapedCharAt(index: Int): Boolean {
     if (index == 0) return false
     var n = 0

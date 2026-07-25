@@ -41,8 +41,7 @@ interface ParadoxExpression {
     val type: ParadoxExpressionType
     val role: ParadoxExpressionRole
 
-    fun isParameterized(): Boolean
-    fun isFullParameterized(): Boolean
+    fun isParameterized(conditionalBlock: Boolean = true, full: Boolean = false): Boolean
 
     fun matchesInt(): Boolean
     fun matchesFloat(): Boolean
@@ -113,12 +112,8 @@ private object ParadoxExpressionResolver {
 private sealed class ParadoxExpressionBase : ParadoxExpression {
     private val regex by lazy { ParadoxExpressionManager.toRegex(value) }
 
-    override fun isParameterized(): Boolean {
-        return type == ParadoxExpressionType.String && value.isParameterized()
-    }
-
-    override fun isFullParameterized(): Boolean {
-        return type == ParadoxExpressionType.String && value.isParameterized(full = true)
+    override fun isParameterized(conditionalBlock: Boolean, full: Boolean): Boolean {
+        return type == ParadoxExpressionType.String && value.isParameterized(conditionalBlock, full)
     }
 
     override fun matchesInt(): Boolean {

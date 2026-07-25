@@ -39,11 +39,11 @@ import icu.windea.pls.core.cast
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.collections.processValue
+import icu.windea.pls.core.isIdentifier
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.matchesAntPattern
 import icu.windea.pls.core.matchesPath
 import icu.windea.pls.core.orNull
-import icu.windea.pls.lang.isIdentifier
 import icu.windea.pls.model.paths.ParadoxPath
 
 object CwtConfigMatchService {

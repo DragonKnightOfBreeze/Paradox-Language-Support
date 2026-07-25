@@ -9,6 +9,7 @@ import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.CwtSubtypeGroup
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.core.isExactDigit
+import icu.windea.pls.core.isIdentifier
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.core.util.getValue
@@ -17,7 +18,6 @@ import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.isIdentifier
 import icu.windea.pls.lang.resolve.ParadoxEventService
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
