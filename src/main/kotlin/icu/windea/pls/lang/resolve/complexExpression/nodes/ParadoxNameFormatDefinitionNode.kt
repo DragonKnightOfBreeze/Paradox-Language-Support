@@ -6,6 +6,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiPolyVariantReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.impl.source.resolve.ResolveCache
+import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.createResults
 import icu.windea.pls.lang.editor.ParadoxSemanticHighlighterColors
@@ -30,6 +31,11 @@ class ParadoxNameFormatDefinitionNode(
     override val configGroup: CwtConfigGroup,
     val definitionType: String?,
 ) : ParadoxComplexExpressionNodeBase(), ParadoxIdentifierNode, ParadoxDynamicDataNode {
+    fun getMockConfig(): CwtValueConfig? {
+        if (definitionType.isNullOrEmpty()) return null
+        return CwtValueConfig.createMock(configGroup, "<$definitionType>")
+    }
+
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
         return ParadoxSemanticHighlighterColors.definitionReference(element.language)
     }

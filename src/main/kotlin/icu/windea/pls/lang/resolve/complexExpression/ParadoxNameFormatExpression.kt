@@ -32,8 +32,8 @@ import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressi
  * name_format_closure ::= "{" closure_content? "}"
  * closure_content ::= closure_item*
  * private closure_item ::= name_format_closure | command | name_part | name_format_localisation | name_format_text
- * name_part ::= "<" name_format_definition ">"
  * command ::= "[" command_expression "]"
+ * name_part ::= "<" name_format_definition ">"
  * ```
  *
  * ### 语法与结构
@@ -42,11 +42,11 @@ import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressi
  *   - 顶层仅识别由花括号包围的“闭包段”`{...}`。若字符串中不含任何`{`，则非空白部分整体被视为错误片段，其前后空白会作为空白节点保留。
  *
  * - 闭包段的内容由一系列节点顺序拼接而成，空白会被保留为空白节点。按优先级识别如下节点类型：
+ *   2) 命令表达式：形如`[ ... ]`。
+ *      - 解析为 `ParadoxCommandNode`，内部为`ParadoxCommandExpression`，并保留方括号标记节点。
  *   1) 定义占位：形如`<name>`。
  *      - 解析为 `ParadoxNamePartNode`，其内部包含`"<"`与`">"`标记节点，以及一个 `ParadoxNameFormatDefinitionNode`。
  *      - `name` 的类型由规则中的 `formatName` 推导为 `${formatName}_name_parts_list`，用于跨文件的定义名解析与跳转。
- *   2) 命令表达式：形如`[ ... ]`。
- *      - 解析为 `ParadoxCommandNode`，内部为`ParadoxCommandExpression`，并保留方括号标记节点。
  *   3) 本地化标识符：一段看起来是“标识符”的连续字符序列（字母/数字/`_`/`-`/`.`/`'`）。
  *      - 解析为 `ParadoxNameFormatLocalisationNode`，按偏好语言或上下文语言进行引用解析。
  *   4) 文本：当不匹配上述任一结构时，根据空白进行拆分。

@@ -27,6 +27,7 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxCommandExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDatabaseObjectExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDefineReferenceExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDynamicValueExpression
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxNameFormatExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScriptValueReferenceExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxTagsExpression
@@ -34,6 +35,7 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxTemplateExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxValueFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxVariableFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
+import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionRecursiveVisitor
 import icu.windea.pls.lang.search.ParadoxDefineNamespaceSearch
 import icu.windea.pls.lang.search.ParadoxDefineVariableSearch
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
@@ -42,7 +44,6 @@ import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.model.scope.ParadoxScopeContext
-import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 object ParadoxComplexExpressionCompletionManager {
     // region Entry Completion Methods
@@ -380,86 +381,69 @@ object ParadoxComplexExpressionCompletionManager {
             val inRange = offset >= node.rangeInExpression.startOffset && offset <= node.rangeInExpression.endOffset
             if (!inRange) continue
             when (node) {
-                is ParadoxDatabaseObjectTypeNode -> completeForDatabaseObjectTypeNode(context, result, node, offset)
-                is ParadoxDatabaseObjectValueNode -> completeForDatabaseObjectNode(context, result, node, offset)
+                is ParadoxDatabaseObjectTypeNode -> {
+                    val keyword = node.text.substring(0, offset - node.rangeInExpression.startOffset)
+                    val keywordOffset = node.rangeInExpression.startOffset
+                    val context = context.copy(keyword = keyword, keywordOffset = keywordOffset, node = node)
+                    val result = result.withPrefixMatcher(context.keyword)
+                    completeDatabaseObjectType(context, result)
+                }
+                is ParadoxDatabaseObjectValueNode -> {
+                    val keyword = node.text.substring(0, offset - node.rangeInExpression.startOffset)
+                    val keywordOffset = node.rangeInExpression.startOffset
+                    val context = context.copy(keyword = keyword, keywordOffset = keywordOffset, node = node)
+                    val result = result.withPrefixMatcher(keyword)
+                    completeDatabaseObject(context, result)
+                }
             }
         }
     }
 
     fun completeNameFormatExpression(context: ParadoxCompletionContext, result: CompletionResultSet) {
-        // TODO 2.0.6+ 并没有基于节点进行代码补全……不过能用就行，暂时不做重构
+        ProgressManager.checkCanceled()
+        val offset = context.offsetInParent - context.expressionOffset
+        if (offset < 0) return // unexpected
 
-        val element = context.contextElement as? ParadoxScriptStringExpressionElement ?: return
         val config = context.config ?: return
-        val formatName = config.configExpression?.metadata?.value ?: return
-        val type = "${formatName}_name_parts_list"
+        val textRange = TextRange.from(context.keywordOffset, context.keyword.length)
+        val expression = markIncomplete { ParadoxNameFormatExpression.resolve(context.keyword, textRange, context.configGroup, config) } ?: return
 
-        // caret position inside expression
-        val caretInExpr = context.offsetInParent - context.expressionOffset
-        if (caretInExpr < 0) return
-        val exprText = element.value
-        val caret = caretInExpr.coerceIn(0, exprText.length)
-
-        fun lastUnclosedIndex(open: Char, close: Char, until: Int): Int {
-            var depth = 0
-            var lastOpen = -1
-            var i = 0
-            while (i < until) {
-                when (exprText[i]) {
-                    open -> {
-                        depth++; lastOpen = i
+        val context = context.copy(isKey = null)
+        expression.acceptChildren(object : ParadoxComplexExpressionRecursiveVisitor() {
+            override fun visit(node: ParadoxComplexExpressionNode): Boolean {
+                if (offset < node.rangeInExpression.startOffset) return super.visit(node)
+                if (offset > node.rangeInExpression.endOffset) return false
+                when (node) {
+                    is ParadoxNameFormatDefinitionNode -> {
+                        val mockConfig = node.getMockConfig() ?: return false
+                        val keyword = node.text.substring(0, offset - node.rangeInExpression.startOffset)
+                        val keywordOffset = node.rangeInExpression.startOffset
+                        val context = context.copy(keyword = keyword, keywordOffset = keywordOffset, config = mockConfig)
+                        val result = result.withPrefixMatcher(context.keyword)
+                        ParadoxExpressionCompletionManager.completeDefinition(context, result)
+                        return false
                     }
-                    close -> if (depth > 0) depth--
+                    is ParadoxNameFormatLocalisationNode -> {
+                        val mockConfig = node.getMockConfig()
+                        val keyword = node.text.substring(0, offset - node.rangeInExpression.startOffset)
+                        val keywordOffset = node.rangeInExpression.startOffset
+                        val context = context.copy(keyword = keyword, keywordOffset = keywordOffset, config = mockConfig)
+                        val result = result.withPrefixMatcher(context.keyword)
+                        ParadoxExpressionCompletionManager.completeLocalisation(context, result)
+                        return false
+                    }
+                    is ParadoxCommandExpression -> {
+                        val keyword = node.text.substring(0, offset - node.rangeInExpression.startOffset)
+                        val keywordOffset = node.rangeInExpression.startOffset
+                        val context = context.copy(keyword = keyword, keywordOffset = keywordOffset)
+                        val result = result.withPrefixMatcher(context.keyword)
+                        completeCommandExpression(context, result)
+                        return false
+                    }
                 }
-                i++
+                return super.visit(node)
             }
-            return if (depth > 0) lastOpen else -1
-        }
-
-        // inside [...]
-        run {
-            val leftSq = lastUnclosedIndex('[', ']', caret)
-            if (leftSq >= 0) {
-                val innerStart = leftSq + 1
-                val keyword = exprText.substring(innerStart, caret)
-                val keywordOffset = innerStart
-                val context = context.copy(keyword = keyword, keywordOffset = keywordOffset, isKey = null)
-                val result = result.withPrefixMatcher(context.keyword)
-                ParadoxComplexExpressionCompletionManager.completeCommandExpression(context, result)
-                return
-            }
-        }
-
-        // inside <...>
-        run {
-            val leftAngle = lastUnclosedIndex('<', '>', caret)
-            if (leftAngle >= 0) {
-                val innerStart = leftAngle + 1
-                val keyword = exprText.substring(innerStart, caret)
-                val keywordOffset = innerStart
-                val config = CwtValueConfig.createMock(config.configGroup, "<${type}>")
-                val context = context.copy(keyword = keyword, keywordOffset = keywordOffset, config = config, isKey = null)
-                val result = result.withPrefixMatcher(context.keyword)
-                ParadoxExpressionCompletionManager.completeDefinition(context, result)
-                return
-            }
-        }
-
-        // otherwise, treat as localisation name
-        run {
-            fun isLocChar(ch: Char): Boolean {
-                return ch.isLetterOrDigit() || ch == '_' || ch == '-' || ch == '.' || ch == '\''
-            }
-
-            var start = caret
-            while (start > 0 && isLocChar(exprText[start - 1])) start--
-            val keyword = exprText.substring(start, caret)
-            val keywordOffset = start
-            val config = CwtValueConfig.createMock(config.configGroup, "localisation")
-            val context = context.copy(keyword = keyword, keywordOffset = keywordOffset, config = config, isKey = null)
-            val result = result.withPrefixMatcher(context.keyword)
-            ParadoxExpressionCompletionManager.completeLocalisation(context, result)
-        }
+        })
     }
 
     private inline fun <T> markIncomplete(action: () -> T): T {
@@ -736,22 +720,6 @@ object ParadoxComplexExpressionCompletionManager {
         val context = context.copy(keyword = keyword, keywordOffset = keywordOffset, node = node)
         val result = result.withPrefixMatcher(context.keyword)
         completeDefineVariable(context, result)
-    }
-
-    private fun completeForDatabaseObjectTypeNode(context: ParadoxCompletionContext, result: CompletionResultSet, node: ParadoxDatabaseObjectTypeNode, offset: Int) {
-        val keyword = node.text.substring(0, offset - node.rangeInExpression.startOffset)
-        val keywordOffset = node.rangeInExpression.startOffset
-        val context = context.copy(keyword = keyword, keywordOffset = keywordOffset, node = node)
-        val result = result.withPrefixMatcher(context.keyword)
-        completeDatabaseObjectType(context, result)
-    }
-
-    private fun completeForDatabaseObjectNode(context: ParadoxCompletionContext, result: CompletionResultSet, node: ParadoxDatabaseObjectValueNode, offset: Int) {
-        val keyword = node.text.substring(0, offset - node.rangeInExpression.startOffset)
-        val keywordOffset = node.rangeInExpression.startOffset
-        val context = context.copy(keyword = keyword, keywordOffset = keywordOffset, node = node)
-        val result = result.withPrefixMatcher(keyword)
-        completeDatabaseObject(context, result)
     }
 
     // endregion
