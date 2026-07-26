@@ -15,7 +15,7 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.*
  * 模板表达式。
  *
  * 说明：
- * - 对应的规则数据类型为 [CwtDataTypes.TemplateExpression]。
+ * - 对应的规则数据类型为 [CwtDataTypes.Template]。
  * - 模板格式取决于对应的规则表达式（[CwtTemplateExpression]）。
  *
  * 语法：
@@ -62,7 +62,7 @@ private object ParadoxTemplateExpressionResolver {
         val templateExpression = when {
             config is CwtModifierConfig -> config.template
             else -> {
-                if (config.configExpression?.type != CwtDataTypes.TemplateExpression) return null
+                if (config.configExpression?.type != CwtDataTypes.Template) return null
                 val templateString = config.configExpression?.expressionString ?: return null
                 CwtTemplateExpression.resolve(templateString)
             }

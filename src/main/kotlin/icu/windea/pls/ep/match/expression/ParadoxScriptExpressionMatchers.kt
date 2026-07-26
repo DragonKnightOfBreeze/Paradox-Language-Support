@@ -376,7 +376,7 @@ class ParadoxTemplateScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
     override fun isPatternAware(context: ParadoxScriptExpressionMatchContext) = true
 
     override fun match(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult? {
-        if (context.dataType != CwtDataTypes.TemplateExpression) return null
+        if (context.dataType != CwtDataTypes.Template) return null
         if (!context.expression.type.isNumberOrLenientString()) return ParadoxMatchResult.NotMatch
         if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
         // 允许用引号括起

@@ -864,7 +864,7 @@ object CwtDataTypes {
      *
      * @see ParadoxTemplateExpression
      */
-    val TemplateExpression = CwtDataType.builder("TemplateExpression").patternAware().build {
+    val Template = CwtDataType.builder("Template").patternAware().build {
         withPriority(65.0)
     }
     /**

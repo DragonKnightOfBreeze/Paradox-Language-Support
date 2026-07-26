@@ -9,7 +9,7 @@ import icu.windea.pls.core.util.IntRangeInfo
  *
  * 说明：
  * - 绝大部分字符串类型的元数据都可以通过 [value] 获取。
- * - 对于常量类型（[Constant][CwtDataTypes.Constant]）和模板类型（[TemplateExpression][CwtDataTypes.TemplateExpression]）的数据表达式，需要直接通过 `expressionString` 获取表达式字符串，而非通过 [value] 获取。
+ * - 对于常量类型（[Constant][CwtDataTypes.Constant]）和模板类型（[Template][CwtDataTypes.Template]）的数据表达式，需要直接通过 `expressionString` 获取表达式字符串，而非通过 [value] 获取。
  *
  * 参考：
  * - 规则系统的说明文档：[config.md](https://windea.icu/Paradox-Language-Support/config.md)

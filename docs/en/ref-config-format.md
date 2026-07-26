@@ -2342,7 +2342,7 @@ Format of corresponding data expressions:
 
 > CWTools Compatibility: Compatible.
 
-#### TemplateExpression {#data-type-template-expression}
+#### Template {#data-type-template}
 
 Template expression type.
 
@@ -2460,7 +2460,7 @@ Format of corresponding data expressions:
 
 #### About Template Expressions {#faq-template}
 
-<!-- @see icu.windea.pls.config.CwtDataTypes.TemplateExpression -->
+<!-- @see icu.windea.pls.config.CwtDataTypes.Template -->
 <!-- @see icu.windea.pls.config.configExpression.CwtTemplateExpression -->
 
 Template expressions are composed of multiple [data expression](#config-expression-data) fragments (such as definition references, enum references, dynamic value references, etc.) combined with constant fragments, used for more flexible matching. See the [Template Expression](#config-expression-template) chapter for details.

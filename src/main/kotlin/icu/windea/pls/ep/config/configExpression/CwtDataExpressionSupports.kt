@@ -126,7 +126,7 @@ class CwtConstantDataExpressionSupport : CwtDataExpressionSupport {
 class CwtTemplateDataExpressionSupport : CwtDataExpressionSupport {
     override fun resolve(expressionString: String, isKey: Boolean): CwtDataExpression? {
         if (CwtTemplateExpression.resolve(expressionString).expressionString.isEmpty()) return null
-        return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.TemplateExpression)
+        return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.Template)
     }
 
     override fun resolveTemplate(expressionString: String): CwtDataExpression? {

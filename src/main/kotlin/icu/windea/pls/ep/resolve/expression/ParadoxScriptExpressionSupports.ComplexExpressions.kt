@@ -21,12 +21,12 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxVariableFieldExpress
 // Complex Expressions
 
 /**
- * @see CwtDataTypes.TemplateExpression
+ * @see CwtDataTypes.Template
  * @see ParadoxTemplateExpression
  */
 class ParadoxScriptTemplateExpressionSupport : ParadoxScriptComplexExpressionSupportBase() {
     override fun supports(dataType: CwtDataType): Boolean {
-        return dataType == CwtDataTypes.TemplateExpression
+        return dataType == CwtDataTypes.Template
     }
 
     override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {

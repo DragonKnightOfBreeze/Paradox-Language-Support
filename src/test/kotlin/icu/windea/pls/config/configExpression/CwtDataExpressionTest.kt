@@ -358,12 +358,12 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
         if (!hasEp()) return
         val s = "a_value[foo]_b"
         val e = CwtDataExpression.resolve(s, false)
-        if (e.type != CwtDataTypes.TemplateExpression) {
+        if (e.type != CwtDataTypes.Template) {
             // 在某些退化环境下，EP 不可用时会回退为 Constant
             // 为了兼容性测试，这里仅校验不抛异常
             return
         }
-        assertEquals(CwtDataTypes.TemplateExpression, e.type)
+        assertEquals(CwtDataTypes.Template, e.type)
         assertEquals(s, e.expressionString)
         assertNull(e.metadata.value) // since 3.0.1
         assertEquals(e, CwtDataExpression.resolve(s, false))

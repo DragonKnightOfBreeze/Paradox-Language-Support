@@ -27,7 +27,7 @@ import icu.windea.pls.lang.util.ParadoxScopeManager
  *
  * 规则名称在这里用于匹配（而非等同于）修正名，可以是：
  * - 常量（[Constant][CwtDataTypes.Constant]） - 匹配预定义的修正。
- * - 模板表达式（[TemplateExpression][CwtDataTypes.TemplateExpression]） - 匹配动态生成的修正。
+ * - 模板表达式（[Template][CwtDataTypes.Template]） - 匹配动态生成的修正。
  *
  * 路径定位：
  * - `modifiers/{name}`。其中 `{name}` 匹配规则名称。

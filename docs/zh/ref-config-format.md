@@ -2342,7 +2342,7 @@ icon|p1,p2
 
 > CWTools 兼容性：兼容。
 
-#### TemplateExpression {#data-type-template-expression}
+#### Template {#data-type-template}
 
 模板表达式类型。
 
@@ -2460,7 +2460,7 @@ ANT 路径模式类型。模式感知的数据类型之一。
 
 #### 关于模板表达式 {#faq-template}
 
-<!-- @see icu.windea.pls.config.CwtDataTypes.TemplateExpression -->
+<!-- @see icu.windea.pls.config.CwtDataTypes.Template -->
 <!-- @see icu.windea.pls.config.configExpression.CwtTemplateExpression -->
 
 模板表达式由多个[数据表达式](#config-expression-data)片段（如定义引用、枚举引用、动态值引用等）与常量片段组合而成，用来进行更加灵活的匹配。详见[模板表达式](#config-expression-template)章节。
