@@ -373,7 +373,7 @@ object ParadoxCompletionManager {
 
             val selector = ParadoxDefinitionSearch.selector(context.project, context.file).contextSensitive().distinct()
             ParadoxDefinitionSearch.searchProperty(null, type, selector).processAsync {
-                ParadoxCompletionLookupProvider.processDefinition(context, resultToUse, it)
+                ParadoxCompletionLookupProvider.fromDefinition(context, it).addToResult(context, resultToUse)
             }
 
             ParadoxExtendedCompletionManager.completeExtendedDefinition(context, resultToUse)

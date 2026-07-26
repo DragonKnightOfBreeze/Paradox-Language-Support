@@ -20,6 +20,16 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import javax.swing.Icon
 
+fun LookupElement?.addToResult(context: CompletionContext, result: CompletionResultSet): Boolean {
+    result.addElement(this, context)
+    return true
+}
+
+fun Collection<LookupElement>.addToResult(context: CompletionContext, result: CompletionResultSet): Boolean {
+    result.addElements(this, context)
+    return true
+}
+
 fun CompletionResultSet.addElement(lookupElement: LookupElement?, context: CompletionContext) {
     if (lookupElement == null) return
     getFinalElement(lookupElement, context)?.let { addElement(it) }

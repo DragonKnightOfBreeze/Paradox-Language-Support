@@ -83,7 +83,7 @@ object CwtConfigCompletionManager {
                         val schemaExpression = CwtSchemaExpression.resolve(config.value)
                         completeBySchemaExpression(context, result, schema, config, schemaExpression)
                     } else {
-                        result.addElement(CwtCompletionLookupProvider.forBlockKeyword(), context)
+                        CwtCompletionLookupProvider.forBlockKeyword().addToResult(context,result)
                     }
                 }
             }
@@ -93,7 +93,7 @@ object CwtConfigCompletionManager {
                         val schemaExpression = CwtSchemaExpression.resolve(config.value)
                         completeBySchemaExpression(context, result, schema, config, schemaExpression)
                     } else {
-                        result.addElement(CwtCompletionLookupProvider.forBlockKeyword(), context)
+                        CwtCompletionLookupProvider.forBlockKeyword().addToResult(context, result)
                     }
                 }
             }
@@ -133,7 +133,7 @@ object CwtConfigCompletionManager {
                         val schemaExpression = CwtSchemaExpression.resolve(config.value)
                         completeBySchemaExpression(context, result, schema, config, schemaExpression)
                     } else {
-                        result.addElement(CwtCompletionLookupProvider.forBlockKeyword(), context)
+                        CwtCompletionLookupProvider.forBlockKeyword().addToResult(context, result)
                     }
                 }
             }
@@ -143,7 +143,7 @@ object CwtConfigCompletionManager {
                         val schemaExpression = CwtSchemaExpression.resolve(config.value)
                         completeBySchemaExpression(context, result, schema, config, schemaExpression)
                     } else {
-                        result.addElement(CwtCompletionLookupProvider.forBlockKeyword(), context)
+                        CwtCompletionLookupProvider.forBlockKeyword().addToResult(context, result)
                     }
                 }
             }
@@ -152,9 +152,7 @@ object CwtConfigCompletionManager {
 
     private fun completeBySchemaExpression(context: CwtConfigCompletionContext, result: CompletionResultSet, schema: CwtSchemaConfig, config: CwtConfig<*>, schemaExpression: CwtSchemaExpression) {
         completeFromSchemaExpression(schema, config, schemaExpression) {
-            val lookupElement = it.wrapForConfig(context, config, schemaExpression)
-            result.addElement(lookupElement, context)
-            true
+            it.wrapForConfig(context, config, schemaExpression).addToResult(context, result)
         }
     }
 

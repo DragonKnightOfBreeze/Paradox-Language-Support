@@ -11,6 +11,7 @@ import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionLookupProvider
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionProvider
 import icu.windea.pls.lang.codeInsight.completion.ParadoxExtendedCompletionManager
+import icu.windea.pls.lang.codeInsight.completion.addToResult
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized
@@ -75,7 +76,7 @@ class ParadoxDefinitionNameCompletionProvider : ParadoxCompletionProvider() {
                         val selector = ParadoxDefinitionSearch.selector(context.project, context.file).contextSensitive().distinct()
                             .filterBy { it.name != context.keyword } // skip if name = input
                         ParadoxDefinitionSearch.searchProperty(null, type, selector).processAsync {
-                            ParadoxCompletionLookupProvider.processDefinition(context, result, it)
+                            ParadoxCompletionLookupProvider.fromDefinition(context, it).addToResult(context, result)
                         }
 
                         ParadoxExtendedCompletionManager.completeExtendedDefinition(context, result)
@@ -99,7 +100,7 @@ class ParadoxDefinitionNameCompletionProvider : ParadoxCompletionProvider() {
                         val selector = ParadoxDefinitionSearch.selector(context.project, context.file).contextSensitive().distinct()
                             .filterBy { it.name != context.keyword } // skip if name = input
                         ParadoxDefinitionSearch.searchProperty(null, type, selector).processAsync {
-                            ParadoxCompletionLookupProvider.processDefinition(context, result, it)
+                            ParadoxCompletionLookupProvider.fromDefinition(context, it).addToResult(context, result)
                         }
 
                         ParadoxExtendedCompletionManager.completeExtendedDefinition(context, result)

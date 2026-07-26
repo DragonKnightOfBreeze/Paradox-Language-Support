@@ -34,7 +34,6 @@ import icu.windea.pls.model.constants.ChronicleStrings
 import icu.windea.pls.model.type.CwtExpressionType
 import javax.swing.Icon
 
-@Suppress("unused")
 object CwtCompletionLookupProvider {
     // region Constants
 
@@ -58,7 +57,9 @@ object CwtCompletionLookupProvider {
 
     // endregion
 
+    @Suppress("unused")
     fun forYesKeyword(): LookupElementBuilder = LOOKUP_ELEMENT_YES
+    @Suppress("unused")
     fun forNoKeyword(): LookupElementBuilder = LOOKUP_ELEMENT_NO
     fun forBlockKeyword(): LookupElementBuilder = LOOKUP_ELEMENT_BLOCK
     fun forKeyword(): List<LookupElementBuilder> = LOOKUP_ELEMENT_KEYWORD
@@ -102,6 +103,12 @@ object CwtCompletionLookupProvider {
     }
 
     fun wrapForConfig(lookupElement: LookupElementBuilder, context: CwtConfigCompletionContext, config: CwtConfig<*>, schemaExpression: CwtSchemaExpression): LookupElement? {
+        return applyWrapForConfig(lookupElement, context, config, schemaExpression)
+    }
+
+    // region Wrap Implementations
+
+    private fun applyWrapForConfig(lookupElement: LookupElementBuilder, context: CwtConfigCompletionContext, config: CwtConfig<*>, schemaExpression: CwtSchemaExpression): LookupElementBuilder? {
         if (lookupElement in forKeyword()) return lookupElement
 
         val isKeyConfig = config is CwtOptionConfig || config is CwtPropertyConfig
@@ -166,6 +173,10 @@ object CwtCompletionLookupProvider {
         append(withValueText)
         if (patchableTailText != null) append(patchableTailText)
     }
+
+    // endregion
+
+    // endregion
 
     // region Insert Handlers
 

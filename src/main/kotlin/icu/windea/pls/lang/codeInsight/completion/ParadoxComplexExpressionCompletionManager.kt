@@ -1198,7 +1198,7 @@ object ParadoxComplexExpressionCompletionManager {
         val valueNode = dsNode.expression.valueNode ?: return
         val selector = ParadoxDefinitionSearch.selector(context.project, context.contextElement).contextSensitive().distinct()
         ParadoxDefinitionSearch.searchElement(valueNode.text, config.type, selector).processAsync {
-            ParadoxCompletionLookupProvider.processDefinition(context, result, it)
+            ParadoxCompletionLookupProvider.fromDefinition(context, it).addToResult(context, result)
         }
     }
 
