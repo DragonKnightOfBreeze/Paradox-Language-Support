@@ -10,6 +10,8 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
+import icu.windea.pls.config.config.delegated.CwtAliasConfig
+import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.config.resolved
 import icu.windea.pls.config.processCandidateConfigs
 import icu.windea.pls.core.codeInsight.LimitedCompletionProcessor
@@ -58,7 +60,7 @@ object ParadoxExpressionCompletionManager {
         val configExpression = context.config?.configExpression ?: return
         if (configExpression.expressionString.isEmpty()) return
         // 要求匹配作用域
-        val nextScopeMatched = ParadoxCompletionUtil.isNextScopeMatched(context)
+        val nextScopeMatched = isNextScopeMatched(context)
         if (!nextScopeMatched && !ChronicleSettings.getInstance().state.completion.completeOnlyScopeIsMatched) return
         val context = context.copy(scopeMatched = nextScopeMatched)
         ParadoxExpressionService.completeScriptExpression(context, result)
@@ -74,6 +76,20 @@ object ParadoxExpressionCompletionManager {
         ParadoxExpressionService.completeCsvExpression(context, result)
     }
 
+    fun isNextScopeMatched(context: ParadoxCompletionContext): Boolean {
+        if (!context.scopeMatched) return false
+        val supportedScopes = when {
+            context.config is CwtPropertyConfig -> context.config.optionMetadata.supportedScopes
+            context.config is CwtAliasConfig -> context.config.supportedScopes
+            context.config is CwtLinkConfig -> context.config.inputScopes
+            else -> null
+        }
+        return when {
+            context.scopeContext == null -> true
+            else -> ParadoxScopeManager.matchesScope(context.scopeContext, supportedScopes, context.configGroup)
+        }
+    }
+
     // endregion
 
     // region General Completion Methods
@@ -87,7 +103,7 @@ object ParadoxExpressionCompletionManager {
         // 本地化的提示结果可能有上千条，因此这里改为先按照输入的关键字过滤结果，关键字变更时重新提示
         result.restartCompletionOnPrefixChange(StandardPatterns.string().shorterThan(context.keyword.length))
 
-        val tailText = ParadoxCompletionUtil.getPatchableTailText(context, config)
+        val tailText = ParadoxCompletionLookupProvider.getConfigBasedPatchableTailText(context, config)
         val selector = ParadoxLocalisationSearch.selector(context.project, context.contextElement)
             .contextSensitive()
             .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
@@ -120,7 +136,7 @@ object ParadoxExpressionCompletionManager {
         // 本地化的提示结果可能有上千条，因此这里改为先按照输入的关键字过滤结果，关键字变更时重新提示
         result.restartCompletionOnPrefixChange(StandardPatterns.string().shorterThan(context.keyword.length))
 
-        val tailText = ParadoxCompletionUtil.getPatchableTailText(context, config)
+        val tailText = ParadoxCompletionLookupProvider.getConfigBasedPatchableTailText(context, config)
         val selector = ParadoxLocalisationSearch.selector(context.project, context.contextElement)
             .contextSensitive()
             .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
@@ -149,7 +165,7 @@ object ParadoxExpressionCompletionManager {
         val scopeContext = context.scopeContext
         val typeExpression = config.configExpression?.metadata?.value ?: return
         val configGroup = config.configGroup
-        val tailText = ParadoxCompletionUtil.getPatchableTailText(context, config)
+        val tailText = ParadoxCompletionLookupProvider.getConfigBasedPatchableTailText(context, config)
         val selector = ParadoxDefinitionSearch.selector(context.project, context.contextElement).contextSensitive().distinct()
         ParadoxDefinitionSearch.searchElement(null, typeExpression, selector).processAsync p@{ definition ->
             ProgressManager.checkCanceled()
@@ -185,7 +201,7 @@ object ParadoxExpressionCompletionManager {
         val configExpression = config.configExpression ?: return
         val pathReferenceExpressionSupport = ParadoxPathReferenceExpressionSupport.get(configExpression)
         if (pathReferenceExpressionSupport != null) {
-            val tailText = ParadoxCompletionUtil.getPatchableTailText(context, config)
+            val tailText = ParadoxCompletionLookupProvider.getConfigBasedPatchableTailText(context, config)
             val fileExtensions = when (config) {
                 is CwtMemberConfig<*> -> config.optionMetadata.fileExtensions.orEmpty()
                 else -> emptySet()
@@ -229,7 +245,7 @@ object ParadoxExpressionCompletionManager {
         val configGroup = context.configGroup
         val config = context.config ?: return
         val enumName = config.configExpression?.metadata?.value ?: return
-        val tailText = ParadoxCompletionUtil.getPatchableTailText(context, config)
+        val tailText = ParadoxCompletionLookupProvider.getConfigBasedPatchableTailText(context, config)
         val enumConfig = configGroup.enums[enumName] ?: return
         val enumValueConfigs = enumConfig.valueConfigMap.values
         if (enumValueConfigs.isEmpty()) return
@@ -240,7 +256,7 @@ object ParadoxExpressionCompletionManager {
             val lookupElement = LookupElementBuilder.create(element, name)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withCaseSensitivity(false)
-                .withPriority(ChronicleCompletionPriorities.enumValue)
+                .withPriority(ParadoxCompletionPriorities.enumValue)
                 .withPatchableIcon(ChronicleIcons.Nodes.EnumValue)
                 .withPatchableTailText(tailText)
                 .wrapForExpression(context)
@@ -253,7 +269,7 @@ object ParadoxExpressionCompletionManager {
         val configGroup = context.configGroup
         val config = context.config ?: return
         val enumName = config.configExpression?.metadata?.value ?: return
-        val tailText = ParadoxCompletionUtil.getPatchableTailText(context, config)
+        val tailText = ParadoxCompletionLookupProvider.getConfigBasedPatchableTailText(context, config)
         val complexEnumConfig = configGroup.complexEnums[enumName] ?: return
         val typeFile = complexEnumConfig.pointer.containingFile
         val searchScopeType = complexEnumConfig.searchScopeType
@@ -267,7 +283,7 @@ object ParadoxExpressionCompletionManager {
             val lookupElement = LookupElementBuilder.create(element, name)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withCaseSensitivity(!complexEnumConfig.caseInsensitive) // # 261
-                .withPriority(ChronicleCompletionPriorities.complexEnumValue)
+                .withPriority(ParadoxCompletionPriorities.complexEnumValue)
                 .withPatchableIcon(ChronicleIcons.Nodes.ComplexEnumValue(enumName))
                 .withPatchableTailText(tailText)
                 .wrapForExpression(context)
@@ -326,7 +342,7 @@ object ParadoxExpressionCompletionManager {
         val configExpression = config.configExpression ?: return
         val dynamicValueType = configExpression.metadata.value ?: return
         if (configExpression.type != CwtDataTypes.Value && configExpression.type != CwtDataTypes.DynamicValue) return
-        val tailText = ParadoxCompletionUtil.getPatchableTailText(context, config)
+        val tailText = ParadoxCompletionLookupProvider.getConfigBasedPatchableTailText(context, config)
         val valueConfig = configGroup.dynamicValueTypes[dynamicValueType] ?: return
         val dynamicValueTypeConfigs = valueConfig.valueConfigMap.values
         for (dynamicValueTypeConfig in dynamicValueTypeConfigs) {
@@ -393,12 +409,12 @@ object ParadoxExpressionCompletionManager {
             // 常量的值也可能是yes/no
             if (name == "yes") {
                 if (context.leftQuoted) return
-                result.addElement(ChronicleLookupElements.yesLookupElement, context)
+                result.addElement(ParadoxCompletionLookupProvider.forYesKeyword(), context)
                 return
             }
             if (name == "no") {
                 if (context.leftQuoted) return
-                result.addElement(ChronicleLookupElements.noLookupElement, context)
+                result.addElement(ParadoxCompletionLookupProvider.forNoKeyword(), context)
                 return
             }
         }
@@ -407,7 +423,7 @@ object ParadoxExpressionCompletionManager {
         val lookupElement = LookupElementBuilder.create(element, name)
             .withTypeText(typeFile?.name, typeFile?.icon, true)
             .withCaseSensitivity(false)
-            .withPriority(ChronicleCompletionPriorities.constant)
+            .withPriority(ParadoxCompletionPriorities.constant)
             .withPatchableIcon(icon)
             .withScopeMatched(context.scopeMatched)
             .wrapForExpression(context)

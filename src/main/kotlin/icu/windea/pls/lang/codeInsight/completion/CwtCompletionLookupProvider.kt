@@ -34,32 +34,33 @@ import icu.windea.pls.model.constants.ChronicleStrings
 import icu.windea.pls.model.type.CwtExpressionType
 import javax.swing.Icon
 
+@Suppress("unused")
 object CwtCompletionLookupProvider {
     // region Constants
 
-    private const val PRIORITY_KEYWORD = 10.0
-    private const val PRIORITY_CONSTANT = 90.0
-    private const val PRIORITY_ENUM_VALUE = 90.0
-
     private val LOOKUP_ELEMENT_YES = LookupElementBuilder.create(ChronicleStrings.yesKeyword).bold()
-        .withPriority(PRIORITY_KEYWORD).withCompletionId()
+        .withPriority(CwtCompletionPriorities.keyword)
+        .withCompletionId()
     private val LOOKUP_ELEMENT_NO = LookupElementBuilder.create(ChronicleStrings.noKeyword).bold()
-        .withPriority(PRIORITY_KEYWORD).withCompletionId()
+        .withPriority(CwtCompletionPriorities.keyword)
+        .withCompletionId()
     private val LOOKUP_ELEMENT_BLOCK = LookupElementBuilder.create("").withPresentableText(ChronicleStrings.blockKeyword)
-        .withPriority(PRIORITY_KEYWORD).withCompletionId(ChronicleStrings.blockKeyword)
-        .withInsertHandler(ChronicleInsertHandlers.block())
+        .withPriority(CwtCompletionPriorities.keyword)
+        .withCompletionId(ChronicleStrings.blockKeyword)
+        .withInsertHandler(BlockInsertHandler())
     private val LOOKUP_ELEMENT_KEYWORD = listOf(LOOKUP_ELEMENT_YES, LOOKUP_ELEMENT_NO, LOOKUP_ELEMENT_BLOCK)
     private val LOOKUP_ELEMENT_BOOL = listOf(LOOKUP_ELEMENT_YES, LOOKUP_ELEMENT_NO)
     private val LOOKUP_ELEMENT_CARDINALITY = listOf("0..1", "1..1", "0..inf", "1..inf").map {
         LookupElementBuilder.create(it)
-            .withPriority(PRIORITY_CONSTANT).withCompletionId()
+            .withPriority(CwtCompletionPriorities.constant)
+            .withCompletionId()
     }
 
     // endregion
 
-    // fun forYesKeyword(): LookupElementBuilder = LOOKUP_ELEMENT_YES
-    // fun forNoKeyword(): LookupElementBuilder = LOOKUP_ELEMENT_NO
-    // fun forBlockKeyword(): LookupElementBuilder = LOOKUP_ELEMENT_BLOCK
+    fun forYesKeyword(): LookupElementBuilder = LOOKUP_ELEMENT_YES
+    fun forNoKeyword(): LookupElementBuilder = LOOKUP_ELEMENT_NO
+    fun forBlockKeyword(): LookupElementBuilder = LOOKUP_ELEMENT_BLOCK
     fun forKeyword(): List<LookupElementBuilder> = LOOKUP_ELEMENT_KEYWORD
     fun forBool(): List<LookupElementBuilder> = LOOKUP_ELEMENT_BOOL
     fun forCardinality(): List<LookupElementBuilder> = LOOKUP_ELEMENT_CARDINALITY
@@ -69,7 +70,7 @@ object CwtCompletionLookupProvider {
             .withTypeText(typeFile?.name, typeFile?.icon, true)
             .withIcon(icon)
             .withPatchableTailText(hintText)
-            .withPriority(PRIORITY_CONSTANT)
+            .withPriority(CwtCompletionPriorities.constant)
     }
 
     fun forSchemaEnumValue(lookupString: String, element: PsiElement? = null, typeFile: PsiFile? = null, icon: Icon? = null, hintText: String? = null): LookupElementBuilder {
@@ -77,7 +78,7 @@ object CwtCompletionLookupProvider {
             .withIcon(icon)
             .withTypeText(typeFile?.name, typeFile?.icon, true)
             .withPatchableTailText(hintText)
-            .withPriority(PRIORITY_ENUM_VALUE)
+            .withPriority(CwtCompletionPriorities.enumName)
     }
 
     fun forSchemaTemplate(lookupString: String, element: PsiElement? = null, typeFile: PsiFile? = null, icon: Icon? = null, hintText: String? = null): LookupElementBuilder {
@@ -101,7 +102,7 @@ object CwtCompletionLookupProvider {
     }
 
     fun wrapForConfig(lookupElement: LookupElementBuilder, context: CwtConfigCompletionContext, config: CwtConfig<*>, schemaExpression: CwtSchemaExpression): LookupElement? {
-        if (lookupElement in ChronicleLookupElements.keywordLookupElements) return lookupElement
+        if (lookupElement in forKeyword()) return lookupElement
 
         val isKeyConfig = config is CwtOptionConfig || config is CwtPropertyConfig
 
@@ -135,9 +136,9 @@ object CwtCompletionLookupProvider {
         result = result.patchIcon()
         result = result.patchTailText(withValueText)
 
-        if (context.isKeyOnly || context.isValueOnly) {
+        if (context.isKeyOnly || context.isValueOnly) { // key or value only
             result = result.withInsertHandler(KeyOrValueOnlyInsertHandler(context))
-        } else if (isKeyConfig && context.isKey) {
+        } else if (isKeyConfig && context.isKey) { // key with value
             result = result.withInsertHandler(KeyWithValueInsertHandler(context, insertCurlyBraces))
         }
 
@@ -168,6 +169,17 @@ object CwtCompletionLookupProvider {
 
     // region Insert Handlers
 
+    private open class BlockInsertHandler<T : LookupElement> : InsertHandler<T> {
+        override fun handleInsert(c: InsertionContext, item: T) {
+            // 插入成对的花括号
+            val codeStyleSettings = CwtCodeStyleSettings.getInstance(c.file)
+            val spaceWithinBraces = codeStyleSettings.SPACE_WITHIN_BRACES
+            val text = if (spaceWithinBraces) "{  }" else "{}"
+            val length = if (spaceWithinBraces) text.length - 2 else text.length - 1
+            EditorModificationUtil.insertStringAtCaret(c.editor, text, false, true, length)
+        }
+    }
+
     private open class KeyOrValueOnlyInsertHandler<T : LookupElement>(
         private val context: CwtConfigCompletionContext,
     ) : InsertHandler<T> {
@@ -197,8 +209,9 @@ object CwtCompletionLookupProvider {
             super.handleInsert(c, item)
 
             val editor = c.editor
-            val spaceAroundPropertySeparator = isSpaceAroundPropertySeparator(c.file)
-            val spaceWithinBraces = isSpaceWithinBraces(c.file)
+            val codeStyleSettings = CwtCodeStyleSettings.getInstance(c.file)
+            val spaceAroundPropertySeparator = codeStyleSettings.SPACE_AROUND_PROPERTY_SEPARATOR
+            val spaceWithinBraces = codeStyleSettings.SPACE_WITHIN_BRACES
             val text = buildString {
                 if (spaceAroundPropertySeparator) append(" ")
                 append("=")
@@ -214,10 +227,6 @@ object CwtCompletionLookupProvider {
             }
             EditorModificationUtil.insertStringAtCaret(editor, text, false, true, length)
         }
-
-        private fun isSpaceWithinBraces(file: PsiFile) = CwtCodeStyleSettings.getInstance(file).SPACE_WITHIN_BRACES
-
-        private fun isSpaceAroundPropertySeparator(file: PsiFile) = CwtCodeStyleSettings.getInstance(file).SPACE_AROUND_PROPERTY_SEPARATOR
     }
 
     private open class TemplateInsertHandler<T : LookupElement>(

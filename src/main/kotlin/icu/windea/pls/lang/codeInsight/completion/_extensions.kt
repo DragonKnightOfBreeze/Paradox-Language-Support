@@ -44,7 +44,7 @@ fun <T : LookupElement> T.withPriority(priority: Double?): T {
     val scopeMatched = this.scopeMatched
     if (priority == null && scopeMatched) return this
     var finalPriority = priority ?: 0.0
-    if (!scopeMatched) finalPriority += ChronicleCompletionPriorities.scopeMismatchOffset
+    if (!scopeMatched) finalPriority += ParadoxCompletionPriorities.scopeMismatchOffset
     this.priority = finalPriority
     return this
 }

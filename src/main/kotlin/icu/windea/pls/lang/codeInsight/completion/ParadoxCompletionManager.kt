@@ -20,6 +20,7 @@ import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.manipulation.CwtConfigManipulationService
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.codeInsight.LimitedCompletionProcessor
+import icu.windea.pls.core.codeInsight.completion.AddCharInsertHandler
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.letIf
@@ -291,7 +292,7 @@ object ParadoxCompletionManager {
                 .withCaseSensitivity(false)
                 .withPatchableIcon(icon)
                 .withPatchableTailText(tailText)
-                .withPriority(ChronicleCompletionPriorities.rootKey)
+                .withPriority(ParadoxCompletionPriorities.rootKey)
                 .wrapForExpression(context)
             result.addElement(lookupElement, context)
         }
@@ -322,7 +323,7 @@ object ParadoxCompletionManager {
                 .withPatchableIcon(icon)
                 .withPatchableTailText(tailText)
                 .withForceInsertCurlyBraces(tuples.isEmpty())
-                .withPriority(ChronicleCompletionPriorities.rootKey)
+                .withPriority(ParadoxCompletionPriorities.rootKey)
                 .wrapForExpression(context)
             result.addElement(lookupElement, context)
         }
@@ -342,7 +343,7 @@ object ParadoxCompletionManager {
                 .withIcon(ChronicleIcons.Nodes.Macro)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withCaseSensitivity(false)
-                .withPriority(ChronicleCompletionPriorities.constant)
+                .withPriority(ParadoxCompletionPriorities.constant)
                 .wrapForExpression(context)
             result.addElement(lookupElement, context)
         }
@@ -394,8 +395,8 @@ object ParadoxCompletionManager {
                 .withIcon(ChronicleIcons.Nodes.Macro)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withCaseSensitivity(false)
-                .withInsertHandler(ChronicleInsertHandlers.addColon())
-                .withPriority(ChronicleCompletionPriorities.macro)
+                .withInsertHandler(AddCharInsertHandler(':'))
+                .withPriority(ParadoxCompletionPriorities.macro)
                 .withPatchableTailText(tailText)
                 .wrapForExpression(context)
             result.addElement(lookupElement, context)
@@ -422,7 +423,7 @@ object ParadoxCompletionManager {
                     it.withItemTextForeground(JBColor.GRAY) // 将不匹配的语言环境的提示项置灰
                 }
                 .letIf(matched == true) {
-                    it.withPriority(ChronicleCompletionPriorities.pinned) // 优先提示与文件名匹配的语言环境
+                    it.withPriority(ParadoxCompletionPriorities.pinned) // 优先提示与文件名匹配的语言环境
                 }
             lookupElements.add(lookupElement)
         }
@@ -565,7 +566,7 @@ object ParadoxCompletionManager {
             val lookupElement = LookupElementBuilder.create(element, name)
                 .withIcon(ChronicleIcons.Nodes.Column)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
-                .withPriority(ChronicleCompletionPriorities.constant)
+                .withPriority(ParadoxCompletionPriorities.constant)
             result.addElement(lookupElement, context)
         }
     }

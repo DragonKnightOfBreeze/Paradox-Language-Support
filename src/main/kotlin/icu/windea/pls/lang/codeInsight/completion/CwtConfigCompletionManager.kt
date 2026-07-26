@@ -83,7 +83,7 @@ object CwtConfigCompletionManager {
                         val schemaExpression = CwtSchemaExpression.resolve(config.value)
                         completeBySchemaExpression(context, result, schema, config, schemaExpression)
                     } else {
-                        result.addElement(ChronicleLookupElements.blockLookupElement, context)
+                        result.addElement(CwtCompletionLookupProvider.forBlockKeyword(), context)
                     }
                 }
             }
@@ -93,7 +93,7 @@ object CwtConfigCompletionManager {
                         val schemaExpression = CwtSchemaExpression.resolve(config.value)
                         completeBySchemaExpression(context, result, schema, config, schemaExpression)
                     } else {
-                        result.addElement(ChronicleLookupElements.blockLookupElement, context)
+                        result.addElement(CwtCompletionLookupProvider.forBlockKeyword(), context)
                     }
                 }
             }
@@ -133,7 +133,7 @@ object CwtConfigCompletionManager {
                         val schemaExpression = CwtSchemaExpression.resolve(config.value)
                         completeBySchemaExpression(context, result, schema, config, schemaExpression)
                     } else {
-                        result.addElement(ChronicleLookupElements.blockLookupElement, context)
+                        result.addElement(CwtCompletionLookupProvider.forBlockKeyword(), context)
                     }
                 }
             }
@@ -143,7 +143,7 @@ object CwtConfigCompletionManager {
                         val schemaExpression = CwtSchemaExpression.resolve(config.value)
                         completeBySchemaExpression(context, result, schema, config, schemaExpression)
                     } else {
-                        result.addElement(ChronicleLookupElements.blockLookupElement, context)
+                        result.addElement(CwtCompletionLookupProvider.forBlockKeyword(), context)
                     }
                 }
             }
