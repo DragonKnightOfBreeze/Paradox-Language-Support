@@ -1,10 +1,12 @@
 package icu.windea.pls.lang.codeInsight.completion
 
+import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.completion.InsertHandler
 import com.intellij.codeInsight.completion.InsertionContext
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.editor.EditorModificationUtil
+import com.intellij.openapi.progress.ProgressManager
 import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
@@ -17,12 +19,18 @@ import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.config.resolved
 import icu.windea.pls.config.config.tagType
 import icu.windea.pls.config.manipulation.CwtConfigManipulationService
+import icu.windea.pls.core.icon
+import icu.windea.pls.core.orNull
 import icu.windea.pls.core.quoteIfNeeded
+import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.model.constants.ChronicleStrings
 import icu.windea.pls.model.type.CwtExpressionType
 import icu.windea.pls.script.formatter.ParadoxScriptCodeStyleSettings
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
+import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
+import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.ParadoxScriptString
 import javax.swing.Icon
 
@@ -49,6 +57,63 @@ object ParadoxCompletionLookupProvider {
     fun forBlockKeyword(): LookupElementBuilder = LOOKUP_ELEMENT_BLOCK
     fun forKeyword(): List<LookupElementBuilder> = LOOKUP_ELEMENT_KEYWORD
     fun forBool(): List<LookupElementBuilder> = LOOKUP_ELEMENT_BOOL
+
+    fun processScriptedVariable(context: ParadoxCompletionContext, result: CompletionResultSet, element: ParadoxScriptScriptedVariable): Boolean {
+        // 不自动插入后面的等号
+        ProgressManager.checkCanceled()
+        val name = element.name?.orNull() ?: return true
+        val tailText = element.value?.let { " = $it" }
+        val typeFile = element.containingFile
+        val lookupElement = LookupElementBuilder.create(element, name)
+            .withTailText(tailText, true)
+            .withTypeText(typeFile.name, typeFile.icon, true)
+            .withPatchableIcon(ChronicleIcons.Nodes.ScriptedVariable)
+            .withScriptedVariablePresentableNames(element)
+            .wrapForExpression(context)
+        result.addElement(lookupElement, context)
+        return true
+    }
+
+    fun processDefinition(context: ParadoxCompletionContext, result: CompletionResultSet, element: ParadoxDefinitionElement): Boolean {
+        ProgressManager.checkCanceled()
+        val definitionInfo = element.definitionInfo ?: return true
+        val name = element.name.orNull() ?: return true // skip anonymous definitions
+        val typeFile = element.containingFile
+        val lookupElement = LookupElementBuilder.create(element, name)
+            .withTypeText(typeFile?.name, typeFile?.icon, true)
+            .withPatchableIcon(ChronicleIcons.Nodes.Definition(definitionInfo.type))
+            .withPatchableTailText(context.patchableTailText)
+            .withDefinitionPresentableNames(element)
+            .wrapForExpression(context)
+        result.addElement(lookupElement, context)
+        return true
+    }
+
+    fun processDefineNamespace(context: ParadoxCompletionContext, result: CompletionResultSet, element: ParadoxScriptProperty): Boolean {
+        // 不自动插入后面的等号
+        ProgressManager.checkCanceled()
+        val name = element.name.orNull() ?: return true
+        val typeFile = element.containingFile
+        val lookupElement = LookupElementBuilder.create(element, name)
+            .withTypeText(typeFile.name, typeFile.icon, true)
+            .withPatchableIcon(ChronicleIcons.Nodes.DefineNamespace)
+            .wrapForExpression(context)
+        result.addElement(lookupElement, context)
+        return true
+    }
+
+    fun processDefineVariable(context: ParadoxCompletionContext, result: CompletionResultSet, element: ParadoxScriptProperty): Boolean {
+        // 不自动插入后面的等号
+        ProgressManager.checkCanceled()
+        val name = element.name.orNull() ?: return true
+        val typeFile = element.containingFile
+        val lookupElement = LookupElementBuilder.create(element, name)
+            .withTypeText(typeFile.name, typeFile.icon, true)
+            .withPatchableIcon(ChronicleIcons.Nodes.DefineVariable)
+            .wrapForExpression(context)
+        result.addElement(lookupElement, context)
+        return true
+    }
 
     fun getConfigBasedPatchableTailText(context: ParadoxCompletionContext, config: CwtConfig<*>?, withConfigExpression: Boolean = true, withFileName: Boolean = true): String {
         context.patchableTailText?.let { return it }
