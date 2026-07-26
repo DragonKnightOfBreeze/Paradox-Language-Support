@@ -13,17 +13,13 @@ import icu.windea.pls.core.util.setValue
 abstract class CwtDataExpressionMetadataBase : UserDataHolderBase(), CwtDataExpressionMetadata {
     object Keys : KeyRegistry() {
         val value by registerKey<String>(this)
-        val wildcard by registerKey<Boolean>(this) { false }
-        val condition by registerKey<Boolean>(this) { false }
-        val ignoreCase by registerKey<Boolean>(this) { false }
+        val wildcard by registerKey(this) { false }
+        val condition by registerKey(this) { false }
+        val ignoreCase by registerKey(this) { false }
         val intRange by registerKey<IntRangeInfo>(this)
         val floatRange by registerKey<FloatRangeInfo>(this)
         val suffixes by registerKey<Set<String>>(this)
     }
-
-    // NOTE 3.0.1 常量类型（`CwtDataTypes.Constant`）和模板类型（`CwtDataTypes.Template`）的数据表达式，实际上并不需要元数据（`value`），直接从 `expressionString` 获取原始的表达式字符串即可。
-
-    // region Accessors
 
     override var value by Keys.value
     override var wildcard by Keys.wildcard
@@ -32,6 +28,10 @@ abstract class CwtDataExpressionMetadataBase : UserDataHolderBase(), CwtDataExpr
     override var intRange by Keys.intRange
     override var floatRange by Keys.floatRange
     override var suffixes by Keys.suffixes
-
-    // endregion
 }
+
+typealias CwtDataExpressionMetadataBuilder = CwtDataExpressionMetadataBase.() -> Unit
+
+typealias CwtDataExpressionMetadataBuilderWithInput = CwtDataExpressionMetadataBase.(String) -> Unit
+
+fun CwtDataExpressionMetadataBuilderWithInput.acceptInput(input: String): CwtDataExpressionMetadataBuilder = { invoke(this, input) }

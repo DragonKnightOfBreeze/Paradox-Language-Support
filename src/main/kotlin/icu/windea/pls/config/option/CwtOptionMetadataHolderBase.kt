@@ -53,8 +53,6 @@ abstract class CwtOptionMetadataHolderBase : UserDataHolderBase(), CwtOptionMeta
         val perDefinition by registerKey(this, false)
     }
 
-    // region Accessors
-
     final override var optionConfigs by Keys.optionConfigs
     final override var apiStatus by Keys.apiStatus
     final override var cardinality by Keys.cardinality
@@ -88,8 +86,6 @@ abstract class CwtOptionMetadataHolderBase : UserDataHolderBase(), CwtOptionMeta
     final override var tag by Keys.tag
     final override var caseInsensitive by Keys.caseInsensitive
     final override var perDefinition by Keys.perDefinition
-
-    // endregion
 
     final override fun clear() {
         clearUserData()

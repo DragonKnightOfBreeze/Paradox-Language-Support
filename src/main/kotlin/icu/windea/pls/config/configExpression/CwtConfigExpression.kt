@@ -11,6 +11,10 @@ import icu.windea.pls.core.annotations.Optimized
  * 例如：数据类型表达式、模板表达式、基数表达式、定位表达式等。
  * 这些解析结果会承载后续的导航、高亮、校验与补全等能力所需的元数据。
  *
+ * 参考：
+ * - 规则系统的说明文档：[config.md](https://windea.icu/Paradox-Language-Support/config.md)
+ * - 规则格式的参考手册：[ref-config-format.md](https://windea.icu/Paradox-Language-Support/ref-config-format.md)
+ *
  * @property expressionString 原始的表达式字符串（作为缓存键与相等性依据）。
  */
 interface CwtConfigExpression {

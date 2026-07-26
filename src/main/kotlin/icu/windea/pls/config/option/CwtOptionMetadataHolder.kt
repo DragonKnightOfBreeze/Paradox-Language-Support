@@ -48,7 +48,7 @@ interface CwtOptionMetadataHolder : UserDataHolder {
      */
     val optionConfigs: List<CwtOptionMemberConfig<*>>
 
-    // region Core
+    // region Options
 
     /**
      * API 状态。
@@ -521,7 +521,7 @@ interface CwtOptionMetadataHolder : UserDataHolder {
 
     // endregion
 
-    // region Flags
+    // region Option Flags
 
     /**
      * 将对应位置的本地化和图片标记为必需项。
