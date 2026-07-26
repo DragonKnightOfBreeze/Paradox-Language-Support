@@ -39,8 +39,8 @@ import icu.windea.pls.ep.resolve.parameter.ParadoxParameterSupport
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.codeInsight.completion.ParadoxExtendedCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.addElement
-import icu.windea.pls.lang.codeInsight.completion.forExpression
 import icu.windea.pls.lang.codeInsight.completion.withPatchableIcon
+import icu.windea.pls.lang.codeInsight.completion.wrapForExpression
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxPsiService
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
@@ -199,7 +199,7 @@ object ParadoxParameterManager {
             val lookupElement = LookupElementBuilder.create(parameterElement, parameterName)
                 .withTypeText(parameterElement.contextName, parameterElement.contextIcon, true)
                 .withPatchableIcon(ChronicleIcons.Nodes.Parameter)
-                .forExpression(context)
+                .wrapForExpression(context)
             result.addElement(lookupElement, context)
         }
 
@@ -237,7 +237,7 @@ object ParadoxParameterManager {
                 val lookupElement = LookupElementBuilder.create(parameterElement, parameterName)
                     .withTypeText(parameterElement.contextName, parameterElement.contextIcon, true)
                     .withPatchableIcon(ChronicleIcons.Nodes.Parameter)
-                    .forExpression(context)
+                    .wrapForExpression(context)
                 result.addElement(lookupElement, context)
             }
             true

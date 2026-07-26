@@ -29,7 +29,7 @@ object ParadoxCompletionUtil {
             .withTypeText(typeFile.name, typeFile.icon, true)
             .withPatchableIcon(ChronicleIcons.Nodes.ScriptedVariable)
             .withScriptedVariablePresentableNames(element)
-            .forExpression(context)
+            .wrapForExpression(context)
         result.addElement(lookupElement, context)
         return true
     }
@@ -44,7 +44,7 @@ object ParadoxCompletionUtil {
             .withPatchableIcon(ChronicleIcons.Nodes.Definition(definitionInfo.type))
             .withPatchableTailText(context.patchableTailText)
             .withDefinitionPresentableNames(element)
-            .forExpression(context)
+            .wrapForExpression(context)
         result.addElement(lookupElement, context)
         return true
     }
@@ -57,7 +57,7 @@ object ParadoxCompletionUtil {
         val lookupElement = LookupElementBuilder.create(element, name)
             .withTypeText(typeFile.name, typeFile.icon, true)
             .withPatchableIcon(ChronicleIcons.Nodes.DefineNamespace)
-            .forExpression(context)
+            .wrapForExpression(context)
         result.addElement(lookupElement, context)
         return true
     }
@@ -70,7 +70,7 @@ object ParadoxCompletionUtil {
         val lookupElement = LookupElementBuilder.create(element, name)
             .withTypeText(typeFile.name, typeFile.icon, true)
             .withPatchableIcon(ChronicleIcons.Nodes.DefineVariable)
-            .forExpression(context)
+            .wrapForExpression(context)
         result.addElement(lookupElement, context)
         return true
     }

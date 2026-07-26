@@ -28,11 +28,11 @@ import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionUtil
 import icu.windea.pls.lang.codeInsight.completion.addElement
-import icu.windea.pls.lang.codeInsight.completion.forExpression
 import icu.windea.pls.lang.codeInsight.completion.withModifierPresentableNames
 import icu.windea.pls.lang.codeInsight.completion.withPatchableIcon
 import icu.windea.pls.lang.codeInsight.completion.withPatchableTailText
 import icu.windea.pls.lang.codeInsight.completion.withScopeMatched
+import icu.windea.pls.lang.codeInsight.completion.wrapForExpression
 import icu.windea.pls.lang.match.ParadoxConfigExpressionMatchService
 import icu.windea.pls.lang.psi.light.ParadoxModifierLightElement
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxTemplateExpression
@@ -121,7 +121,7 @@ class ParadoxPredefinedModifierSupport : ParadoxModifierSupport {
                 .withPatchableTailText(tailText)
                 .withScopeMatched(scopeMatched)
                 .withModifierPresentableNames(name, element)
-                .forExpression(context)
+                .wrapForExpression(context)
             result.addElement(lookupElement, context)
         }
     }
@@ -199,7 +199,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
                     .withPatchableTailText(tailText)
                     .withScopeMatched(scopeMatched)
                     .withModifierPresentableNames(name, element)
-                    .forExpression(context)
+                    .wrapForExpression(context)
                 result.addElement(lookupElement, context)
                 true
             }
@@ -410,7 +410,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
                     .withPatchableIcon(ChronicleIcons.Nodes.Modifier)
                     .withPatchableTailText(tailText)
                     .withModifierPresentableNames(name, element)
-                    .forExpression(context)
+                    .wrapForExpression(context)
                 result.addElement(lookupElement, context)
             }
             true

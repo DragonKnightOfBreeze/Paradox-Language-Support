@@ -17,10 +17,4 @@ object ChronicleLookupElements {
         .withInsertHandler(ChronicleInsertHandlers.block())
 
     val keywordLookupElements = listOf(yesLookupElement, noLookupElement, blockLookupElement)
-
-    val cardinalityElements = listOf("0..1", "1..1", "0..inf", "1..inf").map {
-        LookupElementBuilder.create(it)
-            .withPriority(ChronicleCompletionPriorities.constant)
-            .withCompletionId()
-    }
 }

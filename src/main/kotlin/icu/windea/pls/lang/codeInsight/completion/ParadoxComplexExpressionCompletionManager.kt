@@ -1119,7 +1119,7 @@ object ParadoxComplexExpressionCompletionManager {
             val lookupElement = LookupElementBuilder.create(element, namespace)
                 .withPatchableIcon(ChronicleIcons.Nodes.DefineNamespace)
                 .withPatchableTailText(tailText)
-                .forExpression(context)
+                .wrapForExpression(context)
             result.addElement(lookupElement, context)
             true
         }
@@ -1140,7 +1140,7 @@ object ParadoxComplexExpressionCompletionManager {
             val lookupElement = LookupElementBuilder.create(element, variable)
                 .withPatchableIcon(ChronicleIcons.Nodes.DefineVariable)
                 .withPatchableTailText(tailText)
-                .forExpression(context)
+                .wrapForExpression(context)
             result.addElement(lookupElement, context)
             true
         }
@@ -1160,7 +1160,7 @@ object ParadoxComplexExpressionCompletionManager {
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withPriority(ChronicleCompletionPriorities.prefix)
                 .withPatchableTailText(tailText)
-                .forExpression(context)
+                .wrapForExpression(context)
             result.addElement(lookupElement, context)
         }
     }

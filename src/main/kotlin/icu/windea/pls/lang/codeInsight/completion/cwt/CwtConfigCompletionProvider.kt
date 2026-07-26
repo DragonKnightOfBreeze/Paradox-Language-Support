@@ -13,11 +13,11 @@ import icu.windea.pls.cwt.psi.CwtOptionKey
 import icu.windea.pls.cwt.psi.CwtPropertyKey
 import icu.windea.pls.cwt.psi.CwtString
 import icu.windea.pls.cwt.psi.CwtTokenSets.KEY_OR_STRING_TOKENS
+import icu.windea.pls.lang.codeInsight.completion.CwtCompletionProvider
 import icu.windea.pls.lang.codeInsight.completion.CwtConfigCompletionContext
 import icu.windea.pls.lang.codeInsight.completion.CwtConfigCompletionManager
-import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionProvider
 
-class CwtConfigCompletionProvider : ParadoxCompletionProvider() {
+class CwtConfigCompletionProvider : CwtCompletionProvider() {
     val elementPattern get() = psiElement().withElementType(KEY_OR_STRING_TOKENS)
 
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {

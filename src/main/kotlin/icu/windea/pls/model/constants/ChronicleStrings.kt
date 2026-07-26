@@ -63,6 +63,10 @@ object ChronicleStrings {
     const val textIconStartMarker = "@"
     const val textIconEndMarker = "!"
 
+    const val yesKeyword = "yes"
+    const val noKeyword = "no"
+    const val blockKeyword = "{...}"
+
     const val commentFolder = "# ..."
     const val quotedFolder = "\"...\""
     const val blockFolder = "{...}"

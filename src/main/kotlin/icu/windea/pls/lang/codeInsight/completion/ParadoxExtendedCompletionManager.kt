@@ -65,7 +65,7 @@ object ParadoxExtendedCompletionManager {
                         .withItemTextUnderlined(true) // used for completions from extended configs
                         .withPatchableIcon(ChronicleIcons.Configs.ExtendedDefinition)
                         .withPatchableTailText(tailText)
-                        .forExpression(context)
+                        .wrapForExpression(context)
                     result.addElement(lookupElement, context)
                 }
             }
@@ -83,7 +83,7 @@ object ParadoxExtendedCompletionManager {
                     .withItemTextUnderlined(true) // used for completions from extended configs
                     .withPatchableIcon(ChronicleIcons.Configs.ExtendedGameRule)
                     .withPatchableTailText(tailText)
-                    .forExpression(context)
+                    .wrapForExpression(context)
                 result.addElement(lookupElement, context)
             }
         }
@@ -100,7 +100,7 @@ object ParadoxExtendedCompletionManager {
                     .withItemTextUnderlined(true) // used for completions from extended configs
                     .withPatchableIcon(ChronicleIcons.Configs.ExtendedOnAction)
                     .withPatchableTailText(tailText)
-                    .forExpression(context)
+                    .wrapForExpression(context)
                 result.addElement(lookupElement, context)
             }
         }
@@ -126,7 +126,7 @@ object ParadoxExtendedCompletionManager {
                     .withTypeText(typeFile?.name, typeFile?.icon, true)
                     .withItemTextUnderlined(true) // used for completions from extended configs
                     .withPatchableIcon(ChronicleIcons.Configs.ExtendedParameter)
-                    .forExpression(context)
+                    .wrapForExpression(context)
                 result.addElement(lookupElement, context)
             }
         }
@@ -151,7 +151,7 @@ object ParadoxExtendedCompletionManager {
                 .withItemTextUnderlined(true) // used for completions from extended configs
                 .withPatchableIcon(ChronicleIcons.Configs.ExtendedComplexEnumValue)
                 .withPatchableTailText(tailText)
-                .forExpression(context)
+                .wrapForExpression(context)
             result.addElement(lookupElement, context)
         }
     }
@@ -181,7 +181,7 @@ object ParadoxExtendedCompletionManager {
                     .withItemTextUnderlined(true) // used for completions from extended configs
                     .withPatchableIcon(ChronicleIcons.Nodes.DynamicValue(dynamicValueType))
                     .withPatchableTailText(tailText)
-                    .forExpression(context)
+                    .wrapForExpression(context)
                 result.addElement(lookupElement, context)
             }
         }
@@ -205,7 +205,7 @@ object ParadoxExtendedCompletionManager {
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withItemTextUnderlined(true) // used for completions from extended configs
                 .withPatchableTailText(tailText)
-                .forExpression(context)
+                .wrapForExpression(context)
             result.addElement(lookupElement, context)
         }
     }

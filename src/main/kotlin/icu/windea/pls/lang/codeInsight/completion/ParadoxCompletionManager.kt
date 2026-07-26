@@ -292,7 +292,7 @@ object ParadoxCompletionManager {
                 .withPatchableIcon(icon)
                 .withPatchableTailText(tailText)
                 .withPriority(ChronicleCompletionPriorities.rootKey)
-                .forExpression(context)
+                .wrapForExpression(context)
             result.addElement(lookupElement, context)
         }
         for ((key, tuples) in infoMapForKey) {
@@ -323,7 +323,7 @@ object ParadoxCompletionManager {
                 .withPatchableTailText(tailText)
                 .withForceInsertCurlyBraces(tuples.isEmpty())
                 .withPriority(ChronicleCompletionPriorities.rootKey)
-                .forExpression(context)
+                .wrapForExpression(context)
             result.addElement(lookupElement, context)
         }
     }
@@ -343,7 +343,7 @@ object ParadoxCompletionManager {
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withCaseSensitivity(false)
                 .withPriority(ChronicleCompletionPriorities.constant)
-                .forExpression(context)
+                .wrapForExpression(context)
             result.addElement(lookupElement, context)
         }
     }
@@ -397,7 +397,7 @@ object ParadoxCompletionManager {
                 .withInsertHandler(ChronicleInsertHandlers.addColon())
                 .withPriority(ChronicleCompletionPriorities.macro)
                 .withPatchableTailText(tailText)
-                .forExpression(context)
+                .wrapForExpression(context)
             result.addElement(lookupElement, context)
         }
     }
