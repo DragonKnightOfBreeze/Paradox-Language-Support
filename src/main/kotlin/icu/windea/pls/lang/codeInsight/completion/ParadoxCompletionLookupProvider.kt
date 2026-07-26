@@ -12,14 +12,20 @@ import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
+import icu.windea.pls.config.config.delegated.CwtDatabaseObjectTypeConfig
+import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.config.delegated.CwtMacroConfig
 import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
+import icu.windea.pls.config.config.prefixFromArgument
 import icu.windea.pls.config.config.resolved
 import icu.windea.pls.config.config.tagType
 import icu.windea.pls.config.manipulation.CwtConfigManipulationService
+import icu.windea.pls.core.codeInsight.completion.AddParenthesesInsertHandler
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.quoteIfNeeded
+import icu.windea.pls.lang.defineNamespaceInfo
+import icu.windea.pls.lang.defineVariableInfo
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.model.constants.ChronicleStrings
@@ -55,7 +61,7 @@ object ParadoxCompletionLookupProvider {
     fun forKeyword(): List<LookupElementBuilder> = LOOKUP_ELEMENT_KEYWORD
     fun forBool(): List<LookupElementBuilder> = LOOKUP_ELEMENT_BOOL
 
-    fun fromScriptedVariable(context: ParadoxCompletionContext, element: ParadoxScriptScriptedVariable): LookupElementBuilder? {
+    fun fromScriptedVariable(context: ParadoxCompletionContext, element: ParadoxScriptScriptedVariable, hintText: String? = null): LookupElementBuilder? {
         // 不自动插入后面的等号
         val name = element.name?.orNull() ?: return null
         val tailText = element.value?.let { " = $it" }
@@ -64,41 +70,100 @@ object ParadoxCompletionLookupProvider {
             .withTailText(tailText, true)
             .withTypeText(typeFile.name, typeFile.icon, true)
             .withPatchableIcon(ChronicleIcons.Nodes.ScriptedVariable)
+            .withPatchableTailText(hintText)
             .withScriptedVariablePresentableNames(element)
             .wrapForExpression(context)
     }
 
-    fun fromDefinition(context: ParadoxCompletionContext, element: ParadoxDefinitionElement): LookupElementBuilder? {
+    fun fromDefinition(context: ParadoxCompletionContext, element: ParadoxDefinitionElement, hintText: String? = null): LookupElementBuilder? {
         // skip anonymous definitions
         val definitionInfo = element.definitionInfo ?: return null
-        val name = element.name.orNull() ?: return null
+        val name = definitionInfo.name.orNull() ?: return null
         val typeFile = element.containingFile
         return LookupElementBuilder.create(element, name)
             .withTypeText(typeFile?.name, typeFile?.icon, true)
             .withPatchableIcon(ChronicleIcons.Nodes.Definition(definitionInfo.type))
-            .withPatchableTailText(context.patchableTailText)
+            .withPatchableTailText(hintText ?: context.patchableTailText)
             .withDefinitionPresentableNames(element)
             .wrapForExpression(context)
     }
 
-    fun fromDefineNamespace(context: ParadoxCompletionContext, element: ParadoxScriptProperty): LookupElementBuilder? {
+    fun fromDefineNamespace(context: ParadoxCompletionContext, element: ParadoxScriptProperty, hintText: String? = null): LookupElementBuilder? {
         // 不自动插入后面的等号
-        val name = element.name.orNull() ?: return null
+        val defineNamespaceInfo = element.defineNamespaceInfo ?: return null
+        val name = defineNamespaceInfo.namespace.orNull() ?: return null
         val typeFile = element.containingFile
         return LookupElementBuilder.create(element, name)
             .withTypeText(typeFile.name, typeFile.icon, true)
             .withPatchableIcon(ChronicleIcons.Nodes.DefineNamespace)
+            .withPatchableTailText(hintText)
             .wrapForExpression(context)
     }
 
-    fun fromDefineVariable(context: ParadoxCompletionContext, element: ParadoxScriptProperty): LookupElementBuilder? {
+    fun fromDefineVariable(context: ParadoxCompletionContext, element: ParadoxScriptProperty, hintText: String? = null): LookupElementBuilder? {
         // 不自动插入后面的等号
-        val name = element.name.orNull() ?: return null
+        val defineVariableInfo = element.defineVariableInfo ?: return null
+        val name = defineVariableInfo.variable.orNull() ?: return null
         val typeFile = element.containingFile
         return LookupElementBuilder.create(element, name)
             .withTypeText(typeFile.name, typeFile.icon, true)
             .withPatchableIcon(ChronicleIcons.Nodes.DefineVariable)
+            .withPatchableTailText(hintText)
             .wrapForExpression(context)
+    }
+
+    fun fromDatabaseObjectType(context: ParadoxCompletionContext, config: CwtDatabaseObjectTypeConfig, hintText: String? = null): LookupElementBuilder? {
+        val name = config.name.orNull() ?: return null
+        val element = config.pointer.element ?: return null
+        val typeFile = config.pointer.containingFile
+        return LookupElementBuilder.create(element, name)
+            .withIcon(ChronicleIcons.Nodes.DatabaseObjectType)
+            .withTypeText(typeFile?.name, typeFile?.icon, true)
+            .withPriority(ParadoxCompletionPriorities.prefix)
+            .withPatchableTailText(hintText)
+            .wrapForExpression(context)
+    }
+
+    fun forCommandField(linkConfig: CwtLinkConfig, hintText: String? = null, scopeMatched: Boolean = true): LookupElementBuilder? {
+        val name = linkConfig.name
+        val icon = ChronicleIcons.Nodes.StaticCommandField
+        return createForStaticLink(linkConfig, name, icon, hintText, scopeMatched)
+    }
+
+    fun forCommandFieldPrefixFromData(linkConfig: CwtLinkConfig, hintText: String? = null, scopeMatched: Boolean = true): LookupElementBuilder? {
+        val name = linkConfig.prefix ?: return null
+        val icon = ChronicleIcons.Nodes.DynamicCommandField
+        return createForDynamicLink(linkConfig, name, icon, hintText, scopeMatched)
+    }
+
+    fun forCommandFieldPrefixFromArgument(linkConfig: CwtLinkConfig, hintText: String? = null, scopeMatched: Boolean = true): LookupElementBuilder? {
+        val name = linkConfig.prefixFromArgument ?: return null
+        val icon = ChronicleIcons.Nodes.DynamicCommandField
+        return createForDynamicLink(linkConfig, name, icon, hintText, scopeMatched)?.withInsertHandler(AddParenthesesInsertHandler())
+    }
+
+    private fun createForStaticLink(linkConfig: CwtLinkConfig, name: String, icon: Icon?, hintText: String?, scopeMatched: Boolean): LookupElementBuilder? {
+        val element = linkConfig.pointer.element ?: return null
+        val typeFile = linkConfig.pointer.containingFile
+        return LookupElementBuilder.create(element, name)
+            .withIcon(icon)
+            .withTailText(hintText, true)
+            .withTypeText(typeFile?.name, typeFile?.icon, true)
+            .withCaseSensitivity(false) // 忽略大小写
+            .withScopeMatched(scopeMatched)
+            .withCompletionId()
+    }
+
+    private fun createForDynamicLink(linkConfig: CwtLinkConfig, name: String, icon: Icon?, hintText: String?, scopeMatched: Boolean): LookupElementBuilder? {
+        val element = linkConfig.pointer.element ?: return null
+        val typeFile = linkConfig.pointer.containingFile
+        return LookupElementBuilder.create(element, name).bold()
+            .withIcon(icon)
+            .withTailText(hintText, true)
+            .withTypeText(typeFile?.name, typeFile?.icon, true)
+            .withPriority(ParadoxCompletionPriorities.prefix)
+            .withScopeMatched(scopeMatched)
+            .withCompletionId()
     }
 
     fun getConfigBasedPatchableTailText(context: ParadoxCompletionContext, config: CwtConfig<*>?, withConfigExpression: Boolean = true, withFileName: Boolean = true): String {
