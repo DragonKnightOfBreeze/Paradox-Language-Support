@@ -14,7 +14,7 @@ import icu.windea.pls.config.config.CwtIdMatchableConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.manipulation.CwtConfigManipulationService
-import icu.windea.pls.config.option.CwtOptionMetadataHolder
+import icu.windea.pls.config.option.CwtOptionMetadata
 import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.core.util.values.singletonListOrEmpty
 import icu.windea.pls.core.util.values.to
@@ -66,8 +66,8 @@ import icu.windea.pls.script.psi.ParadoxScriptMember
  * @property contextConfigsType 上下文规则的聚合类型（`single`/`multiple`，默认为 `single`）。决定上下文规则是直接来自其属性值规则，还是来自其中的一组子规则。
  * @property inherit 是否继承使用处的规则上下文与作用域上下文。
  *
- * @see CwtOptionMetadataHolder.replaceScopes
- * @see CwtOptionMetadataHolder.pushScope
+ * @see CwtOptionMetadata.replaceScopes
+ * @see CwtOptionMetadata.pushScope
  */
 interface CwtExtendedParameterConfig : CwtDelegatedConfig<CwtMember, CwtMemberConfig<*>>, CwtIdMatchableConfig<CwtMember> {
     @FromName

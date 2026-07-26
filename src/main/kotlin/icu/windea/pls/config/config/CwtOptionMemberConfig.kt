@@ -1,6 +1,6 @@
 package icu.windea.pls.config.config
 
-import icu.windea.pls.config.option.CwtOptionMetadataHolder
+import icu.windea.pls.config.option.CwtOptionMetadata
 import icu.windea.pls.cwt.psi.CwtOptionComment
 import icu.windea.pls.cwt.psi.CwtOptionMember
 import icu.windea.pls.model.type.CwtExpressionType
@@ -18,7 +18,7 @@ import icu.windea.pls.model.type.CwtExpressionType
  *
  * @see CwtOptionConfig
  * @see CwtOptionValueConfig
- * @see CwtOptionMetadataHolder
+ * @see CwtOptionMetadata
  * @see CwtOptionComment
  * @see CwtOptionMember
  */

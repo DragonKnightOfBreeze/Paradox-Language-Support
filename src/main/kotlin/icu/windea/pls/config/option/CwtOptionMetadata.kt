@@ -40,7 +40,7 @@ import icu.windea.pls.model.scope.ParadoxScopeContext
  *
  * @see CwtMemberConfig
  */
-interface CwtOptionMetadataHolder : UserDataHolder {
+interface CwtOptionMetadata : UserDataHolder {
     /**
      * 得到原始的选项规则列表。
      *
@@ -594,5 +594,5 @@ interface CwtOptionMetadataHolder : UserDataHolder {
 
     fun clear()
 
-    fun copyTo(target: CwtOptionMetadataHolder)
+    fun copyTo(target: CwtOptionMetadata)
 }

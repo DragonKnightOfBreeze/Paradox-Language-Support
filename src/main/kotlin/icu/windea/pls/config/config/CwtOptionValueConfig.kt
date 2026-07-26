@@ -3,7 +3,7 @@
 package icu.windea.pls.config.config
 
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.option.CwtOptionMetadataHolder
+import icu.windea.pls.config.option.CwtOptionMetadata
 import icu.windea.pls.config.util.CwtConfigResolverManager
 import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.core.annotations.Optimized
@@ -27,7 +27,7 @@ import java.util.*
  * 用于提供额外的选项元数据，自身也可以嵌套下级选项和选项值，以提供更复杂的数据表述。
  * 在选项注释中单独使用时，常用来提供布尔标志或较短的语义标签。
  *
- * @see CwtOptionMetadataHolder
+ * @see CwtOptionMetadata
  * @see CwtOptionComment
  * @see CwtValue
  */

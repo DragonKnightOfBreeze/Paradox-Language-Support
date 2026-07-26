@@ -10,7 +10,7 @@ import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtIdMatchableConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.config.option.CwtOptionMetadataHolder
+import icu.windea.pls.config.option.CwtOptionMetadata
 import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.cwt.psi.CwtMember
 
@@ -44,8 +44,8 @@ import icu.windea.pls.cwt.psi.CwtMember
  * @property type 定义类型。
  * @property hint 可选的提示文本。用于提供额外的内嵌提示。
  *
- * @see CwtOptionMetadataHolder.replaceScopes
- * @see CwtOptionMetadataHolder.pushScope
+ * @see CwtOptionMetadata.replaceScopes
+ * @see CwtOptionMetadata.pushScope
  */
 interface CwtExtendedDefinitionConfig : CwtDelegatedConfig<CwtMember, CwtMemberConfig<*>>, CwtIdMatchableConfig<CwtMember> {
     @FromName

@@ -1,7 +1,7 @@
 package icu.windea.pls.config.config
 
 import icu.windea.pls.config.configExpression.CwtDataExpression
-import icu.windea.pls.config.option.CwtOptionMetadataHolder
+import icu.windea.pls.config.option.CwtOptionMetadata
 import icu.windea.pls.config.util.CwtMemberConfigVisitor
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.collections.process
@@ -26,7 +26,7 @@ import icu.windea.pls.model.type.CwtExpressionType
  *
  * @see CwtPropertyConfig
  * @see CwtValueConfig
- * @see CwtOptionMetadataHolder
+ * @see CwtOptionMetadata
  * @see CwtMember
  */
 sealed interface CwtMemberConfig<out T : CwtMember> : CwtMemberContainerConfig<T> {
@@ -36,7 +36,7 @@ sealed interface CwtMemberConfig<out T : CwtMember> : CwtMemberContainerConfig<T
     override val properties: List<CwtPropertyConfig>?
     override val values: List<CwtValueConfig>?
     val parentConfig: CwtMemberConfig<*>?
-    val optionMetadata: CwtOptionMetadataHolder
+    val optionMetadata: CwtOptionMetadata
 
     val valueExpression: CwtDataExpression
     override val configExpression: CwtDataExpression

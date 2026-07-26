@@ -4,7 +4,7 @@ package icu.windea.pls.config.config
 
 import com.intellij.openapi.diagnostic.thisLogger
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.option.CwtOptionMetadataHolder
+import icu.windea.pls.config.option.CwtOptionMetadata
 import icu.windea.pls.config.util.CwtConfigResolverManager
 import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.core.annotations.Optimized
@@ -37,7 +37,7 @@ import java.util.*
  * @property valueType 选项值类型，用于后续解析与校验。
  * @property separatorType 分隔符类型。用于为作为条件的选项元数据取正或取反。
  *
- * @see CwtOptionMetadataHolder
+ * @see CwtOptionMetadata
  * @see CwtOptionComment
  * @see CwtOption
  */

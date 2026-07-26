@@ -8,8 +8,8 @@ import com.intellij.openapi.util.Key
 import com.intellij.psi.SmartPsiElementPointer
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.option.CwtOptionMetadataHolder
-import icu.windea.pls.config.option.CwtOptionMetadataHolderBase
+import icu.windea.pls.config.option.CwtOptionMetadata
+import icu.windea.pls.config.option.CwtOptionMetadataBase
 import icu.windea.pls.config.option.CwtOptionMetadataProcessor
 import icu.windea.pls.config.util.CwtConfigResolverManager
 import icu.windea.pls.config.util.CwtConfigResolverScope
@@ -169,13 +169,13 @@ private const val blockValue = ChronicleStrings.blockFolder
 private val blockValueTypeId = CwtExpressionType.Block.optimized(OptimizerFactory.forCwtType())
 
 // 12 + 2 * 4 = 20 -> 24
-private sealed class CwtValueConfigBase : CwtOptionMetadataHolderBase(), CwtValueConfig {
+private sealed class CwtValueConfigBase : CwtOptionMetadataBase(), CwtValueConfig {
     override val properties: List<CwtPropertyConfig>? get() = configs?.filterIsInstanceFast()
     override val values: List<CwtValueConfig>? get() = configs?.filterIsInstanceFast()
 
     @Volatile override var parentConfig: CwtMemberConfig<*>? = null
 
-    override val optionMetadata: CwtOptionMetadataHolder get() = this
+    override val optionMetadata: CwtOptionMetadata get() = this
 
     override val configExpression: CwtDataExpression get() = valueExpression
 
@@ -305,7 +305,7 @@ private open class CwtValueConfigDelegate(
     override val value: String get() = delegate.value
     override val valueType: CwtExpressionType get() = delegate.valueType
     override val configs: List<CwtMemberConfig<*>>? get() = delegate.configs
-    override val optionMetadata: CwtOptionMetadataHolder get() = delegate.optionMetadata
+    override val optionMetadata: CwtOptionMetadata get() = delegate.optionMetadata
     override val propertyConfig: CwtPropertyConfig? get() = delegate.propertyConfig
 
     override val valueExpression: CwtDataExpression get() = delegate.valueExpression

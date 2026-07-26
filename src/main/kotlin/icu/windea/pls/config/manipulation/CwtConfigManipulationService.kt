@@ -16,7 +16,7 @@ import icu.windea.pls.config.config.isSamePointer
 import icu.windea.pls.config.config.singleAliasConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.option.CwtOptionMetadataHolder
+import icu.windea.pls.config.option.CwtOptionMetadata
 import icu.windea.pls.config.util.CwtConfigKeyManager
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.annotations.Optimized
@@ -220,7 +220,7 @@ object CwtConfigManipulationService {
         return merged
     }
 
-    fun mergeOptionMetadata(optionMetadata: CwtOptionMetadataHolder, vararg sources: CwtOptionMetadataHolder?) {
+    fun mergeOptionMetadata(optionMetadata: CwtOptionMetadata, vararg sources: CwtOptionMetadata?) {
         for (source in sources) {
             if (source == null) continue
             source.copyTo(optionMetadata)

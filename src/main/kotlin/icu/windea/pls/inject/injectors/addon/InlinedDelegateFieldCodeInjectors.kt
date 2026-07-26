@@ -12,10 +12,10 @@ interface InlinedDelegateFieldCodeInjectors {
     @InlinedDelegateFields
     class CwtConfigGroupDataHolderBase : CodeInjectorBase()
 
-    /** @see icu.windea.pls.config.option.CwtOptionMetadataHolderBase */
-    @InjectionTarget("icu.windea.pls.config.option.CwtOptionMetadataHolderBase", pluginId = "icu.windea.pls")
+    /** @see icu.windea.pls.config.option.CwtOptionMetadataBase */
+    @InjectionTarget("icu.windea.pls.config.option.CwtOptionMetadataBase", pluginId = "icu.windea.pls")
     @InlinedDelegateFields
-    class CwtOptionMetadataHolderBase : CodeInjectorBase()
+    class CwtOptionMetadataBase : CodeInjectorBase()
 
     /** @see icu.windea.pls.config.configExpression.CwtDataExpressionMetadataBase */
     @InjectionTarget("icu.windea.pls.config.configExpression.CwtDataExpressionMetadataBase", pluginId = "icu.windea.pls")

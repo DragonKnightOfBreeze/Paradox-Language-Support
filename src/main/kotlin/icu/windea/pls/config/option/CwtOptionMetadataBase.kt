@@ -15,8 +15,8 @@ import icu.windea.pls.core.util.values.ReversibleValue
 import icu.windea.pls.model.scope.ParadoxScopeConstants
 import icu.windea.pls.model.scope.ParadoxScopeContext
 
-/** @see icu.windea.pls.inject.injectors.addon.InlinedDelegateFieldCodeInjectors.CwtOptionMetadataHolderBase */
-abstract class CwtOptionMetadataHolderBase : UserDataHolderBase(), CwtOptionMetadataHolder {
+/** @see icu.windea.pls.inject.injectors.addon.InlinedDelegateFieldCodeInjectors.CwtOptionMetadataBase */
+abstract class CwtOptionMetadataBase : UserDataHolderBase(), CwtOptionMetadata {
     object Keys : KeyRegistry() {
         val optionConfigs by registerKey<List<CwtOptionMemberConfig<*>>>(this, emptyList())
         val apiStatus by registerKey<CwtConfigApiStatus?>(this)
@@ -91,7 +91,7 @@ abstract class CwtOptionMetadataHolderBase : UserDataHolderBase(), CwtOptionMeta
         clearUserData()
     }
 
-    final override fun copyTo(target: CwtOptionMetadataHolder) {
+    final override fun copyTo(target: CwtOptionMetadata) {
         // NOTE 2.1.2 `UserDataHolderBase.getUserMap()` 现在是内部 API，因此这里改为直接遍历注册表，应该不会对索引时的性能造成什么影响
         val keys = Keys.keys.values
         for (key in keys) {

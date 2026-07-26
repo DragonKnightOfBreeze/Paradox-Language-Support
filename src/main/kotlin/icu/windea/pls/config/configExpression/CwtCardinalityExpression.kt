@@ -3,7 +3,7 @@
 package icu.windea.pls.config.configExpression
 
 import com.intellij.openapi.diagnostic.thisLogger
-import icu.windea.pls.config.option.CwtOptionMetadataHolder
+import icu.windea.pls.config.option.CwtOptionMetadata
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cache.CacheBuilder
 
@@ -37,7 +37,7 @@ import icu.windea.pls.core.cache.CacheBuilder
  * @property lenientMin 最小值的宽松标记。如果为 `true`，小于最小值仅视为（弱）警告而非错误。
  * @property lenientMax 最大值的宽松标记。如果为 `true`，大于最大值仅视为（弱）警告而非错误。
  *
- * @see CwtOptionMetadataHolder.cardinality
+ * @see CwtOptionMetadata.cardinality
  */
 interface CwtCardinalityExpression : CwtConfigExpression {
     val min: Int

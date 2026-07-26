@@ -23,8 +23,8 @@ import icu.windea.pls.model.type.CwtSeparatorType
 
 object CwtOptionMetadataProcessor {
     @Optimized
-    fun process(optionMetadata: CwtOptionMetadataHolder, optionConfigs: List<CwtOptionMemberConfig<*>>) {
-        if (optionMetadata !is CwtOptionMetadataHolderBase) return
+    fun process(optionMetadata: CwtOptionMetadata, optionConfigs: List<CwtOptionMemberConfig<*>>) {
+        if (optionMetadata !is CwtOptionMetadataBase) return
         if (optionConfigs.isEmpty()) return
         val skipProcessing = ChronicleThreadContext.skipProcessingOptionMetadata.get() == true
         val keepOptionConfigs = skipProcessing || ChronicleCapacities.keepOptionConfigs()
@@ -42,7 +42,7 @@ object CwtOptionMetadataProcessor {
         }
     }
 
-    private fun processOptionConfig(optionMetadata: CwtOptionMetadataHolderBase, config: CwtOptionConfig) {
+    private fun processOptionConfig(optionMetadata: CwtOptionMetadataBase, config: CwtOptionConfig) {
         val key = config.key
         when (key) {
             "api_status" -> {
@@ -168,7 +168,7 @@ object CwtOptionMetadataProcessor {
         }
     }
 
-    private fun processOptionValueConfig(optionMetadata: CwtOptionMetadataHolderBase, config: CwtOptionValueConfig) {
+    private fun processOptionValueConfig(optionMetadata: CwtOptionMetadataBase, config: CwtOptionValueConfig) {
         // NOTE 2.1.1 移除 `optional` 标志：CWTools 指引文档中并未提及，同时也是不必要的（默认即为可选）
         val flag = config.getOptionValue() ?: return
         when (flag) {

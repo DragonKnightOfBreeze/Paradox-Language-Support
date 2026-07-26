@@ -2517,7 +2517,7 @@ re.i:foo.*
 
 #### 如何在规则文件中指定定义成员的出现次数 {#faq-cardinality}
 
-<!-- @see icu.windea.pls.config.option.CwtOptionMetadataHolder.cardinality -->
+<!-- @see icu.windea.pls.config.option.CwtOptionMetadata.cardinality -->
 <!-- @see icu.windea.pls.config.configExpression.CwtCardinalityExpression -->
 
 在规则文件中，定义成员的出现次数范围是通过选项 `## cardinality` 指定的。
@@ -2545,8 +2545,8 @@ effect = single_alias_right[effect_clause]
 
 #### 如何在规则文件中指定作用域上下文 {#faq-scope-context}
 
-<!-- @see icu.windea.pls.config.option.CwtOptionMetadataHolder.pushScope -->
-<!-- @see icu.windea.pls.config.option.CwtOptionMetadataHolder.replaceScopes -->
+<!-- @see icu.windea.pls.config.option.CwtOptionMetadata.pushScope -->
+<!-- @see icu.windea.pls.config.option.CwtOptionMetadata.replaceScopes -->
 
 在规则文件中，作用域上下文是通过选项 `## push_scope` 与 `## replace_scopes`（或 `## replace_scope`）指定的。
 
@@ -2569,7 +2569,7 @@ some_config = single_alias_right[trigger_clause]
 
 #### 如何在规则文件中指定支持的作用域 {#faq-supported-scopes}
 
-<!-- @see icu.windea.pls.config.option.CwtOptionMetadataHolder.supportedScopes -->
+<!-- @see icu.windea.pls.config.option.CwtOptionMetadata.supportedScopes -->
 
 在规则文件中，触发器（trigger）与效果（effect）的支持的作用域是通过选项 `## scopes`（或 `## scope`）指定的。
 
@@ -2583,7 +2583,7 @@ alias[trigger:has_country_flag] = value[country_flag]
 
 #### 如何在规则文件中指定颜色类型 {#faq-color-type}
 
-<!-- @see icu.windea.pls.config.option.CwtOptionMetadataHolder.colorType -->
+<!-- @see icu.windea.pls.config.option.CwtOptionMetadata.colorType -->
 <!-- @see icu.windea.pls.config.CwtDataTypes.ColorField -->
 <!-- @see icu.windea.pls.ep.codeInsight.hints.ParadoxColorProvider -->
 
@@ -2634,7 +2634,7 @@ color_field_hsv = hsv { 208 0.849 0.882 }
 
 #### 如何在规则文件中指定路径引用的扩展名 {#faq-file-extensions}
 
-<!-- @see icu.windea.pls.config.option.CwtOptionMetadataHolder.fileExtensions -->
+<!-- @see icu.windea.pls.config.option.CwtOptionMetadata.fileExtensions -->
 
 在规则文件中，路径引用的允许的扩展名是通过选项 `## file_extensions` 指定的。
 
@@ -2657,7 +2657,7 @@ file = filepath[./]
 
 #### 如何在规则文件中注入规则 {#faq-config-inject}
 
-<!-- @see icu.windea.pls.config.option.CwtOptionMetadataHolder.inject -->
+<!-- @see icu.windea.pls.config.option.CwtOptionMetadata.inject -->
 <!-- @see icu.windea.pls.ep.config.config.CwtInjectConfigPostProcessor -->
 
 从插件版本 2.1.0 开始，可以通过使用选项 `## inject` 在规则的解析阶段注入规则。

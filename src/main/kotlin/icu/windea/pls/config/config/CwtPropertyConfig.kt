@@ -8,8 +8,8 @@ import com.intellij.openapi.util.Key
 import com.intellij.psi.SmartPsiElementPointer
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.option.CwtOptionMetadataHolder
-import icu.windea.pls.config.option.CwtOptionMetadataHolderBase
+import icu.windea.pls.config.option.CwtOptionMetadata
+import icu.windea.pls.config.option.CwtOptionMetadataBase
 import icu.windea.pls.config.option.CwtOptionMetadataProcessor
 import icu.windea.pls.config.util.CwtConfigResolverManager
 import icu.windea.pls.config.util.CwtConfigResolverScope
@@ -197,13 +197,13 @@ private const val blockValue = ChronicleStrings.blockFolder
 private val blockValueTypeId = CwtExpressionType.Block.optimized(OptimizerFactory.forCwtType())
 
 // 12 + 3 * 4 = 24 -> 24
-private sealed class CwtPropertyConfigBase : CwtOptionMetadataHolderBase(), CwtPropertyConfig {
+private sealed class CwtPropertyConfigBase : CwtOptionMetadataBase(), CwtPropertyConfig {
     override val properties: List<CwtPropertyConfig>? get() = configs?.filterIsInstanceFast()
     override val values: List<CwtValueConfig>? get() = configs?.filterIsInstanceFast()
 
     @Volatile override var parentConfig: CwtMemberConfig<*>? = null
 
-    override val optionMetadata: CwtOptionMetadataHolder get() = this
+    override val optionMetadata: CwtOptionMetadata get() = this
 
     override val configExpression: CwtDataExpression get() = keyExpression
 
@@ -349,7 +349,7 @@ private open class CwtPropertyConfigDelegate(
     override val valueType: CwtExpressionType get() = delegate.valueType
     override val separatorType: CwtSeparatorType get() = delegate.separatorType
     override val configs: List<CwtMemberConfig<*>>? get() = delegate.configs
-    override val optionMetadata: CwtOptionMetadataHolder get() = delegate.optionMetadata
+    override val optionMetadata: CwtOptionMetadata get() = delegate.optionMetadata
 
     override val keyExpression: CwtDataExpression get() = delegate.keyExpression
     override val valueExpression: CwtDataExpression get() = delegate.valueExpression
