@@ -55,23 +55,23 @@ object ParadoxCompletionLookupProvider {
             completeWithValue -> isBlockConfig
             else -> false
         }
-
-        // 排除重复项
         val withValueText = when {
             isKeyElement || (isStringElement && context.isKey != true) -> ""
             constantValue != null -> " = $constantValue"
             insertCurlyBraces -> " = {...}"
             else -> ""
         }
+
+        // 排除重复项
         val completionId = lookupString + withValueText
         if (!context.completionIds.add(completionId)) return null
 
         var result = lookupElement
 
         result = result.withBaseLookupString(lookupString) // #369
-        result = result.addPresentableNames()
         result = result.patchIcon(config)
         result = result.patchTailText(withValueText)
+        result = result.addPresentableNames()
 
         if (!isKeyElement && !isStringElement) return result // not in a key or value position
         if (context.isKey == null) return result // not complete full key or value
@@ -83,9 +83,9 @@ object ParadoxCompletionLookupProvider {
             constantValue = constantValue,
         )
 
-        if (isKeyElement || isStringElement && !context.isKey) { // key or value only
+        if (isKeyElement || !context.isKey) { // key or value only
             result = result.withInsertHandler(ChronicleInsertHandlers.keyOrValue(params))
-        } else if (context.isKey) { // key with value
+        } else { // key with value
             result = result.withInsertHandler(ChronicleInsertHandlers.keyWithValue(params))
         }
 
@@ -99,12 +99,6 @@ object ParadoxCompletionLookupProvider {
 
         result.extraLookupElements = extraLookupElements
         return result
-    }
-
-    private fun LookupElementBuilder.addPresentableNames(): LookupElementBuilder {
-        val presentableNames = presentableNames
-        if (presentableNames.isNullOrEmpty()) return this
-        return withLookupStrings(presentableNames)
     }
 
     private fun LookupElementBuilder.patchIcon(config: CwtConfig<*>?): LookupElementBuilder {
@@ -146,5 +140,11 @@ object ParadoxCompletionLookupProvider {
     private fun getPatchedTailText(withValueText: String, patchableTailText: String?): String = buildString {
         append(withValueText)
         if (patchableTailText != null) append(patchableTailText)
+    }
+
+    private fun LookupElementBuilder.addPresentableNames(): LookupElementBuilder {
+        val presentableNames = presentableNames
+        if (presentableNames.isNullOrEmpty()) return this
+        return withLookupStrings(presentableNames)
     }
 }

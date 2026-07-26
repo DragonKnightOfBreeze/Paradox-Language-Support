@@ -26,6 +26,7 @@ import icu.windea.pls.core.buildInlineTemplate
 import icu.windea.pls.core.codeInsight.TemplateEditingFinishedListener
 import icu.windea.pls.core.executeWriteCommand
 import icu.windea.pls.core.icon
+import icu.windea.pls.core.quoteIfNeeded
 import icu.windea.pls.cwt.formatter.CwtCodeStyleSettings
 import icu.windea.pls.cwt.psi.CwtPropertyKey
 import icu.windea.pls.cwt.psi.CwtString
@@ -100,10 +101,14 @@ object CwtCompletionLookupProvider {
     }
 
     fun wrapForConfig(lookupElement: LookupElementBuilder, context: CwtConfigCompletionContext, config: CwtConfig<*>, schemaExpression: CwtSchemaExpression): LookupElement? {
-        var result = lookupElement
-        if (result in ChronicleLookupElements.keywordLookupElements) return result
+        if (lookupElement in ChronicleLookupElements.keywordLookupElements) return lookupElement
 
         val isKeyConfig = config is CwtOptionConfig || config is CwtPropertyConfig
+
+        val lookupString = when {
+            context.leftQuoted -> lookupElement.lookupString // already quoted
+            else -> lookupElement.lookupString.quoteIfNeeded() // #369 should be quoted if is blank or contains blank
+        }
         val insertCurlyBraces = when {
             config is CwtOptionMemberConfig<*> -> config.valueType == CwtExpressionType.Block
             config is CwtMemberConfig<*> -> config.valueType == CwtExpressionType.Block
@@ -115,24 +120,50 @@ object CwtCompletionLookupProvider {
             config is CwtMemberConfig<*> -> config.value
             else -> return null
         }
-
-        val patchableTailText = lookupElement.patchableTailText
-        val tailText = buildString {
-            if (isKeyConfig && !context.isKeyOnly && !context.isValueOnly) append(" = ").append(valueText)
-            if (patchableTailText != null) append(patchableTailText)
+        val withValueText = when {
+            isKeyConfig && !context.isKeyOnly && !context.isValueOnly -> " = $valueText"
+            else -> ""
         }
-        result = result.withTailText(tailText, true)
+
+        // 排除重复项
+        val completionId = lookupString + withValueText
+        if (!context.completionIds.add(completionId)) return null
+
+        var result = lookupElement
+
+        result = result.withBaseLookupString(lookupString) // #369
+        result = result.patchIcon()
+        result = result.patchTailText(withValueText)
 
         if (context.isKeyOnly || context.isValueOnly) {
             result = result.withInsertHandler(KeyOrValueOnlyInsertHandler(context))
         } else if (isKeyConfig && context.isKey) {
             result = result.withInsertHandler(KeyWithValueInsertHandler(context, insertCurlyBraces))
         }
+
         if (schemaExpression is CwtSchemaExpression.Template) {
-            result = result.withInsertHandler(TemplateInsertHandler(context,schemaExpression, result.insertHandler))
+            result = result.withInsertHandler(TemplateInsertHandler(context, schemaExpression, result.insertHandler))
         }
 
         return result
+    }
+
+    private fun LookupElementBuilder.patchIcon(): LookupElementBuilder {
+        val patchableIcon = patchableIcon
+        if (patchableIcon == null) return this
+        return withIcon(patchableIcon)
+    }
+
+    private fun LookupElementBuilder.patchTailText(withValueText: String): LookupElementBuilder {
+        val patchableTailText = patchableTailText
+        val patchedTailText = getPatchedTailText(withValueText, patchableTailText)
+        if (patchedTailText.isEmpty()) return this
+        return withTailText(patchedTailText, true)
+    }
+
+    private fun getPatchedTailText(withValueText: String, patchableTailText: String?): String = buildString {
+        append(withValueText)
+        if (patchableTailText != null) append(patchableTailText)
     }
 
     // region Insert Handlers
