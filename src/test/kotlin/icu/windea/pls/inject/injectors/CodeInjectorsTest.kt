@@ -82,8 +82,7 @@ class CodeInjectorsTest : BasePlatformTestCase() {
 
     @After
     fun doTearDown() {
-        CodeInjectorContext.classPool = null
-        CodeInjectorContext.codeInjectors.clear()
+        CodeInjectorContext.cleanUp()
     }
 
     private fun makeTargetClass(className: String, methods: List<String>): CtClass {

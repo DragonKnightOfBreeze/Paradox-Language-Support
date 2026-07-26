@@ -39,16 +39,15 @@ object CodeInjectorContext {
         classPool = initClassPool()
         // apply code injectors
         applyCodeInjectors()
+
         // clean up class pool
-        classPool = null
-        // tricky but somehow necessary (~20M)
-        staticProperty<ClassPool, ClassPool?>("defaultPool").set(null)
+        classPool = null // detach
+        staticProperty<ClassPool, ClassPool?>("defaultPool").set(null) // tricky but somehow necessary (~20M)
     }
 
     @JvmStatic
     fun initClassPool(): ClassPool {
         val classPool = ClassPool.getDefault()
-        classPool.appendClassPath(ClassClassPath(javaClass))
         val classPathList = System.getProperty("java.class.path")
         val separator = if (System.getProperty("os.name")?.contains("linux") == true) ':' else ';'
         classPathList.split(separator).forEach {
@@ -58,6 +57,7 @@ object CodeInjectorContext {
                 // ignored
             }
         }
+        classPool.appendClassPath(ClassClassPath(javaClass))
         return classPool
     }
 
@@ -86,10 +86,12 @@ object CodeInjectorContext {
             application.putUserData(applyInjectionMethodKey, null)
         }
 
-        // 避免内存泄露
-        classPool = null
         codeInjectors.clear()
         runSafelyFlags.cleanUp()
+
+        // clean up class pool
+        classPool = null // detach
+        staticProperty<ClassPool, ClassPool?>("defaultPool").set(null) // tricky but somehow necessary (~20M)
     }
 
     @Suppress("unused")
