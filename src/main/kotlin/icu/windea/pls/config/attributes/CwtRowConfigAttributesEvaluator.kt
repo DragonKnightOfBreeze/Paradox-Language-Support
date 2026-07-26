@@ -24,7 +24,7 @@ class CwtRowConfigAttributesEvaluator {
 
     private fun processColumnConfig(columnConfig: CwtPropertyConfig) {
         if (!declareComplexEnum) {
-            val r = columnConfig.optionData.declareComplexEnum?.orNull() != null
+            val r = columnConfig.optionMetadata.declareComplexEnum?.orNull() != null
             if (r) declareComplexEnum = true
         }
         val valueConfig = columnConfig.valueConfig ?: return

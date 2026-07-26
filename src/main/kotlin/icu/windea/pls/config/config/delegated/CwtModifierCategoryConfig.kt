@@ -9,7 +9,7 @@ import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtIdMatchableConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.stringValue
-import icu.windea.pls.config.option.CwtOptionDataHolder
+import icu.windea.pls.config.option.CwtOptionMetadataHolder
 import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.core.optimized
 import icu.windea.pls.cwt.psi.CwtProperty
@@ -38,8 +38,8 @@ import icu.windea.pls.model.scope.ParadoxScopeConstants
  * @property supportedScopes 允许的作用域（类型）的集合。
  *
  * @see CwtModifierConfig
- * @see CwtOptionDataHolder.replaceScopes
- * @see CwtOptionDataHolder.pushScope
+ * @see CwtOptionMetadataHolder.replaceScopes
+ * @see CwtOptionMetadataHolder.pushScope
  * @see icu.windea.pls.lang.util.ParadoxModifierManager
  */
 interface CwtModifierCategoryConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, CwtIdMatchableConfig<CwtProperty> {

@@ -8,9 +8,9 @@ import com.intellij.openapi.util.Key
 import com.intellij.psi.SmartPsiElementPointer
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.option.CwtOptionDataHolder
-import icu.windea.pls.config.option.CwtOptionDataHolderBase
-import icu.windea.pls.config.option.CwtOptionDataProcessor
+import icu.windea.pls.config.option.CwtOptionMetadataHolder
+import icu.windea.pls.config.option.CwtOptionMetadataHolderBase
+import icu.windea.pls.config.option.CwtOptionMetadataProcessor
 import icu.windea.pls.config.util.CwtConfigResolverManager
 import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.config.util.CwtMemberConfigVisitor
@@ -82,7 +82,7 @@ interface CwtPropertyConfig : CwtMemberConfig<CwtProperty> {
         @JvmStatic
         fun resolve(element: CwtProperty, file: CwtFile, configGroup: CwtConfigGroup): CwtPropertyConfig? = CwtPropertyConfigResolver.resolve(element, file, configGroup)
 
-        /** 创建属性规则。其中的选项数据仍然需要手动初始化。 */
+        /** 创建属性规则。其中的选项元数据仍然需要手动初始化。 */
         @JvmStatic
         fun create(
             pointer: SmartPsiElementPointer<out CwtProperty>,
@@ -151,7 +151,7 @@ private object CwtPropertyConfigResolver : CwtConfigResolverScope {
         val valueType = CwtTypeResolver.resolveExpressionType(valueElement)
         val config = create(pointer, configGroup, keyExpression, valueExpression, valueType, separatorType, configs, injectable = true)
         val optionConfigs = CwtConfigResolverManager.getOptionConfigs(element, configGroup)
-        CwtOptionDataProcessor.process(config.optionData, optionConfigs) // initialize option data
+        CwtOptionMetadataProcessor.process(config.optionMetadata, optionConfigs) // initialize option metadata
         when {
             configs == null -> logger.trace { "Resolved property config (key: ${config.key}, value: ${config.value}).".withLocationPrefix(element, configGroup) }
             configs.isEmpty() -> logger.trace { "Resolved property config (key: ${config.key}, empty member configs).".withLocationPrefix(element, configGroup) }
@@ -197,13 +197,13 @@ private const val blockValue = ChronicleStrings.blockFolder
 private val blockValueTypeId = CwtExpressionType.Block.optimized(OptimizerFactory.forCwtType())
 
 // 12 + 3 * 4 = 24 -> 24
-private sealed class CwtPropertyConfigBase : CwtOptionDataHolderBase(), CwtPropertyConfig {
+private sealed class CwtPropertyConfigBase : CwtOptionMetadataHolderBase(), CwtPropertyConfig {
     override val properties: List<CwtPropertyConfig>? get() = configs?.filterIsInstanceFast()
     override val values: List<CwtValueConfig>? get() = configs?.filterIsInstanceFast()
 
     @Volatile override var parentConfig: CwtMemberConfig<*>? = null
 
-    override val optionData: CwtOptionDataHolder get() = this
+    override val optionMetadata: CwtOptionMetadataHolder get() = this
 
     override val configExpression: CwtDataExpression get() = keyExpression
 
@@ -349,7 +349,7 @@ private open class CwtPropertyConfigDelegate(
     override val valueType: CwtExpressionType get() = delegate.valueType
     override val separatorType: CwtSeparatorType get() = delegate.separatorType
     override val configs: List<CwtMemberConfig<*>>? get() = delegate.configs
-    override val optionData: CwtOptionDataHolder get() = delegate.optionData
+    override val optionMetadata: CwtOptionMetadataHolder get() = delegate.optionMetadata
 
     override val keyExpression: CwtDataExpression get() = delegate.keyExpression
     override val valueExpression: CwtDataExpression get() = delegate.valueExpression

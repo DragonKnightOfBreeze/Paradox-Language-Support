@@ -178,10 +178,10 @@ object ParadoxCompletionManager {
         val actualCount = occurrences[expression]?.actual ?: 0
         // 如果写明了 `cardinality`，则为 `cardinality.max` ，否则如果类型为常量，则为1，否则为 `null`，`null` 表示没有限制
         // 如果上限是动态的值（如，基于 `define` 的值），也不作限制
-        val cardinality = config.optionData.cardinality
+        val cardinality = config.optionMetadata.cardinality
         val maxCount = when {
             cardinality == null -> if (expression.type == CwtDataTypes.Constant) 1 else null
-            config.optionData.cardinalityMaxDefine != null -> null
+            config.optionMetadata.cardinalityMaxDefine != null -> null
             else -> cardinality.max
         }
         return maxCount == null || actualCount < maxCount
@@ -192,10 +192,10 @@ object ParadoxCompletionManager {
         val actualCount = occurrences[expression]?.actual ?: 0
         // 如果写明了 `cardinality`，则为 `cardinality.max`，否则如果类型为常量，则为1，否则为 `null`，`null` 表示没有限制
         // 如果上限是动态的值（如，基于 `define` 的值），也不作限制
-        val cardinality = config.optionData.cardinality
+        val cardinality = config.optionMetadata.cardinality
         val maxCount = when {
             cardinality == null -> if (expression.type == CwtDataTypes.Constant) 1 else null
-            config.optionData.cardinalityMaxDefine != null -> null
+            config.optionMetadata.cardinalityMaxDefine != null -> null
             else -> cardinality.max
         }
         return maxCount == null || actualCount < maxCount

@@ -164,7 +164,7 @@ object CwtConfigKeyManager {
     private fun isInBlockKey(config: CwtPropertyConfig): Boolean {
         val gameType = config.configGroup.gameType
         if (config.keyExpression.type != CwtDataTypes.Constant) return false
-        if (config.optionData.cardinality?.isRequired() == false) return false
+        if (config.optionMetadata.cardinality?.isRequired() == false) return false
         if (ParadoxInlineScriptManager.isMatched(config.key, gameType)) return false // 排除是内联脚本用法的情况
         return true
     }

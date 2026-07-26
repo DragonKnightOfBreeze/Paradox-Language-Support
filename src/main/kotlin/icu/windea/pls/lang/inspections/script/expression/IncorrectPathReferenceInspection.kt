@@ -63,7 +63,7 @@ class IncorrectPathReferenceInspection : LocalInspectionTool() {
                 val dataType = configExpression.type
                 if (dataType !in CwtDataTypeSets.PathReference) return
                 if (dataType == CwtDataTypes.Icon) return // no file extension in expression
-                val expectFileExtensions = config.optionData.fileExtensions.orEmpty()
+                val expectFileExtensions = config.optionMetadata.fileExtensions.orEmpty()
                 if (expectFileExtensions.isEmpty()) return
                 val value = element.value
                 val fileExtension = value.substringAfterLast('.', "")

@@ -61,7 +61,7 @@ private object CwtExtendedScriptedVariableConfigResolver : CwtConfigResolverScop
 
     fun resolve(config: CwtMemberConfig<*>): CwtExtendedScriptedVariableConfig {
         val name = if (config is CwtPropertyConfig) config.key else config.value
-        val hint = config.optionData.hint
+        val hint = config.optionMetadata.hint
         logger.debug { "Resolved extended scripted variable config (name: $name).".withLocationPrefix(config) }
         return CwtExtendedScriptedVariableConfigImpl(config, name, hint)
     }

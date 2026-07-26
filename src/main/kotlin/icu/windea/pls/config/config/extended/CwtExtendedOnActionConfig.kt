@@ -68,12 +68,12 @@ private object CwtExtendedOnActionConfigResolver : CwtConfigResolverScope {
 
     fun resolve(config: CwtMemberConfig<*>): CwtExtendedOnActionConfig? {
         val name = if (config is CwtPropertyConfig) config.key else config.value
-        val eventType = config.optionData.eventType
+        val eventType = config.optionMetadata.eventType
         if (eventType == null) {
             logger.warn("Skipped invalid extended on action config (name: $name): Missing event_type option.".withLocationPrefix(config))
             return null
         }
-        val hint = config.optionData.hint
+        val hint = config.optionMetadata.hint
         logger.debug { "Resolved extended on action config (name: $name, event type: $eventType).".withLocationPrefix(config) }
         return CwtExtendedOnActionConfigImpl(config, name, eventType, hint)
     }

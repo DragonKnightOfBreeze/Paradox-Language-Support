@@ -18,6 +18,6 @@ object ChronicleCapacities {
     /** 处理规则数据时，是否保留文件规则列表到其用户数据中（默认不保留）。 */
     fun keepFileConfigs() = System.getProperty("chronicle.capacities.keepFileConfigs").toBoolean()
 
-    /** 处理成员规则的选项数据时，是否保留选项规则列表到其用户数据中（默认仅为内部规则保留）。 */
+    /** 处理成员规则的选项元数据时，是否保留选项规则列表到其用户数据中（默认仅为内部规则保留）。 */
     fun keepOptionConfigs() = System.getProperty("chronicle.capacities.keepOptionConfigs").toBoolean()
 }

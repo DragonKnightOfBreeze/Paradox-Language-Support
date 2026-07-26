@@ -21,9 +21,9 @@ import icu.windea.pls.script.psi.ParadoxScriptValue
 object ParadoxMatchOccurrenceService {
     fun evaluate(contextElement: PsiElement, config: CwtMemberConfig<*>): ParadoxMatchOccurrence {
         val project = config.configGroup.project
-        val cardinality = config.optionData.cardinality ?: return ParadoxMatchOccurrence(0, null, null)
-        val cardinalityMinDefine = config.optionData.cardinalityMinDefine
-        val cardinalityMaxDefine = config.optionData.cardinalityMaxDefine
+        val cardinality = config.optionMetadata.cardinality ?: return ParadoxMatchOccurrence(0, null, null)
+        val cardinalityMinDefine = config.optionMetadata.cardinalityMinDefine
+        val cardinalityMaxDefine = config.optionMetadata.cardinalityMaxDefine
         val occurrence = ParadoxMatchOccurrence(0, cardinality.min, cardinality.max, cardinality.lenientMin, cardinality.lenientMax)
         run {
             if (cardinalityMinDefine == null) return@run

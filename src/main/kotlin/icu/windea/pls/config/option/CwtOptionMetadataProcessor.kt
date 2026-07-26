@@ -21,165 +21,163 @@ import icu.windea.pls.model.scope.ParadoxScope
 import icu.windea.pls.model.scope.ParadoxScopeContext
 import icu.windea.pls.model.type.CwtSeparatorType
 
-object CwtOptionDataProcessor {
-    // NOTE 2.1.1 目前不作为 EP
-
+object CwtOptionMetadataProcessor {
     @Optimized
-    fun process(optionData: CwtOptionDataHolder, optionConfigs: List<CwtOptionMemberConfig<*>>) {
-        if (optionData !is CwtOptionDataHolderBase) return
+    fun process(optionMetadata: CwtOptionMetadataHolder, optionConfigs: List<CwtOptionMemberConfig<*>>) {
+        if (optionMetadata !is CwtOptionMetadataHolderBase) return
         if (optionConfigs.isEmpty()) return
-        val skipProcessing = ChronicleThreadContext.skipProcessingOptionData.get() == true
+        val skipProcessing = ChronicleThreadContext.skipProcessingOptionMetadata.get() == true
         val keepOptionConfigs = skipProcessing || ChronicleCapacities.keepOptionConfigs()
         if (keepOptionConfigs) {
-            optionData.optionConfigs = optionConfigs.optimized() // optimized to optimize memory
+            optionMetadata.optionConfigs = optionConfigs.optimized() // optimized to optimize memory
         }
         if (skipProcessing) {
             return
         }
         optionConfigs.forEachFast { config ->
             when (config) {
-                is CwtOptionConfig -> processOptionConfig(optionData, config)
-                is CwtOptionValueConfig -> processOptionValueConfig(optionData, config)
+                is CwtOptionConfig -> processOptionConfig(optionMetadata, config)
+                is CwtOptionValueConfig -> processOptionValueConfig(optionMetadata, config)
             }
         }
     }
 
-    private fun processOptionConfig(optionData: CwtOptionDataHolderBase, config: CwtOptionConfig) {
+    private fun processOptionConfig(optionMetadata: CwtOptionMetadataHolderBase, config: CwtOptionConfig) {
         val key = config.key
         when (key) {
             "api_status" -> {
                 val v = config.getOptionValue()?.let { CwtConfigApiStatus.get(it) } ?: return
-                optionData.apiStatus = v
+                optionMetadata.apiStatus = v
             }
             "cardinality" -> {
                 val v = config.getOptionValue()?.let { CwtCardinalityExpression.resolve(it) } ?: return
-                optionData.cardinality = v
+                optionMetadata.cardinality = v
             }
             "cardinality_min_define" -> {
                 val v = config.getOptionValue() ?: return
-                optionData.cardinalityMinDefine = v
+                optionMetadata.cardinalityMinDefine = v
             }
             "cardinality_max_define" -> {
                 val v = config.getOptionValue() ?: return
-                optionData.cardinalityMaxDefine = v
+                optionMetadata.cardinalityMaxDefine = v
             }
             "predicate" -> {
                 val v = resolvePredicate(config) ?: return
-                optionData.predicate = v
+                optionMetadata.predicate = v
             }
             "push_scope" -> {
                 val v = resolvePushScope(config) ?: return
-                optionData.pushScope = v
+                optionMetadata.pushScope = v
             }
             "replace_scope", "replace_scopes" -> {
                 val v = resolveReplaceScopes(config) ?: return
-                optionData.replaceScopes = v
+                optionMetadata.replaceScopes = v
             }
             "scope", "scopes" -> {
                 val r = resolveSupportedScopes(config) ?: return
-                optionData.supportedScopes = r
+                optionMetadata.supportedScopes = r
             }
             "type" -> {
                 val v = config.getOptionValue() ?: return
-                optionData.type = v
+                optionMetadata.type = v
             }
             "hint" -> {
                 val v = config.getOptionValue() ?: return
-                optionData.hint = v
+                optionMetadata.hint = v
             }
             "event_type" -> {
                 val v = config.getOptionValue() ?: return
-                optionData.eventType = v
+                optionMetadata.eventType = v
             }
             "context_key" -> {
                 val v = config.getOptionValue() ?: return
-                optionData.contextKey = v
+                optionMetadata.contextKey = v
             }
             "context_configs_type" -> {
                 val v = config.getOptionValue() ?: return
-                optionData.contextConfigsType = v
+                optionMetadata.contextConfigsType = v
             }
             "group" -> {
                 val v = config.getOptionValue() ?: return
-                optionData.group = v
+                optionMetadata.group = v
             }
             "type_key_filter" -> {
                 val v = resolveTypeKeyFilter(config) ?: return
-                optionData.typeKeyFilter = v
+                optionMetadata.typeKeyFilter = v
             }
             "type_key_regex" -> {
                 val v = config.getOptionValue()?.toRegex(RegexOption.IGNORE_CASE) ?: return
-                optionData.typeKeyRegex = v
+                optionMetadata.typeKeyRegex = v
             }
             "starts_with" -> {
                 val v = config.getOptionValue() ?: return
-                optionData.startsWith = v
+                optionMetadata.startsWith = v
             }
             "only_if_not" -> {
                 val v = config.getOptionValueOrValues()?.optimized() ?: return
-                optionData.onlyIfNot = v
+                optionMetadata.onlyIfNot = v
             }
             "graph_related_types" -> {
                 val v = config.getOptionValueOrValues()?.optimized() ?: return
-                optionData.graphRelatedTypes = v
+                optionMetadata.graphRelatedTypes = v
             }
             "declare_complex_enum" -> {
                 val v = config.getOptionValue() ?: return
-                optionData.declareComplexEnum = v
+                optionMetadata.declareComplexEnum = v
             }
             "severity" -> {
                 val v = config.getOptionValue() ?: return
-                optionData.severity = v
+                optionMetadata.severity = v
             }
             "file_extensions" -> {
                 val v = config.getOptionValueOrValues()?.mapTo(mutableSetOf()) { it.optimizedPathExtension() }?.optimized() ?: return
-                optionData.fileExtensions = v
+                optionMetadata.fileExtensions = v
             }
             "modifier_categories" -> {
                 val v = config.getOptionValueOrValues()?.optimized() ?: return
-                optionData.modifierCategories = v
+                optionMetadata.modifierCategories = v
             }
             "color_type" -> {
                 val v = config.getOptionValue() ?: return
-                optionData.colorType = v
+                optionMetadata.colorType = v
             }
             "inject" -> {
                 val v = config.getOptionValue() ?: return
-                optionData.inject = v
+                optionMetadata.inject = v
             }
         }
 
         // 保存缺省的基数表达式
         run {
-            if (optionData.cardinality != null || optionData !is CwtMemberConfig<*>) return@run
-            val dataType = optionData.configExpression.type
+            if (optionMetadata.cardinality != null || optionMetadata !is CwtMemberConfig<*>) return@run
+            val dataType = optionMetadata.configExpression.type
             // 如果没有注明且类型是常量或枚举值，则推断为 `1..~1`
             if (dataType == CwtDataTypes.Constant || dataType == CwtDataTypes.EnumValue) {
-                optionData.cardinality = CwtCardinalityExpression.resolve("1..~1")
+                optionMetadata.cardinality = CwtCardinalityExpression.resolve("1..~1")
             }
         }
 
         // 保存初始的作用域上下文
         run {
-            val replaceScopes = optionData.replaceScopes
-            val pushScope = optionData.pushScope
+            val replaceScopes = optionMetadata.replaceScopes
+            val pushScope = optionMetadata.pushScope
             val scopeContext = replaceScopes?.let { ParadoxScopeContext.resolve(it) }?.resolveNext(pushScope)
                 ?: pushScope?.let { ParadoxScopeContext.resolve(it, it) }
             if (scopeContext == null) return@run
-            optionData.scopeContext = scopeContext
+            optionMetadata.scopeContext = scopeContext
         }
     }
 
-    private fun processOptionValueConfig(optionData: CwtOptionDataHolderBase, config: CwtOptionValueConfig) {
+    private fun processOptionValueConfig(optionMetadata: CwtOptionMetadataHolderBase, config: CwtOptionValueConfig) {
         // NOTE 2.1.1 移除 `optional` 标志：CWTools 指引文档中并未提及，同时也是不必要的（默认即为可选）
         val flag = config.getOptionValue() ?: return
         when (flag) {
-            "required" -> optionData.required = true
-            "primary" -> optionData.primary = true
-            "inherit" -> optionData.primary = true
-            "tag" -> optionData.tag = true
-            "case_insensitive" -> optionData.caseInsensitive = true
-            "per_definition" -> optionData.perDefinition = true
+            "required" -> optionMetadata.required = true
+            "primary" -> optionMetadata.primary = true
+            "inherit" -> optionMetadata.primary = true
+            "tag" -> optionMetadata.tag = true
+            "case_insensitive" -> optionMetadata.caseInsensitive = true
+            "per_definition" -> optionMetadata.perDefinition = true
         }
     }
 

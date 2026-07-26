@@ -218,7 +218,7 @@ class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInfe
                         val config = configGroup.extendedOnActions.findByPattern(containingOnActionName, psiFile, configGroup)
                         if (config == null) return@f // missing
                         if (config.eventType != thisEventType) return@f // invalid (mismatch)
-                        val map = config.config.optionData.replaceScopes ?: return@f
+                        val map = config.config.optionMetadata.replaceScopes ?: return@f
                         if (scopeContextMap.isNotEmpty()) {
                             val mergedMap = ParadoxScopeManipulationService.mergeScopeContextMap(scopeContextMap, map, true)
                             if (mergedMap != null) {

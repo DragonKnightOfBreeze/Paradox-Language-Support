@@ -110,8 +110,8 @@ private object CwtComplexEnumConfigResolver : CwtConfigResolverScope {
         val pathStrict = propGroup.getOne("path_strict")?.booleanValue ?: false
         val pathPatterns = propGroup.getAll("path_pattern").mapNotNullTo(sortedSetOf()) { it.stringValue?.optimizedPath() }.optimized()
         val startFromRoot = propGroup.getOne("start_from_root")?.booleanValue ?: false
-        val caseInsensitive = config.optionData.caseInsensitive
-        val perDefinition = config.optionData.perDefinition
+        val caseInsensitive = config.optionMetadata.caseInsensitive
+        val perDefinition = config.optionMetadata.perDefinition
         val nameConfig = propGroup.getOne("name")
 
         if (nameConfig == null) {
@@ -127,7 +127,7 @@ private object CwtComplexEnumConfigResolver : CwtConfigResolverScope {
     }
 
     fun resolveFromColumnConfig(config: CwtPropertyConfig): CwtComplexEnumConfig? {
-        val name = config.optionData.declareComplexEnum?.orNull() ?: return null
+        val name = config.optionMetadata.declareComplexEnum?.orNull() ?: return null
         return CwtComplexEnumConfigFromColumnConfig(config, name)
     }
 }

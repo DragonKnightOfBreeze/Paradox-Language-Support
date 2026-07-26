@@ -65,7 +65,7 @@ private object CwtExtendedComplexEnumValueConfigResolver : CwtConfigResolverScop
 
     fun resolve(config: CwtMemberConfig<*>, type: String): CwtExtendedComplexEnumValueConfig {
         val name = if (config is CwtPropertyConfig) config.key else config.value
-        val hint = config.optionData.hint
+        val hint = config.optionMetadata.hint
         logger.debug { "Resolved extended complex enum value config (name: $name, type: $type).".withLocationPrefix(config) }
         return CwtExtendedComplexEnumValueConfigImpl(config, name, type, hint)
     }

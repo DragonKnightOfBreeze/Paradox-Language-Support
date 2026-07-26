@@ -115,7 +115,7 @@ class CwtConfigInjectionTest : BasePlatformTestCase() {
             val p = targetProps.getValue("non_block")
             assertEquals("1", p.value)
             assertNull(p.configs)
-            assertEquals("common/test/injection_source.cwt@injected_group/*", p.optionData.inject)
+            assertEquals("common/test/injection_source.cwt@injected_group/*", p.optionMetadata.inject)
         }
 
         // duplicate keys are allowed: injected configs are appended (no de-dup)
@@ -159,7 +159,7 @@ class CwtConfigInjectionTest : BasePlatformTestCase() {
             assertNotNull(v.pointer.element)
             assertEquals(targetFile.name, v.pointer.element!!.containingFile.name)
 
-            assertEquals("common/test/injection_source.cwt@injected_group/*", v.optionData.inject)
+            assertEquals("common/test/injection_source.cwt@injected_group/*", v.optionMetadata.inject)
         }
     }
 

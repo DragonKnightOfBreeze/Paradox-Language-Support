@@ -80,11 +80,11 @@ private object CwtSubtypeConfigResolver : CwtConfigResolverScope {
 
     fun resolve(config: CwtPropertyConfig): CwtSubtypeConfig? {
         val name = config.key.removeSurroundingOrNull("subtype[", "]")?.orNull()?.optimized() ?: return null
-        val typeKeyFilter = config.optionData.typeKeyFilter
-        val typeKeyRegex = config.optionData.typeKeyRegex
-        val startsWith = config.optionData.startsWith
-        val onlyIfNot = config.optionData.onlyIfNot
-        val group = config.optionData.group
+        val typeKeyFilter = config.optionMetadata.typeKeyFilter
+        val typeKeyRegex = config.optionMetadata.typeKeyRegex
+        val startsWith = config.optionMetadata.startsWith
+        val onlyIfNot = config.optionMetadata.onlyIfNot
+        val group = config.optionMetadata.group
         logger.debug { "Resolved subtype config (name: $name).".withLocationPrefix(config) }
         return CwtSubtypeConfigImpl(config, name, typeKeyFilter, typeKeyRegex, startsWith, onlyIfNot, group)
     }

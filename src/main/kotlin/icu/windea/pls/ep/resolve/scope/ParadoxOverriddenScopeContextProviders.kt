@@ -48,7 +48,7 @@ class ParadoxSwitchOverriddenScopeContextProvider : ParadoxOverriddenScopeContex
         if (CwtDataExpression.resolve(triggerName, false).type != CwtDataTypes.Constant) return null // must be a predefined trigger
         val configGroup = finalConfig.configGroup
         val resultTriggerConfigs = configGroup.aliasGroups.get("trigger")?.get(triggerName)?.orNull() ?: return null
-        val pushScope = resultTriggerConfigs.firstOrNull()?.config?.optionData?.pushScope
+        val pushScope = resultTriggerConfigs.firstOrNull()?.config?.optionMetadata?.pushScope
         return parentScopeContext?.resolveNext(pushScope) ?: ParadoxScopeContext.resolveAny().resolveNext(pushScope)
     }
 }
@@ -92,7 +92,7 @@ class ParadoxTriggerWithParametersAwareOverriddenScopeContextProvider : ParadoxO
         if (CwtDataExpression.resolve(triggerName, false).type != CwtDataTypes.Constant) return null // must be a predefined trigger
         val configGroup = finalConfig.configGroup
         val resultTriggerConfigs = configGroup.aliasGroups.get("trigger")?.get(triggerName)?.orNull() ?: return null
-        val pushScope = resultTriggerConfigs.firstOrNull()?.config?.optionData?.pushScope
+        val pushScope = resultTriggerConfigs.firstOrNull()?.config?.optionMetadata?.pushScope
         return parentScopeContext?.resolveNext(pushScope) ?: ParadoxScopeContext.resolveAny().resolveNext(pushScope)
     }
 }

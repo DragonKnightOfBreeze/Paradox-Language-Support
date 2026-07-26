@@ -171,7 +171,7 @@ class ParadoxComplexEnumValueIndex : ParadoxIndexInfoAwareFileBasedIndex<List<Pa
             private fun processComplexEnumValue(element: ParadoxCsvColumn) {
                 val name = element.name
                 val columnConfig = ParadoxConfigMatchService.getColumnConfig(config, columnNames, columnIndex) ?: return
-                val enumName = columnConfig.optionData.declareComplexEnum?.orNull() ?: return
+                val enumName = columnConfig.optionMetadata.declareComplexEnum?.orNull() ?: return
                 val info = ParadoxComplexEnumValueIndexInfo(name, enumName, -1, gameType)
                 addToFileData(info, fileData)
             }

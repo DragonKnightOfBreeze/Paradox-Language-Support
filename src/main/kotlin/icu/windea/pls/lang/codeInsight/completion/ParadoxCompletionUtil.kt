@@ -97,7 +97,7 @@ object ParadoxCompletionUtil {
     fun isNextScopeMatched(context: ParadoxCompletionContext): Boolean {
         if (!context.scopeMatched) return false
         val supportedScopes = when {
-            context.config is CwtPropertyConfig -> context.config.optionData.supportedScopes
+            context.config is CwtPropertyConfig -> context.config.optionMetadata.supportedScopes
             context.config is CwtAliasConfig -> context.config.supportedScopes
             context.config is CwtLinkConfig -> context.config.inputScopes
             else -> null

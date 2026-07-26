@@ -3,7 +3,7 @@ package icu.windea.pls.inject.injectors
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.config.configExpression.CwtCardinalityExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroupDataHolderBase
-import icu.windea.pls.config.option.CwtOptionDataHolderBase
+import icu.windea.pls.config.option.CwtOptionMetadataHolderBase
 import icu.windea.pls.inject.CodeInjector
 import icu.windea.pls.inject.CodeInjectorContext
 import icu.windea.pls.inject.CodeInjectorSupport
@@ -23,7 +23,7 @@ import org.junit.runners.JUnit4
 @RunWith(JUnit4::class)
 class InlinedDelegateFieldCodeInjectorsTest : BasePlatformTestCase() {
     @Suppress("unused")
-    private class OptionDataModel : CwtOptionDataHolderBase()
+    private class OptionMetadataModel : CwtOptionMetadataHolderBase()
 
     @Suppress("unused")
     private class ConfigGroupDataModel : CwtConfigGroupDataHolderBase()
@@ -45,7 +45,7 @@ class InlinedDelegateFieldCodeInjectorsTest : BasePlatformTestCase() {
     fun inlinedDelegateFields_forDataHolders_test() {
         val classLoader = this::class.java.classLoader
 
-        val optionBaseClassName = "icu.windea.pls.config.option.CwtOptionDataHolderBase"
+        val optionBaseClassName = "icu.windea.pls.config.option.CwtOptionMetadataHolderBase"
         val configGroupBaseClassName = "icu.windea.pls.config.configGroup.CwtConfigGroupDataHolderBase"
 
         val injectors = CodeInjector.EP_NAME.extensionList
@@ -97,7 +97,7 @@ class InlinedDelegateFieldCodeInjectorsTest : BasePlatformTestCase() {
 
         // Verify basic accessor behavior via subclasses defined in the same isolated loader.
         run {
-            val modelClassName = "icu.windea.pls.inject.injectors.InlinedDelegateFieldCodeInjectorsTest\$OptionDataModel_Injected"
+            val modelClassName = "icu.windea.pls.inject.injectors.InlinedDelegateFieldCodeInjectorsTest\$OptionMetadataModel_Injected"
             val ctModelClass = pool.makeClass(modelClassName)
             ctModelClass.superclass = pool.get(optionBaseClassName)
             ctModelClass.addConstructor(CtNewConstructor.defaultConstructor(ctModelClass))

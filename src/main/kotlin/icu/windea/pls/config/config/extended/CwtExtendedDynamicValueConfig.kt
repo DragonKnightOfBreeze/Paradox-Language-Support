@@ -65,7 +65,7 @@ private object CwtExtendedDynamicValueConfigResolver : CwtConfigResolverScope {
 
     fun resolve(config: CwtMemberConfig<*>, type: String): CwtExtendedDynamicValueConfig {
         val name = if (config is CwtPropertyConfig) config.key else config.value
-        val hint = config.optionData.hint
+        val hint = config.optionMetadata.hint
         logger.debug { "Resolved extended dynamic value config (name: $name, type: $type).".withLocationPrefix(config) }
         return CwtExtendedDynamicValueConfigImpl(config, name, type, hint)
     }

@@ -299,8 +299,8 @@ object ParadoxScopeService {
             return result
         } else {
             // 优先基于内联前的规则，如果没有，再基于内联后的规则
-            val replaceScopes = config.optionData.replaceScopes ?: config.resolvedOrNull()?.optionData?.replaceScopes
-            val pushScope = config.optionData.pushScope ?: config.resolved().optionData.pushScope
+            val replaceScopes = config.optionMetadata.replaceScopes ?: config.resolvedOrNull()?.optionMetadata?.replaceScopes
+            val pushScope = config.optionMetadata.pushScope ?: config.resolved().optionMetadata.pushScope
             val scopeContext = replaceScopes?.let { ParadoxScopeContext.resolve(it) } ?: parentScopeContext ?: return null
             val result = scopeContext.resolveNext(pushScope)
             return result

@@ -308,7 +308,7 @@ object ParadoxConfigMatchService {
         val propValue = property.propertyValue
 
         // 对于 propertyValue 同样这样判断（可能脚本没有写完）
-        if (propValue == null) return propertyConfig.optionData.cardinality?.min == 0
+        if (propValue == null) return propertyConfig.optionMetadata.cardinality?.min == 0
 
         when {
             // 匹配布尔值

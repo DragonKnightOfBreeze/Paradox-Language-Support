@@ -15,7 +15,7 @@ class CwtBaseConfigPostProcessor : CwtConfigPostProcessor {
     }
 
     private fun applyTagOption(config: CwtMemberConfig<*>) {
-        if (config is CwtValueConfig && config.optionData.tag) {
+        if (config is CwtValueConfig && config.optionMetadata.tag) {
             config.tagType = ParadoxTagType.Predefined
         }
     }
@@ -25,7 +25,7 @@ class CwtInjectConfigPostProcessor : CwtConfigPostProcessor {
     private val logger = thisLogger()
 
     override fun supports(config: CwtMemberConfig<*>): Boolean {
-        val pathExpression = config.optionData.inject ?: return false
+        val pathExpression = config.optionMetadata.inject ?: return false
         val pathList = pathExpression.split('@', limit = 2)
         if (pathList.size != 2) {
             invalidPathExpression(pathExpression, config)
@@ -39,7 +39,7 @@ class CwtInjectConfigPostProcessor : CwtConfigPostProcessor {
     }
 
     override fun postProcess(config: CwtMemberConfig<*>) {
-        val pathExpression = config.optionData.inject ?: return
+        val pathExpression = config.optionMetadata.inject ?: return
 
         val configsToInject = CwtConfigResolverManager.findConfigsByPathExpression(config.configGroup, pathExpression)
         if (configsToInject == null) {
@@ -51,7 +51,7 @@ class CwtInjectConfigPostProcessor : CwtConfigPostProcessor {
         }
 
         // avoid (shallow) recursion injection: if configs to inject also contain inject option, ignore directly
-        if (configsToInject.any { it.optionData.inject != null }) {
+        if (configsToInject.any { it.optionMetadata.inject != null }) {
             recursive(pathExpression, config)
             return
         }

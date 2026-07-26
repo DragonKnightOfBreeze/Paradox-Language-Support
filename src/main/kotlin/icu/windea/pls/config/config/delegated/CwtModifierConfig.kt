@@ -9,7 +9,7 @@ import icu.windea.pls.config.config.CwtIdMatchableConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
-import icu.windea.pls.config.option.CwtOptionDataHolder
+import icu.windea.pls.config.option.CwtOptionMetadataHolder
 import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.core.optimized
 import icu.windea.pls.cwt.psi.CwtProperty
@@ -64,8 +64,8 @@ import icu.windea.pls.lang.util.ParadoxScopeManager
  * @property supportedScopes 允许的作用域（类型）的集合。
  *
  * @see CwtModifierCategoryConfig
- * @see CwtOptionDataHolder.replaceScopes
- * @see CwtOptionDataHolder.pushScope
+ * @see CwtOptionMetadataHolder.replaceScopes
+ * @see CwtOptionMetadataHolder.pushScope
  */
 interface CwtModifierConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, CwtIdMatchableConfig<CwtProperty> {
     val name: String
@@ -130,7 +130,7 @@ private class CwtModifierConfigImpl(
     private fun computeSupportedScopes(): Set<String> {
         return when {
             categoryConfigMap.isNotEmpty() -> ParadoxScopeManager.getSupportedScopes(categoryConfigMap)
-            else -> config.optionData.supportedScopes
+            else -> config.optionMetadata.supportedScopes
         }
     }
 

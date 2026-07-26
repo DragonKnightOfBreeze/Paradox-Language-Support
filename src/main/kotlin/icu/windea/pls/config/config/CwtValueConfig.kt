@@ -8,9 +8,9 @@ import com.intellij.openapi.util.Key
 import com.intellij.psi.SmartPsiElementPointer
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.option.CwtOptionDataHolder
-import icu.windea.pls.config.option.CwtOptionDataHolderBase
-import icu.windea.pls.config.option.CwtOptionDataProcessor
+import icu.windea.pls.config.option.CwtOptionMetadataHolder
+import icu.windea.pls.config.option.CwtOptionMetadataHolderBase
+import icu.windea.pls.config.option.CwtOptionMetadataProcessor
 import icu.windea.pls.config.util.CwtConfigResolverManager
 import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.config.util.CwtMemberConfigVisitor
@@ -68,7 +68,7 @@ interface CwtValueConfig : CwtMemberConfig<CwtValue> {
             propertyConfig: CwtPropertyConfig,
         ): CwtValueConfig = CwtValueConfigResolver.resolveFromPropertyConfig(pointer, propertyConfig)
 
-        /** 创建值规则。其中的选项数据仍然需要手动初始化。 */
+        /** 创建值规则。其中的选项元数据仍然需要手动初始化。 */
         @JvmStatic
         fun create(
             pointer: SmartPsiElementPointer<out CwtValue>,
@@ -84,7 +84,7 @@ interface CwtValueConfig : CwtMemberConfig<CwtValue> {
         @JvmStatic
         fun createMock(configGroup: CwtConfigGroup, value: String): CwtValueConfig = CwtValueConfigResolver.createMock(configGroup, value)
 
-        /** 创建基于源规则 [sourceConfig] 的复制规则。其中的选项数据仍然需要手动合并。 */
+        /** 创建基于源规则 [sourceConfig] 的复制规则。其中的选项元数据仍然需要手动合并。 */
         @JvmStatic
         fun copy(
             sourceConfig: CwtValueConfig,
@@ -112,7 +112,7 @@ private object CwtValueConfigResolver : CwtConfigResolverScope {
         val valueType = CwtTypeResolver.resolveExpressionType(element)
         val config = create(pointer, configGroup, valueExpression, valueType, configs, propertyConfig = null, injectable = true)
         val optionConfigs = CwtConfigResolverManager.getOptionConfigs(element, configGroup)
-        CwtOptionDataProcessor.process(config.optionData, optionConfigs) // initialize option data
+        CwtOptionMetadataProcessor.process(config.optionMetadata, optionConfigs) // initialize option metadata
         when {
             configs == null -> logger.trace { "Resolved value config (value: ${config.value}).".withLocationPrefix(element, configGroup) }
             configs.isEmpty() -> logger.trace { "Resolved value config (empty member configs).".withLocationPrefix(element, configGroup) }
@@ -126,7 +126,7 @@ private object CwtValueConfigResolver : CwtConfigResolverScope {
         propertyConfig: CwtPropertyConfig,
     ): CwtValueConfig {
         val config = CwtValueConfigFromPropertyConfig(pointer, propertyConfig)
-        propertyConfig.optionData.copyTo(config) // inherit option data from property config
+        propertyConfig.optionMetadata.copyTo(config) // inherit option metadata from property config
         return config
     }
 
@@ -169,13 +169,13 @@ private const val blockValue = ChronicleStrings.blockFolder
 private val blockValueTypeId = CwtExpressionType.Block.optimized(OptimizerFactory.forCwtType())
 
 // 12 + 2 * 4 = 20 -> 24
-private sealed class CwtValueConfigBase : CwtOptionDataHolderBase(), CwtValueConfig {
+private sealed class CwtValueConfigBase : CwtOptionMetadataHolderBase(), CwtValueConfig {
     override val properties: List<CwtPropertyConfig>? get() = configs?.filterIsInstanceFast()
     override val values: List<CwtValueConfig>? get() = configs?.filterIsInstanceFast()
 
     @Volatile override var parentConfig: CwtMemberConfig<*>? = null
 
-    override val optionData: CwtOptionDataHolder get() = this
+    override val optionMetadata: CwtOptionMetadataHolder get() = this
 
     override val configExpression: CwtDataExpression get() = valueExpression
 
@@ -305,7 +305,7 @@ private open class CwtValueConfigDelegate(
     override val value: String get() = delegate.value
     override val valueType: CwtExpressionType get() = delegate.valueType
     override val configs: List<CwtMemberConfig<*>>? get() = delegate.configs
-    override val optionData: CwtOptionDataHolder get() = delegate.optionData
+    override val optionMetadata: CwtOptionMetadataHolder get() = delegate.optionMetadata
     override val propertyConfig: CwtPropertyConfig? get() = delegate.propertyConfig
 
     override val valueExpression: CwtDataExpression get() = delegate.valueExpression

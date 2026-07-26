@@ -149,12 +149,12 @@ private object CwtTypeConfigResolver : CwtConfigResolverScope {
             prop.stringValue?.let { listOf(it) } ?: prop.values?.mapNotNull { it.stringValue }?.optimized().orEmpty()
         }
         val typeKeyPrefix = propGroup.getOne("type_key_prefix")?.stringValue
-        val typeKeyFilter = config.optionData.typeKeyFilter
-        val typeKeyRegex = config.optionData.typeKeyRegex
-        val startsWith = config.optionData.startsWith
+        val typeKeyFilter = config.optionMetadata.typeKeyFilter
+        val typeKeyRegex = config.optionMetadata.typeKeyRegex
+        val startsWith = config.optionMetadata.startsWith
         val unique = propGroup.getOne("unique")?.booleanValue ?: false
         val severity = propGroup.getOne("severity")?.stringValue
-        val graphRelatedTypes = config.optionData.graphRelatedTypes
+        val graphRelatedTypes = config.optionMetadata.graphRelatedTypes
         val subtypes = propConfigs.mapNotNull { CwtSubtypeConfig.resolve(it) }.associateBy { it.name }.optimized()
         val localisation = propGroup.getOne("localisation")?.let { CwtTypeLocalisationConfig.resolve(it) }
         val images = propGroup.getOne("images")?.let { CwtTypeImagesConfig.resolve(it) }

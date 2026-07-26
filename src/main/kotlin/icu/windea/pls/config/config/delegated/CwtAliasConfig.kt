@@ -106,8 +106,8 @@ private class CwtAliasConfigImpl(
     override val name: String,
     override val subName: String
 ) : UserDataHolderBase(), CwtAliasConfig {
-    override val supportedScopes get() = config.optionData.supportedScopes
-    override val outputScope get() = config.optionData.pushScope
+    override val supportedScopes get() = config.optionMetadata.supportedScopes
+    override val outputScope get() = config.optionMetadata.pushScope
     override val subNameExpression = CwtDataExpression.resolve(subName, true) // cached
     override val configExpression: CwtDataExpression get() = subNameExpression
 

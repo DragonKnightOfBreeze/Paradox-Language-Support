@@ -137,7 +137,7 @@ class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor {
     }
 
     private fun resolveInternalFileConfig(configGroup: CwtConfigGroup, file: VirtualFile, filePath: String): CwtFileConfig? {
-        return withState(ChronicleThreadContext.skipProcessingOptionData) {
+        return withState(ChronicleThreadContext.skipProcessingOptionMetadata) {
             CwtFileConfig.resolve(file, configGroup, filePath)
         }
     }

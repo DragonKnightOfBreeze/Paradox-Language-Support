@@ -44,7 +44,7 @@ class CwtValueConfigTest : BasePlatformTestCase() {
         val yesC = CwtValueConfig.resolve(yes, file, group)
         assertEquals("yes", yesC.value)
         assertEquals(CwtExpressionType.Boolean, yesC.valueType)
-        assertTrue(yesC.optionData.tag)
+        assertTrue(yesC.optionMetadata.tag)
 
         // 42 int
         val i = root.findChild<CwtValue> { it.value == "42" }!!

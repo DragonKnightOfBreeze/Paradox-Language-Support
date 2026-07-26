@@ -268,7 +268,7 @@ object ParadoxModifierManager {
 
     private fun getModifierCategoryOptionValues(enumConfig: CwtEnumConfig, finalValue: String): Set<String>? {
         val valueConfig = enumConfig.valueConfigMap[finalValue] ?: return null
-        // 统一使用选项数据访问器的缓存
-        return valueConfig.optionData.modifierCategories
+        // 统一使用选项元数据访问器的缓存
+        return valueConfig.optionMetadata.modifierCategories
     }
 }

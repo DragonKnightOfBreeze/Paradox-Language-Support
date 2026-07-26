@@ -92,7 +92,7 @@ class CwtTriggerConfigGenerator(override val project: Project) : CwtConfigGenera
         val name = configs.first().subName
         val description = configs.firstNotNullOfOrNull { it.config.documentation }.orEmpty()
         val supportedScopes = configs.first().supportedScopes
-        val apiStatus = configs.firstNotNullOfOrNull { it.config.optionData.apiStatus }
+        val apiStatus = configs.firstNotNullOfOrNull { it.config.optionMetadata.apiStatus }
         return TriggerConfigInfo(name, description, supportedScopes, apiStatus)
     }
 

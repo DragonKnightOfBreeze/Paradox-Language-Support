@@ -119,7 +119,7 @@ object ParadoxEventManager {
 
     fun getScope(definitionInfo: ParadoxDefinitionInfo): String {
         return definitionInfo.getOrPutUserData(Keys.eventScope) {
-            definitionInfo.subtypeConfigs.firstNotNullOfOrNull { it.config.optionData.pushScope } ?: ParadoxScopeConstants.anyScope
+            definitionInfo.subtypeConfigs.firstNotNullOfOrNull { it.config.optionMetadata.pushScope } ?: ParadoxScopeConstants.anyScope
         }
     }
 

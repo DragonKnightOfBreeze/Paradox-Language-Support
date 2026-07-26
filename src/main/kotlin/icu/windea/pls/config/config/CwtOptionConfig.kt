@@ -4,7 +4,7 @@ package icu.windea.pls.config.config
 
 import com.intellij.openapi.diagnostic.thisLogger
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.option.CwtOptionDataHolder
+import icu.windea.pls.config.option.CwtOptionMetadataHolder
 import icu.windea.pls.config.util.CwtConfigResolverManager
 import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.core.annotations.Optimized
@@ -30,16 +30,16 @@ import java.util.*
  *
  * 对应 CWT 规则文件中的一个选项（`## k = v` 或 `## k = {...}`）。需要位于附加到成员上的选项注释中。
  *
- * 用于提供额外的选项数据，自身也可以嵌套下级选项和选项值，以提供更复杂的数据表述。
+ * 用于提供额外的选项元数据，自身也可以嵌套下级选项和选项值，以提供更复杂的数据表述。
  *
  * @property key 选项键。
  * @property value 选项值（去除首尾的双引号）。
  * @property valueType 选项值类型，用于后续解析与校验。
- * @property separatorType 分隔符类型。用于为作为条件的选项数据取正或取反。
+ * @property separatorType 分隔符类型。用于为作为条件的选项元数据取正或取反。
  *
+ * @see CwtOptionMetadataHolder
  * @see CwtOptionComment
  * @see CwtOption
- * @see CwtOptionDataHolder
  */
 interface CwtOptionConfig : CwtOptionMemberConfig<CwtOption> {
     val key: String

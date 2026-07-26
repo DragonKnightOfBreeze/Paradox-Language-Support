@@ -134,8 +134,8 @@ class CwtFileConfigTest : BasePlatformTestCase() {
             assertNotNull(v.configs)
             assertEquals(p.configs!!.size, v.configs!!.size)
 
-            assertTrue(p.optionData.required)
-            assertTrue(p.optionData.severity == "warning")
+            assertTrue(p.optionMetadata.required)
+            assertTrue(p.optionMetadata.severity == "warning")
         }
 
         val values = fileConfig.values
@@ -145,7 +145,7 @@ class CwtFileConfigTest : BasePlatformTestCase() {
         run {
             val v = vMap.getValue("top_value1").single()
             assertEquals(CwtExpressionType.String, v.valueType)
-            assertTrue(v.optionData.tag)
+            assertTrue(v.optionMetadata.tag)
         }
         run {
             val v = vMap.getValue("top quoted").single()

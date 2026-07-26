@@ -2517,7 +2517,7 @@ re.i:foo.*
 
 #### How to Specify the Occurrence Count of a Definition Member in Config Files {#faq-cardinality}
 
-<!-- @see icu.windea.pls.config.option.CwtOptionDataHolder.cardinality -->
+<!-- @see icu.windea.pls.config.option.CwtOptionMetadataHolder.cardinality -->
 <!-- @see icu.windea.pls.config.configExpression.CwtCardinalityExpression -->
 
 In config files, the occurrence range of a defined member is specified through the `## cardinality` option.  
@@ -2545,8 +2545,8 @@ effect = single_alias_right[effect_clause]
 
 #### How to Specify Scope Context in Config Files {#faq-scope-context}
 
-<!-- @see icu.windea.pls.config.option.CwtOptionDataHolder.pushScope -->
-<!-- @see icu.windea.pls.config.option.CwtOptionDataHolder.replaceScopes -->
+<!-- @see icu.windea.pls.config.option.CwtOptionMetadataHolder.pushScope -->
+<!-- @see icu.windea.pls.config.option.CwtOptionMetadataHolder.replaceScopes -->
 
 In config files, scope context is specified via the options `## push_scope` and `## replace_scopes` (or `## replace_scope`).
 
@@ -2569,7 +2569,7 @@ some_config = single_alias_right[trigger_clause]
 
 #### How to Specify Supported Scopes in Config Files {#faq-supported-scopes}
 
-<!-- @see icu.windea.pls.config.option.CwtOptionDataHolder.supportedScopes -->
+<!-- @see icu.windea.pls.config.option.CwtOptionMetadataHolder.supportedScopes -->
 
 In config files, the supported scopes for triggers and effects are specified via the option `## scopes` (or `## scope`).
 
@@ -2583,7 +2583,7 @@ alias[trigger:has_country_flag] = value[country_flag]
 
 #### How to Specify Color Types in Config Files {#faq-color-type}
 
-<!-- @see icu.windea.pls.config.option.CwtOptionDataHolder.colorType -->
+<!-- @see icu.windea.pls.config.option.CwtOptionMetadataHolder.colorType -->
 <!-- @see icu.windea.pls.config.CwtDataTypes.ColorField -->
 <!-- @see icu.windea.pls.ep.codeInsight.hints.ParadoxColorProvider -->
 
@@ -2634,7 +2634,7 @@ color_field_hsv = hsv { 208 0.849 0.882 }
 
 #### How to Specify File Extensions for Path References in Config Files {#faq-file-extensions}
 
-<!-- @see icu.windea.pls.config.option.CwtOptionDataHolder.fileExtensions -->
+<!-- @see icu.windea.pls.config.option.CwtOptionMetadataHolder.fileExtensions -->
 
 In config files, the allowed file extensions for path references are specified via the option `## file_extensions`.
 
@@ -2657,7 +2657,7 @@ file = filepath[./]
 
 #### How to Inject Configs in Config Files {#faq-config-inject}
 
-<!-- @see icu.windea.pls.config.option.CwtOptionDataHolder.inject -->
+<!-- @see icu.windea.pls.config.option.CwtOptionMetadataHolder.inject -->
 <!-- @see icu.windea.pls.ep.config.config.CwtInjectConfigPostProcessor -->
 
 Starting from plugin version 2.1.0, injecting configs is supported by using the option `## inject`, during the config resolving phase.

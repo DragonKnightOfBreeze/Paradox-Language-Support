@@ -21,6 +21,10 @@ import java.util.*
  *
  * 规则分组会在获取时就保证已经被创建，而其中的规则数据的初始化是在打开 IDE 或项目时异步进行的。
  *
+ * 参考：
+ * - 规则系统的说明文档：[config.md](https://windea.icu/Paradox-Language-Support/config.md)
+ * - 规则格式的参考手册：[ref-config-format.md](https://windea.icu/Paradox-Language-Support/ref-config-format.md)
+ *
  * @property project 对应的项目。如果是默认项目，则不能用于访问 PSI。
  * @property gameType 对应的游戏类型。如果是 [ParadoxGameType.Core]，则为通用的规则分组。
  *

@@ -81,7 +81,7 @@ class IncorrectScopeInspection : ScopeInspectionBase() {
                     val supportedScopes = ParadoxScopeService.getSupportedScopes(resolved, definitionInfo)
                     return supportedScopes
                 }
-                val supportedScopes = config.optionData.supportedScopes
+                val supportedScopes = config.optionMetadata.supportedScopes
                 return supportedScopes
             }
 

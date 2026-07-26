@@ -28,10 +28,10 @@ import icu.windea.pls.model.scope.ParadoxScope
 import icu.windea.pls.model.scope.ParadoxScopeContext
 
 /**
- * 用于访问选项数据。
+ * 成员规则的选项元数据。
  *
  * 说明：
- * - 规则数据指保存在选项注释中的元数据，以 `## ...` 的形式声明。
+ * - 选项元数据指保存在选项注释中的元数据，以 `## ...` 的形式声明。
  * - 仅保存有效的元数据，不支持或者无法识别的元数据会被直接舍弃。
  *
  * 参考：
@@ -40,7 +40,7 @@ import icu.windea.pls.model.scope.ParadoxScopeContext
  *
  * @see CwtMemberConfig
  */
-interface CwtOptionDataHolder : UserDataHolder {
+interface CwtOptionMetadataHolder : UserDataHolder {
     /**
      * 得到原始的选项规则列表。
      *
@@ -594,5 +594,5 @@ interface CwtOptionDataHolder : UserDataHolder {
 
     fun clear()
 
-    fun copyTo(target: CwtOptionDataHolder)
+    fun copyTo(target: CwtOptionMetadataHolder)
 }

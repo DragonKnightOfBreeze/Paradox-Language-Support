@@ -10,7 +10,7 @@ import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtIdMatchableConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.config.option.CwtOptionDataHolder
+import icu.windea.pls.config.option.CwtOptionMetadataHolder
 import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.cwt.psi.CwtMember
 
@@ -44,8 +44,8 @@ import icu.windea.pls.cwt.psi.CwtMember
  * @property type 定义类型。
  * @property hint 可选的提示文本。用于提供额外的内嵌提示。
  *
- * @see CwtOptionDataHolder.replaceScopes
- * @see CwtOptionDataHolder.pushScope
+ * @see CwtOptionMetadataHolder.replaceScopes
+ * @see CwtOptionMetadataHolder.pushScope
  */
 interface CwtExtendedDefinitionConfig : CwtDelegatedConfig<CwtMember, CwtMemberConfig<*>>, CwtIdMatchableConfig<CwtMember> {
     @FromName
@@ -71,12 +71,12 @@ private object CwtExtendedDefinitionConfigResolver : CwtConfigResolverScope {
 
     fun resolve(config: CwtMemberConfig<*>): CwtExtendedDefinitionConfig? {
         val name = if (config is CwtPropertyConfig) config.key else config.value
-        val type = config.optionData.type
+        val type = config.optionMetadata.type
         if (type == null) {
             logger.warn("Skipped invalid extended definition config (name: $name): Missing type option.".withLocationPrefix(config))
             return null
         }
-        val hint = config.optionData.hint
+        val hint = config.optionMetadata.hint
         logger.debug { "Resolved extended definition config (name: $name, type: $type).".withLocationPrefix(config) }
         return CwtExtendedDefinitionConfigImpl(config, name, type, hint)
     }

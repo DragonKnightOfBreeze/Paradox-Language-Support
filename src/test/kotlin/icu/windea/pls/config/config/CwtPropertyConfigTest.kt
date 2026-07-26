@@ -85,14 +85,14 @@ class CwtPropertyConfigTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testOptionData_onProperty() {
+    fun testOptionMetadata_onProperty() {
         val (file, group) = prepare().let { it.first to it.second }
         val root = file.block!!
         val p = root.findChild<CwtProperty> { it.name == "opt_prop" }!!
         val c = CwtPropertyConfig.resolve(p, file, group)!!
         // ## required ; ## severity = info
-        assertTrue(c.optionData.required)
-        assertTrue(c.optionData.severity == "info")
+        assertTrue(c.optionMetadata.required)
+        assertTrue(c.optionMetadata.severity == "info")
     }
 
     @Test

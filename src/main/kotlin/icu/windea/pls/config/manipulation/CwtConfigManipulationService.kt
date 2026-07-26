@@ -16,7 +16,7 @@ import icu.windea.pls.config.config.isSamePointer
 import icu.windea.pls.config.config.singleAliasConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.option.CwtOptionDataHolder
+import icu.windea.pls.config.option.CwtOptionMetadataHolder
 import icu.windea.pls.config.util.CwtConfigKeyManager
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.annotations.Optimized
@@ -216,14 +216,14 @@ object CwtConfigManipulationService {
             configGroup = config.configGroup,
             valueExpression = CwtDataExpression.resolveValue(expressionString),
         )
-        mergeOptionData(merged.optionData, config.optionData, otherConfig.optionData) // merge option data
+        mergeOptionMetadata(merged.optionMetadata, config.optionMetadata, otherConfig.optionMetadata) // merge option metadata
         return merged
     }
 
-    fun mergeOptionData(optionData: CwtOptionDataHolder, vararg sources: CwtOptionDataHolder?) {
+    fun mergeOptionMetadata(optionMetadata: CwtOptionMetadataHolder, vararg sources: CwtOptionMetadataHolder?) {
         for (source in sources) {
             if (source == null) continue
-            source.copyTo(optionData)
+            source.copyTo(optionMetadata)
         }
     }
 
@@ -274,7 +274,7 @@ object CwtConfigManipulationService {
             configs = deepCopyConfigs(other),
         )
         inlined.postOptimize() // do post optimization
-        mergeOptionData(inlined.optionData, config.optionData, other.optionData) // merge option data
+        mergeOptionMetadata(inlined.optionMetadata, config.optionMetadata, other.optionMetadata) // merge option metadata
         inlined.withParentConfig(config.parentConfig)
         inlined.singleAliasConfig = config.singleAliasConfig
         inlined.aliasConfig = aliasConfig
@@ -307,7 +307,7 @@ object CwtConfigManipulationService {
             configs = deepCopyConfigs(other),
         )
         inlined.postOptimize() // do post optimization
-        mergeOptionData(inlined.optionData, config.optionData, other.optionData) // merge option data
+        mergeOptionMetadata(inlined.optionMetadata, config.optionMetadata, other.optionMetadata) // merge option metadata
         inlined.withParentConfig(config.parentConfig)
         inlined.singleAliasConfig = singleAliasConfig
         inlined.aliasConfig = config.aliasConfig
@@ -324,7 +324,7 @@ object CwtConfigManipulationService {
             configs = deepCopyConfigs(other),
         )
         inlined.postOptimize() // do post optimization
-        mergeOptionData(inlined.optionData, other.optionData) // merge option data
+        mergeOptionMetadata(inlined.optionMetadata, other.optionMetadata) // merge option metadata
         inlined.inlineConfig = macroConfig
         return inlined
     }
@@ -355,7 +355,7 @@ object CwtConfigManipulationService {
             },
         )
         inlined.postOptimize() // do post optimization
-        mergeOptionData(inlined.optionData, config.optionData) // merge option data
+        mergeOptionMetadata(inlined.optionMetadata, config.optionMetadata) // merge option metadata
         inlined.withParentConfig(config.parentConfig)
         inlined.singleAliasConfig = config.singleAliasConfig
         inlined.aliasConfig = config.aliasConfig
@@ -395,7 +395,7 @@ object CwtConfigManipulationService {
             valueType = CwtExpressionType.Block,
             configs = configs,
         )
-        mergeOptionData(inlined.optionData, config?.optionData) // merge option data
+        mergeOptionMetadata(inlined.optionMetadata, config?.optionMetadata) // merge option metadata
         return inlined
     }
 

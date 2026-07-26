@@ -187,7 +187,7 @@ object ParadoxExpressionCompletionManager {
         if (pathReferenceExpressionSupport != null) {
             val tailText = ParadoxCompletionUtil.getPatchableTailText(context, config)
             val fileExtensions = when (config) {
-                is CwtMemberConfig<*> -> config.optionData.fileExtensions.orEmpty()
+                is CwtMemberConfig<*> -> config.optionMetadata.fileExtensions.orEmpty()
                 else -> emptySet()
             }
             // 仅提示匹配 `file_extensions` 选项指定的扩展名的，如果存在
