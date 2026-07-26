@@ -33,6 +33,8 @@ import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressi
  * 语法：
  * ```bnf
  * dynamic_value_expression ::= dynamic_value ("@" scope_field_expression)?
+ * dynamic_value ::= IDENTIFIER
+ * scope_field_expression ::= EXPRESSION
  * ```
  *
  * ### 语法与结构

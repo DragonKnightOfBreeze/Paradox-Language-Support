@@ -3,6 +3,7 @@ package icu.windea.pls.lang.resolve.complexExpression.nodes
 import com.intellij.openapi.util.TextRange
 import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.config.config.CwtConfig
+import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.indexOf
 
@@ -11,12 +12,11 @@ class ParadoxNegatedDynamicValueNode(
     override val rangeInExpression: TextRange,
     override val configGroup: CwtConfigGroup,
     override val nodes: List<ParadoxComplexExpressionNode>,
-    val config: List<CwtConfig<*>>
+    val configs: List<CwtConfig<*>>,
 ) : ParadoxComplexExpressionNodeBase() {
     companion object {
-
         @JvmStatic
-        fun resolve(text: String, range: TextRange, configGroup: CwtConfigGroup, configs: List<CwtConfig<*>>): ParadoxNegatedDynamicValueNode? {
+        fun resolve(text: String, range: TextRange, configGroup: CwtConfigGroup, configs: List<CwtValueConfig>): ParadoxNegatedDynamicValueNode? {
             if (text.isEmpty()) return null
             if (!text.startsWith("not")) return null
 

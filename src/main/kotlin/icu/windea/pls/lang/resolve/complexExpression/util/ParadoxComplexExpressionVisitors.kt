@@ -56,7 +56,7 @@ abstract class ParadoxComplexExpressionWordSelectionRecursiveVisitor(private val
     private fun isCurrentNode(node: ParadoxComplexExpressionNode): Boolean {
         // 排除 markerNode/operatorNode
         if (node is ParadoxMarkerNode || node is ParadoxOperatorNode) return false
-        // startOffset <= offest <= endOffset
+        // startOffset <= offset <= endOffset
         return offsetInExpression >= node.rangeInExpression.startOffset && offsetInExpression <= node.rangeInExpression.endOffset
     }
 }

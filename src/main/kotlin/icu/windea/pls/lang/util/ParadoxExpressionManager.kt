@@ -379,8 +379,8 @@ object ParadoxExpressionManager {
     private fun annotateNodeByAttributesKey(element: ParadoxExpressionElement, node: ParadoxComplexExpressionNode, attributesKey: TextAttributesKey, holder: AnnotationHolder) {
         if (node.text.isEmpty()) return
 
-        val offest = element.startOffset + getExpressionOffset(element)
-        val rangeToAnnotate = node.rangeInExpression.shiftRight(offest)
+        val offset = element.startOffset + getExpressionOffset(element)
+        val rangeToAnnotate = node.rangeInExpression.shiftRight(offset)
 
         // merge text attributes from HighlighterColors.TEXT and attributesKey for token nodes (in case foreground is not set)
         if (node is ParadoxTokenNode) {

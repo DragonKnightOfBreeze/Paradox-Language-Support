@@ -20,14 +20,10 @@ class ParadoxDynamicValueNode(
     override val text: String,
     override val rangeInExpression: TextRange,
     override val configGroup: CwtConfigGroup,
-    val configs: List<CwtConfig<*>>
+    val configs: List<CwtConfig<*>>,
 ) : ParadoxComplexExpressionNodeBase(), ParadoxIdentifierNode, ParadoxDynamicDataNode {
-    override fun getRelatedConfigs(): Collection<CwtConfig<*>> {
-        return configs
-    }
-
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey? {
-        val expression = configs.first().configExpression ?: return null // first is ok
+        val expression = configs.firstOrNull()?.configExpression ?: return null // first is ok
         val dynamicValueType = expression.metadata.value ?: return null
         return when (dynamicValueType) {
             "variable" -> ParadoxSemanticHighlighterColors.variable(element.language)

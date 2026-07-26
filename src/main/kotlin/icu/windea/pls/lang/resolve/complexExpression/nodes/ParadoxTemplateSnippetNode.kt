@@ -38,21 +38,24 @@ class ParadoxTemplateSnippetNode(
     override val configGroup: CwtConfigGroup,
     val configExpression: CwtDataExpression
 ) : ParadoxComplexExpressionNodeBase(), ParadoxIdentifierNode, ParadoxDynamicDataNode {
-    val config = CwtValueConfig.createMock(configGroup, configExpression.expressionString)
+    fun getMockConfig(): CwtValueConfig {
+        return CwtValueConfig.createMock(configGroup, configExpression.expressionString)
+    }
 
     /** 是否可以被精确匹配（不存在可能有歧义的引用）。 */
     fun isExactMatched(): Boolean {
-        val dataType = config.configExpression.type
+        val mockConfig = getMockConfig()
+        val dataType = mockConfig.configExpression.type
         return when {
             dataType in CwtDataTypeSets.Expandable -> {
                 false // for simple code
             }
             dataType in CwtDataTypeSets.DefinitionAware -> {
-                val definitionType = config.configExpression.metadata.value ?: return true
+                val definitionType = mockConfig.configExpression.metadata.value ?: return true
                 definitionType !in configGroup.types.keys
             }
             dataType == CwtDataTypes.EnumValue -> {
-                val enumName = config.configExpression.metadata.value ?: return true
+                val enumName = mockConfig.configExpression.metadata.value ?: return true
                 enumName !in configGroup.complexEnums.keys
             }
             else -> true
@@ -62,13 +65,13 @@ class ParadoxTemplateSnippetNode(
     /** 检查是否可以被精确匹配（不存在可能有歧义的引用）。 */
     fun checkExactMatched(element: PsiElement): Boolean {
         val expression = ParadoxExpression.resolve(text)
-        val matchContext = ParadoxScriptExpressionMatchContext(element, expression, configExpression, config, configGroup)
+        val matchContext = ParadoxScriptExpressionMatchContext(element, expression, configExpression, getMockConfig(), configGroup)
         return ParadoxExpressionMatchService.matchScriptExpression(matchContext).get()
     }
 
     override fun getAttributesKeyConfig(element: ParadoxExpressionElement): CwtConfig<*>? {
         if (text.isParameterized()) return null
-        return config
+        return getMockConfig()
     }
 
     override fun getUnresolvedError(element: ParadoxExpressionElement): ParadoxComplexExpressionError? {
@@ -86,7 +89,7 @@ class ParadoxTemplateSnippetNode(
     override fun getReference(element: ParadoxExpressionElement): Reference? {
         if (text.isParameterized()) return null
         val offset = ParadoxExpressionManager.getExpressionOffset(element)
-        return Reference(element, rangeInExpression.shiftRight(offset), text, config)
+        return Reference(element, rangeInExpression.shiftRight(offset), text, getMockConfig())
     }
 
     class Reference(

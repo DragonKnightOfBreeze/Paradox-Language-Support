@@ -44,6 +44,7 @@ import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressi
  * tags_expression ::= tag? ("," tag?)*
  * private tag ::= dynamic_value | invert_dynamic_value
  * invert_dynamic_value ::= KEYWORD "(" dynamic_value? ")"
+ * dynamic_value ::= IDENTIFIER
  * ```
  */
 interface ParadoxTagsExpression : ParadoxComplexExpression {

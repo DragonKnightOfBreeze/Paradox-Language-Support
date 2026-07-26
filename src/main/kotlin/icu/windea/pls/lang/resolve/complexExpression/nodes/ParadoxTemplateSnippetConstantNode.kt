@@ -1,6 +1,7 @@
 package icu.windea.pls.lang.resolve.complexExpression.nodes
 
 import com.intellij.openapi.util.TextRange
+import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxTemplateExpression
 
@@ -12,6 +13,10 @@ class ParadoxTemplateSnippetConstantNode(
     override val rangeInExpression: TextRange,
     override val configGroup: CwtConfigGroup
 ) : ParadoxComplexExpressionNodeBase() {
+    fun getMockConfig(): CwtValueConfig {
+        return CwtValueConfig.createMock(configGroup, text)
+    }
+
     companion object {
         @JvmStatic
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxTemplateSnippetConstantNode {
