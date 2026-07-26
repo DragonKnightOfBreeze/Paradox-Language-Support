@@ -33,7 +33,7 @@ data class ParadoxCompletionContext(
     val argumentNames: MutableSet<String>? = null,
     val node: ParadoxComplexExpressionNode? = null,
     /** 在对多参数动态链接的代码补全中，表示当前光标所处的参数索引（从0开始）。 */
-    val linkArgIndex: Int = 0,
+    val linkArgumentIndex: Int = 0,
 ) : GlobalBasedCompletionContext() {
     val offsetInExpression: Int = offsetInParent - expressionOffset
 

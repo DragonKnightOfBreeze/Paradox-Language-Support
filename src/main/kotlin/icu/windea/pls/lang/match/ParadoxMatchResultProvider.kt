@@ -18,6 +18,7 @@ import icu.windea.pls.core.cache.cancelable
 import icu.windea.pls.core.cache.createNestedCache
 import icu.windea.pls.core.createCachedValue
 import icu.windea.pls.core.normalizePath
+import icu.windea.pls.core.util.KeyProviderWithFactory
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.KeyWithFactory
 import icu.windea.pls.core.util.getOrPutUserData
@@ -50,6 +51,7 @@ import icu.windea.pls.script.psi.propertyValue
 
 private typealias MatchResultNestedCache = NestedCache<VirtualFile, String, ParadoxMatchResult>
 private typealias MatchResultNestedCacheKey = KeyWithFactory<CachedValue<MatchResultNestedCache>, CwtConfigGroup>
+private typealias MatchResultNestedCacheKeyProvider = KeyProviderWithFactory<CachedValue<MatchResultNestedCache>, CwtConfigGroup>
 
 object ParadoxMatchResultProvider {
     object Keys : KeyRegistry() {
@@ -61,12 +63,14 @@ object ParadoxMatchResultProvider {
         val cacheForModifiers by createKeyForCache(ParadoxModificationTrackers.ScriptFile)
         val cacheForTemplates by createKeyForCache(ParadoxModificationTrackers.ScriptFile, ParadoxModificationTrackers.LocalisationFile, ParadoxModificationTrackers.PreferredLocale)
 
-        private fun createKeyForCache(vararg dependencies: Any) = registerKeyWithThis<CachedValue<MatchResultNestedCache>, CwtConfigGroup>(Keys) {
-            // rootFile -> cacheKey -> configMatchResult
-            createCachedValue(project) {
-                createNestedCache<VirtualFile, _, _> {
-                    CacheBuilder().build<String, ParadoxMatchResult>().cancelable()
-                }.withDependencyItems(*dependencies)
+        private fun createKeyForCache(vararg dependencies: Any): MatchResultNestedCacheKeyProvider {
+            return registerKeyWithThis(Keys) {
+                // rootFile -> cacheKey -> configMatchResult
+                createCachedValue(project) {
+                    createNestedCache<VirtualFile, _, _> {
+                        CacheBuilder().build<String, ParadoxMatchResult>().cancelable()
+                    }.withDependencyItems(*dependencies)
+                }
             }
         }
     }
