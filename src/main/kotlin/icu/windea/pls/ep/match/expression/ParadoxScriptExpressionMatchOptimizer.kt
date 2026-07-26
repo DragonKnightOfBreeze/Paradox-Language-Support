@@ -2,7 +2,7 @@ package icu.windea.pls.ep.match.expression
 
 import com.intellij.openapi.extensions.ExtensionPointName
 import icu.windea.pls.config.config.CwtMemberConfig
-import icu.windea.pls.lang.match.ParadoxMatchPipeline
+import icu.windea.pls.lang.match.ParadoxMatchService
 import icu.windea.pls.lang.match.ParadoxScriptExpressionMatchOptimizerContext
 import icu.windea.pls.model.expressions.ParadoxExpression
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
@@ -12,7 +12,7 @@ import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
  *
  * @see ParadoxExpression
  * @see ParadoxScriptExpressionElement
- * @see ParadoxMatchPipeline
+ * @see ParadoxMatchService
  */
 interface ParadoxScriptExpressionMatchOptimizer {
     /**
