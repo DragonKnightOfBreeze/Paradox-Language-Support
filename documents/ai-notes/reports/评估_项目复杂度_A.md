@@ -1,6 +1,7 @@
 # 评估：项目复杂度
 
-> 评估日期：2026-02-14
+> 版本：v2.1.3-dev
+> 日期：2026-02-14
 > 数据来源：README、code_stats.py、config_stats.py、plugin.xml 及其引用的全部 18 个 XML 配置文件
 > 模型：Claude Opus 4.6 Thinking
 
