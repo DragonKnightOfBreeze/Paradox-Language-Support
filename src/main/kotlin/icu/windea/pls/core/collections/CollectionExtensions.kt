@@ -176,9 +176,17 @@ inline fun <T> Iterable<T>.chunkedBy(keepEmpty: Boolean = true, predicate: (T) -
 fun <T : Any> List<T>.removePrefixOrNull(prefix: List<T>, wildcard: T? = null): List<T>? {
     if (prefix.isEmpty()) return this
     if (prefix.size > this.size) return null
-    for ((i, e) in prefix.withIndex()) {
-        if (wildcard != null && wildcard == e) continue
-        if (e != this[i]) return null
+    if (this is RandomAccess) {
+        for (i in 0 until prefix.size) {
+            val e = prefix[i]
+            if (wildcard != null && wildcard == e) continue
+            if (e != this[i]) return null
+        }
+    } else {
+        for ((i, e) in prefix.withIndex()) {
+            if (wildcard != null && wildcard == e) continue
+            if (e != this[i]) return null
+        }
     }
     return this.drop(prefix.size)
 }
@@ -190,9 +198,17 @@ fun <T : Any> List<T>.removePrefixOrNull(prefix: List<T>, wildcard: T? = null): 
 fun <T : Any> List<T>.removeSuffixOrNull(suffix: List<T>, wildcard: T? = null): List<T>? {
     if (suffix.isEmpty()) return this
     if (suffix.size > this.size) return null
-    for ((i, e) in suffix.withIndex()) {
-        if (wildcard != null && wildcard == e) continue
-        if (e != this[this.size - suffix.size + i]) return null
+    if (this is RandomAccess) {
+        for (i in 0 until suffix.size) {
+            val e = suffix[i]
+            if (wildcard != null && wildcard == e) continue
+            if (e != this[this.size - suffix.size + i]) return null
+        }
+    } else {
+        for ((i, e) in suffix.withIndex()) {
+            if (wildcard != null && wildcard == e) continue
+            if (e != this[this.size - suffix.size + i]) return null
+        }
     }
     return this.dropLast(suffix.size)
 }

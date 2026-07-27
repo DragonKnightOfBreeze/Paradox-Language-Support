@@ -2,13 +2,14 @@
 
 ## Unreleased
 
+- [ ] 完善脚本文件的 lexer：更好的对可选空白和高级插值语法（如 `a_$p$_[[p]b]`）的支持） / Improve lexer for script files: better support for optional blank and advanced interpolation syntax (e.g., `a_$p$_[[p]b]`)
+
 ## 3.0.1
 
 - [x] 定义名应允许为任意字符串字面量（而非仅限合法的标识符） / Definition names should be allowed to be any string literals (not just valid identifiers) ([#369](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/369))
 - [x] 对于上下文规则和期望的规则，在检查前展开规则，包括并集（`union[x]`）和别名（`alias_keys_field[x]`） / For context configs and expected configs, expand before checking, including unions (`union[x]`) and aliases (`alias_keys_field[x]`)
 - [x] 完善 `ParadoxExecutableFileBasedGameMetadataProvider`，修复回归 BUG / Improve `ParadoxExecutableFileBasedGameMetadataProvider`, fix regression ([#339](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/339))
 - [x] 修复对于 `alias[x] = union[y]`，匹配逻辑不符合预期的问题 / Fix a bug where for `alias[x] = union[y]`, the match logic does not work as expected ([#339](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/339))
-- [ ] 完善脚本文件的 lexer：更好的对可选空白和高级插值语法（如 `a_$p$_[[p]b]`）的支持） / Improve lexer for script files: better support for optional blank and advanced interpolation syntax (e.g., `a_$p$_[[p]b]`)
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 3.0.0 - 2026-07-13

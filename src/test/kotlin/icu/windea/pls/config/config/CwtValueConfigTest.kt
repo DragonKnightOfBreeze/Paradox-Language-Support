@@ -232,7 +232,7 @@ class CwtValueConfigTest : BasePlatformTestCase() {
         val d = c.delegatedWith(value = "100")
         assertNull(d.parentConfig)
         assertEquals("100", d.value)
-        assertEquals(CwtDataExpressionRole.Key, d.valueExpression.role)
+        assertEquals(CwtDataExpressionRole.Value, d.valueExpression.role)
     }
 
     // endregion
