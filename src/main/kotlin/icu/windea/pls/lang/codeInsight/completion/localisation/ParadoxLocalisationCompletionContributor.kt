@@ -17,8 +17,8 @@ class ParadoxLocalisationCompletionContributor : CompletionContributor() {
         ParadoxLocalisationExpressionCompletionProvider().let { extend(null, it.elementPattern, it) }
         ParadoxLocalisationIconCompletionProvider().let { extend(null, it.elementPattern, it) }
         ParadoxLocalisationConceptCompletionProvider().let { extend(null, it.elementPattern, it) }
-        ParadoxLocalisationTextFormatCompletionProvider().let { extend(null, it.elementPattern, it) }
         ParadoxLocalisationTextIconCompletionProvider().let { extend(null, it.elementPattern, it) }
+        ParadoxLocalisationTextFormatCompletionProvider().let { extend(null, it.elementPattern, it) }
     }
 
     override fun beforeCompletion(context: CompletionInitializationContext) {

@@ -26,6 +26,6 @@ class ParadoxLocalisationTextFormatCompletionProvider : ParadoxCompletionProvide
         val globalContext = GlobalCompletionContext.create(element, parameters, context)
         val context = ParadoxCompletionContext.create(globalContext)
 
-        ParadoxCompletionManager.completeTextFormat(context, result)
+        ParadoxCompletionManager.completeLocalisationTextFormat(context, result)
     }
 }

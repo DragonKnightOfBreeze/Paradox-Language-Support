@@ -26,6 +26,6 @@ class ParadoxLocalisationTextIconCompletionProvider : ParadoxCompletionProvider(
         val globalContext = GlobalCompletionContext.create(element, parameters, context)
         val context = ParadoxCompletionContext.create(globalContext)
 
-        ParadoxCompletionManager.completeTextIcon(context, result)
+        ParadoxCompletionManager.completeLocalisationTextIcon(context, result)
     }
 }

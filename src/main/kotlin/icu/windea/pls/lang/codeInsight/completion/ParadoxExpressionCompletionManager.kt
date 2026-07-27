@@ -17,12 +17,10 @@ import icu.windea.pls.core.codeInsight.LimitedCompletionProcessor
 import icu.windea.pls.core.processAsync
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.runWithRecursionGuard
-import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.util.values.singletonListOrEmpty
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.ep.resolve.expression.ParadoxPathReferenceExpressionSupport
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueLightElement
 import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
 import icu.windea.pls.lang.psi.light.ParadoxMeshLocatorLightElement
@@ -166,8 +164,8 @@ object ParadoxExpressionCompletionManager {
     fun completePathReference(context: ParadoxCompletionContext, result: CompletionResultSet) {
         val config = context.config ?: return
         val configExpression = config.configExpression ?: return
-        val pathReferenceExpressionSupport = ParadoxPathReferenceExpressionSupport.get(configExpression)
-        if (pathReferenceExpressionSupport != null) {
+        val support = ParadoxPathReferenceExpressionSupport.get(configExpression)
+        if (support != null) {
             val hintText = ParadoxCompletionLookupProvider.getConfigBasedHintText(context, config)
             val fileExtensions = when (config) {
                 is CwtMemberConfig<*> -> config.optionMetadata.fileExtensions.orEmpty()
@@ -177,14 +175,8 @@ object ParadoxExpressionCompletionManager {
             val selector = ParadoxFilePathSearch.selector(context.project, context.contextElement).contextSensitive().distinct()
                 .withFileExtensions(fileExtensions)
             ParadoxFilePathSearch.search(null, configExpression, selector).processAsync p@{ virtualFile ->
-                ProgressManager.checkCanceled()
-                val file = virtualFile.toPsiFile(context.project) ?: return@p true
-                val filePath = virtualFile.fileInfo?.path?.path ?: return@p true
-                val name = pathReferenceExpressionSupport.extract(configExpression, context.file, filePath) ?: return@p true
-                val icon = ChronicleIcons.Nodes.PathReference(config.configExpression)
-                ParadoxCompletionLookupProvider.fromPathReference(context, file, name, file, icon, hintText).addToResult(context, result)
+                ParadoxCompletionLookupProvider.fromPathReference(context, config, virtualFile, support, hintText).addToResult(context, result)
             }
-
             if (config.configExpression == ParadoxInlineScriptManager.inlineScriptPathExpression) {
                 ParadoxExtendedCompletionManager.completeExtendedInlineScript(context, result)
             }
@@ -213,9 +205,8 @@ object ParadoxExpressionCompletionManager {
         if (enumValueConfigs.isEmpty()) return
         val typeFile = enumConfig.pointer.containingFile
         for (enumValueConfig in enumValueConfigs) {
-            val name = enumValueConfig.value
-            val element = enumValueConfig.pointer.element ?: continue
-            ParadoxCompletionLookupProvider.fromStaticEnumValue(context, element, name, typeFile, hintText).addToResult(context, result)
+            ProgressManager.checkCanceled()
+            ParadoxCompletionLookupProvider.fromStaticEnumValue(context, enumValueConfig, typeFile, hintText).addToResult(context, result)
         }
     }
 
@@ -235,7 +226,7 @@ object ParadoxExpressionCompletionManager {
             val name = info.name
             val readWriteAccess = Access.Write // write (declaration)
             val element = ParadoxComplexEnumValueLightElement(context.contextElement, name, enumName, readWriteAccess, configGroup.gameType, configGroup.project)
-            ParadoxCompletionLookupProvider.fromComplexEnumValue(context, element, name, typeFile, enumName, hintText, complexEnumConfig.caseInsensitive).addToResult(context, result)
+            ParadoxCompletionLookupProvider.fromComplexEnumValue(context, element, typeFile, hintText).addToResult(context, result)
         }
     }
 
@@ -277,6 +268,7 @@ object ParadoxExpressionCompletionManager {
         val finalConfigs = configs.ifEmpty { config.to.singletonListOrEmpty() }
         if (finalConfigs.isEmpty()) return
         for (finalConfig in finalConfigs) {
+            ProgressManager.checkCanceled()
             completePredefinedDynamicValue(context, result, finalConfig)
             completeIndexedDynamicValue(context, result, finalConfig)
         }
@@ -290,13 +282,13 @@ object ParadoxExpressionCompletionManager {
         val dynamicValueType = configExpression.metadata.value ?: return
         if (configExpression.type != CwtDataTypes.Value && configExpression.type != CwtDataTypes.DynamicValue) return
         val hintText = ParadoxCompletionLookupProvider.getConfigBasedHintText(context, config)
-        val valueConfig = configGroup.dynamicValueTypes[dynamicValueType] ?: return
-        val dynamicValueTypeConfigs = valueConfig.valueConfigMap.values
-        for (dynamicValueTypeConfig in dynamicValueTypeConfigs) {
-            val name = dynamicValueTypeConfig.value
-            val element = dynamicValueTypeConfig.pointer.element ?: continue
-            val typeFile = valueConfig.pointer.containingFile
-            ParadoxCompletionLookupProvider.fromPredefinedDynamicValue(context, element, name, typeFile, hintText, dynamicValueType).addToResult(context, result)
+        val dynamicValueTypeConfig = configGroup.dynamicValueTypes[dynamicValueType] ?: return
+        val valueConfigs = dynamicValueTypeConfig.valueConfigMap.values
+        if (valueConfigs.isEmpty()) return
+        val typeFile = dynamicValueTypeConfig.pointer.containingFile
+        for (valueConfig in valueConfigs) {
+            ProgressManager.checkCanceled()
+            ParadoxCompletionLookupProvider.fromPredefinedDynamicValue(context, valueConfig, dynamicValueType, typeFile, hintText).addToResult(context, result)
         }
     }
 
@@ -313,7 +305,7 @@ object ParadoxExpressionCompletionManager {
             if (name == context.keyword) return@p true // 排除和当前输入的同名的
             val readWriteAccess = info.readWriteAccess
             val element = ParadoxDynamicValueLightElement(context.contextElement, name, dynamicValueType, readWriteAccess, configGroup.gameType, configGroup.project)
-            ParadoxCompletionLookupProvider.fromLightElement(context, element, hintText).addToResult(context, result)
+            ParadoxCompletionLookupProvider.fromIndexedDynamicValue(context, element, hintText).addToResult(context, result)
         }
     }
 
@@ -346,18 +338,18 @@ object ParadoxExpressionCompletionManager {
             // 常量的值也可能是yes/no
             if (name == "yes") {
                 if (context.leftQuoted) return
-                result.addElement(ParadoxCompletionLookupProvider.forYesKeyword(), context)
+                ParadoxCompletionLookupProvider.forYesKeyword().addToResult(context, result)
                 return
             }
             if (name == "no") {
                 if (context.leftQuoted) return
-                result.addElement(ParadoxCompletionLookupProvider.forNoKeyword(), context)
+                ParadoxCompletionLookupProvider.forNoKeyword().addToResult(context, result)
                 return
             }
         }
         val element = config.resolved().pointer.element ?: return
         val typeFile = config.resolved().pointer.containingFile
-        ParadoxCompletionLookupProvider.fromConstant(context, element, name, typeFile, icon).addToResult(context, result)
+        ParadoxCompletionLookupProvider.fromConstant(context, name, element, typeFile, icon).addToResult(context, result)
     }
 
     fun completeArgument(context: ParadoxCompletionContext, result: CompletionResultSet) {
@@ -384,7 +376,7 @@ object ParadoxExpressionCompletionManager {
             val name = info.name
             if (name == context.keyword) return@p true // 排除和当前输入的同名的
             val element = ParadoxShaderEffectLightElement(context.contextElement, name, configGroup.gameType, configGroup.project)
-            ParadoxCompletionLookupProvider.fromLightElement(context, element, hintText).addToResult(context, result)
+            ParadoxCompletionLookupProvider.fromIndexedExternalReference(context, element, hintText).addToResult(context, result)
         }
     }
 
@@ -404,7 +396,7 @@ object ParadoxExpressionCompletionManager {
             val name = info.name
             if (name == context.keyword) return@p true // 排除和当前输入的同名的
             val element = ParadoxMeshLocatorLightElement(context.contextElement, name, configGroup.gameType, configGroup.project)
-            ParadoxCompletionLookupProvider.fromLightElement(context, element, hintText).addToResult(context, result)
+            ParadoxCompletionLookupProvider.fromIndexedExternalReference(context, element, hintText).addToResult(context, result)
         }
     }
 

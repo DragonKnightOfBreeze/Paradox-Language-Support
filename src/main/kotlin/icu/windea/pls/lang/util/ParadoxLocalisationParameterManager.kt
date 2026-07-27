@@ -1,18 +1,14 @@
 package icu.windea.pls.lang.util
 
-import com.intellij.codeInsight.completion.CompletionResultSet
-import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
-import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.isSamePointer
 import icu.windea.pls.core.collections.synced
-import icu.windea.pls.core.icon
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.processAsync
 import icu.windea.pls.core.util.KeyRegistry
@@ -22,7 +18,6 @@ import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.match.ParadoxMatchOptions
-import icu.windea.pls.lang.resolve.ParadoxLocalisationParameterService
 import icu.windea.pls.lang.search.ParadoxLocalisationParameterSearch
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
@@ -104,18 +99,4 @@ object ParadoxLocalisationParameterManager {
         return dataType == CwtDataTypes.LocalisationParameter
     }
 
-    fun completeParameters(localisation: ParadoxLocalisationProperty, result: CompletionResultSet) {
-        val localisationName = localisation.name
-        val localisationIcon = localisation.icon
-        val parameterNames = getParameterNames(localisation)
-        if (parameterNames.isNotEmpty()) {
-            for (parameterName in parameterNames) {
-                val parameter = ParadoxLocalisationParameterService.resolveParameter(localisation, parameterName) ?: continue
-                val lookupElement = LookupElementBuilder.create(parameter, parameterName)
-                    .withIcon(ChronicleIcons.Nodes.Parameter)
-                    .withTypeText(localisationName, localisationIcon, true)
-                result.addElement(lookupElement)
-            }
-        }
-    }
 }

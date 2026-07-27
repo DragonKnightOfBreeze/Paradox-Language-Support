@@ -2,56 +2,25 @@ package icu.windea.pls.lang.codeInsight.completion.localisation
 
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionResultSet
-import com.intellij.codeInsight.completion.InsertHandler
-import com.intellij.codeInsight.lookup.LookupElement
-import com.intellij.codeInsight.lookup.LookupElementBuilder
-import com.intellij.openapi.progress.ProgressManager
 import com.intellij.patterns.PlatformPatterns.*
-import com.intellij.psi.util.elementType
 import com.intellij.util.ProcessingContext
-import icu.windea.pls.core.icon
-import icu.windea.pls.core.letIf
+import icu.windea.pls.core.codeInsight.completion.GlobalCompletionContext
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionProvider
-import icu.windea.pls.lang.util.ParadoxTextColorManager
-import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes
 
 /**
  * 提供颜色ID的代码补全。
  */
 class ParadoxLocalisationColorCompletionProvider : ParadoxCompletionProvider() {
-    private val insertHandler = InsertHandler<LookupElement> { context, _ ->
-        // delete existing colorId after press enter
-        if (context.completionChar == '\n' || context.completionChar == '\r') {
-            val editor = context.editor
-            val offset = editor.caretModel.offset
-            editor.document.deleteString(offset, offset + 1)
-        }
-    }
-
     val elementPattern get() = psiElement().atStartOf(psiElement().afterLeaf("§"))
 
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-        val file = parameters.originalFile
-        val originalColorId = file.findElementAt(parameters.offset)
-            ?.takeIf { it.elementType == ParadoxLocalisationElementTypes.COLOR_TOKEN }
-        val project = file.project
-        val colorInfos = ParadoxTextColorManager.getInfos(project, file)
-        val lookupElements = mutableListOf<LookupElement>()
-        for (colorInfo in colorInfos) {
-            ProgressManager.checkCanceled()
-            val element = colorInfo.element ?: continue
-            val name = colorInfo.name
-            val icon = colorInfo.icon
-            val tailText = " from <text_color>"
-            val typeFile = element.containingFile
-            val lookupElement = LookupElementBuilder.create(element, name).withIcon(icon)
-                .withTailText(tailText, true)
-                .withTypeText(typeFile?.name, typeFile?.icon, true)
-                .letIf(originalColorId != null) {
-                    it.withInsertHandler(insertHandler)
-                }
-            lookupElements.add(lookupElement)
-        }
-        result.addAllElements(lookupElements)
+        val element = parameters.position
+
+        val globalContext = GlobalCompletionContext.create(element, parameters, context)
+        val context = ParadoxCompletionContext.create(globalContext)
+
+        ParadoxCompletionManager.completeLocalisationColor(context, result)
     }
 }

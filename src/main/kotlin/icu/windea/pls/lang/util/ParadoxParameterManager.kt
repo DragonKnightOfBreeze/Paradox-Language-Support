@@ -1,7 +1,6 @@
 package icu.windea.pls.lang.util
 
 import com.intellij.codeInsight.completion.CompletionResultSet
-import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.vfs.VirtualFile
@@ -13,7 +12,6 @@ import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.startOffset
 import icu.windea.pls.ChronicleFacade
-import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
@@ -37,10 +35,9 @@ import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.ep.resolve.parameter.ParadoxParameterSupport
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionLookupProvider
 import icu.windea.pls.lang.codeInsight.completion.ParadoxExtendedCompletionManager
-import icu.windea.pls.lang.codeInsight.completion.addElement
-import icu.windea.pls.lang.codeInsight.completion.withPatchableIcon
-import icu.windea.pls.lang.codeInsight.completion.wrapForExpression
+import icu.windea.pls.lang.codeInsight.completion.addToResult
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxPsiService
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
@@ -196,11 +193,7 @@ object ParadoxParameterManager {
                 parameter is ParadoxParameter -> ParadoxParameterService.resolveParameter(parameter)
                 else -> null
             } ?: continue
-            val lookupElement = LookupElementBuilder.create(parameterElement, parameterName)
-                .withTypeText(parameterElement.contextName, parameterElement.contextIcon, true)
-                .withPatchableIcon(ChronicleIcons.Nodes.Parameter)
-                .wrapForExpression(context)
-            result.addElement(lookupElement, context)
+            ParadoxCompletionLookupProvider.fromParameter(context, parameterElement).addToResult(context, result)
         }
 
         val contextKey = ParadoxParameterService.getContextKeyFromContext(parameterContext) ?: return
@@ -234,11 +227,7 @@ object ParadoxParameterManager {
                     parameter is ParadoxParameter -> ParadoxParameterService.resolveParameter(parameter)
                     else -> null
                 } ?: continue
-                val lookupElement = LookupElementBuilder.create(parameterElement, parameterName)
-                    .withTypeText(parameterElement.contextName, parameterElement.contextIcon, true)
-                    .withPatchableIcon(ChronicleIcons.Nodes.Parameter)
-                    .wrapForExpression(context)
-                result.addElement(lookupElement, context)
+                ParadoxCompletionLookupProvider.fromParameter(context, parameterElement).addToResult(context, result)
             }
             true
         }

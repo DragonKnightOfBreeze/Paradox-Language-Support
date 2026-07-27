@@ -1,7 +1,6 @@
 package icu.windea.pls.ep.resolve.modifier
 
 import com.intellij.codeInsight.completion.CompletionResultSet
-import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.ModificationTracker
 import com.intellij.psi.PsiElement
@@ -27,12 +26,7 @@ import icu.windea.pls.core.util.values.or
 import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionLookupProvider
-import icu.windea.pls.lang.codeInsight.completion.addElement
-import icu.windea.pls.lang.codeInsight.completion.withModifierPresentableNames
-import icu.windea.pls.lang.codeInsight.completion.withPatchableIcon
-import icu.windea.pls.lang.codeInsight.completion.withPatchableTailText
-import icu.windea.pls.lang.codeInsight.completion.withScopeMatched
-import icu.windea.pls.lang.codeInsight.completion.wrapForExpression
+import icu.windea.pls.lang.codeInsight.completion.addToResult
 import icu.windea.pls.lang.match.ParadoxConfigExpressionMatchService
 import icu.windea.pls.lang.psi.light.ParadoxModifierLightElement
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxTemplateExpression
@@ -113,16 +107,12 @@ class ParadoxPredefinedModifierSupport : ParadoxModifierSupport {
             val template = modifierConfig.template
             if (template.expressionString.isNotEmpty()) continue
             val typeFile = modifierConfig.pointer.containingFile
+            val typeText = typeFile?.name
+            val typeIcon = typeFile?.icon
             val name = modifierConfig.name
-            val modifierElement = ParadoxModifierManager.resolveModifier(name, element, configGroup, this)
-            val lookupElement = LookupElementBuilder.create(name).withPsiElement(modifierElement)
-                .withTypeText(typeFile?.name, typeFile?.icon, true)
-                .withPatchableIcon(ChronicleIcons.Nodes.Modifier)
-                .withPatchableTailText(hintText)
-                .withScopeMatched(scopeMatched)
-                .withModifierPresentableNames(name, element)
-                .wrapForExpression(context)
-            result.addElement(lookupElement, context)
+            val modifierElement = ParadoxModifierManager.resolveModifier(name, element, configGroup, this) ?: continue
+            val lookupElement = ParadoxCompletionLookupProvider.fromModifier(context, modifierElement, typeText, typeIcon, hintText)
+            lookupElement.addToResult(context, result)
         }
     }
 
@@ -183,25 +173,18 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, modifierConfig.supportedScopes, configGroup)
             if (!scopeMatched && ChronicleSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
 
-            val hintText = ParadoxCompletionLookupProvider.getConfigBasedHintText(context, modifierConfig.config, withConfigExpression = true)
             val template = modifierConfig.template
             if (template.expressionString.isEmpty()) continue
             val typeFile = modifierConfig.pointer.containingFile
+            val typeText = typeFile?.name
+            val typeIcon = typeFile?.icon
+            val hintText = ParadoxCompletionLookupProvider.getConfigBasedHintText(context, modifierConfig.config, withConfigExpression = true)
             // 生成的 modifier
             ParadoxModifierManager.completeTemplateModifier(element, template, configGroup) p@{ name ->
-                // 排除重复的
-                if (!modifierNames.add(name)) return@p true
-
-                val modifierElement = ParadoxModifierManager.resolveModifier(name, element, configGroup, this)
-                val lookupElement = LookupElementBuilder.create(name).withPsiElement(modifierElement)
-                    .withTypeText(typeFile?.name, typeFile?.icon, true)
-                    .withPatchableIcon(ChronicleIcons.Nodes.Modifier)
-                    .withPatchableTailText(hintText)
-                    .withScopeMatched(scopeMatched)
-                    .withModifierPresentableNames(name, element)
-                    .wrapForExpression(context)
-                result.addElement(lookupElement, context)
-                true
+                if (!modifierNames.add(name)) return@p true // 排除重复的
+                val modifierElement = ParadoxModifierManager.resolveModifier(name, element, configGroup, this) ?: return@p true
+                val lookupElement = ParadoxCompletionLookupProvider.fromModifier(context, modifierElement, typeText, typeIcon, hintText)
+                lookupElement.addToResult(context, result)
             }
         }
     }
@@ -396,22 +379,15 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, supportedScopes, configGroup)
             if (!scopeMatched && ChronicleSettings.getInstance().state.completion.completeOnlyScopeIsMatched) return@p true
 
-            val tailText = " from economic category " + economicCategoryInfo.name
             val typeText = economicCategoryInfo.name
             val typeIcon = ChronicleIcons.Nodes.Definition(ParadoxDefinitionTypes.economicCategory)
+            val hintText = " from economic category " + economicCategoryInfo.name
             for (economicCategoryModifierInfo in economicCategoryInfo.modifiers) {
                 val name = economicCategoryModifierInfo.name
-                // 排除重复的
-                if (!modifierNames.add(name)) continue
-
-                val modifierElement = ParadoxModifierManager.resolveModifier(name, element, configGroup, this)
-                val lookupElement = LookupElementBuilder.create(name).withPsiElement(modifierElement)
-                    .withTypeText(typeText, typeIcon, true)
-                    .withPatchableIcon(ChronicleIcons.Nodes.Modifier)
-                    .withPatchableTailText(tailText)
-                    .withModifierPresentableNames(name, element)
-                    .wrapForExpression(context)
-                result.addElement(lookupElement, context)
+                if (!modifierNames.add(name)) continue // 排除重复的
+                val modifierElement = ParadoxModifierManager.resolveModifier(name, element, configGroup, this) ?: continue
+                val lookupElement = ParadoxCompletionLookupProvider.fromModifier(context, modifierElement, typeText, typeIcon, hintText)
+                lookupElement.addToResult(context, result)
             }
             true
         }

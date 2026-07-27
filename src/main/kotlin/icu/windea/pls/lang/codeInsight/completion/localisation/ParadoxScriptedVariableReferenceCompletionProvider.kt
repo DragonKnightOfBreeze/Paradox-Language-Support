@@ -4,18 +4,19 @@ import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.completion.InsertHandler
 import com.intellij.codeInsight.lookup.LookupElement
-import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.editor.EditorModificationUtil
-import com.intellij.openapi.progress.ProgressManager
 import com.intellij.patterns.PlatformPatterns.*
 import com.intellij.util.ProcessingContext
-import icu.windea.pls.core.icon
+import icu.windea.pls.core.codeInsight.completion.GlobalCompletionContext
 import icu.windea.pls.core.processAsync
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionLookupProvider
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionProvider
+import icu.windea.pls.lang.codeInsight.completion.ParadoxExtendedCompletionManager
+import icu.windea.pls.lang.codeInsight.completion.addToResult
 import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
-import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 class ParadoxScriptedVariableReferenceCompletionProvider : ParadoxCompletionProvider() {
     private val insertHandler = InsertHandler<LookupElement> { context, _ ->
@@ -33,22 +34,16 @@ class ParadoxScriptedVariableReferenceCompletionProvider : ParadoxCompletionProv
 
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
         val element = parameters.position
-        val project = parameters.originalFile.project
-        val selector = ParadoxScriptedVariableSearch.selector(project, element).contextSensitive().distinct()
-        ParadoxScriptedVariableSearch.searchGlobal(null, selector).processAsync { processScriptedVariable(it, result) }
-    }
 
-    @Suppress("SameReturnValue")
-    private fun processScriptedVariable(it: ParadoxScriptScriptedVariable, result: CompletionResultSet): Boolean {
-        ProgressManager.checkCanceled()
-        val name = it.name ?: return true
-        val icon = it.icon
-        val typeFile = it.containingFile
-        val lookupElement = LookupElementBuilder.create(it, name).withIcon(icon)
-            .withTypeText(typeFile.name, typeFile.icon, true)
-            .withInsertHandler(insertHandler)
-        result.addElement(lookupElement)
-        return true
+        val globalContext = GlobalCompletionContext.create(element, parameters, context)
+        val context = ParadoxCompletionContext.create(globalContext)
+
+        val selector = ParadoxScriptedVariableSearch.selector(context.project, element).contextSensitive().distinct()
+        ParadoxScriptedVariableSearch.searchGlobal(null, selector).processAsync { element ->
+            ParadoxCompletionLookupProvider.forLocalisationScriptedVariable(element).addToResult(context, result)
+        }
+
+        ParadoxExtendedCompletionManager.completeExtendedScriptedVariable(context, result)
     }
 }
 

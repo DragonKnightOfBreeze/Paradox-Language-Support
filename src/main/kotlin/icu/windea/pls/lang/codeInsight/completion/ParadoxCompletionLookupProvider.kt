@@ -6,6 +6,7 @@ import com.intellij.codeInsight.completion.InsertionContext
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.editor.EditorModificationUtil
+import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleIcons
@@ -29,15 +30,25 @@ import icu.windea.pls.config.manipulation.CwtConfigManipulationService
 import icu.windea.pls.core.codeInsight.completion.AddCharInsertHandler
 import icu.windea.pls.core.codeInsight.completion.AddParenthesesInsertHandler
 import icu.windea.pls.core.icon
+import icu.windea.pls.core.letIf
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.psi.light.LightElementBase
 import icu.windea.pls.core.quoteIfNeeded
+import icu.windea.pls.core.toPsiFile
+import icu.windea.pls.ep.resolve.expression.ParadoxPathReferenceExpressionSupport
 import icu.windea.pls.lang.defineNamespaceInfo
 import icu.windea.pls.lang.defineVariableInfo
 import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueLightElement
+import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
+import icu.windea.pls.lang.psi.light.ParadoxLocalisationParameterLightElement
+import icu.windea.pls.lang.psi.light.ParadoxModifierLightElement
+import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.localisation.ParadoxLocalisationFileType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.model.ParadoxTextColorInfo
 import icu.windea.pls.model.constants.ChronicleStrings
 import icu.windea.pls.model.type.CwtExpressionType
 import icu.windea.pls.script.formatter.ParadoxScriptCodeStyleSettings
@@ -137,15 +148,9 @@ object ParadoxCompletionLookupProvider {
             .wrapForExpression(context)
     }
 
-    fun fromPathReference(context: ParadoxCompletionContext, element: PsiElement, name: String, typeFile: PsiFile?, icon: Icon?, hintText: String? = null): LookupElementBuilder? {
-        return LookupElementBuilder.create(element, name)
-            .withTypeText(typeFile?.name, typeFile?.icon, true)
-            .withPatchableIcon(icon)
-            .withPatchableTailText(hintText)
-            .wrapForExpression(context)
-    }
-
-    fun fromStaticEnumValue(context: ParadoxCompletionContext, element: PsiElement, name: String, typeFile: PsiFile?, hintText: String? = null): LookupElementBuilder? {
+    fun fromStaticEnumValue(context: ParadoxCompletionContext, config: CwtValueConfig, typeFile: PsiFile?, hintText: String? = null): LookupElementBuilder? {
+        val name = config.value
+        val element = config.pointer.element ?: return null
         return LookupElementBuilder.create(element, name)
             .withTypeText(typeFile?.name, typeFile?.icon, true)
             .withCaseSensitivity(false) // ignore case
@@ -155,17 +160,20 @@ object ParadoxCompletionLookupProvider {
             .wrapForExpression(context)
     }
 
-    fun fromComplexEnumValue(context: ParadoxCompletionContext, element: PsiElement, name: String, typeFile: PsiFile?, enumName: String, hintText: String? = null, caseInsensitive: Boolean = false): LookupElementBuilder? {
+    fun fromComplexEnumValue(context: ParadoxCompletionContext, element: ParadoxComplexEnumValueLightElement, typeFile: PsiFile?, hintText: String? = null): LookupElementBuilder? {
+        val name = element.name.orNull() ?: return null
         return LookupElementBuilder.create(element, name)
             .withTypeText(typeFile?.name, typeFile?.icon, true)
-            .withCaseSensitivity(!caseInsensitive)
+            .withCaseSensitivity(!element.caseInsensitive)
             .withPriority(ParadoxCompletionPriorities.complexEnumValue)
-            .withPatchableIcon(ChronicleIcons.Nodes.ComplexEnumValue(enumName))
+            .withPatchableIcon(element.icon)
             .withPatchableTailText(hintText)
             .wrapForExpression(context)
     }
 
-    fun fromPredefinedDynamicValue(context: ParadoxCompletionContext, element: PsiElement, name: String, typeFile: PsiFile?, hintText: String? = null, dynamicValueType: String? = null): LookupElementBuilder? {
+    fun fromPredefinedDynamicValue(context: ParadoxCompletionContext, config: CwtValueConfig, dynamicValueType: String, typeFile: PsiFile?, hintText: String? = null): LookupElementBuilder? {
+        val name = config.value
+        val element = config.pointer.element ?: return null
         return LookupElementBuilder.create(element, name)
             .withTypeText(typeFile?.name, typeFile?.icon, true)
             .withPatchableIcon(ChronicleIcons.Nodes.DynamicValue(dynamicValueType))
@@ -173,33 +181,29 @@ object ParadoxCompletionLookupProvider {
             .wrapForExpression(context)
     }
 
-    fun fromConstant(context: ParadoxCompletionContext, element: PsiElement, name: String, typeFile: PsiFile?, icon: Icon?): LookupElementBuilder? {
-        val scopeMatched = context.scopeMatched
+    fun fromIndexedDynamicValue(context: ParadoxCompletionContext, element: ParadoxDynamicValueLightElement, hintText: String? = null): LookupElementBuilder? {
+        val name = element.name.orNull() ?: return null
         return LookupElementBuilder.create(element, name)
-            .withTypeText(typeFile?.name, typeFile?.icon, true)
-            .withCaseSensitivity(false) // ignore case
-            .withPriority(ParadoxCompletionPriorities.constant)
-            .withPatchableIcon(icon)
-            .withScopeMatched(scopeMatched)
-            .wrapForExpression(context)
-    }
-
-    fun fromRootKey(context: ParadoxCompletionContext, key: String, element: PsiElement?, typeFile: PsiFile?, icon: Icon?, hintText: String? = null, forceInsertCurlyBraces: Boolean = false): LookupElementBuilder? {
-        return LookupElementBuilder.create(key).withPsiElement(element)
-            .withTypeText(typeFile?.name, typeFile?.icon, true)
-            .withCaseSensitivity(false) // ignore case
-            .withPatchableIcon(icon)
+            .withPatchableIcon(element.icon)
             .withPatchableTailText(hintText)
-            .withForceInsertCurlyBraces(forceInsertCurlyBraces)
-            .withPriority(ParadoxCompletionPriorities.rootKey)
             .wrapForExpression(context)
     }
 
-    fun fromLightElement(context: ParadoxCompletionContext, element: LightElementBase, hintText: String? = null): LookupElementBuilder? {
-        val name = element.name ?: return null
-        val icon = element.icon
+    fun fromModifier(context: ParadoxCompletionContext, element: ParadoxModifierLightElement, typeText: String?, typeIcon: Icon?, hintText: String? = null): LookupElementBuilder? {
+        val name = element.name.orNull() ?: return null
         return LookupElementBuilder.create(element, name)
-            .withPatchableIcon(icon)
+            .withTypeText(typeText, typeIcon, true)
+            .withPatchableIcon(ChronicleIcons.Nodes.Modifier)
+            .withPatchableTailText(hintText)
+            .withModifierPresentableNames(name, context)
+            .wrapForExpression(context)
+    }
+
+    fun fromParameter(context: ParadoxCompletionContext, element: ParadoxParameterLightElement, hintText: String? = null): LookupElementBuilder? {
+        val name = element.name.orNull() ?: return null
+        return LookupElementBuilder.create(element, name)
+            .withTypeText(element.contextName, element.contextIcon, true)
+            .withPatchableIcon(element.icon)
             .withPatchableTailText(hintText)
             .wrapForExpression(context)
     }
@@ -231,41 +235,155 @@ object ParadoxCompletionLookupProvider {
             .wrapForExpression(context)
     }
 
+    fun fromPathReference(context: ParadoxCompletionContext, config: CwtConfig<*>, virtualFile: VirtualFile, support: ParadoxPathReferenceExpressionSupport, hintText: String? = null): LookupElementBuilder? {
+        val configExpression = config.configExpression ?: return null
+        val file = virtualFile.toPsiFile(context.project) ?: return null
+        val filePath = virtualFile.fileInfo?.path?.path ?: return null
+        val name = support.extract(configExpression, context.file, filePath) ?: return null
+        return LookupElementBuilder.create(file, name)
+            .withTypeText(file.name, file.icon, true)
+            .withPatchableIcon(ChronicleIcons.Nodes.PathReference(config.configExpression))
+            .withPatchableTailText(hintText)
+            .wrapForExpression(context)
+    }
+
+    fun fromIndexedExternalReference(context: ParadoxCompletionContext, element: LightElementBase, hintText: String? = null): LookupElementBuilder? {
+        val name = element.name?.orNull() ?: return null
+        return LookupElementBuilder.create(element, name)
+            .withPatchableIcon(element.icon)
+            .withPatchableTailText(hintText)
+            .wrapForExpression(context)
+    }
+
+    fun fromConstant(context: ParadoxCompletionContext, lookupString: String, element: PsiElement, typeFile: PsiFile?, icon: Icon?): LookupElementBuilder? {
+        val scopeMatched = context.scopeMatched
+        return LookupElementBuilder.create(element, lookupString)
+            .withTypeText(typeFile?.name, typeFile?.icon, true)
+            .withCaseSensitivity(false) // ignore case
+            .withPriority(ParadoxCompletionPriorities.constant)
+            .withPatchableIcon(icon)
+            .withScopeMatched(scopeMatched)
+            .wrapForExpression(context)
+    }
+
+    fun fromRootKey(context: ParadoxCompletionContext, lookupString: String, element: PsiElement?, typeFile: PsiFile?, icon: Icon?, hintText: String? = null, forceInsertCurlyBraces: Boolean = false): LookupElementBuilder? {
+        return LookupElementBuilder.create(lookupString).withPsiElement(element)
+            .withTypeText(typeFile?.name, typeFile?.icon, true)
+            .withCaseSensitivity(false) // ignore case
+            .withPatchableIcon(icon)
+            .withPatchableTailText(hintText)
+            .withForceInsertCurlyBraces(forceInsertCurlyBraces)
+            .withPriority(ParadoxCompletionPriorities.rootKey)
+            .wrapForExpression(context)
+    }
+
     // endregion
 
     // region Providers (unwrapped)
 
-    fun forLocale(config: CwtLocaleConfig): LookupElementBuilder? {
+    fun forEventNamespace(element: ParadoxScriptProperty): LookupElementBuilder? {
+        val name = element.value ?: return null
+        val typeFile = element.containingFile
+        return LookupElementBuilder.create(element, name)
+            .withIcon(ChronicleIcons.Nodes.EventNamespace)
+            .withTypeText(typeFile?.name, typeFile?.icon, true)
+            .withCompletionId()
+    }
+
+    fun forLocalisationLocale(config: CwtLocaleConfig, hintText: String? = null, postHandle: Boolean = true): LookupElementBuilder? {
         val element = config.pointer.element ?: return null
         val typeFile = config.pointer.containingFile
         return LookupElementBuilder.create(element, config.name)
             .withIcon(ChronicleIcons.Nodes.LocalisationLocale)
-            .withTailText(" " + config.text, true)
+            .withTailText(hintText, true)
             .withTypeText(typeFile?.name, typeFile?.icon, true)
-            .withInsertHandler(LocaleInsertHandler())
+            .letIf(postHandle) {
+                it.withInsertHandler(LocalisationLocaleInsertHandler())
+            }
+            .withCompletionId()
     }
 
-    fun forLocalisationName(element: PsiElement, name: String, typeFile: PsiFile?, icon: Icon?): LookupElementBuilder {
+    fun forLocalisationName(element: ParadoxLocalisationProperty): LookupElementBuilder? {
+        val name = element.name.orNull() ?: return null
+        val typeFile = element.containingFile
         return LookupElementBuilder.create(element, name)
-            .withIcon(icon)
-            .withTypeText(typeFile?.name, typeFile?.icon, true)
-    }
-
-    fun forConcept(element: PsiElement, name: String, typeFile: PsiFile?, tailText: String?, icon: Icon?): LookupElementBuilder {
-        return LookupElementBuilder.create(element, name)
-            .withIcon(icon)
-            .withTailText(tailText, true)
+            .withIcon(element.icon)
             .withTypeText(typeFile?.name, typeFile?.icon, true)
             .withCompletionId()
     }
 
-    fun forTextFormat(element: PsiElement, name: String, typeFile: PsiFile?, tailText: String?, icon: Icon?): LookupElementBuilder {
+    fun forLocalisationParameter(element: ParadoxLocalisationParameterLightElement): LookupElementBuilder? {
+        val lookupString = element.name.orNull() ?: return null
+        return LookupElementBuilder.create(element, lookupString)
+            .withIcon(element.icon)
+            .withTypeText(element.localisationName, element.localisationIcon, true)
+            .withCompletionId()
+    }
+
+    fun forLocalisationScriptedVariable(element: ParadoxScriptScriptedVariable): LookupElementBuilder? {
+        val name = element.name?.orNull() ?: return null
+        val typeFile = element.containingFile
         return LookupElementBuilder.create(element, name)
-            .withIcon(icon)
-            .withTailText(tailText, true)
+            .withIcon(ChronicleIcons.Nodes.ScriptedVariable)
+            .withTypeText(typeFile.name, typeFile.icon, true)
+            .withInsertHandler(LocalisationScriptedVariableInsertHandler())
+            .withScriptedVariablePresentableNames(element)
+            .withCompletionId()
+    }
+
+    fun forLocalisationColor(colorInfo: ParadoxTextColorInfo, hintText: String? = null, postHandle: Boolean = true): LookupElementBuilder? {
+        val element = colorInfo.element ?: return null
+        val name = colorInfo.name
+        val icon = colorInfo.icon
+        val typeFile = element.containingFile
+        return LookupElementBuilder.create(element, name).withIcon(icon)
+            .withTailText(hintText, true)
+            .withTypeText(typeFile?.name, typeFile?.icon, true)
+            .letIf(postHandle) {
+                it.withInsertHandler(LocalisationColorInsertHandler())
+            }
+            .withCompletionId()
+    }
+
+    fun forLocalisationIcon(element: PsiElement, key: String, typeFile: PsiFile?, hintText: String? = null): LookupElementBuilder? {
+        if (key.isEmpty()) return null
+        return LookupElementBuilder.create(element, key).withIcon(ChronicleIcons.Nodes.LocalisationIcon)
+            .withTailText(hintText, true)
             .withTypeText(typeFile?.name, typeFile?.icon, true)
             .withCompletionId()
-            .withCaseSensitivity(false) // ignore case
+    }
+
+    fun forLocalisationConcept(element: ParadoxScriptProperty, key: String, hintText: String? = null): LookupElementBuilder? {
+        if (key.isEmpty()) return null
+        val typeFile = element.containingFile
+        return LookupElementBuilder.create(element, key)
+            .withIcon(ChronicleIcons.Nodes.LocalisationConceptCommand)
+            .withTailText(hintText, true)
+            .withTypeText(typeFile?.name, typeFile?.icon, true)
+            .withCompletionId()
+    }
+
+    fun forLocalisationTextIcon(element: ParadoxScriptProperty, hintText: String? = null): LookupElementBuilder? {
+        val definitionInfo = element.definitionInfo ?: return null
+        val name = definitionInfo.name.orNull() ?: return null
+        val typeFile = element.containingFile
+        return LookupElementBuilder.create(element, name)
+            .withIcon(ChronicleIcons.Nodes.LocalisationTextIcon)
+            .withTailText(hintText, true)
+            .withTypeText(typeFile?.name, typeFile?.icon, true)
+            .withCompletionId()
+    }
+
+    fun forLocalisationTextFormat(element: ParadoxScriptProperty, hintText: String? = null): LookupElementBuilder? {
+        val definitionInfo = element.definitionInfo ?: return null
+        val name = definitionInfo.name.orNull() ?: return null
+        val typeFile = element.containingFile
+        return LookupElementBuilder.create(element, name)
+            .withIcon(ChronicleIcons.Nodes.LocalisationTextFormat)
+            .withTailText(hintText, true)
+            .withTypeText(typeFile?.name, typeFile?.icon, true)
+            .withCaseSensitivity(false) // NOTE 3.0.1 ignore case specially here
+            .withCompletionId()
     }
 
     fun forHeaderColumn(config: CwtPropertyConfig): LookupElementBuilder? {
@@ -437,11 +555,10 @@ object ParadoxCompletionLookupProvider {
 
     fun forCommandField(config: CwtLinkConfig, hintText: String? = null, scopeMatched: Boolean = true): LookupElementBuilder? {
         val name = config.name
-        val icon = ChronicleIcons.Nodes.StaticCommandField
         val element = config.pointer.element ?: return null
         val typeFile = config.pointer.containingFile
         return LookupElementBuilder.create(element, name)
-            .withIcon(icon)
+            .withIcon(ChronicleIcons.Nodes.StaticCommandField)
             .withTailText(hintText, true)
             .withTypeText(typeFile?.name, typeFile?.icon, true)
             .withCaseSensitivity(false) // ignore case
@@ -451,11 +568,10 @@ object ParadoxCompletionLookupProvider {
 
     fun forCommandFieldPrefixFromData(config: CwtLinkConfig, hintText: String? = null, scopeMatched: Boolean = true): LookupElementBuilder? {
         val name = config.prefix ?: return null
-        val icon = ChronicleIcons.Nodes.DynamicCommandField
         val element = config.pointer.element ?: return null
         val typeFile = config.pointer.containingFile
         return LookupElementBuilder.create(element, name).bold()
-            .withIcon(icon)
+            .withIcon(ChronicleIcons.Nodes.DynamicCommandField)
             .withTailText(hintText, true)
             .withTypeText(typeFile?.name, typeFile?.icon, true)
             .withPriority(ParadoxCompletionPriorities.prefix)
@@ -465,11 +581,10 @@ object ParadoxCompletionLookupProvider {
 
     fun forCommandFieldPrefixFromArgument(config: CwtLinkConfig, hintText: String? = null, scopeMatched: Boolean = true): LookupElementBuilder? {
         val name = config.prefixFromArgument ?: return null
-        val icon = ChronicleIcons.Nodes.DynamicCommandField
         val element = config.pointer.element ?: return null
         val typeFile = config.pointer.containingFile
         return LookupElementBuilder.create(element, name).bold()
-            .withIcon(icon)
+            .withIcon(ChronicleIcons.Nodes.DynamicCommandField)
             .withTailText(hintText, true)
             .withTypeText(typeFile?.name, typeFile?.icon, true)
             .withInsertHandler(AddParenthesesInsertHandler())
@@ -527,7 +642,6 @@ object ParadoxCompletionLookupProvider {
             .withPatchableTailText(hintText)
             .wrapForExpression(context)
     }
-
 
     // endregion
 
@@ -600,7 +714,6 @@ object ParadoxCompletionLookupProvider {
         result = result.withBaseLookupString(lookupString) // #369
         result = result.patchIcon(config)
         result = result.patchTailText(withValueText)
-        result = result.addPresentableNames()
 
         if (!isKeyElement && !isStringElement) return result // not in a key or value position
         if (context.isKey == null) return result // not complete full key or value
@@ -662,12 +775,6 @@ object ParadoxCompletionLookupProvider {
     private fun getPatchedTailText(withValueText: String, patchableTailText: String?): String = buildString {
         append(withValueText)
         if (patchableTailText != null) append(patchableTailText)
-    }
-
-    private fun LookupElementBuilder.addPresentableNames(): LookupElementBuilder {
-        val presentableNames = presentableNames
-        if (presentableNames.isNullOrEmpty()) return this
-        return withLookupStrings(presentableNames)
     }
 
     // endregion
@@ -734,18 +841,19 @@ object ParadoxCompletionLookupProvider {
         }
     }
 
-    private class LocaleInsertHandler<T : LookupElement> : InsertHandler<T> {
+    private class LocalisationLocaleInsertHandler<T : LookupElement> : InsertHandler<T> {
         override fun handleInsert(c: InsertionContext, item: T) {
             // 如果之后没有英文冒号，则插入英文冒号（如果之后没有更多行，则还要插入换行符和必要的缩进），否则光标移到冒号之后
             val editor = c.editor
+            val caretModel = editor.caretModel
             val chars = editor.document.charsSequence
             val colonIndex = chars.indexOf(':', c.startOffset)
             if (colonIndex != -1) {
-                editor.caretModel.moveToOffset(colonIndex + 1)
+                caretModel.moveToOffset(colonIndex + 1)
             } else {
                 val settings = CodeStyle.getSettings(c.file)
                 val indentOptions = settings.getIndentOptions(ParadoxLocalisationFileType)
-                val insertLineBreak = editor.document.getLineNumber(editor.caretModel.offset) == editor.document.lineCount - 1
+                val insertLineBreak = editor.document.getLineNumber(caretModel.offset) == editor.document.lineCount - 1
                 val s = buildString {
                     append(":")
                     if (insertLineBreak) {
@@ -755,6 +863,29 @@ object ParadoxCompletionLookupProvider {
                 }
                 EditorModificationUtil.insertStringAtCaret(editor, s)
             }
+        }
+    }
+
+    private class LocalisationScriptedVariableInsertHandler<T : LookupElement> : InsertHandler<T> {
+        override fun handleInsert(c: InsertionContext, item: T) {
+            // 因为只能在 `$...$` 引用中出现，如果后面没有 `$`，需要自动补充，并将光标移到补充 `$` 之前
+            val editor = c.editor
+            val caretModel = editor.caretModel
+            val suffixChar = editor.document.charsSequence.getOrNull(caretModel.offset)
+            if (suffixChar != '$') {
+                EditorModificationUtil.insertStringAtCaret(editor, "$")
+                caretModel.moveToOffset(caretModel.offset - 1)
+            }
+        }
+    }
+
+    private class LocalisationColorInsertHandler<T : LookupElement> : InsertHandler<T> {
+        override fun handleInsert(c: InsertionContext, item: T) {
+            // delete existing colorId after press enter
+            if (c.completionChar != '\n' && c.completionChar != '\r') return
+            val editor = c.editor
+            val offset = editor.caretModel.offset
+            editor.document.deleteString(offset, offset + 1)
         }
     }
 

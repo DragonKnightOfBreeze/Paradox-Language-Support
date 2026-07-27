@@ -15,32 +15,27 @@ import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.lang.util.ParadoxScriptedVariableManager
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
-import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import javax.swing.Icon
 
 fun LookupElement?.addToResult(context: CompletionContext, result: CompletionResultSet): Boolean {
-    result.addElement(this, context)
+    addComputedElement(context, result, this)
     return true
 }
 
 fun Collection<LookupElement>.addToResult(context: CompletionContext, result: CompletionResultSet): Boolean {
-    result.addElements(this, context)
+    for (lookupElement in this) addComputedElement(context, result, lookupElement)
     return true
 }
 
-fun CompletionResultSet.addElement(lookupElement: LookupElement?, context: CompletionContext) {
+private fun addComputedElement(context: CompletionContext, result: CompletionResultSet, lookupElement: LookupElement?) {
     if (lookupElement == null) return
-    getFinalElement(lookupElement, context)?.let { addElement(it) }
+    computeElement(lookupElement, context)?.let { result.addElement(it) }
     lookupElement.extraLookupElements?.forEach { extraLookupElement ->
-        getFinalElement(extraLookupElement, context)?.let { addElement(it) }
+        computeElement(extraLookupElement, context)?.let { result.addElement(it) }
     }
 }
 
-fun CompletionResultSet.addElements(lookupElements: Collection<LookupElement>, context: CompletionContext) {
-    for (lookupElement in lookupElements) addElement(lookupElement, context)
-}
-
-private fun getFinalElement(lookupElement: LookupElement, context: CompletionContext): LookupElement? {
+private fun computeElement(lookupElement: LookupElement, context: CompletionContext): LookupElement? {
     val completionIds = context.completionIds
     if (lookupElement.completionId?.let { id -> completionIds.add(id) } == false) return null
     val priority = lookupElement.priority
@@ -85,26 +80,29 @@ fun LookupElementBuilder.withScopeMatched(scopeMatched: Boolean): LookupElementB
 
 fun LookupElementBuilder.withScriptedVariablePresentableNames(element: ParadoxScriptScriptedVariable): LookupElementBuilder {
     if (!ChronicleSettings.getInstance().state.completion.completeByPresentableName) return this
-
     ProgressManager.checkCanceled()
-    presentableNames = ParadoxScriptedVariableManager.getPresentableNames(element)
-    return this
+    // TODO 3.0.1+ may be relatively slow, consider optimize performance...
+    val presentableNames = ParadoxScriptedVariableManager.getPresentableNames(element)
+    if (presentableNames.isEmpty()) return this
+    return withLookupStrings(presentableNames)
 }
 
 fun LookupElementBuilder.withDefinitionPresentableNames(element: ParadoxDefinitionElement): LookupElementBuilder {
     if (!ChronicleSettings.getInstance().state.completion.completeByPresentableName) return this
-
     ProgressManager.checkCanceled()
-    presentableNames = ParadoxDefinitionManager.getPresentableNames(element)
-    return this
+    // TODO 3.0.1+ may be relatively slow, consider optimize performance...
+    val presentableNames = ParadoxDefinitionManager.getPresentableNames(element)
+    if (presentableNames.isEmpty()) return this
+    return withLookupStrings(presentableNames)
 }
 
-fun LookupElementBuilder.withModifierPresentableNames(modifierName: String, element: ParadoxScriptStringExpressionElement): LookupElementBuilder {
+fun LookupElementBuilder.withModifierPresentableNames(modifierName: String, context: ParadoxCompletionContext): LookupElementBuilder {
     if (!ChronicleSettings.getInstance().state.completion.completeByPresentableName) return this
-
     ProgressManager.checkCanceled()
-    presentableNames = ParadoxModifierManager.getModifierPresentableNames(modifierName, element, element.project)
-    return this
+    // TODO 3.0.1+ may be relatively slow, consider optimize performance...
+    val presentableNames = ParadoxModifierManager.getModifierPresentableNames(modifierName, context.contextElement, context.project)
+    if (presentableNames.isEmpty()) return this
+    return withLookupStrings(presentableNames)
 }
 
 fun LookupElementBuilder.wrapForConfig(context: CwtConfigCompletionContext, config: CwtConfig<*>, schemaExpression: CwtSchemaExpression): LookupElement? {

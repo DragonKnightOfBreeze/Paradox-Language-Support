@@ -2,17 +2,14 @@ package icu.windea.pls.lang.codeInsight.completion.script
 
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionResultSet
-import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.patterns.PlatformPatterns.*
 import com.intellij.util.ProcessingContext
-import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.codeInsight.completion.GlobalCompletionContext
-import icu.windea.pls.core.icon
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionLookupProvider
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionProvider
-import icu.windea.pls.lang.codeInsight.completion.addElement
-import icu.windea.pls.lang.codeInsight.completion.withCompletionId
+import icu.windea.pls.lang.codeInsight.completion.addToResult
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.manipulation.ParadoxEventManipulationService
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
@@ -41,13 +38,7 @@ class ParadoxEventNamespaceCompletionProvider : ParadoxCompletionProvider() {
         if (boundEventNamespaces.isEmpty()) return
 
         for (eventNamespace in boundEventNamespaces) {
-            val name = eventNamespace.value ?: continue
-            val typeFile = eventNamespace.containingFile
-            val lookupElement = LookupElementBuilder.create(eventNamespace, name)
-                .withIcon(ChronicleIcons.Nodes.EventNamespace)
-                .withTypeText(typeFile?.name, typeFile?.icon, true)
-                .withCompletionId()
-            result.addElement(lookupElement, context)
+            ParadoxCompletionLookupProvider.forEventNamespace(eventNamespace).addToResult(context, result)
         }
     }
 }

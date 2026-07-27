@@ -3,6 +3,7 @@ package icu.windea.pls.lang.codeInsight.completion
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.openapi.progress.ProgressManager
+import com.intellij.psi.util.elementType
 import com.intellij.ui.JBColor
 import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.config.CwtDataTypes
@@ -17,7 +18,6 @@ import icu.windea.pls.config.manipulation.CwtConfigManipulationService
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.codeInsight.LimitedCompletionProcessor
 import icu.windea.pls.core.collections.orNull
-import icu.windea.pls.core.icon
 import icu.windea.pls.core.letIf
 import icu.windea.pls.core.match.PathMatcher
 import icu.windea.pls.core.processAsync
@@ -30,7 +30,6 @@ import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.csv.psi.ParadoxCsvHeader
 import icu.windea.pls.csv.psi.ParadoxCsvPsiService
 import icu.windea.pls.ep.util.data.StellarisGameConceptData
-import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.getDefinitionData
 import icu.windea.pls.lang.match.CwtTypeConfigMatchContext
@@ -53,6 +52,8 @@ import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.ParadoxLocalisationFileManager
 import icu.windea.pls.lang.util.ParadoxLocalisationIconManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
+import icu.windea.pls.lang.util.ParadoxTextColorManager
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxLocalisationType
@@ -96,10 +97,12 @@ object ParadoxCompletionManager {
         val context = context.copy(isKey = true, scopeContext = scopeContext)
         configs.groupBy { it.key }.forEach { (_, configsWithSameKey) ->
             for (config in configsWithSameKey) {
+                ProgressManager.checkCanceled()
                 if (shouldComplete(config, occurrences)) {
                     val overriddenConfigs = ParadoxConfigService.getOverriddenConfigs(context.contextElement, config)
                     if (overriddenConfigs.isNotEmpty()) {
                         for (overriddenConfig in overriddenConfigs) {
+                            ProgressManager.checkCanceled()
                             val context = context.copy(config = overriddenConfig)
                             ParadoxExpressionCompletionManager.completeScriptExpression(context, result)
                         }
@@ -133,10 +136,12 @@ object ParadoxCompletionManager {
         val scopeContext = ParadoxScopeManager.getScopeContext(memberElement)
         val context = context.copy(isKey = false, scopeContext = scopeContext)
         for (config in configs) {
+            ProgressManager.checkCanceled()
             if (shouldComplete(config, occurrences)) {
                 val overriddenConfigs = ParadoxConfigService.getOverriddenConfigs(context.contextElement, config)
                 if (overriddenConfigs.isNotEmpty()) {
                     for (overriddenConfig in overriddenConfigs) {
+                        ProgressManager.checkCanceled()
                         val context = context.copy(config = overriddenConfig)
                         ParadoxExpressionCompletionManager.completeScriptExpression(context, result)
                     }
@@ -228,6 +233,7 @@ object ParadoxCompletionManager {
         val infoMapForTag = mutableMapOf<String, MutableList<CwtTypeConfig>>()
         val infoMapForKey = mutableMapOf<String, MutableList<Tuple2<CwtTypeConfig, CwtSubtypeConfig?>>>()
         for (typeConfig in typeConfigs) {
+            ProgressManager.checkCanceled()
             run {
                 val typeKeyPrefix = typeConfig.typeKeyPrefix
                 if (typeKeyPrefix == null) return@run
@@ -253,6 +259,7 @@ object ParadoxCompletionManager {
                 }
             } else {
                 for (skipConfig in skipRootKeyConfig) {
+                    ProgressManager.checkCanceled()
                     val relative = PathMatcher.relative(memberPath.subPaths, skipConfig, ignoreCase = true, usePattern = true, useAny = true) ?: continue
                     if (relative.isEmpty()) {
                         typeConfig.typeKeyFilter?.takeWithOperator()?.forEach {
@@ -272,18 +279,18 @@ object ParadoxCompletionManager {
         }
 
         for ((key, typeConfigsToUse) in infoMapForTag) {
+            ProgressManager.checkCanceled()
             val typeConfigToUse = typeConfigsToUse.firstOrNull() ?: continue
             val config = typeConfigToUse.typeKeyPrefixConfig ?: continue
             val element = config.pointer.element
             val icon = ChronicleIcons.Nodes.Tag
-            val tailText = typeConfigsToUse.joinToString(", ", " for ") { typeConfig ->
-                typeConfig.name
-            }
+            val hintText = typeConfigsToUse.joinToString(", ", " for ") { typeConfig -> typeConfig.name }
             val typeFile = config.pointer.containingFile
             val context = context.copy(isKey = false, config = config)
-            ParadoxCompletionLookupProvider.fromRootKey(context, key, element, typeFile, icon, tailText).addToResult(context, result)
+            ParadoxCompletionLookupProvider.fromRootKey(context, key, element, typeFile, icon, hintText).addToResult(context, result)
         }
         for ((key, tuples) in infoMapForKey) {
+            ProgressManager.checkCanceled()
             if (key == "any") return // skip any wildcard
             val typeConfigToUse = tuples.map { it.first }.distinctBy { it.name }.singleOrNull()
             val typeToUse = typeConfigToUse?.name
@@ -299,13 +306,16 @@ object ParadoxCompletionManager {
             }
             val element = config?.pointer?.element
             val icon = if (config == null) ChronicleIcons.Nodes.Property else ChronicleIcons.Nodes.Definition(typeToUse)
-            val tailText = if (tuples.isEmpty()) null else tuples.joinToString(", ", " for ") { (typeConfig, subTypeConfig) ->
-                if (subTypeConfig == null) typeConfig.name else "${typeConfig.name}.${subTypeConfig.name}"
+            val hintText = when {
+                tuples.isEmpty() -> null
+                else -> tuples.joinToString(", ", " for ") { (typeConfig, subTypeConfig) ->
+                    if (subTypeConfig == null) typeConfig.name else "${typeConfig.name}.${subTypeConfig.name}"
+                }
             }
             val typeFile = config?.pointer?.containingFile
             val forceInsertCurlyBraces = tuples.isEmpty()
             val context = context.copy(config = config)
-            ParadoxCompletionLookupProvider.fromRootKey(context, key, element, typeFile, icon, tailText, forceInsertCurlyBraces).addToResult(context, result)
+            ParadoxCompletionLookupProvider.fromRootKey(context, key, element, typeFile, icon, hintText, forceInsertCurlyBraces).addToResult(context, result)
         }
     }
 
@@ -342,8 +352,8 @@ object ParadoxCompletionManager {
             val context = context.copy(keyword = keyword, config = config, isKey = true, patchableTailText = "")
             val result = result.withPrefixMatcher(context.keyword)
             val selector = ParadoxDefinitionSearch.selector(context.project, context.file).contextSensitive().distinct()
-            ParadoxDefinitionSearch.searchProperty(null, type, selector).processAsync {
-                ParadoxCompletionLookupProvider.fromDefinition(context, it).addToResult(context, result)
+            ParadoxDefinitionSearch.searchProperty(null, type, selector).processAsync { definition ->
+                ParadoxCompletionLookupProvider.fromDefinition(context, definition).addToResult(context, result)
             }
             ParadoxExtendedCompletionManager.completeExtendedDefinition(context, result)
         }
@@ -355,12 +365,13 @@ object ParadoxCompletionManager {
         val modeConfigs = config.modeConfigs.values
         val hintText = " from definition injection modes"
         for (modeConfig in modeConfigs) {
+            ProgressManager.checkCanceled()
             val context = context.copy(config = modeConfig)
             ParadoxCompletionLookupProvider.fromDefinitionInjectionMode(context, modeConfig, hintText).addToResult(context, result)
         }
     }
 
-    fun completeLocale(context: ParadoxCompletionContext, result: CompletionResultSet) {
+    fun completeLocalisationLocale(context: ParadoxCompletionContext, result: CompletionResultSet) {
         val localeIdFromFileName = context.file.castOrNull<ParadoxLocalisationFile>()?.let { ParadoxLocalisationFileManager.getLocaleIdFromFileName(it) }
 
         // 批量提示
@@ -368,8 +379,9 @@ object ParadoxCompletionManager {
         val locales = context.configGroup.supportedLocales
         for (locale in locales) {
             ProgressManager.checkCanceled()
+            val hintText = " " + locale.text
             val matched = localeIdFromFileName?.let { it == locale.name }
-            val lookupElement = ParadoxCompletionLookupProvider.forLocale(locale)
+            val lookupElement = ParadoxCompletionLookupProvider.forLocalisationLocale(locale, hintText, postHandle = true)
                 ?.letIf(matched == false) {
                     it.withItemTextForeground(JBColor.GRAY) // 将不匹配的语言环境的提示项置灰
                 }
@@ -379,7 +391,7 @@ object ParadoxCompletionManager {
             if (lookupElement == null) continue
             lookupElements.add(lookupElement)
         }
-        result.addAllElements(lookupElements)
+        result.addAllElements(lookupElements) // add in batch to ensure a predictable order
     }
 
     fun completeLocalisationName(context: ParadoxCompletionContext, result: CompletionResultSet) {
@@ -394,12 +406,8 @@ object ParadoxCompletionManager {
             .contextSensitive()
             .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
             .filterBy { it.name != context.keyword } // skip if name = input
-        val processor = LimitedCompletionProcessor<ParadoxLocalisationProperty> {
-            ProgressManager.checkCanceled()
-            val name = it.name
-            val icon = it.icon
-            val typeFile = it.containingFile
-            ParadoxCompletionLookupProvider.forLocalisationName(it, name, typeFile, icon).addToResult(context, result)
+        val processor = LimitedCompletionProcessor<ParadoxLocalisationProperty> { element ->
+            ParadoxCompletionLookupProvider.forLocalisationName(element).addToResult(context, result)
         }
         // 保证索引在此 readAction 中可用
         runSmartReadAction(context.project, inSmartMode = true) {
@@ -407,62 +415,55 @@ object ParadoxCompletionManager {
         }
     }
 
-    fun completeIcon(context: ParadoxCompletionContext, result: CompletionResultSet) {
+    fun completeLocalisationColor(context: ParadoxCompletionContext, result: CompletionResultSet) {
+        val colorInfos = ParadoxTextColorManager.getInfos(context.project, context.file)
+        if (colorInfos.isEmpty()) return
+        val originalColorId = context.file.findElementAt(context.offset)?.takeIf { it.elementType == ParadoxLocalisationElementTypes.COLOR_TOKEN }
+        val postHandle = originalColorId != null
+        val hintText = " from <text_color>"
+        for (colorInfo in colorInfos) {
+            ProgressManager.checkCanceled()
+            ParadoxCompletionLookupProvider.forLocalisationColor(colorInfo, hintText, postHandle).addToResult(context, result)
+        }
+    }
+
+    fun completeLocalisationIcon(context: ParadoxCompletionContext, result: CompletionResultSet) {
         ParadoxLocalisationIconManager.complete(context, result)
     }
 
-    fun completeConcept(context: ParadoxCompletionContext, result: CompletionResultSet) {
+    fun completeLocalisationConcept(context: ParadoxCompletionContext, result: CompletionResultSet) {
         val hintText = " from concepts"
         val conceptSelector = ParadoxDefinitionSearch.selector(context.project, context.file).contextSensitive().distinct()
         val keysToDistinct = mutableSetOf<String>()
-        ParadoxDefinitionSearch.searchProperty(null, ParadoxDefinitionTypes.gameConcept, conceptSelector).processAsync p@{ concept ->
-            val typeFile = concept.containingFile
-            val icon = ChronicleIcons.Nodes.LocalisationConceptCommand
-            run action@{
-                val key = concept.name
-                if (key.isEmpty()) return@action
-                if (!keysToDistinct.add(key)) return@action
-                ParadoxCompletionLookupProvider.forConcept(concept, key, typeFile, hintText, icon).addToResult(context, result)
+        ParadoxDefinitionSearch.searchProperty(null, ParadoxDefinitionTypes.gameConcept, conceptSelector).processAsync { concept ->
+            val name = concept.name
+            if (keysToDistinct.add(name)) {
+                ParadoxCompletionLookupProvider.forLocalisationConcept(concept, concept.name, hintText).addToResult(context, result)
             }
-            concept.getDefinitionData<StellarisGameConceptData>()?.alias?.forEach action@{ alias ->
-                val key = alias
-                if (key.isEmpty()) return@action
-                if (!keysToDistinct.add(key)) return@action
-                ParadoxCompletionLookupProvider.forConcept(concept, key, typeFile, hintText, icon).addToResult(context, result)
+            concept.getDefinitionData<StellarisGameConceptData>()?.alias?.forEach { alias ->
+                if (keysToDistinct.add(alias)) {
+                    ParadoxCompletionLookupProvider.forLocalisationConcept(concept, alias, hintText).addToResult(context, result)
+                }
             }
             true
         }
     }
 
-    fun completeTextFormat(context: ParadoxCompletionContext, result: CompletionResultSet) {
-        val definitionType = ParadoxDefinitionTypes.textFormat
-        val icon = ChronicleIcons.Nodes.LocalisationTextFormat // 使用特定图标
+    fun completeLocalisationTextIcon(context: ParadoxCompletionContext, result: CompletionResultSet) {
+        val definitionType = ParadoxDefinitionTypes.textIcon
         val hintText = " from <$definitionType>"
         val definitionSelector = ParadoxDefinitionSearch.selector(context.project, context.file).contextSensitive().distinct()
-        ParadoxDefinitionSearch.searchProperty(null, definitionType, definitionSelector).processAsync p@{ definition ->
-            ProgressManager.checkCanceled()
-            val definitionInfo = definition.definitionInfo ?: return@p true
-            val name = definitionInfo.name
-            if (name.isEmpty()) return@p true
-
-            val typeFile = definition.containingFile
-            ParadoxCompletionLookupProvider.forTextFormat(definition, name, typeFile, hintText, icon).addToResult(context, result)
+        ParadoxDefinitionSearch.searchProperty(null, definitionType, definitionSelector).processAsync { definition ->
+            ParadoxCompletionLookupProvider.forLocalisationTextIcon(definition, hintText).addToResult(context, result)
         }
     }
 
-    fun completeTextIcon(context: ParadoxCompletionContext, result: CompletionResultSet) {
-        val definitionType = ParadoxDefinitionTypes.textIcon
-        val icon = ChronicleIcons.Nodes.LocalisationTextIcon // 使用特定图标
+    fun completeLocalisationTextFormat(context: ParadoxCompletionContext, result: CompletionResultSet) {
+        val definitionType = ParadoxDefinitionTypes.textFormat
         val hintText = " from <$definitionType>"
         val definitionSelector = ParadoxDefinitionSearch.selector(context.project, context.file).contextSensitive().distinct()
-        ParadoxDefinitionSearch.searchProperty(null, definitionType, definitionSelector).processAsync p@{ definition ->
-            ProgressManager.checkCanceled()
-            val definitionInfo = definition.definitionInfo ?: return@p true
-            val name = definitionInfo.name
-            if (name.isEmpty()) return@p true
-
-            val typeFile = definition.containingFile
-            ParadoxCompletionLookupProvider.forTextFormat(definition, name, typeFile, hintText, icon).addToResult(context, result)
+        ParadoxDefinitionSearch.searchProperty(null, definitionType, definitionSelector).processAsync { definition ->
+            ParadoxCompletionLookupProvider.forLocalisationTextFormat(definition, hintText).addToResult(context, result)
         }
     }
 
