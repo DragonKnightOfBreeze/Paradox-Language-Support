@@ -1,5 +1,6 @@
 package icu.windea.pls.lang.resolve
 
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.parentOfType
 import icu.windea.pls.base.annotations.ChronicleAnnotationService
@@ -63,6 +64,7 @@ object ParadoxScopeService {
         return ParadoxDefinitionSupportedScopesProvider.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
             if (!ChronicleAnnotationService.check(ep, gameType)) return@f null
             if (!ep.supports(definition, definitionInfo)) return@f null
+            ProgressManager.checkCanceled() // 3.0.1 optimize: check immediately before applying logic
             ep.getSupportedScopes(definition, definitionInfo)
         }
     }
@@ -75,6 +77,7 @@ object ParadoxScopeService {
         return ParadoxDefinitionScopeContextProvider.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
             if (!ChronicleAnnotationService.check(ep, gameType)) return@f null
             if (!ep.supports(definition, definitionInfo)) return@f null
+            ProgressManager.checkCanceled() // 3.0.1 optimize: check immediately before applying logic
             ep.getScopeContext(definition, definitionInfo)
         }
     }
@@ -88,6 +91,7 @@ object ParadoxScopeService {
         ParadoxDefinitionInferredScopeContextProvider.EP_NAME.extensionList.forEach f@{ ep ->
             if (!ChronicleAnnotationService.check(ep, gameType)) return@f
             if (!ep.supports(definition, definitionInfo)) return@f
+            ProgressManager.checkCanceled() // 3.0.1 optimize: check immediately before applying logic
             val info = ep.getScopeContext(definition, definitionInfo) ?: return@f
             if (info.hasConflict) return null // 只要任何推断方式的推断结果存在冲突，就不要继续推断scopeContext
             if (map == null) {
@@ -150,6 +154,7 @@ object ParadoxScopeService {
         return ParadoxDynamicValueScopeContextProvider.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
             if (!ChronicleAnnotationService.check(ep, gameType)) return@f null
             if (!ep.supports(element)) return@f null
+            ProgressManager.checkCanceled() // 3.0.1 optimize: check immediately before applying logic
             ep.getScopeContext(element)
         }
     }
@@ -163,6 +168,7 @@ object ParadoxScopeService {
         ParadoxDynamicValueInferredScopeContextProvider.EP_NAME.extensionList.forEach f@{ ep ->
             if (!ChronicleAnnotationService.check(ep, gameType)) return@f
             if (!ep.supports(dynamicValue)) return@f
+            ProgressManager.checkCanceled() // 3.0.1 optimize: check immediately before applying logic
             val info = ep.getScopeContext(dynamicValue) ?: return@f
             if (info.hasConflict) return null // 只要任何推断方式的推断结果存在冲突，就不要继续推断scopeContext
             if (map == null) {
@@ -183,6 +189,7 @@ object ParadoxScopeService {
         val gameType = config.configGroup.gameType
         return ParadoxOverriddenScopeContextProvider.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
             if (!ChronicleAnnotationService.check(ep, gameType)) return@f null
+            ProgressManager.checkCanceled() // 3.0.1 optimize: check immediately before applying logic
             ep.getOverriddenScopeContext(contextElement, config, parentScopeContext)
                 ?.also { it.overriddenProvider = ep }
         }

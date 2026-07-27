@@ -48,7 +48,7 @@ object CwtConfigService {
     @Optimized
     fun filter(config: CwtConfig<*>): Boolean {
         val eps = CwtConfigFilterProvider.EP_NAME.extensionList
-        eps.forEachFast f@{ ep ->
+        eps.forEachFast { ep ->
             if (ep.filter(config)) return true
         }
         return false

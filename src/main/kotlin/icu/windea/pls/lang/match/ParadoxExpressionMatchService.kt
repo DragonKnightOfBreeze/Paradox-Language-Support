@@ -22,8 +22,8 @@ object ParadoxExpressionMatchService {
      */
     @Optimized
     fun matchScriptExpression(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
+        ProgressManager.checkCanceled() // 3.0.1 optimize: check out of loop
         ParadoxScriptExpressionMatcher.EP_NAME.extensionList.forEachFast { ep ->
-            ProgressManager.checkCanceled()
             val r = ep.match(context)
             if (r != null) return r
         }
@@ -35,8 +35,8 @@ object ParadoxExpressionMatchService {
      */
     @Optimized
     fun matchCsvExpression(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult {
+        ProgressManager.checkCanceled() // 3.0.1 optimize: check out of loop
         ParadoxCsvExpressionMatcher.EP_NAME.extensionList.forEachFast { ep ->
-            ProgressManager.checkCanceled()
             val r = ep.match(context)
             if (r != null) return r
         }
@@ -87,6 +87,7 @@ object ParadoxExpressionMatchService {
         val unionConfig = configGroup.unions[unionName] ?: return null
         // NOTE 3.0.1 recursion guard is not directly required here
         unionConfig.processCandidateConfigs { valueConfig ->
+            ProgressManager.checkCanceled()
             val configExpression = valueConfig.configExpression
             val context = ParadoxScriptExpressionMatchContext(element, expression, configExpression, valueConfig, configGroup, options)
             if (matchScriptExpression(context).get(options)) return valueConfig
@@ -99,6 +100,7 @@ object ParadoxExpressionMatchService {
         val unionConfig = configGroup.unions[unionName] ?: return null
         // NOTE 3.0.1 recursion guard is not directly required here
         unionConfig.processCandidateConfigs { valueConfig ->
+            ProgressManager.checkCanceled()
             val configExpression = valueConfig.configExpression
             val context = ParadoxCsvExpressionMatchContext(element, expression, configExpression, configGroup)
             if (matchCsvExpression(context).get()) return valueConfig

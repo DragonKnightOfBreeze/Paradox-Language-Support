@@ -54,9 +54,9 @@ object ParadoxExpressionService {
         val configExpression = config.configExpression ?: return
         val gameType = config.configGroup.gameType
         ParadoxScriptExpressionSupport.EP_NAME.extensionList.forEach f@{ ep ->
-            ProgressManager.checkCanceled()
             if (!ep.supports(config, configExpression)) return@f
             if (!ChronicleAnnotationService.check(ep, gameType)) return@f
+            ProgressManager.checkCanceled() // 3.0.1 optimize: check immediately before applying logic
             ep.annotate(element, rangeInElement, text, config, holder)
         }
     }
@@ -69,9 +69,9 @@ object ParadoxExpressionService {
         val configExpression = config.configExpression ?: return null
         val gameType = config.configGroup.gameType
         val result = ParadoxScriptExpressionSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-            ProgressManager.checkCanceled()
             if (!ep.supports(config, configExpression)) return@f null
             if (!ChronicleAnnotationService.check(ep, gameType)) return@f null
+            ProgressManager.checkCanceled() // 3.0.1 optimize: check immediately before applying logic
             ep.resolve(element, rangeInElement, text, config, role)
         }
         if (result != null) return result
@@ -89,9 +89,9 @@ object ParadoxExpressionService {
         val configExpression = config.configExpression ?: return emptyList()
         val gameType = config.configGroup.gameType
         val result = ParadoxScriptExpressionSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-            ProgressManager.checkCanceled()
             if (!ep.supports(config, configExpression)) return@f null
             if (!ChronicleAnnotationService.check(ep, gameType)) return@f null
+            ProgressManager.checkCanceled() // 3.0.1 optimize: check immediately before applying logic
             ep.resolveAll(element, rangeInElement, text, config, role).orNull()
         }.orEmpty()
         if (result.isNotEmpty()) return result
@@ -109,9 +109,9 @@ object ParadoxExpressionService {
         val configExpression = config.configExpression ?: return emptyList()
         val gameType = config.configGroup.gameType
         return ParadoxScriptExpressionSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-            ProgressManager.checkCanceled()
             if (!ep.supports(config, configExpression)) return@f null
             if (!ChronicleAnnotationService.check(ep, gameType)) return@f null
+            ProgressManager.checkCanceled() // 3.0.1 optimize: check immediately before applying logic
             ep.getReferences(element, rangeInElement, text, config, role).orNull()
         }.orEmpty()
     }
@@ -124,9 +124,9 @@ object ParadoxExpressionService {
         val configExpression = config.configExpression ?: return
         val gameType = config.configGroup.gameType
         ParadoxScriptExpressionSupport.EP_NAME.extensionList.forEach f@{ ep ->
-            ProgressManager.checkCanceled()
             if (!ep.supports(config, configExpression)) return@f
             if (!ChronicleAnnotationService.check(ep, gameType)) return@f
+            ProgressManager.checkCanceled() // 3.0.1 optimize: check immediately before applying logic
             ep.complete(context, result)
         }
     }
@@ -142,9 +142,9 @@ object ParadoxExpressionService {
         if (text.isEmpty()) return // skip if expression is empty
         val gameType = selectGameType(element)
         ParadoxLocalisationExpressionSupport.EP_NAME.extensionList.forEach f@{ ep ->
-            ProgressManager.checkCanceled()
             if (!ep.supports(element)) return@f
             if (!ChronicleAnnotationService.check(ep, gameType)) return@f
+            ProgressManager.checkCanceled() // 3.0.1 optimize: check immediately before applying logic
             ep.annotate(element, rangeInElement, text, holder)
         }
     }
@@ -156,9 +156,9 @@ object ParadoxExpressionService {
         if (text.isEmpty()) return null // ignore if expression is empty
         val gameType = selectGameType(element)
         return ParadoxLocalisationExpressionSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-            ProgressManager.checkCanceled()
             if (!ep.supports(element)) return@f null
             if (!ChronicleAnnotationService.check(ep, gameType)) return@f null
+            ProgressManager.checkCanceled() // 3.0.1 optimize: check immediately before applying logic
             ep.resolve(element, rangeInElement, text)
         }
     }
@@ -170,9 +170,9 @@ object ParadoxExpressionService {
         if (text.isEmpty()) return emptyList() // ignore if expression is empty
         val gameType = selectGameType(element)
         return ParadoxLocalisationExpressionSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-            ProgressManager.checkCanceled()
             if (!ep.supports(element)) return@f null
             if (!ChronicleAnnotationService.check(ep, gameType)) return@f null
+            ProgressManager.checkCanceled() // 3.0.1 optimize: check immediately before applying logic
             ep.resolveAll(element, rangeInElement, text).orNull()
         }.orEmpty()
     }
@@ -184,9 +184,9 @@ object ParadoxExpressionService {
         if (text.isEmpty()) return emptyList() // ignore if expression is empty
         val gameType = selectGameType(element)
         return ParadoxLocalisationExpressionSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-            ProgressManager.checkCanceled()
             if (!ep.supports(element)) return@f null
             if (!ChronicleAnnotationService.check(ep, gameType)) return@f null
+            ProgressManager.checkCanceled() // 3.0.1 optimize: check immediately before applying logic
             ep.getReferences(element, rangeInElement, text).orNull()
         }.orEmpty()
     }
@@ -199,9 +199,9 @@ object ParadoxExpressionService {
         val configGroup = context.configGroup
         val gameType = configGroup.gameType
         ParadoxLocalisationExpressionSupport.EP_NAME.extensionList.forEach f@{ ep ->
-            ProgressManager.checkCanceled()
             if (!ep.supports(element)) return@f
             if (!ChronicleAnnotationService.check(ep, gameType)) return@f
+            ProgressManager.checkCanceled() // 3.0.1 optimize: check immediately before applying logic
             ep.complete(context, result)
         }
     }

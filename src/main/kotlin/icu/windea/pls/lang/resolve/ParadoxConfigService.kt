@@ -331,7 +331,7 @@ object ParadoxConfigService {
 
         if (element !is ParadoxScriptProperty) return null
         if (!expression.isParameterized()) return null
-        if (!expression.isParameterized(full = true)) return emptyList()
+        if (!expression.isFullParameterized()) return emptyList()
         return ParadoxParameterManager.getParameterizedKeyConfigs(element)
     }
 

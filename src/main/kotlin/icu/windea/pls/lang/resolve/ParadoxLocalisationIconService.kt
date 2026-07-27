@@ -19,7 +19,7 @@ object ParadoxLocalisationIconService {
         val gameType = selectGameType(element)
         return ParadoxLocalisationIconSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
             if (!ChronicleAnnotationService.check(ep, gameType)) return@f null
-            ProgressManager.checkCanceled()
+            ProgressManager.checkCanceled() // 3.0.1 optimize: check immediately before applying logic
             ep.resolve(name, element, project)
         }
     }
@@ -31,7 +31,7 @@ object ParadoxLocalisationIconService {
         val gameType = selectGameType(element)
         return ParadoxLocalisationIconSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
             if (!ChronicleAnnotationService.check(ep, gameType)) return@f null
-            ProgressManager.checkCanceled()
+            ProgressManager.checkCanceled() // 3.0.1 optimize: check immediately before applying logic
             ep.resolveAll(name, element, project).orNull()
         }.orEmpty()
     }
@@ -43,7 +43,7 @@ object ParadoxLocalisationIconService {
         val gameType = context.gameType
         ParadoxLocalisationIconSupport.EP_NAME.extensionList.forEach f@{ ep ->
             if (!ChronicleAnnotationService.check(ep, gameType)) return@f
-            ProgressManager.checkCanceled()
+            ProgressManager.checkCanceled() // 3.0.1 optimize: check immediately before applying logic
             ep.complete(context, result)
         }
     }

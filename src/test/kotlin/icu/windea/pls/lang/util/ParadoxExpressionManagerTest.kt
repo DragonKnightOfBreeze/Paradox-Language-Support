@@ -48,14 +48,16 @@ class ParadoxExpressionManagerTest {
 
     @Test
     fun isParameterized_escaped() {
-        // 转义后的 $ 或 [[ 不被识别为参数
-        Assert.assertFalse(ParadoxExpressionManager.isParameterized("\\\$abc$"))
+        // 转义后的 $ 或 [[ 不会被识别为参数
+        Assert.assertFalse(ParadoxExpressionManager.isParameterized("\\\$a"))
+        Assert.assertFalse(ParadoxExpressionManager.isParameterized("\\[[a"))
+        // 检查所有出现的标记，即使之前已经存在被转义的标记
+        Assert.assertTrue(ParadoxExpressionManager.isParameterized("\\\$abc$"))
         Assert.assertFalse(ParadoxExpressionManager.isParameterized("\\[[a]]"))
-        // 仅第一个 $ 或 [[ 需要检查转义；后续不受影响
-        // indexOf 只会匹配到第一个 $，若它被转义则整体结果为 false
-        Assert.assertFalse(ParadoxExpressionManager.isParameterized("\\$$"))
-        Assert.assertFalse(ParadoxExpressionManager.isParameterized("\\\$abc\$def$"))
+        Assert.assertTrue(ParadoxExpressionManager.isParameterized("\\$$"))
+        Assert.assertTrue(ParadoxExpressionManager.isParameterized("\\\$abc\$def$"))
         Assert.assertFalse(ParadoxExpressionManager.isParameterized("\\[[a]]b]]"))
+        Assert.assertTrue(ParadoxExpressionManager.isParameterized("\\[[a]][[b]]]]"))
     }
 
     @Test

@@ -2,6 +2,7 @@ package icu.windea.pls.ep.index
 
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.match.CwtConfigExpressionMatchService
+import icu.windea.pls.core.collections.findFast
 import icu.windea.pls.core.readOrReadFrom
 import icu.windea.pls.core.readUTFFast
 import icu.windea.pls.core.writeOrWriteFrom
@@ -23,7 +24,7 @@ class ParadoxShaderEffectMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxS
     override fun buildDataForExpression(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, info: ParadoxDefinitionCandidateInfo?, configs: List<CwtMemberConfig<*>>) {
         val expression = element.value
         if (expression.isEmpty() || expression.isParameterized()) return // skip if expression is empty or parameterized
-        val config = configs.find { matchesConfig(it) }
+        val config = configs.findFast { matchesConfig(it) }
         if (config == null) return
 
         val name = element.value
@@ -55,7 +56,7 @@ class ParadoxMeshLocatorMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxMe
     override fun buildDataForExpression(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, info: ParadoxDefinitionCandidateInfo?, configs: List<CwtMemberConfig<*>>) {
         val expression = element.value
         if (expression.isEmpty() || expression.isParameterized()) return // skip if expression is empty or parameterized
-        val config = configs.find { matchesConfig(it) }
+        val config = configs.findFast { matchesConfig(it) }
         if (config == null) return
 
         val name = element.value

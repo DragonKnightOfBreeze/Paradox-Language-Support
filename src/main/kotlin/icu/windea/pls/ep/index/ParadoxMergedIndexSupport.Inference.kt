@@ -8,6 +8,7 @@ import icu.windea.pls.config.config.aliasConfig
 import icu.windea.pls.config.config.containingDirectConfig
 import icu.windea.pls.config.match.CwtConfigExpressionMatchService
 import icu.windea.pls.config.select.selectConfigScope
+import icu.windea.pls.core.collections.findFast
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.readIntFast
 import icu.windea.pls.core.readOrReadFrom
@@ -41,7 +42,7 @@ class ParadoxInferredScopeContextAwareDefinitionMergedIndexSupport : ParadoxMerg
     override fun buildDataForExpression(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, info: ParadoxDefinitionCandidateInfo?, configs: List<CwtMemberConfig<*>>) {
         val expression = element.value
         if (expression.isEmpty() || expression.isParameterized()) return // skip if expression is empty or parameterized
-        val config = configs.find { matchesConfig(it) }
+        val config = configs.findFast { matchesConfig(it) }
         if (config == null) return
 
         val definitionName = element.value
@@ -84,7 +85,7 @@ class ParadoxEventInOnActionMergedIndexSupport : ParadoxMergedIndexSupport<Parad
 
         val expression = element.value
         if (expression.isEmpty() || expression.isParameterized()) return // skip if expression is empty or parameterized
-        val config = configs.find { matchesConfig(it) }
+        val config = configs.findFast { matchesConfig(it) }
         if (config == null) return
 
         val eventName = element.value
@@ -127,7 +128,7 @@ class ParadoxEventInEventMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxE
 
         val expression = element.value
         if (expression.isEmpty() || expression.isParameterized()) return // skip if expression is empty or parameterized
-        val config = configs.find { matchesConfig(it) }
+        val config = configs.findFast { matchesConfig(it) }
         if (config == null) return
 
         val eventName = element.value
@@ -194,7 +195,7 @@ class ParadoxOnActionInEventMergedIndexSupport : ParadoxMergedIndexSupport<Parad
 
         val expression = element.value
         if (expression.isEmpty() || expression.isParameterized()) return // skip if expression is empty or parameterized
-        val config = configs.find { matchesConfig(it) }
+        val config = configs.findFast { matchesConfig(it) }
         if (config == null) return
 
         val onActionName = element.value

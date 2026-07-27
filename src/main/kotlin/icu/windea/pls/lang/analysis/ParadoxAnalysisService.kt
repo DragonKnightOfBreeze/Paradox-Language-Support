@@ -5,6 +5,8 @@ import com.intellij.openapi.vcs.FilePath
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.toNioPathOrNull
 import com.intellij.util.indexing.FileBasedIndex
+import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.trimFast
 import icu.windea.pls.core.util.Tuple2
@@ -26,10 +28,12 @@ object ParadoxAnalysisService {
     /**
      * @see ParadoxIgnoredFileProvider.isIgnoredFile
      */
+    @Optimized
     fun isIgnoredFile(path: ParadoxPath, entry: String): Boolean {
-        return ParadoxIgnoredFileProvider.EP_NAME.extensionList.any { ep ->
-            ep.isIgnoredFile(path, entry)
+        ParadoxIgnoredFileProvider.EP_NAME.extensionList.forEachFast { ep ->
+            if (ep.isIgnoredFile(path, entry)) return true
         }
+        return false
     }
 
     /**
@@ -37,9 +41,10 @@ object ParadoxAnalysisService {
      */
     fun getRootMetadata(rootPath: Path): ParadoxRootMetadata? {
         if (!rootPath.isDirectory()) return null
-        return ParadoxRootMetadataProvider.EP_NAME.extensionList.firstNotNullOfOrNull { ep ->
-            ep.getRootMetadata(rootPath)
+        ParadoxRootMetadataProvider.EP_NAME.extensionList.forEachFast { ep ->
+            ep.getRootMetadata(rootPath)?.let { return it }
         }
+        return null
     }
 
     /**
@@ -47,9 +52,10 @@ object ParadoxAnalysisService {
      */
     fun getInferredGameTypeInfo(rootPath: Path): ParadoxGameTypeInfo? {
         if (!rootPath.isDirectory()) return null
-        return ParadoxInferredGameTypeProvider.EP_NAME.extensionList.firstNotNullOfOrNull { ep ->
-            ep.getInferredGameTypeInfo(rootPath)
+        ParadoxInferredGameTypeProvider.EP_NAME.extensionList.forEachFast { ep ->
+            ep.getInferredGameTypeInfo(rootPath)?.let { return it }
         }
+        return null
     }
 
     fun resolveRootInfo(rootFile: VirtualFile): ParadoxRootInfo? {

@@ -24,6 +24,7 @@ import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collectReferences
+import icu.windea.pls.core.collections.findFast
 import icu.windea.pls.core.isEscapedCharAt
 import icu.windea.pls.core.isIdentifierChar
 import icu.windea.pls.core.isLeftQuoted
@@ -101,9 +102,15 @@ object ParadoxExpressionManager {
             return true
         }
         // `a_$PARAM$_b` - 高级插值语法 A
-        if (text.indexOf('$').let { c -> c != -1 && !text.isEscapedCharAt(c) }) return true
         // `a_[[PARAM]b]_c` - 高级插值语法 B
-        if (conditionBlock && text.indexOf("[[").let { c -> c != -1 && !text.isEscapedCharAt(c) }) return true
+        for ((i, c) in text.withIndex()) {
+            if (c == '$' && !text.isEscapedCharAt(i)) {
+                return true
+            } else if (conditionBlock && c == '[' && !text.isEscapedCharAt(i)) {
+                if (i == text.length - 1 || text[i + 1] != '[') continue // 仅接受 `[[`
+                return true
+            }
+        }
         return false
     }
 
@@ -183,7 +190,7 @@ object ParadoxExpressionManager {
         for ((i, c) in text.withIndex()) {
             if (c.isIdentifierChar(extraChars)) continue
             if (parameterRanges == null) parameterRanges = getParameterRanges(text)
-            if (parameterRanges.any { it.contains(i) }) continue
+            if (parameterRanges.findFast { it.contains(i) } != null) continue
             return false
         }
         return true

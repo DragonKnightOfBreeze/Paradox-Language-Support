@@ -215,6 +215,7 @@ fun String.findKeywordsWithTextRanges(keywords: Collection<String>): List<Tuple2
         result += tupleOf(keyword, TextRange.from(index, keyword.length))
         startIndex = index + keyword.length
     }
+    if (result.isEmpty()) return emptyList()
     return result.sortedBy { it.second.startOffset }
 }
 

@@ -1,5 +1,6 @@
 package icu.windea.pls.lang.match
 
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.configExpression.CwtDataExpression
@@ -38,6 +39,7 @@ object ParadoxPatternMatchService {
         val pattern0 = text.substring(fromIndex)
         val configExpression = CwtDataExpression.resolve(pattern0, CwtDataExpressionRole.Key)
         if (configExpression.expressionString.isEmpty()) return false
+        ProgressManager.checkCanceled()
         val expression = ParadoxExpression.resolve(key)
         val matchContext = ParadoxScriptExpressionMatchContext(contextElement, expression, configExpression, null, configGroup, options)
         val matchResult = ParadoxScriptExpressionMatcher.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->

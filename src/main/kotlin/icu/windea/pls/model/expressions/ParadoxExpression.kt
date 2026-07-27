@@ -46,7 +46,8 @@ interface ParadoxExpression {
     val type: ParadoxExpressionType
     val role: ParadoxExpressionRole
 
-    fun isParameterized(conditionalBlock: Boolean = true, full: Boolean = false): Boolean
+    fun isParameterized(): Boolean
+    fun isFullParameterized(): Boolean
 
     fun matchesInt(): Boolean
     fun matchesFloat(): Boolean
@@ -115,10 +116,16 @@ private object ParadoxExpressionResolver {
 }
 
 private sealed class ParadoxExpressionBase : ParadoxExpression {
-    private val regex by lazy { ParadoxExpressionManager.toRegex(value) }
+    private val _isParameterized by lazy { value.isParameterized() } // 3.0.1 optimize: cache status
+    private val _isFullParameterized by lazy { value.isParameterized(full = true) } // 3.0.1 optimize: cache status
+    private val _regex by lazy { ParadoxExpressionManager.toRegex(value) } // optimize: cache status
 
-    override fun isParameterized(conditionalBlock: Boolean, full: Boolean): Boolean {
-        return type == ParadoxExpressionType.String && value.isParameterized(conditionalBlock, full)
+    override fun isParameterized(): Boolean {
+        return type == ParadoxExpressionType.String && _isParameterized
+    }
+
+    override fun isFullParameterized(): Boolean {
+        return type == ParadoxExpressionType.String && _isFullParameterized
     }
 
     override fun matchesInt(): Boolean {
@@ -131,7 +138,7 @@ private sealed class ParadoxExpressionBase : ParadoxExpression {
 
     override fun matchesConstant(v: String): Boolean {
         // 兼容带参数的情况（此时先转化为正则表达式，再进行匹配）
-        if (value.isParameterized()) return regex.matches(v)
+        if (isParameterized()) return _regex.matches(v)
         // 忽略大小写
         return value.equals(v, true)
     }
