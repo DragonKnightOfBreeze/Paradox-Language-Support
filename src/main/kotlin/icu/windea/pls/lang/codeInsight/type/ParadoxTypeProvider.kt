@@ -37,7 +37,7 @@ class ParadoxTypeProvider : ExpressionTypeProvider<PsiElement>() {
         ParadoxTypeManager.getDefinitionType(element)?.let { return it.escapeXml() }
         ParadoxTypeManager.getLocalisationType(element)?.let { return it.id }
         ParadoxTypeManager.getConfigExpression(element)?.let { return it.escapeXml() }
-        ParadoxTypeManager.getType(element)?.let { return it.id }
+        ParadoxTypeManager.getType(element)?.let { return it.text }
         return FallbackStrings.unknown
     }
 
@@ -52,7 +52,7 @@ class ParadoxTypeProvider : ExpressionTypeProvider<PsiElement>() {
     override fun getAdvancedInformationHint(element: PsiElement): String {
         val map = buildMap {
             val type = ParadoxTypeManager.getType(element)
-            type?.let { this[ChronicleBundle.message("title.type")] = it.id }
+            type?.let { this[ChronicleBundle.message("title.type")] = it.text }
 
             val name = ParadoxTypeManager.getName(element)
             name?.let { this[ChronicleBundle.message("title.name")] = it.or.anonymous() }

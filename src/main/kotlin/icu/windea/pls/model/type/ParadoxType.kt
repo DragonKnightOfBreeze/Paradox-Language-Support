@@ -1,6 +1,6 @@
 package icu.windea.pls.model.type
 
-enum class ParadoxType(val id: String) {
+enum class ParadoxType(val text: String) {
     Unknown("(unknown)"),
     Boolean("boolean"),
     Int("int"),
@@ -16,29 +16,5 @@ enum class ParadoxType(val id: String) {
     LocalisationParameter("localisation_parameter"),
     ;
 
-    override fun toString() = id
-
-    // region Matchers
-
-    fun isLenientInt(): Boolean {
-        return this == Int || this == InlineMath || this == Unknown
-    }
-
-    fun isLenientFloat(): Boolean {
-        return this == Int || this == Float || this == InlineMath || this == Unknown
-    }
-
-    fun isLenientString(): Boolean {
-        return this == String || this == Unknown
-    }
-
-    fun isNumberOrLenientString(): Boolean {
-        return this == Int || this == Float || this == String || this == Unknown
-    }
-
-    fun isBlockLike(): Boolean {
-        return this == Block || this == Color || this == InlineMath
-    }
-
-    // endregion
+    override fun toString() = text
 }

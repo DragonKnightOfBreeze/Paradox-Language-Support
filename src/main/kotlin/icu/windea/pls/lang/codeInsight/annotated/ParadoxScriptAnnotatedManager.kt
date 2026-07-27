@@ -38,12 +38,12 @@ object ParadoxScriptAnnotatedManager {
     fun getTypeAnnotation(element: ParadoxScriptMember): String? {
         return when (element) {
             is ParadoxScriptProperty -> {
-                val keyType = element.propertyKey.resolved()?.let { ParadoxTypeResolver.resolveExpressionType(it) }?.id ?: FallbackStrings.unknown
-                val valueType = element.propertyValue?.resolved()?.let { ParadoxTypeResolver.resolveExpressionType(it) }?.id ?: FallbackStrings.unknown
+                val keyType = element.propertyKey.resolved()?.let { ParadoxTypeResolver.resolveExpressionType(it) }?.text ?: FallbackStrings.unknown
+                val valueType = element.propertyValue?.resolved()?.let { ParadoxTypeResolver.resolveExpressionType(it) }?.text ?: FallbackStrings.unknown
                 "## $typePrefix ${keyType} = ${valueType}"
             }
             is ParadoxScriptValue -> {
-                val valueType = element.resolved()?.let { ParadoxTypeResolver.resolveExpressionType(it) }?.id ?: FallbackStrings.unknown
+                val valueType = element.resolved()?.let { ParadoxTypeResolver.resolveExpressionType(it) }?.text ?: FallbackStrings.unknown
                 "## $typePrefix ${valueType}"
             }
             else -> null

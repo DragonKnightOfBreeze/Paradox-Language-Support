@@ -1,6 +1,13 @@
 package icu.windea.pls.model.type
 
-enum class ParadoxExpressionType(val id: String) {
+import icu.windea.pls.lang.psi.ParadoxExpressionElement
+import icu.windea.pls.model.expressions.ParadoxExpression
+
+/**
+ * @see ParadoxExpressionElement
+ * @see ParadoxExpression
+ */
+enum class ParadoxExpressionType(val text: String) {
     Unknown("(unknown)"),
     Boolean("boolean"),
     Int("int"),
@@ -12,7 +19,7 @@ enum class ParadoxExpressionType(val id: String) {
     ScriptedVariableReference("scripted_variable_reference"),
     ;
 
-    override fun toString() = id
+    override fun toString() = text
 
     // region Matchers
 
