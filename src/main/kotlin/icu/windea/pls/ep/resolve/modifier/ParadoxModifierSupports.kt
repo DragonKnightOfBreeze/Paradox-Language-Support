@@ -109,7 +109,7 @@ class ParadoxPredefinedModifierSupport : ParadoxModifierSupport {
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, modifierConfig.supportedScopes, configGroup)
             if (!scopeMatched && ChronicleSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
 
-            val tailText = ParadoxCompletionLookupProvider.getConfigBasedPatchableTailText(context, modifierConfig.config, withConfigExpression = false)
+            val hintText = ParadoxCompletionLookupProvider.getConfigBasedHintText(context, modifierConfig.config, withConfigExpression = false)
             val template = modifierConfig.template
             if (template.expressionString.isNotEmpty()) continue
             val typeFile = modifierConfig.pointer.containingFile
@@ -118,7 +118,7 @@ class ParadoxPredefinedModifierSupport : ParadoxModifierSupport {
             val lookupElement = LookupElementBuilder.create(name).withPsiElement(modifierElement)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withPatchableIcon(ChronicleIcons.Nodes.Modifier)
-                .withPatchableTailText(tailText)
+                .withPatchableTailText(hintText)
                 .withScopeMatched(scopeMatched)
                 .withModifierPresentableNames(name, element)
                 .wrapForExpression(context)
@@ -183,7 +183,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, modifierConfig.supportedScopes, configGroup)
             if (!scopeMatched && ChronicleSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
 
-            val tailText = ParadoxCompletionLookupProvider.getConfigBasedPatchableTailText(context, modifierConfig.config, withConfigExpression = true)
+            val hintText = ParadoxCompletionLookupProvider.getConfigBasedHintText(context, modifierConfig.config, withConfigExpression = true)
             val template = modifierConfig.template
             if (template.expressionString.isEmpty()) continue
             val typeFile = modifierConfig.pointer.containingFile
@@ -196,7 +196,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
                 val lookupElement = LookupElementBuilder.create(name).withPsiElement(modifierElement)
                     .withTypeText(typeFile?.name, typeFile?.icon, true)
                     .withPatchableIcon(ChronicleIcons.Nodes.Modifier)
-                    .withPatchableTailText(tailText)
+                    .withPatchableTailText(hintText)
                     .withScopeMatched(scopeMatched)
                     .withModifierPresentableNames(name, element)
                     .wrapForExpression(context)

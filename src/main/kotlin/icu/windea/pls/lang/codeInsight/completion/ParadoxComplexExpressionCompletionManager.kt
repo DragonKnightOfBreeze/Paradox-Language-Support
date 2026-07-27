@@ -1,11 +1,9 @@
 package icu.windea.pls.lang.codeInsight.completion
 
 import com.intellij.codeInsight.completion.CompletionResultSet
-import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
-import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
@@ -13,7 +11,6 @@ import icu.windea.pls.config.sortedByPriority
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.collections.toListOrThis
-import icu.windea.pls.core.icon
 import icu.windea.pls.core.processAsync
 import icu.windea.pls.core.util.values.singletonListOrEmpty
 import icu.windea.pls.core.util.values.to
@@ -411,7 +408,7 @@ object ParadoxComplexExpressionCompletionManager {
             val keywordOffset = keywordNode.rangeInExpression.startOffset
             val keyword = keywordNode.text.substring(0, context.offsetInExpression - keywordOffset)
             val context = context.copy(keyword = keyword, keywordOffset = keywordOffset, linkArgumentIndex = argumentIndex)
-            val result = result.withPrefixMatcher(keyword)
+            val result = result.withPrefixMatcher(context.keyword)
             completeCommandFieldValue(context, result, prefixNode.text, currentArgumentNode)
             inputPrefix = true
         } else {
@@ -420,7 +417,7 @@ object ParadoxComplexExpressionCompletionManager {
             val keywordOffset = node.rangeInExpression.startOffset
             val keyword = node.text.substring(0, context.offsetInExpression - keywordOffset)
             val context = context.copy(keyword = keyword, keywordOffset = keywordOffset, linkArgumentIndex = argumentIndex)
-            val result = result.withPrefixMatcher(keyword)
+            val result = result.withPrefixMatcher(context.keyword)
             if (inFirstNode) {
                 completeStaticCommandField(context, result)
                 completeCommandFieldPrefix(context, result)
@@ -651,7 +648,8 @@ object ParadoxComplexExpressionCompletionManager {
     // region General Completion Methods
 
     private fun completeNegated(context: ParadoxCompletionContext, result: CompletionResultSet) {
-        ParadoxCompletionLookupProvider.forNotKeyword().addToResult(context, result)
+        ProgressManager.checkCanceled()
+        ParadoxCompletionLookupProvider.forNegated().addToResult(context, result)
     }
 
     private fun completeSystemScope(context: ParadoxCompletionContext, result: CompletionResultSet) {
@@ -659,10 +657,11 @@ object ParadoxComplexExpressionCompletionManager {
         ProgressManager.checkCanceled()
 
         // 总是提示，无论作用域是否匹配
+        val hintText = " from system scopes"
         val systemScopeConfigs = context.configGroup.systemScopes
         for (systemScopeConfig in systemScopeConfigs.values) {
             ProgressManager.checkCanceled()
-            ParadoxCompletionLookupProvider.forSystemScope(systemScopeConfig, hintText = " from system scopes").addToResult(context, result)
+            ParadoxCompletionLookupProvider.forSystemScope(systemScopeConfig, hintText = hintText).addToResult(context, result)
         }
     }
 
@@ -670,12 +669,13 @@ object ParadoxComplexExpressionCompletionManager {
         if (!context.isIdentifierKeyword()) return // 前缀不合法时需要跳过，避免补全项被意外去重
         ProgressManager.checkCanceled()
 
+        val hintText = " from links"
         val linksConfigs = context.configGroup.linksModel.forScopeStatic
         for (linkConfig in linksConfigs) {
             ProgressManager.checkCanceled()
             val scopeMatched = ParadoxScopeManager.matchesScope(context.scopeContext, linkConfig.inputScopes, context.configGroup)
             if (!scopeMatched && ChronicleSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
-            ParadoxCompletionLookupProvider.forStaticScope(linkConfig, hintText = " from links", scopeMatched = scopeMatched).addToResult(context, result)
+            ParadoxCompletionLookupProvider.forStaticScope(linkConfig, hintText, scopeMatched).addToResult(context, result)
         }
     }
 
@@ -688,7 +688,8 @@ object ParadoxComplexExpressionCompletionManager {
             ProgressManager.checkCanceled()
             val scopeMatched = ParadoxScopeManager.matchesScope(context.scopeContext, linkConfig.inputScopes, context.configGroup)
             if (!scopeMatched && ChronicleSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
-            ParadoxCompletionLookupProvider.forScopePrefixFromArgument(linkConfig, hintText = "(...) from link ${linkConfig.name}").addToResult(context, result)
+            val hintText = "(...) from link ${linkConfig.name}"
+            ParadoxCompletionLookupProvider.forScopePrefixFromArgument(linkConfig, hintText, scopeMatched).addToResult(context, result)
         }
 
         val linkConfigsFromData = context.configGroup.linksModel.forScopeFromDataSorted
@@ -696,7 +697,8 @@ object ParadoxComplexExpressionCompletionManager {
             ProgressManager.checkCanceled()
             val scopeMatched = ParadoxScopeManager.matchesScope(context.scopeContext, linkConfig.inputScopes, context.configGroup)
             if (!scopeMatched && ChronicleSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
-            ParadoxCompletionLookupProvider.forScopePrefixFromData(linkConfig, hintText = " from link ${linkConfig.name}", scopeMatched = scopeMatched).addToResult(context, result)
+            val hintText = " from link ${linkConfig.name}"
+            ParadoxCompletionLookupProvider.forScopePrefixFromData(linkConfig, hintText, scopeMatched).addToResult(context, result)
         }
     }
 
@@ -705,8 +707,8 @@ object ParadoxComplexExpressionCompletionManager {
         // NOTE 2.0.6 遇到单引号括起的字面量传参时，应中断代码补全（未来可能会完善这里的逻辑）
 
         if (argumentNode is ParadoxStringLiteralNode) return
-
         ProgressManager.checkCanceled()
+
         val linkConfigs = context.configGroup.links.values.filter { it.type.forScope() && it.prefix == prefix }
             .mapNotNull { CwtLinkConfig.delegatedWith(it, context.linkArgumentIndex) }
             .sortedByPriority({ it.configExpression }, { context.configGroup })
@@ -723,13 +725,14 @@ object ParadoxComplexExpressionCompletionManager {
         if (!context.isIdentifierKeyword()) return // 前缀不合法时需要跳过，避免补全项被意外去重
         ProgressManager.checkCanceled()
 
+        val hintText = " from links"
         val linkConfigs = context.configGroup.linksModel.forValueStatic
         for (linkConfig in linkConfigs) {
             ProgressManager.checkCanceled()
             // 排除 input_scopes 不匹配前一个 scope 的 output_scope 的情况
             val scopeMatched = ParadoxScopeManager.matchesScope(context.scopeContext, linkConfig.inputScopes, context.configGroup)
             if (!scopeMatched && ChronicleSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
-            ParadoxCompletionLookupProvider.forStaticValueField(linkConfig, hintText = " from links", scopeMatched = scopeMatched).addToResult(context, result)
+            ParadoxCompletionLookupProvider.forStaticValueField(linkConfig, hintText, scopeMatched).addToResult(context, result)
         }
     }
 
@@ -742,14 +745,17 @@ object ParadoxComplexExpressionCompletionManager {
             ProgressManager.checkCanceled()
             val scopeMatched = ParadoxScopeManager.matchesScope(context.scopeContext, linkConfig.inputScopes, context.configGroup)
             if (!scopeMatched && ChronicleSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
-            ParadoxCompletionLookupProvider.forValueFieldPrefixFromArgument(linkConfig, hintText = "(...) from link ${linkConfig.name}").addToResult(context, result)
+            val hintText = "(...) from link ${linkConfig.name}"
+            ParadoxCompletionLookupProvider.forValueFieldPrefixFromArgument(linkConfig, hintText, scopeMatched).addToResult(context, result)
         }
 
         val linkConfigsFromData = context.configGroup.linksModel.forValueFromDataSorted
         for (linkConfig in linkConfigsFromData) {
             ProgressManager.checkCanceled()
-            // TODO 这里没有对 scopeMatched 进行检查，与 completeScopePrefix 的 fromData 分支不一致，确认是否遗漏？
-            ParadoxCompletionLookupProvider.forValueFieldPrefixFromData(linkConfig, hintText = " from link ${linkConfig.name}").addToResult(context, result)
+            val scopeMatched = ParadoxScopeManager.matchesScope(context.scopeContext, linkConfig.inputScopes, context.configGroup)
+            if (!scopeMatched && ChronicleSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
+            val hintText = " from link ${linkConfig.name}"
+            ParadoxCompletionLookupProvider.forValueFieldPrefixFromData(linkConfig, hintText, scopeMatched).addToResult(context, result)
         }
     }
 
@@ -758,8 +764,8 @@ object ParadoxComplexExpressionCompletionManager {
         // NOTE 2.0.6 遇到单引号括起的字面量传参时，应中断代码补全（未来可能会完善这里的逻辑）
 
         if (argumentNode is ParadoxStringLiteralNode) return
-
         ProgressManager.checkCanceled()
+
         val linkConfigs = if (variableOnly) context.configGroup.linksModel.variable
         else context.configGroup.links.values.filter { it.type.forValue() && it.prefix == prefix }
             .mapNotNull { CwtLinkConfig.delegatedWith(it, context.linkArgumentIndex) }
@@ -781,10 +787,11 @@ object ParadoxComplexExpressionCompletionManager {
         ProgressManager.checkCanceled()
 
         // 总是提示，无论作用域是否匹配
+        val hintText = " from system scopes"
         val systemScopeConfigs = context.configGroup.systemScopes
         for (systemScopeConfig in systemScopeConfigs.values) {
             ProgressManager.checkCanceled()
-            ParadoxCompletionLookupProvider.forSystemCommandScope(systemScopeConfig, hintText = " from system scopes").addToResult(context, result)
+            ParadoxCompletionLookupProvider.forSystemCommandScope(systemScopeConfig, hintText).addToResult(context, result)
         }
     }
 
@@ -792,12 +799,13 @@ object ParadoxComplexExpressionCompletionManager {
         if (!context.isIdentifierKeyword()) return // 前缀不合法时需要跳过，避免补全项被意外去重
         ProgressManager.checkCanceled()
 
+        val hintText = " from localisation links"
         val linkConfigs = context.configGroup.localisationLinksModel.forScopeStatic
         for (linkConfig in linkConfigs) {
             ProgressManager.checkCanceled()
             val scopeMatched = ParadoxScopeManager.matchesScope(context.scopeContext, linkConfig.inputScopes, context.configGroup)
             if (!scopeMatched && ChronicleSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
-            ParadoxCompletionLookupProvider.forStaticCommandScope(linkConfig, hintText = " from localisation links", scopeMatched = scopeMatched).addToResult(context, result)
+            ParadoxCompletionLookupProvider.forStaticCommandScope(linkConfig, hintText, scopeMatched).addToResult(context, result)
         }
     }
 
@@ -810,7 +818,8 @@ object ParadoxComplexExpressionCompletionManager {
             ProgressManager.checkCanceled()
             val scopeMatched = ParadoxScopeManager.matchesScope(context.scopeContext, linkConfig.inputScopes, context.configGroup)
             if (!scopeMatched && ChronicleSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
-            ParadoxCompletionLookupProvider.forCommandScopePrefixFromArgument(linkConfig, hintText = "(...) from localisation link ${linkConfig.name}").addToResult(context, result)
+            val hintText = "(...) from localisation link ${linkConfig.name}"
+            ParadoxCompletionLookupProvider.forCommandScopePrefixFromArgument(linkConfig, hintText, scopeMatched).addToResult(context, result)
         }
 
         val linkConfigsFromData = context.configGroup.localisationLinksModel.forScopeFromDataSorted
@@ -819,7 +828,8 @@ object ParadoxComplexExpressionCompletionManager {
             ProgressManager.checkCanceled()
             val scopeMatched = ParadoxScopeManager.matchesScope(context.scopeContext, linkConfig.inputScopes, context.configGroup)
             if (!scopeMatched && ChronicleSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
-            ParadoxCompletionLookupProvider.forCommandScopePrefixFromData(linkConfig, hintText = " from localisation link ${linkConfig.name}", scopeMatched = scopeMatched).addToResult(context, result)
+            val hintText = " from localisation link ${linkConfig.name}"
+            ParadoxCompletionLookupProvider.forCommandScopePrefixFromData(linkConfig, hintText, scopeMatched).addToResult(context, result)
         }
     }
 
@@ -828,8 +838,8 @@ object ParadoxComplexExpressionCompletionManager {
         // NOTE 2.0.6 遇到单引号括起的字面量传参时，应中断代码补全（未来可能会完善这里的逻辑）
 
         if (argumentNode is ParadoxStringLiteralNode) return
-
         ProgressManager.checkCanceled()
+
         val linkConfigs = context.configGroup.localisationLinks.values.filter { it.type.forScope() && it.prefix == prefix }
             .mapNotNull { CwtLinkConfig.delegatedWith(it, context.linkArgumentIndex) }
             .sortedByPriority({ it.configExpression }, { context.configGroup })
@@ -844,24 +854,13 @@ object ParadoxComplexExpressionCompletionManager {
         if (!context.isIdentifierKeyword()) return // 前缀不合法时需要跳过，避免补全项被意外去重
         ProgressManager.checkCanceled()
 
-        val localisationCommands = context.configGroup.localisationCommands
-        for (localisationCommand in localisationCommands.values) {
+        val commandConfigs = context.configGroup.localisationCommands
+        for (commandConfig in commandConfigs.values) {
             ProgressManager.checkCanceled()
-            val scopeMatched = ParadoxScopeManager.matchesScope(context.scopeContext, localisationCommand.supportedScopes, context.configGroup)
+            val scopeMatched = ParadoxScopeManager.matchesScope(context.scopeContext, commandConfig.supportedScopes, context.configGroup)
             if (!scopeMatched && ChronicleSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
-
-            val tailText = " from localisation commands"
-            val name = localisationCommand.name
-            val element = localisationCommand.pointer.element ?: continue
-            val typeFile = localisationCommand.pointer.containingFile
-            val lookupElement = LookupElementBuilder.create(element, name)
-                .withIcon(ChronicleIcons.Nodes.StaticCommandField)
-                .withTailText(tailText, true)
-                .withTypeText(typeFile?.name, typeFile?.icon, true)
-                .withCaseSensitivity(false) // 忽略大小写
-                .withScopeMatched(scopeMatched)
-                .withCompletionId()
-            result.addElement(lookupElement, context)
+            val hintText = " from localisation commands"
+            ParadoxCompletionLookupProvider.forLocalisationCommand(commandConfig, hintText, scopeMatched).addToResult(context, result)
         }
 
         val linkConfigs = context.configGroup.localisationLinksModel.forValueStatic
@@ -885,7 +884,7 @@ object ParadoxComplexExpressionCompletionManager {
             val scopeMatched = ParadoxScopeManager.matchesScope(context.scopeContext, linkConfig.inputScopes, context.configGroup)
             if (!scopeMatched && ChronicleSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
             val hintText = "(...) from localisation link ${linkConfig.name}"
-            ParadoxCompletionLookupProvider.forCommandFieldPrefixFromArgument(linkConfig, hintText).addToResult(context, result)
+            ParadoxCompletionLookupProvider.forCommandFieldPrefixFromArgument(linkConfig, hintText, scopeMatched).addToResult(context, result)
         }
 
         val linkConfigsFromData = context.configGroup.localisationLinksModel.forValueFromDataSorted
@@ -894,17 +893,16 @@ object ParadoxComplexExpressionCompletionManager {
             val scopeMatched = ParadoxScopeManager.matchesScope(context.scopeContext, linkConfig.inputScopes, context.configGroup)
             if (!scopeMatched && ChronicleSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
             val hintText = " from localisation link ${linkConfig.name}"
-            ParadoxCompletionLookupProvider.forCommandFieldPrefixFromData(linkConfig, hintText).addToResult(context, result)
+            ParadoxCompletionLookupProvider.forCommandFieldPrefixFromData(linkConfig, hintText, scopeMatched).addToResult(context, result)
         }
     }
 
     private fun completeCommandFieldValue(context: ParadoxCompletionContext, result: CompletionResultSet, prefix: String?, argumentNode: ParadoxComplexExpressionNode?) {
         // NOTE 2.0.6 这里需要兼容多传参动态链接，支持正确地对其传参进行代码补全
         // NOTE 2.0.6 遇到单引号括起的字面量传参时，应中断代码补全（未来可能会完善这里的逻辑）
-
         if (argumentNode is ParadoxStringLiteralNode) return
-
         ProgressManager.checkCanceled()
+
         val linkConfigs = context.configGroup.localisationLinks.values.filter { it.type.forValue() && it.prefix == prefix }
             .mapNotNull { CwtLinkConfig.delegatedWith(it, context.linkArgumentIndex) }
             .sortedByPriority({ it.configExpression }, { context.configGroup })
@@ -916,6 +914,7 @@ object ParadoxComplexExpressionCompletionManager {
     }
 
     private fun completeScriptExpressionFromLinkConfigs(context: ParadoxCompletionContext, result: CompletionResultSet, linkConfigs: List<CwtLinkConfig>) {
+        ProgressManager.checkCanceled()
         for (linkConfig in linkConfigs) {
             ProgressManager.checkCanceled()
             val context = context.copy(config = linkConfig)
@@ -924,27 +923,25 @@ object ParadoxComplexExpressionCompletionManager {
     }
 
     private fun completeDefineNamespace(context: ParadoxCompletionContext, result: CompletionResultSet) {
-        val project = context.parameters.originalFile.project
-        val contextElement = context.contextElement
+        ProgressManager.checkCanceled()
         val hintText = " from define namespaces"
-        val selector = ParadoxDefineNamespaceSearch.selector(project, contextElement).distinct()
+        val selector = ParadoxDefineNamespaceSearch.selector(context.project, context.contextElement).distinct()
         ParadoxDefineNamespaceSearch.search(null, selector).processAsync p@{ element ->
             ProgressManager.checkCanceled()
-            ParadoxCompletionLookupProvider.fromDefineNamespace(context, element, hintText = hintText).addToResult(context, result)
+            ParadoxCompletionLookupProvider.fromDefineNamespace(context, element, hintText).addToResult(context, result)
         }
     }
 
     private fun completeDefineVariable(context: ParadoxCompletionContext, result: CompletionResultSet) {
-        val project = context.parameters.originalFile.project
-        val contextElement = context.contextElement
+        ProgressManager.checkCanceled()
         val node = context.node?.castOrNull<ParadoxDefineVariableNode>() ?: return
         val namespaceNode = node.namespaceNode ?: return
         val namespace = namespaceNode.text
         val hintText = " from define namespace ${namespace}"
-        val selector = ParadoxDefineVariableSearch.selector(project, contextElement).distinct()
+        val selector = ParadoxDefineVariableSearch.selector(context.project, context.contextElement).distinct()
         ParadoxDefineVariableSearch.search(namespace, null, selector).processAsync p@{ element ->
             ProgressManager.checkCanceled()
-            ParadoxCompletionLookupProvider.fromDefineVariable(context, element, hintText = hintText).addToResult(context, result)
+            ParadoxCompletionLookupProvider.fromDefineVariable(context, element, hintText).addToResult(context, result)
         }
     }
 
@@ -954,7 +951,7 @@ object ParadoxComplexExpressionCompletionManager {
         val configs = context.configGroup.databaseObjectTypes.values
         for (config in configs) {
             ProgressManager.checkCanceled()
-            ParadoxCompletionLookupProvider.fromDatabaseObjectType(context, config, hintText = hintText).addToResult(context, result)
+            ParadoxCompletionLookupProvider.forDatabaseObjectType(config, hintText).addToResult(context, result)
         }
     }
 
@@ -962,16 +959,15 @@ object ParadoxComplexExpressionCompletionManager {
         ProgressManager.checkCanceled()
         val node = context.node?.castOrNull<ParadoxDatabaseObjectValueNode>()?.nodes?.findIsInstance<ParadoxDatabaseObjectNode>() ?: return
         val config = node.config ?: return
-
         val typeToSearch = node.getTypeToSearch()
         if (typeToSearch == null) return
-
         val expressionTailText = " from database object type ${config.name}"
         val context = context.copy(patchableTailText = expressionTailText)
 
         // complete forced base database object
         completeForcedBaseDatabaseObject(context, result, node)
 
+        // complete normal database object
         run {
             val mockConfig = config.getConfigForType(node.isBase)
             val extraFilter = { e: PsiElement -> node.isValidDatabaseObject(e, typeToSearch) }
@@ -985,6 +981,7 @@ object ParadoxComplexExpressionCompletionManager {
     }
 
     private fun completeForcedBaseDatabaseObject(context: ParadoxCompletionContext, result: CompletionResultSet, dsNode: ParadoxDatabaseObjectNode) {
+        ProgressManager.checkCanceled()
         val config = dsNode.config ?: return
         if (!dsNode.isPossibleForcedBase()) return
         val valueNode = dsNode.expression.valueNode ?: return

@@ -1,5 +1,3 @@
-@file:Suppress("KotlinConstantConditions")
-
 package icu.windea.pls.lang.codeInsight.completion
 
 import com.intellij.codeInsight.completion.CompletionResultSet

@@ -18,13 +18,12 @@ object ParadoxExtendedCompletionManager {
         ProgressManager.checkCanceled()
 
         val configGroup = context.configGroup
-        configGroup.extendedScriptedVariables.values.forEach f@{ config0 ->
+        val icon = ChronicleIcons.Configs.ExtendedScriptedVariable
+        configGroup.extendedScriptedVariables.values.forEach f@{ extendedConfig ->
             ProgressManager.checkCanceled()
-            val name = config0.name
+            val name = extendedConfig.name
             if (checkExtendedConfigName(name)) return@f
-            val element = config0.pointer.element ?: return@f
-            val typeFile = config0.pointer.containingFile
-            ParadoxCompletionLookupProvider.forExtendedConfig(element, name, typeFile, ChronicleIcons.Configs.ExtendedScriptedVariable).addToResult(context, result)
+            ParadoxCompletionLookupProvider.forExtendedConfig(extendedConfig, name, icon).addToResult(context, result)
         }
     }
 
@@ -41,42 +40,39 @@ object ParadoxExtendedCompletionManager {
             else -> contextConfig
         }
         val typeExpression = config.configExpression?.metadata?.value ?: return
-        val tailText = ParadoxCompletionLookupProvider.getConfigBasedPatchableTailText(context, config)
+        val hintText = ParadoxCompletionLookupProvider.getConfigBasedHintText(context, config)
         run r1@{
-            configGroup.extendedDefinitions.values.forEach { configs0 ->
-                configs0.forEach f@{ config0 ->
+            val icon = ChronicleIcons.Configs.ExtendedDefinition
+            configGroup.extendedDefinitions.values.forEach { extendedConfigs ->
+                extendedConfigs.forEach f@{ extendedConfig ->
                     ProgressManager.checkCanceled()
-                    val name = config0.name
+                    val name = extendedConfig.name
                     if (name.isEmpty()) return@f
                     if (checkExtendedConfigName(name)) return@f
-                    val type = config0.type
+                    val type = extendedConfig.type
                     if (!ParadoxDefinitionTypeExpression.resolve(type).matches(typeExpression)) return@f
-                    val element = config0.pointer.element
-                    val typeFile = config0.pointer.containingFile
-                    ParadoxCompletionLookupProvider.fromExtendedConfig(context, name, element, typeFile, ChronicleIcons.Configs.ExtendedDefinition, tailText).addToResult(context, result)
+                    ParadoxCompletionLookupProvider.fromExtendedConfig(context, extendedConfig, name, icon, hintText).addToResult(context, result)
                 }
             }
         }
         run r1@{
             if (typeExpression != ParadoxDefinitionTypes.gameRule) return@r1
-            configGroup.extendedGameRules.values.forEach f@{ config0 ->
+            val icon = ChronicleIcons.Configs.ExtendedGameRule
+            configGroup.extendedGameRules.values.forEach f@{ extendedConfig ->
                 ProgressManager.checkCanceled()
-                val name = config0.name
+                val name = extendedConfig.name
                 if (checkExtendedConfigName(name)) return@f
-                val element = config0.pointer.element
-                val typeFile = config0.pointer.containingFile
-                ParadoxCompletionLookupProvider.fromExtendedConfig(context, name, element, typeFile, ChronicleIcons.Configs.ExtendedGameRule, tailText).addToResult(context, result)
+                ParadoxCompletionLookupProvider.fromExtendedConfig(context, extendedConfig, name, icon, hintText).addToResult(context, result)
             }
         }
         run r1@{
             if (typeExpression != ParadoxDefinitionTypes.onAction) return@r1
-            configGroup.extendedOnActions.values.forEach f@{ config0 ->
+            val icon = ChronicleIcons.Configs.ExtendedOnAction
+            configGroup.extendedOnActions.values.forEach f@{ extendedConfig ->
                 ProgressManager.checkCanceled()
-                val name = config0.name
+                val name = extendedConfig.name
                 if (checkExtendedConfigName(name)) return@f
-                val element = config0.pointer.element
-                val typeFile = config0.pointer.containingFile
-                ParadoxCompletionLookupProvider.fromExtendedConfig(context, name, element, typeFile, ChronicleIcons.Configs.ExtendedOnAction, tailText).addToResult(context, result)
+                ParadoxCompletionLookupProvider.fromExtendedConfig(context, extendedConfig, name, icon, hintText).addToResult(context, result)
             }
         }
     }
@@ -89,15 +85,14 @@ object ParadoxExtendedCompletionManager {
         val contextKey = context.contextKey ?: return
         val argumentNames = context.argumentNames
         val contextElement = context.contextElement
-        configGroup.extendedParameters.values.forEach { configs0 ->
-            configs0.forEach f@{ config0 ->
-                if (!config0.contextKey.matchesByPattern(contextKey, contextElement, configGroup)) return@f
-                val name = config0.name
+        val icon = ChronicleIcons.Configs.ExtendedParameter
+        configGroup.extendedParameters.values.forEach { extendedConfigs ->
+            extendedConfigs.forEach f@{ extendedConfig ->
+                if (!extendedConfig.contextKey.matchesByPattern(contextKey, contextElement, configGroup)) return@f
+                val name = extendedConfig.name
                 if (checkExtendedConfigName(name)) return@f
                 if (argumentNames != null && !argumentNames.add(name)) return@f  // 排除已输入的
-                val element = config0.pointer.element
-                val typeFile = config0.pointer.containingFile
-                ParadoxCompletionLookupProvider.fromExtendedConfig(context, name, element, typeFile, ChronicleIcons.Configs.ExtendedParameter).addToResult(context, result)
+                ParadoxCompletionLookupProvider.fromExtendedConfig(context, extendedConfig, name, icon).addToResult(context, result)
             }
         }
     }
@@ -109,14 +104,13 @@ object ParadoxExtendedCompletionManager {
         val config = context.config ?: return
         val enumName = config.configExpression?.metadata?.value ?: return
         val configGroup = config.configGroup
-        val tailText = ParadoxCompletionLookupProvider.getConfigBasedPatchableTailText(context, config)
-        configGroup.extendedComplexEnumValues[enumName]?.values?.forEach f@{ config0 ->
+        val hintText = ParadoxCompletionLookupProvider.getConfigBasedHintText(context, config)
+        val icon = ChronicleIcons.Configs.ExtendedComplexEnumValue
+        configGroup.extendedComplexEnumValues[enumName]?.values?.forEach f@{ extendedConfig ->
             ProgressManager.checkCanceled()
-            val name = config0.name
+            val name = extendedConfig.name
             if (checkExtendedConfigName(name)) return@f
-            val element = config0.pointer.element
-            val typeFile = config0.pointer.containingFile
-            ParadoxCompletionLookupProvider.fromExtendedConfig(context, name, element, typeFile, ChronicleIcons.Configs.ExtendedComplexEnumValue, tailText).addToResult(context, result)
+            ParadoxCompletionLookupProvider.fromExtendedConfig(context, extendedConfig, name, icon, hintText).addToResult(context, result)
         }
     }
 
@@ -131,16 +125,14 @@ object ParadoxExtendedCompletionManager {
         for (config in finalConfigs) {
             val dynamicValueType = config.configExpression?.metadata?.value ?: continue
             val configGroup = config.configGroup
-            val tailText = ParadoxCompletionLookupProvider.getConfigBasedPatchableTailText(context, config)
+            val hintText = ParadoxCompletionLookupProvider.getConfigBasedHintText(context, config)
 
-            configGroup.extendedDynamicValues[dynamicValueType]?.values?.forEach f@{ config0 ->
+            val icon = ChronicleIcons.Nodes.DynamicValue(dynamicValueType)
+            configGroup.extendedDynamicValues[dynamicValueType]?.values?.forEach f@{ extendedConfig ->
                 ProgressManager.checkCanceled()
-                val name = config0.name
+                val name = extendedConfig.name
                 if (checkExtendedConfigName(name)) return@f
-                val dynamicValueType = config0.type
-                val element = config0.pointer.element
-                val typeFile = config0.pointer.containingFile
-                ParadoxCompletionLookupProvider.fromExtendedConfig(context, name, element, typeFile, ChronicleIcons.Nodes.DynamicValue(dynamicValueType), tailText).addToResult(context, result)
+                ParadoxCompletionLookupProvider.fromExtendedConfig(context, extendedConfig, name, icon, hintText).addToResult(context, result)
             }
         }
     }
@@ -151,14 +143,13 @@ object ParadoxExtendedCompletionManager {
 
         val config = context.config ?: return
         val configGroup = config.configGroup
-        val tailText = ParadoxCompletionLookupProvider.getConfigBasedPatchableTailText(context, config)
-        configGroup.extendedInlineScripts.values.forEach f@{ config0 ->
+        val hintText = ParadoxCompletionLookupProvider.getConfigBasedHintText(context, config)
+        val icon = ChronicleIcons.Configs.ExtendedInlineScript
+        configGroup.extendedInlineScripts.values.forEach f@{ extendedConfig ->
             ProgressManager.checkCanceled()
-            val name = config0.name
+            val name = extendedConfig.name
             if (checkExtendedConfigName(name)) return@f
-            val element = config0.pointer.element
-            val typeFile = config0.pointer.containingFile
-            ParadoxCompletionLookupProvider.fromExtendedConfig(context, name, element, typeFile, ChronicleIcons.Configs.ExtendedInlineScript, tailText).addToResult(context, result)
+            ParadoxCompletionLookupProvider.fromExtendedConfig(context, extendedConfig, name, icon, hintText).addToResult(context, result)
         }
     }
 

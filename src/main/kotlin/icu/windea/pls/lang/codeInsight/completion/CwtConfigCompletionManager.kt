@@ -83,7 +83,7 @@ object CwtConfigCompletionManager {
                         val schemaExpression = CwtSchemaExpression.resolve(config.value)
                         completeBySchemaExpression(context, result, schema, config, schemaExpression)
                     } else {
-                        CwtCompletionLookupProvider.forBlockKeyword().addToResult(context,result)
+                        CwtCompletionLookupProvider.forBlockKeyword().addToResult(context, result)
                     }
                 }
             }
@@ -180,7 +180,7 @@ object CwtConfigCompletionManager {
                     if (config == null) return true
                     val lookupString = config.stringValue ?: return true
                     val element = config.pointer.element
-                    val lookupElement = CwtCompletionLookupProvider.forSchemaEnumValue(lookupString, element, typeFile, icon, hintText = hintText)
+                    val lookupElement = CwtCompletionLookupProvider.forSchemaEnumValue(lookupString, element, typeFile, icon, hintText)
                     return processor.process(lookupElement)
                 }
 
@@ -192,7 +192,7 @@ object CwtConfigCompletionManager {
                 val lookupString = schemaExpression.expressionString
                 val element = config.pointer.element
                 val hintText = " (template)"
-                val lookupElement = CwtCompletionLookupProvider.forSchemaTemplate(lookupString, element, typeFile, icon, hintText = hintText)
+                val lookupElement = CwtCompletionLookupProvider.forSchemaTemplate(lookupString, element, typeFile, icon, hintText)
                 processor.process(lookupElement)
             }
             is CwtSchemaExpression.Type -> {
@@ -219,7 +219,7 @@ object CwtConfigCompletionManager {
                     val lookupString = config.stringValue ?: return true
                     val element = config.pointer.element
                     val typeFile = config.pointer.containingFile
-                    val lookupElement = CwtCompletionLookupProvider.forSchemaTemplateEnum(lookupString, element, typeFile, hintText = hintText)
+                    val lookupElement = CwtCompletionLookupProvider.forSchemaTemplateEnum(lookupString, element, typeFile, hintText)
                     return processor.process(lookupElement)
                 }
 
@@ -232,7 +232,7 @@ object CwtConfigCompletionManager {
                     if (config == null) return true
                     val lookupString = name
                     val element = config.pointer.element
-                    val lookupElement = CwtCompletionLookupProvider.forSchemaTemplateParameter(lookupString, element, hintText = hintText)
+                    val lookupElement = CwtCompletionLookupProvider.forSchemaTemplateParameter(lookupString, element, hintText)
                     return processor.process(lookupElement)
                 }
 

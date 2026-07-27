@@ -57,6 +57,8 @@ object CwtCompletionLookupProvider {
 
     // endregion
 
+    // region Providers (keywords)
+
     @Suppress("unused")
     fun forYesKeyword(): LookupElementBuilder = LOOKUP_ELEMENT_YES
     @Suppress("unused")
@@ -65,6 +67,10 @@ object CwtCompletionLookupProvider {
     fun forKeyword(): List<LookupElementBuilder> = LOOKUP_ELEMENT_KEYWORD
     fun forBool(): List<LookupElementBuilder> = LOOKUP_ELEMENT_BOOL
     fun forCardinality(): List<LookupElementBuilder> = LOOKUP_ELEMENT_CARDINALITY
+
+    // endregion
+
+    // region Providers (schema)
 
     fun forSchemaConstant(lookupString: String, element: PsiElement? = null, typeFile: PsiFile? = null, icon: Icon? = null, hintText: String? = null): LookupElementBuilder {
         return LookupElementBuilder.create(lookupString).withPsiElement(element)
@@ -102,13 +108,11 @@ object CwtCompletionLookupProvider {
             .withTailText(hintText, true)
     }
 
+    // endregion
+
+    // region Wrappers
+
     fun wrapForConfig(lookupElement: LookupElementBuilder, context: CwtConfigCompletionContext, config: CwtConfig<*>, schemaExpression: CwtSchemaExpression): LookupElement? {
-        return applyWrapForConfig(lookupElement, context, config, schemaExpression)
-    }
-
-    // region Wrap Implementations
-
-    private fun applyWrapForConfig(lookupElement: LookupElementBuilder, context: CwtConfigCompletionContext, config: CwtConfig<*>, schemaExpression: CwtSchemaExpression): LookupElementBuilder? {
         if (lookupElement in forKeyword()) return lookupElement
 
         val isKeyConfig = config is CwtOptionConfig || config is CwtPropertyConfig
