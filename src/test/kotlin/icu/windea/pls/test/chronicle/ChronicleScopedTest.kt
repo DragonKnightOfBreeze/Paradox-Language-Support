@@ -1,5 +1,6 @@
 package icu.windea.pls.test.chronicle
 
+import com.intellij.codeInsight.completion.CompletionType
 import com.intellij.psi.util.parentOfType
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
@@ -57,12 +58,13 @@ class ChronicleScopedTest : BasePlatformTestCase(), ChronicleTestScope {
         // `<caret>` should be after `@`
         markFileInfo(ParadoxGameType.Stellaris, "common/tests/greetings/01_greetings.txt")
         myFixture.configureByText("01_greetings.txt", """
-            @value = 42
-            @value = NaN
+            @answer = 42
+            @answer = NaN
+            @expected_answer = "greetings"
             the_waked = {
                 on_waked = {
                     do = answer
-                    value = @<caret>value
+                    value = @<caret>answer
                 }
             }
         """.trimIndent())
@@ -72,20 +74,42 @@ class ChronicleScopedTest : BasePlatformTestCase(), ChronicleTestScope {
     }
 
     @Test
+    fun the_waked_completion_test() {
+        // `<caret>` should be after `@`
+        markFileInfo(ParadoxGameType.Stellaris, "common/tests/greetings/01_greetings.txt")
+        myFixture.configureByText("01_greetings.txt", """
+            @answer = 42
+            @answer = NaN
+            @expected_answer = "greetings"
+            the_waked = {
+                on_waked = {
+                    do = answer
+                    value = @<caret>
+                }
+            }
+        """.trimIndent())
+
+        myFixture.complete(CompletionType.BASIC)
+        val lookupElementStrings = myFixture.lookupElementStrings!!
+        assertSameElements(lookupElementStrings, "answer", "expected_answer")
+    }
+
+    @Test
     fun the_waked_highlighting_test() {
         myFixture.enableInspections(DuplicateScriptedVariablesInspection::class.java)
 
-        val tag = ChronicleBundle.message("inspection.script.duplicateScriptedVariables.desc", "value").toWarningTag()
+        val tag = ChronicleBundle.message("inspection.script.duplicateScriptedVariables.desc", "answer").toWarningTag()
 
         // tag markers should be surrounding `@v`, rather than `@v = v`
         markFileInfo(ParadoxGameType.Stellaris, "common/tests/greetings")
         myFixture.configureByText("01_greetings.txt", """
-            ${tag.start}@value${tag.end} = 42
-            ${tag.start}@value${tag.end} = NaN
+            ${tag.start}@answer${tag.end} = 42
+            ${tag.start}@answer${tag.end} = NaN
+            @expected_answer = "greetings"
             the_waked = {
                 on_waked = {
                     do = answer
-                    value = @value
+                    value = @answer
                 }
             }
         """.trimIndent())
