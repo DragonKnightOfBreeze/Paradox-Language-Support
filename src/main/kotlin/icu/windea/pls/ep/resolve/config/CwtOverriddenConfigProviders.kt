@@ -11,6 +11,7 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.aliasConfig
 import icu.windea.pls.config.config.containingDirectConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.config.configExpression.CwtDataExpressionRole
 import icu.windea.pls.config.manipulation.CwtConfigInlineMode
 import icu.windea.pls.config.manipulation.CwtConfigManipulationService
 import icu.windea.pls.core.cast
@@ -48,7 +49,7 @@ class CwtSwitchOverriddenConfigProvider : CwtOverriddenConfigProvider {
         val contextBlock = contextElement.parentOfType<ParadoxScriptBlock>(withSelf = false) ?: return emptyList()
         val triggerProperty = selectScope { contextBlock.properties(inline = true).ofKey(triggerConfigKey).one() } ?: return emptyList()
         val triggerName = triggerProperty.propertyValue?.stringValue() ?: return emptyList()
-        if (CwtDataExpression.resolve(triggerName, false).type != CwtDataTypes.Constant) return emptyList() // must be a predefined trigger
+        if (CwtDataExpression.resolve(triggerName, CwtDataExpressionRole.Value).type != CwtDataTypes.Constant) return emptyList() // must be a predefined trigger
         val configGroup = config.configGroup
         val resultTriggerConfigs = configGroup.aliasGroups.get("trigger")?.get(triggerName)?.orNull() ?: return emptyList()
         val resultConfigs = mutableListOf<CwtPropertyConfig>()
@@ -87,7 +88,7 @@ class CwtTriggerWithParametersAwareOverriddenConfigProvider : CwtOverriddenConfi
             ?: return emptyList()
         val triggerProperty = selectScope { contextProperty.properties(inline = true).ofKey(Constants.triggerKey).one() } ?: return emptyList()
         val triggerName = triggerProperty.propertyValue?.stringValue() ?: return emptyList()
-        if (CwtDataExpression.resolve(triggerName, false).type != CwtDataTypes.Constant) return emptyList() // must be a predefined trigger
+        if (CwtDataExpression.resolve(triggerName, CwtDataExpressionRole.Value).type != CwtDataTypes.Constant) return emptyList() // must be a predefined trigger
         val configGroup = config.configGroup
         val resultTriggerConfigs = configGroup.aliasGroups.get("trigger")?.get(triggerName)?.orNull() ?: return emptyList()
         val resultConfigs = mutableListOf<CwtPropertyConfig>()
@@ -103,7 +104,7 @@ class CwtTriggerWithParametersAwareOverriddenConfigProvider : CwtOverriddenConfi
         // for `export_trigger_value_to_variable`, skip all properties
         // for `complex_trigger_modifier`, skip properties whose value config type is `int`, `float`, `value_field` or `variable_field`
 
-        if (!configExpression.isKey) return false
+        if (!configExpression.role.isKey()) return false
         configs.forEach { c1 ->
             val pc = c1.containingDirectConfig.parentConfig?.containingDirectConfig?.castOrNull<CwtPropertyConfig>()
             if (pc?.key != Constants.contextName1) return true

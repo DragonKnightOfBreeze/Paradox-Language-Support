@@ -9,6 +9,7 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.aliasConfig
 import icu.windea.pls.config.config.originalConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.config.configExpression.CwtDataExpressionRole
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.lang.psi.properties
@@ -45,7 +46,7 @@ class ParadoxSwitchOverriddenScopeContextProvider : ParadoxOverriddenScopeContex
         // 基于 `trigger` 的值得到最终的 `scopeContext`，然后推断目标属性的 `scopeContext`
         val triggerProperty = selectScope { containerProperty.properties(inline = true).ofKeys(Constants.triggerKeys).one() } ?: return null
         val triggerName = triggerProperty.propertyValue?.stringValue() ?: return null
-        if (CwtDataExpression.resolve(triggerName, false).type != CwtDataTypes.Constant) return null // must be a predefined trigger
+        if (CwtDataExpression.resolve(triggerName, CwtDataExpressionRole.Value).type != CwtDataTypes.Constant) return null // must be a predefined trigger
         val configGroup = finalConfig.configGroup
         val resultTriggerConfigs = configGroup.aliasGroups.get("trigger")?.get(triggerName)?.orNull() ?: return null
         val pushScope = resultTriggerConfigs.firstOrNull()?.config?.optionMetadata?.pushScope
@@ -89,7 +90,7 @@ class ParadoxTriggerWithParametersAwareOverriddenScopeContextProvider : ParadoxO
         // 基于 `trigger` 的值得到最终的 `scopeContext`，然后推断属性 `parameters` 的 `scopeContext`
         val triggerProperty = selectScope { containerProperty.properties(inline = true).ofKey(Constants.triggerKey).one() } ?: return null
         val triggerName = triggerProperty.propertyValue?.stringValue() ?: return null
-        if (CwtDataExpression.resolve(triggerName, false).type != CwtDataTypes.Constant) return null // must be a predefined trigger
+        if (CwtDataExpression.resolve(triggerName, CwtDataExpressionRole.Value).type != CwtDataTypes.Constant) return null // must be a predefined trigger
         val configGroup = finalConfig.configGroup
         val resultTriggerConfigs = configGroup.aliasGroups.get("trigger")?.get(triggerName)?.orNull() ?: return null
         val pushScope = resultTriggerConfigs.firstOrNull()?.config?.optionMetadata?.pushScope

@@ -7,6 +7,7 @@ import com.intellij.openapi.diagnostic.trace
 import com.intellij.openapi.util.Key
 import com.intellij.psi.SmartPsiElementPointer
 import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.config.configExpression.CwtDataExpressionRole
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.option.CwtOptionMetadata
 import icu.windea.pls.config.option.CwtOptionMetadataBase
@@ -146,8 +147,8 @@ private object CwtPropertyConfigResolver : CwtConfigResolverScope {
 
         val pointer = if (configGroup.project.isDefault) emptyPointer() else CwtPropertyPointer(file, element, valueElement)
         val configs = CwtConfigResolverManager.getConfigs(valueElement, file, configGroup)
-        val keyExpression = CwtDataExpression.resolveKey(keyElement.value)
-        val valueExpression = if (configs == null) CwtDataExpression.resolveValue(valueElement.value) else CwtDataExpression.resolveBlock()
+        val keyExpression = CwtDataExpression.resolve(keyElement.value, CwtDataExpressionRole.Key)
+        val valueExpression = if (configs == null) CwtDataExpression.resolve(valueElement.value, CwtDataExpressionRole.Value) else CwtDataExpression.resolveBlock()
         val valueType = CwtTypeResolver.resolveExpressionType(valueElement)
         val config = create(pointer, configGroup, keyExpression, valueExpression, valueType, separatorType, configs, injectable = true)
         val optionConfigs = CwtConfigResolverManager.getOptionConfigs(element, configGroup)
@@ -403,8 +404,8 @@ private class CwtPropertyConfigDelegateWithKeyAndValue(
     override val value: String get() = valueExpression.expressionString
     override val configs: List<CwtMemberConfig<*>>? get() = null // should be always null here
 
-    override val keyExpression: CwtDataExpression = CwtDataExpression.resolveKey(key) // as field directly
-    override val valueExpression: CwtDataExpression = CwtDataExpression.resolveValue(value) // as field directly
+    override val keyExpression: CwtDataExpression = CwtDataExpression.resolve(key, CwtDataExpressionRole.Key) // as field directly
+    override val valueExpression: CwtDataExpression = CwtDataExpression.resolve(value, CwtDataExpressionRole.Value) // as field directly
 }
 
 // endregion

@@ -16,9 +16,9 @@ object CwtConfigExpressionService {
      * @see CwtDataExpressionSupport.resolve
      */
     @Optimized
-    fun resolve(expressionString: String, isKey: Boolean): CwtDataExpression? {
+    fun resolve(expressionString: String, role: CwtDataExpressionRole): CwtDataExpression? {
         CwtDataExpressionSupport.EP_NAME.extensionList.forEachFast { ep ->
-            val r = ep.resolve(expressionString, isKey)
+            val r = ep.resolve(expressionString, role)
             if (r != null) return r
         }
         return null

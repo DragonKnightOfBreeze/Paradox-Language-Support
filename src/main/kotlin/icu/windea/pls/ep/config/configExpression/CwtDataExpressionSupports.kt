@@ -2,6 +2,7 @@ package icu.windea.pls.ep.config.configExpression
 
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.config.configExpression.CwtDataExpressionRole
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
 import icu.windea.pls.config.optimizedPath
 import icu.windea.pls.core.orNull
@@ -113,20 +114,16 @@ class CwtConstantDataExpressionSupport : CwtDataExpressionSupport {
     private val forceRegex = """\w*\[[\w:]*]""".toRegex() // `type[x]`, `alias[x:y]`, etc.
     private val excludeCharacters = ":.@[]<>".toCharArray() // `x_<y>_enum[z]`, etc.
 
-    override fun resolve(expressionString: String, isKey: Boolean): CwtDataExpression? {
+    override fun resolve(expressionString: String, role: CwtDataExpressionRole): CwtDataExpression? {
         if (expressionString.any { c -> c in excludeCharacters } && !forceRegex.matches(expressionString)) return null
-        return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.Constant)
-    }
-
-    override fun resolveTemplate(expressionString: String): CwtDataExpression? {
-        return null
+        return CwtDataExpression.create(expressionString, CwtDataTypes.Constant, role)
     }
 }
 
 class CwtTemplateDataExpressionSupport : CwtDataExpressionSupport {
-    override fun resolve(expressionString: String, isKey: Boolean): CwtDataExpression? {
+    override fun resolve(expressionString: String, role: CwtDataExpressionRole): CwtDataExpression? {
         if (CwtTemplateExpression.resolve(expressionString).expressionString.isEmpty()) return null
-        return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.Template)
+        return CwtDataExpression.create(expressionString, CwtDataTypes.Template, role)
     }
 
     override fun resolveTemplate(expressionString: String): CwtDataExpression? {
@@ -145,37 +142,29 @@ class CwtPatternDataExpressionSupport : CwtPrefixBasedDataExpressionSupport() {
         from(CwtDataTypes.Regex, "regex:", false) // for compatibility
         from(CwtDataTypes.Regex, "regex.i:", true) // for compatibility
     }
-
-    override fun resolveTemplate(expressionString: String): CwtDataExpression? {
-        return null
-    }
 }
 
 class CwtSuffixAwareDataExpressionSupport : CwtDataExpressionSupport {
-    override fun resolve(expressionString: String, isKey: Boolean): CwtDataExpression? {
+    override fun resolve(expressionString: String, role: CwtDataExpressionRole): CwtDataExpression? {
         val separatorIndex = expressionString.indexOf('|')
         if (separatorIndex == -1) return null
         val text = expressionString.substring(0, separatorIndex)
         val expectedSuffixes = expressionString.substring(separatorIndex + 1).toCommaDelimitedStringSet()
         run {
             val t = text.removeSurroundingOrNull("<", ">") ?: return@run
-            if (expectedSuffixes.isEmpty()) return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.Definition) { value = t.orNull() }
-            return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.SuffixAwareDefinition) { value = t.orNull(); suffixes = expectedSuffixes }
+            if (expectedSuffixes.isEmpty()) return CwtDataExpression.create(expressionString, CwtDataTypes.Definition, role) { value = t.orNull() }
+            return CwtDataExpression.create(expressionString, CwtDataTypes.SuffixAwareDefinition, role) { value = t.orNull(); suffixes = expectedSuffixes }
         }
         run {
             if (text != "localisation") return@run
-            if (expectedSuffixes.isEmpty()) return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.Localisation)
-            return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.SuffixAwareLocalisation) { suffixes = expectedSuffixes }
+            if (expectedSuffixes.isEmpty()) return CwtDataExpression.create(expressionString, CwtDataTypes.Localisation, role)
+            return CwtDataExpression.create(expressionString, CwtDataTypes.SuffixAwareLocalisation, role) { suffixes = expectedSuffixes }
         }
         run {
             if (text != "localisation_synced") return@run
-            if (expectedSuffixes.isEmpty()) return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.SyncedLocalisation)
-            return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.SuffixAwareSyncedLocalisation) { suffixes = expectedSuffixes }
+            if (expectedSuffixes.isEmpty()) return CwtDataExpression.create(expressionString, CwtDataTypes.SyncedLocalisation, role)
+            return CwtDataExpression.create(expressionString, CwtDataTypes.SuffixAwareSyncedLocalisation, role) { suffixes = expectedSuffixes }
         }
-        return null
-    }
-
-    override fun resolveTemplate(expressionString: String): CwtDataExpression? {
         return null
     }
 }

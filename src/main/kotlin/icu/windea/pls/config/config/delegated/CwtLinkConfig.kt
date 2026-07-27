@@ -237,7 +237,7 @@ private class CwtLinkConfigImpl(
     override val isLocalisationLink: Boolean,
 ) : UserDataHolderBase(), CwtLinkConfig {
     override val dataSourceIndex: Int get() = 0
-    override val dataSourceExpressions = dataSources.map { CwtDataExpression.resolve(it, false) }.optimized()
+    override val dataSourceExpressions = dataSources.map { CwtDataExpression.resolve(it) }.optimized()
     override val dataSourceExpression = dataSourceExpressions.getOrNull(dataSourceIndex) ?: dataSourceExpressions.firstOrNull()
     override val configExpression: CwtDataExpression? get() = dataSourceExpression
 

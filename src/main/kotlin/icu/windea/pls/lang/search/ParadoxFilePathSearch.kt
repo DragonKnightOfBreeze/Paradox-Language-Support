@@ -6,6 +6,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.search.searches.ExtensibleQueryFactory
 import com.intellij.util.QueryExecutor
 import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.config.configExpression.CwtDataExpressionRole
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.search.searchers.ParadoxFilePathSearcher
 import icu.windea.pls.lang.search.util.ParadoxSearchParameters
@@ -41,7 +42,7 @@ class ParadoxFilePathSearch : ExtensibleQueryFactory<VirtualFile, ParadoxFilePat
     }
 
     companion object {
-        private val iconExpression = CwtDataExpression.resolve("icon[]", false)
+        private val iconExpression = CwtDataExpression.resolve("icon[]", CwtDataExpressionRole.Value)
 
         @JvmField val EP_NAME = ExtensionPointName<QueryExecutor<VirtualFile, Parameters>>("icu.windea.pls.search.filePathSearch")
         @JvmField val INSTANCE = ParadoxFilePathSearch()

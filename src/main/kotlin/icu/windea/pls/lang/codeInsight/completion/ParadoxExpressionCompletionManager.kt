@@ -330,11 +330,11 @@ object ParadoxExpressionCompletionManager {
         val configExpression = config.configExpression ?: return
         if (configExpression.type != CwtDataTypes.Constant) return
         val icon = when {
-            configExpression.isKey -> ChronicleIcons.Nodes.Property
+            configExpression.role.isKey() -> ChronicleIcons.Nodes.Property
             else -> ChronicleIcons.Nodes.Value
         }
         val name = configExpression.expressionString
-        if (!configExpression.isKey) {
+        if (configExpression.role.isValue()) {
             // 常量的值也可能是yes/no
             if (name == "yes") {
                 if (context.leftQuoted) return

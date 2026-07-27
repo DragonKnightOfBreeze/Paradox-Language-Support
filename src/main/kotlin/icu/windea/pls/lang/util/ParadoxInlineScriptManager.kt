@@ -6,6 +6,7 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.config.configExpression.CwtDataExpressionRole
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.orNull
@@ -34,7 +35,7 @@ import icu.windea.pls.script.psi.ParadoxScriptString
 @Suppress("unused")
 object ParadoxInlineScriptManager {
     const val inlineScriptKey = "inline_script"
-    val inlineScriptPathExpression = CwtDataExpression.resolve("filepath[common/inline_scripts/,.txt]", false)
+    val inlineScriptPathExpression = CwtDataExpression.resolve("filepath[common/inline_scripts/,.txt]", CwtDataExpressionRole.Value)
 
     /**
      * 检查游戏类型是否支持内联脚本。

@@ -4,6 +4,7 @@ import com.intellij.openapi.util.Key
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.config.configExpression.CwtDataExpressionRole
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.findChild
 import icu.windea.pls.core.util.createKey
@@ -176,7 +177,7 @@ class CwtPropertyConfigTest : BasePlatformTestCase() {
         run {
             val copied = CwtPropertyConfig.copy(
                 baseCfg,
-                keyExpression = CwtDataExpression.resolveKey(baseCfg.key + "_c"),
+                keyExpression = CwtDataExpression.resolve(baseCfg.key + "_c", CwtDataExpressionRole.Key),
                 valueExpression = baseCfg.valueExpression,
                 valueType = baseCfg.valueType,
                 separatorType = CwtSeparatorType.Equal,
@@ -211,8 +212,8 @@ class CwtPropertyConfigTest : BasePlatformTestCase() {
             assertEquals(baseCfg.key + "_d", delegated.key)
             assertEquals("42", delegated.value)
             // expressions exist; for block value (configs != null), valueExpression is blockExpression with isKey=false
-            assertTrue(delegated.keyExpression.isKey)
-            assertFalse(delegated.valueExpression.isKey)
+            assertEquals(CwtDataExpressionRole.Key, delegated.keyExpression.role)
+            assertEquals(CwtDataExpressionRole.Value, delegated.valueExpression.role)
         }
     }
 
@@ -225,8 +226,8 @@ class CwtPropertyConfigTest : BasePlatformTestCase() {
         assertEquals(CwtExpressionType.String, c.valueType)
         val d = c.delegatedWith(key = c.key + "_d", value = "x")
         assertNull(d.parentConfig)
-        assertTrue(d.keyExpression.isKey)
-        assertFalse(d.valueExpression.isKey)
+        assertEquals(CwtDataExpressionRole.Key, d.keyExpression.role)
+        assertEquals(CwtDataExpressionRole.Value, d.valueExpression.role)
     }
 
     // endregion

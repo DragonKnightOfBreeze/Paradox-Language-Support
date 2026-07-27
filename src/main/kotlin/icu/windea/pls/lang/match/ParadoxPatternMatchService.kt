@@ -3,6 +3,7 @@ package icu.windea.pls.lang.match
 import com.intellij.psi.PsiElement
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.config.configExpression.CwtDataExpressionRole
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.util.values.singletonList
 import icu.windea.pls.core.util.values.to
@@ -35,7 +36,7 @@ object ParadoxPatternMatchService {
             if (p1 != p2) return false
         }
         val pattern0 = text.substring(fromIndex)
-        val configExpression = CwtDataExpression.resolve(pattern0, true)
+        val configExpression = CwtDataExpression.resolve(pattern0, CwtDataExpressionRole.Key)
         if (configExpression.expressionString.isEmpty()) return false
         val expression = ParadoxExpression.resolve(key)
         val matchContext = ParadoxScriptExpressionMatchContext(contextElement, expression, configExpression, null, configGroup, options)

@@ -11,6 +11,7 @@ import icu.windea.pls.config.config.delegated.CwtModifierConfig
 import icu.windea.pls.config.config.isStatic
 import icu.windea.pls.config.config.prefixFromArgument
 import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.config.configExpression.CwtDataExpressionRole
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.CwtLinksModelBase
 import icu.windea.pls.config.filePathPatterns
@@ -170,7 +171,7 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
             val keysConst = CaseInsensitiveStringKeyMap<String>()
             val keysNoConst = ObjectLinkedOpenHashSet<String>()
             for (key in v.keys) {
-                if (CwtDataExpression.resolve(key, true).type == CwtDataTypes.Constant) {
+                if (CwtDataExpression.resolve(key, CwtDataExpressionRole.Key).type == CwtDataTypes.Constant) {
                     keysConst[key] = key
                 } else {
                     keysNoConst += key
@@ -180,7 +181,7 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
                 initializer.aliasKeysGroupConst[k] = keysConst
             }
             if (keysNoConst.isNotEmpty()) {
-                val sorted = keysNoConst.sortedByPriority({ CwtDataExpression.resolve(it, true) }, { configGroup })
+                val sorted = keysNoConst.sortedByPriority({ CwtDataExpression.resolve(it, CwtDataExpressionRole.Key) }, { configGroup })
                 val fastSet = ObjectLinkedOpenHashSet<String>()
                 fastSet.addAll(sorted)
                 initializer.aliasKeysGroupNoConst[k] = fastSet
@@ -281,7 +282,7 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
                 val propertyConfig = c.parentConfig as? CwtPropertyConfig ?: return@forEach
                 val aliasSubName = propertyConfig.key.removeSurroundingOrNull("alias[", "]")?.substringAfter(':', "")
                 val contextExpression = if (aliasSubName.isNullOrEmpty()) propertyConfig.keyExpression
-                else CwtDataExpression.resolve(aliasSubName, true)
+                else CwtDataExpression.resolve(aliasSubName, CwtDataExpressionRole.Key)
                 if (contextExpression.type == CwtDataTypes.Definition) {
                     contextExpression.metadata.value?.let { supportParameters += it }
                 }

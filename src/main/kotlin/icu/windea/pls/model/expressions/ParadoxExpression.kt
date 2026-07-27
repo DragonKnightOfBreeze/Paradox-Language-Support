@@ -27,6 +27,11 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 /**
  * 脚本文件、本地化文件或者 CSV 文件中的各种表达式，
  *
+ * @property text 文本。保留括起的双引号。
+ * @property value 值，不保留括起的双引号。
+ * @property type 类型。
+ * @property role 角色。分为键/值/其他。
+ *
  * @see ParadoxExpressionElement
  * @see ParadoxScriptExpressionMatcher
  * @see ParadoxCsvExpressionMatcher
@@ -89,18 +94,18 @@ private object ParadoxExpressionResolver {
 
     fun resolveUnknown(): ParadoxExpression = unknownExpression
 
-    fun resolve(text: String, role: ParadoxExpressionRole = ParadoxExpressionRole.Other): ParadoxExpression {
+    fun resolve(text: String, role: ParadoxExpressionRole): ParadoxExpression {
         return ParadoxTextBasedExpression(text, role)
     }
 
-    fun resolve(value: String, quoted: Boolean, role: ParadoxExpressionRole = ParadoxExpressionRole.Other): ParadoxExpression {
+    fun resolve(value: String, quoted: Boolean, role: ParadoxExpressionRole): ParadoxExpression {
         return when {
             quoted -> ParadoxQuotedValueBasedExpression(value, role)
             else -> ParadoxUnquotedValueBasedExpression(value, role)
         }
     }
 
-    fun resolve(element: ParadoxExpressionElement, options: ParadoxMatchOptions? = null): ParadoxExpression {
+    fun resolve(element: ParadoxExpressionElement, options: ParadoxMatchOptions?): ParadoxExpression {
         return when (element) {
             is ParadoxScriptBlock -> blockExpression
             is ParadoxScriptScriptedVariableReference -> ParadoxScriptedVariableReferenceBasedExpression(element, options)

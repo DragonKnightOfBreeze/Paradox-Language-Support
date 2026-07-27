@@ -75,7 +75,9 @@ object ParadoxExpressionService {
             ep.resolve(element, rangeInElement, text, config, role)
         }
         if (result != null) return result
-        if (configExpression.isKey) return getResolvedConfigElement(element, config, config.configGroup)
+        if (configExpression.role.isKey()) {
+            return getResolvedConfigElement(element, config, config.configGroup)
+        }
         return null
     }
 
@@ -93,7 +95,9 @@ object ParadoxExpressionService {
             ep.resolveAll(element, rangeInElement, text, config, role).orNull()
         }.orEmpty()
         if (result.isNotEmpty()) return result
-        if (configExpression.isKey) return getResolvedConfigElement(element, config, config.configGroup).to.singletonListOrEmpty()
+        if (configExpression.role.isKey()) {
+            return getResolvedConfigElement(element, config, config.configGroup).to.singletonListOrEmpty()
+        }
         return emptyList()
     }
 

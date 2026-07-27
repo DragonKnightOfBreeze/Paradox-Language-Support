@@ -218,7 +218,7 @@ object ParadoxClauseTemplateCompletionManager {
     private fun getDescriptors(constantConfigGroup: Map<CwtDataExpression, List<CwtMemberConfig<*>>>): List<ElementDescriptor> {
         val descriptors = mutableListOf<ElementDescriptor>()
         for ((expression, constantConfigs) in constantConfigGroup) {
-            if (expression.isKey) {
+            if (expression.role.isKey()) {
                 val name = expression.expressionString
                 val constantValueExpressions = constantConfigs
                     .mapNotNull { it.castOrNull<CwtPropertyConfig>()?.valueExpression?.takeIf { e -> e.type == CwtDataTypes.Constant } }

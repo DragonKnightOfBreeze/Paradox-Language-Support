@@ -1,14 +1,12 @@
-package icu.windea.pls.model.type
-
-import icu.windea.pls.cwt.psi.CwtExpressionElement
+package icu.windea.pls.config.configExpression
 
 /**
- * @see CwtExpressionElement
+ * @see CwtDataExpression
  */
-enum class CwtExpressionRole(val text: String) {
+enum class CwtDataExpressionRole(val text: String) {
     Key("key"),
     Value("value"),
-    Other("(other)"),
+    Other("(other)")
     ;
 
     override fun toString() = text
@@ -25,6 +23,6 @@ enum class CwtExpressionRole(val text: String) {
     companion object {
         @Suppress("unused")
         @JvmStatic
-        fun fromBoolean(value: Boolean?): CwtExpressionRole = if (value == true) Key else if (value == false) Value else Other
+        fun fromBoolean(value: Boolean?): CwtDataExpressionRole = if (value == true) Key else if (value == false) Value else Other
     }
 }

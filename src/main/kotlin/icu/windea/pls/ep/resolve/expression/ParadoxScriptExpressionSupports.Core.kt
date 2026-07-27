@@ -426,11 +426,11 @@ class ParadoxScriptConstantExpressionSupport : ParadoxScriptExpressionSupportBas
         if (annotated) return
         val configExpression = config.configExpression ?: return
         if (rangeInElement == null) {
-            if (element is ParadoxScriptPropertyKey && configExpression.isKey) return // unnecessary
-            if (element is ParadoxScriptString && !configExpression.isKey) return // unnecessary
+            if (element is ParadoxScriptPropertyKey && configExpression.role.isKey()) return // unnecessary
+            if (element is ParadoxScriptString && configExpression.role.isValue()) return // unnecessary
         }
         val attributesKey = when {
-            configExpression.isKey -> ParadoxScriptHighlighterColors.PROPERTY_KEY
+            configExpression.role.isKey() -> ParadoxScriptHighlighterColors.PROPERTY_KEY
             else -> ParadoxScriptHighlighterColors.STRING
         }
         val textRange = element.textRange

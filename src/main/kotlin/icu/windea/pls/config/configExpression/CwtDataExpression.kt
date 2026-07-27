@@ -37,8 +37,8 @@ import icu.windea.pls.model.expressions.ParadoxExpression
  *
  * > CWTools 兼容性：部分兼容。插件进行了额外的扩展和改进。
  *
- * @property isKey 是否来源于作为键的表达式。
  * @property type 数据类型。
+ * @property role 角色。分为键/值/其他。
  * @property metadata 可选的元数据。
  *
  * @see CwtDataType
@@ -47,8 +47,8 @@ import icu.windea.pls.model.expressions.ParadoxExpression
  * @see ParadoxExpression
  */
 interface CwtDataExpression : CwtConfigExpression {
-    val isKey: Boolean
     val type: CwtDataType
+    val role: CwtDataExpressionRole
     val metadata: CwtDataExpressionMetadata
 
     override fun equals(other: Any?): Boolean // NOTE 3.0.1 only based on `expressionString`
@@ -59,13 +59,13 @@ interface CwtDataExpression : CwtConfigExpression {
 
     companion object {
         @JvmStatic
-        fun create(expressionString: String, isKey: Boolean, type: CwtDataType, metadataBuilder: CwtDataExpressionMetadataBuilder? = null): CwtDataExpression {
-            return CwtDataExpressionResolver.create(expressionString, isKey, type, metadataBuilder)
+        fun create(expressionString: String, type: CwtDataType, role: CwtDataExpressionRole = CwtDataExpressionRole.Other, metadataBuilder: CwtDataExpressionMetadataBuilder? = null): CwtDataExpression {
+            return CwtDataExpressionResolver.create(expressionString, type, role, metadataBuilder)
         }
 
         @JvmStatic
-        fun resolveEmpty(isKey: Boolean): CwtDataExpression {
-            return CwtDataExpressionResolver.resolveEmpty(isKey)
+        fun resolveEmpty(role: CwtDataExpressionRole = CwtDataExpressionRole.Other): CwtDataExpression {
+            return CwtDataExpressionResolver.resolveEmpty(role)
         }
 
         @JvmStatic
@@ -74,18 +74,8 @@ interface CwtDataExpression : CwtConfigExpression {
         }
 
         @JvmStatic
-        fun resolve(expressionString: String, isKey: Boolean): CwtDataExpression {
-            return CwtDataExpressionResolver.resolve(expressionString, isKey)
-        }
-
-        @JvmStatic
-        fun resolveKey(expressionString: String): CwtDataExpression {
-            return CwtDataExpressionResolver.resolveKey(expressionString)
-        }
-
-        @JvmStatic
-        fun resolveValue(expressionString: String): CwtDataExpression {
-            return CwtDataExpressionResolver.resolveValue(expressionString)
+        fun resolve(expressionString: String, role: CwtDataExpressionRole = CwtDataExpressionRole.Other): CwtDataExpression {
+            return CwtDataExpressionResolver.resolve(expressionString, role)
         }
 
         @JvmStatic
@@ -98,60 +88,63 @@ interface CwtDataExpression : CwtConfigExpression {
 // region Implementations
 
 private object CwtDataExpressionResolver {
-    private val cacheForKey = CacheBuilder("expireAfterAccess=30m").build<String, CwtDataExpression> { doResolve(it, true) }
-    private val cacheForValue = CacheBuilder("expireAfterAccess=30m").build<String, CwtDataExpression> { doResolve(it, false) }
+    private val cacheForKey = CacheBuilder("expireAfterAccess=30m").build<String, CwtDataExpression> { doResolve(it, CwtDataExpressionRole.Key) }
+    private val cacheForValue = CacheBuilder("expireAfterAccess=30m").build<String, CwtDataExpression> { doResolve(it, CwtDataExpressionRole.Value) }
+    private val cacheForOther = CacheBuilder("expireAfterAccess=30m").build<String, CwtDataExpression> { doResolve(it, CwtDataExpressionRole.Other) }
     private val cacheForTemplate = CacheBuilder("expireAfterAccess=30m").build<String, CwtDataExpression> { doResolveTemplate(it) }
 
-    private val emptyKeyExpression = CwtDataExpressionImplWithMetadata("", true, CwtDataTypes.Constant)
-    private val emptyValueExpression = CwtDataExpressionImplWithMetadata("", false, CwtDataTypes.Constant)
-    private val blockExpression = create(ChronicleStrings.blockFolder, false, CwtDataTypes.Block)
+    private val emptyKeyExpression = CwtDataExpressionImplWithoutMetadata("", CwtDataTypes.Constant, CwtDataExpressionRole.Key)
+    private val emptyValueExpression = CwtDataExpressionImplWithoutMetadata("", CwtDataTypes.Constant, CwtDataExpressionRole.Value)
+    private val emptyOtherExpression = CwtDataExpressionImplWithoutMetadata("", CwtDataTypes.Constant, CwtDataExpressionRole.Other)
+    private val blockExpression = CwtDataExpressionImplWithoutMetadata(ChronicleStrings.blockFolder, CwtDataTypes.Block, CwtDataExpressionRole.Value)
 
-    fun create(expressionString: String, isKey: Boolean, type: CwtDataType, metadataBuilder: CwtDataExpressionMetadataBuilder? = null): CwtDataExpression {
-        if (expressionString.isEmpty()) return resolveEmpty(isKey)
-        if (metadataBuilder == null) return CwtDataExpressionImplWithoutMetadata(expressionString, isKey, type)
-        return CwtDataExpressionImplWithMetadata(expressionString, isKey, type).apply(metadataBuilder)
+    fun create(expressionString: String, type: CwtDataType, role: CwtDataExpressionRole, metadataBuilder: CwtDataExpressionMetadataBuilder?): CwtDataExpression {
+        if (expressionString.isEmpty()) return resolveEmpty(role)
+        if (metadataBuilder == null) return CwtDataExpressionImplWithoutMetadata(expressionString, type, role)
+        return CwtDataExpressionImplWithMetadata(expressionString, type, role).apply(metadataBuilder)
     }
 
-    fun resolveEmpty(isKey: Boolean): CwtDataExpression {
-        return if (isKey) emptyKeyExpression else emptyValueExpression
+    fun resolveEmpty(role: CwtDataExpressionRole): CwtDataExpression {
+        return when (role) {
+            CwtDataExpressionRole.Key -> emptyKeyExpression
+            CwtDataExpressionRole.Value -> emptyValueExpression
+            CwtDataExpressionRole.Other -> emptyOtherExpression
+        }
     }
 
     fun resolveBlock(): CwtDataExpression {
         return blockExpression
     }
 
-    fun resolve(expressionString: String, isKey: Boolean): CwtDataExpression {
-        if (expressionString.isEmpty()) return if (isKey) emptyKeyExpression else emptyValueExpression
-        val cache = if (isKey) cacheForKey else cacheForValue
+    fun resolve(expressionString: String, role: CwtDataExpressionRole): CwtDataExpression {
+        if (expressionString.isEmpty()) return resolveEmpty(role)
+        val cache = when (role) {
+            CwtDataExpressionRole.Key -> cacheForKey
+            CwtDataExpressionRole.Value -> cacheForValue
+            CwtDataExpressionRole.Other -> cacheForOther
+        }
         return cache.get(expressionString)
     }
 
-    fun resolveKey(expressionString: String): CwtDataExpression {
-        return resolve(expressionString, true)
-    }
-
-    fun resolveValue(expressionString: String): CwtDataExpression {
-        return resolve(expressionString, false)
-    }
-
     fun resolveTemplate(expressionString: String): CwtDataExpression {
-        if (expressionString.isEmpty()) return emptyValueExpression
-        return cacheForTemplate.get(expressionString)
+        if (expressionString.isEmpty()) return emptyOtherExpression
+        val cache = cacheForTemplate
+        return cache.get(expressionString)
     }
 
-    private fun doResolve(expressionString: String, isKey: Boolean): CwtDataExpression {
-        return CwtConfigExpressionService.resolve(expressionString, isKey) ?: create(expressionString, isKey, CwtDataTypes.Constant)
+    private fun doResolve(expressionString: String, role: CwtDataExpressionRole): CwtDataExpression {
+        return CwtConfigExpressionService.resolve(expressionString, role) ?: CwtDataExpressionImplWithoutMetadata(expressionString, CwtDataTypes.Constant, role)
     }
 
     private fun doResolveTemplate(expressionString: String): CwtDataExpression {
-        return CwtConfigExpressionService.resolveTemplate(expressionString) ?: create(expressionString, false, CwtDataTypes.Constant)
+        return CwtConfigExpressionService.resolveTemplate(expressionString) ?: CwtDataExpressionImplWithoutMetadata(expressionString, CwtDataTypes.Constant, CwtDataExpressionRole.Other)
     }
 }
 
 private class CwtDataExpressionImplWithoutMetadata(
     override val expressionString: String,
-    override val isKey: Boolean,
     override val type: CwtDataType,
+    override val role: CwtDataExpressionRole,
 ) : CwtDataExpression {
     override val metadata get() = EmptyCwtDataExpressionMetadata
 
@@ -162,8 +155,8 @@ private class CwtDataExpressionImplWithoutMetadata(
 
 private class CwtDataExpressionImplWithMetadata(
     override val expressionString: String,
-    override val isKey: Boolean,
     override val type: CwtDataType,
+    override val role: CwtDataExpressionRole,
 ) : CwtDataExpressionMetadataBase(), CwtDataExpression {
     override val metadata: CwtDataExpressionMetadata get() = this
 
@@ -175,3 +168,4 @@ private class CwtDataExpressionImplWithMetadata(
 private object EmptyCwtDataExpressionMetadata : CwtDataExpressionMetadata
 
 // endregion
+

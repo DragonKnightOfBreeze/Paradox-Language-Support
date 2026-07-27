@@ -7,6 +7,7 @@ import com.intellij.openapi.diagnostic.trace
 import com.intellij.openapi.util.Key
 import com.intellij.psi.SmartPsiElementPointer
 import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.config.configExpression.CwtDataExpressionRole
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.option.CwtOptionMetadata
 import icu.windea.pls.config.option.CwtOptionMetadataBase
@@ -108,7 +109,7 @@ private object CwtValueConfigResolver : CwtConfigResolverScope {
 
         val pointer = if (configGroup.project.isDefault) emptyPointer() else element.createPointer(file)
         val configs = CwtConfigResolverManager.getConfigs(element, file, configGroup)
-        val valueExpression = if (configs == null) CwtDataExpression.resolveValue(element.value) else CwtDataExpression.resolveBlock()
+        val valueExpression = if (configs == null) CwtDataExpression.resolve(element.value, CwtDataExpressionRole.Value) else CwtDataExpression.resolveBlock()
         val valueType = CwtTypeResolver.resolveExpressionType(element)
         val config = create(pointer, configGroup, valueExpression, valueType, configs, propertyConfig = null, injectable = true)
         val optionConfigs = CwtConfigResolverManager.getOptionConfigs(element, configGroup)
@@ -149,7 +150,7 @@ private object CwtValueConfigResolver : CwtConfigResolverScope {
     }
 
     fun createMock(configGroup: CwtConfigGroup, value: String): CwtValueConfig {
-        return CwtValueConfigMock(configGroup, CwtDataExpression.resolveValue(value))
+        return CwtValueConfigMock(configGroup, CwtDataExpression.resolve(value, CwtDataExpressionRole.Value))
     }
 
     fun copy(
@@ -357,7 +358,7 @@ private class CwtValueConfigDelegateWithValue(
     override val value: String get() = valueExpression.expressionString
     override val configs: List<CwtMemberConfig<*>>? get() = null // should be always null here
 
-    override val valueExpression: CwtDataExpression = CwtDataExpression.resolveValue(value) // as field directly
+    override val valueExpression: CwtDataExpression = CwtDataExpression.resolve(value, CwtDataExpressionRole.Value) // as field directly
 }
 
 // 12 + 4 * 4 = 28 -> 32

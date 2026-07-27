@@ -11,6 +11,7 @@ import icu.windea.pls.config.CwtConfigType
 import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.config.configExpression.CwtDataExpressionRole
 import icu.windea.pls.core.ReadWriteAccess
 import icu.windea.pls.core.collections.toArray
 import icu.windea.pls.core.findKeywordsWithTextRanges
@@ -98,7 +99,7 @@ object CwtConfigSymbolManager {
             // modifiers & effects & triggers
             if (configType != CwtConfigTypes.Modifier && configType != CwtConfigTypes.Trigger && configType != CwtConfigTypes.Effect) return@b
             val n2 = name.substringAfter(':').orNull() ?: return@b
-            if (CwtDataExpression.resolve(n2, false).type != CwtDataTypes.Constant) return@b
+            if (CwtDataExpression.resolve(n2, CwtDataExpressionRole.Value).type != CwtDataTypes.Constant) return@b
             add(tupleOf(n2, expressionString.indexOf(':') + 1, configType))
         }
         tuples.forEach f@{ (symbolName, symbolOffset, symbolConfigType) ->

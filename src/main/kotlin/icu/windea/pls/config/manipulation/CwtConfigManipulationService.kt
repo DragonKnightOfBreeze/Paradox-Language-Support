@@ -15,6 +15,7 @@ import icu.windea.pls.config.config.inlineConfig
 import icu.windea.pls.config.config.isSamePointer
 import icu.windea.pls.config.config.singleAliasConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.config.configExpression.CwtDataExpressionRole
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.option.CwtOptionMetadata
 import icu.windea.pls.config.util.CwtConfigKeyManager
@@ -214,7 +215,7 @@ object CwtConfigManipulationService {
         val merged = CwtValueConfig.create(
             pointer = emptyPointer(),
             configGroup = config.configGroup,
-            valueExpression = CwtDataExpression.resolveValue(expressionString),
+            valueExpression = CwtDataExpression.resolve(expressionString, CwtDataExpressionRole.Value),
         )
         mergeOptionMetadata(merged.optionMetadata, config.optionMetadata, otherConfig.optionMetadata) // merge option metadata
         return merged
@@ -320,7 +321,7 @@ object CwtConfigManipulationService {
         val other = macroConfig.contextContainerConfig
         val inlined = CwtPropertyConfig.copy(
             sourceConfig = other,
-            keyExpression = CwtDataExpression.resolveKey(macroConfig.name),
+            keyExpression = CwtDataExpression.resolve(macroConfig.name, CwtDataExpressionRole.Key),
             configs = deepCopyConfigs(other),
         )
         inlined.postOptimize() // do post optimization
@@ -335,11 +336,11 @@ object CwtConfigManipulationService {
             sourceConfig = config,
             keyExpression = when (inlineMode) {
                 CwtConfigInlineMode.KEY_TO_KEY -> if (otherConfig is CwtPropertyConfig) otherConfig.keyExpression else return null
-                CwtConfigInlineMode.VALUE_TO_KEY -> CwtDataExpression.resolveKey(otherConfig.value)
+                CwtConfigInlineMode.VALUE_TO_KEY -> CwtDataExpression.resolve(otherConfig.value, CwtDataExpressionRole.Key)
                 else -> config.keyExpression
             },
             valueExpression = when (inlineMode) {
-                CwtConfigInlineMode.KEY_TO_VALUE -> if (otherConfig is CwtPropertyConfig) CwtDataExpression.resolveValue(otherConfig.key) else return null
+                CwtConfigInlineMode.KEY_TO_VALUE -> if (otherConfig is CwtPropertyConfig) CwtDataExpression.resolve(otherConfig.key, CwtDataExpressionRole.Value) else return null
                 CwtConfigInlineMode.VALUE_TO_VALUE -> otherConfig.valueExpression
                 else -> config.valueExpression
             },

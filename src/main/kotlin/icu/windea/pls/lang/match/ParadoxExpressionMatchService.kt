@@ -5,6 +5,7 @@ import com.intellij.psi.PsiElement
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.config.configExpression.CwtDataExpressionRole
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.processCandidateConfigs
 import icu.windea.pls.core.annotations.Optimized
@@ -76,8 +77,8 @@ object ParadoxExpressionMatchService {
 
     fun matchesExpressionRole(expression: ParadoxExpression, configExpression: CwtDataExpression): Boolean {
         return when (expression.role) {
-            ParadoxExpressionRole.Key -> configExpression.isKey
-            ParadoxExpressionRole.Value -> !configExpression.isKey
+            ParadoxExpressionRole.Key -> configExpression.role == CwtDataExpressionRole.Key
+            ParadoxExpressionRole.Value -> configExpression.role == CwtDataExpressionRole.Value
             else -> true
         }
     }
@@ -112,7 +113,7 @@ object ParadoxExpressionMatchService {
         val keys = configGroup.aliasKeysGroupNoConst[aliasName] ?: return null
         return keys.find { key ->
             ProgressManager.checkCanceled()
-            val configExpression = CwtDataExpression.resolve(key, true)
+            val configExpression = CwtDataExpression.resolve(key)
             val context = ParadoxScriptExpressionMatchContext(element, expression, configExpression, null, configGroup, options)
             matchScriptExpression(context).get(options)
         }

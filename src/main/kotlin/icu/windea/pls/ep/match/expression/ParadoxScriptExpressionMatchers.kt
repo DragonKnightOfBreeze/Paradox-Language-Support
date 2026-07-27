@@ -274,7 +274,7 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
         val aliasName = configExpression.metadata.value ?: return ParadoxMatchResult.NotMatch
         val aliasExpression = expression
         val aliasSubName = ParadoxExpressionMatchService.getMatchedAliasKey(element, aliasExpression, aliasName, configGroup, options) ?: return ParadoxMatchResult.NotMatch
-        val nextContext = ParadoxScriptExpressionMatchContext(element, expression, CwtDataExpression.resolve(aliasSubName, true), null, configGroup, options)
+        val nextContext = ParadoxScriptExpressionMatchContext(element, expression, CwtDataExpression.resolve(aliasSubName), null, configGroup, options)
         return ParadoxExpressionMatchService.matchScriptExpression(nextContext)
     }
 
@@ -361,7 +361,7 @@ class ParadoxConstantScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
     override fun match(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult? {
         if (context.dataType != CwtDataTypes.Constant) return null
         val value = context.configExpression.expressionString
-        if (!context.configExpression.isKey) {
+        if (context.configExpression.role.isValue()) {
             // 作为常量的值也可能是布尔值（`yes` / `no`）
             val text = context.expression.value
             if ((value == "yes" || value == "no") && text.isLeftQuoted()) return ParadoxMatchResult.NotMatch

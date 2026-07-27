@@ -5,6 +5,7 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.config.configExpression.CwtDataExpressionRole
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.processAsync
 import icu.windea.pls.core.toPsiFile
@@ -95,7 +96,7 @@ class ParadoxDefinitionBasedLocalisationIconSupport(
 class ParadoxImageFileBasedLocalisationIconSupport(
     pathExpressionString: String
 ) : ParadoxLocalisationIconSupport {
-    val pathExpression = CwtDataExpression.resolve(pathExpressionString, false)
+    val pathExpression = CwtDataExpression.resolve(pathExpressionString, CwtDataExpressionRole.Value)
 
     override fun resolve(name: String, element: ParadoxLocalisationIcon, project: Project): PsiElement? {
         val fileSelector = ParadoxFilePathSearch.selector(project, element).contextSensitive()

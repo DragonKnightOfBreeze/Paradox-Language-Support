@@ -326,7 +326,7 @@ object ParadoxScopeService {
             else -> ParadoxScopeContext.resolveAny()
         }
         val expressionElement = when {
-            element is ParadoxScriptProperty -> if (configExpression.isKey) element.propertyKey else element.propertyValue
+            element is ParadoxScriptProperty -> if (configExpression.role.isKey()) element.propertyKey else element.propertyValue
             element is ParadoxScriptValue -> element
             else -> null
         }

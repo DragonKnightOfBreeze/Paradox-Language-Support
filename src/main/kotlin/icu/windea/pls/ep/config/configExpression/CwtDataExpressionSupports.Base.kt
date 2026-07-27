@@ -5,6 +5,7 @@ import icu.windea.pls.config.CwtDataType
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.CwtDataExpressionMetadataBuilder
 import icu.windea.pls.config.configExpression.CwtDataExpressionMetadataBuilderWithInput
+import icu.windea.pls.config.configExpression.CwtDataExpressionRole
 import icu.windea.pls.config.configExpression.acceptInput
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.process
@@ -42,9 +43,13 @@ abstract class CwtTextPatternBasedDataExpressionSupport : CwtDataExpressionSuppo
         return v.length >= 2 && v.first().let { c -> c == '[' || c == '(' } && v.last().let { c -> c == ']' || c == ')' }
     }
 
-    final override fun resolve(expressionString: String, isKey: Boolean): CwtDataExpression? {
+    final override fun resolve(expressionString: String, role: CwtDataExpressionRole): CwtDataExpression? {
         val context = builder.build(expressionString) ?: return null
-        return CwtDataExpression.create(expressionString, isKey, context.dataType, context.metadataBuilder)
+        return CwtDataExpression.create(expressionString, context.dataType, role, context.metadataBuilder)
+    }
+
+    final override fun resolveTemplate(expressionString: String): CwtDataExpression? {
+        return resolve(expressionString, CwtDataExpressionRole.Other)
     }
 
     final override fun processTextPatterns(consumer: Processor<TextPattern<*>>): Boolean {
@@ -67,12 +72,16 @@ abstract class CwtPrefixBasedDataExpressionSupport : CwtDataExpressionSupport {
         providers += Provider(dataType, prefix, ignoreCase)
     }
 
-    final override fun resolve(expressionString: String, isKey: Boolean): CwtDataExpression? {
+    final override fun resolve(expressionString: String, role: CwtDataExpressionRole): CwtDataExpression? {
         providers.forEachFast f@{ provider ->
             val v = expressionString.removePrefixOrNull(provider.prefix) ?: return@f
-            return CwtDataExpression.create(expressionString, isKey, provider.dataType) { value = v; ignoreCase = provider.ignoreCase }
+            return CwtDataExpression.create(expressionString, provider.dataType, role) { value = v; ignoreCase = provider.ignoreCase }
         }
         return null
+    }
+
+    final override fun resolveTemplate(expressionString: String): CwtDataExpression? {
+        return null // unsupported
     }
 
     final override fun processTextPatterns(consumer: Processor<TextPattern<*>>): Boolean {

@@ -3,6 +3,7 @@ package icu.windea.pls.config.config
 import com.intellij.openapi.util.Key
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import icu.windea.pls.config.configExpression.CwtDataExpressionRole
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.createPointer
 import icu.windea.pls.core.findChild
@@ -189,7 +190,7 @@ class CwtValueConfigTest : BasePlatformTestCase() {
             val delegated = baseCfg.delegatedWith(value = "over")
             assertEquals("over", delegated.value)
             // for block base (configs != null), valueExpression is blockExpression with isKey=false
-            assertFalse(delegated.valueExpression.isKey)
+            assertEquals(CwtDataExpressionRole.Value, delegated.valueExpression.role)
         }
     }
 
@@ -212,7 +213,7 @@ class CwtValueConfigTest : BasePlatformTestCase() {
         assertEquals(pCfg.valueType, vCfg.valueType)
         assertEquals(pCfg.configs?.size, vCfg.configs?.size)
         // for block property, wrapper valueExpression is blockExpression with isKey=false
-        assertFalse(vCfg.valueExpression.isKey)
+        assertEquals(CwtDataExpressionRole.Value, vCfg.valueExpression.role)
         // userData should NOT be inherited from property config on wrapper
         assertNull(vCfg.getUserData(extraKey))
         vCfg.putUserData(extraKey, "vw1")
@@ -231,7 +232,7 @@ class CwtValueConfigTest : BasePlatformTestCase() {
         val d = c.delegatedWith(value = "100")
         assertNull(d.parentConfig)
         assertEquals("100", d.value)
-        assertFalse(d.valueExpression.isKey)
+        assertEquals(CwtDataExpressionRole.Key, d.valueExpression.role)
     }
 
     // endregion
