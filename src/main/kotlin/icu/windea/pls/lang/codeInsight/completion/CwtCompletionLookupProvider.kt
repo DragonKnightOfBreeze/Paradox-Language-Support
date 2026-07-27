@@ -176,8 +176,6 @@ object CwtCompletionLookupProvider {
 
     // endregion
 
-    // endregion
-
     // region Insert Handlers
 
     private open class BlockInsertHandler<T : LookupElement> : InsertHandler<T> {

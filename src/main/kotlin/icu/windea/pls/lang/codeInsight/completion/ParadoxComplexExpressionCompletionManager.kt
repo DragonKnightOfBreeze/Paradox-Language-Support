@@ -9,10 +9,8 @@ import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
-import icu.windea.pls.config.config.prefixFromArgument
 import icu.windea.pls.config.sortedByPriority
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.codeInsight.completion.AddParenthesesInsertHandler
 import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.collections.toListOrThis
 import icu.windea.pls.core.icon
@@ -653,15 +651,7 @@ object ParadoxComplexExpressionCompletionManager {
     // region General Completion Methods
 
     private fun completeNegated(context: ParadoxCompletionContext, result: CompletionResultSet) {
-        val name = "not"
-        val tailText = "(...)"
-        val lookupElement = LookupElementBuilder.create(name)
-            .withBoldness(true)
-            .withTailText(tailText, true)
-            .withInsertHandler(AddParenthesesInsertHandler())
-            .withPriority(ParadoxCompletionPriorities.keyword)
-            .withCompletionId()
-        result.addElement(lookupElement, context)
+        ParadoxCompletionLookupProvider.forNotKeyword().addToResult(context, result)
     }
 
     private fun completeSystemScope(context: ParadoxCompletionContext, result: CompletionResultSet) {
@@ -672,18 +662,7 @@ object ParadoxComplexExpressionCompletionManager {
         val systemScopeConfigs = context.configGroup.systemScopes
         for (systemScopeConfig in systemScopeConfigs.values) {
             ProgressManager.checkCanceled()
-            val name = systemScopeConfig.name
-            val element = systemScopeConfig.pointer.element ?: continue
-            val tailText = " from system scopes"
-            val typeFile = systemScopeConfig.pointer.containingFile
-            val lookupElement = LookupElementBuilder.create(element, name)
-                .withIcon(ChronicleIcons.Nodes.SystemScope)
-                .withTailText(tailText, true)
-                .withTypeText(typeFile?.name, typeFile?.icon, true)
-                .withCaseSensitivity(false) // 忽略大小写
-                .withPriority(ParadoxCompletionPriorities.systemScope)
-                .withCompletionId()
-            result.addElement(lookupElement, context)
+            ParadoxCompletionLookupProvider.forSystemScope(systemScopeConfig, hintText = " from system scopes").addToResult(context, result)
         }
     }
 
@@ -696,20 +675,7 @@ object ParadoxComplexExpressionCompletionManager {
             ProgressManager.checkCanceled()
             val scopeMatched = ParadoxScopeManager.matchesScope(context.scopeContext, linkConfig.inputScopes, context.configGroup)
             if (!scopeMatched && ChronicleSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
-
-            val name = linkConfig.name
-            val element = linkConfig.pointer.element ?: continue
-            val tailText = " from links"
-            val typeFile = linkConfig.pointer.containingFile
-            val lookupElement = LookupElementBuilder.create(element, name)
-                .withIcon(ChronicleIcons.Nodes.StaticScope)
-                .withTailText(tailText, true)
-                .withTypeText(typeFile?.name, typeFile?.icon, true)
-                .withCaseSensitivity(false) // 忽略大小写
-                .withScopeMatched(scopeMatched)
-                .withPriority(ParadoxCompletionPriorities.scope)
-                .withCompletionId()
-            result.addElement(lookupElement, context)
+            ParadoxCompletionLookupProvider.forStaticScope(linkConfig, hintText = " from links", scopeMatched = scopeMatched).addToResult(context, result)
         }
     }
 
@@ -722,20 +688,7 @@ object ParadoxComplexExpressionCompletionManager {
             ProgressManager.checkCanceled()
             val scopeMatched = ParadoxScopeManager.matchesScope(context.scopeContext, linkConfig.inputScopes, context.configGroup)
             if (!scopeMatched && ChronicleSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
-
-            val name = linkConfig.prefixFromArgument ?: continue
-            val element = linkConfig.pointer.element ?: continue
-            val tailText = "(...) from link ${linkConfig.name}"
-            val typeFile = linkConfig.pointer.containingFile
-            val lookupElement = LookupElementBuilder.create(element, name)
-                .withBoldness(true)
-                .withIcon(ChronicleIcons.Nodes.DynamicScope)
-                .withTailText(tailText, true)
-                .withTypeText(typeFile?.name, typeFile?.icon, true)
-                .withInsertHandler(AddParenthesesInsertHandler())
-                .withPriority(ParadoxCompletionPriorities.prefix)
-                .withCompletionId()
-            result.addElement(lookupElement, context)
+            ParadoxCompletionLookupProvider.forScopePrefixFromArgument(linkConfig, hintText = "(...) from link ${linkConfig.name}").addToResult(context, result)
         }
 
         val linkConfigsFromData = context.configGroup.linksModel.forScopeFromDataSorted
@@ -743,20 +696,7 @@ object ParadoxComplexExpressionCompletionManager {
             ProgressManager.checkCanceled()
             val scopeMatched = ParadoxScopeManager.matchesScope(context.scopeContext, linkConfig.inputScopes, context.configGroup)
             if (!scopeMatched && ChronicleSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
-
-            val name = linkConfig.prefix ?: continue
-            val element = linkConfig.pointer.element ?: continue
-            val tailText = " from link ${linkConfig.name}"
-            val typeFile = linkConfig.pointer.containingFile
-            val lookupElement = LookupElementBuilder.create(element, name)
-                .withBoldness(true)
-                .withIcon(ChronicleIcons.Nodes.DynamicScope)
-                .withTailText(tailText, true)
-                .withTypeText(typeFile?.name, typeFile?.icon, true)
-                .withScopeMatched(scopeMatched)
-                .withPriority(ParadoxCompletionPriorities.prefix)
-                .withCompletionId()
-            result.addElement(lookupElement, context)
+            ParadoxCompletionLookupProvider.forScopePrefixFromData(linkConfig, hintText = " from link ${linkConfig.name}", scopeMatched = scopeMatched).addToResult(context, result)
         }
     }
 
@@ -789,19 +729,7 @@ object ParadoxComplexExpressionCompletionManager {
             // 排除 input_scopes 不匹配前一个 scope 的 output_scope 的情况
             val scopeMatched = ParadoxScopeManager.matchesScope(context.scopeContext, linkConfig.inputScopes, context.configGroup)
             if (!scopeMatched && ChronicleSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
-
-            val name = linkConfig.name
-            val element = linkConfig.pointer.element ?: continue
-            val tailText = " from links"
-            val typeFile = linkConfig.pointer.containingFile
-            val lookupElement = LookupElementBuilder.create(element, name)
-                .withIcon(ChronicleIcons.Nodes.StaticValueField)
-                .withTailText(tailText, true)
-                .withTypeText(typeFile?.name, typeFile?.icon, true)
-                .withCaseSensitivity(false) // 忽略大小写
-                .withScopeMatched(scopeMatched)
-                .withCompletionId()
-            result.addElement(lookupElement, context)
+            ParadoxCompletionLookupProvider.forStaticValueField(linkConfig, hintText = " from links", scopeMatched = scopeMatched).addToResult(context, result)
         }
     }
 
@@ -814,40 +742,14 @@ object ParadoxComplexExpressionCompletionManager {
             ProgressManager.checkCanceled()
             val scopeMatched = ParadoxScopeManager.matchesScope(context.scopeContext, linkConfig.inputScopes, context.configGroup)
             if (!scopeMatched && ChronicleSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
-
-            val name = linkConfig.prefixFromArgument ?: continue
-            val element = linkConfig.pointer.element ?: continue
-            val tailText = "(...) from link ${linkConfig.name}"
-            val typeFile = linkConfig.pointer.containingFile
-            val lookupElement = LookupElementBuilder.create(element, name)
-                .withBoldness(true)
-                .withIcon(ChronicleIcons.Nodes.DynamicValueField)
-                .withTailText(tailText, true)
-                .withTypeText(typeFile?.name, typeFile?.icon, true)
-                .withInsertHandler(AddParenthesesInsertHandler())
-                .withPriority(ParadoxCompletionPriorities.prefix)
-                .withCompletionId()
-            result.addElement(lookupElement, context)
+            ParadoxCompletionLookupProvider.forValueFieldPrefixFromArgument(linkConfig, hintText = "(...) from link ${linkConfig.name}").addToResult(context, result)
         }
 
         val linkConfigsFromData = context.configGroup.linksModel.forValueFromDataSorted
         for (linkConfig in linkConfigsFromData) {
             ProgressManager.checkCanceled()
-            val scopeMatched = ParadoxScopeManager.matchesScope(context.scopeContext, linkConfig.inputScopes, context.configGroup)
-            if (!scopeMatched && ChronicleSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
-
-            val name = linkConfig.prefix ?: continue
-            val element = linkConfig.pointer.element ?: continue
-            val tailText = " from link ${linkConfig.name}"
-            val typeFile = linkConfig.pointer.containingFile
-            val lookupElement = LookupElementBuilder.create(element, name)
-                .withBoldness(true)
-                .withIcon(ChronicleIcons.Nodes.DynamicValueField)
-                .withTailText(tailText, true)
-                .withTypeText(typeFile?.name, typeFile?.icon, true)
-                .withPriority(ParadoxCompletionPriorities.prefix)
-                .withCompletionId()
-            result.addElement(lookupElement, context)
+            // TODO 这里没有对 scopeMatched 进行检查，与 completeScopePrefix 的 fromData 分支不一致，确认是否遗漏？
+            ParadoxCompletionLookupProvider.forValueFieldPrefixFromData(linkConfig, hintText = " from link ${linkConfig.name}").addToResult(context, result)
         }
     }
 
@@ -882,18 +784,7 @@ object ParadoxComplexExpressionCompletionManager {
         val systemScopeConfigs = context.configGroup.systemScopes
         for (systemScopeConfig in systemScopeConfigs.values) {
             ProgressManager.checkCanceled()
-            val name = systemScopeConfig.name
-            val element = systemScopeConfig.pointer.element ?: continue
-            val tailText = " from system scopes"
-            val typeFile = systemScopeConfig.pointer.containingFile
-            val lookupElement = LookupElementBuilder.create(element, name)
-                .withIcon(ChronicleIcons.Nodes.SystemCommandScope)
-                .withTailText(tailText, true)
-                .withTypeText(typeFile?.name, typeFile?.icon, true)
-                .withCaseSensitivity(false) // 忽略大小写
-                .withPriority(ParadoxCompletionPriorities.systemScope)
-                .withCompletionId()
-            result.addElement(lookupElement, context)
+            ParadoxCompletionLookupProvider.forSystemCommandScope(systemScopeConfig, hintText = " from system scopes").addToResult(context, result)
         }
     }
 
@@ -906,21 +797,7 @@ object ParadoxComplexExpressionCompletionManager {
             ProgressManager.checkCanceled()
             val scopeMatched = ParadoxScopeManager.matchesScope(context.scopeContext, linkConfig.inputScopes, context.configGroup)
             if (!scopeMatched && ChronicleSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
-
-            // optimize: make first char uppercase (e.g., owner -> Owner)
-            val name = linkConfig.name.replaceFirstChar { it.uppercaseChar() }
-            val element = linkConfig.pointer.element ?: continue
-            val tailText = " from localisation links"
-            val typeFile = linkConfig.pointer.containingFile
-            val lookupElement = LookupElementBuilder.create(element, name)
-                .withIcon(ChronicleIcons.Nodes.StaticCommandScope)
-                .withTailText(tailText, true)
-                .withTypeText(typeFile?.name, typeFile?.icon, true)
-                .withCaseSensitivity(false) // 忽略大小写
-                .withScopeMatched(scopeMatched)
-                .withPriority(ParadoxCompletionPriorities.scope)
-                .withCompletionId()
-            result.addElement(lookupElement, context)
+            ParadoxCompletionLookupProvider.forStaticCommandScope(linkConfig, hintText = " from localisation links", scopeMatched = scopeMatched).addToResult(context, result)
         }
     }
 
@@ -933,20 +810,7 @@ object ParadoxComplexExpressionCompletionManager {
             ProgressManager.checkCanceled()
             val scopeMatched = ParadoxScopeManager.matchesScope(context.scopeContext, linkConfig.inputScopes, context.configGroup)
             if (!scopeMatched && ChronicleSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
-
-            val name = linkConfig.prefixFromArgument ?: continue
-            val element = linkConfig.pointer.element ?: continue
-            val tailText = "(...) from localisation link ${linkConfig.name}"
-            val typeFile = linkConfig.pointer.containingFile
-            val lookupElement = LookupElementBuilder.create(element, name)
-                .withBoldness(true)
-                .withIcon(ChronicleIcons.Nodes.DynamicCommandScope)
-                .withTailText(tailText, true)
-                .withTypeText(typeFile?.name, typeFile?.icon, true)
-                .withInsertHandler(AddParenthesesInsertHandler())
-                .withPriority(ParadoxCompletionPriorities.prefix)
-                .withCompletionId()
-            result.addElement(lookupElement, context)
+            ParadoxCompletionLookupProvider.forCommandScopePrefixFromArgument(linkConfig, hintText = "(...) from localisation link ${linkConfig.name}").addToResult(context, result)
         }
 
         val linkConfigsFromData = context.configGroup.localisationLinksModel.forScopeFromDataSorted
@@ -955,20 +819,7 @@ object ParadoxComplexExpressionCompletionManager {
             ProgressManager.checkCanceled()
             val scopeMatched = ParadoxScopeManager.matchesScope(context.scopeContext, linkConfig.inputScopes, context.configGroup)
             if (!scopeMatched && ChronicleSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
-
-            val name = linkConfig.prefix ?: continue
-            val element = linkConfig.pointer.element ?: continue
-            val tailText = " from localisation link ${linkConfig.name}"
-            val typeFile = linkConfig.pointer.containingFile
-            val lookupElement = LookupElementBuilder.create(element, name)
-                .withBoldness(true)
-                .withIcon(ChronicleIcons.Nodes.DynamicCommandScope)
-                .withTailText(tailText, true)
-                .withTypeText(typeFile?.name, typeFile?.icon, true)
-                .withScopeMatched(scopeMatched)
-                .withPriority(ParadoxCompletionPriorities.prefix)
-                .withCompletionId()
-            result.addElement(lookupElement, context)
+            ParadoxCompletionLookupProvider.forCommandScopePrefixFromData(linkConfig, hintText = " from localisation link ${linkConfig.name}", scopeMatched = scopeMatched).addToResult(context, result)
         }
     }
 

@@ -4,7 +4,6 @@ import com.intellij.application.options.CodeStyle
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.completion.InsertHandler
 import com.intellij.codeInsight.lookup.LookupElement
-import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.editor.EditorModificationUtil
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.ui.JBColor
@@ -20,7 +19,6 @@ import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.manipulation.CwtConfigManipulationService
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.codeInsight.LimitedCompletionProcessor
-import icu.windea.pls.core.codeInsight.completion.AddCharInsertHandler
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.letIf
@@ -287,14 +285,7 @@ object ParadoxCompletionManager {
             }
             val typeFile = config.pointer.containingFile
             val context = context.copy(isKey = false, config = config)
-            val lookupElement = LookupElementBuilder.create(key).withPsiElement(element)
-                .withTypeText(typeFile?.name, typeFile?.icon, true)
-                .withCaseSensitivity(false)
-                .withPatchableIcon(icon)
-                .withPatchableTailText(tailText)
-                .withPriority(ParadoxCompletionPriorities.rootKey)
-                .wrapForExpression(context)
-            result.addElement(lookupElement, context)
+            ParadoxCompletionLookupProvider.fromRootKey(context, key, element, typeFile, icon, tailText).addToResult(context, result)
         }
         for ((key, tuples) in infoMapForKey) {
             if (key == "any") return // skip any wildcard
@@ -317,15 +308,7 @@ object ParadoxCompletionManager {
             }
             val typeFile = config?.pointer?.containingFile
             val context = context.copy(config = config)
-            val lookupElement = LookupElementBuilder.create(key).withPsiElement(element)
-                .withTypeText(typeFile?.name, typeFile?.icon, true)
-                .withCaseSensitivity(false)
-                .withPatchableIcon(icon)
-                .withPatchableTailText(tailText)
-                .withForceInsertCurlyBraces(tuples.isEmpty())
-                .withPriority(ParadoxCompletionPriorities.rootKey)
-                .wrapForExpression(context)
-            result.addElement(lookupElement, context)
+            ParadoxCompletionLookupProvider.fromRootKey(context, key, element, typeFile, icon, tailText, tuples.isEmpty()).addToResult(context, result)
         }
     }
 
@@ -339,13 +322,7 @@ object ParadoxCompletionManager {
             val name = config.name
             val element = config.pointer.element ?: continue
             val typeFile = config.pointer.containingFile
-            val lookupElement = LookupElementBuilder.create(element, name)
-                .withIcon(ChronicleIcons.Nodes.Macro)
-                .withTypeText(typeFile?.name, typeFile?.icon, true)
-                .withCaseSensitivity(false)
-                .withPriority(ParadoxCompletionPriorities.constant)
-                .wrapForExpression(context)
-            result.addElement(lookupElement, context)
+            ParadoxCompletionLookupProvider.fromInlineScriptMacro(context, element, name, typeFile).addToResult(context, result)
         }
     }
 
@@ -390,16 +367,7 @@ object ParadoxCompletionManager {
             val name = modeConfig.value
             val element = modeConfig.pointer.element ?: continue
             val typeFile = modeConfig.pointer.containingFile
-            val lookupElement = LookupElementBuilder.create(element, name)
-                .withBoldness(true)
-                .withIcon(ChronicleIcons.Nodes.Macro)
-                .withTypeText(typeFile?.name, typeFile?.icon, true)
-                .withCaseSensitivity(false)
-                .withInsertHandler(AddCharInsertHandler(':'))
-                .withPriority(ParadoxCompletionPriorities.macro)
-                .withPatchableTailText(tailText)
-                .wrapForExpression(context)
-            result.addElement(lookupElement, context)
+            ParadoxCompletionLookupProvider.fromDefinitionInjectionMode(context, element, name, typeFile, tailText).addToResult(context, result)
         }
     }
 
@@ -414,10 +382,7 @@ object ParadoxCompletionManager {
             val element = locale.pointer.element ?: continue
             val typeFile = locale.pointer.containingFile
             val matched = localeIdFromFileName?.let { it == locale.name }
-            val lookupElement = LookupElementBuilder.create(element, locale.name)
-                .withIcon(ChronicleIcons.Nodes.LocalisationLocale)
-                .withTailText(" " + locale.text) // 前面需要加一个空格
-                .withTypeText(typeFile?.name, typeFile?.icon, true)
+            val lookupElement = ParadoxCompletionLookupProvider.forLocale(element, locale.name, locale.text, typeFile)
                 .withInsertHandler(localisationLocaleInsertHandler)
                 .letIf(matched == false) {
                     it.withItemTextForeground(JBColor.GRAY) // 将不匹配的语言环境的提示项置灰
@@ -447,10 +412,7 @@ object ParadoxCompletionManager {
             val name = it.name
             val icon = it.icon
             val typeFile = it.containingFile
-            val lookupElement = LookupElementBuilder.create(it, name)
-                .withIcon(icon)
-                .withTypeText(typeFile.name, typeFile.icon, true)
-            result.addElement(lookupElement)
+            ParadoxCompletionLookupProvider.forLocalisationName(it, name, typeFile, icon).addToResult(context, result)
             true
         }
         // 保证索引在此 readAction 中可用
@@ -474,23 +436,13 @@ object ParadoxCompletionManager {
                 val key = concept.name
                 if (key.isEmpty()) return@action
                 if (!keysToDistinct.add(key)) return@action
-                val lookupElement = LookupElementBuilder.create(concept, key)
-                    .withIcon(icon)
-                    .withTailText(tailText, true)
-                    .withTypeText(typeFile?.name, typeFile?.icon, true)
-                    .withCompletionId()
-                result.addElement(lookupElement, context)
+                ParadoxCompletionLookupProvider.forConcept(concept, key, typeFile, tailText, icon).addToResult(context, result)
             }
             concept.getDefinitionData<StellarisGameConceptData>()?.alias?.forEach action@{ alias ->
                 val key = alias
                 if (key.isEmpty()) return@action
                 if (!keysToDistinct.add(key)) return@action
-                val lookupElement = LookupElementBuilder.create(concept, key)
-                    .withIcon(icon)
-                    .withTailText(tailText, true)
-                    .withTypeText(typeFile?.name, typeFile?.icon, true)
-                    .withCompletionId()
-                result.addElement(lookupElement, context)
+                ParadoxCompletionLookupProvider.forConcept(concept, key, typeFile, tailText, icon).addToResult(context, result)
             }
             true
         }
@@ -508,12 +460,7 @@ object ParadoxCompletionManager {
             if (name.isEmpty()) return@p true
 
             val typeFile = definition.containingFile
-            val lookupElement = LookupElementBuilder.create(definition, name).withIcon(icon)
-                .withTailText(tailText, true)
-                .withTypeText(typeFile.name, typeFile.icon, true)
-                .withCompletionId()
-                .withCaseSensitivity(false)
-            result.addElement(lookupElement, context)
+            ParadoxCompletionLookupProvider.forTextFormat(definition, name, typeFile, tailText, icon).addToResult(context, result)
             true
         }
     }
@@ -530,12 +477,7 @@ object ParadoxCompletionManager {
             if (name.isEmpty()) return@p true
 
             val typeFile = definition.containingFile
-            val lookupElement = LookupElementBuilder.create(definition, name).withIcon(icon)
-                .withTailText(tailText, true)
-                .withTypeText(typeFile.name, typeFile.icon, true)
-                .withCompletionId()
-                .withCaseSensitivity(false)
-            result.addElement(lookupElement, context)
+            ParadoxCompletionLookupProvider.forTextFormat(definition, name, typeFile, tailText, icon).addToResult(context, result)
             true
         }
     }
@@ -563,11 +505,7 @@ object ParadoxCompletionManager {
             val name = columnConfig.key
             val element = columnConfig.pointer.element ?: continue
             val typeFile = columnConfig.pointer.containingFile
-            val lookupElement = LookupElementBuilder.create(element, name)
-                .withIcon(ChronicleIcons.Nodes.Column)
-                .withTypeText(typeFile?.name, typeFile?.icon, true)
-                .withPriority(ParadoxCompletionPriorities.constant)
-            result.addElement(lookupElement, context)
+            ParadoxCompletionLookupProvider.forHeaderColumn(element, name, typeFile).addToResult(context, result)
         }
     }
 

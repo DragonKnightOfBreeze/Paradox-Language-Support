@@ -5,6 +5,7 @@ import com.intellij.codeInsight.completion.InsertionContext
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.editor.EditorModificationUtil
+import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
@@ -14,12 +15,15 @@ import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.delegated.CwtDatabaseObjectTypeConfig
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
+import icu.windea.pls.config.config.delegated.CwtLocalisationCommandConfig
 import icu.windea.pls.config.config.delegated.CwtMacroConfig
 import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
+import icu.windea.pls.config.config.delegated.CwtSystemScopeConfig
 import icu.windea.pls.config.config.prefixFromArgument
 import icu.windea.pls.config.config.resolved
 import icu.windea.pls.config.config.tagType
 import icu.windea.pls.config.manipulation.CwtConfigManipulationService
+import icu.windea.pls.core.codeInsight.completion.AddCharInsertHandler
 import icu.windea.pls.core.codeInsight.completion.AddParenthesesInsertHandler
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.orNull
@@ -66,7 +70,7 @@ object ParadoxCompletionLookupProvider {
         val name = element.name?.orNull() ?: return null
         val tailText = element.value?.let { " = $it" }
         val typeFile = element.containingFile
-        return LookupElementBuilder.create(element, name)
+        return LookupElementBuilder.create(element ?: return null, name)
             .withTailText(tailText, true)
             .withTypeText(typeFile.name, typeFile.icon, true)
             .withPatchableIcon(ChronicleIcons.Nodes.ScriptedVariable)
@@ -75,15 +79,16 @@ object ParadoxCompletionLookupProvider {
             .wrapForExpression(context)
     }
 
-    fun fromDefinition(context: ParadoxCompletionContext, element: ParadoxDefinitionElement, hintText: String? = null): LookupElementBuilder? {
+    fun fromDefinition(context: ParadoxCompletionContext, element: ParadoxDefinitionElement, hintText: String? = null, scopeMatched: Boolean = true): LookupElementBuilder? {
         // skip anonymous definitions
         val definitionInfo = element.definitionInfo ?: return null
         val name = definitionInfo.name.orNull() ?: return null
         val typeFile = element.containingFile
-        return LookupElementBuilder.create(element, name)
+        return LookupElementBuilder.create(element ?: return null, name)
             .withTypeText(typeFile?.name, typeFile?.icon, true)
             .withPatchableIcon(ChronicleIcons.Nodes.Definition(definitionInfo.type))
             .withPatchableTailText(hintText ?: context.patchableTailText)
+            .withScopeMatched(scopeMatched)
             .withDefinitionPresentableNames(element)
             .wrapForExpression(context)
     }
@@ -93,7 +98,7 @@ object ParadoxCompletionLookupProvider {
         val defineNamespaceInfo = element.defineNamespaceInfo ?: return null
         val name = defineNamespaceInfo.namespace.orNull() ?: return null
         val typeFile = element.containingFile
-        return LookupElementBuilder.create(element, name)
+        return LookupElementBuilder.create(element ?: return null, name)
             .withTypeText(typeFile.name, typeFile.icon, true)
             .withPatchableIcon(ChronicleIcons.Nodes.DefineNamespace)
             .withPatchableTailText(hintText)
@@ -105,7 +110,7 @@ object ParadoxCompletionLookupProvider {
         val defineVariableInfo = element.defineVariableInfo ?: return null
         val name = defineVariableInfo.variable.orNull() ?: return null
         val typeFile = element.containingFile
-        return LookupElementBuilder.create(element, name)
+        return LookupElementBuilder.create(element ?: return null, name)
             .withTypeText(typeFile.name, typeFile.icon, true)
             .withPatchableIcon(ChronicleIcons.Nodes.DefineVariable)
             .withPatchableTailText(hintText)
@@ -116,7 +121,7 @@ object ParadoxCompletionLookupProvider {
         val name = config.name.orNull() ?: return null
         val element = config.pointer.element ?: return null
         val typeFile = config.pointer.containingFile
-        return LookupElementBuilder.create(element, name)
+        return LookupElementBuilder.create(element ?: return null, name)
             .withIcon(ChronicleIcons.Nodes.DatabaseObjectType)
             .withTypeText(typeFile?.name, typeFile?.icon, true)
             .withPriority(ParadoxCompletionPriorities.prefix)
@@ -145,7 +150,7 @@ object ParadoxCompletionLookupProvider {
     private fun createForStaticLink(linkConfig: CwtLinkConfig, name: String, icon: Icon?, hintText: String?, scopeMatched: Boolean): LookupElementBuilder? {
         val element = linkConfig.pointer.element ?: return null
         val typeFile = linkConfig.pointer.containingFile
-        return LookupElementBuilder.create(element, name)
+        return LookupElementBuilder.create(element ?: return null, name)
             .withIcon(icon)
             .withTailText(hintText, true)
             .withTypeText(typeFile?.name, typeFile?.icon, true)
@@ -157,7 +162,7 @@ object ParadoxCompletionLookupProvider {
     private fun createForDynamicLink(linkConfig: CwtLinkConfig, name: String, icon: Icon?, hintText: String?, scopeMatched: Boolean): LookupElementBuilder? {
         val element = linkConfig.pointer.element ?: return null
         val typeFile = linkConfig.pointer.containingFile
-        return LookupElementBuilder.create(element, name).bold()
+        return LookupElementBuilder.create(element ?: return null, name).bold()
             .withIcon(icon)
             .withTailText(hintText, true)
             .withTypeText(typeFile?.name, typeFile?.icon, true)
@@ -165,6 +170,356 @@ object ParadoxCompletionLookupProvider {
             .withScopeMatched(scopeMatched)
             .withCompletionId()
     }
+
+    // region not Keyword
+
+    fun forNotKeyword(): LookupElementBuilder {
+        return LookupElementBuilder.create("not")
+            .withBoldness(true)
+            .withTailText("(...)", true)
+            .withInsertHandler(AddParenthesesInsertHandler())
+            .withPriority(ParadoxCompletionPriorities.keyword)
+            .withCompletionId()
+    }
+
+    // endregion
+
+    // region Scope Link Items
+
+    fun forSystemScope(config: CwtSystemScopeConfig, hintText: String? = null): LookupElementBuilder? {
+        val name = config.name.orNull() ?: return null
+        val element = config.pointer.element ?: return null
+        val typeFile = config.pointer.containingFile
+        return LookupElementBuilder.create(element ?: return null, name)
+            .withIcon(ChronicleIcons.Nodes.SystemScope)
+            .withTailText(hintText, true)
+            .withTypeText(typeFile?.name, typeFile?.icon, true)
+            .withCaseSensitivity(false)
+            .withPriority(ParadoxCompletionPriorities.systemScope)
+            .withCompletionId()
+    }
+
+    fun forStaticScope(linkConfig: CwtLinkConfig, hintText: String? = null, scopeMatched: Boolean = true): LookupElementBuilder? {
+        val name = linkConfig.name
+        val element = linkConfig.pointer.element ?: return null
+        val typeFile = linkConfig.pointer.containingFile
+        return LookupElementBuilder.create(element ?: return null, name)
+            .withIcon(ChronicleIcons.Nodes.StaticScope)
+            .withTailText(hintText, true)
+            .withTypeText(typeFile?.name, typeFile?.icon, true)
+            .withCaseSensitivity(false)
+            .withScopeMatched(scopeMatched)
+            .withPriority(ParadoxCompletionPriorities.scope)
+            .withCompletionId()
+    }
+
+    fun forScopePrefixFromArgument(linkConfig: CwtLinkConfig, hintText: String? = null): LookupElementBuilder? {
+        val name = linkConfig.prefixFromArgument ?: return null
+        val element = linkConfig.pointer.element ?: return null
+        val typeFile = linkConfig.pointer.containingFile
+        return LookupElementBuilder.create(element ?: return null, name).bold()
+            .withIcon(ChronicleIcons.Nodes.DynamicScope)
+            .withTailText(hintText, true)
+            .withTypeText(typeFile?.name, typeFile?.icon, true)
+            .withInsertHandler(AddParenthesesInsertHandler())
+            .withPriority(ParadoxCompletionPriorities.prefix)
+            .withCompletionId()
+    }
+
+    fun forScopePrefixFromData(linkConfig: CwtLinkConfig, hintText: String? = null, scopeMatched: Boolean = true): LookupElementBuilder? {
+        val name = linkConfig.prefix ?: return null
+        val element = linkConfig.pointer.element ?: return null
+        val typeFile = linkConfig.pointer.containingFile
+        return LookupElementBuilder.create(element ?: return null, name).bold()
+            .withIcon(ChronicleIcons.Nodes.DynamicScope)
+            .withTailText(hintText, true)
+            .withTypeText(typeFile?.name, typeFile?.icon, true)
+            .withScopeMatched(scopeMatched)
+            .withPriority(ParadoxCompletionPriorities.prefix)
+            .withCompletionId()
+    }
+
+    // endregion
+
+    // region Value Link Items
+
+    fun forStaticValueField(linkConfig: CwtLinkConfig, hintText: String? = null, scopeMatched: Boolean = true): LookupElementBuilder? {
+        val name = linkConfig.name
+        val element = linkConfig.pointer.element ?: return null
+        val typeFile = linkConfig.pointer.containingFile
+        return LookupElementBuilder.create(element ?: return null, name)
+            .withIcon(ChronicleIcons.Nodes.StaticValueField)
+            .withTailText(hintText, true)
+            .withTypeText(typeFile?.name, typeFile?.icon, true)
+            .withCaseSensitivity(false)
+            .withScopeMatched(scopeMatched)
+            .withCompletionId()
+    }
+
+    fun forValueFieldPrefixFromArgument(linkConfig: CwtLinkConfig, hintText: String? = null): LookupElementBuilder? {
+        val name = linkConfig.prefixFromArgument ?: return null
+        val element = linkConfig.pointer.element ?: return null
+        val typeFile = linkConfig.pointer.containingFile
+        return LookupElementBuilder.create(element ?: return null, name).bold()
+            .withIcon(ChronicleIcons.Nodes.DynamicValueField)
+            .withTailText(hintText, true)
+            .withTypeText(typeFile?.name, typeFile?.icon, true)
+            .withInsertHandler(AddParenthesesInsertHandler())
+            .withPriority(ParadoxCompletionPriorities.prefix)
+            .withCompletionId()
+    }
+
+    fun forValueFieldPrefixFromData(linkConfig: CwtLinkConfig, hintText: String? = null): LookupElementBuilder? {
+        val name = linkConfig.prefix ?: return null
+        val element = linkConfig.pointer.element ?: return null
+        val typeFile = linkConfig.pointer.containingFile
+        return LookupElementBuilder.create(element ?: return null, name).bold()
+            .withIcon(ChronicleIcons.Nodes.DynamicValueField)
+            .withTailText(hintText, true)
+            .withTypeText(typeFile?.name, typeFile?.icon, true)
+            .withPriority(ParadoxCompletionPriorities.prefix)
+            .withCompletionId()
+    }
+
+    // endregion
+
+    // region Command Link Items
+
+    fun forSystemCommandScope(config: CwtSystemScopeConfig, hintText: String? = null): LookupElementBuilder? {
+        val name = config.name.orNull() ?: return null
+        val element = config.pointer.element ?: return null
+        val typeFile = config.pointer.containingFile
+        return LookupElementBuilder.create(element ?: return null, name)
+            .withIcon(ChronicleIcons.Nodes.SystemCommandScope)
+            .withTailText(hintText, true)
+            .withTypeText(typeFile?.name, typeFile?.icon, true)
+            .withCaseSensitivity(false)
+            .withPriority(ParadoxCompletionPriorities.systemScope)
+            .withCompletionId()
+    }
+
+    fun forStaticCommandScope(linkConfig: CwtLinkConfig, hintText: String? = null, scopeMatched: Boolean = true): LookupElementBuilder? {
+        // optimize: make first char uppercase (e.g., owner -> Owner)
+        val name = linkConfig.name.replaceFirstChar { it.uppercaseChar() }
+        val element = linkConfig.pointer.element ?: return null
+        val typeFile = linkConfig.pointer.containingFile
+        return LookupElementBuilder.create(element ?: return null, name)
+            .withIcon(ChronicleIcons.Nodes.StaticCommandScope)
+            .withTailText(hintText, true)
+            .withTypeText(typeFile?.name, typeFile?.icon, true)
+            .withCaseSensitivity(false)
+            .withScopeMatched(scopeMatched)
+            .withPriority(ParadoxCompletionPriorities.scope)
+            .withCompletionId()
+    }
+
+    fun forCommandScopePrefixFromArgument(linkConfig: CwtLinkConfig, hintText: String? = null): LookupElementBuilder? {
+        val name = linkConfig.prefixFromArgument ?: return null
+        val element = linkConfig.pointer.element ?: return null
+        val typeFile = linkConfig.pointer.containingFile
+        return LookupElementBuilder.create(element ?: return null, name).bold()
+            .withIcon(ChronicleIcons.Nodes.DynamicCommandScope)
+            .withTailText(hintText, true)
+            .withTypeText(typeFile?.name, typeFile?.icon, true)
+            .withInsertHandler(AddParenthesesInsertHandler())
+            .withPriority(ParadoxCompletionPriorities.prefix)
+            .withCompletionId()
+    }
+
+    fun forCommandScopePrefixFromData(linkConfig: CwtLinkConfig, hintText: String? = null, scopeMatched: Boolean = true): LookupElementBuilder? {
+        val name = linkConfig.prefix ?: return null
+        val element = linkConfig.pointer.element ?: return null
+        val typeFile = linkConfig.pointer.containingFile
+        return LookupElementBuilder.create(element ?: return null, name).bold()
+            .withIcon(ChronicleIcons.Nodes.DynamicCommandScope)
+            .withTailText(hintText, true)
+            .withTypeText(typeFile?.name, typeFile?.icon, true)
+            .withScopeMatched(scopeMatched)
+            .withPriority(ParadoxCompletionPriorities.prefix)
+            .withCompletionId()
+    }
+
+    fun forLocalisationCommand(config: CwtLocalisationCommandConfig, hintText: String? = null, scopeMatched: Boolean = true): LookupElementBuilder? {
+        val name = config.name.orNull() ?: return null
+        val element = config.pointer.element ?: return null
+        val typeFile = config.pointer.containingFile
+        return LookupElementBuilder.create(element ?: return null, name)
+            .withIcon(ChronicleIcons.Nodes.StaticCommandField)
+            .withTailText(hintText, true)
+            .withTypeText(typeFile?.name, typeFile?.icon, true)
+            .withCaseSensitivity(false)
+            .withScopeMatched(scopeMatched)
+            .withCompletionId()
+    }
+
+    // endregion
+
+    // region from Element (Patched)
+
+    fun fromLocalisation(context: ParadoxCompletionContext, element: Any?, name: String, typeFile: PsiFile?, hintText: String? = null): LookupElementBuilder? {
+        return LookupElementBuilder.create(element ?: return null, name)
+            .withTypeText(typeFile?.name, typeFile?.icon, true)
+            .withPatchableIcon(ChronicleIcons.Nodes.Localisation)
+            .withPatchableTailText(hintText)
+            .wrapForExpression(context)
+    }
+
+    fun fromPathReference(context: ParadoxCompletionContext, element: Any?, name: String, typeFile: PsiFile?, icon: Icon?, hintText: String? = null): LookupElementBuilder? {
+        return LookupElementBuilder.create(element ?: return null, name)
+            .withTypeText(typeFile?.name, typeFile?.icon, true)
+            .withPatchableIcon(icon)
+            .withPatchableTailText(hintText)
+            .wrapForExpression(context)
+    }
+
+    fun fromStaticEnumValue(context: ParadoxCompletionContext, element: Any?, name: String, typeFile: PsiFile?, hintText: String? = null): LookupElementBuilder? {
+        return LookupElementBuilder.create(element ?: return null, name)
+            .withTypeText(typeFile?.name, typeFile?.icon, true)
+            .withCaseSensitivity(false)
+            .withPriority(ParadoxCompletionPriorities.enumValue)
+            .withPatchableIcon(ChronicleIcons.Nodes.EnumValue)
+            .withPatchableTailText(hintText)
+            .wrapForExpression(context)
+    }
+
+    fun fromComplexEnumValue(context: ParadoxCompletionContext, element: Any?, name: String, typeFile: PsiFile?, enumName: String, hintText: String? = null, caseInsensitive: Boolean = false): LookupElementBuilder? {
+        return LookupElementBuilder.create(element ?: return null, name)
+            .withTypeText(typeFile?.name, typeFile?.icon, true)
+            .withCaseSensitivity(!caseInsensitive)
+            .withPriority(ParadoxCompletionPriorities.complexEnumValue)
+            .withPatchableIcon(ChronicleIcons.Nodes.ComplexEnumValue(enumName))
+            .withPatchableTailText(hintText)
+            .wrapForExpression(context)
+    }
+
+    fun fromPredefinedDynamicValue(context: ParadoxCompletionContext, element: Any?, name: String, typeFile: PsiFile?, hintText: String? = null, dynamicValueType: String? = null): LookupElementBuilder? {
+        return LookupElementBuilder.create(element ?: return null, name)
+            .withTypeText(typeFile?.name, typeFile?.icon, true)
+            .withPatchableIcon(ChronicleIcons.Nodes.DynamicValue(dynamicValueType))
+            .withPatchableTailText(hintText)
+            .wrapForExpression(context)
+    }
+
+    fun fromLightDynamicValue(context: ParadoxCompletionContext, element: Any?, name: String, hintText: String? = null, dynamicValueType: String? = null): LookupElementBuilder? {
+        return LookupElementBuilder.create(element ?: return null, name)
+            .withPatchableIcon(ChronicleIcons.Nodes.DynamicValue(dynamicValueType))
+            .withPatchableTailText(hintText)
+            .wrapForExpression(context)
+    }
+
+    fun fromConstant(context: ParadoxCompletionContext, element: Any?, name: String, typeFile: PsiFile?, icon: Icon?): LookupElementBuilder? {
+        val scopeMatched = context.scopeMatched
+        return LookupElementBuilder.create(element ?: return null, name)
+            .withTypeText(typeFile?.name, typeFile?.icon, true)
+            .withCaseSensitivity(false)
+            .withPriority(ParadoxCompletionPriorities.constant)
+            .withPatchableIcon(icon)
+            .withScopeMatched(scopeMatched)
+            .wrapForExpression(context)
+    }
+
+    fun fromLightElement(context: ParadoxCompletionContext, element: Any?, name: String, icon: Icon?, hintText: String? = null): LookupElementBuilder? {
+        return LookupElementBuilder.create(element ?: return null, name)
+            .withPatchableIcon(icon)
+            .withPatchableTailText(hintText)
+            .wrapForExpression(context)
+    }
+
+    fun fromRootKey(context: ParadoxCompletionContext, key: String, element: Any?, typeFile: PsiFile?, icon: Icon?, hintText: String? = null, forceInsertCurlyBraces: Boolean = false): LookupElementBuilder? {
+        return LookupElementBuilder.create(element ?: return null, key)
+            .withTypeText(typeFile?.name, typeFile?.icon, true)
+            .withCaseSensitivity(false)
+            .withPatchableIcon(icon)
+            .withPatchableTailText(hintText)
+            .withForceInsertCurlyBraces(forceInsertCurlyBraces)
+            .withPriority(ParadoxCompletionPriorities.rootKey)
+            .wrapForExpression(context)
+    }
+
+    fun fromInlineScriptMacro(context: ParadoxCompletionContext, element: Any?, name: String, typeFile: PsiFile?, hintText: String? = null): LookupElementBuilder? {
+        return LookupElementBuilder.create(element ?: return null, name)
+            .withIcon(ChronicleIcons.Nodes.Macro)
+            .withTypeText(typeFile?.name, typeFile?.icon, true)
+            .withCaseSensitivity(false)
+            .withPriority(ParadoxCompletionPriorities.constant)
+            .wrapForExpression(context)
+    }
+
+    fun fromDefinitionInjectionMode(context: ParadoxCompletionContext, element: Any?, name: String, typeFile: PsiFile?, hintText: String? = null): LookupElementBuilder? {
+        return LookupElementBuilder.create(element ?: return null, name)
+            .withBoldness(true)
+            .withIcon(ChronicleIcons.Nodes.Macro)
+            .withTypeText(typeFile?.name, typeFile?.icon, true)
+            .withCaseSensitivity(false)
+            .withInsertHandler(AddCharInsertHandler(':'))
+            .withPriority(ParadoxCompletionPriorities.macro)
+            .withPatchableTailText(hintText)
+            .wrapForExpression(context)
+    }
+
+    // endregion
+
+    // region from Extended Config (Patched)
+
+    fun fromExtendedConfig(context: ParadoxCompletionContext, name: String, element: Any?, typeFile: PsiFile?, icon: Icon?, hintText: String? = null): LookupElementBuilder? {
+        return LookupElementBuilder.create(element ?: return null, name)
+            .withTypeText(typeFile?.name, typeFile?.icon, true)
+            .withItemTextUnderlined(true)
+            .withPatchableIcon(icon)
+            .withPatchableTailText(hintText)
+            .wrapForExpression(context)
+    }
+
+    // endregion
+
+    // region for Element (Unpatched)
+
+    fun forLocale(element: Any?, name: String, text: String, typeFile: PsiFile?): LookupElementBuilder {
+        return LookupElementBuilder.create(element!!, name)
+            .withIcon(ChronicleIcons.Nodes.LocalisationLocale)
+            .withTailText(" " + text, true)
+            .withTypeText(typeFile?.name, typeFile?.icon, true)
+    }
+
+    fun forLocalisationName(element: Any?, name: String, typeFile: PsiFile?, icon: Icon?): LookupElementBuilder {
+        return LookupElementBuilder.create(element!!, name)
+            .withIcon(icon)
+            .withTypeText(typeFile?.name, typeFile?.icon, true)
+    }
+
+    fun forConcept(element: Any?, name: String, typeFile: PsiFile?, tailText: String?, icon: Icon?): LookupElementBuilder {
+        return LookupElementBuilder.create(element!!, name)
+            .withIcon(icon)
+            .withTailText(tailText, true)
+            .withTypeText(typeFile?.name, typeFile?.icon, true)
+            .withCompletionId()
+    }
+
+    fun forTextFormat(element: Any?, name: String, typeFile: PsiFile?, tailText: String?, icon: Icon?): LookupElementBuilder {
+        return LookupElementBuilder.create(element!!, name)
+            .withIcon(icon)
+            .withTailText(tailText, true)
+            .withTypeText(typeFile?.name, typeFile?.icon, true)
+            .withCompletionId()
+            .withCaseSensitivity(false)
+    }
+
+    fun forHeaderColumn(element: Any?, name: String, typeFile: PsiFile?): LookupElementBuilder {
+        return LookupElementBuilder.create(element!!, name)
+            .withIcon(ChronicleIcons.Nodes.Column)
+            .withTypeText(typeFile?.name, typeFile?.icon, true)
+            .withPriority(ParadoxCompletionPriorities.constant)
+    }
+
+    fun forExtendedConfig(element: Any?, name: String, typeFile: PsiFile?, icon: Icon?): LookupElementBuilder {
+        return LookupElementBuilder.create(element!!, name)
+            .withIcon(icon)
+            .withTypeText(typeFile?.name, typeFile?.icon, true)
+            .withItemTextUnderlined(true)
+            .withCompletionId()
+    }
+
+    // endregion
 
     fun getConfigBasedPatchableTailText(context: ParadoxCompletionContext, config: CwtConfig<*>?, withConfigExpression: Boolean = true, withFileName: Boolean = true): String {
         context.patchableTailText?.let { return it }

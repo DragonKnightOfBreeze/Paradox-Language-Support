@@ -1,12 +1,10 @@
 package icu.windea.pls.lang.codeInsight.completion
 
 import com.intellij.codeInsight.completion.CompletionResultSet
-import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.progress.ProgressManager
 import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
-import icu.windea.pls.core.icon
 import icu.windea.pls.core.util.values.singletonListOrEmpty
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.lang.match.matchesByPattern
@@ -26,12 +24,7 @@ object ParadoxExtendedCompletionManager {
             if (checkExtendedConfigName(name)) return@f
             val element = config0.pointer.element ?: return@f
             val typeFile = config0.pointer.containingFile
-            val lookupElement = LookupElementBuilder.create(element, name)
-                .withIcon(ChronicleIcons.Configs.ExtendedScriptedVariable)
-                .withTypeText(typeFile?.name, typeFile?.icon, true)
-                .withItemTextUnderlined(true) // used for completions from extended configs
-                .withCompletionId()
-            result.addElement(lookupElement, context)
+            ParadoxCompletionLookupProvider.forExtendedConfig(element, name, typeFile, ChronicleIcons.Configs.ExtendedScriptedVariable).addToResult(context, result)
         }
     }
 
@@ -60,13 +53,7 @@ object ParadoxExtendedCompletionManager {
                     if (!ParadoxDefinitionTypeExpression.resolve(type).matches(typeExpression)) return@f
                     val element = config0.pointer.element
                     val typeFile = config0.pointer.containingFile
-                    val lookupElement = LookupElementBuilder.create(name).withPsiElement(element)
-                        .withTypeText(typeFile?.name, typeFile?.icon, true)
-                        .withItemTextUnderlined(true) // used for completions from extended configs
-                        .withPatchableIcon(ChronicleIcons.Configs.ExtendedDefinition)
-                        .withPatchableTailText(tailText)
-                        .wrapForExpression(context)
-                    result.addElement(lookupElement, context)
+                    ParadoxCompletionLookupProvider.fromExtendedConfig(context, name, element, typeFile, ChronicleIcons.Configs.ExtendedDefinition, tailText).addToResult(context, result)
                 }
             }
         }
@@ -78,13 +65,7 @@ object ParadoxExtendedCompletionManager {
                 if (checkExtendedConfigName(name)) return@f
                 val element = config0.pointer.element
                 val typeFile = config0.pointer.containingFile
-                val lookupElement = LookupElementBuilder.create(name).withPsiElement(element)
-                    .withTypeText(typeFile?.name, typeFile?.icon, true)
-                    .withItemTextUnderlined(true) // used for completions from extended configs
-                    .withPatchableIcon(ChronicleIcons.Configs.ExtendedGameRule)
-                    .withPatchableTailText(tailText)
-                    .wrapForExpression(context)
-                result.addElement(lookupElement, context)
+                ParadoxCompletionLookupProvider.fromExtendedConfig(context, name, element, typeFile, ChronicleIcons.Configs.ExtendedGameRule, tailText).addToResult(context, result)
             }
         }
         run r1@{
@@ -95,13 +76,7 @@ object ParadoxExtendedCompletionManager {
                 if (checkExtendedConfigName(name)) return@f
                 val element = config0.pointer.element
                 val typeFile = config0.pointer.containingFile
-                val lookupElement = LookupElementBuilder.create(name).withPsiElement(element)
-                    .withTypeText(typeFile?.name, typeFile?.icon, true)
-                    .withItemTextUnderlined(true) // used for completions from extended configs
-                    .withPatchableIcon(ChronicleIcons.Configs.ExtendedOnAction)
-                    .withPatchableTailText(tailText)
-                    .wrapForExpression(context)
-                result.addElement(lookupElement, context)
+                ParadoxCompletionLookupProvider.fromExtendedConfig(context, name, element, typeFile, ChronicleIcons.Configs.ExtendedOnAction, tailText).addToResult(context, result)
             }
         }
     }
@@ -122,12 +97,7 @@ object ParadoxExtendedCompletionManager {
                 if (argumentNames != null && !argumentNames.add(name)) return@f  // 排除已输入的
                 val element = config0.pointer.element
                 val typeFile = config0.pointer.containingFile
-                val lookupElement = LookupElementBuilder.create(name).withPsiElement(element)
-                    .withTypeText(typeFile?.name, typeFile?.icon, true)
-                    .withItemTextUnderlined(true) // used for completions from extended configs
-                    .withPatchableIcon(ChronicleIcons.Configs.ExtendedParameter)
-                    .wrapForExpression(context)
-                result.addElement(lookupElement, context)
+                ParadoxCompletionLookupProvider.fromExtendedConfig(context, name, element, typeFile, ChronicleIcons.Configs.ExtendedParameter).addToResult(context, result)
             }
         }
     }
@@ -146,13 +116,7 @@ object ParadoxExtendedCompletionManager {
             if (checkExtendedConfigName(name)) return@f
             val element = config0.pointer.element
             val typeFile = config0.pointer.containingFile
-            val lookupElement = LookupElementBuilder.create(name).withPsiElement(element)
-                .withTypeText(typeFile?.name, typeFile?.icon, true)
-                .withItemTextUnderlined(true) // used for completions from extended configs
-                .withPatchableIcon(ChronicleIcons.Configs.ExtendedComplexEnumValue)
-                .withPatchableTailText(tailText)
-                .wrapForExpression(context)
-            result.addElement(lookupElement, context)
+            ParadoxCompletionLookupProvider.fromExtendedConfig(context, name, element, typeFile, ChronicleIcons.Configs.ExtendedComplexEnumValue, tailText).addToResult(context, result)
         }
     }
 
@@ -176,13 +140,7 @@ object ParadoxExtendedCompletionManager {
                 val dynamicValueType = config0.type
                 val element = config0.pointer.element
                 val typeFile = config0.pointer.containingFile
-                val lookupElement = LookupElementBuilder.create(name).withPsiElement(element)
-                    .withTypeText(typeFile?.name, typeFile?.icon, true)
-                    .withItemTextUnderlined(true) // used for completions from extended configs
-                    .withPatchableIcon(ChronicleIcons.Nodes.DynamicValue(dynamicValueType))
-                    .withPatchableTailText(tailText)
-                    .wrapForExpression(context)
-                result.addElement(lookupElement, context)
+                ParadoxCompletionLookupProvider.fromExtendedConfig(context, name, element, typeFile, ChronicleIcons.Nodes.DynamicValue(dynamicValueType), tailText).addToResult(context, result)
             }
         }
     }
@@ -200,13 +158,7 @@ object ParadoxExtendedCompletionManager {
             if (checkExtendedConfigName(name)) return@f
             val element = config0.pointer.element
             val typeFile = config0.pointer.containingFile
-            val lookupElement = LookupElementBuilder.create(name).withPsiElement(element)
-                .withIcon(ChronicleIcons.Configs.ExtendedInlineScript)
-                .withTypeText(typeFile?.name, typeFile?.icon, true)
-                .withItemTextUnderlined(true) // used for completions from extended configs
-                .withPatchableTailText(tailText)
-                .wrapForExpression(context)
-            result.addElement(lookupElement, context)
+            ParadoxCompletionLookupProvider.fromExtendedConfig(context, name, element, typeFile, ChronicleIcons.Configs.ExtendedInlineScript, tailText).addToResult(context, result)
         }
     }
 
