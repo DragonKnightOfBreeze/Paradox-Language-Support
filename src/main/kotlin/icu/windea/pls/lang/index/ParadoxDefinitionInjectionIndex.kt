@@ -180,6 +180,7 @@ class ParadoxDefinitionInjectionIndex : ParadoxIndexInfoAwareFileBasedIndex<List
         val modes = storage.readWithIndexStringList()
         val types = storage.readWithIndexStringList()
 
+        // 2.1.9 optimize: create sized immutable list directly
         return ImmutableList(size) {
             val mode = storage.readIntFast().let { modes.get(it).orEmpty() }
             val target = storage.readUTFFast()

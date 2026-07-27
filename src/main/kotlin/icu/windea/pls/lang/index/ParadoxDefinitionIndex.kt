@@ -264,6 +264,7 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
         val types = storage.readWithIndexStringList()
         val typeKeys = storage.readWithIndexStringList()
 
+        // 2.1.9 optimize: create sized immutable list directly
         return ImmutableList(size) {
             val source = storage.readByte().deoptimized(OptimizerFactory.forParadoxDefinitionSource())
             val name = storage.readUTFFast()

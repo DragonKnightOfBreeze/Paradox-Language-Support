@@ -95,6 +95,8 @@ class CwtConfigSymbolIndex : CwtConfigIndexInfoAwareFileBasedIndex<List<CwtConfi
 
         val type = storage.readUTFFast()
         val gameType = storage.readByte().deoptimized(OptimizerFactory.forParadoxGameType())
+
+        // 2.1.9 optimize: create sized immutable list directly
         return ImmutableList(size) {
             val name = storage.readUTFFast()
             val readWriteAccess = storage.readByte().deoptimized(OptimizerFactory.forReadWriteAccess())

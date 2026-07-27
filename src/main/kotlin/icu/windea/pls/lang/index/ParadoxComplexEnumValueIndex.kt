@@ -229,6 +229,7 @@ class ParadoxComplexEnumValueIndex : ParadoxIndexInfoAwareFileBasedIndex<List<Pa
         // 3.0.0 optimize: read existing enum names first
         val enumNames = storage.readWithIndexStringList()
 
+        // 2.1.9 optimize: create sized immutable list directly
         return ImmutableList(size) {
             val name = storage.readUTFFast()
             val enumName = storage.readIntFast().let { enumNames.get(it).orEmpty() }

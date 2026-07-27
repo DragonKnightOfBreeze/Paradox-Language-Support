@@ -333,6 +333,8 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
         val supports = ParadoxMergedIndexSupport.EP_NAME.extensionList
         val support = getSupportOrUnsupported(supports, key)
         val gameType = storage.readByte().deoptimized(OptimizerFactory.forParadoxGameType())
+
+        // 2.1.9 optimize: create sized immutable list directly
         var previousInfo: ParadoxIndexInfo? = null
         return ImmutableList(size) {
             support.readData(storage, previousInfo, gameType).also { previousInfo = it }
