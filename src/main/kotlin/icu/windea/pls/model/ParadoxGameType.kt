@@ -1,6 +1,8 @@
 package icu.windea.pls.model
 
 import icu.windea.pls.core.optimized
+import icu.windea.pls.core.optimizer.Optimizer
+import icu.windea.pls.core.optimizer.OptimizerFactory
 import icu.windea.pls.ep.analysis.ParadoxInferredGameTypeProvider
 import icu.windea.pls.lang.analysis.ParadoxGameTypeManager
 import icu.windea.pls.lang.settings.ChronicleSettings
@@ -72,5 +74,10 @@ enum class ParadoxGameType(
 
         @JvmStatic
         fun getDefault(): ParadoxGameType = ChronicleSettings.getInstance().state.defaultGameType
+
+        private val optimizer = OptimizerFactory.create<ParadoxGameType, Byte>({ (it.ordinal - 1).toByte() }, { entries[it.toInt() + 1] })
+
+        @JvmStatic
+        fun optimizer(): Optimizer<ParadoxGameType, Byte> = optimizer
     }
 }

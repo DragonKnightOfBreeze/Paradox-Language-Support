@@ -14,7 +14,6 @@ import icu.windea.pls.core.collections.asMutable
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.deoptimized
 import icu.windea.pls.core.optimized
-import icu.windea.pls.core.optimizer.OptimizerFactory
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.readIntFast
 import icu.windea.pls.core.readUTFFast
@@ -37,7 +36,7 @@ import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.psi.isResolvableLiteralExpression
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
-import icu.windea.pls.model.forParadoxGameType
+import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.index.ParadoxComplexEnumValueIndexInfo
 import icu.windea.pls.script.ParadoxScriptFileType
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
@@ -208,7 +207,7 @@ class ParadoxComplexEnumValueIndex : ParadoxIndexInfoAwareFileBasedIndex<List<Pa
         if (value.isEmpty()) return
 
         val gameType = value.first().gameType
-        storage.writeByte(gameType.optimized(OptimizerFactory.forParadoxGameType()))
+        storage.writeByte(gameType.optimized(ParadoxGameType.optimizer()))
 
         // 3.0.0 optimize: write existing enum names first
         val enumNames = storage.writeIndexedStringList(value) { it.enumName }
@@ -224,7 +223,7 @@ class ParadoxComplexEnumValueIndex : ParadoxIndexInfoAwareFileBasedIndex<List<Pa
         val size = storage.readIntFast()
         if (size == 0) return emptyList()
 
-        val gameType = storage.readByte().deoptimized(OptimizerFactory.forParadoxGameType())
+        val gameType = storage.readByte().deoptimized(ParadoxGameType.optimizer())
 
         // 3.0.0 optimize: read existing enum names first
         val enumNames = storage.readWithIndexStringList()

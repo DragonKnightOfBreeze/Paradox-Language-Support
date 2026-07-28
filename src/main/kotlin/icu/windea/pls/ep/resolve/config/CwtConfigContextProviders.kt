@@ -19,7 +19,6 @@ import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.toHashString
 import icu.windea.pls.lang.resolve.CwtConfigContext
 import icu.windea.pls.lang.resolve.ParadoxConfigService
-import icu.windea.pls.lang.resolve.declarationRoot
 import icu.windea.pls.lang.resolve.defineVariableInfo
 import icu.windea.pls.lang.resolve.definitionInfo
 import icu.windea.pls.lang.resolve.definitionInjectionInfo
@@ -50,9 +49,8 @@ class CwtBaseConfigContextProvider : CwtConfigContextProvider {
         if (vFile == null) return null
         val fileInfo = vFile.fileInfo
         if (fileInfo == null) return null
-        val memberPathFromFile = memberPathFromFile.normalize()
-        val configContext = CwtConfigContext(element, memberPathFromFile, null, memberRole, configGroup)
-        return configContext
+        val context = CwtConfigContext.create(configGroup, element, memberRole, false, this, memberPathFromFile)
+        return context
     }
 
     override fun getCacheKey(context: CwtConfigContext, options: ParadoxMatchOptions?): String? {
@@ -78,12 +76,11 @@ class CwtDefinitionConfigContextProvider : CwtConfigContextProvider {
         if (fileInfo == null) return null
         val definition = selectScope { element.parentDefinition() } ?: return null
         val definitionInfo = definition.definitionInfo ?: return null
-        val memberPath = definitionInfo.memberPath.relativize(memberPathFromFile)?.normalize() ?: return null
-        val memberPathFromFile = memberPathFromFile.normalize() // normalize before all fast return
-        val configContext = CwtConfigContext(element, memberPathFromFile, memberPath, memberRole, configGroup)
-        if (memberPath.isEmpty()) configContext.declarationRoot = true
-        configContext.definitionInfo = definitionInfo
-        return configContext
+        val memberPath = definitionInfo.memberPath.relativize(memberPathFromFile) ?: return null
+        val declarationRoot = memberPath.isEmpty()
+        val context = CwtConfigContext.createFromMember(configGroup, element, memberRole, declarationRoot, this, memberPathFromFile, memberPath)
+        context.definitionInfo = definitionInfo
+        return context
     }
 
     override fun getCacheKey(context: CwtConfigContext, options: ParadoxMatchOptions?): String? {
@@ -119,12 +116,11 @@ class CwtDefineVariableConfigContextProvider : CwtConfigContextProvider {
         val defineVariable = selectScope { element.parentDefineVariable() } ?: return null
         val defineVariableInfo = defineVariable.defineVariableInfo ?: return null
         if (defineVariableInfo.config == null) return null // no define variable config -> skip
-        val memberPath = ParadoxMemberPath.resolve(memberPathFromFile.subPaths.drop(2)).normalize()
-        val memberPathFromFile = memberPathFromFile.normalize()
-        val configContext = CwtConfigContext(element, memberPathFromFile, memberPath, memberRole, configGroup)
-        if (memberPath.isEmpty()) configContext.declarationRoot = true
-        configContext.defineVariableInfo = defineVariableInfo
-        return configContext
+        val memberPath = ParadoxMemberPath.resolve(memberPathFromFile.subPaths.drop(2))
+        val declarationRoot = memberPath.isEmpty()
+        val context = CwtConfigContext.createFromMember(configGroup, element, memberRole, declarationRoot, this, memberPathFromFile, memberPath)
+        context.defineVariableInfo = defineVariableInfo
+        return context
     }
 
     override fun getCacheKey(context: CwtConfigContext, options: ParadoxMatchOptions?): String? {
@@ -166,11 +162,10 @@ class CwtParameterValueConfigContextProvider : CwtConfigContextProvider {
         ProgressManager.checkCanceled()
         val injectionInfo = ParadoxScriptInjectionManager.getParameterValueInjectionInfoFromInjectedFile(file) ?: return null
         val parameterElement = injectionInfo.parameterElement ?: return null
-        val memberPathFromFile = memberPathFromFile.normalize() // normalize before all fast return
-        val configContext = CwtConfigContext(element, memberPathFromFile, memberPathFromFile, memberRole, configGroup)
-        configContext.parameterElement = parameterElement
-        configContext.parameterValueQuoted = injectionInfo.parameterValueQuoted
-        return configContext
+        val context = CwtConfigContext.createFromFile(configGroup, element, memberRole, false, this, memberPathFromFile)
+        context.parameterElement = parameterElement
+        context.parameterValueQuoted = injectionInfo.parameterValueQuoted
+        return context
     }
 
     override fun getCacheKey(context: CwtConfigContext, options: ParadoxMatchOptions?): String? {
@@ -216,10 +211,9 @@ class CwtInlineScriptUsageConfigContextProvider : CwtConfigContextProvider {
         if (!ParadoxInlineScriptManager.isSupported(configGroup.gameType)) return null // 忽略游戏类型不支持的情况
         val vFile = selectFile(file)
         if (vFile == null) return null
-        val memberPath = ParadoxMemberPath.resolve(memberPathFromFile.subPaths.drop(memberPathFromFile.indexOfFirst { ParadoxInlineScriptManager.isMatched(it) } + 1)).normalize()
-        val memberPathFromFile = memberPathFromFile.normalize()
-        val configContext = CwtConfigContext(element, memberPathFromFile, memberPath, memberRole, configGroup)
-        return configContext
+        val memberPath = ParadoxMemberPath.resolve(memberPathFromFile.subPaths.drop(memberPathFromFile.indexOfFirst { ParadoxInlineScriptManager.isMatched(it) } + 1))
+        val context = CwtConfigContext.createFromMember(configGroup, element, memberRole, false, this, memberPathFromFile, memberPath)
+        return context
     }
 
     override fun getCacheKey(context: CwtConfigContext, options: ParadoxMatchOptions?): String? {
@@ -257,10 +251,9 @@ class CwtInlineScriptFileConfigContextProvider : CwtConfigContextProvider {
         val fileInfo = vFile.fileInfo
         if (fileInfo == null) return null
         val inlineScriptExpression = ParadoxInlineScriptManager.getInlineScriptExpression(vFile) ?: return null
-        val memberPathFromFile = memberPathFromFile.normalize()
-        val configContext = CwtConfigContext(element, memberPathFromFile, memberPathFromFile, memberRole, configGroup)
-        configContext.inlineScriptExpression = inlineScriptExpression
-        return configContext
+        val context = CwtConfigContext.createFromFile(configGroup, element, memberRole, false, this, memberPathFromFile)
+        context.inlineScriptExpression = inlineScriptExpression
+        return context
     }
 
     override fun getCacheKey(context: CwtConfigContext, options: ParadoxMatchOptions?): String? {
@@ -311,12 +304,11 @@ class CwtDefinitionInjectionConfigContextProvider : CwtConfigContextProvider {
         if (fileInfo == null) return null
         val definitionInjection = selectScope { element.parentDefinitionInjection() } ?: return null
         val definitionInjectionInfo = definitionInjection.definitionInjectionInfo ?: return null
-        val memberPath = ParadoxMemberPath.resolve(memberPathFromFile.subPaths.drop(1)).normalize() // 去除第一个子路径
-        val memberPathFromFile = memberPathFromFile.normalize()
-        val configContext = CwtConfigContext(element, memberPathFromFile, memberPath, memberRole, configGroup)
-        if (memberPath.isEmpty()) configContext.declarationRoot = true
-        configContext.definitionInjectionInfo = definitionInjectionInfo
-        return configContext
+        val memberPath = ParadoxMemberPath.resolve(memberPathFromFile.subPaths.drop(1)) // 去除第一个子路径
+        val declarationRoot = memberPath.isEmpty()
+        val context = CwtConfigContext.createFromMember(configGroup, element, memberRole, declarationRoot, this, memberPathFromFile, memberPath)
+        context.definitionInjectionInfo = definitionInjectionInfo
+        return context
     }
 
     override fun getCacheKey(context: CwtConfigContext, options: ParadoxMatchOptions?): String? {

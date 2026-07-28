@@ -12,14 +12,11 @@ import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.deoptimized
 import icu.windea.pls.core.forEachChild
 import icu.windea.pls.core.optimized
-import icu.windea.pls.core.optimizer.OptimizerFactory
 import icu.windea.pls.cwt.psi.CwtOption
 import icu.windea.pls.cwt.psi.CwtOptionComment
 import icu.windea.pls.cwt.psi.CwtOptionKey
 import icu.windea.pls.cwt.psi.CwtValue
 import icu.windea.pls.model.constants.ChronicleStrings
-import icu.windea.pls.model.forCwtSeparatorType
-import icu.windea.pls.model.forCwtType
 import icu.windea.pls.model.type.CwtExpressionType
 import icu.windea.pls.model.type.CwtSeparatorType
 import icu.windea.pls.model.type.CwtTypeResolver
@@ -124,7 +121,7 @@ private object CwtOptionConfigResolver : CwtConfigResolverScope {
 }
 
 private const val blockValue = ChronicleStrings.blockFolder
-private val blockValueTypeId = CwtExpressionType.Block.optimized(OptimizerFactory.forCwtType())
+private val blockValueTypeId = CwtExpressionType.Block.optimized(CwtExpressionType.optimizer())
 
 private sealed class CwtOptionConfigBase : CwtOptionConfig {
     override fun equals(other: Any?) = this === other || other is CwtOptionConfig
@@ -140,10 +137,10 @@ private sealed class CwtOptionConfigImplBase(
     key: String,
     separatorType: CwtSeparatorType,
 ) : CwtOptionConfigBase() {
-    private val separatorTypeId = separatorType.optimized(OptimizerFactory.forCwtSeparatorType()) // optimized to optimize memory
+    private val separatorTypeId = separatorType.optimized(CwtSeparatorType.optimizer()) // optimized to optimize memory
 
     override val key: String = key.optimized() // optimized to optimize memory
-    override val separatorType: CwtSeparatorType get() = separatorTypeId.deoptimized(OptimizerFactory.forCwtSeparatorType())
+    override val separatorType: CwtSeparatorType get() = separatorTypeId.deoptimized(CwtSeparatorType.optimizer())
 }
 
 // 12 + 2 * 1 + 2 * 4 = 22 -> 24
@@ -153,10 +150,10 @@ private class CwtOptionConfigImpl(
     valueType: CwtExpressionType,
     separatorType: CwtSeparatorType,
 ) : CwtOptionConfigImplBase(key, separatorType) {
-    private val valueTypeId = valueType.optimized(OptimizerFactory.forCwtType()) // optimized to optimize memory
+    private val valueTypeId = valueType.optimized(CwtExpressionType.optimizer()) // optimized to optimize memory
 
     override val value: String = value.optimized() // optimized to optimize memory
-    override val valueType: CwtExpressionType get() = valueTypeId.deoptimized(OptimizerFactory.forCwtType())
+    override val valueType: CwtExpressionType get() = valueTypeId.deoptimized(CwtExpressionType.optimizer())
     override val optionConfigs: List<CwtOptionMemberConfig<*>>? get() = if (valueTypeId == blockValueTypeId) emptyList() else null
 }
 

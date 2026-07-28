@@ -16,7 +16,6 @@ import icu.windea.pls.core.collections.findFast
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.deoptimized
 import icu.windea.pls.core.optimized
-import icu.windea.pls.core.optimizer.OptimizerFactory
 import icu.windea.pls.core.readIntFast
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getValue
@@ -45,7 +44,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPsiService
 import icu.windea.pls.model.ParadoxDefinitionCandidateInfo
 import icu.windea.pls.model.ParadoxDefinitionSource
-import icu.windea.pls.model.forParadoxGameType
+import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.index.ParadoxIndexInfo
 import icu.windea.pls.script.ParadoxScriptFileType
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
@@ -317,7 +316,7 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
         val support = getSupportOrUnsupported(supports, type)
         storage.writeByte(support.indexInfoType.key)
         val gameType = firstInfo.gameType
-        storage.writeByte(gameType.optimized(OptimizerFactory.forParadoxGameType()))
+        storage.writeByte(gameType.optimized(ParadoxGameType.optimizer()))
         var previousInfo: ParadoxIndexInfo? = null
         value.forEachFast { info ->
             support.saveData(storage, info, previousInfo, gameType)
@@ -332,7 +331,7 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
         val key = storage.readByte()
         val supports = ParadoxMergedIndexSupport.EP_NAME.extensionList
         val support = getSupportOrUnsupported(supports, key)
-        val gameType = storage.readByte().deoptimized(OptimizerFactory.forParadoxGameType())
+        val gameType = storage.readByte().deoptimized(ParadoxGameType.optimizer())
 
         // 2.1.9 optimize: create sized immutable list directly
         var previousInfo: ParadoxIndexInfo? = null

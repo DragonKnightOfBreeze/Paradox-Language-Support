@@ -22,7 +22,7 @@ import icu.windea.pls.core.writeUTFFast
 import icu.windea.pls.cwt.CwtFileType
 import icu.windea.pls.cwt.psi.CwtPsiService
 import icu.windea.pls.cwt.psi.CwtStringExpressionElement
-import icu.windea.pls.model.forParadoxGameType
+import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.index.CwtConfigSymbolIndexInfo
 import java.io.DataInput
 import java.io.DataOutput
@@ -80,7 +80,7 @@ class CwtConfigSymbolIndex : CwtConfigIndexInfoAwareFileBasedIndex<List<CwtConfi
 
         val firstInfo = value.first()
         storage.writeUTFFast(firstInfo.type)
-        storage.writeByte(firstInfo.gameType.optimized(OptimizerFactory.forParadoxGameType()))
+        storage.writeByte(firstInfo.gameType.optimized(ParadoxGameType.optimizer()))
         value.forEachFast { info ->
             storage.writeUTFFast(info.name)
             storage.writeByte(info.readWriteAccess.optimized(OptimizerFactory.forReadWriteAccess()))
@@ -94,7 +94,7 @@ class CwtConfigSymbolIndex : CwtConfigIndexInfoAwareFileBasedIndex<List<CwtConfi
         if (size == 0) return emptyList()
 
         val type = storage.readUTFFast()
-        val gameType = storage.readByte().deoptimized(OptimizerFactory.forParadoxGameType())
+        val gameType = storage.readByte().deoptimized(ParadoxGameType.optimizer())
 
         // 2.1.9 optimize: create sized immutable list directly
         return ImmutableList(size) {

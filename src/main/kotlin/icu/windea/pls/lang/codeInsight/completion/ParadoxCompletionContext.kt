@@ -41,7 +41,7 @@ data class ParadoxCompletionContext(
     companion object {
         @JvmStatic
         fun create(globalContext: GlobalCompletionContext): ParadoxCompletionContext {
-            return ParadoxCompletionContextBuilder.build(globalContext)
+            return ParadoxCompletionContextBuilder.create(globalContext)
         }
     }
 }
@@ -49,7 +49,7 @@ data class ParadoxCompletionContext(
 // region Implementations
 
 private object ParadoxCompletionContextBuilder {
-    fun build(globalContext: GlobalCompletionContext): ParadoxCompletionContext {
+    fun create(globalContext: GlobalCompletionContext): ParadoxCompletionContext {
         val gameType = selectGameType(globalContext.file)
         val keyword = getKeyword(globalContext.contextElement, globalContext.offsetInParent)
         val configGroup = ChronicleFacade.getConfigGroup(globalContext.project, gameType)

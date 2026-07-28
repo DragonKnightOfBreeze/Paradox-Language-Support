@@ -8,6 +8,7 @@ import icu.windea.pls.config.config.extended.CwtExtendedGameRuleConfig
 import icu.windea.pls.config.config.extended.CwtExtendedOnActionConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.manipulation.CwtConfigManipulationService
+import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.lang.match.findByPattern
 import icu.windea.pls.lang.resolve.CwtDeclarationConfigContext
@@ -20,7 +21,8 @@ import icu.windea.pls.model.constants.ParadoxDefinitionTypes
  */
 class CwtBaseDeclarationConfigContextProvider : CwtDeclarationConfigContextProvider {
     override fun getContext(element: PsiElement, configGroup: CwtConfigGroup, definitionName: String?, definitionType: String, definitionSubtypes: List<String>?): CwtDeclarationConfigContext {
-        return CwtDeclarationConfigContext(definitionName, definitionType, definitionSubtypes, configGroup)
+        if (definitionName == null) return CwtDeclarationConfigContext.create(configGroup, definitionType, definitionSubtypes, this)
+        return CwtDeclarationConfigContext.createNamed(configGroup, definitionName, definitionType, definitionSubtypes, this)
     }
 
     override fun getCacheKey(context: CwtDeclarationConfigContext, declarationConfig: CwtDeclarationConfig): String {
@@ -29,7 +31,7 @@ class CwtBaseDeclarationConfigContextProvider : CwtDeclarationConfigContextProvi
         val subtypesString = context.definitionSubtypes?.orNull()?.let { subtypes ->
             val subtypesToDistinct = declarationConfig.attributes.involvedSubtypes
             buildString {
-                for (subtype in subtypes) {
+                subtypes.forEachFast { subtype ->
                     if (subtype in subtypesToDistinct) append(".").append(subtype)
                 }
             }
@@ -59,7 +61,7 @@ class CwtGameRuleDeclarationConfigContextProvider : CwtDeclarationConfigContextP
         if (definitionName.isNullOrEmpty()) return null
         val gameRuleConfig = configGroup.extendedGameRules.findByPattern(definitionName, element, configGroup) ?: return null
         if (gameRuleConfig.config.configs.isNullOrEmpty()) return null
-        return CwtDeclarationConfigContext(definitionName, definitionType, definitionSubtypes, configGroup)
+        return CwtDeclarationConfigContext.createNamed(configGroup, definitionName, definitionType, definitionSubtypes, this)
             .apply { this.gameRuleConfig = gameRuleConfig }
     }
 
@@ -91,7 +93,7 @@ class CwtOnActionDeclarationConfigContextProvider : CwtDeclarationConfigContextP
         if (definitionType != ParadoxDefinitionTypes.onAction) return null
         if (definitionName.isNullOrEmpty()) return null
         val onActionConfig = configGroup.extendedOnActions.findByPattern(definitionName, element, configGroup) ?: return null
-        return CwtDeclarationConfigContext(definitionName, definitionType, definitionSubtypes, configGroup)
+        return CwtDeclarationConfigContext.createNamed(configGroup, definitionName, definitionType, definitionSubtypes, this)
             .apply { this.onActionConfig = onActionConfig }
     }
 

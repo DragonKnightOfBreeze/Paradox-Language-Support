@@ -24,8 +24,6 @@ import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.lang.resolve.CwtConfigContext
-import icu.windea.pls.lang.resolve.inRoot
-import icu.windea.pls.lang.resolve.isDeclarationRoot
 import icu.windea.pls.lang.tagType
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager

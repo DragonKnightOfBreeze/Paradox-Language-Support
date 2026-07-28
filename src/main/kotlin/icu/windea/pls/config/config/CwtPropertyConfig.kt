@@ -25,15 +25,12 @@ import icu.windea.pls.core.deoptimized
 import icu.windea.pls.core.emptyPointer
 import icu.windea.pls.core.forEachChild
 import icu.windea.pls.core.optimized
-import icu.windea.pls.core.optimizer.OptimizerFactory
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.cwt.psi.CwtPropertyKey
 import icu.windea.pls.cwt.psi.CwtPropertyPointer
 import icu.windea.pls.cwt.psi.CwtValue
 import icu.windea.pls.model.constants.ChronicleStrings
-import icu.windea.pls.model.forCwtSeparatorType
-import icu.windea.pls.model.forCwtType
 import icu.windea.pls.model.type.CwtExpressionType
 import icu.windea.pls.model.type.CwtSeparatorType
 import icu.windea.pls.model.type.CwtTypeResolver
@@ -195,7 +192,7 @@ private object CwtPropertyConfigResolver : CwtConfigResolverScope {
 }
 
 private const val blockValue = ChronicleStrings.blockFolder
-private val blockValueTypeId = CwtExpressionType.Block.optimized(OptimizerFactory.forCwtType())
+private val blockValueTypeId = CwtExpressionType.Block.optimized(CwtExpressionType.optimizer())
 
 // 12 + 3 * 4 = 24 -> 24
 private sealed class CwtPropertyConfigBase : CwtOptionMetadataBase(), CwtPropertyConfig {
@@ -270,10 +267,10 @@ private sealed class CwtPropertyConfigImplBase(
     override val keyExpression: CwtDataExpression, // as constructor argument and field directly
     separatorType: CwtSeparatorType,
 ) : CwtPropertyConfigBase() {
-    private val separatorTypeId = separatorType.optimized(OptimizerFactory.forCwtSeparatorType()) // optimized to optimize memory
+    private val separatorTypeId = separatorType.optimized(CwtSeparatorType.optimizer()) // optimized to optimize memory
 
     override val key: String get() = keyExpression.expressionString
-    override val separatorType: CwtSeparatorType get() = separatorTypeId.deoptimized(OptimizerFactory.forCwtSeparatorType())
+    override val separatorType: CwtSeparatorType get() = separatorTypeId.deoptimized(CwtSeparatorType.optimizer())
 }
 
 // 12 + 2 * 1 + 7 * 4 = 42 -> 48
@@ -285,10 +282,10 @@ private open class CwtPropertyConfigImpl(
     valueType: CwtExpressionType,
     separatorType: CwtSeparatorType,
 ) : CwtPropertyConfigImplBase(pointer, configGroup, keyExpression, separatorType) {
-    private val valueTypeId = valueType.optimized(OptimizerFactory.forCwtType()) // optimized to optimize memory
+    private val valueTypeId = valueType.optimized(CwtExpressionType.optimizer()) // optimized to optimize memory
 
     override val value: String get() = valueExpression.expressionString
-    override val valueType: CwtExpressionType get() = valueTypeId.deoptimized(OptimizerFactory.forCwtType())
+    override val valueType: CwtExpressionType get() = valueTypeId.deoptimized(CwtExpressionType.optimizer())
     override val configs: List<CwtMemberConfig<*>>? get() = if (valueTypeId == blockValueTypeId) emptyList() else null
 }
 

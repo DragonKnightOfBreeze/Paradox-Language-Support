@@ -16,7 +16,6 @@ import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.deoptimized
 import icu.windea.pls.core.letIf
 import icu.windea.pls.core.optimized
-import icu.windea.pls.core.optimizer.OptimizerFactory
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.readIntFast
 import icu.windea.pls.core.readUTFFast
@@ -35,9 +34,8 @@ import icu.windea.pls.lang.resolve.ParadoxMemberService
 import icu.windea.pls.lang.settings.ChronicleInternalSettings
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.model.ParadoxDefinitionSource
+import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constraints.ParadoxDefinitionIndexConstraint
-import icu.windea.pls.model.forParadoxDefinitionSource
-import icu.windea.pls.model.forParadoxGameType
 import icu.windea.pls.model.index.ParadoxDefinitionIndexInfo
 import icu.windea.pls.script.ParadoxScriptFileType
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
@@ -231,14 +229,14 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
         if (value.isEmpty()) return
 
         val gameType = value.first().gameType
-        storage.writeByte(gameType.optimized(OptimizerFactory.forParadoxGameType()))
+        storage.writeByte(gameType.optimized(ParadoxGameType.optimizer()))
 
         // 3.0.0 optimize: write existing types and type keys first
         val types = storage.writeIndexedStringList(value) { it.type }
         val typeKeys = storage.writeIndexedStringList(value) { if (it.typeKeyIsName) null else it.typeKey }
 
         value.forEachFast { info ->
-            storage.writeByte(info.source.optimized(OptimizerFactory.forParadoxDefinitionSource()))
+            storage.writeByte(info.source.optimized(ParadoxDefinitionSource.optimizer()))
             storage.writeUTFFast(info.name)
             storage.writeIntFast(types.getInt(info.type))
             val fastSubtypes = info.fastSubtypes
@@ -258,7 +256,7 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
         val size = storage.readIntFast()
         if (size == 0) return emptyList()
 
-        val gameType = storage.readByte().deoptimized(OptimizerFactory.forParadoxGameType())
+        val gameType = storage.readByte().deoptimized(ParadoxGameType.optimizer())
 
         // 3.0.0 optimize: read existing types and type keys first
         val types = storage.readWithIndexStringList()
@@ -266,7 +264,7 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
 
         // 2.1.9 optimize: create sized immutable list directly
         return ImmutableList(size) {
-            val source = storage.readByte().deoptimized(OptimizerFactory.forParadoxDefinitionSource())
+            val source = storage.readByte().deoptimized(ParadoxDefinitionSource.optimizer())
             val name = storage.readUTFFast()
             val type = storage.readIntFast().let { types.get(it).orEmpty() }
             val subtypesSize = storage.readIntFast()
