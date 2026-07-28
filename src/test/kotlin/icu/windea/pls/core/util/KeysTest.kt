@@ -87,7 +87,7 @@ class KeysTest {
         val keyA2 = registry.keyA
         assertSame(keyA, keyA2)
 
-        val fetched = registry.getKeyOrNull<String?>(expectedName)
+        val fetched = registry.find<String?>(expectedName)
         assertSame(keyA, fetched)
     }
 

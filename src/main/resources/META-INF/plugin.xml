@@ -18,7 +18,7 @@
   <depends optional="true" config-file="chronicle-extension-translation.xml">cn.yiiguxing.plugin.translate</depends>
 
   <!-- Chapters of the guide book -->
-  <xi:include href="/META-INF/chronicle-inject.xml"/> <!-- Chapter of the injection magic needs to be put at the very front -->
+  <xi:include href="/META-INF/chronicle-inject.xml"/> <!-- Chapter of the code injection magic needs to be put at the very front -->
   <xi:include href="/META-INF/chronicle-base.xml"/>
   <xi:include href="/META-INF/chronicle-ide.xml"/>
   <xi:include href="/META-INF/chronicle-cwt.xml"/>

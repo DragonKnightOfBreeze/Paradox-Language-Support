@@ -1,3 +1,4 @@
+@file:Optimized
 @file:Suppress("NOTHING_TO_INLINE", "unused")
 
 package icu.windea.pls.core.util
@@ -5,9 +6,10 @@ package icu.windea.pls.core.util
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.Key.*
 import com.intellij.openapi.util.UserDataHolder
-import icu.windea.pls.core.cast
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.castOrNull
-import java.util.concurrent.ConcurrentHashMap
+import icu.windea.pls.core.collections.asMutable
+import it.unimi.dsi.fastutil.objects.ObjectArraySet
 import kotlin.reflect.KProperty
 
 // Key Extensions
@@ -18,8 +20,8 @@ fun Key<*>.clear(target: UserDataHolder) {
     target.putUserData(this, null)
 }
 
-@Suppress("UNCHECKED_CAST")
 fun Key<*>.copy(source: UserDataHolder, target: UserDataHolder, ifPresent: Boolean = false) {
+    @Suppress("UNCHECKED_CAST")
     this as Key<Any>
     val v = source.getUserData(this)
     if (ifPresent && v == null) return
@@ -30,46 +32,54 @@ fun Key<*>.copy(source: UserDataHolder, target: UserDataHolder, ifPresent: Boole
 
 abstract class KeyRegistry {
     val id = javaClass.name.substringAfterLast(".").replace("\$Keys", "")
-    val keys: MutableMap<String, Key<*>> = ConcurrentHashMap()
 
-    fun getKeyName(shortName: String): String {
-        return "${id}.${shortName}"
-    }
+    // NOTE 3.0.1 optimize: use immutable set as interface, and array backend mutable set as implementation
+    val keys: Set<Key<*>> = ObjectArraySet()
 
-    fun <T> getKey(name: String): Key<T> {
-        return keys.get(name).cast()
-    }
-
-    fun <T> getKeyOrNull(name: String): Key<T>? {
-        return keys.get(name).castOrNull()
+    fun <T> find(name: String): Key<T>? {
+        return keys.find { it is KeyNamed && it.name == name }.castOrNull()
     }
 
     fun clear(target: UserDataHolder) {
-        keys.values.forEach { key -> key.clear(target) }
+        keys.forEach { key -> key.clear(target) }
     }
 
     fun copy(source: UserDataHolder, target: UserDataHolder, ifPresent: Boolean = false) {
         // use optimized method rather than `UserDataHolderBase.copyUserDataTo` to reduce memory usage
-        keys.values.forEach { key -> key.copy(source, target, ifPresent) }
+        keys.forEach { key -> key.copy(source, target, ifPresent) }
     }
 }
 
 // Keys
 
-class KeyNormal<T>(val name: String) : Key<T>(name)
+sealed class KeyNamed<T>(val name: String) : Key<T>(name)
 
-class KeyWithDefault<T>(val name: String, val default: T) : Key<T>(name)
+class KeyNormal<T>(name: String) : KeyNamed<T>(name)
 
-class KeyWithProducer<T>(val name: String, val producer: () -> T) : Key<T>(name)
+class KeyWithDefault<T>(name: String, val default: T) : KeyNamed<T>(name)
 
-class KeyWithFactory<T, in THIS>(val name: String, val factory: THIS.() -> T) : Key<T>(name)
+class KeyWithProducer<T>(name: String, val producer: () -> T) : KeyNamed<T>(name)
+
+class KeyWithFactory<T, in THIS>(name: String, val factory: THIS.() -> T) : KeyNamed<T>(name)
 
 // Key Providers
 
 sealed class KeyProvider<T>(val registry: KeyRegistry) {
+    protected fun getKeyName(shortName: String): String {
+        return "${registry.id}.${shortName}"
+    }
+
     @Suppress("UNCHECKED_CAST")
     protected fun <K : Key<T>> register(name: String, block: () -> K): K {
-        return registry.keys.computeIfAbsent(name) { block() } as K
+        val keys = registry.keys
+        keys.find { it is KeyNamed }?.let { return it as K }
+        // NOTE 3.0.1 optimize: make if mutable with sync only if it's necessary to create and register
+        return synchronized(registry) {
+            keys.find { it is KeyNamed }?.let { return it as K }
+            val key = block()
+            keys.asMutable().add(key)
+            key
+        }
     }
 }
 
@@ -79,28 +89,28 @@ fun interface KeyProviderCallback<T> {
 
 class KeyProviderNormal<T>(registry: KeyRegistry) : KeyProvider<T>(registry) {
     fun getKey(shortName: String): KeyNormal<T> {
-        val name = registry.getKeyName(shortName)
+        val name = getKeyName(shortName)
         return register(name) { KeyNormal(name) }
     }
 }
 
 class KeyProviderWithDefault<T>(registry: KeyRegistry, val default: T) : KeyProvider<T>(registry) {
     fun getKey(shortName: String): KeyWithDefault<T> {
-        val name = registry.getKeyName(shortName)
+        val name = getKeyName(shortName)
         return register(name) { KeyWithDefault(name, default) }
     }
 }
 
 class KeyProviderWithProducer<T>(registry: KeyRegistry, val producer: () -> T) : KeyProvider<T>(registry) {
     fun getKey(shortName: String): KeyWithProducer<T> {
-        val name = registry.getKeyName(shortName)
+        val name = getKeyName(shortName)
         return register(name) { KeyWithProducer(name, producer) }
     }
 }
 
 class KeyProviderWithFactory<T, THIS>(registry: KeyRegistry, val factory: THIS.() -> T) : KeyProvider<T>(registry) {
     fun getKey(shortName: String): KeyWithFactory<T, THIS> {
-        val name = registry.getKeyName(shortName)
+        val name = getKeyName(shortName)
         return register(name) { KeyWithFactory(name, factory) }
     }
 }
