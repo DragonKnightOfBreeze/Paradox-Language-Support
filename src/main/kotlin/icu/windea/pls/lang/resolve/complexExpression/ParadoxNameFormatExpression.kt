@@ -34,6 +34,10 @@ import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressi
  * private closure_item ::= name_format_closure | command | name_part | name_format_localisation | name_format_text
  * command ::= "[" command_expression "]"
  * name_part ::= "<" name_format_definition ">"
+ * command_expression ::= EXPRESSION
+ * name_format_definition ::= IDENTIFIER
+ * name_format_localisation ::= IDENTIFIER
+ * name_format_text ::= STRING_LITERAL
  * ```
  *
  * ### 语法与结构

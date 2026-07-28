@@ -49,8 +49,17 @@ import icu.windea.pls.lang.util.ParadoxExpressionManager
  * private scope_link_with_args ::= scope_link_prefix "(" scope_link_args ")"
  * private scope_link_args ::= scope_link_arg ("," scope_link_arg)* // = scope_link_value
  * private scope_link_arg ::= scope_link_value
- * scope_link_value ::= dynamic_value_expression | scope_field_expression | value_field_expression | data_source
  * private variable ::= data_source
+ *
+ * system_scope ::= IDENTIFIER
+ * scope ::= IDENTIFIER
+ * scope_link_prefix ::= IDENTIFIER
+ * parameterized_scope_link ::= STRING_LITERAL
+
+ * scope_link_value ::= data_source
+ *     // | dynamic_value_expression // general available
+ *     // | scope_field_expression | value_field_expression // for argument form only
+ * data_source ::= IDENTIFIER
  * ```
  */
 interface ParadoxVariableFieldExpression : ParadoxComplexExpression, ParadoxLinkedExpression {

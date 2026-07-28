@@ -39,6 +39,8 @@ import icu.windea.pls.lang.util.ParadoxDefineManager
  * 语法：
  * ```bnf
  * array_define_reference_expression ::= define_namespace "|" define_variable "|" NUMBER_LITERAL
+ * define_namespace ::= IDENTIFIER
+ * define_variable ::= IDENTIFIER
  * ```
  */
 interface ParadoxArrayDefineReferenceExpression : ParadoxComplexExpression {

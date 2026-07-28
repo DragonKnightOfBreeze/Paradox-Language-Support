@@ -38,6 +38,9 @@ import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressi
  * ```bnf
  * script_value_reference_expression ::= script_value script_value_args?
  * private script_value_args ::= "|" (script_value_argument_name "|" script_value_argument_value "|")+
+ * script_value ::= IDENTIFIER
+ * script_value_argument_name ::= IDENTIFIER
+ * script_value_argument_value ::= STRING_LITERAL
  * ```
  *
  * ### 语法与结构

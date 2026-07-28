@@ -61,16 +61,30 @@ import icu.windea.pls.lang.util.ParadoxExpressionManager
  * private scope_link_with_args ::= scope_link_prefix "(" scope_link_args ")"
  * private scope_link_args ::= scope_link_arg ("," scope_link_arg)* // = scope_link_value
  * private scope_link_arg ::= scope_link_value
- * scope_link_value ::= dynamic_value_expression | scope_field_expression | value_field_expression | data_source
  * value_field ::= predefined_value_field | dynamic_value_field | parameterized_value_field
  * dynamic_value_field ::= value_field_with_prefix | value_field_with_args
  * private value_field_with_prefix ::= value_field_prefix? value_field_value
  * private value_field_with_args ::= value_field_prefix "(" value_field_args ")"
  * private value_field_args ::= value_field_arg ("," value_field_arg)* // = value_field_value
  * private value_field_arg ::= value_field_value
- * value_field_value ::= dynamic_value_expression | scope_field_expression | value_field_expression
- *   | script_value_reference_expression | define_reference_expression | array_define_reference_expression
- *   | data_source
+ *
+ * system_scope ::= IDENTIFIER
+ * scope ::= IDENTIFIER
+ * scope_link_prefix ::= IDENTIFIER
+ * parameterized_scope_link ::= STRING_LITERAL
+ * predefined_value_field ::= IDENTIFIER
+ * value_field_prefix ::= IDENTIFIER
+ * parameterized_value_field ::= STRING_LITERAL
+ *
+ * scope_link_value ::= data_source
+ *     // | dynamic_value_expression // general available
+ *     // | scope_field_expression | value_field_expression // for argument form only
+ * value_field_value ::= data_source
+ *     // | dynamic_value_expression // general available
+ *     // | scope_field_expression | value_field_expression // for argument form only
+ *     // | script_value_reference_expression // general available
+ *     // | define_reference_expression | array_define_reference_expression // general available
+ * data_source ::= IDENTIFIER
  * ```
  */
 interface ParadoxValueFieldExpression : ParadoxComplexExpression, ParadoxLinkedExpression {

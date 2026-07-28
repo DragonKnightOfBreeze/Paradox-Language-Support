@@ -23,6 +23,8 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.*
  * ```bnf
  * template_expression ::= snippet+
  * private snippet ::= template_snippet_constant | template_snippet
+ * template_snippet_constant ::= STRING_LITERAL
+ * template_snippet ::= STRING_LITERAL
  * ```
  *
  * ### 语法与结构

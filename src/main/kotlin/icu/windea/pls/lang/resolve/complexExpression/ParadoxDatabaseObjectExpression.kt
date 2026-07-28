@@ -37,6 +37,8 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationConceptName
  * ```bnf
  * database_object_expression ::= database_object_type ":" database_object_value (":" database_object_value)?
  * database_object_value ::= database_object
+ * database_object_type ::= IDENTIFIER
+ * database_object ::= database_object
  * ```
  */
 interface ParadoxDatabaseObjectExpression : ParadoxComplexExpression {

@@ -34,6 +34,8 @@ import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressi
  * 语法：
  * ```bnf
  * define_reference_expression ::= define_namespace "|" define_variable
+ * define_namespace ::= IDENTIFIER
+ * define_variable ::= IDENTIFIER
  * ```
  */
 interface ParadoxDefineReferenceExpression : ParadoxComplexExpression {

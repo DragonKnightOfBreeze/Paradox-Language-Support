@@ -57,17 +57,30 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationCommandText
  * private command_scope_link_with_args ::= command_scope_link_prefix "(" command_scope_link_args ")"
  * private command_scope_link_args ::= command_scope_link_arg ("," command_scope_link_arg)* // = command_scope_link_value
  * private command_scope_link_arg ::= command_scope_link_value
- * command_scope_link_value ::= dynamic_value_expression | command_expression | data_source
  * command_field ::= predefined_command_field | dynamic_command_field | parameterized_command_field
  * dynamic_command_field ::= command_field_with_prefix | command_field_with_args
  * private command_field_with_prefix ::= command_field_prefix? command_field_value
  * private command_field_with_args ::= command_field_prefix "(" command_field_args ")"
  * private command_field_args ::= command_field_arg ("," command_field_arg)* // = command_field_value
  * private command_field_arg ::= command_field_value
- * command_field_value ::= dynamic_value_expression | command_expression
- *   | define_reference_expression | array_define_reference_expression
- *   | data_source
  * command_suffix ::= "&" SUFFIX | "::" SUFFIX
+ *
+ * system_command_scope ::= IDENTIFIER
+ * command_scope ::= IDENTIFIER
+ * command_scope_link_prefix ::= IDENTIFIER
+ * parameterized_command_scope_link ::= STRING_LITERAL
+ * command_field_prefix ::= IDENTIFIER
+ * predefined_command_field ::= IDENTIFIER
+ * parameterized_command_field ::= STRING_LITERAL
+ *
+ * command_scope_link_value ::= data_source
+ *     // | dynamic_value_expression // general available
+ *     // | command_expression // for argument form only
+ * command_field_value ::= data_source
+ *     // | dynamic_value_expression // general available
+ *     // | command_expression // for argument form only
+ *     // | define_reference_expression | array_define_reference_expression // general available
+ * data_source ::= IDENTIFIER
  * ```
  */
 interface ParadoxCommandExpression : ParadoxComplexExpression, ParadoxLinkedExpression {
