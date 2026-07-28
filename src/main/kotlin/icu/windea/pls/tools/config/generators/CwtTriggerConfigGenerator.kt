@@ -81,7 +81,7 @@ class CwtTriggerConfigGenerator(override val project: Project) : CwtConfigGenera
         val text = withContext(Dispatchers.IO) { file.readText() }
         val psiFile = readAction { CwtElementFactory.createFileFromText(project, text) }
         return readAction {
-            val fileConfig = CwtFileConfig.resolve(psiFile, CwtConfigGroup(project, gameType), file.name)
+            val fileConfig = CwtFileConfig.resolve(psiFile, CwtConfigGroup.create(project, gameType), file.name)
             val configs = fileConfig.properties.mapNotNull { CwtAliasConfig.resolve(it) }
                 .filter { it.name == "trigger" && it.subName.isIdentifier() }
             configs.groupBy { it.subName }.mapValues { (_, v) -> parseConfigInfo(v) }

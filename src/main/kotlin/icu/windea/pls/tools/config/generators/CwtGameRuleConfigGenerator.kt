@@ -64,7 +64,7 @@ class CwtGameRuleConfigGenerator(override val project: Project) : CwtConfigGener
         val text = withContext(Dispatchers.IO) { file.readText() }
         val psiFile = readAction { CwtElementFactory.createFileFromText(project, text) }
         return readAction {
-            val fileConfig = CwtFileConfig.resolve(psiFile, CwtConfigGroup(project, gameType), file.name)
+            val fileConfig = CwtFileConfig.resolve(psiFile, CwtConfigGroup.create(project, gameType), file.name)
             val rootConfig = fileConfig.properties.find { it.key == CONTAINER_GAME_RULES }
             val configs = rootConfig?.configs.orEmpty().map { CwtExtendedGameRuleConfig.resolve(it) }
             parseConfigInfo(configs)

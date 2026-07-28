@@ -3,6 +3,7 @@ package icu.windea.pls.ep.config.configGroup
 import com.intellij.openapi.progress.checkCanceled
 import icu.windea.pls.config.attributes.CwtExpandableConfigAttributesEvaluator
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.configGroup.CwtConfigGroupImpl
 
 class CwtBaseConfigGroupPostProcessor : CwtConfigGroupPostProcessor {
     override suspend fun postProcess(configGroup: CwtConfigGroup) {
@@ -10,6 +11,8 @@ class CwtBaseConfigGroupPostProcessor : CwtConfigGroupPostProcessor {
     }
 
     private suspend fun evaluateAttributes(configGroup: CwtConfigGroup) {
+        if (configGroup !is CwtConfigGroupImpl) return
+
         checkCanceled()
         configGroup.unions.forEach { (k, v) ->
             configGroup.unionAttributes[k] = CwtExpandableConfigAttributesEvaluator().evaluate(k, v, configGroup)

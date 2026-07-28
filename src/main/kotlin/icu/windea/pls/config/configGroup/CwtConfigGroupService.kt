@@ -112,7 +112,7 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
         val configGroup = getConfigGroups().get(gameType)
         if (configGroup == null) {
             // return temporary empty config group to avoid NPE
-            return CwtConfigGroup(project, gameType)
+            return CwtConfigGroup.create(project, gameType)
         }
         return configGroup
     }
@@ -130,7 +130,7 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
         val gameTypes = ParadoxGameType.getAll()
         val configGroups = buildMap(gameTypes.size) {
             for (gameType in gameTypes) {
-                this[gameType] = CwtConfigGroup(project, gameType)
+                this[gameType] = CwtConfigGroup.create(project, gameType)
             }
         }
         return configGroups

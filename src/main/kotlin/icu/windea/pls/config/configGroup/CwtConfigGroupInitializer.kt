@@ -9,4 +9,8 @@ import icu.windea.pls.model.ParadoxGameType
 class CwtConfigGroupInitializer(
      val project: Project,
      val gameType: ParadoxGameType,
-) : CwtConfigGroupDataHolderBase()
+) : CwtConfigGroupDataHolderBase() {
+    override fun toString(): String {
+        return "CwtConfigGroupInitializer(gameType=${gameType.id}, project=$project)"
+    }
+}

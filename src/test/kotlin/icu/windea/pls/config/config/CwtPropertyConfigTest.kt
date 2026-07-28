@@ -28,7 +28,7 @@ class CwtPropertyConfigTest : BasePlatformTestCase() {
     private fun prepare(): Triple<CwtFile, CwtConfigGroup, String> {
         myFixture.configureByFile("features/config/property_config_cases.test.cwt")
         val file = myFixture.file as CwtFile
-        val group = CwtConfigGroup(project, ParadoxGameType.Stellaris)
+        val group = CwtConfigGroup.create(project, ParadoxGameType.Stellaris)
         val path = "common/test/property_config_cases.cwt"
         return Triple(file, group, path)
     }
@@ -100,7 +100,7 @@ class CwtPropertyConfigTest : BasePlatformTestCase() {
     fun testBoundaries_numberFormats() {
         myFixture.configureByFile("features/config/property_config_boundaries.test.cwt")
         val file = myFixture.file as CwtFile
-        val group = CwtConfigGroup(project, ParadoxGameType.Stellaris)
+        val group = CwtConfigGroup.create(project, ParadoxGameType.Stellaris)
         val root = file.block!!
 
         // empty block property -> configs should be non-null and empty

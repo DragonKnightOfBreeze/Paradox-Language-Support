@@ -30,7 +30,7 @@ class CwtMemberConfigExpandedRecursiveVisitorTest : BasePlatformTestCase() {
     private fun prepareCases(): Pair<CwtFile, CwtConfigGroup> {
         myFixture.configureByFile("features/config/expandable_visitor_cases.test.cwt")
         val file = myFixture.file as CwtFile
-        val configGroup = CwtConfigGroup(project, ParadoxGameType.Stellaris)
+        val configGroup = CwtConfigGroup.create(project, ParadoxGameType.Stellaris)
 
         // 解析文件配置并注册别名到配置组
         val filePath = "common/test/expandable_visitor_cases.cwt"
