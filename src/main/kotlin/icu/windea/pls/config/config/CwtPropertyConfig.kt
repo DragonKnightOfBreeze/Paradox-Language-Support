@@ -207,13 +207,13 @@ private sealed class CwtPropertyConfigBase : CwtOptionMetadataBase(), CwtPropert
 
     // use memory-optimized lazy property
     @Volatile private var _valueConfig: Any? = EMPTY_OBJECT
-    override val valueConfig: CwtValueConfig? @Synchronized get() = resolveLazyValueConfig()
+    override val valueConfig: CwtValueConfig? @Synchronized get() = computeLazyValueConfig()
 
-    private fun resolveLazyValueConfig(): CwtValueConfig? {
-        return if (_valueConfig !== EMPTY_OBJECT) _valueConfig.cast() else resolveValueConfig().also { _valueConfig = it }
+    private fun computeLazyValueConfig(): CwtValueConfig? {
+        return if (_valueConfig !== EMPTY_OBJECT) _valueConfig.cast() else computeValueConfig().also { _valueConfig = it }
     }
 
-    private fun resolveValueConfig(): CwtValueConfig? {
+    private fun computeValueConfig(): CwtValueConfig? {
         // this function should be enough fast because there are no pointers to be created
         val resolvedPointer = this.resolved().pointer
         val valuePointer = when {

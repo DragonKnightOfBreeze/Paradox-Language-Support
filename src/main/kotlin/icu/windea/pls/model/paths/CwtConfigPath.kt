@@ -57,14 +57,6 @@ interface CwtConfigPath : Iterable<String> {
 
 // region Implementations
 
-private val pathInterner = Interner.newWeakInterner<String>()
-private val subPathInterner = Interner.newWeakInterner<String>()
-
-private fun String.internPath() = pathInterner.intern(this)
-private fun String.internSubPath() = subPathInterner.intern(this)
-private fun String.splitSubPaths() = replace("\\/", "\u0000").splitFast('/').mapFast { it.replace('\u0000', '/') }
-private fun List<String>.joinSubPaths() = joinToString("/") { it.replace("/", "\\/") }
-
 private object CwtConfigPathResolver {
     fun resolveEmpty(): CwtConfigPath = EmptyCwtConfigPath
 
@@ -112,19 +104,33 @@ private sealed class CwtConfigPathBase : CwtConfigPath {
     override fun toString() = path
 }
 
+private val pathInterner = Interner.newWeakInterner<String>()
+private val subPathInterner = Interner.newWeakInterner<String>()
+
+private fun String.internPath() = pathInterner.intern(this)
+private fun String.internSubPath() = subPathInterner.intern(this)
+private fun List<String>.computePath() = if (size == 1) first().replace("/", "\\/") else joinToString("/") { it.replace("/", "\\/") }
+private fun String.computeSubPaths() = replace("\\/", "\u0000").splitFast('/').mapFast { it.replace('\u0000', '/') }
+private fun List<String>.computeNormalizedPath() = if (size == 1) first().replace("/", "\\/").internSubPath() else joinToString("/") { it.replace("/", "\\/") }.internPath()
+private fun CwtConfigPath.computeNormalizedSubPaths(): List<String> = ImmutableList(subPaths.size) { subPaths[it].internSubPath() }
+
 private class CwtConfigPathImplFromPath(input: String) : CwtConfigPathBase() {
     override val path: String = input
-    override val subPaths: List<String> = input.splitSubPaths()
+    override val subPaths: List<String> = input.computeSubPaths()
 }
 
 private class CwtConfigPathImplFromSubPaths(input: List<String>) : CwtConfigPathBase() {
-    override val path: String = input.joinSubPaths()
+    // 3.0.1 optimize: lazy compute `path` since it's rarely used in production code
+    @Volatile private var _path: String? = null
+    override val path: String get() = _path ?: subPaths.computePath().also { _path = it }
     override val subPaths: List<String> = input
 }
 
 private class NormalizedCwtConfigPath(input: CwtConfigPath) : CwtConfigPathBase() {
-    override val path: String = if (input.length == 1) input.path.internSubPath() else input.path.internPath()
-    override val subPaths: List<String> = ImmutableList(input.subPaths.size) { input.subPaths[it].internSubPath() }
+    // 3.0.1 optimize: lazy compute `path` since it's rarely used in production code
+    @Volatile private var _path: String? = null
+    override val path: String get() = _path ?: subPaths.computeNormalizedPath().also { _path = it }
+    override val subPaths: List<String> = input.computeNormalizedSubPaths()
 }
 
 private object EmptyCwtConfigPath : CwtConfigPathBase() {

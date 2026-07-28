@@ -66,15 +66,6 @@ interface ParadoxPath : Iterable<String> {
 
 // region Implementations
 
-private val pathInterner = Interner.newWeakInterner<String>()
-private val subPathInterner = Interner.newWeakInterner<String>()
-
-private fun String.internPath() = pathInterner.intern(this)
-private fun String.internSubPath() = subPathInterner.intern(this)
-private fun String.splitSubPaths() = splitFast('/')
-private fun List<String>.joinSubPaths() = joinToString("/")
-private fun String.getParent() = substringBeforeLast('/', "")
-
 private object ParadoxPathResolver {
     fun resolveEmpty(): ParadoxPath = EmptyParadoxPath
 
@@ -141,22 +132,34 @@ private sealed class ParadoxPathBase : ParadoxPath {
     override fun toString() = path
 }
 
+private val pathInterner = Interner.newWeakInterner<String>()
+private val subPathInterner = Interner.newWeakInterner<String>()
+
+private fun String.internPath() = pathInterner.intern(this)
+private fun String.internSubPath() = subPathInterner.intern(this)
+private fun List<String>.computePath() = if (size == 1) first() else joinToString("/")
+private fun String.computeSubPaths() = splitFast('/')
+private fun String.computeParent() = substringBeforeLast('/', "")
+private fun ParadoxPath.computeNormalizedPath(): String = if (length == 1) path.internSubPath() else path.internPath()
+private fun ParadoxPath.computeNormalizedSubPath(): List<String> = ImmutableList(subPaths.size) { subPaths[it].internSubPath() }
+private fun ParadoxPath.computeNormalizedParent(): String = if (length == 1) "" else parent.internPath()
+
 private class ParadoxPathImplFromPath(input: String) : ParadoxPathBase() {
     override val path: String = input
-    override val subPaths: List<String> = input.splitSubPaths()
-    override val parent: String = input.getParent()
+    override val subPaths: List<String> = input.computeSubPaths()
+    override val parent: String = input.computeParent()
 }
 
 private class ParadoxPathImplFromSubPaths(input: List<String>) : ParadoxPathBase() {
-    override val path: String = input.joinSubPaths()
+    override val path: String = input.computePath()
     override val subPaths: List<String> = input
-    override val parent: String = path.getParent()
+    override val parent: String = path.computeParent()
 }
 
 private class NormalizedParadoxPath(input: ParadoxPath) : ParadoxPathBase() {
-    override val path: String = if (input.length == 1) input.path.internSubPath() else input.path.internPath()
-    override val subPaths: List<String> = ImmutableList(input.subPaths.size) { input.subPaths[it].internSubPath() }
-    override val parent: String = if (input.length == 1) "" else input.parent.internPath()
+    override val path: String = input.computeNormalizedPath()
+    override val subPaths: List<String> = input.computeNormalizedSubPath()
+    override val parent: String = input.computeNormalizedParent()
 }
 
 private object EmptyParadoxPath : ParadoxPathBase() {
