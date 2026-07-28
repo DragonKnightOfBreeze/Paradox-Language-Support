@@ -50,6 +50,15 @@ inline fun <T, R> List<T>.mapNotNullFast(transform: (T) -> R?): List<R> {
     return destination
 }
 
+/** @see kotlin.collections.flatMap */
+@Fast
+inline fun <T, R> List<T>.flatMapFast(transform: (T) -> Collection<R>): List<R> {
+    if (isEmpty()) return emptyList()
+    val destination = ArrayList<R>(size)
+    forEachFast { e -> destination.addAll(transform(e)) }
+    return destination
+}
+
 /** @see kotlin.collections.filter */
 @Fast
 inline fun <T> List<T>.filterFast(predicate: (T) -> Boolean): List<T> {
@@ -68,12 +77,12 @@ inline fun <T> List<T?>.filterNotNullFast(): List<T> {
     return destination
 }
 
-/** @see kotlin.collections.filterIsInstance */
+/** @see filterIsInstance */
 @Fast
-inline fun <reified R> List<*>.filterIsInstanceFast(): List<R> {
+inline fun <reified R> List<*>.filterIsInstanceFast(predicate: (R) -> Boolean = { true }): List<R> {
     if (isEmpty()) return emptyList()
     val destination = ArrayList<R>()
-    forEachFast { e -> if (e is R) destination.add(e) }
+    forEachFast { e -> if (e is R && predicate(e)) destination.add(e) }
     return destination
 }
 
@@ -83,4 +92,34 @@ inline fun <T> List<T>.findFast(predicate: (T) -> Boolean): T? {
     if (isEmpty()) return null
     forEachFast { e -> if (predicate(e)) return e }
     return null
+}
+
+/** @see findIsInstance */
+inline fun <reified R> List<*>.findIsInstanceFast(predicate: (R) -> Boolean = { true }): R? {
+    if (isEmpty()) return null
+    forEachFast { e -> if (e is R && predicate(e)) return e }
+    return null
+}
+
+/** @see kotlin.collections.all */
+@Fast
+inline fun <T> List<T>.allFast(predicate: (T) -> Boolean): Boolean {
+    if (isEmpty()) return true
+    forEachFast { e -> if (!predicate(e)) return false }
+    return true
+}
+
+/** @see kotlin.collections.any */
+@Fast
+inline fun <T> List<T>.anyFast(predicate: (T) -> Boolean): Boolean {
+    forEachFast { e -> if (predicate(e)) return true }
+    return false
+}
+
+/** @see kotlin.collections.none */
+@Fast
+inline fun <T> List<T>.noneFast(predicate: (T) -> Boolean): Boolean {
+    if (isEmpty()) return true
+    forEachFast { e -> if (predicate(e)) return false }
+    return true
 }

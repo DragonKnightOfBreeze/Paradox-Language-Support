@@ -4,7 +4,8 @@ import com.intellij.openapi.util.TextRange
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.core.collections.findIsInstance
+import icu.windea.pls.core.collections.filterFast
+import icu.windea.pls.core.collections.findIsInstanceFast
 
 class ParadoxDynamicCommandFieldNode(
     override val text: String,
@@ -14,9 +15,9 @@ class ParadoxDynamicCommandFieldNode(
     override val nodes: List<ParadoxComplexExpressionNode> = emptyList(),
 ) : ParadoxComplexExpressionNodeBase(), ParadoxCommandFieldNode {
     val prefixNode: ParadoxCommandFieldPrefixNode?
-        get() = nodes.findIsInstance<ParadoxCommandFieldPrefixNode>()
+        get() = nodes.findIsInstanceFast<ParadoxCommandFieldPrefixNode>()
     val valueNode: ParadoxCommandFieldValueNode
-        get() = nodes.findIsInstance<ParadoxCommandFieldValueNode>()!!
+        get() = nodes.findIsInstanceFast<ParadoxCommandFieldValueNode>()!!
 
     override fun getRelatedConfigs(): Collection<CwtConfig<*>> {
         return linkConfigs
@@ -68,7 +69,7 @@ class ParadoxDynamicCommandFieldNode(
             // 匹配某一前缀的场合（如 `event_target:some_job`）
             run r1@{
                 val linkConfigs = configGroup.localisationLinksModel.forValueFromDataSorted
-                    .filter { text.startsWith(it.prefix!!) }
+                    .filterFast { text.startsWith(it.prefix!!) }
                 if (linkConfigs.isEmpty()) return@r1
                 run r2@{
                     val nodeText = linkConfigs.first().prefix!!

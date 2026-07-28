@@ -6,6 +6,7 @@ import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.cast
+import icu.windea.pls.core.collections.anyFast
 import icu.windea.pls.core.util.values.singletonList
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.lang.getParameterRanges
@@ -74,7 +75,7 @@ private object ParadoxDynamicValueExpressionResolver {
     }
 
     fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, configs: List<CwtConfig<*>>): ParadoxDynamicValueExpression? {
-        if (configs.any { it.configExpression?.type !in CwtDataTypeSets.DynamicValue }) return null
+        if (configs.anyFast { it.configExpression?.type !in CwtDataTypeSets.DynamicValue }) return null
 
         val incomplete = ChronicleThreadContext.incompleteComplexExpression.get() ?: false
         if (!incomplete && text.isEmpty()) return null
@@ -92,7 +93,7 @@ private object ParadoxDynamicValueExpressionResolver {
         while (tokenIndex < textLength) {
             index = tokenIndex + 1
             tokenIndex = text.indexOf('@', index)
-            if (tokenIndex != -1 && parameterRanges.any { tokenIndex in it }) continue // skip parameter text
+            if (tokenIndex != -1 && parameterRanges.anyFast { tokenIndex in it }) continue // skip parameter text
             if (tokenIndex == -1) {
                 tokenIndex = textLength
             }

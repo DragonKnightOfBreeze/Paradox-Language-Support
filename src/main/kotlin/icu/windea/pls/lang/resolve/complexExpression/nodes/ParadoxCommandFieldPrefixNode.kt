@@ -7,6 +7,7 @@ import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.config.resolveElementWithConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.lang.editor.ParadoxSemanticHighlighterColors
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
@@ -28,7 +29,7 @@ class ParadoxCommandFieldPrefixNode(
     }
 
     override fun getReference(element: ParadoxExpressionElement): Reference {
-        linkConfigs.forEach { it.resolveElementWithConfig() }
+        linkConfigs.forEachFast { it.resolveElementWithConfig() }
         val offset = ParadoxExpressionManager.getExpressionOffset(element)
         return Reference(element, rangeInExpression.shiftRight(offset), linkConfigs)
     }

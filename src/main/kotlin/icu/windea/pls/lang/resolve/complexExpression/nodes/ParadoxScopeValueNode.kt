@@ -5,6 +5,9 @@ import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.collections.anyFast
+import icu.windea.pls.core.collections.filterFast
+import icu.windea.pls.core.collections.mapNotNullFast
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.isEscapedCharAt
 import icu.windea.pls.core.isQuoted
@@ -25,7 +28,7 @@ class ParadoxScopeValueNode(
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, linkConfigs: List<CwtLinkConfig>): ParadoxScopeValueNode {
             val incomplete = ChronicleThreadContext.incompleteComplexExpression.get() ?: false
             val parameterRanges = text.getParameterRanges()
-            val separatorChar = if (linkConfigs.any { it.argumentSeparator.usePipe() }) '|' else ','
+            val separatorChar = if (linkConfigs.anyFast { it.argumentSeparator.usePipe() }) '|' else ','
 
             val nodes = mutableListOf<ParadoxComplexExpressionNode>()
 
@@ -37,7 +40,7 @@ class ParadoxScopeValueNode(
                 var inSingleQuote = false
                 while (i < text.length) {
                     val ch = text[i]
-                    val inParam = parameterRanges.any { i in it }
+                    val inParam = parameterRanges.anyFast { i in it }
                     if (!inParam) {
                         if (ch == '\'' && !text.isEscapedCharAt(i)) inSingleQuote = !inSingleQuote
                         else if (!inSingleQuote) when (ch) {
@@ -54,7 +57,7 @@ class ParadoxScopeValueNode(
 
             if (!hasTopLevelSeparator) {
                 // original single-value resolution path
-                val linkConfigsForDs = linkConfigs.mapNotNull { CwtLinkConfig.delegatedWith(it, 0) }.ifEmpty { linkConfigs }
+                val linkConfigsForDs = linkConfigs.mapNotNullFast { CwtLinkConfig.delegatedWith(it, 0) }.ifEmpty { linkConfigs }
                 nodes += resolveDsNode(text, textRange, configGroup, linkConfigsForDs)
                 return ParadoxScopeValueNode(text, textRange, configGroup, linkConfigs, nodes)
             }
@@ -83,7 +86,7 @@ class ParadoxScopeValueNode(
                     if (coreText.isQuoted('\'')) {
                         nodes += ParadoxStringLiteralNode(coreText, coreRange, configGroup)
                     } else {
-                        val linkConfigsForDs = linkConfigs.mapNotNull { CwtLinkConfig.delegatedWith(it, argIndex) }.ifEmpty { linkConfigs }
+                        val linkConfigsForDs = linkConfigs.mapNotNullFast { CwtLinkConfig.delegatedWith(it, argIndex) }.ifEmpty { linkConfigs }
                         nodes += resolveDsNode(coreText, coreRange, configGroup, linkConfigsForDs)
                     }
                 } else if (fromSeparator) {
@@ -93,7 +96,7 @@ class ParadoxScopeValueNode(
                 } else if (incomplete) {
                     // trailing empty argument in incomplete mode -> emit an empty argument node via resolveSingle
                     val coreRange = TextRange.create(a + offset, a + offset)
-                    val linkConfigsForDs = linkConfigs.mapNotNull { CwtLinkConfig.delegatedWith(it, argIndex) }.ifEmpty { linkConfigs }
+                    val linkConfigsForDs = linkConfigs.mapNotNullFast { CwtLinkConfig.delegatedWith(it, argIndex) }.ifEmpty { linkConfigs }
                     nodes += resolveDsNode("", coreRange, configGroup, linkConfigsForDs)
                 }
                 // trailing blanks
@@ -105,7 +108,7 @@ class ParadoxScopeValueNode(
             }
             while (i < text.length) {
                 val c = text[i]
-                val inParam = parameterRanges.any { i in it }
+                val inParam = parameterRanges.anyFast { i in it }
                 if (!inParam) {
                     if (c == '\'' && !text.isEscapedCharAt(i)) inSingleQuote = !inSingleQuote
                     else if (!inSingleQuote) when (c) {
@@ -127,13 +130,13 @@ class ParadoxScopeValueNode(
 
         private fun resolveDsNode(text: String, textRange: TextRange, configGroup: CwtConfigGroup, configs: List<CwtLinkConfig>): ParadoxComplexExpressionNode {
             // NOTE 2.1.10 nested expressions here may not be valid (return null) even if the data source expression is single, and then fallback to data source node
-            configs.filter { it.configExpression?.type in CwtDataTypeSets.DynamicValue }.orNull()
+            configs.filterFast { it.configExpression?.type in CwtDataTypeSets.DynamicValue }.orNull()
                 ?.let { ParadoxDynamicValueExpression.resolve(text, textRange, configGroup, it) }
                 ?.let { return it }
-            configs.filter { it.configExpression?.type in CwtDataTypeSets.ScopeField }.orNull()
+            configs.filterFast { it.configExpression?.type in CwtDataTypeSets.ScopeField }.orNull()
                 ?.let { ParadoxScopeFieldExpression.resolve(text, textRange, configGroup) }
                 ?.let { return it }
-            configs.filter { it.configExpression?.type in CwtDataTypeSets.ValueField }.orNull()
+            configs.filterFast { it.configExpression?.type in CwtDataTypeSets.ValueField }.orNull()
                 ?.let { ParadoxValueFieldExpression.resolve(text, textRange, configGroup) }
                 ?.let { return it }
 

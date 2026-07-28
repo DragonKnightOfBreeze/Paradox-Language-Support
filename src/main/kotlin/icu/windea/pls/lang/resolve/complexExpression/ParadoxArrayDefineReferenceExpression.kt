@@ -5,7 +5,7 @@ import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.collections.findIsInstance
+import icu.windea.pls.core.collections.findIsInstanceFast
 import icu.windea.pls.core.match.TextMatcher
 import icu.windea.pls.lang.isParameterAwareIdentifier
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
@@ -130,7 +130,7 @@ private object ParadoxArrayDefineReferenceExpressionValidator : ParadoxComplexEx
     }
 
     private fun checkArrayDefine(expression: ParadoxArrayDefineReferenceExpression, element: ParadoxExpressionElement? = null, errors: MutableList<ParadoxComplexExpressionError>) {
-        val variableNode = expression.nodes.findIsInstance<ParadoxDefineVariableNode>()
+        val variableNode = expression.nodes.findIsInstanceFast<ParadoxDefineVariableNode>()
         val resolved = if (element == null) null else variableNode?.getReference(element)?.resolve()
 
         if (variableNode != null && resolved != null) {
@@ -139,7 +139,7 @@ private object ParadoxArrayDefineReferenceExpressionValidator : ParadoxComplexEx
             }
         }
 
-        val indexNode = expression.nodes.findIsInstance<ParadoxLiteralNode>() ?: return
+        val indexNode = expression.nodes.findIsInstanceFast<ParadoxLiteralNode>() ?: return
         val index = indexNode.text.toIntOrNull()
         if (index == null) {
             errors += ParadoxComplexExpressionErrors.indexNotInt(indexNode.rangeInExpression, indexNode.text)

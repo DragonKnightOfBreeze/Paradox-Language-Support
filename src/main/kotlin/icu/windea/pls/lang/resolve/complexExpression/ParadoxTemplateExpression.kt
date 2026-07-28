@@ -9,6 +9,7 @@ import icu.windea.pls.config.config.delegated.CwtModifierConfig
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.util.CwtConfigExpressionManager
+import icu.windea.pls.core.collections.noneFast
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 
 /**
@@ -124,11 +125,11 @@ private class ParadoxTemplateExpressionImpl(
     override val nodes: List<ParadoxComplexExpressionNode> = emptyList(),
 ) : ParadoxComplexExpressionBase(), ParadoxTemplateExpression {
     override fun isExactMatched(): Boolean {
-        return nodes.none { it is ParadoxTemplateSnippetNode && !it.isExactMatched() }
+        return nodes.noneFast { it is ParadoxTemplateSnippetNode && !it.isExactMatched() }
     }
 
     override fun checkExactMatched(element: PsiElement): Boolean {
-        return nodes.none { it is ParadoxTemplateSnippetNode && !it.checkExactMatched(element) }
+        return nodes.noneFast { it is ParadoxTemplateSnippetNode && !it.checkExactMatched(element) }
     }
 
     override fun equals(other: Any?) = this === other || other is ParadoxTemplateExpression && text == other.text

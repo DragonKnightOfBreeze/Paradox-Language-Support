@@ -7,6 +7,7 @@ import com.intellij.psi.PsiPolyVariantReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.impl.source.resolve.ResolveCache
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.collections.filterFast
 import icu.windea.pls.core.createResults
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.resolveFirst
@@ -183,13 +184,13 @@ class ParadoxDatabaseObjectNode(
                 val preferredLocale = selectLocale(element) ?: ParadoxLocaleManager.getPreferredLocaleConfig()
                 val selector = ParadoxLocalisationSearch.selector(project, element).contextSensitive().preferLocale(preferredLocale)
                 return ParadoxLocalisationSearch.searchNormal(name, selector).findAll()
-                    .filter { node.isValidDatabaseObject(it, typeToSearch) }
+                    .filterFast { node.isValidDatabaseObject(it, typeToSearch) }
                     .createResults()
             }
 
             val selector = ParadoxDefinitionSearch.selector(project, element).contextSensitive()
             return ParadoxDefinitionSearch.searchElement(name, typeToSearch, selector).findAll()
-                .filter { node.isValidDatabaseObject(it, typeToSearch) }
+                .filterFast { node.isValidDatabaseObject(it, typeToSearch) }
                 .createResults()
         }
 

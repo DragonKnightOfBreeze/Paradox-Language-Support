@@ -6,6 +6,8 @@ import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.cast
+import icu.windea.pls.core.collections.anyFast
+import icu.windea.pls.core.collections.filterIsInstanceFast
 import icu.windea.pls.core.match.TextMatcher
 import icu.windea.pls.lang.getParameterRanges
 import icu.windea.pls.lang.isParameterAwareIdentifier
@@ -111,7 +113,7 @@ private object ParadoxValueFieldExpressionResolver {
         val textLength = text.length
         while (i < textLength) {
             val ch = text[i]
-            val inParam = parameterRanges.any { i in it }
+            val inParam = parameterRanges.anyFast { i in it }
             if (!inParam) {
                 when (ch) {
                     '(' -> depthParen++ // 支持 prefix(x).owner：括号内的点不切分
@@ -171,9 +173,9 @@ private class ParadoxValueFieldExpressionImpl(
     override val nodes: List<ParadoxComplexExpressionNode> = emptyList(),
 ) : ParadoxComplexExpressionBase(), ParadoxValueFieldExpression {
     override val linkNodes: List<ParadoxLinkNode>
-        get() = nodes.filterIsInstance<ParadoxLinkNode>()
+        get() = nodes.filterIsInstanceFast<ParadoxLinkNode>()
     override val scopeNodes: List<ParadoxScopeNode>
-        get() = nodes.filterIsInstance<ParadoxScopeNode>()
+        get() = nodes.filterIsInstanceFast<ParadoxScopeNode>()
     override val fieldNode: ParadoxValueFieldNode
         get() = nodes.last().cast()
 

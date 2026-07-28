@@ -7,6 +7,7 @@ import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.mockScriptValueConfig
 import icu.windea.pls.core.cast
+import icu.windea.pls.core.collections.anyFast
 import icu.windea.pls.core.isIdentifier
 import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.core.util.tupleOf
@@ -92,7 +93,7 @@ private object ParadoxScriptValueReferenceExpressionResolver {
         while (tokenIndex < textLength) {
             index = tokenIndex + 1
             tokenIndex = text.indexOf('|', index)
-            if (tokenIndex != -1 && parameterRanges.any { tokenIndex in it }) continue // skip parameter text
+            if (tokenIndex != -1 && parameterRanges.anyFast { tokenIndex in it }) continue // skip parameter text
             val pipeNode = if (tokenIndex != -1) {
                 val pipeRange = TextRange.create(tokenIndex + offset, tokenIndex + 1 + offset)
                 ParadoxMarkerNode("|", pipeRange, configGroup)

@@ -8,6 +8,8 @@ import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.collections.allFast
+import icu.windea.pls.core.collections.anyFast
 import icu.windea.pls.core.unquote
 import icu.windea.pls.lang.editor.ParadoxSemanticHighlighterColors
 import icu.windea.pls.lang.isParameterized
@@ -58,7 +60,7 @@ class ParadoxDynamicValueNode(
                 // always true
                 ParadoxReferenceConstraint.DynamicValue -> true
                 // skip if related link config can have multiple arguments
-                ParadoxReferenceConstraint.DynamicValueReference -> configs.all { it !is CwtLinkConfig || it.dataSources.size == 1 }
+                ParadoxReferenceConstraint.DynamicValueReference -> configs.allFast { it !is CwtLinkConfig || it.dataSources.size == 1 }
                 else -> false
             }
         }
@@ -68,7 +70,7 @@ class ParadoxDynamicValueNode(
         @JvmStatic
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, configs: List<CwtConfig<*>>): ParadoxDynamicValueNode? {
             // text may contain parameters
-            if (configs.any { c -> c.configExpression?.type !in CwtDataTypeSets.DynamicValue }) return null
+            if (configs.anyFast { c -> c.configExpression?.type !in CwtDataTypeSets.DynamicValue }) return null
             return ParadoxDynamicValueNode(text, textRange, configGroup, configs)
         }
     }
