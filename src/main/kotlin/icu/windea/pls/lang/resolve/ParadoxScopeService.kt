@@ -14,8 +14,9 @@ import icu.windea.pls.config.config.aliasConfig
 import icu.windea.pls.config.config.resolved
 import icu.windea.pls.config.config.resolvedOrNull
 import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.collections.findIsInstance
+import icu.windea.pls.core.collections.findIsInstanceFast
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.util.Tuple2
@@ -486,6 +487,7 @@ object ParadoxScopeService {
         return inputScopeContext.resolveNext(outputScope)
     }
 
+    @Optimized
     private fun evaluateScopeContextForNode(element: ParadoxExpressionElement, node: ParadoxDynamicScopeNode, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext {
         val linkConfig = node.linkConfigs.firstOrNull() ?: return ParadoxScopeContext.resolveUnknown(inputScopeContext)
         if (linkConfig.outputScope != null) return inputScopeContext.resolveNext(linkConfig.outputScope)
@@ -496,23 +498,23 @@ object ParadoxScopeService {
         when {
             // hidden:event_target:xxx = {...}
             dataType in CwtDataTypeSets.ScopeField -> {
-                val nestedNode = node.valueNode.nodes.findIsInstance<ParadoxScopeNode>()
+                val nestedNode = node.valueNode.nodes.findIsInstanceFast<ParadoxScopeNode>()
                     ?: return ParadoxScopeContext.resolveUnknown(inputScopeContext)
                 return evaluateScopeContextForNode(element, nestedNode, inputScopeContext)
             }
             // event_target:xxx = {...}
             dataType in CwtDataTypeSets.DynamicValue -> {
-                val dynamicValueExpression = node.valueNode.nodes.findIsInstance<ParadoxDynamicValueExpression>()
+                val dynamicValueExpression = node.valueNode.nodes.findIsInstanceFast<ParadoxDynamicValueExpression>()
                     ?: return ParadoxScopeContext.resolveUnknown(inputScopeContext)
                 val configGroup = dynamicValueExpression.configGroup
                 val dynamicValueNode = dynamicValueExpression.dynamicValueNode
                 val name = dynamicValueNode.text
-                val configExpressions = dynamicValueNode.configs.mapNotNullTo(mutableSetOf()) { it.configExpression }
                 val expressionElement = when {
                     element is ParadoxScriptProperty -> element.propertyKey
                     else -> element.castOrNull<ParadoxScriptStringExpressionElement>()
                 }
                 if (expressionElement == null) return ParadoxScopeContext.resolveAny()
+                val configExpressions = dynamicValueNode.configs.mapNotNullTo(mutableSetOf()) { it.configExpression }
                 val dynamicValueElement = ParadoxDynamicValueManager.resolveDynamicValue(expressionElement, name, configExpressions, configGroup)
                 if (dynamicValueElement == null) return ParadoxScopeContext.resolveAny()
                 return ParadoxScopeManager.getScopeContext(dynamicValueElement, inputScopeContext)

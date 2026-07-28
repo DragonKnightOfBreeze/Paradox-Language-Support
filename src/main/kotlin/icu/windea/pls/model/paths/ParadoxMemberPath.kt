@@ -93,14 +93,14 @@ private sealed class ParadoxMemberPathBase : ParadoxMemberPath {
     }
 
     override fun relativize(other: ParadoxMemberPath, wildcard: String?): ParadoxMemberPath? {
-        if (this == other) return ParadoxMemberPath.resolveEmpty()
+        // 3.0.1: optimize: do not check equality first
         if (this.isEmpty()) return other
         val subPaths = other.subPaths.removePrefixOrNull(this.subPaths, wildcard) ?: return null
         return ParadoxMemberPath.resolve(subPaths)
     }
 
-    override fun equals(other: Any?) = this === other || other is ParadoxMemberPath && path == other.path
-    override fun hashCode() = path.hashCode()
+    override fun equals(other: Any?) = this === other || other is ParadoxMemberPath && subPaths == other.subPaths // 3.0.1 optimize: depends on `subPath` to avoid computing
+    override fun hashCode() = subPaths.hashCode() // 3.0.1 optimize: depends on `subPath` to avoid computing
     override fun toString() = path
 }
 

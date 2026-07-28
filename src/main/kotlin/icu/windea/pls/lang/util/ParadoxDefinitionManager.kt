@@ -22,6 +22,7 @@ import icu.windea.pls.lang.match.ParadoxMatchService
 import icu.windea.pls.lang.resolve.ParadoxDefinitionService
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxDefinitionInfo
+import icu.windea.pls.model.ParadoxDefinitionSource
 import icu.windea.pls.model.paths.ParadoxMemberPath
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
@@ -104,7 +105,7 @@ object ParadoxDefinitionManager {
 
     fun getMemberPath(definitionInfo: ParadoxDefinitionInfo): ParadoxMemberPath {
         // NOTE 2.1.2 file definition has empty member path
-        if (definitionInfo.typeConfig.typePerFile) return ParadoxMemberPath.resolveEmpty()
+        if (definitionInfo.source == ParadoxDefinitionSource.File) return ParadoxMemberPath.resolveEmpty()
         return ParadoxMemberPath.resolve(definitionInfo.rootKeys + definitionInfo.typeKey)
     }
 

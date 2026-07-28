@@ -174,10 +174,13 @@ inline fun <T> Iterable<T>.chunkedBy(keepEmpty: Boolean = true, predicate: (T) -
  * 如果指定了通配符 [wildcard]，则当前缀中的元素与其相等时，认为总是匹配当前列表中的对应索引的元素。
  */
 fun <T : Any> List<T>.removePrefixOrNull(prefix: List<T>, wildcard: T? = null): List<T>? {
-    if (prefix.isEmpty()) return this
-    if (prefix.size > this.size) return null
-    if (this is RandomAccess) {
-        for (i in 0 until prefix.size) {
+    if (prefix.isEmpty()) return this // fast return
+    if (this === prefix) return emptyList() // fast return
+    val size = this.size
+    val prefixSize = prefix.size
+    if (prefixSize > size) return null
+    if (this is RandomAccess) { // optimized for ArrayList, etc.
+        for (i in 0 until prefixSize) {
             val e = prefix[i]
             if (wildcard != null && wildcard == e) continue
             if (e != this[i]) return null
@@ -188,7 +191,7 @@ fun <T : Any> List<T>.removePrefixOrNull(prefix: List<T>, wildcard: T? = null): 
             if (e != this[i]) return null
         }
     }
-    return this.drop(prefix.size)
+    return this.drop(prefixSize)
 }
 
 /**
@@ -196,21 +199,24 @@ fun <T : Any> List<T>.removePrefixOrNull(prefix: List<T>, wildcard: T? = null): 
  * 如果指定了通配符 [wildcard]，则当后缀中的元素与其相等时，认为总是匹配当前列表中的对应索引的元素。
  */
 fun <T : Any> List<T>.removeSuffixOrNull(suffix: List<T>, wildcard: T? = null): List<T>? {
-    if (suffix.isEmpty()) return this
-    if (suffix.size > this.size) return null
-    if (this is RandomAccess) {
-        for (i in 0 until suffix.size) {
+    if (suffix.isEmpty()) return this // fast return
+    if (this === suffix) return emptyList() // fast return
+    val size = this.size
+    val suffixSize = suffix.size
+    if (suffixSize > size) return null
+    if (this is RandomAccess) { // optimized for ArrayList, etc.
+        for (i in 0 until suffixSize) {
             val e = suffix[i]
             if (wildcard != null && wildcard == e) continue
-            if (e != this[this.size - suffix.size + i]) return null
+            if (e != this[size - suffixSize + i]) return null
         }
     } else {
         for ((i, e) in suffix.withIndex()) {
             if (wildcard != null && wildcard == e) continue
-            if (e != this[this.size - suffix.size + i]) return null
+            if (e != this[size - suffixSize + i]) return null
         }
     }
-    return this.dropLast(suffix.size)
+    return this.dropLast(suffixSize)
 }
 
 /**
