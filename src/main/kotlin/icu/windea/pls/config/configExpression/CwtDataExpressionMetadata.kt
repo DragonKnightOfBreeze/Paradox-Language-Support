@@ -3,6 +3,7 @@ package icu.windea.pls.config.configExpression
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.core.util.FloatRangeInfo
 import icu.windea.pls.core.util.IntRangeInfo
+import icu.windea.pls.core.util.metadata.MetadataMap
 
 /**
  * 数据表达式的元数据。
@@ -17,7 +18,7 @@ import icu.windea.pls.core.util.IntRangeInfo
  *
  * @see CwtDataExpression
  */
-interface CwtDataExpressionMetadata {
+interface CwtDataExpressionMetadata : MetadataMap {
     val value: String? get() = null
     val wildcard: Boolean get() = false
     val condition: Boolean get() = false

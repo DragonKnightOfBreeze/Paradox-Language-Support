@@ -1,6 +1,5 @@
 package icu.windea.pls.config.option
 
-import com.intellij.openapi.util.UserDataHolder
 import icu.windea.pls.base.ChronicleCapacities
 import icu.windea.pls.config.CwtConfigApiStatus
 import icu.windea.pls.config.CwtDataTypeSets
@@ -21,6 +20,7 @@ import icu.windea.pls.config.config.extended.CwtExtendedParameterConfig
 import icu.windea.pls.config.config.extended.CwtExtendedScriptedVariableConfig
 import icu.windea.pls.config.configExpression.CwtCardinalityExpression
 import icu.windea.pls.core.annotations.CaseInsensitive
+import icu.windea.pls.core.util.metadata.MetadataMap
 import icu.windea.pls.core.util.values.ReversibleValue
 import icu.windea.pls.ep.config.config.CwtInjectConfigPostProcessor
 import icu.windea.pls.model.ParadoxTagType
@@ -40,13 +40,13 @@ import icu.windea.pls.model.scope.ParadoxScopeContext
  *
  * @see CwtMemberConfig
  */
-interface CwtOptionMetadata : UserDataHolder {
+interface CwtOptionMetadata : MetadataMap {
     /**
      * 得到原始的选项规则列表。
      *
      * 备注：默认仅为内部规则保留。参见 [ChronicleCapacities.keepOptionConfigs]。
      */
-    val optionConfigs: List<CwtOptionMemberConfig<*>>
+    val optionConfigs: List<CwtOptionMemberConfig<*>> get() = emptyList()
 
     // region Options
 
@@ -68,7 +68,7 @@ interface CwtOptionMetadata : UserDataHolder {
      *
      * @see CwtConfigApiStatus
      */
-    val apiStatus: CwtConfigApiStatus?
+    val apiStatus: CwtConfigApiStatus? get() = null
 
     /**
      * 允许的出现次数范围（基数表达式）。
@@ -93,7 +93,7 @@ interface CwtOptionMetadata : UserDataHolder {
      *
      * @see CwtCardinalityExpression
      */
-    val cardinality: CwtCardinalityExpression?
+    val cardinality: CwtCardinalityExpression? get() = null
 
     /**
      * 最小基数，通过指定表达式的定值变量动态指定。
@@ -109,7 +109,7 @@ interface CwtOptionMetadata : UserDataHolder {
      *
      * > CWTools 兼容性：不兼容。插件作为扩展提供。
      */
-    val cardinalityMinDefine: String?
+    val cardinalityMinDefine: String? get() = null
 
     /**
      * 最大基数，通过指定表达式的定值变量动态指定。
@@ -125,7 +125,7 @@ interface CwtOptionMetadata : UserDataHolder {
      *
      * > CWTools 兼容性：不兼容。插件作为扩展提供。
      */
-    val cardinalityMaxDefine: String?
+    val cardinalityMaxDefine: String? get() = null
 
     /**
      * 简单结构谓词（结构化过滤）。
@@ -144,7 +144,7 @@ interface CwtOptionMetadata : UserDataHolder {
      *
      * > CWTools 兼容性：不兼容。插件作为扩展提供。
      */
-    val predicate: Map<String, ReversibleValue<String>>?
+    val predicate: Map<String, ReversibleValue<String>>? get() = null
 
     /**
      * 入栈作用域（push scope）。
@@ -166,7 +166,7 @@ interface CwtOptionMetadata : UserDataHolder {
      * @see ParadoxScope
      * @see ParadoxScopeContext
      */
-    val pushScope: String?
+    val pushScope: String? get() = null
 
     /**
      * 替换作用域上下文（replace scopes）。
@@ -189,7 +189,7 @@ interface CwtOptionMetadata : UserDataHolder {
      * @see ParadoxScope
      * @see ParadoxScopeContext
      */
-    val replaceScopes: Map<String, String>?
+    val replaceScopes: Map<String, String>? get() = null
 
     /**
      * 初始的作用域上下文。
@@ -204,7 +204,7 @@ interface CwtOptionMetadata : UserDataHolder {
      * @see ParadoxScope
      * @see ParadoxScopeContext
      */
-    val scopeContext: ParadoxScopeContext?
+    val scopeContext: ParadoxScopeContext? get() = null
 
     /**
      * 允许的作用域（类型）的集合。默认支持任意作用域。
@@ -224,7 +224,7 @@ interface CwtOptionMetadata : UserDataHolder {
      * @see ParadoxScope
      * @see ParadoxScopeContext
      */
-    val supportedScopes: Set<String>
+    val supportedScopes: Set<String> get() = emptySet()
 
     /**
      * 类型标识。
@@ -242,7 +242,7 @@ interface CwtOptionMetadata : UserDataHolder {
      *
      * > CWTools 兼容性：不兼容。插件作为扩展提供。
      */
-    val type: String?
+    val type: String? get() = null
 
     /**
      * 提示文本。
@@ -260,7 +260,7 @@ interface CwtOptionMetadata : UserDataHolder {
      *
      * > CWTools 兼容性：不兼容。插件作为扩展提供。
      */
-    val hint: String?
+    val hint: String? get() = null
 
     /**
      * 事件类型。
@@ -278,7 +278,7 @@ interface CwtOptionMetadata : UserDataHolder {
      *
      * > CWTools 兼容性：不兼容。插件作为扩展提供。
      */
-    val eventType: String?
+    val eventType: String? get() = null
 
     /**
      * 上下文键（context key）。
@@ -291,7 +291,7 @@ interface CwtOptionMetadata : UserDataHolder {
      *
      * > CWTools 兼容性：不兼容。插件作为扩展提供。
      */
-    val contextKey: String?
+    val contextKey: String? get() = null
 
     /**
      * 上下文规则的聚合类型。
@@ -309,7 +309,7 @@ interface CwtOptionMetadata : UserDataHolder {
      *
      * > CWTools 兼容性：不兼容。插件作为扩展提供。
      */
-    val contextConfigsType: String?
+    val contextConfigsType: String? get() = null
 
     /**
      * 分组名。
@@ -327,7 +327,7 @@ interface CwtOptionMetadata : UserDataHolder {
      *
      * > CWTools 兼容性：不兼容。插件作为扩展提供。
      */
-    val group: String?
+    val group: String? get() = null
 
     /**
      * 类型键的过滤器（包含/排除，忽略大小写）。
@@ -346,7 +346,7 @@ interface CwtOptionMetadata : UserDataHolder {
      *
      * > CWTools 兼容性：兼容。
      */
-    val typeKeyFilter: ReversibleValue<Set<@CaseInsensitive String>>?
+    val typeKeyFilter: ReversibleValue<Set<@CaseInsensitive String>>? get() = null
 
     /**
      * 类型键的正则过滤器（忽略大小写）。
@@ -362,7 +362,7 @@ interface CwtOptionMetadata : UserDataHolder {
      *
      * > CWTools 兼容性：不兼容。插件作为扩展提供。
      */
-    val typeKeyRegex: Regex?
+    val typeKeyRegex: Regex? get() = null
 
     /**
      * 类型键的前缀要求（忽略大小写）。
@@ -380,7 +380,7 @@ interface CwtOptionMetadata : UserDataHolder {
      *
      * > CWTools 兼容性：兼容。
      */
-    val startsWith: String?
+    val startsWith: String? get() = null
 
     /**
      * 排除名单。
@@ -398,7 +398,7 @@ interface CwtOptionMetadata : UserDataHolder {
      *
      * > CWTools 兼容性：兼容。
      */
-    val onlyIfNot: Set<String>?
+    val onlyIfNot: Set<String>? get() = null
 
     /**
      * 图相关的关联类型集合（graph related types）。
@@ -410,7 +410,7 @@ interface CwtOptionMetadata : UserDataHolder {
      *
      * > CWTools 兼容性：不兼容。插件未使用此类选项。
      */
-    val graphRelatedTypes: Set<String>?
+    val graphRelatedTypes: Set<String>? get() = null
 
     /**
      * 表示当前列声明了一个指定类型的复杂枚举值（而非引用）。
@@ -423,7 +423,7 @@ interface CwtOptionMetadata : UserDataHolder {
      *
      * > CWTools 兼容性：不兼容。插件作为扩展提供。
      */
-    val declareComplexEnum: String?
+    val declareComplexEnum: String? get() = null
 
     /**
      * 基于规则的代码检查的严重度（severity）。
@@ -436,7 +436,7 @@ interface CwtOptionMetadata : UserDataHolder {
      *
      * > CWTools 兼容性：不兼容。插件未使用此类选项。
      */
-    val severity: String?
+    val severity: String? get() = null
 
     /**
      * 修正分类键集合（modifier categories）。
@@ -451,7 +451,7 @@ interface CwtOptionMetadata : UserDataHolder {
      *
      * > CWTools 兼容性：不兼容。插件作为扩展提供。
      */
-    val modifierCategories: Set<String>?
+    val modifierCategories: Set<String>? get() = null
 
     /**
      * 颜色类型（`hex` / `rgb` / `hsv` / `hsv360`）。
@@ -476,7 +476,7 @@ interface CwtOptionMetadata : UserDataHolder {
      *
      * > CWTools 兼容性：不兼容。插件作为扩展提供。
      */
-    val colorType: String?
+    val colorType: String? get() = null
 
     /**
      * 允许的文件扩展名集合。
@@ -499,7 +499,7 @@ interface CwtOptionMetadata : UserDataHolder {
      *
      * @see CwtDataTypeSets.PathReference
      */
-    val fileExtensions: Set<String>?
+    val fileExtensions: Set<String>? get() = null
 
     /**
      * 要注入从而成为当前成员规则的子规则的一组成员规则的路径。
@@ -517,7 +517,7 @@ interface CwtOptionMetadata : UserDataHolder {
      *
      * @see CwtInjectConfigPostProcessor
      */
-    val inject: String?
+    val inject: String? get() = null
 
     // endregion
 
@@ -531,7 +531,7 @@ interface CwtOptionMetadata : UserDataHolder {
      *
      * > CWTools 兼容性：兼容。
      */
-    val required: Boolean
+    val required: Boolean get() = false
 
     /**
      * 将对应位置的本地化和图片标记为主要项。
@@ -544,7 +544,7 @@ interface CwtOptionMetadata : UserDataHolder {
      *
      * @see CwtLocationConfig
      */
-    val primary: Boolean
+    val primary: Boolean get() = false
 
     /**
      * 注明规则上下文和作用域上下文将会被继承。
@@ -555,7 +555,7 @@ interface CwtOptionMetadata : UserDataHolder {
      *
      * > CWTools 兼容性：不兼容。插件作为扩展提供。
      */
-    val inherit: Boolean
+    val inherit: Boolean get() = false
 
     /**
      * 将匹配的单独的值标记为预定义的标签。
@@ -568,7 +568,7 @@ interface CwtOptionMetadata : UserDataHolder {
      *
      * @see ParadoxTagType
      */
-    val tag: Boolean
+    val tag: Boolean get() = false
 
     /**
      * 将复杂枚举的枚举值标记为忽略大小写。
@@ -578,7 +578,7 @@ interface CwtOptionMetadata : UserDataHolder {
      *
      * > CWTools 兼容性：不兼容。插件作为扩展提供。
      */
-    val caseInsensitive: Boolean
+    val caseInsensitive: Boolean get() = false
 
     /**
      * 将同名同类型的复杂枚举值的等效性限制在定义级别（而非文件级别）。
@@ -588,11 +588,9 @@ interface CwtOptionMetadata : UserDataHolder {
      *
      * > CWTools 兼容性：不兼容。插件作为扩展提供。
      */
-    val perDefinition: Boolean
+    val perDefinition: Boolean get() = false
 
     // endregion
-
-    fun clear()
 
     fun copyTo(target: CwtOptionMetadata)
 }

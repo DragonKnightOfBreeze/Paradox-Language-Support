@@ -9,7 +9,7 @@ import com.intellij.util.ProcessingContext
 import icu.windea.pls.core.EMPTY_OBJECT
 import kotlin.reflect.KProperty
 
-// UserDataHolder
+// UserDataHolder Extensions
 
 /**
  * 获取用户数据，如果不存在则通过 [action] 计算并保存。
@@ -95,6 +95,20 @@ private fun <T> UserDataHolder.getOrPutComputedNullableUserData(key: Key<*>, com
     return computed
 }
 
+// UserDataHolder Access Extensions
+
+inline operator fun <T> UserDataHolder.get(key: Key<T>): T? = getOrPutUserData(key)
+
+inline operator fun <T> UserDataHolder.get(key: KeyWithDefault<T>): T = getOrPutUserData(key)
+
+inline operator fun <T> UserDataHolder.get(key: KeyWithProducer<T>): T = getOrPutUserData(key)
+
+inline operator fun <T, THIS : UserDataHolder> UserDataHolder.get(key: KeyWithFactory<T, THIS>): T? = getOrPutUserData(key)
+
+inline operator fun <T> UserDataHolder.set(key: Key<T>, value: T?) = putUserData(key, value)
+
+// UserDataHolder Delegate Extensions
+
 inline operator fun <T> Key<T>.getValue(thisRef: UserDataHolder, property: KProperty<*>): T? = thisRef.getOrPutUserData(this)
 
 inline operator fun <T> KeyWithDefault<T>.getValue(thisRef: UserDataHolder, property: KProperty<*>): T = thisRef.getOrPutUserData(this)
@@ -105,7 +119,7 @@ inline operator fun <T, THIS : UserDataHolder> KeyWithFactory<T, THIS>.getValue(
 
 inline operator fun <T> Key<T>.setValue(thisRef: UserDataHolder, property: KProperty<*>, value: T?) = thisRef.putUserData(this, value)
 
-// ProcessingContext
+// ProcessingContext Extensions
 
 /**
  * 获取上下文数据，如果不存在则尝试从 [key] 获取默认值或计算并保存。
@@ -171,6 +185,8 @@ private fun <T> ProcessingContext.getOrPutComputedNullable(key: Key<*>, computed
     put(key as Key<Any>, computed ?: EMPTY_OBJECT)
     return computed
 }
+
+// UserDataHolder Delegate Extensions
 
 inline operator fun <T> Key<T>.getValue(thisRef: ProcessingContext, property: KProperty<*>): T? = thisRef.getOrPut(this)
 

@@ -1,6 +1,7 @@
 package icu.windea.pls.core.util
 
 import com.intellij.openapi.util.UserDataHolderBase
+import icu.windea.pls.core.collections.findFast
 import org.junit.Assert.*
 import org.junit.Test
 
@@ -87,7 +88,7 @@ class KeysTest {
         val keyA2 = registry.keyA
         assertSame(keyA, keyA2)
 
-        val fetched = registry.find<String?>(expectedName)
+        val fetched = registry.keys.findFast { it is KeyNamed && it.name == expectedName }
         assertSame(keyA, fetched)
     }
 

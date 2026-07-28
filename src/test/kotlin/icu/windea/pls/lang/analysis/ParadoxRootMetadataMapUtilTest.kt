@@ -16,7 +16,7 @@ import kotlin.io.path.toPath
  */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
-class ParadoxRootMetadataUtilTest : BasePlatformTestCase() {
+class ParadoxRootMetadataMapUtilTest : BasePlatformTestCase() {
     @Test
     fun getLauncherSettingsJsonInfo() {
         val url = "/analysis/launcher-settings.test.json".toClasspathUrl()

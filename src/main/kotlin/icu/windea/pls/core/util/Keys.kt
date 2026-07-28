@@ -1,4 +1,3 @@
-@file:Optimized
 @file:Suppress("NOTHING_TO_INLINE", "unused")
 
 package icu.windea.pls.core.util
@@ -6,10 +5,8 @@ package icu.windea.pls.core.util
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.Key.*
 import com.intellij.openapi.util.UserDataHolder
-import icu.windea.pls.core.annotations.Optimized
-import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.asMutable
-import it.unimi.dsi.fastutil.objects.ObjectArraySet
+import icu.windea.pls.core.collections.forEachFast
 import kotlin.reflect.KProperty
 
 // Key Extensions
@@ -33,20 +30,16 @@ fun Key<*>.copy(source: UserDataHolder, target: UserDataHolder, ifPresent: Boole
 abstract class KeyRegistry {
     val id = javaClass.name.substringAfterLast(".").replace("\$Keys", "")
 
-    // NOTE 3.0.1 optimize: use immutable set as interface, and array backend mutable set as implementation
-    val keys: Set<Key<*>> = ObjectArraySet()
-
-    fun <T> find(name: String): Key<T>? {
-        return keys.find { it is KeyNamed && it.name == name }.castOrNull()
-    }
+    // 3.0.1 optimize: use list instead of map (duplicate key names are allowed and not checked)
+    val keys: List<Key<*>> = mutableListOf()
 
     fun clear(target: UserDataHolder) {
-        keys.forEach { key -> key.clear(target) }
+        keys.forEachFast { key -> key.clear(target) }
     }
 
     fun copy(source: UserDataHolder, target: UserDataHolder, ifPresent: Boolean = false) {
         // use optimized method rather than `UserDataHolderBase.copyUserDataTo` to reduce memory usage
-        keys.forEach { key -> key.copy(source, target, ifPresent) }
+        keys.forEachFast { key -> key.copy(source, target, ifPresent) }
     }
 }
 
@@ -71,13 +64,10 @@ sealed class KeyProvider<T>(val registry: KeyRegistry) {
 
     @Suppress("UNCHECKED_CAST")
     protected fun <K : Key<T>> register(name: String, block: () -> K): K {
-        val keys = registry.keys
-        keys.find { it is KeyNamed }?.let { return it as K }
-        // NOTE 3.0.1 optimize: make if mutable with sync only if it's necessary to create and register
+        // 3.0.1 optimize: make if mutable with sync only if it's necessary to create and register
         return synchronized(registry) {
-            keys.find { it is KeyNamed }?.let { return it as K }
             val key = block()
-            keys.asMutable().add(key)
+            registry.keys.asMutable().add(key)
             key
         }
     }

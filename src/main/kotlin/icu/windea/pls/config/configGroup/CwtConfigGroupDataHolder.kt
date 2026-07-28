@@ -1,6 +1,5 @@
 package icu.windea.pls.config.configGroup
 
-import com.intellij.openapi.util.UserDataHolder
 import icu.windea.pls.base.ChronicleCapacities
 import icu.windea.pls.config.attributes.CwtExpandableConfigAttributes
 import icu.windea.pls.config.config.CwtFileConfig
@@ -40,6 +39,7 @@ import icu.windea.pls.config.config.internal.CwtSchemaConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.util.Tuple2
+import icu.windea.pls.core.util.metadata.MetadataMap
 import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
 
 /**
@@ -52,7 +52,7 @@ import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
  * @see CwtConfigGroup
  * @see CwtConfigGroupInitializer
  */
-interface CwtConfigGroupDataHolder : UserDataHolder {
+interface CwtConfigGroupDataHolder : MetadataMap {
     /**
      * 得到原始的文件规则映射，键为相对于规则分组根目录的路径。
      *

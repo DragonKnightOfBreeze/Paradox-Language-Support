@@ -39,9 +39,6 @@
 
     <!-- Code injectors to optimize memory -->
     <codeInjector implementation="icu.windea.pls.inject.injectors.addon.OptimizedFieldCodeInjectors$BasePresentation"/>
-    <codeInjector implementation="icu.windea.pls.inject.injectors.addon.InlinedDelegateFieldCodeInjectors$CwtConfigGroupDataHolderBase"/>
-    <codeInjector implementation="icu.windea.pls.inject.injectors.addon.InlinedDelegateFieldCodeInjectors$CwtOptionMetadataBase"/>
-    <codeInjector implementation="icu.windea.pls.inject.injectors.addon.InlinedDelegateFieldCodeInjectors$CwtDataExpressionMetadataBase"/>
 
     <!-- Code injectors to optimize performance -->
     <codeInjector implementation="icu.windea.pls.inject.injectors.addon.CwtPsiCodeInjectors$Property"/>
