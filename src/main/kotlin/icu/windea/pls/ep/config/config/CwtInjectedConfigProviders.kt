@@ -49,7 +49,7 @@ class CwtTechnologyWithLevelInjectedConfigProvider : CwtExpressionStringBasedInj
     // https://github.com/cwtools/cwtools-vscode/issues/58
 
     private val logger = thisLogger()
-    private val expressions = listOf("<technology>", "<technology.repeatable>")
+    private val expressions = arrayOf("<technology>", "<technology.repeatable>")
     private val injectedExpressions = listOf("\$technology_with_level")
 
     override fun supports(gameType: ParadoxGameType) = gameType == ParadoxGameType.Stellaris

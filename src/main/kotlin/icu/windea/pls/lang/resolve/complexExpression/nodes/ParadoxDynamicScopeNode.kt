@@ -4,6 +4,7 @@ import com.intellij.openapi.util.TextRange
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.collections.filterFast
 import icu.windea.pls.core.collections.findIsInstance
 
 class ParadoxDynamicScopeNode(
@@ -68,7 +69,7 @@ class ParadoxDynamicScopeNode(
             // 匹配某一前缀的场合（如 `event_target:some_job`）
             run r1@{
                 val linkConfigs = configGroup.linksModel.forScopeFromDataSorted
-                    .filter { text.startsWith(it.prefix!!) }
+                    .filterFast { text.startsWith(it.prefix!!) }
                 if (linkConfigs.isEmpty()) return@r1
 
                 run r2@{

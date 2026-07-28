@@ -32,9 +32,9 @@ class CwtSwitchOverriddenConfigProvider : CwtOverriddenConfigProvider {
 
     object Constants {
         const val caseKey = "scalar"
-        val triggerKeys = setOf("trigger", "on_trigger")
+        val triggerKeys = arrayOf("trigger", "on_trigger")
         const val triggerValue = "alias_keys_field[trigger]"
-        val contextNames = setOf("switch", "inverted_switch")
+        val contextNames = arrayOf("switch", "inverted_switch")
     }
 
     override fun <T : CwtMemberConfig<*>> getOverriddenConfigs(contextElement: PsiElement, config: T): List<T> {
@@ -72,7 +72,7 @@ class CwtTriggerWithParametersAwareOverriddenConfigProvider : CwtOverriddenConfi
         const val parametersKey = "parameters"
         const val contextName1 = "complex_trigger_modifier"
         const val contextName2 = "export_trigger_value_to_variable"
-        val contextNames = setOf(contextName1, contextName2)
+        val contextNames = arrayOf(contextName1, contextName2)
     }
 
     override fun <T : CwtMemberConfig<*>> getOverriddenConfigs(contextElement: PsiElement, config: T): List<T> {

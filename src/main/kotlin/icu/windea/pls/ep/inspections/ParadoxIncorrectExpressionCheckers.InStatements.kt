@@ -25,8 +25,8 @@ import icu.windea.pls.script.psi.ParadoxScriptString
  */
 class ParadoxTriggerInSwitchStatementsChecker : ParadoxIncorrectExpressionChecker {
     object Constants {
-        val triggerKeys = setOf("trigger", "on_trigger")
-        val contextNames = setOf("switch", "inverted_switch")
+        val triggerKeys = arrayOf("trigger", "on_trigger")
+        val contextNames = arrayOf("switch", "inverted_switch")
     }
 
     override fun check(element: ParadoxExpressionElement, config: CwtMemberConfig<*>, context: ParadoxExpressionInspectionContext): Boolean {
@@ -61,7 +61,7 @@ class ParadoxTriggerInSwitchStatementsChecker : ParadoxIncorrectExpressionChecke
 class ParadoxTriggerInWithParametersStatementsChecker : ParadoxIncorrectExpressionChecker {
     object Constants {
         const val triggerKey = "trigger"
-        val contextNames = setOf("complex_trigger_modifier", "export_trigger_value_to_variable")
+        val contextNames = arrayOf("complex_trigger_modifier", "export_trigger_value_to_variable")
     }
 
     override fun check(element: ParadoxExpressionElement, config: CwtMemberConfig<*>, context: ParadoxExpressionInspectionContext): Boolean {

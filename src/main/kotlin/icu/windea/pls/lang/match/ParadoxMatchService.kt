@@ -14,31 +14,36 @@ object ParadoxMatchService {
     // region Predicates
 
     fun isDumb(options: ParadoxMatchOptions? = null): Boolean {
-        if (ChronicleThreadContext.processMergedIndex.get() == true) return true
-        return options.normalized().skipIndex || options.normalized().skipScope
+        val options = options.normalized()
+        return options.skipIndex || options.skipScope || processingMergedIndex()
     }
 
     fun fallback(options: ParadoxMatchOptions? = null): Boolean {
-        return options.normalized().fallback
+        val options = options.normalized()
+        return options.fallback
     }
 
     fun forDeclarationRoot(options: ParadoxMatchOptions? = null): Boolean {
-        return options.normalized().forDeclarationRoot
+        val options = options.normalized()
+        return options.forDeclarationRoot
     }
 
     fun lenient(options: ParadoxMatchOptions? = null): Boolean {
-        return options.normalized().lenient
+        val options = options.normalized()
+        return options.lenient
     }
 
     fun skipIndex(options: ParadoxMatchOptions? = null): Boolean {
-        if (ChronicleThreadContext.processMergedIndex.get() == true) return true
-        return options.normalized().skipIndex
+        val options = options.normalized()
+        return options.skipIndex || processingMergedIndex()
     }
 
     fun skipScope(options: ParadoxMatchOptions? = null): Boolean {
-        if (ChronicleThreadContext.processMergedIndex.get() == true) return true
-        return options.normalized().skipScope
+        val options = options.normalized()
+        return options.skipScope || processingMergedIndex()
     }
+
+    private fun processingMergedIndex() = ChronicleThreadContext.processMergedIndex.get() == true
 
     // endregion
 
@@ -90,10 +95,12 @@ object ParadoxMatchService {
         }
 
         // NOTE 2.1.2 如果是动态的优化器，需要把正在解析的规则上下文标记为动态的
-        if (dynamic) ChronicleThreadContext.resolvingConfigContextStack.get()?.peekLast()?.dynamic = true
+        if (dynamic) getResolvingConfigContext()?.dynamic = true
 
         return result
     }
+
+    private fun getResolvingConfigContext() = ChronicleThreadContext.resolvingConfigContextStack.get()?.peekLast()
 
     // endregion
 }

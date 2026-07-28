@@ -6,12 +6,10 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtMemberType
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.sortedByPriority
-import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.intValue
 import icu.windea.pls.lang.psi.members
 import icu.windea.pls.lang.util.ParadoxDefineManager
 import icu.windea.pls.model.expressions.ParadoxExpression
-import icu.windea.pls.model.type.ParadoxExpressionType
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptMemberContainer
@@ -72,8 +70,8 @@ object ParadoxMatchOccurrenceService {
                 is ParadoxScriptValue -> ParadoxExpression.resolve(data)
                 else -> return@f
             }
-            val isParameterized = expression.type == ParadoxExpressionType.String && expression.value.isParameterized()
             // may contain parameter -> can't and should not get occurrences
+            val isParameterized = expression.isParameterized()
             if (isParameterized) {
                 occurrences.clear()
                 return@f
