@@ -138,7 +138,7 @@ object ParadoxConfigService {
         val eps = CwtConfigContextProvider.EP_NAME.extensionList
         eps.forEachFast f@{ ep ->
             if (!ChronicleAnnotationService.check(ep, gameType)) return@f
-            val r = ep.getContext(element, file, configGroup, memberPathFromFile, memberRole)?.also { it.provider = ep }
+            val r = ep.getContext(element, configGroup, file, memberPathFromFile, memberRole)
             if (r != null) return r
         }
         return null
@@ -153,7 +153,7 @@ object ParadoxConfigService {
         val eps = CwtDeclarationConfigContextProvider.EP_NAME.extensionList
         eps.forEachFast f@{ ep ->
             if (!ChronicleAnnotationService.check(ep, gameType)) return@f
-            val r = ep.getContext(element, configGroup, definitionName, definitionType, definitionSubtypes)?.also { it.provider = ep }
+            val r = ep.getContext(element, configGroup, definitionName, definitionType, definitionSubtypes)
             if (r != null) return r
         }
         return null

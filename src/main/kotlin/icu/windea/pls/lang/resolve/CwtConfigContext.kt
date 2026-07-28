@@ -45,17 +45,16 @@ import java.util.concurrent.ConcurrentMap
  * @see CwtConfigContextProvider
  */
 interface CwtConfigContext : UserDataHolder {
-    val configGroup: CwtConfigGroup
     val element: ParadoxScriptMember
+    val configGroup: CwtConfigGroup
     val memberRole: ParadoxMemberRole
-
-    val project: Project get() = configGroup.project
-    val gameType: ParadoxGameType get() = configGroup.gameType
-
     val memberPathFromFile: ParadoxMemberPath?
     val memberPath: ParadoxMemberPath?
     val declarationRoot: Boolean
     val provider: CwtConfigContextProvider
+
+    val project: Project get() = configGroup.project
+    val gameType: ParadoxGameType get() = configGroup.gameType
 
     /** 是否是整个文件中的根上下文。 */
     fun inRoot(): Boolean
@@ -77,39 +76,39 @@ interface CwtConfigContext : UserDataHolder {
     companion object {
         @JvmStatic
         fun create(
-            configGroup: CwtConfigGroup,
             element: ParadoxScriptMember,
+            configGroup: CwtConfigGroup,
             memberRole: ParadoxMemberRole,
             declarationRoot: Boolean,
             provider: CwtConfigContextProvider,
             memberPathFromFile: ParadoxMemberPath?,
         ): CwtConfigContext {
-            return CwtBaseConfigContext(configGroup, element, memberRole, declarationRoot, provider, memberPathFromFile)
+            return CwtBaseConfigContext(element, configGroup, memberRole, declarationRoot, provider, memberPathFromFile)
         }
 
         @JvmStatic
         fun createFromFile(
-            configGroup: CwtConfigGroup,
             element: ParadoxScriptMember,
+            configGroup: CwtConfigGroup,
             memberRole: ParadoxMemberRole,
             declarationRoot: Boolean,
             provider: CwtConfigContextProvider,
             memberPathFromFile: ParadoxMemberPath?,
         ): CwtConfigContext {
-            return CwtFromFileConfigContext(configGroup, element, memberRole, declarationRoot, provider, memberPathFromFile)
+            return CwtFromFileConfigContext(element, configGroup, memberRole, declarationRoot, provider, memberPathFromFile)
         }
 
         @JvmStatic
         fun createFromMember(
-            configGroup: CwtConfigGroup,
             element: ParadoxScriptMember,
+            configGroup: CwtConfigGroup,
             memberRole: ParadoxMemberRole,
             declarationRoot: Boolean,
             provider: CwtConfigContextProvider,
             memberPathFromFile: ParadoxMemberPath?,
             memberPath: ParadoxMemberPath?,
         ): CwtConfigContext {
-            return CwtFromMemberConfigContext(configGroup, element, memberRole, declarationRoot, provider, memberPathFromFile, memberPath)
+            return CwtFromMemberConfigContext(element, configGroup, memberRole, declarationRoot, provider, memberPathFromFile, memberPath)
         }
     }
 }
@@ -134,8 +133,8 @@ var CwtConfigContext.definitionInjectionInfo: ParadoxDefinitionInjectionInfo? by
 
 // 12 + 4 * 4 + 1 + 1 = 30 -> 32
 private sealed class CwtConfigContextBase(
-    override val configGroup: CwtConfigGroup,
-    override val element: ParadoxScriptMember, // use element directly here
+    override val element: ParadoxScriptMember,
+    override val configGroup: CwtConfigGroup, // use element directly here
     memberRole: ParadoxMemberRole,
     override val declarationRoot: Boolean,
     override val provider: CwtConfigContextProvider,
@@ -178,40 +177,40 @@ private sealed class CwtConfigContextBase(
 
 // 12 + 4 * 4 + 1 + 1 = 30 -> 32
 private class CwtBaseConfigContext(
-    configGroup: CwtConfigGroup,
     element: ParadoxScriptMember,
+    configGroup: CwtConfigGroup,
     memberRole: ParadoxMemberRole,
     declarationRoot: Boolean,
     provider: CwtConfigContextProvider,
     memberPathFromFile: ParadoxMemberPath?,
-) : CwtConfigContextBase(configGroup, element, memberRole, declarationRoot, provider) {
+) : CwtConfigContextBase(element, configGroup, memberRole, declarationRoot, provider) {
     override val memberPathFromFile: ParadoxMemberPath? = memberPathFromFile?.normalize()
     override val memberPath: ParadoxMemberPath? get() = null
 }
 
 // 12 + 5 * 4 + 1 + 1 = 34 -> 40
 private class CwtFromFileConfigContext(
-    configGroup: CwtConfigGroup,
     element: ParadoxScriptMember,
+    configGroup: CwtConfigGroup,
     memberRole: ParadoxMemberRole,
     declarationRoot: Boolean,
     provider: CwtConfigContextProvider,
     memberPathFromFile: ParadoxMemberPath?,
-) : CwtConfigContextBase(configGroup, element, memberRole, declarationRoot, provider) {
+) : CwtConfigContextBase(element, configGroup, memberRole, declarationRoot, provider) {
     override val memberPathFromFile: ParadoxMemberPath? = memberPathFromFile?.normalize()
     override val memberPath: ParadoxMemberPath? get() = memberPathFromFile
 }
 
 // 12 + 6 * 4 + 1 + 1 = 38 -> 40
 private class CwtFromMemberConfigContext(
-    configGroup: CwtConfigGroup,
     element: ParadoxScriptMember,
+    configGroup: CwtConfigGroup,
     memberRole: ParadoxMemberRole,
     declarationRoot: Boolean,
     provider: CwtConfigContextProvider,
     memberPathFromFile: ParadoxMemberPath?,
     memberPath: ParadoxMemberPath?,
-) : CwtConfigContextBase(configGroup, element, memberRole, declarationRoot, provider) {
+) : CwtConfigContextBase(element, configGroup, memberRole, declarationRoot, provider) {
     override val memberPathFromFile: ParadoxMemberPath? = memberPathFromFile?.normalize()
     override val memberPath: ParadoxMemberPath? = memberPath?.normalize()
 }
