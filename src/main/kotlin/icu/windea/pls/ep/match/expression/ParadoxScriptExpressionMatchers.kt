@@ -1,6 +1,7 @@
 package icu.windea.pls.ep.match.expression
 
 import com.intellij.openapi.progress.ProgressManager
+import icu.windea.pls.config.CwtDataType
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
@@ -20,18 +21,15 @@ import icu.windea.pls.lang.match.ParadoxScriptExpressionMatchContext
 import icu.windea.pls.model.type.ParadoxExpressionRole
 import icu.windea.pls.model.type.ParadoxExpressionType
 
-class ParadoxBasicScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
-    override fun match(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult? {
-        return when (context.dataType) {
-            CwtDataTypes.Any -> ParadoxMatchResult.FallbackMatch
-            CwtDataTypes.Bool -> matchBool(context)
-            CwtDataTypes.Int -> matchInt(context)
-            CwtDataTypes.Float -> matchFloat(context)
-            CwtDataTypes.Scalar -> matchScalar(context)
-            CwtDataTypes.ColorField -> matchColorField(context)
-            CwtDataTypes.Block -> matchBlock(context)
-            else -> null
-        }
+class ParadoxScriptBasicExpressionMatcher : ParadoxScriptCompositeExpressionMatcher() {
+    override fun registerMatchers() {
+        register(CwtDataTypes.Any) { ParadoxMatchResult.FallbackMatch }
+        register(CwtDataTypes.Bool) { matchBool(it) }
+        register(CwtDataTypes.Int) { matchInt(it) }
+        register(CwtDataTypes.Float) { matchFloat(it) }
+        register(CwtDataTypes.Scalar) { matchScalar(it) }
+        register(CwtDataTypes.ColorField) { matchColorField(it) }
+        register(CwtDataTypes.Block) { matchBlock(it) }
     }
 
     private fun matchBool(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
@@ -81,14 +79,11 @@ class ParadoxBasicScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
     }
 }
 
-class ParadoxExtraBasicScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
-    override fun match(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult? {
-        return when (context.dataType) {
-            CwtDataTypes.PercentageField -> matchPercentageField(context)
-            CwtDataTypes.IntPercentageField -> matchIntPercentageField(context)
-            CwtDataTypes.DateField -> matchDataField(context)
-            else -> null
-        }
+class ParadoxScriptExtraBasicExpressionMatcher : ParadoxScriptCompositeExpressionMatcher() {
+    override fun registerMatchers() {
+        register(CwtDataTypes.PercentageField) { matchPercentageField(it) }
+        register(CwtDataTypes.IntPercentageField) { matchIntPercentageField(it) }
+        register(CwtDataTypes.DateField) { matchDataField(it) }
     }
 
     private fun matchPercentageField(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
@@ -111,40 +106,37 @@ class ParadoxExtraBasicScriptExpressionMatcher : ParadoxScriptExpressionMatcher 
     }
 }
 
-class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
-    override fun match(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult? {
-        return when (context.dataType) {
-            CwtDataTypes.Definition, CwtDataTypes.SuffixAwareDefinition -> matchDefinition(context)
-            CwtDataTypes.Localisation, CwtDataTypes.SuffixAwareLocalisation -> matchLocalisation(context)
-            CwtDataTypes.SyncedLocalisation, CwtDataTypes.SuffixAwareSyncedLocalisation -> matchSyncedLocalisation(context)
-            CwtDataTypes.InlineLocalisation -> matchInlineLocalisation(context)
-            in CwtDataTypeSets.PathReference -> matchPathReference(context)
-            CwtDataTypes.EnumValue -> matchEnumValue(context)
-            CwtDataTypes.UnionValue -> matchUnionValue(context)
-            in CwtDataTypeSets.DynamicValue -> matchDynamicValue(context)
-            in CwtDataTypeSets.ScopeField -> matchScopeFieldExpression(context)
-            in CwtDataTypeSets.ValueField -> matchValueFieldExpression(context)
-            in CwtDataTypeSets.VariableField -> matchVariableFieldExpression(context)
-            CwtDataTypes.Modifier -> matchModifier(context)
-            CwtDataTypes.AliasKeysField -> matchAliasName(context)
-            CwtDataTypes.AliasName -> matchAliasName(context)
-            CwtDataTypes.AliasMatchLeft -> ParadoxMatchResult.NotMatch // 不在这里处理
-            CwtDataTypes.SingleAliasRight -> ParadoxMatchResult.NotMatch // 不在这里处理
-            CwtDataTypes.Command -> null // TODO 2.1.1+ 目前不支持用来匹配脚本表达式
-            CwtDataTypes.ScriptValueReference -> matchScriptValueReferenceExpression(context)
-            CwtDataTypes.DefineReference -> matchDefineReferenceExpression(context)
-            CwtDataTypes.ArrayDefineReference -> matchArrayDefineReferenceExpression(context)
-            CwtDataTypes.Tags -> matchTagsExpression(context)
-            CwtDataTypes.DatabaseObject -> matchDatabaseObjectExpression(context)
-            CwtDataTypes.NameFormat -> matchNameFormatExpression(context)
-            CwtDataTypes.Parameter -> matchParameter(context)
-            CwtDataTypes.ParameterValue -> matchParameterValue(context)
-            CwtDataTypes.LocalisationParameter -> matchLocalisationParameter(context)
-            CwtDataTypes.ShaderEffect -> matchShaderEffect(context)
-            CwtDataTypes.MeshLocator -> matchMeshLocator(context)
-            CwtDataTypes.TechnologyWithLevel -> matchTechnologyWithLevel(context)
-            else -> null
-        }
+class ParadoxScriptCoreExpressionMatcher : ParadoxScriptCompositeExpressionMatcher() {
+    override fun registerMatchers() {
+        register(CwtDataTypes.Definition, CwtDataTypes.SuffixAwareDefinition) { matchDefinition(it) }
+        register(CwtDataTypes.Localisation, CwtDataTypes.SuffixAwareLocalisation) { matchLocalisation(it) }
+        register(CwtDataTypes.SyncedLocalisation, CwtDataTypes.SuffixAwareSyncedLocalisation) { matchSyncedLocalisation(it) }
+        register(CwtDataTypes.InlineLocalisation) { matchInlineLocalisation(it) }
+        register(CwtDataTypeSets.PathReference) { matchPathReference(it) }
+        register(CwtDataTypes.EnumValue) { matchEnumValue(it) }
+        register(CwtDataTypes.UnionValue) { matchUnionValue(it) }
+        register(CwtDataTypeSets.DynamicValue) { matchDynamicValue(it) }
+        register(CwtDataTypeSets.ScopeField) { matchScopeFieldExpression(it) }
+        register(CwtDataTypeSets.ValueField) { matchValueFieldExpression(it) }
+        register(CwtDataTypeSets.VariableField) { matchVariableFieldExpression(it) }
+        register(CwtDataTypes.Modifier) { matchModifier(it) }
+        register(CwtDataTypes.AliasKeysField) { matchAliasName(it) }
+        register(CwtDataTypes.AliasName) { matchAliasName(it) }
+        register(CwtDataTypes.AliasMatchLeft) { ParadoxMatchResult.NotMatch } // 不在这里处理
+        register(CwtDataTypes.SingleAliasRight) { ParadoxMatchResult.NotMatch } // 不在这里处理
+        register(CwtDataTypes.Command) { ParadoxMatchResult.NotMatch } // TODO 2.1.1+ 目前不支持用来匹配脚本表达式
+        register(CwtDataTypes.ScriptValueReference) { matchScriptValueReferenceExpression(it) }
+        register(CwtDataTypes.DefineReference) { matchDefineReferenceExpression(it) }
+        register(CwtDataTypes.ArrayDefineReference) { matchArrayDefineReferenceExpression(it) }
+        register(CwtDataTypes.Tags) { matchTagsExpression(it) }
+        register(CwtDataTypes.DatabaseObject) { matchDatabaseObjectExpression(it) }
+        register(CwtDataTypes.NameFormat) { matchNameFormatExpression(it) }
+        register(CwtDataTypes.Parameter) { matchParameter(it) }
+        register(CwtDataTypes.ParameterValue) { matchParameterValue(it) }
+        register(CwtDataTypes.LocalisationParameter) { matchLocalisationParameter(it) }
+        register(CwtDataTypes.ShaderEffect) { matchShaderEffect(it) }
+        register(CwtDataTypes.MeshLocator) { matchMeshLocator(it) }
+        register(CwtDataTypes.TechnologyWithLevel) { matchTechnologyWithLevel(it) }
     }
 
     private fun matchDefinition(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
@@ -236,13 +228,14 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
 
     private fun matchValueFieldExpression(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
         // 兼容数字字面量（包括用引号括起的数字字面量）
-        val value = context.expression.value
-        val type = context.expression.type
-        if (context.dataType == CwtDataTypes.ValueField) {
+        val dataType = context.dataType
+        if (dataType == CwtDataTypes.ValueField) {
             if (context.expression.matchesFloat()) return ParadoxMatchResult.ExactMatch
-        } else if (context.dataType == CwtDataTypes.IntValueField) {
+        } else if (dataType == CwtDataTypes.IntValueField) {
             if (context.expression.matchesInt()) return ParadoxMatchResult.ExactMatch
         }
+        val value = context.expression.value
+        val type = context.expression.type
         if (!type.isLenientString()) return ParadoxMatchResult.NotMatch
         if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
         return ParadoxMatchResultProvider.forValueFieldExpression(context.configGroup, value)
@@ -250,13 +243,14 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
 
     private fun matchVariableFieldExpression(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
         // 兼容数字字面量（包括用引号括起的数字字面量）
-        val value = context.expression.value
-        val type = context.expression.type
-        if (context.dataType == CwtDataTypes.VariableField) {
+        val dataType = context.dataType
+        if (dataType == CwtDataTypes.VariableField) {
             if (context.expression.matchesFloat()) return ParadoxMatchResult.ExactMatch
-        } else if (context.dataType == CwtDataTypes.IntVariableField) {
+        } else if (dataType == CwtDataTypes.IntVariableField) {
             if (context.expression.matchesInt()) return ParadoxMatchResult.ExactMatch
         }
+        val value = context.expression.value
+        val type = context.expression.type
         if (!type.isLenientString()) return ParadoxMatchResult.NotMatch
         if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
         return ParadoxMatchResultProvider.forVariableFieldExpression(context.configGroup, value)
@@ -359,7 +353,9 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
     }
 }
 
-class ParadoxConstantScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
+class ParadoxScriptConstantExpressionMatcher : ParadoxScriptSimpleExpressionMatcher() {
+    override val dataTypes: Array<CwtDataType> = arrayOf(CwtDataTypes.Constant)
+
     override fun match(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult? {
         if (context.dataType != CwtDataTypes.Constant) return null
         val value = context.configExpression.expressionString
@@ -374,7 +370,9 @@ class ParadoxConstantScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
     }
 }
 
-class ParadoxTemplateScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
+class ParadoxScriptTemplateExpressionMatcher : ParadoxScriptSimpleExpressionMatcher() {
+    override val dataTypes: Array<CwtDataType> = arrayOf(CwtDataTypes.Template)
+
     override fun isPatternAware(context: ParadoxScriptExpressionMatchContext) = true
 
     override fun match(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult? {
@@ -386,13 +384,15 @@ class ParadoxTemplateScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
     }
 }
 
-class ParadoxPatternScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
+class ParadoxScriptPatternExpressionMatcher : ParadoxScriptSimpleExpressionMatcher() {
+    override val dataTypes: Array<CwtDataType> = arrayOf(CwtDataTypes.Glob, CwtDataTypes.Ant, CwtDataTypes.Regex)
+
     override fun isPatternAware(context: ParadoxScriptExpressionMatchContext) = true
 
     override fun match(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult? {
-        val value = context.expression.value
         val pattern = context.configExpression.metadata.value ?: return null
         val ignoreCase = context.configExpression.metadata.ignoreCase
+        val value = context.expression.value
         val r = when (context.dataType) {
             CwtDataTypes.Glob -> value.matchesPattern(pattern, ignoreCase)
             CwtDataTypes.Ant -> value.matchesAntPattern(pattern, ignoreCase)
@@ -403,7 +403,8 @@ class ParadoxPatternScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
     }
 }
 
-class ParadoxPredicateBasedScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
+// NOTE 3.0.1 目前从未被实际使用
+class ParadoxScriptPredicateBasedExpressionMatcher : ParadoxScriptExpressionMatcher {
     override fun match(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult? {
         // 如果附有 `## predicate = {...}` 选项，则根据上下文进行匹配
         val config = context.config

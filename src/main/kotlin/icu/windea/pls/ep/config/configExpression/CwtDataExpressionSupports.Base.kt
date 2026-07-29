@@ -52,7 +52,7 @@ abstract class CwtTextPatternBasedDataExpressionSupport : CwtDataExpressionSuppo
         return resolve(expressionString, CwtDataExpressionRole.Other)
     }
 
-    final override fun processTextPatterns(consumer: Processor<TextPattern<*>>): Boolean {
+    fun processTextPatterns(consumer: Processor<TextPattern<*>>): Boolean {
         return providers.process { provider -> consumer.process(provider.pattern) }
     }
 }
@@ -82,10 +82,5 @@ abstract class CwtPrefixBasedDataExpressionSupport : CwtDataExpressionSupport {
 
     final override fun resolveTemplate(expressionString: String): CwtDataExpression? {
         return null // unsupported
-    }
-
-    final override fun processTextPatterns(consumer: Processor<TextPattern<*>>): Boolean {
-        // do nothing
-        return true
     }
 }

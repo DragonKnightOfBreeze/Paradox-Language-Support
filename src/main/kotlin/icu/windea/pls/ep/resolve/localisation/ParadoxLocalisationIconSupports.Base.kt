@@ -6,6 +6,8 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.CwtDataExpressionRole
+import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.processAsync
 import icu.windea.pls.core.toPsiFile
@@ -18,40 +20,45 @@ import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.localisation.psi.ParadoxLocalisationIcon
 
+@Optimized
 @Suppress("SameParameterValue")
 abstract class ParadoxCompositeLocalisationIconSupport : ParadoxLocalisationIconSupport {
-    val supports = mutableListOf<ParadoxLocalisationIconSupport>()
+    private val _supports = mutableListOf<ParadoxLocalisationIconSupport>()
+
+    val supports: List<ParadoxLocalisationIconSupport> get() = _supports
 
     protected fun fromDefinition(definitionType: String) {
-        supports += ParadoxDefinitionBasedLocalisationIconSupport(definitionType, { it }, { it })
+        _supports += ParadoxDefinitionBasedLocalisationIconSupport(definitionType, { it }, { it })
     }
 
     protected fun fromDefinition(definitionType: String, definitionNameGetter: (name: String) -> String?, nameGetter: (definitionName: String) -> String?) {
-        supports += ParadoxDefinitionBasedLocalisationIconSupport(definitionType, definitionNameGetter, nameGetter)
+        _supports += ParadoxDefinitionBasedLocalisationIconSupport(definitionType, definitionNameGetter, nameGetter)
     }
 
     protected fun fromImageFile(pathExpressionString: String) {
-        supports += ParadoxImageFileBasedLocalisationIconSupport(pathExpressionString)
+        _supports += ParadoxImageFileBasedLocalisationIconSupport(pathExpressionString)
     }
 
     final override fun resolve(name: String, element: ParadoxLocalisationIcon, project: Project): PsiElement? {
-        return supports.firstNotNullOfOrNull {
+        _supports.forEachFast { support ->
             ProgressManager.checkCanceled()
-            it.resolve(name, element, project)
+            support.resolve(name, element, project)?.let { return it }
         }
+        return null
     }
 
     final override fun resolveAll(name: String, element: ParadoxLocalisationIcon, project: Project): Collection<PsiElement> {
-        return supports.firstNotNullOfOrNull {
+        _supports.forEachFast { support ->
             ProgressManager.checkCanceled()
-            it.resolveAll(name, element, project).orNull()
-        }.orEmpty()
+            support.resolveAll(name, element, project).orNull()?.let { return it }
+        }
+        return emptyList()
     }
 
     final override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
-        supports.forEach {
+        _supports.forEachFast { support ->
             ProgressManager.checkCanceled()
-            it.complete(context, result)
+            support.complete(context, result)
         }
     }
 }

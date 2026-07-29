@@ -57,7 +57,7 @@ object ParadoxExpressionService {
         val configExpression = config.configExpression ?: return
         val dataType = configExpression.type
         val gameType = config.configGroup.gameType
-        val supports = ParadoxScriptExpressionSupport.get(dataType)
+        val supports = ParadoxScriptExpressionSupport.get(dataType) // 3.0.1 optimize: use global cache (by data type)
         supports.forEachFast f@{ ep ->
             if (!ChronicleAnnotationService.check(ep, gameType)) return@f
             ProgressManager.checkCanceled() // 3.0.1 optimize: check immediately before applying logic
@@ -74,7 +74,7 @@ object ParadoxExpressionService {
         val configExpression = config.configExpression ?: return null
         val dataType = configExpression.type
         val gameType = config.configGroup.gameType
-        val supports = ParadoxScriptExpressionSupport.get(dataType)
+        val supports = ParadoxScriptExpressionSupport.get(dataType) // 3.0.1 optimize: use global cache (by data type)
         supports.forEachFast f@{ ep ->
             if (!ChronicleAnnotationService.check(ep, gameType)) return@f
             ProgressManager.checkCanceled() // 3.0.1 optimize: check immediately before applying logic
@@ -95,7 +95,7 @@ object ParadoxExpressionService {
         val configExpression = config.configExpression ?: return emptyList()
         val dataType = configExpression.type
         val gameType = config.configGroup.gameType
-        val supports = ParadoxScriptExpressionSupport.get(dataType)
+        val supports = ParadoxScriptExpressionSupport.get(dataType) // 3.0.1 optimize: use global cache (by data type)
         supports.forEachFast f@{ ep ->
             if (!ChronicleAnnotationService.check(ep, gameType)) return@f
             ProgressManager.checkCanceled() // 3.0.1 optimize: check immediately before applying logic
@@ -116,7 +116,7 @@ object ParadoxExpressionService {
         val configExpression = config.configExpression ?: return emptyList()
         val dataType = configExpression.type
         val gameType = config.configGroup.gameType
-        val supports = ParadoxScriptExpressionSupport.get(dataType)
+        val supports = ParadoxScriptExpressionSupport.get(dataType) // 3.0.1 optimize: use global cache (by data type)
         supports.forEachFast f@{ ep ->
             if (!ChronicleAnnotationService.check(ep, gameType)) return@f
             ProgressManager.checkCanceled() // 3.0.1 optimize: check immediately before applying logic
@@ -134,7 +134,7 @@ object ParadoxExpressionService {
         val configExpression = config.configExpression ?: return
         val dataType = configExpression.type
         val gameType = config.configGroup.gameType
-        val supports = ParadoxScriptExpressionSupport.get(dataType)
+        val supports = ParadoxScriptExpressionSupport.get(dataType) // 3.0.1 optimize: use global cache (by data type)
         supports.forEachFast f@{ ep ->
             if (!ChronicleAnnotationService.check(ep, gameType)) return@f
             ProgressManager.checkCanceled() // 3.0.1 optimize: check immediately before applying logic

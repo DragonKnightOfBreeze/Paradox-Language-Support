@@ -13,16 +13,13 @@ import icu.windea.pls.lang.match.ParadoxMatchResult
 import icu.windea.pls.lang.match.ParadoxMatchResultProvider
 import icu.windea.pls.model.type.ParadoxExpressionType
 
-class ParadoxBasicCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
-    override fun match(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult? {
-        return when (context.dataType) {
-            CwtDataTypes.Any -> ParadoxMatchResult.FallbackMatch
-            CwtDataTypes.Bool -> matchBool(context)
-            CwtDataTypes.Int -> matchInt(context)
-            CwtDataTypes.Float -> matchFloat(context)
-            CwtDataTypes.Scalar -> matchScalar()
-            else -> null
-        }
+class ParadoxCsvBasicExpressionMatcher : ParadoxCsvCompositeExpressionMatcher() {
+    override fun registerMatchers() {
+        register(CwtDataTypes.Any) { ParadoxMatchResult.FallbackMatch }
+        register(CwtDataTypes.Bool) { matchBool(it) }
+        register(CwtDataTypes.Int) { matchInt(it) }
+        register(CwtDataTypes.Float) { matchFloat(it) }
+        register(CwtDataTypes.Scalar) { matchScalar() }
     }
 
     private fun matchBool(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult {
@@ -58,14 +55,11 @@ class ParadoxBasicCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
     }
 }
 
-class ParadoxExtraBasicCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
-    override fun match(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult? {
-        return when (context.dataType) {
-            CwtDataTypes.PercentageField -> matchPercentageField(context)
-            CwtDataTypes.IntPercentageField -> matchIntPercentageField(context)
-            CwtDataTypes.DateField -> matchDataField(context)
-            else -> null
-        }
+class ParadoxExtraBasicCsvExpressionMatcher : ParadoxCsvCompositeExpressionMatcher() {
+    override fun registerMatchers() {
+        register(CwtDataTypes.PercentageField) { matchPercentageField(it) }
+        register(CwtDataTypes.IntPercentageField) { matchIntPercentageField(it) }
+        register(CwtDataTypes.DateField) { matchDataField(it) }
     }
 
     private fun matchPercentageField(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult {
@@ -88,15 +82,12 @@ class ParadoxExtraBasicCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
     }
 }
 
-class ParadoxCoreCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
-    override fun match(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult? {
-        return when (context.dataType) {
-            CwtDataTypes.Definition -> matchDefinition(context)
-            CwtDataTypes.EnumValue -> matchEnumValue(context)
-            CwtDataTypes.UnionValue -> matchUnionValue(context)
-            in CwtDataTypeSets.DynamicValue -> matchDynamicValue(context)
-            else -> null
-        }
+class ParadoxCsvCoreExpressionMatcher : ParadoxCsvCompositeExpressionMatcher() {
+    override fun registerMatchers() {
+        register(CwtDataTypes.Definition) { matchDefinition(it) }
+        register(CwtDataTypes.EnumValue) { matchEnumValue(it) }
+        register(CwtDataTypes.UnionValue) { matchUnionValue(it) }
+        register(CwtDataTypeSets.DynamicValue) { matchDynamicValue(it) }
     }
 
     private fun matchDefinition(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult {

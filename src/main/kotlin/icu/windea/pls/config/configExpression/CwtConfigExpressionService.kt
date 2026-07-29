@@ -6,10 +6,10 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.processCandidateConfigs
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.forEachFast
-import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.text.TextPattern
 import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.ep.config.configExpression.CwtDataExpressionSupport
+import icu.windea.pls.ep.config.configExpression.CwtTextPatternBasedDataExpressionSupport
 
 object CwtConfigExpressionService {
     /**
@@ -37,12 +37,16 @@ object CwtConfigExpressionService {
     }
 
     /**
-     * @see CwtDataExpressionSupport.processTextPatterns
+     * @see CwtTextPatternBasedDataExpressionSupport.processTextPatterns
      */
+    @Optimized
     fun processTextPatterns(consumer: Processor<TextPattern<*>>): Boolean {
-        return CwtDataExpressionSupport.EP_NAME.extensionList.process { ep ->
-            ep.processTextPatterns(consumer)
+        CwtDataExpressionSupport.EP_NAME.extensionList.forEachFast { ep ->
+            if (ep is CwtTextPatternBasedDataExpressionSupport) {
+                ep.processTextPatterns(consumer).let { if (!it) return false }
+            }
         }
+        return true
     }
 
     fun collectLiterals(configExpression: CwtDataExpression, configGroup: CwtConfigGroup, result: MutableSet<String>) {
