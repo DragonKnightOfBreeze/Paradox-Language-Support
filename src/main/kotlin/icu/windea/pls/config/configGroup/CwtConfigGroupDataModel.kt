@@ -5,7 +5,6 @@ import icu.windea.pls.config.attributes.CwtConfigGroupAttributes
 import icu.windea.pls.config.attributes.CwtConfigGroupAttributesBase
 import icu.windea.pls.config.attributes.CwtExpandableConfigAttributes
 import icu.windea.pls.config.config.CwtFileConfig
-import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.delegated.CwtComplexEnumConfig
 import icu.windea.pls.config.config.delegated.CwtDatabaseObjectTypeConfig
@@ -38,7 +37,6 @@ import icu.windea.pls.config.config.extended.CwtExtendedScriptedVariableConfig
 import icu.windea.pls.config.config.internal.CwtFoldingSettingsConfig
 import icu.windea.pls.config.config.internal.CwtPostfixTemplateSettingsConfig
 import icu.windea.pls.config.config.internal.CwtSchemaConfig
-import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.ep.config.config.CwtConfigPostProcessor
@@ -169,15 +167,6 @@ interface CwtConfigGroupDataModel {
 
     /** 相关本地化的模式，用于从本地化导航到相关定义。 */
     val relatedLocalisationPatterns: Set<Tuple2<String, String>> get() = emptySet()
-
-    // endregion
-
-    // region Collected
-
-    // TODO 3.0.1 remove
-    val filePathExpressions: Set<CwtDataExpression> get() = emptySet()
-    // TODO 3.0.1 remove
-    val parameterConfigs: Set<CwtMemberConfig<*>> get() = emptySet()
 
     // endregion
 

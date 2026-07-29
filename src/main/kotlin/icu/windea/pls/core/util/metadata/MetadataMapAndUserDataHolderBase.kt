@@ -1,26 +1,18 @@
 package icu.windea.pls.core.util.metadata
 
 import com.intellij.openapi.util.Key
-import com.intellij.openapi.util.UserDataHolder
 import com.intellij.openapi.util.UserDataHolderBase
 import com.intellij.util.keyFMap.KeyFMap
 import icu.windea.pls.core.EMPTY_OBJECT
-import icu.windea.pls.core.util.KeyProvider
-import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.KeyWithDefault
 import icu.windea.pls.core.util.KeyWithProducer
 
 /**
- * 使用 [KeyFMap] 作为底层数据结构的元数据映射。
+ * 使用 [KeyFMap] 作为底层数据结构，同时继承自 [UserDataHolderBase] 的元数据映射。
  *
- * @see KeyRegistry
- * @see Key
- * @see KeyProvider
- * @see KeyFMap
- * @see UserDataHolder
- * @see UserDataHolderBase
+ * @see MetadataMapBase
  */
-open class MetadataMapBase : MetadataMap {
+open class MetadataMapAndUserDataHolderBase: UserDataHolderBase(), MetadataMap {
     // NOTE 3.0.1 暂时不考虑更加激进的底层数据结构
     //  - 比如，可以在底层仅使用 `bitmasks: Long` 和 `elements: Array<Any>` 这两个字段
     //  - 当元素个数大于2且不大于64时，这种策略可以获得更好的性能和内存占用
@@ -72,12 +64,12 @@ open class MetadataMapBase : MetadataMap {
     }
 
     @Suppress("unused")
-    fun copyMetadataTo(other: MetadataMapBase) {
+    fun copyMetadataTo(other: MetadataMapAndUserDataHolderBase) {
         other.map = map
     }
 
     @Suppress("unused")
-    fun mergeMetadataTo(other: MetadataMapBase) {
+    fun mergeMetadataTo(other: MetadataMapAndUserDataHolderBase) {
         if (map.isEmpty) return // fast return
         if (other.map.isEmpty) {
             other.map = map

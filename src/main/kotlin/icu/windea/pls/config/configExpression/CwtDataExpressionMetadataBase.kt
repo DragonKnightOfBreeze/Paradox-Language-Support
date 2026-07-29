@@ -3,14 +3,12 @@ package icu.windea.pls.config.configExpression
 import icu.windea.pls.core.util.FloatRangeInfo
 import icu.windea.pls.core.util.IntRangeInfo
 import icu.windea.pls.core.util.KeyRegistry
-import icu.windea.pls.core.util.get
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.metadata.MetadataMapBase
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
-import icu.windea.pls.core.util.set
 
-abstract class CwtDataExpressionMetadataBase : MetadataMapBase(), CwtDataExpressionMetadata {
+open class CwtDataExpressionMetadataBase : MetadataMapBase(), CwtDataExpressionMetadata {
     // 3.0.1 use explicit code with folding, instead of delegate properties with addon code injector, to make things simple
 
     final override var value: String? // region

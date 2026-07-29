@@ -224,7 +224,7 @@ object CwtConfigManipulationService {
     fun mergeOptionMetadata(optionMetadata: CwtOptionMetadata, vararg sources: CwtOptionMetadata?) {
         for (source in sources) {
             if (source == null) continue
-            source.copyTo(optionMetadata)
+            source.mergeTo(optionMetadata)
         }
     }
 

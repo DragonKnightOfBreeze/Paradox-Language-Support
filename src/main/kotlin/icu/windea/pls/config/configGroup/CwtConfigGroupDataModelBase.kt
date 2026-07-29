@@ -4,7 +4,6 @@ import icu.windea.pls.config.attributes.CwtConfigGroupAttributesBase
 import icu.windea.pls.config.attributes.CwtExpandableConfigAttributes
 import icu.windea.pls.config.attributes.CwtExpandableConfigAttributesEvaluator
 import icu.windea.pls.config.config.CwtFileConfig
-import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.delegated.CwtComplexEnumConfig
 import icu.windea.pls.config.config.delegated.CwtDatabaseObjectTypeConfig
@@ -37,7 +36,6 @@ import icu.windea.pls.config.config.extended.CwtExtendedScriptedVariableConfig
 import icu.windea.pls.config.config.internal.CwtFoldingSettingsConfig
 import icu.windea.pls.config.config.internal.CwtPostfixTemplateSettingsConfig
 import icu.windea.pls.config.config.internal.CwtSchemaConfig
-import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.collections.CaseInsensitiveStringKeyMap
 import icu.windea.pls.core.util.Tuple2
@@ -100,8 +98,6 @@ open class CwtConfigGroupDataModelBase : CwtConfigGroupDataModel {
     final override val linksModel: CwtLinksModelBase = CwtLinksModelBase()
     final override val localisationLinksModel: CwtLinksModelBase = CwtLinksModelBase()
     final override val macrosModel: CwtMacrosModelBase = CwtMacrosModelBase()
-    final override val filePathExpressions: ObjectLinkedOpenHashSet<CwtDataExpression> = ObjectLinkedOpenHashSet()
-    final override val parameterConfigs: ObjectLinkedOpenHashSet<CwtMemberConfig<*>> = ObjectLinkedOpenHashSet()
     final override val attribute: CwtConfigGroupAttributesBase = CwtConfigGroupAttributesBase()
 
     val unionAttributes: Object2ObjectLinkedOpenHashMap<String, CwtExpandableConfigAttributes> = Object2ObjectLinkedOpenHashMap<String, CwtExpandableConfigAttributes>()

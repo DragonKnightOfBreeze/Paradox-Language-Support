@@ -448,7 +448,7 @@ interface CwtOptionMetadata : MetadataMap {
      *
      * ```cwt
      * ## modifier_categories = { economic_unit planet }
-     * ```cwt
+     * ```
      *
      * > CWTools 兼容性：不兼容。插件作为扩展提供。
      */
@@ -595,7 +595,9 @@ interface CwtOptionMetadata : MetadataMap {
 
     fun copyTo(target: CwtOptionMetadata)
 
-    object Empty : CwtOptionMetadata {
-        override fun copyTo(target: CwtOptionMetadata) = Unit
+    fun mergeTo(target: CwtOptionMetadata)
+
+    companion object {
+        @JvmField val EMPTY = CwtOptionMetadataBase()
     }
 }

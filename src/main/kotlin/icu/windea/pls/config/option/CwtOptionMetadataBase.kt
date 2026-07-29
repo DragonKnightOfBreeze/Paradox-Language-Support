@@ -4,20 +4,16 @@ import icu.windea.pls.config.CwtConfigApiStatus
 import icu.windea.pls.config.config.CwtOptionMemberConfig
 import icu.windea.pls.config.configExpression.CwtCardinalityExpression
 import icu.windea.pls.core.annotations.CaseInsensitive
-import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.util.KeyRegistry
-import icu.windea.pls.core.util.copy
-import icu.windea.pls.core.util.get
 import icu.windea.pls.core.util.getValue
-import icu.windea.pls.core.util.metadata.MetadataMapBase
+import icu.windea.pls.core.util.metadata.MetadataMapAndUserDataHolderBase
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
-import icu.windea.pls.core.util.set
 import icu.windea.pls.core.util.values.ReversibleValue
 import icu.windea.pls.model.scope.ParadoxScopeConstants
 import icu.windea.pls.model.scope.ParadoxScopeContext
 
-abstract class CwtOptionMetadataBase : MetadataMapBase(), CwtOptionMetadata {
+open class CwtOptionMetadataBase : MetadataMapAndUserDataHolderBase(), CwtOptionMetadata {
     // 3.0.1 use explicit code with folding, instead of delegate properties with addon code injector, to make things simple
 
     final override var optionConfigs: List<CwtOptionMemberConfig<*>> // region
@@ -120,12 +116,14 @@ abstract class CwtOptionMetadataBase : MetadataMapBase(), CwtOptionMetadata {
         get() = this[Keys.perDefinition]
         set(value) = run { this[Keys.perDefinition] = value } // endregion
 
-    final override fun copyTo(target: CwtOptionMetadata) {
-        if (target !is CwtOptionMetadataBase) throw IllegalStateException()
-        val keys = Keys.keys
-        keys.forEachFast { key ->
-            key.copy(this, target, ifPresent = true)
-        }
+    override fun copyTo(target: CwtOptionMetadata) {
+        if (target !is CwtOptionMetadataBase) return
+        return copyMetadataTo(target)
+    }
+
+    override fun mergeTo(target: CwtOptionMetadata) {
+        if (target !is CwtOptionMetadataBase) return
+        return mergeMetadataTo(target)
     }
 }
 

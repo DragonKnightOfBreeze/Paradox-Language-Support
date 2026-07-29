@@ -27,5 +27,7 @@ interface CwtDataExpressionMetadata : MetadataMap {
     val floatRange: FloatRangeInfo? get() = null
     val suffixes: Set<String>? get() = null
 
-    object Empty : CwtDataExpressionMetadata
+    companion object {
+        @JvmField val EMPTY: CwtDataExpressionMetadata = CwtDataExpressionMetadataBase()
+    }
 }
