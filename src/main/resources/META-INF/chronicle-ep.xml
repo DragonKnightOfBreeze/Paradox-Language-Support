@@ -9,6 +9,7 @@
     <extensionPoint qualifiedName="icu.windea.pls.configFilterProvider" interface="icu.windea.pls.ep.config.config.CwtConfigFilterProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.configPostProcessor" interface="icu.windea.pls.ep.config.config.CwtConfigPostProcessor" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.injectedConfigProvider" interface="icu.windea.pls.ep.config.config.CwtInjectedConfigProvider" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.injectedConfigProcessor" interface="icu.windea.pls.ep.config.config.CwtInjectedConfigProcessor" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.configGroupFileProvider" interface="icu.windea.pls.ep.config.configGroup.CwtConfigGroupFileProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.configGroupProcessor" interface="icu.windea.pls.ep.config.configGroup.CwtConfigGroupProcessor" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.configGroupPostProcessor" interface="icu.windea.pls.ep.config.configGroup.CwtConfigGroupPostProcessor" dynamic="true"/>
@@ -101,8 +102,10 @@
     <configPostProcessor implementation="icu.windea.pls.ep.config.config.CwtBaseConfigPostProcessor"/>
     <configPostProcessor implementation="icu.windea.pls.ep.config.config.CwtInjectConfigPostProcessor"/>
 
-    <injectedConfigProvider implementation="icu.windea.pls.ep.config.config.CwtInOnActionInjectedConfigProvider"/>
-    <injectedConfigProvider implementation="icu.windea.pls.ep.config.config.CwtTechnologyWithLevelInjectedConfigProvider"/>
+    <injectedConfigProvider implementation="icu.windea.pls.ep.config.config.CwtConfigExpressionBasedInjectedConfigProvider"/>
+
+    <injectedConfigProcessor implementation="icu.windea.pls.ep.config.config.CwtInOnActionInjectedConfigProcessor"/>
+    <injectedConfigProcessor implementation="icu.windea.pls.ep.config.config.CwtTechnologyWithLevelInjectedConfigProcessor"/>
 
     <configGroupFileProvider id="builtIn" implementation="icu.windea.pls.ep.config.configGroup.CwtBuiltInConfigGroupFileProvider" order="first"/>
     <configGroupFileProvider id="remote" implementation="icu.windea.pls.ep.config.configGroup.CwtRemoteConfigGroupFileProvider"/>
