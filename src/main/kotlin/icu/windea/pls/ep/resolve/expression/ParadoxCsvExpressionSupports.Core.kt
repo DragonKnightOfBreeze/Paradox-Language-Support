@@ -28,7 +28,7 @@ import icu.windea.pls.model.expressions.ParadoxExpression
 /**
  * @see CwtDataTypes.Definition
  */
-class ParadoxCsvDefinitionExpressionSupport : ParadoxCsvExpressionSupportBase() {
+class ParadoxCsvDefinitionExpressionSupport : ParadoxCsvExpressionSupport {
     override fun supports(dataType: CwtDataType): Boolean {
         return dataType == CwtDataTypes.Definition
     }
@@ -66,7 +66,7 @@ class ParadoxCsvDefinitionExpressionSupport : ParadoxCsvExpressionSupportBase() 
 /**
  * @see CwtDataTypes.EnumValue
  */
-class ParadoxCsvEnumValueExpressionSupport : ParadoxCsvExpressionSupportBase() {
+class ParadoxCsvEnumValueExpressionSupport : ParadoxCsvExpressionSupport {
     override fun supports(dataType: CwtDataType): Boolean {
         return dataType == CwtDataTypes.EnumValue
     }
@@ -95,7 +95,7 @@ class ParadoxCsvEnumValueExpressionSupport : ParadoxCsvExpressionSupportBase() {
 /**
  * @see CwtDataTypes.UnionValue
  */
-class ParadoxCsvUnionValueExpressionSupport : ParadoxCsvExpressionSupportBase() {
+class ParadoxCsvUnionValueExpressionSupport : ParadoxCsvExpressionSupport {
     override fun supports(dataType: CwtDataType): Boolean {
         return dataType == CwtDataTypes.UnionValue
     }
@@ -149,7 +149,7 @@ class ParadoxCsvUnionValueExpressionSupport : ParadoxCsvExpressionSupportBase() 
 /**
  * @see CwtDataTypeSets.DynamicValue
  */
-class ParadoxCsvDynamicValueExpressionSupport : ParadoxCsvExpressionSupportBase() {
+class ParadoxCsvDynamicValueExpressionSupport : ParadoxCsvExpressionSupport {
     override fun supports(dataType: CwtDataType): Boolean {
         return dataType in CwtDataTypeSets.DynamicValue
     }

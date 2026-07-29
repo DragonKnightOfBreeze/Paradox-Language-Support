@@ -54,7 +54,7 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
                 }
             }
         } else {
-            val support = ParadoxPathReferenceExpressionSupport.get(context.configExpression) ?: return true
+            val support = ParadoxPathReferenceExpressionSupport.get(context.configExpression.type) ?: return true
             if (context.filePath == null) {
                 val keys = mutableSetOf<String>()
                 FileBasedIndex.getInstance().processAllKeys(ChronicleIndexKeys.FilePath, p@{ p ->

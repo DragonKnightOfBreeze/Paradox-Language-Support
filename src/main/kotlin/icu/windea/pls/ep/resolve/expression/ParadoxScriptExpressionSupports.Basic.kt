@@ -18,7 +18,7 @@ import icu.windea.pls.model.type.ParadoxExpressionRole
 /**
  * @see CwtDataTypes.Bool
  */
-class ParadoxScriptBoolExpressionSupport : ParadoxScriptExpressionSupportBase() {
+class ParadoxScriptBoolExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(dataType: CwtDataType): Boolean {
         return dataType == CwtDataTypes.Bool
     }
@@ -31,7 +31,7 @@ class ParadoxScriptBoolExpressionSupport : ParadoxScriptExpressionSupportBase() 
 /**
  * @see CwtDataTypes.Block
  */
-class ParadoxScriptBlockExpressionSupport : ParadoxScriptExpressionSupportBase() {
+class ParadoxScriptBlockExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(dataType: CwtDataType): Boolean {
         return dataType == CwtDataTypes.Block
     }

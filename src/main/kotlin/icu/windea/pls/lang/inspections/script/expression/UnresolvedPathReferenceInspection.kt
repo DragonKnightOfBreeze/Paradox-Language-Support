@@ -83,7 +83,7 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
                     holder.registerProblem(location, description, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
                     return
                 }
-                val pathReferenceExpressionSupport = ParadoxPathReferenceExpressionSupport.get(configExpression)
+                val pathReferenceExpressionSupport = ParadoxPathReferenceExpressionSupport.get(configExpression.type)
                 if (pathReferenceExpressionSupport != null) {
                     val pathReference = element.value.normalizePath()
                     run {

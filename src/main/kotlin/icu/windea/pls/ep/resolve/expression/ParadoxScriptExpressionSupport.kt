@@ -2,13 +2,19 @@ package icu.windea.pls.ep.resolve.expression
 
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.lang.annotation.AnnotationHolder
+import com.intellij.openapi.extensions.ExtensionPointListener
 import com.intellij.openapi.extensions.ExtensionPointName
+import com.intellij.openapi.extensions.PluginDescriptor
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import icu.windea.pls.base.annotations.WithGameTypeEP
+import icu.windea.pls.config.CwtDataType
 import icu.windea.pls.config.config.CwtConfig
-import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.core.collections.filterFast
+import icu.windea.pls.core.collections.orNull
+import icu.windea.pls.core.optimized
+import icu.windea.pls.core.util.values.LazyValue
 import icu.windea.pls.core.util.values.singletonListOrEmpty
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
@@ -26,7 +32,7 @@ import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
  */
 @WithGameTypeEP
 interface ParadoxScriptExpressionSupport {
-    fun supports(config: CwtConfig<*>, configExpression: CwtDataExpression): Boolean
+    fun supports(dataType: CwtDataType): Boolean = false
 
     fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, holder: AnnotationHolder) {
         // by default nothing
@@ -50,5 +56,33 @@ interface ParadoxScriptExpressionSupport {
 
     companion object INSTANCE {
         @JvmField val EP_NAME = ExtensionPointName<ParadoxScriptExpressionSupport>("icu.windea.pls.scriptExpressionSupport")
+        @JvmField val CACHE = LazyValue<Map<CwtDataType, List<ParadoxScriptExpressionSupport>>>()
+
+        fun get(dataType: CwtDataType): List<ParadoxScriptExpressionSupport> = CACHE.get()?.get(dataType).orEmpty()
+
+        // region Implementations
+
+        init {
+            computeCache()
+            addListener()
+        }
+
+        private fun computeCache() {
+            CACHE.reinitialize {
+                val result = mutableMapOf<CwtDataType, List<ParadoxScriptExpressionSupport>>()
+                val eps = EP_NAME.extensionList
+                CwtDataType.entries.values.forEach { dataType -> eps.filterFast { ep -> ep.supports(dataType) }.orNull()?.let { result[dataType] = it.optimized() } }
+                result.optimized()
+            }
+        }
+
+        private fun addListener() {
+            EP_NAME.addExtensionPointListener(object : ExtensionPointListener<ParadoxScriptExpressionSupport> {
+                override fun extensionAdded(extension: ParadoxScriptExpressionSupport, pluginDescriptor: PluginDescriptor) = computeCache()
+                override fun extensionRemoved(extension: ParadoxScriptExpressionSupport, pluginDescriptor: PluginDescriptor) = computeCache()
+            })
+        }
+
+        // endregion
     }
 }

@@ -29,7 +29,7 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
  * @see CwtDataTypes.TechnologyWithLevel
  */
 @WithGameType(ParadoxGameType.Stellaris)
-class ParadoxScriptTechnologyWithLevelExpressionSupport : ParadoxScriptExpressionSupportBase() {
+class ParadoxScriptTechnologyWithLevelExpressionSupport : ParadoxScriptExpressionSupport {
     // https://github.com/cwtools/cwtools-vscode/issues/58
 
     private val typeExpression = "<technology.repeatable>"

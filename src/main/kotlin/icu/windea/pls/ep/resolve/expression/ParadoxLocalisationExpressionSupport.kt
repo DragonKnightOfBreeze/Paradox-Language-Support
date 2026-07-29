@@ -2,11 +2,15 @@ package icu.windea.pls.ep.resolve.expression
 
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.lang.annotation.AnnotationHolder
+import com.intellij.openapi.extensions.ExtensionPointListener
 import com.intellij.openapi.extensions.ExtensionPointName
+import com.intellij.openapi.extensions.PluginDescriptor
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import icu.windea.pls.base.annotations.WithGameTypeEP
+import icu.windea.pls.core.optimized
+import icu.windea.pls.core.util.values.LazyValue
 import icu.windea.pls.core.util.values.singletonListOrEmpty
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
@@ -47,5 +51,28 @@ interface ParadoxLocalisationExpressionSupport {
 
     companion object INSTANCE {
         @JvmField val EP_NAME = ExtensionPointName<ParadoxLocalisationExpressionSupport>("icu.windea.pls.localisationExpressionSupport")
+        @JvmField val CACHE = LazyValue<List<ParadoxLocalisationExpressionSupport>>()
+
+        fun getAll(): List<ParadoxLocalisationExpressionSupport> = CACHE.get().orEmpty()
+
+        // region Implementations
+
+        init {
+            computeCache()
+            addListener()
+        }
+
+        private fun computeCache() {
+            CACHE.reinitialize {
+                EP_NAME.extensionList.optimized()
+            }
+        }
+
+        private fun addListener() {
+            EP_NAME.addExtensionPointListener(object : ExtensionPointListener<ParadoxLocalisationExpressionSupport> {
+                override fun extensionAdded(extension: ParadoxLocalisationExpressionSupport, pluginDescriptor: PluginDescriptor) = computeCache()
+                override fun extensionRemoved(extension: ParadoxLocalisationExpressionSupport, pluginDescriptor: PluginDescriptor) = computeCache()
+            })
+        }
     }
 }

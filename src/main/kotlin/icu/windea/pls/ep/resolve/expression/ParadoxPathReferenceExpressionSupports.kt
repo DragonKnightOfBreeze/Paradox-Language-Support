@@ -1,6 +1,7 @@
 package icu.windea.pls.ep.resolve.expression
 
 import com.intellij.psi.PsiElement
+import icu.windea.pls.config.CwtDataType
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.core.matchesPath
@@ -15,8 +16,8 @@ import icu.windea.pls.model.constants.ChronicleConstants
  * @see CwtDataTypes.Icon
  */
 class ParadoxIconReferenceExpressionSupport : ParadoxPathReferenceExpressionSupport {
-    override fun supports(configExpression: CwtDataExpression): Boolean {
-        return configExpression.type == CwtDataTypes.Icon
+    override fun supports(dataType: CwtDataType): Boolean {
+        return dataType == CwtDataTypes.Icon
     }
 
     // `icon[]` -  `filePath` 需要是不带扩展名的文件名（其扩展名必须是合法的图片的扩展名）
@@ -62,8 +63,8 @@ class ParadoxIconReferenceExpressionSupport : ParadoxPathReferenceExpressionSupp
  * @see CwtDataTypes.FilePath
  */
 class ParadoxFilePathReferenceExpressionSupport : ParadoxPathReferenceExpressionSupport {
-    override fun supports(configExpression: CwtDataExpression): Boolean {
-        return configExpression.type == CwtDataTypes.FilePath
+    override fun supports(dataType: CwtDataType): Boolean {
+        return dataType == CwtDataTypes.FilePath
     }
 
     // `filepath` - 匹配任意路径
@@ -154,8 +155,8 @@ class ParadoxFilePathReferenceExpressionSupport : ParadoxPathReferenceExpression
  * @see CwtDataTypes.FileName
  */
 class ParadoxFileNameReferenceExpressionSupport : ParadoxPathReferenceExpressionSupport {
-    override fun supports(configExpression: CwtDataExpression): Boolean {
-        return configExpression.type == CwtDataTypes.FileName
+    override fun supports(dataType: CwtDataType): Boolean {
+        return dataType == CwtDataTypes.FileName
     }
 
     // `filename` - `filePath` 需要是文件名

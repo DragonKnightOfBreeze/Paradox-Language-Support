@@ -3,7 +3,6 @@ package icu.windea.pls.ep.config.config
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
-import icu.windea.pls.config.util.CwtMemberConfigVisitor
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.forEachReversedIndexedFast
@@ -14,11 +13,13 @@ import icu.windea.pls.core.collections.forEachReversedIndexedFast
 abstract class CwtExpressionStringBasedInjectedConfigProvider : CwtInjectedConfigProvider {
     @Optimized
     override fun injectConfigs(parentConfig: CwtMemberConfig<*>, containerConfig: CwtMemberConfig<*>, configs: MutableList<CwtMemberConfig<*>>): Boolean {
-        // 2.1.1 通过使用访问者模式，消除类型检查
+        // NOTE 3.0.1 optimize: 来自 gemini-3.1-pro：将密集的类型检查改为访问者模式，性能通常会更差，而不是更好
+        //  - 现代 JVM 对 `instanceof` 指令做了极度深度的优化，比如内联缓存和分支预测；而访问者模式需要两次虚方法调用，这会查找虚方法表（vtable/itable），且会增加方法栈帧的压栈和出栈开销。
+        //  - 总之这里的类型检查不是非常明显的性能热点，时间复杂度仍然是无法避免的，让事情变得简单一点。
         var r = false
         configs.forEachReversedIndexedFast { i, config ->
-            config.accept(object : CwtMemberConfigVisitor() {
-                override fun visitProperty(config: CwtPropertyConfig): Boolean {
+            when (config) {
+                is CwtPropertyConfig -> {
                     val key = config.key
                     val value = config.value
                     val injectedKeys = doInjectKey(parentConfig, config, key)
@@ -35,10 +36,8 @@ abstract class CwtExpressionStringBasedInjectedConfigProvider : CwtInjectedConfi
                         }
                     }
                     if (!keepOrigin(config)) configs.removeAt(i)
-                    return true
                 }
-
-                override fun visitValue(config: CwtValueConfig): Boolean {
+                is CwtValueConfig -> {
                     val value = config.value
                     val injectedValues = doInjectValue(parentConfig, config, value)
                     val injected = injectedValues != null
@@ -51,9 +50,8 @@ abstract class CwtExpressionStringBasedInjectedConfigProvider : CwtInjectedConfi
                         i0++
                     }
                     if (!keepOrigin(config)) configs.removeAt(i)
-                    return true
                 }
-            })
+            }
         }
         return r
     }

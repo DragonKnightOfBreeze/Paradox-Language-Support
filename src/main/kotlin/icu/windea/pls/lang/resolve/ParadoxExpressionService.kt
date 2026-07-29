@@ -12,7 +12,9 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.resolved
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.isEmpty
 import icu.windea.pls.core.util.values.singletonListOrEmpty
@@ -49,12 +51,14 @@ object ParadoxExpressionService {
     /**
      * @see ParadoxScriptExpressionSupport.annotate
      */
+    @Optimized
     fun annotateScriptExpression(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, holder: AnnotationHolder) {
         if (text.isEmpty()) return // skip if expression is empty
         val configExpression = config.configExpression ?: return
+        val dataType = configExpression.type
         val gameType = config.configGroup.gameType
-        ParadoxScriptExpressionSupport.EP_NAME.extensionList.forEach f@{ ep ->
-            if (!ep.supports(config, configExpression)) return@f
+        val supports = ParadoxScriptExpressionSupport.get(dataType)
+        supports.forEachFast f@{ ep ->
             if (!ChronicleAnnotationService.check(ep, gameType)) return@f
             ProgressManager.checkCanceled() // 3.0.1 optimize: check immediately before applying logic
             ep.annotate(element, rangeInElement, text, config, holder)
@@ -64,17 +68,18 @@ object ParadoxExpressionService {
     /**
      * @see ParadoxScriptExpressionSupport.resolve
      */
+    @Optimized
     fun resolveScriptExpression(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
         if (text.isEmpty()) return null // ignore if expression is empty
         val configExpression = config.configExpression ?: return null
+        val dataType = configExpression.type
         val gameType = config.configGroup.gameType
-        val result = ParadoxScriptExpressionSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-            if (!ep.supports(config, configExpression)) return@f null
-            if (!ChronicleAnnotationService.check(ep, gameType)) return@f null
+        val supports = ParadoxScriptExpressionSupport.get(dataType)
+        supports.forEachFast f@{ ep ->
+            if (!ChronicleAnnotationService.check(ep, gameType)) return@f
             ProgressManager.checkCanceled() // 3.0.1 optimize: check immediately before applying logic
-            ep.resolve(element, rangeInElement, text, config, role)
+            ep.resolve(element, rangeInElement, text, config, role)?.let { return it }
         }
-        if (result != null) return result
         if (configExpression.role.isKey()) {
             return getResolvedConfigElement(element, config, config.configGroup)
         }
@@ -84,17 +89,18 @@ object ParadoxExpressionService {
     /**
      * @see ParadoxScriptExpressionSupport.resolveAll
      */
+    @Optimized
     fun resolveAllScriptExpression(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiElement> {
         if (text.isEmpty()) return emptyList() // ignore if expression is empty
         val configExpression = config.configExpression ?: return emptyList()
+        val dataType = configExpression.type
         val gameType = config.configGroup.gameType
-        val result = ParadoxScriptExpressionSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-            if (!ep.supports(config, configExpression)) return@f null
-            if (!ChronicleAnnotationService.check(ep, gameType)) return@f null
+        val supports = ParadoxScriptExpressionSupport.get(dataType)
+        supports.forEachFast f@{ ep ->
+            if (!ChronicleAnnotationService.check(ep, gameType)) return@f
             ProgressManager.checkCanceled() // 3.0.1 optimize: check immediately before applying logic
-            ep.resolveAll(element, rangeInElement, text, config, role).orNull()
-        }.orEmpty()
-        if (result.isNotEmpty()) return result
+            ep.resolveAll(element, rangeInElement, text, config, role).orNull()?.let { return it }
+        }
         if (configExpression.role.isKey()) {
             return getResolvedConfigElement(element, config, config.configGroup).to.singletonListOrEmpty()
         }
@@ -104,27 +110,32 @@ object ParadoxExpressionService {
     /**
      * @see ParadoxScriptExpressionSupport.getReferences
      */
+    @Optimized
     fun getScriptExpressionReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiReference> {
         if (text.isEmpty()) return emptyList() // ignore if expression is empty
         val configExpression = config.configExpression ?: return emptyList()
+        val dataType = configExpression.type
         val gameType = config.configGroup.gameType
-        return ParadoxScriptExpressionSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-            if (!ep.supports(config, configExpression)) return@f null
-            if (!ChronicleAnnotationService.check(ep, gameType)) return@f null
+        val supports = ParadoxScriptExpressionSupport.get(dataType)
+        supports.forEachFast f@{ ep ->
+            if (!ChronicleAnnotationService.check(ep, gameType)) return@f
             ProgressManager.checkCanceled() // 3.0.1 optimize: check immediately before applying logic
-            ep.getReferences(element, rangeInElement, text, config, role).orNull()
-        }.orEmpty()
+            ep.getReferences(element, rangeInElement, text, config, role).orNull()?.let { return it }
+        }
+        return emptyList()
     }
 
     /**
      * @see ParadoxScriptExpressionSupport.complete
      */
+    @Optimized
     fun completeScriptExpression(context: ParadoxCompletionContext, result: CompletionResultSet) {
         val config = context.config ?: return
         val configExpression = config.configExpression ?: return
+        val dataType = configExpression.type
         val gameType = config.configGroup.gameType
-        ParadoxScriptExpressionSupport.EP_NAME.extensionList.forEach f@{ ep ->
-            if (!ep.supports(config, configExpression)) return@f
+        val supports = ParadoxScriptExpressionSupport.get(dataType)
+        supports.forEachFast f@{ ep ->
             if (!ChronicleAnnotationService.check(ep, gameType)) return@f
             ProgressManager.checkCanceled() // 3.0.1 optimize: check immediately before applying logic
             ep.complete(context, result)
@@ -141,8 +152,9 @@ object ParadoxExpressionService {
     fun annotateLocalisationExpression(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, holder: AnnotationHolder) {
         if (text.isEmpty()) return // skip if expression is empty
         val gameType = selectGameType(element)
-        ParadoxLocalisationExpressionSupport.EP_NAME.extensionList.forEach f@{ ep ->
-            if (!ep.supports(element)) return@f
+        val supports = ParadoxLocalisationExpressionSupport.getAll() // 3.0.1 use global cache (all supports)
+        supports.forEachFast f@{ ep ->
+            if (!ep.supports(element)) return@f // 3.0.1 still check here
             if (!ChronicleAnnotationService.check(ep, gameType)) return@f
             ProgressManager.checkCanceled() // 3.0.1 optimize: check immediately before applying logic
             ep.annotate(element, rangeInElement, text, holder)
@@ -155,12 +167,14 @@ object ParadoxExpressionService {
     fun resolveLocalisationExpression(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String): PsiElement? {
         if (text.isEmpty()) return null // ignore if expression is empty
         val gameType = selectGameType(element)
-        return ParadoxLocalisationExpressionSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-            if (!ep.supports(element)) return@f null
-            if (!ChronicleAnnotationService.check(ep, gameType)) return@f null
+        val supports = ParadoxLocalisationExpressionSupport.getAll() // 3.0.1 use global cache (all supports)
+        supports.forEachFast f@{ ep ->
+            if (!ep.supports(element)) return@f // 3.0.1 still check here
+            if (!ChronicleAnnotationService.check(ep, gameType)) return@f
             ProgressManager.checkCanceled() // 3.0.1 optimize: check immediately before applying logic
-            ep.resolve(element, rangeInElement, text)
+            ep.resolve(element, rangeInElement, text)?.let { return it }
         }
+        return null
     }
 
     /**
@@ -169,12 +183,14 @@ object ParadoxExpressionService {
     fun resolveAllLocalisationExpression(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String): List<PsiElement> {
         if (text.isEmpty()) return emptyList() // ignore if expression is empty
         val gameType = selectGameType(element)
-        return ParadoxLocalisationExpressionSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-            if (!ep.supports(element)) return@f null
-            if (!ChronicleAnnotationService.check(ep, gameType)) return@f null
+        val supports = ParadoxLocalisationExpressionSupport.getAll() // 3.0.1 use global cache (all supports)
+        supports.forEachFast f@{ ep ->
+            if (!ep.supports(element)) return@f // 3.0.1 still check here
+            if (!ChronicleAnnotationService.check(ep, gameType)) return@f
             ProgressManager.checkCanceled() // 3.0.1 optimize: check immediately before applying logic
-            ep.resolveAll(element, rangeInElement, text).orNull()
-        }.orEmpty()
+            ep.resolveAll(element, rangeInElement, text).orNull()?.let { return it }
+        }
+        return emptyList()
     }
 
     /**
@@ -183,12 +199,14 @@ object ParadoxExpressionService {
     fun getLocalisationExpressionReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String): List<PsiReference> {
         if (text.isEmpty()) return emptyList() // ignore if expression is empty
         val gameType = selectGameType(element)
-        return ParadoxLocalisationExpressionSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-            if (!ep.supports(element)) return@f null
-            if (!ChronicleAnnotationService.check(ep, gameType)) return@f null
+        val supports = ParadoxLocalisationExpressionSupport.getAll() // 3.0.1 use global cache (all supports)
+        supports.forEachFast f@{ ep ->
+            if (!ep.supports(element)) return@f // 3.0.1 still check here
+            if (!ChronicleAnnotationService.check(ep, gameType)) return@f
             ProgressManager.checkCanceled() // 3.0.1 optimize: check immediately before applying logic
-            ep.getReferences(element, rangeInElement, text).orNull()
-        }.orEmpty()
+            ep.getReferences(element, rangeInElement, text).orNull()?.let { return it }
+        }
+        return emptyList()
     }
 
     /**
@@ -198,8 +216,9 @@ object ParadoxExpressionService {
         val element = context.contextElement.castOrNull<ParadoxExpressionElement>() ?: return
         val configGroup = context.configGroup
         val gameType = configGroup.gameType
-        ParadoxLocalisationExpressionSupport.EP_NAME.extensionList.forEach f@{ ep ->
-            if (!ep.supports(element)) return@f
+        val supports = ParadoxLocalisationExpressionSupport.getAll() // 3.0.1 use global cache (all supports)
+        supports.forEachFast f@{ ep ->
+            if (!ep.supports(element)) return@f // 3.0.1 still check here
             if (!ChronicleAnnotationService.check(ep, gameType)) return@f
             ProgressManager.checkCanceled() // 3.0.1 optimize: check immediately before applying logic
             ep.complete(context, result)
@@ -213,14 +232,16 @@ object ParadoxExpressionService {
     /**
      * @see ParadoxCsvExpressionSupport.annotate
      */
+    @Optimized
     fun annotateCsvExpression(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, text: String, config: CwtValueConfig, holder: AnnotationHolder) {
         if (text.isEmpty()) return // skip if expression is empty
         val configExpression = config.configExpression
+        val dataType = configExpression.type
         val gameType = config.configGroup.gameType
-        ParadoxCsvExpressionSupport.EP_NAME.extensionList.forEach f@{ ep ->
-            ProgressManager.checkCanceled()
-            if (!ep.supports(config, configExpression)) return@f
+        val supports = ParadoxCsvExpressionSupport.get(dataType) // 3.0.1 optimize: use global cache (by data type)
+        supports.forEachFast f@{ ep ->
             if (!ChronicleAnnotationService.check(ep, gameType)) return@f
+            ProgressManager.checkCanceled() // 3.0.1 optimize: check immediately before applying logic
             ep.annotate(element, rangeInElement, text, config, holder)
         }
     }
@@ -228,16 +249,19 @@ object ParadoxExpressionService {
     /**
      * @see ParadoxCsvExpressionSupport.resolve
      */
+    @Optimized
     fun resolveCsvExpression(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, text: String, config: CwtValueConfig): PsiElement? {
         if (text.isEmpty()) return null // ignore if expression is empty
         val configExpression = config.configExpression
+        val dataType = configExpression.type
         val gameType = config.configGroup.gameType
-        return ParadoxCsvExpressionSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-            ProgressManager.checkCanceled()
-            if (!ep.supports(config, configExpression)) return@f null
-            if (!ChronicleAnnotationService.check(ep, gameType)) return@f null
-            ep.resolve(element, rangeInElement, text, config)
+        val supports = ParadoxCsvExpressionSupport.get(dataType) // 3.0.1 optimize: use global cache (by data type)
+        supports.forEachFast f@{ ep ->
+            if (!ChronicleAnnotationService.check(ep, gameType)) return@f
+            ProgressManager.checkCanceled() // 3.0.1 optimize: check immediately before applying logic
+            ep.resolve(element, rangeInElement, text, config)?.let { return it }
         }
+        return null
     }
 
     /**
@@ -246,13 +270,15 @@ object ParadoxExpressionService {
     fun resolveAllCsvExpression(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, text: String, config: CwtValueConfig): List<PsiElement> {
         if (text.isEmpty()) return emptyList() // ignore if expression is empty
         val configExpression = config.configExpression
+        val dataType = configExpression.type
         val gameType = config.configGroup.gameType
-        return ParadoxCsvExpressionSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-            ProgressManager.checkCanceled()
-            if (!ep.supports(config, configExpression)) return@f null
-            if (!ChronicleAnnotationService.check(ep, gameType)) return@f null
-            ep.resolveAll(element, rangeInElement, text, config).orNull()
-        }.orEmpty()
+        val supports = ParadoxCsvExpressionSupport.get(dataType) // 3.0.1 optimize: use global cache (by data type)
+        supports.forEachFast f@{ ep ->
+            if (!ChronicleAnnotationService.check(ep, gameType)) return@f
+            ProgressManager.checkCanceled() // 3.0.1 optimize: check immediately before applying logic
+            ep.resolveAll(element, rangeInElement, text, config).orNull()?.let { return it }
+        }
+        return emptyList()
     }
 
     /**
@@ -261,11 +287,12 @@ object ParadoxExpressionService {
     fun completeCsvExpression(context: ParadoxCompletionContext, result: CompletionResultSet) {
         val config = context.config?.castOrNull<CwtValueConfig>() ?: return
         val configExpression = config.configExpression
-        val gameType = context.gameType
-        ParadoxCsvExpressionSupport.EP_NAME.extensionList.forEach f@{ ep ->
-            ProgressManager.checkCanceled()
-            if (!ep.supports(config, configExpression)) return@f
+        val dataType = configExpression.type
+        val gameType = config.configGroup.gameType
+        val supports = ParadoxCsvExpressionSupport.get(dataType) // 3.0.1 optimize: use global cache (by data type)
+        supports.forEachFast f@{ ep ->
             if (!ChronicleAnnotationService.check(ep, gameType)) return@f
+            ProgressManager.checkCanceled() // 3.0.1 optimize: check immediately before applying logic
             ep.complete(context, result)
         }
     }

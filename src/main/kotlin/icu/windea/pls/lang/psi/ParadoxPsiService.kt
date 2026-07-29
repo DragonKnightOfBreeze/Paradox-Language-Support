@@ -426,7 +426,7 @@ object ParadoxPsiService {
             resolved is PsiFileSystemItem -> {
                 // #33
                 if (configExpression == null) throw IncorrectOperationException()
-                val ep = ParadoxPathReferenceExpressionSupport.get(configExpression) ?: throw IncorrectOperationException()
+                val ep = ParadoxPathReferenceExpressionSupport.get(configExpression.type) ?: throw IncorrectOperationException()
                 val fileInfo = resolved.fileInfo ?: throw IncorrectOperationException()
                 val newPath = fileInfo.path.parent + "/" + newElementName
                 val newPathReference = ep.extract(configExpression, element, newPath) ?: throw IncorrectOperationException()

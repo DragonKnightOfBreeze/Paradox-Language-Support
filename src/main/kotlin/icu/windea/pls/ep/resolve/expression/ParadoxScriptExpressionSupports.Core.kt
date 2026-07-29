@@ -50,7 +50,7 @@ import icu.windea.pls.script.psi.ParadoxScriptString
  * @see CwtDataTypes.Definition
  * @see CwtDataTypes.SuffixAwareDefinition
  */
-class ParadoxScriptDefinitionExpressionSupport : ParadoxScriptExpressionSupportBase() {
+class ParadoxScriptDefinitionExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(dataType: CwtDataType): Boolean {
         return dataType == CwtDataTypes.Definition || dataType == CwtDataTypes.SuffixAwareDefinition
     }
@@ -100,7 +100,7 @@ class ParadoxScriptDefinitionExpressionSupport : ParadoxScriptExpressionSupportB
  * @see CwtDataTypes.Localisation
  * @see CwtDataTypes.SuffixAwareLocalisation
  */
-class ParadoxScriptLocalisationExpressionSupport : ParadoxScriptExpressionSupportBase() {
+class ParadoxScriptLocalisationExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(dataType: CwtDataType): Boolean {
         return dataType == CwtDataTypes.Localisation || dataType == CwtDataTypes.SuffixAwareLocalisation
     }
@@ -146,7 +146,7 @@ class ParadoxScriptLocalisationExpressionSupport : ParadoxScriptExpressionSuppor
  * @see CwtDataTypes.SyncedLocalisation
  * @see CwtDataTypes.SuffixAwareSyncedLocalisation
  */
-class ParadoxScriptSyncedLocalisationExpressionSupport : ParadoxScriptExpressionSupportBase() {
+class ParadoxScriptSyncedLocalisationExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(dataType: CwtDataType): Boolean {
         return dataType == CwtDataTypes.SyncedLocalisation || dataType == CwtDataTypes.SuffixAwareSyncedLocalisation
     }
@@ -191,7 +191,7 @@ class ParadoxScriptSyncedLocalisationExpressionSupport : ParadoxScriptExpression
 /**
  * @see CwtDataTypes.InlineLocalisation
  */
-class ParadoxScriptInlineLocalisationExpressionSupport : ParadoxScriptExpressionSupportBase() {
+class ParadoxScriptInlineLocalisationExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(dataType: CwtDataType): Boolean {
         return dataType == CwtDataTypes.InlineLocalisation
     }
@@ -229,7 +229,7 @@ class ParadoxScriptInlineLocalisationExpressionSupport : ParadoxScriptExpression
 /**
  * @see CwtDataTypes.Modifier
  */
-class ParadoxScriptModifierExpressionSupport : ParadoxScriptExpressionSupportBase() {
+class ParadoxScriptModifierExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(dataType: CwtDataType): Boolean {
         return dataType == CwtDataTypes.Modifier
     }
@@ -255,7 +255,7 @@ class ParadoxScriptModifierExpressionSupport : ParadoxScriptExpressionSupportBas
 /**
  * @see CwtDataTypes.EnumValue
  */
-class ParadoxScriptEnumValueExpressionSupport : ParadoxScriptExpressionSupportBase() {
+class ParadoxScriptEnumValueExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(dataType: CwtDataType): Boolean {
         return dataType == CwtDataTypes.EnumValue
     }
@@ -286,7 +286,7 @@ class ParadoxScriptEnumValueExpressionSupport : ParadoxScriptExpressionSupportBa
 /**
  * @see CwtDataTypes.UnionValue
  */
-class ParadoxScriptUnionValueExpressionSupport : ParadoxScriptExpressionSupportBase() {
+class ParadoxScriptUnionValueExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(dataType: CwtDataType): Boolean {
         return dataType == CwtDataTypes.UnionValue
     }
@@ -355,7 +355,7 @@ class ParadoxScriptUnionValueExpressionSupport : ParadoxScriptExpressionSupportB
  * @see CwtDataTypes.AliasKeysField
  * @see CwtDataTypes.AliasName
  */
-class ParadoxScriptAliasNameExpressionSupport : ParadoxScriptExpressionSupportBase() {
+class ParadoxScriptAliasNameExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(dataType: CwtDataType): Boolean {
         return dataType == CwtDataTypes.AliasKeysField || dataType == CwtDataTypes.AliasName
     }
@@ -416,7 +416,7 @@ class ParadoxScriptAliasNameExpressionSupport : ParadoxScriptExpressionSupportBa
 /**
  * @see CwtDataTypes.Constant
  */
-class ParadoxScriptConstantExpressionSupport : ParadoxScriptExpressionSupportBase() {
+class ParadoxScriptConstantExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(dataType: CwtDataType): Boolean {
         return dataType == CwtDataTypes.Constant
     }
@@ -473,7 +473,7 @@ class ParadoxScriptConstantExpressionSupport : ParadoxScriptExpressionSupportBas
 /**
  * @see CwtDataTypeSets.PathReference
  */
-class ParadoxScriptPathReferenceExpressionSupport : ParadoxScriptExpressionSupportBase() {
+class ParadoxScriptPathReferenceExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(dataType: CwtDataType): Boolean {
         return dataType in CwtDataTypeSets.PathReference
     }

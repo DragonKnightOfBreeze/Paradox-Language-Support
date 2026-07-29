@@ -12,7 +12,7 @@ import icu.windea.pls.lang.codeInsight.completion.addToResult
 /**
  * @see CwtDataTypes.Bool
  */
-class ParadoxCsvBoolExpressionSupport : ParadoxCsvExpressionSupportBase() {
+class ParadoxCsvBoolExpressionSupport : ParadoxCsvExpressionSupport {
     override fun supports(dataType: CwtDataType): Boolean {
         return dataType == CwtDataTypes.Bool
     }

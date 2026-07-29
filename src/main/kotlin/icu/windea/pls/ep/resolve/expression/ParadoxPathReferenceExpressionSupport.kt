@@ -1,9 +1,15 @@
 package icu.windea.pls.ep.resolve.expression
 
+import com.intellij.openapi.extensions.ExtensionPointListener
 import com.intellij.openapi.extensions.ExtensionPointName
+import com.intellij.openapi.extensions.PluginDescriptor
 import com.intellij.psi.PsiElement
+import icu.windea.pls.config.CwtDataType
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.core.collections.findFast
+import icu.windea.pls.core.optimized
+import icu.windea.pls.core.util.values.LazyValue
 import icu.windea.pls.lang.index.ParadoxFilePathIndex
 
 /**
@@ -12,11 +18,12 @@ import icu.windea.pls.lang.index.ParadoxFilePathIndex
  * 用于实现如何匹配、解析脚本文件中使用的路径表达式，以及如何基于文件路径索引进行代码补全等功能。
  *
  * @see CwtDataExpression
+ * @see CwtDataType
  * @see CwtDataTypeSets.PathReference
  * @see ParadoxFilePathIndex
  */
 interface ParadoxPathReferenceExpressionSupport {
-    fun supports(configExpression: CwtDataExpression): Boolean
+    fun supports(dataType: CwtDataType): Boolean
 
     /**
      * 判断指定的文件路径表达式是否匹配另一个相对于入口目录的路径。
@@ -57,9 +64,33 @@ interface ParadoxPathReferenceExpressionSupport {
 
     companion object INSTANCE {
         @JvmField val EP_NAME = ExtensionPointName<ParadoxPathReferenceExpressionSupport>("icu.windea.pls.pathReferenceExpressionSupport")
+        @JvmField val CACHE = LazyValue<Map<CwtDataType, ParadoxPathReferenceExpressionSupport>>()
 
-        fun get(configExpression: CwtDataExpression): ParadoxPathReferenceExpressionSupport? {
-            return EP_NAME.extensionList.find { ep -> ep.supports(configExpression) }
+        fun get(dataType: CwtDataType): ParadoxPathReferenceExpressionSupport? = CACHE.get()?.get(dataType)
+
+        // region Implementations
+
+        init {
+            computeCache()
+            addListener()
         }
+
+        private fun computeCache() {
+            CACHE.reinitialize {
+                val result = mutableMapOf<CwtDataType, ParadoxPathReferenceExpressionSupport>()
+                val eps = EP_NAME.extensionList
+                CwtDataType.entries.values.forEach { dataType -> eps.findFast { ep -> ep.supports(dataType) }?.let { result[dataType] = it } }
+                result.optimized()
+            }
+        }
+
+        private fun addListener() {
+            EP_NAME.addExtensionPointListener(object : ExtensionPointListener<ParadoxPathReferenceExpressionSupport> {
+                override fun extensionAdded(extension: ParadoxPathReferenceExpressionSupport, pluginDescriptor: PluginDescriptor) = computeCache()
+                override fun extensionRemoved(extension: ParadoxPathReferenceExpressionSupport, pluginDescriptor: PluginDescriptor) = computeCache()
+            })
+        }
+
+        // endregion
     }
 }

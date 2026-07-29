@@ -164,7 +164,7 @@ object ParadoxExpressionCompletionManager {
     fun completePathReference(context: ParadoxCompletionContext, result: CompletionResultSet) {
         val config = context.config ?: return
         val configExpression = config.configExpression ?: return
-        val support = ParadoxPathReferenceExpressionSupport.get(configExpression)
+        val support = ParadoxPathReferenceExpressionSupport.get(configExpression.type)
         if (support != null) {
             val hintText = ParadoxCompletionLookupProvider.getConfigBasedHintText(context, config)
             val fileExtensions = when (config) {

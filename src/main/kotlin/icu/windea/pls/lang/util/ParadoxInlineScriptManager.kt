@@ -104,7 +104,7 @@ object ParadoxInlineScriptManager {
         if (!isSupported(gameType)) return null
         val filePath = fileInfo.path.path
         val configExpression = inlineScriptPathExpression
-        return ParadoxPathReferenceExpressionSupport.get(configExpression)?.extract(configExpression, null, filePath)?.orNull()
+        return ParadoxPathReferenceExpressionSupport.get(configExpression.type)?.extract(configExpression, null, filePath)?.orNull()
     }
 
     /**
@@ -121,7 +121,7 @@ object ParadoxInlineScriptManager {
      */
     fun getInlineScriptFilePath(pathReference: String): String? {
         val configExpression = inlineScriptPathExpression
-        return ParadoxPathReferenceExpressionSupport.get(configExpression)?.resolvePath(configExpression, pathReference.normalizePath())?.firstOrNull()
+        return ParadoxPathReferenceExpressionSupport.get(configExpression.type)?.resolvePath(configExpression, pathReference.normalizePath())?.firstOrNull()
     }
 
     /**
