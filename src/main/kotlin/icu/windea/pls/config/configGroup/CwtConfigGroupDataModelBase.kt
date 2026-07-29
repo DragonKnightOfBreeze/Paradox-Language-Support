@@ -193,8 +193,7 @@ open class CwtConfigGroupDataModelBase : CwtConfigGroupDataModel {
         localisationLinksModel.trim()
         macrosModel.trim()
         typesModel.trim()
-        filePathExpressions.trim()
-        parameterConfigs.trim()
+        attribute.trim()
     }
 }
 

@@ -258,11 +258,19 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
 
     private fun computeMacrosModel(configGroup: CwtConfigGroup) {
         val initializer = configGroup.initializer
+        val attribute = initializer.attribute
         with(initializer.macrosModel) {
             initializer.macros.forEach { c ->
                 when (c) {
-                    is CwtMacroConfig.InlineScript -> forInlineScripts += c
-                    is CwtMacroConfig.DefinitionInjection -> forDefinitionInjections = c
+                    is CwtMacroConfig.InlineScript -> {
+                        attribute.supportInlineScript = true
+                        forInlineScripts += c
+                    }
+                    is CwtMacroConfig.DefinitionInjection -> {
+                        attribute.supportDefinitionInjection = true
+                        attribute.definitionInjectionModes += c.modeConfigs.keys
+                        forDefinitionInjections = c
+                    }
                 }
             }
         }
@@ -278,7 +286,7 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
                 }
             }
 
-            initializer.parameterConfigs.forEach { c ->
+            initializer.attribute.parameterConfigs.forEach { c ->
                 val propertyConfig = c.parentConfig as? CwtPropertyConfig ?: return@forEach
                 val aliasSubName = propertyConfig.key.removeSurroundingOrNull("alias[", "]")?.substringAfter(':', "")
                 val contextExpression = if (aliasSubName.isNullOrEmpty()) propertyConfig.keyExpression

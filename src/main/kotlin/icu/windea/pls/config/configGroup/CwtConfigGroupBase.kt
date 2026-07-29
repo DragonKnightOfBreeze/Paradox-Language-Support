@@ -130,8 +130,6 @@ class CwtConfigGroupBase(
     override val aliasKeysGroupNoConst get() = dataModel.aliasKeysGroupNoConst
     override val aliasNamesSupportScope get() = dataModel.aliasNamesSupportScope
     override val relatedLocalisationPatterns get() = dataModel.relatedLocalisationPatterns
-    override val filePathExpressions get() = dataModel.filePathExpressions
-    override val parameterConfigs get() = dataModel.parameterConfigs
     override val typesModel get() = dataModel.typesModel
     override val linksModel get() = dataModel.linksModel
     override val localisationLinksModel get() = dataModel.localisationLinksModel

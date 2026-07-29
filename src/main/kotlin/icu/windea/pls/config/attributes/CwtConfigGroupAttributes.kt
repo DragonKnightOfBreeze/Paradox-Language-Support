@@ -11,21 +11,20 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet
  */
 interface CwtConfigGroupAttributes {
     /** 是否可能到了使用基于 `## predicate` 的简单结构匹配。 */
-    val usePredicateBasedMatch: Boolean
-
+    val usePredicateBasedMatch: Boolean get() = false
     /** 是否支持内联脚本（作为一种特殊的宏）。 */
-    val supportInlineScript: Boolean
+    val supportInlineScript: Boolean get() = false
     /** 是否支持定义注入（作为一种特殊的宏）。 */
-    val supportDefinitionInjection: Boolean
+    val supportDefinitionInjection: Boolean get() = false
 
     /** 涉及到的数据类型为路径引用（[CwtDataTypeSets.PathReference]]）的数据表达式。 */
-    val filePathExpressions: Set<CwtDataExpression>
+    val filePathExpressions: Set<CwtDataExpression> get() = emptySet()
     /** 涉及到的数据类型为参数（[CwtDataTypes.Parameter]）的成员规则。 */
-    val parameterConfigs: Set<CwtMemberConfig<*>>
+    val parameterConfigs: Set<CwtMemberConfig<*>> get() = emptySet()
+    /** 支持的定义注入模式。 */
+    val definitionInjectionModes: Set<String> get() = emptySet()
 
-    companion object {
-        val EMPTY = CwtConfigGroupAttributesBase()
-    }
+    object Empty : CwtConfigGroupAttributes
 }
 
 class CwtConfigGroupAttributesBase : CwtConfigGroupAttributes {
@@ -34,9 +33,11 @@ class CwtConfigGroupAttributesBase : CwtConfigGroupAttributes {
     override var supportDefinitionInjection: Boolean = false
     override val parameterConfigs: ObjectOpenHashSet<CwtMemberConfig<*>> = ObjectOpenHashSet()
     override val filePathExpressions: ObjectOpenHashSet<CwtDataExpression> = ObjectOpenHashSet()
+    override val definitionInjectionModes: ObjectOpenHashSet<String> = ObjectOpenHashSet()
 
     fun trim() {
         parameterConfigs.trim()
         filePathExpressions.trim()
+        definitionInjectionModes.trim()
     }
 }

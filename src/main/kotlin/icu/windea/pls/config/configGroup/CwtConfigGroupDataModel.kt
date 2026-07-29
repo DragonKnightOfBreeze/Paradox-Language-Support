@@ -197,7 +197,7 @@ interface CwtConfigGroupDataModel {
     // region Attributes
 
     /** 规则分组自身的综合属性。 */
-    val attribute: CwtConfigGroupAttributes get() = CwtConfigGroupAttributes.EMPTY
+    val attribute: CwtConfigGroupAttributes get() = CwtConfigGroupAttributes.Empty
     /** 得到指定名字的并集规则（[CwtUnionConfig]）的综合属性。 */
     fun getUnionAttribute(name: String): CwtExpandableConfigAttributes = CwtExpandableConfigAttributes.EMPTY
     /** 得到指定名字的别名规则（[CwtAliasConfig]）的综合属性。 */

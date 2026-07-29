@@ -46,7 +46,7 @@ object ParadoxInlineScriptManager {
         if (context == null) return false
         val gameType = selectGameType(context) ?: return false
         val configGroup = ChronicleFacade.getConfigGroup(gameType)
-        return configGroup.macrosModel.forInlineScripts.isNotEmpty()
+        return configGroup.attribute.supportInlineScript // use attribute
     }
 
     /**

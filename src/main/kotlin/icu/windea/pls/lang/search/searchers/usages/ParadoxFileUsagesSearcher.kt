@@ -41,7 +41,7 @@ class ParadoxFileUsagesSearcher : QueryExecutorBase<PsiReference, ReferencesSear
 
     private fun getExtraWords(target: PsiFile, filePath: String, configGroup: CwtConfigGroup): Set<String> {
         val extraWords = mutableSetOf<String>()
-        configGroup.filePathExpressions.forEach { configExpression ->
+        configGroup.attribute.filePathExpressions.forEach { configExpression ->
             val name = ParadoxPathReferenceExpressionSupport.get(configExpression.type)?.extract(configExpression, target, filePath)?.orNull()
             if (name != null) extraWords.add(name)
         }

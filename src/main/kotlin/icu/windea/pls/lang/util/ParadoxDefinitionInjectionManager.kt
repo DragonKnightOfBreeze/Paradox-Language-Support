@@ -50,7 +50,7 @@ object ParadoxDefinitionInjectionManager {
         if (context == null) return false
         val gameType = selectGameType(context) ?: return false
         val configGroup = ChronicleFacade.getConfigGroup(gameType)
-        return configGroup.macrosModel.forDefinitionInjections != null
+        return configGroup.attribute.supportDefinitionInjection // use attribute
     }
 
     /**
@@ -63,9 +63,7 @@ object ParadoxDefinitionInjectionManager {
         if (mode.isEmpty()) return false
         val gameType = selectGameType(context) ?: return false
         val configGroup = ChronicleFacade.getConfigGroup(gameType)
-        val config = configGroup.macrosModel.forDefinitionInjections ?: return false
-        // ignore case for `mode`
-        return config.modeConfigs[mode] != null
+        return configGroup.attribute.definitionInjectionModes.contains(mode) // use attribute
     }
 
     /**

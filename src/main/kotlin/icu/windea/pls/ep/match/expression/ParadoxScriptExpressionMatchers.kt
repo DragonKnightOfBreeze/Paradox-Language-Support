@@ -407,6 +407,9 @@ class ParadoxScriptPatternExpressionMatcher : ParadoxScriptSimpleExpressionMatch
 // NOTE 3.0.1 目前从未被实际使用
 class ParadoxScriptPredicateBasedExpressionMatcher : ParadoxScriptExpressionMatcher {
     override fun match(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult? {
+        // 3.0.1 optimize: use attribute to apply fast return
+        if (!context.usePredicateBasedMatch) return null
+
         // 如果附有 `## predicate = {...}` 选项，则根据上下文进行匹配
         val config = context.config
         if (config !is CwtMemberConfig<*>) return null

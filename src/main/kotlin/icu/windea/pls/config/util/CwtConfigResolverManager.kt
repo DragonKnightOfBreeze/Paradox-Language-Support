@@ -23,10 +23,6 @@ import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.forEachChild
 import icu.windea.pls.core.match.PathMatcher
 import icu.windea.pls.core.pass
-import icu.windea.pls.core.util.KeyRegistry
-import icu.windea.pls.core.util.getValue
-import icu.windea.pls.core.util.provideDelegate
-import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.cwt.psi.CwtBlock
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.cwt.psi.CwtMember
@@ -37,10 +33,6 @@ import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.cwt.psi.CwtValue
 
 object CwtConfigResolverManager {
-    object Keys : KeyRegistry() {
-        val postProcessActions by registerKey<MutableList<Runnable>>(Keys)
-    }
-
     fun getConfigs(element: PsiElement?, file: CwtFile, configGroup: CwtConfigGroup): List<CwtMemberConfig<*>>? {
         if (element !is CwtMemberContainer) return null
         val configs: MutableList<CwtMemberConfig<*>> = mutableListOf()
@@ -136,17 +128,17 @@ object CwtConfigResolverManager {
         when (configExpression.type) {
             CwtDataTypes.FilePath -> {
                 if (configExpression.metadata.value != null) {
-                    initializer.filePathExpressions += configExpression
+                    initializer.attribute.filePathExpressions += configExpression
                 }
             }
             CwtDataTypes.Icon -> {
                 if (configExpression.metadata.value != null) {
-                    initializer.filePathExpressions += configExpression
+                    initializer.attribute.filePathExpressions += configExpression
                 }
             }
             CwtDataTypes.Parameter -> {
                 if (config is CwtPropertyConfig) {
-                    initializer.parameterConfigs += config
+                    initializer.attribute.parameterConfigs += config
                 }
             }
             else -> pass()
