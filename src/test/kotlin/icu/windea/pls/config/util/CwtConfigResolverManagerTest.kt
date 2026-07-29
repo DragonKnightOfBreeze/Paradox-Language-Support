@@ -28,7 +28,8 @@ class CwtConfigResolverManagerTest : BasePlatformTestCase() {
 
         val filePath = "common/test/resolver_find_configs_by_path_expression.cwt"
         val fileConfig = CwtFileConfig.resolve(file, configGroup, filePath)
-        CwtConfigResolverManager.getFileConfigs(configGroup)[filePath] = fileConfig
+        val fileConfigs = configGroup.initializer.fileConfigs
+        fileConfigs[filePath] = fileConfig
 
         run {
             val result = CwtConfigResolverManager.findConfigsByPathExpression(configGroup, "$filePath@match_a")
@@ -79,7 +80,8 @@ class CwtConfigResolverManagerTest : BasePlatformTestCase() {
 
         val filePath = "common/test/resolver_find_configs_by_path_expression.cwt"
         val fileConfig = CwtFileConfig.resolve(file, configGroup, filePath)
-        CwtConfigResolverManager.getFileConfigs(configGroup)[filePath] = fileConfig
+        val fileConfigs = configGroup.initializer.fileConfigs
+        fileConfigs[filePath] = fileConfig
 
         run {
             val result = CwtConfigResolverManager.findConfigsByPathExpression(configGroup, "$filePath@-")
@@ -117,7 +119,8 @@ class CwtConfigResolverManagerTest : BasePlatformTestCase() {
 
         val filePath = "common/test/resolver_find_configs_by_path_expression.cwt"
         val fileConfig = CwtFileConfig.resolve(file, configGroup, filePath)
-        CwtConfigResolverManager.getFileConfigs(configGroup)[filePath] = fileConfig
+        val fileConfigs = configGroup.initializer.fileConfigs
+        fileConfigs[filePath] = fileConfig
 
         // ignore case
         run {

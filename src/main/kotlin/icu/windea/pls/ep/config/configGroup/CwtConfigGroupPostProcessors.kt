@@ -3,7 +3,7 @@ package icu.windea.pls.ep.config.configGroup
 import com.intellij.openapi.progress.checkCanceled
 import icu.windea.pls.config.attributes.CwtExpandableConfigAttributesEvaluator
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.configGroup.CwtConfigGroupImpl
+import icu.windea.pls.config.configGroup.CwtConfigGroupDataModelBase
 
 class CwtBaseConfigGroupPostProcessor : CwtConfigGroupPostProcessor {
     override suspend fun postProcess(configGroup: CwtConfigGroup) {
@@ -11,30 +11,34 @@ class CwtBaseConfigGroupPostProcessor : CwtConfigGroupPostProcessor {
     }
 
     private suspend fun evaluateAttributes(configGroup: CwtConfigGroup) {
-        if (configGroup !is CwtConfigGroupImpl) throw IllegalStateException()
+        val dataModel = configGroup.dataModel
+        if (dataModel !is CwtConfigGroupDataModelBase) return
 
         checkCanceled()
-        configGroup.unions.forEach { (k, v) ->
-            configGroup.unionAttributes[k] = CwtExpandableConfigAttributesEvaluator().evaluate(k, v, configGroup)
+        dataModel.unions.forEach { (k, v) ->
+            dataModel.unionAttributes[k] = CwtExpandableConfigAttributesEvaluator().evaluate(k, v, configGroup)
         }
-        configGroup.unions.trim()
+        dataModel.unions.trim()
 
         checkCanceled()
-        configGroup.singleAliases.forEach { (k, v) ->
-            configGroup.singleAliasAttributes[k] = CwtExpandableConfigAttributesEvaluator().evaluate(k, v, configGroup)
+        dataModel.singleAliases.forEach { (k, v) ->
+            dataModel.singleAliasAttributes[k] = CwtExpandableConfigAttributesEvaluator().evaluate(k, v, configGroup)
         }
-        configGroup.singleAliasAttributes.trim()
+        dataModel.singleAliasAttributes.trim()
 
         checkCanceled()
-        configGroup.aliasGroups.forEach { (k, v) ->
-            configGroup.aliasAttributes[k] = CwtExpandableConfigAttributesEvaluator().evaluate(k, v.values, configGroup)
+        dataModel.aliasGroups.forEach { (k, v) ->
+            dataModel.aliasAttributes[k] = CwtExpandableConfigAttributesEvaluator().evaluate(k, v.values, configGroup)
         }
-        configGroup.aliasAttributes.trim()
+        dataModel.aliasAttributes.trim()
 
         checkCanceled()
-        configGroup.types.values.forEach { it.attributes }
+        dataModel.types.values.forEach { it.attributes }
 
         checkCanceled()
-        configGroup.declarations.values.forEach { it.attributes }
+        dataModel.rows.values.forEach { it.attributes }
+
+        checkCanceled()
+        dataModel.declarations.values.forEach { it.attributes }
     }
 }

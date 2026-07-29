@@ -15,7 +15,6 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.util.CwtConfigManager.Keys
 import icu.windea.pls.config.util.CwtConfigManager.getConfigPath
 import icu.windea.pls.config.util.CwtConfigManager.isInternalFile
-import icu.windea.pls.config.util.CwtConfigResolverManager
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.executeCommandLine
@@ -63,7 +62,7 @@ object CwtConfigService {
         eps.forEachFast f@{ ep ->
             if (!ep.supports(config)) return@f
             if (ep.deferred(config)) {
-                val deferredActions = CwtConfigResolverManager.getPostProcessActions(config.configGroup)
+                val deferredActions = config.configGroup.initializer.configPostProcessActions
                 deferredActions += Runnable { ep.postProcess(config) }
             } else {
                 ep.postProcess(config)

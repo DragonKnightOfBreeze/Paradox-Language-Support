@@ -116,7 +116,7 @@
     <configGroupProcessor id="predefined" implementation="icu.windea.pls.ep.config.configGroup.CwtPredefinedConfigGroupProcessor" order="first"/>
     <configGroupProcessor id="fileBased" implementation="icu.windea.pls.ep.config.configGroup.CwtFileBasedConfigGroupProcessor"/>
     <configGroupProcessor id="computed" implementation="icu.windea.pls.ep.config.configGroup.CwtComputedConfigGroupProcessor"/>
-    <configGroupProcessor id="post" implementation="icu.windea.pls.ep.config.configGroup.CwtPostConfigGroupProcessor" order="last"/>
+    <configGroupProcessor id="final" implementation="icu.windea.pls.ep.config.configGroup.CwtFinalConfigGroupProcessor" order="last"/>
 
     <configGroupPostProcessor id="base" implementation="icu.windea.pls.ep.config.configGroup.CwtBaseConfigGroupPostProcessor"/>
 

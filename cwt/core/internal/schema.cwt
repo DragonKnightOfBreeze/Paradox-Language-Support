@@ -485,9 +485,9 @@ $$options = {
     #### Example: `## cardinality_max_define = NGameplay.ETHOS_MAX_POINTS`
     cardinality_max_define
 
-    #### Specifies a simple structural predicate (structured filtering).
+    #### Specifies a structural predicate to apply simple structural match.
     ####
-    #### Uses the form `key = value` or `key != value` for simple filtering of matches.
+    #### Uses the form `key = value` or `key != value` for filtering of matches.
     ####
     #### Applicable to: Configs corresponding to definition members, as supplementary filtering conditions.
     ####

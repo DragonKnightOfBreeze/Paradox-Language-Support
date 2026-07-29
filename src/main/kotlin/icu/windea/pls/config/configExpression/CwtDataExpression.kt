@@ -146,7 +146,7 @@ private class CwtDataExpressionImplWithoutMetadata(
     override val type: CwtDataType,
     override val role: CwtDataExpressionRole,
 ) : CwtDataExpression {
-    override val metadata get() = EmptyCwtDataExpressionMetadata
+    override val metadata get() = CwtDataExpressionMetadata.Empty
 
     override fun equals(other: Any?) = this === other || other is CwtDataExpression && expressionString == other.expressionString
     override fun hashCode() = expressionString.hashCode()
@@ -164,8 +164,6 @@ private class CwtDataExpressionImplWithMetadata(
     override fun hashCode() = expressionString.hashCode()
     override fun toString() = expressionString
 }
-
-private object EmptyCwtDataExpressionMetadata : CwtDataExpressionMetadata
 
 // endregion
 

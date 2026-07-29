@@ -52,17 +52,17 @@ class CwtDeclarationConfigAttributesEvaluator {
             }
 
             override fun visitUnion(name: String, config: CwtUnionConfig): Boolean {
-                val attributes = configGroup.unionAttributes.getOrPut(name) { CwtExpandableConfigAttributesEvaluator().evaluate(name, config, configGroup) }
+                val attributes = configGroup.getUnionAttribute(name)
                 return handleContext(attributes)
             }
 
             override fun visitAliasGroup(name: String, aliasConfigGroup: Collection<List<CwtAliasConfig>>): Boolean {
-                val attributes = configGroup.aliasAttributes.getOrPut(name) { CwtExpandableConfigAttributesEvaluator().evaluate(name, aliasConfigGroup, configGroup) }
+                val attributes = configGroup.getAliasAttribute(name)
                 return handleContext(attributes)
             }
 
             override fun visitSingleAlias(name: String, config: CwtSingleAliasConfig): Boolean {
-                val attributes = configGroup.singleAliasAttributes.getOrPut(name) { CwtExpandableConfigAttributesEvaluator().evaluate(name, config, configGroup) }
+                val attributes = configGroup.getSingleAliasAttribute(name)
                 return handleContext(attributes)
             }
         }

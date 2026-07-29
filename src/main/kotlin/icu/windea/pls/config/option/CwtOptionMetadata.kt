@@ -128,9 +128,10 @@ interface CwtOptionMetadata : MetadataMap {
     val cardinalityMaxDefine: String? get() = null
 
     /**
-     * 简单结构谓词（结构化过滤）。
+     * 结构谓词。
      *
-     * 使用 `key = value` 或 `key != value` 的形式对匹配进行简单过滤。
+     * 用于进行简单的结构匹配。
+     * 使用 `key = value` 或 `key != value` 的形式对匹配进行过滤。
      * 值存储为 `ReversibleValue`，其中分隔符 `=` 表示正向、`!=` 表示反向。
      *
      * 适用对象：
@@ -593,4 +594,8 @@ interface CwtOptionMetadata : MetadataMap {
     // endregion
 
     fun copyTo(target: CwtOptionMetadata)
+
+    object Empty : CwtOptionMetadata {
+        override fun copyTo(target: CwtOptionMetadata) = Unit
+    }
 }

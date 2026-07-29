@@ -24,7 +24,6 @@ import icu.windea.pls.core.forEachChild
 import icu.windea.pls.core.match.PathMatcher
 import icu.windea.pls.core.pass
 import icu.windea.pls.core.util.KeyRegistry
-import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
@@ -154,17 +153,9 @@ object CwtConfigResolverManager {
         }
     }
 
-    fun getFileConfigs(configGroup: CwtConfigGroup): MutableMap<String, CwtFileConfig> {
-        return configGroup.initializer.fileConfigs
-    }
-
-    fun getPostProcessActions(configGroup: CwtConfigGroup): MutableList<Runnable> {
-        return configGroup.initializer.getOrPutUserData(Keys.postProcessActions) { mutableListOf() }
-    }
-
     fun findFileConfigByPathExpression(configGroup: CwtConfigGroup, pathExpression: String): CwtFileConfig? {
         if (pathExpression.isEmpty()) return null
-        val fileConfigs = getFileConfigs(configGroup)
+        val fileConfigs = configGroup.initializer.fileConfigs
         val fileConfig = fileConfigs[pathExpression]
         return fileConfig
     }

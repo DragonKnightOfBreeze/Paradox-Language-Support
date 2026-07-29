@@ -26,4 +26,6 @@ interface CwtDataExpressionMetadata : MetadataMap {
     val intRange: IntRangeInfo? get() = null
     val floatRange: FloatRangeInfo? get() = null
     val suffixes: Set<String>? get() = null
+
+    object Empty : CwtDataExpressionMetadata
 }

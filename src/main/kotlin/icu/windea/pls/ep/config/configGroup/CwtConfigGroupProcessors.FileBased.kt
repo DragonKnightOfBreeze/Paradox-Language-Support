@@ -46,7 +46,6 @@ import icu.windea.pls.config.configGroup.CwtConfigGroupFileSource
 import icu.windea.pls.config.optimizedPath
 import icu.windea.pls.config.settings.ChronicleConfigSettings
 import icu.windea.pls.config.util.CwtConfigManager
-import icu.windea.pls.config.util.CwtConfigResolverManager
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.withState
@@ -117,12 +116,12 @@ class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor {
             fileConfigMap[filePath] = fileConfig
         }
 
-        val fileConfigs = CwtConfigResolverManager.getFileConfigs(configGroup)
+        val fileConfigs = configGroup.initializer.fileConfigs
         fileConfigs += internalFileConfigMap
         fileConfigs += fileConfigMap
 
-        val postProcessActions = CwtConfigResolverManager.getPostProcessActions(configGroup)
-        for (it in postProcessActions) {
+        val configPostProcessActions = configGroup.initializer.configPostProcessActions
+        for (it in configPostProcessActions) {
             it.run()
         }
 
