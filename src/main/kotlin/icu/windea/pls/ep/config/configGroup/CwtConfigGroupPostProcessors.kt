@@ -11,7 +11,7 @@ class CwtBaseConfigGroupPostProcessor : CwtConfigGroupPostProcessor {
     }
 
     private suspend fun evaluateAttributes(configGroup: CwtConfigGroup) {
-        if (configGroup !is CwtConfigGroupImpl) return
+        if (configGroup !is CwtConfigGroupImpl) throw IllegalStateException()
 
         checkCanceled()
         configGroup.unions.forEach { (k, v) ->

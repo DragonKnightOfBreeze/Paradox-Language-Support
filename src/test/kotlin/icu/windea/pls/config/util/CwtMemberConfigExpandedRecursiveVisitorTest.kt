@@ -9,6 +9,7 @@ import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.configGroup.CwtConfigGroupImpl
 import icu.windea.pls.core.findChild
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.cwt.psi.CwtProperty
@@ -51,7 +52,7 @@ class CwtMemberConfigExpandedRecursiveVisitorTest : BasePlatformTestCase() {
                 initializer.singleAliases[singleAliasConfig.name] = singleAliasConfig
             }
         }
-        initializer.copyUserDataTo(configGroup)
+        initializer.copyUserDataTo(configGroup as CwtConfigGroupImpl)
 
         return file to configGroup
     }

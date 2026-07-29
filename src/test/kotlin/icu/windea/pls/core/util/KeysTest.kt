@@ -174,8 +174,8 @@ class KeysTest {
         assertSame(namedProducerKey, registry.namedProducerKey)
         assertSame(namedFactoryKey, registry.namedFactoryKey)
 
-        assertTrue(registry.keys.containsKey(defaultKey.name))
-        assertTrue(registry.keys.containsKey(namedDefaultKey.name))
+        assertTrue(registry.keys.contains(defaultKey))
+        assertTrue(registry.keys.contains(namedDefaultKey))
     }
 
     @Test
@@ -186,6 +186,6 @@ class KeysTest {
 
         val key = registry.k
         assertSame(key, registry.k)
-        assertSame(key, registry.keys.values.single())
+        assertSame(key, registry.keys.single())
     }
 }
