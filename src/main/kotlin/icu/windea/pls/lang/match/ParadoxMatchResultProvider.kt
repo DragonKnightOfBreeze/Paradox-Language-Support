@@ -101,11 +101,12 @@ object ParadoxMatchResultProvider {
             return ParadoxMatchResult.exactOrFallback(r)
         }
         // 使用检测子句内容的匹配
+        ProgressManager.checkCanceled() // check cancellation before lazy match
         return ParadoxMatchResult.LazyBlockAwareMatch { ParadoxMatchProvider.matchesBlock(block, config) }
     }
 
     fun getCached(element: PsiElement, project: Project, key: MatchResultNestedCacheKey, cacheKey: String, matchResultProvider: (String) -> ParadoxMatchResult): ParadoxMatchResult {
-        ProgressManager.checkCanceled()
+        ProgressManager.checkCanceled() // check cancellation before access root-file-level cache
         val rootFile = selectRootFile(element) ?: return ParadoxMatchResult.NotMatch
         val configGroup = ChronicleFacade.getConfigGroup(project, selectGameType(rootFile))
         val cache = configGroup.getOrPutUserData(key).value.get(rootFile)
@@ -124,6 +125,7 @@ object ParadoxMatchResultProvider {
             else -> "${suffixes.joinToString(",")}#${typeExpression}#${expression}"
         }
         return getCached(element, project, key, cacheKey) {
+            ProgressManager.checkCanceled() // check cancellation before lazy match
             ParadoxMatchResult.LazyIndexAwareMatch {
                 when {
                     suffixes.isEmpty() -> ParadoxMatchProvider.matchesDefinition(element, project, expression, typeExpression)
@@ -144,6 +146,7 @@ object ParadoxMatchResultProvider {
             else -> "${suffixes.joinToString(",")}#${expression}"
         }
         return getCached(element, project, key, cacheKey) {
+            ProgressManager.checkCanceled() // check cancellation before lazy match
             ParadoxMatchResult.LazyIndexAwareMatch {
                 when {
                     suffixes.isEmpty() -> ParadoxMatchProvider.matchesLocalisation(element, project, expression)
@@ -164,6 +167,7 @@ object ParadoxMatchResultProvider {
             else -> "${suffixes.joinToString(",")}#${expression}"
         }
         return getCached(element, project, key, cacheKey) {
+            ProgressManager.checkCanceled() // check cancellation before lazy match
             ParadoxMatchResult.LazyIndexAwareMatch {
                 when {
                     suffixes.isEmpty() -> ParadoxMatchProvider.matchesSyncedLocalisation(element, project, expression)
@@ -187,6 +191,7 @@ object ParadoxMatchResultProvider {
         val key = Keys.cacheForPathReferences
         val cacheKey = "${pathReference}#${configExpression}"
         return getCached(element, project, key, cacheKey) {
+            ProgressManager.checkCanceled() // check cancellation before lazy match
             ParadoxMatchResult.LazyIndexAwareMatch {
                 ParadoxMatchProvider.matchesPathReference(element, project, pathReference, configExpression)
             }
@@ -200,6 +205,7 @@ object ParadoxMatchResultProvider {
         // with search scope type -> not cached
         val searchScopeType = complexEnumConfig.searchScopeType
         if (searchScopeType != null) {
+            ProgressManager.checkCanceled() // check cancellation before lazy match
             return ParadoxMatchResult.LazyIndexAwareMatch {
                 ParadoxMatchProvider.matchesComplexEnumValue(element, project, name, enumName, searchScopeType)
             }
@@ -208,6 +214,7 @@ object ParadoxMatchResultProvider {
         val key = Keys.cacheForComplexEnumValues
         val cacheKey = "${enumName}#${name}"
         return getCached(element, project, key, cacheKey) {
+            ProgressManager.checkCanceled() // check cancellation before lazy match
             ParadoxMatchResult.LazyIndexAwareMatch {
                 ParadoxMatchProvider.matchesComplexEnumValue(element, project, name, enumName)
             }
@@ -221,6 +228,7 @@ object ParadoxMatchResultProvider {
         val key = Keys.cacheForModifiers
         val cacheKey = name
         return getCached(element, configGroup.project, key, cacheKey) {
+            ProgressManager.checkCanceled() // check cancellation before lazy match
             ParadoxMatchResult.LazyIndexAwareMatch {
                 ParadoxMatchProvider.matchesModifier(element, configGroup, name)
             }
@@ -236,6 +244,7 @@ object ParadoxMatchResultProvider {
         val cacheKey = "${template}#${expression}\u0000${options.toHashString(forMatched = false)}"
         options.toHashString(forMatched = false)
         return getCached(element, configGroup.project, key, cacheKey) {
+            ProgressManager.checkCanceled() // check cancellation before lazy match
             ParadoxMatchResult.LazyTemplateAwareMatch {
                 ParadoxMatchProvider.matchesTemplate(element, configGroup, expression, template, options)
             }
@@ -247,6 +256,7 @@ object ParadoxMatchResultProvider {
             CwtDataTypes.ScopeField -> forComplexExpressionFromAttributes(scopeFieldExpression)
             CwtDataTypes.Scope -> {
                 val expectedScope = configExpression.metadata.value ?: return forComplexExpressionFromAttributes(scopeFieldExpression)
+                ProgressManager.checkCanceled() // check cancellation before lazy match
                 ParadoxMatchResult.LazyScopeAwareMatch {
                     val scopeContext = ParadoxScopeManager.getScopeContext(element, scopeFieldExpression, configExpression)
                     ParadoxScopeManager.matchesScope(scopeContext, expectedScope, configGroup)
@@ -254,6 +264,7 @@ object ParadoxMatchResultProvider {
             }
             CwtDataTypes.ScopeGroup -> {
                 val expectedScopeGroup = configExpression.metadata.value ?: return forComplexExpressionFromAttributes(scopeFieldExpression)
+                ProgressManager.checkCanceled() // check cancellation before lazy match
                 ParadoxMatchResult.LazyScopeAwareMatch {
                     val scopeContext = ParadoxScopeManager.getScopeContext(element, scopeFieldExpression, configExpression)
                     ParadoxScopeManager.matchesScopeGroup(scopeContext, expectedScopeGroup, configGroup)

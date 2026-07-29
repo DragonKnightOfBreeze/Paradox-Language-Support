@@ -114,7 +114,7 @@ object ParadoxExpressionMatchService {
         if (constKey != null) return constKey
         val keys = configGroup.aliasKeysGroupNoConst[aliasName] ?: return null
         return keys.find { key ->
-            ProgressManager.checkCanceled()
+            ProgressManager.checkCanceled() // check cancellation
             val configExpression = CwtDataExpression.resolve(key)
             val context = ParadoxScriptExpressionMatchContext(element, expression, configExpression, null, configGroup, options)
             matchScriptExpression(context).get(options)

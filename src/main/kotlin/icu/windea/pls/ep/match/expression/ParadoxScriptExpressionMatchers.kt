@@ -1,5 +1,6 @@
 package icu.windea.pls.ep.match.expression
 
+import com.intellij.openapi.progress.ProgressManager
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
@@ -207,6 +208,7 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
         // NOTE 3.0.1 recursion guard is required here
         runWithRecursionGuard("scriptExpression.match.union", unionName) {
             unionConfig.processCandidateConfigs { valueConfig ->
+                ProgressManager.checkCanceled() // check cancellation
                 val nextContext = context.copy(configExpression = valueConfig.configExpression)
                 val r = ParadoxExpressionMatchService.matchScriptExpression(nextContext)
                 if (r.get(context.options)) return r

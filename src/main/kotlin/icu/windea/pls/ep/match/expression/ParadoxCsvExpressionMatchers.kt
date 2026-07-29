@@ -1,5 +1,6 @@
 package icu.windea.pls.ep.match.expression
 
+import com.intellij.openapi.progress.ProgressManager
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.processCandidateConfigs
@@ -129,6 +130,7 @@ class ParadoxCoreCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
         // NOTE 3.0.1 recursion guard is required here
         runWithRecursionGuard("csvExpression.match.union", unionName) {
             unionConfig.processCandidateConfigs { valueConfig ->
+                ProgressManager.checkCanceled() // check cancellation
                 val nextContext = context.copy(configExpression = valueConfig.configExpression)
                 val r = ParadoxExpressionMatchService.matchCsvExpression(nextContext)
                 if (r.get()) return r
