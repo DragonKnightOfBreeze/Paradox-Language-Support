@@ -26,17 +26,21 @@ class CwtBaseDeclarationConfigContextProvider : CwtDeclarationConfigContextProvi
     }
 
     override fun getCacheKey(context: CwtDeclarationConfigContext, declarationConfig: CwtDeclarationConfig): String {
-        val gameTypeId = context.configGroup.gameType.id
+        val gameType = context.gameType
         val typeString = context.definitionType
-        val subtypesString = context.definitionSubtypes?.orNull()?.let { subtypes ->
-            val subtypesToDistinct = declarationConfig.attributes.involvedSubtypes
-            buildString {
+        return buildString {
+            append(gameType.ordinal)
+            append("@b@")
+            append(typeString)
+            context.definitionSubtypes?.orNull()?.let { subtypes ->
+                val subtypesToDistinct = declarationConfig.attributes.involvedSubtypes
                 subtypes.forEachFast { subtype ->
-                    if (subtype in subtypesToDistinct) append(".").append(subtype)
+                    if (subtype in subtypesToDistinct) {
+                        append('.').append(subtype)
+                    }
                 }
             }
-        }.orEmpty()
-        return "b@$gameTypeId#$typeString$subtypesString"
+        }
     }
 
     override fun getConfig(context: CwtDeclarationConfigContext, declarationConfig: CwtDeclarationConfig): CwtPropertyConfig {
@@ -66,9 +70,13 @@ class CwtGameRuleDeclarationConfigContextProvider : CwtDeclarationConfigContextP
     }
 
     override fun getCacheKey(context: CwtDeclarationConfigContext, declarationConfig: CwtDeclarationConfig): String {
-        val gameTypeId = context.configGroup.gameType.id
+        val gameType = context.gameType
         val definitionName = context.definitionName
-        return "gr@$gameTypeId#$definitionName"
+        return buildString {
+            append(gameType.ordinal)
+            append("@gr@")
+            append(definitionName)
+        }
     }
 
     override fun getConfig(context: CwtDeclarationConfigContext, declarationConfig: CwtDeclarationConfig): CwtPropertyConfig {
@@ -98,9 +106,13 @@ class CwtOnActionDeclarationConfigContextProvider : CwtDeclarationConfigContextP
     }
 
     override fun getCacheKey(context: CwtDeclarationConfigContext, declarationConfig: CwtDeclarationConfig): String {
-        val gameTypeId = context.configGroup.gameType.id
+        val gameType = context.gameType
         val definitionName = context.definitionName
-        return "oa@$gameTypeId#$definitionName"
+        return buildString {
+            append(gameType.ordinal)
+            append("@oa@")
+            append(definitionName)
+        }
     }
 
     override fun getConfig(context: CwtDeclarationConfigContext, declarationConfig: CwtDeclarationConfig): CwtPropertyConfig {

@@ -6,6 +6,7 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.declarationConfigCacheKey
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.manipulation.CwtConfigManipulationService
+import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.util.values.singletonList
 import icu.windea.pls.core.util.values.to
@@ -84,15 +85,22 @@ class CwtDefinitionConfigContextProvider : CwtConfigContextProvider {
     }
 
     override fun getCacheKey(context: CwtConfigContext, options: ParadoxMatchOptions?): String? {
-        val gameTypeId = context.gameType.id
-        val definitionInfo = context.definitionInfo ?: return null
-        val declarationConfig = definitionInfo.getDeclaration(options) ?: return null // TODO 2.0.6+ 这里存在一定的耗时，需要考虑优化
-        val declarationConfigCacheKey = declarationConfig.declarationConfigCacheKey ?: return null // null -> unexpected
-        val declarationKey = declarationConfigCacheKey.replace("$gameTypeId#", "")
-        val memberPath = context.memberPath ?: return null // null -> unexpected
+        val gameType = context.gameType
         val memberRole = context.memberRole
-        val suffix = "${memberPath}\u0000${memberRole.ordinal}\u0000${options.toHashString(forMatched = false)}"
-        return "d@$gameTypeId#$declarationKey#$suffix"
+        val memberPath = context.memberPath ?: return null // null -> unexpected
+        val definitionInfo = context.definitionInfo ?: return null
+        val declarationConfig = definitionInfo.getDeclaration(options) ?: return null // TODO 2.0.6+ consider optimization (~3.6s during indexing)
+        val declarationConfigCacheKey = declarationConfig.declarationConfigCacheKey ?: return null // null -> unexpected
+        return buildString {
+            append(gameType.ordinal)
+            append("@d@")
+            append(options.toHashString(forMatched = false))
+            append(":")
+            append(declarationConfigCacheKey)
+            append("\u0000:")
+            append(memberRole.ordinal)
+            memberPath.subPaths.forEachFast { append("\u0000/").append(it) }
+        }
     }
 
     override fun getConfigs(context: CwtConfigContext, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>>? {
@@ -124,13 +132,20 @@ class CwtDefineVariableConfigContextProvider : CwtConfigContextProvider {
     }
 
     override fun getCacheKey(context: CwtConfigContext, options: ParadoxMatchOptions?): String? {
-        val gameTypeId = context.gameType.id
-        val defineVariableInfo = context.defineVariableInfo ?: return null
-        val declarationKey = defineVariableInfo.namespace + "\u0000" + defineVariableInfo.variable
-        val memberPath = context.memberPath ?: return null // null -> unexpected
+        val gameType = context.gameType
         val memberRole = context.memberRole
-        val suffix = "${memberPath}\u0000${memberRole.ordinal}\u0000${options.toHashString(forMatched = false)}"
-        return "dv@$gameTypeId#${declarationKey}#$suffix"
+        val memberPath = context.memberPath ?: return null // null -> unexpected
+        val defineVariableInfo = context.defineVariableInfo ?: return null
+        return buildString {
+            append(gameType.ordinal)
+            append("@dv@")
+            append(options.toHashString(forMatched = false))
+            append(":")
+            append(defineVariableInfo.namespace).append("\u0000.").append(defineVariableInfo.variable)
+            append("\u0000:")
+            append(memberRole.ordinal)
+            memberPath.subPaths.forEachFast { append("\u0000/").append(it) }
+        }
     }
 
     override fun getConfigs(context: CwtConfigContext, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>>? {
@@ -169,12 +184,20 @@ class CwtParameterValueConfigContextProvider : CwtConfigContextProvider {
     }
 
     override fun getCacheKey(context: CwtConfigContext, options: ParadoxMatchOptions?): String? {
-        val gameTypeId = context.gameType.id
-        val parameterElement = context.parameterElement ?: return null // null -> unexpected
-        val memberPath = context.memberPath ?: return null // null -> unexpected
+        val gameType = context.gameType
         val memberRole = context.memberRole
-        val suffix = "${memberPath}\u0000${memberRole.ordinal}\u0000${options.toHashString(forMatched = false)}"
-        return "pv@$gameTypeId#${parameterElement.contextKey}#${parameterElement.name}#$suffix"
+        val memberPath = context.memberPath ?: return null // null -> unexpected
+        val parameterElement = context.parameterElement ?: return null // null -> unexpected
+        return buildString {
+            append(gameType.ordinal)
+            append("@pv@")
+            append(options.toHashString(forMatched = false))
+            append(":")
+            append(parameterElement.contextKey).append("\u0000@").append(parameterElement.name)
+            append("\u0000:")
+            append(memberRole.ordinal)
+            memberPath.subPaths.forEachFast { append("\u0000/").append(it) }
+        }
     }
 
     override fun getConfigs(context: CwtConfigContext, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>>? {
@@ -217,11 +240,17 @@ class CwtInlineScriptUsageConfigContextProvider : CwtConfigContextProvider {
     }
 
     override fun getCacheKey(context: CwtConfigContext, options: ParadoxMatchOptions?): String? {
-        val gameTypeId = context.gameType.id
-        val memberPath = context.memberPath ?: return null // null -> unexpected
+        val gameType = context.gameType
         val memberRole = context.memberRole
-        val suffix = "${memberPath}\u0000${memberRole.ordinal}\u0000${options.toHashString(forMatched = false)}"
-        return "isu@$gameTypeId#$suffix"
+        val memberPath = context.memberPath ?: return null // null -> unexpected
+        return buildString {
+            append(gameType.ordinal)
+            append("@isu@")
+            append(options.toHashString(forMatched = false))
+            append(":")
+            append(memberRole.ordinal)
+            memberPath.subPaths.forEachFast { append("\u0000/").append(it) }
+        }
     }
 
     override fun getConfigs(context: CwtConfigContext, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>>? {
@@ -257,12 +286,20 @@ class CwtInlineScriptFileConfigContextProvider : CwtConfigContextProvider {
     }
 
     override fun getCacheKey(context: CwtConfigContext, options: ParadoxMatchOptions?): String? {
-        val gameTypeId = context.gameType.id
-        val inlineScriptExpression = context.inlineScriptExpression ?: return null // null -> unexpected
-        val memberPath = context.memberPath ?: return null // null -> unexpected
+        val gameType = context.gameType
         val memberRole = context.memberRole
-        val suffix = "${memberPath}\u0000${memberRole.ordinal}\u0000${options.toHashString(forMatched = false)}"
-        return "is@$gameTypeId#$inlineScriptExpression#$suffix"
+        val memberPath = context.memberPath ?: return null // null -> unexpected
+        val inlineScriptExpression = context.inlineScriptExpression ?: return null // null -> unexpected
+        return buildString {
+            append(gameType.ordinal)
+            append("@is@")
+            append(options.toHashString(forMatched = false))
+            append(":")
+            append(inlineScriptExpression)
+            append("\u0000:")
+            append(memberRole.ordinal)
+            memberPath.subPaths.forEachFast { append("\u0000/").append(it) }
+        }
     }
 
     override fun getConfigs(context: CwtConfigContext, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>>? {
@@ -312,13 +349,20 @@ class CwtDefinitionInjectionConfigContextProvider : CwtConfigContextProvider {
     }
 
     override fun getCacheKey(context: CwtConfigContext, options: ParadoxMatchOptions?): String? {
-        val gameTypeId = context.gameType.id
-        val definitionInjectionInfo = context.definitionInjectionInfo ?: return null
-        val targetKey = definitionInjectionInfo.type + "@" + definitionInjectionInfo.target
-        val memberPath = context.memberPath ?: return null // null -> unexpected
+        val gameType = context.gameType
         val memberRole = context.memberRole
-        val suffix = "${memberPath}\u0000${memberRole.ordinal}\u0000${options.toHashString(forMatched = false)}"
-        return "di@$gameTypeId#$targetKey#$suffix"
+        val memberPath = context.memberPath ?: return null // null -> unexpected
+        val definitionInjectionInfo = context.definitionInjectionInfo ?: return null
+        return buildString {
+            append(gameType.ordinal)
+            append("@di@")
+            append(options.toHashString(forMatched = false))
+            append(":")
+            append(definitionInjectionInfo.type).append("\u0000@").append(definitionInjectionInfo.target)
+            append("\u0000:")
+            append(memberRole.ordinal)
+            memberPath.subPaths.forEachFast { append("\u0000/").append(it) }
+        }
     }
 
     override fun getConfigs(context: CwtConfigContext, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>>? {
