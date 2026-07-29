@@ -20,20 +20,20 @@ class CwtConfigExpressionBasedInjectedConfigProvider : CwtInjectedConfigProvider
         //  - 总之这里的类型检查不是非常明显的性能热点，时间复杂度仍然是无法避免的，让事情变得简单一点。
         var r = false
         val processors = CwtInjectedConfigProcessor.EP_NAME.extensionList
-        configs.forEachReversedIndexedFast { i, config ->
+        configs.forEachReversedIndexedFast f1@{ i, config ->
             when (config) {
                 is CwtPropertyConfig -> {
                     val keyExpression = config.keyExpression // 3.0.1 optimize: access expressionString only on demand
                     val valueExpression = config.valueExpression // 3.0.1 optimize: access expressionString only on demand
-                    processors.forEachFast f@{ processor ->
-                        if (!processor.supports(parentConfig)) return@f
+                    processors.forEachFast f2@{ processor ->
+                        if (!processor.supports(parentConfig)) return@f2 // continue to next processor
                         val injectedKeys = processor.processKey(parentConfig, config, keyExpression)
                         val injectedValues = processor.processValue(parentConfig, config, valueExpression)
                         val keyInjected = injectedKeys != null
                         val valueInjected = injectedValues != null
                         val injected = keyInjected || valueInjected
                         r = r || injected
-                        if (!injected) return true
+                        if (!injected) return@f1 // continue to next config
                         var i0 = i + 1
                         if (keyInjected) {
                             injectedKeys.forEachFast { injectedKey ->
@@ -63,12 +63,12 @@ class CwtConfigExpressionBasedInjectedConfigProvider : CwtInjectedConfigProvider
                 }
                 is CwtValueConfig -> {
                     val valueExpression = config.valueExpression // 3.0.1 optimize: access expressionString only on demand
-                    processors.forEachFast f@{ processor ->
-                        if (!processor.supports(parentConfig)) return@f
+                    processors.forEachFast f2@{ processor ->
+                        if (!processor.supports(parentConfig)) return@f2 // continue to next processor
                         val injectedValues = processor.processValue(parentConfig, config, valueExpression)
                         val injected = injectedValues != null
                         r = r || injected
-                        if (!injected) return true
+                        if (!injected) return@f1 // continue to next config
                         var i0 = i + 1
                         injectedValues.forEachFast { injectedValue ->
                             val delegatedConfig = config.delegatedWith(injectedValue).also { it.withParentConfig(containerConfig) }

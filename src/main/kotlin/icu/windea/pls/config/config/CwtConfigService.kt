@@ -80,7 +80,8 @@ object CwtConfigService {
         val eps = CwtInjectedConfigProvider.EP_NAME.extensionList
         eps.forEachFast f@{ ep ->
             if (!ep.supports(parentConfig)) return@f
-            r = r || ep.injectConfigs(parentConfig, containerConfig, configs)
+            // NOTE 3.0.1 can be applied multiple times here
+            ep.injectConfigs(parentConfig, containerConfig, configs).let { r = r || it }
         }
         return r
     }
