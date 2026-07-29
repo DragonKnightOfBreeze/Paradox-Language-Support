@@ -4,6 +4,7 @@ import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.patterns.PlatformPatterns.*
 import com.intellij.util.ProcessingContext
+import icu.windea.pls.base.ChronicleCapacities
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.codeInsight.completion.GlobalCompletionContext
 import icu.windea.pls.core.processAsync
@@ -24,7 +25,6 @@ import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.search.util.filterBy
 import icu.windea.pls.lang.select.selectScope
-import icu.windea.pls.lang.settings.ChronicleInternalSettings
 import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
@@ -59,8 +59,7 @@ class ParadoxDefinitionNameCompletionProvider : ParadoxCompletionProvider() {
                 val fileInfo = context.file.fileInfo ?: return
                 val path = fileInfo.path
                 // 忽略 rootKeys 深度超出限制，或者带参数的情况
-                val maxDepth = ChronicleInternalSettings.getInstance().maxDefinitionDepth
-                val rootKeys = ParadoxMemberService.getRootKeys(element, maxDepth = maxDepth, parameterAware = false) ?: return
+                val rootKeys = ParadoxMemberService.getRootKeys(element, maxDepth = ChronicleCapacities.maxDefinitionDepth(), parameterAware = false) ?: return
                 val typeKeyPrefix = lazy { ParadoxMemberService.getKeyPrefix(element) }
                 for (typeConfig in context.configGroup.types.values) {
                     if (typeConfig.nameField != null) continue

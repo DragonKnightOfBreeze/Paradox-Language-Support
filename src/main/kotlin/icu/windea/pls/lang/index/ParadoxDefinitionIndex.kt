@@ -8,6 +8,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor
 import com.intellij.psi.util.startOffset
 import icu.windea.pls.ChronicleFacade
+import icu.windea.pls.base.ChronicleCapacities
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.ImmutableList
@@ -31,7 +32,6 @@ import icu.windea.pls.lang.match.CwtTypeConfigMatchContext
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.resolve.ParadoxDefinitionService
 import icu.windea.pls.lang.resolve.ParadoxMemberService
-import icu.windea.pls.lang.settings.ChronicleInternalSettings
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.model.ParadoxDefinitionSource
 import icu.windea.pls.model.ParadoxGameType
@@ -92,9 +92,8 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
         ParadoxMemberService.injectRootKeys(psiFile, rootKeyStack)
 
         // 预计算候选类型规则中最大的顶级键深度，用于限制 PSI 遍历深度
-        val maxDefinitionDepth = ChronicleInternalSettings.getInstance().maxDefinitionDepth
         val maxRootKeyDepth = fileLevelTypeConfigs.maxOf { it.attributes.maxRootKeyDepth }
-        val effectiveMaxDepth = (minOf(maxRootKeyDepth, maxDefinitionDepth) - rootKeyStack.size).coerceAtLeast(0)
+        val effectiveMaxDepth = (minOf(maxRootKeyDepth, ChronicleCapacities.maxDefinitionDepth()) - rootKeyStack.size).coerceAtLeast(0)
 
         // 2.1.3 这里需要使用 accept 而非 acceptChildren，因为 psiFile 也可能是一个定义
         psiFile.accept(object : PsiRecursiveElementWalkingVisitor() {

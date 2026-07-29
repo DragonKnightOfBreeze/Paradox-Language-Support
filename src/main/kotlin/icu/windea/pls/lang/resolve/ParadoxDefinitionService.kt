@@ -3,6 +3,7 @@ package icu.windea.pls.lang.resolve
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleFacade
+import icu.windea.pls.base.ChronicleCapacities
 import icu.windea.pls.base.annotations.ChronicleAnnotationService
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
@@ -30,7 +31,6 @@ import icu.windea.pls.lang.match.ParadoxMatchService
 import icu.windea.pls.lang.psi.stringValue
 import icu.windea.pls.lang.search.util.preferLocale
 import icu.windea.pls.lang.select.selectScope
-import icu.windea.pls.lang.settings.ChronicleInternalSettings
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager.getModeFromExpression
@@ -88,8 +88,7 @@ object ParadoxDefinitionService {
         val source = resolveSource(element) ?: return null
         val typeKey = ParadoxMemberService.getTypeKey(element) ?: return null
         // 忽略 rootKeys 深度超出限制，或者带参数的情况
-        val maxDepth = ChronicleInternalSettings.getInstance().maxDefinitionDepth
-        val rootKeys = ParadoxMemberService.getRootKeys(element, maxDepth = maxDepth, parameterAware = false) ?: return null
+        val rootKeys = ParadoxMemberService.getRootKeys(element, maxDepth = ChronicleCapacities.maxDefinitionDepth(), parameterAware = false) ?: return null
         val typeKeyPrefix = lazy { ParadoxMemberService.getKeyPrefix(element) }
         val configGroup = ChronicleFacade.getConfigGroup(file.project, gameType)
         val matchContext = CwtTypeConfigMatchContext(configGroup, path, typeKey, rootKeys, typeKeyPrefix)
