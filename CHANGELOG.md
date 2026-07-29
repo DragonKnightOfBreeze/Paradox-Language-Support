@@ -10,6 +10,7 @@
 - [x] 对于上下文规则和期望的规则，在检查前展开规则，包括并集（`union[x]`）和别名（`alias_keys_field[x]`） / For context configs and expected configs, expand before checking, including unions (`union[x]`) and aliases (`alias_keys_field[x]`)
 - [x] 完善 `ParadoxExecutableFileBasedGameMetadataProvider`，修复回归 BUG / Improve `ParadoxExecutableFileBasedGameMetadataProvider`, fix regression ([#339](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/339))
 - [x] 修复对于 `alias[x] = union[y]`，匹配逻辑不符合预期的问题 / Fix a bug where for `alias[x] = union[y]`, the match logic does not work as expected ([#339](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/339))
+- [x] 分析与优化构建索引时的性能和内存占用 / Analyze and optimize performance and memory during indexing 
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 3.0.0 - 2026-07-13
