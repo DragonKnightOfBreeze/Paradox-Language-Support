@@ -1,6 +1,6 @@
 package icu.windea.pls.model.type
 
-import icu.windea.pls.core.optimizer.Optimizer
+import icu.windea.pls.core.optimizer.ByteOptimizer
 import icu.windea.pls.core.optimizer.OptimizerFactory
 import icu.windea.pls.cwt.psi.CwtExpressionElement
 
@@ -25,10 +25,10 @@ enum class CwtExpressionRole(val text: String) {
     fun toBoolean(): Boolean? = if (this == Key) true else if (this === Value) false else null
 
     companion object {
-        private val optimizer = OptimizerFactory.create<CwtExpressionRole, Byte>({ it.ordinal.toByte() }, { entries[it.toInt()] })
+        private val optimizer = OptimizerFactory.create({ it.ordinal.toByte() }, { entries[it.toInt()] })
 
         @JvmStatic
-        fun optimizer(): Optimizer<CwtExpressionRole, Byte> = optimizer
+        fun optimizer(): ByteOptimizer<CwtExpressionRole> = optimizer
 
         @Suppress("unused")
         @JvmStatic

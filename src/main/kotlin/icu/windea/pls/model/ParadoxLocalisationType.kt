@@ -2,7 +2,7 @@ package icu.windea.pls.model
 
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiFile
-import icu.windea.pls.core.optimizer.Optimizer
+import icu.windea.pls.core.optimizer.ByteOptimizer
 import icu.windea.pls.core.optimizer.OptimizerFactory
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.localisation.ParadoxLocalisationFileType
@@ -54,9 +54,9 @@ enum class ParadoxLocalisationType(val id: String) {
             return resolve(root)
         }
 
-        private val optimizer = OptimizerFactory.create<ParadoxLocalisationType, Byte>({ it.ordinal.toByte() }, { entries[it.toInt()] })
+        private val optimizer = OptimizerFactory.create({ it.ordinal.toByte() }, { entries[it.toInt()] })
 
         @JvmStatic
-        fun optimizer(): Optimizer<ParadoxLocalisationType, Byte> = optimizer
+        fun optimizer(): ByteOptimizer<ParadoxLocalisationType> = optimizer
     }
 }

@@ -1,6 +1,6 @@
 package icu.windea.pls.model.type
 
-import icu.windea.pls.core.optimizer.Optimizer
+import icu.windea.pls.core.optimizer.ByteOptimizer
 import icu.windea.pls.core.optimizer.OptimizerFactory
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.model.expressions.ParadoxExpression
@@ -61,9 +61,9 @@ enum class ParadoxExpressionType(val text: String) {
     // endregion
 
     companion object {
-        private val optimizer = OptimizerFactory.create<ParadoxExpressionType, Byte>({ it.ordinal.toByte() }, { entries[it.toInt()] })
+        private val optimizer = OptimizerFactory.create({ it.ordinal.toByte() }, { entries[it.toInt()] })
 
         @JvmStatic
-        fun optimizer(): Optimizer<ParadoxExpressionType, Byte> = optimizer
+        fun optimizer(): ByteOptimizer<ParadoxExpressionType> = optimizer
     }
 }

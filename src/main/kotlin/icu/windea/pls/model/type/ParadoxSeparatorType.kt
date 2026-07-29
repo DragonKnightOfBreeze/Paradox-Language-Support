@@ -1,6 +1,6 @@
 package icu.windea.pls.model.type
 
-import icu.windea.pls.core.optimizer.Optimizer
+import icu.windea.pls.core.optimizer.ByteOptimizer
 import icu.windea.pls.core.optimizer.OptimizerFactory
 
 enum class ParadoxSeparatorType(val text: String) {
@@ -20,9 +20,9 @@ enum class ParadoxSeparatorType(val text: String) {
     override fun toString() = text
 
     companion object {
-        private val optimizer = OptimizerFactory.create<ParadoxSeparatorType, Byte>({ it.ordinal.toByte() }, { entries[it.toInt()] })
+        private val optimizer = OptimizerFactory.create({ it.ordinal.toByte() }, { entries[it.toInt()] })
 
         @JvmStatic
-        fun optimizer(): Optimizer<ParadoxSeparatorType, Byte> = optimizer
+        fun optimizer(): ByteOptimizer<ParadoxSeparatorType> = optimizer
     }
 }
