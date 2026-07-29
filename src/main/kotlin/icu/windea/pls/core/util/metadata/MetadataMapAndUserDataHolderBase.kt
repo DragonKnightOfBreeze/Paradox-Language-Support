@@ -17,6 +17,9 @@ open class MetadataMapAndUserDataHolderBase: UserDataHolderBase(), MetadataMap {
     //  - 比如，可以在底层仅使用 `bitmasks: Long` 和 `elements: Array<Any>` 这两个字段
     //  - 当元素个数大于2且不大于64时，这种策略可以获得更好的性能和内存占用
 
+    // region Copied from `MetadataMapBase`
+
+    // volatile is enough
     @Volatile private var map: KeyFMap = KeyFMap.EMPTY_MAP
 
     override fun isEmpty(): Boolean {
@@ -42,7 +45,7 @@ open class MetadataMapAndUserDataHolderBase: UserDataHolderBase(), MetadataMap {
         @Suppress("UNCHECKED_CAST")
         if (value === EMPTY_OBJECT) return null as T
         if (value != null) return value
-        // no thread safe check here
+        // no strict thread safe check here
         // see: com.intellij.openapi.util.UserDataHolderBase.putUserData
         val computed = key.producer()
         @Suppress("UNCHECKED_CAST")
@@ -52,7 +55,7 @@ open class MetadataMapAndUserDataHolderBase: UserDataHolderBase(), MetadataMap {
     }
 
     operator fun <T> set(key: Key<T>, value: T?) {
-        // no thread safe check here
+        // no strict thread safe check here
         // see: com.intellij.openapi.util.UserDataHolderBase.putUserData
         val newMap = if (value == null) map.minus(key) else map.plus(key, value)
         map = newMap
@@ -83,4 +86,6 @@ open class MetadataMapAndUserDataHolderBase: UserDataHolderBase(), MetadataMap {
             other.map = newOtherMap
         }
     }
+
+    // endregion
 }

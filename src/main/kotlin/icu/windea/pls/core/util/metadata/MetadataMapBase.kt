@@ -25,6 +25,7 @@ open class MetadataMapBase : MetadataMap {
     //  - 比如，可以在底层仅使用 `bitmasks: Long` 和 `elements: Array<Any>` 这两个字段
     //  - 当元素个数大于2且不大于64时，这种策略可以获得更好的性能和内存占用
 
+    // volatile is enough
     @Volatile private var map: KeyFMap = KeyFMap.EMPTY_MAP
 
     override fun isEmpty(): Boolean {
@@ -50,7 +51,7 @@ open class MetadataMapBase : MetadataMap {
         @Suppress("UNCHECKED_CAST")
         if (value === EMPTY_OBJECT) return null as T
         if (value != null) return value
-        // no thread safe check here
+        // no strict thread safe check here
         // see: com.intellij.openapi.util.UserDataHolderBase.putUserData
         val computed = key.producer()
         @Suppress("UNCHECKED_CAST")
@@ -60,22 +61,25 @@ open class MetadataMapBase : MetadataMap {
     }
 
     operator fun <T> set(key: Key<T>, value: T?) {
-        // no thread safe check here
+        // no strict thread safe check here
         // see: com.intellij.openapi.util.UserDataHolderBase.putUserData
         val newMap = if (value == null) map.minus(key) else map.plus(key, value)
         map = newMap
     }
 
+    /** 清空所有元数据。 */
     @Suppress("unused")
     fun clearMetadata() {
         map = KeyFMap.EMPTY_MAP
     }
 
+    /** 将当前元数据映射中的所有元数据拷贝到 [other]。[other] 中的底层数据结构会被直接替换。 */
     @Suppress("unused")
     fun copyMetadataTo(other: MetadataMapBase) {
         other.map = map
     }
 
+    /** 将当前元数据映射中的所有元数据合并到 [other]。[other] 中的底层元数据会被按需替换，已存在时也会被覆盖。 */
     @Suppress("unused")
     fun mergeMetadataTo(other: MetadataMapBase) {
         if (map.isEmpty) return // fast return
