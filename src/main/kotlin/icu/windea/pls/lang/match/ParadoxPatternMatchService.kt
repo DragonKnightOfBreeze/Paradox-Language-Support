@@ -6,6 +6,8 @@ import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.CwtDataExpressionRole
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.util.values.singletonList
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.ep.match.expression.ParadoxScriptExpressionMatcher
@@ -20,6 +22,7 @@ object ParadoxPatternMatchService {
      *
      * @see CwtDataTypeSets.PatternAware
      */
+    @Optimized
     fun matches(
         text: String,
         key: String,
@@ -42,12 +45,12 @@ object ParadoxPatternMatchService {
         ProgressManager.checkCanceled()
         val expression = ParadoxExpression.resolve(key)
         val matchContext = ParadoxScriptExpressionMatchContext(contextElement, expression, configExpression, null, configGroup, options)
-        val matchResult = ParadoxScriptExpressionMatcher.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-            if (!ep.isPatternAware(matchContext)) return@f null
-            ep.match(matchContext)
+        val matchers = ParadoxScriptExpressionMatcher.get(matchContext.dataType)
+        matchers.forEachFast f@{ ep ->
+            if (!ep.isPatternAware(matchContext)) return@f
+            ep.match(matchContext)?.let { return it.get(options) }
         }
-        if (matchResult == null) return false
-        return matchResult.get(options)
+        return false
     }
 
     /**

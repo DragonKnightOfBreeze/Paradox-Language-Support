@@ -5,6 +5,7 @@ import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.processCandidateConfigs
 import icu.windea.pls.core.isIdentifier
+import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.runWithRecursionGuard
 import icu.windea.pls.lang.match.ParadoxCsvExpressionMatchContext
 import icu.windea.pls.lang.match.ParadoxExpressionMatchService
@@ -137,5 +138,23 @@ class ParadoxCsvCoreExpressionMatcher : ParadoxCsvCompositeExpressionMatcher() {
         val dynamicValueType = context.configExpression.metadata.value
         if (dynamicValueType == null) return ParadoxMatchResult.NotMatch
         return ParadoxMatchResult.FallbackMatch
+    }
+}
+
+class ParadoxCsvConstantExpressionMatcher : ParadoxCsvCompositeExpressionMatcher() {
+    override fun registerMatchers() {
+        register(CwtDataTypes.Constant) { matchConstant(it) }
+    }
+
+    private fun matchConstant(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult {
+        val value = context.configExpression.expressionString
+        if (context.configExpression.role.isValue()) {
+            // 作为常量的值也可能是布尔值（`yes` / `no`）
+            val text = context.expression.value
+            if ((value == "yes" || value == "no") && text.isLeftQuoted()) return ParadoxMatchResult.NotMatch
+        }
+        // 兼容空字符串，兼容带参数的情况
+        val r = context.expression.matchesConstant(value)
+        return ParadoxMatchResult.exactOrNot(r)
     }
 }

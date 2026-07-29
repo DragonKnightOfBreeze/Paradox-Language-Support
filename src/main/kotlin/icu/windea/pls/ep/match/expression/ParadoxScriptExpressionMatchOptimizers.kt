@@ -14,6 +14,7 @@ import icu.windea.pls.lang.resolve.ParadoxConfigService
 import icu.windea.pls.model.expressions.ParadoxExpression
 import icu.windea.pls.model.type.CwtExpressionType
 import icu.windea.pls.model.type.ParadoxExpressionType
+import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 class ParadoxScriptExpressionConstantMatchOptimizer : ParadoxScriptExpressionMatchOptimizer {
@@ -36,15 +37,17 @@ class ParadoxScriptExpressionBlockMatchOptimizer : ParadoxScriptExpressionMatchO
 
     @Optimized
     override fun <T : CwtMemberConfig<*>> optimize(configs: List<T>, context: ParadoxScriptExpressionMatchOptimizerContext): List<T>? {
-        if (configs.isEmpty()) return null
-        val filtered = configs.filterFast { it.valueType == CwtExpressionType.Block && it is CwtPropertyConfig }.cast<List<CwtPropertyConfig>>()
+        if (configs.size <= 1) return null
+        val filtered = configs.filterFast { it is CwtPropertyConfig && it.valueType == CwtExpressionType.Block }.cast<List<CwtPropertyConfig>>()
         if (filtered.isEmpty()) return null
-        val filteredGroup = filtered.groupBy { it.key }.values.filter { it.count() > 1 }
-        if (filteredGroup.isEmpty()) return null
-        val block = context.element.castOrNull<ParadoxScriptProperty>()?.block ?: return null
+        val filteredGroup = mutableMapOf<String, MutableList<CwtPropertyConfig>>()
+        filtered.forEachFast { c -> filteredGroup.getOrPut(c.key) { mutableListOf() } += c }
         val blockExpression = ParadoxExpression.resolveBlock()
+        var block: ParadoxScriptBlock? = null
         var configsToRemove: MutableSet<CwtPropertyConfig>? = null
-        filteredGroup.forEachFast f1@{ filteredConfigs ->
+        filteredGroup.values.forEach f1@{ filteredConfigs ->
+            if (filteredConfigs.size <= 1) return@f1
+            if (block == null) block = context.element.castOrNull<ParadoxScriptProperty>()?.block ?: return null
             filteredConfigs.forEachFast f2@{ filteredConfig ->
                 val valueConfig = filteredConfig.valueConfig ?: return@f2
                 val matchContext = ParadoxScriptExpressionMatchContext(block, blockExpression, valueConfig.configExpression, valueConfig, context.configGroup, context.options)

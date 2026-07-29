@@ -353,11 +353,12 @@ class ParadoxScriptCoreExpressionMatcher : ParadoxScriptCompositeExpressionMatch
     }
 }
 
-class ParadoxScriptConstantExpressionMatcher : ParadoxScriptSimpleExpressionMatcher() {
-    override val dataTypes: Array<CwtDataType> = arrayOf(CwtDataTypes.Constant)
+class ParadoxScriptConstantExpressionMatcher : ParadoxScriptCompositeExpressionMatcher() {
+    override fun registerMatchers() {
+        register(CwtDataTypes.Constant) { matchConstant(it) }
+    }
 
-    override fun match(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult? {
-        if (context.dataType != CwtDataTypes.Constant) return null
+    private fun matchConstant(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
         val value = context.configExpression.expressionString
         if (context.configExpression.role.isValue()) {
             // 作为常量的值也可能是布尔值（`yes` / `no`）

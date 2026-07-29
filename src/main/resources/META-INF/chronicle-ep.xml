@@ -169,14 +169,15 @@
     <scriptExpressionMatcher id="basic" implementation="icu.windea.pls.ep.match.expression.ParadoxScriptBasicExpressionMatcher"/>
     <scriptExpressionMatcher id="extraBasic" implementation="icu.windea.pls.ep.match.expression.ParadoxScriptExtraBasicExpressionMatcher"/>
     <scriptExpressionMatcher id="core" implementation="icu.windea.pls.ep.match.expression.ParadoxScriptCoreExpressionMatcher"/>
-    <scriptExpressionMatcher id="constant" implementation="icu.windea.pls.ep.match.expression.ParadoxScriptConstantExpressionMatcher" order="first"/>
+    <scriptExpressionMatcher id="constant" implementation="icu.windea.pls.ep.match.expression.ParadoxScriptConstantExpressionMatcher"/>
     <scriptExpressionMatcher id="template" implementation="icu.windea.pls.ep.match.expression.ParadoxScriptTemplateExpressionMatcher"/>
     <scriptExpressionMatcher id="pattern" implementation="icu.windea.pls.ep.match.expression.ParadoxScriptPatternExpressionMatcher"/>
-    <scriptExpressionMatcher id="predicateBased" implementation="icu.windea.pls.ep.match.expression.ParadoxScriptPredicateBasedExpressionMatcher" order="first, before constant"/>
+    <scriptExpressionMatcher id="predicateBased" implementation="icu.windea.pls.ep.match.expression.ParadoxScriptPredicateBasedExpressionMatcher" order="first"/>
 
     <csvExpressionMatcher id="basic" implementation="icu.windea.pls.ep.match.expression.ParadoxCsvBasicExpressionMatcher"/>
     <csvExpressionMatcher id="extraBasic" implementation="icu.windea.pls.ep.match.expression.ParadoxExtraBasicCsvExpressionMatcher"/>
     <csvExpressionMatcher id="core" implementation="icu.windea.pls.ep.match.expression.ParadoxCsvCoreExpressionMatcher"/>
+    <csvExpressionMatcher id="constant" implementation="icu.windea.pls.ep.match.expression.ParadoxCsvConstantExpressionMatcher"/>
 
     <scriptExpressionMatchOptimizer id="constant" implementation="icu.windea.pls.ep.match.expression.ParadoxScriptExpressionConstantMatchOptimizer" order="first"/>
     <scriptExpressionMatchOptimizer id="block" implementation="icu.windea.pls.ep.match.expression.ParadoxScriptExpressionBlockMatchOptimizer"/>

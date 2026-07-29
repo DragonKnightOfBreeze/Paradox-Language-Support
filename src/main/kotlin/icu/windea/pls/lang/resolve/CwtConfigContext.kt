@@ -5,8 +5,6 @@ import com.intellij.openapi.util.UserDataHolder
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.core.deoptimized
-import icu.windea.pls.core.optimized
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
@@ -131,18 +129,14 @@ var CwtConfigContext.definitionInjectionInfo: ParadoxDefinitionInjectionInfo? by
 
 // region Implementations
 
-// 12 + 4 * 4 + 1 + 1 = 30 -> 32
+// 12 + 5 * 4 + 1 = 33 -> 40
 private sealed class CwtConfigContextBase(
     override val element: ParadoxScriptMember,
-    override val configGroup: CwtConfigGroup, // use element directly here
-    memberRole: ParadoxMemberRole,
+    override val configGroup: CwtConfigGroup, // 3.0.1 use `element` directly here, no smart pointer since it's cached on PSI level
+    override val memberRole: ParadoxMemberRole, // 3.0.1 use `memberRole` directly here, no optimization (compress to byte) since it's cached on PSI level
     override val declarationRoot: Boolean,
     override val provider: CwtConfigContextProvider,
 ) : UserDataHolderBase(), CwtConfigContext {
-    private val memberRoleId = memberRole.optimized(ParadoxMemberRole.optimizer()) // optimized to optimize memory
-
-    override val memberRole: ParadoxMemberRole get() = memberRoleId.deoptimized(ParadoxMemberRole.optimizer())
-
     override fun inRoot(): Boolean {
         return memberPath != null
     }
@@ -175,7 +169,7 @@ private sealed class CwtConfigContextBase(
     }
 }
 
-// 12 + 4 * 4 + 1 + 1 = 30 -> 32
+// 12 + 6 * 4 + 1 = 37 -> 40
 private class CwtBaseConfigContext(
     element: ParadoxScriptMember,
     configGroup: CwtConfigGroup,
@@ -188,7 +182,7 @@ private class CwtBaseConfigContext(
     override val memberPath: ParadoxMemberPath? get() = null
 }
 
-// 12 + 5 * 4 + 1 + 1 = 34 -> 40
+// 12 + 6 * 4 + 1 = 37 -> 40
 private class CwtFromFileConfigContext(
     element: ParadoxScriptMember,
     configGroup: CwtConfigGroup,
@@ -201,7 +195,7 @@ private class CwtFromFileConfigContext(
     override val memberPath: ParadoxMemberPath? get() = memberPathFromFile
 }
 
-// 12 + 6 * 4 + 1 + 1 = 38 -> 40
+// 12 + 7 * 4 + 1 = 41 -> 48
 private class CwtFromMemberConfigContext(
     element: ParadoxScriptMember,
     configGroup: CwtConfigGroup,
