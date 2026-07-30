@@ -10,8 +10,8 @@ data class CwtTypeConfigMatchContext(
     val configGroup: CwtConfigGroup,
     val path: ParadoxPath? = null,
     val typeKey: String? = null,
-    val rootKeys: List<String>? = null,
-    val typeKeyPrefix: Lazy<String?>? = null,
+    val lazyRootKeys: Lazy<List<String>?>? = null, // 3.0.1 optimize: use lazy property
+    val lazyTypeKeyPrefix: Lazy<String?>? = null, // optimize: use lazy property
     var matchPath: Boolean = true,
 ) {
     val project: Project get() = configGroup.project

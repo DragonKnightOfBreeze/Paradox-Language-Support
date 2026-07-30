@@ -196,23 +196,27 @@ object ParadoxConfigMatchService {
             }
         }
 
-        if (context.rootKeys != null) {
+        if (context.lazyRootKeys != null) {
             // 如果属性 skip_root_key 存在，则要判断是否需要跳过 rootKey
             // skip_root_key 可以为列表（如果是列表，其中的每一个 root_key 都要依次匹配）
             // skip_root_key 可以重复（其中之一匹配即可）
+            val expectedRootKeys = context.lazyRootKeys.value ?: return false
             val skipRootKey = typeConfig.skipRootKey
             if (skipRootKey.isEmpty()) {
-                if (context.rootKeys.isNotEmpty()) return false
+                if (expectedRootKeys.isNotEmpty()) return false
             } else {
-                if (context.rootKeys.isEmpty()) return false
-                val result = skipRootKey.any { PathMatcher.matches(context.rootKeys, it, ignoreCase = true, usePattern = true, useAny = true) }
+                if (expectedRootKeys.isEmpty()) return false
+                val result = skipRootKey.any { PathMatcher.matches(expectedRootKeys, it, ignoreCase = true, usePattern = true, useAny = true) }
                 if (!result) return false
             }
         }
 
-        // 如果属性 type_key_prefix 存在，且有必要校验，则要求其与 typeKeyPrefix 必须一致（忽略大小写）
-        if (context.typeKeyPrefix != null && typeConfig.name in typeConfig.configGroup.typesModel.typeKeyPrefixAware) {
-            val result = typeConfig.typeKeyPrefix.equals(context.typeKeyPrefix.value, ignoreCase = true)
+        if (context.lazyTypeKeyPrefix != null && typeConfig.name in typeConfig.configGroup.typesModel.typeKeyPrefixAware) {
+            // 如果属性 type_key_prefix 存在，则要求其与 typeKeyPrefix 必须匹配（忽略大小写）
+            // 如果属性 type_key_prefix 不存在，则在必要时，要求 typeKeyPrefix 也不存在
+            val expectedTypeKeyPrefix = context.lazyTypeKeyPrefix.value
+            val typeKeyPrefix = typeConfig.typeKeyPrefix
+            val result = typeKeyPrefix.equals(expectedTypeKeyPrefix, ignoreCase = true)
             if (!result) return false
         }
 

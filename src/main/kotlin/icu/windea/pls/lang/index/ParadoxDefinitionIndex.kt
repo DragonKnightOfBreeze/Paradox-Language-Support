@@ -88,12 +88,12 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
 
         val typeConfigForInjection = getMatchedTypeConfigForInjection(fileLevelMatchContext, fileLevelTypeConfigs)
 
-        val rootKeyStack = ArrayDeque<String>()
-        ParadoxMemberService.injectRootKeys(psiFile, rootKeyStack)
+        val rootKeys = ArrayDeque<String>()
+        ParadoxMemberService.injectRootKeys(psiFile, rootKeys)
 
         // 预计算候选类型规则中最大的顶级键深度，用于限制 PSI 遍历深度
         val maxRootKeyDepth = fileLevelTypeConfigs.maxOf { it.attributes.maxRootKeyDepth }
-        val effectiveMaxDepth = (minOf(maxRootKeyDepth, ChronicleCapacities.maxDefinitionDepth()) - rootKeyStack.size).coerceAtLeast(0)
+        val effectiveMaxDepth = (minOf(maxRootKeyDepth, ChronicleCapacities.maxDefinitionDepth()) - rootKeys.size).coerceAtLeast(0)
 
         // 2.1.3 这里需要使用 accept 而非 acceptChildren，因为 psiFile 也可能是一个定义
         psiFile.accept(object : PsiRecursiveElementWalkingVisitor() {
@@ -126,7 +126,7 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
                 // 2.1.3 直接匹配，不经过缓存数据，以优化性能
                 processDefinition(element, elementName)
 
-                rootKeyStack.addLast(elementName)
+                rootKeys.addLast(elementName)
                 depth++
             }
 
@@ -141,9 +141,9 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
                 // 匹配性检查
                 val source = ParadoxDefinitionService.resolveSource(element) ?: return true
                 val typeKey = ParadoxMemberService.getTypeKey(element, elementName) ?: return true
-                val rootKeys = rootKeyStack // reuse root key stack here to optimize performance
-                val typeKeyPrefix = lazy { ParadoxMemberService.getKeyPrefix(element) }
-                val matchContext = fileLevelMatchContext.copy(typeKey = typeKey, rootKeys = rootKeys, typeKeyPrefix = typeKeyPrefix)
+                val lazyRootKeys = lazyOf(rootKeys) // reuse root keys here to optimize performance
+                val typeKeyPrefix = lazy { ParadoxMemberService.getKeyPrefix(element) } // lazy load here to optimize performance
+                val matchContext = fileLevelMatchContext.copy(typeKey = typeKey, lazyRootKeys = lazyRootKeys, lazyTypeKeyPrefix = typeKeyPrefix)
                 val typeConfig = getMatchedTypeConfig(matchContext, element, fileLevelTypeConfigs) ?: return false
                 val type = typeConfig.name.orNull() ?: return false
                 val name = ParadoxDefinitionService.resolveName(element, typeKey, typeConfig)
@@ -185,7 +185,7 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
 
             override fun elementFinished(element: PsiElement) {
                 if (element is ParadoxScriptProperty) {
-                    rootKeyStack.removeLastOrNull()
+                    rootKeys.removeLastOrNull()
                     depth--
                 }
             }

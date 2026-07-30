@@ -58,12 +58,13 @@ class ParadoxDefinitionNameCompletionProvider : ParadoxCompletionProvider() {
             element is ParadoxScriptPropertyKey || (element is ParadoxScriptString && element.isDirectValue()) -> {
                 val fileInfo = context.file.fileInfo ?: return
                 val path = fileInfo.path
-                // 忽略 rootKeys 深度超出限制，或者带参数的情况
-                val rootKeys = ParadoxMemberService.getRootKeys(element, maxDepth = ChronicleCapacities.maxDefinitionDepth(), parameterAware = false) ?: return
-                val typeKeyPrefix = lazy { ParadoxMemberService.getKeyPrefix(element) }
+                // 3.0.1 懒加载（通常可以先检查 typeKey） + 忽略 rootKeys 深度超出限制，或者带参数的情况
+                val lazyRootKeys = lazy { ParadoxMemberService.getRootKeys(element, maxDepth = ChronicleCapacities.maxDefinitionDepth(), parameterAware = false) }
+                // 3.0.1 懒加载（通常都是不必要的）
+                val lazyTypeKeyPrefix = lazy { ParadoxMemberService.getKeyPrefix(element) }
                 for (typeConfig in context.configGroup.types.values) {
                     if (typeConfig.nameField != null) continue
-                    val matchContext = CwtTypeConfigMatchContext(context.configGroup, path, null, rootKeys, typeKeyPrefix)
+                    val matchContext = CwtTypeConfigMatchContext(context.configGroup, path, null, lazyRootKeys, lazyTypeKeyPrefix)
                     if (!ParadoxConfigMatchService.matchesTypeByUnknownDeclaration(matchContext, typeConfig)) continue
                     val type = typeConfig.name
                     val config = ParadoxDefinitionService.resolveDeclaration(element, type, configGroup = context.configGroup)

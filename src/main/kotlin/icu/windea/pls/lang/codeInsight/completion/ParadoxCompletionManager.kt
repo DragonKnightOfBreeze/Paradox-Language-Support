@@ -241,7 +241,7 @@ object ParadoxCompletionManager {
                 infoMapForTag.getOrPut(typeKeyPrefix) { mutableListOf() }.add(typeConfig)
             }
 
-            val matchContext = CwtTypeConfigMatchContext(context.configGroup, path, typeKeyPrefix = rootKeyPrefix)
+            val matchContext = CwtTypeConfigMatchContext(context.configGroup, path, lazyTypeKeyPrefix = rootKeyPrefix)
             if (!ParadoxConfigMatchService.matchesTypeByUnknownDeclaration(matchContext, typeConfig)) continue
             val skipRootKeyConfig = typeConfig.skipRootKey
             if (skipRootKeyConfig.isEmpty()) {

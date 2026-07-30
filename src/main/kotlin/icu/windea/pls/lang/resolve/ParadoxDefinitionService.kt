@@ -87,15 +87,17 @@ object ParadoxDefinitionService {
         val path = fileInfo.path
         val source = resolveSource(element) ?: return null
         val typeKey = ParadoxMemberService.getTypeKey(element) ?: return null
-        // 忽略 rootKeys 深度超出限制，或者带参数的情况
-        val rootKeys = ParadoxMemberService.getRootKeys(element, maxDepth = ChronicleCapacities.maxDefinitionDepth(), parameterAware = false) ?: return null
-        val typeKeyPrefix = lazy { ParadoxMemberService.getKeyPrefix(element) }
+        // 3.0.1 懒加载（通常可以先检查 typeKey） + 忽略 rootKeys 深度超出限制，或者带参数的情况
+        val lazyRootKeys = lazy { ParadoxMemberService.getRootKeys(element, maxDepth = ChronicleCapacities.maxDefinitionDepth(), parameterAware = false) }
+        // 3.0.1 懒加载（通常都是不必要的）
+        val lazyTypeKeyPrefix = lazy { ParadoxMemberService.getKeyPrefix(element) }
         val configGroup = ChronicleFacade.getConfigGroup(file.project, gameType)
-        val matchContext = CwtTypeConfigMatchContext(configGroup, path, typeKey, rootKeys, typeKeyPrefix)
+        val matchContext = CwtTypeConfigMatchContext(configGroup, path, typeKey, lazyRootKeys, lazyTypeKeyPrefix)
         val typeConfig = ParadoxConfigMatchService.getMatchedTypeConfig(matchContext, element) ?: return null
         val name = resolveName(element, typeKey, typeConfig)
         val type = typeConfig.name.orNull() ?: return null
-        return ParadoxDefinitionInfo(source, name, type, typeKey, rootKeys.optimized(), typeConfig).also { it.element = element }
+        val rootKeys = lazyRootKeys.value?.optimized() ?: return null
+        return ParadoxDefinitionInfo(source, name, type, typeKey, rootKeys, typeConfig).also { it.element = element }
     }
 
     private fun resolveInfoFromInjection(element: ParadoxDefinitionElement, file: PsiFile, fileInfo: ParadoxFileInfo): ParadoxDefinitionInfo? {
