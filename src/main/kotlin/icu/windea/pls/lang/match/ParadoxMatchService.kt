@@ -7,7 +7,6 @@ import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.mapFast
 import icu.windea.pls.ep.match.expression.ParadoxScriptExpressionMatchOptimizer
-import icu.windea.pls.lang.resolve.dynamic
 import icu.windea.pls.model.expressions.ParadoxExpression
 
 object ParadoxMatchService {
@@ -55,13 +54,12 @@ object ParadoxMatchService {
     @Optimized
     inline fun <T : CwtMemberConfig<*>> collectCandidates(configs: List<T>, matchResultProvider: (T) -> ParadoxMatchResult): List<ParadoxMatchCandidate> {
         if (configs.isEmpty()) return emptyList()
-        val result = buildList {
-            configs.forEachFast f@{ config ->
-                val matchResult = matchResultProvider(config)
-                if (matchResult == ParadoxMatchResult.NotMatch) return@f
-                val matchCandidate = ParadoxMatchCandidate(config, matchResult)
-                this += matchCandidate
-            }
+        val result = mutableListOf<ParadoxMatchCandidate>()
+        configs.forEachFast f@{ config ->
+            val matchResult = matchResultProvider(config)
+            if (matchResult == ParadoxMatchResult.NotMatch) return@f
+            val matchCandidate = ParadoxMatchCandidate(config, matchResult)
+            result += matchCandidate
         }
         return result
     }
@@ -71,6 +69,7 @@ object ParadoxMatchService {
      */
     @Optimized
     fun process(candidates: List<ParadoxMatchCandidate>, options: ParadoxMatchOptions? = null): List<CwtMemberConfig<*>> {
+        if (candidates.isEmpty()) return emptyList()
         val matched = ParadoxMatchProcessor.process(candidates, options)
         return matched.mapFast { it.value }
     }

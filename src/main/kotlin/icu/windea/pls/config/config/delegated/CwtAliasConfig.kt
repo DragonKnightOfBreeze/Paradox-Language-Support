@@ -9,6 +9,7 @@ import icu.windea.pls.config.config.CwtExpandableConfig
 import icu.windea.pls.config.config.CwtIdMatchableConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.config.configExpression.CwtDataExpressionRole
 import icu.windea.pls.config.manipulation.CwtConfigManipulationService
 import icu.windea.pls.config.util.CwtConfigResolverManager
 import icu.windea.pls.config.util.CwtConfigResolverScope
@@ -107,7 +108,7 @@ private class CwtAliasConfigImpl(
 ) : UserDataHolderBase(), CwtAliasConfig {
     override val supportedScopes get() = config.optionMetadata.supportedScopes
     override val outputScope get() = config.optionMetadata.pushScope
-    override val subNameExpression = CwtDataExpression.resolve(subName) // cached
+    override val subNameExpression = CwtDataExpression.resolve(subName, CwtDataExpressionRole.Key) // cached
     override val configExpression: CwtDataExpression get() = subNameExpression
 
     override fun toString() = "CwtAliasConfigImpl(name='$name', subName='$subName')"

@@ -2,6 +2,38 @@ package icu.windea.pls.core
 
 import icu.windea.pls.core.annotations.Fast
 
+/** @see kotlin.text.equals */
+@Fast
+fun String?.equalsFast(other: String?, ignoreCase: Boolean = false): Boolean {
+    // 专为纯 ASCII 字符串设计的高性能忽略大小写比较
+    // 零对象分配，无 Unicode 开销
+    // 感谢猫猫！
+
+    if (this === null) return other === null
+    @Suppress("StringReferentialEquality")
+    if (this === other) return true
+    if (other === null) return false
+
+    val length = length
+    if (length != other.length) return false
+
+    for (i in 0 until length) {
+        val c1 = this[i]
+        val c2 = other[i]
+        if (c1 == c2) continue
+
+        // 如果不是纯 ASCII，退化为标准库比较（作为安全兜底）
+        if (c1.code > 127 || c2.code > 127) return equals(other, ignoreCase)
+
+        // ASCII 快速转小写比较 (大写字母 A-Z 的 ASCII 码加上 32 就是小写)
+        val lc1 = if (ignoreCase && c1 in 'A'..'Z') c1.code + 32 else c1.code
+        val lc2 = if (ignoreCase && c2 in 'A'..'Z') c2.code + 32 else c2.code
+
+        if (lc1 != lc2) return false
+    }
+    return true
+}
+
 /** @see kotlin.text.trim */
 @Fast
 fun String.trimFast(c: Char): String {

@@ -1,5 +1,6 @@
 package icu.windea.pls.model.expressions
 
+import icu.windea.pls.core.equalsFast
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.match.TextMatcher
 import icu.windea.pls.core.quote
@@ -140,7 +141,7 @@ private sealed class ParadoxExpressionBase : ParadoxExpression {
         // 兼容带参数的情况（此时先转化为正则表达式，再进行匹配）
         if (isParameterized()) return _regex.matches(v)
         // 忽略大小写
-        return value.equals(v, true)
+        return value.equalsFast(v, true) // 3.0.1 radical optimization
     }
 
     override fun equals(other: Any?) = this === other || other is ParadoxExpression && text == other.text

@@ -51,8 +51,7 @@ object ParadoxMemberService {
             current = current.parent ?: break
         }
         if (current is ParadoxScriptFile) injectRootKeys(current, deque)
-        val result = if (deque.isEmpty()) emptyList() else deque
-        return ParadoxMemberPath.resolve(result)
+        return ParadoxMemberPath.resolve(deque)
     }
 
     /**
@@ -81,8 +80,7 @@ object ParadoxMemberService {
             current = current.parent ?: break
         }
         injectRootKeys(current, deque)
-        val result = if (deque.isEmpty()) emptyList() else deque
-        return result
+        return if (deque.isEmpty()) emptyList() else deque
     }
 
     /**
@@ -121,8 +119,7 @@ object ParadoxMemberService {
                 else -> break
             }
         }
-        val result = if(deque.isEmpty()) emptyList() else deque
-        return result
+        return if (deque.isEmpty()) emptyList() else deque
     }
 
     /**

@@ -5,6 +5,28 @@ import org.junit.Test
 
 class StdlibFastExtensionsTest {
     @Test
+    fun equalsFast_basic_test() {
+        Assert.assertTrue(null.equalsFast(null))
+        Assert.assertFalse(null.equalsFast(""))
+        Assert.assertFalse("".equalsFast(null))
+        Assert.assertTrue("".equalsFast(""))
+        Assert.assertTrue("abc".equalsFast("abc"))
+        Assert.assertTrue("abc".equalsFast(String("abc".toCharArray())))
+        Assert.assertFalse("".equalsFast("abc"))
+        Assert.assertFalse("".equalsFast(String("abc".toCharArray())))
+
+        Assert.assertTrue("hello world".equalsFast("hello world"))
+        Assert.assertTrue("hello world".equalsFast("Hello World", ignoreCase = true))
+        Assert.assertFalse("hello world".equalsFast("hello world!"))
+        Assert.assertFalse("hello world".equalsFast("Hello World!", ignoreCase = true))
+
+        Assert.assertTrue("prompt: 你好，世界".equalsFast("prompt: 你好，世界"))
+        Assert.assertTrue("prompt: 你好，世界".equalsFast("PROMPT: 你好，世界", ignoreCase = true))
+        Assert.assertFalse("prompt: 你好，世界".equalsFast("prompt: 你好，世界！"))
+        Assert.assertFalse("prompt: 你好，世界".equalsFast("PROMPT: 你好，世界！", ignoreCase = true))
+    }
+
+    @Test
     fun trimFast_basic_test() {
         Assert.assertEquals("abc", "///abc///".trimFast('/'))
         Assert.assertEquals("a/b/c", "/a/b/c/".trimFast('/'))

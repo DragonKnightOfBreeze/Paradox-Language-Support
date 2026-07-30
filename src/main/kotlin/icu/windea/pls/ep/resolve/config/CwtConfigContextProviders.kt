@@ -50,7 +50,7 @@ class CwtBaseConfigContextProvider : CwtConfigContextProvider {
         if (vFile == null) return null
         val fileInfo = vFile.fileInfo
         if (fileInfo == null) return null
-        val context = CwtConfigContext.create(element, configGroup, memberRole, false, this, memberPathFromFile)
+        val context = CwtConfigContext.create(element, configGroup, memberRole, this, memberPathFromFile)
         return context
     }
 
@@ -78,8 +78,8 @@ class CwtDefinitionConfigContextProvider : CwtConfigContextProvider {
         val definition = selectScope { element.parentDefinition() } ?: return null
         val definitionInfo = definition.definitionInfo ?: return null
         val memberPath = definitionInfo.memberPath.relativize(memberPathFromFile) ?: return null
-        val declarationRoot = memberPath.isEmpty()
-        val context = CwtConfigContext.createFromMember(element, configGroup, memberRole, declarationRoot, this, memberPathFromFile, memberPath)
+        val context = CwtConfigContext.createFromMember(element, configGroup, memberRole, this, memberPathFromFile, memberPath)
+        context.declarationRoot = memberPath.isEmpty()
         context.definitionInfo = definitionInfo
         return context
     }
@@ -125,8 +125,8 @@ class CwtDefineVariableConfigContextProvider : CwtConfigContextProvider {
         val defineVariableInfo = defineVariable.defineVariableInfo ?: return null
         if (defineVariableInfo.config == null) return null // no define variable config -> skip
         val memberPath = ParadoxMemberPath.resolve(memberPathFromFile.subPaths.drop(2))
-        val declarationRoot = memberPath.isEmpty()
-        val context = CwtConfigContext.createFromMember(element, configGroup, memberRole, declarationRoot, this, memberPathFromFile, memberPath)
+        val context = CwtConfigContext.createFromMember(element, configGroup, memberRole, this, memberPathFromFile, memberPath)
+        context.declarationRoot = memberPath.isEmpty()
         context.defineVariableInfo = defineVariableInfo
         return context
     }
@@ -177,7 +177,7 @@ class CwtParameterValueConfigContextProvider : CwtConfigContextProvider {
         ProgressManager.checkCanceled()
         val injectionInfo = ParadoxScriptInjectionManager.getParameterValueInjectionInfoFromInjectedFile(file) ?: return null
         val parameterElement = injectionInfo.parameterElement ?: return null
-        val context = CwtConfigContext.createFromFile(element, configGroup, memberRole, false, this, memberPathFromFile)
+        val context = CwtConfigContext.createFromFile(element, configGroup, memberRole, this, memberPathFromFile)
         context.parameterElement = parameterElement
         context.parameterValueQuoted = injectionInfo.parameterValueQuoted
         return context
@@ -235,7 +235,7 @@ class CwtInlineScriptUsageConfigContextProvider : CwtConfigContextProvider {
         val vFile = selectFile(file)
         if (vFile == null) return null
         val memberPath = ParadoxMemberPath.resolve(memberPathFromFile.subPaths.drop(memberPathFromFile.indexOfFirst { ParadoxInlineScriptManager.isMatched(it) } + 1))
-        val context = CwtConfigContext.createFromMember(element, configGroup, memberRole, false, this, memberPathFromFile, memberPath)
+        val context = CwtConfigContext.createFromMember(element, configGroup, memberRole, this, memberPathFromFile, memberPath)
         return context
     }
 
@@ -280,7 +280,7 @@ class CwtInlineScriptFileConfigContextProvider : CwtConfigContextProvider {
         val fileInfo = vFile.fileInfo
         if (fileInfo == null) return null
         val inlineScriptExpression = ParadoxInlineScriptManager.getInlineScriptExpression(vFile) ?: return null
-        val context = CwtConfigContext.createFromFile(element, configGroup, memberRole, false, this, memberPathFromFile)
+        val context = CwtConfigContext.createFromFile(element, configGroup, memberRole, this, memberPathFromFile)
         context.inlineScriptExpression = inlineScriptExpression
         return context
     }
@@ -342,8 +342,8 @@ class CwtDefinitionInjectionConfigContextProvider : CwtConfigContextProvider {
         val definitionInjection = selectScope { element.parentDefinitionInjection() } ?: return null
         val definitionInjectionInfo = definitionInjection.definitionInjectionInfo ?: return null
         val memberPath = ParadoxMemberPath.resolve(memberPathFromFile.subPaths.drop(1)) // 去除第一个子路径
-        val declarationRoot = memberPath.isEmpty()
-        val context = CwtConfigContext.createFromMember(element, configGroup, memberRole, declarationRoot, this, memberPathFromFile, memberPath)
+        val context = CwtConfigContext.createFromMember(element, configGroup, memberRole, this, memberPathFromFile, memberPath)
+        context.declarationRoot = memberPath.isEmpty()
         context.definitionInjectionInfo = definitionInjectionInfo
         return context
     }

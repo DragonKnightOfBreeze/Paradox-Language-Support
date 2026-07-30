@@ -14,6 +14,7 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.aliasConfig
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.resolved
+import icu.windea.pls.config.configExpression.CwtDataExpressionRole
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.isNotNullOrEmpty
@@ -42,7 +43,6 @@ import icu.windea.pls.model.expressions.ParadoxExpression
 import icu.windea.pls.model.type.ParadoxExpressionRole
 import icu.windea.pls.script.editor.ParadoxScriptHighlighterColors
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
-import icu.windea.pls.script.psi.ParadoxScriptString
 
 // Core
 
@@ -425,18 +425,19 @@ class ParadoxScriptConstantExpressionSupport : ParadoxScriptExpressionSupport {
         val annotated = annotateByAliasName(element, rangeInElement, holder, config)
         if (annotated) return
         val configExpression = config.configExpression ?: return
-        if (rangeInElement == null) {
-            if (element is ParadoxScriptPropertyKey && configExpression.role.isKey()) return // unnecessary
-            if (element is ParadoxScriptString && configExpression.role.isValue()) return // unnecessary
+        val role = configExpression.role
+        when {
+            role == CwtDataExpressionRole.Other -> return // unnecessary
+            role == CwtDataExpressionRole.Value -> return // skip
+            role == CwtDataExpressionRole.Key -> {
+                if (rangeInElement == null && element is ParadoxScriptPropertyKey) return // unnecessary
+                val attributesKey = ParadoxScriptHighlighterColors.PROPERTY_KEY
+                val textRange = element.textRange
+                val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
+                if (range.isEmpty) return
+                ParadoxExpressionManager.annotateExpressionByAttributesKey(element, range, attributesKey, holder)
+            }
         }
-        val attributesKey = when {
-            configExpression.role.isKey() -> ParadoxScriptHighlighterColors.PROPERTY_KEY
-            else -> ParadoxScriptHighlighterColors.STRING
-        }
-        val textRange = element.textRange
-        val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
-        if (range.isEmpty) return
-        ParadoxExpressionManager.annotateExpressionByAttributesKey(element, range, attributesKey, holder)
     }
 
     private fun annotateByAliasName(element: ParadoxExpressionElement, rangeInElement: TextRange?, holder: AnnotationHolder, config: CwtConfig<*>): Boolean {
