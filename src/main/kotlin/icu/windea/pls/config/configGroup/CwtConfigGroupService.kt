@@ -19,6 +19,7 @@ import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.listeners.CwtConfigGroupRefreshStatusListener
 import icu.windea.pls.core.getDefaultProject
+import icu.windea.pls.core.optimized
 import icu.windea.pls.ep.config.configGroup.CwtConfigGroupFileProvider
 import icu.windea.pls.ide.analysis.ChronicleAnalysisManager
 import icu.windea.pls.ide.notification.ChronicleNotificationGroups
@@ -127,13 +128,9 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
     }
 
     private fun createConfigGroups(): Map<ParadoxGameType, CwtConfigGroup> {
-        val gameTypes = ParadoxGameType.getAll()
-        val configGroups = buildMap(gameTypes.size) {
-            for (gameType in gameTypes) {
-                this[gameType] = CwtConfigGroup.create(project, gameType)
-            }
-        }
-        return configGroups
+        val gameTypes = ParadoxGameType.getAll().toSet()
+        val result = gameTypes.associateWith { gameType -> CwtConfigGroup.create(project, gameType) }
+        return result.optimized() // optimized to optimize access performance
     }
 
     /**

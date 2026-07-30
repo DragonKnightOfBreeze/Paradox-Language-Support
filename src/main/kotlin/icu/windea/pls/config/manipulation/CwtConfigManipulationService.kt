@@ -460,7 +460,7 @@ object CwtConfigManipulationService {
         when (configExpression.type) {
             CwtDataTypes.UnionValue -> {
                 val name = configExpression.metadata.value ?: return
-                configGroup.unions[name]?.valueConfigs?.orNull()?.forEach { yield(it.valueExpression) }
+                configGroup.unions[name]?.valueConfigs?.orNull()?.forEachFast { yield(it.valueExpression) }
             }
             CwtDataTypes.AliasKeysField -> {
                 val name = configExpression.metadata.value ?: return
@@ -469,8 +469,6 @@ object CwtConfigManipulationService {
             else -> yield(configExpression)
         }
     }
-
-    // TODO 3.0.1+ more expansion
 
     // endregion
 }

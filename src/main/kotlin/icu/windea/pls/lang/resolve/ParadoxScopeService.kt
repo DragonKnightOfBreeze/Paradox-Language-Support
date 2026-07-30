@@ -16,7 +16,11 @@ import icu.windea.pls.config.config.resolvedOrNull
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.collections.anyFast
 import icu.windea.pls.core.collections.findIsInstanceFast
+import icu.windea.pls.core.collections.findLastFast
+import icu.windea.pls.core.collections.forEachFast
+import icu.windea.pls.core.collections.mapNotNullFast
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.util.Tuple2
@@ -56,18 +60,21 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptValue
 
+@Optimized
 object ParadoxScopeService {
     /**
      * @see ParadoxDefinitionSupportedScopesProvider.getSupportedScopes
      */
     fun getSupportedScopes(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Set<String>? {
         val gameType = definitionInfo.gameType
-        return ParadoxDefinitionSupportedScopesProvider.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-            if (!ChronicleAnnotationService.check(ep, gameType)) return@f null
-            if (!ep.supports(definition, definitionInfo)) return@f null
+        val eps = ParadoxDefinitionSupportedScopesProvider.EP_NAME.extensionList
+        eps.forEachFast f@{ ep ->
+            if (!ChronicleAnnotationService.check(ep, gameType)) return@f
+            if (!ep.supports(definition, definitionInfo)) return@f
             ProgressManager.checkCanceled() // 3.0.1 optimize: check immediately before applying logic
-            ep.getSupportedScopes(definition, definitionInfo)
+            ep.getSupportedScopes(definition, definitionInfo)?.let { return it }
         }
+        return null
     }
 
     /**
@@ -75,12 +82,14 @@ object ParadoxScopeService {
      */
     fun getScopeContext(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContext? {
         val gameType = definitionInfo.gameType
-        return ParadoxDefinitionScopeContextProvider.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-            if (!ChronicleAnnotationService.check(ep, gameType)) return@f null
-            if (!ep.supports(definition, definitionInfo)) return@f null
+        val eps = ParadoxDefinitionScopeContextProvider.EP_NAME.extensionList
+        eps.forEachFast f@{ ep ->
+            if (!ChronicleAnnotationService.check(ep, gameType)) return@f
+            if (!ep.supports(definition, definitionInfo)) return@f
             ProgressManager.checkCanceled() // 3.0.1 optimize: check immediately before applying logic
-            ep.getScopeContext(definition, definitionInfo)
+            ep.getScopeContext(definition, definitionInfo)?.let { return it }
         }
+        return null
     }
 
     /**
@@ -89,7 +98,8 @@ object ParadoxScopeService {
     fun getInferredScopeContext(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContext? {
         val gameType = definitionInfo.gameType
         var map: Map<String, String>? = null
-        ParadoxDefinitionInferredScopeContextProvider.EP_NAME.extensionList.forEach f@{ ep ->
+        val eps = ParadoxDefinitionInferredScopeContextProvider.EP_NAME.extensionList
+        eps.forEachFast f@{ ep ->
             if (!ChronicleAnnotationService.check(ep, gameType)) return@f
             if (!ep.supports(definition, definitionInfo)) return@f
             ProgressManager.checkCanceled() // 3.0.1 optimize: check immediately before applying logic
@@ -113,7 +123,8 @@ object ParadoxScopeService {
     fun getInferenceMessage(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): String? {
         val gameType = definitionInfo.gameType
         var message: String? = null
-        ParadoxDefinitionInferredScopeContextProvider.EP_NAME.extensionList.forEach f@{ ep ->
+        val eps = ParadoxDefinitionInferredScopeContextProvider.EP_NAME.extensionList
+        eps.forEachFast f@{ ep ->
             if (!ChronicleAnnotationService.check(ep, gameType)) return@f
             if (!ep.supports(definition, definitionInfo)) return@f
             val info = ep.getScopeContext(definition, definitionInfo) ?: return@f
@@ -133,7 +144,8 @@ object ParadoxScopeService {
     fun getInferenceErrorMessage(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): String? {
         val gameType = definitionInfo.gameType
         var errorMessage: String? = null
-        ParadoxDefinitionInferredScopeContextProvider.EP_NAME.extensionList.forEach f@{ ep ->
+        val eps = ParadoxDefinitionInferredScopeContextProvider.EP_NAME.extensionList
+        eps.forEachFast f@{ ep ->
             if (!ChronicleAnnotationService.check(ep, gameType)) return@f
             if (!ep.supports(definition, definitionInfo)) return@f
             val info = ep.getScopeContext(definition, definitionInfo) ?: return@f
@@ -152,12 +164,14 @@ object ParadoxScopeService {
      */
     fun getScopeContext(element: ParadoxDynamicValueLightElement): ParadoxScopeContext? {
         val gameType = element.gameType
-        return ParadoxDynamicValueScopeContextProvider.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-            if (!ChronicleAnnotationService.check(ep, gameType)) return@f null
-            if (!ep.supports(element)) return@f null
+        val eps = ParadoxDynamicValueScopeContextProvider.EP_NAME.extensionList
+        eps.forEachFast f@{ ep ->
+            if (!ChronicleAnnotationService.check(ep, gameType)) return@f
+            if (!ep.supports(element)) return@f
             ProgressManager.checkCanceled() // 3.0.1 optimize: check immediately before applying logic
-            ep.getScopeContext(element)
+            ep.getScopeContext(element)?.let { return it }
         }
+        return null
     }
 
     /**
@@ -166,7 +180,8 @@ object ParadoxScopeService {
     fun getInferredScopeContext(dynamicValue: ParadoxDynamicValueLightElement): ParadoxScopeContext? {
         val gameType = dynamicValue.gameType
         var map: Map<String, String>? = null
-        ParadoxDynamicValueInferredScopeContextProvider.EP_NAME.extensionList.forEach f@{ ep ->
+        val eps = ParadoxDynamicValueInferredScopeContextProvider.EP_NAME.extensionList
+        eps.forEachFast f@{ ep ->
             if (!ChronicleAnnotationService.check(ep, gameType)) return@f
             if (!ep.supports(dynamicValue)) return@f
             ProgressManager.checkCanceled() // 3.0.1 optimize: check immediately before applying logic
@@ -188,12 +203,13 @@ object ParadoxScopeService {
      */
     fun getOverriddenScopeContext(contextElement: PsiElement, config: CwtMemberConfig<*>, parentScopeContext: ParadoxScopeContext?): ParadoxScopeContext? {
         val gameType = config.configGroup.gameType
-        return ParadoxOverriddenScopeContextProvider.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-            if (!ChronicleAnnotationService.check(ep, gameType)) return@f null
+        val eps = ParadoxOverriddenScopeContextProvider.EP_NAME.extensionList
+        eps.forEachFast f@{ ep ->
+            if (!ChronicleAnnotationService.check(ep, gameType)) return@f
             ProgressManager.checkCanceled() // 3.0.1 optimize: check immediately before applying logic
-            ep.getOverriddenScopeContext(contextElement, config, parentScopeContext)
-                ?.also { it.overriddenProvider = ep }
+            ep.getOverriddenScopeContext(contextElement, config, parentScopeContext)?.also { it.overriddenProvider = ep }?.let { return it }
         }
+        return null
     }
 
     fun isScopeContextSupportedForMember(element: ParadoxScriptMember, indirect: Boolean = false): Boolean {
@@ -222,7 +238,7 @@ object ParadoxScopeService {
     private fun isScopeContextSupportedForDefinitionMember(element: ParadoxScriptMember): Boolean {
         val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(forDeclarationRoot = true))
         if (configs.isEmpty()) return false
-        return configs.any { isScopeContextSupportedFromConfig(it) }
+        return configs.anyFast { isScopeContextSupportedFromConfig(it) }
     }
 
     private fun isScopeContextSupportedFromConfig(config: CwtMemberConfig<*>): Boolean {
@@ -237,10 +253,10 @@ object ParadoxScopeService {
     private fun isScopeContextSupportedFromRootConfig(config: CwtMemberConfig<*>): Boolean {
         val properties = config.properties ?: return false
         val configGroup = config.configGroup
-        for (it in properties) {
+        properties.forEachFast f@{ property ->
             val aliasName = when {
-                it.keyExpression.type == CwtDataTypes.AliasName -> it.keyExpression.metadata.value
-                else -> continue
+                property.keyExpression.type == CwtDataTypes.AliasName -> property.keyExpression.metadata.value
+                else -> return@f
             }
             if (aliasName in configGroup.aliasNamesSupportScope) return true
         }
@@ -347,10 +363,12 @@ object ParadoxScopeService {
         if (scopeNodes.isEmpty()) return inputScopeContext // unexpected -> unchanged
         var result = inputScopeContext
         val links = mutableListOf<Tuple2<ParadoxScopeNode, ParadoxScopeContext>>()
-        for (scopeNode in scopeNodes) {
-            result = evaluateScopeContextForNode(element, scopeNode, result)
-            links.add(scopeNode to result)
-            if (scopeNode is ParadoxErrorScopeNode) break
+        run {
+            scopeNodes.forEachFast { scopeNode ->
+                result = evaluateScopeContextForNode(element, scopeNode, result)
+                links.add(scopeNode to result)
+                if (scopeNode is ParadoxErrorScopeNode) return@run
+            }
         }
         return inputScopeContext.resolveNext(links)
     }
@@ -430,14 +448,14 @@ object ParadoxScopeService {
             val parameterElement = ParadoxParameterManager.getParameterElement(parameter) ?: return@r1
             val configGroup = node.configGroup
             val configs = configGroup.extendedParameters.findByPattern(parameterElement.name, parameterElement, configGroup).orEmpty()
-            val config = configs.findLast { it.contextKey.matchesByPattern(parameterElement.contextKey, parameterElement, configGroup) } ?: return@r1
+            val config = configs.findLastFast { it.contextKey.matchesByPattern(parameterElement.contextKey, parameterElement, configGroup) } ?: return@r1
             val contextContainerConfig = config.getContextContainerConfig(parameterElement)
 
             // ex_param = scope[country]
             // result: country (don't validate & inline allowed)
             run r2@{
                 val inferredScope = contextContainerConfig.castOrNull<CwtPropertyConfig>()?.valueExpression
-                                ?.takeIf { it.type == CwtDataTypes.Scope }?.metadata?.value?.orNull() ?: return@r2
+                    ?.takeIf { it.type == CwtDataTypes.Scope }?.metadata?.value?.orNull() ?: return@r2
                 return inputScopeContext.resolveNext(inferredScope)
             }
 
@@ -487,7 +505,6 @@ object ParadoxScopeService {
         return inputScopeContext.resolveNext(outputScope)
     }
 
-    @Optimized
     private fun evaluateScopeContextForNode(element: ParadoxExpressionElement, node: ParadoxDynamicScopeNode, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext {
         val linkConfig = node.linkConfigs.firstOrNull() ?: return ParadoxScopeContext.resolveUnknown(inputScopeContext)
         if (linkConfig.outputScope != null) return inputScopeContext.resolveNext(linkConfig.outputScope)
@@ -514,7 +531,7 @@ object ParadoxScopeService {
                     else -> element.castOrNull<ParadoxScriptStringExpressionElement>()
                 }
                 if (expressionElement == null) return ParadoxScopeContext.resolveAny()
-                val configExpressions = dynamicValueNode.configs.mapNotNullTo(mutableSetOf()) { it.configExpression }
+                val configExpressions = dynamicValueNode.configs.mapNotNullFast { it.configExpression } // delay distinct
                 val dynamicValueElement = ParadoxDynamicValueManager.resolveDynamicValue(expressionElement, name, configExpressions, configGroup)
                 if (dynamicValueElement == null) return ParadoxScopeContext.resolveAny()
                 return ParadoxScopeManager.getScopeContext(dynamicValueElement, inputScopeContext)

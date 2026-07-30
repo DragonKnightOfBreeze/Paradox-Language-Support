@@ -29,6 +29,7 @@ import icu.windea.pls.lang.psi.light.CwtMemberConfigLightElement
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.model.type.ParadoxExpressionRole
 
+@Optimized
 object ParadoxExpressionService {
     // region Common Methods
 
@@ -51,7 +52,6 @@ object ParadoxExpressionService {
     /**
      * @see ParadoxScriptExpressionSupport.annotate
      */
-    @Optimized
     fun annotateScriptExpression(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, holder: AnnotationHolder) {
         if (text.isEmpty()) return // skip if expression is empty
         val configExpression = config.configExpression ?: return
@@ -68,7 +68,6 @@ object ParadoxExpressionService {
     /**
      * @see ParadoxScriptExpressionSupport.resolve
      */
-    @Optimized
     fun resolveScriptExpression(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
         if (text.isEmpty()) return null // ignore if expression is empty
         val configExpression = config.configExpression ?: return null
@@ -89,7 +88,6 @@ object ParadoxExpressionService {
     /**
      * @see ParadoxScriptExpressionSupport.resolveAll
      */
-    @Optimized
     fun resolveAllScriptExpression(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiElement> {
         if (text.isEmpty()) return emptyList() // ignore if expression is empty
         val configExpression = config.configExpression ?: return emptyList()
@@ -110,7 +108,6 @@ object ParadoxExpressionService {
     /**
      * @see ParadoxScriptExpressionSupport.getReferences
      */
-    @Optimized
     fun getScriptExpressionReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiReference> {
         if (text.isEmpty()) return emptyList() // ignore if expression is empty
         val configExpression = config.configExpression ?: return emptyList()
@@ -128,7 +125,6 @@ object ParadoxExpressionService {
     /**
      * @see ParadoxScriptExpressionSupport.complete
      */
-    @Optimized
     fun completeScriptExpression(context: ParadoxCompletionContext, result: CompletionResultSet) {
         val config = context.config ?: return
         val configExpression = config.configExpression ?: return
@@ -232,7 +228,6 @@ object ParadoxExpressionService {
     /**
      * @see ParadoxCsvExpressionSupport.annotate
      */
-    @Optimized
     fun annotateCsvExpression(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, text: String, config: CwtValueConfig, holder: AnnotationHolder) {
         if (text.isEmpty()) return // skip if expression is empty
         val configExpression = config.configExpression
@@ -249,7 +244,6 @@ object ParadoxExpressionService {
     /**
      * @see ParadoxCsvExpressionSupport.resolve
      */
-    @Optimized
     fun resolveCsvExpression(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, text: String, config: CwtValueConfig): PsiElement? {
         if (text.isEmpty()) return null // ignore if expression is empty
         val configExpression = config.configExpression

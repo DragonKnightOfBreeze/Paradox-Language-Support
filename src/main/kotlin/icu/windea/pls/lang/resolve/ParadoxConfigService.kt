@@ -68,8 +68,8 @@ import icu.windea.pls.script.psi.parentProperty
 import java.util.*
 import kotlin.concurrent.getOrSet
 
+@Optimized
 object ParadoxConfigService {
-    @Optimized
     private val CwtConfigGroup.configsCache by registerKeyWithThis(CwtConfigGroup.Keys) {
         createCachedValue(project) {
             // rootFile -> cacheKey -> configs
@@ -80,7 +80,6 @@ object ParadoxConfigService {
         }
     }
 
-    @Optimized
     private val CwtConfigGroup.declarationConfigCache by registerKeyWithThis(CwtConfigGroup.Keys) {
         createCachedValue(project) {
             // cacheKey -> declarationConfig
@@ -93,7 +92,6 @@ object ParadoxConfigService {
     /**
      * @see CwtOverriddenConfigProvider.getOverriddenConfigs
      */
-    @Optimized
     fun <T : CwtMemberConfig<*>> getOverriddenConfigs(contextElement: PsiElement, config: T): List<T> {
         val gameType = config.configGroup.gameType
         val eps = CwtOverriddenConfigProvider.EP_NAME.extensionList
@@ -112,7 +110,6 @@ object ParadoxConfigService {
     /**
      * @see CwtRelatedConfigProvider.getRelatedConfigs
      */
-    @Optimized
     fun getRelatedConfigs(file: PsiFile, offset: Int): Collection<CwtConfig<*>> {
         val gameType = selectGameType(file) ?: return emptySet()
         val result = mutableSetOf<CwtConfig<*>>()
@@ -122,13 +119,13 @@ object ParadoxConfigService {
             val r = ep.getRelatedConfigs(file, offset)
             result += r
         }
+        if(result.isEmpty()) return emptyList()
         return result
     }
 
     /**
      * @see CwtConfigContextProvider.getContext
      */
-    @Optimized
     fun getConfigContext(element: ParadoxScriptMember): CwtConfigContext? {
         val file = element.containingFile ?: return null
         val gameType = selectGameType(file) ?: return null
@@ -147,7 +144,6 @@ object ParadoxConfigService {
     /**
      * @see CwtDeclarationConfigContextProvider.getContext
      */
-    @Optimized
     fun getDeclarationConfigContext(element: PsiElement, configGroup: CwtConfigGroup, definitionName: String?, definitionType: String, definitionSubtypes: List<String>?): CwtDeclarationConfigContext? {
         val gameType = configGroup.gameType
         val eps = CwtDeclarationConfigContextProvider.EP_NAME.extensionList
@@ -208,7 +204,6 @@ object ParadoxConfigService {
         return cached
     }
 
-    @Optimized
     fun getTopConfigsForConfigContext(context: CwtConfigContext, rootConfigs: List<CwtMemberConfig<*>>): List<CwtMemberConfig<*>> {
         if (rootConfigs.isEmpty()) return emptyList()
         if (context.memberRole == ParadoxMemberRole.PropertyValue) {
@@ -217,7 +212,6 @@ object ParadoxConfigService {
         return rootConfigs
     }
 
-    @Optimized
     fun getFlattenedConfigsForConfigContext(context: CwtConfigContext, options: ParadoxMatchOptions? = null): List<CwtMemberConfig<*>> {
         val result = flattenConfigsForConfigContext(context, options)
         return result.sortedByPriority({ it.configExpression }, { it.configGroup }) // 按优先级排序
@@ -345,7 +339,6 @@ object ParadoxConfigService {
         return CwtConfigManipulationService.mergeAndMatchValueConfigs(configs, configExpression)
     }
 
-    @Optimized
     fun getConfigs(element: ParadoxScriptMember, options: ParadoxMatchOptions? = null): List<CwtMemberConfig<*>> {
         val result = resolveConfigs(element, options)
         return result.sortedByPriority({ it.configExpression }, { it.configGroup }) // 按优先级排序

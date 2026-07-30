@@ -7,6 +7,7 @@ import com.intellij.psi.PsiFileSystemItem
 import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.util.parentOfType
 import com.intellij.psi.util.siblings
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.lang.analysis.ParadoxAnalysisInjectionManager
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.selectFile
@@ -22,6 +23,7 @@ import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.psi.isDirectValue
 
+@Optimized
 object ParadoxMemberService {
     /**
      * 得到 [element] 对应的脚本成员（[ParadoxScriptMember]）的路径。相对于所在文件，顺序从前往后。
@@ -33,7 +35,7 @@ object ParadoxMemberService {
         val member = element.parentOfType<ParadoxScriptMember>(withSelf = true) ?: return ParadoxMemberPath.resolveEmpty()
         if (member !is ParadoxScriptProperty && member !is ParadoxScriptValue) return ParadoxMemberPath.resolveEmpty()
         var current: PsiElement = member
-        val result = ArrayDeque<String>()
+        val deque = ArrayDeque<String>()
         while (current !is PsiFile) {
             val p = when {
                 current is ParadoxScriptProperty -> current.name
@@ -41,14 +43,15 @@ object ParadoxMemberService {
                 else -> null
             }
             if (p != null) {
-                if (maxDepth > 0 && maxDepth <= result.size) return null
+                if (maxDepth > 0 && maxDepth <= deque.size) return null
                 if (!parameterAware && p.isParameterized()) return null
-                result.addFirst(p)
-                if (limit > 0 && limit == result.size) break
+                deque.addFirst(p)
+                if (limit > 0 && limit == deque.size) break
             }
             current = current.parent ?: break
         }
-        if (current is ParadoxScriptFile) injectRootKeys(current, result)
+        if (current is ParadoxScriptFile) injectRootKeys(current, deque)
+        val result = if (deque.isEmpty()) emptyList() else deque
         return ParadoxMemberPath.resolve(result)
     }
 
@@ -62,7 +65,7 @@ object ParadoxMemberService {
         val member = element.parentOfType<ParadoxScriptMember>(withSelf = true) ?: return emptyList()
         if (member !is ParadoxScriptProperty && member !is ParadoxScriptValue) return emptyList()
         var current: PsiElement = member.parent ?: return emptyList()
-        val result = ArrayDeque<String>()
+        val deque = ArrayDeque<String>()
         while (current !is PsiFile) {
             val p = when {
                 current is ParadoxScriptProperty -> current.name
@@ -70,14 +73,15 @@ object ParadoxMemberService {
                 else -> null
             }
             if (p != null) {
-                if (maxDepth > 0 && maxDepth <= result.size) return null
+                if (maxDepth > 0 && maxDepth <= deque.size) return null
                 if (!parameterAware && p.isParameterized()) return null
-                result.addFirst(p)
-                if (limit > 0 && limit == result.size) break
+                deque.addFirst(p)
+                if (limit > 0 && limit == deque.size) break
             }
             current = current.parent ?: break
         }
-        injectRootKeys(current, result)
+        injectRootKeys(current, deque)
+        val result = if (deque.isEmpty()) emptyList() else deque
         return result
     }
 
@@ -103,21 +107,22 @@ object ParadoxMemberService {
         val member = element.parentOfType<ParadoxScriptMember>(withSelf = true) ?: return emptyList()
         if (member !is ParadoxScriptProperty && member !is ParadoxScriptValue) return emptyList()
         val siblings = member.siblings(forward = false, withSelf = false)
-        val result = ArrayDeque<String>()
+        val deque = ArrayDeque<String>()
         for (e in siblings) {
             when (e) {
                 is PsiWhiteSpace, is PsiComment -> continue
                 is ParadoxScriptString -> {
                     val v = e.value.takeUnless { it.isParameterized() } ?: break
-                    if (maxDepth > 0 && maxDepth <= result.size) return null
+                    if (maxDepth > 0 && maxDepth <= deque.size) return null
                     if (!parameterAware && v.isParameterized()) return null
-                    result.addFirst(v)
-                    if (limit > 0 && limit == result.size) break
+                    deque.addFirst(v)
+                    if (limit > 0 && limit == deque.size) break
                 }
                 else -> break
             }
         }
-        return result // no optimization here
+        val result = if(deque.isEmpty()) emptyList() else deque
+        return result
     }
 
     /**

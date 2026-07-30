@@ -94,6 +94,14 @@ inline fun <T> List<T>.findFast(predicate: (T) -> Boolean): T? {
     return null
 }
 
+/** @see kotlin.collections.findLast */
+@Fast
+inline fun <T> List<T>.findLastFast(predicate: (T) -> Boolean): T? {
+    if (isEmpty()) return null
+    forEachReversedFast { e -> if (predicate(e)) return e }
+    return null
+}
+
 /** @see findIsInstance */
 inline fun <reified R> List<*>.findIsInstanceFast(predicate: (R) -> Boolean = { true }): R? {
     if (isEmpty()) return null

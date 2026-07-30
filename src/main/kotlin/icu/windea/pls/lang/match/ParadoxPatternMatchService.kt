@@ -8,11 +8,13 @@ import icu.windea.pls.config.configExpression.CwtDataExpressionRole
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.forEachFast
+import icu.windea.pls.core.collections.mapFast
 import icu.windea.pls.core.util.values.singletonList
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.ep.match.expression.ParadoxScriptExpressionMatcher
 import icu.windea.pls.model.expressions.ParadoxExpression
 
+@Optimized
 object ParadoxPatternMatchService {
     /**
      * 用输入的 [text] 作为通配符来匹配指定的 [key]。
@@ -22,7 +24,6 @@ object ParadoxPatternMatchService {
      *
      * @see CwtDataTypeSets.PatternAware
      */
-    @Optimized
     fun matches(
         text: String,
         key: String,
@@ -92,6 +93,6 @@ object ParadoxPatternMatchService {
     ): List<V> {
         val fastResult = map.get(key)
         if (fastResult != null) return fastResult.to.singletonList()
-        return map.entries.filter { (k) -> matches(k, key, contextElement, configGroup, options, fromIndex) }.map { it.value }
+        return map.entries.filter { (k) -> matches(k, key, contextElement, configGroup, options, fromIndex) }.mapFast { it.value }
     }
 }

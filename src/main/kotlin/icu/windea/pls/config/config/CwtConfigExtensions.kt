@@ -108,6 +108,4 @@ fun Collection<CwtMemberConfig<*>>.expandValueExpression(): Sequence<CwtDataExpr
     return CwtConfigManipulationService.expandValueExpression(this)
 }
 
-// TODO 3.0.1+ more expansion
-
 // endregion
