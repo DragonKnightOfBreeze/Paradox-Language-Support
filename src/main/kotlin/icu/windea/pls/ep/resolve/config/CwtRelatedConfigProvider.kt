@@ -2,10 +2,10 @@ package icu.windea.pls.ep.resolve.config
 
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.psi.PsiFile
-import icu.windea.pls.base.annotations.WithGameTypeEP
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.lang.codeInsight.navigation.GotoRelatedConfigsAction
 import icu.windea.pls.lang.codeInsight.navigation.GotoRelatedConfigsHandler
+import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 提供相关的规则。
@@ -13,8 +13,8 @@ import icu.windea.pls.lang.codeInsight.navigation.GotoRelatedConfigsHandler
  * @see GotoRelatedConfigsAction
  * @see GotoRelatedConfigsHandler
  */
-@WithGameTypeEP
 interface CwtRelatedConfigProvider {
+    fun supports(gameType: ParadoxGameType): Boolean = true
     /**
      * 得到相关的规则列表。
      *

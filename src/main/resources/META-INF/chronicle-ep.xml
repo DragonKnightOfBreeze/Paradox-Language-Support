@@ -26,8 +26,8 @@
     <extensionPoint qualifiedName="icu.windea.pls.overrideStrategyProvider" interface="icu.windea.pls.ep.overrides.ParadoxOverrideStrategyProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.referenceLinkProvider" interface="icu.windea.pls.ep.resolve.ReferenceLinkProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.inlineSupport" interface="icu.windea.pls.ep.resolve.ParadoxInlineSupport" dynamic="true"/>
-    <extensionPoint qualifiedName="icu.windea.pls.overriddenConfigProvider" interface="icu.windea.pls.ep.resolve.config.CwtOverriddenConfigProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.relatedConfigProvider" interface="icu.windea.pls.ep.resolve.config.CwtRelatedConfigProvider" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.overriddenConfigProvider" interface="icu.windea.pls.ep.resolve.config.CwtOverriddenConfigProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.configContextProvider" interface="icu.windea.pls.ep.resolve.config.CwtConfigContextProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.declarationConfigContextProvider" interface="icu.windea.pls.ep.resolve.config.CwtDeclarationConfigContextProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.scriptExpressionSupport" interface="icu.windea.pls.ep.resolve.expression.ParadoxScriptExpressionSupport" dynamic="true"/>
@@ -197,13 +197,13 @@
 
     <inlineSupport implementation="icu.windea.pls.ep.resolve.ParadoxInlineScriptInlineSupport"/>
 
-    <overriddenConfigProvider implementation="icu.windea.pls.ep.resolve.config.CwtSwitchOverriddenConfigProvider"/>
-    <overriddenConfigProvider implementation="icu.windea.pls.ep.resolve.config.CwtTriggerWithParametersAwareOverriddenConfigProvider"/>
-
     <relatedConfigProvider implementation="icu.windea.pls.ep.resolve.config.CwtBaseRelatedConfigProvider"/>
     <relatedConfigProvider implementation="icu.windea.pls.ep.resolve.config.CwtInComplexExpressionRelatedConfigProvider"/>
     <relatedConfigProvider implementation="icu.windea.pls.ep.resolve.config.CwtExtendedRelatedConfigProvider"/>
     <relatedConfigProvider implementation="icu.windea.pls.ep.resolve.config.CwtColumnRelatedConfigProvider"/>
+
+    <overriddenConfigProvider implementation="icu.windea.pls.ep.resolve.config.CwtSwitchOverriddenConfigProvider"/>
+    <overriddenConfigProvider implementation="icu.windea.pls.ep.resolve.config.CwtTriggerWithParametersAwareOverriddenConfigProvider"/>
 
     <configContextProvider id="base" implementation="icu.windea.pls.ep.resolve.config.CwtBaseConfigContextProvider" order="last"/>
     <configContextProvider id="definition" implementation="icu.windea.pls.ep.resolve.config.CwtDefinitionConfigContextProvider" order="last, before base"/>

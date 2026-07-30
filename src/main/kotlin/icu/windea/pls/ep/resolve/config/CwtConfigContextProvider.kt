@@ -2,13 +2,13 @@ package icu.windea.pls.ep.resolve.config
 
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.psi.PsiFile
-import icu.windea.pls.base.annotations.WithGameTypeEP
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.ep.resolve.expression.ParadoxScriptExpressionSupport
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.resolve.CwtConfigContext
 import icu.windea.pls.lang.resolve.CwtDeclarationConfigContext
+import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.paths.ParadoxMemberPath
 import icu.windea.pls.model.type.ParadoxMemberRole
 import icu.windea.pls.script.psi.ParadoxScriptMember
@@ -24,8 +24,9 @@ import icu.windea.pls.script.psi.ParadoxScriptMember
  * @see CwtConfigContext
  * @see CwtDeclarationConfigContext
  */
-@WithGameTypeEP
 interface CwtConfigContextProvider {
+    fun supports(gameType: ParadoxGameType): Boolean = true
+
     fun getContext(element: ParadoxScriptMember, configGroup: CwtConfigGroup, file: PsiFile, memberPathFromFile: ParadoxMemberPath, memberRole: ParadoxMemberRole): CwtConfigContext?
 
     fun getCacheKey(context: CwtConfigContext, options: ParadoxMatchOptions? = null): String?
