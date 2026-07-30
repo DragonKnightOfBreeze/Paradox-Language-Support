@@ -11,6 +11,7 @@ import icu.windea.pls.config.configExpression.CwtImageLocationExpression
 import icu.windea.pls.config.configExpression.CwtLocalisationLocationExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.annotations.Inferred
+import icu.windea.pls.core.equalsFast
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.model.paths.ParadoxMemberPath
@@ -69,7 +70,7 @@ data class ParadoxDefinitionInfo(
         val primary: Boolean = false
     ) {
         @Inferred
-        val primaryByInference: Boolean = key.equals("icon", true)
+        val primaryByInference: Boolean = key.equalsFast("icon", true)
     }
 
     data class RelatedLocalisationInfo(
@@ -79,7 +80,7 @@ data class ParadoxDefinitionInfo(
         val primary: Boolean = false
     ) {
         @Inferred
-        val primaryByInference: Boolean = key.equals("name", true) || key.equals("title", true)
+        val primaryByInference: Boolean = key.equalsFast("name", true) || key.equalsFast("title", true)
     }
 
     data class ModifierInfo(
