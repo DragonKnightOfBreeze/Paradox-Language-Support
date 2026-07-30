@@ -45,7 +45,7 @@ import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
 /**
  * 规则分组的数据模型。
  *
- * 除了直接来自规则文件的那些数据外，也包括计算得到的数据，收集得到的数据，以及规则分组的综合属性。
+ * 除了直接来自规则文件的那些数据外，也包括计算得到的数据，收集得到的数据，以及规则分组自身的综合属性。
  *
  * 参考：
  * - 规则系统的说明文档：[config.md](https://windea.icu/Paradox-Language-Support/config.md)

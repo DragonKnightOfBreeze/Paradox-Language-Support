@@ -19,8 +19,8 @@ class CwtConfigGroupBase(
     override val gameType: ParadoxGameType,
 ) : UserDataHolderBase(), CwtConfigGroup, CwtConfigGroupDataModel {
     private val mutex = Mutex()
-    @Volatile private var _dataModel: CwtConfigGroupDataModel? = null
-    @Volatile private var _initializer: CwtConfigGroupDataModelBase? = null
+    @Volatile private var _dataModel: CwtConfigGroupDataModel? = CwtConfigGroupDataModelBase()
+    @Volatile private var _initializer: CwtConfigGroupDataModelBase? = CwtConfigGroupDataModelBase()
 
     @Volatile override var initialized = false
     @Volatile override var changed = false
@@ -39,7 +39,6 @@ class CwtConfigGroupBase(
             _initializer = CwtConfigGroupDataModelBase()
             doApplyProcessors() // 应用 processors
             _dataModel = _initializer
-            _initializer = null
             doApplyPostProcessors() // 应用 postProcessors
             modificationTracker.incModificationCount() // 显式增加修改计数
             initialized = true // 标记规则数据已全部加载完毕

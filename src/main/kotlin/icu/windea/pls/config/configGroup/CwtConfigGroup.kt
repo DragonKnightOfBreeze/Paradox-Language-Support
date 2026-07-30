@@ -20,8 +20,8 @@ import icu.windea.pls.model.ParadoxGameType
  *
  * @property project 对应的项目。如果是默认项目，则不能用于访问 PSI。
  * @property gameType 对应的游戏类型。如果是 [ParadoxGameType.Core]，则为通用的规则分组。
- * @property dataModel 底层的数据模型。如果尚未初始化，则会得到空模型。
- * @property initializer 底层的用于初始化的可变数据模型。如果未在初始化，则会得到新创建的临时模型。
+ * @property dataModel 底层的数据模型。如果规则分组已被清理，则会得到空模型。
+ * @property initializer 底层的用于初始化的可变数据模型。如果规则分组已被清理，则会得到新创建的临时模型。
  *
  * @see CwtConfigGroupDataModel
  * @see CwtConfigGroupService
