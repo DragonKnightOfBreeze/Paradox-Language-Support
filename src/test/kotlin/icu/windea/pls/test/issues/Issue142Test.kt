@@ -1,5 +1,6 @@
 package icu.windea.pls.test.issues
 
+import com.intellij.testFramework.IndexingTestUtil
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.lang.inspections.script.expression.ConflictingResolvedExpressionInspection
@@ -38,6 +39,9 @@ class Issue142Test : BasePlatformTestCase(), ChronicleTestScope {
     fun testVarInTrigger() {
         markFileInfo(ParadoxGameType.Vic3, "common/scripted_triggers/test_trigger.test.txt")
         myFixture.configureByFile("issues/142/common/scripted_triggers/test_trigger.test.txt")
+
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+
         myFixture.checkHighlighting()
     }
 
@@ -45,6 +49,9 @@ class Issue142Test : BasePlatformTestCase(), ChronicleTestScope {
     fun testVarInEffect() {
         markFileInfo(ParadoxGameType.Vic3, "common/scripted_effects/test_effect.test.txt")
         myFixture.configureByFile("issues/142/common/scripted_effects/test_effect.test.txt")
+
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+
         myFixture.checkHighlighting()
     }
 

@@ -54,7 +54,7 @@ class OverrideForDefinitionInspectionTest : BasePlatformTestCase(), ChronicleTes
             }
         """.trimIndent())
 
-        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile) // necessary
+        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
         myFixture.checkHighlighting()
     }
 
@@ -79,7 +79,7 @@ class OverrideForDefinitionInspectionTest : BasePlatformTestCase(), ChronicleTes
             }
         """.trimIndent())
 
-        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile) // necessary
+        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
         myFixture.checkHighlighting()
     }
 
@@ -104,7 +104,7 @@ class OverrideForDefinitionInspectionTest : BasePlatformTestCase(), ChronicleTes
             }
         """.trimIndent())
 
-        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile) // necessary
+        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
         myFixture.checkHighlighting()
     }
 
@@ -131,7 +131,7 @@ class OverrideForDefinitionInspectionTest : BasePlatformTestCase(), ChronicleTes
             }
         """.trimIndent())
 
-        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile) // necessary
+        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
         myFixture.checkHighlighting()
     }
 
@@ -158,7 +158,7 @@ class OverrideForDefinitionInspectionTest : BasePlatformTestCase(), ChronicleTes
             }
         """.trimIndent())
 
-        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile) // necessary
+        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
         myFixture.checkHighlighting()
     }
 
@@ -185,7 +185,7 @@ class OverrideForDefinitionInspectionTest : BasePlatformTestCase(), ChronicleTes
             }
         """.trimIndent())
 
-        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile) // necessary
+        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
         myFixture.checkHighlighting()
     }
 }

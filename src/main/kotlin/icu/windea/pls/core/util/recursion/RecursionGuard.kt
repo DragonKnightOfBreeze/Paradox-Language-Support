@@ -5,6 +5,10 @@ import java.util.*
 
 /**
  * 递归守卫。
+ *
+ * 用于根据一组键来避免意外的递归。同一上下文中可以存在多个不同名字的递归守卫。
+ *
+ * @see RecursionService
  */
 class RecursionGuard(val name: String) {
     val stackTrace = ArrayDeque<Any>() // 来自 GPT：小深度用线性结构（数组/栈）线性扫，往往比哈希集合更快（分支预测友好、少间接寻址）
@@ -18,7 +22,9 @@ class RecursionGuard(val name: String) {
      */
     fun recursionCheck(key: Any?) {
         if (key == null) return
-        if (stackTrace.contains(key)) throw StackOverflowPreventedException("")
+        if (stackTrace.contains(key)) {
+            throw StackOverflowPreventedException("")
+        }
         stackTrace.addLast(key)
     }
 
@@ -31,7 +37,9 @@ class RecursionGuard(val name: String) {
      */
     inline fun <T> withRecursionCheck(key: Any?, action: () -> T): T? {
         if (key == null) return action()
-        if (stackTrace.contains(key)) return null
+        if (stackTrace.contains(key)) {
+            return null
+        }
         stackTrace.addLast(key)
         try {
             return action()

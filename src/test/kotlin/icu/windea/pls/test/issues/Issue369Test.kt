@@ -1,6 +1,7 @@
 package icu.windea.pls.test.issues
 
 import com.intellij.codeInsight.completion.CompletionType
+import com.intellij.testFramework.IndexingTestUtil
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.core.quote
@@ -55,7 +56,8 @@ class Issue369Test : BasePlatformTestCase(), ChronicleTestScope {
             }
         """.trimIndent())
 
-        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile) // necessary
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+
         myFixture.checkHighlighting()
     }
 
@@ -74,6 +76,8 @@ class Issue369Test : BasePlatformTestCase(), ChronicleTestScope {
                 # ...
             }
         """.trimIndent())
+
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
 
         myFixture.complete(CompletionType.BASIC)
         val lookupElementStrings = myFixture.lookupElementStrings!!
@@ -96,6 +100,8 @@ class Issue369Test : BasePlatformTestCase(), ChronicleTestScope {
             }
         """.trimIndent())
 
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+
         myFixture.complete(CompletionType.BASIC)
         val lookupElementStrings = myFixture.lookupElementStrings!!
         assertSameElements(lookupElementStrings, "no_spaces", "spaced out".quote()) // should be quoted if is blank or contains blank
@@ -117,6 +123,8 @@ class Issue369Test : BasePlatformTestCase(), ChronicleTestScope {
             }
         """.trimIndent())
 
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+
         myFixture.complete(CompletionType.BASIC)
         val lookupElementStrings = myFixture.lookupElementStrings!!
         assertSameElements(lookupElementStrings, "no_spaces", "spaced out") // should not be quoted since already quoted
@@ -137,6 +145,8 @@ class Issue369Test : BasePlatformTestCase(), ChronicleTestScope {
                 # ...
             }
         """.trimIndent())
+
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
 
         myFixture.complete(CompletionType.BASIC)
         val lookupElementStrings = myFixture.lookupElementStrings!!

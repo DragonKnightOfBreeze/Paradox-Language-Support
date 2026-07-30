@@ -2,6 +2,7 @@ package icu.windea.pls.test.chronicle
 
 import com.intellij.codeInsight.completion.CompletionType
 import com.intellij.psi.util.parentOfType
+import com.intellij.testFramework.IndexingTestUtil
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.ChronicleBundle
@@ -69,6 +70,8 @@ class ChronicleScopedTest : BasePlatformTestCase(), ChronicleTestScope {
             }
         """.trimIndent())
 
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+
         val reference = myFixture.findReferenceAtCaret()?.castOrNull<ParadoxScriptedVariablePsiReference>()!!
         assertEquals("NaN", reference.resolve()?.value)
     }
@@ -88,6 +91,8 @@ class ChronicleScopedTest : BasePlatformTestCase(), ChronicleTestScope {
                 }
             }
         """.trimIndent())
+
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
 
         myFixture.complete(CompletionType.BASIC)
         val lookupElementStrings = myFixture.lookupElementStrings!!
@@ -113,6 +118,8 @@ class ChronicleScopedTest : BasePlatformTestCase(), ChronicleTestScope {
                 }
             }
         """.trimIndent())
+
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
 
         myFixture.checkHighlighting()
     }

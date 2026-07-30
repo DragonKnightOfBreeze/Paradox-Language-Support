@@ -1,9 +1,10 @@
 package icu.windea.pls.test.issues
 
 import com.intellij.codeInsight.completion.CompletionType
+import com.intellij.testFramework.IndexingTestUtil
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.cwt.psi.CwtValue
+import icu.windea.pls.cwt.psi.CwtString
 import icu.windea.pls.lang.inspections.script.expression.UnresolvedExpressionInspection
 import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
 import icu.windea.pls.model.ParadoxGameType
@@ -50,7 +51,8 @@ class Issue374Test : BasePlatformTestCase(), ChronicleTestScope {
             }
         """.trimIndent())
 
-        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile) // necessary
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+
         myFixture.checkHighlighting()
     }
 
@@ -65,11 +67,12 @@ class Issue374Test : BasePlatformTestCase(), ChronicleTestScope {
             }
         """.trimIndent())
 
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+
         val reference = myFixture.findReferenceAtCaret()!!
         val resolved = reference.resolve()!!
-        assertTrue(resolved is CwtValue && resolved.name == "v1")
+        assertTrue(resolved is CwtString && resolved.name == "v1")
 
-        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile) // necessary
         myFixture.checkHighlighting()
     }
 
@@ -84,11 +87,12 @@ class Issue374Test : BasePlatformTestCase(), ChronicleTestScope {
             }
         """.trimIndent())
 
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+
         val reference = myFixture.findReferenceAtCaret()!!
         val resolved = reference.resolve()!!
         assertTrue(resolved is ParadoxDynamicValueLightElement && resolved.name == "some_flag" && resolved.presentableType == "test_flag")
 
-        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile) // necessary
         myFixture.checkHighlighting()
     }
 
@@ -107,6 +111,8 @@ class Issue374Test : BasePlatformTestCase(), ChronicleTestScope {
                 value = <caret>
             }
         """.trimIndent())
+
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
 
         myFixture.complete(CompletionType.BASIC)
         val lookupElementStrings = myFixture.lookupElementStrings!!
@@ -133,6 +139,8 @@ class Issue374Test : BasePlatformTestCase(), ChronicleTestScope {
                 value = some_<caret>
             }
         """.trimIndent())
+
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
 
         myFixture.complete(CompletionType.BASIC)
         val lookupElementStrings = myFixture.lookupElementStrings!!

@@ -1,5 +1,6 @@
 package icu.windea.pls.test.issues
 
+import com.intellij.testFramework.IndexingTestUtil
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.lang.inspections.script.expression.UnresolvedExpressionInspection
@@ -34,8 +35,10 @@ class Issue288Test : BasePlatformTestCase(), ChronicleTestScope {
         myFixture.enableInspections(UnresolvedExpressionInspection::class.java)
 
         markFileInfo(ParadoxGameType.Eu5, "common/location_ranks/issue_288_eu5.test.txt")
-
         myFixture.configureByFile("issues/288/common/location_ranks/issue_288_eu5.test.txt")
+
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+
         myFixture.checkHighlighting()
     }
 }
