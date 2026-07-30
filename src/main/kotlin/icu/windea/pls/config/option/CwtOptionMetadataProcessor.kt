@@ -9,6 +9,7 @@ import icu.windea.pls.config.config.CwtOptionConfig
 import icu.windea.pls.config.config.CwtOptionMemberConfig
 import icu.windea.pls.config.config.CwtOptionValueConfig
 import icu.windea.pls.config.configExpression.CwtCardinalityExpression
+import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.optimizedPathExtension
 import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.annotations.Optimized
@@ -23,7 +24,7 @@ import icu.windea.pls.model.type.CwtSeparatorType
 
 object CwtOptionMetadataProcessor {
     @Optimized
-    fun process(optionMetadata: CwtOptionMetadata, optionConfigs: List<CwtOptionMemberConfig<*>>) {
+    fun process(optionMetadata: CwtOptionMetadata, optionConfigs: List<CwtOptionMemberConfig<*>>, configGroup: CwtConfigGroup) {
         if (optionMetadata !is CwtOptionMetadataBase) return
         if (optionConfigs.isEmpty()) return
         val skipProcessing = ChronicleThreadContext.skipProcessingOptionMetadata.get() == true
@@ -36,13 +37,13 @@ object CwtOptionMetadataProcessor {
         }
         optionConfigs.forEachFast { config ->
             when (config) {
-                is CwtOptionConfig -> processOptionConfig(optionMetadata, config)
-                is CwtOptionValueConfig -> processOptionValueConfig(optionMetadata, config)
+                is CwtOptionConfig -> processOptionConfig(optionMetadata, config, configGroup)
+                is CwtOptionValueConfig -> processOptionValueConfig(optionMetadata, config, configGroup)
             }
         }
     }
 
-    private fun processOptionConfig(optionMetadata: CwtOptionMetadataBase, config: CwtOptionConfig) {
+    private fun processOptionConfig(optionMetadata: CwtOptionMetadataBase, config: CwtOptionConfig, configGroup: CwtConfigGroup) {
         val key = config.key
         when (key) {
             "api_status" -> {
@@ -63,6 +64,7 @@ object CwtOptionMetadataProcessor {
             }
             "predicate" -> {
                 val v = resolvePredicate(config) ?: return
+                configGroup.initializer.attribute.usePredicateBasedMatch = true // set attribute
                 optionMetadata.predicate = v
             }
             "push_scope" -> {
@@ -168,7 +170,8 @@ object CwtOptionMetadataProcessor {
         }
     }
 
-    private fun processOptionValueConfig(optionMetadata: CwtOptionMetadataBase, config: CwtOptionValueConfig) {
+    @Suppress("unused")
+    private fun processOptionValueConfig(optionMetadata: CwtOptionMetadataBase, config: CwtOptionValueConfig, configGroup: CwtConfigGroup) {
         // NOTE 2.1.1 移除 `optional` 标志：CWTools 指引文档中并未提及，同时也是不必要的（默认即为可选）
         val flag = config.getOptionValue() ?: return
         when (flag) {

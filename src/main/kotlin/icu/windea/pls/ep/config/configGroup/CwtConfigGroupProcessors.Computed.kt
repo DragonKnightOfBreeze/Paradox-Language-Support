@@ -263,11 +263,11 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
             initializer.macros.forEach { c ->
                 when (c) {
                     is CwtMacroConfig.InlineScript -> {
-                        attribute.supportInlineScript = true
+                        attribute.supportInlineScript = true // set attribute
                         forInlineScripts += c
                     }
                     is CwtMacroConfig.DefinitionInjection -> {
-                        attribute.supportDefinitionInjection = true
+                        attribute.supportDefinitionInjection = true // set attribute
                         attribute.definitionInjectionModes += c.modeConfigs.keys
                         forDefinitionInjections = c
                     }

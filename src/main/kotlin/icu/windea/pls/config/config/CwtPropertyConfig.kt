@@ -149,7 +149,7 @@ private object CwtPropertyConfigResolver : CwtConfigResolverScope {
         val valueType = CwtTypeResolver.resolveExpressionType(valueElement)
         val config = create(pointer, configGroup, keyExpression, valueExpression, valueType, separatorType, configs, injectable = true)
         val optionConfigs = CwtConfigResolverManager.getOptionConfigs(element, configGroup)
-        CwtOptionMetadataProcessor.process(config.optionMetadata, optionConfigs) // initialize option metadata
+        CwtOptionMetadataProcessor.process(config.optionMetadata, optionConfigs, configGroup) // initialize option metadata
         when {
             configs == null -> logger.trace { "Resolved property config (key: ${config.key}, value: ${config.value}).".withLocationPrefix(element, configGroup) }
             configs.isEmpty() -> logger.trace { "Resolved property config (key: ${config.key}, empty member configs).".withLocationPrefix(element, configGroup) }
