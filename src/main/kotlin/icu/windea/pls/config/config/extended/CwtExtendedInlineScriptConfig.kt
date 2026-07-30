@@ -1,6 +1,5 @@
 package icu.windea.pls.config.config.extended
 
-import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.CwtDataTypeSets
@@ -88,7 +87,7 @@ private object CwtExtendedInlineScriptConfigResolver : CwtConfigResolverScope {
     fun resolve(config: CwtMemberConfig<*>): CwtExtendedInlineScriptConfig {
         val name = if (config is CwtPropertyConfig) config.key else config.value
         val contextConfigsType = config.optionMetadata.contextConfigsType.let { CwtContextConfigsType.resolve(it) }
-        logger.debug { "Resolved extended inline script config (name: $name).".withLocationPrefix(config) }
+        logger.debugWithPrefix(config) { "Resolved extended inline script config (name: $name)." }
         return CwtExtendedInlineScriptConfigImpl(config, name, contextConfigsType)
     }
 }

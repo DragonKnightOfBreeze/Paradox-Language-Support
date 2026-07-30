@@ -1,6 +1,5 @@
 package icu.windea.pls.config.config.delegated
 
-import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.CwtDataTypes
@@ -98,10 +97,10 @@ private object CwtModifierConfigResolver : CwtConfigResolverScope {
         // string | string[]
         val categories = config.stringValue?.let { setOf(it) } ?: config.values?.mapNotNullTo(mutableSetOf()) { it.stringValue }?.optimized()
         if (categories == null) {
-            logger.warn("Skipped invalid modifier config (name: $name): Null categories".withLocationPrefix(config))
+            logger.warnWithPrefix(config, "Skipped invalid modifier config (name: $name): Null categories")
             return null
         }
-        logger.debug { "Resolved modifier config (name: $name).".withLocationPrefix(config) }
+        logger.debugWithPrefix(config) { "Resolved modifier config (name: $name)." }
         return CwtModifierConfigImpl(config, name, categories)
     }
 
@@ -109,11 +108,11 @@ private object CwtModifierConfigResolver : CwtConfigResolverScope {
         // string | string[]
         val categories = config.stringValue?.let { setOf(it) } ?: config.values?.mapNotNullTo(mutableSetOf()) { it.stringValue }?.optimized()
         if (categories == null) {
-            logger.debug("Skipped invalid modifier config from definition modifier (name: $name): Null categories".withLocationPrefix(config))
+            logger.debugWithPrefix(config) { "Skipped invalid modifier config from definition modifier (name: $name): Null categories" }
             return null
         }
         val modifierName = name.replace("$", "<$typeExpression>").optimized()
-        logger.debug { "Resolved modifier config from definition modifier (name: $name, type expression: $typeExpression).".withLocationPrefix(config) }
+        logger.debugWithPrefix(config) { "Resolved modifier config from definition modifier (name: $name, type expression: $typeExpression)." }
         return CwtModifierConfigImpl(config, modifierName, categories)
     }
 }

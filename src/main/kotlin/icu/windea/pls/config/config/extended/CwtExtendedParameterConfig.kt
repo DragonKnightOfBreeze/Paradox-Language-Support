@@ -1,6 +1,5 @@
 package icu.windea.pls.config.config.extended
 
-import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
 import com.intellij.psi.util.parentOfType
@@ -103,12 +102,12 @@ private object CwtExtendedParameterConfigResolver : CwtConfigResolverScope {
         val name = if (config is CwtPropertyConfig) config.key else config.value
         val contextKey = config.optionMetadata.contextKey
         if (contextKey == null) {
-            logger.warn("Skipped invalid extended parameter config (name: $name): Missing context_key option.".withLocationPrefix(config))
+            logger.warnWithPrefix(config, "Skipped invalid extended parameter config (name: $name): Missing context_key option.")
             return null
         }
         val contextConfigsType = config.optionMetadata.contextConfigsType.let { CwtContextConfigsType.resolve(it) }
         val inherit = config.optionMetadata.inherit
-        logger.debug { "Resolved extended parameter config (name: $name, context key: $contextKey).".withLocationPrefix(config) }
+        logger.debugWithPrefix(config) { "Resolved extended parameter config (name: $name, context key: $contextKey)." }
         return CwtExtendedParameterConfigImpl(config, name, contextKey, contextConfigsType, inherit)
     }
 }

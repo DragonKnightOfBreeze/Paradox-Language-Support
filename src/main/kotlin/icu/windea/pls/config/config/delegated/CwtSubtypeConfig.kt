@@ -1,6 +1,5 @@
 package icu.windea.pls.config.config.delegated
 
-import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.annotations.FromName
@@ -85,7 +84,7 @@ private object CwtSubtypeConfigResolver : CwtConfigResolverScope {
         val startsWith = config.optionMetadata.startsWith
         val onlyIfNot = config.optionMetadata.onlyIfNot
         val group = config.optionMetadata.group
-        logger.debug { "Resolved subtype config (name: $name).".withLocationPrefix(config) }
+        logger.debugWithPrefix(config) { "Resolved subtype config (name: $name)." }
         return CwtSubtypeConfigImpl(config, name, typeKeyFilter, typeKeyRegex, startsWith, onlyIfNot, group)
     }
 }

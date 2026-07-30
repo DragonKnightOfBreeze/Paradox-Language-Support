@@ -1,6 +1,5 @@
 package icu.windea.pls.config.config.delegated
 
-import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.annotations.FromMember
@@ -73,12 +72,12 @@ private object CwtSystemScopeConfigResolver : CwtConfigResolverScope {
         val name = config.key
         val propConfigs = config.properties
         if (propConfigs == null) {
-            logger.warn("Skipped invalid system scope config (name: $name): Null properties.".withLocationPrefix(config))
+            logger.warnWithPrefix(config, "Skipped invalid system scope config (name: $name): Null properties.")
             return null
         }
         val propGroup = propConfigs.groupBy { it.key }
         val base = propGroup.getOne("base")?.stringValue ?: name
-        logger.debug { "Resolved system scope config (name: $name).".withLocationPrefix(config) }
+        logger.debugWithPrefix(config) { "Resolved system scope config (name: $name)." }
         return CwtSystemScopeConfigImpl(config, name, base)
     }
 }

@@ -3,7 +3,6 @@
 package icu.windea.pls.config.config
 
 import com.intellij.openapi.diagnostic.thisLogger
-import com.intellij.openapi.diagnostic.trace
 import com.intellij.openapi.util.Key
 import com.intellij.psi.SmartPsiElementPointer
 import icu.windea.pls.config.configExpression.CwtDataExpression
@@ -113,9 +112,9 @@ private object CwtValueConfigResolver : CwtConfigResolverScope {
         val optionConfigs = CwtConfigResolverManager.getOptionConfigs(element, configGroup)
         CwtOptionMetadataProcessor.process(config.optionMetadata, optionConfigs, configGroup) // initialize option metadata
         when {
-            configs == null -> logger.trace { "Resolved value config (value: ${config.value}).".withLocationPrefix(element, configGroup) }
-            configs.isEmpty() -> logger.trace { "Resolved value config (empty member configs).".withLocationPrefix(element, configGroup) }
-            else -> logger.trace { "Resolved value config (${configs.size} member configs).".withLocationPrefix(element, configGroup) }
+            configs == null -> logger.traceWithPrefix(element, configGroup) { "Resolved value config (value: ${config.value})." }
+            configs.isEmpty() -> logger.traceWithPrefix(element, configGroup) { "Resolved value config (empty member configs)." }
+            else -> logger.traceWithPrefix(element, configGroup) { "Resolved value config (${configs.size} member configs)." }
         }
         return config
     }

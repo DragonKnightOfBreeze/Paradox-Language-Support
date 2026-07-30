@@ -1,6 +1,5 @@
 package icu.windea.pls.config.config.delegated
 
-import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.annotations.FromMember
@@ -95,7 +94,7 @@ private object CwtMacroConfigResolver : CwtConfigResolverScope {
             ?: return null
         return when (name) {
             "inline_script" -> {
-                logger.debug { "Resolved macro config for inline scripts (name: $name).".withLocationPrefix(config) }
+                logger.debugWithPrefix(config) { "Resolved macro config for inline scripts (name: $name)." }
                 CwtInlineScriptMacroConfig(config, name)
             }
             "definition_injection" -> {
@@ -113,11 +112,11 @@ private object CwtMacroConfigResolver : CwtConfigResolverScope {
                 val createModes = propGroup.getOne("create_modes")?.let { prop ->
                     prop.values?.mapNotNullTo(CaseInsensitiveStringSet()) { it.stringValue }
                 }?.optimized().orEmpty()
-                logger.debug { "Resolved macro config for definition injections (name: $name).".withLocationPrefix(config) }
+                logger.debugWithPrefix(config) { "Resolved macro config for definition injections (name: $name)." }
                 CwtDefinitionInjectionMacroConfig(config, name, modeConfigs, lenientModes, replaceModes, createModes)
             }
             else -> {
-                logger.debug { "Resolved macro config (name: $name).".withLocationPrefix(config) }
+                logger.debugWithPrefix(config) { "Resolved macro config (name: $name)." }
                 CwtMacroConfigImpl(config, name)
             }
         }

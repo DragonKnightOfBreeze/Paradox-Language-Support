@@ -1,6 +1,5 @@
 package icu.windea.pls.config.config.delegated
 
-import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.annotations.FromMember
@@ -92,7 +91,7 @@ private object CwtRowConfigResolver : CwtConfigResolverScope {
         val name = config.key.removeSurroundingOrNull("row[", "]")?.orNull() ?: return null
         val propConfigs = config.properties
         if (propConfigs.isNullOrEmpty()) {
-            logger.warn("Skipped invalid row config (name: $name): Empty properties.".withLocationPrefix(config))
+            logger.warnWithPrefix(config, "Skipped invalid row config (name: $name): Empty properties.")
             return null
         }
 
@@ -107,7 +106,7 @@ private object CwtRowConfigResolver : CwtConfigResolverScope {
         val skipLastColumn = propGroup.getOne("skip_last_column")?.booleanValue ?: false
         val columns = propGroup.getOne("columns")?.properties?.optimized().orEmpty()
 
-        logger.debug { "Resolved row config (name: $name).".withLocationPrefix(config) }
+        logger.debugWithPrefix(config) { "Resolved row config (name: $name)." }
         return CwtRowConfigImpl(
             config, name,
             paths, pathFile, pathExtension, pathStrict, pathPatterns,

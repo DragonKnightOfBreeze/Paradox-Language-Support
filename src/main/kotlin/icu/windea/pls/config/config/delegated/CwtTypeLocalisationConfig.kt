@@ -74,7 +74,7 @@ private object CwtTypeLocalisationConfigResolver : CwtConfigResolverScope {
         }
 
         if (locationConfigGroup.isEmpty()) {
-            logger.warn("Skipped invalid type images config: Missing properties (after flatten).".withLocationPrefix(config))
+            logger.warnWithPrefix(config, "Skipped invalid type images config: Missing properties (after flatten).")
             return null
         }
         return CwtTypeLocalisationConfigImpl(config, locationConfigGroup.mapValues { (_, v) -> v.optimized() }.optimized())

@@ -1,6 +1,5 @@
 package icu.windea.pls.config.config.delegated
 
-import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.annotations.FromMember
@@ -99,7 +98,7 @@ private object CwtComplexEnumConfigResolver : CwtConfigResolverScope {
         val name = config.key.removeSurroundingOrNull("complex_enum[", "]")?.orNull() ?: return null
         val propConfigs = config.properties
         if (propConfigs.isNullOrEmpty()) {
-            logger.warn("Skipped invalid complex enum config (name: $name): Missing properties.".withLocationPrefix(config))
+            logger.warnWithPrefix(config, "Skipped invalid complex enum config (name: $name): Missing properties.")
             return null
         }
 
@@ -115,10 +114,10 @@ private object CwtComplexEnumConfigResolver : CwtConfigResolverScope {
         val nameConfig = propGroup.getOne("name")
 
         if (nameConfig == null) {
-            logger.warn("Skipped invalid complex enum config (name: $name): Missing name config.".withLocationPrefix(config))
+            logger.warnWithPrefix(config, "Skipped invalid complex enum config (name: $name): Missing name config.")
             return null
         }
-        logger.debug { "Resolved complex enum config (name: $name).".withLocationPrefix(config) }
+        logger.debugWithPrefix(config) { "Resolved complex enum config (name: $name)." }
         return CwtComplexEnumConfigImpl(
             config, name,
             paths, pathFile, pathExtension, pathStrict, pathPatterns,

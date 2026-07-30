@@ -1,6 +1,5 @@
 package icu.windea.pls.config.config.extended
 
-import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.CwtDataTypeSets
@@ -66,7 +65,7 @@ private object CwtExtendedComplexEnumValueConfigResolver : CwtConfigResolverScop
     fun resolve(config: CwtMemberConfig<*>, type: String): CwtExtendedComplexEnumValueConfig {
         val name = if (config is CwtPropertyConfig) config.key else config.value
         val hint = config.optionMetadata.hint
-        logger.debug { "Resolved extended complex enum value config (name: $name, type: $type).".withLocationPrefix(config) }
+        logger.debugWithPrefix(config) { "Resolved extended complex enum value config (name: $name, type: $type)." }
         return CwtExtendedComplexEnumValueConfigImpl(config, name, type, hint)
     }
 }

@@ -1,6 +1,5 @@
 package icu.windea.pls.config.config.extended
 
-import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.CwtDataTypeSets
@@ -67,7 +66,7 @@ private object CwtExtendedGameRuleConfigResolver : CwtConfigResolverScope {
     fun resolve(config: CwtMemberConfig<*>): CwtExtendedGameRuleConfig {
         val name = if (config is CwtPropertyConfig) config.key else config.value
         val hint = config.optionMetadata.hint
-        logger.debug { "Resolved extended game rule config (name: $name).".withLocationPrefix(config) }
+        logger.debugWithPrefix(config) { "Resolved extended game rule config (name: $name)." }
         return CwtExtendedGameRuleConfigImpl(config, name, hint)
     }
 }

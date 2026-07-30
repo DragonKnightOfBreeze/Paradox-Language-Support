@@ -1,6 +1,5 @@
 package icu.windea.pls.config.config.extended
 
-import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.CwtDataTypeSets
@@ -73,11 +72,11 @@ private object CwtExtendedDefinitionConfigResolver : CwtConfigResolverScope {
         val name = if (config is CwtPropertyConfig) config.key else config.value
         val type = config.optionMetadata.type
         if (type == null) {
-            logger.warn("Skipped invalid extended definition config (name: $name): Missing type option.".withLocationPrefix(config))
+            logger.warnWithPrefix(config, "Skipped invalid extended definition config (name: $name): Missing type option.")
             return null
         }
         val hint = config.optionMetadata.hint
-        logger.debug { "Resolved extended definition config (name: $name, type: $type).".withLocationPrefix(config) }
+        logger.debugWithPrefix(config) { "Resolved extended definition config (name: $name, type: $type)." }
         return CwtExtendedDefinitionConfigImpl(config, name, type, hint)
     }
 }

@@ -3,7 +3,6 @@
 package icu.windea.pls.config.config
 
 import com.intellij.openapi.diagnostic.thisLogger
-import com.intellij.openapi.diagnostic.trace
 import com.intellij.openapi.util.Key
 import com.intellij.psi.SmartPsiElementPointer
 import icu.windea.pls.config.configExpression.CwtDataExpression
@@ -130,15 +129,15 @@ private object CwtPropertyConfigResolver : CwtConfigResolverScope {
         }
 
         if (keyElement == null) {
-            logger.warn("Missing property key, skipped.".withLocationPrefix(element, configGroup))
+            logger.warnWithPrefix(element, configGroup, "Missing property key, skipped.")
             return null
         }
         if (valueElement == null) {
-            logger.warn("Missing property value, skipped.".withLocationPrefix(element, configGroup))
+            logger.warnWithPrefix(element, configGroup, "Missing property value, skipped.")
             return null
         }
         if (separatorType == null) {
-            logger.warn("Missing property separator, skipped.".withLocationPrefix(element, configGroup))
+            logger.warnWithPrefix(element, configGroup, "Missing property separator, skipped.")
             return null
         }
 
@@ -151,9 +150,9 @@ private object CwtPropertyConfigResolver : CwtConfigResolverScope {
         val optionConfigs = CwtConfigResolverManager.getOptionConfigs(element, configGroup)
         CwtOptionMetadataProcessor.process(config.optionMetadata, optionConfigs, configGroup) // initialize option metadata
         when {
-            configs == null -> logger.trace { "Resolved property config (key: ${config.key}, value: ${config.value}).".withLocationPrefix(element, configGroup) }
-            configs.isEmpty() -> logger.trace { "Resolved property config (key: ${config.key}, empty member configs).".withLocationPrefix(element, configGroup) }
-            else -> logger.trace { "Resolved property config (key: ${config.key}, ${configs.size} member configs).".withLocationPrefix(element, configGroup) }
+            configs == null -> logger.traceWithPrefix(element, configGroup) { "Resolved property config (key: ${config.key}, value: ${config.value})." }
+            configs.isEmpty() -> logger.traceWithPrefix(element, configGroup) { "Resolved property config (key: ${config.key}, empty member configs)." }
+            else -> logger.traceWithPrefix(element, configGroup) { "Resolved property config (key: ${config.key}, ${configs.size} member configs)." }
         }
         return config
     }

@@ -1,6 +1,5 @@
 package icu.windea.pls.config.config.delegated
 
-import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.annotations.FromName
@@ -67,7 +66,7 @@ private object CwtSingleAliasConfigResolver : CwtConfigResolverScope {
     fun resolve(config: CwtPropertyConfig): CwtSingleAliasConfig? {
         val key = config.key
         val name = key.removeSurroundingOrNull("single_alias[", "]")?.orNull()?.optimized() ?: return null
-        logger.debug { "Resolved single alias config (name: $name).".withLocationPrefix(config) }
+        logger.debugWithPrefix(config) { "Resolved single alias config (name: $name)." }
         return CwtSingleAliasConfigImpl(config, name)
     }
 }

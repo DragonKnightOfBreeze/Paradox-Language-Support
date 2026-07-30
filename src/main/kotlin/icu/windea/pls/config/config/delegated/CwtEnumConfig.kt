@@ -1,6 +1,5 @@
 package icu.windea.pls.config.config.delegated
 
-import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.annotations.FromMember
@@ -71,11 +70,11 @@ private object CwtEnumConfigResolver : CwtConfigResolverScope {
         val name = key.removeSurroundingOrNull("enum[", "]")?.orNull()?.optimized() ?: return null
         val valueConfigs = config.values
         if (valueConfigs == null) {
-            logger.warn("Skipped invalid enum config (name: $name): Null values.".withLocationPrefix(config))
+            logger.warnWithPrefix(config, "Skipped invalid enum config (name: $name): Null values.")
             return null
         }
         if (valueConfigs.isEmpty()) {
-            logger.debug { "Resolved enum config with empty values (name: $name).".withLocationPrefix(config) }
+            logger.debugWithPrefix(config) { "Resolved enum config with empty values (name: $name)." }
             return CwtEnumConfigImpl(config, name, emptySet(), emptyMap())
         }
         val values = CaseInsensitiveStringSet()
@@ -84,7 +83,7 @@ private object CwtEnumConfigResolver : CwtConfigResolverScope {
             values.add(valueElement.value)
             valueConfigMap.put(valueElement.value, valueElement)
         }
-        logger.debug { "Resolved enum config (name: $name).".withLocationPrefix(config) }
+        logger.debugWithPrefix(config) { "Resolved enum config (name: $name)." }
         return CwtEnumConfigImpl(config, name, values.optimized(), valueConfigMap.optimized())
     }
 }

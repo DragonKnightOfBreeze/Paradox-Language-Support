@@ -1,6 +1,5 @@
 package icu.windea.pls.config.config.delegated
 
-import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.annotations.FromMember
@@ -130,7 +129,7 @@ private object CwtTypeConfigResolver : CwtConfigResolverScope {
         val name = config.key.removeSurroundingOrNull("type[", "]")?.orNull()?.optimized() ?: return null
         val propConfigs = config.properties
         if (propConfigs.isNullOrEmpty()) {
-            logger.warn("Skipped invalid type config (name: $name): Missing properties.".withLocationPrefix(config))
+            logger.warnWithPrefix(config, "Skipped invalid type config (name: $name): Missing properties.")
             return null
         }
 
@@ -160,11 +159,11 @@ private object CwtTypeConfigResolver : CwtConfigResolverScope {
         val images = propGroup.getOne("images")?.let { CwtTypeImagesConfig.resolve(it) }
 
         if (baseType != null && baseType == name) {
-            logger.warn("Incorrect base_type property: base type cannot be same to current type, fallback to null.".withLocationPrefix(config))
+            logger.warnWithPrefix(config, "Incorrect base_type property: base type cannot be same to current type, fallback to null.")
             baseType = null
         }
 
-        logger.debug { "Resolved type config (name: $name).".withLocationPrefix(config) }
+        logger.debugWithPrefix(config) { "Resolved type config (name: $name)." }
         return CwtTypeConfigImpl(
             config, name, baseType,
             paths, pathFile, pathExtension, pathStrict, pathPatterns,

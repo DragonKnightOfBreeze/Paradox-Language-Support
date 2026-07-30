@@ -1,6 +1,5 @@
 package icu.windea.pls.config.config.delegated
 
-import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.annotations.FromMember
@@ -66,7 +65,7 @@ private object CwtModifierCategoryConfigResolver : CwtConfigResolverScope {
         val name = config.key
         val propConfigs = config.properties
         if (propConfigs.isNullOrEmpty()) {
-            logger.warn("Skipped invalid modifier category config (name: $name): Missing properties.".withLocationPrefix(config))
+            logger.warnWithPrefix(config, "Skipped invalid modifier category config (name: $name): Missing properties.")
             return null
         }
         // may be empty here (e.g., "AI Economy")
@@ -76,7 +75,7 @@ private object CwtModifierCategoryConfigResolver : CwtConfigResolverScope {
                 prop.values?.forEach { it.stringValue?.let { v -> add(ParadoxScope.getId(v)) } }
             }
         }?.optimized() ?: ParadoxScopeConstants.anyScopes
-        logger.debug { "Resolved modifier category config (name: $name).".withLocationPrefix(config) }
+        logger.debugWithPrefix(config) { "Resolved modifier category config (name: $name)." }
         return CwtModifierCategoryConfigImpl(config, name, supportedScopes)
     }
 }

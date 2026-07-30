@@ -1,6 +1,5 @@
 package icu.windea.pls.config.config.delegated
 
-import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.annotations.FromMember
@@ -71,11 +70,11 @@ private object CwtScopeGroupConfigResolver : CwtConfigResolverScope {
         val name = config.key
         val valueConfigs = config.values
         if (valueConfigs == null) {
-            logger.warn("Skipped invalid scope group config (name: $name): Null values.".withLocationPrefix(config))
+            logger.warnWithPrefix(config, "Skipped invalid scope group config (name: $name): Null values.")
             return null
         }
         if (valueConfigs.isEmpty()) {
-            logger.debug { "Resolved scope group config with empty values (name: $name).".withLocationPrefix(config) }
+            logger.debugWithPrefix(config) { "Resolved scope group config with empty values (name: $name)." }
             return CwtScopeGroupConfigImpl(config, name, emptySet(), emptyMap())
         }
         val values = CaseInsensitiveStringSet()
@@ -84,7 +83,7 @@ private object CwtScopeGroupConfigResolver : CwtConfigResolverScope {
             values.add(valueElement.value)
             valueConfigMap.put(valueElement.value, valueElement)
         }
-        logger.debug { "Resolved scope group config (name: $name).".withLocationPrefix(config) }
+        logger.debugWithPrefix(config) { "Resolved scope group config (name: $name)." }
         return CwtScopeGroupConfigImpl(config, name, values.optimized(), valueConfigMap.optimized())
     }
 }

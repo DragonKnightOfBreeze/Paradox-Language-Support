@@ -1,6 +1,5 @@
 package icu.windea.pls.config.config.delegated
 
-import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.annotations.FromName
@@ -65,14 +64,14 @@ private object CwtUnionConfigResolver : CwtConfigResolverScope {
         val name = key.removeSurroundingOrNull("union[", "]")?.orNull()?.optimized() ?: return null
         val valueConfigs = config.values
         if (valueConfigs == null) {
-            logger.warn("Skipped invalid union config (name: $name): Null values.".withLocationPrefix(config))
+            logger.warnWithPrefix(config, "Skipped invalid union config (name: $name): Null values.")
             return null
         }
         if (valueConfigs.isEmpty()) {
-            logger.debug { "Resolved union config with empty values (name: $name).".withLocationPrefix(config) }
+            logger.debugWithPrefix(config) { "Resolved union config with empty values (name: $name)." }
             return CwtUnionConfigImpl(config, name, emptyList())
         }
-        logger.debug { "Resolved union config (name: $name).".withLocationPrefix(config) }
+        logger.debugWithPrefix(config) { "Resolved union config (name: $name)." }
         return CwtUnionConfigImpl(config, name, valueConfigs.optimized())
     }
 }

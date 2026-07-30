@@ -81,15 +81,15 @@ private object CwtOptionConfigResolver : CwtConfigResolverScope {
         }
 
         if (keyElement == null) {
-            logger.warn("Missing option key, skipped.".withLocationPrefix(element, configGroup))
+            logger.warnWithPrefix(element, configGroup, "Missing option key, skipped.")
             return null
         }
         if (valueElement == null) {
-            logger.warn("Missing option value, skipped.".withLocationPrefix(element, configGroup))
+            logger.warnWithPrefix(element, configGroup, "Missing option value, skipped.")
             return null
         }
         if (separatorType == null) {
-            logger.warn("Missing option separator, skipped.".withLocationPrefix(element, configGroup))
+            logger.warnWithPrefix(element, configGroup, "Missing option separator, skipped.")
             return null
         }
 

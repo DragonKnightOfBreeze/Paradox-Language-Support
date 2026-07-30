@@ -1,6 +1,5 @@
 package icu.windea.pls.config.config.delegated
 
-import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.annotations.FromName
@@ -91,7 +90,7 @@ private object CwtAliasConfigResolver : CwtConfigResolverScope {
             ?: return null
         val name = tokens[0].optimized()
         val subName = tokens[1].optimized()
-        logger.debug { "Resolved alias config (name: $name, subName: $subName).".withLocationPrefix(config) }
+        logger.debugWithPrefix(config) { "Resolved alias config (name: $name, subName: $subName)." }
         return CwtAliasConfigImpl(config, name, subName)
     }
 

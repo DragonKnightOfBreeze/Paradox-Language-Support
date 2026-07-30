@@ -1,6 +1,5 @@
 package icu.windea.pls.config.config.delegated
 
-import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.annotations.FromName
@@ -79,7 +78,7 @@ private object CwtDeclarationConfigResolver : CwtConfigResolverScope {
 
     fun resolve(config: CwtPropertyConfig, inputName: String?): CwtDeclarationConfig? {
         val name = inputName ?: config.key.takeIf { it.isIdentifier() } ?: return null
-        logger.debug { "Resolved declaration config (name: $name).".withLocationPrefix(config) }
+        logger.debugWithPrefix(config) { "Resolved declaration config (name: $name)." }
         return CwtDeclarationConfigImpl(config, name)
     }
 }
