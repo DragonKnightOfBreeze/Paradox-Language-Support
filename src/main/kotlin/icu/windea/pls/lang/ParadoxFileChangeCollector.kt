@@ -11,12 +11,16 @@ import com.intellij.openapi.vfs.newvfs.events.VFileMoveEvent
 import com.intellij.openapi.vfs.newvfs.events.VFilePropertyChangeEvent
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.ide.analysis.ChronicleAnalysisManager
-import icu.windea.pls.lang.analysis.ParadoxAnalysisDataService
+import icu.windea.pls.lang.analysis.ParadoxAnalysisScope
+import icu.windea.pls.lang.analysis.cachedFileInfo
+import icu.windea.pls.lang.analysis.cachedLocaleConfig
+import icu.windea.pls.lang.analysis.cachedRootInfo
+import icu.windea.pls.lang.analysis.sliceInfos
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.model.constants.ChronicleConstants
 
 @Optimized
-class ParadoxFileChangeCollector {
+class ParadoxFileChangeCollector : ParadoxAnalysisScope {
     private val rootInfoContextFiles: MutableSet<VirtualFile> = mutableSetOf()
     private val rootFilesToClearRootInfo: MutableSet<VirtualFile> = mutableSetOf()
 
@@ -156,38 +160,31 @@ class ParadoxFileChangeCollector {
         // NOTE 2.1.2 分析数据缓存需要在 VFS 更改之后再清空，否则可能会被再次加载
 
         // 清空分析数据缓存
-        val dataService = ParadoxAnalysisDataService.getInstance()
         if (rootInfoContextFiles.isNotEmpty()) {
             rootInfoContextFiles.forEach { contextFile ->
                 selectRootFile(contextFile)?.let { rootFile -> rootFilesToClearRootInfo += rootFile }
             }
         }
         if (rootFilesToClearRootInfo.isNotEmpty()) {
-            with(dataService) {
-                rootFilesToClearRootInfo.forEach { rootFile ->
-                    rootFile.cachedRootInfo = null
-                }
+            rootFilesToClearRootInfo.forEach { rootFile ->
+                rootFile.cachedRootInfo = null
             }
         }
         if (filesToClearFileInfo.isNotEmpty()) {
-            with(dataService) {
-                filesToClearFileInfo.forEach { file ->
-                    file.cachedFileInfo = null
-                }
+            filesToClearFileInfo.forEach { file ->
+                file.cachedFileInfo = null
             }
+
         }
         if (filesToClearLocaleConfig.isNotEmpty()) {
-            with(dataService) {
-                filesToClearLocaleConfig.forEach { file ->
-                    file.cachedLocaleConfig = null
-                }
+            filesToClearLocaleConfig.forEach { file ->
+                file.cachedLocaleConfig = null
             }
+
         }
         if (filesToClearSliceInfos.isNotEmpty()) {
-            with(dataService) {
-                filesToClearSliceInfos.forEach { file ->
-                    file.sliceInfos = null
-                }
+            filesToClearSliceInfos.forEach { file ->
+                file.sliceInfos = null
             }
         }
 

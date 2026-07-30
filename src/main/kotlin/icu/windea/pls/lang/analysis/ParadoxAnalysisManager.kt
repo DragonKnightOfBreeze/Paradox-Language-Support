@@ -24,6 +24,8 @@ import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.core.util.values.LazyValue
 import icu.windea.pls.core.vfs.VirtualFileService
+import icu.windea.pls.lang.analysis.ParadoxAnalysisDataManager.markedFileInfo
+import icu.windea.pls.lang.analysis.ParadoxAnalysisDataManager.markedRootInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.listeners.ParadoxRootInfoListener
 import icu.windea.pls.lang.psi.light.CwtConfigLightElementBase
@@ -42,9 +44,8 @@ import icu.windea.pls.model.index.CwtConfigIndexInfo
 import icu.windea.pls.model.index.ParadoxIndexInfo
 import java.nio.file.Path
 
-object ParadoxAnalysisManager {
+object ParadoxAnalysisManager : ParadoxAnalysisScope {
     private val logger = thisLogger()
-    private val dataService get() = ParadoxAnalysisDataService.getInstance()
 
     // region Get Methods
 
@@ -56,6 +57,8 @@ object ParadoxAnalysisManager {
         // skip for in achieve files (unsupported)
         if (VirtualFileService.isInArchiveFile(rootFile)) return null
 
+        ParadoxAnalysisLifecycleService.ensureLoaded()
+
         // try to get injected root info first
         doGetForcedRootInfo(rootFile)?.let { return it }
 
@@ -64,11 +67,11 @@ object ParadoxAnalysisManager {
     }
 
     private fun doGetForcedRootInfo(rootFile: VirtualFile): ParadoxRootInfo? {
-        return with(dataService) { rootFile.injectedRootInfo ?: markedRootInfo?.also { rootFile.injectedRootInfo = it } }
+        return rootFile.injectedRootInfo ?: markedRootInfo?.also { rootFile.injectedRootInfo = it }
     }
 
     private fun doGetCachedRootInfo(rootFile: VirtualFile): ParadoxRootInfo? {
-        val cachedRootInfo = with(dataService) { rootFile.cachedRootInfo ?: LazyValue<ParadoxRootInfo>().also { rootFile.cachedRootInfo = it } }
+        val cachedRootInfo = rootFile.cachedRootInfo ?: LazyValue<ParadoxRootInfo>().also { rootFile.cachedRootInfo = it }
         return cachedRootInfo.initialize {
             runCatchingCancelable { doResolveRootInfo(rootFile) }.onFailure { e -> logger.warn(e) }.getOrNull()
         }
@@ -95,6 +98,8 @@ object ParadoxAnalysisManager {
         // skip for in achieve files (unsupported)
         if (VirtualFileService.isInArchiveFile(file)) return null
 
+        ParadoxAnalysisLifecycleService.ensureLoaded()
+
         // try to get injected file info first
         doGetForcedFileInfo(file)?.let { return it }
 
@@ -107,11 +112,11 @@ object ParadoxAnalysisManager {
     }
 
     private fun doGetForcedFileInfo(file: VirtualFile): ParadoxFileInfo? {
-        return with(dataService) { file.injectedFileInfo ?: markedFileInfo?.takeIf { it.isPossible(file) }?.also { file.injectedFileInfo = it } }
+        return file.injectedFileInfo ?: markedFileInfo?.takeIf { it.isPossible(file) }?.also { file.injectedFileInfo = it }
     }
 
     private fun doGetCachedFileInfo(file: VirtualFile): ParadoxFileInfo? {
-        val cachedFileInfo = with(dataService) { file.cachedFileInfo ?: LazyValue<ParadoxFileInfo>().also { file.cachedFileInfo = it } }
+        val cachedFileInfo = file.cachedFileInfo ?: LazyValue<ParadoxFileInfo>().also { file.cachedFileInfo = it }
         cachedFileInfo.check { fileInfo ->
             doCheckFileInfo(fileInfo)
         }
@@ -191,6 +196,8 @@ object ParadoxAnalysisManager {
         // skip for in achieve files (unsupported)
         if (VirtualFileService.isInArchiveFile(file)) return null
 
+        ParadoxAnalysisLifecycleService.ensureLoaded()
+
         // try to get injected locale config first
         doGetForcedLocaleConfig(file)?.let { return it }
 
@@ -199,12 +206,12 @@ object ParadoxAnalysisManager {
     }
 
     private fun doGetForcedLocaleConfig(file: VirtualFile): CwtLocaleConfig? {
-        return with(dataService) { file.injectedLocaleConfig }
+        return file.injectedLocaleConfig
     }
 
     private fun doGetCachedLocaleConfig(file: VirtualFile, project: Project): CwtLocaleConfig? {
         if (DumbService.isDumb(project)) return null // NOTE 2.1.2 incase index not ready
-        val cachedLocaleConfig = with(dataService) { file.cachedLocaleConfig ?: LazyValue<CwtLocaleConfig>().also { file.cachedLocaleConfig = it } }
+        val cachedLocaleConfig = file.cachedLocaleConfig ?: LazyValue<CwtLocaleConfig>().also { file.cachedLocaleConfig = it }
         return cachedLocaleConfig.initialize {
             runCatchingCancelable { doResolveLocaleConfig(file, project) }.onFailure { e -> logger.warn(e) }.getOrNull()
         }
@@ -218,7 +225,7 @@ object ParadoxAnalysisManager {
     }
 
     fun getSliceInfos(file: VirtualFile): MutableSet<String> {
-        return with(dataService) { file.sliceInfos ?: mutableSetOf<String>().also { file.sliceInfos = it } }
+        return file.sliceInfos ?: mutableSetOf<String>().also { file.sliceInfos = it }
     }
 
     // endregion

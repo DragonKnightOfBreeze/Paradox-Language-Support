@@ -19,7 +19,7 @@ import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.lang.ParadoxFileType
 import icu.windea.pls.lang.ParadoxModificationTrackers
-import icu.windea.pls.lang.analysis.ParadoxAnalysisDataService
+import icu.windea.pls.lang.analysis.ParadoxAnalysisDataManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -100,10 +100,8 @@ object ChronicleAnalysisManager {
      */
     fun refreshAnalysisData(rootFiles: Collection<VirtualFile>) {
         if (rootFiles.isEmpty()) return
-        with(ParadoxAnalysisDataService.getInstance()) {
-            rootFiles.forEach { rootFile ->
-                rootFile.cachedRootInfo = null
-            }
+        rootFiles.forEach { rootFile ->
+            rootFile.putUserData(ParadoxAnalysisDataManager.Keys.cachedRootInfo, null)
         }
     }
 
