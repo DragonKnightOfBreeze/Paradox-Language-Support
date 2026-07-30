@@ -217,7 +217,7 @@ interface CwtTypesModel {
     val supportParameters: Set<String> get() = emptySet()
     /** 支持作用域推断的定义类型。 */
     val supportScopeContextInference: Set<String> get() = emptySet()
-    /** 可能有类型键前缀（type_key_prefix）的定义类型 - 按文件路径计算。 */
+    /** 可能有类型键前缀（typeKeyPrefix）的定义类型 - 按文件路径计算。 */
     val typeKeyPrefixAware: Set<String> get() = emptySet()
 
     object Empty : CwtTypesModel

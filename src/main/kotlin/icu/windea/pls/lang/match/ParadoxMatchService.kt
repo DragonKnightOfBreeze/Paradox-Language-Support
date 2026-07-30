@@ -1,6 +1,7 @@
 package icu.windea.pls.lang.match
 
 import com.intellij.psi.PsiElement
+import com.intellij.util.SmartList
 import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.core.annotations.Optimized
@@ -54,7 +55,7 @@ object ParadoxMatchService {
     @Optimized
     inline fun <T : CwtMemberConfig<*>> collectCandidates(configs: List<T>, matchResultProvider: (T) -> ParadoxMatchResult): List<ParadoxMatchCandidate> {
         if (configs.isEmpty()) return emptyList()
-        val result = mutableListOf<ParadoxMatchCandidate>()
+        val result = SmartList<ParadoxMatchCandidate>() // 3.0.1 optimize: use SmartList (0 or 1 elements in most situations)
         configs.forEachFast f@{ config ->
             val matchResult = matchResultProvider(config)
             if (matchResult == ParadoxMatchResult.NotMatch) return@f

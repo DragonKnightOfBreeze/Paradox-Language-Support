@@ -293,9 +293,18 @@ object ParadoxDefinitionService {
     }
 
     @Suppress("UNUSED_PARAMETER")
-    fun getInfoDependencies(element: ParadoxDefinitionElement, file: PsiFile): List<Any> {
-        // 由于可能有 rootKey 或 typeKeyPrefix，这里需要依赖 file
-        return listOf(file)
+    fun getInfoDependencies(element: ParadoxDefinitionElement, file: PsiFile, definitionInfo: ParadoxDefinitionInfo): List<Any> {
+        // 3.0.1 使用更精确的依赖
+        val typeConfig = definitionInfo.typeConfig
+
+        // 如果存在 rootKey，则需要直接依赖文件
+        if (typeConfig.skipRootKey.isNotEmpty()) return listOf(file)
+
+        // 如果可能存在 typeKeyPrefix，则需要依赖父节点
+        if (typeConfig.typeKeyPrefixConfig != null || typeConfig.name in typeConfig.configGroup.typesModel.typeKeyPrefixAware) return listOf(element.parent)
+
+        // 其余情况，直接依赖 element
+        return listOf(element)
     }
 
     fun getSubtypeAwareDependencies(element: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): List<Any> {
