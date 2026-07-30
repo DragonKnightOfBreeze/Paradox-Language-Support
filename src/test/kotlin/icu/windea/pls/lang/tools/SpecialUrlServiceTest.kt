@@ -3,6 +3,7 @@ package icu.windea.pls.lang.tools
 import com.intellij.platform.util.coroutines.mapConcurrent
 import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.test.ChronicleAssume
 import icu.windea.pls.test.ParallelMethodRunner
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -74,6 +75,8 @@ class SpecialUrlServiceTest {
 
     @Test
     fun getSteamGameStoreUrl() {
+        ChronicleAssume.includeRemote()
+
         println("=== Steam Game Store URLs (website) ===")
         val failed = mutableListOf<String>()
         val tuple = runBlocking {
@@ -92,6 +95,8 @@ class SpecialUrlServiceTest {
 
     @Test
     fun getSteamGameWorkshopUrl() {
+        ChronicleAssume.includeRemote()
+
         println("=== Steam Game Workshop URLs (website) ===")
         val failed = mutableListOf<String>()
         val tuple = runBlocking {
@@ -110,6 +115,8 @@ class SpecialUrlServiceTest {
 
     @Test
     fun getSteamWorkshopUrl() {
+        ChronicleAssume.includeRemote()
+
         println("=== Steam Workshop Item URLs (website) ===")
         val failed = mutableListOf<String>()
         val url = service.getSteamWorkshopUrl(testModSteamId)
@@ -163,6 +170,8 @@ class SpecialUrlServiceTest {
 
     @Test
     fun getSteamDbAppUrl() {
+        ChronicleAssume.includeRemote()
+
         println("=== SteamDB App URLs ===")
         // SteamDB 对自动化请求返回 403，只打印、不断言
         for (gameType in gameTypes) {
@@ -177,6 +186,8 @@ class SpecialUrlServiceTest {
 
     @Test
     fun getParadoxModsGameUrl() {
+        ChronicleAssume.includeRemote()
+
         println("=== Paradox Mods Game URLs ===")
         val failed = mutableListOf<String>()
         val tuple = runBlocking {
@@ -196,6 +207,8 @@ class SpecialUrlServiceTest {
 
     @Test
     fun getParadoxModsModUrl() {
+        ChronicleAssume.includeRemote()
+
         println("=== Paradox Mods Mod URLs ===")
         val failed = mutableListOf<String>()
         // 使用 UI Overhaul Dynamic 的 Paradox Mods ID（同 steamId 均为数字 ID，此处用 steamId 演示格式）
@@ -215,6 +228,8 @@ class SpecialUrlServiceTest {
 
     @Test
     fun getGameForumUrl() {
+        ChronicleAssume.includeRemote()
+
         println("=== Game Forum URLs ===")
         val failed = mutableListOf<String>()
         val tuple = runBlocking {
@@ -233,6 +248,8 @@ class SpecialUrlServiceTest {
 
     @Test
     fun getGameWikiUrl() {
+        ChronicleAssume.includeRemote()
+
         println("=== Game Wiki URLs ===")
         val failed = mutableListOf<String>()
         val tuple = runBlocking {

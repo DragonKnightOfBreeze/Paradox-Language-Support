@@ -145,12 +145,13 @@ Package `icu.windea.pls.test.chronicle` hosts a family of "snapshot" tests drive
 
 Some tests are intentionally **disabled by default** and only run when explicitly enabled via system properties, gated through `icu.windea.pls.test.ChronicleAssume` (each method wraps `org.junit.Assume.assumeTrue(...)`, so a gated-out test is reported as *skipped*, not *failed*). Flags are read by `icu.windea.pls.test.ChronicleTestCapacities` from system properties:
 
-| `ChronicleAssume` method    | System property                        | Category                                                        |
-| --------------------------- | --------------------------------------- | ---------------------------------------------------------------- |
-| `includeBenchmark()`        | `chronicle.test.include.benchmark`      | Benchmarks                                                        |
-| `includeAi()`                | `chronicle.test.include.ai`             | AI-backed tests                                                   |
-| `includeLocalEnv()`          | `chronicle.test.include.local.env`      | Tests requiring a real local game/mod environment (e.g. `ParadoxModImporterTest`) |
-| `includeConfigGenerator()`   | `chronicle.test.include.config.generator` | Config generator tests                                            |
+| `ChronicleAssume` method   | System property                           | Category                                                                          |
+|----------------------------|-------------------------------------------|-----------------------------------------------------------------------------------|
+| `includeBenchmark()`       | `chronicle.test.include.benchmark`        | Benchmarks                                                                        |
+| `includeAi()`              | `chronicle.test.include.ai`               | AI-backed tests                                                                   |
+| `includeRemote()`          | `chronicle.test.include.remote`           | Tests requiring access remote network (e.g., `SpecialUrlServiceTest`)                                    |
+| `includeLocalEnv()`        | `chronicle.test.include.local.env`        | Tests requiring a real local game/mod environment (e.g. `ParadoxModImporterTest`) |
+| `includeConfigGenerator()` | `chronicle.test.include.config.generator` | Config generator tests                                                            |
 
 `chronicle.test.include.all` (checked via `includeAll()`) unconditionally enables every category above. Example: `./gradlew test -Dchronicle.test.include.local.env=true`.
 
