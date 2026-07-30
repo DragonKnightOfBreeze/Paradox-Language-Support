@@ -36,10 +36,11 @@ class CwtConfigGroupBase(
     private suspend fun doInit() {
         try {
             val start = System.currentTimeMillis()
-            _initializer = CwtConfigGroupDataModelBase()
-            doApplyProcessors() // 应用 processors
-            _dataModel = _initializer
-            doApplyPostProcessors() // 应用 postProcessors
+            _initializer = CwtConfigGroupDataModelBase() // refresh initializer
+            doApplyProcessors() // apply processors
+            _dataModel = _initializer /// bind data model
+            clearUserData() // also necessary
+            doApplyPostProcessors() // apply post processors
             modificationTracker.incModificationCount() // 显式增加修改计数
             initialized = true // 标记规则数据已全部加载完毕
             val end = System.currentTimeMillis()
@@ -65,6 +66,7 @@ class CwtConfigGroupBase(
     override fun clear() {
         _dataModel = null
         _initializer = null
+        clearUserData() // also necessary
     }
 
     override fun equals(other: Any?): Boolean {

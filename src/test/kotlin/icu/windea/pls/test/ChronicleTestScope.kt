@@ -199,7 +199,7 @@ interface ChronicleTestScope {
      */
     fun initConfigGroups(project: Project, vararg gameTypes: ParadoxGameType) {
         ParadoxAnalysisInjectionManager.useOnlyBuiltInAndInjectedConfigFiles(true)
-        ChronicleTestManager.initConfigGroups(project, *gameTypes)
+        ChronicleTestManager.initConfigGroups(project, gameTypes.toList(), onlyInjected = false)
         ParadoxAnalysisInjectionManager.useOnlyBuiltInAndInjectedConfigFiles(false)
     }
 
@@ -211,9 +211,9 @@ interface ChronicleTestScope {
      * - 通用的规则分组总是会被初始化。
      */
     fun initInjectedConfigGroups(project: Project, vararg gameTypes: ParadoxGameType) {
-        ParadoxAnalysisInjectionManager.useOnlyBuiltInAndInjectedConfigFiles(true)
-        ChronicleTestManager.initInjectedConfigGroups(project, *gameTypes)
-        ParadoxAnalysisInjectionManager.useOnlyBuiltInAndInjectedConfigFiles(false)
+        ParadoxAnalysisInjectionManager.useOnlyInjectedConfigFiles(true)
+        ChronicleTestManager.initConfigGroups(project, gameTypes.toList(), onlyInjected = true)
+        ParadoxAnalysisInjectionManager.useOnlyInjectedConfigFiles(false)
     }
 
     // endregion

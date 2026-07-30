@@ -4,50 +4,53 @@ import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
+import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.CwtConfigGroupFileSource
 import icu.windea.pls.config.configGroup.CwtConfigGroupService
 import icu.windea.pls.ep.config.configGroup.CwtConfigGroupFileProvider
+import icu.windea.pls.lang.analysis.ParadoxAnalysisInjectionManager
 import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.runBlocking
 
 object ChronicleTestManager {
     private val logger = thisLogger()
     private val refreshedConfigDirectories = mutableSetOf<VirtualFile>()
+    @Volatile private var lastUseBuiltInGroupGroups = false
+    @Volatile private var lastMarkedConfigPath: String? = null
 
-    fun initConfigGroups(project: Project, vararg gameTypes: ParadoxGameType) {
+    fun initConfigGroups(project: Project, gameTypes: Collection<ParadoxGameType>, onlyInjected: Boolean) {
         if (project.isDisposed) return
-        val configGroupService = CwtConfigGroupService.getInstance(project)
-        val configGroups = configGroupService.getConfigGroups().values
+        val configGroups = getConfigGroups(project, gameTypes)
+        if (!shouldRefreshConfigGroups(onlyInjected)) return // skip unnecessary reinitialization
+        clearConfigGroups(configGroups) // clear config groups to be reinitialized
+        if (project.isDisposed) return
+        refreshConfigFiles(project, onlyInjected) // in case
+        if (project.isDisposed) return
+        initConfigGroups(project, configGroups, onlyInjected)
+    }
+
+    private fun getConfigGroups(project: Project, gameTypes: Collection<ParadoxGameType>): List<CwtConfigGroup> {
+        return CwtConfigGroupService.getInstance(project).getConfigGroups().values
             .filter { it.gameType == ParadoxGameType.Core || (gameTypes.isEmpty() || it.gameType in gameTypes) }
-        if (project.isDisposed) return
-        refreshBuiltInAndInjectedConfigFiles(project) // in case
-        if (project.isDisposed) return
-        logger.info("Prepare to init config groups...")
-        runBlocking { configGroupService.initConfigGroups(configGroups) }
     }
 
-    fun initInjectedConfigGroups(project: Project, vararg gameTypes: ParadoxGameType) {
-        if (project.isDisposed) return
-        val configGroupService = CwtConfigGroupService.getInstance(project)
-        val configGroups = configGroupService.getConfigGroups().values
-            .filter { it.gameType == ParadoxGameType.Core || (gameTypes.isEmpty() || it.gameType in gameTypes) }
-        if (project.isDisposed) return
-        refreshInjectedConfigFiles(project) // in case
-        if (project.isDisposed) return
-        logger.info("Prepare to init injected config groups...")
-        runBlocking { configGroupService.initConfigGroups(configGroups) }
+    private fun shouldRefreshConfigGroups(onlyInjected: Boolean): Boolean {
+        if (lastUseBuiltInGroupGroups && lastMarkedConfigPath == ParadoxAnalysisInjectionManager.getMarkedConfigPath()) return false
+        lastUseBuiltInGroupGroups = !onlyInjected
+        lastMarkedConfigPath = ParadoxAnalysisInjectionManager.getMarkedConfigPath()
+        return true
     }
 
-    private fun refreshBuiltInAndInjectedConfigFiles(project: Project) {
-        refreshBuiltInConfigFilesIfNeeded(project)
-        refreshInjectedConfigFilesIfNeeded(project)
+    private fun clearConfigGroups(configGroups: List<CwtConfigGroup>) {
+        configGroups.forEach { configGroup -> configGroup.clear() }
     }
 
-    private fun refreshInjectedConfigFiles(project: Project) {
-        refreshInjectedConfigFilesIfNeeded(project)
+    private fun refreshConfigFiles(project: Project, onlyInjected: Boolean) {
+        if (!onlyInjected) refreshBuiltInFiles(project)
+        refreshInjectedFiles(project)
     }
 
-    private fun refreshBuiltInConfigFilesIfNeeded(project: Project) {
+    private fun refreshBuiltInFiles(project: Project) {
         val files = CwtConfigGroupFileProvider.EP_NAME.extensionList
             .filter { it.source == CwtConfigGroupFileSource.BuiltIn }
             .mapNotNullTo(mutableSetOf()) { it.getRootDirectory(project) }
@@ -62,7 +65,7 @@ object ChronicleTestManager {
         refreshedConfigDirectories.addAll(files)
     }
 
-    private fun refreshInjectedConfigFilesIfNeeded(project: Project) {
+    private fun refreshInjectedFiles(project: Project) {
         val files = CwtConfigGroupFileProvider.EP_NAME.extensionList
             .filter { it.source == CwtConfigGroupFileSource.Injected }
             .mapNotNullTo(mutableSetOf()) { it.getRootDirectory(project) }
@@ -72,8 +75,17 @@ object ChronicleTestManager {
         logger.info("Prepare to refresh injected config directories...")
         files.forEach {
             VfsUtil.markDirtyAndRefresh(false, true, true, it)
-            logger.info("Refreshed injected config directory: ${it.presentableUrl}")
+            logger.info("Refreshed builtin injected directory: ${it.presentableUrl}")
         }
         refreshedConfigDirectories.addAll(files)
+    }
+
+    private fun initConfigGroups(project: Project, configGroups: List<CwtConfigGroup>, onlyInjected: Boolean) {
+        if (onlyInjected) {
+            logger.info("Prepare to init injected config groups...")
+        } else {
+            logger.info("Prepare to init config groups...")
+        }
+        runBlocking { CwtConfigGroupService.getInstance(project).initConfigGroups(configGroups) }
     }
 }
