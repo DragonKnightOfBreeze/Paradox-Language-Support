@@ -126,7 +126,7 @@ object ParadoxDefinitionInjectionManager {
             runSmartReadAction {
                 val file = element.containingFile
                 val value = ParadoxDefinitionInjectionService.resolveInfo(element, file)
-                val dependencies = ParadoxDefinitionInjectionService.getInfoDependencies(element, file)
+                val dependencies = ParadoxDefinitionInjectionService.getInfoDependencies(element, file, value)
                 value.withDependencyItems(dependencies)
             }
         }

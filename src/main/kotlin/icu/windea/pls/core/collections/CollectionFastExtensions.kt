@@ -48,15 +48,14 @@ inline fun <T> List<T>.forEachReversedIndexedFast(action: (Int, T) -> Unit) {
 @Fast
 inline fun <T, R> List<T>.mapFast(transform: (T) -> R): List<R> {
     if (isEmpty()) return emptyList()
-    var destination: MutableList<R>? = null
+    val destination: MutableList<R> = ArrayList(size)
     val size = size
     for (i in 0 until size) {
         val e = this[i]
         val t = transform(e)
-        if (destination == null) destination = ArrayList(size) // delay initialization
         destination.add(t)
     }
-    return destination.orEmpty()
+    return destination
 }
 
 /** @see kotlin.collections.mapNotNull */

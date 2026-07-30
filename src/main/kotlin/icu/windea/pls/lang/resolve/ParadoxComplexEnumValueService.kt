@@ -59,6 +59,7 @@ object ParadoxComplexEnumValueService {
 
     @Suppress("UNUSED_PARAMETER")
     fun getInfoDependencies(element: ParadoxScriptExpressionElement, file: PsiFile): List<Any> {
+        // 需要直接依赖文件
         return listOf(file)
     }
 
