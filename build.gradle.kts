@@ -238,6 +238,9 @@ kotlin {
         jvmTarget = JvmTarget.JVM_21
         freeCompilerArgs.addAll(
             listOf(
+                "-Xno-param-assertions", // disable not-null check to optimize performance
+                "-Xno-call-assertions", // disable not-null check to optimize performance
+                "-Xno-receiver-assertions", // disable not-null check to optimize performance
                 "-Xjvm-default=all",
                 "-Xinline-classes",
                 "-Xcontext-parameters",
