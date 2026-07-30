@@ -6,31 +6,21 @@ import com.intellij.openapi.util.NotNullLazyValue
 import com.intellij.psi.PsiElement
 import javax.swing.Icon
 
-object NavigationGutterIconBuilderFacade {
+object NavigationGutterIconBuilderC {
     private val defaultConverter: (PsiElement) -> Collection<PsiElement> = { listOf(it) }
 
     @JvmStatic
-    fun createForPsi(
-        icon: Icon,
-        gotoRelatedItemProvider: ((PsiElement) -> Collection<GotoRelatedItem>)? = null
-    ): NavigationGutterIconBuilder<PsiElement> {
+    fun createForPsi(icon: Icon, gotoRelatedItemProvider: ((PsiElement) -> Collection<GotoRelatedItem>)? = null): NavigationGutterIconBuilder<PsiElement> {
         return NavigationGutterIconBuilder.create(icon, defaultConverter, gotoRelatedItemProvider)
     }
 
     @JvmStatic
-    fun <T> create(
-        icon: Icon,
-        converter: (T) -> Collection<PsiElement>
-    ): NavigationGutterIconBuilder<T> {
+    fun <T> create(icon: Icon, converter: (T) -> Collection<PsiElement>): NavigationGutterIconBuilder<T> {
         return NavigationGutterIconBuilder.create(icon, converter, null)
     }
 
     @JvmStatic
-    fun <T> create(
-        icon: Icon,
-        converter: (T) -> Collection<PsiElement>,
-        gotoRelatedItemProvider: (T) -> Collection<GotoRelatedItem>
-    ): NavigationGutterIconBuilder<T> {
+    fun <T> create(icon: Icon, converter: (T) -> Collection<PsiElement>, gotoRelatedItemProvider: (T) -> Collection<GotoRelatedItem>): NavigationGutterIconBuilder<T> {
         return NavigationGutterIconBuilder.create(icon, converter, gotoRelatedItemProvider)
     }
 }

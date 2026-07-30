@@ -7,7 +7,7 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleIcons
-import icu.windea.pls.core.codeInsight.navigation.NavigationGutterIconBuilderFacade
+import icu.windea.pls.core.codeInsight.navigation.NavigationGutterIconBuilderC
 import icu.windea.pls.core.codeInsight.navigation.setTargets
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.optimized
@@ -50,7 +50,7 @@ class ParadoxDefinitionLineMarkerProvider : ParadoxRelatedItemLineMarkerProvider
             val selector = ParadoxDefinitionSearch.selector(project, element).contextSensitive()
             ParadoxDefinitionSearch.searchElement(definitionInfo.name, definitionInfo.type, selector).findAll().optimized()
         }
-        val lineMarkerInfo = NavigationGutterIconBuilderFacade.createForPsi(icon) { createGotoRelatedItem(targets) }
+        val lineMarkerInfo = NavigationGutterIconBuilderC.createForPsi(icon) { createGotoRelatedItem(targets) }
             .setTooltipText(tooltip)
             .setPopupTitle(ChronicleBundle.message("script.gutterIcon.definition.title"))
             .setTargets { targets }

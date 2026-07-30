@@ -203,7 +203,7 @@
 | `CommandLineExecutionException.kt` | 完全未测试 |
 | `PathEnvironmentVariableService.kt` | 完全未测试 |
 
-**测试类型：** 现有测试为集成测试（需真实 OS 进程）。`PathEnvironmentVariableService` 需 IntelliJ Platform（`PathEnvironmentVariableUtil`）。
+**测试类型：** 现有测试为集成测试（需真实 OS 进程）。`PathEnvironmentVariableUtilC` 需 IntelliJ Platform（`PathEnvironmentVariableUtil`）。
 
 **可测试性：** 未测试的方法包括 `execute(commands: List<String>)` 变体、`AUTO`/`SHELL`/`NONE` 类型、非零退出码处理、超时行为、`environment`/`workDirectory` 属性、`getOutputCharset` 等。这些需要集成测试框架或系统级 mock。
 

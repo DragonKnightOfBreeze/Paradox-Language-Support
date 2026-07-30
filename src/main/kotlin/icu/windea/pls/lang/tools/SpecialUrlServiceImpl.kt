@@ -11,7 +11,7 @@ import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.ide.CopyPasteManager
 import com.intellij.openapi.util.SystemInfo
 import icu.windea.pls.ChronicleFacade
-import icu.windea.pls.core.execution.configurations.PathEnvironmentVariableService
+import icu.windea.pls.core.execution.configurations.PathEnvironmentVariableUtilC
 import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.launch
 import java.awt.datatransfer.StringSelection
@@ -174,7 +174,7 @@ class SpecialUrlServiceImpl : SpecialUrlService {
     private fun hasXdgOpen(): Boolean {
         // NOTE 3.0.0 [compatibility] `SystemInfo.hasXdgOpen()` is deprecated since IDEA-261
         //  - Use `PathEnvironmentVariableUtil.isOnPath("xdg-open")` instead (which was introduced in IDEA-253, so there is a workaround)
-        return PathEnvironmentVariableService.isOnPath("xdg-open")
+        return PathEnvironmentVariableUtilC.isOnPath("xdg-open")
     }
 
     override fun copyUrl(url: String) {

@@ -8,7 +8,7 @@ import java.util.*
 import kotlin.io.path.isExecutable
 
 /** @see PathEnvironmentVariableUtil */
-object PathEnvironmentVariableService {
+object PathEnvironmentVariableUtilC {
     private val ourOnPathCache: MutableMap<String, Boolean> = Collections.synchronizedMap(HashMap())
 
     fun isOnPath(name: String): Boolean {
