@@ -15,13 +15,14 @@ import kotlinx.coroutines.runBlocking
 object ChronicleTestManager {
     private val logger = thisLogger()
     private val refreshedConfigDirectories = mutableSetOf<VirtualFile>()
-    @Volatile private var lastUseBuiltInGroupGroups = false
+    private val initializedGameTypes = mutableSetOf<ParadoxGameType>()
+    @Volatile private var initializedBuiltInGroupGroups = false
     @Volatile private var lastMarkedConfigPath: String? = null
 
     fun initConfigGroups(project: Project, gameTypes: Collection<ParadoxGameType>, onlyInjected: Boolean) {
         if (project.isDisposed) return
-        val configGroups = getConfigGroups(project, gameTypes)
-        if (!shouldRefreshConfigGroups(onlyInjected)) return // skip unnecessary reinitialization
+        val configGroups = getConfigGroups(project, gameTypes, onlyInjected)
+        if (configGroups.isEmpty()) return // skip if it's unnecessary to reinitialize any config groups
         clearConfigGroups(configGroups) // clear config groups to be reinitialized
         if (project.isDisposed) return
         refreshConfigFiles(project, onlyInjected) // in case
@@ -29,16 +30,19 @@ object ChronicleTestManager {
         initConfigGroups(project, configGroups, onlyInjected)
     }
 
-    private fun getConfigGroups(project: Project, gameTypes: Collection<ParadoxGameType>): List<CwtConfigGroup> {
-        return CwtConfigGroupService.getInstance(project).getConfigGroups().values
-            .filter { it.gameType == ParadoxGameType.Core || (gameTypes.isEmpty() || it.gameType in gameTypes) }
-    }
-
-    private fun shouldRefreshConfigGroups(onlyInjected: Boolean): Boolean {
-        if (lastUseBuiltInGroupGroups && lastMarkedConfigPath == ParadoxAnalysisInjectionManager.getMarkedConfigPath()) return false
-        lastUseBuiltInGroupGroups = !onlyInjected
-        lastMarkedConfigPath = ParadoxAnalysisInjectionManager.getMarkedConfigPath()
-        return true
+    private fun getConfigGroups(project: Project, gameTypes: Collection<ParadoxGameType>, onlyInjected: Boolean): List<CwtConfigGroup> {
+        val markedConfigPath = ParadoxAnalysisInjectionManager.getMarkedConfigPath()
+        val sameContext = initializedBuiltInGroupGroups && lastMarkedConfigPath == markedConfigPath
+        if (!sameContext) initializedGameTypes.clear()
+        val gameTypesToInit = mutableSetOf<ParadoxGameType>()
+        gameTypesToInit.add(ParadoxGameType.Core)
+        gameTypesToInit.addAll(gameTypes)
+        if(sameContext) gameTypesToInit.removeAll(initializedGameTypes)
+        val configGroups = CwtConfigGroupService.getInstance(project).getConfigGroups().values.filter { it.gameType in gameTypesToInit }
+        initializedGameTypes += gameTypesToInit
+        initializedBuiltInGroupGroups = !onlyInjected
+        lastMarkedConfigPath = markedConfigPath
+        return configGroups
     }
 
     private fun clearConfigGroups(configGroups: List<CwtConfigGroup>) {

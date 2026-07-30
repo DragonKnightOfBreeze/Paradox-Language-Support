@@ -4,6 +4,9 @@ import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.core.annotations.CaseInsensitive
+import icu.windea.pls.core.collections.CaseInsensitiveStringSet
+import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenCustomHashSet
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet
 
 /**
@@ -22,7 +25,7 @@ interface CwtConfigGroupAttributes {
     /** 涉及到的数据类型为参数（[CwtDataTypes.Parameter]）的成员规则。 */
     val parameterConfigs: Set<CwtMemberConfig<*>> get() = emptySet()
     /** 支持的定义注入模式。 */
-    val definitionInjectionModes: Set<String> get() = emptySet()
+    val definitionInjectionModes: Set<@CaseInsensitive String> get() = emptySet()
 
     object Empty : CwtConfigGroupAttributes
 }
@@ -33,7 +36,7 @@ class CwtConfigGroupAttributesBase : CwtConfigGroupAttributes {
     override var supportDefinitionInjection: Boolean = false
     override val parameterConfigs: ObjectOpenHashSet<CwtMemberConfig<*>> = ObjectOpenHashSet()
     override val filePathExpressions: ObjectOpenHashSet<CwtDataExpression> = ObjectOpenHashSet()
-    override val definitionInjectionModes: ObjectOpenHashSet<String> = ObjectOpenHashSet()
+    override val definitionInjectionModes: ObjectLinkedOpenCustomHashSet<String> = CaseInsensitiveStringSet()
 
     fun trim() {
         parameterConfigs.trim()
