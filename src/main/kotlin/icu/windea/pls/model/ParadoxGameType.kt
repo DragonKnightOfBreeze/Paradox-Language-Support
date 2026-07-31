@@ -1,8 +1,6 @@
 package icu.windea.pls.model
 
 import icu.windea.pls.core.optimized
-import icu.windea.pls.core.optimizer.ByteOptimizer
-import icu.windea.pls.core.optimizer.OptimizerFactory
 import icu.windea.pls.ep.analysis.ParadoxInferredGameTypeProvider
 import icu.windea.pls.lang.analysis.ParadoxGameTypeManager
 import icu.windea.pls.lang.settings.ChronicleSettings
@@ -54,6 +52,13 @@ enum class ParadoxGameType(
 
     val metadata: ParadoxGameTypeMetadata get() = ParadoxGameTypeManager.getMetadata(this)
 
+    // region Inline Methods
+
+    @Suppress("NOTHING_TO_INLINE", "unused")
+    inline fun optimized(): Byte = ordinal.toByte() // 3.0.1 radical optimization
+
+    // endregion
+
     companion object {
         private val values = entries.toList().optimized()
         private val valuesSpecific = entries.filter { it != Core }.optimized()
@@ -75,9 +80,11 @@ enum class ParadoxGameType(
         @JvmStatic
         fun getDefault(): ParadoxGameType = ChronicleSettings.getInstance().state.defaultGameType
 
-        private val optimizer = OptimizerFactory.create({ (it.ordinal - 1).toByte() }, { entries[it.toInt() + 1] })
+        // region Inline Methods
 
-        @JvmStatic
-        fun optimizer(): ByteOptimizer<ParadoxGameType> = optimizer
+        @Suppress("NOTHING_TO_INLINE", "unused")
+        inline fun deoptimized(value: Byte): ParadoxGameType = entries[value.toInt()] // 3.0.1 radical optimization
+
+        // endregion
     }
 }

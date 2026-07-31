@@ -17,7 +17,6 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.core.ReadWriteAccess
 import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.cache.cancelable
 import icu.windea.pls.core.cache.createNestedCache
@@ -27,6 +26,7 @@ import icu.windea.pls.core.findChild
 import icu.windea.pls.core.isSamePosition
 import icu.windea.pls.core.unquote
 import icu.windea.pls.core.util.KeyRegistry
+import icu.windea.pls.core.util.ReadWriteAccess
 import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.core.util.getValue

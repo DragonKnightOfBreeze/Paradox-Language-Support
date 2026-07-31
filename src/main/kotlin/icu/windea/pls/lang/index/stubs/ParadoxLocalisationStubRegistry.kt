@@ -11,9 +11,7 @@ import com.intellij.psi.stubs.StubOutputStream
 import com.intellij.psi.stubs.StubRegistry
 import com.intellij.psi.stubs.StubRegistryExtension
 import com.intellij.psi.stubs.StubSerializer
-import icu.windea.pls.core.deoptimized
 import icu.windea.pls.core.letIf
-import icu.windea.pls.core.optimized
 import icu.windea.pls.core.writeByte
 import icu.windea.pls.lang.index.ChronicleIndexKeys
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
@@ -50,13 +48,13 @@ class ParadoxLocalisationStubRegistry : StubRegistryExtension {
         }
 
         override fun serialize(stub: ParadoxLocalisationFileStub, dataStream: StubOutputStream) {
-            dataStream.writeByte(stub.localisationType.optimized(ParadoxLocalisationType.optimizer()))
-            dataStream.writeByte(stub.gameType.optimized(ParadoxGameType.optimizer()))
+            dataStream.writeByte(stub.localisationType.optimized())
+            dataStream.writeByte(stub.gameType.optimized())
         }
 
         override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<*>?): ParadoxLocalisationFileStub {
-            val localisationType = dataStream.readByte().deoptimized(ParadoxLocalisationType.optimizer())
-            val gameType = dataStream.readByte().deoptimized(ParadoxGameType.optimizer())
+            val localisationType = dataStream.readByte().let { ParadoxLocalisationType.deoptimized(it) }
+            val gameType = dataStream.readByte().let { ParadoxGameType.deoptimized(it) }
             return ParadoxLocalisationFileStub.create(null, localisationType, gameType)
         }
 

@@ -1,6 +1,6 @@
 package icu.windea.pls.core.optimizer
 
-import icu.windea.pls.core.ReadWriteAccess
+import icu.windea.pls.core.util.ReadWriteAccess
 
 fun OptimizerFactory.forReadWriteAccess() = get(ReadWriteAccessOptimizer)
 

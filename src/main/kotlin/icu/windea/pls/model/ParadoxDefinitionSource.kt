@@ -1,8 +1,5 @@
 package icu.windea.pls.model
 
-import icu.windea.pls.core.optimizer.ByteOptimizer
-import icu.windea.pls.core.optimizer.OptimizerFactory
-
 /**
  * 定义的来源。
  */
@@ -13,10 +10,19 @@ enum class ParadoxDefinitionSource {
     Injection,
     ;
 
-    companion object {
-        private val optimizer = OptimizerFactory.create({ it.ordinal.toByte() }, { entries[it.toInt()] })
+    // region Inline Methods
 
-        @JvmStatic
-        fun optimizer(): ByteOptimizer<ParadoxDefinitionSource> = optimizer
+    @Suppress("NOTHING_TO_INLINE", "unused")
+    inline fun optimized(): Byte = ordinal.toByte() // 3.0.1 radical optimization
+
+    // endregion
+
+    companion object {
+        // region Inline Methods
+
+        @Suppress("NOTHING_TO_INLINE", "unused")
+        inline fun deoptimized(value: Byte): ParadoxDefinitionSource = entries[value.toInt()] // 3.0.1 radical optimization
+
+        // endregion
     }
 }

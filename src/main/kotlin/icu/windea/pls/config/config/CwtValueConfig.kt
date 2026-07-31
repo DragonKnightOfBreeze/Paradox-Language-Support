@@ -18,7 +18,6 @@ import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.filterIsInstanceFast
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.createPointer
-import icu.windea.pls.core.deoptimized
 import icu.windea.pls.core.emptyPointer
 import icu.windea.pls.core.optimized
 import icu.windea.pls.cwt.psi.CwtFile
@@ -164,7 +163,7 @@ private object CwtValueConfigResolver : CwtConfigResolverScope {
 }
 
 private const val blockValue = ChronicleStrings.blockFolder
-private val blockValueTypeId = CwtExpressionType.Block.optimized(CwtExpressionType.optimizer())
+private val blockValueTypeId = CwtExpressionType.Block.optimized()
 
 // 12 + 2 * 4 = 20 -> 24
 private sealed class CwtValueConfigBase : CwtOptionMetadataBase(), CwtValueConfig {
@@ -228,10 +227,10 @@ private open class CwtValueConfigImpl(
     valueType: CwtExpressionType,
     propertyConfig: CwtPropertyConfig?,
 ) : CwtValueConfigImplBase(pointer, configGroup, propertyConfig) {
-    private val valueTypeId = valueType.optimized(CwtExpressionType.optimizer()) // optimized to optimize memory
+    private val valueTypeId = valueType.optimized() // optimized to optimize memory
 
     override val value: String get() = valueExpression.expressionString
-    override val valueType: CwtExpressionType get() = valueTypeId.deoptimized(CwtExpressionType.optimizer())
+    override val valueType: CwtExpressionType get() = CwtExpressionType.deoptimized(valueTypeId)
     override val configs: List<CwtMemberConfig<*>>? get() = if (valueTypeId == blockValueTypeId) emptyList() else null
 }
 

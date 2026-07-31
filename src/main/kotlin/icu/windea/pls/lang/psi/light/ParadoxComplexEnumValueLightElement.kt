@@ -6,8 +6,8 @@ import com.intellij.psi.PsiNameIdentifierOwner
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.config.config.delegated.CwtComplexEnumConfig
-import icu.windea.pls.core.ReadWriteAccess
 import icu.windea.pls.core.psi.PsiReadWriteAccessAwareElement
+import icu.windea.pls.core.util.ReadWriteAccess
 import icu.windea.pls.lang.search.scope.ParadoxSearchScopeType
 import icu.windea.pls.lang.search.scope.ParadoxSearchScopeTypes
 import icu.windea.pls.model.ParadoxGameType

@@ -13,8 +13,6 @@ import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.ImmutableList
 import icu.windea.pls.core.collections.asMutable
 import icu.windea.pls.core.collections.forEachFast
-import icu.windea.pls.core.deoptimized
-import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.readIntFast
 import icu.windea.pls.core.readUTFFast
@@ -155,7 +153,7 @@ class ParadoxDefinitionInjectionIndex : ParadoxIndexInfoAwareFileBasedIndex<List
         if (value.isEmpty()) return
 
         val gameType = value.first().gameType
-        storage.writeByte(gameType.optimized(ParadoxGameType.optimizer()))
+        storage.writeByte(gameType.optimized())
 
         // 3.0.0 optimize: write existing modes and types first
         val modes = storage.writeIndexedStringList(value) { it.mode }
@@ -173,7 +171,7 @@ class ParadoxDefinitionInjectionIndex : ParadoxIndexInfoAwareFileBasedIndex<List
         val size = storage.readIntFast()
         if (size == 0) return emptyList()
 
-        val gameType = storage.readByte().deoptimized(ParadoxGameType.optimizer())
+        val gameType = storage.readByte().let { ParadoxGameType.deoptimized(it) }
 
         // 3.0.0 optimize: read existing modes and types first
         val modes = storage.readWithIndexStringList()

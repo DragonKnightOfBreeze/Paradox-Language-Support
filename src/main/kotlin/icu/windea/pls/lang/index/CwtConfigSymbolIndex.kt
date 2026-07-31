@@ -10,12 +10,10 @@ import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.ImmutableList
 import icu.windea.pls.core.collections.asMutable
 import icu.windea.pls.core.collections.forEachFast
-import icu.windea.pls.core.deoptimized
-import icu.windea.pls.core.optimized
-import icu.windea.pls.core.optimizer.OptimizerFactory
-import icu.windea.pls.core.optimizer.forReadWriteAccess
 import icu.windea.pls.core.readIntFast
 import icu.windea.pls.core.readUTFFast
+import icu.windea.pls.core.util.ReadWriteAccessC
+import icu.windea.pls.core.util.optimized
 import icu.windea.pls.core.writeByte
 import icu.windea.pls.core.writeIntFast
 import icu.windea.pls.core.writeUTFFast
@@ -80,10 +78,10 @@ class CwtConfigSymbolIndex : CwtConfigIndexInfoAwareFileBasedIndex<List<CwtConfi
 
         val firstInfo = value.first()
         storage.writeUTFFast(firstInfo.type)
-        storage.writeByte(firstInfo.gameType.optimized(ParadoxGameType.optimizer()))
+        storage.writeByte(firstInfo.gameType.optimized())
         value.forEachFast { info ->
             storage.writeUTFFast(info.name)
-            storage.writeByte(info.readWriteAccess.optimized(OptimizerFactory.forReadWriteAccess()))
+            storage.writeByte(info.readWriteAccess.optimized())
             storage.writeIntFast(info.offset)
             storage.writeIntFast(info.elementOffset)
         }
@@ -94,12 +92,12 @@ class CwtConfigSymbolIndex : CwtConfigIndexInfoAwareFileBasedIndex<List<CwtConfi
         if (size == 0) return emptyList()
 
         val type = storage.readUTFFast()
-        val gameType = storage.readByte().deoptimized(ParadoxGameType.optimizer())
+        val gameType = storage.readByte().let { ParadoxGameType.deoptimized(it) }
 
         // 2.1.9 optimize: create sized immutable list directly
         return ImmutableList(size) {
             val name = storage.readUTFFast()
-            val readWriteAccess = storage.readByte().deoptimized(OptimizerFactory.forReadWriteAccess())
+            val readWriteAccess = storage.readByte().let { ReadWriteAccessC.deoptimized(it) }
             val offset = storage.readIntFast()
             val elementOffset = storage.readIntFast()
             CwtConfigSymbolIndexInfo(name, type, readWriteAccess, offset, elementOffset, gameType)

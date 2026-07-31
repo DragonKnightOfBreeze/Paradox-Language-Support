@@ -2,8 +2,8 @@ package icu.windea.pls.model
 
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.UserDataHolderBase
-import icu.windea.pls.core.ReadWriteAccess
 import icu.windea.pls.core.getDefaultProject
+import icu.windea.pls.core.util.ReadWriteAccess
 import icu.windea.pls.ep.resolve.parameter.ParadoxParameterSupport
 import icu.windea.pls.ep.resolve.parameter.support
 import icu.windea.pls.script.psi.ParadoxConditionParameter
@@ -36,4 +36,3 @@ data class ParadoxParameterInfo(
         @JvmField val EMPTY = ParadoxParameterInfo("", "", null, "", ReadWriteAccess.ReadWrite, ParadoxGameType.Core, getDefaultProject())
     }
 }
-

@@ -14,8 +14,6 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.ImmutableList
 import icu.windea.pls.core.collections.findFast
 import icu.windea.pls.core.collections.forEachFast
-import icu.windea.pls.core.deoptimized
-import icu.windea.pls.core.optimized
 import icu.windea.pls.core.readIntFast
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getValue
@@ -316,7 +314,7 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
         val support = getSupportOrUnsupported(supports, type)
         storage.writeByte(support.indexInfoType.key)
         val gameType = firstInfo.gameType
-        storage.writeByte(gameType.optimized(ParadoxGameType.optimizer()))
+        storage.writeByte(gameType.optimized())
         var previousInfo: ParadoxIndexInfo? = null
         value.forEachFast { info ->
             support.saveData(storage, info, previousInfo, gameType)
@@ -331,7 +329,7 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
         val key = storage.readByte()
         val supports = ParadoxMergedIndexSupport.EP_NAME.extensionList
         val support = getSupportOrUnsupported(supports, key)
-        val gameType = storage.readByte().deoptimized(ParadoxGameType.optimizer())
+        val gameType = storage.readByte().let { ParadoxGameType.deoptimized(it) }
 
         // 2.1.9 optimize: create sized immutable list directly
         var previousInfo: ParadoxIndexInfo? = null

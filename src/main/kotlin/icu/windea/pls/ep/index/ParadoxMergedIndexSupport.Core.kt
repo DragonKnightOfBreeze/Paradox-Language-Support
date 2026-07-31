@@ -3,12 +3,10 @@ package icu.windea.pls.ep.index
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import icu.windea.pls.base.context.ChronicleThreadContext
-import icu.windea.pls.core.deoptimized
-import icu.windea.pls.core.optimized
-import icu.windea.pls.core.optimizer.OptimizerFactory
-import icu.windea.pls.core.optimizer.forReadWriteAccess
 import icu.windea.pls.core.readOrReadFrom
 import icu.windea.pls.core.readUTFFast
+import icu.windea.pls.core.util.ReadWriteAccessC
+import icu.windea.pls.core.util.optimized
 import icu.windea.pls.core.withState
 import icu.windea.pls.core.writeByte
 import icu.windea.pls.core.writeOrWriteFrom
@@ -86,13 +84,13 @@ class ParadoxDynamicValueMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxD
     override fun saveData(storage: DataOutput, info: ParadoxDynamicValueIndexInfo, previousInfo: ParadoxDynamicValueIndexInfo?, gameType: ParadoxGameType) {
         storage.writeOrWriteFrom(info, previousInfo, { it.name }, { storage.writeUTFFast(it) })
         storage.writeOrWriteFrom(info, previousInfo, { it.type }, { storage.writeUTFFast(it) })
-        storage.writeByte(info.readWriteAccess.optimized(OptimizerFactory.forReadWriteAccess()))
+        storage.writeByte(info.readWriteAccess.optimized())
     }
 
     override fun readData(storage: DataInput, previousInfo: ParadoxDynamicValueIndexInfo?, gameType: ParadoxGameType): ParadoxDynamicValueIndexInfo {
         val name = storage.readOrReadFrom(previousInfo, { it.name }, { storage.readUTFFast() })
         val dynamicValueType = storage.readOrReadFrom(previousInfo, { it.type }, { storage.readUTFFast() })
-        val readWriteAccess = storage.readByte().deoptimized(OptimizerFactory.forReadWriteAccess())
+        val readWriteAccess = storage.readByte().let { ReadWriteAccessC.deoptimized(it) }
         return ParadoxDynamicValueIndexInfo(name, dynamicValueType, readWriteAccess, gameType)
     }
 }
@@ -141,13 +139,13 @@ class ParadoxParameterMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxPara
     override fun saveData(storage: DataOutput, info: ParadoxParameterIndexInfo, previousInfo: ParadoxParameterIndexInfo?, gameType: ParadoxGameType) {
         storage.writeOrWriteFrom(info, previousInfo, { it.name }, { storage.writeUTFFast(it) })
         storage.writeOrWriteFrom(info, previousInfo, { it.contextKey }, { storage.writeUTFFast(it) })
-        storage.writeByte(info.readWriteAccess.optimized(OptimizerFactory.forReadWriteAccess()))
+        storage.writeByte(info.readWriteAccess.optimized())
     }
 
     override fun readData(storage: DataInput, previousInfo: ParadoxParameterIndexInfo?, gameType: ParadoxGameType): ParadoxParameterIndexInfo {
         val name = storage.readOrReadFrom(previousInfo, { it.name }, { storage.readUTFFast() })
         val contextKey = storage.readOrReadFrom(previousInfo, { it.contextKey }, { storage.readUTFFast() })
-        val readWriteAccess = storage.readByte().deoptimized(OptimizerFactory.forReadWriteAccess())
+        val readWriteAccess = storage.readByte().let { ReadWriteAccessC.deoptimized(it) }
         return ParadoxParameterIndexInfo(name, contextKey, readWriteAccess, gameType)
     }
 }

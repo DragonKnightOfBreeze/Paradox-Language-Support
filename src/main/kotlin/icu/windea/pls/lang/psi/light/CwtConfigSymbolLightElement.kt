@@ -2,8 +2,8 @@ package icu.windea.pls.lang.psi.light
 
 import com.intellij.openapi.project.Project
 import icu.windea.pls.config.CwtConfigType
-import icu.windea.pls.core.ReadWriteAccess
 import icu.windea.pls.core.psi.PsiReadWriteAccessAwareElement
+import icu.windea.pls.core.util.ReadWriteAccess
 import icu.windea.pls.cwt.psi.CwtStringExpressionElement
 import icu.windea.pls.model.ParadoxGameType
 import java.util.*

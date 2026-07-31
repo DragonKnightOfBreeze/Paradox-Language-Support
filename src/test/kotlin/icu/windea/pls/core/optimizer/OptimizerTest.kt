@@ -3,7 +3,7 @@ package icu.windea.pls.core.optimizer
 import com.google.common.collect.ImmutableList
 import com.google.common.collect.ImmutableMap
 import com.google.common.collect.ImmutableSet
-import icu.windea.pls.core.ReadWriteAccess
+import icu.windea.pls.core.util.ReadWriteAccess
 import org.junit.Assert.*
 import org.junit.Test
 

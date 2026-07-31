@@ -3,8 +3,8 @@ package icu.windea.pls.lang.psi.light
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
-import icu.windea.pls.core.ReadWriteAccess
 import icu.windea.pls.core.psi.PsiReadWriteAccessAwareElement
+import icu.windea.pls.core.util.ReadWriteAccess
 import icu.windea.pls.lang.util.ParadoxDynamicValueManager
 import icu.windea.pls.model.ParadoxGameType
 import java.util.*

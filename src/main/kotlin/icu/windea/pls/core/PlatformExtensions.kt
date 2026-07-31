@@ -2,7 +2,6 @@
 
 package icu.windea.pls.core
 
-import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector
 import com.intellij.codeInsight.template.TemplateBuilder
 import com.intellij.codeInsight.template.TemplateBuilderImpl
 import com.intellij.credentialStore.CredentialAttributes
@@ -636,8 +635,6 @@ fun PsiBuilder.lookup(steps: Int, skipWhitespaces: Boolean = true, forward: Bool
 // endregion
 
 // region Code Insight Extensions
-
-typealias ReadWriteAccess = ReadWriteAccessDetector.Access
 
 fun TemplateBuilder.buildTemplate() = cast<TemplateBuilderImpl>().buildTemplate()
 

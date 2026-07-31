@@ -2,8 +2,6 @@ package icu.windea.pls.model
 
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiFile
-import icu.windea.pls.core.optimizer.ByteOptimizer
-import icu.windea.pls.core.optimizer.OptimizerFactory
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.localisation.ParadoxLocalisationFileType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
@@ -18,6 +16,13 @@ enum class ParadoxLocalisationType(val id: String) {
     ;
 
     override fun toString() = id
+
+    // region Inline Methods
+
+    @Suppress("NOTHING_TO_INLINE", "unused")
+    inline fun optimized(): Byte = ordinal.toByte() // 3.0.1 radical optimization
+
+    // endregion
 
     companion object {
         @JvmStatic
@@ -54,9 +59,11 @@ enum class ParadoxLocalisationType(val id: String) {
             return resolve(root)
         }
 
-        private val optimizer = OptimizerFactory.create({ it.ordinal.toByte() }, { entries[it.toInt()] })
+        // region Inline Methods
 
-        @JvmStatic
-        fun optimizer(): ByteOptimizer<ParadoxLocalisationType> = optimizer
+        @Suppress("NOTHING_TO_INLINE", "unused")
+        inline fun deoptimized(value: Byte): ParadoxLocalisationType = entries[value.toInt()] // 3.0.1 radical optimization
+
+        // endregion
     }
 }

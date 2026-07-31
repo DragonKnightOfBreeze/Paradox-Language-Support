@@ -1,7 +1,5 @@
 package icu.windea.pls.model.type
 
-import icu.windea.pls.core.optimizer.ByteOptimizer
-import icu.windea.pls.core.optimizer.OptimizerFactory
 import icu.windea.pls.script.psi.ParadoxScriptMember
 
 /**
@@ -17,10 +15,19 @@ enum class ParadoxMemberRole(val text: String) {
 
     override fun toString() = text
 
-    companion object {
-        private val optimizer = OptimizerFactory.create({ it.ordinal.toByte() }, { entries[it.toInt()] })
+    // region Inline Methods
 
-        @JvmStatic
-        fun optimizer(): ByteOptimizer<ParadoxMemberRole> = optimizer
+    @Suppress("NOTHING_TO_INLINE", "unused")
+    inline fun optimized(): Byte = ordinal.toByte() // 3.0.1 radical optimization
+
+    // endregion
+
+    companion object {
+        // region Inline Methods
+
+        @Suppress("NOTHING_TO_INLINE", "unused")
+        inline fun deoptimized(value: Byte): ParadoxMemberRole = entries[value.toInt()] // 3.0.1 radical optimization
+
+        // endregion
     }
 }

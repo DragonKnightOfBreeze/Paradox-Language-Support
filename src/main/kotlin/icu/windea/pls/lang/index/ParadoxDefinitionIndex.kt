@@ -14,7 +14,6 @@ import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.ImmutableList
 import icu.windea.pls.core.collections.asMutable
 import icu.windea.pls.core.collections.forEachFast
-import icu.windea.pls.core.deoptimized
 import icu.windea.pls.core.letIf
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
@@ -228,14 +227,14 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
         if (value.isEmpty()) return
 
         val gameType = value.first().gameType
-        storage.writeByte(gameType.optimized(ParadoxGameType.optimizer()))
+        storage.writeByte(gameType.optimized())
 
         // 3.0.0 optimize: write existing types and type keys first
         val types = storage.writeIndexedStringList(value) { it.type }
         val typeKeys = storage.writeIndexedStringList(value) { if (it.typeKeyIsName) null else it.typeKey }
 
         value.forEachFast { info ->
-            storage.writeByte(info.source.optimized(ParadoxDefinitionSource.optimizer()))
+            storage.writeByte(info.source.optimized())
             storage.writeUTFFast(info.name)
             storage.writeIntFast(types.getInt(info.type))
             val fastSubtypes = info.fastSubtypes
@@ -255,7 +254,7 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
         val size = storage.readIntFast()
         if (size == 0) return emptyList()
 
-        val gameType = storage.readByte().deoptimized(ParadoxGameType.optimizer())
+        val gameType = storage.readByte().let { ParadoxGameType.deoptimized(it) }
 
         // 3.0.0 optimize: read existing types and type keys first
         val types = storage.readWithIndexStringList()
@@ -263,7 +262,7 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
 
         // 2.1.9 optimize: create sized immutable list directly
         return ImmutableList(size) {
-            val source = storage.readByte().deoptimized(ParadoxDefinitionSource.optimizer())
+            val source = storage.readByte().let { ParadoxDefinitionSource.deoptimized(it) }
             val name = storage.readUTFFast()
             val type = storage.readIntFast().let { types.get(it).orEmpty() }
             val subtypesSize = storage.readIntFast()

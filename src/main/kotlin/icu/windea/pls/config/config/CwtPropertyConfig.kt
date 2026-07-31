@@ -20,7 +20,6 @@ import icu.windea.pls.core.cast
 import icu.windea.pls.core.collections.filterIsInstanceFast
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.createPointer
-import icu.windea.pls.core.deoptimized
 import icu.windea.pls.core.emptyPointer
 import icu.windea.pls.core.forEachChild
 import icu.windea.pls.core.optimized
@@ -191,7 +190,7 @@ private object CwtPropertyConfigResolver : CwtConfigResolverScope {
 }
 
 private const val blockValue = ChronicleStrings.blockFolder
-private val blockValueTypeId = CwtExpressionType.Block.optimized(CwtExpressionType.optimizer())
+private val blockValueTypeId = CwtExpressionType.Block.optimized()
 
 // 12 + 3 * 4 = 24 -> 24
 private sealed class CwtPropertyConfigBase : CwtOptionMetadataBase(), CwtPropertyConfig {
@@ -266,10 +265,10 @@ private sealed class CwtPropertyConfigImplBase(
     override val keyExpression: CwtDataExpression, // as constructor argument and field directly
     separatorType: CwtSeparatorType,
 ) : CwtPropertyConfigBase() {
-    private val separatorTypeId = separatorType.optimized(CwtSeparatorType.optimizer()) // optimized to optimize memory
+    private val separatorTypeId = separatorType.optimized() // optimized to optimize memory
 
     override val key: String get() = keyExpression.expressionString
-    override val separatorType: CwtSeparatorType get() = separatorTypeId.deoptimized(CwtSeparatorType.optimizer())
+    override val separatorType: CwtSeparatorType get() = CwtSeparatorType.deoptimized(separatorTypeId)
 }
 
 // 12 + 2 * 1 + 7 * 4 = 42 -> 48
@@ -281,10 +280,10 @@ private open class CwtPropertyConfigImpl(
     valueType: CwtExpressionType,
     separatorType: CwtSeparatorType,
 ) : CwtPropertyConfigImplBase(pointer, configGroup, keyExpression, separatorType) {
-    private val valueTypeId = valueType.optimized(CwtExpressionType.optimizer()) // optimized to optimize memory
+    private val valueTypeId = valueType.optimized() // optimized to optimize memory
 
     override val value: String get() = valueExpression.expressionString
-    override val valueType: CwtExpressionType get() = valueTypeId.deoptimized(CwtExpressionType.optimizer())
+    override val valueType: CwtExpressionType get() = CwtExpressionType.deoptimized(valueTypeId)
     override val configs: List<CwtMemberConfig<*>>? get() = if (valueTypeId == blockValueTypeId) emptyList() else null
 }
 

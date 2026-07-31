@@ -8,7 +8,6 @@ import icu.windea.pls.config.util.CwtConfigResolverManager
 import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cache.CacheBuilder
-import icu.windea.pls.core.deoptimized
 import icu.windea.pls.core.optimized
 import icu.windea.pls.cwt.psi.CwtOptionComment
 import icu.windea.pls.cwt.psi.CwtValue
@@ -70,7 +69,7 @@ private object CwtOptionValueConfigResolver : CwtConfigResolverScope {
 }
 
 private const val blockValue = ChronicleStrings.blockFolder
-private val blockValueTypeId = CwtExpressionType.Block.optimized(CwtExpressionType.optimizer())
+private val blockValueTypeId = CwtExpressionType.Block.optimized()
 
 private abstract class CwtOptionValueConfigBase : CwtOptionValueConfig {
     override fun equals(other: Any?) = this === other || other is CwtOptionValueConfig
@@ -88,10 +87,10 @@ private class CwtOptionValueConfigImpl(
     value: String,
     valueType: CwtExpressionType,
 ) : CwtOptionValueConfigImplBase() {
-    private val valueTypeId = valueType.optimized(CwtExpressionType.optimizer()) // optimized to optimize memory
+    private val valueTypeId = valueType.optimized() // optimized to optimize memory
 
     override val value: String = value.optimized() // optimized to optimize memory
-    override val valueType: CwtExpressionType get() = valueTypeId.deoptimized(CwtExpressionType.optimizer())
+    override val valueType: CwtExpressionType get() = CwtExpressionType.deoptimized(valueTypeId)
     override val optionConfigs: List<CwtOptionMemberConfig<*>>? get() = if (valueTypeId == blockValueTypeId) emptyList() else null
 }
 

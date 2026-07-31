@@ -12,8 +12,6 @@ import com.intellij.psi.stubs.StubOutputStream
 import com.intellij.psi.stubs.StubRegistry
 import com.intellij.psi.stubs.StubRegistryExtension
 import com.intellij.psi.stubs.StubSerializer
-import icu.windea.pls.core.deoptimized
-import icu.windea.pls.core.optimized
 import icu.windea.pls.core.writeByte
 import icu.windea.pls.lang.index.ChronicleIndexKeys
 import icu.windea.pls.model.ParadoxDefineVariableKey
@@ -44,11 +42,11 @@ class ParadoxScriptStubRegistry : StubRegistryExtension {
         }
 
         override fun serialize(stub: ParadoxScriptFileStub, dataStream: StubOutputStream) {
-            dataStream.writeByte(stub.gameType.optimized(ParadoxGameType.optimizer()))
+            dataStream.writeByte(stub.gameType.optimized())
         }
 
         override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<*>?): ParadoxScriptFileStub {
-            val gameType = dataStream.readByte().deoptimized(ParadoxGameType.optimizer())
+            val gameType = dataStream.readByte().let { ParadoxGameType.deoptimized(it) }
             return ParadoxScriptFileStub.create(null, gameType)
         }
 

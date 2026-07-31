@@ -8,9 +8,9 @@ import com.intellij.util.indexing.FindSymbolParameters
 import com.intellij.util.indexing.IdFilter
 import icu.windea.pls.config.CwtConfigType
 import icu.windea.pls.config.CwtConfigTypes
-import icu.windea.pls.core.ReadWriteAccess
 import icu.windea.pls.core.getCurrentProject
 import icu.windea.pls.core.process
+import icu.windea.pls.core.util.ReadWriteAccess
 import icu.windea.pls.lang.analysis.ParadoxAnalysisManager
 import icu.windea.pls.lang.search.CwtConfigSymbolSearch
 import icu.windea.pls.lang.settings.ChronicleSettings

@@ -1,7 +1,5 @@
 package icu.windea.pls.model.type
 
-import icu.windea.pls.core.optimizer.ByteOptimizer
-import icu.windea.pls.core.optimizer.OptimizerFactory
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.model.expressions.ParadoxExpression
 
@@ -17,23 +15,31 @@ enum class ParadoxExpressionRole(val text: String) {
 
     override fun toString() = text
 
-    @Suppress("unused")
-    fun isKey() = this == Key
+    // region Inline Methods
 
-    @Suppress("unused")
-    fun isValue() = this == Value
+    @Suppress("NOTHING_TO_INLINE", "unused")
+    inline fun optimized(): Byte = ordinal.toByte() // 3.0.1 radical optimization
 
-    @Suppress("unused")
-    fun toBoolean(): Boolean? = if (this == Key) true else if (this === Value) false else null
+    @Suppress("NOTHING_TO_INLINE", "unused")
+    inline fun toBoolean(): Boolean? = if (this == Key) true else if (this === Value) false else null
+
+    @Suppress("NOTHING_TO_INLINE", "unused")
+    inline fun isKey(): Boolean = this == Key
+
+    @Suppress("NOTHING_TO_INLINE", "unused")
+    inline fun isValue(): Boolean = this == Value
+
+    // endregion
 
     companion object {
-        private val optimizer = OptimizerFactory.create({ it.ordinal.toByte() }, { entries[it.toInt()] })
+        // region Inline Methods
 
-        @JvmStatic
-        fun optimizer(): ByteOptimizer<ParadoxExpressionRole> = optimizer
+        @Suppress("NOTHING_TO_INLINE", "unused")
+        inline fun deoptimized(value: Byte): ParadoxExpressionRole = entries[value.toInt()] // 3.0.1 radical optimization
 
-        @Suppress("unused")
-        @JvmStatic
+        @Suppress("NOTHING_TO_INLINE", "unused")
         fun fromBoolean(value: Boolean?): ParadoxExpressionRole = if (value == true) Key else if (value == false) Value else Other
+
+        // endregion
     }
 }
