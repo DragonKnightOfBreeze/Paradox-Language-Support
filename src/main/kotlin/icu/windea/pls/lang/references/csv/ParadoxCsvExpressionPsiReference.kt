@@ -73,6 +73,6 @@ class ParadoxCsvExpressionPsiReference(
     override fun canResolveFor(constraint: ParadoxReferenceConstraint): Boolean {
         // NOTE 3.0.1 expand config expression first since it's necessary for unions and aliases
         val config = columnConfig.valueConfig ?: return false
-        return ProcessorScope.anyFrom({ constraint.test(it.type) }) { config.expandConfigExpression { process(it) } }
+        return ProcessorScope.anyFrom({ config.expandConfigExpression { process(it) } }) { constraint.test(it.type) }
     }
 }

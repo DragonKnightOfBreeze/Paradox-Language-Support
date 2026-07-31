@@ -123,7 +123,7 @@ object ParadoxImageCodeInsightContextService {
         val inspection = if (fromInspection) getMissingImageInspection(project, element) else null
 
         if (!(inspection == null || inspection.checkForModifiers)) return null
-        if (ProcessorScope.noneFrom({ it.type == CwtDataTypes.Modifier }) { config.expandConfigExpression { process(it) } }) return null
+        if (ProcessorScope.noneFrom({ config.expandConfigExpression { process(it) } }) { it.type == CwtDataTypes.Modifier }) return null
         val modifierName = element.value
         val codeInsightInfos = mutableListOf<ParadoxImageCodeInsightInfo>()
 

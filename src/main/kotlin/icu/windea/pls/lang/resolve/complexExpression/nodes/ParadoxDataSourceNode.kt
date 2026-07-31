@@ -158,7 +158,7 @@ class ParadoxDataSourceNode(
             // test data type
             // NOTE 3.0.1 expand config expression first since it's necessary for unions and aliases
             val configs = node.linkConfigs
-            return ProcessorScope.anyFrom({ constraint.test(it.type) }) { configs.expandConfigExpression { process(it) } }
+            return ProcessorScope.anyFrom({ configs.expandConfigExpression { process(it) } }) { constraint.test(it.type) }
         }
 
         private fun isAcceptableConstraint(constraint: ParadoxReferenceConstraint): Boolean {

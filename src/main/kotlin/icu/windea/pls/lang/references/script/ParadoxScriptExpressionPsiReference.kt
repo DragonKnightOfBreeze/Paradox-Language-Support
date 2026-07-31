@@ -96,6 +96,6 @@ class ParadoxScriptExpressionPsiReference(
 
     override fun canResolveFor(constraint: ParadoxReferenceConstraint): Boolean {
         // NOTE 3.0.1 expand config expression first since it's necessary for unions and aliases
-        return ProcessorScope.anyFrom({ constraint.test(it.type) }) { configs.expandConfigExpression { process(it) } }
+        return ProcessorScope.anyFrom({ configs.expandConfigExpression { process(it) } }) { constraint.test(it.type) }
     }
 }

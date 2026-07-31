@@ -151,7 +151,7 @@ class ParadoxTemplateSnippetNode(
             if (!isAcceptableConstraint(constraint)) return false
             // test data type
             // NOTE 3.0.1 expand config expression first since it's necessary for unions and aliases
-            return ProcessorScope.anyFrom({ constraint.test(it.type) }) { config.expandConfigExpression { process(it) } }
+            return ProcessorScope.anyFrom({ config.expandConfigExpression { process(it) } }) { constraint.test(it.type) }
         }
 
         private fun isAcceptableConstraint(constraint: ParadoxReferenceConstraint): Boolean {
