@@ -244,9 +244,11 @@ kotlin {
             "kotlin.ExperimentalStdlibApi",
         )
         freeCompilerArgs.addAll(
+            "-java-parameters",
             "-Xno-call-assertions", // disable not-null check to optimize performance
             "-Xno-receiver-assertions", // disable not-null check to optimize performance
             "-Xno-param-assertions", // disable not-null check to optimize performance
+            "-Xjvm-default=all",
             "-Xinline-classes",
             "-Xcontext-parameters",
             "-Xannotation-default-target=param-property", // see: https://kotlinlang.org/docs/whatsnew22.html#new-defaulting-rules-for-use-site-annotation-targets

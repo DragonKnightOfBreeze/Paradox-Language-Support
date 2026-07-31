@@ -12,6 +12,9 @@ import icu.windea.pls.core.util.KeyWithProducer
  *
  * 作为一种特殊的数据结构，通常仅在构建时是可变的，构建逻辑应发生在同一线程中。
  * 构建后即是只读的，因此不需要保证底层数据结构的线程安全。
+ *
+ * @see MetadataMapBase
+ * @see MetadataMapAndUserDataHolderBase
  */
 interface MetadataMap {
     /** 检查当前的元数据映射是否为空。 */

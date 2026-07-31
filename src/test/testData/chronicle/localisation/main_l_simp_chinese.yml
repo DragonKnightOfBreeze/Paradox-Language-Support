@@ -10,9 +10,10 @@
 
  narrative:0 "叙事性"
  female:0 "女性"
- species_unknown:0 "未知"
+ species_unknown:0 "未知种族"
  creation:0 "造物"
  the_waker:0 "唤醒者"
+ the_waked:0 "被唤醒者"
 
  here_we_introduce:0 "我们在此介绍"
  here_we_send_greetings:0 "我们在此发出问候"

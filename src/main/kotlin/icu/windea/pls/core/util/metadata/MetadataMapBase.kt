@@ -25,7 +25,7 @@ open class MetadataMapBase : MetadataMap {
     //  - 比如，可以在底层仅使用 `bitmasks: Long` 和 `elements: Array<Any>` 这两个字段
     //  - 当元素个数大于2且不大于64时，这种策略可以获得更好的性能和内存占用
 
-    // volatile is enough
+    // volatile is enough here since strict thread safe is not required
     @Volatile private var map: KeyFMap = KeyFMap.EMPTY_MAP
 
     override fun isEmpty(): Boolean {

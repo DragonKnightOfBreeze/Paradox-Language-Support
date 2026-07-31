@@ -10,9 +10,10 @@
 
  narrative:0 "Narrative"
  female:0 "Female"
- species_unknown:0 "Unknown"
+ species_unknown:0 "Unknown species"
  creation:0 "Creation"
- the_waker:0 "Creation"
+ the_waker:0 "The waker"
+ the_waked:0 "The waked"
 
  here_we_introduce:0 "Here we introduce"
  here_we_send_greetings:0 "Here we send our greetings"
