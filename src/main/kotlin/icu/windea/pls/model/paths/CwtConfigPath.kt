@@ -93,7 +93,7 @@ private sealed class CwtConfigPathBase : CwtConfigPath {
     }
 
     override fun relativize(other: CwtConfigPath, wildcard: String?): CwtConfigPath? {
-        // 3.0.1: optimize: do not check equality first
+        // 3.0.1 optimize: do not check equality first
         if (this.isEmpty()) return other
         val subPaths = other.subPaths.removePrefixOrNull(this.subPaths, wildcard) ?: return null
         return CwtConfigPath.resolve(subPaths)

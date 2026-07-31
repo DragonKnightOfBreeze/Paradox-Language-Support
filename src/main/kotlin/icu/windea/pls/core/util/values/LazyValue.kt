@@ -53,4 +53,53 @@ class LazyValue<T> : Supplier<T?> {
             return newValue
         }
     }
+
+    override fun toString(): String = if (isInitialized()) value.toString() else "Lazy value is not initialized."
+
+    companion object {
+        inline val UNINITIALIZED get() = EMPTY_OBJECT
+
+        /**
+         * 用于实现内存友好的懒加载的属性。基于 `@Volatile`。
+         *
+         * 示例：
+         *
+         * ```
+         * val value: Value?
+         *     get() = LazyValue(_value) { computeValue().also {_value = it}  }
+         * @Volatile private var _value: Any? = LazyValue.UNINITIALIZED
+         *
+         * private fun computeValue() { ... }
+         * ```
+         */
+        @Suppress("UNCHECKED_CAST")
+        inline operator fun <T> invoke(field: Any?, provider: () -> T?): T? {
+            if (field !== EMPTY_OBJECT) return field as T
+            return provider()
+        }
+
+        /**
+         * 用于实现内存友好的懒加载的属性。基于 `@Volatile` 和双重检查锁。
+         *
+         * 示例：
+         *
+         * ```
+         * val value: Value?
+         *     get() = LazyValue(this, { _value }) { computeValue().also {_value = it}  }
+         * @Volatile private var _value: Any? = LazyValue.UNINITIALIZED
+         *
+         * private fun computeValue() { ... }
+         * ```
+         */
+        @Suppress("UNCHECKED_CAST")
+        inline operator fun <T> invoke(lock: Any, fieldProvider: () -> Any?, provider: () -> T?): T? {
+            val field = fieldProvider()
+            if (field !== EMPTY_OBJECT) return field as T
+            synchronized(lock) {
+                val field = fieldProvider()
+                if (field !== EMPTY_OBJECT) return field as T
+                return provider()
+            }
+        }
+    }
 }

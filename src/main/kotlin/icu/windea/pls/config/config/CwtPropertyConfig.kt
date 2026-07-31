@@ -14,15 +14,14 @@ import icu.windea.pls.config.option.CwtOptionMetadataProcessor
 import icu.windea.pls.config.util.CwtConfigResolverManager
 import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.config.util.CwtMemberConfigVisitor
-import icu.windea.pls.core.EMPTY_OBJECT
 import icu.windea.pls.core.annotations.Optimized
-import icu.windea.pls.core.cast
 import icu.windea.pls.core.collections.filterIsInstanceFast
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.createPointer
 import icu.windea.pls.core.emptyPointer
 import icu.windea.pls.core.forEachChild
 import icu.windea.pls.core.optimized
+import icu.windea.pls.core.util.values.LazyValue
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.cwt.psi.CwtPropertyKey
@@ -203,13 +202,10 @@ private sealed class CwtPropertyConfigBase : CwtOptionMetadataBase(), CwtPropert
 
     override val configExpression: CwtDataExpression get() = keyExpression
 
-    // use memory-optimized lazy property
-    @Volatile private var _valueConfig: Any? = EMPTY_OBJECT
-    override val valueConfig: CwtValueConfig? @Synchronized get() = computeLazyValueConfig()
-
-    private fun computeLazyValueConfig(): CwtValueConfig? {
-        return if (_valueConfig !== EMPTY_OBJECT) _valueConfig.cast() else computeValueConfig().also { _valueConfig = it }
-    }
+    // optimize: use memory-friendly lazy property
+    override val valueConfig: CwtValueConfig? // region by lazy { computeValueConfig() }
+        get() = LazyValue(this, { _valueConfig }) { computeValueConfig().also { _valueConfig = it } }
+    @Volatile private var _valueConfig: Any? = LazyValue.UNINITIALIZED // endregion
 
     private fun computeValueConfig(): CwtValueConfig? {
         // this function should be enough fast because there are no pointers to be created

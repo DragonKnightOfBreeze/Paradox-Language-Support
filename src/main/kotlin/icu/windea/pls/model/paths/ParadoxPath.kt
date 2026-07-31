@@ -105,7 +105,7 @@ private sealed class ParadoxPathBase : ParadoxPath {
     }
 
     override fun relativize(other: ParadoxPath, wildcard: String?): ParadoxPath? {
-        // 3.0.1: optimize: do not check equality first
+        // 3.0.1 optimize: do not check equality first
         if (this.isEmpty()) return other
         val subPaths = other.subPaths.removePrefixOrNull(this.subPaths, wildcard) ?: return null
         return ParadoxPath.resolve(subPaths)

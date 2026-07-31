@@ -1,9 +1,11 @@
 package icu.windea.pls.model
 
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.ModificationTracker
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.core.getDefaultProject
 import icu.windea.pls.core.util.ReadWriteAccess
+import icu.windea.pls.core.util.values.LazyValue
 import icu.windea.pls.ep.resolve.parameter.ParadoxParameterSupport
 import icu.windea.pls.ep.resolve.parameter.support
 import icu.windea.pls.script.psi.ParadoxConditionParameter
@@ -30,7 +32,12 @@ data class ParadoxParameterInfo(
     val gameType: ParadoxGameType,
     val project: Project,
 ) : UserDataHolderBase() {
-    val modificationTracker by lazy { support?.getModificationTracker(this) }
+    // 3.0.1 optimize: use memory-friendly lazy property
+    val modificationTracker: ModificationTracker? // region by lazy { computeModificationTracker() }
+        get() = LazyValue(_modificationTracker) { computeModificationTracker().also { _modificationTracker = it } }
+    @Volatile private var _modificationTracker: Any? = LazyValue.UNINITIALIZED // endregion
+
+    private fun computeModificationTracker() = support?.getModificationTracker(this)
 
     companion object {
         @JvmField val EMPTY = ParadoxParameterInfo("", "", null, "", ReadWriteAccess.ReadWrite, ParadoxGameType.Core, getDefaultProject())
