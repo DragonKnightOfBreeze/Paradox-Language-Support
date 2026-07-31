@@ -3,9 +3,9 @@ package icu.windea.pls.ep.match.expression
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.core.annotations.Optimized
-import icu.windea.pls.core.cast
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.filterFast
+import icu.windea.pls.core.collections.filterIsInstanceFast
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.lang.match.ParadoxExpressionMatchService
 import icu.windea.pls.lang.match.ParadoxScriptExpressionMatchContext
@@ -38,7 +38,7 @@ class ParadoxScriptExpressionBlockMatchOptimizer : ParadoxScriptExpressionMatchO
     @Optimized
     override fun <T : CwtMemberConfig<*>> optimize(configs: List<T>, context: ParadoxScriptExpressionMatchOptimizerContext): List<T>? {
         if (configs.size <= 1) return null
-        val filtered = configs.filterFast { it is CwtPropertyConfig && it.valueType == CwtExpressionType.Block }.cast<List<CwtPropertyConfig>>()
+        val filtered = configs.filterIsInstanceFast<CwtPropertyConfig> { it.valueType == CwtExpressionType.Block }
         if (filtered.isEmpty()) return null
         val filteredGroup = mutableMapOf<String, MutableList<CwtPropertyConfig>>()
         filtered.forEachFast { c -> filteredGroup.getOrPut(c.key) { mutableListOf() } += c }

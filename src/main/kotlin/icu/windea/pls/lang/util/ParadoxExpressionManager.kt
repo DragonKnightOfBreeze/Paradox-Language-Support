@@ -96,11 +96,12 @@ object ParadoxExpressionManager {
     @Optimized
     fun isParameterized(text: String, conditionBlock: Boolean = true, full: Boolean = false): Boolean {
         // 快速判断，不检测带参数后的语法是否合法
-        if (text.length < 2) return false
+        val length = text.length
+        if (length < 2) return false
         if (full) {
             // `$PARAM$` - 仅限：高级插值语法 A
             if (!text.startsWith('$')) return false
-            if (text.indexOf('$', 1).let { c -> c != text.lastIndex || text.isEscapedCharAt(c) }) return false
+            if (text.indexOf('$', 1).let { c -> c != length - 1 || text.isEscapedCharAt(c) }) return false
             return true
         }
         // `a_$PARAM$_b` - 高级插值语法 A
@@ -109,7 +110,7 @@ object ParadoxExpressionManager {
             if (c == '$' && !text.isEscapedCharAt(i)) {
                 return true
             } else if (conditionBlock && c == '[' && !text.isEscapedCharAt(i)) {
-                if (i == text.length - 1 || text[i + 1] != '[') continue // 仅接受 `[[`
+                if (i == length - 1 || text[i + 1] != '[') continue // 仅接受 `[[`
                 return true
             }
         }

@@ -11,18 +11,25 @@ enum class CwtDataExpressionRole(val text: String) {
 
     override fun toString() = text
 
-    @Suppress("unused")
-    fun isKey() = this == Key
+    // region Inline Methods
 
-    @Suppress("unused")
-    fun isValue() = this == Value
+    @Suppress("NOTHING_TO_INLINE", "unused")
+    inline fun toBoolean(): Boolean? = if (this == Key) true else if (this === Value) false else null
 
-    @Suppress("unused")
-    fun toBoolean(): Boolean? = if (this == Key) true else if (this === Value) false else null
+    @Suppress("NOTHING_TO_INLINE", "unused")
+    inline fun isKey(): Boolean = this == Key
+
+    @Suppress("NOTHING_TO_INLINE", "unused")
+    inline fun isValue(): Boolean = this == Value
+
+    // endregion
 
     companion object {
-        @Suppress("unused")
-        @JvmStatic
+        // region Inline Methods
+
+        @Suppress("NOTHING_TO_INLINE", "unused")
         fun fromBoolean(value: Boolean?): CwtDataExpressionRole = if (value == true) Key else if (value == false) Value else Other
+
+        // endregion
     }
 }

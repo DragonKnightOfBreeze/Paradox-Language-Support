@@ -60,7 +60,7 @@ class LazyValue<T> : Supplier<T?> {
         inline val UNINITIALIZED get() = EMPTY_OBJECT
 
         /**
-         * 用于实现内存友好的懒加载的属性。基于 `@Volatile`。
+         * 用于实现内存友好的懒加载属性。基于 `@Volatile`。
          *
          * 示例：
          *
@@ -79,7 +79,7 @@ class LazyValue<T> : Supplier<T?> {
         }
 
         /**
-         * 用于实现内存友好的懒加载的属性。基于 `@Volatile` 和双重检查锁。
+         * 用于实现内存友好的懒加载属性。基于 `@Volatile` 和双重检查锁。
          *
          * 示例：
          *

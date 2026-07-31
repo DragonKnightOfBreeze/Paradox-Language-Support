@@ -57,8 +57,6 @@ object ParadoxAnalysisManager : ParadoxAnalysisScope {
         // skip for in achieve files (unsupported)
         if (VirtualFileService.isInArchiveFile(rootFile)) return null
 
-        ParadoxAnalysisLifecycleService.ensureLoaded()
-
         // try to get injected root info first
         doGetForcedRootInfo(rootFile)?.let { return it }
 
@@ -73,6 +71,7 @@ object ParadoxAnalysisManager : ParadoxAnalysisScope {
     private fun doGetCachedRootInfo(rootFile: VirtualFile): ParadoxRootInfo? {
         val cachedRootInfo = rootFile.cachedRootInfo ?: LazyValue<ParadoxRootInfo>().also { rootFile.cachedRootInfo = it }
         return cachedRootInfo.initialize {
+            ParadoxAnalysisLifecycleService.ensureLoaded()
             runCatchingCancelable { doResolveRootInfo(rootFile) }.onFailure { e -> logger.warn(e) }.getOrNull()
         }
     }
@@ -98,8 +97,6 @@ object ParadoxAnalysisManager : ParadoxAnalysisScope {
         // skip for in achieve files (unsupported)
         if (VirtualFileService.isInArchiveFile(file)) return null
 
-        ParadoxAnalysisLifecycleService.ensureLoaded()
-
         // try to get injected file info first
         doGetForcedFileInfo(file)?.let { return it }
 
@@ -121,6 +118,7 @@ object ParadoxAnalysisManager : ParadoxAnalysisScope {
             doCheckFileInfo(fileInfo)
         }
         return cachedFileInfo.initialize {
+            ParadoxAnalysisLifecycleService.ensureLoaded()
             runCatchingCancelable { doResolveFileInfo(file) }.onFailure { e -> logger.warn(e) }.getOrNull()
         }
     }
@@ -196,8 +194,6 @@ object ParadoxAnalysisManager : ParadoxAnalysisScope {
         // skip for in achieve files (unsupported)
         if (VirtualFileService.isInArchiveFile(file)) return null
 
-        ParadoxAnalysisLifecycleService.ensureLoaded()
-
         // try to get injected locale config first
         doGetForcedLocaleConfig(file)?.let { return it }
 
@@ -213,6 +209,7 @@ object ParadoxAnalysisManager : ParadoxAnalysisScope {
         if (DumbService.isDumb(project)) return null // NOTE 2.1.2 incase index not ready
         val cachedLocaleConfig = file.cachedLocaleConfig ?: LazyValue<CwtLocaleConfig>().also { file.cachedLocaleConfig = it }
         return cachedLocaleConfig.initialize {
+            ParadoxAnalysisLifecycleService.ensureLoaded()
             runCatchingCancelable { doResolveLocaleConfig(file, project) }.onFailure { e -> logger.warn(e) }.getOrNull()
         }
     }

@@ -36,6 +36,12 @@ fun String?.equalsFast(other: String?, ignoreCase: Boolean = false): Boolean {
     return true
 }
 
+/** @see kotlin.text.equals */
+@Fast
+fun Array<String>.equalsAnyFast(other: String, ignoreCase: Boolean = false): Boolean {
+    return any { it.equalsFast(other, ignoreCase) }
+}
+
 /** @see kotlin.text.trim */
 @Fast
 fun String.trimFast(c: Char): String {
