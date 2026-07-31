@@ -5,6 +5,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiPolyVariantReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.SmartPsiElementPointer
+import icu.windea.pls.core.collections.filterFast
 import icu.windea.pls.core.createResults
 import icu.windea.pls.core.unquote
 import icu.windea.pls.lang.manipulation.ParadoxEventManipulationService
@@ -54,7 +55,7 @@ class ParadoxEventNamespacePsiReference(
 
         // bound and matched
         val boundEventNamespaces = ParadoxEventManipulationService.getBoundNamespaceDeclarationsFromEventDeclaration(event)
-        val boundEventNamespace = boundEventNamespaces.filter { ParadoxEventManipulationService.getNamespaceFromEventNamespaceDeclaration(it) == expectedNamespace }
+        val boundEventNamespace = boundEventNamespaces.filterFast { ParadoxEventManipulationService.getNamespaceFromEventNamespaceDeclaration(it) == expectedNamespace }
         result.addAll(boundEventNamespace)
 
         val name = element.value.substringBefore('.')

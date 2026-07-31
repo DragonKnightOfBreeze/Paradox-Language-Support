@@ -8,6 +8,7 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.EMPTY_OBJECT
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.runSmartReadAction
@@ -31,7 +32,7 @@ import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptRootBlock
 
-@Suppress("unused")
+@Optimized
 object ParadoxDefinitionInjectionManager {
     object Keys : KeyRegistry() {
         val cachedDefinitionInjectionInfo by registerKey<CachedValue<ParadoxDefinitionInjectionInfo>>(Keys)
@@ -107,6 +108,7 @@ object ParadoxDefinitionInjectionManager {
         return mode + ":" + target.orEmpty()
     }
 
+    @Suppress("unused")
     fun getTarget(element: ParadoxScriptProperty): String? {
         return element.definitionInjectionInfo?.target
     }
@@ -189,6 +191,7 @@ object ParadoxDefinitionInjectionManager {
     /**
      * 检查指定模式是否应被识别为定义声明（可以被索引和搜索）。
      */
+    @Suppress("unused")
     fun isCreateMode(definitionInjectionInfo: ParadoxDefinitionInjectionInfo): Boolean {
         val mode = definitionInjectionInfo.mode
         val configGroup = definitionInjectionInfo.configGroup

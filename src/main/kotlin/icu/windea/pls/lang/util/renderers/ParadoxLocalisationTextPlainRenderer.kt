@@ -29,7 +29,7 @@ class ParadoxLocalisationTextPlainRenderer : ParadoxLocalisationTextRenderer<Str
 }
 
 class ParadoxLocalisationTextPlainRenderContext(
-    private val settings: ParadoxLocalisationTextPlainRenderSettings,
+    @Suppress("unused") private val settings: ParadoxLocalisationTextPlainRenderSettings,
     var builder: StringBuilder = StringBuilder(),
 ) : ParadoxLocalisationTextRenderContext<String>() {
     private val guardStack: ArrayDeque<String> = ArrayDeque() // 避免 StackOverflow

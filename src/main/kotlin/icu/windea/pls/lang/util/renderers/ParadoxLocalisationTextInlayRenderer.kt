@@ -1,4 +1,4 @@
-@file:Suppress("unused", "UnstableApiUsage")
+@file:Suppress("UnstableApiUsage")
 
 package icu.windea.pls.lang.util.renderers
 
@@ -10,6 +10,7 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import icu.windea.pls.core.codeInsight.hints.mergePresentations
+import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.forEachChild
 import icu.windea.pls.core.letIf
 import icu.windea.pls.core.psi.light.LightElementBase
@@ -125,7 +126,7 @@ class ParadoxLocalisationTextInlayRenderContext(
 
     override fun renderRichTexts(elements: List<ParadoxLocalisationRichText>) {
         if (elements.isEmpty()) return
-        for (richText in elements) {
+        elements.forEachFast { richText ->
             ProgressManager.checkCanceled()
             renderRichText(richText)
             if (truncated) return

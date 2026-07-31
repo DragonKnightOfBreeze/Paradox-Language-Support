@@ -7,12 +7,15 @@ import com.intellij.psi.PsiElement
 import icu.windea.pls.base.annotations.WithGameTypeEP
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.localisation.psi.ParadoxLocalisationIcon
+import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 提供对本地化图标的支持。
  */
 @WithGameTypeEP
 interface ParadoxLocalisationIconSupport {
+    fun supports(gameType: ParadoxGameType) = true
+
     fun resolve(name: String, element: ParadoxLocalisationIcon, project: Project): PsiElement?
 
     fun resolveAll(name: String, element: ParadoxLocalisationIcon, project: Project): Collection<PsiElement>

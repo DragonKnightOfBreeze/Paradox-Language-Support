@@ -5,6 +5,8 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
+import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.collections.mapNotNullFast
 import icu.windea.pls.core.createPointer
 import icu.windea.pls.core.isExactLetter
 import icu.windea.pls.core.isExactWord
@@ -30,6 +32,7 @@ import icu.windea.pls.model.constraints.ParadoxDefinitionIndexConstraint
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
+@Optimized
 object ParadoxTextColorManager {
     object Keys : KeyRegistry() {
         val cachedTextColorInfo by registerKey<CachedValue<ParadoxTextColorInfo>>(Keys)
@@ -108,7 +111,7 @@ object ParadoxTextColorManager {
             .withConstraint(ParadoxDefinitionIndexConstraint.TextColor)
         val definitions = ParadoxDefinitionSearch.searchProperty(null, ParadoxDefinitionTypes.textColor, selector).findAll()
         if (definitions.isEmpty()) return emptyList()
-        return definitions.mapNotNull { definition -> getInfoFromCache(definition) } // it.name == it.definitionInfo.name
+        return definitions.mapNotNullFast { definition -> getInfoFromCache(definition) } // it.name == it.definitionInfo.name
     }
 
     fun isId(c: Char): Boolean {

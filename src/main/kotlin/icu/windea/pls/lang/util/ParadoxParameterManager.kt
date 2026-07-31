@@ -17,11 +17,17 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.cache.cancelable
 import icu.windea.pls.core.cache.createNestedCache
 import icu.windea.pls.core.cache.trackedBy
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.collections.allFast
+import icu.windea.pls.core.collections.anyFast
+import icu.windea.pls.core.collections.filterIsInstanceFast
+import icu.windea.pls.core.collections.forEachFast
+import icu.windea.pls.core.collections.forEachReversedFast
 import icu.windea.pls.core.findChild
 import icu.windea.pls.core.isSamePosition
 import icu.windea.pls.core.unquote
@@ -60,6 +66,7 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.isDataExpression
 import java.util.*
 
+@Optimized
 object ParadoxParameterManager {
     object Keys : KeyRegistry() {
         val cachedParameterContextInfo by registerKey<CachedValue<ParadoxParameterContextInfo>>(Keys)
@@ -102,11 +109,11 @@ object ParadoxParameterManager {
         return when {
             expressionElement is ParadoxScriptPropertyKey -> {
                 val configs = ParadoxConfigManager.getConfigs(expressionElement)
-                configs.filterIsInstance<CwtPropertyConfig>()
+                configs.filterIsInstanceFast<CwtPropertyConfig>()
             }
             expressionElement is ParadoxScriptString && expressionElement.isDataExpression() -> {
                 val configs = ParadoxConfigManager.getConfigs(expressionElement)
-                configs.filterIsInstance<CwtValueConfig>()
+                configs.filterIsInstanceFast<CwtValueConfig>()
             }
             else -> {
                 emptyList()
@@ -118,7 +125,7 @@ object ParadoxParameterManager {
         val result = mutableSetOf<String>()
         val argumentNames = mutableSetOf<String>()
         val presentArgumentNames = mutableSetOf<String>()
-        for (argument in contextReferenceInfo.arguments) {
+        contextReferenceInfo.arguments.forEachFast { argument ->
             argumentNames.add(argument.argumentName)
             if (isPresent(element, argument)) presentArgumentNames.add(argument.argumentName)
         }
@@ -145,7 +152,7 @@ object ParadoxParameterManager {
     fun isOptional(parameterContextInfo: ParadoxParameterContextInfo, parameterName: String, argumentNames: Set<String>? = null): Boolean {
         val parameterInfos = parameterContextInfo.parameters.get(parameterName)
         if (parameterInfos.isNullOrEmpty()) return true
-        return parameterInfos.all { parameterInfo -> isOptional(parameterInfo, argumentNames) }
+        return parameterInfos.allFast { parameterInfo -> isOptional(parameterInfo, argumentNames) }
     }
 
     /**
@@ -168,7 +175,7 @@ object ParadoxParameterManager {
      */
     fun isPassingParameterValue(parameterInfo: ParadoxParameterContextInfo.Parameter): Boolean {
         val expressionConfigs = getExpressionConfigs(parameterInfo)
-        return expressionConfigs.any { it is CwtValueConfig && it.propertyConfig?.configExpression?.type == CwtDataTypes.Parameter }
+        return expressionConfigs.anyFast { it is CwtValueConfig && it.propertyConfig?.configExpression?.type == CwtDataTypes.Parameter }
     }
 
     fun isPresent(element: PsiElement, argumentInfo: ParadoxParameterContextReferenceInfo.Argument): Boolean {
@@ -183,7 +190,7 @@ object ParadoxParameterManager {
         val parameterContext = ParadoxParameterService.findContext(element) ?: return
         val parameterContextInfo = ParadoxParameterService.getContextInfo(parameterContext) ?: return
         if (parameterContextInfo.parameters.isEmpty()) return
-        for ((parameterName, parameterInfos) in parameterContextInfo.parameters) {
+        for (parameterInfos in parameterContextInfo.parameters.values) {
             ProgressManager.checkCanceled()
             val parameter = parameterInfos.firstNotNullOfOrNull { it.element } ?: continue
             // 排除当前正在输入的那个
@@ -209,7 +216,7 @@ object ParadoxParameterManager {
         val completionOffset = context.offset
         val contextReferenceInfo = ParadoxParameterService.getContextReferenceInfo(element, from, config, completionOffset) ?: return
         val argumentNames = mutableSetOf<String>()
-        for (argument in contextReferenceInfo.arguments) {
+        contextReferenceInfo.arguments.forEachFast { argument ->
             argumentNames.add(argument.argumentName)
         }
         // 整合查找到的所有参数上下文
@@ -336,7 +343,7 @@ object ParadoxParameterManager {
         if (direct) {
             val oldText = element.text
             var newText = oldText
-            args.forEach { (k, v) ->
+            args.forEachFast { (k, v) ->
                 newText = newText.replace("$$k$", v.unquote())
             }
             return newText
@@ -381,7 +388,7 @@ object ParadoxParameterManager {
             })
 
             var newText = element.text
-            replacements.reversed().forEach { (range, v) ->
+            replacements.forEachReversedFast { (range, v) ->
                 newText = newText.replaceRange(range.startOffset, range.endOffset, v)
             }
             return newText

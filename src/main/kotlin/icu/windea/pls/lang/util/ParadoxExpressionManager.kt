@@ -25,6 +25,7 @@ import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collectReferences
 import icu.windea.pls.core.collections.findFast
+import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.isEscapedCharAt
 import icu.windea.pls.core.isIdentifierChar
 import icu.windea.pls.core.isLeftQuoted
@@ -72,6 +73,7 @@ import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.isDataExpression
 
+@Optimized
 object ParadoxExpressionManager {
     object Keys : KeyRegistry() {
         val cachedParameterRanges by registerKey<CachedValue<List<TextRange>>>(Keys)
@@ -377,7 +379,7 @@ object ParadoxExpressionManager {
         }
 
         if (node.nodes.isNotEmpty()) {
-            for (node in node.nodes) {
+            node.nodes.forEachFast { node ->
                 annotateComplexExpressionNode(element, node, holder, config)
             }
         }

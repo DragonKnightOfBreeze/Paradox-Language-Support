@@ -3,6 +3,7 @@ package icu.windea.pls.lang.util
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import icu.windea.pls.base.annotations.WithGameType
+import icu.windea.pls.core.collections.findFast
 import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.ep.util.data.StellarisGameConceptData
 import icu.windea.pls.lang.getDefinitionData
@@ -26,7 +27,8 @@ object ParadoxGameConceptManager {
         val fromName = ParadoxDefinitionSearch.searchProperty(nameOrAlias, ParadoxDefinitionTypes.gameConcept, definitionSelector).find()
         if (fromName != null) return fromName
         val all = ParadoxDefinitionSearch.searchProperty(null, ParadoxDefinitionTypes.gameConcept, definitionSelector).findAll()
-        return all.find { nameOrAlias == getName(it) || nameOrAlias in getAlias(it) }
+        if (all.isNotEmpty()) return all.findFast { nameOrAlias == getName(it) || nameOrAlias in getAlias(it) }
+        return null
     }
 
     fun getName(element: ParadoxScriptProperty): String {

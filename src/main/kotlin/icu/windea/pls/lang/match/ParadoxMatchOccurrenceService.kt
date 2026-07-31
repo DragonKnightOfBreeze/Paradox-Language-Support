@@ -6,6 +6,10 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtMemberType
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.sortedByPriority
+import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.collections.findFast
+import icu.windea.pls.core.collections.flatMapFast
+import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.lang.psi.intValue
 import icu.windea.pls.lang.psi.members
 import icu.windea.pls.lang.util.ParadoxDefineManager
@@ -16,6 +20,7 @@ import icu.windea.pls.script.psi.ParadoxScriptMemberContainer
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptValue
 
+@Optimized
 object ParadoxMatchOccurrenceService {
     fun evaluate(contextElement: PsiElement, config: CwtMemberConfig<*>): ParadoxMatchOccurrence {
         val project = config.configGroup.project
@@ -49,7 +54,7 @@ object ParadoxMatchOccurrenceService {
 
         ProgressManager.checkCanceled()
         val configGroup = configs.first().configGroup
-        val childConfigs = configs.flatMap { it.configs.orEmpty() }.sortedByPriority({ it.configExpression }, { configGroup })
+        val childConfigs = configs.flatMapFast { it.configs.orEmpty() }.sortedByPriority({ it.configExpression }, { configGroup })
         if (childConfigs.isEmpty()) return emptyMap()
         val memberContainerElement = when (memberElement) {
             is ParadoxDefinitionElement -> memberElement.block
@@ -58,7 +63,7 @@ object ParadoxMatchOccurrenceService {
         }
         if (memberContainerElement == null) return emptyMap()
         val occurrences = mutableMapOf<CwtDataExpression, ParadoxMatchOccurrence>()
-        for (childConfig in childConfigs) {
+        childConfigs.forEachFast { childConfig ->
             occurrences[childConfig.configExpression] = evaluate(memberElement, childConfig)
         }
 
@@ -76,9 +81,9 @@ object ParadoxMatchOccurrenceService {
                 occurrences.clear()
                 return@f
             }
-            val matched = childConfigs.find { childConfig ->
-                if (childConfig.memberType == CwtMemberType.PROPERTY && data !is ParadoxScriptProperty) return@find false
-                if (childConfig.memberType == CwtMemberType.VALUE && data !is ParadoxScriptValue) return@find false
+            val matched = childConfigs.findFast f@{ childConfig ->
+                if (childConfig.memberType == CwtMemberType.PROPERTY && data !is ParadoxScriptProperty) return@f false
+                if (childConfig.memberType == CwtMemberType.VALUE && data !is ParadoxScriptValue) return@f false
                 val configExpression = childConfig.configExpression
                 val context = ParadoxScriptExpressionMatchContext(data, expression, configExpression, childConfig, configGroup)
                 ParadoxExpressionMatchService.matchScriptExpression(context).get()

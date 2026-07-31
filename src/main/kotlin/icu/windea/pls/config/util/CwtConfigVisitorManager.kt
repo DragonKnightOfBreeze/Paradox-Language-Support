@@ -7,11 +7,13 @@ import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.config.delegated.CwtUnionConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.withRecursionGuard
 
+@Optimized
 object CwtConfigVisitorManager {
     fun visitExpanded(config: CwtPropertyConfig, visitor: CwtMemberConfigVisitor, forUnion: Boolean = true, forSingleAlias: Boolean = true, forAlias: Boolean = true): Boolean {
         val valueExpression = config.valueExpression

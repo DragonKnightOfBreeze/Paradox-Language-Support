@@ -1,6 +1,7 @@
 package icu.windea.pls.lang.util.renderers
 
 import com.intellij.openapi.progress.ProgressManager
+import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.quote
 import icu.windea.pls.core.quoteIfNeeded
 import icu.windea.pls.core.util.OnceMarker
@@ -38,7 +39,7 @@ open class ParadoxCsvTextPlainRenderContext(
             }
             renderColumnContainer(header)
         }
-        for (row in element.rows) {
+        element.rows.forEachFast { row ->
             ProgressManager.checkCanceled()
             if (m.mark()) {
                 builder.append('\n')
@@ -51,7 +52,7 @@ open class ParadoxCsvTextPlainRenderContext(
         val columns = element.columnList
         if (columns.isEmpty() && !hasTrailingSeparator(element)) return
         val m = OnceMarker()
-        for (column in columns) {
+        columns.forEachFast { column ->
             ProgressManager.checkCanceled()
             if (m.mark()) renderSeparator()
             renderColumn(column)

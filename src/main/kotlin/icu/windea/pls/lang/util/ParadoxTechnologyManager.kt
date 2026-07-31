@@ -37,7 +37,6 @@ import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptString
 
-@Suppress("unused")
 object ParadoxTechnologyManager {
     object Keys : KeyRegistry() {
         val cachedPrerequisites by registerKey<CachedValue<Set<String>>>(Keys)
@@ -45,6 +44,7 @@ object ParadoxTechnologyManager {
         val technologyAttributes by registerKey<Set<String>>(Keys)
     }
 
+    @Suppress("unused")
     fun getTechnologies(selector: ParadoxDefinitionSearch.Selector): List<ParadoxScriptProperty> {
         return ParadoxDefinitionSearch.searchProperty(null, ParadoxDefinitionTypes.technology, selector).findAll()
     }
@@ -53,10 +53,12 @@ object ParadoxTechnologyManager {
         return element.name // = element.definitionInfo.name
     }
 
+    @Suppress("unused")
     fun getPresentableNameElement(definition: ParadoxDefinitionElement): ParadoxLocalisationProperty? {
         return ParadoxDefinitionManager.getPrimaryLocalisation(definition)
     }
 
+    @Suppress("unused")
     fun getIconFile(definition: ParadoxDefinitionElement): PsiFile? {
         return ParadoxDefinitionManager.getPrimaryImage(definition)
     }
@@ -90,6 +92,7 @@ object ParadoxTechnologyManager {
             }
         }
 
+        @Suppress("unused")
         fun getAllAttributeConfigs(project: Project): Collection<CwtSubtypeConfig> {
             val eventConfig = ChronicleFacade.getConfigGroup(project, gameType).types[ParadoxDefinitionTypes.technology] ?: return emptySet()
             return eventConfig.subtypes.values.filter { it in CwtSubtypeGroup.TechnologyAttribute }
@@ -107,6 +110,7 @@ object ParadoxTechnologyManager {
             return element.getDefinitionData<StellarisTechnologyData>()?.category.orEmpty()
         }
 
+        @Suppress("unused")
         fun getAttributes(element: ParadoxDefinitionElement): Set<String> {
             return element.definitionInfo?.let { getAttributes(it) }.orEmpty()
         }

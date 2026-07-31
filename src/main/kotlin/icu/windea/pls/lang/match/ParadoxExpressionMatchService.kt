@@ -24,8 +24,8 @@ object ParadoxExpressionMatchService {
     fun matchScriptExpression(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
         // ProgressManager.checkCanceled() // 3.0.1 optimize: not here (before cache access or lazy match instead)
         val matchers = ParadoxScriptExpressionMatcher.get(context.dataType) // 3.0.1 optimize: use global cache (by data type)
-        matchers.forEachFast { ep ->
-            ep.match(context)?.let { return it }
+        matchers.forEachFast { matcher ->
+            matcher.match(context)?.let { return it }
         }
         return ParadoxMatchResult.NotMatch
     }
@@ -37,8 +37,8 @@ object ParadoxExpressionMatchService {
     fun matchCsvExpression(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult {
         // ProgressManager.checkCanceled() // 3.0.1 optimize: not here (before cache access or lazy match instead)
         val matchers = ParadoxCsvExpressionMatcher.get(context.dataType) // 3.0.1 optimize: use global cache (by data type)
-        matchers.forEachFast { ep ->
-            ep.match(context)?.let { return it }
+        matchers.forEachFast { matcher ->
+            matcher.match(context)?.let { return it }
         }
         return ParadoxMatchResult.NotMatch
     }

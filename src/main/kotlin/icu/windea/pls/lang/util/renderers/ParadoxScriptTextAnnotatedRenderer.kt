@@ -1,5 +1,6 @@
 package icu.windea.pls.lang.util.renderers
 
+import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.util.OnceMarker
 import icu.windea.pls.lang.codeInsight.annotated.ParadoxAnnotatedLevel
 import icu.windea.pls.lang.codeInsight.annotated.ParadoxScriptAnnotatedManager
@@ -37,7 +38,7 @@ class ParadoxScriptTextAnnotatedRenderContext(
         val annotations = getAnnotations(element)
         if (annotations.isEmpty()) return
         val m = OnceMarker()
-        for (annotation in annotations) {
+        annotations.forEachFast { annotation ->
             if (m.mark()) super.renderIndent()
             builder.append(annotation)
             builder.append('\n')

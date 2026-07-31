@@ -33,8 +33,6 @@ inline fun <T, reified R> Collection<T>.mapToArray(empty: Array<R>, transform: (
     if (isEmpty()) return empty
     if (this is List) return Array(size) { transform(this[it]) }
     val result = arrayOfNulls<R>(this.size)
-    for ((i, e) in this.withIndex()) {
-        result[i] = transform(e)
-    }
+    this.forEachIndexed { i, e -> result[i] = transform(e) }
     return result.cast()
 }

@@ -1,16 +1,18 @@
 package icu.windea.pls.lang.util
 
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.model.ParadoxDefinitionCandidateInfo
 import icu.windea.pls.model.ParadoxDefinitionSource
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
-@Suppress("unused")
+@Optimized
 object ParadoxDefinitionCandidateManager {
     fun getType(element: ParadoxDefinitionElement): String? {
         return getInfo(element)?.type
     }
 
+    @Suppress("unused")
     fun getSubtypes(element: ParadoxDefinitionElement): List<String>? {
         return getInfo(element)?.subtypes
     }

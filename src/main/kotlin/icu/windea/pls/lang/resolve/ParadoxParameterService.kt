@@ -14,7 +14,10 @@ import icu.windea.pls.config.manipulation.CwtConfigManipulationService
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cast
 import icu.windea.pls.core.collections.anyFast
+import icu.windea.pls.core.collections.findFast
+import icu.windea.pls.core.collections.findLastFast
 import icu.windea.pls.core.collections.forEachFast
+import icu.windea.pls.core.collections.mapFast
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.createPointer
@@ -48,9 +51,9 @@ object ParadoxParameterService {
      * @see ParadoxParameterSupport.findContext
      */
     fun findContext(element: PsiElement): ParadoxDefinitionElement? {
-        val eps = ParadoxParameterSupport.EP_NAME.extensionList
-        eps.forEachFast { ep ->
-            ep.findContext(element)?.let { return it }
+        val supports = ParadoxParameterSupport.EP_NAME.extensionList
+        supports.forEachFast { support ->
+            support.findContext(element)?.let { return it }
         }
         return null
     }
@@ -59,9 +62,9 @@ object ParadoxParameterService {
      * @see ParadoxParameterSupport.getContextKeyFromContext
      */
     fun getContextKeyFromContext(element: ParadoxDefinitionElement): String? {
-        val eps = ParadoxParameterSupport.EP_NAME.extensionList
-        eps.forEachFast { ep ->
-            ep.getContextKeyFromContext(element)?.let { return it }
+        val supports = ParadoxParameterSupport.EP_NAME.extensionList
+        supports.forEachFast { support ->
+            support.getContextKeyFromContext(element)?.let { return it }
         }
         return null
     }
@@ -70,9 +73,9 @@ object ParadoxParameterService {
      * @see ParadoxParameterSupport.getContextInfo
      */
     fun getContextInfo(element: ParadoxDefinitionElement): ParadoxParameterContextInfo? {
-        val eps = ParadoxParameterSupport.EP_NAME.extensionList
-        eps.forEachFast { ep ->
-            ep.getContextInfo(element)?.let { return it }
+        val supports = ParadoxParameterSupport.EP_NAME.extensionList
+        supports.forEachFast { support ->
+            support.getContextInfo(element)?.let { return it }
         }
         return null
     }
@@ -81,9 +84,9 @@ object ParadoxParameterService {
      * @see ParadoxParameterSupport.getContextReferenceInfo
      */
     fun getContextReferenceInfo(element: PsiElement, from: ParadoxParameterContextReferenceInfo.From, vararg extraArgs: Any?): ParadoxParameterContextReferenceInfo? {
-        val eps = ParadoxParameterSupport.EP_NAME.extensionList
-        eps.forEachFast { ep ->
-            ep.getContextReferenceInfo(element, from, *extraArgs)?.also { it.support = ep }?.let { return it }
+        val supports = ParadoxParameterSupport.EP_NAME.extensionList
+        supports.forEachFast { support ->
+            support.getContextReferenceInfo(element, from, *extraArgs)?.also { it.support = support }?.let { return it }
         }
         return null
     }
@@ -92,9 +95,9 @@ object ParadoxParameterService {
      * @see ParadoxParameterSupport.resolveParameter
      */
     fun resolveParameter(element: ParadoxParameter): ParadoxParameterLightElement? {
-        val eps = ParadoxParameterSupport.EP_NAME.extensionList
-        eps.forEachFast { ep ->
-            ep.resolveParameter(element)?.also { it.support = ep }?.let { return it }
+        val supports = ParadoxParameterSupport.EP_NAME.extensionList
+        supports.forEachFast { support ->
+            support.resolveParameter(element)?.also { it.support = support }?.let { return it }
         }
         return null
     }
@@ -103,9 +106,9 @@ object ParadoxParameterService {
      * @see ParadoxParameterSupport.resolveConditionParameter
      */
     fun resolveConditionParameter(element: ParadoxConditionParameter): ParadoxParameterLightElement? {
-        val eps = ParadoxParameterSupport.EP_NAME.extensionList
-        eps.forEachFast { ep ->
-            ep.resolveConditionParameter(element)?.also { it.support = ep }?.let { return it }
+        val supports = ParadoxParameterSupport.EP_NAME.extensionList
+        supports.forEachFast { support ->
+            support.resolveConditionParameter(element)?.also { it.support = support }?.let { return it }
         }
         return null
     }
@@ -114,9 +117,9 @@ object ParadoxParameterService {
      * @see ParadoxParameterSupport.resolveArgument
      */
     fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>): ParadoxParameterLightElement? {
-        val eps = ParadoxParameterSupport.EP_NAME.extensionList
-        eps.forEachFast { ep ->
-            ep.resolveArgument(element, rangeInElement, config)?.also { it.support = ep }?.let { return it }
+        val supports = ParadoxParameterSupport.EP_NAME.extensionList
+        supports.forEachFast { support ->
+            support.resolveArgument(element, rangeInElement, config)?.also { it.support = support }?.let { return it }
         }
         return null
     }
@@ -125,9 +128,9 @@ object ParadoxParameterService {
      * @see ParadoxParameterSupport.processContext
      */
     fun processContext(parameterElement: ParadoxParameterLightElement, onlyMostRelevant: Boolean, processor: (ParadoxDefinitionElement) -> Boolean): Boolean {
-        val eps = ParadoxParameterSupport.EP_NAME.extensionList
-        return eps.anyFast { ep ->
-            ep.processContext(parameterElement, onlyMostRelevant, processor)
+        val supports = ParadoxParameterSupport.EP_NAME.extensionList
+        return supports.anyFast { support ->
+            support.processContext(parameterElement, onlyMostRelevant, processor)
         }
     }
 
@@ -135,9 +138,9 @@ object ParadoxParameterService {
      * @see ParadoxParameterSupport.processContextReference
      */
     fun processContextReference(element: PsiElement, contextReferenceInfo: ParadoxParameterContextReferenceInfo, onlyMostRelevant: Boolean, processor: (ParadoxDefinitionElement) -> Boolean): Boolean {
-        val eps = ParadoxParameterSupport.EP_NAME.extensionList
-        return eps.anyFast { ep ->
-            ep.processContextReference(element, contextReferenceInfo, onlyMostRelevant, processor)
+        val supports = ParadoxParameterSupport.EP_NAME.extensionList
+        return supports.anyFast { support ->
+            support.processContextReference(element, contextReferenceInfo, onlyMostRelevant, processor)
         }
     }
 
@@ -145,24 +148,24 @@ object ParadoxParameterService {
      * @see ParadoxParameterSupport.buildDocumentationDefinition
      */
     fun getDocumentationDefinition(parameterElement: ParadoxParameterLightElement, builder: DocumentationBuilder): Boolean {
-        val eps = ParadoxParameterSupport.EP_NAME.extensionList
-        return eps.anyFast { ep ->
-            ep.buildDocumentationDefinition(parameterElement, builder)
+        val supports = ParadoxParameterSupport.EP_NAME.extensionList
+        return supports.anyFast { support ->
+            support.buildDocumentationDefinition(parameterElement, builder)
         }
     }
 
-    // TODO 3.0.1 cleanup fast
     /**
      * @see ParadoxParameterInferredConfigProvider.getContextConfigs
      */
     fun getContextConfigs(parameterInfo: ParadoxParameterContextInfo.Parameter, parameterContextInfo: ParadoxParameterContextInfo): List<CwtMemberConfig<*>>? {
         val gameType = parameterContextInfo.gameType
         val eps = ParadoxParameterInferredConfigProvider.EP_NAME.extensionList
-        return eps.firstNotNullOfOrNull f@{ ep ->
-            if (!ChronicleAnnotationService.check(ep, gameType)) return@f null
-            if (!ep.supports(parameterInfo, parameterContextInfo)) return@f null
-            ep.getContextConfigs(parameterInfo, parameterContextInfo).orNull()
+        eps.forEachFast f@{ ep ->
+            if (!ChronicleAnnotationService.check(ep, gameType)) return@f
+            if (!ep.supports(parameterInfo, parameterContextInfo)) return@f
+            ep.getContextConfigs(parameterInfo, parameterContextInfo).orNull()?.let { return it }
         }
+        return null
     }
 
     fun resolveContextInfo(element: ParadoxDefinitionElement): ParadoxParameterContextInfo? {
@@ -221,8 +224,8 @@ object ParadoxParameterService {
         val configs = configGroup.extendedParameters.findByPattern(parameterElement.name, parameterElement, configGroup)
         if (configs.isNullOrEmpty()) return emptyList()
         val config = when {
-            fast -> configs.find { it.contextKey.matchesByPattern(parameterElement.contextKey, parameterElement, configGroup) }
-            else -> configs.findLast { it.contextKey.matchesByPattern(parameterElement.contextKey, parameterElement, configGroup) }
+            fast -> configs.findFast { it.contextKey.matchesByPattern(parameterElement.contextKey, parameterElement, configGroup) }
+            else -> configs.findLastFast { it.contextKey.matchesByPattern(parameterElement.contextKey, parameterElement, configGroup) }
         }
         if (config == null) return emptyList()
         return config.getContextConfigs(parameterElement)
@@ -275,8 +278,8 @@ object ParadoxParameterService {
     fun getInferredType(contextConfigs: List<CwtMemberConfig<*>>): String? {
         val configs = contextConfigs.singleOrNull()?.configs
         if (configs.isNullOrEmpty()) return null
-        if (configs.any { it !is CwtValueConfig || it.valueType == CwtExpressionType.Block }) return ChronicleStrings.complexText
-        return configs.mapTo(mutableSetOf()) { it.configExpression.expressionString }.joinToString(" | ")
+        if (configs.anyFast { it !is CwtValueConfig || it.valueType == CwtExpressionType.Block }) return ChronicleStrings.complexText
+        return configs.mapFast { it.configExpression.expressionString }.toSet().joinToString(" | ")
     }
 
     fun getParameterizedKeyConfigs(contextConfigs: List<CwtMemberConfig<*>>): List<CwtValueConfig> {

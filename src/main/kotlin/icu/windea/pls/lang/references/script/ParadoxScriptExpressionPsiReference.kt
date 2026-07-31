@@ -10,6 +10,8 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.expandConfigExpression
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.collections.flatMapFast
+import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.createResults
 import icu.windea.pls.core.psi.PsiCompositeReference
 import icu.windea.pls.core.util.ProcessorScope
@@ -80,15 +82,15 @@ class ParadoxScriptExpressionPsiReference(
 
     private fun doResolve(): PsiElement? {
         // 根据对应的 expression 进行解析
-        val resolved = configs.firstNotNullOfOrNull { config ->
-            ParadoxExpressionManager.resolveScriptExpression(element, rangeInElement, config, role)
+        configs.forEachFast { config ->
+            ParadoxExpressionManager.resolveScriptExpression(element, rangeInElement, config, role)?.let { return it }
         }
-        return resolved
+        return null
     }
 
     private fun doMultiResolve(): Array<out ResolveResult> {
         // 根据对应的 expression 进行解析
-        val resolved = configs.flatMap { config ->
+        val resolved = configs.flatMapFast { config ->
             ParadoxExpressionManager.resolveAllScriptExpression(element, rangeInElement, config, role)
         }
         return resolved.createResults()

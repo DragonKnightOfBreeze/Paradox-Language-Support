@@ -14,6 +14,8 @@ import com.intellij.psi.PsiRecursiveElementVisitor
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
+import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.isExactDigit
 import icu.windea.pls.integrations.translation.TranslationToolService
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
@@ -27,6 +29,7 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
+@Optimized
 object ParadoxLocalisationManipulationService {
     /**
      * 是否需要处理 [element]。这意味着不需要时，操作通常无必要或无意义。
@@ -102,8 +105,8 @@ object ParadoxLocalisationManipulationService {
                 coroutineScope.launch {
                     withBackgroundProgress(project, ChronicleBundle.message("manipulation.localisation.revert.progress.title")) {
                         writeCommandAction(project, ChronicleBundle.message("manipulation.localisation.revert.command")) {
-                            for (context in contexts) {
-                                if (context.text == context.newText) continue
+                            contexts.forEachFast f@{ context ->
+                                if (context.text == context.newText) return@f
                                 // 注意这里 context.element 可能已经不合法
                                 context.element?.setValue(context.text)
                             }
@@ -122,8 +125,8 @@ object ParadoxLocalisationManipulationService {
                 coroutineScope.launch {
                     withBackgroundProgress(project, ChronicleBundle.message("manipulation.localisation.reapply.progress.title")) {
                         writeCommandAction(project, ChronicleBundle.message("manipulation.localisation.reapply.command")) {
-                            for (context in contexts) {
-                                if (context.text == context.newText) continue
+                            contexts.forEachFast f@{ context ->
+                                if (context.text == context.newText) return@f
                                 // 注意这里 context.element 可能已经不合法
                                 context.element?.setValue(context.newText)
                             }

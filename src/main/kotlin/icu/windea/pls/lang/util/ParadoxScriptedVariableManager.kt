@@ -4,6 +4,8 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
+import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.collections.mapNotNullFast
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.fileInfo
@@ -16,6 +18,7 @@ import icu.windea.pls.script.ParadoxScriptFileType
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
+@Optimized
 object ParadoxScriptedVariableManager {
     fun isGlobalScriptedVariablesFile(file: VirtualFile): Boolean {
         if (file.fileType != ParadoxScriptFileType) return false
@@ -51,7 +54,7 @@ object ParadoxScriptedVariableManager {
     fun getPresentableNames(element: ParadoxScriptScriptedVariable, locale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig()): Set<String> {
         val name = element.name?.orNull() ?: return emptySet()
         val nameLocalisation = getNameLocalisations(name, element, locale)
-        return nameLocalisation.mapNotNull { ParadoxLocalisationManager.getPresentableText(it) }.toSet()
+        return nameLocalisation.mapNotNullFast { ParadoxLocalisationManager.getPresentableText(it) }.toSet()
     }
 
     fun getNameLocalisation(name: String, contextElement: PsiElement, locale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig()): ParadoxLocalisationProperty? {

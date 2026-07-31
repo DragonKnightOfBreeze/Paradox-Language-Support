@@ -4,6 +4,7 @@ import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtRowConfig
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.util.ComputedModificationTracker
 import icu.windea.pls.core.util.KeyRegistry
@@ -17,6 +18,7 @@ import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.resolve.ParadoxCsvService
 
+@Optimized
 object ParadoxCsvManager {
     object Keys : KeyRegistry() {
         val cachedRowConfig by registerKey<CachedValue<CwtRowConfig>>(Keys)

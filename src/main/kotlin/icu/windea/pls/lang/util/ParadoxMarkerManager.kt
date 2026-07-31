@@ -1,5 +1,6 @@
 package icu.windea.pls.lang.util
 
+import icu.windea.pls.core.collections.findFast
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxCommandExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxNameFormatExpression
@@ -46,6 +47,6 @@ object ParadoxMarkerManager {
         val c = node.text.singleOrNull() ?: return null
         val s = markerPairs[c] ?: return null
         val nodes = node.parent?.nodes ?: return null
-        return nodes.find { it is ParadoxMarkerNode && it.text.singleOrNull() == s && it !== node }
+        return nodes.findFast { it is ParadoxMarkerNode && it.text.singleOrNull() == s && it !== node }
     }
 }

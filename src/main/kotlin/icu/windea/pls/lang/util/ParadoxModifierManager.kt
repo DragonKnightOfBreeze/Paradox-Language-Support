@@ -12,10 +12,12 @@ import icu.windea.pls.config.config.delegated.CwtEnumConfig
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.cache.cancelable
 import icu.windea.pls.core.cache.createNestedCache
 import icu.windea.pls.core.cache.trackedBy
+import icu.windea.pls.core.collections.mapNotNullFast
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.pass
@@ -48,6 +50,7 @@ import icu.windea.pls.model.toInfo
 import icu.windea.pls.model.toPsiElement
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
+@Optimized
 object ParadoxModifierManager {
     object Keys : KeyRegistry() {
         val modifierNameKeys by registerKey<Set<String>>(Keys)
@@ -246,7 +249,7 @@ object ParadoxModifierManager {
                 .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
                 .withConstraint(ParadoxLocalisationIndexConstraint.Modifier)
             val nameLocalisations = ParadoxLocalisationSearch.searchNormal(key, selector).findAll()
-            nameLocalisations.mapNotNull { ParadoxLocalisationManager.getPresentableText(it) }.toSet().orNull()
+            nameLocalisations.mapNotNullFast { ParadoxLocalisationManager.getPresentableText(it) }.toSet().orNull()
         }.orEmpty()
     }
 

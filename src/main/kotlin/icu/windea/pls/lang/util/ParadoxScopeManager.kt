@@ -131,14 +131,18 @@ object ParadoxScopeManager {
 
     fun getSupportedScopes(modifierCategories: Map<String, CwtModifierCategoryConfig>): Set<String> {
         val categoryConfigs = modifierCategories.values
-        return when {
+        val result = when {
             categoryConfigs.isEmpty() -> ParadoxScopeConstants.anyScopes
             categoryConfigs.any { it.supportedScopes == ParadoxScopeConstants.anyScopes } -> ParadoxScopeConstants.anyScopes
             else -> categoryConfigs.flatMapTo(mutableSetOf()) { it.supportedScopes }
         }
+        if (result.isEmpty()) return emptySet()
+        return result
     }
 
     fun getSupportedScopes(element: ParadoxExpressionElement, node: ParadoxComplexExpressionNode, inputScopeContext: ParadoxScopeContext): Set<String>? {
-        return ParadoxScopeService.evaluateSupportedScopesForNode(element, node, inputScopeContext)
+        val result = ParadoxScopeService.evaluateSupportedScopesForNode(element, node, inputScopeContext) ?: return null
+        if (result.isEmpty()) return emptySet()
+        return result
     }
 }

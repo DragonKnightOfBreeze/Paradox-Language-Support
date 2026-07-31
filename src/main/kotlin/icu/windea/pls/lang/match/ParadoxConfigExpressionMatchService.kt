@@ -6,9 +6,12 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.util.CwtConfigExpressionManager
+import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.unquote
 import icu.windea.pls.model.expressions.ParadoxExpression
 
+@Optimized
 object ParadoxConfigExpressionMatchService {
     fun matchesTemplate(
         element: PsiElement,
@@ -24,9 +27,9 @@ object ParadoxConfigExpressionMatchService {
         val matchResult = regex.matchEntire(expressionString) ?: return false
         if (templateExpression.referenceExpressions.size != matchResult.groups.size - 1) return false
         var i = 1
-        for (snippetExpression in snippetExpressions) {
+        snippetExpressions.forEachFast f@{ snippetExpression ->
             ProgressManager.checkCanceled()
-            if (snippetExpression.type == CwtDataTypes.Constant) continue
+            if (snippetExpression.type == CwtDataTypes.Constant) return@f
             val matchGroup = matchResult.groups.get(i++) ?: return false
             val matchValue = matchGroup.value
             if (matchValue.isEmpty() && snippetExpression.type == CwtDataTypes.Definition) return false // skip anonymous definitions

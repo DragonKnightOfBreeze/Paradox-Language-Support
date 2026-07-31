@@ -22,7 +22,9 @@ import icu.windea.pls.config.util.CwtConfigKeyManager
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.collections.allFast
 import icu.windea.pls.core.collections.forEachFast
+import icu.windea.pls.core.collections.mapNotNullFast
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.collections.processFast
@@ -62,7 +64,6 @@ object CwtConfigManipulationService {
     /**
      * 递归拷贝 [parentConfig] 中的所有子节点，并加入作为 [containerConfig] 的子规则。
      */
-    @Optimized
     fun deepCopyConfigs(parentConfig: CwtMemberConfig<*>, containerConfig: CwtMemberConfig<*> = parentConfig): List<CwtMemberConfig<*>>? {
         return doDeepCopyConfigs(parentConfig, containerConfig)
     }
@@ -70,7 +71,6 @@ object CwtConfigManipulationService {
     /**
      * 在声明规则上下文 [context] 中中，递归拷贝 [parentConfig] 中的所有子节点，并加入作为 [containerConfig] 的子规则。
      */
-    @Optimized
     fun deepCopyConfigsInDeclaration(parentConfig: CwtMemberConfig<*>, containerConfig: CwtMemberConfig<*> = parentConfig, context: CwtDeclarationConfigContext): List<CwtMemberConfig<*>>? {
         return doDeepCopyConfigsInDeclaration(parentConfig, containerConfig, context)
     }
@@ -175,7 +175,7 @@ object CwtConfigManipulationService {
             }
         }
 
-        if (configs.all { it is CwtValueConfig } && otherConfigs.all { it is CwtValueConfig }) {
+        if (configs.allFast { it is CwtValueConfig } && otherConfigs.allFast { it is CwtValueConfig }) {
             val c1 = when {
                 configs.size == 1 -> configs.single()
                 otherConfigs.size == 1 -> otherConfigs.single()
@@ -187,7 +187,7 @@ object CwtConfigManipulationService {
                 else -> null
             }?.castOrNull<List<CwtValueConfig>>()
             if (c1 != null && cs2.isNotNullOrEmpty()) {
-                val mergedConfigs = cs2.mapNotNull { c2 -> mergeValueConfig(c1, c2) }
+                val mergedConfigs = cs2.mapNotNullFast { c2 -> mergeValueConfig(c1, c2) }
                 return mergedConfigs
             }
         }
@@ -230,10 +230,10 @@ object CwtConfigManipulationService {
     }
 
     fun mergeAndMatchValueConfigs(configs: List<CwtValueConfig>, configExpression: CwtDataExpression): Boolean {
-        for (config in configs) {
+        configs.forEachFast f@{ config ->
             val e1 = configExpression // expect
             val e2 = config.configExpression // actual (e.g., from parameterized key)
-            val e3 = CwtConfigExpressionManipulationService.mergeDataExpression(e1, e2) ?: continue // merged
+            val e3 = CwtConfigExpressionManipulationService.mergeDataExpression(e1, e2) ?: return@f // merged
             if (e3 == e2.expressionString) return true
         }
         return false
@@ -243,7 +243,6 @@ object CwtConfigManipulationService {
 
     // region Inline Methods
 
-    @Optimized
     fun inlineAlias(config: CwtPropertyConfig, key: String): List<CwtMemberConfig<*>>? {
         val valueExpression = config.valueExpression
         if (valueExpression.type != CwtDataTypes.AliasMatchLeft) return null
@@ -265,7 +264,6 @@ object CwtConfigManipulationService {
         return result
     }
 
-    @Optimized
     fun inlineAlias(config: CwtPropertyConfig, aliasConfig: CwtAliasConfig): CwtPropertyConfig? {
         val other = aliasConfig.config
         val inlined = CwtPropertyConfig.copy(
@@ -288,7 +286,6 @@ object CwtConfigManipulationService {
         return finalInlined
     }
 
-    @Optimized
     fun inlineSingleAlias(config: CwtPropertyConfig): CwtPropertyConfig? {
         val valueExpression = config.valueExpression
         if (valueExpression.type != CwtDataTypes.SingleAliasRight) return null
@@ -298,7 +295,6 @@ object CwtConfigManipulationService {
         return inlineSingleAlias(config, singleAliasConfig)
     }
 
-    @Optimized
     fun inlineSingleAlias(config: CwtPropertyConfig, singleAliasConfig: CwtSingleAliasConfig): CwtPropertyConfig {
         // inline all value and configs
         val other = singleAliasConfig.config
@@ -317,7 +313,6 @@ object CwtConfigManipulationService {
         return inlined
     }
 
-    @Optimized
     fun inlineMacro(macroConfig: CwtMacroConfig.InlineScript): CwtPropertyConfig {
         val other = macroConfig.contextContainerConfig
         val inlined = CwtPropertyConfig.copy(
@@ -331,7 +326,6 @@ object CwtConfigManipulationService {
         return inlined
     }
 
-    @Optimized
     fun inlineWithConfig(config: CwtPropertyConfig, otherConfig: CwtMemberConfig<*>, inlineMode: CwtConfigInlineMode): CwtPropertyConfig? {
         val inlined = CwtPropertyConfig.copy(
             sourceConfig = config,
@@ -365,7 +359,6 @@ object CwtConfigManipulationService {
         return inlined
     }
 
-    @Optimized
     fun inlineForConfigContext(config: CwtPropertyConfig, key: String): List<CwtMemberConfig<*>>? {
         val valueExpression = config.valueExpression
         return when (valueExpression.type) {
@@ -375,20 +368,17 @@ object CwtConfigManipulationService {
         }
     }
 
-    @Optimized
     fun inlineForConfig(config: CwtPropertyConfig): CwtPropertyConfig {
         // #76
         return inlineSingleAlias(config) ?: config
     }
 
-    @Optimized
     fun inlineForConfig(config: CwtMemberConfig<*>): CwtMemberConfig<*> {
         // #76
         if (config is CwtPropertyConfig) return inlineSingleAlias(config) ?: config
         return config
     }
 
-    @Optimized
     fun inlineForContextConfig(config: CwtMemberConfig<*>?, configs: List<CwtMemberConfig<*>>?, configGroup: CwtConfigGroup): CwtValueConfig {
         val inlined = CwtValueConfig.create(
             pointer = emptyPointer(),

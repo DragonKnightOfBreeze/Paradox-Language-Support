@@ -82,7 +82,7 @@ class ParadoxDefinitionUsagesSearcher : QueryExecutorBase<PsiReference, Referenc
     private fun addToNameGetters(support: ParadoxLocalisationIconSupport, definitionInfo: ParadoxDefinitionInfo, nameGetters: MutableSet<(String) -> String?>) {
         when (support) {
             is ParadoxCompositeLocalisationIconSupport -> {
-                support.supports.forEach { s -> addToNameGetters(s, definitionInfo, nameGetters) }
+                support.supports.forEach { addToNameGetters(it, definitionInfo, nameGetters) }
             }
             is ParadoxDefinitionBasedLocalisationIconSupport -> {
                 if (ParadoxDefinitionTypeExpression.resolve(support.definitionType).matches(definitionInfo)) {

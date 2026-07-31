@@ -28,7 +28,6 @@ import icu.windea.pls.model.scope.ParadoxScopeConstants
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
-@Suppress("unused")
 object ParadoxEventManager {
     object Keys : KeyRegistry() {
         val cachedEventInvocations by registerKey<CachedValue<Set<String>>>(Keys)
@@ -61,6 +60,7 @@ object ParadoxEventManager {
         return prefix == eventNamespace
     }
 
+    @Suppress("unused")
     fun getEvents(selector: ParadoxDefinitionSearch.Selector): List<ParadoxScriptProperty> {
         return ParadoxDefinitionSearch.searchProperty(null, ParadoxDefinitionTypes.event, selector).findAll()
     }
@@ -109,7 +109,7 @@ object ParadoxEventManager {
 
     fun getAttributes(definitionInfo: ParadoxDefinitionInfo): Set<String> {
         return definitionInfo.getOrPutUserData(Keys.eventAttributes) {
-            definitionInfo.subtypeConfigs.filter { it in CwtSubtypeGroup.EventAttribute }.mapTo(mutableSetOf()) { it.name }
+            definitionInfo.subtypeConfigs.filter { it in CwtSubtypeGroup.EventAttribute }.map { it.name }.toSet()
         }
     }
 

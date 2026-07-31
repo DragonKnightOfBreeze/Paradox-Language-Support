@@ -58,10 +58,10 @@ object ParadoxExpressionService {
         val dataType = configExpression.type
         val gameType = config.configGroup.gameType
         val supports = ParadoxScriptExpressionSupport.get(dataType) // 3.0.1 optimize: use global cache (by data type)
-        supports.forEachFast f@{ ep ->
-            if (!ChronicleAnnotationService.check(ep, gameType)) return@f
+        supports.forEachFast f@{ support ->
+            if (!ChronicleAnnotationService.check(support, gameType)) return@f
             ProgressManager.checkCanceled() // 3.0.1 optimize: check immediately before applying logic
-            ep.annotate(element, rangeInElement, text, config, holder)
+            support.annotate(element, rangeInElement, text, config, holder)
         }
     }
 
@@ -74,10 +74,10 @@ object ParadoxExpressionService {
         val dataType = configExpression.type
         val gameType = config.configGroup.gameType
         val supports = ParadoxScriptExpressionSupport.get(dataType) // 3.0.1 optimize: use global cache (by data type)
-        supports.forEachFast f@{ ep ->
-            if (!ChronicleAnnotationService.check(ep, gameType)) return@f
+        supports.forEachFast f@{ support ->
+            if (!ChronicleAnnotationService.check(support, gameType)) return@f
             ProgressManager.checkCanceled() // 3.0.1 optimize: check immediately before applying logic
-            ep.resolve(element, rangeInElement, text, config, role)?.let { return it }
+            support.resolve(element, rangeInElement, text, config, role)?.let { return it }
         }
         if (configExpression.role.isKey()) {
             return getResolvedConfigElement(element, config, config.configGroup)
@@ -94,10 +94,10 @@ object ParadoxExpressionService {
         val dataType = configExpression.type
         val gameType = config.configGroup.gameType
         val supports = ParadoxScriptExpressionSupport.get(dataType) // 3.0.1 optimize: use global cache (by data type)
-        supports.forEachFast f@{ ep ->
-            if (!ChronicleAnnotationService.check(ep, gameType)) return@f
+        supports.forEachFast f@{ support ->
+            if (!ChronicleAnnotationService.check(support, gameType)) return@f
             ProgressManager.checkCanceled() // 3.0.1 optimize: check immediately before applying logic
-            ep.resolveAll(element, rangeInElement, text, config, role).orNull()?.let { return it }
+            support.resolveAll(element, rangeInElement, text, config, role).orNull()?.let { return it }
         }
         if (configExpression.role.isKey()) {
             return getResolvedConfigElement(element, config, config.configGroup).to.singletonListOrEmpty()
@@ -114,10 +114,10 @@ object ParadoxExpressionService {
         val dataType = configExpression.type
         val gameType = config.configGroup.gameType
         val supports = ParadoxScriptExpressionSupport.get(dataType) // 3.0.1 optimize: use global cache (by data type)
-        supports.forEachFast f@{ ep ->
-            if (!ChronicleAnnotationService.check(ep, gameType)) return@f
+        supports.forEachFast f@{ support ->
+            if (!ChronicleAnnotationService.check(support, gameType)) return@f
             ProgressManager.checkCanceled() // 3.0.1 optimize: check immediately before applying logic
-            ep.getReferences(element, rangeInElement, text, config, role).orNull()?.let { return it }
+            support.getReferences(element, rangeInElement, text, config, role).orNull()?.let { return it }
         }
         return emptyList()
     }
@@ -131,10 +131,10 @@ object ParadoxExpressionService {
         val dataType = configExpression.type
         val gameType = config.configGroup.gameType
         val supports = ParadoxScriptExpressionSupport.get(dataType) // 3.0.1 optimize: use global cache (by data type)
-        supports.forEachFast f@{ ep ->
-            if (!ChronicleAnnotationService.check(ep, gameType)) return@f
+        supports.forEachFast f@{ support ->
+            if (!ChronicleAnnotationService.check(support, gameType)) return@f
             ProgressManager.checkCanceled() // 3.0.1 optimize: check immediately before applying logic
-            ep.complete(context, result)
+            support.complete(context, result)
         }
     }
 
@@ -149,11 +149,11 @@ object ParadoxExpressionService {
         if (text.isEmpty()) return // skip if expression is empty
         val gameType = selectGameType(element)
         val supports = ParadoxLocalisationExpressionSupport.getAll() // 3.0.1 use global cache (all supports)
-        supports.forEachFast f@{ ep ->
-            if (!ep.supports(element)) return@f // 3.0.1 still check here
-            if (!ChronicleAnnotationService.check(ep, gameType)) return@f
+        supports.forEachFast f@{ support ->
+            if (!support.supports(element)) return@f // 3.0.1 still check here
+            if (!ChronicleAnnotationService.check(support, gameType)) return@f
             ProgressManager.checkCanceled() // 3.0.1 optimize: check immediately before applying logic
-            ep.annotate(element, rangeInElement, text, holder)
+            support.annotate(element, rangeInElement, text, holder)
         }
     }
 
@@ -164,11 +164,11 @@ object ParadoxExpressionService {
         if (text.isEmpty()) return null // ignore if expression is empty
         val gameType = selectGameType(element)
         val supports = ParadoxLocalisationExpressionSupport.getAll() // 3.0.1 use global cache (all supports)
-        supports.forEachFast f@{ ep ->
-            if (!ep.supports(element)) return@f // 3.0.1 still check here
-            if (!ChronicleAnnotationService.check(ep, gameType)) return@f
+        supports.forEachFast f@{ support ->
+            if (!support.supports(element)) return@f // 3.0.1 still check here
+            if (!ChronicleAnnotationService.check(support, gameType)) return@f
             ProgressManager.checkCanceled() // 3.0.1 optimize: check immediately before applying logic
-            ep.resolve(element, rangeInElement, text)?.let { return it }
+            support.resolve(element, rangeInElement, text)?.let { return it }
         }
         return null
     }
@@ -180,11 +180,11 @@ object ParadoxExpressionService {
         if (text.isEmpty()) return emptyList() // ignore if expression is empty
         val gameType = selectGameType(element)
         val supports = ParadoxLocalisationExpressionSupport.getAll() // 3.0.1 use global cache (all supports)
-        supports.forEachFast f@{ ep ->
-            if (!ep.supports(element)) return@f // 3.0.1 still check here
-            if (!ChronicleAnnotationService.check(ep, gameType)) return@f
+        supports.forEachFast f@{ support ->
+            if (!support.supports(element)) return@f // 3.0.1 still check here
+            if (!ChronicleAnnotationService.check(support, gameType)) return@f
             ProgressManager.checkCanceled() // 3.0.1 optimize: check immediately before applying logic
-            ep.resolveAll(element, rangeInElement, text).orNull()?.let { return it }
+            support.resolveAll(element, rangeInElement, text).orNull()?.let { return it }
         }
         return emptyList()
     }
@@ -196,11 +196,11 @@ object ParadoxExpressionService {
         if (text.isEmpty()) return emptyList() // ignore if expression is empty
         val gameType = selectGameType(element)
         val supports = ParadoxLocalisationExpressionSupport.getAll() // 3.0.1 use global cache (all supports)
-        supports.forEachFast f@{ ep ->
-            if (!ep.supports(element)) return@f // 3.0.1 still check here
-            if (!ChronicleAnnotationService.check(ep, gameType)) return@f
+        supports.forEachFast f@{ support ->
+            if (!support.supports(element)) return@f // 3.0.1 still check here
+            if (!ChronicleAnnotationService.check(support, gameType)) return@f
             ProgressManager.checkCanceled() // 3.0.1 optimize: check immediately before applying logic
-            ep.getReferences(element, rangeInElement, text).orNull()?.let { return it }
+            support.getReferences(element, rangeInElement, text).orNull()?.let { return it }
         }
         return emptyList()
     }
@@ -213,11 +213,11 @@ object ParadoxExpressionService {
         val configGroup = context.configGroup
         val gameType = configGroup.gameType
         val supports = ParadoxLocalisationExpressionSupport.getAll() // 3.0.1 use global cache (all supports)
-        supports.forEachFast f@{ ep ->
-            if (!ep.supports(element)) return@f // 3.0.1 still check here
-            if (!ChronicleAnnotationService.check(ep, gameType)) return@f
+        supports.forEachFast f@{ support ->
+            if (!support.supports(element)) return@f // 3.0.1 still check here
+            if (!ChronicleAnnotationService.check(support, gameType)) return@f
             ProgressManager.checkCanceled() // 3.0.1 optimize: check immediately before applying logic
-            ep.complete(context, result)
+            support.complete(context, result)
         }
     }
 
@@ -234,10 +234,10 @@ object ParadoxExpressionService {
         val dataType = configExpression.type
         val gameType = config.configGroup.gameType
         val supports = ParadoxCsvExpressionSupport.get(dataType) // 3.0.1 optimize: use global cache (by data type)
-        supports.forEachFast f@{ ep ->
-            if (!ChronicleAnnotationService.check(ep, gameType)) return@f
+        supports.forEachFast f@{ support ->
+            if (!ChronicleAnnotationService.check(support, gameType)) return@f
             ProgressManager.checkCanceled() // 3.0.1 optimize: check immediately before applying logic
-            ep.annotate(element, rangeInElement, text, config, holder)
+            support.annotate(element, rangeInElement, text, config, holder)
         }
     }
 
@@ -250,10 +250,10 @@ object ParadoxExpressionService {
         val dataType = configExpression.type
         val gameType = config.configGroup.gameType
         val supports = ParadoxCsvExpressionSupport.get(dataType) // 3.0.1 optimize: use global cache (by data type)
-        supports.forEachFast f@{ ep ->
-            if (!ChronicleAnnotationService.check(ep, gameType)) return@f
+        supports.forEachFast f@{ support ->
+            if (!ChronicleAnnotationService.check(support, gameType)) return@f
             ProgressManager.checkCanceled() // 3.0.1 optimize: check immediately before applying logic
-            ep.resolve(element, rangeInElement, text, config)?.let { return it }
+            support.resolve(element, rangeInElement, text, config)?.let { return it }
         }
         return null
     }
@@ -267,10 +267,10 @@ object ParadoxExpressionService {
         val dataType = configExpression.type
         val gameType = config.configGroup.gameType
         val supports = ParadoxCsvExpressionSupport.get(dataType) // 3.0.1 optimize: use global cache (by data type)
-        supports.forEachFast f@{ ep ->
-            if (!ChronicleAnnotationService.check(ep, gameType)) return@f
+        supports.forEachFast f@{ support ->
+            if (!ChronicleAnnotationService.check(support, gameType)) return@f
             ProgressManager.checkCanceled() // 3.0.1 optimize: check immediately before applying logic
-            ep.resolveAll(element, rangeInElement, text, config).orNull()?.let { return it }
+            support.resolveAll(element, rangeInElement, text, config).orNull()?.let { return it }
         }
         return emptyList()
     }
@@ -284,10 +284,10 @@ object ParadoxExpressionService {
         val dataType = configExpression.type
         val gameType = config.configGroup.gameType
         val supports = ParadoxCsvExpressionSupport.get(dataType) // 3.0.1 optimize: use global cache (by data type)
-        supports.forEachFast f@{ ep ->
-            if (!ChronicleAnnotationService.check(ep, gameType)) return@f
+        supports.forEachFast f@{ support ->
+            if (!ChronicleAnnotationService.check(support, gameType)) return@f
             ProgressManager.checkCanceled() // 3.0.1 optimize: check immediately before applying logic
-            ep.complete(context, result)
+            support.complete(context, result)
         }
     }
 

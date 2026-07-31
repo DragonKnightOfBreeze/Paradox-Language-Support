@@ -3,6 +3,7 @@ package icu.windea.pls.lang.util.renderers
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.elementType
+import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.localisation.psi.ParadoxLocalisationColorfulText
 import icu.windea.pls.localisation.psi.ParadoxLocalisationCommand
@@ -57,7 +58,7 @@ abstract class ParadoxLocalisationTextRenderContext<R> : ParadoxRenderContext<R>
 
     open fun renderRichTexts(elements: List<ParadoxLocalisationRichText>) {
         if (elements.isEmpty()) return
-        for (element in elements) {
+        elements.forEachFast { element ->
             ProgressManager.checkCanceled()
             renderRichText(element)
         }

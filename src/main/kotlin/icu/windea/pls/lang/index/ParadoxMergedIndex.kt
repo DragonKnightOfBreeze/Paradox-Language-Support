@@ -201,7 +201,7 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
             }
 
             private fun buildDataForExpressionFromSupports(element: ParadoxLocalisationExpressionElement) {
-                supports.forEachFast { ep -> ep.buildDataForExpression(element, fileData) }
+                supports.forEachFast { support -> support.buildDataForExpression(element, fileData) }
             }
 
             override fun elementFinished(element: PsiElement?) {
@@ -235,7 +235,7 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
             }
 
             private fun buildDataForExpressionFromSupports(element: ParadoxCsvExpressionElement) {
-                supports.forEachFast { ep -> ep.buildDataForExpression(element, fileData) }
+                supports.forEachFast { support -> support.buildDataForExpression(element, fileData) }
             }
 
             override fun elementFinished(element: PsiElement?) {
@@ -299,7 +299,7 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
         // 用于兼容懒加载的索引
         return buildMap {
             val supports = ParadoxMergedIndexSupport.EP_NAME.extensionList
-            supports.forEachFast { ep -> put(ep.indexInfoType.key.toString(), emptyList()) }
+            supports.forEachFast { support -> put(support.indexInfoType.key.toString(), emptyList()) }
         }
     }
 
@@ -339,10 +339,10 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
     }
 
     private fun getSupportOrUnsupported(supports: List<ParadoxMergedIndexSupport<*>>, key: Byte): ParadoxMergedIndexSupport<ParadoxIndexInfo> {
-        return supports.findFast { it.indexInfoType.key == key }?.castOrNull() ?: throw UnsupportedOperationException()
+        return supports.findFast { support -> support.indexInfoType.key == key }?.castOrNull() ?: throw UnsupportedOperationException()
     }
 
     private fun getSupportOrUnsupported(supports: List<ParadoxMergedIndexSupport<*>>, type: Class<ParadoxIndexInfo>): ParadoxMergedIndexSupport<ParadoxIndexInfo> {
-        return supports.findFast { it.indexInfoType.type == type }?.castOrNull() ?: throw UnsupportedOperationException()
+        return supports.findFast { support -> support.indexInfoType.type == type }?.castOrNull() ?: throw UnsupportedOperationException()
     }
 }

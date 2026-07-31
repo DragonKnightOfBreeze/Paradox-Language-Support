@@ -17,6 +17,10 @@ import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.base.io.ChronicleGitService
 import icu.windea.pls.config.listeners.CwtConfigDirectoriesListener
 import icu.windea.pls.config.settings.ChronicleConfigSettings
+import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.collections.anyFast
+import icu.windea.pls.core.collections.filterFast
+import icu.windea.pls.core.collections.mapNotNullFast
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.getCurrentProject
 import icu.windea.pls.core.isNotNullOrEmpty
@@ -33,6 +37,7 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+@Optimized
 @Suppress("UnstableApiUsage")
 object CwtConfigRepositoryManager {
     fun getDefaultUrl(gameType: ParadoxGameType): String {
@@ -78,8 +83,8 @@ object CwtConfigRepositoryManager {
         // 如果存在报错，显示错误弹窗并直接返回
         if (results.any { it.isFailure }) {
             val errorMessage = results
-                .filter { it.isFailure }
-                .mapNotNull { it.exceptionOrNull()?.message?.orNull() }
+                .filterFast { it.isFailure }
+                .mapNotNullFast { it.exceptionOrNull()?.message?.orNull() }
                 .distinct()
                 .joinToString("<br>") { it.replace("\n", "<br>") }
             Messages.showErrorDialog(errorMessage, ChronicleBundle.message("config.repo.validation.result.title"))
@@ -151,7 +156,7 @@ object CwtConfigRepositoryManager {
             }
 
             // 如果存在报错，发送通知并直接返回
-            if (results.any { it.isFailure }) {
+            if (results.anyFast { it.isFailure }) {
                 val warningMessage = ChronicleBundle.message("config.repo.sync.result.2")
                 val notification = ChronicleNotificationGroups.global().createNotification(notificationTitle, warningMessage, NotificationType.WARNING)
                     .addAction(action)
@@ -159,7 +164,7 @@ object CwtConfigRepositoryManager {
                 return@c
             }
 
-            val updated = results.any { result -> result.getOrNull().let { !ChronicleGitService.getInstance().isUpdateToDate(it) } }
+            val updated = results.anyFast { result -> result.getOrNull().let { !ChronicleGitService.getInstance().isUpdateToDate(it) } }
 
             // 发送成功的通知
             val successMessage = if (updated) ChronicleBundle.message("config.repo.sync.result.0") else ChronicleBundle.message("config.repo.sync.result.1")

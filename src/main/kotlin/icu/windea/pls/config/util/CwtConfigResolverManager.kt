@@ -18,11 +18,15 @@ import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.filterProperties
 import icu.windea.pls.config.filterValues
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cast
+import icu.windea.pls.core.collections.filterFast
+import icu.windea.pls.core.collections.flatMapFast
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.forEachChild
 import icu.windea.pls.core.match.PathMatcher
 import icu.windea.pls.core.pass
+import icu.windea.pls.core.splitFast
 import icu.windea.pls.cwt.psi.CwtBlock
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.cwt.psi.CwtMember
@@ -32,6 +36,7 @@ import icu.windea.pls.cwt.psi.CwtOptionComment
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.cwt.psi.CwtValue
 
+@Optimized
 object CwtConfigResolverManager {
     fun getConfigs(element: PsiElement?, file: CwtFile, configGroup: CwtConfigGroup): List<CwtMemberConfig<*>>? {
         if (element !is CwtMemberContainer) return null
@@ -154,22 +159,22 @@ object CwtConfigResolverManager {
 
     fun findConfigsByPathExpression(fileConfig: CwtFileConfig, pathExpression: String): List<CwtMemberConfig<*>> {
         if (pathExpression.isEmpty()) return emptyList()
-        val pathList = pathExpression.split('/')
+        val pathList = pathExpression.splitFast('/')
         var r: List<CwtMemberConfig<*>> = emptyList()
-        pathList.forEach { p ->
+        pathList.forEachFast { p ->
             if (p == "-") {
                 if (r.isEmpty()) {
                     r = fileConfig.values
                 } else {
-                    r = r.flatMap { it.values.orEmpty() }
+                    r = r.flatMapFast { it.values.orEmpty() }
                 }
             } else {
                 if (r.isEmpty()) {
                     r = fileConfig.properties
-                        .filter { PathMatcher.matches(it.key, p, ignoreCase = true, usePattern = true) }
+                        .filterFast { PathMatcher.matches(it.key, p, ignoreCase = true, usePattern = true) }
                 } else {
                     r = r.flatMap { it.properties.orEmpty() }
-                        .filter { PathMatcher.matches(it.key, p, ignoreCase = true, usePattern = true) }
+                        .filterFast { PathMatcher.matches(it.key, p, ignoreCase = true, usePattern = true) }
                 }
             }
             if (r.isEmpty()) return emptyList()
@@ -178,7 +183,7 @@ object CwtConfigResolverManager {
     }
 
     fun findConfigsByPathExpression(configGroup: CwtConfigGroup, pathExpression: String): List<CwtMemberConfig<*>>? {
-        val pathList = pathExpression.split('@', limit = 2)
+        val pathList = pathExpression.splitFast('@', limit = 2)
         if (pathList.size != 2) return null
         val fileConfig = findFileConfigByPathExpression(configGroup, pathList[0]) ?: return null
         val configs = findConfigsByPathExpression(fileConfig, pathList[1])

@@ -3,6 +3,8 @@ package icu.windea.pls.lang.resolve
 import com.intellij.openapi.progress.ProgressManager
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.util.CwtConfigExpressionManager
+import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.lang.definitionInfo
@@ -15,6 +17,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
+@Optimized
 object ParadoxLocalisationService {
     fun resolvePresentableText(element: ParadoxLocalisationProperty): String? {
         return ParadoxLocalisationTextPlainRenderer().render(element).orNull()
@@ -48,11 +51,11 @@ object ParadoxLocalisationService {
         namesToSearch.forEach f1@{ nameToSearch ->
             ProgressManager.checkCanceled()
             // NOTE 2.1.3 skip file definitions
-            ParadoxDefinitionSearch.searchProperty(nameToSearch, null, selector).findAll().forEach f2@{ definition ->
+            ParadoxDefinitionSearch.searchProperty(nameToSearch, null, selector).findAll().forEachFast f2@{ definition ->
                 ProgressManager.checkCanceled()
                 val definitionInfo = definition.definitionInfo ?: return@f2
                 val definitionName = definitionInfo.name.orNull() ?: return@f2
-                definitionInfo.localisations.forEach f3@{ l ->
+                definitionInfo.localisations.forEachFast f3@{ l ->
                     val resolved = CwtConfigExpressionManager.resolvePlaceholder(l.locationExpression, definitionName) ?: return@f3
                     if (resolved != name) return@f3
                     result += definition

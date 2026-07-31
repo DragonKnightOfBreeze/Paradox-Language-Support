@@ -4,24 +4,28 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
-import icu.windea.pls.base.annotations.ChronicleAnnotationService
+import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.ep.resolve.localisation.ParadoxLocalisationIconSupport
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationIcon
 
+@Optimized
 object ParadoxLocalisationIconService {
     /**
      * @see ParadoxLocalisationIconSupport.resolve
      */
     fun resolve(name: String, element: ParadoxLocalisationIcon, project: Project): PsiElement? {
         val gameType = selectGameType(element)
-        return ParadoxLocalisationIconSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-            if (!ChronicleAnnotationService.check(ep, gameType)) return@f null
+        val supports = ParadoxLocalisationIconSupport.EP_NAME.extensionList
+        supports.forEachFast f@{ support ->
+            if (gameType != null && !support.supports(gameType)) return@f
             ProgressManager.checkCanceled() // 3.0.1 optimize: check immediately before applying logic
-            ep.resolve(name, element, project)
+            support.resolve(name, element, project)?.let { return it }
         }
+        return null
     }
 
     /**
@@ -29,11 +33,13 @@ object ParadoxLocalisationIconService {
      */
     fun resolveAll(name: String, element: ParadoxLocalisationIcon, project: Project): Collection<PsiElement> {
         val gameType = selectGameType(element)
-        return ParadoxLocalisationIconSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-            if (!ChronicleAnnotationService.check(ep, gameType)) return@f null
+        val supports = ParadoxLocalisationIconSupport.EP_NAME.extensionList
+        supports.forEachFast f@{ support ->
+            if (gameType != null && !support.supports(gameType)) return@f
             ProgressManager.checkCanceled() // 3.0.1 optimize: check immediately before applying logic
-            ep.resolveAll(name, element, project).orNull()
-        }.orEmpty()
+            support.resolveAll(name, element, project).orNull()?.let { return it }
+        }
+        return emptyList()
     }
 
     /**
@@ -41,10 +47,11 @@ object ParadoxLocalisationIconService {
      */
     fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
         val gameType = context.gameType
-        ParadoxLocalisationIconSupport.EP_NAME.extensionList.forEach f@{ ep ->
-            if (!ChronicleAnnotationService.check(ep, gameType)) return@f
+        val supports = ParadoxLocalisationIconSupport.EP_NAME.extensionList
+        supports.forEachFast f@{ support ->
+            if (!support.supports(gameType)) return@f
             ProgressManager.checkCanceled() // 3.0.1 optimize: check immediately before applying logic
-            ep.complete(context, result)
+            support.complete(context, result)
         }
     }
 }

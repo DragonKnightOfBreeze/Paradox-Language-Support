@@ -59,6 +59,7 @@ object CwtConfigMatchService {
         return processMatchedConfigsById(id, configGroup, T::class.java, processor)
     }
 
+    @Suppress("TYPE_PARAMETER_AS_REIFIED_DEPRECATION_WARNING")
     fun <T : CwtIdMatchableConfig<*>> processMatchedConfigsById(id: String?, configGroup: CwtConfigGroup, type: Class<T>, processor: Processor<T>): Boolean {
         val id = id?.trim()?.orNull()
         return when (type) {

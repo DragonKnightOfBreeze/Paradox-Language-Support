@@ -10,6 +10,7 @@ import icu.windea.pls.core.collections.mapFast
 import icu.windea.pls.ep.match.expression.ParadoxScriptExpressionMatchOptimizer
 import icu.windea.pls.model.expressions.ParadoxExpression
 
+@Optimized
 object ParadoxMatchService {
     // region Predicates
 

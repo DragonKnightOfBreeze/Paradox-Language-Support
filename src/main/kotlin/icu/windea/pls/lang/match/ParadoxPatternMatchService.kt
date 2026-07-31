@@ -47,9 +47,9 @@ object ParadoxPatternMatchService {
         val expression = ParadoxExpression.resolve(key)
         val matchContext = ParadoxScriptExpressionMatchContext(contextElement, expression, configExpression, null, configGroup, options)
         val matchers = ParadoxScriptExpressionMatcher.get(matchContext.dataType)
-        matchers.forEachFast f@{ ep ->
-            if (!ep.isPatternAware(matchContext)) return@f
-            ep.match(matchContext)?.let { return it.get(options) }
+        matchers.forEachFast f@{ matcher ->
+            if (!matcher.isPatternAware(matchContext)) return@f
+            matcher.match(matchContext)?.let { return it.get(options) }
         }
         return false
     }

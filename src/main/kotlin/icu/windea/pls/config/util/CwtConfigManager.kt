@@ -26,6 +26,9 @@ import icu.windea.pls.config.config.inlineConfig
 import icu.windea.pls.config.config.singleAliasConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.collections.filterFast
+import icu.windea.pls.core.collections.filterIsInstanceFast
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.toListOrThis
 import icu.windea.pls.core.optimized
@@ -47,6 +50,7 @@ import icu.windea.pls.cwt.psi.CwtRootBlock
 import icu.windea.pls.model.paths.CwtConfigPath
 import kotlin.io.path.name
 
+@Optimized
 object CwtConfigManager {
     object Keys : KeyRegistry() {
         val gameTypeIdFromRepoFile by registerKey<String>(Keys)
@@ -217,12 +221,12 @@ object CwtConfigManager {
                 config.inlineConfig?.let { return getEntryConfigs(it) }
                 config.aliasConfig?.let { return getEntryConfigs(it) }
                 config.singleAliasConfig?.let { return getEntryConfigs(it) }
-                config.parentConfig?.configs?.filter { it is CwtPropertyConfig && it.key == config.key }?.let { return it }
+                config.parentConfig?.configs?.filterFast { it is CwtPropertyConfig && it.key == config.key }?.let { return it }
                 config.to.singletonList()
             }
             is CwtValueConfig -> {
                 config.propertyConfig?.let { return getEntryConfigs(it) }
-                config.parentConfig?.configs?.filterIsInstance<CwtValueConfig>()?.let { return it }
+                config.parentConfig?.configs?.filterIsInstanceFast<CwtValueConfig>()?.let { return it }
                 config.to.singletonList()
             }
             is CwtAliasConfig -> {
@@ -249,7 +253,7 @@ object CwtConfigManager {
     fun findLiterals(configs: List<CwtMemberConfig<*>>): Set<String> {
         val configGroup = configs.firstOrNull()?.configGroup ?: return emptySet()
         val result = mutableSetOf<String>()
-        for (config in configs) {
+        configs.forEachFast { config ->
             CwtConfigService.collectLiterals(config, configGroup, result)
         }
         return result

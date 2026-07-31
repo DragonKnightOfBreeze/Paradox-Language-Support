@@ -7,6 +7,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.Tuple2
@@ -35,6 +36,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.psi.propertyValue
 
+@Optimized
 object ParadoxDefineManager {
     object Keys : KeyRegistry() {
         val cachedDefineInfo by registerKey<CachedValue<ParadoxDefineInfo>>(Keys)

@@ -1,9 +1,8 @@
 package icu.windea.pls.core.match
 
 import icu.windea.pls.core.annotations.Optimized
-import icu.windea.pls.core.collections.mapNotNullFast
-import icu.windea.pls.core.orNull
-import icu.windea.pls.core.splitFast
+import icu.windea.pls.core.collections.anyFast
+import icu.windea.pls.core.toDelimitedList
 import org.intellij.lang.annotations.Language
 
 @Optimized
@@ -30,8 +29,8 @@ object MatchService {
      */
     fun matchesPatterns(input: String?, patterns: String, delimiter: Char = ';', ignoreCase: Boolean = false): Boolean {
         if (input == null) return false
-        val sequence = patterns.splitFast(delimiter).mapNotNullFast { it.trim().orNull() }
-        return sequence.any { pattern -> GlobMatcher.matches(input, pattern, ignoreCase) }
+        val list = patterns.toDelimitedList(delimiter)
+        return list.anyFast { pattern -> GlobMatcher.matches(input, pattern, ignoreCase) }
     }
 
     /**
@@ -58,8 +57,8 @@ object MatchService {
      */
     fun matchesAntPatterns(input: String?, patterns: String, delimiter: Char = ';', ignoreCase: Boolean = false, trimSeparator: Boolean = true): Boolean {
         if (input == null) return false
-        val sequence = patterns.splitFast(delimiter).mapNotNullFast { it.trim().orNull() }
-        return sequence.any { pattern -> AntMatcher.matches(input, pattern, ignoreCase, trimSeparator) }
+        val list = patterns.toDelimitedList(delimiter)
+        return list.anyFast { pattern -> AntMatcher.matches(input, pattern, ignoreCase, trimSeparator) }
     }
 
     /**

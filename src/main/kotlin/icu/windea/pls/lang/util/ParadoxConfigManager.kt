@@ -12,6 +12,8 @@ import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.util.CwtConfigKeyManager
 import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.collections.findFast
+import icu.windea.pls.core.collections.flatMapFast
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.util.KeyRegistry
@@ -34,6 +36,7 @@ import icu.windea.pls.model.expressions.ParadoxDefinitionTypeExpression
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import java.util.concurrent.ConcurrentMap
 
+@Optimized
 object ParadoxConfigManager {
     object Keys : KeyRegistry() {
         val cachedConfigContext by registerKey<CachedValue<CwtConfigContext>>(Keys)
@@ -77,7 +80,6 @@ object ParadoxConfigManager {
         return cache.getOrPut(cacheKey) { ParadoxConfigService.getConfigs(memberElement, options).optimized() }
     }
 
-    @Optimized
     private fun getConfigsCacheFromCache(element: ParadoxScriptMember): SoftValue<ConcurrentMap<String, List<CwtMemberConfig<*>>>> {
         return CachedValuesManager.getCachedValue(element, Keys.cachedConfigsCache) {
             // use soft referenced concurrent map to optimize more memory
@@ -91,7 +93,7 @@ object ParadoxConfigManager {
      */
     fun getChildOccurrences(element: ParadoxScriptMember, configs: List<CwtMemberConfig<*>>): Map<CwtDataExpression, ParadoxMatchOccurrence> {
         if (configs.isEmpty()) return emptyMap()
-        val childConfigs = configs.flatMap { it.configs.orEmpty() }
+        val childConfigs = configs.flatMapFast { it.configs.orEmpty() }
         if (childConfigs.isEmpty()) return emptyMap()
         ProgressManager.checkCanceled()
         val cacheKey = CwtConfigKeyManager.getIdentifierKey(childConfigs, "\u0000", 1).optimized() // optimized to optimize memory
@@ -99,7 +101,6 @@ object ParadoxConfigManager {
         return cache.getOrPut(cacheKey) { ParadoxMatchOccurrenceService.getChildOccurrences(element, configs).optimized() }
     }
 
-    @Optimized
     private fun getChildOccurrencesCacheFromCache(element: ParadoxScriptMember): SoftValue<ConcurrentMap<String, Map<CwtDataExpression, ParadoxMatchOccurrence>>> {
         return CachedValuesManager.getCachedValue(element, Keys.cachedChildOccurrencesCache) {
             // use soft referenced concurrent map to optimize more memory
@@ -108,7 +109,6 @@ object ParadoxConfigManager {
         }
     }
 
-    @Optimized
     fun getSubtypes(subtypeConfigs: List<CwtSubtypeConfig>): List<String> {
         if (subtypeConfigs.isEmpty()) return emptyList()
         return ImmutableList.builderWithExpectedSize<String>(subtypeConfigs.size)
@@ -116,7 +116,6 @@ object ParadoxConfigManager {
             .build()
     }
 
-    @Optimized
     fun getTypes(type: String?, subtypeConfigs: List<CwtSubtypeConfig>): List<String> {
         if (type == null) return emptyList()
         if (subtypeConfigs.isEmpty()) return listOf(type)
@@ -126,7 +125,6 @@ object ParadoxConfigManager {
             .build()
     }
 
-    @Optimized
     fun getTypeText(type: String?, subtypeConfigs: List<CwtSubtypeConfig>): String {
         if (type == null) return ""
         if (subtypeConfigs.isEmpty()) return type
@@ -152,7 +150,7 @@ object ParadoxConfigManager {
         if (configExpression.type in CwtDataTypeSets.DefinitionAware) {
             val definitionType = configExpression.metadata.value ?: return false
             val configs = configGroup.extendedDefinitions.findByPattern(value, element, configGroup).orEmpty()
-            val config = configs.find { ParadoxDefinitionTypeExpression.resolve(it.type).matches(definitionType) }
+            val config = configs.findFast { ParadoxDefinitionTypeExpression.resolve(it.type).matches(definitionType) }
             if (config != null) return true
             if (definitionType == ParadoxDefinitionTypes.gameRule) {
                 val config = configGroup.extendedGameRules.findByPattern(value, element, configGroup)

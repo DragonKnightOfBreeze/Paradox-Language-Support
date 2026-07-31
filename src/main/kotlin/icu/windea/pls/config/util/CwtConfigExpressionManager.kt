@@ -6,10 +6,14 @@ import icu.windea.pls.config.configExpression.CwtLocalisationLocationExpression
 import icu.windea.pls.config.configExpression.CwtLocationExpression
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.cache.cancelable
+import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.util.Tuple2
 
+@Suppress("unused")
+@Optimized
 object CwtConfigExpressionManager {
     fun getPriority(configExpression: CwtDataExpression, configGroup: CwtConfigGroup): Double {
         val dataType = configExpression.type
@@ -28,7 +32,7 @@ object CwtConfigExpressionManager {
     fun extract(templateExpression: CwtTemplateExpression, referenceName: String): String {
         if (templateExpression.referenceExpressions.size != 1) throw IllegalStateException()
         return buildString {
-            for (snippetExpression in templateExpression.snippetExpressions) {
+            templateExpression.snippetExpressions.forEachFast { snippetExpression ->
                 when (snippetExpression.type) {
                     CwtDataTypes.Constant -> append(snippetExpression.expressionString)
                     else -> append(referenceName)
@@ -40,7 +44,7 @@ object CwtConfigExpressionManager {
     fun extract(templateExpression: CwtTemplateExpression, referenceNames: Map<CwtDataExpression, String>): String {
         if (templateExpression.referenceExpressions.size != referenceNames.size) throw IllegalStateException()
         return buildString {
-            for (snippetExpression in templateExpression.snippetExpressions) {
+            templateExpression.snippetExpressions.forEachFast { snippetExpression ->
                 when (snippetExpression.type) {
                     CwtDataTypes.Constant -> append(snippetExpression.expressionString)
                     else -> append(referenceNames.getValue(snippetExpression))
@@ -56,7 +60,7 @@ object CwtConfigExpressionManager {
     private val regexCache = CacheBuilder().build<CwtTemplateExpression, Regex> { doToRegex(it) }.cancelable()
 
     private fun doToRegex(templateExpression: CwtTemplateExpression): Regex {
-        return buildString { templateExpression.snippetExpressions.forEach { appendRegexSnippet(it) } }.toRegex(RegexOption.IGNORE_CASE)
+        return buildString { templateExpression.snippetExpressions.forEachFast { appendRegexSnippet(it) } }.toRegex(RegexOption.IGNORE_CASE)
     }
 
     fun toMatchedRegex(templateExpression: CwtTemplateExpression, text: String, incomplete: Boolean = false): Tuple2<Regex, MatchResult>? {
@@ -70,7 +74,7 @@ object CwtConfigExpressionManager {
         if (incomplete) {
             var truncated = templateExpression.snippetExpressions.size - 1
             while (truncated > 0) {
-                val regex1 = buildString { templateExpression.snippetExpressions.take(truncated).forEach { appendRegexSnippet(it) } }.toRegex(RegexOption.IGNORE_CASE)
+                val regex1 = buildString { templateExpression.snippetExpressions.take(truncated).forEachFast { appendRegexSnippet(it) } }.toRegex(RegexOption.IGNORE_CASE)
                 val matchResult1 = regex1.matchEntire(text)
                 if (matchResult1 != null) return regex to matchResult1
                 truncated--

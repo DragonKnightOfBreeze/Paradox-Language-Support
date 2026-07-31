@@ -3,7 +3,10 @@ package icu.windea.pls.config.manipulation
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.equalsFast
 
+@Optimized
 object CwtConfigExpressionManipulationService {
     // region Merge Methods
 
@@ -11,7 +14,7 @@ object CwtConfigExpressionManipulationService {
         if (expression.type == CwtDataTypes.Constant && otherExpression.type == CwtDataTypes.Constant) {
             return when {
                 expression.expressionString == otherExpression.expressionString -> expression.expressionString
-                expression.expressionString.equals(otherExpression.expressionString, true) -> expression.expressionString.lowercase()
+                expression.expressionString.equalsFast(otherExpression.expressionString, ignoreCase = true) -> expression.expressionString.lowercase()
                 else -> null
             }
         }

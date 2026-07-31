@@ -7,7 +7,9 @@ import com.intellij.psi.util.CachedValuesManager
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.core.EMPTY_OBJECT
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.collections.filterFast
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.util.KeyRegistry
@@ -26,7 +28,7 @@ import icu.windea.pls.model.ParadoxDefinitionSource
 import icu.windea.pls.model.paths.ParadoxMemberPath
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
-@Suppress("unused")
+@Optimized
 object ParadoxDefinitionManager {
     object Keys : KeyRegistry() {
         val cachedDefinitionInfo by registerKey<CachedValue<ParadoxDefinitionInfo>>(Keys)
@@ -122,11 +124,11 @@ object ParadoxDefinitionManager {
     }
 
     fun getPrimaryRelatedLocalisationInfos(definitionInfo: ParadoxDefinitionInfo): List<ParadoxDefinitionInfo.RelatedLocalisationInfo> {
-        return definitionInfo.localisations.filter { it.primary || it.primaryByInference }.optimized()
+        return definitionInfo.localisations.filterFast { it.primary || it.primaryByInference }.optimized()
     }
 
     fun getPrimaryRelatedImageInfos(definitionInfo: ParadoxDefinitionInfo): List<ParadoxDefinitionInfo.RelatedImageInfo> {
-        return definitionInfo.images.filter { it.primary || it.primaryByInference }.optimized()
+        return definitionInfo.images.filterFast { it.primary || it.primaryByInference }.optimized()
     }
 
     fun getPresentableName(element: ParadoxDefinitionElement): String? {
@@ -136,6 +138,7 @@ object ParadoxDefinitionManager {
 
     fun getPresentableNames(element: ParadoxDefinitionElement): Set<String> {
         val primaryLocalisations = getPrimaryLocalisations(element)
+        if (primaryLocalisations.isEmpty()) return emptySet()
         return primaryLocalisations.mapNotNull { ParadoxLocalisationManager.getPresentableText(it) }.toSet()
     }
 
@@ -183,6 +186,7 @@ object ParadoxDefinitionManager {
         }
     }
 
+    @Suppress("unused")
     fun getPrimaryImages(element: ParadoxDefinitionElement): Set<PsiFile> {
         return CachedValuesManager.getCachedValue(element, Keys.cachedPrimaryImages) {
             ProgressManager.checkCanceled()

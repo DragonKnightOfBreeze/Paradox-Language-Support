@@ -4,6 +4,7 @@ import com.intellij.util.SmartList
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.forEachFast
 
+@Optimized
 object ParadoxMatchProcessor {
     @Optimized
     fun process(candidates: List<ParadoxMatchCandidate>, options: ParadoxMatchOptions?): List<ParadoxMatchCandidate> {

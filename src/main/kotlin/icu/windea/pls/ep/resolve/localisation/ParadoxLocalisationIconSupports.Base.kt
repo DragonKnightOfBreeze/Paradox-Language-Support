@@ -6,8 +6,8 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.CwtDataExpressionRole
-import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.forEachFast
+import icu.windea.pls.core.collections.mapNotNullFast
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.processAsync
 import icu.windea.pls.core.toPsiFile
@@ -20,12 +20,17 @@ import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.localisation.psi.ParadoxLocalisationIcon
 
-@Optimized
 @Suppress("SameParameterValue")
 abstract class ParadoxCompositeLocalisationIconSupport : ParadoxLocalisationIconSupport {
     private val _supports = mutableListOf<ParadoxLocalisationIconSupport>()
 
     val supports: List<ParadoxLocalisationIconSupport> get() = _supports
+
+    init {
+        registerSupports()
+    }
+
+    protected abstract fun registerSupports()
 
     protected fun fromDefinition(definitionType: String) {
         _supports += ParadoxDefinitionBasedLocalisationIconSupport(definitionType, { it }, { it })
@@ -114,7 +119,7 @@ class ParadoxImageFileBasedLocalisationIconSupport(
     override fun resolveAll(name: String, element: ParadoxLocalisationIcon, project: Project): Collection<PsiElement> {
         val fileSelector = ParadoxFilePathSearch.selector(project, element).contextSensitive()
         val files = ParadoxFilePathSearch.search(name, pathExpression, fileSelector).findAll()
-        return files.mapNotNull { it.toPsiFile(project) }
+        return files.mapNotNullFast { it.toPsiFile(project) }
     }
 
     override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
