@@ -392,7 +392,7 @@
 | `KeyAccessors.kt` | `KeyAccessorsTest.kt` | ~347 行 | **良好** — 所有 `UserDataHolder.getOrPutUserData` 重载（含 `EMPTY_OBJECT` 缓存）、属性代理读写、`ProcessingContext.getOrPut` 全部重载 |
 | `OptionProvider.kt` | `OptionProviderTest.kt` | ~80 行 | **良好** — 值/默认值/环境变量/默认环境变量优先级链、`fromEnv()` 重载 |
 | `RangeInfos.kt` | `RangeInfoTest.kt` | ~260 行 | **良好** — `IntRangeInfo.from`（8 种解析用例）、`IntRangeInfo.contains`（8 种边界）、`FloatRangeInfo`（4 种解析 + 5 种边界） |
-| `ObservableProperty.kt` / `ObservableMutableProperty.kt` / `ObservableExtensions.kt`（部分） | `ObservableTest.kt` | ~34 行 | **部分** — `ObservableProperty` 属性代理、`fromCommandDelimitedString` 往返。但 `observeMutable` 及 nullable source 的 `fromCommandDelimitedString`/`toCommandDelimitedString` 未全面覆盖 |
+| `ObservableProperty.kt` / `ObservableMutableProperty.kt` / `ObservableExtensions.kt`（部分） | `ObservableTest.kt` | ~34 行 | **部分** — `ObservableProperty` 属性代理、`fromDelimitedString` 往返。但 `observeMutable` 及 nullable source 的 `fromDelimitedString`/`toDelimitedString` 未全面覆盖 |
 
 #### 完全未测试的文件（10 个）— 全部可单元测试
 

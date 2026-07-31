@@ -3,6 +3,7 @@ package icu.windea.pls.core.accessor
 import com.jetbrains.rd.util.ConcurrentHashMap
 import icu.windea.pls.core.isGetter
 import icu.windea.pls.core.isSetter
+import icu.windea.pls.core.optimized
 import java.lang.reflect.Modifier
 import kotlin.reflect.KClass
 import kotlin.reflect.full.declaredMemberFunctions
@@ -28,27 +29,27 @@ class AccessorProviderImpl<T : Any>(
         buildSet {
             addAll(targetClass.declaredMemberProperties)
             addAll(targetClass.memberProperties)
-        }
+        }.optimized()
     }
     private val allStaticProperties by lazy { targetClass.staticProperties }
     private val allMemberFunctions by lazy {
         buildSet {
             addAll(targetClass.declaredMemberFunctions)
             addAll(targetClass.memberFunctions)
-        }
+        }.optimized()
     }
     private val allStaticFunctions by lazy { targetClass.staticFunctions }
     private val allJavaFields by lazy {
         buildSet {
             addAll(targetClass.java.declaredFields)
             addAll(targetClass.java.fields)
-        }
+        }.optimized()
     }
     private val allJavaMethods by lazy {
         buildSet {
             addAll(targetClass.java.declaredMethods)
             addAll(targetClass.java.methods)
-        }
+        }.optimized()
     }
 
     private val readAccessorCache = ConcurrentHashMap<String, ReadAccessorDelegate<T, *>>()

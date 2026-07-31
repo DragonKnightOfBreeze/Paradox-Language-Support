@@ -8,8 +8,8 @@ import com.intellij.openapi.components.Storage
 import com.intellij.openapi.components.service
 import com.intellij.util.xmlb.annotations.Property
 import com.intellij.util.xmlb.annotations.Tag
-import icu.windea.pls.core.toCommaDelimitedStringSet
-import icu.windea.pls.core.util.properties.fromCommandDelimitedString
+import icu.windea.pls.core.toDelimitedSet
+import icu.windea.pls.core.util.properties.fromDelimitedString
 import icu.windea.pls.lang.settings.ChronicleSettingsStrategies.*
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.model.ParadoxDefinitionInfo
@@ -40,7 +40,7 @@ class ChronicleSettings : SimplePersistentStateComponent<ChronicleSettings.State
         var preferredLocale by string(ParadoxLocaleManager.ID_AUTO)
         var ignoredFileNames by string("")
 
-        val ignoredFileNameSet by ::ignoredFileNames.fromCommandDelimitedString(true)
+        val ignoredFileNameSet by ::ignoredFileNames.fromDelimitedString()
 
         @get:Property(surroundWithTag = false)
         var documentation by property(DocumentationState())
@@ -205,7 +205,7 @@ class ChronicleSettings : SimplePersistentStateComponent<ChronicleSettings.State
      * @property showLocationInfoByPath 显示位置信息时，是否显示路径。
      * @property showLocationInfoByRootInfo 显示位置信息时，是否显示游戏或模组信息。
      * @property showScriptedVariablesInCallHierarchy 是否在调用层级视图中显示封装变量。
-     * @property showDefinitionsInCallHierarchyByBindings 是否在调用层级视图中显示定义。
+     * @property showDefinitionsInCallHierarchy 是否在调用层级视图中显示定义。
      * @property showLocalisationsInCallHierarchy 是否在调用层级视图中显示本地化。
      * @property definitionTypeBindingsInCallHierarchy 调用层级视图中，定义类型的绑定。
      * @property showEventInfo 是否在事件树的层级视图中显示事件信息。
@@ -251,7 +251,7 @@ class ChronicleSettings : SimplePersistentStateComponent<ChronicleSettings.State
             val matchedBindings = bindings.filterKeys { k -> ParadoxDefinitionTypeExpression.resolve(k).matches(rootDefinitionInfo) }
             if (matchedBindings.isEmpty()) return true
             return matchedBindings.values.any { v ->
-                v.toCommaDelimitedStringSet().any { e -> ParadoxDefinitionTypeExpression.resolve(e).matches(definitionInfo) }
+                v.toDelimitedSet().any { e -> ParadoxDefinitionTypeExpression.resolve(e).matches(definitionInfo) }
             }
         }
     }

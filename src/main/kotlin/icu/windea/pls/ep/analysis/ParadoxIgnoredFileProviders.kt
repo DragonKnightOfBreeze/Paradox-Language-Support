@@ -9,9 +9,9 @@ class ParadoxSettingsBasedIgnoredFileProvider : ParadoxIgnoredFileProvider {
     // - ignoredFileNameSet
 
     override fun isIgnoredFile(path: ParadoxPath, entry: String): Boolean {
-        return path.fileName in ChronicleSettings.getInstance().state.ignoredFileNameSet
+        val fileName = path.fileName.lowercase() // it's required to convert to lowercase first
+        return fileName in ChronicleSettings.getInstance().state.ignoredFileNameSet
     }
-
 }
 
 class ParadoxTopLevelIgnoredFileProvider : ParadoxIgnoredFileProvider {

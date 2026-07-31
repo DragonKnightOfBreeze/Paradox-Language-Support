@@ -7,7 +7,7 @@ import icu.windea.pls.config.configExpression.CwtTemplateExpression
 import icu.windea.pls.config.optimizedPath
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
-import icu.windea.pls.core.toCommaDelimitedStringSet
+import icu.windea.pls.core.toDelimitedSet
 import icu.windea.pls.core.util.FloatRangeInfo
 import icu.windea.pls.core.util.IntRangeInfo
 
@@ -149,7 +149,7 @@ class CwtSuffixAwareDataExpressionSupport : CwtDataExpressionSupport {
         val separatorIndex = expressionString.indexOf('|')
         if (separatorIndex == -1) return null
         val text = expressionString.substring(0, separatorIndex)
-        val expectedSuffixes = expressionString.substring(separatorIndex + 1).toCommaDelimitedStringSet()
+        val expectedSuffixes = expressionString.substring(separatorIndex + 1).toDelimitedSet()
         run {
             val t = text.removeSurroundingOrNull("<", ">") ?: return@run
             if (expectedSuffixes.isEmpty()) return CwtDataExpression.create(expressionString, CwtDataTypes.Definition, role) { value = t.orNull() }

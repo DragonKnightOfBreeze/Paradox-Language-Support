@@ -14,7 +14,7 @@ import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.toAtomicProperty
-import icu.windea.pls.core.util.properties.fromCommandDelimitedString
+import icu.windea.pls.core.util.properties.fromDelimitedString
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContext
 import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContextService
@@ -54,7 +54,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
     @JvmField var ignoredInInjectedFiles = false
 
     @Suppress("ktPropBy")
-    var localeSet: Set<String> by ::locales.fromCommandDelimitedString()
+    var localeSet: Set<String> by ::locales.fromDelimitedString()
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 按需忽略注入的文件

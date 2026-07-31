@@ -36,10 +36,10 @@ object ChronicleSettingsManager {
         refreshInlayHints(callbackLock)
     }
 
-    fun refreshForFilesByFileNames(callbackLock: CallbackLock, fileNames: MutableSet<String>) {
+    fun refreshForFilesByFileNames(callbackLock: CallbackLock, fileNames: MutableSet<String>, caseSensitive: Boolean) {
         if (!callbackLock.check("refreshForFilesByFileNames")) return
 
-        val files = ChronicleAnalysisManager.findAllFilesByFileNames(fileNames)
+        val files = ChronicleAnalysisManager.findAllFilesByFileNames(fileNames, caseSensitive)
         ChronicleAnalysisManager.reparseFiles(files)
     }
 

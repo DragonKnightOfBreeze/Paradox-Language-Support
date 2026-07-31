@@ -1,10 +1,15 @@
 package icu.windea.pls.core.match.similarity
 
 import com.google.common.hash.Hashing
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cache.CacheBuilder
+import icu.windea.pls.core.collections.filterFast
+import icu.windea.pls.core.collections.forEachFast
+import icu.windea.pls.core.optimized
 import java.util.*
 import kotlin.math.roundToInt
 
+@Optimized
 object SimilarityMatchService {
     /**
      * 按相似度匹配，从一组候选项（[candidates]）中查询输入项（[input]）的最佳匹配。
@@ -31,7 +36,7 @@ object SimilarityMatchService {
 
         // 过滤并去重候选，保持稳定迭代顺序（至少要求首字母精确匹配）
         val c = input.first()
-        val finalCandidates = candidates.distinct().filter { it.isNotEmpty() && it.first().equals(c, options.ignoreCase) }
+        val finalCandidates = candidates.distinct().filterFast { it.isNotEmpty() && it.first().equals(c, options.ignoreCase) }
         if (options.cached) return doFindBestMatchesFromCache(input, finalCandidates, options)
         return doFindBestMatches(input, finalCandidates, options)
     }
@@ -41,7 +46,7 @@ object SimilarityMatchService {
 
     private fun doFindBestMatchesFromCache(input: String, finalCandidates: List<String>, options: SimilarityMatchOptions): List<SimilarityMatchResult> {
         val cacheKey = doGetBestMatchesCacheKey(input, finalCandidates, options)
-        return bestMatchesCache.get(cacheKey) { doFindBestMatches(input, finalCandidates, options) }
+        return bestMatchesCache.get(cacheKey) { doFindBestMatches(input, finalCandidates, options).optimized() }
     }
 
     @Suppress("UnstableApiUsage")
@@ -52,7 +57,7 @@ object SimilarityMatchService {
         val input0 = if (options.ignoreCase) input.lowercase(Locale.ROOT) else input
         hasher.putInt(input0.length).putString(input0, Charsets.UTF_8)
         hasher.putInt(finalCandidates.size)
-        for (candidate in finalCandidates) {
+        finalCandidates.forEachFast { candidate ->
             val candidate0 = if (options.ignoreCase) candidate.lowercase() else candidate
             hasher.putInt(candidate0.length).putString(candidate0, Charsets.UTF_8)
         }
@@ -75,7 +80,7 @@ object SimilarityMatchService {
                 .mapNotNull { PrefixSimilarityMatcher.match(input, it, options.ignoreCase) }
                 .sortedWith(compareByDescending { it.score })
                 .toList()
-            matched.forEach { picked.putIfAbsent(it.value, it) }
+            matched.forEachFast { picked.putIfAbsent(it.value, it) }
         }
         if (options.enableSnippetMatch) {
             // 片段匹配
@@ -84,7 +89,7 @@ object SimilarityMatchService {
                 .mapNotNull { SnippetSimilarityMatcher.match(input, it, options.ignoreCase) }
                 .sortedWith(compareByDescending { it.score })
                 .toList()
-            matched.forEach { picked.putIfAbsent(it.value, it) }
+            matched.forEachFast { picked.putIfAbsent(it.value, it) }
         }
         if (options.enableTypoMatch) {
             // 错字匹配
@@ -95,8 +100,9 @@ object SimilarityMatchService {
                 .sortedWith(compareByDescending { it.score })
                 .take(options.typoTopN)
                 .toList()
-            matched.forEach { picked.putIfAbsent(it.value, it) }
+            matched.forEachFast { picked.putIfAbsent(it.value, it) }
         }
-        return picked.values.toList()
+        val result = picked.values
+        return result.toList()
     }
 }

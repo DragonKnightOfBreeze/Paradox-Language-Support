@@ -46,14 +46,14 @@ object ChronicleAnalysisManager {
         return files
     }
 
-    fun findAllFilesByFileNames(fileNames: Set<String>): Set<VirtualFile> {
+    fun findAllFilesByFileNames(fileNames: Set<String>, caseSensitively: Boolean): Set<VirtualFile> {
         if (fileNames.isEmpty()) return emptySet()
         val files = mutableSetOf<VirtualFile>()
         val projects = ProjectManager.getInstance().openProjects.filter { it.isInitialized && !it.isDisposed }
         val scopes = projects.map { GlobalSearchScope.allScope(it) }
         val scope = scopes.reduceOrNull { a, b -> a.union(b) } ?: return emptySet()
         runSmartReadAction {
-            FilenameIndex.processFilesByNames(fileNames, false, scope, null) { file ->
+            FilenameIndex.processFilesByNames(fileNames, caseSensitively, scope, null) { file ->
                 if (file.isFile && file.fileType is ParadoxFileType) files.add(file)
                 true
             }

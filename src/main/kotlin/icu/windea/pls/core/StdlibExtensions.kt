@@ -367,22 +367,6 @@ fun String.escapeBlank(): String {
     return builder?.toString() ?: this
 }
 
-/** 将字符串集合拼接为以逗号分隔的字符串。 */
-fun Collection<String>.toCommaDelimitedString(): String {
-    val input = this
-    return if (input.isEmpty()) "" else input.joinToString(",")
-}
-
-/** 将逗号分隔字符串解析为列表（自动 trim，忽略空项）。 */
-fun String.toCommaDelimitedStringList(destination: MutableList<String> = mutableListOf()): MutableList<String> {
-    return this.split(',').mapNotNullTo(destination) { it.trim().orNull() }
-}
-
-/** 将逗号分隔字符串解析为集合（自动 trim，忽略空项）。 */
-fun String.toCommaDelimitedStringSet(destination: MutableSet<String> = mutableSetOf()): MutableSet<String> {
-    return this.split(',').mapNotNullTo(destination) { it.trim().orNull() }
-}
-
 // /** 拆分后逐项 trim 并丢弃空串的轻量实现。 */
 // fun String.splitOptimized(vararg delimiters: Char, ignoreCase: Boolean = false, limit: Int = 0): List<String> {
 //     return this.split(*delimiters, ignoreCase = ignoreCase, limit = limit).mapNotNull { it.trim().orNull() }

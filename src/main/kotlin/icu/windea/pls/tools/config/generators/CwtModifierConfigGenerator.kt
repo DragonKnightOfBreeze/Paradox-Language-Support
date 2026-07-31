@@ -11,7 +11,7 @@ import icu.windea.pls.core.collections.CaseInsensitiveStringSet
 import icu.windea.pls.core.isIdentifier
 import icu.windea.pls.core.quoteIfNeeded
 import icu.windea.pls.core.removeSuffixOrNull
-import icu.windea.pls.core.toCommaDelimitedStringSet
+import icu.windea.pls.core.toDelimitedSet
 import icu.windea.pls.core.toFile
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getValue
@@ -77,7 +77,7 @@ class CwtModifierConfigGenerator(override val project: Project) : CwtConfigGener
                     val name = CwtConfigGeneratorUtil.parseValue(chunkLines, "Tag:")
                         ?.takeIf { it.isNotEmpty() && it.isIdentifier() }?.lowercase() ?: return@f null
                     val categories = CwtConfigGeneratorUtil.parseValue(chunkLines, "Use areas:")
-                        ?.toCommaDelimitedStringSet().orEmpty()
+                        ?.toDelimitedSet().orEmpty()
                     ModifierInfo(name, categories)
                 }
             }
@@ -87,7 +87,7 @@ class CwtModifierConfigGenerator(override val project: Project) : CwtConfigGener
                 definitionLines.mapNotNull f@{ line ->
                     val m = regex.matchEntire(line) ?: return@f null
                     val name = m.groupValues[1].lowercase()
-                    val categories = m.groupValues[2].toCommaDelimitedStringSet()
+                    val categories = m.groupValues[2].toDelimitedSet()
                     ModifierInfo(name, categories)
                 }
             }
@@ -97,7 +97,7 @@ class CwtModifierConfigGenerator(override val project: Project) : CwtConfigGener
                 definitionLines.mapNotNull f@{ line ->
                     val m = regex.matchEntire(line) ?: return@f null
                     val name = m.groupValues[1].lowercase()
-                    val categories = m.groupValues[2].toCommaDelimitedStringSet()
+                    val categories = m.groupValues[2].toDelimitedSet()
                     ModifierInfo(name, categories)
                 }
             }

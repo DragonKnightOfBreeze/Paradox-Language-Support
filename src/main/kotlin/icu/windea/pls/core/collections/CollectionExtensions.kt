@@ -11,6 +11,12 @@ inline fun <T : Collection<*>> T?.orNull() = this?.takeIf { it.isNotEmpty() }
 /** 如果当前映射为 `null` 或为空，则返回 `null`。否则返回自身。 */
 inline fun <T : Map<*, *>> T?.orNull() = this?.takeIf { it.isNotEmpty() }
 
+/** 如果当前集合已是 [List]，则直接返回，否则转化为新的 [List]。 */
+inline fun <T> Collection<T>.toListOrThis(): List<T> = this as? List ?: this.toList()
+
+/** 如果当前集合已是 [Set]，则直接返回，否则转化为新的 [Set]。 */
+inline fun <T> Collection<T>.toSetOrThis(): Set<T> = this as? Set ?: this.toSet()
+
 /** 将当前只读 [List] 视为 [MutableList]（要求实际可变，否则抛出异常）。 */
 inline fun <T> List<T>.asMutable(): MutableList<T> = this as MutableList<T>
 
@@ -28,12 +34,6 @@ inline fun <T> MutableSet<T>.synced(): MutableSet<T> = Collections.synchronizedS
 
 /** 返回加锁后的同步的 [MutableMap]。 */
 inline fun <K, V> MutableMap<K, V>.synced(): MutableMap<K, V> = Collections.synchronizedMap(this)
-
-/** 如果当前集合已是 [List]，则直接返回，否则转化为新的 [List]。 */
-inline fun <T> Collection<T>.toListOrThis(): List<T> = this as? List ?: this.toList()
-
-/** 如果当前集合已是 [Set]，则直接返回，否则转化为新的 [Set]。 */
-inline fun <T> Collection<T>.toSetOrThis(): Set<T> = this as? Set ?: this.toSet()
 
 inline fun <T, K> Iterable<T>.associateByNotNull(keySelector: (T) -> K?): Map<K, T> {
     return associateByNotNullTo(LinkedHashMap(), keySelector)

@@ -14,9 +14,9 @@ import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.matchesPatterns
 import icu.windea.pls.core.toAtomicProperty
-import icu.windea.pls.core.toCommaDelimitedString
-import icu.windea.pls.core.toCommaDelimitedStringList
-import icu.windea.pls.core.util.properties.fromCommandDelimitedString
+import icu.windea.pls.core.toDelimitedMutableList
+import icu.windea.pls.core.toDelimitedString
+import icu.windea.pls.core.util.properties.fromDelimitedString
 import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContext
 import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContextService
 import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightInfo
@@ -44,7 +44,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
     @JvmField var locales = ""
 
     @Suppress("ktPropBy")
-    var localeSet: Set<String> by ::locales.fromCommandDelimitedString()
+    var localeSet: Set<String> by ::locales.fromDelimitedString()
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 跳过需要忽略的文件
@@ -125,7 +125,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
             // ignoredFileNames
             row {
                 label(ChronicleBundle.message("inspection.localisation.missingLocalisation.option.ignoredFileNames"))
-                expandableTextField({ it.toCommaDelimitedStringList() }, { it.toCommaDelimitedString() })
+                expandableTextField({ it.toDelimitedMutableList() }, { it.toDelimitedString() })
                     .bindText(::ignoredFileNames.toAtomicProperty())
                     .comment(ChronicleBundle.message("comment.patterns"))
                     .align(Align.FILL)

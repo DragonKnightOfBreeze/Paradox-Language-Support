@@ -1,3 +1,5 @@
+@file:Suppress("NOTHING_TO_INLINE", "unused")
+
 package icu.windea.pls.core
 
 import icu.windea.pls.core.annotations.Fast
@@ -66,19 +68,134 @@ fun String.splitFast(delimiter: Char, ignoreCase: Boolean = false, limit: Int = 
     var currentOffset = 0
     var nextIndex = indexOf(delimiter, currentOffset, ignoreCase)
     if (nextIndex == -1 || limit == 1) {
-        return listOf(this)
+        val r = this
+        return listOf(r)
     }
 
     val isLimited = limit > 0
     val result = ArrayList<String>(if (isLimited) limit.coerceAtMost(10) else 10)
     do {
-        result.add(substring(currentOffset, nextIndex))
+        val r = substring(currentOffset, nextIndex)
+        result.add(r)
         currentOffset = nextIndex + 1
         // Do not search for next occurrence if we're reaching limit
         if (isLimited && result.size == limit - 1) break
         nextIndex = indexOf(delimiter, currentOffset, ignoreCase)
     } while (nextIndex != -1)
 
-    result.add(substring(currentOffset, length))
+    val r = substring(currentOffset, length)
+    result.add(r)
     return result
+}
+
+/** 将当前的字符串按 [delimiter] 分割并转化为 [List]。自动去除首尾空白并忽略空项。默认使用英文逗号作为分隔符。 */
+@Fast
+fun String.toDelimitedList(delimiter: Char = ','): List<String> {
+    var currentOffset = 0
+    var nextIndex = indexOf(delimiter, currentOffset)
+    if (nextIndex == -1) {
+        val r = trim()
+        if (r.isNotEmpty()) return listOf(r)
+        return emptyList()
+    }
+
+    var result: MutableList<String>? = null
+    do {
+        val r = substring(currentOffset, nextIndex).trim()
+        if (r.isNotEmpty()) {
+            if (result == null) result = mutableListOf() // delay initialization
+            result.add(r)
+        }
+        currentOffset = nextIndex + 1
+        nextIndex = indexOf(delimiter, currentOffset)
+    } while (nextIndex != -1)
+
+    val r = substring(currentOffset, length).trim()
+    if (r.isNotEmpty()) {
+        if (result == null) result = mutableListOf() // delay initialization
+        result.add(r)
+    }
+    return result.orEmpty()
+}
+
+/** 将当前的字符串按 [delimiter] 分割并转化为 [Set]。自动去除首尾空白并忽略空项。默认使用英文逗号作为分隔符。 */
+@Fast
+fun String.toDelimitedSet(delimiter: Char = ','): Set<String> {
+    var currentOffset = 0
+    var nextIndex = indexOf(delimiter, currentOffset)
+    if (nextIndex == -1) {
+        val r = trim()
+        if (r.isNotEmpty()) return setOf(r)
+        return emptySet()
+    }
+
+    var result: MutableSet<String>? = null
+    do {
+        val r = substring(currentOffset, nextIndex).trim()
+        if (r.isNotEmpty()) {
+            if (result == null) result = mutableSetOf() // delay initialization
+            result.add(r)
+        }
+        currentOffset = nextIndex + 1
+        nextIndex = indexOf(delimiter, currentOffset)
+    } while (nextIndex != -1)
+
+    val r = substring(currentOffset, length).trim()
+    if (r.isNotEmpty()) {
+        if (result == null) result = mutableSetOf() // delay initialization
+        result.add(r)
+    }
+    return result.orEmpty()
+}
+
+/** 将当前的字符串按 [delimiter] 分割并加入到 [result]。自动去除首尾空白并忽略空项。默认使用英文逗号作为分隔符。 */
+@Fast
+fun String.toDelimitedMutableList(result: MutableList<String> = mutableListOf(), delimiter: Char = ','): MutableList<String> {
+    var currentOffset = 0
+    var nextIndex = indexOf(delimiter, currentOffset)
+    if (nextIndex == -1) {
+        val r = trim()
+        if (r.isNotEmpty()) result.add(r)
+        return result
+    }
+
+    do {
+        val r = substring(currentOffset, nextIndex).trim()
+        if (r.isNotEmpty()) result.add(r)
+        currentOffset = nextIndex + 1
+        nextIndex = indexOf(delimiter, currentOffset)
+    } while (nextIndex != -1)
+
+    val r = substring(currentOffset, length).trim()
+    if (r.isNotEmpty()) result.add(r)
+    return result
+}
+
+/** 将当前的字符串按 [delimiter] 分割并加入到 [result]。自动去除首尾空白并忽略空项。默认使用英文逗号作为分隔符。 */
+@Fast
+fun String.toDelimitedMutableSet(result: MutableSet<String> = mutableSetOf(), delimiter: Char = ','): MutableSet<String> {
+    var currentOffset = 0
+    var nextIndex = indexOf(delimiter, currentOffset)
+    if (nextIndex == -1) {
+        val r = trim()
+        if (r.isNotEmpty()) result.add(r)
+        return result
+    }
+
+    do {
+        val r = substring(currentOffset, nextIndex).trim()
+        if (r.isNotEmpty()) result.add(r)
+        currentOffset = nextIndex + 1
+        nextIndex = indexOf(delimiter, currentOffset)
+    } while (nextIndex != -1)
+
+    val r = substring(currentOffset, length).trim()
+    if (r.isNotEmpty()) result.add(r)
+    return result
+}
+
+/** 将当前的字符串集合拼接为按 [delimiter] 分隔后的字符串。默认使用英文逗号作为分隔符。 */
+@Fast
+fun Collection<String>.toDelimitedString(delimiter: Char = ','): String {
+    return if (isEmpty()) "" else if (size == 1) single() else joinToString(",")
 }

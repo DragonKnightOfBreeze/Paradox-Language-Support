@@ -216,11 +216,8 @@ class StdlibExtensionsTest {
     }
 
     @Test
-    fun indicesOf_and_comma_delimited_test() {
+    fun indicesOf_test() {
         Assert.assertEquals(listOf(0, 2, 4), "ababa".indicesOf('a'))
-        Assert.assertEquals("a,b,c", listOf("a", "b", "c").toCommaDelimitedString())
-        Assert.assertEquals(listOf("a", "b", "c"), "a,b,, c".toCommaDelimitedStringList())
-        Assert.assertEquals(setOf("a", "b", "c"), "a,b,, c".toCommaDelimitedStringSet())
     }
 
     @Test

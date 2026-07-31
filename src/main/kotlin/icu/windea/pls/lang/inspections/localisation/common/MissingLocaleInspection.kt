@@ -10,8 +10,8 @@ import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.matchesPatterns
 import icu.windea.pls.core.toAtomicProperty
-import icu.windea.pls.core.toCommaDelimitedString
-import icu.windea.pls.core.toCommaDelimitedStringList
+import icu.windea.pls.core.toDelimitedMutableList
+import icu.windea.pls.core.toDelimitedString
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
@@ -54,7 +54,7 @@ class MissingLocaleInspection : LocalInspectionTool(), DumbAware {
             // ignoredFileNames
             row {
                 label(ChronicleBundle.message("inspection.localisation.missingLocale.option.ignoredFileNames"))
-                expandableTextField({ it.toCommaDelimitedStringList() }, { it.toCommaDelimitedString() })
+                expandableTextField({ it.toDelimitedMutableList() }, { it.toDelimitedString() })
                     .bindText(::ignoredFileNames.toAtomicProperty())
                     .comment(ChronicleBundle.message("comment.patterns"))
                     .align(Align.FILL)
