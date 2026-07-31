@@ -1,4 +1,4 @@
-@file:Suppress("NOTHING_TO_INLINE", "unused")
+@file:Suppress("unused")
 
 package icu.windea.pls.core
 
@@ -43,14 +43,19 @@ fun <T : FileBasedIndexExtension<*, *>> findFileBasedIndex(type: Class<T>): T {
 //     }
 // }
 
+@Suppress("NOTHING_TO_INLINE")
 inline fun DataOutput.writeByte(v: Byte) = writeByte(v.toInt())
 
+@Suppress("NOTHING_TO_INLINE")
 inline fun DataInput.readIntFast(): Int = DataInputOutputUtil.readINT(this)
 
+@Suppress("NOTHING_TO_INLINE")
 inline fun DataOutput.writeIntFast(value: Int) = DataInputOutputUtil.writeINT(this, value)
 
+@Suppress("NOTHING_TO_INLINE")
 inline fun DataInput.readUTFFast(): String = IOUtil.readUTF(this)
 
+@Suppress("NOTHING_TO_INLINE")
 inline fun DataOutput.writeUTFFast(value: String) = IOUtil.writeUTF(this, value)
 
 /**
@@ -97,6 +102,7 @@ inline fun <T> DataOutput.writeIndexedStringList(list: List<T>, transform: (T) -
 /**
  * 读取集合的大小与各个元素，然后转换为以索引为键的映射。
  */
+@Suppress("NOTHING_TO_INLINE")
 inline fun DataInput.readWithIndexStringList(): Int2ObjectMap<String> {
     val size = readIntFast()
     val result = Int2ObjectOpenHashMap<String>()

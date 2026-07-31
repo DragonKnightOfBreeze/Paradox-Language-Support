@@ -51,26 +51,31 @@ class ParadoxDefaultUnresolvedExpressionChecker : ParadoxUnresolvedExpressionChe
         // - int percentage field -> actual is float percentage field -> use weaker highlight type
         // - localisation reference -> expression can be a string literal instead -> use weaker highlight type
 
-        for (configExpression in expectedConfigs.expandConfigExpression()) {
+        var result =  ProblemHighlightType.GENERIC_ERROR_OR_WARNING
+        expectedConfigs.expandConfigExpression p@{ configExpression ->
             when(configExpression.type) {
                 in CwtDataTypeSets.IntField -> {
                     if (element is ParadoxScriptFloat || element.castOrNull<ParadoxScriptedVariableReference>()?.resolved() is ParadoxScriptFloat) {
-                        return getWeakerHighlightType(context)
+                        result =  getWeakerHighlightType(context)
+                        return@p false
                     }
                 }
                 CwtDataTypes.IntPercentageField -> {
                     if (ParadoxMatchProvider.matchesFloatPercentageField(element.value)) {
-                        return getWeakerHighlightType(context)
+                        result = getWeakerHighlightType(context)
+                        return@p false
                     }
                 }
                 in CwtDataTypeSets.LocalisationReference -> {
                     if (element is ParadoxScriptStringExpressionElement) {
-                        return getWeakerHighlightType(context)
+                        result = getWeakerHighlightType(context)
+                        return@p false
                     }
                 }
             }
+            true
         }
-        return ProblemHighlightType.GENERIC_ERROR_OR_WARNING
+        return result
     }
 
     private fun getWeakerHighlightType(context: ParadoxExpressionInspectionContext): ProblemHighlightType {

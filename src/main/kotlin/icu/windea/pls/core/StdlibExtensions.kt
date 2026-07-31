@@ -1,4 +1,4 @@
-@file:Suppress("unused", "NOTHING_TO_INLINE")
+@file:Suppress("unused")
 
 package icu.windea.pls.core
 
@@ -22,10 +22,9 @@ import kotlin.io.path.isDirectory
 
 private data object EmptyObject
 
-/** 通用空对象占位符。 */
 val EMPTY_OBJECT: Any = EmptyObject
 
-/** 空操作，占位用。 */
+@Suppress("NOTHING_TO_INLINE")
 inline fun pass() {
     // nothing
 }
@@ -74,7 +73,7 @@ inline fun <T> T.alsoUnless(condition: Boolean, block: (T) -> Unit): T {
 
 /** 判断可空字符序列是否非空（同时判空与长度为 0）。 */
 @OptIn(ExperimentalContracts::class)
-@Suppress("ReplaceSizeCheckWithIsNotEmpty")
+@Suppress("NOTHING_TO_INLINE", "ReplaceSizeCheckWithIsNotEmpty")
 inline fun CharSequence?.isNotNullOrEmpty(): Boolean {
     contract {
         returns(true) implies (this@isNotNullOrEmpty != null)
@@ -84,7 +83,7 @@ inline fun CharSequence?.isNotNullOrEmpty(): Boolean {
 }
 
 @OptIn(ExperimentalContracts::class)
-@Suppress("ReplaceSizeCheckWithIsNotEmpty")
+@Suppress("NOTHING_TO_INLINE", "ReplaceSizeCheckWithIsNotEmpty")
 /** 判断可空数组是否非空。 */
 inline fun Array<*>?.isNotNullOrEmpty(): Boolean {
     contract {
@@ -96,7 +95,7 @@ inline fun Array<*>?.isNotNullOrEmpty(): Boolean {
 
 /** 判断可空集合是否非空。 */
 @OptIn(ExperimentalContracts::class)
-@Suppress("ReplaceSizeCheckWithIsNotEmpty")
+@Suppress("NOTHING_TO_INLINE", "ReplaceSizeCheckWithIsNotEmpty")
 inline fun Collection<*>?.isNotNullOrEmpty(): Boolean {
     contract {
         returns(true) implies (this@isNotNullOrEmpty != null)
@@ -106,9 +105,11 @@ inline fun Collection<*>?.isNotNullOrEmpty(): Boolean {
 }
 
 /** 如果当前布尔值为 `false`，则返回 `null`，否则返回自身。 */
+@Suppress("NOTHING_TO_INLINE")
 inline fun Boolean.orNull() = takeIf { it }
 
 /** 如果当前字符串为空，则返回 `null`。否则返回自身。 */
+@Suppress("NOTHING_TO_INLINE")
 inline fun <T : CharSequence> T.orNull() = takeIf { it.isNotEmpty() }
 
 /** 判断是否以指定前缀/后缀包围（基于单个字符）。 */

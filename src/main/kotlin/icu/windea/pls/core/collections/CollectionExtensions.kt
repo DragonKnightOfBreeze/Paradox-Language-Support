@@ -1,4 +1,4 @@
-@file:Suppress("NOTHING_TO_INLINE", "UNCHECKED_CAST", "unused")
+@file:Suppress("unused")
 
 package icu.windea.pls.core.collections
 
@@ -6,33 +6,43 @@ import java.util.*
 import kotlin.reflect.KProperty
 
 /** 如果当前集合为 `null` 或为空，则返回 `null`。否则返回自身。 */
+@Suppress("NOTHING_TO_INLINE")
 inline fun <T : Collection<*>> T?.orNull() = this?.takeIf { it.isNotEmpty() }
 
 /** 如果当前映射为 `null` 或为空，则返回 `null`。否则返回自身。 */
+@Suppress("NOTHING_TO_INLINE")
 inline fun <T : Map<*, *>> T?.orNull() = this?.takeIf { it.isNotEmpty() }
 
 /** 如果当前集合已是 [List]，则直接返回，否则转化为新的 [List]。 */
+@Suppress("NOTHING_TO_INLINE")
 inline fun <T> Collection<T>.toListOrThis(): List<T> = this as? List ?: this.toList()
 
 /** 如果当前集合已是 [Set]，则直接返回，否则转化为新的 [Set]。 */
+@Suppress("NOTHING_TO_INLINE")
 inline fun <T> Collection<T>.toSetOrThis(): Set<T> = this as? Set ?: this.toSet()
 
 /** 将当前只读 [List] 视为 [MutableList]（要求实际可变，否则抛出异常）。 */
+@Suppress("NOTHING_TO_INLINE")
 inline fun <T> List<T>.asMutable(): MutableList<T> = this as MutableList<T>
 
 /** 将当前只读 [Set] 视为 [MutableSet]（要求实际可变，否则抛出异常）。 */
+@Suppress("NOTHING_TO_INLINE")
 inline fun <T> Set<T>.asMutable(): MutableSet<T> = this as MutableSet<T>
 
 /** 将当前只读 [Map] 视为 [MutableMap]（要求实际可变，否则抛出异常）。 */
+@Suppress("NOTHING_TO_INLINE")
 inline fun <K, V> Map<K, V>.asMutable(): MutableMap<K, V> = this as MutableMap<K, V>
 
 /** 返回加锁后的同步的 [MutableList]。 */
+@Suppress("NOTHING_TO_INLINE")
 inline fun <T> MutableList<T>.synced(): MutableList<T> = Collections.synchronizedList(this)
 
 /** 返回加锁后的同步的 [MutableSet]。 */
+@Suppress("NOTHING_TO_INLINE")
 inline fun <T> MutableSet<T>.synced(): MutableSet<T> = Collections.synchronizedSet(this)
 
 /** 返回加锁后的同步的 [MutableMap]。 */
+@Suppress("NOTHING_TO_INLINE")
 inline fun <K, V> MutableMap<K, V>.synced(): MutableMap<K, V> = Collections.synchronizedMap(this)
 
 inline fun <T, K> Iterable<T>.associateByNotNull(keySelector: (T) -> K?): Map<K, T> {
@@ -84,8 +94,7 @@ inline fun <reified R> List<*>.findLastIsInstance(predicate: (R) -> Boolean = { 
 inline fun <T> Iterable<T>.process(processor: (T) -> Boolean): Boolean {
     if (this is Collection && this.isEmpty()) return true
     for (e in this) {
-        val r = processor(e)
-        if (!r) return false
+        if (!processor(e)) return false
     }
     return true
 }
@@ -94,8 +103,7 @@ inline fun <T> Iterable<T>.process(processor: (T) -> Boolean): Boolean {
 inline fun <K, V> Map<K, V>.process(processor: (Map.Entry<K, V>) -> Boolean): Boolean {
     if (this.isEmpty()) return true
     for (entry in this) {
-        val r = processor(entry)
-        if (!r) return false
+        if (!processor(entry)) return false
     }
     return true
 }
@@ -105,8 +113,7 @@ inline fun <K, V> Map<K, V>.processValue(key: K?, processor: (V) -> Boolean): Bo
     if (this.isEmpty()) return true
     if (key != null) return this[key]?.let { processor(it) } ?: true
     for (value in values) {
-        val r = processor(value)
-        if (!r) return false
+        if (!processor(value)) return false
     }
     return true
 }
@@ -224,12 +231,14 @@ fun <T : Any> List<T>.removeSuffixOrNull(suffix: List<T>, wildcard: T? = null): 
  */
 class MapWithDefaultValueDelegate<V>(val map: MutableMap<String, V>, val defaultValue: V)
 
+@Suppress("NOTHING_TO_INLINE")
 inline operator fun <V> MapWithDefaultValueDelegate<V>.provideDelegate(thisRef: Any?, property: KProperty<*>): MutableMap<String, V> {
     map.putIfAbsent(property.name, defaultValue)
     return map
 }
 
 /** 为 [MutableMap] 提供默认值委托构建器。 */
+@Suppress("NOTHING_TO_INLINE")
 inline infix fun <V> MutableMap<String, V>.withDefault(defaultValue: V) = MapWithDefaultValueDelegate(this, defaultValue)
 
 /** 得到指定键 [key] 对应的类型为 [List] 的值中的最后一个元素，如果不存在则返回 `null`。 */

@@ -7,6 +7,7 @@ import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
+import icu.windea.pls.config.config.expandBySubtypeExpression
 import icu.windea.pls.config.config.expandConfigExpression
 import icu.windea.pls.config.config.expandKeyExpression
 import icu.windea.pls.config.config.expandValueExpression
@@ -272,9 +273,12 @@ class CwtConfigManipulationServiceTest : BasePlatformTestCase(), ChronicleTestSc
         val containerProp = root.findChild<CwtProperty> { it.name == "k1" }!!
         val containerConfig = CwtPropertyConfig.resolve(containerProp, file, configGroup)!!
 
-        val result = CwtConfigManipulationService.expandBySubtypeExpression(containerConfig)
-            .map { (c, t) -> tupleOf(c.toString(), t) }
-            .toList()
+        val result = buildList {
+            containerConfig.expandBySubtypeExpression { c, t ->
+                this += tupleOf(c.toString(), t)
+                true
+            }
+        }
         val expect = listOf(
             tupleOf("(property) k2 = v", ""),
             tupleOf("(property) k3 = v", "t2"),
@@ -294,16 +298,17 @@ class CwtConfigManipulationServiceTest : BasePlatformTestCase(), ChronicleTestSc
         val root = file.block!!
 
         val propMap = root.propertyList.associateBy({ it.name }, { CwtPropertyConfig.resolve(it, file, configGroup)!! })
+        val props = propMap.values
 
-        assertTrue(propMap.values.expandConfigExpression().all { it.type == CwtDataTypes.Constant }) // keys -> all constant
+        assertTrue(props.expandConfigExpression{ it.type == CwtDataTypes.Constant }) // keys -> all constant
 
-        assertTrue(propMap.values.expandKeyExpression().all { it.type == CwtDataTypes.Constant }) // keys -> all constant
+        assertTrue(props.expandKeyExpression { it.type == CwtDataTypes.Constant }) // keys -> all constant
 
-        assertTrue(propMap.getValue("k1").expandValueExpression().any { it.type === CwtDataTypes.Int })
-        assertTrue(propMap.getValue("k2").expandValueExpression().any { it.type === CwtDataTypes.Int }) // expanded
-        assertTrue(propMap.getValue("k3").expandValueExpression().any { it.type === CwtDataTypes.Int }) // expanded
-        assertTrue(propMap.getValue("k4").expandValueExpression().none { it.type === CwtDataTypes.Int }) // ignored
-        assertTrue(propMap.getValue("k5").expandValueExpression().none { it.type === CwtDataTypes.Int }) // ignored
-        assertTrue(propMap.getValue("k0").expandValueExpression().none { it.type === CwtDataTypes.Int })
+        assertFalse(propMap.getValue("k1").expandValueExpression{ it.type != CwtDataTypes.Int })
+        assertFalse(propMap.getValue("k2").expandValueExpression{ it.type != CwtDataTypes.Int }) // expanded
+        assertFalse(propMap.getValue("k3").expandValueExpression{ it.type != CwtDataTypes.Int }) // expanded
+        assertTrue(propMap.getValue("k4").expandValueExpression { it.type != CwtDataTypes.Int }) // ignored
+        assertTrue(propMap.getValue("k5").expandValueExpression { it.type != CwtDataTypes.Int }) // ignored
+        assertTrue(propMap.getValue("k0").expandValueExpression { it.type != CwtDataTypes.Int })
     }
 }

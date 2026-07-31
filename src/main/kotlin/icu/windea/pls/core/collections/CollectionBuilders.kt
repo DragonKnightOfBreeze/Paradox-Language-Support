@@ -1,4 +1,4 @@
-@file:Suppress("NOTHING_TO_INLINE", "UNCHECKED_CAST", "unused")
+@file:Suppress("unused")
 
 package icu.windea.pls.core.collections
 
@@ -71,6 +71,7 @@ fun <V> MutableStringKeyMap(caseInsensitive: Boolean = false): MutableMap<String
 /**
  * 创建一个字符串集合，且则使用大小写不敏感的哈希策略。
  */
+@Suppress("NOTHING_TO_INLINE")
 inline fun CaseInsensitiveStringSet(): ObjectLinkedOpenCustomHashSet<@CaseInsensitive String> {
     return ObjectLinkedOpenCustomHashSet<@CaseInsensitive String>(CaseInsensitiveStringHashingStrategy)
 }
@@ -78,6 +79,7 @@ inline fun CaseInsensitiveStringSet(): ObjectLinkedOpenCustomHashSet<@CaseInsens
 /**
  * 创建一个键为字符串的映射，且键使用大小写不敏感的哈希策略。
  */
+@Suppress("NOTHING_TO_INLINE")
 inline fun <V> CaseInsensitiveStringKeyMap(): Object2ObjectLinkedOpenCustomHashMap<@CaseInsensitive String, V> {
     return Object2ObjectLinkedOpenCustomHashMap<@CaseInsensitive String, V>(CaseInsensitiveStringHashingStrategy)
 }

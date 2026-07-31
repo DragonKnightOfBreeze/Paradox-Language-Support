@@ -17,6 +17,7 @@ import icu.windea.pls.core.collections.flatMapFast
 import icu.windea.pls.core.collections.mapNotNullFast
 import icu.windea.pls.core.createResults
 import icu.windea.pls.core.resolveFirst
+import icu.windea.pls.core.util.ProcessorScope
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.ParadoxPsiService
@@ -156,7 +157,8 @@ class ParadoxDataSourceNode(
             if (!isAcceptableConstraint(constraint)) return false
             // test data type
             // NOTE 3.0.1 expand config expression first since it's necessary for unions and aliases
-            return node.linkConfigs.expandConfigExpression().any { constraint.test(it.type) }
+            val configs = node.linkConfigs
+            return ProcessorScope.anyFrom({ constraint.test(it.type) }) { configs.expandConfigExpression { process(it) } }
         }
 
         private fun isAcceptableConstraint(constraint: ParadoxReferenceConstraint): Boolean {

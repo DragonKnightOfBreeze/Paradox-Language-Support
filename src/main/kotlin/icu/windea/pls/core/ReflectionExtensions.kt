@@ -1,4 +1,4 @@
-@file:Suppress("UNCHECKED_CAST", "unused")
+@file:Suppress("unused")
 
 package icu.windea.pls.core
 
@@ -64,5 +64,6 @@ fun KFunction<*>.isSetter(propertyName: String? = null): Boolean {
  * 仅在当前类型为 [ParameterizedType] 时有效，否则返回 `null`。
  */
 fun <T : Class<*>> Type.genericType(index: Int): T? {
+    @Suppress("UNCHECKED_CAST")
     return castOrNull<ParameterizedType>()?.actualTypeArguments?.getOrNull(index) as? T
 }

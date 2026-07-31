@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package icu.windea.pls.core
 
 import com.intellij.openapi.diagnostic.thisLogger
@@ -13,7 +15,6 @@ import java.util.concurrent.atomic.AtomicBoolean
  * - 进入同步块前后各检查一次 [flag]；
  * - 执行异常将被记录为 `WARN` 日志，不会抛出到调用方。
  */
-@Suppress("unused")
 inline fun <T> Any.withDoubleLock(flag: AtomicBoolean, action: () -> T) {
     if (flag.get()) return
     synchronized(this) {

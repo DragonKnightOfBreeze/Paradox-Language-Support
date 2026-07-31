@@ -24,12 +24,12 @@ import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.orNull
+import icu.windea.pls.core.collections.process
+import icu.windea.pls.core.collections.processFast
 import icu.windea.pls.core.emptyPointer
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.removeSurroundingOrNull
-import icu.windea.pls.core.util.Tuple2
-import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.core.util.values.singletonList
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.core.withRecursionGuard
@@ -40,6 +40,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 
+@Optimized
 object CwtConfigManipulationService {
     // region Common Methods
 
@@ -409,64 +410,76 @@ object CwtConfigManipulationService {
      *
      * 结果序列中的元组的第一个元素是展开后的子规则，第二个元素是合并后的当前子类型表达式。
      */
-    fun expandBySubtypeExpression(config: CwtMemberConfig<*>): Sequence<Tuple2<CwtMemberConfig<*>, String>> {
-        if (config.configs.isNullOrEmpty()) return emptySequence()
-        return sequence { doExpandBySubtypeExpression(config, "") }
+    fun expandBySubtypeExpression(config: CwtMemberConfig<*>, processor: (CwtMemberConfig<*>, String) -> Boolean): Boolean {
+        if (config.configs.isNullOrEmpty()) return true
+        return doExpandBySubtypeExpression(config, "", processor)
     }
 
-    private suspend fun SequenceScope<Tuple2<CwtMemberConfig<*>, String>>.doExpandBySubtypeExpression(config: CwtMemberConfig<*>, currentExpression: String) {
+    private fun doExpandBySubtypeExpression(config: CwtMemberConfig<*>, currentExpression: String, processor: (CwtMemberConfig<*>, String) -> Boolean): Boolean {
+        // NOTE 3.0.1 use processor pattern (instead of direct sequence builder) to optimize performance
         config.configs?.orNull()?.forEachFast { childConfig ->
             val nextExpression = extractSubtypeExpression(childConfig)
             if (nextExpression != null) {
                 if (childConfig.configs?.orNull() != null) {
                     val mergedExpression = mergeSubtypeExpression(currentExpression, nextExpression)
-                    doExpandBySubtypeExpression(childConfig, mergedExpression)
+                    doExpandBySubtypeExpression(childConfig, mergedExpression, processor).let { if (!it) return false }
                 }
             } else {
-                yield(tupleOf(childConfig, currentExpression))
+                processor(childConfig, currentExpression).let { if (!it) return false }
             }
+        }
+        return true
+    }
+
+    fun expandConfigExpression(config: CwtConfig<*>, processor: (CwtDataExpression) -> Boolean): Boolean {
+        return doExpandConfigExpression(config.configExpression, config.configGroup, processor)
+    }
+
+    fun expandConfigExpression(configs: Collection<CwtConfig<*>>, processor: (CwtDataExpression) -> Boolean): Boolean {
+        if (configs.isEmpty()) return true
+        return when (configs) {
+            is List -> configs.processFast { config -> doExpandConfigExpression(config.configExpression, config.configGroup, processor) }
+            else -> configs.process { config -> doExpandConfigExpression(config.configExpression, config.configGroup, processor) }
         }
     }
 
-    fun expandConfigExpression(config: CwtConfig<*>): Sequence<CwtDataExpression> {
-        return sequence { doExpandConfigExpression(config.configExpression, config.configGroup) }
+    fun expandKeyExpression(config: CwtPropertyConfig, processor: (CwtDataExpression) -> Boolean): Boolean {
+        return doExpandConfigExpression(config.keyExpression, config.configGroup, processor)
     }
 
-    fun expandConfigExpression(configs: Collection<CwtConfig<*>>): Sequence<CwtDataExpression> {
-        if (configs.isEmpty()) return emptySequence()
-        return sequence { configs.forEach { config -> doExpandConfigExpression(config.configExpression, config.configGroup) } }
+    fun expandKeyExpression(configs: Collection<CwtPropertyConfig>, processor: (CwtDataExpression) -> Boolean): Boolean {
+        if (configs.isEmpty()) return true
+        return when (configs) {
+            is List -> configs.processFast { config -> doExpandConfigExpression(config.keyExpression, config.configGroup, processor) }
+            else -> configs.process { config -> doExpandConfigExpression(config.keyExpression, config.configGroup, processor) }
+        }
     }
 
-    fun expandKeyExpression(config: CwtPropertyConfig): Sequence<CwtDataExpression> {
-        return sequence { doExpandConfigExpression(config.keyExpression, config.configGroup) }
+    fun expandValueExpression(config: CwtMemberConfig<*>, processor: (CwtDataExpression) -> Boolean): Boolean {
+        return doExpandConfigExpression(config.valueExpression, config.configGroup, processor)
     }
 
-    fun expandKeyExpression(configs: Collection<CwtPropertyConfig>): Sequence<CwtDataExpression> {
-        if (configs.isEmpty()) return emptySequence()
-        return sequence { configs.forEach { config -> doExpandConfigExpression(config.keyExpression, config.configGroup) } }
+    fun expandValueExpression(configs: Collection<CwtMemberConfig<*>>, processor: (CwtDataExpression) -> Boolean): Boolean {
+        if (configs.isEmpty()) return true
+        return when (configs) {
+            is List -> configs.processFast { config -> doExpandConfigExpression(config.valueExpression, config.configGroup, processor) }
+            else -> configs.process { config -> doExpandConfigExpression(config.valueExpression, config.configGroup, processor) }
+        }
     }
 
-    fun expandValueExpression(config: CwtMemberConfig<*>): Sequence<CwtDataExpression> {
-        return sequence { doExpandConfigExpression(config.valueExpression, config.configGroup) }
-    }
-
-    fun expandValueExpression(configs: Collection<CwtMemberConfig<*>>): Sequence<CwtDataExpression> {
-        if (configs.isEmpty()) return emptySequence()
-        return sequence { configs.forEach { config -> doExpandConfigExpression(config.valueExpression, config.configGroup) } }
-    }
-
-    private suspend fun SequenceScope<CwtDataExpression>.doExpandConfigExpression(configExpression: CwtDataExpression?, configGroup: CwtConfigGroup) {
-        if (configExpression == null) return
-        when (configExpression.type) {
+    private fun doExpandConfigExpression(configExpression: CwtDataExpression?, configGroup: CwtConfigGroup, processor: (CwtDataExpression) -> Boolean): Boolean {
+        // NOTE 3.0.1 use processor pattern (instead of direct sequence builder) to optimize performance
+        if (configExpression == null) return true
+        return when (configExpression.type) {
             CwtDataTypes.UnionValue -> {
-                val name = configExpression.metadata.value ?: return
-                configGroup.unions[name]?.valueConfigs?.orNull()?.forEachFast { yield(it.valueExpression) }
+                val name = configExpression.metadata.value ?: return true
+                configGroup.unions[name]?.valueConfigs?.orNull()?.processFast { e -> processor(e.valueExpression) } ?: true
             }
             CwtDataTypes.AliasKeysField -> {
-                val name = configExpression.metadata.value ?: return
-                configGroup.aliasGroups[name]?.values?.orNull()?.forEach { yield(it.first().configExpression) }
+                val name = configExpression.metadata.value ?: return true
+                configGroup.aliasGroups[name]?.values?.orNull()?.process { e -> processor(e.first().subNameExpression) } ?: true
             }
-            else -> yield(configExpression)
+            else -> processor(configExpression)
         }
     }
 

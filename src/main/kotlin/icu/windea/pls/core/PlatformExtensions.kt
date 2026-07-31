@@ -127,15 +127,18 @@ inline fun <T, R> T.runCatchingCancelable(block: T.() -> R): Result<R> {
     return runCatching(block).onFailure { if (it is ProcessCanceledException) throw it }
 }
 
-fun <T> createCachedValue(project: Project, trackValue: Boolean = false, provider: CachedValueProvider<T>): CachedValue<T> {
+@Suppress("NOTHING_TO_INLINE")
+inline fun <T> createCachedValue(project: Project, trackValue: Boolean = false, provider: CachedValueProvider<T>): CachedValue<T> {
     return CachedValuesManager.getManager(project).createCachedValue(provider, trackValue)
 }
 
-fun <T> T.withDependencyItems(vararg dependencies: Any): CachedValueProvider.Result<T> {
+@Suppress("NOTHING_TO_INLINE")
+inline fun <T> T.withDependencyItems(vararg dependencies: Any): CachedValueProvider.Result<T> {
     return CachedValueProvider.Result.create(this, *dependencies)
 }
 
-fun <T> T.withDependencyItems(dependencies: List<Any>): CachedValueProvider.Result<T> {
+@Suppress("NOTHING_TO_INLINE")
+inline fun <T> T.withDependencyItems(dependencies: List<Any>): CachedValueProvider.Result<T> {
     return CachedValueProvider.Result.create(this, dependencies)
 }
 

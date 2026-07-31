@@ -1,4 +1,4 @@
-@file:Suppress("NOTHING_TO_INLINE", "unused")
+@file:Suppress("unused")
 
 package icu.windea.pls.core.collections
 
@@ -106,7 +106,7 @@ inline fun <T> List<T>.filterFast(predicate: (T) -> Boolean): List<T> {
 
 /** @see kotlin.collections.filterNotNull */
 @Fast
-inline fun <T> List<T?>.filterNotNullFast(): List<T> {
+fun <T> List<T?>.filterNotNullFast(): List<T> {
     if (isEmpty()) return emptyList()
     var destination: MutableList<T>? = null
     val size = size
@@ -149,7 +149,6 @@ inline fun <T> List<T>.findFast(predicate: (T) -> Boolean): T? {
 @Fast
 inline fun <T> List<T>.findLastFast(predicate: (T) -> Boolean): T? {
     if (isEmpty()) return null
-    val lastIndex = lastIndex
     for (i in lastIndex downTo 0) {
         val e = this[i]
         if (predicate(e)) return e
@@ -162,6 +161,16 @@ inline fun <reified R> List<*>.findIsInstanceFast(predicate: (R) -> Boolean = { 
     if (isEmpty()) return null
     val size = size
     for (i in 0 until size) {
+        val e = this[i]
+        if (e is R && predicate(e)) return e
+    }
+    return null
+}
+
+/** @see findLastIsInstance */
+inline fun <reified R> List<*>.findLastIsInstanceFast(predicate: (R) -> Boolean = { true }): R? {
+    if (isEmpty()) return null
+    for (i in lastIndex downTo 0) {
         val e = this[i]
         if (e is R && predicate(e)) return e
     }
@@ -199,6 +208,18 @@ inline fun <T> List<T>.noneFast(predicate: (T) -> Boolean): Boolean {
     for (i in 0 until size) {
         val e = this[i]
         if (predicate(e)) return false
+    }
+    return true
+}
+
+/** @see process */
+@Fast
+inline fun <T> List<T>.processFast(processor: (T) -> Boolean): Boolean {
+    if (isEmpty()) return true
+    val size = size
+    for (i in 0 until size) {
+        val e = this[i]
+        if (!processor(e)) return false
     }
     return true
 }

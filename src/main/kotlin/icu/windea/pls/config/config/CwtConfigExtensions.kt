@@ -8,7 +8,6 @@ import icu.windea.pls.config.manipulation.CwtConfigManipulationService
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.emptyPointer
-import icu.windea.pls.core.util.Tuple2
 
 // region Config Resolve Extensions
 
@@ -54,6 +53,45 @@ infix fun CwtConfig<*>?.isSamePointer(other: CwtConfig<*>?): Boolean {
 
 // endregion
 
+// region Process Extensions
+
+/** @see CwtConfigManipulationService.expandBySubtypeExpression */
+fun CwtMemberConfig<*>.expandBySubtypeExpression(processor: (CwtMemberConfig<*>, String) -> Boolean): Boolean {
+    return CwtConfigManipulationService.expandBySubtypeExpression(this, processor)
+}
+
+/** @see CwtConfigManipulationService.expandConfigExpression */
+fun CwtConfig<*>.expandConfigExpression(processor: (CwtDataExpression) -> Boolean): Boolean {
+    return CwtConfigManipulationService.expandConfigExpression(this, processor)
+}
+
+/** @see CwtConfigManipulationService.expandConfigExpression */
+fun Collection<CwtConfig<*>>.expandConfigExpression(processor: (CwtDataExpression) -> Boolean): Boolean {
+    return CwtConfigManipulationService.expandConfigExpression(this, processor)
+}
+
+/** @see CwtConfigManipulationService.expandKeyExpression */
+fun CwtPropertyConfig.expandKeyExpression(processor: (CwtDataExpression) -> Boolean): Boolean {
+    return CwtConfigManipulationService.expandKeyExpression(this, processor)
+}
+
+/** @see CwtConfigManipulationService.expandKeyExpression */
+fun Collection<CwtPropertyConfig>.expandKeyExpression(processor: (CwtDataExpression) -> Boolean): Boolean {
+    return CwtConfigManipulationService.expandKeyExpression(this, processor)
+}
+
+/** @see CwtConfigManipulationService.expandValueExpression */
+fun CwtMemberConfig<*>.expandValueExpression(processor: (CwtDataExpression) -> Boolean): Boolean {
+    return CwtConfigManipulationService.expandValueExpression(this, processor)
+}
+
+/** @see CwtConfigManipulationService.expandValueExpression */
+fun Collection<CwtMemberConfig<*>>.expandValueExpression(processor: (CwtDataExpression) -> Boolean): Boolean {
+    return CwtConfigManipulationService.expandValueExpression(this, processor)
+}
+
+// endregion
+
 // region Sequence Builders
 
 fun CwtMemberContainerConfig<*>.members(): Sequence<CwtMemberConfig<*>> {
@@ -71,41 +109,6 @@ fun CwtMemberContainerConfig<*>.values(): Sequence<CwtValueConfig> {
 fun CwtMemberConfig<*>.parents(withSelf: Boolean = false): Sequence<CwtMemberConfig<*>> {
     val current = if (withSelf) this else this.parentConfig
     return generateSequence(current) { it.parentConfig }
-}
-
-/** @see CwtConfigManipulationService.expandBySubtypeExpression */
-fun CwtMemberConfig<*>.expandBySubtypeExpression(): Sequence<Tuple2<CwtMemberConfig<*>, String>> {
-    return CwtConfigManipulationService.expandBySubtypeExpression(this)
-}
-
-/** @see CwtConfigManipulationService.expandConfigExpression */
-fun CwtConfig<*>.expandConfigExpression(): Sequence<CwtDataExpression> {
-    return CwtConfigManipulationService.expandConfigExpression(this)
-}
-
-/** @see CwtConfigManipulationService.expandConfigExpression */
-fun Collection<CwtConfig<*>>.expandConfigExpression(): Sequence<CwtDataExpression> {
-    return CwtConfigManipulationService.expandConfigExpression(this)
-}
-
-/** @see CwtConfigManipulationService.expandKeyExpression */
-fun CwtPropertyConfig.expandKeyExpression(): Sequence<CwtDataExpression> {
-    return CwtConfigManipulationService.expandKeyExpression(this)
-}
-
-/** @see CwtConfigManipulationService.expandKeyExpression */
-fun Collection<CwtPropertyConfig>.expandKeyExpression(): Sequence<CwtDataExpression> {
-    return CwtConfigManipulationService.expandKeyExpression(this)
-}
-
-/** @see CwtConfigManipulationService.expandValueExpression */
-fun CwtMemberConfig<*>.expandValueExpression(): Sequence<CwtDataExpression> {
-    return CwtConfigManipulationService.expandValueExpression(this)
-}
-
-/** @see CwtConfigManipulationService.expandValueExpression */
-fun Collection<CwtMemberConfig<*>>.expandValueExpression(): Sequence<CwtDataExpression> {
-    return CwtConfigManipulationService.expandValueExpression(this)
 }
 
 // endregion

@@ -1,9 +1,10 @@
-@file:Suppress("NOTHING_TO_INLINE", "UNCHECKED_CAST", "unused")
+@file:Suppress("unused")
 
 package icu.windea.pls.core.collections
 
 /** 将类型为 [R] 且满足 [predicate] 的元素过滤为序列。 */
 inline fun <reified R> Sequence<*>.filterIsInstance(crossinline predicate: (R) -> Boolean): Sequence<R> {
+    @Suppress("UNCHECKED_CAST")
     return filter { it is R && predicate(it) } as Sequence<R>
 }
 

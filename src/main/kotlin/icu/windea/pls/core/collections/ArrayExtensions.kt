@@ -1,13 +1,15 @@
-@file:Suppress("NOTHING_TO_INLINE", "UNCHECKED_CAST", "unused")
+@file:Suppress("unused")
 
 package icu.windea.pls.core.collections
 
 import icu.windea.pls.core.cast
 
 /** 如果当前数组为 `null` 或为空，则返回 `null`。否则返回自身。 */
+@Suppress("NOTHING_TO_INLINE")
 inline fun <T> Array<T>?.orNull() = this?.takeIf { it.isNotEmpty() }
 
 /** 将当前集合转换为新的数组。如果当前数组为空，则直接返回 [empty]。 */
+@Suppress("NOTHING_TO_INLINE")
 inline fun <E> Collection<E>.toArray(empty: Array<E>): Array<E> {
     if (isEmpty()) return empty
     @Suppress("PLATFORM_CLASS_MAPPED_TO_KOTLIN", "UNCHECKED_CAST")

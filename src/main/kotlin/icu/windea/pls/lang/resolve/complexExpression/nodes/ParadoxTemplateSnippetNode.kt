@@ -14,6 +14,7 @@ import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.createResults
 import icu.windea.pls.core.resolveFirst
+import icu.windea.pls.core.util.ProcessorScope
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxExpressionMatchService
 import icu.windea.pls.lang.match.ParadoxScriptExpressionMatchContext
@@ -150,7 +151,7 @@ class ParadoxTemplateSnippetNode(
             if (!isAcceptableConstraint(constraint)) return false
             // test data type
             // NOTE 3.0.1 expand config expression first since it's necessary for unions and aliases
-            return config.expandConfigExpression().any { constraint.test(it.type) }
+            return ProcessorScope.anyFrom({ constraint.test(it.type) }) { config.expandConfigExpression { process(it) } }
         }
 
         private fun isAcceptableConstraint(constraint: ParadoxReferenceConstraint): Boolean {
