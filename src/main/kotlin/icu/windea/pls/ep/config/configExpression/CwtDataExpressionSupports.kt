@@ -4,7 +4,7 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.CwtDataExpressionRole
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
-import icu.windea.pls.config.optimizedPath
+import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.toDelimitedSet
@@ -43,7 +43,7 @@ class CwtExtraBasicDataExpressionSupport : CwtTextPatternBasedDataExpressionSupp
     }
 }
 
-class CwtCoreDataExpressionSupport : CwtTextPatternBasedDataExpressionSupport() {
+class CwtCoreDataExpressionSupport : CwtTextPatternBasedDataExpressionSupport(), CwtConfigResolverScope {
     override fun registerProviders() {
         fromLiteral(CwtDataTypes.Localisation, "localisation")
         fromLiteral(CwtDataTypes.SyncedLocalisation, "localisation_synced")

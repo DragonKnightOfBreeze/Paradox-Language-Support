@@ -122,7 +122,7 @@ object ParadoxInlineScriptManager {
     }
 
     /**
-     * 按照 [inlineScriptPathExpression]，尝试将指定的 [pathReference] 解析为内联脚本文件的路径。
+     * 尝试将指定的 [pathReference] 解析为内联脚本文件的路径。
      */
     fun getInlineScriptFilePath(pathReference: String): String? {
         val configExpression = inlineScriptPathExpression

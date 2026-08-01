@@ -243,14 +243,15 @@ object ParadoxAnalysisManager : ParadoxAnalysisScope {
 
     tailrec fun selectFile(from: Any?): VirtualFile? {
         if (from == null) return null
+        // vfs -> psi -> indexInfo
         return when {
-            from is ParadoxIndexInfo -> selectFile(from.virtualFile)
             from is VirtualFileWindow -> from.castOrNull() // for injected PSI (result is from, not from.delegate)
             from is LightVirtualFileBase && from.originalFile != null -> selectFile(from.originalFile)
             from is VirtualFile -> from
             from is PsiDirectory -> selectFile(from.virtualFile)
             from is PsiFile -> selectFile(from.originalFile.virtualFile)
             from is PsiElement -> selectFile(runSmartReadAction { from.containingFile })
+            from is ParadoxIndexInfo -> selectFile(from.virtualFile)
             else -> null
         }
     }
@@ -259,9 +260,8 @@ object ParadoxAnalysisManager : ParadoxAnalysisScope {
         if (from == null) return null
         if (from is ParadoxGameType) return from
         if (from is VirtualFile) ParadoxAnalysisInjectionManager.inferGameTypeFromFileName(from)?.let { return it }
+        // vfs -> psi -> indexInfo -> stub
         return when {
-            from is ParadoxIndexInfo -> from.gameType
-            from is CwtConfigIndexInfo -> from.gameType
             from is VirtualFileWindow -> selectGameType(from.delegate) // for injected PSI
             from is LightVirtualFileBase && from.originalFile != null -> selectGameType(from.originalFile)
             from is VirtualFile -> getFileInfo(from)?.rootInfo?.gameType
@@ -280,6 +280,8 @@ object ParadoxAnalysisManager : ParadoxAnalysisScope {
                 }
                 selectGameType(nextFrom)
             }
+            from is ParadoxIndexInfo -> from.gameType
+            from is CwtConfigIndexInfo -> from.gameType
             from is ParadoxStub<*> -> from.gameType
             else -> null
         }
@@ -289,6 +291,7 @@ object ParadoxAnalysisManager : ParadoxAnalysisScope {
         if (from == null) return null
         if (from is CwtLocaleConfig) return from
         if (from is VirtualFile) ParadoxAnalysisInjectionManager.getInjectedLocaleConfig(from)?.let { return it }
+        // vfs -> psi -> stub
         return when {
             from is VirtualFile -> ParadoxLocaleManager.getPreferredLocaleConfig()
             from is PsiDirectory -> ParadoxLocaleManager.getPreferredLocaleConfig()

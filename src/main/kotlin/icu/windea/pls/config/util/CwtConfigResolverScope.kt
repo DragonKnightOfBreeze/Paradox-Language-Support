@@ -8,8 +8,22 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.util.startOffset
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.normalizePath
+import icu.windea.pls.core.optimized
+import icu.windea.pls.core.removePrefixOrNull
+import icu.windea.pls.model.constants.ChronicleConstants
 
 interface CwtConfigResolverScope {
+    fun String.optimizedPath(): String {
+        val r = ChronicleConstants.configFilePathPrefixes.firstNotNullOfOrNull { removePrefixOrNull(it) } ?: this
+        return r.normalizePath().optimized()
+    }
+
+    fun String.optimizedPathExtension(): String {
+        val r = removePrefix(".")
+        return r.optimized()
+    }
+
     @Suppress("unused")
     fun Logger.traceWithPrefix(element: PsiElement?, configGroup: CwtConfigGroup, lazyMessage: () -> String) {
         if (configGroup.project.isDefault) return /// skip for application config groups

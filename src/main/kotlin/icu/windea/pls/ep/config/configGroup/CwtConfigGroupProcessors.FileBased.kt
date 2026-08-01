@@ -43,9 +43,9 @@ import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.CwtConfigGroupFileInfo
 import icu.windea.pls.config.configGroup.CwtConfigGroupFileSource
-import icu.windea.pls.config.optimizedPath
 import icu.windea.pls.config.settings.ChronicleConfigSettings
 import icu.windea.pls.config.util.CwtConfigManager
+import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.withState
@@ -59,7 +59,7 @@ import kotlinx.coroutines.ensureActive
 /**
  * 用于初始化规则分组中基于文件内容的那些数据。
  */
-class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor {
+class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor, CwtConfigResolverScope {
     override suspend fun process(configGroup: CwtConfigGroup) {
         val currentCoroutineContext = currentCoroutineContext()
 
