@@ -139,7 +139,7 @@ private sealed class ParadoxExpressionBase : ParadoxExpression {
     @Volatile private var _float = LazyValue.UNINITIALIZED_BOOLEAN // endregion
     private inline val regex: Regex // region by lazy { computeRegex() }
         get() = LazyValue.of({ _regex }, { _regex = it }) { computeRegex() }
-    @Volatile private var _regex = LazyValue.UNINITIALIZED // endregion
+    @Volatile private var _regex: Regex? = null // endregion
 
     private fun doIsParameterized() = type == ParadoxExpressionType.String && value.isParameterized()
     private fun doIsFullParameterized() = type == ParadoxExpressionType.String && value.isParameterized(full = true)
@@ -222,7 +222,7 @@ private class ParadoxScriptedVariableReferenceBasedExpression(
 ) : ParadoxExpressionBase() {
     private inline val resolvedExpression: ParadoxExpression // region by lazy { computeResolvedExpression() }
         get() = LazyValue.of(this, { _resolvedExpression }, { _resolvedExpression = it }) { computeResolvedExpression() }
-    @Volatile private var _resolvedExpression = LazyValue.UNINITIALIZED // endregion
+    @Volatile private var _resolvedExpression: ParadoxExpression? = null // endregion
 
     private fun computeResolvedExpression(): ParadoxExpression {
         if (ParadoxMatchService.isDumb(options)) return ParadoxExpression.resolveUnknown()

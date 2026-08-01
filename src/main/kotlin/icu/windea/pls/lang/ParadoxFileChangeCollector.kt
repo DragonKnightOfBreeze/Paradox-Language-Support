@@ -11,11 +11,8 @@ import com.intellij.openapi.vfs.newvfs.events.VFileMoveEvent
 import com.intellij.openapi.vfs.newvfs.events.VFilePropertyChangeEvent
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.ide.analysis.ChronicleAnalysisManager
+import icu.windea.pls.lang.analysis.ParadoxAnalysisDataManager
 import icu.windea.pls.lang.analysis.ParadoxAnalysisScope
-import icu.windea.pls.lang.analysis.cachedFileInfo
-import icu.windea.pls.lang.analysis.cachedLocaleConfig
-import icu.windea.pls.lang.analysis.cachedRootInfo
-import icu.windea.pls.lang.analysis.sliceInfos
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.model.constants.ChronicleConstants
 
@@ -38,12 +35,13 @@ class ParadoxFileChangeCollector : ParadoxAnalysisScope {
             when (event) {
                 is VFileCreateEvent -> {
                     val fileName = event.childName
+                    val parent = event.parent
 
                     if (shouldRestartAnalysis(fileName)) {
-                        rootInfoContextFiles += event.parent
+                        rootInfoContextFiles += parent
                         reparseAllOpenFiles = true
                     }
-                    if (shouldRefreshForFilePaths(event.parent)) {
+                    if (shouldRefreshForFilePaths(parent)) {
                         refreshFilePaths = true
                     }
                 }
@@ -167,24 +165,24 @@ class ParadoxFileChangeCollector : ParadoxAnalysisScope {
         }
         if (rootFilesToClearRootInfo.isNotEmpty()) {
             rootFilesToClearRootInfo.forEach { rootFile ->
-                rootFile.cachedRootInfo = null
+                ParadoxAnalysisDataManager.clearData(rootFile, ParadoxAnalysisDataManager.Keys.cachedRootInfo)
             }
         }
         if (filesToClearFileInfo.isNotEmpty()) {
             filesToClearFileInfo.forEach { file ->
-                file.cachedFileInfo = null
+                ParadoxAnalysisDataManager.clearData(file, ParadoxAnalysisDataManager.Keys.cachedFileInfo)
             }
 
         }
         if (filesToClearLocaleConfig.isNotEmpty()) {
             filesToClearLocaleConfig.forEach { file ->
-                file.cachedLocaleConfig = null
+                ParadoxAnalysisDataManager.clearData(file, ParadoxAnalysisDataManager.Keys.cachedLocaleConfig)
             }
 
         }
         if (filesToClearSliceInfos.isNotEmpty()) {
             filesToClearSliceInfos.forEach { file ->
-                file.sliceInfos = null
+                ParadoxAnalysisDataManager.clearData(file, ParadoxAnalysisDataManager.Keys.sliceInfos)
             }
         }
 

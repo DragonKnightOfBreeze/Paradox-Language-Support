@@ -117,13 +117,13 @@ object ParadoxGameManager {
             // TODO 3.0.1+ require more optimization here (~6.7s during indexing for stellaris game directory)
             rootPath.resolve(baseName).takeIf { checkExecutablePath(it) }?.let { return it }
             rootPath.resolve("${baseName}.exe").takeIf { checkExecutablePath(it) }?.let { return it }
-            rootPath.resolve("bin").takeIf { it.isDirectory() }?.let { binPath ->
-                binPath.resolve(baseName).takeIf { checkExecutablePath(it) }?.let { return it }
-                binPath.resolve("${baseName}.exe").takeIf { checkExecutablePath(it) }?.let { return it }
-            }
             rootPath.resolve("binaries").takeIf { it.isDirectory() }?.let { binariesPath ->
                 binariesPath.resolve(baseName).takeIf { checkExecutablePath(it) }?.let { return it }
                 binariesPath.resolve("${baseName}.exe").takeIf { checkExecutablePath(it) }?.let { return it }
+            }
+            rootPath.resolve("bin").takeIf { it.isDirectory() }?.let { binPath ->
+                binPath.resolve(baseName).takeIf { checkExecutablePath(it) }?.let { return it }
+                binPath.resolve("${baseName}.exe").takeIf { checkExecutablePath(it) }?.let { return it }
             }
         }
         return null

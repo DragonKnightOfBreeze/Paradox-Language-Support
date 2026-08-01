@@ -87,12 +87,14 @@ private fun <T> UserDataHolder.getOrPutComputedNullableUserData(key: Key<*>, com
     // default value is still saved if it's null
     if (this is UserDataHolderEx) {
         @Suppress("UNCHECKED_CAST")
-        putUserDataIfAbsent(key as Key<Any>, computed ?: EMPTY_OBJECT)
+        val computed = putUserDataIfAbsent(key as Key<Any>, computed ?: EMPTY_OBJECT)
+        @Suppress("UNCHECKED_CAST")
+        return computed.takeIf { it !== EMPTY_OBJECT } as T
     } else {
         @Suppress("UNCHECKED_CAST")
         putUserData(key as Key<Any>, computed ?: EMPTY_OBJECT)
+        return computed
     }
-    return computed
 }
 
 // UserDataHolder Access Extensions

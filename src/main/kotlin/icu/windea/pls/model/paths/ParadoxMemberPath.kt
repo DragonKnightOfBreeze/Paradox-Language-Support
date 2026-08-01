@@ -8,6 +8,7 @@ import icu.windea.pls.core.collections.ImmutableList
 import icu.windea.pls.core.collections.mapFast
 import icu.windea.pls.core.collections.removePrefixOrNull
 import icu.windea.pls.core.splitFast
+import icu.windea.pls.core.util.values.LazyValue
 
 /**
  * 脚本成员在脚本文件中的路径。
@@ -104,33 +105,60 @@ private sealed class ParadoxMemberPathBase : ParadoxMemberPath {
     override fun toString() = path
 }
 
-private val pathInterner = Interner.newWeakInterner<String>()
-private val subPathInterner = Interner.newWeakInterner<String>()
-
-private fun String.internPath() = pathInterner.intern(this)
-private fun String.internSubPath() = subPathInterner.intern(this)
-private fun List<String>.computePath() = if (size == 1) first().replace("/", "\\/") else joinToString("/") { it.replace("/", "\\/") }
-private fun String.computeSubPaths() = replace("\\/", "\u0000").splitFast('/').mapFast { it.replace('\u0000', '/') }
-private fun List<String>.computeNormalizedPath() = if (size == 1) first().replace("/", "\\/").internSubPath() else joinToString("/") { it.replace("/", "\\/") }.internPath()
-private fun ParadoxMemberPath.computeNormalizedSubPaths(): List<String> = ImmutableList(subPaths.size) { subPaths[it].internSubPath() }
-
 private class ParadoxMemberPathImplFromPath(input: String) : ParadoxMemberPathBase() {
     override val path: String = input
-    override val subPaths: List<String> = input.computeSubPaths()
+    override val subPaths: List<String> = computeSubPaths(path)
+
+    private fun computeSubPaths(path: String): List<String> {
+        if (path.contains('\\')) {
+            return path.replace("\\/", "\u0000").splitFast('/').mapFast { it.replace('\u0000', '/') }
+        }
+        return path.splitFast('/')
+    }
 }
 
 private class ParadoxMemberPathImplFromSubPaths(input: List<String>) : ParadoxMemberPathBase() {
     // 3.0.1 optimize: lazy compute `path` since it's rarely used in production code
-    @Volatile private var _path: String? = null
-    override val path: String get() = _path ?: subPaths.computePath().also { _path = it }
+    override val path: String // region by lazy { computePath() }
+        get() = LazyValue.of({ _path }, { _path = it }) { computePath(subPaths) }
+    @Volatile private var _path: String? = null // endregion
     override val subPaths: List<String> = input
+
+    private fun computePath(subPaths: List<String>): String {
+        if(path.contains('/')) {
+            if (subPaths.size == 1) return subPaths[0].replace("/", "\\/")
+            return subPaths.joinToString("/") { it.replace("/", "\\/") }
+        }
+        if (subPaths.size == 1) return subPaths[0]
+        return subPaths.joinToString("/")
+    }
 }
+
+// 3.0.1 note: path object will not be self interned atm
+private val pathInterner = Interner.newWeakInterner<String>()
+private val subPathInterner = Interner.newWeakInterner<String>()
+private fun String.internPath() = pathInterner.intern(this)
+private fun String.internSubPath() = subPathInterner.intern(this)
 
 private class NormalizedParadoxMemberPath(input: ParadoxMemberPath) : ParadoxMemberPathBase() {
     // 3.0.1 optimize: lazy compute `path` since it's rarely used in production code
-    @Volatile private var _path: String? = null
-    override val path: String get() = _path ?: subPaths.computeNormalizedPath().also { _path = it }
-    override val subPaths: List<String> = input.computeNormalizedSubPaths()
+    override val path: String // region by lazy { computePath() }
+        get() = LazyValue.of({ _path }, { _path = it }) { computePath(subPaths) }
+    @Volatile private var _path: String? = null // endregion
+    override val subPaths: List<String> = computeNormalizedSubPaths(input.subPaths)
+
+    private fun computePath(subPaths: List<String>): String {
+        if(path.contains('/')) {
+            if (subPaths.size == 1) return subPaths[0].replace("/", "\\/").internSubPath()
+            return subPaths.joinToString("/") { it.replace("/", "\\/") }.internPath()
+        }
+        if (subPaths.size == 1) return subPaths[0].internSubPath()
+        return subPaths.joinToString("/").internPath()
+    }
+
+    private fun computeNormalizedSubPaths(subPaths: List<String>): List<String> {
+        return ImmutableList(subPaths.size) { subPaths[it].internSubPath() }
+    }
 }
 
 private object EmptyParadoxMemberPath : ParadoxMemberPathBase() {

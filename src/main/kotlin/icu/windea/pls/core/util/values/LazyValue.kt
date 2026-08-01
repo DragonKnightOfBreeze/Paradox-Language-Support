@@ -112,23 +112,71 @@ class LazyValue<T> : Supplier<T?> {
         }
 
         /**
-         * 用于实现内存友好的懒加载属性。基于 `@Volatile`。
+         * 用于实现内存友好的可空类型的懒加载属性。基于 `@Volatile`。
          *
          * 示例：
          *
          * ```
          * val value: Value?
-         *     get() = LazyValue.of({ _value }, { _value = it }) { computeValue() }
+         *     get() = LazyValue.ofNullable({ _value }, { _value = it }) { computeValue() }
          * @Volatile private var _value = LazyValue.UNINITIALIZED
          *
          * private fun computeValue() { ... }
          * ```
          */
         @Fast
-        inline fun <T> of(fieldGetter: () -> Any?, fieldSetter: (T) -> Unit, valueProvider: () -> T): T {
+        inline fun <T> ofNullable(fieldGetter: () -> Any?, fieldSetter: (T) -> Unit, valueProvider: () -> T): T {
             val field = fieldGetter()
             @Suppress("UNCHECKED_CAST")
             if (field !== UNINITIALIZED) return field as T
+            val value = valueProvider()
+            return value.also { fieldSetter(value) }
+        }
+
+        /**
+         * 用于实现内存友好的可空类型的懒加载属性。基于 `@Volatile` 和双重检查锁。
+         *
+         * 示例：
+         *
+         * ```
+         * val value: Value?
+         *     get() = LazyValue.ofNullable(lock, { _value }, { _value = it }) { computeValue() }
+         * @Volatile private var _value = LazyValue.UNINITIALIZED
+         *
+         * private fun computeValue() { ... }
+         * ```
+         */
+        @Fast
+        inline fun <T> ofNullable(lock: Any, fieldGetter: () -> Any?, fieldSetter: (T) -> Unit, valueProvider: () -> T): T {
+            val field = fieldGetter()
+            @Suppress("UNCHECKED_CAST")
+            if (field !== UNINITIALIZED) return field as T
+            synchronized(lock) {
+                val field = fieldGetter()
+                @Suppress("UNCHECKED_CAST")
+                if (field !== UNINITIALIZED) return field as T
+                val value = valueProvider()
+                return value.also { fieldSetter(value) }
+            }
+        }
+
+        /**
+         * 用于实现内存友好的懒加载属性。基于 `@Volatile`。
+         *
+         * 示例：
+         *
+         * ```
+         * val value: Value
+         *     get() = LazyValue.of({ _value }, { _value = it }) { computeValue() }
+         * @Volatile private var _value: Value? = null
+         *
+         * private fun computeValue() { ... }
+         * ```
+         */
+        @Fast
+        inline fun <T> of(fieldGetter: () -> T?, fieldSetter: (T) -> Unit, valueProvider: () -> T): T {
+            val field = fieldGetter()
+            if (field !== null) return field
             val value = valueProvider()
             return value.also { fieldSetter(value) }
         }
@@ -139,22 +187,20 @@ class LazyValue<T> : Supplier<T?> {
          * 示例：
          *
          * ```
-         * val value: Value?
+         * val value: Value
          *     get() = LazyValue.of(lock, { _value }, { _value = it }) { computeValue() }
-         * @Volatile private var _value = LazyValue.UNINITIALIZED
+         * @Volatile private var _value: Value? = null
          *
          * private fun computeValue() { ... }
          * ```
          */
         @Fast
-        inline fun <T> of(lock: Any, fieldGetter: () -> Any?, fieldSetter: (T) -> Unit, valueProvider: () -> T): T {
+        inline fun <T> of(lock: Any, fieldGetter: () -> T?, fieldSetter: (T) -> Unit, valueProvider: () -> T): T {
             val field = fieldGetter()
-            @Suppress("UNCHECKED_CAST")
-            if (field !== UNINITIALIZED) return field as T
+            if (field !== null) return field
             synchronized(lock) {
                 val field = fieldGetter()
-                @Suppress("UNCHECKED_CAST")
-                if (field !== UNINITIALIZED) return field as T
+                if (field !== null) return field
                 val value = valueProvider()
                 return value.also { fieldSetter(value) }
             }

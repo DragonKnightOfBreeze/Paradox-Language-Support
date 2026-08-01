@@ -70,7 +70,7 @@ object ParadoxAnalysisManager : ParadoxAnalysisScope {
     }
 
     private fun doGetCachedRootInfo(rootFile: VirtualFile): ParadoxRootInfo? {
-        val cachedRootInfo = rootFile.cachedRootInfo ?: LazyValue<ParadoxRootInfo>().also { rootFile.cachedRootInfo = it }
+        val cachedRootInfo = ParadoxAnalysisDataManager.getOrPutData(rootFile, ParadoxAnalysisDataManager.Keys.cachedRootInfo) { LazyValue() }
         return cachedRootInfo.initialize {
             ParadoxAnalysisLifecycleService.ensureLoaded()
             runCatchingCancelable { doResolveRootInfo(rootFile) }.onFailure { e -> logger.warn(e) }.getOrNull()
@@ -114,7 +114,7 @@ object ParadoxAnalysisManager : ParadoxAnalysisScope {
     }
 
     private fun doGetCachedFileInfo(file: VirtualFile): ParadoxFileInfo? {
-        val cachedFileInfo = file.cachedFileInfo ?: LazyValue<ParadoxFileInfo>().also { file.cachedFileInfo = it }
+        val cachedFileInfo = ParadoxAnalysisDataManager.getOrPutData(file, ParadoxAnalysisDataManager.Keys.cachedFileInfo) { LazyValue() }
         cachedFileInfo.check { fileInfo ->
             doCheckFileInfo(fileInfo)
         }
@@ -126,9 +126,10 @@ object ParadoxAnalysisManager : ParadoxAnalysisScope {
 
     private fun doCheckFileInfo(fileInfo: ParadoxFileInfo): Boolean {
         // consistency check
-        if (fileInfo.rootInfo is ParadoxRootInfo.MetadataBased) {
-            val expectedRootInfo = doGetCachedRootInfo(fileInfo.rootInfo.rootFile)
-            if (expectedRootInfo != fileInfo.rootInfo) return false
+        val rootInfo = fileInfo.rootInfo
+        if (rootInfo is ParadoxRootInfo.MetadataBased) {
+            val expectedRootInfo = doGetCachedRootInfo(rootInfo.rootFile)
+            if (expectedRootInfo != rootInfo) return false
         }
         return true
     }
@@ -208,7 +209,7 @@ object ParadoxAnalysisManager : ParadoxAnalysisScope {
 
     private fun doGetCachedLocaleConfig(file: VirtualFile, project: Project): CwtLocaleConfig? {
         if (DumbService.isDumb(project)) return null // NOTE 2.1.2 incase index not ready
-        val cachedLocaleConfig = file.cachedLocaleConfig ?: LazyValue<CwtLocaleConfig>().also { file.cachedLocaleConfig = it }
+        val cachedLocaleConfig = ParadoxAnalysisDataManager.getOrPutData(file, ParadoxAnalysisDataManager.Keys.cachedLocaleConfig) { LazyValue() }
         return cachedLocaleConfig.initialize {
             ParadoxAnalysisLifecycleService.ensureLoaded()
             runCatchingCancelable { doResolveLocaleConfig(file, project) }.onFailure { e -> logger.warn(e) }.getOrNull()
@@ -223,7 +224,7 @@ object ParadoxAnalysisManager : ParadoxAnalysisScope {
     }
 
     fun getSliceInfos(file: VirtualFile): MutableSet<String> {
-        return file.sliceInfos ?: mutableSetOf<String>().also { file.sliceInfos = it }
+        return ParadoxAnalysisDataManager.getOrPutData(file, ParadoxAnalysisDataManager.Keys.sliceInfos) { mutableSetOf() }
     }
 
     // endregion

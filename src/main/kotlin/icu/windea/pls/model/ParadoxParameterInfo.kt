@@ -34,7 +34,7 @@ data class ParadoxParameterInfo(
 ) : UserDataHolderBase() {
     // 3.0.1 optimize: use memory-friendly lazy property
     val modificationTracker: ModificationTracker? // region by lazy { computeModificationTracker() }
-        get() = LazyValue.of({ _modificationTracker }, { _modificationTracker = it }) { computeModificationTracker() }
+        get() = LazyValue.ofNullable({ _modificationTracker }, { _modificationTracker = it }) { computeModificationTracker() }
     @Volatile private var _modificationTracker = LazyValue.UNINITIALIZED // endregion
 
     private fun computeModificationTracker() = support?.getModificationTracker(this)

@@ -202,9 +202,9 @@ private sealed class CwtPropertyConfigBase : CwtOptionMetadataBase(), CwtPropert
 
     override val configExpression: CwtDataExpression get() = keyExpression
 
-    // optimize: use memory-friendly lazy property
+    // 3.0.1 optimize: use memory-friendly lazy property
     override val valueConfig: CwtValueConfig? // region by lazy { computeValueConfig() }
-        get() = LazyValue.of(this, { _valueConfig }, { _valueConfig = it }) { computeValueConfig() }
+        get() = LazyValue.ofNullable(this, { _valueConfig }, { _valueConfig = it }) { computeValueConfig() }
     @Volatile private var _valueConfig = LazyValue.UNINITIALIZED // endregion
 
     private fun computeValueConfig(): CwtValueConfig? {

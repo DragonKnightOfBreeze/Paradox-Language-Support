@@ -2,7 +2,6 @@ package icu.windea.pls.lang.analysis
 
 import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
-import icu.windea.pls.core.util.values.LazyValue
 import icu.windea.pls.model.ParadoxFileInfo
 import icu.windea.pls.model.ParadoxRootInfo
 import java.nio.file.Path
@@ -66,22 +65,6 @@ inline var useOnlyInjectedConfigFiles: Boolean // region by ParadoxAnalysisDataM
     get() = ParadoxAnalysisDataManager.useOnlyInjectedConfigFiles
     set(value) = run { ParadoxAnalysisDataManager.useOnlyInjectedConfigFiles = value } // endregion
 
-/** @see ParadoxAnalysisDataManager.Keys.cachedRootInfo */
-context(_: ParadoxAnalysisScope)
-inline var VirtualFile.cachedRootInfo: LazyValue<ParadoxRootInfo>? // region by ParadoxAnalysisDataManager.Keys.cachedRootInfo
-    get() = ParadoxAnalysisDataManager.getData(this, ParadoxAnalysisDataManager.Keys.cachedRootInfo)
-    set(value) = ParadoxAnalysisDataManager.setData(this, ParadoxAnalysisDataManager.Keys.cachedRootInfo, value) // endregion
-/** @see ParadoxAnalysisDataManager.Keys.cachedFileInfo */
-context(_: ParadoxAnalysisScope)
-inline var VirtualFile.cachedFileInfo: LazyValue<ParadoxFileInfo>? // region by ParadoxAnalysisDataManager.Keys.cachedFileInfo
-    get() = ParadoxAnalysisDataManager.getData(this, ParadoxAnalysisDataManager.Keys.cachedFileInfo)
-    set(value) = ParadoxAnalysisDataManager.setData(this, ParadoxAnalysisDataManager.Keys.cachedFileInfo, value) // endregion
-/** @see ParadoxAnalysisDataManager.Keys.cachedLocaleConfig */
-context(_: ParadoxAnalysisScope)
-inline var VirtualFile.cachedLocaleConfig: LazyValue<CwtLocaleConfig>? // region by ParadoxAnalysisDataManager.Keys.cachedLocaleConfig
-    get() = ParadoxAnalysisDataManager.getData(this, ParadoxAnalysisDataManager.Keys.cachedLocaleConfig)
-    set(value) = ParadoxAnalysisDataManager.setData(this, ParadoxAnalysisDataManager.Keys.cachedLocaleConfig, value) // endregion
-
 /** @see ParadoxAnalysisDataManager.Keys.injectedRootInfo */
 context(_: ParadoxAnalysisScope)
 inline var VirtualFile.injectedRootInfo: ParadoxRootInfo? // region by ParadoxAnalysisDataManager.Keys.injectedRootInfo
@@ -97,14 +80,9 @@ context(_: ParadoxAnalysisScope)
 inline var VirtualFile.injectedLocaleConfig: CwtLocaleConfig? // region by ParadoxAnalysisDataManager.Keys.injectedLocaleConfig
     get() = ParadoxAnalysisDataManager.getData(this, ParadoxAnalysisDataManager.Keys.injectedLocaleConfig)
     set(value) = ParadoxAnalysisDataManager.setData(this, ParadoxAnalysisDataManager.Keys.injectedLocaleConfig, value) // endregion
+
 /** @see ParadoxAnalysisDataManager.Keys.injectedRootKeys */
 context(_: ParadoxAnalysisScope)
 inline var VirtualFile.injectedRootKeys: List<String>? // region by ParadoxAnalysisDataManager.Keys.injectedRootKeys
     get() = ParadoxAnalysisDataManager.getData(this, ParadoxAnalysisDataManager.Keys.injectedRootKeys)
     set(value) = ParadoxAnalysisDataManager.setData(this, ParadoxAnalysisDataManager.Keys.injectedRootKeys, value) // endregion
-
-/** @see ParadoxAnalysisDataManager.Keys.sliceInfos */
-context(_: ParadoxAnalysisScope)
-inline var VirtualFile.sliceInfos: MutableSet<String>? // region by ParadoxAnalysisDataManager.Keys.sliceInfos
-    get() = ParadoxAnalysisDataManager.getData(this, ParadoxAnalysisDataManager.Keys.sliceInfos)
-    set(value) = ParadoxAnalysisDataManager.setData(this, ParadoxAnalysisDataManager.Keys.sliceInfos, value) // endregion

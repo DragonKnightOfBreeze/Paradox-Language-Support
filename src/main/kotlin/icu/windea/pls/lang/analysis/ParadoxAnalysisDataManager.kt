@@ -27,6 +27,8 @@ object ParadoxAnalysisDataManager {
         val cachedFileInfo by registerKey<LazyValue<ParadoxFileInfo>>(this)
         /** 用于在文件级别保存语言环境规则（[CwtLocaleConfig]）。 */
         val cachedLocaleConfig by registerKey<LazyValue<CwtLocaleConfig>>(this)
+        /** 用于切分图片文件。 */
+        val sliceInfos by registerKey<MutableSet<String>>(this)
 
         /** 用于为文件注入根信息（[ParadoxRootInfo]）。 */
         val injectedRootInfo by registerKey<ParadoxRootInfo>(this)
@@ -36,12 +38,9 @@ object ParadoxAnalysisDataManager {
         val injectedLocaleConfig by registerKey<CwtLocaleConfig>(this)
         /** 用于为脚本文件注入一组顶级键，解析时会加上作为前缀。 */
         val injectedRootKeys by registerKey<List<String>>(this)
-
-        /** 用于切分图片文件。 */
-        val sliceInfos by registerKey<MutableSet<String>>(this)
     }
 
-    val trackedFiles: MutableMap<VirtualFile, Unit> = CollectionFactory.createConcurrentWeakIdentityMap()
+    val trackedFiles: MutableMap<VirtualFile, Boolean> = CollectionFactory.createConcurrentWeakIdentityMap()
 
     /** 是否直接根据文件扩展名决定是否需要将文件类型重载为对应的文件类型（[ParadoxFileType]）。可用于集成测试。 */
     @Volatile var useDefaultFileExtensions: Boolean = false
@@ -66,20 +65,34 @@ object ParadoxAnalysisDataManager {
     /** 初始化规则分组时，是否仅使用注入的规则文件。 */
     @Volatile var useOnlyInjectedConfigFiles: Boolean = false
 
-    // 3.0.1 optimize: inline only
-    @Suppress("NOTHING_TO_INLINE")
-    inline fun <T> getData(file: VirtualFile, key: Key<T>): T? {
+    fun <T : Any> getData(file: VirtualFile, key: Key<T>): T? {
         return file.getUserData(key)
     }
 
-    // 3.0.1 optimize: inline only
-    @Suppress("NOTHING_TO_INLINE")
-    inline fun <T> setData(file: VirtualFile, key: Key<T>, value: T?) {
+    fun <T : Any> setData(file: VirtualFile, key: Key<T>, value: T?) {
         // skip for `StubVirtualFile` (unsupported)
         if (VirtualFileService.isStubFile(file)) return
-        // put data
+        // put user data
         file.putUserData(key, value)
-        // auto track files
-        if (value != null) trackedFiles.put(file, Unit) else trackedFiles.remove(file)
+        // track file
+        if (value != null) trackedFiles.put(file, true) else trackedFiles.remove(file)
+    }
+
+    fun <T : Any> clearData(file: VirtualFile, key: Key<T>) {
+        // skip for `StubVirtualFile` (unsupported)
+        if (VirtualFileService.isStubFile(file)) return
+        // put user data
+        file.putUserData(key, null)
+        // track file
+        trackedFiles.remove(file)
+    }
+
+    inline fun <T : Any> getOrPutData(file: VirtualFile, key: Key<T>, defaultValue: () -> T): T {
+        // get user data if exists
+        file.getUserData(key)?.let { return it }
+        // track file
+        trackedFiles.put(file, true)
+        // NOTE 3.0.1 optimize: initialize user data atomically
+        return file.putUserDataIfAbsent(key, defaultValue())
     }
 }

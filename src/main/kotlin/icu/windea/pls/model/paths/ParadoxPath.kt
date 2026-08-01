@@ -140,7 +140,7 @@ private fun String.internSubPath() = subPathInterner.intern(this)
 private fun List<String>.computePath() = if (size == 1) first() else joinToString("/")
 private fun String.computeSubPaths() = splitFast('/')
 private fun String.computeParent() = substringBeforeLast('/', "")
-private fun ParadoxPath.computeNormalizedPath(): String = if (length == 1) path.internSubPath() else path.internPath()
+private fun ParadoxPath.computePath(): String = if (length == 1) path.internSubPath() else path.internPath()
 private fun ParadoxPath.computeNormalizedSubPath(): List<String> = ImmutableList(subPaths.size) { subPaths[it].internSubPath() }
 private fun ParadoxPath.computeNormalizedParent(): String = if (length == 1) "" else parent.internPath()
 
@@ -157,7 +157,7 @@ private class ParadoxPathImplFromSubPaths(input: List<String>) : ParadoxPathBase
 }
 
 private class NormalizedParadoxPath(input: ParadoxPath) : ParadoxPathBase() {
-    override val path: String = input.computeNormalizedPath()
+    override val path: String = input.computePath()
     override val subPaths: List<String> = input.computeNormalizedSubPath()
     override val parent: String = input.computeNormalizedParent()
 }

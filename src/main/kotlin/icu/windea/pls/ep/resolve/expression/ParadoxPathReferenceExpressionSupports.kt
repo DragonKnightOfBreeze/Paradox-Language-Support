@@ -101,8 +101,9 @@ class ParadoxFilePathReferenceExpressionSupport : ParadoxPathReferenceExpression
             val l1 = index
             if (!filePath.regionMatches(0, expression, 0, l1, ignoreCase)) return null
             val l2 = expression.length - index - 1
-            if (!filePath.regionMatches(filePath.length - l2, expression, index + 1, l2, ignoreCase)) return null
-            return filePath.substring(l1, filePath.length - l2).trimFast('/')
+            val filePathLength = filePath.length
+            if (!filePath.regionMatches(filePathLength - l2, expression, index + 1, l2, ignoreCase)) return null
+            return filePath.substring(l1, filePathLength - l2).trimFast('/')
             // val s1 = expression.substring(0, index)
             // val s2 = expression.substring(index + 1)
             // return filePath.removeSurroundingOrNull(s1, s2, ignoreCase)?.trimFast('/')
