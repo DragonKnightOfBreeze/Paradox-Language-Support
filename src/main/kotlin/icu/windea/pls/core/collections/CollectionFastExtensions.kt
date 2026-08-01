@@ -1,4 +1,5 @@
 @file:Suppress("unused")
+@file:Fast
 
 package icu.windea.pls.core.collections
 

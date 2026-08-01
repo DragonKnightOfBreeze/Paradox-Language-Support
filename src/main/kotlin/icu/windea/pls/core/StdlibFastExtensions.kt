@@ -1,7 +1,9 @@
 @file:Suppress("unused")
+@file:Fast
 
 package icu.windea.pls.core
 
+import com.google.common.collect.ImmutableList
 import icu.windea.pls.core.annotations.Fast
 
 /** @see kotlin.text.equals */
@@ -75,7 +77,7 @@ fun String.splitFast(delimiter: Char, ignoreCase: Boolean = false, limit: Int = 
     var nextIndex = indexOf(delimiter, currentOffset, ignoreCase)
     if (nextIndex == -1 || limit == 1) {
         val r = this
-        return listOf(r)
+        return ImmutableList.of(r)
     }
 
     val isLimited = limit > 0
