@@ -85,7 +85,12 @@ class KotlinGetterReadAccessorDelegate<T : Any, V>(
     @Suppress("UNCHECKED_CAST")
     override fun get(target: T?): V {
         return AccessorRunner.runInAccessorDelegate {
-            getter.call(target) as V
+            if (target != null) {
+                getter.call(target) as V
+            } else {
+                // 3.0.1 fix: KFunction should not take null target as first arg
+                getter.call() as V
+            }
         }
     }
 }
@@ -166,7 +171,12 @@ class KotlinSetterWriteAccessorDelegate<T : Any, V>(
 
     override fun set(target: T?, value: V) {
         AccessorRunner.runInAccessorDelegate {
-            getter.call(target, value)
+            if (target != null) {
+                getter.call(target, value)
+            } else {
+                // 3.0.1 fix: KFunction should not take null target as first arg
+                getter.call(value)
+            }
         }
     }
 }
@@ -208,7 +218,12 @@ class KotlinFunctionInvokeAccessorDelegate<T : Any>(
 
     override fun invoke(target: T?, vararg args: Any?): Any? {
         return AccessorRunner.runInAccessorDelegate {
-            function.call(target, *args)
+            if (target != null) {
+                function.call(target, *args)
+            } else {
+                // 3.0.1 fix: KFunction should not take null target as first arg
+                function.call(*args)
+            }
         }
     }
 }
