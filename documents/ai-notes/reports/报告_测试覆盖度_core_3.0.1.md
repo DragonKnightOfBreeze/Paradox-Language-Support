@@ -76,18 +76,17 @@
 
 **覆盖度：PARTIAL (~30%)**
 
-| 已测试 | 未测试 |
-|---|---|
-| `AccessorBuilder.property()` 读 | 所有写操作（`set()`） |
-| `AccessorBuilder.memberProperty()` 读 | `staticProperty(String, String)` 重载 |
-| `AccessorBuilder.staticProperty()` 读 | Kotlin 属性代理（`getValue/setValue`） |
-| `AccessorBuilder.function()` 调用 | `AccessorProviderImpl` 直接测试 |
-| `AccessorBuilder.memberFunction()` 调用 | 查找写访问器和调用访问器路径 |
-| `AccessorBuilder.staticFunction()` 调用 | Java 反射回退路径 |
+| 已测试 | 未测试                                                                                            |
+|---|---------------------------------------------------------------------------------------------------|
+| `AccessorBuilder.property()` 读 | 所有写操作（`set()`）                                                                             |
+| `AccessorBuilder.memberProperty()` 读 | `staticProperty(String, String)` 重载                                                             |
+| `AccessorBuilder.staticProperty()` 读 | Kotlin 属性代理（`getValue/setValue`）                                                            |
+| `AccessorBuilder.function()` 调用 | `AccessorProviderImpl` 直接测试                                                                   |
+| `AccessorBuilder.memberFunction()` 调用 | 查找写访问器和调用访问器路径                                                                      |
+| `AccessorBuilder.staticFunction()` 调用 | Java 反射回退路径                                                                                 |
 | | 错误路径（`ClassCastException`、`UnsupportedAccessorException`、`ProcessCanceledException` 传播） |
-| | `AccessorContext` |
-| | `AccessorDelegateBuilder` 工厂方法 |
-| | `AccessorRunner` 异常包装逻辑 |
+| | `AccessorContext` 异常包装逻辑                                                                                |
+| | `AccessorDelegateBuilder` 工厂方法                                                                |
 
 **测试类型：** 纯单元测试，无 IntelliJ 平台依赖。
 

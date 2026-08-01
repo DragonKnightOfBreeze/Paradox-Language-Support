@@ -99,7 +99,7 @@ internal object CodeInjectorContext {
      * 执行注入的代码逻辑，捕捉意外错误，并对于每个 [codeInjectorId] 的每个 [name] 仅报告一次错误。
      */
     @PublishedApi
-    internal fun <T> execute(codeInjectorId: String, name: String, action: () -> T): T? {
+    internal inline fun <T> execute(codeInjectorId: String, name: String, action: () -> T): T? {
         try {
             return action()
         } catch (e: Exception) {

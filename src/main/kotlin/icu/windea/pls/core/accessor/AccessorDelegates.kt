@@ -49,7 +49,7 @@ class KotlinMemberPropertyReadAccessorDelegate<T : Any, V>(
     @Suppress("UNCHECKED_CAST")
     override fun get(target: T?): V {
         if (target == null) throw UnsupportedAccessorException()
-        return AccessorRunner.runInAccessorDelegate {
+        return AccessorContext.runInAccessorDelegate {
             property.get(target) as V
         }
     }
@@ -67,7 +67,7 @@ class KotlinPropertyReadAccessorDelegate<T : Any, V>(
     @Suppress("UNCHECKED_CAST")
     override fun get(target: T?): V {
         if (target != null) throw UnsupportedAccessorException()
-        return AccessorRunner.runInAccessorDelegate {
+        return AccessorContext.runInAccessorDelegate {
             property.get() as V
         }
     }
@@ -84,7 +84,7 @@ class KotlinGetterReadAccessorDelegate<T : Any, V>(
 
     @Suppress("UNCHECKED_CAST")
     override fun get(target: T?): V {
-        return AccessorRunner.runInAccessorDelegate {
+        return AccessorContext.runInAccessorDelegate {
             if (target != null) {
                 getter.call(target) as V
             } else {
@@ -105,7 +105,7 @@ class JavaFieldReadAccessorDelegate<T : Any, V>(
 
     @Suppress("UNCHECKED_CAST")
     override fun get(target: T?): V {
-        return AccessorRunner.runInAccessorDelegate {
+        return AccessorContext.runInAccessorDelegate {
             field.get(target) as V
         }
     }
@@ -134,7 +134,7 @@ class KotlinMemberPropertyWriteAccessorDelegate<T : Any, V>(
     @Suppress("UNCHECKED_CAST")
     override fun set(target: T?, value: V) {
         if (target == null) throw UnsupportedAccessorException()
-        AccessorRunner.runInAccessorDelegate {
+        AccessorContext.runInAccessorDelegate {
             property as KMutableProperty1<T, in Any?>
             property.set(target, value)
         }
@@ -153,7 +153,7 @@ class KotlinPropertyWriteAccessorDelegate<T : Any, V>(
     @Suppress("UNCHECKED_CAST")
     override fun set(target: T?, value: V) {
         if (target != null) throw UnsupportedAccessorException()
-        AccessorRunner.runInAccessorDelegate {
+        AccessorContext.runInAccessorDelegate {
             property as KMutableProperty0<in Any?>
             property.set(value)
         }
@@ -170,7 +170,7 @@ class KotlinSetterWriteAccessorDelegate<T : Any, V>(
     }
 
     override fun set(target: T?, value: V) {
-        AccessorRunner.runInAccessorDelegate {
+        AccessorContext.runInAccessorDelegate {
             if (target != null) {
                 getter.call(target, value)
             } else {
@@ -190,7 +190,7 @@ class JavaFieldWriteAccessorDelegate<T : Any, V>(
     }
 
     override fun set(target: T?, value: V) {
-        AccessorRunner.runInAccessorDelegate {
+        AccessorContext.runInAccessorDelegate {
             field.set(target, value)
         }
     }
@@ -217,7 +217,7 @@ class KotlinFunctionInvokeAccessorDelegate<T : Any>(
     }
 
     override fun invoke(target: T?, vararg args: Any?): Any? {
-        return AccessorRunner.runInAccessorDelegate {
+        return AccessorContext.runInAccessorDelegate {
             if (target != null) {
                 function.call(target, *args)
             } else {
@@ -237,7 +237,7 @@ class JavaMethodInvokeAccessorDelegate<T : Any>(
     }
 
     override fun invoke(target: T?, vararg args: Any?): Any? {
-        return AccessorRunner.runInAccessorDelegate {
+        return AccessorContext.runInAccessorDelegate {
             method.invoke(target, *args)
         }
     }

@@ -58,7 +58,7 @@ class AccessorProviderImpl<T : Any>(
 
     override fun <V> get(target: T?, propertyName: String): V {
         validateTargetClass(target)
-        return AccessorRunner.runInAccessorProvider {
+        return AccessorContext.runInAccessorProvider {
             val accessor = findReadAccessor<V>(target, propertyName)
             accessor.get(target)
         }
@@ -66,7 +66,7 @@ class AccessorProviderImpl<T : Any>(
 
     override fun <V> set(target: T?, propertyName: String, value: V) {
         validateTargetClass(target)
-        AccessorRunner.runInAccessorProvider {
+        AccessorContext.runInAccessorProvider {
             val accessor = findWriteAccessor<V>(target, propertyName)
             accessor.set(target, value)
         }
@@ -74,11 +74,11 @@ class AccessorProviderImpl<T : Any>(
 
     override fun invoke(target: T?, functionName: String, vararg args: Any?): Any? {
         validateTargetClass(target)
-        return AccessorRunner.runInAccessorProvider block@{
+        return AccessorContext.runInAccessorProvider action@{
             val accessors = findInvokeAccessors(target, functionName, *args)
             for (accessor in accessors) {
                 try {
-                    return@block accessor.invoke(target, *args)
+                    return@action accessor.invoke(target, *args)
                 } catch (_: IllegalArgumentException) {
                     // ignore
                 }

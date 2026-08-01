@@ -8,7 +8,8 @@ import java.lang.reflect.InvocationTargetException
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
 
-object AccessorContext {
+@PublishedApi
+internal object AccessorContext {
     private val logger = thisLogger()
     private val reported = ConcurrentHashMap.newKeySet<String>()
 
@@ -19,14 +20,14 @@ object AccessorContext {
      *
      * 按目标 [KClass] 维度缓存和复用 [AccessorProvider] 实例，避免重复构建和反射扫描。
      */
-    @JvmStatic
-    fun <T : Any> get(targetClass: KClass<T>): AccessorProvider<T> {
+    @PublishedApi
+    internal fun <T : Any> get(targetClass: KClass<T>): AccessorProvider<T> {
         // 3.0.1 use `computeIfAbsent` here to ensure strict thread safe
         return cache.computeIfAbsent(targetClass) { AccessorProviderImpl(targetClass) }.cast()
     }
 
-    @JvmStatic
-    fun reportError(name: String, error: Throwable) {
+    @PublishedApi
+    internal fun reportError(name: String, error: Throwable) {
         val key = name
         if (!reported.add(key)) return
         logger.warn("ERROR while execute $name (suppressed now)", error)

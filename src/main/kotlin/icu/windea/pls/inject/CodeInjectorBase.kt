@@ -70,7 +70,7 @@ abstract class CodeInjectorBase : CodeInjector, UserDataHolderBase() {
 
     /** @see CodeInjectorContext.execute */
     @Suppress("unused")
-    protected fun <T> execute(name: String, action: () -> T): T? {
+    protected inline fun <T> execute(name: String, action: () -> T): T? {
         return CodeInjectorContext.execute(id, name, action)
     }
 
