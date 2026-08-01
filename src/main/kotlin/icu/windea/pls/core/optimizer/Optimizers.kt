@@ -86,8 +86,8 @@ private sealed class SetOptimizer<E : Any> : Optimizer.Unary<Set<E>> {
 
     protected inline fun apply(input: Set<E>): Set<E> {
         if (input.size == 1) {
-            val E = input.iterator().next()
-            return ImmutableSet.of(E)
+            val e = input.iterator().next()
+            return ImmutableSet.of(e)
         }
         return ImmutableSet.copyOf(input)
     }
@@ -126,13 +126,9 @@ private object StringListOptimizer : ListOptimizer<String>() {
 
     override fun optimize(input: List<String>): List<String> {
         if (input.isEmpty()) return applyForEmpty()
-        if (ignore(input)) return intern(input)
-        return intern(apply(input))
-    }
-
-    private inline fun intern(input: List<String>): List<String> {
-        if (input.size > threshold) return input
-        return interner.intern(input)
+        if (input.size > threshold) return input // exceeds the threshold -> return self
+        if (ignore(input)) return interner.intern(input)
+        return interner.intern(apply(input))
     }
 }
 
@@ -142,13 +138,9 @@ private object StringSetOptimizer : SetOptimizer<String>() {
 
     override fun optimize(input: Set<String>): Set<String> {
         if (input.isEmpty()) return applyForEmpty()
-        if (ignore(input)) return intern(input)
-        return intern(apply(input))
-    }
-
-    private inline fun intern(input: Set<String>): Set<String> {
-        if (input.size > threshold) return input
-        return interner.intern(input)
+        if (input.size > threshold) return input // exceeds the threshold -> return self
+        if (ignore(input)) return interner.intern(input)
+        return interner.intern(apply(input))
     }
 }
 

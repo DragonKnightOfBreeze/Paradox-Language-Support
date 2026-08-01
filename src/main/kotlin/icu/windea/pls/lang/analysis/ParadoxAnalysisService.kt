@@ -24,13 +24,15 @@ import icu.windea.pls.model.paths.ParadoxPath
 import java.nio.file.Path
 import kotlin.io.path.isDirectory
 
+@Optimized
 object ParadoxAnalysisService {
     /**
      * @see ParadoxIgnoredFileProvider.isIgnoredFile
      */
     @Optimized
     fun isIgnoredFile(path: ParadoxPath, entry: String): Boolean {
-        ParadoxIgnoredFileProvider.EP_NAME.extensionList.forEachFast { ep ->
+        val eps = ParadoxIgnoredFileProvider.EP_NAME.extensionList
+        eps.forEachFast { ep ->
             if (ep.isIgnoredFile(path, entry)) return true
         }
         return false
@@ -41,7 +43,8 @@ object ParadoxAnalysisService {
      */
     fun getRootMetadata(rootPath: Path): ParadoxRootMetadata? {
         if (!rootPath.isDirectory()) return null
-        ParadoxRootMetadataProvider.EP_NAME.extensionList.forEachFast { ep ->
+        val eps = ParadoxRootMetadataProvider.EP_NAME.extensionList
+        eps.forEachFast { ep ->
             ep.getRootMetadata(rootPath)?.let { return it }
         }
         return null
@@ -52,7 +55,8 @@ object ParadoxAnalysisService {
      */
     fun getInferredGameTypeInfo(rootPath: Path): ParadoxGameTypeInfo? {
         if (!rootPath.isDirectory()) return null
-        ParadoxInferredGameTypeProvider.EP_NAME.extensionList.forEachFast { ep ->
+        val eps = ParadoxInferredGameTypeProvider.EP_NAME.extensionList
+        eps.forEachFast { ep ->
             ep.getInferredGameTypeInfo(rootPath)?.let { return it }
         }
         return null

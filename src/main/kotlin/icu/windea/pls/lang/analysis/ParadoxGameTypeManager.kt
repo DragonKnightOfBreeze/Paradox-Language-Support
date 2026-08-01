@@ -22,7 +22,16 @@ object ParadoxGameTypeManager {
         val gameTypes = ParadoxGameType.getAll()
         val result = gameTypes.associateWith { gameType ->
             val json = map.getOrElse(gameType) { ParadoxGameTypeMetadataJson(gameType) }
-            with(json) { ParadoxGameTypeMetadata(gameType, gameMainEntries, gameExtraEntries, modMainEntries, modExtraEntries, executableBaseNames) }
+            with(json) {
+                ParadoxGameTypeMetadata(
+                    gameType,
+                    gameMainEntries.optimized(),
+                    gameExtraEntries.optimized(),
+                    modMainEntries.optimized(),
+                    modExtraEntries.optimized(),
+                    executableBaseNames.optimized(),
+                )
+            }
         }
         return result.optimized() // optimized to optimize access performance
     }
