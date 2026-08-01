@@ -484,7 +484,7 @@ object CwtDocumentationManager {
             val gameType = selectGameType(originalElement)
             if (gameType != null) return ChronicleFacade.getConfigGroup(project, gameType)
         }
-        if (element.language is CwtLanguage) {
+        if (element.language === CwtLanguage) {
             return CwtConfigManager.getContainingConfigGroup(element)
         }
         return null

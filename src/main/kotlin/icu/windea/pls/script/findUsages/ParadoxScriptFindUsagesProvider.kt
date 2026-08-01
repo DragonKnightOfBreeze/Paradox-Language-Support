@@ -17,7 +17,7 @@ class ParadoxScriptFindUsagesProvider : FindUsagesProvider {
         return when (element) {
             is ParadoxScriptScriptedVariable -> true
             is ParadoxScriptProperty -> true
-            is LightElementBase -> element.language == ParadoxScriptLanguage
+            is LightElementBase -> element.language === ParadoxScriptLanguage
             else -> false
         }
     }

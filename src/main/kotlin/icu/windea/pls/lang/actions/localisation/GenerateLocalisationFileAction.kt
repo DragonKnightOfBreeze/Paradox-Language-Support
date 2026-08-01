@@ -163,7 +163,7 @@ class GenerateLocalisationFileAction : AnAction() {
     }
 
     private fun isValidFile(file: VirtualFile): Boolean {
-        if (file.fileType !is ParadoxLocalisationFileType) return false
+        if (file.fileType !== ParadoxLocalisationFileType) return false
         if (file.fileInfo == null) return false
         if (VirtualFileService.isLightFile(file)) return false
         return true

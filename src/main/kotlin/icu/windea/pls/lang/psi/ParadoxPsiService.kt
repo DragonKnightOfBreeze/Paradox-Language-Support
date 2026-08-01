@@ -157,12 +157,12 @@ object ParadoxPsiService {
         }
         val language = element.language
         when (language) {
-            is ParadoxScriptLanguage -> {
+            ParadoxScriptLanguage -> {
                 // 这里会把 newText 识别为一个值，但是实际上 newText 可以是任何文本，目前不进行额外的处理
                 val newRef = ParadoxScriptElementFactory.createValueFromText(project, newText)
                 element.replace(newRef)
             }
-            is ParadoxLocalisationLanguage -> {
+            ParadoxLocalisationLanguage -> {
                 // 这里会把 newText 识别为一个字符串，但是实际上 newText 可以是任何文本，目前不进行额外的处理
                 newText = newText.unquote() // 内联到本地化文本中时，需要先尝试去除周围的双引号
                 val newRef = ParadoxLocalisationElementFactory.createText(project, newText)
@@ -432,7 +432,7 @@ object ParadoxPsiService {
                 val newPathReference = ep.extract(configExpression, element, newPath) ?: throw IncorrectOperationException()
                 element.setValue(newPathReference)
             }
-            resolved.language is CwtLanguage -> throw IncorrectOperationException() // cannot rename cwt config
+            resolved.language === CwtLanguage -> throw IncorrectOperationException() // cannot rename cwt config
             resolved.language is ParadoxLanguage -> element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
             else -> throw IncorrectOperationException()
         }

@@ -72,7 +72,7 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
     override fun getVersion() = ChronicleIndexVersions.Merged
 
     override fun filterFileType(fileType: FileType): Boolean {
-        return fileType == ParadoxScriptFileType || fileType == ParadoxLocalisationFileType || fileType == ParadoxCsvFileType
+        return fileType === ParadoxScriptFileType || fileType === ParadoxLocalisationFileType || fileType === ParadoxCsvFileType
     }
 
     override fun filterFile(file: VirtualFile): Boolean {

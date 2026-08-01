@@ -185,14 +185,14 @@ object ParadoxSemanticHighlighterColors {
 
     fun databaseObjectType(language: Language? = null): TextAttributesKey {
         return when (language) {
-            is ParadoxLocalisationLanguage -> ParadoxLocalisationHighlighterColors.DATABASE_OBJECT_TYPE
+            ParadoxLocalisationLanguage -> ParadoxLocalisationHighlighterColors.DATABASE_OBJECT_TYPE
             else -> ParadoxScriptHighlighterColors.DATABASE_OBJECT_TYPE
         }
     }
 
     fun databaseObject(language: Language? = null): TextAttributesKey {
         return when (language) {
-            is ParadoxLocalisationLanguage -> ParadoxLocalisationHighlighterColors.DATABASE_OBJECT
+            ParadoxLocalisationLanguage -> ParadoxLocalisationHighlighterColors.DATABASE_OBJECT
             else -> ParadoxScriptHighlighterColors.DATABASE_OBJECT
         }
     }

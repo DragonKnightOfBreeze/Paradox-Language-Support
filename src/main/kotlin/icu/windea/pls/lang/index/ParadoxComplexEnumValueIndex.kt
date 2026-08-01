@@ -56,7 +56,7 @@ class ParadoxComplexEnumValueIndex : ParadoxIndexInfoAwareFileBasedIndex<List<Pa
     override fun getVersion() = ChronicleIndexVersions.ComplexEnumValue
 
     override fun filterFileType(fileType: FileType): Boolean {
-        return fileType == ParadoxScriptFileType || fileType == ParadoxCsvFileType
+        return fileType === ParadoxScriptFileType || fileType === ParadoxCsvFileType
     }
 
     override fun filterFile(file: VirtualFile): Boolean {

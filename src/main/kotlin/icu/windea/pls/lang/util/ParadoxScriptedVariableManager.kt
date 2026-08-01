@@ -21,7 +21,7 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 @Optimized
 object ParadoxScriptedVariableManager {
     fun isGlobalScriptedVariablesFile(file: VirtualFile): Boolean {
-        if (file.fileType != ParadoxScriptFileType) return false
+        if (file.fileType !== ParadoxScriptFileType) return false
         val filePath = file.fileInfo?.path ?: return false
         return isGlobalScriptedVariablesFilePath(filePath)
     }

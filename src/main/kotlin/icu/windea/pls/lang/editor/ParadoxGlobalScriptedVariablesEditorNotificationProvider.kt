@@ -19,7 +19,7 @@ import javax.swing.JComponent
  */
 class ParadoxGlobalScriptedVariablesEditorNotificationProvider : EditorNotificationProvider {
     override fun collectNotificationData(project: Project, file: VirtualFile): Function<in FileEditor, out JComponent?>? {
-        if (file.fileType !is ParadoxScriptFileType) return null
+        if (file.fileType !== ParadoxScriptFileType) return null
 
         if (!ParadoxScriptedVariableManager.isGlobalScriptedVariablesFile(file)) return null
 

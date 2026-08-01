@@ -35,7 +35,7 @@ class CwtConfigSymbolIndex : CwtConfigIndexInfoAwareFileBasedIndex<List<CwtConfi
     override fun getVersion() = ChronicleIndexVersions.ConfigSymbol
 
     override fun filterFileType(fileType: FileType): Boolean {
-        return fileType == CwtFileType
+        return fileType === CwtFileType
     }
 
     override fun filterFile(file: VirtualFile): Boolean {

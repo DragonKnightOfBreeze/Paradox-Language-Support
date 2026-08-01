@@ -14,7 +14,7 @@ import icu.windea.pls.cwt.psi.CwtStringExpressionElement
 
 class CwtWordSelectionHandler : ExtendWordSelectionHandlerBase() {
     override fun canSelect(e: PsiElement): Boolean {
-        if (e.language !is CwtLanguage) return false
+        if (e.language !== CwtLanguage) return false
         val element = findExpressionElement(e)
         if (element != null) return true
         return false

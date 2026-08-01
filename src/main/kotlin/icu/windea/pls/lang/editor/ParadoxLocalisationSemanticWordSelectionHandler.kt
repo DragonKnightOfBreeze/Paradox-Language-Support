@@ -17,7 +17,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 
 class ParadoxLocalisationSemanticWordSelectionHandler : ExtendWordSelectionHandlerBase() {
     override fun canSelect(e: PsiElement): Boolean {
-        if (e.language !is ParadoxLocalisationLanguage) return false
+        if (e.language !== ParadoxLocalisationLanguage) return false
         val element = findExpressionElement(e)
         if (element != null) return true
         return false

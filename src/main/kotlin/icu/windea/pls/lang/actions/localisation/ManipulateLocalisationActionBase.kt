@@ -61,7 +61,7 @@ abstract class ManipulateLocalisationActionBase<C> : AnAction() {
 
     protected open fun isValidFile(file: VirtualFile): Boolean {
         if (!file.isFile) return false
-        if (file.fileType !is ParadoxLocalisationFileType) return false
+        if (file.fileType !== ParadoxLocalisationFileType) return false
         if (file.fileInfo == null) return false
         if (VirtualFileService.isLightFile(file)) return false
         return true

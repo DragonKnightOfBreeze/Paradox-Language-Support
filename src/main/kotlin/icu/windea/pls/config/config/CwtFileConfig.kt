@@ -94,7 +94,7 @@ private object CwtFileConfigResolver : CwtConfigResolverScope {
     }
 
     fun resolve(file: VirtualFile, configGroup: CwtConfigGroup, filePath: String): CwtFileConfig? {
-        if (file.fileType != CwtFileType) return null
+        if (file.fileType !== CwtFileType) return null
         val psiFile = runCatchingCancelable { file.toPsiFile(configGroup.project) }.onFailure { logger.warn(it) }.getOrNull()
         if (psiFile !is CwtFile) return null
         return resolve(psiFile, configGroup, filePath)

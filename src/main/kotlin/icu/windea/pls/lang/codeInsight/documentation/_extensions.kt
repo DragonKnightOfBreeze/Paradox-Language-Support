@@ -74,16 +74,16 @@ fun getDocumentationTargets(element: PsiElement, originalElement: PsiElement?): 
     if (targets.isNotEmpty()) return targets
 
     val target = when {
+        element.language === CwtLanguage -> CwtDocumentationTarget(element, originalElement)
         element.language is ParadoxLanguage -> ParadoxDocumentationTarget(element, originalElement)
-        element.language is CwtLanguage -> CwtDocumentationTarget(element, originalElement)
         else -> createPsiDocumentationTarget(element, originalElement)
     }
     return target.to.singletonListOrEmpty()
 }
 
 val DocumentationTarget.targetElement: PsiElement?
-    get() = when {
-        this is CwtDocumentationTarget -> this.element
-        this is ParadoxDocumentationTarget -> this.element
+    get() = when (this) {
+        is ParadoxDocumentationTarget -> element
+        is CwtDocumentationTarget -> element
         else -> null
     }

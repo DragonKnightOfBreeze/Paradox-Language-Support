@@ -14,7 +14,7 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 class ParadoxScriptWordSelectionHandler : ExtendWordSelectionHandlerBase() {
     override fun canSelect(e: PsiElement): Boolean {
-        if (e.language !is ParadoxScriptLanguage) return false
+        if (e.language !== ParadoxScriptLanguage) return false
         val element = findExpressionElement(e)
         if (element != null) return true
         return false

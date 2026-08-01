@@ -44,7 +44,7 @@ object ParadoxDefineManager {
 
     @Suppress("unused")
     fun isDefinesFile(file: VirtualFile): Boolean {
-        if (file.fileType != ParadoxScriptFileType) return false
+        if (file.fileType !== ParadoxScriptFileType) return false
         val filePath = file.fileInfo?.path ?: return false
         return isDefinesFilePath(filePath)
     }

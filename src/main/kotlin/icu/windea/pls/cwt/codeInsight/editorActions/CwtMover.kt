@@ -23,7 +23,7 @@ import icu.windea.pls.cwt.psi.CwtRootBlock
  * 入口：主菜单，点击 `Code -> Move Statement Up/Down`。
  */
 class CwtMover : ContainerBasedMover() {
-    override fun checkFileAvailable(editor: Editor, file: PsiFile, info: MoveInfo, down: Boolean) = file.language is CwtLanguage
+    override fun checkFileAvailable(editor: Editor, file: PsiFile, info: MoveInfo, down: Boolean) = file.language === CwtLanguage
 
     override fun isContainerElement(element: PsiElement) = element is CwtMemberContainer
 

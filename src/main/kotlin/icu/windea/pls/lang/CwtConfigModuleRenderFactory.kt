@@ -21,7 +21,7 @@ class CwtConfigModuleRenderFactory : ModuleRendererFactory() {
     }
 
     private fun forConfig(element: Any?): TextWithIcon? {
-        if (element !is PsiElement || element.language !is CwtLanguage) return null
+        if (element !is PsiElement || element.language !== CwtLanguage) return null
         val configGroup = CwtConfigManager.getContainingConfigGroup(element) ?: return null
         val gameType = configGroup.gameType
         val text = "${gameType.title} Config"

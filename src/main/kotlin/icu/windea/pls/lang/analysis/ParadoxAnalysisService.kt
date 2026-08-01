@@ -121,7 +121,7 @@ object ParadoxAnalysisService {
     }
 
     fun resolveLocaleId(file: VirtualFile, project: Project): String? {
-        if (file.fileType != ParadoxLocalisationFileType) return null // fast return (meaningless for non-loc file types)
+        if (file.fileType !== ParadoxLocalisationFileType) return null // fast return (meaningless for non-loc file types)
         val indexId = ChronicleIndexKeys.FileLocale
         val localeId = FileBasedIndex.getInstance().getFileData(indexId, file, project).keys.singleOrNull()
         return localeId?.orNull()

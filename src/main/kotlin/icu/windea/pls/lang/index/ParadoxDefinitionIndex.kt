@@ -58,7 +58,7 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
     override fun getVersion() = ChronicleIndexVersions.Definition
 
     override fun filterFileType(fileType: FileType): Boolean {
-        return fileType == ParadoxScriptFileType
+        return fileType === ParadoxScriptFileType
     }
 
     override fun filterFile(file: VirtualFile): Boolean {

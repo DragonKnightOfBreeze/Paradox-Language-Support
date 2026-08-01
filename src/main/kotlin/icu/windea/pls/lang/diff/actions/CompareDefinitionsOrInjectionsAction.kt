@@ -67,7 +67,7 @@ class CompareDefinitionsOrInjectionsAction : ParadoxShowDiffAction() {
     private fun findSourceFile(e: AnActionEvent): VirtualFile? {
         val file = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return null
         if (file.isDirectory) return null
-        if (file.fileType !is ParadoxScriptFileType) return null
+        if (file.fileType !== ParadoxScriptFileType) return null
         val fileInfo = file.fileInfo ?: return null
         if (fileInfo.rootInfo !is ParadoxRootInfo.MetadataBased) return null
         if (fileInfo.isTopFromRoot()) return null // 忽略直接位于游戏或模组的根目录下的文件

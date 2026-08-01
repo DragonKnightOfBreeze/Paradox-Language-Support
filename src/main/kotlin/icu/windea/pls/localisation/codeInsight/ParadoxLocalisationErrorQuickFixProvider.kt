@@ -19,7 +19,7 @@ import icu.windea.pls.model.constants.ChronicleStrings
  */
 class ParadoxLocalisationErrorQuickFixProvider : ErrorQuickFixProvider {
     override fun registerErrorQuickFix(errorElement: PsiErrorElement, builder: HighlightInfo.Builder) {
-        if (errorElement.language !is ParadoxLocalisationLanguage) return
+        if (errorElement.language !== ParadoxLocalisationLanguage) return
         when {
             errorElement.prevSibling == null && errorElement.parent is ParadoxLocalisationPropertyValue -> {
                 // LEFT_QUOTE

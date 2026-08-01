@@ -15,7 +15,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyValue
 abstract class ParadoxLocalisationTemplateContextType(presentableName: String) : TemplateContextType(presentableName) {
     final override fun isInContext(templateActionContext: TemplateActionContext): Boolean {
         val file = templateActionContext.file
-        if (file.language !is ParadoxLocalisationLanguage) return false
+        if (file.language !== ParadoxLocalisationLanguage) return false
         return doIsInContext(templateActionContext)
     }
 

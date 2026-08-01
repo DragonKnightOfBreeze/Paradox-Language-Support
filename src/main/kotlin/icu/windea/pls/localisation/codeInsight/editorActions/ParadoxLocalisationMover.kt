@@ -19,7 +19,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyList
  * 入口：主菜单，点击 `Code -> Move Statement Up/Down`。
  */
 class ParadoxLocalisationMover : ContainerBasedMover() {
-    override fun checkFileAvailable(editor: Editor, file: PsiFile, info: MoveInfo, down: Boolean) = file.language is ParadoxLocalisationLanguage
+    override fun checkFileAvailable(editor: Editor, file: PsiFile, info: MoveInfo, down: Boolean) = file.language === ParadoxLocalisationLanguage
 
     override fun isContainerElement(element: PsiElement) = element is ParadoxLocalisationPropertyList
 

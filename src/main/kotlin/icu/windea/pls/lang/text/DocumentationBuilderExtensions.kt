@@ -96,7 +96,7 @@ fun DocumentationBuilder.appendFileInfoHeader(element: PsiElement): Documentatio
 }
 
 fun DocumentationBuilder.appendConfigFileInfoHeader(element: PsiElement): DocumentationBuilder {
-    if (element.language !is CwtLanguage) return this
+    if (element.language !== CwtLanguage) return this
     val file = element.containingFile ?: return this
     val vFile = file.virtualFile ?: return this
     val project = file.project

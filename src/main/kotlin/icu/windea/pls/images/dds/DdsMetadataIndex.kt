@@ -37,7 +37,7 @@ class DdsMetadataIndex {
     private val gist: VirtualFileGist<DdsMetadata> by lazy {
         GistManager.getInstance().newVirtualFileGist("DdsMetadata", 5, valueExternalizer) c@{ _, file ->
             if (!file.isInLocalFileSystem) return@c null
-            if (file.fileType != DdsFileType) return@c null
+            if (file.fileType !== DdsFileType) return@c null
             if (file.length > Registry.get("ide.index.image.max.size").asDouble() * 1024 * 1024) return@c null
             DdsMetadataReader.read(file)
         }

@@ -232,7 +232,7 @@ class ParadoxSelectScopeImpl : ParadoxSelectScope {
 
     override fun PsiElement?.queryParent(withSelf: Boolean): ParadoxScriptMember? {
         if (this == null) return null
-        if (language !is ParadoxScriptLanguage) return null
+        if (language !== ParadoxScriptLanguage) return null
         val current = if (withSelf) this else parent ?: return null
         return current.queryParentInternal()
     }
@@ -253,7 +253,7 @@ class ParadoxSelectScopeImpl : ParadoxSelectScope {
 
     override fun PsiElement?.queryParentBy(path: String, ignoreCase: Boolean, usePattern: Boolean, withSelf: Boolean): ParadoxScriptMember? {
         if (this == null) return null
-        if (language !is ParadoxScriptLanguage) return null
+        if (language !== ParadoxScriptLanguage) return null
         val current = if (withSelf) this else parent ?: return null
         return current.queryParentByInternal(path, ignoreCase, usePattern)
     }
@@ -316,7 +316,7 @@ class ParadoxSelectScopeImpl : ParadoxSelectScope {
     }
 
     override fun PsiElement.parentDefinitionCandidate(withSelf: Boolean): ParadoxDefinitionElement? {
-        if (language !is ParadoxScriptLanguage) return null
+        if (language !== ParadoxScriptLanguage) return null
         processParent(withSelf = withSelf) p@{
             if (ParadoxPsiMatchService.isDefinitionCandidate(it)) return it
             true
@@ -325,7 +325,7 @@ class ParadoxSelectScopeImpl : ParadoxSelectScope {
     }
 
     override fun PsiElement.parentDefinition(withSelf: Boolean): ParadoxDefinitionElement? {
-        if (language !is ParadoxScriptLanguage) return null
+        if (language !== ParadoxScriptLanguage) return null
         processParent(withSelf = withSelf) p@{
             if (ParadoxPsiMatchService.isDefinition(it)) return it
             true
@@ -334,7 +334,7 @@ class ParadoxSelectScopeImpl : ParadoxSelectScope {
     }
 
     override fun PsiElement.parentDefinitionInjection(withSelf: Boolean): ParadoxScriptProperty? {
-        if (language !is ParadoxScriptLanguage) return null
+        if (language !== ParadoxScriptLanguage) return null
         processParent(withSelf = withSelf) p@{
             if (it is ParadoxScriptRootBlock) return@p false
             if (ParadoxPsiMatchService.isDefinitionInjection(it)) return it
@@ -344,7 +344,7 @@ class ParadoxSelectScopeImpl : ParadoxSelectScope {
     }
 
     override fun PsiElement.parentDefineVariable(withSelf: Boolean): ParadoxScriptProperty? {
-        if (language !is ParadoxScriptLanguage) return null
+        if (language !== ParadoxScriptLanguage) return null
         processParent(withSelf = withSelf) p@{
             if (ParadoxPsiMatchService.isDefineVariable(it)) return it
             true

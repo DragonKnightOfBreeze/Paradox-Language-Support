@@ -103,7 +103,7 @@ object ParadoxInlineScriptManager {
      */
     fun getInlineScriptExpression(file: VirtualFile): String? {
         val fileType = file.fileType
-        if (fileType != ParadoxScriptFileType) return null
+        if (fileType !== ParadoxScriptFileType) return null
         val fileInfo = file.fileInfo ?: return null
         val gameType = fileInfo.gameType
         if (!isSupported(gameType)) return null

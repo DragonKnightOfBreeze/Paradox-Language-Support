@@ -68,7 +68,7 @@ class ParadoxCallerHierarchyTreeStructure(
     ) {
         val referenceElement = reference.element
         when (referenceElement.language) {
-            is ParadoxScriptLanguage -> {
+            ParadoxScriptLanguage -> {
                 if (!settings.showDefinitionsInCallHierarchy) return // 不显示
                 val definition = selectScope { referenceElement.parentDefinition() } ?: return
                 val definitionInfo = definition.definitionInfo ?: return
@@ -83,7 +83,7 @@ class ParadoxCallerHierarchyTreeStructure(
                 }
                 d.references.add(reference)
             }
-            is ParadoxLocalisationLanguage -> {
+            ParadoxLocalisationLanguage -> {
                 if (!settings.showLocalisationsInCallHierarchy) return  // 不显示
                 // 兼容向上内联的情况
                 val localisation = referenceElement.parentOfType<ParadoxLocalisationProperty>() ?: return

@@ -27,7 +27,7 @@ class ParadoxLocalisationLocaleGroupingRule(
 
     private fun getLocalisationLocale(usage: Usage): ParadoxLocalisationLocale? {
         var element = usage.castOrNull<PsiElementUsage>()?.element ?: return null
-        if (element.language !is ParadoxLocalisationLanguage) return null
+        if (element.language !== ParadoxLocalisationLanguage) return null
         if (element is ParadoxLocalisationFile) {
             val offset = usage.castOrNull<UsageInfo2UsageAdapter>()?.usageInfo?.navigationOffset
             if (offset != null) {

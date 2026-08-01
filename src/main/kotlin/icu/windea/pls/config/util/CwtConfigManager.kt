@@ -105,13 +105,13 @@ object CwtConfigManager {
     }
 
     fun getFilePath(file: VirtualFile, project: Project): String? {
-        if (file.fileType !is CwtFileType) return null
+        if (file.fileType !== CwtFileType) return null
         val configGroup = getContainingConfigGroup(file, project) ?: return null
         return CwtConfigService.resolveFilePath(file, configGroup)
     }
 
     fun getConfigPath(element: PsiElement): CwtConfigPath? {
-        if (element.language !is CwtLanguage) return null
+        if (element.language !== CwtLanguage) return null
         if (element is CwtFile || element is CwtRootBlock) return CwtConfigPath.resolveEmpty()
         val memberElement = element.parentOfType<CwtMember>(withSelf = true) ?: return null
         // from cache (invalidated on file modification)
@@ -126,7 +126,7 @@ object CwtConfigManager {
     }
 
     fun getConfigType(element: PsiElement): CwtConfigType? {
-        if (element.language !is CwtLanguage) return null
+        if (element.language !== CwtLanguage) return null
         val memberElement = element.parentOfType<CwtMember>(withSelf = true) ?: return null
         // from cache (invalidated on file modification)
         return CachedValuesManager.getCachedValue(memberElement, Keys.cachedConfigType) {

@@ -49,7 +49,7 @@ class LineCommentCopyPastePreProcessorCodeInjector : CodeInjectorBase() {
 
         run {
             val commonSettings = CodeStyle.getSettings(file).getCommonSettings(language)
-            if (language is CwtLanguage) {
+            if (language === CwtLanguage) {
                 if (matchesCommentPrefix(CwtCommenter.MD_DOC_COMMENT_PREFIX)) {
                     commentPrefix = CwtCommenter.MD_DOC_COMMENT_PREFIX
                     addSpace = commonSettings.LINE_COMMENT_ADD_SPACE // 2.1.8 delegate to LINE_COMMENT_ADD_SPACE

@@ -30,7 +30,7 @@ object ParadoxMemberService {
      * 如果 [parameterAware] 为 `false`，且包含参数，则直接返回 `null`。
      */
     fun getPath(element: PsiElement, limit: Int = 0, maxDepth: Int = 0, parameterAware: Boolean = true): ParadoxMemberPath? {
-        if (element.language != ParadoxScriptLanguage) return null
+        if (element.language !== ParadoxScriptLanguage) return null
         if (element is PsiFileSystemItem) return ParadoxMemberPath.resolveEmpty()
         val member = element.parentOfType<ParadoxScriptMember>(withSelf = true) ?: return ParadoxMemberPath.resolveEmpty()
         if (member !is ParadoxScriptProperty && member !is ParadoxScriptValue) return ParadoxMemberPath.resolveEmpty()
@@ -59,7 +59,7 @@ object ParadoxMemberService {
      * 如果 [parameterAware] 为 `false`，且包含参数，则直接返回 `null`。
      */
     fun getRootKeys(element: PsiElement, limit: Int = 0, maxDepth: Int = 0, parameterAware: Boolean = true): List<String>? {
-        if (element.language != ParadoxScriptLanguage) return null
+        if (element.language !== ParadoxScriptLanguage) return null
         if (element is PsiFileSystemItem) return emptyList()
         val member = element.parentOfType<ParadoxScriptMember>(withSelf = true) ?: return emptyList()
         if (member !is ParadoxScriptProperty && member !is ParadoxScriptValue) return emptyList()
@@ -100,7 +100,7 @@ object ParadoxMemberService {
      * 找到之前紧邻的一组连续的字符串节点（忽略空白和注释），将它们转化为字符串列表（基于值）。
      */
     fun getKeyPrefixes(element: PsiElement, limit: Int = 0, maxDepth: Int = 0, parameterAware: Boolean = true): List<String>? {
-        if (element.language != ParadoxScriptLanguage) return null
+        if (element.language !== ParadoxScriptLanguage) return null
         if (element is PsiFileSystemItem) return emptyList()
         val member = element.parentOfType<ParadoxScriptMember>(withSelf = true) ?: return emptyList()
         if (member !is ParadoxScriptProperty && member !is ParadoxScriptValue) return emptyList()

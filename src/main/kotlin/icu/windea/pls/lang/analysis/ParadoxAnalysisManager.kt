@@ -293,7 +293,7 @@ object ParadoxAnalysisManager : ParadoxAnalysisScope {
             from is VirtualFile -> ParadoxLocaleManager.getPreferredLocaleConfig()
             from is PsiDirectory -> ParadoxLocaleManager.getPreferredLocaleConfig()
             from is PsiFile -> getLocaleConfig(from.virtualFile ?: return null, from.project)
-            from is PsiElement && from.language == ParadoxLocalisationLanguage -> {
+            from is PsiElement && from.language === ParadoxLocalisationLanguage -> {
                 // NOTE 3.0.0 even green stubs can be erased in the files that are changed after they had been switched to AST mode
                 val nextFrom = runSmartReadAction action@{
                     if (from is StubBasedPsiElementBase<*>) {

@@ -41,7 +41,7 @@ enum class ParadoxLocalisationType(val id: String) {
 
         @JvmStatic
         fun resolve(file: VirtualFile): ParadoxLocalisationType? {
-            if (file.fileType !is ParadoxLocalisationFileType) return null
+            if (file.fileType !== ParadoxLocalisationFileType) return null
             val root = file.fileInfo?.path ?: return null
             return resolve(root)
         }
