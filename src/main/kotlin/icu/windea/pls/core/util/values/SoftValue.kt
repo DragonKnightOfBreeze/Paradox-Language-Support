@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package icu.windea.pls.core.util.values
 
 import java.lang.ref.SoftReference
@@ -27,12 +29,6 @@ abstract class SoftValue<T> {
     }
 
     companion object {
-        @Suppress("NOTHING_TO_INLINE")
-        inline operator fun <T> invoke(noinline valueProvider: () -> T): SoftValue<T> {
-            return create(valueProvider)
-        }
-
-        @Suppress("unused")
         @JvmStatic
         fun <T> create(valueProvider: () -> T): SoftValue<T> {
             return object : SoftValue<T>() {
@@ -40,7 +36,11 @@ abstract class SoftValue<T> {
             }
         }
 
-        @Suppress("unused")
+        @Suppress("NOTHING_TO_INLINE")
+        inline operator fun <T> invoke(noinline valueProvider: () -> T): SoftValue<T> {
+            return create(valueProvider)
+        }
+
         @JvmStatic
         fun <K, V> ofMutableMap(): SoftValue<MutableMap<K, V>> {
             return object : SoftValue<MutableMap<K, V>>() {
@@ -48,7 +48,6 @@ abstract class SoftValue<T> {
             }
         }
 
-        @Suppress("unused")
         @JvmStatic
         fun <K, V> ofConcurrentMap(): SoftValue<ConcurrentMap<K, V>> {
             return object : SoftValue<ConcurrentMap<K, V>>() {

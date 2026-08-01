@@ -359,14 +359,16 @@ class ParadoxScriptConstantExpressionMatcher : ParadoxScriptCompositeExpressionM
     }
 
     private fun matchConstant(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
-        val value = context.configExpression.expressionString
-        if (context.configExpression.role.isValue()) {
+        val expression = context.expression
+        val configExpression = context.configExpression
+        val value = configExpression.expressionString
+        if (configExpression.role.isValue()) {
             // 作为常量的值也可能是布尔值（`yes` / `no`）
-            val text = context.expression.value
+            val text = expression.value
             if ((value == "yes" || value == "no") && text.isLeftQuoted()) return ParadoxMatchResult.NotMatch
         }
         // 兼容空字符串，兼容带参数的情况
-        val r = context.expression.matchesConstant(value)
+        val r = expression.matchesConstant(value)
         return ParadoxMatchResult.exactOrNot(r)
     }
 }

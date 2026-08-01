@@ -100,9 +100,7 @@ object ParadoxExpressionManager {
         if (length < 2) return false
         if (full) {
             // `$PARAM$` - 仅限：高级插值语法 A
-            if (!text.startsWith('$')) return false
-            if (text.indexOf('$', 1).let { c -> c != length - 1 || text.isEscapedCharAt(c) }) return false
-            return true
+            return text[0] == '$' && text.indexOf('$', 1).let { c -> c == length - 1 && !text.isEscapedCharAt(c) }
         }
         // `a_$PARAM$_b` - 高级插值语法 A
         // `a_[[PARAM]b]_c` - 高级插值语法 B

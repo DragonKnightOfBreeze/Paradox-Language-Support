@@ -204,8 +204,8 @@ private sealed class CwtPropertyConfigBase : CwtOptionMetadataBase(), CwtPropert
 
     // optimize: use memory-friendly lazy property
     override val valueConfig: CwtValueConfig? // region by lazy { computeValueConfig() }
-        get() = LazyValue(this, { _valueConfig }) { computeValueConfig().also { _valueConfig = it } }
-    @Volatile private var _valueConfig: Any? = LazyValue.UNINITIALIZED // endregion
+        get() = LazyValue.of(this, { _valueConfig }, { _valueConfig = it }) { computeValueConfig() }
+    @Volatile private var _valueConfig = LazyValue.UNINITIALIZED // endregion
 
     private fun computeValueConfig(): CwtValueConfig? {
         // this function should be enough fast because there are no pointers to be created

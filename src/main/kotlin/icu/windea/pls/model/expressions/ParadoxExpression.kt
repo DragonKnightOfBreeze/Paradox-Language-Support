@@ -1,10 +1,14 @@
+@file:Optimized
+
 package icu.windea.pls.model.expressions
 
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.equalsFast
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.match.TextMatcher
 import icu.windea.pls.core.quote
 import icu.windea.pls.core.unquote
+import icu.windea.pls.core.util.values.LazyValue
 import icu.windea.pls.ep.match.expression.ParadoxCsvExpressionMatcher
 import icu.windea.pls.ep.match.expression.ParadoxScriptExpressionMatcher
 import icu.windea.pls.ep.resolve.expression.ParadoxCsvExpressionSupport
@@ -52,6 +56,7 @@ interface ParadoxExpression {
 
     fun matchesInt(): Boolean
     fun matchesFloat(): Boolean
+    fun matchesRegex(v: String): Boolean
     fun matchesConstant(v: String): Boolean
 
     override fun equals(other: Any?): Boolean // NOTE 3.0.1 only based on `text`
@@ -117,29 +122,46 @@ private object ParadoxExpressionResolver {
 }
 
 private sealed class ParadoxExpressionBase : ParadoxExpression {
-    private val _isParameterized by lazy { value.isParameterized() } // 3.0.1 optimize: cache status
-    private val _isFullParameterized by lazy { value.isParameterized(full = true) } // 3.0.1 optimize: cache status
-    private val _regex by lazy { ParadoxExpressionManager.toRegex(value) } // optimize: cache status
+    // 3.0.1 optimize: cache status
+    // 3.0.1 optimize: use more memory-friendly lazy property
 
-    override fun isParameterized(): Boolean {
-        return type == ParadoxExpressionType.String && _isParameterized
-    }
+    private inline val isParameterized: Boolean // region by lazy { doIsParameterized() }
+        get() = LazyValue.ofBoolean({ _isParameterized }, { _isParameterized = it }) { doIsParameterized() }
+    @Volatile private var _isParameterized = LazyValue.UNINITIALIZED_BOOLEAN // endregion
+    private inline val isFullParameterized: Boolean // region by lazy { doIsFullParameterized() }
+        get() = LazyValue.ofBoolean({ _isFullParameterized }, { _isFullParameterized = it }) { doIsFullParameterized() }
+    @Volatile private var _isFullParameterized = LazyValue.UNINITIALIZED_BOOLEAN // endregion
+    private inline val matchesInt: Boolean // region by lazy { doMatchInt() }
+        get() = LazyValue.ofBoolean({ _matchesInt }, { _matchesInt = it }) { doMatchInt() }
+    @Volatile private var _matchesInt = LazyValue.UNINITIALIZED_BOOLEAN // endregion
+    private inline val matchesFloat: Boolean // region by lazy { doMatchFloat() }
+        get() = LazyValue.ofBoolean({ _matchesFloat }, { _matchesFloat = it }) { doMatchFloat() }
+    @Volatile private var _matchesFloat = LazyValue.UNINITIALIZED_BOOLEAN // endregion
+    private inline val regex: Regex // region by lazy { computeRegex() }
+        get() = LazyValue.of({ _regex }, { _regex = it }) { computeRegex() }
+    @Volatile private var _regex = LazyValue.UNINITIALIZED // endregion
 
-    override fun isFullParameterized(): Boolean {
-        return type == ParadoxExpressionType.String && _isFullParameterized
-    }
+    private fun doIsParameterized() = type == ParadoxExpressionType.String && value.isParameterized()
+    private fun doIsFullParameterized() = type == ParadoxExpressionType.String && value.isParameterized(full = true)
+    private fun doMatchInt() = type.isLenientInt() || TextMatcher.matchesInt(value)
+    private fun doMatchFloat() = type.isLenientFloat() || TextMatcher.matchesFloat(value)
+    private fun computeRegex() = ParadoxExpressionManager.toRegex(value)
 
-    override fun matchesInt(): Boolean {
-        return type.isLenientInt() || TextMatcher.matchesInt(value)
-    }
+    override fun isParameterized(): Boolean = isParameterized
 
-    override fun matchesFloat(): Boolean {
-        return type.isLenientFloat() || TextMatcher.matchesFloat(value)
+    override fun isFullParameterized(): Boolean = isFullParameterized
+
+    override fun matchesInt(): Boolean = matchesInt
+
+    override fun matchesFloat(): Boolean = matchesFloat
+
+    override fun matchesRegex(v: String): Boolean {
+        return regex.matches(v)
     }
 
     override fun matchesConstant(v: String): Boolean {
         // 兼容带参数的情况（此时先转化为正则表达式，再进行匹配）
-        if (isParameterized()) return _regex.matches(v)
+        if (isParameterized()) return matchesRegex(v)
         // 忽略大小写
         return value.equalsFast(v, true) // 3.0.1 radical optimization
     }
@@ -198,7 +220,9 @@ private class ParadoxScriptedVariableReferenceBasedExpression(
     private val element: ParadoxScriptedVariableReference,
     private val options: ParadoxMatchOptions?,
 ) : ParadoxExpressionBase() {
-    private val resolvedExpression by lazy { computeResolvedExpression() }
+    private val resolvedExpression: ParadoxExpression // region by lazy { computeResolvedExpression() }
+        get() = LazyValue.of(this, { _resolvedExpression }, { _resolvedExpression = it }) { computeResolvedExpression() }
+    @Volatile private var _resolvedExpression = LazyValue.UNINITIALIZED // endregion
 
     private fun computeResolvedExpression(): ParadoxExpression {
         if (ParadoxMatchService.isDumb(options)) return ParadoxExpression.resolveUnknown()

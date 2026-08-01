@@ -406,7 +406,7 @@ fun String.decapitalized(): String {
     return replaceFirstChar { it.lowercaseChar() }
 }
 
-/** 将字符串按单词边界转换为“每个单词首字母大写”形式。 */
+/** 将字符串按单词边界转化为“每个单词首字母大写”形式。 */
 fun String.toCapitalizedWords(): String {
     if (isEmpty()) return this
     return buildString {
@@ -482,10 +482,10 @@ fun Collection<String>.truncate(limit: Int, ellipsis: String = "..."): List<Stri
     return take(limit).let { if (size > limit) it + ellipsis else it }
 }
 
-/** 非空断言式转换（不安全）：将对象强转为 [T]。 */
+/** 非空断言式转化（不安全）：将对象强转为 [T]。 */
 inline fun <reified T> Any?.cast(): T = this as T
 
-/** 安全转换：将对象尝试转换为 [T]，失败返回 `null`。 */
+/** 安全转化：将对象尝试转化为 [T]，失败返回 `null`。 */
 inline fun <reified T> Any?.castOrNull(): T? = this as? T
 
 /**
@@ -539,7 +539,7 @@ fun String.normalizePath(): String {
 }
 
 /**
- * 转换当前路径中的文件名部分。
+ * 转化当前路径中的文件名部分。
  *
  * - 格式：`{parent}{baseName}{fileExtension}`
  * - 示例：`"foo/bar.txt".convertPath { b, e -> "$b.after$e" }` -> `"foo/bar.after.txt"`
@@ -573,28 +573,21 @@ fun Path.create(): Path {
     return this
 }
 
-/** `Boolean` 与 `Byte` 的互转：`true->1`，`false->0`。 */
-fun Boolean.toByte() = if (this) 1.toByte() else 0.toByte()
+/** 将布尔值转化为 [Byte]。如果为 `true` 则返回 1，否则返回 0. */
+@Suppress("NOTHING_TO_INLINE")
+inline fun Boolean.toByte() = if (this) 1.toByte() else 0.toByte()
 
-/** `Byte` 转 `Boolean`：`0->false`，其他->`true`。 */
-fun Byte.toBoolean() = if (this == 0.toByte()) false else true
-
-/** 可空 `Boolean` 转 `Byte`：`null->2`。 */
-fun Boolean?.toByte() = this?.toByte() ?: 2.toByte()
-
-/** `Byte` 转可空 `Boolean`：`2->null`，其余同上。 */
-fun Byte.toBooleanOrNull() = if (this == 2.toByte()) null else toBoolean()
-
-/** `Boolean` 转 `Int`：`true->1`，`false->0`。 */
-fun Boolean.toInt() = if (this) 1 else 0
+/** 将 [Byte] 转化为布尔值。如果不为 `0` 则返回 `true`，否则返回 `false`。 */
+@Suppress("NOTHING_TO_INLINE")
+inline fun Byte.toBoolean() = if (this == 0.toByte()) false else true
 
 /** `null` 则返回空字符串。 */
 fun Any?.toStringOrEmpty() = this?.toString() ?: ""
 
-/** "yes"/"no" 到布尔的转换（不忽略大小写）。 */
+/** "yes"/"no" 到布尔值的转化（不忽略大小写）。 */
 fun String?.toBooleanYesNo() = if (this == "yes") true else false
 
-/** "yes"/"no" 到可空布尔值的转换（不忽略大小写）。 */
+/** "yes"/"no" 到可空布尔值的转化（不忽略大小写）。 */
 fun String?.toBooleanYesNoOrNull() = if (this == "yes") true else if (this == "no") false else null
 
 /** 生成基于内容的稳定 UUID。 */
@@ -603,26 +596,26 @@ fun String.toUUID(): UUID = UUID.nameUUIDFromBytes(toByteArray(StandardCharsets.
 /** 生成基于内容的稳定 UUID 字符串。 */
 fun String.toUuidString() = UUID.nameUUIDFromBytes(toByteArray(StandardCharsets.UTF_8)).toString()
 
-/** 路径与 URL/类加载器相关的便捷转换。 */
+/** 路径与 URL/类加载器相关的便捷转化。 */
 fun String.toFile() = File(this)
 
-/** 安全转换为 [File]，失败返回 `null`。 */
+/** 安全转化为 [File]，失败返回 `null`。 */
 fun String.toFileOrNull() = runCatchingCancelable { File(this) }.getOrNull()
 
-/** 转换为 [Path]。 */
+/** 转化为 [Path]。 */
 fun String.toPath(): Path = Path.of(this)
 
-/** 安全转换为 [Path]，失败返回 `null`。 */
+/** 安全转化为 [Path]，失败返回 `null`。 */
 fun String.toPathOrNull() = runCatchingCancelable { Path.of(this) }.getOrNull()
 
-/** 转换为文件 URL（file://）。 */
+/** 转化为文件 URL（file://）。 */
 fun String.toFileUrl(): URL = File(this).toURI().toURL()
 
 /** 基于类加载器从 classpath 获取资源 URL。 */
 fun String.toClasspathUrl(locationClass: Class<*> = ChronicleFacade::class.java) = locationClass.getResource(this)!!
 
-/** 将 URL 转换为 [File]。 */
+/** 将 URL 转化为 [File]。 */
 fun URL.toFile() = File(this.toURI())
 
-/** 将 URL 转换为 [Path]。 */
+/** 将 URL 转化为 [Path]。 */
 fun URL.toPath(): Path = Paths.get(this.toURI())

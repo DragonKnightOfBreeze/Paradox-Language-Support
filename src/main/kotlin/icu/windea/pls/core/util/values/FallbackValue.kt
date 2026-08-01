@@ -1,4 +1,4 @@
-@file:Suppress("NOTHING_TO_INLINE", "unused")
+@file:Suppress("unused", "NOTHING_TO_INLINE")
 
 package icu.windea.pls.core.util.values
 
