@@ -4,6 +4,7 @@
 package icu.windea.pls.core
 
 import com.google.common.collect.ImmutableList
+import com.google.common.collect.ImmutableSet
 import icu.windea.pls.core.annotations.Fast
 
 /** @see kotlin.text.equals */
@@ -103,8 +104,8 @@ fun String.toDelimitedList(delimiter: Char = ','): List<String> {
     var nextIndex = indexOf(delimiter, currentOffset)
     if (nextIndex == -1) {
         val r = trim()
-        if (r.isNotEmpty()) return listOf(r)
-        return emptyList()
+        if (r.isNotEmpty()) return ImmutableList.of(r)
+        return ImmutableList.of()
     }
 
     var result: MutableList<String>? = null
@@ -133,8 +134,8 @@ fun String.toDelimitedSet(delimiter: Char = ','): Set<String> {
     var nextIndex = indexOf(delimiter, currentOffset)
     if (nextIndex == -1) {
         val r = trim()
-        if (r.isNotEmpty()) return setOf(r)
-        return emptySet()
+        if (r.isNotEmpty()) return ImmutableSet.of(r)
+        return ImmutableSet.of()
     }
 
     var result: MutableSet<String>? = null

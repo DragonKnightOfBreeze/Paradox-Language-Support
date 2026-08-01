@@ -125,18 +125,18 @@ private sealed class ParadoxExpressionBase : ParadoxExpression {
     // 3.0.1 optimize: cache status
     // 3.0.1 optimize: use more memory-friendly lazy property
 
-    private inline val isParameterized: Boolean // region by lazy { doIsParameterized() }
-        get() = LazyValue.ofBoolean({ _isParameterized }, { _isParameterized = it }) { doIsParameterized() }
-    @Volatile private var _isParameterized = LazyValue.UNINITIALIZED_BOOLEAN // endregion
-    private inline val isFullParameterized: Boolean // region by lazy { doIsFullParameterized() }
-        get() = LazyValue.ofBoolean({ _isFullParameterized }, { _isFullParameterized = it }) { doIsFullParameterized() }
-    @Volatile private var _isFullParameterized = LazyValue.UNINITIALIZED_BOOLEAN // endregion
-    private inline val matchesInt: Boolean // region by lazy { doMatchInt() }
-        get() = LazyValue.ofBoolean({ _matchesInt }, { _matchesInt = it }) { doMatchInt() }
-    @Volatile private var _matchesInt = LazyValue.UNINITIALIZED_BOOLEAN // endregion
-    private inline val matchesFloat: Boolean // region by lazy { doMatchFloat() }
-        get() = LazyValue.ofBoolean({ _matchesFloat }, { _matchesFloat = it }) { doMatchFloat() }
-    @Volatile private var _matchesFloat = LazyValue.UNINITIALIZED_BOOLEAN // endregion
+    private inline val parameterized: Boolean // region by lazy { doIsParameterized() }
+        get() = LazyValue.ofBoolean({ _parameterized }, { _parameterized = it }) { doIsParameterized() }
+    @Volatile private var _parameterized = LazyValue.UNINITIALIZED_BOOLEAN // endregion
+    private inline val fullParameterized: Boolean // region by lazy { doIsFullParameterized() }
+        get() = LazyValue.ofBoolean({ _fullParameterized }, { _fullParameterized = it }) { doIsFullParameterized() }
+    @Volatile private var _fullParameterized = LazyValue.UNINITIALIZED_BOOLEAN // endregion
+    private inline val int: Boolean // region by lazy { doMatchInt() }
+        get() = LazyValue.ofBoolean({ _int }, { _int = it }) { doMatchInt() }
+    @Volatile private var _int = LazyValue.UNINITIALIZED_BOOLEAN // endregion
+    private inline val float: Boolean // region by lazy { doMatchFloat() }
+        get() = LazyValue.ofBoolean({ _float }, { _float = it }) { doMatchFloat() }
+    @Volatile private var _float = LazyValue.UNINITIALIZED_BOOLEAN // endregion
     private inline val regex: Regex // region by lazy { computeRegex() }
         get() = LazyValue.of({ _regex }, { _regex = it }) { computeRegex() }
     @Volatile private var _regex = LazyValue.UNINITIALIZED // endregion
@@ -147,13 +147,13 @@ private sealed class ParadoxExpressionBase : ParadoxExpression {
     private fun doMatchFloat() = type.isLenientFloat() || TextMatcher.matchesFloat(value)
     private fun computeRegex() = ParadoxExpressionManager.toRegex(value)
 
-    override fun isParameterized(): Boolean = isParameterized
+    override fun isParameterized(): Boolean = parameterized
 
-    override fun isFullParameterized(): Boolean = isFullParameterized
+    override fun isFullParameterized(): Boolean = fullParameterized
 
-    override fun matchesInt(): Boolean = matchesInt
+    override fun matchesInt(): Boolean = int
 
-    override fun matchesFloat(): Boolean = matchesFloat
+    override fun matchesFloat(): Boolean = float
 
     override fun matchesRegex(v: String): Boolean {
         return regex.matches(v)

@@ -8,7 +8,6 @@ import icu.windea.pls.config.configExpression.CwtDataExpressionRole
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.forEachFast
-import icu.windea.pls.core.collections.mapFast
 import icu.windea.pls.core.util.values.singletonList
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.ep.match.expression.ParadoxScriptExpressionMatcher
@@ -76,7 +75,7 @@ object ParadoxPatternMatchService {
     }
 
     /**
-     * 用输入的 [map] 的键作为通配符来匹配指定的 [key]，得到匹配的首个结果。
+     * 用输入的 [map] 的键作为通配符来匹配指定的 [key]，得到匹配的所有值的集合。
      *
      * @param key 要与通配符进行匹配的键。
      * @param fromIndex 从该索引开始匹配，之前的字符串需要相同才会进行进一步的匹配。
@@ -90,9 +89,9 @@ object ParadoxPatternMatchService {
         configGroup: CwtConfigGroup,
         options: ParadoxMatchOptions? = null,
         fromIndex: Int = 0,
-    ): List<V> {
+    ): Collection<V> {
         val fastResult = map.get(key)
         if (fastResult != null) return fastResult.to.singletonList()
-        return map.entries.filter { (k) -> matches(k, key, contextElement, configGroup, options, fromIndex) }.mapFast { it.value }
+        return map.filterKeys { k -> matches(k, key, contextElement, configGroup, options, fromIndex) }.values
     }
 }
