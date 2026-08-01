@@ -318,17 +318,16 @@ object ParadoxDefinitionService {
 
     fun getSubtypeAwareDependencies(element: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): List<Any> {
         val subtypes = definitionInfo.typeConfig.subtypes
-        val file = element.containingFile
 
-        // 无子类型候选项
-        if (subtypes.isEmpty()) return listOf(file)
+        // 如果无子类型候选项，则直接依赖 element
+        if (subtypes.isEmpty()) return listOf(element)
 
-        // 所有子类型候选项都不依赖声明结构（快速匹配）
+        // 如果所有子类型候选项都不依赖声明结构，则直接依赖 element（快速匹配）
         val allFastMatch = subtypes.values.all { it.config.configs.isNullOrEmpty() }
-        if (allFastMatch) return listOf(file)
+        if (allFastMatch) return listOf(element)
 
-        // 需要依赖声明结构
-        return listOf(file, ParadoxModificationTrackers.ScriptFile)
+        // 如果需要依赖声明结构，则需要依赖任何脚本文件
+        return listOf(element.containingFile, ParadoxModificationTrackers.ScriptFile)
     }
 
     fun getRelatedLocalisationKeyAwareDependencies(element: ParadoxDefinitionElement): List<Any> {
