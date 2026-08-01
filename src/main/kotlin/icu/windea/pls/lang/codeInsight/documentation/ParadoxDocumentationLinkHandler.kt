@@ -14,6 +14,7 @@ class ParadoxDocumentationLinkHandler : DocumentationLinkHandler {
         if (target !is ParadoxDocumentationTarget) return null
         val link = url.removePrefixOrNull(DocumentationManagerProtocol.PSI_ELEMENT_PROTOCOL) ?: return null
         val resolved = ReferenceLinkService.resolve(link, target.element) ?: return null
-        return LinkResolveResult.resolvedTarget(getDocumentationTargets(resolved, null).first())
+        val resolvedTarget = getDocumentationTargets(resolved, null).firstOrNull() ?: return null
+        return LinkResolveResult.resolvedTarget(resolvedTarget)
     }
 }
