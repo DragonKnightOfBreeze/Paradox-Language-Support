@@ -2,16 +2,16 @@
 
 package icu.windea.pls.ep.util.data
 
-import icu.windea.pls.base.annotations.WithDefinitionType
-import icu.windea.pls.base.annotations.WithGameType
+import icu.windea.pls.base.annotations.ForDefinitionType
+import icu.windea.pls.base.annotations.ForGameType
 import icu.windea.pls.lang.data.ParadoxScriptData
 import icu.windea.pls.lang.data.get
 import icu.windea.pls.lang.data.getAll
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 
-@WithGameType(ParadoxGameType.Stellaris)
-@WithDefinitionType(ParadoxDefinitionTypes.economicCategory)
+@ForGameType(ParadoxGameType.Stellaris)
+@ForDefinitionType(ParadoxDefinitionTypes.economicCategory)
 class StellarisEconomicCategoryData(data: ParadoxScriptData) : ParadoxDefinitionDataBase(data) {
     val parent: String? by data.get("parent")
     val useForAiBudget: Boolean by data.get("use_for_ai_budget", false)
@@ -30,16 +30,16 @@ class StellarisEconomicCategoryData(data: ParadoxScriptData) : ParadoxDefinition
     }
 }
 
-@WithGameType(ParadoxGameType.Stellaris)
-@WithDefinitionType(ParadoxDefinitionTypes.gameConcept)
+@ForGameType(ParadoxGameType.Stellaris)
+@ForDefinitionType(ParadoxDefinitionTypes.gameConcept)
 class StellarisGameConceptData(data: ParadoxScriptData) : ParadoxDefinitionDataBase(data) {
     val icon: String? by data.get("icon")
     val tooltipOverride: String? by data.get("tooltip_override")
     val alias: Set<String>? by data.get("alias")
 }
 
-@WithGameType(ParadoxGameType.Stellaris)
-@WithDefinitionType(ParadoxDefinitionTypes.technology)
+@ForGameType(ParadoxGameType.Stellaris)
+@ForDefinitionType(ParadoxDefinitionTypes.technology)
 class StellarisTechnologyData(data: ParadoxScriptData) : ParadoxDefinitionDataBase(data) {
     val icon: String? by data.get("icon")
     val tier: String? by data.get("tier")
@@ -59,8 +59,8 @@ class StellarisTechnologyData(data: ParadoxScriptData) : ParadoxDefinitionDataBa
     val prerequisites: Set<String> by data.get("prerequisites", emptySet())
 }
 
-@WithGameType(ParadoxGameType.Stellaris)
-@WithDefinitionType(ParadoxDefinitionTypes.event)
+@ForGameType(ParadoxGameType.Stellaris)
+@ForDefinitionType(ParadoxDefinitionTypes.event)
 class StellarisEventData(data: ParadoxScriptData) : ParadoxDefinitionDataBase(data) {
     val base: String? by data.get("base")
     val descClear: Boolean by data.get("desc_clear", false)

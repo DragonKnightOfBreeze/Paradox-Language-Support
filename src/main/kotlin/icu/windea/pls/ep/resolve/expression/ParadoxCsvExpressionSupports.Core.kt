@@ -29,9 +29,7 @@ import icu.windea.pls.model.expressions.ParadoxExpression
  * @see CwtDataTypes.Definition
  */
 class ParadoxCsvDefinitionExpressionSupport : ParadoxCsvExpressionSupport {
-    override fun supports(dataType: CwtDataType): Boolean {
-        return dataType == CwtDataTypes.Definition
-    }
+    override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.Definition
 
     override fun annotate(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, text: String, config: CwtValueConfig, holder: AnnotationHolder) {
         val attributesKey = ParadoxSemanticHighlighterColors.definitionReference(element.language)
@@ -67,9 +65,7 @@ class ParadoxCsvDefinitionExpressionSupport : ParadoxCsvExpressionSupport {
  * @see CwtDataTypes.EnumValue
  */
 class ParadoxCsvEnumValueExpressionSupport : ParadoxCsvExpressionSupport {
-    override fun supports(dataType: CwtDataType): Boolean {
-        return dataType == CwtDataTypes.EnumValue
-    }
+    override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.EnumValue
 
     override fun annotate(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, text: String, config: CwtValueConfig, holder: AnnotationHolder) {
         val configGroup = config.configGroup
@@ -96,9 +92,7 @@ class ParadoxCsvEnumValueExpressionSupport : ParadoxCsvExpressionSupport {
  * @see CwtDataTypes.UnionValue
  */
 class ParadoxCsvUnionValueExpressionSupport : ParadoxCsvExpressionSupport {
-    override fun supports(dataType: CwtDataType): Boolean {
-        return dataType == CwtDataTypes.UnionValue
-    }
+    override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.UnionValue
 
     // NOTE 3.0.1 recursion guard is required here for various operations
 
@@ -150,9 +144,7 @@ class ParadoxCsvUnionValueExpressionSupport : ParadoxCsvExpressionSupport {
  * @see CwtDataTypeSets.DynamicValue
  */
 class ParadoxCsvDynamicValueExpressionSupport : ParadoxCsvExpressionSupport {
-    override fun supports(dataType: CwtDataType): Boolean {
-        return dataType in CwtDataTypeSets.DynamicValue
-    }
+    override fun supports(dataType: CwtDataType) = dataType in CwtDataTypeSets.DynamicValue
 
     override fun annotate(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, text: String, config: CwtValueConfig, holder: AnnotationHolder) {
         val attributesKey = ParadoxSemanticHighlighterColors.dynamicValue(element.language)

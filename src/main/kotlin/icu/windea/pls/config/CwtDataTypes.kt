@@ -1,6 +1,6 @@
 package icu.windea.pls.config
 
-import icu.windea.pls.base.annotations.WithGameType
+import icu.windea.pls.base.annotations.ForGameType
 import icu.windea.pls.config.config.delegated.CwtScopeConfig
 import icu.windea.pls.config.config.delegated.CwtScopeGroupConfig
 import icu.windea.pls.core.match.AntMatcher
@@ -657,7 +657,7 @@ object CwtDataTypes {
      *
      * > CWTools 兼容性：不兼容。插件作为扩展提供。
      */
-    @WithGameType(ParadoxGameType.Stellaris)
+    @ForGameType(ParadoxGameType.Stellaris)
     val TechnologyWithLevel = CwtDataType.builder("TechnologyWithLevel").reference().build {
         withPriority(69.0) // lower than Definition
     }

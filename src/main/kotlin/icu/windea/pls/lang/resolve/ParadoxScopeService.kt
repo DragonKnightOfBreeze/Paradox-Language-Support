@@ -3,7 +3,6 @@ package icu.windea.pls.lang.resolve
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.parentOfType
-import icu.windea.pls.base.annotations.ChronicleAnnotationService
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
@@ -48,6 +47,7 @@ import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.lang.util.ParadoxScopeManager.findParentMember
 import icu.windea.pls.model.ParadoxDefinitionInfo
+import icu.windea.pls.model.orSpecific
 import icu.windea.pls.model.scope.ParadoxScopeConstants
 import icu.windea.pls.model.scope.ParadoxScopeContext
 import icu.windea.pls.model.scope.isExact
@@ -69,9 +69,9 @@ object ParadoxScopeService {
         val gameType = definitionInfo.gameType
         val eps = ParadoxDefinitionSupportedScopesProvider.EP_NAME.extensionList
         eps.forEachFast f@{ ep ->
-            if (!ChronicleAnnotationService.check(ep, gameType)) return@f
+            if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f // check game type first
             if (!ep.supports(definition, definitionInfo)) return@f
-            ProgressManager.checkCanceled() // 3.0.1 optimize: check immediately before applying logic
+            ProgressManager.checkCanceled() // 3.0.1 optimize: check cancellation immediately before applying logic
             ep.getSupportedScopes(definition, definitionInfo)?.let { return it }
         }
         return null
@@ -84,9 +84,9 @@ object ParadoxScopeService {
         val gameType = definitionInfo.gameType
         val eps = ParadoxDefinitionScopeContextProvider.EP_NAME.extensionList
         eps.forEachFast f@{ ep ->
-            if (!ChronicleAnnotationService.check(ep, gameType)) return@f
+            if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f // check game type first
             if (!ep.supports(definition, definitionInfo)) return@f
-            ProgressManager.checkCanceled() // 3.0.1 optimize: check immediately before applying logic
+            ProgressManager.checkCanceled() // 3.0.1 optimize: check cancellation immediately before applying logic
             ep.getScopeContext(definition, definitionInfo)?.let { return it }
         }
         return null
@@ -100,9 +100,9 @@ object ParadoxScopeService {
         var map: Map<String, String>? = null
         val eps = ParadoxDefinitionInferredScopeContextProvider.EP_NAME.extensionList
         eps.forEachFast f@{ ep ->
-            if (!ChronicleAnnotationService.check(ep, gameType)) return@f
+            if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f // check game type first
             if (!ep.supports(definition, definitionInfo)) return@f
-            ProgressManager.checkCanceled() // 3.0.1 optimize: check immediately before applying logic
+            ProgressManager.checkCanceled() // 3.0.1 optimize: check cancellation immediately before applying logic
             val info = ep.getScopeContext(definition, definitionInfo) ?: return@f
             if (info.hasConflict) return null // 只要任何推断方式的推断结果存在冲突，就不要继续推断scopeContext
             if (map == null) {
@@ -125,7 +125,7 @@ object ParadoxScopeService {
         var message: String? = null
         val eps = ParadoxDefinitionInferredScopeContextProvider.EP_NAME.extensionList
         eps.forEachFast f@{ ep ->
-            if (!ChronicleAnnotationService.check(ep, gameType)) return@f
+            if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f // check game type first
             if (!ep.supports(definition, definitionInfo)) return@f
             val info = ep.getScopeContext(definition, definitionInfo) ?: return@f
             if (info.hasConflict) return@f
@@ -146,7 +146,7 @@ object ParadoxScopeService {
         var errorMessage: String? = null
         val eps = ParadoxDefinitionInferredScopeContextProvider.EP_NAME.extensionList
         eps.forEachFast f@{ ep ->
-            if (!ChronicleAnnotationService.check(ep, gameType)) return@f
+            if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f // check game type first
             if (!ep.supports(definition, definitionInfo)) return@f
             val info = ep.getScopeContext(definition, definitionInfo) ?: return@f
             if (!info.hasConflict) return@f
@@ -166,9 +166,9 @@ object ParadoxScopeService {
         val gameType = element.gameType
         val eps = ParadoxDynamicValueScopeContextProvider.EP_NAME.extensionList
         eps.forEachFast f@{ ep ->
-            if (!ChronicleAnnotationService.check(ep, gameType)) return@f
+            if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f // check game type first
             if (!ep.supports(element)) return@f
-            ProgressManager.checkCanceled() // 3.0.1 optimize: check immediately before applying logic
+            ProgressManager.checkCanceled() // 3.0.1 optimize: check cancellation immediately before applying logic
             ep.getScopeContext(element)?.let { return it }
         }
         return null
@@ -182,9 +182,9 @@ object ParadoxScopeService {
         var map: Map<String, String>? = null
         val eps = ParadoxDynamicValueInferredScopeContextProvider.EP_NAME.extensionList
         eps.forEachFast f@{ ep ->
-            if (!ChronicleAnnotationService.check(ep, gameType)) return@f
+            if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f // check game type first
             if (!ep.supports(dynamicValue)) return@f
-            ProgressManager.checkCanceled() // 3.0.1 optimize: check immediately before applying logic
+            ProgressManager.checkCanceled() // 3.0.1 optimize: check cancellation immediately before applying logic
             val info = ep.getScopeContext(dynamicValue) ?: return@f
             if (info.hasConflict) return null // 只要任何推断方式的推断结果存在冲突，就不要继续推断scopeContext
             if (map == null) {
@@ -205,8 +205,8 @@ object ParadoxScopeService {
         val gameType = config.configGroup.gameType
         val eps = ParadoxOverriddenScopeContextProvider.EP_NAME.extensionList
         eps.forEachFast f@{ ep ->
-            if (!ChronicleAnnotationService.check(ep, gameType)) return@f
-            ProgressManager.checkCanceled() // 3.0.1 optimize: check immediately before applying logic
+            if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f // check game type first
+            ProgressManager.checkCanceled() // 3.0.1 optimize: check cancellation immediately before applying logic
             ep.getOverriddenScopeContext(contextElement, config, parentScopeContext)?.also { it.overriddenProvider = ep }?.let { return it }
         }
         return null

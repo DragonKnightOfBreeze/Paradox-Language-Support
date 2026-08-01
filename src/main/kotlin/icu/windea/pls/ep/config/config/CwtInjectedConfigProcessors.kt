@@ -2,6 +2,7 @@ package icu.windea.pls.ep.config.config
 
 import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
+import icu.windea.pls.base.annotations.ForGameType
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.declarationConfigContext
@@ -47,6 +48,7 @@ class CwtInOnActionInjectedConfigProcessor : CwtInjectedConfigProcessor {
     override fun keepOrigin(config: CwtMemberConfig<*>) = false
 }
 
+@ForGameType(ParadoxGameType.Stellaris)
 class CwtTechnologyWithLevelInjectedConfigProcessor : CwtInjectedConfigProcessor {
     // 如果 Stellaris 中的脚本表达式至少匹配 `<technology.repeatable>`，则也可以匹配 `$technology_with_level`
     // https://github.com/cwtools/cwtools-vscode/issues/58

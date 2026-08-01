@@ -7,7 +7,7 @@ import com.intellij.psi.PsiElement
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.ChronicleIcons
-import icu.windea.pls.base.annotations.WithGameType
+import icu.windea.pls.base.annotations.ForGameType
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
@@ -322,8 +322,10 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
 /**
  * 提供对从经济分类（`economic_category`）生成的修正的支持。
  */
-@WithGameType(ParadoxGameType.Stellaris)
+@ForGameType(ParadoxGameType.Stellaris)
 class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
+    override fun supports(gameType: ParadoxGameType) = gameType == ParadoxGameType.Stellaris
+
     override fun matchModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): Boolean {
         val modifierName = name
         val project = configGroup.project

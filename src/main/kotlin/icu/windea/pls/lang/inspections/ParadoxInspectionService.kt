@@ -1,7 +1,6 @@
 package icu.windea.pls.lang.inspections
 
 import com.intellij.psi.PsiElement
-import icu.windea.pls.base.annotations.ChronicleAnnotationService
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.forEachFast
@@ -11,6 +10,7 @@ import icu.windea.pls.ep.inspections.ParadoxIncorrectSyntaxChecker
 import icu.windea.pls.ep.inspections.ParadoxUnresolvedExpressionChecker
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.model.ParadoxDefinitionInfo
+import icu.windea.pls.model.orSpecific
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 object ParadoxInspectionService {
@@ -18,18 +18,19 @@ object ParadoxInspectionService {
     fun getSuppressedToolIds(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Set<String> {
         val gameType = definitionInfo.gameType
         val result = mutableSetOf<String>()
-        ParadoxDefinitionInspectionSuppressionProvider.EP_NAME.extensionList.forEachFast f@{ ep ->
-            if (!ChronicleAnnotationService.check(ep, gameType)) return@f
+        val eps = ParadoxDefinitionInspectionSuppressionProvider.EP_NAME.extensionList
+        eps.forEachFast f@{ ep ->
+            if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f // check game type first
             result += ep.getSuppressedToolIds(definition, definitionInfo)
         }
         return result
     }
 
     @Optimized
-    fun checkIncorrectSyntax(element: PsiElement, context: ParadoxSyntaxInspectionContext, checkers: List<ParadoxIncorrectSyntaxChecker>): Boolean {
+    fun checkIncorrectSyntax(element: PsiElement, context: ParadoxSyntaxInspectionContext, eps: List<ParadoxIncorrectSyntaxChecker>): Boolean {
         val gameType = context.gameType
-        checkers.forEachFast f@{ ep ->
-            if (!ChronicleAnnotationService.check(ep, gameType)) return@f
+        eps.forEachFast f@{ ep ->
+            if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f // check game type first
             val r = ep.check(element, context)
             if (!r) return false
         }
@@ -37,10 +38,10 @@ object ParadoxInspectionService {
     }
 
     @Optimized
-    fun checkIncorrectExpression(element: ParadoxExpressionElement, config: CwtMemberConfig<*>, context: ParadoxExpressionInspectionContext, checkers: List<ParadoxIncorrectExpressionChecker>): Boolean {
+    fun checkIncorrectExpression(element: ParadoxExpressionElement, config: CwtMemberConfig<*>, context: ParadoxExpressionInspectionContext, eps: List<ParadoxIncorrectExpressionChecker>): Boolean {
         val gameType = context.gameType
-        checkers.forEachFast f@{ ep ->
-            if (!ChronicleAnnotationService.check(ep, gameType)) return@f
+        eps.forEachFast f@{ ep ->
+            if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f // check game type first
             val r = ep.check(element, config, context)
             if (!r) return false
         }
@@ -51,7 +52,7 @@ object ParadoxInspectionService {
     fun checkUnresolvedExpression(element: ParadoxExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>, context: ParadoxExpressionInspectionContext, checkers: List<ParadoxUnresolvedExpressionChecker>): Boolean {
         val gameType = context.gameType
         checkers.forEachFast f@{ ep ->
-            if (!ChronicleAnnotationService.check(ep, gameType)) return@f
+            if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f // check game type first
             val r = ep.check(element, expectedConfigs, context)
             if (!r) return false
         }

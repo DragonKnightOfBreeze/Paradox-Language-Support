@@ -4,7 +4,6 @@ import com.intellij.codeInsight.hints.InlayHintsSink
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.endOffset
 import com.intellij.testFramework.LightVirtualFile
-import icu.windea.pls.base.annotations.ChronicleAnnotationService
 import icu.windea.pls.core.collections.forEachReversedFast
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.util.recursion.RecursionService
@@ -12,6 +11,7 @@ import icu.windea.pls.ep.codeInsight.hints.ParadoxHintTextProvider
 import icu.windea.pls.lang.psi.ParadoxFile
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.model.orSpecific
 
 @Suppress("UnstableApiUsage")
 object ParadoxHintsService {
@@ -21,8 +21,9 @@ object ParadoxHintsService {
     @Suppress("unused")
     fun getHintText(element: PsiElement): String? {
         val gameType = selectGameType(element)
-        ParadoxHintTextProvider.EP_NAME.extensionList.forEachReversedFast f@{ ep ->
-            if (!ChronicleAnnotationService.check(ep, gameType)) return@f
+        val eps = ParadoxHintTextProvider.EP_NAME.extensionList
+        eps.forEachReversedFast f@{ ep ->
+            if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f // check game type first
             ep.getHintText(element)?.orNull()?.let { return it }
         }
         return null
@@ -33,8 +34,9 @@ object ParadoxHintsService {
      */
     fun getHintLocalisation(element: PsiElement): ParadoxLocalisationProperty? {
         val gameType = selectGameType(element)
-        ParadoxHintTextProvider.EP_NAME.extensionList.forEachReversedFast f@{ ep ->
-            if (!ChronicleAnnotationService.check(ep, gameType)) return@f
+        val eps = ParadoxHintTextProvider.EP_NAME.extensionList
+        eps.forEachReversedFast f@{ ep ->
+            if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f // check game type first
             ep.getHintLocalisation(element)?.let { return it }
         }
         return null

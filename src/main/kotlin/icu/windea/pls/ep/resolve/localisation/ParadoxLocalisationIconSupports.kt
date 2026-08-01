@@ -1,5 +1,6 @@
 package icu.windea.pls.ep.resolve.localisation
 
+import icu.windea.pls.base.annotations.ForGameType
 import icu.windea.pls.core.addPrefix
 import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.model.ParadoxGameType
@@ -12,6 +13,7 @@ class ParadoxBaseLocalisationIconSupport : ParadoxCompositeLocalisationIconSuppo
         fromImageFile("icon[gfx/interface/icons/]")
     }
 
+    @ForGameType(ParadoxGameType.Stellaris)
     class Stellaris : ParadoxCompositeLocalisationIconSupport() {
         override fun supports(gameType: ParadoxGameType) = gameType == ParadoxGameType.Stellaris
 

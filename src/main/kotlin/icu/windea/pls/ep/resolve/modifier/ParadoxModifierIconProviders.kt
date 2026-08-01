@@ -2,7 +2,7 @@ package icu.windea.pls.ep.resolve.modifier
 
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
-import icu.windea.pls.base.annotations.WithGameType
+import icu.windea.pls.base.annotations.ForGameType
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.util.CwtConfigExpressionManager
 import icu.windea.pls.core.process
@@ -26,9 +26,11 @@ class ParadoxBaseModifierIconProvider : ParadoxModifierIconProvider {
 /**
  * 对于从岗位（`job`）生成的那些修正，需要应用特殊的图标继承逻辑。
  */
-@WithGameType(ParadoxGameType.Stellaris)
+@ForGameType(ParadoxGameType.Stellaris)
 class ParadoxJobBasedModifierIconProvider : ParadoxModifierIconProvider {
     // 对于由job生成的那些修正，需要应用特殊的图标继承逻辑
+
+    override fun supports(gameType: ParadoxGameType) = gameType == ParadoxGameType.Stellaris
 
     override fun addModifierIconPath(modifierInfo: ParadoxModifierInfo, element: PsiElement, registry: MutableSet<String>) {
         val modifierConfig = modifierInfo.modifierConfig ?: return
@@ -56,8 +58,10 @@ class ParadoxJobBasedModifierIconProvider : ParadoxModifierIconProvider {
 /**
  * 对于从经济分类（`economic_category`）生成的那些修正，需要应用特殊的图标继承逻辑。
  */
-@WithGameType(ParadoxGameType.Stellaris)
+@ForGameType(ParadoxGameType.Stellaris)
 class ParadoxEconomicCategoryBasedModifierIconProvider : ParadoxModifierIconProvider {
+    override fun supports(gameType: ParadoxGameType) = gameType == ParadoxGameType.Stellaris
+
     override fun addModifierIconPath(modifierInfo: ParadoxModifierInfo, element: PsiElement, registry: MutableSet<String>) {
         val economicCategoryInfo = modifierInfo.economicCategoryInfo ?: return
         val economicCategoryModifierInfo = modifierInfo.economicCategoryModifierInfo ?: return

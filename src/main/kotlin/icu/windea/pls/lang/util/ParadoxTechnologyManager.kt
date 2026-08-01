@@ -8,7 +8,7 @@ import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import icu.windea.pls.ChronicleFacade
-import icu.windea.pls.base.annotations.WithGameType
+import icu.windea.pls.base.annotations.ForGameType
 import icu.windea.pls.config.config.CwtSubtypeGroup
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
@@ -63,7 +63,7 @@ object ParadoxTechnologyManager {
         return ParadoxDefinitionManager.getPrimaryImage(definition)
     }
 
-    @WithGameType(ParadoxGameType.Stellaris)
+    @ForGameType(ParadoxGameType.Stellaris)
     object Stellaris {
         private val gameType = ParadoxGameType.Stellaris
 

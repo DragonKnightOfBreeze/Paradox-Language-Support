@@ -6,7 +6,6 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor
 import icu.windea.pls.ChronicleFacade
-import icu.windea.pls.base.annotations.ChronicleAnnotationService
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtValueConfig
@@ -35,6 +34,7 @@ import icu.windea.pls.model.ParadoxParameterContextInfo
 import icu.windea.pls.model.ParadoxParameterContextReferenceInfo
 import icu.windea.pls.model.constants.ChronicleStrings
 import icu.windea.pls.model.expressions.ParadoxConditionalBlockExpression
+import icu.windea.pls.model.orSpecific
 import icu.windea.pls.model.type.CwtExpressionType
 import icu.windea.pls.script.psi.ParadoxConditionParameter
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
@@ -161,7 +161,7 @@ object ParadoxParameterService {
         val gameType = parameterContextInfo.gameType
         val eps = ParadoxParameterInferredConfigProvider.EP_NAME.extensionList
         eps.forEachFast f@{ ep ->
-            if (!ChronicleAnnotationService.check(ep, gameType)) return@f
+            if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f // check game type first
             if (!ep.supports(parameterInfo, parameterContextInfo)) return@f
             ep.getContextConfigs(parameterInfo, parameterContextInfo).orNull()?.let { return it }
         }

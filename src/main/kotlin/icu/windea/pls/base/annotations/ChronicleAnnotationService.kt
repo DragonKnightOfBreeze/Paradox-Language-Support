@@ -7,37 +7,17 @@ import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.expressions.ParadoxDefinitionTypeExpression
 
 object ChronicleAnnotationService {
-    private val definitionTypesCache = CacheBuilder().build<Class<*>, Set<String>> {
-        it.getAnnotation(WithDefinitionType::class.java)?.value?.toSet()?.optimized().orEmpty()
-    }
+    // TODO 3.0.1+ remove all annotation based check (since it's not effective and necessary)
+
     private val gameTypesCache = CacheBuilder().build<Class<*>, Set<ParadoxGameType>> {
-        it.getAnnotation(WithGameType::class.java)?.value?.toSet()?.optimized().orEmpty()
+        it.getAnnotation(ForGameType::class.java)?.value?.toSet()?.optimized().orEmpty()
+    }
+    private val definitionTypesCache = CacheBuilder().build<Class<*>, Set<String>> {
+        it.getAnnotation(ForDefinitionType::class.java)?.value?.toSet()?.optimized().orEmpty()
     }
 
     /**
-     * 基于注解 [WithDefinitionType]，判断目标对象类型（[targetType]）是否支持指定的定义信息（[definitionInfo]）。
-     */
-    fun check(targetType: Class<*>, definitionInfo: ParadoxDefinitionInfo?): Boolean {
-        if (definitionInfo == null) return false
-        return doCheck(targetType, definitionInfo)
-    }
-
-    /**
-     * 基于注解 [WithDefinitionType]，判断目标对象（[target]）是否支持指定的定义信息（[definitionInfo]）。
-     */
-    fun check(target: Any, definitionInfo: ParadoxDefinitionInfo?): Boolean {
-        if (definitionInfo == null) return false
-        return doCheck(target.javaClass, definitionInfo)
-    }
-
-    private fun doCheck(targetType: Class<*>, definitionInfo: ParadoxDefinitionInfo): Boolean {
-        val types = definitionTypesCache.get(targetType)
-        if (types.isEmpty()) return true
-        return types.any { ParadoxDefinitionTypeExpression.resolve(it).matches(definitionInfo) }
-    }
-
-    /**
-     * 基于注解 [WithGameType]，判断目标类型（[targetType]）是否支持指定的游戏类型（[gameType]）。
+     * 基于注解 [ForGameType]，判断目标类型（[targetType]）是否支持指定的游戏类型（[gameType]）。
      */
     fun check(targetType: Class<*>, gameType: ParadoxGameType?): Boolean {
         if (gameType == null || gameType == ParadoxGameType.Core) return true
@@ -45,7 +25,7 @@ object ChronicleAnnotationService {
     }
 
     /**
-     * 基于注解 [WithGameType]，判断目标对象（[target]）是否支持指定的游戏类型（[gameType]）。
+     * 基于注解 [ForGameType]，判断目标对象（[target]）是否支持指定的游戏类型（[gameType]）。
      */
     fun check(target: Any, gameType: ParadoxGameType?): Boolean {
         if (gameType == null || gameType == ParadoxGameType.Core) return true
@@ -56,5 +36,27 @@ object ChronicleAnnotationService {
         val gameTypes = gameTypesCache.get(targetType)
         if (gameTypes.isEmpty()) return true
         return gameType in gameTypes
+    }
+
+    /**
+     * 基于注解 [ForDefinitionType]，判断目标对象类型（[targetType]）是否支持指定的定义信息（[definitionInfo]）。
+     */
+    fun check(targetType: Class<*>, definitionInfo: ParadoxDefinitionInfo?): Boolean {
+        if (definitionInfo == null) return false
+        return doCheck(targetType, definitionInfo)
+    }
+
+    /**
+     * 基于注解 [ForDefinitionType]，判断目标对象（[target]）是否支持指定的定义信息（[definitionInfo]）。
+     */
+    fun check(target: Any, definitionInfo: ParadoxDefinitionInfo?): Boolean {
+        if (definitionInfo == null) return false
+        return doCheck(target.javaClass, definitionInfo)
+    }
+
+    private fun doCheck(targetType: Class<*>, definitionInfo: ParadoxDefinitionInfo): Boolean {
+        val types = definitionTypesCache.get(targetType)
+        if (types.isEmpty()) return true
+        return types.any { ParadoxDefinitionTypeExpression.resolve(it).matches(definitionInfo) }
     }
 }

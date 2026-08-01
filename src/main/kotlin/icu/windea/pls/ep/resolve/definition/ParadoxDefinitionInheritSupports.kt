@@ -1,6 +1,6 @@
 package icu.windea.pls.ep.resolve.definition
 
-import icu.windea.pls.base.annotations.WithGameType
+import icu.windea.pls.base.annotations.ForGameType
 import icu.windea.pls.config.config.CwtSubtypeGroup
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.core.runWithRecursionGuard
@@ -56,9 +56,11 @@ class ParadoxSwappedTypeInheritSupport : ParadoxDefinitionInheritSupport {
  *
  * @see CwtSubtypeGroup.EventAttribute
  */
-@WithGameType(ParadoxGameType.Stellaris)
+@ForGameType(ParadoxGameType.Stellaris)
 class StellarisEventInheritSupport : ParadoxDefinitionInheritSupport {
     // 子事件应当有子类型 `inherited`，并且父事件应当和子事件有相同的事件类型
+
+    override fun supports(gameType: ParadoxGameType) = gameType == ParadoxGameType.Stellaris
 
     override fun getSuperDefinition(definitionInfo: ParadoxDefinitionInfo): ParadoxDefinitionElement? {
         if (definitionInfo.type != T.event) return null

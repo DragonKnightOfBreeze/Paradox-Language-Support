@@ -55,6 +55,7 @@ import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.model.expressions.ParadoxExpression
+import icu.windea.pls.model.orSpecific
 import icu.windea.pls.model.type.ParadoxExpressionRole
 import icu.windea.pls.model.type.ParadoxMemberRole
 import icu.windea.pls.model.type.ParadoxTypeResolver
@@ -96,7 +97,7 @@ object ParadoxConfigService {
         val result = mutableSetOf<CwtConfig<*>>()
         val eps = CwtRelatedConfigProvider.EP_NAME.extensionList
         eps.forEachFast f@{ ep ->
-            if (!ep.supports(gameType)) return@f
+            if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f // check game type first
             val r = ep.getRelatedConfigs(file, offset)
             result += r
         }
@@ -111,7 +112,7 @@ object ParadoxConfigService {
         val gameType = config.configGroup.gameType
         val eps = CwtOverriddenConfigProvider.EP_NAME.extensionList
         eps.forEachFast f@{ ep ->
-            if (!ep.supports(gameType)) return@f
+            if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f // check game type first
             val r = ep.getOverriddenConfigs(contextElement, config).orNull()
                 ?.onEach {
                     it.originalConfig = config
@@ -133,7 +134,7 @@ object ParadoxConfigService {
         val configGroup = ChronicleFacade.getConfigGroup(file.project, gameType)
         val eps = CwtConfigContextProvider.EP_NAME.extensionList
         eps.forEachFast f@{ ep ->
-            if (!ep.supports(gameType)) return@f
+            if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f // check game type first
             val r = ep.getContext(element, configGroup, file, memberPathFromFile, memberRole)
             if (r != null) return r
         }
@@ -147,7 +148,7 @@ object ParadoxConfigService {
         val gameType = configGroup.gameType
         val eps = CwtDeclarationConfigContextProvider.EP_NAME.extensionList
         eps.forEachFast f@{ ep ->
-            if (!ep.supports(gameType)) return@f
+            if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f // check game type first
             val r = ep.getContext(element, configGroup, definitionName, definitionType, definitionSubtypes)
             if (r != null) return r
         }

@@ -11,6 +11,7 @@ import icu.windea.pls.ep.resolve.localisation.ParadoxLocalisationIconSupport
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationIcon
+import icu.windea.pls.model.orSpecific
 
 @Optimized
 object ParadoxLocalisationIconService {
@@ -21,8 +22,8 @@ object ParadoxLocalisationIconService {
         val gameType = selectGameType(element)
         val supports = ParadoxLocalisationIconSupport.EP_NAME.extensionList
         supports.forEachFast f@{ support ->
-            if (gameType != null && !support.supports(gameType)) return@f
-            ProgressManager.checkCanceled() // 3.0.1 optimize: check immediately before applying logic
+            if (gameType.orSpecific() != null && !support.supports(gameType)) return@f // check game type first
+            ProgressManager.checkCanceled() // 3.0.1 optimize: check cancellation immediately before applying logic
             support.resolve(name, element, project)?.let { return it }
         }
         return null
@@ -35,8 +36,8 @@ object ParadoxLocalisationIconService {
         val gameType = selectGameType(element)
         val supports = ParadoxLocalisationIconSupport.EP_NAME.extensionList
         supports.forEachFast f@{ support ->
-            if (gameType != null && !support.supports(gameType)) return@f
-            ProgressManager.checkCanceled() // 3.0.1 optimize: check immediately before applying logic
+            if (gameType.orSpecific() != null && !support.supports(gameType)) return@f // check game type first
+            ProgressManager.checkCanceled() // 3.0.1 optimize: check cancellation immediately before applying logic
             support.resolveAll(name, element, project).orNull()?.let { return it }
         }
         return emptyList()
@@ -49,8 +50,8 @@ object ParadoxLocalisationIconService {
         val gameType = context.gameType
         val supports = ParadoxLocalisationIconSupport.EP_NAME.extensionList
         supports.forEachFast f@{ support ->
-            if (!support.supports(gameType)) return@f
-            ProgressManager.checkCanceled() // 3.0.1 optimize: check immediately before applying logic
+            if (gameType.orSpecific() != null && !support.supports(gameType)) return@f // check game type first
+            ProgressManager.checkCanceled() // 3.0.1 optimize: check cancellation immediately before applying logic
             support.complete(context, result)
         }
     }

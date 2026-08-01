@@ -15,6 +15,7 @@ import icu.windea.pls.model.ParadoxGameType
  */
 interface CwtRelatedConfigProvider {
     fun supports(gameType: ParadoxGameType): Boolean = true
+
     /**
      * 得到相关的规则列表。
      *

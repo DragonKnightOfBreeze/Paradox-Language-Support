@@ -2,11 +2,11 @@ package icu.windea.pls.ep.codeInsight.hints
 
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.psi.PsiElement
-import icu.windea.pls.base.annotations.WithGameTypeEP
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsProvider
 import icu.windea.pls.lang.psi.ParadoxPsiMatchService
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 用于为各种目标提供提示文本，并渲染到（专门用于渲染提示文本的）内嵌提示中。
@@ -21,10 +21,10 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
  * @see ParadoxHintsProvider
  * @see ParadoxPsiMatchService
  */
-@Suppress("unused")
-@WithGameTypeEP
 interface ParadoxHintTextProvider {
     val source: Source get() = Source.Other
+
+    fun supports(gameType: ParadoxGameType): Boolean = true
 
     /**
      * @param locale 提示文本来自本地化时，优先使用的语言环境，如果为 `null` 则优先使用偏好的语言环境。

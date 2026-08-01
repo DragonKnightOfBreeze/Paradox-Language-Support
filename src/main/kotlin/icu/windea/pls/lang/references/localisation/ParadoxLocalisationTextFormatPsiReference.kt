@@ -5,7 +5,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiPolyVariantReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.impl.source.resolve.ResolveCache
-import icu.windea.pls.base.annotations.WithGameType
+import icu.windea.pls.base.annotations.ForGameType
 import icu.windea.pls.core.createResults
 import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
@@ -21,7 +21,7 @@ import icu.windea.pls.model.constraints.ParadoxDefinitionIndexConstraint
  *
  * @see icu.windea.pls.lang.codeInsight.completion.localisation.ParadoxLocalisationTextFormatCompletionProvider
  */
-@WithGameType(ParadoxGameType.Ck3, ParadoxGameType.Vic3, ParadoxGameType.Eu5)
+@ForGameType(ParadoxGameType.Ck3, ParadoxGameType.Vic3, ParadoxGameType.Eu5)
 class ParadoxLocalisationTextFormatPsiReference(
     element: ParadoxLocalisationTextFormat,
     rangeInElement: TextRange

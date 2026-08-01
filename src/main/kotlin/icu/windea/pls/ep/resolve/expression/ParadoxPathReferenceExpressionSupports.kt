@@ -16,9 +16,7 @@ import icu.windea.pls.model.constants.ChronicleConstants
  * @see CwtDataTypes.Icon
  */
 class ParadoxIconReferenceExpressionSupport : ParadoxPathReferenceExpressionSupport {
-    override fun supports(dataType: CwtDataType): Boolean {
-        return dataType == CwtDataTypes.Icon
-    }
+    override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.Icon
 
     // `icon[]` -  `filePath` 需要是不带扩展名的文件名（其扩展名必须是合法的图片的扩展名）
     // `icon[foo/bar]` - `filePath` 需要是不带扩展名的文件名（其扩展名必须是合法的图片的扩展名），且该文件需要位于目录 `foo/bar` 中
@@ -63,9 +61,7 @@ class ParadoxIconReferenceExpressionSupport : ParadoxPathReferenceExpressionSupp
  * @see CwtDataTypes.FilePath
  */
 class ParadoxFilePathReferenceExpressionSupport : ParadoxPathReferenceExpressionSupport {
-    override fun supports(dataType: CwtDataType): Boolean {
-        return dataType == CwtDataTypes.FilePath
-    }
+    override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.FilePath
 
     // `filepath` - 匹配任意路径
     // `filepath[./]` - 匹配相对于脚本文件所在目录的路径
@@ -155,9 +151,7 @@ class ParadoxFilePathReferenceExpressionSupport : ParadoxPathReferenceExpression
  * @see CwtDataTypes.FileName
  */
 class ParadoxFileNameReferenceExpressionSupport : ParadoxPathReferenceExpressionSupport {
-    override fun supports(dataType: CwtDataType): Boolean {
-        return dataType == CwtDataTypes.FileName
-    }
+    override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.FileName
 
     // `filename` - `filePath` 需要是文件名
     // `filename[foo/bar]` - `filePath` 需要是文件名，且该文件需要位于目录 `foo/bar` 中

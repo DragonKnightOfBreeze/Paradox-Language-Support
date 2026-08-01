@@ -1,12 +1,13 @@
 package icu.windea.pls.ep.resolve.definition
 
 import com.intellij.openapi.extensions.ExtensionPointName
-import icu.windea.pls.base.annotations.WithGameTypeEP
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.model.ParadoxDefinitionInfo
+import icu.windea.pls.model.ParadoxGameType
 
-@WithGameTypeEP
 interface ParadoxDefinitionModifierProvider {
+    fun supports(gameType: ParadoxGameType): Boolean = true
+
     fun getModifierCategories(definitionInfo: ParadoxDefinitionInfo): Map<String, CwtModifierCategoryConfig>?
 
     companion object INSTANCE {

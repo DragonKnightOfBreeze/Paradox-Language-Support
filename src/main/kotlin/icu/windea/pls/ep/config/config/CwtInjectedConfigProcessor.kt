@@ -14,7 +14,7 @@ import icu.windea.pls.model.ParadoxGameType
 interface CwtInjectedConfigProcessor {
     fun supports(gameType: ParadoxGameType): Boolean = true
 
-    fun supports(parentConfig: CwtMemberConfig<*>): Boolean = supports(parentConfig.configGroup.gameType)
+    fun supports(parentConfig: CwtMemberConfig<*>): Boolean = true
 
     /**
      * 对键或值进行注入，返回得到的表达式字符串列表。如果为 `null`，则表示不进行注入。

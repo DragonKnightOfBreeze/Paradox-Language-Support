@@ -1,17 +1,18 @@
 package icu.windea.pls.ep.overrides
 
 import com.intellij.openapi.extensions.ExtensionPointName
-import icu.windea.pls.base.annotations.WithGameTypeEP
 import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
 import icu.windea.pls.lang.search.util.ParadoxSearchParameters
+import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 用于从目标或查询参数得到覆盖策略。
  *
  * @see ParadoxOverrideStrategy
  */
-@WithGameTypeEP
 interface ParadoxOverrideStrategyProvider {
+    fun supports(gameType: ParadoxGameType): Boolean = true
+
     /**
      * 得到目标（文件、全局封装变量、定义、本地化等）使用的覆盖策略。
      * 如果返回 `null`，则表示不适用覆盖策略。

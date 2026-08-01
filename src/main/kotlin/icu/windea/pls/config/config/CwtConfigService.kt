@@ -38,6 +38,7 @@ import icu.windea.pls.ep.config.config.CwtInjectedConfigProvider
 import icu.windea.pls.ep.config.configGroup.CwtConfigGroupFileProvider
 import icu.windea.pls.lang.psi.CwtPsiService
 import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.orSpecific
 import icu.windea.pls.model.paths.CwtConfigPath
 
 object CwtConfigService {
@@ -58,8 +59,10 @@ object CwtConfigService {
      */
     @Optimized
     fun postProcess(config: CwtMemberConfig<*>) {
+        val gameType = config.configGroup.gameType
         val eps = CwtConfigPostProcessor.EP_NAME.extensionList
         eps.forEachFast f@{ ep ->
+            if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f // check game type first
             if (!ep.supports(config)) return@f
             if (ep.deferred(config)) {
                 val deferredActions = config.configGroup.initializer.configPostProcessActions
@@ -76,8 +79,10 @@ object CwtConfigService {
     @Optimized
     fun injectConfigs(parentConfig: CwtMemberConfig<*>, containerConfig: CwtMemberConfig<*>, configs: MutableList<CwtMemberConfig<*>>): Boolean {
         var r = false
+        val gameType = parentConfig.configGroup.gameType
         val eps = CwtInjectedConfigProvider.EP_NAME.extensionList
         eps.forEachFast f@{ ep ->
+            if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f // check game type first
             if (!ep.supports(parentConfig)) return@f
             // NOTE 3.0.1 can be applied multiple times here
             ep.injectConfigs(parentConfig, containerConfig, configs).let { r = r || it }

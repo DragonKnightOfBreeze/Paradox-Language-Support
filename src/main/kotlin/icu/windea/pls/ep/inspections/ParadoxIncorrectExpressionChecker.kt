@@ -1,10 +1,10 @@
 package icu.windea.pls.ep.inspections
 
 import com.intellij.openapi.extensions.ExtensionPointName
-import icu.windea.pls.base.annotations.WithGameTypeEP
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.lang.inspections.ParadoxExpressionInspectionContext
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
+import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 不正确的表达式的检查器。
@@ -18,8 +18,9 @@ import icu.windea.pls.lang.psi.ParadoxExpressionElement
  * @see icu.windea.pls.lang.inspections.script.expression.IncorrectExpressionInspection
  * @see icu.windea.pls.lang.inspections.csv.expression.IncorrectExpressionInspection
  */
-@WithGameTypeEP
 interface ParadoxIncorrectExpressionChecker {
+    fun supports(gameType: ParadoxGameType): Boolean = true
+
     /**
      * 执行检查。
      *

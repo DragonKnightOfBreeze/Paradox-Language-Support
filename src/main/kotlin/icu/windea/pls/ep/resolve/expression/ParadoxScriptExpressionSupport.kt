@@ -8,7 +8,6 @@ import com.intellij.openapi.extensions.PluginDescriptor
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
-import icu.windea.pls.base.annotations.WithGameTypeEP
 import icu.windea.pls.config.CwtDataType
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.core.collections.filterFast
@@ -19,6 +18,7 @@ import icu.windea.pls.core.util.values.singletonListOrEmpty
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
+import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.type.ParadoxExpressionRole
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 
@@ -30,9 +30,10 @@ import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
  * @see ParadoxExpressionElement
  * @see ParadoxScriptExpressionElement
  */
-@WithGameTypeEP
 interface ParadoxScriptExpressionSupport {
-    fun supports(dataType: CwtDataType): Boolean = false
+    fun supports(gameType: ParadoxGameType): Boolean = true
+
+    fun supports(dataType: CwtDataType): Boolean
 
     fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, holder: AnnotationHolder) {
         // by default nothing

@@ -4,7 +4,6 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.base.ChronicleCapacities
-import icu.windea.pls.base.annotations.ChronicleAnnotationService
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
@@ -13,9 +12,11 @@ import icu.windea.pls.config.configExpression.CwtImageLocationExpression
 import icu.windea.pls.config.configExpression.CwtLocalisationLocationExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.util.CwtConfigExpressionManager
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.orNull
-import icu.windea.pls.core.collections.process
+import icu.windea.pls.core.collections.processFast
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
 import icu.windea.pls.ep.resolve.definition.ParadoxDefinitionInheritSupport
@@ -42,29 +43,34 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxDefinitionSource
 import icu.windea.pls.model.ParadoxFileInfo
+import icu.windea.pls.model.orSpecific
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
+@Optimized
 object ParadoxDefinitionService {
     /**
      * @see ParadoxDefinitionInheritSupport.getSuperDefinition
      */
     fun getSuperDefinition(definitionInfo: ParadoxDefinitionInfo): ParadoxDefinitionElement? {
         val gameType = definitionInfo.gameType
-        return ParadoxDefinitionInheritSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-            if (!ChronicleAnnotationService.check(ep, gameType)) return@f null
-            ep.getSuperDefinition(definitionInfo)
+        val eps = ParadoxDefinitionInheritSupport.EP_NAME.extensionList
+        eps.forEachFast f@{ ep ->
+            if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f // check game type first
+            ep.getSuperDefinition(definitionInfo)?.let { return it }
         }
+        return null
     }
 
     /**
      * @see ParadoxDefinitionInheritSupport.processSubtypeConfigs
      */
-    fun processSubtypeConfigsFromInherit(definitionInfo: ParadoxDefinitionInfo, subtypeConfigs: MutableList<CwtSubtypeConfig>) {
+    fun processSubtypeConfigsFromInherit(definitionInfo: ParadoxDefinitionInfo, subtypeConfigs: MutableList<CwtSubtypeConfig>): Boolean {
         val gameType = definitionInfo.gameType
-        ParadoxDefinitionInheritSupport.EP_NAME.extensionList.process p@{ ep ->
-            if (!ChronicleAnnotationService.check(ep, gameType)) return@p true
+        val eps = ParadoxDefinitionInheritSupport.EP_NAME.extensionList
+        return eps.processFast f@{ ep ->
+            if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f true // check game type first
             ep.processSubtypeConfigs(definitionInfo, subtypeConfigs)
         }
     }
@@ -74,10 +80,12 @@ object ParadoxDefinitionService {
      */
     fun getModifierCategories(definitionInfo: ParadoxDefinitionInfo): Map<String, CwtModifierCategoryConfig>? {
         val gameType = definitionInfo.gameType
-        return ParadoxDefinitionModifierProvider.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-            if (!ChronicleAnnotationService.check(ep, gameType)) return@f null
-            ep.getModifierCategories(definitionInfo)
+        val eps = ParadoxDefinitionModifierProvider.EP_NAME.extensionList
+        eps.forEachFast f@{ ep ->
+            if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f // check game type first
+            ep.getModifierCategories(definitionInfo)?.let { return it }
         }
+        return null
     }
 
     fun resolveInfo(element: ParadoxDefinitionElement, file: PsiFile): ParadoxDefinitionInfo? {
@@ -228,9 +236,9 @@ object ParadoxDefinitionService {
         val primaryLocalisations = definitionInfo.primaryLocalisations
         if (primaryLocalisations.isEmpty()) return null // 没有或者规则不完善
         val preferredLocale = ParadoxLocaleManager.getPreferredLocaleConfig()
-        for (primaryLocalisation in primaryLocalisations) {
+        primaryLocalisations.forEachFast f@{ primaryLocalisation ->
             val resolveResult = ParadoxConfigExpressionService.resolve(primaryLocalisation.locationExpression, element, definitionInfo) { preferLocale(preferredLocale) }
-            if (resolveResult !is CwtLocalisationLocationResolveResult.Static) continue
+            if (resolveResult !is CwtLocalisationLocationResolveResult.Static) return@f
             return resolveResult.name
         }
         return null
@@ -241,9 +249,9 @@ object ParadoxDefinitionService {
         val primaryLocalisations = definitionInfo.primaryLocalisations
         if (primaryLocalisations.isEmpty()) return null // 没有或者规则不完善
         val preferredLocale = ParadoxLocaleManager.getPreferredLocaleConfig()
-        for (primaryLocalisation in primaryLocalisations) {
+        primaryLocalisations.forEachFast f@{ primaryLocalisation ->
             val resolveResult = ParadoxConfigExpressionService.resolve(primaryLocalisation.locationExpression, element, definitionInfo) { preferLocale(preferredLocale) }
-            if (resolveResult !is CwtLocalisationLocationResolveResult.Static) continue
+            if (resolveResult !is CwtLocalisationLocationResolveResult.Static) return@f
             return resolveResult.element
         }
         return null
@@ -255,9 +263,9 @@ object ParadoxDefinitionService {
         if (primaryLocalisations.isEmpty()) return emptySet() // 没有或者规则不完善
         val result = mutableSetOf<ParadoxLocalisationProperty>()
         val preferredLocale = ParadoxLocaleManager.getPreferredLocaleConfig()
-        for (primaryLocalisation in primaryLocalisations) {
+        primaryLocalisations.forEachFast f@{ primaryLocalisation ->
             val resolveResult = ParadoxConfigExpressionService.resolve(primaryLocalisation.locationExpression, element, definitionInfo) { preferLocale(preferredLocale) }
-            if (resolveResult !is CwtLocalisationLocationResolveResult.Static) continue
+            if (resolveResult !is CwtLocalisationLocationResolveResult.Static) return@f
             result.addAll(resolveResult.elements)
         }
         return result
@@ -267,10 +275,10 @@ object ParadoxDefinitionService {
         val element = definitionInfo.element ?: return null
         val primaryImages = definitionInfo.primaryImages
         if (primaryImages.isEmpty()) return null // 没有或者规则不完善
-        for (primaryImage in primaryImages) {
+        primaryImages.forEachFast f@{ primaryImage ->
             val resolveResult = ParadoxConfigExpressionService.resolve(primaryImage.locationExpression, element, definitionInfo, toFile = true)
-            if (resolveResult !is CwtImageLocationResolveResult.Static) continue
-            val file = resolveResult.element?.castOrNull<PsiFile>() ?: continue
+            if (resolveResult !is CwtImageLocationResolveResult.Static) return@f
+            val file = resolveResult.element?.castOrNull<PsiFile>() ?: return@f
             element.putUserData(Keys.imageFrameInfo, resolveResult.frameInfo)
             return file
         }
@@ -282,9 +290,9 @@ object ParadoxDefinitionService {
         val primaryImages = definitionInfo.primaryImages
         if (primaryImages.isEmpty()) return emptySet() // 没有或者规则不完善
         val result = mutableSetOf<PsiFile>()
-        for (primaryImage in primaryImages) {
+        primaryImages.forEachFast f@{ primaryImage ->
             val resolveResult = ParadoxConfigExpressionService.resolve(primaryImage.locationExpression, element, definitionInfo, toFile = true)
-            if (resolveResult !is CwtImageLocationResolveResult.Static) continue
+            if (resolveResult !is CwtImageLocationResolveResult.Static) return@f
             val files = resolveResult.elements.filterIsInstance<PsiFile>()
             element.putUserData(Keys.imageFrameInfo, resolveResult.frameInfo)
             result.addAll(files)

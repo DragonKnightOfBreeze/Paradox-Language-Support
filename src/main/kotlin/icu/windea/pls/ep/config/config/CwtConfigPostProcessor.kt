@@ -10,7 +10,7 @@ import icu.windea.pls.model.ParadoxGameType
 interface CwtConfigPostProcessor {
     fun supports(gameType: ParadoxGameType): Boolean = true
 
-    fun supports(config: CwtMemberConfig<*>): Boolean = supports(config.configGroup.gameType)
+    fun supports(config: CwtMemberConfig<*>): Boolean = true
 
     fun deferred(config: CwtMemberConfig<*>): Boolean = false
 

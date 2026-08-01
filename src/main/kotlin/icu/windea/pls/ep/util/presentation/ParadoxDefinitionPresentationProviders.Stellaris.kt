@@ -1,8 +1,8 @@
 package icu.windea.pls.ep.util.presentation
 
 import com.intellij.openapi.diagnostic.thisLogger
-import icu.windea.pls.base.annotations.WithDefinitionType
-import icu.windea.pls.base.annotations.WithGameType
+import icu.windea.pls.base.annotations.ForDefinitionType
+import icu.windea.pls.base.annotations.ForGameType
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.lang.presentation.StellarisTechnologyCardBuilder
 import icu.windea.pls.model.ParadoxGameType
@@ -13,8 +13,8 @@ import javax.swing.JComponent
 /**
  * 科技的图形展示（科技卡）。
  */
-@WithGameType(ParadoxGameType.Stellaris)
-@WithDefinitionType(ParadoxDefinitionTypes.technology)
+@ForGameType(ParadoxGameType.Stellaris)
+@ForDefinitionType(ParadoxDefinitionTypes.technology)
 class StellarisTechnologyCardPresentation(element: ParadoxDefinitionElement) : ParadoxDefinitionPresentationBase(element) {
     override fun createComponent(): JComponent? {
         return runCatchingCancelable { doCreateComponent() }.onFailure { thisLogger().warn(it) }.getOrNull()

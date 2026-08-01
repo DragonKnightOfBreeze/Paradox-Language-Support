@@ -4,7 +4,6 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.openapi.util.ModificationTracker
 import com.intellij.psi.PsiElement
-import icu.windea.pls.base.annotations.WithGameTypeEP
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.text.DocumentationBuilder
@@ -12,6 +11,7 @@ import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.psi.light.ParadoxModifierLightElement
 import icu.windea.pls.model.ParadoxDefinitionInfo
+import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxModifierInfo
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
@@ -21,8 +21,9 @@ import icu.windea.pls.script.psi.ParadoxDefinitionElement
  * @see ParadoxModifierInfo
  * @see ParadoxModifierLightElement
  */
-@WithGameTypeEP
 interface ParadoxModifierSupport {
+    fun supports(gameType: ParadoxGameType) = true
+
     /**
      * @param element 进行匹配时的上下文 PSI 元素。
      */

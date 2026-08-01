@@ -3,7 +3,7 @@ package icu.windea.pls.ep.inspections
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.util.parentOfType
-import icu.windea.pls.base.annotations.WithGameType
+import icu.windea.pls.base.annotations.ForGameType
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
@@ -204,8 +204,10 @@ class ParadoxFloatValueFieldChecker : ParadoxIncorrectExpressionChecker {
 /**
  * 检查 Stellaris 中携带了循环等级的科技引用是否正确。
  */
-@WithGameType(ParadoxGameType.Stellaris)
+@ForGameType(ParadoxGameType.Stellaris)
 class StellarisTechnologyWithLevelChecker : ParadoxIncorrectExpressionChecker {
+    override fun supports(gameType: ParadoxGameType) = gameType == ParadoxGameType.Stellaris
+
     override fun check(element: ParadoxExpressionElement, config: CwtMemberConfig<*>, context: ParadoxExpressionInspectionContext): Boolean {
         if (element !is ParadoxScriptStringExpressionElement) return true
 

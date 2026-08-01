@@ -7,7 +7,6 @@ import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.openapi.extensions.PluginDescriptor
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
-import icu.windea.pls.base.annotations.WithGameTypeEP
 import icu.windea.pls.config.CwtDataType
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.core.collections.filterFast
@@ -19,6 +18,7 @@ import icu.windea.pls.core.util.values.to
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
+import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 
 /**
@@ -31,8 +31,9 @@ import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
  * @see ParadoxExpressionElement
  * @see ParadoxScriptExpressionElement
  */
-@WithGameTypeEP
 interface ParadoxCsvExpressionSupport {
+    fun supports(gameType: ParadoxGameType): Boolean = true
+
     fun supports(dataType: CwtDataType): Boolean
 
     fun annotate(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, text: String, config: CwtValueConfig, holder: AnnotationHolder) {

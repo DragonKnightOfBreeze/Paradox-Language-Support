@@ -7,13 +7,13 @@ import com.intellij.openapi.project.Project
 import com.intellij.ui.dsl.builder.*
 import com.intellij.util.xmlb.annotations.XMap
 import icu.windea.pls.ChronicleDocBundle
-import icu.windea.pls.base.annotations.WithGameType
+import icu.windea.pls.base.annotations.ForGameType
 import icu.windea.pls.extensions.diagram.ChronicleDiagramBundle
 import icu.windea.pls.lang.util.ParadoxEventManager
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.ChronicleConstants
 
-@WithGameType(ParadoxGameType.Ck2)
+@ForGameType(ParadoxGameType.Ck2)
 @Service(Service.Level.PROJECT)
 @State(name = "ParadoxDiagramSettings.Ck2.EventTree", storages = [Storage(ChronicleConstants.pluginSettingsFileName)])
 class Ck2EventTreeDiagramSettings(

@@ -5,7 +5,7 @@ import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import com.intellij.util.Processor
-import icu.windea.pls.base.annotations.WithGameType
+import icu.windea.pls.base.annotations.ForGameType
 import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.process
@@ -23,7 +23,7 @@ import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import kotlinx.coroutines.CancellationException
 
-@WithGameType(ParadoxGameType.Stellaris)
+@ForGameType(ParadoxGameType.Stellaris)
 object ParadoxEconomicCategoryService {
     fun resolveInfo(definition: ParadoxScriptProperty): ParadoxEconomicCategoryInfo? {
         try {

@@ -4,7 +4,6 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
-import icu.windea.pls.base.annotations.WithGameTypeEP
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.localisation.psi.ParadoxLocalisationIcon
 import icu.windea.pls.model.ParadoxGameType
@@ -12,7 +11,6 @@ import icu.windea.pls.model.ParadoxGameType
 /**
  * 提供对本地化图标的支持。
  */
-@WithGameTypeEP
 interface ParadoxLocalisationIconSupport {
     fun supports(gameType: ParadoxGameType) = true
 

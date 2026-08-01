@@ -8,7 +8,6 @@ import com.intellij.openapi.extensions.PluginDescriptor
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
-import icu.windea.pls.base.annotations.WithGameTypeEP
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.util.values.LazyValue
 import icu.windea.pls.core.util.values.singletonListOrEmpty
@@ -16,6 +15,7 @@ import icu.windea.pls.core.util.values.to
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
+import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 提供对本地化表达式的支持。
@@ -25,8 +25,9 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
  * @see ParadoxExpressionElement
  * @see ParadoxLocalisationExpressionElement
  */
-@WithGameTypeEP
 interface ParadoxLocalisationExpressionSupport {
+    fun supports(gameType: ParadoxGameType): Boolean = true
+
     fun supports(element: ParadoxExpressionElement): Boolean
 
     fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, holder: AnnotationHolder) {
