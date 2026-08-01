@@ -100,7 +100,7 @@ sealed interface ParadoxMatchResult {
     class LazyScopeAwareMatch(predicate: () -> Boolean) : LazyMatch(predicate), DirectMatch
 
     companion object {
-        // 3.0.1 optimize: make all inline only
+        // 3.0.1 make all inline only
 
         @Suppress("NOTHING_TO_INLINE")
         inline fun exactOrLenientExact(value: Boolean) = if (value) ExactMatch else LenientExactMatch

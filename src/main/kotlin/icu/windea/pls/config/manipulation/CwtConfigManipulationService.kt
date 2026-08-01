@@ -1,6 +1,7 @@
 package icu.windea.pls.config.manipulation
 
 import com.intellij.psi.PsiElement
+import com.intellij.util.SmartList
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtConfigService
@@ -38,27 +39,19 @@ import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.lang.resolve.CwtDeclarationConfigContext
 import icu.windea.pls.model.expressions.ParadoxDefinitionSubtypeExpression
 import icu.windea.pls.model.type.CwtExpressionType
-import it.unimi.dsi.fastutil.objects.ObjectArrayList
-import kotlin.contracts.ExperimentalContracts
-import kotlin.contracts.contract
 
 @Optimized
 object CwtConfigManipulationService {
     // region Common Methods
 
-    @Optimized
     fun createListForDeepCopy(): MutableList<CwtMemberConfig<*>> {
-        return ObjectArrayList()
+        return SmartList() // 3.0.1 optimize: use SmartList here (reduce temporary memory overhead, especially for the sizes of 0 and 1)
     }
 
-    @Optimized
-    @OptIn(ExperimentalContracts::class)
-    fun createListForDeepCopy(configs: List<CwtMemberConfig<*>>?): MutableList<CwtMemberConfig<*>>? {
-        contract {
-            returnsNotNull() implies (configs != null)
-        }
-        if (configs == null) return null
-        return ObjectArrayList()
+    fun createListForDeepCopy(expectedSize: Int): MutableList<CwtMemberConfig<*>> {
+        require(expectedSize >= 0) { "expectedSize must be non-negative" }
+        if (expectedSize <= 1) return SmartList() // 3.0.1 optimize: use SmartList here (reduce temporary memory overhead, especially for the sizes of 0 and 1)
+        return ArrayList(expectedSize) // 3.0.1 optimize: use sized mutable list here
     }
 
     /**
@@ -78,11 +71,12 @@ object CwtConfigManipulationService {
     private fun doDeepCopyConfigs(parentConfig: CwtMemberConfig<*>, containerConfig: CwtMemberConfig<*>): List<CwtMemberConfig<*>>? {
         val configs = parentConfig.configs?.optimized() ?: return null // 这里需要兼容并同样处理子规则列表为空的情况
         if (configs.isEmpty()) return configs
-        val result = createListForDeepCopy()
+        val result = createListForDeepCopy(expectedSize = configs.size)
         configs.forEachFast { config ->
-            val childConfigs = createListForDeepCopy(config.configs)
-            val delegatedConfig = config.delegated(childConfigs).also { it.withParentConfig(containerConfig) }
-            if (childConfigs != null) childConfigs += doDeepCopyConfigs(config, delegatedConfig).orEmpty()
+            val childConfigs = config.configs
+            val childResult = if (childConfigs != null) createListForDeepCopy(expectedSize = childConfigs.size) else null
+            val delegatedConfig = config.delegated(childResult).also { it.withParentConfig(containerConfig) }
+            if (childResult != null) childResult += doDeepCopyConfigs(config, delegatedConfig).orEmpty()
             delegatedConfig.postOptimize() // 进行后续优化
             result += delegatedConfig
         }
@@ -94,7 +88,7 @@ object CwtConfigManipulationService {
     private fun doDeepCopyConfigsInDeclaration(parentConfig: CwtMemberConfig<*>, containerConfig: CwtMemberConfig<*>, context: CwtDeclarationConfigContext): List<CwtMemberConfig<*>>? {
         val configs = parentConfig.configs?.optimized() ?: return null // 这里需要兼容并同样处理子规则列表为空的情况
         if (configs.isEmpty()) return configs
-        val result = createListForDeepCopy()
+        val result = createListForDeepCopy(/* expectedSize = configs.size */)
         configs.forEachFast f@{ config ->
             run r@{
                 // 如果匹配子类型表达式，打平其中的子规则并加入结果，否则直接跳过
@@ -107,9 +101,10 @@ object CwtConfigManipulationService {
                 return@f
             }
 
-            val childConfigs = createListForDeepCopy(config.configs)
-            val delegatedConfig = config.delegated(childConfigs).also { it.withParentConfig(containerConfig) }
-            if (childConfigs != null) childConfigs += deepCopyConfigsInDeclaration(config, delegatedConfig, context).orEmpty()
+            val childConfigs = config.configs
+            val childResult = if (childConfigs != null) createListForDeepCopy(/* expectedSize = childConfigs.size */) else null
+            val delegatedConfig = config.delegated(childResult).also { it.withParentConfig(containerConfig) }
+            if (childResult != null) childResult += deepCopyConfigsInDeclaration(config, delegatedConfig, context).orEmpty()
             delegatedConfig.postOptimize() // 进行后续优化
             result += delegatedConfig
         }

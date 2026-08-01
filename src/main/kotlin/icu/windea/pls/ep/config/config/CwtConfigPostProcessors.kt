@@ -6,6 +6,8 @@ import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.tagType
 import icu.windea.pls.config.manipulation.CwtConfigManipulationService
 import icu.windea.pls.config.util.CwtConfigResolverManager
+import icu.windea.pls.core.collections.anyFast
+import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.model.ParadoxTagType
 
 class CwtBaseConfigPostProcessor : CwtConfigPostProcessor {
@@ -51,15 +53,15 @@ class CwtInjectConfigPostProcessor : CwtConfigPostProcessor {
         }
 
         // avoid (shallow) recursion injection: if configs to inject also contain inject option, ignore directly
-        if (configsToInject.any { it.optionMetadata.inject != null }) {
+        if (configsToInject.anyFast { it.optionMetadata.inject != null }) {
             recursive(pathExpression, config)
             return
         }
 
         val targetConfig = config
         val originalConfigs = targetConfig.configs ?: return
-        val injectedConfigs = CwtConfigManipulationService.createListForDeepCopy()
-        configsToInject.forEach { configToInject ->
+        val injectedConfigs = CwtConfigManipulationService.createListForDeepCopy(expectedSize = configsToInject.size)
+        configsToInject.forEachFast { configToInject ->
             injectedConfigs += deepCopyForInjection(configToInject, targetConfig)
         }
         if (injectedConfigs.isEmpty()) {
@@ -67,9 +69,7 @@ class CwtInjectConfigPostProcessor : CwtConfigPostProcessor {
             return
         }
 
-        val newConfigs = CwtConfigManipulationService.createListForDeepCopy()
-        newConfigs += originalConfigs
-        newConfigs += injectedConfigs
+        val newConfigs = originalConfigs + injectedConfigs
 
         val updated = updateChildConfigs(targetConfig, newConfigs)
         if (!updated) {
@@ -99,11 +99,9 @@ class CwtInjectConfigPostProcessor : CwtConfigPostProcessor {
 
     private fun deepCopyForInjection(configToInject: CwtMemberConfig<*>, parentConfig: CwtMemberConfig<*>): CwtMemberConfig<*> {
         val sourceConfigs = configToInject.configs
-            ?: return configToInject.delegated(null).also { it.withParentConfig(parentConfig) }
-        val copiedChildConfigs = CwtConfigManipulationService.createListForDeepCopy(sourceConfigs)
-            ?: return configToInject.delegated(null).also { it.withParentConfig(parentConfig) }
-        val delegatedConfig = configToInject.delegated(copiedChildConfigs).also { it.withParentConfig(parentConfig) }
-        copiedChildConfigs += CwtConfigManipulationService.deepCopyConfigs(configToInject, delegatedConfig).orEmpty()
+        val configs = if (sourceConfigs != null) CwtConfigManipulationService.createListForDeepCopy(expectedSize = sourceConfigs.size) else null
+        val delegatedConfig = configToInject.delegated(configs).also { it.withParentConfig(parentConfig) }
+        if (configs != null) configs += CwtConfigManipulationService.deepCopyConfigs(configToInject, delegatedConfig).orEmpty()
         delegatedConfig.postOptimize()
         return delegatedConfig
     }

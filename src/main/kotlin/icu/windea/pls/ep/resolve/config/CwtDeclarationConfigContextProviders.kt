@@ -45,7 +45,8 @@ class CwtBaseDeclarationConfigContextProvider : CwtDeclarationConfigContextProvi
 
     override fun getConfig(context: CwtDeclarationConfigContext, declarationConfig: CwtDeclarationConfig): CwtPropertyConfig {
         val rootConfig = declarationConfig.rootConfig
-        val configs = CwtConfigManipulationService.createListForDeepCopy(rootConfig.configs)
+        val childConfigs = rootConfig.configs
+        val configs = if (childConfigs != null) CwtConfigManipulationService.createListForDeepCopy(expectedSize = childConfigs.size) else null
         val finalRootConfig = rootConfig.delegated(configs)
         finalRootConfig.declarationConfigContext = context
         if (configs != null) configs += CwtConfigManipulationService.deepCopyConfigsInDeclaration(rootConfig, finalRootConfig, context).orEmpty()
@@ -81,7 +82,8 @@ class CwtGameRuleDeclarationConfigContextProvider : CwtDeclarationConfigContextP
 
     override fun getConfig(context: CwtDeclarationConfigContext, declarationConfig: CwtDeclarationConfig): CwtPropertyConfig {
         val rootConfig = context.gameRuleConfig?.rootConfig ?: declarationConfig.rootConfig
-        val configs = CwtConfigManipulationService.createListForDeepCopy(rootConfig.configs)
+        val childConfigs = rootConfig.configs
+        val configs = if (childConfigs != null) CwtConfigManipulationService.createListForDeepCopy(expectedSize = childConfigs.size) else null
         val finalRootConfig = rootConfig.delegated(configs)
         finalRootConfig.declarationConfigContext = context
         if (configs != null) configs += CwtConfigManipulationService.deepCopyConfigsInDeclaration(rootConfig, finalRootConfig, context).orEmpty()
@@ -117,7 +119,8 @@ class CwtOnActionDeclarationConfigContextProvider : CwtDeclarationConfigContextP
 
     override fun getConfig(context: CwtDeclarationConfigContext, declarationConfig: CwtDeclarationConfig): CwtPropertyConfig {
         val rootConfig = declarationConfig.rootConfig
-        val configs = CwtConfigManipulationService.createListForDeepCopy(rootConfig.configs)
+        val childConfigs = rootConfig.configs
+        val configs = if (childConfigs != null) CwtConfigManipulationService.createListForDeepCopy(expectedSize = childConfigs.size) else null
         val finalRootConfig = rootConfig.delegated(configs)
         finalRootConfig.declarationConfigContext = context
         if (configs != null) configs += CwtConfigManipulationService.deepCopyConfigsInDeclaration(rootConfig, finalRootConfig, context).orEmpty()
