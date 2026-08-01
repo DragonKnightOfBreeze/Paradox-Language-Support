@@ -87,7 +87,7 @@ object ParadoxMatchService {
         var dynamic = false
 
         val context = ParadoxScriptExpressionMatchOptimizerContext(element, expression, configGroup, options)
-        val optimizers = ParadoxScriptExpressionMatchOptimizer.EP_NAME.extensionList
+        val optimizers = ParadoxScriptExpressionMatchOptimizer.getAll()
         optimizers.forEachFast f@{ optimizer ->
             val optimized = optimizer.optimize(result, context)
             if (optimized == null) return@f

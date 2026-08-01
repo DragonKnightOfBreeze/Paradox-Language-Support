@@ -74,5 +74,7 @@ interface ParadoxLocalisationExpressionSupport {
                 override fun extensionRemoved(extension: ParadoxLocalisationExpressionSupport, pluginDescriptor: PluginDescriptor) = computeCache()
             })
         }
+
+        // endregion
     }
 }

@@ -1,7 +1,11 @@
 package icu.windea.pls.ep.match.expression
 
+import com.intellij.openapi.extensions.ExtensionPointListener
 import com.intellij.openapi.extensions.ExtensionPointName
+import com.intellij.openapi.extensions.PluginDescriptor
 import icu.windea.pls.config.config.CwtMemberConfig
+import icu.windea.pls.core.optimized
+import icu.windea.pls.core.util.values.LazyValue
 import icu.windea.pls.lang.match.ParadoxMatchService
 import icu.windea.pls.lang.match.ParadoxScriptExpressionMatchOptimizerContext
 import icu.windea.pls.model.expressions.ParadoxExpression
@@ -29,5 +33,30 @@ interface ParadoxScriptExpressionMatchOptimizer {
 
     companion object INSTANCE {
         @JvmField val EP_NAME = ExtensionPointName<ParadoxScriptExpressionMatchOptimizer>("icu.windea.pls.scriptExpressionMatchOptimizer")
+        @JvmField val CACHE = LazyValue<List<ParadoxScriptExpressionMatchOptimizer>>()
+
+        fun getAll(): List<ParadoxScriptExpressionMatchOptimizer> = CACHE.get().orEmpty()
+
+        // region Implementations
+
+        init {
+            computeCache()
+            addListener()
+        }
+
+        private fun computeCache() {
+            CACHE.reinitialize {
+                EP_NAME.extensionList.optimized()
+            }
+        }
+
+        private fun addListener() {
+            EP_NAME.addExtensionPointListener(object : ExtensionPointListener<ParadoxScriptExpressionMatchOptimizer> {
+                override fun extensionAdded(extension: ParadoxScriptExpressionMatchOptimizer, pluginDescriptor: PluginDescriptor) = computeCache()
+                override fun extensionRemoved(extension: ParadoxScriptExpressionMatchOptimizer, pluginDescriptor: PluginDescriptor) = computeCache()
+            })
+        }
+
+        // endregion
     }
 }

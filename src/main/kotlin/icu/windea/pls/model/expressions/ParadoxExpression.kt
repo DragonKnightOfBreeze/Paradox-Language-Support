@@ -220,7 +220,7 @@ private class ParadoxScriptedVariableReferenceBasedExpression(
     private val element: ParadoxScriptedVariableReference,
     private val options: ParadoxMatchOptions?,
 ) : ParadoxExpressionBase() {
-    private val resolvedExpression: ParadoxExpression // region by lazy { computeResolvedExpression() }
+    private inline val resolvedExpression: ParadoxExpression // region by lazy { computeResolvedExpression() }
         get() = LazyValue.of(this, { _resolvedExpression }, { _resolvedExpression = it }) { computeResolvedExpression() }
     @Volatile private var _resolvedExpression = LazyValue.UNINITIALIZED // endregion
 
