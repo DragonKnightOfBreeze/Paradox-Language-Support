@@ -330,10 +330,11 @@ object ParadoxConfigMatchService {
             }
             // 匹配值
             propertyConfig.stringValue != null -> {
-                val expression = ParadoxExpression.resolve(propValue, context.options)
+                val options = context.options
+                val expression = ParadoxExpression.resolve(propValue, options)
                 val configExpression = propertyConfig.valueExpression
-                val context = ParadoxScriptExpressionMatchContext(propValue, expression, configExpression, propertyConfig, configGroup, context.options)
-                return ParadoxExpressionMatchService.matchScriptExpression(context).get(context.options)
+                val context = ParadoxScriptExpressionMatchContext(propValue, expression, configExpression, propertyConfig, configGroup, options)
+                return ParadoxExpressionMatchService.matchScriptExpression(context).get(options)
             }
             // 匹配 single_alias
             CwtConfigMatchService.isSingleAliasEntry(propertyConfig) -> {
@@ -360,12 +361,13 @@ object ParadoxConfigMatchService {
 
         val occurrences = propertyConfigs.associateByTo(mutableMapOf(), { it.key }, { ParadoxMatchOccurrenceService.evaluate(definition, it) })
         val configGroup = propertyConfigs.first().configGroup
+        val options = context.options
         val matched = definition.properties(context.inline).all p@{ propertyElement ->
             val keyElement = propertyElement.propertyKey
-            val expression = ParadoxExpression.resolve(keyElement, context.options)
+            val expression = ParadoxExpression.resolve(keyElement, options)
             val propConfigs = propertyConfigs.filterFast { config ->
-                val context = ParadoxScriptExpressionMatchContext(keyElement, expression, config.keyExpression, config, configGroup, context.options)
-                ParadoxExpressionMatchService.matchScriptExpression(context).get(context.options)
+                val context = ParadoxScriptExpressionMatchContext(keyElement, expression, config.keyExpression, config, configGroup, options)
+                ParadoxExpressionMatchService.matchScriptExpression(context).get(options)
             }
             if (propConfigs.isEmpty()) return@p true // 如果没有匹配的规则则忽略
 
@@ -387,12 +389,13 @@ object ParadoxConfigMatchService {
 
         val occurrences = valueConfigs.associateByTo(mutableMapOf(), { it.value }, { ParadoxMatchOccurrenceService.evaluate(block, it) })
         val configGroup = valueConfigs.first().configGroup
+        val options = context.options
         val matched = block.values(context.inline).process p@{ valueElement ->
-            val expression = ParadoxExpression.resolve(valueElement, context.options)
+            val expression = ParadoxExpression.resolve(valueElement, options)
             val matched = valueConfigs.anyFast { config ->
                 val configExpression = config.valueExpression
-                val context = ParadoxScriptExpressionMatchContext(valueElement, expression, configExpression, config, configGroup, context.options)
-                val matched = ParadoxExpressionMatchService.matchScriptExpression(context).get(context.options)
+                val context = ParadoxScriptExpressionMatchContext(valueElement, expression, configExpression, config, configGroup, options)
+                val matched = ParadoxExpressionMatchService.matchScriptExpression(context).get(options)
                 if (matched) occurrences.get(config.value)?.let { it.actual++ }
                 matched
             }
@@ -415,8 +418,9 @@ object ParadoxConfigMatchService {
         val configGroup = propertyConfig.configGroup
         val aliasName = propertyConfig.keyExpression.metadata.value ?: return false
         val propertyKey = property.propertyKey
-        val aliasExpression = ParadoxExpression.resolve(propertyKey, context.options)
-        val aliasSubName = ParadoxExpressionMatchService.getMatchedAliasKey(property, aliasExpression, aliasName, configGroup, context.options) ?: return false
+        val options = context.options
+        val aliasExpression = ParadoxExpression.resolve(propertyKey, options)
+        val aliasSubName = ParadoxExpressionMatchService.getMatchedAliasKey(property, aliasExpression, aliasName, configGroup, options) ?: return false
         val aliasGroup = configGroup.aliasGroups[aliasName] ?: return false
         val aliases = aliasGroup[aliasSubName] ?: return false
         return aliases.anyFast { alias ->

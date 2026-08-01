@@ -5,6 +5,7 @@ package icu.windea.pls.core.collections
 
 import com.google.common.collect.ImmutableList
 import icu.windea.pls.core.annotations.Fast
+import it.unimi.dsi.fastutil.objects.ObjectImmutableList
 
 /** @see kotlin.collections.forEach */
 @Fast
@@ -52,17 +53,22 @@ inline fun <T> List<T>.forEachReversedIndexedFast(action: (Int, T) -> Unit) {
 @Fast
 inline fun <T, R : Any> List<T>.mapFast(transform: (T) -> R): List<R> {
     // note: assume input is `RandomAccess` and is not `CopyOnWriteArrayList`
+    // note: use immutable list from fastutil instead of guava (nullable elements, better memory usage, copy array only on demand)
     val size = size // optimize: cache input size first
     if (size == 0) return ImmutableList.of() // optimize: fast return
     if (size == 1) return ImmutableList.of(transform(this[0])) // optimize: fast return
-    val result = arrayOfNulls<Any?>(size) // optimize: construct size array directly for better performance and memory
+    val elements = arrayOfNulls<Any?>(size) // optimize: construct size array directly for better performance and memory
     for (i in 0 until size) { // optimize: use index-based iteration
         val e = this[i]
         val t = transform(e)
-        result[i] = t
+        elements[i] = t
     }
     @Suppress("UNCHECKED_CAST")
-    return ImmutableList.copyOf(result as Array<out R>)
+    elements as Array<out R>
+    // return result.asList() // memory usage: 24 + align8(16 + 4n)
+    // @Suppress("ReplaceJavaStaticMethodWithKotlinAnalog") return java.util.List.of(*elements) // memory usage: 24 + align8(16 + 4n)
+    // return ImmutableList.copyOf(result) // memory usage: 16 + align8(16 + 4n) // note: this will copy the input array
+    return ObjectImmutableList(elements) // memory usage: 16 + align8(16 + 4n)
 }
 
 /** @see kotlin.collections.mapNotNull */
