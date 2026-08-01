@@ -76,7 +76,6 @@ import icu.windea.pls.script.psi.isDataExpression
 @Optimized
 object ParadoxExpressionManager {
     object Keys : KeyRegistry() {
-        val cachedParameterRanges by registerKey<CachedValue<List<TextRange>>>(Keys)
         val cachedReferences by registerKey<CachedValue<Array<out PsiReference>>>(Keys)
         val cachedReferencesDumb by registerKey<CachedValue<Array<out PsiReference>>>(Keys)
         val cachedExpressionReferences by registerKey<CachedValue<Array<out PsiReference>>>(Keys)
@@ -93,7 +92,6 @@ object ParadoxExpressionManager {
      * - 快速判断，不检查携带参数后的语法是否合法。
      * - 仅接受长度大于2的字符串。
      */
-    @Optimized
     fun isParameterized(text: String, conditionBlock: Boolean = true, full: Boolean = false): Boolean {
         // 快速判断，不检测带参数后的语法是否合法
         val length = text.length
@@ -123,7 +121,6 @@ object ParadoxExpressionManager {
      * - 快速判断，不检查携带参数后的语法是否合法。
      * - 仅接受长度大于2的字符串，否则直接返回空列表。
      */
-    @Optimized
     fun getParameterRanges(text: String, conditionBlock: Boolean = true): List<TextRange> {
         // 优化：仅在必要时创建列表
         if (text.length < 2) return emptyList()
@@ -183,7 +180,6 @@ object ParadoxExpressionManager {
      * - 通过 [extraChars] 指定额外接受的字符。不接受空字符串。
      * - 不接受空字符串。
      */
-    @Optimized
     fun isParameterAwareIdentifier(text: String, extraChars: String = ""): Boolean {
         // 优化：仅在必要时创建列表
         if (text.isEmpty()) return false
@@ -274,17 +270,7 @@ object ParadoxExpressionManager {
     }
 
     fun getParameterRangesInExpression(element: ParadoxExpressionElement): List<TextRange> {
-        return getParameterRangesInExpressionFromCache(element)
-    }
-
-    private fun getParameterRangesInExpressionFromCache(element: ParadoxExpressionElement): List<TextRange> {
-        return CachedValuesManager.getCachedValue(element, Keys.cachedParameterRanges) {
-            val value = doGetParameterRangesInExpression(element)
-            value.withDependencyItems(element)
-        }
-    }
-
-    private fun doGetParameterRangesInExpression(element: ParadoxExpressionElement): List<TextRange> {
+        // NOTE 3.0.1 不要缓存，因为自身的计算逻辑已经足够块
         var parameterRanges: MutableList<TextRange>? = null
         element.processChild { e ->
             if (isParameterElementInExpression(e)) {

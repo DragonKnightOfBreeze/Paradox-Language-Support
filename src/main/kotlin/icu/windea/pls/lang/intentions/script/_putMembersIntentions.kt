@@ -15,7 +15,7 @@ import icu.windea.pls.script.psi.ParadoxScriptConditionalBlock
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
 import icu.windea.pls.script.psi.ParadoxScriptMember
 
-sealed class PutMembersIntentionBase : PsiUpdateModCommandAction<ParadoxScriptBoundMemberContainer>(ParadoxScriptBoundMemberContainer::class.java), DumbAware {
+abstract class PutMembersIntentionBase : PsiUpdateModCommandAction<ParadoxScriptBoundMemberContainer>(ParadoxScriptBoundMemberContainer::class.java), DumbAware {
     protected fun getMemberTextSequence(element: ParadoxScriptBoundMemberContainer): Sequence<String> {
         return element.members.asSequence().map { it.text.trim() }.filter { it.isNotEmpty() }
     }

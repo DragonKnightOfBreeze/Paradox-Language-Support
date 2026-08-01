@@ -10,6 +10,7 @@ import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.collections.findFast
 import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.match.findByPattern
@@ -61,7 +62,7 @@ class UnresolvedConceptInspection : LocalInspectionTool() {
         if (!ignoredByConfigs) return false
         val name = element.name
         val configs = configGroup.extendedDefinitions.findByPattern(name, element, configGroup).orEmpty()
-        val config = configs.find { ParadoxDefinitionTypeExpression.resolve(it.type).matches(ParadoxDefinitionTypes.gameConcept) }
+        val config = configs.findFast { ParadoxDefinitionTypeExpression.resolve(it.type).matches(ParadoxDefinitionTypes.gameConcept) }
         if (config != null) return true
         return false
     }

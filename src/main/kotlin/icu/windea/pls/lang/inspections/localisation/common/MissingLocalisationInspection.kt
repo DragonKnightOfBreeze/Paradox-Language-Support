@@ -12,6 +12,7 @@ import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
+import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.matchesPatterns
 import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.core.toDelimitedMutableList
@@ -82,7 +83,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                 val messages = getDescriptions(context)
                 if (messages.isEmpty()) return
                 val fixes = getFixes(element, context)
-                for (description in messages) {
+                messages.forEachFast { description ->
                     holder.registerProblem(location, description, *fixes)
                 }
             }
@@ -92,10 +93,10 @@ class MissingLocalisationInspection : LocalInspectionTool() {
     private fun getDescriptions(context: ParadoxLocalisationCodeInsightContext): List<String> {
         val includeMap = mutableMapOf<String, ParadoxLocalisationCodeInsightInfo>()
         val excludeKeys = mutableSetOf<String>()
-        for (codeInsightInfo in context.infos) {
-            if (!codeInsightInfo.check) continue
-            val key = codeInsightInfo.key ?: continue
-            if (excludeKeys.contains(key)) continue
+        context.infos.forEachFast f@{ codeInsightInfo ->
+            if (!codeInsightInfo.check) return@f
+            val key = codeInsightInfo.key ?: return@f
+            if (excludeKeys.contains(key)) return@f
             if (codeInsightInfo.missing) {
                 includeMap.putIfAbsent(key, codeInsightInfo)
             } else {

@@ -22,7 +22,7 @@ import icu.windea.pls.cwt.psi.CwtValue
 import icu.windea.pls.cwt.psi.isDirectValue
 import icu.windea.pls.cwt.psi.isPropertyValue
 
-sealed class QuoteOrUnquoteLiteralIntentionBase : PsiUpdateModCommandAction<CwtExpressionElement>(CwtExpressionElement::class.java), DumbAware {
+abstract class QuoteOrUnquoteLiteralIntentionBase : PsiUpdateModCommandAction<CwtExpressionElement>(CwtExpressionElement::class.java), DumbAware {
     override fun stopSearchAt(element: PsiElement, context: ActionContext): Boolean {
         return element is CwtExpressionElement
     }

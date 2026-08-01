@@ -35,7 +35,7 @@ data class ParadoxDefinitionInjectionInfo(
     val modeConfig: CwtValueConfig,
     override val typeConfig: CwtTypeConfig?,
 ) : UserDataHolderBase(), ParadoxDefinitionCandidateInfo {
-    @Volatile var element: ParadoxScriptProperty? = null
+    @Volatile var element: ParadoxScriptProperty? = null // should be cached in associated PSI element, so holds directly
 
     val expression: String get() = ParadoxDefinitionInjectionManager.getExpression(mode, target)
 

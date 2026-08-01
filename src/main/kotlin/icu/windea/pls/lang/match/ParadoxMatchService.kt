@@ -53,7 +53,6 @@ object ParadoxMatchService {
     /**
      * 根据来自 [matchResultProvider] 的匹配结果，从输入的一组成员规则 [configs] 收集匹配候选项。
      */
-    @Optimized
     inline fun <T : CwtMemberConfig<*>> collectCandidates(configs: List<T>, matchResultProvider: (T) -> ParadoxMatchResult): List<ParadoxMatchCandidate> {
         if (configs.isEmpty()) return emptyList()
         val result = SmartList<ParadoxMatchCandidate>() // 3.0.1 optimize: use SmartList (0 or 1 elements in most situations)
@@ -69,7 +68,6 @@ object ParadoxMatchService {
     /**
      * 处理输入的一组匹配候选项 [candidates]，进行进一步的匹配。基于匹配结果的类型。
      */
-    @Optimized
     fun process(candidates: List<ParadoxMatchCandidate>, options: ParadoxMatchOptions? = null): List<CwtMemberConfig<*>> {
         if (candidates.isEmpty()) return emptyList()
         val matched = ParadoxMatchProcessor.process(candidates, options)
@@ -79,7 +77,6 @@ object ParadoxMatchService {
     /**
      * 对输入的一组已处理过的成员规则 [configs] 进行后续优化。基于 [ParadoxScriptExpressionMatchOptimizer]。
      */
-    @Optimized
     fun <T : CwtMemberConfig<*>> optimize(configs: List<T>, element: PsiElement, expression: ParadoxExpression, options: ParadoxMatchOptions? = null): List<T> {
         if (configs.isEmpty()) return emptyList()
         val configGroup = configs.first().configGroup

@@ -16,11 +16,11 @@ import icu.windea.pls.ep.match.expression.ParadoxScriptExpressionMatcher
 import icu.windea.pls.model.expressions.ParadoxExpression
 import icu.windea.pls.model.type.ParadoxExpressionRole
 
+@Optimized
 object ParadoxExpressionMatchService {
     /**
      * @see ParadoxScriptExpressionMatcher.match
      */
-    @Optimized
     fun matchScriptExpression(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
         // ProgressManager.checkCanceled() // 3.0.1 optimize: not here (before cache access or lazy match instead)
         val matchers = ParadoxScriptExpressionMatcher.get(context.dataType) // 3.0.1 optimize: use global cache (by data type)
@@ -33,7 +33,6 @@ object ParadoxExpressionMatchService {
     /**
      * @see ParadoxCsvExpressionMatcher.match
      */
-    @Optimized
     fun matchCsvExpression(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult {
         // ProgressManager.checkCanceled() // 3.0.1 optimize: not here (before cache access or lazy match instead)
         val matchers = ParadoxCsvExpressionMatcher.get(context.dataType) // 3.0.1 optimize: use global cache (by data type)

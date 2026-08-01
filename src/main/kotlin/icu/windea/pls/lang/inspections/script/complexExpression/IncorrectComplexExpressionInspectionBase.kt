@@ -10,6 +10,7 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.toArray
 import icu.windea.pls.lang.fixes.QuoteLiteralFix
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
@@ -63,7 +64,7 @@ abstract class IncorrectComplexExpressionInspectionBase : LocalInspectionTool() 
 
     protected open fun getFixes(element: ParadoxScriptStringExpressionElement, complexExpression: ParadoxComplexExpression, errors: List<ParadoxComplexExpressionError>): Array<LocalQuickFix> {
         val result = mutableListOf<LocalQuickFix>()
-        for (error in errors) {
+        errors.forEachFast { error ->
             if (error.code == ParadoxComplexExpressionErrors.EXPRESSION_NOT_QUOTED) result += QuoteLiteralFix()
         }
         return result.toArray(LocalQuickFix.EMPTY_ARRAY)

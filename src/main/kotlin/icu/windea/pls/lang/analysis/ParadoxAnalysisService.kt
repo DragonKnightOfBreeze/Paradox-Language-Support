@@ -29,7 +29,6 @@ object ParadoxAnalysisService {
     /**
      * @see ParadoxIgnoredFileProvider.isIgnoredFile
      */
-    @Optimized
     fun isIgnoredFile(path: ParadoxPath, entry: String): Boolean {
         val eps = ParadoxIgnoredFileProvider.EP_NAME.extensionList
         eps.forEachFast { ep ->

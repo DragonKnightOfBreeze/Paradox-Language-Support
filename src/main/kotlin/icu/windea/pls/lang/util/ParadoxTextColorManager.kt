@@ -7,7 +7,6 @@ import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.mapNotNullFast
-import icu.windea.pls.core.createPointer
 import icu.windea.pls.core.isExactLetter
 import icu.windea.pls.core.isExactWord
 import icu.windea.pls.core.util.KeyRegistry
@@ -102,7 +101,7 @@ object ParadoxTextColorManager {
         val gameType = selectGameType(definition) ?: return null
         val rgbList = definition.values().mapNotNull { it.intValue() }.toList()
         if (rgbList.size != 3) return null
-        val value = ParadoxTextColorInfo(definition.createPointer(), name, gameType, rgbList[0], rgbList[1], rgbList[2])
+        val value = ParadoxTextColorInfo(name, rgbList[0], rgbList[1], rgbList[2], gameType).also { it.element = definition }
         return value
     }
 

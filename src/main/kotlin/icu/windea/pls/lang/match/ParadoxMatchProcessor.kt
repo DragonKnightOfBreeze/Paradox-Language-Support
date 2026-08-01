@@ -6,7 +6,6 @@ import icu.windea.pls.core.collections.forEachFast
 
 @Optimized
 object ParadoxMatchProcessor {
-    @Optimized
     fun process(candidates: List<ParadoxMatchCandidate>, options: ParadoxMatchOptions?): List<ParadoxMatchCandidate> {
         // 步骤：
         // - 处理精确匹配（`ExactMatch` `LenientExactMatch`），如果有结果，则仅使用这些结果，并直接返回

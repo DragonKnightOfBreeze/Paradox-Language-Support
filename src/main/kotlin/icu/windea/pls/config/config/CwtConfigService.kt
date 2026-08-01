@@ -41,11 +41,11 @@ import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.orSpecific
 import icu.windea.pls.model.paths.CwtConfigPath
 
+@Optimized
 object CwtConfigService {
     /**
      * @see CwtConfigFilterProvider.filter
      */
-    @Optimized
     fun filter(config: CwtConfig<*>): Boolean {
         val eps = CwtConfigFilterProvider.EP_NAME.extensionList
         eps.forEachFast { ep ->
@@ -57,7 +57,6 @@ object CwtConfigService {
     /**
      * @see CwtConfigPostProcessor.postProcess
      */
-    @Optimized
     fun postProcess(config: CwtMemberConfig<*>) {
         val gameType = config.configGroup.gameType
         val eps = CwtConfigPostProcessor.EP_NAME.extensionList
@@ -76,7 +75,6 @@ object CwtConfigService {
     /**
      * @see CwtInjectedConfigProvider.injectConfigs
      */
-    @Optimized
     fun injectConfigs(parentConfig: CwtMemberConfig<*>, containerConfig: CwtMemberConfig<*>, configs: MutableList<CwtMemberConfig<*>>): Boolean {
         var r = false
         val gameType = parentConfig.configGroup.gameType
@@ -169,7 +167,6 @@ object CwtConfigService {
         return CwtConfigPath.resolve(subPaths)
     }
 
-    @Optimized
     fun resolveConfigType(element: CwtMember, file: PsiFile): CwtConfigType? {
         if (element !is CwtProperty && element !is CwtValue) return null
         if (isInternalFile(file)) return null // 排除内部规则文件

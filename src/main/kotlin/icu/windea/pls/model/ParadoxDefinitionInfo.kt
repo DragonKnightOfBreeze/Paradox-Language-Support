@@ -40,7 +40,7 @@ data class ParadoxDefinitionInfo(
     val rootKeys: List<String>,
     override val typeConfig: CwtTypeConfig,
 ) : UserDataHolderBase(), ParadoxDefinitionCandidateInfo {
-    @Volatile var element: ParadoxDefinitionElement? = null
+    @Volatile var element: ParadoxDefinitionElement? = null // should be cached in associated PSI element, so holds directly
 
     val memberPath: ParadoxMemberPath get() = ParadoxDefinitionManager.getMemberPath(this)
 

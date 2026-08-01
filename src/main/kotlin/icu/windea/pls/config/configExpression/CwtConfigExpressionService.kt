@@ -11,11 +11,11 @@ import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.ep.config.configExpression.CwtDataExpressionSupport
 import icu.windea.pls.ep.config.configExpression.CwtTextPatternBasedDataExpressionSupport
 
+@Optimized
 object CwtConfigExpressionService {
     /**
      * @see CwtDataExpressionSupport.resolve
      */
-    @Optimized
     fun resolve(expressionString: String, role: CwtDataExpressionRole): CwtDataExpression? {
         CwtDataExpressionSupport.EP_NAME.extensionList.forEachFast { ep ->
             val r = ep.resolve(expressionString, role)
@@ -27,7 +27,6 @@ object CwtConfigExpressionService {
     /**
      * @see CwtDataExpressionSupport.resolveTemplate
      */
-    @Optimized
     fun resolveTemplate(expressionString: String): CwtDataExpression? {
         CwtDataExpressionSupport.EP_NAME.extensionList.forEachFast { ep ->
             val r = ep.resolveTemplate(expressionString)
@@ -39,7 +38,6 @@ object CwtConfigExpressionService {
     /**
      * @see CwtTextPatternBasedDataExpressionSupport.processTextPatterns
      */
-    @Optimized
     fun processTextPatterns(consumer: Processor<TextPattern<*>>): Boolean {
         CwtDataExpressionSupport.EP_NAME.extensionList.forEachFast { ep ->
             if (ep is CwtTextPatternBasedDataExpressionSupport) {

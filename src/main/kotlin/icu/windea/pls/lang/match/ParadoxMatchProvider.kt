@@ -48,7 +48,7 @@ object ParadoxMatchProvider {
 
     fun matchesDefinition(element: PsiElement, project: Project, name: String, typeExpression: String): Boolean {
         val selector = ParadoxDefinitionSearch.selector(project, element)
-        return ParadoxDefinitionSearch.searchElement(name, typeExpression, selector).findFirst() != null
+        return ParadoxDefinitionSearch.search(name, typeExpression, selector).findFirst() != null
     }
 
     fun matchesLocalisation(element: PsiElement, project: Project, name: String): Boolean {

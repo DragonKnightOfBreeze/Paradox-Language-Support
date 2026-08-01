@@ -8,6 +8,7 @@ import com.intellij.psi.PsiElementVisitor
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.isCommandExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxCommandExpression
@@ -40,7 +41,7 @@ class IncorrectScopeSwitchInspection : ScopeInspectionBase() {
     private fun checkExpression(element: ParadoxExpressionElement, complexExpression: ParadoxComplexExpression, configGroup: CwtConfigGroup, holder: ProblemsHolder) {
         var inputScopeContext = ParadoxScopeContext.resolveAny()
         if (complexExpression !is ParadoxCommandExpression) return
-        for (node in complexExpression.nodes) {
+        complexExpression.nodes.forEachFast f@{ node ->
             when (node) {
                 is ParadoxCommandScopeNode -> {
                     val supportedScopes = ParadoxScopeManager.getSupportedScopes(element, node, inputScopeContext)
@@ -48,17 +49,17 @@ class IncorrectScopeSwitchInspection : ScopeInspectionBase() {
                     val outputScopeContext = ParadoxScopeManager.getScopeContext(element, node, inputScopeContext)
                     inputScopeContext = outputScopeContext
 
-                    if (supportedScopes.isNullOrEmpty()) continue
-                    if (matched) continue
+                    if (supportedScopes.isNullOrEmpty()) return@f
+                    if (matched) return@f
                     val offset = ParadoxExpressionManager.getExpressionOffset(element)
                     val startOffset = offset + node.rangeInExpression.startOffset
                     val endOffset = offset + node.rangeInExpression.endOffset
                     val range = TextRange.create(startOffset, endOffset)
                     val description = ChronicleBundle.message("inspection.localisation.incorrectScopeSwitch.desc.1", node.text, supportedScopes.joinToString(), outputScopeContext.scope)
                     holder.registerProblem(element, range, description)
-                    break // only reports first problem per complex expression
+                    return // only reports first problem per complex expression
                 }
-                is ParadoxCommandFieldNode -> break
+                is ParadoxCommandFieldNode -> return
             }
         }
     }

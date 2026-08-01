@@ -1,7 +1,6 @@
 package icu.windea.pls.lang.resolve.complexExpression
 
 import com.intellij.psi.PsiReference
-import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
@@ -9,7 +8,6 @@ import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressi
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionRecursiveVisitor
 
 abstract class ParadoxComplexExpressionBase : ParadoxComplexExpressionNodeBase(), ParadoxComplexExpression {
-    @Optimized
     fun finishResolution() {
         bindParentRecursively(this)
     }

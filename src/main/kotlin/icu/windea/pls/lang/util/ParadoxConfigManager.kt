@@ -6,13 +6,11 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.parentOfType
-import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.util.CwtConfigKeyManager
 import icu.windea.pls.core.annotations.Optimized
-import icu.windea.pls.core.collections.findFast
 import icu.windea.pls.core.collections.flatMapFast
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.optimized
@@ -26,13 +24,9 @@ import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.match.ParadoxMatchOccurrence
 import icu.windea.pls.lang.match.ParadoxMatchOccurrenceService
 import icu.windea.pls.lang.match.ParadoxMatchOptions
-import icu.windea.pls.lang.match.findByPattern
 import icu.windea.pls.lang.match.toHashString
-import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.CwtConfigContext
 import icu.windea.pls.lang.resolve.ParadoxConfigService
-import icu.windea.pls.model.constants.ParadoxDefinitionTypes
-import icu.windea.pls.model.expressions.ParadoxDefinitionTypeExpression
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import java.util.concurrent.ConcurrentMap
 
@@ -141,26 +135,5 @@ object ParadoxConfigManager {
         } else {
             result.add(config)
         }
-    }
-
-    fun checkExtendedConfig(element: ParadoxExpressionElement, config: CwtMemberConfig<*>): Boolean {
-        val value = element.value
-        val configGroup = config.configGroup
-        val configExpression = config.configExpression
-        if (configExpression.type in CwtDataTypeSets.DefinitionAware) {
-            val definitionType = configExpression.metadata.value ?: return false
-            val configs = configGroup.extendedDefinitions.findByPattern(value, element, configGroup).orEmpty()
-            val config = configs.findFast { ParadoxDefinitionTypeExpression.resolve(it.type).matches(definitionType) }
-            if (config != null) return true
-            if (definitionType == ParadoxDefinitionTypes.gameRule) {
-                val config = configGroup.extendedGameRules.findByPattern(value, element, configGroup)
-                if (config != null) return true
-            }
-            if (definitionType == ParadoxDefinitionTypes.onAction) {
-                val config = configGroup.extendedOnActions.findByPattern(value, element, configGroup)
-                if (config != null) return true
-            }
-        }
-        return false
     }
 }
