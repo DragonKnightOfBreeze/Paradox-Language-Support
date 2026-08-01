@@ -47,8 +47,7 @@ class CwtConfigGroupBase(
             val targetName = if (project.isDefault) "application" else "project '${project.name}'"
             logger.info("Initialized config group '${gameType.id}' for $targetName in ${end - start} ms.")
         } catch (e: Exception) {
-            if (e is ProcessCanceledException) throw e
-            if (e is CancellationException) throw e
+            if (e is ProcessCanceledException || e is CancellationException) throw e
             logger.error(e) // 不期望在这里出现常规异常
         }
     }

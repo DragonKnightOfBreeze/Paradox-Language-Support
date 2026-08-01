@@ -42,6 +42,7 @@ import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.index.CwtConfigIndexInfo
 import icu.windea.pls.model.index.ParadoxIndexInfo
+import kotlinx.coroutines.CancellationException
 import java.nio.file.Path
 
 object ParadoxAnalysisManager : ParadoxAnalysisScope {
@@ -164,7 +165,7 @@ object ParadoxAnalysisManager : ParadoxAnalysisScope {
             }
             return null
         } catch (e: Exception) {
-            if (e is ProcessCanceledException) throw e
+            if (e is ProcessCanceledException || e is CancellationException) throw e
             logger.warn(e)
             return null
         }
@@ -180,7 +181,7 @@ object ParadoxAnalysisManager : ParadoxAnalysisScope {
             }
             return file
         } catch (e: Exception) {
-            if (e is ProcessCanceledException) throw e
+            if (e is ProcessCanceledException || e is CancellationException) throw e
             logger.warn(e)
             return null
         }

@@ -33,6 +33,7 @@ import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.constants.ChronicleConstants
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
+import kotlinx.coroutines.CancellationException
 import org.intellij.images.fileTypes.impl.ImageFileType
 import java.nio.file.Path
 import javax.imageio.ImageIO
@@ -76,7 +77,7 @@ object ParadoxImageManager {
             if (url.isNullOrEmpty()) return null
             return url
         } catch (e: Exception) {
-            if (e is ProcessCanceledException) throw e
+            if (e is ProcessCanceledException || e is CancellationException) throw e
             logger.warn("Resolve url for dds image failed. (definition name: ${definitionInfo.name.or.anonymous()})", e)
             return null
         }
@@ -94,7 +95,7 @@ object ParadoxImageManager {
             if (url.isNullOrEmpty()) return null
             return url
         } catch (e: Exception) {
-            if (e is ProcessCanceledException) throw e
+            if (e is ProcessCanceledException || e is CancellationException) throw e
             logger.warn("Resolve url for dds image failed. (dds file path: ${file.path})", e)
             return null
         }
@@ -113,7 +114,7 @@ object ParadoxImageManager {
             if (url.isNullOrEmpty()) return null
             return url
         } catch (e: Exception) {
-            if (e is ProcessCanceledException) throw e
+            if (e is ProcessCanceledException || e is CancellationException) throw e
             logger.warn("Resolve url for dds image failed. (dds file path: ${filePath})", e)
             return null
         }

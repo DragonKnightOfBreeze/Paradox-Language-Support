@@ -39,26 +39,26 @@ class AccessorTest {
 
     @Test
     fun testFunction() {
-        Assert.assertEquals(obj.helloWorld(), AccessorBuilder.function(obj, "helloWorld", AccessorObject::class).invoke())
-        Assert.assertEquals(obj.hello(arg), AccessorBuilder.function(obj, "hello", AccessorObject::class).invoke(arg))
-        Assert.assertEquals(obj.helloAll(*args), AccessorBuilder.function(obj, "helloAll", AccessorObject::class).invoke(args))
+        Assert.assertEquals(obj.helloWorld(), AccessorBuilder.function(obj, "helloWorld", AccessorObject::class).call())
+        Assert.assertEquals(obj.hello(arg), AccessorBuilder.function(obj, "hello", AccessorObject::class).call(arg))
+        Assert.assertEquals(obj.helloAll(*args), AccessorBuilder.function(obj, "helloAll", AccessorObject::class).call(args))
 
-        Assert.assertEquals(obj.awake(), AccessorBuilder.function(obj, "awake", AccessorObject::class).invoke())
-        Assert.assertEquals(obj.awake(), AccessorBuilder.function(obj, "doAwake", AccessorObject::class).invoke())
+        Assert.assertEquals(obj.awake(), AccessorBuilder.function(obj, "awake", AccessorObject::class).call())
+        Assert.assertEquals(obj.awake(), AccessorBuilder.function(obj, "doAwake", AccessorObject::class).call())
     }
 
     @Test
     fun testMemberFunction() {
-        Assert.assertEquals(obj.helloWorld(), AccessorBuilder.memberFunction("helloWorld", AccessorObject::class).invoke(obj))
-        Assert.assertEquals(obj.hello(arg), AccessorBuilder.memberFunction("hello", AccessorObject::class).invoke(obj, arg))
-        Assert.assertEquals(obj.helloAll(*args), AccessorBuilder.memberFunction("helloAll", AccessorObject::class).invoke(obj, args))
+        Assert.assertEquals(obj.helloWorld(), AccessorBuilder.memberFunction("helloWorld", AccessorObject::class).call(obj))
+        Assert.assertEquals(obj.hello(arg), AccessorBuilder.memberFunction("hello", AccessorObject::class).call(obj, arg))
+        Assert.assertEquals(obj.helloAll(*args), AccessorBuilder.memberFunction("helloAll", AccessorObject::class).call(obj, args))
 
-        Assert.assertEquals(obj.awake(), AccessorBuilder.memberFunction("awake", AccessorObject::class).invoke(obj))
-        Assert.assertEquals(obj.awake(), AccessorBuilder.memberFunction("doAwake", AccessorObject::class).invoke(obj))
+        Assert.assertEquals(obj.awake(), AccessorBuilder.memberFunction("awake", AccessorObject::class).call(obj))
+        Assert.assertEquals(obj.awake(), AccessorBuilder.memberFunction("doAwake", AccessorObject::class).call(obj))
     }
 
     @Test
     fun testStaticFunction() {
-        Assert.assertEquals(AccessorObject.initialize(), AccessorBuilder.staticFunction("initialize", AccessorObject::class).invoke())
+        Assert.assertEquals(AccessorObject.initialize(), AccessorBuilder.staticFunction("initialize", AccessorObject::class).call())
     }
 }

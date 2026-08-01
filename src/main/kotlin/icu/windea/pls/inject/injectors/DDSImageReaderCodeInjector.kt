@@ -20,9 +20,9 @@ class DDSImageReaderCodeInjector : CodeInjectorBase() {
 
     @InjectMethod(pointer = InjectMethod.Pointer.BEFORE)
     fun Any.read(imageIndex: Int, param: ImageReadParam?): BufferedImage {
-        runSafely r@{
-            val stream = this.imageInput ?: return@r
-            val image = ImageToolService.getInstance().read(imageIndex, param, stream, "dds", "png") ?: return@r
+        execute("read") action@{
+            val stream = this.imageInput ?: return@action
+            val image = ImageToolService.getInstance().read(imageIndex, param, stream, "dds", "png") ?: return@action
             return image
         }
         continueInvocation()

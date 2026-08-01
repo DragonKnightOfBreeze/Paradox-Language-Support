@@ -16,6 +16,7 @@ import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
+import kotlinx.coroutines.CancellationException
 
 /**
  * 支持符合以下条件的定义的数据：
@@ -61,7 +62,7 @@ class ParadoxBaseDefinitionPresentationProvider : ParadoxDefinitionPresentationP
             val presentation = type.getConstructor(ParadoxDefinitionElement::class.java).newInstance(element)
             return presentation
         } catch (e: Exception) {
-            if (e is ProcessCanceledException) throw e
+            if (e is ProcessCanceledException || e is CancellationException) throw e
             thisLogger().warn("Cannot create definition presentation (type: $type)", e)
             return null
         }

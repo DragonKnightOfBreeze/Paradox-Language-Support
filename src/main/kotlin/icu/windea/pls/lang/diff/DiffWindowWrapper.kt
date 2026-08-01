@@ -41,7 +41,7 @@ class DiffWindowWrapper(
      */
     fun show() {
         val diffWindow = createDiffWindow()
-        showFunction(diffWindow)
+        showFunction.executeOnly(diffWindow)
     }
 
     /**
@@ -51,7 +51,7 @@ class DiffWindowWrapper(
         val diffWindow = getOrCreateDiffWindow()
         val window = diffWindow.myWrapper?.window
         if (window?.isVisible != true) {
-            showFunction(diffWindow)
+            showFunction.executeOnly(diffWindow)
         } else {
             window.toFront()
         }

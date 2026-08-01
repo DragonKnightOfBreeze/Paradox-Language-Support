@@ -22,7 +22,7 @@ class FileRenderCodeInjector : CodeInjectorBase() {
 
     @InjectMethod(pointer = InjectMethod.Pointer.AFTER, static = true)
     fun customize(renderer: SimpleColoredComponent, value: Any) {
-        runSafely {
+        execute("customize") {
             appendQualifiedName(renderer, value)
         }
     }

@@ -22,4 +22,13 @@ object ChronicleBundle {
     fun lazyMessage(@PropertyKey(resourceBundle = BUNDLE) key: String, vararg params: Any): Supplier<String> {
         return INSTANCE.getLazyMessage(key, *params)
     }
+
+    // methods to get specific messages
+
+    @JvmStatic
+    @Nls
+    fun errorDetails(message: String?): String {
+        if (message.isNullOrEmpty()) return ""
+        return INSTANCE.getMessage("error.details")
+    }
 }

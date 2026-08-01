@@ -18,7 +18,6 @@ import com.intellij.util.ui.ListTableModel
 import com.intellij.util.ui.TextTransferable
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.createPointer
-import icu.windea.pls.core.errorDetails
 import icu.windea.pls.core.math.MathResult
 import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.util.evaluators.ParadoxInlineMathExpressionEvaluator
@@ -197,7 +196,7 @@ class ParadoxInlineMathEvaluatorDialog(
             }
             isInitialized = true
             currentResult = null
-            currentResultText = ChronicleBundle.message("ui.dialog.evaluator.inlineMath.message.exception") + message.errorDetails
+            currentResultText = ChronicleBundle.message("ui.dialog.evaluator.inlineMath.message.exception") + ChronicleBundle.errorDetails(message)
         }
     }
 

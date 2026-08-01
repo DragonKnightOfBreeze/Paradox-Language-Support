@@ -28,7 +28,7 @@ class InjectionRegistrarImplCodeInjector : CodeInjectorBase() {
         psiFile: PsiFile,
         @InjectReturnValue returnValue: Boolean
     ): Boolean {
-        runSafely {
+        execute("cacheEverything") {
             InjectedFileProcessor.EP_NAME.extensionList.process { it.process(psiFile) }
         }
         return returnValue

@@ -60,14 +60,14 @@
 
 #### 完全缺失测试的文件
 
-| 生产文件 | 行数 | API 数 | 可测试性 | 说明 |
-|---|---|---|---|---|
-| `AccessorExtensions.kt` | 71 | 12 | **可单元测试** | 底层 `AccessorBuilder` 已有测试，但此处的 12 个扩展包装器均未直接测试 |
-| `AddonExtensions.kt` | 34 | 5 | **可单元测试** | `runOnce`、`errorDetails`、`withErrorRef` 从不被测试；`loadText`/`withState` 仅在其他测试中作为装置使用 |
-| `ConcurrentExtensions.kt` | 50 | 2 | **可单元测试** | `withDoubleLock`（同步版和协程版）完全未测试 |
-| `ExecutionExtensions.kt` | 32 | 2 | **需集成测试** | 底层 `CommandLineExecutor` 已有测试，但此处的扩展包装器未测试 |
-| `IndexExtensions.kt` | 108 | 11 | **可单元测试** | `readOrReadFrom`/`writeOrWriteFrom` 增量序列化逻辑、`writeIndexedStringList`/`readWithIndexStringList` 压缩序列化逻辑完全未测试 |
-| `OptimizerExtensions.kt` | 51 | 10 | **可单元测试** | 底层 `Optimizer` 已有充分测试，但此处的 10 个扩展函数均未直接测试 |
+| 生产文件 | 行数 | API 数 | 可测试性 | 说明                                                                                                                                                                |
+|---|---|---|---|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `AccessorExtensions.kt` | 71 | 12 | **可单元测试** | 底层 `AccessorBuilder` 已有测试，但此处的 12 个扩展包装器均未直接测试                                                                                               |
+| `AddonExtensions.kt` | 34 | 5 | **可单元测试** | `runOnce`、`withErrorRef` 从不被测试；`loadText`/`withState` 仅在其他测试中作为装置使用                                                                             |
+| `ConcurrentExtensions.kt` | 50 | 2 | **可单元测试** | `withDoubleLock`（同步版和协程版）完全未测试                                                                                                                        |
+| `ExecutionExtensions.kt` | 32 | 2 | **需集成测试** | 底层 `CommandLineExecutor` 已有测试，但此处的扩展包装器未测试                                                                                                       |
+| `IndexExtensions.kt` | 108 | 11 | **可单元测试** | `readOrReadFrom`/`writeOrWriteFrom` 增量序列化逻辑、`writeIndexedStringList`/`readWithIndexStringList` 压缩序列化逻辑完全未测试                                     |
+| `OptimizerExtensions.kt` | 51 | 10 | **可单元测试** | 底层 `Optimizer` 已有充分测试，但此处的 10 个扩展函数均未直接测试                                                                                                   |
 | `UiExtensions.kt` | 185 | ~20 | **部分可测试** | UI 组件扩展（`resize`、`toIcon`、`registerSingleClickListener`）需 UI 上下文，但纯逻辑函数（`Color.component*`、`toAtomicProperty`、`toMutableProperty`）可单元测试 |
 
 ---
@@ -85,7 +85,7 @@
 | `AccessorBuilder.memberFunction()` 调用 | 查找写访问器和调用访问器路径 |
 | `AccessorBuilder.staticFunction()` 调用 | Java 反射回退路径 |
 | | 错误路径（`ClassCastException`、`UnsupportedAccessorException`、`ProcessCanceledException` 传播） |
-| | `AccessorProviderCache` |
+| | `AccessorContext` |
 | | `AccessorDelegateBuilder` 工厂方法 |
 | | `AccessorRunner` 异常包装逻辑 |
 

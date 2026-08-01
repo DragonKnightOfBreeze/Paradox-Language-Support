@@ -9,6 +9,7 @@ import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.lang.rootInfo
 import icu.windea.pls.model.ParadoxRootInfo
+import kotlinx.coroutines.CancellationException
 import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.io.path.exists
@@ -62,7 +63,7 @@ object ParadoxMetadataUtil {
             val first = modsNode.firstOrNull() ?: return null
             first.get("position")?.isInt
         } catch (e: Exception) {
-            if (e is ProcessCanceledException) throw e
+            if (e is ProcessCanceledException || e is CancellationException) throw e
             thisLogger().warn(e)
             null
         }

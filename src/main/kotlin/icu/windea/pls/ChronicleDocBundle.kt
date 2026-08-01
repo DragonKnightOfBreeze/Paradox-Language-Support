@@ -39,8 +39,7 @@ object ChronicleDocBundle {
     @JvmStatic
     @Nls
     fun locale(name: String): String {
-        return INSTANCE.messageOrNull("locale.$name")
-            ?: name
+        return INSTANCE.messageOrNull("locale.$name") ?: name
     }
 
     @JvmStatic
@@ -56,7 +55,7 @@ object ChronicleDocBundle {
     fun eventAttribute(name: String, gameType: ParadoxGameType?): String {
         return gameType?.id?.let { INSTANCE.messageOrNull("$it.event.attribute.$name") }
             ?: INSTANCE.messageOrNull("general.event.attribute.$name")
-            ?: INSTANCE.getMessage("general.event.attribute.default", name)
+            ?: INSTANCE.getMessage("default.event.attribute", name)
     }
 
     @JvmStatic

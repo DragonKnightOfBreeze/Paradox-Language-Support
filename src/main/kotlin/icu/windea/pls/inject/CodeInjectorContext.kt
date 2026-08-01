@@ -4,33 +4,36 @@ import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.util.application
 import icu.windea.pls.ChronicleFacade
-import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.staticProperty
 import icu.windea.pls.core.util.createKey
 import icu.windea.pls.inject.model.InjectMethodInfo
 import javassist.ClassClassPath
 import javassist.ClassPool
 import javassist.CtClass
+import kotlinx.coroutines.CancellationException
 import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
 import java.lang.reflect.Parameter
-import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.ConcurrentHashMap
 
-object CodeInjectorContext {
+@PublishedApi
+internal object CodeInjectorContext {
+    private val logger = thisLogger()
+    private val reported = ConcurrentHashMap.newKeySet<String>()
+
     // keys for `Application`
-    @JvmField val applyInjectionMethodKey = createKey<Method>("APPLY_INJECTION_METHOD_BY_WINDEA")
+    val applyInjectionMethodKey = createKey<Method>("APPLY_INJECTION_METHOD_BY_WINDEA")
 
     // keys for `CodeInjector`
-    @JvmField val targetClassKey = createKey<CtClass>("TARGET_CLASS_BY_WINDEA")
-    @JvmField val injectMethodInfosKey = createKey<Map<String, InjectMethodInfo>>("INJECT_METHOD_INFOS_BY_WINDEA")
+    val targetClassKey = createKey<CtClass>("TARGET_CLASS_BY_WINDEA")
+    val injectMethodInfosKey = createKey<Map<String, InjectMethodInfo>>("INJECT_METHOD_INFOS_BY_WINDEA")
 
-    @PublishedApi @JvmField @Volatile internal var classPool: ClassPool? = null
-    @PublishedApi @JvmField internal val codeInjectors: MutableMap<String, CodeInjector> = mutableMapOf()
-    @PublishedApi @JvmField internal val runSafelyFlags = CacheBuilder().build<String, AtomicBoolean> { AtomicBoolean() }
-    @PublishedApi @JvmField internal val continueInvocationException: ContinueInvocationException = ContinueInvocationException("CONTINUE_INVOCATION_BY_WINDEA")
+    @PublishedApi internal val codeInjectors: MutableMap<String, CodeInjector> = mutableMapOf()
+    @PublishedApi internal val continueInvocationException: ContinueInvocationException = ContinueInvocationException("CONTINUE_INVOCATION_BY_WINDEA")
+    @PublishedApi @Volatile internal var classPool: ClassPool? = null
 
-    @JvmStatic
-    fun init() {
+    @PublishedApi
+    internal fun init() {
         if (!ChronicleFacade.isUnitTestMode()) {
             application.putUserData(applyInjectionMethodKey, CodeInjectorContext.javaClass.methods.first { it.name == "applyInjection" })
         }
@@ -45,8 +48,8 @@ object CodeInjectorContext {
         staticProperty<ClassPool, ClassPool?>("defaultPool").set(null) // tricky but somehow necessary (~20M)
     }
 
-    @JvmStatic
-    fun initClassPool(): ClassPool {
+    @PublishedApi
+    internal fun initClassPool(): ClassPool {
         val classPool = ClassPool.getDefault()
         val classPathList = System.getProperty("java.class.path")
         val separator = if (System.getProperty("os.name")?.contains("linux") == true) ':' else ';'
@@ -61,9 +64,8 @@ object CodeInjectorContext {
         return classPool
     }
 
-    @JvmStatic
-    fun applyCodeInjectors() {
-        val logger = thisLogger()
+    @PublishedApi
+    internal fun applyCodeInjectors() {
         val codeInjectors = codeInjectors
         CodeInjector.EP_NAME.extensionList.forEach { codeInjector ->
             val codeInjectorId = codeInjector.id
@@ -71,32 +73,63 @@ object CodeInjectorContext {
                 codeInjector.inject()
                 logger.info("Applied code injector: $codeInjectorId")
             } catch (e: Exception) {
-                if (e is ProcessCanceledException) throw e
-                // NOTE IDE 更新到新版本后，某些代码注入器可能已不再兼容，因而需要进行必要的验证和代码更改
-                logger.warn("ERROR when applying code injector: $codeInjectorId")
+                if (e is ProcessCanceledException || e is CancellationException) throw e
+                logger.warn("ERROR while applying code injector: $codeInjectorId")
                 logger.warn(e.message, e)
             }
             codeInjectors.put(codeInjectorId, codeInjector)
         }
     }
 
-    @JvmStatic
-    fun cleanUp() {
+    @PublishedApi
+    internal fun cleanUp() {
         if (!ChronicleFacade.isUnitTestMode()) {
             application.putUserData(applyInjectionMethodKey, null)
         }
 
+        reported.clear()
         codeInjectors.clear()
-        runSafelyFlags.cleanUp()
 
         // clean up class pool
         classPool = null // detach
         staticProperty<ClassPool, ClassPool?>("defaultPool").set(null) // tricky but somehow necessary (~20M)
     }
 
-    @Suppress("unused")
+    /**
+     * 执行注入的代码逻辑，捕捉意外错误，并对于每个 [codeInjectorId] 的每个 [name] 仅报告一次错误。
+     */
     @PublishedApi
+    internal fun <T> execute(codeInjectorId: String, name: String, action: () -> T): T? {
+        try {
+            return action()
+        } catch (e: Exception) {
+            if (e is ProcessCanceledException || e is CancellationException) throw e
+            reportError(codeInjectorId, name, e)
+            return null
+        }
+    }
+
+    /**
+     * 报告错误（对于每个 [codeInjectorId] 的每个 [name] 仅报告一次）。
+     */
+    @PublishedApi
+    internal fun reportError(codeInjectorId: String, name: String, error: Throwable) {
+        val key = "$codeInjectorId@$name"
+        if (!reported.add(key)) return
+        logger.warn("ERROR while executing $name from code injector: $codeInjectorId (suppressed now)", error)
+    }
+
+    /**
+     * 结束执行注入的代码逻辑，继续执行目标方法中的代码。用于在（注入到目标方法之前的）注入方法中使用。
+     */
+    @PublishedApi
+    internal fun continueInvocation(): Nothing {
+        throw continueInvocationException
+    }
+
+    @Suppress("unused")
     @JvmStatic
+    @PublishedApi
     @Throws(InvocationTargetException::class)
     internal fun applyInjection(codeInjectorId: String, methodId: String, args: Array<out Any?>, target: Any?, returnValue: Any?): Any? {
         // 如果注入方法是一个扩展方法，则传递 `target` 到接收者（目标方法是一个静态方法时，`target` 的值为 `null`）
@@ -134,12 +167,9 @@ object CodeInjectorContext {
         }
         try {
             return method.invoke(codeInjector, *finalArgs)
-        } catch (e: InvocationTargetException) {
-            if (!ChronicleFacade.isUnitTestMode()) {
-                throw e.targetException ?: e
-            }
-            throw e
         } catch (e: Exception) {
+            if (ChronicleFacade.isUnitTestMode()) throw e
+            if (e is InvocationTargetException) throw e.targetException ?: e // 3.0.1 fix: not `e.cause` here
             throw e
         }
     }

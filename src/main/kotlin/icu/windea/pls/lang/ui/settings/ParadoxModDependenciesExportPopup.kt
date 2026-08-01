@@ -10,7 +10,6 @@ import com.intellij.openapi.ui.popup.util.BaseListPopupStep
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.platform.ide.progress.runWithModalProgressBlocking
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.core.errorDetails
 import icu.windea.pls.ep.tools.exporter.ParadoxModExporter
 import icu.windea.pls.ide.notification.ChronicleNotificationGroups
 import icu.windea.pls.lang.actions.ChronicleDataKeys
@@ -66,7 +65,7 @@ class ParadoxModDependenciesExportPopup(
         } catch (e: Exception) {
             if (e is ProcessCanceledException || e is CancellationException) throw e
             logger.warn(e)
-            val content = ChronicleBundle.message("mod.dependencies.export.error") + e.message.errorDetails
+            val content = ChronicleBundle.message("mod.dependencies.export.error") + ChronicleBundle.errorDetails(e.message)
             ChronicleNotificationGroups.settings().createNotification(qualifiedName, content, NotificationType.WARNING).notify(project)
             return
         }
@@ -78,7 +77,7 @@ class ParadoxModDependenciesExportPopup(
         }
 
         if (result.warning != null) {
-            val content = ChronicleBundle.message("mod.dependencies.export.info", from, result.actualTotal) + result.warning.errorDetails
+            val content = ChronicleBundle.message("mod.dependencies.export.info", from, result.actualTotal) + ChronicleBundle.errorDetails(result.warning)
             ChronicleNotificationGroups.settings().createNotification(qualifiedName, content, NotificationType.WARNING).notify(project)
             return
         }

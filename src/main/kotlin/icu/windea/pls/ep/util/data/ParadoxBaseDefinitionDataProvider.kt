@@ -18,6 +18,7 @@ import icu.windea.pls.lang.data.ParadoxScriptData
 import icu.windea.pls.lang.data.ParadoxScriptDataResolver
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
+import kotlinx.coroutines.CancellationException
 
 /**
  * 支持符合以下条件的定义的数据：
@@ -64,7 +65,7 @@ class ParadoxBaseDefinitionDataProvider : ParadoxDefinitionDataProvider {
             val data = type.getConstructor(ParadoxScriptData::class.java).newInstance(scriptData)
             return data
         } catch (e: Exception) {
-            if (e is ProcessCanceledException) throw e
+            if (e is ProcessCanceledException || e is CancellationException) throw e
             thisLogger().warn("Cannot create definition data (type: $type)", e)
             return null
         }

@@ -23,14 +23,14 @@ class IdentifierHighlightingComputerCodeInjector : CodeInjectorBase() {
     @Suppress("unused")
     @InjectMethod(pointer = InjectMethod.Pointer.AFTER)
     fun Any.computeRanges(@InjectReturnValue returnValue: Any/* IdentifierHighlightingResult */): Any/* IdentifierHighlightingResult */ {
-        runSafely r@{
+        execute("computeRanges") action@{
             val file = myPsiFile
-            if (file !is ParadoxFile) return@r
+            if (file !is ParadoxFile) return@action
             val targets = returnValue.targets
-            if (targets !is MutableCollection) return@r
-            if (targets.size <= 1) return@r
+            if (targets !is MutableCollection) return@action
+            if (targets.size <= 1) return@action
             val first = targets.first()
-            if (!targets.any { target -> target !== first && target in first }) return@r
+            if (!targets.any { target -> target !== first && target in first }) return@action
             targets.remove(first)
             return returnValue
         }

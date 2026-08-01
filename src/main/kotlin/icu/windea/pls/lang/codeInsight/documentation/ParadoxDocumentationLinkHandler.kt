@@ -7,6 +7,8 @@ import com.intellij.platform.backend.documentation.LinkResolveResult
 import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.lang.resolve.ReferenceLinkService
 
+// org.jetbrains.kotlin.idea.k2.codeinsight.quickDoc.KotlinDocumentationLinkHandler
+
 class ParadoxDocumentationLinkHandler : DocumentationLinkHandler {
     override fun resolveLink(target: DocumentationTarget, url: String): LinkResolveResult? {
         if (target !is ParadoxDocumentationTarget) return null

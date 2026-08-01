@@ -27,8 +27,8 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
 import com.intellij.platform.ide.progress.withBackgroundProgress
 import com.intellij.unscramble.AnalyzeStacktraceUtil
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleFacade
-import icu.windea.pls.core.errorDetails
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.core.toVirtualFile
@@ -105,7 +105,7 @@ abstract class GenerateConfigActionBase : DumbAwareAction() {
         } catch (e: Exception) {
             if (e is ProcessCanceledException || e is CancellationException) throw e
             logger.warn(e)
-            val content = ChronicleToolsBundle.message("config.generation.notification.failed") + e.message.errorDetails
+            val content = ChronicleToolsBundle.message("config.generation.notification.failed") + ChronicleBundle.errorDetails(e.message)
             ChronicleNotificationGroups.global().createNotification(generator.getName(), content, NotificationType.WARNING).notify(project)
             null
         }

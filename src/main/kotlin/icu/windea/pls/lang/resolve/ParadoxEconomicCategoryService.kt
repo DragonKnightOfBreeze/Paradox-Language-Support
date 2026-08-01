@@ -21,6 +21,7 @@ import icu.windea.pls.model.ParadoxEconomicCategoryModifierInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.script.psi.ParadoxScriptProperty
+import kotlinx.coroutines.CancellationException
 
 @WithGameType(ParadoxGameType.Stellaris)
 object ParadoxEconomicCategoryService {
@@ -34,7 +35,7 @@ object ParadoxEconomicCategoryService {
             val modifierInfos = getModifierInfos(definition, definitionInfo, data)
             return ParadoxEconomicCategoryInfo(name, data.parent, data.useForAiBudget, data.modifierCategory, modifierInfos)
         } catch (e: Exception) {
-            if (e is ProcessCanceledException) throw e
+            if (e is ProcessCanceledException || e is CancellationException) throw e
             thisLogger().error(e)
             return null
         }
