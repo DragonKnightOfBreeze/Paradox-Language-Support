@@ -138,7 +138,8 @@ object ParadoxImageManager {
 
     private fun doResolveUrlByFilePath(filePath: String, project: Project, frameInfo: ImageFrameInfo?): String? {
         val selector = ParadoxFilePathSearch.selector(project)
-        val file = ParadoxFilePathSearch.search(filePath, null, selector).find() ?: return null
+        val query = ParadoxFilePathSearch.searchImage(filePath, null, selector) // 3.0.1 optimize: limit file extensions
+        val file = query.find() ?: return null
         return doResolveUrl(file, project, frameInfo)
     }
 

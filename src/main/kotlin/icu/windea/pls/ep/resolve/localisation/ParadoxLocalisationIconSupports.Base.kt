@@ -111,21 +111,23 @@ class ParadoxImageFileBasedLocalisationIconSupport(
     val pathExpression = CwtDataExpression.resolve(pathExpressionString, CwtDataExpressionRole.Value)
 
     override fun resolve(name: String, element: ParadoxLocalisationIcon, project: Project): PsiElement? {
-        val fileSelector = ParadoxFilePathSearch.selector(project, element).contextSensitive()
-        val file = ParadoxFilePathSearch.search(name, pathExpression, fileSelector).find()
-        return file?.toPsiFile(project)
+        val selector = ParadoxFilePathSearch.selector(project, element).contextSensitive()
+        val query = ParadoxFilePathSearch.searchImage(name, pathExpression, selector) // 3.0.1 optimize: limit file extensions
+        return query.find()?.toPsiFile(project)
     }
 
     override fun resolveAll(name: String, element: ParadoxLocalisationIcon, project: Project): Collection<PsiElement> {
-        val fileSelector = ParadoxFilePathSearch.selector(project, element).contextSensitive()
-        val files = ParadoxFilePathSearch.search(name, pathExpression, fileSelector).findAll()
+        val selector = ParadoxFilePathSearch.selector(project, element).contextSensitive()
+        val query = ParadoxFilePathSearch.searchImage(name, pathExpression, selector) // 3.0.1 optimize: limit file extensions
+        val files = query.findAll()
         return files.mapNotNullFast { it.toPsiFile(project) }
     }
 
     override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
         val hintText = " from image file"
-        val fileSelector = ParadoxFilePathSearch.selector(context.project, context.file).contextSensitive().distinct()
-        ParadoxFilePathSearch.search(null, pathExpression, fileSelector).processAsync p@{ file ->
+        val selector = ParadoxFilePathSearch.selector(context.project, context.file).contextSensitive().distinct()
+        val query = ParadoxFilePathSearch.searchImage(null, pathExpression, selector) // 3.0.1 optimize: limit file extensions
+        query.processAsync p@{ file ->
             val name = file.nameWithoutExtension
             if (name.isEmpty()) return@p true
             val psiFile = file.toPsiFile(context.project) ?: return@p true

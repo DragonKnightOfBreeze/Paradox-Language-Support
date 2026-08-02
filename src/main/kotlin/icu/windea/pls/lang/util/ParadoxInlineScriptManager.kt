@@ -38,6 +38,9 @@ import icu.windea.pls.script.psi.ParadoxScriptString
 @Optimized
 object ParadoxInlineScriptManager {
     const val inlineScriptKey = "inline_script"
+    // const val inlineScriptFileRoot = "common/inline_scripts"
+    const val inlineScriptFileExtension = "txt"
+
     val inlineScriptPathExpression = CwtDataExpression.resolve("filepath[common/inline_scripts/,.txt]", CwtDataExpressionRole.Value)
 
     /**

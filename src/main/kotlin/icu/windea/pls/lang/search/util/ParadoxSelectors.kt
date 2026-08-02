@@ -29,6 +29,34 @@ class ParadoxWithGameTypeSelector<T>(
     }
 }
 
+class ParadoxWithFileExtensionArraySelector(
+    vararg val fileExtensions: String
+) : ParadoxSelector<VirtualFile> {
+    override fun selectOne(target: VirtualFile): Boolean {
+        val extension = target.extension ?: return false
+        return extension in fileExtensions
+    }
+
+    override fun select(target: VirtualFile): Boolean {
+        val extension = target.extension ?: return false
+        return extension in fileExtensions
+    }
+}
+
+class ParadoxWithFileExtensionsSelector(
+    val fileExtensions: Collection<String>
+) : ParadoxSelector<VirtualFile> {
+    override fun selectOne(target: VirtualFile): Boolean {
+        val extension = target.extension ?: return false
+        return extension in fileExtensions
+    }
+
+    override fun select(target: VirtualFile): Boolean {
+        val extension = target.extension ?: return false
+        return extension in fileExtensions
+    }
+}
+
 interface ParadoxSearchScopeAwareSelector<T> : ParadoxSelector<T> {
     fun getGlobalSearchScope(): GlobalSearchScope?
 }
@@ -66,6 +94,22 @@ class ParadoxWithSearchScopeTypeSelector<T>(
 
     override fun getGlobalSearchScope(): GlobalSearchScope? {
         return searchScopeType.getGlobalSearchScope(project, context)
+    }
+}
+
+class ParadoxWithConstraintSelector<T>(
+    val constraint: ParadoxIndexConstraint<T>
+) : ParadoxSelector<T>
+
+class ParadoxLocaleSelector(
+    val locale: CwtLocaleConfig
+) : ParadoxSelector<ParadoxLocalisationProperty> {
+    override fun selectOne(target: ParadoxLocalisationProperty): Boolean {
+        return locale == selectLocale(target)
+    }
+
+    override fun select(target: ParadoxLocalisationProperty): Boolean {
+        return selectOne(target)
     }
 }
 
@@ -118,22 +162,6 @@ class ParadoxDistinctSelector<T, K>(
 ) : ParadoxSelector<T> {
     override fun keySelector(): Function<T, Any?> {
         return Function { keySelector.invoke(it) }
-    }
-}
-
-class ParadoxWithConstraintSelector<T>(
-    val constraint: ParadoxIndexConstraint<T>
-) : ParadoxSelector<T>
-
-class ParadoxLocaleSelector(
-    val locale: CwtLocaleConfig
-) : ParadoxSelector<ParadoxLocalisationProperty> {
-    override fun selectOne(target: ParadoxLocalisationProperty): Boolean {
-        return locale == selectLocale(target)
-    }
-
-    override fun select(target: ParadoxLocalisationProperty): Boolean {
-        return selectOne(target)
     }
 }
 

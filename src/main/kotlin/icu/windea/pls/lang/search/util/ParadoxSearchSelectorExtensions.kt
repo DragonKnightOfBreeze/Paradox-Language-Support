@@ -13,6 +13,16 @@ fun <S : ParadoxSearchSelector<T>, T> S.withGameType(gameType: ParadoxGameType?)
     return this
 }
 
+fun <S : ParadoxSearchSelector<VirtualFile>> S.withFileExtensions(vararg fileExtensions: String): S {
+    if (fileExtensions.isNotEmpty()) selectors += ParadoxWithFileExtensionArraySelector(*fileExtensions)
+    return this
+}
+
+fun <S : ParadoxSearchSelector<VirtualFile>> S.withFileExtensions(fileExtensions: Collection<String>): S {
+    if (fileExtensions.isNotEmpty()) selectors += ParadoxWithFileExtensionsSelector(fileExtensions)
+    return this
+}
+
 fun <S : ParadoxSearchSelector<T>, T> S.withSearchScope(searchScope: GlobalSearchScope?): S {
     if (searchScope != null) selectors += ParadoxWithSearchScopeSelector(searchScope)
     return this
@@ -20,6 +30,11 @@ fun <S : ParadoxSearchSelector<T>, T> S.withSearchScope(searchScope: GlobalSearc
 
 fun <S : ParadoxSearchSelector<T>, T> S.withSearchScopeType(searchScopeType: String?): S {
     if (searchScopeType != null) selectors += ParadoxWithSearchScopeTypeSelector(searchScopeType, project, context)
+    return this
+}
+
+fun <S : ParadoxSearchSelector<T>, T> S.withConstraint(constraint: ParadoxIndexConstraint<T>?): S {
+    if (constraint != null) selectors += ParadoxWithConstraintSelector(constraint)
     return this
 }
 
@@ -44,11 +59,6 @@ fun <S : ParadoxSearchSelector<T>, T, K> S.distinctBy(keySelector: (T) -> K): S 
     return this
 }
 
-fun <S : ParadoxSearchSelector<T>, T> S.withConstraint(constraint: ParadoxIndexConstraint<T>?): S {
-    if (constraint != null) selectors += ParadoxWithConstraintSelector(constraint)
-    return this
-}
-
 fun <S : ParadoxSearchSelector<T>, T> S.getConstraint(): ParadoxIndexConstraint<T>? {
     return selectors.findIsInstance<ParadoxWithConstraintSelector<T>>()?.constraint
 }
@@ -61,9 +71,4 @@ fun <S : ParadoxSearchSelector<ParadoxLocalisationProperty>> S.locale(locale: Cw
 fun <S : ParadoxSearchSelector<ParadoxLocalisationProperty>> S.preferLocale(locale: CwtLocaleConfig?, condition: Boolean = true): S {
     if (locale != null && condition) selectors += ParadoxPreferLocaleSelector(locale)
     return this
-}
-
-fun <S : ParadoxSearchSelector<VirtualFile>> S.withFileExtensions(fileExtensions: Set<String>): S {
-    if (fileExtensions.isEmpty()) return this
-    return filterBy { it.extension?.let { e -> ".$e" }.orEmpty() in fileExtensions }
 }

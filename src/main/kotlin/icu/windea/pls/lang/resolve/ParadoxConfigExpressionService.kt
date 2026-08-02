@@ -223,10 +223,12 @@ object ParadoxConfigExpressionService {
     ): CwtImageLocationResolveResult.Static {
         return CwtImageLocationResolveResult.Static(filePath, frameInfo, {
             val selector = ParadoxFilePathSearch.selector(project, definition).contextSensitive()
-            ParadoxFilePathSearch.search(filePath, null, selector).find()?.toPsiFile(project)
+            val query = ParadoxFilePathSearch.searchImage(filePath, null, selector) // 3.0.1 optimize: limit file extensions
+            query.find()?.toPsiFile(project)
         }, {
             val selector = ParadoxFilePathSearch.selector(project, definition).contextSensitive()
-            ParadoxFilePathSearch.search(filePath, null, selector).findAll().mapNotNullTo(mutableSetOf()) { it.toPsiFile(project) }
+            val query = ParadoxFilePathSearch.searchImage(filePath, null, selector) // 3.0.1 optimize: limit file extensions
+            query.findAll().mapNotNullTo(mutableSetOf()) { it.toPsiFile(project) }
         })
     }
 
