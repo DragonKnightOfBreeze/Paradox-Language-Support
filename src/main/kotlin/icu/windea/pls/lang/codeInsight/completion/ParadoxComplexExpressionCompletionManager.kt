@@ -156,8 +156,8 @@ object ParadoxComplexExpressionCompletionManager {
     private fun completeForTemplateExpression(context: ParadoxCompletionContext, result: CompletionResultSet, expression: ParadoxTemplateExpression) {
         val context = context.copy(isKey = null, scopeContext = null)
         for (node in expression.nodes) {
-            if (context.offsetInExpression > node.rangeInExpression.endOffset) break // about process
-            if (context.offsetInExpression < node.rangeInExpression.startOffset) continue // continue process root nodes
+            if (context.offsetInExpression < node.rangeInExpression.startOffset) break // abort process
+            if (context.offsetInExpression > node.rangeInExpression.endOffset) continue // continue process root nodes
             ProgressManager.checkCanceled()
             when (node) {
                 is ParadoxTemplateSnippetNode -> completeForTemplateSnippetNode(context, result, node)
@@ -187,8 +187,8 @@ object ParadoxComplexExpressionCompletionManager {
         var scopeContextFromNode = scopeContext
         val context = context.copy(isKey = null)
         for (node in expression.nodes) {
-            if (context.offsetInExpression > node.rangeInExpression.endOffset) break // about process
-            if (context.offsetInExpression < node.rangeInExpression.startOffset) {
+            if (context.offsetInExpression < node.rangeInExpression.startOffset) break // abort process
+            if (context.offsetInExpression > node.rangeInExpression.endOffset) {
                 if (node is ParadoxErrorNode || node.text.isEmpty()) break // skip error or empty nodes
                 if (node is ParadoxScopeNode) scopeContextFromNode = scopeContextFromNode.switchFromNode(node, element)  // switch scope context
                 continue
@@ -200,7 +200,6 @@ object ParadoxComplexExpressionCompletionManager {
                     completeForScopeNode(context, result, node)
                 }
             }
-            break // about process
         }
     }
 
@@ -210,8 +209,8 @@ object ParadoxComplexExpressionCompletionManager {
         var scopeContextFromNode = scopeContext
         val context = context.copy(isKey = null)
         for (node in expression.nodes) {
-            if (context.offsetInExpression > node.rangeInExpression.endOffset) break // about process
-            if (context.offsetInExpression < node.rangeInExpression.startOffset) {
+            if (context.offsetInExpression < node.rangeInExpression.startOffset) break // abort process
+            if (context.offsetInExpression > node.rangeInExpression.endOffset) {
                 if (node is ParadoxErrorNode || node.text.isEmpty()) break // skip error or empty nodes
                 if (node is ParadoxScopeNode) scopeContextFromNode = scopeContextFromNode.switchFromNode(node, element)  // switch scope context
                 continue
@@ -230,7 +229,6 @@ object ParadoxComplexExpressionCompletionManager {
                     completeForValueFieldNode(context, result, node)
                 }
             }
-            break // about process
         }
     }
 
@@ -240,8 +238,8 @@ object ParadoxComplexExpressionCompletionManager {
         var scopeContextFromNode = scopeContext
         val context = context.copy(isKey = null)
         for (node in expression.nodes) {
-            if (context.offsetInExpression > node.rangeInExpression.endOffset) break // about process
-            if (context.offsetInExpression < node.rangeInExpression.startOffset) {
+            if (context.offsetInExpression < node.rangeInExpression.startOffset) break // abort process
+            if (context.offsetInExpression > node.rangeInExpression.endOffset) {
                 if (node is ParadoxErrorNode || node.text.isEmpty()) break // skip error or empty nodes
                 if (node is ParadoxScopeNode) scopeContextFromNode = scopeContextFromNode.switchFromNode(node, element)  // switch scope context
                 continue
@@ -260,7 +258,6 @@ object ParadoxComplexExpressionCompletionManager {
                     completeForVariableFieldValueNode(context, result, node)
                 }
             }
-            break // about process
         }
     }
 
@@ -337,8 +334,8 @@ object ParadoxComplexExpressionCompletionManager {
         var scopeContextFromNode = scopeContext
         val context = context.copy(isKey = null)
         for (node in expression.nodes) {
-            if (context.offsetInExpression > node.rangeInExpression.endOffset) break // about process
-            if (context.offsetInExpression < node.rangeInExpression.startOffset) {
+            if (context.offsetInExpression < node.rangeInExpression.startOffset) break // abort process
+            if (context.offsetInExpression > node.rangeInExpression.endOffset) {
                 if (node is ParadoxErrorNode || node.text.isEmpty()) break // skip error or empty nodes
                 if (node is ParadoxCommandScopeNode) scopeContextFromNode = scopeContextFromNode.switchFromNode(node, element)  // switch scope context
                 continue
@@ -357,7 +354,6 @@ object ParadoxComplexExpressionCompletionManager {
                     completeForCommandFieldNode(context, result, node)
                 }
             }
-            break // about process
         }
     }
 
@@ -431,14 +427,13 @@ object ParadoxComplexExpressionCompletionManager {
         // skip check scope context here
         val context = context.copy(isKey = null)
         for (node in expression.nodes) {
-            if (context.offsetInExpression > node.rangeInExpression.endOffset) break // about process
-            if (context.offsetInExpression < node.rangeInExpression.startOffset) continue // continue process root nodes
+            if (context.offsetInExpression < node.rangeInExpression.startOffset) break // abort process
+            if (context.offsetInExpression > node.rangeInExpression.endOffset) continue // continue process root nodes
             ProgressManager.checkCanceled()
             when (node) {
                 is ParadoxDynamicValueNode -> completeForDynamicValueNode(context, result, node)
                 is ParadoxScopeFieldExpression -> completeForDynamicValueNestedScopeFieldExpression(context, result, node)
             }
-            break // about process
         }
     }
 
@@ -458,15 +453,14 @@ object ParadoxComplexExpressionCompletionManager {
         val element = context.contextElement.castOrNull<ParadoxExpressionElement>() ?: return
         val context = context.copy(isKey = null, scopeContext = null)
         for (node in expression.nodes) {
-            if (context.offsetInExpression > node.rangeInExpression.endOffset) break // about process
-            if (context.offsetInExpression < node.rangeInExpression.startOffset) continue // continue process root nodes
+            if (context.offsetInExpression < node.rangeInExpression.startOffset) break // abort process
+            if (context.offsetInExpression > node.rangeInExpression.endOffset) continue // continue process root nodes
             ProgressManager.checkCanceled()
             when (node) {
                 is ParadoxScriptValueNode -> completeForScriptValueNode(context, result, node)
                 is ParadoxScriptValueArgumentNameNode -> completeForScriptValueArgumentNode(context, result, node, element)
                 is ParadoxScriptValueArgumentValueNode -> completeForScopeValueArgumentValueNode(context, result, node, element)
             }
-            break // about process
         }
     }
 
@@ -502,8 +496,8 @@ object ParadoxComplexExpressionCompletionManager {
     private fun completeForDefineReferenceExpression(context: ParadoxCompletionContext, result: CompletionResultSet, expression: ParadoxDefineReferenceExpression) {
         val context = context.copy(isKey = null)
         for (node in expression.nodes) {
-            if (context.offsetInExpression > node.rangeInExpression.endOffset) break // about process
-            if (context.offsetInExpression < node.rangeInExpression.startOffset) continue // continue process root nodes
+            if (context.offsetInExpression < node.rangeInExpression.startOffset) break // abort process
+            if (context.offsetInExpression > node.rangeInExpression.endOffset) continue // continue process root nodes
             ProgressManager.checkCanceled()
             when (node) {
                 is ParadoxDefineNamespaceNode -> completeForDefineNamespaceNode(context, result, node)
@@ -515,14 +509,13 @@ object ParadoxComplexExpressionCompletionManager {
     private fun completeForArrayDefineReferenceExpression(context: ParadoxCompletionContext, result: CompletionResultSet, expression: ParadoxArrayDefineReferenceExpression) {
         val context = context.copy(isKey = null)
         for (node in expression.nodes) {
-            if (context.offsetInExpression > node.rangeInExpression.endOffset) break // about process
-            if (context.offsetInExpression < node.rangeInExpression.startOffset) continue // continue process root nodes
+            if (context.offsetInExpression < node.rangeInExpression.startOffset) break // abort process
+            if (context.offsetInExpression > node.rangeInExpression.endOffset) continue // continue process root nodes
             ProgressManager.checkCanceled()
             when (node) {
                 is ParadoxDefineNamespaceNode -> completeForDefineNamespaceNode(context, result, node)
                 is ParadoxDefineVariableNode -> completeForDefineVariableNode(context, result, node)
             }
-            break // about process
         }
     }
 
@@ -541,8 +534,8 @@ object ParadoxComplexExpressionCompletionManager {
     private fun completeForTagsExpression(context: ParadoxCompletionContext, result: CompletionResultSet, expression: ParadoxTagsExpression) {
         val context = context.copy(isKey = null)
         for (node in expression.nodes) {
-            if (context.offsetInExpression > node.rangeInExpression.endOffset) break // about process
-            if (context.offsetInExpression < node.rangeInExpression.startOffset) continue // continue process root nodes
+            if (context.offsetInExpression < node.rangeInExpression.startOffset) break // abort process
+            if (context.offsetInExpression > node.rangeInExpression.endOffset) continue // continue process root nodes
             ProgressManager.checkCanceled()
             when (node) {
                 is ParadoxDynamicValueNode -> {
@@ -555,7 +548,7 @@ object ParadoxComplexExpressionCompletionManager {
                     val condition = expression.config.configExpression?.metadata?.condition ?: false
                     if (!condition) continue // skip if is not a condition variant
                     for (node in node.nodes) {
-                        if (context.offsetInExpression > node.rangeInExpression.endOffset) break // about process
+                        if (context.offsetInExpression > node.rangeInExpression.endOffset) break // abort process
                         if (context.offsetInExpression < node.rangeInExpression.startOffset) continue // continue process root nodes
                         ProgressManager.checkCanceled()
                         when (node) {
@@ -565,11 +558,9 @@ object ParadoxComplexExpressionCompletionManager {
                                 ParadoxExpressionCompletionManager.completeDynamicValue(context, result)
                             }
                         }
-                        break // about process
                     }
                 }
             }
-            break // about process
         }
     }
 
@@ -577,8 +568,8 @@ object ParadoxComplexExpressionCompletionManager {
         val context = context.copy(isKey = null)
         expression.acceptChildren(object : ParadoxComplexExpressionRecursiveVisitor() {
             override fun visit(node: ParadoxComplexExpressionNode): Boolean {
-                if (context.offsetInExpression > node.rangeInExpression.endOffset) return false // about process
-                if (context.offsetInExpression < node.rangeInExpression.startOffset) return true // continue process root nodes
+                if (context.offsetInExpression < node.rangeInExpression.startOffset) return false // abort process
+                if (context.offsetInExpression > node.rangeInExpression.endOffset) return true // continue process root nodes
                 ProgressManager.checkCanceled()
                 when (node) {
                     is ParadoxDatabaseObjectTypeNode -> {
@@ -603,8 +594,8 @@ object ParadoxComplexExpressionCompletionManager {
         val context = context.copy(isKey = null)
         expression.acceptChildren(object : ParadoxComplexExpressionRecursiveVisitor() {
             override fun visit(node: ParadoxComplexExpressionNode): Boolean {
-                if (context.offsetInExpression > node.rangeInExpression.endOffset) return false // about process
-                if (context.offsetInExpression < node.rangeInExpression.startOffset) return true // continue process root nodes
+                if (context.offsetInExpression < node.rangeInExpression.startOffset) return false // abort process
+                if (context.offsetInExpression > node.rangeInExpression.endOffset) return true // continue process root nodes
                 ProgressManager.checkCanceled()
                 when (node) {
                     is ParadoxNameFormatDefinitionNode -> {
