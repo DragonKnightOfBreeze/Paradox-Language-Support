@@ -231,12 +231,12 @@ interface CwtLinksModel {
     val forScopeNoPrefixSorted: List<CwtLinkConfig> get() = emptyList()
     val forScopeFromDataSorted: List<CwtLinkConfig> get() = emptyList()
     val forScopeFromArgumentSorted: List<CwtLinkConfig> get() = emptyList()
-    val forScopeFromArgumentSortedByPrefix: Map<String, List<CwtLinkConfig>> get() = emptyMap()
+    val forScopeFromArgumentSortedByPrefix: Map<@CaseInsensitive String, List<CwtLinkConfig>> get() = emptyMap()
     val forValueStatic: List<CwtLinkConfig> get() = emptyList()
     val forValueNoPrefixSorted: List<CwtLinkConfig> get() = emptyList()
     val forValueFromDataSorted: List<CwtLinkConfig> get() = emptyList()
     val forValueFromArgumentSorted: List<CwtLinkConfig> get() = emptyList()
-    val forValueFromArgumentSortedByPrefix: Map<String, List<CwtLinkConfig>> get() = emptyMap()
+    val forValueFromArgumentSortedByPrefix: Map<@CaseInsensitive String, List<CwtLinkConfig>> get() = emptyMap()
 
     object Empty : CwtLinksModel
 }

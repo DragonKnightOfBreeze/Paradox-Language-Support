@@ -440,6 +440,7 @@ object ParadoxCompletionLookupProvider {
             .withTailText(hintText, true)
             .withTypeText(typeFile?.name, typeFile?.icon, true)
             .withInsertHandler(AddParenthesesInsertHandler())
+            .withCaseSensitivity(false) // 3.0.1 clarify: ignore case
             .withScopeMatched(scopeMatched)
             .withPriority(ParadoxCompletionPriorities.prefix)
             .withCompletionId()
@@ -453,6 +454,7 @@ object ParadoxCompletionLookupProvider {
             .withIcon(ChronicleIcons.Nodes.DynamicScope)
             .withTailText(hintText, true)
             .withTypeText(typeFile?.name, typeFile?.icon, true)
+            .withCaseSensitivity(false) // 3.0.1 clarify: ignore case
             .withScopeMatched(scopeMatched)
             .withPriority(ParadoxCompletionPriorities.prefix)
             .withCompletionId()
@@ -480,6 +482,7 @@ object ParadoxCompletionLookupProvider {
             .withTailText(hintText, true)
             .withTypeText(typeFile?.name, typeFile?.icon, true)
             .withInsertHandler(AddParenthesesInsertHandler())
+            .withCaseSensitivity(false) // 3.0.1 clarify: ignore case
             .withScopeMatched(scopeMatched)
             .withPriority(ParadoxCompletionPriorities.prefix)
             .withCompletionId()
@@ -493,6 +496,7 @@ object ParadoxCompletionLookupProvider {
             .withIcon(ChronicleIcons.Nodes.DynamicValueField)
             .withTailText(hintText, true)
             .withTypeText(typeFile?.name, typeFile?.icon, true)
+            .withCaseSensitivity(false) // 3.0.1 clarify: ignore case
             .withScopeMatched(scopeMatched)
             .withPriority(ParadoxCompletionPriorities.prefix)
             .withCompletionId()
@@ -535,6 +539,7 @@ object ParadoxCompletionLookupProvider {
             .withTailText(hintText, true)
             .withTypeText(typeFile?.name, typeFile?.icon, true)
             .withInsertHandler(AddParenthesesInsertHandler())
+            .withCaseSensitivity(false) // 3.0.1 clarify: ignore case
             .withScopeMatched(scopeMatched)
             .withPriority(ParadoxCompletionPriorities.prefix)
             .withCompletionId()
@@ -548,6 +553,7 @@ object ParadoxCompletionLookupProvider {
             .withIcon(ChronicleIcons.Nodes.DynamicCommandScope)
             .withTailText(hintText, true)
             .withTypeText(typeFile?.name, typeFile?.icon, true)
+            .withCaseSensitivity(false) // 3.0.1 clarify: ignore case
             .withScopeMatched(scopeMatched)
             .withPriority(ParadoxCompletionPriorities.prefix)
             .withCompletionId()
@@ -574,6 +580,7 @@ object ParadoxCompletionLookupProvider {
             .withIcon(ChronicleIcons.Nodes.DynamicCommandField)
             .withTailText(hintText, true)
             .withTypeText(typeFile?.name, typeFile?.icon, true)
+            .withCaseSensitivity(false) // 3.0.1 clarify: ignore case
             .withPriority(ParadoxCompletionPriorities.prefix)
             .withScopeMatched(scopeMatched)
             .withCompletionId()
@@ -588,6 +595,7 @@ object ParadoxCompletionLookupProvider {
             .withTailText(hintText, true)
             .withTypeText(typeFile?.name, typeFile?.icon, true)
             .withInsertHandler(AddParenthesesInsertHandler())
+            .withCaseSensitivity(false) // 3.0.1 clarify: ignore case
             .withPriority(ParadoxCompletionPriorities.prefix)
             .withScopeMatched(scopeMatched)
             .withCompletionId()

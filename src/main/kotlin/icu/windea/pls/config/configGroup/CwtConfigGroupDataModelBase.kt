@@ -221,12 +221,12 @@ class CwtLinksModelBase : CwtLinksModel {
     override val forScopeNoPrefixSorted: ObjectArrayList<CwtLinkConfig> = ObjectArrayList()
     override val forScopeFromDataSorted: ObjectArrayList<CwtLinkConfig> = ObjectArrayList()
     override val forScopeFromArgumentSorted: ObjectArrayList<CwtLinkConfig> = ObjectArrayList()
-    override val forScopeFromArgumentSortedByPrefix: Object2ObjectLinkedOpenHashMap<String, ObjectArrayList<CwtLinkConfig>> = Object2ObjectLinkedOpenHashMap()
+    override val forScopeFromArgumentSortedByPrefix: Object2ObjectLinkedOpenCustomHashMap<String, ObjectArrayList<CwtLinkConfig>> = CaseInsensitiveStringKeyMap()
     override val forValueStatic: ObjectArrayList<CwtLinkConfig> = ObjectArrayList()
     override val forValueNoPrefixSorted: ObjectArrayList<CwtLinkConfig> = ObjectArrayList()
     override val forValueFromDataSorted: ObjectArrayList<CwtLinkConfig> = ObjectArrayList()
     override val forValueFromArgumentSorted: ObjectArrayList<CwtLinkConfig> = ObjectArrayList()
-    override val forValueFromArgumentSortedByPrefix: Object2ObjectLinkedOpenHashMap<String, ObjectArrayList<CwtLinkConfig>> = Object2ObjectLinkedOpenHashMap()
+    override val forValueFromArgumentSortedByPrefix: Object2ObjectLinkedOpenCustomHashMap<String, ObjectArrayList<CwtLinkConfig>> = CaseInsensitiveStringKeyMap()
 
     fun trim() {
         variable.trim()

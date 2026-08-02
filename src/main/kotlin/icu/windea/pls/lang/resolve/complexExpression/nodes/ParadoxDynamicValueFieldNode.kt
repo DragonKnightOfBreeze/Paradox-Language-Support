@@ -69,7 +69,7 @@ class ParadoxDynamicValueFieldNode(
             // 匹配某一前缀的场合（如 `event_target:some_job`）
             run r1@{
                 val linkConfigs = configGroup.linksModel.forValueFromDataSorted
-                    .filterFast { text.startsWith(it.prefix!!) }
+                    .filterFast { text.startsWith(it.prefix!!, ignoreCase = true) } // 3.0.1 clarify: ignore case
                 if (linkConfigs.isEmpty()) return@r1
                 run r2@{
                     val nodeText = linkConfigs.first().prefix!!
