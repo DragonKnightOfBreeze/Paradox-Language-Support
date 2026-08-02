@@ -5,9 +5,11 @@ package icu.windea.pls.model.paths
 import com.github.benmanes.caffeine.cache.Interner
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.ImmutableList
+import icu.windea.pls.core.collections.anyFast
 import icu.windea.pls.core.collections.mapFast
 import icu.windea.pls.core.collections.removePrefixOrNull
 import icu.windea.pls.core.splitFast
+import icu.windea.pls.core.util.values.LazyValue
 
 /**
  * 规则在规则文件中的路径。
@@ -104,33 +106,57 @@ private sealed class CwtConfigPathBase : CwtConfigPath {
     override fun toString() = path
 }
 
+// 3.0.1 note: path object will not be self interned atm
 private val pathInterner = Interner.newWeakInterner<String>()
 private val subPathInterner = Interner.newWeakInterner<String>()
 
 private fun String.internPath() = pathInterner.intern(this)
 private fun String.internSubPath() = subPathInterner.intern(this)
-private fun List<String>.computePath() = if (size == 1) first().replace("/", "\\/") else joinToString("/") { it.replace("/", "\\/") }
-private fun String.computeSubPaths() = replace("\\/", "\u0000").splitFast('/').mapFast { it.replace('\u0000', '/') }
-private fun List<String>.computeNormalizedPath() = if (size == 1) first().replace("/", "\\/").internSubPath() else joinToString("/") { it.replace("/", "\\/") }.internPath()
-private fun CwtConfigPath.computeNormalizedSubPaths(): List<String> = ImmutableList(subPaths.size) { subPaths[it].internSubPath() }
+
+private fun computePath(subPaths: List<String>): String {
+    if (subPaths.anyFast { it.contains('/') }) {
+        if (subPaths.size == 1) return subPaths[0].replace("/", "\\/")
+        return subPaths.joinToString("/") { it.replace("/", "\\/") }
+    }
+    if (subPaths.size == 1) return subPaths[0]
+    return subPaths.joinToString("/")
+}
+
+private fun computeSubPaths(path: String): List<String> {
+    if (path.contains('\\')) {
+        return path.replace("\\/", "\u0000").splitFast('/').mapFast { it.replace('\u0000', '/') }
+    }
+    return path.splitFast('/')
+}
+
+private fun computeNormalizedPath(subPaths: List<String>): String {
+    if (subPaths.size == 1) return subPaths[0].replace("/", "\\/").internPath()
+    return subPaths.joinToString("/") { it.replace("/", "\\/") }.internPath()
+}
+
+private fun computeNormalizedSubPaths(subPaths: List<String>): List<String> {
+    return ImmutableList(subPaths.size) { subPaths[it].internSubPath() }
+}
 
 private class CwtConfigPathImplFromPath(input: String) : CwtConfigPathBase() {
     override val path: String = input
-    override val subPaths: List<String> = input.computeSubPaths()
+    override val subPaths: List<String> = computeSubPaths(path)
 }
 
 private class CwtConfigPathImplFromSubPaths(input: List<String>) : CwtConfigPathBase() {
     // 3.0.1 optimize: lazy compute `path` since it's rarely used in production code
-    @Volatile private var _path: String? = null
-    override val path: String get() = _path ?: subPaths.computePath().also { _path = it }
+    override val path: String // region by lazy { computePath(subPaths) }
+        get() = LazyValue.of({ _path }, { _path = it }) { computePath(subPaths) }
+    @Volatile private var _path: String? = null // endregion
     override val subPaths: List<String> = input
 }
 
 private class NormalizedCwtConfigPath(input: CwtConfigPath) : CwtConfigPathBase() {
     // 3.0.1 optimize: lazy compute `path` since it's rarely used in production code
-    @Volatile private var _path: String? = null
-    override val path: String get() = _path ?: subPaths.computeNormalizedPath().also { _path = it }
-    override val subPaths: List<String> = input.computeNormalizedSubPaths()
+    override val path: String // region by lazy { computeNormalizedPath(subPaths) }
+        get() = LazyValue.of({ _path }, { _path = it }) { computeNormalizedPath(subPaths) }
+    @Volatile private var _path: String? = null // endregion
+    override val subPaths: List<String> = computeNormalizedSubPaths(input.subPaths)
 }
 
 private object EmptyCwtConfigPath : CwtConfigPathBase() {

@@ -137,29 +137,48 @@ private val subPathInterner = Interner.newWeakInterner<String>()
 
 private fun String.internPath() = pathInterner.intern(this)
 private fun String.internSubPath() = subPathInterner.intern(this)
-private fun List<String>.computePath() = if (size == 1) first() else joinToString("/")
-private fun String.computeSubPaths() = splitFast('/')
-private fun String.computeParent() = substringBeforeLast('/', "")
-private fun ParadoxPath.computePath(): String = if (length == 1) path.internSubPath() else path.internPath()
-private fun ParadoxPath.computeNormalizedSubPath(): List<String> = ImmutableList(subPaths.size) { subPaths[it].internSubPath() }
-private fun ParadoxPath.computeNormalizedParent(): String = if (length == 1) "" else parent.internPath()
+
+private fun computePath(subPaths: List<String>): String {
+    if (subPaths.size == 1) return subPaths[0]
+    return subPaths.joinToString("/")
+}
+
+private fun computeSubPaths(path: String): List<String> {
+    return path.splitFast('/')
+}
+
+private fun computeParent(path: String): String {
+    return path.substringBeforeLast('/', "")
+}
+
+private fun computeNormalizedPath(input: ParadoxPath): String {
+    return input.path.internPath()
+}
+
+private fun computeNormalizedSubPaths(input: ParadoxPath): List<String> {
+    return ImmutableList(input.subPaths.size) { input.subPaths[it].internSubPath() }
+}
+
+private fun computeNormalizedParent(input: ParadoxPath): String {
+    return input.parent.internPath()
+}
 
 private class ParadoxPathImplFromPath(input: String) : ParadoxPathBase() {
     override val path: String = input
-    override val subPaths: List<String> = input.computeSubPaths()
-    override val parent: String = input.computeParent()
+    override val subPaths: List<String> = computeSubPaths(input)
+    override val parent: String = computeParent(input)
 }
 
 private class ParadoxPathImplFromSubPaths(input: List<String>) : ParadoxPathBase() {
-    override val path: String = input.computePath()
+    override val path: String = computePath(input)
     override val subPaths: List<String> = input
-    override val parent: String = path.computeParent()
+    override val parent: String = computeParent(path)
 }
 
 private class NormalizedParadoxPath(input: ParadoxPath) : ParadoxPathBase() {
-    override val path: String = input.computePath()
-    override val subPaths: List<String> = input.computeNormalizedSubPath()
-    override val parent: String = input.computeNormalizedParent()
+    override val path: String = computeNormalizedPath(input)
+    override val subPaths: List<String> = computeNormalizedSubPaths(input)
+    override val parent: String = computeNormalizedParent(input)
 }
 
 private object EmptyParadoxPath : ParadoxPathBase() {
