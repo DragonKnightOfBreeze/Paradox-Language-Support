@@ -10,6 +10,7 @@ import com.intellij.codeInsight.template.impl.TextExpression
 import com.intellij.icons.AllIcons
 import com.intellij.openapi.command.impl.FinishMarkAction.*
 import com.intellij.openapi.command.impl.StartMarkAction.*
+import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.EditorModificationUtil
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
@@ -26,6 +27,7 @@ import icu.windea.pls.core.buildInlineTemplate
 import icu.windea.pls.core.codeInsight.TemplateEditingFinishedListener
 import icu.windea.pls.core.executeWriteCommand
 import icu.windea.pls.core.icon
+import icu.windea.pls.core.isEscapedCharAt
 import icu.windea.pls.core.quoteIfNeeded
 import icu.windea.pls.cwt.formatter.CwtCodeStyleSettings
 import icu.windea.pls.cwt.psi.CwtPropertyKey
@@ -201,8 +203,7 @@ object CwtCompletionLookupProvider {
             if (!context.leftQuoted) return
             val editor = c.editor
             val caretOffset = editor.caretModel.offset
-            val charsSequence = editor.document.charsSequence
-            val rightQuoted = charsSequence.get(caretOffset) == '"' && charsSequence.get(caretOffset - 1) != '\\'
+            val rightQuoted = isRightQuoted(editor, caretOffset)
             if (rightQuoted) {
                 // 在必要时将光标移到右双引号之后
                 editor.caretModel.moveToOffset(caretOffset + 1)
@@ -210,6 +211,11 @@ object CwtCompletionLookupProvider {
                 // 插入缺失的右双引号，且在必要时将光标移到右双引号之后
                 EditorModificationUtil.insertStringAtCaret(editor, "\"", false, true)
             }
+        }
+
+        private fun isRightQuoted(editor: Editor, caretOffset: Int): Boolean {
+            val charsSequence = editor.document.charsSequence
+            return charsSequence.get(caretOffset) == '"' && !charsSequence.isEscapedCharAt(caretOffset)
         }
     }
 

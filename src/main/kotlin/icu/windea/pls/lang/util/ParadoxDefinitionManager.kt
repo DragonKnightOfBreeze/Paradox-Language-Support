@@ -1,5 +1,6 @@
 package icu.windea.pls.lang.util
 
+import com.google.common.collect.ImmutableList.*
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.CachedValue
@@ -108,7 +109,12 @@ object ParadoxDefinitionManager {
     fun getMemberPath(definitionInfo: ParadoxDefinitionInfo): ParadoxMemberPath {
         // NOTE 2.1.2 file definition has empty member path
         if (definitionInfo.source == ParadoxDefinitionSource.File) return ParadoxMemberPath.resolveEmpty()
-        return ParadoxMemberPath.resolve(definitionInfo.rootKeys + definitionInfo.typeKey)
+        // 3.0.1 optimize: build immutable list here
+        val subPaths = builderWithExpectedSize<String>(definitionInfo.rootKeys.size + 1)
+            .addAll(definitionInfo.rootKeys)
+            .add(definitionInfo.typeKey)
+            .build()
+        return ParadoxMemberPath.resolve(subPaths)
     }
 
     fun getRelatedLocalisationInfos(definitionInfo: ParadoxDefinitionInfo): List<ParadoxDefinitionInfo.RelatedLocalisationInfo> {

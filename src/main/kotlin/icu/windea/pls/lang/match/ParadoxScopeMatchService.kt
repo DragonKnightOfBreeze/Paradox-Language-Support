@@ -6,6 +6,14 @@ import icu.windea.pls.model.scope.ParadoxScopeContext
 import icu.windea.pls.model.scope.promotions
 
 object ParadoxScopeMatchService {
+    // TODO 3.0.1 refactor but should not be a lot
+
+    @Suppress("unused")
+    fun matchesScope(thisScope: String, scopeToMatch: String, configGroup: CwtConfigGroup): Boolean {
+        // TODO 3.0.1 for any, all, union (e.g., carrier), and other normal scopes
+        TODO()
+    }
+
     fun matchesScope(scopeContext: ParadoxScopeContext?, scopeToMatch: String, configGroup: CwtConfigGroup): Boolean {
         val thisScope = scopeContext?.scope?.id
         if (thisScope == null) return true

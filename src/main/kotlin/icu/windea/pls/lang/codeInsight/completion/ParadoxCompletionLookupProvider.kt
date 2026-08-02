@@ -5,6 +5,7 @@ import com.intellij.codeInsight.completion.InsertHandler
 import com.intellij.codeInsight.completion.InsertionContext
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
+import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.EditorModificationUtil
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
@@ -30,6 +31,7 @@ import icu.windea.pls.config.manipulation.CwtConfigManipulationService
 import icu.windea.pls.core.codeInsight.completion.AddCharInsertHandler
 import icu.windea.pls.core.codeInsight.completion.AddParenthesesInsertHandler
 import icu.windea.pls.core.icon
+import icu.windea.pls.core.isEscapedCharAt
 import icu.windea.pls.core.letIf
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.psi.light.LightElementBase
@@ -676,7 +678,7 @@ object ParadoxCompletionLookupProvider {
 
     fun wrapForExpression(lookupElement: LookupElementBuilder, context: ParadoxCompletionContext): LookupElementBuilder? {
         // check whether scope is matched again here
-        if ((!lookupElement.scopeMatched || !context.scopeMatched) && ChronicleSettings.getInstance().state.completion.completeOnlyScopeIsMatched) return null
+        if (!checkScopeMatched(lookupElement, context)) return null
 
         val config = context.config
         val completeWithValue = ChronicleSettings.getInstance().state.completion.completeWithValue
@@ -744,6 +746,10 @@ object ParadoxCompletionLookupProvider {
         return result
     }
 
+    private fun checkScopeMatched(lookupElement: LookupElementBuilder, context: ParadoxCompletionContext): Boolean {
+        return lookupElement.scopeMatched && context.scopeMatched || !ChronicleSettings.getInstance().state.completion.completeOnlyScopeIsMatched
+    }
+
     private fun LookupElementBuilder.patchIcon(config: CwtConfig<*>?): LookupElementBuilder {
         val patchableIcon = patchableIcon
         if (patchableIcon == null) return this
@@ -808,8 +814,7 @@ object ParadoxCompletionLookupProvider {
             if (!context.leftQuoted) return
             val editor = c.editor
             val caretOffset = editor.caretModel.offset
-            val charsSequence = editor.document.charsSequence
-            val rightQuoted = charsSequence.get(caretOffset) == '"' && charsSequence.get(caretOffset - 1) != '\\'
+            val rightQuoted = isRightQuoted(editor, caretOffset)
             if (rightQuoted) {
                 // 在必要时将光标移到右双引号之后
                 if (context.isKey != null) editor.caretModel.moveToOffset(caretOffset + 1)
@@ -817,6 +822,11 @@ object ParadoxCompletionLookupProvider {
                 // 插入缺失的右双引号，且在必要时将光标移到右双引号之后
                 EditorModificationUtil.insertStringAtCaret(editor, "\"", false, context.isKey != null)
             }
+        }
+
+        private fun isRightQuoted(editor: Editor, caretOffset: Int): Boolean {
+            val charsSequence = editor.document.charsSequence
+            return charsSequence.get(caretOffset) == '"' && !charsSequence.isEscapedCharAt(caretOffset)
         }
     }
 
@@ -851,11 +861,10 @@ object ParadoxCompletionLookupProvider {
 
     private class LocalisationLocaleInsertHandler<T : LookupElement> : InsertHandler<T> {
         override fun handleInsert(c: InsertionContext, item: T) {
-            // 如果之后没有英文冒号，则插入英文冒号（如果之后没有更多行，则还要插入换行符和必要的缩进），否则光标移到冒号之后
+            // 如果之后没有英文冒号（跳过空白），则插入英文冒号（如果之后没有更多行，则还要插入换行符和必要的缩进），否则光标移到冒号之后
             val editor = c.editor
             val caretModel = editor.caretModel
-            val chars = editor.document.charsSequence
-            val colonIndex = chars.indexOf(':', c.startOffset)
+            val colonIndex = findNextColonIndex(editor, c)
             if (colonIndex != -1) {
                 caretModel.moveToOffset(colonIndex + 1)
             } else {
@@ -872,15 +881,30 @@ object ParadoxCompletionLookupProvider {
                 EditorModificationUtil.insertStringAtCaret(editor, s)
             }
         }
+
+        private fun findNextColonIndex(editor: Editor, c: InsertionContext): Int {
+            val charsSequence = editor.document.charsSequence
+            var index = c.startOffset
+            val length = charsSequence.length
+            while (index < length) {
+                val c = charsSequence.get(index)
+                if (c == ':') return index
+                if (c == '\r' || c == '\n' || c == '#') return -1
+                if (!c.isWhitespace()) return -1
+                index++
+            }
+            return -1
+        }
     }
 
     private class LocalisationScriptedVariableInsertHandler<T : LookupElement> : InsertHandler<T> {
         override fun handleInsert(c: InsertionContext, item: T) {
-            // 因为只能在 `$...$` 引用中出现，如果后面没有 `$`，需要自动补充，并将光标移到补充 `$` 之前
+            // 因为只能在 `$...$` 引用中出现，如果之后没有紧接着的 `$`（或者 `|`），需要自动补充，并将光标移到补充 `$` 之前
             val editor = c.editor
             val caretModel = editor.caretModel
-            val suffixChar = editor.document.charsSequence.getOrNull(caretModel.offset)
-            if (suffixChar != '$') {
+            val charsSequence = editor.document.charsSequence
+            val suffixChar = charsSequence.getOrNull(caretModel.offset)
+            if (suffixChar != '$' && suffixChar != '|') {
                 EditorModificationUtil.insertStringAtCaret(editor, "$")
                 caretModel.moveToOffset(caretModel.offset - 1)
             }

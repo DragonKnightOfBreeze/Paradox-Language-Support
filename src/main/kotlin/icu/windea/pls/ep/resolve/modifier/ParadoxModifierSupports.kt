@@ -93,6 +93,8 @@ class ParadoxPredefinedModifierSupport : ParadoxModifierSupport {
         val modifiers = configGroup.predefinedModifiers
         if (modifiers.isEmpty()) return
 
+        val completeOnlyScopeIsMatched = ChronicleSettings.getInstance().state.completion.completeOnlyScopeIsMatched
+
         for (modifierConfig in modifiers.values) {
             ProgressManager.checkCanceled()
 
@@ -101,7 +103,7 @@ class ParadoxPredefinedModifierSupport : ParadoxModifierSupport {
 
             // 排除不匹配 modifier 的 supported_scopes 的情况
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, modifierConfig.supportedScopes, configGroup)
-            if (!scopeMatched && ChronicleSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
+            if (!scopeMatched && completeOnlyScopeIsMatched) continue
 
             val hintText = ParadoxCompletionLookupProvider.getConfigBasedHintText(context, modifierConfig.config, withConfigExpression = false)
             val template = modifierConfig.template
@@ -166,12 +168,14 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
         val modifiers = configGroup.generatedModifiers
         if (modifiers.isEmpty()) return
 
+        val completeOnlyScopeIsMatched = ChronicleSettings.getInstance().state.completion.completeOnlyScopeIsMatched
+
         for (modifierConfig in modifiers.values) {
             ProgressManager.checkCanceled()
 
             // 排除不匹配 modifier 的 supported_scopes 的情况
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, modifierConfig.supportedScopes, configGroup)
-            if (!scopeMatched && ChronicleSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
+            if (!scopeMatched && completeOnlyScopeIsMatched) continue
 
             val template = modifierConfig.template
             if (template.expressionString.isEmpty()) continue
@@ -370,6 +374,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
         val scopeContext = context.scopeContext
         if (element !is ParadoxScriptStringExpressionElement) return
 
+        val completeOnlyScopeIsMatched = ChronicleSettings.getInstance().state.completion.completeOnlyScopeIsMatched
         val selector = ParadoxDefinitionSearch.selector(configGroup.project, element).contextSensitive().distinct()
         ParadoxDefinitionSearch.searchProperty(null, ParadoxDefinitionTypes.economicCategory, selector).processAsync p@{ economicCategory ->
             ProgressManager.checkCanceled()
@@ -379,7 +384,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
             val modifierCategories = ParadoxModifierManager.resolveModifierCategory(economicCategoryInfo.modifierCategory, configGroup)
             val supportedScopes = ParadoxScopeManager.getSupportedScopes(modifierCategories)
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, supportedScopes, configGroup)
-            if (!scopeMatched && ChronicleSettings.getInstance().state.completion.completeOnlyScopeIsMatched) return@p true
+            if (!scopeMatched && completeOnlyScopeIsMatched) return@p true
 
             val typeText = economicCategoryInfo.name
             val typeIcon = ChronicleIcons.Nodes.Definition(ParadoxDefinitionTypes.economicCategory)
