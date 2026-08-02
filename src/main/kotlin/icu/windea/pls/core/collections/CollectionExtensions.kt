@@ -177,56 +177,6 @@ inline fun <T> Iterable<T>.chunkedBy(keepEmpty: Boolean = true, predicate: (T) -
 }
 
 /**
- * 如果当前列表存在指定的作为前缀的子列表 [prefix]（可以为空），则去除并返回。否则，返回 `null`。
- * 如果指定了通配符 [wildcard]，则当前缀中的元素与其相等时，认为总是匹配当前列表中的对应索引的元素。
- */
-fun <T : Any> List<T>.removePrefixOrNull(prefix: List<T>, wildcard: T? = null): List<T>? {
-    if (prefix.isEmpty()) return this // fast return
-    if (this === prefix) return emptyList() // fast return
-    val size = this.size
-    val prefixSize = prefix.size
-    if (prefixSize > size) return null
-    if (this is RandomAccess) { // optimized for ArrayList, etc.
-        for (i in 0 until prefixSize) {
-            val e = prefix[i]
-            if (wildcard != null && wildcard == e) continue
-            if (e != this[i]) return null
-        }
-    } else {
-        for ((i, e) in prefix.withIndex()) {
-            if (wildcard != null && wildcard == e) continue
-            if (e != this[i]) return null
-        }
-    }
-    return this.drop(prefixSize)
-}
-
-/**
- * 如果当前列表存在指定的作为后缀的子列表 [suffix]（可以为空），则去除并返回，否则返回 `null`。
- * 如果指定了通配符 [wildcard]，则当后缀中的元素与其相等时，认为总是匹配当前列表中的对应索引的元素。
- */
-fun <T : Any> List<T>.removeSuffixOrNull(suffix: List<T>, wildcard: T? = null): List<T>? {
-    if (suffix.isEmpty()) return this // fast return
-    if (this === suffix) return emptyList() // fast return
-    val size = this.size
-    val suffixSize = suffix.size
-    if (suffixSize > size) return null
-    if (this is RandomAccess) { // optimized for ArrayList, etc.
-        for (i in 0 until suffixSize) {
-            val e = suffix[i]
-            if (wildcard != null && wildcard == e) continue
-            if (e != this[size - suffixSize + i]) return null
-        }
-    } else {
-        for ((i, e) in suffix.withIndex()) {
-            if (wildcard != null && wildcard == e) continue
-            if (e != this[size - suffixSize + i]) return null
-        }
-    }
-    return this.dropLast(suffixSize)
-}
-
-/**
  * 如果对应键的值不存在，则先将指定的默认值放入映射（当实例化对应的委托属性时即会放入），再提供委托。
  */
 class MapWithDefaultValueDelegate<V>(val map: MutableMap<String, V>, val defaultValue: V)

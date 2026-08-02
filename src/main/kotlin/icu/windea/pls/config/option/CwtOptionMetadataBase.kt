@@ -14,7 +14,7 @@ import icu.windea.pls.model.scope.ParadoxScopeConstants
 import icu.windea.pls.model.scope.ParadoxScopeContext
 
 open class CwtOptionMetadataBase : MetadataMapAndUserDataHolderBase(), CwtOptionMetadata {
-    // 3.0.1 use explicit code with folding, instead of delegate properties with addon code injector, to make things simple
+    // 3.0.1 use explicit code with folding, instead of delegate properties with corresponding code injector, to make things simple
 
     final override var optionConfigs: List<CwtOptionMemberConfig<*>> // region by Keys.optionConfigs by Keys.optionConfigs
         get() = this[Keys.optionConfigs]

@@ -9,7 +9,7 @@ import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 
 open class CwtDataExpressionMetadataBase : MetadataMapBase(), CwtDataExpressionMetadata {
-    // 3.0.1 use explicit code with folding, instead of delegate properties with addon code injector, to make things simple
+    // 3.0.1 use explicit code with folding, instead of delegate properties with corresponding code injector, to make things simple
 
     final override var value: String? // region by Keys.value
         get() = this[Keys.value]

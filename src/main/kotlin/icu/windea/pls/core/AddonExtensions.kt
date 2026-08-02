@@ -13,12 +13,6 @@ inline fun <T> runOnce(marker: AtomicBoolean, action: () -> T): T? {
     return r
 }
 
-fun loadText(path: String, locationClass: Class<*> = ChronicleFacade::class.java): String {
-    // 让该死的 Windows 换行符见鬼去吧
-    val url = path.toClasspathUrl(locationClass)
-    return url.openStream().use { s -> s.bufferedReader().use { r -> r.lineSequence().joinToString("\n") } }
-}
-
 inline fun <T> withErrorRef(errorRef: AtomicReference<Throwable>, action: () -> T): Result<T> {
     return runCatchingCancelable { action() }.onFailure { errorRef.compareAndSet(null, it) }
 }
@@ -30,4 +24,10 @@ inline fun <T> withState(state: ThreadLocal<Boolean>, action: () -> T): T {
     } finally {
         state.remove()
     }
+}
+
+fun loadText(path: String, locationClass: Class<*> = ChronicleFacade::class.java): String {
+    // 让该死的 Windows 换行符见鬼去吧
+    val url = path.toClasspathUrl(locationClass)
+    return url.openStream().use { s -> s.bufferedReader().use { r -> r.lineSequence().joinToString("\n") } }
 }
