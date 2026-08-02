@@ -166,9 +166,9 @@ class ParadoxDefinitionCacheTest : BasePlatformTestCase(), ChronicleTestScope {
 
         val deps = ParadoxDefinitionService.getSubtypeAwareDependencies(distress, info)
 
-        // 无子类型候选项时，只依赖 file
+        // 无子类型候选项时，只依赖定义
         Assert.assertEquals(1, deps.size)
-        Assert.assertSame(file, deps[0])
+        Assert.assertSame(distress, deps[0])
     }
 
     @Test
