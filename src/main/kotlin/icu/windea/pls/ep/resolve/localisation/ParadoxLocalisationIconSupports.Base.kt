@@ -6,6 +6,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.CwtDataExpressionRole
+import icu.windea.pls.config.configGroup.CwtTypesModel
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.mapNotNullFast
 import icu.windea.pls.core.collections.orNull
@@ -19,10 +20,13 @@ import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.localisation.psi.ParadoxLocalisationIcon
+import icu.windea.pls.model.constraints.ParadoxDefinitionIndexConstraint
 
 @Suppress("SameParameterValue")
 abstract class ParadoxCompositeLocalisationIconSupport : ParadoxLocalisationIconSupport {
     private val _supports = mutableListOf<ParadoxLocalisationIconSupport>()
+
+    // NOTE 3.0.1 nested composite supports are not supported atm
 
     val supports: List<ParadoxLocalisationIconSupport> get() = _supports
 
@@ -32,10 +36,22 @@ abstract class ParadoxCompositeLocalisationIconSupport : ParadoxLocalisationIcon
 
     protected abstract fun registerSupports()
 
+    /**
+     * 注意：这里的注册信息发生更改时，受约束的索引的构建逻辑也会发生变化，因此需要同步更新对应的索引版本。
+     *
+     * @see CwtTypesModel.localisationIconResolvable
+     * @see ParadoxDefinitionIndexConstraint.LocalisationIconResolvable
+     */
     protected fun fromDefinition(definitionType: String) {
         _supports += ParadoxDefinitionBasedLocalisationIconSupport(definitionType, { it }, { it })
     }
 
+    /**
+     * 注意：这里的注册信息发生更改时，受约束的索引的构建逻辑也会发生变化，因此需要同步更新对应的索引版本。
+     *
+     * @see CwtTypesModel.localisationIconResolvable
+     * @see ParadoxDefinitionIndexConstraint.LocalisationIconResolvable
+     */
     protected fun fromDefinition(definitionType: String, definitionNameGetter: (name: String) -> String?, nameGetter: (definitionName: String) -> String?) {
         _supports += ParadoxDefinitionBasedLocalisationIconSupport(definitionType, definitionNameGetter, nameGetter)
     }
@@ -45,7 +61,8 @@ abstract class ParadoxCompositeLocalisationIconSupport : ParadoxLocalisationIcon
     }
 
     final override fun resolve(name: String, element: ParadoxLocalisationIcon, project: Project): PsiElement? {
-        _supports.forEachFast { support ->
+        _supports.forEachFast f@{ support ->
+            if(support is ParadoxCompositeLocalisationIconSupport) return@f // skip
             ProgressManager.checkCanceled()
             support.resolve(name, element, project)?.let { return it }
         }
@@ -53,7 +70,8 @@ abstract class ParadoxCompositeLocalisationIconSupport : ParadoxLocalisationIcon
     }
 
     final override fun resolveAll(name: String, element: ParadoxLocalisationIcon, project: Project): Collection<PsiElement> {
-        _supports.forEachFast { support ->
+        _supports.forEachFast f@{ support ->
+            if(support is ParadoxCompositeLocalisationIconSupport) return@f // skip
             ProgressManager.checkCanceled()
             support.resolveAll(name, element, project).orNull()?.let { return it }
         }
@@ -61,7 +79,8 @@ abstract class ParadoxCompositeLocalisationIconSupport : ParadoxLocalisationIcon
     }
 
     final override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
-        _supports.forEachFast { support ->
+        _supports.forEachFast f@{ support ->
+            if(support is ParadoxCompositeLocalisationIconSupport) return@f // skip
             ProgressManager.checkCanceled()
             support.complete(context, result)
         }

@@ -11,6 +11,8 @@ abstract class ParadoxCsvCompositeExpressionMatcher : ParadoxCsvExpressionMatche
     private val _matchers = mutableListOf<ParadoxCsvLightExpressionMatcher>()
     private val _matcherMap = mutableMapOf<ParadoxCsvLightExpressionMatcher, MutableSet<CwtDataType>>()
 
+    // NOTE 3.0.1 nested composite matchers are not supported atm
+
     @Suppress("unused")
     val matchers: List<ParadoxCsvLightExpressionMatcher> get() = _matchers
     val matcherMap: Map<ParadoxCsvLightExpressionMatcher, Set<CwtDataType>> get() = _matcherMap
@@ -43,7 +45,8 @@ abstract class ParadoxCsvCompositeExpressionMatcher : ParadoxCsvExpressionMatche
     }
 
     final override fun match(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult? {
-        _matchers.forEachFast { matcher ->
+        _matchers.forEachFast f@{ matcher ->
+            if (matcher is ParadoxScriptCompositeExpressionMatcher) return@f // skip
             matcher.match(context)?.let { return it }
         }
         return null

@@ -22,6 +22,7 @@ import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.util.tupleOf
+import icu.windea.pls.lang.resolve.ParadoxLocalisationIconService
 import icu.windea.pls.model.paths.CwtConfigPath
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap
 import it.unimi.dsi.fastutil.objects.ObjectArrayList
@@ -57,6 +58,9 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
         computeRelatedLocalisationPatterns(configGroup)
 
         checkCanceled()
+        computeTypesModel(configGroup)
+
+        checkCanceled()
         computeLinksModel(configGroup, configGroup.initializer.linksModel, configGroup.initializer.links.values)
 
         checkCanceled()
@@ -64,9 +68,6 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
 
         checkCanceled()
         computeMacrosModel(configGroup)
-
-        checkCanceled()
-        computeTypesModel(configGroup)
     }
 
     private fun computeLocales(configGroup: CwtConfigGroup) {
@@ -209,6 +210,40 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
         }
     }
 
+    private fun computeTypesModel(configGroup: CwtConfigGroup) {
+        val initializer = configGroup.initializer
+        with(initializer.typesModel) {
+            initializer.types.values.forEach { c ->
+                if (c.baseType.isNotNullOrEmpty()) {
+                    base2Swapped[c.baseType] = c.name
+                    swapped2Base[c.name] = c.baseType
+                }
+            }
+
+            initializer.attribute.parameterConfigs.forEach { c ->
+                val propertyConfig = c.parentConfig as? CwtPropertyConfig ?: return@forEach
+                val aliasSubName = propertyConfig.key.removeSurroundingOrNull("alias[", "]")?.substringAfter(':', "")
+                val contextExpression = if (aliasSubName.isNullOrEmpty()) propertyConfig.keyExpression
+                else CwtDataExpression.resolve(aliasSubName, CwtDataExpressionRole.Key)
+                if (contextExpression.type == CwtDataTypes.Definition) {
+                    contextExpression.metadata.value?.let { supportParameters += it }
+                }
+            }
+
+            // based on file paths, in detail, based on file path patterns (has any same file path patterns)
+            val types = initializer.types.values.filter { c -> c.typeKeyPrefix != null && !c.typePerFile }
+            val filePathPatterns = types.flatMapTo(mutableSetOf()) { c -> c.filePathPatterns }
+            initializer.types.values.forEach { c ->
+                if (c.filePathPatterns.any { it in filePathPatterns }) {
+                    typeKeyPrefixAware += c.name
+                }
+            }
+
+            // from localisation icons
+            localisationIconResolvable += ParadoxLocalisationIconService.getDefinitionTypes(configGroup.gameType)
+        }
+    }
+
     private fun computeLinksModel(configGroup: CwtConfigGroup, linksModel: CwtLinksModelBase, links: Collection<CwtLinkConfig>) {
         with(linksModel) {
             val staticLinks = links.filter { it.isStatic }
@@ -271,37 +306,6 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
                         attribute.definitionInjectionModes += c.modeConfigs.keys
                         forDefinitionInjections = c
                     }
-                }
-            }
-        }
-    }
-
-    private fun computeTypesModel(configGroup: CwtConfigGroup) {
-        val initializer = configGroup.initializer
-        with(initializer.typesModel) {
-            initializer.types.values.forEach { c ->
-                if (c.baseType.isNotNullOrEmpty()) {
-                    base2Swapped[c.baseType] = c.name
-                    swapped2Base[c.name] = c.baseType
-                }
-            }
-
-            initializer.attribute.parameterConfigs.forEach { c ->
-                val propertyConfig = c.parentConfig as? CwtPropertyConfig ?: return@forEach
-                val aliasSubName = propertyConfig.key.removeSurroundingOrNull("alias[", "]")?.substringAfter(':', "")
-                val contextExpression = if (aliasSubName.isNullOrEmpty()) propertyConfig.keyExpression
-                else CwtDataExpression.resolve(aliasSubName, CwtDataExpressionRole.Key)
-                if (contextExpression.type == CwtDataTypes.Definition) {
-                    contextExpression.metadata.value?.let { supportParameters += it }
-                }
-            }
-
-            // based on file paths, in detail, based on file path patterns (has any same file path patterns)
-            val types = initializer.types.values.filter { c -> c.typeKeyPrefix != null && !c.typePerFile }
-            val filePathPatterns = types.flatMapTo(mutableSetOf()) { c -> c.filePathPatterns }
-            initializer.types.values.forEach { c ->
-                if (c.filePathPatterns.any { it in filePathPatterns }) {
-                    typeKeyPrefixAware += c.name
                 }
             }
         }

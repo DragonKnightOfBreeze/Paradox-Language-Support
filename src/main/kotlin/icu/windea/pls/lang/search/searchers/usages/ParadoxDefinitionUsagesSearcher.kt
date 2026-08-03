@@ -14,6 +14,7 @@ import icu.windea.pls.ep.resolve.localisation.ParadoxLocalisationIconSupport
 import icu.windea.pls.ep.util.data.StellarisGameConceptData
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.getDefinitionData
+import icu.windea.pls.lang.resolve.ParadoxLocalisationIconService
 import icu.windea.pls.lang.wordRequests
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxDefinitionInjectionInfo
@@ -41,7 +42,7 @@ class ParadoxDefinitionUsagesSearcher : QueryExecutorBase<PsiReference, Referenc
         val definitionInfo = target.definitionInfo ?: return
         if (definitionInfo.name.isEmpty()) return // skip anonymous definitions
         val words = getWords(target, definitionInfo)
-        val ignoreCase = ParadoxDefinitionIndexConstraint.entries.any { it.ignoreCase && it.test(definitionInfo.type) }
+        val ignoreCase = ParadoxDefinitionIndexConstraint.entries.any { it.ignoreCase && it.test(definitionInfo.type, definitionInfo.configGroup) }
 
         // 这里不能直接使用 target.useScope，否则文件高亮会出现问题
         val useScope = queryParameters.effectiveSearchScope
@@ -67,10 +68,7 @@ class ParadoxDefinitionUsagesSearcher : QueryExecutorBase<PsiReference, Referenc
         }
 
         // from localisation icons
-        val nameGetters = mutableSetOf<(String) -> String?>()
-        ParadoxLocalisationIconSupport.EP_NAME.extensionList.forEach { support ->
-            addToNameGetters(support, definitionInfo, nameGetters)
-        }
+        val nameGetters = ParadoxLocalisationIconService.getNameGetters(definitionInfo.gameType, definitionInfo)
         nameGetters.forEach { nameGetter ->
             val name = nameGetter(definitionInfo.name)?.orNull()
             if (name != null) words.add(name)

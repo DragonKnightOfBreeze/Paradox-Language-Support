@@ -10,6 +10,7 @@ import com.intellij.psi.util.startOffset
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.base.ChronicleCapacities
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
+import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.ImmutableList
 import icu.windea.pls.core.collections.asMutable
@@ -149,7 +150,7 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
                 val fastSubtypes = ParadoxConfigMatchService.getFastMatchedSubtypeConfigs(typeConfig, typeKey).map { it.name }.optimized()
 
                 val info = ParadoxDefinitionIndexInfo(source, name, type, fastSubtypes, typeKey, element.startOffset, gameType)
-                addToFileData(info, fileData)
+                addToFileData(info, fileData, configGroup)
                 return false
             }
 
@@ -178,7 +179,7 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
                 val fastSubtypes = ParadoxConfigMatchService.getFastMatchedSubtypeConfigs(typeConfig, target).map { it.name }.optimized()
 
                 val info = ParadoxDefinitionIndexInfo(source, name, type, fastSubtypes, target, element.startOffset, gameType)
-                addToFileData(info, fileData)
+                addToFileData(info, fileData, configGroup)
                 return false
             }
 
@@ -200,10 +201,10 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
         return typeConfigs.find { ParadoxConfigMatchService.matchesTypeForInjection(context, it) }
     }
 
-    private fun addToFileData(info: ParadoxDefinitionIndexInfo, fileData: MutableMap<String, List<ParadoxDefinitionIndexInfo>>) {
+    private fun addToFileData(info: ParadoxDefinitionIndexInfo, fileData: MutableMap<String, List<ParadoxDefinitionIndexInfo>>, configGroup: CwtConfigGroup) {
         ChronicleIndexStatisticService.recordDefinition(info.gameType)
 
-        val ignoreCase = ParadoxDefinitionIndexConstraint.entries.any { it.ignoreCase && it.test(info.type) }
+        val ignoreCase = ParadoxDefinitionIndexConstraint.entries.any { it.ignoreCase && it.test(info.type, configGroup) }
         val name = info.name.letIf(ignoreCase) { it.lowercase() }
         val type = info.type
         fileData.getOrPut(ChronicleIndexUtil.createAllKey()) { mutableListOf() }.asMutable() += info

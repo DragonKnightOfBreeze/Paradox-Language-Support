@@ -24,13 +24,21 @@ object ChronicleIndexKeys {
     val DefinitionInjection = ID.create<String, List<ParadoxDefinitionInjectionIndexInfo>>("paradox.definitionInjection.index") // #252
     val Merged = ID.create<String, List<ParadoxIndexInfo>>("paradox.merged.index")
 
+    // constrained indexes for definitions
+    val DefinitionForTextColor = ID.create<String, List<ParadoxDefinitionIndexInfo>>("paradox.definition.index.textColor")
+    val DefinitionForTextIcon = ID.create<String, List<ParadoxDefinitionIndexInfo>>("paradox.definition.index.textIcon")
+    val DefinitionForTextFormat = ID.create<String, List<ParadoxDefinitionIndexInfo>>("paradox.definition.index.textFormat")
+    val DefinitionForLocalisationIconResolvable = ID.create<String, List<ParadoxDefinitionIndexInfo>>("paradox.definition.index.localisaionIconResolvable")
+
     // stub indexes
 
     val ScriptedVariableName = StubIndexKey.createIndexKey<String, ParadoxScriptScriptedVariable>("paradox.scriptedVariable.name.index")
     val LocalisationName = StubIndexKey.createIndexKey<String, ParadoxLocalisationProperty>("paradox.localisation.name.index")
+    val SyncedLocalisationName = StubIndexKey.createIndexKey<String, ParadoxLocalisationProperty>("paradox.syncedLocalisation.name.index")
+
+    // constrained indexes for localisations
     val LocalisationNameForModifier = StubIndexKey.createIndexKey<String, ParadoxLocalisationProperty>("paradox.localisation.name.index.modifier")
     val LocalisationNameForEvent = StubIndexKey.createIndexKey<String, ParadoxLocalisationProperty>("paradox.localisation.name.index.event")
-    val SyncedLocalisationName = StubIndexKey.createIndexKey<String, ParadoxLocalisationProperty>("paradox.syncedLocalisation.name.index")
 
     // for define namespaces, namespace -> ParadoxScriptProperty
     val DefineNamespace = StubIndexKey.createIndexKey<String, ParadoxScriptProperty>("paradox.define.namespace.index")

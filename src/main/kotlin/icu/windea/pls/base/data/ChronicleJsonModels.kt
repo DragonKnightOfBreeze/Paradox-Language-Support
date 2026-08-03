@@ -15,10 +15,10 @@ data class CwtConfigGroupDataJson(
     val gameType: ParadoxGameType,
     val aliasNamesSupportScope: Set<String> = emptySet(),
     val typesSupportScope: Set<String> = emptySet(),
-    val typesIndirectSupportScope: Set<String> = emptySet(),
+    val typesSupportIndirectScope: Set<String> = emptySet(),
+    val typesSupportScopeInference: Set<String> = emptySet(),
     val typesSkipCheckSystemScope: Set<String> = emptySet(),
     val typesSupportParameters: Set<String> = emptySet(),
-    val typesSupportScopeInference: Set<String> = emptySet(),
 )
 
 private val singleEmptyStringSet = setOf("")

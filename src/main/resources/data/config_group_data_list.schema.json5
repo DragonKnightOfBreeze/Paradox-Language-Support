@@ -18,7 +18,7 @@
         "typesSupportScope": {
           "$ref": "#/definitions/stringSet"
         },
-        "typesIndirectSupportScope": {
+        "typesSupportIndirectScope": {
           "$ref": "#/definitions/stringSet"
         },
         "typesSkipCheckSystemScope": {

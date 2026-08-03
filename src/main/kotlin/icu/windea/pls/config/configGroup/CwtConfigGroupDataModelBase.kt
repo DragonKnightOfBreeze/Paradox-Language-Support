@@ -197,21 +197,23 @@ class CwtTypesModelBase : CwtTypesModel {
     override val base2Swapped: Object2ObjectLinkedOpenHashMap<String, String> = Object2ObjectLinkedOpenHashMap()
     override val swapped2Base: Object2ObjectLinkedOpenHashMap<String, String> = Object2ObjectLinkedOpenHashMap()
     override val supportScope: ObjectLinkedOpenHashSet<String> = ObjectLinkedOpenHashSet()
-    override val indirectSupportScope: ObjectLinkedOpenHashSet<String> = ObjectLinkedOpenHashSet()
+    override val supportIndirectScope: ObjectLinkedOpenHashSet<String> = ObjectLinkedOpenHashSet()
+    override val supportScopeInference: ObjectLinkedOpenHashSet<String> = ObjectLinkedOpenHashSet()
     override val skipCheckSystemScope: ObjectLinkedOpenHashSet<String> = ObjectLinkedOpenHashSet()
     override val supportParameters: ObjectLinkedOpenHashSet<String> = ObjectLinkedOpenHashSet()
-    override val supportScopeInference: ObjectLinkedOpenHashSet<String> = ObjectLinkedOpenHashSet()
     override val typeKeyPrefixAware: ObjectLinkedOpenHashSet<String> = ObjectLinkedOpenHashSet()
+    override val localisationIconResolvable: ObjectLinkedOpenHashSet<String> = ObjectLinkedOpenHashSet()
 
     fun trim() {
         base2Swapped.trim()
         swapped2Base.trim()
         supportScope.trim()
-        indirectSupportScope.trim()
+        supportIndirectScope.trim()
+        supportScopeInference.trim()
         skipCheckSystemScope.trim()
         supportParameters.trim()
-        supportScopeInference.trim()
         typeKeyPrefixAware.trim()
+        localisationIconResolvable.trim()
     }
 }
 

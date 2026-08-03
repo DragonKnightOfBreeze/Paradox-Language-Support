@@ -12,16 +12,20 @@
       "scripted_effect",
       "game_rule",
     ],
-    "typesIndirectSupportScope": [
+    "typesSupportIndirectScope": [
       "on_action",
       "event",
+    ],
+    "typesSupportScopeInference": [
+      "scripted_trigger",
+      "scripted_effect",
     ],
     "typesSkipCheckSystemScope": [
       "event",
       "scripted_trigger",
       "scripted_effect",
       "script_value",
-      "game_rule"
+      "game_rule",
     ],
     "typesSupportParameters": [
       "scripted_trigger",
@@ -29,9 +33,5 @@
       "script_value",
       // "inline_script", // but inline scripts are not definitions
     ],
-    "typesSupportScopeInference": [
-      "scripted_trigger",
-      "scripted_effect",
-    ]
   }
 ]
