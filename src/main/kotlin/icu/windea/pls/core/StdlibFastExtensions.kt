@@ -95,3 +95,22 @@ fun String.splitFast(delimiter: Char, ignoreCase: Boolean = false, limit: Int = 
     result.add(r)
     return result
 }
+
+@Fast
+fun <T> List<T>.joinToStringFast(separator: CharSequence, transform: ((T) -> CharSequence)? = null): String {
+    val size = size
+    if (size == 0) return ""
+    if (size == 1) return this[0].withTransform(transform).toString()
+    val builder = StringBuilder()
+    var marker = false
+    for (i in 0 until size) {
+        val e = this[i]
+        if (marker) builder.append(separator) else marker = true
+        builder.append(e.withTransform(transform))
+    }
+    return builder.toString()
+}
+
+private fun <T> T.withTransform(transform: ((T) -> CharSequence)? = null): CharSequence {
+    return if (transform == null) toString() else transform(this)
+}

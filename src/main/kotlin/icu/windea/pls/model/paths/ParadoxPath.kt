@@ -6,6 +6,7 @@ import com.github.benmanes.caffeine.cache.Interner
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.ImmutableList
 import icu.windea.pls.core.collections.removePrefixOrNull
+import icu.windea.pls.core.joinToStringFast
 import icu.windea.pls.core.matchesPath
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.splitFast
@@ -140,7 +141,7 @@ private fun String.internSubPath() = subPathInterner.intern(this)
 
 private fun computePath(subPaths: List<String>): String {
     if (subPaths.size == 1) return subPaths[0]
-    return subPaths.joinToString("/")
+    return subPaths.joinToStringFast("/")
 }
 
 private fun computeSubPaths(path: String): List<String> {

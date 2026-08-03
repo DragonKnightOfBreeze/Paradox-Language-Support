@@ -8,6 +8,7 @@ import icu.windea.pls.core.collections.ImmutableList
 import icu.windea.pls.core.collections.anyFast
 import icu.windea.pls.core.collections.mapFast
 import icu.windea.pls.core.collections.removePrefixOrNull
+import icu.windea.pls.core.joinToStringFast
 import icu.windea.pls.core.splitFast
 import icu.windea.pls.core.util.values.LazyValue
 
@@ -115,11 +116,9 @@ private fun String.internSubPath() = subPathInterner.intern(this)
 
 private fun computePath(subPaths: List<String>): String {
     if(subPaths.anyFast { it.contains('/') }) {
-        if (subPaths.size == 1) return subPaths[0].replace("/", "\\/")
-        return subPaths.joinToString("/") { it.replace("/", "\\/") }
+        return subPaths.joinToStringFast("/") { it.replace("/", "\\/") }
     }
-    if (subPaths.size == 1) return subPaths[0]
-    return subPaths.joinToString("/")
+    return subPaths.joinToStringFast("/")
 }
 
 private fun computeSubPaths(path: String): List<String> {
@@ -130,8 +129,7 @@ private fun computeSubPaths(path: String): List<String> {
 }
 
 private fun computeNormalizedPath(subPaths: List<String>): String {
-    if (subPaths.size == 1) return subPaths[0].replace("/", "\\/").internPath()
-    return subPaths.joinToString("/") { it.replace("/", "\\/") }.internPath()
+    return subPaths.joinToStringFast("/") { it.replace("/", "\\/") }.internPath()
 }
 
 private fun computeNormalizedSubPaths(subPaths: List<String>): List<String> {
