@@ -243,9 +243,11 @@ class ParadoxSelectScopeImpl : ParadoxSelectScope {
             if (current is ParadoxScriptProperty) {
                 return current
             } else if (current is ParadoxScriptValue) {
-                if (current.isDirectValue()) return current
+                // 3.0.1 optimize: get and cache parent first
+                val parent = current.parent ?: return null
+                if (current.isDirectValue(parent)) return current
+                current = parent
             }
-            current = current.parent ?: return null
         }
         if (current is ParadoxScriptFile) return current
         return null

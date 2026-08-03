@@ -37,9 +37,11 @@ object ParadoxMemberService {
         var current: PsiElement = member
         val deque = ArrayDeque<String>()
         while (current !is PsiFile) {
+            // 3.0.1 optimize: get and cache parent first
+            val parent = current.parent ?: break
             val p = when {
                 current is ParadoxScriptProperty -> current.name
-                current is ParadoxScriptValue && current.isDirectValue() -> "-"
+                current is ParadoxScriptValue && current.isDirectValue(parent) -> "-"
                 else -> null
             }
             if (p != null) {
@@ -48,7 +50,7 @@ object ParadoxMemberService {
                 deque.addFirst(p)
                 if (limit > 0 && limit == deque.size) break
             }
-            current = current.parent ?: break
+            current = parent
         }
         if (current is ParadoxScriptFile) injectRootKeys(current, deque)
         return ParadoxMemberPath.resolve(deque)
@@ -66,9 +68,11 @@ object ParadoxMemberService {
         var current: PsiElement = member.parent ?: return emptyList()
         val deque = ArrayDeque<String>()
         while (current !is PsiFile) {
+            // 3.0.1 optimize: get and cache parent first
+            val parent = current.parent ?: break
             val p = when {
                 current is ParadoxScriptProperty -> current.name
-                current is ParadoxScriptValue && current.isDirectValue() -> "-"
+                current is ParadoxScriptValue && current.isDirectValue(parent) -> "-"
                 else -> null
             }
             if (p != null) {
@@ -77,7 +81,7 @@ object ParadoxMemberService {
                 deque.addFirst(p)
                 if (limit > 0 && limit == deque.size) break
             }
-            current = current.parent ?: break
+            current = parent
         }
         injectRootKeys(current, deque)
         return if (deque.isEmpty()) emptyList() else deque

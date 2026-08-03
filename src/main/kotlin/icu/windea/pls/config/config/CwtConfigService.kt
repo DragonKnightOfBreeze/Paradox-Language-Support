@@ -151,17 +151,19 @@ object CwtConfigService {
         var depth = 0
         val subPaths = ArrayDeque<String>()
         while (current !is PsiFile) {
+            // 3.0.1 optimize: get and cache parent first
+            val parent = current.parent ?: break
             when {
                 current is CwtProperty -> {
                     subPaths.addFirst(current.name)
                     depth++
                 }
-                current is CwtValue && current.isDirectValue() -> {
+                current is CwtValue && current.isDirectValue(parent) -> {
                     subPaths.addFirst("-")
                     depth++
                 }
             }
-            current = current.parent ?: break
+            current = parent
         }
         if (current !is CwtFile) return null // unexpected
         return CwtConfigPath.resolve(subPaths)

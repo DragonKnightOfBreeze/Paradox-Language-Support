@@ -64,6 +64,7 @@ import icu.windea.pls.script.psi.floatValue
 import icu.windea.pls.script.psi.intValue
 import icu.windea.pls.script.psi.isDirectValue
 import icu.windea.pls.script.psi.isPropertyValue
+import icu.windea.pls.script.psi.parentProperty
 import icu.windea.pls.script.psi.propertyValue
 
 @Optimized
@@ -466,15 +467,16 @@ object ParadoxConfigMatchService {
                 val valueElement = element.propertyValue ?: return false
                 if (!matchesValueForComplexEnum(valueElement, complexEnumConfig, config)) return false
             } else if (config.stringValue == "enum_name") {
-                if (element !is ParadoxScriptString || !element.isPropertyValue()) return false
-                val propertyElement = element.parent?.castOrNull<ParadoxScriptProperty>() ?: return false
+                if (element !is ParadoxScriptString) return false
+                val propertyElement = element.parentProperty ?: return false
                 if (!matchesKeyForComplexEnum(propertyElement, config)) return false
             } else {
                 return false
             }
         } else if (config is CwtValueConfig) {
             if (config.stringValue == "enum_name") {
-                if (element !is ParadoxScriptString || !element.isDirectValue()) return false
+                if (element !is ParadoxScriptString) return false
+                if (!element.isDirectValue()) return false
             } else {
                 return false
             }

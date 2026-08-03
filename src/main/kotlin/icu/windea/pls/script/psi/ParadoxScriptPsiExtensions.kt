@@ -2,6 +2,7 @@
 
 package icu.windea.pls.script.psi
 
+import com.intellij.psi.PsiElement
 import com.intellij.psi.util.siblings
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.findIsInstance
@@ -12,6 +13,8 @@ import icu.windea.pls.script.psi.stubs.ParadoxScriptPropertyStub
 import icu.windea.pls.script.psi.stubs.ParadoxScriptScriptedVariableStub
 import java.awt.Color
 import java.math.BigDecimal
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.contract
 
 // region PSI Value Accessors
 
@@ -30,6 +33,8 @@ val ParadoxScriptColor.colorValue: Color? get() = this.color
 // endregion
 
 // region PSI Accessors
+
+val ParadoxScriptMember.containingDirectMember: ParadoxScriptMember get() = castOrNull<ParadoxScriptValue>()?.parentProperty ?: this
 
 val ParadoxScriptExpressionElement.parentProperty: ParadoxScriptProperty? get() = parent?.castOrNull()
 
@@ -67,15 +72,27 @@ fun ParadoxScriptExpressionElement.isDataExpression(): Boolean {
     }
 }
 
-fun ParadoxScriptValue.isScriptedVariableValue(): Boolean {
+@OptIn(ExperimentalContracts::class)
+fun ParadoxScriptValue.isScriptedVariableValue(parent: PsiElement? = this.parent): Boolean {
+    contract {
+        returns(true) implies (parent is ParadoxScriptScriptedVariable)
+    }
     return parent is ParadoxScriptScriptedVariable
 }
 
-fun ParadoxScriptValue.isPropertyValue(): Boolean {
+@OptIn(ExperimentalContracts::class)
+fun ParadoxScriptValue.isPropertyValue(parent: PsiElement? = this.parent): Boolean {
+    contract {
+        returns(true) implies (parent is ParadoxScriptProperty)
+    }
     return parent is ParadoxScriptProperty
 }
 
-fun ParadoxScriptValue.isDirectValue(): Boolean {
+@OptIn(ExperimentalContracts::class)
+fun ParadoxScriptValue.isDirectValue(parent: PsiElement? = this.parent): Boolean {
+    contract {
+        returns(true) implies (parent is ParadoxScriptMemberContainer)
+    }
     return parent is ParadoxScriptMemberContainer
 }
 

@@ -787,7 +787,7 @@ fun executeWriteCommand(
 
 // region EP Extensions
 
-inline fun <T : Any> ExtensionPointName<T>.addExtensionPointListener(action: (extension: T) -> Unit) {
+inline fun <T : Any> ExtensionPointName<T>.addExtensionPointListener(crossinline action: (extension: T) -> Unit) {
     addExtensionPointListener(object : ExtensionPointListener<T> {
         override fun extensionAdded(extension: T, pluginDescriptor: PluginDescriptor) {
             action(extension)
