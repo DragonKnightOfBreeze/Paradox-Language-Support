@@ -7,6 +7,7 @@ import com.intellij.psi.search.RequestResultProcessor
 import com.intellij.psi.search.UsageSearchContext
 import com.intellij.psi.search.searches.ReferencesSearch
 import com.intellij.util.Processor
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.lang.wordRequests
 import icu.windea.pls.model.constraints.ParadoxReferenceConstraint
@@ -15,6 +16,7 @@ import kotlin.experimental.or
 /**
  * 参数的用法的查询器。
  */
+@Optimized
 class ParadoxParameterUsagesSearcher : QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters>(true) {
     override fun processQuery(queryParameters: ReferencesSearch.SearchParameters, consumer: Processor<in PsiReference>) {
         val target = queryParameters.elementToSearch

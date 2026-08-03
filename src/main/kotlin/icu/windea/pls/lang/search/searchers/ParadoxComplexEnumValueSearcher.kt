@@ -7,7 +7,8 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.Processor
 import icu.windea.pls.base.context.ChronicleThreadContext
-import icu.windea.pls.core.collections.process
+import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.collections.processFast
 import icu.windea.pls.csv.ParadoxCsvFileType
 import icu.windea.pls.lang.index.ChronicleIndexService
 import icu.windea.pls.lang.index.ChronicleIndexUtil
@@ -22,6 +23,7 @@ import icu.windea.pls.script.ParadoxScriptFileType
 /**
  * 复杂枚举值的查询器。
  */
+@Optimized
 class ParadoxComplexEnumValueSearcher : QueryExecutorBase<ParadoxComplexEnumValueIndexInfo, ParadoxComplexEnumValueSearch.Parameters>() {
     override fun processQuery(queryParameters: ParadoxComplexEnumValueSearch.Parameters, consumer: Processor<in ParadoxComplexEnumValueIndexInfo>) {
         // #141 如果正在为 ParadoxMergedIndex 编制索引并且正在解析引用，则直接跳过
@@ -42,7 +44,7 @@ class ParadoxComplexEnumValueSearcher : QueryExecutorBase<ParadoxComplexEnumValu
         return ChronicleIndexService.processAllFileData(ParadoxComplexEnumValueIndex::class.java, keys, context.project, context.scope, context.gameType) { file, fileData ->
             val actualKey = createActualKey(context)
             val infos = fileData[actualKey].orEmpty()
-            infos.process { info -> processInfo(context, file, info, consumer) }
+            infos.processFast { info -> processInfo(context, file, info, consumer) }
         }
     }
 

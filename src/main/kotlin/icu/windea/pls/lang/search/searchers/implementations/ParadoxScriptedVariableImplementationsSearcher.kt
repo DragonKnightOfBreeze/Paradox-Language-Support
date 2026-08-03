@@ -5,6 +5,7 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.searches.DefinitionsScopedSearch
 import com.intellij.util.Processor
 import com.intellij.util.QueryExecutor
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
@@ -14,6 +15,7 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 /**
  * 封装变量的实现的查询器。加入所有作用域内的同名封装变量。
  */
+@Optimized
 class ParadoxScriptedVariableImplementationsSearcher : QueryExecutor<PsiElement, DefinitionsScopedSearch.SearchParameters> {
     override fun execute(queryParameters: DefinitionsScopedSearch.SearchParameters, consumer: Processor<in PsiElement>): Boolean {
         val project = queryParameters.project

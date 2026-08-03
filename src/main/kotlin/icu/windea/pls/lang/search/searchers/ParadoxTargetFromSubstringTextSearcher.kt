@@ -5,11 +5,14 @@ import com.intellij.psi.NavigatablePsiElement
 import com.intellij.psi.search.TextOccurenceProcessor
 import com.intellij.psi.search.UsageSearchContext
 import com.intellij.util.Processor
+import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.splitByBlank
 
 /**
  * 来自本地化文本片段的目标的查询器 - 子字符串搜索。
  */
+@Optimized
 class ParadoxTargetFromSubstringTextSearcher : ParadoxTargetByTextSearcher() {
     override fun process(context: Context, consumer: Processor<in NavigatablePsiElement>) {
         val input = context.queryParameters.text.trim()
@@ -17,7 +20,7 @@ class ParadoxTargetFromSubstringTextSearcher : ParadoxTargetByTextSearcher() {
         if (input.length >= MAX_INPUT_LENGTH) return // 排除输入文本过长的情况
         val snippets = getSnippets(input)
         if (snippets.isEmpty()) return
-        for (snippet in snippets) {
+        snippets.forEachFast { snippet ->
             if (acceptSnippet(snippet)) {
                 if (!processText(snippet, context, consumer)) return
             }

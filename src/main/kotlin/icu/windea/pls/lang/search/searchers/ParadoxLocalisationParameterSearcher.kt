@@ -6,7 +6,8 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.Processor
-import icu.windea.pls.core.collections.process
+import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.collections.processFast
 import icu.windea.pls.lang.index.ChronicleIndexService
 import icu.windea.pls.lang.index.ParadoxMergedIndexTypes
 import icu.windea.pls.lang.search.ParadoxLocalisationParameterSearch
@@ -17,6 +18,7 @@ import icu.windea.pls.model.index.ParadoxLocalisationParameterIndexInfo
 /**
  * 本地化参数的查询器。
  */
+@Optimized
 class ParadoxLocalisationParameterSearcher : QueryExecutorBase<ParadoxLocalisationParameterIndexInfo, ParadoxLocalisationParameterSearch.Parameters>() {
     override fun processQuery(queryParameters: ParadoxLocalisationParameterSearch.Parameters, consumer: Processor<in ParadoxLocalisationParameterIndexInfo>) {
         ProgressManager.checkCanceled()
@@ -28,7 +30,7 @@ class ParadoxLocalisationParameterSearcher : QueryExecutorBase<ParadoxLocalisati
         if (!context.isValid()) return true
         val indexInfoType = ParadoxMergedIndexTypes.LocalisationParameter
         return ChronicleIndexService.processAllFileDataWithKey(indexInfoType, context.project, context.scope, context.gameType) { file, infos ->
-            infos.process { info -> processInfo(context, file, info, consumer) }
+            infos.processFast { info -> processInfo(context, file, info, consumer) }
         }
     }
 

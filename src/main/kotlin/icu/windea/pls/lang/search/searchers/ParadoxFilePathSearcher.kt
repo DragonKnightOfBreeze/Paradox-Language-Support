@@ -11,6 +11,9 @@ import com.intellij.util.Processor
 import com.intellij.util.indexing.FileBasedIndex
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.collections.forEachFast
+import icu.windea.pls.core.collections.mapFast
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.ep.resolve.expression.ParadoxPathReferenceExpressionSupport
@@ -25,6 +28,7 @@ import icu.windea.pls.model.ParadoxGameType
 /**
  * 文件路径的查询器。
  */
+@Optimized
 class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSearch.Parameters>() {
     override fun processQuery(queryParameters: ParadoxFilePathSearch.Parameters, consumer: Processor<in VirtualFile>) {
         ProgressManager.checkCanceled()
@@ -116,7 +120,7 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
         if (!filePath.endsWith(".yml", true)) return null // 仅限本地化文件
         val configGroup = ChronicleFacade.getConfigGroup()
         val globalLocales = ParadoxLocaleManager.getGlobalLocales(configGroup)
-        val localeStrings = globalLocales.map { it.shortId }
+        val localeStrings = globalLocales.mapFast { it.shortId }
         var index = 0
         var usedLocaleString: String? = null
         for (localeString in localeStrings) {
@@ -135,7 +139,7 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
         if (usedLocaleString == null) return null
         val result = mutableSetOf<String>()
         result.add(filePath)
-        localeStrings.forEach { result.add(filePath.replace(usedLocaleString, it)) }
+        localeStrings.forEachFast { result.add(filePath.replace(usedLocaleString, it)) }
         return result
     }
 

@@ -6,7 +6,8 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.Processor
-import icu.windea.pls.core.collections.process
+import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.collections.processFast
 import icu.windea.pls.lang.index.ChronicleIndexService
 import icu.windea.pls.lang.index.ParadoxMergedIndexTypes
 import icu.windea.pls.lang.search.ParadoxShaderEffectSearch
@@ -17,6 +18,7 @@ import icu.windea.pls.model.index.ParadoxShaderEffectIndexInfo
 /**
  * 着色器效果（shader effect）的查询器。
  */
+@Optimized
 class ParadoxShaderEffectSearcher : QueryExecutorBase<ParadoxShaderEffectIndexInfo, ParadoxShaderEffectSearch.Parameters>() {
     override fun processQuery(queryParameters: ParadoxShaderEffectSearch.Parameters, consumer: Processor<in ParadoxShaderEffectIndexInfo>) {
         ProgressManager.checkCanceled()
@@ -28,7 +30,7 @@ class ParadoxShaderEffectSearcher : QueryExecutorBase<ParadoxShaderEffectIndexIn
         if (!context.isValid()) return true
         val indexInfoType = ParadoxMergedIndexTypes.ShaderEffect
         return ChronicleIndexService.processAllFileDataWithKey(indexInfoType, context.project, context.scope, context.gameType) { file, infos ->
-            infos.process { info -> processInfo(context, file, info, consumer) }
+            infos.processFast { info -> processInfo(context, file, info, consumer) }
         }
     }
 

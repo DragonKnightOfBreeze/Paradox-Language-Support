@@ -7,6 +7,7 @@ import com.intellij.psi.search.searches.ReferencesSearch
 import com.intellij.util.Processor
 import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.config.util.CwtConfigManager
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.findChild
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.pass
@@ -21,6 +22,7 @@ import icu.windea.pls.cwt.psi.stringValue
 /**
  * 规则的用法的查询器。
  */
+@Optimized
 class CwtConfigUsagesSearcher : QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters>(true) {
     // - 对于别名规则 `alias[x:y]`，其在脚本文件中匹配的属性名是 `y`，需要特殊处理
     // - 对于宏规则 `macro[x]`，其在脚本文件中匹配的属性名可能是 `x`，需要特殊处理

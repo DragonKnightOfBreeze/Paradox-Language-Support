@@ -7,10 +7,8 @@ import com.intellij.psi.search.RequestResultProcessor
 import com.intellij.psi.search.UsageSearchContext
 import com.intellij.psi.search.searches.ReferencesSearch
 import com.intellij.util.Processor
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.orNull
-import icu.windea.pls.ep.resolve.localisation.ParadoxCompositeLocalisationIconSupport
-import icu.windea.pls.ep.resolve.localisation.ParadoxDefinitionBasedLocalisationIconSupport
-import icu.windea.pls.ep.resolve.localisation.ParadoxLocalisationIconSupport
 import icu.windea.pls.ep.util.data.StellarisGameConceptData
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.getDefinitionData
@@ -21,7 +19,6 @@ import icu.windea.pls.model.ParadoxDefinitionInjectionInfo
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.model.constraints.ParadoxDefinitionIndexConstraint
 import icu.windea.pls.model.constraints.ParadoxReferenceConstraint
-import icu.windea.pls.model.expressions.ParadoxDefinitionTypeExpression
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import kotlin.experimental.or
 
@@ -32,6 +29,7 @@ import kotlin.experimental.or
  * 也可能只是属性定义的类型键（[ParadoxDefinitionInfo.typeKey]），或者注入定义的表达式（[ParadoxDefinitionInjectionInfo.expression]）。
  * 因此这里需要特殊处理。
  */
+@Optimized
 class ParadoxDefinitionUsagesSearcher : QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters>(true) {
     override fun processQuery(queryParameters: ReferencesSearch.SearchParameters, consumer: Processor<in PsiReference>) {
         // TODO SUFFIX_AWARE 不兼容需要带上后缀的情况，目前不支持
@@ -75,19 +73,6 @@ class ParadoxDefinitionUsagesSearcher : QueryExecutorBase<PsiReference, Referenc
         }
 
         return words
-    }
-
-    private fun addToNameGetters(support: ParadoxLocalisationIconSupport, definitionInfo: ParadoxDefinitionInfo, nameGetters: MutableSet<(String) -> String?>) {
-        when (support) {
-            is ParadoxCompositeLocalisationIconSupport -> {
-                support.supports.forEach { addToNameGetters(it, definitionInfo, nameGetters) }
-            }
-            is ParadoxDefinitionBasedLocalisationIconSupport -> {
-                if (ParadoxDefinitionTypeExpression.resolve(support.definitionType).matches(definitionInfo)) {
-                    nameGetters.add(support.nameGetter)
-                }
-            }
-        }
     }
 
     private fun getProcessor(target: PsiElement): RequestResultProcessor {

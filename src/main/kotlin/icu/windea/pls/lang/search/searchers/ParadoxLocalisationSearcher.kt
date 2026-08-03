@@ -6,6 +6,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.Processor
 import icu.windea.pls.base.context.ChronicleThreadContext
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.lang.index.ChronicleIndexKeys
 import icu.windea.pls.lang.index.ChronicleIndexService
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
@@ -21,6 +22,7 @@ import icu.windea.pls.model.constraints.ParadoxLocalisationIndexConstraint
 /**
  * 本地化的查询器。
  */
+@Optimized
 class ParadoxLocalisationSearcher : QueryExecutorBase<ParadoxLocalisationProperty, ParadoxLocalisationSearch.Parameters>() {
     override fun processQuery(queryParameters: ParadoxLocalisationSearch.Parameters, consumer: Processor<in ParadoxLocalisationProperty>) {
         // #141 如果正在为 ParadoxMergedIndex 编制索引并且正在解析引用，则直接跳过

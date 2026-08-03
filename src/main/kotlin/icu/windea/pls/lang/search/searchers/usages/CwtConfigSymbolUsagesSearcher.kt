@@ -8,6 +8,8 @@ import com.intellij.psi.search.UsageSearchContext
 import com.intellij.psi.search.searches.ReferencesSearch
 import com.intellij.util.Processor
 import icu.windea.pls.config.util.CwtConfigSymbolManager
+import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.cwt.CwtFileType
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.cwt.psi.CwtStringExpressionElement
@@ -16,6 +18,7 @@ import icu.windea.pls.lang.search.scope.withFileTypes
 /**
  * 规则符号的用法的查询器。
  */
+@Optimized
 class CwtConfigSymbolUsagesSearcher : QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters>(true) {
     override fun processQuery(queryParameters: ReferencesSearch.SearchParameters, consumer: Processor<in PsiReference>) {
         val target = queryParameters.elementToSearch
@@ -39,7 +42,7 @@ class CwtConfigSymbolUsagesSearcher : QueryExecutorBase<PsiReference, References
         if (target !is CwtStringExpressionElement) return emptySet()
         val extraWords = mutableSetOf<String>()
         val infos = CwtConfigSymbolManager.getInfos(target)
-        infos.forEach { info -> extraWords.add(info.name) }
+        infos.forEachFast { info -> extraWords.add(info.name) }
         return extraWords
     }
 }

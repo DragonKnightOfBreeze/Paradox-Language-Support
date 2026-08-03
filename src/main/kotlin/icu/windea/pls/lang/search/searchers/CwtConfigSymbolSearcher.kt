@@ -6,7 +6,9 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.Processor
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.process
+import icu.windea.pls.core.collections.processFast
 import icu.windea.pls.cwt.CwtFileType
 import icu.windea.pls.lang.index.ChronicleIndexService
 import icu.windea.pls.lang.index.CwtConfigSymbolIndex
@@ -19,6 +21,7 @@ import icu.windea.pls.model.index.CwtConfigSymbolIndexInfo
 /**
  * 规则符号的查询器。
  */
+@Optimized
 class CwtConfigSymbolSearcher : QueryExecutorBase<CwtConfigSymbolIndexInfo, CwtConfigSymbolSearch.Parameters>() {
     override fun processQuery(queryParameters: CwtConfigSymbolSearch.Parameters, consumer: Processor<in CwtConfigSymbolIndexInfo>) {
         ProgressManager.checkCanceled()
@@ -33,7 +36,7 @@ class CwtConfigSymbolSearcher : QueryExecutorBase<CwtConfigSymbolIndexInfo, CwtC
         return ChronicleIndexService.processAllFileData(CwtConfigSymbolIndex::class.java, keys, context.project, context.scope, context.gameType) { file, fileData ->
             context.types.process { type ->
                 val infos = fileData[type].orEmpty()
-                infos.process { info -> processInfo(context, file, info, consumer) }
+                infos.processFast { info -> processInfo(context, file, info, consumer) }
             }
         }
     }

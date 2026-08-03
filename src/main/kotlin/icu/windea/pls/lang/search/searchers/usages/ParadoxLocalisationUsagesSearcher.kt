@@ -7,6 +7,7 @@ import com.intellij.psi.search.RequestResultProcessor
 import com.intellij.psi.search.UsageSearchContext
 import com.intellij.psi.search.searches.ReferencesSearch
 import com.intellij.util.Processor
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.lang.wordRequests
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.constraints.ParadoxLocalisationIndexConstraint
@@ -16,6 +17,7 @@ import kotlin.experimental.or
 /**
  * 本地化的用法的查询器。
  */
+@Optimized
 class ParadoxLocalisationUsagesSearcher : QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters>(true) {
     override fun processQuery(queryParameters: ReferencesSearch.SearchParameters, consumer: Processor<in PsiReference>) {
         // TODO SUFFIX_AWARE 不兼容需要带上后缀的情况，目前不支持

@@ -36,6 +36,7 @@ import icu.windea.pls.config.config.extended.CwtExtendedScriptedVariableConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.collections.process
+import icu.windea.pls.core.collections.processFast
 import icu.windea.pls.core.collections.processValue
 import icu.windea.pls.core.isIdentifier
 import icu.windea.pls.core.isNotNullOrEmpty
@@ -70,12 +71,12 @@ object CwtConfigMatchService {
                     if (aliasSubNameMayBeConst) {
                         // may-be-const alias sub name should ignore case here (but such collection is not a case-insensitive collection)
                         v1.values.process { v2 ->
-                            v2.process { if (aliasSubName == null || aliasSubName.equals(it.subName, true)) processor.process(it as T) else true }
+                            v2.processFast { if (aliasSubName == null || aliasSubName.equals(it.subName, true)) processor.process(it as T) else true }
                         }
                     } else {
                         // non-const alias sub name do not ignore case
                         v1.processValue(aliasSubName) { v2 ->
-                            v2.process { processor.process(it as T) }
+                            v2.processFast { processor.process(it as T) }
                         }
                     }
                 }
@@ -164,7 +165,7 @@ object CwtConfigMatchService {
             CwtExtendedDefinitionConfig::class.java -> {
                 // TODO 2.1.6+ pattern match
                 val source = configGroup.extendedDefinitions
-                source.processValue(id) { v -> v.process { processor.process(it as T) } }
+                source.processValue(id) { v -> v.processFast { processor.process(it as T) } }
             }
             CwtExtendedGameRuleConfig::class.java -> {
                 // TODO 2.1.6+ pattern match
@@ -179,7 +180,7 @@ object CwtConfigMatchService {
             CwtExtendedParameterConfig::class.java -> {
                 // TODO 2.1.6+ pattern match
                 val source = configGroup.extendedParameters
-                source.processValue(id) { v -> v.process { processor.process(it as T) } }
+                source.processValue(id) { v -> v.processFast { processor.process(it as T) } }
             }
             CwtExtendedComplexEnumValueConfig::class.java -> {
                 val source = configGroup.extendedComplexEnumValues

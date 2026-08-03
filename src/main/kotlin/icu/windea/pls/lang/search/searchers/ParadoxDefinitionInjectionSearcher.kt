@@ -7,7 +7,8 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.Processor
 import icu.windea.pls.base.context.ChronicleThreadContext
-import icu.windea.pls.core.collections.process
+import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.collections.processFast
 import icu.windea.pls.lang.index.ChronicleIndexService
 import icu.windea.pls.lang.index.ChronicleIndexUtil
 import icu.windea.pls.lang.index.ParadoxDefinitionInjectionIndex
@@ -21,6 +22,7 @@ import icu.windea.pls.script.ParadoxScriptFileType
 /**
  * 定义注入的查询器。
  */
+@Optimized
 class ParadoxDefinitionInjectionSearcher : QueryExecutorBase<ParadoxDefinitionInjectionIndexInfo, ParadoxDefinitionInjectionSearch.Parameters>() {
     override fun processQuery(queryParameters: ParadoxDefinitionInjectionSearch.Parameters, consumer: Processor<in ParadoxDefinitionInjectionIndexInfo>) {
         // #141 如果正在为 ParadoxMergedIndex 编制索引并且正在解析引用，则直接跳过
@@ -41,7 +43,7 @@ class ParadoxDefinitionInjectionSearcher : QueryExecutorBase<ParadoxDefinitionIn
         return ChronicleIndexService.processAllFileData(ParadoxDefinitionInjectionIndex::class.java, keys, context.project, context.scope, context.gameType) p@{ file, fileData ->
             val actualKey = createActualKey(context)
             val infos = fileData[actualKey].orEmpty()
-            infos.process { info -> processInfo(context, file, info, consumer) }
+            infos.processFast { info -> processInfo(context, file, info, consumer) }
         }
     }
 

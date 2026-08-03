@@ -6,7 +6,8 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.Processor
-import icu.windea.pls.core.collections.process
+import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.collections.processFast
 import icu.windea.pls.lang.index.ChronicleIndexService
 import icu.windea.pls.lang.index.ParadoxMergedIndexTypes
 import icu.windea.pls.lang.search.ParadoxMeshLocatorSearch
@@ -17,6 +18,7 @@ import icu.windea.pls.model.index.ParadoxMeshLocatorIndexInfo
 /**
  * 网格定位器（mesh locator）的查询器。
  */
+@Optimized
 class ParadoxMeshLocatorSearcher : QueryExecutorBase<ParadoxMeshLocatorIndexInfo, ParadoxMeshLocatorSearch.Parameters>() {
     override fun processQuery(queryParameters: ParadoxMeshLocatorSearch.Parameters, consumer: Processor<in ParadoxMeshLocatorIndexInfo>) {
         ProgressManager.checkCanceled()
@@ -29,7 +31,7 @@ class ParadoxMeshLocatorSearcher : QueryExecutorBase<ParadoxMeshLocatorIndexInfo
         ProgressManager.checkCanceled()
         val indexInfoType = ParadoxMergedIndexTypes.MeshLocator
         return ChronicleIndexService.processAllFileDataWithKey(indexInfoType, context.project, context.scope, context.gameType) { file, infos ->
-            infos.process { info -> processInfo(context, file, info, consumer) }
+            infos.processFast { info -> processInfo(context, file, info, consumer) }
         }
     }
 
