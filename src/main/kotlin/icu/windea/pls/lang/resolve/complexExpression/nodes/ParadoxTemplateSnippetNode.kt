@@ -20,6 +20,7 @@ import icu.windea.pls.lang.match.ParadoxExpressionMatchService
 import icu.windea.pls.lang.match.ParadoxScriptExpressionMatchContext
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.ParadoxPsiService
+import icu.windea.pls.lang.resolve.ParadoxExpressionService
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxTemplateExpression
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionErrors
@@ -89,7 +90,7 @@ class ParadoxTemplateSnippetNode(
 
     override fun getReference(element: ParadoxExpressionElement): Reference? {
         if (text.isParameterized()) return null
-        val offset = ParadoxExpressionManager.getExpressionOffset(element)
+        val offset = ParadoxExpressionService.getExpressionOffset(element)
         return Reference(element, rangeInExpression.shiftRight(offset), text, getMockConfig())
     }
 

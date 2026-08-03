@@ -131,6 +131,7 @@
     <mergedIndexSupport implementation="icu.windea.pls.ep.index.ParadoxDynamicValueMergedIndexSupport"/>
     <mergedIndexSupport implementation="icu.windea.pls.ep.index.ParadoxParameterMergedIndexSupport"/>
     <mergedIndexSupport implementation="icu.windea.pls.ep.index.ParadoxLocalisationParameterMergedIndexSupport"/>
+    <mergedIndexSupport implementation="icu.windea.pls.ep.index.ParadoxParameterWithReadAccessMergedIndexSupport"/>
 
     <mergedIndexSupport implementation="icu.windea.pls.ep.index.ParadoxScopeInferrableDefinitionMergedIndexSupport"/>
     <mergedIndexSupport implementation="icu.windea.pls.ep.index.ParadoxEventInOnActionMergedIndexSupport"/>
@@ -142,7 +143,7 @@
 
     <mergedIndexOptimizer implementation="icu.windea.pls.ep.index.ParadoxDefinitionBasedMergedIndexOptimizer"/>
     <mergedIndexOptimizer implementation="icu.windea.pls.ep.index.ParadoxRowBasedMergedIndexOptimizer"/>
-    <mergedIndexOptimizer implementation="icu.windea.pls.ep.index.ParadoxFallbackMergedIndexOptimizer" order="last"/>
+    <mergedIndexOptimizer implementation="icu.windea.pls.ep.index.ParadoxDefaultFileLevelMergedIndexOptimizer" order="last"/>
 
     <definitionInspectionSuppressionProvider implementation="icu.windea.pls.ep.inspections.ParadoxBaseDefinitionInspectionSuppressionProvider"/>
     <definitionInspectionSuppressionProvider implementation="icu.windea.pls.ep.inspections.StellarisBaseDefinitionInspectionSuppressionProvider"/>

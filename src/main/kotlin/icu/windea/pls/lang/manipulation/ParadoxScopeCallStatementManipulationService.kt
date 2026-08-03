@@ -19,12 +19,12 @@ import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.core.quote
 import icu.windea.pls.lang.analysis.ParadoxAnalysisManager
 import icu.windea.pls.lang.psi.properties
+import icu.windea.pls.lang.resolve.ParadoxExpressionService
 import icu.windea.pls.lang.resolve.ParadoxSyntaxService
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxLinkedExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.lang.selectGameType
-import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constraints.ParadoxSyntaxConstraint
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
@@ -370,7 +370,7 @@ object ParadoxScopeCallStatementManipulationService {
         val linkNodes = complexExpression.linkNodes
         if (linkNodes.size <= 1) return -1
 
-        val expressionOffset = ParadoxExpressionManager.getExpressionOffset(propertyKey)
+        val expressionOffset = ParadoxExpressionService.getExpressionOffset(propertyKey)
         val cursorOffsetInExpression = caretOffset - propertyKey.startOffset - expressionOffset
 
         val outerKey: String

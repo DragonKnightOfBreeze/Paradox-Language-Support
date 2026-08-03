@@ -112,7 +112,7 @@ private object ParadoxValueFieldExpressionResolver {
         val parameterRanges = text.getParameterRanges()
 
         // skip if text is a parameter with unary operator prefix
-        if (ParadoxExpressionManager.isUnaryOperatorAwareParameter(text, parameterRanges)) return null
+        if (ParadoxExpressionManager.isParameterAwareNumber(text, parameterRanges)) return null
 
         val nodes = mutableListOf<ParadoxComplexExpressionNode>()
         val range = range ?: TextRange.create(0, text.length)

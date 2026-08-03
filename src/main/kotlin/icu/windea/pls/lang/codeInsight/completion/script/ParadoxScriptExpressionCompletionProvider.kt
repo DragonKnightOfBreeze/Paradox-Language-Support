@@ -10,9 +10,9 @@ import icu.windea.pls.core.codeInsight.completion.GlobalCompletionContext
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionProvider
+import icu.windea.pls.lang.resolve.ParadoxExpressionService
 import icu.windea.pls.lang.resolve.parameterValueQuoted
 import icu.windea.pls.lang.util.ParadoxConfigManager
-import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptMemberContainer
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -37,7 +37,7 @@ class ParadoxScriptExpressionCompletionProvider : ParadoxCompletionProvider() {
 
         val globalContext = GlobalCompletionContext.create(element, parameters, context)
         val context = ParadoxCompletionContext.create(globalContext).copy(
-            expressionOffset = ParadoxExpressionManager.getExpressionOffset(element)
+            expressionOffset = ParadoxExpressionService.getExpressionOffset(element)
         )
 
         // 兼容参数值（包括整行或多行参数值）和内联脚本文件中内容

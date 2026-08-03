@@ -11,11 +11,11 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.isCommandExpression
+import icu.windea.pls.lang.resolve.ParadoxExpressionService
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxCommandExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.lang.selectGameType
-import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.model.scope.ParadoxScopeContext
@@ -51,7 +51,7 @@ class IncorrectScopeSwitchInspection : ScopeInspectionBase() {
 
                     if (supportedScopes.isNullOrEmpty()) return@f
                     if (matched) return@f
-                    val offset = ParadoxExpressionManager.getExpressionOffset(element)
+                    val offset = ParadoxExpressionService.getExpressionOffset(element)
                     val startOffset = offset + node.rangeInExpression.startOffset
                     val endOffset = offset + node.rangeInExpression.endOffset
                     val range = TextRange.create(startOffset, endOffset)

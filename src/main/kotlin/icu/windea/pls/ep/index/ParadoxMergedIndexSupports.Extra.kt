@@ -1,39 +1,28 @@
 package icu.windea.pls.ep.index
 
-import icu.windea.pls.config.config.CwtMemberConfig
-import icu.windea.pls.config.match.CwtConfigExpressionMatchService
-import icu.windea.pls.core.collections.findFast
+import com.intellij.psi.PsiElement
 import icu.windea.pls.core.readOrReadFrom
 import icu.windea.pls.core.readUTFFast
 import icu.windea.pls.core.writeOrWriteFrom
 import icu.windea.pls.core.writeUTFFast
-import icu.windea.pls.lang.index.ParadoxIndexInfoTypes
-import icu.windea.pls.lang.isParameterized
-import icu.windea.pls.model.ParadoxDefinitionCandidateInfo
+import icu.windea.pls.lang.index.ParadoxMergedIndexContext
+import icu.windea.pls.lang.index.ParadoxMergedIndexTypes
+import icu.windea.pls.lang.psi.light.ParadoxShaderEffectLightElement
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.model.index.ParadoxIndexInfo
+import icu.windea.pls.model.constraints.ParadoxReferenceConstraint
 import icu.windea.pls.model.index.ParadoxMeshLocatorIndexInfo
 import icu.windea.pls.model.index.ParadoxShaderEffectIndexInfo
-import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import java.io.DataInput
 import java.io.DataOutput
 
-class ParadoxShaderEffectMergedIndexSupport : ParadoxMergedIndexSupportBase<ParadoxShaderEffectIndexInfo>() {
-    override val indexInfoType = ParadoxIndexInfoTypes.ShaderEffect
+class ParadoxShaderEffectMergedIndexSupport : ParadoxMergedIndexSupportFromExpressionReferencesBase<ParadoxShaderEffectIndexInfo>() {
+    override val type = ParadoxMergedIndexTypes.ShaderEffect
+    override val constraint = ParadoxReferenceConstraint.ShaderEffect
 
-    override fun buildData(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, info: ParadoxDefinitionCandidateInfo?, configs: List<CwtMemberConfig<*>>) {
-        val expression = element.value
-        if (expression.isEmpty() || expression.isParameterized()) return // skip if expression is empty or parameterized
-        val config = configs.findFast { matchesConfig(it) }
-        if (config == null) return
-
-        val name = element.value
-        val info = ParadoxShaderEffectIndexInfo(name, config.configGroup.gameType)
-        addToFileData(info, fileData)
-    }
-
-    private fun matchesConfig(config: CwtMemberConfig<*>): Boolean {
-        return CwtConfigExpressionMatchService.matchesShaderEffect(config.configExpression)
+    override fun buildDataFromResolved(resolved: PsiElement, context: ParadoxMergedIndexContext) {
+        if (resolved !is ParadoxShaderEffectLightElement) return
+        val info = ParadoxShaderEffectIndexInfo(resolved.name, resolved.gameType)
+        addToFileData(info, context)
     }
 
     override fun compressData(value: List<ParadoxShaderEffectIndexInfo>): List<ParadoxShaderEffectIndexInfo> {
@@ -50,22 +39,14 @@ class ParadoxShaderEffectMergedIndexSupport : ParadoxMergedIndexSupportBase<Para
     }
 }
 
-class ParadoxMeshLocatorMergedIndexSupport : ParadoxMergedIndexSupportBase<ParadoxMeshLocatorIndexInfo>() {
-    override val indexInfoType = ParadoxIndexInfoTypes.MeshLocator
+class ParadoxMeshLocatorMergedIndexSupport : ParadoxMergedIndexSupportFromExpressionReferencesBase<ParadoxMeshLocatorIndexInfo>() {
+    override val type = ParadoxMergedIndexTypes.MeshLocator
+    override val constraint = ParadoxReferenceConstraint.MeshLocator
 
-    override fun buildData(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, info: ParadoxDefinitionCandidateInfo?, configs: List<CwtMemberConfig<*>>) {
-        val expression = element.value
-        if (expression.isEmpty() || expression.isParameterized()) return // skip if expression is empty or parameterized
-        val config = configs.findFast { matchesConfig(it) }
-        if (config == null) return
-
-        val name = element.value
-        val info = ParadoxMeshLocatorIndexInfo(name, config.configGroup.gameType)
-        addToFileData(info, fileData)
-    }
-
-    private fun matchesConfig(config: CwtMemberConfig<*>): Boolean {
-        return CwtConfigExpressionMatchService.matchesMeshLocator(config.configExpression)
+    override fun buildDataFromResolved(resolved: PsiElement, context: ParadoxMergedIndexContext) {
+        if (resolved !is ParadoxShaderEffectLightElement) return
+        val info = ParadoxShaderEffectIndexInfo(resolved.name, resolved.gameType)
+        addToFileData(info, context)
     }
 
     override fun compressData(value: List<ParadoxMeshLocatorIndexInfo>): List<ParadoxMeshLocatorIndexInfo> {

@@ -14,12 +14,12 @@ import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.toArray
 import icu.windea.pls.lang.fixes.QuoteLiteralFix
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
+import icu.windea.pls.lang.resolve.ParadoxExpressionService
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionErrors
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxConfigManager
-import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.isDataExpression
 
@@ -56,7 +56,7 @@ abstract class IncorrectComplexExpressionInspectionBase : LocalInspectionTool() 
     protected open fun resolveComplexExpression(element: ParadoxScriptStringExpressionElement, configGroup: CwtConfigGroup): ParadoxComplexExpression? {
         val config = ParadoxConfigManager.getConfigs(element).firstOrNull() ?: return null
         if (!isAvailableForConfig(config)) return null
-        val expressionText = ParadoxExpressionManager.getExpressionText(element)
+        val expressionText = ParadoxExpressionService.getExpressionText(element)
         return ParadoxComplexExpression.resolveByConfig(expressionText, null, configGroup, config)
     }
 

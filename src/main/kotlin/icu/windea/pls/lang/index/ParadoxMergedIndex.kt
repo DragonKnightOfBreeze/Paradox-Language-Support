@@ -1,5 +1,6 @@
 package icu.windea.pls.lang.index
 
+import com.google.common.collect.ImmutableSet
 import com.intellij.openapi.fileTypes.FileType
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.vfs.VirtualFile
@@ -8,13 +9,14 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor
 import com.intellij.util.gist.VirtualFileGist
 import icu.windea.pls.base.context.ChronicleThreadContext
-import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.ImmutableList
+import icu.windea.pls.core.collections.filterFast
 import icu.windea.pls.core.collections.findFast
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.readIntFast
+import icu.windea.pls.core.readUTFFast
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
@@ -23,6 +25,7 @@ import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.core.withState
 import icu.windea.pls.core.writeByte
 import icu.windea.pls.core.writeIntFast
+import icu.windea.pls.core.writeUTFFast
 import icu.windea.pls.csv.ParadoxCsvFileType
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.csv.psi.ParadoxCsvFile
@@ -30,15 +33,12 @@ import icu.windea.pls.ep.index.ParadoxMergedIndexOptimizer
 import icu.windea.pls.ep.index.ParadoxMergedIndexSupport
 import icu.windea.pls.lang.definitionCandidateInfo
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.match.ParadoxMatchOptions
-import icu.windea.pls.lang.psi.ParadoxExpressionElement
-import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
-import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.localisation.ParadoxLocalisationFileType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPsiService
 import icu.windea.pls.model.ParadoxDefinitionCandidateInfo
 import icu.windea.pls.model.ParadoxDefinitionSource
@@ -47,6 +47,8 @@ import icu.windea.pls.model.index.ParadoxIndexInfo
 import icu.windea.pls.script.ParadoxScriptFileType
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
+import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.isDataExpression
 import java.io.DataInput
@@ -100,79 +102,94 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
         // NOTE 2.1.6 use lazy index -> config context root may not be a definition -> DO NOT skip on any level
         val useLazyIndex = useLazyIndex(file.virtualFile)
 
+        // 3.0.1 optimize: limit available types and supports via strategies, config attributes, etc.
         val optimizers = ParadoxMergedIndexOptimizer.EP_NAME.extensionList
-        if (!useLazyIndex && !isAvailableFromOptimizers(file, optimizers)) return
+        val allTypes = ImmutableSet.copyOf(ParadoxMergedIndexType.entries)
+        val availableTypes = if (useLazyIndex) allTypes else getAvailableTypes(file, optimizers)
+        if (availableTypes.isEmpty()) return // fast return
+        val allSupports = ParadoxMergedIndexSupport.EP_NAME.extensionList
+        val supports = if (useLazyIndex) allSupports else allSupports.filterFast { it.type in availableTypes }
+        if (supports.isEmpty()) return // fast return
 
-        val definitionCandidateInfoStack = ArrayDeque<ParadoxDefinitionCandidateInfo>() // definition or definition injection
-        val definitionAvailableStatusStack = ArrayDeque<Boolean>()
+        val context = ParadoxMergedIndexScriptContextBase(file, fileData)
+        // definition or definition injection
+        val definitionCandidateInfoStack = ArrayDeque<ParadoxDefinitionCandidateInfo>()
+        val definitionCandidateAvailableTypesStack = ArrayDeque<Set<ParadoxMergedIndexType<*>>>()
 
-        val supports = ParadoxMergedIndexSupport.EP_NAME.extensionList
         file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
-                buildDataFromSupports(element, fileData, supports)
+                buildData(element, context, supports)
 
-                checkContextRoot(element)
                 if (element is ParadoxScriptStringExpressionElement) {
-                    visitStringExpressionElement(element)
+                    visitStringExpressionElement(element) // 3.0.1 just for string expressions atm
                 }
+
+                handleContext(element)
 
                 super.visitElement(element)
             }
 
-            private fun checkContextRoot(element: PsiElement) {
-                if (element !is ParadoxDefinitionElement) return
-                val definitionCandidateInfo = element.definitionCandidateInfo ?: return
-
-                // 忽略内联的定义
-                if (definitionCandidateInfo.source == ParadoxDefinitionSource.Inline) return
-
-                element.putUserData(Keys.definitionCandidate, true)
-                definitionCandidateInfoStack.addLast(definitionCandidateInfo)
-                val definitionAvailableStatus = isAvailableFromOptimizers(definitionCandidateInfo, optimizers)
-                definitionAvailableStatusStack.addLast(definitionAvailableStatus)
+            override fun elementFinished(element: PsiElement) {
+                handleContextFinished(element)
             }
 
             private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
-                if (!element.isDataExpression()) return
+                val definitionCandidateInfo = context.definitionCandidateInfo
+                if (definitionCandidateInfo != null && context.definitionCandidateAvailableTypes.isEmpty()) return // fast return
 
-                val definitionCandidateInfo = definitionCandidateInfoStack.lastOrNull()
-                val definitionAvailableStatus = definitionAvailableStatusStack.lastOrNull()
-                if (!useLazyIndex && definitionAvailableStatus != true) return
+                if (element.value.isEmpty()) return // skip if expression is empty
+                if (!element.isDataExpression()) return // fast return
+                // skip for definition type keys (and definition injection expressions), atm
+                if (element is ParadoxScriptPropertyKey && element.getUserData(Keys.definitionCandidate) == true) return
 
                 ProgressManager.checkCanceled()
-                buildDataFromSupports(element, definitionCandidateInfo, fileData, supports)
-
-                ProgressManager.checkCanceled()
-                val options = ParadoxMatchOptions.DUMB
-                val configs = ParadoxConfigManager.getConfigs(element, options)
-                if (configs.isEmpty()) return
-                buildDataFromSupports(element, definitionCandidateInfo, configs, fileData, supports)
+                context.expressionElement = element
+                buildDataForExpression(element, context, supports)
+                context.expressionElement = null
+                context.resetCache()
             }
 
-            override fun elementFinished(element: PsiElement) {
+            private fun handleContext(element: PsiElement) {
                 if (element is ParadoxDefinitionElement) {
-                    if (element.getUserData(Keys.definitionCandidate) == true) {
-                        element.putUserData(Keys.definitionCandidate, null)
-                        definitionCandidateInfoStack.removeLastOrNull()
-                        definitionAvailableStatusStack.removeLastOrNull()
-                        cleanUpDumbDefinitionCache(element)
-                    }
+                    val definitionCandidateInfo = element.definitionCandidateInfo ?: return
+                    if (definitionCandidateInfo.source == ParadoxDefinitionSource.Inline) return  // 忽略内联的定义
+                    element.putUserData(Keys.definitionCandidate, true) // 标记
+                    if (element is ParadoxScriptProperty) element.propertyKey.putUserData(Keys.definitionCandidate, true) // 标记
+                    val definitionCandidateAvailableTypes = if (useLazyIndex) allTypes else getAvailableTypes(definitionCandidateInfo, optimizers)
+                    definitionCandidateInfoStack.addLast(definitionCandidateInfo) // 进栈
+                    definitionCandidateAvailableTypesStack.addLast(definitionCandidateAvailableTypes) // 进栈
+                    context.definitionCandidateInfo = definitionCandidateInfo
+                    context.definitionCandidateAvailableTypes = definitionCandidateAvailableTypes
+                    context.definitionCandidateAvailableTypesUnchanged = definitionCandidateAvailableTypes == availableTypes
                 }
-                if (element is ParadoxScriptStringExpressionElement) {
-                    cleanUpDumbExpressionReferencesCache(element)
+            }
+
+            private fun handleContextFinished(element: PsiElement) {
+                if (element is ParadoxDefinitionElement && element.getUserData(Keys.definitionCandidate) == true) {
+                    element.putUserData(Keys.definitionCandidate, null) // 清空标记
+                    if (element is ParadoxScriptProperty) element.propertyKey.putUserData(Keys.definitionCandidate, null) // 清空标记
+                    definitionCandidateInfoStack.removeLastOrNull() // 出栈
+                    definitionCandidateAvailableTypesStack.removeLastOrNull() // 出栈
+                    cleanUpDumbDefinitionCache(element) // 清空缓存
+                    context.definitionCandidateInfo = null
+                    context.definitionCandidateAvailableTypes = emptySet()
+                    context.definitionCandidateAvailableTypesUnchanged = true
                 }
             }
         })
     }
 
     private fun buildDataForLocalisationFile(file: ParadoxLocalisationFile, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
-        // NOTE 2.1.6 use lazy index -> config context root may not be a definition -> DO NOT skip on any level
-        val useLazyIndex = useLazyIndex(file.virtualFile)
-
+        // 3.0.1 optimize: limit available types and supports via strategies, config attributes, etc.
         val optimizers = ParadoxMergedIndexOptimizer.EP_NAME.extensionList
-        if (!useLazyIndex && !isAvailableFromOptimizers(file, optimizers)) return
+        val availableTypes = getAvailableTypes(file, optimizers)
+        if (availableTypes.isEmpty()) return // fast return
+        val allSupports = ParadoxMergedIndexSupport.EP_NAME.extensionList
+        val supports = allSupports.filterFast { it.type in availableTypes }
+        if (supports.isEmpty()) return // fast return
 
-        val supports = ParadoxMergedIndexSupport.EP_NAME.extensionList
+        val context = ParadoxMergedIndexLocalisationContextBase(file, fileData)
+
         file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
                 if (element is ParadoxLocalisationExpressionElement) {
@@ -180,30 +197,51 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
                     return // optimize
                 }
 
+                handleContext(element)
+
                 if (!ParadoxLocalisationPsiService.isStrictRichTextContext(element)) return // optimize
                 super.visitElement(element)
             }
 
-            private fun visitExpressionElement(element: ParadoxLocalisationExpressionElement) {
-                buildDataFromSupports(element, fileData, supports)
+            override fun elementFinished(element: PsiElement) {
+                handleContextFinished(element)
             }
 
-            override fun elementFinished(element: PsiElement?) {
-                if (element is ParadoxLocalisationExpressionElement) {
-                    cleanUpDumbExpressionReferencesCache(element)
+            private fun visitExpressionElement(element: ParadoxLocalisationExpressionElement) {
+                if (element.value.isEmpty()) return // skip if expression is empty
+
+                ProgressManager.checkCanceled()
+                context.expressionElement = element
+                buildDataForExpression(element, context, supports)
+                context.expressionElement = null
+                context.resetCache()
+            }
+
+            private fun handleContext(element: PsiElement) {
+                if (element is ParadoxLocalisationProperty) {
+                    context.localisation = element
+                }
+            }
+
+            private fun handleContextFinished(element: PsiElement) {
+                if (element is ParadoxLocalisationProperty) {
+                    context.localisation = null
                 }
             }
         })
     }
 
     private fun buildDataForCsvFile(file: ParadoxCsvFile, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
-        // NOTE 2.1.6 use lazy index -> config context root may not be a definition -> DO NOT skip on any level
-        val useLazyIndex = useLazyIndex(file.virtualFile)
-
+        // 3.0.1 optimize: limit available types and supports via strategies, config attributes, etc.
         val optimizers = ParadoxMergedIndexOptimizer.EP_NAME.extensionList
-        if (!useLazyIndex && !isAvailableFromOptimizers(file, optimizers)) return
+        val availableTypes = getAvailableTypes(file, optimizers)
+        if (availableTypes.isEmpty()) return // fast return
+        val allSupports = ParadoxMergedIndexSupport.EP_NAME.extensionList
+        val supports = allSupports.filterFast { it.type in availableTypes }
+        if (supports.isEmpty()) return // fast return
 
-        val supports = ParadoxMergedIndexSupport.EP_NAME.extensionList
+        val context = ParadoxMergedIndexCsvContextBase(file, fileData)
+
         file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
                 if (element is ParadoxCsvExpressionElement) {
@@ -215,55 +253,55 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
             }
 
             private fun visitExpressionElement(element: ParadoxCsvExpressionElement) {
-                buildDataFromSupports(element, fileData, supports)
-            }
+                if (element.value.isEmpty()) return // skip if expression is empty
 
-            override fun elementFinished(element: PsiElement?) {
-                if (element is ParadoxCsvExpressionElement) {
-                    cleanUpDumbExpressionReferencesCache(element)
-                }
+                ProgressManager.checkCanceled()
+                context.expressionElement = element
+                buildDataForExpression(element, context, supports)
+                context.expressionElement = null
+                context.resetCache()
             }
         })
     }
 
-    private fun isAvailableFromOptimizers(file: ParadoxScriptFile, optimizers: List<ParadoxMergedIndexOptimizer>): Boolean {
-        optimizers.forEachFast { optimizer -> if (optimizer.isAvailable(file)) return true }
-        return false
+    private fun getAvailableTypes(file: ParadoxScriptFile, optimizers: List<ParadoxMergedIndexOptimizer>): Set<ParadoxMergedIndexType<*>> {
+        val builder = ImmutableSet.builder<ParadoxMergedIndexType<*>>()
+        optimizers.forEachFast { optimizer -> builder.addAll(optimizer.getAvailableTypes(file)) }
+        return builder.build()
     }
 
-    private fun isAvailableFromOptimizers(file: ParadoxLocalisationFile, optimizers: List<ParadoxMergedIndexOptimizer>): Boolean {
-        optimizers.forEachFast { optimizer -> if (optimizer.isAvailable(file)) return true }
-        return false
+    private fun getAvailableTypes(file: ParadoxLocalisationFile, optimizers: List<ParadoxMergedIndexOptimizer>): Set<ParadoxMergedIndexType<*>> {
+        val builder = ImmutableSet.builder<ParadoxMergedIndexType<*>>()
+        optimizers.forEachFast { optimizer -> builder.addAll(optimizer.getAvailableTypes(file)) }
+        return builder.build()
     }
 
-    private fun isAvailableFromOptimizers(file: ParadoxCsvFile, optimizers: List<ParadoxMergedIndexOptimizer>): Boolean {
-        optimizers.forEachFast { optimizer -> if (optimizer.isAvailable(file)) return true }
-        return false
+    private fun getAvailableTypes(file: ParadoxCsvFile, optimizers: List<ParadoxMergedIndexOptimizer>): Set<ParadoxMergedIndexType<*>> {
+        val builder = ImmutableSet.builder<ParadoxMergedIndexType<*>>()
+        optimizers.forEachFast { optimizer -> builder.addAll(optimizer.getAvailableTypes(file)) }
+        return builder.build()
     }
 
-    private fun isAvailableFromOptimizers(definitionCandidateInfo: ParadoxDefinitionCandidateInfo, optimizers: List<ParadoxMergedIndexOptimizer>): Boolean {
-        optimizers.forEachFast { optimizer -> if (optimizer.isAvailable(definitionCandidateInfo)) return true }
-        return false
+    private fun getAvailableTypes(definitionCandidateInfo: ParadoxDefinitionCandidateInfo, optimizers: List<ParadoxMergedIndexOptimizer>): Set<ParadoxMergedIndexType<*>> {
+        val builder = ImmutableSet.builder<ParadoxMergedIndexType<*>>()
+        optimizers.forEachFast { optimizer -> builder.addAll(optimizer.getAvailableTypes(definitionCandidateInfo)) }
+        return builder.build()
     }
 
-    private fun buildDataFromSupports(element: PsiElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, supports: List<ParadoxMergedIndexSupport<*>>) {
-        supports.forEachFast { support -> support.buildData(element, fileData) }
+    private fun buildData(element: PsiElement, context: ParadoxMergedIndexScriptContext, supports: List<ParadoxMergedIndexSupport<*>>) {
+        supports.forEachFast { support -> support.buildData(element, context) }
     }
 
-    private fun buildDataFromSupports(element: ParadoxScriptStringExpressionElement, info: ParadoxDefinitionCandidateInfo?, fileData: MutableMap<String, List<ParadoxIndexInfo>>, supports: List<ParadoxMergedIndexSupport<*>>) {
-        supports.forEachFast { support -> support.buildData(element, fileData, info) }
+    private fun buildDataForExpression(element: ParadoxScriptStringExpressionElement, context: ParadoxMergedIndexScriptContext, supports: List<ParadoxMergedIndexSupport<*>>) {
+        supports.forEachFast { support -> support.buildDataForExpression(element, context) }
     }
 
-    private fun buildDataFromSupports(element: ParadoxScriptStringExpressionElement, info: ParadoxDefinitionCandidateInfo?, configs: List<CwtMemberConfig<*>>, fileData: MutableMap<String, List<ParadoxIndexInfo>>, supports: List<ParadoxMergedIndexSupport<*>>) {
-        supports.forEachFast { support -> support.buildData(element, fileData, info, configs) }
+    private fun buildDataForExpression(element: ParadoxLocalisationExpressionElement, context: ParadoxMergedIndexLocalisationContext, supports: List<ParadoxMergedIndexSupport<*>>) {
+        supports.forEachFast { support -> support.buildDataForExpression(element, context) }
     }
 
-    private fun buildDataFromSupports(element: ParadoxLocalisationExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, supports: List<ParadoxMergedIndexSupport<*>>) {
-        supports.forEachFast { support -> support.buildData(element, fileData) }
-    }
-
-    private fun buildDataFromSupports(element: ParadoxCsvExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, supports: List<ParadoxMergedIndexSupport<*>>) {
-        supports.forEachFast { support -> support.buildData(element, fileData) }
+    private fun buildDataForExpression(element: ParadoxCsvExpressionElement, context: ParadoxMergedIndexCsvContext, supports: List<ParadoxMergedIndexSupport<*>>) {
+        supports.forEachFast { support -> support.buildDataForExpression(element, context) }
     }
 
     private fun cleanUpDumbDefinitionCache(element: ParadoxDefinitionElement) {
@@ -272,10 +310,11 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
         element.putUserData(ParadoxDefinitionManager.Keys.cachedDeclarationDumb, null)
     }
 
-    private fun cleanUpDumbExpressionReferencesCache(element: ParadoxExpressionElement) {
-        // clean up dumb expression references caches
-        element.putUserData(ParadoxExpressionManager.Keys.cachedExpressionReferencesDumb, null)
-    }
+    // 3.0.1 unnecessary since expression references will be cached directly in context (`ParadoxMergedIndexCsvContext`)
+    // private fun cleanUpDumbExpressionReferencesCache(element: ParadoxExpressionElement) {
+    //     // clean up dumb expression references caches
+    //     element.putUserData(ParadoxExpressionManager.Keys.cachedExpressionReferencesDumb, null)
+    // }
 
     private fun compressData(fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
         if (fileData.isEmpty()) return
@@ -283,7 +322,7 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
         for (key in fileData.keys) {
             val oldValue = fileData.getValue(key)
             if (oldValue.size <= 1) continue
-            val support = getSupportOrUnsupported(supports, key.toByte())
+            val support = getSupportOrUnsupported(supports, key)
             val newValue = support.compressData(oldValue)
             fileData[key] = newValue
         }
@@ -299,7 +338,7 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
         // 用于兼容懒加载的索引
         return buildMap {
             val supports = ParadoxMergedIndexSupport.EP_NAME.extensionList
-            supports.forEachFast { support -> put(support.indexInfoType.key.toString(), emptyList()) }
+            supports.forEachFast { support -> put(support.type.key, emptyList()) }
         }
     }
 
@@ -312,9 +351,10 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
         val type = firstInfo.javaClass
         val supports = ParadoxMergedIndexSupport.EP_NAME.extensionList
         val support = getSupportOrUnsupported(supports, type)
-        storage.writeByte(support.indexInfoType.key)
+        storage.writeUTFFast(support.type.key)
         val gameType = firstInfo.gameType
         storage.writeByte(gameType.optimized())
+
         var previousInfo: ParadoxIndexInfo? = null
         value.forEachFast { info ->
             support.saveData(storage, info, previousInfo, gameType)
@@ -326,7 +366,7 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
         val size = storage.readIntFast()
         if (size == 0) return emptyList()
 
-        val key = storage.readByte()
+        val key = storage.readUTFFast()
         val supports = ParadoxMergedIndexSupport.EP_NAME.extensionList
         val support = getSupportOrUnsupported(supports, key)
         val gameType = storage.readByte().let { ParadoxGameType.deoptimized(it) }
@@ -338,11 +378,11 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
         }
     }
 
-    private fun getSupportOrUnsupported(supports: List<ParadoxMergedIndexSupport<*>>, key: Byte): ParadoxMergedIndexSupport<ParadoxIndexInfo> {
-        return supports.findFast { support -> support.indexInfoType.key == key }?.castOrNull() ?: throw UnsupportedOperationException()
+    private fun getSupportOrUnsupported(supports: List<ParadoxMergedIndexSupport<*>>, key: String): ParadoxMergedIndexSupport<ParadoxIndexInfo> {
+        return supports.findFast { support -> support.type.key == key }?.castOrNull() ?: throw UnsupportedOperationException()
     }
 
     private fun getSupportOrUnsupported(supports: List<ParadoxMergedIndexSupport<*>>, type: Class<ParadoxIndexInfo>): ParadoxMergedIndexSupport<ParadoxIndexInfo> {
-        return supports.findFast { support -> support.indexInfoType.type == type }?.castOrNull() ?: throw UnsupportedOperationException()
+        return supports.findFast { support -> support.type.type == type }?.castOrNull() ?: throw UnsupportedOperationException()
     }
 }

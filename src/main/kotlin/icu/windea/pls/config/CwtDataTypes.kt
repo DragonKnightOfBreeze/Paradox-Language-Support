@@ -28,7 +28,6 @@ import icu.windea.pls.model.ParadoxGameType
  * 每个数据类型对应规则表达式中一种特定的取值形态，决定了规则表达式如何从字符串解析，以及如何与脚本表达式匹配。
  *
  * @see CwtDataType
- * @see CwtDataTypeSets
  */
 @Suppress("unused")
 object CwtDataTypes {

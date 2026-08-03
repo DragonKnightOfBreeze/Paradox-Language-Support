@@ -20,13 +20,13 @@ import icu.windea.pls.lang.match.CwtTypeConfigMatchContext
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.psi.isDefinitionName
 import icu.windea.pls.lang.resolve.ParadoxDefinitionService
+import icu.windea.pls.lang.resolve.ParadoxExpressionService
 import icu.windea.pls.lang.resolve.ParadoxMemberService
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.search.util.filterBy
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.settings.ChronicleSettings
-import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
@@ -48,7 +48,7 @@ class ParadoxDefinitionNameCompletionProvider : ParadoxCompletionProvider() {
 
         val globalContext = GlobalCompletionContext.create(element, parameters, context)
         val context = ParadoxCompletionContext.create(globalContext).copy(
-            expressionOffset = ParadoxExpressionManager.getExpressionOffset(element)
+            expressionOffset = ParadoxExpressionService.getExpressionOffset(element)
         )
 
         when {

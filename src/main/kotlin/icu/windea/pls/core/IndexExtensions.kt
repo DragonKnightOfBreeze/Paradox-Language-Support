@@ -103,7 +103,7 @@ inline fun <T> DataOutput.writeIndexedStringList(list: List<T>, transform: (T) -
  * 读取集合的大小与各个元素，然后转换为以索引为键的映射。
  */
 @Suppress("NOTHING_TO_INLINE")
-inline fun DataInput.readWithIndexStringList(): Int2ObjectMap<String> {
+inline fun DataInput.readIndexedStringList(): Int2ObjectMap<String> {
     val size = readIntFast()
     val result = Int2ObjectOpenHashMap<String>()
     repeat(size) { index ->

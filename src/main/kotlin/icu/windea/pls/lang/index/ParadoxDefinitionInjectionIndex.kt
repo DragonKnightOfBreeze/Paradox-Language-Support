@@ -14,9 +14,9 @@ import icu.windea.pls.core.collections.ImmutableList
 import icu.windea.pls.core.collections.asMutable
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.orNull
+import icu.windea.pls.core.readIndexedStringList
 import icu.windea.pls.core.readIntFast
 import icu.windea.pls.core.readUTFFast
-import icu.windea.pls.core.readWithIndexStringList
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.core.writeByte
 import icu.windea.pls.core.writeIndexedStringList
@@ -174,8 +174,8 @@ class ParadoxDefinitionInjectionIndex : ParadoxIndexInfoAwareFileBasedIndex<List
         val gameType = storage.readByte().let { ParadoxGameType.deoptimized(it) }
 
         // 3.0.0 optimize: read existing modes and types first
-        val modes = storage.readWithIndexStringList()
-        val types = storage.readWithIndexStringList()
+        val modes = storage.readIndexedStringList()
+        val types = storage.readIndexedStringList()
 
         // 2.1.9 optimize: create sized immutable list directly
         return ImmutableList(size) {

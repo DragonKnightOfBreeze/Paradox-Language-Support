@@ -213,6 +213,34 @@ enum class ParadoxReferenceConstraint {
         }
     },
 
+    ShaderEffect {
+        override fun canResolveReference(element: PsiElement): Boolean {
+            return element is ParadoxScriptStringExpressionElement && element.isDataExpression()
+        }
+
+        override fun canResolve(reference: PsiReference): Boolean {
+            return reference is ParadoxConstrainedPsiReference && reference.canResolveFor(this)
+        }
+
+        override fun test(dataType: CwtDataType): Boolean {
+            return dataType == CwtDataTypes.ShaderEffect
+        }
+    },
+
+    MeshLocator {
+        override fun canResolveReference(element: PsiElement): Boolean {
+            return element is ParadoxScriptStringExpressionElement && element.isDataExpression()
+        }
+
+        override fun canResolve(reference: PsiReference): Boolean {
+            return reference is ParadoxConstrainedPsiReference && reference.canResolveFor(this)
+        }
+
+        override fun test(dataType: CwtDataType): Boolean {
+            return dataType == CwtDataTypes.MeshLocator
+        }
+    },
+
     LocalisationReference {
         override fun canResolveReference(element: PsiElement): Boolean {
             return Localisation.canResolveReference(element)

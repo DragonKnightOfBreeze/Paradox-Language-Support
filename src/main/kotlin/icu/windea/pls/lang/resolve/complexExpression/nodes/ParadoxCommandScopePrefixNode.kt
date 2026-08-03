@@ -12,7 +12,7 @@ import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.lang.editor.ParadoxSemanticHighlighterColors
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.references.CwtConfigBasedPsiPolyVariantReference
-import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.lang.resolve.ParadoxExpressionService
 
 class ParadoxCommandScopePrefixNode(
     override val text: String,
@@ -30,7 +30,7 @@ class ParadoxCommandScopePrefixNode(
 
     override fun getReference(element: ParadoxExpressionElement): Reference {
         linkConfigs.forEachFast { it.resolveElementWithConfig() }
-        val offset = ParadoxExpressionManager.getExpressionOffset(element)
+        val offset = ParadoxExpressionService.getExpressionOffset(element)
         return Reference(element, rangeInExpression.shiftRight(offset), linkConfigs)
     }
 

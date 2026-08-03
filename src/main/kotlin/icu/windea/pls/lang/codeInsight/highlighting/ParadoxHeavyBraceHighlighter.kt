@@ -11,11 +11,11 @@ import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.isRightQuoted
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.lang.psi.ParadoxPsiFileService
+import icu.windea.pls.lang.resolve.ParadoxExpressionService
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionRecursiveVisitor
 import icu.windea.pls.lang.selectGameType
-import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxMarkerManager
 
 /**
@@ -63,7 +63,7 @@ class ParadoxHeavyBraceHighlighter : HeavyBraceHighlighter() {
         val complexExpression = ParadoxComplexExpression.resolve(element, configGroup)
         if (complexExpression == null) return true
 
-        val startOffset = elementOffset + ParadoxExpressionManager.getExpressionOffset(element)
+        val startOffset = elementOffset + ParadoxExpressionService.getExpressionOffset(element)
         val offsetInExpression = caretOffset - startOffset
         complexExpression.accept(object : ParadoxComplexExpressionRecursiveVisitor() {
             override fun visit(node: ParadoxComplexExpressionNode): Boolean {

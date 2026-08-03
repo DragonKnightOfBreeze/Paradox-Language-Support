@@ -21,6 +21,7 @@ import icu.windea.pls.core.util.ProcessorScope
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.ParadoxPsiService
+import icu.windea.pls.lang.resolve.ParadoxExpressionService
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionErrors
 import icu.windea.pls.lang.util.ParadoxDynamicValueManager
@@ -47,7 +48,7 @@ class ParadoxDataSourceNode(
         if (linkConfigs.size == 1) return linkConfigs.first()
         run {
             if (linkConfigsNotDynamicValue.isEmpty()) return@run
-            val offset = ParadoxExpressionManager.getExpressionOffset(element)
+            val offset = ParadoxExpressionService.getExpressionOffset(element)
             val rangeInElement = rangeInExpression.shiftRight(offset)
             val resolved = linkConfigs.findFast {
                 ParadoxExpressionManager.resolveScriptExpression(element, rangeInElement, it, ParadoxExpressionRole.Other) != null
@@ -78,7 +79,7 @@ class ParadoxDataSourceNode(
         if (linkConfigs.isEmpty()) return null
         if (text.isEmpty()) return null
         if (text.isParameterized()) return null
-        val offset = ParadoxExpressionManager.getExpressionOffset(element)
+        val offset = ParadoxExpressionService.getExpressionOffset(element)
         return Reference(element, rangeInExpression.shiftRight(offset), this)
     }
 

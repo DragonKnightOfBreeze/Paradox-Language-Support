@@ -9,7 +9,6 @@ package icu.windea.pls.config
  * 备注：对于需要展开的数据类型的分组，使用 [Expandable]。其他分组一般不检查展开前的状态。
  *
  * @see CwtDataType
- * @see CwtDataTypes
  */
 @Suppress("unused")
 object CwtDataTypeSets {

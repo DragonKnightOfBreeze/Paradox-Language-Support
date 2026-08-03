@@ -13,9 +13,9 @@ import icu.windea.pls.core.collections.ImmutableList
 import icu.windea.pls.core.collections.asMutable
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.orNull
+import icu.windea.pls.core.readIndexedStringList
 import icu.windea.pls.core.readIntFast
 import icu.windea.pls.core.readUTFFast
-import icu.windea.pls.core.readWithIndexStringList
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.core.writeByte
 import icu.windea.pls.core.writeIndexedStringList
@@ -224,7 +224,7 @@ class ParadoxComplexEnumValueIndex : ParadoxIndexInfoAwareFileBasedIndex<List<Pa
         val gameType = storage.readByte().let { ParadoxGameType.deoptimized(it) }
 
         // 3.0.0 optimize: read existing enum names first
-        val enumNames = storage.readWithIndexStringList()
+        val enumNames = storage.readIndexedStringList()
 
         // 2.1.9 optimize: create sized immutable list directly
         return ImmutableList(size) {

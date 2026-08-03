@@ -10,9 +10,9 @@ import icu.windea.pls.lang.editor.ParadoxSemanticHighlighterColors
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
+import icu.windea.pls.lang.resolve.ParadoxExpressionService
 import icu.windea.pls.lang.resolve.ParadoxParameterService
 import icu.windea.pls.lang.util.ParadoxConfigManager
-import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.model.constraints.ParadoxReferenceConstraint
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
@@ -32,7 +32,7 @@ class ParadoxScriptValueArgumentNameNode(
         if (text.isEmpty()) return null
         val reference = valueNode.getReference(element)
         if (reference == null) return null
-        val offset = ParadoxExpressionManager.getExpressionOffset(element)
+        val offset = ParadoxExpressionService.getExpressionOffset(element)
         return Reference(element, rangeInExpression.shiftRight(offset))
     }
 

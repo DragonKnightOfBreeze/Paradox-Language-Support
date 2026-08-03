@@ -8,6 +8,7 @@ import icu.windea.pls.config.config.aliasConfig
 import icu.windea.pls.config.config.containingDirectConfig
 import icu.windea.pls.config.match.CwtConfigExpressionMatchService
 import icu.windea.pls.config.select.selectConfigScope
+import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.findFast
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.readIntFast
@@ -16,83 +17,82 @@ import icu.windea.pls.core.readUTFFast
 import icu.windea.pls.core.writeIntFast
 import icu.windea.pls.core.writeOrWriteFrom
 import icu.windea.pls.core.writeUTFFast
-import icu.windea.pls.lang.index.ParadoxIndexInfoTypes
+import icu.windea.pls.lang.index.ParadoxMergedIndexScriptContext
+import icu.windea.pls.lang.index.ParadoxMergedIndexTypes
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.util.ParadoxEventManager
-import icu.windea.pls.model.ParadoxDefinitionCandidateInfo
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.model.index.ParadoxEventInEventIndexInfo
 import icu.windea.pls.model.index.ParadoxEventInOnActionIndexInfo
-import icu.windea.pls.model.index.ParadoxIndexInfo
-import icu.windea.pls.model.index.ParadoxInferredScopeContextAwareDefinitionIndexInfo
 import icu.windea.pls.model.index.ParadoxOnActionInEventIndexInfo
+import icu.windea.pls.model.index.ParadoxScopeInferrableDefinitionIndexInfo
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import java.io.DataInput
 import java.io.DataOutput
 
-class ParadoxScopeInferrableDefinitionMergedIndexSupport : ParadoxMergedIndexSupportBase<ParadoxInferredScopeContextAwareDefinitionIndexInfo>() {
-    private val compressComparator = compareBy<ParadoxInferredScopeContextAwareDefinitionIndexInfo> { it.typeExpression }
+class ParadoxScopeInferrableDefinitionMergedIndexSupport : ParadoxMergedIndexSupportBase<ParadoxScopeInferrableDefinitionIndexInfo>() {
+    private val compressComparator = compareBy<ParadoxScopeInferrableDefinitionIndexInfo> { it.typeExpression }
 
-    override val indexInfoType = ParadoxIndexInfoTypes.InferredScopeContextAwareDefinition
+    override val type = ParadoxMergedIndexTypes.ScopeInferrableDefinition
 
-    override fun buildData(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, info: ParadoxDefinitionCandidateInfo?, configs: List<CwtMemberConfig<*>>) {
+    override fun buildDataForExpression(element: ParadoxScriptStringExpressionElement, context: ParadoxMergedIndexScriptContext) {
         val expression = element.value
         if (expression.isEmpty() || expression.isParameterized()) return // skip if expression is empty or parameterized
-        val config = configs.findFast { matchesConfig(it) }
+        val config = context.configs.findFast { matchesConfig(it) }
         if (config == null) return
 
         val definitionName = element.value
         val typeExpression = config.configExpression.metadata.value ?: return
         val gameType = config.configGroup.gameType
-        val info = ParadoxInferredScopeContextAwareDefinitionIndexInfo(definitionName, typeExpression, element.startOffset, gameType)
-        addToFileData(info, fileData)
+        val info = ParadoxScopeInferrableDefinitionIndexInfo(definitionName, typeExpression, element.startOffset, gameType)
+        addToFileData(info, context)
     }
 
     private fun matchesConfig(config: CwtMemberConfig<*>): Boolean {
         return CwtConfigExpressionMatchService.matchesScopeInferrableDefinitionReference(config.configExpression, config.configGroup)
     }
 
-    override fun compressData(value: List<ParadoxInferredScopeContextAwareDefinitionIndexInfo>): List<ParadoxInferredScopeContextAwareDefinitionIndexInfo> {
+    override fun compressData(value: List<ParadoxScopeInferrableDefinitionIndexInfo>): List<ParadoxScopeInferrableDefinitionIndexInfo> {
         return value.sortedWith(compressComparator) // 3.0.0 not very necessary to distinct here
     }
 
-    override fun saveData(storage: DataOutput, info: ParadoxInferredScopeContextAwareDefinitionIndexInfo, previousInfo: ParadoxInferredScopeContextAwareDefinitionIndexInfo?, gameType: ParadoxGameType) {
+    override fun saveData(storage: DataOutput, info: ParadoxScopeInferrableDefinitionIndexInfo, previousInfo: ParadoxScopeInferrableDefinitionIndexInfo?, gameType: ParadoxGameType) {
         storage.writeUTFFast(info.definitionName)
         storage.writeOrWriteFrom(info, previousInfo, { it.typeExpression }, { storage.writeUTFFast(it) })
         storage.writeIntFast(info.definitionElementOffset)
     }
 
-    override fun readData(storage: DataInput, previousInfo: ParadoxInferredScopeContextAwareDefinitionIndexInfo?, gameType: ParadoxGameType): ParadoxInferredScopeContextAwareDefinitionIndexInfo {
+    override fun readData(storage: DataInput, previousInfo: ParadoxScopeInferrableDefinitionIndexInfo?, gameType: ParadoxGameType): ParadoxScopeInferrableDefinitionIndexInfo {
         val definitionName = storage.readUTFFast()
         val typeExpression = storage.readOrReadFrom(previousInfo, { it.typeExpression }, { storage.readUTFFast() })
         val elementOffset = storage.readIntFast()
-        return ParadoxInferredScopeContextAwareDefinitionIndexInfo(definitionName, typeExpression, elementOffset, gameType)
+        return ParadoxScopeInferrableDefinitionIndexInfo(definitionName, typeExpression, elementOffset, gameType)
     }
 }
 
 class ParadoxEventInOnActionMergedIndexSupport : ParadoxMergedIndexSupportBase<ParadoxEventInOnActionIndexInfo>() {
     private val compressComparator = compareBy<ParadoxEventInOnActionIndexInfo> { it.containingOnActionName }
 
-    override val indexInfoType = ParadoxIndexInfoTypes.EventInOnAction
+    override val type = ParadoxMergedIndexTypes.EventInOnAction
 
-    override fun buildData(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, info: ParadoxDefinitionCandidateInfo?, configs: List<CwtMemberConfig<*>>) {
-        if (info !is ParadoxDefinitionInfo) return
-        if (info.type != ParadoxDefinitionTypes.onAction) return
+    override fun buildDataForExpression(element: ParadoxScriptStringExpressionElement, context: ParadoxMergedIndexScriptContext) {
+        val definitionInfo = context.definitionCandidateInfo?.castOrNull<ParadoxDefinitionInfo>() ?: return
+        if (definitionInfo.type != ParadoxDefinitionTypes.onAction) return
 
         val expression = element.value
         if (expression.isEmpty() || expression.isParameterized()) return // skip if expression is empty or parameterized
-        val config = configs.findFast { matchesConfig(it) }
+        val config = context.configs.findFast { matchesConfig(it) }
         if (config == null) return
 
         val eventName = element.value
         val typeExpression = config.configExpression.metadata.value ?: return
-        val containingOnActionName = info.name
-        val info = ParadoxEventInOnActionIndexInfo(eventName, typeExpression, containingOnActionName, info.gameType)
-        addToFileData(info, fileData)
+        val containingOnActionName = definitionInfo.name
+        val info = ParadoxEventInOnActionIndexInfo(eventName, typeExpression, containingOnActionName, definitionInfo.gameType)
+        addToFileData(info, context)
     }
 
     private fun matchesConfig(config: CwtMemberConfig<*>): Boolean {
@@ -120,23 +120,23 @@ class ParadoxEventInOnActionMergedIndexSupport : ParadoxMergedIndexSupportBase<P
 class ParadoxEventInEventMergedIndexSupport : ParadoxMergedIndexSupportBase<ParadoxEventInEventIndexInfo>() {
     private val compressComparator = compareBy<ParadoxEventInEventIndexInfo> { it.containingEventName }
 
-    override val indexInfoType = ParadoxIndexInfoTypes.EventInEvent
+    override val type = ParadoxMergedIndexTypes.EventInEvent
 
-    override fun buildData(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, info: ParadoxDefinitionCandidateInfo?, configs: List<CwtMemberConfig<*>>) {
-        if (info !is ParadoxDefinitionInfo) return
-        if (info.type != ParadoxDefinitionTypes.event) return
+    override fun buildDataForExpression(element: ParadoxScriptStringExpressionElement, context: ParadoxMergedIndexScriptContext) {
+        val definitionInfo = context.definitionCandidateInfo?.castOrNull<ParadoxDefinitionInfo>() ?: return
+        if (definitionInfo.type != ParadoxDefinitionTypes.event) return
 
         val expression = element.value
         if (expression.isEmpty() || expression.isParameterized()) return // skip if expression is empty or parameterized
-        val config = configs.findFast { matchesConfig(it) }
+        val config = context.configs.findFast { matchesConfig(it) }
         if (config == null) return
 
         val eventName = element.value
-        val containingEventName = info.name
-        val containingEventScope = ParadoxEventManager.getScope(info)
+        val containingEventName = definitionInfo.name
+        val containingEventScope = ParadoxEventManager.getScope(definitionInfo)
         val scopesElementOffset = getScopesElementOffset(element, config) ?: return
-        val info = ParadoxEventInEventIndexInfo(eventName, containingEventName, containingEventScope, scopesElementOffset, info.gameType)
-        addToFileData(info, fileData)
+        val info = ParadoxEventInEventIndexInfo(eventName, containingEventName, containingEventScope, scopesElementOffset, definitionInfo.gameType)
+        addToFileData(info, context)
     }
 
     private fun matchesConfig(config: CwtMemberConfig<*>): Boolean {
@@ -187,23 +187,23 @@ class ParadoxEventInEventMergedIndexSupport : ParadoxMergedIndexSupportBase<Para
 class ParadoxOnActionInEventMergedIndexSupport : ParadoxMergedIndexSupportBase<ParadoxOnActionInEventIndexInfo>() {
     private val compressComparator = compareBy<ParadoxOnActionInEventIndexInfo> { it.containingEventName }
 
-    override val indexInfoType = ParadoxIndexInfoTypes.OnActionInEvent
+    override val type = ParadoxMergedIndexTypes.OnActionInEvent
 
-    override fun buildData(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, info: ParadoxDefinitionCandidateInfo?, configs: List<CwtMemberConfig<*>>) {
-        if (info !is ParadoxDefinitionInfo) return
-        if (info.type != ParadoxDefinitionTypes.event) return
+    override fun buildDataForExpression(element: ParadoxScriptStringExpressionElement, context: ParadoxMergedIndexScriptContext) {
+        val definitionInfo = context.definitionCandidateInfo?.castOrNull<ParadoxDefinitionInfo>() ?: return
+        if (definitionInfo.type != ParadoxDefinitionTypes.event) return
 
         val expression = element.value
         if (expression.isEmpty() || expression.isParameterized()) return // skip if expression is empty or parameterized
-        val config = configs.findFast { matchesConfig(it) }
+        val config = context.configs.findFast { matchesConfig(it) }
         if (config == null) return
 
         val onActionName = element.value
-        val containingEventName = info.name
-        val containingEventScope = ParadoxEventManager.getScope(info)
+        val containingEventName = definitionInfo.name
+        val containingEventScope = ParadoxEventManager.getScope(definitionInfo)
         val scopesElementOffset = getScopesElementOffset(element, config) ?: return
-        val info = ParadoxOnActionInEventIndexInfo(onActionName, containingEventName, containingEventScope, scopesElementOffset, info.gameType)
-        addToFileData(info, fileData)
+        val info = ParadoxOnActionInEventIndexInfo(onActionName, containingEventName, containingEventScope, scopesElementOffset, definitionInfo.gameType)
+        addToFileData(info, context)
     }
 
     private fun matchesConfig(config: CwtMemberConfig<*>): Boolean {

@@ -101,9 +101,4 @@ fun String.getParameterRanges(conditionBlock: Boolean = true): List<TextRange> {
     return ParadoxExpressionManager.getParameterRanges(this, conditionBlock)
 }
 
-// /** @see ParadoxExpressionManager.isQuoted */
-// fun ParadoxExpressionElement.isQuoted(): Boolean {
-//     return ParadoxExpressionManager.isQuoted(this)
-// }
-
 // endregion

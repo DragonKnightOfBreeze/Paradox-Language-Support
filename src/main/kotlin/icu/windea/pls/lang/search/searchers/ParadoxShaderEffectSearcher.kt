@@ -8,7 +8,7 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.Processor
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.lang.index.ChronicleIndexService
-import icu.windea.pls.lang.index.ParadoxIndexInfoTypes
+import icu.windea.pls.lang.index.ParadoxMergedIndexTypes
 import icu.windea.pls.lang.search.ParadoxShaderEffectSearch
 import icu.windea.pls.lang.search.util.ParadoxSearchContext
 import icu.windea.pls.model.ParadoxGameType
@@ -26,7 +26,7 @@ class ParadoxShaderEffectSearcher : QueryExecutorBase<ParadoxShaderEffectIndexIn
 
     private fun processQuery(context: Context, consumer: Processor<in ParadoxShaderEffectIndexInfo>): Boolean {
         if (!context.isValid()) return true
-        val indexInfoType = ParadoxIndexInfoTypes.ShaderEffect
+        val indexInfoType = ParadoxMergedIndexTypes.ShaderEffect
         return ChronicleIndexService.processAllFileDataWithKey(indexInfoType, context.project, context.scope, context.gameType) { file, infos ->
             infos.process { info -> processInfo(context, file, info, consumer) }
         }

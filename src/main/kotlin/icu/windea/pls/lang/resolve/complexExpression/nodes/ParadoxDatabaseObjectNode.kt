@@ -17,6 +17,7 @@ import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.ParadoxPsiService
 import icu.windea.pls.lang.resolve.ParadoxDefinitionService
+import icu.windea.pls.lang.resolve.ParadoxExpressionService
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDatabaseObjectExpression
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionErrors
@@ -25,7 +26,6 @@ import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.search.util.preferLocale
 import icu.windea.pls.lang.selectLocale
-import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.constraints.ParadoxReferenceConstraint
@@ -63,7 +63,7 @@ class ParadoxDatabaseObjectNode(
         if (config == null) return null
         if (text.isEmpty()) return null
         if (text.isParameterized()) return null
-        val offset = ParadoxExpressionManager.getExpressionOffset(element)
+        val offset = ParadoxExpressionService.getExpressionOffset(element)
         return Reference(element, rangeInExpression.shiftRight(offset), this)
     }
 

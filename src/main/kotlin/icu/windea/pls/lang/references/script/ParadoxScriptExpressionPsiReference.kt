@@ -20,7 +20,6 @@ import icu.windea.pls.lang.psi.ParadoxPsiService
 import icu.windea.pls.lang.references.ParadoxConstrainedPsiReference
 import icu.windea.pls.lang.resolve.ParadoxExpressionService
 import icu.windea.pls.lang.util.ParadoxExpressionManager
-import icu.windea.pls.lang.util.ParadoxExpressionManager.getExpressionText
 import icu.windea.pls.lang.util.ParadoxTagManager
 import icu.windea.pls.model.constraints.ParadoxReferenceConstraint
 import icu.windea.pls.model.type.ParadoxExpressionRole
@@ -59,7 +58,7 @@ class ParadoxScriptExpressionPsiReference(
     }
 
     override fun getReferences(): List<PsiReference> {
-        val expressionText = getExpressionText(element, rangeInElement)
+        val expressionText = ParadoxExpressionService.getExpressionText(element, rangeInElement)
         val result = ParadoxExpressionService.getScriptExpressionReferences(element, rangeInElement, expressionText, config, role)
         return result
     }

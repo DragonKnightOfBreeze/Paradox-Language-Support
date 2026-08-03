@@ -1,7 +1,6 @@
 package icu.windea.pls.ep.index
 
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiReference
 import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.core.readOrReadFrom
 import icu.windea.pls.core.readUTFFast
@@ -11,69 +10,36 @@ import icu.windea.pls.core.withState
 import icu.windea.pls.core.writeByte
 import icu.windea.pls.core.writeOrWriteFrom
 import icu.windea.pls.core.writeUTFFast
-import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
-import icu.windea.pls.lang.index.ParadoxIndexInfoTypes
+import icu.windea.pls.lang.index.ParadoxMergedIndexContext
+import icu.windea.pls.lang.index.ParadoxMergedIndexScriptContext
+import icu.windea.pls.lang.index.ParadoxMergedIndexTypes
 import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
 import icu.windea.pls.lang.psi.light.ParadoxLocalisationParameterLightElement
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
-import icu.windea.pls.lang.util.ParadoxExpressionManager
-import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
-import icu.windea.pls.model.ParadoxDefinitionCandidateInfo
+import icu.windea.pls.lang.resolve.ParadoxParameterService
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constraints.ParadoxReferenceConstraint
 import icu.windea.pls.model.index.ParadoxDynamicValueIndexInfo
-import icu.windea.pls.model.index.ParadoxIndexInfo
 import icu.windea.pls.model.index.ParadoxLocalisationParameterIndexInfo
 import icu.windea.pls.model.index.ParadoxParameterIndexInfo
-import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
-import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
+import icu.windea.pls.script.psi.ParadoxConditionParameter
+import icu.windea.pls.script.psi.ParadoxParameter
 import java.io.DataInput
 import java.io.DataOutput
 
-class ParadoxDynamicValueMergedIndexSupport : ParadoxMergedIndexSupportBase<ParadoxDynamicValueIndexInfo>() {
+class ParadoxDynamicValueMergedIndexSupport : ParadoxMergedIndexSupportFromExpressionReferencesBase<ParadoxDynamicValueIndexInfo>() {
     // NOTE 3.0.0 do not make `compressComparator` depend on `name` - should keep declaration order per type (or context type)
 
-    private val constraint = ParadoxReferenceConstraint.DynamicValue
     private val compressComparator = compareBy<ParadoxDynamicValueIndexInfo> { it.type }
 
-    override val indexInfoType = ParadoxIndexInfoTypes.DynamicValue
+    override val type = ParadoxMergedIndexTypes.DynamicValue
+    override val constraint = ParadoxReferenceConstraint.DynamicValue
 
-    override fun buildData(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, info: ParadoxDefinitionCandidateInfo?) {
-        // read access or write access
-        if (!constraint.canResolveReference(element)) return
-        val references = ParadoxExpressionManager.getExpressionReferences(element) // use expression references only to optimize performance
-        for (reference in references) {
-            if (!constraint.canResolve(reference)) continue
-            buildDataFromReference(reference, fileData)
-        }
-    }
-
-    override fun buildData(element: ParadoxLocalisationExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
-        // read access or write access
-        if (!constraint.canResolveReference(element)) return
-        val references = ParadoxExpressionManager.getExpressionReferences(element) // use expression references only to optimize performance
-        for (reference in references) {
-            if (!constraint.canResolve(reference)) continue
-            buildDataFromReference(reference, fileData)
-        }
-    }
-
-    override fun buildData(element: ParadoxCsvExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
-        // read access or write access
-        if (!constraint.canResolveReference(element)) return
-        val references = ParadoxExpressionManager.getExpressionReferences(element) // use expression references only to optimize performance
-        for (reference in references) {
-            if (!constraint.canResolve(reference)) continue
-            buildDataFromReference(reference, fileData)
-        }
-    }
-
-    private fun buildDataFromReference(reference: PsiReference, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
-        val resolved = withState(ChronicleThreadContext.resolveForMergedIndex) { reference.resolve() }
+    override fun buildDataFromResolved(resolved: PsiElement, context: ParadoxMergedIndexContext) {
         if (resolved !is ParadoxDynamicValueLightElement) return
         for (dynamicValueType in resolved.types) {
             val info = ParadoxDynamicValueIndexInfo(resolved.name, dynamicValueType, resolved.readWriteAccess, resolved.gameType)
-            addToFileData(info, fileData)
+            addToFileData(info, context)
         }
     }
 
@@ -95,41 +61,18 @@ class ParadoxDynamicValueMergedIndexSupport : ParadoxMergedIndexSupportBase<Para
     }
 }
 
-class ParadoxParameterMergedIndexSupport : ParadoxMergedIndexSupportBase<ParadoxParameterIndexInfo>() {
+class ParadoxParameterMergedIndexSupport : ParadoxMergedIndexSupportFromExpressionReferencesBase<ParadoxParameterIndexInfo>() {
     // NOTE 3.0.0 do not make `compressComparator` depend on `name` - should keep declaration order per type (or context type)
 
-    private val constraint = ParadoxReferenceConstraint.Parameter
     private val compressComparator = compareBy<ParadoxParameterIndexInfo> { it.contextKey }
 
-    override val indexInfoType = ParadoxIndexInfoTypes.Parameter
+    override val type = ParadoxMergedIndexTypes.Parameter
+    override val constraint = ParadoxReferenceConstraint.Parameter
 
-    override fun buildData(element: PsiElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
-        // read access
-        if (element is ParadoxScriptExpressionElement) return // skip expression elements first
-        if (!constraint.canResolveReference(element)) return
-        val references = element.references
-        for (reference in references) {
-            if (!constraint.canResolve(reference)) continue
-            buildDataFromReference(reference, fileData)
-        }
-    }
-
-    override fun buildData(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, info: ParadoxDefinitionCandidateInfo?) {
-        // write access
-        if (!constraint.canResolveReference(element)) return
-        val references = ParadoxExpressionManager.getExpressionReferences(element) // use expression references only to optimize performance
-        for (reference in references) {
-            if (!constraint.canResolve(reference)) continue
-            buildDataFromReference(reference, fileData)
-        }
-    }
-
-    private fun buildDataFromReference(reference: PsiReference, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
-        val resolved = withState(ChronicleThreadContext.resolveForMergedIndex) { reference.resolve() }
+    override fun buildDataFromResolved(resolved: PsiElement, context: ParadoxMergedIndexContext) {
         if (resolved !is ParadoxParameterLightElement) return
-        // note that `element.startOffset` may not equal to actual `parameterElement.startOffset` (e.g. in a script value expression)
         val info = ParadoxParameterIndexInfo(resolved.name, resolved.contextKey, resolved.readWriteAccess, resolved.gameType)
-        addToFileData(info, fileData)
+        addToFileData(info, context)
     }
 
     override fun compressData(value: List<ParadoxParameterIndexInfo>): List<ParadoxParameterIndexInfo> {
@@ -150,29 +93,18 @@ class ParadoxParameterMergedIndexSupport : ParadoxMergedIndexSupportBase<Paradox
     }
 }
 
-class ParadoxLocalisationParameterMergedIndexSupport : ParadoxMergedIndexSupportBase<ParadoxLocalisationParameterIndexInfo>() {
+class ParadoxLocalisationParameterMergedIndexSupport : ParadoxMergedIndexSupportFromExpressionReferencesBase<ParadoxLocalisationParameterIndexInfo>() {
     // NOTE 3.0.0 do not make `compressComparator` depend on `name` - should keep declaration order per type (or context type)
 
-    private val constraint = ParadoxReferenceConstraint.LocalisationParameter
     private val compressComparator = compareBy<ParadoxLocalisationParameterIndexInfo> { it.localisationName }
 
-    override val indexInfoType = ParadoxIndexInfoTypes.LocalisationParameter
+    override val type = ParadoxMergedIndexTypes.LocalisationParameter
+    override val constraint = ParadoxReferenceConstraint.LocalisationParameter
 
-    override fun buildData(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, info: ParadoxDefinitionCandidateInfo?) {
-        // write access
-        if (!constraint.canResolveReference(element)) return
-        val references = ParadoxExpressionManager.getExpressionReferences(element) // use expression references only to optimize performance
-        for (reference in references) {
-            if (!constraint.canResolve(reference)) continue
-            buildDataFromReference(reference, fileData)
-        }
-    }
-
-    private fun buildDataFromReference(reference: PsiReference, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
-        val resolved = withState(ChronicleThreadContext.resolveForMergedIndex) { reference.resolve() }
+    override fun buildDataFromResolved(resolved: PsiElement, context: ParadoxMergedIndexContext) {
         if (resolved !is ParadoxLocalisationParameterLightElement) return
         val info = ParadoxLocalisationParameterIndexInfo(resolved.name, resolved.localisationName, resolved.gameType)
-        addToFileData(info, fileData)
+        addToFileData(info, context)
     }
 
     override fun compressData(value: List<ParadoxLocalisationParameterIndexInfo>): List<ParadoxLocalisationParameterIndexInfo> {
@@ -188,5 +120,48 @@ class ParadoxLocalisationParameterMergedIndexSupport : ParadoxMergedIndexSupport
         val name = storage.readOrReadFrom(previousInfo, { it.name }, { storage.readUTFFast() })
         val localisationName = storage.readOrReadFrom(previousInfo, { it.localisationName }, { storage.readUTFFast() })
         return ParadoxLocalisationParameterIndexInfo(name, localisationName, gameType)
+    }
+}
+
+class ParadoxParameterWithReadAccessMergedIndexSupport : ParadoxMergedIndexSupportBase<ParadoxParameterIndexInfo>() {
+    // NOTE 3.0.0 do not make `compressComparator` depend on `name` - should keep declaration order per type (or context type)
+
+    private val compressComparator = compareBy<ParadoxParameterIndexInfo> { it.contextKey }
+
+    override val type = ParadoxMergedIndexTypes.ParameterWithReadAccess
+
+    override fun buildData(element: PsiElement, context: ParadoxMergedIndexScriptContext) {
+        // 3.0.1 although it's not very necessary
+        if (!checkAvailable(context)) return
+
+        val resolved = withState(ChronicleThreadContext.resolveForMergedIndex) { resolve(element) }
+        if (resolved == null) return
+        val info = ParadoxParameterIndexInfo(resolved.name, resolved.contextKey, resolved.readWriteAccess, resolved.gameType)
+        addToFileData(info, context)
+    }
+
+    private fun resolve(element: PsiElement): ParadoxParameterLightElement? {
+        return when (element) {
+            is ParadoxParameter -> ParadoxParameterService.resolveParameter(element)
+            is ParadoxConditionParameter -> ParadoxParameterService.resolveConditionParameter(element)
+            else -> null
+        }
+    }
+
+    override fun compressData(value: List<ParadoxParameterIndexInfo>): List<ParadoxParameterIndexInfo> {
+        return value.sortedWith(compressComparator).distinct()
+    }
+
+    override fun saveData(storage: DataOutput, info: ParadoxParameterIndexInfo, previousInfo: ParadoxParameterIndexInfo?, gameType: ParadoxGameType) {
+        storage.writeOrWriteFrom(info, previousInfo, { it.name }, { storage.writeUTFFast(it) })
+        storage.writeOrWriteFrom(info, previousInfo, { it.contextKey }, { storage.writeUTFFast(it) })
+        storage.writeByte(info.readWriteAccess.optimized())
+    }
+
+    override fun readData(storage: DataInput, previousInfo: ParadoxParameterIndexInfo?, gameType: ParadoxGameType): ParadoxParameterIndexInfo {
+        val name = storage.readOrReadFrom(previousInfo, { it.name }, { storage.readUTFFast() })
+        val contextKey = storage.readOrReadFrom(previousInfo, { it.contextKey }, { storage.readUTFFast() })
+        val readWriteAccess = storage.readByte().let { ReadWriteAccessC.deoptimized(it) }
+        return ParadoxParameterIndexInfo(name, contextKey, readWriteAccess, gameType)
     }
 }

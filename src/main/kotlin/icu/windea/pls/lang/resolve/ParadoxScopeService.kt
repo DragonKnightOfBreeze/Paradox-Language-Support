@@ -42,7 +42,6 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxDynamicValueManager
-import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.lang.util.ParadoxScopeManager.findParentMember
@@ -442,7 +441,7 @@ object ParadoxScopeService {
             // only support full parameterized node
             if (!node.text.isParameterized(full = true)) return@r1
 
-            val startOffset = ParadoxExpressionManager.getExpressionOffset(element) + node.rangeInExpression.startOffset
+            val startOffset = ParadoxExpressionService.getExpressionOffset(element) + node.rangeInExpression.startOffset
             val parameter = element.findElementAt(startOffset)?.parentOfType<ParadoxParameter>() ?: return@r1
             if (parameter.text != node.text) return@r1
             val parameterElement = ParadoxParameterManager.getParameterElement(parameter) ?: return@r1

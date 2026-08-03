@@ -8,7 +8,7 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.Processor
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.lang.index.ChronicleIndexService
-import icu.windea.pls.lang.index.ParadoxIndexInfoTypes
+import icu.windea.pls.lang.index.ParadoxMergedIndexTypes
 import icu.windea.pls.lang.search.ParadoxMeshLocatorSearch
 import icu.windea.pls.lang.search.util.ParadoxSearchContext
 import icu.windea.pls.model.ParadoxGameType
@@ -27,7 +27,7 @@ class ParadoxMeshLocatorSearcher : QueryExecutorBase<ParadoxMeshLocatorIndexInfo
     private fun processQuery(context: Context, consumer: Processor<in ParadoxMeshLocatorIndexInfo>): Boolean {
         if (!context.isValid()) return true
         ProgressManager.checkCanceled()
-        val indexInfoType = ParadoxIndexInfoTypes.MeshLocator
+        val indexInfoType = ParadoxMergedIndexTypes.MeshLocator
         return ChronicleIndexService.processAllFileDataWithKey(indexInfoType, context.project, context.scope, context.gameType) { file, infos ->
             infos.process { info -> processInfo(context, file, info, consumer) }
         }

@@ -62,7 +62,7 @@ object ChronicleIndexService {
 
         val index = EXTENSION_POINT_NAME.findExtensionOrFail(ParadoxMergedIndex::class.java)
         val indexId = index.name
-        val key = indexInfoType.key.toString()
+        val key = indexInfoType.key
         val keys = setOf(key)
         return FileBasedIndex.getInstance().processFilesContainingAnyKey(indexId, keys, scope, null, null) p@{ file ->
             ProgressManager.checkCanceled()

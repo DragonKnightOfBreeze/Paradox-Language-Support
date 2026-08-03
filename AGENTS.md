@@ -199,7 +199,7 @@ For more details, see: `agents/context/importing-conventions.md`
 - Data depending on analysis data and/or PSI-structure, not depending on dynamic data (e.g., scripted variables, localisations): prefer `StubIndex`.
 - Data depending on PSI reference resolve results and/or config data (e.g., definitions, complex enums values): prefer `FileBasedIndex`.
 - For file indices that depend on resolved/matched member configs, prefer unifying via a merged index (e.g. `ParadoxMergedIndex`) for performance.
-- Compress serialized index data when necessary (e.g. via `readOrReadFrom` or `readWithIndexStringList`).
+- Compress serialized index data when necessary (e.g. via `readOrReadFrom` or `readIndexedStringList`).
 
 ### Code structure
 

@@ -19,7 +19,7 @@ import icu.windea.pls.ep.ChronicleEpBundle
 import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.index.ChronicleIndexService
-import icu.windea.pls.lang.index.ParadoxIndexInfoTypes
+import icu.windea.pls.lang.index.ParadoxMergedIndexTypes
 import icu.windea.pls.lang.manipulation.ParadoxScopeManipulationService
 import icu.windea.pls.lang.match.findByPattern
 import icu.windea.pls.lang.psi.properties
@@ -96,7 +96,7 @@ class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInfer
         val gameType = configGroup.gameType
         return withRecursionGuard({}.javaClass.name) {
             withRecursionCheck("${definitionInfo.name}:${definitionInfo.type}") {
-                val indexInfoType = ParadoxIndexInfoTypes.InferredScopeContextAwareDefinition
+                val indexInfoType = ParadoxMergedIndexTypes.ScopeInferrableDefinition
                 ChronicleIndexService.processAllFileDataWithKey(indexInfoType, project, searchScope, gameType) p@{ _, infos ->
                     infos.forEach f@{ info ->
                         ProgressManager.checkCanceled()
@@ -205,7 +205,7 @@ class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInfe
         return withRecursionGuard({}.javaClass.name) {
             if (depth == 1) stackTrace.addLast(thisEventName)
 
-            val indexInfoType = ParadoxIndexInfoTypes.EventInOnAction
+            val indexInfoType = ParadoxMergedIndexTypes.EventInOnAction
             ChronicleIndexService.processAllFileDataWithKey(indexInfoType, project, searchScope, gameType) p@{ file, infos ->
                 val psiFile = file.toPsiFile(project) ?: return@p true
                 infos.forEach f@{ info ->
@@ -317,7 +317,7 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
             if (depth == 1) stackTrace.addLast(thisEventName)
 
             val toRef = "from".repeat(depth)
-            val indexInfoType = ParadoxIndexInfoTypes.EventInEvent
+            val indexInfoType = ParadoxMergedIndexTypes.EventInEvent
             ChronicleIndexService.processAllFileDataWithKey(indexInfoType, project, searchScope, gameType) p@{ _, infos ->
                 infos.forEach f@{ info ->
                     ProgressManager.checkCanceled()
@@ -470,7 +470,7 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
             if (depth == 1) stackTrace.addLast(thisOnActionName)
 
             val toRef = "from".repeat(depth)
-            val indexInfoType = ParadoxIndexInfoTypes.OnActionInEvent
+            val indexInfoType = ParadoxMergedIndexTypes.OnActionInEvent
             ChronicleIndexService.processAllFileDataWithKey(indexInfoType, project, searchScope, gameType) p@{ _, infos ->
                 infos.forEach f@{ info ->
                     ProgressManager.checkCanceled()
