@@ -43,6 +43,7 @@ import icu.windea.pls.ep.config.config.CwtConfigPostProcessor
 import icu.windea.pls.ep.resolve.localisation.ParadoxCompositeLocalisationIconSupport
 import icu.windea.pls.ep.resolve.localisation.ParadoxLocalisationIconSupport
 import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
+import icu.windea.pls.lang.references.localisation.ParadoxLocalisationIconPsiReference
 import icu.windea.pls.model.constraints.ParadoxDefinitionIndexConstraint
 
 /**
@@ -229,6 +230,7 @@ interface CwtTypesModel {
     /**
      * 可能作为本地化图标的解析目标的定义类型。
      *
+     * @see ParadoxLocalisationIconPsiReference
      * @see ParadoxLocalisationIconSupport
      * @see ParadoxCompositeLocalisationIconSupport.fromDefinition
      * @see ParadoxDefinitionIndexConstraint.LocalisationIconResolvable

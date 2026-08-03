@@ -372,8 +372,8 @@
 
     <stubIndex implementation="icu.windea.pls.lang.index.ParadoxScriptedVariableNameIndex"/>
     <stubIndex implementation="icu.windea.pls.lang.index.ParadoxLocalisationNameIndex"/>
-    <stubIndex implementation="icu.windea.pls.lang.index.ParadoxLocalisationNameIndex$ModifierIndex"/>
-    <stubIndex implementation="icu.windea.pls.lang.index.ParadoxLocalisationNameIndex$EventIndex"/>
+    <stubIndex implementation="icu.windea.pls.lang.index.ParadoxLocalisationNameConstrainedIndex$ModifierIndex"/>
+    <stubIndex implementation="icu.windea.pls.lang.index.ParadoxLocalisationNameConstrainedIndex$EventIndex"/>
     <stubIndex implementation="icu.windea.pls.lang.index.ParadoxSyncedLocalisationNameIndex"/>
     <stubIndex implementation="icu.windea.pls.lang.index.ParadoxDefineNamespaceIndex"/>
     <stubIndex implementation="icu.windea.pls.lang.index.ParadoxDefineVariableIndex"/>
@@ -388,6 +388,7 @@
     <fileBasedIndex implementation="icu.windea.pls.lang.index.ParadoxDefinitionInjectionIndex"/>
     <fileBasedIndex implementation="icu.windea.pls.lang.index.ParadoxComplexEnumValueIndex"/>
     <fileBasedIndex implementation="icu.windea.pls.lang.index.ParadoxMergedIndex"/>
+
 
     <searchScopesProvider implementation="icu.windea.pls.lang.search.scope.ParadoxSearchScopeProvider"/>
 

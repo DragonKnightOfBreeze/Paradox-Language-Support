@@ -49,9 +49,12 @@ import java.io.DataOutput
 
 /**
  * 定义信息的索引。
+ *
+ * @see ParadoxDefinitionConstrainedIndex
+ * @see ParadoxDefinitionIndexConstraint
  */
 @Optimized
-class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxDefinitionIndexInfo>, ParadoxDefinitionIndexInfo>() {
+open class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxDefinitionIndexInfo>, ParadoxDefinitionIndexInfo>() {
     // NOTE 3.0.0 DO NOT use `sortedWith(compressComparator)` to compress index data - should keep declaration order
 
     override fun getName() = ChronicleIndexKeys.Definition

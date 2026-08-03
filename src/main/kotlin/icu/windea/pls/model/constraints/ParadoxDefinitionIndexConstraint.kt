@@ -6,6 +6,10 @@ import icu.windea.pls.config.configGroup.CwtTypesModel
 import icu.windea.pls.ep.resolve.localisation.ParadoxCompositeLocalisationIconSupport
 import icu.windea.pls.ep.resolve.localisation.ParadoxLocalisationIconSupport
 import icu.windea.pls.lang.index.ChronicleIndexKeys
+import icu.windea.pls.lang.references.localisation.ParadoxLocalisationIconPsiReference
+import icu.windea.pls.lang.references.localisation.ParadoxLocalisationTextColorPsiReference
+import icu.windea.pls.lang.references.localisation.ParadoxLocalisationTextFormatPsiReference
+import icu.windea.pls.lang.references.localisation.ParadoxLocalisationTextIconPsiReference
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.model.index.ParadoxDefinitionIndexInfo
 
@@ -14,17 +18,26 @@ enum class ParadoxDefinitionIndexConstraint(
     val ignoreCase: Boolean = false,
     val inferred: Boolean = false,
 ) : ParadoxIndexConstraint<ParadoxDefinitionIndexInfo> {
+    /**
+     * @see ParadoxLocalisationTextColorPsiReference
+     */
     TextColor(ChronicleIndexKeys.DefinitionForTextColor) {
         override fun test(definitionType: String, configGroup: CwtConfigGroup): Boolean {
             return definitionType == ParadoxDefinitionTypes.textColor
         }
     },
+    /**
+     * @see ParadoxLocalisationTextIconPsiReference
+     */
     TextIcon(ChronicleIndexKeys.DefinitionForTextIcon) {
         override fun test(definitionType: String, configGroup: CwtConfigGroup): Boolean {
             if (!ParadoxSyntaxConstraint.LocalisationTextIcon.test(configGroup.gameType)) return false
             return definitionType == ParadoxDefinitionTypes.textIcon
         }
     },
+    /**
+     * @see ParadoxLocalisationTextFormatPsiReference
+     */
     TextFormat(ChronicleIndexKeys.DefinitionForTextFormat, ignoreCase = true) {
         override fun test(definitionType: String, configGroup: CwtConfigGroup): Boolean {
             if (!ParadoxSyntaxConstraint.LocalisationTextFormat.test(configGroup.gameType)) return false
@@ -32,6 +45,7 @@ enum class ParadoxDefinitionIndexConstraint(
         }
     },
     /**
+     * @see ParadoxLocalisationIconPsiReference
      * @see ParadoxLocalisationIconSupport
      * @see ParadoxCompositeLocalisationIconSupport.fromDefinition
      * @see CwtTypesModel.localisationIconResolvable
