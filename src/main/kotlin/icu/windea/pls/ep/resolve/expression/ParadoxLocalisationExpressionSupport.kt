@@ -2,12 +2,11 @@ package icu.windea.pls.ep.resolve.expression
 
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.lang.annotation.AnnotationHolder
-import com.intellij.openapi.extensions.ExtensionPointListener
 import com.intellij.openapi.extensions.ExtensionPointName
-import com.intellij.openapi.extensions.PluginDescriptor
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
+import icu.windea.pls.core.addExtensionPointListener
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.util.values.LazyValue
 import icu.windea.pls.core.util.values.singletonListOrEmpty
@@ -59,21 +58,12 @@ interface ParadoxLocalisationExpressionSupport {
         // region Implementations
 
         init {
-            computeCache()
-            addListener()
+            CACHE.initialize { computeCache() }
+            EP_NAME.addExtensionPointListener { CACHE.reinitialize { computeCache() } }
         }
 
-        private fun computeCache() {
-            CACHE.reinitialize {
-                EP_NAME.extensionList.optimized()
-            }
-        }
-
-        private fun addListener() {
-            EP_NAME.addExtensionPointListener(object : ExtensionPointListener<ParadoxLocalisationExpressionSupport> {
-                override fun extensionAdded(extension: ParadoxLocalisationExpressionSupport, pluginDescriptor: PluginDescriptor) = computeCache()
-                override fun extensionRemoved(extension: ParadoxLocalisationExpressionSupport, pluginDescriptor: PluginDescriptor) = computeCache()
-            })
+        private fun computeCache(): List<ParadoxLocalisationExpressionSupport> {
+            return EP_NAME.extensionList.optimized()
         }
 
         // endregion

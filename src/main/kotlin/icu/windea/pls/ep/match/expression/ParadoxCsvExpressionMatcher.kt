@@ -1,10 +1,9 @@
 package icu.windea.pls.ep.match.expression
 
-import com.intellij.openapi.extensions.ExtensionPointListener
 import com.intellij.openapi.extensions.ExtensionPointName
-import com.intellij.openapi.extensions.PluginDescriptor
 import icu.windea.pls.config.CwtDataType
 import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.core.addExtensionPointListener
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.util.values.LazyValue
@@ -36,51 +35,43 @@ interface ParadoxCsvExpressionMatcher {
         @JvmField val EP_NAME = ExtensionPointName<ParadoxCsvExpressionMatcher>("icu.windea.pls.csvExpressionMatcher")
         @JvmField val CACHE = LazyValue<Map<CwtDataType, List<ParadoxCsvExpressionMatcher>>>()
 
-        fun get(dataType: CwtDataType): List<ParadoxCsvExpressionMatcher> = CACHE.get()?.get(dataType).orEmpty()
+        @JvmStatic
+        fun getAll(dataType: CwtDataType): List<ParadoxCsvExpressionMatcher> = CACHE.get()?.get(dataType).orEmpty()
 
         // region Implementations
 
         init {
-            computeCache()
-            addListener()
+            CACHE.initialize { computeCache() }
+            EP_NAME.addExtensionPointListener { CACHE.reinitialize { computeCache() } }
         }
 
-        private fun computeCache() {
-            CACHE.reinitialize {
-                val result = mutableMapOf<CwtDataType, MutableList<ParadoxCsvExpressionMatcher>>()
-                val eps = EP_NAME.extensionList
-                eps.forEachFast { ep ->
-                    when (ep) {
-                        is ParadoxCsvCompositeExpressionMatcher -> {
-                            val matchers = ep.matcherMap
-                            matchers.forEach { (matcher, dataTypes) ->
-                                dataTypes.forEach { dataType ->
-                                    result.computeIfAbsent(dataType) { mutableListOf() } += matcher
-                                }
-                            }
-                        }
-                        is ParadoxCsvSimpleExpressionMatcher -> {
-                            ep.dataTypes.forEach { dataType ->
-                                result.computeIfAbsent(dataType) { mutableListOf() } += ep
-                            }
-                        }
-                        else -> {
-                            // fallback
-                            CwtDataType.entries.values.forEach { dataType ->
-                                result.computeIfAbsent(dataType) { mutableListOf() } += ep
+        private fun computeCache(): Map<CwtDataType, List<ParadoxCsvExpressionMatcher>> {
+            val result = mutableMapOf<CwtDataType, MutableList<ParadoxCsvExpressionMatcher>>()
+            val eps = EP_NAME.extensionList
+            eps.forEachFast { ep ->
+                when (ep) {
+                    is ParadoxCsvCompositeExpressionMatcher -> {
+                        val matchers = ep.matcherMap
+                        matchers.forEach { (matcher, dataTypes) ->
+                            dataTypes.forEach { dataType ->
+                                result.computeIfAbsent(dataType) { mutableListOf() } += matcher
                             }
                         }
                     }
+                    is ParadoxCsvSimpleExpressionMatcher -> {
+                        ep.dataTypes.forEach { dataType ->
+                            result.computeIfAbsent(dataType) { mutableListOf() } += ep
+                        }
+                    }
+                    else -> {
+                        // fallback
+                        CwtDataType.entries.values.forEach { dataType ->
+                            result.computeIfAbsent(dataType) { mutableListOf() } += ep
+                        }
+                    }
                 }
-                result.mapValues { (_, v) -> v.optimized() }.optimized()
             }
-        }
-
-        private fun addListener() {
-            EP_NAME.addExtensionPointListener(object : ExtensionPointListener<ParadoxCsvExpressionMatcher> {
-                override fun extensionAdded(extension: ParadoxCsvExpressionMatcher, pluginDescriptor: PluginDescriptor) = computeCache()
-                override fun extensionRemoved(extension: ParadoxCsvExpressionMatcher, pluginDescriptor: PluginDescriptor) = computeCache()
-            })
+            return result.mapValues { (_, v) -> v.optimized() }.optimized()
         }
 
         // endregion

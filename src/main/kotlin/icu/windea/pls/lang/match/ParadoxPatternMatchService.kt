@@ -45,7 +45,7 @@ object ParadoxPatternMatchService {
         ProgressManager.checkCanceled()
         val expression = ParadoxExpression.resolve(key)
         val matchContext = ParadoxScriptExpressionMatchContext(contextElement, expression, configExpression, null, configGroup, options)
-        val matchers = ParadoxScriptExpressionMatcher.get(matchContext.dataType)
+        val matchers = ParadoxScriptExpressionMatcher.getAll(matchContext.dataType)
         matchers.forEachFast f@{ matcher ->
             if (!matcher.isPatternAware(matchContext)) return@f
             matcher.match(matchContext)?.let { return it.get(options) }

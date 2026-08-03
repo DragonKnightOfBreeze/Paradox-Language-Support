@@ -30,7 +30,7 @@ object ParadoxAnalysisService {
      * @see ParadoxIgnoredFileProvider.isIgnoredFile
      */
     fun isIgnoredFile(path: ParadoxPath, entry: String): Boolean {
-        val eps = ParadoxIgnoredFileProvider.EP_NAME.extensionList
+        val eps = ParadoxIgnoredFileProvider.getAll()
         eps.forEachFast { ep ->
             if (ep.isIgnoredFile(path, entry)) return true
         }
@@ -42,7 +42,7 @@ object ParadoxAnalysisService {
      */
     fun getRootMetadata(rootPath: Path): ParadoxRootMetadata? {
         if (!rootPath.isDirectory()) return null
-        val eps = ParadoxRootMetadataProvider.EP_NAME.extensionList
+        val eps = ParadoxRootMetadataProvider.getAll()
         eps.forEachFast { ep ->
             ep.getRootMetadata(rootPath)?.let { return it }
         }
@@ -54,7 +54,7 @@ object ParadoxAnalysisService {
      */
     fun getInferredGameTypeInfo(rootPath: Path): ParadoxGameTypeInfo? {
         if (!rootPath.isDirectory()) return null
-        val eps = ParadoxInferredGameTypeProvider.EP_NAME.extensionList
+        val eps = ParadoxInferredGameTypeProvider.getAll()
         eps.forEachFast { ep ->
             ep.getInferredGameTypeInfo(rootPath)?.let { return it }
         }

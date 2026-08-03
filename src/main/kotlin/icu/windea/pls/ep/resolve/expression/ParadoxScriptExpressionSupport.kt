@@ -2,14 +2,13 @@ package icu.windea.pls.ep.resolve.expression
 
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.lang.annotation.AnnotationHolder
-import com.intellij.openapi.extensions.ExtensionPointListener
 import com.intellij.openapi.extensions.ExtensionPointName
-import com.intellij.openapi.extensions.PluginDescriptor
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import icu.windea.pls.config.CwtDataType
 import icu.windea.pls.config.config.CwtConfig
+import icu.windea.pls.core.addExtensionPointListener
 import icu.windea.pls.core.collections.filterFast
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.optimized
@@ -64,24 +63,15 @@ interface ParadoxScriptExpressionSupport {
         // region Implementations
 
         init {
-            computeCache()
-            addListener()
+            CACHE.initialize { computeCache() }
+            EP_NAME.addExtensionPointListener { CACHE.reinitialize { computeCache() } }
         }
 
-        private fun computeCache() {
-            CACHE.reinitialize {
-                val result = mutableMapOf<CwtDataType, List<ParadoxScriptExpressionSupport>>()
-                val eps = EP_NAME.extensionList
-                CwtDataType.entries.values.forEach { dataType -> eps.filterFast { ep -> ep.supports(dataType) }.orNull()?.let { result[dataType] = it.optimized() } }
-                result.optimized()
-            }
-        }
-
-        private fun addListener() {
-            EP_NAME.addExtensionPointListener(object : ExtensionPointListener<ParadoxScriptExpressionSupport> {
-                override fun extensionAdded(extension: ParadoxScriptExpressionSupport, pluginDescriptor: PluginDescriptor) = computeCache()
-                override fun extensionRemoved(extension: ParadoxScriptExpressionSupport, pluginDescriptor: PluginDescriptor) = computeCache()
-            })
+        private fun computeCache(): Map<CwtDataType, List<ParadoxScriptExpressionSupport>> {
+            val result = mutableMapOf<CwtDataType, List<ParadoxScriptExpressionSupport>>()
+            val eps = EP_NAME.extensionList
+            CwtDataType.entries.values.forEach { dataType -> eps.filterFast { ep -> ep.supports(dataType) }.orNull()?.let { result[dataType] = it.optimized() } }
+            return result.optimized()
         }
 
         // endregion

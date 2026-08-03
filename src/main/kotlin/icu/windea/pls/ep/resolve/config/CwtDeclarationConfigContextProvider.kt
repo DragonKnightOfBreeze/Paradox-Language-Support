@@ -5,6 +5,9 @@ import com.intellij.psi.PsiElement
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.addExtensionPointListener
+import icu.windea.pls.core.optimized
+import icu.windea.pls.core.util.values.LazyValue
 import icu.windea.pls.lang.resolve.CwtConfigContext
 import icu.windea.pls.lang.resolve.CwtDeclarationConfigContext
 import icu.windea.pls.model.ParadoxGameType
@@ -30,5 +33,21 @@ interface CwtDeclarationConfigContextProvider {
 
     companion object INSTANCE {
         @JvmField val EP_NAME = ExtensionPointName<CwtDeclarationConfigContextProvider>("icu.windea.pls.declarationConfigContextProvider")
+        @JvmField val CACHE = LazyValue<List<CwtDeclarationConfigContextProvider>>()
+
+        fun getAll(): List<CwtDeclarationConfigContextProvider> = CACHE.get().orEmpty()
+
+        // region Implementations
+
+        init {
+            CACHE.reinitialize { compute() }
+            EP_NAME.addExtensionPointListener { CACHE.reinitialize { compute() } }
+        }
+
+        private fun compute(): List<CwtDeclarationConfigContextProvider> {
+            return EP_NAME.extensionList.optimized()
+        }
+
+        // endregion
     }
 }

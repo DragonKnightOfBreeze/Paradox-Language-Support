@@ -4,6 +4,9 @@ import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.psi.PsiElement
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.core.addExtensionPointListener
+import icu.windea.pls.core.optimized
+import icu.windea.pls.core.util.values.LazyValue
 import icu.windea.pls.model.ParadoxGameType
 
 /**
@@ -41,5 +44,21 @@ interface CwtOverriddenConfigProvider {
 
     companion object INSTANCE {
         @JvmField val EP_NAME = ExtensionPointName<CwtOverriddenConfigProvider>("icu.windea.pls.overriddenConfigProvider")
+        @JvmField val CACHE = LazyValue<List<CwtOverriddenConfigProvider>>()
+
+        fun getAll(): List<CwtOverriddenConfigProvider> = CACHE.get().orEmpty()
+
+        // region Implementations
+
+        init {
+            CACHE.reinitialize { compute() }
+            EP_NAME.addExtensionPointListener { CACHE.reinitialize { compute() } }
+        }
+
+        private fun compute(): List<CwtOverriddenConfigProvider> {
+            return EP_NAME.extensionList.optimized()
+        }
+
+        // endregion
     }
 }

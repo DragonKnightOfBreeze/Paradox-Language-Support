@@ -232,7 +232,7 @@ object ParadoxExpressionService {
         val configExpression = config.configExpression
         val dataType = configExpression.type
         val gameType = config.configGroup.gameType
-        val supports = ParadoxCsvExpressionSupport.get(dataType) // 3.0.1 optimize: use global cache (by data type)
+        val supports = ParadoxCsvExpressionSupport.getAll(dataType) // 3.0.1 optimize: use global cache (by data type)
         supports.forEachFast f@{ support ->
             if (gameType.orSpecific() != null && !support.supports(gameType)) return@f // check game type first
             ProgressManager.checkCanceled() // 3.0.1 optimize: check canceled immediately before applying logic
@@ -248,7 +248,7 @@ object ParadoxExpressionService {
         val configExpression = config.configExpression
         val dataType = configExpression.type
         val gameType = config.configGroup.gameType
-        val supports = ParadoxCsvExpressionSupport.get(dataType) // 3.0.1 optimize: use global cache (by data type)
+        val supports = ParadoxCsvExpressionSupport.getAll(dataType) // 3.0.1 optimize: use global cache (by data type)
         supports.forEachFast f@{ support ->
             if (gameType.orSpecific() != null && !support.supports(gameType)) return@f // check game type first
             ProgressManager.checkCanceled() // 3.0.1 optimize: check canceled immediately before applying logic
@@ -265,7 +265,7 @@ object ParadoxExpressionService {
         val configExpression = config.configExpression
         val dataType = configExpression.type
         val gameType = config.configGroup.gameType
-        val supports = ParadoxCsvExpressionSupport.get(dataType) // 3.0.1 optimize: use global cache (by data type)
+        val supports = ParadoxCsvExpressionSupport.getAll(dataType) // 3.0.1 optimize: use global cache (by data type)
         supports.forEachFast f@{ support ->
             if (gameType.orSpecific() != null && !support.supports(gameType)) return@f // check game type first
             ProgressManager.checkCanceled() // 3.0.1 optimize: check canceled immediately before applying logic
@@ -282,7 +282,7 @@ object ParadoxExpressionService {
         val configExpression = config.configExpression
         val dataType = configExpression.type
         val gameType = config.configGroup.gameType
-        val supports = ParadoxCsvExpressionSupport.get(dataType) // 3.0.1 optimize: use global cache (by data type)
+        val supports = ParadoxCsvExpressionSupport.getAll(dataType) // 3.0.1 optimize: use global cache (by data type)
         supports.forEachFast f@{ support ->
             if (gameType.orSpecific() != null && !support.supports(gameType)) return@f // check game type first
             ProgressManager.checkCanceled() // 3.0.1 optimize: check canceled immediately before applying logic

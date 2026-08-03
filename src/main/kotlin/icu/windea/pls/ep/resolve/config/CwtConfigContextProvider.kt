@@ -4,6 +4,9 @@ import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.psi.PsiFile
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.addExtensionPointListener
+import icu.windea.pls.core.optimized
+import icu.windea.pls.core.util.values.LazyValue
 import icu.windea.pls.ep.resolve.expression.ParadoxScriptExpressionSupport
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.resolve.CwtConfigContext
@@ -39,5 +42,21 @@ interface CwtConfigContextProvider {
 
     companion object INSTANCE {
         @JvmField val EP_NAME = ExtensionPointName<CwtConfigContextProvider>("icu.windea.pls.configContextProvider")
+        @JvmField val CACHE = LazyValue<List<CwtConfigContextProvider>>()
+
+        fun getAll(): List<CwtConfigContextProvider> = CACHE.get().orEmpty()
+
+        // region Implementations
+
+        init {
+            CACHE.reinitialize { compute() }
+            EP_NAME.addExtensionPointListener { CACHE.reinitialize { compute() } }
+        }
+
+        private fun compute(): List<CwtConfigContextProvider> {
+            return EP_NAME.extensionList.optimized()
+        }
+
+        // endregion
     }
 }

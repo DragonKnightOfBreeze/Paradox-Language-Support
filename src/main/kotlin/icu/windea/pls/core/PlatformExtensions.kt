@@ -23,6 +23,9 @@ import com.intellij.openapi.application.runReadAction
 import com.intellij.openapi.command.CommandProcessor
 import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.extensions.ExtensionPointListener
+import com.intellij.openapi.extensions.ExtensionPointName
+import com.intellij.openapi.extensions.PluginDescriptor
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.DumbService
@@ -778,6 +781,22 @@ fun executeWriteCommand(
     WriteCommandAction.writeCommandAction(project, makeWritable)
         .withName(name).withGroupId(groupId)
         .run(action)
+}
+
+// endregion
+
+// region EP Extensions
+
+inline fun <T : Any> ExtensionPointName<T>.addExtensionPointListener(action: (extension: T) -> Unit) {
+    addExtensionPointListener(object : ExtensionPointListener<T> {
+        override fun extensionAdded(extension: T, pluginDescriptor: PluginDescriptor) {
+            action(extension)
+        }
+
+        override fun extensionRemoved(extension: T, pluginDescriptor: PluginDescriptor) {
+            action(extension)
+        }
+    })
 }
 
 // endregion

@@ -1,9 +1,8 @@
 package icu.windea.pls.ep.match.expression
 
-import com.intellij.openapi.extensions.ExtensionPointListener
 import com.intellij.openapi.extensions.ExtensionPointName
-import com.intellij.openapi.extensions.PluginDescriptor
 import icu.windea.pls.config.config.CwtMemberConfig
+import icu.windea.pls.core.addExtensionPointListener
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.util.values.LazyValue
 import icu.windea.pls.lang.match.ParadoxMatchService
@@ -40,21 +39,12 @@ interface ParadoxScriptExpressionMatchOptimizer {
         // region Implementations
 
         init {
-            computeCache()
-            addListener()
+            CACHE.reinitialize { compute() }
+            EP_NAME.addExtensionPointListener { CACHE.reinitialize { compute() } }
         }
 
-        private fun computeCache() {
-            CACHE.reinitialize {
-                EP_NAME.extensionList.optimized()
-            }
-        }
-
-        private fun addListener() {
-            EP_NAME.addExtensionPointListener(object : ExtensionPointListener<ParadoxScriptExpressionMatchOptimizer> {
-                override fun extensionAdded(extension: ParadoxScriptExpressionMatchOptimizer, pluginDescriptor: PluginDescriptor) = computeCache()
-                override fun extensionRemoved(extension: ParadoxScriptExpressionMatchOptimizer, pluginDescriptor: PluginDescriptor) = computeCache()
-            })
+        private fun compute(): List<ParadoxScriptExpressionMatchOptimizer> {
+            return EP_NAME.extensionList.optimized()
         }
 
         // endregion

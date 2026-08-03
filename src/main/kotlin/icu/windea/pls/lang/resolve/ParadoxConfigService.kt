@@ -95,13 +95,13 @@ object ParadoxConfigService {
     fun getRelatedConfigs(file: PsiFile, offset: Int): Collection<CwtConfig<*>> {
         val gameType = selectGameType(file) ?: return emptySet()
         val result = mutableSetOf<CwtConfig<*>>()
-        val eps = CwtRelatedConfigProvider.EP_NAME.extensionList
+        val eps = CwtRelatedConfigProvider.getAll()
         eps.forEachFast f@{ ep ->
             if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f // check game type first
             val r = ep.getRelatedConfigs(file, offset)
             result += r
         }
-        if (result.isEmpty()) return emptyList()
+        if (result.isEmpty()) return emptySet()
         return result
     }
 
@@ -110,7 +110,7 @@ object ParadoxConfigService {
      */
     fun <T : CwtMemberConfig<*>> getOverriddenConfigs(contextElement: PsiElement, config: T): List<T> {
         val gameType = config.configGroup.gameType
-        val eps = CwtOverriddenConfigProvider.EP_NAME.extensionList
+        val eps = CwtOverriddenConfigProvider.getAll()
         eps.forEachFast f@{ ep ->
             if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f // check game type first
             val r = ep.getOverriddenConfigs(contextElement, config).orNull()
@@ -132,7 +132,7 @@ object ParadoxConfigService {
         val memberPathFromFile = ParadoxMemberService.getPath(element) ?: return null
         val memberRole = ParadoxTypeResolver.resolveMemberRole(element)
         val configGroup = ChronicleFacade.getConfigGroup(file.project, gameType)
-        val eps = CwtConfigContextProvider.EP_NAME.extensionList
+        val eps = CwtConfigContextProvider.getAll()
         eps.forEachFast f@{ ep ->
             if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f // check game type first
             val r = ep.getContext(element, configGroup, file, memberPathFromFile, memberRole)
@@ -146,7 +146,7 @@ object ParadoxConfigService {
      */
     fun getDeclarationConfigContext(element: PsiElement, configGroup: CwtConfigGroup, definitionName: String?, definitionType: String, definitionSubtypes: List<String>?): CwtDeclarationConfigContext? {
         val gameType = configGroup.gameType
-        val eps = CwtDeclarationConfigContextProvider.EP_NAME.extensionList
+        val eps = CwtDeclarationConfigContextProvider.getAll()
         eps.forEachFast f@{ ep ->
             if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f // check game type first
             val r = ep.getContext(element, configGroup, definitionName, definitionType, definitionSubtypes)

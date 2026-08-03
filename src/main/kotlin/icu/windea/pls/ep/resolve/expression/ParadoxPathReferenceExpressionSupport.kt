@@ -1,12 +1,11 @@
 package icu.windea.pls.ep.resolve.expression
 
-import com.intellij.openapi.extensions.ExtensionPointListener
 import com.intellij.openapi.extensions.ExtensionPointName
-import com.intellij.openapi.extensions.PluginDescriptor
 import com.intellij.psi.PsiElement
 import icu.windea.pls.config.CwtDataType
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.core.addExtensionPointListener
 import icu.windea.pls.core.collections.findFast
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.util.values.LazyValue
@@ -71,24 +70,15 @@ interface ParadoxPathReferenceExpressionSupport {
         // region Implementations
 
         init {
-            computeCache()
-            addListener()
+            CACHE.initialize { computeCache() }
+            EP_NAME.addExtensionPointListener { CACHE.reinitialize { computeCache() } }
         }
 
-        private fun computeCache() {
-            CACHE.reinitialize {
-                val result = mutableMapOf<CwtDataType, ParadoxPathReferenceExpressionSupport>()
-                val eps = EP_NAME.extensionList
-                CwtDataType.entries.values.forEach { dataType -> eps.findFast { ep -> ep.supports(dataType) }?.let { result[dataType] = it } }
-                result.optimized()
-            }
-        }
-
-        private fun addListener() {
-            EP_NAME.addExtensionPointListener(object : ExtensionPointListener<ParadoxPathReferenceExpressionSupport> {
-                override fun extensionAdded(extension: ParadoxPathReferenceExpressionSupport, pluginDescriptor: PluginDescriptor) = computeCache()
-                override fun extensionRemoved(extension: ParadoxPathReferenceExpressionSupport, pluginDescriptor: PluginDescriptor) = computeCache()
-            })
+        private fun computeCache(): Map<CwtDataType, ParadoxPathReferenceExpressionSupport> {
+            val result = mutableMapOf<CwtDataType, ParadoxPathReferenceExpressionSupport>()
+            val eps = EP_NAME.extensionList
+            CwtDataType.entries.values.forEach { dataType -> eps.findFast { ep -> ep.supports(dataType) }?.let { result[dataType] = it } }
+            return result.optimized()
         }
 
         // endregion
