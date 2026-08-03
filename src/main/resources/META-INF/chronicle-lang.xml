@@ -106,7 +106,7 @@
     <!-- icu.windea.pls.lang.codeInsight.completion.localisation.ParadoxLocalisationNameCompletionProvider -->
     <!-- icu.windea.pls.lang.codeInsight.completion.localisation.ParadoxLocalisationColorCompletionProvider -->
     <!-- icu.windea.pls.lang.codeInsight.completion.localisation.ParadoxLocalisationParameterCompletionProvider -->
-    <!-- icu.windea.pls.lang.codeInsight.completion.localisation.ParadoxScriptedVariableReferenceCompletionProvider -->
+    <!-- icu.windea.pls.lang.codeInsight.completion.localisation.ParadoxLocalisationScriptedVariableReferenceCompletionProvidertionProvider -->
     <!-- icu.windea.pls.lang.codeInsight.completion.localisation.ParadoxLocalisationExpressionCompletionProvider -->
     <!-- icu.windea.pls.lang.codeInsight.completion.localisation.ParadoxLocalisationConceptCompletionProvider -->
     <!-- icu.windea.pls.lang.codeInsight.completion.localisation.ParadoxLocalisationTextIconCompletionProvider -->
@@ -406,7 +406,7 @@
     <referencesSearch implementation="icu.windea.pls.lang.search.searchers.usages.ParadoxLocalisationParameterUsagesSearcher"/>
 
     <psi.referenceContributor language="CWT" implementation="icu.windea.pls.lang.references.cwt.CwtConfigPsiReferenceContributor"/>
-    <!-- icu.windea.pls.lang.references.cwt.CwtConfigSymbolReferenceProvider -->
+    <!-- icu.windea.pls.lang.references.cwt.CwtConfigSymbolPsiReferenceProvider -->
     <psi.referenceContributor language="PARADOX_SCRIPT" implementation="icu.windea.pls.lang.references.script.ParadoxScriptPsiReferenceContributor"/>
     <!-- icu.windea.pls.lang.references.script.ParadoxScriptPsiReferenceProvider -->
     <!-- icu.windea.pls.lang.references.script.ParadoxScriptExpressionPsiReferenceProvider -->

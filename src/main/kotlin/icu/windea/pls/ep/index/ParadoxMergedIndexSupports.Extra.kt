@@ -18,10 +18,10 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import java.io.DataInput
 import java.io.DataOutput
 
-class ParadoxShaderEffectMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxShaderEffectIndexInfo> {
+class ParadoxShaderEffectMergedIndexSupport : ParadoxMergedIndexSupportBase<ParadoxShaderEffectIndexInfo>() {
     override val indexInfoType = ParadoxIndexInfoTypes.ShaderEffect
 
-    override fun buildDataForExpression(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, info: ParadoxDefinitionCandidateInfo?, configs: List<CwtMemberConfig<*>>) {
+    override fun buildData(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, info: ParadoxDefinitionCandidateInfo?, configs: List<CwtMemberConfig<*>>) {
         val expression = element.value
         if (expression.isEmpty() || expression.isParameterized()) return // skip if expression is empty or parameterized
         val config = configs.findFast { matchesConfig(it) }
@@ -50,10 +50,10 @@ class ParadoxShaderEffectMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxS
     }
 }
 
-class ParadoxMeshLocatorMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxMeshLocatorIndexInfo> {
+class ParadoxMeshLocatorMergedIndexSupport : ParadoxMergedIndexSupportBase<ParadoxMeshLocatorIndexInfo>() {
     override val indexInfoType = ParadoxIndexInfoTypes.MeshLocator
 
-    override fun buildDataForExpression(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, info: ParadoxDefinitionCandidateInfo?, configs: List<CwtMemberConfig<*>>) {
+    override fun buildData(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, info: ParadoxDefinitionCandidateInfo?, configs: List<CwtMemberConfig<*>>) {
         val expression = element.value
         if (expression.isEmpty() || expression.isParameterized()) return // skip if expression is empty or parameterized
         val config = configs.findFast { matchesConfig(it) }

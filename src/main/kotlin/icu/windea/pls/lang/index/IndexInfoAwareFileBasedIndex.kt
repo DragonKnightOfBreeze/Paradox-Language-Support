@@ -82,7 +82,9 @@ sealed class IndexInfoAwareFileBasedIndex<V, out T : IndexInfo> : FileBasedIndex
         }
 
         // use file based index (`FileBasedIndex`)
-        return indexData(fileContent.psiFile)
+        val result = indexData(fileContent.psiFile)
+        if (result.isEmpty()) return emptyMap() // 3.0.1 optimize: for empty map
+        return result
     }
 
     protected open fun indexData(psiFile: PsiFile): Map<String, V> = emptyMap()
@@ -102,7 +104,9 @@ sealed class IndexInfoAwareFileBasedIndex<V, out T : IndexInfo> : FileBasedIndex
         if (!filterFile(file)) return emptyMap()
 
         val psiFile = file.toPsiFile(project) ?: return emptyMap()
-        return indexData(psiFile)
+        val result = indexData(psiFile)
+        if (result.isEmpty()) return emptyMap() // 3.0.1 optimize: for empty map
+        return result
     }
 
     private fun saveGistValue(storage: DataOutput, value: Map<String, V>) {

@@ -15,6 +15,7 @@ import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.createResults
 import icu.windea.pls.core.psi.PsiCompositeReference
 import icu.windea.pls.core.util.ProcessorScope
+import icu.windea.pls.lang.codeInsight.completion.script.ParadoxScriptExpressionCompletionProvider
 import icu.windea.pls.lang.psi.ParadoxPsiService
 import icu.windea.pls.lang.references.ParadoxConstrainedPsiReference
 import icu.windea.pls.lang.resolve.ParadoxExpressionService
@@ -27,7 +28,8 @@ import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 
 /**
- * @see icu.windea.pls.lang.codeInsight.completion.script.ParadoxScriptExpressionCompletionProvider
+ * @see ParadoxScriptPsiReferenceProvider
+ * @see ParadoxScriptExpressionCompletionProvider
  */
 class ParadoxScriptExpressionPsiReference(
     element: ParadoxScriptExpressionElement,

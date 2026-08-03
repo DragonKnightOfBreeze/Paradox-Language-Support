@@ -4,11 +4,13 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.util.IncorrectOperationException
+import icu.windea.pls.lang.codeInsight.completion.localisation.ParadoxLocalisationColorCompletionProvider
 import icu.windea.pls.localisation.psi.ParadoxLocalisationColorfulText
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextColorAwareElement
 
 /**
- * @see icu.windea.pls.lang.codeInsight.completion.localisation.ParadoxLocalisationColorCompletionProvider
+ * @see ParadoxLocalisationPsiReferenceProvider
+ * @see ParadoxLocalisationColorCompletionProvider
  */
 class ParadoxLocalisationTextColorPsiReference(
     element: ParadoxLocalisationTextColorAwareElement,

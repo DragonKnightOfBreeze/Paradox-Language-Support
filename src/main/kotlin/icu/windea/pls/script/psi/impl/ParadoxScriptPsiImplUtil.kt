@@ -446,12 +446,6 @@ object ParadoxScriptPsiImplUtil {
         return element.node.startOffset
     }
 
-    @JvmStatic
-    fun getReference(element: ParadoxScriptConditionalBlockParameter): ParadoxConditionParameterPsiReference {
-        val nameElement = element.idElement
-        return ParadoxConditionParameterPsiReference(element, nameElement.textRangeInParent)
-    }
-
     // endregion
 
     // region ParadoxScriptInlineMath
@@ -598,12 +592,6 @@ object ParadoxScriptPsiImplUtil {
         return element.argumentElement?.idElement?.text
     }
 
-    @JvmStatic
-    fun getReference(element: ParadoxScriptParameter): ParadoxParameterPsiReference? {
-        val nameElement = element.idElement ?: return null
-        return ParadoxParameterPsiReference(element, nameElement.textRangeInParent)
-    }
-
     // endregion
 
     // region ParadoxScriptInlineMathParameter
@@ -645,12 +633,6 @@ object ParadoxScriptPsiImplUtil {
     fun getDefaultValue(element: ParadoxScriptInlineMathParameter): String? {
         // 兼容默认值为空字符串的情况
         return element.argumentElement?.idElement?.text
-    }
-
-    @JvmStatic
-    fun getReference(element: ParadoxScriptInlineMathParameter): ParadoxParameterPsiReference? {
-        val nameElement = element.idElement ?: return null
-        return ParadoxParameterPsiReference(element, nameElement.textRangeInParent)
     }
 
     // endregion

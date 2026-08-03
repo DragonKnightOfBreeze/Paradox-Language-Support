@@ -6,13 +6,13 @@ import com.intellij.psi.PsiPolyVariantReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.impl.source.resolve.ResolveCache
 import icu.windea.pls.core.createResults
+import icu.windea.pls.lang.codeInsight.completion.localisation.ParadoxLocalisationIconCompletionProvider
 import icu.windea.pls.lang.util.ParadoxLocalisationIconManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationIcon
 
 /**
- * 本地化图标的PSI引用。
- *
- * @see icu.windea.pls.lang.codeInsight.completion.localisation.ParadoxLocalisationIconCompletionProvider
+ * @see ParadoxLocalisationPsiReferenceProvider
+ * @see ParadoxLocalisationIconCompletionProvider
  */
 class ParadoxLocalisationIconPsiReference(
     element: ParadoxLocalisationIcon,

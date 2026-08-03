@@ -116,7 +116,8 @@ scripted_variable_reference ::= AT scripted_variable_reference_part <<postProces
   ]
   methods=[
     getIdElement parameter=""
-    getIcon getName setName getValue setValue getExpression getReference getReferences
+    getIcon getName setName getValue setValue getExpression
+    getReference getReferences
   ]
 }
 private scripted_variable_reference_part ::= SCRIPTED_VARIABLE_REFERENCE_TOKEN | parameter | inline_conditional_block
@@ -172,7 +173,8 @@ block ::= LEFT_BRACE block_item * RIGHT_BRACE {
     "icu.windea.pls.script.psi.ParadoxScriptBoundMemberContainer"
   ]
   methods=[
-    getIcon getValue getExpression getReference getReferences
+    getIcon getValue getExpression
+    getReference getReferences
     getMemberContainer getMembers getLeftBound getRightBound getComponents
   ]
 }
@@ -206,7 +208,8 @@ parameter ::= PARAMETER_START parameter_name parameter_argument_part ? PARAMETER
   ]
   methods=[
     getIdElement getArgumentElement parameter_argument=""
-    getIcon getName setName getTextOffset getDefaultValue getReference
+    getIcon getName setName getTextOffset getDefaultValue
+    getReference getReferences
   ]
 }
 inline_math_parameter ::= PARAMETER_START parameter_name parameter_argument_part ? PARAMETER_END {
@@ -218,7 +221,8 @@ inline_math_parameter ::= PARAMETER_START parameter_name parameter_argument_part
   ]
   methods=[
     getIdElement getArgumentElement parameter_argument=""
-    getIcon getName setName getTextOffset getDefaultValue getReference
+    getIcon getName setName getTextOffset getDefaultValue
+    getReference getReferences
   ]
 }
 private parameter_name ::= PARAMETER_TOKEN
@@ -253,7 +257,10 @@ private conditional_block_expr ::= NESTED_LEFT_BRACKET conditional_block_express
 conditional_block_expression ::= NOT_SIGN ? conditional_block_parameter
 conditional_block_parameter ::= CONDITION_PARAMETER_TOKEN {
   implements="icu.windea.pls.script.psi.ParadoxConditionParameter"
-  methods=[getIdElement getIcon getName setName getTextOffset getReference]
+  methods=[
+    getIdElement getIcon getName setName getTextOffset
+    getReference getReferences
+  ]
 }
 private conditional_block_item ::= COMMENT | conditional_block_value | property | conditional_block {
   recoverWhile="#auto" // continue parsing
@@ -363,7 +370,8 @@ inline_math_scripted_variable_reference ::= AT ? inline_math_scripted_variable_r
   ]
   methods=[
     getIdElement inline_math_parameter=""
-    getIcon getName setName getReference getReferences
+    getIcon getName setName
+    getReference getReferences
   ]
 }
 private inline_math_scripted_variable_reference_part ::= SCRIPTED_VARIABLE_REFERENCE_TOKEN | inline_math_parameter

@@ -34,12 +34,12 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import java.io.DataInput
 import java.io.DataOutput
 
-class ParadoxInferredScopeContextAwareDefinitionMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxInferredScopeContextAwareDefinitionIndexInfo> {
+class ParadoxInferredScopeContextAwareDefinitionMergedIndexSupport : ParadoxMergedIndexSupportBase<ParadoxInferredScopeContextAwareDefinitionIndexInfo>() {
     private val compressComparator = compareBy<ParadoxInferredScopeContextAwareDefinitionIndexInfo> { it.typeExpression }
 
     override val indexInfoType = ParadoxIndexInfoTypes.InferredScopeContextAwareDefinition
 
-    override fun buildDataForExpression(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, info: ParadoxDefinitionCandidateInfo?, configs: List<CwtMemberConfig<*>>) {
+    override fun buildData(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, info: ParadoxDefinitionCandidateInfo?, configs: List<CwtMemberConfig<*>>) {
         val expression = element.value
         if (expression.isEmpty() || expression.isParameterized()) return // skip if expression is empty or parameterized
         val config = configs.findFast { matchesConfig(it) }
@@ -74,12 +74,12 @@ class ParadoxInferredScopeContextAwareDefinitionMergedIndexSupport : ParadoxMerg
     }
 }
 
-class ParadoxEventInOnActionMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxEventInOnActionIndexInfo> {
+class ParadoxEventInOnActionMergedIndexSupport : ParadoxMergedIndexSupportBase<ParadoxEventInOnActionIndexInfo>() {
     private val compressComparator = compareBy<ParadoxEventInOnActionIndexInfo> { it.containingOnActionName }
 
     override val indexInfoType = ParadoxIndexInfoTypes.EventInOnAction
 
-    override fun buildDataForExpression(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, info: ParadoxDefinitionCandidateInfo?, configs: List<CwtMemberConfig<*>>) {
+    override fun buildData(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, info: ParadoxDefinitionCandidateInfo?, configs: List<CwtMemberConfig<*>>) {
         if (info !is ParadoxDefinitionInfo) return
         if (info.type != ParadoxDefinitionTypes.onAction) return
 
@@ -117,12 +117,12 @@ class ParadoxEventInOnActionMergedIndexSupport : ParadoxMergedIndexSupport<Parad
     }
 }
 
-class ParadoxEventInEventMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxEventInEventIndexInfo> {
+class ParadoxEventInEventMergedIndexSupport : ParadoxMergedIndexSupportBase<ParadoxEventInEventIndexInfo>() {
     private val compressComparator = compareBy<ParadoxEventInEventIndexInfo> { it.containingEventName }
 
     override val indexInfoType = ParadoxIndexInfoTypes.EventInEvent
 
-    override fun buildDataForExpression(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, info: ParadoxDefinitionCandidateInfo?, configs: List<CwtMemberConfig<*>>) {
+    override fun buildData(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, info: ParadoxDefinitionCandidateInfo?, configs: List<CwtMemberConfig<*>>) {
         if (info !is ParadoxDefinitionInfo) return
         if (info.type != ParadoxDefinitionTypes.event) return
 
@@ -184,12 +184,12 @@ class ParadoxEventInEventMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxE
     }
 }
 
-class ParadoxOnActionInEventMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxOnActionInEventIndexInfo> {
+class ParadoxOnActionInEventMergedIndexSupport : ParadoxMergedIndexSupportBase<ParadoxOnActionInEventIndexInfo>() {
     private val compressComparator = compareBy<ParadoxOnActionInEventIndexInfo> { it.containingEventName }
 
     override val indexInfoType = ParadoxIndexInfoTypes.OnActionInEvent
 
-    override fun buildDataForExpression(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, info: ParadoxDefinitionCandidateInfo?, configs: List<CwtMemberConfig<*>>) {
+    override fun buildData(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, info: ParadoxDefinitionCandidateInfo?, configs: List<CwtMemberConfig<*>>) {
         if (info !is ParadoxDefinitionInfo) return
         if (info.type != ParadoxDefinitionTypes.event) return
 

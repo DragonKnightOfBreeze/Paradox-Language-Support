@@ -140,25 +140,25 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
                 if (!useLazyIndex && definitionAvailableStatus != true) return
 
                 ProgressManager.checkCanceled()
-                buildDataForExpressionFromSupports(element, definitionCandidateInfo)
+                buildDataFromSupports(element, definitionCandidateInfo)
 
                 ProgressManager.checkCanceled()
                 val options = ParadoxMatchOptions.DUMB
                 val configs = ParadoxConfigManager.getConfigs(element, options)
                 if (configs.isEmpty()) return
-                buildDataForExpressionFromSupports(element, definitionCandidateInfo, configs)
+                buildDataFromSupports(element, definitionCandidateInfo, configs)
             }
 
             private fun buildDataFromSupports(element: PsiElement) {
                 supports.forEachFast { support -> support.buildData(element, fileData) }
             }
 
-            private fun buildDataForExpressionFromSupports(element: ParadoxScriptStringExpressionElement, info: ParadoxDefinitionCandidateInfo?) {
-                supports.forEachFast { support -> support.buildDataForExpression(element, fileData, info) }
+            private fun buildDataFromSupports(element: ParadoxScriptStringExpressionElement, info: ParadoxDefinitionCandidateInfo?) {
+                supports.forEachFast { support -> support.buildData(element, fileData, info) }
             }
 
-            private fun buildDataForExpressionFromSupports(element: ParadoxScriptStringExpressionElement, info: ParadoxDefinitionCandidateInfo?, configs: List<CwtMemberConfig<*>>) {
-                supports.forEachFast { support -> support.buildDataForExpression(element, fileData, info, configs) }
+            private fun buildDataFromSupports(element: ParadoxScriptStringExpressionElement, info: ParadoxDefinitionCandidateInfo?, configs: List<CwtMemberConfig<*>>) {
+                supports.forEachFast { support -> support.buildData(element, fileData, info, configs) }
             }
 
             override fun elementFinished(element: PsiElement) {
@@ -197,11 +197,11 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
             }
 
             private fun visitExpressionElement(element: ParadoxLocalisationExpressionElement) {
-                buildDataForExpressionFromSupports(element)
+                buildDataFromSupports(element)
             }
 
-            private fun buildDataForExpressionFromSupports(element: ParadoxLocalisationExpressionElement) {
-                supports.forEachFast { support -> support.buildDataForExpression(element, fileData) }
+            private fun buildDataFromSupports(element: ParadoxLocalisationExpressionElement) {
+                supports.forEachFast { support -> support.buildData(element, fileData) }
             }
 
             override fun elementFinished(element: PsiElement?) {
@@ -231,11 +231,11 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
             }
 
             private fun visitExpressionElement(element: ParadoxCsvExpressionElement) {
-                buildDataForExpressionFromSupports(element)
+                buildDataFromSupports(element)
             }
 
-            private fun buildDataForExpressionFromSupports(element: ParadoxCsvExpressionElement) {
-                supports.forEachFast { support -> support.buildDataForExpression(element, fileData) }
+            private fun buildDataFromSupports(element: ParadoxCsvExpressionElement) {
+                supports.forEachFast { support -> support.buildData(element, fileData) }
             }
 
             override fun elementFinished(element: PsiElement?) {

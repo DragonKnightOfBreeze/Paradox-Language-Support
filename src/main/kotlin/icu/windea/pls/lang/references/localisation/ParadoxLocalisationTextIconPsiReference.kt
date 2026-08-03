@@ -5,23 +5,23 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiPolyVariantReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.impl.source.resolve.ResolveCache
-import icu.windea.pls.base.annotations.ForGameType
+import icu.windea.pls.base.annotations.ForGameTypeConstraint
 import icu.windea.pls.core.createResults
 import icu.windea.pls.core.orNull
+import icu.windea.pls.lang.codeInsight.completion.localisation.ParadoxLocalisationTextIconCompletionProvider
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.search.util.withConstraint
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextIcon
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.model.constraints.ParadoxDefinitionIndexConstraint
+import icu.windea.pls.model.constraints.ParadoxGameTypeConstraint
 
 /**
- * 本地化文本图标的PSI引用。
- *
- * @see icu.windea.pls.lang.codeInsight.completion.localisation.ParadoxLocalisationTextIconCompletionProvider
+ * @see ParadoxLocalisationPsiReferenceProvider
+ * @see ParadoxLocalisationTextIconCompletionProvider
  */
-@ForGameType(ParadoxGameType.Ck3, ParadoxGameType.Vic3, ParadoxGameType.Eu5)
+@ForGameTypeConstraint(ParadoxGameTypeConstraint.JominiBased)
 class ParadoxLocalisationTextIconPsiReference(
     element: ParadoxLocalisationTextIcon,
     rangeInElement: TextRange

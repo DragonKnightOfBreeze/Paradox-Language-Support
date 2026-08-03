@@ -6,11 +6,21 @@ import com.intellij.psi.PsiPolyVariantReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.impl.source.resolve.ResolveCache
 import icu.windea.pls.core.createResults
+import icu.windea.pls.lang.codeInsight.completion.localisation.ParadoxLocalisationScriptedVariableReferenceCompletionProvider
+import icu.windea.pls.lang.codeInsight.completion.script.ParadoxScriptedVariableReferenceCompletionProvider
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
+import icu.windea.pls.lang.references.localisation.ParadoxLocalisationPsiReferenceProvider
+import icu.windea.pls.lang.references.script.ParadoxScriptPsiReferenceProvider
 import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
+/**
+ * @see ParadoxLocalisationPsiReferenceProvider
+ * @see ParadoxScriptPsiReferenceProvider
+ * @see ParadoxScriptedVariableReferenceCompletionProvider
+ * @see ParadoxLocalisationScriptedVariableReferenceCompletionProvider
+ */
 class ParadoxScriptedVariablePsiReference(
     element: ParadoxScriptedVariableReference,
     rangeInElement: TextRange

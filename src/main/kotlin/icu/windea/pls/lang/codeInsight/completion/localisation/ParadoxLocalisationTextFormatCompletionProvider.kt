@@ -4,7 +4,7 @@ import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.patterns.PlatformPatterns.*
 import com.intellij.util.ProcessingContext
-import icu.windea.pls.base.annotations.ForGameType
+import icu.windea.pls.base.annotations.ForGameTypeConstraint
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.codeInsight.completion.GlobalCompletionContext
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
@@ -13,9 +13,9 @@ import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionProvider
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextFormat
-import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.constraints.ParadoxGameTypeConstraint
 
-@ForGameType(ParadoxGameType.Ck3, ParadoxGameType.Vic3, ParadoxGameType.Eu5)
+@ForGameTypeConstraint(ParadoxGameTypeConstraint.JominiBased)
 class ParadoxLocalisationTextFormatCompletionProvider : ParadoxCompletionProvider() {
     val elementPattern get() = psiElement(TEXT_FORMAT_TOKEN)
 

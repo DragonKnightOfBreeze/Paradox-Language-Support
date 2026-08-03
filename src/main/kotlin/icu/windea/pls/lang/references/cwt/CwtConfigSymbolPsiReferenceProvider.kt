@@ -8,7 +8,7 @@ import com.intellij.util.ProcessingContext
 import icu.windea.pls.config.util.CwtConfigSymbolManager
 import icu.windea.pls.cwt.psi.CwtStringExpressionElement
 
-class CwtConfigSymbolReferenceProvider : PsiReferenceProvider() {
+class CwtConfigSymbolPsiReferenceProvider : PsiReferenceProvider() {
     override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<out PsiReference?> {
         ProgressManager.checkCanceled()
 

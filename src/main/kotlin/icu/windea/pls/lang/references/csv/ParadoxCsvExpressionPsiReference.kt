@@ -12,11 +12,16 @@ import icu.windea.pls.core.util.ProcessorScope
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.csv.psi.ParadoxCsvPsiService
+import icu.windea.pls.lang.codeInsight.completion.csv.ParadoxCsvExpressionCompletionProvider
 import icu.windea.pls.lang.psi.ParadoxPsiService
 import icu.windea.pls.lang.references.ParadoxConstrainedPsiReference
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.model.constraints.ParadoxReferenceConstraint
 
+/**
+ * @see ParadoxCsvExpressionPsiReferenceProvider
+ * @see ParadoxCsvExpressionCompletionProvider
+ */
 class ParadoxCsvExpressionPsiReference(
     element: ParadoxCsvExpressionElement,
     rangeInElement: TextRange,

@@ -8,12 +8,17 @@ import com.intellij.psi.ResolveResult
 import com.intellij.psi.impl.source.resolve.ResolveCache
 import icu.windea.pls.core.createResults
 import icu.windea.pls.core.psi.PsiCompositeReference
+import icu.windea.pls.lang.codeInsight.completion.localisation.ParadoxLocalisationExpressionCompletionProvider
 import icu.windea.pls.lang.psi.ParadoxPsiService
 import icu.windea.pls.lang.resolve.ParadoxExpressionService
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager.getExpressionText
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 
+/**
+ * @see ParadoxLocalisationExpressionPsiReferenceProvider
+ * @see ParadoxLocalisationExpressionCompletionProvider
+ */
 class ParadoxLocalisationExpressionPsiReference(
     element: ParadoxLocalisationExpressionElement,
     rangeInElement: TextRange

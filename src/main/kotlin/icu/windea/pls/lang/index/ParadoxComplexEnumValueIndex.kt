@@ -86,7 +86,7 @@ class ParadoxComplexEnumValueIndex : ParadoxIndexInfoAwareFileBasedIndex<List<Pa
         val path = fileInfo.path
         val fileLevelMatchContext = CwtComplexEnumConfigMatchContext(configGroup, path)
         val fileLevelConfigs = ParadoxConfigMatchService.getComplexEnumConfigCandidates(fileLevelMatchContext)
-        if (fileLevelConfigs.isEmpty()) return
+        if (fileLevelConfigs.isEmpty()) return // optimize (fast return if there are no candidates)
         fileLevelMatchContext.matchPath = false
 
         file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {

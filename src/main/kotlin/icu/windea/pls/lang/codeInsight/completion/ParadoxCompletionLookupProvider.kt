@@ -328,7 +328,6 @@ object ParadoxCompletionLookupProvider {
         return LookupElementBuilder.create(element, name)
             .withIcon(ChronicleIcons.Nodes.ScriptedVariable)
             .withTypeText(typeFile.name, typeFile.icon, true)
-            .withInsertHandler(LocalisationScriptedVariableInsertHandler())
             .withScriptedVariablePresentableNames(element)
             .withCompletionId()
     }
@@ -894,20 +893,6 @@ object ParadoxCompletionLookupProvider {
                 index++
             }
             return -1
-        }
-    }
-
-    private class LocalisationScriptedVariableInsertHandler<T : LookupElement> : InsertHandler<T> {
-        override fun handleInsert(c: InsertionContext, item: T) {
-            // 因为只能在 `$...$` 引用中出现，如果之后没有紧接着的 `$`（或者 `|`），需要自动补充，并将光标移到补充 `$` 之前
-            val editor = c.editor
-            val caretModel = editor.caretModel
-            val charsSequence = editor.document.charsSequence
-            val suffixChar = charsSequence.getOrNull(caretModel.offset)
-            if (suffixChar != '$' && suffixChar != '|') {
-                EditorModificationUtil.insertStringAtCaret(editor, "$")
-                caretModel.moveToOffset(caretModel.offset - 1)
-            }
         }
     }
 

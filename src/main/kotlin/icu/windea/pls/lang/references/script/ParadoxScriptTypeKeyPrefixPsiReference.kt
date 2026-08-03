@@ -6,6 +6,9 @@ import icu.windea.pls.cwt.psi.CwtValue
 import icu.windea.pls.lang.references.CwtConfigBasedPsiReference
 import icu.windea.pls.script.psi.ParadoxScriptString
 
+/**
+ * @see ParadoxScriptTypeKeyPrefixPsiReferenceProvider
+ */
 class ParadoxScriptTypeKeyPrefixPsiReference(
     element: ParadoxScriptString,
     rangeInElement: TextRange,

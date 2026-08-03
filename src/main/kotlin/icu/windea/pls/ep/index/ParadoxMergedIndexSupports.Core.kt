@@ -30,7 +30,7 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import java.io.DataInput
 import java.io.DataOutput
 
-class ParadoxDynamicValueMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxDynamicValueIndexInfo> {
+class ParadoxDynamicValueMergedIndexSupport : ParadoxMergedIndexSupportBase<ParadoxDynamicValueIndexInfo>() {
     // NOTE 3.0.0 do not make `compressComparator` depend on `name` - should keep declaration order per type (or context type)
 
     private val constraint = ParadoxReferenceConstraint.DynamicValue
@@ -38,7 +38,7 @@ class ParadoxDynamicValueMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxD
 
     override val indexInfoType = ParadoxIndexInfoTypes.DynamicValue
 
-    override fun buildDataForExpression(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, info: ParadoxDefinitionCandidateInfo?) {
+    override fun buildData(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, info: ParadoxDefinitionCandidateInfo?) {
         // read access or write access
         if (!constraint.canResolveReference(element)) return
         val references = ParadoxExpressionManager.getExpressionReferences(element) // use expression references only to optimize performance
@@ -48,7 +48,7 @@ class ParadoxDynamicValueMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxD
         }
     }
 
-    override fun buildDataForExpression(element: ParadoxLocalisationExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
+    override fun buildData(element: ParadoxLocalisationExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
         // read access or write access
         if (!constraint.canResolveReference(element)) return
         val references = ParadoxExpressionManager.getExpressionReferences(element) // use expression references only to optimize performance
@@ -58,7 +58,7 @@ class ParadoxDynamicValueMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxD
         }
     }
 
-    override fun buildDataForExpression(element: ParadoxCsvExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
+    override fun buildData(element: ParadoxCsvExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
         // read access or write access
         if (!constraint.canResolveReference(element)) return
         val references = ParadoxExpressionManager.getExpressionReferences(element) // use expression references only to optimize performance
@@ -95,7 +95,7 @@ class ParadoxDynamicValueMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxD
     }
 }
 
-class ParadoxParameterMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxParameterIndexInfo> {
+class ParadoxParameterMergedIndexSupport : ParadoxMergedIndexSupportBase<ParadoxParameterIndexInfo>() {
     // NOTE 3.0.0 do not make `compressComparator` depend on `name` - should keep declaration order per type (or context type)
 
     private val constraint = ParadoxReferenceConstraint.Parameter
@@ -114,7 +114,7 @@ class ParadoxParameterMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxPara
         }
     }
 
-    override fun buildDataForExpression(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, info: ParadoxDefinitionCandidateInfo?) {
+    override fun buildData(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, info: ParadoxDefinitionCandidateInfo?) {
         // write access
         if (!constraint.canResolveReference(element)) return
         val references = ParadoxExpressionManager.getExpressionReferences(element) // use expression references only to optimize performance
@@ -150,7 +150,7 @@ class ParadoxParameterMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxPara
     }
 }
 
-class ParadoxLocalisationParameterMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxLocalisationParameterIndexInfo> {
+class ParadoxLocalisationParameterMergedIndexSupport : ParadoxMergedIndexSupportBase<ParadoxLocalisationParameterIndexInfo>() {
     // NOTE 3.0.0 do not make `compressComparator` depend on `name` - should keep declaration order per type (or context type)
 
     private val constraint = ParadoxReferenceConstraint.LocalisationParameter
@@ -158,7 +158,7 @@ class ParadoxLocalisationParameterMergedIndexSupport : ParadoxMergedIndexSupport
 
     override val indexInfoType = ParadoxIndexInfoTypes.LocalisationParameter
 
-    override fun buildDataForExpression(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, info: ParadoxDefinitionCandidateInfo?) {
+    override fun buildData(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, info: ParadoxDefinitionCandidateInfo?) {
         // write access
         if (!constraint.canResolveReference(element)) return
         val references = ParadoxExpressionManager.getExpressionReferences(element) // use expression references only to optimize performance

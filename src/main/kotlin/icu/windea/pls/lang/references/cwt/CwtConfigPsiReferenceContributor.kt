@@ -6,7 +6,7 @@ import com.intellij.psi.PsiReferenceRegistrar
 import icu.windea.pls.cwt.psi.CwtStringExpressionElement
 
 class CwtConfigPsiReferenceContributor : PsiReferenceContributor() {
-    private val symbolProvider = CwtConfigSymbolReferenceProvider()
+    private val symbolProvider = CwtConfigSymbolPsiReferenceProvider()
 
     override fun registerReferenceProviders(registrar: PsiReferenceRegistrar) {
         registrar.registerReferenceProvider(psiElement(CwtStringExpressionElement::class.java), symbolProvider)

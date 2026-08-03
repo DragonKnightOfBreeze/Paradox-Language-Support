@@ -28,7 +28,7 @@ import icu.windea.pls.script.psi.parentProperty
 import icu.windea.pls.script.psi.propertyValue
 
 /**
- * 提供定义注入的表达式的代码补全。
+ * 提供定义注入表达式中的代码补全。
  */
 class ParadoxDefinitionInjectionExpressionCompletionProvider : ParadoxCompletionProvider() {
     val elementPattern get() = psiElement().withElementType(KEY_OR_STRING_TOKENS)

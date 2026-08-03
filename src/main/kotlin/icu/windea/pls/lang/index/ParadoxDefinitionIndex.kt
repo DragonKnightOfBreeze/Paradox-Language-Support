@@ -82,7 +82,7 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
         val path = fileInfo.path
         val fileLevelMatchContext = CwtTypeConfigMatchContext(configGroup, path)
         val fileLevelTypeConfigs = ParadoxConfigMatchService.getTypeConfigCandidates(fileLevelMatchContext)
-        if (fileLevelTypeConfigs.isEmpty()) return
+        if (fileLevelTypeConfigs.isEmpty()) return // optimize (fast return if there are no candidates)
         fileLevelMatchContext.matchPath = false
 
         val typeConfigForInjection = getMatchedTypeConfigForInjection(fileLevelMatchContext, fileLevelTypeConfigs)
