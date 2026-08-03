@@ -4,6 +4,12 @@ import com.intellij.openapi.fileTypes.FileType
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.SearchScope
 
+fun GlobalSearchScope.withFileExtensions(fileExtensions: Collection<String>): GlobalSearchScope {
+    if (SearchScope.isEmptyScope(this)) return this
+    if (fileExtensions.isEmpty()) return this
+    return ParadoxWithFileExtensionsSearchScope(this, fileExtensions)
+}
+
 fun GlobalSearchScope.withFilePath(filePath: String, fileExtension: String? = null): GlobalSearchScope {
     if (SearchScope.isEmptyScope(this)) return this
     return ParadoxWithFilePathSearchScope(this, filePath, fileExtension)

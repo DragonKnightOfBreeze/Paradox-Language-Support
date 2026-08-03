@@ -5,11 +5,13 @@ import com.intellij.psi.search.GlobalSearchScope
 import icu.windea.pls.core.thenPossible
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.search.scope.ParadoxSearchScope
+import icu.windea.pls.lang.search.scope.withFileExtensions
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.settings.ChronicleProfilesSettings
 import icu.windea.pls.lang.settings.ParadoxGameOrModSettingsState
+import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
 import java.util.function.Function
 
@@ -25,23 +27,31 @@ abstract class ParadoxSearchSelector<T>(val project: Project, val context: Any?)
     val file = selectFile(context)
     val rootFile = selectRootFile(file)
 
-    val gameType by lazy {
-        val selectorGameType = selectors.filterIsInstance<ParadoxWithGameTypeSelector<T>>().lastOrNull()?.gameType
-        if (selectorGameType != null) return@lazy selectorGameType
-        selectGameType(context)
+    val gameType by lazy { computeGameType() }
+    val settings: ParadoxGameOrModSettingsState? by lazy { computeSettings() }
+    val defaultScope: GlobalSearchScope by lazy { computeDefaultScope() }
+    val scope: GlobalSearchScope by lazy { computeScope() }
+
+    private fun computeGameType(): ParadoxGameType? {
+        val gameTypeFromSelectors = selectors.filterIsInstance<ParadoxWithGameTypeSelector<T>>().lastOrNull()?.gameType
+        return gameTypeFromSelectors ?: selectGameType(context)
     }
-    val settings: ParadoxGameOrModSettingsState? by lazy {
+
+    private fun computeSettings(): ParadoxGameOrModSettingsState? {
         val rootInfo = file?.fileInfo?.rootInfo
-        when (rootInfo) {
-            is ParadoxRootInfo.Game -> ChronicleProfilesSettings.getInstance().state.gameSettings.get(rootInfo.rootFile.path)
-            is ParadoxRootInfo.Mod -> ChronicleProfilesSettings.getInstance().state.modSettings.get(rootInfo.rootFile.path)
+        val profilesSettings = ChronicleProfilesSettings.getInstance().state
+        return when (rootInfo) {
+            is ParadoxRootInfo.Game -> profilesSettings.gameSettings.get(rootInfo.rootFile.path)
+            is ParadoxRootInfo.Mod -> profilesSettings.modSettings.get(rootInfo.rootFile.path)
             else -> null
         }
     }
-    val defaultScope: GlobalSearchScope by lazy {
-        ParadoxSearchScope.fromFile(project, file) ?: ParadoxSearchScope.allScope(project, file)
+
+    private fun computeDefaultScope(): GlobalSearchScope {
+        return ParadoxSearchScope.fromFile(project, file) ?: ParadoxSearchScope.allScope(project, file)
     }
-    val scope: GlobalSearchScope by lazy {
+
+    private fun computeScope(): GlobalSearchScope {
         // NOTE 这里需要保证适用 `ParadoxFileManager.canReference()`
         val selectorScopes = selectors.filterIsInstance<ParadoxSearchScopeAwareSelector<*>>().mapNotNull { it.getGlobalSearchScope() }
         val mergedScope = when {
@@ -49,7 +59,10 @@ abstract class ParadoxSearchSelector<T>(val project: Project, val context: Any?)
             selectorScopes.size == 1 -> selectorScopes[0].intersectWith(ParadoxSearchScope.allScope(project, file))
             else -> selectorScopes.reduce { a, b -> a.intersectWith(b) }.intersectWith(ParadoxSearchScope.allScope(project, file))
         }
-        mergedScope
+        var resultScope = mergedScope
+        val fileExtensions = selectors.filterIsInstance<ParadoxWithFileExtensionsSelector<T>>().flatMapTo(mutableSetOf()) { it.fileExtensions }
+        if (fileExtensions.isNotEmpty()) resultScope = resultScope.withFileExtensions(fileExtensions)
+        return resultScope
     }
 
     private var defaultValue: T? = null
@@ -79,7 +92,7 @@ abstract class ParadoxSearchSelector<T>(val project: Project, val context: Any?)
         var finalSelectResult = true
         var finalSelectDefaultResult = true
         var finalDefaultValuePriority = 0
-        selectors.forEach { selector ->
+        for (selector in selectors) {
             val selectResult = selector.selectOne(target)
             finalSelectResult = finalSelectResult && selectResult
             if (selectResult) finalDefaultValuePriority++
@@ -101,7 +114,7 @@ abstract class ParadoxSearchSelector<T>(val project: Project, val context: Any?)
     override fun select(target: T): Boolean {
         if (!matchesGameType(target)) return false
         if (selectors.isEmpty()) return true
-        selectors.forEach { selector ->
+        for (selector in selectors) {
             if (!selector.select(target)) return false
         }
         return true
@@ -122,7 +135,7 @@ abstract class ParadoxSearchSelector<T>(val project: Project, val context: Any?)
         if (selectors.isEmpty()) return null
         // use merged comparator
         var comparator: Comparator<T>? = null
-        selectors.forEach { selector ->
+        for (selector in selectors) {
             comparator = comparator thenPossible selector.comparator()
         }
         return comparator

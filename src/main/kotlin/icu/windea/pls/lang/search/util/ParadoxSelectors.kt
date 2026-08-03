@@ -29,32 +29,19 @@ class ParadoxWithGameTypeSelector<T>(
     }
 }
 
-class ParadoxWithFileExtensionArraySelector(
-    vararg val fileExtensions: String
-) : ParadoxSelector<VirtualFile> {
-    override fun selectOne(target: VirtualFile): Boolean {
-        val extension = target.extension ?: return false
-        return extension in fileExtensions
-    }
-
-    override fun select(target: VirtualFile): Boolean {
-        val extension = target.extension ?: return false
-        return extension in fileExtensions
-    }
-}
-
-class ParadoxWithFileExtensionsSelector(
+class ParadoxWithFileExtensionsSelector<T>(
     val fileExtensions: Collection<String>
-) : ParadoxSelector<VirtualFile> {
-    override fun selectOne(target: VirtualFile): Boolean {
-        val extension = target.extension ?: return false
-        return extension in fileExtensions
-    }
-
-    override fun select(target: VirtualFile): Boolean {
-        val extension = target.extension ?: return false
-        return extension in fileExtensions
-    }
+) : ParadoxSelector<T> {
+    // NOTE 3.0.1 optimize: check on search scope level directly
+    // override fun selectOne(target: VirtualFile): Boolean {
+    //     val extension = target.extension ?: return false
+    //     return extension in fileExtensions
+    // }
+    //
+    // override fun select(target: VirtualFile): Boolean {
+    //     val extension = target.extension ?: return false
+    //     return extension in fileExtensions
+    // }
 }
 
 interface ParadoxSearchScopeAwareSelector<T> : ParadoxSelector<T> {

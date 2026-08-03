@@ -1,6 +1,5 @@
 package icu.windea.pls.lang.search.util
 
-import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.search.GlobalSearchScope
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.collections.findIsInstance
@@ -13,12 +12,12 @@ fun <S : ParadoxSearchSelector<T>, T> S.withGameType(gameType: ParadoxGameType?)
     return this
 }
 
-fun <S : ParadoxSearchSelector<VirtualFile>> S.withFileExtensions(vararg fileExtensions: String): S {
-    if (fileExtensions.isNotEmpty()) selectors += ParadoxWithFileExtensionArraySelector(*fileExtensions)
+fun <S : ParadoxSearchSelector<T>, T> S.withFileExtensions(vararg fileExtensions: String): S {
+    if (fileExtensions.isNotEmpty()) selectors += ParadoxWithFileExtensionsSelector(fileExtensions.toSet())
     return this
 }
 
-fun <S : ParadoxSearchSelector<VirtualFile>> S.withFileExtensions(fileExtensions: Collection<String>): S {
+fun <S : ParadoxSearchSelector<T>, T> S.withFileExtensions(fileExtensions: Collection<String>): S {
     if (fileExtensions.isNotEmpty()) selectors += ParadoxWithFileExtensionsSelector(fileExtensions)
     return this
 }
