@@ -26,7 +26,7 @@ class CwtPredefinedConfigGroupProcessor : CwtConfigGroupProcessor {
             typesModel.indirectSupportScope += json.typesIndirectSupportScope
             typesModel.skipCheckSystemScope += json.typesSkipCheckSystemScope
             typesModel.supportParameters += json.typesSupportParameters
-            typesModel.supportScopeContextInference += json.typesSupportScopeContextInference
+            typesModel.supportScopeInference += json.typesSupportScopeInference
         }
     }
 }

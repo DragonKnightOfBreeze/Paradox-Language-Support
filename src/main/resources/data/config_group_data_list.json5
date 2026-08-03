@@ -29,7 +29,7 @@
       "script_value",
       // "inline_script", // but inline scripts are not definitions
     ],
-    "typesSupportScopeContextInference": [
+    "typesSupportScopeInference": [
       "scripted_trigger",
       "scripted_effect",
     ]

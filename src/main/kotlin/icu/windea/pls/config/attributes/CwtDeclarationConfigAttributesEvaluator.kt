@@ -28,7 +28,7 @@ class CwtDeclarationConfigAttributesEvaluator {
     private var involveDynamicValue = false
     private var involveParameter = false
     private var involveLocalisationParameter = false
-    private var involveInferredScopeContextAwareDefinitionReference = false
+    private var involveScopeInferrableDefinitionReference = false
     private var involveExternalReference = false
 
     fun evaluate(config: CwtDeclarationConfig): CwtDeclarationConfigAttributes {
@@ -87,9 +87,9 @@ class CwtDeclarationConfigAttributesEvaluator {
             val r = CwtConfigExpressionMatchService.matchesLocalisationParameter(dataExpression)
             if (r) involveLocalisationParameter = true
         }
-        if (!involveInferredScopeContextAwareDefinitionReference) {
-            val r = CwtConfigExpressionMatchService.matchesInferredScopeContextAwareDefinitionReference(dataExpression, configGroup)
-            if (r) involveInferredScopeContextAwareDefinitionReference = true
+        if (!involveScopeInferrableDefinitionReference) {
+            val r = CwtConfigExpressionMatchService.matchesScopeInferrableDefinitionReference(dataExpression, configGroup)
+            if (r) involveScopeInferrableDefinitionReference = true
         }
         if (!involveExternalReference) {
             val r = CwtConfigExpressionMatchService.matchesExternalReference(dataExpression)
@@ -101,7 +101,7 @@ class CwtDeclarationConfigAttributesEvaluator {
         if (attributes.involveDynamicValue) involveDynamicValue = true
         if (attributes.involveParameter) involveParameter = true
         if (attributes.involveLocalisationParameter) involveLocalisationParameter = true
-        if (attributes.involveInferredScopeContextAwareDefinitionReference) involveInferredScopeContextAwareDefinitionReference = true
+        if (attributes.involveScopeInferrableDefinitionReference) involveScopeInferrableDefinitionReference = true
         if (attributes.involveExternalReference) involveExternalReference = true
         return true
     }
@@ -112,7 +112,7 @@ class CwtDeclarationConfigAttributesEvaluator {
             involveDynamicValue,
             involveParameter,
             involveLocalisationParameter,
-            involveInferredScopeContextAwareDefinitionReference,
+            involveScopeInferrableDefinitionReference,
             involveExternalReference,
         )
         if (result == CwtDeclarationConfigAttributes.EMPTY) return CwtDeclarationConfigAttributes.EMPTY

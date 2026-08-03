@@ -32,6 +32,6 @@ val CwtConfigGroup.definitionParameterModificationTracker: ModificationTracker
 
 val CwtConfigGroup.definitionScopeContextModificationTracker: ModificationTracker
     by registerKeyWithThis(CwtConfigGroup.Keys) {
-        val definitionTypes = typesModel.supportScopeContextInference
+        val definitionTypes = typesModel.supportScopeInference
         ParadoxModificationTrackers.scriptFileFromDefinitionTypes(this, definitionTypes)
     }

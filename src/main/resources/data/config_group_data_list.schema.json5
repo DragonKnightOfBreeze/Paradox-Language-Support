@@ -27,7 +27,7 @@
         "typesSupportParameters": {
           "$ref": "#/definitions/stringSet"
         },
-        "typesSupportScopeContextInference": {
+        "typesSupportScopeInference": {
           "$ref": "#/definitions/stringSet"
         },
       },

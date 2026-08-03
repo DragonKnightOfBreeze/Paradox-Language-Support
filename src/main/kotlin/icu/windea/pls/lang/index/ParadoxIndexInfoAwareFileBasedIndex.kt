@@ -8,6 +8,9 @@ import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.index.ParadoxIndexInfo
 
+/**
+ * @see ParadoxIndexInfo
+ */
 @Optimized
 sealed class ParadoxIndexInfoAwareFileBasedIndex<V, out T : ParadoxIndexInfo> : IndexInfoAwareFileBasedIndex<V, T>() {
     override fun checkFile(file: VirtualFile, project: Project, expectGameType: ParadoxGameType?): Boolean {

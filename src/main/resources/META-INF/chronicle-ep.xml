@@ -132,7 +132,7 @@
     <mergedIndexSupport implementation="icu.windea.pls.ep.index.ParadoxParameterMergedIndexSupport"/>
     <mergedIndexSupport implementation="icu.windea.pls.ep.index.ParadoxLocalisationParameterMergedIndexSupport"/>
 
-    <mergedIndexSupport implementation="icu.windea.pls.ep.index.ParadoxInferredScopeContextAwareDefinitionMergedIndexSupport"/>
+    <mergedIndexSupport implementation="icu.windea.pls.ep.index.ParadoxScopeInferrableDefinitionMergedIndexSupport"/>
     <mergedIndexSupport implementation="icu.windea.pls.ep.index.ParadoxEventInOnActionMergedIndexSupport"/>
     <mergedIndexSupport implementation="icu.windea.pls.ep.index.ParadoxEventInEventMergedIndexSupport"/>
     <mergedIndexSupport implementation="icu.windea.pls.ep.index.ParadoxOnActionInEventMergedIndexSupport"/>

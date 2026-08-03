@@ -21,7 +21,6 @@ import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.index.IndexInfo
 import icu.windea.pls.model.index.ParadoxIndexInfo
-import icu.windea.pls.model.index.ParadoxIndexInfoType
 
 object ChronicleIndexService {
     // region FileBasedIndex Methods
@@ -51,7 +50,7 @@ object ChronicleIndexService {
     }
 
     fun <T : ParadoxIndexInfo> processAllFileDataWithKey(
-        indexInfoType: ParadoxIndexInfoType<T>,
+        indexInfoType: ParadoxMergedIndexType<T>,
         project: Project,
         scope: GlobalSearchScope,
         gameType: ParadoxGameType?,

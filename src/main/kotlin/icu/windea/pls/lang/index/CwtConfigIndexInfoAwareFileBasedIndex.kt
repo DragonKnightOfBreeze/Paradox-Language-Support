@@ -7,6 +7,9 @@ import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.index.CwtConfigIndexInfo
 
+/**
+ * @see CwtConfigIndexInfo
+ */
 @Optimized
 sealed class CwtConfigIndexInfoAwareFileBasedIndex<V, out T : CwtConfigIndexInfo> : IndexInfoAwareFileBasedIndex<V, T>() {
     override fun checkFile(file: VirtualFile, project: Project, expectGameType: ParadoxGameType?): Boolean {

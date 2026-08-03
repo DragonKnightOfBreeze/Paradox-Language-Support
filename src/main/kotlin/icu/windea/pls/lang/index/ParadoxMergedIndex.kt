@@ -58,8 +58,8 @@ import java.io.DataOutput
  * 兼容需要内联的情况（此时使用懒加载的索引，即 [VirtualFileGist]）。
  *
  * @see ParadoxIndexInfo
- * @see ParadoxMergedIndexOptimizer
  * @see ParadoxMergedIndexSupport
+ * @see ParadoxMergedIndexOptimizer
  */
 @Optimized
 class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndexInfo>, ParadoxIndexInfo>() {
@@ -101,7 +101,7 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
         val useLazyIndex = useLazyIndex(file.virtualFile)
 
         val optimizers = ParadoxMergedIndexOptimizer.EP_NAME.extensionList
-        if (!useLazyIndex && !isAvailableForScriptFile(file, optimizers)) return
+        if (!useLazyIndex && !isAvailableFromOptimizers(file, optimizers)) return
 
         val definitionCandidateInfoStack = ArrayDeque<ParadoxDefinitionCandidateInfo>() // definition or definition injection
         val definitionAvailableStatusStack = ArrayDeque<Boolean>()
@@ -109,7 +109,7 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
         val supports = ParadoxMergedIndexSupport.EP_NAME.extensionList
         file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
-                buildDataFromSupports(element)
+                buildDataFromSupports(element, fileData, supports)
 
                 checkContextRoot(element)
                 if (element is ParadoxScriptStringExpressionElement) {
@@ -128,7 +128,7 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
 
                 element.putUserData(Keys.definitionCandidate, true)
                 definitionCandidateInfoStack.addLast(definitionCandidateInfo)
-                val definitionAvailableStatus = isAvailableForDefinition(definitionCandidateInfo, optimizers)
+                val definitionAvailableStatus = isAvailableFromOptimizers(definitionCandidateInfo, optimizers)
                 definitionAvailableStatusStack.addLast(definitionAvailableStatus)
             }
 
@@ -140,25 +140,13 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
                 if (!useLazyIndex && definitionAvailableStatus != true) return
 
                 ProgressManager.checkCanceled()
-                buildDataFromSupports(element, definitionCandidateInfo)
+                buildDataFromSupports(element, definitionCandidateInfo, fileData, supports)
 
                 ProgressManager.checkCanceled()
                 val options = ParadoxMatchOptions.DUMB
                 val configs = ParadoxConfigManager.getConfigs(element, options)
                 if (configs.isEmpty()) return
-                buildDataFromSupports(element, definitionCandidateInfo, configs)
-            }
-
-            private fun buildDataFromSupports(element: PsiElement) {
-                supports.forEachFast { support -> support.buildData(element, fileData) }
-            }
-
-            private fun buildDataFromSupports(element: ParadoxScriptStringExpressionElement, info: ParadoxDefinitionCandidateInfo?) {
-                supports.forEachFast { support -> support.buildData(element, fileData, info) }
-            }
-
-            private fun buildDataFromSupports(element: ParadoxScriptStringExpressionElement, info: ParadoxDefinitionCandidateInfo?, configs: List<CwtMemberConfig<*>>) {
-                supports.forEachFast { support -> support.buildData(element, fileData, info, configs) }
+                buildDataFromSupports(element, definitionCandidateInfo, configs, fileData, supports)
             }
 
             override fun elementFinished(element: PsiElement) {
@@ -182,7 +170,7 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
         val useLazyIndex = useLazyIndex(file.virtualFile)
 
         val optimizers = ParadoxMergedIndexOptimizer.EP_NAME.extensionList
-        if (!useLazyIndex && !isAvailableForLocalisationFile(file, optimizers)) return
+        if (!useLazyIndex && !isAvailableFromOptimizers(file, optimizers)) return
 
         val supports = ParadoxMergedIndexSupport.EP_NAME.extensionList
         file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
@@ -197,11 +185,7 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
             }
 
             private fun visitExpressionElement(element: ParadoxLocalisationExpressionElement) {
-                buildDataFromSupports(element)
-            }
-
-            private fun buildDataFromSupports(element: ParadoxLocalisationExpressionElement) {
-                supports.forEachFast { support -> support.buildData(element, fileData) }
+                buildDataFromSupports(element, fileData, supports)
             }
 
             override fun elementFinished(element: PsiElement?) {
@@ -217,7 +201,7 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
         val useLazyIndex = useLazyIndex(file.virtualFile)
 
         val optimizers = ParadoxMergedIndexOptimizer.EP_NAME.extensionList
-        if (!useLazyIndex && !isAvailableForCsvFile(file, optimizers)) return
+        if (!useLazyIndex && !isAvailableFromOptimizers(file, optimizers)) return
 
         val supports = ParadoxMergedIndexSupport.EP_NAME.extensionList
         file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
@@ -231,11 +215,7 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
             }
 
             private fun visitExpressionElement(element: ParadoxCsvExpressionElement) {
-                buildDataFromSupports(element)
-            }
-
-            private fun buildDataFromSupports(element: ParadoxCsvExpressionElement) {
-                supports.forEachFast { support -> support.buildData(element, fileData) }
+                buildDataFromSupports(element, fileData, supports)
             }
 
             override fun elementFinished(element: PsiElement?) {
@@ -246,24 +226,44 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
         })
     }
 
-    private fun isAvailableForScriptFile(file: ParadoxScriptFile, optimizers: List<ParadoxMergedIndexOptimizer>): Boolean {
-        optimizers.forEachFast { optimizer -> if (optimizer.isAvailableForScriptFile(file)) return true }
+    private fun isAvailableFromOptimizers(file: ParadoxScriptFile, optimizers: List<ParadoxMergedIndexOptimizer>): Boolean {
+        optimizers.forEachFast { optimizer -> if (optimizer.isAvailable(file)) return true }
         return false
     }
 
-    private fun isAvailableForLocalisationFile(file: ParadoxLocalisationFile, optimizers: List<ParadoxMergedIndexOptimizer>): Boolean {
-        optimizers.forEachFast { optimizer -> if (optimizer.isAvailableForLocalisationFile(file)) return true }
+    private fun isAvailableFromOptimizers(file: ParadoxLocalisationFile, optimizers: List<ParadoxMergedIndexOptimizer>): Boolean {
+        optimizers.forEachFast { optimizer -> if (optimizer.isAvailable(file)) return true }
         return false
     }
 
-    private fun isAvailableForCsvFile(file: ParadoxCsvFile, optimizers: List<ParadoxMergedIndexOptimizer>): Boolean {
-        optimizers.forEachFast { optimizer -> if (optimizer.isAvailableForCsvFile(file)) return true }
+    private fun isAvailableFromOptimizers(file: ParadoxCsvFile, optimizers: List<ParadoxMergedIndexOptimizer>): Boolean {
+        optimizers.forEachFast { optimizer -> if (optimizer.isAvailable(file)) return true }
         return false
     }
 
-    private fun isAvailableForDefinition(definitionCandidateInfo: ParadoxDefinitionCandidateInfo, optimizers: List<ParadoxMergedIndexOptimizer>): Boolean {
-        optimizers.forEachFast { optimizer -> if (optimizer.isAvailableForDefinition(definitionCandidateInfo)) return true }
+    private fun isAvailableFromOptimizers(definitionCandidateInfo: ParadoxDefinitionCandidateInfo, optimizers: List<ParadoxMergedIndexOptimizer>): Boolean {
+        optimizers.forEachFast { optimizer -> if (optimizer.isAvailable(definitionCandidateInfo)) return true }
         return false
+    }
+
+    private fun buildDataFromSupports(element: PsiElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, supports: List<ParadoxMergedIndexSupport<*>>) {
+        supports.forEachFast { support -> support.buildData(element, fileData) }
+    }
+
+    private fun buildDataFromSupports(element: ParadoxScriptStringExpressionElement, info: ParadoxDefinitionCandidateInfo?, fileData: MutableMap<String, List<ParadoxIndexInfo>>, supports: List<ParadoxMergedIndexSupport<*>>) {
+        supports.forEachFast { support -> support.buildData(element, fileData, info) }
+    }
+
+    private fun buildDataFromSupports(element: ParadoxScriptStringExpressionElement, info: ParadoxDefinitionCandidateInfo?, configs: List<CwtMemberConfig<*>>, fileData: MutableMap<String, List<ParadoxIndexInfo>>, supports: List<ParadoxMergedIndexSupport<*>>) {
+        supports.forEachFast { support -> support.buildData(element, fileData, info, configs) }
+    }
+
+    private fun buildDataFromSupports(element: ParadoxLocalisationExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, supports: List<ParadoxMergedIndexSupport<*>>) {
+        supports.forEachFast { support -> support.buildData(element, fileData) }
+    }
+
+    private fun buildDataFromSupports(element: ParadoxCsvExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, supports: List<ParadoxMergedIndexSupport<*>>) {
+        supports.forEachFast { support -> support.buildData(element, fileData) }
     }
 
     private fun cleanUpDumbDefinitionCache(element: ParadoxDefinitionElement) {

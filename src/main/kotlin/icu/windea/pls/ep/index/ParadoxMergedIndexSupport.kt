@@ -5,11 +5,11 @@ import com.intellij.psi.PsiElement
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.lang.index.ParadoxMergedIndex
+import icu.windea.pls.lang.index.ParadoxMergedIndexType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.model.ParadoxDefinitionCandidateInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.index.ParadoxIndexInfo
-import icu.windea.pls.model.index.ParadoxIndexInfoType
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import java.io.DataInput
 import java.io.DataOutput
@@ -21,7 +21,7 @@ import java.io.DataOutput
  * @see ParadoxIndexInfo
  */
 interface ParadoxMergedIndexSupport<T : ParadoxIndexInfo> {
-    val indexInfoType: ParadoxIndexInfoType<T>
+    val indexInfoType: ParadoxMergedIndexType<T>
 
     fun buildData(element: PsiElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {}
 

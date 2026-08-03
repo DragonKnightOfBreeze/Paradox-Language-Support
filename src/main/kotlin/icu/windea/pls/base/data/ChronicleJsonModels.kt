@@ -18,7 +18,7 @@ data class CwtConfigGroupDataJson(
     val typesIndirectSupportScope: Set<String> = emptySet(),
     val typesSkipCheckSystemScope: Set<String> = emptySet(),
     val typesSupportParameters: Set<String> = emptySet(),
-    val typesSupportScopeContextInference: Set<String> = emptySet(),
+    val typesSupportScopeInference: Set<String> = emptySet(),
 )
 
 private val singleEmptyStringSet = setOf("")

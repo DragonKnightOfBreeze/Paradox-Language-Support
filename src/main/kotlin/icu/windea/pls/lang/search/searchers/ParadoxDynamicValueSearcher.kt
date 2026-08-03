@@ -9,13 +9,13 @@ import com.intellij.util.Processor
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.csv.ParadoxCsvFileType
 import icu.windea.pls.lang.index.ChronicleIndexService
+import icu.windea.pls.lang.index.ParadoxIndexInfoTypes
 import icu.windea.pls.lang.search.ParadoxDynamicValueSearch
 import icu.windea.pls.lang.search.scope.withFileTypes
 import icu.windea.pls.lang.search.util.ParadoxSearchContext
 import icu.windea.pls.localisation.ParadoxLocalisationFileType
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.index.ParadoxDynamicValueIndexInfo
-import icu.windea.pls.model.index.ParadoxIndexInfoTypes
 import icu.windea.pls.script.ParadoxScriptFileType
 
 /**

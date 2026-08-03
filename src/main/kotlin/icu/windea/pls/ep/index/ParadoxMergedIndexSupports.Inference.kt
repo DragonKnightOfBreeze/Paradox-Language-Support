@@ -16,6 +16,7 @@ import icu.windea.pls.core.readUTFFast
 import icu.windea.pls.core.writeIntFast
 import icu.windea.pls.core.writeOrWriteFrom
 import icu.windea.pls.core.writeUTFFast
+import icu.windea.pls.lang.index.ParadoxIndexInfoTypes
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.util.ParadoxEventManager
@@ -26,7 +27,6 @@ import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.model.index.ParadoxEventInEventIndexInfo
 import icu.windea.pls.model.index.ParadoxEventInOnActionIndexInfo
 import icu.windea.pls.model.index.ParadoxIndexInfo
-import icu.windea.pls.model.index.ParadoxIndexInfoTypes
 import icu.windea.pls.model.index.ParadoxInferredScopeContextAwareDefinitionIndexInfo
 import icu.windea.pls.model.index.ParadoxOnActionInEventIndexInfo
 import icu.windea.pls.script.psi.ParadoxScriptString
@@ -34,7 +34,7 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import java.io.DataInput
 import java.io.DataOutput
 
-class ParadoxInferredScopeContextAwareDefinitionMergedIndexSupport : ParadoxMergedIndexSupportBase<ParadoxInferredScopeContextAwareDefinitionIndexInfo>() {
+class ParadoxScopeInferrableDefinitionMergedIndexSupport : ParadoxMergedIndexSupportBase<ParadoxInferredScopeContextAwareDefinitionIndexInfo>() {
     private val compressComparator = compareBy<ParadoxInferredScopeContextAwareDefinitionIndexInfo> { it.typeExpression }
 
     override val indexInfoType = ParadoxIndexInfoTypes.InferredScopeContextAwareDefinition
@@ -53,7 +53,7 @@ class ParadoxInferredScopeContextAwareDefinitionMergedIndexSupport : ParadoxMerg
     }
 
     private fun matchesConfig(config: CwtMemberConfig<*>): Boolean {
-        return CwtConfigExpressionMatchService.matchesInferredScopeContextAwareDefinitionReference(config.configExpression, config.configGroup)
+        return CwtConfigExpressionMatchService.matchesScopeInferrableDefinitionReference(config.configExpression, config.configGroup)
     }
 
     override fun compressData(value: List<ParadoxInferredScopeContextAwareDefinitionIndexInfo>): List<ParadoxInferredScopeContextAwareDefinitionIndexInfo> {

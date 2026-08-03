@@ -200,7 +200,7 @@ class CwtTypesModelBase : CwtTypesModel {
     override val indirectSupportScope: ObjectLinkedOpenHashSet<String> = ObjectLinkedOpenHashSet()
     override val skipCheckSystemScope: ObjectLinkedOpenHashSet<String> = ObjectLinkedOpenHashSet()
     override val supportParameters: ObjectLinkedOpenHashSet<String> = ObjectLinkedOpenHashSet()
-    override val supportScopeContextInference: ObjectLinkedOpenHashSet<String> = ObjectLinkedOpenHashSet()
+    override val supportScopeInference: ObjectLinkedOpenHashSet<String> = ObjectLinkedOpenHashSet()
     override val typeKeyPrefixAware: ObjectLinkedOpenHashSet<String> = ObjectLinkedOpenHashSet()
 
     fun trim() {
@@ -210,7 +210,7 @@ class CwtTypesModelBase : CwtTypesModel {
         indirectSupportScope.trim()
         skipCheckSystemScope.trim()
         supportParameters.trim()
-        supportScopeContextInference.trim()
+        supportScopeInference.trim()
         typeKeyPrefixAware.trim()
     }
 }

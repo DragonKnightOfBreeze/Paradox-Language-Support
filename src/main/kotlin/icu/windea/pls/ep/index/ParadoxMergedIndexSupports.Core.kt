@@ -12,6 +12,7 @@ import icu.windea.pls.core.writeByte
 import icu.windea.pls.core.writeOrWriteFrom
 import icu.windea.pls.core.writeUTFFast
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
+import icu.windea.pls.lang.index.ParadoxIndexInfoTypes
 import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
 import icu.windea.pls.lang.psi.light.ParadoxLocalisationParameterLightElement
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
@@ -22,7 +23,6 @@ import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constraints.ParadoxReferenceConstraint
 import icu.windea.pls.model.index.ParadoxDynamicValueIndexInfo
 import icu.windea.pls.model.index.ParadoxIndexInfo
-import icu.windea.pls.model.index.ParadoxIndexInfoTypes
 import icu.windea.pls.model.index.ParadoxLocalisationParameterIndexInfo
 import icu.windea.pls.model.index.ParadoxParameterIndexInfo
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement

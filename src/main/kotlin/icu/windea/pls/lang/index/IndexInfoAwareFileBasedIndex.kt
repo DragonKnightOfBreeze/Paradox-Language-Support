@@ -28,6 +28,8 @@ import java.util.Collections.*
 
 /**
  * 各种索引信息的文件索引的基类。
+ *
+ * @see IndexInfo
  */
 @Optimized
 sealed class IndexInfoAwareFileBasedIndex<V, out T : IndexInfo> : FileBasedIndexExtension<String, V>() {

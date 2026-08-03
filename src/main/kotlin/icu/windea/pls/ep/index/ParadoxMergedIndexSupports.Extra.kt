@@ -7,11 +7,11 @@ import icu.windea.pls.core.readOrReadFrom
 import icu.windea.pls.core.readUTFFast
 import icu.windea.pls.core.writeOrWriteFrom
 import icu.windea.pls.core.writeUTFFast
+import icu.windea.pls.lang.index.ParadoxIndexInfoTypes
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.model.ParadoxDefinitionCandidateInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.index.ParadoxIndexInfo
-import icu.windea.pls.model.index.ParadoxIndexInfoTypes
 import icu.windea.pls.model.index.ParadoxMeshLocatorIndexInfo
 import icu.windea.pls.model.index.ParadoxShaderEffectIndexInfo
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement

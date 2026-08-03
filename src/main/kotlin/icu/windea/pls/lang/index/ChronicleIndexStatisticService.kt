@@ -2,7 +2,6 @@ package icu.windea.pls.lang.index
 
 import icu.windea.pls.base.ChronicleCapacities
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.model.index.ParadoxIndexInfoType
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicLong
 
@@ -14,7 +13,7 @@ object ChronicleIndexStatisticService {
     private val complexEnumValueCounters = ConcurrentHashMap<ParadoxGameType, AtomicLong>()
     private val definitionCounters = ConcurrentHashMap<ParadoxGameType, AtomicLong>()
     private val definitionInjectionCounters = ConcurrentHashMap<ParadoxGameType, AtomicLong>()
-    private val mergedCounters = ConcurrentHashMap<ParadoxGameType, ConcurrentHashMap<ParadoxIndexInfoType<*>, AtomicLong>>()
+    private val mergedCounters = ConcurrentHashMap<ParadoxGameType, ConcurrentHashMap<ParadoxMergedIndexType<*>, AtomicLong>>()
 
     fun collectResult(): ChronicleIndexStatisticResult {
         return ChronicleIndexStatisticResult(
@@ -50,7 +49,7 @@ object ChronicleIndexStatisticService {
         counter.incrementAndGet()
     }
 
-    fun recordMerged(gameType: ParadoxGameType, indexInfoType: ParadoxIndexInfoType<*>) {
+    fun recordMerged(gameType: ParadoxGameType, indexInfoType: ParadoxMergedIndexType<*>) {
         if (!recordIndexStats) return
         val counter = mergedCounters.computeIfAbsent(gameType) { ConcurrentHashMap() }.getOrPut(indexInfoType) { AtomicLong() }
         counter.incrementAndGet()

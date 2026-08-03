@@ -1,6 +1,6 @@
-package icu.windea.pls.model.index
+package icu.windea.pls.lang.index
 
-import icu.windea.pls.lang.index.ParadoxMergedIndex
+import icu.windea.pls.model.index.ParadoxIndexInfo
 
 /**
  * 索引信息的类型。
@@ -9,10 +9,10 @@ import icu.windea.pls.lang.index.ParadoxMergedIndex
  *
  * @see ParadoxMergedIndex
  */
-class ParadoxIndexInfoType<T : ParadoxIndexInfo>(
+class ParadoxMergedIndexType<T : ParadoxIndexInfo>(
     val id: String,
     val key: Byte,
     val type: Class<T>,
 ) {
-    override fun toString() = "ParadoxIndexInfoType(id=$id, key=$key)"
+    override fun toString() = "ParadoxMergedIndexType(id=$id, key=$key)"
 }

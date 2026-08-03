@@ -89,7 +89,7 @@ class CwtExpandableConfigAttributesEvaluator {
             if (r) involveLocalisationParameter = true
         }
         if (!involveInferredScopeContextAwareDefinitionReference) {
-            val r = CwtConfigExpressionMatchService.matchesInferredScopeContextAwareDefinitionReference(dataExpression, configGroup)
+            val r = CwtConfigExpressionMatchService.matchesScopeInferrableDefinitionReference(dataExpression, configGroup)
             if (r) involveInferredScopeContextAwareDefinitionReference = true
         }
         if (!involveExternalReference) {
@@ -102,7 +102,7 @@ class CwtExpandableConfigAttributesEvaluator {
         if (attributes.involveDynamicValue) involveDynamicValue = true
         if (attributes.involveParameter) involveParameter = true
         if (attributes.involveLocalisationParameter) involveLocalisationParameter = true
-        if (attributes.involveInferredScopeContextAwareDefinitionReference) involveInferredScopeContextAwareDefinitionReference = true
+        if (attributes.involveScopeInferrableDefinitionReference) involveInferredScopeContextAwareDefinitionReference = true
         if (attributes.involveExternalReference) involveExternalReference = true
         return true
     }

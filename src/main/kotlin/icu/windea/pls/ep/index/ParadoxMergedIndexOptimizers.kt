@@ -19,10 +19,10 @@ import icu.windea.pls.script.psi.ParadoxScriptFile
 /**
  * 基于定义的优化方案。
  * - 检查文件级别的类型规则候选项是否存在、对应的类型规则的名字、以及对应的声明规则的综合属性。
- * - 检查定义级别的类型规则的名字、以及对应的声明规则的综合属性。
+ * - 检查定义级别的类型规则的名字，以及对应的声明规则的综合属性。
  */
 class ParadoxDefinitionBasedMergedIndexOptimizer : ParadoxMergedIndexOptimizer {
-    override fun isAvailableForScriptFile(file: ParadoxScriptFile): Boolean {
+    override fun isAvailable(file: ParadoxScriptFile): Boolean {
         val fileInfo = file.fileInfo ?: return false
         val gameType = fileInfo.gameType
         val configGroup = ChronicleFacade.getConfigGroup(file.project, gameType)
@@ -45,7 +45,7 @@ class ParadoxDefinitionBasedMergedIndexOptimizer : ParadoxMergedIndexOptimizer {
         return false
     }
 
-    override fun isAvailableForDefinition(definitionCandidateInfo: ParadoxDefinitionCandidateInfo): Boolean {
+    override fun isAvailable(definitionCandidateInfo: ParadoxDefinitionCandidateInfo): Boolean {
         val typeConfig = definitionCandidateInfo.typeConfig ?: return false
         val configGroup = definitionCandidateInfo.configGroup
 
@@ -81,11 +81,11 @@ class ParadoxDefinitionBasedMergedIndexOptimizer : ParadoxMergedIndexOptimizer {
             attributes.involveParameter -> true
             // see: icu.windea.pls.ep.index.ParadoxLocalisationParameterMergedIndexSupport
             attributes.involveLocalisationParameter -> true
-            // see: icu.windea.pls.ep.index.ParadoxInferredScopeContextAwareDefinitionMergedIndexSupport
-            attributes.involveInferredScopeContextAwareDefinitionReference -> true
             // see: icu.windea.pls.ep.index.ParadoxShaderEffectMergedIndexSupport
             // see: icu.windea.pls.ep.index.ParadoxMeshLocatorMergedIndexSupport
             attributes.involveExternalReference -> true
+            // see: icu.windea.pls.ep.index.ParadoxScopeInferrableDefinitionMergedIndexSupport
+            attributes.involveScopeInferrableDefinitionReference -> true
             else -> false
         }
     }
@@ -93,10 +93,10 @@ class ParadoxDefinitionBasedMergedIndexOptimizer : ParadoxMergedIndexOptimizer {
 
 /**
  * 基于列的优化方案。
- * - 检查文件级别的列规则候选项是否存在、以及对应的列规则的综合属性。
+ * - 检查文件级别的列规则候选项是否存在，以及对应的列规则的综合属性。
  */
 class ParadoxRowBasedMergedIndexOptimizer : ParadoxMergedIndexOptimizer {
-    override fun isAvailableForCsvFile(file: ParadoxCsvFile): Boolean {
+    override fun isAvailable(file: ParadoxCsvFile): Boolean {
         val fileInfo = file.fileInfo ?: return false
         val gameType = fileInfo.gameType
         val configGroup = ChronicleFacade.getConfigGroup(file.project, gameType)
@@ -130,15 +130,15 @@ class ParadoxRowBasedMergedIndexOptimizer : ParadoxMergedIndexOptimizer {
  * - 脚本文件和 CSV 文件默认不可用，本地化文件默认可用。
  */
 class ParadoxFallbackMergedIndexOptimizer : ParadoxMergedIndexOptimizer {
-    override fun isAvailableForScriptFile(file: ParadoxScriptFile): Boolean {
+    override fun isAvailable(file: ParadoxScriptFile): Boolean {
         return false // fallback to false (skip)
     }
 
-    override fun isAvailableForLocalisationFile(file: ParadoxLocalisationFile): Boolean {
+    override fun isAvailable(file: ParadoxLocalisationFile): Boolean {
         return true // fallback to true
     }
 
-    override fun isAvailableForCsvFile(file: ParadoxCsvFile): Boolean {
+    override fun isAvailable(file: ParadoxCsvFile): Boolean {
         return false // fallback to false (skip)
     }
 }
