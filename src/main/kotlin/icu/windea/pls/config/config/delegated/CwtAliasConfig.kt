@@ -2,6 +2,8 @@ package icu.windea.pls.config.config.delegated
 
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
+import icu.windea.pls.config.CwtConfigType
+import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.config.annotations.FromName
 import icu.windea.pls.config.annotations.FromOptionMember
 import icu.windea.pls.config.config.CwtDelegatedConfig
@@ -63,7 +65,9 @@ interface CwtAliasConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, C
     val outputScope: String?
 
     val subNameExpression: CwtDataExpression
-    override val configExpression: CwtDataExpression
+
+    override val configType: CwtConfigType get() = CwtConfigTypes.Alias
+    override val configExpression: CwtDataExpression get() = subNameExpression
 
     companion object {
         /** 由属性规则解析为别名规则。 */
@@ -109,7 +113,6 @@ private class CwtAliasConfigImpl(
     override val supportedScopes get() = config.optionMetadata.supportedScopes
     override val outputScope get() = config.optionMetadata.pushScope
     override val subNameExpression = CwtDataExpression.resolve(subName, CwtDataExpressionRole.Key) // cached
-    override val configExpression: CwtDataExpression get() = subNameExpression
 
     override fun toString() = "CwtAliasConfigImpl(name='$name', subName='$subName')"
 }

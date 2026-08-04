@@ -39,8 +39,7 @@ import icu.windea.pls.model.type.CwtTypeResolver
 interface CwtValueConfig : CwtMemberConfig<CwtValue> {
     val propertyConfig: CwtPropertyConfig?
 
-    override val configExpression: CwtDataExpression
-
+    override val configExpression: CwtDataExpression get() = valueExpression
     override val memberType: CwtMemberType get() = CwtMemberType.VALUE
 
     override fun accept(visitor: CwtMemberConfigVisitor): Boolean {
@@ -173,8 +172,6 @@ private sealed class CwtValueConfigBase : CwtOptionMetadataBase(), CwtValueConfi
     @Volatile override var parentConfig: CwtMemberConfig<*>? = null
 
     override val optionMetadata: CwtOptionMetadata get() = this
-
-    override val configExpression: CwtDataExpression get() = valueExpression
 
     override fun withParentConfig(parentConfig: CwtMemberConfig<*>?): Boolean {
         this.parentConfig = parentConfig

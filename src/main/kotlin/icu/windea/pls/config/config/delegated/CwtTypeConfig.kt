@@ -2,6 +2,8 @@ package icu.windea.pls.config.config.delegated
 
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
+import icu.windea.pls.config.CwtConfigType
+import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.config.annotations.FromMember
 import icu.windea.pls.config.annotations.FromName
 import icu.windea.pls.config.annotations.FromOptionMember
@@ -108,6 +110,8 @@ interface CwtTypeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, Cw
 
     val attributes: CwtTypeConfigAttributes
     val typeKeyPrefixConfig: CwtValueConfig? // #123
+
+    override val configType: CwtConfigType get() = CwtConfigTypes.Type
 
     companion object {
         /** 由属性规则解析为类型规则。 */

@@ -2,6 +2,8 @@ package icu.windea.pls.config.config.delegated
 
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
+import icu.windea.pls.config.CwtConfigType
+import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.config.annotations.FromName
 import icu.windea.pls.config.annotations.FromOptionMember
 import icu.windea.pls.config.config.CwtDelegatedConfig
@@ -62,6 +64,8 @@ interface CwtSubtypeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> 
     val onlyIfNot: Set<String>?
     @FromOptionMember("group: string?")
     val group: String?
+
+    override val configType: CwtConfigType get() = CwtConfigTypes.Subtype
 
     companion object {
         /** 由属性规则解析为子类型规则。 */

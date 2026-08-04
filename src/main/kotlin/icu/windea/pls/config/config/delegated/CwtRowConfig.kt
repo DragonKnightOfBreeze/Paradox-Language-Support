@@ -2,6 +2,8 @@ package icu.windea.pls.config.config.delegated
 
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
+import icu.windea.pls.config.CwtConfigType
+import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.config.annotations.FromMember
 import icu.windea.pls.config.annotations.FromName
 import icu.windea.pls.config.attributes.CwtRowConfigAttributes
@@ -68,6 +70,8 @@ interface CwtRowConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, Cwt
     val skipLastColumn: Boolean
     @FromMember("columns: ColumnConfigs")
     val columns: List<CwtPropertyConfig>
+
+    override val configType: CwtConfigType get() = CwtConfigTypes.Row
 
     val attributes: CwtRowConfigAttributes
 

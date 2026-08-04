@@ -2,6 +2,8 @@ package icu.windea.pls.config.config.extended
 
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
+import icu.windea.pls.config.CwtConfigType
+import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.annotations.FromName
 import icu.windea.pls.config.annotations.FromOptionMember
@@ -48,6 +50,8 @@ interface CwtExtendedGameRuleConfig : CwtDelegatedConfig<CwtMember, CwtMemberCon
     val hint: String?
 
     val rootConfig: CwtPropertyConfig?
+
+    override val configType: CwtConfigType get() = CwtConfigTypes.ExtendedGameRule
 
     companion object {
         /** 由成员规则解析为游戏规则的扩展规则。 */

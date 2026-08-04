@@ -2,6 +2,8 @@ package icu.windea.pls.config.config.delegated
 
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
+import icu.windea.pls.config.CwtConfigType
+import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.annotations.FromMember
 import icu.windea.pls.config.annotations.FromName
@@ -56,6 +58,8 @@ interface CwtDatabaseObjectTypeConfig : CwtDelegatedConfig<CwtProperty, CwtPrope
     val swapType: String?
     @FromMember("localisation: string?")
     val localisation: String?
+
+    override val configType: CwtConfigType get() = CwtConfigTypes.DatabaseObjectType
 
     /** 根据 [isBase]（基础/替换）返回对应的值规则。 */
     fun getConfigForType(isBase: Boolean): CwtValueConfig?

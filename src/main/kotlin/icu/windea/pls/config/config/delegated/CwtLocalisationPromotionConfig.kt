@@ -2,6 +2,8 @@ package icu.windea.pls.config.config.delegated
 
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
+import icu.windea.pls.config.CwtConfigType
+import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.annotations.FromName
 import icu.windea.pls.config.annotations.FromOptionMember
@@ -63,6 +65,8 @@ interface CwtLocalisationPromotionConfig : CwtDelegatedConfig<CwtProperty, CwtPr
     val name: @CaseInsensitive String
     @FromOptionMember(": string | string[]")
     val supportedScopes: Set<String>
+
+    override val configType: CwtConfigType get() = CwtConfigTypes.LocalisationPromotion
 
     companion object {
         /** 由属性规则解析为本地化提升规则。 */

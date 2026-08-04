@@ -3,6 +3,7 @@ package icu.windea.pls.config.config
 import com.intellij.openapi.util.UserDataHolder
 import com.intellij.psi.PsiElement
 import com.intellij.psi.SmartPsiElementPointer
+import icu.windea.pls.config.CwtConfigType
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 
@@ -19,7 +20,8 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
  *
  * @property pointer 指向对应的 PSI 元素的智能指针。
  * @property configGroup 所属规则分组（按项目与游戏类型划分）。
- * @property configExpression 绑定到该规则的数据表达式，部分场景可能为 null。
+ * @property configType 对应的规则类型。可能为 null。
+ * @property configExpression 绑定到该规则的数据表达式。可能为 null。
  *
  * @see CwtFileConfig
  * @see CwtMemberConfig
@@ -30,6 +32,7 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 interface CwtConfig<out T : PsiElement> : UserDataHolder {
     val pointer: SmartPsiElementPointer<out T>
     val configGroup: CwtConfigGroup
+    val configType: CwtConfigType? get() = null
     val configExpression: CwtDataExpression? get() = null
 
     override fun toString(): String

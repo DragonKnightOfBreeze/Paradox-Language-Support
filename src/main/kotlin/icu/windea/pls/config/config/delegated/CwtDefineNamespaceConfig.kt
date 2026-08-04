@@ -2,6 +2,8 @@ package icu.windea.pls.config.config.delegated
 
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
+import icu.windea.pls.config.CwtConfigType
+import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.config.annotations.FromMember
 import icu.windea.pls.config.annotations.FromName
 import icu.windea.pls.config.config.CwtPropertyConfig
@@ -49,6 +51,8 @@ interface CwtDefineNamespaceConfig : CwtDefineConfig {
     val variables: Map<String, CwtDefineVariableConfig>
 
     override val namespace: String
+
+    override val configType: CwtConfigType get() = CwtConfigTypes.DefineNamespace
 
     companion object {
         /** 由属性规则解析为定值命名空间规则。 */

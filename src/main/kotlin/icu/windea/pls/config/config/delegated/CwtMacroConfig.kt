@@ -2,6 +2,8 @@ package icu.windea.pls.config.config.delegated
 
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
+import icu.windea.pls.config.CwtConfigType
+import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.config.annotations.FromMember
 import icu.windea.pls.config.annotations.FromName
 import icu.windea.pls.config.config.CwtDelegatedConfig
@@ -50,6 +52,8 @@ import icu.windea.pls.cwt.psi.CwtProperty
 interface CwtMacroConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, CwtIdMatchableConfig<CwtProperty> {
     @FromName("macro[$]")
     val name: String
+
+    override val configType: CwtConfigType get() = CwtConfigTypes.Macro
 
     /**
      * 内联脚本的宏规则。为内联脚本用法提供快速文档和规则上下文。

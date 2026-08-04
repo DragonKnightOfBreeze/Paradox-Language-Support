@@ -58,8 +58,8 @@ interface CwtPropertyConfig : CwtMemberConfig<CwtProperty> {
 
     val keyExpression: CwtDataExpression
     override val valueExpression: CwtDataExpression
-    override val configExpression: CwtDataExpression
 
+    override val configExpression: CwtDataExpression get() = keyExpression
     override val memberType: CwtMemberType get() = CwtMemberType.PROPERTY
 
     override fun accept(visitor: CwtMemberConfigVisitor): Boolean {
@@ -199,8 +199,6 @@ private sealed class CwtPropertyConfigBase : CwtOptionMetadataBase(), CwtPropert
     @Volatile override var parentConfig: CwtMemberConfig<*>? = null
 
     override val optionMetadata: CwtOptionMetadata get() = this
-
-    override val configExpression: CwtDataExpression get() = keyExpression
 
     // 3.0.1 optimize: use memory-friendly lazy property
     override val valueConfig: CwtValueConfig? // region by lazy { computeValueConfig() }

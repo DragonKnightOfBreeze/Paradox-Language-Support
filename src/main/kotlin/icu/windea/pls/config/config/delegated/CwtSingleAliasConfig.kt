@@ -2,6 +2,8 @@ package icu.windea.pls.config.config.delegated
 
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
+import icu.windea.pls.config.CwtConfigType
+import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.config.annotations.FromName
 import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtExpandableConfig
@@ -48,6 +50,8 @@ import icu.windea.pls.cwt.psi.CwtProperty
 interface CwtSingleAliasConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, CwtIdMatchableConfig<CwtProperty>, CwtExpandableConfig<CwtProperty> {
     @FromName("single_alias[$]")
     val name: String
+
+    override val configType: CwtConfigType get() = CwtConfigTypes.SingleAlias
 
     companion object {
         /** 由属性规则解析为单别名规则。 */

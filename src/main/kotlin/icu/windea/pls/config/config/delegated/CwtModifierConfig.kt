@@ -2,6 +2,8 @@ package icu.windea.pls.config.config.delegated
 
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
+import icu.windea.pls.config.CwtConfigType
+import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtIdMatchableConfig
@@ -72,6 +74,8 @@ interface CwtModifierConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>
     val categoryConfigMap: MutableMap<String, CwtModifierCategoryConfig>
     val template: CwtTemplateExpression
     val supportedScopes: Set<String>
+
+    override val configType: CwtConfigType get() = CwtConfigTypes.Modifier
 
     companion object {
         /** 由属性规则解析为修正规则。 */

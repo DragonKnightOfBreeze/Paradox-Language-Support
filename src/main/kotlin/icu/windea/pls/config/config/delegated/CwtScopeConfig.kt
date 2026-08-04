@@ -2,6 +2,8 @@ package icu.windea.pls.config.config.delegated
 
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
+import icu.windea.pls.config.CwtConfigType
+import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.config.annotations.FromMember
 import icu.windea.pls.config.annotations.FromName
 import icu.windea.pls.config.config.CwtDelegatedConfig
@@ -49,6 +51,8 @@ interface CwtScopeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, C
     val aliases: Set<@CaseInsensitive String>
     @FromMember("is_subscope_of: string?")
     val isSubscopeOf: String?
+
+    override val configType: CwtConfigType get() = CwtConfigTypes.Scope
 
     companion object {
         /** 由属性规则解析为作用域规则。 */

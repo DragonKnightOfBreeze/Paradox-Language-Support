@@ -2,6 +2,8 @@ package icu.windea.pls.config.config.extended
 
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
+import icu.windea.pls.config.CwtConfigType
+import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.annotations.FromName
 import icu.windea.pls.config.annotations.FromOptionMember
@@ -63,6 +65,8 @@ interface CwtExtendedInlineScriptConfig : CwtDelegatedConfig<CwtMember, CwtMembe
     val name: String
     @FromOptionMember("context_configs_type: string", defaultValue = "single", allowedValues = ["single", "multiple"])
     val contextConfigsType: CwtContextConfigsType
+
+    override val configType: CwtConfigType get() = CwtConfigTypes.ExtendedInlineScript
 
     /** 得到经过处理后的上下文容器规则。在后续的语义解析流程中，需要获取的通常是上下文规则，而非上下文容器规则。 */
     fun getContextContainerConfig(): CwtMemberConfig<*>

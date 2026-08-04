@@ -2,6 +2,8 @@ package icu.windea.pls.config.config.delegated
 
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
+import icu.windea.pls.config.CwtConfigType
+import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.config.annotations.FromName
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.manipulation.CwtConfigManipulationService
@@ -50,6 +52,8 @@ interface CwtDefineVariableConfig : CwtDefineConfig {
     val variable: String
 
     val rootConfig: CwtPropertyConfig
+
+    override val configType: CwtConfigType get() = CwtConfigTypes.DefineVariable
 
     companion object {
         /** 由属性规则解析为定值变量规则。 */

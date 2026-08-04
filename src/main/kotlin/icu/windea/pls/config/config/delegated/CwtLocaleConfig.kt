@@ -3,6 +3,8 @@ package icu.windea.pls.config.config.delegated
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.ChronicleDocBundle
+import icu.windea.pls.config.CwtConfigType
+import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.config.annotations.FromMember
 import icu.windea.pls.config.annotations.FromName
 import icu.windea.pls.config.config.CwtDelegatedConfig
@@ -56,6 +58,8 @@ interface CwtLocaleConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, 
     val text: String
     val shortId: String get() = name.removePrefix("l_")
     val idWithText: String get() = if (text.isEmpty()) name else "$name ($text)"
+
+    override val configType: CwtConfigType get() = CwtConfigTypes.Locale
 
     override fun equals(other: Any?): Boolean
     override fun hashCode(): Int

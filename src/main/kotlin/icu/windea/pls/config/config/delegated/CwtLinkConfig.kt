@@ -2,6 +2,8 @@ package icu.windea.pls.config.config.delegated
 
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
+import icu.windea.pls.config.CwtConfigType
+import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.config.annotations.FromMember
 import icu.windea.pls.config.annotations.FromName
 import icu.windea.pls.config.config.CwtDelegatedConfig
@@ -115,7 +117,9 @@ interface CwtLinkConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, Cw
     val dataSourceIndex: Int
     val dataSourceExpression: CwtDataExpression?
     val dataSourceExpressions: List<CwtDataExpression>
-    override val configExpression: CwtDataExpression?
+
+    override val configType: CwtConfigType get() = CwtConfigTypes.Link // or `CwtConfigTypes.LocalisationLink`
+    override val configExpression: CwtDataExpression? get() = dataSourceExpression
 
     companion object {
         /** 由属性规则解析为（常规）链接规则。 */
@@ -238,7 +242,6 @@ private class CwtLinkConfigImpl(
     override val dataSourceIndex: Int get() = 0
     override val dataSourceExpressions = dataSources.map { CwtDataExpression.resolve(it) }.optimized()
     override val dataSourceExpression = dataSourceExpressions.getOrNull(dataSourceIndex) ?: dataSourceExpressions.firstOrNull()
-    override val configExpression: CwtDataExpression? get() = dataSourceExpression
 
     override fun toString() = "CwtLinkConfigImpl(name='$name')"
 }
@@ -249,7 +252,6 @@ private class CwtLinkConfigDelegate(
 ) : CwtLinkConfig by delegate {
     // NOTE 需要重载下面两个属性
     override val dataSourceExpression = dataSourceExpressions.getOrNull(dataSourceIndex) ?: dataSourceExpressions.firstOrNull()
-    override val configExpression get() = dataSourceExpression
 
     override fun toString() = "CwtLinkConfigDelegate(name='$name', dataSourceIndex='$dataSourceIndex')"
 }
