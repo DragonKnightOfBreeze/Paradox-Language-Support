@@ -1,6 +1,8 @@
 package icu.windea.pls.config.match
 
 import com.intellij.util.Processor
+import icu.windea.pls.config.CwtConfigType
+import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtFilePathMatchableConfig
 import icu.windea.pls.config.config.CwtIdMatchableConfig
@@ -43,6 +45,7 @@ import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.matchesAntPattern
 import icu.windea.pls.core.matchesPath
 import icu.windea.pls.core.orNull
+import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.model.paths.ParadoxPath
 
 object CwtConfigMatchService {
@@ -236,6 +239,15 @@ object CwtConfigMatchService {
         }
     }
 
+    fun getConfigToMatchFilePath(configName: String, configType: CwtConfigType, configGroup: CwtConfigGroup): CwtFilePathMatchableConfig<CwtProperty>? {
+        return when (configType) {
+            CwtConfigTypes.Type -> configGroup.types[configName]
+            CwtConfigTypes.ComplexEnum -> configGroup.complexEnums[configName]
+            CwtConfigTypes.Row -> configGroup.rows[configName]
+            else -> null
+        }
+    }
+
     fun matchesFilePath(config: CwtFilePathMatchableConfig<*>, filePath: String?): Boolean {
         if (filePath == null) return true
         return matchesFilePath(config, ParadoxPath.resolve(filePath))
@@ -261,9 +273,7 @@ object CwtConfigMatchService {
         val paths = config.paths
         if (paths.isNotEmpty()) {
             val pathStrict = config.pathStrict
-            for (path in paths) {
-                if (path.matchesPath(filePath.path, strict = pathStrict)) return true
-            }
+            if (paths.any { it.matchesPath(filePath.path, strict = pathStrict) }) return true
             return false
         } else {
             val pathExtension = config.pathExtension

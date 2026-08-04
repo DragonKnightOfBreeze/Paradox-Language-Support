@@ -7,12 +7,14 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.Processor
 import icu.windea.pls.base.context.ChronicleThreadContext
+import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.processFast
 import icu.windea.pls.lang.index.ChronicleIndexKeys
 import icu.windea.pls.lang.index.ChronicleIndexService
 import icu.windea.pls.lang.index.ChronicleIndexUtil
 import icu.windea.pls.lang.search.ParadoxDefinitionInjectionSearch
+import icu.windea.pls.lang.search.scope.withConfig
 import icu.windea.pls.lang.search.scope.withFileTypes
 import icu.windea.pls.lang.search.util.ParadoxSearchContext
 import icu.windea.pls.model.ParadoxGameType
@@ -85,6 +87,7 @@ class ParadoxDefinitionInjectionSearcher : QueryExecutorBase<ParadoxDefinitionIn
 
     private fun ParadoxDefinitionInjectionSearch.Parameters.createContext(): Context {
         val scope = scope.withFileTypes(ParadoxScriptFileType) // optimize: restrict file types
+            .withConfig(type, CwtConfigTypes.Type, selector) // 3.0.1 optimize: restrict file by complex enum config
         return Context(mode, target, type, gameType, project, scope)
     }
 

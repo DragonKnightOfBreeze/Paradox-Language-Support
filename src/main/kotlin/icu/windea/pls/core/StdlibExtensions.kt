@@ -489,33 +489,6 @@ inline fun <reified T> Any?.cast(): T = this as T
 inline fun <reified T> Any?.castOrNull(): T? = this as? T
 
 /**
- * 判断当前路径是否匹配另一个路径（相同或者是其父路径）。
- * 使用 "/" 作为路径分隔符。
- * 不会忽略前导的路径分隔符。
- *
- * @param other 另一个路径。
- * @param acceptSelf 是否接受路径完全一致的情况。
- * @param strict 是否严格匹配（相同或是其直接父路径）。
- * @param trim 是否需要事先去除当前路径首尾的路径分隔符。不会去除另一个路径首尾的路径分隔符。
- */
-@Suppress("PLATFORM_CLASS_MAPPED_TO_KOTLIN")
-fun String.matchesPath(other: String, acceptSelf: Boolean = true, strict: Boolean = false, trim: Boolean = false): Boolean {
-    // 这个方法的执行速度应当非常非常快
-
-    val path = if (trim) this.trimFast('/') else this
-    val length = path.length
-    val otherLength = other.length
-    if (length > otherLength) return false
-    if ((other as java.lang.String).startsWith(path, 0)) {
-        if (length == otherLength) return acceptSelf
-        if (other[length] != '/') return false
-        if (strict && (other as java.lang.String).indexOf(47, length + 1) != -1) return false // 47 -> '/'
-        return true
-    }
-    return false
-}
-
-/**
  * 规范化当前路径。
  *
  * 将分隔符统一替换成 "/"，将连续的分隔符替换为单个分隔符，并去除所有作为后缀的分隔符。

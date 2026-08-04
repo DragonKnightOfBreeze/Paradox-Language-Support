@@ -26,8 +26,9 @@ class ParadoxWithFilePathSearchScope(
             val extension = topFile.extension
             if (fileExtension != extension) return false
         }
-        val path = topFile.fileInfo?.path?.path ?: return false
-        return filePath.matchesPath(path)
+        val fileInfo = topFile.fileInfo ?: return false
+        val path = fileInfo.path
+        return filePath.matchesPath(path.path)
     }
 
     override fun calcHashCode(): Int {

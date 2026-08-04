@@ -235,30 +235,6 @@ class StdlibExtensionsTest {
     }
 
     @Test
-    fun matchesPath_basic_and_strict_test() {
-        // equal
-        Assert.assertTrue("/a/b".matchesPath("/a/b", acceptSelf = true))
-        Assert.assertFalse("/a/b".matchesPath("/a/b", acceptSelf = false))
-
-        // parent-child
-        Assert.assertTrue("/a".matchesPath("/a/b"))
-        Assert.assertTrue("/a/b".matchesPath("/a/b/c"))
-        Assert.assertFalse("/a/b/c".matchesPath("/a/b"))
-
-        // strict: only direct parent
-        Assert.assertTrue("/a".matchesPath("/a/b", strict = true))
-        Assert.assertFalse("/a".matchesPath("/a/b/c", strict = true))
-    }
-
-    @Test
-    fun matchesPath_trim_test() {
-        // when trim=true, only the receiver is trimmed
-        Assert.assertTrue("a/b/".matchesPath("a/b/c", trim = true))
-        Assert.assertTrue("a/b".matchesPath("a/b/c", trim = false))
-        Assert.assertFalse("a/b/".matchesPath("a-b/c", trim = true))
-    }
-
-    @Test
     fun normalizePath_unify_separators_and_trim_tail_test() {
         Assert.assertEquals("a/b/c", "a//b\\c/".normalizePath())
         Assert.assertEquals("", "".normalizePath())

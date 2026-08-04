@@ -8,6 +8,7 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.Processor
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.base.context.ChronicleThreadContext
+import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.annotations.Optimized
@@ -18,6 +19,7 @@ import icu.windea.pls.lang.index.ChronicleIndexService
 import icu.windea.pls.lang.index.ChronicleIndexUtil
 import icu.windea.pls.lang.index.constraints.ParadoxDefinitionIndexConstraint
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
+import icu.windea.pls.lang.search.scope.withConfig
 import icu.windea.pls.lang.search.scope.withFileTypes
 import icu.windea.pls.lang.search.util.ParadoxSearchContext
 import icu.windea.pls.lang.search.util.getConstraint
@@ -119,6 +121,7 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxDefinitionIndexInfo, 
         val subtypes = typeExpression?.subtypes
         val constraint = selector.getConstraint() as? ParadoxDefinitionIndexConstraint // extract index constraint from the selector
         val scope = scope.withFileTypes(ParadoxScriptFileType) // optimize: restrict file types
+            .withConfig(type, CwtConfigTypes.Type, selector) // 3.0.1 optimize: restrict file by complex enum config
         return Context(name, type, subtypes, constraint, gameType, project, scope)
     }
 

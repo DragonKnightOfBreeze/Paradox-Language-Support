@@ -7,6 +7,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.Processor
 import icu.windea.pls.base.context.ChronicleThreadContext
+import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.processFast
 import icu.windea.pls.csv.ParadoxCsvFileType
@@ -14,6 +15,7 @@ import icu.windea.pls.lang.index.ChronicleIndexKeys
 import icu.windea.pls.lang.index.ChronicleIndexService
 import icu.windea.pls.lang.index.ChronicleIndexUtil
 import icu.windea.pls.lang.search.ParadoxComplexEnumValueSearch
+import icu.windea.pls.lang.search.scope.withConfig
 import icu.windea.pls.lang.search.scope.withFileTypes
 import icu.windea.pls.lang.search.util.ParadoxSearchContext
 import icu.windea.pls.model.ParadoxGameType
@@ -74,6 +76,7 @@ class ParadoxComplexEnumValueSearcher : QueryExecutorBase<ParadoxComplexEnumValu
 
     private fun ParadoxComplexEnumValueSearch.Parameters.createContext(): Context {
         val scope = scope.withFileTypes(ParadoxScriptFileType, ParadoxCsvFileType) // optimize: restrict file types
+            .withConfig(enumName, CwtConfigTypes.ComplexEnum, selector) // 3.0.1 optimize: restrict file by complex enum config
         return Context(name, enumName, gameType, project, scope)
     }
 

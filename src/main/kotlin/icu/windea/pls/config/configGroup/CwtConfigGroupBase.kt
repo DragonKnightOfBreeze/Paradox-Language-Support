@@ -77,7 +77,7 @@ class CwtConfigGroupBase(
     }
 
     override fun toString(): String {
-        return "CwtConfigGroupBase(gameType=${gameType.id}, project=$project, initialized=$initialized, changed=$changed)"
+        return "CwtConfigGroupBase(gameType=${gameType.id}, project=$project)"
     }
 
     // region Accessors
