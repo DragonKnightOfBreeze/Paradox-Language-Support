@@ -1,4 +1,4 @@
-package icu.windea.pls.model.constraints
+package icu.windea.pls.lang.index.constraints
 
 import com.intellij.util.indexing.ID
 import icu.windea.pls.config.configGroup.CwtConfigGroup
@@ -6,13 +6,23 @@ import icu.windea.pls.config.configGroup.CwtTypesModel
 import icu.windea.pls.ep.resolve.localisation.ParadoxCompositeLocalisationIconSupport
 import icu.windea.pls.ep.resolve.localisation.ParadoxLocalisationIconSupport
 import icu.windea.pls.lang.index.ChronicleIndexKeys
+import icu.windea.pls.lang.index.ParadoxDefinitionConstrainedIndex
 import icu.windea.pls.lang.references.localisation.ParadoxLocalisationIconPsiReference
 import icu.windea.pls.lang.references.localisation.ParadoxLocalisationTextColorPsiReference
 import icu.windea.pls.lang.references.localisation.ParadoxLocalisationTextFormatPsiReference
 import icu.windea.pls.lang.references.localisation.ParadoxLocalisationTextIconPsiReference
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
+import icu.windea.pls.model.constraints.ParadoxSyntaxConstraint
 import icu.windea.pls.model.index.ParadoxDefinitionIndexInfo
 
+/**
+ * 定义索引的索引约束。
+ *
+ * @property indexKey 对应的受约束索引使用的 [ID]。
+ * @property ignoreCase 对应的受约束索引在索引定义的名字时，是否忽略大小写。
+ *
+ * @see ParadoxDefinitionConstrainedIndex
+ */
 enum class ParadoxDefinitionIndexConstraint(
     val indexKey: ID<String, List<ParadoxDefinitionIndexInfo>>,
     val ignoreCase: Boolean = false,

@@ -2,7 +2,6 @@ package icu.windea.pls.config.configGroup
 
 import icu.windea.pls.base.ChronicleCapacities
 import icu.windea.pls.config.attributes.CwtConfigGroupAttributes
-import icu.windea.pls.config.attributes.CwtConfigGroupAttributesBase
 import icu.windea.pls.config.attributes.CwtExpandableConfigAttributes
 import icu.windea.pls.config.config.CwtFileConfig
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
@@ -42,9 +41,9 @@ import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.ep.config.config.CwtConfigPostProcessor
 import icu.windea.pls.ep.resolve.localisation.ParadoxCompositeLocalisationIconSupport
 import icu.windea.pls.ep.resolve.localisation.ParadoxLocalisationIconSupport
+import icu.windea.pls.lang.index.constraints.ParadoxDefinitionIndexConstraint
 import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
 import icu.windea.pls.lang.references.localisation.ParadoxLocalisationIconPsiReference
-import icu.windea.pls.model.constraints.ParadoxDefinitionIndexConstraint
 
 /**
  * 规则分组的数据模型。
@@ -190,7 +189,7 @@ interface CwtConfigGroupDataModel {
     // region Attributes
 
     /** 规则分组自身的综合属性。 */
-    val attribute: CwtConfigGroupAttributes get() = CwtConfigGroupAttributes.Empty
+    val attribute: CwtConfigGroupAttributes get() = CwtConfigGroupAttributes.EMPTY
     /** 得到指定名字的并集规则（[CwtUnionConfig]）的综合属性。 */
     fun getUnionAttribute(name: String): CwtExpandableConfigAttributes = CwtExpandableConfigAttributes.EMPTY
     /** 得到指定名字的别名规则（[CwtAliasConfig]）的综合属性。 */
@@ -200,9 +199,7 @@ interface CwtConfigGroupDataModel {
 
     // endregion
 
-    object Empty : CwtConfigGroupDataModel {
-        override val attribute: CwtConfigGroupAttributes = CwtConfigGroupAttributesBase()
-    }
+    object Empty : CwtConfigGroupDataModel
 }
 
 /** 定义类型的数据模型。用于保存和获取符合特定条件的定义类型。 */

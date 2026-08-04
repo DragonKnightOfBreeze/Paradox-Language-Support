@@ -38,6 +38,7 @@ import icu.windea.pls.cwt.psi.isDataExpression
 import icu.windea.pls.cwt.psi.isOptionValue
 import icu.windea.pls.lang.ParadoxLanguage
 import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.index.constraints.ParadoxLocalisationIndexConstraint
 import icu.windea.pls.lang.psi.CwtPsiService
 import icu.windea.pls.lang.psi.light.CwtConfigSymbolLightElement
 import icu.windea.pls.lang.psi.light.CwtMemberConfigLightElement
@@ -61,7 +62,6 @@ import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextQuickDocRenderer
 import icu.windea.pls.model.ReferenceLinkType
 import icu.windea.pls.model.constants.ChronicleStrings
-import icu.windea.pls.model.constraints.ParadoxLocalisationIndexConstraint
 import icu.windea.pls.model.scope.ParadoxScopeConstants
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
@@ -466,7 +466,7 @@ object CwtDocumentationManager {
         val scopeContext = ParadoxScopeManager.getScopeContext(memberElement)
         if (scopeContext == null) return
         // TODO 如果作用域引用位于脚本表达式中，应当使用那个位置的作用域上下文，但是目前实现不了
-        // 因为这里的 `referenceElement` 是整个 `stringExpression`，得到的作用域上下文会是脚本表达式最终的作用域上下文
+        //  因为这里的 `referenceElement` 是整个 `stringExpression`，得到的作用域上下文会是脚本表达式最终的作用域上下文
         sections[ChronicleBundle.message("doc.sectionTitle.scopeContext")] = getScopeContextText(scopeContext, gameType, element)
     }
 

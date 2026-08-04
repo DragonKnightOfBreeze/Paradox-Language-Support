@@ -1,24 +1,29 @@
 package icu.windea.pls.lang.index
 
 import com.intellij.psi.PsiFile
+import icu.windea.pls.lang.index.constraints.ParadoxDefinitionIndexConstraint
 import icu.windea.pls.lang.references.localisation.ParadoxLocalisationIconPsiReference
 import icu.windea.pls.lang.references.localisation.ParadoxLocalisationTextColorPsiReference
 import icu.windea.pls.lang.references.localisation.ParadoxLocalisationTextFormatPsiReference
 import icu.windea.pls.lang.references.localisation.ParadoxLocalisationTextIconPsiReference
-import icu.windea.pls.model.constraints.ParadoxDefinitionIndexConstraint
 import icu.windea.pls.model.index.ParadoxDefinitionIndexInfo
 
 /**
- * 定义信息的受约束的索引。
+ * 定义信息的受约束索引。
  *
  * 用于优化和调整符合特定约束的定义声明的索引逻辑。
  *
  * @see ParadoxDefinitionIndex
  * @see ParadoxDefinitionIndexConstraint
  */
-abstract class ParadoxDefinitionConstrainedIndex: ParadoxDefinitionIndex() {
+abstract class ParadoxDefinitionConstrainedIndex : ParadoxDefinitionIndex() {
+    abstract val constraint: ParadoxDefinitionIndexConstraint
+
+    override fun getName() = constraint.indexKey
+
     override fun indexData(psiFile: PsiFile): Map<String, List<ParadoxDefinitionIndexInfo>> {
         // TODO 3.0.1
+        return emptyMap()
     }
 
     /**
@@ -26,8 +31,8 @@ abstract class ParadoxDefinitionConstrainedIndex: ParadoxDefinitionIndex() {
      *
      * @see ParadoxDefinitionIndexConstraint.TextColor
      */
-    class TextColorIndex: ParadoxDefinitionConstrainedIndex() {
-        override fun getName() = ChronicleIndexKeys.DefinitionForTextColor
+    class TextColorIndex : ParadoxDefinitionConstrainedIndex() {
+        override val constraint get() = ParadoxDefinitionIndexConstraint.TextColor
     }
 
     /**
@@ -35,8 +40,8 @@ abstract class ParadoxDefinitionConstrainedIndex: ParadoxDefinitionIndex() {
      *
      * @see ParadoxDefinitionIndexConstraint.TextIcon
      */
-    class TextIconIndex: ParadoxDefinitionConstrainedIndex() {
-        override fun getName() = ChronicleIndexKeys.DefinitionForTextIcon
+    class TextIconIndex : ParadoxDefinitionConstrainedIndex() {
+        override val constraint get() = ParadoxDefinitionIndexConstraint.TextIcon
     }
 
     /**
@@ -44,8 +49,8 @@ abstract class ParadoxDefinitionConstrainedIndex: ParadoxDefinitionIndex() {
      *
      * @see ParadoxDefinitionIndexConstraint.TextFormat
      */
-    class TextFormatIndex: ParadoxDefinitionConstrainedIndex() {
-        override fun getName() = ChronicleIndexKeys.DefinitionForTextFormat
+    class TextFormatIndex : ParadoxDefinitionConstrainedIndex() {
+        override val constraint get() = ParadoxDefinitionIndexConstraint.TextFormat
     }
 
     /**
@@ -53,7 +58,7 @@ abstract class ParadoxDefinitionConstrainedIndex: ParadoxDefinitionIndex() {
      *
      * @see ParadoxDefinitionIndexConstraint.LocalisationIconResolvable
      */
-    class LocalisationIconResolvableIndex: ParadoxDefinitionConstrainedIndex() {
-        override fun getName() = ChronicleIndexKeys.DefinitionForLocalisationIconResolvable
+    class LocalisationIconResolvableIndex : ParadoxDefinitionConstrainedIndex() {
+        override val constraint get() = ParadoxDefinitionIndexConstraint.LocalisationIconResolvable
     }
 }

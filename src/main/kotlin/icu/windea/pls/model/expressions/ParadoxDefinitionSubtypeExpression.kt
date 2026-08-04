@@ -1,5 +1,12 @@
+@file:Optimized
+
 package icu.windea.pls.model.expressions
 
+import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
+import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.collections.allFast
+import icu.windea.pls.core.collections.mapFast
+import icu.windea.pls.core.splitFast
 import icu.windea.pls.core.util.values.ReversibleValue
 import icu.windea.pls.model.ParadoxDefinitionInfo
 
@@ -15,6 +22,8 @@ import icu.windea.pls.model.ParadoxDefinitionInfo
  * - `a`
  * - `!b`
  * - `a&!b`
+ *
+ * @see CwtSubtypeConfig
  */
 interface ParadoxDefinitionSubtypeExpression {
     val text: String
@@ -46,11 +55,11 @@ private object ParadoxDefinitionSubtypeExpressionResolver {
 private class ParadoxDefinitionSubtypeExpressionImpl(
     override val text: String
 ) : ParadoxDefinitionSubtypeExpression {
-    override val parts: List<ReversibleValue<String>> = text.split('&').map { ReversibleValue.from(it) }
+    override val parts: List<ReversibleValue<String>> = text.splitFast('&').mapFast { ReversibleValue.from(it) }
 
     override fun matches(subtypes: Collection<String>): Boolean {
         // 目前仅支持"!"和"&"的组合
-        return this.parts.all { t -> t.withOperator { subtypes.contains(it) } }
+        return this.parts.allFast { t -> t.withOperator { subtypes.contains(it) } }
     }
 
     override fun matches(definitionInfo: ParadoxDefinitionInfo): Boolean {

@@ -27,6 +27,7 @@ import icu.windea.pls.core.writeIndexedStringList
 import icu.windea.pls.core.writeIntFast
 import icu.windea.pls.core.writeUTFFast
 import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.index.constraints.ParadoxDefinitionIndexConstraint
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.CwtTypeConfigMatchContext
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
@@ -35,7 +36,6 @@ import icu.windea.pls.lang.resolve.ParadoxMemberService
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.model.ParadoxDefinitionSource
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.model.constraints.ParadoxDefinitionIndexConstraint
 import icu.windea.pls.model.index.ParadoxDefinitionIndexInfo
 import icu.windea.pls.script.ParadoxScriptFileType
 import icu.windea.pls.script.psi.ParadoxDefinitionElement

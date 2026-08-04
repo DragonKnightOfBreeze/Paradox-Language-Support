@@ -1,8 +1,8 @@
 package icu.windea.pls.lang.index
 
 import com.intellij.psi.stubs.StringStubIndexExtension
+import icu.windea.pls.lang.index.constraints.ParadoxLocalisationIndexConstraint
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
-import icu.windea.pls.model.constraints.ParadoxLocalisationIndexConstraint
 
 /**
  * 本地化声明的名字的索引。

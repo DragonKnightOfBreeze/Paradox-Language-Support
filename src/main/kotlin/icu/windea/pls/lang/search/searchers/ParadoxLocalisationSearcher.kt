@@ -9,6 +9,7 @@ import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.lang.index.ChronicleIndexKeys
 import icu.windea.pls.lang.index.ChronicleIndexService
+import icu.windea.pls.lang.index.constraints.ParadoxLocalisationIndexConstraint
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.scope.withFileTypes
 import icu.windea.pls.lang.search.util.ParadoxSearchContext
@@ -17,7 +18,6 @@ import icu.windea.pls.localisation.ParadoxLocalisationFileType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxLocalisationType
-import icu.windea.pls.model.constraints.ParadoxLocalisationIndexConstraint
 
 /**
  * 本地化的查询器。

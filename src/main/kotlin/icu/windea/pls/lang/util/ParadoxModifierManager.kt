@@ -32,6 +32,7 @@ import icu.windea.pls.ep.resolve.modifier.ParadoxModifierSupport
 import icu.windea.pls.ep.resolve.modifier.support
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.index.constraints.ParadoxLocalisationIndexConstraint
 import icu.windea.pls.lang.psi.light.ParadoxModifierLightElement
 import icu.windea.pls.lang.resolve.ParadoxModifierService
 import icu.windea.pls.lang.search.ParadoxComplexEnumValueSearch
@@ -45,7 +46,6 @@ import icu.windea.pls.lang.search.util.withSearchScopeType
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.model.ParadoxModifierInfo
-import icu.windea.pls.model.constraints.ParadoxLocalisationIndexConstraint
 import icu.windea.pls.model.toInfo
 import icu.windea.pls.model.toPsiElement
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement

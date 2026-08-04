@@ -9,12 +9,12 @@ import icu.windea.pls.base.annotations.ForGameTypeConstraint
 import icu.windea.pls.core.createResults
 import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.codeInsight.completion.localisation.ParadoxLocalisationTextFormatCompletionProvider
+import icu.windea.pls.lang.index.constraints.ParadoxDefinitionIndexConstraint
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.search.util.withConstraint
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextFormat
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
-import icu.windea.pls.model.constraints.ParadoxDefinitionIndexConstraint
 import icu.windea.pls.model.constraints.ParadoxGameTypeConstraint
 
 /**

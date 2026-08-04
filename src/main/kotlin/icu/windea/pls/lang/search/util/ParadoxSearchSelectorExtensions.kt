@@ -3,9 +3,9 @@ package icu.windea.pls.lang.search.util
 import com.intellij.psi.search.GlobalSearchScope
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.collections.findIsInstance
+import icu.windea.pls.lang.index.constraints.ParadoxIndexConstraint
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.model.constraints.ParadoxIndexConstraint
 
 fun <S : ParadoxSearchSelector<T>, T> S.withGameType(gameType: ParadoxGameType?): S {
     if (gameType != null) selectors += ParadoxWithGameTypeSelector(gameType)

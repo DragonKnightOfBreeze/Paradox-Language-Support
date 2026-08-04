@@ -1,9 +1,9 @@
 package icu.windea.pls.lang.index
 
-import icu.windea.pls.model.constraints.ParadoxLocalisationIndexConstraint
+import icu.windea.pls.lang.index.constraints.ParadoxLocalisationIndexConstraint
 
 /**
- * 本地化声明的名字的受约束的索引。
+ * 本地化声明的名字的受约束索引。
  *
  * 用于优化和调整符合特定约束的本地化声明的索引逻辑。
  *
@@ -11,6 +11,10 @@ import icu.windea.pls.model.constraints.ParadoxLocalisationIndexConstraint
  * @see ParadoxLocalisationIndexConstraint
  */
 abstract class ParadoxLocalisationNameConstrainedIndex: ParadoxLocalisationNameIndex() {
+    abstract val constraint: ParadoxLocalisationIndexConstraint
+
+    override fun getKey() = constraint.indexKey
+
     override fun getVersion() = ChronicleIndexVersions.LocalisationStub
 
     /**
@@ -19,7 +23,7 @@ abstract class ParadoxLocalisationNameConstrainedIndex: ParadoxLocalisationNameI
      * @see ParadoxLocalisationIndexConstraint.Modifier
      */
     class ModifierIndex : ParadoxLocalisationNameConstrainedIndex() {
-        override fun getKey() = ChronicleIndexKeys.LocalisationNameForModifier
+        override val constraint get() = ParadoxLocalisationIndexConstraint.Modifier
     }
 
     /**
@@ -28,6 +32,6 @@ abstract class ParadoxLocalisationNameConstrainedIndex: ParadoxLocalisationNameI
      * @see ParadoxLocalisationIndexConstraint.Event
      */
     class EventIndex : ParadoxLocalisationNameConstrainedIndex() {
-        override fun getKey() = ChronicleIndexKeys.LocalisationNameForEvent
+        override val constraint get() = ParadoxLocalisationIndexConstraint.Event
     }
 }

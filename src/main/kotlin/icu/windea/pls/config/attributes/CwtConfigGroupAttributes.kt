@@ -27,17 +27,19 @@ interface CwtConfigGroupAttributes {
     /** 支持的定义注入模式。 */
     val definitionInjectionModes: Set<@CaseInsensitive String> get() = emptySet()
 
-    object Empty : CwtConfigGroupAttributes
+    companion object {
+        @JvmField val EMPTY = CwtConfigGroupAttributesBase()
+    }
 }
 
-class CwtConfigGroupAttributesBase : CwtConfigGroupAttributes {
-    override var usePredicateBasedMatch: Boolean = false
-    override var supportInlineScript: Boolean = false
-    override var supportDefinitionInjection: Boolean = false
-    override val parameterConfigs: ObjectOpenHashSet<CwtMemberConfig<*>> = ObjectOpenHashSet()
-    override val filePathExpressions: ObjectOpenHashSet<CwtDataExpression> = ObjectOpenHashSet()
-    override val definitionInjectionModes: ObjectLinkedOpenCustomHashSet<String> = CaseInsensitiveStringSet()
-
+data class CwtConfigGroupAttributesBase(
+    override var usePredicateBasedMatch: Boolean = false,
+    override var supportInlineScript: Boolean = false,
+    override var supportDefinitionInjection: Boolean = false,
+    override val parameterConfigs: ObjectOpenHashSet<CwtMemberConfig<*>> = ObjectOpenHashSet(),
+    override val filePathExpressions: ObjectOpenHashSet<CwtDataExpression> = ObjectOpenHashSet(),
+    override val definitionInjectionModes: ObjectLinkedOpenCustomHashSet<@CaseInsensitive String> = CaseInsensitiveStringSet(),
+) : CwtConfigGroupAttributes {
     fun trim() {
         parameterConfigs.trim()
         filePathExpressions.trim()

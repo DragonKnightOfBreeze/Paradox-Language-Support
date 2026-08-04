@@ -7,6 +7,7 @@ import com.intellij.psi.search.GlobalSearchScope
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.complexCompareBy
 import icu.windea.pls.core.isSamePosition
+import icu.windea.pls.lang.index.constraints.ParadoxIndexConstraint
 import icu.windea.pls.lang.search.scope.ParadoxSearchScopeTypes
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.selectGameType
@@ -14,7 +15,6 @@ import icu.windea.pls.lang.selectLocale
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.model.constraints.ParadoxIndexConstraint
 import java.util.function.Function
 
 class ParadoxWithGameTypeSelector<T>(

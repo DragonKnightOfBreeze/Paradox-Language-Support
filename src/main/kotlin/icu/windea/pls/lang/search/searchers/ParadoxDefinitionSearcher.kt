@@ -17,13 +17,13 @@ import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.index.ChronicleIndexService
 import icu.windea.pls.lang.index.ChronicleIndexUtil
 import icu.windea.pls.lang.index.ParadoxDefinitionIndex
+import icu.windea.pls.lang.index.constraints.ParadoxDefinitionIndexConstraint
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.scope.withFileTypes
 import icu.windea.pls.lang.search.util.ParadoxSearchContext
 import icu.windea.pls.lang.search.util.getConstraint
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.model.constraints.ParadoxDefinitionIndexConstraint
 import icu.windea.pls.model.expressions.ParadoxDefinitionTypeExpression
 import icu.windea.pls.model.index.ParadoxDefinitionIndexInfo
 import icu.windea.pls.script.ParadoxScriptFileType

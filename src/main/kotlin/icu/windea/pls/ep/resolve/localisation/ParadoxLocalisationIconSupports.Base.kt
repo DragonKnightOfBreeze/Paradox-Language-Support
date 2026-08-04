@@ -16,11 +16,11 @@ import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionLookupProvider
 import icu.windea.pls.lang.codeInsight.completion.addToResult
 import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.index.constraints.ParadoxDefinitionIndexConstraint
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.localisation.psi.ParadoxLocalisationIcon
-import icu.windea.pls.model.constraints.ParadoxDefinitionIndexConstraint
 
 @Suppress("SameParameterValue")
 abstract class ParadoxCompositeLocalisationIconSupport : ParadoxLocalisationIconSupport {
@@ -37,7 +37,7 @@ abstract class ParadoxCompositeLocalisationIconSupport : ParadoxLocalisationIcon
     protected abstract fun registerSupports()
 
     /**
-     * 注意：这里的注册信息发生更改时，受约束的索引的构建逻辑也会发生变化，因此需要同步更新对应的索引版本。
+     * 注意：这里的注册信息发生更改时，受约束索引的构建逻辑也会发生变化，因此需要同步更新对应的索引版本。
      *
      * @see CwtTypesModel.localisationIconResolvable
      * @see ParadoxDefinitionIndexConstraint.LocalisationIconResolvable
@@ -47,7 +47,7 @@ abstract class ParadoxCompositeLocalisationIconSupport : ParadoxLocalisationIcon
     }
 
     /**
-     * 注意：这里的注册信息发生更改时，受约束的索引的构建逻辑也会发生变化，因此需要同步更新对应的索引版本。
+     * 注意：这里的注册信息发生更改时，受约束索引的构建逻辑也会发生变化，因此需要同步更新对应的索引版本。
      *
      * @see CwtTypesModel.localisationIconResolvable
      * @see ParadoxDefinitionIndexConstraint.LocalisationIconResolvable
