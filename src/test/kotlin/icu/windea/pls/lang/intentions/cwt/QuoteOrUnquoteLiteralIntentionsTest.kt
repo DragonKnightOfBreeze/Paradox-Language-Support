@@ -72,11 +72,11 @@ class QuoteOrUnquoteLiteralIntentionsTest : BasePlatformTestCase(), ChronicleTes
     }
 
     @Test
-    fun testQuoteLiteral_notAvailableForOptionValue() {
+    fun testQuoteLiteral_availableForOptionValue() {
         val intentionName = ChronicleBundle.message("intention.quoteIdentifier")
         myFixture.configureByText("quote_not_available_option_value.test.cwt", "## k = <caret>v")
         val available = myFixture.availableIntentions
-        assertFalse(available.any { it.text == intentionName })
+        assertTrue(available.any { it.text == intentionName })
     }
 
     @Test
@@ -122,12 +122,13 @@ class QuoteOrUnquoteLiteralIntentionsTest : BasePlatformTestCase(), ChronicleTes
         assertFalse(available.any { it.text == intentionName })
     }
 
+    // 3.0.1 available now
     @Test
-    fun testUnquoteLiteral_notAvailableForOptionValue() {
+    fun testUnquoteLiteral_availableForOptionValue() {
         val intentionName = ChronicleBundle.message("intention.unquoteIdentifier")
         myFixture.configureByText("unquote_not_available_option_value.test.cwt", "## k = <caret>\"v\"")
         val available = myFixture.availableIntentions
-        assertFalse(available.any { it.text == intentionName })
+        assertTrue(available.any { it.text == intentionName })
     }
 
     @Test

@@ -447,18 +447,20 @@ object ParadoxExpressionManager {
     }
 
     private fun checkForExpressionReferences(element: ParadoxExpressionElement): Boolean {
-        when (element) {
+        return when (element) {
             is ParadoxScriptExpressionElement -> {
                 if (!element.isResolvableLiteralExpression() && element !is ParadoxScriptBlock) return false // #131
                 if (!element.isDataExpression()) return false // fast return
                 // skip for definition type keys (and definition injection expressions)
                 if (element is ParadoxScriptPropertyKey && element.isDefinitionTypeKey()) return false
+                true
             }
             is ParadoxLocalisationExpressionElement -> {
                 if (!element.isComplexExpression()) return false
+                true
             }
+            else -> false
         }
-        return true
     }
 
     private fun getExpressionReferencesCacheKey(): Key<CachedValue<Array<out PsiReference>>> {
@@ -467,12 +469,12 @@ object ParadoxExpressionManager {
     }
 
     private fun resolveExpressionReferences(element: ParadoxExpressionElement): Array<out PsiReference> {
-        when (element) {
+        return when (element) {
             is ParadoxScriptExpressionElement -> ParadoxExpressionService.resolveScriptExpressionReferences(element)
             is ParadoxLocalisationExpressionElement -> ParadoxExpressionService.resolveLocalisationExpressionReferences(element)
             is ParadoxCsvExpressionElement -> ParadoxExpressionService.resolveCsvExpressionReferences(element)
+            else -> PsiReference.EMPTY_ARRAY
         }
-        return PsiReference.EMPTY_ARRAY
     }
 
     // endregion
