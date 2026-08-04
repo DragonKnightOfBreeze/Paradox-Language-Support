@@ -28,8 +28,7 @@ import icu.windea.pls.script.ParadoxScriptFileType
 class ParadoxDynamicValueSearcher : QueryExecutorBase<ParadoxDynamicValueIndexInfo, ParadoxDynamicValueSearch.Parameters>() {
     override fun processQuery(queryParameters: ParadoxDynamicValueSearch.Parameters, consumer: Processor<in ParadoxDynamicValueIndexInfo>) {
         ProgressManager.checkCanceled()
-        val scope = queryParameters.scope.withFileTypes(ParadoxScriptFileType, ParadoxLocalisationFileType, ParadoxCsvFileType)
-        val context = queryParameters.createContext(scope)
+        val context = queryParameters.createContext()
         processQuery(context, consumer)
     }
 
@@ -57,7 +56,8 @@ class ParadoxDynamicValueSearcher : QueryExecutorBase<ParadoxDynamicValueIndexIn
         return context.name == info.name
     }
 
-    private fun ParadoxDynamicValueSearch.Parameters.createContext(scope: GlobalSearchScope = this.scope): Context {
+    private fun ParadoxDynamicValueSearch.Parameters.createContext(): Context {
+        val scope = scope.withFileTypes(ParadoxScriptFileType, ParadoxLocalisationFileType, ParadoxCsvFileType) // optimize: limit file types
         return Context(name, types, gameType, project, scope)
     }
 

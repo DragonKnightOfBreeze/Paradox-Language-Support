@@ -30,8 +30,7 @@ class ParadoxDefineVariableSearcher : QueryExecutorBase<ParadoxScriptProperty, P
         if (ChronicleThreadContext.resolveForMergedIndex.get() == true) return
 
         ProgressManager.checkCanceled()
-        val scope = queryParameters.scope.withFileTypes(ParadoxScriptFileType).withFilePath("common/defines", "txt") // optimized
-        val context = queryParameters.createContext(scope)
+        val context = queryParameters.createContext()
         processQuery(context, consumer)
     }
 
@@ -58,7 +57,9 @@ class ParadoxDefineVariableSearcher : QueryExecutorBase<ParadoxScriptProperty, P
         }
     }
 
-    private fun ParadoxDefineVariableSearch.Parameters.createContext(scope: GlobalSearchScope = this.scope): Context {
+    private fun ParadoxDefineVariableSearch.Parameters.createContext(): Context {
+        val scope = scope.withFileTypes(ParadoxScriptFileType) // optimize: limit file types
+            .withFilePath("common/defines", "txt") // optimize: restrict file path
         return Context(namespace, variable, gameType, project, scope)
     }
 

@@ -27,8 +27,7 @@ import icu.windea.pls.model.index.CwtConfigSymbolIndexInfo
 class CwtConfigSymbolSearcher : QueryExecutorBase<CwtConfigSymbolIndexInfo, CwtConfigSymbolSearch.Parameters>() {
     override fun processQuery(queryParameters: CwtConfigSymbolSearch.Parameters, consumer: Processor<in CwtConfigSymbolIndexInfo>) {
         ProgressManager.checkCanceled()
-        val scope = queryParameters.scope.withFileTypes(CwtFileType)
-        val context = queryParameters.createContext(scope)
+        val context = queryParameters.createContext()
         processQuery(context, consumer)
     }
 
@@ -55,7 +54,8 @@ class CwtConfigSymbolSearcher : QueryExecutorBase<CwtConfigSymbolIndexInfo, CwtC
         return context.name == info.name
     }
 
-    private fun CwtConfigSymbolSearch.Parameters.createContext(scope: GlobalSearchScope = this.scope): Context {
+    private fun CwtConfigSymbolSearch.Parameters.createContext(): Context {
+        val scope = scope.withFileTypes(CwtFileType) // optimize: restrict file types
         return Context(name, types, gameType, project, scope)
     }
 

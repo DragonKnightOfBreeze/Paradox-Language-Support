@@ -48,8 +48,7 @@ class ParadoxScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScriptedV
         if (ChronicleThreadContext.resolveForMergedIndex.get() == true) return
 
         ProgressManager.checkCanceled()
-        val scope = queryParameters.scope.withFileTypes(ParadoxScriptFileType)
-        val context = queryParameters.createContext(scope)
+        val context = queryParameters.createContext()
         processQuery(context, consumer)
     }
 
@@ -165,7 +164,8 @@ class ParadoxScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScriptedV
         }
     }
 
-    private fun ParadoxScriptedVariableSearch.Parameters.createContext(scope: GlobalSearchScope = this.scope): Context {
+    private fun ParadoxScriptedVariableSearch.Parameters.createContext(): Context {
+        val scope = scope.withFileTypes(ParadoxScriptFileType) // optimize: restrict file types
         return Context(name, type, selector.file, selector.context, gameType, project, scope)
     }
 

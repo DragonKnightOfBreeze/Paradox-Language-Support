@@ -31,8 +31,7 @@ class ParadoxDefinitionInjectionSearcher : QueryExecutorBase<ParadoxDefinitionIn
         if (ChronicleThreadContext.resolveForMergedIndex.get() == true) return
 
         ProgressManager.checkCanceled()
-        val scope = queryParameters.scope.withFileTypes(ParadoxScriptFileType)
-        val context = queryParameters.createContext(scope)
+        val context = queryParameters.createContext()
         processQuery(context, consumer)
     }
 
@@ -84,7 +83,8 @@ class ParadoxDefinitionInjectionSearcher : QueryExecutorBase<ParadoxDefinitionIn
         return context.target == info.target
     }
 
-    private fun ParadoxDefinitionInjectionSearch.Parameters.createContext(scope: GlobalSearchScope = this.scope): Context {
+    private fun ParadoxDefinitionInjectionSearch.Parameters.createContext(): Context {
+        val scope = scope.withFileTypes(ParadoxScriptFileType) // optimize: restrict file types
         return Context(mode, target, type, gameType, project, scope)
     }
 

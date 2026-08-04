@@ -29,8 +29,7 @@ class ParadoxDefineNamespaceSearcher : QueryExecutorBase<ParadoxScriptProperty, 
         if (ChronicleThreadContext.resolveForMergedIndex.get() == true) return
 
         ProgressManager.checkCanceled()
-        val scope = queryParameters.scope.withFileTypes(ParadoxScriptFileType).withFilePath("common/defines", "txt") // optimized
-        val context = queryParameters.createContext(scope)
+        val context = queryParameters.createContext()
         processQuery(context, consumer)
     }
 
@@ -49,7 +48,9 @@ class ParadoxDefineNamespaceSearcher : QueryExecutorBase<ParadoxScriptProperty, 
         }
     }
 
-    private fun ParadoxDefineNamespaceSearch.Parameters.createContext(scope: GlobalSearchScope = this.scope): Context {
+    private fun ParadoxDefineNamespaceSearch.Parameters.createContext(): Context {
+        val scope = scope.withFileTypes(ParadoxScriptFileType) // optimize: restrict file types
+            .withFilePath("common/defines", "txt") // optimize: restrict file path
         return Context(namespace, gameType, project, scope)
     }
 

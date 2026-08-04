@@ -11,9 +11,11 @@ import icu.windea.pls.core.collections.processFast
 import icu.windea.pls.lang.index.ChronicleIndexService
 import icu.windea.pls.lang.index.ParadoxMergedIndexTypes
 import icu.windea.pls.lang.search.ParadoxShaderEffectSearch
+import icu.windea.pls.lang.search.scope.withFileTypes
 import icu.windea.pls.lang.search.util.ParadoxSearchContext
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.index.ParadoxShaderEffectIndexInfo
+import icu.windea.pls.script.ParadoxScriptFileType
 
 /**
  * 着色器效果（shader effect）的查询器。
@@ -47,7 +49,8 @@ class ParadoxShaderEffectSearcher : QueryExecutorBase<ParadoxShaderEffectIndexIn
         return context.name == info.name
     }
 
-    private fun ParadoxShaderEffectSearch.Parameters.createContext(scope: GlobalSearchScope = this.scope): Context {
+    private fun ParadoxShaderEffectSearch.Parameters.createContext(): Context {
+        val scope = scope.withFileTypes(ParadoxScriptFileType) // optimize: restrict file types
         return Context(name, gameType, project, scope)
     }
 

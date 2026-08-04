@@ -11,9 +11,11 @@ import icu.windea.pls.core.collections.processFast
 import icu.windea.pls.lang.index.ChronicleIndexService
 import icu.windea.pls.lang.index.ParadoxMergedIndexTypes
 import icu.windea.pls.lang.search.ParadoxMeshLocatorSearch
+import icu.windea.pls.lang.search.scope.withFileTypes
 import icu.windea.pls.lang.search.util.ParadoxSearchContext
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.index.ParadoxMeshLocatorIndexInfo
+import icu.windea.pls.script.ParadoxScriptFileType
 
 /**
  * 网格定位器（mesh locator）的查询器。
@@ -48,7 +50,8 @@ class ParadoxMeshLocatorSearcher : QueryExecutorBase<ParadoxMeshLocatorIndexInfo
         return context.name == info.name
     }
 
-    private fun ParadoxMeshLocatorSearch.Parameters.createContext(scope: GlobalSearchScope = this.scope): Context {
+    private fun ParadoxMeshLocatorSearch.Parameters.createContext(): Context {
+        val scope = scope.withFileTypes(ParadoxScriptFileType) // optimize: restrict file types
         return Context(name, gameType, project, scope)
     }
 

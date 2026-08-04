@@ -31,8 +31,7 @@ class ParadoxLocalisationSearcher : QueryExecutorBase<ParadoxLocalisationPropert
         if (ChronicleThreadContext.resolveForMergedIndex.get() == true) return
 
         ProgressManager.checkCanceled()
-        val scope = queryParameters.scope.withFileTypes(ParadoxLocalisationFileType)
-        val context = queryParameters.createContext(scope)
+        val context = queryParameters.createContext()
         processQuery(context, consumer)
     }
 
@@ -60,8 +59,9 @@ class ParadoxLocalisationSearcher : QueryExecutorBase<ParadoxLocalisationPropert
         return true
     }
 
-    private fun ParadoxLocalisationSearch.Parameters.createContext(scope: GlobalSearchScope = this.scope): Context {
-        val constraint = selector.getConstraint() as? ParadoxLocalisationIndexConstraint
+    private fun ParadoxLocalisationSearch.Parameters.createContext(): Context {
+        val constraint = selector.getConstraint() as? ParadoxLocalisationIndexConstraint // extract index constraint from the selector
+        val scope = scope.withFileTypes(ParadoxLocalisationFileType) // optimize: restrict file types
         return Context(name, type, constraint, gameType, project, scope)
     }
 

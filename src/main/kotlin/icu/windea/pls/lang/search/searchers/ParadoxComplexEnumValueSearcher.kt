@@ -32,8 +32,7 @@ class ParadoxComplexEnumValueSearcher : QueryExecutorBase<ParadoxComplexEnumValu
         if (ChronicleThreadContext.resolveForMergedIndex.get() == true) return
 
         ProgressManager.checkCanceled()
-        val scope = queryParameters.scope.withFileTypes(ParadoxScriptFileType, ParadoxCsvFileType)
-        val context = queryParameters.createContext(scope)
+        val context = queryParameters.createContext()
         processQuery(context, consumer)
     }
 
@@ -73,7 +72,8 @@ class ParadoxComplexEnumValueSearcher : QueryExecutorBase<ParadoxComplexEnumValu
     }
 
 
-    private fun ParadoxComplexEnumValueSearch.Parameters.createContext(scope: GlobalSearchScope = this.scope): Context {
+    private fun ParadoxComplexEnumValueSearch.Parameters.createContext(): Context {
+        val scope = scope.withFileTypes(ParadoxScriptFileType, ParadoxCsvFileType) // optimize: restrict file types
         return Context(name, enumName, gameType, project, scope)
     }
 

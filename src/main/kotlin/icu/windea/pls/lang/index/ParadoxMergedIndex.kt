@@ -99,7 +99,7 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
         // NOTE 2.1.6 use lazy index -> config context root may not be a definition -> DO NOT skip on any level
         val useLazyIndex = useLazyIndex(file.virtualFile)
 
-        // 3.0.1 optimize: limit available types and supports via strategies, config attributes, etc.
+        // 3.0.1 optimize: restrict types and supports via strategies, config attributes, etc.
         val optimizers = ParadoxMergedIndexOptimizer.EP_NAME.extensionList
         val allTypes = ImmutableSet.copyOf(ParadoxMergedIndexType.entries)
         val availableTypes = if (useLazyIndex) allTypes else ParadoxMergedIndexService.getAvailableTypes(file, optimizers)
@@ -180,7 +180,7 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
     }
 
     private fun buildDataForLocalisationFile(file: ParadoxLocalisationFile, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
-        // 3.0.1 optimize: limit available types and supports via strategies, config attributes, etc.
+        // 3.0.1 optimize: restrict types and supports via strategies, config attributes, etc.
         val optimizers = ParadoxMergedIndexOptimizer.EP_NAME.extensionList
         val availableTypes = ParadoxMergedIndexService.getAvailableTypes(file, optimizers)
         if (availableTypes.isEmpty()) return // fast return
@@ -234,7 +234,7 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
     }
 
     private fun buildDataForCsvFile(file: ParadoxCsvFile, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
-        // 3.0.1 optimize: limit available types and supports via strategies, config attributes, etc.
+        // 3.0.1 optimize: restrict types and supports via strategies, config attributes, etc.
         val optimizers = ParadoxMergedIndexOptimizer.EP_NAME.extensionList
         val availableTypes = ParadoxMergedIndexService.getAvailableTypes(file, optimizers)
         if (availableTypes.isEmpty()) return // fast return

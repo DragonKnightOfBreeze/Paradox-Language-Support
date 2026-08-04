@@ -39,8 +39,7 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxDefinitionIndexInfo, 
         if (ChronicleThreadContext.resolveForMergedIndex.get() == true) return
 
         ProgressManager.checkCanceled()
-        val scope = queryParameters.scope.withFileTypes(ParadoxScriptFileType)
-        val context = queryParameters.createContext(scope)
+        val context = queryParameters.createContext()
         processQuery(context, consumer)
     }
 
@@ -114,11 +113,12 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxDefinitionIndexInfo, 
         return subtypes.containsAll(context.subtypes)
     }
 
-    private fun ParadoxDefinitionSearch.Parameters.createContext(scope: GlobalSearchScope = this.scope): Context {
+    private fun ParadoxDefinitionSearch.Parameters.createContext(): Context {
         val typeExpression = typeExpression?.let { ParadoxDefinitionTypeExpression.resolve(it) }
         val type = typeExpression?.type
         val subtypes = typeExpression?.subtypes
-        val constraint = selector.getConstraint() as? ParadoxDefinitionIndexConstraint
+        val constraint = selector.getConstraint() as? ParadoxDefinitionIndexConstraint // extract index constraint from the selector
+        val scope = scope.withFileTypes(ParadoxScriptFileType) // optimize: restrict file types
         return Context(name, type, subtypes, constraint, gameType, project, scope)
     }
 

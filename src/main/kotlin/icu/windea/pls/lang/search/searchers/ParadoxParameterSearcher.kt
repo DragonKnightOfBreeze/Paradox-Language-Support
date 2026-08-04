@@ -11,9 +11,11 @@ import icu.windea.pls.core.collections.processFast
 import icu.windea.pls.lang.index.ChronicleIndexService
 import icu.windea.pls.lang.index.ParadoxMergedIndexTypes
 import icu.windea.pls.lang.search.ParadoxParameterSearch
+import icu.windea.pls.lang.search.scope.withFileTypes
 import icu.windea.pls.lang.search.util.ParadoxSearchContext
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.index.ParadoxParameterIndexInfo
+import icu.windea.pls.script.ParadoxScriptFileType
 
 /**
  * 参数的查询器。
@@ -55,7 +57,8 @@ class ParadoxParameterSearcher : QueryExecutorBase<ParadoxParameterIndexInfo, Pa
         return context.name == info.name
     }
 
-    private fun ParadoxParameterSearch.Parameters.createContext(scope: GlobalSearchScope = this.scope): Context {
+    private fun ParadoxParameterSearch.Parameters.createContext(): Context {
+        val scope = scope.withFileTypes(ParadoxScriptFileType) // optimize: restrict file types
         return Context(name, contextKey, gameType, project, scope)
     }
 

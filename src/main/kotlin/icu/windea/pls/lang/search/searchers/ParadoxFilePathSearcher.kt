@@ -150,7 +150,7 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
         return context.gameType == null || selectGameType(file) == context.gameType
     }
 
-    fun ParadoxFilePathSearch.Parameters.createContext(scope: GlobalSearchScope = this.scope): Context {
+    fun ParadoxFilePathSearch.Parameters.createContext(): Context {
         val contextElement = selector.file?.toPsiFile(project)
         return Context(filePath, configExpression, ignoreLocale, contextElement, gameType, project, scope)
     }
