@@ -50,7 +50,6 @@ import icu.windea.pls.lang.match.ParadoxScriptExpressionMatchContext
 import icu.windea.pls.lang.match.toHashString
 import icu.windea.pls.lang.select.*
 import icu.windea.pls.lang.selectGameType
-import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.model.expressions.ParadoxExpression
@@ -134,7 +133,7 @@ object ParadoxConfigService {
         val eps = CwtConfigContextProvider.getAll()
         eps.forEachFast f@{ ep ->
             if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f // check game type first
-            val r = ep.getContext(element, configGroup, file, memberRole, memberPathFromFile)
+            val r = ep.getContext(configGroup, element, file, memberRole, memberPathFromFile)
             if (r != null) return r
         }
         return null
@@ -148,23 +147,25 @@ object ParadoxConfigService {
         val eps = CwtDeclarationConfigContextProvider.getAll()
         eps.forEachFast f@{ ep ->
             if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f // check game type first
-            val r = ep.getContext(element, configGroup, definitionName, definitionType, definitionSubtypes)
+            val r = ep.getContext(configGroup, element, definitionName, definitionType, definitionSubtypes)
             if (r != null) return r
         }
         return null
     }
 
     fun getConfigsForConfigContext(context: CwtConfigContext, options: ParadoxMatchOptions? = null): List<CwtMemberConfig<*>> {
-        val provider = context.provider
-        val cacheKey = provider.getCacheKey(context, options) ?: return emptyList()
-        if (context.dynamic) {
+        val dynamic = context.dynamic
+        val dynamicCache = context.dynamicCache
+        if (dynamic) {
             // NOTE 2.1.1 prefix in-config-context cache if marked as dynamic
             val dynamicCacheKey = options.toHashString(forMatched = false).optimized() // optimized to optimize memory
-            context.dynamicCache.getIfPresent(dynamicCacheKey)?.let { return it }
+            dynamicCache.getIfPresent(dynamicCacheKey)?.let { return it }
         }
-        val rootFile = selectRootFile(context.element) ?: return emptyList()
+        val rootFile = context.rootFile ?: return emptyList() // 3.0.1 optimize: get root file from context object directly
+        val provider = context.provider
         val cache = context.configGroup.configsCache.value.get(rootFile)
-        val cached = withRecursionGuard({}.javaClass.name) {
+        val cacheKey = provider.getCacheKey(context, options) ?: return emptyList()
+        val cached = withRecursionGuard("ParadoxConfigService.getConfigsForConfigContext") {
             withRecursionCheck(cacheKey) {
                 val resolvingStack = ChronicleThreadContext.resolvingConfigContextStack.getOrSet { ArrayDeque() }
                 resolvingStack.addLast(context)
@@ -176,7 +177,7 @@ object ParadoxConfigService {
                     }
                 } finally {
                     resolvingStack.pollLast()
-                    if (context.dynamic) {
+                    if (dynamic) {
                         // invalidate in-config-group cache if result context configs are dynamic (e.g., based on script context)
                         cache.invalidate(cacheKey)
                     }
@@ -184,10 +185,10 @@ object ParadoxConfigService {
                 }
             }
         } ?: return emptyList() // unexpected recursion, return empty list
-        if (context.dynamic) {
+        if (dynamic) {
             // NOTE 2.1.1 store dynamic result into in-config-context cache
             val dynamicCacheKey = options.toHashString(forMatched = false).optimized() // optimized to optimize memory
-            context.dynamicCache.put(dynamicCacheKey, cached)
+            dynamicCache.put(dynamicCacheKey, cached)
         }
         return cached
     }
@@ -228,14 +229,14 @@ object ParadoxConfigService {
         val parentSubPath = subPaths.getOrNull(subPaths.lastIndex - 1)
         val parentExpression = parentSubPath?.let { ParadoxExpression.resolve(it, quoted = false, role = ParadoxExpressionRole.Key) }
 
-        val element = context.element
+        val element = context.element ?: return emptyList() // null -> unexpected (should be bound first)
         val containingDirectMember = element.containingDirectMember
         val parentMember = containingDirectMember.parents(withSelf = false).findIsInstance<ParadoxScriptMember> { it is ParadoxScriptFile || it.isDirectMember() } ?: return emptyList()
 
         // 从存储于 PSI 的上级缓存中获取 `parentContext`（父上下文），然后再从存储于规则分组的缓存中获取 `parentConfigs`（父上下文规则）
         val parentContext = ParadoxConfigManager.getConfigContext(parentMember) ?: return emptyList()
         // NOTE 2.1.2 如果父上下文是动态的，也需要把子上下文标记为动态的
-        if (parentContext.dynamic) context.dynamic = true
+        if (parentContext.dynamic) context.markDynamic()
 
         val parentConfigs = parentContext.getConfigs(options)
         if (parentConfigs.isEmpty()) return emptyList() // 忽略

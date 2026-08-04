@@ -25,7 +25,7 @@ import icu.windea.pls.model.ParadoxGameType
 interface CwtDeclarationConfigContextProvider {
     fun supports(gameType: ParadoxGameType): Boolean = true
 
-    fun getContext(element: PsiElement, configGroup: CwtConfigGroup, definitionName: String?, definitionType: String, definitionSubtypes: List<String>?): CwtDeclarationConfigContext?
+    fun getContext(configGroup: CwtConfigGroup, element: PsiElement, definitionName: String?, definitionType: String, definitionSubtypes: List<String>?): CwtDeclarationConfigContext?
 
     fun getCacheKey(context: CwtDeclarationConfigContext, declarationConfig: CwtDeclarationConfig): String
 

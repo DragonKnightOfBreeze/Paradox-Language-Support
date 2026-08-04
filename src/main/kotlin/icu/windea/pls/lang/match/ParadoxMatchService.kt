@@ -93,7 +93,7 @@ object ParadoxMatchService {
         }
 
         // NOTE 2.1.2 如果是动态的优化器，需要把正在解析的规则上下文标记为动态的
-        if (dynamic) getResolvingConfigContext()?.dynamic = true
+        if (dynamic) getResolvingConfigContext()?.markDynamic()
 
         return result
     }

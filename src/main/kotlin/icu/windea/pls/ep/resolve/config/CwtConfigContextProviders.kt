@@ -30,6 +30,7 @@ import icu.windea.pls.lang.resolve.parameterElement
 import icu.windea.pls.lang.resolve.parameterValueQuoted
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.selectFile
+import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.util.ParadoxDefineManager
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
@@ -46,12 +47,14 @@ import icu.windea.pls.script.psi.ParadoxScriptMember
  * - TODO 2.1.0+ 在以后的插件版本中，可能会提供顶级键（如 `spriteTypes`）对应的合成的上下文规则。
  */
 class CwtBaseConfigContextProvider : CwtConfigContextProvider {
-    override fun getContext(element: ParadoxScriptMember, configGroup: CwtConfigGroup, file: PsiFile, memberRole: ParadoxMemberRole, memberPathFromFile: ParadoxMemberPath): CwtConfigContext? {
+    override fun getContext(configGroup: CwtConfigGroup, element: ParadoxScriptMember, file: PsiFile, memberRole: ParadoxMemberRole, memberPathFromFile: ParadoxMemberPath): CwtConfigContext? {
         val vFile = selectFile(file)
         if (vFile == null) return null
         val fileInfo = vFile.fileInfo
         if (fileInfo == null) return null
-        val context = CwtConfigContext.create(element, configGroup, memberRole, this, memberPathFromFile)
+        val context = CwtConfigContext.create(configGroup, memberRole, memberPathFromFile, this)
+        context.element = element // necessary
+        context.rootFile = selectRootFile(file) // necessary
         return context
     }
 
@@ -70,7 +73,7 @@ class CwtBaseConfigContextProvider : CwtConfigContextProvider {
  * - 基于文件信息（包括注入的文件信息）和成员路径。
  */
 class CwtDefinitionConfigContextProvider : CwtConfigContextProvider {
-    override fun getContext(element: ParadoxScriptMember, configGroup: CwtConfigGroup, file: PsiFile, memberRole: ParadoxMemberRole, memberPathFromFile: ParadoxMemberPath): CwtConfigContext? {
+    override fun getContext(configGroup: CwtConfigGroup, element: ParadoxScriptMember, file: PsiFile, memberRole: ParadoxMemberRole, memberPathFromFile: ParadoxMemberPath): CwtConfigContext? {
         val vFile = selectFile(file)
         if (vFile == null) return null
         val fileInfo = vFile.fileInfo
@@ -78,7 +81,9 @@ class CwtDefinitionConfigContextProvider : CwtConfigContextProvider {
         val definition = selectScope { element.parentDefinition() } ?: return null
         val definitionInfo = definition.definitionInfo ?: return null
         val memberPath = definitionInfo.memberPath.relativize(memberPathFromFile) ?: return null
-        val context = CwtConfigContext.createFromMember(element, configGroup, memberRole, this, memberPathFromFile, memberPath)
+        val context = CwtConfigContext.createFromMember(configGroup, memberRole, memberPathFromFile, memberPath, this)
+        context.element = element // necessary
+        context.rootFile = selectRootFile(file) // necessary
         context.declarationRoot = memberPath.isEmpty()
         context.definitionInfo = definitionInfo
         return context
@@ -117,14 +122,16 @@ class CwtDefinitionConfigContextProvider : CwtConfigContextProvider {
  * 提供定值变量声明中的规则上下文。
  */
 class CwtDefineVariableConfigContextProvider : CwtConfigContextProvider {
-    override fun getContext(element: ParadoxScriptMember, configGroup: CwtConfigGroup, file: PsiFile, memberRole: ParadoxMemberRole, memberPathFromFile: ParadoxMemberPath): CwtConfigContext? {
+    override fun getContext(configGroup: CwtConfigGroup, element: ParadoxScriptMember, file: PsiFile, memberRole: ParadoxMemberRole, memberPathFromFile: ParadoxMemberPath): CwtConfigContext? {
         if (!ParadoxDefineManager.isDefinesFile(file)) return null
         if (memberPathFromFile.length <= 1) return null // file level or top property level -> not within define variable
         val defineVariable = selectScope { element.parentDefineVariable() } ?: return null
         val defineVariableInfo = defineVariable.defineVariableInfo ?: return null
         if (defineVariableInfo.config == null) return null // no define variable config -> skip
         val memberPath = ParadoxMemberPath.resolve(memberPathFromFile.subPaths.dropFast(2))
-        val context = CwtConfigContext.createFromMember(element, configGroup, memberRole, this, memberPathFromFile, memberPath)
+        val context = CwtConfigContext.createFromMember(configGroup, memberRole, memberPathFromFile, memberPath, this)
+        context.element = element // necessary
+        context.rootFile = selectRootFile(file) // necessary
         context.declarationRoot = memberPath.isEmpty()
         context.defineVariableInfo = defineVariableInfo
         return context
@@ -172,10 +179,12 @@ class CwtParameterValueConfigContextProvider : CwtConfigContextProvider {
     // 兼容适用语言注入功能的 `VirtualFileWindow`
     // 兼容通过编辑代码碎片的意图操作打开的 `LightVirtualFile`
 
-    override fun getContext(element: ParadoxScriptMember, configGroup: CwtConfigGroup, file: PsiFile, memberRole: ParadoxMemberRole, memberPathFromFile: ParadoxMemberPath): CwtConfigContext? {
+    override fun getContext(configGroup: CwtConfigGroup, element: ParadoxScriptMember, file: PsiFile, memberRole: ParadoxMemberRole, memberPathFromFile: ParadoxMemberPath): CwtConfigContext? {
         val injectionInfo = ParadoxScriptInjectionManager.getParameterValueInjectionInfoFromInjectedFile(file) ?: return null
         val parameterElement = injectionInfo.parameterElement ?: return null
-        val context = CwtConfigContext.createFromFile(element, configGroup, memberRole, this, memberPathFromFile)
+        val context = CwtConfigContext.createFromFile(configGroup, memberRole, memberPathFromFile, this)
+        context.element = element // necessary
+        context.rootFile = selectRootFile(file) // necessary
         context.parameterElement = parameterElement
         context.parameterValueQuoted = injectionInfo.parameterValueQuoted
         return context
@@ -226,14 +235,16 @@ class CwtInlineScriptUsageConfigContextProvider : CwtConfigContextProvider {
     // 注意：内联脚本用法可以在定义声明之外
     // 注意这里的 `fileInfo` 可以为 `null`（例如，在内联脚本参数的多行参数值中）
 
-    override fun getContext(element: ParadoxScriptMember, configGroup: CwtConfigGroup, file: PsiFile, memberRole: ParadoxMemberRole, memberPathFromFile: ParadoxMemberPath): CwtConfigContext? {
+    override fun getContext(configGroup: CwtConfigGroup, element: ParadoxScriptMember, file: PsiFile, memberRole: ParadoxMemberRole, memberPathFromFile: ParadoxMemberPath): CwtConfigContext? {
         if (memberPathFromFile.subPaths.noneFast { ParadoxInlineScriptManager.isMatched(it) }) return null // 要求当前位置相对于文件的成员路径中包含子路径 `inline_script`
         if (!ParadoxInlineScriptManager.isSupported(configGroup.gameType)) return null // 忽略游戏类型不支持的情况
         val vFile = selectFile(file)
         if (vFile == null) return null
         val prefixLength = memberPathFromFile.subPaths.indexOfFirst { ParadoxInlineScriptManager.isMatched(it) } + 1
         val memberPath = ParadoxMemberPath.resolve(memberPathFromFile.subPaths.dropFast(prefixLength))
-        val context = CwtConfigContext.createFromMember(element, configGroup, memberRole, this, memberPathFromFile, memberPath)
+        val context = CwtConfigContext.createFromMember(configGroup, memberRole, memberPathFromFile, memberPath, this)
+        context.element = element // necessary
+        context.rootFile = selectRootFile(file) // necessary
         return context
     }
 
@@ -270,14 +281,16 @@ class CwtInlineScriptFileConfigContextProvider : CwtConfigContextProvider {
     // 获取上下文规则后才能确定是否存在冲突以及是否存在递归
     // TODO 1.1.0+ 支持解析内联脚本文件中的定义声明
 
-    override fun getContext(element: ParadoxScriptMember, configGroup: CwtConfigGroup, file: PsiFile, memberRole: ParadoxMemberRole, memberPathFromFile: ParadoxMemberPath): CwtConfigContext? {
+    override fun getContext(configGroup: CwtConfigGroup, element: ParadoxScriptMember, file: PsiFile, memberRole: ParadoxMemberRole, memberPathFromFile: ParadoxMemberPath): CwtConfigContext? {
         val vFile = selectFile(file)
         if (vFile == null) return null
         if (VirtualFileService.isInjectedFile(vFile)) return null // ignored for injected psi
         val fileInfo = vFile.fileInfo
         if (fileInfo == null) return null
         val inlineScriptExpression = ParadoxInlineScriptManager.getInlineScriptExpression(vFile) ?: return null
-        val context = CwtConfigContext.createFromFile(element, configGroup, memberRole, this, memberPathFromFile)
+        val context = CwtConfigContext.createFromFile(configGroup, memberRole, memberPathFromFile, this)
+        context.element = element // necessary
+        context.rootFile = selectRootFile(file) // necessary
         context.inlineScriptExpression = inlineScriptExpression
         return context
     }
@@ -300,10 +313,11 @@ class CwtInlineScriptFileConfigContextProvider : CwtConfigContextProvider {
     }
 
     override fun getConfigs(context: CwtConfigContext, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>>? {
-        val memberPath = context.memberPath ?: return null
+        val memberPath = context.memberPath ?: return null // null -> unexpected
+        val element = context.element ?: return null // null -> unexpected
         if (memberPath.isNotEmpty()) return ParadoxConfigService.getFlattenedConfigsForConfigContext(context, options)
         val inlineScriptExpression = context.inlineScriptExpression ?: return null
-        val rootConfigs = ParadoxInlineScriptManager.getInferredContextConfigs(inlineScriptExpression, context.element, context, options)
+        val rootConfigs = ParadoxInlineScriptManager.getInferredContextConfigs(inlineScriptExpression, element, context, options)
         return ParadoxConfigService.getTopConfigsForConfigContext(context, rootConfigs)
     }
 
@@ -328,7 +342,7 @@ class CwtInlineScriptFileConfigContextProvider : CwtConfigContextProvider {
  * - （目前）不会先内联目标定义声明中的内容，然后再进行相关代码检查。
  */
 class CwtDefinitionInjectionConfigContextProvider : CwtConfigContextProvider {
-    override fun getContext(element: ParadoxScriptMember, configGroup: CwtConfigGroup, file: PsiFile, memberRole: ParadoxMemberRole, memberPathFromFile: ParadoxMemberPath): CwtConfigContext? {
+    override fun getContext(configGroup: CwtConfigGroup, element: ParadoxScriptMember, file: PsiFile, memberRole: ParadoxMemberRole, memberPathFromFile: ParadoxMemberPath): CwtConfigContext? {
         if (memberPathFromFile.isEmpty()) return null
         if (!ParadoxDefinitionInjectionManager.isSupported(configGroup.gameType)) return null // 忽略游戏类型不支持的情况
         val vFile = selectFile(file)
@@ -338,7 +352,9 @@ class CwtDefinitionInjectionConfigContextProvider : CwtConfigContextProvider {
         val definitionInjection = selectScope { element.parentDefinitionInjection() } ?: return null
         val definitionInjectionInfo = definitionInjection.definitionInjectionInfo ?: return null
         val memberPath = ParadoxMemberPath.resolve(memberPathFromFile.subPaths.dropFast(1)) // 去除第一个子路径
-        val context = CwtConfigContext.createFromMember(element, configGroup, memberRole, this, memberPathFromFile, memberPath)
+        val context = CwtConfigContext.createFromMember(configGroup, memberRole, memberPathFromFile, memberPath, this)
+        context.element = element // necessary
+        context.rootFile = selectRootFile(file) // necessary
         context.declarationRoot = memberPath.isEmpty()
         context.definitionInjectionInfo = definitionInjectionInfo
         return context
