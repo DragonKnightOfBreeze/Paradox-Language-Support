@@ -34,13 +34,14 @@ class ParadoxDefineNamespaceSearcher : QueryExecutorBase<ParadoxScriptProperty, 
 
     private fun processQuery(context: Context, consumer: Processor<in ParadoxScriptProperty>): Boolean {
         if (!context.isValid()) return true
+        val indexKey = ChronicleIndexKeys.DefineNamespace
         if (context.namespace == null) {
-            return ChronicleIndexService.processElementsByKeys(ChronicleIndexKeys.DefineNamespace, context.project, context.scope) { _, element ->
+            return ChronicleIndexService.processElementsByKeys(indexKey, context.project, context.scope) { _, element ->
                 consumer.process(element)
             }
         } else {
             if (context.namespace.isEmpty()) return true
-            return ChronicleIndexService.processElements(ChronicleIndexKeys.DefineNamespace, context.namespace, context.project, context.scope) { element ->
+            return ChronicleIndexService.processElements(indexKey, context.namespace, context.project, context.scope) { element ->
                 consumer.process(element)
             }
         }

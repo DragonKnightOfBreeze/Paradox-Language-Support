@@ -15,7 +15,6 @@ import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.ImmutableList
 import icu.windea.pls.core.collections.asMutable
 import icu.windea.pls.core.collections.forEachFast
-import icu.windea.pls.core.letIf
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.readIndexedStringList
@@ -28,6 +27,7 @@ import icu.windea.pls.core.writeIntFast
 import icu.windea.pls.core.writeUTFFast
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.index.constraints.ParadoxDefinitionIndexConstraint
+import icu.windea.pls.lang.index.statistics.ChronicleIndexStatisticService
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.CwtTypeConfigMatchContext
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
@@ -83,16 +83,14 @@ open class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<Par
 
         // 2.1.3 要求存在候选项
         val configGroup = ChronicleFacade.getConfigGroup(psiFile.project, gameType)
-        val path = fileInfo.path
-        val fileLevelMatchContext = CwtTypeConfigMatchContext(configGroup, path)
-        val fileLevelTypeConfigs = ParadoxConfigMatchService.getTypeConfigCandidates(fileLevelMatchContext)
+        val fileLevelMatchContext = CwtTypeConfigMatchContext(configGroup, fileInfo.path)
+        val fileLevelTypeConfigs = getFileLevelTypeConfigs(fileLevelMatchContext)
         if (fileLevelTypeConfigs.isEmpty()) return // optimize (fast return if there are no candidates)
         fileLevelMatchContext.matchPath = false
 
-        val typeConfigForInjection = getMatchedTypeConfigForInjection(fileLevelMatchContext, fileLevelTypeConfigs)
+        val fileLevelTypeConfigForInjection = getFileLevelTypeConfigForInjection(fileLevelMatchContext, fileLevelTypeConfigs)
 
         val rootKeys = ArrayDeque<String>()
-        ParadoxMemberService.injectRootKeys(psiFile, rootKeys)
 
         // 预计算候选类型规则中最大的顶级键深度，用于限制 PSI 遍历深度
         val maxRootKeyDepth = fileLevelTypeConfigs.maxOf { it.attributes.maxRootKeyDepth }
@@ -176,7 +174,7 @@ open class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<Par
                 if (target.isEmpty()) return false
 
                 // 匹配类型
-                val typeConfig = typeConfigForInjection ?: return false
+                val typeConfig = fileLevelTypeConfigForInjection ?: return false
                 val type = typeConfig.name.orNull() ?: return false
                 val name = ParadoxDefinitionService.resolveName(element, target, typeConfig)
                 val fastSubtypes = ParadoxConfigMatchService.getFastMatchedSubtypeConfigs(typeConfig, target).map { it.name }.optimized()
@@ -195,20 +193,23 @@ open class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<Par
         })
     }
 
-    private fun getMatchedTypeConfig(context: CwtTypeConfigMatchContext, element: ParadoxDefinitionElement, typeConfigs: Collection<CwtTypeConfig>): CwtTypeConfig? {
-        return typeConfigs.find { ParadoxConfigMatchService.matchesType(context, element, it) }
+    protected open fun getFileLevelTypeConfigs(matchContext: CwtTypeConfigMatchContext): Collection<CwtTypeConfig> {
+        return ParadoxConfigMatchService.getTypeConfigCandidates(matchContext)
     }
 
-    private fun getMatchedTypeConfigForInjection(context: CwtTypeConfigMatchContext, typeConfigs: Collection<CwtTypeConfig>): CwtTypeConfig? {
-        if (!ParadoxDefinitionInjectionManager.isSupported(context.gameType)) return null
-        return typeConfigs.find { ParadoxConfigMatchService.matchesTypeForInjection(context, it) }
+    protected open fun getFileLevelTypeConfigForInjection(matchContext: CwtTypeConfigMatchContext, typeConfigs: Collection<CwtTypeConfig>): CwtTypeConfig? {
+        if (!ParadoxDefinitionInjectionManager.isSupported(matchContext.gameType)) return null
+        return typeConfigs.find { ParadoxConfigMatchService.matchesTypeForInjection(matchContext, it) }
     }
 
-    private fun addToFileData(info: ParadoxDefinitionIndexInfo, fileData: MutableMap<String, List<ParadoxDefinitionIndexInfo>>, configGroup: CwtConfigGroup) {
+    protected open fun getMatchedTypeConfig(matchContext: CwtTypeConfigMatchContext, element: ParadoxDefinitionElement, typeConfigs: Collection<CwtTypeConfig>): CwtTypeConfig? {
+        return typeConfigs.find { ParadoxConfigMatchService.matchesType(matchContext, element, it) }
+    }
+
+    protected open fun addToFileData(info: ParadoxDefinitionIndexInfo, fileData: MutableMap<String, List<ParadoxDefinitionIndexInfo>>, configGroup: CwtConfigGroup) {
         ChronicleIndexStatisticService.recordDefinition(info.gameType)
 
-        val ignoreCase = ParadoxDefinitionIndexConstraint.entries.any { it.ignoreCase && it.test(info.type, configGroup) }
-        val name = info.name.letIf(ignoreCase) { it.lowercase() }
+        val name = info.name
         val type = info.type
         fileData.getOrPut(ChronicleIndexUtil.createAllKey()) { mutableListOf() }.asMutable() += info
         fileData.getOrPut(ChronicleIndexUtil.createTypeKey(type)) { mutableListOf() }.asMutable() += info

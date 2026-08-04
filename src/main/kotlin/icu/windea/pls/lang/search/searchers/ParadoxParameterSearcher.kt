@@ -31,8 +31,8 @@ class ParadoxParameterSearcher : QueryExecutorBase<ParadoxParameterIndexInfo, Pa
 
     private fun processQuery(context: Context, consumer: Processor<in ParadoxParameterIndexInfo>): Boolean {
         if (!context.isValid()) return true
-        val indexInfoType = ParadoxMergedIndexTypes.Parameter
-        return ChronicleIndexService.processAllFileDataWithKey(indexInfoType, context.project, context.scope, context.gameType) { file, infos ->
+        val mergedIndexType = ParadoxMergedIndexTypes.Parameter
+        return ChronicleIndexService.processAllFileDataWithKey(mergedIndexType, context.project, context.scope, context.gameType) { file, infos ->
             infos.processFast { info -> processInfo(context, file, info, consumer) }
         }
     }

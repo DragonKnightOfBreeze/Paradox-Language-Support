@@ -8,6 +8,8 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor
 import com.intellij.psi.util.startOffset
 import icu.windea.pls.ChronicleFacade
+import icu.windea.pls.config.config.delegated.CwtComplexEnumConfig
+import icu.windea.pls.config.config.delegated.CwtRowConfig
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.ImmutableList
 import icu.windea.pls.core.collections.asMutable
@@ -27,6 +29,7 @@ import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.csv.psi.ParadoxCsvHeader
 import icu.windea.pls.csv.psi.ParadoxCsvRow
 import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.index.statistics.ChronicleIndexStatisticService
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.CwtComplexEnumConfigMatchContext
 import icu.windea.pls.lang.match.CwtRowConfigMatchContext
@@ -85,8 +88,8 @@ class ParadoxComplexEnumValueIndex : ParadoxIndexInfoAwareFileBasedIndex<List<Pa
         val configGroup = ChronicleFacade.getConfigGroup(file.project, gameType)
         val path = fileInfo.path
         val fileLevelMatchContext = CwtComplexEnumConfigMatchContext(configGroup, path)
-        val fileLevelConfigs = ParadoxConfigMatchService.getComplexEnumConfigCandidates(fileLevelMatchContext)
-        if (fileLevelConfigs.isEmpty()) return // optimize (fast return if there are no candidates)
+        val fileLevelComplexEnumConfigs = getFileLevelComplexEnumConfigs(fileLevelMatchContext)
+        if (fileLevelComplexEnumConfigs.isEmpty()) return // optimize (fast return if there are no candidates)
         fileLevelMatchContext.matchPath = false
 
         file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
@@ -112,11 +115,11 @@ class ParadoxComplexEnumValueIndex : ParadoxIndexInfoAwareFileBasedIndex<List<Pa
                 if (name.isParameterized()) return // 排除可能带参数的情况
                 if (ParadoxInlineScriptManager.isMatched(name, gameType)) return // 排除是内联脚本用法的情况
                 val matchContext = fileLevelMatchContext
-                val config = fileLevelConfigs.find { ParadoxConfigMatchService.matchesComplexEnum(matchContext, element, it) } ?: return
-                val enumName = config.name
+                val complexEnumConfig = getMatchedComplexEnumConfig(matchContext, element, fileLevelComplexEnumConfigs) ?: return
+                val enumName = complexEnumConfig.name
 
                 // 2.1.3 兼容定义注入
-                val definitionElementOffset = if (config.perDefinition) selectScope { element.parentDefinitionCandidate() }?.startOffset ?: -1 else -1
+                val definitionElementOffset = if (complexEnumConfig.perDefinition) selectScope { element.parentDefinitionCandidate() }?.startOffset ?: -1 else -1
 
                 val info = ParadoxComplexEnumValueIndexInfo(name, enumName, definitionElementOffset, gameType)
                 addToFileData(info, fileData)
@@ -131,12 +134,11 @@ class ParadoxComplexEnumValueIndex : ParadoxIndexInfoAwareFileBasedIndex<List<Pa
 
         // 2.1.3 要求存在候选项
         val configGroup = ChronicleFacade.getConfigGroup(file.project, gameType)
-        val path = fileInfo.path
-        val fileLevelMatchContext = CwtRowConfigMatchContext(configGroup, path)
-        val fileLevelConfigs = ParadoxConfigMatchService.getRowConfigCandidates(fileLevelMatchContext)
-        if (fileLevelConfigs.isEmpty()) return
-        val config = fileLevelConfigs.find { ParadoxConfigMatchService.matchesRow(fileLevelMatchContext, it) } ?: return
-        if (!config.attributes.declareComplexEnum) return
+        val fileLevelMatchContext = CwtRowConfigMatchContext(configGroup, fileInfo.path)
+        val fileLevelRowConfigs = getFileLevelRowConfigs(fileLevelMatchContext)
+        if (fileLevelRowConfigs.isEmpty()) return
+        val rowConfig = getMatchedRowConfig(fileLevelMatchContext, fileLevelRowConfigs) ?: return
+        if (!rowConfig.attributes.declareComplexEnum) return
         fileLevelMatchContext.matchPath = false
 
         var isHeader = true
@@ -167,7 +169,7 @@ class ParadoxComplexEnumValueIndex : ParadoxIndexInfoAwareFileBasedIndex<List<Pa
 
             private fun processComplexEnumValue(element: ParadoxCsvColumn) {
                 val name = element.name
-                val columnConfig = ParadoxConfigMatchService.getColumnConfig(config, columnNames, columnIndex) ?: return
+                val columnConfig = ParadoxConfigMatchService.getColumnConfig(rowConfig, columnNames, columnIndex) ?: return
                 val enumName = columnConfig.optionMetadata.declareComplexEnum?.orNull() ?: return
                 val info = ParadoxComplexEnumValueIndexInfo(name, enumName, -1, gameType)
                 addToFileData(info, fileData)
@@ -180,6 +182,22 @@ class ParadoxComplexEnumValueIndex : ParadoxIndexInfoAwareFileBasedIndex<List<Pa
                 }
             }
         })
+    }
+
+    private fun getFileLevelComplexEnumConfigs(matchContext: CwtComplexEnumConfigMatchContext): Collection<CwtComplexEnumConfig> {
+        return ParadoxConfigMatchService.getComplexEnumConfigCandidates(matchContext)
+    }
+
+    private fun getMatchedComplexEnumConfig(matchContext: CwtComplexEnumConfigMatchContext, element: ParadoxScriptExpressionElement, complexEnumConfigs: Collection<CwtComplexEnumConfig>): CwtComplexEnumConfig? {
+        return complexEnumConfigs.find { ParadoxConfigMatchService.matchesComplexEnum(matchContext, element, it) }
+    }
+
+    private fun getFileLevelRowConfigs(matchContext: CwtRowConfigMatchContext): Collection<CwtRowConfig> {
+        return ParadoxConfigMatchService.getRowConfigCandidates(matchContext)
+    }
+
+    private fun getMatchedRowConfig(matchContext: CwtRowConfigMatchContext, rowConfigs: Collection<CwtRowConfig>): CwtRowConfig? {
+        return rowConfigs.find { ParadoxConfigMatchService.matchesRow(matchContext, it) }
     }
 
     private fun addToFileData(info: ParadoxComplexEnumValueIndexInfo, fileData: MutableMap<String, List<ParadoxComplexEnumValueIndexInfo>>) {

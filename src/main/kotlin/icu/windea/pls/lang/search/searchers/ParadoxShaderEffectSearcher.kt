@@ -28,8 +28,8 @@ class ParadoxShaderEffectSearcher : QueryExecutorBase<ParadoxShaderEffectIndexIn
 
     private fun processQuery(context: Context, consumer: Processor<in ParadoxShaderEffectIndexInfo>): Boolean {
         if (!context.isValid()) return true
-        val indexInfoType = ParadoxMergedIndexTypes.ShaderEffect
-        return ChronicleIndexService.processAllFileDataWithKey(indexInfoType, context.project, context.scope, context.gameType) { file, infos ->
+        val mergedIndexType = ParadoxMergedIndexTypes.ShaderEffect
+        return ChronicleIndexService.processAllFileDataWithKey(mergedIndexType, context.project, context.scope, context.gameType) { file, infos ->
             infos.processFast { info -> processInfo(context, file, info, consumer) }
         }
     }

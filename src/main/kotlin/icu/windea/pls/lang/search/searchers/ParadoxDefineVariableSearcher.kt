@@ -35,21 +35,22 @@ class ParadoxDefineVariableSearcher : QueryExecutorBase<ParadoxScriptProperty, P
 
     private fun processQuery(context: Context, consumer: Processor<in ParadoxScriptProperty>): Boolean {
         if (!context.isValid()) return true
+        val indexKey = ChronicleIndexKeys.DefineVariable
         if (context.namespace != null && context.variable != null) {
             val key = ParadoxDefineVariableKey(context.namespace, context.variable)
-            return ChronicleIndexService.processElements(ChronicleIndexKeys.DefineVariable, key, context.project, context.scope) { element ->
+            return ChronicleIndexService.processElements(indexKey, key, context.project, context.scope) { element ->
                 consumer.process(element)
             }
         } else if (context.namespace != null) {
-            return ChronicleIndexService.processElementsByKeys(ChronicleIndexKeys.DefineVariable, context.project, context.scope, { it.namespace == context.namespace }) { _, element ->
+            return ChronicleIndexService.processElementsByKeys(indexKey, context.project, context.scope, { it.namespace == context.namespace }) { _, element ->
                 consumer.process(element)
             }
         } else if (context.variable != null) {
-            return ChronicleIndexService.processElementsByKeys(ChronicleIndexKeys.DefineVariable, context.project, context.scope, { it.variable == context.variable }) { _, element ->
+            return ChronicleIndexService.processElementsByKeys(indexKey, context.project, context.scope, { it.variable == context.variable }) { _, element ->
                 consumer.process(element)
             }
         } else {
-            return ChronicleIndexService.processElementsByKeys(ChronicleIndexKeys.DefineVariable, context.project, context.scope) { _, element ->
+            return ChronicleIndexService.processElementsByKeys(indexKey, context.project, context.scope) { _, element ->
                 consumer.process(element)
             }
         }

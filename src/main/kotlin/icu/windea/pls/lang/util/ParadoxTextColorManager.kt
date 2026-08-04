@@ -84,6 +84,14 @@ object ParadoxTextColorManager {
         return getInfoFromCache(definition)
     }
 
+    fun getInfos(project: Project, contextElement: PsiElement? = null): List<ParadoxTextColorInfo> {
+        val selector = ParadoxDefinitionSearch.selector(project, contextElement).contextSensitive().distinct()
+            .withConstraint(ParadoxDefinitionIndexConstraint.TextColor)
+        val definitions = ParadoxDefinitionSearch.searchProperty(null, ParadoxDefinitionTypes.textColor, selector).findAll()
+        if (definitions.isEmpty()) return emptyList()
+        return definitions.mapNotNullFast { definition -> getInfoFromCache(definition) } // it.name == it.definitionInfo.name
+    }
+
     private fun getInfoFromCache(definition: ParadoxDefinitionElement): ParadoxTextColorInfo? {
         if (definition !is ParadoxScriptProperty) return null
         return CachedValuesManager.getCachedValue(definition, Keys.cachedTextColorInfo) {
@@ -103,14 +111,6 @@ object ParadoxTextColorManager {
         if (rgbList.size != 3) return null
         val value = ParadoxTextColorInfo(name, rgbList[0], rgbList[1], rgbList[2], gameType).also { it.element = definition }
         return value
-    }
-
-    fun getInfos(project: Project, contextElement: PsiElement? = null): List<ParadoxTextColorInfo> {
-        val selector = ParadoxDefinitionSearch.selector(project, contextElement).contextSensitive().distinct()
-            .withConstraint(ParadoxDefinitionIndexConstraint.TextColor)
-        val definitions = ParadoxDefinitionSearch.searchProperty(null, ParadoxDefinitionTypes.textColor, selector).findAll()
-        if (definitions.isEmpty()) return emptyList()
-        return definitions.mapNotNullFast { definition -> getInfoFromCache(definition) } // it.name == it.definitionInfo.name
     }
 
     fun isId(c: Char): Boolean {

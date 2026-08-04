@@ -2,8 +2,6 @@
 
 package icu.windea.pls.core
 
-import com.intellij.psi.stubs.StubIndexExtension
-import com.intellij.util.indexing.FileBasedIndexExtension
 import com.intellij.util.io.DataInputOutputUtil
 import com.intellij.util.io.IOUtil
 import icu.windea.pls.core.collections.forEachFast
@@ -15,15 +13,15 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet
 import java.io.DataInput
 import java.io.DataOutput
 
-/** 查找注册的 StubIndex 扩展。 */
-fun <T : StubIndexExtension<*, *>> findStubIndex(type: Class<T>): T {
-    return StubIndexExtension.EP_NAME.findExtensionOrFail(type)
-}
-
-/** 查找注册的 FileBasedIndex 扩展。 */
-fun <T : FileBasedIndexExtension<*, *>> findFileBasedIndex(type: Class<T>): T {
-    return FileBasedIndexExtension.EXTENSION_POINT_NAME.findExtensionOrFail(type)
-}
+// /** 查找注册的 StubIndex 扩展。 */
+// fun <T : StubIndexExtension<*, *>> findStubIndex(type: Class<T>): T {
+//     return StubIndexExtension.EP_NAME.findExtensionOrFail(type)
+// }
+//
+// /** 查找注册的 FileBasedIndex 扩展。 */
+// fun <T : FileBasedIndexExtension<*, *>> findFileBasedIndex(type: Class<T>): T {
+//     return FileBasedIndexExtension.EXTENSION_POINT_NAME.findExtensionOrFail(type)
+// }
 
 // fun IndexInputFilter(predicate: (VirtualFile) -> Boolean): FileBasedIndex.InputFilter {
 //     return FileBasedIndex.InputFilter(predicate)

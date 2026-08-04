@@ -28,8 +28,8 @@ class ParadoxLocalisationParameterSearcher : QueryExecutorBase<ParadoxLocalisati
 
     private fun processQuery(context: Context, consumer: Processor<in ParadoxLocalisationParameterIndexInfo>): Boolean {
         if (!context.isValid()) return true
-        val indexInfoType = ParadoxMergedIndexTypes.LocalisationParameter
-        return ChronicleIndexService.processAllFileDataWithKey(indexInfoType, context.project, context.scope, context.gameType) { file, infos ->
+        val mergedIndexType = ParadoxMergedIndexTypes.LocalisationParameter
+        return ChronicleIndexService.processAllFileDataWithKey(mergedIndexType, context.project, context.scope, context.gameType) { file, infos ->
             infos.processFast { info -> processInfo(context, file, info, consumer) }
         }
     }

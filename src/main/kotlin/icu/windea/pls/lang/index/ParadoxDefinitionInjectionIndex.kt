@@ -23,6 +23,7 @@ import icu.windea.pls.core.writeIndexedStringList
 import icu.windea.pls.core.writeIntFast
 import icu.windea.pls.core.writeUTFFast
 import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.index.statistics.ChronicleIndexStatisticService
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.CwtTypeConfigMatchContext
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
@@ -74,12 +75,12 @@ class ParadoxDefinitionInjectionIndex : ParadoxIndexInfoAwareFileBasedIndex<List
         if (!ParadoxDefinitionInjectionManager.isSupported(gameType)) return // optimize (fast return if the game type not supports)
         val configGroup = ChronicleFacade.getConfigGroup(psiFile.project, gameType)
         val config = configGroup.macrosModel.forDefinitionInjections ?: return
-        val path = fileInfo.path
-        val fileLevelMatchContext = CwtTypeConfigMatchContext(configGroup, path)
-        val fileLevelTypeConfigs = ParadoxConfigMatchService.getTypeConfigCandidates(fileLevelMatchContext)
+        val fileLevelMatchContext = CwtTypeConfigMatchContext(configGroup, fileInfo.path)
+        val fileLevelTypeConfigs = getFileLevelTypeConfigs(fileLevelMatchContext)
         if (fileLevelTypeConfigs.isEmpty()) return // optimize (fast return if there are no candidates)
 
-        val typeConfigForInjection = getMatchedTypeConfigForInjection(fileLevelMatchContext, fileLevelTypeConfigs) ?: return
+        val fileLevelTypeConfigForInjection = getMatchedTypeConfigForInjection(fileLevelMatchContext, fileLevelTypeConfigs)
+        if (fileLevelTypeConfigForInjection == null) return // optimize (fast return if there are no injectable candidates)
 
         psiFile.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
@@ -114,7 +115,7 @@ class ParadoxDefinitionInjectionIndex : ParadoxIndexInfoAwareFileBasedIndex<List
                 if (config.modeConfigs[mode] == null) return
                 val target = ParadoxDefinitionInjectionManager.getTargetFromExpression(expression) ?: return
                 if (target.isEmpty()) return
-                val type = typeConfigForInjection.name.orNull() ?: return
+                val type = fileLevelTypeConfigForInjection.name.orNull() ?: return
 
                 val info = ParadoxDefinitionInjectionIndexInfo(mode, target, type, element.startOffset, gameType)
                 addToFileData(info, fileData)
@@ -122,8 +123,12 @@ class ParadoxDefinitionInjectionIndex : ParadoxIndexInfoAwareFileBasedIndex<List
         })
     }
 
-    private fun getMatchedTypeConfigForInjection(context: CwtTypeConfigMatchContext, typeConfigs: Collection<CwtTypeConfig>): CwtTypeConfig? {
-        return typeConfigs.find { ParadoxConfigMatchService.matchesTypeForInjection(context, it) }
+    private fun getFileLevelTypeConfigs(matchContext: CwtTypeConfigMatchContext): Collection<CwtTypeConfig> {
+        return ParadoxConfigMatchService.getTypeConfigCandidates(matchContext)
+    }
+
+    private fun getMatchedTypeConfigForInjection(matchContext: CwtTypeConfigMatchContext, typeConfigs: Collection<CwtTypeConfig>): CwtTypeConfig? {
+        return typeConfigs.find { ParadoxConfigMatchService.matchesTypeForInjection(matchContext, it) }
     }
 
     private fun addToFileData(info: ParadoxDefinitionInjectionIndexInfo, fileData: MutableMap<String, List<ParadoxDefinitionInjectionIndexInfo>>) {

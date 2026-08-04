@@ -9,9 +9,9 @@ import com.intellij.util.Processor
 import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.processFast
+import icu.windea.pls.lang.index.ChronicleIndexKeys
 import icu.windea.pls.lang.index.ChronicleIndexService
 import icu.windea.pls.lang.index.ChronicleIndexUtil
-import icu.windea.pls.lang.index.ParadoxDefinitionInjectionIndex
 import icu.windea.pls.lang.search.ParadoxDefinitionInjectionSearch
 import icu.windea.pls.lang.search.scope.withFileTypes
 import icu.windea.pls.lang.search.util.ParadoxSearchContext
@@ -40,7 +40,8 @@ class ParadoxDefinitionInjectionSearcher : QueryExecutorBase<ParadoxDefinitionIn
             createActualKey(context),
             ChronicleIndexUtil.createLazyKey(),
         )
-        return ChronicleIndexService.processAllFileData(ParadoxDefinitionInjectionIndex::class.java, keys, context.project, context.scope, context.gameType) p@{ file, fileData ->
+        val indexId = ChronicleIndexKeys.DefinitionInjection
+        return ChronicleIndexService.processAllFileData(indexId, keys, context.project, context.scope, context.gameType) p@{ file, fileData ->
             val actualKey = createActualKey(context)
             val infos = fileData[actualKey].orEmpty()
             infos.processFast { info -> processInfo(context, file, info, consumer) }

@@ -18,13 +18,13 @@ import icu.windea.pls.model.index.ParadoxDefinitionIndexInfo
 /**
  * 定义索引的索引约束。
  *
- * @property indexKey 对应的受约束索引使用的 [ID]。
+ * @property indexId 对应的受约束索引使用的 [ID]。
  * @property ignoreCase 对应的受约束索引在索引定义的名字时，是否忽略大小写。
  *
  * @see ParadoxDefinitionConstrainedIndex
  */
 enum class ParadoxDefinitionIndexConstraint(
-    val indexKey: ID<String, List<ParadoxDefinitionIndexInfo>>,
+    val indexId: ID<String, List<ParadoxDefinitionIndexInfo>>,
     val ignoreCase: Boolean = false,
     val inferred: Boolean = false,
 ) : ParadoxIndexConstraint<ParadoxDefinitionIndexInfo> {

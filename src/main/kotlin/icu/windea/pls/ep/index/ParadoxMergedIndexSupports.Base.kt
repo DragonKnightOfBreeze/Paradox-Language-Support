@@ -6,11 +6,11 @@ import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.core.collections.asMutable
 import icu.windea.pls.core.withState
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
-import icu.windea.pls.lang.index.ChronicleIndexStatisticService
 import icu.windea.pls.lang.index.ParadoxMergedIndexContext
 import icu.windea.pls.lang.index.ParadoxMergedIndexCsvContext
 import icu.windea.pls.lang.index.ParadoxMergedIndexLocalisationContext
 import icu.windea.pls.lang.index.ParadoxMergedIndexScriptContext
+import icu.windea.pls.lang.index.statistics.ChronicleIndexStatisticService
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.model.constraints.ParadoxReferenceConstraint

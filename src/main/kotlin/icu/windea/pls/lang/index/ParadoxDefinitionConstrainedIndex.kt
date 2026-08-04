@@ -1,7 +1,12 @@
 package icu.windea.pls.lang.index
 
-import com.intellij.psi.PsiFile
+import icu.windea.pls.config.config.delegated.CwtTypeConfig
+import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.collections.asMutable
+import icu.windea.pls.core.letIf
 import icu.windea.pls.lang.index.constraints.ParadoxDefinitionIndexConstraint
+import icu.windea.pls.lang.index.statistics.ChronicleIndexStatisticService
+import icu.windea.pls.lang.match.CwtTypeConfigMatchContext
 import icu.windea.pls.lang.references.localisation.ParadoxLocalisationIconPsiReference
 import icu.windea.pls.lang.references.localisation.ParadoxLocalisationTextColorPsiReference
 import icu.windea.pls.lang.references.localisation.ParadoxLocalisationTextFormatPsiReference
@@ -19,11 +24,25 @@ import icu.windea.pls.model.index.ParadoxDefinitionIndexInfo
 abstract class ParadoxDefinitionConstrainedIndex : ParadoxDefinitionIndex() {
     abstract val constraint: ParadoxDefinitionIndexConstraint
 
-    override fun getName() = constraint.indexKey
+    override fun getName() = constraint.indexId
 
-    override fun indexData(psiFile: PsiFile): Map<String, List<ParadoxDefinitionIndexInfo>> {
-        // TODO 3.0.1
-        return emptyMap()
+    override fun getFileLevelTypeConfigs(matchContext: CwtTypeConfigMatchContext): Collection<CwtTypeConfig> {
+        val result = super.getFileLevelTypeConfigs(matchContext).filter { constraint.test(it.name, it.configGroup) }
+        if (result.isEmpty()) return emptyList()
+        return result
+    }
+
+    override fun addToFileData(info: ParadoxDefinitionIndexInfo, fileData: MutableMap<String, List<ParadoxDefinitionIndexInfo>>, configGroup: CwtConfigGroup) {
+        ChronicleIndexStatisticService.recordDefinitionConstrained(info.gameType, constraint)
+
+        val ignoreCase = constraint.ignoreCase
+        val name = info.name.letIf(ignoreCase) { it.lowercase() }
+        val type = info.type
+        fileData.getOrPut(ChronicleIndexUtil.createAllKey()) { mutableListOf() }.asMutable() += info
+        fileData.getOrPut(ChronicleIndexUtil.createTypeKey(type)) { mutableListOf() }.asMutable() += info
+        if (name.isEmpty()) return
+        fileData.getOrPut(ChronicleIndexUtil.createNameKey(name)) { mutableListOf() }.asMutable() += info
+        fileData.getOrPut(ChronicleIndexUtil.createNameTypeKey(name, type)) { mutableListOf() }.asMutable() += info
     }
 
     /**

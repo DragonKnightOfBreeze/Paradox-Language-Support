@@ -12,11 +12,10 @@ import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.processFast
-import icu.windea.pls.core.letIf
 import icu.windea.pls.core.orNull
+import icu.windea.pls.lang.index.ChronicleIndexKeys
 import icu.windea.pls.lang.index.ChronicleIndexService
 import icu.windea.pls.lang.index.ChronicleIndexUtil
-import icu.windea.pls.lang.index.ParadoxDefinitionIndex
 import icu.windea.pls.lang.index.constraints.ParadoxDefinitionIndexConstraint
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.scope.withFileTypes
@@ -45,11 +44,13 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxDefinitionIndexInfo, 
 
     private fun processQuery(context: Context, consumer: Processor<in ParadoxDefinitionIndexInfo>): Boolean {
         if (!context.isValid()) return true
+        val constraint = context.constraint
+        val indexId = constraint?.indexId ?: ChronicleIndexKeys.Definition
         val keys = setOf(
             createActualKey(context),
             ChronicleIndexUtil.createLazyKey(),
         )
-        val r = ChronicleIndexService.processAllFileData(ParadoxDefinitionIndex::class.java, keys, context.project, context.scope, context.gameType) { file, fileData ->
+        val r = ChronicleIndexService.processAllFileData(indexId, keys, context.project, context.scope, context.gameType) { file, fileData ->
             val actualKey = createActualKey(context)
             val infos = fileData[actualKey].orEmpty()
             infos.processFast { info -> processInfo(context, file, info, consumer) }
@@ -66,8 +67,9 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxDefinitionIndexInfo, 
     }
 
     private fun createActualKey(context: Context): String {
-        val ignoreCase = context.constraint?.ignoreCase == true
-        val name = context.name?.letIf(ignoreCase) { it.lowercase() }
+        val constraint = context.constraint
+        val ignoreCase = constraint?.ignoreCase == true
+        val name = if (ignoreCase) context.name?.lowercase() else context.name
         val type = context.type
         return when {
             !name.isNullOrEmpty() && !type.isNullOrEmpty() -> ChronicleIndexUtil.createNameTypeKey(name, type)

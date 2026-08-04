@@ -20,6 +20,7 @@ import icu.windea.pls.lang.index.constraints.ParadoxDefinitionIndexConstraint
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.util.contextSensitive
+import icu.windea.pls.lang.search.util.withConstraint
 import icu.windea.pls.localisation.psi.ParadoxLocalisationIcon
 
 @Suppress("SameParameterValue")
@@ -96,6 +97,7 @@ class ParadoxDefinitionBasedLocalisationIconSupport(
         val definitionName = definitionNameGetter(name)
         if (definitionName.isNullOrEmpty()) return null
         val definitionSelector = ParadoxDefinitionSearch.selector(project, element).contextSensitive()
+            .withConstraint(ParadoxDefinitionIndexConstraint.LocalisationIconResolvable) // 3.0.1 optimize: apply constraint
         val definition = ParadoxDefinitionSearch.searchElement(definitionName, definitionType, definitionSelector).find()
         return definition
     }
@@ -104,12 +106,14 @@ class ParadoxDefinitionBasedLocalisationIconSupport(
         val definitionName = definitionNameGetter(name)
         if (definitionName.isNullOrEmpty()) return emptySet()
         val definitionSelector = ParadoxDefinitionSearch.selector(project, element).contextSensitive()
+            .withConstraint(ParadoxDefinitionIndexConstraint.LocalisationIconResolvable) // 3.0.1 optimize: apply constraint
         val definitions = ParadoxDefinitionSearch.searchElement(definitionName, definitionType, definitionSelector).findAll()
         return definitions
     }
 
     override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
         val definitionSelector = ParadoxDefinitionSearch.selector(context.project, context.file).contextSensitive().distinct()
+            .withConstraint(ParadoxDefinitionIndexConstraint.LocalisationIconResolvable) // 3.0.1 optimize: apply constraint
         ParadoxDefinitionSearch.searchElement(null, definitionType, definitionSelector).processAsync p@{ definition ->
             ProgressManager.checkCanceled()
             val definitionInfo = definition.definitionInfo ?: return@p true

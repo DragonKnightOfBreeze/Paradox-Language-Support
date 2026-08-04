@@ -1,6 +1,8 @@
-package icu.windea.pls.lang.index
+package icu.windea.pls.lang.index.statistics
 
 import icu.windea.pls.base.ChronicleCapacities
+import icu.windea.pls.lang.index.ParadoxMergedIndexType
+import icu.windea.pls.lang.index.constraints.ParadoxDefinitionIndexConstraint
 import icu.windea.pls.model.ParadoxGameType
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicLong
@@ -12,6 +14,7 @@ object ChronicleIndexStatisticService {
     private val configSymbolCounters = ConcurrentHashMap<ParadoxGameType, AtomicLong>()
     private val complexEnumValueCounters = ConcurrentHashMap<ParadoxGameType, AtomicLong>()
     private val definitionCounters = ConcurrentHashMap<ParadoxGameType, AtomicLong>()
+    private val definitionConstrainedCounters = ConcurrentHashMap<ParadoxGameType, ConcurrentHashMap<ParadoxDefinitionIndexConstraint, AtomicLong>>()
     private val definitionInjectionCounters = ConcurrentHashMap<ParadoxGameType, AtomicLong>()
     private val mergedCounters = ConcurrentHashMap<ParadoxGameType, ConcurrentHashMap<ParadoxMergedIndexType<*>, AtomicLong>>()
 
@@ -20,6 +23,7 @@ object ChronicleIndexStatisticService {
             configSymbolCounters.mapValues { (_, v) -> v.get() },
             complexEnumValueCounters.mapValues { (_, v) -> v.get() },
             definitionCounters.mapValues { (_, v) -> v.get() },
+            definitionConstrainedCounters.mapValues { (_, v) -> v.mapValues { (_, v1) -> v1.get() } },
             definitionInjectionCounters.mapValues { (_, v) -> v.get() },
             mergedCounters.mapValues { (_, v) -> v.mapValues { (_, v1) -> v1.get() } },
         )
@@ -40,6 +44,12 @@ object ChronicleIndexStatisticService {
     fun recordDefinition(gameType: ParadoxGameType) {
         if (!recordIndexStats) return
         val counter = definitionCounters.getOrPut(gameType) { AtomicLong() }
+        counter.incrementAndGet()
+    }
+
+    fun recordDefinitionConstrained(gameType: ParadoxGameType, constraint: ParadoxDefinitionIndexConstraint) {
+        if (!recordIndexStats) return
+        val counter = definitionConstrainedCounters.computeIfAbsent(gameType) { ConcurrentHashMap() }.getOrPut(constraint) { AtomicLong() }
         counter.incrementAndGet()
     }
 
@@ -64,6 +74,7 @@ object ChronicleIndexStatisticService {
         configSymbolCounters.clear()
         complexEnumValueCounters.clear()
         definitionCounters.clear()
+        definitionConstrainedCounters.clear()
         definitionInjectionCounters.clear()
         mergedCounters.clear()
     }

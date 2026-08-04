@@ -10,9 +10,9 @@ import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.processFast
 import icu.windea.pls.csv.ParadoxCsvFileType
+import icu.windea.pls.lang.index.ChronicleIndexKeys
 import icu.windea.pls.lang.index.ChronicleIndexService
 import icu.windea.pls.lang.index.ChronicleIndexUtil
-import icu.windea.pls.lang.index.ParadoxComplexEnumValueIndex
 import icu.windea.pls.lang.search.ParadoxComplexEnumValueSearch
 import icu.windea.pls.lang.search.scope.withFileTypes
 import icu.windea.pls.lang.search.util.ParadoxSearchContext
@@ -41,7 +41,8 @@ class ParadoxComplexEnumValueSearcher : QueryExecutorBase<ParadoxComplexEnumValu
             createActualKey(context),
             ChronicleIndexUtil.createLazyKey(),
         )
-        return ChronicleIndexService.processAllFileData(ParadoxComplexEnumValueIndex::class.java, keys, context.project, context.scope, context.gameType) { file, fileData ->
+        val indexId = ChronicleIndexKeys.ComplexEnumValue
+        return ChronicleIndexService.processAllFileData(indexId, keys, context.project, context.scope, context.gameType) { file, fileData ->
             val actualKey = createActualKey(context)
             val infos = fileData[actualKey].orEmpty()
             infos.processFast { info -> processInfo(context, file, info, consumer) }

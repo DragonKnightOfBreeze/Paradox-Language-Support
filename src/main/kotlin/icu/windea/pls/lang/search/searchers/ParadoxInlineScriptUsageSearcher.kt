@@ -35,13 +35,14 @@ class ParadoxInlineScriptUsageSearcher : QueryExecutorBase<ParadoxScriptProperty
     private fun processQuery(context: Context, processor: Processor<in ParadoxScriptProperty>): Boolean {
         if (!context.isValid()) return true
         val expression = context.expression
+        val indexKey = ChronicleIndexKeys.InlineScriptUsage
         if (expression == null) {
-            return ChronicleIndexService.processElementsByKeys(ChronicleIndexKeys.InlineScriptUsage, context.project, context.scope) { _, element ->
+            return ChronicleIndexService.processElementsByKeys(indexKey, context.project, context.scope) { _, element ->
                 processor.process(element)
             }
         } else {
             if (expression.isEmpty() || expression.isParameterized()) return true // 排除为空或者带参数的情况
-            return ChronicleIndexService.processElements(ChronicleIndexKeys.InlineScriptUsage, expression, context.project, context.scope) { element ->
+            return ChronicleIndexService.processElements(indexKey, expression, context.project, context.scope) { element ->
                 processor.process(element)
             }
         }

@@ -12,7 +12,7 @@ import icu.windea.pls.model.index.ParadoxIndexInfo
  * @see ParadoxIndexInfo
  */
 @Optimized
-sealed class ParadoxIndexInfoAwareFileBasedIndex<V, out T : ParadoxIndexInfo> : IndexInfoAwareFileBasedIndex<V, T>() {
+sealed class ParadoxIndexInfoAwareFileBasedIndex<V : List<T>, out T : ParadoxIndexInfo> : IndexInfoAwareFileBasedIndex<V, T>() {
     override fun checkFile(file: VirtualFile, project: Project, expectGameType: ParadoxGameType?): Boolean {
         // ensure file info is resolved here
         ParadoxAnalysisManager.getFileInfo(file)

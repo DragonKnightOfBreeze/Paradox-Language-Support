@@ -10,10 +10,8 @@ import com.intellij.psi.PsiRecursiveElementWalkingVisitor
 import com.intellij.util.gist.VirtualFileGist
 import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.core.annotations.Optimized
-import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.ImmutableList
 import icu.windea.pls.core.collections.filterFast
-import icu.windea.pls.core.collections.findFast
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.readIntFast
 import icu.windea.pls.core.readUTFFast
@@ -84,7 +82,6 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
     override fun indexData(psiFile: PsiFile): Map<String, List<ParadoxIndexInfo>> {
         return buildMap {
             buildData(psiFile, this)
-            compressData(this)
         }
     }
 
@@ -105,7 +102,7 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
         // 3.0.1 optimize: limit available types and supports via strategies, config attributes, etc.
         val optimizers = ParadoxMergedIndexOptimizer.EP_NAME.extensionList
         val allTypes = ImmutableSet.copyOf(ParadoxMergedIndexType.entries)
-        val availableTypes = if (useLazyIndex) allTypes else getAvailableTypes(file, optimizers)
+        val availableTypes = if (useLazyIndex) allTypes else ParadoxMergedIndexService.getAvailableTypes(file, optimizers)
         if (availableTypes.isEmpty()) return // fast return
         val allSupports = ParadoxMergedIndexSupport.EP_NAME.extensionList
         val supports = if (useLazyIndex) allSupports else allSupports.filterFast { it.type in availableTypes }
@@ -118,7 +115,7 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
 
         file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
-                buildData(element, context, supports)
+                ParadoxMergedIndexService.buildData(element, context, supports)
 
                 if (element is ParadoxScriptStringExpressionElement) {
                     visitStringExpressionElement(element) // 3.0.1 just for string expressions atm
@@ -144,7 +141,7 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
 
                 ProgressManager.checkCanceled()
                 context.expressionElement = element
-                buildDataForExpression(element, context, supports)
+                ParadoxMergedIndexService.buildDataForExpression(element, context, supports)
                 context.expressionElement = null
                 context.resetCache()
             }
@@ -155,7 +152,7 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
                     if (definitionCandidateInfo.source == ParadoxDefinitionSource.Inline) return  // 忽略内联的定义
                     element.putUserData(Keys.definitionCandidate, true) // 标记
                     if (element is ParadoxScriptProperty) element.propertyKey.putUserData(Keys.definitionCandidate, true) // 标记
-                    val definitionCandidateAvailableTypes = if (useLazyIndex) allTypes else getAvailableTypes(definitionCandidateInfo, optimizers)
+                    val definitionCandidateAvailableTypes = if (useLazyIndex) allTypes else ParadoxMergedIndexService.getAvailableTypes(definitionCandidateInfo, optimizers)
                     definitionCandidateInfoStack.addLast(definitionCandidateInfo) // 进栈
                     definitionCandidateAvailableTypesStack.addLast(definitionCandidateAvailableTypes) // 进栈
                     context.definitionCandidateInfo = definitionCandidateInfo
@@ -170,19 +167,22 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
                     if (element is ParadoxScriptProperty) element.propertyKey.putUserData(Keys.definitionCandidate, null) // 清空标记
                     definitionCandidateInfoStack.removeLastOrNull() // 出栈
                     definitionCandidateAvailableTypesStack.removeLastOrNull() // 出栈
-                    cleanUpDumbDefinitionCache(element) // 清空缓存
                     context.definitionCandidateInfo = null
                     context.definitionCandidateAvailableTypes = emptySet()
                     context.definitionCandidateAvailableTypesUnchanged = true
+
+                    cleanUpDumbDefinitionCache(element) // 清空缓存
                 }
             }
         })
+
+        ParadoxMergedIndexService.compressData(fileData, supports)
     }
 
     private fun buildDataForLocalisationFile(file: ParadoxLocalisationFile, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
         // 3.0.1 optimize: limit available types and supports via strategies, config attributes, etc.
         val optimizers = ParadoxMergedIndexOptimizer.EP_NAME.extensionList
-        val availableTypes = getAvailableTypes(file, optimizers)
+        val availableTypes = ParadoxMergedIndexService.getAvailableTypes(file, optimizers)
         if (availableTypes.isEmpty()) return // fast return
         val allSupports = ParadoxMergedIndexSupport.EP_NAME.extensionList
         val supports = allSupports.filterFast { it.type in availableTypes }
@@ -212,7 +212,7 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
 
                 ProgressManager.checkCanceled()
                 context.expressionElement = element
-                buildDataForExpression(element, context, supports)
+                ParadoxMergedIndexService.buildDataForExpression(element, context, supports)
                 context.expressionElement = null
                 context.resetCache()
             }
@@ -229,12 +229,14 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
                 }
             }
         })
+
+        ParadoxMergedIndexService.compressData(fileData, supports)
     }
 
     private fun buildDataForCsvFile(file: ParadoxCsvFile, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
         // 3.0.1 optimize: limit available types and supports via strategies, config attributes, etc.
         val optimizers = ParadoxMergedIndexOptimizer.EP_NAME.extensionList
-        val availableTypes = getAvailableTypes(file, optimizers)
+        val availableTypes = ParadoxMergedIndexService.getAvailableTypes(file, optimizers)
         if (availableTypes.isEmpty()) return // fast return
         val allSupports = ParadoxMergedIndexSupport.EP_NAME.extensionList
         val supports = allSupports.filterFast { it.type in availableTypes }
@@ -257,51 +259,13 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
 
                 ProgressManager.checkCanceled()
                 context.expressionElement = element
-                buildDataForExpression(element, context, supports)
+                ParadoxMergedIndexService.buildDataForExpression(element, context, supports)
                 context.expressionElement = null
                 context.resetCache()
             }
         })
-    }
 
-    private fun getAvailableTypes(file: ParadoxScriptFile, optimizers: List<ParadoxMergedIndexOptimizer>): Set<ParadoxMergedIndexType<*>> {
-        val builder = ImmutableSet.builder<ParadoxMergedIndexType<*>>()
-        optimizers.forEachFast { optimizer -> builder.addAll(optimizer.getAvailableTypes(file)) }
-        return builder.build()
-    }
-
-    private fun getAvailableTypes(file: ParadoxLocalisationFile, optimizers: List<ParadoxMergedIndexOptimizer>): Set<ParadoxMergedIndexType<*>> {
-        val builder = ImmutableSet.builder<ParadoxMergedIndexType<*>>()
-        optimizers.forEachFast { optimizer -> builder.addAll(optimizer.getAvailableTypes(file)) }
-        return builder.build()
-    }
-
-    private fun getAvailableTypes(file: ParadoxCsvFile, optimizers: List<ParadoxMergedIndexOptimizer>): Set<ParadoxMergedIndexType<*>> {
-        val builder = ImmutableSet.builder<ParadoxMergedIndexType<*>>()
-        optimizers.forEachFast { optimizer -> builder.addAll(optimizer.getAvailableTypes(file)) }
-        return builder.build()
-    }
-
-    private fun getAvailableTypes(definitionCandidateInfo: ParadoxDefinitionCandidateInfo, optimizers: List<ParadoxMergedIndexOptimizer>): Set<ParadoxMergedIndexType<*>> {
-        val builder = ImmutableSet.builder<ParadoxMergedIndexType<*>>()
-        optimizers.forEachFast { optimizer -> builder.addAll(optimizer.getAvailableTypes(definitionCandidateInfo)) }
-        return builder.build()
-    }
-
-    private fun buildData(element: PsiElement, context: ParadoxMergedIndexScriptContext, supports: List<ParadoxMergedIndexSupport<*>>) {
-        supports.forEachFast { support -> support.buildData(element, context) }
-    }
-
-    private fun buildDataForExpression(element: ParadoxScriptStringExpressionElement, context: ParadoxMergedIndexScriptContext, supports: List<ParadoxMergedIndexSupport<*>>) {
-        supports.forEachFast { support -> support.buildDataForExpression(element, context) }
-    }
-
-    private fun buildDataForExpression(element: ParadoxLocalisationExpressionElement, context: ParadoxMergedIndexLocalisationContext, supports: List<ParadoxMergedIndexSupport<*>>) {
-        supports.forEachFast { support -> support.buildDataForExpression(element, context) }
-    }
-
-    private fun buildDataForExpression(element: ParadoxCsvExpressionElement, context: ParadoxMergedIndexCsvContext, supports: List<ParadoxMergedIndexSupport<*>>) {
-        supports.forEachFast { support -> support.buildDataForExpression(element, context) }
+        ParadoxMergedIndexService.compressData(fileData, supports)
     }
 
     private fun cleanUpDumbDefinitionCache(element: ParadoxDefinitionElement) {
@@ -315,18 +279,6 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
     //     // clean up dumb expression references caches
     //     element.putUserData(ParadoxExpressionManager.Keys.cachedExpressionReferencesDumb, null)
     // }
-
-    private fun compressData(fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
-        if (fileData.isEmpty()) return
-        val supports = ParadoxMergedIndexSupport.EP_NAME.extensionList
-        for (key in fileData.keys) {
-            val oldValue = fileData.getValue(key)
-            if (oldValue.size <= 1) continue
-            val support = getSupportOrUnsupported(supports, key)
-            val newValue = support.compressData(oldValue)
-            fileData[key] = newValue
-        }
-    }
 
     override fun useLazyIndex(file: VirtualFile): Boolean {
         if (VirtualFileService.isInjectedFile(file)) return true
@@ -350,7 +302,7 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
         val firstInfo = value.first()
         val type = firstInfo.javaClass
         val supports = ParadoxMergedIndexSupport.EP_NAME.extensionList
-        val support = getSupportOrUnsupported(supports, type)
+        val support = ParadoxMergedIndexService.getSupportOrUnsupported(type, supports)
         storage.writeUTFFast(support.type.key)
         val gameType = firstInfo.gameType
         storage.writeByte(gameType.optimized())
@@ -368,7 +320,7 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
 
         val key = storage.readUTFFast()
         val supports = ParadoxMergedIndexSupport.EP_NAME.extensionList
-        val support = getSupportOrUnsupported(supports, key)
+        val support = ParadoxMergedIndexService.getSupportOrUnsupported(key, supports)
         val gameType = storage.readByte().let { ParadoxGameType.deoptimized(it) }
 
         // 2.1.9 optimize: create sized immutable list directly
@@ -376,13 +328,5 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
         return ImmutableList(size) {
             support.readData(storage, previousInfo, gameType).also { previousInfo = it }
         }
-    }
-
-    private fun getSupportOrUnsupported(supports: List<ParadoxMergedIndexSupport<*>>, key: String): ParadoxMergedIndexSupport<ParadoxIndexInfo> {
-        return supports.findFast { support -> support.type.key == key }?.castOrNull() ?: throw UnsupportedOperationException()
-    }
-
-    private fun getSupportOrUnsupported(supports: List<ParadoxMergedIndexSupport<*>>, type: Class<ParadoxIndexInfo>): ParadoxMergedIndexSupport<ParadoxIndexInfo> {
-        return supports.findFast { support -> support.type.type == type }?.castOrNull() ?: throw UnsupportedOperationException()
     }
 }

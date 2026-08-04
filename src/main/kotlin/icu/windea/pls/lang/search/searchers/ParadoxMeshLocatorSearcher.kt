@@ -29,8 +29,8 @@ class ParadoxMeshLocatorSearcher : QueryExecutorBase<ParadoxMeshLocatorIndexInfo
     private fun processQuery(context: Context, consumer: Processor<in ParadoxMeshLocatorIndexInfo>): Boolean {
         if (!context.isValid()) return true
         ProgressManager.checkCanceled()
-        val indexInfoType = ParadoxMergedIndexTypes.MeshLocator
-        return ChronicleIndexService.processAllFileDataWithKey(indexInfoType, context.project, context.scope, context.gameType) { file, infos ->
+        val mergedIndexType = ParadoxMergedIndexTypes.MeshLocator
+        return ChronicleIndexService.processAllFileDataWithKey(mergedIndexType, context.project, context.scope, context.gameType) { file, infos ->
             infos.processFast { info -> processInfo(context, file, info, consumer) }
         }
     }

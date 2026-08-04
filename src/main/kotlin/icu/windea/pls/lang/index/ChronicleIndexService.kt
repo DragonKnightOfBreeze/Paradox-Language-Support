@@ -12,8 +12,11 @@ import com.intellij.psi.stubs.StubIndex
 import com.intellij.psi.stubs.StubIndexKey
 import com.intellij.util.Processor
 import com.intellij.util.indexing.FileBasedIndex
-import com.intellij.util.indexing.FileBasedIndexExtension.*
+import com.intellij.util.indexing.FileBasedIndexExtension
+import com.intellij.util.indexing.ID
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.collections.findIsInstanceFast
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.lang.analysis.ParadoxAnalysisManager
 import icu.windea.pls.lang.search.util.ParadoxSearchSelector
@@ -22,24 +25,28 @@ import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.index.IndexInfo
 import icu.windea.pls.model.index.ParadoxIndexInfo
 
+@Optimized
 object ChronicleIndexService {
     // region FileBasedIndex Methods
 
-    fun <INDEX : IndexInfoAwareFileBasedIndex<V, T>, V, T : IndexInfo> processAllFileData(
-        indexType: Class<out INDEX>,
+    fun <T : IndexInfo> processAllFileData(
+        indexId: ID<String, List<T>>,
         keys: Collection<String>,
         project: Project,
         scope: GlobalSearchScope,
         gameType: ParadoxGameType?,
-        processor: (file: VirtualFile, fileData: Map<String, V>) -> Boolean
+        processor: (file: VirtualFile, fileData: Map<String, List<T>>) -> Boolean
     ): Boolean {
         if (SearchScope.isEmptyScope(scope)) return true
         if (DumbService.isDumb(project)) return true
         ProgressManager.checkCanceled()
 
         if (keys.isEmpty()) return true
-        val index = EXTENSION_POINT_NAME.findExtensionOrFail(indexType)
-        val indexId = index.name
+        val indexes = FileBasedIndexExtension.EXTENSION_POINT_NAME.extensionList
+        val index = indexes.findIsInstanceFast<IndexInfoAwareFileBasedIndex<*, *>> { it.name == indexId }
+        if (index == null) throw IllegalStateException("Cannot find matched IndexInfoAwareFileBasedIndex (indexId: $indexId)")
+        @Suppress("UNCHECKED_CAST")
+        index as IndexInfoAwareFileBasedIndex<List<T>, T>
         return FileBasedIndex.getInstance().processFilesContainingAnyKey(indexId, keys, scope, null, null) p@{ file ->
             ProgressManager.checkCanceled()
             if (!index.checkFile(file, project, gameType)) return@p true
@@ -50,7 +57,7 @@ object ChronicleIndexService {
     }
 
     fun <T : ParadoxIndexInfo> processAllFileDataWithKey(
-        indexInfoType: ParadoxMergedIndexType<T>,
+        mergedIndexType: ParadoxMergedIndexType<T>,
         project: Project,
         scope: GlobalSearchScope,
         gameType: ParadoxGameType?,
@@ -60,9 +67,11 @@ object ChronicleIndexService {
         if (DumbService.isDumb(project)) return true
         ProgressManager.checkCanceled()
 
-        val index = EXTENSION_POINT_NAME.findExtensionOrFail(ParadoxMergedIndex::class.java)
+        val indexes = FileBasedIndexExtension.EXTENSION_POINT_NAME.extensionList
+        val index = indexes.findIsInstanceFast<ParadoxMergedIndex>()
+        if (index == null) throw IllegalStateException("Cannot find ParadoxMergedIndex (mergedIndexType: ${mergedIndexType})")
         val indexId = index.name
-        val key = indexInfoType.key
+        val key = mergedIndexType.key
         val keys = setOf(key)
         return FileBasedIndex.getInstance().processFilesContainingAnyKey(indexId, keys, scope, null, null) p@{ file ->
             ProgressManager.checkCanceled()
@@ -128,6 +137,7 @@ object ChronicleIndexService {
             if (keyPredicate(key)) keys.add(key)
             true
         }, scope)
+        if (keys.isEmpty()) return true
         return keys.process { key ->
             ProgressManager.checkCanceled()
             StubIndex.getInstance().processElements(indexKey, key, project, scope, T::class.java) { element ->
@@ -168,6 +178,7 @@ object ChronicleIndexService {
             if (keyPredicate(key)) keys.add(key)
             true
         }, scope)
+        if (keys.isEmpty()) return true
         var value: T?
         return keys.process { key ->
             ProgressManager.checkCanceled()

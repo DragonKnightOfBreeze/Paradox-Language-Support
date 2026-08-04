@@ -1,3 +1,5 @@
+@file:Optimized
+
 package icu.windea.pls.ep.resolve.scope
 
 import com.intellij.openapi.progress.ProgressManager
@@ -6,6 +8,8 @@ import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.definitionScopeContextModificationTracker
+import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.toPsiFile
@@ -96,9 +100,9 @@ class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInfer
         val gameType = configGroup.gameType
         return withRecursionGuard({}.javaClass.name) {
             withRecursionCheck("${definitionInfo.name}:${definitionInfo.type}") {
-                val indexInfoType = ParadoxMergedIndexTypes.ScopeInferrableDefinition
-                ChronicleIndexService.processAllFileDataWithKey(indexInfoType, project, searchScope, gameType) p@{ _, infos ->
-                    infos.forEach f@{ info ->
+                val mergedIndexType = ParadoxMergedIndexTypes.ScopeInferrableDefinition
+                ChronicleIndexService.processAllFileDataWithKey(mergedIndexType, project, searchScope, gameType) p@{ _, infos ->
+                    infos.forEachFast f@{ info ->
                         ProgressManager.checkCanceled()
                         // TODO 1.0.6+ 这里对应的引用可能属于某个复杂表达式的一部分（目前不需要考虑兼容这种情况）
                         val definitionName = info.definitionName
@@ -205,10 +209,10 @@ class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInfe
         return withRecursionGuard({}.javaClass.name) {
             if (depth == 1) stackTrace.addLast(thisEventName)
 
-            val indexInfoType = ParadoxMergedIndexTypes.EventInOnAction
-            ChronicleIndexService.processAllFileDataWithKey(indexInfoType, project, searchScope, gameType) p@{ file, infos ->
+            val mergedIndexType = ParadoxMergedIndexTypes.EventInOnAction
+            ChronicleIndexService.processAllFileDataWithKey(mergedIndexType, project, searchScope, gameType) p@{ file, infos ->
                 val psiFile = file.toPsiFile(project) ?: return@p true
-                infos.forEach f@{ info ->
+                infos.forEachFast f@{ info ->
                     ProgressManager.checkCanceled()
                     val eventName = info.eventName
                     if (eventName != thisEventName) return@f
@@ -317,9 +321,9 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
             if (depth == 1) stackTrace.addLast(thisEventName)
 
             val toRef = "from".repeat(depth)
-            val indexInfoType = ParadoxMergedIndexTypes.EventInEvent
-            ChronicleIndexService.processAllFileDataWithKey(indexInfoType, project, searchScope, gameType) p@{ _, infos ->
-                infos.forEach f@{ info ->
+            val mergedIndexType = ParadoxMergedIndexTypes.EventInEvent
+            ChronicleIndexService.processAllFileDataWithKey(mergedIndexType, project, searchScope, gameType) p@{ _, infos ->
+                infos.forEachFast f@{ info ->
                     ProgressManager.checkCanceled()
                     val eventName = info.eventName
                     if (eventName != thisEventName) return@f
@@ -470,9 +474,9 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
             if (depth == 1) stackTrace.addLast(thisOnActionName)
 
             val toRef = "from".repeat(depth)
-            val indexInfoType = ParadoxMergedIndexTypes.OnActionInEvent
-            ChronicleIndexService.processAllFileDataWithKey(indexInfoType, project, searchScope, gameType) p@{ _, infos ->
-                infos.forEach f@{ info ->
+            val mergedIndexType = ParadoxMergedIndexTypes.OnActionInEvent
+            ChronicleIndexService.processAllFileDataWithKey(mergedIndexType, project, searchScope, gameType) p@{ _, infos ->
+                infos.forEachFast f@{ info ->
                     ProgressManager.checkCanceled()
                     val onActionName = info.onActionName
                     if (onActionName != thisOnActionName) return@f

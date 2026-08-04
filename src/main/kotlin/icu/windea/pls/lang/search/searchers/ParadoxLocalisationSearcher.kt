@@ -41,7 +41,8 @@ class ParadoxLocalisationSearcher : QueryExecutorBase<ParadoxLocalisationPropert
             ParadoxLocalisationType.Normal -> ChronicleIndexKeys.LocalisationName
             ParadoxLocalisationType.Synced -> ChronicleIndexKeys.SyncedLocalisationName
         }
-        val name = if (constraint?.ignoreCase == true) context.name?.lowercase() else context.name
+        val ignoreCase = constraint?.ignoreCase == true
+        val name = if (ignoreCase) context.name?.lowercase() else context.name
         val r = if (name == null) {
             ChronicleIndexService.processElementsByKeys(indexKey, context.project, context.scope) { _, element -> processor.process(element) }
         } else {

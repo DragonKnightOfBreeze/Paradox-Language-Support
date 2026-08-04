@@ -33,6 +33,7 @@ import icu.windea.pls.csv.psi.ParadoxCsvPsiService
 import icu.windea.pls.ep.util.data.StellarisGameConceptData
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.getDefinitionData
+import icu.windea.pls.lang.index.constraints.ParadoxDefinitionIndexConstraint
 import icu.windea.pls.lang.match.CwtTypeConfigMatchContext
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.match.ParadoxMatchOccurrence
@@ -45,6 +46,7 @@ import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.search.util.filterBy
 import icu.windea.pls.lang.search.util.preferLocale
+import icu.windea.pls.lang.search.util.withConstraint
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxCsvManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
@@ -451,6 +453,7 @@ object ParadoxCompletionManager {
         val definitionType = ParadoxDefinitionTypes.textIcon
         val hintText = " from <$definitionType>"
         val definitionSelector = ParadoxDefinitionSearch.selector(context.project, context.file).contextSensitive().distinct()
+            .withConstraint(ParadoxDefinitionIndexConstraint.TextIcon) // 3.0.1 optimize: apply constraint
         ParadoxDefinitionSearch.searchProperty(null, definitionType, definitionSelector).processAsync { definition ->
             ParadoxCompletionLookupProvider.forLocalisationTextIcon(definition, hintText).addToResult(context, result)
         }
@@ -460,6 +463,7 @@ object ParadoxCompletionManager {
         val definitionType = ParadoxDefinitionTypes.textFormat
         val hintText = " from <$definitionType>"
         val definitionSelector = ParadoxDefinitionSearch.selector(context.project, context.file).contextSensitive().distinct()
+            .withConstraint(ParadoxDefinitionIndexConstraint.TextFormat) // 3.0.1 optimize: apply constraint
         ParadoxDefinitionSearch.searchProperty(null, definitionType, definitionSelector).processAsync { definition ->
             ParadoxCompletionLookupProvider.forLocalisationTextFormat(definition, hintText).addToResult(context, result)
         }

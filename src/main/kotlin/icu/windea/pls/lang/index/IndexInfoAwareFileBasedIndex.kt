@@ -32,7 +32,7 @@ import java.util.Collections.*
  * @see IndexInfo
  */
 @Optimized
-sealed class IndexInfoAwareFileBasedIndex<V, out T : IndexInfo> : FileBasedIndexExtension<String, V>() {
+sealed class IndexInfoAwareFileBasedIndex<V : List<T>, out T : IndexInfo> : FileBasedIndexExtension<String, V>() {
     // NOTE 3.0.1 mainly depends on specific file types - use `FileTypeInputFilterPredicate` to speed up scanning
     @Suppress("UnstableApiUsage")
     private val inputFilter = FileTypeInputFilterPredicate { filterFileType(it) }
