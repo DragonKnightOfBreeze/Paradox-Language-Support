@@ -31,6 +31,10 @@ object ParadoxComplexEnumValueManager {
         // fast return
         if (!element.isResolvableLiteralExpression()) return null
         // from cache
+        return getInfoFromCache(element)
+    }
+
+    private fun getInfoFromCache(element: ParadoxScriptExpressionElement): ParadoxComplexEnumValueInfo? {
         return CachedValuesManager.getCachedValue(element, Keys.cachedComplexEnumValueInfo) {
             ProgressManager.checkCanceled()
             runSmartReadAction {
@@ -46,6 +50,10 @@ object ParadoxComplexEnumValueManager {
         // fast return
         if (element !is ParadoxCsvColumn) return null
         // from cache
+        return getInfoFromCache(element)
+    }
+
+    private fun getInfoFromCache(element: ParadoxCsvColumn): ParadoxComplexEnumValueInfo? {
         return CachedValuesManager.getCachedValue(element, Keys.cachedComplexEnumValueInfo) {
             ProgressManager.checkCanceled()
             runSmartReadAction {

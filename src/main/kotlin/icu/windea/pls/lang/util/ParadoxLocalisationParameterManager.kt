@@ -33,6 +33,7 @@ object ParadoxLocalisationParameterManager {
     }
 
     fun getParameterNames(element: ParadoxLocalisationProperty): Set<String> {
+        // from cache
         return getParameterNamesFromCache(element)
     }
 

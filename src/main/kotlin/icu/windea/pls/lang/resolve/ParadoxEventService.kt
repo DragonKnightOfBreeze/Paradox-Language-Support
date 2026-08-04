@@ -27,6 +27,7 @@ import icu.windea.pls.script.psi.isDataExpression
 
 object ParadoxEventService {
     fun resolveInvocations(definition: ParadoxDefinitionElement): Set<String> {
+        // TODO 考虑兼容需要内联和事件继承的情况
         val result = mutableSetOf<String>()
         definition.block?.acceptChildren(object : PsiRecursiveElementVisitor() {
             override fun visitElement(element: PsiElement) {
@@ -53,6 +54,7 @@ object ParadoxEventService {
                     && config.configExpression.metadata.value?.substringBefore('.') == ParadoxDefinitionTypes.event
             }
         })
+        if (result.isEmpty()) return emptySet()
         return result
     }
 
@@ -62,7 +64,7 @@ object ParadoxEventService {
         val name = definition.definitionInfo?.name
         if (name.isNullOrEmpty()) return emptyList()
         selector.withGameType(ParadoxGameType.Stellaris)
-        return buildList {
+        val result = buildList {
             ParadoxDefinitionSearch.searchProperty(name, ParadoxDefinitionTypes.event, selector).process p0@{ definition0 ->
                 ProgressManager.checkCanceled()
                 ReferencesSearch.search(definition0, selector.scope).process p@{ ref ->
@@ -79,6 +81,8 @@ object ParadoxEventService {
                 true
             }
         }.distinct()
+        if (result.isEmpty()) return emptyList()
+        return result
     }
 
     fun resolveInvokedEvents(definition: ParadoxDefinitionElement, selector: ParadoxDefinitionSearch.Selector): List<ParadoxScriptProperty> {
@@ -89,7 +93,7 @@ object ParadoxEventService {
         val invocations = getInvocations(definition)
         if (invocations.isEmpty()) return emptyList()
         selector.withGameType(ParadoxGameType.Stellaris)
-        return buildList {
+        val result = buildList {
             ParadoxDefinitionSearch.searchProperty(null, ParadoxDefinitionTypes.event, selector).process p@{ rDefinition ->
                 ProgressManager.checkCanceled()
                 val rDefinitionInfo = rDefinition.definitionInfo ?: return@p true
@@ -99,5 +103,7 @@ object ParadoxEventService {
                 true
             }
         }.distinct()
+        if (result.isEmpty()) return emptyList()
+        return result
     }
 }

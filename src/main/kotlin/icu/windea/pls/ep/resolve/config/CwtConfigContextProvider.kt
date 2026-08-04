@@ -30,7 +30,7 @@ import icu.windea.pls.script.psi.ParadoxScriptMember
 interface CwtConfigContextProvider {
     fun supports(gameType: ParadoxGameType): Boolean = true
 
-    fun getContext(element: ParadoxScriptMember, configGroup: CwtConfigGroup, file: PsiFile, memberPathFromFile: ParadoxMemberPath, memberRole: ParadoxMemberRole): CwtConfigContext?
+    fun getContext(element: ParadoxScriptMember, configGroup: CwtConfigGroup, file: PsiFile, memberRole: ParadoxMemberRole, memberPathFromFile: ParadoxMemberPath): CwtConfigContext?
 
     fun getCacheKey(context: CwtConfigContext, options: ParadoxMatchOptions? = null): String?
 

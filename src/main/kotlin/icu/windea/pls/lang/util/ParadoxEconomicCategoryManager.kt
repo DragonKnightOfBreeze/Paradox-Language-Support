@@ -23,6 +23,10 @@ object ParadoxEconomicCategoryManager {
 
     fun getInfo(definition: ParadoxScriptProperty): ParadoxEconomicCategoryInfo? {
         // from cache
+        return getInfoFromCache(definition)
+    }
+
+    private fun getInfoFromCache(definition: ParadoxScriptProperty): ParadoxEconomicCategoryInfo? {
         return CachedValuesManager.getCachedValue(definition, Keys.cachedEconomicCategoryInfo) {
             ProgressManager.checkCanceled()
             runSmartReadAction {

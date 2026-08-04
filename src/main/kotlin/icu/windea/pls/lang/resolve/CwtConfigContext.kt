@@ -1,5 +1,6 @@
 package icu.windea.pls.lang.resolve
 
+import com.github.benmanes.caffeine.cache.Cache
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.UserDataHolder
 import com.intellij.openapi.util.UserDataHolderBase
@@ -22,8 +23,6 @@ import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.paths.ParadoxMemberPath
 import icu.windea.pls.model.type.ParadoxMemberRole
 import icu.windea.pls.script.psi.ParadoxScriptMember
-import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.ConcurrentMap
 
 /**
  * 规则上下文。
@@ -112,7 +111,7 @@ interface CwtConfigContext : UserDataHolder {
 
 // region Accessors
 
-val CwtConfigContext.dynamicCache: ConcurrentMap<String, List<CwtMemberConfig<*>>> by registerKey(CwtConfigContext.Keys) { ConcurrentHashMap() }
+val CwtConfigContext.dynamicCache: Cache<String, List<CwtMemberConfig<*>>> by registerKey(CwtConfigContext.Keys) { Cache() }
 
 var CwtConfigContext.definitionInfo: ParadoxDefinitionInfo? by registerKey(CwtConfigContext.Keys)
 var CwtConfigContext.defineVariableInfo: ParadoxDefineVariableInfo? by registerKey(CwtConfigContext.Keys)
@@ -129,11 +128,12 @@ var CwtConfigContext.definitionInjectionInfo: ParadoxDefinitionInjectionInfo? by
 
 // 12 + 5 * 4 + 2 = 34 -> 40
 sealed class CwtConfigContextBase(
-    override val element: ParadoxScriptMember,
-    override val configGroup: CwtConfigGroup, // 3.0.1 use `element` directly here, no smart pointer since it's cached on PSI level
+    element: ParadoxScriptMember,
+    override val configGroup: CwtConfigGroup,
     override val memberRole: ParadoxMemberRole, // 3.0.1 use `memberRole` directly here, no optimization (compress to byte) since it's cached on PSI level
     override val provider: CwtConfigContextProvider,
 ) : UserDataHolderBase(), CwtConfigContext {
+    override val element: ParadoxScriptMember = element // 3.0.1 use `element` directly here, no smart pointer since it's cached on PSI level
     override var declarationRoot: Boolean = false
     override var dynamic: Boolean = false // 3.0.1 optimize: declared as field to optimize access performance
 

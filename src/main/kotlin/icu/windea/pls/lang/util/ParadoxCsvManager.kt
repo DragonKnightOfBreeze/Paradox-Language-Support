@@ -26,21 +26,27 @@ object ParadoxCsvManager {
 
     fun getRowConfig(file: ParadoxCsvFile): CwtRowConfig? {
         // from cache
+        return getRowConfigFromCache(file)
+    }
+
+    fun getRowConfig(element: ParadoxCsvColumnContainer): CwtRowConfig? {
+        val file = element.containingFile?.castOrNull<ParadoxCsvFile>() ?: return null
+        // from cache
+        return getRowConfigFromCache(file)
+    }
+
+    fun getRowConfig(element: ParadoxCsvColumn): CwtRowConfig? {
+        val file = element.containingFile?.castOrNull<ParadoxCsvFile>() ?: return null
+        // from cache
+        return getRowConfigFromCache(file)
+    }
+
+    private fun getRowConfigFromCache(file: ParadoxCsvFile): CwtRowConfig? {
         // when the file content changes, the cache here does not need to be refreshed
         return CachedValuesManager.getCachedValue(file, Keys.cachedRowConfig) {
             val value = ParadoxCsvService.resolveRowConfig(file)
             value.withDependencyItems(ComputedModificationTracker { file.fileInfo })
         }
-    }
-
-    fun getRowConfig(element: ParadoxCsvColumnContainer): CwtRowConfig? {
-        val file = element.containingFile?.castOrNull<ParadoxCsvFile>() ?: return null
-        return getRowConfig(file)
-    }
-
-    fun getRowConfig(element: ParadoxCsvColumn): CwtRowConfig? {
-        val file = element.containingFile?.castOrNull<ParadoxCsvFile>() ?: return null
-        return getRowConfig(file)
     }
 
     fun getColumnConfig(element: ParadoxCsvColumn, rowConfig: CwtRowConfig): CwtPropertyConfig? {

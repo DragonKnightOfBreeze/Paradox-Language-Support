@@ -86,6 +86,11 @@ object ParadoxParameterManager {
      * 这个方法不会判断 [element] 是否是合法的参数上下文，如果需要，考虑使用 [ParadoxParameterSupport.getContextInfo]。
      */
     fun getContextInfo(element: ParadoxDefinitionElement): ParadoxParameterContextInfo? {
+        // from cache
+        return getContextInfoFromCache(element)
+    }
+
+    private fun getContextInfoFromCache(element: ParadoxDefinitionElement): ParadoxParameterContextInfo? {
         return CachedValuesManager.getCachedValue(element, Keys.cachedParameterContextInfo) {
             val value = ParadoxParameterService.resolveContextInfo(element)
             CachedValueProvider.Result(value, element)

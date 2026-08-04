@@ -13,6 +13,6 @@ class StellarisScriptedModifierDefinitionModifierProvider : ParadoxDefinitionMod
     override fun getModifierCategories(definitionInfo: ParadoxDefinitionInfo): Map<String, CwtModifierCategoryConfig>? {
         if (definitionInfo.type != "scripted_modifier") return null
         val definition = definitionInfo.element ?: return null
-        return ParadoxScriptedModifierManager.resolveModifierCategory(definition, definitionInfo)
+        return ParadoxScriptedModifierManager.getModifierCategory(definition, definitionInfo)
     }
 }

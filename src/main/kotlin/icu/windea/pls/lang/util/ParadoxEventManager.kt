@@ -10,6 +10,7 @@ import icu.windea.pls.config.config.CwtSubtypeGroup
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.core.isExactDigit
 import icu.windea.pls.core.isIdentifier
+import icu.windea.pls.core.optimized
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.core.util.getValue
@@ -66,67 +67,83 @@ object ParadoxEventManager {
     }
 
     fun getName(element: ParadoxDefinitionElement): String {
-        return element.definitionInfo?.name.or.anonymous()
+        val result = element.definitionInfo?.name
+        return result.or.anonymous()
     }
 
     fun getAllTypes(gameType: ParadoxGameType): Set<String> {
         val eventConfig = ChronicleFacade.getConfigGroup(gameType).types[ParadoxDefinitionTypes.event] ?: return emptySet()
         return eventConfig.config.getOrPutUserData(Keys.eventAllTypes) {
-            eventConfig.subtypes.values.filter { it in CwtSubtypeGroup.EventType }.map { it.name }.toSet()
+            val result = eventConfig.subtypes.values.filter { it in CwtSubtypeGroup.EventType }.map { it.name }.toSet()
+            result.optimized()
         }
     }
 
     fun getAllTypeConfigs(project: Project, gameType: ParadoxGameType): Collection<CwtSubtypeConfig> {
         val eventConfig = ChronicleFacade.getConfigGroup(project, gameType).types[ParadoxDefinitionTypes.event] ?: return emptySet()
-        return eventConfig.subtypes.values.filter { it in CwtSubtypeGroup.EventType }
+        val result = eventConfig.subtypes.values.filter { it in CwtSubtypeGroup.EventType }
+        return result
     }
 
     fun getAllAttributes(gameType: ParadoxGameType): Set<String> {
         val eventConfig = ChronicleFacade.getConfigGroup(gameType).types[ParadoxDefinitionTypes.event] ?: return emptySet()
         return eventConfig.config.getOrPutUserData(Keys.eventAllAttributes) {
-            eventConfig.subtypes.values.filter { it in CwtSubtypeGroup.EventAttribute }.map { it.name }.toSet()
+            val result = eventConfig.subtypes.values.filter { it in CwtSubtypeGroup.EventAttribute }.map { it.name }.toSet()
+            result.optimized()
         }
     }
 
+    @Suppress("unused")
     fun getAllAttributeConfigs(project: Project, gameType: ParadoxGameType): Collection<CwtSubtypeConfig> {
         val eventConfig = ChronicleFacade.getConfigGroup(project, gameType).types[ParadoxDefinitionTypes.event] ?: return emptySet()
-        return eventConfig.subtypes.values.filter { it in CwtSubtypeGroup.EventAttribute }
+        val result = eventConfig.subtypes.values.filter { it in CwtSubtypeGroup.EventAttribute }
+        return result
     }
 
     fun getType(element: ParadoxDefinitionElement): String? {
-        return element.definitionInfo?.let { getType(it) }
+        val result = element.definitionInfo?.let { getType(it) }
+        return result
     }
 
     fun getType(definitionInfo: ParadoxDefinitionInfo): String? {
         return definitionInfo.getOrPutUserData(Keys.eventType) {
-            definitionInfo.subtypeConfigs.find { it in CwtSubtypeGroup.EventType }?.name
+            val result = definitionInfo.subtypeConfigs.find { it in CwtSubtypeGroup.EventType }?.name
+            result
         }
     }
 
+    @Suppress("unused")
     fun getAttributes(element: ParadoxDefinitionElement): Set<String> {
-        return element.definitionInfo?.let { getAttributes(it) }.orEmpty()
+        val result = element.definitionInfo?.let { getAttributes(it) }.orEmpty()
+        return result
     }
 
     fun getAttributes(definitionInfo: ParadoxDefinitionInfo): Set<String> {
         return definitionInfo.getOrPutUserData(Keys.eventAttributes) {
-            definitionInfo.subtypeConfigs.filter { it in CwtSubtypeGroup.EventAttribute }.map { it.name }.toSet()
+            val result = definitionInfo.subtypeConfigs.filter { it in CwtSubtypeGroup.EventAttribute }.map { it.name }.toSet()
+            result.optimized()
         }
     }
 
+    @Suppress("unused")
     fun getScope(element: ParadoxDefinitionElement): String {
-        return element.definitionInfo?.let { getScope(it) } ?: ParadoxScopeConstants.anyScope
+        val result = element.definitionInfo?.let { getScope(it) }
+        return result ?: ParadoxScopeConstants.anyScope
     }
 
     fun getScope(definitionInfo: ParadoxDefinitionInfo): String {
         return definitionInfo.getOrPutUserData(Keys.eventScope) {
-            definitionInfo.subtypeConfigs.firstNotNullOfOrNull { it.config.optionMetadata.pushScope } ?: ParadoxScopeConstants.anyScope
+            val result = definitionInfo.subtypeConfigs.firstNotNullOfOrNull { it.config.optionMetadata.pushScope }
+            result ?: ParadoxScopeConstants.anyScope
         }
     }
 
+    @Suppress("unused")
     fun getPresentableNameElement(definition: ParadoxDefinitionElement): ParadoxLocalisationProperty? {
         return ParadoxDefinitionManager.getPrimaryLocalisation(definition)
     }
 
+    @Suppress("unused")
     fun getIconFile(definition: ParadoxDefinitionElement): PsiFile? {
         return ParadoxDefinitionManager.getPrimaryImage(definition)
     }
@@ -135,9 +152,9 @@ object ParadoxEventManager {
      * 得到指定事件可能调用的所有事件的名字。
      */
     fun getInvocations(definition: ParadoxDefinitionElement): Set<String> {
-        // TODO 考虑兼容需要内联和事件继承的情况
+        // from cache
         return CachedValuesManager.getCachedValue(definition, Keys.cachedEventInvocations) {
-            val value = ParadoxEventService.resolveInvocations(definition)
+            val value = ParadoxEventService.resolveInvocations(definition).optimized()
             CachedValueProvider.Result(value, definition)
         }
     }

@@ -84,7 +84,12 @@ object ParadoxDefineManager {
     }
 
     fun getInfo(element: ParadoxScriptProperty): ParadoxDefineInfo? {
-        // from cache (invalidated on file modification)
+        // from cache
+        return getInfoFromCache(element)
+    }
+
+    private fun getInfoFromCache(element: ParadoxScriptProperty): ParadoxDefineInfo? {
+        // invalidated on file modification
         return CachedValuesManager.getCachedValue(element, Keys.cachedDefineInfo) {
             ProgressManager.checkCanceled()
             runSmartReadAction {

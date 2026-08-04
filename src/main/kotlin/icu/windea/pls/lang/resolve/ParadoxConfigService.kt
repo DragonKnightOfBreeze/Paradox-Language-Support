@@ -134,7 +134,7 @@ object ParadoxConfigService {
         val eps = CwtConfigContextProvider.getAll()
         eps.forEachFast f@{ ep ->
             if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f // check game type first
-            val r = ep.getContext(element, configGroup, file, memberPathFromFile, memberRole)
+            val r = ep.getContext(element, configGroup, file, memberRole, memberPathFromFile)
             if (r != null) return r
         }
         return null
@@ -160,7 +160,7 @@ object ParadoxConfigService {
         if (context.dynamic) {
             // NOTE 2.1.1 prefix in-config-context cache if marked as dynamic
             val dynamicCacheKey = options.toHashString(forMatched = false).optimized() // optimized to optimize memory
-            context.dynamicCache[dynamicCacheKey]?.let { return it }
+            context.dynamicCache.getIfPresent(dynamicCacheKey)?.let { return it }
         }
         val rootFile = selectRootFile(context.element) ?: return emptyList()
         val cache = context.configGroup.configsCache.value.get(rootFile)
@@ -187,7 +187,7 @@ object ParadoxConfigService {
         if (context.dynamic) {
             // NOTE 2.1.1 store dynamic result into in-config-context cache
             val dynamicCacheKey = options.toHashString(forMatched = false).optimized() // optimized to optimize memory
-            context.dynamicCache[dynamicCacheKey] = cached
+            context.dynamicCache.put(dynamicCacheKey, cached)
         }
         return cached
     }

@@ -61,6 +61,10 @@ object ParadoxDefinitionManager {
 
     fun getInfo(element: ParadoxDefinitionElement): ParadoxDefinitionInfo? {
         // from cache
+        return getInfoFromCache(element)
+    }
+
+    private fun getInfoFromCache(element: ParadoxDefinitionElement): ParadoxDefinitionInfo? {
         return CachedValuesManager.getCachedValue(element, Keys.cachedDefinitionInfo) {
             ProgressManager.checkCanceled()
             runSmartReadAction {
@@ -75,8 +79,12 @@ object ParadoxDefinitionManager {
     fun getSubtypeConfigs(definitionInfo: ParadoxDefinitionInfo, options: ParadoxMatchOptions? = null): List<CwtSubtypeConfig> {
         val candidates = definitionInfo.typeConfig.subtypes
         if (candidates.isEmpty()) return emptyList()
-        val element = definitionInfo.element ?: return emptyList()
         // from cache
+        return getSubtypeConfigsFromCache(definitionInfo, options)
+    }
+
+    private fun getSubtypeConfigsFromCache(definitionInfo: ParadoxDefinitionInfo, options: ParadoxMatchOptions?): List<CwtSubtypeConfig> {
+        val element = definitionInfo.element ?: return emptyList()
         val isDumb = ParadoxMatchService.isDumb(options)
         val finalOptions = if (isDumb) ParadoxMatchOptions.DUMB else ParadoxMatchOptions.DEFAULT
         val cacheKey = if (isDumb) Keys.cachedSubtypeConfigsDumb else Keys.cachedSubtypeConfigs
@@ -91,8 +99,12 @@ object ParadoxDefinitionManager {
     }
 
     fun getDeclaration(definitionInfo: ParadoxDefinitionInfo, options: ParadoxMatchOptions? = null): CwtPropertyConfig? {
-        val element = definitionInfo.element ?: return null
         // from cache
+        return getDeclarationFromCache(definitionInfo, options)
+    }
+
+    private fun getDeclarationFromCache(definitionInfo: ParadoxDefinitionInfo, options: ParadoxMatchOptions?): CwtPropertyConfig? {
+        val element = definitionInfo.element ?: return null
         val isDumb = ParadoxMatchService.isDumb(options)
         val finalOptions = if (isDumb) ParadoxMatchOptions.DUMB else ParadoxMatchOptions.DEFAULT
         val cacheKey = if (isDumb) Keys.cachedDeclarationDumb else Keys.cachedDeclaration
@@ -151,6 +163,7 @@ object ParadoxDefinitionManager {
     }
 
     fun getPrimaryLocalisationKey(element: ParadoxDefinitionElement): String? {
+        // from cache
         return CachedValuesManager.getCachedValue(element, Keys.cachedPrimaryLocalisationKey) {
             ProgressManager.checkCanceled()
             runSmartReadAction {
@@ -162,6 +175,7 @@ object ParadoxDefinitionManager {
     }
 
     fun getPrimaryLocalisation(element: ParadoxDefinitionElement): ParadoxLocalisationProperty? {
+        // from cache
         return CachedValuesManager.getCachedValue(element, Keys.cachedPrimaryLocalisation) {
             ProgressManager.checkCanceled()
             runSmartReadAction {
@@ -173,6 +187,7 @@ object ParadoxDefinitionManager {
     }
 
     fun getPrimaryLocalisations(element: ParadoxDefinitionElement): Set<ParadoxLocalisationProperty> {
+        // from cache
         return CachedValuesManager.getCachedValue(element, Keys.cachedPrimaryLocalisations) {
             ProgressManager.checkCanceled()
             runSmartReadAction {
@@ -184,6 +199,7 @@ object ParadoxDefinitionManager {
     }
 
     fun getPrimaryImage(element: ParadoxDefinitionElement): PsiFile? {
+        // from cache
         return CachedValuesManager.getCachedValue(element, Keys.cachedPrimaryImage) {
             ProgressManager.checkCanceled()
             runSmartReadAction {
@@ -196,6 +212,7 @@ object ParadoxDefinitionManager {
 
     @Suppress("unused")
     fun getPrimaryImages(element: ParadoxDefinitionElement): Set<PsiFile> {
+        // from cache
         return CachedValuesManager.getCachedValue(element, Keys.cachedPrimaryImages) {
             ProgressManager.checkCanceled()
             runSmartReadAction {

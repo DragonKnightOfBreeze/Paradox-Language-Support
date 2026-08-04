@@ -22,7 +22,12 @@ object ParadoxLocalisationManager {
     }
 
     fun getPresentableText(element: ParadoxLocalisationProperty): String? {
-        // from cache (invalidate on element modification)
+        // from cache
+        return getPresentableTextFromCache(element)
+    }
+
+    private fun getPresentableTextFromCache(element: ParadoxLocalisationProperty): String? {
+        // invalidate on element modification
         return CachedValuesManager.getCachedValue(element, Keys.cachedPresentableName) {
             ProgressManager.checkCanceled()
             runSmartReadAction {

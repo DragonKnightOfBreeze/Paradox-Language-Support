@@ -10,7 +10,6 @@ import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.editor.markup.TextAttributes
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
@@ -416,18 +415,18 @@ object ParadoxExpressionManager {
     fun getReferences(element: ParadoxExpressionElement): Array<out PsiReference> {
         // NOTE 2.1.7 DO NOT just call `ReferenceProvidersRegistry.getReferencesFromProviders()` directly to avoid non-idempotent computation problem
         ProgressManager.checkCanceled()
-        val cacheKey = getReferencesCacheKey()
+        return getReferencesFromCache(element)
+    }
+
+    private fun getReferencesFromCache(element: ParadoxExpressionElement): Array<out PsiReference> {
+        val isDumb = ParadoxMatchService.isDumb()
+        val cacheKey = if (isDumb) Keys.cachedReferencesDumb else Keys.cachedReferences
         return CachedValuesManager.getCachedValue(element, cacheKey) {
             ProgressManager.checkCanceled()
             val value = resolveReferences(element)
             val tracker = ParadoxModificationTrackers.expression(element)
             value.withDependencyItems(element, PsiModificationTracker.MODIFICATION_COUNT, tracker)
         }
-    }
-
-    private fun getReferencesCacheKey(): Key<CachedValue<Array<out PsiReference>>> {
-        val isDumb = ParadoxMatchService.isDumb()
-        return if (isDumb) Keys.cachedReferencesDumb else Keys.cachedReferences
     }
 
     private fun resolveReferences(element: ParadoxExpressionElement): Array<out PsiReference> {
@@ -437,13 +436,7 @@ object ParadoxExpressionManager {
     fun getExpressionReferences(element: ParadoxExpressionElement): Array<out PsiReference> {
         ProgressManager.checkCanceled()
         if (!checkForExpressionReferences(element)) return PsiReference.EMPTY_ARRAY
-        val cacheKey = getExpressionReferencesCacheKey()
-        return CachedValuesManager.getCachedValue(element, cacheKey) {
-            ProgressManager.checkCanceled()
-            val value = resolveExpressionReferences(element)
-            val tracker = ParadoxModificationTrackers.expression(element)
-            value.withDependencyItems(element, tracker)
-        }
+        return getExpressionReferencesFromCache(element)
     }
 
     private fun checkForExpressionReferences(element: ParadoxExpressionElement): Boolean {
@@ -467,9 +460,15 @@ object ParadoxExpressionManager {
         }
     }
 
-    private fun getExpressionReferencesCacheKey(): Key<CachedValue<Array<out PsiReference>>> {
+    private fun getExpressionReferencesFromCache(element: ParadoxExpressionElement): Array<out PsiReference> {
         val isDumb = ParadoxMatchService.isDumb()
-        return if (isDumb) Keys.cachedExpressionReferencesDumb else Keys.cachedExpressionReferences
+        val cacheKey = if (isDumb) Keys.cachedExpressionReferencesDumb else Keys.cachedExpressionReferences
+        return CachedValuesManager.getCachedValue(element, cacheKey) {
+            ProgressManager.checkCanceled()
+            val value = resolveExpressionReferences(element)
+            val tracker = ParadoxModificationTrackers.expression(element)
+            value.withDependencyItems(element, tracker)
+        }
     }
 
     private fun resolveExpressionReferences(element: ParadoxExpressionElement): Array<out PsiReference> {

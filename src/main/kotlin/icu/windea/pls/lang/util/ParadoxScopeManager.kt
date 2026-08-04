@@ -78,6 +78,10 @@ object ParadoxScopeManager {
 
     fun getScopeContext(element: ParadoxScriptMember): ParadoxScopeContext? {
         // from cache
+        return getScopeContextFromCache(element)
+    }
+
+    private fun getScopeContextFromCache(element: ParadoxScriptMember): ParadoxScopeContext? {
         return CachedValuesManager.getCachedValue(element, Keys.cachedScopeContext) {
             ProgressManager.checkCanceled()
             runSmartReadAction {
@@ -89,6 +93,10 @@ object ParadoxScopeManager {
 
     fun getScopeContext(element: ParadoxDynamicValueLightElement): ParadoxScopeContext {
         // from cache
+        return getScopeContextFromCache(element)
+    }
+
+    private fun getScopeContextFromCache(element: ParadoxDynamicValueLightElement): ParadoxScopeContext {
         return CachedValuesManager.getCachedValue(element, Keys.cachedScopeContext) {
             ProgressManager.checkCanceled()
             runSmartReadAction {

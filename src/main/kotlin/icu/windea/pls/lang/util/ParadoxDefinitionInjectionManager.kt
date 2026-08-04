@@ -123,6 +123,10 @@ object ParadoxDefinitionInjectionManager {
         // mode must exist
         if (getModeFromExpression(element.name).isNullOrEmpty()) return null
         // from cache
+        return getInfoFromCache(element)
+    }
+
+    private fun getInfoFromCache(element: ParadoxScriptProperty): ParadoxDefinitionInjectionInfo? {
         return CachedValuesManager.getCachedValue(element, Keys.cachedDefinitionInjectionInfo) {
             ProgressManager.checkCanceled()
             runSmartReadAction {
@@ -137,11 +141,15 @@ object ParadoxDefinitionInjectionManager {
     fun getSubtypeConfigs(definitionInjectionInfo: ParadoxDefinitionInjectionInfo, options: ParadoxMatchOptions? = null): List<CwtSubtypeConfig> {
         val candidates = definitionInjectionInfo.typeConfig?.subtypes
         if (candidates.isNullOrEmpty()) return emptyList()
+        // from cache
+        return getSubtypeConfigsFromCache(definitionInjectionInfo, options)
+    }
+
+    private fun getSubtypeConfigsFromCache(definitionInjectionInfo: ParadoxDefinitionInjectionInfo, options: ParadoxMatchOptions?): List<CwtSubtypeConfig> {
         val element = definitionInjectionInfo.element ?: return emptyList()
         val isDumb = ParadoxMatchService.isDumb(options)
         val finalOptions = if (isDumb) ParadoxMatchOptions.DUMB else ParadoxMatchOptions.DEFAULT
         val cacheKey = if (isDumb) Keys.cachedSubtypeConfigsDumb else Keys.cachedSubtypeConfigs
-        // from cache
         return CachedValuesManager.getCachedValue(element, cacheKey) {
             ProgressManager.checkCanceled()
             runSmartReadAction {
@@ -153,11 +161,15 @@ object ParadoxDefinitionInjectionManager {
     }
 
     fun getDeclaration(definitionInjectionInfo: ParadoxDefinitionInjectionInfo, options: ParadoxMatchOptions? = null): CwtPropertyConfig? {
+        // from cache
+        return getDeclarationFromCache(definitionInjectionInfo, options)
+    }
+
+    private fun getDeclarationFromCache(definitionInjectionInfo: ParadoxDefinitionInjectionInfo, options: ParadoxMatchOptions?): CwtPropertyConfig? {
         val element = definitionInjectionInfo.element ?: return null
         val isDumb = ParadoxMatchService.isDumb(options)
         val finalOptions = if (isDumb) ParadoxMatchOptions.DUMB else ParadoxMatchOptions.DEFAULT
         val cacheKey = if (isDumb) Keys.cachedDeclarationDumb else Keys.cachedDeclaration
-        // from cache
         return CachedValuesManager.getCachedValue(element, cacheKey) {
             ProgressManager.checkCanceled()
             runSmartReadAction {
