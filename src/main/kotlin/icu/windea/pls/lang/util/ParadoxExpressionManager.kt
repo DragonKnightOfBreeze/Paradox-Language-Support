@@ -459,6 +459,10 @@ object ParadoxExpressionManager {
                 if (!element.isComplexExpression()) return false
                 true
             }
+            is ParadoxCsvExpressionElement -> {
+                if (element !is ParadoxCsvColumn) return false
+                true
+            }
             else -> false
         }
     }

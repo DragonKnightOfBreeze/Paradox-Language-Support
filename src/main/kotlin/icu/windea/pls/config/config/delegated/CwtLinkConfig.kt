@@ -252,6 +252,7 @@ private class CwtLinkConfigDelegate(
 ) : CwtLinkConfig by delegate {
     // NOTE 需要重载下面两个属性
     override val dataSourceExpression = dataSourceExpressions.getOrNull(dataSourceIndex) ?: dataSourceExpressions.firstOrNull()
+    override val configExpression get() = dataSourceExpression
 
     override fun toString() = "CwtLinkConfigDelegate(name='$name', dataSourceIndex='$dataSourceIndex')"
 }
