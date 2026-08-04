@@ -13,6 +13,8 @@ import icu.windea.pls.lang.search.CwtConfigSearch
  * 规则的查询器。
  *
  * 直接从规则分组中查询符合条件的规则对象。
+ *
+ * @see CwtConfigSearch
  */
 @Optimized
 class CwtConfigSearcher : QueryExecutorBase<CwtConfig<*>, CwtConfigSearch.Parameters>() {

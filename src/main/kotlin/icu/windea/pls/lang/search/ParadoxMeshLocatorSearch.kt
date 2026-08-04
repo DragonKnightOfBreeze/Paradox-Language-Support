@@ -16,6 +16,8 @@ import icu.windea.pls.model.index.ParadoxMeshLocatorIndexInfo
  * 网格定位器（mesh locator）的查询。
  *
  * @see ParadoxMeshLocatorSearcher
+ * @see ParadoxMeshLocatorSearch.Parameters
+ * @see ParadoxMeshLocatorSearch.Selector
  */
 class ParadoxMeshLocatorSearch : ExtensibleQueryFactory<ParadoxMeshLocatorIndexInfo, ParadoxMeshLocatorSearch.Parameters>(EP_NAME) {
     /**

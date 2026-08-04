@@ -17,6 +17,8 @@ import icu.windea.pls.model.index.ParadoxLocalisationParameterIndexInfo
 
 /**
  * 本地化参数的查询器。
+ *
+ * @see ParadoxLocalisationParameterSearch
  */
 @Optimized
 class ParadoxLocalisationParameterSearcher : QueryExecutorBase<ParadoxLocalisationParameterIndexInfo, ParadoxLocalisationParameterSearch.Parameters>() {

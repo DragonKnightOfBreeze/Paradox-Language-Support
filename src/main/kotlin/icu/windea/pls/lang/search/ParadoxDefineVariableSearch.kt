@@ -17,6 +17,8 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
  * 定值变量的查询。
  *
  * @see ParadoxDefineVariableSearcher
+ * @see ParadoxDefineVariableSearch.Parameters
+ * @see ParadoxDefineVariableSearch.Selector
  */
 class ParadoxDefineVariableSearch : ExtensibleQueryFactory<ParadoxScriptProperty, ParadoxDefineVariableSearch.Parameters>(EP_NAME) {
     /**

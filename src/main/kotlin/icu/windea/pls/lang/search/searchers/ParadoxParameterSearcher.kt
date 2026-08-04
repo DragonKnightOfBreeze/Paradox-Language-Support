@@ -17,6 +17,8 @@ import icu.windea.pls.model.index.ParadoxParameterIndexInfo
 
 /**
  * 参数的查询器。
+ *
+ * @see ParadoxParameterSearch
  */
 @Optimized
 class ParadoxParameterSearcher : QueryExecutorBase<ParadoxParameterIndexInfo, ParadoxParameterSearch.Parameters>() {

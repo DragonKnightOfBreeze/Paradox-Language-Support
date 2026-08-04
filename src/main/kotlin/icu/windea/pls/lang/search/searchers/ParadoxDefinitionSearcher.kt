@@ -29,6 +29,8 @@ import icu.windea.pls.script.ParadoxScriptFileType
 
 /**
  * 定义的查询器。
+ *
+ * @see ParadoxDefinitionSearch
  */
 @Optimized
 class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxDefinitionIndexInfo, ParadoxDefinitionSearch.Parameters>() {

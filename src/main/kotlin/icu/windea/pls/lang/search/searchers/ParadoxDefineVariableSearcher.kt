@@ -20,6 +20,8 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 /**
  * 定值命名空间的查询器。
+ *
+ * @see ParadoxDefineVariableSearch
  */
 @Optimized
 class ParadoxDefineVariableSearcher : QueryExecutorBase<ParadoxScriptProperty, ParadoxDefineVariableSearch.Parameters>() {

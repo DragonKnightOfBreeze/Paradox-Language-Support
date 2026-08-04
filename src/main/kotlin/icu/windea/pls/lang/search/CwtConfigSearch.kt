@@ -20,6 +20,7 @@ import icu.windea.pls.model.ParadoxGameType
  * 直接从规则分组中查询符合条件的规则对象。
  *
  * @see CwtConfigSearcher
+ * @see CwtConfigSearch.Parameters
  */
 class CwtConfigSearch : ExtensibleQueryFactory<CwtConfig<*>, CwtConfigSearch.Parameters>(EP_NAME) {
     /**

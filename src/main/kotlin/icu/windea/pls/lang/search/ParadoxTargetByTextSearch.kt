@@ -24,6 +24,7 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
  * - 本地化 - [ParadoxSearchTargetType.Localisation] - [ParadoxLocalisationProperty]
  *
  * @see ParadoxTargetByTextSearcher
+ * @see ParadoxTargetByTextSearch.Parameters
  */
 class ParadoxTargetByTextSearch : ExtensibleQueryFactory<NavigatablePsiElement, ParadoxTargetByTextSearch.Parameters>(EP_NAME) {
     data class Parameters(

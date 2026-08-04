@@ -18,6 +18,8 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
  * 定义注入的查询。
  *
  * @see ParadoxDefinitionInjectionSearcher
+ * @see ParadoxDefinitionInjectionSearch.Parameters
+ * @see ParadoxDefinitionInjectionSearch.Selector
  */
 class ParadoxDefinitionInjectionSearch : ExtensibleQueryFactory<ParadoxDefinitionInjectionIndexInfo, ParadoxDefinitionInjectionSearch.Parameters>(EP_NAME) {
     /**

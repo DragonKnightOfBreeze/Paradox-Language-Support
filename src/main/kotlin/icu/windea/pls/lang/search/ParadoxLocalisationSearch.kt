@@ -21,6 +21,8 @@ import icu.windea.pls.model.ParadoxLocalisationType
  * 本地化的查询。
  *
  * @see ParadoxLocalisationSearcher
+ * @see ParadoxLocalisationSearch.Parameters
+ * @see ParadoxLocalisationSearch.Selector
  */
 class ParadoxLocalisationSearch : ExtensibleQueryFactory<ParadoxLocalisationProperty, ParadoxLocalisationSearch.Parameters>(EP_NAME) {
     /**

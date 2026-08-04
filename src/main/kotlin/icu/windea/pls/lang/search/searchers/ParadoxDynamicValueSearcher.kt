@@ -21,6 +21,8 @@ import icu.windea.pls.script.ParadoxScriptFileType
 
 /**
  * 动态值的查询器。
+ *
+ * @see ParadoxDynamicValueSearch
  */
 @Optimized
 class ParadoxDynamicValueSearcher : QueryExecutorBase<ParadoxDynamicValueIndexInfo, ParadoxDynamicValueSearch.Parameters>() {

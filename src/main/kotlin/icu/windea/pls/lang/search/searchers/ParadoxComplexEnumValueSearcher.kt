@@ -22,6 +22,8 @@ import icu.windea.pls.script.ParadoxScriptFileType
 
 /**
  * 复杂枚举值的查询器。
+ *
+ * @see ParadoxComplexEnumValueSearch
  */
 @Optimized
 class ParadoxComplexEnumValueSearcher : QueryExecutorBase<ParadoxComplexEnumValueIndexInfo, ParadoxComplexEnumValueSearch.Parameters>() {

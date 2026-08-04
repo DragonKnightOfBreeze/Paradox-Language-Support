@@ -17,6 +17,8 @@ import icu.windea.pls.model.index.ParadoxShaderEffectIndexInfo
 
 /**
  * 着色器效果（shader effect）的查询器。
+ *
+ * @see ParadoxShaderEffectSearch
  */
 @Optimized
 class ParadoxShaderEffectSearcher : QueryExecutorBase<ParadoxShaderEffectIndexInfo, ParadoxShaderEffectSearch.Parameters>() {

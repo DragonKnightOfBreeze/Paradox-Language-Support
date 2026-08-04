@@ -38,6 +38,8 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
  *
  * - 本地封装变量：位于同一脚本文件中，且在当前位置之前的封装变量。兼容需要内联的情况（除非内联脚本表达式带有参数，或者需要传递内联脚本的传入参数）。
  * - 全局封装变量：位于特定位置（`common/scripted_variables/**/*.txt`）的脚本文件中的封装变量。
+ *
+ * @see ParadoxScriptedVariableSearch
  */
 @Optimized
 class ParadoxScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScriptedVariable, ParadoxScriptedVariableSearch.Parameters>() {

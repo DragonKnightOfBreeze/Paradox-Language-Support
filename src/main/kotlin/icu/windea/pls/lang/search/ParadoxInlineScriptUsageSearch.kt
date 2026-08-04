@@ -15,6 +15,8 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
  * 内联脚本用法的查询。
  *
  * @see ParadoxInlineScriptUsageSearcher
+ * @see ParadoxInlineScriptUsageSearch.Parameters
+ * @see ParadoxInlineScriptUsageSearch.Selector
  */
 class ParadoxInlineScriptUsageSearch : ExtensibleQueryFactory<ParadoxScriptProperty, ParadoxInlineScriptUsageSearch.Parameters>(EP_NAME) {
     /**

@@ -32,6 +32,8 @@ import java.util.concurrent.ConcurrentHashMap
  * - 本地化 - [ParadoxSearchTargetType.Localisation] - [ParadoxLocalisationProperty]
  *
  * 流程：输入的文本片段 → 用于查询的文本片段 → 所属的本地 → 相关的封装变量和定义
+ *
+ * @see ParadoxTargetByTextSearch
  */
 @Optimized
 abstract class ParadoxTargetByTextSearcher : QueryExecutorBase<NavigatablePsiElement, ParadoxTargetByTextSearch.Parameters>() {

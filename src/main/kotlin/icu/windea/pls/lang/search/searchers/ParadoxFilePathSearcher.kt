@@ -27,6 +27,8 @@ import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 文件路径的查询器。
+ *
+ * @see ParadoxFilePathSearch
  */
 @Optimized
 class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSearch.Parameters>() {

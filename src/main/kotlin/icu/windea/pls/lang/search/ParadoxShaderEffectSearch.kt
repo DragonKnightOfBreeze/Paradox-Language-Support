@@ -4,7 +4,6 @@ import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.openapi.project.Project
 import com.intellij.psi.search.searches.ExtensibleQueryFactory
 import com.intellij.util.QueryExecutor
-import icu.windea.pls.lang.search.ParadoxShaderEffectSearch.*
 import icu.windea.pls.lang.search.searchers.ParadoxShaderEffectSearcher
 import icu.windea.pls.lang.search.util.ParadoxSearchParameters
 import icu.windea.pls.lang.search.util.ParadoxSearchSelector
@@ -17,8 +16,10 @@ import icu.windea.pls.model.index.ParadoxShaderEffectIndexInfo
  * 着色器效果（shader effect）的查询。
  *
  * @see ParadoxShaderEffectSearcher
+ * @see ParadoxShaderEffectSearch.Parameters
+ * @see ParadoxShaderEffectSearch.Selector
  */
-class ParadoxShaderEffectSearch : ExtensibleQueryFactory<ParadoxShaderEffectIndexInfo, Parameters>(EP_NAME) {
+class ParadoxShaderEffectSearch : ExtensibleQueryFactory<ParadoxShaderEffectIndexInfo, ParadoxShaderEffectSearch.Parameters>(EP_NAME) {
     /**
      * 着色器效果（shader effect）的查询参数。
      *

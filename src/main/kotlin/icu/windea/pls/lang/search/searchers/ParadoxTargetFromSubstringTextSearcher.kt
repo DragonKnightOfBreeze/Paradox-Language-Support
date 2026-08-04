@@ -8,9 +8,12 @@ import com.intellij.util.Processor
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.splitByBlank
+import icu.windea.pls.lang.search.ParadoxTargetByTextSearch
 
 /**
  * 来自本地化文本片段的目标的查询器 - 子字符串搜索。
+ *
+ * @see ParadoxTargetByTextSearch
  */
 @Optimized
 class ParadoxTargetFromSubstringTextSearcher : ParadoxTargetByTextSearcher() {

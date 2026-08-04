@@ -22,6 +22,8 @@ import icu.windea.pls.model.constants.ChronicleConstants
  * 文件路径的查询。
  *
  * @see ParadoxFilePathSearcher
+ * @see ParadoxFilePathSearch.Parameters
+ * @see ParadoxFilePathSearch.Selector
  */
 class ParadoxFilePathSearch : ExtensibleQueryFactory<VirtualFile, ParadoxFilePathSearch.Parameters>(EP_NAME) {
     /**

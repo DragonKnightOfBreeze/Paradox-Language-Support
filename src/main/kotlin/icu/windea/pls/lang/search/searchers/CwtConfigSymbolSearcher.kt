@@ -20,6 +20,8 @@ import icu.windea.pls.model.index.CwtConfigSymbolIndexInfo
 
 /**
  * 规则符号的查询器。
+ *
+ * @see CwtConfigSymbolSearch
  */
 @Optimized
 class CwtConfigSymbolSearcher : QueryExecutorBase<CwtConfigSymbolIndexInfo, CwtConfigSymbolSearch.Parameters>() {
