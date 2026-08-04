@@ -10,8 +10,8 @@ import com.intellij.psi.util.startOffset
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.core.annotations.Optimized
-import icu.windea.pls.core.collections.ImmutableList
 import icu.windea.pls.core.collections.asMutable
+import icu.windea.pls.core.collections.buildImmutableList
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.readIndexedStringList
@@ -183,7 +183,7 @@ class ParadoxDefinitionInjectionIndex : ParadoxIndexInfoAwareFileBasedIndex<List
         val types = storage.readIndexedStringList()
 
         // 2.1.9 optimize: create sized immutable list directly
-        return ImmutableList(size) {
+        return buildImmutableList(size) {
             val mode = storage.readIntFast().let { modes.get(it).orEmpty() }
             val target = storage.readUTFFast()
             val type = storage.readIntFast().let { types.get(it).orEmpty() }

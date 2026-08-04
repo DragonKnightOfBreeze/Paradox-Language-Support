@@ -26,6 +26,16 @@ import icu.windea.pls.script.psi.isDirectValue
 @Optimized
 object ParadoxMemberService {
     /**
+     * 使用 [element] 作为上下文，为 [result] 注入一组顶级键。
+     */
+    fun injectRootKeys(element: PsiElement, result: MutableList<String>) {
+        val vFile = selectFile(element) ?: return
+        val injectedRootKeys = ParadoxAnalysisInjectionManager.getInjectedRootKeys(vFile)
+        if (injectedRootKeys.isEmpty()) return
+        result.addAll(0, injectedRootKeys)
+    }
+
+    /**
      * 得到 [element] 对应的脚本成员（[ParadoxScriptMember]）的路径。相对于所在文件，顺序从前往后。
      * 如果 [parameterAware] 为 `false`，且包含参数，则直接返回 `null`。
      */
@@ -34,7 +44,12 @@ object ParadoxMemberService {
         if (element is PsiFileSystemItem) return ParadoxMemberPath.resolveEmpty()
         val member = element.parentOfType<ParadoxScriptMember>(withSelf = true) ?: return ParadoxMemberPath.resolveEmpty()
         if (member !is ParadoxScriptProperty && member !is ParadoxScriptValue) return ParadoxMemberPath.resolveEmpty()
-        var current: PsiElement = member
+        return resolvePathFromPsi(member, limit, maxDepth, parameterAware)
+    }
+
+    private fun resolvePathFromPsi(element: ParadoxScriptMember, limit: Int, maxDepth: Int, parameterAware: Boolean): ParadoxMemberPath? {
+        // resolve from PSI
+        var current: PsiElement = element
         val deque = ArrayDeque<String>()
         while (current !is PsiFile) {
             // 3.0.1 optimize: get and cache parent first
@@ -52,7 +67,8 @@ object ParadoxMemberService {
             }
             current = parent
         }
-        if (current is ParadoxScriptFile) injectRootKeys(current, deque)
+        if (current !is ParadoxScriptFile) return null
+        injectRootKeys(current, deque)
         return ParadoxMemberPath.resolve(deque)
     }
 
@@ -65,7 +81,12 @@ object ParadoxMemberService {
         if (element is PsiFileSystemItem) return emptyList()
         val member = element.parentOfType<ParadoxScriptMember>(withSelf = true) ?: return emptyList()
         if (member !is ParadoxScriptProperty && member !is ParadoxScriptValue) return emptyList()
-        var current: PsiElement = member.parent ?: return emptyList()
+        return resolveRootKeysFromPsi(member, limit, maxDepth, parameterAware)
+    }
+
+    private fun resolveRootKeysFromPsi(element: ParadoxScriptMember, limit: Int, maxDepth: Int, parameterAware: Boolean): List<String>? {
+        // resolve from PSI
+        var current: PsiElement = element.parent ?: return emptyList()
         val deque = ArrayDeque<String>()
         while (current !is PsiFile) {
             // 3.0.1 optimize: get and cache parent first
@@ -83,18 +104,10 @@ object ParadoxMemberService {
             }
             current = parent
         }
+        if (current !is ParadoxScriptFile) return null
         injectRootKeys(current, deque)
-        return if (deque.isEmpty()) emptyList() else deque
-    }
-
-    /**
-     * 使用 [element] 作为上下文，为 [result] 注入一组顶级键。
-     */
-    fun injectRootKeys(element: PsiElement, result: MutableList<String>) {
-        val vFile = selectFile(element) ?: return
-        val injectedRootKeys = ParadoxAnalysisInjectionManager.getInjectedRootKeys(vFile)
-        if (injectedRootKeys.isEmpty()) return
-        result.addAll(0, injectedRootKeys)
+        if (deque.isEmpty()) return emptyList()
+        return deque
     }
 
     /**
@@ -108,8 +121,13 @@ object ParadoxMemberService {
         if (element is PsiFileSystemItem) return emptyList()
         val member = element.parentOfType<ParadoxScriptMember>(withSelf = true) ?: return emptyList()
         if (member !is ParadoxScriptProperty && member !is ParadoxScriptValue) return emptyList()
-        val siblings = member.siblings(forward = false, withSelf = false)
+        return resolveKeyPrefixesFromPsi(member, limit, maxDepth, parameterAware)
+    }
+
+    private fun resolveKeyPrefixesFromPsi(element: ParadoxScriptMember, limit: Int, maxDepth: Int, parameterAware: Boolean): List<String>? {
+        // resolve from PSI
         val deque = ArrayDeque<String>()
+        val siblings = element.siblings(forward = false, withSelf = false)
         for (e in siblings) {
             when (e) {
                 is PsiWhiteSpace, is PsiComment -> continue
@@ -123,7 +141,8 @@ object ParadoxMemberService {
                 else -> break
             }
         }
-        return if (deque.isEmpty()) emptyList() else deque
+        if (deque.isEmpty()) return emptyList()
+        return deque
     }
 
     /**

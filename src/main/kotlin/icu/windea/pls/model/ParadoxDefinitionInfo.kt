@@ -42,6 +42,8 @@ data class ParadoxDefinitionInfo(
 ) : UserDataHolderBase(), ParadoxDefinitionCandidateInfo {
     @Volatile var element: ParadoxDefinitionElement? = null // should be cached in associated PSI element, so holds directly
 
+    override val configGroup: CwtConfigGroup get() = typeConfig.configGroup
+
     val memberPath: ParadoxMemberPath get() = ParadoxDefinitionManager.getMemberPath(this)
 
     // NOTE 2.1.3 以下属性目前保持为计算属性即可，不需要额外缓存
@@ -50,8 +52,6 @@ data class ParadoxDefinitionInfo(
     val modifiers: List<ModifierInfo> get() = ParadoxDefinitionManager.getModifierInfos(this)
     val primaryLocalisations: List<RelatedLocalisationInfo> get() = ParadoxDefinitionManager.getPrimaryRelatedLocalisationInfos(this)
     val primaryImages: List<RelatedImageInfo> get() = ParadoxDefinitionManager.getPrimaryRelatedImageInfos(this)
-
-    override val configGroup: CwtConfigGroup get() = typeConfig.configGroup
 
     /** @see ParadoxDefinitionManager.getSubtypeConfigs */
     override fun getSubtypeConfigs(options: ParadoxMatchOptions?): List<CwtSubtypeConfig> = ParadoxDefinitionManager.getSubtypeConfigs(this, options)

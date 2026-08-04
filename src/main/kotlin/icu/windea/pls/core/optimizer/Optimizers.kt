@@ -7,6 +7,7 @@ import com.google.common.collect.ImmutableList
 import com.google.common.collect.ImmutableMap
 import com.google.common.collect.ImmutableSet
 import it.unimi.dsi.fastutil.Hash
+import it.unimi.dsi.fastutil.objects.ObjectImmutableList
 
 fun OptimizerFactory.forString(): Optimizer.Unary<String> = get(StringOptimizer)
 fun OptimizerFactory.forStringList(): Optimizer.Unary<List<String>> = get(StringListOptimizer)
@@ -49,6 +50,7 @@ private sealed class ListOptimizer<E : Any> : Optimizer.Unary<List<E>> {
 
     protected inline fun ignore(input: List<E>): Boolean {
         if (input is ImmutableList) return true // immutable collection (guava) -> skip
+        if (input is ObjectImmutableList) return true // immutable list (fastutil) -> skip
         // if (isOptimizedByClass(input)) return true // immutable collection (checked by class name) -> do not skip atm
         return false
     }

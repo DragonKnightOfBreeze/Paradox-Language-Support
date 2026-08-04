@@ -58,7 +58,7 @@ object ParadoxMatchService {
         val result = SmartList<ParadoxMatchCandidate>() // 3.0.1 optimize: use SmartList (0 or 1 elements in most situations)
         configs.forEachFast f@{ config ->
             val matchResult = matchResultProvider(config)
-            if (matchResult == ParadoxMatchResult.NotMatch) return@f
+            if (matchResult === ParadoxMatchResult.NotMatch) return@f
             val matchCandidate = ParadoxMatchCandidate(config, matchResult)
             result += matchCandidate
         }

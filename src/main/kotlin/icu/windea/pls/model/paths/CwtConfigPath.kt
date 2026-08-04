@@ -4,8 +4,8 @@ package icu.windea.pls.model.paths
 
 import com.github.benmanes.caffeine.cache.Interner
 import icu.windea.pls.core.annotations.Optimized
-import icu.windea.pls.core.collections.ImmutableList
 import icu.windea.pls.core.collections.anyFast
+import icu.windea.pls.core.collections.buildImmutableList
 import icu.windea.pls.core.collections.mapFast
 import icu.windea.pls.core.collections.removePrefixOrNull
 import icu.windea.pls.core.joinToStringFast
@@ -28,7 +28,7 @@ import icu.windea.pls.core.util.values.LazyValue
  * - `foo/bar` - 对应所属规则文件或成员规则中，名为 `foo` 的属性的值（块/子句）中，名为 `bar` 的属性。
  * - `foo/-` - 对应所属规则文件或成员规则中，名为 `foo` 的属性的值（块/子句）中，任意的值。
  */
-interface CwtConfigPath : Iterable<String> {
+interface CwtConfigPath {
     val path: String
     val subPaths: List<String> // 子路径中不用保留括起的双引号
     val length: Int
@@ -41,7 +41,6 @@ interface CwtConfigPath : Iterable<String> {
     fun resolve(other: CwtConfigPath): CwtConfigPath?
     fun relativize(other: CwtConfigPath, wildcard: String? = null): CwtConfigPath?
 
-    override fun iterator(): Iterator<String> = subPaths.iterator()
     override fun equals(other: Any?): Boolean
     override fun hashCode(): Int
     override fun toString(): String
@@ -133,7 +132,7 @@ private fun computeNormalizedPath(subPaths: List<String>): String {
 }
 
 private fun computeNormalizedSubPaths(subPaths: List<String>): List<String> {
-    return ImmutableList(subPaths.size) { subPaths[it].internSubPath() }
+    return buildImmutableList(subPaths.size) { subPaths[it].internSubPath() }
 }
 
 private class CwtConfigPathImplFromPath(input: String) : CwtConfigPathBase() {

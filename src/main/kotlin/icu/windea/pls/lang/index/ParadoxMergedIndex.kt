@@ -10,7 +10,7 @@ import com.intellij.psi.PsiRecursiveElementWalkingVisitor
 import com.intellij.util.gist.VirtualFileGist
 import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.core.annotations.Optimized
-import icu.windea.pls.core.collections.ImmutableList
+import icu.windea.pls.core.collections.buildImmutableList
 import icu.windea.pls.core.collections.filterFast
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.readIntFast
@@ -325,7 +325,7 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
 
         // 2.1.9 optimize: create sized immutable list directly
         var previousInfo: ParadoxIndexInfo? = null
-        return ImmutableList(size) {
+        return buildImmutableList(size) {
             support.readData(storage, previousInfo, gameType).also { previousInfo = it }
         }
     }

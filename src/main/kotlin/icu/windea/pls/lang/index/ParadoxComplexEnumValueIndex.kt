@@ -11,8 +11,8 @@ import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.delegated.CwtComplexEnumConfig
 import icu.windea.pls.config.config.delegated.CwtRowConfig
 import icu.windea.pls.core.annotations.Optimized
-import icu.windea.pls.core.collections.ImmutableList
 import icu.windea.pls.core.collections.asMutable
+import icu.windea.pls.core.collections.buildImmutableList
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.readIndexedStringList
@@ -245,7 +245,7 @@ class ParadoxComplexEnumValueIndex : ParadoxIndexInfoAwareFileBasedIndex<List<Pa
         val enumNames = storage.readIndexedStringList()
 
         // 2.1.9 optimize: create sized immutable list directly
-        return ImmutableList(size) {
+        return buildImmutableList(size) {
             val name = storage.readUTFFast()
             val enumName = storage.readIntFast().let { enumNames.get(it).orEmpty() }
             val definitionElementOffset = storage.readIntFast()

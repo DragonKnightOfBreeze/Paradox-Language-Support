@@ -26,7 +26,6 @@ import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.cache.cancelable
 import icu.windea.pls.core.cache.createNestedCache
-import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.mapFast
@@ -63,8 +62,8 @@ import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptValue
+import icu.windea.pls.script.psi.containingDirectMember
 import icu.windea.pls.script.psi.isDirectMember
-import icu.windea.pls.script.psi.parentProperty
 import java.util.*
 import kotlin.concurrent.getOrSet
 
@@ -222,15 +221,16 @@ object ParadoxConfigService {
 
         if (context.memberRole == ParadoxMemberRole.Other) return emptyList() // 忽略
         val memberPath = context.memberPath ?: return emptyList() // 忽略
-        if (memberPath.isEmpty()) return emptyList() // 忽略
-        val subPath = memberPath.subPaths.last()
+        val subPaths = memberPath.subPaths
+        if (subPaths.isEmpty()) return emptyList() // 忽略
+        val subPath = subPaths.last()
         val expression = ParadoxExpression.resolve(subPath, quoted = false, role = ParadoxExpressionRole.Key)
-        val parentSubPath = memberPath.subPaths.getOrNull(memberPath.subPaths.lastIndex - 1)
+        val parentSubPath = subPaths.getOrNull(subPaths.lastIndex - 1)
         val parentExpression = parentSubPath?.let { ParadoxExpression.resolve(it, quoted = false, role = ParadoxExpressionRole.Key) }
 
         val element = context.element
-        val containingMember = element.castOrNull<ParadoxScriptValue>()?.parentProperty ?: element
-        val parentMember = containingMember.parents(withSelf = false).findIsInstance<ParadoxScriptMember> { it is ParadoxScriptFile || it.isDirectMember() } ?: return emptyList()
+        val containingDirectMember = element.containingDirectMember
+        val parentMember = containingDirectMember.parents(withSelf = false).findIsInstance<ParadoxScriptMember> { it is ParadoxScriptFile || it.isDirectMember() } ?: return emptyList()
 
         // 从存储于 PSI 的上级缓存中获取 `parentContext`（父上下文），然后再从存储于规则分组的缓存中获取 `parentConfigs`（父上下文规则）
         val parentContext = ParadoxConfigManager.getConfigContext(parentMember) ?: return emptyList()
@@ -258,7 +258,7 @@ object ParadoxConfigService {
                     }
                 }
             } else {
-                val parameterizedKeyConfigs by lazy { getParameterizedKeyConfigs(containingMember, expression) }
+                val parameterizedKeyConfigs by lazy { getParameterizedKeyConfigs(containingDirectMember, expression) }
 
                 matchedParentConfigs.forEachFast f1@{ parentConfig ->
                     val configs = parentConfig.properties

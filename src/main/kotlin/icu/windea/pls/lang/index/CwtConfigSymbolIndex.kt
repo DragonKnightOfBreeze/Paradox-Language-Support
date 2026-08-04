@@ -7,8 +7,8 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor
 import icu.windea.pls.config.util.CwtConfigSymbolManager
 import icu.windea.pls.core.annotations.Optimized
-import icu.windea.pls.core.collections.ImmutableList
 import icu.windea.pls.core.collections.asMutable
+import icu.windea.pls.core.collections.buildImmutableList
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.readIntFast
 import icu.windea.pls.core.readUTFFast
@@ -96,7 +96,7 @@ class CwtConfigSymbolIndex : CwtConfigIndexInfoAwareFileBasedIndex<List<CwtConfi
         val gameType = storage.readByte().let { ParadoxGameType.deoptimized(it) }
 
         // 2.1.9 optimize: create sized immutable list directly
-        return ImmutableList(size) {
+        return buildImmutableList(size) {
             val name = storage.readUTFFast()
             val readWriteAccess = storage.readByte().let { ReadWriteAccessC.deoptimized(it) }
             val offset = storage.readIntFast()

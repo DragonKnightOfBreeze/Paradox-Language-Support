@@ -5,7 +5,6 @@ package icu.windea.pls.core.collections
 
 import com.google.common.collect.ImmutableList
 import icu.windea.pls.core.annotations.Fast
-import it.unimi.dsi.fastutil.objects.ObjectImmutableList
 
 /** @see kotlin.collections.forEach */
 @Fast
@@ -62,12 +61,7 @@ inline fun <T, R : Any> List<T>.mapFast(transform: (T) -> R): List<R> {
         val t = transform(e)
         elements[i] = t
     }
-    @Suppress("UNCHECKED_CAST")
-    elements as Array<out R>
-    // return result.asList() // memory usage: 24 + align8(16 + 4n)
-    // @Suppress("ReplaceJavaStaticMethodWithKotlinAnalog") return java.util.List.of(*elements) // memory usage: 24 + align8(16 + 4n)
-    // return ImmutableList.copyOf(result) // memory usage: 16 + align8(16 + 4n) // note: this will copy the input array
-    return ObjectImmutableList(elements) // memory usage: 16 + align8(16 + 4n)
+    return elements.asImmutableList()
 }
 
 /** @see kotlin.collections.mapNotNull */
@@ -272,4 +266,21 @@ inline fun <T> List<T>.processFast(processor: (T) -> Boolean): Boolean {
         if (!processor(e)) return false
     }
     return true
+}
+
+/** @see kotlin.collections.drop */
+@Fast
+fun <T : Any> List<T>.dropFast(n: Int): List<T> {
+    require(n >= 0) { "Requested element count $n is less than zero." }
+    // note: assume input is `RandomAccess` and is not `CopyOnWriteArrayList`
+    val size = size // optimize: cache input size first
+    if (n == 0) return this
+    val resultSize = size - n
+    if (resultSize <= 0) return ImmutableList.of() // optimize: fast return
+    if (resultSize == 1) return ImmutableList.of(this[size - 1])
+    val elements = arrayOfNulls<Any?>(resultSize) // optimize: construct sized array directly for better performance and memory
+    for (i in 0 until resultSize) { // optimize: use index-based iteration
+        elements[i] = this[i + resultSize]
+    }
+    return elements.asImmutableList()
 }

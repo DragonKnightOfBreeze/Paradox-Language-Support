@@ -66,33 +66,48 @@ object ParadoxAnalysisDataManager {
     @Volatile var useOnlyInjectedConfigFiles: Boolean = false
 
     fun <T : Any> getData(file: VirtualFile, key: Key<T>): T? {
+        // skip for `StubVirtualFile` (unsupported)
+        if (VirtualFileService.isStubFile(file)) return null
+        // get user data
         return file.getUserData(key)
     }
 
     fun <T : Any> setData(file: VirtualFile, key: Key<T>, value: T?) {
         // skip for `StubVirtualFile` (unsupported)
         if (VirtualFileService.isStubFile(file)) return
+        // apply callback
+        onDataChanged(file, key, value)
         // put user data
         file.putUserData(key, value)
-        // track file
-        if (value != null) trackedFiles.put(file, true) else trackedFiles.remove(file)
     }
 
     fun <T : Any> clearData(file: VirtualFile, key: Key<T>) {
         // skip for `StubVirtualFile` (unsupported)
         if (VirtualFileService.isStubFile(file)) return
+        // apply callback
+        onDataChanged(file, key, null)
         // put user data
         file.putUserData(key, null)
-        // track file
-        trackedFiles.remove(file)
     }
 
     inline fun <T : Any> getOrPutData(file: VirtualFile, key: Key<T>, defaultValue: () -> T): T {
         // get user data if exists
         file.getUserData(key)?.let { return it }
-        // track file
-        trackedFiles.put(file, true)
+        // compute default value
+        val value = defaultValue()
+        // apply callback
+        onDataChanged(file, key, value)
         // NOTE 3.0.1 optimize: initialize user data atomically
-        return file.putUserDataIfAbsent(key, defaultValue())
+        return file.putUserDataIfAbsent(key, value)
+    }
+
+    fun <T : Any> onDataChanged(file: VirtualFile, key: Key<T>, value: T?) {
+        // track file & invalidate if necessary
+        if (value != null) {
+            trackedFiles.put(file, true)
+        } else {
+            trackedFiles.remove(file)
+            if (key === Keys.cachedRootInfo) file.getUserData(Keys.cachedRootInfo)?.value?.invalidate()
+        }
     }
 }

@@ -1,6 +1,5 @@
 package icu.windea.pls.lang.util
 
-import com.google.common.collect.ImmutableList.*
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.CachedValue
@@ -10,6 +9,7 @@ import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.core.EMPTY_OBJECT
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.collections.buildImmutableList
 import icu.windea.pls.core.collections.filterFast
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.runSmartReadAction
@@ -110,10 +110,12 @@ object ParadoxDefinitionManager {
         // NOTE 2.1.2 file definition has empty member path
         if (definitionInfo.source == ParadoxDefinitionSource.File) return ParadoxMemberPath.resolveEmpty()
         // 3.0.1 optimize: build immutable list here
-        val subPaths = builderWithExpectedSize<String>(definitionInfo.rootKeys.size + 1)
-            .addAll(definitionInfo.rootKeys)
-            .add(definitionInfo.typeKey)
-            .build()
+        // 3.0.1 optimize: construct sized array directly for better performance and memory
+        val rootKeys = definitionInfo.rootKeys
+        val size = rootKeys.size
+        val subPaths = buildImmutableList(size + 1) {
+            if (it != size) rootKeys[it] else definitionInfo.typeKey
+        }
         return ParadoxMemberPath.resolve(subPaths)
     }
 

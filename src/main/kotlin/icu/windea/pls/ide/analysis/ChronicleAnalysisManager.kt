@@ -101,7 +101,7 @@ object ChronicleAnalysisManager {
     fun refreshAnalysisData(rootFiles: Collection<VirtualFile>) {
         if (rootFiles.isEmpty()) return
         rootFiles.forEach { rootFile ->
-            rootFile.putUserData(ParadoxAnalysisDataManager.Keys.cachedRootInfo, null)
+            ParadoxAnalysisDataManager.clearData(rootFile, ParadoxAnalysisDataManager.Keys.cachedRootInfo)
         }
     }
 

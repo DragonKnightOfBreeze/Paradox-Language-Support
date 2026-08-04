@@ -4,7 +4,7 @@ package icu.windea.pls.model.paths
 
 import com.github.benmanes.caffeine.cache.Interner
 import icu.windea.pls.core.annotations.Optimized
-import icu.windea.pls.core.collections.ImmutableList
+import icu.windea.pls.core.collections.buildImmutableList
 import icu.windea.pls.core.collections.removePrefixOrNull
 import icu.windea.pls.core.joinToStringFast
 import icu.windea.pls.core.matchesPath
@@ -26,7 +26,7 @@ import icu.windea.pls.model.constraints.ParadoxPathConstraint
  *
  * @see ParadoxPathConstraint
  */
-interface ParadoxPath : Iterable<String> {
+interface ParadoxPath{
     val path: String
     val subPaths: List<String>
     val parent: String
@@ -48,7 +48,6 @@ interface ParadoxPath : Iterable<String> {
     fun matchesExtensions(extensions: Array<String>): Boolean
     fun matchesExtensions(extensions: Collection<String>): Boolean
 
-    override fun iterator(): Iterator<String> = subPaths.iterator()
     override fun equals(other: Any?): Boolean
     override fun hashCode(): Int
     override fun toString(): String
@@ -157,7 +156,7 @@ private fun computeNormalizedPath(input: ParadoxPath): String {
 }
 
 private fun computeNormalizedSubPaths(input: ParadoxPath): List<String> {
-    return ImmutableList(input.subPaths.size) { input.subPaths[it].internSubPath() }
+    return buildImmutableList(input.subPaths.size) { input.subPaths[it].internSubPath() }
 }
 
 private fun computeNormalizedParent(input: ParadoxPath): String {

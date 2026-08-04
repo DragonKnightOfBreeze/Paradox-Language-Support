@@ -11,6 +11,7 @@ import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.util.CwtConfigKeyManager
 import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.collections.buildImmutableList
 import icu.windea.pls.core.collections.flatMapFast
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.optimized
@@ -104,19 +105,18 @@ object ParadoxConfigManager {
     }
 
     fun getSubtypes(subtypeConfigs: List<CwtSubtypeConfig>): List<String> {
-        if (subtypeConfigs.isEmpty()) return emptyList()
-        return ImmutableList.builderWithExpectedSize<String>(subtypeConfigs.size)
-            .apply { subtypeConfigs.forEachFast { add(it.name) } }
-            .build()
+        val size = subtypeConfigs.size
+        return buildImmutableList(size) {
+            subtypeConfigs[it].name
+        }
     }
 
     fun getTypes(type: String?, subtypeConfigs: List<CwtSubtypeConfig>): List<String> {
-        if (type == null) return emptyList()
-        if (subtypeConfigs.isEmpty()) return listOf(type)
-        return ImmutableList.builderWithExpectedSize<String>(subtypeConfigs.size + 1)
-            .apply { add(type) }
-            .apply { subtypeConfigs.forEachFast { add(it.name) } }
-            .build()
+        if (type == null) return ImmutableList.of()
+        val size = subtypeConfigs.size
+        return buildImmutableList(size + 1) {
+            if (it == 0) type else subtypeConfigs[it + 1].name
+        }
     }
 
     fun getTypeText(type: String?, subtypeConfigs: List<CwtSubtypeConfig>): String {
@@ -128,7 +128,7 @@ object ParadoxConfigManager {
         }
     }
 
-    fun <C: CwtMemberConfig<*>> collectConfigWithOverridden(element: PsiElement, config: C, result: MutableList<C>) {
+    fun <C : CwtMemberConfig<*>> collectConfigWithOverridden(element: PsiElement, config: C, result: MutableList<C>) {
         val overriddenConfigs = ParadoxConfigService.getOverriddenConfigs(element, config)
         if (overriddenConfigs.isNotEmpty()) {
             result.addAll(overriddenConfigs)

@@ -1,12 +1,14 @@
 package icu.windea.pls.ep.resolve.config
 
-import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiFile
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.declarationConfigCacheKey
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.manipulation.CwtConfigManipulationService
+import icu.windea.pls.core.collections.dropFast
 import icu.windea.pls.core.collections.forEachFast
+import icu.windea.pls.core.collections.mapFast
+import icu.windea.pls.core.collections.noneFast
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.util.values.singletonList
 import icu.windea.pls.core.util.values.to
@@ -45,7 +47,6 @@ import icu.windea.pls.script.psi.ParadoxScriptMember
  */
 class CwtBaseConfigContextProvider : CwtConfigContextProvider {
     override fun getContext(element: ParadoxScriptMember, configGroup: CwtConfigGroup, file: PsiFile, memberPathFromFile: ParadoxMemberPath, memberRole: ParadoxMemberRole): CwtConfigContext? {
-        ProgressManager.checkCanceled()
         val vFile = selectFile(file)
         if (vFile == null) return null
         val fileInfo = vFile.fileInfo
@@ -70,7 +71,6 @@ class CwtBaseConfigContextProvider : CwtConfigContextProvider {
  */
 class CwtDefinitionConfigContextProvider : CwtConfigContextProvider {
     override fun getContext(element: ParadoxScriptMember, configGroup: CwtConfigGroup, file: PsiFile, memberPathFromFile: ParadoxMemberPath, memberRole: ParadoxMemberRole): CwtConfigContext? {
-        ProgressManager.checkCanceled()
         val vFile = selectFile(file)
         if (vFile == null) return null
         val fileInfo = vFile.fileInfo
@@ -118,13 +118,12 @@ class CwtDefinitionConfigContextProvider : CwtConfigContextProvider {
  */
 class CwtDefineVariableConfigContextProvider : CwtConfigContextProvider {
     override fun getContext(element: ParadoxScriptMember, configGroup: CwtConfigGroup, file: PsiFile, memberPathFromFile: ParadoxMemberPath, memberRole: ParadoxMemberRole): CwtConfigContext? {
-        ProgressManager.checkCanceled()
         if (!ParadoxDefineManager.isDefinesFile(file)) return null
         if (memberPathFromFile.length <= 1) return null // file level or top property level -> not within define variable
         val defineVariable = selectScope { element.parentDefineVariable() } ?: return null
         val defineVariableInfo = defineVariable.defineVariableInfo ?: return null
         if (defineVariableInfo.config == null) return null // no define variable config -> skip
-        val memberPath = ParadoxMemberPath.resolve(memberPathFromFile.subPaths.drop(2))
+        val memberPath = ParadoxMemberPath.resolve(memberPathFromFile.subPaths.dropFast(2))
         val context = CwtConfigContext.createFromMember(element, configGroup, memberRole, this, memberPathFromFile, memberPath)
         context.declarationRoot = memberPath.isEmpty()
         context.defineVariableInfo = defineVariableInfo
@@ -174,7 +173,6 @@ class CwtParameterValueConfigContextProvider : CwtConfigContextProvider {
     // 兼容通过编辑代码碎片的意图操作打开的 `LightVirtualFile`
 
     override fun getContext(element: ParadoxScriptMember, configGroup: CwtConfigGroup, file: PsiFile, memberPathFromFile: ParadoxMemberPath, memberRole: ParadoxMemberRole): CwtConfigContext? {
-        ProgressManager.checkCanceled()
         val injectionInfo = ParadoxScriptInjectionManager.getParameterValueInjectionInfoFromInjectedFile(file) ?: return null
         val parameterElement = injectionInfo.parameterElement ?: return null
         val context = CwtConfigContext.createFromFile(element, configGroup, memberRole, this, memberPathFromFile)
@@ -229,12 +227,12 @@ class CwtInlineScriptUsageConfigContextProvider : CwtConfigContextProvider {
     // 注意这里的 `fileInfo` 可以为 `null`（例如，在内联脚本参数的多行参数值中）
 
     override fun getContext(element: ParadoxScriptMember, configGroup: CwtConfigGroup, file: PsiFile, memberPathFromFile: ParadoxMemberPath, memberRole: ParadoxMemberRole): CwtConfigContext? {
-        ProgressManager.checkCanceled()
-        if (memberPathFromFile.none { ParadoxInlineScriptManager.isMatched(it) }) return null // 要求当前位置相对于文件的成员路径中包含子路径 `inline_script`
+        if (memberPathFromFile.subPaths.noneFast { ParadoxInlineScriptManager.isMatched(it) }) return null // 要求当前位置相对于文件的成员路径中包含子路径 `inline_script`
         if (!ParadoxInlineScriptManager.isSupported(configGroup.gameType)) return null // 忽略游戏类型不支持的情况
         val vFile = selectFile(file)
         if (vFile == null) return null
-        val memberPath = ParadoxMemberPath.resolve(memberPathFromFile.subPaths.drop(memberPathFromFile.indexOfFirst { ParadoxInlineScriptManager.isMatched(it) } + 1))
+        val prefixLength = memberPathFromFile.subPaths.indexOfFirst { ParadoxInlineScriptManager.isMatched(it) } + 1
+        val memberPath = ParadoxMemberPath.resolve(memberPathFromFile.subPaths.dropFast(prefixLength))
         val context = CwtConfigContext.createFromMember(element, configGroup, memberRole, this, memberPathFromFile, memberPath)
         return context
     }
@@ -257,7 +255,7 @@ class CwtInlineScriptUsageConfigContextProvider : CwtConfigContextProvider {
         val memberPath = context.memberPath ?: return null
         if (memberPath.isNotEmpty()) return ParadoxConfigService.getFlattenedConfigsForConfigContext(context, options)
         val inlineConfigs = context.configGroup.macrosModel.forInlineScripts.orNull() ?: return null
-        val rootConfigs = inlineConfigs.map { CwtConfigManipulationService.inlineMacro(it) }
+        val rootConfigs = inlineConfigs.mapFast { CwtConfigManipulationService.inlineMacro(it) }
         return ParadoxConfigService.getTopConfigsForConfigContext(context, rootConfigs)
     }
 }
@@ -273,7 +271,6 @@ class CwtInlineScriptFileConfigContextProvider : CwtConfigContextProvider {
     // TODO 1.1.0+ 支持解析内联脚本文件中的定义声明
 
     override fun getContext(element: ParadoxScriptMember, configGroup: CwtConfigGroup, file: PsiFile, memberPathFromFile: ParadoxMemberPath, memberRole: ParadoxMemberRole): CwtConfigContext? {
-        ProgressManager.checkCanceled()
         val vFile = selectFile(file)
         if (vFile == null) return null
         if (VirtualFileService.isInjectedFile(vFile)) return null // ignored for injected psi
@@ -332,7 +329,6 @@ class CwtInlineScriptFileConfigContextProvider : CwtConfigContextProvider {
  */
 class CwtDefinitionInjectionConfigContextProvider : CwtConfigContextProvider {
     override fun getContext(element: ParadoxScriptMember, configGroup: CwtConfigGroup, file: PsiFile, memberPathFromFile: ParadoxMemberPath, memberRole: ParadoxMemberRole): CwtConfigContext? {
-        ProgressManager.checkCanceled()
         if (memberPathFromFile.isEmpty()) return null
         if (!ParadoxDefinitionInjectionManager.isSupported(configGroup.gameType)) return null // 忽略游戏类型不支持的情况
         val vFile = selectFile(file)
@@ -341,7 +337,7 @@ class CwtDefinitionInjectionConfigContextProvider : CwtConfigContextProvider {
         if (fileInfo == null) return null
         val definitionInjection = selectScope { element.parentDefinitionInjection() } ?: return null
         val definitionInjectionInfo = definitionInjection.definitionInjectionInfo ?: return null
-        val memberPath = ParadoxMemberPath.resolve(memberPathFromFile.subPaths.drop(1)) // 去除第一个子路径
+        val memberPath = ParadoxMemberPath.resolve(memberPathFromFile.subPaths.dropFast(1)) // 去除第一个子路径
         val context = CwtConfigContext.createFromMember(element, configGroup, memberRole, this, memberPathFromFile, memberPath)
         context.declarationRoot = memberPath.isEmpty()
         context.definitionInjectionInfo = definitionInjectionInfo

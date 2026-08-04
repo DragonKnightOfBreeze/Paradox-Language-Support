@@ -12,8 +12,8 @@ import icu.windea.pls.base.ChronicleCapacities
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.annotations.Optimized
-import icu.windea.pls.core.collections.ImmutableList
 import icu.windea.pls.core.collections.asMutable
+import icu.windea.pls.core.collections.buildImmutableList
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
@@ -266,12 +266,12 @@ open class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<Par
         val typeKeys = storage.readIndexedStringList()
 
         // 2.1.9 optimize: create sized immutable list directly
-        return ImmutableList(size) {
+        return buildImmutableList(size) {
             val source = storage.readByte().let { ParadoxDefinitionSource.deoptimized(it) }
             val name = storage.readUTFFast()
             val type = storage.readIntFast().let { types.get(it).orEmpty() }
             val subtypesSize = storage.readIntFast()
-            val fastSubtypes = ImmutableList(subtypesSize) { storage.readUTFFast() }
+            val fastSubtypes = buildImmutableList(subtypesSize) { storage.readUTFFast() }
             val typeKeyIsName = storage.readBoolean()
             val typeKey = if (typeKeyIsName) name else storage.readIntFast().let { typeKeys.get(it).orEmpty() }
             val elementOffset = storage.readIntFast()

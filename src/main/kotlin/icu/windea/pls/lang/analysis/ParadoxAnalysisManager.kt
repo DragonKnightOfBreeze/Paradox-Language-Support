@@ -127,11 +127,13 @@ object ParadoxAnalysisManager : ParadoxAnalysisScope {
     private fun doCheckFileInfo(fileInfo: ParadoxFileInfo): Boolean {
         // consistency check
         val rootInfo = fileInfo.rootInfo
-        if (rootInfo is ParadoxRootInfo.MetadataBased) {
-            val expectedRootInfo = doGetCachedRootInfo(rootInfo.rootFile)
-            if (expectedRootInfo != rootInfo) return false
-        }
-        return true
+        // 3.0.1 optimize: check `rootInfo.isValid` directly
+        return rootInfo.isValid
+        // if (rootInfo is ParadoxRootInfo.MetadataBased) {
+        //     val expectedRootInfo = doGetCachedRootInfo(rootInfo.rootFile)
+        //     return expectedRootInfo == rootInfo
+        // }
+        // return true
     }
 
     private fun doResolveFileInfo(file: VirtualFile): ParadoxFileInfo? {

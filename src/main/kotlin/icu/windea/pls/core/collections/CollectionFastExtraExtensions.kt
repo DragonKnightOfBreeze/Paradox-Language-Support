@@ -5,7 +5,6 @@ package icu.windea.pls.core.collections
 
 import com.google.common.collect.ImmutableList
 import icu.windea.pls.core.annotations.Fast
-import it.unimi.dsi.fastutil.objects.ObjectImmutableList
 
 /**
  * 如果当前列表存在指定的作为前缀的子列表 [prefix]（可以为空），则去除并返回。否则，返回 `null`。
@@ -30,12 +29,9 @@ fun <T : Any> List<T>.removePrefixOrNull(prefix: List<T>, wildcard: T? = null): 
     if (resultSize == 1) return ImmutableList.of(this[size - 1])
     val elements = arrayOfNulls<Any?>(resultSize) // optimize: construct sized array directly for better performance and memory
     for (i in 0 until resultSize) { // optimize: use index-based iteration
-        val e = this[i + prefixSize]
-        elements[i] = e
+        elements[i] = this[i + prefixSize]
     }
-    @Suppress("UNCHECKED_CAST")
-    elements as Array<out T>
-    return ObjectImmutableList(elements) // memory usage: 16 + align8(16 + 4n)
+    return elements.asImmutableList()
 }
 
 /**
@@ -61,10 +57,7 @@ fun <T : Any> List<T>.removeSuffixOrNull(suffix: List<T>, wildcard: T? = null): 
     if (resultSize == 1) return ImmutableList.of(this[0])
     val elements = arrayOfNulls<Any?>(resultSize) // optimize: construct sized array directly for better performance and memory
     for (i in 0 until resultSize) { // optimize: use index-based iteration
-        val e = this[i]
-        elements[i] = e
+        elements[i] = this[i]
     }
-    @Suppress("UNCHECKED_CAST")
-    elements as Array<out T>
-    return ObjectImmutableList(elements) // memory usage: 16 + align8(16 + 4n)
+    return elements.asImmutableList()
 }

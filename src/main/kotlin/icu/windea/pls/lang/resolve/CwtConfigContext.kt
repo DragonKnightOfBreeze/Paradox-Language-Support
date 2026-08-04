@@ -81,7 +81,7 @@ interface CwtConfigContext : UserDataHolder {
             memberRole: ParadoxMemberRole,
             provider: CwtConfigContextProvider,
             memberPathFromFile: ParadoxMemberPath?,
-        ): CwtConfigContext {
+        ): CwtConfigContextBase {
             return CwtBaseConfigContext(element, configGroup, memberRole, provider, memberPathFromFile)
         }
 
@@ -92,7 +92,7 @@ interface CwtConfigContext : UserDataHolder {
             memberRole: ParadoxMemberRole,
             provider: CwtConfigContextProvider,
             memberPathFromFile: ParadoxMemberPath?,
-        ): CwtConfigContext {
+        ): CwtConfigContextBase {
             return CwtFromFileConfigContext(element, configGroup, memberRole, provider, memberPathFromFile)
         }
 
@@ -104,7 +104,7 @@ interface CwtConfigContext : UserDataHolder {
             provider: CwtConfigContextProvider,
             memberPathFromFile: ParadoxMemberPath?,
             memberPath: ParadoxMemberPath?,
-        ): CwtConfigContext {
+        ): CwtConfigContextBase {
             return CwtFromMemberConfigContext(element, configGroup, memberRole, provider, memberPathFromFile, memberPath)
         }
     }
@@ -128,7 +128,7 @@ var CwtConfigContext.definitionInjectionInfo: ParadoxDefinitionInjectionInfo? by
 // region Implementations
 
 // 12 + 5 * 4 + 2 = 34 -> 40
-private sealed class CwtConfigContextBase(
+sealed class CwtConfigContextBase(
     override val element: ParadoxScriptMember,
     override val configGroup: CwtConfigGroup, // 3.0.1 use `element` directly here, no smart pointer since it's cached on PSI level
     override val memberRole: ParadoxMemberRole, // 3.0.1 use `memberRole` directly here, no optimization (compress to byte) since it's cached on PSI level
@@ -164,6 +164,7 @@ private sealed class CwtConfigContextBase(
             ", memberPathFromFile=$memberPathFromFile" +
             ", memberPath=$memberPath" +
             ", declarationRoot=$declarationRoot" +
+            ", dynamic=$dynamic" +
             ", provider=$provider" +
             ")"
     }

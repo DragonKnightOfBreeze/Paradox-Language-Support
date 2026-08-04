@@ -2,6 +2,7 @@ package icu.windea.pls.lang.index
 
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiReference
+import com.intellij.psi.util.parentOfType
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.core.collectReferences
@@ -15,9 +16,9 @@ import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.references.csv.ParadoxCsvExpressionPsiReference
 import icu.windea.pls.lang.references.localisation.ParadoxLocalisationExpressionPsiReference
 import icu.windea.pls.lang.references.script.ParadoxScriptExpressionPsiReference
+import icu.windea.pls.lang.resolve.ParadoxConfigService
 import icu.windea.pls.lang.resolve.ParadoxExpressionService
 import icu.windea.pls.lang.resolve.ParadoxExpressionService.getExpressionTextRange
-import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxCsvManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
@@ -26,6 +27,7 @@ import icu.windea.pls.model.ParadoxDefinitionCandidateInfo
 import icu.windea.pls.model.index.ParadoxIndexInfo
 import icu.windea.pls.model.type.ParadoxTypeResolver
 import icu.windea.pls.script.psi.ParadoxScriptFile
+import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
@@ -76,11 +78,13 @@ class ParadoxMergedIndexScriptContextBase(
     }
 
     private fun computeConfigs(): List<CwtMemberConfig<*>> {
+        // 3.0.l it's safe to call `ParadoxConfigService.getConfigs` directly during indexing (with dumb mode)
         val element = expressionElement ?: return emptyList()
+        val memberElement = element.parentOfType<ParadoxScriptMember>(withSelf = true) ?: return emptyList()
         val isKey = element is ParadoxScriptPropertyKey
         val isDumb = ParadoxMatchService.isDumb()
         val options = if (isDumb) ParadoxMatchOptions.DUMB else ParadoxMatchOptions.DEFAULT
-        val configs = ParadoxConfigManager.getConfigs(element, options.copy(fallback = isKey))
+        val configs = ParadoxConfigService.getConfigs(memberElement, options.copy(fallback = isKey))
         return configs
     }
 
