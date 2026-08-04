@@ -29,6 +29,7 @@ object ParadoxMemberService {
      * 使用 [element] 作为上下文，为 [result] 注入一组顶级键。
      */
     fun injectRootKeys(element: PsiElement, result: MutableList<String>) {
+        if (element !is ParadoxScriptFile) return
         val vFile = selectFile(element) ?: return
         val injectedRootKeys = ParadoxAnalysisInjectionManager.getInjectedRootKeys(vFile)
         if (injectedRootKeys.isEmpty()) return
@@ -44,10 +45,10 @@ object ParadoxMemberService {
         if (element is PsiFileSystemItem) return ParadoxMemberPath.resolveEmpty()
         val member = element.parentOfType<ParadoxScriptMember>(withSelf = true) ?: return ParadoxMemberPath.resolveEmpty()
         if (member !is ParadoxScriptProperty && member !is ParadoxScriptValue) return ParadoxMemberPath.resolveEmpty()
-        return resolvePathFromPsi(member, limit, maxDepth, parameterAware)
+        return getPathFromPsi(member, limit, maxDepth, parameterAware)
     }
 
-    private fun resolvePathFromPsi(element: ParadoxScriptMember, limit: Int, maxDepth: Int, parameterAware: Boolean): ParadoxMemberPath? {
+    private fun getPathFromPsi(element: ParadoxScriptMember, limit: Int, maxDepth: Int, parameterAware: Boolean): ParadoxMemberPath? {
         // resolve from PSI
         var current: PsiElement = element
         val deque = ArrayDeque<String>()
@@ -67,7 +68,6 @@ object ParadoxMemberService {
             }
             current = parent
         }
-        if (current !is ParadoxScriptFile) return null
         injectRootKeys(current, deque)
         return ParadoxMemberPath.resolve(deque)
     }
@@ -81,10 +81,10 @@ object ParadoxMemberService {
         if (element is PsiFileSystemItem) return emptyList()
         val member = element.parentOfType<ParadoxScriptMember>(withSelf = true) ?: return emptyList()
         if (member !is ParadoxScriptProperty && member !is ParadoxScriptValue) return emptyList()
-        return resolveRootKeysFromPsi(member, limit, maxDepth, parameterAware)
+        return getRootKeysFromPsi(member, limit, maxDepth, parameterAware)
     }
 
-    private fun resolveRootKeysFromPsi(element: ParadoxScriptMember, limit: Int, maxDepth: Int, parameterAware: Boolean): List<String>? {
+    private fun getRootKeysFromPsi(element: ParadoxScriptMember, limit: Int, maxDepth: Int, parameterAware: Boolean): List<String>? {
         // resolve from PSI
         var current: PsiElement = element.parent ?: return emptyList()
         val deque = ArrayDeque<String>()
@@ -104,7 +104,6 @@ object ParadoxMemberService {
             }
             current = parent
         }
-        if (current !is ParadoxScriptFile) return null
         injectRootKeys(current, deque)
         if (deque.isEmpty()) return emptyList()
         return deque
@@ -121,10 +120,10 @@ object ParadoxMemberService {
         if (element is PsiFileSystemItem) return emptyList()
         val member = element.parentOfType<ParadoxScriptMember>(withSelf = true) ?: return emptyList()
         if (member !is ParadoxScriptProperty && member !is ParadoxScriptValue) return emptyList()
-        return resolveKeyPrefixesFromPsi(member, limit, maxDepth, parameterAware)
+        return getKeyPrefixesFromPsi(member, limit, maxDepth, parameterAware)
     }
 
-    private fun resolveKeyPrefixesFromPsi(element: ParadoxScriptMember, limit: Int, maxDepth: Int, parameterAware: Boolean): List<String>? {
+    private fun getKeyPrefixesFromPsi(element: ParadoxScriptMember, limit: Int, maxDepth: Int, parameterAware: Boolean): List<String>? {
         // resolve from PSI
         val deque = ArrayDeque<String>()
         val siblings = element.siblings(forward = false, withSelf = false)

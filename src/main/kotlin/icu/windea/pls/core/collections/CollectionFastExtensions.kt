@@ -280,7 +280,7 @@ fun <T : Any> List<T>.dropFast(n: Int): List<T> {
     if (resultSize == 1) return ImmutableList.of(this[size - 1])
     val elements = arrayOfNulls<Any?>(resultSize) // optimize: construct sized array directly for better performance and memory
     for (i in 0 until resultSize) { // optimize: use index-based iteration
-        elements[i] = this[i + resultSize]
+        elements[i] = this[i + n]
     }
     return elements.asImmutableList()
 }

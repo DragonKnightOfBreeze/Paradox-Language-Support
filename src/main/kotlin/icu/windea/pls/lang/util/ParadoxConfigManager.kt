@@ -115,7 +115,7 @@ object ParadoxConfigManager {
         if (type == null) return ImmutableList.of()
         val size = subtypeConfigs.size
         return buildImmutableList(size + 1) {
-            if (it == 0) type else subtypeConfigs[it + 1].name
+            if (it == 0) type else subtypeConfigs[it - 1].name
         }
     }
 
