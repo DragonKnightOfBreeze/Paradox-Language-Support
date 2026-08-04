@@ -6,7 +6,8 @@ import kotlinx.coroutines.flow.flow
 /**
  * 将上游 [Flow] 按固定大小 [chunkSize] 分块输出为 [List]。
  *
- * - 要求 [chunkSize] > 0；
+ * 说明：
+ * - 要求 [chunkSize] > 0。
  * - 末尾不足一整块时会以实际大小输出最后一块。
  */
 fun <T> Flow<T>.chunked(chunkSize: Int): Flow<List<T>> = flow {
@@ -25,8 +26,9 @@ fun <T> Flow<T>.chunked(chunkSize: Int): Flow<List<T>> = flow {
 }
 
 /**
- * 将字符串流合并并按换行符分割为“逐行” [Flow]。
+ * 将字符串流合并并按换行符分割为逐行的 [Flow]。
  *
+ * 说明：
  * - 会累积上游分片，遇到 `\n` 时输出一行；
  * - 最后不存在换行结尾时，会输出剩余的非空尾行。
  */

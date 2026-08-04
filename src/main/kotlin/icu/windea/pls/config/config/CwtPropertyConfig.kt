@@ -383,7 +383,7 @@ private class CwtPropertyConfigDelegateWithConfigs(
     }
 }
 
-// 12 + 6 * 4 = 26 -> 40
+// 12 + 6 * 4 = 36 -> 40
 private class CwtPropertyConfigDelegateWithKeyAndValue(
     delegate: CwtPropertyConfig,
     key: String,
