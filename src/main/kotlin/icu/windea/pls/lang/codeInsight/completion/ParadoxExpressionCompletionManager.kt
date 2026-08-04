@@ -11,8 +11,8 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
+import icu.windea.pls.config.config.expandUnionCandidates
 import icu.windea.pls.config.config.resolved
-import icu.windea.pls.config.processCandidateConfigs
 import icu.windea.pls.core.codeInsight.LimitedCompletionProcessor
 import icu.windea.pls.core.processAsync
 import icu.windea.pls.core.runSmartReadAction
@@ -238,7 +238,7 @@ object ParadoxExpressionCompletionManager {
         val unionConfig = configGroup.unions[unionName] ?: return
         // NOTE 3.0.1 recursion guard is required here
         runWithRecursionGuard("scriptExpression.complete.union", unionName) {
-            unionConfig.processCandidateConfigs { valueConfig ->
+            unionConfig.expandUnionCandidates { valueConfig ->
                 val context = context.copy(config = valueConfig, configs = setOf(valueConfig))
                 completeScriptExpression(context, result)
                 true
@@ -254,7 +254,7 @@ object ParadoxExpressionCompletionManager {
         val unionConfig = configGroup.unions[unionName] ?: return
         // NOTE 3.0.1 recursion guard is required here
         runWithRecursionGuard("csvExpression.complete.union", unionName) {
-            unionConfig.processCandidateConfigs { valueConfig ->
+            unionConfig.expandUnionCandidates { valueConfig ->
                 val context = context.copy(config = valueConfig, configs = setOf(valueConfig))
                 completeCsvExpression(context, result)
                 true

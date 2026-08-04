@@ -1,5 +1,6 @@
 package icu.windea.pls.core.util
 
+@Suppress("unused")
 object ProcessorFactory {
     /** 创建一个不带过滤条件的 [FindProcessor]。 */
     @Suppress("NOTHING_TO_INLINE")
@@ -74,7 +75,7 @@ object ProcessorFactory {
 
     @Suppress("NOTHING_TO_INLINE")
     inline fun <T> none(): NoneProcessor<T> {
-        return NoneProcessor<T>()
+        return NoneProcessor()
     }
 
     inline fun <T> none(crossinline predicate: (T) -> Boolean): NoneProcessor<T> {

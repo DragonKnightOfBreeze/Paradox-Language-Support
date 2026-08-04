@@ -3,10 +3,11 @@ package icu.windea.pls.ep.match.expression
 import com.intellij.openapi.progress.ProgressManager
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
-import icu.windea.pls.config.processCandidateConfigs
+import icu.windea.pls.config.config.expandUnionCandidates
 import icu.windea.pls.core.isIdentifier
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.runWithRecursionGuard
+import icu.windea.pls.core.util.ProcessorScope
 import icu.windea.pls.lang.match.ParadoxCsvExpressionMatchContext
 import icu.windea.pls.lang.match.ParadoxExpressionMatchService
 import icu.windea.pls.lang.match.ParadoxMatchProvider
@@ -120,16 +121,17 @@ class ParadoxCsvCoreExpressionMatcher : ParadoxCsvCompositeExpressionMatcher() {
         val unionName = context.configExpression.metadata.value ?: return ParadoxMatchResult.NotMatch // null -> invalid config
         val unionConfig = context.configGroup.unions[unionName] ?: return ParadoxMatchResult.NotMatch // null -> not match
         // NOTE 3.0.1 recursion guard is required here
-        runWithRecursionGuard("csvExpression.match.union", unionName) {
-            unionConfig.processCandidateConfigs { valueConfig ->
-                ProgressManager.checkCanceled() // check cancellation
-                val nextContext = context.copy(configExpression = valueConfig.configExpression)
-                val r = ParadoxExpressionMatchService.matchCsvExpression(nextContext)
-                if (r.get()) return r
-                true
+        return ProcessorScope.findFrom {
+            runWithRecursionGuard("csvExpression.match.union", unionName) {
+                unionConfig.expandUnionCandidates { valueConfig ->
+                    ProgressManager.checkCanceled() // check cancellation
+                    val nextContext = context.copy(configExpression = valueConfig.configExpression)
+                    val r = ParadoxExpressionMatchService.matchCsvExpression(nextContext)
+                    if (r.get()) process(r)
+                    else true
+                }
             }
-        }
-        return ParadoxMatchResult.NotMatch
+        } ?: ParadoxMatchResult.NotMatch
     }
 
     private fun matchDynamicValue(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult {

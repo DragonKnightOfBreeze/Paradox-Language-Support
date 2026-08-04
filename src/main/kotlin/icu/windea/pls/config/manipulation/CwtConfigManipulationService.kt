@@ -10,8 +10,10 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.aliasConfig
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
+import icu.windea.pls.config.config.delegated.CwtEnumConfig
 import icu.windea.pls.config.config.delegated.CwtMacroConfig
 import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
+import icu.windea.pls.config.config.delegated.CwtUnionConfig
 import icu.windea.pls.config.config.inlineConfig
 import icu.windea.pls.config.config.isSamePointer
 import icu.windea.pls.config.config.singleAliasConfig
@@ -389,6 +391,31 @@ object CwtConfigManipulationService {
     // endregion
 
     // region Expand Methods
+
+    /**
+     * 展开枚举规则 [config] 的所有作为候选项的值规则。
+     */
+    fun expandEnumCandidates(config: CwtEnumConfig, processor: (CwtValueConfig) -> Boolean): Boolean {
+        if (config.valueConfigMap.isEmpty()) return true
+        config.valueConfigMap.values.forEach { valueConfig ->
+            val r = processor(valueConfig)
+            if (!r) return false
+        }
+        return true
+    }
+
+    /**
+     * 展开并集规则 [config] 的所有作为候选项的值规则。
+     */
+    fun expandUnionCandidates(config: CwtUnionConfig, processor: (CwtValueConfig) -> Boolean): Boolean {
+        if (config.valueConfigs.isEmpty()) return true
+        // NOTE 3.0.1 recursion guard should not be directly used here, since the context may be different
+        config.valueConfigs.forEachFast { valueConfig ->
+            val r = processor(valueConfig)
+            if (!r) return false
+        }
+        return true
+    }
 
     /**
      * 递归展开 [config] 的子规则中的所有形如 `subtype[{expression}] = {...}` 的属性规则中的子规则，保留其他形式的子规则。

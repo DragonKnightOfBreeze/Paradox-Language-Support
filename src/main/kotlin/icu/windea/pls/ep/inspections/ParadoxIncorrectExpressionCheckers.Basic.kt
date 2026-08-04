@@ -102,9 +102,7 @@ class ParadoxScopeBasedScopeFieldExpressionChecker : ParadoxIncorrectExpressionC
     override fun check(element: ParadoxExpressionElement, config: CwtMemberConfig<*>, context: ParadoxExpressionInspectionContext): Boolean {
         if (element !is ParadoxScriptStringExpressionElement) return true
 
-        val configExpression = ProcessorScope.findFrom({
-            config.expandConfigExpression { process(it) }
-        }) { it.type == CwtDataTypes.Scope }
+        val configExpression = ProcessorScope.findFrom({ config.expandConfigExpression { process(it) } }) { it.type == CwtDataTypes.Scope }
         if (configExpression == null) return true
 
         val expectedScope = configExpression.metadata.value ?: return true

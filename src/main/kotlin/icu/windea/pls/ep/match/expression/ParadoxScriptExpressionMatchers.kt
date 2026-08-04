@@ -5,13 +5,14 @@ import icu.windea.pls.config.CwtDataType
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
+import icu.windea.pls.config.config.expandUnionCandidates
 import icu.windea.pls.config.configExpression.CwtDataExpression
-import icu.windea.pls.config.processCandidateConfigs
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.matchesAntPattern
 import icu.windea.pls.core.matchesPattern
 import icu.windea.pls.core.matchesRegex
 import icu.windea.pls.core.runWithRecursionGuard
+import icu.windea.pls.core.util.ProcessorScope
 import icu.windea.pls.lang.isParameterAwareIdentifier
 import icu.windea.pls.lang.match.ParadoxExpressionMatchService
 import icu.windea.pls.lang.match.ParadoxMatchProvider
@@ -198,16 +199,17 @@ class ParadoxScriptCoreExpressionMatcher : ParadoxScriptCompositeExpressionMatch
         val unionName = context.configExpression.metadata.value ?: return ParadoxMatchResult.NotMatch // null -> invalid config
         val unionConfig = context.configGroup.unions[unionName] ?: return ParadoxMatchResult.NotMatch // null -> not match
         // NOTE 3.0.1 recursion guard is required here
-        runWithRecursionGuard("scriptExpression.match.union", unionName) {
-            unionConfig.processCandidateConfigs { valueConfig ->
-                ProgressManager.checkCanceled() // check cancellation
-                val nextContext = context.copy(configExpression = valueConfig.configExpression)
-                val r = ParadoxExpressionMatchService.matchScriptExpression(nextContext)
-                if (r.get(context.options)) return r
-                true
+        return ProcessorScope.findFrom {
+            runWithRecursionGuard("scriptExpression.match.union", unionName) {
+                unionConfig.expandUnionCandidates { valueConfig ->
+                    ProgressManager.checkCanceled() // check cancellation
+                    val nextContext = context.copy(configExpression = valueConfig.configExpression)
+                    val r = ParadoxExpressionMatchService.matchScriptExpression(nextContext)
+                    if (r.get(context.options)) process(r)
+                    else true
+                }
             }
-        }
-        return ParadoxMatchResult.NotMatch
+        } ?: ParadoxMatchResult.NotMatch
     }
 
     private fun matchDynamicValue(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {

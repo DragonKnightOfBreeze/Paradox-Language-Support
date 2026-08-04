@@ -1,6 +1,5 @@
 package icu.windea.pls.core.util
 
-import com.intellij.util.Processor
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
@@ -9,7 +8,7 @@ import kotlin.experimental.ExperimentalTypeInference
 @Suppress("unused")
 object ProcessorScope {
     @OptIn(ExperimentalTypeInference::class, ExperimentalContracts::class)
-    inline fun <T> findFrom(@BuilderInference source: Processor<T>.() -> Unit): T? {
+    inline fun <T> findFrom(@BuilderInference source: FindProcessor<T>.() -> Unit): T? {
         contract {
             callsInPlace(source, InvocationKind.EXACTLY_ONCE)
         }
@@ -17,7 +16,7 @@ object ProcessorScope {
     }
 
     @OptIn(ExperimentalTypeInference::class, ExperimentalContracts::class)
-    inline fun <T> findFrom(@BuilderInference source: Processor<T>.() -> Unit, crossinline predicate: (T) -> Boolean = { true }): T? {
+    inline fun <T> findFrom(@BuilderInference source: FindProcessor<T>.() -> Unit, crossinline predicate: (T) -> Boolean = { true }): T? {
         contract {
             callsInPlace(source, InvocationKind.EXACTLY_ONCE)
         }
@@ -25,7 +24,7 @@ object ProcessorScope {
     }
 
     @OptIn(ExperimentalTypeInference::class, ExperimentalContracts::class)
-    inline fun <T> collectFrom(@BuilderInference buildAction: Processor<T>.() -> Unit): MutableList<T> {
+    inline fun <T> collectFrom(@BuilderInference buildAction: CollectProcessor<T, MutableList<T>>.() -> Unit): MutableList<T> {
         contract {
             callsInPlace(buildAction, InvocationKind.EXACTLY_ONCE)
         }
@@ -33,7 +32,7 @@ object ProcessorScope {
     }
 
     @OptIn(ExperimentalTypeInference::class, ExperimentalContracts::class)
-    inline fun <T> collectFrom(@BuilderInference source: Processor<T>.() -> Unit, crossinline predicate: (T) -> Boolean = { true }): MutableList<T> {
+    inline fun <T> collectFrom(@BuilderInference source: CollectProcessor<T, MutableList<T>>.() -> Unit, crossinline predicate: (T) -> Boolean = { true }): MutableList<T> {
         contract {
             callsInPlace(source, InvocationKind.EXACTLY_ONCE)
         }
@@ -41,7 +40,7 @@ object ProcessorScope {
     }
 
     @OptIn(ExperimentalTypeInference::class, ExperimentalContracts::class)
-    inline fun <T> duplicateFrom(@BuilderInference source: Processor<T>.() -> Unit): Boolean {
+    inline fun <T> duplicateFrom(@BuilderInference source: DuplicateProcessor<T>.() -> Unit): Boolean {
         contract {
             callsInPlace(source, InvocationKind.EXACTLY_ONCE)
         }
@@ -49,7 +48,7 @@ object ProcessorScope {
     }
 
     @OptIn(ExperimentalTypeInference::class, ExperimentalContracts::class)
-    inline fun <T> duplicateFrom(@BuilderInference source: Processor<T>.() -> Unit, crossinline predicate: (T) -> Boolean = { true }): Boolean {
+    inline fun <T> duplicateFrom(@BuilderInference source: DuplicateProcessor<T>.() -> Unit, crossinline predicate: (T) -> Boolean = { true }): Boolean {
         contract {
             callsInPlace(source, InvocationKind.EXACTLY_ONCE)
         }
@@ -57,7 +56,7 @@ object ProcessorScope {
     }
 
     @OptIn(ExperimentalTypeInference::class, ExperimentalContracts::class)
-    inline fun <T> allFrom(@BuilderInference buildAction: Processor<T>.() -> Unit): Boolean {
+    inline fun <T> allFrom(@BuilderInference buildAction: AllProcessor<T>.() -> Unit): Boolean {
         contract {
             callsInPlace(buildAction, InvocationKind.EXACTLY_ONCE)
         }
@@ -65,7 +64,7 @@ object ProcessorScope {
     }
 
     @OptIn(ExperimentalTypeInference::class, ExperimentalContracts::class)
-    inline fun <T> allFrom(@BuilderInference source: Processor<T>.() -> Unit, crossinline predicate: (T) -> Boolean = { true }): Boolean {
+    inline fun <T> allFrom(@BuilderInference source: AllProcessor<T>.() -> Unit, crossinline predicate: (T) -> Boolean = { true }): Boolean {
         contract {
             callsInPlace(source, InvocationKind.EXACTLY_ONCE)
         }
@@ -73,7 +72,7 @@ object ProcessorScope {
     }
 
     @OptIn(ExperimentalTypeInference::class, ExperimentalContracts::class)
-    inline fun <T> anyFrom(@BuilderInference source: Processor<T>.() -> Unit): Boolean {
+    inline fun <T> anyFrom(@BuilderInference source: AnyProcessor<T>.() -> Unit): Boolean {
         contract {
             callsInPlace(source, InvocationKind.EXACTLY_ONCE)
         }
@@ -81,7 +80,7 @@ object ProcessorScope {
     }
 
     @OptIn(ExperimentalTypeInference::class, ExperimentalContracts::class)
-    inline fun <T> anyFrom(@BuilderInference source: Processor<T>.() -> Unit, crossinline predicate: (T) -> Boolean = { true }): Boolean {
+    inline fun <T> anyFrom(@BuilderInference source: AnyProcessor<T>.() -> Unit, crossinline predicate: (T) -> Boolean = { true }): Boolean {
         contract {
             callsInPlace(source, InvocationKind.EXACTLY_ONCE)
         }
@@ -89,7 +88,7 @@ object ProcessorScope {
     }
 
     @OptIn(ExperimentalTypeInference::class, ExperimentalContracts::class)
-    inline fun <T> noneFrom(@BuilderInference source: Processor<T>.() -> Unit): Boolean {
+    inline fun <T> noneFrom(@BuilderInference source: NoneProcessor<T>.() -> Unit): Boolean {
         contract {
             callsInPlace(source, InvocationKind.EXACTLY_ONCE)
         }
@@ -97,7 +96,7 @@ object ProcessorScope {
     }
 
     @OptIn(ExperimentalTypeInference::class, ExperimentalContracts::class)
-    inline fun <T> noneFrom(@BuilderInference source: Processor<T>.() -> Unit, crossinline predicate: (T) -> Boolean = { true }): Boolean {
+    inline fun <T> noneFrom(@BuilderInference source: NoneProcessor<T>.() -> Unit, crossinline predicate: (T) -> Boolean = { true }): Boolean {
         contract {
             callsInPlace(source, InvocationKind.EXACTLY_ONCE)
         }

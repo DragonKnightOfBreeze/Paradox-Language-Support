@@ -3,6 +3,8 @@
 package icu.windea.pls.config.config
 
 import com.intellij.psi.PsiElement
+import icu.windea.pls.config.config.delegated.CwtEnumConfig
+import icu.windea.pls.config.config.delegated.CwtUnionConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.manipulation.CwtConfigManipulationService
 import icu.windea.pls.config.util.CwtConfigManager
@@ -54,6 +56,16 @@ infix fun CwtConfig<*>?.isSamePointer(other: CwtConfig<*>?): Boolean {
 // endregion
 
 // region Process Extensions
+
+/** @see CwtConfigManipulationService.expandEnumCandidates */
+fun CwtEnumConfig.expandEnumCandidates(processor: (CwtValueConfig) -> Boolean): Boolean {
+    return CwtConfigManipulationService.expandEnumCandidates(this, processor)
+}
+
+/** @see CwtConfigManipulationService.expandUnionCandidates */
+fun CwtUnionConfig.expandUnionCandidates(processor: (CwtValueConfig) -> Boolean): Boolean {
+    return CwtConfigManipulationService.expandUnionCandidates(this, processor)
+}
 
 /** @see CwtConfigManipulationService.expandBySubtypeExpression */
 fun CwtMemberConfig<*>.expandBySubtypeExpression(processor: (CwtMemberConfig<*>, String) -> Boolean): Boolean {
