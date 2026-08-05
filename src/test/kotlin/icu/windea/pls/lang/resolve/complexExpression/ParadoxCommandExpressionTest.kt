@@ -61,17 +61,13 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
             node<ParadoxDynamicCommandScopeNode>("event_target:some_target", 11, 35) {
                 node<ParadoxCommandScopePrefixNode>("event_target:", 11, 24)
                 node<ParadoxCommandScopeValueNode>("some_target", 24, 35) {
-                    node<ParadoxDynamicValueExpression>("some_target", 24, 35) {
-                        node<ParadoxDynamicValueNode>("some_target", 24, 35)
-                    }
+                    node<ParadoxDataSourceNode>("some_target", 24, 35)
                 }
             }
             node<ParadoxOperatorNode>(".", 35, 36)
             node<ParadoxDynamicCommandFieldNode>("var", 36, 39) {
                 node<ParadoxCommandFieldValueNode>("var", 36, 39) {
-                    node<ParadoxDynamicValueExpression>("var", 36, 39) {
-                        node<ParadoxDynamicValueNode>("var", 36, 39)
-                    }
+                    node<ParadoxDataSourceNode>("var", 36, 39)
                 }
             }
         }
@@ -105,9 +101,7 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
             node<ParadoxOperatorNode>(".", 4, 5)
             node<ParadoxDynamicCommandFieldNode>("Var", 5, 8) {
                 node<ParadoxCommandFieldValueNode>("Var", 5, 8) {
-                    node<ParadoxDynamicValueExpression>("Var", 5, 8) {
-                        node<ParadoxDynamicValueNode>("Var", 5, 8)
-                    }
+                    node<ParadoxDataSourceNode>("Var", 5, 8)
                 }
             }
         }
@@ -152,9 +146,7 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
         val dsl = buildComplexExpression<ParadoxCommandExpression>("", 0, 0) {
             node<ParadoxDynamicCommandFieldNode>("", 0, 0) {
                 node<ParadoxCommandFieldValueNode>("", 0, 0) {
-                    node<ParadoxDynamicValueExpression>("", 0, 0) {
-                        node<ParadoxDynamicValueNode>("", 0, 0)
-                    }
+                    node<ParadoxDataSourceNode>("", 0, 0)
                 }
             }
         }
@@ -185,9 +177,7 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
                 node<ParadoxCommandFieldPrefixNode>("TestCommand", 36, 47)
                 node<ParadoxMarkerNode>("(", 47, 48)
                 node<ParadoxCommandFieldValueNode>("some_flag, some_job", 48, 67) {
-                    node<ParadoxDynamicValueExpression>("some_flag", 48, 57) {
-                        node<ParadoxDynamicValueNode>("some_flag", 48, 57)
-                    }
+                    node<ParadoxDataSourceNode>("some_flag", 48, 57)
                     node<ParadoxMarkerNode>(",", 57, 58)
                     node<ParadoxBlankNode>(" ", 58, 59)
                     node<ParadoxDataSourceNode>("some_job", 59, 67)
@@ -223,9 +213,7 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
                 node<ParadoxCommandFieldPrefixNode>("TestCommand", 37, 48)
                 node<ParadoxMarkerNode>("(", 48, 49)
                 node<ParadoxCommandFieldValueNode>("some_flag, some_job,", 49, 69) {
-                    node<ParadoxDynamicValueExpression>("some_flag", 49, 58) {
-                        node<ParadoxDynamicValueNode>("some_flag", 49, 58)
-                    }
+                    node<ParadoxDataSourceNode>("some_flag", 49, 58)
                     node<ParadoxMarkerNode>(",", 58, 59)
                     node<ParadoxBlankNode>(" ", 59, 60)
                     node<ParadoxDataSourceNode>("some_job", 60, 68)
@@ -258,9 +246,7 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
                 node<ParadoxCommandFieldPrefixNode>("TestCommand", 30, 41)
                 node<ParadoxMarkerNode>("(", 41, 42)
                 node<ParadoxCommandFieldValueNode>("some_job", 42, 50) {
-                    node<ParadoxDynamicValueExpression>("some_job", 42, 50) {
-                        node<ParadoxDynamicValueNode>("some_job", 42, 50)
-                    }
+                    node<ParadoxDataSourceNode>("some_job", 42, 50)
                 }
                 node<ParadoxMarkerNode>(")", 50, 51)
             }
@@ -291,9 +277,7 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
                 node<ParadoxCommandFieldPrefixNode>("TestCommand", 23, 34)
                 node<ParadoxMarkerNode>("(", 34, 35)
                 node<ParadoxCommandFieldValueNode>("some_flag, ", 35, 46) {
-                    node<ParadoxDynamicValueExpression>("some_flag", 35, 44) {
-                        node<ParadoxDynamicValueNode>("some_flag", 35, 44)
-                    }
+                    node<ParadoxDataSourceNode>("some_flag", 35, 44)
                     node<ParadoxMarkerNode>(",", 44, 45)
                     node<ParadoxBlankNode>(" ", 45, 46)
                 }
@@ -353,9 +337,7 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
                     node<ParadoxStringLiteralNode>("'foo bar'", 22, 31)
                     node<ParadoxMarkerNode>(",", 31, 32)
                     node<ParadoxBlankNode>(" ", 32, 33)
-                    node<ParadoxDynamicValueExpression>("some_variable", 33, 46) {
-                        node<ParadoxDynamicValueNode>("some_variable", 33, 46)
-                    }
+                    node<ParadoxDataSourceNode>("some_variable", 33, 46)
                 }
                 node<ParadoxMarkerNode>(")", 46, 47)
             }
@@ -364,9 +346,7 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
                 node<ParadoxCommandFieldPrefixNode>("TestCommand", 48, 59)
                 node<ParadoxMarkerNode>("(", 59, 60)
                 node<ParadoxCommandFieldValueNode>("some_flag, some_job", 60, 79) {
-                    node<ParadoxDynamicValueExpression>("some_flag", 60, 69) {
-                        node<ParadoxDynamicValueNode>("some_flag", 60, 69)
-                    }
+                    node<ParadoxDataSourceNode>("some_flag", 60, 69)
                     node<ParadoxMarkerNode>(",", 69, 70)
                     node<ParadoxBlankNode>(" ", 70, 71)
                     node<ParadoxDataSourceNode>("some_job", 71, 79)
@@ -388,9 +368,7 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
             node<ParadoxDynamicCommandScopeNode>("event_target:target", 5, 24) {
                 node<ParadoxCommandScopePrefixNode>("event_target:", 5, 18)
                 node<ParadoxCommandScopeValueNode>("target", 18, 24) {
-                    node<ParadoxDynamicValueExpression>("target", 18, 24) {
-                        node<ParadoxDynamicValueNode>("target", 18, 24)
-                    }
+                    node<ParadoxDataSourceNode>("target", 18, 24)
                 }
             }
             node<ParadoxOperatorNode>(".", 24, 25)

@@ -1,0 +1,37 @@
+types = {
+	## type_key_filter = { defined_text define_text }
+	type[scripted_loc] = {
+		name_field = "name"
+		path = "game/common/scripted_loc"
+		path_extension = .txt
+	}
+}
+
+scripted_loc = {
+	name = scalar
+	## cardinality = 0..1
+	random = bool
+	# text or value (with optional default)
+	## cardinality = 0..inf
+	text = {
+		## cardinality = 0..1
+		weight = {
+			alias_name[modifier_rule] = alias_match_left[modifier_rule]
+		}
+		## cardinality = 0..1
+		weight = float
+		## cardinality = 0..1
+		trigger = single_alias_right[trigger_clause]
+		localization_key = localisation
+		localization_key = <sprite> # GFX reference is also accepted
+		localization_key = scalar # `[...]` or `['...']` or just scalar
+	}
+	## cardinality = 0..1
+	value = value_field
+	## cardinality = 0..1
+	default = localisation
+	## cardinality = 0..1
+	default = <sprite> # GFX reference is also accepted
+	## cardinality = 0..1
+	default = scalar # `[...]` or `['...']` or just scalar
+}

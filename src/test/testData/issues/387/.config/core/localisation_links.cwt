@@ -1,0 +1,183 @@
+localisation_links = {
+	Planet = {
+		input_scopes = { archaeological_site megastructure deposit colony }
+		output_scope = planet
+	}
+	Colony = {
+		input_scopes = { army pop_group }
+		output_scope = colony
+	}
+	Capital = {
+		input_scopes = { country }
+		output_scope = planet
+	}
+	MoonOf = {
+		input_scopes = { planet }
+		output_scope = planet
+	}
+	AmbientObject = {
+		input_scopes = { archaeological_site }
+		output_scope = ambient_object
+	}
+	Fleet = {
+		input_scopes = { archaeological_site ship starbase }
+		output_scope = fleet
+	}
+	Ship = {
+		input_scopes = { archaeological_site colony }
+		output_scope = ship
+	}
+	GalacticObject = {
+		input_scopes = { archaeological_site }
+		output_scope = system
+	}
+	System = {
+		input_scopes = { fleet planet first_contact megastructure colony }
+		output_scope = system
+	}
+	Owner = {
+		input_scopes = { army planet system leader pop_faction fleet ship starbase first_contact sector megastructure spy_network espionage_operation colony }
+		output_scope = country
+	}
+	ContactCountry = {
+		input_scopes = { first_contact }
+		output_scope = country
+	}
+	Leader = {
+		input_scopes = { army fleet first_contact spy_network }
+		output_scope = leader
+	}
+	Ruler = {
+		input_scopes = { country }
+		output_scope = leader
+	}
+	Heir = {
+		input_scopes = { country }
+		output_scope = leader
+	}
+	Species = {
+		input_scopes = { country leader pop_group }
+		output_scope = species
+	}
+	Federation = {
+		input_scopes = { country }
+		output_scope = federation
+	}
+	Faction = {
+		input_scopes = { pop_group }
+		output_scope = pop_faction
+	}
+	Sector = {
+		input_scopes = { planet system sector colony }
+		output_scope = sector
+	}
+	MainDefender = {
+		input_scopes = { war }
+		output_scope = country
+	}
+	MainAttacker = {
+		input_scopes = { war }
+		output_scope = country
+	}
+	### Only in diplo actions
+	Actor = {
+		input_scopes = { country }
+		output_scope = country
+	}
+	### Only in diplo actions
+	Recipient = {
+		input_scopes = { country }
+		output_scope = country
+	}
+	### Only in diplo actions
+	Third_party = {
+		input_scopes = { country }
+		output_scope = country
+	}
+	SpyNetwork = {
+		input_scopes = { espionage_operation }
+		output_scope = spy_network
+	}
+	Target = {
+		input_scopes = { espionage_operation spy_network agreement situation }
+		output_scope = any
+	}
+	EVENT_TARGET_0 = {
+		input_scopes = any
+		output_scope = any
+	}
+	EVENT_TARGET_1 = {
+		input_scopes = any
+		output_scope = any
+	}
+	EVENT_TARGET_2 = {
+		input_scopes = any
+		output_scope = any
+	}
+	EVENT_TARGET_3 = {
+		input_scopes = any
+		output_scope = any
+	}
+	EVENT_TARGET_4 = {
+		input_scopes = any
+		output_scope = any
+	}
+	EVENT_TARGET_5 = {
+		input_scopes = any
+		output_scope = any
+	}
+	EVENT_TARGET_6 = {
+		input_scopes = any
+		output_scope = any
+	}
+	EVENT_TARGET_7 = {
+		input_scopes = any
+		output_scope = any
+	}
+	EVENT_TARGET_8 = {
+		input_scopes = any
+		output_scope = any
+	}
+	EVENT_TARGET_9 = {
+		input_scopes = any
+		output_scope = any
+	}
+
+	# links from data
+
+	event_target_no_prefix = {
+		type = scope
+		from_data = yes
+		# prefix = event_target: # no prefix
+		data_source = value[event_target]
+	}
+	global_event_target_no_prefix = {
+		type = scope
+		from_data = yes
+		# prefix = event_target: # no prefix
+		data_source = value[global_event_target]
+	}
+	parameter = {
+		type = scope
+		from_data = yes
+		prefix = parameter:
+		data_source = value[parameter]
+	}
+	variable = {
+		type = value
+		from_data = yes
+		data_source = value[variable]
+	}
+	job = {
+		type = scope
+		from_data = yes
+		data_source = <job>
+		output_scope = pop_job
+	}
+	patron_relation = {
+		type = scope
+		from_data = yes
+		prefix = patron:
+		data_source = <patron_type>
+	}
+}

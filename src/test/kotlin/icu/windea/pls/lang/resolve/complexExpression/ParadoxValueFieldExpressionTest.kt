@@ -194,16 +194,14 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest(), Chronicl
         val s = "root.owner.some_variable"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
-        val dsl = buildComplexExpression<ParadoxValueFieldExpression>(s, 0, s.length) {
-            node<ParadoxScopeNode>("root", 0, 4)
+        val dsl = buildComplexExpression<ParadoxValueFieldExpression>("root.owner.some_variable", 0, 24) {
+            node<ParadoxSystemScopeNode>("root", 0, 4)
             node<ParadoxOperatorNode>(".", 4, 5)
-            node<ParadoxScopeNode>("owner", 5, 10)
+            node<ParadoxStaticScopeNode>("owner", 5, 10)
             node<ParadoxOperatorNode>(".", 10, 11)
             node<ParadoxDynamicValueFieldNode>("some_variable", 11, 24) {
                 node<ParadoxValueFieldValueNode>("some_variable", 11, 24) {
-                    node<ParadoxDynamicValueExpression>("some_variable", 11, 24) {
-                        node<ParadoxDynamicValueNode>("some_variable", 11, 24)
-                    }
+                    node<ParadoxDataSourceNode>("some_variable", 11, 24)
                 }
             }
         }
@@ -218,9 +216,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest(), Chronicl
         val dsl = buildComplexExpression<ParadoxValueFieldExpression>("", 0, 0) {
             node<ParadoxDynamicValueFieldNode>("", 0, 0) {
                 node<ParadoxValueFieldValueNode>("", 0, 0) {
-                    node<ParadoxDynamicValueExpression>("", 0, 0) {
-                        node<ParadoxDynamicValueNode>("", 0, 0)
-                    }
+                    node<ParadoxDataSourceNode>("", 0, 0)
                 }
             }
         }
@@ -261,9 +257,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest(), Chronicl
                         node<ParadoxDynamicScopeNode>("scope:some_scope", 10, 26) {
                             node<ParadoxScopePrefixNode>("scope:", 10, 16)
                             node<ParadoxScopeValueNode>("some_scope", 16, 26) {
-                                node<ParadoxDynamicValueExpression>("some_scope", 16, 26) {
-                                    node<ParadoxDynamicValueNode>("some_scope", 16, 26)
-                                }
+                                node<ParadoxDataSourceNode>("some_scope", 16, 26)
                             }
                         }
                     }
@@ -300,9 +294,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest(), Chronicl
                 node<ParadoxValueFieldPrefixNode>("test_value", 37, 47)
                 node<ParadoxMarkerNode>("(", 47, 48)
                 node<ParadoxValueFieldValueNode>("some_flag, some_job", 48, 67) {
-                    node<ParadoxDynamicValueExpression>("some_flag", 48, 57) {
-                        node<ParadoxDynamicValueNode>("some_flag", 48, 57)
-                    }
+                    node<ParadoxDataSourceNode>("some_flag", 48, 57)
                     node<ParadoxMarkerNode>(",", 57, 58)
                     node<ParadoxBlankNode>(" ", 58, 59)
                     node<ParadoxDataSourceNode>("some_job", 59, 67)
@@ -340,9 +332,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest(), Chronicl
                 node<ParadoxValueFieldPrefixNode>("test_value", 38, 48)
                 node<ParadoxMarkerNode>("(", 48, 49)
                 node<ParadoxValueFieldValueNode>("some_flag, some_job,", 49, 69) {
-                    node<ParadoxDynamicValueExpression>("some_flag", 49, 58) {
-                        node<ParadoxDynamicValueNode>("some_flag", 49, 58)
-                    }
+                    node<ParadoxDataSourceNode>("some_flag", 49, 58)
                     node<ParadoxMarkerNode>(",", 58, 59)
                     node<ParadoxBlankNode>(" ", 59, 60)
                     node<ParadoxDataSourceNode>("some_job", 60, 68)
@@ -377,9 +367,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest(), Chronicl
                 node<ParadoxValueFieldPrefixNode>("test_value", 22, 32)
                 node<ParadoxMarkerNode>("(", 32, 33)
                 node<ParadoxValueFieldValueNode>("some_flag", 33, 42) {
-                    node<ParadoxDynamicValueExpression>("some_flag", 33, 42) {
-                        node<ParadoxDynamicValueNode>("some_flag", 33, 42)
-                    }
+                    node<ParadoxDataSourceNode>("some_flag", 33, 42)
                 }
                 node<ParadoxMarkerNode>(")", 42, 43)
             }
@@ -411,9 +399,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest(), Chronicl
                 node<ParadoxValueFieldPrefixNode>("test_value", 23, 33)
                 node<ParadoxMarkerNode>("(", 33, 34)
                 node<ParadoxValueFieldValueNode>("some_flag,", 34, 44) {
-                    node<ParadoxDynamicValueExpression>("some_flag", 34, 43) {
-                        node<ParadoxDynamicValueNode>("some_flag", 34, 43)
-                    }
+                    node<ParadoxDataSourceNode>("some_flag", 34, 43)
                     node<ParadoxMarkerNode>(",", 43, 44)
                 }
                 node<ParadoxMarkerNode>(")", 44, 45)
@@ -472,9 +458,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest(), Chronicl
                     node<ParadoxStringLiteralNode>("'foo bar'", 24, 33)
                     node<ParadoxMarkerNode>(",", 33, 34)
                     node<ParadoxBlankNode>(" ", 34, 35)
-                    node<ParadoxDynamicValueExpression>("some_variable", 35, 48) {
-                        node<ParadoxDynamicValueNode>("some_variable", 35, 48)
-                    }
+                    node<ParadoxDataSourceNode>("some_variable", 35, 48)
                 }
                 node<ParadoxMarkerNode>(")", 48, 49)
             }
@@ -483,9 +467,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest(), Chronicl
                 node<ParadoxValueFieldPrefixNode>("test_value", 50, 60)
                 node<ParadoxMarkerNode>("(", 60, 61)
                 node<ParadoxValueFieldValueNode>("some_flag, some_job", 61, 80) {
-                    node<ParadoxDynamicValueExpression>("some_flag", 61, 70) {
-                        node<ParadoxDynamicValueNode>("some_flag", 61, 70)
-                    }
+                    node<ParadoxDataSourceNode>("some_flag", 61, 70)
                     node<ParadoxMarkerNode>(",", 70, 71)
                     node<ParadoxBlankNode>(" ", 71, 72)
                     node<ParadoxDataSourceNode>("some_job", 72, 80)
@@ -510,9 +492,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest(), Chronicl
                         node<ParadoxDynamicScopeNode>("scope:target", 25, 37) {
                             node<ParadoxScopePrefixNode>("scope:", 25, 31)
                             node<ParadoxScopeValueNode>("target", 31, 37) {
-                                node<ParadoxDynamicValueExpression>("target", 31, 37) {
-                                    node<ParadoxDynamicValueNode>("target", 31, 37)
-                                }
+                                node<ParadoxDataSourceNode>("target", 31, 37)
                             }
                         }
                     }
@@ -521,9 +501,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest(), Chronicl
                         node<ParadoxDynamicScopeNode>("scope:some", 38, 48) {
                             node<ParadoxScopePrefixNode>("scope:", 38, 44)
                             node<ParadoxScopeValueNode>("some", 44, 48) {
-                                node<ParadoxDynamicValueExpression>("some", 44, 48) {
-                                    node<ParadoxDynamicValueNode>("some", 44, 48)
-                                }
+                                node<ParadoxDataSourceNode>("some", 44, 48)
                             }
                         }
                     }
@@ -544,9 +522,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest(), Chronicl
             node<ParadoxOperatorNode>(".", 4, 5)
             node<ParadoxDynamicValueFieldNode>("event_target:target", 5, 24) {
                 node<ParadoxValueFieldValueNode>("event_target:target", 5, 24) {
-                    node<ParadoxDynamicValueExpression>("event_target:target", 5, 24) {
-                        node<ParadoxDynamicValueNode>("event_target:target", 5, 24)
-                    }
+                    node<ParadoxDataSourceNode>("event_target:target", 5, 24)
                 }
             }
         }

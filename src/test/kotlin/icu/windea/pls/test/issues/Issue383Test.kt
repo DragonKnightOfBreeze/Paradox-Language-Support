@@ -31,11 +31,12 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import icu.windea.pls.ep.resolve.config.CwtTriggerWithParametersAwareOverriddenConfigProvider
 
 /**
  * See: [#383](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/383)
  *
- * @see UnresolvedExpressionInspection
+ * @see CwtTriggerWithParametersAwareOverriddenConfigProvider
  */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
@@ -139,7 +140,7 @@ class Issue383Test : BasePlatformTestCase(), ChronicleTestScope {
                 complex_trigger_modifier = {
                     trigger = count_starbase_modules
                     parameters = {
-                        type = ${'$'}<caret>TYPE$
+                        type = $<caret>TYPE$
                     }
                     mode = add
                 }
