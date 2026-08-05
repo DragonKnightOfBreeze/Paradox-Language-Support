@@ -19,6 +19,7 @@ enum class ParadoxLocalisationIndexConstraint(
     val ignoreCase: Boolean = false,
     val inferred: Boolean = false,
 ) : ParadoxIndexConstraint<ParadoxLocalisationProperty> {
+    // NOTE 3.0.1 clarify: ignore case (should be) (#385)
     Modifier(ChronicleIndexKeys.LocalisationNameForModifier, ignoreCase = true) {
         override fun test(name: String): Boolean {
             return name.startsWith("mod_", true)

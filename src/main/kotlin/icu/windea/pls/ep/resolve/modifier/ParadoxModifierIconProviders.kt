@@ -17,7 +17,7 @@ import icu.windea.pls.model.constants.ParadoxDefinitionTypeSets
 import icu.windea.pls.script.psi.ParadoxScriptString
 
 class ParadoxBaseModifierIconProvider : ParadoxModifierIconProvider {
-    override fun addModifierIconPath(modifierInfo: ParadoxModifierInfo, element: PsiElement, registry: MutableSet<String>) {
+    override fun addModifierIconBaseName(modifierInfo: ParadoxModifierInfo, element: PsiElement, registry: MutableSet<String>) {
         // gfx/interface/icons/modifiers/mod_$
         registry += "gfx/interface/icons/modifiers/mod_${modifierInfo.name}"
     }
@@ -32,7 +32,7 @@ class ParadoxJobBasedModifierIconProvider : ParadoxModifierIconProvider {
 
     override fun supports(gameType: ParadoxGameType) = gameType == ParadoxGameType.Stellaris
 
-    override fun addModifierIconPath(modifierInfo: ParadoxModifierInfo, element: PsiElement, registry: MutableSet<String>) {
+    override fun addModifierIconBaseName(modifierInfo: ParadoxModifierInfo, element: PsiElement, registry: MutableSet<String>) {
         val modifierConfig = modifierInfo.modifierConfig ?: return
         val templateExpression = modifierInfo.templateExpression ?: return
         val snippetNode = templateExpression.nodes
@@ -62,7 +62,7 @@ class ParadoxJobBasedModifierIconProvider : ParadoxModifierIconProvider {
 class ParadoxEconomicCategoryBasedModifierIconProvider : ParadoxModifierIconProvider {
     override fun supports(gameType: ParadoxGameType) = gameType == ParadoxGameType.Stellaris
 
-    override fun addModifierIconPath(modifierInfo: ParadoxModifierInfo, element: PsiElement, registry: MutableSet<String>) {
+    override fun addModifierIconBaseName(modifierInfo: ParadoxModifierInfo, element: PsiElement, registry: MutableSet<String>) {
         val economicCategoryInfo = modifierInfo.economicCategoryInfo ?: return
         val economicCategoryModifierInfo = modifierInfo.economicCategoryModifierInfo ?: return
         if (economicCategoryModifierInfo.useParentIcon) {

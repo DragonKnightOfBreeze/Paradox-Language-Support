@@ -157,9 +157,9 @@ interface CwtConfigGroupDataModel {
     val supportedLocales: List<CwtLocaleConfig> get() = emptyList()
 
     /** 预定义的修正规则的映射。 */
-    val predefinedModifiers: Map<@CaseInsensitive String, CwtModifierConfig> get() = emptyMap()
+    val predefinedModifiers: Map<@CaseInsensitive String, CwtModifierConfig> get() = emptyMap() // 3.0.1 clarify: ignore case (for modifier names)
     /** 生成的修正规则的映射。 */
-    val generatedModifiers: Map<@CaseInsensitive String, CwtModifierConfig> get() = emptyMap()
+    val generatedModifiers: Map<@CaseInsensitive String, CwtModifierConfig> get() = emptyMap() // 3.0.1 clarify: ignore case (for modifier names)
 
     /** 常量字符串的别名的组名的映射。 */
     val aliasKeysGroupConst: Map<@CaseInsensitive String, Map<@CaseInsensitive String, String>> get() = emptyMap()

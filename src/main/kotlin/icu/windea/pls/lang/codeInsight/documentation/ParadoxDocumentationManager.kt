@@ -449,7 +449,7 @@ object ParadoxDocumentationManager {
             keys.firstNotNullOfOrNull { key ->
                 val selector = ParadoxLocalisationSearch.selector(project, element).contextSensitive()
                     .preferLocale(usedLocale)
-                    .withConstraint(ParadoxLocalisationIndexConstraint.Modifier)
+                    .withConstraint(ParadoxLocalisationIndexConstraint.Modifier) // so ignore case
                 ParadoxLocalisationSearch.searchNormal(key, selector).find()
             }
         }
@@ -458,7 +458,7 @@ object ParadoxDocumentationManager {
             keys.firstNotNullOfOrNull { key ->
                 val selector = ParadoxLocalisationSearch.selector(project, element).contextSensitive()
                     .preferLocale(usedLocale)
-                    .withConstraint(ParadoxLocalisationIndexConstraint.Modifier)
+                    .withConstraint(ParadoxLocalisationIndexConstraint.Modifier) // so ignore case
                 ParadoxLocalisationSearch.searchNormal(key, selector).find()
             }
         }

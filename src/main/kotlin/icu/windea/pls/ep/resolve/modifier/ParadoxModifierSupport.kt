@@ -6,6 +6,7 @@ import com.intellij.openapi.util.ModificationTracker
 import com.intellij.psi.PsiElement
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.text.DocumentationBuilder
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
@@ -17,6 +18,8 @@ import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 /**
  * 提供对修正的支持。
+ *
+ * 注意：修正名是**忽略大小写**的。 (#385)
  *
  * @see ParadoxModifierInfo
  * @see ParadoxModifierLightElement
@@ -31,7 +34,7 @@ interface ParadoxModifierSupport {
 
     fun resolveModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): ParadoxModifierInfo?
 
-    fun completeModifier(context: ParadoxCompletionContext, result: CompletionResultSet, modifierNames: MutableSet<String>)
+    fun completeModifier(context: ParadoxCompletionContext, result: CompletionResultSet, modifierNames: MutableSet<@CaseInsensitive String>)
 
     fun getModificationTracker(modifierInfo: ParadoxModifierInfo): ModificationTracker? = null
 

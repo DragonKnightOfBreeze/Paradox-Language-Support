@@ -5,6 +5,7 @@ import com.intellij.psi.PsiElement
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.collections.CaseInsensitiveStringSet
 import icu.windea.pls.core.collections.anyFast
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.text.DocumentationBuilder
@@ -49,8 +50,9 @@ object ParadoxModifierService {
     /**
      * @see ParadoxModifierSupport.completeModifier
      */
-    fun completeModifier(context: ParadoxCompletionContext, result: CompletionResultSet, modifierNames: MutableSet<String>) {
+    fun completeModifier(context: ParadoxCompletionContext, result: CompletionResultSet) {
         val gameType = context.gameType
+        val modifierNames = CaseInsensitiveStringSet() // 3.0.1 clarify: ignore case (for modifier names)
         val supports = ParadoxModifierSupport.EP_NAME.extensionList
         supports.forEachFast f@{ ep ->
             if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f // check game type first
@@ -96,15 +98,15 @@ object ParadoxModifierService {
     }
 
     /**
-     * @see ParadoxModifierIconProvider.addModifierIconPath
+     * @see ParadoxModifierIconProvider.addModifierIconBaseName
      */
     fun getModifierIconPaths(element: PsiElement, modifierInfo: ParadoxModifierInfo): Set<String> {
         val gameType = modifierInfo.gameType
         val eps = ParadoxModifierIconProvider.EP_NAME.extensionList
-        val result = mutableSetOf<String>()
+        val result = mutableSetOf<String>() // 3.0.1 do not use `CaseInsensitiveStringSet` here
         eps.forEachFast f@{ ep ->
             if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f // check game type first
-            ep.addModifierIconPath(modifierInfo, element, result)
+            ep.addModifierIconBaseName(modifierInfo, element, result)
         }
         if (result.isEmpty()) return emptySet()
         return result
@@ -115,8 +117,8 @@ object ParadoxModifierService {
      */
     fun getModifierNameKeys(element: PsiElement, modifierInfo: ParadoxModifierInfo): Set<String> {
         val gameType = modifierInfo.gameType
+        val result = mutableSetOf<String>() // 3.0.1 do not use `CaseInsensitiveStringSet` here
         val eps = ParadoxModifierNameDescProvider.EP_NAME.extensionList
-        val result = mutableSetOf<String>()
         eps.forEachFast f@{ ep ->
             if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f // check game type first
             ep.addModifierNameKey(modifierInfo, element, result)
@@ -130,8 +132,8 @@ object ParadoxModifierService {
      */
     fun getModifierDescKeys(element: PsiElement, modifierInfo: ParadoxModifierInfo): Set<String> {
         val gameType = modifierInfo.gameType
+        val result = mutableSetOf<String>() // 3.0.1 do not use `CaseInsensitiveStringSet` here
         val eps = ParadoxModifierNameDescProvider.EP_NAME.extensionList
-        val result = mutableSetOf<String>()
         eps.forEachFast f@{ ep ->
             if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f // check game type first
             ep.addModifierDescKey(modifierInfo, element, result)

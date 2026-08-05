@@ -11,7 +11,6 @@ import com.intellij.psi.stubs.StubOutputStream
 import com.intellij.psi.stubs.StubRegistry
 import com.intellij.psi.stubs.StubRegistryExtension
 import com.intellij.psi.stubs.StubSerializer
-import icu.windea.pls.core.letIf
 import icu.windea.pls.core.writeByte
 import icu.windea.pls.lang.index.ChronicleIndexKeys
 import icu.windea.pls.lang.index.constraints.ParadoxLocalisationIndexConstraint
@@ -164,7 +163,8 @@ class ParadoxLocalisationStubRegistry : StubRegistryExtension {
                     sink.occurrence(ChronicleIndexKeys.LocalisationName, stub.name)
                     ParadoxLocalisationIndexConstraint.entries.forEach { constraint ->
                         if (constraint.test(stub.name)) {
-                            val name = stub.name.letIf(constraint.ignoreCase) { it.lowercase() }
+                            val ignoreCase = constraint.ignoreCase
+                            val name = if (ignoreCase) stub.name.lowercase() else stub.name
                             sink.occurrence(constraint.indexKey, name)
                         }
                     }

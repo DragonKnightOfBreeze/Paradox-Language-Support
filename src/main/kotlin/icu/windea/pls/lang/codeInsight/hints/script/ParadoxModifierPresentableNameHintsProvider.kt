@@ -40,6 +40,7 @@ class ParadoxModifierPresentableNameHintsProvider : ParadoxHintsProvider() {
 
     context(context: ParadoxHintsContext)
     override fun collectFromElement(element: PsiElement, sink: InlayHintsSink) {
+        // TODO 3.0.x refactor: use `icu.windea.pls.lang.util.ParadoxModifierManager.getModifierPresentableNames` directly?
         if (element !is ParadoxScriptStringExpressionElement) return
         if (!element.isDataExpression()) return
         val config = ParadoxConfigManager.getConfigs(element).firstOrNull() ?: return
@@ -54,7 +55,7 @@ class ParadoxModifierPresentableNameHintsProvider : ParadoxHintsProvider() {
         val localisation = keys.firstNotNullOfOrNull { key ->
             val selector = ParadoxLocalisationSearch.selector(project, element).contextSensitive()
                 .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
-                .withConstraint(ParadoxLocalisationIndexConstraint.Modifier)
+                .withConstraint(ParadoxLocalisationIndexConstraint.Modifier) // so ignore case
             ParadoxLocalisationSearch.searchNormal(key, selector).find()
         } ?: return
 

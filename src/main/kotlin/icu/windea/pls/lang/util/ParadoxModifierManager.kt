@@ -88,8 +88,7 @@ object ParadoxModifierManager {
 
     fun completeModifier(context: ParadoxCompletionContext, result: CompletionResultSet) {
         if (context.contextElement !is ParadoxScriptStringExpressionElement) return
-        val modifierNames = mutableSetOf<String>()
-        ParadoxModifierService.completeModifier(context, result, modifierNames)
+        ParadoxModifierService.completeModifier(context, result)
     }
 
     fun completeTemplateModifier(contextElement: PsiElement, templateExpression: CwtTemplateExpression, configGroup: CwtConfigGroup, processor: Processor<String>) {
@@ -178,7 +177,7 @@ object ParadoxModifierManager {
     fun getModifierInfo(name: String, element: PsiElement, configGroup: CwtConfigGroup, useSupport: ParadoxModifierSupport? = null): ParadoxModifierInfo? {
         val rootFile = selectRootFile(element) ?: return null
         val cache = configGroup.modifierInfoCache.get(rootFile)
-        val cacheKey = name
+        val cacheKey = name.lowercase() // since modifier names are case-insensitive
         val modifierInfo = cache.get(cacheKey) {
             // 进行代码补全时，可能需要使用指定的扩展点解析修正
             useSupport?.resolveModifier(name, element, configGroup)?.also { it.support = useSupport }
@@ -195,7 +194,7 @@ object ParadoxModifierManager {
         val project = element.project
         val configGroup = ChronicleFacade.getConfigGroup(project, gameType)
         val cache = configGroup.modifierInfoCache.get(rootFile)
-        val cacheKey = name
+        val cacheKey = name.lowercase() // since modifier names are case-insensitive
         val modifierInfo = cache.get(cacheKey) {
             ParadoxModifierService.resolveModifier(name, element, configGroup) ?: ParadoxModifierInfo.EMPTY
         }
@@ -210,7 +209,7 @@ object ParadoxModifierManager {
         val project = modifierElement.project
         val configGroup = ChronicleFacade.getConfigGroup(project, gameType)
         val cache = configGroup.modifierInfoCache.get(rootFile)
-        val cacheKey = modifierElement.name
+        val cacheKey = modifierElement.name.lowercase() // since modifier names are case-insensitive
         val modifierInfo = cache.get(cacheKey) {
             modifierElement.toInfo()
         }
@@ -247,7 +246,7 @@ object ParadoxModifierManager {
         return keys.firstNotNullOfOrNull { key ->
             val selector = ParadoxLocalisationSearch.selector(project, element)
                 .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
-                .withConstraint(ParadoxLocalisationIndexConstraint.Modifier)
+                .withConstraint(ParadoxLocalisationIndexConstraint.Modifier) // so ignore case
             val nameLocalisations = ParadoxLocalisationSearch.searchNormal(key, selector).findAll()
             nameLocalisations.mapNotNullFast { ParadoxLocalisationManager.getPresentableText(it) }.toSet().orNull()
         }.orEmpty()

@@ -288,7 +288,7 @@ object CwtDocumentationManager {
             keys.firstNotNullOfOrNull { key ->
                 val selector = ParadoxLocalisationSearch.selector(project, contextElement).contextSensitive()
                     .preferLocale(usedLocale)
-                    .withConstraint(ParadoxLocalisationIndexConstraint.Modifier)
+                    .withConstraint(ParadoxLocalisationIndexConstraint.Modifier) // so ignore case
                 ParadoxLocalisationSearch.searchNormal(key, selector).find()
             }
         }
@@ -297,7 +297,7 @@ object CwtDocumentationManager {
             keys.firstNotNullOfOrNull { key ->
                 val selector = ParadoxLocalisationSearch.selector(project, contextElement).contextSensitive()
                     .preferLocale(usedLocale)
-                    .withConstraint(ParadoxLocalisationIndexConstraint.Modifier)
+                    .withConstraint(ParadoxLocalisationIndexConstraint.Modifier) // so ignore case
                 ParadoxLocalisationSearch.searchNormal(key, selector).find()
             }
         }

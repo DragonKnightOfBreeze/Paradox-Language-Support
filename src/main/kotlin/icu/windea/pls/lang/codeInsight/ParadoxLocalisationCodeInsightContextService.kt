@@ -17,6 +17,7 @@ import icu.windea.pls.core.util.FindProcessor
 import icu.windea.pls.core.util.ProcessorScope
 import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContext.*
 import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.index.constraints.ParadoxLocalisationIndexConstraint
 import icu.windea.pls.lang.inspections.ChronicleInspections
 import icu.windea.pls.lang.inspections.script.common.MissingLocalisationInspection
 import icu.windea.pls.lang.isParameterized
@@ -26,6 +27,7 @@ import icu.windea.pls.lang.resolve.CwtLocalisationLocationResolveResult
 import icu.windea.pls.lang.resolve.ParadoxConfigExpressionService
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.util.locale
+import icu.windea.pls.lang.search.util.withConstraint
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
@@ -166,9 +168,10 @@ object ParadoxLocalisationCodeInsightContextService {
                 val check = checkGeneratedModifierNamesForDefinitions(inspection)
                 val keys = ParadoxModifierManager.getModifierNameKeys(modifierName, element)
                 val keyToUse = keys.firstOrNull() ?: return@run
+                val constraint = ParadoxLocalisationIndexConstraint.Modifier // so ignore case
                 for (locale in locales) {
                     ProgressManager.checkCanceled()
-                    val missing = keys.all { key -> isMissing(key, project, element, locale, localisationType) }
+                    val missing = keys.all { key -> isMissing(key, project, element, locale, localisationType, constraint) }
                     val codeInsightInfo = ParadoxLocalisationCodeInsightInfo(type, keyToUse, null, locale, check, missing, false)
                     codeInsightInfos += codeInsightInfo
                 }
@@ -178,9 +181,10 @@ object ParadoxLocalisationCodeInsightContextService {
                 val check = checkGeneratedModifierDescriptionsForDefinitions(inspection)
                 val keys = ParadoxModifierManager.getModifierDescKeys(modifierName, element)
                 val keyToUse = keys.firstOrNull() ?: return@run
+                val constraint = ParadoxLocalisationIndexConstraint.Modifier // so ignore case
                 for (locale in locales) {
                     ProgressManager.checkCanceled()
-                    val missing = keys.all { key -> isMissing(key, project, element, locale, localisationType) }
+                    val missing = keys.all { key -> isMissing(key, project, element, locale, localisationType, constraint) }
                     val codeInsightInfo = ParadoxLocalisationCodeInsightInfo(type, keyToUse, null, locale, check, missing, false)
                     codeInsightInfos += codeInsightInfo
                 }
@@ -252,9 +256,10 @@ object ParadoxLocalisationCodeInsightContextService {
             val check = checkModifierNames(inspection)
             val keys = ParadoxModifierManager.getModifierNameKeys(modifierName, element)
             val keyToUse = keys.firstOrNull() ?: return@run
+            val constraint = ParadoxLocalisationIndexConstraint.Modifier // so ignore case
             for (locale in locales) {
                 ProgressManager.checkCanceled()
-                val missing = keys.all { key -> isMissing(key, project, element, locale, localisationType) }
+                val missing = keys.all { key -> isMissing(key, project, element, locale, localisationType, constraint) }
                 val codeInsightInfo = ParadoxLocalisationCodeInsightInfo(type, keyToUse, null, locale, check, missing, false)
                 codeInsightInfos += codeInsightInfo
             }
@@ -264,9 +269,10 @@ object ParadoxLocalisationCodeInsightContextService {
             val check = checkModifierDescriptions(inspection)
             val keys = ParadoxModifierManager.getModifierDescKeys(modifierName, element)
             val keyToUse = keys.firstOrNull() ?: return@run
+            val constraint = ParadoxLocalisationIndexConstraint.Modifier // so ignore case
             for (locale in locales) {
                 ProgressManager.checkCanceled()
-                val missing = keys.all { key -> isMissing(key, project, element, locale, localisationType) }
+                val missing = keys.all { key -> isMissing(key, project, element, locale, localisationType, constraint) }
                 val codeInsightInfo = ParadoxLocalisationCodeInsightInfo(type, keyToUse, null, locale, check, missing, false)
                 codeInsightInfos += codeInsightInfo
             }
@@ -324,8 +330,9 @@ object ParadoxLocalisationCodeInsightContextService {
         }
     }
 
-    private fun isMissing(name: String, project: Project, element: PsiElement, locale: CwtLocaleConfig, localisationType: ParadoxLocalisationType): Boolean {
+    private fun isMissing(name: String, project: Project, element: PsiElement, locale: CwtLocaleConfig, localisationType: ParadoxLocalisationType, constraint: ParadoxLocalisationIndexConstraint? = null): Boolean {
         val selector = ParadoxLocalisationSearch.selector(project, element).locale(locale)
+            .withConstraint(constraint)
         val missing = ParadoxLocalisationSearch.search(name, localisationType, selector).findFirst() == null
         return missing
     }
