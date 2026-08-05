@@ -37,7 +37,7 @@ object ChronicleTestManager {
         val gameTypesToInit = mutableSetOf<ParadoxGameType>()
         gameTypesToInit.add(ParadoxGameType.Core)
         gameTypesToInit.addAll(gameTypes)
-        if(sameContext) gameTypesToInit.removeAll(initializedGameTypes)
+        if (sameContext) gameTypesToInit.removeAll(initializedGameTypes)
         val configGroups = CwtConfigGroupService.getInstance(project).getConfigGroups().values.filter { it.gameType in gameTypesToInit }
         initializedGameTypes += gameTypesToInit
         initializedBuiltInGroupGroups = !onlyInjected

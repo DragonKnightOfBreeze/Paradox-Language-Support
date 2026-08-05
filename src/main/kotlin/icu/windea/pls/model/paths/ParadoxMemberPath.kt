@@ -28,7 +28,7 @@ import icu.windea.pls.core.util.values.LazyValue
  * - `foo/bar` - 对应所属脚本文件、定义或脚本成员中，名为 `foo` 的属性的值（块/子句）中，名为 `bar` 的属性。
  * - `foo/-` - 对应所属脚本文件、定义或脚本成员，名为 `foo` 的属性的值（块/子句）中，任意的值。
  */
-interface ParadoxMemberPath  {
+interface ParadoxMemberPath {
     val path: String
     val subPaths: List<String> // 子路径中不用保留括起的双引号
     val length: Int
@@ -114,7 +114,7 @@ private fun String.internPath() = pathInterner.intern(this)
 private fun String.internSubPath() = subPathInterner.intern(this)
 
 private fun computePath(subPaths: List<String>): String {
-    if(subPaths.anyFast { it.contains('/') }) {
+    if (subPaths.anyFast { it.contains('/') }) {
         return subPaths.joinToStringFast("/") { it.replace("/", "\\/") }
     }
     return subPaths.joinToStringFast("/")

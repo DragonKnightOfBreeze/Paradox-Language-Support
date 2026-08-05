@@ -12,7 +12,7 @@ import icu.windea.pls.core.util.KeyWithProducer
  *
  * @see MetadataMapBase
  */
-open class MetadataMapAndUserDataHolderBase: UserDataHolderBase(), MetadataMap {
+open class MetadataMapAndUserDataHolderBase : UserDataHolderBase(), MetadataMap {
     // NOTE 3.0.1 暂时不考虑更加激进的底层数据结构
     //  - 比如，可以在底层仅使用 `bitmasks: Long` 和 `elements: Array<Any>` 这两个字段
     //  - 当元素个数大于2且不大于64时，这种策略可以获得更好的性能和内存占用

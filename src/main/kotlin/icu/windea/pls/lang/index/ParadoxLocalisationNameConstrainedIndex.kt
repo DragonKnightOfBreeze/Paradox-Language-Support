@@ -10,7 +10,7 @@ import icu.windea.pls.lang.index.constraints.ParadoxLocalisationIndexConstraint
  * @see ParadoxLocalisationNameIndex
  * @see ParadoxLocalisationIndexConstraint
  */
-abstract class ParadoxLocalisationNameConstrainedIndex: ParadoxLocalisationNameIndex() {
+abstract class ParadoxLocalisationNameConstrainedIndex : ParadoxLocalisationNameIndex() {
     abstract val constraint: ParadoxLocalisationIndexConstraint
 
     override fun getKey() = constraint.indexKey

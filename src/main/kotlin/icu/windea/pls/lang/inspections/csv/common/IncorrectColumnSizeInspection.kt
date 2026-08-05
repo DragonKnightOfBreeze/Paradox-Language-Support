@@ -44,7 +44,7 @@ class IncorrectColumnSizeInspection : LocalInspectionTool() {
         return object : ParadoxCsvVisitor() {
             override fun visitColumnContainer(element: ParadoxCsvColumnContainer) {
                 ProgressManager.checkCanceled()
-                if(rowConfig.skipLastRow && ParadoxCsvPsiService.isLastRow(element)) return // ignored
+                if (rowConfig.skipLastRow && ParadoxCsvPsiService.isLastRow(element)) return // ignored
                 val columnSize = ParadoxCsvPsiService.getColumnSize(element)
                 val expectColumnSize = rowConfig.columns.size
                 if (columnSize == expectColumnSize) return

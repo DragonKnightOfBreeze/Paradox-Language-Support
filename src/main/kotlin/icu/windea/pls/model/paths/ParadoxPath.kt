@@ -26,7 +26,7 @@ import icu.windea.pls.model.constraints.ParadoxPathConstraint
  *
  * @see ParadoxPathConstraint
  */
-interface ParadoxPath{
+interface ParadoxPath {
     val path: String
     val subPaths: List<String>
     val parent: String

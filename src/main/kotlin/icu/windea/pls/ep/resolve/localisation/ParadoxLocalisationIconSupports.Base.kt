@@ -63,7 +63,7 @@ abstract class ParadoxCompositeLocalisationIconSupport : ParadoxLocalisationIcon
 
     final override fun resolve(name: String, element: ParadoxLocalisationIcon, project: Project): PsiElement? {
         _supports.forEachFast f@{ support ->
-            if(support is ParadoxCompositeLocalisationIconSupport) return@f // skip
+            if (support is ParadoxCompositeLocalisationIconSupport) return@f // skip
             ProgressManager.checkCanceled()
             support.resolve(name, element, project)?.let { return it }
         }
@@ -72,7 +72,7 @@ abstract class ParadoxCompositeLocalisationIconSupport : ParadoxLocalisationIcon
 
     final override fun resolveAll(name: String, element: ParadoxLocalisationIcon, project: Project): Collection<PsiElement> {
         _supports.forEachFast f@{ support ->
-            if(support is ParadoxCompositeLocalisationIconSupport) return@f // skip
+            if (support is ParadoxCompositeLocalisationIconSupport) return@f // skip
             ProgressManager.checkCanceled()
             support.resolveAll(name, element, project).orNull()?.let { return it }
         }
@@ -81,7 +81,7 @@ abstract class ParadoxCompositeLocalisationIconSupport : ParadoxLocalisationIcon
 
     final override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
         _supports.forEachFast f@{ support ->
-            if(support is ParadoxCompositeLocalisationIconSupport) return@f // skip
+            if (support is ParadoxCompositeLocalisationIconSupport) return@f // skip
             ProgressManager.checkCanceled()
             support.complete(context, result)
         }

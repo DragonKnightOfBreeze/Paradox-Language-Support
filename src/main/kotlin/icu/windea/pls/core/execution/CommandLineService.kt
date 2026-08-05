@@ -18,8 +18,8 @@ object CommandLineService {
     fun getCommandTypeForOs(commandType: CommandType = CommandType.AUTO): CommandType {
         return when (commandType) {
             CommandType.AUTO -> if (SystemInfo.isWindows) CommandType.POWER_SHELL else CommandType.SHELL
-            CommandType.CMD -> if(SystemInfo.isWindows) commandType else throw UnsupportedOperationException()
-            CommandType.POWER_SHELL -> if(SystemInfo.isWindows) commandType else throw UnsupportedOperationException()
+            CommandType.CMD -> if (SystemInfo.isWindows) commandType else throw UnsupportedOperationException()
+            CommandType.POWER_SHELL -> if (SystemInfo.isWindows) commandType else throw UnsupportedOperationException()
             CommandType.SHELL -> commandType // this is allowed and maybe available
             CommandType.NONE -> commandType
         }

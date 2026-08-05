@@ -300,13 +300,13 @@ class CwtConfigManipulationServiceTest : BasePlatformTestCase(), ChronicleTestSc
         val propMap = root.propertyList.associateBy({ it.name }, { CwtPropertyConfig.resolve(it, file, configGroup)!! })
         val props = propMap.values
 
-        assertTrue(props.expandConfigExpression{ it.type == CwtDataTypes.Constant }) // keys -> all constant
+        assertTrue(props.expandConfigExpression { it.type == CwtDataTypes.Constant }) // keys -> all constant
 
         assertTrue(props.expandKeyExpression { it.type == CwtDataTypes.Constant }) // keys -> all constant
 
-        assertFalse(propMap.getValue("k1").expandValueExpression{ it.type != CwtDataTypes.Int })
-        assertFalse(propMap.getValue("k2").expandValueExpression{ it.type != CwtDataTypes.Int }) // expanded
-        assertFalse(propMap.getValue("k3").expandValueExpression{ it.type != CwtDataTypes.Int }) // expanded
+        assertFalse(propMap.getValue("k1").expandValueExpression { it.type != CwtDataTypes.Int })
+        assertFalse(propMap.getValue("k2").expandValueExpression { it.type != CwtDataTypes.Int }) // expanded
+        assertFalse(propMap.getValue("k3").expandValueExpression { it.type != CwtDataTypes.Int }) // expanded
         assertTrue(propMap.getValue("k4").expandValueExpression { it.type != CwtDataTypes.Int }) // ignored
         assertTrue(propMap.getValue("k5").expandValueExpression { it.type != CwtDataTypes.Int }) // ignored
         assertTrue(propMap.getValue("k0").expandValueExpression { it.type != CwtDataTypes.Int })

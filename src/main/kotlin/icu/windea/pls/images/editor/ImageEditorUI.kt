@@ -566,7 +566,6 @@ class ImageEditorUI(
     override fun performCopy(dataContext: DataContext) {
         val document = imageComponent.document
         val image = document.value
-        @Suppress("UsePropertyAccessSyntax")
         CopyPasteManager.getInstance().setContents(ImageTransferable(image))
     }
 

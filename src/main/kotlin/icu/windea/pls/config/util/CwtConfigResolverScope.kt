@@ -53,7 +53,7 @@ interface CwtConfigResolverScope {
     @Suppress("unused")
     fun Logger.infoWithPrefix(element: PsiElement?, configGroup: CwtConfigGroup, message: String) {
         if (configGroup.project.isDefault) return /// skip for application config groups
-        info("${getLogPrefix(element, configGroup)} $message" )
+        info("${getLogPrefix(element, configGroup)} $message")
     }
 
     @Suppress("unused")
@@ -66,7 +66,7 @@ interface CwtConfigResolverScope {
     @Suppress("unused")
     fun Logger.warnWithPrefix(element: PsiElement?, configGroup: CwtConfigGroup, message: String) {
         if (configGroup.project.isDefault) return /// skip for application config groups
-        warn("${getLogPrefix(element, configGroup)} $message" )
+        warn("${getLogPrefix(element, configGroup)} $message")
     }
 
     @Suppress("unused")

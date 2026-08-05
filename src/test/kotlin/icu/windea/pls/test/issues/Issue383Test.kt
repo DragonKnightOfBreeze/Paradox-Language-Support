@@ -5,6 +5,7 @@ import com.intellij.psi.util.parentOfType
 import com.intellij.testFramework.IndexingTestUtil
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import icu.windea.pls.ep.resolve.config.CwtTriggerWithParametersAwareOverriddenConfigProvider
 import icu.windea.pls.lang.inspections.script.common.MissingParameterInspection
 import icu.windea.pls.lang.inspections.script.common.UnsupportedParameterInspection
 import icu.windea.pls.lang.inspections.script.common.UnusedParameterInspection
@@ -31,7 +32,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import icu.windea.pls.ep.resolve.config.CwtTriggerWithParametersAwareOverriddenConfigProvider
 
 /**
  * See: [#383](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/383)

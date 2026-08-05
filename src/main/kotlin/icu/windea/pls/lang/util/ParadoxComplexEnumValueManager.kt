@@ -72,7 +72,7 @@ object ParadoxComplexEnumValueManager {
     @Suppress("unused")
     fun getPresentableNames(name: String, contextElement: PsiElement, locale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig()): Set<String> {
         val nameLocalisation = getNameLocalisations(name, contextElement, locale)
-        if(nameLocalisation.isEmpty()) return emptySet()
+        if (nameLocalisation.isEmpty()) return emptySet()
         return nameLocalisation.mapNotNullFast { ParadoxLocalisationManager.getPresentableText(it) }.toSet()
     }
 

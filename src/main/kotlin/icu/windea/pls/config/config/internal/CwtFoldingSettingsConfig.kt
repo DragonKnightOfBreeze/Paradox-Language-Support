@@ -45,7 +45,7 @@ private object CwtFoldingSettingsConfigResolver : CwtConfigResolverScope {
                 val id = property.key
                 val propConfigs = property.properties
                 if (propConfigs.isNullOrEmpty()) {
-                    logger.warnWithPrefix(property,"Skipped invalid internal folding settings config (id: $id): Missing properties")
+                    logger.warnWithPrefix(property, "Skipped invalid internal folding settings config (id: $id): Missing properties")
                     continue
                 }
                 val propGroup = propConfigs.groupBy { it.key }

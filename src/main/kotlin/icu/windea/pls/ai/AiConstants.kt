@@ -9,7 +9,6 @@ object AiConstants {
         const val defaultLocalisationMemorySize: Int = 10000
     }
 
-    @Suppress("unused")
     object Models {
         const val deepseekFlash = "deepseek-v4-flash"
         const val deepseekPro = "deepseek-v4-pro"
@@ -20,7 +19,6 @@ object AiConstants {
         const val gpt = "gpt-5.4"
     }
 
-    @Suppress("unused")
     object BaseUrls {
         const val deepseek = "https://api.deepseek.com"
         const val deepseekAnthropic = "https://api.deepseek.com/anthropic"

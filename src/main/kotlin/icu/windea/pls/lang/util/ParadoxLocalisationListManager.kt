@@ -1,4 +1,3 @@
-
 package icu.windea.pls.lang.util
 
 import com.intellij.openapi.ide.CopyPasteManager
@@ -12,7 +11,6 @@ object ParadoxLocalisationListManager {
     fun copyWithLocale(element: ParadoxLocalisationPropertyList) {
         // 2.1.8 不检查 localeId 是否合法
         val text = element.text.trim() // 去除首尾空白
-        @Suppress("UsePropertyAccessSyntax")
         CopyPasteManager.getInstance().setContents(StringSelection(text))
     }
 
@@ -23,7 +21,6 @@ object ParadoxLocalisationListManager {
         // 2.1.8 不检查 localeId 是否合法
         val offset = element.locale?.textLength ?: 0
         val text = element.text.drop(offset).trimIndent().trim() // 去除前缀，去除最小缩进，去除首尾空白
-        @Suppress("UsePropertyAccessSyntax")
         CopyPasteManager.getInstance().setContents(StringSelection(text))
     }
 }
