@@ -61,7 +61,7 @@ interface CwtConfigContext : UserDataHolder {
     /** 将当前的上下文对象标记动态的。这意味着获取上下文规则时，会改为从上下文对象上的缓存中获取，而非从规则分组上的缓存中获取。 */
     fun markDynamic()
 
-    /** 是否是整个文件中的根上下文。 */
+    /** 是否存在。 */
     fun inRoot(): Boolean
 
     /** 是否是某种特定声明（如定义、定义注入、定值变量）的根上下文。 */
@@ -71,10 +71,10 @@ interface CwtConfigContext : UserDataHolder {
     fun getConfigs(options: ParadoxMatchOptions? = null): List<CwtMemberConfig<*>>
 
     /** 是否跳过代码检查 [MissingExpressionInspection] */
-    fun skipMissingExpressionCheck(): Boolean
+    fun skipMissingExpressionCheck(): Boolean = false
 
     /** 是否跳过代码检查 [TooManyExpressionInspection] */
-    fun skipTooManyExpressionCheck(): Boolean
+    fun skipTooManyExpressionCheck(): Boolean = false
 
     object Keys : KeyRegistry()
 
