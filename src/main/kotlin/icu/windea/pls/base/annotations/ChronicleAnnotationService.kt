@@ -7,7 +7,7 @@ import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.expressions.ParadoxDefinitionTypeExpression
 
 object ChronicleAnnotationService {
-    // TODO 3.0.1+ remove all annotation based check (since it's not effective and necessary)
+    // TODO 3.0.x refactor: remove all annotation based check (since it's not effective and necessary)
 
     private val gameTypesCache = CacheBuilder().build<Class<*>, Set<ParadoxGameType>> {
         it.getAnnotation(ForGameType::class.java)?.value?.toSet()?.optimized().orEmpty()

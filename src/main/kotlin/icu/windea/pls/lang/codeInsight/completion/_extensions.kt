@@ -81,7 +81,7 @@ fun LookupElementBuilder.withScopeMatched(scopeMatched: Boolean): LookupElementB
 fun LookupElementBuilder.withScriptedVariablePresentableNames(element: ParadoxScriptScriptedVariable): LookupElementBuilder {
     if (!ChronicleSettings.getInstance().state.completion.completeByPresentableName) return this
     ProgressManager.checkCanceled()
-    // TODO 3.0.1+ may be relatively slow, consider optimize performance...
+    // TODO 3.0.1+ [performance] may be relatively slow, consider optimize performance...
     val presentableNames = ParadoxScriptedVariableManager.getPresentableNames(element)
     if (presentableNames.isEmpty()) return this
     return withLookupStrings(presentableNames)
@@ -90,7 +90,7 @@ fun LookupElementBuilder.withScriptedVariablePresentableNames(element: ParadoxSc
 fun LookupElementBuilder.withDefinitionPresentableNames(element: ParadoxDefinitionElement): LookupElementBuilder {
     if (!ChronicleSettings.getInstance().state.completion.completeByPresentableName) return this
     ProgressManager.checkCanceled()
-    // TODO 3.0.1+ may be relatively slow, consider optimize performance...
+    // TODO 3.0.1+ [performance] may be relatively slow, consider optimize performance...
     val presentableNames = ParadoxDefinitionManager.getPresentableNames(element)
     if (presentableNames.isEmpty()) return this
     return withLookupStrings(presentableNames)
@@ -99,7 +99,7 @@ fun LookupElementBuilder.withDefinitionPresentableNames(element: ParadoxDefiniti
 fun LookupElementBuilder.withModifierPresentableNames(modifierName: String, context: ParadoxCompletionContext): LookupElementBuilder {
     if (!ChronicleSettings.getInstance().state.completion.completeByPresentableName) return this
     ProgressManager.checkCanceled()
-    // TODO 3.0.1+ may be relatively slow, consider optimize performance...
+    // TODO 3.0.1+ [performance] may be relatively slow, consider optimize performance...
     val presentableNames = ParadoxModifierManager.getModifierPresentableNames(modifierName, context.contextElement, context.project)
     if (presentableNames.isEmpty()) return this
     return withLookupStrings(presentableNames)

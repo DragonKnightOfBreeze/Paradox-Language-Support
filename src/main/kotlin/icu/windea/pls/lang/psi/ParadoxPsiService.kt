@@ -142,7 +142,7 @@ object ParadoxPsiService {
 
     // endregion
 
-    // TODO 3.0.1+ [refactor] extract into manipulation services
+    // TODO 3.0.x refactor: extract into manipulation services
 
     // region Inline Methods
 

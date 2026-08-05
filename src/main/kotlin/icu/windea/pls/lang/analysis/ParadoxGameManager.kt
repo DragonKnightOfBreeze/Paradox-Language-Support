@@ -114,7 +114,7 @@ object ParadoxGameManager {
         // #339 the executable file will also use `.exe` extension, if using Proton on Linux OS
         val baseNames = gameType.metadata.executableBaseNames
         for (baseName in baseNames) {
-            // TODO 3.0.1+ require more optimization here (~6.7s during indexing for stellaris game directory)
+            // TODO 3.0.1+ [performance] require more optimization here (~6.7s during indexing for stellaris game directory)
             rootPath.resolve(baseName).takeIf { checkExecutablePath(it) }?.let { return it }
             rootPath.resolve("${baseName}.exe").takeIf { checkExecutablePath(it) }?.let { return it }
             rootPath.resolve("binaries").takeIf { it.isDirectory() }?.let { binariesPath ->

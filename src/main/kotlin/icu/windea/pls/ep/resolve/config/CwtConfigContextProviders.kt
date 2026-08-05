@@ -94,7 +94,8 @@ class CwtDefinitionConfigContextProvider : CwtConfigContextProvider {
         val memberRole = context.memberRole
         val memberPath = context.memberPath ?: return null // null -> unexpected
         val definitionInfo = context.definitionInfo ?: return null
-        val declarationConfig = definitionInfo.getDeclaration(options) ?: return null // TODO 2.0.6+ consider optimization (~3.6s during indexing)
+        // TODO 3.0.1+ [performance] consider optimization (relatively slow during indexing)
+        val declarationConfig = definitionInfo.getDeclaration(options) ?: return null
         val declarationConfigCacheKey = declarationConfig.declarationConfigCacheKey ?: return null // null -> unexpected
         return buildString {
             append(gameType.ordinal)

@@ -6,11 +6,11 @@ import icu.windea.pls.model.scope.ParadoxScopeContext
 import icu.windea.pls.model.scope.promotions
 
 object ParadoxScopeMatchService {
-    // TODO 3.0.1 refactor but should not be a lot
+    // TODO 3.0.2 refactor but should not be a lot
 
     @Suppress("unused")
     fun matchesScope(thisScope: String, scopeToMatch: String, configGroup: CwtConfigGroup): Boolean {
-        // TODO 3.0.1 for any, all, union (e.g., carrier), and other normal scopes
+        // TODO 3.0.2 for any, all, union (e.g., carrier), and other normal scopes
         TODO()
     }
 
