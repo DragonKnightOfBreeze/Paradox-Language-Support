@@ -33,7 +33,7 @@ class ParadoxDataSourceNode(
     override val text: String,
     override val rangeInExpression: TextRange,
     override val configGroup: CwtConfigGroup,
-    val linkConfigs: List<CwtLinkConfig>
+    val linkConfigs: List<CwtLinkConfig>,
 ) : ParadoxComplexExpressionNodeBase(), ParadoxIdentifierNode, ParadoxDynamicDataNode {
     private val linkConfigsDynamicValue = linkConfigs.filterFast { it.configExpression?.type in CwtDataTypeSets.DynamicValue }
     private val linkConfigsNotDynamicValue = linkConfigs.filterFast { it.configExpression?.type !in CwtDataTypeSets.DynamicValue }

@@ -135,9 +135,11 @@ class ParadoxValueFieldValueNode(
 
         private fun resolveDsNode(text: String, textRange: TextRange, configGroup: CwtConfigGroup, configs: List<CwtLinkConfig>): ParadoxComplexExpressionNode {
             // NOTE 2.1.10 nested expressions here may not be valid (return null) even if the data source expression is single, and then fallback to data source node
-            configs.filterFast { it.configExpression?.type in CwtDataTypeSets.DynamicValue }.orNull()
-                ?.let { ParadoxDynamicValueExpression.resolve(text, textRange, configGroup, it) }
-                ?.let { return it }
+            if (text.contains('@')) { // NOTE 3.0.1 workaround to be compatible with `value[x] | <y> | ...` (#387)
+                configs.filterFast { it.configExpression?.type in CwtDataTypeSets.DynamicValue }.orNull()
+                    ?.let { ParadoxDynamicValueExpression.resolve(text, textRange, configGroup, it) }
+                    ?.let { return it }
+            }
             configs.filterFast { it.configExpression?.type in CwtDataTypeSets.ScopeField }.orNull()
                 ?.let { ParadoxScopeFieldExpression.resolve(text, textRange, configGroup) }
                 ?.let { return it }
