@@ -78,6 +78,10 @@ object ParadoxScopeManager {
 
     fun getScopeContext(element: ParadoxScriptMember): ParadoxScopeContext? {
         // from cache
+        return getScopeContextFromCache(element)
+    }
+
+    private fun getScopeContextFromCache(element: ParadoxScriptMember): ParadoxScopeContext? {
         return CachedValuesManager.getCachedValue(element, Keys.cachedScopeContext) {
             ProgressManager.checkCanceled()
             runSmartReadAction {
@@ -89,6 +93,10 @@ object ParadoxScopeManager {
 
     fun getScopeContext(element: ParadoxDynamicValueLightElement): ParadoxScopeContext {
         // from cache
+        return getScopeContextFromCache(element)
+    }
+
+    private fun getScopeContextFromCache(element: ParadoxDynamicValueLightElement): ParadoxScopeContext {
         return CachedValuesManager.getCachedValue(element, Keys.cachedScopeContext) {
             ProgressManager.checkCanceled()
             runSmartReadAction {
@@ -119,8 +127,8 @@ object ParadoxScopeManager {
 
     fun getScopeContext(config: CwtMemberConfig<*>, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext? {
         // 优先基于内联前的规则，如果没有，再基于内联后的规则
-        val replaceScopes = config.optionData.replaceScopes ?: config.resolvedOrNull()?.optionData?.replaceScopes
-        val pushScope = config.optionData.pushScope ?: config.resolved().optionData.pushScope
+        val replaceScopes = config.optionMetadata.replaceScopes ?: config.resolvedOrNull()?.optionMetadata?.replaceScopes
+        val pushScope = config.optionMetadata.pushScope ?: config.resolved().optionMetadata.pushScope
         if (replaceScopes != null) {
             return ParadoxScopeContext.resolve(replaceScopes)
         } else if (pushScope != null) {
@@ -131,14 +139,18 @@ object ParadoxScopeManager {
 
     fun getSupportedScopes(modifierCategories: Map<String, CwtModifierCategoryConfig>): Set<String> {
         val categoryConfigs = modifierCategories.values
-        return when {
+        val result = when {
             categoryConfigs.isEmpty() -> ParadoxScopeConstants.anyScopes
             categoryConfigs.any { it.supportedScopes == ParadoxScopeConstants.anyScopes } -> ParadoxScopeConstants.anyScopes
             else -> categoryConfigs.flatMapTo(mutableSetOf()) { it.supportedScopes }
         }
+        if (result.isEmpty()) return emptySet()
+        return result
     }
 
     fun getSupportedScopes(element: ParadoxExpressionElement, node: ParadoxComplexExpressionNode, inputScopeContext: ParadoxScopeContext): Set<String>? {
-        return ParadoxScopeService.evaluateSupportedScopesForNode(element, node, inputScopeContext)
+        val result = ParadoxScopeService.evaluateSupportedScopesForNode(element, node, inputScopeContext) ?: return null
+        if (result.isEmpty()) return emptySet()
+        return result
     }
 }

@@ -7,8 +7,8 @@ import com.intellij.openapi.util.Key
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
 import icu.windea.pls.base.annotations.ChronicleAnnotationService
-import icu.windea.pls.base.annotations.WithDefinitionType
-import icu.windea.pls.base.annotations.WithGameType
+import icu.windea.pls.base.annotations.ForDefinitionType
+import icu.windea.pls.base.annotations.ForGameType
 import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.cast
 import icu.windea.pls.core.util.createKey
@@ -16,11 +16,12 @@ import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
+import kotlinx.coroutines.CancellationException
 
 /**
  * 支持符合以下条件的定义的数据：
  * - 其类型继承自 [ParadoxDefinitionPresentationBase]。
- * - 其类型注有适当的注解（[WithGameType]、[WithDefinitionType]）。
+ * - 其类型注有适当的注解（[ForGameType]、[ForDefinitionType]）。
  */
 class ParadoxBaseDefinitionPresentationProvider : ParadoxDefinitionPresentationProvider {
     private val keyCache = CacheBuilder().build<Class<out ParadoxDefinitionPresentation>, Key<CachedValue<ParadoxDefinitionPresentation>>> {
@@ -61,7 +62,7 @@ class ParadoxBaseDefinitionPresentationProvider : ParadoxDefinitionPresentationP
             val presentation = type.getConstructor(ParadoxDefinitionElement::class.java).newInstance(element)
             return presentation
         } catch (e: Exception) {
-            if (e is ProcessCanceledException) throw e
+            if (e is ProcessCanceledException || e is CancellationException) throw e
             thisLogger().warn("Cannot create definition presentation (type: $type)", e)
             return null
         }

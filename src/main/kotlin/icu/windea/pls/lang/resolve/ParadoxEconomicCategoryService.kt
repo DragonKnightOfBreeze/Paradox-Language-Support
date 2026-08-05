@@ -5,7 +5,7 @@ import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import com.intellij.util.Processor
-import icu.windea.pls.base.annotations.WithGameType
+import icu.windea.pls.base.annotations.ForGameType
 import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.process
@@ -21,8 +21,9 @@ import icu.windea.pls.model.ParadoxEconomicCategoryModifierInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.script.psi.ParadoxScriptProperty
+import kotlinx.coroutines.CancellationException
 
-@WithGameType(ParadoxGameType.Stellaris)
+@ForGameType(ParadoxGameType.Stellaris)
 object ParadoxEconomicCategoryService {
     fun resolveInfo(definition: ParadoxScriptProperty): ParadoxEconomicCategoryInfo? {
         try {
@@ -34,7 +35,7 @@ object ParadoxEconomicCategoryService {
             val modifierInfos = getModifierInfos(definition, definitionInfo, data)
             return ParadoxEconomicCategoryInfo(name, data.parent, data.useForAiBudget, data.modifierCategory, modifierInfos)
         } catch (e: Exception) {
-            if (e is ProcessCanceledException) throw e
+            if (e is ProcessCanceledException || e is CancellationException) throw e
             thisLogger().error(e)
             return null
         }
@@ -128,7 +129,7 @@ object ParadoxEconomicCategoryService {
 
     private fun processParentDataRecursively(contextElement: PsiElement, data: StellarisEconomicCategoryData, processor: Processor<StellarisEconomicCategoryData>): Boolean {
         val parent = data.parent?.orNull() ?: return true
-        return withRecursionGuard {
+        return withRecursionGuard({}.javaClass.name) {
             withRecursionCheck(parent) {
                 val selector = ParadoxDefinitionSearch.selector(contextElement.project, contextElement).contextSensitive()
                 ParadoxDefinitionSearch.searchProperty(parent, ParadoxDefinitionTypes.economicCategory, selector).process p@{

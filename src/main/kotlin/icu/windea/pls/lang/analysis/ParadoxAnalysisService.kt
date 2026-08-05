@@ -5,6 +5,8 @@ import com.intellij.openapi.vcs.FilePath
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.toNioPathOrNull
 import com.intellij.util.indexing.FileBasedIndex
+import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.trimFast
 import icu.windea.pls.core.util.Tuple2
@@ -22,14 +24,17 @@ import icu.windea.pls.model.paths.ParadoxPath
 import java.nio.file.Path
 import kotlin.io.path.isDirectory
 
+@Optimized
 object ParadoxAnalysisService {
     /**
      * @see ParadoxIgnoredFileProvider.isIgnoredFile
      */
     fun isIgnoredFile(path: ParadoxPath, entry: String): Boolean {
-        return ParadoxIgnoredFileProvider.EP_NAME.extensionList.any { ep ->
-            ep.isIgnoredFile(path, entry)
+        val eps = ParadoxIgnoredFileProvider.getAll()
+        eps.forEachFast { ep ->
+            if (ep.isIgnoredFile(path, entry)) return true
         }
+        return false
     }
 
     /**
@@ -37,9 +42,11 @@ object ParadoxAnalysisService {
      */
     fun getRootMetadata(rootPath: Path): ParadoxRootMetadata? {
         if (!rootPath.isDirectory()) return null
-        return ParadoxRootMetadataProvider.EP_NAME.extensionList.firstNotNullOfOrNull { ep ->
-            ep.getRootMetadata(rootPath)
+        val eps = ParadoxRootMetadataProvider.getAll()
+        eps.forEachFast { ep ->
+            ep.getRootMetadata(rootPath)?.let { return it }
         }
+        return null
     }
 
     /**
@@ -47,9 +54,11 @@ object ParadoxAnalysisService {
      */
     fun getInferredGameTypeInfo(rootPath: Path): ParadoxGameTypeInfo? {
         if (!rootPath.isDirectory()) return null
-        return ParadoxInferredGameTypeProvider.EP_NAME.extensionList.firstNotNullOfOrNull { ep ->
-            ep.getInferredGameTypeInfo(rootPath)
+        val eps = ParadoxInferredGameTypeProvider.getAll()
+        eps.forEachFast { ep ->
+            ep.getInferredGameTypeInfo(rootPath)?.let { return it }
         }
+        return null
     }
 
     fun resolveRootInfo(rootFile: VirtualFile): ParadoxRootInfo? {
@@ -111,7 +120,7 @@ object ParadoxAnalysisService {
     }
 
     fun resolveLocaleId(file: VirtualFile, project: Project): String? {
-        if (file.fileType != ParadoxLocalisationFileType) return null // fast return (meaningless for non-loc file types)
+        if (file.fileType !== ParadoxLocalisationFileType) return null // fast return (meaningless for non-loc file types)
         val indexId = ChronicleIndexKeys.FileLocale
         val localeId = FileBasedIndex.getInstance().getFileData(indexId, file, project).keys.singleOrNull()
         return localeId?.orNull()

@@ -1,12 +1,18 @@
 package icu.windea.pls.ep.resolve.expression
 
 import com.intellij.codeInsight.completion.CompletionResultSet
+import com.intellij.lang.annotation.AnnotationHolder
+import com.intellij.openapi.util.TextRange
+import com.intellij.psi.PsiReference
 import icu.windea.pls.config.CwtDataType
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
+import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.codeInsight.completion.ParadoxComplexExpressionCompletionManager
+import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxArrayDefineReferenceExpression
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDatabaseObjectExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDefineReferenceExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDynamicValueExpression
@@ -17,16 +23,41 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxTagsExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxTemplateExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxValueFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxVariableFieldExpression
+import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.model.type.ParadoxExpressionRole
+import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 // Complex Expressions
 
 /**
- * @see CwtDataTypes.TemplateExpression
+ * @see ParadoxComplexExpression
+ */
+abstract class ParadoxScriptComplexExpressionSupportBase : ParadoxScriptExpressionSupport {
+    override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, holder: AnnotationHolder) {
+        if (element !is ParadoxScriptStringExpressionElement) return
+        val configGroup = config.configGroup
+        val complexExpression = ParadoxComplexExpression.resolveByConfig(text, null, configGroup, config) ?: return
+        ParadoxExpressionManager.annotateComplexExpression(element, complexExpression, holder, config)
+    }
+
+    override fun getReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiReference> {
+        if (element !is ParadoxScriptStringExpressionElement) return emptyList()
+        val configGroup = config.configGroup
+        val complexExpression = ParadoxComplexExpression.resolveByConfig(text, null, configGroup, config) ?: return emptyList()
+        val references = complexExpression.getAllReferences(element)
+        if (references.isEmpty()) return emptyList()
+        return references
+    }
+}
+
+
+/**
+ * @see CwtDataTypes.Template
  * @see ParadoxTemplateExpression
  */
 class ParadoxScriptTemplateExpressionSupport : ParadoxScriptComplexExpressionSupportBase() {
     override fun supports(dataType: CwtDataType): Boolean {
-        return dataType == CwtDataTypes.TemplateExpression
+        return dataType == CwtDataTypes.Template
     }
 
     override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
@@ -60,8 +91,8 @@ class ParadoxScriptScopeFieldExpressionSupport : ParadoxScriptComplexExpressionS
     override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
         val configExpression = context.config?.configExpression ?: return
         val context = when (configExpression.type) {
-            CwtDataTypes.Scope -> context.copy(scopeName = configExpression.value)
-            CwtDataTypes.ScopeGroup -> context.copy(scopeGroupName = configExpression.value)
+            CwtDataTypes.Scope -> context.copy(scopeName = configExpression.metadata.value)
+            CwtDataTypes.ScopeGroup -> context.copy(scopeGroupName = configExpression.metadata.value)
             else -> context
         }
         ParadoxComplexExpressionCompletionManager.completeScopeFieldExpression(context, result)

@@ -15,6 +15,7 @@ import icu.windea.pls.model.index.CwtConfigSymbolIndexInfo
  * 规则符号的查询。
  *
  * @see CwtConfigSymbolSearcher
+ * @see CwtConfigSymbolSearch.Parameters
  */
 class CwtConfigSymbolSearch : ExtensibleQueryFactory<CwtConfigSymbolIndexInfo, CwtConfigSymbolSearch.Parameters>(EP_NAME) {
     /**

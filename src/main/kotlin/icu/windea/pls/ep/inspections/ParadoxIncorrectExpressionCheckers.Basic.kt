@@ -3,15 +3,14 @@ package icu.windea.pls.ep.inspections
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.util.parentOfType
-import icu.windea.pls.base.annotations.WithGameType
+import icu.windea.pls.base.annotations.ForGameType
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.expandConfigExpression
-import icu.windea.pls.config.configExpression.floatRange
-import icu.windea.pls.config.configExpression.intRange
 import icu.windea.pls.core.isExactDigit
 import icu.windea.pls.core.unquote
+import icu.windea.pls.core.util.ProcessorScope
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.ep.ChronicleEpBundle
 import icu.windea.pls.lang.inspections.ParadoxExpressionInspectionContext
@@ -38,10 +37,10 @@ class ParadoxRangedIntFieldChecker : ParadoxIncorrectExpressionChecker {
         if (element !is ParadoxScriptExpressionElement && element !is ParadoxCsvExpressionElement) return true
 
         // for int field only (after expansion)
-        val configExpression = config.expandConfigExpression().find { it.type in CwtDataTypeSets.IntField }
+        val configExpression = ProcessorScope.findFrom({ config.expandConfigExpression { process(it) } }) { it.type in CwtDataTypeSets.IntField }
         if (configExpression == null) return true
 
-        val intRange = configExpression.intRange ?: return true
+        val intRange = configExpression.metadata.intRange ?: return true
         val intValue = when {
             element is ParadoxScriptExpressionElement -> element.resolved()?.intValue()
             else -> element.value.toIntOrNull()
@@ -61,10 +60,10 @@ class ParadoxRangedFloatFieldChecker : ParadoxIncorrectExpressionChecker {
         if (element !is ParadoxScriptExpressionElement && element !is ParadoxCsvExpressionElement) return true
 
         // for float field only (after expansion)
-        val configExpression = config.expandConfigExpression().find { it.type in CwtDataTypeSets.FloatField }
+        val configExpression = ProcessorScope.findFrom({ config.expandConfigExpression { process(it) } }) { it.type in CwtDataTypeSets.FloatField }
         if (configExpression == null) return true
 
-        val floatRange = configExpression.floatRange ?: return true
+        val floatRange = configExpression.metadata.floatRange ?: return true
         val floatValue = when {
             element is ParadoxScriptExpressionElement -> element.resolved()?.floatValue()
             else -> element.value.toFloatOrNull()
@@ -84,10 +83,10 @@ class ParadoxColorFieldChecker : ParadoxIncorrectExpressionChecker {
         if (element !is ParadoxScriptColor) return true
 
         // for color field only (after expansion)
-        val configExpression = config.expandConfigExpression().find { it.type == CwtDataTypes.ColorField }
+        val configExpression = ProcessorScope.findFrom({ config.expandConfigExpression { process(it) } }) { it.type == CwtDataTypes.ColorField }
         if (configExpression == null) return true
 
-        val expectedColorType = configExpression.value ?: return true
+        val expectedColorType = configExpression.metadata.value ?: return true
         val colorType = element.colorType
         if (colorType == expectedColorType) return true
         val description = ChronicleEpBundle.message("incorrectExpression.colorType.desc", expectedColorType, colorType)
@@ -103,10 +102,10 @@ class ParadoxScopeBasedScopeFieldExpressionChecker : ParadoxIncorrectExpressionC
     override fun check(element: ParadoxExpressionElement, config: CwtMemberConfig<*>, context: ParadoxExpressionInspectionContext): Boolean {
         if (element !is ParadoxScriptStringExpressionElement) return true
 
-        val configExpression = config.expandConfigExpression().find { it.type == CwtDataTypes.Scope }
+        val configExpression = ProcessorScope.findFrom({ config.expandConfigExpression { process(it) } }) { it.type == CwtDataTypes.Scope }
         if (configExpression == null) return true
 
-        val expectedScope = configExpression.value ?: return true
+        val expectedScope = configExpression.metadata.value ?: return true
         val value = element.value
         val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(value, null, context.configGroup) ?: return true
         val memberElement = element.parentOfType<ParadoxScriptMember>(withSelf = true) ?: return true
@@ -126,10 +125,10 @@ class ParadoxScopeGroupBasedScopeFieldExpressionChecker : ParadoxIncorrectExpres
     override fun check(element: ParadoxExpressionElement, config: CwtMemberConfig<*>, context: ParadoxExpressionInspectionContext): Boolean {
         if (element !is ParadoxScriptStringExpressionElement) return true
 
-        val configExpression = config.expandConfigExpression().find { it.type == CwtDataTypes.ScopeGroup }
+        val configExpression = ProcessorScope.findFrom({ config.expandConfigExpression { process(it) } }) { it.type == CwtDataTypes.ScopeGroup }
         if (configExpression == null) return true
 
-        val expectedScopeGroup = configExpression.value ?: return true
+        val expectedScopeGroup = configExpression.metadata.value ?: return true
         val value = element.value
         val configGroup = config.configGroup
         val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(value, null, configGroup) ?: return true
@@ -151,12 +150,12 @@ class ParadoxIntValueFieldChecker : ParadoxIncorrectExpressionChecker {
         if (element !is ParadoxScriptExpressionElement) return true
 
         // for int value field only (after expansion)
-        val configExpression = config.expandConfigExpression().find { it.type == CwtDataTypes.IntValueField }
+        val configExpression = ProcessorScope.findFrom({ config.expandConfigExpression { process(it) } }) { it.type == CwtDataTypes.IntValueField }
         if (configExpression == null) return true
 
         val evaluated = ParadoxComplexExpressionEvaluator().evaluate(element) ?: return true
         val intValue = evaluated.intValue()
-        val intRange = configExpression.intRange
+        val intRange = configExpression.metadata.intRange
         if (intValue == null) {
             val description = ChronicleEpBundle.message("incorrectExpression.intValueField.desc", evaluated.expression)
             context.holder.registerProblem(element, description)
@@ -179,12 +178,12 @@ class ParadoxFloatValueFieldChecker : ParadoxIncorrectExpressionChecker {
         if (element !is ParadoxScriptExpressionElement) return true
 
         // for value field only (after expansion)
-        val configExpression = config.expandConfigExpression().find { it.type == CwtDataTypes.ValueField }
+        val configExpression = ProcessorScope.findFrom({ config.expandConfigExpression { process(it) } }) { it.type == CwtDataTypes.ValueField }
         if (configExpression == null) return true
 
         val evaluated = ParadoxComplexExpressionEvaluator().evaluate(element) ?: return true
         val floatValue = evaluated.floatValue()
-        val floatRange = configExpression.floatRange
+        val floatRange = configExpression.metadata.floatRange
         if (floatValue == null && floatRange != null) { // NOTE 2.2.0 may not be a number after evaluation, if range is not specified
             val description = ChronicleEpBundle.message("incorrectExpression.floatValueField.desc", evaluated.expression)
             context.holder.registerProblem(element, description)
@@ -203,12 +202,14 @@ class ParadoxFloatValueFieldChecker : ParadoxIncorrectExpressionChecker {
 /**
  * 检查 Stellaris 中携带了循环等级的科技引用是否正确。
  */
-@WithGameType(ParadoxGameType.Stellaris)
+@ForGameType(ParadoxGameType.Stellaris)
 class StellarisTechnologyWithLevelChecker : ParadoxIncorrectExpressionChecker {
+    override fun supports(gameType: ParadoxGameType) = gameType == ParadoxGameType.Stellaris
+
     override fun check(element: ParadoxExpressionElement, config: CwtMemberConfig<*>, context: ParadoxExpressionInspectionContext): Boolean {
         if (element !is ParadoxScriptStringExpressionElement) return true
 
-        val configExpression = config.expandConfigExpression().find { it.type == CwtDataTypes.TechnologyWithLevel }
+        val configExpression = ProcessorScope.findFrom({ config.expandConfigExpression { process(it) } }) { it.type == CwtDataTypes.TechnologyWithLevel }
         if (configExpression == null) return true
 
         val (technologyName, technologyLevel) = element.value.split('@', limit = 2).takeIf { it.size == 2 } ?: return true

@@ -20,7 +20,7 @@ sealed class CwtConfigCompletionTemplateExpression(
 
     override fun calculateLookupItems(context: ExpressionContext): Array<out LookupElement>? {
         val lookupElements = mutableListOf<LookupElement>()
-        CwtConfigCompletionManager.completeByTemplateExpression(this, context) {
+        CwtConfigCompletionManager.completeFromTemplateExpression(this, context) {
             lookupElements.add(it)
             true
         }

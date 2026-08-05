@@ -28,9 +28,11 @@ import java.util.Collections.*
 
 /**
  * 各种索引信息的文件索引的基类。
+ *
+ * @see IndexInfo
  */
 @Optimized
-sealed class IndexInfoAwareFileBasedIndex<V, out T : IndexInfo> : FileBasedIndexExtension<String, V>() {
+sealed class IndexInfoAwareFileBasedIndex<V : List<T>, out T : IndexInfo> : FileBasedIndexExtension<String, V>() {
     // NOTE 3.0.1 mainly depends on specific file types - use `FileTypeInputFilterPredicate` to speed up scanning
     @Suppress("UnstableApiUsage")
     private val inputFilter = FileTypeInputFilterPredicate { filterFileType(it) }
@@ -82,7 +84,9 @@ sealed class IndexInfoAwareFileBasedIndex<V, out T : IndexInfo> : FileBasedIndex
         }
 
         // use file based index (`FileBasedIndex`)
-        return indexData(fileContent.psiFile)
+        val result = indexData(fileContent.psiFile)
+        if (result.isEmpty()) return emptyMap() // 3.0.1 optimize: for empty map
+        return result
     }
 
     protected open fun indexData(psiFile: PsiFile): Map<String, V> = emptyMap()
@@ -102,7 +106,9 @@ sealed class IndexInfoAwareFileBasedIndex<V, out T : IndexInfo> : FileBasedIndex
         if (!filterFile(file)) return emptyMap()
 
         val psiFile = file.toPsiFile(project) ?: return emptyMap()
-        return indexData(psiFile)
+        val result = indexData(psiFile)
+        if (result.isEmpty()) return emptyMap() // 3.0.1 optimize: for empty map
+        return result
     }
 
     private fun saveGistValue(storage: DataOutput, value: Map<String, V>) {

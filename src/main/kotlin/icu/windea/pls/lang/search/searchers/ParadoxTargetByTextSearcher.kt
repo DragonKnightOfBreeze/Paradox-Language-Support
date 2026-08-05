@@ -10,6 +10,8 @@ import com.intellij.psi.util.elementType
 import com.intellij.psi.util.parentOfType
 import com.intellij.util.Processor
 import icu.windea.pls.base.context.ChronicleThreadContext
+import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.lang.search.ParadoxTargetByTextSearch
 import icu.windea.pls.lang.search.util.ParadoxSearchTargetType
 import icu.windea.pls.lang.settings.ChronicleSettings
@@ -30,7 +32,10 @@ import java.util.concurrent.ConcurrentHashMap
  * - 本地化 - [ParadoxSearchTargetType.Localisation] - [ParadoxLocalisationProperty]
  *
  * 流程：输入的文本片段 → 用于查询的文本片段 → 所属的本地 → 相关的封装变量和定义
+ *
+ * @see ParadoxTargetByTextSearch
  */
+@Optimized
 abstract class ParadoxTargetByTextSearcher : QueryExecutorBase<NavigatablePsiElement, ParadoxTargetByTextSearch.Parameters>() {
     override fun processQuery(queryParameters: ParadoxTargetByTextSearch.Parameters, consumer: Processor<in NavigatablePsiElement>) {
         // 检查是否启用
@@ -67,20 +72,20 @@ abstract class ParadoxTargetByTextSearcher : QueryExecutorBase<NavigatablePsiEle
         if (context.includeScriptedVariables) {
             ProgressManager.checkCanceled()
             val scriptedVariables = ParadoxLocalisationManager.getRelatedScriptedVariables(localisation)
-            for (scriptedVariable in scriptedVariables) {
+            scriptedVariables.forEachFast f@{ scriptedVariable ->
                 ProgressManager.checkCanceled()
-                val info = ParadoxTargetInfo.from(scriptedVariable) ?: continue
-                if (!context.processedTargets.add(info)) continue
+                val info = ParadoxTargetInfo.from(scriptedVariable) ?: return@f
+                if (!context.processedTargets.add(info)) return@f
                 if (!consumer.process(scriptedVariable)) return false
             }
         }
         if (context.includeDefinitions) {
             ProgressManager.checkCanceled()
             val definitions = ParadoxLocalisationManager.getRelatedDefinitions(localisation)
-            for (definition in definitions) {
+            definitions.forEachFast f@{ definition ->
                 ProgressManager.checkCanceled()
-                val info = ParadoxTargetInfo.from(definition) ?: continue
-                if (!context.processedTargets.add(info)) continue
+                val info = ParadoxTargetInfo.from(definition) ?: return@f
+                if (!context.processedTargets.add(info)) return@f
                 if (!consumer.process(definition)) return false
             }
         }

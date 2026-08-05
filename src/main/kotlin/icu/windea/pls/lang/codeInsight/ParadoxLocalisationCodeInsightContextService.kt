@@ -13,6 +13,8 @@ import icu.windea.pls.config.config.expandConfigExpression
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.inspections.InspectionService
 import icu.windea.pls.core.orNull
+import icu.windea.pls.core.util.FindProcessor
+import icu.windea.pls.core.util.ProcessorScope
 import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContext.*
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.inspections.ChronicleInspections
@@ -240,7 +242,7 @@ object ParadoxLocalisationCodeInsightContextService {
         val inspection = if (fromInspection) getMissingLocalisationInspection(project, element) else null
         if (!(inspection == null || inspection.checkForModifiers)) return null
 
-        if (config.expandConfigExpression().none { it.type == CwtDataTypes.Modifier }) return null
+        if (ProcessorScope.noneFrom({ config.expandConfigExpression { process(it) } }) { it.type == CwtDataTypes.Modifier }) return null
         val modifierName = element.value
         val localisationType = ParadoxLocalisationType.Normal
         val codeInsightInfos = mutableListOf<ParadoxLocalisationCodeInsightInfo>()
@@ -286,20 +288,9 @@ object ParadoxLocalisationCodeInsightContextService {
         val type = ParadoxLocalisationCodeInsightInfo.Type.Reference
         val name = element.value
         if (name.isEmpty()) return null
-
-        val contextType = config.expandConfigExpression().firstNotNullOfOrNull { configExpression ->
-            when (configExpression.type) {
-                CwtDataTypes.Localisation -> Type.LocalisationReference
-                CwtDataTypes.SyncedLocalisation -> Type.SyncedLocalisationReference
-                CwtDataTypes.InlineLocalisation -> Type.LocalisationReference // even is not quoted
-                else -> null
-            }
-        }
+        val contextType = getContextType(config)
         if (contextType == null) return null
-        val localisationType = when (contextType) {
-            Type.SyncedLocalisationReference -> ParadoxLocalisationType.Synced
-            else -> ParadoxLocalisationType.Normal
-        }
+        val localisationType = getLocalisationType(contextType)
 
         val codeInsightInfos = mutableListOf<ParadoxLocalisationCodeInsightInfo>()
         for (locale in locales) {
@@ -310,6 +301,27 @@ object ParadoxLocalisationCodeInsightContextService {
         }
 
         return ParadoxLocalisationCodeInsightContext(contextType, name, codeInsightInfos, locales = locales, fromInspection = fromInspection)
+    }
+
+    private fun getContextType(config: CwtMemberConfig<*>): Type? {
+        val processor = FindProcessor<Type>()
+        config.expandConfigExpression { configExpression ->
+            val r = when (configExpression.type) {
+                CwtDataTypes.Localisation -> Type.LocalisationReference
+                CwtDataTypes.SyncedLocalisation -> Type.SyncedLocalisationReference
+                CwtDataTypes.InlineLocalisation -> Type.LocalisationReference // even is not quoted
+                else -> null
+            }
+            if (r != null) processor.process(r) else true
+        }
+        return processor.result
+    }
+
+    private fun getLocalisationType(contextType: Any): ParadoxLocalisationType {
+        return when (contextType) {
+            Type.SyncedLocalisationReference -> ParadoxLocalisationType.Synced
+            else -> ParadoxLocalisationType.Normal
+        }
     }
 
     private fun isMissing(name: String, project: Project, element: PsiElement, locale: CwtLocaleConfig, localisationType: ParadoxLocalisationType): Boolean {

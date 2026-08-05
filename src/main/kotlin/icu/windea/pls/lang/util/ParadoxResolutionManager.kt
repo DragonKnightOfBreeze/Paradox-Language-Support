@@ -7,7 +7,7 @@ import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.isStatic
 import icu.windea.pls.config.config.resolveElementWithConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.core.ReadWriteAccess
+import icu.windea.pls.core.util.ReadWriteAccess
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueLightElement
 import icu.windea.pls.lang.psi.light.ParadoxMeshLocatorLightElement
@@ -32,7 +32,7 @@ object ParadoxResolutionManager {
         val dataExpression = config.configExpression ?: return null
         if (dataExpression.type != CwtDataTypes.EnumValue) return null
         val name = expression
-        val enumName = dataExpression.value ?: return null
+        val enumName = dataExpression.metadata.value ?: return null
         val configGroup = config.configGroup
         val enumConfig = configGroup.enums[enumName] ?: return null
         val enumValueConfig = enumConfig.valueConfigMap.get(name) ?: return null
@@ -44,7 +44,7 @@ object ParadoxResolutionManager {
         val dataExpression = config.configExpression ?: return null
         if (dataExpression.type != CwtDataTypes.EnumValue) return null
         val name = expression
-        val enumName = dataExpression.value ?: return null
+        val enumName = dataExpression.metadata.value ?: return null
         val configGroup = config.configGroup
         val complexEnumConfig = configGroup.complexEnums[enumName] ?: return null
         val project = configGroup.project

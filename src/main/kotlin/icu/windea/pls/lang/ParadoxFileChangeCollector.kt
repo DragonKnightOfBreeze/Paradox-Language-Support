@@ -11,12 +11,13 @@ import com.intellij.openapi.vfs.newvfs.events.VFileMoveEvent
 import com.intellij.openapi.vfs.newvfs.events.VFilePropertyChangeEvent
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.ide.analysis.ChronicleAnalysisManager
-import icu.windea.pls.lang.analysis.ParadoxAnalysisDataService
+import icu.windea.pls.lang.analysis.ParadoxAnalysisDataManager
+import icu.windea.pls.lang.analysis.ParadoxAnalysisScope
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.model.constants.ChronicleConstants
 
 @Optimized
-class ParadoxFileChangeCollector {
+class ParadoxFileChangeCollector : ParadoxAnalysisScope {
     private val rootInfoContextFiles: MutableSet<VirtualFile> = mutableSetOf()
     private val rootFilesToClearRootInfo: MutableSet<VirtualFile> = mutableSetOf()
 
@@ -34,12 +35,13 @@ class ParadoxFileChangeCollector {
             when (event) {
                 is VFileCreateEvent -> {
                     val fileName = event.childName
+                    val parent = event.parent
 
                     if (shouldRestartAnalysis(fileName)) {
-                        rootInfoContextFiles += event.parent
+                        rootInfoContextFiles += parent
                         reparseAllOpenFiles = true
                     }
-                    if (shouldRefreshForFilePaths(event.parent)) {
+                    if (shouldRefreshForFilePaths(parent)) {
                         refreshFilePaths = true
                     }
                 }
@@ -156,38 +158,31 @@ class ParadoxFileChangeCollector {
         // NOTE 2.1.2 分析数据缓存需要在 VFS 更改之后再清空，否则可能会被再次加载
 
         // 清空分析数据缓存
-        val dataService = ParadoxAnalysisDataService.getInstance()
         if (rootInfoContextFiles.isNotEmpty()) {
             rootInfoContextFiles.forEach { contextFile ->
                 selectRootFile(contextFile)?.let { rootFile -> rootFilesToClearRootInfo += rootFile }
             }
         }
         if (rootFilesToClearRootInfo.isNotEmpty()) {
-            with(dataService) {
-                rootFilesToClearRootInfo.forEach { rootFile ->
-                    rootFile.cachedRootInfo = null
-                }
+            rootFilesToClearRootInfo.forEach { rootFile ->
+                ParadoxAnalysisDataManager.clearData(rootFile, ParadoxAnalysisDataManager.Keys.cachedRootInfo)
             }
         }
         if (filesToClearFileInfo.isNotEmpty()) {
-            with(dataService) {
-                filesToClearFileInfo.forEach { file ->
-                    file.cachedFileInfo = null
-                }
+            filesToClearFileInfo.forEach { file ->
+                ParadoxAnalysisDataManager.clearData(file, ParadoxAnalysisDataManager.Keys.cachedFileInfo)
             }
+
         }
         if (filesToClearLocaleConfig.isNotEmpty()) {
-            with(dataService) {
-                filesToClearLocaleConfig.forEach { file ->
-                    file.cachedLocaleConfig = null
-                }
+            filesToClearLocaleConfig.forEach { file ->
+                ParadoxAnalysisDataManager.clearData(file, ParadoxAnalysisDataManager.Keys.cachedLocaleConfig)
             }
+
         }
         if (filesToClearSliceInfos.isNotEmpty()) {
-            with(dataService) {
-                filesToClearSliceInfos.forEach { file ->
-                    file.sliceInfos = null
-                }
+            filesToClearSliceInfos.forEach { file ->
+                ParadoxAnalysisDataManager.clearData(file, ParadoxAnalysisDataManager.Keys.sliceInfos)
             }
         }
 

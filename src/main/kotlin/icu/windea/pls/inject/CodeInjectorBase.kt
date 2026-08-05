@@ -4,16 +4,16 @@ import com.intellij.ide.plugins.PluginManager
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.extensions.PluginDescriptor
 import com.intellij.openapi.extensions.PluginId
-import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.core.orNull
-import icu.windea.pls.core.runOnce
 import icu.windea.pls.inject.annotations.InjectionTarget
 import icu.windea.pls.inject.model.InjectionTargetInfo
 import kotlin.reflect.full.findAnnotation
 
 abstract class CodeInjectorBase : CodeInjector, UserDataHolderBase() {
-    override val id: String = javaClass.name
+    private val defaultId = javaClass.name
+
+    override val id: String get() = defaultId
 
     final override fun inject() {
         val injectionTargetInfo = getInjectionTargetInfo() ?: return
@@ -56,7 +56,7 @@ abstract class CodeInjectorBase : CodeInjector, UserDataHolderBase() {
     private fun getInjectionTargetInfo(): InjectionTargetInfo? {
         val injectionTarget = this::class.findAnnotation<InjectionTarget>()
         if (injectionTarget == null) {
-            thisLogger().error("Code injector $id is not annotated with @InjectionTarget")
+            thisLogger().error("Code injector $defaultId is not annotated with @InjectionTarget")
             return null
         }
         val injectTargetName = injectionTarget.value
@@ -68,26 +68,21 @@ abstract class CodeInjectorBase : CodeInjector, UserDataHolderBase() {
         CodeInjectorSupport.EP_NAME.extensionList.forEach { ep -> ep.apply(this) }
     }
 
-    /**
-     * 用于安全地执行注入的代码逻辑，并在发生异常时仅打印一次警告日志。
-     */
-    protected inline fun <T> runSafely(key: String = "", action: () -> T): T? {
-        try {
-            return action()
-        } catch (e: Exception) {
-            if (e is ProcessCanceledException) throw e
-            val flagKey = "$id.$key"
-            val flag = CodeInjectorContext.runSafelyFlags.get(flagKey)
-            runOnce(flag) {
-                val logger = thisLogger()
-                logger.warn("ERROR when executing injected code from code injector: $id (suppressed now)")
-            }
-            return null
-        }
+    /** @see CodeInjectorContext.execute */
+    @Suppress("unused")
+    protected inline fun <T> execute(name: String, action: () -> T): T? {
+        return CodeInjectorContext.execute(id, name, action)
     }
 
-    /**
-     * 用于在（注入到目标方法之前的）注入方法中使用，让此方法不直接返回而继续执行目标方法中的代码。
-     */
-    protected fun continueInvocation(): Nothing = throw CodeInjectorContext.continueInvocationException
+    /** @see CodeInjectorContext.reportError */
+    @Suppress("unused")
+    protected fun reportError(name: String, error: Throwable) {
+        return CodeInjectorContext.reportError(id, name, error)
+    }
+
+    /** @see CodeInjectorContext.continueInvocation */
+    @Suppress("unused")
+    protected fun continueInvocation(): Nothing {
+        CodeInjectorContext.continueInvocation()
+    }
 }

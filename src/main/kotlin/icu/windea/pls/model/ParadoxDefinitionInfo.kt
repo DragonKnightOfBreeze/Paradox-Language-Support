@@ -11,6 +11,7 @@ import icu.windea.pls.config.configExpression.CwtImageLocationExpression
 import icu.windea.pls.config.configExpression.CwtLocalisationLocationExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.annotations.Inferred
+import icu.windea.pls.core.equalsFast
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.model.paths.ParadoxMemberPath
@@ -39,7 +40,9 @@ data class ParadoxDefinitionInfo(
     val rootKeys: List<String>,
     override val typeConfig: CwtTypeConfig,
 ) : UserDataHolderBase(), ParadoxDefinitionCandidateInfo {
-    @Volatile var element: ParadoxDefinitionElement? = null
+    @Volatile override var element: ParadoxDefinitionElement? = null // should be cached in associated PSI element, so holds directly
+
+    override val configGroup: CwtConfigGroup get() = typeConfig.configGroup
 
     val memberPath: ParadoxMemberPath get() = ParadoxDefinitionManager.getMemberPath(this)
 
@@ -49,8 +52,6 @@ data class ParadoxDefinitionInfo(
     val modifiers: List<ModifierInfo> get() = ParadoxDefinitionManager.getModifierInfos(this)
     val primaryLocalisations: List<RelatedLocalisationInfo> get() = ParadoxDefinitionManager.getPrimaryRelatedLocalisationInfos(this)
     val primaryImages: List<RelatedImageInfo> get() = ParadoxDefinitionManager.getPrimaryRelatedImageInfos(this)
-
-    override val configGroup: CwtConfigGroup get() = typeConfig.configGroup
 
     /** @see ParadoxDefinitionManager.getSubtypeConfigs */
     override fun getSubtypeConfigs(options: ParadoxMatchOptions?): List<CwtSubtypeConfig> = ParadoxDefinitionManager.getSubtypeConfigs(this, options)
@@ -69,7 +70,7 @@ data class ParadoxDefinitionInfo(
         val primary: Boolean = false
     ) {
         @Inferred
-        val primaryByInference: Boolean = key.equals("icon", true)
+        val primaryByInference: Boolean = key.equalsFast("icon", true)
     }
 
     data class RelatedLocalisationInfo(
@@ -79,7 +80,7 @@ data class ParadoxDefinitionInfo(
         val primary: Boolean = false
     ) {
         @Inferred
-        val primaryByInference: Boolean = key.equals("name", true) || key.equals("title", true)
+        val primaryByInference: Boolean = key.equalsFast("name", true) || key.equalsFast("title", true)
     }
 
     data class ModifierInfo(

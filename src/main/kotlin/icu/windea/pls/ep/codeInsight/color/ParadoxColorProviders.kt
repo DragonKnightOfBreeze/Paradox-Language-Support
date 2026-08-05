@@ -20,12 +20,9 @@ import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptColor
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
-import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptNumberExpressionElement
-import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptString
-import icu.windea.pls.script.psi.isDirectValue
-import icu.windea.pls.script.psi.isPropertyValue
+import icu.windea.pls.script.psi.containingDirectMember
 import java.awt.Color
 
 /**
@@ -163,13 +160,8 @@ class ParadoxScriptBlockColorProvider : ParadoxColorProvider {
     }
 
     private fun getColorType(element: ParadoxScriptBlock): String? {
-        val elementToGetOption: ParadoxScriptMember? = when {
-            element.isPropertyValue() -> element.parent as? ParadoxScriptProperty
-            element.isDirectValue() -> element
-            else -> null
-        }
-        if (elementToGetOption == null) return null
-        return ParadoxColorUtil.getColorType(elementToGetOption)
+        val memberElement = element.containingDirectMember
+        return ParadoxColorUtil.getColorType(memberElement)
     }
 
     private fun getColorArgs(element: ParadoxScriptBlock): List<String>? {

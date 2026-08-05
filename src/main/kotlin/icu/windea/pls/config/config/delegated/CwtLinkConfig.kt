@@ -1,8 +1,9 @@
 package icu.windea.pls.config.config.delegated
 
-import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
+import icu.windea.pls.config.CwtConfigType
+import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.config.annotations.FromMember
 import icu.windea.pls.config.annotations.FromName
 import icu.windea.pls.config.config.CwtDelegatedConfig
@@ -116,7 +117,9 @@ interface CwtLinkConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, Cw
     val dataSourceIndex: Int
     val dataSourceExpression: CwtDataExpression?
     val dataSourceExpressions: List<CwtDataExpression>
-    override val configExpression: CwtDataExpression?
+
+    override val configType: CwtConfigType get() = CwtConfigTypes.Link // or `CwtConfigTypes.LocalisationLink`
+    override val configExpression: CwtDataExpression? get() = dataSourceExpression
 
     companion object {
         /** 由属性规则解析为（常规）链接规则。 */
@@ -160,7 +163,7 @@ private object CwtLinkConfigResolver : CwtConfigResolverScope {
         val name = config.key
         val propConfigs = config.properties
         if (propConfigs == null) {
-            logger.warn("Skipped invalid link config (name: $name): Null properties.".withLocationPrefix(config))
+            logger.warnWithPrefix(config, "Skipped invalid link config (name: $name): Null properties.")
             return null
         }
 
@@ -187,15 +190,15 @@ private object CwtLinkConfigResolver : CwtConfigResolverScope {
 
         // when from data or from argument, data sources must not be empty
         if (fromData && dataSources.isEmpty()) {
-            logger.warn("Skipped invalid link config (name: $name): No data_source properties while from_data = yes.".withLocationPrefix(config))
+            logger.warnWithPrefix(config, "Skipped invalid link config (name: $name): No data_source properties while from_data = yes.")
             return null
         }
         if (fromArgument && dataSources.isEmpty()) {
-            logger.warn("Skipped invalid link config (name: $name): No data_source properties while from_argument = yes.".withLocationPrefix(config))
+            logger.warnWithPrefix(config, "Skipped invalid link config (name: $name): No data_source properties while from_argument = yes.")
             return null
         }
 
-        logger.debug { "Resolved link config (name: $name).".withLocationPrefix(config) }
+        logger.debugWithPrefix(config) { "Resolved link config (name: $name)." }
         return CwtLinkConfigImpl(
             config, name, type, fromData, fromArgument, argumentSeparator,
             prefix, dataSources, inputScopes, outputScope,
@@ -237,9 +240,8 @@ private class CwtLinkConfigImpl(
     override val isLocalisationLink: Boolean,
 ) : UserDataHolderBase(), CwtLinkConfig {
     override val dataSourceIndex: Int get() = 0
-    override val dataSourceExpressions = dataSources.map { CwtDataExpression.resolve(it, false) }.optimized()
+    override val dataSourceExpressions = dataSources.map { CwtDataExpression.resolve(it) }.optimized()
     override val dataSourceExpression = dataSourceExpressions.getOrNull(dataSourceIndex) ?: dataSourceExpressions.firstOrNull()
-    override val configExpression: CwtDataExpression? get() = dataSourceExpression
 
     override fun toString() = "CwtLinkConfigImpl(name='$name')"
 }

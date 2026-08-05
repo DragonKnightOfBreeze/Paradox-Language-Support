@@ -5,14 +5,14 @@ import org.junit.Test
 
 class ArrayExtensionsTest {
     @Test
-    fun test_orNull_on_array() {
+    fun orNull_on_array_test() {
         assertNull(emptyArray<String>().orNull())
         val arr = arrayOf("a")
         assertSame(arr, arr.orNull())
     }
 
     @Test
-    fun test_mapToArray_on_array() {
+    fun mapToArray_on_array_test() {
         val empty = emptyArray<String>()
 
         assertTrue(arrayOf<String>().mapToArray(empty) { it.repeat(1) } === arrayOf<String>().mapToArray<String, String>(empty) { it.repeat(1) })
@@ -22,7 +22,7 @@ class ArrayExtensionsTest {
     }
 
     @Test
-    fun test_mapToArray_on_list() {
+    fun mapToArray_on_list_test() {
         val empty = emptyArray<String>()
 
         assertTrue(listOf<String>().mapToArray(empty) { it.repeat(1) } === listOf<String>().mapToArray<String, String>(empty) { it.repeat(1) })
@@ -32,7 +32,7 @@ class ArrayExtensionsTest {
     }
 
     @Test
-    fun test_mapToArray_on_set() {
+    fun mapToArray_on_set_test() {
         val empty = emptyArray<String>()
 
         assertTrue(setOf<String>().mapToArray(empty) { it.repeat(1) } === setOf<String>().mapToArray<String, String>(empty) { it.repeat(1) })

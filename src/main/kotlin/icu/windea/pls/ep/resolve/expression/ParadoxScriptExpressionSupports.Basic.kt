@@ -6,10 +6,10 @@ import com.intellij.psi.PsiElement
 import icu.windea.pls.config.CwtDataType
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
-import icu.windea.pls.lang.codeInsight.completion.ChronicleLookupElements
 import icu.windea.pls.lang.codeInsight.completion.ParadoxClauseTemplateCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
-import icu.windea.pls.lang.codeInsight.completion.addElement
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionLookupProvider
+import icu.windea.pls.lang.codeInsight.completion.addToResult
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.model.type.ParadoxExpressionRole
 
@@ -18,21 +18,20 @@ import icu.windea.pls.model.type.ParadoxExpressionRole
 /**
  * @see CwtDataTypes.Bool
  */
-class ParadoxScriptBoolExpressionSupport : ParadoxScriptExpressionSupportBase() {
+class ParadoxScriptBoolExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(dataType: CwtDataType): Boolean {
         return dataType == CwtDataTypes.Bool
     }
 
     override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
-        result.addElement(ChronicleLookupElements.yesLookupElement, context)
-        result.addElement(ChronicleLookupElements.noLookupElement, context)
+        ParadoxCompletionLookupProvider.forBool().addToResult(context, result)
     }
 }
 
 /**
  * @see CwtDataTypes.Block
  */
-class ParadoxScriptBlockExpressionSupport : ParadoxScriptExpressionSupportBase() {
+class ParadoxScriptBlockExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(dataType: CwtDataType): Boolean {
         return dataType == CwtDataTypes.Block
     }
@@ -42,11 +41,11 @@ class ParadoxScriptBlockExpressionSupport : ParadoxScriptExpressionSupportBase()
     }
 
     override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
-        result.addElement(ChronicleLookupElements.blockLookupElement, context)
+        ParadoxCompletionLookupProvider.forBlockKeyword().addToResult(context, result)
 
         // 进行提示并在提示后插入子句内联模板（仅当子句中允许键为常量字符串的属性时才会提示）
         val config = context.config!!
         val extraLookupElement = ParadoxClauseTemplateCompletionManager.buildBlockLookupElement(context, config)
-        result.addElement(extraLookupElement, context)
+        extraLookupElement.addToResult(context, result)
     }
 }

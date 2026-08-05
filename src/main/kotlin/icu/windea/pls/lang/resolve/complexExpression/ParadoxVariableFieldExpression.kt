@@ -5,7 +5,10 @@ import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.cast
+import icu.windea.pls.core.collections.anyFast
+import icu.windea.pls.core.collections.filterIsInstanceFast
 import icu.windea.pls.core.match.TextMatcher
+import icu.windea.pls.lang.getParameterRanges
 import icu.windea.pls.lang.isParameterAwareIdentifier
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
@@ -33,7 +36,7 @@ import icu.windea.pls.lang.util.ParadoxExpressionManager
  * - 如果不是任何嵌套的复杂表达式，则解析为 [ParadoxDataSourceNode]。
  *
  * 示例：
- * ```
+ * ```text
  * root.owner.some_variable
  * ```
  *
@@ -46,8 +49,17 @@ import icu.windea.pls.lang.util.ParadoxExpressionManager
  * private scope_link_with_args ::= scope_link_prefix "(" scope_link_args ")"
  * private scope_link_args ::= scope_link_arg ("," scope_link_arg)* // = scope_link_value
  * private scope_link_arg ::= scope_link_value
- * scope_link_value ::= dynamic_value_expression | scope_field_expression | value_field_expression | data_source
  * private variable ::= data_source
+ *
+ * system_scope ::= IDENTIFIER
+ * scope ::= IDENTIFIER
+ * scope_link_prefix ::= IDENTIFIER
+ * parameterized_scope_link ::= STRING_LITERAL
+
+ * scope_link_value ::= data_source
+ *     // | dynamic_value_expression // general available
+ *     // | scope_field_expression | value_field_expression // for argument form only
+ * data_source ::= IDENTIFIER
  * ```
  */
 interface ParadoxVariableFieldExpression : ParadoxComplexExpression, ParadoxLinkedExpression {
@@ -72,10 +84,10 @@ private object ParadoxVariableFieldExpressionResolver {
         // skip if text is a number
         if (TextMatcher.matchesFloat(text)) return null
 
-        val parameterRanges = ParadoxExpressionManager.getParameterRanges(text)
+        val parameterRanges = text.getParameterRanges()
 
         // skip if text is a parameter with unary operator prefix
-        if (ParadoxExpressionManager.isUnaryOperatorAwareParameter(text, parameterRanges)) return null
+        if (ParadoxExpressionManager.isParameterAwareNumber(text, parameterRanges)) return null
 
         val nodes = mutableListOf<ParadoxComplexExpressionNode>()
         val range = range ?: TextRange.create(0, text.length)
@@ -90,7 +102,7 @@ private object ParadoxVariableFieldExpressionResolver {
         val textLength = text.length
         while (i < textLength) {
             val ch = text[i]
-            val inParam = parameterRanges.any { i in it }
+            val inParam = parameterRanges.anyFast { i in it }
             if (!inParam) {
                 when (ch) {
                     '(' -> depthParen++ // 支持 prefix(x).owner：括号内的点不切分
@@ -150,9 +162,9 @@ private class ParadoxVariableFieldExpressionImpl(
     override val nodes: List<ParadoxComplexExpressionNode> = emptyList(),
 ) : ParadoxComplexExpressionBase(), ParadoxVariableFieldExpression {
     override val linkNodes: List<ParadoxLinkNode>
-        get() = nodes.filterIsInstance<ParadoxLinkNode>()
+        get() = nodes.filterIsInstanceFast<ParadoxLinkNode>()
     override val scopeNodes: List<ParadoxScopeNode>
-        get() = nodes.filterIsInstance<ParadoxScopeNode>()
+        get() = nodes.filterIsInstanceFast<ParadoxScopeNode>()
     override val variableNode: ParadoxDataSourceNode
         get() = nodes.last().cast()
 

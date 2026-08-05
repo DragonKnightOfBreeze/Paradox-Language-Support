@@ -6,7 +6,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.util.ProcessingContext
-import icu.windea.pls.lang.isIdentifier
+import icu.windea.pls.core.isIdentifier
 
 @Suppress("unused")
 abstract class GlobalBasedCompletionContext : CompletionContext {

@@ -1,4 +1,4 @@
-@file:Suppress("NOTHING_TO_INLINE", "UNCHECKED_CAST", "unused")
+@file:Suppress("unused")
 
 package icu.windea.pls.core.collections
 

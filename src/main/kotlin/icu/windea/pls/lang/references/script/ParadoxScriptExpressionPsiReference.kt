@@ -10,13 +10,16 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.expandConfigExpression
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.collections.flatMapFast
+import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.createResults
 import icu.windea.pls.core.psi.PsiCompositeReference
+import icu.windea.pls.core.util.ProcessorScope
+import icu.windea.pls.lang.codeInsight.completion.script.ParadoxScriptExpressionCompletionProvider
 import icu.windea.pls.lang.psi.ParadoxPsiService
 import icu.windea.pls.lang.references.ParadoxConstrainedPsiReference
 import icu.windea.pls.lang.resolve.ParadoxExpressionService
 import icu.windea.pls.lang.util.ParadoxExpressionManager
-import icu.windea.pls.lang.util.ParadoxExpressionManager.getExpressionText
 import icu.windea.pls.lang.util.ParadoxTagManager
 import icu.windea.pls.model.constraints.ParadoxReferenceConstraint
 import icu.windea.pls.model.type.ParadoxExpressionRole
@@ -24,7 +27,8 @@ import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 
 /**
- * @see icu.windea.pls.lang.codeInsight.completion.script.ParadoxScriptExpressionCompletionProvider
+ * @see ParadoxScriptPsiReferenceProvider
+ * @see ParadoxScriptExpressionCompletionProvider
  */
 class ParadoxScriptExpressionPsiReference(
     element: ParadoxScriptExpressionElement,
@@ -54,7 +58,7 @@ class ParadoxScriptExpressionPsiReference(
     }
 
     override fun getReferences(): List<PsiReference> {
-        val expressionText = getExpressionText(element, rangeInElement)
+        val expressionText = ParadoxExpressionService.getExpressionText(element, rangeInElement)
         val result = ParadoxExpressionService.getScriptExpressionReferences(element, rangeInElement, expressionText, config, role)
         return result
     }
@@ -79,15 +83,15 @@ class ParadoxScriptExpressionPsiReference(
 
     private fun doResolve(): PsiElement? {
         // 根据对应的 expression 进行解析
-        val resolved = configs.firstNotNullOfOrNull { config ->
-            ParadoxExpressionManager.resolveScriptExpression(element, rangeInElement, config, role)
+        configs.forEachFast { config ->
+            ParadoxExpressionManager.resolveScriptExpression(element, rangeInElement, config, role)?.let { return it }
         }
-        return resolved
+        return null
     }
 
     private fun doMultiResolve(): Array<out ResolveResult> {
         // 根据对应的 expression 进行解析
-        val resolved = configs.flatMap { config ->
+        val resolved = configs.flatMapFast { config ->
             ParadoxExpressionManager.resolveAllScriptExpression(element, rangeInElement, config, role)
         }
         return resolved.createResults()
@@ -95,6 +99,6 @@ class ParadoxScriptExpressionPsiReference(
 
     override fun canResolveFor(constraint: ParadoxReferenceConstraint): Boolean {
         // NOTE 3.0.1 expand config expression first since it's necessary for unions and aliases
-        return configs.expandConfigExpression().any { constraint.test(it.type) }
+        return ProcessorScope.anyFrom({ configs.expandConfigExpression { process(it) } }) { constraint.test(it.type) }
     }
 }

@@ -5,6 +5,8 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
+import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.collections.mapNotNullFast
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getValue
@@ -19,7 +21,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxComplexEnumValueInfo
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 
-@Suppress("unused")
+@Optimized
 object ParadoxComplexEnumValueManager {
     object Keys : KeyRegistry() {
         val cachedComplexEnumValueInfo by registerKey<CachedValue<ParadoxComplexEnumValueInfo>>(Keys)
@@ -29,6 +31,10 @@ object ParadoxComplexEnumValueManager {
         // fast return
         if (!element.isResolvableLiteralExpression()) return null
         // from cache
+        return getInfoFromCache(element)
+    }
+
+    private fun getInfoFromCache(element: ParadoxScriptExpressionElement): ParadoxComplexEnumValueInfo? {
         return CachedValuesManager.getCachedValue(element, Keys.cachedComplexEnumValueInfo) {
             ProgressManager.checkCanceled()
             runSmartReadAction {
@@ -44,6 +50,10 @@ object ParadoxComplexEnumValueManager {
         // fast return
         if (element !is ParadoxCsvColumn) return null
         // from cache
+        return getInfoFromCache(element)
+    }
+
+    private fun getInfoFromCache(element: ParadoxCsvColumn): ParadoxComplexEnumValueInfo? {
         return CachedValuesManager.getCachedValue(element, Keys.cachedComplexEnumValueInfo) {
             ProgressManager.checkCanceled()
             runSmartReadAction {
@@ -56,12 +66,14 @@ object ParadoxComplexEnumValueManager {
 
     fun getPresentableName(name: String, contextElement: PsiElement, locale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig()): String? {
         val nameLocalisation = getNameLocalisation(name, contextElement, locale)
-        return nameLocalisation?.let { ParadoxLocalisationManager.getLocalizedText(it) }
+        return nameLocalisation?.let { ParadoxLocalisationManager.getPresentableText(it) }
     }
 
+    @Suppress("unused")
     fun getPresentableNames(name: String, contextElement: PsiElement, locale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig()): Set<String> {
         val nameLocalisation = getNameLocalisations(name, contextElement, locale)
-        return nameLocalisation.mapNotNull { ParadoxLocalisationManager.getLocalizedText(it) }.toSet()
+        if(nameLocalisation.isEmpty()) return emptySet()
+        return nameLocalisation.mapNotNullFast { ParadoxLocalisationManager.getPresentableText(it) }.toSet()
     }
 
     fun getNameLocalisation(name: String, contextElement: PsiElement, locale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig()): ParadoxLocalisationProperty? {

@@ -14,7 +14,7 @@ import icu.windea.pls.script.psi.ParadoxParameter
  */
 class ParadoxScriptErrorQuickFixProvider : ErrorQuickFixProvider {
     override fun registerErrorQuickFix(errorElement: PsiErrorElement, builder: HighlightInfo.Builder) {
-        if (errorElement.language !is ParadoxScriptLanguage) return
+        if (errorElement.language !== ParadoxScriptLanguage) return
         when {
             errorElement.nextSibling == null && errorElement.parent is ParadoxParameter -> {
                 // PARAMETER_END

@@ -1,6 +1,6 @@
 package icu.windea.pls.config.config
 
-import icu.windea.pls.config.option.CwtOptionDataHolder
+import icu.windea.pls.config.option.CwtOptionMetadata
 import icu.windea.pls.cwt.psi.CwtOptionComment
 import icu.windea.pls.cwt.psi.CwtOptionMember
 import icu.windea.pls.model.type.CwtExpressionType
@@ -10,15 +10,17 @@ import icu.windea.pls.model.type.CwtExpressionType
  *
  * 对应 CWT 规则文件中的一个选项（`## k = v` 或 `## k = {...}`）或选项值（`## v`）。需要位于附加到成员上的选项注释中。
  *
- * 用于提供额外的选项数据，自身也可以嵌套下级选项和选项值，以提供更复杂的数据表述。
+ * 用于提供额外的选项元数据，自身也可以嵌套下级选项和选项值，以提供更复杂的数据表述。
  *
  * @property value 选项值（去除首尾的双引号）。
  * @property valueType 选项值类型，用于后续解析与校验。
  * @property optionConfigs 子规则列表（其中嵌套的下级选项和选项值对应的规则）。
  *
+ * @see CwtOptionConfig
+ * @see CwtOptionValueConfig
+ * @see CwtOptionMetadata
  * @see CwtOptionComment
  * @see CwtOptionMember
- * @see CwtOptionDataHolder
  */
 sealed interface CwtOptionMemberConfig<out T : CwtOptionMember> : CwtDetachedConfig {
     val value: String

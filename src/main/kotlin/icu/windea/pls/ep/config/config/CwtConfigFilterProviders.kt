@@ -14,7 +14,7 @@ class CwtApiStatusBasedConfigFilterProvider : CwtConfigFilterProvider {
 
     override fun filter(config: CwtConfig<*>): Boolean {
         if (config !is CwtAliasConfig && config !is CwtSingleAliasConfig) return false
-        return config.config.optionData.apiStatus == CwtConfigApiStatus.Removed
+        return config.config.optionMetadata.apiStatus == CwtConfigApiStatus.Removed
     }
 }
 

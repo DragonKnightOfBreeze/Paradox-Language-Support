@@ -1463,7 +1463,7 @@ Examples:
 ```cwt
 int                         # integer
 float[0.0..1.0]             # float with range constraint
-enum[shipsize_class]        # enum reference
+enum[ship_size]        # enum reference
 scope[country]              # scope reference
 <ship_size>                 # definition reference
 value[event_target]         # dynamic value reference
@@ -2342,7 +2342,7 @@ Format of corresponding data expressions:
 
 > CWTools Compatibility: Compatible.
 
-#### TemplateExpression {#data-type-template-expression}
+#### Template {#data-type-template}
 
 Template expression type.
 
@@ -2460,7 +2460,7 @@ Format of corresponding data expressions:
 
 #### About Template Expressions {#faq-template}
 
-<!-- @see icu.windea.pls.config.CwtDataTypes.TemplateExpression -->
+<!-- @see icu.windea.pls.config.CwtDataTypes.Template -->
 <!-- @see icu.windea.pls.config.configExpression.CwtTemplateExpression -->
 
 Template expressions are composed of multiple [data expression](#config-expression-data) fragments (such as definition references, enum references, dynamic value references, etc.) combined with constant fragments, used for more flexible matching. See the [Template Expression](#config-expression-template) chapter for details.
@@ -2517,7 +2517,7 @@ re.i:foo.*
 
 #### How to Specify the Occurrence Count of a Definition Member in Config Files {#faq-cardinality}
 
-<!-- @see icu.windea.pls.config.option.CwtOptionDataHolder.cardinality -->
+<!-- @see icu.windea.pls.config.option.CwtOptionMetadata.cardinality -->
 <!-- @see icu.windea.pls.config.configExpression.CwtCardinalityExpression -->
 
 In config files, the occurrence range of a defined member is specified through the `## cardinality` option.  
@@ -2545,8 +2545,8 @@ effect = single_alias_right[effect_clause]
 
 #### How to Specify Scope Context in Config Files {#faq-scope-context}
 
-<!-- @see icu.windea.pls.config.option.CwtOptionDataHolder.pushScope -->
-<!-- @see icu.windea.pls.config.option.CwtOptionDataHolder.replaceScopes -->
+<!-- @see icu.windea.pls.config.option.CwtOptionMetadata.pushScope -->
+<!-- @see icu.windea.pls.config.option.CwtOptionMetadata.replaceScopes -->
 
 In config files, scope context is specified via the options `## push_scope` and `## replace_scopes` (or `## replace_scope`).
 
@@ -2569,7 +2569,7 @@ some_config = single_alias_right[trigger_clause]
 
 #### How to Specify Supported Scopes in Config Files {#faq-supported-scopes}
 
-<!-- @see icu.windea.pls.config.option.CwtOptionDataHolder.supportedScopes -->
+<!-- @see icu.windea.pls.config.option.CwtOptionMetadata.supportedScopes -->
 
 In config files, the supported scopes for triggers and effects are specified via the option `## scopes` (or `## scope`).
 
@@ -2583,7 +2583,7 @@ alias[trigger:has_country_flag] = value[country_flag]
 
 #### How to Specify Color Types in Config Files {#faq-color-type}
 
-<!-- @see icu.windea.pls.config.option.CwtOptionDataHolder.colorType -->
+<!-- @see icu.windea.pls.config.option.CwtOptionMetadata.colorType -->
 <!-- @see icu.windea.pls.config.CwtDataTypes.ColorField -->
 <!-- @see icu.windea.pls.ep.codeInsight.hints.ParadoxColorProvider -->
 
@@ -2634,7 +2634,7 @@ color_field_hsv = hsv { 208 0.849 0.882 }
 
 #### How to Specify File Extensions for Path References in Config Files {#faq-file-extensions}
 
-<!-- @see icu.windea.pls.config.option.CwtOptionDataHolder.fileExtensions -->
+<!-- @see icu.windea.pls.config.option.CwtOptionMetadata.fileExtensions -->
 
 In config files, the allowed file extensions for path references are specified via the option `## file_extensions`.
 
@@ -2657,7 +2657,7 @@ file = filepath[./]
 
 #### How to Inject Configs in Config Files {#faq-config-inject}
 
-<!-- @see icu.windea.pls.config.option.CwtOptionDataHolder.inject -->
+<!-- @see icu.windea.pls.config.option.CwtOptionMetadata.inject -->
 <!-- @see icu.windea.pls.ep.config.config.CwtInjectConfigPostProcessor -->
 
 Starting from plugin version 2.1.0, injecting configs is supported by using the option `## inject`, during the config resolving phase.

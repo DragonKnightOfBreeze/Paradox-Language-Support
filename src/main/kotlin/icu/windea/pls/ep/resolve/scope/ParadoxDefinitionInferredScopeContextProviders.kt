@@ -1,3 +1,5 @@
+@file:Optimized
+
 package icu.windea.pls.ep.resolve.scope
 
 import com.intellij.openapi.progress.ProgressManager
@@ -6,6 +8,8 @@ import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.definitionScopeContextModificationTracker
+import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.toPsiFile
@@ -19,6 +23,7 @@ import icu.windea.pls.ep.ChronicleEpBundle
 import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.index.ChronicleIndexService
+import icu.windea.pls.lang.index.ParadoxMergedIndexTypes
 import icu.windea.pls.lang.manipulation.ParadoxScopeManipulationService
 import icu.windea.pls.lang.match.findByPattern
 import icu.windea.pls.lang.psi.properties
@@ -30,7 +35,6 @@ import icu.windea.pls.lang.util.ParadoxEventManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
-import icu.windea.pls.model.index.ParadoxIndexInfoTypes
 import icu.windea.pls.model.scope.ParadoxScopeConstants
 import icu.windea.pls.model.scope.ParadoxScopeContextInferenceInfo
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
@@ -45,7 +49,7 @@ class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInfer
     }
 
     override fun supports(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Boolean {
-        val definitionTypes = definitionInfo.configGroup.typesModel.supportScopeContextInference
+        val definitionTypes = definitionInfo.configGroup.typesModel.supportScopeInference
         return definitionInfo.type in definitionTypes
     }
 
@@ -94,11 +98,11 @@ class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInfer
         ProgressManager.checkCanceled()
         val project = configGroup.project
         val gameType = configGroup.gameType
-        return withRecursionGuard {
+        return withRecursionGuard({}.javaClass.name) {
             withRecursionCheck("${definitionInfo.name}:${definitionInfo.type}") {
-                val indexInfoType = ParadoxIndexInfoTypes.InferredScopeContextAwareDefinition
-                ChronicleIndexService.processAllFileDataWithKey(indexInfoType, project, searchScope, gameType) p@{ _, infos ->
-                    infos.forEach f@{ info ->
+                val mergedIndexType = ParadoxMergedIndexTypes.ScopeInferrableDefinition
+                ChronicleIndexService.processAllFileDataWithKey(mergedIndexType, project, searchScope, gameType) p@{ _, infos ->
+                    infos.forEachFast f@{ info ->
                         ProgressManager.checkCanceled()
                         // TODO 1.0.6+ 这里对应的引用可能属于某个复杂表达式的一部分（目前不需要考虑兼容这种情况）
                         val definitionName = info.definitionName
@@ -202,13 +206,13 @@ class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInfe
         ProgressManager.checkCanceled()
         val project = configGroup.project
         val gameType = configGroup.gameType
-        return withRecursionGuard {
+        return withRecursionGuard({}.javaClass.name) {
             if (depth == 1) stackTrace.addLast(thisEventName)
 
-            val indexInfoType = ParadoxIndexInfoTypes.EventInOnAction
-            ChronicleIndexService.processAllFileDataWithKey(indexInfoType, project, searchScope, gameType) p@{ file, infos ->
+            val mergedIndexType = ParadoxMergedIndexTypes.EventInOnAction
+            ChronicleIndexService.processAllFileDataWithKey(mergedIndexType, project, searchScope, gameType) p@{ file, infos ->
                 val psiFile = file.toPsiFile(project) ?: return@p true
-                infos.forEach f@{ info ->
+                infos.forEachFast f@{ info ->
                     ProgressManager.checkCanceled()
                     val eventName = info.eventName
                     if (eventName != thisEventName) return@f
@@ -218,7 +222,7 @@ class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInfe
                         val config = configGroup.extendedOnActions.findByPattern(containingOnActionName, psiFile, configGroup)
                         if (config == null) return@f // missing
                         if (config.eventType != thisEventType) return@f // invalid (mismatch)
-                        val map = config.config.optionData.replaceScopes ?: return@f
+                        val map = config.config.optionMetadata.replaceScopes ?: return@f
                         if (scopeContextMap.isNotEmpty()) {
                             val mergedMap = ParadoxScopeManipulationService.mergeScopeContextMap(scopeContextMap, map, true)
                             if (mergedMap != null) {
@@ -313,13 +317,13 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
         ProgressManager.checkCanceled()
         val project = configGroup.project
         val gameType = configGroup.gameType
-        return withRecursionGuard {
+        return withRecursionGuard({}.javaClass.name) {
             if (depth == 1) stackTrace.addLast(thisEventName)
 
             val toRef = "from".repeat(depth)
-            val indexInfoType = ParadoxIndexInfoTypes.EventInEvent
-            ChronicleIndexService.processAllFileDataWithKey(indexInfoType, project, searchScope, gameType) p@{ _, infos ->
-                infos.forEach f@{ info ->
+            val mergedIndexType = ParadoxMergedIndexTypes.EventInEvent
+            ChronicleIndexService.processAllFileDataWithKey(mergedIndexType, project, searchScope, gameType) p@{ _, infos ->
+                infos.forEachFast f@{ info ->
                     ProgressManager.checkCanceled()
                     val eventName = info.eventName
                     if (eventName != thisEventName) return@f
@@ -466,13 +470,13 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
         ProgressManager.checkCanceled()
         val project = configGroup.project
         val gameType = configGroup.gameType
-        return withRecursionGuard {
+        return withRecursionGuard({}.javaClass.name) {
             if (depth == 1) stackTrace.addLast(thisOnActionName)
 
             val toRef = "from".repeat(depth)
-            val indexInfoType = ParadoxIndexInfoTypes.OnActionInEvent
-            ChronicleIndexService.processAllFileDataWithKey(indexInfoType, project, searchScope, gameType) p@{ _, infos ->
-                infos.forEach f@{ info ->
+            val mergedIndexType = ParadoxMergedIndexTypes.OnActionInEvent
+            ChronicleIndexService.processAllFileDataWithKey(mergedIndexType, project, searchScope, gameType) p@{ _, infos ->
+                infos.forEachFast f@{ info ->
                     ProgressManager.checkCanceled()
                     val onActionName = info.onActionName
                     if (onActionName != thisOnActionName) return@f

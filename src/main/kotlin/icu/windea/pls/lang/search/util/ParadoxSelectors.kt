@@ -7,6 +7,7 @@ import com.intellij.psi.search.GlobalSearchScope
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.complexCompareBy
 import icu.windea.pls.core.isSamePosition
+import icu.windea.pls.lang.index.constraints.ParadoxIndexConstraint
 import icu.windea.pls.lang.search.scope.ParadoxSearchScopeTypes
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.selectGameType
@@ -14,7 +15,6 @@ import icu.windea.pls.lang.selectLocale
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.model.constraints.ParadoxIndexConstraint
 import java.util.function.Function
 
 class ParadoxWithGameTypeSelector<T>(
@@ -28,6 +28,11 @@ class ParadoxWithGameTypeSelector<T>(
         return selectGameType(target) == gameType
     }
 }
+
+// NOTE 3.0.1 optimize: check on search scope level directly
+class ParadoxWithFileExtensionsSelector<T>(
+    val fileExtensions: Collection<String>
+) : ParadoxSelector<T>
 
 interface ParadoxSearchScopeAwareSelector<T> : ParadoxSelector<T> {
     fun getGlobalSearchScope(): GlobalSearchScope?
@@ -66,6 +71,22 @@ class ParadoxWithSearchScopeTypeSelector<T>(
 
     override fun getGlobalSearchScope(): GlobalSearchScope? {
         return searchScopeType.getGlobalSearchScope(project, context)
+    }
+}
+
+class ParadoxWithConstraintSelector<T>(
+    val constraint: ParadoxIndexConstraint<T>
+) : ParadoxSelector<T>
+
+class ParadoxLocaleSelector(
+    val locale: CwtLocaleConfig
+) : ParadoxSelector<ParadoxLocalisationProperty> {
+    override fun selectOne(target: ParadoxLocalisationProperty): Boolean {
+        return locale == selectLocale(target)
+    }
+
+    override fun select(target: ParadoxLocalisationProperty): Boolean {
+        return selectOne(target)
     }
 }
 
@@ -118,22 +139,6 @@ class ParadoxDistinctSelector<T, K>(
 ) : ParadoxSelector<T> {
     override fun keySelector(): Function<T, Any?> {
         return Function { keySelector.invoke(it) }
-    }
-}
-
-class ParadoxWithConstraintSelector<T>(
-    val constraint: ParadoxIndexConstraint<T>
-) : ParadoxSelector<T>
-
-class ParadoxLocaleSelector(
-    val locale: CwtLocaleConfig
-) : ParadoxSelector<ParadoxLocalisationProperty> {
-    override fun selectOne(target: ParadoxLocalisationProperty): Boolean {
-        return locale == selectLocale(target)
-    }
-
-    override fun select(target: ParadoxLocalisationProperty): Boolean {
-        return selectOne(target)
     }
 }
 

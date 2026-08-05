@@ -1,5 +1,11 @@
+@file:Optimized
+
 package icu.windea.pls.model.expressions
 
+import com.google.common.collect.ImmutableList
+import icu.windea.pls.config.config.delegated.CwtTypeConfig
+import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.splitFast
 import icu.windea.pls.model.ParadoxDefinitionInfo
 
 /**
@@ -12,11 +18,13 @@ import icu.windea.pls.model.ParadoxDefinitionInfo
  * - 在规则文件中，数据表达式 `<{x}>` 用于匹配一个定义引用，其中 `{x}` 即是一个定义类型表达式。
  *
  * 示例：
- * ```
+ * ```text
  * event
  * event.hidden
  * event.hidden.country_event
  * ```
+ *
+ * @see CwtTypeConfig
  */
 interface ParadoxDefinitionTypeExpression {
     val text: String
@@ -60,7 +68,7 @@ private class ParadoxDefinitionTypeExpressionImpl(
     init {
         val dotIndex = text.indexOf('.')
         type = if (dotIndex == -1) text else text.substring(0, dotIndex)
-        subtypes = if (dotIndex == -1) emptyList() else text.substring(dotIndex + 1).split('.')
+        subtypes = if (dotIndex == -1) ImmutableList.of() else text.substring(dotIndex + 1).splitFast('.')
     }
 
     override fun matches(type: String, subtypes: Collection<String>): Boolean {

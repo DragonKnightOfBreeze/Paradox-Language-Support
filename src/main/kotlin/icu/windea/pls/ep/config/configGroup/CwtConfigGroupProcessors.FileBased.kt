@@ -43,10 +43,9 @@ import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.CwtConfigGroupFileInfo
 import icu.windea.pls.config.configGroup.CwtConfigGroupFileSource
-import icu.windea.pls.config.optimizedPath
 import icu.windea.pls.config.settings.ChronicleConfigSettings
 import icu.windea.pls.config.util.CwtConfigManager
-import icu.windea.pls.config.util.CwtConfigResolverManager
+import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.withState
@@ -60,7 +59,7 @@ import kotlinx.coroutines.ensureActive
 /**
  * 用于初始化规则分组中基于文件内容的那些数据。
  */
-class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor {
+class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor, CwtConfigResolverScope {
     override suspend fun process(configGroup: CwtConfigGroup) {
         val currentCoroutineContext = currentCoroutineContext()
 
@@ -117,12 +116,12 @@ class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor {
             fileConfigMap[filePath] = fileConfig
         }
 
-        val fileConfigs = CwtConfigResolverManager.getFileConfigs(configGroup)
+        val fileConfigs = configGroup.initializer.fileConfigs
         fileConfigs += internalFileConfigMap
         fileConfigs += fileConfigMap
 
-        val postProcessActions = CwtConfigResolverManager.getPostProcessActions(configGroup)
-        for (it in postProcessActions) {
+        val configPostProcessActions = configGroup.initializer.configPostProcessActions
+        for (it in configPostProcessActions) {
             it.run()
         }
 
@@ -137,7 +136,7 @@ class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor {
     }
 
     private fun resolveInternalFileConfig(configGroup: CwtConfigGroup, file: VirtualFile, filePath: String): CwtFileConfig? {
-        return withState(ChronicleThreadContext.skipProcessingOptionData) {
+        return withState(ChronicleThreadContext.skipProcessingOptionMetadata) {
             CwtFileConfig.resolve(file, configGroup, filePath)
         }
     }

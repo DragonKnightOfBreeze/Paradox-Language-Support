@@ -15,7 +15,7 @@ class ParadoxLocalisationFindUsagesProvider : FindUsagesProvider {
     override fun canFindUsagesFor(element: PsiElement): Boolean {
         return when (element) {
             is ParadoxLocalisationProperty -> true
-            is LightElementBase -> element.language == ParadoxLocalisationLanguage
+            is LightElementBase -> element.language === ParadoxLocalisationLanguage
             else -> false
         }
     }

@@ -15,7 +15,7 @@ import icu.windea.pls.images.editor.ImageFileEditorImpl
  */
 class DdsFileEditorProvider : FileEditorProvider, DumbAware {
     override fun accept(project: Project, file: VirtualFile): Boolean {
-        return file.fileType == DdsFileType
+        return file.fileType === DdsFileType
     }
 
     override fun createEditor(project: Project, file: VirtualFile): FileEditor {

@@ -1,20 +1,25 @@
 package icu.windea.pls.model.scope
 
+import com.github.benmanes.caffeine.cache.Interner.*
+import com.google.common.collect.ImmutableList
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cache.CacheBuilder
-import icu.windea.pls.core.optimized
 import icu.windea.pls.core.toCapitalizedWords
 import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 
+@Optimized
 object ParadoxScopeResolver {
+    private val interner = newWeakInterner<String>()
     private val cache = CacheBuilder("expireAfterAccess=30m").build<String, ParadoxScope> { ParadoxScope.Default(it) }
 
     fun getScopeId(scope: String): String {
-        val scopeId = scope.lowercase().replace(' ', '_').optimized() // optimized to optimize memory
+        val scopeId = scope.lowercase().replace(' ', '_')
         // "all" scope is always resolved as "any" scope
         if (scopeId == ParadoxScopeConstants.allScope) return ParadoxScopeConstants.anyScope
-        return scopeId
+        // intern to optimize memory
+        return interner.intern(scopeId)
     }
 
     fun getScopeName(scope: String, configGroup: CwtConfigGroup): String {
@@ -24,7 +29,7 @@ object ParadoxScopeResolver {
         // a scope may not have aliases, or not defined in scopes.cwt
         return configGroup.scopes[scope]?.name
             ?: configGroup.scopeAliasMap[scope]?.name
-            ?: scope.toCapitalizedWords().optimized() // optimized to optimize memory
+            ?: scope.toCapitalizedWords()
     }
 
     fun resolveScope(id: String): ParadoxScope {
@@ -67,13 +72,12 @@ object ParadoxScopeResolver {
         val prev2 = map.get(c.prev2Scope)?.let { resolveScopeContext(it) }
         val prev3 = map.get(c.prev3Scope)?.let { resolveScopeContext(it) }
         val prev4 = map.get(c.prev4Scope)?.let { resolveScopeContext(it) }
-        val prevStack = buildList b@{
-            // break if previous-prev is null (but next-prev is null or not null)
-            prev?.let { add(it) } ?: return@b
-            prev2?.let { add(it) } ?: return@b
-            prev3?.let { add(it) } ?: return@b
-            prev4?.let { add(it) } ?: return@b
-        }
+        val prevStack = ImmutableList.builder<ParadoxScopeContext>().apply action@{
+            prev?.let { add(it) } ?: return@action
+            prev2?.let { add(it) } ?: return@action
+            prev3?.let { add(it) } ?: return@action
+            prev4?.let { add(it) } ?: return@action
+        }.build()
         return ParadoxScopeContext.Complex(scope, root, from, from2, from3, from4, prevStack)
     }
 
@@ -85,7 +89,10 @@ object ParadoxScopeResolver {
         val from2 = if (isFrom) null else input.from2
         val from3 = if (isFrom) null else input.from3
         val from4 = if (isFrom) null else input.from4
-        val prevStack = input.prevStack.toMutableList().also { it.add(0, input) }
+        val prevStack = ImmutableList.builderWithExpectedSize<ParadoxScopeContext>(input.prevStack.size + 1)
+            .add(input)
+            .addAll(input.prevStack)
+            .build()
         return ParadoxScopeContext.Complex(scope, root, from, from2, from3, from4, prevStack)
     }
 
@@ -96,12 +103,18 @@ object ParadoxScopeResolver {
         val from2 = if (isFrom) next.from2 else next.from2 ?: input.from2
         val from3 = if (isFrom) next.from3 else next.from3 ?: input.from3
         val from4 = if (isFrom) next.from4 else next.from4 ?: input.from4
-        val prevStack = input.prevStack.toMutableList().also { it.add(0, input) }
+        val prevStack = ImmutableList.builderWithExpectedSize<ParadoxScopeContext>(input.prevStack.size + 1)
+            .add(input)
+            .addAll(input.prevStack)
+            .build()
         return ParadoxScopeContext.Complex(scope, root, from, from2, from3, from4, prevStack)
     }
 
     fun resolveNextScopeContext(input: ParadoxScopeContext, links: List<Tuple2<ParadoxScopeNode, ParadoxScopeContext>>): ParadoxScopeContext {
-        val prevStack = input.prevStack.toMutableList().also { it.add(0, input) }
+        val prevStack = ImmutableList.builderWithExpectedSize<ParadoxScopeContext>(input.prevStack.size + 1)
+            .add(input)
+            .addAll(input.prevStack)
+            .build()
         return ParadoxScopeContext.Linked(links, prevStack)
     }
 

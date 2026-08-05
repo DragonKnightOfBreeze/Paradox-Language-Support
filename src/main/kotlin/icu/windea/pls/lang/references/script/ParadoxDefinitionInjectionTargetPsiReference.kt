@@ -6,11 +6,16 @@ import com.intellij.psi.PsiPolyVariantReferenceBase
 import com.intellij.psi.ResolveResult
 import icu.windea.pls.core.createResults
 import icu.windea.pls.core.unquote
+import icu.windea.pls.lang.codeInsight.completion.script.ParadoxDefinitionInjectionExpressionCompletionProvider
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.model.ParadoxDefinitionInjectionInfo
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 
+/**
+ * @see ParadoxDefinitionInjectionPsiReferenceProvider
+ * @see ParadoxDefinitionInjectionExpressionCompletionProvider
+ */
 class ParadoxDefinitionInjectionTargetPsiReference(
     element: ParadoxScriptPropertyKey,
     rangeInElement: TextRange,

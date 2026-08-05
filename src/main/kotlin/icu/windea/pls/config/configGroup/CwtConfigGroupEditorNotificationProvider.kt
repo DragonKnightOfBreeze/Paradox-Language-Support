@@ -20,7 +20,7 @@ import javax.swing.JComponent
  */
 class CwtConfigGroupEditorNotificationProvider : EditorNotificationProvider, DumbAware {
     override fun collectNotificationData(project: Project, file: VirtualFile): Function<in FileEditor, out JComponent?>? {
-        if (file.fileType !is CwtFileType) return null
+        if (file.fileType !== CwtFileType) return null
 
         val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
         val (fileProvider, configGroup) = fileProviders.firstNotNullOfOrNull { fileProvider ->

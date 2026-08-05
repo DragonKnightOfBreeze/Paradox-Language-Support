@@ -5,6 +5,7 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.searches.DefinitionsScopedSearch
 import com.intellij.util.Processor
 import com.intellij.util.QueryExecutor
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.lang.definitionInfo
@@ -15,6 +16,7 @@ import icu.windea.pls.script.psi.ParadoxDefinitionElement
 /**
  * 定义的实现的查询器。加入所有作用域内的同名定义。
  */
+@Optimized
 class ParadoxDefinitionImplementationsSearcher : QueryExecutor<PsiElement, DefinitionsScopedSearch.SearchParameters> {
     override fun execute(queryParameters: DefinitionsScopedSearch.SearchParameters, consumer: Processor<in PsiElement>): Boolean {
         val project = queryParameters.project

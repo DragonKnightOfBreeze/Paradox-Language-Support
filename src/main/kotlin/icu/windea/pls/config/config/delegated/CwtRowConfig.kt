@@ -1,8 +1,9 @@
 package icu.windea.pls.config.config.delegated
 
-import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
+import icu.windea.pls.config.CwtConfigType
+import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.config.annotations.FromMember
 import icu.windea.pls.config.annotations.FromName
 import icu.windea.pls.config.attributes.CwtRowConfigAttributes
@@ -14,8 +15,6 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtRowType
 import icu.windea.pls.config.config.booleanValue
 import icu.windea.pls.config.config.stringValue
-import icu.windea.pls.config.optimizedPath
-import icu.windea.pls.config.optimizedPathExtension
 import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.core.collections.getAll
 import icu.windea.pls.core.collections.getOne
@@ -72,6 +71,8 @@ interface CwtRowConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, Cwt
     @FromMember("columns: ColumnConfigs")
     val columns: List<CwtPropertyConfig>
 
+    override val configType: CwtConfigType get() = CwtConfigTypes.Row
+
     val attributes: CwtRowConfigAttributes
 
     companion object {
@@ -92,7 +93,7 @@ private object CwtRowConfigResolver : CwtConfigResolverScope {
         val name = config.key.removeSurroundingOrNull("row[", "]")?.orNull() ?: return null
         val propConfigs = config.properties
         if (propConfigs.isNullOrEmpty()) {
-            logger.warn("Skipped invalid row config (name: $name): Empty properties.".withLocationPrefix(config))
+            logger.warnWithPrefix(config, "Skipped invalid row config (name: $name): Empty properties.")
             return null
         }
 
@@ -107,7 +108,7 @@ private object CwtRowConfigResolver : CwtConfigResolverScope {
         val skipLastColumn = propGroup.getOne("skip_last_column")?.booleanValue ?: false
         val columns = propGroup.getOne("columns")?.properties?.optimized().orEmpty()
 
-        logger.debug { "Resolved row config (name: $name).".withLocationPrefix(config) }
+        logger.debugWithPrefix(config) { "Resolved row config (name: $name)." }
         return CwtRowConfigImpl(
             config, name,
             paths, pathFile, pathExtension, pathStrict, pathPatterns,

@@ -1,4 +1,4 @@
-@file:Suppress("unused", "NOTHING_TO_INLINE")
+@file:Suppress("unused")
 
 package icu.windea.pls.core
 
@@ -22,10 +22,9 @@ import kotlin.io.path.isDirectory
 
 private data object EmptyObject
 
-/** 通用空对象占位符。 */
 val EMPTY_OBJECT: Any = EmptyObject
 
-/** 空操作，占位用。 */
+@Suppress("NOTHING_TO_INLINE")
 inline fun pass() {
     // nothing
 }
@@ -74,7 +73,7 @@ inline fun <T> T.alsoUnless(condition: Boolean, block: (T) -> Unit): T {
 
 /** 判断可空字符序列是否非空（同时判空与长度为 0）。 */
 @OptIn(ExperimentalContracts::class)
-@Suppress("ReplaceSizeCheckWithIsNotEmpty")
+@Suppress("NOTHING_TO_INLINE", "ReplaceSizeCheckWithIsNotEmpty")
 inline fun CharSequence?.isNotNullOrEmpty(): Boolean {
     contract {
         returns(true) implies (this@isNotNullOrEmpty != null)
@@ -84,7 +83,7 @@ inline fun CharSequence?.isNotNullOrEmpty(): Boolean {
 }
 
 @OptIn(ExperimentalContracts::class)
-@Suppress("ReplaceSizeCheckWithIsNotEmpty")
+@Suppress("NOTHING_TO_INLINE", "ReplaceSizeCheckWithIsNotEmpty")
 /** 判断可空数组是否非空。 */
 inline fun Array<*>?.isNotNullOrEmpty(): Boolean {
     contract {
@@ -96,7 +95,7 @@ inline fun Array<*>?.isNotNullOrEmpty(): Boolean {
 
 /** 判断可空集合是否非空。 */
 @OptIn(ExperimentalContracts::class)
-@Suppress("ReplaceSizeCheckWithIsNotEmpty")
+@Suppress("NOTHING_TO_INLINE", "ReplaceSizeCheckWithIsNotEmpty")
 inline fun Collection<*>?.isNotNullOrEmpty(): Boolean {
     contract {
         returns(true) implies (this@isNotNullOrEmpty != null)
@@ -106,9 +105,11 @@ inline fun Collection<*>?.isNotNullOrEmpty(): Boolean {
 }
 
 /** 如果当前布尔值为 `false`，则返回 `null`，否则返回自身。 */
+@Suppress("NOTHING_TO_INLINE")
 inline fun Boolean.orNull() = takeIf { it }
 
 /** 如果当前字符串为空，则返回 `null`。否则返回自身。 */
+@Suppress("NOTHING_TO_INLINE")
 inline fun <T : CharSequence> T.orNull() = takeIf { it.isNotEmpty() }
 
 /** 判断是否以指定前缀/后缀包围（基于单个字符）。 */
@@ -269,6 +270,21 @@ fun Char.isExactWord(): Boolean {
     return this == '_' || isExactLetter() || isExactDigit()
 }
 
+/** 是否为有效的标识符字符。通过 [extraChars] 指定额外接受的字符。允许 `$`。 */
+fun Char.isIdentifierChar(extraChars: String = ""): Boolean {
+    return StringUtil.isJavaIdentifierPart(this) || extraChars.isNotEmpty() && this in extraChars
+}
+
+/** 是否为是有效的标识符字符串。通过 [extraChars] 指定额外接受的字符。允许 `$`。不接受空字符串。 */
+fun String.isIdentifier(extraChars: String = ""): Boolean {
+    if (isEmpty()) return false
+    for ((_, c) in this.withIndex()) {
+        if (c.isIdentifierChar(extraChars)) continue
+        return false
+    }
+    return true
+}
+
 /** 是否以 [quote] 起始。 */
 fun String.isLeftQuoted(quote: Char = '"'): Boolean {
     return startsWith(quote)
@@ -325,9 +341,7 @@ fun String.quoteIfNeeded(quote: Char = '"', containAnyChar: String = "", contain
     return if (shouldQuote) this.quote(quote) else this
 }
 
-/**
- * 判断当前字符串中的指定索引 [index] 的字符是否被转义（在前面有连续的奇数个反斜线）。
- */
+/** 判断当前字符串中的指定索引 [index] 的字符是否被转义（在前面有连续的奇数个反斜线）。 */
 fun CharSequence.isEscapedCharAt(index: Int): Boolean {
     if (index == 0) return false
     var n = 0
@@ -352,22 +366,6 @@ fun String.escapeBlank(): String {
         }
     }
     return builder?.toString() ?: this
-}
-
-/** 将字符串集合拼接为以逗号分隔的字符串。 */
-fun Collection<String>.toCommaDelimitedString(): String {
-    val input = this
-    return if (input.isEmpty()) "" else input.joinToString(",")
-}
-
-/** 将逗号分隔字符串解析为列表（自动 trim，忽略空项）。 */
-fun String.toCommaDelimitedStringList(destination: MutableList<String> = mutableListOf()): MutableList<String> {
-    return this.split(',').mapNotNullTo(destination) { it.trim().orNull() }
-}
-
-/** 将逗号分隔字符串解析为集合（自动 trim，忽略空项）。 */
-fun String.toCommaDelimitedStringSet(destination: MutableSet<String> = mutableSetOf()): MutableSet<String> {
-    return this.split(',').mapNotNullTo(destination) { it.trim().orNull() }
 }
 
 // /** 拆分后逐项 trim 并丢弃空串的轻量实现。 */
@@ -408,7 +406,7 @@ fun String.decapitalized(): String {
     return replaceFirstChar { it.lowercaseChar() }
 }
 
-/** 将字符串按单词边界转换为“每个单词首字母大写”形式。 */
+/** 将字符串按单词边界转化为“每个单词首字母大写”形式。 */
 fun String.toCapitalizedWords(): String {
     if (isEmpty()) return this
     return buildString {
@@ -484,38 +482,11 @@ fun Collection<String>.truncate(limit: Int, ellipsis: String = "..."): List<Stri
     return take(limit).let { if (size > limit) it + ellipsis else it }
 }
 
-/** 非空断言式转换（不安全）：将对象强转为 [T]。 */
+/** 非空断言式转化（不安全）：将对象强转为 [T]。 */
 inline fun <reified T> Any?.cast(): T = this as T
 
-/** 安全转换：将对象尝试转换为 [T]，失败返回 `null`。 */
+/** 安全转化：将对象尝试转化为 [T]，失败返回 `null`。 */
 inline fun <reified T> Any?.castOrNull(): T? = this as? T
-
-/**
- * 判断当前路径是否匹配另一个路径（相同或者是其父路径）。
- * 使用 "/" 作为路径分隔符。
- * 不会忽略前导的路径分隔符。
- *
- * @param other 另一个路径。
- * @param acceptSelf 是否接受路径完全一致的情况。
- * @param strict 是否严格匹配（相同或是其直接父路径）。
- * @param trim 是否需要事先去除当前路径首尾的路径分隔符。不会去除另一个路径首尾的路径分隔符。
- */
-@Suppress("PLATFORM_CLASS_MAPPED_TO_KOTLIN")
-fun String.matchesPath(other: String, acceptSelf: Boolean = true, strict: Boolean = false, trim: Boolean = false): Boolean {
-    // 这个方法的执行速度应当非常非常快
-
-    val path = if (trim) this.trimFast('/') else this
-    val length = path.length
-    val otherLength = other.length
-    if (length > otherLength) return false
-    if ((other as java.lang.String).startsWith(path, 0)) {
-        if (length == otherLength) return acceptSelf
-        if (other[length] != '/') return false
-        if (strict && (other as java.lang.String).indexOf(47, length + 1) != -1) return false // 47 -> '/'
-        return true
-    }
-    return false
-}
 
 /**
  * 规范化当前路径。
@@ -541,6 +512,21 @@ fun String.normalizePath(): String {
 }
 
 /**
+ * 转化当前路径中的文件名部分。
+ *
+ * - 格式：`{parent}{baseName}{fileExtension}`
+ * - 示例：`"foo/bar.txt".convertPath { b, e -> "$b.after$e" }` -> `"foo/bar.after.txt"`
+ */
+inline fun String.convertPath(transform: (baseName: String, extension: String) -> String): String {
+    val separatorIndex = lastIndexOf('/')
+    val dotIndex = if (separatorIndex == -1) -1 else indexOf('.', separatorIndex + 1)
+    val parent = if (separatorIndex == -1) "" else substring(0, separatorIndex + 1)
+    val baseName = if (dotIndex == -1) substring(separatorIndex + 1) else substring(separatorIndex + 1, dotIndex)
+    val extension = if (dotIndex == -1) "" else substring(dotIndex)
+    return parent + transform(baseName, extension)
+}
+
+/**
  * 返回规范化后的绝对路径（absolute + normalize）。
  */
 fun Path.formatted(): Path = absolute().normalize()
@@ -560,28 +546,21 @@ fun Path.create(): Path {
     return this
 }
 
-/** `Boolean` 与 `Byte` 的互转：`true->1`，`false->0`。 */
-fun Boolean.toByte() = if (this) 1.toByte() else 0.toByte()
+/** 将布尔值转化为 [Byte]。如果为 `true` 则返回 1，否则返回 0. */
+@Suppress("NOTHING_TO_INLINE")
+inline fun Boolean.toByte() = if (this) 1.toByte() else 0.toByte()
 
-/** `Byte` 转 `Boolean`：`0->false`，其他->`true`。 */
-fun Byte.toBoolean() = if (this == 0.toByte()) false else true
-
-/** 可空 `Boolean` 转 `Byte`：`null->2`。 */
-fun Boolean?.toByte() = this?.toByte() ?: 2.toByte()
-
-/** `Byte` 转可空 `Boolean`：`2->null`，其余同上。 */
-fun Byte.toBooleanOrNull() = if (this == 2.toByte()) null else toBoolean()
-
-/** `Boolean` 转 `Int`：`true->1`，`false->0`。 */
-fun Boolean.toInt() = if (this) 1 else 0
+/** 将 [Byte] 转化为布尔值。如果不为 `0` 则返回 `true`，否则返回 `false`。 */
+@Suppress("NOTHING_TO_INLINE")
+inline fun Byte.toBoolean() = if (this == 0.toByte()) false else true
 
 /** `null` 则返回空字符串。 */
 fun Any?.toStringOrEmpty() = this?.toString() ?: ""
 
-/** "yes"/"no" 到布尔的转换（不忽略大小写）。 */
+/** "yes"/"no" 到布尔值的转化（不忽略大小写）。 */
 fun String?.toBooleanYesNo() = if (this == "yes") true else false
 
-/** "yes"/"no" 到可空布尔值的转换（不忽略大小写）。 */
+/** "yes"/"no" 到可空布尔值的转化（不忽略大小写）。 */
 fun String?.toBooleanYesNoOrNull() = if (this == "yes") true else if (this == "no") false else null
 
 /** 生成基于内容的稳定 UUID。 */
@@ -590,26 +569,26 @@ fun String.toUUID(): UUID = UUID.nameUUIDFromBytes(toByteArray(StandardCharsets.
 /** 生成基于内容的稳定 UUID 字符串。 */
 fun String.toUuidString() = UUID.nameUUIDFromBytes(toByteArray(StandardCharsets.UTF_8)).toString()
 
-/** 路径与 URL/类加载器相关的便捷转换。 */
+/** 路径与 URL/类加载器相关的便捷转化。 */
 fun String.toFile() = File(this)
 
-/** 安全转换为 [File]，失败返回 `null`。 */
+/** 安全转化为 [File]，失败返回 `null`。 */
 fun String.toFileOrNull() = runCatchingCancelable { File(this) }.getOrNull()
 
-/** 转换为 [Path]。 */
+/** 转化为 [Path]。 */
 fun String.toPath(): Path = Path.of(this)
 
-/** 安全转换为 [Path]，失败返回 `null`。 */
+/** 安全转化为 [Path]，失败返回 `null`。 */
 fun String.toPathOrNull() = runCatchingCancelable { Path.of(this) }.getOrNull()
 
-/** 转换为文件 URL（file://）。 */
+/** 转化为文件 URL（file://）。 */
 fun String.toFileUrl(): URL = File(this).toURI().toURL()
 
 /** 基于类加载器从 classpath 获取资源 URL。 */
 fun String.toClasspathUrl(locationClass: Class<*> = ChronicleFacade::class.java) = locationClass.getResource(this)!!
 
-/** 将 URL 转换为 [File]。 */
+/** 将 URL 转化为 [File]。 */
 fun URL.toFile() = File(this.toURI())
 
-/** 将 URL 转换为 [Path]。 */
+/** 将 URL 转化为 [Path]。 */
 fun URL.toPath(): Path = Paths.get(this.toURI())

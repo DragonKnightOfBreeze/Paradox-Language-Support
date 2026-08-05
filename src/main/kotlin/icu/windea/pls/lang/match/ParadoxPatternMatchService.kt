@@ -1,14 +1,19 @@
 package icu.windea.pls.lang.match
 
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.config.configExpression.CwtDataExpressionRole
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.util.values.singletonList
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.ep.match.expression.ParadoxScriptExpressionMatcher
 import icu.windea.pls.model.expressions.ParadoxExpression
 
+@Optimized
 object ParadoxPatternMatchService {
     /**
      * 用输入的 [text] 作为通配符来匹配指定的 [key]。
@@ -35,16 +40,17 @@ object ParadoxPatternMatchService {
             if (p1 != p2) return false
         }
         val pattern0 = text.substring(fromIndex)
-        val configExpression = CwtDataExpression.resolve(pattern0, true)
+        val configExpression = CwtDataExpression.resolve(pattern0, CwtDataExpressionRole.Key)
         if (configExpression.expressionString.isEmpty()) return false
+        ProgressManager.checkCanceled()
         val expression = ParadoxExpression.resolve(key)
         val matchContext = ParadoxScriptExpressionMatchContext(contextElement, expression, configExpression, null, configGroup, options)
-        val matchResult = ParadoxScriptExpressionMatcher.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-            if (!ep.isPatternAware(matchContext)) return@f null
-            ep.match(matchContext)
+        val matchers = ParadoxScriptExpressionMatcher.getAll(matchContext.dataType)
+        matchers.forEachFast f@{ matcher ->
+            if (!matcher.isPatternAware(matchContext)) return@f
+            matcher.match(matchContext)?.let { return it.get(options) }
         }
-        if (matchResult == null) return false
-        return matchResult.get(options)
+        return false
     }
 
     /**
@@ -69,7 +75,7 @@ object ParadoxPatternMatchService {
     }
 
     /**
-     * 用输入的 [map] 的键作为通配符来匹配指定的 [key]，得到匹配的首个结果。
+     * 用输入的 [map] 的键作为通配符来匹配指定的 [key]，得到匹配的所有值的集合。
      *
      * @param key 要与通配符进行匹配的键。
      * @param fromIndex 从该索引开始匹配，之前的字符串需要相同才会进行进一步的匹配。
@@ -83,9 +89,9 @@ object ParadoxPatternMatchService {
         configGroup: CwtConfigGroup,
         options: ParadoxMatchOptions? = null,
         fromIndex: Int = 0,
-    ): List<V> {
+    ): Collection<V> {
         val fastResult = map.get(key)
         if (fastResult != null) return fastResult.to.singletonList()
-        return map.entries.filter { (k) -> matches(k, key, contextElement, configGroup, options, fromIndex) }.map { it.value }
+        return map.filterKeys { k -> matches(k, key, contextElement, configGroup, options, fromIndex) }.values
     }
 }

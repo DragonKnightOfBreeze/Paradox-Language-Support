@@ -6,6 +6,7 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiElementVisitor
 import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.lang.fixes.navigation.NavigateToDuplicatesFix
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyList
 import icu.windea.pls.localisation.psi.ParadoxLocalisationVisitor
@@ -24,8 +25,9 @@ class DuplicatePropertiesInspection : LocalInspectionTool(), DumbAware {
                 val propertyGroup = element.propertyList.groupBy { it.name }
                 if (propertyGroup.isEmpty()) return
                 for ((key, values) in propertyGroup) {
+                    ProgressManager.checkCanceled()
                     if (values.size <= 1) continue
-                    for (value in values) {
+                    values.forEachFast { value ->
                         // 第一个元素指定为file，则是在文档头部弹出，否则从psiElement上通过contextActions显示
                         val location = value.propertyKey
                         val fix = NavigateToDuplicatesFix(key, value, values)

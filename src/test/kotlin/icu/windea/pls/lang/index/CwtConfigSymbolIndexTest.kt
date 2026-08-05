@@ -5,7 +5,7 @@ import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.intellij.util.indexing.FileBasedIndex
 import icu.windea.pls.config.CwtConfigTypes
-import icu.windea.pls.core.ReadWriteAccess
+import icu.windea.pls.core.util.ReadWriteAccess
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.ChronicleTestScope
 import org.junit.After

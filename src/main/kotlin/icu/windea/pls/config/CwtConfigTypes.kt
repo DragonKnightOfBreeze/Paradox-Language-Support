@@ -2,9 +2,6 @@ package icu.windea.pls.config
 
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleIcons
-import icu.windea.pls.config.CwtConfigTypes.Effect
-import icu.windea.pls.config.CwtConfigTypes.Modifier
-import icu.windea.pls.config.CwtConfigTypes.Trigger
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.delegated.CwtComplexEnumConfig
 import icu.windea.pls.config.config.delegated.CwtDatabaseObjectTypeConfig

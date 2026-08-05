@@ -17,9 +17,9 @@ class ParadoxDefaultDefinitionScopeContextProvider : ParadoxDefinitionScopeConte
         val declarationConfig = definitionInfo.declarationConfig?.config ?: return null
         val subtypeConfigs = definitionInfo.subtypeConfigs
         val typeConfig = definitionInfo.typeConfig
-        val scopeContextOnType = subtypeConfigs.firstNotNullOfOrNull { it.config.optionData.scopeContext }
-            ?: typeConfig.config.optionData.scopeContext
-        val scopeContextOnDeclaration = declarationConfig.optionData.scopeContext
+        val scopeContextOnType = subtypeConfigs.firstNotNullOfOrNull { it.config.optionMetadata.scopeContext }
+            ?: typeConfig.config.optionMetadata.scopeContext
+        val scopeContextOnDeclaration = declarationConfig.optionMetadata.scopeContext
         if (scopeContextOnType == null) return scopeContextOnDeclaration
         if (scopeContextOnDeclaration == null) return scopeContextOnType
         return scopeContextOnType.resolveNext(scopeContextOnDeclaration).also { it.isExact = false }
@@ -35,7 +35,7 @@ class ParadoxBaseDefinitionScopeContextProvider : ParadoxDefinitionScopeContextP
         val configGroup = definitionInfo.configGroup
         val configs = configGroup.extendedDefinitions.findByPattern(definitionInfo.name, definition, configGroup).orEmpty()
         val config = configs.findLast { ParadoxDefinitionTypeExpression.resolve(it.type).matches(definitionInfo) } ?: return null
-        return config.config.optionData.scopeContext
+        return config.config.optionMetadata.scopeContext
     }
 }
 
@@ -47,7 +47,7 @@ class ParadoxGameRuleScopeContextProvider : ParadoxDefinitionScopeContextProvide
     override fun getScopeContext(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContext? {
         val configGroup = definitionInfo.configGroup
         val config = configGroup.extendedGameRules.findByPattern(definitionInfo.name, definition, configGroup) ?: return null
-        return config.config.optionData.scopeContext
+        return config.config.optionMetadata.scopeContext
     }
 }
 
@@ -59,6 +59,6 @@ class ParadoxOnActionScopeContextProvider : ParadoxDefinitionScopeContextProvide
     override fun getScopeContext(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContext? {
         val configGroup = definitionInfo.configGroup
         val config = configGroup.extendedOnActions.findByPattern(definitionInfo.name, definition, configGroup) ?: return null
-        return config.config.optionData.scopeContext
+        return config.config.optionMetadata.scopeContext
     }
 }

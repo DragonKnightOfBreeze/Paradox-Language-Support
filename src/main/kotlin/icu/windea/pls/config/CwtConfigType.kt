@@ -1,6 +1,5 @@
 package icu.windea.pls.config
 
-import icu.windea.pls.config.CwtConfigType.Companion.entries
 import icu.windea.pls.config.config.CwtConfigService
 import icu.windea.pls.cwt.psi.CwtMember
 import icu.windea.pls.model.paths.CwtConfigPath

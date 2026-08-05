@@ -122,7 +122,7 @@ object ParadoxInlineScriptService {
     }
 
     fun getInferredContextConfigsFromUsages(expression: String, contextElement: ParadoxScriptMember, context: CwtConfigContext, options: ParadoxMatchOptions? = null, fast: Boolean = true): List<CwtMemberConfig<*>> {
-        return withRecursionGuard {
+        return withRecursionGuard({}.javaClass.name) {
             withRecursionCheck(expression) {
                 context.inlineScriptHasConflict = false
                 context.inlineScriptHasRecursion = false

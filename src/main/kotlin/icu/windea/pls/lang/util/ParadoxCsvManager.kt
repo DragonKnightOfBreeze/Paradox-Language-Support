@@ -4,6 +4,7 @@ import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtRowConfig
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.util.ComputedModificationTracker
 import icu.windea.pls.core.util.KeyRegistry
@@ -17,6 +18,7 @@ import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.resolve.ParadoxCsvService
 
+@Optimized
 object ParadoxCsvManager {
     object Keys : KeyRegistry() {
         val cachedRowConfig by registerKey<CachedValue<CwtRowConfig>>(Keys)
@@ -24,21 +26,27 @@ object ParadoxCsvManager {
 
     fun getRowConfig(file: ParadoxCsvFile): CwtRowConfig? {
         // from cache
+        return getRowConfigFromCache(file)
+    }
+
+    fun getRowConfig(element: ParadoxCsvColumnContainer): CwtRowConfig? {
+        val file = element.containingFile?.castOrNull<ParadoxCsvFile>() ?: return null
+        // from cache
+        return getRowConfigFromCache(file)
+    }
+
+    fun getRowConfig(element: ParadoxCsvColumn): CwtRowConfig? {
+        val file = element.containingFile?.castOrNull<ParadoxCsvFile>() ?: return null
+        // from cache
+        return getRowConfigFromCache(file)
+    }
+
+    private fun getRowConfigFromCache(file: ParadoxCsvFile): CwtRowConfig? {
         // when the file content changes, the cache here does not need to be refreshed
         return CachedValuesManager.getCachedValue(file, Keys.cachedRowConfig) {
             val value = ParadoxCsvService.resolveRowConfig(file)
             value.withDependencyItems(ComputedModificationTracker { file.fileInfo })
         }
-    }
-
-    fun getRowConfig(element: ParadoxCsvColumnContainer): CwtRowConfig? {
-        val file = element.containingFile?.castOrNull<ParadoxCsvFile>() ?: return null
-        return getRowConfig(file)
-    }
-
-    fun getRowConfig(element: ParadoxCsvColumn): CwtRowConfig? {
-        val file = element.containingFile?.castOrNull<ParadoxCsvFile>() ?: return null
-        return getRowConfig(file)
     }
 
     fun getColumnConfig(element: ParadoxCsvColumn, rowConfig: CwtRowConfig): CwtPropertyConfig? {

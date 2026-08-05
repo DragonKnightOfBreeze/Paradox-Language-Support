@@ -13,4 +13,3 @@ fun List<InlayPresentation>.mergePresentations(): InlayPresentation? {
         else -> SequencePresentation(this.optimized())
     }
 }
-

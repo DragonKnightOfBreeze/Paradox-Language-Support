@@ -1,7 +1,9 @@
-@file:Suppress("NOTHING_TO_INLINE")
+@file:Suppress("unused")
 
 package icu.windea.pls.core.accessor
 
+import com.intellij.openapi.progress.ProcessCanceledException
+import kotlinx.coroutines.CancellationException
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
 
@@ -18,7 +20,7 @@ class PropertyAccessor<T : Any, V>(
     val targetClassProvider: () -> KClass<T>
 ) : Accessor<T> {
     override val targetClass by lazy { targetClassProvider() }
-    override val accessorProvider by lazy { AccessorProviderCache.get(targetClass) }
+    override val accessorProvider by lazy { AccessorContext.get(targetClass) }
 
     /** 读取属性值。 */
     fun get(): V {
@@ -45,7 +47,7 @@ class MemberPropertyAccessor<T : Any, V>(
 
     @Suppress("UNCHECKED_CAST")
     override val targetClass by lazy { targetClassProvider() ?: runtimeTarget!!::class as KClass<T> }
-    override val accessorProvider by lazy { AccessorProviderCache.get(targetClass) }
+    override val accessorProvider by lazy { AccessorContext.get(targetClass) }
 
     /** 读取属性值。 */
     fun get(target: T): V {
@@ -59,12 +61,14 @@ class MemberPropertyAccessor<T : Any, V>(
         accessorProvider.set(target, propertyName, value)
     }
 
-    /** 委托读取：`val v by memberProperty(...)`。 */
+    /** @see MemberPropertyAccessor.get */
+    @Suppress("NOTHING_TO_INLINE")
     inline operator fun getValue(thisRef: T, property: KProperty<*>): V {
         return get(thisRef)
     }
 
-    /** 委托写入：`var v by memberProperty(...)`。 */
+    /** @see MemberPropertyAccessor.set */
+    @Suppress("NOTHING_TO_INLINE")
     inline operator fun setValue(thisRef: T, property: KProperty<*>, value: V) {
         set(thisRef, value)
     }
@@ -81,7 +85,7 @@ class StaticPropertyAccessor<T : Any, V>(
     val targetClassProvider: () -> KClass<T>
 ) : Accessor<T> {
     override val targetClass by lazy { targetClassProvider() }
-    override val accessorProvider by lazy { AccessorProviderCache.get(targetClass) }
+    override val accessorProvider by lazy { AccessorContext.get(targetClass) }
 
     /** 读取静态属性值。 */
     fun get(): V {
@@ -93,14 +97,16 @@ class StaticPropertyAccessor<T : Any, V>(
         accessorProvider.set(null, propertyName, value)
     }
 
-    /** 委托读取静态属性值。 */
+    /** @see StaticPropertyAccessor.get */
+    @Suppress("NOTHING_TO_INLINE")
     inline operator fun getValue(thisRef: Any?, property: KProperty<*>): V {
-        return this.get()
+        return get()
     }
 
-    /** 委托写入静态属性值。 */
+    /** @see StaticPropertyAccessor.set */
+    @Suppress("NOTHING_TO_INLINE")
     inline operator fun setValue(thisRef: Any?, property: KProperty<*>, value: V) {
-        this.set(value)
+        set(value)
     }
 }
 
@@ -117,11 +123,36 @@ class FunctionAccessor<T : Any>(
     val targetClassProvider: () -> KClass<T>
 ) : Accessor<T> {
     override val targetClass by lazy { targetClassProvider() }
-    override val accessorProvider by lazy { AccessorProviderCache.get(targetClass) }
+    override val accessorProvider by lazy { AccessorContext.get(targetClass) }
 
-    /** 调用成员函数。 */
-    operator fun invoke(vararg args: Any?): Any? {
+    /** 调用函数。 */
+    fun call(vararg args: Any?): Any? {
         return accessorProvider.invoke(target, functionName, *args)
+    }
+
+    /** @see FunctionAccessor.call */
+    @Suppress("NOTHING_TO_INLINE")
+    inline operator fun invoke(vararg args: Any?): Any? {
+        return call(*args)
+    }
+
+    /** 调用函数，并尝试将结果转换为指定的类型 [R]。如果发生意外错误，则直接返回 `null`，并对于每个函数名仅报告一次错误。 */
+    fun <R> execute(vararg args: Any?): R? {
+        try {
+            @Suppress("UNCHECKED_CAST")
+            return call(*args) as R
+        } catch (e: Exception) {
+            if (e is ProcessCanceledException || e is CancellationException) throw e
+            val name = "member function '${targetClass.qualifiedName}.$functionName'"
+            AccessorContext.reportError(name, e)
+            return null
+        }
+    }
+
+    /** @see FunctionAccessor.execute */
+    @Suppress("NOTHING_TO_INLINE")
+    inline fun executeOnly(vararg args: Any?) {
+        execute<Any?>(*args)
     }
 }
 
@@ -138,12 +169,37 @@ class MemberFunctionAccessor<T : Any>(
     private var runtimeTarget: T? = null
     @Suppress("UNCHECKED_CAST")
     private val targetClass by lazy { targetClassProvider() ?: runtimeTarget!!::class as KClass<T> }
-    private val accessorProvider by lazy { AccessorProviderCache.get(targetClass) }
+    private val accessorProvider by lazy { AccessorContext.get(targetClass) }
 
     /** 调用成员函数。 */
-    operator fun invoke(target: T, vararg args: Any?): Any? {
+    fun call(target: T, vararg args: Any?): Any? {
         runtimeTarget = target
         return accessorProvider.invoke(target, functionName, *args)
+    }
+
+    /** @see MemberFunctionAccessor.call */
+    @Suppress("NOTHING_TO_INLINE")
+    inline operator fun invoke(target: T, vararg args: Any?): Any? {
+        return call(target, *args)
+    }
+
+    /** 调用成员函数，并尝试将结果转换为指定的类型 [R]。如果发生意外错误，则直接返回 `null`，并对于每个函数名仅报告一次错误。 */
+    fun <R> execute(target: T, vararg args: Any?): R? {
+        try {
+            @Suppress("UNCHECKED_CAST")
+            return call(target, *args) as R
+        } catch (e: Exception) {
+            if (e is ProcessCanceledException || e is CancellationException) throw e
+            val name = "member function '${targetClass.qualifiedName}.$functionName'"
+            AccessorContext.reportError(name, e)
+            return null
+        }
+    }
+
+    /** @see MemberFunctionAccessor.execute */
+    @Suppress("NOTHING_TO_INLINE")
+    inline fun executeOnly(target: T, vararg args: Any?) {
+        execute<Any?>(target, *args)
     }
 }
 
@@ -158,11 +214,35 @@ class StaticFunctionAccessor<T : Any>(
     private val targetClassProvider: () -> KClass<T>
 ) : Accessor<T> {
     override val targetClass by lazy { targetClassProvider() }
-    override val accessorProvider by lazy { AccessorProviderCache.get(targetClass) }
+    override val accessorProvider by lazy { AccessorContext.get(targetClass) }
 
     /** 调用静态函数。 */
-    operator fun invoke(vararg args: Any?): Any? {
+    fun call(vararg args: Any?): Any? {
         return accessorProvider.invoke(null, functionName, *args)
     }
-}
 
+    /** @see StaticFunctionAccessor.call */
+    @Suppress("NOTHING_TO_INLINE")
+    inline operator fun invoke(vararg args: Any?): Any? {
+        return call(*args)
+    }
+
+    /** 调用静态函数，并尝试将结果转换为指定的类型 [R]。如果发生意外错误，则直接返回 `null`，并对于每个函数名仅报告一次错误。 */
+    fun <R> execute(vararg args: Any?): R? {
+        try {
+            @Suppress("UNCHECKED_CAST")
+            return call(*args) as R
+        } catch (e: Exception) {
+            if (e is ProcessCanceledException || e is CancellationException) throw e
+            val name = "static function '${targetClass.qualifiedName}.$functionName'"
+            AccessorContext.reportError(name, e)
+            return null
+        }
+    }
+
+    /** @see StaticFunctionAccessor.execute */
+    @Suppress("NOTHING_TO_INLINE")
+    inline fun executeOnly(vararg args: Any?) {
+        execute<Any?>(*args)
+    }
+}

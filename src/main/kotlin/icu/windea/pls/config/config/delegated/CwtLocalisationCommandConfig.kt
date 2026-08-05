@@ -1,8 +1,9 @@
 package icu.windea.pls.config.config.delegated
 
-import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
+import icu.windea.pls.config.CwtConfigType
+import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.annotations.FromName
 import icu.windea.pls.config.annotations.FromOptionMember
@@ -59,6 +60,8 @@ interface CwtLocalisationCommandConfig : CwtDelegatedConfig<CwtProperty, CwtProp
     @FromOptionMember(": string | string[]")
     val supportedScopes: Set<String>
 
+    override val configType: CwtConfigType get() = CwtConfigTypes.LocalisationCommand
+
     companion object {
         /** 由属性规则解析为本地化命令规则。 */
         @JvmStatic
@@ -79,7 +82,7 @@ private object CwtLocalisationCommandConfigResolver : CwtConfigResolverScope {
             config.stringValue?.let { v -> add(ParadoxScope.getId(v)) }
             config.values?.forEach { it.stringValue?.let { v -> add(ParadoxScope.getId(v)) } }
         }.optimized().orNull() ?: ParadoxScopeConstants.anyScopes
-        logger.debug { "Resolved localisation command config (name: $name).".withLocationPrefix(config) }
+        logger.debugWithPrefix(config) { "Resolved localisation command config (name: $name)." }
         return CwtLocalisationCommandConfigImpl(config, name, supportedScopes)
     }
 }

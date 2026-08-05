@@ -4,22 +4,18 @@ package icu.windea.pls.config.config
 
 import com.intellij.openapi.diagnostic.thisLogger
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.option.CwtOptionDataHolder
+import icu.windea.pls.config.option.CwtOptionMetadata
 import icu.windea.pls.config.util.CwtConfigResolverManager
 import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cache.CacheBuilder
-import icu.windea.pls.core.deoptimized
 import icu.windea.pls.core.forEachChild
 import icu.windea.pls.core.optimized
-import icu.windea.pls.core.optimizer.OptimizerFactory
 import icu.windea.pls.cwt.psi.CwtOption
 import icu.windea.pls.cwt.psi.CwtOptionComment
 import icu.windea.pls.cwt.psi.CwtOptionKey
 import icu.windea.pls.cwt.psi.CwtValue
 import icu.windea.pls.model.constants.ChronicleStrings
-import icu.windea.pls.model.forCwtSeparatorType
-import icu.windea.pls.model.forCwtType
 import icu.windea.pls.model.type.CwtExpressionType
 import icu.windea.pls.model.type.CwtSeparatorType
 import icu.windea.pls.model.type.CwtTypeResolver
@@ -30,16 +26,16 @@ import java.util.*
  *
  * 对应 CWT 规则文件中的一个选项（`## k = v` 或 `## k = {...}`）。需要位于附加到成员上的选项注释中。
  *
- * 用于提供额外的选项数据，自身也可以嵌套下级选项和选项值，以提供更复杂的数据表述。
+ * 用于提供额外的选项元数据，自身也可以嵌套下级选项和选项值，以提供更复杂的数据表述。
  *
  * @property key 选项键。
  * @property value 选项值（去除首尾的双引号）。
  * @property valueType 选项值类型，用于后续解析与校验。
- * @property separatorType 分隔符类型。用于为作为条件的选项数据取正或取反。
+ * @property separatorType 分隔符类型。用于为作为条件的选项元数据取正或取反。
  *
+ * @see CwtOptionMetadata
  * @see CwtOptionComment
  * @see CwtOption
- * @see CwtOptionDataHolder
  */
 interface CwtOptionConfig : CwtOptionMemberConfig<CwtOption> {
     val key: String
@@ -84,15 +80,15 @@ private object CwtOptionConfigResolver : CwtConfigResolverScope {
         }
 
         if (keyElement == null) {
-            logger.warn("Missing option key, skipped.".withLocationPrefix(element, configGroup))
+            logger.warnWithPrefix(element, configGroup, "Missing option key, skipped.")
             return null
         }
         if (valueElement == null) {
-            logger.warn("Missing option value, skipped.".withLocationPrefix(element, configGroup))
+            logger.warnWithPrefix(element, configGroup, "Missing option value, skipped.")
             return null
         }
         if (separatorType == null) {
-            logger.warn("Missing option separator, skipped.".withLocationPrefix(element, configGroup))
+            logger.warnWithPrefix(element, configGroup, "Missing option separator, skipped.")
             return null
         }
 
@@ -124,7 +120,7 @@ private object CwtOptionConfigResolver : CwtConfigResolverScope {
 }
 
 private const val blockValue = ChronicleStrings.blockFolder
-private val blockValueTypeId = CwtExpressionType.Block.optimized(OptimizerFactory.forCwtType())
+private val blockValueTypeId = CwtExpressionType.Block.optimized()
 
 private sealed class CwtOptionConfigBase : CwtOptionConfig {
     override fun equals(other: Any?) = this === other || other is CwtOptionConfig
@@ -140,10 +136,10 @@ private sealed class CwtOptionConfigImplBase(
     key: String,
     separatorType: CwtSeparatorType,
 ) : CwtOptionConfigBase() {
-    private val separatorTypeId = separatorType.optimized(OptimizerFactory.forCwtSeparatorType()) // optimized to optimize memory
+    private val separatorTypeId = separatorType.optimized() // optimized to optimize memory
 
     override val key: String = key.optimized() // optimized to optimize memory
-    override val separatorType: CwtSeparatorType get() = separatorTypeId.deoptimized(OptimizerFactory.forCwtSeparatorType())
+    override val separatorType: CwtSeparatorType get() = CwtSeparatorType.deoptimized(separatorTypeId)
 }
 
 // 12 + 2 * 1 + 2 * 4 = 22 -> 24
@@ -153,10 +149,10 @@ private class CwtOptionConfigImpl(
     valueType: CwtExpressionType,
     separatorType: CwtSeparatorType,
 ) : CwtOptionConfigImplBase(key, separatorType) {
-    private val valueTypeId = valueType.optimized(OptimizerFactory.forCwtType()) // optimized to optimize memory
+    private val valueTypeId = valueType.optimized() // optimized to optimize memory
 
     override val value: String = value.optimized() // optimized to optimize memory
-    override val valueType: CwtExpressionType get() = valueTypeId.deoptimized(OptimizerFactory.forCwtType())
+    override val valueType: CwtExpressionType get() = CwtExpressionType.deoptimized(valueTypeId)
     override val optionConfigs: List<CwtOptionMemberConfig<*>>? get() = if (valueTypeId == blockValueTypeId) emptyList() else null
 }
 

@@ -3,8 +3,10 @@ package icu.windea.pls.lang.refactoring.rename
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.testFramework.IndexingTestUtil
+import com.intellij.testFramework.TestDataFile
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import icu.windea.pls.core.convertPath
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.ChronicleTestScope
 import org.junit.After
@@ -36,22 +38,14 @@ class ParadoxLocalisationRenameTest : BasePlatformTestCase(), ChronicleTestScope
         FileDocumentManager.getInstance().saveAllDocuments()
     }
 
-    private fun configureFile(path: String): String {
-        markFileInfo(gameType, path)
-        myFixture.copyFileToProject("features/refactoring/$path", path)
-        return path
-    }
+    // region Tests
 
     @Test
     fun testRename_Localisation_OverridesAndReferences() {
-        val localisationEnglishPath = "localisation/localisations_l_english.test.yml"
-        val localisationChinesePath = "localisation/localisations_l_simp_chinese.test.yml"
-        val fanPath = "common/vtuber_fans/vtuber_fan_1.test.txt"
-
         // Arrange
-        configureFile(localisationEnglishPath)
-        configureFile(localisationChinesePath)
-        configureFile(fanPath)
+        val localisationEnglishPath = configureMarkedFile("features/refactoring/localisation/localisations_l_english.test.yml")
+        val localisationChinesePath = configureMarkedFile("features/refactoring/localisation/localisations_l_simp_chinese.test.yml")
+        val fanPath = configureMarkedFile("features/refactoring/common/vtuber_fans/vtuber_fan_1.test.txt")
 
         // Ensure indexed
         IndexingTestUtil.waitUntilIndexesAreReady(project)
@@ -62,21 +56,17 @@ class ParadoxLocalisationRenameTest : BasePlatformTestCase(), ChronicleTestScope
         myFixture.renameElementAtCaretUsingHandler(newName)
 
         // Assert
-        myFixture.checkResultByFile(localisationEnglishPath, "features/refactoring/localisation/localisations_l_english.after.test.yml", true)
-        myFixture.checkResultByFile(localisationChinesePath, "features/refactoring/localisation/localisations_l_simp_chinese.after.test.yml", true)
-        myFixture.checkResultByFile(fanPath, "features/refactoring/common/vtuber_fans/vtuber_fan_1.after_localisation.test.txt", true)
+        checkMarkedResult(localisationEnglishPath, "after")
+        checkMarkedResult(localisationChinesePath, "after")
+        checkMarkedResult(fanPath, "after_localisation")
     }
 
     @Test
     fun testRename_Localisation_ReferencesInScript_Multiple() {
-        val localisationEnglishPath = "localisation/localisations_l_english.test.yml"
-        val localisationChinesePath = "localisation/localisations_l_simp_chinese.test.yml"
-        val fanPath = "common/vtuber_fans/vtuber_fan_2.test.txt"
-
         // Arrange
-        configureFile(localisationEnglishPath)
-        configureFile(localisationChinesePath)
-        configureFile(fanPath)
+        val localisationEnglishPath = configureMarkedFile("features/refactoring/localisation/localisations_l_english.test.yml")
+        val localisationChinesePath = configureMarkedFile("features/refactoring/localisation/localisations_l_simp_chinese.test.yml")
+        val fanPath = configureMarkedFile("features/refactoring/common/vtuber_fans/vtuber_fan_2.test.txt")
 
         // Ensure indexed
         IndexingTestUtil.waitUntilIndexesAreReady(project)
@@ -87,8 +77,21 @@ class ParadoxLocalisationRenameTest : BasePlatformTestCase(), ChronicleTestScope
         myFixture.renameElementAtCaretUsingHandler(newName)
 
         // Assert
-        myFixture.checkResultByFile(localisationEnglishPath, "features/refactoring/localisation/localisations_l_english.after.test.yml", true)
-        myFixture.checkResultByFile(localisationChinesePath, "features/refactoring/localisation/localisations_l_simp_chinese.after.test.yml", true)
-        myFixture.checkResultByFile(fanPath, "features/refactoring/common/vtuber_fans/vtuber_fan_2.after_localisation.test.txt", true)
+        checkMarkedResult(localisationEnglishPath, "after")
+        checkMarkedResult(localisationChinesePath, "after")
+        checkMarkedResult(fanPath, "after_localisation")
+    }
+
+    // endregion
+
+    private fun configureMarkedFile(@TestDataFile testDataPath: String, path: String = testDataPath.removePrefix("features/refactoring/")): String {
+        markFileInfo(gameType, path)
+        myFixture.configureByFile(testDataPath)
+        return testDataPath
+    }
+
+    private fun checkMarkedResult(@TestDataFile testDataPath: String, tag: String) {
+        val expectedPath = testDataPath.convertPath { b, e -> "$b.$tag$e" }
+        myFixture.checkResultByFile(testDataPath, expectedPath, true)
     }
 }

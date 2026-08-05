@@ -22,7 +22,7 @@ import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
  * 对应脚本语言与本地化语言中的一段特定的表达式文本，它们可能包含数个节点，且允许嵌套包含。
  *
  * 目前支持的复杂表达式种类包括：
- * - [ParadoxTemplateExpression] - 模板表达式。规则数据类型：[CwtDataTypes.TemplateExpression]。
+ * - [ParadoxTemplateExpression] - 模板表达式。规则数据类型：[CwtDataTypes.Template]。
  * - [ParadoxScopeFieldExpression] - 作用域字段表达式。规则数据类型：[CwtDataTypeSets.ScopeField]。
  * - [ParadoxValueFieldExpression] - 值字段表达式。规则数据类型：[CwtDataTypeSets.ValueField]。
  * - [ParadoxVariableFieldExpression] - 变量字段表达式。规则数据类型：[CwtDataTypeSets.ValueField]。
@@ -92,7 +92,7 @@ private object ParadoxComplexExpressionResolver {
     fun resolveByConfig(text: String, range: TextRange?, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxComplexExpression? {
         val dataType = config.configExpression?.type ?: return null
         return when {
-            dataType == CwtDataTypes.TemplateExpression -> ParadoxTemplateExpression.resolve(text, range, configGroup, config)
+            dataType == CwtDataTypes.Template -> ParadoxTemplateExpression.resolve(text, range, configGroup, config)
             dataType in CwtDataTypeSets.ScopeField -> ParadoxScopeFieldExpression.resolve(text, range, configGroup)
             dataType in CwtDataTypeSets.ValueField -> ParadoxValueFieldExpression.resolve(text, range, configGroup)
             dataType in CwtDataTypeSets.VariableField -> ParadoxVariableFieldExpression.resolve(text, range, configGroup)

@@ -6,10 +6,12 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.Processor
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.process
+import icu.windea.pls.core.collections.processFast
 import icu.windea.pls.cwt.CwtFileType
+import icu.windea.pls.lang.index.ChronicleIndexKeys
 import icu.windea.pls.lang.index.ChronicleIndexService
-import icu.windea.pls.lang.index.CwtConfigSymbolIndex
 import icu.windea.pls.lang.search.CwtConfigSymbolSearch
 import icu.windea.pls.lang.search.scope.withFileTypes
 import icu.windea.pls.lang.search.util.CwtConfigSearchContext
@@ -18,22 +20,25 @@ import icu.windea.pls.model.index.CwtConfigSymbolIndexInfo
 
 /**
  * 规则符号的查询器。
+ *
+ * @see CwtConfigSymbolSearch
  */
+@Optimized
 class CwtConfigSymbolSearcher : QueryExecutorBase<CwtConfigSymbolIndexInfo, CwtConfigSymbolSearch.Parameters>() {
     override fun processQuery(queryParameters: CwtConfigSymbolSearch.Parameters, consumer: Processor<in CwtConfigSymbolIndexInfo>) {
         ProgressManager.checkCanceled()
-        val scope = queryParameters.scope.withFileTypes(CwtFileType)
-        val context = queryParameters.createContext(scope)
+        val context = queryParameters.createContext()
         processQuery(context, consumer)
     }
 
     private fun processQuery(context: Context, consumer: Processor<in CwtConfigSymbolIndexInfo>): Boolean {
         if (!context.isValid()) return true
         val keys = context.types
-        return ChronicleIndexService.processAllFileData(CwtConfigSymbolIndex::class.java, keys, context.project, context.scope, context.gameType) { file, fileData ->
+        val indexId = ChronicleIndexKeys.ConfigSymbol
+        return ChronicleIndexService.processAllFileData(indexId, keys, context.project, context.scope, context.gameType) { file, fileData ->
             context.types.process { type ->
                 val infos = fileData[type].orEmpty()
-                infos.process { info -> processInfo(context, file, info, consumer) }
+                infos.processFast { info -> processInfo(context, file, info, consumer) }
             }
         }
     }
@@ -49,7 +54,8 @@ class CwtConfigSymbolSearcher : QueryExecutorBase<CwtConfigSymbolIndexInfo, CwtC
         return context.name == info.name
     }
 
-    private fun CwtConfigSymbolSearch.Parameters.createContext(scope: GlobalSearchScope = this.scope): Context {
+    private fun CwtConfigSymbolSearch.Parameters.createContext(): Context {
+        val scope = scope.withFileTypes(CwtFileType) // optimize: restrict file types
         return Context(name, types, gameType, project, scope)
     }
 

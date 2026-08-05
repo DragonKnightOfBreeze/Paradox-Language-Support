@@ -2,7 +2,6 @@
 
 package icu.windea.pls.core
 
-import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector
 import com.intellij.codeInsight.template.TemplateBuilder
 import com.intellij.codeInsight.template.TemplateBuilderImpl
 import com.intellij.credentialStore.CredentialAttributes
@@ -24,6 +23,9 @@ import com.intellij.openapi.application.runReadAction
 import com.intellij.openapi.command.CommandProcessor
 import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.extensions.ExtensionPointListener
+import com.intellij.openapi.extensions.ExtensionPointName
+import com.intellij.openapi.extensions.PluginDescriptor
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.DumbService
@@ -128,15 +130,18 @@ inline fun <T, R> T.runCatchingCancelable(block: T.() -> R): Result<R> {
     return runCatching(block).onFailure { if (it is ProcessCanceledException) throw it }
 }
 
-fun <T> createCachedValue(project: Project, trackValue: Boolean = false, provider: CachedValueProvider<T>): CachedValue<T> {
+@Suppress("NOTHING_TO_INLINE")
+inline fun <T> createCachedValue(project: Project, trackValue: Boolean = false, provider: CachedValueProvider<T>): CachedValue<T> {
     return CachedValuesManager.getManager(project).createCachedValue(provider, trackValue)
 }
 
-fun <T> T.withDependencyItems(vararg dependencies: Any): CachedValueProvider.Result<T> {
+@Suppress("NOTHING_TO_INLINE")
+inline fun <T> T.withDependencyItems(vararg dependencies: Any): CachedValueProvider.Result<T> {
     return CachedValueProvider.Result.create(this, *dependencies)
 }
 
-fun <T> T.withDependencyItems(dependencies: List<Any>): CachedValueProvider.Result<T> {
+@Suppress("NOTHING_TO_INLINE")
+inline fun <T> T.withDependencyItems(dependencies: List<Any>): CachedValueProvider.Result<T> {
     return CachedValueProvider.Result.create(this, dependencies)
 }
 
@@ -215,6 +220,7 @@ fun String.findKeywordsWithTextRanges(keywords: Collection<String>): List<Tuple2
         result += tupleOf(keyword, TextRange.from(index, keyword.length))
         startIndex = index + keyword.length
     }
+    if (result.isEmpty()) return emptyList()
     return result.sortedBy { it.second.startOffset }
 }
 
@@ -636,8 +642,6 @@ fun PsiBuilder.lookup(steps: Int, skipWhitespaces: Boolean = true, forward: Bool
 
 // region Code Insight Extensions
 
-typealias ReadWriteAccess = ReadWriteAccessDetector.Access
-
 fun TemplateBuilder.buildTemplate() = cast<TemplateBuilderImpl>().buildTemplate()
 
 fun TemplateBuilder.buildInlineTemplate() = cast<TemplateBuilderImpl>().buildInlineTemplate()
@@ -777,6 +781,22 @@ fun executeWriteCommand(
     WriteCommandAction.writeCommandAction(project, makeWritable)
         .withName(name).withGroupId(groupId)
         .run(action)
+}
+
+// endregion
+
+// region EP Extensions
+
+inline fun <T : Any> ExtensionPointName<T>.addExtensionPointListener(crossinline action: (extension: T) -> Unit) {
+    addExtensionPointListener(object : ExtensionPointListener<T> {
+        override fun extensionAdded(extension: T, pluginDescriptor: PluginDescriptor) {
+            action(extension)
+        }
+
+        override fun extensionRemoved(extension: T, pluginDescriptor: PluginDescriptor) {
+            action(extension)
+        }
+    })
 }
 
 // endregion

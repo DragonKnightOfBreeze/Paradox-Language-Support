@@ -13,12 +13,12 @@ class ParadoxLocalisationCompletionContributor : CompletionContributor() {
         ParadoxLocalisationNameCompletionProvider().let { extend(CompletionType.BASIC, it.elementPattern, it) }
         ParadoxLocalisationColorCompletionProvider().let { extend(null, it.elementPattern, it) }
         ParadoxLocalisationParameterCompletionProvider().let { extend(null, it.elementPattern, it) }
-        ParadoxScriptedVariableReferenceCompletionProvider().let { extend(null, it.elementPattern, it) }
+        ParadoxLocalisationScriptedVariableReferenceCompletionProvider().let { extend(null, it.elementPattern, it) }
         ParadoxLocalisationExpressionCompletionProvider().let { extend(null, it.elementPattern, it) }
         ParadoxLocalisationIconCompletionProvider().let { extend(null, it.elementPattern, it) }
         ParadoxLocalisationConceptCompletionProvider().let { extend(null, it.elementPattern, it) }
-        ParadoxLocalisationTextFormatCompletionProvider().let { extend(null, it.elementPattern, it) }
         ParadoxLocalisationTextIconCompletionProvider().let { extend(null, it.elementPattern, it) }
+        ParadoxLocalisationTextFormatCompletionProvider().let { extend(null, it.elementPattern, it) }
     }
 
     override fun beforeCompletion(context: CompletionInitializationContext) {

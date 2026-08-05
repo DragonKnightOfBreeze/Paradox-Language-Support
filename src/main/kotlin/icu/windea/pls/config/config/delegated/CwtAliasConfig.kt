@@ -1,8 +1,9 @@
 package icu.windea.pls.config.config.delegated
 
-import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
+import icu.windea.pls.config.CwtConfigType
+import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.config.annotations.FromName
 import icu.windea.pls.config.annotations.FromOptionMember
 import icu.windea.pls.config.config.CwtDelegatedConfig
@@ -10,6 +11,7 @@ import icu.windea.pls.config.config.CwtExpandableConfig
 import icu.windea.pls.config.config.CwtIdMatchableConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.config.configExpression.CwtDataExpressionRole
 import icu.windea.pls.config.manipulation.CwtConfigManipulationService
 import icu.windea.pls.config.util.CwtConfigResolverManager
 import icu.windea.pls.config.util.CwtConfigResolverScope
@@ -63,7 +65,9 @@ interface CwtAliasConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, C
     val outputScope: String?
 
     val subNameExpression: CwtDataExpression
-    override val configExpression: CwtDataExpression
+
+    override val configType: CwtConfigType get() = CwtConfigTypes.Alias
+    override val configExpression: CwtDataExpression get() = subNameExpression
 
     companion object {
         /** 由属性规则解析为别名规则。 */
@@ -91,7 +95,7 @@ private object CwtAliasConfigResolver : CwtConfigResolverScope {
             ?: return null
         val name = tokens[0].optimized()
         val subName = tokens[1].optimized()
-        logger.debug { "Resolved alias config (name: $name, subName: $subName).".withLocationPrefix(config) }
+        logger.debugWithPrefix(config) { "Resolved alias config (name: $name, subName: $subName)." }
         return CwtAliasConfigImpl(config, name, subName)
     }
 
@@ -106,10 +110,9 @@ private class CwtAliasConfigImpl(
     override val name: String,
     override val subName: String
 ) : UserDataHolderBase(), CwtAliasConfig {
-    override val supportedScopes get() = config.optionData.supportedScopes
-    override val outputScope get() = config.optionData.pushScope
-    override val subNameExpression = CwtDataExpression.resolve(subName, true) // cached
-    override val configExpression: CwtDataExpression get() = subNameExpression
+    override val supportedScopes get() = config.optionMetadata.supportedScopes
+    override val outputScope get() = config.optionMetadata.pushScope
+    override val subNameExpression = CwtDataExpression.resolve(subName, CwtDataExpressionRole.Key) // cached
 
     override fun toString() = "CwtAliasConfigImpl(name='$name', subName='$subName')"
 }

@@ -11,14 +11,17 @@ import icu.windea.pls.config.CwtConfigType
 import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configExpression.CwtDataExpression
-import icu.windea.pls.core.ReadWriteAccess
-import icu.windea.pls.core.collections.toArray
+import icu.windea.pls.config.configExpression.CwtDataExpressionRole
+import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.collections.forEachFast
+import icu.windea.pls.core.collections.mapToArray
 import icu.windea.pls.core.findKeywordsWithTextRanges
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.util.KeyRegistry
+import icu.windea.pls.core.util.ReadWriteAccess
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
@@ -34,6 +37,7 @@ import icu.windea.pls.model.constants.CwtConfigTextPatterns
 import icu.windea.pls.model.expressions.ParadoxDefinitionTypeExpression
 import icu.windea.pls.model.index.CwtConfigSymbolIndexInfo
 
+@Optimized
 object CwtConfigSymbolManager {
     object Keys : KeyRegistry() {
         val cachedSymbolInfos by registerKey<CachedValue<List<CwtConfigSymbolIndexInfo>>>(Keys)
@@ -53,8 +57,9 @@ object CwtConfigSymbolManager {
         if (!element.isDataExpression()) return PsiReference.EMPTY_ARRAY
         val infos = getInfoFromCache(element)
         if (infos.isEmpty()) return PsiReference.EMPTY_ARRAY
-        val references = infos.map { CwtConfigSymbolPsiReference(element, TextRange.from(it.offset, it.name.length), it) }
-        return references.toArray(PsiReference.EMPTY_ARRAY)
+        // val references = infos.mapFast { CwtConfigSymbolPsiReference(element, TextRange.from(it.offset, it.name.length), it) }
+        // return references.toArray(PsiReference.EMPTY_ARRAY)
+        return infos.mapToArray(PsiReference.EMPTY_ARRAY) { CwtConfigSymbolPsiReference(element, TextRange.from(it.offset, it.name.length), it) }
     }
 
     private fun getInfoFromCache(element: CwtStringExpressionElement): List<CwtConfigSymbolIndexInfo> {
@@ -88,20 +93,20 @@ object CwtConfigSymbolManager {
         if (nameOffset == -1) return
         val tuples = buildList b@{
             if (symbolConfigType != CwtConfigTypes.Alias) {
-                add(tupleOf(name, nameOffset, symbolConfigType))
+                this += tupleOf(name, nameOffset, symbolConfigType)
                 return@b
             }
 
             // aliases
             val n1 = name.substringBefore(':').orNull() ?: return@b
-            add(tupleOf(n1, nameOffset, symbolConfigType))
+            this += tupleOf(n1, nameOffset, symbolConfigType)
             // modifiers & effects & triggers
             if (configType != CwtConfigTypes.Modifier && configType != CwtConfigTypes.Trigger && configType != CwtConfigTypes.Effect) return@b
             val n2 = name.substringAfter(':').orNull() ?: return@b
-            if (CwtDataExpression.resolve(n2, false).type != CwtDataTypes.Constant) return@b
-            add(tupleOf(n2, expressionString.indexOf(':') + 1, configType))
+            if (CwtDataExpression.resolve(n2, CwtDataExpressionRole.Value).type != CwtDataTypes.Constant) return@b
+            this += tupleOf(n2, expressionString.indexOf(':') + 1, configType)
         }
-        tuples.forEach f@{ (symbolName, symbolOffset, symbolConfigType) ->
+        tuples.forEachFast f@{ (symbolName, symbolOffset, symbolConfigType) ->
             val readWriteAccess = ReadWriteAccess.Write
             val nextOffset = offset + symbolOffset
             val info = CwtConfigSymbolIndexInfo(symbolName, symbolConfigType.id, readWriteAccess, nextOffset, element.startOffset, gameType)
@@ -146,10 +151,11 @@ object CwtConfigSymbolManager {
         keywords += expression.subtypes
         val tuples = text.findKeywordsWithTextRanges(keywords)
         if (tuples.isEmpty()) return
-        tuples.mapTo(infos) { (keyword, rangeInElement) ->
+        tuples.forEachFast { (keyword, rangeInElement) ->
             val configType = if (keyword == expression.type) CwtConfigTypes.Type else CwtConfigTypes.Subtype
             val nextOffset = offset + prefix.length + rangeInElement.startOffset
-            CwtConfigSymbolIndexInfo(keyword, configType.id, readWriteAccess, nextOffset, element.startOffset, gameType)
+            val info = CwtConfigSymbolIndexInfo(keyword, configType.id, readWriteAccess, nextOffset, element.startOffset, gameType)
+            infos += info
         }
     }
 
@@ -164,10 +170,11 @@ object CwtConfigSymbolManager {
         keywords += expression.subtypes
         val tuples = text.findKeywordsWithTextRanges(keywords)
         if (tuples.isEmpty()) return
-        tuples.mapTo(infos) { (keyword, rangeInElement) ->
+        tuples.forEachFast { (keyword, rangeInElement) ->
             val configType = if (keyword == expression.type) CwtConfigTypes.Type else CwtConfigTypes.Subtype
             val nextOffset = offset + prefix.length + rangeInElement.startOffset
-            CwtConfigSymbolIndexInfo(keyword, configType.id, readWriteAccess, nextOffset, element.startOffset, gameType)
+            val info = CwtConfigSymbolIndexInfo(keyword, configType.id, readWriteAccess, nextOffset, element.startOffset, gameType)
+            infos += info
         }
     }
 

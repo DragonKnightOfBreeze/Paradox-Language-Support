@@ -142,8 +142,8 @@ object ParadoxTypeResolver {
             is ParadoxScriptProperty -> ParadoxMemberRole.Property
             is ParadoxScriptValue -> when (element.parent) {
                 is ParadoxScriptProperty -> ParadoxMemberRole.PropertyValue
-                is ParadoxScriptRootBlock -> ParadoxMemberRole.LonelyValue
-                is ParadoxScriptBlock -> ParadoxMemberRole.LonelyValue
+                is ParadoxScriptRootBlock -> ParadoxMemberRole.DirectValue
+                is ParadoxScriptBlock -> ParadoxMemberRole.DirectValue
                 is ParadoxScriptScriptedVariable -> ParadoxMemberRole.ScriptedVariableValue
                 else -> ParadoxMemberRole.Other
             }

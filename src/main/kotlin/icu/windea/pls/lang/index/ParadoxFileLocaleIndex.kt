@@ -37,7 +37,7 @@ class ParadoxFileLocaleIndex : ScalarIndexExtension<String>() {
     override fun getKeyDescriptor() = keyDescriptor
 
     private fun indexData(inputData: FileContent): Map<String, Void?> {
-        if (inputData.fileType != ParadoxLocalisationFileType) return emptyMap()
+        if (inputData.fileType !== ParadoxLocalisationFileType) return emptyMap()
         if (inputData is PsiDependentFileContent) {
             // use lighter AST if possible to optimize performance
             val tree = inputData.lighterAST

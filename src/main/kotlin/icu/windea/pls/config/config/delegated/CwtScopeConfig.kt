@@ -1,8 +1,9 @@
 package icu.windea.pls.config.config.delegated
 
-import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
+import icu.windea.pls.config.CwtConfigType
+import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.config.annotations.FromMember
 import icu.windea.pls.config.annotations.FromName
 import icu.windea.pls.config.config.CwtDelegatedConfig
@@ -51,6 +52,8 @@ interface CwtScopeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, C
     @FromMember("is_subscope_of: string?")
     val isSubscopeOf: String?
 
+    override val configType: CwtConfigType get() = CwtConfigTypes.Scope
+
     companion object {
         /** 由属性规则解析为作用域规则。 */
         @JvmStatic
@@ -69,7 +72,7 @@ private object CwtScopeConfigResolver : CwtConfigResolverScope {
         val name = config.key
         val propConfigs = config.properties
         if (propConfigs == null) {
-            logger.warn("Skipped invalid scope config (name: $name): Null properties.".withLocationPrefix(config))
+            logger.warnWithPrefix(config, "Skipped invalid scope config (name: $name): Null properties.")
             return null
         }
         val propGroup = propConfigs.groupBy { it.key }
@@ -77,7 +80,7 @@ private object CwtScopeConfigResolver : CwtConfigResolverScope {
             prop.values?.mapNotNullTo(CaseInsensitiveStringSet()) { it.stringValue }
         }?.optimized().orEmpty()
         val isSubscopeOf = propGroup.getOne("is_subscope_of")?.stringValue
-        logger.debug { "Resolved scope config (name: $name).".withLocationPrefix(config) }
+        logger.debugWithPrefix(config) { "Resolved scope config (name: $name)." }
         return CwtScopeConfigImpl(config, name, aliases, isSubscopeOf)
     }
 }

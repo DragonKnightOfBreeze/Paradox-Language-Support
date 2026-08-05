@@ -37,7 +37,7 @@ class DuplicateScriptedVariablesInspectionTest : BasePlatformTestCase(), Chronic
         """.trimIndent())
 
         myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
-        myFixture.checkHighlighting(true, true, true)
+        myFixture.checkHighlighting()
     }
 
     @Test
@@ -49,7 +49,7 @@ class DuplicateScriptedVariablesInspectionTest : BasePlatformTestCase(), Chronic
         """.trimIndent())
 
         myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
-        myFixture.checkHighlighting(true, true, true)
+        myFixture.checkHighlighting()
     }
 
     @Test
@@ -64,6 +64,6 @@ class DuplicateScriptedVariablesInspectionTest : BasePlatformTestCase(), Chronic
         """.trimIndent())
 
         myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
-        myFixture.checkHighlighting(true, true, true)
+        myFixture.checkHighlighting()
     }
 }

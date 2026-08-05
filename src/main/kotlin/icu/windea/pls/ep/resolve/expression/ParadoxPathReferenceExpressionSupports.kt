@@ -1,6 +1,7 @@
 package icu.windea.pls.ep.resolve.expression
 
 import com.intellij.psi.PsiElement
+import icu.windea.pls.config.CwtDataType
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.core.matchesPath
@@ -15,22 +16,20 @@ import icu.windea.pls.model.constants.ChronicleConstants
  * @see CwtDataTypes.Icon
  */
 class ParadoxIconReferenceExpressionSupport : ParadoxPathReferenceExpressionSupport {
-    override fun supports(configExpression: CwtDataExpression): Boolean {
-        return configExpression.type == CwtDataTypes.Icon
-    }
+    override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.Icon
 
     // `icon[]` -  `filePath` 需要是不带扩展名的文件名（其扩展名必须是合法的图片的扩展名）
     // `icon[foo/bar]` - `filePath` 需要是不带扩展名的文件名（其扩展名必须是合法的图片的扩展名），且该文件需要位于目录 `foo/bar` 中
 
     override fun matches(configExpression: CwtDataExpression, element: PsiElement?, filePath: String): Boolean {
         val filePathWithoutExtension = getFilePathWithoutExtension(filePath) ?: return false
-        val expression = configExpression.value ?: return true
+        val expression = configExpression.metadata.value ?: return true
         return expression.matchesPath(filePathWithoutExtension, trim = true)
     }
 
     override fun extract(configExpression: CwtDataExpression, element: PsiElement?, filePath: String, ignoreCase: Boolean): String? {
         val filePathWithoutExtension = getFilePathWithoutExtension(filePath) ?: return null
-        val expression = configExpression.value ?: return filePathWithoutExtension
+        val expression = configExpression.metadata.value ?: return filePathWithoutExtension
         return filePathWithoutExtension.removePrefixOrNull(expression, ignoreCase)?.trimFast('/')
     }
 
@@ -62,15 +61,13 @@ class ParadoxIconReferenceExpressionSupport : ParadoxPathReferenceExpressionSupp
  * @see CwtDataTypes.FilePath
  */
 class ParadoxFilePathReferenceExpressionSupport : ParadoxPathReferenceExpressionSupport {
-    override fun supports(configExpression: CwtDataExpression): Boolean {
-        return configExpression.type == CwtDataTypes.FilePath
-    }
+    override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.FilePath
 
     // `filepath` - 匹配任意路径
     // `filepath[./]` - 匹配相对于脚本文件所在目录的路径
 
     override fun matches(configExpression: CwtDataExpression, element: PsiElement?, filePath: String): Boolean {
-        var expression = configExpression.value ?: return true
+        var expression = configExpression.metadata.value ?: return true
         val expressionRel = expression.removePrefixOrNull("./")
         if (expressionRel != null) {
             val contextParentPath = element?.fileInfo?.path?.parent ?: return false
@@ -90,7 +87,7 @@ class ParadoxFilePathReferenceExpressionSupport : ParadoxPathReferenceExpression
     }
 
     override fun extract(configExpression: CwtDataExpression, element: PsiElement?, filePath: String, ignoreCase: Boolean): String? {
-        var expression = configExpression.value ?: return filePath
+        var expression = configExpression.metadata.value ?: return filePath
         val expressionRel = expression.removePrefixOrNull("./")
         if (expressionRel != null) {
             val contextParentPath = element?.fileInfo?.path?.parent ?: return null
@@ -104,8 +101,9 @@ class ParadoxFilePathReferenceExpressionSupport : ParadoxPathReferenceExpression
             val l1 = index
             if (!filePath.regionMatches(0, expression, 0, l1, ignoreCase)) return null
             val l2 = expression.length - index - 1
-            if (!filePath.regionMatches(filePath.length - l2, expression, index + 1, l2, ignoreCase)) return null
-            return filePath.substring(l1, filePath.length - l2).trimFast('/')
+            val filePathLength = filePath.length
+            if (!filePath.regionMatches(filePathLength - l2, expression, index + 1, l2, ignoreCase)) return null
+            return filePath.substring(l1, filePathLength - l2).trimFast('/')
             // val s1 = expression.substring(0, index)
             // val s2 = expression.substring(index + 1)
             // return filePath.removeSurroundingOrNull(s1, s2, ignoreCase)?.trimFast('/')
@@ -119,7 +117,7 @@ class ParadoxFilePathReferenceExpressionSupport : ParadoxPathReferenceExpression
 
     override fun resolvePath(configExpression: CwtDataExpression, pathReference: String): Set<String>? {
         val pathReference = pathReference.trimStart('/') // #335
-        val expression = configExpression.value ?: return pathReference.to.singletonSet()
+        val expression = configExpression.metadata.value ?: return pathReference.to.singletonSet()
         val expressionRel = expression.removePrefixOrNull("./")
         if (expressionRel != null) {
             return null // 信息不足
@@ -139,7 +137,7 @@ class ParadoxFilePathReferenceExpressionSupport : ParadoxPathReferenceExpression
 
     override fun resolveFileName(configExpression: CwtDataExpression, pathReference: String): Set<String> {
         val pathReference = pathReference.trimStart('/') // #335
-        val expression = configExpression.value ?: return pathReference.substringAfterLast('/').to.singletonSet()
+        val expression = configExpression.metadata.value ?: return pathReference.substringAfterLast('/').to.singletonSet()
         val index = expression.lastIndexOf(',') // `,` 应当最多出现一次
         val resolved = if (index == -1) {
             pathReference.substringAfterLast('/')
@@ -154,15 +152,13 @@ class ParadoxFilePathReferenceExpressionSupport : ParadoxPathReferenceExpression
  * @see CwtDataTypes.FileName
  */
 class ParadoxFileNameReferenceExpressionSupport : ParadoxPathReferenceExpressionSupport {
-    override fun supports(configExpression: CwtDataExpression): Boolean {
-        return configExpression.type == CwtDataTypes.FileName
-    }
+    override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.FileName
 
     // `filename` - `filePath` 需要是文件名
     // `filename[foo/bar]` - `filePath` 需要是文件名，且该文件需要位于目录 `foo/bar` 中
 
     override fun matches(configExpression: CwtDataExpression, element: PsiElement?, filePath: String): Boolean {
-        val expression = configExpression.value ?: return true
+        val expression = configExpression.metadata.value ?: return true
         return expression.matchesPath(filePath, trim = true)
     }
 

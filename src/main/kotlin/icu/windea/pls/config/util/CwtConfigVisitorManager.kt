@@ -7,35 +7,37 @@ import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.config.delegated.CwtUnionConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.withRecursionGuard
 
+@Optimized
 object CwtConfigVisitorManager {
     fun visitExpanded(config: CwtPropertyConfig, visitor: CwtMemberConfigVisitor, forUnion: Boolean = true, forSingleAlias: Boolean = true, forAlias: Boolean = true): Boolean {
         val valueExpression = config.valueExpression
         return when (valueExpression.type) {
             CwtDataTypes.UnionValue -> {
                 if (!forUnion) return true
-                val name = valueExpression.value?.orNull() ?: return true
+                val name = valueExpression.metadata.value?.orNull() ?: return true
                 visitExpandedForUnion(name, config.configGroup, visitor)
             }
             CwtDataTypes.AliasKeysField -> {
                 if (!forAlias) return true
-                val name = valueExpression.value?.orNull() ?: return true
+                val name = valueExpression.metadata.value?.orNull() ?: return true
                 visitExpandedForAliasGroup(name, config.configGroup, visitor)
             }
             CwtDataTypes.AliasMatchLeft -> {
                 if (!forAlias) return true
-                val name = valueExpression.value?.orNull() ?: return true
+                val name = valueExpression.metadata.value?.orNull() ?: return true
                 val keyExpression = config.keyExpression
-                if (keyExpression.type != CwtDataTypes.AliasName || keyExpression.value != name) return true // invalid
+                if (keyExpression.type != CwtDataTypes.AliasName || keyExpression.metadata.value != name) return true // invalid
                 visitExpandedForAliasGroup(name, config.configGroup, visitor)
             }
             CwtDataTypes.SingleAliasRight -> {
                 if (!forSingleAlias) return true
-                val name = valueExpression.value?.orNull() ?: return true
+                val name = valueExpression.metadata.value?.orNull() ?: return true
                 visitExpandedForSingleAlias(name, config.configGroup, visitor)
             }
             else -> true
@@ -47,12 +49,12 @@ object CwtConfigVisitorManager {
         return when (valueExpression.type) {
             CwtDataTypes.UnionValue -> {
                 if (!forUnion) return true
-                val name = valueExpression.value?.orNull() ?: return true
+                val name = valueExpression.metadata.value?.orNull() ?: return true
                 visitExpandedForUnion(name, config.configGroup, visitor)
             }
             CwtDataTypes.AliasKeysField -> {
                 if (!forAlias) return true
-                val name = valueExpression.value?.orNull() ?: return true
+                val name = valueExpression.metadata.value?.orNull() ?: return true
                 visitExpandedForAliasGroup(name, config.configGroup, visitor)
             }
             CwtDataTypes.AliasMatchLeft -> {
@@ -60,7 +62,7 @@ object CwtConfigVisitorManager {
             }
             CwtDataTypes.SingleAliasRight -> {
                 if (!forSingleAlias) return true
-                val name = valueExpression.value?.orNull() ?: return true
+                val name = valueExpression.metadata.value?.orNull() ?: return true
                 visitExpandedForSingleAlias(name, config.configGroup, visitor)
             }
             else -> true
@@ -70,7 +72,7 @@ object CwtConfigVisitorManager {
     private fun visitExpandedForUnion(name: String, configGroup: CwtConfigGroup, visitor: CwtMemberConfigVisitor): Boolean {
         // NOTE 3.0.0 recursion guard is required here
         val unionConfig = configGroup.unions[name] ?: return true
-        return withRecursionGuard {
+        return withRecursionGuard("CwtConfigVisitorManager.visitExpanded") {
             withRecursionCheck("u:$name") {
                 when (visitor) {
                     is CwtMemberConfigExpandedRecursiveVisitor -> visitor.visitUnion(name, unionConfig)
@@ -83,8 +85,8 @@ object CwtConfigVisitorManager {
     private fun visitExpandedForAliasGroup(name: String, configGroup: CwtConfigGroup, visitor: CwtMemberConfigVisitor): Boolean {
         // NOTE 2.1.6 recursion guard is required here
         val aliasConfigGroup = configGroup.aliasGroups[name]?.values?.orNull() ?: return true
-        return withRecursionGuard {
-            withRecursionCheck("a:$name") check@{
+        return withRecursionGuard("CwtConfigVisitorManager.visitExpanded") {
+            withRecursionCheck("a:$name") action@{
                 when (visitor) {
                     is CwtMemberConfigExpandedRecursiveVisitor -> visitor.visitAliasGroup(name, aliasConfigGroup)
                     else -> visitAliasGroup(name, aliasConfigGroup, visitor)
@@ -96,7 +98,7 @@ object CwtConfigVisitorManager {
     private fun visitExpandedForSingleAlias(name: String, configGroup: CwtConfigGroup, visitor: CwtMemberConfigVisitor): Boolean {
         // NOTE 2.1.6 recursion guard is required here
         val singleAliasConfig = configGroup.singleAliases[name] ?: return true
-        return withRecursionGuard {
+        return withRecursionGuard("CwtConfigVisitorManager.visitExpanded") {
             withRecursionCheck("sa:$name") {
                 when (visitor) {
                     is CwtMemberConfigExpandedRecursiveVisitor -> visitor.visitSingleAlias(name, singleAliasConfig)

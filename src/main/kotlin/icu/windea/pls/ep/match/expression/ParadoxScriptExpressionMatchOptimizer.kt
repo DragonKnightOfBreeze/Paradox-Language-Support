@@ -2,7 +2,10 @@ package icu.windea.pls.ep.match.expression
 
 import com.intellij.openapi.extensions.ExtensionPointName
 import icu.windea.pls.config.config.CwtMemberConfig
-import icu.windea.pls.lang.match.ParadoxMatchPipeline
+import icu.windea.pls.core.addExtensionPointListener
+import icu.windea.pls.core.optimized
+import icu.windea.pls.core.util.values.LazyValue
+import icu.windea.pls.lang.match.ParadoxMatchService
 import icu.windea.pls.lang.match.ParadoxScriptExpressionMatchOptimizerContext
 import icu.windea.pls.model.expressions.ParadoxExpression
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
@@ -12,7 +15,7 @@ import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
  *
  * @see ParadoxExpression
  * @see ParadoxScriptExpressionElement
- * @see ParadoxMatchPipeline
+ * @see ParadoxMatchService
  */
 interface ParadoxScriptExpressionMatchOptimizer {
     /**
@@ -29,5 +32,21 @@ interface ParadoxScriptExpressionMatchOptimizer {
 
     companion object INSTANCE {
         @JvmField val EP_NAME = ExtensionPointName<ParadoxScriptExpressionMatchOptimizer>("icu.windea.pls.scriptExpressionMatchOptimizer")
+        @JvmField val CACHE = LazyValue<List<ParadoxScriptExpressionMatchOptimizer>>()
+
+        fun getAll(): List<ParadoxScriptExpressionMatchOptimizer> = CACHE.get().orEmpty()
+
+        // region Implementations
+
+        init {
+            CACHE.reinitialize { compute() }
+            EP_NAME.addExtensionPointListener { CACHE.reinitialize { compute() } }
+        }
+
+        private fun compute(): List<ParadoxScriptExpressionMatchOptimizer> {
+            return EP_NAME.extensionList.optimized()
+        }
+
+        // endregion
     }
 }

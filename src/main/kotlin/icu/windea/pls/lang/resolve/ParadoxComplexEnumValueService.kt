@@ -42,7 +42,7 @@ object ParadoxComplexEnumValueService {
         val name = element.value
         if (name.isParameterized()) return null // 排除可能带参数的情况
         val columnConfig = ParadoxCsvManager.getColumnConfig(element) ?: return null
-        val enumName = columnConfig.optionData.declareComplexEnum?.orNull() ?: return null
+        val enumName = columnConfig.optionMetadata.declareComplexEnum?.orNull() ?: return null
         val config = columnConfig.configGroup.complexEnumsFromColumns[enumName] ?: return null // 这里使用来自列规则的复杂枚举规则
         return ParadoxComplexEnumValueInfo(name, enumName, config)
     }
@@ -59,6 +59,7 @@ object ParadoxComplexEnumValueService {
 
     @Suppress("UNUSED_PARAMETER")
     fun getInfoDependencies(element: ParadoxScriptExpressionElement, file: PsiFile): List<Any> {
+        // 需要直接依赖文件
         return listOf(file)
     }
 

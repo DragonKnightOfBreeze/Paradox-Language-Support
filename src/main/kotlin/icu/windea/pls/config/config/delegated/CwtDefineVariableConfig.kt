@@ -1,8 +1,9 @@
 package icu.windea.pls.config.config.delegated
 
-import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
+import icu.windea.pls.config.CwtConfigType
+import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.config.annotations.FromName
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.manipulation.CwtConfigManipulationService
@@ -52,6 +53,8 @@ interface CwtDefineVariableConfig : CwtDefineConfig {
 
     val rootConfig: CwtPropertyConfig
 
+    override val configType: CwtConfigType get() = CwtConfigTypes.DefineVariable
+
     companion object {
         /** 由属性规则解析为定值变量规则。 */
         @JvmStatic
@@ -66,7 +69,7 @@ private object CwtDefineVariableConfigResolver : CwtConfigResolverScope {
 
     fun resolve(config: CwtPropertyConfig, namespace: String): CwtDefineVariableConfig {
         val variable = config.key
-        logger.debug { "Resolved define variable config (namespace: $namespace, variable: $variable)".withLocationPrefix(config) }
+        logger.debugWithPrefix(config) { "Resolved define variable config (namespace: $namespace, variable: $variable)" }
         return CwtDefineVariableConfigImpl(config, namespace, variable)
     }
 }

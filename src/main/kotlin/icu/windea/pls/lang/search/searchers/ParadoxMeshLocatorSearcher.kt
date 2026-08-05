@@ -6,17 +6,23 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.Processor
-import icu.windea.pls.core.collections.process
+import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.collections.processFast
 import icu.windea.pls.lang.index.ChronicleIndexService
+import icu.windea.pls.lang.index.ParadoxMergedIndexTypes
 import icu.windea.pls.lang.search.ParadoxMeshLocatorSearch
+import icu.windea.pls.lang.search.scope.withFileTypes
 import icu.windea.pls.lang.search.util.ParadoxSearchContext
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.model.index.ParadoxIndexInfoTypes
 import icu.windea.pls.model.index.ParadoxMeshLocatorIndexInfo
+import icu.windea.pls.script.ParadoxScriptFileType
 
 /**
  * 网格定位器（mesh locator）的查询器。
+ *
+ * @see ParadoxMeshLocatorSearch
  */
+@Optimized
 class ParadoxMeshLocatorSearcher : QueryExecutorBase<ParadoxMeshLocatorIndexInfo, ParadoxMeshLocatorSearch.Parameters>() {
     override fun processQuery(queryParameters: ParadoxMeshLocatorSearch.Parameters, consumer: Processor<in ParadoxMeshLocatorIndexInfo>) {
         ProgressManager.checkCanceled()
@@ -27,9 +33,9 @@ class ParadoxMeshLocatorSearcher : QueryExecutorBase<ParadoxMeshLocatorIndexInfo
     private fun processQuery(context: Context, consumer: Processor<in ParadoxMeshLocatorIndexInfo>): Boolean {
         if (!context.isValid()) return true
         ProgressManager.checkCanceled()
-        val indexInfoType = ParadoxIndexInfoTypes.MeshLocator
-        return ChronicleIndexService.processAllFileDataWithKey(indexInfoType, context.project, context.scope, context.gameType) { file, infos ->
-            infos.process { info -> processInfo(context, file, info, consumer) }
+        val mergedIndexType = ParadoxMergedIndexTypes.MeshLocator
+        return ChronicleIndexService.processAllFileDataWithKey(mergedIndexType, context.project, context.scope, context.gameType) { file, infos ->
+            infos.processFast { info -> processInfo(context, file, info, consumer) }
         }
     }
 
@@ -44,7 +50,8 @@ class ParadoxMeshLocatorSearcher : QueryExecutorBase<ParadoxMeshLocatorIndexInfo
         return context.name == info.name
     }
 
-    private fun ParadoxMeshLocatorSearch.Parameters.createContext(scope: GlobalSearchScope = this.scope): Context {
+    private fun ParadoxMeshLocatorSearch.Parameters.createContext(): Context {
+        val scope = scope.withFileTypes(ParadoxScriptFileType) // optimize: restrict file types
         return Context(name, gameType, project, scope)
     }
 

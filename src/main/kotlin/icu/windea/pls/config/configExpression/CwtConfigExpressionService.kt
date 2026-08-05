@@ -2,23 +2,23 @@ package icu.windea.pls.config.configExpression
 
 import com.intellij.util.Processor
 import icu.windea.pls.config.CwtDataTypes
+import icu.windea.pls.config.config.expandUnionCandidates
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.processUnionCandidates
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.forEachFast
-import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.text.TextPattern
 import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.ep.config.configExpression.CwtDataExpressionSupport
+import icu.windea.pls.ep.config.configExpression.CwtTextPatternBasedDataExpressionSupport
 
+@Optimized
 object CwtConfigExpressionService {
     /**
      * @see CwtDataExpressionSupport.resolve
      */
-    @Optimized
-    fun resolve(expressionString: String, isKey: Boolean): CwtDataExpression? {
+    fun resolve(expressionString: String, role: CwtDataExpressionRole): CwtDataExpression? {
         CwtDataExpressionSupport.EP_NAME.extensionList.forEachFast { ep ->
-            val r = ep.resolve(expressionString, isKey)
+            val r = ep.resolve(expressionString, role)
             if (r != null) return r
         }
         return null
@@ -27,7 +27,6 @@ object CwtConfigExpressionService {
     /**
      * @see CwtDataExpressionSupport.resolveTemplate
      */
-    @Optimized
     fun resolveTemplate(expressionString: String): CwtDataExpression? {
         CwtDataExpressionSupport.EP_NAME.extensionList.forEachFast { ep ->
             val r = ep.resolveTemplate(expressionString)
@@ -37,12 +36,15 @@ object CwtConfigExpressionService {
     }
 
     /**
-     * @see CwtDataExpressionSupport.processTextPatterns
+     * @see CwtTextPatternBasedDataExpressionSupport.processTextPatterns
      */
     fun processTextPatterns(consumer: Processor<TextPattern<*>>): Boolean {
-        return CwtDataExpressionSupport.EP_NAME.extensionList.process { ep ->
-            ep.processTextPatterns(consumer)
+        CwtDataExpressionSupport.EP_NAME.extensionList.forEachFast { ep ->
+            if (ep is CwtTextPatternBasedDataExpressionSupport) {
+                ep.processTextPatterns(consumer).let { if (!it) return false }
+            }
         }
+        return true
     }
 
     fun collectLiterals(configExpression: CwtDataExpression, configGroup: CwtConfigGroup, result: MutableSet<String>) {
@@ -53,40 +55,49 @@ object CwtConfigExpressionService {
                 result += "no"
             }
             CwtDataTypes.Constant -> {
-                val v = configExpression.value ?: return
+                val v = configExpression.expressionString
                 result += v
             }
             CwtDataTypes.EnumValue -> {
-                val name = configExpression.value ?: return
+                val name = configExpression.metadata.value ?: return
                 val nextConfig = configGroup.enums[name] ?: return
                 val values = nextConfig.values
                 result += values
             }
             CwtDataTypes.UnionValue -> {
-                val name = configExpression.value ?: return
+                val name = configExpression.metadata.value ?: return
                 val unionConfig = configGroup.unions[name] ?: return
-                unionConfig.processUnionCandidates { valueConfig ->
-                    val e = valueConfig.configExpression
-                    collectLiterals(e, configGroup, result)
-                    true
+                // NOTE 3.0.1 recursion guard is required here
+                withRecursionGuard("CwtConfigExpressionService.collectLiterals") {
+                    unionConfig.expandUnionCandidates { valueConfig ->
+                        val e = valueConfig.configExpression
+                        withRecursionCheck(e) {
+                            collectLiterals(e, configGroup, result)
+                        }
+                        true
+                    }
                 }
             }
             CwtDataTypes.AliasKeysField, CwtDataTypes.AliasName -> {
-                val name = configExpression.value ?: return
+                val name = configExpression.metadata.value ?: return
                 val aliasConfigGroup = configGroup.aliasGroups[name] ?: return
-                withRecursionGuard { // 这里需要防止递归
-                    for (aliasConfigs in aliasConfigGroup.values) {
-                        val e = aliasConfigs.firstOrNull()?.configExpression ?: continue
-                        withRecursionCheck(e) {
-                            collectLiterals(e, configGroup, result)
+                // NOTE 3.0.1 recursion guard is required here
+                withRecursionGuard("CwtConfigExpressionService.collectLiterals") {
+                    withRecursionCheck(name) {
+                        for (aliasConfigs in aliasConfigGroup.values) {
+                            val e = aliasConfigs.firstOrNull()?.configExpression ?: continue
+                            withRecursionCheck(e) {
+                                collectLiterals(e, configGroup, result)
+                            }
                         }
                     }
                 }
             }
             CwtDataTypes.SingleAliasRight -> {
-                val name = configExpression.value ?: return
+                val name = configExpression.metadata.value ?: return
                 val singleAliasConfig = configGroup.singleAliases[name] ?: return
-                withRecursionGuard { // 这里需要防止递归
+                // NOTE 3.0.1 recursion guard is required here
+                withRecursionGuard("CwtConfigExpressionService.collectLiterals") {
                     val e = singleAliasConfig.config.valueExpression
                     withRecursionCheck(e) {
                         collectLiterals(e, configGroup, result)

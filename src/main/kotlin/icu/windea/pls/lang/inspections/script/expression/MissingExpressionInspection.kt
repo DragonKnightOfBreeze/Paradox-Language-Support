@@ -14,6 +14,7 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.overriddenProvider
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.select.selectConfigScope
+import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.findChild
 import icu.windea.pls.core.inspections.InspectionService
 import icu.windea.pls.core.toAtomicProperty
@@ -115,7 +116,7 @@ class MissingExpressionInspection : LocalInspectionTool() {
             }
 
             private fun getOverriddenProvider(configs: List<CwtMemberConfig<*>>): CwtOverriddenConfigProvider? {
-                configs.forEach { c1 ->
+                configs.forEachFast { c1 ->
                     c1.overriddenProvider?.let { return it }
                     val pc1 = selectConfigScope { c1.asValue()?.propertyConfig }
                     pc1?.overriddenProvider?.let { return it }
@@ -128,7 +129,7 @@ class MissingExpressionInspection : LocalInspectionTool() {
             private fun doCheckOccurrence(element: ParadoxScriptMember, position: PsiElement, occurrence: ParadoxMatchOccurrence, configExpression: CwtDataExpression): Boolean {
                 val (actual, min, _, lenientMin) = occurrence
                 if (min != null && actual < min) {
-                    val isKey = configExpression.isKey
+                    val isKey = configExpression.role.isKey()
                     val isConst = configExpression.type == CwtDataTypes.Constant
                     val description = if (isKey) {
                         when {

@@ -30,13 +30,13 @@ import icu.windea.pls.lang.psi.isComplexExpression
 import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueLightElement
 import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
+import icu.windea.pls.lang.resolve.ParadoxExpressionService
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionRecursiveVisitor
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxCsvManager
-import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.lang.util.ParadoxParameterManager
@@ -115,7 +115,7 @@ class CwtBaseRelatedConfigProvider : CwtRelatedConfigProvider {
                 val configExpression = config.configExpression
                 when {
                     configExpression.type == CwtDataTypes.EnumValue -> {
-                        val enumName = configExpression.value
+                        val enumName = configExpression.metadata.value
                         if (enumName != null) {
                             val enumConfig = configGroup.enums[enumName]
                             enumConfig?.also { result += it }
@@ -125,14 +125,14 @@ class CwtBaseRelatedConfigProvider : CwtRelatedConfigProvider {
                         }
                     }
                     configExpression.type == CwtDataTypes.UnionValue -> {
-                        val unionName = configExpression.value
+                        val unionName = configExpression.metadata.value
                         if (unionName != null) {
                             val unionConfig = configGroup.unions[unionName]
                             unionConfig?.also { result += it }
                         }
                     }
                     configExpression.type in CwtDataTypeSets.DynamicValue -> {
-                        val type = configExpression.value
+                        val type = configExpression.metadata.value
                         if (type != null) {
                             val dynamicValueConfig = configGroup.dynamicValueTypes[type]
                             dynamicValueConfig?.also { result += it }
@@ -172,7 +172,7 @@ class CwtInComplexExpressionRelatedConfigProvider : CwtRelatedConfigProvider {
 
         val configGroup = ChronicleFacade.getConfigGroup(file.project, selectGameType(file))
         val textRange = element.textRange
-        val offsetInExpression = offset - textRange.startOffset - ParadoxExpressionManager.getExpressionOffset(element)
+        val offsetInExpression = offset - textRange.startOffset - ParadoxExpressionService.getExpressionOffset(element)
         if (offsetInExpression < 0) return emptySet()
         val complexExpression = ParadoxComplexExpression.resolve(element, configGroup)
         if (complexExpression == null) return emptySet()

@@ -2,13 +2,16 @@ package icu.windea.pls.ep.resolve.config
 
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.psi.PsiFile
-import icu.windea.pls.base.annotations.WithGameTypeEP
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.addExtensionPointListener
+import icu.windea.pls.core.optimized
+import icu.windea.pls.core.util.values.LazyValue
 import icu.windea.pls.ep.resolve.expression.ParadoxScriptExpressionSupport
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.resolve.CwtConfigContext
 import icu.windea.pls.lang.resolve.CwtDeclarationConfigContext
+import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.paths.ParadoxMemberPath
 import icu.windea.pls.model.type.ParadoxMemberRole
 import icu.windea.pls.script.psi.ParadoxScriptMember
@@ -24,9 +27,10 @@ import icu.windea.pls.script.psi.ParadoxScriptMember
  * @see CwtConfigContext
  * @see CwtDeclarationConfigContext
  */
-@WithGameTypeEP
 interface CwtConfigContextProvider {
-    fun getContext(element: ParadoxScriptMember, file: PsiFile, configGroup: CwtConfigGroup, memberPathFromFile: ParadoxMemberPath, memberRole: ParadoxMemberRole): CwtConfigContext?
+    fun supports(gameType: ParadoxGameType): Boolean = true
+
+    fun getContext(configGroup: CwtConfigGroup, element: ParadoxScriptMember, file: PsiFile, memberRole: ParadoxMemberRole, memberPathFromFile: ParadoxMemberPath): CwtConfigContext?
 
     fun getCacheKey(context: CwtConfigContext, options: ParadoxMatchOptions? = null): String?
 
@@ -38,5 +42,21 @@ interface CwtConfigContextProvider {
 
     companion object INSTANCE {
         @JvmField val EP_NAME = ExtensionPointName<CwtConfigContextProvider>("icu.windea.pls.configContextProvider")
+        @JvmField val CACHE = LazyValue<List<CwtConfigContextProvider>>()
+
+        fun getAll(): List<CwtConfigContextProvider> = CACHE.get().orEmpty()
+
+        // region Implementations
+
+        init {
+            CACHE.reinitialize { compute() }
+            EP_NAME.addExtensionPointListener { CACHE.reinitialize { compute() } }
+        }
+
+        private fun compute(): List<CwtConfigContextProvider> {
+            return EP_NAME.extensionList.optimized()
+        }
+
+        // endregion
     }
 }

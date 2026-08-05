@@ -7,6 +7,7 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.searches.DefinitionsScopedSearch
 import com.intellij.util.Processor
 import com.intellij.util.QueryExecutor
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.toPsiFile
@@ -17,6 +18,7 @@ import icu.windea.pls.lang.search.util.withSearchScope
 /**
  * 文件的实现的查询器。加入所有作用域内的同路径的文件。
  */
+@Optimized
 class ParadoxFileImplementationsSearcher : QueryExecutor<PsiElement, DefinitionsScopedSearch.SearchParameters> {
     override fun execute(queryParameters: DefinitionsScopedSearch.SearchParameters, consumer: Processor<in PsiElement>): Boolean {
         val project = queryParameters.project

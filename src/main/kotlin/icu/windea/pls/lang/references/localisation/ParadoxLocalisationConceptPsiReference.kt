@@ -5,12 +5,14 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.impl.source.resolve.ResolveCache
 import com.intellij.util.IncorrectOperationException
+import icu.windea.pls.lang.codeInsight.completion.localisation.ParadoxLocalisationConceptCompletionProvider
 import icu.windea.pls.lang.util.ParadoxGameConceptManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationConceptCommand
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 /**
- * @see icu.windea.pls.lang.codeInsight.completion.localisation.ParadoxLocalisationConceptCompletionProvider
+ * @see ParadoxLocalisationPsiReferenceProvider
+ * @see ParadoxLocalisationConceptCompletionProvider
  */
 class ParadoxLocalisationConceptPsiReference(
     element: ParadoxLocalisationConceptCommand,

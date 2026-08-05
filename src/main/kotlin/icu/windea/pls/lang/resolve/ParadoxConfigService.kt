@@ -7,7 +7,6 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.parents
 import icu.windea.pls.ChronicleFacade
-import icu.windea.pls.base.annotations.ChronicleAnnotationService
 import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtMemberConfig
@@ -27,7 +26,6 @@ import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.cache.cancelable
 import icu.windea.pls.core.cache.createNestedCache
-import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.mapFast
@@ -37,7 +35,7 @@ import icu.windea.pls.core.createCachedValue
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
-import icu.windea.pls.core.util.registerKey
+import icu.windea.pls.core.util.registerKeyWithThis
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.ep.resolve.config.CwtConfigContextProvider
@@ -47,16 +45,15 @@ import icu.windea.pls.ep.resolve.config.CwtRelatedConfigProvider
 import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.match.ParadoxExpressionMatchService
 import icu.windea.pls.lang.match.ParadoxMatchOptions
-import icu.windea.pls.lang.match.ParadoxMatchPipeline
 import icu.windea.pls.lang.match.ParadoxMatchService
 import icu.windea.pls.lang.match.ParadoxScriptExpressionMatchContext
 import icu.windea.pls.lang.match.toHashString
 import icu.windea.pls.lang.select.*
 import icu.windea.pls.lang.selectGameType
-import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.model.expressions.ParadoxExpression
+import icu.windea.pls.model.orSpecific
 import icu.windea.pls.model.type.ParadoxExpressionRole
 import icu.windea.pls.model.type.ParadoxMemberRole
 import icu.windea.pls.model.type.ParadoxTypeResolver
@@ -64,14 +61,14 @@ import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptValue
+import icu.windea.pls.script.psi.containingDirectMember
 import icu.windea.pls.script.psi.isDirectMember
-import icu.windea.pls.script.psi.parentProperty
 import java.util.*
 import kotlin.concurrent.getOrSet
 
+@Optimized
 object ParadoxConfigService {
-    @Optimized
-    private val CwtConfigGroup.configsCache by registerKey(CwtConfigGroup.Keys) {
+    private val CwtConfigGroup.configsCache by registerKeyWithThis(CwtConfigGroup.Keys) {
         createCachedValue(project) {
             // rootFile -> cacheKey -> configs
             // use soft values to optimize memory
@@ -81,8 +78,7 @@ object ParadoxConfigService {
         }
     }
 
-    @Optimized
-    private val CwtConfigGroup.declarationConfigCache by registerKey(CwtConfigGroup.Keys) {
+    private val CwtConfigGroup.declarationConfigCache by registerKeyWithThis(CwtConfigGroup.Keys) {
         createCachedValue(project) {
             // cacheKey -> declarationConfig
             // use soft values to optimize memory
@@ -92,14 +88,29 @@ object ParadoxConfigService {
     }
 
     /**
+     * @see CwtRelatedConfigProvider.getRelatedConfigs
+     */
+    fun getRelatedConfigs(file: PsiFile, offset: Int): Collection<CwtConfig<*>> {
+        val gameType = selectGameType(file) ?: return emptySet()
+        val result = mutableSetOf<CwtConfig<*>>()
+        val eps = CwtRelatedConfigProvider.getAll()
+        eps.forEachFast f@{ ep ->
+            if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f // check game type first
+            val r = ep.getRelatedConfigs(file, offset)
+            result += r
+        }
+        if (result.isEmpty()) return emptySet()
+        return result
+    }
+
+    /**
      * @see CwtOverriddenConfigProvider.getOverriddenConfigs
      */
-    @Optimized
     fun <T : CwtMemberConfig<*>> getOverriddenConfigs(contextElement: PsiElement, config: T): List<T> {
         val gameType = config.configGroup.gameType
-        val eps = CwtOverriddenConfigProvider.EP_NAME.extensionList
+        val eps = CwtOverriddenConfigProvider.getAll()
         eps.forEachFast f@{ ep ->
-            if (!ChronicleAnnotationService.check(ep, gameType)) return@f
+            if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f // check game type first
             val r = ep.getOverriddenConfigs(contextElement, config).orNull()
                 ?.onEach {
                     it.originalConfig = config
@@ -111,35 +122,18 @@ object ParadoxConfigService {
     }
 
     /**
-     * @see CwtRelatedConfigProvider.getRelatedConfigs
-     */
-    @Optimized
-    fun getRelatedConfigs(file: PsiFile, offset: Int): Collection<CwtConfig<*>> {
-        val gameType = selectGameType(file) ?: return emptySet()
-        val result = mutableSetOf<CwtConfig<*>>()
-        val eps = CwtRelatedConfigProvider.EP_NAME.extensionList
-        eps.forEachFast f@{ ep ->
-            if (!ChronicleAnnotationService.check(ep, gameType)) return@f
-            val r = ep.getRelatedConfigs(file, offset)
-            result += r
-        }
-        return result
-    }
-
-    /**
      * @see CwtConfigContextProvider.getContext
      */
-    @Optimized
     fun getConfigContext(element: ParadoxScriptMember): CwtConfigContext? {
         val file = element.containingFile ?: return null
         val gameType = selectGameType(file) ?: return null
         val memberPathFromFile = ParadoxMemberService.getPath(element) ?: return null
         val memberRole = ParadoxTypeResolver.resolveMemberRole(element)
         val configGroup = ChronicleFacade.getConfigGroup(file.project, gameType)
-        val eps = CwtConfigContextProvider.EP_NAME.extensionList
+        val eps = CwtConfigContextProvider.getAll()
         eps.forEachFast f@{ ep ->
-            if (!ChronicleAnnotationService.check(ep, gameType)) return@f
-            val r = ep.getContext(element, file, configGroup, memberPathFromFile, memberRole)?.also { it.provider = ep }
+            if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f // check game type first
+            val r = ep.getContext(configGroup, element, file, memberRole, memberPathFromFile)
             if (r != null) return r
         }
         return null
@@ -148,41 +142,43 @@ object ParadoxConfigService {
     /**
      * @see CwtDeclarationConfigContextProvider.getContext
      */
-    @Optimized
     fun getDeclarationConfigContext(element: PsiElement, configGroup: CwtConfigGroup, definitionName: String?, definitionType: String, definitionSubtypes: List<String>?): CwtDeclarationConfigContext? {
         val gameType = configGroup.gameType
-        val eps = CwtDeclarationConfigContextProvider.EP_NAME.extensionList
+        val eps = CwtDeclarationConfigContextProvider.getAll()
         eps.forEachFast f@{ ep ->
-            if (!ChronicleAnnotationService.check(ep, gameType)) return@f
-            val r = ep.getContext(element, configGroup, definitionName, definitionType, definitionSubtypes)?.also { it.provider = ep }
+            if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f // check game type first
+            val r = ep.getContext(configGroup, element, definitionName, definitionType, definitionSubtypes)
             if (r != null) return r
         }
         return null
     }
 
     fun getConfigsForConfigContext(context: CwtConfigContext, options: ParadoxMatchOptions? = null): List<CwtMemberConfig<*>> {
-        val provider = context.provider
-        val cacheKey = provider.getCacheKey(context, options) ?: return emptyList()
-        if (context.dynamic) {
+        val dynamic = context.dynamic
+        val dynamicCache = context.dynamicCache
+        if (dynamic) {
             // NOTE 2.1.1 prefix in-config-context cache if marked as dynamic
             val dynamicCacheKey = options.toHashString(forMatched = false).optimized() // optimized to optimize memory
-            context.dynamicCache[dynamicCacheKey]?.let { return it }
+            val cached = dynamicCache.getIfPresent(dynamicCacheKey)
+            if (cached != null) return cached
         }
-        val rootFile = selectRootFile(context.element) ?: return emptyList()
+        val rootFile = context.rootFile ?: return emptyList() // 3.0.1 optimize: get root file from context object directly
+        val provider = context.provider
         val cache = context.configGroup.configsCache.value.get(rootFile)
-        val cached = withRecursionGuard {
+        val cacheKey = provider.getCacheKey(context, options) ?: return emptyList()
+        val cached = withRecursionGuard("ParadoxConfigService.getConfigsForConfigContext") {
             withRecursionCheck(cacheKey) {
                 val resolvingStack = ChronicleThreadContext.resolvingConfigContextStack.getOrSet { ArrayDeque() }
                 resolvingStack.addLast(context)
                 try {
-                    // use lock-freeze `ConcurrentMap.getOrPut` to prevent IDE freezing problems
+                    // use lock-freeze `ConcurrentMap.getOrPut` to prevent IDE freezing problems (WARNING: or will cause deadlock!)
                     cache.asMap().getOrPut(cacheKey) {
                         val result = provider.getConfigs(context, options)
                         result?.optimized().orEmpty()
                     }
                 } finally {
                     resolvingStack.pollLast()
-                    if (context.dynamic) {
+                    if (dynamic) {
                         // invalidate in-config-group cache if result context configs are dynamic (e.g., based on script context)
                         cache.invalidate(cacheKey)
                     }
@@ -190,10 +186,10 @@ object ParadoxConfigService {
                 }
             }
         } ?: return emptyList() // unexpected recursion, return empty list
-        if (context.dynamic) {
+        if (dynamic) {
             // NOTE 2.1.1 store dynamic result into in-config-context cache
             val dynamicCacheKey = options.toHashString(forMatched = false).optimized() // optimized to optimize memory
-            context.dynamicCache[dynamicCacheKey] = cached
+            dynamicCache.put(dynamicCacheKey, cached)
         }
         return cached
     }
@@ -209,7 +205,6 @@ object ParadoxConfigService {
         return cached
     }
 
-    @Optimized
     fun getTopConfigsForConfigContext(context: CwtConfigContext, rootConfigs: List<CwtMemberConfig<*>>): List<CwtMemberConfig<*>> {
         if (rootConfigs.isEmpty()) return emptyList()
         if (context.memberRole == ParadoxMemberRole.PropertyValue) {
@@ -218,7 +213,6 @@ object ParadoxConfigService {
         return rootConfigs
     }
 
-    @Optimized
     fun getFlattenedConfigsForConfigContext(context: CwtConfigContext, options: ParadoxMatchOptions? = null): List<CwtMemberConfig<*>> {
         val result = flattenConfigsForConfigContext(context, options)
         return result.sortedByPriority({ it.configExpression }, { it.configGroup }) // 按优先级排序
@@ -229,28 +223,30 @@ object ParadoxConfigService {
 
         if (context.memberRole == ParadoxMemberRole.Other) return emptyList() // 忽略
         val memberPath = context.memberPath ?: return emptyList() // 忽略
-        if (memberPath.isEmpty()) return emptyList() // 忽略
-        val subPath = memberPath.subPaths.last()
+        val subPaths = memberPath.subPaths
+        if (subPaths.isEmpty()) return emptyList() // 忽略
+        val subPath = subPaths.last()
         val expression = ParadoxExpression.resolve(subPath, quoted = false, role = ParadoxExpressionRole.Key)
-        val parentSubPath = memberPath.subPaths.getOrNull(memberPath.subPaths.lastIndex - 1)
+        val parentSubPath = subPaths.getOrNull(subPaths.lastIndex - 1)
         val parentExpression = parentSubPath?.let { ParadoxExpression.resolve(it, quoted = false, role = ParadoxExpressionRole.Key) }
 
-        val element = context.element
-        val containingMember = element.castOrNull<ParadoxScriptValue>()?.parentProperty ?: element
-        val parentMember = containingMember.parents(withSelf = false).findIsInstance<ParadoxScriptMember> { it is ParadoxScriptFile || it.isDirectMember() } ?: return emptyList()
+        val element = context.element ?: return emptyList() // null -> unexpected (should be bound first)
+        val containingDirectMember = element.containingDirectMember
+        val parentMember = containingDirectMember.parents(withSelf = false).findIsInstance<ParadoxScriptMember> { it is ParadoxScriptFile || it.isDirectMember() } ?: return emptyList()
 
         // 从存储于 PSI 的上级缓存中获取 `parentContext`（父上下文），然后再从存储于规则分组的缓存中获取 `parentConfigs`（父上下文规则）
         val parentContext = ParadoxConfigManager.getConfigContext(parentMember) ?: return emptyList()
         // NOTE 2.1.2 如果父上下文是动态的，也需要把子上下文标记为动态的
-        if (parentContext.dynamic) context.dynamic = true
+        if (parentContext.dynamic) context.markDynamic()
 
         val parentConfigs = parentContext.getConfigs(options)
         if (parentConfigs.isEmpty()) return emptyList() // 忽略
 
+        val configGroup = context.configGroup
         var result = buildList {
             // `parentConfigs` 是上下文规则，因此如果 `parentSubPath` 对应一个脚本属性，需要先进行一次匹配
             val matchedParentConfigs = when {
-                parentExpression != null && parentMember is ParadoxScriptProperty -> matchConfigsForConfigContext(parentMember, parentExpression, parentConfigs, context.configGroup, options)
+                parentExpression != null && parentMember is ParadoxScriptProperty -> matchConfigsForConfigContext(parentMember, parentExpression, parentConfigs, configGroup, options)
                 else -> parentConfigs
             }
 
@@ -264,7 +260,7 @@ object ParadoxConfigService {
                     }
                 }
             } else {
-                val parameterizedKeyConfigs by lazy { getParameterizedKeyConfigs(containingMember, expression) }
+                val parameterizedKeyConfigs by lazy { getParameterizedKeyConfigs(containingDirectMember, expression) }
 
                 matchedParentConfigs.forEachFast f1@{ parentConfig ->
                     val configs = parentConfig.properties
@@ -309,7 +305,7 @@ object ParadoxConfigService {
 
         // 如果 `element` 是属性值，则需要再次进行匹配，并接着转换为属性值对应的规则
         if (context.memberRole == ParadoxMemberRole.PropertyValue) {
-            result = matchConfigsForConfigContext(element, expression, result, context.configGroup, options)
+            result = matchConfigsForConfigContext(element, expression, result, configGroup, options)
             result = result.mapNotNullFast { if (it is CwtPropertyConfig) it.valueConfig else null }
         }
 
@@ -318,12 +314,12 @@ object ParadoxConfigService {
 
     private fun matchConfigsForConfigContext(element: PsiElement, expression: ParadoxExpression, configs: List<CwtMemberConfig<*>>, configGroup: CwtConfigGroup, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>> {
         ProgressManager.checkCanceled()
-        val candidates = ParadoxMatchPipeline.collectCandidates(configs) { config ->
+        val candidates = ParadoxMatchService.collectCandidates(configs) { config ->
             val context = ParadoxScriptExpressionMatchContext(element, expression, config.configExpression, config, configGroup, options)
             ParadoxExpressionMatchService.matchScriptExpression(context)
         }
-        val result = ParadoxMatchPipeline.process(candidates, options)
-            .let { ParadoxMatchPipeline.optimize(it, element, expression, options) }
+        val result = ParadoxMatchService.process(candidates, options)
+            .let { ParadoxMatchService.optimize(it, element, expression, options) }
         return result
     }
 
@@ -346,7 +342,6 @@ object ParadoxConfigService {
         return CwtConfigManipulationService.mergeAndMatchValueConfigs(configs, configExpression)
     }
 
-    @Optimized
     fun getConfigs(element: ParadoxScriptMember, options: ParadoxMatchOptions? = null): List<CwtMemberConfig<*>> {
         val result = resolveConfigs(element, options)
         return result.sortedByPriority({ it.configExpression }, { it.configGroup }) // 按优先级排序
@@ -379,23 +374,23 @@ object ParadoxConfigService {
 
                 ProgressManager.checkCanceled()
                 val keyExpression = element.propertyKey.let { ParadoxExpression.resolve(it, options) }
-                val candidatesForKey = ParadoxMatchPipeline.collectCandidates(configs) { config ->
+                val candidatesForKey = ParadoxMatchService.collectCandidates(configs) { config ->
                     val context = ParadoxScriptExpressionMatchContext(element, keyExpression, config.keyExpression, config, configGroup, options)
                     ParadoxExpressionMatchService.matchScriptExpression(context)
                 }
-                val resultForKey = ParadoxMatchPipeline.process(candidatesForKey, options)
-                    .let { ParadoxMatchPipeline.optimize(it, element, keyExpression, options) }
+                val resultForKey = ParadoxMatchService.process(candidatesForKey, options)
+                    .let { ParadoxMatchService.optimize(it, element, keyExpression, options) }
                 if (resultForKey.isEmpty()) return emptyList() // 如果无结果，则直接返回空列表
 
                 ProgressManager.checkCanceled()
                 val valueExpression = element.propertyValue?.let { ParadoxExpression.resolve(it, options) }
                 if (valueExpression == null) return resultForKey // 如果无法得到值表达式，则返回所有匹配键的规则
-                val candidates = ParadoxMatchPipeline.collectCandidates(resultForKey) { config ->
+                val candidates = ParadoxMatchService.collectCandidates(resultForKey) { config ->
                     val context = ParadoxScriptExpressionMatchContext(element, valueExpression, config.valueExpression, config, configGroup, options)
                     ParadoxExpressionMatchService.matchScriptExpression(context)
                 }
                 if (candidates.isEmpty() && fallback) return resultForKey // 如果无结果，则需要考虑回退
-                val result = ParadoxMatchPipeline.process(candidates, options)
+                val result = ParadoxMatchService.process(candidates, options)
                 if (result.isEmpty() && fallback) return candidates.mapFast { it.value } // 如果无结果，则需要考虑回退
                 return result // 返回最终匹配的规则
             }
@@ -411,13 +406,13 @@ object ParadoxConfigService {
                     else -> null
                 }
                 if (valueExpression == null) return configs // 如果无法得到值表达式，则返回所有上下文值规则
-                val candidates = ParadoxMatchPipeline.collectCandidates(configs) { config ->
+                val candidates = ParadoxMatchService.collectCandidates(configs) { config ->
                     val context = ParadoxScriptExpressionMatchContext(element, valueExpression, config.valueExpression, config, configGroup, options)
                     ParadoxExpressionMatchService.matchScriptExpression(context)
                 }
                 if (candidates.isEmpty() && fallback) return configs // 如果无结果，则需要考虑回退
-                val result = ParadoxMatchPipeline.process(candidates, options)
-                    .let { ParadoxMatchPipeline.optimize(it, element, valueExpression, options) }
+                val result = ParadoxMatchService.process(candidates, options)
+                    .let { ParadoxMatchService.optimize(it, element, valueExpression, options) }
                 if (result.isEmpty() && fallback) return candidates.mapFast { it.value } // 如果无结果，则需要考虑回退
                 return result // 返回最终匹配的规则
             }

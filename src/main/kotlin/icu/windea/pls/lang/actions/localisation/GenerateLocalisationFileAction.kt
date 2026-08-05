@@ -38,6 +38,7 @@ import icu.windea.pls.localisation.ParadoxLocalisationFileType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import kotlinx.coroutines.CancellationException
 
 /**
  * 用于从指定的本地化文件生成其他语言环境的本地化文件。
@@ -144,7 +145,7 @@ class GenerateLocalisationFileAction : AnAction() {
                             documentManager.doPostponedOperationsAndUnblockDocument(newDocument)
                             generated++
                         } catch (e: Exception) {
-                            if (e is ProcessCanceledException) throw e
+                            if (e is ProcessCanceledException || e is CancellationException) throw e
                             thisLogger().warn(e)
                         }
                     }
@@ -162,7 +163,7 @@ class GenerateLocalisationFileAction : AnAction() {
     }
 
     private fun isValidFile(file: VirtualFile): Boolean {
-        if (file.fileType !is ParadoxLocalisationFileType) return false
+        if (file.fileType !== ParadoxLocalisationFileType) return false
         if (file.fileInfo == null) return false
         if (VirtualFileService.isLightFile(file)) return false
         return true

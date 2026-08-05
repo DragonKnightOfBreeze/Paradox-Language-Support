@@ -8,17 +8,16 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor
 import com.intellij.psi.util.startOffset
 import icu.windea.pls.ChronicleFacade
+import icu.windea.pls.config.config.delegated.CwtComplexEnumConfig
+import icu.windea.pls.config.config.delegated.CwtRowConfig
 import icu.windea.pls.core.annotations.Optimized
-import icu.windea.pls.core.collections.ImmutableList
 import icu.windea.pls.core.collections.asMutable
+import icu.windea.pls.core.collections.buildImmutableList
 import icu.windea.pls.core.collections.forEachFast
-import icu.windea.pls.core.deoptimized
-import icu.windea.pls.core.optimized
-import icu.windea.pls.core.optimizer.OptimizerFactory
 import icu.windea.pls.core.orNull
+import icu.windea.pls.core.readIndexedStringList
 import icu.windea.pls.core.readIntFast
 import icu.windea.pls.core.readUTFFast
-import icu.windea.pls.core.readWithIndexStringList
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.core.writeByte
 import icu.windea.pls.core.writeIndexedStringList
@@ -30,6 +29,7 @@ import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.csv.psi.ParadoxCsvHeader
 import icu.windea.pls.csv.psi.ParadoxCsvRow
 import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.index.statistics.ChronicleIndexStatisticService
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.CwtComplexEnumConfigMatchContext
 import icu.windea.pls.lang.match.CwtRowConfigMatchContext
@@ -37,7 +37,7 @@ import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.psi.isResolvableLiteralExpression
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
-import icu.windea.pls.model.forParadoxGameType
+import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.index.ParadoxComplexEnumValueIndexInfo
 import icu.windea.pls.script.ParadoxScriptFileType
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
@@ -59,7 +59,7 @@ class ParadoxComplexEnumValueIndex : ParadoxIndexInfoAwareFileBasedIndex<List<Pa
     override fun getVersion() = ChronicleIndexVersions.ComplexEnumValue
 
     override fun filterFileType(fileType: FileType): Boolean {
-        return fileType == ParadoxScriptFileType || fileType == ParadoxCsvFileType
+        return fileType === ParadoxScriptFileType || fileType === ParadoxCsvFileType
     }
 
     override fun filterFile(file: VirtualFile): Boolean {
@@ -88,8 +88,8 @@ class ParadoxComplexEnumValueIndex : ParadoxIndexInfoAwareFileBasedIndex<List<Pa
         val configGroup = ChronicleFacade.getConfigGroup(file.project, gameType)
         val path = fileInfo.path
         val fileLevelMatchContext = CwtComplexEnumConfigMatchContext(configGroup, path)
-        val fileLevelConfigs = ParadoxConfigMatchService.getComplexEnumConfigCandidates(fileLevelMatchContext)
-        if (fileLevelConfigs.isEmpty()) return
+        val fileLevelComplexEnumConfigs = getFileLevelComplexEnumConfigs(fileLevelMatchContext)
+        if (fileLevelComplexEnumConfigs.isEmpty()) return // optimize (fast return if there are no candidates)
         fileLevelMatchContext.matchPath = false
 
         file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
@@ -115,11 +115,11 @@ class ParadoxComplexEnumValueIndex : ParadoxIndexInfoAwareFileBasedIndex<List<Pa
                 if (name.isParameterized()) return // 排除可能带参数的情况
                 if (ParadoxInlineScriptManager.isMatched(name, gameType)) return // 排除是内联脚本用法的情况
                 val matchContext = fileLevelMatchContext
-                val config = fileLevelConfigs.find { ParadoxConfigMatchService.matchesComplexEnum(matchContext, element, it) } ?: return
-                val enumName = config.name
+                val complexEnumConfig = getMatchedComplexEnumConfig(matchContext, element, fileLevelComplexEnumConfigs) ?: return
+                val enumName = complexEnumConfig.name
 
                 // 2.1.3 兼容定义注入
-                val definitionElementOffset = if (config.perDefinition) selectScope { element.parentDefinitionCandidate() }?.startOffset ?: -1 else -1
+                val definitionElementOffset = if (complexEnumConfig.perDefinition) selectScope { element.parentDefinitionCandidate() }?.startOffset ?: -1 else -1
 
                 val info = ParadoxComplexEnumValueIndexInfo(name, enumName, definitionElementOffset, gameType)
                 addToFileData(info, fileData)
@@ -134,12 +134,11 @@ class ParadoxComplexEnumValueIndex : ParadoxIndexInfoAwareFileBasedIndex<List<Pa
 
         // 2.1.3 要求存在候选项
         val configGroup = ChronicleFacade.getConfigGroup(file.project, gameType)
-        val path = fileInfo.path
-        val fileLevelMatchContext = CwtRowConfigMatchContext(configGroup, path)
-        val fileLevelConfigs = ParadoxConfigMatchService.getRowConfigCandidates(fileLevelMatchContext)
-        if (fileLevelConfigs.isEmpty()) return
-        val config = fileLevelConfigs.find { ParadoxConfigMatchService.matchesRow(fileLevelMatchContext, it) } ?: return
-        if (!config.attributes.declareComplexEnum) return
+        val fileLevelMatchContext = CwtRowConfigMatchContext(configGroup, fileInfo.path)
+        val fileLevelRowConfigs = getFileLevelRowConfigs(fileLevelMatchContext)
+        if (fileLevelRowConfigs.isEmpty()) return
+        val rowConfig = getMatchedRowConfig(fileLevelMatchContext, fileLevelRowConfigs) ?: return
+        if (!rowConfig.attributes.declareComplexEnum) return
         fileLevelMatchContext.matchPath = false
 
         var isHeader = true
@@ -170,8 +169,8 @@ class ParadoxComplexEnumValueIndex : ParadoxIndexInfoAwareFileBasedIndex<List<Pa
 
             private fun processComplexEnumValue(element: ParadoxCsvColumn) {
                 val name = element.name
-                val columnConfig = ParadoxConfigMatchService.getColumnConfig(config, columnNames, columnIndex) ?: return
-                val enumName = columnConfig.optionData.declareComplexEnum?.orNull() ?: return
+                val columnConfig = ParadoxConfigMatchService.getColumnConfig(rowConfig, columnNames, columnIndex) ?: return
+                val enumName = columnConfig.optionMetadata.declareComplexEnum?.orNull() ?: return
                 val info = ParadoxComplexEnumValueIndexInfo(name, enumName, -1, gameType)
                 addToFileData(info, fileData)
             }
@@ -183,6 +182,22 @@ class ParadoxComplexEnumValueIndex : ParadoxIndexInfoAwareFileBasedIndex<List<Pa
                 }
             }
         })
+    }
+
+    private fun getFileLevelComplexEnumConfigs(matchContext: CwtComplexEnumConfigMatchContext): Collection<CwtComplexEnumConfig> {
+        return ParadoxConfigMatchService.getComplexEnumConfigCandidates(matchContext)
+    }
+
+    private fun getMatchedComplexEnumConfig(matchContext: CwtComplexEnumConfigMatchContext, element: ParadoxScriptExpressionElement, complexEnumConfigs: Collection<CwtComplexEnumConfig>): CwtComplexEnumConfig? {
+        return complexEnumConfigs.find { ParadoxConfigMatchService.matchesComplexEnum(matchContext, element, it) }
+    }
+
+    private fun getFileLevelRowConfigs(matchContext: CwtRowConfigMatchContext): Collection<CwtRowConfig> {
+        return ParadoxConfigMatchService.getRowConfigCandidates(matchContext)
+    }
+
+    private fun getMatchedRowConfig(matchContext: CwtRowConfigMatchContext, rowConfigs: Collection<CwtRowConfig>): CwtRowConfig? {
+        return rowConfigs.find { ParadoxConfigMatchService.matchesRow(matchContext, it) }
     }
 
     private fun addToFileData(info: ParadoxComplexEnumValueIndexInfo, fileData: MutableMap<String, List<ParadoxComplexEnumValueIndexInfo>>) {
@@ -208,7 +223,7 @@ class ParadoxComplexEnumValueIndex : ParadoxIndexInfoAwareFileBasedIndex<List<Pa
         if (value.isEmpty()) return
 
         val gameType = value.first().gameType
-        storage.writeByte(gameType.optimized(OptimizerFactory.forParadoxGameType()))
+        storage.writeByte(gameType.optimized())
 
         // 3.0.0 optimize: write existing enum names first
         val enumNames = storage.writeIndexedStringList(value) { it.enumName }
@@ -224,12 +239,13 @@ class ParadoxComplexEnumValueIndex : ParadoxIndexInfoAwareFileBasedIndex<List<Pa
         val size = storage.readIntFast()
         if (size == 0) return emptyList()
 
-        val gameType = storage.readByte().deoptimized(OptimizerFactory.forParadoxGameType())
+        val gameType = storage.readByte().let { ParadoxGameType.deoptimized(it) }
 
         // 3.0.0 optimize: read existing enum names first
-        val enumNames = storage.readWithIndexStringList()
+        val enumNames = storage.readIndexedStringList()
 
-        return ImmutableList(size) {
+        // 2.1.9 optimize: create sized immutable list directly
+        return buildImmutableList(size) {
             val name = storage.readUTFFast()
             val enumName = storage.readIntFast().let { enumNames.get(it).orEmpty() }
             val definitionElementOffset = storage.readIntFast()

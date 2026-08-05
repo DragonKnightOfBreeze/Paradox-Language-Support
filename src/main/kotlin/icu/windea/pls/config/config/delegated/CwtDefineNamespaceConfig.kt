@@ -1,8 +1,9 @@
 package icu.windea.pls.config.config.delegated
 
-import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
+import icu.windea.pls.config.CwtConfigType
+import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.config.annotations.FromMember
 import icu.windea.pls.config.annotations.FromName
 import icu.windea.pls.config.config.CwtPropertyConfig
@@ -51,6 +52,8 @@ interface CwtDefineNamespaceConfig : CwtDefineConfig {
 
     override val namespace: String
 
+    override val configType: CwtConfigType get() = CwtConfigTypes.DefineNamespace
+
     companion object {
         /** 由属性规则解析为定值命名空间规则。 */
         @JvmStatic
@@ -68,11 +71,11 @@ private object CwtDefineNamespaceConfigResolver : CwtConfigResolverScope {
         val namespace = config.key
         val propConfigs = config.properties
         if (propConfigs == null) {
-            logger.warn("Skipped invalid define namespace config (namespace: $namespace): Null properties".withLocationPrefix(config))
+            logger.warnWithPrefix(config, "Skipped invalid define namespace config (namespace: $namespace): Null properties")
             return null
         }
         val variables = propConfigs.mapNotNull { CwtDefineVariableConfig.resolve(it, namespace) }.associateBy { it.name }.optimized()
-        logger.debug { "Resolved define namespace config (namespace: $namespace)".withLocationPrefix(config) }
+        logger.debugWithPrefix(config) { "Resolved define namespace config (namespace: $namespace)" }
         return CwtDefineNamespaceConfigImpl(config, namespace, variables)
     }
 }

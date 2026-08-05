@@ -6,6 +6,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.search.searches.ExtensibleQueryFactory
 import com.intellij.util.QueryExecutor
 import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.config.configExpression.CwtDataExpressionRole
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.search.searchers.ParadoxFilePathSearcher
 import icu.windea.pls.lang.search.util.ParadoxSearchParameters
@@ -13,12 +14,16 @@ import icu.windea.pls.lang.search.util.ParadoxSearchSelector
 import icu.windea.pls.lang.search.util.ParadoxUnaryQuery
 import icu.windea.pls.lang.search.util.createParadoxQuery
 import icu.windea.pls.lang.search.util.distinctBy
+import icu.windea.pls.lang.search.util.withFileExtensions
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
+import icu.windea.pls.model.constants.ChronicleConstants
 
 /**
  * 文件路径的查询。
  *
  * @see ParadoxFilePathSearcher
+ * @see ParadoxFilePathSearch.Parameters
+ * @see ParadoxFilePathSearch.Selector
  */
 class ParadoxFilePathSearch : ExtensibleQueryFactory<VirtualFile, ParadoxFilePathSearch.Parameters>(EP_NAME) {
     /**
@@ -41,7 +46,7 @@ class ParadoxFilePathSearch : ExtensibleQueryFactory<VirtualFile, ParadoxFilePat
     }
 
     companion object {
-        private val iconExpression = CwtDataExpression.resolve("icon[]", false)
+        private val iconExpression = CwtDataExpression.resolve("icon[]", CwtDataExpressionRole.Value)
 
         @JvmField val EP_NAME = ExtensionPointName<QueryExecutor<VirtualFile, Parameters>>("icu.windea.pls.search.filePathSearch")
         @JvmField val INSTANCE = ParadoxFilePathSearch()
@@ -56,16 +61,37 @@ class ParadoxFilePathSearch : ExtensibleQueryFactory<VirtualFile, ParadoxFilePat
             return INSTANCE.createParadoxQuery(Parameters(filePath, configExpression, ignoreLocale, selector))
         }
 
-        /** @see Parameters */
+        /**
+         * @see Parameters
+         * @see ChronicleConstants.imageFileExtensions
+         */
         @JvmStatic
-        fun searchIcon(filePath: String?, selector: Selector, ignoreLocale: Boolean = false): ParadoxUnaryQuery<VirtualFile> {
-            return search(filePath, iconExpression, selector, ignoreLocale)
+        fun searchImage(filePath: String?, configExpression: CwtDataExpression? = null, selector: Selector, ignoreLocale: Boolean = false): ParadoxUnaryQuery<VirtualFile> {
+            val selector = selector.withFileExtensions(*ChronicleConstants.imageFileExtensions) // 3.0.1 optimize: limit file extensions
+            return INSTANCE.createParadoxQuery(Parameters(filePath, configExpression, ignoreLocale, selector))
         }
 
-        /** @see Parameters */
+        /**
+         * @see Parameters
+         * @see ChronicleConstants.imageFileExtensions
+         */
+        @JvmStatic
+        fun searchIcon(filePath: String?, selector: Selector, ignoreLocale: Boolean = false): ParadoxUnaryQuery<VirtualFile> {
+            val configExpression = iconExpression
+            val selector = selector.withFileExtensions(*ChronicleConstants.imageFileExtensions) // 3.0.1 optimize: limit file extensions
+            return search(filePath, configExpression, selector, ignoreLocale)
+        }
+
+        /**
+         * @see Parameters
+         * @see ParadoxInlineScriptManager.getInlineScriptFilePath
+         * @see ParadoxInlineScriptManager.inlineScriptFileExtension
+         */
         @JvmStatic
         fun searchInlineScript(expression: String, selector: Selector): ParadoxUnaryQuery<VirtualFile> {
-            return search(ParadoxInlineScriptManager.getInlineScriptFilePath(expression), null, selector)
+            val filePath = ParadoxInlineScriptManager.getInlineScriptFilePath(expression)
+            val selector = selector.withFileExtensions(ParadoxInlineScriptManager.inlineScriptFileExtension) // 3.0.1 optimize: limit file extensions
+            return search(filePath, null, selector)
         }
     }
 }

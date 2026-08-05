@@ -6,7 +6,7 @@
       <template v-for="(gameType, i) in gameTypes" :key="gameType">
         <code>{{ gameType }}</code><template v-if="i < gameTypes.length - 1">, </template>
       </template><!--
-   -->（对于共享的规则分组则为 <code>{{ coreGameType }}</code>）。
+   -->（对于通用的规则分组则为 <code>{{ coreGameType }}</code>）。
     </template>
     <template v-else>
       Game type ID.
@@ -14,7 +14,7 @@
       <template v-for="(gameType, i) in gameTypes" :key="gameType">
         <code>{{ gameType }}</code><template v-if="i < gameTypes.length - 1">, </template>
       </template>
-      (for shared config groups use <code>{{ coreGameType }}</code>).
+      (for general config groups use <code>{{ coreGameType }}</code>).
     </template>
   </span>
 </template>

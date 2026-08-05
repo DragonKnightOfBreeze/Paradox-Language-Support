@@ -20,7 +20,7 @@ class CwtFindUsagesProvider : FindUsagesProvider {
         return when (element) {
             is CwtProperty -> true
             is CwtString -> true
-            is LightElementBase -> element.language == CwtLanguage
+            is LightElementBase -> element.language === CwtLanguage
             else -> false
         }
     }

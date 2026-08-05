@@ -25,8 +25,8 @@ class ParadoxLocalisationPsiReferenceContributor : PsiReferenceContributor() {
         registrar.registerReferenceProvider(psiElement(ParadoxLocalisationParameter::class.java), provider)
         registrar.registerReferenceProvider(psiElement(ParadoxLocalisationIcon::class.java), provider)
         registrar.registerReferenceProvider(psiElement(ParadoxLocalisationConceptCommand::class.java), provider)
-        registrar.registerReferenceProvider(psiElement(ParadoxLocalisationTextFormat::class.java), provider)
         registrar.registerReferenceProvider(psiElement(ParadoxLocalisationTextIcon::class.java), provider)
+        registrar.registerReferenceProvider(psiElement(ParadoxLocalisationTextFormat::class.java), provider)
         registrar.registerReferenceProvider(psiElement(ParadoxLocalisationScriptedVariableReference::class.java), provider)
 
         registrar.registerReferenceProvider(psiElement(ParadoxLocalisationExpressionElement::class.java), expressionProvider)

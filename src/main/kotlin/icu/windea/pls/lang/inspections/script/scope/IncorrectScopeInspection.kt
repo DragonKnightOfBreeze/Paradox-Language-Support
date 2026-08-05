@@ -57,7 +57,7 @@ class IncorrectScopeInspection : ScopeInspectionBase() {
             private fun getSupportedScopes(element: ParadoxScriptMember, config: CwtMemberConfig<*>): Set<String>? {
                 if (config.configExpression.type == CwtDataTypes.AliasKeysField) {
                     val configGroup = config.configGroup
-                    val aliasName = config.configExpression.value ?: return null
+                    val aliasName = config.configExpression.metadata.value ?: return null
                     val aliasSubName = element.name ?: return null
                     val aliasConfig = configGroup.aliasGroups.get(aliasName)?.get(aliasSubName)?.singleOrNull() ?: return null
                     val supportedScopes = aliasConfig.supportedScopes
@@ -81,7 +81,7 @@ class IncorrectScopeInspection : ScopeInspectionBase() {
                     val supportedScopes = ParadoxScopeService.getSupportedScopes(resolved, definitionInfo)
                     return supportedScopes
                 }
-                val supportedScopes = config.optionData.supportedScopes
+                val supportedScopes = config.optionMetadata.supportedScopes
                 return supportedScopes
             }
 

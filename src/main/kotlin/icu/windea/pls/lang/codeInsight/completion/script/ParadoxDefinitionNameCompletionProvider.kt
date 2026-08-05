@@ -4,13 +4,15 @@ import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.patterns.PlatformPatterns.*
 import com.intellij.util.ProcessingContext
+import icu.windea.pls.base.ChronicleCapacities
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.codeInsight.completion.GlobalCompletionContext
 import icu.windea.pls.core.processAsync
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionLookupProvider
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionProvider
-import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionUtil
 import icu.windea.pls.lang.codeInsight.completion.ParadoxExtendedCompletionManager
+import icu.windea.pls.lang.codeInsight.completion.addToResult
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized
@@ -18,14 +20,13 @@ import icu.windea.pls.lang.match.CwtTypeConfigMatchContext
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.psi.isDefinitionName
 import icu.windea.pls.lang.resolve.ParadoxDefinitionService
+import icu.windea.pls.lang.resolve.ParadoxExpressionService
 import icu.windea.pls.lang.resolve.ParadoxMemberService
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.search.util.filterBy
 import icu.windea.pls.lang.select.selectScope
-import icu.windea.pls.lang.settings.ChronicleInternalSettings
 import icu.windea.pls.lang.settings.ChronicleSettings
-import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
@@ -47,7 +48,7 @@ class ParadoxDefinitionNameCompletionProvider : ParadoxCompletionProvider() {
 
         val globalContext = GlobalCompletionContext.create(element, parameters, context)
         val context = ParadoxCompletionContext.create(globalContext).copy(
-            expressionOffset = ParadoxExpressionManager.getExpressionOffset(element)
+            expressionOffset = ParadoxExpressionService.getExpressionOffset(element)
         )
 
         when {
@@ -57,13 +58,13 @@ class ParadoxDefinitionNameCompletionProvider : ParadoxCompletionProvider() {
             element is ParadoxScriptPropertyKey || (element is ParadoxScriptString && element.isDirectValue()) -> {
                 val fileInfo = context.file.fileInfo ?: return
                 val path = fileInfo.path
-                // 忽略 rootKeys 深度超出限制，或者带参数的情况
-                val maxDepth = ChronicleInternalSettings.getInstance().maxDefinitionDepth
-                val rootKeys = ParadoxMemberService.getRootKeys(element, maxDepth = maxDepth, parameterAware = false) ?: return
-                val typeKeyPrefix = lazy { ParadoxMemberService.getKeyPrefix(element) }
+                // 3.0.1 懒加载（通常可以先检查 typeKey） + 忽略 rootKeys 深度超出限制，或者带参数的情况
+                val lazyRootKeys = lazy { ParadoxMemberService.getRootKeys(element, maxDepth = ChronicleCapacities.maxDefinitionDepth(), parameterAware = false) }
+                // 3.0.1 懒加载（通常都是不必要的）
+                val lazyTypeKeyPrefix = lazy { ParadoxMemberService.getKeyPrefix(element) }
                 for (typeConfig in context.configGroup.types.values) {
                     if (typeConfig.nameField != null) continue
-                    val matchContext = CwtTypeConfigMatchContext(context.configGroup, path, null, rootKeys, typeKeyPrefix)
+                    val matchContext = CwtTypeConfigMatchContext(context.configGroup, path, null, lazyRootKeys, lazyTypeKeyPrefix)
                     if (!ParadoxConfigMatchService.matchesTypeByUnknownDeclaration(matchContext, typeConfig)) continue
                     val type = typeConfig.name
                     val config = ParadoxDefinitionService.resolveDeclaration(element, type, configGroup = context.configGroup)
@@ -75,7 +76,7 @@ class ParadoxDefinitionNameCompletionProvider : ParadoxCompletionProvider() {
                         val selector = ParadoxDefinitionSearch.selector(context.project, context.file).contextSensitive().distinct()
                             .filterBy { it.name != context.keyword } // skip if name = input
                         ParadoxDefinitionSearch.searchProperty(null, type, selector).processAsync {
-                            ParadoxCompletionUtil.processDefinition(context, result, it)
+                            ParadoxCompletionLookupProvider.fromDefinition(context, it).addToResult(context, result)
                         }
 
                         ParadoxExtendedCompletionManager.completeExtendedDefinition(context, result)
@@ -99,7 +100,7 @@ class ParadoxDefinitionNameCompletionProvider : ParadoxCompletionProvider() {
                         val selector = ParadoxDefinitionSearch.selector(context.project, context.file).contextSensitive().distinct()
                             .filterBy { it.name != context.keyword } // skip if name = input
                         ParadoxDefinitionSearch.searchProperty(null, type, selector).processAsync {
-                            ParadoxCompletionUtil.processDefinition(context, result, it)
+                            ParadoxCompletionLookupProvider.fromDefinition(context, it).addToResult(context, result)
                         }
 
                         ParadoxExtendedCompletionManager.completeExtendedDefinition(context, result)

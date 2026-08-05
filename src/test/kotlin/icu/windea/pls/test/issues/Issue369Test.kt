@@ -1,6 +1,7 @@
 package icu.windea.pls.test.issues
 
 import com.intellij.codeInsight.completion.CompletionType
+import com.intellij.testFramework.IndexingTestUtil
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.core.quote
@@ -15,8 +16,6 @@ import org.junit.runners.JUnit4
 
 /**
  * See: [#369](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/369)
- *
- * @see UnresolvedExpressionInspection
  */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
@@ -28,15 +27,16 @@ class Issue369Test : BasePlatformTestCase(), ChronicleTestScope {
         markIntegrationTest()
         markRootDirectory("issues/369")
         markConfigDirectory("issues/369/.config")
-        initConfigGroups(project, ParadoxGameType.Stellaris)
-        myFixture.enableInspections(UnresolvedExpressionInspection::class.java)
+        initInjectedConfigGroups(project, ParadoxGameType.Stellaris) // on demand
     }
 
     @After
     fun doTearDown() = clearIntegrationTest()
 
     @Test
-    fun test() {
+    fun testInspection() {
+        myFixture.enableInspections(UnresolvedExpressionInspection::class.java)
+
         markFileInfo(ParadoxGameType.Stellaris, "prescripted_countries/test_countries.txt")
         myFixture.configureByFile("issues/369/prescripted_countries/test_countries.txt")
 
@@ -56,12 +56,13 @@ class Issue369Test : BasePlatformTestCase(), ChronicleTestScope {
             }
         """.trimIndent())
 
-        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile) // necessary
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+
         myFixture.checkHighlighting()
     }
 
     @Test
-    fun testCompletion_1() {
+    fun testCompletion() {
         markFileInfo(ParadoxGameType.Stellaris, "prescripted_countries/test_countries.txt")
         myFixture.configureByFile("issues/369/prescripted_countries/test_countries.txt")
 
@@ -76,8 +77,10 @@ class Issue369Test : BasePlatformTestCase(), ChronicleTestScope {
             }
         """.trimIndent())
 
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+
         myFixture.complete(CompletionType.BASIC)
-        val lookupElementStrings: List<String> = myFixture.lookupElementStrings!!
+        val lookupElementStrings = myFixture.lookupElementStrings!!
         assertSameElements(lookupElementStrings, "no_spaces", "spaced out".quote()) // should be quoted if is blank or contains blank
     }
 
@@ -97,8 +100,10 @@ class Issue369Test : BasePlatformTestCase(), ChronicleTestScope {
             }
         """.trimIndent())
 
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+
         myFixture.complete(CompletionType.BASIC)
-        val lookupElementStrings: List<String> = myFixture.lookupElementStrings!!
+        val lookupElementStrings = myFixture.lookupElementStrings!!
         assertSameElements(lookupElementStrings, "no_spaces", "spaced out".quote()) // should be quoted if is blank or contains blank
     }
 
@@ -118,8 +123,10 @@ class Issue369Test : BasePlatformTestCase(), ChronicleTestScope {
             }
         """.trimIndent())
 
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+
         myFixture.complete(CompletionType.BASIC)
-        val lookupElementStrings: List<String> = myFixture.lookupElementStrings!!
+        val lookupElementStrings = myFixture.lookupElementStrings!!
         assertSameElements(lookupElementStrings, "no_spaces", "spaced out") // should not be quoted since already quoted
     }
 
@@ -139,8 +146,10 @@ class Issue369Test : BasePlatformTestCase(), ChronicleTestScope {
             }
         """.trimIndent())
 
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+
         myFixture.complete(CompletionType.BASIC)
-        val lookupElementStrings: List<String> = myFixture.lookupElementStrings!!
+        val lookupElementStrings = myFixture.lookupElementStrings!!
         assertSameElements(lookupElementStrings, "no_spaces", "spaced out") // should not be quoted since already quoted (even only left quoted)
     }
 }

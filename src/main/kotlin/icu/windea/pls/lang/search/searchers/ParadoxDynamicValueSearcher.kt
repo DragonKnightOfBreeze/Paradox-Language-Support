@@ -6,34 +6,37 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.Processor
-import icu.windea.pls.core.collections.process
+import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.collections.processFast
 import icu.windea.pls.csv.ParadoxCsvFileType
 import icu.windea.pls.lang.index.ChronicleIndexService
+import icu.windea.pls.lang.index.ParadoxMergedIndexTypes
 import icu.windea.pls.lang.search.ParadoxDynamicValueSearch
 import icu.windea.pls.lang.search.scope.withFileTypes
 import icu.windea.pls.lang.search.util.ParadoxSearchContext
 import icu.windea.pls.localisation.ParadoxLocalisationFileType
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.index.ParadoxDynamicValueIndexInfo
-import icu.windea.pls.model.index.ParadoxIndexInfoTypes
 import icu.windea.pls.script.ParadoxScriptFileType
 
 /**
  * 动态值的查询器。
+ *
+ * @see ParadoxDynamicValueSearch
  */
+@Optimized
 class ParadoxDynamicValueSearcher : QueryExecutorBase<ParadoxDynamicValueIndexInfo, ParadoxDynamicValueSearch.Parameters>() {
     override fun processQuery(queryParameters: ParadoxDynamicValueSearch.Parameters, consumer: Processor<in ParadoxDynamicValueIndexInfo>) {
         ProgressManager.checkCanceled()
-        val scope = queryParameters.scope.withFileTypes(ParadoxScriptFileType, ParadoxLocalisationFileType, ParadoxCsvFileType)
-        val context = queryParameters.createContext(scope)
+        val context = queryParameters.createContext()
         processQuery(context, consumer)
     }
 
     private fun processQuery(context: Context, consumer: Processor<in ParadoxDynamicValueIndexInfo>): Boolean {
         if (!context.isValid()) return true
-        val indexInfoType = ParadoxIndexInfoTypes.DynamicValue
-        return ChronicleIndexService.processAllFileDataWithKey(indexInfoType, context.project, context.scope, context.gameType) { file, infos ->
-            infos.process { info -> processInfo(context, file, info, consumer) }
+        val mergedIndexType = ParadoxMergedIndexTypes.DynamicValue
+        return ChronicleIndexService.processAllFileDataWithKey(mergedIndexType, context.project, context.scope, context.gameType) { file, infos ->
+            infos.processFast { info -> processInfo(context, file, info, consumer) }
         }
     }
 
@@ -53,7 +56,8 @@ class ParadoxDynamicValueSearcher : QueryExecutorBase<ParadoxDynamicValueIndexIn
         return context.name == info.name
     }
 
-    private fun ParadoxDynamicValueSearch.Parameters.createContext(scope: GlobalSearchScope = this.scope): Context {
+    private fun ParadoxDynamicValueSearch.Parameters.createContext(): Context {
+        val scope = scope.withFileTypes(ParadoxScriptFileType, ParadoxLocalisationFileType, ParadoxCsvFileType) // optimize: limit file types
         return Context(name, types, gameType, project, scope)
     }
 

@@ -8,7 +8,7 @@ import org.junit.Test
  */
 class ParadoxLocalisationManagerTest {
     @Test
-    fun isRichTextTest() {
+    fun isRichText_test() {
         Assert.assertFalse(ParadoxLocalisationManager.isRichText(""))
         Assert.assertFalse(ParadoxLocalisationManager.isRichText(" "))
         Assert.assertFalse(ParadoxLocalisationManager.isRichText("abc"))

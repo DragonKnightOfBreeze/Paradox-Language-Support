@@ -6,9 +6,11 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.parentOfType
 import com.intellij.psi.util.siblings
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.children
 import icu.windea.pls.core.collections.WalkingContext
 import icu.windea.pls.core.collections.WalkingSequence
+import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.forward
 import icu.windea.pls.core.findElementAt
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
@@ -18,6 +20,7 @@ import icu.windea.pls.csv.psi.ParadoxCsvHeader
 import icu.windea.pls.csv.psi.ParadoxCsvPsiService
 import icu.windea.pls.csv.psi.ParadoxCsvRow
 
+@Optimized
 object ParadoxCsvFileManipulationService {
     /**
      * 构建一个序列，包含当前文件 [file] 中，选取范围涉及到的所有行。
@@ -34,7 +37,7 @@ object ParadoxCsvFileManipulationService {
         return sequence {
             val set = mutableSetOf<ParadoxCsvRow>()
             val allCarets = editor.caretModel.allCarets.let { if (context.forward) it else it.reversed() }
-            for (caret in allCarets) {
+            allCarets.forEachFast { caret ->
                 ProgressManager.checkCanceled()
                 val startRow = yieldStartRow(file, caret, set)
                 yieldEndRow(file, caret, startRow, set)
@@ -83,7 +86,7 @@ object ParadoxCsvFileManipulationService {
         return sequence {
             val set = mutableSetOf<ParadoxCsvColumn>()
             val allCarets = editor.caretModel.allCarets.let { if (context.forward) it else it.reversed() }
-            for (caret in allCarets) {
+            allCarets.forEachFast { caret ->
                 ProgressManager.checkCanceled()
                 val startColumn = yieldStartColumn(file, caret, set)
                 yieldEndColumn(file, caret, startColumn, set)

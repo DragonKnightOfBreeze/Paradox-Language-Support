@@ -23,4 +23,5 @@ enum class CwtConfigGroupFileSource {
     BuiltIn,
     Remote,
     Local,
+    Injected,
 }

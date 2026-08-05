@@ -15,9 +15,9 @@ import icu.windea.pls.lang.codeInsight.completion.ParadoxComplexExpressionComple
 import icu.windea.pls.lang.codeInsight.template.postfix.ParadoxVariableOperationExpressionPostfixTemplate
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOptions
+import icu.windea.pls.lang.resolve.ParadoxExpressionService
 import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.lang.util.ParadoxConfigManager
-import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptTokenSets.STRING_TOKENS
@@ -54,7 +54,7 @@ class ParadoxVariableNameCompletionProvider : ParadoxCompletionProvider() {
 
         val globalContext = GlobalCompletionContext.create(element, parameters, context)
         val context = ParadoxCompletionContext.create(globalContext).copy(
-            expressionOffset = ParadoxExpressionManager.getExpressionOffset(element),
+            expressionOffset = ParadoxExpressionService.getExpressionOffset(element),
             config = configGroup.mockVariableConfig,
         )
 

@@ -3,6 +3,7 @@ package icu.windea.pls.images.supports
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.progress.ProcessCanceledException
 import icu.windea.pls.images.ImageSupport
+import kotlinx.coroutines.CancellationException
 import java.io.InputStream
 import java.io.OutputStream
 import java.nio.file.Path
@@ -25,7 +26,7 @@ class DefaultImageSupport : ImageSupport {
             doConvertImageFormat(inputStream, outputStream, targetFormat)
             return true
         } catch (e: Exception) {
-            if (e is ProcessCanceledException) throw e
+            if (e is ProcessCanceledException || e is CancellationException) throw e
             thisLogger().warn(e)
             throw UnsupportedOperationException(e)
         }
@@ -38,7 +39,7 @@ class DefaultImageSupport : ImageSupport {
             doConvertImageFormat(inputStream, outputStream, targetFormat)
             return targetPath.exists()
         } catch (e: Exception) {
-            if (e is ProcessCanceledException) throw e
+            if (e is ProcessCanceledException || e is CancellationException) throw e
             thisLogger().warn(e)
             throw UnsupportedOperationException(e)
         }

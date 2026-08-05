@@ -1,7 +1,5 @@
 package icu.windea.pls.config
 
-import icu.windea.pls.config.CwtDataTypeSets.Expandable
-
 
 /**
  * 数据类型的分组。
@@ -11,7 +9,6 @@ import icu.windea.pls.config.CwtDataTypeSets.Expandable
  * 备注：对于需要展开的数据类型的分组，使用 [Expandable]。其他分组一般不检查展开前的状态。
  *
  * @see CwtDataType
- * @see CwtDataTypes
  */
 @Suppress("unused")
 object CwtDataTypeSets {
@@ -67,7 +64,7 @@ object CwtDataTypeSets {
     /** 可包含常量文本的数据类型。 */
     val ConstantAware = arrayOf(
         CwtDataTypes.Constant,
-        CwtDataTypes.TemplateExpression,
+        CwtDataTypes.Template,
     )
     /** 可解析为定义的数据类型。 */
     val DefinitionAware = arrayOf(
@@ -98,7 +95,7 @@ object CwtDataTypeSets {
     /** 所有模式感知的数据类型。 */
     val PatternAware = arrayOf(
         CwtDataTypes.Constant,
-        CwtDataTypes.TemplateExpression,
+        CwtDataTypes.Template,
         CwtDataTypes.Glob,
         CwtDataTypes.Ant,
         CwtDataTypes.Regex,

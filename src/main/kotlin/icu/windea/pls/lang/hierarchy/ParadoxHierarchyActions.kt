@@ -69,7 +69,8 @@ interface ParadoxHierarchyActions {
 
                 // invokeLater is called to update state of button before long tree building operation
                 // scope is kept per type so other builders don't need to be refreshed
-                application.invokeLater({ browser.function("doRefresh")(true) }) { browser.isDisposed }
+                val runnable = Runnable { browser.function("doRefresh").executeOnly(true) }
+                application.invokeLater(runnable) { browser.isDisposed }
             }
         }
     }
@@ -129,7 +130,8 @@ interface ParadoxHierarchyActions {
 
                 // invokeLater is called to update state of button before long tree building operation
                 // scope is kept per type so other builders don't need to be refreshed
-                application.invokeLater({ browser.function("doRefresh")(true) }) { browser.isDisposed }
+                val runnable = Runnable { browser.function("doRefresh").executeOnly(true) }
+                application.invokeLater(runnable) { browser.isDisposed }
             }
         }
     }

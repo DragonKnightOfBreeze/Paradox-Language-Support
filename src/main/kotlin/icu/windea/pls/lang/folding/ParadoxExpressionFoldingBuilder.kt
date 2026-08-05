@@ -8,7 +8,7 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor
 import icu.windea.pls.ChronicleFacade
-import icu.windea.pls.base.annotations.WithInternalConfig
+import icu.windea.pls.base.annotations.FromInternalConfig
 import icu.windea.pls.config.config.internal.CwtFoldingSettingsConfig
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.collections.toArray
@@ -23,7 +23,7 @@ import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPsiService
 
-@WithInternalConfig("builtin/folding_settings.cwt", CwtFoldingSettingsConfig::class)
+@FromInternalConfig("builtin/folding_settings.cwt", CwtFoldingSettingsConfig::class)
 abstract class ParadoxExpressionFoldingBuilder : FoldingBuilderEx() {
     abstract fun getGroupName(): String
 
@@ -31,7 +31,7 @@ abstract class ParadoxExpressionFoldingBuilder : FoldingBuilderEx() {
 
     override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
         if (quick) return FoldingDescriptor.EMPTY_ARRAY
-        if (root.language !is ParadoxScriptLanguage) return FoldingDescriptor.EMPTY_ARRAY
+        if (root.language !== ParadoxScriptLanguage) return FoldingDescriptor.EMPTY_ARRAY
         val project = root.project
         val gameType = selectGameType(root) ?: return FoldingDescriptor.EMPTY_ARRAY
         val configGroup = ChronicleFacade.getConfigGroup(project, gameType)

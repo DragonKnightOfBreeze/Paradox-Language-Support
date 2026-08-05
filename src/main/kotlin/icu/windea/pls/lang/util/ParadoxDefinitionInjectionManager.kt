@@ -8,6 +8,7 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.EMPTY_OBJECT
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.runSmartReadAction
@@ -31,7 +32,7 @@ import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptRootBlock
 
-@Suppress("unused")
+@Optimized
 object ParadoxDefinitionInjectionManager {
     object Keys : KeyRegistry() {
         val cachedDefinitionInjectionInfo by registerKey<CachedValue<ParadoxDefinitionInjectionInfo>>(Keys)
@@ -50,7 +51,7 @@ object ParadoxDefinitionInjectionManager {
         if (context == null) return false
         val gameType = selectGameType(context) ?: return false
         val configGroup = ChronicleFacade.getConfigGroup(gameType)
-        return configGroup.macrosModel.forDefinitionInjections != null
+        return configGroup.attribute.supportDefinitionInjection // use attribute
     }
 
     /**
@@ -63,9 +64,7 @@ object ParadoxDefinitionInjectionManager {
         if (mode.isEmpty()) return false
         val gameType = selectGameType(context) ?: return false
         val configGroup = ChronicleFacade.getConfigGroup(gameType)
-        val config = configGroup.macrosModel.forDefinitionInjections ?: return false
-        // ignore case for `mode`
-        return config.modeConfigs[mode] != null
+        return configGroup.attribute.definitionInjectionModes.contains(mode) // use attribute
     }
 
     /**
@@ -109,6 +108,7 @@ object ParadoxDefinitionInjectionManager {
         return mode + ":" + target.orEmpty()
     }
 
+    @Suppress("unused")
     fun getTarget(element: ParadoxScriptProperty): String? {
         return element.definitionInjectionInfo?.target
     }
@@ -123,12 +123,16 @@ object ParadoxDefinitionInjectionManager {
         // mode must exist
         if (getModeFromExpression(element.name).isNullOrEmpty()) return null
         // from cache
+        return getInfoFromCache(element)
+    }
+
+    private fun getInfoFromCache(element: ParadoxScriptProperty): ParadoxDefinitionInjectionInfo? {
         return CachedValuesManager.getCachedValue(element, Keys.cachedDefinitionInjectionInfo) {
             ProgressManager.checkCanceled()
             runSmartReadAction {
                 val file = element.containingFile
                 val value = ParadoxDefinitionInjectionService.resolveInfo(element, file)
-                val dependencies = ParadoxDefinitionInjectionService.getInfoDependencies(element, file)
+                val dependencies = ParadoxDefinitionInjectionService.getInfoDependencies(element, file, value)
                 value.withDependencyItems(dependencies)
             }
         }
@@ -137,11 +141,15 @@ object ParadoxDefinitionInjectionManager {
     fun getSubtypeConfigs(definitionInjectionInfo: ParadoxDefinitionInjectionInfo, options: ParadoxMatchOptions? = null): List<CwtSubtypeConfig> {
         val candidates = definitionInjectionInfo.typeConfig?.subtypes
         if (candidates.isNullOrEmpty()) return emptyList()
+        // from cache
+        return getSubtypeConfigsFromCache(definitionInjectionInfo, options)
+    }
+
+    private fun getSubtypeConfigsFromCache(definitionInjectionInfo: ParadoxDefinitionInjectionInfo, options: ParadoxMatchOptions?): List<CwtSubtypeConfig> {
         val element = definitionInjectionInfo.element ?: return emptyList()
         val isDumb = ParadoxMatchService.isDumb(options)
         val finalOptions = if (isDumb) ParadoxMatchOptions.DUMB else ParadoxMatchOptions.DEFAULT
         val cacheKey = if (isDumb) Keys.cachedSubtypeConfigsDumb else Keys.cachedSubtypeConfigs
-        // from cache
         return CachedValuesManager.getCachedValue(element, cacheKey) {
             ProgressManager.checkCanceled()
             runSmartReadAction {
@@ -153,11 +161,15 @@ object ParadoxDefinitionInjectionManager {
     }
 
     fun getDeclaration(definitionInjectionInfo: ParadoxDefinitionInjectionInfo, options: ParadoxMatchOptions? = null): CwtPropertyConfig? {
+        // from cache
+        return getDeclarationFromCache(definitionInjectionInfo, options)
+    }
+
+    private fun getDeclarationFromCache(definitionInjectionInfo: ParadoxDefinitionInjectionInfo, options: ParadoxMatchOptions?): CwtPropertyConfig? {
         val element = definitionInjectionInfo.element ?: return null
         val isDumb = ParadoxMatchService.isDumb(options)
         val finalOptions = if (isDumb) ParadoxMatchOptions.DUMB else ParadoxMatchOptions.DEFAULT
         val cacheKey = if (isDumb) Keys.cachedDeclarationDumb else Keys.cachedDeclaration
-        // from cache
         return CachedValuesManager.getCachedValue(element, cacheKey) {
             ProgressManager.checkCanceled()
             runSmartReadAction {
@@ -191,6 +203,7 @@ object ParadoxDefinitionInjectionManager {
     /**
      * 检查指定模式是否应被识别为定义声明（可以被索引和搜索）。
      */
+    @Suppress("unused")
     fun isCreateMode(definitionInjectionInfo: ParadoxDefinitionInjectionInfo): Boolean {
         val mode = definitionInjectionInfo.mode
         val configGroup = definitionInjectionInfo.configGroup

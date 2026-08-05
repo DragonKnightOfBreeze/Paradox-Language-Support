@@ -22,6 +22,8 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
  * 定义的查询。
  *
  * @see ParadoxDefinitionSearcher
+ * @see ParadoxDefinitionSearch.Parameters
+ * @see ParadoxDefinitionSearch.Selector
  */
 class ParadoxDefinitionSearch : ExtensibleQueryFactory<ParadoxDefinitionIndexInfo, ParadoxDefinitionSearch.Parameters>(EP_NAME) {
     /**

@@ -1,6 +1,7 @@
 package icu.windea.pls.lang.resolve
 
 import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.psi.util.parentOfType
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.lang.analysis.ParadoxAnalysisInjectionManager
@@ -9,7 +10,6 @@ import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.ParadoxScriptValue
-import icu.windea.pls.script.psi.isDirectMember
 import icu.windea.pls.script.psi.isDirectValue
 import icu.windea.pls.test.ChronicleTestScope
 import org.junit.After
@@ -34,68 +34,29 @@ class ParadoxMemberServiceTest : BasePlatformTestCase(), ChronicleTestScope {
     @After
     fun doTearDown() = clearIntegrationTest()
 
-    // region Helper Methods
-
-    private fun configureScriptFile(text: String): ParadoxScriptFile {
-        myFixture.configureByText("test.txt", text.trimIndent())
-        return myFixture.file as ParadoxScriptFile
-    }
-
-    private fun findProperty(file: ParadoxScriptFile, name: String): ParadoxScriptProperty {
-        return PsiTreeUtil.findChildrenOfType(file, ParadoxScriptProperty::class.java)
-            .firstOrNull { it.name == name }
-            ?: throw AssertionError("Property not found: $name")
-    }
-
-    private fun findAllProperties(file: ParadoxScriptFile, name: String): List<ParadoxScriptProperty> {
-        return PsiTreeUtil.findChildrenOfType(file, ParadoxScriptProperty::class.java)
-            .filter { it.name == name }
-    }
-
-    private fun findDirectValue(file: ParadoxScriptFile, text: String): ParadoxScriptValue {
-        return PsiTreeUtil.findChildrenOfType(file, ParadoxScriptValue::class.java)
-            .firstOrNull { it.value == text && it.isDirectMember() }
-            ?: throw AssertionError("Block member value not found: $text")
-    }
-
-    private fun findAllDirectValues(file: ParadoxScriptFile): List<ParadoxScriptValue> {
-        return PsiTreeUtil.findChildrenOfType(file, ParadoxScriptValue::class.java)
-            .filter { it.isDirectValue() }
-    }
-
-    private fun findScriptedVariable(file: ParadoxScriptFile, name: String): ParadoxScriptScriptedVariable {
-        return PsiTreeUtil.findChildrenOfType(file, ParadoxScriptScriptedVariable::class.java)
-            .firstOrNull { it.name == name }
-            ?: throw AssertionError("Scripted variable not found: @$name")
-    }
-
-    // endregion
-
     // region getPath Tests
 
     @Test
     fun getPath_rootLevelProperty_returnsPropertyName() {
-        val file = configureScriptFile("root_prop = 1")
-        val prop = findProperty(file, "root_prop")
-        val path = ParadoxMemberService.getPath(prop)
+        myFixture.configureByText("test.txt", "<caret>root_prop = 1")
+        val property = myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptProperty>()!!
+        val path = ParadoxMemberService.getPath(property)
         Assert.assertEquals("root_prop", path!!.path)
         Assert.assertEquals(1, path.length)
     }
 
     @Test
     fun getPath_nestedProperty_returnsFullPath() {
-        val file = configureScriptFile(
-            """
+        myFixture.configureByText("test.txt", """
             a = {
                 b = {
                     c = {
-                        d = 1
+                        <caret>d = 1
                     }
                 }
             }
-            """
-        )
-        val d = findProperty(file, "d")
+        """)
+        val d = myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptProperty>()!!
         val path = ParadoxMemberService.getPath(d)
         Assert.assertEquals("a/b/c/d", path!!.path)
         Assert.assertEquals(listOf("a", "b", "c", "d"), path.subPaths)
@@ -103,87 +64,68 @@ class ParadoxMemberServiceTest : BasePlatformTestCase(), ChronicleTestScope {
 
     @Test
     fun getPath_directMemberValue_usesHyphen() {
-        val file = configureScriptFile(
-            """
-            list = { "item1" "item2" "item3" }
-            """
-        )
-        val item1 = findDirectValue(file, "item1")
+        myFixture.configureByText("test.txt", """
+            list = { <caret>"item1" "item2" "item3" }
+        """)
+        val item1 = myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptValue>()!!
         val path = ParadoxMemberService.getPath(item1)
         Assert.assertEquals("list/-", path!!.path)
     }
 
     @Test
     fun getPath_mixedPropertiesAndValues_correctPath() {
-        val file = configureScriptFile(
-            """
+        myFixture.configureByText("test.txt", """
             outer = {
                 inner = {
-                    "value1"
+                    <caret>"value1"
                     "value2"
                 }
             }
-            """
-        )
-        val value1 = findDirectValue(file, "value1")
+        """)
+        val value1 = myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptValue>()!!
         val path = ParadoxMemberService.getPath(value1)
         Assert.assertEquals("outer/inner/-", path!!.path)
     }
 
     @Test
     fun getPath_withLimit_returnsLimitedPath() {
-        val file = configureScriptFile(
-            """
-            a = { b = { c = { d = { e = 1 } } } }
-            """
-        )
-        val e = findProperty(file, "e")
+        myFixture.configureByText("test.txt", """
+            a = { b = { c = { d = { <caret>e = 1 } } } }
+        """)
+        val e = myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptProperty>()!!
 
-        // limit = 2，只返回最近的 2 层
         val limited = ParadoxMemberService.getPath(e, limit = 2)
         Assert.assertEquals("d/e", limited!!.path)
         Assert.assertEquals(2, limited.length)
 
-        // limit = 3
         val limited3 = ParadoxMemberService.getPath(e, limit = 3)
         Assert.assertEquals("c/d/e", limited3!!.path)
     }
 
     @Test
     fun getPath_withMaxDepth_returnsNullIfExceeded() {
-        val file = configureScriptFile(
-            """
-            a = { b = { c = { d = 1 } } }
-            """
-        )
-        val d = findProperty(file, "d")
+        myFixture.configureByText("test.txt", """
+            a = { b = { c = { <caret>d = 1 } } }
+        """)
+        val d = myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptProperty>()!!
 
-        // maxDepth 检查逻辑：在添加元素前，若 maxDepth <= result.size 则返回 null
-        // 对于 4 层路径 "a/b/c/d"：
-        // - maxDepth = 2：添加 d(size=1), 添加 c(size=2), 尝试添加 b 时 2<=2 返回 null
-        // - maxDepth = 3：添加 d, c, b(size=3), 尝试添加 a 时 3<=3 返回 null
-        // - maxDepth = 4：添加 d, c, b, a(size=4), 正常返回
         val result2 = ParadoxMemberService.getPath(d, maxDepth = 2)
         Assert.assertNull(result2)
 
         val result3 = ParadoxMemberService.getPath(d, maxDepth = 3)
         Assert.assertNull(result3)
 
-        // maxDepth = 4，刚好允许 4 层，正常返回
         val result4 = ParadoxMemberService.getPath(d, maxDepth = 4)
         Assert.assertEquals("a/b/c/d", result4!!.path)
 
-        // maxDepth = 5，大于实际深度，正常返回
         val result5 = ParadoxMemberService.getPath(d, maxDepth = 5)
         Assert.assertEquals("a/b/c/d", result5!!.path)
     }
 
     @Test
     fun getPath_parameterizedKey_parameterAwareTrue_returnsPath() {
-        val file = configureScriptFile("root = { \"key_${p("PARAM")}\" = 1 }")
-        val props = findAllProperties(file, "key_${p("PARAM")}")
-        Assert.assertTrue(props.isNotEmpty())
-        val prop = props.first()
+        myFixture.configureByText("test.txt", "root = { <caret>\"key_${p("PARAM")}\" = 1 }")
+        val prop = myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptProperty>()!!
         val path = ParadoxMemberService.getPath(prop, parameterAware = true)
         Assert.assertNotNull(path)
         Assert.assertEquals("root/key_${p("PARAM")}", path!!.path)
@@ -191,17 +133,16 @@ class ParadoxMemberServiceTest : BasePlatformTestCase(), ChronicleTestScope {
 
     @Test
     fun getPath_parameterizedKey_parameterAwareFalse_returnsNull() {
-        val file = configureScriptFile("root = { \"key_${p("PARAM")}\" = 1 }")
-        val props = findAllProperties(file, "key_${p("PARAM")}")
-        Assert.assertTrue(props.isNotEmpty())
-        val prop = props.first()
+        myFixture.configureByText("test.txt", "root = { <caret>\"key_${p("PARAM")}\" = 1 }")
+        val prop = myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptProperty>()!!
         val path = ParadoxMemberService.getPath(prop, parameterAware = false)
         Assert.assertNull(path)
     }
 
     @Test
     fun getPath_fileElement_returnsEmptyPath() {
-        val file = configureScriptFile("root = 1")
+        myFixture.configureByText("test.txt", "<caret>root = 1")
+        val file = myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptFile>()!!
         val path = ParadoxMemberService.getPath(file)
         Assert.assertEquals("", path!!.path)
         Assert.assertTrue(path.isEmpty())
@@ -209,61 +150,54 @@ class ParadoxMemberServiceTest : BasePlatformTestCase(), ChronicleTestScope {
 
     @Test
     fun getPath_propertyValue_returnsPropertyPath() {
-        val file = configureScriptFile("outer = { inner = value }")
-        val inner = findProperty(file, "inner")
-        // 获取属性值
+        myFixture.configureByText("test.txt", "outer = { <caret>inner = value }")
+        val inner = myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptProperty>()!!
         val value = inner.propertyValue
         Assert.assertNotNull(value)
-        // 值本身的路径应该与属性相同
         val path = ParadoxMemberService.getPath(value!!)
         Assert.assertEquals("outer/inner", path!!.path)
     }
 
     @Test
     fun getPath_multipleDirectValues_allHaveSamePath() {
-        val file = configureScriptFile(
-            """
+        myFixture.configureByText("test.txt", """
             items = {
                 1
-                2
+                <caret>2
                 3
             }
-            """
-        )
-        val values = findAllDirectValues(file)
+        """)
+        val caretValue = myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptValue>()!!
+        Assert.assertEquals("items/-", ParadoxMemberService.getPath(caretValue)!!.path)
+        val values = PsiTreeUtil.findChildrenOfType(myFixture.file, ParadoxScriptValue::class.java)
+            .filter { it.isDirectValue() }
         Assert.assertEquals(3, values.size)
         for (v in values) {
-            val path = ParadoxMemberService.getPath(v)
-            Assert.assertEquals("items/-", path!!.path)
+            Assert.assertEquals("items/-", ParadoxMemberService.getPath(v)!!.path)
         }
     }
 
     @Test
     fun getPath_quotedPropertyKey_stripsQuotes() {
-        val file = configureScriptFile(
-            """
+        myFixture.configureByText("test.txt", """
             "quoted key" = {
-                nested = 1
+                <caret>nested = 1
             }
-            """
-        )
-        val nested = findProperty(file, "nested")
+        """)
+        val nested = myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptProperty>()!!
         val path = ParadoxMemberService.getPath(nested)
         Assert.assertEquals("quoted key/nested", path!!.path)
     }
 
     @Test
     fun getPath_keyWithSlash_escapedInPath() {
-        val file = configureScriptFile(
-            """
+        myFixture.configureByText("test.txt", """
             "key/with/slash" = {
-                nested = 1
+                <caret>nested = 1
             }
-            """
-        )
-        val nested = findProperty(file, "nested")
+        """)
+        val nested = myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptProperty>()!!
         val path = ParadoxMemberService.getPath(nested)
-        // 路径中的 "/" 应被转义为 "\/"
         Assert.assertEquals("key\\/with\\/slash/nested", path!!.path)
     }
 
@@ -273,82 +207,72 @@ class ParadoxMemberServiceTest : BasePlatformTestCase(), ChronicleTestScope {
 
     @Test
     fun getRootKeys_rootLevelProperty_returnsEmptyList() {
-        val file = configureScriptFile("root_prop = 1")
-        val prop = findProperty(file, "root_prop")
+        myFixture.configureByText("test.txt", "<caret>root_prop = 1")
+        val prop = myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptProperty>()!!
         val rootKeys = ParadoxMemberService.getRootKeys(prop)
-        // 根级属性没有父键
         Assert.assertTrue(rootKeys!!.isEmpty())
     }
 
     @Test
     fun getRootKeys_nestedProperty_returnsParentKeys() {
-        val file = configureScriptFile(
-            """
+        myFixture.configureByText("test.txt", """
             a = {
                 b = {
-                    c = 1
+                    <caret>c = 1
                 }
             }
-            """
-        )
-        val c = findProperty(file, "c")
+        """)
+        val c = myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptProperty>()!!
         val rootKeys = ParadoxMemberService.getRootKeys(c)
-        // 不包含 c 自身
         Assert.assertEquals(listOf("a", "b"), rootKeys)
     }
 
     @Test
     fun getRootKeys_directMemberValue_returnsParentKeys() {
-        val file = configureScriptFile(
-            """
+        myFixture.configureByText("test.txt", """
             list = {
                 nested = {
-                    "item"
+                    <caret>"item"
                 }
             }
-            """
-        )
-        val item = findDirectValue(file, "item")
+        """)
+        val item = myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptValue>()!!
         val rootKeys = ParadoxMemberService.getRootKeys(item)
         Assert.assertEquals(listOf("list", "nested"), rootKeys)
     }
 
     @Test
     fun getRootKeys_withLimit_returnsLimitedKeys() {
-        val file = configureScriptFile(
-            """
-            a = { b = { c = { d = 1 } } }
-            """
-        )
-        val d = findProperty(file, "d")
+        myFixture.configureByText("test.txt", """
+            a = { b = { c = { <caret>d = 1 } } }
+        """)
+        val d = myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptProperty>()!!
         val limited = ParadoxMemberService.getRootKeys(d, limit = 2)
         Assert.assertEquals(listOf("b", "c"), limited)
     }
 
     @Test
     fun getRootKeys_withMaxDepth_returnsNullIfExceeded() {
-        val file = configureScriptFile(
-            """
-            a = { b = { c = { d = 1 } } }
-            """
-        )
-        val d = findProperty(file, "d")
-        // d 的父键是 a, b, c，共 3 个
+        myFixture.configureByText("test.txt", """
+            a = { b = { c = { <caret>d = 1 } } }
+        """)
+        val d = myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptProperty>()!!
         val result = ParadoxMemberService.getRootKeys(d, maxDepth = 2)
         Assert.assertNull(result)
     }
 
     @Test
     fun getRootKeys_parameterizedParent_parameterAwareFalse_returnsNull() {
-        val file = configureScriptFile("\"parent_${p("P")}\" = { child = 1 }")
-        val child = findProperty(file, "child")
+        myFixture.configureByText("test.txt", "\"parent_${p("P")}\" = { <caret>child = 1 }")
+        val child = myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptProperty>()!!
         val rootKeys = ParadoxMemberService.getRootKeys(child, parameterAware = false)
         Assert.assertNull(rootKeys)
     }
 
     @Test
     fun getRootKeys_fileElement_returnsEmptyList() {
-        val file = configureScriptFile("root = 1")
+        myFixture.configureByText("test.txt", "<caret>root = 1")
+        val file = myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptFile>()!!
         val rootKeys = ParadoxMemberService.getRootKeys(file)
         Assert.assertTrue(rootKeys!!.isEmpty())
     }
@@ -359,132 +283,116 @@ class ParadoxMemberServiceTest : BasePlatformTestCase(), ChronicleTestScope {
 
     @Test
     fun getKeyPrefixes_withPrecedingStrings_returnsPrefixes() {
-        val file = configureScriptFile(
-            """
+        myFixture.configureByText("test.txt", """
             block = {
                 "prefix1"
                 "prefix2"
-                target = 1
+                <caret>target = 1
             }
-            """
-        )
-        val target = findProperty(file, "target")
+        """)
+        val target = myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptProperty>()!!
         val prefixes = ParadoxMemberService.getKeyPrefixes(target)
         Assert.assertEquals(listOf("prefix1", "prefix2"), prefixes)
     }
 
     @Test
     fun getKeyPrefixes_skipsCommentsAndWhitespace() {
-        val file = configureScriptFile(
-            """
+        myFixture.configureByText("test.txt", """
             block = {
                 "p1"
                 # comment between
                 "p2"
 
-                target = 1
+                <caret>target = 1
             }
-            """
-        )
-        val target = findProperty(file, "target")
+        """)
+        val target = myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptProperty>()!!
         val prefixes = ParadoxMemberService.getKeyPrefixes(target)
         Assert.assertEquals(listOf("p1", "p2"), prefixes)
     }
 
     @Test
     fun getKeyPrefixes_stopsAtNonStringElement() {
-        val file = configureScriptFile(
-            """
+        myFixture.configureByText("test.txt", """
             block = {
                 "early"
                 other_prop = 1
                 "late"
-                target = 1
+                <caret>target = 1
             }
-            """
-        )
-        val target = findProperty(file, "target")
+        """)
+        val target = myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptProperty>()!!
         val prefixes = ParadoxMemberService.getKeyPrefixes(target)
-        // 只返回 target 之前连续的字符串，遇到 other_prop 就停止
         Assert.assertEquals(listOf("late"), prefixes)
     }
 
     @Test
     fun getKeyPrefixes_noPrecedingStrings_returnsEmptyList() {
-        val file = configureScriptFile(
-            """
+        myFixture.configureByText("test.txt", """
             block = {
-                target = 1
+                <caret>target = 1
             }
-            """
-        )
-        val target = findProperty(file, "target")
+        """)
+        val target = myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptProperty>()!!
         val prefixes = ParadoxMemberService.getKeyPrefixes(target)
         Assert.assertTrue(prefixes!!.isEmpty())
     }
 
     @Test
     fun getKeyPrefixes_withLimit_returnsLimitedPrefixes() {
-        val file = configureScriptFile(
-            """
+        myFixture.configureByText("test.txt", """
             block = {
                 "p1"
                 "p2"
                 "p3"
-                target = 1
+                <caret>target = 1
             }
-            """
-        )
-        val target = findProperty(file, "target")
+        """)
+        val target = myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptProperty>()!!
         val limited = ParadoxMemberService.getKeyPrefixes(target, limit = 2)
-        // limit=2，从后往前取 2 个
         Assert.assertEquals(listOf("p2", "p3"), limited)
     }
 
     @Test
     fun getKeyPrefixes_withMaxDepth_returnsNullIfExceeded() {
-        val file = configureScriptFile(
-            """
+        myFixture.configureByText("test.txt", """
             block = {
                 "p1"
                 "p2"
                 "p3"
-                target = 1
+                <caret>target = 1
             }
-            """
-        )
-        val target = findProperty(file, "target")
+        """)
+        val target = myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptProperty>()!!
         val result = ParadoxMemberService.getKeyPrefixes(target, maxDepth = 2)
         Assert.assertNull(result)
     }
 
     @Test
     fun getKeyPrefixes_parameterizedString_stopsCollection() {
-        val file = configureScriptFile("block = { \"p1\" \"p_${p("X")}\" \"p3\" target = 1 }")
-        val target = findProperty(file, "target")
+        myFixture.configureByText("test.txt", "block = { \"p1\" \"p_${p("X")}\" \"p3\" <caret>target = 1 }")
+        val target = myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptProperty>()!!
         val prefixes = ParadoxMemberService.getKeyPrefixes(target)
-        // 遇到参数化字符串时停止收集
         Assert.assertEquals(listOf("p3"), prefixes)
     }
 
     @Test
     fun getKeyPrefixes_fileElement_returnsEmptyList() {
-        val file = configureScriptFile("root = 1")
+        myFixture.configureByText("test.txt", "<caret>root = 1")
+        val file = myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptFile>()!!
         val prefixes = ParadoxMemberService.getKeyPrefixes(file)
         Assert.assertTrue(prefixes!!.isEmpty())
     }
 
     @Test
     fun getKeyPrefixes_forDirectValue_returnsPrecedingStrings() {
-        val file = configureScriptFile(
-            """
+        myFixture.configureByText("test.txt", """
             block = {
                 "prefix"
-                "target_value"
+                <caret>"target_value"
             }
-            """
-        )
-        val targetValue = findDirectValue(file, "target_value")
+        """)
+        val targetValue = myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptValue>()!!
         val prefixes = ParadoxMemberService.getKeyPrefixes(targetValue)
         Assert.assertEquals(listOf("prefix"), prefixes)
     }
@@ -495,53 +403,47 @@ class ParadoxMemberServiceTest : BasePlatformTestCase(), ChronicleTestScope {
 
     @Test
     fun getKeyPrefix_withSinglePrefix_returnsIt() {
-        val file = configureScriptFile(
-            """
+        myFixture.configureByText("test.txt", """
             block = {
                 "single_prefix"
-                target = 1
+                <caret>target = 1
             }
-            """
-        )
-        val target = findProperty(file, "target")
+        """)
+        val target = myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptProperty>()!!
         val prefix = ParadoxMemberService.getKeyPrefix(target)
         Assert.assertEquals("single_prefix", prefix)
     }
 
     @Test
     fun getKeyPrefix_withMultiplePrefixes_returnsLastOne() {
-        val file = configureScriptFile(
-            """
+        myFixture.configureByText("test.txt", """
             block = {
                 "first"
                 "second"
-                target = 1
+                <caret>target = 1
             }
-            """
-        )
-        val target = findProperty(file, "target")
+        """)
+        val target = myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptProperty>()!!
         val prefix = ParadoxMemberService.getKeyPrefix(target)
         Assert.assertEquals("second", prefix)
     }
 
     @Test
     fun getKeyPrefix_noPrefixes_returnsNull() {
-        val file = configureScriptFile(
-            """
+        myFixture.configureByText("test.txt", """
             block = {
-                target = 1
+                <caret>target = 1
             }
-            """
-        )
-        val target = findProperty(file, "target")
+        """)
+        val target = myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptProperty>()!!
         val prefix = ParadoxMemberService.getKeyPrefix(target)
         Assert.assertNull(prefix)
     }
 
     @Test
     fun getKeyPrefix_parameterizedPrefix_returnsNull() {
-        val file = configureScriptFile("block = { \"p_${p("X")}\" target = 1 }")
-        val target = findProperty(file, "target")
+        myFixture.configureByText("test.txt", "block = { \"p_${p("X")}\" <caret>target = 1 }")
+        val target = myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptProperty>()!!
         val prefix = ParadoxMemberService.getKeyPrefix(target)
         Assert.assertNull(prefix)
     }
@@ -552,54 +454,49 @@ class ParadoxMemberServiceTest : BasePlatformTestCase(), ChronicleTestScope {
 
     @Test
     fun injectRootKeys_affectsGetPath() {
-        val file = configureScriptFile("a = { b = 1 }")
-        val virtualFile = file.virtualFile!!
-        ParadoxAnalysisInjectionManager.injectRootKeys(virtualFile, listOf("injected"))
+        myFixture.configureByText("test.txt", "a = { <caret>b = 1 }")
+        val virtualFile = (myFixture.file as ParadoxScriptFile).virtualFile!!
+        val b = myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptProperty>()!!
 
-        val b = findProperty(file, "b")
+        ParadoxAnalysisInjectionManager.injectRootKeys(virtualFile, listOf("injected"))
         val path = ParadoxMemberService.getPath(b)
         Assert.assertEquals("injected/a/b", path!!.path)
-
         ParadoxAnalysisInjectionManager.injectRootKeys(virtualFile, emptyList())
     }
 
     @Test
     fun injectRootKeys_affectsGetRootKeys() {
-        val file = configureScriptFile("a = { b = 1 }")
-        val virtualFile = file.virtualFile!!
-        ParadoxAnalysisInjectionManager.injectRootKeys(virtualFile, listOf("i1", "i2"))
+        myFixture.configureByText("test.txt", "a = { <caret>b = 1 }")
+        val virtualFile = (myFixture.file as ParadoxScriptFile).virtualFile!!
+        val b = myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptProperty>()!!
 
-        val b = findProperty(file, "b")
+        ParadoxAnalysisInjectionManager.injectRootKeys(virtualFile, listOf("i1", "i2"))
         val rootKeys = ParadoxMemberService.getRootKeys(b)
         Assert.assertEquals(listOf("i1", "i2", "a"), rootKeys)
-
         ParadoxAnalysisInjectionManager.injectRootKeys(virtualFile, emptyList())
     }
 
     @Test
     fun injectRootKeys_doesNotAffectLimitedPath() {
-        val file = configureScriptFile("a = { b = { c = 1 } }")
-        val virtualFile = file.virtualFile!!
-        ParadoxAnalysisInjectionManager.injectRootKeys(virtualFile, listOf("injected"))
+        myFixture.configureByText("test.txt", "a = { b = { <caret>c = 1 } }")
+        val virtualFile = (myFixture.file as ParadoxScriptFile).virtualFile!!
+        val c = myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptProperty>()!!
 
-        val c = findProperty(file, "c")
-        // limit=2 时，只返回最近 2 层，不受注入键影响
+        ParadoxAnalysisInjectionManager.injectRootKeys(virtualFile, listOf("injected"))
         val limited = ParadoxMemberService.getPath(c, limit = 2)
         Assert.assertEquals("b/c", limited!!.path)
-
         ParadoxAnalysisInjectionManager.injectRootKeys(virtualFile, emptyList())
     }
 
     @Test
     fun injectRootKeys_multipleInjected_allPrepended() {
-        val file = configureScriptFile("root = { child = 1 }")
-        val virtualFile = file.virtualFile!!
-        ParadoxAnalysisInjectionManager.injectRootKeys(virtualFile, listOf("i1", "i2", "i3"))
+        myFixture.configureByText("test.txt", "root = { <caret>child = 1 }")
+        val virtualFile = (myFixture.file as ParadoxScriptFile).virtualFile!!
+        val child = myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptProperty>()!!
 
-        val child = findProperty(file, "child")
+        ParadoxAnalysisInjectionManager.injectRootKeys(virtualFile, listOf("i1", "i2", "i3"))
         val path = ParadoxMemberService.getPath(child)
         Assert.assertEquals("i1/i2/i3/root/child", path!!.path)
-
         ParadoxAnalysisInjectionManager.injectRootKeys(virtualFile, emptyList())
     }
 
@@ -609,108 +506,130 @@ class ParadoxMemberServiceTest : BasePlatformTestCase(), ChronicleTestScope {
 
     @Test
     fun getPath_scriptedVariable_returnsEmptyPath() {
-        val file = configureScriptFile("@my_var = 42")
-        val variable = findScriptedVariable(file, "my_var")
-        // 封装变量不是 ParadoxScriptProperty 或 ParadoxScriptValue，应返回空路径
+        myFixture.configureByText("test.txt", "<caret>@my_var = 42")
+        val variable = myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptScriptedVariable>()!!
         val path = ParadoxMemberService.getPath(variable)
         Assert.assertEquals("", path!!.path)
     }
 
     @Test
+    fun getPath_scriptedVariable_nested_returnsContainerPath() {
+        myFixture.configureByText("test.txt", "k = { <caret>@my_var = 42 }")
+        val variable = myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptScriptedVariable>()!!
+        val path = ParadoxMemberService.getPath(variable)
+        Assert.assertEquals("k", path!!.path)
+    }
+
+    @Test
     fun getPath_colorValue_correctPath() {
-        val file = configureScriptFile(
-            """
+        myFixture.configureByText("test.txt", """
             settings = {
-                color = rgb { 255 128 64 }
+                <caret>color = rgb { 255 128 64 }
             }
-            """
-        )
-        val color = findProperty(file, "color")
+        """)
+        val color = myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptProperty>()!!
         val path = ParadoxMemberService.getPath(color)
         Assert.assertEquals("settings/color", path!!.path)
     }
 
     @Test
     fun getPath_booleanValue_correctPath() {
-        val file = configureScriptFile(
-            """
+        myFixture.configureByText("test.txt", """
             config = {
-                enabled = yes
+                <caret>enabled = yes
                 disabled = no
             }
-            """
-        )
-        val enabled = findProperty(file, "enabled")
-        val disabled = findProperty(file, "disabled")
+        """)
+        val enabled = myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptProperty>()!!
         Assert.assertEquals("config/enabled", ParadoxMemberService.getPath(enabled)!!.path)
+
+        myFixture.configureByText("test.txt", """
+            config = {
+                enabled = yes
+                <caret>disabled = no
+            }
+        """)
+        val disabled = myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptProperty>()!!
         Assert.assertEquals("config/disabled", ParadoxMemberService.getPath(disabled)!!.path)
     }
 
     @Test
     fun getPath_numericValues_correctPath() {
-        val file = configureScriptFile(
-            """
+        myFixture.configureByText("test.txt", """
             numbers = {
-                int_val = 42
+                <caret>int_val = 42
                 float_val = 3.14
                 negative = -10
             }
-            """
-        )
-        Assert.assertEquals("numbers/int_val", ParadoxMemberService.getPath(findProperty(file, "int_val"))!!.path)
-        Assert.assertEquals("numbers/float_val", ParadoxMemberService.getPath(findProperty(file, "float_val"))!!.path)
-        Assert.assertEquals("numbers/negative", ParadoxMemberService.getPath(findProperty(file, "negative"))!!.path)
+        """)
+        Assert.assertEquals("numbers/int_val", ParadoxMemberService.getPath(
+            myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptProperty>()!!
+        )!!.path)
+
+        myFixture.configureByText("test.txt", """
+            numbers = {
+                int_val = 42
+                <caret>float_val = 3.14
+                negative = -10
+            }
+        """)
+        Assert.assertEquals("numbers/float_val", ParadoxMemberService.getPath(
+            myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptProperty>()!!
+        )!!.path)
+
+        myFixture.configureByText("test.txt", """
+            numbers = {
+                int_val = 42
+                float_val = 3.14
+                <caret>negative = -10
+            }
+        """)
+        Assert.assertEquals("numbers/negative", ParadoxMemberService.getPath(
+            myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptProperty>()!!
+        )!!.path)
     }
 
     @Test
     fun getPath_scriptedVariableReference_correctPath() {
-        val file = configureScriptFile(
-            """
+        myFixture.configureByText("test.txt", """
             @cost = 100
             item = {
-                price = @cost
+                <caret>price = @cost
             }
-            """
-        )
-        val price = findProperty(file, "price")
+        """)
+        val price = myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptProperty>()!!
         val path = ParadoxMemberService.getPath(price)
         Assert.assertEquals("item/price", path!!.path)
     }
 
     @Test
     fun getPath_inlineMath_correctPath() {
-        val file = configureScriptFile(
-            """
+        myFixture.configureByText("test.txt", """
             calc = {
-                result = @[ 1 + 2 * 3 ]
+                <caret>result = @[ 1 + 2 * 3 ]
             }
-            """
-        )
-        val result = findProperty(file, "result")
+        """)
+        val result = myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptProperty>()!!
         val path = ParadoxMemberService.getPath(result)
         Assert.assertEquals("calc/result", path!!.path)
     }
 
     @Test
     fun getPath_emptyBlock_propertyStillHasPath() {
-        val file = configureScriptFile(
-            """
-            empty = { }
-            """
-        )
-        val empty = findProperty(file, "empty")
+        myFixture.configureByText("test.txt", """
+            <caret>empty = { }
+        """)
+        val empty = myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptProperty>()!!
         val path = ParadoxMemberService.getPath(empty)
         Assert.assertEquals("empty", path!!.path)
     }
 
     @Test
     fun getPath_deeplyNested_correctPath() {
-        val file = configureScriptFile(
-            """
-            l1 = { l2 = { l3 = { l4 = { l5 = { l6 = { l7 = { l8 = { l9 = { l10 = 1 } } } } } } } } }
-            """
-        )
-        val l10 = findProperty(file, "l10")
+        myFixture.configureByText("test.txt", """
+            l1 = { l2 = { l3 = { l4 = { l5 = { l6 = { l7 = { l8 = { l9 = { <caret>l10 = 1 } } } } } } } } }
+        """)
+        val l10 = myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptProperty>()!!
         val path = ParadoxMemberService.getPath(l10)
         Assert.assertEquals("l1/l2/l3/l4/l5/l6/l7/l8/l9/l10", path!!.path)
         Assert.assertEquals(10, path.length)
@@ -718,51 +637,128 @@ class ParadoxMemberServiceTest : BasePlatformTestCase(), ChronicleTestScope {
 
     @Test
     fun getPath_siblingProperties_differentPaths() {
-        val file = configureScriptFile(
-            """
+        myFixture.configureByText("test.txt", """
             parent = {
-                child1 = 1
+                <caret>child1 = 1
                 child2 = 2
                 child3 = 3
             }
-            """
-        )
-        Assert.assertEquals("parent/child1", ParadoxMemberService.getPath(findProperty(file, "child1"))!!.path)
-        Assert.assertEquals("parent/child2", ParadoxMemberService.getPath(findProperty(file, "child2"))!!.path)
-        Assert.assertEquals("parent/child3", ParadoxMemberService.getPath(findProperty(file, "child3"))!!.path)
+        """)
+        Assert.assertEquals("parent/child1", ParadoxMemberService.getPath(
+            myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptProperty>()!!
+        )!!.path)
+
+        myFixture.configureByText("test.txt", """
+            parent = {
+                child1 = 1
+                <caret>child2 = 2
+                child3 = 3
+            }
+        """)
+        Assert.assertEquals("parent/child2", ParadoxMemberService.getPath(
+            myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptProperty>()!!
+        )!!.path)
+
+        myFixture.configureByText("test.txt", """
+            parent = {
+                child1 = 1
+                child2 = 2
+                <caret>child3 = 3
+            }
+        """)
+        Assert.assertEquals("parent/child3", ParadoxMemberService.getPath(
+            myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptProperty>()!!
+        )!!.path)
     }
 
     @Test
     fun getPath_multipleRootProperties_eachHasOwnPath() {
-        val file = configureScriptFile(
-            """
-            root1 = 1
+        myFixture.configureByText("test.txt", """
+            <caret>root1 = 1
             root2 = 2
             root3 = { nested = 1 }
-            """
-        )
-        Assert.assertEquals("root1", ParadoxMemberService.getPath(findProperty(file, "root1"))!!.path)
-        Assert.assertEquals("root2", ParadoxMemberService.getPath(findProperty(file, "root2"))!!.path)
-        Assert.assertEquals("root3", ParadoxMemberService.getPath(findProperty(file, "root3"))!!.path)
-        Assert.assertEquals("root3/nested", ParadoxMemberService.getPath(findProperty(file, "nested"))!!.path)
+        """)
+        Assert.assertEquals("root1", ParadoxMemberService.getPath(
+            myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptProperty>()!!
+        )!!.path)
+
+        myFixture.configureByText("test.txt", """
+            root1 = 1
+            <caret>root2 = 2
+            root3 = { nested = 1 }
+        """)
+        Assert.assertEquals("root2", ParadoxMemberService.getPath(
+            myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptProperty>()!!
+        )!!.path)
+
+        myFixture.configureByText("test.txt", """
+            root1 = 1
+            root2 = 2
+            <caret>root3 = { nested = 1 }
+        """)
+        Assert.assertEquals("root3", ParadoxMemberService.getPath(
+            myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptProperty>()!!
+        )!!.path)
+
+        myFixture.configureByText("test.txt", """
+            root1 = 1
+            root2 = 2
+            root3 = { <caret>nested = 1 }
+        """)
+        Assert.assertEquals("root3/nested", ParadoxMemberService.getPath(
+            myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptProperty>()!!
+        )!!.path)
     }
 
     @Test
     fun getPath_mixedBlockContent_correctPaths() {
-        val file = configureScriptFile(
-            """
+        myFixture.configureByText("test.txt", """
             mixed = {
-                prop1 = a
+                <caret>prop1 = a
                 "value1"
                 prop2 = b
                 "value2"
             }
-            """
-        )
-        Assert.assertEquals("mixed/prop1", ParadoxMemberService.getPath(findProperty(file, "prop1"))!!.path)
-        Assert.assertEquals("mixed/prop2", ParadoxMemberService.getPath(findProperty(file, "prop2"))!!.path)
-        Assert.assertEquals("mixed/-", ParadoxMemberService.getPath(findDirectValue(file, "value1"))!!.path)
-        Assert.assertEquals("mixed/-", ParadoxMemberService.getPath(findDirectValue(file, "value2"))!!.path)
+        """)
+        Assert.assertEquals("mixed/prop1", ParadoxMemberService.getPath(
+            myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptProperty>()!!
+        )!!.path)
+
+        myFixture.configureByText("test.txt", """
+            mixed = {
+                prop1 = a
+                "value1"
+                <caret>prop2 = b
+                "value2"
+            }
+        """)
+        Assert.assertEquals("mixed/prop2", ParadoxMemberService.getPath(
+            myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptProperty>()!!
+        )!!.path)
+
+        myFixture.configureByText("test.txt", """
+            mixed = {
+                prop1 = a
+                <caret>"value1"
+                prop2 = b
+                "value2"
+            }
+        """)
+        Assert.assertEquals("mixed/-", ParadoxMemberService.getPath(
+            myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptValue>()!!
+        )!!.path)
+
+        myFixture.configureByText("test.txt", """
+            mixed = {
+                prop1 = a
+                "value1"
+                prop2 = b
+                <caret>"value2"
+            }
+        """)
+        Assert.assertEquals("mixed/-", ParadoxMemberService.getPath(
+            myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptValue>()!!
+        )!!.path)
     }
 
     // endregion
@@ -794,7 +790,7 @@ class ParadoxMemberServiceTest : BasePlatformTestCase(), ChronicleTestScope {
         Assert.assertEquals("a", path.get(0))
         Assert.assertEquals("b", path.get(1))
         Assert.assertEquals("c", path.get(2))
-        Assert.assertEquals("", path.get(3)) // out of bounds returns empty
+        Assert.assertEquals("", path.get(3))
     }
 
     // endregion

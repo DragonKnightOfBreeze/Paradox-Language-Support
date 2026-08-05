@@ -1,9 +1,10 @@
 package icu.windea.pls.config.config.delegated
 
-import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.ChronicleDocBundle
+import icu.windea.pls.config.CwtConfigType
+import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.config.annotations.FromMember
 import icu.windea.pls.config.annotations.FromName
 import icu.windea.pls.config.config.CwtDelegatedConfig
@@ -58,6 +59,8 @@ interface CwtLocaleConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, 
     val shortId: String get() = name.removePrefix("l_")
     val idWithText: String get() = if (text.isEmpty()) name else "$name ($text)"
 
+    override val configType: CwtConfigType get() = CwtConfigTypes.Locale
+
     override fun equals(other: Any?): Boolean
     override fun hashCode(): Int
     override fun toString(): String
@@ -106,13 +109,13 @@ private object CwtLocaleConfigResolver : CwtConfigResolverScope {
         val name = config.key
         val propConfigs = config.properties
         if (propConfigs == null) {
-            logger.warn("Skipped invalid locale config (name: $name): Null properties.".withLocationPrefix(config))
+            logger.warnWithPrefix(config, "Skipped invalid locale config (name: $name): Null properties.")
             return null
         }
         val propGroup = propConfigs.groupBy { it.key }
         val codes = propGroup.getOne("codes")?.values?.mapNotNull { v -> v.stringValue }?.optimized().orEmpty()
         val supports = propGroup.getOne("supports")?.booleanValue ?: true
-        logger.debug { "Resolved locale config (name: $name).".withLocationPrefix(config) }
+        logger.debugWithPrefix(config) { "Resolved locale config (name: $name)." }
         return CwtLocaleConfigImpl(config, name, codes, supports)
     }
 }

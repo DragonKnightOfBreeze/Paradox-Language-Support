@@ -1,7 +1,7 @@
 package icu.windea.pls.config.config
 
 import icu.windea.pls.config.configExpression.CwtDataExpression
-import icu.windea.pls.config.option.CwtOptionDataHolder
+import icu.windea.pls.config.option.CwtOptionMetadata
 import icu.windea.pls.config.util.CwtMemberConfigVisitor
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.collections.process
@@ -20,10 +20,13 @@ import icu.windea.pls.model.type.CwtExpressionType
  * @property properties 子属性规则列表（其中嵌套的属性对应的成员规则）。
  * @property values 子值规则列表（其中嵌套的值对应的成员规则）。
  * @property parentConfig 父级成员规则（若存在），用于溯源与继承/推断。
- * @property optionData 选项数据（来自附加的选项注释，以 `## ...` 的形式声明）。
+ * @property optionMetadata 选项元数据（来自附加的选项注释，以 `## ...` 的形式声明）。
  * @property valueExpression 值对应的数据表达式，用于驱动解析与校验。
  * @property configExpression 绑定到该规则的数据表达式（等同于 [CwtPropertyConfig.keyExpression] 或 [CwtValueConfig.valueExpression]）。
  *
+ * @see CwtPropertyConfig
+ * @see CwtValueConfig
+ * @see CwtOptionMetadata
  * @see CwtMember
  */
 sealed interface CwtMemberConfig<out T : CwtMember> : CwtMemberContainerConfig<T> {
@@ -33,7 +36,7 @@ sealed interface CwtMemberConfig<out T : CwtMember> : CwtMemberContainerConfig<T
     override val properties: List<CwtPropertyConfig>?
     override val values: List<CwtValueConfig>?
     val parentConfig: CwtMemberConfig<*>?
-    val optionData: CwtOptionDataHolder
+    val optionMetadata: CwtOptionMetadata
 
     val valueExpression: CwtDataExpression
     override val configExpression: CwtDataExpression

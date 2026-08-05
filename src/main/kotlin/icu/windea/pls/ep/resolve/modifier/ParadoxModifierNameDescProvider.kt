@@ -2,7 +2,7 @@ package icu.windea.pls.ep.resolve.modifier
 
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.psi.PsiElement
-import icu.windea.pls.base.annotations.WithGameTypeEP
+import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxModifierInfo
 
 /**
@@ -10,8 +10,9 @@ import icu.windea.pls.model.ParadoxModifierInfo
  *
  * 注意：修正的名字或描述对应的本地化的名字是忽略大小写的。
  */
-@WithGameTypeEP
 interface ParadoxModifierNameDescProvider {
+    fun supports(gameType: ParadoxGameType) = true
+
     /**
      * 注意：这里加入的本地化的名字是忽略大小写的。
      */

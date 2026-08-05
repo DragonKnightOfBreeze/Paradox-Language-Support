@@ -215,7 +215,7 @@ class ImageEditorUI(
         val fileSize = if (file != null) StringUtil.formatFileSize(file.length) else null
         run {
             if (file == null || project == null) return@run
-            if (fileType != DdsFileType) return@run
+            if (fileType !== DdsFileType) return@run
             val metadata = runSmartReadAction(this) { service<DdsMetadataIndex>().getMetadata(file, project) } ?: return@run
             infoLabel.text = buildString {
                 append(metadata.width).append("\u00D7").append(metadata.height)
@@ -227,7 +227,7 @@ class ImageEditorUI(
         }
         run {
             if (file == null || project == null) return@run
-            if (fileType != TgaFileType) return@run
+            if (fileType !== TgaFileType) return@run
             val metadata = runSmartReadAction(this) { service<TgaMetadataIndex>().getMetadata(file, project) } ?: return@run
             infoLabel.text = buildString {
                 append(metadata.width).append("\u00D7").append(metadata.height)
@@ -566,6 +566,7 @@ class ImageEditorUI(
     override fun performCopy(dataContext: DataContext) {
         val document = imageComponent.document
         val image = document.value
+        @Suppress("UsePropertyAccessSyntax")
         CopyPasteManager.getInstance().setContents(ImageTransferable(image))
     }
 

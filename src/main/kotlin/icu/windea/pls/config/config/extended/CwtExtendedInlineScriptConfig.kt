@@ -1,8 +1,9 @@
 package icu.windea.pls.config.config.extended
 
-import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
+import icu.windea.pls.config.CwtConfigType
+import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.annotations.FromName
 import icu.windea.pls.config.annotations.FromOptionMember
@@ -12,7 +13,7 @@ import icu.windea.pls.config.config.CwtIdMatchableConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.manipulation.CwtConfigManipulationService
-import icu.windea.pls.config.option.CwtOptionDataHolder
+import icu.windea.pls.config.option.CwtOptionMetadata
 import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.core.util.values.singletonListOrEmpty
 import icu.windea.pls.core.util.values.to
@@ -56,14 +57,16 @@ import icu.windea.pls.cwt.psi.CwtMember
  * @property name 规则名称。
  * @property contextConfigsType 上下文规则的聚合类型（`single`/`multiple`，默认为 `single`）。决定上下文规则是直接来自其属性值规则，还是来自其中的一组子规则。
  *
- * @see CwtOptionDataHolder.replaceScopes
- * @see CwtOptionDataHolder.pushScope
+ * @see CwtOptionMetadata.replaceScopes
+ * @see CwtOptionMetadata.pushScope
  */
 interface CwtExtendedInlineScriptConfig : CwtDelegatedConfig<CwtMember, CwtMemberConfig<*>>, CwtIdMatchableConfig<CwtMember> {
     @FromName
     val name: String
     @FromOptionMember("context_configs_type: string", defaultValue = "single", allowedValues = ["single", "multiple"])
     val contextConfigsType: CwtContextConfigsType
+
+    override val configType: CwtConfigType get() = CwtConfigTypes.ExtendedInlineScript
 
     /** 得到经过处理后的上下文容器规则。在后续的语义解析流程中，需要获取的通常是上下文规则，而非上下文容器规则。 */
     fun getContextContainerConfig(): CwtMemberConfig<*>
@@ -87,8 +90,8 @@ private object CwtExtendedInlineScriptConfigResolver : CwtConfigResolverScope {
 
     fun resolve(config: CwtMemberConfig<*>): CwtExtendedInlineScriptConfig {
         val name = if (config is CwtPropertyConfig) config.key else config.value
-        val contextConfigsType = config.optionData.contextConfigsType.let { CwtContextConfigsType.resolve(it) }
-        logger.debug { "Resolved extended inline script config (name: $name).".withLocationPrefix(config) }
+        val contextConfigsType = config.optionMetadata.contextConfigsType.let { CwtContextConfigsType.resolve(it) }
+        logger.debugWithPrefix(config) { "Resolved extended inline script config (name: $name)." }
         return CwtExtendedInlineScriptConfigImpl(config, name, contextConfigsType)
     }
 }

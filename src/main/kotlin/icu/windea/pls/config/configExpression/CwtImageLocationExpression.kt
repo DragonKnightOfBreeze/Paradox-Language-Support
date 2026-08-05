@@ -5,7 +5,7 @@ package icu.windea.pls.config.configExpression
 import icu.windea.pls.config.config.delegated.CwtTypeImagesConfig
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cache.CacheBuilder
-import icu.windea.pls.core.toCommaDelimitedStringSet
+import icu.windea.pls.core.toDelimitedSet
 
 /**
  * 图片位置表达式。
@@ -74,9 +74,9 @@ private object CwtImageLocationExpressionResolver {
             // 以 '$' 开头：表示 namePaths；否则为 framePaths
             // 若出现多次，同类参数以后者覆盖（按实现顺序）
             if (arg.startsWith('$')) {
-                namePaths = arg.drop(1).toCommaDelimitedStringSet()
+                namePaths = arg.drop(1).toDelimitedSet()
             } else {
-                framePaths = arg.toCommaDelimitedStringSet()
+                framePaths = arg.toDelimitedSet()
             }
         }
         return CwtImageLocationExpressionImpl(expressionString, location, namePaths.orEmpty(), framePaths.orEmpty())

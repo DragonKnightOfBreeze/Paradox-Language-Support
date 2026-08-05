@@ -5,7 +5,7 @@ import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiReference
-import icu.windea.pls.base.annotations.WithGameType
+import icu.windea.pls.base.annotations.ForGameType
 import icu.windea.pls.config.CwtDataType
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
@@ -28,15 +28,15 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 /**
  * @see CwtDataTypes.TechnologyWithLevel
  */
-@WithGameType(ParadoxGameType.Stellaris)
-class ParadoxScriptTechnologyWithLevelExpressionSupport : ParadoxScriptExpressionSupportBase() {
+@ForGameType(ParadoxGameType.Stellaris)
+class ParadoxScriptTechnologyWithLevelExpressionSupport : ParadoxScriptExpressionSupport {
     // https://github.com/cwtools/cwtools-vscode/issues/58
 
     private val typeExpression = "<technology.repeatable>"
 
-    override fun supports(dataType: CwtDataType): Boolean {
-        return dataType == CwtDataTypes.TechnologyWithLevel
-    }
+    override fun supports(gameType: ParadoxGameType) = gameType == ParadoxGameType.Stellaris
+
+    override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.TechnologyWithLevel
 
     override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, holder: AnnotationHolder) {
         if (element !is ParadoxScriptStringExpressionElement) return
@@ -68,12 +68,12 @@ class ParadoxScriptTechnologyWithLevelExpressionSupport : ParadoxScriptExpressio
         }
     }
 
-    override fun getReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiReference> {
+    override fun getReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiReference> {
         if (element !is ParadoxScriptStringExpressionElement) return emptyList()
-        val separatorIndex = expressionText.indexOf('@')
+        val separatorIndex = text.indexOf('@')
         if (separatorIndex == -1) return emptyList() // no `@` -> ignore
         if (separatorIndex == 0) return emptyList() // no tech node -> ignore
-        val range = rangeInElement ?: TextRange.create(0, expressionText.length).unquote(expressionText)
+        val range = rangeInElement ?: TextRange.create(0, text.length).unquote(text)
         val referenceRange = range.let { TextRange.create(it.startOffset, it.startOffset + separatorIndex) }
         val referenceConfigs = listOf(CwtValueConfig.createMock(config.configGroup, typeExpression))
         val referenceRole = ParadoxExpressionRole.Other

@@ -7,7 +7,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.ui.dsl.builder.*
 import com.intellij.util.xmlb.annotations.XMap
 import icu.windea.pls.ChronicleDocBundle
-import icu.windea.pls.base.annotations.WithGameType
+import icu.windea.pls.base.annotations.ForGameType
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.extensions.diagram.ChronicleDiagramBundle
 import icu.windea.pls.lang.presentation.ParadoxPresentationUtil
@@ -16,7 +16,7 @@ import icu.windea.pls.lang.util.ParadoxTechnologyManager
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.ChronicleConstants
 
-@WithGameType(ParadoxGameType.Stellaris)
+@ForGameType(ParadoxGameType.Stellaris)
 @Service(Service.Level.PROJECT)
 @State(name = "ParadoxDiagramSettings.Stellaris.EventTree", storages = [Storage(ChronicleConstants.pluginSettingsFileName)])
 class StellarisEventTreeDiagramSettings(
@@ -59,7 +59,7 @@ class StellarisEventTreeDiagramSettings(
     }
 }
 
-@WithGameType(ParadoxGameType.Stellaris)
+@ForGameType(ParadoxGameType.Stellaris)
 @Service(Service.Level.PROJECT)
 @State(name = "ParadoxDiagramSettings.Stellaris.TechTree", storages = [Storage(ChronicleConstants.pluginSettingsFileName)])
 class StellarisTechTreeDiagramSettings(

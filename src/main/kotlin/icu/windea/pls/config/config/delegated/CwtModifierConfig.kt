@@ -1,15 +1,16 @@
 package icu.windea.pls.config.config.delegated
 
-import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
+import icu.windea.pls.config.CwtConfigType
+import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtIdMatchableConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
-import icu.windea.pls.config.option.CwtOptionDataHolder
+import icu.windea.pls.config.option.CwtOptionMetadata
 import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.core.optimized
 import icu.windea.pls.cwt.psi.CwtProperty
@@ -27,7 +28,7 @@ import icu.windea.pls.lang.util.ParadoxScopeManager
  *
  * 规则名称在这里用于匹配（而非等同于）修正名，可以是：
  * - 常量（[Constant][CwtDataTypes.Constant]） - 匹配预定义的修正。
- * - 模板表达式（[TemplateExpression][CwtDataTypes.TemplateExpression]） - 匹配动态生成的修正。
+ * - 模板表达式（[Template][CwtDataTypes.Template]） - 匹配动态生成的修正。
  *
  * 路径定位：
  * - `modifiers/{name}`。其中 `{name}` 匹配规则名称。
@@ -64,8 +65,8 @@ import icu.windea.pls.lang.util.ParadoxScopeManager
  * @property supportedScopes 允许的作用域（类型）的集合。
  *
  * @see CwtModifierCategoryConfig
- * @see CwtOptionDataHolder.replaceScopes
- * @see CwtOptionDataHolder.pushScope
+ * @see CwtOptionMetadata.replaceScopes
+ * @see CwtOptionMetadata.pushScope
  */
 interface CwtModifierConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, CwtIdMatchableConfig<CwtProperty> {
     val name: String
@@ -73,6 +74,8 @@ interface CwtModifierConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>
     val categoryConfigMap: MutableMap<String, CwtModifierCategoryConfig>
     val template: CwtTemplateExpression
     val supportedScopes: Set<String>
+
+    override val configType: CwtConfigType get() = CwtConfigTypes.Modifier
 
     companion object {
         /** 由属性规则解析为修正规则。 */
@@ -98,10 +101,10 @@ private object CwtModifierConfigResolver : CwtConfigResolverScope {
         // string | string[]
         val categories = config.stringValue?.let { setOf(it) } ?: config.values?.mapNotNullTo(mutableSetOf()) { it.stringValue }?.optimized()
         if (categories == null) {
-            logger.warn("Skipped invalid modifier config (name: $name): Null categories".withLocationPrefix(config))
+            logger.warnWithPrefix(config, "Skipped invalid modifier config (name: $name): Null categories")
             return null
         }
-        logger.debug { "Resolved modifier config (name: $name).".withLocationPrefix(config) }
+        logger.debugWithPrefix(config) { "Resolved modifier config (name: $name)." }
         return CwtModifierConfigImpl(config, name, categories)
     }
 
@@ -109,11 +112,11 @@ private object CwtModifierConfigResolver : CwtConfigResolverScope {
         // string | string[]
         val categories = config.stringValue?.let { setOf(it) } ?: config.values?.mapNotNullTo(mutableSetOf()) { it.stringValue }?.optimized()
         if (categories == null) {
-            logger.debug("Skipped invalid modifier config from definition modifier (name: $name): Null categories".withLocationPrefix(config))
+            logger.debugWithPrefix(config) { "Skipped invalid modifier config from definition modifier (name: $name): Null categories" }
             return null
         }
         val modifierName = name.replace("$", "<$typeExpression>").optimized()
-        logger.debug { "Resolved modifier config from definition modifier (name: $name, type expression: $typeExpression).".withLocationPrefix(config) }
+        logger.debugWithPrefix(config) { "Resolved modifier config from definition modifier (name: $name, type expression: $typeExpression)." }
         return CwtModifierConfigImpl(config, modifierName, categories)
     }
 }
@@ -130,7 +133,7 @@ private class CwtModifierConfigImpl(
     private fun computeSupportedScopes(): Set<String> {
         return when {
             categoryConfigMap.isNotEmpty() -> ParadoxScopeManager.getSupportedScopes(categoryConfigMap)
-            else -> config.optionData.supportedScopes
+            else -> config.optionMetadata.supportedScopes
         }
     }
 

@@ -1,9 +1,7 @@
-@file:Suppress("NOTHING_TO_INLINE", "unused")
+@file:Suppress("unused")
 
 package icu.windea.pls.core
 
-import com.intellij.psi.stubs.StubIndexExtension
-import com.intellij.util.indexing.FileBasedIndexExtension
 import com.intellij.util.io.DataInputOutputUtil
 import com.intellij.util.io.IOUtil
 import icu.windea.pls.core.collections.forEachFast
@@ -15,15 +13,15 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet
 import java.io.DataInput
 import java.io.DataOutput
 
-/** 查找注册的 StubIndex 扩展。 */
-fun <T : StubIndexExtension<*, *>> findStubIndex(type: Class<T>): T {
-    return StubIndexExtension.EP_NAME.findExtensionOrFail(type)
-}
-
-/** 查找注册的 FileBasedIndex 扩展。 */
-fun <T : FileBasedIndexExtension<*, *>> findFileBasedIndex(type: Class<T>): T {
-    return FileBasedIndexExtension.EXTENSION_POINT_NAME.findExtensionOrFail(type)
-}
+// /** 查找注册的 StubIndex 扩展。 */
+// fun <T : StubIndexExtension<*, *>> findStubIndex(type: Class<T>): T {
+//     return StubIndexExtension.EP_NAME.findExtensionOrFail(type)
+// }
+//
+// /** 查找注册的 FileBasedIndex 扩展。 */
+// fun <T : FileBasedIndexExtension<*, *>> findFileBasedIndex(type: Class<T>): T {
+//     return FileBasedIndexExtension.EXTENSION_POINT_NAME.findExtensionOrFail(type)
+// }
 
 // fun IndexInputFilter(predicate: (VirtualFile) -> Boolean): FileBasedIndex.InputFilter {
 //     return FileBasedIndex.InputFilter(predicate)
@@ -43,14 +41,19 @@ fun <T : FileBasedIndexExtension<*, *>> findFileBasedIndex(type: Class<T>): T {
 //     }
 // }
 
+@Suppress("NOTHING_TO_INLINE")
 inline fun DataOutput.writeByte(v: Byte) = writeByte(v.toInt())
 
+@Suppress("NOTHING_TO_INLINE")
 inline fun DataInput.readIntFast(): Int = DataInputOutputUtil.readINT(this)
 
+@Suppress("NOTHING_TO_INLINE")
 inline fun DataOutput.writeIntFast(value: Int) = DataInputOutputUtil.writeINT(this, value)
 
+@Suppress("NOTHING_TO_INLINE")
 inline fun DataInput.readUTFFast(): String = IOUtil.readUTF(this)
 
+@Suppress("NOTHING_TO_INLINE")
 inline fun DataOutput.writeUTFFast(value: String) = IOUtil.writeUTF(this, value)
 
 /**
@@ -97,7 +100,8 @@ inline fun <T> DataOutput.writeIndexedStringList(list: List<T>, transform: (T) -
 /**
  * 读取集合的大小与各个元素，然后转换为以索引为键的映射。
  */
-inline fun DataInput.readWithIndexStringList(): Int2ObjectMap<String> {
+@Suppress("NOTHING_TO_INLINE")
+inline fun DataInput.readIndexedStringList(): Int2ObjectMap<String> {
     val size = readIntFast()
     val result = Int2ObjectOpenHashMap<String>()
     repeat(size) { index ->

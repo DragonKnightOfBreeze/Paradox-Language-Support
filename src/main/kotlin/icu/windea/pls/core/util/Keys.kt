@@ -5,9 +5,8 @@ package icu.windea.pls.core.util
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.Key.*
 import com.intellij.openapi.util.UserDataHolder
-import icu.windea.pls.core.cast
-import icu.windea.pls.core.castOrNull
-import java.util.concurrent.ConcurrentHashMap
+import icu.windea.pls.core.collections.asMutable
+import icu.windea.pls.core.collections.forEachFast
 import kotlin.reflect.KProperty
 
 // Key Extensions
@@ -18,8 +17,8 @@ fun Key<*>.clear(target: UserDataHolder) {
     target.putUserData(this, null)
 }
 
-@Suppress("UNCHECKED_CAST")
 fun Key<*>.copy(source: UserDataHolder, target: UserDataHolder, ifPresent: Boolean = false) {
+    @Suppress("UNCHECKED_CAST")
     this as Key<Any>
     val v = source.getUserData(this)
     if (ifPresent && v == null) return
@@ -30,44 +29,47 @@ fun Key<*>.copy(source: UserDataHolder, target: UserDataHolder, ifPresent: Boole
 
 abstract class KeyRegistry {
     val id = javaClass.name.substringAfterLast(".").replace("\$Keys", "")
-    val keys: MutableMap<String, Key<*>> = ConcurrentHashMap()
 
-    fun getKeyName(shortName: String): String {
-        return "${id}.${shortName}"
-    }
-
-    fun <T> getKey(name: String): Key<T> {
-        return keys.get(name).cast()
-    }
-
-    fun <T> getKeyOrNull(name: String): Key<T>? {
-        return keys.get(name).castOrNull()
-    }
+    // 3.0.1 optimize: use list instead of map (duplicate key names are allowed and not checked)
+    val keys: List<Key<*>> = mutableListOf()
 
     fun clear(target: UserDataHolder) {
-        keys.values.forEach { key -> key.clear(target) }
+        keys.forEachFast { key -> key.clear(target) }
     }
 
     fun copy(source: UserDataHolder, target: UserDataHolder, ifPresent: Boolean = false) {
         // use optimized method rather than `UserDataHolderBase.copyUserDataTo` to reduce memory usage
-        keys.values.forEach { key -> key.copy(source, target, ifPresent) }
+        keys.forEachFast { key -> key.copy(source, target, ifPresent) }
     }
 }
 
 // Keys
 
-class KeyNormal<T>(val name: String) : Key<T>(name)
+sealed class KeyNamed<T>(val name: String) : Key<T>(name)
 
-class KeyWithDefault<T>(val name: String, val default: T) : Key<T>(name)
+class KeyNormal<T>(name: String) : KeyNamed<T>(name)
 
-class KeyWithFactory<T, in THIS>(val name: String, val factory: THIS.() -> T) : Key<T>(name)
+class KeyWithDefault<T>(name: String, val default: T) : KeyNamed<T>(name)
+
+class KeyWithProducer<T>(name: String, val producer: () -> T) : KeyNamed<T>(name)
+
+class KeyWithFactory<T, in THIS>(name: String, val factory: THIS.() -> T) : KeyNamed<T>(name)
 
 // Key Providers
 
 sealed class KeyProvider<T>(val registry: KeyRegistry) {
+    protected fun getKeyName(shortName: String): String {
+        return "${registry.id}.${shortName}"
+    }
+
     @Suppress("UNCHECKED_CAST")
     protected fun <K : Key<T>> register(name: String, block: () -> K): K {
-        return registry.keys.computeIfAbsent(name) { block() } as K
+        // 3.0.1 optimize: make if mutable with sync only if it's necessary to create and register
+        return synchronized(registry) {
+            val key = block()
+            registry.keys.asMutable().add(key)
+            key
+        }
     }
 }
 
@@ -77,21 +79,28 @@ fun interface KeyProviderCallback<T> {
 
 class KeyProviderNormal<T>(registry: KeyRegistry) : KeyProvider<T>(registry) {
     fun getKey(shortName: String): KeyNormal<T> {
-        val name = registry.getKeyName(shortName)
+        val name = getKeyName(shortName)
         return register(name) { KeyNormal(name) }
     }
 }
 
 class KeyProviderWithDefault<T>(registry: KeyRegistry, val default: T) : KeyProvider<T>(registry) {
     fun getKey(shortName: String): KeyWithDefault<T> {
-        val name = registry.getKeyName(shortName)
+        val name = getKeyName(shortName)
         return register(name) { KeyWithDefault(name, default) }
+    }
+}
+
+class KeyProviderWithProducer<T>(registry: KeyRegistry, val producer: () -> T) : KeyProvider<T>(registry) {
+    fun getKey(shortName: String): KeyWithProducer<T> {
+        val name = getKeyName(shortName)
+        return register(name) { KeyWithProducer(name, producer) }
     }
 }
 
 class KeyProviderWithFactory<T, THIS>(registry: KeyRegistry, val factory: THIS.() -> T) : KeyProvider<T>(registry) {
     fun getKey(shortName: String): KeyWithFactory<T, THIS> {
-        val name = registry.getKeyName(shortName)
+        val name = getKeyName(shortName)
         return register(name) { KeyWithFactory(name, factory) }
     }
 }
@@ -108,6 +117,12 @@ class KeyProviderNamedWithDefault<T>(registry: KeyRegistry, val name: String, va
     }
 }
 
+class KeyProviderNamedWithProducer<T>(registry: KeyRegistry, val name: String, val producer: () -> T) : KeyProvider<T>(registry) {
+    fun getKey(): KeyWithProducer<T> {
+        return register(name) { KeyWithProducer(name, producer) }
+    }
+}
+
 class KeyProviderNamedWithFactory<T, THIS>(registry: KeyRegistry, val name: String, val factory: THIS.() -> T) : KeyProvider<T>(registry) {
     fun getKey(): KeyWithFactory<T, THIS> {
         return register(name) { KeyWithFactory(name, factory) }
@@ -120,13 +135,17 @@ inline fun <T> registerKey(registry: KeyRegistry): KeyProviderNormal<T> = KeyPro
 
 inline fun <T> registerKey(registry: KeyRegistry, default: T): KeyProviderWithDefault<T> = KeyProviderWithDefault(registry, default)
 
-inline fun <T, THIS> registerKey(registry: KeyRegistry, noinline factory: THIS.() -> T): KeyProviderWithFactory<T, THIS> = KeyProviderWithFactory(registry, factory)
+inline fun <T> registerKey(registry: KeyRegistry, noinline producer: () -> T): KeyProviderWithProducer<T> = KeyProviderWithProducer(registry, producer)
+
+inline fun <T, THIS> registerKeyWithThis(registry: KeyRegistry, noinline factory: THIS.() -> T): KeyProviderWithFactory<T, THIS> = KeyProviderWithFactory(registry, factory)
 
 inline fun <T> registerNamedKey(registry: KeyRegistry, name: String): KeyProviderNamed<T> = KeyProviderNamed(registry, name)
 
 inline fun <T> registerNamedKey(registry: KeyRegistry, name: String, default: T): KeyProviderNamedWithDefault<T> = KeyProviderNamedWithDefault(registry, name, default)
 
-inline fun <T, THIS> registerNamedKey(registry: KeyRegistry, name: String, noinline factory: THIS.() -> T): KeyProviderNamedWithFactory<T, THIS> = KeyProviderNamedWithFactory(registry, name, factory)
+inline fun <T> registerNamedKey(registry: KeyRegistry, name: String, noinline producer: () -> T): KeyProviderNamedWithProducer<T> = KeyProviderNamedWithProducer(registry, name, producer)
+
+inline fun <T, THIS> registerNamedKeyWithThis(registry: KeyRegistry, name: String, noinline factory: THIS.() -> T): KeyProviderNamedWithFactory<T, THIS> = KeyProviderNamedWithFactory(registry, name, factory)
 
 // Delegate Extensions
 
@@ -136,9 +155,13 @@ inline operator fun <T> KeyProviderNormal<T>.provideDelegate(thisRef: Any?, prop
 
 inline operator fun <T> KeyProviderWithDefault<T>.provideDelegate(thisRef: Any?, property: KProperty<*>): KeyWithDefault<T> = getKey(property.name)
 
+inline operator fun <T> KeyProviderWithProducer<T>.provideDelegate(thisRef: Any?, property: KProperty<*>): KeyWithProducer<T> = getKey(property.name)
+
 inline operator fun <T, THIS> KeyProviderWithFactory<T, THIS>.provideDelegate(thisRef: Any?, property: KProperty<*>): KeyWithFactory<T, THIS> = getKey(property.name)
 
 inline operator fun <T> KeyProviderNamed<T>.provideDelegate(thisRef: Any?, property: KProperty<*>): KeyNormal<T> = getKey()
+
+inline operator fun <T> KeyProviderNamedWithProducer<T>.provideDelegate(thisRef: Any?, property: KProperty<*>): KeyWithProducer<T> = getKey()
 
 inline operator fun <T> KeyProviderNamedWithDefault<T>.provideDelegate(thisRef: Any?, property: KProperty<*>): KeyWithDefault<T> = getKey()
 

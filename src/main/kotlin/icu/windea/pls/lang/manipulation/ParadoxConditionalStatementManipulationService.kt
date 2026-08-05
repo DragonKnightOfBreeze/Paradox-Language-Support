@@ -2,8 +2,6 @@ package icu.windea.pls.lang.manipulation
 
 import com.intellij.openapi.project.Project
 import icu.windea.pls.core.findChild
-import icu.windea.pls.lang.manipulation.ParadoxConditionalStatementManipulationService.isBlockForm
-import icu.windea.pls.lang.manipulation.ParadoxConditionalStatementManipulationService.isPropertyForm
 import icu.windea.pls.script.psi.ParadoxScriptConditionalBlock
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
 import icu.windea.pls.script.psi.ParadoxScriptProperty

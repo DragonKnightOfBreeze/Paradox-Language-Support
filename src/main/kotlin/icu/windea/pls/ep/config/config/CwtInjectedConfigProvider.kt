@@ -14,7 +14,7 @@ import icu.windea.pls.model.ParadoxGameType
 interface CwtInjectedConfigProvider {
     fun supports(gameType: ParadoxGameType): Boolean = true
 
-    fun supports(parentConfig: CwtMemberConfig<*>): Boolean = supports(parentConfig.configGroup.gameType)
+    fun supports(parentConfig: CwtMemberConfig<*>): Boolean = true
 
     /**
      * 注入规则。

@@ -7,12 +7,24 @@ import icu.windea.pls.ep.resolve.modifier.ParadoxModifierSupport
 import icu.windea.pls.ep.resolve.parameter.ParadoxParameterSupport
 import icu.windea.pls.lang.psi.light.ParadoxModifierLightElement
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.contract
 
 // region Game Types
 
-fun ParadoxGameType?.orSpecific(): ParadoxGameType? = takeIf { it != ParadoxGameType.Core }
+@OptIn(ExperimentalContracts::class)
+fun ParadoxGameType?.orSpecific(): ParadoxGameType? {
+    contract {
+        returnsNotNull() implies (this@orSpecific != null)
+    }
 
-fun ParadoxGameType?.orDefault(): ParadoxGameType = this ?: ParadoxGameType.getDefault()
+    if (this == null || this == ParadoxGameType.Core) return null
+    return this
+}
+
+fun ParadoxGameType?.orDefault(): ParadoxGameType {
+    return this ?: ParadoxGameType.getDefault()
+}
 
 // endregion
 

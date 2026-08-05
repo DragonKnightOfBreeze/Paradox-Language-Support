@@ -1,10 +1,11 @@
 package icu.windea.pls.lang.match
 
+import com.intellij.util.SmartList
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.forEachFast
 
+@Optimized
 object ParadoxMatchProcessor {
-    @Optimized
     fun process(candidates: List<ParadoxMatchCandidate>, options: ParadoxMatchOptions?): List<ParadoxMatchCandidate> {
         // 步骤：
         // - 处理精确匹配（`ExactMatch` `LenientExactMatch`），如果有结果，则仅使用这些结果，并直接返回
@@ -18,7 +19,7 @@ object ParadoxMatchProcessor {
         // - 如果不是直接返回的情况，还需要处理带参数的匹配（`ParameterizedMatch`），如果有结果，则需要加入最终的结果中
 
         if (candidates.isEmpty()) return emptyList()
-        val matched = mutableListOf<ParadoxMatchCandidate>()
+        val matched = SmartList<ParadoxMatchCandidate>() // 3.0.1 optimize: use SmartList (0 or 1 elements in most situations)
         process(candidates, matched, options)
         return matched
     }
@@ -68,7 +69,7 @@ object ParadoxMatchProcessor {
     }
 
     private inline fun processLazy(candidates: List<ParadoxMatchCandidate>, matched: MutableList<ParadoxMatchCandidate>, options: ParadoxMatchOptions?, predicate: (ParadoxMatchCandidate) -> Boolean) {
-        val lazyMatched = mutableListOf<ParadoxMatchCandidate>()
+        val lazyMatched = SmartList<ParadoxMatchCandidate>() // 3.0.1 optimize: use SmartList (0 or 1 elements in most situations)
         processUnchecked(candidates, lazyMatched, predicate)
         val lazyMatchedSize = lazyMatched.size
         if (lazyMatchedSize == 1) {

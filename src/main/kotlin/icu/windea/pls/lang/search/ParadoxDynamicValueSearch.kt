@@ -18,6 +18,8 @@ import icu.windea.pls.model.index.ParadoxDynamicValueIndexInfo
  * 不涉及规则文件中预定义的值。
  *
  * @see ParadoxDynamicValueSearcher
+ * @see ParadoxDynamicValueSearch.Parameters
+ * @see ParadoxDynamicValueSearch.Selector
  */
 class ParadoxDynamicValueSearch : ExtensibleQueryFactory<ParadoxDynamicValueIndexInfo, ParadoxDynamicValueSearch.Parameters>(EP_NAME) {
     /**

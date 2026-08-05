@@ -13,6 +13,11 @@ object ChronicleAssume {
         Assume.assumeTrue("AI tests are not included", v)
     }
 
+    fun includeRemote() {
+        val v = ChronicleTestCapacities.includeAll() || ChronicleTestCapacities.includeRemote()
+        Assume.assumeTrue("Remote network accessed tests are not included", v)
+    }
+
     fun includeLocalEnv() {
         val v = ChronicleTestCapacities.includeAll() || ChronicleTestCapacities.includeLocalEnv()
         Assume.assumeTrue("Local environment only tests are not included", v)

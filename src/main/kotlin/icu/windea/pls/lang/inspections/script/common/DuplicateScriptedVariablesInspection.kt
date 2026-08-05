@@ -10,6 +10,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor
 import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.lang.fixes.navigation.NavigateToDuplicatesFix
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptInlineMath
@@ -54,7 +55,7 @@ class DuplicateScriptedVariablesInspection : LocalInspectionTool(), DumbAware {
         for ((name, values) in variableGroup) {
             ProgressManager.checkCanceled()
             if (values.size <= 1) continue
-            for (value in values) {
+            values.forEachFast { value ->
                 // 第一个元素指定为 file，则是在文档头部弹出，否则从 psiElement 上通过 contextActions 显示
                 val location = value.scriptedVariableName
                 val description = ChronicleBundle.message("inspection.script.duplicateScriptedVariables.desc", name)

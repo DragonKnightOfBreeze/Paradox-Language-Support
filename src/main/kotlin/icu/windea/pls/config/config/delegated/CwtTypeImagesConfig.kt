@@ -63,16 +63,16 @@ private object CwtTypeImagesConfigResolver : CwtConfigResolverScope {
     fun resolve(config: CwtPropertyConfig): CwtTypeImagesConfig? {
         val locationConfigGroup = mutableMapOf<String, MutableList<CwtLocationConfig>>()
 
-        val expanded = config.expandBySubtypeExpression() // #324
-        for ((c, e) in expanded) {
-            if (c !is CwtPropertyConfig) continue
-            val locationConfig = CwtLocationConfig.resolve(c) ?: continue
+        // #324
+        config.expandBySubtypeExpression p@{ c, e ->
+            if (c !is CwtPropertyConfig) return@p true
+            val locationConfig = CwtLocationConfig.resolve(c) ?: return@p true
             val key = e.optimized()
             locationConfigGroup.getOrPut(key) { mutableListOf() }.add(locationConfig)
         }
 
         if (locationConfigGroup.isEmpty()) {
-            logger.warn("Skipped invalid type images config: Missing properties (after flatten).".withLocationPrefix(config))
+            logger.warnWithPrefix(config, "Skipped invalid type images config: Missing properties (after flatten).")
             return null
         }
         return CwtTypeImagesConfigImpl(config, locationConfigGroup.mapValues { (_, v) -> v.optimized() }.optimized())

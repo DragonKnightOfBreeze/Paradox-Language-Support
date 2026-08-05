@@ -6,7 +6,6 @@ import icu.windea.pls.config.config.CwtFileConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.manipulation.CwtConfigManipulationService
-import icu.windea.pls.config.util.CwtConfigResolverManager
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.ep.config.config.CwtConfigPostProcessor
 import icu.windea.pls.ep.config.config.CwtInjectConfigPostProcessor
@@ -35,7 +34,7 @@ class CwtConfigInjectionTest : BasePlatformTestCase() {
         myFixture.configureByFile("features/config/injection_target.test.cwt")
         val targetFile = myFixture.file as CwtFile
 
-        val configGroup = CwtConfigGroup(project, ParadoxGameType.Stellaris)
+        val configGroup = CwtConfigGroup.create(project, ParadoxGameType.Stellaris)
 
         val sourceFilePath = "common/test/injection_source.cwt"
         val targetFilePath = "common/test/injection_target.cwt"
@@ -43,11 +42,11 @@ class CwtConfigInjectionTest : BasePlatformTestCase() {
         val sourceFileConfig = CwtFileConfig.resolve(sourceFile, configGroup, sourceFilePath)
         val targetFileConfig = CwtFileConfig.resolve(targetFile, configGroup, targetFilePath)
 
-        val fileConfigs = CwtConfigResolverManager.getFileConfigs(configGroup)
+        val fileConfigs = configGroup.initializer.fileConfigs
         fileConfigs[sourceFilePath] = sourceFileConfig
         fileConfigs[targetFilePath] = targetFileConfig
 
-        runPostProcessActions(configGroup)
+        runConfigPostProcessActions(configGroup)
 
         val sourceInjectedGroup = sourceFileConfig.properties.single { it.key == "injected_group" }
         val sourceInjectedChildren = sourceInjectedGroup.properties.orEmpty().associateBy { it.key }
@@ -115,7 +114,7 @@ class CwtConfigInjectionTest : BasePlatformTestCase() {
             val p = targetProps.getValue("non_block")
             assertEquals("1", p.value)
             assertNull(p.configs)
-            assertEquals("common/test/injection_source.cwt@injected_group/*", p.optionData.inject)
+            assertEquals("common/test/injection_source.cwt@injected_group/*", p.optionMetadata.inject)
         }
 
         // duplicate keys are allowed: injected configs are appended (no de-dup)
@@ -159,7 +158,7 @@ class CwtConfigInjectionTest : BasePlatformTestCase() {
             assertNotNull(v.pointer.element)
             assertEquals(targetFile.name, v.pointer.element!!.containingFile.name)
 
-            assertEquals("common/test/injection_source.cwt@injected_group/*", v.optionData.inject)
+            assertEquals("common/test/injection_source.cwt@injected_group/*", v.optionMetadata.inject)
         }
     }
 
@@ -195,7 +194,7 @@ class CwtConfigInjectionTest : BasePlatformTestCase() {
         myFixture.configureByFile("features/config/injection_deep_recursive_target.test.cwt")
         val targetFile = myFixture.file as CwtFile
 
-        val configGroup = CwtConfigGroup(project, ParadoxGameType.Stellaris)
+        val configGroup = CwtConfigGroup.create(project, ParadoxGameType.Stellaris)
 
         val sourceFilePath = "common/test/injection_deep_recursive_source.cwt"
         val targetFilePath = "common/test/injection_deep_recursive_target.cwt"
@@ -203,11 +202,11 @@ class CwtConfigInjectionTest : BasePlatformTestCase() {
         val sourceFileConfig = CwtFileConfig.resolve(sourceFile, configGroup, sourceFilePath)
         val targetFileConfig = CwtFileConfig.resolve(targetFile, configGroup, targetFilePath)
 
-        val fileConfigs = CwtConfigResolverManager.getFileConfigs(configGroup)
+        val fileConfigs = configGroup.initializer.fileConfigs
         fileConfigs[sourceFilePath] = sourceFileConfig
         fileConfigs[targetFilePath] = targetFileConfig
 
-        runPostProcessActions(configGroup)
+        runConfigPostProcessActions(configGroup)
 
         assertTrue(recursionPrevented.get())
 
@@ -237,7 +236,7 @@ class CwtConfigInjectionTest : BasePlatformTestCase() {
         myFixture.configureByFile("features/config/injection_recursive_target.test.cwt")
         val fileTarget = myFixture.file as CwtFile
 
-        val configGroup = CwtConfigGroup(project, ParadoxGameType.Stellaris)
+        val configGroup = CwtConfigGroup.create(project, ParadoxGameType.Stellaris)
 
         val pathA = "common/test/injection_recursive_a.cwt"
         val pathB = "common/test/injection_recursive_b.cwt"
@@ -247,12 +246,12 @@ class CwtConfigInjectionTest : BasePlatformTestCase() {
         val configB = CwtFileConfig.resolve(fileB, configGroup, pathB)
         val configTarget = CwtFileConfig.resolve(fileTarget, configGroup, pathTarget)
 
-        val fileConfigs = CwtConfigResolverManager.getFileConfigs(configGroup)
+        val fileConfigs = configGroup.initializer.fileConfigs
         fileConfigs[pathA] = configA
         fileConfigs[pathB] = configB
         fileConfigs[pathTarget] = configTarget
 
-        runPostProcessActions(configGroup)
+        runConfigPostProcessActions(configGroup)
 
         run {
             val p = configTarget.properties.single { it.key == "cycle_target" }
@@ -264,10 +263,10 @@ class CwtConfigInjectionTest : BasePlatformTestCase() {
         }
     }
 
-    private fun runPostProcessActions(configGroup: CwtConfigGroup) {
-        val actions = CwtConfigResolverManager.getPostProcessActions(configGroup)
-        while (actions.isNotEmpty()) {
-            val action = actions.removeAt(0)
+    private fun runConfigPostProcessActions(configGroup: CwtConfigGroup) {
+        val configPostProcessActions = configGroup.initializer.configPostProcessActions
+        while (configPostProcessActions.isNotEmpty()) {
+            val action = configPostProcessActions.removeAt(0)
             action.run()
         }
     }

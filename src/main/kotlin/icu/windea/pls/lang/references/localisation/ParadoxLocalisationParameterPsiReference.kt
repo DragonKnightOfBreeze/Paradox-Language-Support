@@ -7,6 +7,7 @@ import com.intellij.psi.ResolveResult
 import com.intellij.psi.impl.source.resolve.ResolveCache
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.createResults
+import icu.windea.pls.lang.codeInsight.completion.localisation.ParadoxLocalisationParameterCompletionProvider
 import icu.windea.pls.lang.resolve.ParadoxLocalisationParameterService
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.util.contextSensitive
@@ -18,7 +19,8 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxLocalisationType
 
 /**
- * @see icu.windea.pls.lang.codeInsight.completion.localisation.ParadoxLocalisationParameterCompletionProvider
+ * @see ParadoxLocalisationPsiReferenceProvider
+ * @see ParadoxLocalisationParameterCompletionProvider
  */
 class ParadoxLocalisationParameterPsiReference(
     element: ParadoxLocalisationParameter,

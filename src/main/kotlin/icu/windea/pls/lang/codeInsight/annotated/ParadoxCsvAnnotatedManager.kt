@@ -26,7 +26,7 @@ object ParadoxCsvAnnotatedManager {
     fun getTypeAnnotation(element: ParadoxCsvColumnContainer): String? {
         if (element is ParadoxCsvHeader) return null // skip for header
         val columns = element.columnList.orNull() ?: return null
-        val types = columns.map { column -> ParadoxTypeResolver.resolveExpressionType(column).id }
+        val types = columns.map { column -> ParadoxTypeResolver.resolveExpressionType(column).text }
         return types.joinToString(";", "## $typePrefix ")
     }
 

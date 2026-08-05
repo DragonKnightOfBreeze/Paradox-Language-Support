@@ -23,10 +23,10 @@ class CwtPredefinedConfigGroupProcessor : CwtConfigGroupProcessor {
 
             val typesModel = initializer.typesModel
             typesModel.supportScope += json.typesSupportScope
-            typesModel.indirectSupportScope += json.typesIndirectSupportScope
+            typesModel.supportIndirectScope += json.typesSupportIndirectScope
+            typesModel.supportScopeInference += json.typesSupportScopeInference
             typesModel.skipCheckSystemScope += json.typesSkipCheckSystemScope
             typesModel.supportParameters += json.typesSupportParameters
-            typesModel.supportScopeContextInference += json.typesSupportScopeContextInference
         }
     }
 }

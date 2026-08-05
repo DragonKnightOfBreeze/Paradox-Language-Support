@@ -3,6 +3,7 @@ package icu.windea.pls.core.accessor
 import com.jetbrains.rd.util.ConcurrentHashMap
 import icu.windea.pls.core.isGetter
 import icu.windea.pls.core.isSetter
+import icu.windea.pls.core.optimized
 import java.lang.reflect.Modifier
 import kotlin.reflect.KClass
 import kotlin.reflect.full.declaredMemberFunctions
@@ -28,27 +29,27 @@ class AccessorProviderImpl<T : Any>(
         buildSet {
             addAll(targetClass.declaredMemberProperties)
             addAll(targetClass.memberProperties)
-        }
+        }.optimized()
     }
     private val allStaticProperties by lazy { targetClass.staticProperties }
     private val allMemberFunctions by lazy {
         buildSet {
             addAll(targetClass.declaredMemberFunctions)
             addAll(targetClass.memberFunctions)
-        }
+        }.optimized()
     }
     private val allStaticFunctions by lazy { targetClass.staticFunctions }
     private val allJavaFields by lazy {
         buildSet {
             addAll(targetClass.java.declaredFields)
             addAll(targetClass.java.fields)
-        }
+        }.optimized()
     }
     private val allJavaMethods by lazy {
         buildSet {
             addAll(targetClass.java.declaredMethods)
             addAll(targetClass.java.methods)
-        }
+        }.optimized()
     }
 
     private val readAccessorCache = ConcurrentHashMap<String, ReadAccessorDelegate<T, *>>()
@@ -57,7 +58,7 @@ class AccessorProviderImpl<T : Any>(
 
     override fun <V> get(target: T?, propertyName: String): V {
         validateTargetClass(target)
-        return AccessorRunner.runInAccessorProvider {
+        return AccessorContext.runInAccessorProvider {
             val accessor = findReadAccessor<V>(target, propertyName)
             accessor.get(target)
         }
@@ -65,7 +66,7 @@ class AccessorProviderImpl<T : Any>(
 
     override fun <V> set(target: T?, propertyName: String, value: V) {
         validateTargetClass(target)
-        AccessorRunner.runInAccessorProvider {
+        AccessorContext.runInAccessorProvider {
             val accessor = findWriteAccessor<V>(target, propertyName)
             accessor.set(target, value)
         }
@@ -73,11 +74,11 @@ class AccessorProviderImpl<T : Any>(
 
     override fun invoke(target: T?, functionName: String, vararg args: Any?): Any? {
         validateTargetClass(target)
-        return AccessorRunner.runInAccessorProvider block@{
+        return AccessorContext.runInAccessorProvider action@{
             val accessors = findInvokeAccessors(target, functionName, *args)
             for (accessor in accessors) {
                 try {
-                    return@block accessor.invoke(target, *args)
+                    return@action accessor.invoke(target, *args)
                 } catch (_: IllegalArgumentException) {
                     // ignore
                 }

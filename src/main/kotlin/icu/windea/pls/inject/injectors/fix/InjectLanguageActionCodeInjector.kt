@@ -5,8 +5,6 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiLanguageInjectionHost
 import com.intellij.util.InjectionUtils
-import icu.windea.pls.core.cast
-import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.staticFunction
 import icu.windea.pls.inject.CodeInjectorBase
 import icu.windea.pls.inject.annotations.InjectMethod
@@ -21,16 +19,16 @@ class InjectLanguageActionCodeInjector : CodeInjectorBase() {
     // see: org.intellij.plugins.intelliLang.inject.InjectLanguageAction
     // see: org.intellij.plugins.intelliLang.inject.InjectLanguageAction#findInjectionHost
 
-    private fun Any.findInjectionHost(editor: Editor, file: PsiFile): PsiLanguageInjectionHost? {
-        val function = staticFunction<Any>("findInjectionHost")
-        return runCatchingCancelable { function(editor, file) }.getOrNull()?.cast()
+    private fun findInjectionHost(editor: Editor, file: PsiFile): PsiLanguageInjectionHost? {
+        val function = staticFunction("findInjectionHost", "org.intellij.plugins.intelliLang.inject.InjectLanguageAction")
+        return function.execute(editor, file)
     }
 
     @Suppress("unused")
     @InjectMethod(pointer = InjectMethod.Pointer.BEFORE)
     fun isAvailable(project: Project, editor: Editor, psiFile: PsiFile): Boolean {
-        runSafely r@{
-            if (psiFile !is ParadoxScriptFile) return@r
+        execute("isAvailable") action@{
+            if (psiFile !is ParadoxScriptFile) return@action
             val host = findInjectionHost(editor, psiFile) ?: return false
             if (!InjectionUtils.isInjectLanguageActionEnabled(host)) return false
         }

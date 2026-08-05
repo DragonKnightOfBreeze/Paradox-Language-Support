@@ -3,7 +3,6 @@
 package icu.windea.pls.lang
 
 import com.intellij.openapi.util.TextRange
-import com.intellij.openapi.util.text.StringUtil
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
@@ -38,30 +37,46 @@ import icu.windea.pls.script.psi.ParadoxScriptValue
 
 // region Analysis Extensions
 
+/** @see ParadoxAnalysisManager.getRootInfo */
 inline val VirtualFile.rootInfo: ParadoxRootInfo? get() = ParadoxAnalysisManager.getRootInfo(this)
+/** @see ParadoxAnalysisManager.getFileInfo */
 inline val VirtualFile.fileInfo: ParadoxFileInfo? get() = ParadoxAnalysisManager.getFileInfo(this)
+/** @see ParadoxAnalysisManager.getFileInfo */
 inline val PsiElement.fileInfo: ParadoxFileInfo? get() = ParadoxAnalysisManager.getFileInfo(this)
 
+/** @see ParadoxAnalysisManager.selectRootFile */
 inline fun selectRootFile(from: Any?): VirtualFile? = ParadoxAnalysisManager.selectRootFile(from)
+/** @see ParadoxAnalysisManager.selectFile */
 inline fun selectFile(from: Any?): VirtualFile? = ParadoxAnalysisManager.selectFile(from)
+/** @see ParadoxAnalysisManager.selectGameType */
 inline fun selectGameType(from: Any?): ParadoxGameType? = ParadoxAnalysisManager.selectGameType(from)
+/** @see ParadoxAnalysisManager.selectLocale */
 inline fun selectLocale(from: Any?): CwtLocaleConfig? = ParadoxAnalysisManager.selectLocale(from)
 
 // endregion
 
 // region Resolution Extensions
 
+/** @see ParadoxDefineManager.getInfo */
 inline val ParadoxScriptProperty.defineInfo: ParadoxDefineInfo? get() = ParadoxDefineManager.getInfo(this)
+/** @see ParadoxDefineManager.getNamespaceInfo */
 inline val ParadoxScriptProperty.defineNamespaceInfo: ParadoxDefineNamespaceInfo? get() = ParadoxDefineManager.getNamespaceInfo(this)
+/** @see ParadoxDefineManager.getVariableInfo */
 inline val ParadoxScriptProperty.defineVariableInfo: ParadoxDefineVariableInfo? get() = ParadoxDefineManager.getVariableInfo(this)
 
+/** @see ParadoxDefinitionCandidateManager.getInfo */
 inline val ParadoxDefinitionElement.definitionCandidateInfo: ParadoxDefinitionCandidateInfo? get() = ParadoxDefinitionCandidateManager.getInfo(this)
+/** @see ParadoxDefinitionManager.getInfo */
 inline val ParadoxDefinitionElement.definitionInfo: ParadoxDefinitionInfo? get() = ParadoxDefinitionManager.getInfo(this)
+/** @see ParadoxDefinitionInjectionManager.getInfo */
 inline val ParadoxScriptProperty.definitionInjectionInfo: ParadoxDefinitionInjectionInfo? get() = ParadoxDefinitionInjectionManager.getInfo(this)
 
+/** @see ParadoxComplexEnumValueManager.getInfo */
 inline val ParadoxScriptExpressionElement.complexEnumValueInfo: ParadoxComplexEnumValueInfo? get() = ParadoxComplexEnumValueManager.getInfo(this)
+/** @see ParadoxComplexEnumValueManager.getInfo */
 inline val ParadoxCsvExpressionElement.complexEnumValueInfo: ParadoxComplexEnumValueInfo? get() = ParadoxComplexEnumValueManager.getInfo(this)
 
+/** @see ParadoxTagManager.getTagType */
 inline val ParadoxScriptValue.tagType: ParadoxTagType? get() = ParadoxTagManager.getTagType(this)
 
 inline fun <reified T : ParadoxDefinitionData> ParadoxDefinitionElement.getDefinitionData(lenient: Boolean = false): T? = ParadoxDataService.getDefinitionData(this, lenient)
@@ -69,40 +84,21 @@ inline fun <reified T : ParadoxDefinitionPresentation> ParadoxDefinitionElement.
 
 // endregion
 
-// region Addon Extensions
+// region Expression Extensions
 
-fun Char.isIdentifierChar(extraChars: String = ""): Boolean {
-    return StringUtil.isJavaIdentifierPart(this) || extraChars.isNotEmpty() && this in extraChars
-}
-
-fun String.isIdentifier(extraChars: String = ""): Boolean {
-    if (isEmpty()) return false
-    for ((_, c) in this.withIndex()) {
-        if (c.isIdentifierChar(extraChars)) continue
-        return false
-    }
-    return true
-}
-
-fun String.isParameterAwareIdentifier(extraChars: String = ""): Boolean {
-    // 优化：仅在必要时获取参数范围
-    if (isEmpty()) return false
-    var parameterRanges: List<TextRange>? = null
-    for ((i, c) in this.withIndex()) {
-        if (c.isIdentifierChar(extraChars)) continue
-        if (parameterRanges == null) parameterRanges = ParadoxExpressionManager.getParameterRanges(this)
-        if (parameterRanges.any { it.contains(i) }) continue
-        return false
-    }
-    return true
-}
-
+/** @see ParadoxExpressionManager.isParameterized */
 fun String.isParameterized(conditionBlock: Boolean = true, full: Boolean = false): Boolean {
     return ParadoxExpressionManager.isParameterized(this, conditionBlock, full)
 }
 
-// fun ParadoxExpressionElement.isQuoted(): Boolean {
-//     return ParadoxExpressionManager.isQuoted(this)
-// }
+/** @see ParadoxExpressionManager.isParameterAwareIdentifier */
+fun String.isParameterAwareIdentifier(extraChars: String = ""): Boolean {
+    return ParadoxExpressionManager.isParameterAwareIdentifier(this, extraChars)
+}
+
+/** @see ParadoxExpressionManager.getParameterRanges */
+fun String.getParameterRanges(conditionBlock: Boolean = true): List<TextRange> {
+    return ParadoxExpressionManager.getParameterRanges(this, conditionBlock)
+}
 
 // endregion

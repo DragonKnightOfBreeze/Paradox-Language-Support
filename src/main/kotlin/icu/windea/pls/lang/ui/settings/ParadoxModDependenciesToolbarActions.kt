@@ -16,12 +16,12 @@ import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.ui.AnActionButton
 import com.intellij.ui.AnActionButtonRunnable
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.core.errorDetails
 import icu.windea.pls.ide.notification.ChronicleNotificationGroups
 import icu.windea.pls.lang.actions.ChronicleDataKeys
 import icu.windea.pls.lang.rootInfo
 import icu.windea.pls.lang.settings.ParadoxModDependencySettingsState
 import icu.windea.pls.lang.settings.qualifiedName
+import kotlinx.coroutines.CancellationException
 
 @Suppress("unused")
 interface ParadoxModDependenciesToolbarActions {
@@ -59,9 +59,9 @@ interface ParadoxModDependenciesToolbarActions {
                     val content = ChronicleBundle.message("mod.dependencies.add.info", count)
                     ChronicleNotificationGroups.settings().createNotification(qualifiedName, content, NotificationType.INFORMATION).notify(project)
                 } catch (e: Exception) {
-                    if (e is ProcessCanceledException) throw e
+                    if (e is ProcessCanceledException || e is CancellationException) throw e
                     thisLogger().warn(e)
-                    val content = ChronicleBundle.message("mod.dependencies.add.error") + e.message.errorDetails
+                    val content = ChronicleBundle.message("mod.dependencies.add.error") + ChronicleBundle.errorDetails(e.message)
                     ChronicleNotificationGroups.settings().createNotification(qualifiedName, content, NotificationType.WARNING).notify(project)
                 }
             }

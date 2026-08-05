@@ -1,8 +1,9 @@
 package icu.windea.pls.ep.resolve.parameter
 
 import com.intellij.openapi.extensions.ExtensionPointName
-import icu.windea.pls.base.annotations.WithGameTypeEP
 import icu.windea.pls.config.config.CwtMemberConfig
+import icu.windea.pls.ep.resolve.config.CwtParameterValueConfigContextProvider
+import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxParameterContextInfo
 
 /**
@@ -10,10 +11,11 @@ import icu.windea.pls.model.ParadoxParameterContextInfo
  *
  * 基于语言注入功能为参数值对应的脚本片段提供高级语言功能。
  *
- * @see icu.windea.pls.ep.resolve.config.CwtParameterValueConfigContextProvider
+ * @see CwtParameterValueConfigContextProvider
  */
-@WithGameTypeEP
 interface ParadoxParameterInferredConfigProvider {
+    fun supports(gameType: ParadoxGameType) = true
+
     fun supports(parameterInfo: ParadoxParameterContextInfo.Parameter, parameterContextInfo: ParadoxParameterContextInfo): Boolean
 
     /**

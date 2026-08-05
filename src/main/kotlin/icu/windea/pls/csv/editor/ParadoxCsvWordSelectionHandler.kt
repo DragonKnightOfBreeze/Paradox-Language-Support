@@ -14,7 +14,7 @@ import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 
 class ParadoxCsvWordSelectionHandler : ExtendWordSelectionHandlerBase() {
     override fun canSelect(e: PsiElement): Boolean {
-        if (e.language !is ParadoxCsvLanguage) return false
+        if (e.language !== ParadoxCsvLanguage) return false
         val element = findExpressionElement(e)
         if (element != null) return true
         return false

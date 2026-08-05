@@ -7,14 +7,16 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.lang.isIdentifier
+import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.collections.mapNotNullFast
+import icu.windea.pls.core.isIdentifier
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
 import icu.windea.pls.lang.resolve.ParadoxDynamicValueService
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import javax.swing.Icon
 
-@Suppress("unused")
+@Optimized
 object ParadoxDynamicValueManager {
     fun getPresentableIcon(types: Set<String>): Icon {
         val type = types.first() // first is ok
@@ -40,26 +42,27 @@ object ParadoxDynamicValueManager {
     fun resolveDynamicValue(element: ParadoxExpressionElement, name: String, configExpression: CwtDataExpression, configGroup: CwtConfigGroup): ParadoxDynamicValueLightElement? {
         if (!name.isIdentifier()) return null // skip invalid names
         val readWriteAccess = getReadWriteAccess(configExpression)
-        val dynamicValueType = configExpression.value ?: return null
+        val dynamicValueType = configExpression.metadata.value ?: return null
         return ParadoxDynamicValueLightElement(element, name, dynamicValueType, readWriteAccess, configGroup.gameType, configGroup.project)
     }
 
-    fun resolveDynamicValue(element: ParadoxExpressionElement, name: String, configExpressions: Iterable<CwtDataExpression>, configGroup: CwtConfigGroup): ParadoxDynamicValueLightElement? {
+    fun resolveDynamicValue(element: ParadoxExpressionElement, name: String, configExpressions: Collection<CwtDataExpression>, configGroup: CwtConfigGroup): ParadoxDynamicValueLightElement? {
         if (!name.isIdentifier()) return null // skip invalid names
         val configExpression = configExpressions.firstOrNull() ?: return null
         val readWriteAccess = getReadWriteAccess(configExpression)
-        val dynamicValueTypes = configExpressions.mapNotNullTo(mutableSetOf()) { it.value }
+        val dynamicValueTypes = configExpressions.mapNotNull { it.metadata.value }.toSet()
         return ParadoxDynamicValueLightElement(element, name, dynamicValueTypes, readWriteAccess, configGroup.gameType, configGroup.project)
     }
 
     fun getPresentableName(name: String, contextElement: PsiElement, locale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig()): String? {
         val nameLocalisation = getNameLocalisation(name, contextElement, locale)
-        return nameLocalisation?.let { ParadoxLocalisationManager.getLocalizedText(it) }
+        return nameLocalisation?.let { ParadoxLocalisationManager.getPresentableText(it) }
     }
 
+    @Suppress("unused")
     fun getPresentableNames(name: String, contextElement: PsiElement, locale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig()): Set<String> {
         val nameLocalisation = getNameLocalisations(name, contextElement, locale)
-        return nameLocalisation.mapNotNull { ParadoxLocalisationManager.getLocalizedText(it) }.toSet()
+        return nameLocalisation.mapNotNullFast { ParadoxLocalisationManager.getPresentableText(it) }.toSet()
     }
 
     fun getNameLocalisation(name: String, contextElement: PsiElement, locale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig()): ParadoxLocalisationProperty? {

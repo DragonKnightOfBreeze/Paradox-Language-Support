@@ -8,36 +8,34 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor
 import com.intellij.psi.util.startOffset
 import icu.windea.pls.ChronicleFacade
+import icu.windea.pls.base.ChronicleCapacities
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
+import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.annotations.Optimized
-import icu.windea.pls.core.collections.ImmutableList
 import icu.windea.pls.core.collections.asMutable
+import icu.windea.pls.core.collections.buildImmutableList
 import icu.windea.pls.core.collections.forEachFast
-import icu.windea.pls.core.deoptimized
-import icu.windea.pls.core.letIf
 import icu.windea.pls.core.optimized
-import icu.windea.pls.core.optimizer.OptimizerFactory
 import icu.windea.pls.core.orNull
+import icu.windea.pls.core.readIndexedStringList
 import icu.windea.pls.core.readIntFast
 import icu.windea.pls.core.readUTFFast
-import icu.windea.pls.core.readWithIndexStringList
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.core.writeByte
 import icu.windea.pls.core.writeIndexedStringList
 import icu.windea.pls.core.writeIntFast
 import icu.windea.pls.core.writeUTFFast
 import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.index.constraints.ParadoxDefinitionIndexConstraint
+import icu.windea.pls.lang.index.statistics.ChronicleIndexStatisticService
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.CwtTypeConfigMatchContext
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.resolve.ParadoxDefinitionService
 import icu.windea.pls.lang.resolve.ParadoxMemberService
-import icu.windea.pls.lang.settings.ChronicleInternalSettings
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.model.ParadoxDefinitionSource
-import icu.windea.pls.model.constraints.ParadoxDefinitionIndexConstraint
-import icu.windea.pls.model.forParadoxDefinitionSource
-import icu.windea.pls.model.forParadoxGameType
+import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.index.ParadoxDefinitionIndexInfo
 import icu.windea.pls.script.ParadoxScriptFileType
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
@@ -51,9 +49,12 @@ import java.io.DataOutput
 
 /**
  * 定义信息的索引。
+ *
+ * @see ParadoxDefinitionConstrainedIndex
+ * @see ParadoxDefinitionIndexConstraint
  */
 @Optimized
-class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxDefinitionIndexInfo>, ParadoxDefinitionIndexInfo>() {
+open class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxDefinitionIndexInfo>, ParadoxDefinitionIndexInfo>() {
     // NOTE 3.0.0 DO NOT use `sortedWith(compressComparator)` to compress index data - should keep declaration order
 
     override fun getName() = ChronicleIndexKeys.Definition
@@ -61,7 +62,7 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
     override fun getVersion() = ChronicleIndexVersions.Definition
 
     override fun filterFileType(fileType: FileType): Boolean {
-        return fileType == ParadoxScriptFileType
+        return fileType === ParadoxScriptFileType
     }
 
     override fun filterFile(file: VirtualFile): Boolean {
@@ -82,21 +83,18 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
 
         // 2.1.3 要求存在候选项
         val configGroup = ChronicleFacade.getConfigGroup(psiFile.project, gameType)
-        val path = fileInfo.path
-        val fileLevelMatchContext = CwtTypeConfigMatchContext(configGroup, path)
-        val fileLevelTypeConfigs = ParadoxConfigMatchService.getTypeConfigCandidates(fileLevelMatchContext)
-        if (fileLevelTypeConfigs.isEmpty()) return
+        val fileLevelMatchContext = CwtTypeConfigMatchContext(configGroup, fileInfo.path)
+        val fileLevelTypeConfigs = getFileLevelTypeConfigs(fileLevelMatchContext)
+        if (fileLevelTypeConfigs.isEmpty()) return // optimize (fast return if there are no candidates)
         fileLevelMatchContext.matchPath = false
 
-        val typeConfigForInjection = getMatchedTypeConfigForInjection(fileLevelMatchContext, fileLevelTypeConfigs)
+        val fileLevelTypeConfigForInjection = getFileLevelTypeConfigForInjection(fileLevelMatchContext, fileLevelTypeConfigs)
 
-        val rootKeyStack = ArrayDeque<String>()
-        ParadoxMemberService.injectRootKeys(psiFile, rootKeyStack)
+        val rootKeys = ArrayDeque<String>()
 
         // 预计算候选类型规则中最大的顶级键深度，用于限制 PSI 遍历深度
-        val maxDefinitionDepth = ChronicleInternalSettings.getInstance().maxDefinitionDepth
         val maxRootKeyDepth = fileLevelTypeConfigs.maxOf { it.attributes.maxRootKeyDepth }
-        val effectiveMaxDepth = (minOf(maxRootKeyDepth, maxDefinitionDepth) - rootKeyStack.size).coerceAtLeast(0)
+        val effectiveMaxDepth = (minOf(maxRootKeyDepth, ChronicleCapacities.maxDefinitionDepth()) - rootKeys.size).coerceAtLeast(0)
 
         // 2.1.3 这里需要使用 accept 而非 acceptChildren，因为 psiFile 也可能是一个定义
         psiFile.accept(object : PsiRecursiveElementWalkingVisitor() {
@@ -129,7 +127,7 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
                 // 2.1.3 直接匹配，不经过缓存数据，以优化性能
                 processDefinition(element, elementName)
 
-                rootKeyStack.addLast(elementName)
+                rootKeys.addLast(elementName)
                 depth++
             }
 
@@ -144,16 +142,16 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
                 // 匹配性检查
                 val source = ParadoxDefinitionService.resolveSource(element) ?: return true
                 val typeKey = ParadoxMemberService.getTypeKey(element, elementName) ?: return true
-                val rootKeys = rootKeyStack // reuse root key stack here to optimize performance
-                val typeKeyPrefix = lazy { ParadoxMemberService.getKeyPrefix(element) }
-                val matchContext = fileLevelMatchContext.copy(typeKey = typeKey, rootKeys = rootKeys, typeKeyPrefix = typeKeyPrefix)
+                val lazyRootKeys = lazyOf(rootKeys) // reuse root keys here to optimize performance
+                val typeKeyPrefix = lazy { ParadoxMemberService.getKeyPrefix(element) } // lazy load here to optimize performance
+                val matchContext = fileLevelMatchContext.copy(typeKey = typeKey, lazyRootKeys = lazyRootKeys, lazyTypeKeyPrefix = typeKeyPrefix)
                 val typeConfig = getMatchedTypeConfig(matchContext, element, fileLevelTypeConfigs) ?: return false
                 val type = typeConfig.name.orNull() ?: return false
                 val name = ParadoxDefinitionService.resolveName(element, typeKey, typeConfig)
                 val fastSubtypes = ParadoxConfigMatchService.getFastMatchedSubtypeConfigs(typeConfig, typeKey).map { it.name }.optimized()
 
                 val info = ParadoxDefinitionIndexInfo(source, name, type, fastSubtypes, typeKey, element.startOffset, gameType)
-                addToFileData(info, fileData)
+                addToFileData(info, fileData, configGroup)
                 return false
             }
 
@@ -176,39 +174,42 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
                 if (target.isEmpty()) return false
 
                 // 匹配类型
-                val typeConfig = typeConfigForInjection ?: return false
+                val typeConfig = fileLevelTypeConfigForInjection ?: return false
                 val type = typeConfig.name.orNull() ?: return false
                 val name = ParadoxDefinitionService.resolveName(element, target, typeConfig)
                 val fastSubtypes = ParadoxConfigMatchService.getFastMatchedSubtypeConfigs(typeConfig, target).map { it.name }.optimized()
 
                 val info = ParadoxDefinitionIndexInfo(source, name, type, fastSubtypes, target, element.startOffset, gameType)
-                addToFileData(info, fileData)
+                addToFileData(info, fileData, configGroup)
                 return false
             }
 
             override fun elementFinished(element: PsiElement) {
                 if (element is ParadoxScriptProperty) {
-                    rootKeyStack.removeLastOrNull()
+                    rootKeys.removeLastOrNull()
                     depth--
                 }
             }
         })
     }
 
-    private fun getMatchedTypeConfig(context: CwtTypeConfigMatchContext, element: ParadoxDefinitionElement, typeConfigs: Collection<CwtTypeConfig>): CwtTypeConfig? {
-        return typeConfigs.find { ParadoxConfigMatchService.matchesType(context, element, it) }
+    protected open fun getFileLevelTypeConfigs(matchContext: CwtTypeConfigMatchContext): Collection<CwtTypeConfig> {
+        return ParadoxConfigMatchService.getTypeConfigCandidates(matchContext)
     }
 
-    private fun getMatchedTypeConfigForInjection(context: CwtTypeConfigMatchContext, typeConfigs: Collection<CwtTypeConfig>): CwtTypeConfig? {
-        if (!ParadoxDefinitionInjectionManager.isSupported(context.gameType)) return null
-        return typeConfigs.find { ParadoxConfigMatchService.matchesTypeForInjection(context, it) }
+    protected open fun getFileLevelTypeConfigForInjection(matchContext: CwtTypeConfigMatchContext, typeConfigs: Collection<CwtTypeConfig>): CwtTypeConfig? {
+        if (!ParadoxDefinitionInjectionManager.isSupported(matchContext.gameType)) return null
+        return typeConfigs.find { ParadoxConfigMatchService.matchesTypeForInjection(matchContext, it) }
     }
 
-    private fun addToFileData(info: ParadoxDefinitionIndexInfo, fileData: MutableMap<String, List<ParadoxDefinitionIndexInfo>>) {
+    protected open fun getMatchedTypeConfig(matchContext: CwtTypeConfigMatchContext, element: ParadoxDefinitionElement, typeConfigs: Collection<CwtTypeConfig>): CwtTypeConfig? {
+        return typeConfigs.find { ParadoxConfigMatchService.matchesType(matchContext, element, it) }
+    }
+
+    protected open fun addToFileData(info: ParadoxDefinitionIndexInfo, fileData: MutableMap<String, List<ParadoxDefinitionIndexInfo>>, configGroup: CwtConfigGroup) {
         ChronicleIndexStatisticService.recordDefinition(info.gameType)
 
-        val ignoreCase = ParadoxDefinitionIndexConstraint.entries.any { it.ignoreCase && it.test(info.type) }
-        val name = info.name.letIf(ignoreCase) { it.lowercase() }
+        val name = info.name
         val type = info.type
         fileData.getOrPut(ChronicleIndexUtil.createAllKey()) { mutableListOf() }.asMutable() += info
         fileData.getOrPut(ChronicleIndexUtil.createTypeKey(type)) { mutableListOf() }.asMutable() += info
@@ -231,14 +232,14 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
         if (value.isEmpty()) return
 
         val gameType = value.first().gameType
-        storage.writeByte(gameType.optimized(OptimizerFactory.forParadoxGameType()))
+        storage.writeByte(gameType.optimized())
 
         // 3.0.0 optimize: write existing types and type keys first
         val types = storage.writeIndexedStringList(value) { it.type }
         val typeKeys = storage.writeIndexedStringList(value) { if (it.typeKeyIsName) null else it.typeKey }
 
         value.forEachFast { info ->
-            storage.writeByte(info.source.optimized(OptimizerFactory.forParadoxDefinitionSource()))
+            storage.writeByte(info.source.optimized())
             storage.writeUTFFast(info.name)
             storage.writeIntFast(types.getInt(info.type))
             val fastSubtypes = info.fastSubtypes
@@ -258,18 +259,19 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
         val size = storage.readIntFast()
         if (size == 0) return emptyList()
 
-        val gameType = storage.readByte().deoptimized(OptimizerFactory.forParadoxGameType())
+        val gameType = storage.readByte().let { ParadoxGameType.deoptimized(it) }
 
         // 3.0.0 optimize: read existing types and type keys first
-        val types = storage.readWithIndexStringList()
-        val typeKeys = storage.readWithIndexStringList()
+        val types = storage.readIndexedStringList()
+        val typeKeys = storage.readIndexedStringList()
 
-        return ImmutableList(size) {
-            val source = storage.readByte().deoptimized(OptimizerFactory.forParadoxDefinitionSource())
+        // 2.1.9 optimize: create sized immutable list directly
+        return buildImmutableList(size) {
+            val source = storage.readByte().let { ParadoxDefinitionSource.deoptimized(it) }
             val name = storage.readUTFFast()
             val type = storage.readIntFast().let { types.get(it).orEmpty() }
             val subtypesSize = storage.readIntFast()
-            val fastSubtypes = ImmutableList(subtypesSize) { storage.readUTFFast() }
+            val fastSubtypes = buildImmutableList(subtypesSize) { storage.readUTFFast() }
             val typeKeyIsName = storage.readBoolean()
             val typeKey = if (typeKeyIsName) name else storage.readIntFast().let { typeKeys.get(it).orEmpty() }
             val elementOffset = storage.readIntFast()

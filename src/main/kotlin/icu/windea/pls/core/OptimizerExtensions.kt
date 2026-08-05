@@ -1,7 +1,8 @@
-@file:Suppress("NOTHING_TO_INLINE")
+@file:Suppress("unused", "NOTHING_TO_INLINE")
 
 package icu.windea.pls.core
 
+import icu.windea.pls.core.optimizer.ByteOptimizer
 import icu.windea.pls.core.optimizer.Optimizer
 import icu.windea.pls.core.optimizer.OptimizerFactory
 import icu.windea.pls.core.optimizer.forList
@@ -16,19 +17,19 @@ inline fun <T : Any, R : Any> T.optimized(optimizer: Optimizer<T, R>): R {
     return optimizer.optimize(this)
 }
 
-/** @see Optimizer.optimize */
-inline fun <T : Any, R : Any> T.optimized(optimizerProvider: OptimizerFactory.() -> Optimizer<T, R>): R {
-    return OptimizerFactory.optimizerProvider().optimize(this)
-}
-
 /** @see Optimizer.deoptimize */
 inline fun <T : Any, R : Any> R.deoptimized(optimizer: Optimizer<T, R>): T {
     return optimizer.deoptimize(this)
 }
 
-/** @see Optimizer.deoptimize */
-inline fun <T : Any, R : Any> R.deoptimized(optimizerProvider: OptimizerFactory.() -> Optimizer<T, R>): T {
-    return OptimizerFactory.optimizerProvider().deoptimize(this)
+/** @see ByteOptimizer.optimizeByte */
+inline fun <T : Any> T.optimized(optimizer: ByteOptimizer<T>): Byte {
+    return optimizer.optimizeByte(this)
+}
+
+/** @see ByteOptimizer.deoptimizeByte */
+inline fun <T : Any> Byte.deoptimized(optimizer: ByteOptimizer<T>): T {
+    return optimizer.deoptimizeByte(this)
 }
 
 /** @see OptimizerFactory.forString */

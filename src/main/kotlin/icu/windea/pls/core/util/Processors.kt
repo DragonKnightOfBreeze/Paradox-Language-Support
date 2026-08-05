@@ -1,54 +1,8 @@
+@file:Suppress("unused")
+
 package icu.windea.pls.core.util
 
 import com.intellij.util.Processor
-
-object ProcessorFactory {
-    /** 创建一个不带过滤条件的 [FindProcessor]。 */
-    fun <T> find(): FindProcessor<T> {
-        return FindProcessor()
-    }
-
-    /** 创建一个带过滤条件 [filter] 的 [FindProcessor]。 */
-    fun <T> find(filter: (T) -> Boolean): FindProcessor<T> {
-        return object : FindProcessor<T>() {
-            override fun accept(e: T) = filter(e)
-        }
-    }
-
-    /** 创建一个不带过滤条件的 [CollectProcessor]，将元素加入 [collection]。 */
-    fun <T, C : MutableCollection<T>> collect(collection: C): CollectProcessor<T, C> {
-        return CollectProcessor(collection)
-    }
-
-    /** 创建一个带过滤条件 [filter] 的 [CollectProcessor]，将元素加入 [collection]。 */
-    fun <T, C : MutableCollection<T>> collect(collection: C, filter: (T) -> Boolean): CollectProcessor<T, C> {
-        return object : CollectProcessor<T, C>(collection) {
-            override fun accept(e: T) = filter(e)
-        }
-    }
-
-    /** 创建一个不带过滤条件的 [CollectProcessor]，将元素加入可变列表。 */
-    fun <T> collect(): CollectProcessor<T, MutableList<T>> {
-        return collect(mutableListOf())
-    }
-
-    /** 创建一个带过滤条件 [filter] 的 [CollectProcessor]，将元素加入列表。 */
-    fun <T> collect(filter: (T) -> Boolean): CollectProcessor<T, MutableList<T>> {
-        return collect(mutableListOf(), filter)
-    }
-
-    /** 创建一个不带过滤条件的 [DuplicateProcessor]。 */
-    fun <T> duplicate(): DuplicateProcessor<T> {
-        return DuplicateProcessor()
-    }
-
-    /** 创建一个带过滤条件 [filter] 的 [DuplicateProcessor]。 */
-    fun <T> duplicate(filter: (T) -> Boolean): DuplicateProcessor<T> {
-        return object : DuplicateProcessor<T>() {
-            override fun accept(e: T) = filter(e)
-        }
-    }
-}
 
 /**
  * 查找处理器：在处理到第一个满足条件的元素时终止迭代。
@@ -109,6 +63,54 @@ open class CollectProcessor<T, C : MutableCollection<T>>(val collection: C) : Pr
     override fun process(e: T): Boolean {
         if (accept(e)) {
             collection.add(e)
+        }
+        return true
+    }
+
+    protected open fun accept(e: T): Boolean {
+        return true
+    }
+}
+
+open class AllProcessor<T> : Processor<T> {
+    var result: Boolean = true
+
+    override fun process(e: T): Boolean {
+        if (accept(e)) {
+            return true
+        }
+        result = false
+        return false
+    }
+
+    protected open fun accept(e: T): Boolean {
+        return true
+    }
+}
+
+open class AnyProcessor<T> : Processor<T> {
+    var result: Boolean = false
+
+    override fun process(e: T): Boolean {
+        if (accept(e)) {
+            result = true
+            return false
+        }
+        return true
+    }
+
+    protected open fun accept(e: T): Boolean {
+        return true
+    }
+}
+
+open class NoneProcessor<T> : Processor<T> {
+    var result: Boolean = true
+
+    override fun process(e: T): Boolean {
+        if (accept(e)) {
+            result = false
+            return false
         }
         return true
     }

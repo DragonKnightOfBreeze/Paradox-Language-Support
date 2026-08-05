@@ -10,25 +10,25 @@ class ReflectionExtensionsTest {
         private var _foo: String? = null
         private var _active: Boolean = false
 
-        fun test_getFoo(): String? = _foo
-        fun test_setFoo(v: String?) {
+        fun getFoo(): String? = _foo
+        fun setFoo(v: String?) {
             _foo = v
         }
 
-        fun test_isActive(): Boolean = _active
-        fun test_setActive(v: Boolean) {
+        fun isActive(): Boolean = _active
+        fun setActive(v: Boolean) {
             _active = v
         }
 
         // Non-accessor methods
-        fun test_getValueX() = 1
-        fun test_setValueX(x: Int) {}
+        fun getValueX() = 1
+        fun setValueX(x: Int) {}
     }
 
     open class GenericHolder : ArrayList<String>()
 
     @Test
-    fun test_isGetter_isSetter_without_propertyName() {
+    fun isGetter_isSetter_without_propertyName_test() {
         val k = Foo::class
         val getFoo = k.members.first { it.name == "getFoo" } as KFunction<*>
         val setFoo = k.members.first { it.name == "setFoo" } as KFunction<*>
@@ -45,7 +45,7 @@ class ReflectionExtensionsTest {
     }
 
     @Test
-    fun test_isGetter_isSetter_with_propertyName() {
+    fun isGetter_isSetter_with_propertyName_test() {
         val k = Foo::class
         val getFoo = k.members.first { it.name == "getFoo" } as KFunction<*>
         val setFoo = k.members.first { it.name == "setFoo" } as KFunction<*>
@@ -60,7 +60,7 @@ class ReflectionExtensionsTest {
     }
 
     @Test
-    fun test_genericType_from_parameterizedType() {
+    fun genericType_from_parameterizedType_test() {
         val type = GenericHolder::class.java.genericSuperclass // ArrayList<String>
         val arg0 = type.genericType<Class<*>>(0)
         Assert.assertEquals(String::class.java, arg0)

@@ -17,9 +17,9 @@ import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.lang.psi.ParadoxPsiFileService
 import icu.windea.pls.lang.psi.ParadoxPsiMatchService
+import icu.windea.pls.lang.resolve.ParadoxExpressionService
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
-import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.parentProperty
@@ -66,8 +66,8 @@ class ChangeDefinitionInjectionModeIntention : ModCommandAction {
 
         override fun invoke(context: ActionContext, element: ParadoxScriptProperty, updater: ModPsiUpdater) {
             val expressionElement = element.propertyKey
-            val expressionText = ParadoxExpressionManager.getExpressionText(expressionElement)
-            val expressionOffset = ParadoxExpressionManager.getExpressionOffset(expressionElement)
+            val expressionText = ParadoxExpressionService.getExpressionText(expressionElement)
+            val expressionOffset = ParadoxExpressionService.getExpressionOffset(expressionElement)
             val oldMode = ParadoxDefinitionInjectionManager.getModeFromExpression(expressionText) ?: return
             val range = TextRange.from(expressionOffset, oldMode.length)
             ElementManipulators.handleContentChange(expressionElement, range, mode)

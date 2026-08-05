@@ -20,7 +20,6 @@ import icu.windea.pls.ep.inspections.ParadoxUnresolvedExpressionChecker
 import icu.windea.pls.lang.inspections.ParadoxExpressionInspectionService
 import icu.windea.pls.lang.inspections.ParadoxInspectionService
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
-import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxCsvManager
 import javax.swing.JComponent
 
@@ -82,7 +81,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
             }
 
             private fun isIgnoredByConfigs(element: ParadoxCsvExpressionElement, expectedConfigs: List<CwtValueConfig>): Boolean {
-                return ignoredByConfigs && expectedConfigs.any { ParadoxConfigManager.checkExtendedConfig(element, it) }
+                return ignoredByConfigs && ParadoxInspectionService.checkExtendedConfig(element, expectedConfigs)
             }
         }
     }

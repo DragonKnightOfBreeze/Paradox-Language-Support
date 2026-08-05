@@ -3,8 +3,10 @@ package icu.windea.pls.lang.refactoring.rename
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.testFramework.IndexingTestUtil
+import com.intellij.testFramework.TestDataFile
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import icu.windea.pls.core.convertPath
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.ChronicleTestScope
 import org.junit.After
@@ -36,20 +38,13 @@ class ParadoxComplexEnumValueRenameTest : BasePlatformTestCase(), ChronicleTestS
         FileDocumentManager.getInstance().saveAllDocuments()
     }
 
-    private fun configureFile(path: String): String {
-        markFileInfo(gameType, path)
-        myFixture.copyFileToProject("features/refactoring/$path", path)
-        return path
-    }
+    // region Tests
 
     @Test
     fun testRename_ComplexEnumValue() {
-        val mainPath = "common/vtubers/1_1_vtubers.test.txt"
-        val otherPath = "common/vtuber_tags/1_1_vtuber_tags.test.txt"
-
         // Arrange
-        configureFile(mainPath)
-        configureFile(otherPath)
+        val mainPath = configureMarkedFile("features/refactoring/common/vtubers/1_1_vtubers.test.txt")
+        val otherPath = configureMarkedFile("features/refactoring/common/vtuber_tags/1_1_vtuber_tags.test.txt")
 
         // Ensure indexed
         IndexingTestUtil.waitUntilIndexesAreReady(project)
@@ -60,18 +55,15 @@ class ParadoxComplexEnumValueRenameTest : BasePlatformTestCase(), ChronicleTestS
         myFixture.renameElementAtCaretUsingHandler(newName)
 
         // Assert
-        myFixture.checkResultByFile(mainPath, "features/refactoring/common/vtubers/1_1_vtubers.after.test.txt", true)
-        myFixture.checkResultByFile(otherPath, "features/refactoring/common/vtuber_tags/1_1_vtuber_tags.after.test.txt", true)
+        checkMarkedResult(mainPath, "after")
+        checkMarkedResult(otherPath, "after")
     }
 
     @Test
     fun testRename_ComplexEnumValue_FromDeclaration() {
-        val mainPath = "common/vtuber_tags/1_2_vtuber_tags.test.txt"
-        val otherPath = "common/vtubers/1_2_vtubers.test.txt"
-
         // Arrange
-        configureFile(mainPath)
-        configureFile(otherPath)
+        val mainPath = configureMarkedFile("features/refactoring/common/vtuber_tags/1_2_vtuber_tags.test.txt")
+        val otherPath = configureMarkedFile("features/refactoring/common/vtubers/1_2_vtubers.test.txt")
 
         // Ensure indexed
         IndexingTestUtil.waitUntilIndexesAreReady(project)
@@ -82,22 +74,17 @@ class ParadoxComplexEnumValueRenameTest : BasePlatformTestCase(), ChronicleTestS
         myFixture.renameElementAtCaretUsingHandler(newName)
 
         // Assert
-        myFixture.checkResultByFile(mainPath, "features/refactoring/common/vtuber_tags/1_2_vtuber_tags.after.test.txt", true)
-        myFixture.checkResultByFile(otherPath, "features/refactoring/common/vtubers/1_2_vtubers.after.test.txt", true)
+        checkMarkedResult(mainPath, "after")
+        checkMarkedResult(otherPath, "after")
     }
 
     @Test
     fun testRename_ComplexEnumValue_RelatedLocalisations() {
-        val mainPath = "common/vtubers/1_3_vtubers.test.txt"
-        val otherPath = "common/vtuber_tags/1_3_vtuber_tags.test.txt"
-        val localisationEnglishPath = "localisation/1_3_main_l_english.test.yml"
-        val localisationChinesePath = "localisation/1_3_main_l_simp_chinese.test.yml"
-
         // Arrange
-        configureFile(mainPath)
-        configureFile(otherPath) // necessary
-        configureFile(localisationEnglishPath)
-        configureFile(localisationChinesePath)
+        val mainPath = configureMarkedFile("features/refactoring/common/vtubers/1_3_vtubers.test.txt")
+        val otherPath = configureMarkedFile("features/refactoring/common/vtuber_tags/1_3_vtuber_tags.test.txt") // necessary
+        val localisationEnglishPath = configureMarkedFile("features/refactoring/localisation/1_3_main_l_english.test.yml")
+        val localisationChinesePath = configureMarkedFile("features/refactoring/localisation/1_3_main_l_simp_chinese.test.yml")
 
         // Ensure indexed
         IndexingTestUtil.waitUntilIndexesAreReady(project)
@@ -108,9 +95,22 @@ class ParadoxComplexEnumValueRenameTest : BasePlatformTestCase(), ChronicleTestS
         myFixture.renameElementAtCaretUsingHandler(newName)
 
         // Assert
-        myFixture.checkResultByFile(mainPath, "features/refactoring/common/vtubers/1_3_vtubers.after.test.txt", true)
-        myFixture.checkResultByFile(otherPath, "features/refactoring/common/vtuber_tags/1_3_vtuber_tags.after.test.txt", true)
-        myFixture.checkResultByFile(localisationEnglishPath, "features/refactoring/localisation/1_3_main_l_english.after.test.yml", true)
-        myFixture.checkResultByFile(localisationChinesePath, "features/refactoring/localisation/1_3_main_l_simp_chinese.after.test.yml", true)
+        checkMarkedResult(mainPath, "after")
+        checkMarkedResult(otherPath, "after")
+        checkMarkedResult(localisationEnglishPath, "after")
+        checkMarkedResult(localisationChinesePath, "after")
+    }
+
+    // endregion
+
+    private fun configureMarkedFile(@TestDataFile testDataPath: String, path: String = testDataPath.removePrefix("features/refactoring/")): String {
+        markFileInfo(gameType, path)
+        myFixture.configureByFile(testDataPath)
+        return testDataPath
+    }
+
+    private fun checkMarkedResult(@TestDataFile testDataPath: String, tag: String) {
+        val expectedPath = testDataPath.convertPath { b, e -> "$b.$tag$e" }
+        myFixture.checkResultByFile(testDataPath, expectedPath, true)
     }
 }

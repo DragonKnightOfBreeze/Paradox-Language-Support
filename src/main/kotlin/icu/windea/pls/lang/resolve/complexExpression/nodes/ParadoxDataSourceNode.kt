@@ -10,11 +10,18 @@ import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.config.expandConfigExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.collections.anyFast
+import icu.windea.pls.core.collections.filterFast
+import icu.windea.pls.core.collections.findFast
+import icu.windea.pls.core.collections.flatMapFast
+import icu.windea.pls.core.collections.mapNotNullFast
 import icu.windea.pls.core.createResults
 import icu.windea.pls.core.resolveFirst
+import icu.windea.pls.core.util.ProcessorScope
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.ParadoxPsiService
+import icu.windea.pls.lang.resolve.ParadoxExpressionService
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionErrors
 import icu.windea.pls.lang.util.ParadoxDynamicValueManager
@@ -28,8 +35,8 @@ class ParadoxDataSourceNode(
     override val configGroup: CwtConfigGroup,
     val linkConfigs: List<CwtLinkConfig>
 ) : ParadoxComplexExpressionNodeBase(), ParadoxIdentifierNode, ParadoxDynamicDataNode {
-    private val linkConfigsDynamicValue = linkConfigs.filter { it.configExpression?.type in CwtDataTypeSets.DynamicValue }
-    private val linkConfigsNotDynamicValue = linkConfigs.filter { it.configExpression?.type !in CwtDataTypeSets.DynamicValue }
+    private val linkConfigsDynamicValue = linkConfigs.filterFast { it.configExpression?.type in CwtDataTypeSets.DynamicValue }
+    private val linkConfigsNotDynamicValue = linkConfigs.filterFast { it.configExpression?.type !in CwtDataTypeSets.DynamicValue }
 
     override fun getRelatedConfigs(): Collection<CwtConfig<*>> {
         return linkConfigs
@@ -41,9 +48,9 @@ class ParadoxDataSourceNode(
         if (linkConfigs.size == 1) return linkConfigs.first()
         run {
             if (linkConfigsNotDynamicValue.isEmpty()) return@run
-            val offset = ParadoxExpressionManager.getExpressionOffset(element)
+            val offset = ParadoxExpressionService.getExpressionOffset(element)
             val rangeInElement = rangeInExpression.shiftRight(offset)
-            val resolved = linkConfigs.find {
+            val resolved = linkConfigs.findFast {
                 ParadoxExpressionManager.resolveScriptExpression(element, rangeInElement, it, ParadoxExpressionRole.Other) != null
             }
             if (resolved != null) return resolved
@@ -59,20 +66,20 @@ class ParadoxDataSourceNode(
         if (nodes.isNotEmpty()) return null
         if (text.isEmpty()) return null
         if (text.isParameterized()) return null
-        val configExpressions = linkConfigs.mapNotNullTo(mutableSetOf()) { it.configExpression }
+        val configExpressions = linkConfigs.mapNotNullFast { it.configExpression }
         // 忽略不是引用或者是dynamicValue的情况
-        if (configExpressions.any { !it.type.isReference || it.type in CwtDataTypeSets.DynamicValue }) return null
+        if (configExpressions.anyFast { !it.type.isReference || it.type in CwtDataTypeSets.DynamicValue }) return null
         // 排除可解析的情况
         val reference = getReference(element)
         if (reference == null || reference.resolveFirst() != null) return null
-        return ParadoxComplexExpressionErrors.unresolvedDataSource(rangeInExpression, text, configExpressions.joinToString())
+        return ParadoxComplexExpressionErrors.unresolvedDataSource(rangeInExpression, text, configExpressions.toSet().joinToString())
     }
 
     override fun getReference(element: ParadoxExpressionElement): Reference? {
         if (linkConfigs.isEmpty()) return null
         if (text.isEmpty()) return null
         if (text.isParameterized()) return null
-        val offset = ParadoxExpressionManager.getExpressionOffset(element)
+        val offset = ParadoxExpressionService.getExpressionOffset(element)
         return Reference(element, rangeInExpression.shiftRight(offset), this)
     }
 
@@ -83,8 +90,8 @@ class ParadoxDataSourceNode(
     ) : PsiPolyVariantReferenceBase<ParadoxExpressionElement>(element, rangeInElement), ParadoxIdentifierNode.Reference {
         private val name get() = node.text
         private val project get() = node.configGroup.project
-        private val linkConfigsDynamicValue = node.linkConfigs.filter { it.configExpression?.type in CwtDataTypeSets.DynamicValue }
-        private val linkConfigsNotDynamicValue = node.linkConfigs.filter { it.configExpression?.type !in CwtDataTypeSets.DynamicValue }
+        private val linkConfigsDynamicValue = node.linkConfigs.filterFast { it.configExpression?.type in CwtDataTypeSets.DynamicValue }
+        private val linkConfigsNotDynamicValue = node.linkConfigs.filterFast { it.configExpression?.type !in CwtDataTypeSets.DynamicValue }
 
         override fun handleElementRename(newElementName: String): PsiElement {
             return ParadoxPsiService.handleExpressionElementRename(element, rangeInElement, newElementName, resolve())
@@ -119,7 +126,7 @@ class ParadoxDataSourceNode(
             }
             run {
                 if (linkConfigsDynamicValue.isEmpty()) return@run
-                val configExpressions = linkConfigsDynamicValue.mapNotNull { it.configExpression }
+                val configExpressions = linkConfigsDynamicValue.mapNotNullFast { it.configExpression }
                 if (configExpressions.isEmpty()) return@run
                 val resolved = ParadoxDynamicValueManager.resolveDynamicValue(element, name, configExpressions, node.configGroup)
                 return resolved
@@ -131,14 +138,14 @@ class ParadoxDataSourceNode(
             val element = element
             run {
                 if (linkConfigsNotDynamicValue.isEmpty()) return@run
-                val resolved = linkConfigsNotDynamicValue.flatMap {
+                val resolved = linkConfigsNotDynamicValue.flatMapFast {
                     ParadoxExpressionManager.resolveAllScriptExpression(element, rangeInElement, it, ParadoxExpressionRole.Other)
                 }
                 if (resolved.isNotEmpty()) return resolved.createResults()
             }
             run {
                 if (linkConfigsDynamicValue.isEmpty()) return@run
-                val configExpressions = linkConfigsDynamicValue.mapNotNull { it.configExpression }
+                val configExpressions = linkConfigsDynamicValue.mapNotNullFast { it.configExpression }
                 if (configExpressions.isEmpty()) return@run
                 val resolved = ParadoxDynamicValueManager.resolveDynamicValue(element, name, configExpressions, node.configGroup)
                 if (resolved != null) return resolved.createResults()
@@ -151,7 +158,8 @@ class ParadoxDataSourceNode(
             if (!isAcceptableConstraint(constraint)) return false
             // test data type
             // NOTE 3.0.1 expand config expression first since it's necessary for unions and aliases
-            return node.linkConfigs.expandConfigExpression().any { constraint.test(it.type) }
+            val configs = node.linkConfigs
+            return ProcessorScope.anyFrom({ configs.expandConfigExpression { process(it) } }) { constraint.test(it.type) }
         }
 
         private fun isAcceptableConstraint(constraint: ParadoxReferenceConstraint): Boolean {

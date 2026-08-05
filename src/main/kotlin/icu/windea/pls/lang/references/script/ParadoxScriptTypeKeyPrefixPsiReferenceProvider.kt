@@ -15,11 +15,6 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.isDirectValue
 
-/**
- * 解析定义键前缀引用。
- *
- * 直接在定义声明之前的，作为前缀的字符串，将其视为引用，并解析为对应的规则（类型规则中，属性 `type_key_prefix` 的值）。
- */
 class ParadoxScriptTypeKeyPrefixPsiReferenceProvider : PsiReferenceProvider() {
     override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<PsiReference> {
         ProgressManager.checkCanceled()

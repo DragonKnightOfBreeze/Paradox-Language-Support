@@ -14,11 +14,13 @@ import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.createResults
 import icu.windea.pls.core.resolveFirst
+import icu.windea.pls.core.util.ProcessorScope
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxExpressionMatchService
 import icu.windea.pls.lang.match.ParadoxScriptExpressionMatchContext
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.ParadoxPsiService
+import icu.windea.pls.lang.resolve.ParadoxExpressionService
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxTemplateExpression
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionErrors
@@ -38,21 +40,24 @@ class ParadoxTemplateSnippetNode(
     override val configGroup: CwtConfigGroup,
     val configExpression: CwtDataExpression
 ) : ParadoxComplexExpressionNodeBase(), ParadoxIdentifierNode, ParadoxDynamicDataNode {
-    val config = CwtValueConfig.createMock(configGroup, configExpression.expressionString)
+    fun getMockConfig(): CwtValueConfig {
+        return CwtValueConfig.createMock(configGroup, configExpression.expressionString)
+    }
 
     /** 是否可以被精确匹配（不存在可能有歧义的引用）。 */
     fun isExactMatched(): Boolean {
-        val dataType = config.configExpression.type
+        val mockConfig = getMockConfig()
+        val dataType = mockConfig.configExpression.type
         return when {
             dataType in CwtDataTypeSets.Expandable -> {
                 false // for simple code
             }
             dataType in CwtDataTypeSets.DefinitionAware -> {
-                val definitionType = config.configExpression.value ?: return true
+                val definitionType = mockConfig.configExpression.metadata.value ?: return true
                 definitionType !in configGroup.types.keys
             }
             dataType == CwtDataTypes.EnumValue -> {
-                val enumName = config.configExpression.value ?: return true
+                val enumName = mockConfig.configExpression.metadata.value ?: return true
                 enumName !in configGroup.complexEnums.keys
             }
             else -> true
@@ -62,13 +67,13 @@ class ParadoxTemplateSnippetNode(
     /** 检查是否可以被精确匹配（不存在可能有歧义的引用）。 */
     fun checkExactMatched(element: PsiElement): Boolean {
         val expression = ParadoxExpression.resolve(text)
-        val matchContext = ParadoxScriptExpressionMatchContext(element, expression, configExpression, config, configGroup)
+        val matchContext = ParadoxScriptExpressionMatchContext(element, expression, configExpression, getMockConfig(), configGroup)
         return ParadoxExpressionMatchService.matchScriptExpression(matchContext).get()
     }
 
     override fun getAttributesKeyConfig(element: ParadoxExpressionElement): CwtConfig<*>? {
         if (text.isParameterized()) return null
-        return config
+        return getMockConfig()
     }
 
     override fun getUnresolvedError(element: ParadoxExpressionElement): ParadoxComplexExpressionError? {
@@ -85,8 +90,8 @@ class ParadoxTemplateSnippetNode(
 
     override fun getReference(element: ParadoxExpressionElement): Reference? {
         if (text.isParameterized()) return null
-        val offset = ParadoxExpressionManager.getExpressionOffset(element)
-        return Reference(element, rangeInExpression.shiftRight(offset), text, config)
+        val offset = ParadoxExpressionService.getExpressionOffset(element)
+        return Reference(element, rangeInExpression.shiftRight(offset), text, getMockConfig())
     }
 
     class Reference(
@@ -147,7 +152,7 @@ class ParadoxTemplateSnippetNode(
             if (!isAcceptableConstraint(constraint)) return false
             // test data type
             // NOTE 3.0.1 expand config expression first since it's necessary for unions and aliases
-            return config.expandConfigExpression().any { constraint.test(it.type) }
+            return ProcessorScope.anyFrom({ config.expandConfigExpression { process(it) } }) { constraint.test(it.type) }
         }
 
         private fun isAcceptableConstraint(constraint: ParadoxReferenceConstraint): Boolean {

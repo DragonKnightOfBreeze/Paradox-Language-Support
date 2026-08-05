@@ -2,16 +2,15 @@ package icu.windea.pls.ep.index
 
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.psi.PsiElement
-import icu.windea.pls.config.config.CwtMemberConfig
-import icu.windea.pls.core.collections.asMutable
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
-import icu.windea.pls.lang.index.ChronicleIndexStatisticService
 import icu.windea.pls.lang.index.ParadoxMergedIndex
+import icu.windea.pls.lang.index.ParadoxMergedIndexCsvContext
+import icu.windea.pls.lang.index.ParadoxMergedIndexLocalisationContext
+import icu.windea.pls.lang.index.ParadoxMergedIndexScriptContext
+import icu.windea.pls.lang.index.ParadoxMergedIndexType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
-import icu.windea.pls.model.ParadoxDefinitionCandidateInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.index.ParadoxIndexInfo
-import icu.windea.pls.model.index.ParadoxIndexInfoType
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import java.io.DataInput
 import java.io.DataOutput
@@ -23,29 +22,21 @@ import java.io.DataOutput
  * @see ParadoxIndexInfo
  */
 interface ParadoxMergedIndexSupport<T : ParadoxIndexInfo> {
-    val indexInfoType: ParadoxIndexInfoType<T>
+    val type: ParadoxMergedIndexType<T>
 
-    fun buildData(element: PsiElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {}
+    fun buildData(element: PsiElement, context: ParadoxMergedIndexScriptContext) {}
 
-    fun buildDataForExpression(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, info: ParadoxDefinitionCandidateInfo?) {}
+    fun buildDataForExpression(element: ParadoxScriptStringExpressionElement, context: ParadoxMergedIndexScriptContext) {}
 
-    fun buildDataForExpression(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, info: ParadoxDefinitionCandidateInfo?, configs: List<CwtMemberConfig<*>>) {}
+    fun buildDataForExpression(element: ParadoxLocalisationExpressionElement, context: ParadoxMergedIndexLocalisationContext) {}
 
-    fun buildDataForExpression(element: ParadoxLocalisationExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {}
-
-    fun buildDataForExpression(element: ParadoxCsvExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {}
+    fun buildDataForExpression(element: ParadoxCsvExpressionElement, context: ParadoxMergedIndexCsvContext) {}
 
     fun compressData(value: List<T>): List<T> = value
 
     fun saveData(storage: DataOutput, info: T, previousInfo: T?, gameType: ParadoxGameType)
 
     fun readData(storage: DataInput, previousInfo: T?, gameType: ParadoxGameType): T
-
-    fun <T : ParadoxIndexInfo> addToFileData(info: T, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
-        ChronicleIndexStatisticService.recordMerged(info.gameType, indexInfoType)
-
-        fileData.getOrPut(indexInfoType.key.toString()) { mutableListOf() }.asMutable() += info
-    }
 
     companion object INSTANCE {
         @JvmField val EP_NAME = ExtensionPointName<ParadoxMergedIndexSupport<*>>("icu.windea.pls.mergedIndexSupport")

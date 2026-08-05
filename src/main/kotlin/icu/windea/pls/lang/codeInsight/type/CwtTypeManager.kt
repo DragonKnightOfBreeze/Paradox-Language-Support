@@ -15,7 +15,7 @@ import icu.windea.pls.model.type.CwtTypeResolver
 
 object CwtTypeManager {
     fun isTypedElement(element: PsiElement): Boolean {
-        if (element.language !is CwtLanguage) return false
+        if (element.language !== CwtLanguage) return false
         return when {
             element is CwtExpressionElement -> true
             else -> false
@@ -23,7 +23,7 @@ object CwtTypeManager {
     }
 
     fun findTypedElements(element: PsiElement): List<PsiElement> {
-        if (element.language !is CwtLanguage) return emptyList()
+        if (element.language !== CwtLanguage) return emptyList()
         val typedElement = element.parents(withSelf = true).find { isTypedElement(it) }
         return typedElement.to.singletonListOrEmpty()
     }

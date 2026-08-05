@@ -1,6 +1,7 @@
 package icu.windea.pls.lang.util.renderers
 
 import com.intellij.testFramework.IndexingTestUtil
+import com.intellij.testFramework.TestDataFile
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.lang.codeInsight.annotated.ParadoxAnnotatedLevel
@@ -37,31 +38,36 @@ class ParadoxScriptTextAnnotatedRendererTest : BasePlatformTestCase(), Chronicle
 
     @Test
     fun smokeTest_example() {
-        configureFile("common/misc/example.test.txt")
+        configureMarkedFile("features/renderers/common/misc/example.test.txt")
+
         IndexingTestUtil.waitUntilIndexesAreReady(project)
-        assertResult("common/misc/example.test.txt", ParadoxAnnotatedLevel.BASIC)
+
+        assertResult("features/renderers/common/misc/example.test.txt", ParadoxAnnotatedLevel.BASIC)
     }
 
     @Test
     fun smokeTest_example_unformatted() {
-        configureFile("common/misc/example_unformatted.test.txt")
+        configureMarkedFile("features/renderers/common/misc/example_unformatted.test.txt")
+
         IndexingTestUtil.waitUntilIndexesAreReady(project)
-        assertResult("common/misc/example_unformatted.test.txt", ParadoxAnnotatedLevel.BASIC)
+
+        assertResult("features/renderers/common/misc/example_unformatted.test.txt", ParadoxAnnotatedLevel.BASIC)
     }
 
-    private fun configureFile(path: String) {
+    private fun configureMarkedFile(@TestDataFile testDataPath: String, path: String = testDataPath.removePrefix("features/renderers/")): String {
         markFileInfo(gameType, path)
-        myFixture.copyFileToProject("features/renderers/$path", path)
+        myFixture.configureByFile(testDataPath)
+        return testDataPath
     }
 
     @Suppress("SameParameterValue")
-    private fun assertResult(path: String, level: ParadoxAnnotatedLevel) {
-        val file = myFixture.configureFromTempProjectFile(path)
+    private fun assertResult(@TestDataFile testDataPath: String, level: ParadoxAnnotatedLevel) {
+        val file = myFixture.configureFromTempProjectFile(testDataPath)
         file as ParadoxScriptFile
         val renderer = ParadoxScriptTextAnnotatedRenderer().apply { settings.level = level }
         val result = renderer.render(file)
-        val annotatedPath = path.substringBeforeLast('.') + ".annotated." + path.substringAfterLast('.')
-        val annotatedFile = myFixture.configureByFile("features/renderers/$annotatedPath")
+        val annotatedTestDataPath = testDataPath.substringBeforeLast('.') + ".annotated." + testDataPath.substringAfterLast('.')
+        val annotatedFile = myFixture.configureByFile(annotatedTestDataPath)
         annotatedFile as ParadoxScriptFile
         Assert.assertEquals(annotatedFile.text.trimEnd(), result.trimEnd())
     }

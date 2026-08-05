@@ -1,8 +1,9 @@
 package icu.windea.pls.config.config.extended
 
-import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
+import icu.windea.pls.config.CwtConfigType
+import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.annotations.FromName
 import icu.windea.pls.config.annotations.FromOptionMember
@@ -52,6 +53,8 @@ interface CwtExtendedOnActionConfig : CwtDelegatedConfig<CwtMember, CwtMemberCon
     @FromOptionMember("hint: string?")
     val hint: String?
 
+    override val configType: CwtConfigType get() = CwtConfigTypes.ExtendedOnAction
+
     companion object {
         /** 由成员规则解析为 on action 的扩展规则。 */
         @JvmStatic
@@ -68,13 +71,13 @@ private object CwtExtendedOnActionConfigResolver : CwtConfigResolverScope {
 
     fun resolve(config: CwtMemberConfig<*>): CwtExtendedOnActionConfig? {
         val name = if (config is CwtPropertyConfig) config.key else config.value
-        val eventType = config.optionData.eventType
+        val eventType = config.optionMetadata.eventType
         if (eventType == null) {
-            logger.warn("Skipped invalid extended on action config (name: $name): Missing event_type option.".withLocationPrefix(config))
+            logger.warnWithPrefix(config, "Skipped invalid extended on action config (name: $name): Missing event_type option.")
             return null
         }
-        val hint = config.optionData.hint
-        logger.debug { "Resolved extended on action config (name: $name, event type: $eventType).".withLocationPrefix(config) }
+        val hint = config.optionMetadata.hint
+        logger.debugWithPrefix(config) { "Resolved extended on action config (name: $name, event type: $eventType)." }
         return CwtExtendedOnActionConfigImpl(config, name, eventType, hint)
     }
 }

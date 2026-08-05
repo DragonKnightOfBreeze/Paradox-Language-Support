@@ -24,7 +24,7 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 /**
  * @see CwtDataTypes.Parameter
  */
-class ParadoxScriptParameterExpressionSupport : ParadoxScriptExpressionSupportBase() {
+class ParadoxScriptParameterExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(dataType: CwtDataType): Boolean {
         return dataType == CwtDataTypes.Parameter
     }
@@ -51,7 +51,7 @@ class ParadoxScriptParameterExpressionSupport : ParadoxScriptExpressionSupportBa
 /**
  * @see CwtDataTypes.LocalisationParameter
  */
-class ParadoxScriptLocalisationParameterExpressionSupport : ParadoxScriptExpressionSupportBase() {
+class ParadoxScriptLocalisationParameterExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(dataType: CwtDataType): Boolean {
         return dataType == CwtDataTypes.LocalisationParameter
     }

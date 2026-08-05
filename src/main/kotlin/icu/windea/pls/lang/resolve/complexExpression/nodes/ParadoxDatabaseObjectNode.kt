@@ -7,6 +7,7 @@ import com.intellij.psi.PsiPolyVariantReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.impl.source.resolve.ResolveCache
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.collections.filterFast
 import icu.windea.pls.core.createResults
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.resolveFirst
@@ -16,6 +17,7 @@ import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.ParadoxPsiService
 import icu.windea.pls.lang.resolve.ParadoxDefinitionService
+import icu.windea.pls.lang.resolve.ParadoxExpressionService
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDatabaseObjectExpression
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionErrors
@@ -24,7 +26,6 @@ import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.search.util.preferLocale
 import icu.windea.pls.lang.selectLocale
-import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.constraints.ParadoxReferenceConstraint
@@ -62,7 +63,7 @@ class ParadoxDatabaseObjectNode(
         if (config == null) return null
         if (text.isEmpty()) return null
         if (text.isParameterized()) return null
-        val offset = ParadoxExpressionManager.getExpressionOffset(element)
+        val offset = ParadoxExpressionService.getExpressionOffset(element)
         return Reference(element, rangeInExpression.shiftRight(offset), this)
     }
 
@@ -183,13 +184,13 @@ class ParadoxDatabaseObjectNode(
                 val preferredLocale = selectLocale(element) ?: ParadoxLocaleManager.getPreferredLocaleConfig()
                 val selector = ParadoxLocalisationSearch.selector(project, element).contextSensitive().preferLocale(preferredLocale)
                 return ParadoxLocalisationSearch.searchNormal(name, selector).findAll()
-                    .filter { node.isValidDatabaseObject(it, typeToSearch) }
+                    .filterFast { node.isValidDatabaseObject(it, typeToSearch) }
                     .createResults()
             }
 
             val selector = ParadoxDefinitionSearch.selector(project, element).contextSensitive()
             return ParadoxDefinitionSearch.searchElement(name, typeToSearch, selector).findAll()
-                .filter { node.isValidDatabaseObject(it, typeToSearch) }
+                .filterFast { node.isValidDatabaseObject(it, typeToSearch) }
                 .createResults()
         }
 

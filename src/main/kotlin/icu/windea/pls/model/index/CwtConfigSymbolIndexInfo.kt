@@ -1,6 +1,6 @@
 package icu.windea.pls.model.index
 
-import icu.windea.pls.core.ReadWriteAccess
+import icu.windea.pls.core.util.ReadWriteAccess
 import icu.windea.pls.cwt.psi.CwtStringExpressionElement
 import icu.windea.pls.lang.psi.CwtPsiFileService
 import icu.windea.pls.model.ParadoxGameType

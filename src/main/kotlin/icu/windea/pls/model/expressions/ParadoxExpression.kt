@@ -1,9 +1,14 @@
+@file:Optimized
+
 package icu.windea.pls.model.expressions
 
+import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.equalsFast
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.match.TextMatcher
 import icu.windea.pls.core.quote
 import icu.windea.pls.core.unquote
+import icu.windea.pls.core.util.values.LazyValue
 import icu.windea.pls.ep.match.expression.ParadoxCsvExpressionMatcher
 import icu.windea.pls.ep.match.expression.ParadoxScriptExpressionMatcher
 import icu.windea.pls.ep.resolve.expression.ParadoxCsvExpressionSupport
@@ -27,6 +32,11 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 /**
  * 脚本文件、本地化文件或者 CSV 文件中的各种表达式，
  *
+ * @property text 文本。保留括起的双引号。
+ * @property value 值，不保留括起的双引号。
+ * @property type 类型。
+ * @property role 角色。分为键/值/其他。
+ *
  * @see ParadoxExpressionElement
  * @see ParadoxScriptExpressionMatcher
  * @see ParadoxCsvExpressionMatcher
@@ -46,10 +56,11 @@ interface ParadoxExpression {
 
     fun matchesInt(): Boolean
     fun matchesFloat(): Boolean
+    fun matchesRegex(v: String): Boolean
     fun matchesConstant(v: String): Boolean
 
-    override fun equals(other: Any?): Boolean
-    override fun hashCode(): Int
+    override fun equals(other: Any?): Boolean // NOTE 3.0.1 only based on `text`
+    override fun hashCode(): Int // NOTE 3.0.1 only based on `text`
     override fun toString(): String
 
     companion object {
@@ -90,18 +101,18 @@ private object ParadoxExpressionResolver {
 
     fun resolveUnknown(): ParadoxExpression = unknownExpression
 
-    fun resolve(text: String, role: ParadoxExpressionRole = ParadoxExpressionRole.Other): ParadoxExpression {
+    fun resolve(text: String, role: ParadoxExpressionRole): ParadoxExpression {
         return ParadoxTextBasedExpression(text, role)
     }
 
-    fun resolve(value: String, quoted: Boolean, role: ParadoxExpressionRole = ParadoxExpressionRole.Other): ParadoxExpression {
+    fun resolve(value: String, quoted: Boolean, role: ParadoxExpressionRole): ParadoxExpression {
         return when {
             quoted -> ParadoxQuotedValueBasedExpression(value, role)
             else -> ParadoxUnquotedValueBasedExpression(value, role)
         }
     }
 
-    fun resolve(element: ParadoxExpressionElement, options: ParadoxMatchOptions? = null): ParadoxExpression {
+    fun resolve(element: ParadoxExpressionElement, options: ParadoxMatchOptions?): ParadoxExpression {
         return when (element) {
             is ParadoxScriptBlock -> blockExpression
             is ParadoxScriptScriptedVariableReference -> ParadoxScriptedVariableReferenceBasedExpression(element, options)
@@ -111,29 +122,48 @@ private object ParadoxExpressionResolver {
 }
 
 private sealed class ParadoxExpressionBase : ParadoxExpression {
-    private val regex by lazy { ParadoxExpressionManager.toRegex(value) }
+    // 3.0.1 optimize: cache status
+    // 3.0.1 optimize: use more memory-friendly lazy property
 
-    override fun isParameterized(): Boolean {
-        return type == ParadoxExpressionType.String && value.isParameterized()
-    }
+    private inline val parameterized: Boolean // region by lazy { doIsParameterized() }
+        get() = LazyValue.ofBoolean({ _parameterized }, { _parameterized = it }) { doIsParameterized() }
+    @Volatile private var _parameterized = LazyValue.UNINITIALIZED_BOOLEAN // endregion
+    private inline val fullParameterized: Boolean // region by lazy { doIsFullParameterized() }
+        get() = LazyValue.ofBoolean({ _fullParameterized }, { _fullParameterized = it }) { doIsFullParameterized() }
+    @Volatile private var _fullParameterized = LazyValue.UNINITIALIZED_BOOLEAN // endregion
+    private inline val int: Boolean // region by lazy { doMatchInt() }
+        get() = LazyValue.ofBoolean({ _int }, { _int = it }) { doMatchInt() }
+    @Volatile private var _int = LazyValue.UNINITIALIZED_BOOLEAN // endregion
+    private inline val float: Boolean // region by lazy { doMatchFloat() }
+        get() = LazyValue.ofBoolean({ _float }, { _float = it }) { doMatchFloat() }
+    @Volatile private var _float = LazyValue.UNINITIALIZED_BOOLEAN // endregion
+    private inline val regex: Regex // region by lazy { computeRegex() }
+        get() = LazyValue.of({ _regex }, { _regex = it }) { computeRegex() }
+    @Volatile private var _regex: Regex? = null // endregion
 
-    override fun isFullParameterized(): Boolean {
-        return type == ParadoxExpressionType.String && value.isParameterized(full = true)
-    }
+    private fun doIsParameterized() = type == ParadoxExpressionType.String && value.isParameterized()
+    private fun doIsFullParameterized() = type == ParadoxExpressionType.String && value.isParameterized(full = true)
+    private fun doMatchInt() = type.isLenientInt() || TextMatcher.matchesInt(value)
+    private fun doMatchFloat() = type.isLenientFloat() || TextMatcher.matchesFloat(value)
+    private fun computeRegex() = ParadoxExpressionManager.toRegex(value)
 
-    override fun matchesInt(): Boolean {
-        return type.isLenientInt() || TextMatcher.matchesInt(value)
-    }
+    override fun isParameterized(): Boolean = parameterized
 
-    override fun matchesFloat(): Boolean {
-        return type.isLenientFloat() || TextMatcher.matchesFloat(value)
+    override fun isFullParameterized(): Boolean = fullParameterized
+
+    override fun matchesInt(): Boolean = int
+
+    override fun matchesFloat(): Boolean = float
+
+    override fun matchesRegex(v: String): Boolean {
+        return regex.matches(v)
     }
 
     override fun matchesConstant(v: String): Boolean {
         // 兼容带参数的情况（此时先转化为正则表达式，再进行匹配）
-        if (value.isParameterized()) return regex.matches(v)
+        if (isParameterized()) return matchesRegex(v)
         // 忽略大小写
-        return value.equals(v, true)
+        return value.equalsFast(v, true) // 3.0.1 radical optimization
     }
 
     override fun equals(other: Any?) = this === other || other is ParadoxExpression && text == other.text
@@ -190,7 +220,9 @@ private class ParadoxScriptedVariableReferenceBasedExpression(
     private val element: ParadoxScriptedVariableReference,
     private val options: ParadoxMatchOptions?,
 ) : ParadoxExpressionBase() {
-    private val resolvedExpression by lazy { computeResolvedExpression() }
+    private inline val resolvedExpression: ParadoxExpression // region by lazy { computeResolvedExpression() }
+        get() = LazyValue.of(this, { _resolvedExpression }, { _resolvedExpression = it }) { computeResolvedExpression() }
+    @Volatile private var _resolvedExpression: ParadoxExpression? = null // endregion
 
     private fun computeResolvedExpression(): ParadoxExpression {
         if (ParadoxMatchService.isDumb(options)) return ParadoxExpression.resolveUnknown()

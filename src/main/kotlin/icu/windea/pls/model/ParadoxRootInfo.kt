@@ -23,12 +23,23 @@ sealed interface ParadoxRootInfo {
     val mainEntries: Set<String> get() = emptySet()
     val extraEntries: Set<String> get() = emptySet()
 
+    val isValid: Boolean get() = true
+
+    fun invalidate() {}
+
     sealed class MetadataBased(
         override val rootFile: VirtualFile,
         open val metadata: ParadoxRootMetadata,
     ) : ParadoxRootInfo {
         val name: String get() = metadata.name
         val version: String? get() = metadata.version
+
+        @Volatile private var _isValid = true
+        override val isValid: Boolean get() = _isValid
+
+        override fun invalidate() {
+            _isValid = false
+        }
     }
 
     class Game(
@@ -76,6 +87,8 @@ sealed interface ParadoxRootInfo {
     ) : ParadoxRootInfo {
         override val qualifiedName: String get() = ChronicleBundle.message("root.name.injected")
         override val steamId: String? get() = null
+
+        override val isValid: Boolean get() = true
 
         override fun toString() = qualifiedName
     }

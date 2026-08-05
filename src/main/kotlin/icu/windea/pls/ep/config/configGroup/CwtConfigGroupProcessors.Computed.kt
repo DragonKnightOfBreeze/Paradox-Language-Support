@@ -11,6 +11,7 @@ import icu.windea.pls.config.config.delegated.CwtModifierConfig
 import icu.windea.pls.config.config.isStatic
 import icu.windea.pls.config.config.prefixFromArgument
 import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.config.configExpression.CwtDataExpressionRole
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.CwtLinksModelBase
 import icu.windea.pls.config.filePathPatterns
@@ -21,6 +22,7 @@ import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.util.tupleOf
+import icu.windea.pls.lang.resolve.ParadoxLocalisationIconService
 import icu.windea.pls.model.paths.CwtConfigPath
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap
 import it.unimi.dsi.fastutil.objects.ObjectArrayList
@@ -56,6 +58,9 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
         computeRelatedLocalisationPatterns(configGroup)
 
         checkCanceled()
+        computeTypesModel(configGroup)
+
+        checkCanceled()
         computeLinksModel(configGroup, configGroup.initializer.linksModel, configGroup.initializer.links.values)
 
         checkCanceled()
@@ -63,9 +68,6 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
 
         checkCanceled()
         computeMacrosModel(configGroup)
-
-        checkCanceled()
-        computeTypesModel(configGroup)
     }
 
     private fun computeLocales(configGroup: CwtConfigGroup) {
@@ -82,7 +84,7 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
         for ((name, modifierConfig) in initializer.modifiers) {
             for (snippetExpression in modifierConfig.template.snippetExpressions) {
                 if (snippetExpression.type == CwtDataTypes.Definition) {
-                    val typeExpression = snippetExpression.value ?: continue
+                    val typeExpression = snippetExpression.metadata.value ?: continue
                     initializer.type2ModifiersMap.getOrPut(typeExpression) { Object2ObjectLinkedOpenHashMap() }[name] = modifierConfig
                 }
             }
@@ -170,7 +172,7 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
             val keysConst = CaseInsensitiveStringKeyMap<String>()
             val keysNoConst = ObjectLinkedOpenHashSet<String>()
             for (key in v.keys) {
-                if (CwtDataExpression.resolve(key, true).type == CwtDataTypes.Constant) {
+                if (CwtDataExpression.resolve(key, CwtDataExpressionRole.Key).type == CwtDataTypes.Constant) {
                     keysConst[key] = key
                 } else {
                     keysNoConst += key
@@ -180,7 +182,7 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
                 initializer.aliasKeysGroupConst[k] = keysConst
             }
             if (keysNoConst.isNotEmpty()) {
-                val sorted = keysNoConst.sortedByPriority({ CwtDataExpression.resolve(it, true) }, { configGroup })
+                val sorted = keysNoConst.sortedByPriority({ CwtDataExpression.resolve(it, CwtDataExpressionRole.Key) }, { configGroup })
                 val fastSet = ObjectLinkedOpenHashSet<String>()
                 fastSet.addAll(sorted)
                 initializer.aliasKeysGroupNoConst[k] = fastSet
@@ -205,6 +207,40 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
                 this += tupleOf(s.substring(0, i), s.substring(i + 1))
             }
             this.sortedWith(compareBy({ it.first }, { it.second }))
+        }
+    }
+
+    private fun computeTypesModel(configGroup: CwtConfigGroup) {
+        val initializer = configGroup.initializer
+        with(initializer.typesModel) {
+            initializer.types.values.forEach { c ->
+                if (c.baseType.isNotNullOrEmpty()) {
+                    base2Swapped[c.baseType] = c.name
+                    swapped2Base[c.name] = c.baseType
+                }
+            }
+
+            initializer.attribute.parameterConfigs.forEach { c ->
+                val propertyConfig = c.parentConfig as? CwtPropertyConfig ?: return@forEach
+                val aliasSubName = propertyConfig.key.removeSurroundingOrNull("alias[", "]")?.substringAfter(':', "")
+                val contextExpression = if (aliasSubName.isNullOrEmpty()) propertyConfig.keyExpression
+                else CwtDataExpression.resolve(aliasSubName, CwtDataExpressionRole.Key)
+                if (contextExpression.type == CwtDataTypes.Definition) {
+                    contextExpression.metadata.value?.let { supportParameters += it }
+                }
+            }
+
+            // based on file paths, in detail, based on file path patterns (has any same file path patterns)
+            val types = initializer.types.values.filter { c -> c.typeKeyPrefix != null && !c.typePerFile }
+            val filePathPatterns = types.flatMapTo(mutableSetOf()) { c -> c.filePathPatterns }
+            initializer.types.values.forEach { c ->
+                if (c.filePathPatterns.any { it in filePathPatterns }) {
+                    typeKeyPrefixAware += c.name
+                }
+            }
+
+            // from localisation icons
+            localisationIconResolvable += ParadoxLocalisationIconService.getDefinitionTypes(configGroup.gameType)
         }
     }
 
@@ -257,42 +293,19 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
 
     private fun computeMacrosModel(configGroup: CwtConfigGroup) {
         val initializer = configGroup.initializer
+        val attribute = initializer.attribute
         with(initializer.macrosModel) {
             initializer.macros.forEach { c ->
                 when (c) {
-                    is CwtMacroConfig.InlineScript -> forInlineScripts += c
-                    is CwtMacroConfig.DefinitionInjection -> forDefinitionInjections = c
-                }
-            }
-        }
-    }
-
-    private fun computeTypesModel(configGroup: CwtConfigGroup) {
-        val initializer = configGroup.initializer
-        with(initializer.typesModel) {
-            initializer.types.values.forEach { c ->
-                if (c.baseType.isNotNullOrEmpty()) {
-                    base2Swapped[c.baseType] = c.name
-                    swapped2Base[c.name] = c.baseType
-                }
-            }
-
-            initializer.parameterConfigs.forEach { c ->
-                val propertyConfig = c.parentConfig as? CwtPropertyConfig ?: return@forEach
-                val aliasSubName = propertyConfig.key.removeSurroundingOrNull("alias[", "]")?.substringAfter(':', "")
-                val contextExpression = if (aliasSubName.isNullOrEmpty()) propertyConfig.keyExpression
-                else CwtDataExpression.resolve(aliasSubName, true)
-                if (contextExpression.type == CwtDataTypes.Definition) {
-                    contextExpression.value?.let { supportParameters += it }
-                }
-            }
-
-            // based on file paths, in detail, based on file path patterns (has any same file path patterns)
-            val types = initializer.types.values.filter { c -> c.typeKeyPrefix != null && !c.typePerFile }
-            val filePathPatterns = types.flatMapTo(mutableSetOf()) { c -> c.filePathPatterns }
-            initializer.types.values.forEach { c ->
-                if (c.filePathPatterns.any { it in filePathPatterns }) {
-                    typeKeyPrefixAware += c.name
+                    is CwtMacroConfig.InlineScript -> {
+                        attribute.supportInlineScript = true // set attribute
+                        forInlineScripts += c
+                    }
+                    is CwtMacroConfig.DefinitionInjection -> {
+                        attribute.supportDefinitionInjection = true // set attribute
+                        attribute.definitionInjectionModes += c.modeConfigs.keys
+                        forDefinitionInjections = c
+                    }
                 }
             }
         }

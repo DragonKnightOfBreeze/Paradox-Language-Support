@@ -36,16 +36,11 @@ class ParadoxInlineScriptIndexTest : BasePlatformTestCase(), ChronicleTestScope 
     @After
     fun doTearDown() = clearIntegrationTest()
 
-    private fun markAndConfigureByFile(@TestDataFile testDataPath: String, relPath: String = testDataPath.removePrefix("features/index/")): PsiFile {
-        markFileInfo(gameType, relPath)
-        return myFixture.configureByFile(testDataPath)
-    }
-
     // region Usage Index
 
     @Test
     fun test_UsageIndex_DirectForm() {
-        markAndConfigureByFile("features/index/common/test/usage_direct_stellaris.test.txt")
+        configureMarkedFile("features/index/common/test/usage_direct_stellaris.test.txt")
 
         val scope = GlobalSearchScope.projectScope(project)
         val elements = StubIndex.getElements(ChronicleIndexKeys.InlineScriptUsage, "test_inline", project, scope, ParadoxScriptProperty::class.java)
@@ -56,7 +51,7 @@ class ParadoxInlineScriptIndexTest : BasePlatformTestCase(), ChronicleTestScope 
 
     @Test
     fun test_UsageIndex_BlockForm() {
-        markAndConfigureByFile("features/index/common/test/usage_block_stellaris.test.txt")
+        configureMarkedFile("features/index/common/test/usage_block_stellaris.test.txt")
 
         val scope = GlobalSearchScope.projectScope(project)
         val elements = StubIndex.getElements(ChronicleIndexKeys.InlineScriptUsage, "test_inline", project, scope, ParadoxScriptProperty::class.java)
@@ -71,7 +66,7 @@ class ParadoxInlineScriptIndexTest : BasePlatformTestCase(), ChronicleTestScope 
 
     @Test
     fun test_ArgumentIndex_BlockForm_All() {
-        markAndConfigureByFile("features/index/common/test/usage_block_stellaris.test.txt")
+        configureMarkedFile("features/index/common/test/usage_block_stellaris.test.txt")
 
         val scope = GlobalSearchScope.projectScope(project)
         val elements = StubIndex.getElements(ChronicleIndexKeys.InlineScriptArgument, "test_inline", project, scope, ParadoxScriptProperty::class.java)
@@ -85,7 +80,7 @@ class ParadoxInlineScriptIndexTest : BasePlatformTestCase(), ChronicleTestScope 
 
     @Test
     fun testEdge_UsageIndex_Parameterized_ShouldSkip() {
-        markAndConfigureByFile("features/index/common/test/usage_parameterized_stellaris.test.txt")
+        configureMarkedFile("features/index/common/test/usage_parameterized_stellaris.test.txt")
 
         val scope = GlobalSearchScope.projectScope(project)
         val elements = StubIndex.getElements(ChronicleIndexKeys.InlineScriptUsage, "test_\$PARAM$", project, scope, ParadoxScriptProperty::class.java)
@@ -96,7 +91,7 @@ class ParadoxInlineScriptIndexTest : BasePlatformTestCase(), ChronicleTestScope 
 
     @Test
     fun testEdge_UsageIndex_VariableRef_ShouldSkip() {
-        markAndConfigureByFile("features/index/common/test/usage_variable_ref_stellaris.test.txt")
+        configureMarkedFile("features/index/common/test/usage_variable_ref_stellaris.test.txt")
 
         val scope = GlobalSearchScope.projectScope(project)
         val elements = StubIndex.getElements(ChronicleIndexKeys.InlineScriptUsage, "test_inline", project, scope, ParadoxScriptProperty::class.java)
@@ -106,4 +101,9 @@ class ParadoxInlineScriptIndexTest : BasePlatformTestCase(), ChronicleTestScope 
     }
 
     // endregion
+
+    private fun configureMarkedFile(@TestDataFile testDataPath: String, path: String = testDataPath.removePrefix("features/index/")): PsiFile {
+        markFileInfo(gameType, path)
+        return myFixture.configureByFile(testDataPath)
+    }
 }

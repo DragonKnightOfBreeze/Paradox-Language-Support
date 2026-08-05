@@ -1,6 +1,6 @@
 package icu.windea.pls.config
 
-import icu.windea.pls.base.annotations.WithGameType
+import icu.windea.pls.base.annotations.ForGameType
 import icu.windea.pls.config.config.delegated.CwtScopeConfig
 import icu.windea.pls.config.config.delegated.CwtScopeGroupConfig
 import icu.windea.pls.core.match.AntMatcher
@@ -28,7 +28,6 @@ import icu.windea.pls.model.ParadoxGameType
  * 每个数据类型对应规则表达式中一种特定的取值形态，决定了规则表达式如何从字符串解析，以及如何与脚本表达式匹配。
  *
  * @see CwtDataType
- * @see CwtDataTypeSets
  */
 @Suppress("unused")
 object CwtDataTypes {
@@ -287,7 +286,7 @@ object CwtDataTypes {
      */
     val EnumValue = CwtDataType.builder("EnumValue").reference().build {
         withPriority { configExpression, configGroup ->
-            val enumName = configExpression.value ?: return@withPriority 0.0 // unexpected
+            val enumName = configExpression.metadata.value ?: return@withPriority 0.0 // unexpected
             if (configGroup.enums.containsKey(enumName)) return@withPriority 80.0
             if (configGroup.complexEnums.containsKey(enumName)) return@withPriority 50.0
             0.0 // unexpected
@@ -657,7 +656,7 @@ object CwtDataTypes {
      *
      * > CWTools 兼容性：不兼容。插件作为扩展提供。
      */
-    @WithGameType(ParadoxGameType.Stellaris)
+    @ForGameType(ParadoxGameType.Stellaris)
     val TechnologyWithLevel = CwtDataType.builder("TechnologyWithLevel").reference().build {
         withPriority(69.0) // lower than Definition
     }
@@ -843,6 +842,9 @@ object CwtDataTypes {
      * 对应的数据表达式的格式：
      * - 直接使用常量值作为数据表达式字符串本身，如 `yes`、`10`、`trigger` 等。
      *
+     * 备注：
+     * - 对于此类型的数据表达式，需要通过 `expressionString` 而非 `metadata.value` 获取常量字符串（等同于原始的表达式字符串）。
+     *
      * > CWTools 兼容性：兼容。
      */
     val Constant = CwtDataType.builder("Constant").patternAware().build {
@@ -854,11 +856,14 @@ object CwtDataTypes {
      * 由常量文本片段和引用片段交替组成的模式。
      * 匹配时将脚本表达式按模板结构拆分，逐个验证各引用片段。
      *
+     * 备注：
+     * - 对于此类型的数据表达式，需要通过 `expressionString` 而非 `metadata.value` 获取模板字符串（等同于原始的表达式字符串）。
+     *
      * > CWTools 兼容性：部分兼容。拥有不同的解析和处理逻辑。
      *
      * @see ParadoxTemplateExpression
      */
-    val TemplateExpression = CwtDataType.builder("TemplateExpression").patternAware().build {
+    val Template = CwtDataType.builder("Template").patternAware().build {
         withPriority(65.0)
     }
     /**

@@ -12,10 +12,12 @@ import icu.windea.pls.config.config.delegated.CwtEnumConfig
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.cache.cancelable
 import icu.windea.pls.core.cache.createNestedCache
 import icu.windea.pls.core.cache.trackedBy
+import icu.windea.pls.core.collections.mapNotNullFast
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.pass
@@ -25,10 +27,12 @@ import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
+import icu.windea.pls.core.util.registerKeyWithThis
 import icu.windea.pls.ep.resolve.modifier.ParadoxModifierSupport
 import icu.windea.pls.ep.resolve.modifier.support
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.index.constraints.ParadoxLocalisationIndexConstraint
 import icu.windea.pls.lang.psi.light.ParadoxModifierLightElement
 import icu.windea.pls.lang.resolve.ParadoxModifierService
 import icu.windea.pls.lang.search.ParadoxComplexEnumValueSearch
@@ -42,11 +46,11 @@ import icu.windea.pls.lang.search.util.withSearchScopeType
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.model.ParadoxModifierInfo
-import icu.windea.pls.model.constraints.ParadoxLocalisationIndexConstraint
 import icu.windea.pls.model.toInfo
 import icu.windea.pls.model.toPsiElement
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
+@Optimized
 object ParadoxModifierManager {
     object Keys : KeyRegistry() {
         val modifierNameKeys by registerKey<Set<String>>(Keys)
@@ -54,7 +58,7 @@ object ParadoxModifierManager {
         val modifierIconPaths by registerKey<Set<String>>(Keys)
     }
 
-    private val CwtConfigGroup.modifierInfoCache by registerKey(CwtConfigGroup.Keys) {
+    private val CwtConfigGroup.modifierInfoCache by registerKeyWithThis(CwtConfigGroup.Keys) {
         // rootFile -> cacheKey -> modifierInfo
         createNestedCache<VirtualFile, _, _> {
             CacheBuilder().build<String, ParadoxModifierInfo>().cancelable().trackedBy { it.modificationTracker }
@@ -109,7 +113,7 @@ object ParadoxModifierManager {
                 doCompleteTemplateModifier(contextElement, configExpression, configGroup, processor, index + 1, builder + text)
             }
             CwtDataTypes.Definition -> {
-                val typeExpression = snippetExpression.value ?: return
+                val typeExpression = snippetExpression.metadata.value ?: return
                 val selector = ParadoxDefinitionSearch.selector(project, contextElement).contextSensitive().distinct()
                 ParadoxDefinitionSearch.searchElement(null, typeExpression, selector).processAsync p@{ definition ->
                     ProgressManager.checkCanceled()
@@ -120,7 +124,7 @@ object ParadoxModifierManager {
                 }
             }
             CwtDataTypes.EnumValue -> {
-                val enumName = snippetExpression.value ?: return
+                val enumName = snippetExpression.metadata.value ?: return
                 // 提示简单枚举
                 val enumConfig = configGroup.enums[enumName]
                 if (enumConfig != null) {
@@ -149,7 +153,7 @@ object ParadoxModifierManager {
                 }
             }
             CwtDataTypes.Value -> {
-                val dynamicValueType = snippetExpression.value ?: return
+                val dynamicValueType = snippetExpression.metadata.value ?: return
                 ProgressManager.checkCanceled()
                 val valueConfig = configGroup.dynamicValueTypes[dynamicValueType] ?: return
                 val dynamicValueTypeConfigs = valueConfig.valueConfigMap.values
@@ -245,7 +249,7 @@ object ParadoxModifierManager {
                 .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
                 .withConstraint(ParadoxLocalisationIndexConstraint.Modifier)
             val nameLocalisations = ParadoxLocalisationSearch.searchNormal(key, selector).findAll()
-            nameLocalisations.mapNotNull { ParadoxLocalisationManager.getLocalizedText(it) }.toSet().orNull()
+            nameLocalisations.mapNotNullFast { ParadoxLocalisationManager.getPresentableText(it) }.toSet().orNull()
         }.orEmpty()
     }
 
@@ -267,7 +271,7 @@ object ParadoxModifierManager {
 
     private fun getModifierCategoryOptionValues(enumConfig: CwtEnumConfig, finalValue: String): Set<String>? {
         val valueConfig = enumConfig.valueConfigMap[finalValue] ?: return null
-        // 统一使用选项数据访问器的缓存
-        return valueConfig.optionData.modifierCategories
+        // 统一使用选项元数据访问器的缓存
+        return valueConfig.optionMetadata.modifierCategories
     }
 }

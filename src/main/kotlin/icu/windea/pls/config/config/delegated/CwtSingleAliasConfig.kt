@@ -1,8 +1,9 @@
 package icu.windea.pls.config.config.delegated
 
-import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
+import icu.windea.pls.config.CwtConfigType
+import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.config.annotations.FromName
 import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtExpandableConfig
@@ -50,6 +51,8 @@ interface CwtSingleAliasConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConf
     @FromName("single_alias[$]")
     val name: String
 
+    override val configType: CwtConfigType get() = CwtConfigTypes.SingleAlias
+
     companion object {
         /** 由属性规则解析为单别名规则。 */
         @JvmStatic
@@ -67,7 +70,7 @@ private object CwtSingleAliasConfigResolver : CwtConfigResolverScope {
     fun resolve(config: CwtPropertyConfig): CwtSingleAliasConfig? {
         val key = config.key
         val name = key.removeSurroundingOrNull("single_alias[", "]")?.orNull()?.optimized() ?: return null
-        logger.debug { "Resolved single alias config (name: $name).".withLocationPrefix(config) }
+        logger.debugWithPrefix(config) { "Resolved single alias config (name: $name)." }
         return CwtSingleAliasConfigImpl(config, name)
     }
 }

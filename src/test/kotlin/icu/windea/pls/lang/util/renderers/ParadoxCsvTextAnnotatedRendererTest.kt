@@ -1,5 +1,7 @@
 package icu.windea.pls.lang.util.renderers
 
+import com.intellij.testFramework.IndexingTestUtil
+import com.intellij.testFramework.TestDataFile
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.csv.psi.ParadoxCsvFile
@@ -36,29 +38,36 @@ class ParadoxCsvTextAnnotatedRendererTest : BasePlatformTestCase(), ChronicleTes
 
     @Test
     fun smokeTest_example() {
-        configureFile("common/misc/example.test.csv")
-        assertResult("common/misc/example.test.csv", ParadoxAnnotatedLevel.BASIC)
+        configureMarkedFile("features/renderers/common/misc/example.test.csv")
+
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+
+        assertResult("features/renderers/common/misc/example.test.csv", ParadoxAnnotatedLevel.BASIC)
     }
 
     @Test
     fun smokeTest_example_unformatted() {
-        configureFile("common/misc/example_unformatted.test.csv")
-        assertResult("common/misc/example_unformatted.test.csv", ParadoxAnnotatedLevel.BASIC)
+        configureMarkedFile("features/renderers/common/misc/example_unformatted.test.csv")
+
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+
+        assertResult("features/renderers/common/misc/example_unformatted.test.csv", ParadoxAnnotatedLevel.BASIC)
     }
 
-    private fun configureFile(path: String) {
+    private fun configureMarkedFile(@TestDataFile testDataPath: String, path: String = testDataPath.removePrefix("features/renderers/")): String {
         markFileInfo(gameType, path)
-        myFixture.copyFileToProject("features/renderers/$path", path)
+        myFixture.configureByFile(testDataPath)
+        return testDataPath
     }
 
     @Suppress("SameParameterValue")
-    private fun assertResult(path: String, level: ParadoxAnnotatedLevel) {
-        val file = myFixture.configureFromTempProjectFile(path)
+    private fun assertResult(@TestDataFile testDataPath: String, level: ParadoxAnnotatedLevel) {
+        val file = myFixture.configureFromTempProjectFile(testDataPath)
         file as ParadoxCsvFile
         val renderer = ParadoxCsvTextAnnotatedRenderer().apply { settings.level = level }
         val result = renderer.render(file)
-        val annotatedPath = path.substringBeforeLast('.') + ".annotated." + path.substringAfterLast('.')
-        val annotatedFile = myFixture.configureByFile("features/renderers/$annotatedPath")
+        val annotatedTestDataPath = testDataPath.substringBeforeLast('.') + ".annotated." + testDataPath.substringAfterLast('.')
+        val annotatedFile = myFixture.configureByFile(annotatedTestDataPath)
         annotatedFile as ParadoxCsvFile
         Assert.assertEquals(annotatedFile.text.trimEnd(), result.trimEnd())
     }

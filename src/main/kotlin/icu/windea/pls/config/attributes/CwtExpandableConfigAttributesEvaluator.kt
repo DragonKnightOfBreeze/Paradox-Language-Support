@@ -59,17 +59,17 @@ class CwtExpandableConfigAttributesEvaluator {
             }
 
             override fun visitUnion(name: String, config: CwtUnionConfig): Boolean {
-                val attributes = configGroup.unionAttributes.getOrPut(name) { evaluate(name, config, configGroup) }
+                val attributes = configGroup.getUnionAttribute(name)
                 return handleContext(attributes)
             }
 
             override fun visitAliasGroup(name: String, aliasConfigGroup: Collection<List<CwtAliasConfig>>): Boolean {
-                val attributes = configGroup.aliasAttributes.getOrPut(name) { evaluate(name, aliasConfigGroup, configGroup) }
+                val attributes = configGroup.getAliasAttribute(name)
                 return handleContext(attributes)
             }
 
             override fun visitSingleAlias(name: String, config: CwtSingleAliasConfig): Boolean {
-                val attributes = configGroup.singleAliasAttributes.getOrPut(name) { evaluate(name, config, configGroup) }
+                val attributes = configGroup.getSingleAliasAttribute(name)
                 return handleContext(attributes)
             }
         }
@@ -89,7 +89,7 @@ class CwtExpandableConfigAttributesEvaluator {
             if (r) involveLocalisationParameter = true
         }
         if (!involveInferredScopeContextAwareDefinitionReference) {
-            val r = CwtConfigExpressionMatchService.matchesInferredScopeContextAwareDefinitionReference(dataExpression, configGroup)
+            val r = CwtConfigExpressionMatchService.matchesScopeInferrableDefinitionReference(dataExpression, configGroup)
             if (r) involveInferredScopeContextAwareDefinitionReference = true
         }
         if (!involveExternalReference) {
@@ -102,7 +102,7 @@ class CwtExpandableConfigAttributesEvaluator {
         if (attributes.involveDynamicValue) involveDynamicValue = true
         if (attributes.involveParameter) involveParameter = true
         if (attributes.involveLocalisationParameter) involveLocalisationParameter = true
-        if (attributes.involveInferredScopeContextAwareDefinitionReference) involveInferredScopeContextAwareDefinitionReference = true
+        if (attributes.involveScopeInferrableDefinitionReference) involveInferredScopeContextAwareDefinitionReference = true
         if (attributes.involveExternalReference) involveExternalReference = true
         return true
     }

@@ -1,0 +1,13 @@
+types = {
+    type[test_entity] = {
+        path = "common/test_entities"
+        path_extension = .txt
+    }
+}
+
+test_entity = {
+    ## cardinality = 0..1
+    id = scalar
+    ## cardinality = 0..inf
+    alias_name[test_alias] = alias_match_left[test_alias]
+}

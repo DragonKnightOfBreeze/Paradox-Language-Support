@@ -2,7 +2,6 @@
 
 package icu.windea.pls.config.config
 
-import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
 import com.intellij.openapi.vfs.VirtualFile
@@ -88,14 +87,14 @@ private object CwtFileConfigResolver : CwtConfigResolverScope {
         val configs = CwtConfigResolverManager.getConfigs(rootBlock, file, configGroup).orEmpty()
         val config = create(pointer, configGroup, fileName, filePath, configs)
         when {
-            configs.isEmpty() -> logger.debug { "Resolved file config (path: ${config.path}, empty member configs).".withLocationPrefix(file, configGroup) }
-            else -> logger.debug { "Resolved file config (path: ${config.path}, ${configs.size} member configs).".withLocationPrefix(file, configGroup) }
+            configs.isEmpty() -> logger.debugWithPrefix(file, configGroup) { "Resolved file config (path: ${config.path}, empty member configs)." }
+            else -> logger.debugWithPrefix(file, configGroup) { "Resolved file config (path: ${config.path}, ${configs.size} member configs)." }
         }
         return config
     }
 
     fun resolve(file: VirtualFile, configGroup: CwtConfigGroup, filePath: String): CwtFileConfig? {
-        if (file.fileType != CwtFileType) return null
+        if (file.fileType !== CwtFileType) return null
         val psiFile = runCatchingCancelable { file.toPsiFile(configGroup.project) }.onFailure { logger.warn(it) }.getOrNull()
         if (psiFile !is CwtFile) return null
         return resolve(psiFile, configGroup, filePath)

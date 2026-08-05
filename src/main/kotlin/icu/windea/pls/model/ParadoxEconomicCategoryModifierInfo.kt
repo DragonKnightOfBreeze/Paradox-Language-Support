@@ -1,8 +1,8 @@
 package icu.windea.pls.model
 
-import icu.windea.pls.base.annotations.WithGameType
+import icu.windea.pls.base.annotations.ForGameType
 
-@WithGameType(ParadoxGameType.Stellaris)
+@ForGameType(ParadoxGameType.Stellaris)
 data class ParadoxEconomicCategoryModifierInfo(
     val key: String,
     val resource: String?,

@@ -3,13 +3,14 @@ package icu.windea.pls.ep.resolve.parameter
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.util.parentOfType
 import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.core.ReadWriteAccess
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.text.DocumentationBuilder
+import icu.windea.pls.core.util.ReadWriteAccess
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
 import icu.windea.pls.core.util.values.unknown
@@ -25,12 +26,13 @@ import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 
 class ParadoxBaseLocalisationParameterSupport : ParadoxLocalisationParameterSupport {
     override fun resolveParameter(localisationElement: ParadoxLocalisationProperty, name: String): ParadoxLocalisationParameterLightElement? {
-        val localisationName = localisationElement.name
+        val localisationName = localisationElement.name.orNull() ?: return null
+        val localisationIcon = ChronicleIcons.Nodes.Localisation
         val file = localisationElement.containingFile
         val gameType = selectGameType(file) ?: return null
         val project = file.project
         val readWriteAccess = ReadWriteAccess.Read
-        val resolved = ParadoxLocalisationParameterLightElement(localisationElement, name, localisationName, readWriteAccess, gameType, project)
+        val resolved = ParadoxLocalisationParameterLightElement(localisationElement, name, localisationName, localisationIcon, readWriteAccess, gameType, project)
         return resolved
     }
 
@@ -38,11 +40,12 @@ class ParadoxBaseLocalisationParameterSupport : ParadoxLocalisationParameterSupp
         val name = element.name.orNull() ?: return null
         val localisationElement = element.parentOfType<ParadoxLocalisationProperty>(withSelf = false) ?: return null
         val localisationName = localisationElement.name.orNull() ?: return null
+        val localisationIcon = ChronicleIcons.Nodes.Localisation
         val file = localisationElement.containingFile
         val gameType = selectGameType(file) ?: return null
         val project = file.project
         val readWriteAccess = ReadWriteAccess.Read
-        val resolved = ParadoxLocalisationParameterLightElement(element, name, localisationName, readWriteAccess, gameType, project)
+        val resolved = ParadoxLocalisationParameterLightElement(element, name, localisationName, localisationIcon, readWriteAccess, gameType, project)
         return resolved
     }
 
@@ -51,11 +54,12 @@ class ParadoxBaseLocalisationParameterSupport : ParadoxLocalisationParameterSupp
         val name = (rangeInElement?.substring(element.text) ?: element.name).orNull() ?: return null
         val localisationReferenceElement = ParadoxLocalisationParameterManager.getLocalisationReferenceElement(element, config) ?: return null
         val localisationName = localisationReferenceElement.name.orNull() ?: return null
+        val localisationIcon = ChronicleIcons.Nodes.Localisation
         val readWriteAccess = ReadWriteAccess.Write
         val configGroup = config.configGroup
         val gameType = configGroup.gameType
         val project = configGroup.project
-        val resolved = ParadoxLocalisationParameterLightElement(element, name, localisationName, readWriteAccess, gameType, project)
+        val resolved = ParadoxLocalisationParameterLightElement(element, name, localisationName, localisationIcon, readWriteAccess, gameType, project)
         return resolved
     }
 

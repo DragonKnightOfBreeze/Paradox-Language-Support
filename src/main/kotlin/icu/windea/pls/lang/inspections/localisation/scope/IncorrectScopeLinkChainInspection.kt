@@ -9,12 +9,12 @@ import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.isCommandExpression
+import icu.windea.pls.lang.resolve.ParadoxExpressionService
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxCommandExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionRecursiveVisitor
 import icu.windea.pls.lang.selectGameType
-import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 
@@ -50,7 +50,7 @@ class IncorrectScopeLinkChainInspection : ScopeInspectionBase() {
         val max = ParadoxScopeManager.maxScopeLinkSize
         val actual = scopeNodes.size
         if (actual <= max) return
-        val offset = ParadoxExpressionManager.getExpressionOffset(element)
+        val offset = ParadoxExpressionService.getExpressionOffset(element)
         val startOffset = offset + scopeNodes.first().rangeInExpression.startOffset
         val endOffset = offset + scopeNodes.last().rangeInExpression.endOffset
         val range = TextRange.create(startOffset, endOffset)

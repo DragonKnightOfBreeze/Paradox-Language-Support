@@ -7,6 +7,8 @@ object ChronicleTestCapacities {
 
     fun includeAi() = System.getProperty("chronicle.test.include.ai").toBoolean()
 
+    fun includeRemote() = System.getProperty("chronicle.test.include.remote").toBoolean()
+
     fun includeLocalEnv() = System.getProperty("chronicle.test.include.local.env").toBoolean()
 
     fun includeConfigGenerator() = System.getProperty("chronicle.test.include.config.generator").toBoolean()

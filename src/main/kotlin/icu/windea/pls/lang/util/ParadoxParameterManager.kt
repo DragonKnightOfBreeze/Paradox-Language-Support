@@ -1,7 +1,6 @@
 package icu.windea.pls.lang.util
 
 import com.intellij.codeInsight.completion.CompletionResultSet
-import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.vfs.VirtualFile
@@ -13,22 +12,27 @@ import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.startOffset
 import icu.windea.pls.ChronicleFacade
-import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.core.ReadWriteAccess
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.cache.cancelable
 import icu.windea.pls.core.cache.createNestedCache
 import icu.windea.pls.core.cache.trackedBy
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.collections.allFast
+import icu.windea.pls.core.collections.anyFast
+import icu.windea.pls.core.collections.filterIsInstanceFast
+import icu.windea.pls.core.collections.forEachFast
+import icu.windea.pls.core.collections.forEachReversedFast
 import icu.windea.pls.core.findChild
 import icu.windea.pls.core.isSamePosition
 import icu.windea.pls.core.unquote
 import icu.windea.pls.core.util.KeyRegistry
+import icu.windea.pls.core.util.ReadWriteAccess
 import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.core.util.getValue
@@ -37,10 +41,9 @@ import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.ep.resolve.parameter.ParadoxParameterSupport
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionLookupProvider
 import icu.windea.pls.lang.codeInsight.completion.ParadoxExtendedCompletionManager
-import icu.windea.pls.lang.codeInsight.completion.addElement
-import icu.windea.pls.lang.codeInsight.completion.forExpression
-import icu.windea.pls.lang.codeInsight.completion.withPatchableIcon
+import icu.windea.pls.lang.codeInsight.completion.addToResult
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxPsiService
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
@@ -63,6 +66,7 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.isDataExpression
 import java.util.*
 
+@Optimized
 object ParadoxParameterManager {
     object Keys : KeyRegistry() {
         val cachedParameterContextInfo by registerKey<CachedValue<ParadoxParameterContextInfo>>(Keys)
@@ -82,6 +86,11 @@ object ParadoxParameterManager {
      * 这个方法不会判断 [element] 是否是合法的参数上下文，如果需要，考虑使用 [ParadoxParameterSupport.getContextInfo]。
      */
     fun getContextInfo(element: ParadoxDefinitionElement): ParadoxParameterContextInfo? {
+        // from cache
+        return getContextInfoFromCache(element)
+    }
+
+    private fun getContextInfoFromCache(element: ParadoxDefinitionElement): ParadoxParameterContextInfo? {
         return CachedValuesManager.getCachedValue(element, Keys.cachedParameterContextInfo) {
             val value = ParadoxParameterService.resolveContextInfo(element)
             CachedValueProvider.Result(value, element)
@@ -105,11 +114,11 @@ object ParadoxParameterManager {
         return when {
             expressionElement is ParadoxScriptPropertyKey -> {
                 val configs = ParadoxConfigManager.getConfigs(expressionElement)
-                configs.filterIsInstance<CwtPropertyConfig>()
+                configs.filterIsInstanceFast<CwtPropertyConfig>()
             }
             expressionElement is ParadoxScriptString && expressionElement.isDataExpression() -> {
                 val configs = ParadoxConfigManager.getConfigs(expressionElement)
-                configs.filterIsInstance<CwtValueConfig>()
+                configs.filterIsInstanceFast<CwtValueConfig>()
             }
             else -> {
                 emptyList()
@@ -121,7 +130,7 @@ object ParadoxParameterManager {
         val result = mutableSetOf<String>()
         val argumentNames = mutableSetOf<String>()
         val presentArgumentNames = mutableSetOf<String>()
-        for (argument in contextReferenceInfo.arguments) {
+        contextReferenceInfo.arguments.forEachFast { argument ->
             argumentNames.add(argument.argumentName)
             if (isPresent(element, argument)) presentArgumentNames.add(argument.argumentName)
         }
@@ -148,7 +157,7 @@ object ParadoxParameterManager {
     fun isOptional(parameterContextInfo: ParadoxParameterContextInfo, parameterName: String, argumentNames: Set<String>? = null): Boolean {
         val parameterInfos = parameterContextInfo.parameters.get(parameterName)
         if (parameterInfos.isNullOrEmpty()) return true
-        return parameterInfos.all { parameterInfo -> isOptional(parameterInfo, argumentNames) }
+        return parameterInfos.allFast { parameterInfo -> isOptional(parameterInfo, argumentNames) }
     }
 
     /**
@@ -171,7 +180,7 @@ object ParadoxParameterManager {
      */
     fun isPassingParameterValue(parameterInfo: ParadoxParameterContextInfo.Parameter): Boolean {
         val expressionConfigs = getExpressionConfigs(parameterInfo)
-        return expressionConfigs.any { it is CwtValueConfig && it.propertyConfig?.configExpression?.type == CwtDataTypes.Parameter }
+        return expressionConfigs.anyFast { it is CwtValueConfig && it.propertyConfig?.configExpression?.type == CwtDataTypes.Parameter }
     }
 
     fun isPresent(element: PsiElement, argumentInfo: ParadoxParameterContextReferenceInfo.Argument): Boolean {
@@ -186,7 +195,7 @@ object ParadoxParameterManager {
         val parameterContext = ParadoxParameterService.findContext(element) ?: return
         val parameterContextInfo = ParadoxParameterService.getContextInfo(parameterContext) ?: return
         if (parameterContextInfo.parameters.isEmpty()) return
-        for ((parameterName, parameterInfos) in parameterContextInfo.parameters) {
+        for (parameterInfos in parameterContextInfo.parameters.values) {
             ProgressManager.checkCanceled()
             val parameter = parameterInfos.firstNotNullOfOrNull { it.element } ?: continue
             // 排除当前正在输入的那个
@@ -196,11 +205,7 @@ object ParadoxParameterManager {
                 parameter is ParadoxParameter -> ParadoxParameterService.resolveParameter(parameter)
                 else -> null
             } ?: continue
-            val lookupElement = LookupElementBuilder.create(parameterElement, parameterName)
-                .withTypeText(parameterElement.contextName, parameterElement.contextIcon, true)
-                .withPatchableIcon(ChronicleIcons.Nodes.Parameter)
-                .forExpression(context)
-            result.addElement(lookupElement, context)
+            ParadoxCompletionLookupProvider.fromParameter(context, parameterElement).addToResult(context, result)
         }
 
         val contextKey = ParadoxParameterService.getContextKeyFromContext(parameterContext) ?: return
@@ -216,7 +221,7 @@ object ParadoxParameterManager {
         val completionOffset = context.offset
         val contextReferenceInfo = ParadoxParameterService.getContextReferenceInfo(element, from, config, completionOffset) ?: return
         val argumentNames = mutableSetOf<String>()
-        for (argument in contextReferenceInfo.arguments) {
+        contextReferenceInfo.arguments.forEachFast { argument ->
             argumentNames.add(argument.argumentName)
         }
         // 整合查找到的所有参数上下文
@@ -234,11 +239,7 @@ object ParadoxParameterManager {
                     parameter is ParadoxParameter -> ParadoxParameterService.resolveParameter(parameter)
                     else -> null
                 } ?: continue
-                val lookupElement = LookupElementBuilder.create(parameterElement, parameterName)
-                    .withTypeText(parameterElement.contextName, parameterElement.contextIcon, true)
-                    .withPatchableIcon(ChronicleIcons.Nodes.Parameter)
-                    .forExpression(context)
-                result.addElement(lookupElement, context)
+                ParadoxCompletionLookupProvider.fromParameter(context, parameterElement).addToResult(context, result)
             }
             true
         }
@@ -347,7 +348,7 @@ object ParadoxParameterManager {
         if (direct) {
             val oldText = element.text
             var newText = oldText
-            args.forEach { (k, v) ->
+            args.forEachFast { (k, v) ->
                 newText = newText.replace("$$k$", v.unquote())
             }
             return newText
@@ -392,7 +393,7 @@ object ParadoxParameterManager {
             })
 
             var newText = element.text
-            replacements.reversed().forEach { (range, v) ->
+            replacements.forEachReversedFast { (range, v) ->
                 newText = newText.replaceRange(range.startOffset, range.endOffset, v)
             }
             return newText

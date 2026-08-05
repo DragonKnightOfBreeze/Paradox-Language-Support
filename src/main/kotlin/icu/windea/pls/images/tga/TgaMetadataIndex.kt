@@ -35,7 +35,7 @@ class TgaMetadataIndex {
     private val gist: VirtualFileGist<TgaMetadata> by lazy {
         GistManager.getInstance().newVirtualFileGist("TgaMetadata", 2, valueExternalizer) c@{ _, file ->
             if (!file.isInLocalFileSystem) return@c null
-            if (file.fileType != TgaFileType) return@c null
+            if (file.fileType !== TgaFileType) return@c null
             if (file.length > Registry.get("ide.index.image.max.size").asDouble() * 1024 * 1024) return@c null
             TgaMetadataReader.read(file)
         }

@@ -3,7 +3,6 @@ package icu.windea.pls.core.optimizer
 import com.google.common.collect.ImmutableList
 import com.google.common.collect.ImmutableMap
 import com.google.common.collect.ImmutableSet
-import icu.windea.pls.core.ReadWriteAccess
 import org.junit.Assert.*
 import org.junit.Test
 
@@ -209,38 +208,6 @@ class OptimizerTest {
         // 大集合不驻留，应直接返回自身
         assertSame(input, result)
         assertEquals(9, result.size)
-    }
-
-    // endregion
-
-    // region Platform
-
-    @Test
-    fun testReadWriteAccessOptimizer_roundTrip_andValues() {
-        val optimizer = OptimizerFactory.forReadWriteAccess()
-
-        val read = ReadWriteAccess.Read
-        val write = ReadWriteAccess.Write
-        val rw = ReadWriteAccess.ReadWrite
-
-        val br = optimizer.optimize(read)
-        val bw = optimizer.optimize(write)
-        val brw = optimizer.optimize(rw)
-
-        assertEquals(0.toByte(), br)
-        assertEquals(1.toByte(), bw)
-        assertEquals(2.toByte(), brw)
-
-        assertEquals(read, optimizer.deoptimize(br))
-        assertEquals(write, optimizer.deoptimize(bw))
-        assertEquals(rw, optimizer.deoptimize(brw))
-    }
-
-    @Test
-    fun testReadWriteAccessOptimizer_deoptimize_unknownByte_fallsBackToReadWrite() {
-        val optimizer = OptimizerFactory.forReadWriteAccess()
-        val result = optimizer.deoptimize(100.toByte())
-        assertEquals(ReadWriteAccess.ReadWrite, result)
     }
 
     // endregion

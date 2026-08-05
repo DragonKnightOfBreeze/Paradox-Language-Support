@@ -27,7 +27,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationConceptName
  * - [ParadoxMarkerNode] - 对应其中的 `:`。
  *
  * 示例：
- * ```
+ * ```text
  * civic:some_civic # definition
  * civic:some_civic:some_swapped_civic # definition + swapped definition
  * job:job_soldier # localisation
@@ -37,6 +37,8 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationConceptName
  * ```bnf
  * database_object_expression ::= database_object_type ":" database_object_value (":" database_object_value)?
  * database_object_value ::= database_object
+ * database_object_type ::= IDENTIFIER
+ * database_object ::= database_object
  * ```
  */
 interface ParadoxDatabaseObjectExpression : ParadoxComplexExpression {

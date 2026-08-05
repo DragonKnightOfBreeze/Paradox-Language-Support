@@ -1,10 +1,11 @@
 package icu.windea.pls.config.config.extended
 
-import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
 import com.intellij.psi.util.parentOfType
 import icu.windea.pls.base.context.ChronicleThreadContext
+import icu.windea.pls.config.CwtConfigType
+import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.annotations.FromName
 import icu.windea.pls.config.annotations.FromOptionMember
@@ -14,14 +15,13 @@ import icu.windea.pls.config.config.CwtIdMatchableConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.manipulation.CwtConfigManipulationService
-import icu.windea.pls.config.option.CwtOptionDataHolder
+import icu.windea.pls.config.option.CwtOptionMetadata
 import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.core.util.values.singletonListOrEmpty
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.cwt.psi.CwtMember
 import icu.windea.pls.ep.resolve.parameter.containingContextReference
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
-import icu.windea.pls.lang.resolve.dynamic
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.script.psi.ParadoxScriptMember
 
@@ -66,8 +66,8 @@ import icu.windea.pls.script.psi.ParadoxScriptMember
  * @property contextConfigsType 上下文规则的聚合类型（`single`/`multiple`，默认为 `single`）。决定上下文规则是直接来自其属性值规则，还是来自其中的一组子规则。
  * @property inherit 是否继承使用处的规则上下文与作用域上下文。
  *
- * @see CwtOptionDataHolder.replaceScopes
- * @see CwtOptionDataHolder.pushScope
+ * @see CwtOptionMetadata.replaceScopes
+ * @see CwtOptionMetadata.pushScope
  */
 interface CwtExtendedParameterConfig : CwtDelegatedConfig<CwtMember, CwtMemberConfig<*>>, CwtIdMatchableConfig<CwtMember> {
     @FromName
@@ -78,6 +78,8 @@ interface CwtExtendedParameterConfig : CwtDelegatedConfig<CwtMember, CwtMemberCo
     val contextConfigsType: CwtContextConfigsType
     @FromOptionMember("inherit", defaultValue = "no")
     val inherit: Boolean
+
+    override val configType: CwtConfigType get() = CwtConfigTypes.ExtendedParameter
 
     /** 得到经过处理后的上下文容器规则。在后续的语义解析流程中，需要获取的通常是上下文规则，而非上下文容器规则。 */
     fun getContextContainerConfig(parameterElement: ParadoxParameterLightElement): CwtMemberConfig<*>
@@ -101,14 +103,14 @@ private object CwtExtendedParameterConfigResolver : CwtConfigResolverScope {
 
     fun resolve(config: CwtMemberConfig<*>): CwtExtendedParameterConfig? {
         val name = if (config is CwtPropertyConfig) config.key else config.value
-        val contextKey = config.optionData.contextKey
+        val contextKey = config.optionMetadata.contextKey
         if (contextKey == null) {
-            logger.warn("Skipped invalid extended parameter config (name: $name): Missing context_key option.".withLocationPrefix(config))
+            logger.warnWithPrefix(config, "Skipped invalid extended parameter config (name: $name): Missing context_key option.")
             return null
         }
-        val contextConfigsType = config.optionData.contextConfigsType.let { CwtContextConfigsType.resolve(it) }
-        val inherit = config.optionData.inherit
-        logger.debug { "Resolved extended parameter config (name: $name, context key: $contextKey).".withLocationPrefix(config) }
+        val contextConfigsType = config.optionMetadata.contextConfigsType.let { CwtContextConfigsType.resolve(it) }
+        val inherit = config.optionMetadata.inherit
+        logger.debugWithPrefix(config) { "Resolved extended parameter config (name: $name, context key: $contextKey)." }
         return CwtExtendedParameterConfigImpl(config, name, contextKey, contextConfigsType, inherit)
     }
 }
@@ -133,7 +135,7 @@ private class CwtExtendedParameterConfigImpl(
                 val contextReferenceElement = parameterElement.containingContextReference?.element ?: return@run
                 val parentElement = contextReferenceElement.parentOfType<ParadoxScriptMember>(false) ?: return@run
                 val contextConfigs = ParadoxConfigManager.getContextConfigs(parentElement)
-                ChronicleThreadContext.resolvingConfigContextStack.get()?.peekLast()?.dynamic = true // NOTE 2.1.2 需要把正在解析的规则上下文标记为动态的
+                ChronicleThreadContext.resolvingConfigContextStack.get()?.peekLast()?.markDynamic() // NOTE 2.1.2 需要把正在解析的规则上下文标记为动态的
                 return contextConfigs
             }
             return emptyList()

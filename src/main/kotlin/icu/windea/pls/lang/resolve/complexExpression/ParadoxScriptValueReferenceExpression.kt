@@ -7,16 +7,17 @@ import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.mockScriptValueConfig
 import icu.windea.pls.core.cast
+import icu.windea.pls.core.collections.anyFast
+import icu.windea.pls.core.isIdentifier
 import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.core.util.tupleOf
-import icu.windea.pls.lang.isIdentifier
+import icu.windea.pls.lang.getParameterRanges
 import icu.windea.pls.lang.isParameterAwareIdentifier
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionErrors
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionValidatorScope
-import icu.windea.pls.lang.util.ParadoxExpressionManager
 
 /**
  * 脚本值引用表达式。
@@ -27,7 +28,7 @@ import icu.windea.pls.lang.util.ParadoxExpressionManager
  * - 评估结果应是一个数字字面量。
  *
  * 示例：
- * ```
+ * ```text
  * some_sv
  * some_sv|PARAM|VALUE|
  * some_sv|P1|V1|P2|V2|
@@ -37,6 +38,9 @@ import icu.windea.pls.lang.util.ParadoxExpressionManager
  * ```bnf
  * script_value_reference_expression ::= script_value script_value_args?
  * private script_value_args ::= "|" (script_value_argument_name "|" script_value_argument_value "|")+
+ * script_value ::= IDENTIFIER
+ * script_value_argument_name ::= IDENTIFIER
+ * script_value_argument_value ::= STRING_LITERAL
  * ```
  *
  * ### 语法与结构
@@ -74,7 +78,7 @@ private object ParadoxScriptValueReferenceExpressionResolver {
         val incomplete = ChronicleThreadContext.incompleteComplexExpression.get() ?: false
         if (!incomplete && text.isEmpty()) return null
 
-        val parameterRanges = ParadoxExpressionManager.getParameterRanges(text)
+        val parameterRanges = text.getParameterRanges()
 
         val config = configGroup.mockScriptValueConfig
         val nodes = mutableListOf<ParadoxComplexExpressionNode>()
@@ -92,7 +96,7 @@ private object ParadoxScriptValueReferenceExpressionResolver {
         while (tokenIndex < textLength) {
             index = tokenIndex + 1
             tokenIndex = text.indexOf('|', index)
-            if (tokenIndex != -1 && parameterRanges.any { tokenIndex in it }) continue // skip parameter text
+            if (tokenIndex != -1 && parameterRanges.anyFast { tokenIndex in it }) continue // skip parameter text
             val pipeNode = if (tokenIndex != -1) {
                 val pipeRange = TextRange.create(tokenIndex + offset, tokenIndex + 1 + offset)
                 ParadoxMarkerNode("|", pipeRange, configGroup)

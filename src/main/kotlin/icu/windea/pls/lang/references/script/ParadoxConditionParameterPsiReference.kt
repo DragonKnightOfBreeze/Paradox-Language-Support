@@ -3,9 +3,14 @@ package icu.windea.pls.lang.references.script
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
+import icu.windea.pls.lang.codeInsight.completion.script.ParadoxParameterCompletionProvider
 import icu.windea.pls.lang.resolve.ParadoxParameterService
 import icu.windea.pls.script.psi.ParadoxConditionParameter
 
+/**
+ * @see ParadoxScriptPsiReferenceProvider
+ * @see ParadoxParameterCompletionProvider
+ */
 class ParadoxConditionParameterPsiReference(
     element: ParadoxConditionParameter,
     rangeInElement: TextRange

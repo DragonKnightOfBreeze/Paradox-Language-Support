@@ -27,7 +27,7 @@ class CwtConfigFileIconProvider : FileIconProvider, DumbAware {
             }
         } else {
             // 兼容插件或者规则仓库中的 CWT 文件（此时将其视为规则文件）
-            if (file.fileType !is CwtFileType) return null
+            if (file.fileType !== CwtFileType) return null
             val configGroup = CwtConfigManager.getContainingConfigGroup(file, project)
             if (configGroup != null) {
                 return ChronicleIcons.FileTypes.CwtConfig

@@ -1,11 +1,14 @@
 package icu.windea.pls.ep.resolve.config
 
-import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiFile
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.declarationConfigCacheKey
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.manipulation.CwtConfigManipulationService
+import icu.windea.pls.core.collections.dropFast
+import icu.windea.pls.core.collections.forEachFast
+import icu.windea.pls.core.collections.mapFast
+import icu.windea.pls.core.collections.noneFast
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.util.values.singletonList
 import icu.windea.pls.core.util.values.to
@@ -19,7 +22,6 @@ import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.toHashString
 import icu.windea.pls.lang.resolve.CwtConfigContext
 import icu.windea.pls.lang.resolve.ParadoxConfigService
-import icu.windea.pls.lang.resolve.declarationRoot
 import icu.windea.pls.lang.resolve.defineVariableInfo
 import icu.windea.pls.lang.resolve.definitionInfo
 import icu.windea.pls.lang.resolve.definitionInjectionInfo
@@ -28,6 +30,7 @@ import icu.windea.pls.lang.resolve.parameterElement
 import icu.windea.pls.lang.resolve.parameterValueQuoted
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.selectFile
+import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.util.ParadoxDefineManager
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
@@ -44,16 +47,15 @@ import icu.windea.pls.script.psi.ParadoxScriptMember
  * - TODO 2.1.0+ 在以后的插件版本中，可能会提供顶级键（如 `spriteTypes`）对应的合成的上下文规则。
  */
 class CwtBaseConfigContextProvider : CwtConfigContextProvider {
-    override fun getContext(element: ParadoxScriptMember, file: PsiFile, configGroup: CwtConfigGroup, memberPathFromFile: ParadoxMemberPath, memberRole: ParadoxMemberRole): CwtConfigContext? {
-        ProgressManager.checkCanceled()
-
+    override fun getContext(configGroup: CwtConfigGroup, element: ParadoxScriptMember, file: PsiFile, memberRole: ParadoxMemberRole, memberPathFromFile: ParadoxMemberPath): CwtConfigContext? {
         val vFile = selectFile(file)
         if (vFile == null) return null
         val fileInfo = vFile.fileInfo
         if (fileInfo == null) return null
-        val memberPathFromFile = memberPathFromFile.normalize()
-        val configContext = CwtConfigContext(element, memberPathFromFile, null, memberRole, configGroup)
-        return configContext
+        val context = CwtConfigContext.create(configGroup, memberRole, memberPathFromFile, this)
+        context.element = element // necessary
+        context.rootFile = selectRootFile(file) // necessary
+        return context
     }
 
     override fun getCacheKey(context: CwtConfigContext, options: ParadoxMatchOptions?): String? {
@@ -71,33 +73,39 @@ class CwtBaseConfigContextProvider : CwtConfigContextProvider {
  * - 基于文件信息（包括注入的文件信息）和成员路径。
  */
 class CwtDefinitionConfigContextProvider : CwtConfigContextProvider {
-    override fun getContext(element: ParadoxScriptMember, file: PsiFile, configGroup: CwtConfigGroup, memberPathFromFile: ParadoxMemberPath, memberRole: ParadoxMemberRole): CwtConfigContext? {
-        ProgressManager.checkCanceled()
-
+    override fun getContext(configGroup: CwtConfigGroup, element: ParadoxScriptMember, file: PsiFile, memberRole: ParadoxMemberRole, memberPathFromFile: ParadoxMemberPath): CwtConfigContext? {
         val vFile = selectFile(file)
         if (vFile == null) return null
         val fileInfo = vFile.fileInfo
         if (fileInfo == null) return null
         val definition = selectScope { element.parentDefinition() } ?: return null
         val definitionInfo = definition.definitionInfo ?: return null
-        val memberPathFromFile = memberPathFromFile.normalize()
-        val memberPath = definitionInfo.memberPath.relativize(memberPathFromFile)?.normalize() ?: return null
-        val configContext = CwtConfigContext(element, memberPathFromFile, memberPath, memberRole, configGroup)
-        if (memberPath.isEmpty()) configContext.declarationRoot = true
-        configContext.definitionInfo = definitionInfo
-        return configContext
+        val memberPath = definitionInfo.memberPath.relativize(memberPathFromFile) ?: return null
+        val context = CwtConfigContext.createFromMember(configGroup, memberRole, memberPathFromFile, memberPath, this)
+        context.element = element // necessary
+        context.rootFile = selectRootFile(file) // necessary
+        context.declarationRoot = memberPath.isEmpty()
+        context.definitionInfo = definitionInfo
+        return context
     }
 
     override fun getCacheKey(context: CwtConfigContext, options: ParadoxMatchOptions?): String? {
-        val gameTypeId = context.gameType.id
-        val definitionInfo = context.definitionInfo ?: return null
-        val declarationConfig = definitionInfo.getDeclaration(options) ?: return null // TODO 2.0.6+ 这里存在一定的耗时，需要考虑优化
-        val declarationConfigCacheKey = declarationConfig.declarationConfigCacheKey ?: return null // null -> unexpected
-        val declarationKey = declarationConfigCacheKey.replace("$gameTypeId#", "")
-        val memberPath = context.memberPath ?: return null // null -> unexpected
+        val gameType = context.gameType
         val memberRole = context.memberRole
-        val suffix = "${memberPath}\u0000${memberRole.ordinal}\u0000${options.toHashString(forMatched = false)}"
-        return "d@$gameTypeId#$declarationKey#$suffix"
+        val memberPath = context.memberPath ?: return null // null -> unexpected
+        val definitionInfo = context.definitionInfo ?: return null
+        val declarationConfig = definitionInfo.getDeclaration(options) ?: return null // TODO 2.0.6+ consider optimization (~3.6s during indexing)
+        val declarationConfigCacheKey = declarationConfig.declarationConfigCacheKey ?: return null // null -> unexpected
+        return buildString {
+            append(gameType.ordinal)
+            append("@d@")
+            append(options.toHashString(forMatched = false))
+            append(":")
+            append(declarationConfigCacheKey)
+            append("\u0000:")
+            append(memberRole.ordinal)
+            memberPath.subPaths.forEachFast { append("\u0000/").append(it) }
+        }
     }
 
     override fun getConfigs(context: CwtConfigContext, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>>? {
@@ -114,30 +122,36 @@ class CwtDefinitionConfigContextProvider : CwtConfigContextProvider {
  * 提供定值变量声明中的规则上下文。
  */
 class CwtDefineVariableConfigContextProvider : CwtConfigContextProvider {
-    override fun getContext(element: ParadoxScriptMember, file: PsiFile, configGroup: CwtConfigGroup, memberPathFromFile: ParadoxMemberPath, memberRole: ParadoxMemberRole): CwtConfigContext? {
-        ProgressManager.checkCanceled()
-
+    override fun getContext(configGroup: CwtConfigGroup, element: ParadoxScriptMember, file: PsiFile, memberRole: ParadoxMemberRole, memberPathFromFile: ParadoxMemberPath): CwtConfigContext? {
         if (!ParadoxDefineManager.isDefinesFile(file)) return null
         if (memberPathFromFile.length <= 1) return null // file level or top property level -> not within define variable
         val defineVariable = selectScope { element.parentDefineVariable() } ?: return null
         val defineVariableInfo = defineVariable.defineVariableInfo ?: return null
         if (defineVariableInfo.config == null) return null // no define variable config -> skip
-        val memberPathFromFile = memberPathFromFile.normalize()
-        val memberPath = ParadoxMemberPath.resolve(memberPathFromFile.subPaths.drop(2)).normalize()
-        val configContext = CwtConfigContext(element, memberPathFromFile, memberPath, memberRole, configGroup)
-        if (memberPath.isEmpty()) configContext.declarationRoot = true
-        configContext.defineVariableInfo = defineVariableInfo
-        return configContext
+        val memberPath = ParadoxMemberPath.resolve(memberPathFromFile.subPaths.dropFast(2))
+        val context = CwtConfigContext.createFromMember(configGroup, memberRole, memberPathFromFile, memberPath, this)
+        context.element = element // necessary
+        context.rootFile = selectRootFile(file) // necessary
+        context.declarationRoot = memberPath.isEmpty()
+        context.defineVariableInfo = defineVariableInfo
+        return context
     }
 
     override fun getCacheKey(context: CwtConfigContext, options: ParadoxMatchOptions?): String? {
-        val gameTypeId = context.gameType.id
-        val defineVariableInfo = context.defineVariableInfo ?: return null
-        val declarationKey = defineVariableInfo.namespace + "\u0000" + defineVariableInfo.variable
-        val memberPath = context.memberPath ?: return null // null -> unexpected
+        val gameType = context.gameType
         val memberRole = context.memberRole
-        val suffix = "${memberPath}\u0000${memberRole.ordinal}\u0000${options.toHashString(forMatched = false)}"
-        return "dv@$gameTypeId#${declarationKey}#$suffix"
+        val memberPath = context.memberPath ?: return null // null -> unexpected
+        val defineVariableInfo = context.defineVariableInfo ?: return null
+        return buildString {
+            append(gameType.ordinal)
+            append("@dv@")
+            append(options.toHashString(forMatched = false))
+            append(":")
+            append(defineVariableInfo.namespace).append("\u0000.").append(defineVariableInfo.variable)
+            append("\u0000:")
+            append(memberRole.ordinal)
+            memberPath.subPaths.forEachFast { append("\u0000/").append(it) }
+        }
     }
 
     override fun getConfigs(context: CwtConfigContext, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>>? {
@@ -165,25 +179,32 @@ class CwtParameterValueConfigContextProvider : CwtConfigContextProvider {
     // 兼容适用语言注入功能的 `VirtualFileWindow`
     // 兼容通过编辑代码碎片的意图操作打开的 `LightVirtualFile`
 
-    override fun getContext(element: ParadoxScriptMember, file: PsiFile, configGroup: CwtConfigGroup, memberPathFromFile: ParadoxMemberPath, memberRole: ParadoxMemberRole): CwtConfigContext? {
-        ProgressManager.checkCanceled()
-
+    override fun getContext(configGroup: CwtConfigGroup, element: ParadoxScriptMember, file: PsiFile, memberRole: ParadoxMemberRole, memberPathFromFile: ParadoxMemberPath): CwtConfigContext? {
         val injectionInfo = ParadoxScriptInjectionManager.getParameterValueInjectionInfoFromInjectedFile(file) ?: return null
         val parameterElement = injectionInfo.parameterElement ?: return null
-        val memberPathFromFile = memberPathFromFile.normalize()
-        val configContext = CwtConfigContext(element, memberPathFromFile, memberPathFromFile, memberRole, configGroup)
-        configContext.parameterElement = parameterElement
-        configContext.parameterValueQuoted = injectionInfo.parameterValueQuoted
-        return configContext
+        val context = CwtConfigContext.createFromFile(configGroup, memberRole, memberPathFromFile, this)
+        context.element = element // necessary
+        context.rootFile = selectRootFile(file) // necessary
+        context.parameterElement = parameterElement
+        context.parameterValueQuoted = injectionInfo.parameterValueQuoted
+        return context
     }
 
     override fun getCacheKey(context: CwtConfigContext, options: ParadoxMatchOptions?): String? {
-        val gameTypeId = context.gameType.id
-        val parameterElement = context.parameterElement ?: return null // null -> unexpected
-        val memberPath = context.memberPath ?: return null // null -> unexpected
+        val gameType = context.gameType
         val memberRole = context.memberRole
-        val suffix = "${memberPath}\u0000${memberRole.ordinal}\u0000${options.toHashString(forMatched = false)}"
-        return "pv@$gameTypeId#${parameterElement.contextKey}#${parameterElement.name}#$suffix"
+        val memberPath = context.memberPath ?: return null // null -> unexpected
+        val parameterElement = context.parameterElement ?: return null // null -> unexpected
+        return buildString {
+            append(gameType.ordinal)
+            append("@pv@")
+            append(options.toHashString(forMatched = false))
+            append(":")
+            append(parameterElement.contextKey).append("\u0000@").append(parameterElement.name)
+            append("\u0000:")
+            append(memberRole.ordinal)
+            memberPath.subPaths.forEachFast { append("\u0000/").append(it) }
+        }
     }
 
     override fun getConfigs(context: CwtConfigContext, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>>? {
@@ -214,32 +235,38 @@ class CwtInlineScriptUsageConfigContextProvider : CwtConfigContextProvider {
     // 注意：内联脚本用法可以在定义声明之外
     // 注意这里的 `fileInfo` 可以为 `null`（例如，在内联脚本参数的多行参数值中）
 
-    override fun getContext(element: ParadoxScriptMember, file: PsiFile, configGroup: CwtConfigGroup, memberPathFromFile: ParadoxMemberPath, memberRole: ParadoxMemberRole): CwtConfigContext? {
-        ProgressManager.checkCanceled()
-
-        if (memberPathFromFile.none { ParadoxInlineScriptManager.isMatched(it) }) return null // 要求当前位置相对于文件的成员路径中包含子路径 `inline_script`
+    override fun getContext(configGroup: CwtConfigGroup, element: ParadoxScriptMember, file: PsiFile, memberRole: ParadoxMemberRole, memberPathFromFile: ParadoxMemberPath): CwtConfigContext? {
+        if (memberPathFromFile.subPaths.noneFast { ParadoxInlineScriptManager.isMatched(it) }) return null // 要求当前位置相对于文件的成员路径中包含子路径 `inline_script`
         if (!ParadoxInlineScriptManager.isSupported(configGroup.gameType)) return null // 忽略游戏类型不支持的情况
         val vFile = selectFile(file)
         if (vFile == null) return null
-        val memberPathFromFile = memberPathFromFile.normalize()
-        val memberPath = ParadoxMemberPath.resolve(memberPathFromFile.subPaths.drop(memberPathFromFile.indexOfFirst { ParadoxInlineScriptManager.isMatched(it) } + 1)).normalize()
-        val configContext = CwtConfigContext(element, memberPathFromFile, memberPath, memberRole, configGroup)
-        return configContext
+        val prefixLength = memberPathFromFile.subPaths.indexOfFirst { ParadoxInlineScriptManager.isMatched(it) } + 1
+        val memberPath = ParadoxMemberPath.resolve(memberPathFromFile.subPaths.dropFast(prefixLength))
+        val context = CwtConfigContext.createFromMember(configGroup, memberRole, memberPathFromFile, memberPath, this)
+        context.element = element // necessary
+        context.rootFile = selectRootFile(file) // necessary
+        return context
     }
 
     override fun getCacheKey(context: CwtConfigContext, options: ParadoxMatchOptions?): String? {
-        val gameTypeId = context.gameType.id
-        val memberPath = context.memberPath ?: return null // null -> unexpected
+        val gameType = context.gameType
         val memberRole = context.memberRole
-        val suffix = "${memberPath}\u0000${memberRole.ordinal}\u0000${options.toHashString(forMatched = false)}"
-        return "isu@$gameTypeId#$suffix"
+        val memberPath = context.memberPath ?: return null // null -> unexpected
+        return buildString {
+            append(gameType.ordinal)
+            append("@isu@")
+            append(options.toHashString(forMatched = false))
+            append(":")
+            append(memberRole.ordinal)
+            memberPath.subPaths.forEachFast { append("\u0000/").append(it) }
+        }
     }
 
     override fun getConfigs(context: CwtConfigContext, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>>? {
         val memberPath = context.memberPath ?: return null
         if (memberPath.isNotEmpty()) return ParadoxConfigService.getFlattenedConfigsForConfigContext(context, options)
         val inlineConfigs = context.configGroup.macrosModel.forInlineScripts.orNull() ?: return null
-        val rootConfigs = inlineConfigs.map { CwtConfigManipulationService.inlineMacro(it) }
+        val rootConfigs = inlineConfigs.mapFast { CwtConfigManipulationService.inlineMacro(it) }
         return ParadoxConfigService.getTopConfigsForConfigContext(context, rootConfigs)
     }
 }
@@ -254,35 +281,43 @@ class CwtInlineScriptFileConfigContextProvider : CwtConfigContextProvider {
     // 获取上下文规则后才能确定是否存在冲突以及是否存在递归
     // TODO 1.1.0+ 支持解析内联脚本文件中的定义声明
 
-    override fun getContext(element: ParadoxScriptMember, file: PsiFile, configGroup: CwtConfigGroup, memberPathFromFile: ParadoxMemberPath, memberRole: ParadoxMemberRole): CwtConfigContext? {
-        ProgressManager.checkCanceled()
-
+    override fun getContext(configGroup: CwtConfigGroup, element: ParadoxScriptMember, file: PsiFile, memberRole: ParadoxMemberRole, memberPathFromFile: ParadoxMemberPath): CwtConfigContext? {
         val vFile = selectFile(file)
         if (vFile == null) return null
         if (VirtualFileService.isInjectedFile(vFile)) return null // ignored for injected psi
         val fileInfo = vFile.fileInfo
         if (fileInfo == null) return null
         val inlineScriptExpression = ParadoxInlineScriptManager.getInlineScriptExpression(vFile) ?: return null
-        val memberPathFromFile = memberPathFromFile.normalize()
-        val configContext = CwtConfigContext(element, memberPathFromFile, memberPathFromFile, memberRole, configGroup)
-        configContext.inlineScriptExpression = inlineScriptExpression
-        return configContext
+        val context = CwtConfigContext.createFromFile(configGroup, memberRole, memberPathFromFile, this)
+        context.element = element // necessary
+        context.rootFile = selectRootFile(file) // necessary
+        context.inlineScriptExpression = inlineScriptExpression
+        return context
     }
 
     override fun getCacheKey(context: CwtConfigContext, options: ParadoxMatchOptions?): String? {
-        val gameTypeId = context.gameType.id
-        val inlineScriptExpression = context.inlineScriptExpression ?: return null // null -> unexpected
-        val memberPath = context.memberPath ?: return null // null -> unexpected
+        val gameType = context.gameType
         val memberRole = context.memberRole
-        val suffix = "${memberPath}\u0000${memberRole.ordinal}\u0000${options.toHashString(forMatched = false)}"
-        return "is@$gameTypeId#$inlineScriptExpression#$suffix"
+        val memberPath = context.memberPath ?: return null // null -> unexpected
+        val inlineScriptExpression = context.inlineScriptExpression ?: return null // null -> unexpected
+        return buildString {
+            append(gameType.ordinal)
+            append("@is@")
+            append(options.toHashString(forMatched = false))
+            append(":")
+            append(inlineScriptExpression)
+            append("\u0000:")
+            append(memberRole.ordinal)
+            memberPath.subPaths.forEachFast { append("\u0000/").append(it) }
+        }
     }
 
     override fun getConfigs(context: CwtConfigContext, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>>? {
-        val memberPath = context.memberPath ?: return null
+        val memberPath = context.memberPath ?: return null // null -> unexpected
+        val element = context.element ?: return null // null -> unexpected
         if (memberPath.isNotEmpty()) return ParadoxConfigService.getFlattenedConfigsForConfigContext(context, options)
         val inlineScriptExpression = context.inlineScriptExpression ?: return null
-        val rootConfigs = ParadoxInlineScriptManager.getInferredContextConfigs(inlineScriptExpression, context.element, context, options)
+        val rootConfigs = ParadoxInlineScriptManager.getInferredContextConfigs(inlineScriptExpression, element, context, options)
         return ParadoxConfigService.getTopConfigsForConfigContext(context, rootConfigs)
     }
 
@@ -307,34 +342,39 @@ class CwtInlineScriptFileConfigContextProvider : CwtConfigContextProvider {
  * - （目前）不会先内联目标定义声明中的内容，然后再进行相关代码检查。
  */
 class CwtDefinitionInjectionConfigContextProvider : CwtConfigContextProvider {
-    override fun getContext(element: ParadoxScriptMember, file: PsiFile, configGroup: CwtConfigGroup, memberPathFromFile: ParadoxMemberPath, memberRole: ParadoxMemberRole): CwtConfigContext? {
-        ProgressManager.checkCanceled()
-
+    override fun getContext(configGroup: CwtConfigGroup, element: ParadoxScriptMember, file: PsiFile, memberRole: ParadoxMemberRole, memberPathFromFile: ParadoxMemberPath): CwtConfigContext? {
         if (memberPathFromFile.isEmpty()) return null
-
+        if (!ParadoxDefinitionInjectionManager.isSupported(configGroup.gameType)) return null // 忽略游戏类型不支持的情况
         val vFile = selectFile(file)
         if (vFile == null) return null
         val fileInfo = vFile.fileInfo
         if (fileInfo == null) return null
-        if (!ParadoxDefinitionInjectionManager.isSupported(configGroup.gameType)) return null // 忽略游戏类型不支持的情况
         val definitionInjection = selectScope { element.parentDefinitionInjection() } ?: return null
         val definitionInjectionInfo = definitionInjection.definitionInjectionInfo ?: return null
-        val memberPathFromFile = memberPathFromFile.normalize()
-        val memberPath = ParadoxMemberPath.resolve(memberPathFromFile.subPaths.drop(1)).normalize() // 去除第一个子路径
-        val configContext = CwtConfigContext(element, memberPathFromFile, memberPath, memberRole, configGroup)
-        if (memberPath.isEmpty()) configContext.declarationRoot = true
-        configContext.definitionInjectionInfo = definitionInjectionInfo
-        return configContext
+        val memberPath = ParadoxMemberPath.resolve(memberPathFromFile.subPaths.dropFast(1)) // 去除第一个子路径
+        val context = CwtConfigContext.createFromMember(configGroup, memberRole, memberPathFromFile, memberPath, this)
+        context.element = element // necessary
+        context.rootFile = selectRootFile(file) // necessary
+        context.declarationRoot = memberPath.isEmpty()
+        context.definitionInjectionInfo = definitionInjectionInfo
+        return context
     }
 
     override fun getCacheKey(context: CwtConfigContext, options: ParadoxMatchOptions?): String? {
-        val gameTypeId = context.gameType.id
-        val definitionInjectionInfo = context.definitionInjectionInfo ?: return null
-        val targetKey = definitionInjectionInfo.type + "@" + definitionInjectionInfo.target
-        val memberPath = context.memberPath ?: return null // null -> unexpected
+        val gameType = context.gameType
         val memberRole = context.memberRole
-        val suffix = "${memberPath}\u0000${memberRole.ordinal}\u0000${options.toHashString(forMatched = false)}"
-        return "di@$gameTypeId#$targetKey#$suffix"
+        val memberPath = context.memberPath ?: return null // null -> unexpected
+        val definitionInjectionInfo = context.definitionInjectionInfo ?: return null
+        return buildString {
+            append(gameType.ordinal)
+            append("@di@")
+            append(options.toHashString(forMatched = false))
+            append(":")
+            append(definitionInjectionInfo.type).append("\u0000@").append(definitionInjectionInfo.target)
+            append("\u0000:")
+            append(memberRole.ordinal)
+            memberPath.subPaths.forEachFast { append("\u0000/").append(it) }
+        }
     }
 
     override fun getConfigs(context: CwtConfigContext, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>>? {

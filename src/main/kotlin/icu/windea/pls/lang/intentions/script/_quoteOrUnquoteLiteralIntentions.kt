@@ -18,7 +18,7 @@ import icu.windea.pls.script.psi.ParadoxScriptNumberExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptString
 
-sealed class QuoteOrUnquoteLiteralIntentionBase : PsiUpdateModCommandAction<ParadoxScriptExpressionElement>(ParadoxScriptExpressionElement::class.java), DumbAware {
+abstract class QuoteOrUnquoteLiteralIntentionBase : PsiUpdateModCommandAction<ParadoxScriptExpressionElement>(ParadoxScriptExpressionElement::class.java), DumbAware {
     override fun stopSearchAt(element: PsiElement, context: ActionContext): Boolean {
         return element is ParadoxScriptExpressionElement
     }

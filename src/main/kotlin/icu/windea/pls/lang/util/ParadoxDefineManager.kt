@@ -7,6 +7,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.Tuple2
@@ -35,6 +36,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.psi.propertyValue
 
+@Optimized
 object ParadoxDefineManager {
     object Keys : KeyRegistry() {
         val cachedDefineInfo by registerKey<CachedValue<ParadoxDefineInfo>>(Keys)
@@ -42,7 +44,7 @@ object ParadoxDefineManager {
 
     @Suppress("unused")
     fun isDefinesFile(file: VirtualFile): Boolean {
-        if (file.fileType != ParadoxScriptFileType) return false
+        if (file.fileType !== ParadoxScriptFileType) return false
         val filePath = file.fileInfo?.path ?: return false
         return isDefinesFilePath(filePath)
     }
@@ -82,7 +84,12 @@ object ParadoxDefineManager {
     }
 
     fun getInfo(element: ParadoxScriptProperty): ParadoxDefineInfo? {
-        // from cache (invalidated on file modification)
+        // from cache
+        return getInfoFromCache(element)
+    }
+
+    private fun getInfoFromCache(element: ParadoxScriptProperty): ParadoxDefineInfo? {
+        // invalidated on file modification
         return CachedValuesManager.getCachedValue(element, Keys.cachedDefineInfo) {
             ProgressManager.checkCanceled()
             runSmartReadAction {

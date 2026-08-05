@@ -1,6 +1,7 @@
 package icu.windea.pls.lang.resolve.complexExpression
 
 import com.intellij.testFramework.TestDataPath
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.lang.resolve.complexExpression.dsl.*
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.model.ParadoxGameType
@@ -29,12 +30,12 @@ class ParadoxDatabaseObjectExpressionTest : ParadoxComplexExpressionTest() {
     fun doTearDown() = clearIntegrationTest()
 
     private fun resolve(text: String, gameType: ParadoxGameType, incomplete: Boolean = false): ParadoxDatabaseObjectExpression? {
-        val configGroup = getConfigGroup(project, gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(project, gameType)
         return markIncomplete(incomplete) { ParadoxDatabaseObjectExpression.resolve(text, null, configGroup) }
     }
 
     @Test
-    fun test_basic_twoSegments() {
+    fun basic_twoSegments_test() {
         val s = "civic:some_civic"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -49,7 +50,7 @@ class ParadoxDatabaseObjectExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_basic_threeSegments() {
+    fun basic_threeSegments_test() {
         val s = "civic:some_civic:some_swapped_civic"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -68,7 +69,7 @@ class ParadoxDatabaseObjectExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_basic_job() {
+    fun basic_job_test() {
         val s = "job:job_soldier"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -83,7 +84,7 @@ class ParadoxDatabaseObjectExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_empty() {
+    fun empty_test() {
         Assert.assertNull(resolve("", ParadoxGameType.Stellaris, incomplete = false))
         val exp = resolve("", ParadoxGameType.Stellaris, incomplete = true)!!
         exp.renderAndPrintln()

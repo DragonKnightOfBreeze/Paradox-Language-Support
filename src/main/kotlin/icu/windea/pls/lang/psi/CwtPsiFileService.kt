@@ -14,7 +14,7 @@ object CwtPsiFileService {
 
     fun findStringExpressionElementFromStartOffset(file: PsiFile, offset: Int): CwtStringExpressionElement? {
         if (offset < 0) return null
-        if (file.language != CwtLanguage) return null
+        if (file.language !== CwtLanguage) return null
         return file.findElementAt(offset)
             ?.takeIf { it.elementType in CwtTokenSets.STRING_EXPRESSION_TOKENS }
             ?.parentOfType<CwtStringExpressionElement>()
@@ -23,7 +23,7 @@ object CwtPsiFileService {
     @Suppress("unused")
     fun findPropertyFromStartOffset(file: PsiFile, offset: Int): CwtProperty? {
         if (offset < 0) return null
-        if (file.language != CwtLanguage) return null
+        if (file.language !== CwtLanguage) return null
         return file.findElementAt(offset)
             ?.takeIf { it.elementType == CwtElementTypes.PROPERTY_KEY_TOKEN }
             ?.parentOfType<CwtProperty>()

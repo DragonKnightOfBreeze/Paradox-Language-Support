@@ -5,7 +5,7 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
-import icu.windea.pls.base.annotations.WithGameType
+import icu.windea.pls.base.annotations.ForGameType
 import icu.windea.pls.extensions.diagram.ChronicleDiagramBundle
 import icu.windea.pls.extensions.diagram.settings.Eu5EventTreeDiagramSettings
 import icu.windea.pls.extensions.diagram.settings.ParadoxDiagramSettings
@@ -13,7 +13,7 @@ import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
-@WithGameType(ParadoxGameType.Eu5)
+@ForGameType(ParadoxGameType.Eu5)
 class Eu5EventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGameType.Eu5) {
     object Constants {
         const val ID = "Eu5.EventTree"

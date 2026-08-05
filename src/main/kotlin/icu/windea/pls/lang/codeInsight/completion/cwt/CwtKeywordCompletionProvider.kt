@@ -9,10 +9,10 @@ import icu.windea.pls.core.codeInsight.completion.GlobalCompletionContext
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.cwt.psi.CwtString
 import icu.windea.pls.cwt.psi.CwtTokenSets.STRING_TOKENS
-import icu.windea.pls.lang.codeInsight.completion.ChronicleLookupElements
+import icu.windea.pls.lang.codeInsight.completion.CwtCompletionLookupProvider
 import icu.windea.pls.lang.codeInsight.completion.CwtCompletionProvider
 import icu.windea.pls.lang.codeInsight.completion.CwtConfigCompletionContext
-import icu.windea.pls.lang.codeInsight.completion.addElements
+import icu.windea.pls.lang.codeInsight.completion.addToResult
 
 /**
  * 提供关键字的代码补全（要求不在规则文件中提供）。
@@ -29,6 +29,6 @@ class CwtKeywordCompletionProvider : CwtCompletionProvider() {
         val context = CwtConfigCompletionContext.create(globalContext)
         if (context != null) return
 
-        result.addElements(ChronicleLookupElements.keywordLookupElements, globalContext)
+        CwtCompletionLookupProvider.forKeyword().addToResult(globalContext, result)
     }
 }

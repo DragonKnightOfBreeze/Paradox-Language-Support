@@ -9,21 +9,22 @@ import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.util.siblings
 import com.intellij.psi.util.startOffset
 import icu.windea.pls.ChronicleFacade
+import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.collections.filterFast
+import icu.windea.pls.core.collections.findLastFast
+import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.findChild
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.core.quote
 import icu.windea.pls.lang.analysis.ParadoxAnalysisManager
-import icu.windea.pls.lang.manipulation.ParadoxScopeCallStatementManipulationService.isChainedForm
-import icu.windea.pls.lang.manipulation.ParadoxScopeCallStatementManipulationService.isNormalForm
-import icu.windea.pls.lang.manipulation.ParadoxScopeCallStatementManipulationService.isSafeForm
 import icu.windea.pls.lang.psi.properties
+import icu.windea.pls.lang.resolve.ParadoxExpressionService
 import icu.windea.pls.lang.resolve.ParadoxSyntaxService
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxLinkedExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.lang.selectGameType
-import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constraints.ParadoxSyntaxConstraint
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
@@ -64,6 +65,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
  *
  * @see ParadoxLinkedExpression
  */
+@Optimized
 object ParadoxScopeCallStatementManipulationService {
     fun getHighlightingRange(element: ParadoxScriptProperty): TextRange {
         val separator = element.findChild { ParadoxSyntaxService.isPropertySeparator(it) }
@@ -310,8 +312,8 @@ object ParadoxScopeCallStatementManipulationService {
                 .scan("") { acc, node -> if (acc.isEmpty()) node.text else "$acc.${node.text}" }
                 .toSet()
             // "from.owner" -> "" + "from" + "from.owner"
-            val matchedExistsProperties = existsProperties.filter { it.value in allScopes }
-            matchedExistsProperties.forEach { it.delete() }
+            val matchedExistsProperties = existsProperties.filterFast { it.value in allScopes }
+            matchedExistsProperties.forEachFast { it.delete() }
         }
 
         // reformat around spaces
@@ -368,7 +370,7 @@ object ParadoxScopeCallStatementManipulationService {
         val linkNodes = complexExpression.linkNodes
         if (linkNodes.size <= 1) return -1
 
-        val expressionOffset = ParadoxExpressionManager.getExpressionOffset(propertyKey)
+        val expressionOffset = ParadoxExpressionService.getExpressionOffset(propertyKey)
         val cursorOffsetInExpression = caretOffset - propertyKey.startOffset - expressionOffset
 
         val outerKey: String
@@ -376,7 +378,7 @@ object ParadoxScopeCallStatementManipulationService {
         val moveToInInnerExpression: Int
 
         // 语义级别分割：基于复杂表达式节点
-        val lastMarkerBeforeCursor = complexExpression.nodes.findLast { it is ParadoxOperatorNode && it.rangeInExpression.startOffset < cursorOffsetInExpression }
+        val lastMarkerBeforeCursor = complexExpression.nodes.findLastFast { it is ParadoxOperatorNode && it.rangeInExpression.startOffset < cursorOffsetInExpression }
         if (lastMarkerBeforeCursor != null) {
             val splitStart = lastMarkerBeforeCursor.rangeInExpression.startOffset
             val splitEnd = lastMarkerBeforeCursor.rangeInExpression.endOffset

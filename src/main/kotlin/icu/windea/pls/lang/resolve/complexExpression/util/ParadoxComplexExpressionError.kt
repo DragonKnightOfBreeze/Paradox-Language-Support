@@ -5,7 +5,7 @@ import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.openapi.util.TextRange
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
-import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.lang.resolve.ParadoxExpressionService
 
 data class ParadoxComplexExpressionError(
     val code: Int,
@@ -24,7 +24,7 @@ data class ParadoxComplexExpressionError(
             isMalformedError() -> ProblemHighlightType.GENERIC_ERROR_OR_WARNING
             else -> ProblemHighlightType.GENERIC_ERROR_OR_WARNING
         }
-        val offset = ParadoxExpressionManager.getExpressionOffset(element)
+        val offset = ParadoxExpressionService.getExpressionOffset(element)
         holder.registerProblem(element, description, highlightType, rangeInExpression.shiftRight(offset), *fixes)
     }
 }

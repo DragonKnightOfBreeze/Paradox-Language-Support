@@ -8,6 +8,7 @@ import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.documentation
 import icu.windea.pls.core.collections.CaseInsensitiveStringSet
+import icu.windea.pls.core.isIdentifier
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.toFile
 import icu.windea.pls.core.util.KeyRegistry
@@ -17,7 +18,6 @@ import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.cwt.psi.CwtElementFactory
 import icu.windea.pls.cwt.psi.CwtMember
 import icu.windea.pls.cwt.psi.CwtProperty
-import icu.windea.pls.lang.isIdentifier
 import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -81,7 +81,7 @@ class CwtTriggerConfigGenerator(override val project: Project) : CwtConfigGenera
         val text = withContext(Dispatchers.IO) { file.readText() }
         val psiFile = readAction { CwtElementFactory.createFileFromText(project, text) }
         return readAction {
-            val fileConfig = CwtFileConfig.resolve(psiFile, CwtConfigGroup(project, gameType), file.name)
+            val fileConfig = CwtFileConfig.resolve(psiFile, CwtConfigGroup.create(project, gameType), file.name)
             val configs = fileConfig.properties.mapNotNull { CwtAliasConfig.resolve(it) }
                 .filter { it.name == "trigger" && it.subName.isIdentifier() }
             configs.groupBy { it.subName }.mapValues { (_, v) -> parseConfigInfo(v) }
@@ -92,7 +92,7 @@ class CwtTriggerConfigGenerator(override val project: Project) : CwtConfigGenera
         val name = configs.first().subName
         val description = configs.firstNotNullOfOrNull { it.config.documentation }.orEmpty()
         val supportedScopes = configs.first().supportedScopes
-        val apiStatus = configs.firstNotNullOfOrNull { it.config.optionData.apiStatus }
+        val apiStatus = configs.firstNotNullOfOrNull { it.config.optionMetadata.apiStatus }
         return TriggerConfigInfo(name, description, supportedScopes, apiStatus)
     }
 

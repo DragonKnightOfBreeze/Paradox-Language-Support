@@ -6,17 +6,23 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.Processor
-import icu.windea.pls.core.collections.process
+import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.collections.processFast
 import icu.windea.pls.lang.index.ChronicleIndexService
+import icu.windea.pls.lang.index.ParadoxMergedIndexTypes
 import icu.windea.pls.lang.search.ParadoxParameterSearch
+import icu.windea.pls.lang.search.scope.withFileTypes
 import icu.windea.pls.lang.search.util.ParadoxSearchContext
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.model.index.ParadoxIndexInfoTypes
 import icu.windea.pls.model.index.ParadoxParameterIndexInfo
+import icu.windea.pls.script.ParadoxScriptFileType
 
 /**
  * 参数的查询器。
+ *
+ * @see ParadoxParameterSearch
  */
+@Optimized
 class ParadoxParameterSearcher : QueryExecutorBase<ParadoxParameterIndexInfo, ParadoxParameterSearch.Parameters>() {
     override fun processQuery(queryParameters: ParadoxParameterSearch.Parameters, consumer: Processor<in ParadoxParameterIndexInfo>) {
         // 尽管新增了内联脚本传参的索引（ParadoxInlineScriptArgumentIndex），这里仍然统一通过合并索引（ParadoxMergedIndex）进行查询
@@ -29,9 +35,9 @@ class ParadoxParameterSearcher : QueryExecutorBase<ParadoxParameterIndexInfo, Pa
 
     private fun processQuery(context: Context, consumer: Processor<in ParadoxParameterIndexInfo>): Boolean {
         if (!context.isValid()) return true
-        val indexInfoType = ParadoxIndexInfoTypes.Parameter
-        return ChronicleIndexService.processAllFileDataWithKey(indexInfoType, context.project, context.scope, context.gameType) { file, infos ->
-            infos.process { info -> processInfo(context, file, info, consumer) }
+        val mergedIndexType = ParadoxMergedIndexTypes.Parameter
+        return ChronicleIndexService.processAllFileDataWithKey(mergedIndexType, context.project, context.scope, context.gameType) { file, infos ->
+            infos.processFast { info -> processInfo(context, file, info, consumer) }
         }
     }
 
@@ -51,7 +57,8 @@ class ParadoxParameterSearcher : QueryExecutorBase<ParadoxParameterIndexInfo, Pa
         return context.name == info.name
     }
 
-    private fun ParadoxParameterSearch.Parameters.createContext(scope: GlobalSearchScope = this.scope): Context {
+    private fun ParadoxParameterSearch.Parameters.createContext(): Context {
+        val scope = scope.withFileTypes(ParadoxScriptFileType) // optimize: restrict file types
         return Context(name, contextKey, gameType, project, scope)
     }
 

@@ -6,7 +6,7 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.option.CwtOptionDataHolder
+import icu.windea.pls.config.option.CwtOptionMetadata
 import icu.windea.pls.config.util.CwtConfigKeyManager
 import icu.windea.pls.core.match.TextMatcher
 import icu.windea.pls.lang.psi.members
@@ -48,7 +48,7 @@ object ParadoxMatchProvider {
 
     fun matchesDefinition(element: PsiElement, project: Project, name: String, typeExpression: String): Boolean {
         val selector = ParadoxDefinitionSearch.selector(project, element)
-        return ParadoxDefinitionSearch.searchElement(name, typeExpression, selector).findFirst() != null
+        return ParadoxDefinitionSearch.search(name, typeExpression, selector).findFirst() != null
     }
 
     fun matchesLocalisation(element: PsiElement, project: Project, name: String): Boolean {
@@ -80,14 +80,14 @@ object ParadoxMatchProvider {
     }
 
     /**
-     * 根据附加到 [config] 上的选项数据（[CwtOptionDataHolder.predicate]），以及 [element] 所在的块或文件中的结构，进行简单的结构匹配。
+     * 根据附加到 [config] 上的选项元数据 [predicate][CwtOptionMetadata.predicate]，以及 [element] 所在的块或文件中的结构，进行简单的结构匹配。
      *
      * @param element 上下文 PSI 元素。
-     * @param config 用于获取选项数据的规则，也可以是属性值对应的规则。
+     * @param config 用于获取选项元数据的规则，也可以是属性值对应的规则。
      */
     fun matchesByPredicate(element: PsiElement, config: CwtMemberConfig<*>): Boolean {
         run {
-            val predicate = config.optionData.predicate
+            val predicate = config.optionMetadata.predicate
             if (predicate.isNullOrEmpty()) return@run
             val containerElement = selectScope { element.queryParent().queryParent(withSelf = false) } ?: return@run
             predicate.forEach f@{ (pk, pv) ->

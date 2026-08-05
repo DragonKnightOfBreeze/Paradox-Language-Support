@@ -4,8 +4,9 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiFileSystemItem
 import icu.windea.pls.ChronicleFacade
-import icu.windea.pls.base.annotations.ChronicleAnnotationService
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.ep.overrides.ParadoxOverrideStrategyProvider
 import icu.windea.pls.lang.defineVariableInfo
@@ -24,20 +25,24 @@ import icu.windea.pls.lang.settings.ParadoxModSettingsState
 import icu.windea.pls.lang.util.ParadoxFileManager
 import icu.windea.pls.model.ParadoxFileInfo
 import icu.windea.pls.model.ParadoxRootInfo
+import icu.windea.pls.model.orSpecific
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
+@Optimized
 object ParadoxOverrideService {
     /**
      * 得到目标（文件、全局封装变量、定义、定值变量、本地化等）使用的覆盖策略。
      * 如果返回 `null`，则表示不适用覆盖策略。
      */
     fun getOverrideStrategy(target: Any): ParadoxOverrideStrategy? {
-        val gameType by lazy { selectGameType(target) }
-        return ParadoxOverrideStrategyProvider.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-            if (gameType != null && !ChronicleAnnotationService.check(ep, gameType)) return@f null
-            ep.get(target)
+        val gameType = selectGameType(target)
+        val eps = ParadoxOverrideStrategyProvider.EP_NAME.extensionList
+        eps.forEachFast f@{ ep ->
+            if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f // check game type first
+            ep.get(target)?.let { return it }
         }
+        return null
     }
 
     /**
@@ -46,10 +51,12 @@ object ParadoxOverrideService {
      */
     fun getOverrideStrategy(searchParameters: ParadoxSearchParameters<*>): ParadoxOverrideStrategy? {
         val gameType = searchParameters.selector.gameType
-        return ParadoxOverrideStrategyProvider.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-            if (gameType != null && !ChronicleAnnotationService.check(ep, gameType)) return@f null
-            ep.get(searchParameters)
+        val eps = ParadoxOverrideStrategyProvider.EP_NAME.extensionList
+        eps.forEachFast f@{ ep ->
+            if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f // check game type first
+            ep.get(searchParameters)?.let { return it }
         }
+        return null
     }
 
     /**

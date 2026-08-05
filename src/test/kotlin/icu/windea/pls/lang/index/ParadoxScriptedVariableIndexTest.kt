@@ -32,16 +32,11 @@ class ParadoxScriptedVariableIndexTest : BasePlatformTestCase(), ChronicleTestSc
     @After
     fun doTearDown() = clearIntegrationTest()
 
-    private fun markAndConfigureByFile(@TestDataFile testDataPath: String, relPath: String = testDataPath.removePrefix("features/index/")): PsiFile {
-        markFileInfo(gameType, relPath)
-        return myFixture.configureByFile(testDataPath)
-    }
-
     // region Local
 
     @Test
     fun test_Local() {
-        markAndConfigureByFile("features/index/common/test/local_vars.test.txt")
+        configureMarkedFile("features/index/common/test/local_vars.test.txt")
 
         val scope = GlobalSearchScope.projectScope(project)
         val elements = StubIndex.getElements(
@@ -61,7 +56,7 @@ class ParadoxScriptedVariableIndexTest : BasePlatformTestCase(), ChronicleTestSc
 
     @Test
     fun test_Global() {
-        markAndConfigureByFile("features/index/common/scripted_variables/global_vars.test.txt")
+        configureMarkedFile("features/index/common/scripted_variables/global_vars.test.txt")
 
         val scope = GlobalSearchScope.projectScope(project)
         val elements = StubIndex.getElements(
@@ -75,4 +70,9 @@ class ParadoxScriptedVariableIndexTest : BasePlatformTestCase(), ChronicleTestSc
     }
 
     // endregion
+
+    private fun configureMarkedFile(@TestDataFile testDataPath: String, path: String = testDataPath.removePrefix("features/index/")): PsiFile {
+        markFileInfo(gameType, path)
+        return myFixture.configureByFile(testDataPath)
+    }
 }

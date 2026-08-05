@@ -16,6 +16,8 @@ import icu.windea.pls.model.index.ParadoxComplexEnumValueIndexInfo
  * 复杂枚举的查询。
  *
  * @see ParadoxComplexEnumValueSearcher
+ * @see ParadoxComplexEnumValueSearch.Parameters
+ * @see ParadoxComplexEnumValueSearch.Selector
  */
 class ParadoxComplexEnumValueSearch : ExtensibleQueryFactory<ParadoxComplexEnumValueIndexInfo, ParadoxComplexEnumValueSearch.Parameters>(EP_NAME) {
     /**

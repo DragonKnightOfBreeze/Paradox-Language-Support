@@ -4,9 +4,14 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.util.IncorrectOperationException
+import icu.windea.pls.lang.codeInsight.completion.script.ParadoxDefinitionInjectionExpressionCompletionProvider
 import icu.windea.pls.model.ParadoxDefinitionInjectionInfo
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 
+/**
+ * @see ParadoxDefinitionInjectionPsiReferenceProvider
+ * @see ParadoxDefinitionInjectionExpressionCompletionProvider
+ */
 class ParadoxDefinitionInjectionModePsiReference(
     element: ParadoxScriptPropertyKey,
     rangeInElement: TextRange,

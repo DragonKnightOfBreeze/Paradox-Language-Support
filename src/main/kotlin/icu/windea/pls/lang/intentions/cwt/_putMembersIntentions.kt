@@ -14,7 +14,7 @@ import icu.windea.pls.cwt.psi.CwtBoundMemberContainer
 import icu.windea.pls.cwt.psi.CwtElementFactory
 import icu.windea.pls.cwt.psi.CwtMember
 
-sealed class PutMembersIntentionBase : PsiUpdateModCommandAction<CwtBoundMemberContainer>(CwtBoundMemberContainer::class.java), DumbAware {
+abstract class PutMembersIntentionBase : PsiUpdateModCommandAction<CwtBoundMemberContainer>(CwtBoundMemberContainer::class.java), DumbAware {
     protected fun getMemberTextSequence(element: CwtBoundMemberContainer): Sequence<String> {
         return element.members.asSequence().map { it.text.trim() }.filter { it.isNotEmpty() }
     }

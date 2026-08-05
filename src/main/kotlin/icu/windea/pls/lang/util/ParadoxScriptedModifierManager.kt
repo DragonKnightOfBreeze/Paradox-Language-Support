@@ -11,7 +11,7 @@ object ParadoxScriptedModifierManager {
     /**
      * 输入的 [definition] 的定义类型应当保证是 `scripted_modifier`。
      */
-    fun resolveModifierCategory(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Map<String, CwtModifierCategoryConfig> {
+    fun getModifierCategory(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Map<String, CwtModifierCategoryConfig> {
         val configGroup = definitionInfo.configGroup
         val property = selectScope { definition.properties().ofKey("category").one() }
         val value = property?.propertyValue?.stringValue()

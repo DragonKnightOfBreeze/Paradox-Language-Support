@@ -9,6 +9,7 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.aliasConfig
 import icu.windea.pls.config.config.originalConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.config.configExpression.CwtDataExpressionRole
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.lang.psi.properties
@@ -27,8 +28,8 @@ class ParadoxSwitchOverriddenScopeContextProvider : ParadoxOverriddenScopeContex
     object Constants {
         const val caseKey = "scalar"
         const val defaultKey = "default"
-        val triggerKeys = setOf("trigger", "on_trigger")
-        val contextNames = setOf("switch", "inverted_switch")
+        val triggerKeys = arrayOf("trigger", "on_trigger")
+        val contextNames = arrayOf("switch", "inverted_switch")
     }
 
     override fun getOverriddenScopeContext(contextElement: PsiElement, config: CwtMemberConfig<*>, parentScopeContext: ParadoxScopeContext?): ParadoxScopeContext? {
@@ -43,12 +44,12 @@ class ParadoxSwitchOverriddenScopeContextProvider : ParadoxOverriddenScopeContex
             .find { ParadoxConfigManager.getConfigs(it).any { c -> c is CwtPropertyConfig && c.aliasConfig == aliasConfig } }
             ?: return null
         // 基于 `trigger` 的值得到最终的 `scopeContext`，然后推断目标属性的 `scopeContext`
-        val triggerProperty = selectScope { containerProperty.properties(inline = true).ofKeys(Constants.triggerKeys).one() } ?: return null
+        val triggerProperty = selectScope { containerProperty.properties(inline = true).ofKeys(*Constants.triggerKeys).one() } ?: return null
         val triggerName = triggerProperty.propertyValue?.stringValue() ?: return null
-        if (CwtDataExpression.resolve(triggerName, false).type != CwtDataTypes.Constant) return null // must be a predefined trigger
+        if (CwtDataExpression.resolve(triggerName, CwtDataExpressionRole.Value).type != CwtDataTypes.Constant) return null // must be a predefined trigger
         val configGroup = finalConfig.configGroup
         val resultTriggerConfigs = configGroup.aliasGroups.get("trigger")?.get(triggerName)?.orNull() ?: return null
-        val pushScope = resultTriggerConfigs.firstOrNull()?.config?.optionData?.pushScope
+        val pushScope = resultTriggerConfigs.firstOrNull()?.config?.optionMetadata?.pushScope
         return parentScopeContext?.resolveNext(pushScope) ?: ParadoxScopeContext.resolveAny().resolveNext(pushScope)
     }
 }
@@ -89,10 +90,10 @@ class ParadoxTriggerWithParametersAwareOverriddenScopeContextProvider : ParadoxO
         // 基于 `trigger` 的值得到最终的 `scopeContext`，然后推断属性 `parameters` 的 `scopeContext`
         val triggerProperty = selectScope { containerProperty.properties(inline = true).ofKey(Constants.triggerKey).one() } ?: return null
         val triggerName = triggerProperty.propertyValue?.stringValue() ?: return null
-        if (CwtDataExpression.resolve(triggerName, false).type != CwtDataTypes.Constant) return null // must be a predefined trigger
+        if (CwtDataExpression.resolve(triggerName, CwtDataExpressionRole.Value).type != CwtDataTypes.Constant) return null // must be a predefined trigger
         val configGroup = finalConfig.configGroup
         val resultTriggerConfigs = configGroup.aliasGroups.get("trigger")?.get(triggerName)?.orNull() ?: return null
-        val pushScope = resultTriggerConfigs.firstOrNull()?.config?.optionData?.pushScope
+        val pushScope = resultTriggerConfigs.firstOrNull()?.config?.optionMetadata?.pushScope
         return parentScopeContext?.resolveNext(pushScope) ?: ParadoxScopeContext.resolveAny().resolveNext(pushScope)
     }
 }

@@ -5,6 +5,7 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.searches.DefinitionsScopedSearch
 import com.intellij.util.Processor
 import com.intellij.util.QueryExecutor
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
@@ -16,6 +17,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 /**
  * 本地化的实现的查询器。加入所有作用域内的包括不同语言环境在内的同名本地化。
  */
+@Optimized
 class ParadoxLocalisationImplementationsSearcher : QueryExecutor<PsiElement, DefinitionsScopedSearch.SearchParameters> {
     override fun execute(queryParameters: DefinitionsScopedSearch.SearchParameters, consumer: Processor<in PsiElement>): Boolean {
         val project = queryParameters.project

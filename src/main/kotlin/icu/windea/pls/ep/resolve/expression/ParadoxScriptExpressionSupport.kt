@@ -6,13 +6,18 @@ import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
-import icu.windea.pls.base.annotations.WithGameTypeEP
+import icu.windea.pls.config.CwtDataType
 import icu.windea.pls.config.config.CwtConfig
-import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.core.addExtensionPointListener
+import icu.windea.pls.core.collections.filterFast
+import icu.windea.pls.core.collections.orNull
+import icu.windea.pls.core.optimized
+import icu.windea.pls.core.util.values.LazyValue
 import icu.windea.pls.core.util.values.singletonListOrEmpty
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
+import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.type.ParadoxExpressionRole
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 
@@ -24,12 +29,13 @@ import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
  * @see ParadoxExpressionElement
  * @see ParadoxScriptExpressionElement
  */
-@WithGameTypeEP
 interface ParadoxScriptExpressionSupport {
-    fun supports(config: CwtConfig<*>, configExpression: CwtDataExpression): Boolean
+    fun supports(gameType: ParadoxGameType): Boolean = true
+
+    fun supports(dataType: CwtDataType): Boolean
 
     fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, holder: AnnotationHolder) {
-
+        // by default nothing
     }
 
     fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
@@ -40,15 +46,34 @@ interface ParadoxScriptExpressionSupport {
         return resolve(element, rangeInElement, text, config, role).to.singletonListOrEmpty()
     }
 
-    fun getReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiReference> {
+    fun getReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiReference> {
         return emptyList()
     }
 
     fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
-
+        // by default nothing
     }
 
     companion object INSTANCE {
         @JvmField val EP_NAME = ExtensionPointName<ParadoxScriptExpressionSupport>("icu.windea.pls.scriptExpressionSupport")
+        @JvmField val CACHE = LazyValue<Map<CwtDataType, List<ParadoxScriptExpressionSupport>>>()
+
+        fun get(dataType: CwtDataType): List<ParadoxScriptExpressionSupport> = CACHE.get()?.get(dataType).orEmpty()
+
+        // region Implementations
+
+        init {
+            CACHE.initialize { computeCache() }
+            EP_NAME.addExtensionPointListener { CACHE.reinitialize { computeCache() } }
+        }
+
+        private fun computeCache(): Map<CwtDataType, List<ParadoxScriptExpressionSupport>> {
+            val result = mutableMapOf<CwtDataType, List<ParadoxScriptExpressionSupport>>()
+            val eps = EP_NAME.extensionList
+            CwtDataType.entries.values.forEach { dataType -> eps.filterFast { ep -> ep.supports(dataType) }.orNull()?.let { result[dataType] = it.optimized() } }
+            return result.optimized()
+        }
+
+        // endregion
     }
 }

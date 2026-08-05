@@ -7,6 +7,8 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.settings.ChronicleConfigSettings
+import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.collections.anyFast
 import icu.windea.pls.core.indicesOf
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.psi.resolved
@@ -25,6 +27,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptTokenSets
 
+@Optimized
 object ParadoxSyntaxService {
     // region Script
 
@@ -111,7 +114,7 @@ object ParadoxSyntaxService {
 
         val configs = ParadoxConfigManager.getConfigs(element)
         if (configs.isEmpty()) return null
-        return configs.any { config -> isComparisonOperatorValid(config) }
+        return configs.anyFast { config -> isComparisonOperatorValid(config) }
     }
 
     /**

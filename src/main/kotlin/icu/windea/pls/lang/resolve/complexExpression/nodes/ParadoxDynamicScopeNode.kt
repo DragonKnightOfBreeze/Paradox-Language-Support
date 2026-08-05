@@ -4,7 +4,8 @@ import com.intellij.openapi.util.TextRange
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.core.collections.findIsInstance
+import icu.windea.pls.core.collections.filterFast
+import icu.windea.pls.core.collections.findIsInstanceFast
 
 class ParadoxDynamicScopeNode(
     override val text: String,
@@ -14,9 +15,9 @@ class ParadoxDynamicScopeNode(
     override val nodes: List<ParadoxComplexExpressionNode> = emptyList(),
 ) : ParadoxComplexExpressionNodeBase(), ParadoxScopeNode {
     val prefixNode: ParadoxScopePrefixNode?
-        get() = nodes.findIsInstance<ParadoxScopePrefixNode>()
+        get() = nodes.findIsInstanceFast<ParadoxScopePrefixNode>()
     val valueNode: ParadoxScopeValueNode
-        get() = nodes.findIsInstance<ParadoxScopeValueNode>()!!
+        get() = nodes.findIsInstanceFast<ParadoxScopeValueNode>()!!
 
     override fun getRelatedConfigs(): Collection<CwtConfig<*>> {
         return linkConfigs
@@ -68,7 +69,7 @@ class ParadoxDynamicScopeNode(
             // 匹配某一前缀的场合（如 `event_target:some_job`）
             run r1@{
                 val linkConfigs = configGroup.linksModel.forScopeFromDataSorted
-                    .filter { text.startsWith(it.prefix!!) }
+                    .filterFast { text.startsWith(it.prefix!!, ignoreCase = true) } // 3.0.1 clarify: ignore case
                 if (linkConfigs.isEmpty()) return@r1
 
                 run r2@{

@@ -1,8 +1,9 @@
 package icu.windea.pls.config.config.delegated
 
-import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
+import icu.windea.pls.config.CwtConfigType
+import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.config.annotations.FromMember
 import icu.windea.pls.config.annotations.FromName
 import icu.windea.pls.config.annotations.FromOptionMember
@@ -17,8 +18,6 @@ import icu.windea.pls.config.config.booleanValue
 import icu.windea.pls.config.config.resolveElementWithConfig
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.config.tagType
-import icu.windea.pls.config.optimizedPath
-import icu.windea.pls.config.optimizedPathExtension
 import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.collections.getAll
@@ -112,6 +111,8 @@ interface CwtTypeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, Cw
     val attributes: CwtTypeConfigAttributes
     val typeKeyPrefixConfig: CwtValueConfig? // #123
 
+    override val configType: CwtConfigType get() = CwtConfigTypes.Type
+
     companion object {
         /** 由属性规则解析为类型规则。 */
         @JvmStatic
@@ -130,7 +131,7 @@ private object CwtTypeConfigResolver : CwtConfigResolverScope {
         val name = config.key.removeSurroundingOrNull("type[", "]")?.orNull()?.optimized() ?: return null
         val propConfigs = config.properties
         if (propConfigs.isNullOrEmpty()) {
-            logger.warn("Skipped invalid type config (name: $name): Missing properties.".withLocationPrefix(config))
+            logger.warnWithPrefix(config, "Skipped invalid type config (name: $name): Missing properties.")
             return null
         }
 
@@ -149,22 +150,22 @@ private object CwtTypeConfigResolver : CwtConfigResolverScope {
             prop.stringValue?.let { listOf(it) } ?: prop.values?.mapNotNull { it.stringValue }?.optimized().orEmpty()
         }
         val typeKeyPrefix = propGroup.getOne("type_key_prefix")?.stringValue
-        val typeKeyFilter = config.optionData.typeKeyFilter
-        val typeKeyRegex = config.optionData.typeKeyRegex
-        val startsWith = config.optionData.startsWith
+        val typeKeyFilter = config.optionMetadata.typeKeyFilter
+        val typeKeyRegex = config.optionMetadata.typeKeyRegex
+        val startsWith = config.optionMetadata.startsWith
         val unique = propGroup.getOne("unique")?.booleanValue ?: false
         val severity = propGroup.getOne("severity")?.stringValue
-        val graphRelatedTypes = config.optionData.graphRelatedTypes
+        val graphRelatedTypes = config.optionMetadata.graphRelatedTypes
         val subtypes = propConfigs.mapNotNull { CwtSubtypeConfig.resolve(it) }.associateBy { it.name }.optimized()
         val localisation = propGroup.getOne("localisation")?.let { CwtTypeLocalisationConfig.resolve(it) }
         val images = propGroup.getOne("images")?.let { CwtTypeImagesConfig.resolve(it) }
 
         if (baseType != null && baseType == name) {
-            logger.warn("Incorrect base_type property: base type cannot be same to current type, fallback to null.".withLocationPrefix(config))
+            logger.warnWithPrefix(config, "Incorrect base_type property: base type cannot be same to current type, fallback to null.")
             baseType = null
         }
 
-        logger.debug { "Resolved type config (name: $name).".withLocationPrefix(config) }
+        logger.debugWithPrefix(config) { "Resolved type config (name: $name)." }
         return CwtTypeConfigImpl(
             config, name, baseType,
             paths, pathFile, pathExtension, pathStrict, pathPatterns,

@@ -17,6 +17,8 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
  * 定值命名空间的查询。
  *
  * @see ParadoxDefineNamespaceSearcher
+ * @see ParadoxDefineNamespaceSearch.Parameters
+ * @see ParadoxDefineNamespaceSearch.Selector
  */
 class ParadoxDefineNamespaceSearch : ExtensibleQueryFactory<ParadoxScriptProperty, ParadoxDefineNamespaceSearch.Parameters>(EP_NAME) {
     /**

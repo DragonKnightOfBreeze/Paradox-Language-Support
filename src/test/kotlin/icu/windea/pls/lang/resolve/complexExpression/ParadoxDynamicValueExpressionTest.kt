@@ -37,7 +37,7 @@ class ParadoxDynamicValueExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_basic_withoutScopeSuffix() {
+    fun basic_withoutScopeSuffix_test() {
         val s = "some_variable"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -48,7 +48,7 @@ class ParadoxDynamicValueExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_basic_withScopeSuffix() {
+    fun basic_withScopeSuffix_test() {
         val s = "some_variable@root"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -63,7 +63,7 @@ class ParadoxDynamicValueExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_basic_withScopeSuffix_chained() {
+    fun basic_withScopeSuffix_chained_test() {
         val s = "some_variable@root.owner"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -80,7 +80,7 @@ class ParadoxDynamicValueExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_incomplete_withFollowingAt() {
+    fun incomplete_withFollowingAt_test() {
         val s = "some_variable@"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -93,7 +93,7 @@ class ParadoxDynamicValueExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_incomplete_withFollowingDot() {
+    fun incomplete_withFollowingDot_test() {
         val s = "some_variable@root."
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -110,7 +110,7 @@ class ParadoxDynamicValueExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_empty() {
+    fun empty_test() {
         Assert.assertNull(resolve("", ParadoxGameType.Stellaris, incomplete = false))
         val exp = resolve("", ParadoxGameType.Stellaris, incomplete = true)!!
         exp.renderAndPrintln()

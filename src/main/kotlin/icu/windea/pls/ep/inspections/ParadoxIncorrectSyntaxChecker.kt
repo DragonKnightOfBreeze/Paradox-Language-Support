@@ -3,8 +3,8 @@ package icu.windea.pls.ep.inspections
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiElement
-import icu.windea.pls.base.annotations.WithGameTypeEP
 import icu.windea.pls.lang.inspections.ParadoxSyntaxInspectionContext
+import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 不正确的语法的检查器。
@@ -19,8 +19,9 @@ import icu.windea.pls.lang.inspections.ParadoxSyntaxInspectionContext
  * @see icu.windea.pls.lang.inspections.script.common.IncorrectSyntaxInspection
  * @see icu.windea.pls.lang.inspections.localisation.common.IncorrectSyntaxInspection
  */
-@WithGameTypeEP
 interface ParadoxIncorrectSyntaxChecker : DumbAware {
+    fun supports(gameType: ParadoxGameType): Boolean = true
+
     /**
      * 执行检查。
      *

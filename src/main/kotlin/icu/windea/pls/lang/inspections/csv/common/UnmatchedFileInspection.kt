@@ -8,8 +8,8 @@ import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.config.config.CwtFilePathMatchableConfig
 import icu.windea.pls.config.config.delegated.CwtRowConfig
 import icu.windea.pls.core.toAtomicProperty
-import icu.windea.pls.core.toCommaDelimitedString
-import icu.windea.pls.core.toCommaDelimitedStringList
+import icu.windea.pls.core.toDelimitedMutableList
+import icu.windea.pls.core.toDelimitedString
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.inspections.ParadoxFileInspectionService
 import icu.windea.pls.lang.inspections.script.inlineScript.InlineScriptInspectionBase
@@ -53,7 +53,7 @@ class UnmatchedFileInspection : InlineScriptInspectionBase() {
             // ignoredFilePaths
             row {
                 label(ChronicleBundle.message("unmatchedFile.option.ignoredFilePaths"))
-                expandableTextField({ it.toCommaDelimitedStringList() }, { it.toCommaDelimitedString() })
+                expandableTextField({ it.toDelimitedMutableList() }, { it.toDelimitedString() })
                     .bindText(::ignoredFilePaths.toAtomicProperty())
                     .comment(ChronicleBundle.message("comment.antPatterns"))
                     .align(Align.FILL)

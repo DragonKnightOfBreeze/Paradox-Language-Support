@@ -11,11 +11,11 @@ import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionProvider
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
+import icu.windea.pls.lang.resolve.ParadoxExpressionService
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
-import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.model.constraints.ParadoxPathConstraint
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptFile
@@ -28,7 +28,7 @@ import icu.windea.pls.script.psi.parentProperty
 import icu.windea.pls.script.psi.propertyValue
 
 /**
- * 提供定义注入的表达式的代码补全。
+ * 提供定义注入表达式中的代码补全。
  */
 class ParadoxDefinitionInjectionExpressionCompletionProvider : ParadoxCompletionProvider() {
     val elementPattern get() = psiElement().withElementType(KEY_OR_STRING_TOKENS)
@@ -62,7 +62,7 @@ class ParadoxDefinitionInjectionExpressionCompletionProvider : ParadoxCompletion
 
         val globalContext = GlobalCompletionContext.create(element, parameters, context)
         val context = ParadoxCompletionContext.create(globalContext).copy(
-            expressionOffset = ParadoxExpressionManager.getExpressionOffset(element)
+            expressionOffset = ParadoxExpressionService.getExpressionOffset(element)
         )
 
         ParadoxCompletionManager.completeDefinitionInjectionExpression(context, result)

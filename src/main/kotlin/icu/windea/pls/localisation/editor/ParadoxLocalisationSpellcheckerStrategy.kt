@@ -12,7 +12,7 @@ import com.intellij.spellchecker.tokenizer.SpellcheckingStrategy
 import com.intellij.spellchecker.tokenizer.TokenConsumer
 import com.intellij.spellchecker.tokenizer.Tokenizer
 import icu.windea.pls.core.children
-import icu.windea.pls.lang.isIdentifier
+import icu.windea.pls.core.isIdentifier
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationIcon

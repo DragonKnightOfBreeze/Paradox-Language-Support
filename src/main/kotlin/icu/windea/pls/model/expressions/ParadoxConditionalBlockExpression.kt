@@ -1,6 +1,10 @@
+@file:Optimized
+
 package icu.windea.pls.model.expressions
 
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.util.values.ReversibleValue
+import icu.windea.pls.script.psi.ParadoxScriptConditionalBlockExpression
 
 /**
  * 参数化快表达式。
@@ -11,18 +15,18 @@ import icu.windea.pls.core.util.values.ReversibleValue
  * - 在脚本文件中，`[[{x}]...]` 表示一个参数化快 ，其中 `{x}` 即是一个参数化快表达式。
  *
  * 示例：
- * ```
+ * ```text
  * PARAM
  * !PARAM
  * ```
  *
- * @see icu.windea.pls.script.psi.ParadoxScriptConditionalBlockExpression
+ * @see ParadoxScriptConditionalBlockExpression
  */
 interface ParadoxConditionalBlockExpression {
     val text: String
     val part: ReversibleValue<String>
 
-    fun matches(argumentNames: Set<String>? = null): Boolean
+    fun matches(argumentNames: Collection<String>? = null): Boolean
 
     override fun equals(other: Any?): Boolean
     override fun hashCode(): Int
@@ -53,7 +57,7 @@ private class ParadoxConditionalBlockExpressionImpl(
 ) : ParadoxConditionalBlockExpression {
     override val part: ReversibleValue<String> = ReversibleValue.from(text)
 
-    override fun matches(argumentNames: Set<String>?): Boolean {
+    override fun matches(argumentNames: Collection<String>?): Boolean {
         return part.withOperator { argumentNames != null && it in argumentNames }
     }
 

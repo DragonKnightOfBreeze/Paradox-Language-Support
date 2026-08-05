@@ -1,6 +1,7 @@
 package icu.windea.pls.lang.codeInsight.completion
 
 import com.intellij.codeInsight.completion.InsertHandler
+import com.intellij.codeInsight.completion.InsertionContext
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.codeInsight.template.TemplateBuilder
@@ -9,6 +10,7 @@ import com.intellij.codeInsight.template.TemplateManager
 import com.intellij.codeInsight.template.impl.TextExpression
 import com.intellij.openapi.command.impl.FinishMarkAction
 import com.intellij.openapi.command.impl.StartMarkAction
+import com.intellij.openapi.editor.EditorModificationUtil
 import com.intellij.openapi.editor.ScrollType
 import com.intellij.psi.PsiDocumentManager
 import icu.windea.pls.ChronicleBundle
@@ -69,7 +71,7 @@ object ParadoxClauseTemplateCompletionManager {
             .withPresentableText(extraTailText)
             .withInsertHandler(insertHandler)
             .withCompletionId(blockFolderId)
-            .withPriority(ChronicleCompletionPriorities.keyword)
+            .withPriority(ParadoxCompletionPriorities.keyword)
         return result
     }
 
@@ -97,7 +99,7 @@ object ParadoxClauseTemplateCompletionManager {
         val config = context.config!!
         val propertyName = CwtConfigManager.getEntryName(config)
 
-        val params = ChronicleInsertHandlers.Params(
+        val params = Params(
             quoted = context.leftQuoted,
             isKey = context.isKey,
             insertCurlyBraces = true,
@@ -105,9 +107,9 @@ object ParadoxClauseTemplateCompletionManager {
 
         return InsertHandler { c, _ ->
             if (params.isKey == true) {
-                ChronicleInsertHandlers.applyKeyWithValue(c, params)
+                applyKeyWithValue(c, params)
             } else {
-                ChronicleInsertHandlers.applyBlock(c)
+                applyBlock(c)
             }
 
             c.laterRunnable = Runnable {
@@ -163,10 +165,60 @@ object ParadoxClauseTemplateCompletionManager {
         }
     }
 
+    data class Params(
+        val quoted: Boolean = false,
+        val isKey: Boolean? = null,
+        val insertCurlyBraces: Boolean = false,
+    )
+
+    private fun applyBlock(c: InsertionContext) {
+        val spaceWithinBraces = ParadoxScriptCodeStyleSettings.getInstance(c.file).SPACE_WITHIN_BRACES
+        val text = if (spaceWithinBraces) "{  }" else "{}"
+        val length = if (spaceWithinBraces) text.length - 2 else text.length - 1
+        EditorModificationUtil.insertStringAtCaret(c.editor, text, false, true, length)
+    }
+
+    fun applyKeyOrValue(c: InsertionContext, params: Params) {
+        // `isKey` 如果是 `null`，则表示已经填充的只是键或值的其中一部分
+        if (!params.quoted) return
+        val editor = c.editor
+        val caretOffset = editor.caretModel.offset
+        val charsSequence = editor.document.charsSequence
+        val rightQuoted = charsSequence.get(caretOffset) == '"' && charsSequence.get(caretOffset - 1) != '\\'
+        if (rightQuoted) {
+            // 在必要时将光标移到右双引号之后
+            if (params.isKey != null) editor.caretModel.moveToOffset(caretOffset + 1)
+        } else {
+            // 插入缺失的右双引号，且在必要时将光标移到右双引号之后
+            EditorModificationUtil.insertStringAtCaret(editor, "\"", false, params.isKey != null)
+        }
+    }
+
+    private fun applyKeyWithValue(c: InsertionContext, params: Params) {
+        val editor = c.editor
+        applyKeyOrValue(c, params)
+        val spaceAroundPropertySeparator = ParadoxScriptCodeStyleSettings.getInstance(c.file).SPACE_AROUND_PROPERTY_SEPARATOR
+        val spaceWithinBraces = ParadoxScriptCodeStyleSettings.getInstance(c.file).SPACE_WITHIN_BRACES
+        val text = buildString {
+            if (spaceAroundPropertySeparator) append(" ")
+            append("=")
+            if (spaceAroundPropertySeparator) append(" ")
+            if (params.insertCurlyBraces) {
+                if (spaceWithinBraces) append("{  }") else append("{}")
+            }
+        }
+        val length = if (params.insertCurlyBraces) {
+            if (spaceWithinBraces) text.length - 2 else text.length - 1
+        } else {
+            text.length
+        }
+        EditorModificationUtil.insertStringAtCaret(editor, text, false, true, length)
+    }
+
     private fun getDescriptors(constantConfigGroup: Map<CwtDataExpression, List<CwtMemberConfig<*>>>): List<ElementDescriptor> {
         val descriptors = mutableListOf<ElementDescriptor>()
         for ((expression, constantConfigs) in constantConfigGroup) {
-            if (expression.isKey) {
+            if (expression.role.isKey()) {
                 val name = expression.expressionString
                 val constantValueExpressions = constantConfigs
                     .mapNotNull { it.castOrNull<CwtPropertyConfig>()?.valueExpression?.takeIf { e -> e.type == CwtDataTypes.Constant } }

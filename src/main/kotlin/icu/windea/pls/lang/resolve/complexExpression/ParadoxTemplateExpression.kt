@@ -9,19 +9,22 @@ import icu.windea.pls.config.config.delegated.CwtModifierConfig
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.util.CwtConfigExpressionManager
+import icu.windea.pls.core.collections.noneFast
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 
 /**
  * 模板表达式。
  *
  * 说明：
- * - 对应的规则数据类型为 [CwtDataTypes.TemplateExpression]。
+ * - 对应的规则数据类型为 [CwtDataTypes.Template]。
  * - 模板格式取决于对应的规则表达式（[CwtTemplateExpression]）。
  *
  * 语法：
  * ```bnf
  * template_expression ::= snippet+
  * private snippet ::= template_snippet_constant | template_snippet
+ * template_snippet_constant ::= STRING_LITERAL
+ * template_snippet ::= STRING_LITERAL
  * ```
  *
  * ### 语法与结构
@@ -62,7 +65,7 @@ private object ParadoxTemplateExpressionResolver {
         val templateExpression = when {
             config is CwtModifierConfig -> config.template
             else -> {
-                if (config.configExpression?.type != CwtDataTypes.TemplateExpression) return null
+                if (config.configExpression?.type != CwtDataTypes.Template) return null
                 val templateString = config.configExpression?.expressionString ?: return null
                 CwtTemplateExpression.resolve(templateString)
             }
@@ -124,11 +127,11 @@ private class ParadoxTemplateExpressionImpl(
     override val nodes: List<ParadoxComplexExpressionNode> = emptyList(),
 ) : ParadoxComplexExpressionBase(), ParadoxTemplateExpression {
     override fun isExactMatched(): Boolean {
-        return nodes.none { it is ParadoxTemplateSnippetNode && !it.isExactMatched() }
+        return nodes.noneFast { it is ParadoxTemplateSnippetNode && !it.isExactMatched() }
     }
 
     override fun checkExactMatched(element: PsiElement): Boolean {
-        return nodes.none { it is ParadoxTemplateSnippetNode && !it.checkExactMatched(element) }
+        return nodes.noneFast { it is ParadoxTemplateSnippetNode && !it.checkExactMatched(element) }
     }
 
     override fun equals(other: Any?) = this === other || other is ParadoxTemplateExpression && text == other.text

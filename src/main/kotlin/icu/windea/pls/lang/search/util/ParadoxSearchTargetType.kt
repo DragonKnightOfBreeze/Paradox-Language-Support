@@ -1,9 +1,11 @@
 package icu.windea.pls.lang.search.util
 
+import icu.windea.pls.lang.search.ParadoxTargetByTextSearch
+
 /**
  * 要查询的目标的类型。
  *
- * @see icu.windea.pls.lang.search.ParadoxTargetByTextSearch
+ * @see ParadoxTargetByTextSearch
  */
 enum class ParadoxSearchTargetType {
     ScriptedVariable, Definition, Localisation

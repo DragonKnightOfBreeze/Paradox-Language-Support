@@ -9,6 +9,18 @@ object TextMatcher {
     private val dateFieldFormatters = ConcurrentHashMap<String, DateTimeFormatter>()
 
     /**
+     * 检查 [text] 是否匹配一个整数。
+     *
+     * 说明：
+     * - 匹配的字符仅包括数字 `0-9`。
+     * - 当 [leadingUnary] 为 `true` 时，允许首字符为一元运算符（`+` 或 `-`）。
+     */
+    fun matchesInt(text: String, leadingUnary: Boolean = true): Boolean {
+        // radical optimization: no twice access of `text.length`, no pre-check
+        return matchesIntInternal(text, 0, text.length, leadingUnary)
+    }
+
+    /**
      * 检查 [text] 中 `[start, end)` 区间是否匹配一个整数。
      *
      * 说明：
@@ -21,12 +33,25 @@ object TextMatcher {
     }
 
     /**
+     * 检查 [text] 是否匹配一个浮点数。
+     *
+     * 说明：
+     * - 匹配的字符包括数字 `0-9` 与至多一个小数点 `.`。
+     * - [leadingUnary] 为 `true` 时，允许首字符为一元运算符（`+` 或 `-`）。
+     * - [lenientDot] 控制小数的严格程度：`true`（默认）：允许如 `.5`、`5.`、`+.5` 等宽松写法。`false`：要求小数点前后各至少有一个数字。
+     */
+    fun matchesFloat(text: String, leadingUnary: Boolean = true, lenientDot: Boolean = true): Boolean {
+        // radical optimization: no twice access of `text.length`, no pre-check
+        return matchesFloatInternal(text, 0, text.length, leadingUnary, lenientDot)
+    }
+
+    /**
      * 检查 [text] 中 `[start, end)` 区间是否匹配一个浮点数。
      *
      * 说明：
      * - 匹配的字符包括数字 `0-9` 与至多一个小数点 `.`。
      * - [leadingUnary] 为 `true` 时，允许首字符为一元运算符（`+` 或 `-`）。
-     * - [lenientDot] 控制小数的严格程度：true`（默认）：允许如 `.5`、`5.`、`+.5` 等宽松写法。`false`：要求小数点前后各至少有一个数字。
+     * - [lenientDot] 控制小数的严格程度：`true`（默认）：允许如 `.5`、`5.`、`+.5` 等宽松写法。`false`：要求小数点前后各至少有一个数字。
      */
     fun matchesFloat(text: String, start: Int = 0, end: Int = text.length, leadingUnary: Boolean = true, lenientDot: Boolean = true): Boolean {
         require(start >= 0 && end <= text.length && start <= end)

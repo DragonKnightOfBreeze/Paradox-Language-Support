@@ -40,6 +40,6 @@ fun <V> Map<String, V>.filterByPattern(
     configGroup: CwtConfigGroup,
     options: ParadoxMatchOptions? = null,
     fromIndex: Int = 0,
-): List<V> {
+): Collection<V> {
     return ParadoxPatternMatchService.filter(this, key, contextElement, configGroup, options, fromIndex)
 }

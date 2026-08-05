@@ -8,49 +8,55 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.Processor
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.base.context.ChronicleThreadContext
+import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.core.collections.process
-import icu.windea.pls.core.letIf
+import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.collections.processFast
 import icu.windea.pls.core.orNull
+import icu.windea.pls.lang.index.ChronicleIndexKeys
 import icu.windea.pls.lang.index.ChronicleIndexService
 import icu.windea.pls.lang.index.ChronicleIndexUtil
-import icu.windea.pls.lang.index.ParadoxDefinitionIndex
+import icu.windea.pls.lang.index.constraints.ParadoxDefinitionIndexConstraint
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
+import icu.windea.pls.lang.search.scope.withConfig
 import icu.windea.pls.lang.search.scope.withFileTypes
 import icu.windea.pls.lang.search.util.ParadoxSearchContext
 import icu.windea.pls.lang.search.util.getConstraint
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.model.constraints.ParadoxDefinitionIndexConstraint
 import icu.windea.pls.model.expressions.ParadoxDefinitionTypeExpression
 import icu.windea.pls.model.index.ParadoxDefinitionIndexInfo
 import icu.windea.pls.script.ParadoxScriptFileType
 
 /**
  * 定义的查询器。
+ *
+ * @see ParadoxDefinitionSearch
  */
+@Optimized
 class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxDefinitionIndexInfo, ParadoxDefinitionSearch.Parameters>() {
     override fun processQuery(queryParameters: ParadoxDefinitionSearch.Parameters, consumer: Processor<in ParadoxDefinitionIndexInfo>) {
         // #141 如果正在为 ParadoxMergedIndex 编制索引并且正在解析引用，则直接跳过
         if (ChronicleThreadContext.resolveForMergedIndex.get() == true) return
 
         ProgressManager.checkCanceled()
-        val scope = queryParameters.scope.withFileTypes(ParadoxScriptFileType)
-        val context = queryParameters.createContext(scope)
+        val context = queryParameters.createContext()
         processQuery(context, consumer)
     }
 
     private fun processQuery(context: Context, consumer: Processor<in ParadoxDefinitionIndexInfo>): Boolean {
         if (!context.isValid()) return true
+        val constraint = context.constraint
+        val indexId = constraint?.indexId ?: ChronicleIndexKeys.Definition
         val keys = setOf(
             createActualKey(context),
             ChronicleIndexUtil.createLazyKey(),
         )
-        val r = ChronicleIndexService.processAllFileData(ParadoxDefinitionIndex::class.java, keys, context.project, context.scope, context.gameType) { file, fileData ->
+        val r = ChronicleIndexService.processAllFileData(indexId, keys, context.project, context.scope, context.gameType) { file, fileData ->
             val actualKey = createActualKey(context)
             val infos = fileData[actualKey].orEmpty()
-            infos.process { info -> processInfo(context, file, info, consumer) }
+            infos.processFast { info -> processInfo(context, file, info, consumer) }
         }
         if (!r) return false
 
@@ -64,8 +70,9 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxDefinitionIndexInfo, 
     }
 
     private fun createActualKey(context: Context): String {
-        val ignoreCase = context.constraint?.ignoreCase == true
-        val name = context.name?.letIf(ignoreCase) { it.lowercase() }
+        val constraint = context.constraint
+        val ignoreCase = constraint?.ignoreCase == true
+        val name = if (ignoreCase) context.name?.lowercase() else context.name
         val type = context.type
         return when {
             !name.isNullOrEmpty() && !type.isNullOrEmpty() -> ChronicleIndexUtil.createNameTypeKey(name, type)
@@ -108,11 +115,13 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxDefinitionIndexInfo, 
         return subtypes.containsAll(context.subtypes)
     }
 
-    private fun ParadoxDefinitionSearch.Parameters.createContext(scope: GlobalSearchScope = this.scope): Context {
+    private fun ParadoxDefinitionSearch.Parameters.createContext(): Context {
         val typeExpression = typeExpression?.let { ParadoxDefinitionTypeExpression.resolve(it) }
         val type = typeExpression?.type
         val subtypes = typeExpression?.subtypes
-        val constraint = selector.getConstraint() as? ParadoxDefinitionIndexConstraint
+        val constraint = selector.getConstraint() as? ParadoxDefinitionIndexConstraint // extract index constraint from the selector
+        val scope = scope.withFileTypes(ParadoxScriptFileType) // optimize: restrict file types
+            .withConfig(type, CwtConfigTypes.Type, selector) // 3.0.1 optimize: restrict file by complex enum config
         return Context(name, type, subtypes, constraint, gameType, project, scope)
     }
 

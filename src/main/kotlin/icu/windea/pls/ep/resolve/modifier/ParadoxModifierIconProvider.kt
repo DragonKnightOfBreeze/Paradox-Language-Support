@@ -2,14 +2,15 @@ package icu.windea.pls.ep.resolve.modifier
 
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.psi.PsiElement
-import icu.windea.pls.base.annotations.WithGameTypeEP
+import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxModifierInfo
 
 /**
  * 用于为修正提供图标的图片。
  */
-@WithGameTypeEP
 interface ParadoxModifierIconProvider {
+    fun supports(gameType: ParadoxGameType) = true
+
     /**
      * 注意：这里加入的文件路径是不包含扩展名的。实际上，允许任何合法的扩展名（`.png`, `.dds`, `.tga`）。
      */

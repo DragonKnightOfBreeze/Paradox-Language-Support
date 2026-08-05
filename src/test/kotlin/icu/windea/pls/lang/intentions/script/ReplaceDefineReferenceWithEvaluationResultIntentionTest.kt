@@ -33,7 +33,7 @@ class ReplaceDefineReferenceWithEvaluationResultIntentionTest : BasePlatformTest
     fun doTearDown() = clearIntegrationTest()
 
     @Test
-    fun test_smoke() {
+    fun smoke_test() {
         markFileInfo(ParadoxGameType.Stellaris, "common/defines/00_defines.txt")
         myFixture.configureByFile("chronicle/common/defines/00_defines.txt")
 
@@ -49,7 +49,7 @@ class ReplaceDefineReferenceWithEvaluationResultIntentionTest : BasePlatformTest
     }
 
     @Test
-    fun test_unresolved_notAvailable() {
+    fun unresolved_notAvailable_test() {
         markFileInfo(ParadoxGameType.Stellaris, "common/defines/00_defines.txt")
         myFixture.configureByFile("chronicle/common/defines/00_defines.txt")
 

@@ -4,6 +4,7 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.resolveElementWithConfig
 import icu.windea.pls.config.config.tagType
+import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.lang.references.script.ParadoxScriptTagAwarePsiReference
 import icu.windea.pls.model.ParadoxTagType
 import icu.windea.pls.script.psi.ParadoxScriptString
@@ -15,14 +16,14 @@ object ParadoxTagManager {
         if (element !is ParadoxScriptString) return null
         if (!element.isDirectValue()) return null
         val references = element.references
-        for (reference in references) {
+        references.forEach { reference ->
             if (reference is ParadoxScriptTagAwarePsiReference) return reference.tagConfig?.tagType
         }
         return null
     }
 
     fun processConfigs(configs: List<CwtMemberConfig<*>>) {
-        for (config in configs) {
+        configs.forEachFast { config ->
             if (config is CwtValueConfig && config.tagType != null) {
                 config.resolveElementWithConfig()
             }

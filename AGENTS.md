@@ -121,8 +121,7 @@ Key `ChronicleTestScope` methods:
 - `markRootDirectory(relPath)` / `markConfigDirectory(relPath)` inject the root/config directory path, relative to the test data directory (`src/test/testData`).
 - `createRootInfo(gameType, gameVersion = null)` builds an injected root info, optionally pinned to a specific game version - useful for testing version-gated behavior.
 - `markFileInfo(gameType or rootInfo, path, entry = "", group = null)` (for a file to be configured afterward, e.g. via `myFixture.configureByFile`) and `VirtualFile.injectFileInfo(...)` (for an already-existing `VirtualFile`) inject per-file metadata; both have an overload taking a pre-built `ParadoxRootInfo` (from `createRootInfo`) instead of a bare `gameType`.
-- `initConfigGroups(project, ...gameTypes)` initializes the required built-in config groups for the specified game types (the shared `Core` group is always initialized).
-- `getConfigGroup(project, gameType)` get the config group of specified game type in tests. If game type is not specified, return the shared config group.
+- `initConfigGroups(project, ...gameTypes)` initializes the required config groups for the specified game types. Use built-in and injected config files, and the general config group (`core`) is always initialized.
 
 For the showcase test demonstrating `ChronicleTestScope` usage, see:
 
@@ -146,12 +145,13 @@ Package `icu.windea.pls.test.chronicle` hosts a family of "snapshot" tests drive
 
 Some tests are intentionally **disabled by default** and only run when explicitly enabled via system properties, gated through `icu.windea.pls.test.ChronicleAssume` (each method wraps `org.junit.Assume.assumeTrue(...)`, so a gated-out test is reported as *skipped*, not *failed*). Flags are read by `icu.windea.pls.test.ChronicleTestCapacities` from system properties:
 
-| `ChronicleAssume` method    | System property                        | Category                                                        |
-| --------------------------- | --------------------------------------- | ---------------------------------------------------------------- |
-| `includeBenchmark()`        | `chronicle.test.include.benchmark`      | Benchmarks                                                        |
-| `includeAi()`                | `chronicle.test.include.ai`             | AI-backed tests                                                   |
-| `includeLocalEnv()`          | `chronicle.test.include.local.env`      | Tests requiring a real local game/mod environment (e.g. `ParadoxModImporterTest`) |
-| `includeConfigGenerator()`   | `chronicle.test.include.config.generator` | Config generator tests                                            |
+| `ChronicleAssume` method   | System property                           | Category                                                                          |
+|----------------------------|-------------------------------------------|-----------------------------------------------------------------------------------|
+| `includeBenchmark()`       | `chronicle.test.include.benchmark`        | Benchmarks                                                                        |
+| `includeAi()`              | `chronicle.test.include.ai`               | AI-backed tests                                                                   |
+| `includeRemote()`          | `chronicle.test.include.remote`           | Tests requiring access remote network (e.g., `SpecialUrlServiceTest`)                                    |
+| `includeLocalEnv()`        | `chronicle.test.include.local.env`        | Tests requiring a real local game/mod environment (e.g. `ParadoxModImporterTest`) |
+| `includeConfigGenerator()` | `chronicle.test.include.config.generator` | Config generator tests                                                            |
 
 `chronicle.test.include.all` (checked via `includeAll()`) unconditionally enables every category above. Example: `./gradlew test -Dchronicle.test.include.local.env=true`.
 
@@ -199,7 +199,7 @@ For more details, see: `agents/context/importing-conventions.md`
 - Data depending on analysis data and/or PSI-structure, not depending on dynamic data (e.g., scripted variables, localisations): prefer `StubIndex`.
 - Data depending on PSI reference resolve results and/or config data (e.g., definitions, complex enums values): prefer `FileBasedIndex`.
 - For file indices that depend on resolved/matched member configs, prefer unifying via a merged index (e.g. `ParadoxMergedIndex`) for performance.
-- Compress serialized index data when necessary (e.g. via `readOrReadFrom` or `readWithIndexStringList`).
+- Compress serialized index data when necessary (e.g. via `readOrReadFrom` or `readIndexedStringList`).
 
 ### Code structure
 

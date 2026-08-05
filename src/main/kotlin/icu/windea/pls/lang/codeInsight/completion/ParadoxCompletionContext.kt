@@ -33,14 +33,15 @@ data class ParadoxCompletionContext(
     val argumentNames: MutableSet<String>? = null,
     val node: ParadoxComplexExpressionNode? = null,
     /** 在对多参数动态链接的代码补全中，表示当前光标所处的参数索引（从0开始）。 */
-    val linkArgIndex: Int = 0,
+    val linkArgumentIndex: Int = 0,
 ) : GlobalBasedCompletionContext() {
+    val offsetInExpression: Int get() = offsetInParent - expressionOffset
     val gameType: ParadoxGameType get() = configGroup.gameType
 
     companion object {
         @JvmStatic
         fun create(globalContext: GlobalCompletionContext): ParadoxCompletionContext {
-            return ParadoxCompletionContextBuilder.build(globalContext)
+            return ParadoxCompletionContextBuilder.create(globalContext)
         }
     }
 }
@@ -48,7 +49,7 @@ data class ParadoxCompletionContext(
 // region Implementations
 
 private object ParadoxCompletionContextBuilder {
-    fun build(globalContext: GlobalCompletionContext): ParadoxCompletionContext {
+    fun create(globalContext: GlobalCompletionContext): ParadoxCompletionContext {
         val gameType = selectGameType(globalContext.file)
         val keyword = getKeyword(globalContext.contextElement, globalContext.offsetInParent)
         val configGroup = ChronicleFacade.getConfigGroup(globalContext.project, gameType)

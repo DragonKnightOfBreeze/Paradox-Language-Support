@@ -39,8 +39,7 @@ object ChronicleDocBundle {
     @JvmStatic
     @Nls
     fun locale(name: String): String {
-        return INSTANCE.messageOrNull("locale.$name")
-            ?: name
+        return INSTANCE.messageOrNull("locale.$name") ?: name
     }
 
     @JvmStatic
@@ -56,7 +55,7 @@ object ChronicleDocBundle {
     fun eventAttribute(name: String, gameType: ParadoxGameType?): String {
         return gameType?.id?.let { INSTANCE.messageOrNull("$it.event.attribute.$name") }
             ?: INSTANCE.messageOrNull("general.event.attribute.$name")
-            ?: INSTANCE.getMessage("general.event.attribute.default", name)
+            ?: INSTANCE.getMessage("default.event.attribute", name)
     }
 
     @JvmStatic
@@ -75,7 +74,7 @@ object ChronicleDocBundle {
                 .withGameType(gameType)
                 .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
             val localisation = ParadoxLocalisationSearch.searchNormal(name.uppercase(), selector).find() ?: return@run
-            val text = ParadoxLocalisationManager.getLocalizedText(localisation) ?: return@run
+            val text = ParadoxLocalisationManager.getPresentableText(localisation) ?: return@run
             return text
         }
 
@@ -91,7 +90,7 @@ object ChronicleDocBundle {
             val selector = ParadoxDefinitionSearch.selector(project, context).contextSensitive().withGameType(gameType)
             val definition = ParadoxDefinitionSearch.searchProperty(name, ParadoxDefinitionTypes.technologyCategory, selector).find() ?: return@run
             val localisation = ParadoxDefinitionManager.getPrimaryLocalisation(definition) ?: return@run
-            val text = ParadoxLocalisationManager.getLocalizedText(localisation) ?: return@run
+            val text = ParadoxLocalisationManager.getPresentableText(localisation) ?: return@run
             return text
         }
 

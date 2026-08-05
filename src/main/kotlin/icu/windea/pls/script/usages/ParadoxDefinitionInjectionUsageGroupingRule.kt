@@ -29,7 +29,7 @@ class ParadoxDefinitionInjectionUsageGroupingRule(
 
     private fun getDefinitionInjection(usage: Usage): ParadoxScriptProperty? {
         var element = usage.castOrNull<PsiElementUsage>()?.element ?: return null
-        if (element.language !is ParadoxScriptLanguage) return null
+        if (element.language !== ParadoxScriptLanguage) return null
         if (element is ParadoxScriptFile) {
             val offset = usage.castOrNull<UsageInfo2UsageAdapter>()?.usageInfo?.navigationOffset
             if (offset != null) {

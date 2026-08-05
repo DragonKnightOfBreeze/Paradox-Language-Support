@@ -3,6 +3,7 @@ package icu.windea.pls.config.config
 import com.intellij.openapi.util.Key
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import icu.windea.pls.config.configExpression.CwtDataExpressionRole
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.createPointer
 import icu.windea.pls.core.findChild
@@ -27,7 +28,7 @@ class CwtValueConfigTest : BasePlatformTestCase() {
     private fun prepare(): Triple<CwtFile, CwtConfigGroup, String> {
         myFixture.configureByFile("features/config/value_config_cases.test.cwt")
         val file = myFixture.file as CwtFile
-        val group = CwtConfigGroup(project, ParadoxGameType.Stellaris)
+        val group = CwtConfigGroup.create(project, ParadoxGameType.Stellaris)
         val path = "common/test/value_config_cases.cwt"
         return Triple(file, group, path)
     }
@@ -44,7 +45,7 @@ class CwtValueConfigTest : BasePlatformTestCase() {
         val yesC = CwtValueConfig.resolve(yes, file, group)
         assertEquals("yes", yesC.value)
         assertEquals(CwtExpressionType.Boolean, yesC.valueType)
-        assertTrue(yesC.optionData.tag)
+        assertTrue(yesC.optionMetadata.tag)
 
         // 42 int
         val i = root.findChild<CwtValue> { it.value == "42" }!!
@@ -83,7 +84,7 @@ class CwtValueConfigTest : BasePlatformTestCase() {
     fun testBoundaries_values() {
         myFixture.configureByFile("features/config/value_config_boundaries.test.cwt")
         val file = myFixture.file as CwtFile
-        val group = CwtConfigGroup(project, ParadoxGameType.Stellaris)
+        val group = CwtConfigGroup.create(project, ParadoxGameType.Stellaris)
         val root = file.block!!
 
         // number forms
@@ -189,7 +190,7 @@ class CwtValueConfigTest : BasePlatformTestCase() {
             val delegated = baseCfg.delegatedWith(value = "over")
             assertEquals("over", delegated.value)
             // for block base (configs != null), valueExpression is blockExpression with isKey=false
-            assertFalse(delegated.valueExpression.isKey)
+            assertEquals(CwtDataExpressionRole.Value, delegated.valueExpression.role)
         }
     }
 
@@ -197,7 +198,7 @@ class CwtValueConfigTest : BasePlatformTestCase() {
     fun testResolver_resolveFromPropertyConfig_valueWrapper_userDataIsolation() {
         myFixture.configureByFile("features/config/property_config_cases.test.cwt")
         val file = myFixture.file as CwtFile
-        val group = CwtConfigGroup(project, ParadoxGameType.Stellaris)
+        val group = CwtConfigGroup.create(project, ParadoxGameType.Stellaris)
         val root = file.block!!
 
         val prop = root.findChild<CwtProperty> { it.name == "block_prop" }!!
@@ -212,7 +213,7 @@ class CwtValueConfigTest : BasePlatformTestCase() {
         assertEquals(pCfg.valueType, vCfg.valueType)
         assertEquals(pCfg.configs?.size, vCfg.configs?.size)
         // for block property, wrapper valueExpression is blockExpression with isKey=false
-        assertFalse(vCfg.valueExpression.isKey)
+        assertEquals(CwtDataExpressionRole.Value, vCfg.valueExpression.role)
         // userData should NOT be inherited from property config on wrapper
         assertNull(vCfg.getUserData(extraKey))
         vCfg.putUserData(extraKey, "vw1")
@@ -231,7 +232,7 @@ class CwtValueConfigTest : BasePlatformTestCase() {
         val d = c.delegatedWith(value = "100")
         assertNull(d.parentConfig)
         assertEquals("100", d.value)
-        assertFalse(d.valueExpression.isKey)
+        assertEquals(CwtDataExpressionRole.Value, d.valueExpression.role)
     }
 
     // endregion

@@ -1,8 +1,9 @@
 package icu.windea.pls.config.config.delegated
 
-import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
+import icu.windea.pls.config.CwtConfigType
+import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.config.annotations.FromName
 import icu.windea.pls.config.annotations.FromOptionMember
 import icu.windea.pls.config.config.CwtDelegatedConfig
@@ -64,6 +65,8 @@ interface CwtSubtypeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> 
     @FromOptionMember("group: string?")
     val group: String?
 
+    override val configType: CwtConfigType get() = CwtConfigTypes.Subtype
+
     companion object {
         /** 由属性规则解析为子类型规则。 */
         @JvmStatic
@@ -80,12 +83,12 @@ private object CwtSubtypeConfigResolver : CwtConfigResolverScope {
 
     fun resolve(config: CwtPropertyConfig): CwtSubtypeConfig? {
         val name = config.key.removeSurroundingOrNull("subtype[", "]")?.orNull()?.optimized() ?: return null
-        val typeKeyFilter = config.optionData.typeKeyFilter
-        val typeKeyRegex = config.optionData.typeKeyRegex
-        val startsWith = config.optionData.startsWith
-        val onlyIfNot = config.optionData.onlyIfNot
-        val group = config.optionData.group
-        logger.debug { "Resolved subtype config (name: $name).".withLocationPrefix(config) }
+        val typeKeyFilter = config.optionMetadata.typeKeyFilter
+        val typeKeyRegex = config.optionMetadata.typeKeyRegex
+        val startsWith = config.optionMetadata.startsWith
+        val onlyIfNot = config.optionMetadata.onlyIfNot
+        val group = config.optionMetadata.group
+        logger.debugWithPrefix(config) { "Resolved subtype config (name: $name)." }
         return CwtSubtypeConfigImpl(config, name, typeKeyFilter, typeKeyRegex, startsWith, onlyIfNot, group)
     }
 }

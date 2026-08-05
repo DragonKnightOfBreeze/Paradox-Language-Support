@@ -1,12 +1,12 @@
 package icu.windea.pls.ep.resolve.definition
 
 import com.intellij.openapi.extensions.ExtensionPointName
-import icu.windea.pls.base.annotations.WithGameTypeEP
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.lang.codeInsight.documentation.ParadoxDocumentationTarget
 import icu.windea.pls.lang.codeInsight.navigation.GotoSuperDefinitionActionHandler
 import icu.windea.pls.lang.resolve.ParadoxDefinitionService
 import icu.windea.pls.model.ParadoxDefinitionInfo
+import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 /**
@@ -17,8 +17,9 @@ import icu.windea.pls.script.psi.ParadoxDefinitionElement
  * - 导航到父定义的导航动作（[GotoSuperDefinitionActionHandler]）。
  * - 解析子定义的子类型（[ParadoxDefinitionService.processSubtypeConfigsFromInherit]）。
  */
-@WithGameTypeEP
 interface ParadoxDefinitionInheritSupport {
+    fun supports(gameType: ParadoxGameType): Boolean = true
+
     /**
      * 从指定的定义信息得到父定义。
      *

@@ -1,8 +1,9 @@
 package icu.windea.pls.config.config.extended
 
-import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
+import icu.windea.pls.config.CwtConfigType
+import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.annotations.FromName
 import icu.windea.pls.config.annotations.FromOptionMember
@@ -49,6 +50,8 @@ interface CwtExtendedDynamicValueConfig : CwtDelegatedConfig<CwtMember, CwtMembe
     @FromOptionMember("hint: string?")
     val hint: String?
 
+    override val configType: CwtConfigType get() = CwtConfigTypes.ExtendedDynamicValue
+
     companion object {
         /** 由成员规则解析为动态值的扩展规则。 */
         @JvmStatic
@@ -65,8 +68,8 @@ private object CwtExtendedDynamicValueConfigResolver : CwtConfigResolverScope {
 
     fun resolve(config: CwtMemberConfig<*>, type: String): CwtExtendedDynamicValueConfig {
         val name = if (config is CwtPropertyConfig) config.key else config.value
-        val hint = config.optionData.hint
-        logger.debug { "Resolved extended dynamic value config (name: $name, type: $type).".withLocationPrefix(config) }
+        val hint = config.optionMetadata.hint
+        logger.debugWithPrefix(config) { "Resolved extended dynamic value config (name: $name, type: $type)." }
         return CwtExtendedDynamicValueConfigImpl(config, name, type, hint)
     }
 }

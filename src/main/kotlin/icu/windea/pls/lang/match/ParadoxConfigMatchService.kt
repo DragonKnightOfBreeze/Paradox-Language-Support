@@ -21,9 +21,14 @@ import icu.windea.pls.config.config.intValue
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.match.CwtConfigMatchService
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.cache.cancelable
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.collections.anyFast
+import icu.windea.pls.core.collections.filterFast
+import icu.windea.pls.core.collections.findFast
+import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.isIncomplete
 import icu.windea.pls.core.isNotNullOrEmpty
@@ -31,7 +36,7 @@ import icu.windea.pls.core.match.PathMatcher
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
-import icu.windea.pls.core.util.registerKey
+import icu.windea.pls.core.util.registerKeyWithThis
 import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.psi.values
@@ -59,20 +64,22 @@ import icu.windea.pls.script.psi.floatValue
 import icu.windea.pls.script.psi.intValue
 import icu.windea.pls.script.psi.isDirectValue
 import icu.windea.pls.script.psi.isPropertyValue
+import icu.windea.pls.script.psi.parentProperty
 import icu.windea.pls.script.psi.propertyValue
 
+@Optimized
 object ParadoxConfigMatchService {
-    private val CwtConfigGroup.typeConfigCandidatesCache by registerKey(CwtConfigGroup.Keys) {
+    private val CwtConfigGroup.typeConfigCandidatesCache by registerKeyWithThis(CwtConfigGroup.Keys) {
         CacheBuilder().build<ParadoxPath, List<CwtTypeConfig>> { path ->
             types.values.filter { CwtConfigMatchService.matchesFilePath(it, path) }.optimized()
         }.cancelable()
     }
-    private val CwtConfigGroup.complexEnumConfigCandidatesCache by registerKey(CwtConfigGroup.Keys) {
+    private val CwtConfigGroup.complexEnumConfigCandidatesCache by registerKeyWithThis(CwtConfigGroup.Keys) {
         CacheBuilder().build<ParadoxPath, List<CwtComplexEnumConfig>> { path ->
             complexEnums.values.filter { CwtConfigMatchService.matchesFilePath(it, path) }.optimized()
         }.cancelable()
     }
-    private val CwtConfigGroup.rowConfigCandidatesCache by registerKey(CwtConfigGroup.Keys) {
+    private val CwtConfigGroup.rowConfigCandidatesCache by registerKeyWithThis(CwtConfigGroup.Keys) {
         CacheBuilder().build<ParadoxPath, List<CwtRowConfig>> { path ->
             rows.values.filter { CwtConfigMatchService.matchesFilePath(it, path) }.optimized()
         }.cancelable()
@@ -96,7 +103,9 @@ object ParadoxConfigMatchService {
     fun getTypeConfigCandidates(context: CwtTypeConfigMatchContext): Collection<CwtTypeConfig> {
         // 优先从基于文件路径的缓存中获取
         val configGroup = context.configGroup
-        return if (context.path == null) configGroup.types.values else configGroup.typeConfigCandidatesCache[context.path]
+        val result = if (context.path == null) configGroup.types.values else configGroup.typeConfigCandidatesCache[context.path]
+        if (result.isEmpty()) return emptyList()
+        return result
     }
 
     fun getMatchedTypeConfig(context: CwtTypeConfigMatchContext, element: ParadoxDefinitionElement): CwtTypeConfig? {
@@ -196,23 +205,27 @@ object ParadoxConfigMatchService {
             }
         }
 
-        if (context.rootKeys != null) {
+        if (context.lazyRootKeys != null) {
             // 如果属性 skip_root_key 存在，则要判断是否需要跳过 rootKey
             // skip_root_key 可以为列表（如果是列表，其中的每一个 root_key 都要依次匹配）
             // skip_root_key 可以重复（其中之一匹配即可）
+            val expectedRootKeys = context.lazyRootKeys.value ?: return false
             val skipRootKey = typeConfig.skipRootKey
             if (skipRootKey.isEmpty()) {
-                if (context.rootKeys.isNotEmpty()) return false
+                if (expectedRootKeys.isNotEmpty()) return false
             } else {
-                if (context.rootKeys.isEmpty()) return false
-                val result = skipRootKey.any { PathMatcher.matches(context.rootKeys, it, ignoreCase = true, usePattern = true, useAny = true) }
+                if (expectedRootKeys.isEmpty()) return false
+                val result = skipRootKey.anyFast { PathMatcher.matches(expectedRootKeys, it, ignoreCase = true, usePattern = true, useAny = true) }
                 if (!result) return false
             }
         }
 
-        // 如果属性 type_key_prefix 存在，且有必要校验，则要求其与 typeKeyPrefix 必须一致（忽略大小写）
-        if (context.typeKeyPrefix != null && typeConfig.name in typeConfig.configGroup.typesModel.typeKeyPrefixAware) {
-            val result = typeConfig.typeKeyPrefix.equals(context.typeKeyPrefix.value, ignoreCase = true)
+        if (context.lazyTypeKeyPrefix != null && typeConfig.name in typeConfig.configGroup.typesModel.typeKeyPrefixAware) {
+            // 如果属性 type_key_prefix 存在，则要求其与 typeKeyPrefix 必须匹配（忽略大小写）
+            // 如果属性 type_key_prefix 不存在，则在必要时，要求 typeKeyPrefix 也不存在
+            val expectedTypeKeyPrefix = context.lazyTypeKeyPrefix.value
+            val typeKeyPrefix = typeConfig.typeKeyPrefix
+            val result = typeKeyPrefix.equals(expectedTypeKeyPrefix, ignoreCase = true)
             if (!result) return false
         }
 
@@ -234,10 +247,11 @@ object ParadoxConfigMatchService {
         if (typeConfig.subtypes.isEmpty()) return emptyList()
         val result = mutableListOf<CwtSubtypeConfig>()
         val context = CwtSubtypeConfigMatchContext(typeConfig.configGroup, result, typeKey)
-        for (subtypeConfig in typeConfig.subtypes.values) {
+        typeConfig.subtypes.values.forEach { subtypeConfig ->
             val fastResult = matchesSubtypeFast(context, subtypeConfig)
             if (fastResult == true) result.add(subtypeConfig)
         }
+        if (result.isEmpty()) return emptyList()
         return result
     }
 
@@ -255,7 +269,7 @@ object ParadoxConfigMatchService {
         // 如果 only_if_not 存在，且已经匹配指定的任意子类型，则不匹配
         val onlyIfNot = subtypeConfig.onlyIfNot
         if (!onlyIfNot.isNullOrEmpty()) {
-            val matchesAny = context.configs.any { it.name in onlyIfNot }
+            val matchesAny = context.configs.anyFast { it.name in onlyIfNot }
             if (matchesAny) return false
         }
 
@@ -308,7 +322,7 @@ object ParadoxConfigMatchService {
         val propValue = property.propertyValue
 
         // 对于 propertyValue 同样这样判断（可能脚本没有写完）
-        if (propValue == null) return propertyConfig.optionData.cardinality?.min == 0
+        if (propValue == null) return propertyConfig.optionMetadata.cardinality?.min == 0
 
         when {
             // 匹配布尔值
@@ -317,10 +331,11 @@ object ParadoxConfigMatchService {
             }
             // 匹配值
             propertyConfig.stringValue != null -> {
-                val expression = ParadoxExpression.resolve(propValue, context.options)
+                val options = context.options
+                val expression = ParadoxExpression.resolve(propValue, options)
                 val configExpression = propertyConfig.valueExpression
-                val context = ParadoxScriptExpressionMatchContext(propValue, expression, configExpression, propertyConfig, configGroup, context.options)
-                return ParadoxExpressionMatchService.matchScriptExpression(context).get(context.options)
+                val context = ParadoxScriptExpressionMatchContext(propValue, expression, configExpression, propertyConfig, configGroup, options)
+                return ParadoxExpressionMatchService.matchScriptExpression(context).get(options)
             }
             // 匹配 single_alias
             CwtConfigMatchService.isSingleAliasEntry(propertyConfig) -> {
@@ -347,16 +362,17 @@ object ParadoxConfigMatchService {
 
         val occurrences = propertyConfigs.associateByTo(mutableMapOf(), { it.key }, { ParadoxMatchOccurrenceService.evaluate(definition, it) })
         val configGroup = propertyConfigs.first().configGroup
+        val options = context.options
         val matched = definition.properties(context.inline).all p@{ propertyElement ->
             val keyElement = propertyElement.propertyKey
-            val expression = ParadoxExpression.resolve(keyElement, context.options)
-            val propConfigs = propertyConfigs.filter { config ->
-                val context = ParadoxScriptExpressionMatchContext(keyElement, expression, config.keyExpression, config, configGroup, context.options)
-                ParadoxExpressionMatchService.matchScriptExpression(context).get(context.options)
+            val expression = ParadoxExpression.resolve(keyElement, options)
+            val propConfigs = propertyConfigs.filterFast { config ->
+                val context = ParadoxScriptExpressionMatchContext(keyElement, expression, config.keyExpression, config, configGroup, options)
+                ParadoxExpressionMatchService.matchScriptExpression(context).get(options)
             }
             if (propConfigs.isEmpty()) return@p true // 如果没有匹配的规则则忽略
 
-            val matched = propConfigs.any { propConfig ->
+            val matched = propConfigs.anyFast { propConfig ->
                 val matched = matchesPropertyForSubtype(context, definition, propertyElement, propConfig)
                 if (matched) occurrences.get(propConfig.key)?.let { it.actual++ }
                 matched
@@ -374,12 +390,13 @@ object ParadoxConfigMatchService {
 
         val occurrences = valueConfigs.associateByTo(mutableMapOf(), { it.value }, { ParadoxMatchOccurrenceService.evaluate(block, it) })
         val configGroup = valueConfigs.first().configGroup
+        val options = context.options
         val matched = block.values(context.inline).process p@{ valueElement ->
-            val expression = ParadoxExpression.resolve(valueElement, context.options)
-            val matched = valueConfigs.any { config ->
+            val expression = ParadoxExpression.resolve(valueElement, options)
+            val matched = valueConfigs.anyFast { config ->
                 val configExpression = config.valueExpression
-                val context = ParadoxScriptExpressionMatchContext(valueElement, expression, configExpression, config, configGroup, context.options)
-                val matched = ParadoxExpressionMatchService.matchScriptExpression(context).get(context.options)
+                val context = ParadoxScriptExpressionMatchContext(valueElement, expression, configExpression, config, configGroup, options)
+                val matched = ParadoxExpressionMatchService.matchScriptExpression(context).get(options)
                 if (matched) occurrences.get(config.value)?.let { it.actual++ }
                 matched
             }
@@ -392,7 +409,7 @@ object ParadoxConfigMatchService {
 
     private fun matchesSingleAliasForSubtype(context: CwtSubtypeConfigMatchContext, definition: ParadoxDefinitionElement, property: ParadoxScriptProperty, propertyConfig: CwtPropertyConfig): Boolean {
         val configGroup = propertyConfig.configGroup
-        val singleAliasName = propertyConfig.valueExpression.value ?: return false
+        val singleAliasName = propertyConfig.valueExpression.metadata.value ?: return false
         val singleAlias = configGroup.singleAliases[singleAliasName] ?: return false
         return matchesPropertyForSubtype(context, definition, property, singleAlias.config)
     }
@@ -400,13 +417,14 @@ object ParadoxConfigMatchService {
     private fun matchesAliasForSubtype(context: CwtSubtypeConfigMatchContext, definition: ParadoxDefinitionElement, property: ParadoxScriptProperty, propertyConfig: CwtPropertyConfig): Boolean {
         // aliasName 和 aliasSubName 需要匹配
         val configGroup = propertyConfig.configGroup
-        val aliasName = propertyConfig.keyExpression.value ?: return false
+        val aliasName = propertyConfig.keyExpression.metadata.value ?: return false
         val propertyKey = property.propertyKey
-        val aliasExpression = ParadoxExpression.resolve(propertyKey, context.options)
-        val aliasSubName = ParadoxExpressionMatchService.getMatchedAliasKey(property, aliasExpression, aliasName, configGroup, context.options) ?: return false
+        val options = context.options
+        val aliasExpression = ParadoxExpression.resolve(propertyKey, options)
+        val aliasSubName = ParadoxExpressionMatchService.getMatchedAliasKey(property, aliasExpression, aliasName, configGroup, options) ?: return false
         val aliasGroup = configGroup.aliasGroups[aliasName] ?: return false
         val aliases = aliasGroup[aliasSubName] ?: return false
-        return aliases.any { alias ->
+        return aliases.anyFast { alias ->
             matchesPropertyForSubtype(context, definition, property, alias.config)
         }
     }
@@ -420,7 +438,9 @@ object ParadoxConfigMatchService {
     fun getComplexEnumConfigCandidates(context: CwtComplexEnumConfigMatchContext): Collection<CwtComplexEnumConfig> {
         // 优先从基于文件路径的缓存中获取
         val configGroup = context.configGroup
-        return if (context.path == null) configGroup.complexEnums.values else configGroup.complexEnumConfigCandidatesCache[context.path]
+        val result = if (context.path == null) configGroup.complexEnums.values else configGroup.complexEnumConfigCandidatesCache[context.path]
+        if (result.isEmpty()) return emptyList()
+        return result
     }
 
     fun getMatchedComplexEnumConfig(context: CwtComplexEnumConfigMatchContext, element: ParadoxScriptExpressionElement): CwtComplexEnumConfig? {
@@ -434,7 +454,7 @@ object ParadoxConfigMatchService {
         if (context.matchPath && context.path != null) {
             if (!CwtConfigMatchService.matchesFilePath(complexEnumConfig, context.path)) return false
         }
-        for (enumNameConfig in complexEnumConfig.enumNameConfigs) {
+        complexEnumConfig.enumNameConfigs.forEachFast { enumNameConfig ->
             if (matchesEnumNameForComplexEnum(element, complexEnumConfig, enumNameConfig)) return true
         }
         return false
@@ -447,15 +467,16 @@ object ParadoxConfigMatchService {
                 val valueElement = element.propertyValue ?: return false
                 if (!matchesValueForComplexEnum(valueElement, complexEnumConfig, config)) return false
             } else if (config.stringValue == "enum_name") {
-                if (element !is ParadoxScriptString || !element.isPropertyValue()) return false
-                val propertyElement = element.parent?.castOrNull<ParadoxScriptProperty>() ?: return false
+                if (element !is ParadoxScriptString) return false
+                val propertyElement = element.parentProperty ?: return false
                 if (!matchesKeyForComplexEnum(propertyElement, config)) return false
             } else {
                 return false
             }
         } else if (config is CwtValueConfig) {
             if (config.stringValue == "enum_name") {
-                if (element !is ParadoxScriptString || !element.isDirectValue()) return false
+                if (element !is ParadoxScriptString) return false
+                if (!element.isDirectValue()) return false
             } else {
                 return false
             }
@@ -495,12 +516,12 @@ object ParadoxConfigMatchService {
             }
         }
         if (parentElement == null) return false
-        parentConfig.configs?.forEach { c ->
+        parentConfig.configs?.forEachFast f@{ c ->
             ProgressManager.checkCanceled()
             when {
                 c is CwtPropertyConfig -> {
                     // ignore same config or enum name config
-                    if (c == config || c.key == "enum_name" || c.stringValue == "enum_name") return@forEach
+                    if (c == config || c.key == "enum_name" || c.stringValue == "enum_name") return@f
                     val notMatched = parentMemberContainer.properties(inline = true).none { propElement ->
                         matchesPropertyForComplexEnum(propElement, complexEnumConfig, c)
                     }
@@ -508,7 +529,7 @@ object ParadoxConfigMatchService {
                 }
                 c is CwtValueConfig -> {
                     // ignore same config or enum name config
-                    if (c == config || c.stringValue == "enum_name") return@forEach
+                    if (c == config || c.stringValue == "enum_name") return@f
                     val notMatched = parentMemberContainer.values(inline = true).none { valueElement ->
                         matchesValueForComplexEnum(valueElement, complexEnumConfig, c)
                     }
@@ -550,14 +571,14 @@ object ParadoxConfigMatchService {
     }
 
     private fun matchesBlockForComplexEnum(memberContainerElement: ParadoxScriptMemberContainer, complexEnumConfig: CwtComplexEnumConfig, config: CwtMemberConfig<*>): Boolean {
-        config.properties?.forEach { propConfig ->
+        config.properties?.forEachFast { propConfig ->
             ProgressManager.checkCanceled()
             val notMatched = memberContainerElement.properties(inline = true).none { propElement ->
                 matchesPropertyForComplexEnum(propElement, complexEnumConfig, propConfig)
             }
             if (notMatched) return false
         }
-        config.values?.forEach { valueConfig ->
+        config.values?.forEachFast { valueConfig ->
             ProgressManager.checkCanceled()
             val notMatched = memberContainerElement.values(inline = true).none { valueElement ->
                 matchesValueForComplexEnum(valueElement, complexEnumConfig, valueConfig)
@@ -574,7 +595,9 @@ object ParadoxConfigMatchService {
     fun getRowConfigCandidates(context: CwtRowConfigMatchContext): Collection<CwtRowConfig> {
         // 优先从基于文件路径的缓存中获取
         val configGroup = context.configGroup
-        return if (context.path == null) configGroup.rows.values else configGroup.rowConfigCandidatesCache[context.path]
+        val result = if (context.path == null) configGroup.rows.values else configGroup.rowConfigCandidatesCache[context.path]
+        if (result.isEmpty()) return emptyList()
+        return result
     }
 
     fun getMatchedRowConfig(context: CwtRowConfigMatchContext): CwtRowConfig? {
@@ -598,7 +621,7 @@ object ParadoxConfigMatchService {
         return when (rowConfig.type) {
             CwtRowType.Key -> {
                 val columnName = columnNames.getOrNull(columnIndex) ?: return null
-                rowConfig.columns.find { it.key == columnName }
+                rowConfig.columns.findFast { it.key == columnName }
             }
             CwtRowType.Index -> {
                 rowConfig.columns.getOrNull(columnIndex)

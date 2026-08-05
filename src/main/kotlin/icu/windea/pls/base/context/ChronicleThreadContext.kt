@@ -5,11 +5,11 @@ import java.util.*
 
 object ChronicleThreadContext {
     /**
-     * 用于标记是否要跳过对选项数据的处理，直接保留所有选项规则列表。
+     * 用于标记是否要跳过对选项元数据的处理，直接保留所有选项规则列表。
      *
-     * @see icu.windea.pls.config.option.CwtOptionDataProcessor.process
+     * @see icu.windea.pls.config.option.CwtOptionMetadataProcessor.process
      */
-    val skipProcessingOptionData = ThreadLocal<Boolean>()
+    val skipProcessingOptionMetadata = ThreadLocal<Boolean>()
 
     /**
      * 用于标记是否允许不完整的复杂脚本表达式（用于兼容代码补全）。

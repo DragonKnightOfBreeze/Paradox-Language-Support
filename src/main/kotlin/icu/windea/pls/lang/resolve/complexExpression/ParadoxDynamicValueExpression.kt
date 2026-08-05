@@ -6,15 +6,16 @@ import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.cast
+import icu.windea.pls.core.collections.anyFast
 import icu.windea.pls.core.util.values.singletonList
 import icu.windea.pls.core.util.values.to
+import icu.windea.pls.lang.getParameterRanges
 import icu.windea.pls.lang.isParameterAwareIdentifier
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionErrors
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionValidatorScope
-import icu.windea.pls.lang.util.ParadoxExpressionManager
 
 /**
  * 动态值表达式。
@@ -25,7 +26,7 @@ import icu.windea.pls.lang.util.ParadoxExpressionManager
  * - 如果嵌套在链式表达式中，`@` 之后仅允许一个链接节点，作为单个作用域，再之后的链接节点属于外层的链式表达式。
  *
  * 示例：
- * ```
+ * ```text
  * some_variable
  * some_variable@root
  * ```
@@ -33,6 +34,8 @@ import icu.windea.pls.lang.util.ParadoxExpressionManager
  * 语法：
  * ```bnf
  * dynamic_value_expression ::= dynamic_value ("@" scope_field_expression)?
+ * dynamic_value ::= IDENTIFIER
+ * scope_field_expression ::= EXPRESSION
  * ```
  *
  * ### 语法与结构
@@ -72,12 +75,12 @@ private object ParadoxDynamicValueExpressionResolver {
     }
 
     fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, configs: List<CwtConfig<*>>): ParadoxDynamicValueExpression? {
-        if (configs.any { it.configExpression?.type !in CwtDataTypeSets.DynamicValue }) return null
+        if (configs.anyFast { it.configExpression?.type !in CwtDataTypeSets.DynamicValue }) return null
 
         val incomplete = ChronicleThreadContext.incompleteComplexExpression.get() ?: false
         if (!incomplete && text.isEmpty()) return null
 
-        val parameterRanges = ParadoxExpressionManager.getParameterRanges(text)
+        val parameterRanges = text.getParameterRanges()
 
         val nodes = mutableListOf<ParadoxComplexExpressionNode>()
         val range = range ?: TextRange.create(0, text.length)
@@ -90,7 +93,7 @@ private object ParadoxDynamicValueExpressionResolver {
         while (tokenIndex < textLength) {
             index = tokenIndex + 1
             tokenIndex = text.indexOf('@', index)
-            if (tokenIndex != -1 && parameterRanges.any { tokenIndex in it }) continue // skip parameter text
+            if (tokenIndex != -1 && parameterRanges.anyFast { tokenIndex in it }) continue // skip parameter text
             if (tokenIndex == -1) {
                 tokenIndex = textLength
             }

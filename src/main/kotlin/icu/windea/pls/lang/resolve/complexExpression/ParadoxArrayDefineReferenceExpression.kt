@@ -5,7 +5,7 @@ import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.collections.findIsInstance
+import icu.windea.pls.core.collections.findIsInstanceFast
 import icu.windea.pls.core.match.TextMatcher
 import icu.windea.pls.lang.isParameterAwareIdentifier
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
@@ -32,13 +32,15 @@ import icu.windea.pls.lang.util.ParadoxDefineManager
  * - [ParadoxNumberLiteralNode] - 对应其中作为索引的数字字面量。应当是一个正整数。
  *
  * 示例：
- * ```
+ * ```text
  * Namespace|Name|0
  * ```
  *
  * 语法：
  * ```bnf
  * array_define_reference_expression ::= define_namespace "|" define_variable "|" NUMBER_LITERAL
+ * define_namespace ::= IDENTIFIER
+ * define_variable ::= IDENTIFIER
  * ```
  */
 interface ParadoxArrayDefineReferenceExpression : ParadoxComplexExpression {
@@ -130,7 +132,7 @@ private object ParadoxArrayDefineReferenceExpressionValidator : ParadoxComplexEx
     }
 
     private fun checkArrayDefine(expression: ParadoxArrayDefineReferenceExpression, element: ParadoxExpressionElement? = null, errors: MutableList<ParadoxComplexExpressionError>) {
-        val variableNode = expression.nodes.findIsInstance<ParadoxDefineVariableNode>()
+        val variableNode = expression.nodes.findIsInstanceFast<ParadoxDefineVariableNode>()
         val resolved = if (element == null) null else variableNode?.getReference(element)?.resolve()
 
         if (variableNode != null && resolved != null) {
@@ -139,7 +141,7 @@ private object ParadoxArrayDefineReferenceExpressionValidator : ParadoxComplexEx
             }
         }
 
-        val indexNode = expression.nodes.findIsInstance<ParadoxLiteralNode>() ?: return
+        val indexNode = expression.nodes.findIsInstanceFast<ParadoxLiteralNode>() ?: return
         val index = indexNode.text.toIntOrNull()
         if (index == null) {
             errors += ParadoxComplexExpressionErrors.indexNotInt(indexNode.rangeInExpression, indexNode.text)

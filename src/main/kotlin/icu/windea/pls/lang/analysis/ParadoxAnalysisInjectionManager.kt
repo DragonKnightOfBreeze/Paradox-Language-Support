@@ -12,9 +12,7 @@ import icu.windea.pls.model.paths.ParadoxPath
 import java.nio.file.Path
 
 @Suppress("unused")
-object ParadoxAnalysisInjectionManager {
-    private val dataService get() = ParadoxAnalysisDataService.getInstance()
-
+object ParadoxAnalysisInjectionManager : ParadoxAnalysisScope {
     // region Get Methods
 
     fun inferGameTypeFromFileName(file: VirtualFile): ParadoxGameType? {
@@ -25,35 +23,51 @@ object ParadoxAnalysisInjectionManager {
     }
 
     fun getInjectedRootInfo(rootFile: VirtualFile): ParadoxRootInfo? {
-        return with(dataService) { rootFile.injectedRootInfo }
+        return rootFile.injectedRootInfo
     }
 
     fun getInjectedFileInfo(file: VirtualFile): ParadoxFileInfo? {
-        return with(dataService) { file.injectedFileInfo }
+        return file.injectedFileInfo
     }
 
     fun getInjectedLocaleConfig(file: VirtualFile): CwtLocaleConfig? {
-        return with(dataService) { file.injectedLocaleConfig }
+        return file.injectedLocaleConfig
     }
 
     fun getInjectedRootKeys(file: VirtualFile): List<String> {
-        return with(dataService) { file.injectedRootKeys.orEmpty() }
+        return file.injectedRootKeys.orEmpty()
     }
 
     fun useDefaultFileExtensions(): Boolean {
-        return dataService.useDefaultFileExtensions
+        return useDefaultFileExtensions
     }
 
     fun useGameTypeInference(): Boolean {
-        return dataService.useGameTypeInference
+        return useGameTypeInference
     }
 
     fun getMarkedRootInfo(): ParadoxRootInfo? {
-        return dataService.markedRootInfo
+        return markedRootInfo
     }
 
     fun getMarkedFileInfo(): ParadoxFileInfo? {
-        return dataService.markedFileInfo
+        return markedFileInfo
+    }
+
+    fun getMarkedConfigPath(): String? {
+        return markedConfigPath
+    }
+
+    fun getMarkedConfigDirectory(): Path? {
+        return markedConfigDirectory
+    }
+
+    fun useOnlyBuiltInAndInjectedConfigFiles(): Boolean {
+        return useOnlyBuiltInAndInjectedConfigFiles
+    }
+
+    fun useOnlyInjectedConfigFiles(): Boolean {
+        return useOnlyInjectedConfigFiles
     }
 
     // endregion
@@ -61,21 +75,25 @@ object ParadoxAnalysisInjectionManager {
     // region Manipulation Methods
 
     fun createRootInfo(gameType: ParadoxGameType, gameVersion: String? = null): ParadoxRootInfo.Injected {
-        val rootDirectory = dataService.markedRootDirectory
+        ParadoxAnalysisLifecycleService.ensureLoaded()
+        val rootDirectory = markedRootDirectory
         return ParadoxRootInfo.Injected(rootDirectory?.toVirtualFile(), gameType, gameVersion)
     }
 
     fun injectRootInfo(rootFile: VirtualFile, rootInfo: ParadoxRootInfo?): Boolean {
-        with(dataService) { rootFile.injectedRootInfo = rootInfo }
+        ParadoxAnalysisLifecycleService.ensureLoaded()
+        rootFile.injectedRootInfo = rootInfo
         return true
     }
 
     fun injectFileInfo(file: VirtualFile, fileInfo: ParadoxFileInfo?): Boolean {
-        with(dataService) { file.injectedFileInfo = fileInfo }
+        ParadoxAnalysisLifecycleService.ensureLoaded()
+        file.injectedFileInfo = fileInfo
         return true
     }
 
     fun injectFileInfo(file: VirtualFile, rootInfo: ParadoxRootInfo, path: String, entry: String = "", group: ParadoxFileGroup? = null): Boolean {
+        ParadoxAnalysisLifecycleService.ensureLoaded()
         val filePath = ParadoxPath.resolve(path)
         val fileEntry = entry
         val fileGroup = group ?: ParadoxFileGroup.resolvePossible(path.substringAfterLast('/'))
@@ -84,65 +102,80 @@ object ParadoxAnalysisInjectionManager {
     }
 
     fun injectLocaleConfig(file: VirtualFile, localeConfig: CwtLocaleConfig?): Boolean {
-        with(dataService) { file.injectedLocaleConfig = localeConfig }
+        ParadoxAnalysisLifecycleService.ensureLoaded()
+        file.injectedLocaleConfig = localeConfig
         return true
     }
 
     fun injectRootKeys(file: VirtualFile, rootKeys: List<String>): Boolean {
-        with(dataService) { file.injectedRootKeys = rootKeys.orNull() }
+        ParadoxAnalysisLifecycleService.ensureLoaded()
+        file.injectedRootKeys = rootKeys.orNull()
         return true
     }
 
-    fun configureUseDefaultFileExtensions(value: Boolean) {
-        dataService.useDefaultFileExtensions = value
+    fun useDefaultFileExtensions(value: Boolean) {
+        useDefaultFileExtensions = value
     }
 
-    fun configureUseGameTypeInference(value: Boolean) {
-        dataService.useGameTypeInference = value
+    fun useGameTypeInference(value: Boolean) {
+        useGameTypeInference = value
     }
 
     fun markRootInfo(rootInfo: ParadoxRootInfo) {
-        dataService.markedRootInfo = rootInfo
+        ParadoxAnalysisLifecycleService.ensureLoaded()
+        markedRootInfo = rootInfo
     }
 
     fun clearMarkedRootInfo() {
-        dataService.markedRootInfo = null
+        markedRootInfo = null
     }
 
     fun markFileInfo(fileInfo: ParadoxFileInfo) {
-        dataService.markedFileInfo = fileInfo
+        ParadoxAnalysisLifecycleService.ensureLoaded()
+        markedFileInfo = fileInfo
     }
 
     fun markFileInfo(rootInfo: ParadoxRootInfo, path: String, entry: String = "", group: ParadoxFileGroup? = null) {
+        ParadoxAnalysisLifecycleService.ensureLoaded()
         val filePath = ParadoxPath.resolve(path)
         val fileEntry = entry
         val fileGroup = group ?: ParadoxFileGroup.resolvePossible(path.substringAfterLast('/'))
         val fileInfo = ParadoxFileInfo(filePath, fileEntry, fileGroup, rootInfo)
-        dataService.markedFileInfo = fileInfo
+        markedFileInfo = fileInfo
     }
 
     fun clearMarkedFileInfo() {
-        dataService.markedFileInfo = null
+        markedFileInfo = null
     }
 
     fun markRootDirectory(relPath: String, path: Path) {
-        dataService.markedRootPath = relPath
-        dataService.markedRootDirectory = path
+        ParadoxAnalysisLifecycleService.ensureLoaded()
+        markedRootPath = relPath
+        markedRootDirectory = path
     }
 
     fun clearMarkedRootDirectory() {
-        dataService.markedRootPath = null
-        dataService.markedRootDirectory = null
+        markedRootPath = null
+        markedRootDirectory = null
     }
 
     fun markConfigDirectory(relPath: String, path: Path) {
-        dataService.markedConfigPath = relPath
-        dataService.markedConfigDirectory = path
+        ParadoxAnalysisLifecycleService.ensureLoaded()
+        markedConfigPath = relPath
+        markedConfigDirectory = path
     }
 
     fun clearMarkedConfigDirectory() {
-        dataService.markedConfigPath = null
-        dataService.markedConfigDirectory = null
+        markedConfigPath = null
+        markedConfigDirectory = null
+    }
+
+    fun useOnlyBuiltInAndInjectedConfigFiles(value: Boolean) {
+        useOnlyBuiltInAndInjectedConfigFiles = value
+    }
+
+    fun useOnlyInjectedConfigFiles(value: Boolean) {
+        useOnlyInjectedConfigFiles = value
     }
 
     // endregion

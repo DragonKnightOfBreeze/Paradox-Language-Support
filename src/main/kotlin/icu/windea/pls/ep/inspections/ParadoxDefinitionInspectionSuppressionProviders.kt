@@ -1,6 +1,6 @@
 package icu.windea.pls.ep.inspections
 
-import icu.windea.pls.base.annotations.WithGameType
+import icu.windea.pls.base.annotations.ForGameType
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
@@ -15,8 +15,10 @@ class ParadoxBaseDefinitionInspectionSuppressionProvider : ParadoxDefinitionInsp
     }
 }
 
-@WithGameType(ParadoxGameType.Stellaris)
+@ForGameType(ParadoxGameType.Stellaris)
 class StellarisBaseDefinitionInspectionSuppressionProvider : ParadoxDefinitionInspectionSuppressionProvider {
+    override fun supports(gameType: ParadoxGameType) = gameType == ParadoxGameType.Stellaris
+
     override fun getSuppressedToolIds(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Set<String> {
         // 1.1.2 传统的采纳和完成不需要有对应的图片
         if (definitionInfo.type == "tradition" || definitionInfo.typeConfig.baseType == "tradition") {

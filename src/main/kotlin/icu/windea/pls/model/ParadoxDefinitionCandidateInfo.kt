@@ -10,6 +10,7 @@ import icu.windea.pls.config.config.extended.CwtExtendedDefinitionConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.util.ParadoxConfigManager
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 /**
  * 定义候选的解析信息。
@@ -29,6 +30,8 @@ sealed interface ParadoxDefinitionCandidateInfo : UserDataHolder {
     val type: String?
     val typeConfig: CwtTypeConfig?
     val configGroup: CwtConfigGroup
+
+    val element: ParadoxDefinitionElement?
 
     val project: Project get() = configGroup.project
     val gameType: ParadoxGameType get() = configGroup.gameType

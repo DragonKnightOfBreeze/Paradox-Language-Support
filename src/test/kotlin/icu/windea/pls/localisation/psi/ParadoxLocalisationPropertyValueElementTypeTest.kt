@@ -30,16 +30,6 @@ class ParadoxLocalisationPropertyValueElementTypeTest : BasePlatformTestCase(), 
     @After
     fun doTearDown() = clearIntegrationTest()
 
-    private fun configureFile(): PsiFile {
-        return myFixture.configureByFile("localisation/psi/property_value_element_type.test.yml")
-    }
-
-    private fun findPropertyByKey(file: PsiFile, key: String): ParadoxLocalisationProperty {
-        val properties = PsiTreeUtil.findChildrenOfType(file, ParadoxLocalisationProperty::class.java)
-        return properties.find { it.name == key }
-            ?: throw AssertionError("Property '$key' not found in file")
-    }
-
     // region PSI 层级验证
 
     /**
@@ -255,4 +245,14 @@ class ParadoxLocalisationPropertyValueElementTypeTest : BasePlatformTestCase(), 
     }
 
     // endregion
+
+    private fun configureFile(): PsiFile {
+        return myFixture.configureByFile("localisation/psi/property_value_element_type.test.yml")
+    }
+
+    private fun findPropertyByKey(file: PsiFile, key: String): ParadoxLocalisationProperty {
+        val properties = PsiTreeUtil.findChildrenOfType(file, ParadoxLocalisationProperty::class.java)
+        return properties.find { it.name == key }
+            ?: throw AssertionError("Property '$key' not found in file")
+    }
 }

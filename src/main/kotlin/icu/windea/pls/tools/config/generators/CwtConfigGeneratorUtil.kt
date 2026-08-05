@@ -7,12 +7,12 @@ import icu.windea.pls.core.children
 import icu.windea.pls.core.collections.chunkedBy
 import icu.windea.pls.core.collections.filterIsInstance
 import icu.windea.pls.core.formatted
+import icu.windea.pls.core.isIdentifier
 import icu.windea.pls.core.mergeTextRanges
 import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.cwt.psi.CwtMember
 import icu.windea.pls.cwt.psi.CwtProperty
-import icu.windea.pls.lang.isIdentifier
 import icu.windea.pls.lang.tools.SpecialPathService
 import icu.windea.pls.lang.util.ParadoxFileManager
 import icu.windea.pls.model.ParadoxGameType

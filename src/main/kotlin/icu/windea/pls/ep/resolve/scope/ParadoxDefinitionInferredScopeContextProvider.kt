@@ -1,17 +1,18 @@
 package icu.windea.pls.ep.resolve.scope
 
 import com.intellij.openapi.extensions.ExtensionPointName
-import icu.windea.pls.base.annotations.WithGameTypeEP
 import icu.windea.pls.ep.ChronicleEpBundle
 import icu.windea.pls.model.ParadoxDefinitionInfo
+import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.scope.ParadoxScopeContextInferenceInfo
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 /**
  * 用于为定义提供（基于用法的）推断的作用域上下文。
  */
-@WithGameTypeEP
 interface ParadoxDefinitionInferredScopeContextProvider {
+    fun supports(gameType: ParadoxGameType) = true
+
     fun supports(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Boolean
 
     fun getScopeContext(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContextInferenceInfo?

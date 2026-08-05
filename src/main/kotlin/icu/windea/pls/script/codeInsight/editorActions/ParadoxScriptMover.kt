@@ -23,7 +23,7 @@ import icu.windea.pls.script.psi.ParadoxScriptRootBlock
  * 入口：主菜单，点击 `Code -> Move Statement Up/Down`。
  */
 class ParadoxScriptMover : ContainerBasedMover() {
-    override fun checkFileAvailable(editor: Editor, file: PsiFile, info: MoveInfo, down: Boolean) = file.language is ParadoxScriptLanguage
+    override fun checkFileAvailable(editor: Editor, file: PsiFile, info: MoveInfo, down: Boolean) = file.language === ParadoxScriptLanguage
 
     override fun isContainerElement(element: PsiElement) = element is ParadoxScriptMemberContext
 

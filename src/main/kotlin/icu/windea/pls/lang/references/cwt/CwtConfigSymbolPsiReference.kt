@@ -7,9 +7,14 @@ import icu.windea.pls.config.CwtConfigType
 import icu.windea.pls.core.unquote
 import icu.windea.pls.cwt.psi.CwtPropertyKey
 import icu.windea.pls.cwt.psi.CwtStringExpressionElement
+import icu.windea.pls.lang.codeInsight.completion.cwt.CwtConfigCompletionProvider
 import icu.windea.pls.lang.psi.light.CwtConfigSymbolLightElement
 import icu.windea.pls.model.index.CwtConfigSymbolIndexInfo
 
+/**
+ * @see CwtConfigSymbolPsiReferenceProvider
+ * @see CwtConfigCompletionProvider
+ */
 class CwtConfigSymbolPsiReference(
     element: CwtStringExpressionElement,
     rangeInElement: TextRange,

@@ -16,6 +16,8 @@ import icu.windea.pls.model.index.ParadoxParameterIndexInfo
  * 参数的查询。
  *
  * @see ParadoxParameterSearcher
+ * @see ParadoxParameterSearch.Parameters
+ * @see ParadoxParameterSearch.Selector
  */
 class ParadoxParameterSearch : ExtensibleQueryFactory<ParadoxParameterIndexInfo, ParadoxParameterSearch.Parameters>(EP_NAME) {
     /**

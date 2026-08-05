@@ -256,7 +256,7 @@ class CwtConfigSelectDslTest : BasePlatformTestCase(), ChronicleTestScope {
     private fun resolveFileConfig(path: String): CwtFileConfig {
         myFixture.configureByFile(path)
         val file = myFixture.file as CwtFile
-        val configGroup = CwtConfigGroup(project, ParadoxGameType.Stellaris)
+        val configGroup = CwtConfigGroup.create(project, ParadoxGameType.Stellaris)
         val fileConfig = CwtFileConfig.resolve(file, configGroup, file.name)
         return fileConfig
     }

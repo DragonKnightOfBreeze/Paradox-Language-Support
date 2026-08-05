@@ -6,8 +6,10 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.Processor
 import icu.windea.pls.base.context.ChronicleThreadContext
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.lang.index.ChronicleIndexKeys
 import icu.windea.pls.lang.index.ChronicleIndexService
+import icu.windea.pls.lang.index.constraints.ParadoxLocalisationIndexConstraint
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.scope.withFileTypes
 import icu.windea.pls.lang.search.util.ParadoxSearchContext
@@ -16,19 +18,20 @@ import icu.windea.pls.localisation.ParadoxLocalisationFileType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxLocalisationType
-import icu.windea.pls.model.constraints.ParadoxLocalisationIndexConstraint
 
 /**
  * 本地化的查询器。
+ *
+ * @see ParadoxLocalisationSearch
  */
+@Optimized
 class ParadoxLocalisationSearcher : QueryExecutorBase<ParadoxLocalisationProperty, ParadoxLocalisationSearch.Parameters>() {
     override fun processQuery(queryParameters: ParadoxLocalisationSearch.Parameters, consumer: Processor<in ParadoxLocalisationProperty>) {
         // #141 如果正在为 ParadoxMergedIndex 编制索引并且正在解析引用，则直接跳过
         if (ChronicleThreadContext.resolveForMergedIndex.get() == true) return
 
         ProgressManager.checkCanceled()
-        val scope = queryParameters.scope.withFileTypes(ParadoxLocalisationFileType)
-        val context = queryParameters.createContext(scope)
+        val context = queryParameters.createContext()
         processQuery(context, consumer)
     }
 
@@ -39,7 +42,8 @@ class ParadoxLocalisationSearcher : QueryExecutorBase<ParadoxLocalisationPropert
             ParadoxLocalisationType.Normal -> ChronicleIndexKeys.LocalisationName
             ParadoxLocalisationType.Synced -> ChronicleIndexKeys.SyncedLocalisationName
         }
-        val name = if (constraint?.ignoreCase == true) context.name?.lowercase() else context.name
+        val ignoreCase = constraint?.ignoreCase == true
+        val name = if (ignoreCase) context.name?.lowercase() else context.name
         val r = if (name == null) {
             ChronicleIndexService.processElementsByKeys(indexKey, context.project, context.scope) { _, element -> processor.process(element) }
         } else {
@@ -55,8 +59,9 @@ class ParadoxLocalisationSearcher : QueryExecutorBase<ParadoxLocalisationPropert
         return true
     }
 
-    private fun ParadoxLocalisationSearch.Parameters.createContext(scope: GlobalSearchScope = this.scope): Context {
-        val constraint = selector.getConstraint() as? ParadoxLocalisationIndexConstraint
+    private fun ParadoxLocalisationSearch.Parameters.createContext(): Context {
+        val constraint = selector.getConstraint() as? ParadoxLocalisationIndexConstraint // extract index constraint from the selector
+        val scope = scope.withFileTypes(ParadoxLocalisationFileType) // optimize: restrict file types
         return Context(name, type, constraint, gameType, project, scope)
     }
 

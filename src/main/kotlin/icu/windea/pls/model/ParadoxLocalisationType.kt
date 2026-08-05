@@ -17,6 +17,13 @@ enum class ParadoxLocalisationType(val id: String) {
 
     override fun toString() = id
 
+    // region Inline Methods
+
+    @Suppress("NOTHING_TO_INLINE", "unused")
+    inline fun optimized(): Byte = ordinal.toByte() // 3.0.1 radical optimization
+
+    // endregion
+
     companion object {
         @JvmStatic
         fun resolve(id: Byte): ParadoxLocalisationType {
@@ -34,7 +41,7 @@ enum class ParadoxLocalisationType(val id: String) {
 
         @JvmStatic
         fun resolve(file: VirtualFile): ParadoxLocalisationType? {
-            if (file.fileType !is ParadoxLocalisationFileType) return null
+            if (file.fileType !== ParadoxLocalisationFileType) return null
             val root = file.fileInfo?.path ?: return null
             return resolve(root)
         }
@@ -51,5 +58,12 @@ enum class ParadoxLocalisationType(val id: String) {
             val root = element.fileInfo?.path ?: return null
             return resolve(root)
         }
+
+        // region Inline Methods
+
+        @Suppress("NOTHING_TO_INLINE", "unused")
+        inline fun deoptimized(value: Byte): ParadoxLocalisationType = entries[value.toInt()] // 3.0.1 radical optimization
+
+        // endregion
     }
 }

@@ -1,4 +1,4 @@
-@file:Suppress("NOTHING_TO_INLINE", "unused")
+@file:Suppress("unused")
 
 package icu.windea.pls.core.util.values
 
@@ -24,16 +24,21 @@ abstract class SoftValue<T> {
         return value
     }
 
-    companion object {
-        inline operator fun <T> invoke(noinline valueProvider: () -> T): SoftValue<T> {
-            return create(valueProvider)
-        }
+    override fun toString(): String {
+        return dereference().toString()
+    }
 
+    companion object {
         @JvmStatic
         fun <T> create(valueProvider: () -> T): SoftValue<T> {
             return object : SoftValue<T>() {
                 override fun createValue(): T = valueProvider()
             }
+        }
+
+        @Suppress("NOTHING_TO_INLINE")
+        inline operator fun <T> invoke(noinline valueProvider: () -> T): SoftValue<T> {
+            return create(valueProvider)
         }
 
         @JvmStatic

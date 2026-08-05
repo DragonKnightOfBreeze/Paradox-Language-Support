@@ -10,28 +10,26 @@ import com.intellij.psi.util.startOffset
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.core.annotations.Optimized
-import icu.windea.pls.core.collections.ImmutableList
 import icu.windea.pls.core.collections.asMutable
+import icu.windea.pls.core.collections.buildImmutableList
 import icu.windea.pls.core.collections.forEachFast
-import icu.windea.pls.core.deoptimized
-import icu.windea.pls.core.optimized
-import icu.windea.pls.core.optimizer.OptimizerFactory
 import icu.windea.pls.core.orNull
+import icu.windea.pls.core.readIndexedStringList
 import icu.windea.pls.core.readIntFast
 import icu.windea.pls.core.readUTFFast
-import icu.windea.pls.core.readWithIndexStringList
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.core.writeByte
 import icu.windea.pls.core.writeIndexedStringList
 import icu.windea.pls.core.writeIntFast
 import icu.windea.pls.core.writeUTFFast
 import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.index.statistics.ChronicleIndexStatisticService
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.CwtTypeConfigMatchContext
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
+import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constraints.ParadoxPathConstraint
-import icu.windea.pls.model.forParadoxGameType
 import icu.windea.pls.model.index.ParadoxDefinitionInjectionIndexInfo
 import icu.windea.pls.script.ParadoxScriptFileType
 import icu.windea.pls.script.psi.ParadoxScriptBlock
@@ -54,7 +52,7 @@ class ParadoxDefinitionInjectionIndex : ParadoxIndexInfoAwareFileBasedIndex<List
     override fun getVersion() = ChronicleIndexVersions.DefinitionInjection
 
     override fun filterFileType(fileType: FileType): Boolean {
-        return fileType == ParadoxScriptFileType
+        return fileType === ParadoxScriptFileType
     }
 
     override fun filterFile(file: VirtualFile): Boolean {
@@ -74,15 +72,15 @@ class ParadoxDefinitionInjectionIndex : ParadoxIndexInfoAwareFileBasedIndex<List
         val gameType = fileInfo.gameType
         ProgressManager.checkCanceled()
 
-        if (!ParadoxDefinitionInjectionManager.isSupported(gameType)) return
+        if (!ParadoxDefinitionInjectionManager.isSupported(gameType)) return // optimize (fast return if the game type not supports)
         val configGroup = ChronicleFacade.getConfigGroup(psiFile.project, gameType)
         val config = configGroup.macrosModel.forDefinitionInjections ?: return
-        val path = fileInfo.path
-        val fileLevelMatchContext = CwtTypeConfigMatchContext(configGroup, path)
-        val fileLevelTypeConfigs = ParadoxConfigMatchService.getTypeConfigCandidates(fileLevelMatchContext)
-        if (fileLevelTypeConfigs.isEmpty()) return
+        val fileLevelMatchContext = CwtTypeConfigMatchContext(configGroup, fileInfo.path)
+        val fileLevelTypeConfigs = getFileLevelTypeConfigs(fileLevelMatchContext)
+        if (fileLevelTypeConfigs.isEmpty()) return // optimize (fast return if there are no candidates)
 
-        val typeConfigForInjection = getMatchedTypeConfigForInjection(fileLevelMatchContext, fileLevelTypeConfigs) ?: return
+        val fileLevelTypeConfigForInjection = getMatchedTypeConfigForInjection(fileLevelMatchContext, fileLevelTypeConfigs)
+        if (fileLevelTypeConfigForInjection == null) return // optimize (fast return if there are no injectable candidates)
 
         psiFile.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
@@ -117,7 +115,7 @@ class ParadoxDefinitionInjectionIndex : ParadoxIndexInfoAwareFileBasedIndex<List
                 if (config.modeConfigs[mode] == null) return
                 val target = ParadoxDefinitionInjectionManager.getTargetFromExpression(expression) ?: return
                 if (target.isEmpty()) return
-                val type = typeConfigForInjection.name.orNull() ?: return
+                val type = fileLevelTypeConfigForInjection.name.orNull() ?: return
 
                 val info = ParadoxDefinitionInjectionIndexInfo(mode, target, type, element.startOffset, gameType)
                 addToFileData(info, fileData)
@@ -125,8 +123,12 @@ class ParadoxDefinitionInjectionIndex : ParadoxIndexInfoAwareFileBasedIndex<List
         })
     }
 
-    private fun getMatchedTypeConfigForInjection(context: CwtTypeConfigMatchContext, typeConfigs: Collection<CwtTypeConfig>): CwtTypeConfig? {
-        return typeConfigs.find { ParadoxConfigMatchService.matchesTypeForInjection(context, it) }
+    private fun getFileLevelTypeConfigs(matchContext: CwtTypeConfigMatchContext): Collection<CwtTypeConfig> {
+        return ParadoxConfigMatchService.getTypeConfigCandidates(matchContext)
+    }
+
+    private fun getMatchedTypeConfigForInjection(matchContext: CwtTypeConfigMatchContext, typeConfigs: Collection<CwtTypeConfig>): CwtTypeConfig? {
+        return typeConfigs.find { ParadoxConfigMatchService.matchesTypeForInjection(matchContext, it) }
     }
 
     private fun addToFileData(info: ParadoxDefinitionInjectionIndexInfo, fileData: MutableMap<String, List<ParadoxDefinitionInjectionIndexInfo>>) {
@@ -156,7 +158,7 @@ class ParadoxDefinitionInjectionIndex : ParadoxIndexInfoAwareFileBasedIndex<List
         if (value.isEmpty()) return
 
         val gameType = value.first().gameType
-        storage.writeByte(gameType.optimized(OptimizerFactory.forParadoxGameType()))
+        storage.writeByte(gameType.optimized())
 
         // 3.0.0 optimize: write existing modes and types first
         val modes = storage.writeIndexedStringList(value) { it.mode }
@@ -174,13 +176,14 @@ class ParadoxDefinitionInjectionIndex : ParadoxIndexInfoAwareFileBasedIndex<List
         val size = storage.readIntFast()
         if (size == 0) return emptyList()
 
-        val gameType = storage.readByte().deoptimized(OptimizerFactory.forParadoxGameType())
+        val gameType = storage.readByte().let { ParadoxGameType.deoptimized(it) }
 
         // 3.0.0 optimize: read existing modes and types first
-        val modes = storage.readWithIndexStringList()
-        val types = storage.readWithIndexStringList()
+        val modes = storage.readIndexedStringList()
+        val types = storage.readIndexedStringList()
 
-        return ImmutableList(size) {
+        // 2.1.9 optimize: create sized immutable list directly
+        return buildImmutableList(size) {
             val mode = storage.readIntFast().let { modes.get(it).orEmpty() }
             val target = storage.readUTFFast()
             val type = storage.readIntFast().let { types.get(it).orEmpty() }

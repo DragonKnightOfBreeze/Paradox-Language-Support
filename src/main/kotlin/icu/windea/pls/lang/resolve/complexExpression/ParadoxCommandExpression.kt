@@ -7,13 +7,15 @@ import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.cast
+import icu.windea.pls.core.collections.anyFast
+import icu.windea.pls.core.collections.filterIsInstanceFast
+import icu.windea.pls.lang.getParameterRanges
 import icu.windea.pls.lang.isParameterAwareIdentifier
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionErrors
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionValidatorScope
-import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationCommandText
 
 /**
@@ -41,7 +43,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationCommandText
  * - 如果不是任何嵌套的复杂表达式，则解析为 [ParadoxDataSourceNode]。
  *
  * 示例：
- * ```
+ * ```text
  * Root.GetName
  * Root.Owner.event_target:some_event_target.var
  * ```
@@ -55,17 +57,30 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationCommandText
  * private command_scope_link_with_args ::= command_scope_link_prefix "(" command_scope_link_args ")"
  * private command_scope_link_args ::= command_scope_link_arg ("," command_scope_link_arg)* // = command_scope_link_value
  * private command_scope_link_arg ::= command_scope_link_value
- * command_scope_link_value ::= dynamic_value_expression | command_expression | data_source
  * command_field ::= predefined_command_field | dynamic_command_field | parameterized_command_field
  * dynamic_command_field ::= command_field_with_prefix | command_field_with_args
  * private command_field_with_prefix ::= command_field_prefix? command_field_value
  * private command_field_with_args ::= command_field_prefix "(" command_field_args ")"
  * private command_field_args ::= command_field_arg ("," command_field_arg)* // = command_field_value
  * private command_field_arg ::= command_field_value
- * command_field_value ::= dynamic_value_expression | command_expression
- *   | define_reference_expression | array_define_reference_expression
- *   | data_source
  * command_suffix ::= "&" SUFFIX | "::" SUFFIX
+ *
+ * system_command_scope ::= IDENTIFIER
+ * command_scope ::= IDENTIFIER
+ * command_scope_link_prefix ::= IDENTIFIER
+ * parameterized_command_scope_link ::= STRING_LITERAL
+ * command_field_prefix ::= IDENTIFIER
+ * predefined_command_field ::= IDENTIFIER
+ * parameterized_command_field ::= STRING_LITERAL
+ *
+ * command_scope_link_value ::= data_source
+ *     // | dynamic_value_expression // general available
+ *     // | command_expression // for argument form only
+ * command_field_value ::= data_source
+ *     // | dynamic_value_expression // general available
+ *     // | command_expression // for argument form only
+ *     // | define_reference_expression | array_define_reference_expression // general available
+ * data_source ::= IDENTIFIER
  * ```
  */
 interface ParadoxCommandExpression : ParadoxComplexExpression, ParadoxLinkedExpression {
@@ -87,7 +102,7 @@ private object ParadoxCommandExpressionResolver {
         val incomplete = ChronicleThreadContext.incompleteComplexExpression.get() ?: false
         if (!incomplete && text.isEmpty()) return null
 
-        val parameterRanges = ParadoxExpressionManager.getParameterRanges(text)
+        val parameterRanges = text.getParameterRanges()
 
         val nodes = mutableListOf<ParadoxComplexExpressionNode>()
         val range = range ?: TextRange.create(0, text.length)
@@ -108,7 +123,7 @@ private object ParadoxCommandExpressionResolver {
         val textLength = text.length
         while (i < textLength) {
             val ch = text[i]
-            val inParam = parameterRanges.any { i in it }
+            val inParam = parameterRanges.anyFast { i in it }
             if (!inParam) {
                 when (ch) {
                     '(' -> depthParen++ // 支持 prefix(x).owner：括号内的点不切分
@@ -203,9 +218,9 @@ private class ParadoxCommandExpressionImpl(
     override val nodes: List<ParadoxComplexExpressionNode> = emptyList(),
 ) : ParadoxComplexExpressionBase(), ParadoxCommandExpression {
     override val linkNodes: List<ParadoxLinkNode>
-        get() = nodes.filterIsInstance<ParadoxLinkNode>()
+        get() = nodes.filterIsInstanceFast<ParadoxLinkNode>()
     override val scopeNodes: List<ParadoxScopeNode>
-        get() = nodes.filterIsInstance<ParadoxScopeNode>()
+        get() = nodes.filterIsInstanceFast<ParadoxScopeNode>()
     override val fieldNode: ParadoxCommandFieldNode
         get() = nodes.last().cast()
 

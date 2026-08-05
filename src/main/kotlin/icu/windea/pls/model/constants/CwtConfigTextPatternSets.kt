@@ -4,7 +4,7 @@ import icu.windea.pls.model.constants.CwtConfigTextPatterns as C
 
 @Suppress("unused")
 object CwtConfigTextPatternSets {
-    val dynamicValueReference = setOf(C.value, C.valueSet, C.dynamicValue)
-    val singleAliasReference = setOf(C.singleAliasRight)
-    val aliasReference = setOf(C.aliasName, C.aliasMatchLeft, C.aliasKeysField)
+    val dynamicValueReference = arrayOf(C.value, C.valueSet, C.dynamicValue)
+    val singleAliasReference = arrayOf(C.singleAliasRight)
+    val aliasReference = arrayOf(C.aliasName, C.aliasMatchLeft, C.aliasKeysField)
 }

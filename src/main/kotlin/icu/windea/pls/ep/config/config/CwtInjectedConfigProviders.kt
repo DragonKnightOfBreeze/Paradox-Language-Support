@@ -1,63 +1,85 @@
 package icu.windea.pls.ep.config.config
 
-import com.intellij.openapi.diagnostic.debug
-import com.intellij.openapi.diagnostic.thisLogger
 import icu.windea.pls.config.config.CwtMemberConfig
-import icu.windea.pls.config.config.declarationConfigContext
-import icu.windea.pls.config.config.parents
-import icu.windea.pls.config.manipulation.CwtConfigScopeAwareManipulationService
-import icu.windea.pls.lang.resolve.onActionConfig
-import icu.windea.pls.lang.util.ParadoxEventManager
-import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.config.config.CwtPropertyConfig
+import icu.windea.pls.config.config.CwtValueConfig
+import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.collections.forEachFast
+import icu.windea.pls.core.collections.forEachReversedIndexedFast
 
-class CwtInOnActionInjectedConfigProvider : CwtExpressionStringBasedInjectedConfigProvider() {
-    // 如果可以确定 on_action 的事件类型，直接位于其中的 `<event>` 需要替换为 `<event.scopeless>` 和 `<event.{eventType}>`，其中 `{eventType}` 为事件类型
-    // 2.1.10 #344 对于基于 Jomini 的游戏类型，需要排除 `effect = {...}`（以及 `trigger = {...}`）中的 `<event>` - 宽松检测：实现代码中不检测游戏类型
-
-    private val logger = thisLogger()
-    private val expression = "<event>"
-    private fun expression(eventType: String) = "<event.$eventType>"
-    private val expressionScopeless = "<event.scopeless>"
-
-    override fun doInject(parentConfig: CwtMemberConfig<*>, config: CwtMemberConfig<*>, expressionString: String): List<String>? {
-        if (expressionString != expression) return null
-        val rootConfig = config.parents(withSelf = false).lastOrNull() ?: return null
-        val declarationConfigContext = rootConfig.declarationConfigContext ?: return null
-        val onActionConfig = declarationConfigContext.onActionConfig ?: return null
-        val eventType = onActionConfig.eventType
-        if (eventType.isEmpty() || eventType == "scopeless") return null // ignore
-        val allEventTypes = ParadoxEventManager.getAllTypes(config.configGroup.gameType)
-        if (eventType !in allEventTypes) {
-            logger.warn("Applied config injection in declaration of on action `${onActionConfig.name}` failed: unknown event type `$eventType`")
-            return null
+/**
+ * 用于在规则表达式级别注入规则。
+ *
+ * @see CwtInjectedConfigProcessor
+ */
+class CwtConfigExpressionBasedInjectedConfigProvider : CwtInjectedConfigProvider {
+    @Optimized
+    override fun injectConfigs(parentConfig: CwtMemberConfig<*>, containerConfig: CwtMemberConfig<*>, configs: MutableList<CwtMemberConfig<*>>): Boolean {
+        // NOTE 3.0.1 optimize: 来自 gemini-3.1-pro：将密集的类型检查改为访问者模式，性能通常会更差，而不是更好
+        //  - 现代 JVM 对 `instanceof` 指令做了极度深度的优化，比如内联缓存和分支预测；而访问者模式需要两次虚方法调用，这会查找虚方法表（vtable/itable），且会增加方法栈帧的压栈和出栈开销。
+        //  - 总之这里的类型检查不是非常明显的性能热点，时间复杂度仍然是无法避免的，让事情变得简单一点。
+        var r = false
+        val processors = CwtInjectedConfigProcessor.EP_NAME.extensionList
+        configs.forEachReversedIndexedFast f1@{ i, config ->
+            when (config) {
+                is CwtPropertyConfig -> {
+                    val keyExpression = config.keyExpression // 3.0.1 optimize: access expressionString only on demand
+                    val valueExpression = config.valueExpression // 3.0.1 optimize: access expressionString only on demand
+                    processors.forEachFast f2@{ processor ->
+                        if (!processor.supports(parentConfig)) return@f2 // continue to next processor
+                        val injectedKeys = processor.processKey(parentConfig, config, keyExpression)
+                        val injectedValues = processor.processValue(parentConfig, config, valueExpression)
+                        val keyInjected = injectedKeys != null
+                        val valueInjected = injectedValues != null
+                        val injected = keyInjected || valueInjected
+                        r = r || injected
+                        if (!injected) return@f1 // continue to next config
+                        var i0 = i + 1
+                        if (keyInjected) {
+                            injectedKeys.forEachFast { injectedKey ->
+                                if (valueInjected) {
+                                    injectedValues.forEachFast { injectedValue ->
+                                        val delegatedConfig = config.delegatedWith(injectedKey, injectedValue).also { it.withParentConfig(containerConfig) }
+                                        configs.add(i0, delegatedConfig)
+                                        i0++
+                                    }
+                                } else {
+                                    val injectedValue = valueExpression.expressionString
+                                    val delegatedConfig = config.delegatedWith(injectedKey, injectedValue).also { it.withParentConfig(containerConfig) }
+                                    configs.add(i0, delegatedConfig)
+                                    i0++
+                                }
+                            }
+                        } else {
+                            val injectedKey = keyExpression.expressionString
+                            injectedValues?.forEachFast { injectedValue ->
+                                val delegatedConfig = config.delegatedWith(injectedKey, injectedValue).also { it.withParentConfig(containerConfig) }
+                                configs.add(i0, delegatedConfig)
+                                i0++
+                            }
+                        }
+                        if (!processor.keepOrigin(config)) configs.removeAt(i)
+                    }
+                }
+                is CwtValueConfig -> {
+                    val valueExpression = config.valueExpression // 3.0.1 optimize: access expressionString only on demand
+                    processors.forEachFast f2@{ processor ->
+                        if (!processor.supports(parentConfig)) return@f2 // continue to next processor
+                        val injectedValues = processor.processValue(parentConfig, config, valueExpression)
+                        val injected = injectedValues != null
+                        r = r || injected
+                        if (!injected) return@f1 // continue to next config
+                        var i0 = i + 1
+                        injectedValues.forEachFast { injectedValue ->
+                            val delegatedConfig = config.delegatedWith(injectedValue).also { it.withParentConfig(containerConfig) }
+                            configs.add(i0, delegatedConfig)
+                            i0++
+                        }
+                        if (!processor.keepOrigin(config)) configs.removeAt(i)
+                    }
+                }
+            }
         }
-        val withinTriggerOrEffectClause = CwtConfigScopeAwareManipulationService.withinTriggerOrEffectClause(config) // lenient check
-        if (withinTriggerOrEffectClause) return null
-        val result = buildList {
-            if ("scopeless" in allEventTypes) this += expressionScopeless
-            this += expression(eventType)
-        }
-        logger.debug { "Applied config injection in declaration of on action `${onActionConfig.name}`: replace `$expression` with ${result.joinToString()}" }
-        return result
-    }
-
-    override fun keepOrigin(config: CwtMemberConfig<*>) = false
-}
-
-class CwtTechnologyWithLevelInjectedConfigProvider : CwtExpressionStringBasedInjectedConfigProvider() {
-    // 如果 Stellaris 中的脚本表达式至少匹配 `<technology.repeatable>`，则也可以匹配 `$technology_with_level`
-    // https://github.com/cwtools/cwtools-vscode/issues/58
-
-    private val logger = thisLogger()
-    private val expressions = listOf("<technology>", "<technology.repeatable>")
-    private val injectedExpressions = listOf("\$technology_with_level")
-
-    override fun supports(gameType: ParadoxGameType) = gameType == ParadoxGameType.Stellaris
-
-    override fun doInject(parentConfig: CwtMemberConfig<*>, config: CwtMemberConfig<*>, expressionString: String): List<String>? {
-        if (expressionString !in expressions) return null
-        val result = injectedExpressions
-        logger.debug { "Applied config injection: replace `${expressionString}` with ${result.joinToString()}`" }
-        return result
+        return r
     }
 }

@@ -22,13 +22,13 @@ class RefManagerImplCodeInjector : CodeInjectorBase() {
 
     @InjectMethod(pointer = InjectMethod.Pointer.BEFORE)
     fun getGroupName(entity: RefElement): String? {
-        runSafely r@{
+        execute("getGroupName") action@{
             // 按目录分组时显示相对于入口目录的路径
-            if (entity !is RefFile) return@r
-            val element = entity.psiElement ?: return@r
-            val file = selectFile(element) ?: return@r
+            if (entity !is RefFile) return@action
+            val element = entity.psiElement ?: return@action
+            val file = selectFile(element) ?: return@action
             val contextFile = ChronicleInjectionManager.findTopHostFileOrThis(file)
-            val fileInfo = contextFile.fileInfo ?: return@r
+            val fileInfo = contextFile.fileInfo ?: return@action
             return fileInfo.path.parent.orNull()
         }
         continueInvocation()

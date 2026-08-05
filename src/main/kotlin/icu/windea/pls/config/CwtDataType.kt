@@ -1,6 +1,5 @@
 package icu.windea.pls.config
 
-import icu.windea.pls.config.CwtDataType.Companion.entries
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.ep.config.configExpression.CwtDataExpressionSupport
@@ -8,6 +7,7 @@ import icu.windea.pls.ep.match.expression.ParadoxCsvExpressionMatcher
 import icu.windea.pls.ep.match.expression.ParadoxScriptExpressionMatcher
 import icu.windea.pls.lang.match.ParadoxMatchResult
 import icu.windea.pls.model.expressions.ParadoxExpression
+import icu.windea.pls.model.type.ParadoxExpressionType
 
 /**
  * 数据类型。
@@ -31,7 +31,7 @@ import icu.windea.pls.model.expressions.ParadoxExpression
  * ### 数据类型分类
  *
  * - **引用类型**（[isReference]）：表达式指向可导航的目标（如定义、本地化、文件路径等）。
- * - **模式感知**（[isPatternAware]）：表达式自身包含文本模式，匹配时进行模式比较（如常量精确匹配、Ant模式、正则匹配）。
+ * - **模式感知**（[isPatternAware]）：表达式自身包含模式字符串，匹配时进行模式比较（如常量精确匹配、Ant模式、正则匹配）。
  * - **后缀感知**（[isSuffixAware]）：表达式由基础引用和后缀列表组成，匹配时需同时验证引用和后缀。
  *
  * ### 备注
@@ -41,7 +41,7 @@ import icu.windea.pls.model.expressions.ParadoxExpression
  *
  * @property id 唯一标识符。
  * @property isReference 是否表示一个可导航的引用。
- * @property isPatternAware 是否为模式感知类型（表达式包含文本模式）。
+ * @property isPatternAware 是否为模式感知类型（表达式包含模式字符串）。
  * @property isSuffixAware 是否为后缀感知类型（表达式包含后缀列表）。
  * @property priority 静态优先级。脚本表达式会优先匹配优先级更高的数据表达式。
  * @property priorityProvider 动态优先级提供者。根据具体的数据表达式和规则组动态计算优先级。
@@ -51,6 +51,7 @@ import icu.windea.pls.model.expressions.ParadoxExpression
  * @see CwtDataExpression
  * @see CwtDataExpressionSupport
  * @see ParadoxExpression
+ * @see ParadoxExpressionType
  */
 class CwtDataType private constructor(
     val id: String,

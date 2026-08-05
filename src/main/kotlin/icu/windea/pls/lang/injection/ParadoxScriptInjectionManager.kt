@@ -9,7 +9,10 @@ import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtValueConfig
-import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.collections.anyFast
+import icu.windea.pls.core.collections.findFast
+import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.isRightQuoted
@@ -37,6 +40,7 @@ import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.propertyKey
 
+@Optimized
 object ParadoxScriptInjectionManager {
     object Keys : KeyRegistry() {
         val parameterValueInjectionInfos by registerKey<List<ParadoxParameterValueInjectionInfo>>(Keys)
@@ -69,7 +73,7 @@ object ParadoxScriptInjectionManager {
         val contextReferenceInfo = ParadoxParameterService.getContextReferenceInfo(host, from = from) ?: return
         if (contextReferenceInfo.arguments.isEmpty()) return
         val hostRange = host.textRange
-        contextReferenceInfo.arguments.forEach f@{ referenceInfo ->
+        contextReferenceInfo.arguments.forEachFast f@{ referenceInfo ->
             // 这里需要特殊处理传入参数值被双引号括起的情况
             val rawRangeInsideHost = referenceInfo.argumentValueRange
                 ?.takeIf { it.startOffset >= hostRange.startOffset && it.endOffset <= hostRange.endOffset }
@@ -78,21 +82,26 @@ object ParadoxScriptInjectionManager {
             val rangeInsideHost = rawRangeInsideHost.unquote(rawRangeInsideHost.substring(argumentValue))
             // 这里要求参数值两边都有双引号
             val parameterValueQuoted = rawRangeInsideHost.startOffset != rangeInsideHost.startOffset && rawRangeInsideHost.endOffset != rangeInsideHost.endOffset
-            val parameterElementProvider = lazy {
-                val argumentNameElement = referenceInfo.argumentNameElement ?: return@lazy null
-                val argumentNameElementRange = argumentNameElement.textRange
-                val argumentNameRange = referenceInfo.argumentNameRange
-                    .takeIf { it.startOffset >= argumentNameElementRange.startOffset && it.endOffset <= argumentNameElementRange.endOffset }
-                    ?.shiftLeft(argumentNameElementRange.startOffset)
-                    ?: return@lazy null
-                argumentNameElement.references.firstNotNullOfOrNull t@{ reference ->
-                    if (reference.rangeInElement != argumentNameRange) return@t null
-                    reference.resolve()?.castOrNull<ParadoxParameterLightElement>()
-                }
-            }
+            val parameterElementProvider = lazy { computeParameterForArgumentValue(referenceInfo) }
             val injectionInfo = ParadoxParameterValueInjectionInfo(rangeInsideHost, parameterValueQuoted, parameterElementProvider)
             injectionInfos += injectionInfo
         }
+    }
+
+    private fun computeParameterForArgumentValue(info: ParadoxParameterContextReferenceInfo.Argument): ParadoxParameterLightElement? {
+        val argumentNameElement = info.argumentNameElement ?: return null
+        val argumentNameElementRange = argumentNameElement.textRange
+        val argumentNameRange = info.argumentNameRange
+            .takeIf { it.startOffset >= argumentNameElementRange.startOffset && it.endOffset <= argumentNameElementRange.endOffset }
+            ?.shiftLeft(argumentNameElementRange.startOffset)
+            ?: return null
+        val references = argumentNameElement.references
+        for (reference in references) {
+            if (reference.rangeInElement != argumentNameRange) continue
+            val resolved = reference.resolve()
+            if (resolved is ParadoxParameterLightElement) return resolved
+        }
+        return null
     }
 
     private fun applyParameterValueInjectionForParameterDefaultValue(host: PsiLanguageInjectionHost, injectionInfos: MutableList<ParadoxParameterValueInjectionInfo>) {
@@ -106,14 +115,18 @@ object ParadoxScriptInjectionManager {
 
         val defaultValueIndex = host.text.indexOf(defaultValue)
         val rangeInsideHost = TextRange.from(defaultValueIndex, defaultValue.length)
-        val parameterElementProvider = lazy { ParadoxParameterService.resolveParameter(host) }
+        val parameterElementProvider = lazy { computeParameterForParameterDefaultValue(host) }
         val injectionInfo = ParadoxParameterValueInjectionInfo(rangeInsideHost, false, parameterElementProvider)
         injectionInfos += injectionInfo
     }
 
+    private fun computeParameterForParameterDefaultValue(host: ParadoxParameter): ParadoxParameterLightElement? {
+        return ParadoxParameterService.resolveParameter(host)
+    }
+
     private fun shouldApplyParameterValueInjection(value: String): Boolean {
         val normalized = value.unquote().trim()
-        if (ParadoxSeparatorType.entries.any { it.text == normalized }) return true // 为一些狡猾人行方便
+        if (ParadoxSeparatorType.entries.anyFast { it.text == normalized }) return true // 为一些狡猾人行方便
         return false
     }
 
@@ -124,6 +137,7 @@ object ParadoxScriptInjectionManager {
         ProgressManager.checkCanceled()
         applyLocalisationTextInjection(host, injectionInfos)
 
+        if (injectionInfos.isEmpty()) return emptyList()
         return injectionInfos
     }
 
@@ -149,12 +163,14 @@ object ParadoxScriptInjectionManager {
     }
 
     private fun shouldApplyLocalisationTextInjection(configs: List<CwtConfig<*>>): Boolean {
+        return configs.anyFast { config -> shouldApplyLocalisationTextInjection(config) }
+    }
+
+    private fun shouldApplyLocalisationTextInjection(config: CwtConfig<*>): Boolean {
         // 要求匹配的规则表达式兼容字面量或普通本地化
-        return configs.any { config ->
-            if (config !is CwtValueConfig) return@any false
-            val dataType = config.configExpression.type
-            dataType == CwtDataTypes.Scalar || dataType in CwtDataTypeSets.LocalisationAware
-        }
+        if (config !is CwtValueConfig) return false
+        val dataType = config.configExpression.type
+        return dataType == CwtDataTypes.Scalar || dataType in CwtDataTypeSets.LocalisationAware
     }
 
     fun getParameterValueInjectionInfoFromInjectedFile(injectedFile: PsiFile): ParadoxParameterValueInjectionInfo? {
@@ -172,7 +188,7 @@ object ParadoxScriptInjectionManager {
                 val shred = shreds?.singleOrNull()
                 val rangeInsideHost = shred?.rangeInsideHost ?: return null
                 // it.rangeInsideHost may not equal to rangeInsideHost, but inside (e.g., there are escaped double quotes)
-                injectionInfos.find { it.rangeInsideHost.startOffset in rangeInsideHost }
+                injectionInfos.findFast { it.rangeInsideHost.startOffset in rangeInsideHost }
             }
             host is ParadoxParameter -> {
                 // just use the only one

@@ -2,9 +2,11 @@ package icu.windea.pls.lang.resolve
 
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.psi.PsiElement
-import icu.windea.pls.base.annotations.ChronicleAnnotationService
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.collections.anyFast
+import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.text.DocumentationBuilder
 import icu.windea.pls.ep.resolve.modifier.ParadoxModifierIconProvider
 import icu.windea.pls.ep.resolve.modifier.ParadoxModifierNameDescProvider
@@ -14,16 +16,19 @@ import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.psi.light.ParadoxModifierLightElement
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxModifierInfo
+import icu.windea.pls.model.orSpecific
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
+@Optimized
 object ParadoxModifierService {
     /**
      * @see ParadoxModifierSupport.matchModifier
      */
     fun matchesModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): Boolean {
         val gameType = configGroup.gameType
-        return ParadoxModifierSupport.EP_NAME.extensionList.any f@{ ep ->
-            if (!ChronicleAnnotationService.check(ep, gameType)) return@f false
+        val supports = ParadoxModifierSupport.EP_NAME.extensionList
+        return supports.anyFast f@{ ep ->
+            if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f false // check game type first
             ep.matchModifier(name, element, configGroup)
         }
     }
@@ -33,10 +38,12 @@ object ParadoxModifierService {
      */
     fun resolveModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): ParadoxModifierInfo? {
         val gameType = configGroup.gameType
-        return ParadoxModifierSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-            if (!ChronicleAnnotationService.check(ep, gameType)) return@f null
-            ep.resolveModifier(name, element, configGroup)?.also { it.support = ep }
+        val supports = ParadoxModifierSupport.EP_NAME.extensionList
+        supports.forEachFast f@{ ep ->
+            if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f // check game type first
+            ep.resolveModifier(name, element, configGroup)?.also { it.support = ep }?.let { return it }
         }
+        return null
     }
 
     /**
@@ -44,8 +51,9 @@ object ParadoxModifierService {
      */
     fun completeModifier(context: ParadoxCompletionContext, result: CompletionResultSet, modifierNames: MutableSet<String>) {
         val gameType = context.gameType
-        ParadoxModifierSupport.EP_NAME.extensionList.forEach f@{ ep ->
-            if (!ChronicleAnnotationService.check(ep, gameType)) return@f
+        val supports = ParadoxModifierSupport.EP_NAME.extensionList
+        supports.forEachFast f@{ ep ->
+            if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f // check game type first
             ep.completeModifier(context, result, modifierNames)
         }
     }
@@ -55,10 +63,12 @@ object ParadoxModifierService {
      */
     fun getModifierCategories(element: ParadoxModifierLightElement): Map<String, CwtModifierCategoryConfig>? {
         val gameType = element.gameType
-        return ParadoxModifierSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-            if (!ChronicleAnnotationService.check(ep, gameType)) return@f null
-            ep.getModifierCategories(element)
+        val supports = ParadoxModifierSupport.EP_NAME.extensionList
+        supports.forEachFast f@{ ep ->
+            if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f // check game type first
+            ep.getModifierCategories(element)?.let { return it }
         }
+        return null
     }
 
     /**
@@ -66,8 +76,9 @@ object ParadoxModifierService {
      */
     fun getDocumentationDefinition(element: ParadoxModifierLightElement, builder: DocumentationBuilder): Boolean {
         val gameType = element.gameType
-        return ParadoxModifierSupport.EP_NAME.extensionList.any f@{ ep ->
-            if (!ChronicleAnnotationService.check(ep, gameType)) return@f false
+        val supports = ParadoxModifierSupport.EP_NAME.extensionList
+        return supports.anyFast f@{ ep ->
+            if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f false // check game type first
             ep.buildDocumentationDefinition(element, builder)
         }
     }
@@ -77,8 +88,9 @@ object ParadoxModifierService {
      */
     fun buildDDocumentationDefinitionForDefinition(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo, builder: DocumentationBuilder): Boolean {
         val gameType = definitionInfo.gameType
-        return ParadoxModifierSupport.EP_NAME.extensionList.any f@{ ep ->
-            if (!ChronicleAnnotationService.check(ep, gameType)) return@f false
+        val supports = ParadoxModifierSupport.EP_NAME.extensionList
+        return supports.anyFast f@{ ep ->
+            if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f false // check game type first
             ep.buildDDocumentationDefinitionForDefinition(definition, definitionInfo, builder)
         }
     }
@@ -88,12 +100,14 @@ object ParadoxModifierService {
      */
     fun getModifierIconPaths(element: PsiElement, modifierInfo: ParadoxModifierInfo): Set<String> {
         val gameType = modifierInfo.gameType
-        return buildSet {
-            ParadoxModifierIconProvider.EP_NAME.extensionList.forEach f@{ ep ->
-                if (!ChronicleAnnotationService.check(ep, gameType)) return@f
-                ep.addModifierIconPath(modifierInfo, element, this)
-            }
+        val eps = ParadoxModifierIconProvider.EP_NAME.extensionList
+        val result = mutableSetOf<String>()
+        eps.forEachFast f@{ ep ->
+            if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f // check game type first
+            ep.addModifierIconPath(modifierInfo, element, result)
         }
+        if (result.isEmpty()) return emptySet()
+        return result
     }
 
     /**
@@ -101,12 +115,14 @@ object ParadoxModifierService {
      */
     fun getModifierNameKeys(element: PsiElement, modifierInfo: ParadoxModifierInfo): Set<String> {
         val gameType = modifierInfo.gameType
-        return buildSet {
-            ParadoxModifierNameDescProvider.EP_NAME.extensionList.forEach f@{ ep ->
-                if (!ChronicleAnnotationService.check(ep, gameType)) return@f
-                ep.addModifierNameKey(modifierInfo, element, this)
-            }
+        val eps = ParadoxModifierNameDescProvider.EP_NAME.extensionList
+        val result = mutableSetOf<String>()
+        eps.forEachFast f@{ ep ->
+            if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f // check game type first
+            ep.addModifierNameKey(modifierInfo, element, result)
         }
+        if (result.isEmpty()) return emptySet()
+        return result
     }
 
     /**
@@ -114,11 +130,13 @@ object ParadoxModifierService {
      */
     fun getModifierDescKeys(element: PsiElement, modifierInfo: ParadoxModifierInfo): Set<String> {
         val gameType = modifierInfo.gameType
-        return buildSet {
-            ParadoxModifierNameDescProvider.EP_NAME.extensionList.forEach f@{ ep ->
-                if (!ChronicleAnnotationService.check(ep, gameType)) return@f
-                ep.addModifierDescKey(modifierInfo, element, this)
-            }
+        val eps = ParadoxModifierNameDescProvider.EP_NAME.extensionList
+        val result = mutableSetOf<String>()
+        eps.forEachFast f@{ ep ->
+            if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f // check game type first
+            ep.addModifierDescKey(modifierInfo, element, result)
         }
+        if (result.isEmpty()) return emptySet()
+        return result
     }
 }

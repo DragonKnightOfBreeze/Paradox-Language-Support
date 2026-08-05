@@ -15,7 +15,6 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.util.CwtConfigManager.Keys
 import icu.windea.pls.config.util.CwtConfigManager.getConfigPath
 import icu.windea.pls.config.util.CwtConfigManager.isInternalFile
-import icu.windea.pls.config.util.CwtConfigResolverManager
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.executeCommandLine
@@ -39,16 +38,17 @@ import icu.windea.pls.ep.config.config.CwtInjectedConfigProvider
 import icu.windea.pls.ep.config.configGroup.CwtConfigGroupFileProvider
 import icu.windea.pls.lang.psi.CwtPsiService
 import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.orSpecific
 import icu.windea.pls.model.paths.CwtConfigPath
 
+@Optimized
 object CwtConfigService {
     /**
      * @see CwtConfigFilterProvider.filter
      */
-    @Optimized
     fun filter(config: CwtConfig<*>): Boolean {
         val eps = CwtConfigFilterProvider.EP_NAME.extensionList
-        eps.forEachFast f@{ ep ->
+        eps.forEachFast { ep ->
             if (ep.filter(config)) return true
         }
         return false
@@ -57,13 +57,14 @@ object CwtConfigService {
     /**
      * @see CwtConfigPostProcessor.postProcess
      */
-    @Optimized
     fun postProcess(config: CwtMemberConfig<*>) {
+        val gameType = config.configGroup.gameType
         val eps = CwtConfigPostProcessor.EP_NAME.extensionList
         eps.forEachFast f@{ ep ->
+            if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f // check game type first
             if (!ep.supports(config)) return@f
             if (ep.deferred(config)) {
-                val deferredActions = CwtConfigResolverManager.getPostProcessActions(config.configGroup)
+                val deferredActions = config.configGroup.initializer.configPostProcessActions
                 deferredActions += Runnable { ep.postProcess(config) }
             } else {
                 ep.postProcess(config)
@@ -74,13 +75,15 @@ object CwtConfigService {
     /**
      * @see CwtInjectedConfigProvider.injectConfigs
      */
-    @Optimized
     fun injectConfigs(parentConfig: CwtMemberConfig<*>, containerConfig: CwtMemberConfig<*>, configs: MutableList<CwtMemberConfig<*>>): Boolean {
         var r = false
+        val gameType = parentConfig.configGroup.gameType
         val eps = CwtInjectedConfigProvider.EP_NAME.extensionList
         eps.forEachFast f@{ ep ->
+            if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f // check game type first
             if (!ep.supports(parentConfig)) return@f
-            r = r || ep.injectConfigs(parentConfig, containerConfig, configs)
+            // NOTE 3.0.1 can be applied multiple times here
+            ep.injectConfigs(parentConfig, containerConfig, configs).let { r = r || it }
         }
         return r
     }
@@ -148,23 +151,24 @@ object CwtConfigService {
         var depth = 0
         val subPaths = ArrayDeque<String>()
         while (current !is PsiFile) {
+            // 3.0.1 optimize: get and cache parent first
+            val parent = current.parent ?: break
             when {
                 current is CwtProperty -> {
                     subPaths.addFirst(current.name)
                     depth++
                 }
-                current is CwtValue && current.isDirectValue() -> {
+                current is CwtValue && current.isDirectValue(parent) -> {
                     subPaths.addFirst("-")
                     depth++
                 }
             }
-            current = current.parent ?: break
+            current = parent
         }
         if (current !is CwtFile) return null // unexpected
         return CwtConfigPath.resolve(subPaths)
     }
 
-    @Optimized
     fun resolveConfigType(element: CwtMember, file: PsiFile): CwtConfigType? {
         if (element !is CwtProperty && element !is CwtValue) return null
         if (isInternalFile(file)) return null // 排除内部规则文件

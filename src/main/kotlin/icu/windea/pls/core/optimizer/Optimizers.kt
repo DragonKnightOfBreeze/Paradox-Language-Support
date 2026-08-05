@@ -1,4 +1,4 @@
-@file:Suppress("NOTHING_TO_INLINE", "unused")
+@file:Suppress("unused", "NOTHING_TO_INLINE")
 
 package icu.windea.pls.core.optimizer
 
@@ -7,30 +7,15 @@ import com.google.common.collect.ImmutableList
 import com.google.common.collect.ImmutableMap
 import com.google.common.collect.ImmutableSet
 import it.unimi.dsi.fastutil.Hash
-import java.util.*
+import it.unimi.dsi.fastutil.objects.ObjectImmutableList
 
-fun OptimizerFactory.forString() = get(StringOptimizer)
-fun OptimizerFactory.forStringList() = get(StringListOptimizer)
-fun OptimizerFactory.forStringSet() = get(StringSetOptimizer)
+fun OptimizerFactory.forString(): Optimizer.Unary<String> = get(StringOptimizer)
+fun OptimizerFactory.forStringList(): Optimizer.Unary<List<String>> = get(StringListOptimizer)
+fun OptimizerFactory.forStringSet(): Optimizer.Unary<Set<String>> = get(StringSetOptimizer)
 
-fun <E : Any> OptimizerFactory.forList() = getTyped<List<E>, _>(ListOptimizer)
-fun <E : Any> OptimizerFactory.forSet() = getTyped<Set<E>, _>(SetOptimizer)
-fun <K : Any, V : Any> OptimizerFactory.forMap() = getTyped<Map<K, V>, _>(MapOptimizer)
-
-// private val classNameCache = CacheBuilder().build<Class<*>, Boolean> { isOptimizedByClassName(it) }
-// private inline fun isOptimizedByClass(input: Any) = classNameCache.get(input.javaClass)
-// private inline fun isOptimizedByClassName(c: Class<*>): Boolean {
-//     val className = c.name
-//     // Java immutable collections
-//     if (className.startsWith("java.util.ImmutableCollections$")) return true
-//     // Kotlin standard collections may return the JDK's singleton implementation in some cases (e.g. listOf("a") -> java.util.Collections$SingletonList）
-//     if (className.startsWith("java.util.Collections$")) return true
-//     // Kotlin collections which are immutable
-//     if (className.startsWith("kotlin.collections.")) return true
-//     // Kotlin immutable collections, but bad memory
-//     // if (className.startsWith("kotlinx.collections.immutable.")) return true
-//     return false
-// }
+fun <E : Any> OptimizerFactory.forList(): Optimizer.Unary<List<E>> = getTyped(ObjectListOptimizer)
+fun <E : Any> OptimizerFactory.forSet(): Optimizer.Unary<Set<E>> = getTyped(ObjectSetOptimizer)
+fun <K : Any, V : Any> OptimizerFactory.forMap(): Optimizer.Unary<Map<K, V>> = getTyped(ObjectMapOptimizer)
 
 private object StringOptimizer : Optimizer.Unary<String> {
     private val interner = Interner.newWeakInterner<String>()
@@ -41,93 +26,128 @@ private object StringOptimizer : Optimizer.Unary<String> {
     }
 }
 
-private object StringListOptimizer : Optimizer.Unary<List<String>> {
-    private const val threshold = 8
-    private val interner = Interner.newWeakInterner<List<String>>()
+// private val classNameCache = CacheBuilder().build<Class<*>, Boolean> { isOptimizedByClassName(it) }
+// private inline fun isOptimizedByClass(input: Any) = classNameCache.get(input.javaClass)
+// private inline fun isOptimizedByClassName(c: Class<*>): Boolean {
+//     val className = c.name
+//     // Java immutable collections
+//     if (className.startsWith("java.util.ImmutableCollections$")) return true
+//     // Kotlin standard collections may return the JDK's singleton implementation in some cases (e.g., listOf("a") -> java.util.Collections$SingletonList）
+//     if (className.startsWith("java.util.Collections$")) return true
+//     // Kotlin collections which are immutable
+//     if (className.startsWith("kotlin.collections.")) return true
+//     // Kotlinx immutable collections, but bad memory
+//     // if (className.startsWith("kotlinx.collections.immutable.")) return true
+//     return false
+// }
 
-    override fun optimize(input: List<String>): List<String> {
-        if (input.isEmpty()) return emptyList()
-        if (input.size > threshold) return input
-        return interner.intern(input)
-    }
-}
-
-private object StringSetOptimizer : Optimizer.Unary<Set<String>> {
-    private const val threshold = 8
-    private val interner = Interner.newWeakInterner<Set<String>>()
-
-    override fun optimize(input: Set<String>): Set<String> {
-        if (input.isEmpty()) return emptySet()
-        if (input.size > threshold) return input
-        return interner.intern(input)
-    }
-}
-
-private object ListOptimizer : Optimizer.Unary<List<Any>> {
-    override fun optimize(input: List<Any>): List<Any> {
+private sealed class ListOptimizer<E : Any> : Optimizer.Unary<List<E>> {
+    override fun optimize(input: List<E>): List<E> {
         if (input.isEmpty()) return applyForEmpty()
         if (ignore(input)) return input
         return apply(input)
     }
 
-    private inline fun ignore(input: List<Any>): Boolean {
-        if (input is ImmutableList) return true
-        // if (isOptimizedByClass(input)) return true
+    protected inline fun ignore(input: List<E>): Boolean {
+        if (input is ImmutableList) return true // immutable collection (guava) -> skip
+        if (input is ObjectImmutableList) return true // immutable list (fastutil) -> skip
+        // if (isOptimizedByClass(input)) return true // immutable collection (checked by class name) -> do not skip atm
         return false
     }
 
-    private inline fun applyForEmpty(): List<Any> {
-        return emptyList()
+    protected inline fun applyForEmpty(): List<E> {
+        return ImmutableList.of()
     }
 
-    private inline fun apply(input: List<Any>): List<Any> {
-        if (input.size == 1) return ImmutableList.of(input.get(0))
+    protected inline fun apply(input: List<E>): List<E> {
+        if (input.size == 1) {
+            val e = input.get(0)
+            return ImmutableList.of(e)
+        }
         return ImmutableList.copyOf(input)
     }
 }
 
-private object SetOptimizer : Optimizer.Unary<Set<Any>> {
-    override fun optimize(input: Set<Any>): Set<Any> {
+private sealed class SetOptimizer<E : Any> : Optimizer.Unary<Set<E>> {
+    override fun optimize(input: Set<E>): Set<E> {
         if (input.isEmpty()) return applyForEmpty()
         if (ignore(input)) return input
         return apply(input)
     }
 
-    private inline fun ignore(input: Set<Any>): Boolean {
-        if (input is ImmutableSet) return true
-        // if (isOptimizedByClass(input)) return true
-        if (input is Hash) return true // may be case-insensitive or custom hash
+    protected inline fun ignore(input: Set<E>): Boolean {
+        if (input is ImmutableSet) return true // immutable collection (guava) -> skip
+        // if (isOptimizedByClass(input)) return true // immutable collection (checked by class name) -> do not skip atm
+        if (input is Hash) return true // may be case-insensitive or using custom hash -> skip
         return false
     }
 
-    private inline fun applyForEmpty(): Set<Any> {
-        return emptySet()
+    protected inline fun applyForEmpty(): Set<E> {
+        return ImmutableSet.of()
     }
 
-    private inline fun apply(input: Set<Any>): Set<Any> {
+    protected inline fun apply(input: Set<E>): Set<E> {
+        if (input.size == 1) {
+            val e = input.iterator().next()
+            return ImmutableSet.of(e)
+        }
         return ImmutableSet.copyOf(input)
     }
 }
 
-private object MapOptimizer : Optimizer.Unary<Map<Any, Any>> {
-    override fun optimize(input: Map<Any, Any>): Map<Any, Any> {
+private sealed class MapOptimizer<K : Any, V : Any> : Optimizer.Unary<Map<K, V>> {
+    override fun optimize(input: Map<K, V>): Map<K, V> {
         if (input.isEmpty()) return applyForEmpty()
         if (ignore(input)) return input
         return apply(input)
     }
 
-    private inline fun ignore(input: Map<*, Any>): Boolean {
-        if (input is ImmutableMap) return true
-        // if (isOptimizedByClass(input)) return true
-        if (input is Hash) return true // may be case-insensitive or custom hash
+    protected inline fun ignore(input: Map<K, V>): Boolean {
+        if (input is ImmutableMap) return true // immutable collection (guava) -> skip
+        // if (isOptimizedByClass(input)) return true // immutable collection (checked by class name) -> do not skip atm
+        if (input is Hash) return true // may be case-insensitive or using custom hash -> skip
         return false
     }
 
-    private inline fun applyForEmpty(): Map<Any, Any> {
-        return emptyMap()
+    protected inline fun applyForEmpty(): Map<K, V> {
+        return ImmutableMap.of()
     }
 
-    private inline fun apply(input: Map<Any, Any>): Map<Any, Any> {
+    protected inline fun apply(input: Map<K, V>): Map<K, V> {
+        if (input.size == 1) {
+            val e = input.iterator().next()
+            return ImmutableMap.of(e.key, e.value)
+        }
         return ImmutableMap.copyOf(input)
     }
 }
+
+private object StringListOptimizer : ListOptimizer<String>() {
+    private const val threshold = 8
+    private val interner = Interner.newWeakInterner<List<String>>()
+
+    override fun optimize(input: List<String>): List<String> {
+        if (input.isEmpty()) return applyForEmpty()
+        if (input.size > threshold) return input // exceeds the threshold -> return self
+        if (ignore(input)) return interner.intern(input)
+        return interner.intern(apply(input))
+    }
+}
+
+private object StringSetOptimizer : SetOptimizer<String>() {
+    private const val threshold = 8
+    private val interner = Interner.newWeakInterner<Set<String>>()
+
+    override fun optimize(input: Set<String>): Set<String> {
+        if (input.isEmpty()) return applyForEmpty()
+        if (input.size > threshold) return input // exceeds the threshold -> return self
+        if (ignore(input)) return interner.intern(input)
+        return interner.intern(apply(input))
+    }
+}
+
+private object ObjectListOptimizer : ListOptimizer<Any>()
+
+private object ObjectSetOptimizer : SetOptimizer<Any>()
+
+private object ObjectMapOptimizer : MapOptimizer<Any, Any>()

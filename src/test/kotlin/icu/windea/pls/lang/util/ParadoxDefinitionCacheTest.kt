@@ -159,18 +159,6 @@ class ParadoxDefinitionCacheTest : BasePlatformTestCase(), ChronicleTestScope {
     // region Dependencies
 
     @Test
-    fun testGetDependencies_DefinitionInfo() {
-        val file = configureScriptFile("common/mechs/00_mechs.txt", "features/resolve/common/mechs/00_mechs.txt")
-        val titan = selectScope { file.queryBy("titan_mk3").asProperty().one() }!!
-
-        val deps = ParadoxDefinitionService.getInfoDependencies(titan, file)
-
-        // 应依赖 file
-        Assert.assertEquals(1, deps.size)
-        Assert.assertSame(file, deps[0])
-    }
-
-    @Test
     fun testGetSubtypeAwareDependencies_NoSubtypes() {
         val file = configureScriptFile("common/signals/00_signals.txt", "features/resolve/common/signals/00_signals.txt")
         val distress = selectScope { file.queryBy("distress_beacon").asProperty().one() }!!
@@ -178,9 +166,9 @@ class ParadoxDefinitionCacheTest : BasePlatformTestCase(), ChronicleTestScope {
 
         val deps = ParadoxDefinitionService.getSubtypeAwareDependencies(distress, info)
 
-        // 无子类型候选项时，只依赖 file
+        // 无子类型候选项时，只依赖定义
         Assert.assertEquals(1, deps.size)
-        Assert.assertSame(file, deps[0])
+        Assert.assertSame(distress, deps[0])
     }
 
     @Test

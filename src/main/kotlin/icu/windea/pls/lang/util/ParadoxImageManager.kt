@@ -33,6 +33,7 @@ import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.constants.ChronicleConstants
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
+import kotlinx.coroutines.CancellationException
 import org.intellij.images.fileTypes.impl.ImageFileType
 import java.nio.file.Path
 import javax.imageio.ImageIO
@@ -76,7 +77,7 @@ object ParadoxImageManager {
             if (url.isNullOrEmpty()) return null
             return url
         } catch (e: Exception) {
-            if (e is ProcessCanceledException) throw e
+            if (e is ProcessCanceledException || e is CancellationException) throw e
             logger.warn("Resolve url for dds image failed. (definition name: ${definitionInfo.name.or.anonymous()})", e)
             return null
         }
@@ -94,7 +95,7 @@ object ParadoxImageManager {
             if (url.isNullOrEmpty()) return null
             return url
         } catch (e: Exception) {
-            if (e is ProcessCanceledException) throw e
+            if (e is ProcessCanceledException || e is CancellationException) throw e
             logger.warn("Resolve url for dds image failed. (dds file path: ${file.path})", e)
             return null
         }
@@ -113,7 +114,7 @@ object ParadoxImageManager {
             if (url.isNullOrEmpty()) return null
             return url
         } catch (e: Exception) {
-            if (e is ProcessCanceledException) throw e
+            if (e is ProcessCanceledException || e is CancellationException) throw e
             logger.warn("Resolve url for dds image failed. (dds file path: ${filePath})", e)
             return null
         }
@@ -137,7 +138,8 @@ object ParadoxImageManager {
 
     private fun doResolveUrlByFilePath(filePath: String, project: Project, frameInfo: ImageFrameInfo?): String? {
         val selector = ParadoxFilePathSearch.selector(project)
-        val file = ParadoxFilePathSearch.search(filePath, null, selector).find() ?: return null
+        val query = ParadoxFilePathSearch.searchImage(filePath, null, selector) // 3.0.1 optimize: limit file extensions
+        val file = query.find() ?: return null
         return doResolveUrl(file, project, frameInfo)
     }
 

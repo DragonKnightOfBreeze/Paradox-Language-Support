@@ -1,0 +1,17 @@
+enums = {
+    enum[test_enum] = {
+        v1
+        v2
+    }
+}
+
+unions = {
+    union[test_union] = {
+        int
+        enum[test_enum]
+        value[test_flag] # should be put at the very last, as some fallback
+    }
+}
+
+alias[test_alias:name] = scalar
+alias[test_alias:value] = union[test_union]

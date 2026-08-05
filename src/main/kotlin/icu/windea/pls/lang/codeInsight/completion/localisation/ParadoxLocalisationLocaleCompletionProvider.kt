@@ -24,6 +24,6 @@ class ParadoxLocalisationLocaleCompletionProvider : ParadoxCompletionProvider() 
         val globalContext = GlobalCompletionContext.create(element, parameters, context)
         val context = ParadoxCompletionContext.create(globalContext)
 
-        ParadoxCompletionManager.completeLocale(context, result)
+        ParadoxCompletionManager.completeLocalisationLocale(context, result)
     }
 }

@@ -33,16 +33,11 @@ class ParadoxLocalisationIndexTest : BasePlatformTestCase(), ChronicleTestScope 
     @After
     fun doTearDown() = clearIntegrationTest()
 
-    private fun markAndConfigureByFile(@TestDataFile testDataPath: String, relPath: String = testDataPath.removePrefix("features/index/")): PsiFile {
-        markFileInfo(gameType, relPath)
-        return myFixture.configureByFile(testDataPath)
-    }
-
     // region Normal Localisation
 
     @Test
     fun testNormalLocalisation_Basic() {
-        markAndConfigureByFile("features/index/localisation/ui/ui_l_english.test.yml")
+        configureMarkedFile("features/index/localisation/ui/ui_l_english.test.yml")
 
         val scope = GlobalSearchScope.projectScope(project)
         val elements = StubIndex.getElements(
@@ -62,7 +57,7 @@ class ParadoxLocalisationIndexTest : BasePlatformTestCase(), ChronicleTestScope 
 
     @Test
     fun testSyncedLocalisation_Basic() {
-        markAndConfigureByFile("features/index/localisation_synced/ui/ui_l_english.test.yml")
+        configureMarkedFile("features/index/localisation_synced/ui/ui_l_english.test.yml")
 
         val scope = GlobalSearchScope.projectScope(project)
         val elements = StubIndex.getElements(
@@ -77,4 +72,9 @@ class ParadoxLocalisationIndexTest : BasePlatformTestCase(), ChronicleTestScope 
     }
 
     // endregion
+
+    private fun configureMarkedFile(@TestDataFile testDataPath: String, path: String = testDataPath.removePrefix("features/index/")): PsiFile {
+        markFileInfo(gameType, path)
+        return myFixture.configureByFile(testDataPath)
+    }
 }

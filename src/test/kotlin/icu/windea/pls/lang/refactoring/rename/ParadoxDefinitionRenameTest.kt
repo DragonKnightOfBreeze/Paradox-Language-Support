@@ -3,8 +3,10 @@ package icu.windea.pls.lang.refactoring.rename
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.testFramework.IndexingTestUtil
+import com.intellij.testFramework.TestDataFile
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import icu.windea.pls.core.convertPath
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.ChronicleTestScope
 import org.junit.After
@@ -36,21 +38,13 @@ class ParadoxDefinitionRenameTest : BasePlatformTestCase(), ChronicleTestScope {
         FileDocumentManager.getInstance().saveAllDocuments()
     }
 
-    private fun configureFile(path: String): String {
-        markFileInfo(gameType, path)
-        myFixture.copyFileToProject("features/refactoring/$path", path)
-        return path
-    }
-
+    // region Tests
 
     @Test
     fun testRename_Definition_Overrides() {
-        val mainPath = "common/vtubers/vtuber_1.test.txt"
-        val otherPath = "common/vtubers/vtuber_2.test.txt"
-
         // Arrange
-        configureFile(mainPath)
-        configureFile(otherPath)
+        val mainPath = configureMarkedFile("features/refactoring/common/vtubers/vtuber_1.test.txt")
+        val otherPath = configureMarkedFile("features/refactoring/common/vtubers/vtuber_2.test.txt")
 
         // Ensure indexed
         IndexingTestUtil.waitUntilIndexesAreReady(project)
@@ -61,20 +55,16 @@ class ParadoxDefinitionRenameTest : BasePlatformTestCase(), ChronicleTestScope {
         myFixture.renameElementAtCaretUsingHandler(newName)
 
         // Assert
-        myFixture.checkResultByFile(mainPath, "features/refactoring/common/vtubers/vtuber_1.after.test.txt", true)
-        myFixture.checkResultByFile(otherPath, "features/refactoring/common/vtubers/vtuber_2.after.test.txt", true)
+        checkMarkedResult(mainPath, "after")
+        checkMarkedResult(otherPath, "after")
     }
 
     @Test
     fun testRename_Definition_RelatedLocalisations() {
-        val mainPath = "common/vtubers/vtuber_1.test.txt"
-        val localisationEnglishPath = "localisation/definitions_l_english.test.yml"
-        val localisationChinesePath = "localisation/definitions_l_simp_chinese.test.yml"
-
         // Arrange
-        configureFile(mainPath)
-        configureFile(localisationEnglishPath)
-        configureFile(localisationChinesePath)
+        val mainPath = configureMarkedFile("features/refactoring/common/vtubers/vtuber_1.test.txt")
+        val localisationEnglishPath = configureMarkedFile("features/refactoring/localisation/definitions_l_english.test.yml")
+        val localisationChinesePath = configureMarkedFile("features/refactoring/localisation/definitions_l_simp_chinese.test.yml")
 
         // Ensure indexed
         IndexingTestUtil.waitUntilIndexesAreReady(project)
@@ -85,21 +75,17 @@ class ParadoxDefinitionRenameTest : BasePlatformTestCase(), ChronicleTestScope {
         myFixture.renameElementAtCaretUsingHandler(newName)
 
         // Assert
-        myFixture.checkResultByFile(mainPath, "features/refactoring/common/vtubers/vtuber_1.after.test.txt", true)
-        myFixture.checkResultByFile(localisationEnglishPath, "features/refactoring/localisation/definitions_l_english.after.test.yml", true)
-        myFixture.checkResultByFile(localisationChinesePath, "features/refactoring/localisation/definitions_l_simp_chinese.after.test.yml", true)
+        checkMarkedResult(mainPath, "after")
+        checkMarkedResult(localisationEnglishPath, "after")
+        checkMarkedResult(localisationChinesePath, "after")
     }
 
     @Test
     fun testRename_Definition_References() {
-        val mainPath = "common/vtubers/vtuber_1.test.txt"
-        val otherPath = "common/vtubers/vtuber_2.test.txt"
-        val fanPath = "common/vtuber_fans/vtuber_fan_1.test.txt"
-
         // Arrange
-        configureFile(mainPath)
-        configureFile(otherPath)
-        configureFile(fanPath)
+        val mainPath = configureMarkedFile("features/refactoring/common/vtubers/vtuber_1.test.txt")
+        val otherPath = configureMarkedFile("features/refactoring/common/vtubers/vtuber_2.test.txt")
+        val fanPath = configureMarkedFile("features/refactoring/common/vtuber_fans/vtuber_fan_1.test.txt")
 
         // Ensure indexed
         IndexingTestUtil.waitUntilIndexesAreReady(project)
@@ -110,25 +96,19 @@ class ParadoxDefinitionRenameTest : BasePlatformTestCase(), ChronicleTestScope {
         myFixture.renameElementAtCaretUsingHandler(newName)
 
         // Assert
-        myFixture.checkResultByFile(mainPath, "features/refactoring/common/vtubers/vtuber_1.after.test.txt", true)
-        myFixture.checkResultByFile(otherPath, "features/refactoring/common/vtubers/vtuber_2.after.test.txt", true)
-        myFixture.checkResultByFile(fanPath, "features/refactoring/common/vtuber_fans/vtuber_fan_1.after_definition.test.txt", true)
+        checkMarkedResult(mainPath, "after")
+        checkMarkedResult(otherPath, "after")
+        checkMarkedResult(fanPath, "after_definition")
     }
 
     @Test
     fun testRename_Definition_Combined() {
-        val mainPath = "common/vtubers/vtuber_1.test.txt"
-        val otherPath = "common/vtubers/vtuber_2.test.txt"
-        val localisationEnglishPath = "localisation/definitions_l_english.test.yml"
-        val localisationChinesePath = "localisation/definitions_l_simp_chinese.test.yml"
-        val fanPath = "common/vtuber_fans/vtuber_fan_1.test.txt"
-
         // Arrange
-        configureFile(mainPath)
-        configureFile(otherPath)
-        configureFile(localisationEnglishPath)
-        configureFile(localisationChinesePath)
-        configureFile(fanPath)
+        val mainPath = configureMarkedFile("features/refactoring/common/vtubers/vtuber_1.test.txt")
+        val otherPath = configureMarkedFile("features/refactoring/common/vtubers/vtuber_2.test.txt")
+        val localisationEnglishPath = configureMarkedFile("features/refactoring/localisation/definitions_l_english.test.yml")
+        val localisationChinesePath = configureMarkedFile("features/refactoring/localisation/definitions_l_simp_chinese.test.yml")
+        val fanPath = configureMarkedFile("features/refactoring/common/vtuber_fans/vtuber_fan_1.test.txt")
 
         // Ensure indexed
         IndexingTestUtil.waitUntilIndexesAreReady(project)
@@ -139,21 +119,18 @@ class ParadoxDefinitionRenameTest : BasePlatformTestCase(), ChronicleTestScope {
         myFixture.renameElementAtCaretUsingHandler(newName)
 
         // Assert
-        myFixture.checkResultByFile(mainPath, "features/refactoring/common/vtubers/vtuber_1.after.test.txt", true)
-        myFixture.checkResultByFile(otherPath, "features/refactoring/common/vtubers/vtuber_2.after.test.txt", true)
-        myFixture.checkResultByFile(localisationEnglishPath, "features/refactoring/localisation/definitions_l_english.after.test.yml", true)
-        myFixture.checkResultByFile(localisationChinesePath, "features/refactoring/localisation/definitions_l_simp_chinese.after.test.yml", true)
-        myFixture.checkResultByFile(fanPath, "features/refactoring/common/vtuber_fans/vtuber_fan_1.after_definition_combined.test.txt", true)
+        checkMarkedResult(mainPath, "after")
+        checkMarkedResult(otherPath, "after")
+        checkMarkedResult(localisationEnglishPath, "after")
+        checkMarkedResult(localisationChinesePath, "after")
+        checkMarkedResult(fanPath, "after_definition_combined")
     }
 
     @Test
     fun testRename_Definition_ReferencesInScript_Multiple() {
-        val mainPath = "common/vtubers/vtuber_1.test.txt"
-        val fanPath = "common/vtuber_fans/vtuber_fan_2.test.txt"
-
         // Arrange
-        configureFile(mainPath)
-        configureFile(fanPath)
+        val mainPath = configureMarkedFile("features/refactoring/common/vtubers/vtuber_1.test.txt")
+        val fanPath = configureMarkedFile("features/refactoring/common/vtuber_fans/vtuber_fan_2.test.txt")
 
         // Ensure indexed
         IndexingTestUtil.waitUntilIndexesAreReady(project)
@@ -164,9 +141,22 @@ class ParadoxDefinitionRenameTest : BasePlatformTestCase(), ChronicleTestScope {
         myFixture.renameElementAtCaretUsingHandler(newName)
 
         // Assert
-        myFixture.checkResultByFile(mainPath, "features/refactoring/common/vtubers/vtuber_1.after.test.txt", true)
-        myFixture.checkResultByFile(fanPath, "features/refactoring/common/vtuber_fans/vtuber_fan_2.after_definition.test.txt", true)
+        checkMarkedResult(mainPath, "after")
+        checkMarkedResult(fanPath, "after_definition")
     }
 
     // TODO 2.1.3+ 暂不验证以下类型的关联重命名：定义的相关图片、定义的生成的修正
+
+    // endregion
+
+    private fun configureMarkedFile(@TestDataFile testDataPath: String, path: String = testDataPath.removePrefix("features/refactoring/")): String {
+        markFileInfo(gameType, path)
+        myFixture.configureByFile(testDataPath)
+        return testDataPath
+    }
+
+    private fun checkMarkedResult(@TestDataFile testDataPath: String, tag: String) {
+        val expectedPath = testDataPath.convertPath { b, e -> "$b.$tag$e" }
+        myFixture.checkResultByFile(testDataPath, expectedPath, true)
+    }
 }

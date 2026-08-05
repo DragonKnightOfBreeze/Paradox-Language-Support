@@ -1,8 +1,9 @@
 package icu.windea.pls.config.config.delegated
 
-import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
+import icu.windea.pls.config.CwtConfigType
+import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.config.annotations.FromMember
 import icu.windea.pls.config.annotations.FromName
 import icu.windea.pls.config.annotations.FromOptionMember
@@ -14,8 +15,6 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.booleanValue
 import icu.windea.pls.config.config.stringValue
-import icu.windea.pls.config.optimizedPath
-import icu.windea.pls.config.optimizedPathExtension
 import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.config.util.CwtMemberConfigRecursiveVisitor
 import icu.windea.pls.core.collections.getAll
@@ -76,6 +75,8 @@ interface CwtComplexEnumConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConf
     val nameConfig: CwtPropertyConfig?
     val enumNameConfigs: List<CwtMemberConfig<*>>
 
+    override val configType: CwtConfigType get() = CwtConfigTypes.ComplexEnum
+
     companion object {
         /** 由属性规则解析为复杂枚举规则。 */
         @JvmStatic
@@ -99,7 +100,7 @@ private object CwtComplexEnumConfigResolver : CwtConfigResolverScope {
         val name = config.key.removeSurroundingOrNull("complex_enum[", "]")?.orNull() ?: return null
         val propConfigs = config.properties
         if (propConfigs.isNullOrEmpty()) {
-            logger.warn("Skipped invalid complex enum config (name: $name): Missing properties.".withLocationPrefix(config))
+            logger.warnWithPrefix(config, "Skipped invalid complex enum config (name: $name): Missing properties.")
             return null
         }
 
@@ -110,15 +111,15 @@ private object CwtComplexEnumConfigResolver : CwtConfigResolverScope {
         val pathStrict = propGroup.getOne("path_strict")?.booleanValue ?: false
         val pathPatterns = propGroup.getAll("path_pattern").mapNotNullTo(sortedSetOf()) { it.stringValue?.optimizedPath() }.optimized()
         val startFromRoot = propGroup.getOne("start_from_root")?.booleanValue ?: false
-        val caseInsensitive = config.optionData.caseInsensitive
-        val perDefinition = config.optionData.perDefinition
+        val caseInsensitive = config.optionMetadata.caseInsensitive
+        val perDefinition = config.optionMetadata.perDefinition
         val nameConfig = propGroup.getOne("name")
 
         if (nameConfig == null) {
-            logger.warn("Skipped invalid complex enum config (name: $name): Missing name config.".withLocationPrefix(config))
+            logger.warnWithPrefix(config, "Skipped invalid complex enum config (name: $name): Missing name config.")
             return null
         }
-        logger.debug { "Resolved complex enum config (name: $name).".withLocationPrefix(config) }
+        logger.debugWithPrefix(config) { "Resolved complex enum config (name: $name)." }
         return CwtComplexEnumConfigImpl(
             config, name,
             paths, pathFile, pathExtension, pathStrict, pathPatterns,
@@ -127,7 +128,7 @@ private object CwtComplexEnumConfigResolver : CwtConfigResolverScope {
     }
 
     fun resolveFromColumnConfig(config: CwtPropertyConfig): CwtComplexEnumConfig? {
-        val name = config.optionData.declareComplexEnum?.orNull() ?: return null
+        val name = config.optionMetadata.declareComplexEnum?.orNull() ?: return null
         return CwtComplexEnumConfigFromColumnConfig(config, name)
     }
 }

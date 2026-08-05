@@ -1,0 +1,19 @@
+package icu.windea.pls.model.index
+
+import icu.windea.pls.lang.psi.ParadoxPsiFileService
+import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.script.psi.ParadoxScriptProperty
+
+/**
+ * @see icu.windea.pls.lang.index.ParadoxMergedIndex
+ * @see icu.windea.pls.ep.index.ParadoxScopeInferrableDefinitionMergedIndexSupport
+ */
+data class ParadoxScopeInferrableDefinitionIndexInfo(
+    val definitionName: String,
+    val typeExpression: String,
+    val definitionElementOffset: Int,
+    override val gameType: ParadoxGameType,
+) : ParadoxIndexInfo() {
+    val definitionElement: ParadoxScriptProperty?
+        get() = file?.let { file -> ParadoxPsiFileService.findPropertyFromStartOffset(file, definitionElementOffset) }
+}

@@ -1,5 +1,6 @@
 package icu.windea.pls.model.analysis
 
+import com.google.common.collect.ImmutableSet
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.paths.ParadoxPath
 
@@ -32,11 +33,27 @@ data class ParadoxGameTypeMetadata(
     val modExtraEntries: Set<String>,
     val executableBaseNames: Set<String>,
 ) {
-    val gameEntries: Set<String> = gameMainEntries + gameExtraEntries
-    val modEntries: Set<String> = modMainEntries + modExtraEntries
+    val gameEntries: Set<String> = computeGameEntries()
+    val modEntries: Set<String> = computeModEntries()
 
-    val gameEntryPaths: Set<ParadoxPath> = gameEntries.toEntryPaths()
-    val modEntryPaths: Set<ParadoxPath> = modEntries.toEntryPaths()
+    val gameEntryPaths: Set<ParadoxPath> = computeEntryPaths(gameEntries)
+    val modEntryPaths: Set<ParadoxPath> = computeEntryPaths(modEntries)
 
-    private fun Set<String>.toEntryPaths() = sortedDescending().mapTo(mutableSetOf()) { ParadoxPath.resolve(it) }
+    private fun computeGameEntries(): Set<String> {
+        return ImmutableSet.builder<String>()
+            .addAll(gameMainEntries).addAll(gameExtraEntries)
+            .build()
+    }
+
+    private fun computeModEntries(): Set<String> {
+        return ImmutableSet.builder<String>()
+            .addAll(modMainEntries).addAll(modExtraEntries)
+            .build()
+    }
+
+    private fun computeEntryPaths(entries: Set<String>): Set<ParadoxPath> {
+        return ImmutableSet.builder<ParadoxPath>()
+            .apply { entries.sortedDescending().forEach { add(ParadoxPath.resolve(it)) } }
+            .build()
+    }
 }

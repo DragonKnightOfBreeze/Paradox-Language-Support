@@ -5,7 +5,7 @@ package icu.windea.pls.config.configExpression
 import icu.windea.pls.config.config.delegated.CwtTypeLocalisationConfig
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cache.CacheBuilder
-import icu.windea.pls.core.toCommaDelimitedStringSet
+import icu.windea.pls.core.toDelimitedSet
 
 /**
  * 本地化位置表达式。
@@ -71,7 +71,7 @@ private object CwtLocalisationLocationExpressionResolver {
         args.forEach { arg ->
             // 以 '$' 开头：表示 namePaths；参数 'u' 表示强制大写
             if (arg.startsWith('$')) {
-                namePaths = arg.drop(1).toCommaDelimitedStringSet()
+                namePaths = arg.drop(1).toDelimitedSet()
             } else if (arg == "u") {
                 forceUpperCase = true
             }

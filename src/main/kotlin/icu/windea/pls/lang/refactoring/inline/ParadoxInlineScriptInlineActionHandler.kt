@@ -28,7 +28,7 @@ import icu.windea.pls.script.psi.parentProperty
 class ParadoxInlineScriptInlineActionHandler : InlineActionHandler() {
     override fun getActionName(element: PsiElement?) = ChronicleBundle.message("title.inline.inlineScript")
 
-    override fun isEnabledForLanguage(language: Language) = language is ParadoxScriptLanguage
+    override fun isEnabledForLanguage(language: Language) = language === ParadoxScriptLanguage
 
     override fun canInlineElement(element: PsiElement): Boolean {
         val gameType = selectGameType(element)

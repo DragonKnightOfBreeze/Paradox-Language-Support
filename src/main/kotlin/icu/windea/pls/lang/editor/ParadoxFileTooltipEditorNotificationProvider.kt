@@ -33,7 +33,7 @@ class ParadoxFileTooltipEditorNotificationProvider : EditorNotificationProvider 
 
     private fun forLocalisationGeneration(project: Project, file: VirtualFile): Function<in FileEditor, out JComponent?>? {
         if (!VirtualFileService.isLightFile(file)) return null
-        if (file.fileType != ParadoxLocalisationFileType) return null
+        if (file.fileType !== ParadoxLocalisationFileType) return null
         val fileTooltip = file.getUserData(ParadoxLocalisationGenerationService.fileTooltipKey) ?: return null
         return Function f@{ fileEditor ->
             if (fileEditor !is TextEditor) return@f null

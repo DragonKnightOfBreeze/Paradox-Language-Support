@@ -6,13 +6,17 @@ import com.intellij.util.Processor
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.match.CwtConfigMatchService
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.lang.search.CwtConfigSearch
 
 /**
  * 规则的查询器。
  *
  * 直接从规则分组中查询符合条件的规则对象。
+ *
+ * @see CwtConfigSearch
  */
+@Optimized
 class CwtConfigSearcher : QueryExecutorBase<CwtConfig<*>, CwtConfigSearch.Parameters>() {
     override fun processQuery(queryParameters: CwtConfigSearch.Parameters, consumer: Processor<in CwtConfig<*>>) {
         ProgressManager.checkCanceled()

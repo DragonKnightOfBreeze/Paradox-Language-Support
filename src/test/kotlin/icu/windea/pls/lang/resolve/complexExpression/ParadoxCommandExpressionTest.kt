@@ -1,6 +1,7 @@
 package icu.windea.pls.lang.resolve.complexExpression
 
 import com.intellij.testFramework.TestDataPath
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.lang.resolve.complexExpression.dsl.*
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.model.ParadoxGameType
@@ -30,12 +31,12 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
     fun doTearDown() = clearIntegrationTest()
 
     private fun resolve(text: String, gameType: ParadoxGameType, incomplete: Boolean = false): ParadoxCommandExpression? {
-        val configGroup = getConfigGroup(project, gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(project, gameType)
         return markIncomplete(incomplete) { ParadoxCommandExpression.resolve(text, null, configGroup) }
     }
 
     @Test
-    fun test_basic() {
+    fun basic_test() {
         val s = "Root.GetName"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -48,7 +49,7 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_basic_chain_noSuffix() {
+    fun basic_chain_noSuffix_test() {
         val s = "Root.Owner.event_target:some_target.var"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -78,7 +79,7 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_endsWithDot() {
+    fun endsWithDot_test() {
         val s = "Root."
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -95,7 +96,7 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_endsWithVar() {
+    fun endsWithVar_test() {
         val s = "Root.Var"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -114,7 +115,7 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_withSuffix_amp() {
+    fun withSuffix_amp_test() {
         val s = "Root.GetName&L"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -129,7 +130,7 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_withSuffix_doubleColon() {
+    fun withSuffix_doubleColon_test() {
         val s = "Root.GetName::UPPER"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -144,7 +145,7 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_empty() {
+    fun empty_test() {
         Assert.assertNull(resolve("", ParadoxGameType.Stellaris, incomplete = false))
         val exp = resolve("", ParadoxGameType.Stellaris, incomplete = true)!!
         exp.renderAndPrintln()
@@ -161,7 +162,7 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_forArguments() {
+    fun forArguments_test() {
         val s = "Root.TestScope(root, some_building).TestCommand(some_flag, some_job)"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -198,7 +199,7 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_forArguments_withTrailComma() {
+    fun forArguments_withTrailComma_test() {
         val s = "Root.TestScope(root, some_building,).TestCommand(some_flag, some_job,)"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -237,7 +238,7 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_forArguments_missingArgument_1() {
+    fun forArguments_missingArgument_1_test() {
         val s = "Root.TestScope(some_building).TestCommand(some_job)"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -268,7 +269,7 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_forArguments_missingArgument_2() {
+    fun forArguments_missingArgument_2_test() {
         val s = "Root.TestScope(root, ).TestCommand(some_flag, )"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -303,7 +304,7 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_forArguments_missingArgument_3() {
+    fun forArguments_missingArgument_3_test() {
         val s = "Root.TestScope(, some_building).TestCommand(, some_job)"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -338,7 +339,7 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_forArguments_withLiteral() {
+    fun forArguments_withLiteral_test() {
         val s = "Root.TestLiteralScope('foo bar', some_variable).TestCommand(some_flag, some_job)"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -377,7 +378,7 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_nestedDynamicValueExpression_simple() {
+    fun nestedDynamicValueExpression_simple_test() {
         val s = "this.event_target:target.GetName"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -399,7 +400,7 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_nestedDynamicValueExpression_withScope() {
+    fun nestedDynamicValueExpression_withScope_test() {
         val s = "this.event_target:target@root.GetName"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -425,7 +426,7 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_nestedDynamicValueExpression_withScope_in_middle() {
+    fun nestedDynamicValueExpression_withScope_in_middle_test() {
         val s = "this.event_target:target@root.GetName"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -451,7 +452,7 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_nestedDynamicValueExpression_withScope_inMiddle() {
+    fun nestedDynamicValueExpression_withScope_inMiddle_test() {
         val s = "this.event_target:target@root.owner.GetName"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -479,7 +480,7 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_nestedDynamicValueExpression_withFollowingAt() {
+    fun nestedDynamicValueExpression_withFollowingAt_test() {
         val s = "this.event_target:target@.GetName"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -503,7 +504,7 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
-    fun test_nestedDynamicValueExpression_withFollowingAt_inMiddle() {
+    fun nestedDynamicValueExpression_withFollowingAt_inMiddle_test() {
         val s = "this.event_target:target@.owner.GetName"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()

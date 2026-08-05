@@ -1,8 +1,9 @@
 package icu.windea.pls.config.config.extended
 
-import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
+import icu.windea.pls.config.CwtConfigType
+import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.annotations.FromName
 import icu.windea.pls.config.annotations.FromOptionMember
@@ -49,6 +50,8 @@ interface CwtExtendedComplexEnumValueConfig : CwtDelegatedConfig<CwtMember, CwtM
     @FromOptionMember("hint: string?")
     val hint: String?
 
+    override val configType: CwtConfigType get() = CwtConfigTypes.ExtendedComplexEnumValue
+
     companion object {
         /** 由成员规则解析为复杂枚举值的扩展规则。 */
         @JvmStatic
@@ -65,8 +68,8 @@ private object CwtExtendedComplexEnumValueConfigResolver : CwtConfigResolverScop
 
     fun resolve(config: CwtMemberConfig<*>, type: String): CwtExtendedComplexEnumValueConfig {
         val name = if (config is CwtPropertyConfig) config.key else config.value
-        val hint = config.optionData.hint
-        logger.debug { "Resolved extended complex enum value config (name: $name, type: $type).".withLocationPrefix(config) }
+        val hint = config.optionMetadata.hint
+        logger.debugWithPrefix(config) { "Resolved extended complex enum value config (name: $name, type: $type)." }
         return CwtExtendedComplexEnumValueConfigImpl(config, name, type, hint)
     }
 }

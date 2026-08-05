@@ -1,7 +1,9 @@
 package icu.windea.pls.lang.util.evaluators
 
 import icu.windea.pls.config.CwtDataTypeSets
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.collections.findLastFast
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxArrayDefineReferenceExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
@@ -20,6 +22,7 @@ import icu.windea.pls.script.psi.ParadoxScriptValue
  *
  * @see ParadoxComplexExpression
  */
+@Optimized
 class ParadoxComplexExpressionEvaluator(
     var resolve: Boolean = true,
 ) {
@@ -42,8 +45,8 @@ class ParadoxComplexExpressionEvaluator(
             is ParadoxDefineReferenceExpression -> rootExpression
             is ParadoxArrayDefineReferenceExpression -> rootExpression
             is ParadoxLinkedExpression -> {
-                val lastLinkNode = rootExpression.nodes.findLast { it is ParadoxLinkNode } ?: return null
-                val lastLinkValueNode = lastLinkNode.nodes.findLast { it is ParadoxLinkValueNode } ?: return null
+                val lastLinkNode = rootExpression.nodes.findLastFast { it is ParadoxLinkNode } ?: return null
+                val lastLinkValueNode = lastLinkNode.nodes.findLastFast { it is ParadoxLinkValueNode } ?: return null
                 val resultNode = lastLinkValueNode.nodes.singleOrNull() ?: return null
                 resultNode.castOrNull()
             }

@@ -1,15 +1,16 @@
 package icu.windea.pls.config.config.delegated
 
-import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
+import icu.windea.pls.config.CwtConfigType
+import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.config.annotations.FromMember
 import icu.windea.pls.config.annotations.FromName
 import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtIdMatchableConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.stringValue
-import icu.windea.pls.config.option.CwtOptionDataHolder
+import icu.windea.pls.config.option.CwtOptionMetadata
 import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.core.optimized
 import icu.windea.pls.cwt.psi.CwtProperty
@@ -38,8 +39,8 @@ import icu.windea.pls.model.scope.ParadoxScopeConstants
  * @property supportedScopes 允许的作用域（类型）的集合。
  *
  * @see CwtModifierConfig
- * @see CwtOptionDataHolder.replaceScopes
- * @see CwtOptionDataHolder.pushScope
+ * @see CwtOptionMetadata.replaceScopes
+ * @see CwtOptionMetadata.pushScope
  * @see icu.windea.pls.lang.util.ParadoxModifierManager
  */
 interface CwtModifierCategoryConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, CwtIdMatchableConfig<CwtProperty> {
@@ -47,6 +48,8 @@ interface CwtModifierCategoryConfig : CwtDelegatedConfig<CwtProperty, CwtPropert
     val name: String
     @FromMember("supported_scopes: string | string[]")
     val supportedScopes: Set<String>
+
+    override val configType: CwtConfigType get() = CwtConfigTypes.ModifierCategory
 
     companion object {
         /** 由属性规则解析为修正分类规则。 */
@@ -66,7 +69,7 @@ private object CwtModifierCategoryConfigResolver : CwtConfigResolverScope {
         val name = config.key
         val propConfigs = config.properties
         if (propConfigs.isNullOrEmpty()) {
-            logger.warn("Skipped invalid modifier category config (name: $name): Missing properties.".withLocationPrefix(config))
+            logger.warnWithPrefix(config, "Skipped invalid modifier category config (name: $name): Missing properties.")
             return null
         }
         // may be empty here (e.g., "AI Economy")
@@ -76,7 +79,7 @@ private object CwtModifierCategoryConfigResolver : CwtConfigResolverScope {
                 prop.values?.forEach { it.stringValue?.let { v -> add(ParadoxScope.getId(v)) } }
             }
         }?.optimized() ?: ParadoxScopeConstants.anyScopes
-        logger.debug { "Resolved modifier category config (name: $name).".withLocationPrefix(config) }
+        logger.debugWithPrefix(config) { "Resolved modifier category config (name: $name)." }
         return CwtModifierCategoryConfigImpl(config, name, supportedScopes)
     }
 }

@@ -3,18 +3,15 @@
 package icu.windea.pls.config.config
 
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.option.CwtOptionDataHolder
+import icu.windea.pls.config.option.CwtOptionMetadata
 import icu.windea.pls.config.util.CwtConfigResolverManager
 import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cache.CacheBuilder
-import icu.windea.pls.core.deoptimized
 import icu.windea.pls.core.optimized
-import icu.windea.pls.core.optimizer.OptimizerFactory
 import icu.windea.pls.cwt.psi.CwtOptionComment
 import icu.windea.pls.cwt.psi.CwtValue
 import icu.windea.pls.model.constants.ChronicleStrings
-import icu.windea.pls.model.forCwtType
 import icu.windea.pls.model.type.CwtExpressionType
 import icu.windea.pls.model.type.CwtTypeResolver
 import java.util.*
@@ -24,12 +21,12 @@ import java.util.*
  *
  * 对应 CWT 规则文件中的一个没有键的选项值（`## v`）。需要位于附加到成员上的选项注释中。
  *
- * 用于提供额外的选项数据，自身也可以嵌套下级选项和选项值，以提供更复杂的数据表述。
+ * 用于提供额外的选项元数据，自身也可以嵌套下级选项和选项值，以提供更复杂的数据表述。
  * 在选项注释中单独使用时，常用来提供布尔标志或较短的语义标签。
  *
+ * @see CwtOptionMetadata
  * @see CwtOptionComment
  * @see CwtValue
- * @see CwtOptionDataHolder
  */
 interface CwtOptionValueConfig : CwtOptionMemberConfig<CwtValue> {
     companion object {
@@ -72,7 +69,7 @@ private object CwtOptionValueConfigResolver : CwtConfigResolverScope {
 }
 
 private const val blockValue = ChronicleStrings.blockFolder
-private val blockValueTypeId = CwtExpressionType.Block.optimized(OptimizerFactory.forCwtType())
+private val blockValueTypeId = CwtExpressionType.Block.optimized()
 
 private abstract class CwtOptionValueConfigBase : CwtOptionValueConfig {
     override fun equals(other: Any?) = this === other || other is CwtOptionValueConfig
@@ -90,10 +87,10 @@ private class CwtOptionValueConfigImpl(
     value: String,
     valueType: CwtExpressionType,
 ) : CwtOptionValueConfigImplBase() {
-    private val valueTypeId = valueType.optimized(OptimizerFactory.forCwtType()) // optimized to optimize memory
+    private val valueTypeId = valueType.optimized() // optimized to optimize memory
 
     override val value: String = value.optimized() // optimized to optimize memory
-    override val valueType: CwtExpressionType get() = valueTypeId.deoptimized(OptimizerFactory.forCwtType())
+    override val valueType: CwtExpressionType get() = CwtExpressionType.deoptimized(valueTypeId)
     override val optionConfigs: List<CwtOptionMemberConfig<*>>? get() = if (valueTypeId == blockValueTypeId) emptyList() else null
 }
 

@@ -15,13 +15,13 @@ import com.intellij.openapi.vfs.newvfs.VfsPresentationUtil
 import com.intellij.platform.backend.documentation.DocumentationTarget
 import com.intellij.platform.backend.presentation.TargetPresentation
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiFileSystemItem
 import com.intellij.psi.PsiNamedElement
 import com.intellij.util.TextWithIcon
 import icu.windea.pls.core.util.values.singletonListOrEmpty
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.cwt.CwtLanguage
 import icu.windea.pls.lang.ParadoxLanguage
+import icu.windea.pls.lang.createPsiDocumentationTarget
 import icu.windea.pls.lang.psiDocumentationTargets
 
 fun getTargetPresentation(element: PsiElement): TargetPresentation {
@@ -73,22 +73,17 @@ fun getDocumentationTargets(element: PsiElement, originalElement: PsiElement?): 
     val targets = psiDocumentationTargets(element, originalElement)
     if (targets.isNotEmpty()) return targets
 
-    return getDocumentationTarget(element, originalElement).to.singletonListOrEmpty()
-}
-
-@Suppress("UNUSED_PARAMETER")
-private fun getDocumentationTarget(element: PsiElement, originalElement: PsiElement?): DocumentationTarget? {
-    return when {
-        element is PsiFileSystemItem -> null
-        element.language is ParadoxLanguage -> ParadoxDocumentationTarget(element, null)
-        element.language is CwtLanguage -> CwtDocumentationTarget(element, null)
-        else -> null
+    val target = when {
+        element.language === CwtLanguage -> CwtDocumentationTarget(element, originalElement)
+        element.language is ParadoxLanguage -> ParadoxDocumentationTarget(element, originalElement)
+        else -> createPsiDocumentationTarget(element, originalElement)
     }
+    return target.to.singletonListOrEmpty()
 }
 
 val DocumentationTarget.targetElement: PsiElement?
-    get() = when {
-        this is CwtDocumentationTarget -> this.element
-        this is ParadoxDocumentationTarget -> this.element
+    get() = when (this) {
+        is ParadoxDocumentationTarget -> element
+        is CwtDocumentationTarget -> element
         else -> null
     }

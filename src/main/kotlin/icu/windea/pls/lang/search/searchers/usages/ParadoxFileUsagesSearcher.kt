@@ -8,6 +8,7 @@ import com.intellij.psi.search.searches.ReferencesSearch
 import com.intellij.util.Processor
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.orNull
 import icu.windea.pls.ep.resolve.expression.ParadoxPathReferenceExpressionSupport
 import icu.windea.pls.lang.fileInfo
@@ -16,6 +17,7 @@ import kotlin.experimental.or
 /**
  * （游戏或模组）文件的用法的查询器。
  */
+@Optimized
 class ParadoxFileUsagesSearcher : QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters>(true) {
     override fun processQuery(queryParameters: ReferencesSearch.SearchParameters, consumer: Processor<in PsiReference>) {
         // 0.7.8 这里不能仅仅用fileName去查找，需要基于规则文件判断
@@ -41,8 +43,8 @@ class ParadoxFileUsagesSearcher : QueryExecutorBase<PsiReference, ReferencesSear
 
     private fun getExtraWords(target: PsiFile, filePath: String, configGroup: CwtConfigGroup): Set<String> {
         val extraWords = mutableSetOf<String>()
-        configGroup.filePathExpressions.forEach { configExpression ->
-            val name = ParadoxPathReferenceExpressionSupport.get(configExpression)?.extract(configExpression, target, filePath)?.orNull()
+        configGroup.attribute.filePathExpressions.forEach { configExpression ->
+            val name = ParadoxPathReferenceExpressionSupport.get(configExpression.type)?.extract(configExpression, target, filePath)?.orNull()
             if (name != null) extraWords.add(name)
         }
         return extraWords

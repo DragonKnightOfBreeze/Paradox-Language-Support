@@ -14,6 +14,8 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.containingDirectConfig
 import icu.windea.pls.config.config.overriddenProvider
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.collections.anyFast
+import icu.windea.pls.core.collections.filterFast
 import icu.windea.pls.core.findChild
 import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.core.vfs.VirtualFileService
@@ -103,9 +105,9 @@ class ConflictingResolvedExpressionInspection : LocalInspectionTool() {
 
             @Suppress("UNUSED_PARAMETER")
             private fun filterConfigs(element: ParadoxScriptMember, configs: List<CwtMemberConfig<*>>): List<CwtMemberConfig<*>> {
-                val configsToCheck = configs.filter { config ->
+                val configsToCheck = configs.filterFast { config ->
                     val childConfigs = config.configs
-                    childConfigs != null && configs.any { config0 ->
+                    childConfigs != null && configs.anyFast { config0 ->
                         val childConfigs0 = config0.configs
                         config0 != config && childConfigs0 != null && childConfigs0.containsAll(childConfigs)
                     }

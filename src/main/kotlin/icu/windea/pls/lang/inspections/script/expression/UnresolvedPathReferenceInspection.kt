@@ -16,8 +16,8 @@ import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.core.matchesPatterns
 import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.toAtomicProperty
-import icu.windea.pls.core.toCommaDelimitedString
-import icu.windea.pls.core.toCommaDelimitedStringList
+import icu.windea.pls.core.toDelimitedMutableList
+import icu.windea.pls.core.toDelimitedString
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.ep.resolve.expression.ParadoxPathReferenceExpressionSupport
@@ -83,7 +83,7 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
                     holder.registerProblem(location, description, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
                     return
                 }
-                val pathReferenceExpressionSupport = ParadoxPathReferenceExpressionSupport.get(configExpression)
+                val pathReferenceExpressionSupport = ParadoxPathReferenceExpressionSupport.get(configExpression.type)
                 if (pathReferenceExpressionSupport != null) {
                     val pathReference = element.value.normalizePath()
                     run {
@@ -125,7 +125,7 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
         return panel {
             row {
                 label(ChronicleBundle.message("inspection.script.unresolvedPathReference.option.ignoredFileNames"))
-                expandableTextField({ it.toCommaDelimitedStringList() }, { it.toCommaDelimitedString() })
+                expandableTextField({ it.toDelimitedMutableList() }, { it.toDelimitedString() })
                     .bindText(::ignoredFileNames.toAtomicProperty())
                     .comment(ChronicleBundle.message("comment.patterns"))
                     .align(Align.FILL)

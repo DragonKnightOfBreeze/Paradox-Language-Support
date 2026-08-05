@@ -28,7 +28,7 @@ enum class ParadoxGameType(
     val gameId: String,
     val steamId: String,
 ) {
-    /** 通用游戏类型。用于对应共享的规则分组。 */
+    /** 通用游戏类型。用于对应通用的规则分组。 */
     Core("core", "Core", "", ""),
     /** [Stellaris](https://store.steampowered.com/app/281990) */
     Stellaris("stellaris", "Stellaris", "stellaris", "281990"),
@@ -52,6 +52,13 @@ enum class ParadoxGameType(
 
     val metadata: ParadoxGameTypeMetadata get() = ParadoxGameTypeManager.getMetadata(this)
 
+    // region Inline Methods
+
+    @Suppress("NOTHING_TO_INLINE", "unused")
+    inline fun optimized(): Byte = ordinal.toByte() // 3.0.1 radical optimization
+
+    // endregion
+
     companion object {
         private val values = entries.toList().optimized()
         private val valuesSpecific = entries.filter { it != Core }.optimized()
@@ -72,5 +79,12 @@ enum class ParadoxGameType(
 
         @JvmStatic
         fun getDefault(): ParadoxGameType = ChronicleSettings.getInstance().state.defaultGameType
+
+        // region Inline Methods
+
+        @Suppress("NOTHING_TO_INLINE", "unused")
+        inline fun deoptimized(value: Byte): ParadoxGameType = entries[value.toInt()] // 3.0.1 radical optimization
+
+        // endregion
     }
 }

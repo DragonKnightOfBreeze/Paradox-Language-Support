@@ -11,12 +11,10 @@ import com.intellij.psi.stubs.StubOutputStream
 import com.intellij.psi.stubs.StubRegistry
 import com.intellij.psi.stubs.StubRegistryExtension
 import com.intellij.psi.stubs.StubSerializer
-import icu.windea.pls.core.deoptimized
 import icu.windea.pls.core.letIf
-import icu.windea.pls.core.optimized
-import icu.windea.pls.core.optimizer.OptimizerFactory
 import icu.windea.pls.core.writeByte
 import icu.windea.pls.lang.index.ChronicleIndexKeys
+import icu.windea.pls.lang.index.constraints.ParadoxLocalisationIndexConstraint
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
@@ -29,10 +27,8 @@ import icu.windea.pls.localisation.psi.stubs.ParadoxLocalisationFileStub
 import icu.windea.pls.localisation.psi.stubs.ParadoxLocalisationLocaleStub
 import icu.windea.pls.localisation.psi.stubs.ParadoxLocalisationPropertyListStub
 import icu.windea.pls.localisation.psi.stubs.ParadoxLocalisationPropertyStub
+import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxLocalisationType
-import icu.windea.pls.model.constraints.ParadoxLocalisationIndexConstraint
-import icu.windea.pls.model.forParadoxGameType
-import icu.windea.pls.model.forParadoxLocalisationType
 
 @Suppress("UnstableApiUsage")
 class ParadoxLocalisationStubRegistry : StubRegistryExtension {
@@ -52,13 +48,13 @@ class ParadoxLocalisationStubRegistry : StubRegistryExtension {
         }
 
         override fun serialize(stub: ParadoxLocalisationFileStub, dataStream: StubOutputStream) {
-            dataStream.writeByte(stub.localisationType.optimized(OptimizerFactory.forParadoxLocalisationType()))
-            dataStream.writeByte(stub.gameType.optimized(OptimizerFactory.forParadoxGameType()))
+            dataStream.writeByte(stub.localisationType.optimized())
+            dataStream.writeByte(stub.gameType.optimized())
         }
 
         override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<*>?): ParadoxLocalisationFileStub {
-            val localisationType = dataStream.readByte().deoptimized(OptimizerFactory.forParadoxLocalisationType())
-            val gameType = dataStream.readByte().deoptimized(OptimizerFactory.forParadoxGameType())
+            val localisationType = dataStream.readByte().let { ParadoxLocalisationType.deoptimized(it) }
+            val gameType = dataStream.readByte().let { ParadoxGameType.deoptimized(it) }
             return ParadoxLocalisationFileStub.create(null, localisationType, gameType)
         }
 

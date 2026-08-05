@@ -1,6 +1,7 @@
 package icu.windea.pls.lang.resolve.complexExpression
 
 import com.intellij.testFramework.TestDataPath
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.lang.resolve.complexExpression.dsl.*
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.model.ParadoxGameType
@@ -31,7 +32,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest(), Chronicl
     fun doTearDown() = clearIntegrationTest()
 
     private fun resolve(text: String, gameType: ParadoxGameType, incomplete: Boolean = false): ParadoxValueFieldExpression? {
-        val configGroup = getConfigGroup(project, gameType)
+        val configGroup = ChronicleFacade.getConfigGroup(project, gameType)
         return markIncomplete(incomplete) { ParadoxValueFieldExpression.resolve(text, null, configGroup) }
     }
 
@@ -52,7 +53,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest(), Chronicl
     }
 
     @Test
-    fun test_scriptValue_no_param() {
+    fun scriptValue_no_param_test() {
         // #348 still use `ParadoxScriptValueReferenceExpression` here, rather than `ParadoxDataSourceNode`
         val s = "value:some_sv"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
@@ -71,7 +72,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest(), Chronicl
     }
 
     @Test
-    fun test_scriptValue_one_param() {
+    fun scriptValue_one_param_test() {
         val s = "value:some_sv|PARAM|VALUE|"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -94,7 +95,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest(), Chronicl
     }
 
     @Test
-    fun test_scriptValue_malformed_param() {
+    fun scriptValue_malformed_param_test() {
         val s = "value:some_sv|PARAM|VALUE|PPP||VV|"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -123,7 +124,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest(), Chronicl
     }
 
     @Test
-    fun test_scriptValue_inChain_withDotBefore_andBarrierAfter() {
+    fun scriptValue_inChain_withDotBefore_andBarrierAfter_test() {
         val s = "root.value:some_sv|A|B|.owner"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -149,7 +150,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest(), Chronicl
     }
 
     @Test
-    fun test_nested_defineReference() {
+    fun nested_defineReference_test() {
         val s = "define:Namespace|Name"
         val exp = resolve(s, ParadoxGameType.Vic3)!!
         exp.renderAndPrintln()
@@ -169,7 +170,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest(), Chronicl
     }
 
     @Test
-    fun test_nested_arrayDefineReference() {
+    fun nested_arrayDefineReference_test() {
         val s = "define:Namespace|Name|Variable"
         val exp = resolve(s, ParadoxGameType.Vic3)!!
         exp.renderAndPrintln()
@@ -189,7 +190,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest(), Chronicl
     }
 
     @Test
-    fun test_variable_inChain() {
+    fun variable_inChain_test() {
         val s = "root.owner.some_variable"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -210,7 +211,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest(), Chronicl
     }
 
     @Test
-    fun test_empty() {
+    fun empty_test() {
         Assert.assertNull(resolve("", ParadoxGameType.Stellaris, incomplete = false))
         val exp = resolve("", ParadoxGameType.Stellaris, incomplete = true)!!
         exp.renderAndPrintln()
@@ -227,7 +228,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest(), Chronicl
     }
 
     @Test
-    fun test_forArgument() {
+    fun forArgument_test() {
         val s = "relations(root)"
         val exp = resolve(s, ParadoxGameType.Vic3)!!
         exp.renderAndPrintln()
@@ -247,7 +248,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest(), Chronicl
     }
 
     @Test
-    fun test_forArgument_nested() {
+    fun forArgument_nested_test() {
         val s = "relations(scope:some_scope)"
         val exp = resolve(s, ParadoxGameType.Vic3)!!
         exp.renderAndPrintln()
@@ -274,7 +275,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest(), Chronicl
     }
 
     @Test
-    fun test_forArguments() {
+    fun forArguments_test() {
         val s = "root.test_scope(root, some_building).test_value(some_flag, some_job)"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -313,7 +314,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest(), Chronicl
     }
 
     @Test
-    fun test_forArguments_withTrailComma() {
+    fun forArguments_withTrailComma_test() {
         val s = "root.test_scope(root, some_building,).test_value(some_flag, some_job,)"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -354,7 +355,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest(), Chronicl
     }
 
     @Test
-    fun test_forArguments_missingArgument_1() {
+    fun forArguments_missingArgument_1_test() {
         val s = "root.test_scope(root).test_value(some_flag)"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -387,7 +388,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest(), Chronicl
     }
 
     @Test
-    fun test_forArguments_missingArgument_2() {
+    fun forArguments_missingArgument_2_test() {
         val s = "root.test_scope(root,).test_value(some_flag,)"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -422,7 +423,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest(), Chronicl
     }
 
     @Test
-    fun test_forArguments_missingArgument_3() {
+    fun forArguments_missingArgument_3_test() {
         val s = "root.test_scope(, some_building).test_value(, some_job)"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -457,7 +458,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest(), Chronicl
     }
 
     @Test
-    fun test_forArguments_withLiteral() {
+    fun forArguments_withLiteral_test() {
         val s = "root.test_literal_scope('foo bar', some_variable).test_value(some_flag, some_job)"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -496,7 +497,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest(), Chronicl
     }
 
     @Test
-    fun test_forArguments_usePipeSeparator() {
+    fun forArguments_usePipeSeparator_test() {
         val s = "colonial_charter_utility(scope:target|scope:some)"
         val exp = resolve(s, ParadoxGameType.Vic3)!! // ensure `scope:` is available
         exp.renderAndPrintln()
@@ -534,7 +535,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest(), Chronicl
     }
 
     @Test
-    fun test_nestedDynamicValueExpression_simple() {
+    fun nestedDynamicValueExpression_simple_test() {
         val s = "this.event_target:target"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -553,7 +554,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest(), Chronicl
     }
 
     @Test
-    fun test_nestedDynamicValueExpression_withScope() {
+    fun nestedDynamicValueExpression_withScope_test() {
         val s = "this.event_target:target@root.trigger:x"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -584,7 +585,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest(), Chronicl
     }
 
     @Test
-    fun test_nestedDynamicValueExpression_withScope_in_middle() {
+    fun nestedDynamicValueExpression_withScope_in_middle_test() {
         val s = "this.event_target:target@root.trigger:x"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -615,7 +616,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest(), Chronicl
     }
 
     @Test
-    fun test_nestedDynamicValueExpression_withScope_inMiddle() {
+    fun nestedDynamicValueExpression_withScope_inMiddle_test() {
         val s = "this.event_target:target@root.owner.trigger:x"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -648,7 +649,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest(), Chronicl
     }
 
     @Test
-    fun test_nestedDynamicValueExpression_withFollowingAt() {
+    fun nestedDynamicValueExpression_withFollowingAt_test() {
         val s = "this.event_target:target@.trigger:x"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()
@@ -677,7 +678,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest(), Chronicl
     }
 
     @Test
-    fun test_nestedDynamicValueExpression_withFollowingAt_inMiddle() {
+    fun nestedDynamicValueExpression_withFollowingAt_inMiddle_test() {
         val s = "this.event_target:target@.owner.trigger:x"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
         exp.renderAndPrintln()

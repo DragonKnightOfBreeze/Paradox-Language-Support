@@ -100,12 +100,18 @@ sealed interface ParadoxMatchResult {
     class LazyScopeAwareMatch(predicate: () -> Boolean) : LazyMatch(predicate), DirectMatch
 
     companion object {
-        fun exactOrLenientExact(value: Boolean) = if (value) ExactMatch else LenientExactMatch
+        // 3.0.1 make all inline only
 
-        fun exactOrNot(value: Boolean) = if (value) ExactMatch else NotMatch
+        @Suppress("NOTHING_TO_INLINE")
+        inline fun exactOrLenientExact(value: Boolean) = if (value) ExactMatch else LenientExactMatch
 
-        fun fallbackOrNot(value: Boolean) = if (value) FallbackMatch else NotMatch
+        @Suppress("NOTHING_TO_INLINE")
+        inline fun exactOrNot(value: Boolean) = if (value) ExactMatch else NotMatch
 
-        fun exactOrFallback(value: Boolean) = if (value) ExactMatch else FallbackMatch
+        @Suppress("NOTHING_TO_INLINE")
+        inline fun fallbackOrNot(value: Boolean) = if (value) FallbackMatch else NotMatch
+
+        @Suppress("NOTHING_TO_INLINE")
+        inline fun exactOrFallback(value: Boolean) = if (value) ExactMatch else FallbackMatch
     }
 }

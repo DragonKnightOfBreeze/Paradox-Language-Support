@@ -52,7 +52,7 @@ class OverrideForDefineVariableInspectionTest : BasePlatformTestCase(), Chronicl
             }
         """.trimIndent())
 
-        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile) // necessary
+        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
         myFixture.checkHighlighting()
     }
 
@@ -75,7 +75,7 @@ class OverrideForDefineVariableInspectionTest : BasePlatformTestCase(), Chronicl
             }
         """.trimIndent())
 
-        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile) // necessary
+        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
         myFixture.checkHighlighting()
     }
 
@@ -98,7 +98,7 @@ class OverrideForDefineVariableInspectionTest : BasePlatformTestCase(), Chronicl
             }
         """.trimIndent())
 
-        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile) // necessary
+        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
         myFixture.checkHighlighting()
     }
 }

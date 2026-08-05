@@ -3,7 +3,10 @@ package icu.windea.pls.config.manipulation
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.equalsFast
 
+@Optimized
 object CwtConfigExpressionManipulationService {
     // region Merge Methods
 
@@ -11,7 +14,7 @@ object CwtConfigExpressionManipulationService {
         if (expression.type == CwtDataTypes.Constant && otherExpression.type == CwtDataTypes.Constant) {
             return when {
                 expression.expressionString == otherExpression.expressionString -> expression.expressionString
-                expression.expressionString.equals(otherExpression.expressionString, true) -> expression.expressionString.lowercase()
+                expression.expressionString.equalsFast(otherExpression.expressionString, ignoreCase = true) -> expression.expressionString.lowercase()
                 else -> null
             }
         }
@@ -47,13 +50,13 @@ object CwtConfigExpressionManipulationService {
                 otherExpression.type == CwtDataTypes.PercentageField -> return "int_percentage_field"
             }
             in CwtDataTypeSets.DynamicValue -> when {
-                otherExpression.type in CwtDataTypeSets.DynamicValue -> if (expression.value != null && expression.value == otherExpression.value) return "dynamic_value[${expression.value}]"
-                otherExpression.type in CwtDataTypeSets.ValueField -> if (expression.value != null) return "dynamic_value[${expression.value}]"
-                otherExpression.type in CwtDataTypeSets.VariableField -> if (expression.value == "variable") return "dynamic_value[${expression.value}]"
+                otherExpression.type in CwtDataTypeSets.DynamicValue -> if (expression.metadata.value != null && expression.metadata.value == otherExpression.metadata.value) return "dynamic_value[${expression.metadata.value}]"
+                otherExpression.type in CwtDataTypeSets.ValueField -> if (expression.metadata.value != null) return "dynamic_value[${expression.metadata.value}]"
+                otherExpression.type in CwtDataTypeSets.VariableField -> if (expression.metadata.value == "variable") return "dynamic_value[${expression.metadata.value}]"
             }
             in CwtDataTypeSets.ScopeField -> when {
                 otherExpression.type == CwtDataTypes.ScopeField -> return expression.expressionString
-                otherExpression.type == CwtDataTypes.Scope && otherExpression.value == null -> return expression.expressionString
+                otherExpression.type == CwtDataTypes.Scope && otherExpression.metadata.value == null -> return expression.expressionString
             }
             CwtDataTypes.VariableField -> when {
                 otherExpression.type in CwtDataTypeSets.ValueField -> return "variable_field"

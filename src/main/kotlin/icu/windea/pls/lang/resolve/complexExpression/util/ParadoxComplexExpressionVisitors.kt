@@ -3,6 +3,7 @@
 package icu.windea.pls.lang.resolve.complexExpression.util
 
 import com.intellij.openapi.util.TextRange
+import icu.windea.pls.core.collections.findFast
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxLinkedExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 
@@ -38,7 +39,7 @@ abstract class ParadoxComplexExpressionWordSelectionRecursiveVisitor(private val
             visitWordSelection(node, node.rangeInExpression).let { if (!it) return false }
         } else {
             // 首先加入内层的当前节点
-            val currentNode = node.nodes.find { isCurrentNode(it) } ?: return true
+            val currentNode = node.nodes.findFast { isCurrentNode(it) } ?: return true
             visitWordSelection(currentNode, currentNode.rangeInExpression).let { if (!it) return false }
             if (node is ParadoxLinkedExpression && node.rangeInExpression.startOffset != currentNode.rangeInExpression.startOffset) {
                 // 链式表达式开始 ~ 当前链接节点结束
@@ -56,7 +57,7 @@ abstract class ParadoxComplexExpressionWordSelectionRecursiveVisitor(private val
     private fun isCurrentNode(node: ParadoxComplexExpressionNode): Boolean {
         // 排除 markerNode/operatorNode
         if (node is ParadoxMarkerNode || node is ParadoxOperatorNode) return false
-        // startOffset <= offest <= endOffset
+        // startOffset <= offset <= endOffset
         return offsetInExpression >= node.rangeInExpression.startOffset && offsetInExpression <= node.rangeInExpression.endOffset
     }
 }

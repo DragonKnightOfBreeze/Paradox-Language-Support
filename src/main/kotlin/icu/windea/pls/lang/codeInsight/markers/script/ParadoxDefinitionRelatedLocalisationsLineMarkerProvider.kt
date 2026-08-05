@@ -7,7 +7,7 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleIcons
-import icu.windea.pls.core.codeInsight.navigation.NavigationGutterIconBuilderFacade
+import icu.windea.pls.core.codeInsight.navigation.NavigationGutterIconBuilderC
 import icu.windea.pls.core.codeInsight.navigation.setTargets
 import icu.windea.pls.core.optimized
 import icu.windea.pls.lang.actions.ChronicleActions
@@ -65,7 +65,7 @@ class ParadoxDefinitionRelatedLocalisationsLineMarkerProvider : ParadoxRelatedIt
         if (keys.isEmpty()) return
         if (targets.isEmpty()) return
         ProgressManager.checkCanceled()
-        val lineMarkerInfo = NavigationGutterIconBuilderFacade.createForPsi(icon) { createGotoRelatedItem(targets) }
+        val lineMarkerInfo = NavigationGutterIconBuilderC.createForPsi(icon) { createGotoRelatedItem(targets) }
             .setTooltipText(tooltipLines.joinToString("<br>"))
             .setPopupTitle(ChronicleBundle.message("script.gutterIcon.definitionRelatedLocalisations.title"))
             .setTargets { targets.optimized() }

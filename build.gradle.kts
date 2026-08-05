@@ -234,18 +234,27 @@ sourceSets {
 
 kotlin {
     jvmToolchain(21)
+    // https://kotlinlang.org/docs/gradle-compiler-options.html#all-compiler-options
+    // https://kotlinlang.org/docs/compiler-reference.html
     compilerOptions {
+        javaParameters = true
         jvmTarget = JvmTarget.JVM_21
+        optIn.addAll(
+            "kotlin.RequiresOptIn",
+            "kotlin.ExperimentalStdlibApi",
+        )
         freeCompilerArgs.addAll(
-            listOf(
-                "-Xjvm-default=all",
-                "-Xinline-classes",
-                "-Xcontext-parameters",
-                "-Xannotation-default-target=param-property",
-                "-opt-in=kotlin.RequiresOptIn",
-                "-opt-in=kotlin.ExperimentalStdlibApi",
-                // "-XXLanguage:+WhenGuards",
-            )
+            "-java-parameters",
+            "-Xno-call-assertions", // disable not-null check to optimize performance
+            "-Xno-receiver-assertions", // disable not-null check to optimize performance
+            "-Xno-param-assertions", // disable not-null check to optimize performance
+            "-Xjvm-default=all",
+            "-Xinline-classes",
+            "-Xcontext-parameters",
+            "-Xannotation-default-target=param-property", // see: https://kotlinlang.org/docs/whatsnew22.html#new-defaulting-rules-for-use-site-annotation-targets
+            // "-Xwhen-expressions=indy", // see: https://kotlinlang.org/docs/whatsnew2220.html#kotlin-jvm-support-invokedynamic-with-when-expressions
+            // -Xname-based-destructuring=only-syntax //see: https://kotlinlang.org/docs/whatsnew2320.html#name-based-destructuring
+            // "-Xcollection-literals", // https://kotlinlang.org/docs/whatsnew24.html#support-for-collection-literals
         )
     }
 }

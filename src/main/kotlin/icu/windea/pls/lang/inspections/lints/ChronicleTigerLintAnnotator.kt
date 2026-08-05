@@ -8,6 +8,7 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiFile
+import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.letIf
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.runSmartReadAction
@@ -50,11 +51,11 @@ class ChronicleTigerLintAnnotator : ExternalAnnotator<ChronicleTigerLintAnnotato
         val items = annotationResult.items
         if (items.isEmpty()) return
 
-        for (item in items) {
+        items.forEach f1@{ item ->
             ProgressManager.checkCanceled()
             val severity = getHighlightSeverity(item)
             val message = getDescription(annotationResult, item)
-            for (location in item.locations) {
+            item.locations.forEachFast f2@{ location ->
                 val extraMessage = getExtraMessage(annotationResult, item, location)
                 val fullMessage = message + extraMessage
 
@@ -64,7 +65,7 @@ class ChronicleTigerLintAnnotator : ExternalAnnotator<ChronicleTigerLintAnnotato
                         .fileLevel()
                         .problemGroup { getProblemGroup(annotationResult, item) }
                         .create()
-                    continue
+                    return@f2
                 }
 
                 val lineStartOffset = file.fileDocument.getLineStartOffset(location.lineNumber - 1)
@@ -101,6 +102,7 @@ class ChronicleTigerLintAnnotator : ExternalAnnotator<ChronicleTigerLintAnnotato
             location.tag?.orNull()?.let { add("Tag: $it") }
             item.info?.orNull()?.let { add("Info: $it") }
         }
+        if (list.isEmpty()) return ""
         return list.joinToString(", ", " (", ")")
     }
 

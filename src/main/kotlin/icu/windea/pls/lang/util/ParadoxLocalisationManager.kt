@@ -21,12 +21,17 @@ object ParadoxLocalisationManager {
         val cachedPresentableName by registerKey<CachedValue<String>>(Keys)
     }
 
-    fun getLocalizedText(element: ParadoxLocalisationProperty): String? {
-        // from cache (invalidate on element modification)
+    fun getPresentableText(element: ParadoxLocalisationProperty): String? {
+        // from cache
+        return getPresentableTextFromCache(element)
+    }
+
+    private fun getPresentableTextFromCache(element: ParadoxLocalisationProperty): String? {
+        // invalidate on element modification
         return CachedValuesManager.getCachedValue(element, Keys.cachedPresentableName) {
             ProgressManager.checkCanceled()
             runSmartReadAction {
-                val value = ParadoxLocalisationService.resolveLocalizedText(element)
+                val value = ParadoxLocalisationService.resolvePresentableText(element)
                 value.withDependencyItems(element)
             }
         }

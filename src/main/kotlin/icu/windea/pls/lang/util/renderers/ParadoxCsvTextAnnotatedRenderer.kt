@@ -1,5 +1,6 @@
 package icu.windea.pls.lang.util.renderers
 
+import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.csv.psi.ParadoxCsvColumnContainer
 import icu.windea.pls.lang.codeInsight.annotated.ParadoxAnnotatedLevel
 import icu.windea.pls.lang.codeInsight.annotated.ParadoxCsvAnnotatedManager
@@ -31,8 +32,8 @@ class ParadoxCsvTextAnnotatedRenderContext(
     fun renderAnnotations(element: ParadoxCsvColumnContainer) {
         val annotations = getAnnotations(element)
         if (annotations.isEmpty()) return
-        for (line in annotations) {
-            builder.append(line)
+        annotations.forEachFast { annotation ->
+            builder.append(annotation)
             builder.append('\n')
         }
     }

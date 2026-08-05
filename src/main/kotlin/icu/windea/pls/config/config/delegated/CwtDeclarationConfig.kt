@@ -1,8 +1,8 @@
 package icu.windea.pls.config.config.delegated
 
-import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
+import icu.windea.pls.config.CwtConfigType
 import icu.windea.pls.config.annotations.FromName
 import icu.windea.pls.config.attributes.CwtDeclarationConfigAttributes
 import icu.windea.pls.config.attributes.CwtDeclarationConfigAttributesEvaluator
@@ -11,8 +11,8 @@ import icu.windea.pls.config.config.CwtIdMatchableConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.manipulation.CwtConfigManipulationService
 import icu.windea.pls.config.util.CwtConfigResolverScope
+import icu.windea.pls.core.isIdentifier
 import icu.windea.pls.cwt.psi.CwtProperty
-import icu.windea.pls.lang.isIdentifier
 import icu.windea.pls.model.expressions.ParadoxDefinitionSubtypeExpression
 
 /**
@@ -63,6 +63,8 @@ interface CwtDeclarationConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConf
     val attributes: CwtDeclarationConfigAttributes
     val rootConfig: CwtPropertyConfig
 
+    override val configType: CwtConfigType? get() = null // no `CwtConfigTypes.Declaration` atm
+
     companion object {
         /** 由属性规则解析为声明规则，可指定 [name] 以覆盖规则名称。 */
         @JvmStatic
@@ -79,7 +81,7 @@ private object CwtDeclarationConfigResolver : CwtConfigResolverScope {
 
     fun resolve(config: CwtPropertyConfig, inputName: String?): CwtDeclarationConfig? {
         val name = inputName ?: config.key.takeIf { it.isIdentifier() } ?: return null
-        logger.debug { "Resolved declaration config (name: $name).".withLocationPrefix(config) }
+        logger.debugWithPrefix(config) { "Resolved declaration config (name: $name)." }
         return CwtDeclarationConfigImpl(config, name)
     }
 }

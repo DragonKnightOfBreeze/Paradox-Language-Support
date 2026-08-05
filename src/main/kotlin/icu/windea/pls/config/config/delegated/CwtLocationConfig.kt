@@ -75,8 +75,8 @@ private object CwtLocationConfigResolver : CwtConfigResolverScope {
         // default to primary for `icon` if it represents an image location (by inference)
         val key = config.key
         val expression = config.stringValue ?: return null
-        val required = config.optionData.required
-        val primary = config.optionData.primary
+        val required = config.optionMetadata.required
+        val primary = config.optionMetadata.primary
         return CwtLocationConfigImpl(config, key, expression, required, primary)
     }
 }

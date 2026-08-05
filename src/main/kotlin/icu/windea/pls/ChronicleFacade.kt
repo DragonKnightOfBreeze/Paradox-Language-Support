@@ -34,7 +34,7 @@ object ChronicleFacade {
     /**
      * 得到应用级别的指定游戏类型的规则分组（不能用于访问 PSI）。
      *
-     * @param gameType 指定的游戏类型。如果是 `null` 或 [ParadoxGameType.Core]，则会得到共享的规则分组。
+     * @param gameType 指定的游戏类型。如果是 `null` 或 [ParadoxGameType.Core]，则会得到通用的规则分组。
      */
     fun getConfigGroup(gameType: ParadoxGameType? = null): CwtConfigGroup {
         val finalGameType = gameType ?: ParadoxGameType.Core
@@ -45,7 +45,7 @@ object ChronicleFacade {
      * 得到指定项目与游戏类型的规则分组。
      *
      * @param project 指定的项目。如果是默认项目，则会得到应用级别的规则分组（不能用于访问 PSI）。
-     * @param gameType 指定的游戏类型。如果是 `null` 或 [ParadoxGameType.Core]，则会得到共享的规则分组。
+     * @param gameType 指定的游戏类型。如果是 `null` 或 [ParadoxGameType.Core]，则会得到通用的规则分组。
      */
     fun getConfigGroup(project: Project, gameType: ParadoxGameType? = null): CwtConfigGroup {
         val finalGameType = gameType ?: ParadoxGameType.Core

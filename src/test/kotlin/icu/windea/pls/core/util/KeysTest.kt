@@ -1,6 +1,7 @@
 package icu.windea.pls.core.util
 
 import com.intellij.openapi.util.UserDataHolderBase
+import icu.windea.pls.core.collections.findFast
 import org.junit.Assert.*
 import org.junit.Test
 
@@ -87,7 +88,7 @@ class KeysTest {
         val keyA2 = registry.keyA
         assertSame(keyA, keyA2)
 
-        val fetched = registry.getKeyOrNull<String?>(expectedName)
+        val fetched = registry.keys.findFast { it is KeyNamed && it.name == expectedName }
         assertSame(keyA, fetched)
     }
 
@@ -130,29 +131,35 @@ class KeysTest {
 
     @Test
     fun testPropertyDelegates_commonUsages_comprehensive() {
-        class RegistrySynced : KeyRegistry() {
+        class Registry : KeyRegistry() {
             val nullableKey by registerKey<String?>(this)
             val defaultKey by registerKey(this, "d1")
-            val factoryKey by registerKey<String, Obj>(this) { "f1" }
+            val producerKey by registerKey(this) { "p1" }
+            val factoryKey by registerKeyWithThis<String, Obj>(this) { "f1" }
             val namedKey by registerNamedKey<Int>(this, "KeysTest.namedKey")
             val namedDefaultKey by registerNamedKey(this, "KeysTest.namedDefaultKey", "d2")
-            val namedFactoryKey by registerNamedKey<String, Obj>(this, "KeysTest.namedFactoryKey") { "f2" }
+            val namedProducerKey by registerNamedKey(this, "KeysTest.namedProducerKey") { "p2" }
+            val namedFactoryKey by registerNamedKeyWithThis<String, Obj>(this, "KeysTest.namedFactoryKey") { "f2" }
         }
 
-        val registry = RegistrySynced()
+        val registry = Registry()
 
         val nullableKey = registry.nullableKey
         val defaultKey = registry.defaultKey
+        val producerKey = registry.producerKey
         val factoryKey = registry.factoryKey
         val namedKey = registry.namedKey
         val namedDefaultKey = registry.namedDefaultKey
+        val namedProducerKey = registry.namedProducerKey
         val namedFactoryKey = registry.namedFactoryKey
 
         assertEquals(registry.id + ".nullableKey", nullableKey.name)
         assertEquals(registry.id + ".defaultKey", defaultKey.name)
+        assertEquals(registry.id + ".producerKey", producerKey.name)
         assertEquals(registry.id + ".factoryKey", factoryKey.name)
         assertEquals("KeysTest.namedKey", namedKey.name)
         assertEquals("KeysTest.namedDefaultKey", namedDefaultKey.name)
+        assertEquals("KeysTest.namedProducerKey", namedProducerKey.name)
         assertEquals("KeysTest.namedFactoryKey", namedFactoryKey.name)
 
         assertEquals("d1", defaultKey.default)
@@ -160,13 +167,15 @@ class KeysTest {
 
         assertSame(nullableKey, registry.nullableKey)
         assertSame(defaultKey, registry.defaultKey)
+        assertSame(producerKey, registry.producerKey)
         assertSame(factoryKey, registry.factoryKey)
         assertSame(namedKey, registry.namedKey)
         assertSame(namedDefaultKey, registry.namedDefaultKey)
+        assertSame(namedProducerKey, registry.namedProducerKey)
         assertSame(namedFactoryKey, registry.namedFactoryKey)
 
-        assertTrue(registry.keys.containsKey(defaultKey.name))
-        assertTrue(registry.keys.containsKey(namedDefaultKey.name))
+        assertTrue(registry.keys.contains(defaultKey))
+        assertTrue(registry.keys.contains(namedDefaultKey))
     }
 
     @Test
@@ -177,6 +186,6 @@ class KeysTest {
 
         val key = registry.k
         assertSame(key, registry.k)
-        assertSame(key, registry.keys.values.single())
+        assertSame(key, registry.keys.single())
     }
 }

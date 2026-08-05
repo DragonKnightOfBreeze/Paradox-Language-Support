@@ -11,93 +11,93 @@ class ParadoxEscapeManagerTest {
     // region unescapeScriptText
 
     @Test
-    fun testUnescapeScriptText_plainText() {
+    fun unescapeScriptText_plainText() {
         assertEquals("hello world", ParadoxEscapeManager.unescapeScriptText("hello world"))
     }
 
     @Test
-    fun testUnescapeScriptText_newline() {
+    fun unescapeScriptText_newline() {
         assertEquals("a\nb", ParadoxEscapeManager.unescapeScriptText("a\\nb"))
     }
 
     @Test
-    fun testUnescapeScriptText_carriageReturn() {
+    fun unescapeScriptText_carriageReturn() {
         assertEquals("a\rb", ParadoxEscapeManager.unescapeScriptText("a\\rb"))
     }
 
     @Test
-    fun testUnescapeScriptText_tab() {
+    fun unescapeScriptText_tab() {
         assertEquals("a\tb", ParadoxEscapeManager.unescapeScriptText("a\\tb"))
     }
 
     @Test
-    fun testUnescapeScriptText_escapedBackslash() {
+    fun unescapeScriptText_escapedBackslash() {
         // `\\` → `\`（转义字符本身）
         assertEquals("a\\b", ParadoxEscapeManager.unescapeScriptText("a\\\\b"))
     }
 
     @Test
-    fun testUnescapeScriptText_unknownEscape() {
+    fun unescapeScriptText_unknownEscape() {
         // 未知转义序列：`\x` → `x`（直接输出转义字符后的字符）
         assertEquals("ax", ParadoxEscapeManager.unescapeScriptText("a\\xb".substring(0, 3)))
     }
 
     @Test
-    fun testUnescapeScriptText_multipleEscapes() {
+    fun unescapeScriptText_multipleEscapes() {
         assertEquals("a\nb\tc", ParadoxEscapeManager.unescapeScriptText("a\\nb\\tc"))
     }
 
     @Test
-    fun testUnescapeScriptText_emptyString() {
+    fun unescapeScriptText_emptyString() {
         assertEquals("", ParadoxEscapeManager.unescapeScriptText(""))
     }
 
     @Test
-    fun testUnescapeScriptText_trailingBackslash() {
+    fun unescapeScriptText_trailingBackslash() {
         // 末尾的 `\` 不匹配任何转义字符，被忽略
         assertEquals("a", ParadoxEscapeManager.unescapeScriptText("a\\"))
     }
 
     @Test
-    fun testUnescapeScriptText_html_newline() {
+    fun unescapeScriptText_html_newline() {
         assertEquals("a<br>\nb", ParadoxEscapeManager.unescapeScriptText("a\\nb", EscapeType.Html))
     }
 
     @Test
-    fun testUnescapeScriptText_html_carriageReturn() {
+    fun unescapeScriptText_html_carriageReturn() {
         assertEquals("a<br>\rb", ParadoxEscapeManager.unescapeScriptText("a\\rb", EscapeType.Html))
     }
 
     @Test
-    fun testUnescapeScriptText_html_tab() {
+    fun unescapeScriptText_html_tab() {
         assertEquals("a&emsp;b", ParadoxEscapeManager.unescapeScriptText("a\\tb", EscapeType.Html))
     }
 
     @Test
-    fun testUnescapeScriptText_inlay_truncatesAtNewline() {
+    fun unescapeScriptText_inlay_truncatesAtNewline() {
         // Inlay 模式遇到 `\n` 时直接截断
         assertEquals("a", ParadoxEscapeManager.unescapeScriptText("a\\nb", EscapeType.Inlay))
     }
 
     @Test
-    fun testUnescapeScriptText_inlay_truncatesAtCarriageReturn() {
+    fun unescapeScriptText_inlay_truncatesAtCarriageReturn() {
         // Inlay 模式遇到 `\r` 时直接截断
         assertEquals("a", ParadoxEscapeManager.unescapeScriptText("a\\rb", EscapeType.Inlay))
     }
 
     @Test
-    fun testUnescapeScriptText_inlay_tabNotTruncated() {
+    fun unescapeScriptText_inlay_tabNotTruncated() {
         // Inlay 模式下 `\t` 不会截断，正常输出制表符
         assertEquals("a\tb", ParadoxEscapeManager.unescapeScriptText("a\\tb", EscapeType.Inlay))
     }
 
     @Test
-    fun testUnescapeScriptText_inlay_textBeforeNewline() {
+    fun unescapeScriptText_inlay_textBeforeNewline() {
         assertEquals("prefix", ParadoxEscapeManager.unescapeScriptText("prefix\\nsuffix", EscapeType.Inlay))
     }
 
     @Test
-    fun testUnescapeScriptText_consecutiveEscapes() {
+    fun unescapeScriptText_consecutiveEscapes() {
         // `\n\n` → 两个换行
         assertEquals("\n\n", ParadoxEscapeManager.unescapeScriptText("\\n\\n"))
     }
@@ -107,92 +107,92 @@ class ParadoxEscapeManagerTest {
     // region unescapeLocalisationText
 
     @Test
-    fun testUnescapeLocalisationText_plainText() {
+    fun unescapeLocalisationText_plainText() {
         assertEquals("hello world", ParadoxEscapeManager.unescapeLocalisationText("hello world"))
     }
 
     @Test
-    fun testUnescapeLocalisationText_newline() {
+    fun unescapeLocalisationText_newline() {
         assertEquals("a\nb", ParadoxEscapeManager.unescapeLocalisationText("a\\nb"))
     }
 
     @Test
-    fun testUnescapeLocalisationText_carriageReturn() {
+    fun unescapeLocalisationText_carriageReturn() {
         assertEquals("a\rb", ParadoxEscapeManager.unescapeLocalisationText("a\\rb"))
     }
 
     @Test
-    fun testUnescapeLocalisationText_tab() {
+    fun unescapeLocalisationText_tab() {
         assertEquals("a\tb", ParadoxEscapeManager.unescapeLocalisationText("a\\tb"))
     }
 
     @Test
-    fun testUnescapeLocalisationText_escapedBackslash() {
+    fun unescapeLocalisationText_escapedBackslash() {
         assertEquals("a\\b", ParadoxEscapeManager.unescapeLocalisationText("a\\\\b"))
     }
 
     @Test
-    fun testUnescapeLocalisationText_doubleLeftBracket() {
+    fun unescapeLocalisationText_doubleLeftBracket() {
         // `[[` → `[`（本地化文本中的方括号转义）
         assertEquals("[", ParadoxEscapeManager.unescapeLocalisationText("[["))
     }
 
     @Test
-    fun testUnescapeLocalisationText_singleLeftBracket() {
+    fun unescapeLocalisationText_singleLeftBracket() {
         // 单独的 `[` 后跟非 `[` 字符时，`[` 保留
         assertEquals("[a", ParadoxEscapeManager.unescapeLocalisationText("[a"))
     }
 
     @Test
-    fun testUnescapeLocalisationText_doubleLeftBracketInText() {
+    fun unescapeLocalisationText_doubleLeftBracketInText() {
         assertEquals("a[b", ParadoxEscapeManager.unescapeLocalisationText("a[[b"))
     }
 
     @Test
-    fun testUnescapeLocalisationText_mixedEscapes() {
+    fun unescapeLocalisationText_mixedEscapes() {
         // 同时包含 `\\`、`\n` 和 `[[`
         assertEquals("a\nb[c\\d", ParadoxEscapeManager.unescapeLocalisationText("a\\nb[[c\\\\d"))
     }
 
     @Test
-    fun testUnescapeLocalisationText_emptyString() {
+    fun unescapeLocalisationText_emptyString() {
         assertEquals("", ParadoxEscapeManager.unescapeLocalisationText(""))
     }
 
     @Test
-    fun testUnescapeLocalisationText_trailingBackslash() {
+    fun unescapeLocalisationText_trailingBackslash() {
         assertEquals("a", ParadoxEscapeManager.unescapeLocalisationText("a\\"))
     }
 
     @Test
-    fun testUnescapeLocalisationText_trailingLeftBracket() {
+    fun unescapeLocalisationText_trailingLeftBracket() {
         // 末尾的 `[` 没有后续字符，不输出（isLeftBracket 在循环结束时仍为 true）
         assertEquals("a", ParadoxEscapeManager.unescapeLocalisationText("a["))
     }
 
     @Test
-    fun testUnescapeLocalisationText_html_newline() {
+    fun unescapeLocalisationText_html_newline() {
         assertEquals("a<br>\nb", ParadoxEscapeManager.unescapeLocalisationText("a\\nb", EscapeType.Html))
     }
 
     @Test
-    fun testUnescapeLocalisationText_html_tab() {
+    fun unescapeLocalisationText_html_tab() {
         assertEquals("a&emsp;b", ParadoxEscapeManager.unescapeLocalisationText("a\\tb", EscapeType.Html))
     }
 
     @Test
-    fun testUnescapeLocalisationText_inlay_truncatesAtNewline() {
+    fun unescapeLocalisationText_inlay_truncatesAtNewline() {
         assertEquals("a", ParadoxEscapeManager.unescapeLocalisationText("a\\nb", EscapeType.Inlay))
     }
 
     @Test
-    fun testUnescapeLocalisationText_inlay_bracketEscapeStillWorks() {
+    fun unescapeLocalisationText_inlay_bracketEscapeStillWorks() {
         // Inlay 模式下 `[[` 转义仍然生效
         assertEquals("[", ParadoxEscapeManager.unescapeLocalisationText("[[", EscapeType.Inlay))
     }
 
     @Test
-    fun testUnescapeLocalisationText_consecutiveDoubleBrackets() {
+    fun unescapeLocalisationText_consecutiveDoubleBrackets() {
         // `[[[[` → `[[`（两次 `[[` 转义）
         assertEquals("[[", ParadoxEscapeManager.unescapeLocalisationText("[[[["))
     }
@@ -202,7 +202,7 @@ class ParadoxEscapeManagerTest {
     // region parseScriptExpressionCharacters
 
     @Test
-    fun testParseScriptExpressionCharacters_noEscapes() {
+    fun parseScriptExpressionCharacters_noEscapes() {
         val input = "hello world"
         val out = StringBuilder()
         val offsets = IntArray(input.length + 1)
@@ -216,7 +216,7 @@ class ParadoxEscapeManagerTest {
     }
 
     @Test
-    fun testParseScriptExpressionCharacters_escapedQuote() {
+    fun parseScriptExpressionCharacters_escapedQuote() {
         // `\"` → `"`
         val input = "a\\\"b"
         val out = StringBuilder()
@@ -227,7 +227,7 @@ class ParadoxEscapeManagerTest {
     }
 
     @Test
-    fun testParseScriptExpressionCharacters_escapedBackslash() {
+    fun parseScriptExpressionCharacters_escapedBackslash() {
         // `\\` → `\`
         val input = "a\\\\b"
         val out = StringBuilder()
@@ -237,7 +237,7 @@ class ParadoxEscapeManagerTest {
     }
 
     @Test
-    fun testParseScriptExpressionCharacters_unknownEscape() {
+    fun parseScriptExpressionCharacters_unknownEscape() {
         // `\n` 不是此方法识别的转义（仅识别 `\"` 和 `\\`），保留原样
         val input = "a\\nb"
         val out = StringBuilder()
@@ -247,7 +247,7 @@ class ParadoxEscapeManagerTest {
     }
 
     @Test
-    fun testParseScriptExpressionCharacters_trailingBackslash() {
+    fun parseScriptExpressionCharacters_trailingBackslash() {
         // 末尾的 `\` 无后续字符，返回 false 表示解析失败
         val input = "abc\\"
         val out = StringBuilder()
@@ -256,7 +256,7 @@ class ParadoxEscapeManagerTest {
     }
 
     @Test
-    fun testParseScriptExpressionCharacters_emptyString() {
+    fun parseScriptExpressionCharacters_emptyString() {
         val input = ""
         val out = StringBuilder()
         val offsets = IntArray(input.length + 1)
@@ -266,7 +266,7 @@ class ParadoxEscapeManagerTest {
     }
 
     @Test
-    fun testParseScriptExpressionCharacters_multipleEscapes() {
+    fun parseScriptExpressionCharacters_multipleEscapes() {
         // `###\"\\\\\"` 包含多个转义序列
         val input = """###\"\\\\"""" // ###\"\\\\\"
         val out = StringBuilder()
@@ -276,7 +276,7 @@ class ParadoxEscapeManagerTest {
     }
 
     @Test
-    fun testParseScriptExpressionCharacters_nullOffsets() {
+    fun parseScriptExpressionCharacters_nullOffsets() {
         // sourceOffsets 为 null 时不填充偏移量，但功能正常
         val input = "a\\\"b"
         val out = StringBuilder()
@@ -286,7 +286,7 @@ class ParadoxEscapeManagerTest {
     }
 
     @Test
-    fun testParseScriptExpressionCharacters_offsets_withEscape() {
+    fun parseScriptExpressionCharacters_offsets_withEscape() {
         // 验证转义后的 sourceOffsets 映射
         val input = "a\\\"b" // 4 chars → output "a"b" 3 chars
         val out = StringBuilder()

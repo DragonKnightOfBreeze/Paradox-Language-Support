@@ -6,7 +6,11 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.config.configExpression.CwtDataExpressionRole
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.collections.mapNotNullFast
+import icu.windea.pls.core.equalsFast
 import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.processAsync
@@ -31,10 +35,13 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableReference
 import icu.windea.pls.script.psi.ParadoxScriptString
 
-@Suppress("unused")
+@Optimized
 object ParadoxInlineScriptManager {
     const val inlineScriptKey = "inline_script"
-    val inlineScriptPathExpression = CwtDataExpression.resolve("filepath[common/inline_scripts/,.txt]", false)
+    // const val inlineScriptFileRoot = "common/inline_scripts"
+    const val inlineScriptFileExtension = "txt"
+
+    val inlineScriptPathExpression = CwtDataExpression.resolve("filepath[common/inline_scripts/,.txt]", CwtDataExpressionRole.Value)
 
     /**
      * 检查游戏类型是否支持内联脚本。
@@ -45,14 +52,15 @@ object ParadoxInlineScriptManager {
         if (context == null) return false
         val gameType = selectGameType(context) ?: return false
         val configGroup = ChronicleFacade.getConfigGroup(gameType)
-        return configGroup.macrosModel.forInlineScripts.isNotEmpty()
+        return configGroup.attribute.supportInlineScript // use attribute
     }
 
     /**
      * 检查输入的字符串是否匹配内联脚本用法的键（不会检查游戏类型）。
      */
     fun isMatched(expression: String): Boolean {
-        if (!expression.equals(inlineScriptKey, true)) return false // 这里忽略 `expression` 的大小写
+        // 这里需要忽略大小写
+        if (!expression.equalsFast(inlineScriptKey, true)) return false // 3.0.1 radical optimization
         return true
     }
 
@@ -63,7 +71,8 @@ object ParadoxInlineScriptManager {
      */
     fun isMatched(expression: String, context: Any?): Boolean {
         if (context == null) return false
-        if (!expression.equals(inlineScriptKey, true)) return false // 这里忽略 `expression` 的大小写
+        // 这里需要忽略大小写
+        if (!expression.equalsFast(inlineScriptKey, true)) return false // 3.0.1 radical optimization
         return isSupported(context)
     }
 
@@ -97,13 +106,13 @@ object ParadoxInlineScriptManager {
      */
     fun getInlineScriptExpression(file: VirtualFile): String? {
         val fileType = file.fileType
-        if (fileType != ParadoxScriptFileType) return null
+        if (fileType !== ParadoxScriptFileType) return null
         val fileInfo = file.fileInfo ?: return null
         val gameType = fileInfo.gameType
         if (!isSupported(gameType)) return null
         val filePath = fileInfo.path.path
         val configExpression = inlineScriptPathExpression
-        return ParadoxPathReferenceExpressionSupport.get(configExpression)?.extract(configExpression, null, filePath)?.orNull()
+        return ParadoxPathReferenceExpressionSupport.get(configExpression.type)?.extract(configExpression, null, filePath)?.orNull()
     }
 
     /**
@@ -116,11 +125,11 @@ object ParadoxInlineScriptManager {
     }
 
     /**
-     * 按照 [inlineScriptPathExpression]，尝试将指定的 [pathReference] 解析为内联脚本文件的路径。
+     * 尝试将指定的 [pathReference] 解析为内联脚本文件的路径。
      */
     fun getInlineScriptFilePath(pathReference: String): String? {
         val configExpression = inlineScriptPathExpression
-        return ParadoxPathReferenceExpressionSupport.get(configExpression)?.resolvePath(configExpression, pathReference.normalizePath())?.firstOrNull()
+        return ParadoxPathReferenceExpressionSupport.get(configExpression.type)?.resolvePath(configExpression, pathReference.normalizePath())?.firstOrNull()
     }
 
     /**
@@ -140,7 +149,7 @@ object ParadoxInlineScriptManager {
      */
     fun getInlineScriptFiles(expression: String, project: Project, context: Any?): List<ParadoxScriptFile> {
         val selector = ParadoxFilePathSearch.selector(project, context).contextSensitive()
-        return ParadoxFilePathSearch.searchInlineScript(expression, selector).findAll().mapNotNull { it.toPsiFile(project)?.castOrNull() }
+        return ParadoxFilePathSearch.searchInlineScript(expression, selector).findAll().mapNotNullFast { it.toPsiFile(project)?.castOrNull() }
     }
 
     /**
@@ -185,6 +194,7 @@ object ParadoxInlineScriptManager {
      *
      * @param expression 指定的内联脚本表达式。用于定位内联脚本文件，例如，`test` 对应路径为 `common/inline_scripts/test.txt` 的内联脚本文件。
      */
+    @Suppress("unused")
     fun getInferredContextConfigsFromConfig(expression: String, contextElement: ParadoxScriptMember, context: CwtConfigContext, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>> {
         val inferenceSettings = ChronicleSettings.getInstance().state.inference
         if (!inferenceSettings.configContextForInlineScripts) return emptyList()

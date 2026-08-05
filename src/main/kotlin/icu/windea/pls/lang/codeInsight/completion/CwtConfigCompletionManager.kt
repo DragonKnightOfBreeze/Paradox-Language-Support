@@ -1,21 +1,10 @@
 package icu.windea.pls.lang.codeInsight.completion
 
 import com.intellij.codeInsight.completion.CompletionResultSet
-import com.intellij.codeInsight.completion.InsertionContext
-import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.codeInsight.template.ExpressionContext
-import com.intellij.codeInsight.template.TemplateBuilderFactory
-import com.intellij.codeInsight.template.TemplateManager
-import com.intellij.codeInsight.template.impl.TextExpression
 import com.intellij.icons.AllIcons
-import com.intellij.openapi.command.impl.FinishMarkAction
-import com.intellij.openapi.command.impl.StartMarkAction
-import com.intellij.openapi.editor.RangeMarker
-import com.intellij.psi.PsiDocumentManager
-import com.intellij.psi.util.startOffset
 import com.intellij.util.Processor
-import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtMemberConfig
@@ -28,19 +17,14 @@ import icu.windea.pls.config.config.internal.CwtSchemaConfig
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.configExpression.CwtSchemaExpression
 import icu.windea.pls.config.util.CwtConfigManager
-import icu.windea.pls.core.buildInlineTemplate
-import icu.windea.pls.core.codeInsight.TemplateEditingFinishedListener
 import icu.windea.pls.core.collections.process
-import icu.windea.pls.core.executeWriteCommand
-import icu.windea.pls.core.icon
 import icu.windea.pls.core.removeSurroundingOrNull
-import icu.windea.pls.cwt.psi.CwtPropertyKey
-import icu.windea.pls.cwt.psi.CwtString
-import icu.windea.pls.model.constants.ChronicleStrings
 import icu.windea.pls.model.paths.CwtConfigPath
 import icu.windea.pls.model.type.CwtExpressionType
 
 object CwtConfigCompletionManager {
+    // region Entry Completion Extensions
+
     fun addConfigCompletions(context: CwtConfigCompletionContext, result: CompletionResultSet) {
         val schema = context.schema!!
         val contextConfigs = context.contextConfigs
@@ -49,6 +33,10 @@ object CwtConfigCompletionManager {
         }
         completeByContextConfigs(context, result, schema, contextConfigs)
     }
+
+    // endregion
+
+    // region General Completion Extensions
 
     private fun completeByDeclarationConfig(context: CwtConfigCompletionContext, result: CompletionResultSet, schema: CwtSchemaConfig) {
         val declarationConfig = schema.constraints["declaration"] ?: return
@@ -95,7 +83,7 @@ object CwtConfigCompletionManager {
                         val schemaExpression = CwtSchemaExpression.resolve(config.value)
                         completeBySchemaExpression(context, result, schema, config, schemaExpression)
                     } else {
-                        result.addElement(ChronicleLookupElements.blockLookupElement, context)
+                        CwtCompletionLookupProvider.forBlockKeyword().addToResult(context, result)
                     }
                 }
             }
@@ -105,7 +93,7 @@ object CwtConfigCompletionManager {
                         val schemaExpression = CwtSchemaExpression.resolve(config.value)
                         completeBySchemaExpression(context, result, schema, config, schemaExpression)
                     } else {
-                        result.addElement(ChronicleLookupElements.blockLookupElement, context)
+                        CwtCompletionLookupProvider.forBlockKeyword().addToResult(context, result)
                     }
                 }
             }
@@ -113,7 +101,7 @@ object CwtConfigCompletionManager {
     }
 
     private fun completeByOptionConfigs(context: CwtConfigCompletionContext, result: CompletionResultSet, schema: CwtSchemaConfig, config: CwtMemberConfig<*>) {
-        val optionConfigs = config.optionData.optionConfigs
+        val optionConfigs = config.optionMetadata.optionConfigs
         if (optionConfigs.isEmpty()) return
         val optionConfigsGroup = optionConfigs.groupBy { optionConfig ->
             when (optionConfig) {
@@ -145,7 +133,7 @@ object CwtConfigCompletionManager {
                         val schemaExpression = CwtSchemaExpression.resolve(config.value)
                         completeBySchemaExpression(context, result, schema, config, schemaExpression)
                     } else {
-                        result.addElement(ChronicleLookupElements.blockLookupElement, context)
+                        CwtCompletionLookupProvider.forBlockKeyword().addToResult(context, result)
                     }
                 }
             }
@@ -155,7 +143,7 @@ object CwtConfigCompletionManager {
                         val schemaExpression = CwtSchemaExpression.resolve(config.value)
                         completeBySchemaExpression(context, result, schema, config, schemaExpression)
                     } else {
-                        result.addElement(ChronicleLookupElements.blockLookupElement, context)
+                        CwtCompletionLookupProvider.forBlockKeyword().addToResult(context, result)
                     }
                 }
             }
@@ -163,14 +151,12 @@ object CwtConfigCompletionManager {
     }
 
     private fun completeBySchemaExpression(context: CwtConfigCompletionContext, result: CompletionResultSet, schema: CwtSchemaConfig, config: CwtConfig<*>, schemaExpression: CwtSchemaExpression) {
-        completeBySchemaExpression(schema, config, schemaExpression) {
-            val lookupElement = it.forConfig(context, config, schemaExpression)
-            result.addElement(lookupElement, context)
-            true
+        completeFromSchemaExpression(schema, config, schemaExpression) {
+            it.wrapForConfig(context, config, schemaExpression).addToResult(context, result)
         }
     }
 
-    private fun completeBySchemaExpression(schema: CwtSchemaConfig, config: CwtConfig<*>, schemaExpression: CwtSchemaExpression, processor: Processor<LookupElementBuilder>): Boolean {
+    fun completeFromSchemaExpression(schema: CwtSchemaConfig, config: CwtConfig<*>, schemaExpression: CwtSchemaExpression, processor: Processor<LookupElementBuilder>): Boolean {
         val icon = when {
             schemaExpression is CwtSchemaExpression.Enum -> AllIcons.Nodes.Enum
             config is CwtOptionConfig -> ChronicleIcons.Nodes.Option
@@ -182,52 +168,38 @@ object CwtConfigCompletionManager {
         val typeFile = schema.file.pointer.element
         return when (schemaExpression) {
             is CwtSchemaExpression.Constant -> {
+                val lookupString = schemaExpression.expressionString
                 val element = config.pointer.element
-                val v = schemaExpression.expressionString
-                val lookupElement = LookupElementBuilder.create(v).withPsiElement(element)
-                    .withTypeText(typeFile?.name, typeFile?.icon, true)
-                    .withIcon(icon)
-                    .withPriority(ChronicleCompletionPriorities.constant)
+                val lookupElement = CwtCompletionLookupProvider.forSchemaConstant(lookupString, element, typeFile, icon)
                 processor.process(lookupElement)
             }
             is CwtSchemaExpression.Enum -> {
-                val enumName = schemaExpression.name
-                val tailText = " by ${schemaExpression}"
-                val enumValueConfigs = schema.enums[enumName]?.values ?: return true
-                enumValueConfigs.process p@{
-                    val element = it.pointer.element
-                    val v = it.stringValue ?: return@p true
-                    val lookupElement = LookupElementBuilder.create(v).withPsiElement(element)
-                        .withTypeText(typeFile?.name, typeFile?.icon, true)
-                        .withIcon(icon)
-                        .withPriority(ChronicleCompletionPriorities.enumValue)
-                        .withPatchableTailText(tailText)
-                    processor.process(lookupElement)
+                val hintText = " by ${schemaExpression}"
+
+                fun processLookupElement(config: CwtValueConfig? = null): Boolean {
+                    if (config == null) return true
+                    val lookupString = config.stringValue ?: return true
+                    val element = config.pointer.element
+                    val lookupElement = CwtCompletionLookupProvider.forSchemaEnumValue(lookupString, element, typeFile, icon, hintText)
+                    return processor.process(lookupElement)
                 }
+
+                val enumName = schemaExpression.name
+                val enumValueConfigs = schema.enums[enumName]?.values ?: return true
+                enumValueConfigs.process { processLookupElement(it) }
             }
             is CwtSchemaExpression.Template -> {
-                val v = schemaExpression.expressionString
+                val lookupString = schemaExpression.expressionString
                 val element = config.pointer.element
-                val tailText = " (template)"
-                val lookupElement = LookupElementBuilder.create(v).withPsiElement(element)
-                    .withTypeText(typeFile?.name, typeFile?.icon, true)
-                    .withIcon(icon)
-                    .withPatchableTailText(tailText)
+                val hintText = " (template)"
+                val lookupElement = CwtCompletionLookupProvider.forSchemaTemplate(lookupString, element, typeFile, icon, hintText)
                 processor.process(lookupElement)
             }
             is CwtSchemaExpression.Type -> {
-                val typeName = schemaExpression.name
-                when (typeName) {
-                    "any" -> {
-                        ChronicleLookupElements.keywordLookupElements.forEach { processor.process(it) }
-                    }
-                    "bool" -> {
-                        processor.process(ChronicleLookupElements.yesLookupElement)
-                        processor.process(ChronicleLookupElements.noLookupElement)
-                    }
-                    "cardinality" -> {
-                        ChronicleLookupElements.cardinalityElements.forEach { processor.process(it) }
-                    }
+                when (schemaExpression.name) {
+                    "any" -> CwtCompletionLookupProvider.forKeyword().forEach { processor.process(it) }
+                    "bool" -> CwtCompletionLookupProvider.forBool().forEach { processor.process(it) }
+                    "cardinality" -> CwtCompletionLookupProvider.forCardinality().forEach { processor.process(it) }
                 }
                 true
             }
@@ -236,28 +208,18 @@ object CwtConfigCompletionManager {
         }
     }
 
-    fun completeByTemplateExpression(templateExpression: CwtConfigCompletionTemplateExpression, context: ExpressionContext, processor: Processor<LookupElementBuilder>): Boolean {
-        val icon = when {
-            templateExpression is CwtConfigCompletionTemplateExpression.Enum -> AllIcons.Nodes.Enum
-            templateExpression is CwtConfigCompletionTemplateExpression.Parameter -> AllIcons.Nodes.Parameter
-            else -> null
-        }
-
+    fun completeFromTemplateExpression(templateExpression: CwtConfigCompletionTemplateExpression, context: ExpressionContext, processor: Processor<LookupElementBuilder>): Boolean {
         val configGroup = templateExpression.context.configGroup
         val schema = configGroup.schemas.firstOrNull() ?: return true
-
-        val tailText = " by ${templateExpression.text}"
+        val hintText = " by ${templateExpression.text}"
         return when (templateExpression) {
             is CwtConfigCompletionTemplateExpression.Enum -> {
                 fun processLookupElement(config: CwtValueConfig? = null): Boolean {
                     if (config == null) return true
-                    val v = config.stringValue ?: return true
+                    val lookupString = config.stringValue ?: return true
                     val element = config.pointer.element
                     val typeFile = config.pointer.containingFile
-                    val lookupElement = LookupElementBuilder.create(v).withPsiElement(element)
-                        .withIcon(icon)
-                        .withTailText(tailText, true)
-                        .withTypeText(typeFile?.name, typeFile?.icon, true)
+                    val lookupElement = CwtCompletionLookupProvider.forSchemaTemplateEnum(lookupString, element, typeFile, hintText)
                     return processor.process(lookupElement)
                 }
 
@@ -268,10 +230,9 @@ object CwtConfigCompletionManager {
             is CwtConfigCompletionTemplateExpression.Parameter -> {
                 fun processLookupElement(name: String, config: CwtConfig<*>? = null): Boolean {
                     if (config == null) return true
+                    val lookupString = name
                     val element = config.pointer.element
-                    val lookupElement = LookupElementBuilder.create(name).withPsiElement(element)
-                        .withIcon(icon)
-                        .withTailText(tailText, true)
+                    val lookupElement = CwtCompletionLookupProvider.forSchemaTemplateParameter(lookupString, element, hintText)
                     return processor.process(lookupElement)
                 }
 
@@ -420,87 +381,5 @@ object CwtConfigCompletionManager {
         return configPath.subPaths.getOrNull(1)
     }
 
-    private fun LookupElementBuilder.forConfig(context: CwtConfigCompletionContext, config: CwtConfig<*>, schemaExpression: CwtSchemaExpression): LookupElement? {
-        var lookupElement = this
-        if (lookupElement in ChronicleLookupElements.keywordLookupElements) return lookupElement
-
-        val isKeyConfig = config is CwtOptionConfig || config is CwtPropertyConfig
-        val insertCurlyBraces = when {
-            config is CwtOptionMemberConfig<*> -> config.valueType == CwtExpressionType.Block
-            config is CwtMemberConfig<*> -> config.valueType == CwtExpressionType.Block
-            else -> return null
-        }
-        val valueText = when {
-            insertCurlyBraces -> ChronicleStrings.blockFolder
-            config is CwtOptionMemberConfig<*> -> config.value
-            config is CwtMemberConfig<*> -> config.value
-            else -> return null
-        }
-
-        val patchableTailText = this.patchableTailText
-        val tailText = buildString {
-            if (isKeyConfig && !context.isKeyOnly && !context.isValueOnly) append(" = ").append(valueText)
-            if (patchableTailText != null) append(patchableTailText)
-        }
-        lookupElement = lookupElement.withTailText(tailText, true)
-
-        val params = ChronicleInsertHandlers.Params(
-            quoted = context.leftQuoted,
-            isKey = context.isKey,
-            insertCurlyBraces = insertCurlyBraces,
-        )
-
-        if (context.isKeyOnly || context.isValueOnly) { // key or value only
-            lookupElement = lookupElement.withInsertHandler(ChronicleInsertHandlers.keyOrValue(params))
-        }
-        if (isKeyConfig && context.isKey && !context.isKeyOnly) { // key with value
-            lookupElement = lookupElement.withInsertHandler(ChronicleInsertHandlers.keyWithValue(params))
-        }
-
-        if (schemaExpression is CwtSchemaExpression.Template) {
-            val insertHandler0 = lookupElement.insertHandler
-            lookupElement = lookupElement.withInsertHandler { c, item ->
-                val caretOffset1 = c.editor.caretModel.offset
-                insertHandler0?.handleInsert(c, item)
-                val caretOffset2 = c.editor.caretModel.offset
-                val caretMarker = c.editor.document.createRangeMarker(caretOffset1, caretOffset2)
-                caretMarker.isGreedyToRight = true
-                c.editor.caretModel.moveToOffset(caretMarker.startOffset)
-                applyExpandTemplateInsertHandler(c, context, schemaExpression, caretMarker)
-            }
-        }
-
-        return lookupElement
-    }
-
-    private fun applyExpandTemplateInsertHandler(c: InsertionContext, context: CwtConfigCompletionContext, schemaExpression: CwtSchemaExpression.Template, caretMarker: RangeMarker) {
-        c.laterRunnable = Runnable {
-            val project = context.project
-            val editor = c.editor
-            val commandName = ChronicleBundle.message("command.expandTemplate.name")
-            executeWriteCommand(project, commandName, makeWritable = context.file) c@{
-                val documentManager = PsiDocumentManager.getInstance(project)
-                documentManager.commitDocument(editor.document)
-                val elementOffset = caretMarker.startOffset - 1
-                val element = context.file.findElementAt(elementOffset)?.parent
-                if (element !is CwtPropertyKey && element !is CwtString) return@c
-                val startAction = StartMarkAction.start(editor, project, commandName)
-                val templateBuilder = TemplateBuilderFactory.getInstance().createTemplateBuilder(element)
-                val shift = element.startOffset + if (context.leftQuoted) 1 else 0
-                schemaExpression.parameterRanges.forEach { parameterRange ->
-                    val parameterText = parameterRange.substring(schemaExpression.expressionString)
-                    val expression = CwtConfigCompletionTemplateExpression.resolve(context, parameterRange, parameterText)
-                        ?: TextExpression(parameterText)
-                    templateBuilder.replaceRange(parameterRange.shiftRight(shift), expression)
-                }
-                val textRange = element.textRange
-                editor.caretModel.moveToOffset(textRange.startOffset)
-                val template = templateBuilder.buildInlineTemplate()
-                TemplateManager.getInstance(project).startTemplate(editor, template, TemplateEditingFinishedListener { _, _ ->
-                    c.editor.caretModel.moveToOffset(caretMarker.endOffset)
-                    FinishMarkAction.finish(project, editor, startAction)
-                })
-            }
-        }
-    }
+    // endregion
 }

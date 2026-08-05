@@ -5,7 +5,7 @@ import kotlin.reflect.KMutableProperty0
 import kotlin.reflect.KProperty
 
 /**
- * 可修改的可观察属性。
+ * 可观察的可变属性。
  *
  * 基于目标可变属性 [target] 构建一个值类型为 [V] 的“投影视图”，
  * 读取时应用正向转换 [transform]，写入时应用反向转换 [revertedTransform] 并同步回原属性。

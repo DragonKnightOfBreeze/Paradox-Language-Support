@@ -1,6 +1,9 @@
 package icu.windea.pls.ep.analysis
 
 import com.intellij.openapi.extensions.ExtensionPointName
+import icu.windea.pls.core.addExtensionPointListener
+import icu.windea.pls.core.optimized
+import icu.windea.pls.core.util.values.LazyValue
 import icu.windea.pls.model.ParadoxFileGroup
 import icu.windea.pls.model.ParadoxFileInfo
 import icu.windea.pls.model.paths.ParadoxPath
@@ -18,5 +21,21 @@ interface ParadoxIgnoredFileProvider {
 
     companion object INSTANCE {
         @JvmField val EP_NAME = ExtensionPointName<ParadoxIgnoredFileProvider>("icu.windea.pls.ignoredFileProvider")
+        @JvmField val CACHE = LazyValue<List<ParadoxIgnoredFileProvider>>()
+
+        fun getAll(): List<ParadoxIgnoredFileProvider> = CACHE.get().orEmpty()
+
+        // region Implementations
+
+        init {
+            CACHE.reinitialize { compute() }
+            EP_NAME.addExtensionPointListener { CACHE.reinitialize { compute() } }
+        }
+
+        private fun compute(): List<ParadoxIgnoredFileProvider> {
+            return EP_NAME.extensionList.optimized()
+        }
+
+        // endregion
     }
 }

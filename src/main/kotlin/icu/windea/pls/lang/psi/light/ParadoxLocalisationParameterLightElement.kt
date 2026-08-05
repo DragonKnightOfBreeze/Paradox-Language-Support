@@ -5,11 +5,12 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.config.CwtDataTypes
-import icu.windea.pls.core.ReadWriteAccess
 import icu.windea.pls.core.psi.PsiReadWriteAccessAwareElement
+import icu.windea.pls.core.util.ReadWriteAccess
 import icu.windea.pls.ep.resolve.parameter.ParadoxLocalisationParameterSupport
 import icu.windea.pls.model.ParadoxGameType
 import java.util.*
+import javax.swing.Icon
 
 /**
  * @see CwtDataTypes.LocalisationParameter
@@ -19,6 +20,7 @@ class ParadoxLocalisationParameterLightElement(
     parent: PsiElement,
     private val name: String,
     val localisationName: String,
+    val localisationIcon: Icon?,
     override val readWriteAccess: ReadWriteAccess,
     override val gameType: ParadoxGameType,
     private val project: Project,

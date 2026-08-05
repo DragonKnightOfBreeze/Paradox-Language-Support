@@ -1,24 +1,17 @@
+@file:Suppress("unused")
+
 package icu.windea.pls.core
 
-import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleFacade
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicReference
 
-fun loadText(path: String, locationClass: Class<*> = ChronicleFacade::class.java): String {
-    // 让该死的 Windows 换行符见鬼去吧
-    val url = path.toClasspathUrl(locationClass)
-    return url.openStream().use { s -> s.bufferedReader().use { r -> r.lineSequence().joinToString("\n") } }
-}
-
-inline fun <T> runOnce(flag: AtomicBoolean, action: () -> T): T? {
-    if (flag.get()) return null
+inline fun <T> runOnce(marker: AtomicBoolean, action: () -> T): T? {
+    if (marker.get()) return null
     val r = action()
-    flag.set(true)
+    marker.set(true)
     return r
 }
-
-val String?.errorDetails: String get() = this?.orNull()?.let { ChronicleBundle.message("error.details", it) }.orEmpty()
 
 inline fun <T> withErrorRef(errorRef: AtomicReference<Throwable>, action: () -> T): Result<T> {
     return runCatchingCancelable { action() }.onFailure { errorRef.compareAndSet(null, it) }
@@ -31,4 +24,10 @@ inline fun <T> withState(state: ThreadLocal<Boolean>, action: () -> T): T {
     } finally {
         state.remove()
     }
+}
+
+fun loadText(path: String, locationClass: Class<*> = ChronicleFacade::class.java): String {
+    // 让该死的 Windows 换行符见鬼去吧
+    val url = path.toClasspathUrl(locationClass)
+    return url.openStream().use { s -> s.bufferedReader().use { r -> r.lineSequence().joinToString("\n") } }
 }

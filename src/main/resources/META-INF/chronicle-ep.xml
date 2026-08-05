@@ -9,6 +9,7 @@
     <extensionPoint qualifiedName="icu.windea.pls.configFilterProvider" interface="icu.windea.pls.ep.config.config.CwtConfigFilterProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.configPostProcessor" interface="icu.windea.pls.ep.config.config.CwtConfigPostProcessor" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.injectedConfigProvider" interface="icu.windea.pls.ep.config.config.CwtInjectedConfigProvider" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.injectedConfigProcessor" interface="icu.windea.pls.ep.config.config.CwtInjectedConfigProcessor" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.configGroupFileProvider" interface="icu.windea.pls.ep.config.configGroup.CwtConfigGroupFileProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.configGroupProcessor" interface="icu.windea.pls.ep.config.configGroup.CwtConfigGroupProcessor" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.configGroupPostProcessor" interface="icu.windea.pls.ep.config.configGroup.CwtConfigGroupPostProcessor" dynamic="true"/>
@@ -25,8 +26,8 @@
     <extensionPoint qualifiedName="icu.windea.pls.overrideStrategyProvider" interface="icu.windea.pls.ep.overrides.ParadoxOverrideStrategyProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.referenceLinkProvider" interface="icu.windea.pls.ep.resolve.ReferenceLinkProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.inlineSupport" interface="icu.windea.pls.ep.resolve.ParadoxInlineSupport" dynamic="true"/>
-    <extensionPoint qualifiedName="icu.windea.pls.overriddenConfigProvider" interface="icu.windea.pls.ep.resolve.config.CwtOverriddenConfigProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.relatedConfigProvider" interface="icu.windea.pls.ep.resolve.config.CwtRelatedConfigProvider" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.overriddenConfigProvider" interface="icu.windea.pls.ep.resolve.config.CwtOverriddenConfigProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.configContextProvider" interface="icu.windea.pls.ep.resolve.config.CwtConfigContextProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.declarationConfigContextProvider" interface="icu.windea.pls.ep.resolve.config.CwtDeclarationConfigContextProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.scriptExpressionSupport" interface="icu.windea.pls.ep.resolve.expression.ParadoxScriptExpressionSupport" dynamic="true"/>
@@ -101,8 +102,10 @@
     <configPostProcessor implementation="icu.windea.pls.ep.config.config.CwtBaseConfigPostProcessor"/>
     <configPostProcessor implementation="icu.windea.pls.ep.config.config.CwtInjectConfigPostProcessor"/>
 
-    <injectedConfigProvider implementation="icu.windea.pls.ep.config.config.CwtInOnActionInjectedConfigProvider"/>
-    <injectedConfigProvider implementation="icu.windea.pls.ep.config.config.CwtTechnologyWithLevelInjectedConfigProvider"/>
+    <injectedConfigProvider implementation="icu.windea.pls.ep.config.config.CwtConfigExpressionBasedInjectedConfigProvider"/>
+
+    <injectedConfigProcessor implementation="icu.windea.pls.ep.config.config.CwtInOnActionInjectedConfigProcessor"/>
+    <injectedConfigProcessor implementation="icu.windea.pls.ep.config.config.CwtTechnologyWithLevelInjectedConfigProcessor"/>
 
     <configGroupFileProvider id="builtIn" implementation="icu.windea.pls.ep.config.configGroup.CwtBuiltInConfigGroupFileProvider" order="first"/>
     <configGroupFileProvider id="remote" implementation="icu.windea.pls.ep.config.configGroup.CwtRemoteConfigGroupFileProvider"/>
@@ -113,7 +116,7 @@
     <configGroupProcessor id="predefined" implementation="icu.windea.pls.ep.config.configGroup.CwtPredefinedConfigGroupProcessor" order="first"/>
     <configGroupProcessor id="fileBased" implementation="icu.windea.pls.ep.config.configGroup.CwtFileBasedConfigGroupProcessor"/>
     <configGroupProcessor id="computed" implementation="icu.windea.pls.ep.config.configGroup.CwtComputedConfigGroupProcessor"/>
-    <configGroupProcessor id="post" implementation="icu.windea.pls.ep.config.configGroup.CwtPostConfigGroupProcessor" order="last"/>
+    <configGroupProcessor id="final" implementation="icu.windea.pls.ep.config.configGroup.CwtFinalConfigGroupProcessor" order="last"/>
 
     <configGroupPostProcessor id="base" implementation="icu.windea.pls.ep.config.configGroup.CwtBaseConfigGroupPostProcessor"/>
 
@@ -128,18 +131,19 @@
     <mergedIndexSupport implementation="icu.windea.pls.ep.index.ParadoxDynamicValueMergedIndexSupport"/>
     <mergedIndexSupport implementation="icu.windea.pls.ep.index.ParadoxParameterMergedIndexSupport"/>
     <mergedIndexSupport implementation="icu.windea.pls.ep.index.ParadoxLocalisationParameterMergedIndexSupport"/>
+    <mergedIndexSupport implementation="icu.windea.pls.ep.index.ParadoxParameterWithReadAccessMergedIndexSupport"/>
 
-    <mergedIndexOptimizer implementation="icu.windea.pls.ep.index.ParadoxDefinitionBasedMergedIndexOptimizer"/>
-    <mergedIndexOptimizer implementation="icu.windea.pls.ep.index.ParadoxRowBasedMergedIndexOptimizer"/>
-    <mergedIndexOptimizer implementation="icu.windea.pls.ep.index.ParadoxFallbackMergedIndexOptimizer" order="last"/>
-
-    <mergedIndexSupport implementation="icu.windea.pls.ep.index.ParadoxInferredScopeContextAwareDefinitionMergedIndexSupport"/>
+    <mergedIndexSupport implementation="icu.windea.pls.ep.index.ParadoxScopeInferrableDefinitionMergedIndexSupport"/>
     <mergedIndexSupport implementation="icu.windea.pls.ep.index.ParadoxEventInOnActionMergedIndexSupport"/>
     <mergedIndexSupport implementation="icu.windea.pls.ep.index.ParadoxEventInEventMergedIndexSupport"/>
     <mergedIndexSupport implementation="icu.windea.pls.ep.index.ParadoxOnActionInEventMergedIndexSupport"/>
 
     <mergedIndexSupport implementation="icu.windea.pls.ep.index.ParadoxShaderEffectMergedIndexSupport"/>
     <mergedIndexSupport implementation="icu.windea.pls.ep.index.ParadoxMeshLocatorMergedIndexSupport"/>
+
+    <mergedIndexOptimizer implementation="icu.windea.pls.ep.index.ParadoxDefinitionBasedMergedIndexOptimizer"/>
+    <mergedIndexOptimizer implementation="icu.windea.pls.ep.index.ParadoxRowBasedMergedIndexOptimizer"/>
+    <mergedIndexOptimizer implementation="icu.windea.pls.ep.index.ParadoxDefaultFileLevelMergedIndexOptimizer" order="last"/>
 
     <definitionInspectionSuppressionProvider implementation="icu.windea.pls.ep.inspections.ParadoxBaseDefinitionInspectionSuppressionProvider"/>
     <definitionInspectionSuppressionProvider implementation="icu.windea.pls.ep.inspections.StellarisBaseDefinitionInspectionSuppressionProvider"/>
@@ -163,17 +167,18 @@
 
     <unresolvedExpressionChecker implementation="icu.windea.pls.ep.inspections.ParadoxDefaultUnresolvedExpressionChecker" order="last"/>
 
-    <scriptExpressionMatcher id="basic" implementation="icu.windea.pls.ep.match.expression.ParadoxBasicScriptExpressionMatcher"/>
-    <scriptExpressionMatcher id="extraBasic" implementation="icu.windea.pls.ep.match.expression.ParadoxExtraBasicScriptExpressionMatcher"/>
-    <scriptExpressionMatcher id="core" implementation="icu.windea.pls.ep.match.expression.ParadoxCoreScriptExpressionMatcher"/>
-    <scriptExpressionMatcher id="constant" implementation="icu.windea.pls.ep.match.expression.ParadoxConstantScriptExpressionMatcher" order="first"/>
-    <scriptExpressionMatcher id="template" implementation="icu.windea.pls.ep.match.expression.ParadoxTemplateScriptExpressionMatcher"/>
-    <scriptExpressionMatcher id="pattern" implementation="icu.windea.pls.ep.match.expression.ParadoxPatternScriptExpressionMatcher"/>
-    <scriptExpressionMatcher id="predicateBased" implementation="icu.windea.pls.ep.match.expression.ParadoxPredicateBasedScriptExpressionMatcher" order="first, before constant"/>
+    <scriptExpressionMatcher id="basic" implementation="icu.windea.pls.ep.match.expression.ParadoxScriptBasicExpressionMatcher"/>
+    <scriptExpressionMatcher id="extraBasic" implementation="icu.windea.pls.ep.match.expression.ParadoxScriptExtraBasicExpressionMatcher"/>
+    <scriptExpressionMatcher id="core" implementation="icu.windea.pls.ep.match.expression.ParadoxScriptCoreExpressionMatcher"/>
+    <scriptExpressionMatcher id="constant" implementation="icu.windea.pls.ep.match.expression.ParadoxScriptConstantExpressionMatcher"/>
+    <scriptExpressionMatcher id="template" implementation="icu.windea.pls.ep.match.expression.ParadoxScriptTemplateExpressionMatcher"/>
+    <scriptExpressionMatcher id="pattern" implementation="icu.windea.pls.ep.match.expression.ParadoxScriptPatternExpressionMatcher"/>
+    <scriptExpressionMatcher id="predicateBased" implementation="icu.windea.pls.ep.match.expression.ParadoxScriptPredicateBasedExpressionMatcher" order="first"/>
 
-    <csvExpressionMatcher id="basic" implementation="icu.windea.pls.ep.match.expression.ParadoxBasicCsvExpressionMatcher"/>
+    <csvExpressionMatcher id="basic" implementation="icu.windea.pls.ep.match.expression.ParadoxCsvBasicExpressionMatcher"/>
     <csvExpressionMatcher id="extraBasic" implementation="icu.windea.pls.ep.match.expression.ParadoxExtraBasicCsvExpressionMatcher"/>
-    <csvExpressionMatcher id="core" implementation="icu.windea.pls.ep.match.expression.ParadoxCoreCsvExpressionMatcher"/>
+    <csvExpressionMatcher id="core" implementation="icu.windea.pls.ep.match.expression.ParadoxCsvCoreExpressionMatcher"/>
+    <csvExpressionMatcher id="constant" implementation="icu.windea.pls.ep.match.expression.ParadoxCsvConstantExpressionMatcher"/>
 
     <scriptExpressionMatchOptimizer id="constant" implementation="icu.windea.pls.ep.match.expression.ParadoxScriptExpressionConstantMatchOptimizer" order="first"/>
     <scriptExpressionMatchOptimizer id="block" implementation="icu.windea.pls.ep.match.expression.ParadoxScriptExpressionBlockMatchOptimizer"/>
@@ -193,13 +198,13 @@
 
     <inlineSupport implementation="icu.windea.pls.ep.resolve.ParadoxInlineScriptInlineSupport"/>
 
-    <overriddenConfigProvider implementation="icu.windea.pls.ep.resolve.config.CwtSwitchOverriddenConfigProvider"/>
-    <overriddenConfigProvider implementation="icu.windea.pls.ep.resolve.config.CwtTriggerWithParametersAwareOverriddenConfigProvider"/>
-
     <relatedConfigProvider implementation="icu.windea.pls.ep.resolve.config.CwtBaseRelatedConfigProvider"/>
     <relatedConfigProvider implementation="icu.windea.pls.ep.resolve.config.CwtInComplexExpressionRelatedConfigProvider"/>
     <relatedConfigProvider implementation="icu.windea.pls.ep.resolve.config.CwtExtendedRelatedConfigProvider"/>
     <relatedConfigProvider implementation="icu.windea.pls.ep.resolve.config.CwtColumnRelatedConfigProvider"/>
+
+    <overriddenConfigProvider implementation="icu.windea.pls.ep.resolve.config.CwtSwitchOverriddenConfigProvider"/>
+    <overriddenConfigProvider implementation="icu.windea.pls.ep.resolve.config.CwtTriggerWithParametersAwareOverriddenConfigProvider"/>
 
     <configContextProvider id="base" implementation="icu.windea.pls.ep.resolve.config.CwtBaseConfigContextProvider" order="last"/>
     <configContextProvider id="definition" implementation="icu.windea.pls.ep.resolve.config.CwtDefinitionConfigContextProvider" order="last, before base"/>

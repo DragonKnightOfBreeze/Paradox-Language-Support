@@ -1,8 +1,9 @@
 package icu.windea.pls.config.config.delegated
 
-import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
+import icu.windea.pls.config.CwtConfigType
+import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.config.annotations.FromMember
 import icu.windea.pls.config.annotations.FromName
 import icu.windea.pls.config.config.CwtDelegatedConfig
@@ -49,6 +50,8 @@ interface CwtDynamicValueTypeConfig : CwtDelegatedConfig<CwtProperty, CwtPropert
 
     val valueConfigMap: Map<String, CwtValueConfig>
 
+    override val configType: CwtConfigType get() = CwtConfigTypes.DynamicValueType
+
     companion object {
         /** 由属性规则解析为动态值类型规则。 */
         @JvmStatic
@@ -68,11 +71,11 @@ private object CwtDynamicValueTypeConfigResolver : CwtConfigResolverScope {
         val name = key.removeSurroundingOrNull("value[", "]")?.orNull()?.optimized() ?: return null
         val valueConfigs = config.values
         if (valueConfigs == null) {
-            logger.warn("Skipped invalid dynamic value type config (name: $name): Null values.".withLocationPrefix(config))
+            logger.warnWithPrefix(config, "Skipped invalid dynamic value type config (name: $name): Null values.")
             return null
         }
         if (valueConfigs.isEmpty()) {
-            logger.debug { "Resolved dynamic value type config with empty values (name: $name).".withLocationPrefix(config) }
+            logger.debugWithPrefix(config) { "Resolved dynamic value type config with empty values (name: $name)." }
             return CwtDynamicValueTypeConfigImpl(config, name, emptySet(), emptyMap())
         }
         val values = mutableSetOf<String>()
@@ -82,7 +85,7 @@ private object CwtDynamicValueTypeConfigResolver : CwtConfigResolverScope {
             values.add(v)
             valueConfigMap.put(v, propertyConfigValue)
         }
-        logger.debug { "Resolved dynamic value type config (name: $name).".withLocationPrefix(config) }
+        logger.debugWithPrefix(config) { "Resolved dynamic value type config (name: $name)." }
         return CwtDynamicValueTypeConfigImpl(config, name, values.optimized(), valueConfigMap.optimized())
     }
 }

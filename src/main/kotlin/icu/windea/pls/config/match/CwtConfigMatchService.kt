@@ -1,6 +1,8 @@
 package icu.windea.pls.config.match
 
 import com.intellij.util.Processor
+import icu.windea.pls.config.CwtConfigType
+import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtFilePathMatchableConfig
 import icu.windea.pls.config.config.CwtIdMatchableConfig
@@ -34,16 +36,16 @@ import icu.windea.pls.config.config.extended.CwtExtendedOnActionConfig
 import icu.windea.pls.config.config.extended.CwtExtendedParameterConfig
 import icu.windea.pls.config.config.extended.CwtExtendedScriptedVariableConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.core.annotations.Optimized
-import icu.windea.pls.core.cast
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.collections.process
+import icu.windea.pls.core.collections.processFast
 import icu.windea.pls.core.collections.processValue
+import icu.windea.pls.core.isIdentifier
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.matchesAntPattern
 import icu.windea.pls.core.matchesPath
 import icu.windea.pls.core.orNull
-import icu.windea.pls.lang.isIdentifier
+import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.model.paths.ParadoxPath
 
 object CwtConfigMatchService {
@@ -59,6 +61,7 @@ object CwtConfigMatchService {
         return processMatchedConfigsById(id, configGroup, T::class.java, processor)
     }
 
+    @Suppress("UNCHECKED_CAST")
     fun <T : CwtIdMatchableConfig<*>> processMatchedConfigsById(id: String?, configGroup: CwtConfigGroup, type: Class<T>, processor: Processor<T>): Boolean {
         val id = id?.trim()?.orNull()
         return when (type) {
@@ -71,116 +74,116 @@ object CwtConfigMatchService {
                     if (aliasSubNameMayBeConst) {
                         // may-be-const alias sub name should ignore case here (but such collection is not a case-insensitive collection)
                         v1.values.process { v2 ->
-                            v2.process { if (aliasSubName == null || aliasSubName.equals(it.subName, true)) processor.process(it.cast()) else true }
+                            v2.processFast { if (aliasSubName == null || aliasSubName.equals(it.subName, true)) processor.process(it as T) else true }
                         }
                     } else {
                         // non-const alias sub name do not ignore case
                         v1.processValue(aliasSubName) { v2 ->
-                            v2.process { processor.process(it.cast()) }
+                            v2.processFast { processor.process(it as T) }
                         }
                     }
                 }
             }
             CwtComplexEnumConfig::class.java -> {
                 val source = configGroup.complexEnums
-                source.processValue(id) { processor.process(it.cast()) }
+                source.processValue(id) { processor.process(it as T) }
             }
             CwtDatabaseObjectTypeConfig::class.java -> {
                 val source = configGroup.databaseObjectTypes
-                source.processValue(id) { processor.process(it.cast()) }
+                source.processValue(id) { processor.process(it as T) }
             }
             CwtDeclarationConfig::class.java -> {
                 val source = configGroup.declarations
-                source.processValue(id) { processor.process(it.cast()) }
+                source.processValue(id) { processor.process(it as T) }
             }
             CwtMacroConfig::class.java -> {
                 val source = configGroup.macros.orNull() ?: return true
-                source.process { if (it.name == id) processor.process(it.cast()) else true }
+                source.process { if (it.name == id) processor.process(it as T) else true }
             }
             CwtDynamicValueTypeConfig::class.java -> {
                 val source = configGroup.dynamicValueTypes
-                source.processValue(id) { processor.process(it.cast()) }
+                source.processValue(id) { processor.process(it as T) }
             }
             CwtEnumConfig::class.java -> {
                 val source = configGroup.enums
-                source.processValue(id) { processor.process(it.cast()) }
+                source.processValue(id) { processor.process(it as T) }
             }
             CwtLinkConfig::class.java -> {
                 val source = configGroup.links
-                source.processValue(id) { processor.process(it.cast()) }
+                source.processValue(id) { processor.process(it as T) }
             }
             CwtLocaleConfig::class.java -> {
                 val source = configGroup.locales
-                source.processValue(id) { processor.process(it.cast()) }
+                source.processValue(id) { processor.process(it as T) }
             }
             CwtLocalisationCommandConfig -> {
                 val source = configGroup.localisationCommands
-                source.processValue(id) { processor.process(it.cast()) }
+                source.processValue(id) { processor.process(it as T) }
             }
             CwtLocalisationPromotionConfig::class.java -> {
                 val source = configGroup.localisationPromotions
-                source.processValue(id) { processor.process(it.cast()) }
+                source.processValue(id) { processor.process(it as T) }
             }
             CwtModifierCategoryConfig::class.java -> {
                 val source = configGroup.modifierCategories
-                source.processValue(id) { processor.process(it.cast()) }
+                source.processValue(id) { processor.process(it as T) }
             }
             CwtModifierConfig::class.java -> {
                 val source = configGroup.modifiers
-                source.processValue(id) { processor.process(it.cast()) }
+                source.processValue(id) { processor.process(it as T) }
             }
             CwtRowConfig::class.java -> {
                 val source = configGroup.rows
-                source.processValue(id) { processor.process(it.cast()) }
+                source.processValue(id) { processor.process(it as T) }
             }
             CwtScopeConfig::class.java -> {
                 val source = configGroup.scopes
-                source.processValue(id) { processor.process(it.cast()) }
+                source.processValue(id) { processor.process(it as T) }
             }
             CwtScopeGroupConfig::class.java -> {
                 val source = configGroup.scopeGroups
-                source.processValue(id) { processor.process(it.cast()) }
+                source.processValue(id) { processor.process(it as T) }
             }
             CwtSingleAliasConfig::class.java -> {
                 val source = configGroup.singleAliases
-                source.processValue(id) { processor.process(it.cast()) }
+                source.processValue(id) { processor.process(it as T) }
             }
             CwtSystemScopeConfig::class.java -> {
                 val source = configGroup.systemScopes
-                source.processValue(id) { processor.process(it.cast()) }
+                source.processValue(id) { processor.process(it as T) }
             }
             CwtTypeConfig::class.java -> {
                 val source = configGroup.types
-                source.processValue(id) { processor.process(it.cast()) }
+                source.processValue(id) { processor.process(it as T) }
             }
             CwtUnionConfig::class.java -> {
                 val source = configGroup.unions
-                source.processValue(id) { processor.process(it.cast()) }
+                source.processValue(id) { processor.process(it as T) }
             }
             CwtExtendedScriptedVariableConfig::class.java -> {
                 // TODO 2.1.6+ pattern match
                 val source = configGroup.extendedScriptedVariables
-                source.processValue(id) { processor.process(it.cast()) }
+                source.processValue(id) { processor.process(it as T) }
             }
             CwtExtendedDefinitionConfig::class.java -> {
                 // TODO 2.1.6+ pattern match
                 val source = configGroup.extendedDefinitions
-                source.processValue(id) { v -> v.process { processor.process(it.cast()) } }
+                source.processValue(id) { v -> v.processFast { processor.process(it as T) } }
             }
             CwtExtendedGameRuleConfig::class.java -> {
                 // TODO 2.1.6+ pattern match
                 val source = configGroup.extendedGameRules
-                source.processValue(id) { processor.process(it.cast()) }
+                source.processValue(id) { processor.process(it as T) }
             }
             CwtExtendedOnActionConfig::class.java -> {
                 // TODO 2.1.6+ pattern match
                 val source = configGroup.extendedOnActions
-                source.processValue(id) { processor.process(it.cast()) }
+                source.processValue(id) { processor.process(it as T) }
             }
             CwtExtendedParameterConfig::class.java -> {
                 // TODO 2.1.6+ pattern match
                 val source = configGroup.extendedParameters
-                source.processValue(id) { v -> v.process { processor.process(it.cast()) } }
+                source.processValue(id) { v -> v.processFast { processor.process(it as T) } }
             }
             CwtExtendedComplexEnumValueConfig::class.java -> {
                 val source = configGroup.extendedComplexEnumValues
@@ -188,7 +191,7 @@ object CwtConfigMatchService {
                 val name = id?.substringAfter(':')?.trim()?.orNull()
                 source.processValue(enumName) { v1 ->
                     v1.processValue(name) {
-                        processor.process(it.cast())
+                        processor.process(it as T)
                     }
                 }
             }
@@ -199,14 +202,14 @@ object CwtConfigMatchService {
                 val name = id?.substringAfter(':')?.trim()?.orNull()
                 source.processValue(dynamicValueType) { v1 ->
                     v1.processValue(name) {
-                        processor.process(it.cast())
+                        processor.process(it as T)
                     }
                 }
             }
             CwtExtendedInlineScriptConfig::class.java -> {
                 // TODO 2.1.6+ pattern match
                 val source = configGroup.extendedInlineScripts
-                source.processValue(id) { processor.process(it.cast()) }
+                source.processValue(id) { processor.process(it as T) }
             }
             else -> throw UnsupportedOperationException()
         }
@@ -216,22 +219,32 @@ object CwtConfigMatchService {
         return processMatchedConfigsByFilePath(filePath, configGroup, T::class.java, processor)
     }
 
+    @Suppress("UNCHECKED_CAST")
     fun <T : CwtFilePathMatchableConfig<*>> processMatchedConfigsByFilePath(filePath: String?, configGroup: CwtConfigGroup, type: Class<T>, processor: Processor<T>): Boolean {
         return when (type) {
             CwtComplexEnumConfig::class.java -> {
                 val source = configGroup.complexEnums
-                source.values.process { if (matchesFilePath(it, filePath)) processor.process(it.cast()) else true }
+                source.values.process { if (matchesFilePath(it, filePath)) processor.process(it as T) else true }
                 true
             }
             CwtRowConfig::class.java -> {
                 val source = configGroup.rows
-                source.values.process { if (matchesFilePath(it, filePath)) processor.process(it.cast()) else true }
+                source.values.process { if (matchesFilePath(it, filePath)) processor.process(it as T) else true }
             }
             CwtTypeConfig::class.java -> {
                 val source = configGroup.types
-                source.values.process { if (matchesFilePath(it, filePath)) processor.process(it.cast()) else true }
+                source.values.process { if (matchesFilePath(it, filePath)) processor.process(it as T) else true }
             }
             else -> throw UnsupportedOperationException()
+        }
+    }
+
+    fun getConfigToMatchFilePath(configName: String, configType: CwtConfigType, configGroup: CwtConfigGroup): CwtFilePathMatchableConfig<CwtProperty>? {
+        return when (configType) {
+            CwtConfigTypes.Type -> configGroup.types[configName]
+            CwtConfigTypes.ComplexEnum -> configGroup.complexEnums[configName]
+            CwtConfigTypes.Row -> configGroup.rows[configName]
+            else -> null
         }
     }
 
@@ -240,7 +253,6 @@ object CwtConfigMatchService {
         return matchesFilePath(config, ParadoxPath.resolve(filePath))
     }
 
-    @Optimized
     fun matchesFilePath(config: CwtFilePathMatchableConfig<*>, filePath: ParadoxPath?): Boolean {
         // 1.4.2 this method should be very fast, so use optimized match logic here, instead of checking `config.filePathPatterns`
 
@@ -261,9 +273,7 @@ object CwtConfigMatchService {
         val paths = config.paths
         if (paths.isNotEmpty()) {
             val pathStrict = config.pathStrict
-            for (path in paths) {
-                if (path.matchesPath(filePath.path, strict = pathStrict)) return true
-            }
+            if (paths.any { it.matchesPath(filePath.path, strict = pathStrict) }) return true
             return false
         } else {
             val pathExtension = config.pathExtension

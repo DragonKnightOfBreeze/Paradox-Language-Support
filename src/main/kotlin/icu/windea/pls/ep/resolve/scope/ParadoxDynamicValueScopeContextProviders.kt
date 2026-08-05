@@ -17,7 +17,7 @@ class ParadoxBaseDynamicValueScopeContextProvider : ParadoxDynamicValueScopeCont
         for (type in types) {
             val configs = configGroup.extendedDynamicValues[type] ?: continue
             val config = configs.findByPattern(name, element, configGroup) ?: continue
-            val result = config.config.optionData.scopeContext ?: continue
+            val result = config.config.optionMetadata.scopeContext ?: continue
             return result
         }
         return null

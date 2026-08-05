@@ -10,8 +10,8 @@ import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.listCellRenderer.*
 import com.intellij.ui.layout.selected
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.core.toCommaDelimitedString
-import icu.windea.pls.core.toCommaDelimitedStringList
+import icu.windea.pls.core.toDelimitedMutableList
+import icu.windea.pls.core.toDelimitedString
 import icu.windea.pls.core.util.CallbackLock
 import icu.windea.pls.core.util.toMutableEntryList
 import icu.windea.pls.core.util.toMutableMap
@@ -116,7 +116,7 @@ class ChronicleSettingsConfigurable : BoundConfigurable(ChronicleBundle.message(
             label(ChronicleBundle.message("settings.general.ignoredFileNames")).widthGroup(groupName)
                 .comment(ChronicleBundle.message("settings.general.ignoredFileNames.comment", MAX_LINE_LENGTH_WORD_WRAP))
             var ignoredFileNameSet = settings.ignoredFileNameSet
-            expandableTextField({ it.toCommaDelimitedStringList() }, { it.toCommaDelimitedString() })
+            expandableTextField({ it.toDelimitedMutableList() }, { it.toDelimitedString() })
                 .bindText(settings::ignoredFileNames.toNonNullableProperty(""))
                 .align(Align.FILL)
                 .resizableColumn()
@@ -129,7 +129,7 @@ class ChronicleSettingsConfigurable : BoundConfigurable(ChronicleBundle.message(
                     fileNames += oldIgnoredFileNameSet
                     fileNames += newIgnoredFileNameSet
                     // 设置中的被忽略文件名被更改时，需要重新解析相关文件
-                    ChronicleSettingsManager.refreshForFilesByFileNames(callbackLock, fileNames)
+                    ChronicleSettingsManager.refreshForFilesByFileNames(callbackLock, fileNames, caseSensitive = false)
                 }
         }
     }

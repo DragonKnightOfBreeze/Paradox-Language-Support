@@ -131,6 +131,6 @@ object ParadoxColorUtil {
     fun getColorType(element: PsiElement): String? {
         val options = ParadoxMatchOptions(forDeclarationRoot = true)
         val config = ParadoxConfigManager.getConfigs(element, options).firstOrNull() ?: return null
-        return config.optionData.colorType
+        return config.optionMetadata.colorType
     }
 }

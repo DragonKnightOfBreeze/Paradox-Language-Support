@@ -30,7 +30,7 @@ class CwtConfigFilesViewProjectNode(
         if (!file.isDirectory) return false
         val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
         fileProviders.forEach f@{ fileProvider ->
-            if (!fileProvider.isEnabled) return@f
+            if (!fileProvider.isEnabled()) return@f
             val rootDirectory = fileProvider.getRootDirectory(project) ?: return@f
             if (file == rootDirectory) return true
         }
@@ -40,7 +40,7 @@ class CwtConfigFilesViewProjectNode(
     override fun contains(file: VirtualFile): Boolean {
         val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
         fileProviders.forEach f@{ fileProvider ->
-            if (!fileProvider.isEnabled) return@f
+            if (!fileProvider.isEnabled()) return@f
             val rootDirectory = fileProvider.getRootDirectory(project) ?: return@f
             val relativePath = VfsUtil.getRelativePath(file, rootDirectory) ?: return@f
             val directoryName = relativePath.substringBefore('/')

@@ -20,10 +20,20 @@ object ParadoxGameTypeManager {
         val jsonData = ChronicleJsonService.gameTypeMetadataList
         val map = jsonData.associateBy { it.gameType }
         val gameTypes = ParadoxGameType.getAll()
-        return gameTypes.associateWith { gameType ->
+        val result = gameTypes.associateWith { gameType ->
             val json = map.getOrElse(gameType) { ParadoxGameTypeMetadataJson(gameType) }
-            with(json) { ParadoxGameTypeMetadata(gameType, gameMainEntries, gameExtraEntries, modMainEntries, modExtraEntries, executableBaseNames) }
-        }.optimized()
+            with(json) {
+                ParadoxGameTypeMetadata(
+                    gameType,
+                    gameMainEntries.optimized(),
+                    gameExtraEntries.optimized(),
+                    modMainEntries.optimized(),
+                    modExtraEntries.optimized(),
+                    executableBaseNames.optimized(),
+                )
+            }
+        }
+        return result.optimized() // optimized to optimize access performance
     }
 
     fun getMetadata(gameType: ParadoxGameType): ParadoxGameTypeMetadata {
@@ -65,6 +75,7 @@ object ParadoxGameTypeManager {
         }
     }
 
+    @Suppress("unused")
     fun processGamePath(gameType: ParadoxGameType, rootPath: Path, relPath: String, processor: (path: Path, entryPath: Path) -> Boolean): Boolean {
         val entries = gameType.metadata.gameEntries
         return if (entries.isEmpty()) {

@@ -1,7 +1,13 @@
 package icu.windea.pls.ep.match.expression
 
 import com.intellij.openapi.extensions.ExtensionPointName
+import icu.windea.pls.config.CwtDataType
 import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.core.addExtensionPointListener
+import icu.windea.pls.core.collections.forEachFast
+import icu.windea.pls.core.optimized
+import icu.windea.pls.core.util.values.LazyValue
+import icu.windea.pls.lang.match.ParadoxExpressionMatchService
 import icu.windea.pls.lang.match.ParadoxMatchResult
 import icu.windea.pls.lang.match.ParadoxMatchService
 import icu.windea.pls.lang.match.ParadoxPatternMatchService
@@ -16,6 +22,7 @@ import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
  * @see CwtDataExpression
  * @see ParadoxScriptExpressionElement
  * @see ParadoxMatchService
+ * @see ParadoxExpressionMatchService
  */
 interface ParadoxScriptExpressionMatcher {
     /**
@@ -32,5 +39,47 @@ interface ParadoxScriptExpressionMatcher {
 
     companion object INSTANCE {
         @JvmField val EP_NAME = ExtensionPointName<ParadoxScriptExpressionMatcher>("icu.windea.pls.scriptExpressionMatcher")
+        @JvmField val CACHE = LazyValue<Map<CwtDataType, List<ParadoxScriptExpressionMatcher>>>()
+
+        @JvmStatic
+        fun getAll(dataType: CwtDataType): List<ParadoxScriptExpressionMatcher> = CACHE.get()?.get(dataType).orEmpty()
+
+        // region Implementations
+
+        init {
+            CACHE.initialize { computeCache() }
+            EP_NAME.addExtensionPointListener { CACHE.reinitialize { computeCache() } }
+        }
+
+        private fun computeCache(): Map<CwtDataType, List<ParadoxScriptExpressionMatcher>> {
+            val result = mutableMapOf<CwtDataType, MutableList<ParadoxScriptExpressionMatcher>>()
+            val eps = EP_NAME.extensionList
+            eps.forEachFast { ep ->
+                when (ep) {
+                    is ParadoxScriptCompositeExpressionMatcher -> {
+                        val matchers = ep.matcherMap
+                        matchers.forEach { (matcher, dataTypes) ->
+                            dataTypes.forEach { dataType ->
+                                result.computeIfAbsent(dataType) { mutableListOf() } += matcher
+                            }
+                        }
+                    }
+                    is ParadoxScriptSimpleExpressionMatcher -> {
+                        ep.dataTypes.forEach { dataType ->
+                            result.computeIfAbsent(dataType) { mutableListOf() } += ep
+                        }
+                    }
+                    else -> {
+                        // fallback
+                        CwtDataType.entries.values.forEach { dataType ->
+                            result.computeIfAbsent(dataType) { mutableListOf() } += ep
+                        }
+                    }
+                }
+            }
+            return result.mapValues { (_, v) -> v.optimized() }.optimized()
+        }
+
+        // endregion
     }
 }

@@ -14,6 +14,7 @@ import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.images.ImageFrameInfo
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.index.constraints.ParadoxLocalisationIndexConstraint
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.stringValue
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
@@ -31,7 +32,6 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.constants.ChronicleStrings
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
-import icu.windea.pls.model.constraints.ParadoxLocalisationIndexConstraint
 import icu.windea.pls.model.type.ParadoxExpressionRole
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptString
@@ -137,7 +137,7 @@ object ParadoxConfigExpressionService {
                     val resolvedDefinitionInfo = resolved.definitionInfo ?: return null
                     val primaryImageConfigs = resolvedDefinitionInfo.primaryImages
                     if (primaryImageConfigs.isEmpty()) return null // 没有或者规则不完善
-                    return withRecursionGuard {
+                    return withRecursionGuard({}.javaClass.name) {
                         withRecursionCheck("${resolvedDefinitionInfo.name}:${resolvedDefinitionInfo.type}") {
                             primaryImageConfigs.firstNotNullOfOrNull { primaryImageConfig ->
                                 val primaryLocationExpression = primaryImageConfig.locationExpression
@@ -186,7 +186,7 @@ object ParadoxConfigExpressionService {
                 }
                 val primaryImageConfigs = resolvedDefinitionInfo.primaryImages
                 if (primaryImageConfigs.isEmpty()) return null // 没有或者规则不完善
-                return withRecursionGuard {
+                return withRecursionGuard({}.javaClass.name) {
                     withRecursionCheck("${resolvedDefinitionInfo.name}:${resolvedDefinitionInfo.type}") {
                         primaryImageConfigs.firstNotNullOfOrNull { primaryImageConfig ->
                             val primaryLocationExpression = primaryImageConfig.locationExpression
@@ -223,10 +223,12 @@ object ParadoxConfigExpressionService {
     ): CwtImageLocationResolveResult.Static {
         return CwtImageLocationResolveResult.Static(filePath, frameInfo, {
             val selector = ParadoxFilePathSearch.selector(project, definition).contextSensitive()
-            ParadoxFilePathSearch.search(filePath, null, selector).find()?.toPsiFile(project)
+            val query = ParadoxFilePathSearch.searchImage(filePath, null, selector) // 3.0.1 optimize: limit file extensions
+            query.find()?.toPsiFile(project)
         }, {
             val selector = ParadoxFilePathSearch.selector(project, definition).contextSensitive()
-            ParadoxFilePathSearch.search(filePath, null, selector).findAll().mapNotNullTo(mutableSetOf()) { it.toPsiFile(project) }
+            val query = ParadoxFilePathSearch.searchImage(filePath, null, selector) // 3.0.1 optimize: limit file extensions
+            query.findAll().mapNotNullTo(mutableSetOf()) { it.toPsiFile(project) }
         })
     }
 

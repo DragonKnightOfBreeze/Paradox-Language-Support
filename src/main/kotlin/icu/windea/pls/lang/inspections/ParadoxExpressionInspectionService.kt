@@ -7,6 +7,7 @@ import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.util.CwtConfigManager
+import icu.windea.pls.core.collections.mapFast
 import icu.windea.pls.core.match.similarity.SimilarityMatchOptions
 import icu.windea.pls.core.match.similarity.SimilarityMatchService
 import icu.windea.pls.core.truncate
@@ -32,7 +33,7 @@ object ParadoxExpressionInspectionService {
         val expression = element.expression
         val expect = when {
             expectedConfigs.isEmpty() -> ""
-            showExpectInfo(context) -> expectedConfigs.mapTo(mutableSetOf()) { it.configExpression.expressionString }
+            showExpectInfo(context) -> expectedConfigs.mapFast { it.configExpression.expressionString }.toSet()
                 .truncate(ChronicleInternalSettings.getInstance().itemLimit).joinToString()
             else -> null
         }

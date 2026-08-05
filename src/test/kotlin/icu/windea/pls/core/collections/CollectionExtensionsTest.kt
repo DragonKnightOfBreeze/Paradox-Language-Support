@@ -5,20 +5,20 @@ import org.junit.Test
 
 class CollectionExtensionsTest {
     @Test
-    fun test_orNull_on_collection() {
+    fun orNull_on_collection_test() {
         assertNull(emptyList<String>().orNull())
         val list = listOf("a")
         assertSame(list, list.orNull())
     }
     @Test
-    fun test_orNull_on_map() {
+    fun orNull_on_map_test() {
         assertNull(emptyMap<String, Int>().orNull())
         val m = mapOf("a" to 1)
         assertSame(m, m.orNull())
     }
 
     @Test
-    fun test_toListOrThis_and_toSetOrThis_identity_and_copy() {
+    fun toListOrThis_and_toSetOrThis_identity_and_copy_test() {
         val list = listOf(1, 2)
         assertSame(list, list.toListOrThis())
 
@@ -31,7 +31,7 @@ class CollectionExtensionsTest {
     }
 
     @Test
-    fun test_asMutable_safe_cast_on_mutable_collections() {
+    fun asMutable_safe_cast_on_mutable_collections_test() {
         val list = mutableListOf(1, 2)
         val m = list.asMutable()
         m.add(3)
@@ -44,7 +44,7 @@ class CollectionExtensionsTest {
     }
 
     @Test
-    fun test_asMutable_and_and_synced() {
+    fun asMutable_and_and_synced_test() {
         val m = mutableMapOf("a" to 1)
         val mm = m.asMutable()
         mm["b"] = 2
@@ -56,7 +56,7 @@ class CollectionExtensionsTest {
     }
 
     @Test
-    fun test_filterIsInstance_and_findIsInstance() {
+    fun filterIsInstance_and_findIsInstance_test() {
         val list: List<Any?> = listOf(1, "a", null, "abc", 2)
         val onlyOneChar = list.filterIsInstance<String> { it.length == 1 }
         assertEquals(listOf("a"), onlyOneChar)
@@ -69,7 +69,7 @@ class CollectionExtensionsTest {
     }
 
     @Test
-    fun test_process_test() {
+    fun process_test() {
         val m = linkedMapOf("a" to 1, "b" to 2)
 
         var seen = mutableListOf<String>()
@@ -90,27 +90,27 @@ class CollectionExtensionsTest {
     }
 
     @Test
-    fun test_process_short_circuit() {
+    fun process_short_circuit_test() {
         val list = listOf(1, 2, 3)
         assertFalse(list.process { it < 3 })
         assertTrue(list.process { it <= 3 })
     }
 
     @Test
-    fun test_pinned_and_pinnedLast() {
+    fun pinned_and_pinnedLast_test() {
         val list = listOf(1, 2, 3, 4)
         assertEquals(listOf(2, 4, 1, 3), list.pinned { it % 2 == 0 })
         assertEquals(listOf(1, 3, 2, 4), list.pinnedLast { it % 2 == 0 })
     }
 
     @Test
-    fun test_chunkedBy_emptyString() {
+    fun chunkedBy_emptyString_test() {
         val list = listOf("a", "b", "", "c", "", "", "d")
         assertEquals(listOf(listOf("a", "b"), listOf("c"), listOf(), listOf("d")), list.chunkedBy { it.isEmpty() })
     }
 
     @Test
-    fun test_pinned_edgeCases() {
+    fun pinned_edgeCases_test() {
         // empty list
         assertEquals(emptyList<Int>(), emptyList<Int>().pinned { it % 2 == 0 })
 
@@ -133,7 +133,7 @@ class CollectionExtensionsTest {
     }
 
     @Test
-    fun test_pinnedLast_edgeCases() {
+    fun pinnedLast_edgeCases_test() {
         // empty list
         assertEquals(emptyList<Int>(), emptyList<Int>().pinnedLast { it % 2 == 0 })
 
@@ -156,7 +156,7 @@ class CollectionExtensionsTest {
     }
 
     @Test
-    fun test_chunkedBy_empty_input_and_no_separators() {
+    fun chunkedBy_empty_input_and_no_separators_test() {
         // empty input
         assertEquals(listOf<List<String>>(emptyList()), emptyList<String>().chunkedBy { it.isEmpty() })
         assertEquals(emptyList<List<String>>(), emptyList<String>().chunkedBy(keepEmpty = false) { it.isEmpty() })
@@ -168,7 +168,7 @@ class CollectionExtensionsTest {
     }
 
     @Test
-    fun test_chunkedBy_leading_trailing_and_only_separators() {
+    fun chunkedBy_leading_trailing_and_only_separators_test() {
         // leading and trailing separators
         val leadTrail = listOf("", "a", "")
         assertEquals(listOf(listOf(), listOf("a"), listOf()), leadTrail.chunkedBy { it.isEmpty() })
@@ -181,13 +181,13 @@ class CollectionExtensionsTest {
     }
 
     @Test
-    fun test_chunkedBy_keepEmpty_false_on_mixed() {
+    fun chunkedBy_keepEmpty_false_on_mixed_test() {
         val list = listOf("a", "b", "", "c", "", "", "d")
         assertEquals(listOf(listOf("a", "b"), listOf("c"), listOf("d")), list.chunkedBy(keepEmpty = false) { it.isEmpty() })
     }
 
     @Test
-    fun test_chunkedBy_numeric_separators() {
+    fun chunkedBy_numeric_separators_test() {
         val nums = listOf(0, 1, 0, 0, 2, 0)
         assertEquals(
             listOf(emptyList(), listOf(1), emptyList(), listOf(2), emptyList()),
@@ -196,7 +196,7 @@ class CollectionExtensionsTest {
     }
 
     @Test
-    fun test_pinned_partition_equivalence() {
+    fun pinned_partition_equivalence_test() {
         val cases = listOf(
             listOf(1, 2, 3, 4),
             listOf(2, 2, 1, 1, 2),
@@ -211,7 +211,7 @@ class CollectionExtensionsTest {
     }
 
     @Test
-    fun test_pinnedLast_partition_equivalence() {
+    fun pinnedLast_partition_equivalence_test() {
         val cases = listOf(
             listOf(1, 2, 3, 4),
             listOf(2, 2, 1, 1, 2),
@@ -226,7 +226,7 @@ class CollectionExtensionsTest {
     }
 
     @Test
-    fun test_chunkedBy_flatten_invariant_keepEmpty_true_and_false() {
+    fun chunkedBy_flatten_invariant_keepEmpty_true_and_false_test() {
         val s = listOf("", "a", "", "b", "", "", "c", "")
         val predS = { x: String -> x.isEmpty() }
         val kTrue = s.chunkedBy(keepEmpty = true, predicate = predS)
@@ -243,7 +243,7 @@ class CollectionExtensionsTest {
     }
 
     @Test
-    fun test_chunkedBy_chunk_count_matches_separators_plus_one_when_keepEmpty_true() {
+    fun chunkedBy_chunk_count_matches_separators_plus_one_when_keepEmpty_true_test() {
         val s = listOf("", "a", "", "b", "", "", "c", "")
         val pred = { x: String -> x.isEmpty() }
         val sepCount = s.count(pred)
@@ -252,74 +252,22 @@ class CollectionExtensionsTest {
     }
 
     @Test(expected = IllegalStateException::class)
-    fun test_pinned_predicate_exception_propagates() {
+    fun pinned_predicate_exception_propagates_test() {
         listOf(1, 2, 3).pinned { if (it == 2) throw IllegalStateException("boom") else false }
     }
 
     @Test(expected = IllegalStateException::class)
-    fun test_pinnedLast_predicate_exception_propagates() {
+    fun pinnedLast_predicate_exception_propagates_test() {
         listOf(1, 2, 3).pinnedLast { if (it == 2) throw IllegalStateException("boom") else false }
     }
 
     @Test(expected = IllegalStateException::class)
-    fun test_chunkedBy_predicate_exception_propagates() {
+    fun chunkedBy_predicate_exception_propagates_test() {
         listOf(1, 2, 3).chunkedBy { if (it == 2) throw IllegalStateException("boom") else false }
     }
 
     @Test
-    fun test_removePrefixOrNull_basic_and_edges() {
-        val base = listOf(1, 2, 3)
-
-        // empty prefix -> return this (identity)
-        assertSame(base, base.removePrefixOrNull(emptyList()))
-
-        // longer prefix -> null
-        assertNull(base.removePrefixOrNull(listOf(1, 2, 3, 4)))
-
-        // exact match -> empty list
-        assertEquals(emptyList<Int>(), base.removePrefixOrNull(listOf(1, 2, 3)))
-
-        // proper prefix -> tail
-        assertEquals(listOf(3), base.removePrefixOrNull(listOf(1, 2)))
-
-        // mismatch at first element
-        assertNull(base.removePrefixOrNull(listOf(0)))
-
-        // mismatch inside
-        assertNull(base.removePrefixOrNull(listOf(1, 0)))
-
-        // with wildcard
-        assertEquals(listOf("c"), listOf("a", "b", "c").removePrefixOrNull(listOf("a", "*"), wildcard = "*"))
-    }
-
-    @Test
-    fun test_removeSuffixOrNull_basic_and_edges() {
-        val base = listOf(1, 2, 3)
-
-        // empty suffix -> return this (identity)
-        assertSame(base, base.removeSuffixOrNull(emptyList()))
-
-        // longer suffix -> null
-        assertNull(base.removeSuffixOrNull(listOf(0, 1, 2, 3)))
-
-        // exact match -> empty list
-        assertEquals(emptyList<Int>(), base.removeSuffixOrNull(listOf(1, 2, 3)))
-
-        // proper suffix -> head
-        assertEquals(listOf(1), base.removeSuffixOrNull(listOf(2, 3)))
-
-        // mismatch at last element
-        assertNull(base.removeSuffixOrNull(listOf(4)))
-
-        // mismatch inside
-        assertNull(base.removeSuffixOrNull(listOf(2, 4)))
-
-        // with wildcard
-        assertEquals(listOf("a"), listOf("a", "b", "c").removeSuffixOrNull(listOf("b", "*"), wildcard = "*"))
-    }
-
-    @Test
-    fun test_withDefault_delegate_inserts_default_and_updates() {
+    fun withDefault_delegate_inserts_default_and_updates_test() {
         val h = Holder()
         // default inserted at delegate binding time
         assertEquals(1, h.backing["count"])

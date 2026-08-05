@@ -1,8 +1,9 @@
 package icu.windea.pls.config.config.delegated
 
-import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
+import icu.windea.pls.config.CwtConfigType
+import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.annotations.FromMember
 import icu.windea.pls.config.annotations.FromName
@@ -58,6 +59,8 @@ interface CwtDatabaseObjectTypeConfig : CwtDelegatedConfig<CwtProperty, CwtPrope
     @FromMember("localisation: string?")
     val localisation: String?
 
+    override val configType: CwtConfigType get() = CwtConfigTypes.DatabaseObjectType
+
     /** 根据 [isBase]（基础/替换）返回对应的值规则。 */
     fun getConfigForType(isBase: Boolean): CwtValueConfig?
 
@@ -79,7 +82,7 @@ private object CwtDatabaseObjectTypeConfigResolver : CwtConfigResolverScope {
         val name = config.key
         val propConfigs = config.properties
         if (propConfigs.isNullOrEmpty()) {
-            logger.warn("Skipped invalid database object type config (name: $name): Missing properties.".withLocationPrefix(config))
+            logger.warnWithPrefix(config, "Skipped invalid database object type config (name: $name): Missing properties.")
             return null
         }
         val propGroup = propConfigs.groupBy { it.key }
@@ -87,10 +90,10 @@ private object CwtDatabaseObjectTypeConfigResolver : CwtConfigResolverScope {
         val swapType = propGroup.getOne("swap_type")?.stringValue
         val localisation = propGroup.getOne("localisation")?.stringValue
         if (type == null && localisation == null) {
-            logger.warn("Skipped invalid database object type config (name: $name): Missing type or localisation property.".withLocationPrefix(config))
+            logger.warnWithPrefix(config, "Skipped invalid database object type config (name: $name): Missing type or localisation property.")
             return null
         }
-        logger.debug { "Resolved database object type config (name: $name).".withLocationPrefix(config) }
+        logger.debugWithPrefix(config) { "Resolved database object type config (name: $name)." }
         return CwtDatabaseObjectTypeConfigImpl(config, name, type, swapType, localisation)
     }
 }

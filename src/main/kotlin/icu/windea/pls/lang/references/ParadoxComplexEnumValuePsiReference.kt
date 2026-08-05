@@ -5,10 +5,16 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
 import icu.windea.pls.core.unquote
+import icu.windea.pls.lang.codeInsight.completion.script.ParadoxScriptExpressionCompletionProvider
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueLightElement
+import icu.windea.pls.lang.references.script.ParadoxScriptExpressionPsiReferenceProvider
 import icu.windea.pls.model.ParadoxComplexEnumValueInfo
 
+/**
+ * @see ParadoxScriptExpressionPsiReferenceProvider
+ * @see ParadoxScriptExpressionCompletionProvider
+ */
 class ParadoxComplexEnumValuePsiReference(
     element: ParadoxExpressionElement,
     rangeInElement: TextRange,

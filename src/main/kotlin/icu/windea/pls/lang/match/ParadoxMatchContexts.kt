@@ -31,9 +31,11 @@ data class ParadoxScriptExpressionMatchContext(
     val configGroup: CwtConfigGroup,
     val options: ParadoxMatchOptions? = null,
 ) {
-    val dataType: CwtDataType get() = configExpression.type
     val project: Project get() = configGroup.project
     val gameType: ParadoxGameType get() = configGroup.gameType
+
+    val dataType: CwtDataType = configExpression.type  // 3.0.1 optimize: declared as field to optimize access performance
+    val usePredicateBasedMatch: Boolean = configGroup.attribute.usePredicateBasedMatch // 3.0.1 optimize: use attribute to apply fast return
 }
 
 /**
@@ -71,7 +73,8 @@ data class ParadoxCsvExpressionMatchContext(
     val configExpression: CwtDataExpression,
     val configGroup: CwtConfigGroup,
 ) {
-    val dataType: CwtDataType get() = configExpression.type
     val project: Project get() = configGroup.project
     val gameType: ParadoxGameType get() = configGroup.gameType
+
+    val dataType: CwtDataType = configExpression.type  // 3.0.1 optimize: declared as field to optimize access performance
 }

@@ -2,8 +2,8 @@ package icu.windea.pls.ep.resolve.scope
 
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.psi.PsiElement
-import icu.windea.pls.base.annotations.WithGameTypeEP
 import icu.windea.pls.config.config.CwtMemberConfig
+import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.scope.ParadoxScopeContext
 
 /**
@@ -11,8 +11,9 @@ import icu.windea.pls.model.scope.ParadoxScopeContext
  *
  * 这里获取的作用域上下文会覆盖原始的作用域上下文。
  */
-@WithGameTypeEP
 interface ParadoxOverriddenScopeContextProvider {
+    fun supports(gameType: ParadoxGameType): Boolean = true
+
     /**
      * 基于指定的上下文 PSI 元素 [contextElement] 和对应的规则 [config] ，得到重载后的作用域上下文。
      */

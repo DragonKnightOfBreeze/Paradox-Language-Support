@@ -12,11 +12,11 @@ import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.util.values.singletonList
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.resolve.ParadoxExpressionService
 import icu.windea.pls.lang.resolve.ParadoxParameterService
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionRecursiveVisitor
-import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.model.ParadoxParameterContextInfo
 import icu.windea.pls.script.psi.ParadoxConditionParameter
@@ -139,7 +139,7 @@ class ParadoxComplexExpressionNodeParameterInferredConfigProvider : ParadoxParam
         val value = element.value
         val expression = ParadoxComplexExpression.resolveByConfig(value, null, configGroup, config) ?: return null
         val rangeInElement = parameterInfo.element?.textRangeInParent
-        val offset = ParadoxExpressionManager.getExpressionOffset(element)
+        val offset = ParadoxExpressionService.getExpressionOffset(element)
         var result: List<CwtValueConfig>? = null
         expression.accept(object : ParadoxComplexExpressionRecursiveVisitor() {
             override fun visit(node: ParadoxComplexExpressionNode): Boolean {
@@ -174,7 +174,7 @@ class ParadoxComplexExpressionNodeParameterInferredConfigProvider : ParadoxParam
             }
             node is ParadoxScriptValueArgumentValueNode -> {
                 val argumentNode = node.argumentNode ?: return emptyList()
-                val offset = ParadoxExpressionManager.getExpressionOffset(element)
+                val offset = ParadoxExpressionService.getExpressionOffset(element)
                 val rangeInElement = argumentNode.rangeInExpression.shiftRight(offset)
                 val passingParameterElement = ParadoxParameterService.resolveArgument(element, rangeInElement, config) ?: return emptyList()
                 val passingContextConfigs = ParadoxParameterManager.getInferredContextConfigs(passingParameterElement)

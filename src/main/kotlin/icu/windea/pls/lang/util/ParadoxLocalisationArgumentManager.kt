@@ -1,5 +1,6 @@
 package icu.windea.pls.lang.util
 
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiReference
 import com.intellij.psi.util.CachedValueProvider
@@ -13,18 +14,24 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationTextColorAwareElement
 
 object ParadoxLocalisationArgumentManager {
     fun getReferences(element: ParadoxLocalisationArgument): Array<out PsiReference> {
+        // from cache
+        return getReferencesFromCache(element)
+    }
+
+    private fun getReferencesFromCache(element: ParadoxLocalisationArgument): Array<out PsiReference> {
+        ProgressManager.checkCanceled()
         return CachedValuesManager.getCachedValue(element) {
-            val value = doGetReferences(element)
+            val value = resolveReferences(element)
             CachedValueProvider.Result.create(value, element)
         }
     }
 
-    private fun doGetReferences(element: ParadoxLocalisationArgument): Array<out PsiReference> {
+    private fun resolveReferences(element: ParadoxLocalisationArgument): Array<out PsiReference> {
         val references = mutableListOf<PsiReference>()
         val argumentText = element.text
         run {
             if (element !is ParadoxLocalisationTextColorAwareElement) return@run
-            val i = argumentText.indexOfFirst { ParadoxTextColorManager.isIdInArgument(it) }
+            val i = argumentText.indexOfFirst { ParadoxTextColorManager.isColorIdInArgument(it) }
             if (i == -1) return@run
             val rangeInElement = TextRange(i, i + 1)
             val reference = ParadoxLocalisationTextColorPsiReference(element, rangeInElement)

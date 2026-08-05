@@ -18,8 +18,9 @@ import com.intellij.util.application
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.listeners.CwtConfigGroupRefreshStatusListener
-import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.getDefaultProject
+import icu.windea.pls.core.optimized
+import icu.windea.pls.ep.config.configGroup.CwtConfigGroupFileProvider
 import icu.windea.pls.ide.analysis.ChronicleAnalysisManager
 import icu.windea.pls.ide.notification.ChronicleNotificationGroups
 import icu.windea.pls.lang.ParadoxLibraryService
@@ -41,12 +42,10 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
 
     suspend fun refreshBuiltInConfigFiles() {
         if (project.isDisposed) return
-        val files = CwtConfigManager.getBuiltInConfigRootDirectories(project)
+        val files = CwtConfigGroupFileProvider.EP_NAME.extensionList
+            .filter { it.source == CwtConfigGroupFileSource.BuiltIn }
+            .mapNotNull { it.getRootDirectory(project) }
         if (files.isEmpty()) return
-        if (ChronicleFacade.isUnitTestMode()) {
-            files.forEach { VfsUtil.markDirtyAndRefresh(false, true, true, it) }
-            return
-        }
         // 必须先切换到 EDT
         withContext(Dispatchers.EDT) {
             // 显示可以取消的模态进度条
@@ -114,7 +113,7 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
         val configGroup = getConfigGroups().get(gameType)
         if (configGroup == null) {
             // return temporary empty config group to avoid NPE
-            return CwtConfigGroup(project, gameType)
+            return CwtConfigGroup.create(project, gameType)
         }
         return configGroup
     }
@@ -129,13 +128,9 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
     }
 
     private fun createConfigGroups(): Map<ParadoxGameType, CwtConfigGroup> {
-        val gameTypes = ParadoxGameType.getAll()
-        val configGroups = buildMap(gameTypes.size) {
-            for (gameType in gameTypes) {
-                this[gameType] = CwtConfigGroup(project, gameType)
-            }
-        }
-        return configGroups
+        val gameTypes = ParadoxGameType.getAll().toSet()
+        val result = gameTypes.associateWith { gameType -> CwtConfigGroup.create(project, gameType) }
+        return result.optimized() // optimized to optimize access performance
     }
 
     /**

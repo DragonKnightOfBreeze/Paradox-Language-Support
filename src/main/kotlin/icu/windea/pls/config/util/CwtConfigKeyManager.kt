@@ -23,17 +23,16 @@ import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 
 @Suppress("unused")
+@Optimized
 object CwtConfigKeyManager {
     object Keys : KeyRegistry() {
         val inBlockKeys by registerKey<Set<String>>(this)
     }
 
-    @Optimized
     fun getIdentifierKey(config: CwtMemberConfig<*>, delimiter: String, maxDepth: Int = -1): String {
         return doGetIdentifierKey(config, delimiter, maxDepth, 0)
     }
 
-    @Optimized
     fun getIdentifierKey(configs: List<CwtMemberConfig<*>>, delimiter: String, maxDepth: Int = -1): String {
         return doGetIdentifierKey(configs, delimiter, maxDepth, 0)
     }
@@ -63,12 +62,10 @@ object CwtConfigKeyManager {
         }
     }
 
-    @Optimized
     fun getIdentifierKey(optionConfig: CwtOptionMemberConfig<*>, delimiter: String): String {
         return doGetIdentifierKey(optionConfig, delimiter)
     }
 
-    @Optimized
     fun getIdentifierKey(optionConfigs: List<CwtOptionMemberConfig<*>>, delimiter: String): String {
         return doGetIdentifierKey(optionConfigs, delimiter)
     }
@@ -97,7 +94,6 @@ object CwtConfigKeyManager {
         }
     }
 
-    @Optimized
     fun getDistinctKey(config: CwtMemberConfig<*>): String {
         return doGetDistinctKey(config)
     }
@@ -123,7 +119,6 @@ object CwtConfigKeyManager {
         }
     }
 
-    @Optimized
     fun getInBlockKeys(config: CwtMemberConfig<*>): Set<String> {
         return config.getOrPutUserData(Keys.inBlockKeys) { doGetInBlockKeys(config).optimized() }
     }
@@ -164,7 +159,7 @@ object CwtConfigKeyManager {
     private fun isInBlockKey(config: CwtPropertyConfig): Boolean {
         val gameType = config.configGroup.gameType
         if (config.keyExpression.type != CwtDataTypes.Constant) return false
-        if (config.optionData.cardinality?.isRequired() == false) return false
+        if (config.optionMetadata.cardinality?.isRequired() == false) return false
         if (ParadoxInlineScriptManager.isMatched(config.key, gameType)) return false // 排除是内联脚本用法的情况
         return true
     }

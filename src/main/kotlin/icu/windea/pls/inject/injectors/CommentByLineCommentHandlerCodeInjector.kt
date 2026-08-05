@@ -23,8 +23,8 @@ class CommentByLineCommentHandlerCodeInjector : CodeInjectorBase() {
 
     @InjectMethod(pointer = InjectMethod.Pointer.BEFORE, static = true)
     fun isLineCommented(block: Any, line: Int, commenter: Commenter): Boolean {
-        runSafely r@{
-            if (commenter !is CwtCommenter) return@r
+        execute("isLineCommented") action@{
+            if (commenter !is CwtCommenter) return@action
             val document = block.editor.document
             var lineStart: Int = document.getLineStartOffset(line)
             val chars: CharSequence = document.charsSequence

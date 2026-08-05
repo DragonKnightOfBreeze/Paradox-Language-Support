@@ -20,7 +20,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 class ParadoxScriptedEffectInlineActionHandler : InlineActionHandler() {
     override fun getActionName(element: PsiElement?) = ChronicleBundle.message("title.inline.scriptedEffect")
 
-    override fun isEnabledForLanguage(language: Language) = language is ParadoxScriptLanguage
+    override fun isEnabledForLanguage(language: Language) = language === ParadoxScriptLanguage
 
     override fun canInlineElement(element: PsiElement): Boolean {
         if (element !is ParadoxScriptProperty) return false

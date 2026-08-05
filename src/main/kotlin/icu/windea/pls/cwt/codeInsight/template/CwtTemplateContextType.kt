@@ -12,7 +12,7 @@ import icu.windea.pls.cwt.psi.CwtMember
 abstract class CwtTemplateContextType(presentableName: String) : TemplateContextType(presentableName) {
     override fun isInContext(templateActionContext: TemplateActionContext): Boolean {
         val file = templateActionContext.file
-        if (file.language !is CwtLanguage) return false
+        if (file.language !== CwtLanguage) return false
         return doIsInContext(templateActionContext)
     }
 

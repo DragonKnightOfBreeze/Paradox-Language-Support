@@ -13,6 +13,6 @@ import icu.windea.pls.model.ParadoxTextColorInfo
  */
 @Suppress("unused")
 interface ParadoxLocalisationTextColorAwareElement : PsiElement {
-    val colorId: String? get() = ParadoxTextColorManager.getId(this)
+    val colorId: String? get() = ParadoxTextColorManager.getColorId(this)
     val colorInfo: ParadoxTextColorInfo? get() = ParadoxTextColorManager.getInfo(this)
 }

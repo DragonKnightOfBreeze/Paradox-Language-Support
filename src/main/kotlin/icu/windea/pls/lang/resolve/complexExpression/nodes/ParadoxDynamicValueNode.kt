@@ -8,27 +8,25 @@ import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.collections.allFast
+import icu.windea.pls.core.collections.anyFast
 import icu.windea.pls.core.unquote
 import icu.windea.pls.lang.editor.ParadoxSemanticHighlighterColors
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
+import icu.windea.pls.lang.resolve.ParadoxExpressionService
 import icu.windea.pls.lang.util.ParadoxDynamicValueManager
-import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.model.constraints.ParadoxReferenceConstraint
 
 class ParadoxDynamicValueNode(
     override val text: String,
     override val rangeInExpression: TextRange,
     override val configGroup: CwtConfigGroup,
-    val configs: List<CwtConfig<*>>
+    val configs: List<CwtConfig<*>>,
 ) : ParadoxComplexExpressionNodeBase(), ParadoxIdentifierNode, ParadoxDynamicDataNode {
-    override fun getRelatedConfigs(): Collection<CwtConfig<*>> {
-        return configs
-    }
-
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey? {
-        val expression = configs.first().configExpression ?: return null // first is ok
-        val dynamicValueType = expression.value ?: return null
+        val expression = configs.firstOrNull()?.configExpression ?: return null // first is ok
+        val dynamicValueType = expression.metadata.value ?: return null
         return when (dynamicValueType) {
             "variable" -> ParadoxSemanticHighlighterColors.variable(element.language)
             else -> ParadoxSemanticHighlighterColors.dynamicValue(element.language)
@@ -37,7 +35,7 @@ class ParadoxDynamicValueNode(
 
     override fun getReference(element: ParadoxExpressionElement): Reference? {
         if (text.isParameterized()) return null
-        val offset = ParadoxExpressionManager.getExpressionOffset(element)
+        val offset = ParadoxExpressionService.getExpressionOffset(element)
         return Reference(element, rangeInExpression.shiftRight(offset), text, configs, configGroup)
     }
 
@@ -62,7 +60,7 @@ class ParadoxDynamicValueNode(
                 // always true
                 ParadoxReferenceConstraint.DynamicValue -> true
                 // skip if related link config can have multiple arguments
-                ParadoxReferenceConstraint.DynamicValueReference -> configs.all { it !is CwtLinkConfig || it.dataSources.size == 1 }
+                ParadoxReferenceConstraint.DynamicValueReference -> configs.allFast { it !is CwtLinkConfig || it.dataSources.size == 1 }
                 else -> false
             }
         }
@@ -72,7 +70,7 @@ class ParadoxDynamicValueNode(
         @JvmStatic
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, configs: List<CwtConfig<*>>): ParadoxDynamicValueNode? {
             // text may contain parameters
-            if (configs.any { c -> c.configExpression?.type !in CwtDataTypeSets.DynamicValue }) return null
+            if (configs.anyFast { c -> c.configExpression?.type !in CwtDataTypeSets.DynamicValue }) return null
             return ParadoxDynamicValueNode(text, textRange, configGroup, configs)
         }
     }

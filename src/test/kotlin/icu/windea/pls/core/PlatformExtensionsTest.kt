@@ -7,7 +7,7 @@ import org.junit.Test
 
 class PlatformExtensionsTest {
     @Test
-    fun test_unquote() {
+    fun unquote_test() {
         // 空字符串 -> 空
         run {
             Assert.assertEquals("", "".unquote())
@@ -51,7 +51,7 @@ class PlatformExtensionsTest {
     }
 
     @Test
-    fun test_replaceAndQuoteIfNeeded() {
+    fun replaceAndQuoteIfNeeded_test() {
         // 覆盖全长替换 -> 直接按需要包围引号
         run {
             Assert.assertEquals("def", TextRange.create(0, 3).replaceAndQuoteIfNeeded("abc", "def"))
@@ -73,7 +73,7 @@ class PlatformExtensionsTest {
     }
 
     @Test
-    fun test_findKeywordsWithTextRanges() {
+    fun findKeywordsWithTextRanges_test() {
         // 单一关键字
         run {
             val expected = listOf(tupleOf("foo", TextRange.create(0, 3)))
@@ -113,7 +113,7 @@ class PlatformExtensionsTest {
     }
 
     @Test
-    fun test_mergeTextRanges() {
+    fun mergeTextRanges_test() {
         // 空输入
         run {
             val expected = emptyList<TextRange>()

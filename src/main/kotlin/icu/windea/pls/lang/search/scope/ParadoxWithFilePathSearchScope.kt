@@ -13,14 +13,22 @@ class ParadoxWithFilePathSearchScope(
     val fileExtension: String? = null
 ) : ParadoxSearchScope(delegate.project, null) {
     override fun getDisplayName(): String {
-        return ChronicleBundle.message("search.scope.name.filePathAware", delegate.displayName, filePath, fileExtension.orEmpty())
+        return ChronicleBundle.message("search.scope.name.withFilePath", delegate.displayName, filePath, fileExtension.orEmpty())
+    }
+
+    override fun contains(file: VirtualFile): Boolean {
+        if (!delegate.contains(file)) return false // NOTE 3.0.1 should check delegate first
+        return super.contains(file)
     }
 
     override fun containsFromTop(topFile: VirtualFile): Boolean {
-        val path = topFile.fileInfo?.path?.path ?: return false
-        if (!filePath.matchesPath(path)) return false
-        if (fileExtension != null && fileExtension != topFile.extension) return false
-        return delegate.contains(topFile)
+        if (fileExtension != null) {
+            val extension = topFile.extension
+            if (fileExtension != extension) return false
+        }
+        val fileInfo = topFile.fileInfo ?: return false
+        val path = fileInfo.path
+        return filePath.matchesPath(path.path)
     }
 
     override fun calcHashCode(): Int {

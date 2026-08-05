@@ -1,6 +1,5 @@
 package icu.windea.pls.config.config.internal
 
-import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
 import icu.windea.pls.config.config.CwtDetachedConfig
 import icu.windea.pls.config.config.CwtFileConfig
@@ -46,7 +45,7 @@ private object CwtFoldingSettingsConfigResolver : CwtConfigResolverScope {
                 val id = property.key
                 val propConfigs = property.properties
                 if (propConfigs.isNullOrEmpty()) {
-                    logger.warn("Skipped invalid internal folding settings config (id: $id): Missing properties".withLocationPrefix(property))
+                    logger.warnWithPrefix(property,"Skipped invalid internal folding settings config (id: $id): Missing properties")
                     continue
                 }
                 val propGroup = propConfigs.groupBy { it.key }
@@ -54,10 +53,10 @@ private object CwtFoldingSettingsConfigResolver : CwtConfigResolverScope {
                 val keys = propGroup.getOne("keys")?.values?.mapNotNull { it.stringValue }
                 val placeholder = propGroup.getOne("placeholder")?.stringValue
                 if (placeholder == null) {
-                    logger.warn("Skipped invalid internal folding settings config (id: $id): Missing placeholder property".withLocationPrefix(property))
+                    logger.warnWithPrefix(property, "Skipped invalid internal folding settings config (id: $id): Missing placeholder property")
                     continue
                 }
-                logger.debug { "Resolved internal folding settings config (id: $id).".withLocationPrefix(property) }
+                logger.debugWithPrefix(property) { "Resolved internal folding settings config (id: $id)." }
                 val foldingSetting = CwtFoldingSettingsConfig(id, key, keys, placeholder)
                 map.put(id, foldingSetting)
             }

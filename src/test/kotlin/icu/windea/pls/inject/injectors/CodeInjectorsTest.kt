@@ -82,8 +82,7 @@ class CodeInjectorsTest : BasePlatformTestCase() {
 
     @After
     fun doTearDown() {
-        CodeInjectorContext.classPool = null
-        CodeInjectorContext.codeInjectors.clear()
+        CodeInjectorContext.cleanUp()
     }
 
     private fun makeTargetClass(className: String, methods: List<String>): CtClass {
@@ -109,7 +108,7 @@ class CodeInjectorsTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun test_baseSupport_before_continueInvocation() {
+    fun baseSupport_before_continueInvocation_test() {
         // Build a target class dynamically so we don't touch any production/platform classes.
         makeTargetClass(
             TARGET_BEFORE,
@@ -140,7 +139,7 @@ class CodeInjectorsTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun test_baseSupport_body_replace() {
+    fun baseSupport_body_replace_test() {
         // Pointer.BODY replaces the whole method body (i.e., the original implementation is not executed).
         makeTargetClass(
             TARGET_BODY,
@@ -168,7 +167,7 @@ class CodeInjectorsTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun test_baseSupport_after_useReturnValue() {
+    fun baseSupport_after_useReturnValue_test() {
         // `Pointer.AFTER` runs after the original method body and can override the return value.
         // The original return value is passed to the injection method as an extra parameter.
         makeTargetClass(
@@ -197,7 +196,7 @@ class CodeInjectorsTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun test_baseSupport_afterFinally_useReturnValue() {
+    fun baseSupport_afterFinally_useReturnValue_test() {
         // Pointer.AFTER_FINALLY is implemented via a try/finally-style pattern.
         // It also provides the original return value to the injection method.
         makeTargetClass(
@@ -226,7 +225,7 @@ class CodeInjectorsTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun test_baseSupport_staticMethod() {
+    fun baseSupport_staticMethod_test() {
         // Static target methods require static = true so that the generated call site uses a null receiver.
         makeTargetClass(
             TARGET_STATIC,
@@ -253,7 +252,7 @@ class CodeInjectorsTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun test_baseSupport_body_partialArgs() {
+    fun baseSupport_body_partialArgs_test() {
         // Inject method can accept fewer normal parameters than target method (prefix matching).
         makeTargetClass(
             TARGET_PARTIAL_ARGS,
@@ -286,7 +285,7 @@ class CodeInjectorsTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun test_injector_pluginId_notEnabled_skip() {
+    fun injector_pluginId_notEnabled_skip_test() {
         // If pluginId is specified but the plugin is not enabled, CodeInjectorBase.inject() will skip injection.
         // This test verifies that the target class is not defined/loaded as a side effect.
         makeTargetClass(
@@ -314,7 +313,7 @@ class CodeInjectorsTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun test_inject_internalModel_toString_after() {
+    fun inject_internalModel_toString_after_test() {
         // Do NOT inject any production classes (platform or plugin) in tests.
         // Redefining a real class would globally change its behavior and may break unrelated tests.
         if (findLoadedClass(this::class.java.classLoader, TARGET_INTERNAL_TO_STRING_MODEL) != null) return
@@ -338,7 +337,7 @@ class CodeInjectorsTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun test_fieldCache_support_cache_and_cleanup() {
+    fun fieldCache_support_cache_and_cleanup_test() {
         // FieldCacheCodeInjectorSupport injects a cache field and reuses it until cleanUp is called.
         if (findLoadedClass(this::class.java.classLoader, TARGET_FIELD_CACHE_MODEL) != null) return
 
@@ -367,7 +366,7 @@ class CodeInjectorsTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun test_optimizedField_support_replaceType_and_init() {
+    fun optimizedField_support_replaceType_and_init_test() {
         // OptimizedFieldCodeInjectorSupport can replace a field type and update its initialization logic.
         if (findLoadedClass(this::class.java.classLoader, TARGET_OPTIMIZED_FIELD_MODEL) != null) return
 

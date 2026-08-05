@@ -7,7 +7,10 @@ import com.intellij.psi.util.CachedValuesManager
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.core.EMPTY_OBJECT
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.collections.buildImmutableList
+import icu.windea.pls.core.collections.filterFast
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.util.KeyRegistry
@@ -22,10 +25,11 @@ import icu.windea.pls.lang.match.ParadoxMatchService
 import icu.windea.pls.lang.resolve.ParadoxDefinitionService
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxDefinitionInfo
+import icu.windea.pls.model.ParadoxDefinitionSource
 import icu.windea.pls.model.paths.ParadoxMemberPath
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
-@Suppress("unused")
+@Optimized
 object ParadoxDefinitionManager {
     object Keys : KeyRegistry() {
         val cachedDefinitionInfo by registerKey<CachedValue<ParadoxDefinitionInfo>>(Keys)
@@ -57,12 +61,16 @@ object ParadoxDefinitionManager {
 
     fun getInfo(element: ParadoxDefinitionElement): ParadoxDefinitionInfo? {
         // from cache
+        return getInfoFromCache(element)
+    }
+
+    private fun getInfoFromCache(element: ParadoxDefinitionElement): ParadoxDefinitionInfo? {
         return CachedValuesManager.getCachedValue(element, Keys.cachedDefinitionInfo) {
             ProgressManager.checkCanceled()
             runSmartReadAction {
                 val file = element.containingFile
                 val value = ParadoxDefinitionService.resolveInfo(element, file)
-                val dependencies = ParadoxDefinitionService.getInfoDependencies(element, file)
+                val dependencies = ParadoxDefinitionService.getInfoDependencies(element, file, value)
                 value.withDependencyItems(dependencies)
             }
         }
@@ -71,8 +79,12 @@ object ParadoxDefinitionManager {
     fun getSubtypeConfigs(definitionInfo: ParadoxDefinitionInfo, options: ParadoxMatchOptions? = null): List<CwtSubtypeConfig> {
         val candidates = definitionInfo.typeConfig.subtypes
         if (candidates.isEmpty()) return emptyList()
-        val element = definitionInfo.element ?: return emptyList()
         // from cache
+        return getSubtypeConfigsFromCache(definitionInfo, options)
+    }
+
+    private fun getSubtypeConfigsFromCache(definitionInfo: ParadoxDefinitionInfo, options: ParadoxMatchOptions?): List<CwtSubtypeConfig> {
+        val element = definitionInfo.element ?: return emptyList()
         val isDumb = ParadoxMatchService.isDumb(options)
         val finalOptions = if (isDumb) ParadoxMatchOptions.DUMB else ParadoxMatchOptions.DEFAULT
         val cacheKey = if (isDumb) Keys.cachedSubtypeConfigsDumb else Keys.cachedSubtypeConfigs
@@ -87,8 +99,12 @@ object ParadoxDefinitionManager {
     }
 
     fun getDeclaration(definitionInfo: ParadoxDefinitionInfo, options: ParadoxMatchOptions? = null): CwtPropertyConfig? {
-        val element = definitionInfo.element ?: return null
         // from cache
+        return getDeclarationFromCache(definitionInfo, options)
+    }
+
+    private fun getDeclarationFromCache(definitionInfo: ParadoxDefinitionInfo, options: ParadoxMatchOptions?): CwtPropertyConfig? {
+        val element = definitionInfo.element ?: return null
         val isDumb = ParadoxMatchService.isDumb(options)
         val finalOptions = if (isDumb) ParadoxMatchOptions.DUMB else ParadoxMatchOptions.DEFAULT
         val cacheKey = if (isDumb) Keys.cachedDeclarationDumb else Keys.cachedDeclaration
@@ -104,8 +120,15 @@ object ParadoxDefinitionManager {
 
     fun getMemberPath(definitionInfo: ParadoxDefinitionInfo): ParadoxMemberPath {
         // NOTE 2.1.2 file definition has empty member path
-        if (definitionInfo.typeConfig.typePerFile) return ParadoxMemberPath.resolveEmpty()
-        return ParadoxMemberPath.resolve(definitionInfo.rootKeys + definitionInfo.typeKey)
+        if (definitionInfo.source == ParadoxDefinitionSource.File) return ParadoxMemberPath.resolveEmpty()
+        // 3.0.1 optimize: build immutable list here
+        // 3.0.1 optimize: construct sized array directly for better performance and memory
+        val rootKeys = definitionInfo.rootKeys
+        val size = rootKeys.size
+        val subPaths = buildImmutableList(size + 1) {
+            if (it != size) rootKeys[it] else definitionInfo.typeKey
+        }
+        return ParadoxMemberPath.resolve(subPaths)
     }
 
     fun getRelatedLocalisationInfos(definitionInfo: ParadoxDefinitionInfo): List<ParadoxDefinitionInfo.RelatedLocalisationInfo> {
@@ -121,24 +144,26 @@ object ParadoxDefinitionManager {
     }
 
     fun getPrimaryRelatedLocalisationInfos(definitionInfo: ParadoxDefinitionInfo): List<ParadoxDefinitionInfo.RelatedLocalisationInfo> {
-        return definitionInfo.localisations.filter { it.primary || it.primaryByInference }.optimized()
+        return definitionInfo.localisations.filterFast { it.primary || it.primaryByInference }.optimized()
     }
 
     fun getPrimaryRelatedImageInfos(definitionInfo: ParadoxDefinitionInfo): List<ParadoxDefinitionInfo.RelatedImageInfo> {
-        return definitionInfo.images.filter { it.primary || it.primaryByInference }.optimized()
+        return definitionInfo.images.filterFast { it.primary || it.primaryByInference }.optimized()
     }
 
     fun getPresentableName(element: ParadoxDefinitionElement): String? {
         val primaryLocalisation = getPrimaryLocalisation(element)
-        return primaryLocalisation?.let { ParadoxLocalisationManager.getLocalizedText(it) }
+        return primaryLocalisation?.let { ParadoxLocalisationManager.getPresentableText(it) }
     }
 
     fun getPresentableNames(element: ParadoxDefinitionElement): Set<String> {
         val primaryLocalisations = getPrimaryLocalisations(element)
-        return primaryLocalisations.mapNotNull { ParadoxLocalisationManager.getLocalizedText(it) }.toSet()
+        if (primaryLocalisations.isEmpty()) return emptySet()
+        return primaryLocalisations.mapNotNull { ParadoxLocalisationManager.getPresentableText(it) }.toSet()
     }
 
     fun getPrimaryLocalisationKey(element: ParadoxDefinitionElement): String? {
+        // from cache
         return CachedValuesManager.getCachedValue(element, Keys.cachedPrimaryLocalisationKey) {
             ProgressManager.checkCanceled()
             runSmartReadAction {
@@ -150,6 +175,7 @@ object ParadoxDefinitionManager {
     }
 
     fun getPrimaryLocalisation(element: ParadoxDefinitionElement): ParadoxLocalisationProperty? {
+        // from cache
         return CachedValuesManager.getCachedValue(element, Keys.cachedPrimaryLocalisation) {
             ProgressManager.checkCanceled()
             runSmartReadAction {
@@ -161,6 +187,7 @@ object ParadoxDefinitionManager {
     }
 
     fun getPrimaryLocalisations(element: ParadoxDefinitionElement): Set<ParadoxLocalisationProperty> {
+        // from cache
         return CachedValuesManager.getCachedValue(element, Keys.cachedPrimaryLocalisations) {
             ProgressManager.checkCanceled()
             runSmartReadAction {
@@ -172,6 +199,7 @@ object ParadoxDefinitionManager {
     }
 
     fun getPrimaryImage(element: ParadoxDefinitionElement): PsiFile? {
+        // from cache
         return CachedValuesManager.getCachedValue(element, Keys.cachedPrimaryImage) {
             ProgressManager.checkCanceled()
             runSmartReadAction {
@@ -182,7 +210,9 @@ object ParadoxDefinitionManager {
         }
     }
 
+    @Suppress("unused")
     fun getPrimaryImages(element: ParadoxDefinitionElement): Set<PsiFile> {
+        // from cache
         return CachedValuesManager.getCachedValue(element, Keys.cachedPrimaryImages) {
             ProgressManager.checkCanceled()
             runSmartReadAction {

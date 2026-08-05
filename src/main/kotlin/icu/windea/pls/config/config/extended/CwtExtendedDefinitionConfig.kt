@@ -1,8 +1,9 @@
 package icu.windea.pls.config.config.extended
 
-import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
+import icu.windea.pls.config.CwtConfigType
+import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.annotations.FromName
 import icu.windea.pls.config.annotations.FromOptionMember
@@ -10,7 +11,7 @@ import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtIdMatchableConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.config.option.CwtOptionDataHolder
+import icu.windea.pls.config.option.CwtOptionMetadata
 import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.cwt.psi.CwtMember
 
@@ -44,8 +45,8 @@ import icu.windea.pls.cwt.psi.CwtMember
  * @property type 定义类型。
  * @property hint 可选的提示文本。用于提供额外的内嵌提示。
  *
- * @see CwtOptionDataHolder.replaceScopes
- * @see CwtOptionDataHolder.pushScope
+ * @see CwtOptionMetadata.replaceScopes
+ * @see CwtOptionMetadata.pushScope
  */
 interface CwtExtendedDefinitionConfig : CwtDelegatedConfig<CwtMember, CwtMemberConfig<*>>, CwtIdMatchableConfig<CwtMember> {
     @FromName
@@ -54,6 +55,8 @@ interface CwtExtendedDefinitionConfig : CwtDelegatedConfig<CwtMember, CwtMemberC
     val type: String
     @FromOptionMember("hint: string?")
     val hint: String?
+
+    override val configType: CwtConfigType get() = CwtConfigTypes.ExtendedDefinition
 
     companion object {
         /** 由成员规则解析为定义的扩展规则。 */
@@ -71,13 +74,13 @@ private object CwtExtendedDefinitionConfigResolver : CwtConfigResolverScope {
 
     fun resolve(config: CwtMemberConfig<*>): CwtExtendedDefinitionConfig? {
         val name = if (config is CwtPropertyConfig) config.key else config.value
-        val type = config.optionData.type
+        val type = config.optionMetadata.type
         if (type == null) {
-            logger.warn("Skipped invalid extended definition config (name: $name): Missing type option.".withLocationPrefix(config))
+            logger.warnWithPrefix(config, "Skipped invalid extended definition config (name: $name): Missing type option.")
             return null
         }
-        val hint = config.optionData.hint
-        logger.debug { "Resolved extended definition config (name: $name, type: $type).".withLocationPrefix(config) }
+        val hint = config.optionMetadata.hint
+        logger.debugWithPrefix(config) { "Resolved extended definition config (name: $name, type: $type)." }
         return CwtExtendedDefinitionConfigImpl(config, name, type, hint)
     }
 }

@@ -23,7 +23,7 @@ class CwtConfigUsageTypeProvider : UsageTypeProviderEx {
     }
 
     override fun getUsageType(element: PsiElement, targets: Array<out UsageTarget>): UsageType? {
-        if (element.language !is CwtLanguage) return null
+        if (element.language !== CwtLanguage) return null
         run {
             val targetElements = targets.mapNotNull { it.castOrNull<PsiElementUsageTarget>()?.element }
             val targetElement = targetElements.findIsInstance<CwtConfigSymbolLightElement>()

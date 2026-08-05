@@ -31,16 +31,11 @@ class ParadoxScriptedVariableSearchTest : BasePlatformTestCase(), ChronicleTestS
     @After
     fun doTearDown() = clearIntegrationTest()
 
-    private fun markAndConfigureByFile(@TestDataFile testDataPath: String, relPath: String = testDataPath.removePrefix("features/index/")): PsiFile {
-        markFileInfo(gameType, relPath)
-        return myFixture.configureByFile(testDataPath)
-    }
-
     // region Local
 
     @Test
     fun test_Local() {
-        markAndConfigureByFile("features/index/common/test/local_vars.test.txt")
+        configureMarkedFile("features/index/common/test/local_vars.test.txt")
 
         val selector = ParadoxScriptedVariableSearch.selector(project, myFixture.file.virtualFile)
         val results = mutableListOf<String>()
@@ -53,7 +48,7 @@ class ParadoxScriptedVariableSearchTest : BasePlatformTestCase(), ChronicleTestS
 
     @Test
     fun test_Local_SkipAfterCaret() {
-        markAndConfigureByFile("features/index/common/test/local_vars.test.txt")
+        configureMarkedFile("features/index/common/test/local_vars.test.txt")
 
         val element = myFixture.file.findElementAt(myFixture.caretOffset)!!
         val selector = ParadoxScriptedVariableSearch.selector(project, element)
@@ -68,7 +63,7 @@ class ParadoxScriptedVariableSearchTest : BasePlatformTestCase(), ChronicleTestS
 
     @Test
     fun test_Local_withOverride() {
-        markAndConfigureByFile("features/index/common/test/local_vars.test.txt")
+        configureMarkedFile("features/index/common/test/local_vars.test.txt")
 
         run {
             val element = myFixture.file.findElementAt(myFixture.caretOffset)!!
@@ -97,7 +92,7 @@ class ParadoxScriptedVariableSearchTest : BasePlatformTestCase(), ChronicleTestS
 
     @Test
     fun test_Global() {
-        markAndConfigureByFile("features/index/common/scripted_variables/global_vars.test.txt")
+        configureMarkedFile("features/index/common/scripted_variables/global_vars.test.txt")
 
         val selector = ParadoxScriptedVariableSearch.selector(project, myFixture.file)
         val results = mutableListOf<String>()
@@ -109,4 +104,9 @@ class ParadoxScriptedVariableSearchTest : BasePlatformTestCase(), ChronicleTestS
     }
 
     // endregion
+
+    private fun configureMarkedFile(@TestDataFile testDataPath: String, path: String = testDataPath.removePrefix("features/index/")): PsiFile {
+        markFileInfo(gameType, path)
+        return myFixture.configureByFile(testDataPath)
+    }
 }

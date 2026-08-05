@@ -6,6 +6,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.Processor
 import icu.windea.pls.base.context.ChronicleThreadContext
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.lang.index.ChronicleIndexKeys
 import icu.windea.pls.lang.index.ChronicleIndexService
 import icu.windea.pls.lang.search.ParadoxDefineNamespaceSearch
@@ -18,33 +19,38 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 /**
  * 定值命名空间的查询器。
+ *
+ * @see ParadoxDefineNamespaceSearch
  */
+@Optimized
 class ParadoxDefineNamespaceSearcher : QueryExecutorBase<ParadoxScriptProperty, ParadoxDefineNamespaceSearch.Parameters>() {
     override fun processQuery(queryParameters: ParadoxDefineNamespaceSearch.Parameters, consumer: Processor<in ParadoxScriptProperty>) {
         // #141 如果正在为 ParadoxMergedIndex 编制索引并且正在解析引用，则直接跳过
         if (ChronicleThreadContext.resolveForMergedIndex.get() == true) return
 
         ProgressManager.checkCanceled()
-        val scope = queryParameters.scope.withFileTypes(ParadoxScriptFileType).withFilePath("common/defines", "txt") // optimized
-        val context = queryParameters.createContext(scope)
+        val context = queryParameters.createContext()
         processQuery(context, consumer)
     }
 
     private fun processQuery(context: Context, consumer: Processor<in ParadoxScriptProperty>): Boolean {
         if (!context.isValid()) return true
+        val indexKey = ChronicleIndexKeys.DefineNamespace
         if (context.namespace == null) {
-            return ChronicleIndexService.processElementsByKeys(ChronicleIndexKeys.DefineNamespace, context.project, context.scope) { _, element ->
+            return ChronicleIndexService.processElementsByKeys(indexKey, context.project, context.scope) { _, element ->
                 consumer.process(element)
             }
         } else {
             if (context.namespace.isEmpty()) return true
-            return ChronicleIndexService.processElements(ChronicleIndexKeys.DefineNamespace, context.namespace, context.project, context.scope) { element ->
+            return ChronicleIndexService.processElements(indexKey, context.namespace, context.project, context.scope) { element ->
                 consumer.process(element)
             }
         }
     }
 
-    private fun ParadoxDefineNamespaceSearch.Parameters.createContext(scope: GlobalSearchScope = this.scope): Context {
+    private fun ParadoxDefineNamespaceSearch.Parameters.createContext(): Context {
+        val scope = scope.withFileTypes(ParadoxScriptFileType) // optimize: restrict file types
+            .withFilePath("common/defines", "txt") // optimize: restrict file path
         return Context(namespace, gameType, project, scope)
     }
 

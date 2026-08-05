@@ -1,11 +1,11 @@
 package icu.windea.pls.model
 
-import icu.windea.pls.base.annotations.WithGameType
+import icu.windea.pls.base.annotations.ForGameType
 
 /**
  * @property modifierCategory `modifier_category` 属性的值，而不是 `modifier_categories.cwt` 中已定义的值。
  */
-@WithGameType(ParadoxGameType.Stellaris)
+@ForGameType(ParadoxGameType.Stellaris)
 data class ParadoxEconomicCategoryInfo(
     val name: String,
     val parent: String? = null,

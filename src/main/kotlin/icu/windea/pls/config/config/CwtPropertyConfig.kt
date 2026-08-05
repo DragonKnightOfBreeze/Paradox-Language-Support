@@ -3,36 +3,31 @@
 package icu.windea.pls.config.config
 
 import com.intellij.openapi.diagnostic.thisLogger
-import com.intellij.openapi.diagnostic.trace
 import com.intellij.openapi.util.Key
 import com.intellij.psi.SmartPsiElementPointer
 import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.config.configExpression.CwtDataExpressionRole
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.option.CwtOptionDataHolder
-import icu.windea.pls.config.option.CwtOptionDataHolderBase
-import icu.windea.pls.config.option.CwtOptionDataProcessor
+import icu.windea.pls.config.option.CwtOptionMetadata
+import icu.windea.pls.config.option.CwtOptionMetadataBase
+import icu.windea.pls.config.option.CwtOptionMetadataProcessor
 import icu.windea.pls.config.util.CwtConfigResolverManager
 import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.config.util.CwtMemberConfigVisitor
-import icu.windea.pls.core.EMPTY_OBJECT
 import icu.windea.pls.core.annotations.Optimized
-import icu.windea.pls.core.cast
 import icu.windea.pls.core.collections.filterIsInstanceFast
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.createPointer
-import icu.windea.pls.core.deoptimized
 import icu.windea.pls.core.emptyPointer
 import icu.windea.pls.core.forEachChild
 import icu.windea.pls.core.optimized
-import icu.windea.pls.core.optimizer.OptimizerFactory
+import icu.windea.pls.core.util.values.LazyValue
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.cwt.psi.CwtPropertyKey
 import icu.windea.pls.cwt.psi.CwtPropertyPointer
 import icu.windea.pls.cwt.psi.CwtValue
 import icu.windea.pls.model.constants.ChronicleStrings
-import icu.windea.pls.model.forCwtSeparatorType
-import icu.windea.pls.model.forCwtType
 import icu.windea.pls.model.type.CwtExpressionType
 import icu.windea.pls.model.type.CwtSeparatorType
 import icu.windea.pls.model.type.CwtTypeResolver
@@ -63,8 +58,8 @@ interface CwtPropertyConfig : CwtMemberConfig<CwtProperty> {
 
     val keyExpression: CwtDataExpression
     override val valueExpression: CwtDataExpression
-    override val configExpression: CwtDataExpression
 
+    override val configExpression: CwtDataExpression get() = keyExpression
     override val memberType: CwtMemberType get() = CwtMemberType.PROPERTY
 
     override fun accept(visitor: CwtMemberConfigVisitor): Boolean {
@@ -82,7 +77,7 @@ interface CwtPropertyConfig : CwtMemberConfig<CwtProperty> {
         @JvmStatic
         fun resolve(element: CwtProperty, file: CwtFile, configGroup: CwtConfigGroup): CwtPropertyConfig? = CwtPropertyConfigResolver.resolve(element, file, configGroup)
 
-        /** 创建属性规则。其中的选项数据仍然需要手动初始化。 */
+        /** 创建属性规则。其中的选项元数据仍然需要手动初始化。 */
         @JvmStatic
         fun create(
             pointer: SmartPsiElementPointer<out CwtProperty>,
@@ -132,30 +127,30 @@ private object CwtPropertyConfigResolver : CwtConfigResolverScope {
         }
 
         if (keyElement == null) {
-            logger.warn("Missing property key, skipped.".withLocationPrefix(element, configGroup))
+            logger.warnWithPrefix(element, configGroup, "Missing property key, skipped.")
             return null
         }
         if (valueElement == null) {
-            logger.warn("Missing property value, skipped.".withLocationPrefix(element, configGroup))
+            logger.warnWithPrefix(element, configGroup, "Missing property value, skipped.")
             return null
         }
         if (separatorType == null) {
-            logger.warn("Missing property separator, skipped.".withLocationPrefix(element, configGroup))
+            logger.warnWithPrefix(element, configGroup, "Missing property separator, skipped.")
             return null
         }
 
         val pointer = if (configGroup.project.isDefault) emptyPointer() else CwtPropertyPointer(file, element, valueElement)
         val configs = CwtConfigResolverManager.getConfigs(valueElement, file, configGroup)
-        val keyExpression = CwtDataExpression.resolveKey(keyElement.value)
-        val valueExpression = if (configs == null) CwtDataExpression.resolveValue(valueElement.value) else CwtDataExpression.resolveBlock()
+        val keyExpression = CwtDataExpression.resolve(keyElement.value, CwtDataExpressionRole.Key)
+        val valueExpression = if (configs == null) CwtDataExpression.resolve(valueElement.value, CwtDataExpressionRole.Value) else CwtDataExpression.resolveBlock()
         val valueType = CwtTypeResolver.resolveExpressionType(valueElement)
         val config = create(pointer, configGroup, keyExpression, valueExpression, valueType, separatorType, configs, injectable = true)
         val optionConfigs = CwtConfigResolverManager.getOptionConfigs(element, configGroup)
-        CwtOptionDataProcessor.process(config.optionData, optionConfigs) // initialize option data
+        CwtOptionMetadataProcessor.process(config.optionMetadata, optionConfigs, configGroup) // initialize option metadata
         when {
-            configs == null -> logger.trace { "Resolved property config (key: ${config.key}, value: ${config.value}).".withLocationPrefix(element, configGroup) }
-            configs.isEmpty() -> logger.trace { "Resolved property config (key: ${config.key}, empty member configs).".withLocationPrefix(element, configGroup) }
-            else -> logger.trace { "Resolved property config (key: ${config.key}, ${configs.size} member configs).".withLocationPrefix(element, configGroup) }
+            configs == null -> logger.traceWithPrefix(element, configGroup) { "Resolved property config (key: ${config.key}, value: ${config.value})." }
+            configs.isEmpty() -> logger.traceWithPrefix(element, configGroup) { "Resolved property config (key: ${config.key}, empty member configs)." }
+            else -> logger.traceWithPrefix(element, configGroup) { "Resolved property config (key: ${config.key}, ${configs.size} member configs)." }
         }
         return config
     }
@@ -194,28 +189,23 @@ private object CwtPropertyConfigResolver : CwtConfigResolverScope {
 }
 
 private const val blockValue = ChronicleStrings.blockFolder
-private val blockValueTypeId = CwtExpressionType.Block.optimized(OptimizerFactory.forCwtType())
+private val blockValueTypeId = CwtExpressionType.Block.optimized()
 
 // 12 + 3 * 4 = 24 -> 24
-private sealed class CwtPropertyConfigBase : CwtOptionDataHolderBase(), CwtPropertyConfig {
+private sealed class CwtPropertyConfigBase : CwtOptionMetadataBase(), CwtPropertyConfig {
     override val properties: List<CwtPropertyConfig>? get() = configs?.filterIsInstanceFast()
     override val values: List<CwtValueConfig>? get() = configs?.filterIsInstanceFast()
 
     @Volatile override var parentConfig: CwtMemberConfig<*>? = null
 
-    override val optionData: CwtOptionDataHolder get() = this
+    override val optionMetadata: CwtOptionMetadata get() = this
 
-    override val configExpression: CwtDataExpression get() = keyExpression
+    // 3.0.1 optimize: use memory-friendly lazy property
+    override val valueConfig: CwtValueConfig? // region by lazy { computeValueConfig() }
+        get() = LazyValue.ofNullable(this, { _valueConfig }, { _valueConfig = it }) { computeValueConfig() }
+    @Volatile private var _valueConfig = LazyValue.UNINITIALIZED // endregion
 
-    // use memory-optimized lazy property
-    @Volatile private var _valueConfig: Any? = EMPTY_OBJECT
-    override val valueConfig: CwtValueConfig? @Synchronized get() = resolveLazyValueConfig()
-
-    private fun resolveLazyValueConfig(): CwtValueConfig? {
-        return if (_valueConfig !== EMPTY_OBJECT) _valueConfig.cast() else resolveValueConfig().also { _valueConfig = it }
-    }
-
-    private fun resolveValueConfig(): CwtValueConfig? {
+    private fun computeValueConfig(): CwtValueConfig? {
         // this function should be enough fast because there are no pointers to be created
         val resolvedPointer = this.resolved().pointer
         val valuePointer = when {
@@ -269,10 +259,10 @@ private sealed class CwtPropertyConfigImplBase(
     override val keyExpression: CwtDataExpression, // as constructor argument and field directly
     separatorType: CwtSeparatorType,
 ) : CwtPropertyConfigBase() {
-    private val separatorTypeId = separatorType.optimized(OptimizerFactory.forCwtSeparatorType()) // optimized to optimize memory
+    private val separatorTypeId = separatorType.optimized() // optimized to optimize memory
 
     override val key: String get() = keyExpression.expressionString
-    override val separatorType: CwtSeparatorType get() = separatorTypeId.deoptimized(OptimizerFactory.forCwtSeparatorType())
+    override val separatorType: CwtSeparatorType get() = CwtSeparatorType.deoptimized(separatorTypeId)
 }
 
 // 12 + 2 * 1 + 7 * 4 = 42 -> 48
@@ -284,10 +274,10 @@ private open class CwtPropertyConfigImpl(
     valueType: CwtExpressionType,
     separatorType: CwtSeparatorType,
 ) : CwtPropertyConfigImplBase(pointer, configGroup, keyExpression, separatorType) {
-    private val valueTypeId = valueType.optimized(OptimizerFactory.forCwtType()) // optimized to optimize memory
+    private val valueTypeId = valueType.optimized() // optimized to optimize memory
 
     override val value: String get() = valueExpression.expressionString
-    override val valueType: CwtExpressionType get() = valueTypeId.deoptimized(OptimizerFactory.forCwtType())
+    override val valueType: CwtExpressionType get() = CwtExpressionType.deoptimized(valueTypeId)
     override val configs: List<CwtMemberConfig<*>>? get() = if (valueTypeId == blockValueTypeId) emptyList() else null
 }
 
@@ -349,7 +339,7 @@ private open class CwtPropertyConfigDelegate(
     override val valueType: CwtExpressionType get() = delegate.valueType
     override val separatorType: CwtSeparatorType get() = delegate.separatorType
     override val configs: List<CwtMemberConfig<*>>? get() = delegate.configs
-    override val optionData: CwtOptionDataHolder get() = delegate.optionData
+    override val optionMetadata: CwtOptionMetadata get() = delegate.optionMetadata
 
     override val keyExpression: CwtDataExpression get() = delegate.keyExpression
     override val valueExpression: CwtDataExpression get() = delegate.valueExpression
@@ -393,7 +383,7 @@ private class CwtPropertyConfigDelegateWithConfigs(
     }
 }
 
-// 12 + 6 * 4 = 26 -> 40
+// 12 + 6 * 4 = 36 -> 40
 private class CwtPropertyConfigDelegateWithKeyAndValue(
     delegate: CwtPropertyConfig,
     key: String,
@@ -403,8 +393,8 @@ private class CwtPropertyConfigDelegateWithKeyAndValue(
     override val value: String get() = valueExpression.expressionString
     override val configs: List<CwtMemberConfig<*>>? get() = null // should be always null here
 
-    override val keyExpression: CwtDataExpression = CwtDataExpression.resolveKey(key) // as field directly
-    override val valueExpression: CwtDataExpression = CwtDataExpression.resolveValue(value) // as field directly
+    override val keyExpression: CwtDataExpression = CwtDataExpression.resolve(key, CwtDataExpressionRole.Key) // as field directly
+    override val valueExpression: CwtDataExpression = CwtDataExpression.resolve(value, CwtDataExpressionRole.Value) // as field directly
 }
 
 // endregion
