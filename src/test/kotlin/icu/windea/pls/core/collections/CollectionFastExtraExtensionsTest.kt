@@ -4,6 +4,8 @@ import org.junit.Assert.*
 import org.junit.Test
 
 class CollectionFastExtraExtensionsTest {
+    // region removePrefixOrNull
+
     @Test
     fun removePrefixOrNull_basic_and_edges_test() {
         val base = listOf(1, 2, 3)
@@ -34,6 +36,41 @@ class CollectionFastExtraExtensionsTest {
     }
 
     @Test
+    fun removePrefixOrNull_same_reference_test() {
+        val base = listOf(1, 2, 3)
+        // identical reference prefix -> empty list
+        val result = base.removePrefixOrNull(base)
+        assertEquals(emptyList<Int>(), result)
+    }
+
+    @Test
+    fun removePrefixOrNull_wildcard_null_test() {
+        // wildcard 为 null 时不做通配
+        val base = listOf("a", "b", "c")
+        assertNull(base.removePrefixOrNull(listOf("a", "*"), wildcard = null))
+    }
+
+    @Test
+    fun removePrefixOrNull_single_element_test() {
+        assertEquals(emptyList<Int>(), listOf(1).removePrefixOrNull(listOf(1)))
+        assertEquals(listOf(2), listOf(1, 2).removePrefixOrNull(listOf(1)))
+        assertNull(listOf(1).removePrefixOrNull(listOf(2)))
+    }
+
+    @Test
+    fun removePrefixOrNull_immutable_result_test() {
+        val result = listOf(1, 2, 3).removePrefixOrNull(listOf(1))
+        assertNotNull(result)
+        assertThrows(UnsupportedOperationException::class.java) {
+            (result as MutableList).add(999)
+        }
+    }
+
+    // endregion
+
+    // region removeSuffixOrNull
+
+    @Test
     fun removeSuffixOrNull_basic_and_edges_test() {
         val base = listOf(1, 2, 3)
 
@@ -61,4 +98,28 @@ class CollectionFastExtraExtensionsTest {
         // with wildcard
         assertEquals(listOf("a"), listOf("a", "b", "c").removeSuffixOrNull(listOf("b", "*"), wildcard = "*"))
     }
+
+    @Test
+    fun removeSuffixOrNull_same_reference_test() {
+        val base = listOf(1, 2, 3)
+        val result = base.removeSuffixOrNull(base)
+        assertEquals(emptyList<Int>(), result)
+    }
+
+    @Test
+    fun removeSuffixOrNull_wildcard_null_test() {
+        val base = listOf("a", "b", "c")
+        assertNull(base.removeSuffixOrNull(listOf("*", "c"), wildcard = null))
+    }
+
+    @Test
+    fun removeSuffixOrNull_immutable_result_test() {
+        val result = listOf(1, 2, 3).removeSuffixOrNull(listOf(3))
+        assertNotNull(result)
+        assertThrows(UnsupportedOperationException::class.java) {
+            (result as MutableList).add(999)
+        }
+    }
+
+    // endregion
 }

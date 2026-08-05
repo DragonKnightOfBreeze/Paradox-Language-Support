@@ -145,5 +145,9 @@ fun String.toDelimitedMutableSet(result: MutableSet<String> = mutableSetOf(), de
 /** 将当前的字符串集合拼接为按 [delimiter] 分隔后的字符串。默认使用英文逗号作为分隔符。 */
 @Fast
 fun Collection<String>.toDelimitedString(delimiter: Char = ','): String {
-    return if (isEmpty()) "" else if (size == 1) single() else joinToString(",")
+    val size = size
+    if (size == 0) return "" // optimize: fast return
+    if (size == 1) return single() // optimize: fast return
+    if (this is List) return joinToStringFast(delimiter.toString())
+    return joinToString(delimiter.toString())
 }
