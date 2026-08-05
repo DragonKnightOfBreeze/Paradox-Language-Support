@@ -159,7 +159,8 @@ object ParadoxConfigService {
         if (dynamic) {
             // NOTE 2.1.1 prefix in-config-context cache if marked as dynamic
             val dynamicCacheKey = options.toHashString(forMatched = false).optimized() // optimized to optimize memory
-            dynamicCache.getIfPresent(dynamicCacheKey)?.let { return it }
+            val cached = dynamicCache.getIfPresent(dynamicCacheKey)
+            if (cached != null) return cached
         }
         val rootFile = context.rootFile ?: return emptyList() // 3.0.1 optimize: get root file from context object directly
         val provider = context.provider
@@ -170,7 +171,7 @@ object ParadoxConfigService {
                 val resolvingStack = ChronicleThreadContext.resolvingConfigContextStack.getOrSet { ArrayDeque() }
                 resolvingStack.addLast(context)
                 try {
-                    // use lock-freeze `ConcurrentMap.getOrPut` to prevent IDE freezing problems
+                    // use lock-freeze `ConcurrentMap.getOrPut` to prevent IDE freezing problems (WARNING: or will cause deadlock!)
                     cache.asMap().getOrPut(cacheKey) {
                         val result = provider.getConfigs(context, options)
                         result?.optimized().orEmpty()

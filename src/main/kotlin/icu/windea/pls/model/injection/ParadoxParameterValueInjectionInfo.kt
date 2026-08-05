@@ -15,6 +15,5 @@ class ParadoxParameterValueInjectionInfo(
     val parameterValueQuoted: Boolean,
     parameterElementProvider: Lazy<ParadoxParameterLightElement?>
 ) {
-    // 这里必须使用懒加载，否则调用 `element.references` 时会导致 SOF
     val parameterElement by parameterElementProvider
 }

@@ -240,13 +240,15 @@ class ParadoxSelectScopeImpl : ParadoxSelectScope {
     private fun PsiElement.queryParentInternal(): ParadoxScriptMember? {
         var current = this
         while (current !is PsiFile) {
-            if (current is ParadoxScriptProperty) {
-                return current
-            } else if (current is ParadoxScriptValue) {
-                // 3.0.1 optimize: get and cache parent first
-                val parent = current.parent ?: return null
-                if (current.isDirectValue(parent)) return current
-                current = parent
+            when (current) {
+                is ParadoxScriptProperty -> return current
+                is ParadoxScriptValue -> {
+                    // 3.0.1 optimize: get and cache parent first
+                    val parent = current.parent ?: return null
+                    if (current.isDirectValue(parent)) return current
+                    current = parent
+                }
+                else -> current = current.parent ?: return null
             }
         }
         if (current is ParadoxScriptFile) return current
