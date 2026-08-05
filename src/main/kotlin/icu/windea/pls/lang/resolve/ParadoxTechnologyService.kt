@@ -4,6 +4,7 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.search.searches.ReferencesSearch
 import icu.windea.pls.base.annotations.ForGameType
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.optimizedIfEmpty
 import icu.windea.pls.core.process
 import icu.windea.pls.lang.data.ParadoxScriptDataResolver
 import icu.windea.pls.lang.data.get
@@ -27,8 +28,7 @@ object ParadoxTechnologyService {
         fun resolvePrerequisites(definition: ParadoxDefinitionElement): Set<String> {
             val data = ParadoxScriptDataResolver.DEFAULT.resolve(definition) ?: return emptySet()
             val result: Set<String> by data.get("prerequisites", emptySet())
-            if (result.isEmpty()) return emptySet()
-            return result
+            return result.optimizedIfEmpty()
         }
 
         /**
@@ -53,8 +53,7 @@ object ParadoxTechnologyService {
                     true
                 }
             }.distinct()
-            if (result.isEmpty()) return emptyList()
-            return result
+            return result.optimizedIfEmpty()
         }
 
         /**
@@ -84,8 +83,7 @@ object ParadoxTechnologyService {
                     true
                 }
             }.distinct()
-            if (result.isEmpty()) return emptyList()
-            return result
+            return result.optimizedIfEmpty()
         }
     }
 }

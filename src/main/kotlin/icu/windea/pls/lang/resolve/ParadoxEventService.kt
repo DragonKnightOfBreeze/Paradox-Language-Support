@@ -7,6 +7,7 @@ import com.intellij.psi.search.searches.ReferencesSearch
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.optimizedIfEmpty
 import icu.windea.pls.core.process
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.references.script.ParadoxScriptExpressionPsiReference
@@ -54,8 +55,7 @@ object ParadoxEventService {
                     && config.configExpression.metadata.value?.substringBefore('.') == ParadoxDefinitionTypes.event
             }
         })
-        if (result.isEmpty()) return emptySet()
-        return result
+        return result.optimizedIfEmpty()
     }
 
     fun resolveInvokerEvents(definition: ParadoxDefinitionElement, selector: ParadoxDefinitionSearch.Selector): List<ParadoxScriptProperty> {
@@ -81,8 +81,7 @@ object ParadoxEventService {
                 true
             }
         }.distinct()
-        if (result.isEmpty()) return emptyList()
-        return result
+        return result.optimizedIfEmpty()
     }
 
     fun resolveInvokedEvents(definition: ParadoxDefinitionElement, selector: ParadoxDefinitionSearch.Selector): List<ParadoxScriptProperty> {
@@ -103,7 +102,6 @@ object ParadoxEventService {
                 true
             }
         }.distinct()
-        if (result.isEmpty()) return emptyList()
-        return result
+        return result.optimizedIfEmpty()
     }
 }

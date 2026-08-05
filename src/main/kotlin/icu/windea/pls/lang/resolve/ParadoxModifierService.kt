@@ -8,6 +8,7 @@ import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.CaseInsensitiveStringSet
 import icu.windea.pls.core.collections.anyFast
 import icu.windea.pls.core.collections.forEachFast
+import icu.windea.pls.core.optimizedIfEmpty
 import icu.windea.pls.core.text.DocumentationBuilder
 import icu.windea.pls.ep.resolve.modifier.ParadoxModifierIconProvider
 import icu.windea.pls.ep.resolve.modifier.ParadoxModifierNameDescProvider
@@ -108,8 +109,7 @@ object ParadoxModifierService {
             if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f // check game type first
             ep.addModifierIconBaseName(modifierInfo, element, result)
         }
-        if (result.isEmpty()) return emptySet()
-        return result
+        return result.optimizedIfEmpty()
     }
 
     /**
@@ -123,8 +123,7 @@ object ParadoxModifierService {
             if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f // check game type first
             ep.addModifierNameKey(modifierInfo, element, result)
         }
-        if (result.isEmpty()) return emptySet()
-        return result
+        return result.optimizedIfEmpty()
     }
 
     /**
@@ -138,7 +137,6 @@ object ParadoxModifierService {
             if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f // check game type first
             ep.addModifierDescKey(modifierInfo, element, result)
         }
-        if (result.isEmpty()) return emptySet()
-        return result
+        return result.optimizedIfEmpty()
     }
 }
