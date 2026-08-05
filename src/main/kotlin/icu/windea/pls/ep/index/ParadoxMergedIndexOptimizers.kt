@@ -54,11 +54,10 @@ class ParadoxDefinitionBasedMergedIndexOptimizer : ParadoxMergedIndexOptimizer {
 
         val builder = ImmutableSet.builder<ParadoxMergedIndexType<*>>()
         for (typeConfig in fileLevelTypeConfigs) {
-            // 如果涉及特定类型的定义，则认为是可用的
-            checkForcedTypeConfig(typeConfig, builder)
-            // 检查对应的声明规则的综合属性，如果发现可能包含要索引的数据，则认为是可用的
+            // 要求存在声明规则
             val declarationConfig = declarations[typeConfig.name] ?: continue
-            checkInvolvedDeclarationConfig(declarationConfig, builder)
+
+            collectFromTypeConfig(typeConfig, declarationConfig, builder)
         }
         return builder.build()
     }
@@ -72,13 +71,17 @@ class ParadoxDefinitionBasedMergedIndexOptimizer : ParadoxMergedIndexOptimizer {
         val declarationConfig = declarations[typeConfig.name] ?: return emptySet()
 
         val builder = ImmutableSet.builder<ParadoxMergedIndexType<*>>()
+        collectFromTypeConfig(typeConfig, declarationConfig, builder)
+        return builder.build()
+    }
+
+    private fun collectFromTypeConfig(typeConfig: CwtTypeConfig, declarationConfig: CwtDeclarationConfig, builder: ImmutableSet.Builder<ParadoxMergedIndexType<*>>) {
         // 检查类型规则
         checkTypeConfig(typeConfig, builder)
         // 如果涉及特定类型的定义，则认为是可用的
         checkForcedTypeConfig(typeConfig, builder)
         // 检查对应的声明规则的综合属性，如果发现可能包含要索引的数据，则认为是可用的
         checkInvolvedDeclarationConfig(declarationConfig, builder)
-        return builder.build()
     }
 
     private fun checkTypeConfig(typeConfig: CwtTypeConfig, builder: ImmutableSet.Builder<ParadoxMergedIndexType<*>>) {
