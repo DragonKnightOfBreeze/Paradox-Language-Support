@@ -85,10 +85,11 @@ object ChronicleTestManager {
     }
 
     private fun initConfigGroups(project: Project, configGroups: List<CwtConfigGroup>, onlyInjected: Boolean) {
+        val gameTypesString = configGroups.joinToString { it.gameType.id }
         if (onlyInjected) {
-            logger.info("Prepare to init injected config groups...")
+            logger.info("Prepare to init injected config groups for [$gameTypesString]...")
         } else {
-            logger.info("Prepare to init config groups...")
+            logger.info("Prepare to init config groups for [$gameTypesString]...")
         }
         runBlocking { CwtConfigGroupService.getInstance(project).initConfigGroups(configGroups) }
     }

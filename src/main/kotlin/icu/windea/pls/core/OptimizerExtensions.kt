@@ -34,19 +34,25 @@ inline fun <T : Any> Byte.deoptimized(optimizer: ByteOptimizer<T>): T {
 
 /** @see OptimizerFactory.forString */
 @JvmName("optimizedForString")
-inline fun String.optimized() = optimized(OptimizerFactory.forString())
+inline fun String.optimized(): String = optimized(OptimizerFactory.forString())
 /** @see OptimizerFactory.forStringList */
 @JvmName("optimizedForStringList")
-inline fun List<String>.optimized() = optimized(OptimizerFactory.forStringList())
+inline fun List<String>.optimized(): List<String> = optimized(OptimizerFactory.forStringList())
 /** @see OptimizerFactory.forStringSet */
 @JvmName("optimizedForStringSet")
-inline fun Set<String>.optimized() = optimized(OptimizerFactory.forStringSet())
+inline fun Set<String>.optimized(): Set<String> = optimized(OptimizerFactory.forStringSet())
 /** @see OptimizerFactory.forList */
 @JvmName("optimizedForList")
-inline fun <E : Any> List<E>.optimized() = optimized(OptimizerFactory.forList())
+inline fun <E : Any> List<E>.optimized(): List<E> = optimized(OptimizerFactory.forList())
 /** @see OptimizerFactory.forSet */
 @JvmName("optimizedForSet")
-inline fun <E : Any> Set<E>.optimized() = optimized(OptimizerFactory.forSet())
+inline fun <E : Any> Set<E>.optimized(): Set<E> = optimized(OptimizerFactory.forSet())
 /** @see OptimizerFactory.forMap */
 @JvmName("optimizedForMap")
-inline fun <K : Any, V : Any> Map<K, V>.optimized() = optimized(OptimizerFactory.forMap())
+inline fun <K : Any, V : Any> Map<K, V>.optimized(): Map<K, V> = optimized(OptimizerFactory.forMap())
+
+inline fun <E> List<E>.optimizedIfEmpty() = ifEmpty { emptyList() }
+
+inline fun <E> Set<E>.optimizedIfEmpty() = ifEmpty { emptySet() }
+
+inline fun <K, V> Map<K, V>.optimizedIfEmpty() = ifEmpty { emptyMap() }

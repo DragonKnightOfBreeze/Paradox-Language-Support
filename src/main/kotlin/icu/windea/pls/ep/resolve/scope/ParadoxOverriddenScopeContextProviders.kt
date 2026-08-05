@@ -10,8 +10,11 @@ import icu.windea.pls.config.config.aliasConfig
 import icu.windea.pls.config.config.originalConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.CwtDataExpressionRole
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.orNull
+import icu.windea.pls.core.equalsAnyFast
+import icu.windea.pls.core.equalsFast
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.psi.stringValue
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
@@ -21,6 +24,7 @@ import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.model.scope.ParadoxScopeContext
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
+@Optimized
 class ParadoxSwitchOverriddenScopeContextProvider : ParadoxOverriddenScopeContextProvider {
     // 重载 `switch = {...}` 中对应的规则为 `scalar` 的属性以及属性 `default` 对应的作用域上下文
     // 重载 `inverted_switch = {...}` 中对应的规则为 `scalar` 的属性以及属性 `default 对应的作用域上下文
@@ -33,16 +37,18 @@ class ParadoxSwitchOverriddenScopeContextProvider : ParadoxOverriddenScopeContex
     }
 
     override fun getOverriddenScopeContext(contextElement: PsiElement, config: CwtMemberConfig<*>, parentScopeContext: ParadoxScopeContext?): ParadoxScopeContext? {
+        // 3.0.1 radical optimization
         val finalConfig = config.originalConfig ?: config
         if (finalConfig !is CwtPropertyConfig) return null
-        if (finalConfig.key != Constants.caseKey && finalConfig.key != Constants.defaultKey) return null
+        if (!Constants.caseKey.equalsFast(finalConfig.key) && !Constants.defaultKey.equalsFast(finalConfig.key)) return null
         val aliasConfig = finalConfig.parentConfig?.castOrNull<CwtPropertyConfig>()?.aliasConfig ?: return null
-        if (aliasConfig.subName !in Constants.contextNames) return null
-        ProgressManager.checkCanceled()
+        if (!Constants.contextNames.equalsAnyFast(aliasConfig.subName)) return null
         val containerProperty = contextElement.parentsOfType<ParadoxScriptProperty>(false)
-            .filter { it.name.lowercase() in Constants.contextNames }
+            .filter { Constants.contextNames.equalsAnyFast(it.name, ignoreCase = true) }
             .find { ParadoxConfigManager.getConfigs(it).any { c -> c is CwtPropertyConfig && c.aliasConfig == aliasConfig } }
-            ?: return null
+        if (containerProperty == null) return null
+
+        ProgressManager.checkCanceled()
         // 基于 `trigger` 的值得到最终的 `scopeContext`，然后推断目标属性的 `scopeContext`
         val triggerProperty = selectScope { containerProperty.properties(inline = true).ofKeys(*Constants.triggerKeys).one() } ?: return null
         val triggerName = triggerProperty.propertyValue?.stringValue() ?: return null
@@ -54,6 +60,7 @@ class ParadoxSwitchOverriddenScopeContextProvider : ParadoxOverriddenScopeContex
     }
 }
 
+@Optimized
 class ParadoxTriggerWithParametersAwareOverriddenScopeContextProvider : ParadoxOverriddenScopeContextProvider {
     // 重载 `complex_trigger_modifier = {...}` 中属性 `trigger` 的值以及属性 `parameters` 对应的作用域上下文
     // 重载 `export_trigger_value_to_variable = {...}` 中属性 `trigger` 的值以及属性 `parameters` 对应的作用域上下文
@@ -63,20 +70,22 @@ class ParadoxTriggerWithParametersAwareOverriddenScopeContextProvider : ParadoxO
         const val triggerKey = "trigger"
         const val triggerScopeKey = "trigger_scope"
         const val parametersKey = "parameters"
-        val contextNames = setOf("complex_trigger_modifier", "export_trigger_value_to_variable")
+        val contextNames = arrayOf("complex_trigger_modifier", "export_trigger_value_to_variable")
     }
 
     override fun getOverriddenScopeContext(contextElement: PsiElement, config: CwtMemberConfig<*>, parentScopeContext: ParadoxScopeContext?): ParadoxScopeContext? {
+        // 3.0.1 radical optimization
         val finalConfig = config.originalConfig ?: config
         if (finalConfig !is CwtPropertyConfig) return null
-        if (finalConfig.key != Constants.triggerKey && finalConfig.key != Constants.parametersKey) return null
+        if (!Constants.triggerKey.equalsFast(finalConfig.key) && !Constants.parametersKey.equalsFast(finalConfig.key)) return null
         val aliasConfig = finalConfig.parentConfig?.castOrNull<CwtPropertyConfig>()?.aliasConfig ?: return null
-        if (aliasConfig.subName !in Constants.contextNames) return null
-        ProgressManager.checkCanceled()
+        if (!Constants.contextNames.equalsAnyFast(aliasConfig.subName)) return null
         val containerProperty = contextElement.parentsOfType<ParadoxScriptProperty>(false)
-            .filter { it.name.lowercase() in Constants.contextNames }
+            .filter { Constants.contextNames.equalsAnyFast(it.name, ignoreCase = true) }
             .find { ParadoxConfigManager.getConfigs(it).any { c -> c is CwtPropertyConfig && c.aliasConfig == aliasConfig } }
-            ?: return null
+        if (containerProperty == null) return null
+
+        ProgressManager.checkCanceled()
         if (finalConfig.key == Constants.triggerKey) {
             // 基于 `trigger_scope` 的值得到最终的 `scopeContext`，然后推断属性 `trigger` 的值的 `scopeContext`
             val triggerScopeProperty = selectScope { containerProperty.properties(inline = true).ofKey(Constants.triggerScopeKey).one() } ?: return null

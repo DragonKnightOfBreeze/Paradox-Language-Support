@@ -154,12 +154,10 @@ object ParadoxConfigService {
     }
 
     fun getConfigsForConfigContext(context: CwtConfigContext, options: ParadoxMatchOptions? = null): List<CwtMemberConfig<*>> {
-        val dynamic = context.dynamic
-        val dynamicCache = context.dynamicCache
-        if (dynamic) {
+        if (context.dynamic) {
             // NOTE 2.1.1 prefix in-config-context cache if marked as dynamic
             val dynamicCacheKey = options.toHashString(forMatched = false).optimized() // optimized to optimize memory
-            val cached = dynamicCache.getIfPresent(dynamicCacheKey)
+            val cached = context.dynamicCache.getIfPresent(dynamicCacheKey)
             if (cached != null) return cached
         }
         val rootFile = context.rootFile ?: return emptyList() // 3.0.1 optimize: get root file from context object directly
@@ -178,7 +176,7 @@ object ParadoxConfigService {
                     }
                 } finally {
                     resolvingStack.pollLast()
-                    if (dynamic) {
+                    if (context.dynamic) {
                         // invalidate in-config-group cache if result context configs are dynamic (e.g., based on script context)
                         cache.invalidate(cacheKey)
                     }
@@ -186,10 +184,10 @@ object ParadoxConfigService {
                 }
             }
         } ?: return emptyList() // unexpected recursion, return empty list
-        if (dynamic) {
+        if (context.dynamic) {
             // NOTE 2.1.1 store dynamic result into in-config-context cache
             val dynamicCacheKey = options.toHashString(forMatched = false).optimized() // optimized to optimize memory
-            dynamicCache.put(dynamicCacheKey, cached)
+            context.dynamicCache.put(dynamicCacheKey, cached)
         }
         return cached
     }

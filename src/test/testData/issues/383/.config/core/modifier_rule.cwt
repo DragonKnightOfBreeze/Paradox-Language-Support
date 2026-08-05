@@ -1,0 +1,72 @@
+alias[modifier_rule:base] = float
+alias[modifier_rule:enum[complex_maths_enum]] = value_field
+alias[modifier_rule:enum[simple_maths_enum]] = yes
+
+alias[modifier_rule:modifier] = {
+    ## cardinality = 0..inf
+    enum[complex_maths_enum] = value_field
+    ## cardinality = 0..inf
+    enum[simple_maths_enum] = yes
+    ## cardinality = 0..inf
+    alias_name[trigger] = alias_match_left[trigger]
+    ## cardinality = 0..1
+    desc = localisation
+}
+
+alias[modifier_rule:complex_trigger_modifier] = {
+    trigger = alias_keys_field[trigger]
+    ## cardinality = 0..1
+    trigger_scope = scope[any]
+    ## cardinality = 0..1
+    parameters = $any
+    mode = enum[complex_maths_enum]
+    ## cardinality = 0..1
+    mult = value_field
+    ## cardinality = 0..1
+    multiplier = value_field
+    ## cardinality = 0..1
+    divide = value_field
+    ## cardinality = 0..1
+    min_value = value_field
+    ## cardinality = 0..1
+    max_value = value_field
+    ## cardinality = 0..1
+    desc = localisation
+    ## cardinality = 0..1
+    potential = {
+        alias_name[trigger] = alias_match_left[trigger]
+    }
+}
+
+enums = {
+    enum[scaled_modifier_calc] = {
+        pop_amount
+        pop_happiness
+        planet_distance_empire
+        planets_in_country
+    }
+    enum[complex_maths_enum] = {
+        set
+        weight
+        add
+        subtract
+        factor
+        mult
+        multiply
+        divide
+        modulo
+        round_to
+        max
+        min
+        pow
+    }
+    enum[simple_maths_enum] = {
+        round
+        ceiling
+        floor
+        abs
+        round
+        square_root
+        square
+    }
+}

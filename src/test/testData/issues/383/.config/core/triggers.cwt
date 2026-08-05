@@ -1,0 +1,22 @@
+## scopes = any
+alias[trigger:count_country] = {
+    ## cardinality = 0..1
+    ## push_scope = country
+    limit = {
+        alias_name[trigger] = alias_match_left[trigger]
+    }
+    count == int_value_field
+    count = all
+}
+
+## scopes = { country }
+## severity = warning
+alias[trigger:has_country_flag] = value[country_flag]
+
+alias[trigger:count_starbase_modules] = {
+    count == int_value_field
+    ## cardinality = 0..1
+    type = <starbase_module>
+    ## cardinality = 0..1
+    include_being_constructed = bool
+}

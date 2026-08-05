@@ -23,6 +23,7 @@ import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.equalsAnyFast
 import icu.windea.pls.core.equalsFast
+import icu.windea.pls.core.optimizedIfEmpty
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.psi.stringValue
 import icu.windea.pls.lang.select.selectScope
@@ -45,13 +46,16 @@ class CwtSwitchOverriddenConfigProvider : CwtOverriddenConfigProvider {
     }
 
     override fun <T : CwtMemberConfig<*>> getOverriddenConfigs(contextElement: PsiElement, config: T): List<T> {
+        // 3.0.1 radical optimization
         if (config !is CwtPropertyConfig) return emptyList()
-        if (Constants.caseKey.equalsFast(config.key)) return emptyList() // 3.0.1 radical optimization
-
+        if (!Constants.caseKey.equalsFast(config.key)) return emptyList()
         val aliasConfig = config.parentConfig?.castOrNull<CwtPropertyConfig>()?.aliasConfig ?: return emptyList()
-        if (!Constants.contextNames.equalsAnyFast(aliasConfig.subName)) return emptyList() // 3.0.1 radical optimization
+        if (!Constants.contextNames.equalsAnyFast(aliasConfig.subName)) return emptyList()
+        val triggerConfig = aliasConfig.config.configs
+            ?.findIsInstanceFast<CwtPropertyConfig> { Constants.triggerKeys.equalsAnyFast(it.key) && Constants.triggerValue.equalsFast(it.value) }
+        if (triggerConfig == null) return emptyList()
+
         ProgressManager.checkCanceled()
-        val triggerConfig = aliasConfig.config.configs?.findIsInstanceFast<CwtPropertyConfig> { it.key in Constants.triggerKeys && it.value == Constants.triggerValue } ?: return emptyList()
         val triggerConfigKey = triggerConfig.key
         val contextBlock = contextElement.parentOfType<ParadoxScriptBlock>(withSelf = false) ?: return emptyList()
         val triggerProperty = selectScope { contextBlock.properties(inline = true).ofKey(triggerConfigKey).one() } ?: return emptyList()
@@ -65,7 +69,7 @@ class CwtSwitchOverriddenConfigProvider : CwtOverriddenConfigProvider {
             val inlined = CwtConfigManipulationService.inlineWithConfig(config, resultTriggerConfig.config, CwtConfigInlineMode.VALUE_TO_KEY) ?: return@f
             resultConfigs.add(inlined)
         }
-        return resultConfigs.cast<List<T>>()
+        return resultConfigs.optimizedIfEmpty().cast()
     }
 }
 
@@ -84,16 +88,17 @@ class CwtTriggerWithParametersAwareOverriddenConfigProvider : CwtOverriddenConfi
     }
 
     override fun <T : CwtMemberConfig<*>> getOverriddenConfigs(contextElement: PsiElement, config: T): List<T> {
+        // 3.0.1 radical optimization
         if (config !is CwtPropertyConfig) return emptyList()
-        if (Constants.parametersKey.equalsFast(config.key)) return emptyList() // 3.0.1 radical optimization
-
+        if (!Constants.parametersKey.equalsFast(config.key)) return emptyList()
         val aliasConfig = config.parentConfig?.castOrNull<CwtPropertyConfig>()?.aliasConfig ?: return emptyList()
-        if (!Constants.contextNames.equalsAnyFast(aliasConfig.subName)) return emptyList() // 3.0.1 radical optimization
-        ProgressManager.checkCanceled()
+        if (!Constants.contextNames.equalsAnyFast(aliasConfig.subName)) return emptyList()
         val contextProperty = contextElement.parentsOfType<ParadoxScriptProperty>(false)
-            .filter { it.name.lowercase() in Constants.contextNames }
+            .filter { Constants.contextNames.equalsAnyFast(it.name, ignoreCase = true) }
             .find { ParadoxConfigManager.getConfigs(it).anyFast { c -> c is CwtPropertyConfig && c.aliasConfig == aliasConfig } }
-            ?: return emptyList()
+        if (contextProperty == null) return emptyList()
+
+        ProgressManager.checkCanceled()
         val triggerProperty = selectScope { contextProperty.properties(inline = true).ofKey(Constants.triggerKey).one() } ?: return emptyList()
         val triggerName = triggerProperty.propertyValue?.stringValue() ?: return emptyList()
         if (CwtDataExpression.resolve(triggerName, CwtDataExpressionRole.Value).type != CwtDataTypes.Constant) return emptyList() // must be a predefined trigger
@@ -105,14 +110,14 @@ class CwtTriggerWithParametersAwareOverriddenConfigProvider : CwtOverriddenConfi
             val inlined = CwtConfigManipulationService.inlineWithConfig(config, resultTriggerConfig.config, CwtConfigInlineMode.VALUE_TO_VALUE) ?: return@f
             resultConfigs.add(inlined)
         }
-        return resultConfigs.cast<List<T>>()
+        return resultConfigs.optimizedIfEmpty().cast()
     }
 
     override fun skipMissingExpressionCheck(configs: List<CwtMemberConfig<*>>, configExpression: CwtDataExpression): Boolean {
         // for `export_trigger_value_to_variable`, skip all properties
         // for `complex_trigger_modifier`, skip properties whose value config type is `int`, `float`, `value_field` or `variable_field`
 
-        if (!configExpression.role.isKey()) return false
+        if (configExpression.role != CwtDataExpressionRole.Key) return false
         configs.forEachFast { c1 ->
             val pc = c1.containingDirectConfig.parentConfig?.containingDirectConfig?.castOrNull<CwtPropertyConfig>()
             if (pc?.key != Constants.contextName1) return true

@@ -11,15 +11,16 @@ object CwtConfigExpressionManipulationService {
     // region Merge Methods
 
     fun mergeDataExpression(expression: CwtDataExpression, otherExpression: CwtDataExpression): String? {
-        if (expression.type == CwtDataTypes.Constant && otherExpression.type == CwtDataTypes.Constant) {
-            return when {
-                expression.expressionString == otherExpression.expressionString -> expression.expressionString
-                expression.expressionString.equalsFast(otherExpression.expressionString, ignoreCase = true) -> expression.expressionString.lowercase()
-                else -> null
+        val type = expression.type
+        val otherType = otherExpression.type
+        val expressionString = expression.expressionString
+        val otherExpressionString = otherExpression.expressionString
+        when {
+            type == CwtDataTypes.Constant && otherType == CwtDataTypes.Constant -> when {
+                expressionString.equalsFast(otherExpressionString) -> return expressionString
+                expressionString.equalsFast(otherExpressionString, ignoreCase = true) -> return expressionString.lowercase()
             }
-        }
-        if (expression.type == CwtDataTypes.Constant || otherExpression.type == CwtDataTypes.Constant) {
-            return null
+            type == CwtDataTypes.Constant || otherType == CwtDataTypes.Constant -> return null
         }
         return mergeDataExpressionBidirectional(expression, otherExpression)
     }
@@ -29,43 +30,57 @@ object CwtConfigExpressionManipulationService {
     }
 
     private fun mergeDataExpressionDirectional(expression: CwtDataExpression, otherExpression: CwtDataExpression): String? {
-        when (expression.type) {
-            CwtDataTypes.Any -> {
-                return otherExpression.expressionString
-            }
+        val dataType = expression.type
+        val otherType = otherExpression.type
+        val expressionString = expression.expressionString
+        val otherExpressionString = otherExpression.expressionString
+        val value = expression.metadata.value
+        val otherValue = otherExpression.metadata.value
+        when (dataType) {
+            CwtDataTypes.Any -> return otherExpressionString
             CwtDataTypes.Scalar -> when {
-                otherExpression.type == CwtDataTypes.Block -> return null
-                otherExpression.type == CwtDataTypes.ColorField -> return null
-                else -> return otherExpression.expressionString
+                otherType == CwtDataTypes.Block -> return null
+                otherType == CwtDataTypes.ColorField -> return null
+                else -> return otherExpressionString
             }
             CwtDataTypes.Int -> when {
-                otherExpression.type == CwtDataTypes.Float -> return "int"
-                otherExpression.type == CwtDataTypes.ValueField || otherExpression.type == CwtDataTypes.VariableField -> return "int"
-                otherExpression.type == CwtDataTypes.IntValueField || otherExpression.type == CwtDataTypes.IntVariableField -> return "int"
+                otherType == CwtDataTypes.Float -> return "int"
+                otherType == CwtDataTypes.ValueField || otherType == CwtDataTypes.VariableField -> return "int"
+                otherType == CwtDataTypes.IntValueField || otherType == CwtDataTypes.IntVariableField -> return "int"
             }
             CwtDataTypes.Float -> when {
-                otherExpression.type == CwtDataTypes.ValueField || otherExpression.type == CwtDataTypes.VariableField -> return "float"
+                otherType == CwtDataTypes.ValueField || otherType == CwtDataTypes.VariableField -> return "float"
             }
             CwtDataTypes.IntPercentageField -> when {
-                otherExpression.type == CwtDataTypes.PercentageField -> return "int_percentage_field"
+                otherType == CwtDataTypes.PercentageField -> return "int_percentage_field"
             }
-            in CwtDataTypeSets.DynamicValue -> when {
-                otherExpression.type in CwtDataTypeSets.DynamicValue -> if (expression.metadata.value != null && expression.metadata.value == otherExpression.metadata.value) return "dynamic_value[${expression.metadata.value}]"
-                otherExpression.type in CwtDataTypeSets.ValueField -> if (expression.metadata.value != null) return "dynamic_value[${expression.metadata.value}]"
-                otherExpression.type in CwtDataTypeSets.VariableField -> if (expression.metadata.value == "variable") return "dynamic_value[${expression.metadata.value}]"
+            in CwtDataTypeSets.DynamicValue -> {
+                when {
+                    otherType in CwtDataTypeSets.DynamicValue -> {
+                        if (value != null && value.equalsFast(otherValue)) return "dynamic_value[$value]"
+                    }
+                    otherType in CwtDataTypeSets.ValueField -> {
+                        if (value != null) return "dynamic_value[$value]"
+                    }
+                    otherType in CwtDataTypeSets.VariableField -> {
+                        if (value.equalsFast("variable")) return "dynamic_value[$value]"
+                    }
+                }
             }
-            in CwtDataTypeSets.ScopeField -> when {
-                otherExpression.type == CwtDataTypes.ScopeField -> return expression.expressionString
-                otherExpression.type == CwtDataTypes.Scope && otherExpression.metadata.value == null -> return expression.expressionString
+            in CwtDataTypeSets.ScopeField -> {
+                when {
+                    otherType == CwtDataTypes.ScopeField -> return expressionString
+                    otherType == CwtDataTypes.Scope && otherValue == null -> return expressionString
+                }
             }
             CwtDataTypes.VariableField -> when {
-                otherExpression.type in CwtDataTypeSets.ValueField -> return "variable_field"
+                otherType in CwtDataTypeSets.ValueField -> return "variable_field"
             }
             CwtDataTypes.IntVariableField -> when {
-                otherExpression.type in CwtDataTypeSets.ValueField -> return "int_variable_field"
+                otherType in CwtDataTypeSets.ValueField -> return "int_variable_field"
             }
             CwtDataTypes.IntValueField -> when {
-                otherExpression.type == CwtDataTypes.ValueField -> return "int_value_field"
+                otherType == CwtDataTypes.ValueField -> return "int_value_field"
             }
         }
         return null

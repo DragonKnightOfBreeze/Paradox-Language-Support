@@ -24,7 +24,7 @@ class Issue324Test : BasePlatformTestCase(), ChronicleTestScope {
         markIntegrationTest()
         markRootDirectory("issues/324")
         markConfigDirectory("issues/324/.config")
-        initConfigGroups(project, ParadoxGameType.Core)
+        initConfigGroups(project)
     }
 
     @After

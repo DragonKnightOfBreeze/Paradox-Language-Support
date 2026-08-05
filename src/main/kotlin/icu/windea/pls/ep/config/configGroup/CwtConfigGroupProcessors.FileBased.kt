@@ -106,7 +106,7 @@ class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor, CwtConfigResol
         // 允许覆盖先加入的同路径的规则文件
         for ((filePath, file, source) in internalFileInfos) {
             checkCanceled()
-            if (source != CwtConfigGroupFileSource.BuiltIn) return // 不允许覆盖内部规则文件，除非是内置规则文件
+            if (source != CwtConfigGroupFileSource.BuiltIn) continue // 不允许覆盖内部规则文件，除非是内置的规则文件
             val fileConfig = readAction { resolveInternalFileConfig(configGroup, file, filePath) } ?: continue
             internalFileConfigMap[filePath] = fileConfig
         }
