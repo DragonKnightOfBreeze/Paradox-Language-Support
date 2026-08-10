@@ -21,7 +21,6 @@ import icu.windea.pls.lang.resolve.providers.ParadoxAnnotateProvider
 import icu.windea.pls.lang.resolve.providers.ParadoxResolveProvider
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.util.contextSensitive
-import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.model.expressions.ParadoxExpression
 
 // Core (limited support)
@@ -117,7 +116,7 @@ class ParadoxCsvUnionValueExpressionSupport : ParadoxCsvExpressionSupport {
             val quoted = element.text.isLeftQuoted()
             val expression = ParadoxExpression.resolve(text, quoted)
             val valueConfig = ParadoxExpressionMatchService.getMatchedCsvUnionCandidate(element, expression, unionName, configGroup) ?: return null
-            return ParadoxExpressionManager.resolveCsvExpression(element, rangeInElement, valueConfig)
+            return ParadoxExpressionService.resolveCsvExpression(element, rangeInElement, text, valueConfig)
         }
         return null
     }
@@ -130,7 +129,7 @@ class ParadoxCsvUnionValueExpressionSupport : ParadoxCsvExpressionSupport {
             val quoted = element.text.isLeftQuoted()
             val expression = ParadoxExpression.resolve(text, quoted)
             val valueConfig = ParadoxExpressionMatchService.getMatchedCsvUnionCandidate(element, expression, unionName, configGroup) ?: return emptyList()
-            return ParadoxExpressionManager.resolveAllCsvExpression(element, rangeInElement, valueConfig)
+            return ParadoxExpressionService.resolveAllCsvExpression(element, rangeInElement, text, valueConfig)
         }
         return emptyList()
     }

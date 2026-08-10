@@ -11,6 +11,7 @@ import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.codeInsight.completion.ParadoxComplexExpressionCompletionManager
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
+import icu.windea.pls.lang.resolve.ParadoxExpressionService
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxArrayDefineReferenceExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDatabaseObjectExpression
@@ -36,20 +37,23 @@ abstract class ParadoxScriptComplexExpressionSupportBase : ParadoxScriptExpressi
     override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, holder: AnnotationHolder) {
         if (element !is ParadoxScriptStringExpressionElement) return
         val configGroup = config.configGroup
-        val complexExpression = ParadoxComplexExpression.resolveByConfig(text, null, configGroup, config) ?: return
+        val offset = ParadoxExpressionService.getExpressionOffset(element)
+        val rangeInExpression = rangeInElement?.shiftLeft(offset) // #390
+        val complexExpression = ParadoxComplexExpression.resolveByConfig(text, rangeInExpression, configGroup, config) ?: return
         ParadoxAnnotateProvider.annotateComplexExpression(element, complexExpression, holder, config)
     }
 
     override fun getReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiReference> {
         if (element !is ParadoxScriptStringExpressionElement) return emptyList()
         val configGroup = config.configGroup
-        val complexExpression = ParadoxComplexExpression.resolveByConfig(text, null, configGroup, config) ?: return emptyList()
+        val offset = ParadoxExpressionService.getExpressionOffset(element)
+        val rangeInExpression = rangeInElement?.shiftLeft(offset) // #390
+        val complexExpression = ParadoxComplexExpression.resolveByConfig(text, rangeInExpression, configGroup, config) ?: return emptyList()
         val references = complexExpression.getAllReferences(element)
         if (references.isEmpty()) return emptyList()
         return references
     }
 }
-
 
 /**
  * @see CwtDataTypes.Template

@@ -1,6 +1,7 @@
 package icu.windea.pls.test
 
 import com.intellij.openapi.application.PathManager
+import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
@@ -67,6 +68,8 @@ interface ChronicleTestScope {
     fun String.toWeakWarningTag() = toTag("weak_warning")
 
     fun String.toInfoTag() = toTag("info")
+
+    fun TextAttributesKey.toTag() = HighlightingTag("<info textAttributesKey=\"${this.externalName}\">", "</info>")
 
     // endregion
 

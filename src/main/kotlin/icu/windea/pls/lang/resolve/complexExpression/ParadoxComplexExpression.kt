@@ -51,7 +51,17 @@ interface ParadoxComplexExpression : ParadoxComplexExpressionNode {
     companion object {
         @JvmStatic
         fun resolve(element: ParadoxExpressionElement, configGroup: CwtConfigGroup): ParadoxComplexExpression? {
-            return ParadoxComplexExpressionResolver.resolve(element, configGroup)
+            return ParadoxComplexExpressionResolver.resolve(element, null, configGroup)
+        }
+
+        @JvmStatic
+        fun resolve(element: ParadoxExpressionElement, range: TextRange?, configGroup: CwtConfigGroup): ParadoxComplexExpression? {
+            return ParadoxComplexExpressionResolver.resolve(element, range, configGroup)
+        }
+
+        @JvmStatic
+        fun resolveByConfig(text: String, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxComplexExpression? {
+            return ParadoxComplexExpressionResolver.resolveByConfig(text, null, configGroup, config)
         }
 
         @JvmStatic
@@ -64,7 +74,7 @@ interface ParadoxComplexExpression : ParadoxComplexExpressionNode {
 // region Implementations
 
 private object ParadoxComplexExpressionResolver {
-    fun resolve(element: ParadoxExpressionElement, configGroup: CwtConfigGroup): ParadoxComplexExpression? {
+    fun resolve(element: ParadoxExpressionElement, range: TextRange?, configGroup: CwtConfigGroup): ParadoxComplexExpression? {
         return when (element) {
             is ParadoxScriptExpressionElement -> {
                 val config = ParadoxConfigManager.getConfigs(element).firstOrNull() ?: return null
@@ -76,11 +86,11 @@ private object ParadoxComplexExpressionResolver {
                 when {
                     element.isCommandExpression() -> {
                         val value = element.value
-                        ParadoxCommandExpression.resolve(value, null, configGroup)
+                        ParadoxCommandExpression.resolve(value, range, configGroup)
                     }
                     element.isDatabaseObjectExpression(strict = true) -> {
                         val value = element.value
-                        ParadoxDatabaseObjectExpression.resolve(value, null, configGroup)
+                        ParadoxDatabaseObjectExpression.resolve(value, range, configGroup)
                     }
                     else -> null
                 }

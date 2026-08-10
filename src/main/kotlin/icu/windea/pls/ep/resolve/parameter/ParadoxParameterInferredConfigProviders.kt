@@ -137,7 +137,7 @@ class ParadoxComplexExpressionNodeParameterInferredConfigProvider : ParadoxParam
     private fun getContextConfigFromExpressionConfig(element: ParadoxScriptStringExpressionElement, config: CwtMemberConfig<*>, parameterInfo: ParadoxParameterContextInfo.Parameter): CwtValueConfig? {
         val configGroup = config.configGroup
         val value = element.value
-        val expression = ParadoxComplexExpression.resolveByConfig(value, null, configGroup, config) ?: return null
+        val expression = ParadoxComplexExpression.resolveByConfig(value, configGroup, config) ?: return null
         val rangeInElement = parameterInfo.element?.textRangeInParent
         val offset = ParadoxExpressionService.getExpressionOffset(element)
         var result: List<CwtValueConfig>? = null

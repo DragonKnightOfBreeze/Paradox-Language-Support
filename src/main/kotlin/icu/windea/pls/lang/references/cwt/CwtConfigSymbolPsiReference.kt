@@ -22,14 +22,14 @@ class CwtConfigSymbolPsiReference(
 ) : PsiReferenceBase<CwtStringExpressionElement>(element, rangeInElement) {
     private val project get() = element.project
 
-    override fun handleElementRename(newElementName: String): PsiElement {
-        return element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
-    }
-
     override fun isReferenceTo(element: PsiElement): Boolean {
         // 兼容性处理（property VS propertyKey）
         if (element is CwtPropertyKey && isReferenceTo(element.parent)) return true
         return super.isReferenceTo(element)
+    }
+
+    override fun handleElementRename(newElementName: String): PsiElement {
+        return element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
     }
 
     override fun resolve(): PsiElement? {

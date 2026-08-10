@@ -28,7 +28,7 @@ class ParadoxDefineReferenceExpressionEvaluator(
     fun evaluate(element: ParadoxExpressionElement): ParadoxScriptValue? {
         val config = ParadoxConfigManager.getConfigs(element).firstOrNull() ?: return null
         if (config.configExpression.type !in CwtDataTypeSets.DefineReferenceEvaluatable) return null
-        val rootExpression = ParadoxComplexExpression.resolveByConfig(element.value, null, config.configGroup, config) ?: return null
+        val rootExpression = ParadoxComplexExpression.resolveByConfig(element.value, config.configGroup, config) ?: return null
         val expression = findExpression(rootExpression) ?: return null
         return evaluateExpression(element, expression)
     }

@@ -257,6 +257,14 @@ object ParadoxExpressionManager {
     }
 
     /**
+     * @see ParadoxExpressionService.getScriptExpressionReferences
+     */
+    fun getScriptExpressionReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiReference> {
+        val expressionText = ParadoxExpressionService.getExpressionText(element, rangeInElement)
+        return ParadoxExpressionService.getScriptExpressionReferences(element, rangeInElement, expressionText, config, role)
+    }
+
+    /**
      * @see ParadoxExpressionService.resolveLocalisationExpression
      */
     fun resolveLocalisationExpression(element: ParadoxLocalisationExpressionElement, rangeInElement: TextRange?): PsiElement? {
@@ -276,6 +284,14 @@ object ParadoxExpressionManager {
 
         ProgressManager.checkCanceled()
         return ParadoxExpressionService.resolveAllLocalisationExpression(element, rangeInElement, expressionText)
+    }
+
+    /**
+     * @see ParadoxExpressionService.getLocalisationExpressionReferences
+     */
+    fun getLocalisationExpressionReferences(element: ParadoxLocalisationExpressionElement, rangeInElement: TextRange?): List<PsiReference> {
+        val expressionText = ParadoxExpressionService.getExpressionText(element, rangeInElement)
+        return ParadoxExpressionService.getLocalisationExpressionReferences(element, rangeInElement, expressionText)
     }
 
     /**

@@ -1,0 +1,28 @@
+types = {
+	type[scripted_trigger] = {
+		path = "game/common/scripted_triggers"
+		path_extension = .txt
+	}
+	type[scripted_effect] = {
+		path = "game/common/scripted_effects"
+		path_extension = .txt
+	}
+}
+
+scripted_trigger = {
+	## cardinality = 0..1
+    ## tag
+	optimize_memory
+
+    ## cardinality = 0..inf
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+scripted_effect = {
+	## cardinality = 0..1
+	## tag
+	optimize_memory
+
+    ## cardinality = 0..inf
+	alias_name[effect] = alias_match_left[effect]
+}

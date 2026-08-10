@@ -57,7 +57,7 @@ abstract class IncorrectComplexExpressionInspectionBase : LocalInspectionTool() 
         val config = ParadoxConfigManager.getConfigs(element).firstOrNull() ?: return null
         if (!isAvailableForConfig(config)) return null
         val expressionText = ParadoxExpressionService.getExpressionText(element)
-        return ParadoxComplexExpression.resolveByConfig(expressionText, null, configGroup, config)
+        return ParadoxComplexExpression.resolveByConfig(expressionText, configGroup, config)
     }
 
     protected abstract fun isAvailableForConfig(config: CwtMemberConfig<*>): Boolean

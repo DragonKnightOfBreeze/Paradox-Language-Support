@@ -18,7 +18,6 @@ import icu.windea.pls.core.util.ProcessorScope
 import icu.windea.pls.lang.codeInsight.completion.script.ParadoxScriptExpressionCompletionProvider
 import icu.windea.pls.lang.psi.ParadoxPsiService
 import icu.windea.pls.lang.references.ParadoxConstrainedPsiReference
-import icu.windea.pls.lang.resolve.ParadoxExpressionService
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxTagManager
 import icu.windea.pls.model.constraints.ParadoxReferenceConstraint
@@ -47,20 +46,18 @@ class ParadoxScriptExpressionPsiReference(
         ParadoxTagManager.processConfigs(configs)
     }
 
-    override fun handleElementRename(newElementName: String): PsiElement {
-        return ParadoxPsiService.handleExpressionElementRename(element, rangeInElement, newElementName, resolve(), config.configExpression)
-    }
-
     override fun isReferenceTo(element: PsiElement): Boolean {
         // 兼容性处理（property VS propertyKey）
         if (element is ParadoxScriptPropertyKey && isReferenceTo(element.parent)) return true
         return super.isReferenceTo(element)
     }
 
+    override fun handleElementRename(newElementName: String): PsiElement {
+        return ParadoxPsiService.handleExpressionElementRename(element, rangeInElement, newElementName, resolve(), config.configExpression)
+    }
+
     override fun getReferences(): List<PsiReference> {
-        val expressionText = ParadoxExpressionService.getExpressionText(element, rangeInElement)
-        val result = ParadoxExpressionService.getScriptExpressionReferences(element, rangeInElement, expressionText, config, role)
-        return result
+        return ParadoxExpressionManager.getScriptExpressionReferences(element, rangeInElement, config, role)
     }
 
     // 缓存解析结果以优化性能
@@ -83,6 +80,7 @@ class ParadoxScriptExpressionPsiReference(
 
     private fun doResolve(): PsiElement? {
         // 根据对应的 expression 进行解析
+        val rangeInElement = rangeInElement
         configs.forEachFast { config ->
             ParadoxExpressionManager.resolveScriptExpression(element, rangeInElement, config, role)?.let { return it }
         }
@@ -91,6 +89,7 @@ class ParadoxScriptExpressionPsiReference(
 
     private fun doMultiResolve(): Array<out ResolveResult> {
         // 根据对应的 expression 进行解析
+        val rangeInElement = rangeInElement
         val resolved = configs.flatMapFast { config ->
             ParadoxExpressionManager.resolveAllScriptExpression(element, rangeInElement, config, role)
         }

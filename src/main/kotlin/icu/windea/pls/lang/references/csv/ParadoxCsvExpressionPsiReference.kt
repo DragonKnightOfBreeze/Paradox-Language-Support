@@ -59,6 +59,7 @@ class ParadoxCsvExpressionPsiReference(
         }
         // 根据对应的 expression 进行解析
         val config = columnConfig.valueConfig ?: return null
+        val rangeInElement = rangeInElement
         val resolved = ParadoxExpressionManager.resolveCsvExpression(element, rangeInElement, config)
         return resolved
     }
@@ -71,6 +72,7 @@ class ParadoxCsvExpressionPsiReference(
         }
         // 根据对应的 expression 进行解析
         val config = columnConfig.valueConfig ?: return ResolveResult.EMPTY_ARRAY
+        val rangeInElement = rangeInElement
         val resolved = ParadoxExpressionManager.resolveAllCsvExpression(element, rangeInElement, config)
         return resolved.createResults()
     }

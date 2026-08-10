@@ -10,7 +10,6 @@ import icu.windea.pls.core.createResults
 import icu.windea.pls.core.psi.PsiCompositeReference
 import icu.windea.pls.lang.codeInsight.completion.localisation.ParadoxLocalisationExpressionCompletionProvider
 import icu.windea.pls.lang.psi.ParadoxPsiService
-import icu.windea.pls.lang.resolve.ParadoxExpressionService
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 
@@ -29,9 +28,7 @@ class ParadoxLocalisationExpressionPsiReference(
     }
 
     override fun getReferences(): List<PsiReference> {
-        val expressionText = ParadoxExpressionService.getExpressionText(element, rangeInElement)
-        val result = ParadoxExpressionService.getLocalisationExpressionReferences(element, rangeInElement, expressionText)
-        return result
+        return ParadoxExpressionManager.getLocalisationExpressionReferences(element, rangeInElement)
     }
 
     // 缓存解析结果以优化性能
@@ -54,12 +51,14 @@ class ParadoxLocalisationExpressionPsiReference(
 
     private fun doResolve(): PsiElement? {
         // 根据对应的 expression 进行解析
+        val rangeInElement = rangeInElement
         val resolved = ParadoxExpressionManager.resolveLocalisationExpression(element, rangeInElement)
         return resolved
     }
 
     private fun doMultiResolve(): Array<out ResolveResult> {
         // 根据对应的 expression 进行解析
+        val rangeInElement = rangeInElement
         val resolved = ParadoxExpressionManager.resolveAllLocalisationExpression(element, rangeInElement)
         return resolved.createResults()
     }

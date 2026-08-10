@@ -57,7 +57,7 @@ class ParadoxScriptSemanticWordSelectionHandler : ExtendWordSelectionHandlerBase
         if (expressionText.isEmpty()) return
         val configGroup = ChronicleFacade.getConfigGroup(file.project, selectGameType(file))
         val config = ParadoxConfigManager.getConfigs(element).firstOrNull() ?: return
-        val complexExpression = ParadoxComplexExpression.resolveByConfig(expressionText, null, configGroup, config) ?: return
+        val complexExpression = ParadoxComplexExpression.resolveByConfig(expressionText, configGroup, config) ?: return
 
         val expressionOffset = ParadoxExpressionService.getExpressionOffset(element)
         val offsetInExpression = offset - textRange.startOffset - expressionOffset
