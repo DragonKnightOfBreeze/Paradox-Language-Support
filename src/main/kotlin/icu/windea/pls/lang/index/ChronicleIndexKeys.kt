@@ -25,6 +25,7 @@ object ChronicleIndexKeys {
     val Merged = ID.create<String, List<ParadoxIndexInfo>>("paradox.merged.index")
 
     // constrained indexes for definitions
+    val DefinitionForEconomicCategory = ID.create<String, List<ParadoxDefinitionIndexInfo>>("paradox.definition.index.economicCategory")
     val DefinitionForTextColor = ID.create<String, List<ParadoxDefinitionIndexInfo>>("paradox.definition.index.textColor")
     val DefinitionForTextIcon = ID.create<String, List<ParadoxDefinitionIndexInfo>>("paradox.definition.index.textIcon")
     val DefinitionForTextFormat = ID.create<String, List<ParadoxDefinitionIndexInfo>>("paradox.definition.index.textFormat")

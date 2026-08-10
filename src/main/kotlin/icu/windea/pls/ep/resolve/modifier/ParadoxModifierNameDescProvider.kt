@@ -13,9 +13,11 @@ import icu.windea.pls.model.ParadoxModifierInfo
 interface ParadoxModifierNameDescProvider {
     fun supports(gameType: ParadoxGameType) = true
 
+    // NOTE 3.0.1 clarify: ignore case (should be and treat as) (#385)
     /** 根据传入的 [modifierInfo] 和 [element]，加入作为候选的修正名字的本地化键名到 [registry]。 */
     fun addModifierNameKey(modifierInfo: ParadoxModifierInfo, element: PsiElement, registry: MutableSet<String>)
 
+    // NOTE 3.0.1 clarify: ignore case (should be and treat as) (#385)
     /** 根据传入的 [modifierInfo] 和 [element]，加入作为候选的修正描述的本地化键名到 [registry]。 */
     fun addModifierDescKey(modifierInfo: ParadoxModifierInfo, element: PsiElement, registry: MutableSet<String>)
 

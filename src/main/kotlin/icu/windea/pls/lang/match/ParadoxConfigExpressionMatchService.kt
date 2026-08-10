@@ -33,8 +33,8 @@ object ParadoxConfigExpressionMatchService {
             val matchGroup = matchResult.groups.get(i++) ?: return false
             val matchValue = matchGroup.value
             if (matchValue.isEmpty() && snippetExpression.type == CwtDataTypes.Definition) return false // skip anonymous definitions
-            val context = ParadoxScriptExpressionMatchContext(element, ParadoxExpression.resolve(matchValue), snippetExpression, null, configGroup, options)
-            val matched = ParadoxExpressionMatchService.matchScriptExpression(context).get(options)
+            val matchContext = ParadoxScriptExpressionMatchContext(element, ParadoxExpression.resolve(matchValue), snippetExpression, null, configGroup, options)
+            val matched = ParadoxExpressionMatchService.matchScriptExpression(matchContext).get(options)
             if (!matched) return false
         }
         return true

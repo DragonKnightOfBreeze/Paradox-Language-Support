@@ -385,6 +385,7 @@
     <fileBasedIndex implementation="icu.windea.pls.lang.index.ParadoxFilePathIndex"/>
     <fileBasedIndex implementation="icu.windea.pls.lang.index.ParadoxIncludedDirectoryIndex"/>
     <fileBasedIndex implementation="icu.windea.pls.lang.index.ParadoxDefinitionIndex"/>
+    <fileBasedIndex implementation="icu.windea.pls.lang.index.ParadoxDefinitionConstrainedIndex$EconomicCategoryIndex"/>
     <fileBasedIndex implementation="icu.windea.pls.lang.index.ParadoxDefinitionConstrainedIndex$TextColorIndex"/>
     <fileBasedIndex implementation="icu.windea.pls.lang.index.ParadoxDefinitionConstrainedIndex$TextIconIndex"/>
     <fileBasedIndex implementation="icu.windea.pls.lang.index.ParadoxDefinitionConstrainedIndex$TextFormatIndex"/>

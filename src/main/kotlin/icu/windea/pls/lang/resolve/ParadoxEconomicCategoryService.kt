@@ -13,8 +13,10 @@ import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.ep.util.data.StellarisEconomicCategoryData
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.getDefinitionData
+import icu.windea.pls.lang.index.constraints.ParadoxDefinitionIndexConstraint
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.util.contextSensitive
+import icu.windea.pls.lang.search.util.withConstraint
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxEconomicCategoryInfo
 import icu.windea.pls.model.ParadoxEconomicCategoryModifierInfo
@@ -132,6 +134,7 @@ object ParadoxEconomicCategoryService {
         return withRecursionGuard({}.javaClass.name) {
             withRecursionCheck(parent) {
                 val selector = ParadoxDefinitionSearch.selector(contextElement.project, contextElement).contextSensitive()
+                    .withConstraint(ParadoxDefinitionIndexConstraint.EconomicCategory)
                 ParadoxDefinitionSearch.searchProperty(parent, ParadoxDefinitionTypes.economicCategory, selector).process p@{
                     ProgressManager.checkCanceled()
                     val parentData = it.getDefinitionData<StellarisEconomicCategoryData>() ?: return@p true

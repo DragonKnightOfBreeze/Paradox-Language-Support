@@ -7,12 +7,15 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.delegated.CwtModifierConfig
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.processAsync
 import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.index.constraints.ParadoxDefinitionIndexConstraint
 import icu.windea.pls.lang.search.ParadoxComplexEnumValueSearch
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.ParadoxDynamicValueSearch
 import icu.windea.pls.lang.search.util.contextSensitive
+import icu.windea.pls.lang.search.util.withConstraint
 import icu.windea.pls.lang.search.util.withSearchScopeType
 import icu.windea.pls.lang.util.ParadoxEconomicCategoryManager
 import icu.windea.pls.model.ParadoxEconomicCategoryInfo
@@ -23,6 +26,7 @@ object ParadoxModifierProcessor {
         val modifiers = configGroup.predefinedModifiers
         if (modifiers.isEmpty()) return true
         for (modifierConfig in modifiers.values) {
+            ProgressManager.checkCanceled()
             val r = processor.process(modifierConfig)
             if (!r) return false
         }
@@ -33,6 +37,7 @@ object ParadoxModifierProcessor {
         val modifiers = configGroup.generatedModifiers
         if (modifiers.isEmpty()) return true
         for (modifierConfig in modifiers.values) {
+            ProgressManager.checkCanceled()
             if (modifierConfig.template.expressionString.isEmpty()) continue
             val r = processor.process(modifierConfig)
             if (!r) return false
@@ -62,6 +67,7 @@ object ParadoxModifierProcessor {
             }
             CwtDataTypes.Definition -> {
                 val typeExpression = snippetExpression.metadata.value ?: return true
+                ProgressManager.checkCanceled()
                 val selector = ParadoxDefinitionSearch.selector(project, element).contextSensitive().distinct()
                 return ParadoxDefinitionSearch.searchElement(null, typeExpression, selector).processAsync p@{ definition ->
                     ProgressManager.checkCanceled()
@@ -135,9 +141,23 @@ object ParadoxModifierProcessor {
     }
 
     fun processEconomicCategoryInfo(element: PsiElement, configGroup: CwtConfigGroup, processor: Processor<ParadoxEconomicCategoryInfo>): Boolean {
+        ProgressManager.checkCanceled()
         val selector = ParadoxDefinitionSearch.selector(configGroup.project, element).contextSensitive().distinct()
+            .withConstraint(ParadoxDefinitionIndexConstraint.EconomicCategory)
         return ParadoxDefinitionSearch.searchProperty(null, ParadoxDefinitionTypes.economicCategory, selector).processAsync p@{ economicCategory ->
             val economicCategoryInfo = ParadoxEconomicCategoryManager.getInfo(economicCategory) ?: return@p true
+            ProgressManager.checkCanceled()
+            processor.process(economicCategoryInfo)
+        }
+    }
+
+    fun processOrderedEconomicCategoryInfo(element: PsiElement, configGroup: CwtConfigGroup, processor: Processor<ParadoxEconomicCategoryInfo>): Boolean {
+        ProgressManager.checkCanceled()
+        val selector = ParadoxDefinitionSearch.selector(configGroup.project, element).contextSensitive().distinct()
+            .withConstraint(ParadoxDefinitionIndexConstraint.EconomicCategory)
+        return ParadoxDefinitionSearch.searchProperty(null, ParadoxDefinitionTypes.economicCategory, selector).findAll().process p@{ economicCategory ->
+            val economicCategoryInfo = ParadoxEconomicCategoryManager.getInfo(economicCategory) ?: return@p true
+            ProgressManager.checkCanceled()
             processor.process(economicCategoryInfo)
         }
     }

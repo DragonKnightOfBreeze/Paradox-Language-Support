@@ -24,13 +24,14 @@ import icu.windea.pls.core.util.values.or
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionLookupProvider
 import icu.windea.pls.lang.codeInsight.completion.addToResult
-import icu.windea.pls.lang.match.ParadoxConfigExpressionMatchService
+import icu.windea.pls.lang.index.constraints.ParadoxDefinitionIndexConstraint
 import icu.windea.pls.lang.psi.light.ParadoxModifierLightElement
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxTemplateExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.lang.resolve.processors.ParadoxModifierProcessor
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.util.contextSensitive
+import icu.windea.pls.lang.search.util.withConstraint
 import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.lang.text.appendPsiLink
 import icu.windea.pls.lang.text.appendPsiLinkOrUnresolved
@@ -53,21 +54,19 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 /**
  * 提供对预定义的修正的支持。
+ *
+ * 示例：`pop_happiness`（来自 `modifiers.cwt`）
  */
 class ParadoxPredefinedModifierSupport : ParadoxModifierSupport {
     override fun matchModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): Boolean {
-        // 3.0.1 clarify: ignore case (for modifier names) (#385)
         val modifierName = name
         return configGroup.predefinedModifiers[modifierName] != null
     }
 
     override fun resolveModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): ParadoxModifierInfo? {
-        // 3.0.1 clarify: ignore case (for modifier names) (#385)
         val modifierName = name
         val modifierConfig = configGroup.predefinedModifiers[modifierName] ?: return null
-        val gameType = configGroup.gameType
-        val project = configGroup.project
-        val modifierInfo = ParadoxModifierInfo(modifierName, project, gameType)
+        val modifierInfo = ParadoxModifierInfo(modifierName, configGroup.project, configGroup.gameType)
         modifierInfo.modifierConfig = modifierConfig
         return modifierInfo
     }
@@ -87,7 +86,6 @@ class ParadoxPredefinedModifierSupport : ParadoxModifierSupport {
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, modifierConfig.supportedScopes, configGroup)
             if (!scopeMatched && completeOnlyScopeIsMatched) return@p true
 
-            ProgressManager.checkCanceled()
             val hintText = ParadoxCompletionLookupProvider.getConfigBasedHintText(context, modifierConfig.config, withConfigExpression = false)
             val template = modifierConfig.template
             if (template.expressionString.isNotEmpty()) return@p true
@@ -103,7 +101,6 @@ class ParadoxPredefinedModifierSupport : ParadoxModifierSupport {
 
     override fun processModifier(element: PsiElement, configGroup: CwtConfigGroup, processor: Processor<ParadoxModifierLightElement>): Boolean {
         return ParadoxModifierProcessor.processPredefinedModifierConfig(configGroup) p@{ modifierConfig ->
-            ProgressManager.checkCanceled()
             val name = modifierConfig.name
             val modifierElement = ParadoxModifierManager.resolveModifier(name, element, configGroup, this) ?: return@p true
             processor.process(modifierElement)
@@ -120,20 +117,25 @@ class ParadoxPredefinedModifierSupport : ParadoxModifierSupport {
 }
 
 /**
- * 提供对从模板表达式生成的修正的支持。（如：`job_<job>_add` -> `job_researcher_add`）
+ * 提供对从模板表达式生成的修正的支持。
+ *
+ * 示例：`job_researcher_add`（来自 `modifiers.cwt` 中的 `job_<job>_add`）
  */
 class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
     override fun matchModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): Boolean {
-        // TODO 3.0.1+ clarify: ignore case (for modifier names) (#385)
         val modifierName = name
-        return configGroup.generatedModifiers.values.any { config ->
-            ParadoxConfigExpressionMatchService.matchesTemplate(element, configGroup, modifierName, config.template)
+        var matched = false
+        ParadoxModifierProcessor.processGeneratedModifierConfig(configGroup) p@{ modifierConfig ->
+            val templateExpression = ParadoxTemplateExpression.resolve(modifierName, null, configGroup, modifierConfig)
+            if (templateExpression == null) return@p true
+            matched = true
+            false
         }
+        return matched
     }
 
     override fun resolveModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): ParadoxModifierInfo? {
         // NOTE 2.1.8 如果存在多个非精确匹配的候选项，需要检查是否精确匹配，或者回退为第一个
-        // TODO 3.0.1+ clarify: ignore case (for modifier names) (#385)
         val modifierName = name
         val gameType = configGroup.gameType
         val project = configGroup.project
@@ -165,7 +167,6 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, modifierConfig.supportedScopes, configGroup)
             if (!scopeMatched && completeOnlyScopeIsMatched) return@p true
 
-            ProgressManager.checkCanceled()
             val typeFile = modifierConfig.pointer.containingFile
             val typeText = typeFile?.name
             val typeIcon = typeFile?.icon
@@ -184,7 +185,6 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
 
     override fun processModifier(element: PsiElement, configGroup: CwtConfigGroup, processor: Processor<ParadoxModifierLightElement>): Boolean {
         return ParadoxModifierProcessor.processGeneratedModifierConfig(configGroup) p@{ modifierConfig ->
-            ProgressManager.checkCanceled()
             ParadoxModifierProcessor.processModifierTemplate(element, configGroup, modifierConfig.template) p1@{ name ->
                 val modifierElement = ParadoxModifierManager.resolveModifier(name, element, configGroup, this) ?: return@p1 true
                 processor.process(modifierElement)
@@ -322,47 +322,40 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
 
 /**
  * 提供对从经济分类（`economic_category`）生成的修正的支持。
+ *
+ * 示例：`country_base_energy_produces_add`（来自经济分类 `country_base`）
  */
 @ForGameType(ParadoxGameType.Stellaris)
 class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
     override fun supports(gameType: ParadoxGameType) = gameType == ParadoxGameType.Stellaris
 
     override fun matchModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): Boolean {
-        // 3.0.1 clarify: ignore case (for modifier names) (#385)
         val modifierName = name
-        val project = configGroup.project
-        val selector = ParadoxDefinitionSearch.selector(project, element).contextSensitive().distinct()
-        val economicCategories = ParadoxDefinitionSearch.searchProperty(null, ParadoxDefinitionTypes.economicCategory, selector).findAll()
-        for (economicCategory in economicCategories) {
-            ProgressManager.checkCanceled()
-            val economicCategoryInfo = ParadoxEconomicCategoryManager.getInfo(economicCategory) ?: continue
-            for (economicCategoryModifierInfo in economicCategoryInfo.modifiers) {
-                if (economicCategoryModifierInfo.name.equals(modifierName, ignoreCase = true)) return true
+        var matched = false
+        ParadoxModifierProcessor.processEconomicCategoryInfo(element, configGroup) p@{ economicCategoryInfo ->
+            economicCategoryInfo.modifiers.process p1@{ economicCategoryModifierInfo ->
+                if (!economicCategoryModifierInfo.name.equals(modifierName, ignoreCase = true)) return@p1 true
+                matched = true
+                false
             }
         }
-        return false
+        return matched
     }
 
     override fun resolveModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): ParadoxModifierInfo? {
-        // 3.0.1 clarify: ignore case (for modifier names) (#385)
         val modifierName = name
-        val gameType = configGroup.gameType
-        val project = configGroup.project
-        val selector = ParadoxDefinitionSearch.selector(project, element).contextSensitive().distinct()
-        val economicCategories = ParadoxDefinitionSearch.searchProperty(null, ParadoxDefinitionTypes.economicCategory, selector).findAll()
-        for (economicCategory in economicCategories) {
-            ProgressManager.checkCanceled()
-            val economicCategoryInfo = ParadoxEconomicCategoryManager.getInfo(economicCategory) ?: continue
-            for (economicCategoryModifierInfo in economicCategoryInfo.modifiers) {
-                if (economicCategoryModifierInfo.name.equals(modifierName, ignoreCase = true)) {
-                    val modifierInfo = ParadoxModifierInfo(modifierName, project, gameType)
-                    modifierInfo.economicCategoryInfo = economicCategoryInfo
-                    modifierInfo.economicCategoryModifierInfo = economicCategoryModifierInfo
-                    return modifierInfo
-                }
+        var result: ParadoxModifierInfo? = null
+        ParadoxModifierProcessor.processOrderedEconomicCategoryInfo(element, configGroup) p@{ economicCategoryInfo ->
+            economicCategoryInfo.modifiers.process p1@{ economicCategoryModifierInfo ->
+                if (!economicCategoryModifierInfo.name.equals(modifierName, ignoreCase = true)) return@p1 true
+                val modifierInfo = ParadoxModifierInfo(modifierName, configGroup.project, configGroup.gameType)
+                modifierInfo.economicCategoryInfo = economicCategoryInfo
+                modifierInfo.economicCategoryModifierInfo = economicCategoryModifierInfo
+                result = modifierInfo
+                false
             }
         }
-        return null
+        return result
     }
 
     override fun completeModifier(context: ParadoxCompletionContext, result: CompletionResultSet, modifierNames: MutableSet<@CaseInsensitive String>) {
@@ -379,7 +372,6 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, supportedScopes, configGroup)
             if (!scopeMatched && completeOnlyScopeIsMatched) return@p true
 
-            ProgressManager.checkCanceled()
             val typeText = economicCategoryInfo.name
             val typeIcon = ChronicleIcons.Nodes.Definition(ParadoxDefinitionTypes.economicCategory)
             val hintText = " from economic category " + economicCategoryInfo.name
@@ -395,7 +387,6 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
 
     override fun processModifier(element: PsiElement, configGroup: CwtConfigGroup, processor: Processor<ParadoxModifierLightElement>): Boolean {
         return ParadoxModifierProcessor.processEconomicCategoryInfo(element, configGroup) p@{ economicCategoryInfo ->
-            ProgressManager.checkCanceled()
             economicCategoryInfo.modifiers.process p1@{ economicCategoryModifierInfo ->
                 val name = economicCategoryModifierInfo.name
                 val modifierElement = ParadoxModifierManager.resolveModifier(name, element, configGroup, this) ?: return@p1 true
@@ -444,6 +435,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
         val configGroup = definitionInfo.configGroup
         val project = configGroup.project
         val selector = ParadoxDefinitionSearch.selector(project, definition).contextSensitive()
+            .withConstraint(ParadoxDefinitionIndexConstraint.EconomicCategory)
         val economicCategory = ParadoxDefinitionSearch.searchProperty(definitionInfo.name, ParadoxDefinitionTypes.economicCategory, selector).find() ?: return false
         val economicCategoryInfo = ParadoxEconomicCategoryManager.getInfo(economicCategory) ?: return false
         val gameType = definitionInfo.gameType

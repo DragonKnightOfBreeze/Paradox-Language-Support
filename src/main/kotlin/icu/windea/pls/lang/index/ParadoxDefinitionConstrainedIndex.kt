@@ -46,6 +46,15 @@ abstract class ParadoxDefinitionConstrainedIndex : ParadoxDefinitionIndex() {
     }
 
     /**
+     * 用于快速索引经济分类。对于 Stellaris，会额外从经济分类生成修正。
+     *
+     * @see ParadoxDefinitionIndexConstraint.EconomicCategory
+     */
+    class EconomicCategoryIndex : ParadoxDefinitionConstrainedIndex() {
+        override val constraint get() = ParadoxDefinitionIndexConstraint.EconomicCategory
+    }
+
+    /**
      * 用于快速索引文本颜色。它们是 [ParadoxLocalisationTextColorPsiReference] 的解析目标。
      *
      * @see ParadoxDefinitionIndexConstraint.TextColor
