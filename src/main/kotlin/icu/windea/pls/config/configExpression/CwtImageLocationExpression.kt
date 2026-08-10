@@ -5,6 +5,7 @@ package icu.windea.pls.config.configExpression
 import icu.windea.pls.config.config.delegated.CwtTypeImagesConfig
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cache.CacheBuilder
+import icu.windea.pls.core.optimized
 import icu.windea.pls.core.toDelimitedSet
 
 /**
@@ -68,8 +69,8 @@ private object CwtImageLocationExpressionResolver {
         if (tokens.size == 1) return CwtImageLocationExpressionImpl(expressionString, expressionString)
         val location = tokens.first()
         val args = tokens.drop(1)
-        var namePaths: Set<String>? = null
-        var framePaths: Set<String>? = null
+        var namePaths: Set<String> = emptySet()
+        var framePaths: Set<String> = emptySet()
         args.forEach { arg ->
             // 以 '$' 开头：表示 namePaths；否则为 framePaths
             // 若出现多次，同类参数以后者覆盖（按实现顺序）
@@ -79,7 +80,7 @@ private object CwtImageLocationExpressionResolver {
                 framePaths = arg.toDelimitedSet()
             }
         }
-        return CwtImageLocationExpressionImpl(expressionString, location, namePaths.orEmpty(), framePaths.orEmpty())
+        return CwtImageLocationExpressionImpl(expressionString, location, namePaths.optimized(), framePaths.optimized())
     }
 }
 

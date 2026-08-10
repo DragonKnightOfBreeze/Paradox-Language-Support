@@ -28,8 +28,7 @@ abstract class SoftValue<T> {
         return dereference().toString()
     }
 
-    companion object {
-        @JvmStatic
+    companion object Builder {
         fun <T> create(valueProvider: () -> T): SoftValue<T> {
             return object : SoftValue<T>() {
                 override fun createValue(): T = valueProvider()
@@ -41,14 +40,12 @@ abstract class SoftValue<T> {
             return create(valueProvider)
         }
 
-        @JvmStatic
         fun <K, V> ofMutableMap(): SoftValue<MutableMap<K, V>> {
             return object : SoftValue<MutableMap<K, V>>() {
                 override fun createValue(): MutableMap<K, V> = mutableMapOf()
             }
         }
 
-        @JvmStatic
         fun <K, V> ofConcurrentMap(): SoftValue<ConcurrentMap<K, V>> {
             return object : SoftValue<ConcurrentMap<K, V>>() {
                 override fun createValue(): ConcurrentMap<K, V> = ConcurrentHashMap()

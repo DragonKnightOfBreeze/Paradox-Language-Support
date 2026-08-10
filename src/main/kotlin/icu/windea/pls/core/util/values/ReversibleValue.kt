@@ -20,11 +20,10 @@ data class ReversibleValue<T>(
 
     inline fun withOperator(predicate: (T) -> Boolean): Boolean = predicate(value).let { if (operator) it else !it }
 
-    companion object {
+    companion object Builder {
         /**
          * 从 [expression] 构造 [ReversibleValue]，并在必要时去除首尾空白。如果表达式以 `!` 开始则取反。
          */
-        @JvmStatic
         fun from(expression: String): ReversibleValue<String> {
             val s = expression.trim()
             return if (s.startsWith('!')) ReversibleValue(s.drop(1).trimStart(), false) else ReversibleValue(s, true)

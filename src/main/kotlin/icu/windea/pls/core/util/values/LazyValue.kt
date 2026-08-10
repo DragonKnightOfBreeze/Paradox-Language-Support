@@ -60,7 +60,7 @@ class LazyValue<T> : Supplier<T?> {
 
     override fun toString(): String = if (isInitialized()) value.toString() else "Lazy value is not initialized."
 
-    companion object {
+    companion object Builder {
         const val UNINITIALIZED_BOOLEAN: Byte = -1
         @Suppress("RedundantNullableReturnType") val UNINITIALIZED: Any? = Any()
 

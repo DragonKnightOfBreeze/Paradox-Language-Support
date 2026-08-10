@@ -5,6 +5,7 @@ import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.CwtDataExpressionRole
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
 import icu.windea.pls.config.util.CwtConfigResolverScope
+import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.toDelimitedSet
@@ -153,17 +154,17 @@ class CwtSuffixAwareDataExpressionSupport : CwtDataExpressionSupport {
         run {
             val t = text.removeSurroundingOrNull("<", ">") ?: return@run
             if (expectedSuffixes.isEmpty()) return CwtDataExpression.create(expressionString, CwtDataTypes.Definition, role) { value = t.orNull() }
-            return CwtDataExpression.create(expressionString, CwtDataTypes.SuffixAwareDefinition, role) { value = t.orNull(); suffixes = expectedSuffixes }
+            return CwtDataExpression.create(expressionString, CwtDataTypes.SuffixAwareDefinition, role) { value = t.orNull(); suffixes = expectedSuffixes.optimized() }
         }
         run {
             if (text != "localisation") return@run
             if (expectedSuffixes.isEmpty()) return CwtDataExpression.create(expressionString, CwtDataTypes.Localisation, role)
-            return CwtDataExpression.create(expressionString, CwtDataTypes.SuffixAwareLocalisation, role) { suffixes = expectedSuffixes }
+            return CwtDataExpression.create(expressionString, CwtDataTypes.SuffixAwareLocalisation, role) { suffixes = expectedSuffixes.optimized() }
         }
         run {
             if (text != "localisation_synced") return@run
             if (expectedSuffixes.isEmpty()) return CwtDataExpression.create(expressionString, CwtDataTypes.SyncedLocalisation, role)
-            return CwtDataExpression.create(expressionString, CwtDataTypes.SuffixAwareSyncedLocalisation, role) { suffixes = expectedSuffixes }
+            return CwtDataExpression.create(expressionString, CwtDataTypes.SuffixAwareSyncedLocalisation, role) { suffixes = expectedSuffixes.optimized() }
         }
         return null
     }

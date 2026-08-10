@@ -5,6 +5,7 @@ package icu.windea.pls.config.configExpression
 import icu.windea.pls.config.config.delegated.CwtTypeLocalisationConfig
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cache.CacheBuilder
+import icu.windea.pls.core.optimized
 import icu.windea.pls.core.toDelimitedSet
 
 /**
@@ -66,7 +67,7 @@ private object CwtLocalisationLocationExpressionResolver {
         if (tokens.size == 1) return CwtLocalisationLocationExpressionImpl(expressionString, expressionString)
         val location = tokens.first()
         val args = tokens.drop(1)
-        var namePaths: Set<String>? = null
+        var namePaths: Set<String> = emptySet()
         var forceUpperCase = false
         args.forEach { arg ->
             // 以 '$' 开头：表示 namePaths；参数 'u' 表示强制大写
@@ -76,7 +77,7 @@ private object CwtLocalisationLocationExpressionResolver {
                 forceUpperCase = true
             }
         }
-        return CwtLocalisationLocationExpressionImpl(expressionString, location, namePaths.orEmpty(), forceUpperCase)
+        return CwtLocalisationLocationExpressionImpl(expressionString, location, namePaths.optimized(), forceUpperCase)
     }
 }
 

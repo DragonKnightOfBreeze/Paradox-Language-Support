@@ -69,7 +69,7 @@ private object CwtTemplateExpressionResolver {
     // - 含空白字符的输入直接视为非法模板，返回空表达式（避免对不规范规则进行模板拆分）
     // - 仅对拥有“前后缀”的动态规则进行扫描（例如 `value[` 与 `]`、`<` 与 `>`）
     // - 采用“最左最早匹配”的策略：在剩余字符串中选择最靠左的动态片段进行切分，然后继续向后扫描
-    // - 当最终片段数不超过 1（纯常量或纯一个动态值）时，不视为模板，返回空表达式
+    // - 当最终片段数不超过 1（纯常量或纯动态）时，不视为模板，返回空表达式
 
     private val cache = CacheBuilder("expireAfterAccess=30m").build<String, CwtTemplateExpression> { doResolve(it) }
     private val emptyExpression = CwtTemplateExpressionImpl("", emptyList())
@@ -124,7 +124,7 @@ private object CwtTemplateExpressionResolver {
         if (snippets.size <= 1) return emptyExpression
         // 所有片段都是常量时不视为模板
         if (snippets.all { it.type == CwtDataTypes.Constant }) return emptyExpression
-        return CwtTemplateExpressionImpl(expressionString, snippets)
+        return CwtTemplateExpressionImpl(expressionString, snippets.optimized())
     }
 
     private fun addToSnippets(expressionString: String, snippets: MutableList<CwtDataExpression>, isConstant: Boolean) {

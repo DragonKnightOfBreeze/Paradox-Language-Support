@@ -9,6 +9,7 @@ import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.indicesOf
 import icu.windea.pls.core.isEscapedCharAt
+import icu.windea.pls.core.optimized
 import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.core.removeSurroundingOrNull
 
@@ -103,8 +104,7 @@ private object CwtSchemaExpressionResolver {
         }
         // 模板：将 `$...$` 片段替换为 `*` 形成展示/匹配用的 pattern
         val pattern = expressionString.replace(parameterRegex, "*")
-        val parameterRanges = indices
-            .windowed(2, 2) { (i1, i2) -> TextRange.create(i1, i2 + 1) }
+        val parameterRanges = indices.windowed(2, 2) { (i1, i2) -> TextRange.create(i1, i2 + 1) }.optimized()
         return CwtSchemaTemplateExpression(expressionString, pattern, parameterRanges)
     }
 }
