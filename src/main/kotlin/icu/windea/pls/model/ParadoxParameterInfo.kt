@@ -7,7 +7,7 @@ import icu.windea.pls.core.getDefaultProject
 import icu.windea.pls.core.util.ReadWriteAccess
 import icu.windea.pls.core.util.values.LazyValue
 import icu.windea.pls.ep.resolve.parameter.ParadoxParameterSupport
-import icu.windea.pls.ep.resolve.parameter.support
+import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.script.psi.ParadoxConditionParameter
 import icu.windea.pls.script.psi.ParadoxParameter
 import javax.swing.Icon
@@ -19,18 +19,19 @@ import javax.swing.Icon
  * - 对于定义的参数：`<typeExpression>@<definitionName>`
  * - 对于内联脚本的参数：`inline_script@<inline_script_expression>`
  *
+ * @see ParadoxParameterLightElement
  * @see ParadoxParameter
  * @see ParadoxConditionParameter
  * @see ParadoxParameterSupport
  */
-data class ParadoxParameterInfo(
+class ParadoxParameterInfo(
     val name: String,
     val contextName: String,
     val contextIcon: Icon?,
     val contextKey: String,
     val readWriteAccess: ReadWriteAccess,
-    val gameType: ParadoxGameType,
     val project: Project,
+    val gameType: ParadoxGameType,
 ) : UserDataHolderBase() {
     // 3.0.1 optimize: use memory-friendly lazy property
     val modificationTracker: ModificationTracker? // region by lazy { computeModificationTracker() }
@@ -39,7 +40,11 @@ data class ParadoxParameterInfo(
 
     private fun computeModificationTracker() = support?.getModificationTracker(this)
 
+    override fun toString(): String {
+        return "ParadoxParameterInfo(name=$name, contextKey=$contextKey, readWriteAccess=$readWriteAccess, gameType=$gameType, project=$project)"
+    }
+
     companion object {
-        @JvmField val EMPTY = ParadoxParameterInfo("", "", null, "", ReadWriteAccess.ReadWrite, ParadoxGameType.Core, getDefaultProject())
+        @JvmField val EMPTY = ParadoxParameterInfo("", "", null, "", ReadWriteAccess.ReadWrite, getDefaultProject(), ParadoxGameType.Core)
     }
 }

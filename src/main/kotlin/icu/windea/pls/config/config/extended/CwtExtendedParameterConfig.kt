@@ -20,9 +20,9 @@ import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.core.util.values.singletonListOrEmpty
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.cwt.psi.CwtMember
-import icu.windea.pls.ep.resolve.parameter.containingContextReference
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.lang.util.ParadoxConfigManager
+import icu.windea.pls.model.containingContextReference
 import icu.windea.pls.script.psi.ParadoxScriptMember
 
 /**

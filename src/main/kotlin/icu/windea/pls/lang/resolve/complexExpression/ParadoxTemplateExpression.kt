@@ -69,7 +69,8 @@ private object ParadoxTemplateExpressionResolver {
                 val templateString = config.configExpression?.expressionString ?: return null
                 CwtTemplateExpression.resolve(templateString)
             }
-        }.takeIf { it.expressionString.isNotEmpty() } ?: return null
+        }
+        if (templateExpression.expressionString.isEmpty()) return null
 
         val incomplete = ChronicleThreadContext.incompleteComplexExpression.get() ?: false
         if (!incomplete && text.isEmpty()) return null

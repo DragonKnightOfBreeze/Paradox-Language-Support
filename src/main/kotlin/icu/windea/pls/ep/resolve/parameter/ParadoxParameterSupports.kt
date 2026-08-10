@@ -55,6 +55,11 @@ import icu.windea.pls.model.ParadoxParameterInfo
 import icu.windea.pls.model.ReferenceLinkType
 import icu.windea.pls.model.constants.ChronicleStrings
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
+import icu.windea.pls.model.containingContext
+import icu.windea.pls.model.containingContextReference
+import icu.windea.pls.model.definitionName
+import icu.windea.pls.model.definitionTypes
+import icu.windea.pls.model.inlineScriptExpression
 import icu.windea.pls.script.psi.ParadoxConditionParameter
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxParameter

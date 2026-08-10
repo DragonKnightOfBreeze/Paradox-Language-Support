@@ -27,6 +27,10 @@ class ParadoxParameterContextReferenceInfo(
     val element: PsiElement? get() = elementPointer.element
     val contextNameElement: PsiElement? get() = contextNameElementPointer.element
 
+    override fun toString(): String {
+        return "ParadoxParameterContextReferenceInfo(contextKey=$contextKey, $arguments=arguments, project=$project, gameType=$gameType)"
+    }
+
     enum class From {
         /** extraArgs: config, completionOffset? */
         Argument,
@@ -52,5 +56,9 @@ class ParadoxParameterContextReferenceInfo(
     ) {
         val argumentNameElement: PsiElement? get() = argumentNameElementPointer.element
         val argumentValueElement: PsiElement? get() = argumentValueElementPointer?.element
+
+        override fun toString(): String {
+            return "ParadoxParameterContextReferenceInfo.Argument(argumentName=$argumentName, $argumentValue=argumentValue, project=$project, gameType=$gameType)"
+        }
     }
 }

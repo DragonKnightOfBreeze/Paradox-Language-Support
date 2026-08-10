@@ -14,6 +14,10 @@ import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxModifierInfo
 import icu.windea.pls.model.constants.ParadoxDefinitionTypeSets
+import icu.windea.pls.model.economicCategoryInfo
+import icu.windea.pls.model.economicCategoryModifierInfo
+import icu.windea.pls.model.modifierConfig
+import icu.windea.pls.model.templateExpression
 import icu.windea.pls.script.psi.ParadoxScriptString
 
 class ParadoxBaseModifierIconProvider : ParadoxModifierIconProvider {

@@ -25,7 +25,6 @@ import icu.windea.pls.core.text.DocumentationBuilder
 import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.ep.resolve.parameter.ParadoxParameterInferredConfigProvider
 import icu.windea.pls.ep.resolve.parameter.ParadoxParameterSupport
-import icu.windea.pls.ep.resolve.parameter.support
 import icu.windea.pls.lang.match.findByPattern
 import icu.windea.pls.lang.match.matchesByPattern
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
@@ -35,6 +34,7 @@ import icu.windea.pls.model.ParadoxParameterContextReferenceInfo
 import icu.windea.pls.model.constants.ChronicleStrings
 import icu.windea.pls.model.expressions.ParadoxConditionalBlockExpression
 import icu.windea.pls.model.orSpecific
+import icu.windea.pls.model.support
 import icu.windea.pls.model.type.CwtExpressionType
 import icu.windea.pls.script.psi.ParadoxConditionParameter
 import icu.windea.pls.script.psi.ParadoxDefinitionElement

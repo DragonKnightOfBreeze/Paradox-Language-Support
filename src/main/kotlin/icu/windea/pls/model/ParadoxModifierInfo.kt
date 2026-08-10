@@ -6,17 +6,18 @@ import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.core.getDefaultProject
 import icu.windea.pls.core.util.values.LazyValue
 import icu.windea.pls.ep.resolve.modifier.ParadoxModifierSupport
-import icu.windea.pls.ep.resolve.modifier.support
+import icu.windea.pls.lang.psi.light.ParadoxModifierLightElement
 
 /**
  * 修正信息。
  *
+ * @see ParadoxModifierLightElement
  * @see ParadoxModifierSupport
  */
-data class ParadoxModifierInfo(
+class ParadoxModifierInfo(
     val name: String,
-    val gameType: ParadoxGameType,
     val project: Project,
+    val gameType: ParadoxGameType,
 ) : UserDataHolderBase() {
     // 3.0.1 optimize: use memory-friendly lazy property
     val modificationTracker: ModificationTracker? // region by lazy { computeModificationTracker() }
@@ -25,7 +26,11 @@ data class ParadoxModifierInfo(
 
     private fun computeModificationTracker() = support?.getModificationTracker(this)
 
+    override fun toString(): String {
+        return "ParadoxModifierInfo(name=$name, project=$project, gameType=$gameType)"
+    }
+
     companion object {
-        @JvmField val EMPTY = ParadoxModifierInfo("", ParadoxGameType.Core, getDefaultProject())
+        @JvmField val EMPTY = ParadoxModifierInfo("", getDefaultProject(), ParadoxGameType.Core)
     }
 }

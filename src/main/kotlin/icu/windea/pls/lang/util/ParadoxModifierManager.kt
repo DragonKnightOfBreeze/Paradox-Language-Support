@@ -5,12 +5,9 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
-import com.intellij.util.Processor
 import icu.windea.pls.ChronicleFacade
-import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.delegated.CwtEnumConfig
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
-import icu.windea.pls.config.configExpression.CwtTemplateExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cache.CacheBuilder
@@ -20,8 +17,6 @@ import icu.windea.pls.core.cache.trackedBy
 import icu.windea.pls.core.collections.mapNotNullFast
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.optimized
-import icu.windea.pls.core.pass
-import icu.windea.pls.core.processAsync
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.core.util.getValue
@@ -29,23 +24,17 @@ import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.registerKeyWithThis
 import icu.windea.pls.ep.resolve.modifier.ParadoxModifierSupport
-import icu.windea.pls.ep.resolve.modifier.support
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
-import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.index.constraints.ParadoxLocalisationIndexConstraint
 import icu.windea.pls.lang.psi.light.ParadoxModifierLightElement
 import icu.windea.pls.lang.resolve.ParadoxModifierService
-import icu.windea.pls.lang.search.ParadoxComplexEnumValueSearch
-import icu.windea.pls.lang.search.ParadoxDefinitionSearch
-import icu.windea.pls.lang.search.ParadoxDynamicValueSearch
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
-import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.search.util.preferLocale
 import icu.windea.pls.lang.search.util.withConstraint
-import icu.windea.pls.lang.search.util.withSearchScopeType
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.model.ParadoxModifierInfo
+import icu.windea.pls.model.support
 import icu.windea.pls.model.toInfo
 import icu.windea.pls.model.toPsiElement
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
@@ -89,89 +78,6 @@ object ParadoxModifierManager {
     fun completeModifier(context: ParadoxCompletionContext, result: CompletionResultSet) {
         if (context.contextElement !is ParadoxScriptStringExpressionElement) return
         ParadoxModifierService.completeModifier(context, result)
-    }
-
-    fun completeTemplateModifier(contextElement: PsiElement, templateExpression: CwtTemplateExpression, configGroup: CwtConfigGroup, processor: Processor<String>) {
-        doCompleteTemplateModifier(contextElement, templateExpression, configGroup, processor, 0, "")
-    }
-
-    private fun doCompleteTemplateModifier(contextElement: PsiElement, configExpression: CwtTemplateExpression, configGroup: CwtConfigGroup, processor: Processor<String>, index: Int, builder: String) {
-        // 用于提示生成的修正，为了优化性能，这里仅支持部分数据类型
-        ProgressManager.checkCanceled()
-        val project = configGroup.project
-        if (index == configExpression.snippetExpressions.size) {
-            if (builder.isNotEmpty()) {
-                processor.process(builder)
-            }
-            return
-        }
-        val snippetExpression = configExpression.snippetExpressions[index]
-        when (snippetExpression.type) {
-            CwtDataTypes.Constant -> {
-                val text = snippetExpression.expressionString
-                doCompleteTemplateModifier(contextElement, configExpression, configGroup, processor, index + 1, builder + text)
-            }
-            CwtDataTypes.Definition -> {
-                val typeExpression = snippetExpression.metadata.value ?: return
-                val selector = ParadoxDefinitionSearch.selector(project, contextElement).contextSensitive().distinct()
-                ParadoxDefinitionSearch.searchElement(null, typeExpression, selector).processAsync p@{ definition ->
-                    ProgressManager.checkCanceled()
-                    val name = definition.definitionInfo?.name
-                    if (name.isNullOrEmpty()) return@p true
-                    doCompleteTemplateModifier(contextElement, configExpression, configGroup, processor, index + 1, builder + name)
-                    true
-                }
-            }
-            CwtDataTypes.EnumValue -> {
-                val enumName = snippetExpression.metadata.value ?: return
-                // 提示简单枚举
-                val enumConfig = configGroup.enums[enumName]
-                if (enumConfig != null) {
-                    ProgressManager.checkCanceled()
-                    val enumValueConfigs = enumConfig.valueConfigMap.values
-                    if (enumValueConfigs.isEmpty()) return
-                    for (enumValueConfig in enumValueConfigs) {
-                        val name = enumValueConfig.value
-                        doCompleteTemplateModifier(contextElement, configExpression, configGroup, processor, index + 1, builder + name)
-                    }
-                }
-                ProgressManager.checkCanceled()
-                // 提示复杂枚举值
-                val complexEnumConfig = configGroup.complexEnums[enumName]
-                if (complexEnumConfig != null) {
-                    ProgressManager.checkCanceled()
-                    val searchScopeType = complexEnumConfig.searchScopeType
-                    val selector = ParadoxComplexEnumValueSearch.selector(project, contextElement).contextSensitive().distinct()
-                        .withSearchScopeType(searchScopeType)
-                    ParadoxComplexEnumValueSearch.search(null, enumName, selector).processAsync p@{ info ->
-                        ProgressManager.checkCanceled()
-                        val name = info.name
-                        doCompleteTemplateModifier(contextElement, configExpression, configGroup, processor, index + 1, builder + name)
-                        true
-                    }
-                }
-            }
-            CwtDataTypes.Value -> {
-                val dynamicValueType = snippetExpression.metadata.value ?: return
-                ProgressManager.checkCanceled()
-                val valueConfig = configGroup.dynamicValueTypes[dynamicValueType] ?: return
-                val dynamicValueTypeConfigs = valueConfig.valueConfigMap.values
-                if (dynamicValueTypeConfigs.isEmpty()) return
-                for (dynamicValueTypeConfig in dynamicValueTypeConfigs) {
-                    val name = dynamicValueTypeConfig.value
-                    doCompleteTemplateModifier(contextElement, configExpression, configGroup, processor, index + 1, builder + name)
-                }
-                ProgressManager.checkCanceled()
-                val selector = ParadoxDynamicValueSearch.selector(project, contextElement).distinct()
-                ParadoxDynamicValueSearch.search(null, dynamicValueType, selector).processAsync p@{ info ->
-                    ProgressManager.checkCanceled()
-                    // 去除后面的作用域信息
-                    doCompleteTemplateModifier(contextElement, configExpression, configGroup, processor, index + 1, builder + info.name)
-                    true
-                }
-            }
-            else -> pass()
-        }
     }
 
     fun getModifierInfo(name: String, element: PsiElement, configGroup: CwtConfigGroup, useSupport: ParadoxModifierSupport? = null): ParadoxModifierInfo? {

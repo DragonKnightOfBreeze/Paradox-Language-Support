@@ -70,7 +70,7 @@ object ParadoxMatchService {
      */
     fun process(candidates: List<ParadoxMatchCandidate>, options: ParadoxMatchOptions? = null): List<CwtMemberConfig<*>> {
         if (candidates.isEmpty()) return emptyList()
-        val matched = ParadoxMatchProcessor.process(candidates, options)
+        val matched = ParadoxMatchCandidateService.process(candidates, options)
         return matched.mapFast { it.value }
     }
 

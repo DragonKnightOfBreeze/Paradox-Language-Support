@@ -4,6 +4,7 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.ModificationTracker
 import com.intellij.psi.PsiElement
+import com.intellij.util.Processor
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.ChronicleIcons
@@ -12,16 +13,12 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.annotations.CaseInsensitive
+import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.pass
-import icu.windea.pls.core.processAsync
 import icu.windea.pls.core.text.DocumentationBuilder
-import icu.windea.pls.core.util.getValue
-import icu.windea.pls.core.util.provideDelegate
-import icu.windea.pls.core.util.registerKey
-import icu.windea.pls.core.util.setValue
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
@@ -31,6 +28,7 @@ import icu.windea.pls.lang.match.ParadoxConfigExpressionMatchService
 import icu.windea.pls.lang.psi.light.ParadoxModifierLightElement
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxTemplateExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
+import icu.windea.pls.lang.resolve.processors.ParadoxModifierProcessor
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.settings.ChronicleSettings
@@ -41,31 +39,17 @@ import icu.windea.pls.lang.util.ParadoxModificationTrackers
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.model.ParadoxDefinitionInfo
-import icu.windea.pls.model.ParadoxEconomicCategoryInfo
-import icu.windea.pls.model.ParadoxEconomicCategoryModifierInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxModifierInfo
 import icu.windea.pls.model.ReferenceLinkType
 import icu.windea.pls.model.constants.ChronicleStrings
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
+import icu.windea.pls.model.economicCategoryInfo
+import icu.windea.pls.model.economicCategoryModifierInfo
+import icu.windea.pls.model.modifierConfig
+import icu.windea.pls.model.templateExpression
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
-
-// region Extensions
-
-val ParadoxModifierSupport.Keys.templateExpression by registerKey<ParadoxTemplateExpression>(ParadoxModifierSupport.Keys)
-val ParadoxModifierSupport.Keys.economicCategoryInfo by registerKey<ParadoxEconomicCategoryInfo>(ParadoxModifierSupport.Keys)
-val ParadoxModifierSupport.Keys.economicCategoryModifierInfo by registerKey<ParadoxEconomicCategoryModifierInfo>(ParadoxModifierSupport.Keys)
-
-var ParadoxModifierInfo.templateExpression by ParadoxModifierSupport.Keys.templateExpression
-var ParadoxModifierInfo.economicCategoryInfo by ParadoxModifierSupport.Keys.economicCategoryInfo
-var ParadoxModifierInfo.economicCategoryModifierInfo by ParadoxModifierSupport.Keys.economicCategoryModifierInfo
-
-var ParadoxModifierLightElement.templateExpression by ParadoxModifierSupport.Keys.templateExpression
-var ParadoxModifierLightElement.economicCategoryInfo by ParadoxModifierSupport.Keys.economicCategoryInfo
-var ParadoxModifierLightElement.economicCategoryModifierInfo by ParadoxModifierSupport.Keys.economicCategoryModifierInfo
-
-// endregion
 
 /**
  * 提供对预定义的修正的支持。
@@ -83,40 +67,46 @@ class ParadoxPredefinedModifierSupport : ParadoxModifierSupport {
         val modifierConfig = configGroup.predefinedModifiers[modifierName] ?: return null
         val gameType = configGroup.gameType
         val project = configGroup.project
-        val modifierInfo = ParadoxModifierInfo(modifierName, gameType, project)
+        val modifierInfo = ParadoxModifierInfo(modifierName, project, gameType)
         modifierInfo.modifierConfig = modifierConfig
         return modifierInfo
     }
 
     override fun completeModifier(context: ParadoxCompletionContext, result: CompletionResultSet, modifierNames: MutableSet<@CaseInsensitive String>) {
         val element = context.contextElement
+        if (element !is ParadoxScriptStringExpressionElement) return
         val configGroup = context.configGroup
         val scopeContext = context.scopeContext
-        if (element !is ParadoxScriptStringExpressionElement) return
-        val modifiers = configGroup.predefinedModifiers
-        if (modifiers.isEmpty()) return
-
         val completeOnlyScopeIsMatched = ChronicleSettings.getInstance().state.completion.completeOnlyScopeIsMatched
 
-        for (modifierConfig in modifiers.values) {
+        ParadoxModifierProcessor.processPredefinedModifierConfig(configGroup) p@{ modifierConfig ->
             // 排除重复的
-            if (!modifierNames.add(modifierConfig.name)) continue
+            if (!modifierNames.add(modifierConfig.name)) return@p true
 
             // 排除不匹配 modifier 的 supported_scopes 的情况
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, modifierConfig.supportedScopes, configGroup)
-            if (!scopeMatched && completeOnlyScopeIsMatched) continue
+            if (!scopeMatched && completeOnlyScopeIsMatched) return@p true
 
             ProgressManager.checkCanceled()
             val hintText = ParadoxCompletionLookupProvider.getConfigBasedHintText(context, modifierConfig.config, withConfigExpression = false)
             val template = modifierConfig.template
-            if (template.expressionString.isNotEmpty()) continue
+            if (template.expressionString.isNotEmpty()) return@p true
             val typeFile = modifierConfig.pointer.containingFile
             val typeText = typeFile?.name
             val typeIcon = typeFile?.icon
             val name = modifierConfig.name
-            val modifierElement = ParadoxModifierManager.resolveModifier(name, element, configGroup, this) ?: continue
+            val modifierElement = ParadoxModifierManager.resolveModifier(name, element, configGroup, this) ?: return@p true
             val lookupElement = ParadoxCompletionLookupProvider.fromModifier(context, modifierElement, typeText, typeIcon, hintText)
             lookupElement.addToResult(context, result)
+        }
+    }
+
+    override fun processModifier(element: PsiElement, configGroup: CwtConfigGroup, processor: Processor<ParadoxModifierLightElement>): Boolean {
+        return ParadoxModifierProcessor.processPredefinedModifierConfig(configGroup) p@{ modifierConfig ->
+            ProgressManager.checkCanceled()
+            val name = modifierConfig.name
+            val modifierElement = ParadoxModifierManager.resolveModifier(name, element, configGroup, this) ?: return@p true
+            processor.process(modifierElement)
         }
     }
 
@@ -151,7 +141,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
         for (modifierConfig in configGroup.generatedModifiers.values) {
             ProgressManager.checkCanceled()
             val templateExpression = ParadoxTemplateExpression.resolve(modifierName, null, configGroup, modifierConfig) ?: continue
-            val modifierInfo = ParadoxModifierInfo(modifierName, gameType, project)
+            val modifierInfo = ParadoxModifierInfo(modifierName, project, gameType)
             modifierInfo.modifierConfig = modifierConfig
             modifierInfo.templateExpression = templateExpression
             if (templateExpression.isExactMatched()) return modifierInfo
@@ -165,32 +155,39 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
 
     override fun completeModifier(context: ParadoxCompletionContext, result: CompletionResultSet, modifierNames: MutableSet<@CaseInsensitive String>) {
         val element = context.contextElement
+        if (element !is ParadoxScriptStringExpressionElement) return
         val configGroup = context.configGroup
         val scopeContext = context.scopeContext
-        if (element !is ParadoxScriptStringExpressionElement) return
-        val modifiers = configGroup.generatedModifiers
-        if (modifiers.isEmpty()) return
-
         val completeOnlyScopeIsMatched = ChronicleSettings.getInstance().state.completion.completeOnlyScopeIsMatched
 
-        for (modifierConfig in modifiers.values) {
+        ParadoxModifierProcessor.processGeneratedModifierConfig(configGroup) p@{ modifierConfig ->
             // 排除不匹配 modifier 的 supported_scopes 的情况
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, modifierConfig.supportedScopes, configGroup)
-            if (!scopeMatched && completeOnlyScopeIsMatched) continue
+            if (!scopeMatched && completeOnlyScopeIsMatched) return@p true
 
             ProgressManager.checkCanceled()
-            val template = modifierConfig.template
-            if (template.expressionString.isEmpty()) continue
             val typeFile = modifierConfig.pointer.containingFile
             val typeText = typeFile?.name
             val typeIcon = typeFile?.icon
             val hintText = ParadoxCompletionLookupProvider.getConfigBasedHintText(context, modifierConfig.config, withConfigExpression = true)
             // 生成的 modifier
-            ParadoxModifierManager.completeTemplateModifier(element, template, configGroup) p@{ name ->
-                if (!modifierNames.add(name)) return@p true // 排除重复的
-                val modifierElement = ParadoxModifierManager.resolveModifier(name, element, configGroup, this) ?: return@p true
+            ParadoxModifierProcessor.processModifierTemplate(element, configGroup, modifierConfig.template) p1@{ name ->
+                // 排除重复的
+                if (!modifierNames.add(modifierConfig.name)) return@p1 true
+
+                val modifierElement = ParadoxModifierManager.resolveModifier(name, element, configGroup, this) ?: return@p1 true
                 val lookupElement = ParadoxCompletionLookupProvider.fromModifier(context, modifierElement, typeText, typeIcon, hintText)
                 lookupElement.addToResult(context, result)
+            }
+        }
+    }
+
+    override fun processModifier(element: PsiElement, configGroup: CwtConfigGroup, processor: Processor<ParadoxModifierLightElement>): Boolean {
+        return ParadoxModifierProcessor.processGeneratedModifierConfig(configGroup) p@{ modifierConfig ->
+            ProgressManager.checkCanceled()
+            ParadoxModifierProcessor.processModifierTemplate(element, configGroup, modifierConfig.template) p1@{ name ->
+                val modifierElement = ParadoxModifierManager.resolveModifier(name, element, configGroup, this) ?: return@p1 true
+                processor.process(modifierElement)
             }
         }
     }
@@ -358,7 +355,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
             val economicCategoryInfo = ParadoxEconomicCategoryManager.getInfo(economicCategory) ?: continue
             for (economicCategoryModifierInfo in economicCategoryInfo.modifiers) {
                 if (economicCategoryModifierInfo.name.equals(modifierName, ignoreCase = true)) {
-                    val modifierInfo = ParadoxModifierInfo(modifierName, gameType, project)
+                    val modifierInfo = ParadoxModifierInfo(modifierName, project, gameType)
                     modifierInfo.economicCategoryInfo = economicCategoryInfo
                     modifierInfo.economicCategoryModifierInfo = economicCategoryModifierInfo
                     return modifierInfo
@@ -370,16 +367,12 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
 
     override fun completeModifier(context: ParadoxCompletionContext, result: CompletionResultSet, modifierNames: MutableSet<@CaseInsensitive String>) {
         val element = context.contextElement
+        if (element !is ParadoxScriptStringExpressionElement) return
         val configGroup = context.configGroup
         val scopeContext = context.scopeContext
-        if (element !is ParadoxScriptStringExpressionElement) return
-
         val completeOnlyScopeIsMatched = ChronicleSettings.getInstance().state.completion.completeOnlyScopeIsMatched
-        val selector = ParadoxDefinitionSearch.selector(configGroup.project, element).contextSensitive().distinct()
-        ParadoxDefinitionSearch.searchProperty(null, ParadoxDefinitionTypes.economicCategory, selector).processAsync p@{ economicCategory ->
-            // 排除不存在对应的 economic_category 的情况
-            val economicCategoryInfo = ParadoxEconomicCategoryManager.getInfo(economicCategory) ?: return@p true
 
+        ParadoxModifierProcessor.processEconomicCategoryInfo(element, configGroup) p@{ economicCategoryInfo ->
             // 排除不匹配 modifier 的 supported_scopes 的情况
             val modifierCategories = ParadoxModifierManager.resolveModifierCategory(economicCategoryInfo.modifierCategory, configGroup)
             val supportedScopes = ParadoxScopeManager.getSupportedScopes(modifierCategories)
@@ -390,14 +383,24 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
             val typeText = economicCategoryInfo.name
             val typeIcon = ChronicleIcons.Nodes.Definition(ParadoxDefinitionTypes.economicCategory)
             val hintText = " from economic category " + economicCategoryInfo.name
-            for (economicCategoryModifierInfo in economicCategoryInfo.modifiers) {
+            economicCategoryInfo.modifiers.process p1@{ economicCategoryModifierInfo ->
                 val name = economicCategoryModifierInfo.name
-                if (!modifierNames.add(name)) continue // 排除重复的
-                val modifierElement = ParadoxModifierManager.resolveModifier(name, element, configGroup, this) ?: continue
+                if (!modifierNames.add(name)) return@p1 true // 排除重复的
+                val modifierElement = ParadoxModifierManager.resolveModifier(name, element, configGroup, this) ?: return@p1 true
                 val lookupElement = ParadoxCompletionLookupProvider.fromModifier(context, modifierElement, typeText, typeIcon, hintText)
                 lookupElement.addToResult(context, result)
             }
-            true
+        }
+    }
+
+    override fun processModifier(element: PsiElement, configGroup: CwtConfigGroup, processor: Processor<ParadoxModifierLightElement>): Boolean {
+        return ParadoxModifierProcessor.processEconomicCategoryInfo(element, configGroup) p@{ economicCategoryInfo ->
+            ProgressManager.checkCanceled()
+            economicCategoryInfo.modifiers.process p1@{ economicCategoryModifierInfo ->
+                val name = economicCategoryModifierInfo.name
+                val modifierElement = ParadoxModifierManager.resolveModifier(name, element, configGroup, this) ?: return@p1 true
+                processor.process(modifierElement)
+            }
         }
     }
 

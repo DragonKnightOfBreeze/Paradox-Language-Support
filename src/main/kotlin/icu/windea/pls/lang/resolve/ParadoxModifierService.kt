@@ -2,23 +2,25 @@ package icu.windea.pls.lang.resolve
 
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.psi.PsiElement
+import com.intellij.util.Processor
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.CaseInsensitiveStringSet
 import icu.windea.pls.core.collections.anyFast
 import icu.windea.pls.core.collections.forEachFast
+import icu.windea.pls.core.collections.processFast
 import icu.windea.pls.core.optimizedIfEmpty
 import icu.windea.pls.core.text.DocumentationBuilder
 import icu.windea.pls.ep.resolve.modifier.ParadoxModifierIconProvider
 import icu.windea.pls.ep.resolve.modifier.ParadoxModifierNameDescProvider
 import icu.windea.pls.ep.resolve.modifier.ParadoxModifierSupport
-import icu.windea.pls.ep.resolve.modifier.support
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.psi.light.ParadoxModifierLightElement
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxModifierInfo
 import icu.windea.pls.model.orSpecific
+import icu.windea.pls.model.support
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 @Optimized
@@ -58,6 +60,19 @@ object ParadoxModifierService {
         supports.forEachFast f@{ ep ->
             if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f // check game type first
             ep.completeModifier(context, result, modifierNames)
+        }
+    }
+
+    /**
+     * @see ParadoxModifierSupport.processModifier
+     */
+    @Suppress("unused")
+    fun processModifier(element: PsiElement, configGroup: CwtConfigGroup, processor: Processor<ParadoxModifierLightElement>): Boolean {
+        val gameType = configGroup.gameType
+        val supports = ParadoxModifierSupport.EP_NAME.extensionList
+        return supports.processFast f@{ ep ->
+            if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f true // check game type first
+            ep.processModifier(element, configGroup, processor)
         }
     }
 

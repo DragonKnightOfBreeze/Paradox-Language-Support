@@ -1,16 +1,43 @@
 @file:Suppress("unused")
 
-package icu.windea.pls.ep.resolve.parameter
+package icu.windea.pls.model
 
 import com.intellij.psi.SmartPsiElementPointer
+import icu.windea.pls.config.config.delegated.CwtModifierConfig
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.setValue
+import icu.windea.pls.ep.resolve.modifier.ParadoxModifierSupport
+import icu.windea.pls.ep.resolve.parameter.ParadoxParameterSupport
+import icu.windea.pls.lang.psi.light.ParadoxModifierLightElement
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
-import icu.windea.pls.model.ParadoxParameterContextReferenceInfo
-import icu.windea.pls.model.ParadoxParameterInfo
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxTemplateExpression
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
+
+// region Modifiers
+
+val ParadoxModifierSupport.Keys.support by registerKey<ParadoxModifierSupport>(ParadoxModifierSupport.Keys)
+val ParadoxModifierSupport.Keys.modifierConfig by registerKey<CwtModifierConfig>(ParadoxModifierSupport.Keys)
+val ParadoxModifierSupport.Keys.templateExpression by registerKey<ParadoxTemplateExpression>(ParadoxModifierSupport.Keys)
+val ParadoxModifierSupport.Keys.economicCategoryInfo by registerKey<ParadoxEconomicCategoryInfo>(ParadoxModifierSupport.Keys)
+val ParadoxModifierSupport.Keys.economicCategoryModifierInfo by registerKey<ParadoxEconomicCategoryModifierInfo>(ParadoxModifierSupport.Keys)
+
+var ParadoxModifierInfo.support by ParadoxModifierSupport.Keys.support
+var ParadoxModifierInfo.modifierConfig by ParadoxModifierSupport.Keys.modifierConfig
+var ParadoxModifierInfo.templateExpression by ParadoxModifierSupport.Keys.templateExpression
+var ParadoxModifierInfo.economicCategoryInfo by ParadoxModifierSupport.Keys.economicCategoryInfo
+var ParadoxModifierInfo.economicCategoryModifierInfo by ParadoxModifierSupport.Keys.economicCategoryModifierInfo
+
+var ParadoxModifierLightElement.support by ParadoxModifierSupport.Keys.support
+var ParadoxModifierLightElement.modifierConfig by ParadoxModifierSupport.Keys.modifierConfig
+var ParadoxModifierLightElement.templateExpression by ParadoxModifierSupport.Keys.templateExpression
+var ParadoxModifierLightElement.economicCategoryInfo by ParadoxModifierSupport.Keys.economicCategoryInfo
+var ParadoxModifierLightElement.economicCategoryModifierInfo by ParadoxModifierSupport.Keys.economicCategoryModifierInfo
+
+// endregion
+
+// region Parameters
 
 val ParadoxParameterSupport.Keys.support by registerKey<ParadoxParameterSupport>(ParadoxParameterSupport.Keys)
 val ParadoxParameterSupport.Keys.containingContext by registerKey<SmartPsiElementPointer<ParadoxDefinitionElement>>(ParadoxParameterSupport.Keys)
@@ -37,3 +64,5 @@ var ParadoxParameterContextReferenceInfo.containingContextReference by ParadoxPa
 var ParadoxParameterContextReferenceInfo.definitionName by ParadoxParameterSupport.Keys.definitionName
 var ParadoxParameterContextReferenceInfo.definitionTypes by ParadoxParameterSupport.Keys.definitionTypes
 var ParadoxParameterContextReferenceInfo.inlineScriptExpression by ParadoxParameterSupport.Keys.inlineScriptExpression
+
+// endregion

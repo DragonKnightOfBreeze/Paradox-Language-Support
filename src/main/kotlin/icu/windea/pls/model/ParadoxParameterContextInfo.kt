@@ -17,6 +17,10 @@ class ParadoxParameterContextInfo(
     val project: Project,
     val gameType: ParadoxGameType,
 ) {
+    override fun toString(): String {
+        return "ParadoxParameterContextInfo(parameters=$parameters, project=$project, gameType=$gameType)"
+    }
+
     /**
      * @property conditionExpressions 文件中从上到下，链表中从左到右，记录参数化快表达式的堆栈。如果 [element] 是 [ParadoxConditionParameter]，则应当为 null。
      */
@@ -31,5 +35,9 @@ class ParadoxParameterContextInfo(
         val element: PsiElement? get() = elementPointer.element
         val parentElement: PsiElement? get() = elementPointer.element?.parent
         val parameterElement: ParadoxParameterLightElement? get() = elementPointer.element?.let { ParadoxParameterManager.getParameterElement(it) }
+
+        override fun toString(): String {
+            return "ParadoxParameterContextInfo.Parameter(name=$name, defaultValue=$defaultValue, project=$project, gameType=$gameType)"
+        }
     }
 }

@@ -1,12 +1,14 @@
 package icu.windea.pls.model.index
 
+import icu.windea.pls.ep.index.ParadoxScopeInferrableDefinitionMergedIndexSupport
+import icu.windea.pls.lang.index.ParadoxMergedIndex
 import icu.windea.pls.lang.psi.ParadoxPsiFileService
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 /**
- * @see icu.windea.pls.lang.index.ParadoxMergedIndex
- * @see icu.windea.pls.ep.index.ParadoxScopeInferrableDefinitionMergedIndexSupport
+ * @see ParadoxMergedIndex
+ * @see ParadoxScopeInferrableDefinitionMergedIndexSupport
  */
 data class ParadoxScopeInferrableDefinitionIndexInfo(
     val definitionName: String,

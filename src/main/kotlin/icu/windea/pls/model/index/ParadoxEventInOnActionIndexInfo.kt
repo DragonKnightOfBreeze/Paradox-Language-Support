@@ -1,10 +1,12 @@
 package icu.windea.pls.model.index
 
+import icu.windea.pls.ep.index.ParadoxEventInOnActionMergedIndexSupport
+import icu.windea.pls.lang.index.ParadoxMergedIndex
 import icu.windea.pls.model.ParadoxGameType
 
 /**
- * @see icu.windea.pls.lang.index.ParadoxMergedIndex
- * @see icu.windea.pls.ep.index.ParadoxEventInOnActionMergedIndexSupport
+ * @see ParadoxMergedIndex
+ * @see ParadoxEventInOnActionMergedIndexSupport
  */
 data class ParadoxEventInOnActionIndexInfo(
     val eventName: String,

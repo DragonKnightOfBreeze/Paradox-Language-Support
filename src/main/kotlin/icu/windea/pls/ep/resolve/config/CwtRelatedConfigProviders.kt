@@ -16,7 +16,6 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.findElementAt
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvPsiService
-import icu.windea.pls.ep.resolve.modifier.modifierConfig
 import icu.windea.pls.lang.complexEnumValueInfo
 import icu.windea.pls.lang.defineInfo
 import icu.windea.pls.lang.definitionInfo
@@ -45,6 +44,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.model.constraints.ParadoxReferenceConstraint
 import icu.windea.pls.model.expressions.ParadoxDefinitionTypeExpression
+import icu.windea.pls.model.modifierConfig
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey

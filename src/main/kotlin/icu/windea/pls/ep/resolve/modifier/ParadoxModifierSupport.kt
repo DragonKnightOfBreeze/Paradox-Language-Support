@@ -4,6 +4,7 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.openapi.util.ModificationTracker
 import com.intellij.psi.PsiElement
+import com.intellij.util.Processor
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.annotations.CaseInsensitive
@@ -27,14 +28,18 @@ import icu.windea.pls.script.psi.ParadoxDefinitionElement
 interface ParadoxModifierSupport {
     fun supports(gameType: ParadoxGameType) = true
 
-    /**
-     * @param element 进行匹配时的上下文 PSI 元素。
-     */
     fun matchModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): Boolean
 
     fun resolveModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): ParadoxModifierInfo?
 
     fun completeModifier(context: ParadoxCompletionContext, result: CompletionResultSet, modifierNames: MutableSet<@CaseInsensitive String>)
+
+    /**
+     * 根据指定的 [element] 和 [configGroup]，遍历所有修正。
+     *
+     * @return 是否继续遍历。
+     */
+    fun processModifier(element: PsiElement, configGroup: CwtConfigGroup, processor: Processor<ParadoxModifierLightElement>): Boolean
 
     fun getModificationTracker(modifierInfo: ParadoxModifierInfo): ModificationTracker? = null
 

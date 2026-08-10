@@ -36,7 +36,7 @@ fun ParadoxModifierInfo.toPsiElement(parent: PsiElement): ParadoxModifierLightEl
 }
 
 fun ParadoxModifierLightElement.toInfo(): ParadoxModifierInfo {
-    return ParadoxModifierInfo(name, gameType, project)
+    return ParadoxModifierInfo(name, project, gameType)
         .also { ParadoxModifierSupport.Keys.copy(this, it) }
 }
 
@@ -50,7 +50,7 @@ fun ParadoxParameterInfo.toPsiElement(parent: PsiElement): ParadoxParameterLight
 }
 
 fun ParadoxParameterLightElement.toInfo(): ParadoxParameterInfo {
-    return ParadoxParameterInfo(name, contextName, contextIcon, contextKey, readWriteAccess, gameType, project)
+    return ParadoxParameterInfo(name, contextName, contextIcon, contextKey, readWriteAccess, project, gameType)
         .also { ParadoxParameterSupport.Keys.copy(this, it) }
 }
 

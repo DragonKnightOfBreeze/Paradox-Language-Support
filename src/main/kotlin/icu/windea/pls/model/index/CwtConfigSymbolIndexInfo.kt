@@ -2,12 +2,14 @@ package icu.windea.pls.model.index
 
 import icu.windea.pls.core.util.ReadWriteAccess
 import icu.windea.pls.cwt.psi.CwtStringExpressionElement
+import icu.windea.pls.lang.index.CwtConfigIndexInfoAwareFileBasedIndex
 import icu.windea.pls.lang.psi.CwtPsiFileService
+import icu.windea.pls.lang.psi.light.CwtConfigSymbolLightElement
 import icu.windea.pls.model.ParadoxGameType
 
 /**
- * @see icu.windea.pls.lang.psi.light.CwtConfigSymbolLightElement
- * @see icu.windea.pls.lang.index.CwtConfigIndexInfoAwareFileBasedIndex
+ * @see CwtConfigSymbolLightElement
+ * @see CwtConfigIndexInfoAwareFileBasedIndex
  */
 data class CwtConfigSymbolIndexInfo(
     val name: String,
