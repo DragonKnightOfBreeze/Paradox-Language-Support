@@ -80,7 +80,7 @@ object ParadoxAnalysisService {
             isIgnoredFile(path, entry) -> ParadoxFileGroup.Other
             else -> ParadoxFileGroup.resolve(path)
         }
-        val fileInfo = ParadoxFileInfo(path.normalize(), entry, group, rootInfo)
+        val fileInfo = ParadoxFileInfo.Default(path.normalize(), entry, group, rootInfo)
         return fileInfo
     }
 
@@ -92,7 +92,7 @@ object ParadoxAnalysisService {
             isIgnoredFile(path, entry) -> ParadoxFileGroup.Other
             else -> ParadoxFileGroup.resolve(path)
         }
-        val fileInfo = ParadoxFileInfo(path.normalize(), entry, group, rootInfo)
+        val fileInfo = ParadoxFileInfo.Default(path.normalize(), entry, group, rootInfo)
         return fileInfo
     }
 

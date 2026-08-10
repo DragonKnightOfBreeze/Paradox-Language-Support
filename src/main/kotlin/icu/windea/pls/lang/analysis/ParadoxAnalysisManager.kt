@@ -71,10 +71,19 @@ object ParadoxAnalysisManager : ParadoxAnalysisScope {
 
     private fun doGetCachedRootInfo(rootFile: VirtualFile): ParadoxRootInfo? {
         val cachedRootInfo = ParadoxAnalysisDataManager.getOrPutData(rootFile, ParadoxAnalysisDataManager.Keys.cachedRootInfo) { LazyValue() }
+        cachedRootInfo.check { rootInfo ->
+            doCheckRootInfo(rootInfo)
+        }
         return cachedRootInfo.initialize {
             ParadoxAnalysisLifecycleService.ensureLoaded()
             runCatchingCancelable { doResolveRootInfo(rootFile) }.onFailure { e -> logger.warn(e) }.getOrNull()
         }
+    }
+
+    private fun doCheckRootInfo(rootInfo: ParadoxRootInfo): Boolean {
+        // consistency check
+        // 3.0.2 use `rootInfo.isValid()` directly
+        return rootInfo.isValid()
     }
 
     private fun doResolveRootInfo(rootFile: VirtualFile): ParadoxRootInfo? {
@@ -126,9 +135,8 @@ object ParadoxAnalysisManager : ParadoxAnalysisScope {
 
     private fun doCheckFileInfo(fileInfo: ParadoxFileInfo): Boolean {
         // consistency check
-        val rootInfo = fileInfo.rootInfo
-        // 3.0.1 optimize: check `rootInfo.isValid` directly
-        return rootInfo.isValid
+        // 3.0.2 optimize: use `fileInfo.isValid()` directly
+        return fileInfo.isValid()
         // if (rootInfo is ParadoxRootInfo.MetadataBased) {
         //     val expectedRootInfo = doGetCachedRootInfo(rootInfo.rootFile)
         //     return expectedRootInfo == rootInfo

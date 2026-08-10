@@ -1,12 +1,12 @@
 package icu.windea.pls.lang.analysis
 
-import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.base.data.ChronicleJsonService
 import icu.windea.pls.base.data.ParadoxGameTypeMetadataJson
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
+import icu.windea.pls.core.util.values.FallbackStrings
 import icu.windea.pls.lang.settings.ChronicleProfilesSettings
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
@@ -70,7 +70,7 @@ object ParadoxGameTypeManager {
     fun getModQualifiedName(gameType: ParadoxGameType, name: String?, version: String?): String {
         return buildString {
             append(gameType.title).append(" Mod: ")
-            append(name?.orNull() ?: ChronicleBundle.message("root.name.unnamed"))
+            append(name?.orNull() ?: FallbackStrings.unresolved)
             version?.orNull()?.let { version -> append("@").append(version) }
         }
     }

@@ -17,6 +17,8 @@ object FallbackStrings {
     const val anonymous = "(anonymous)"
     const val unknown = "(unknown)"
     const val unresolved = "(unresolved)"
+    const val unnamed = "(unnamed)"
+    const val injected = "(injected)"
 }
 
 inline fun FallbackValue<String?>.anonymous() = if (value.isNullOrEmpty()) FallbackStrings.anonymous else value

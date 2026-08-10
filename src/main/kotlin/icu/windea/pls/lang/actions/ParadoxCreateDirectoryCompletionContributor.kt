@@ -35,7 +35,7 @@ class ParadoxCreateDirectoryCompletionContributor : CreateDirectoryCompletionCon
 
     override fun getVariants(directory: PsiDirectory): Collection<Variant> {
         val fileInfo = directory.fileInfo ?: return emptySet()
-        if (!fileInfo.inMainOrExtraEntry) return emptySet() // 必须位于合法的入口目录中
+        if (!fileInfo.inMainOrExtraEntry()) return emptySet() // 必须位于合法的入口目录中
         val result = sortedSetOf<String>()
         processFromDefault(result, fileInfo)
         processFromIndex(result, fileInfo, directory)

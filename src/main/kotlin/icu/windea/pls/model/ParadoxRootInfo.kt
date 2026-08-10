@@ -1,7 +1,7 @@
 package icu.windea.pls.model
 
 import com.intellij.openapi.vfs.VirtualFile
-import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.core.util.values.FallbackStrings
 import icu.windea.pls.lang.analysis.ParadoxGameTypeManager
 import icu.windea.pls.model.analysis.ParadoxRootMetadata
 
@@ -23,9 +23,13 @@ sealed interface ParadoxRootInfo {
     val mainEntries: Set<String> get() = emptySet()
     val extraEntries: Set<String> get() = emptySet()
 
-    val isValid: Boolean get() = true
+    fun isValid(): Boolean
 
-    fun invalidate() {}
+    fun invalidate()
+
+    override fun equals(other: Any?): Boolean
+    override fun hashCode(): Int
+    override fun toString(): String
 
     sealed class MetadataBased(
         override val rootFile: VirtualFile,
@@ -35,15 +39,18 @@ sealed interface ParadoxRootInfo {
         val version: String? get() = metadata.version
 
         @Volatile private var _isValid = true
-        override val isValid: Boolean get() = _isValid
+
+        override fun isValid(): Boolean {
+            return _isValid && rootFile.isValid
+        }
 
         override fun invalidate() {
             _isValid = false
         }
     }
 
-    class Game(
-        rootFile: VirtualFile,
+    data class Game(
+        override val rootFile: VirtualFile,
         override val metadata: ParadoxRootMetadata.Game
     ) : MetadataBased(rootFile, metadata) {
         override val gameType: ParadoxGameType = ParadoxGameTypeManager.getGameType(this)
@@ -54,11 +61,11 @@ sealed interface ParadoxRootInfo {
         override val mainEntries: Set<String> get() = gameType.metadata.gameMainEntries
         override val extraEntries: Set<String> get() = gameType.metadata.gameExtraEntries
 
-        override fun toString() = qualifiedName
+        override fun toString() = "ParadoxRootInfo.Game(gameType=$gameType, gameVersion=$gameVersion)"
     }
 
-    class Mod(
-        rootFile: VirtualFile,
+    data class Mod(
+        override val rootFile: VirtualFile,
         override val metadata: ParadoxRootMetadata.Mod
     ) : MetadataBased(rootFile, metadata) {
         val gameTypeInfo: ParadoxGameTypeInfo? get() = metadata.gameTypeInfo
@@ -77,19 +84,23 @@ sealed interface ParadoxRootInfo {
         override val mainEntries: Set<String> get() = gameType.metadata.modMainEntries
         override val extraEntries: Set<String> get() = gameType.metadata.modExtraEntries
 
-        override fun toString() = qualifiedName
+        override fun toString() = "ParadoxRootInfo.Game(name=$name, version=$version, gameType=$gameType, gameVersion=$gameVersion)"
     }
 
-    class Injected(
+    data class Injected(
         override val rootFile: VirtualFile? = null,
         override val gameType: ParadoxGameType,
         override val gameVersion: String? = null,
     ) : ParadoxRootInfo {
-        override val qualifiedName: String get() = ChronicleBundle.message("root.name.injected")
+        override val qualifiedName: String get() = FallbackStrings.injected
         override val steamId: String? get() = null
 
-        override val isValid: Boolean get() = true
+        override fun isValid(): Boolean = true
 
-        override fun toString() = qualifiedName
+        override fun invalidate() {}
+
+        override fun equals(other: Any?) = super.equals(other) // use reference equality
+        override fun hashCode() = super.hashCode() // use reference equality
+        override fun toString() = "ParadoxRootInfo.Injected(gameType=$gameType, gameVersion=$gameVersion)"
     }
 }

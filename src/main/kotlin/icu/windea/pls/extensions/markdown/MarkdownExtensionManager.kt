@@ -99,7 +99,7 @@ object MarkdownExtensionManager {
         run {
             val rootInfo = selectRootFile(element)?.rootInfo ?: return@run
             val group = ParadoxFileGroup.resolve(path)
-            val injectedFileInfo = ParadoxFileInfo(path.normalize(), "", group, rootInfo)
+            val injectedFileInfo = ParadoxFileInfo.Default(path.normalize(), "", group, rootInfo)
             return injectedFileInfo
         }
 
@@ -107,7 +107,7 @@ object MarkdownExtensionManager {
 
         val group = ParadoxFileGroup.resolve(path)
         val rootInfo = ParadoxRootInfo.Injected(gameType = pathInjectionInfo.gameType)
-        val injectedFileInfo = ParadoxFileInfo(path.normalize(), "", group, rootInfo)
+        val injectedFileInfo = ParadoxFileInfo.Default(path.normalize(), "", group, rootInfo)
         return injectedFileInfo
     }
 

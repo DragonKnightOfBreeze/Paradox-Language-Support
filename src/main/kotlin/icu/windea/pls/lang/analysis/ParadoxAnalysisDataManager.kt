@@ -107,7 +107,10 @@ object ParadoxAnalysisDataManager {
             trackedFiles.put(file, true)
         } else {
             trackedFiles.remove(file)
-            if (key === Keys.cachedRootInfo) file.getUserData(Keys.cachedRootInfo)?.value?.invalidate()
+            when (key) {
+                Keys.cachedRootInfo -> file.getUserData(Keys.cachedRootInfo)?.value?.invalidate()
+                Keys.cachedFileInfo -> file.getUserData(Keys.cachedFileInfo)?.value?.invalidate()
+            }
         }
     }
 }

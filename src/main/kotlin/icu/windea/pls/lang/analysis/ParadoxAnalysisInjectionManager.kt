@@ -97,7 +97,7 @@ object ParadoxAnalysisInjectionManager : ParadoxAnalysisScope {
         val filePath = ParadoxPath.resolve(path)
         val fileEntry = entry
         val fileGroup = group ?: ParadoxFileGroup.resolvePossible(path.substringAfterLast('/'))
-        val fileInfo = ParadoxFileInfo(filePath, fileEntry, fileGroup, rootInfo)
+        val fileInfo = ParadoxFileInfo.Default(filePath, fileEntry, fileGroup, rootInfo)
         return injectFileInfo(file, fileInfo)
     }
 
@@ -140,7 +140,7 @@ object ParadoxAnalysisInjectionManager : ParadoxAnalysisScope {
         val filePath = ParadoxPath.resolve(path)
         val fileEntry = entry
         val fileGroup = group ?: ParadoxFileGroup.resolvePossible(path.substringAfterLast('/'))
-        val fileInfo = ParadoxFileInfo(filePath, fileEntry, fileGroup, rootInfo)
+        val fileInfo = ParadoxFileInfo.Default(filePath, fileEntry, fileGroup, rootInfo)
         markedFileInfo = fileInfo
     }
 
