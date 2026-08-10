@@ -9,10 +9,10 @@
   </applicationListeners>
 
   <extensions defaultExtensionNs="icu.windea.pls.inject">
-    <codeInjectorSupport implementation="icu.windea.pls.inject.support.BaseCodeInjectorSupport"/>
-    <codeInjectorSupport implementation="icu.windea.pls.inject.support.FieldCacheCodeInjectorSupport"/>
-    <codeInjectorSupport implementation="icu.windea.pls.inject.support.OptimizedFieldCodeInjectorSupport"/>
-    <codeInjectorSupport implementation="icu.windea.pls.inject.support.InlinedDelegateFieldCodeInjectorSupport"/>
+    <codeInjectorSupport implementation="icu.windea.pls.inject.supports.BaseCodeInjectorSupport"/>
+    <codeInjectorSupport implementation="icu.windea.pls.inject.supports.FieldCacheCodeInjectorSupport"/>
+    <codeInjectorSupport implementation="icu.windea.pls.inject.supports.OptimizedFieldCodeInjectorSupport"/>
+    <codeInjectorSupport implementation="icu.windea.pls.inject.supports.InlinedDelegateFieldCodeInjectorSupport"/>
   </extensions>
 
   <extensions defaultExtensionNs="icu.windea.pls.inject">

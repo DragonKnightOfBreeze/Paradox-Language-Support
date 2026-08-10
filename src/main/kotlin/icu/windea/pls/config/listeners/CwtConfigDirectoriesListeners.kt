@@ -5,9 +5,9 @@ import com.intellij.ui.EditorNotifications
 import icu.windea.pls.config.configGroup.ConfigGroupRefreshFloatingProvider
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.CwtConfigGroupEditorNotificationProvider
-import icu.windea.pls.config.configGroup.CwtConfigGroupLibrary
-import icu.windea.pls.config.configGroup.CwtConfigGroupLibraryService
 import icu.windea.pls.config.configGroup.CwtConfigGroupService
+import icu.windea.pls.lang.roots.CwtConfigGroupLibrary
+import icu.windea.pls.lang.roots.CwtConfigGroupLibraryService
 
 /**
  * 当各类规则分组的启用状态发生变化时，更新编辑器通知。

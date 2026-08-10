@@ -1,6 +1,6 @@
 package icu.windea.pls.inject.annotations
 
-import icu.windea.pls.inject.support.OptimizedFieldCodeInjectorSupport
+import icu.windea.pls.inject.supports.OptimizedFieldCodeInjectorSupport
 import kotlin.reflect.KClass
 
 /**

@@ -13,7 +13,7 @@ import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
 import icu.windea.pls.extensions.diagram.provider.ParadoxDiagramProvider
-import icu.windea.pls.lang.ParadoxModificationTrackers
+import icu.windea.pls.lang.util.ParadoxModificationTrackers
 
 // com.intellij.uml.java.JavaUmlDataModel
 

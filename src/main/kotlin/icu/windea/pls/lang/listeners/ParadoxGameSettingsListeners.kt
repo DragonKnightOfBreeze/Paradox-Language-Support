@@ -7,8 +7,8 @@ import icu.windea.pls.core.orNull
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.ide.analysis.ChronicleAnalysisManager
-import icu.windea.pls.lang.ParadoxLibrary
-import icu.windea.pls.lang.ParadoxLibraryService
+import icu.windea.pls.lang.roots.ParadoxLibrary
+import icu.windea.pls.lang.roots.ParadoxLibraryService
 import icu.windea.pls.lang.settings.ParadoxGameSettingsState
 
 /**
@@ -37,7 +37,7 @@ class ParadoxUpdateLibraryOnGameSettingsChangedListener : ParadoxGameSettingsLis
         }
 
         // 重新解析根目录下已打开的文件
-        val files = ChronicleAnalysisManager.findAllOpenFiles().filter { VfsUtil.isAncestor(root, it, true) }
-        ChronicleAnalysisManager.reparseFiles(files)
+        val allOpenFiles = ChronicleAnalysisManager.findAllOpenFiles().filter { VfsUtil.isAncestor(root, it, true) }
+        ChronicleAnalysisManager.reparseFiles(allOpenFiles)
     }
 }

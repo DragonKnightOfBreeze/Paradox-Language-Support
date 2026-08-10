@@ -1,4 +1,4 @@
-package icu.windea.pls.lang
+package icu.windea.pls.lang.roots
 
 import com.intellij.navigation.ItemPresentation
 import com.intellij.openapi.project.Project
@@ -9,12 +9,12 @@ import icu.windea.pls.ChronicleIcons
 import javax.swing.Icon
 
 /**
- * 游戏目录和模组依赖目录对应的外部库。
+ * 非项目本地的规则目录对应的外部库。
  *
- * @see ParadoxLibraryProvider
- * @see ParadoxLibraryService
+ * @see CwtConfigGroupLibraryService
+ * @see CwtConfigGroupLibraryProvider
  */
-class ParadoxLibrary(val project: Project) : SyntheticLibrary(), ItemPresentation {
+class CwtConfigGroupLibrary(val project: Project) : SyntheticLibrary(), ItemPresentation {
     @Volatile
     var roots: Set<VirtualFile> = emptySet()
 
@@ -31,11 +31,11 @@ class ParadoxLibrary(val project: Project) : SyntheticLibrary(), ItemPresentatio
     }
 
     override fun getPresentableText(): String {
-        return ChronicleBundle.message("library.name")
+        return ChronicleBundle.message("configGroup.library.name")
     }
 
     override fun equals(other: Any?): Boolean {
-        return this === other || (other is ParadoxLibrary && project == other.project)
+        return this === other || other is CwtConfigGroupLibrary && project == other.project
     }
 
     override fun hashCode(): Int {
@@ -43,6 +43,6 @@ class ParadoxLibrary(val project: Project) : SyntheticLibrary(), ItemPresentatio
     }
 
     override fun toString(): String {
-        return "ParadoxLibrary(project=$project)"
+        return "CwtConfigGroupLibrary(project=$project)"
     }
 }

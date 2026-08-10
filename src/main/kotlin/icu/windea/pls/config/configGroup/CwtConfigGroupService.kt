@@ -23,9 +23,6 @@ import icu.windea.pls.core.optimized
 import icu.windea.pls.ep.config.configGroup.CwtConfigGroupFileProvider
 import icu.windea.pls.ide.analysis.ChronicleAnalysisManager
 import icu.windea.pls.ide.notification.ChronicleNotificationGroups
-import icu.windea.pls.lang.ParadoxLibraryService
-import icu.windea.pls.lang.selectGameType
-import icu.windea.pls.lang.settings.ChronicleProfilesSettings
 import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
@@ -106,6 +103,12 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
         }
     }
 
+    private fun createConfigGroups(): Map<ParadoxGameType, CwtConfigGroup> {
+        val gameTypes = ParadoxGameType.getAll().toSet()
+        val result = gameTypes.associateWith { gameType -> CwtConfigGroup.create(project, gameType) }
+        return result.optimized() // optimized to optimize access performance
+    }
+
     /**
      * 得到指定项目与游戏类型的规则分组。
      */
@@ -127,20 +130,11 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
         return cache
     }
 
-    private fun createConfigGroups(): Map<ParadoxGameType, CwtConfigGroup> {
-        val gameTypes = ParadoxGameType.getAll().toSet()
-        val result = gameTypes.associateWith { gameType -> CwtConfigGroup.create(project, gameType) }
-        return result.optimized() // optimized to optimize access performance
-    }
-
     /**
      * 检查指定项目与上下文的规则分组是否已加载完毕。
-     *
-     * @param context 用于获取游戏类型的上下文对象。
      */
-    fun checkConfigGroupInitialized(context: Any?): Boolean {
+    fun checkConfigGroupInitialized(gameType: ParadoxGameType): Boolean {
         if (project.isDisposed) return false
-        val gameType = selectGameType(context) ?: return true
         if (!getConfigGroup(ParadoxGameType.Core).initialized) return false
         if (gameType != ParadoxGameType.Core && !getConfigGroup(gameType).initialized) return false
         return true
@@ -161,9 +155,11 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
                     initConfigGroups(configGroups)
                 }
                 // 规则数据加载完毕后，重新解析已打开的文件
-                reparseAllOpenFiles()
+                // 重新解析已打开的文件
+                val allOpenFiles = ChronicleAnalysisManager.findAllOpenFiles()
+                ChronicleAnalysisManager.reparseFiles(allOpenFiles)
                 // 规则数据加载完毕后，异步刷新外部库
-                refreshRootsForLibraries()
+                ChronicleAnalysisManager.refreshRootsForLibraries(project)
             }
         }
     }
@@ -180,9 +176,11 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
                 refreshConfigGroups(configGroups)
             }
             // 规则数据刷新完毕后，重新解析已打开的文件
-            reparseAllOpenFiles()
+            // 重新解析已打开的文件
+            val allOpenFiles = ChronicleAnalysisManager.findAllOpenFiles()
+            ChronicleAnalysisManager.reparseFiles(allOpenFiles)
             // 规则数据加载完毕后，异步刷新外部库
-            refreshRootsForLibraries()
+            ChronicleAnalysisManager.refreshRootsForLibraries(project)
         }.invokeOnCompletion { e ->
             if (e is CancellationException) {
                 val title = ChronicleBundle.message("configGroup.refresh.notification.cancelled.title")
@@ -190,43 +188,16 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
             } else if (e == null) {
                 updateRefreshStatus()
                 val action = NotificationAction.createSimple(ChronicleBundle.message("configGroup.refresh.notification.action.reindex")) {
-                    reparseAllFilesInRootFilePaths(configGroups)
-                    refreshRootsForLibraries(force = true)
+                    // 重新解析涉及的根路径下的所有文件
+                    ChronicleAnalysisManager.reparseAllFilesInRootFilePaths(project, configGroups)
+                    // 异步刷新外部库
+                    ChronicleAnalysisManager.refreshRootsForLibraries(project, force = true)
                 }
                 val title = ChronicleBundle.message("configGroup.refresh.notification.finished.title")
                 val content = ChronicleBundle.message("configGroup.refresh.notification.finished.content")
                 ChronicleNotificationGroups.global().createNotification(title, content, NotificationType.INFORMATION).addAction(action).notify(project)
             }
         }
-    }
-
-    fun reparseAllOpenFiles() {
-        if (project.isDefault || project.isDisposed) return
-        // 重新解析已打开的文件
-        val allOpenFiles = ChronicleAnalysisManager.findAllOpenFiles()
-        ChronicleAnalysisManager.reparseFiles(allOpenFiles)
-    }
-
-    fun reparseAllFilesInRootFilePaths(configGroups: Collection<CwtConfigGroup>) {
-        if (project.isDefault || project.isDisposed) return
-        // 重新解析涉及的根路径下的所有文件
-        val gameTypes = configGroups.mapTo(mutableSetOf()) { it.gameType }
-        val rootFilePaths = mutableSetOf<String>()
-        ChronicleProfilesSettings.getInstance().state.gameDescriptorSettings.values
-            .filter { it.finalGameType in gameTypes }
-            .mapNotNullTo(rootFilePaths) { it.gameDirectory }
-        ChronicleProfilesSettings.getInstance().state.modDescriptorSettings.values
-            .filter { it.finalGameType in gameTypes }
-            .mapNotNullTo(rootFilePaths) { it.modDirectory }
-        val files = ChronicleAnalysisManager.findAllFilesByRootFilePaths(rootFilePaths)
-        ChronicleAnalysisManager.reparseFiles(files)
-    }
-
-    fun refreshRootsForLibraries(force: Boolean = false) {
-        if (project.isDefault || project.isDisposed) return
-        // 异步刷新外部库
-        CwtConfigGroupLibraryService.getInstance(project).refreshRootsAsync(force)
-        ParadoxLibraryService.getInstance(project).refreshRootsAsync(force)
     }
 
     fun updateRefreshStatus() {

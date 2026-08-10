@@ -30,7 +30,6 @@ import icu.windea.pls.core.text.DocumentationBuilder
 import icu.windea.pls.core.util.ReadWriteAccess
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
-import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.injection.ChronicleInjectionManager
 import icu.windea.pls.lang.isParameterized
@@ -48,6 +47,7 @@ import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.text.appendPsiLinkOrUnresolved
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
+import icu.windea.pls.lang.util.ParadoxModificationTrackers
 import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.model.ParadoxParameterContextInfo
 import icu.windea.pls.model.ParadoxParameterContextReferenceInfo

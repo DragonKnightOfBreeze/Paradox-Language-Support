@@ -5,7 +5,7 @@ import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKeyWithThis
-import icu.windea.pls.lang.ParadoxModificationTrackers
+import icu.windea.pls.lang.util.ParadoxModificationTrackers
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 
 val CwtConfigGroup.mockScriptValueConfig: CwtValueConfig

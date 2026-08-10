@@ -1,4 +1,4 @@
-package icu.windea.pls.inject.support
+package icu.windea.pls.inject.supports
 
 import com.intellij.openapi.diagnostic.thisLogger
 import icu.windea.pls.ChronicleFacade

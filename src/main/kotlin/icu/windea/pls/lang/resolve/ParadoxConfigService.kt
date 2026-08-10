@@ -42,7 +42,6 @@ import icu.windea.pls.ep.resolve.config.CwtConfigContextProvider
 import icu.windea.pls.ep.resolve.config.CwtDeclarationConfigContextProvider
 import icu.windea.pls.ep.resolve.config.CwtOverriddenConfigProvider
 import icu.windea.pls.ep.resolve.config.CwtRelatedConfigProvider
-import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.match.ParadoxExpressionMatchService
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.ParadoxMatchService
@@ -51,6 +50,7 @@ import icu.windea.pls.lang.match.toHashString
 import icu.windea.pls.lang.select.*
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxConfigManager
+import icu.windea.pls.lang.util.ParadoxModificationTrackers
 import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.model.expressions.ParadoxExpression
 import icu.windea.pls.model.orSpecific

@@ -6,8 +6,8 @@ import com.intellij.psi.PsiReference
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
+import icu.windea.pls.lang.resolve.providers.ParadoxAnnotateProvider
 import icu.windea.pls.lang.selectGameType
-import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 
 abstract class ParadoxLocalisationExpressionSupportBase : ParadoxLocalisationExpressionSupport
@@ -22,7 +22,7 @@ abstract class ParadoxLocalisationComplexExpressionSupportBase : ParadoxLocalisa
         if (element !is ParadoxLocalisationExpressionElement) return
         val configGroup = ChronicleFacade.getConfigGroup(element.project, selectGameType(element))
         val complexExpression = ParadoxComplexExpression.resolve(element, configGroup) ?: return
-        ParadoxExpressionManager.annotateComplexExpression(element, complexExpression, holder)
+        ParadoxAnnotateProvider.annotateComplexExpression(element, complexExpression, holder)
     }
 
     override fun getReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String): List<PsiReference> {

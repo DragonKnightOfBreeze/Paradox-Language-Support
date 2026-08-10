@@ -1,4 +1,4 @@
-package icu.windea.pls.config.configGroup
+package icu.windea.pls.lang.roots
 
 import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.application.readAction

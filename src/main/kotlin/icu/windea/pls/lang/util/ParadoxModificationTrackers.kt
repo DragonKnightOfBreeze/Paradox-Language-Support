@@ -1,4 +1,4 @@
-package icu.windea.pls.lang
+package icu.windea.pls.lang.util
 
 import com.intellij.openapi.util.ModificationTracker
 import com.intellij.openapi.util.SimpleModificationTracker

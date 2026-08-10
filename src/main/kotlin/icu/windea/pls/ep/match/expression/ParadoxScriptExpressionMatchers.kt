@@ -15,10 +15,10 @@ import icu.windea.pls.core.runWithRecursionGuard
 import icu.windea.pls.core.util.ProcessorScope
 import icu.windea.pls.lang.isParameterAwareIdentifier
 import icu.windea.pls.lang.match.ParadoxExpressionMatchService
-import icu.windea.pls.lang.match.ParadoxMatchProvider
 import icu.windea.pls.lang.match.ParadoxMatchResult
-import icu.windea.pls.lang.match.ParadoxMatchResultProvider
 import icu.windea.pls.lang.match.ParadoxScriptExpressionMatchContext
+import icu.windea.pls.lang.match.providers.ParadoxMatchProvider
+import icu.windea.pls.lang.match.providers.ParadoxMatchResultProvider
 import icu.windea.pls.model.type.ParadoxExpressionRole
 import icu.windea.pls.model.type.ParadoxExpressionType
 

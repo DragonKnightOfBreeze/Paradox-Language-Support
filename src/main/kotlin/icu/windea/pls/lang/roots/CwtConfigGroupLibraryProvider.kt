@@ -1,4 +1,4 @@
-package icu.windea.pls.lang
+package icu.windea.pls.lang.roots
 
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.AdditionalLibraryRootsProvider
@@ -9,15 +9,15 @@ import icu.windea.pls.core.util.values.to
 
 // each library each project
 
-class ParadoxLibraryProvider : AdditionalLibraryRootsProvider() {
+class CwtConfigGroupLibraryProvider : AdditionalLibraryRootsProvider() {
     override fun getAdditionalProjectLibraries(project: Project): Collection<SyntheticLibrary> {
-        val library = ParadoxLibraryService.getInstance(project).library
+        val library = CwtConfigGroupLibraryService.getInstance(project).library
         if (library.roots.isEmpty()) return emptySet()
         return library.to.singletonSetOrEmpty()
     }
 
     override fun getRootsToWatch(project: Project): Collection<VirtualFile> {
-        val library = ParadoxLibraryService.getInstance(project).library
+        val library = CwtConfigGroupLibraryService.getInstance(project).library
         return library.roots
     }
 }

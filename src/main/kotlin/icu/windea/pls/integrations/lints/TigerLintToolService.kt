@@ -20,11 +20,11 @@ import icu.windea.pls.integrations.ChronicleIntegrationsBundle
 import icu.windea.pls.integrations.lints.providers.TigerLintToolProvider
 import icu.windea.pls.integrations.settings.ChronicleIntegrationsSettings
 import icu.windea.pls.lang.ParadoxLanguage
-import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.settings.ChronicleProfilesSettings
+import icu.windea.pls.lang.util.ParadoxModificationTrackers
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
 import java.util.concurrent.ConcurrentHashMap

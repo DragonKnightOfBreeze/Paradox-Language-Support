@@ -1,33 +1,20 @@
-package icu.windea.pls.lang.match
+package icu.windea.pls.lang.match.providers
 
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
-import com.intellij.psi.util.CachedValue
-import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.delegated.CwtComplexEnumConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.core.cache.CacheBuilder
-import icu.windea.pls.core.cache.NestedCache
-import icu.windea.pls.core.cache.cancelable
-import icu.windea.pls.core.cache.createNestedCache
-import icu.windea.pls.core.createCachedValue
 import icu.windea.pls.core.normalizePath
-import icu.windea.pls.core.util.KeyProviderWithFactory
-import icu.windea.pls.core.util.KeyRegistry
-import icu.windea.pls.core.util.KeyWithFactory
-import icu.windea.pls.core.util.getOrPutUserData
-import icu.windea.pls.core.util.getValue
-import icu.windea.pls.core.util.provideDelegate
-import icu.windea.pls.core.util.registerKeyWithThis
-import icu.windea.pls.core.withDependencyItems
-import icu.windea.pls.ep.match.expression.ParadoxScriptExpressionMatcher.*
-import icu.windea.pls.lang.ParadoxModificationTrackers
+import icu.windea.pls.lang.match.ParadoxMatchOptions
+import icu.windea.pls.lang.match.ParadoxMatchResult
+import icu.windea.pls.lang.match.ParadoxMatchResultContext
+import icu.windea.pls.lang.match.ParadoxMatchService
+import icu.windea.pls.lang.match.toHashString
 import icu.windea.pls.lang.psi.members
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxArrayDefineReferenceExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
@@ -41,40 +28,13 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxTagsExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxValueFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxVariableFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.attributes.ParadoxComplexExpressionAttributesEvaluator
-import icu.windea.pls.lang.selectGameType
-import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.model.expressions.ParadoxExpression
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.propertyValue
 
-private typealias MatchResultNestedCache = NestedCache<VirtualFile, String, ParadoxMatchResult>
-private typealias MatchResultNestedCacheKey = KeyWithFactory<CachedValue<MatchResultNestedCache>, CwtConfigGroup>
-private typealias MatchResultNestedCacheKeyProvider = KeyProviderWithFactory<CachedValue<MatchResultNestedCache>, CwtConfigGroup>
-
 object ParadoxMatchResultProvider {
-    object Keys : KeyRegistry() {
-        val cacheForDefinitions by createKeyForCache(ParadoxModificationTrackers.ScriptFile)
-        val cacheForLocalisations by createKeyForCache(ParadoxModificationTrackers.LocalisationFile, ParadoxModificationTrackers.PreferredLocale)
-        val cacheForSyncedLocalisations by createKeyForCache(ParadoxModificationTrackers.LocalisationFile, ParadoxModificationTrackers.PreferredLocale)
-        val cacheForPathReferences by createKeyForCache(ParadoxModificationTrackers.FilePath)
-        val cacheForComplexEnumValues by createKeyForCache(ParadoxModificationTrackers.ScriptFile)
-        val cacheForModifiers by createKeyForCache(ParadoxModificationTrackers.ScriptFile)
-        val cacheForTemplates by createKeyForCache(ParadoxModificationTrackers.ScriptFile, ParadoxModificationTrackers.LocalisationFile, ParadoxModificationTrackers.PreferredLocale)
-
-        private fun createKeyForCache(vararg dependencies: Any): MatchResultNestedCacheKeyProvider {
-            return registerKeyWithThis(Keys) {
-                // rootFile -> cacheKey -> configMatchResult
-                createCachedValue(project) {
-                    createNestedCache<VirtualFile, _, _> {
-                        CacheBuilder().build<String, ParadoxMatchResult>().cancelable()
-                    }.withDependencyItems(*dependencies)
-                }
-            }
-        }
-    }
-
     fun forRangedInt(expression: ParadoxExpression, configExpression: CwtDataExpression): ParadoxMatchResult? {
         val intRange = configExpression.metadata.intRange ?: return null
         val intValue = expression.value.toIntOrNull() ?: return null
@@ -105,26 +65,18 @@ object ParadoxMatchResultProvider {
         return ParadoxMatchResult.LazyBlockAwareMatch { ParadoxMatchProvider.matchesBlock(block, config) }
     }
 
-    fun getCached(element: PsiElement, project: Project, key: MatchResultNestedCacheKey, cacheKey: String, matchResultProvider: (String) -> ParadoxMatchResult): ParadoxMatchResult {
-        ProgressManager.checkCanceled() // check cancellation before access root-file-level cache
-        val rootFile = selectRootFile(element) ?: return ParadoxMatchResult.NotMatch
-        val configGroup = ChronicleFacade.getConfigGroup(project, selectGameType(rootFile))
-        val cache = configGroup.getOrPutUserData(key).value.get(rootFile)
-        return cache.get(cacheKey, matchResultProvider)
-    }
-
     fun forDefinition(element: PsiElement, project: Project, expression: String, configExpression: CwtDataExpression): ParadoxMatchResult {
         // indexing -> should not visit indices -> treat as wildcard match
         if (ParadoxMatchService.skipIndex()) return ParadoxMatchResult.WildcardMatch
 
         val typeExpression = configExpression.metadata.value ?: return ParadoxMatchResult.NotMatch // invalid cwt config
         val suffixes = configExpression.metadata.suffixes.orEmpty()
-        val key = Keys.cacheForDefinitions
+        val key = ParadoxMatchResultContext.Keys.cacheForDefinitions
         val cacheKey = when {
             suffixes.isEmpty() -> "${typeExpression}#${expression}"
             else -> "${suffixes.joinToString(",")}#${typeExpression}#${expression}"
         }
-        return getCached(element, project, key, cacheKey) {
+        return ParadoxMatchResultContext.getFromCache(element, project, key, cacheKey) {
             ProgressManager.checkCanceled() // check cancellation before lazy match
             ParadoxMatchResult.LazyIndexAwareMatch {
                 when {
@@ -140,12 +92,12 @@ object ParadoxMatchResultProvider {
         if (ParadoxMatchService.skipIndex()) return ParadoxMatchResult.WildcardMatch
 
         val suffixes = configExpression.metadata.suffixes.orEmpty()
-        val key = Keys.cacheForLocalisations
+        val key = ParadoxMatchResultContext.Keys.cacheForLocalisations
         val cacheKey = when {
             suffixes.isEmpty() -> expression
             else -> "${suffixes.joinToString(",")}#${expression}"
         }
-        return getCached(element, project, key, cacheKey) {
+        return ParadoxMatchResultContext.getFromCache(element, project, key, cacheKey) {
             ProgressManager.checkCanceled() // check cancellation before lazy match
             ParadoxMatchResult.LazyIndexAwareMatch {
                 when {
@@ -161,12 +113,12 @@ object ParadoxMatchResultProvider {
         if (ParadoxMatchService.skipIndex()) return ParadoxMatchResult.WildcardMatch
 
         val suffixes = configExpression.metadata.suffixes.orEmpty()
-        val key = Keys.cacheForSyncedLocalisations
+        val key = ParadoxMatchResultContext.Keys.cacheForSyncedLocalisations
         val cacheKey = when {
             suffixes.isEmpty() -> expression
             else -> "${suffixes.joinToString(",")}#${expression}"
         }
-        return getCached(element, project, key, cacheKey) {
+        return ParadoxMatchResultContext.getFromCache(element, project, key, cacheKey) {
             ProgressManager.checkCanceled() // check cancellation before lazy match
             ParadoxMatchResult.LazyIndexAwareMatch {
                 when {
@@ -188,9 +140,9 @@ object ParadoxMatchResultProvider {
 
         val pathReference = expression.normalizePath()
         if (pathReference.isEmpty()) return ParadoxMatchResult.NotMatch
-        val key = Keys.cacheForPathReferences
+        val key = ParadoxMatchResultContext.Keys.cacheForPathReferences
         val cacheKey = "${pathReference}#${configExpression}"
-        return getCached(element, project, key, cacheKey) {
+        return ParadoxMatchResultContext.getFromCache(element, project, key, cacheKey) {
             ProgressManager.checkCanceled() // check cancellation before lazy match
             ParadoxMatchResult.LazyIndexAwareMatch {
                 ParadoxMatchProvider.matchesPathReference(element, project, pathReference, configExpression)
@@ -211,9 +163,9 @@ object ParadoxMatchResultProvider {
             }
         }
 
-        val key = Keys.cacheForComplexEnumValues
+        val key = ParadoxMatchResultContext.Keys.cacheForComplexEnumValues
         val cacheKey = "${enumName}#${name}"
-        return getCached(element, project, key, cacheKey) {
+        return ParadoxMatchResultContext.getFromCache(element, project, key, cacheKey) {
             ProgressManager.checkCanceled() // check cancellation before lazy match
             ParadoxMatchResult.LazyIndexAwareMatch {
                 ParadoxMatchProvider.matchesComplexEnumValue(element, project, name, enumName)
@@ -225,9 +177,9 @@ object ParadoxMatchResultProvider {
         // indexing -> should not visit indices -> treat as wildcard match
         if (ParadoxMatchService.skipIndex()) return ParadoxMatchResult.WildcardMatch
 
-        val key = Keys.cacheForModifiers
+        val key = ParadoxMatchResultContext.Keys.cacheForModifiers
         val cacheKey = name
-        return getCached(element, configGroup.project, key, cacheKey) {
+        return ParadoxMatchResultContext.getFromCache(element, configGroup.project, key, cacheKey) {
             ProgressManager.checkCanceled() // check cancellation before lazy match
             ParadoxMatchResult.LazyIndexAwareMatch {
                 ParadoxMatchProvider.matchesModifier(element, configGroup, name)
@@ -240,10 +192,10 @@ object ParadoxMatchResultProvider {
         // if (ParadoxMatchService.skipIndex()) return ParadoxMatchResult.ExactMatch
 
         val template = configExpression.expressionString
-        val key = Keys.cacheForTemplates
+        val key = ParadoxMatchResultContext.Keys.cacheForTemplates
         val cacheKey = "${template}#${expression}\u0000${options.toHashString(forMatched = false)}"
         options.toHashString(forMatched = false)
-        return getCached(element, configGroup.project, key, cacheKey) {
+        return ParadoxMatchResultContext.getFromCache(element, configGroup.project, key, cacheKey) {
             ProgressManager.checkCanceled() // check cancellation before lazy match
             ParadoxMatchResult.LazyTemplateAwareMatch {
                 ParadoxMatchProvider.matchesTemplate(element, configGroup, expression, template, options)

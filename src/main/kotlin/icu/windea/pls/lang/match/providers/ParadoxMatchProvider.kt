@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.match
+package icu.windea.pls.lang.match.providers
 
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
@@ -9,6 +9,8 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.option.CwtOptionMetadata
 import icu.windea.pls.config.util.CwtConfigKeyManager
 import icu.windea.pls.core.match.TextMatcher
+import icu.windea.pls.lang.match.ParadoxConfigExpressionMatchService
+import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.psi.members
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.psi.stringValue

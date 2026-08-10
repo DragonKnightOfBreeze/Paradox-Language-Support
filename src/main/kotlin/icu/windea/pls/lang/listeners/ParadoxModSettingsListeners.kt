@@ -8,9 +8,9 @@ import icu.windea.pls.core.orNull
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.ide.analysis.ChronicleAnalysisManager
-import icu.windea.pls.lang.ParadoxLibrary
-import icu.windea.pls.lang.ParadoxLibraryService
 import icu.windea.pls.lang.editor.ParadoxGameDirectoryNotConfiguredEditorNotificationProvider
+import icu.windea.pls.lang.roots.ParadoxLibrary
+import icu.windea.pls.lang.roots.ParadoxLibraryService
 import icu.windea.pls.lang.settings.ParadoxModSettingsState
 
 /**

@@ -1,6 +1,6 @@
 package icu.windea.pls.inject.annotations
 
-import icu.windea.pls.inject.support.BaseCodeInjectorSupport
+import icu.windea.pls.inject.supports.BaseCodeInjectorSupport
 
 /**
  * 要注入的方法的信息。

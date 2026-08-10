@@ -15,7 +15,7 @@ import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.ParadoxLocalisationParameterService
 import icu.windea.pls.lang.resolve.ParadoxParameterService
-import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.lang.resolve.providers.ParadoxAnnotateProvider
 import icu.windea.pls.model.type.ParadoxExpressionRole
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
@@ -34,7 +34,7 @@ class ParadoxScriptParameterExpressionSupport : ParadoxScriptExpressionSupport {
         val attributesKey = ParadoxSemanticHighlighterColors.argument()
         val textRange = element.textRange
         val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
-        ParadoxExpressionManager.annotateExpressionByAttributesKey(element, range, attributesKey, holder)
+        ParadoxAnnotateProvider.annotateExpression(element, range, holder, attributesKey)
     }
 
     override fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
@@ -61,7 +61,7 @@ class ParadoxScriptLocalisationParameterExpressionSupport : ParadoxScriptExpress
         val attributesKey = ParadoxSemanticHighlighterColors.argument()
         val textRange = element.textRange
         val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
-        ParadoxExpressionManager.annotateExpressionByAttributesKey(element, range, attributesKey, holder)
+        ParadoxAnnotateProvider.annotateExpression(element, range, holder, attributesKey)
     }
 
     override fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {

@@ -48,7 +48,7 @@
     <!-- make first to optimize performance (before JSLibraryOverrider) -->
     <fileTypeOverrider implementation="icu.windea.pls.lang.ParadoxFileTypeOverrider" order="first"/>
 
-    <additionalLibraryRootsProvider implementation="icu.windea.pls.lang.ParadoxLibraryProvider"/>
+    <additionalLibraryRootsProvider implementation="icu.windea.pls.lang.roots.ParadoxLibraryProvider"/>
     <utf8BomOptionProvider implementation="icu.windea.pls.lang.ParadoxUtf8BomOptionProvider"/>
     <vfs.asyncListener implementation="icu.windea.pls.lang.ParadoxFileListener"/>
 

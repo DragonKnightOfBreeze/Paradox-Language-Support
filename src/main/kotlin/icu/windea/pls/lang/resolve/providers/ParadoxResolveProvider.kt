@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.util
+package icu.windea.pls.lang.resolve.providers
 
 import com.intellij.psi.PsiElement
 import icu.windea.pls.config.CwtDataTypeSets
@@ -14,9 +14,11 @@ import icu.windea.pls.lang.psi.light.ParadoxMeshLocatorLightElement
 import icu.windea.pls.lang.psi.light.ParadoxShaderEffectLightElement
 import icu.windea.pls.lang.search.ParadoxComplexEnumValueSearch
 import icu.windea.pls.lang.search.util.withSearchScopeType
+import icu.windea.pls.lang.util.ParadoxDynamicValueManager
+import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
-object ParadoxResolutionManager {
+object ParadoxResolveProvider {
     fun resolveModifier(element: ParadoxExpressionElement, name: String, configGroup: CwtConfigGroup): PsiElement? {
         if (element !is ParadoxScriptStringExpressionElement) return null // NOTE 1.4.0 - unnecessary to support yet
         return ParadoxModifierManager.resolveModifier(name, element, configGroup)

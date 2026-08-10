@@ -9,7 +9,7 @@
 
     <editorNotificationProvider implementation="icu.windea.pls.config.configGroup.CwtConfigGroupEditorNotificationProvider"/>
     <editorFloatingToolbarProvider implementation="icu.windea.pls.config.configGroup.ConfigGroupRefreshFloatingProvider"/>
-    <additionalLibraryRootsProvider implementation="icu.windea.pls.config.configGroup.CwtConfigGroupLibraryProvider"/>
+    <additionalLibraryRootsProvider implementation="icu.windea.pls.lang.roots.CwtConfigGroupLibraryProvider"/>
     <psi.treeChangePreprocessor implementation="icu.windea.pls.config.configGroup.CwtConfigGroupPsiTreeChangePreprocessor"/>
     <vfs.asyncListener implementation="icu.windea.pls.config.configGroup.CwtConfigFileListener"/>
   </extensions>

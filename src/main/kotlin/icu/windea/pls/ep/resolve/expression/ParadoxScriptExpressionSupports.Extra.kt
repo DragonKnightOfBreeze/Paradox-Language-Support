@@ -12,8 +12,8 @@ import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.codeInsight.completion.ParadoxExpressionCompletionManager
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
-import icu.windea.pls.lang.util.ParadoxExpressionManager
-import icu.windea.pls.lang.util.ParadoxResolutionManager
+import icu.windea.pls.lang.resolve.providers.ParadoxAnnotateProvider
+import icu.windea.pls.lang.resolve.providers.ParadoxResolveProvider
 import icu.windea.pls.model.type.ParadoxExpressionRole
 import icu.windea.pls.script.editor.ParadoxScriptHighlighterColors
 
@@ -31,12 +31,12 @@ class ParadoxShaderEffectExpressionSupport : ParadoxScriptExpressionSupport {
         val attributesKey = ParadoxScriptHighlighterColors.SHADER_EFFECT_REFERENCE
         val textRange = element.textRange
         val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
-        ParadoxExpressionManager.annotateExpressionByAttributesKey(element, range, attributesKey, holder)
+        ParadoxAnnotateProvider.annotateExpression(element, range, holder, attributesKey)
     }
 
     override fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement {
         val configGroup = config.configGroup
-        return ParadoxResolutionManager.resolveShaderEffect(element, text, configGroup)
+        return ParadoxResolveProvider.resolveShaderEffect(element, text, configGroup)
     }
 
     override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
@@ -57,12 +57,12 @@ class ParadoxMeshLocatorExpressionSupport : ParadoxScriptExpressionSupport {
         val attributesKey = ParadoxScriptHighlighterColors.MESH_LOCATOR_REFERENCE
         val textRange = element.textRange
         val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
-        ParadoxExpressionManager.annotateExpressionByAttributesKey(element, range, attributesKey, holder)
+        ParadoxAnnotateProvider.annotateExpression(element, range, holder, attributesKey)
     }
 
     override fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement {
         val configGroup = config.configGroup
-        return ParadoxResolutionManager.resolveMeshLocator(element, text, configGroup)
+        return ParadoxResolveProvider.resolveMeshLocator(element, text, configGroup)
     }
 
     override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {

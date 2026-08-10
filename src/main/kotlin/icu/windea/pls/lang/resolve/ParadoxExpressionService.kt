@@ -18,6 +18,7 @@ import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.isEmpty
 import icu.windea.pls.core.isLeftQuoted
+import icu.windea.pls.core.processChild
 import icu.windea.pls.core.unquote
 import icu.windea.pls.core.util.values.singletonListOrEmpty
 import icu.windea.pls.core.util.values.to
@@ -40,11 +41,14 @@ import icu.windea.pls.lang.util.ParadoxComplexEnumValueManager
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxCsvManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
+import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
 import icu.windea.pls.model.orSpecific
 import icu.windea.pls.model.type.ParadoxExpressionRole
 import icu.windea.pls.model.type.ParadoxTypeResolver
+import icu.windea.pls.script.psi.ParadoxParameter
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
+import icu.windea.pls.script.psi.ParadoxScriptInlineConditionalBlock
 import icu.windea.pls.script.psi.ParadoxScriptInlineMath
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
@@ -89,6 +93,23 @@ object ParadoxExpressionService {
             element is ParadoxCsvColumn && element.text.isLeftQuoted() -> 1
             else -> 0
         }
+    }
+
+    fun getParameterRangesInExpression(element: ParadoxExpressionElement): List<TextRange> {
+        // NOTE 3.0.1 不要缓存，因为自身的计算逻辑已经足够块
+        var parameterRanges: MutableList<TextRange>? = null
+        element.processChild { e ->
+            if (isParameterElementInExpression(e)) {
+                if (parameterRanges == null) parameterRanges = mutableListOf()
+                parameterRanges.add(e.textRange)
+            }
+            true
+        }
+        return parameterRanges.orEmpty()
+    }
+
+    fun isParameterElementInExpression(element: PsiElement): Boolean {
+        return element is ParadoxParameter || element is ParadoxScriptInlineConditionalBlock || element is ParadoxLocalisationParameter
     }
 
     // endregion

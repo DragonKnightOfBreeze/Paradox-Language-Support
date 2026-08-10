@@ -1,13 +1,6 @@
 package icu.windea.pls.lang.util
 
-import com.intellij.codeInsight.daemon.impl.HighlightInfoType
 import com.intellij.lang.annotation.AnnotationHolder
-import com.intellij.lang.annotation.HighlightSeverity
-import com.intellij.openapi.editor.DefaultLanguageHighlighterColors
-import com.intellij.openapi.editor.HighlighterColors
-import com.intellij.openapi.editor.colors.EditorColorsManager
-import com.intellij.openapi.editor.colors.TextAttributesKey
-import com.intellij.openapi.editor.markup.TextAttributes
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
@@ -18,17 +11,13 @@ import com.intellij.psi.impl.source.resolve.reference.ReferenceProvidersRegistry
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.PsiModificationTracker
-import com.intellij.psi.util.startOffset
-import com.intellij.util.text.TextRangeUtil
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.findFast
-import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.isEscapedCharAt
 import icu.windea.pls.core.isIdentifierChar
 import icu.windea.pls.core.orNull
-import icu.windea.pls.core.processChild
 import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getValue
@@ -38,7 +27,6 @@ import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.csv.psi.ParadoxCsvPsiService
-import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchService
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
@@ -46,18 +34,12 @@ import icu.windea.pls.lang.psi.isComplexExpression
 import icu.windea.pls.lang.psi.isDefinitionTypeKey
 import icu.windea.pls.lang.psi.isResolvableLiteralExpression
 import icu.windea.pls.lang.resolve.ParadoxExpressionService
-import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
-import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
-import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
 import icu.windea.pls.model.type.ParadoxExpressionRole
-import icu.windea.pls.script.editor.ParadoxScriptHighlighterColors
-import icu.windea.pls.script.psi.ParadoxParameter
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
-import icu.windea.pls.script.psi.ParadoxScriptInlineConditionalBlock
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.isDataExpression
 
@@ -217,23 +199,6 @@ object ParadoxExpressionManager {
         return text
     }
 
-    fun getParameterRangesInExpression(element: ParadoxExpressionElement): List<TextRange> {
-        // NOTE 3.0.1 不要缓存，因为自身的计算逻辑已经足够块
-        var parameterRanges: MutableList<TextRange>? = null
-        element.processChild { e ->
-            if (isParameterElementInExpression(e)) {
-                if (parameterRanges == null) parameterRanges = mutableListOf()
-                parameterRanges.add(e.textRange)
-            }
-            true
-        }
-        return parameterRanges.orEmpty()
-    }
-
-    fun isParameterElementInExpression(element: PsiElement): Boolean {
-        return element is ParadoxParameter || element is ParadoxScriptInlineConditionalBlock || element is ParadoxLocalisationParameter
-    }
-
     // endregion
 
     // region Annotate Methods
@@ -261,77 +226,6 @@ object ParadoxExpressionManager {
         if (element is ParadoxCsvColumn && ParadoxCsvPsiService.isHeaderColumn(element)) return
         val expressionText = ParadoxExpressionService.getExpressionText(element, rangeInElement)
         ParadoxExpressionService.annotateCsvExpression(element, rangeInElement, expressionText, config, holder)
-    }
-
-    fun annotateExpressionByAttributesKey(element: ParadoxExpressionElement, range: TextRange, attributesKey: TextAttributesKey, holder: AnnotationHolder) {
-        if (range.isEmpty) return
-        // skip parameter ranges
-        val parameterRanges = getParameterRangesInExpression(element)
-        if (parameterRanges.isEmpty()) {
-            holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(range).textAttributes(attributesKey).create()
-            return
-        }
-        val finalRanges = TextRangeUtil.excludeRanges(range, parameterRanges)
-        for (r in finalRanges) {
-            if (r.isEmpty) continue
-            holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(r).textAttributes(attributesKey).create()
-        }
-    }
-
-    fun annotateExpressionAsHighlightedReference(range: TextRange, holder: AnnotationHolder) {
-        holder.newSilentAnnotation(HighlightInfoType.HIGHLIGHTED_REFERENCE_SEVERITY).range(range).textAttributes(DefaultLanguageHighlighterColors.HIGHLIGHTED_REFERENCE).create()
-    }
-
-    fun annotateComplexExpression(element: ParadoxExpressionElement, expression: ParadoxComplexExpression, holder: AnnotationHolder, config: CwtConfig<*>? = null) {
-        annotateComplexExpressionNode(element, expression, holder, config)
-    }
-
-    private fun annotateComplexExpressionNode(element: ParadoxExpressionElement, node: ParadoxComplexExpressionNode, holder: AnnotationHolder, config: CwtConfig<*>? = null) {
-        if (node.text.isEmpty()) return
-
-        val attributesKey = node.getAttributesKey(element)
-        run {
-            val mustUseAttributesKey = attributesKey != ParadoxScriptHighlighterColors.PROPERTY_KEY && attributesKey != ParadoxScriptHighlighterColors.STRING
-            if (attributesKey != null && mustUseAttributesKey) {
-                annotateNodeByAttributesKey(element, node, attributesKey, holder)
-                return@run
-            }
-            val attributesKeyConfig = node.getAttributesKeyConfig(element)
-            if (attributesKeyConfig != null) {
-                val offset = ParadoxExpressionService.getExpressionOffset(element)
-                annotateScriptExpression(element, node.rangeInExpression.shiftRight(offset), attributesKeyConfig, holder)
-                return@run
-            }
-            if (attributesKey != null) {
-                annotateNodeByAttributesKey(element, node, attributesKey, holder)
-            }
-        }
-
-        if (node.nodes.isNotEmpty()) {
-            node.nodes.forEachFast { node ->
-                annotateComplexExpressionNode(element, node, holder, config)
-            }
-        }
-    }
-
-    private fun annotateNodeByAttributesKey(element: ParadoxExpressionElement, node: ParadoxComplexExpressionNode, attributesKey: TextAttributesKey, holder: AnnotationHolder) {
-        if (node.text.isEmpty()) return
-
-        val offset = element.startOffset + ParadoxExpressionService.getExpressionOffset(element)
-        val rangeToAnnotate = node.rangeInExpression.shiftRight(offset)
-
-        // merge text attributes from HighlighterColors.TEXT and attributesKey for token nodes (in case foreground is not set)
-        if (node is ParadoxTokenNode) {
-            val editorColorsManager = EditorColorsManager.getInstance()
-            val schema = editorColorsManager.activeVisibleScheme ?: editorColorsManager.schemeForCurrentUITheme
-            val textAttributes1 = schema.getAttributes(HighlighterColors.TEXT)
-            val textAttributes2 = schema.getAttributes(attributesKey)
-            val textAttributes = TextAttributes.merge(textAttributes1, textAttributes2)
-            holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(rangeToAnnotate).enforcedTextAttributes(textAttributes).create()
-            return
-        }
-
-        annotateExpressionByAttributesKey(element, rangeToAnnotate, attributesKey, holder)
     }
 
     // endregion

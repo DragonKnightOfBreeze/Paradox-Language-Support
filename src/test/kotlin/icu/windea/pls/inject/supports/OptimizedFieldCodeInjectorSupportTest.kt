@@ -1,4 +1,4 @@
-package icu.windea.pls.inject.support
+package icu.windea.pls.inject.supports
 
 import icu.windea.pls.inject.CodeInjectorBase
 import icu.windea.pls.inject.CodeInjectorContext
@@ -35,7 +35,7 @@ class OptimizedFieldCodeInjectorSupportTest {
     }
 
     @OptimizedField("field", type = NewType::class, initType = NewType::class)
-    @InjectionTarget("icu.windea.pls.inject.support.OptimizedFieldCodeInjectorSupportTest\$Model")
+    @InjectionTarget("icu.windea.pls.inject.supports.OptimizedFieldCodeInjectorSupportTest\$Model")
     private class Injector : CodeInjectorBase()
 
     private class ByteArrayClassLoader(parent: ClassLoader) : ClassLoader(parent) {
@@ -47,7 +47,7 @@ class OptimizedFieldCodeInjectorSupportTest {
 
     @Test
     fun testOptimizedField_replacesFieldTypeAndKeepsBehavior() {
-        val targetClassName = "icu.windea.pls.inject.support.OptimizedFieldCodeInjectorSupportTest\$Model"
+        val targetClassName = "icu.windea.pls.inject.supports.OptimizedFieldCodeInjectorSupportTest\$Model"
 
         val pool = ClassPool.getDefault()
         pool.appendClassPath(ClassClassPath(javaClass))

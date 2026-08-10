@@ -23,7 +23,7 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxTagsExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxTemplateExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxValueFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxVariableFieldExpression
-import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.lang.resolve.providers.ParadoxAnnotateProvider
 import icu.windea.pls.model.type.ParadoxExpressionRole
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
@@ -37,7 +37,7 @@ abstract class ParadoxScriptComplexExpressionSupportBase : ParadoxScriptExpressi
         if (element !is ParadoxScriptStringExpressionElement) return
         val configGroup = config.configGroup
         val complexExpression = ParadoxComplexExpression.resolveByConfig(text, null, configGroup, config) ?: return
-        ParadoxExpressionManager.annotateComplexExpression(element, complexExpression, holder, config)
+        ParadoxAnnotateProvider.annotateComplexExpression(element, complexExpression, holder, config)
     }
 
     override fun getReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiReference> {

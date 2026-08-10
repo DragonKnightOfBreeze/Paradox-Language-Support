@@ -17,7 +17,7 @@ import icu.windea.pls.core.util.values.to
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.references.script.ParadoxScriptExpressionPsiReference
-import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.lang.resolve.providers.ParadoxAnnotateProvider
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.type.ParadoxExpressionRole
 import icu.windea.pls.script.editor.ParadoxScriptHighlighterColors
@@ -49,7 +49,7 @@ class ParadoxScriptTechnologyWithLevelExpressionSupport : ParadoxScriptExpressio
             if (offset <= 0) return@run
             val attributesKey = ParadoxScriptHighlighterColors.DEFINITION_REFERENCE
             val range1 = range.let { TextRange.create(it.startOffset, it.startOffset + offset) }
-            ParadoxExpressionManager.annotateExpressionByAttributesKey(element, range1, attributesKey, holder)
+            ParadoxAnnotateProvider.annotateExpression(element, range1, holder, attributesKey)
         }
         run {
             val offset = separatorIndex

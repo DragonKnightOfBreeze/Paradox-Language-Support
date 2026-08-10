@@ -5,6 +5,7 @@ import com.intellij.codeInsight.daemon.impl.InlayHintsPassFactoryInternal
 import com.intellij.openapi.application.EDT
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.editor.EditorFactory
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
@@ -14,12 +15,16 @@ import com.intellij.psi.search.FilenameIndex
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.FileContentUtilCore
 import icu.windea.pls.ChronicleFacade
+import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.lang.ParadoxFileType
-import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.analysis.ParadoxAnalysisDataManager
+import icu.windea.pls.lang.roots.CwtConfigGroupLibraryService
+import icu.windea.pls.lang.roots.ParadoxLibraryService
+import icu.windea.pls.lang.settings.ChronicleProfilesSettings
+import icu.windea.pls.lang.util.ParadoxModificationTrackers
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -164,5 +169,27 @@ object ChronicleAnalysisManager {
                 FileContentUtilCore.reparseFiles(files)
             }
         }
+    }
+
+    fun refreshRootsForLibraries(project: Project, force: Boolean = false) {
+        if (project.isDefault || project.isDisposed) return
+        // 异步刷新外部库
+        CwtConfigGroupLibraryService.getInstance(project).refreshRootsAsync(force)
+        ParadoxLibraryService.getInstance(project).refreshRootsAsync(force)
+    }
+
+    fun reparseAllFilesInRootFilePaths(project: Project, configGroups: Collection<CwtConfigGroup>) {
+        if (project.isDefault || project.isDisposed) return
+        // 重新解析涉及的根路径下的所有文件
+        val gameTypes = configGroups.mapTo(mutableSetOf()) { it.gameType }
+        val rootFilePaths = mutableSetOf<String>()
+        ChronicleProfilesSettings.getInstance().state.gameDescriptorSettings.values
+            .filter { it.finalGameType in gameTypes }
+            .mapNotNullTo(rootFilePaths) { it.gameDirectory }
+        ChronicleProfilesSettings.getInstance().state.modDescriptorSettings.values
+            .filter { it.finalGameType in gameTypes }
+            .mapNotNullTo(rootFilePaths) { it.modDirectory }
+        val files = findAllFilesByRootFilePaths(rootFilePaths)
+        reparseFiles(files)
     }
 }

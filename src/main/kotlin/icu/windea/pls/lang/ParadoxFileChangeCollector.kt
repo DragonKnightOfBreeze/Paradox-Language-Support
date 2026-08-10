@@ -14,6 +14,7 @@ import icu.windea.pls.ide.analysis.ChronicleAnalysisManager
 import icu.windea.pls.lang.analysis.ParadoxAnalysisDataManager
 import icu.windea.pls.lang.analysis.ParadoxAnalysisScope
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
+import icu.windea.pls.lang.util.ParadoxModificationTrackers
 import icu.windea.pls.model.constants.ChronicleConstants
 
 @Optimized

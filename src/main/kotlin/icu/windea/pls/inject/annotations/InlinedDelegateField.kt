@@ -1,6 +1,6 @@
 package icu.windea.pls.inject.annotations
 
-import icu.windea.pls.inject.support.InlinedDelegateFieldCodeInjectorSupport
+import icu.windea.pls.inject.supports.InlinedDelegateFieldCodeInjectorSupport
 
 /**
  * 要内联的属性委托字段的信息。

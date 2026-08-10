@@ -53,7 +53,8 @@ class ParadoxDataSourceNode(
             val resolved = linkConfigs.findFast {
                 ParadoxExpressionManager.resolveScriptExpression(element, rangeInElement, it, ParadoxExpressionRole.Other) != null
             }
-            if (resolved != null) return resolved
+            if (resolved == null) return@run
+            return resolved
         }
         run {
             if (linkConfigsDynamicValue.isEmpty()) return@run
