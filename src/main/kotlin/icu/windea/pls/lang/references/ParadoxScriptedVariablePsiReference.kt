@@ -23,7 +23,7 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
  */
 class ParadoxScriptedVariablePsiReference(
     element: ParadoxScriptedVariableReference,
-    rangeInElement: TextRange
+    rangeInElement: TextRange,
 ) : PsiPolyVariantReferenceBase<ParadoxScriptedVariableReference>(element, rangeInElement) {
     private val project get() = element.project
 

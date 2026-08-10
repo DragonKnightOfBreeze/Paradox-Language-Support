@@ -2,6 +2,7 @@ package icu.windea.pls.test.issues
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import icu.windea.pls.ep.resolve.expression.ParadoxScriptExpressionSupport
 import icu.windea.pls.lang.annotator.ParadoxScriptSemanticAnnotator
 import icu.windea.pls.lang.resolve.providers.ParadoxAnnotateProvider
 import icu.windea.pls.model.ParadoxGameType
@@ -18,6 +19,7 @@ import icu.windea.pls.script.editor.ParadoxScriptHighlighterColors as Colors
  * See: [#390](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/390)
  *
  * @see ParadoxScriptSemanticAnnotator
+ * @see ParadoxScriptExpressionSupport
  * @see ParadoxAnnotateProvider
  */
 @RunWith(JUnit4::class)
@@ -30,7 +32,7 @@ class Issue390Test : BasePlatformTestCase(), ChronicleTestScope {
         markIntegrationTest()
         markRootDirectory("issues/390")
         markConfigDirectory("issues/390/.config")
-        initConfigGroups(project, ParadoxGameType.Stellaris) // on demand
+        initInjectedConfigGroups(project, ParadoxGameType.Stellaris) // on demand
     }
 
     @After
@@ -39,14 +41,14 @@ class Issue390Test : BasePlatformTestCase(), ChronicleTestScope {
     @Test
     fun testSemanticAnnotator() {
         markFileInfo(ParadoxGameType.Stellaris, "common/scripted_effects/test.txt")
-        myFixture.configureByText("test.txt", highlightingScope {
-            """
-            ${info(Colors.DEFINITION)}test_effect${infoEnd()} = {
-                ${info(Colors.SCOPE_PREFIX)}event_target:${infoEnd()}${info(Colors.DYNAMIC_VALUE)}test_target${infoEnd()} = {}
-                ${info(Colors.SYSTEM_SCOPE)}root${infoEnd()}${info(Colors.OPERATOR)}.${infoEnd()}${info(Colors.SCOPE_PREFIX)}event_target:${infoEnd()}${info(Colors.DYNAMIC_VALUE)}test_target${infoEnd()} = {}
-            }
-            """.trimIndent()
-        })
+        highlightingScope {
+            myFixture.configureByText("test.txt", """
+                ${info(Colors.DEFINITION)}test_effect${infoEnd()} = {
+                    ${info(Colors.SCOPE_PREFIX)}event_target:${infoEnd()}${info(Colors.DYNAMIC_VALUE)}test_target${infoEnd()} = {}
+                    ${info(Colors.SYSTEM_SCOPE)}root${infoEnd()}${info(Colors.OPERATOR)}.${infoEnd()}${info(Colors.SCOPE_PREFIX)}event_target:${infoEnd()}${info(Colors.DYNAMIC_VALUE)}test_target${infoEnd()} = {}
+                }
+            """.trimIndent())
+        }
         myFixture.checkHighlighting(false, true, false)
     }
 }

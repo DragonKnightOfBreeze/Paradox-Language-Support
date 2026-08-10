@@ -1,0 +1,23 @@
+types = {
+    type[test] = {
+        path = common/test
+    }
+}
+
+test = {
+    enum[test_enum]
+    enum = {
+        scalar
+    }
+}
+
+enums = {
+    complex_enum[test_enum] = {
+        path = common/test
+        name = {
+            enum = {
+                enum_name
+            }
+        }
+    }
+}

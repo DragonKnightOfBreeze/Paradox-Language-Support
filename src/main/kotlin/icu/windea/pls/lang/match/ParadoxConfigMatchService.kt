@@ -53,6 +53,7 @@ import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptFloat
 import icu.windea.pls.script.psi.ParadoxScriptInt
+import icu.windea.pls.script.psi.ParadoxScriptLiteralValue
 import icu.windea.pls.script.psi.ParadoxScriptMemberContainer
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
@@ -66,6 +67,7 @@ import icu.windea.pls.script.psi.isDirectValue
 import icu.windea.pls.script.psi.isPropertyValue
 import icu.windea.pls.script.psi.parentProperty
 import icu.windea.pls.script.psi.propertyValue
+import icu.windea.pls.script.psi.stringValue
 
 @Optimized
 object ParadoxConfigMatchService {
@@ -461,39 +463,45 @@ object ParadoxConfigMatchService {
     }
 
     private fun matchesEnumNameForComplexEnum(element: ParadoxScriptExpressionElement, complexEnumConfig: CwtComplexEnumConfig, config: CwtMemberConfig<*>): Boolean {
-        if (config is CwtPropertyConfig) {
-            if (config.key == "enum_name") {
-                if (element !is ParadoxScriptPropertyKey) return false
-                val valueElement = element.propertyValue ?: return false
-                if (!matchesValueForComplexEnum(valueElement, complexEnumConfig, config)) return false
-            } else if (config.stringValue == "enum_name") {
-                if (element !is ParadoxScriptString) return false
-                val propertyElement = element.parentProperty ?: return false
-                if (!matchesKeyForComplexEnum(propertyElement, config)) return false
-            } else {
-                return false
+        when (config) {
+            is CwtPropertyConfig -> {
+                if (config.key == "enum_name") {
+                    if (element !is ParadoxScriptPropertyKey) return false
+                    val valueElement = element.propertyValue ?: return false
+                    if (!matchesValueForComplexEnum(valueElement, complexEnumConfig, config)) return false
+                } else if (config.stringValue == "enum_name") {
+                    if (element !is ParadoxScriptValue) return false
+                    if (element !is ParadoxScriptLiteralValue) return false // #389 not only string literals, but also boolean and number literals
+                    val propertyElement = element.parentProperty ?: return false
+                    if (!matchesKeyForComplexEnum(propertyElement, config)) return false
+                } else {
+                    return false
+                }
             }
-        } else if (config is CwtValueConfig) {
-            if (config.stringValue == "enum_name") {
-                if (element !is ParadoxScriptString) return false
-                if (!element.isDirectValue()) return false
-            } else {
-                return false
+            is CwtValueConfig -> {
+                if (config.stringValue == "enum_name") {
+                    if (element !is ParadoxScriptValue) return false
+                    if (element !is ParadoxScriptLiteralValue) return false // #389 not only string literals, but also boolean and number literals
+                    if (!element.isDirectValue()) return false
+                } else {
+                    return false
+                }
             }
         }
         return beforeMatchParentForComplexEnum(element, complexEnumConfig, config)
     }
 
     private fun matchesParentForComplexEnum(element: PsiElement, complexEnumConfig: CwtComplexEnumConfig, config: CwtMemberConfig<*>): Boolean {
-        if (config is CwtPropertyConfig) {
-            // match key only
-            if (element !is ParadoxScriptProperty) return false
-            if (!matchesKeyForComplexEnum(element, config)) return false
-        } else if (config is CwtValueConfig) {
-            // blockConfig vs block
-            if (element !is ParadoxScriptMemberContainer) return false
-        } else {
-            return false
+        when (config) {
+            is CwtPropertyConfig -> {
+                // match key only
+                if (element !is ParadoxScriptProperty) return false
+                if (!matchesKeyForComplexEnum(element, config)) return false
+            }
+            is CwtValueConfig -> {
+                // blockConfig vs block
+                if (element !is ParadoxScriptMemberContainer) return false
+            }
         }
         return beforeMatchParentForComplexEnum(element, complexEnumConfig, config)
     }
@@ -518,8 +526,8 @@ object ParadoxConfigMatchService {
         if (parentElement == null) return false
         parentConfig.configs?.forEachFast f@{ c ->
             ProgressManager.checkCanceled()
-            when {
-                c is CwtPropertyConfig -> {
+            when (c) {
+                is CwtPropertyConfig -> {
                     // ignore same config or enum name config
                     if (c == config || c.key == "enum_name" || c.stringValue == "enum_name") return@f
                     val notMatched = parentMemberContainer.properties(inline = true).none { propElement ->
@@ -527,7 +535,7 @@ object ParadoxConfigMatchService {
                     }
                     if (notMatched) return false
                 }
-                c is CwtValueConfig -> {
+                is CwtValueConfig -> {
                     // ignore same config or enum name config
                     if (c == config || c.stringValue == "enum_name") return@f
                     val notMatched = parentMemberContainer.values(inline = true).none { valueElement ->
@@ -554,18 +562,18 @@ object ParadoxConfigMatchService {
 
     private fun matchesValueForComplexEnum(valueElement: ParadoxScriptValue, complexEnumConfig: CwtComplexEnumConfig, config: CwtMemberConfig<*>): Boolean {
         return when (config.valueType) {
-            CwtExpressionType.Block -> valueElement is ParadoxScriptBlock && matchesBlockForComplexEnum(valueElement, complexEnumConfig, config)
+            CwtExpressionType.Boolean -> valueElement is ParadoxScriptBoolean && valueElement.booleanValue == config.booleanValue
+            CwtExpressionType.Int -> valueElement is ParadoxScriptInt && valueElement.intValue == config.intValue
+            CwtExpressionType.Float -> valueElement is ParadoxScriptFloat && valueElement.floatValue == config.floatValue
             CwtExpressionType.String ->
                 when (config.stringValue) {
                     "enum_name", "scalar" -> true
-                    "float" -> valueElement is ParadoxScriptFloat
-                    "int" -> valueElement is ParadoxScriptInt
                     "bool" -> valueElement is ParadoxScriptBoolean
-                    else -> valueElement is ParadoxScriptString && valueElement.value.equals(config.stringValue, true)
+                    "int" -> valueElement is ParadoxScriptInt
+                    "float" -> valueElement is ParadoxScriptFloat
+                    else -> valueElement is ParadoxScriptString && valueElement.stringValue.equals(config.stringValue, true)
                 }
-            CwtExpressionType.Float -> valueElement is ParadoxScriptFloat && valueElement.floatValue == config.floatValue
-            CwtExpressionType.Int -> valueElement is ParadoxScriptInt && valueElement.intValue == config.intValue
-            CwtExpressionType.Boolean -> valueElement is ParadoxScriptBoolean && valueElement.booleanValue == config.booleanValue
+            CwtExpressionType.Block -> valueElement is ParadoxScriptBlock && matchesBlockForComplexEnum(valueElement, complexEnumConfig, config)
             else -> false
         }
     }

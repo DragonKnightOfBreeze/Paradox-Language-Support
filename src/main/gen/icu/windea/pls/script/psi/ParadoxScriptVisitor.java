@@ -1,11 +1,10 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.script.psi;
 
-import org.jetbrains.annotations.*;
-import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiElement;
-import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference;
+import com.intellij.psi.PsiElementVisitor;
 import icu.windea.pls.core.psi.PsiBoundElement;
+import org.jetbrains.annotations.NotNull;
 
 public class ParadoxScriptVisitor extends PsiElementVisitor {
 
@@ -22,7 +21,6 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
 
   public void visitColor(@NotNull ParadoxScriptColor o) {
     visitValue(o);
-    // visitLiteralValue(o);
   }
 
   public void visitConditionalBlock(@NotNull ParadoxScriptConditionalBlock o) {

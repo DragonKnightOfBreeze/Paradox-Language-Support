@@ -160,9 +160,6 @@ string ::= string_part <<postProcessFirstSnippet>> (<<processSnippet>> string_pa
 private string_part ::= STRING_TOKEN | parameter | inline_conditional_block
 color ::= COLOR_TOKEN {
   extends=value
-  implements=[
-    "icu.windea.pls.script.psi.ParadoxScriptLiteralValue"
-  ]
   methods=[getColorType getColorArgs getColor setColor]
 }
 block ::= LEFT_BRACE block_item * RIGHT_BRACE {

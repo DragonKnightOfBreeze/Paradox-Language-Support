@@ -18,7 +18,7 @@ import icu.windea.pls.model.ParadoxComplexEnumValueInfo
 class ParadoxComplexEnumValuePsiReference(
     element: ParadoxExpressionElement,
     rangeInElement: TextRange,
-    val info: ParadoxComplexEnumValueInfo
+    val info: ParadoxComplexEnumValueInfo,
 ) : PsiReferenceBase<ParadoxExpressionElement>(element, rangeInElement) {
     override fun handleElementRename(newElementName: String): PsiElement {
         return element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
