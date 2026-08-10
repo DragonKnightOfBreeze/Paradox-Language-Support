@@ -2,7 +2,18 @@
 
 ## Unreleased
 
+## 3.0.2-dev
+
+- [ ] Generated modifiers should not have case-sensitive parts ([#385](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/385))
+- [ ] Missing error on invalid syntax which can cause cascading errors in-game ([#386](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/386))
+- [ ] complex_enum的匹配问题 ([#389](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/389))
+- [ ] Bug: Broken syntax highlighting on event targets ([#390](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/390))
+- [ ] 支持对所谓“并集作用域”或“带继承关系的作用域”的匹配和合并（如 Stellaris 4.4 中新增的 `carrier`） / Support to match and merge so-called "union scopes" or "scopes with inheritance relationships" (such as `carrier` newly added in Stellaris 4.4)
 - [ ] 完善脚本文件的 lexer：更好的对可选空白和高级插值语法（如 `a_$p$_[[p]b]`）的支持） / Improve lexer for script files: better support for optional blank and advanced interpolation syntax (e.g., `a_$p$_[[p]b]`)
+- [ ] 分析与优化构建索引时的性能和内存占用 / Analyze and optimize performance and memory during indexing
+- [ ] 分析与优化完成项目分析后的性能和内存占用 / Analyze and optimize performance and memory after finishing project analysis
+- [ ] 完善测试用例（通用模块） / Improve test cases (for the common module).
+- [ ] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 3.0.1 - 2026-08-05
 

@@ -259,7 +259,7 @@ kotlin {
     }
 }
 
-// region Methods for Markdown
+// region Markdown
 
 // Custom markdown-to-HTML conversion using IntelliJ Markdown parser
 private fun markdownToHTML(markdown: String): String {
