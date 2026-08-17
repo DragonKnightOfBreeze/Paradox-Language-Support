@@ -90,9 +90,9 @@
 
 <!-- @see icu.windea.pls.lang.overrides.ParadoxOverrideStrategy -->
 <!-- @see icu.windea.pls.lang.overrides.ParadoxOverrideService -->
-<!-- @see cwt/core/priorities.core.cwt -->
+<!-- @see cwt/core/00_overrides.cwt -->
 
-优先级规则用于配置"目标"（文件、全局封装变量、定义、本地化等）的覆盖策略。它影响目标的生效顺序与查询结果排序（流式查询除外）。未命中任何目录映射时，默认使用 `LIOS`（后读覆盖）。
+优先级规则用于配置目标（文件、全局封装变量、定义、本地化等）的覆盖策略。它影响目标的生效顺序与查询结果排序（流式查询除外）。未命中任何目录映射时，默认使用 `LIOS`（后读覆盖）。
 
 覆盖策略：
 
@@ -128,15 +128,15 @@ priorities = {
 }
 ```
 
-- 两个 MOD 都在 `events/` 中定义同名事件：由于 `events = fios`，先被读取（加载更早）的 MOD 生效，后者被忽略。
-- 两个 MOD 都在 `common/on_actions/` 添加条目：由于 `ordered`，会顺序合并执行，不发生覆盖。
+- 两个模组都在 `events/` 中定义同名事件：由于 `events = fios`，先被读取（加载更早）的模组生效，后者被忽略。
+- 两个模组都在 `common/on_actions/` 添加条目：由于 `ordered`，会顺序合并执行，不发生覆盖。
 
 > CWTools 兼容性：不兼容。插件作为扩展提供。
 
 #### 系统作用域规则 {#config-system-scope}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtSystemScopeConfig -->
-<!-- @see cwt/core/system_scopes.core.cwt -->
+<!-- @see cwt/core/00_system_scopes.cwt -->
 
 系统作用域规则为内置的"系统级作用域"（如 This、Root、Prev、From 等）提供元信息，用于快速文档与作用域栈推导。
 
@@ -154,7 +154,7 @@ priorities = {
 示例：
 
 ```cwt
-# from `system_scopes.core.cwt` of core config group
+# from `00_system_scopes.cwt` of core config group
 
 system_scopes = {
     This = {}
@@ -771,7 +771,7 @@ links = {
 ```
 
 ```cwt
-# from `links.core.cwt` of core config group
+# from `00_links.cwt` of core config group
 
 links = {
     event_target = {
@@ -1811,7 +1811,7 @@ icon|p1,p2
 
 同步本地化引用类型。
 
-与 [Localisation][#data-type-localisation] 类似，但指向同步本地化键。
+与 [Localisation](#data-type-localisation) 类似，但指向同步本地化键。
 引用的本地化所在的本地化文件需要位于 `localisation_synced` 或 `localization_synced` 目录（或其子目录）中。
 
 对应的数据表达式的格式：
@@ -1835,7 +1835,7 @@ icon|p1,p2
 修正引用类型。
 
 匹配对修正（modifier）的引用。表达式须为合法标识符。
-匹配时验证引用的修正是否在规则组中存在。优先级高于 [Definition][CwtDataTypes.Definition]。
+匹配时验证引用的修正是否在规则组中存在。优先级高于 [Definition](#data-type-definition)。
 
 对应的数据表达式的格式：
 - `<modifier>`

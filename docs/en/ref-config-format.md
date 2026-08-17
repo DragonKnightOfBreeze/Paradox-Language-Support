@@ -90,9 +90,9 @@ Configs are categorized by level as follows:
 
 <!-- @see icu.windea.pls.lang.overrides.ParadoxOverrideStrategy -->
 <!-- @see icu.windea.pls.lang.overrides.ParadoxOverrideService -->
-<!-- @see cwt/core/priorities.core.cwt -->
+<!-- @see cwt/core/00_overrides.cwt -->
 
-Priority configs configure the override strategy for "targets" (files, global scripted variables, definitions, localisations, etc.). They affect the order in which targets take effect and the sorting of query results (except for streaming queries). When no directory mapping is matched, the default is `LIOS` (Last In, Only Served).
+Priority configs configure the override strategy for targets (files, global scripted variables, definitions, localisations, etc.). They affect the order in which targets take effect and the sorting of query results (except for streaming queries). When no directory mapping is matched, the default is `LIOS` (Last In, Only Served).
 
 Override strategies:
 
@@ -136,7 +136,7 @@ priorities = {
 #### System Scope Config {#config-system-scope}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtSystemScopeConfig -->
-<!-- @see cwt/core/system_scopes.core.cwt -->
+<!-- @see cwt/core/00_system_scopes.cwt -->
 
 System scope configs provide metadata for built-in "system-level scopes" (such as This, Root, Prev, From, etc.), used for quick documentation and scope stack derivation.
 
@@ -154,7 +154,7 @@ Note that `## replace_scopes` does not support replacing `prev`-series system sc
 Examples:
 
 ```cwt
-# from `system_scopes.core.cwt` of core config group
+# from `00_system_scopes.cwt` of core config group
 
 system_scopes = {
     This = {}
@@ -670,7 +670,7 @@ Path location:
 - `unions/union[{name}]` – where `{name}` matches the config name.
 
 Reference synax:
-- `key = union[{name}]` - where `{name}` matches the name of an union config.
+- `key = union[{name}]` - where `{name}` matches the name of a union config.
 
 Examples:
 
@@ -771,7 +771,7 @@ links = {
 ```
 
 ```cwt
-# from `links.core.cwt` of core config group
+# from `00_links.cwt` of core config group
 
 links = {
     event_target = {
