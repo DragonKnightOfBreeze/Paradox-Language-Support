@@ -4,7 +4,6 @@ import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.ep.resolve.expression.ParadoxScriptExpressionSupport
 import icu.windea.pls.lang.annotator.ParadoxScriptSemanticAnnotator
-import icu.windea.pls.lang.resolve.providers.ParadoxAnnotateProvider
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.ChronicleTestScope
 import icu.windea.pls.test.dsl.highlightingScope
@@ -20,7 +19,7 @@ import icu.windea.pls.script.editor.ParadoxScriptHighlighterColors as Colors
  *
  * @see ParadoxScriptSemanticAnnotator
  * @see ParadoxScriptExpressionSupport
- * @see ParadoxAnnotateProvider
+ * @see ParadoxScriptExpressionSupport.annotate
  */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")

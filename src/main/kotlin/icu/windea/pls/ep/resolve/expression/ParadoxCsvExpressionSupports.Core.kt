@@ -17,8 +17,8 @@ import icu.windea.pls.lang.codeInsight.completion.ParadoxExpressionCompletionMan
 import icu.windea.pls.lang.editor.ParadoxSemanticHighlighterColors
 import icu.windea.pls.lang.match.ParadoxExpressionMatchService
 import icu.windea.pls.lang.resolve.ParadoxExpressionService
-import icu.windea.pls.lang.resolve.providers.ParadoxAnnotateProvider
-import icu.windea.pls.lang.resolve.providers.ParadoxResolveProvider
+import icu.windea.pls.lang.resolve.util.ParadoxAnnotateProvider
+import icu.windea.pls.lang.resolve.util.ParadoxResolveProvider
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.model.expressions.ParadoxExpression

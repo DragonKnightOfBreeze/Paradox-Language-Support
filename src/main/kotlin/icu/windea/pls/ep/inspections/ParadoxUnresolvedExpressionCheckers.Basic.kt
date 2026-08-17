@@ -14,7 +14,7 @@ import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvPsiService
 import icu.windea.pls.lang.inspections.ParadoxExpressionInspectionContext
 import icu.windea.pls.lang.inspections.ParadoxExpressionInspectionService
-import icu.windea.pls.lang.match.providers.ParadoxMatchProvider
+import icu.windea.pls.lang.match.util.ParadoxMatchProvider
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
 import icu.windea.pls.lang.psi.resolved

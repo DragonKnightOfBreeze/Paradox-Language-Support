@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.resolve.providers
+package icu.windea.pls.lang.resolve.util
 
 import com.intellij.codeInsight.daemon.impl.HighlightInfoType
 import com.intellij.lang.annotation.AnnotationHolder

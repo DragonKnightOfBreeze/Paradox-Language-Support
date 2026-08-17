@@ -14,7 +14,7 @@ import icu.windea.pls.lang.resolve.ParadoxExpressionService
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxCommandExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDatabaseObjectExpression
-import icu.windea.pls.lang.resolve.providers.ParadoxAnnotateProvider
+import icu.windea.pls.lang.resolve.util.ParadoxAnnotateProvider
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 

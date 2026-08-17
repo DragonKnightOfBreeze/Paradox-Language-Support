@@ -17,7 +17,7 @@ import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionLookupProvide
 import icu.windea.pls.lang.codeInsight.completion.addToResult
 import icu.windea.pls.lang.psi.light.ParadoxModifierLightElement
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxTemplateExpression
-import icu.windea.pls.lang.resolve.processors.ParadoxModifierProcessor
+import icu.windea.pls.lang.resolve.util.ParadoxModifierProcessor
 import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxModificationTrackers

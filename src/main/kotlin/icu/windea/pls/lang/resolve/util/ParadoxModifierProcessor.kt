@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.resolve.processors
+package icu.windea.pls.lang.resolve.util
 
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement

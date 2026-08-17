@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.match.providers
+package icu.windea.pls.lang.match.util
 
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project

@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.resolve.providers
+package icu.windea.pls.lang.resolve.util
 
 import com.intellij.psi.PsiElement
 import icu.windea.pls.config.CwtDataTypeSets
