@@ -25,7 +25,7 @@ interface ParadoxModifierSupport {
     fun supports(gameType: ParadoxGameType) = true
 
     // NOTE 3.0.1 clarify: ignore case (for modifier names) (#385)
-    fun matchModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): Boolean
+    fun matchesModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): Boolean
 
     // NOTE 3.0.1 clarify: ignore case (for modifier names) (#385)
     fun resolveModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): ParadoxModifierInfo?

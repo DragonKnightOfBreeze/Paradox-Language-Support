@@ -22,14 +22,14 @@ import icu.windea.pls.model.support
 @Optimized
 object ParadoxModifierService {
     /**
-     * @see ParadoxModifierSupport.matchModifier
+     * @see ParadoxModifierSupport.matchesModifier
      */
     fun matchesModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): Boolean {
         val gameType = configGroup.gameType
         val supports = ParadoxModifierSupport.EP_NAME.extensionList
         return supports.anyFast f@{ ep ->
             if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f false // check game type first
-            ep.matchModifier(name, element, configGroup)
+            ep.matchesModifier(name, element, configGroup)
         }
     }
 

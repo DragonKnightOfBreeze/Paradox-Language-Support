@@ -4,11 +4,13 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.openapi.util.ModificationTracker
 import com.intellij.psi.PsiElement
 import com.intellij.util.Processor
+import com.intellij.util.SmartList
 import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.base.annotations.ForGameType
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.annotations.CaseInsensitive
+import icu.windea.pls.core.collections.findFast
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.icon
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
@@ -37,7 +39,7 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
  * 示例：`pop_happiness`（来自 `modifiers.cwt`）
  */
 class ParadoxPredefinedModifierSupport : ParadoxModifierSupport {
-    override fun matchModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): Boolean {
+    override fun matchesModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): Boolean {
         val modifierName = name
         return configGroup.predefinedModifiers[modifierName] != null
     }
@@ -99,7 +101,7 @@ class ParadoxPredefinedModifierSupport : ParadoxModifierSupport {
  * 示例：`job_researcher_add`（来自 `modifiers.cwt` 中的 `job_<job>_add`）
  */
 class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
-    override fun matchModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): Boolean {
+    override fun matchesModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): Boolean {
         val modifierName = name
         var matched = false
         ParadoxModifierUtil.processGeneratedModifierConfig(configGroup) p@{ modifierConfig ->
@@ -116,7 +118,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
         val modifierName = name
         val gameType = configGroup.gameType
         val project = configGroup.project
-        val modifierInfoCandidates = mutableListOf<ParadoxModifierInfo>()
+        val modifierInfoCandidates = SmartList<ParadoxModifierInfo>() // optimize: should be often 0 or 1 element here
         ParadoxModifierUtil.processGeneratedModifierConfig(configGroup) p@{ modifierConfig ->
             val templateExpression = ParadoxTemplateExpression.resolve(modifierName, null, configGroup, modifierConfig)
             if (templateExpression == null) return@p true
@@ -134,7 +136,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
         }
         if (modifierInfoCandidates.isEmpty()) return null
         return modifierInfoCandidates.singleOrNull()
-            ?: modifierInfoCandidates.find { ParadoxModifierUtil.checkModifierTemplate(it.templateExpression!!, element) }
+            ?: modifierInfoCandidates.findFast { ParadoxModifierUtil.checkModifierTemplate(it.templateExpression!!, element) }
             ?: modifierInfoCandidates.firstOrNull()
     }
 
@@ -177,7 +179,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
 
     override fun getModificationTracker(modifierInfo: ParadoxModifierInfo): ModificationTracker {
         // TODO 可以进一步缩小范围
-        return ParadoxModificationTrackers.scriptFileFromFilePathPatterns("**/*.txt")
+        return ParadoxModificationTrackers.scriptFileFromFilePathPatterns("common/**/*.txt") // should be enough suitable, but can be better
     }
 }
 
@@ -190,7 +192,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
 class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
     override fun supports(gameType: ParadoxGameType) = gameType == ParadoxGameType.Stellaris
 
-    override fun matchModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): Boolean {
+    override fun matchesModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): Boolean {
         val modifierName = name
         var matched = false
         ParadoxModifierUtil.processEconomicCategoryInfo(element, configGroup) p@{ economicCategoryInfo ->

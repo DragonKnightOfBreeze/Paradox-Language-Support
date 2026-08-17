@@ -210,11 +210,13 @@ object ParadoxModifierUtil {
      * 仅限特定数据类型（[CwtDataTypeSets.ModifierTemplateAware]）的片段。并且，匹配时忽略大小写。
      */
     fun checkModifierTemplateSnippet(snippet: ParadoxTemplateSnippetNode, element: PsiElement): Boolean {
-        // NOTE 3.0.1 clarify: ignore case when matching (#385)
+        // NOTE 3.0.2 clarify: ignore case when matching (#385)
         val snippetExpression = snippet.configExpression
         val configGroup = snippet.configGroup
         val project = configGroup.project
         val snippetText = snippet.text
+        // 这里仅需适配部分特定的数据类型，并且需要忽略大小写
+        // 因此，不能直接调用 `ParadoxExpressionMatchService.matchScriptExpression`，需要改为使用另外的、简化后的、特殊的匹配逻辑
         return when (snippetExpression.type) {
             CwtDataTypes.Constant -> {
                 val text = snippetExpression.expressionString
