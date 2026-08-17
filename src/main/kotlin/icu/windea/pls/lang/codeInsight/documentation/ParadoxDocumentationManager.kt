@@ -32,8 +32,8 @@ import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.lang.psi.light.ParadoxShaderEffectLightElement
 import icu.windea.pls.lang.resolve.CwtImageLocationResolveResult
 import icu.windea.pls.lang.resolve.CwtLocalisationLocationResolveResult
-import icu.windea.pls.lang.resolve.ParadoxConfigExpressionService
 import icu.windea.pls.lang.resolve.ParadoxDefinitionService
+import icu.windea.pls.lang.resolve.ParadoxLocationExpressionService
 import icu.windea.pls.lang.resolve.ParadoxModifierCategoryService
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
@@ -715,7 +715,7 @@ object ParadoxDocumentationManager {
         for ((key, locationExpression, required) in localisationInfos) {
             if (sectionKeys.contains(key)) continue
             ProgressManager.checkCanceled()
-            val resolveResult = ParadoxConfigExpressionService.resolve(locationExpression, element, definitionInfo) { preferLocale(usedLocale) } ?: continue // 发生意外，直接跳过
+            val resolveResult = ParadoxLocationExpressionService.resolve(locationExpression, element, definitionInfo) { preferLocale(usedLocale) } ?: continue // 发生意外，直接跳过
             when (resolveResult) {
                 is CwtLocalisationLocationResolveResult.Static -> {
                     val resolvedElement = resolveResult.element
@@ -755,7 +755,7 @@ object ParadoxDocumentationManager {
         for ((key, locationExpression, required) in imagesInfos) {
             if (sectionKeys.contains(key)) continue
             ProgressManager.checkCanceled()
-            val resolveResult = ParadoxConfigExpressionService.resolve(locationExpression, element, definitionInfo) ?: continue // 发生意外，直接跳过
+            val resolveResult = ParadoxLocationExpressionService.resolve(locationExpression, element, definitionInfo) ?: continue // 发生意外，直接跳过
             when (resolveResult) {
                 is CwtImageLocationResolveResult.Static -> {
                     val resolvedElement = resolveResult.element

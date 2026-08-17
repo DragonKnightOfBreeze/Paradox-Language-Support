@@ -57,10 +57,6 @@ object ParadoxModifierManager {
     // 不同的游戏类型存在一些通过不同逻辑生成的修正
     // 插件使用的modifiers.cwt中应当去除生成的修正
 
-    fun matchesModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): Boolean {
-        return ParadoxModifierService.matchesModifier(name, element, configGroup)
-    }
-
     fun resolveModifier(element: ParadoxScriptStringExpressionElement): ParadoxModifierLightElement? {
         val name = element.value
         val gameType = selectGameType(element) ?: return null

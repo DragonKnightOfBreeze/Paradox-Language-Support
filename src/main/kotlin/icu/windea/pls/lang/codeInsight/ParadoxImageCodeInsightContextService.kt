@@ -18,7 +18,7 @@ import icu.windea.pls.lang.inspections.ChronicleInspections
 import icu.windea.pls.lang.inspections.script.common.MissingImageInspection
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.resolve.CwtImageLocationResolveResult
-import icu.windea.pls.lang.resolve.ParadoxConfigExpressionService
+import icu.windea.pls.lang.resolve.ParadoxLocationExpressionService
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
@@ -66,7 +66,7 @@ object ParadoxImageCodeInsightContextService {
         for (info in definitionInfo.images) {
             ProgressManager.checkCanceled()
             val expression = info.locationExpression
-            val resolveResult = ParadoxConfigExpressionService.resolve(expression, definition, definitionInfo)
+            val resolveResult = ParadoxLocationExpressionService.resolve(expression, definition, definitionInfo)
             val type = when {
                 info.required -> ParadoxImageCodeInsightInfo.Type.Required
                 info.primary -> ParadoxImageCodeInsightInfo.Type.Primary

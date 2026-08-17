@@ -27,7 +27,7 @@ import icu.windea.pls.lang.analysis.ParadoxAnalysisManager
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.resolve.CwtImageLocationResolveResult
-import icu.windea.pls.lang.resolve.ParadoxConfigExpressionService
+import icu.windea.pls.lang.resolve.ParadoxLocationExpressionService
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.constants.ChronicleConstants
@@ -124,7 +124,7 @@ object ParadoxImageManager {
         // 兼容 `definition` 不是 `sprite` 的情况
         val resolved = runSmartReadAction {
             definitionInfo.primaryImages.firstNotNullOfOrNull {
-                ParadoxConfigExpressionService.resolve(it.locationExpression, definition, definitionInfo, frameInfo, toFile = true)
+                ParadoxLocationExpressionService.resolve(it.locationExpression, definition, definitionInfo, frameInfo, toFile = true)
             }
         }
         if (resolved !is CwtImageLocationResolveResult.Static) return null

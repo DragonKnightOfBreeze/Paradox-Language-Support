@@ -8,7 +8,7 @@ import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.config.util.CwtConfigExpressionManager
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.resolve.ParadoxConfigExpressionService
+import icu.windea.pls.lang.resolve.ParadoxLocationExpressionService
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 /**
@@ -41,7 +41,7 @@ class ParadoxDefinitionRelatedLocalisationsAutomaticRenamer(element: PsiElement,
         val infos = definitionInfo.localisations.orNull() ?: return
         for (info in infos) {
             ProgressManager.checkCanceled()
-            val resolveResult = ParadoxConfigExpressionService.resolve(info.locationExpression, element, definitionInfo) ?: continue
+            val resolveResult = ParadoxLocationExpressionService.resolve(info.locationExpression, element, definitionInfo) ?: continue
             val rename = CwtConfigExpressionManager.resolvePlaceholder(info.locationExpression, newName) ?: continue
             for (resolved in resolveResult.elements) {
                 allRenames[resolved] = rename

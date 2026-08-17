@@ -1,7 +1,7 @@
 package icu.windea.pls.ep.analysis
 
 import icu.windea.pls.lang.analysis.ParadoxGameManager
-import icu.windea.pls.lang.analysis.ParadoxRootMetadataUtil
+import icu.windea.pls.lang.analysis.util.ParadoxRootMetadataUtil
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.analysis.ParadoxExecutableFileBasedGameMetadata
 import icu.windea.pls.model.analysis.ParadoxLauncherSettingsJsonBasedGameMetadata

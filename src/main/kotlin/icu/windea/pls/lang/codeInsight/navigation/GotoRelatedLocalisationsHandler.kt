@@ -22,7 +22,7 @@ import icu.windea.pls.lang.index.constraints.ParadoxLocalisationIndexConstraint
 import icu.windea.pls.lang.psi.ParadoxPsiFileService
 import icu.windea.pls.lang.psi.ParadoxPsiMatchService
 import icu.windea.pls.lang.psi.isDefinitionTypeKeyOrName
-import icu.windea.pls.lang.resolve.ParadoxConfigExpressionService
+import icu.windea.pls.lang.resolve.ParadoxLocationExpressionService
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.search.util.preferLocale
@@ -73,7 +73,7 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
                     for ((_, locationExpression) in localisationInfos) {
                         ProgressManager.checkCanceled()
                         readAction {
-                            val resolveResult = ParadoxConfigExpressionService.resolve(locationExpression, definition, definitionInfo) { preferLocale(preferredLocale) }
+                            val resolveResult = ParadoxLocationExpressionService.resolve(locationExpression, definition, definitionInfo) { preferLocale(preferredLocale) }
                             if (resolveResult != null && resolveResult.elements.isNotEmpty()) {
                                 targets.addAll(resolveResult.elements)
                             }

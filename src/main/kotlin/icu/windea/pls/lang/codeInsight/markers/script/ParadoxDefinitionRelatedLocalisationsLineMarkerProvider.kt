@@ -14,7 +14,7 @@ import icu.windea.pls.lang.actions.ChronicleActions
 import icu.windea.pls.lang.codeInsight.markers.ParadoxRelatedItemLineMarkerProvider
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.resolve.CwtLocalisationLocationResolveResult
-import icu.windea.pls.lang.resolve.ParadoxConfigExpressionService
+import icu.windea.pls.lang.resolve.ParadoxLocationExpressionService
 import icu.windea.pls.lang.search.util.preferLocale
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
@@ -49,7 +49,7 @@ class ParadoxDefinitionRelatedLocalisationsLineMarkerProvider : ParadoxRelatedIt
         val preferredLocale = ParadoxLocaleManager.getPreferredLocaleConfig()
         for ((key, locationExpression) in localisationInfos) {
             ProgressManager.checkCanceled()
-            val resolveResult = ParadoxConfigExpressionService.resolve(locationExpression, element, definitionInfo) { preferLocale(preferredLocale) } ?: continue
+            val resolveResult = ParadoxLocationExpressionService.resolve(locationExpression, element, definitionInfo) { preferLocale(preferredLocale) } ?: continue
             targets.addAll(resolveResult.elements)
             if (!keys.add(key)) return
             when (resolveResult) {

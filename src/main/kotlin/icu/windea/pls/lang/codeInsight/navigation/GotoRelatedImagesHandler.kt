@@ -20,7 +20,7 @@ import icu.windea.pls.core.util.values.or
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.ParadoxPsiFileService
 import icu.windea.pls.lang.psi.isDefinitionTypeKeyOrName
-import icu.windea.pls.lang.resolve.ParadoxConfigExpressionService
+import icu.windea.pls.lang.resolve.ParadoxLocationExpressionService
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.select.selectScope
@@ -54,7 +54,7 @@ class GotoRelatedImagesHandler : GotoTargetHandler() {
                     for ((_, locationExpression) in imageInfos) {
                         ProgressManager.checkCanceled()
                         readAction {
-                            val resolveResult = ParadoxConfigExpressionService.resolve(locationExpression, definition, definitionInfo)
+                            val resolveResult = ParadoxLocationExpressionService.resolve(locationExpression, definition, definitionInfo)
                             if (resolveResult != null && resolveResult.elements.isNotEmpty()) {
                                 targets.addAll(resolveResult.elements)
                             }

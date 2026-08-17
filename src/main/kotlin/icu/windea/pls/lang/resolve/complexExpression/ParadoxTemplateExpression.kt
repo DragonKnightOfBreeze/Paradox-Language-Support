@@ -1,7 +1,6 @@
 package icu.windea.pls.lang.resolve.complexExpression
 
 import com.intellij.openapi.util.TextRange
-import com.intellij.psi.PsiElement
 import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
@@ -9,7 +8,6 @@ import icu.windea.pls.config.config.delegated.CwtModifierConfig
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.util.CwtConfigExpressionManager
-import icu.windea.pls.core.collections.noneFast
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 
 /**
@@ -44,12 +42,6 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.*
  * @see CwtTemplateExpression
  */
 interface ParadoxTemplateExpression : ParadoxComplexExpression {
-    /** 是否可以被精确匹配（不存在可能有歧义的引用）。 */
-    fun isExactMatched(): Boolean
-
-    /** 检查是否可以被精确匹配（不存在可能有歧义的引用）。 */
-    fun checkExactMatched(element: PsiElement): Boolean
-
     companion object {
         @JvmStatic
         fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxTemplateExpression? {
@@ -127,14 +119,6 @@ private class ParadoxTemplateExpressionImpl(
     override val configGroup: CwtConfigGroup,
     override val nodes: List<ParadoxComplexExpressionNode> = emptyList(),
 ) : ParadoxComplexExpressionBase(), ParadoxTemplateExpression {
-    override fun isExactMatched(): Boolean {
-        return nodes.noneFast { it is ParadoxTemplateSnippetNode && !it.isExactMatched() }
-    }
-
-    override fun checkExactMatched(element: PsiElement): Boolean {
-        return nodes.noneFast { it is ParadoxTemplateSnippetNode && !it.checkExactMatched(element) }
-    }
-
     override fun equals(other: Any?) = this === other || other is ParadoxTemplateExpression && text == other.text
     override fun hashCode(): Int = text.hashCode()
     override fun toString() = text

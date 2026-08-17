@@ -222,7 +222,7 @@ object ParadoxDefinitionService {
         if (primaryLocalisations.isEmpty()) return null // 没有或者规则不完善
         val preferredLocale = ParadoxLocaleManager.getPreferredLocaleConfig()
         primaryLocalisations.forEachFast f@{ primaryLocalisation ->
-            val resolveResult = ParadoxConfigExpressionService.resolve(primaryLocalisation.locationExpression, element, definitionInfo) { preferLocale(preferredLocale) }
+            val resolveResult = ParadoxLocationExpressionService.resolve(primaryLocalisation.locationExpression, element, definitionInfo) { preferLocale(preferredLocale) }
             if (resolveResult !is CwtLocalisationLocationResolveResult.Static) return@f
             return resolveResult.name
         }
@@ -235,7 +235,7 @@ object ParadoxDefinitionService {
         if (primaryLocalisations.isEmpty()) return null // 没有或者规则不完善
         val preferredLocale = ParadoxLocaleManager.getPreferredLocaleConfig()
         primaryLocalisations.forEachFast f@{ primaryLocalisation ->
-            val resolveResult = ParadoxConfigExpressionService.resolve(primaryLocalisation.locationExpression, element, definitionInfo) { preferLocale(preferredLocale) }
+            val resolveResult = ParadoxLocationExpressionService.resolve(primaryLocalisation.locationExpression, element, definitionInfo) { preferLocale(preferredLocale) }
             if (resolveResult !is CwtLocalisationLocationResolveResult.Static) return@f
             return resolveResult.element
         }
@@ -249,7 +249,7 @@ object ParadoxDefinitionService {
         val result = mutableSetOf<ParadoxLocalisationProperty>()
         val preferredLocale = ParadoxLocaleManager.getPreferredLocaleConfig()
         primaryLocalisations.forEachFast f@{ primaryLocalisation ->
-            val resolveResult = ParadoxConfigExpressionService.resolve(primaryLocalisation.locationExpression, element, definitionInfo) { preferLocale(preferredLocale) }
+            val resolveResult = ParadoxLocationExpressionService.resolve(primaryLocalisation.locationExpression, element, definitionInfo) { preferLocale(preferredLocale) }
             if (resolveResult !is CwtLocalisationLocationResolveResult.Static) return@f
             result.addAll(resolveResult.elements)
         }
@@ -261,7 +261,7 @@ object ParadoxDefinitionService {
         val primaryImages = definitionInfo.primaryImages
         if (primaryImages.isEmpty()) return null // 没有或者规则不完善
         primaryImages.forEachFast f@{ primaryImage ->
-            val resolveResult = ParadoxConfigExpressionService.resolve(primaryImage.locationExpression, element, definitionInfo, toFile = true)
+            val resolveResult = ParadoxLocationExpressionService.resolve(primaryImage.locationExpression, element, definitionInfo, toFile = true)
             if (resolveResult !is CwtImageLocationResolveResult.Static) return@f
             val file = resolveResult.element?.castOrNull<PsiFile>() ?: return@f
             element.putUserData(Keys.imageFrameInfo, resolveResult.frameInfo)
@@ -276,7 +276,7 @@ object ParadoxDefinitionService {
         if (primaryImages.isEmpty()) return emptySet() // 没有或者规则不完善
         val result = mutableSetOf<PsiFile>()
         primaryImages.forEachFast f@{ primaryImage ->
-            val resolveResult = ParadoxConfigExpressionService.resolve(primaryImage.locationExpression, element, definitionInfo, toFile = true)
+            val resolveResult = ParadoxLocationExpressionService.resolve(primaryImage.locationExpression, element, definitionInfo, toFile = true)
             if (resolveResult !is CwtImageLocationResolveResult.Static) return@f
             val files = resolveResult.elements.filterIsInstance<PsiFile>()
             element.putUserData(Keys.imageFrameInfo, resolveResult.frameInfo)

@@ -5,6 +5,7 @@ import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.toClasspathUrl
+import icu.windea.pls.lang.analysis.util.ParadoxRootMetadataUtil
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -12,7 +13,7 @@ import org.junit.runners.JUnit4
 import kotlin.io.path.toPath
 
 /**
- * @see ParadoxRootMetadataUtil
+ * @see icu.windea.pls.lang.analysis.util.ParadoxRootMetadataUtil
  */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")

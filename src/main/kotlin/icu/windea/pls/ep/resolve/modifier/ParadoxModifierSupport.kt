@@ -27,7 +27,7 @@ interface ParadoxModifierSupport {
     // NOTE 3.0.1 clarify: ignore case (for modifier names) (#385)
     fun matchModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): Boolean
 
-    // TODO 3.0.1 clarify: ignore case (for modifier names) (#385)
+    // NOTE 3.0.1 clarify: ignore case (for modifier names) (#385)
     fun resolveModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): ParadoxModifierInfo?
 
     fun completeModifier(context: ParadoxCompletionContext, result: CompletionResultSet, modifierNames: MutableSet<@CaseInsensitive String>)

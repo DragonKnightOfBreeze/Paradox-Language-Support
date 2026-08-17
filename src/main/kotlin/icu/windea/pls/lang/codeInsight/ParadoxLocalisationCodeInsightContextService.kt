@@ -24,7 +24,7 @@ import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxPsiFileService
 import icu.windea.pls.lang.psi.isDefinitionTypeKeyOrName
 import icu.windea.pls.lang.resolve.CwtLocalisationLocationResolveResult
-import icu.windea.pls.lang.resolve.ParadoxConfigExpressionService
+import icu.windea.pls.lang.resolve.ParadoxLocationExpressionService
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.util.locale
 import icu.windea.pls.lang.search.util.withConstraint
@@ -140,7 +140,7 @@ object ParadoxLocalisationCodeInsightContextService {
             val expression = info.locationExpression
             for (locale in locales) {
                 ProgressManager.checkCanceled()
-                val resolveResult = ParadoxConfigExpressionService.resolve(expression, element, definitionInfo) { locale(locale) }
+                val resolveResult = ParadoxLocationExpressionService.resolve(expression, element, definitionInfo) { locale(locale) }
                 val type = when {
                     info.required -> ParadoxLocalisationCodeInsightInfo.Type.Required
                     info.primary -> ParadoxLocalisationCodeInsightInfo.Type.Primary

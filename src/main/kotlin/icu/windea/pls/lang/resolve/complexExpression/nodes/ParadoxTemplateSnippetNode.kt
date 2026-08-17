@@ -6,7 +6,6 @@ import com.intellij.psi.PsiPolyVariantReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.impl.source.resolve.ResolveCache
 import icu.windea.pls.config.CwtDataTypeSets
-import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.expandConfigExpression
@@ -16,8 +15,6 @@ import icu.windea.pls.core.createResults
 import icu.windea.pls.core.resolveFirst
 import icu.windea.pls.core.util.ProcessorScope
 import icu.windea.pls.lang.isParameterized
-import icu.windea.pls.lang.match.ParadoxExpressionMatchService
-import icu.windea.pls.lang.match.ParadoxScriptExpressionMatchContext
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.ParadoxPsiService
 import icu.windea.pls.lang.resolve.ParadoxExpressionService
@@ -27,7 +24,6 @@ import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressi
 import icu.windea.pls.lang.util.ParadoxDynamicValueManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.model.constraints.ParadoxReferenceConstraint
-import icu.windea.pls.model.expressions.ParadoxExpression
 import icu.windea.pls.model.type.ParadoxExpressionRole
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
@@ -42,33 +38,6 @@ class ParadoxTemplateSnippetNode(
 ) : ParadoxComplexExpressionNodeBase(), ParadoxIdentifierNode, ParadoxDynamicDataNode {
     fun getMockConfig(): CwtValueConfig {
         return CwtValueConfig.createMock(configGroup, configExpression.expressionString)
-    }
-
-    /** 是否可以被精确匹配（不存在可能有歧义的引用）。 */
-    fun isExactMatched(): Boolean {
-        val mockConfig = getMockConfig()
-        val dataType = mockConfig.configExpression.type
-        return when {
-            dataType in CwtDataTypeSets.Expandable -> {
-                false // for simple code
-            }
-            dataType in CwtDataTypeSets.DefinitionAware -> {
-                val definitionType = mockConfig.configExpression.metadata.value ?: return true
-                definitionType !in configGroup.types.keys
-            }
-            dataType == CwtDataTypes.EnumValue -> {
-                val enumName = mockConfig.configExpression.metadata.value ?: return true
-                enumName !in configGroup.complexEnums.keys
-            }
-            else -> true
-        }
-    }
-
-    /** 检查是否可以被精确匹配（不存在可能有歧义的引用）。 */
-    fun checkExactMatched(element: PsiElement): Boolean {
-        val expression = ParadoxExpression.resolve(text)
-        val matchContext = ParadoxScriptExpressionMatchContext(element, expression, configExpression, getMockConfig(), configGroup)
-        return ParadoxExpressionMatchService.matchScriptExpression(matchContext).get()
     }
 
     override fun getAttributesKeyConfig(element: ParadoxExpressionElement): CwtConfig<*>? {

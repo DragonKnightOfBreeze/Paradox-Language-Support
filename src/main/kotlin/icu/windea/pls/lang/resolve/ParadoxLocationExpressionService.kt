@@ -38,7 +38,7 @@ import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.psi.stringValue
 
-object ParadoxConfigExpressionService {
+object ParadoxLocationExpressionService {
     fun resolve(
         locationExpression: CwtLocalisationLocationExpression,
         definition: ParadoxDefinitionElement,

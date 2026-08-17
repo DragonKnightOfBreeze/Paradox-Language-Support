@@ -7,7 +7,7 @@ import icu.windea.pls.ep.ChronicleEpBundle
 import icu.windea.pls.ep.tools.model.Constants
 import icu.windea.pls.ep.tools.model.LauncherJsonV2
 import icu.windea.pls.ep.tools.model.LauncherJsonV3
-import icu.windea.pls.lang.analysis.ParadoxMetadataUtil
+import icu.windea.pls.lang.analysis.util.ParadoxMetadataUtil
 import icu.windea.pls.lang.tools.SpecialPathService
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.tools.ParadoxModInfo

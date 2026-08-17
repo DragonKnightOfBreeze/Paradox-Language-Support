@@ -7,7 +7,9 @@ import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.expandUnionCandidates
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.CwtDataExpressionRole
+import icu.windea.pls.config.configExpression.CwtTemplateExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.util.CwtConfigExpressionManager
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.runWithRecursionGuard
@@ -43,6 +45,14 @@ object ParadoxExpressionMatchService {
         return ParadoxMatchResult.NotMatch
     }
 
+    fun matchesExpressionRole(expression: ParadoxExpression, configExpression: CwtDataExpression): Boolean {
+        return when (expression.role) {
+            ParadoxExpressionRole.Key -> configExpression.role == CwtDataExpressionRole.Key
+            ParadoxExpressionRole.Value -> configExpression.role == CwtDataExpressionRole.Value
+            else -> true
+        }
+    }
+
     fun matchesConstant(expression: ParadoxExpression, configExpression: CwtDataExpression, configGroup: CwtConfigGroup): Boolean {
         // 注意这里可能需要在同一循环中同时检查 keyExpression 和 valueExpression，因此这里需要特殊处理
         if (!matchesExpressionRole(expression, configExpression)) return false
@@ -76,12 +86,24 @@ object ParadoxExpressionMatchService {
         }
     }
 
-    fun matchesExpressionRole(expression: ParadoxExpression, configExpression: CwtDataExpression): Boolean {
-        return when (expression.role) {
-            ParadoxExpressionRole.Key -> configExpression.role == CwtDataExpressionRole.Key
-            ParadoxExpressionRole.Value -> configExpression.role == CwtDataExpressionRole.Value
-            else -> true
+    fun matchesTemplate(element: PsiElement, expression: ParadoxExpression, templateExpression: CwtTemplateExpression, configGroup: CwtConfigGroup, options: ParadoxMatchOptions? = null): Boolean {
+        val snippetExpressions = templateExpression.snippetExpressions
+        if (snippetExpressions.isEmpty()) return false
+        val regex = CwtConfigExpressionManager.toRegex(templateExpression)
+        val matchResult = regex.matchEntire(expression.value) ?: return false
+        if (templateExpression.referenceExpressions.size != matchResult.groups.size - 1) return false
+        var i = 1
+        snippetExpressions.forEachFast f@{ snippetExpression ->
+            ProgressManager.checkCanceled()
+            if (snippetExpression.type == CwtDataTypes.Constant) return@f
+            val matchGroup = matchResult.groups.get(i++) ?: return false
+            val matchValue = matchGroup.value
+            if (matchValue.isEmpty() && snippetExpression.type == CwtDataTypes.Definition) return false // skip anonymous definitions
+            val matchContext = ParadoxScriptExpressionMatchContext(element, ParadoxExpression.resolve(matchValue), snippetExpression, null, configGroup, options)
+            val matched = matchScriptExpression(matchContext).get(options)
+            if (!matched) return false
         }
+        return true
     }
 
     fun getMatchedScriptUnionCandidate(element: PsiElement, expression: ParadoxExpression, unionName: String, configGroup: CwtConfigGroup, options: ParadoxMatchOptions? = null): CwtValueConfig? {

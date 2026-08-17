@@ -1,6 +1,6 @@
 package icu.windea.pls.ep.analysis
 
-import icu.windea.pls.lang.analysis.ParadoxRootMetadataUtil
+import icu.windea.pls.lang.analysis.util.ParadoxRootMetadataUtil
 import icu.windea.pls.model.analysis.ParadoxDescriptorModBasedModMetadata
 import icu.windea.pls.model.analysis.ParadoxMetadataJsonBasedModMetadata
 import icu.windea.pls.model.analysis.ParadoxRootMetadata

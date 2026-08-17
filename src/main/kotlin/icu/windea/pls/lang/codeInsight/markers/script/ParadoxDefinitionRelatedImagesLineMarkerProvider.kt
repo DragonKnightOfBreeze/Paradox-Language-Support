@@ -14,7 +14,7 @@ import icu.windea.pls.lang.actions.ChronicleActions
 import icu.windea.pls.lang.codeInsight.markers.ParadoxRelatedItemLineMarkerProvider
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.resolve.CwtImageLocationResolveResult
-import icu.windea.pls.lang.resolve.ParadoxConfigExpressionService
+import icu.windea.pls.lang.resolve.ParadoxLocationExpressionService
 import icu.windea.pls.model.constants.ChronicleStrings
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
@@ -45,7 +45,7 @@ class ParadoxDefinitionRelatedImagesLineMarkerProvider : ParadoxRelatedItemLineM
         val targets = mutableSetOf<PsiElement>() // 这里需要考虑基于引用相等去重
         for ((key, locationExpression) in imageInfos) {
             ProgressManager.checkCanceled()
-            val resolveResult = ParadoxConfigExpressionService.resolve(locationExpression, element, definitionInfo) ?: continue
+            val resolveResult = ParadoxLocationExpressionService.resolve(locationExpression, element, definitionInfo) ?: continue
             targets.addAll(resolveResult.elements)
             if (!keys.add(key)) return
             when (resolveResult) {

@@ -9,18 +9,19 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.option.CwtOptionMetadata
 import icu.windea.pls.config.util.CwtConfigKeyManager
 import icu.windea.pls.core.match.TextMatcher
-import icu.windea.pls.lang.match.ParadoxConfigExpressionMatchService
+import icu.windea.pls.lang.match.ParadoxExpressionMatchService
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.psi.members
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.psi.stringValue
+import icu.windea.pls.lang.resolve.ParadoxModifierService
 import icu.windea.pls.lang.search.ParadoxComplexEnumValueSearch
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.util.withSearchScopeType
 import icu.windea.pls.lang.select.selectScope
-import icu.windea.pls.lang.util.ParadoxModifierManager
+import icu.windea.pls.model.expressions.ParadoxExpression
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
@@ -74,11 +75,13 @@ object ParadoxMatchProvider {
     }
 
     fun matchesModifier(element: PsiElement, configGroup: CwtConfigGroup, name: String): Boolean {
-        return ParadoxModifierManager.matchesModifier(name, element, configGroup)
+        return ParadoxModifierService.matchesModifier(name, element, configGroup)
     }
 
     fun matchesTemplate(element: PsiElement, configGroup: CwtConfigGroup, expression: String, templateExpression: String, options: ParadoxMatchOptions? = null): Boolean {
-        return ParadoxConfigExpressionMatchService.matchesTemplate(element, configGroup, expression, CwtTemplateExpression.resolve(templateExpression), options)
+        val expression = ParadoxExpression.resolve(expression, false)
+        val templateExpression = CwtTemplateExpression.resolve(templateExpression)
+        return ParadoxExpressionMatchService.matchesTemplate(element, expression, templateExpression, configGroup, options)
     }
 
     /**

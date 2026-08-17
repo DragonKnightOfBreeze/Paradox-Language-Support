@@ -80,18 +80,6 @@ object CwtDataTypeSets {
     val SyncedLocalisationAware = arrayOf(
         CwtDataTypes.SyncedLocalisation,
     )
-    /** 可定位图像资源的数据类型。 */
-    val ImageLocationAware = arrayOf(
-        CwtDataTypes.FilePath,
-        CwtDataTypes.Icon,
-        CwtDataTypes.Definition,
-    )
-    /** 可定位本地化资源的数据类型。 */
-    val LocalisationLocationAware = arrayOf(
-        CwtDataTypes.Localisation,
-        CwtDataTypes.SyncedLocalisation,
-        CwtDataTypes.InlineLocalisation,
-    )
     /** 所有模式感知的数据类型。 */
     val PatternAware = arrayOf(
         CwtDataTypes.Constant,
@@ -105,6 +93,26 @@ object CwtDataTypeSets {
         CwtDataTypes.SuffixAwareDefinition,
         CwtDataTypes.SuffixAwareLocalisation,
         CwtDataTypes.SuffixAwareSyncedLocalisation,
+    )
+
+    /** 可定位图像资源的数据类型。 */
+    val ImageLocationAware = arrayOf(
+        CwtDataTypes.FilePath,
+        CwtDataTypes.Icon,
+        CwtDataTypes.Definition,
+    )
+    /** 可定位本地化资源的数据类型。 */
+    val LocalisationLocationAware = arrayOf(
+        CwtDataTypes.Localisation,
+        CwtDataTypes.SyncedLocalisation,
+        CwtDataTypes.InlineLocalisation,
+    )
+    /** 可用于生成修正的模板表达式的片段可使用的数据类型。 */
+    val ModifierTemplateAware = arrayOf(
+        CwtDataTypes.Constant,
+        CwtDataTypes.Definition,
+        CwtDataTypes.EnumValue,
+        CwtDataTypes.Value,
     )
 
     /** 可展开为一组候选项的数据类型。 */
