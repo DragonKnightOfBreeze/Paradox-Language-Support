@@ -7,8 +7,11 @@ import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.parentOfType
 import icu.windea.pls.config.config.CwtMemberConfig
+import icu.windea.pls.config.config.delegated.CwtEnumConfig
+import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.util.CwtConfigKeyManager
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.buildImmutableList
@@ -103,7 +106,17 @@ object ParadoxConfigManager {
         }
     }
 
+    fun <C : CwtMemberConfig<*>> collectConfigWithOverridden(element: PsiElement, config: C, result: MutableList<C>) {
+        val overriddenConfigs = ParadoxConfigService.getOverriddenConfigs(element, config)
+        if (overriddenConfigs.isNotEmpty()) {
+            result.addAll(overriddenConfigs)
+        } else {
+            result.add(config)
+        }
+    }
+
     fun getSubtypes(subtypeConfigs: List<CwtSubtypeConfig>): List<String> {
+        // optimize: build immutable list here
         val size = subtypeConfigs.size
         return buildImmutableList(size) {
             subtypeConfigs[it].name
@@ -111,6 +124,7 @@ object ParadoxConfigManager {
     }
 
     fun getTypes(type: String?, subtypeConfigs: List<CwtSubtypeConfig>): List<String> {
+        // optimize: build immutable list here
         if (type == null) return ImmutableList.of()
         val size = subtypeConfigs.size
         return buildImmutableList(size + 1) {
@@ -127,12 +141,28 @@ object ParadoxConfigManager {
         }
     }
 
-    fun <C : CwtMemberConfig<*>> collectConfigWithOverridden(element: PsiElement, config: C, result: MutableList<C>) {
-        val overriddenConfigs = ParadoxConfigService.getOverriddenConfigs(element, config)
-        if (overriddenConfigs.isNotEmpty()) {
-            result.addAll(overriddenConfigs)
-        } else {
-            result.add(config)
+    fun getModifierCategory(value: String?, configGroup: CwtConfigGroup): Map<String, CwtModifierCategoryConfig> {
+        val finalValue = value ?: "economic_unit" // default to economic_unit
+        val enumConfig = configGroup.enums["scripted_modifier_category"] ?: return emptyMap() // unexpected
+        return doGetModifierCategory(finalValue, enumConfig)
+    }
+
+    private fun doGetModifierCategory(value: String, enumConfig: CwtEnumConfig): Map<String, CwtModifierCategoryConfig> {
+        var keys = doGetModifierCategoryOptionMetadata(value, enumConfig)
+        if (keys == null) keys = doGetModifierCategoryOptionMetadata("economic_unit", enumConfig)
+        if (keys == null) keys = emptySet() // unexpected
+        if (keys.isEmpty()) return emptyMap()
+        val modifierCategories = enumConfig.configGroup.modifierCategories
+        val result = mutableMapOf<String, CwtModifierCategoryConfig>()
+        for (key in keys) {
+            val config = modifierCategories[key] ?: continue
+            result[key] = config
         }
+        return result
+    }
+
+    private fun doGetModifierCategoryOptionMetadata(value: String, enumConfig: CwtEnumConfig): Set<String>? {
+        val valueConfig = enumConfig.valueConfigMap[value] ?: return null
+        return valueConfig.optionMetadata.modifierCategories
     }
 }

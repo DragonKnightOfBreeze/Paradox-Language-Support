@@ -31,6 +31,7 @@ import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxLocalisationManager
 import icu.windea.pls.lang.util.ParadoxNameValidators
+import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.model.ParadoxParameterContextReferenceInfo
 import icu.windea.pls.model.injection.ParadoxLocalisationTextInjectionInfo
 import icu.windea.pls.model.injection.ParadoxParameterValueInjectionInfo
@@ -70,7 +71,7 @@ object ParadoxScriptInjectionManager {
 
         // 这里先向上得到 `contextReferenceInfo`，接着获取传入值对应的 `textRange`，然后选用在 `host` 的 `textRange` 之内的那些
         val from = ParadoxParameterContextReferenceInfo.From.InContextReference
-        val contextReferenceInfo = ParadoxParameterService.getContextReferenceInfo(host, from = from) ?: return
+        val contextReferenceInfo = ParadoxParameterManager.getContextReferenceInfo(host, from = from) ?: return
         if (contextReferenceInfo.arguments.isEmpty()) return
         val hostRange = host.textRange
         contextReferenceInfo.arguments.forEachFast f@{ referenceInfo ->

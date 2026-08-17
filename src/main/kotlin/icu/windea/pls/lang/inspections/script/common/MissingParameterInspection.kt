@@ -14,7 +14,6 @@ import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
-import icu.windea.pls.lang.resolve.ParadoxParameterService
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.model.ParadoxParameterContextReferenceInfo
@@ -52,7 +51,7 @@ class MissingParameterInspection : LocalInspectionTool() {
 
                 val from = ParadoxParameterContextReferenceInfo.From.ContextReference
                 val contextConfig = ParadoxConfigManager.getConfigs(element).firstOrNull() ?: return
-                val contextReferenceInfo = ParadoxParameterService.getContextReferenceInfo(element, from, contextConfig) ?: return
+                val contextReferenceInfo = ParadoxParameterManager.getContextReferenceInfo(element, from, contextConfig) ?: return
                 if (contextReferenceInfo.contextName.isParameterized()) return // skip if context name is parameterized
                 val requiredParameterNames = ParadoxParameterManager.getRequiredParameterNames(element, contextReferenceInfo)
                 if (requiredParameterNames.isEmpty()) return

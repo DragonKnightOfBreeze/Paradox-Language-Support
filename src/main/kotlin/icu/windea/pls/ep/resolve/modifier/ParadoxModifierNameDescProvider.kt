@@ -6,7 +6,7 @@ import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxModifierInfo
 
 /**
- * 用于为修正提供名字和描述的本地化键名。
+ * 指定修正的名字和描述的本地化键名。
  *
  * 注意：修正的名字和描述的本地化键名是**忽略大小写**的。 (#385)
  */

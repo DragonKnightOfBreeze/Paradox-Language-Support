@@ -5,7 +5,6 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.base.ChronicleCapacities
 import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.config.configExpression.CwtImageLocationExpression
@@ -20,7 +19,6 @@ import icu.windea.pls.core.collections.processFast
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
 import icu.windea.pls.ep.resolve.definition.ParadoxDefinitionInheritSupport
-import icu.windea.pls.ep.resolve.definition.ParadoxDefinitionModifierProvider
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.CwtSubtypeConfigMatchContext
@@ -73,19 +71,6 @@ object ParadoxDefinitionService {
             if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f true // check game type first
             ep.processSubtypeConfigs(definitionInfo, subtypeConfigs)
         }
-    }
-
-    /**
-     * @see ParadoxDefinitionModifierProvider.getModifierCategories
-     */
-    fun getModifierCategories(definitionInfo: ParadoxDefinitionInfo): Map<String, CwtModifierCategoryConfig>? {
-        val gameType = definitionInfo.gameType
-        val eps = ParadoxDefinitionModifierProvider.EP_NAME.extensionList
-        eps.forEachFast f@{ ep ->
-            if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f // check game type first
-            ep.getModifierCategories(definitionInfo)?.let { return it }
-        }
-        return null
     }
 
     fun resolveInfo(element: ParadoxDefinitionElement, file: PsiFile): ParadoxDefinitionInfo? {

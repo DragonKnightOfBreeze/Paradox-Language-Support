@@ -7,10 +7,8 @@ import com.intellij.openapi.util.ModificationTracker
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import icu.windea.pls.config.config.CwtConfig
-import icu.windea.pls.core.text.DocumentationBuilder
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
-import icu.windea.pls.model.ParadoxParameterContextInfo
 import icu.windea.pls.model.ParadoxParameterContextReferenceInfo
 import icu.windea.pls.model.ParadoxParameterInfo
 import icu.windea.pls.script.psi.ParadoxConditionParameter
@@ -29,9 +27,25 @@ interface ParadoxParameterSupport {
 
     fun findContext(element: PsiElement): ParadoxDefinitionElement?
 
-    fun getContextKeyFromContext(context: ParadoxDefinitionElement): String?
+    fun resolveParameter(element: ParadoxParameter): ParadoxParameterLightElement?
 
-    fun getContextInfo(element: ParadoxDefinitionElement): ParadoxParameterContextInfo?
+    fun resolveConditionParameter(element: ParadoxConditionParameter): ParadoxParameterLightElement?
+
+    fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>): ParadoxParameterLightElement?
+
+    /**
+     * 根据指定的 [element]，遍历所有作为参数上下文的目标（[ParadoxDefinitionElement]）。这里的参数使用读访问。
+     * 如果 [onlyMostRelevant] 为 `true`，则仅遍历最相关的那个。
+     * 如果返回 `false`，则会终止遍历，因而也会终止遍历 EP。
+     */
+    fun processContext(element: ParadoxParameterLightElement, onlyMostRelevant: Boolean, processor: (ParadoxDefinitionElement) -> Boolean): Boolean
+
+    /**
+     * 根据指定的 [element] 和 [contextReferenceInfo]，遍历所有作为参数上下文引用的目标（[ParadoxDefinitionElement]）。这里的参数使用写访问。
+     * 如果 [onlyMostRelevant] 为 `true`，则仅遍历最相关的那个。
+     * 如果返回 `false`，则会终止遍历，因而也会终止遍历 EP。
+     */
+    fun processContextReference(element: PsiElement, contextReferenceInfo: ParadoxParameterContextReferenceInfo, onlyMostRelevant: Boolean, processor: (ParadoxDefinitionElement) -> Boolean): Boolean
 
     /**
      * 向上查找参数的上下文引用信息。
@@ -42,32 +56,9 @@ interface ParadoxParameterSupport {
      */
     fun getContextReferenceInfo(element: PsiElement, from: ParadoxParameterContextReferenceInfo.From, vararg extraArgs: Any?): ParadoxParameterContextReferenceInfo?
 
-    fun resolveParameter(element: ParadoxParameter): ParadoxParameterLightElement?
-
-    fun resolveConditionParameter(element: ParadoxConditionParameter): ParadoxParameterLightElement?
-
-    fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>): ParadoxParameterLightElement?
+    fun getContextKeyFromContext(context: ParadoxDefinitionElement): String?
 
     fun getModificationTracker(parameterInfo: ParadoxParameterInfo): ModificationTracker? = null
-
-    /**
-     * @param onlyMostRelevant 是否只遍历最相关的那个上下文。
-     * @return 此扩展点是否适用。
-     */
-    fun processContext(parameterElement: ParadoxParameterLightElement, onlyMostRelevant: Boolean, processor: (ParadoxDefinitionElement) -> Boolean): Boolean
-
-    /**
-     * @param onlyMostRelevant 是否只遍历最相关的那个上下文。
-     * @return 此扩展点是否适用。
-     */
-    fun processContextReference(element: PsiElement, contextReferenceInfo: ParadoxParameterContextReferenceInfo, onlyMostRelevant: Boolean, processor: (ParadoxDefinitionElement) -> Boolean): Boolean
-
-    /**
-     * 构建参数的快速文档中的定义部分。
-     *
-     * @return 此扩展点是否适用。
-     */
-    fun buildDocumentationDefinition(parameterElement: ParadoxParameterLightElement, builder: DocumentationBuilder): Boolean = false
 
     object Keys : KeyRegistry()
 

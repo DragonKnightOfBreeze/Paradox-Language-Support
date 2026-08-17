@@ -21,7 +21,7 @@ import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 
 /**
- * 提供对CSV表达式（列）的支持。
+ * 提供对 CSV 表达式（列）的支持。
  *
  * 用于实现代码高亮、引用解析、代码补全等语言功能。
  *

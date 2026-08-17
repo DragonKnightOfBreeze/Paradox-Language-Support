@@ -149,12 +149,12 @@ object ParadoxInlineScriptService {
                 context.inlineScriptHasConflict = true
                 result.set(null)
             }
-            if (fast && isFastAvailable(result)) false else r
+            if (fast && isFastInferenceAvailable(result)) false else r
         }
         return result.get().orEmpty()
     }
 
-    private fun isFastAvailable(result: Ref<List<CwtMemberConfig<*>>>): Boolean {
+    private fun isFastInferenceAvailable(result: Ref<List<CwtMemberConfig<*>>>): Boolean {
         val v = result.get()
         if (v.isNullOrEmpty()) return false // empty -> not available
         return true

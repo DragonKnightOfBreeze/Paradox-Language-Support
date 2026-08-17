@@ -34,9 +34,7 @@ import icu.windea.pls.lang.resolve.CwtImageLocationResolveResult
 import icu.windea.pls.lang.resolve.CwtLocalisationLocationResolveResult
 import icu.windea.pls.lang.resolve.ParadoxConfigExpressionService
 import icu.windea.pls.lang.resolve.ParadoxDefinitionService
-import icu.windea.pls.lang.resolve.ParadoxLocalisationParameterService
-import icu.windea.pls.lang.resolve.ParadoxModifierService
-import icu.windea.pls.lang.resolve.ParadoxParameterService
+import icu.windea.pls.lang.resolve.ParadoxModifierCategoryService
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.util.contextSensitive
@@ -402,7 +400,7 @@ object ParadoxDocumentationManager {
     private fun DocumentationBuilder.buildParameterDefinition(element: ParadoxParameterLightElement) {
         val name = element.name
         definition {
-            val r = ParadoxParameterService.buildDocumentationDefinition(element, this)
+            val r = ParadoxDocumentationService.buildDefinitionPart(element, this)
             if (!r) {
                 // 显示默认的快速文档
                 append(ChronicleStrings.parameterPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
@@ -413,7 +411,7 @@ object ParadoxDocumentationManager {
     private fun DocumentationBuilder.buildLocalisationParameterDefinition(element: ParadoxLocalisationParameterLightElement) {
         val name = element.name
         definition {
-            val r = ParadoxLocalisationParameterService.buildDocumentationDefinition(element, this)
+            val r = ParadoxDocumentationService.buildDefinitionPart(element, this)
             if (!r) {
                 // 显示默认的快速文档
                 append(ChronicleStrings.parameterPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
@@ -424,7 +422,7 @@ object ParadoxDocumentationManager {
     private fun DocumentationBuilder.buildModifierDefinition(element: ParadoxModifierLightElement) {
         val name = element.name
         definition {
-            val r = ParadoxModifierService.buildDocumentationDefinition(element, this)
+            val r = ParadoxDocumentationService.buildDefinitionPart(element, this)
             if (!r) {
                 // 显示默认的快速文档
                 append(ChronicleStrings.modifierPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
@@ -530,7 +528,7 @@ object ParadoxDocumentationManager {
 
         val sections = getSections(SECTIONS_INFO) ?: return
         val gameType = configGroup.gameType
-        val modifierCategories = ParadoxModifierService.getModifierCategories(element) ?: return
+        val modifierCategories = ParadoxModifierCategoryService.getModifierCategories(element) ?: return
         val contextElement = element
         val categoryNames = modifierCategories.keys
         if (categoryNames.isNotEmpty()) {
@@ -808,7 +806,7 @@ object ParadoxDocumentationManager {
     private fun DocumentationBuilder.addGeneratedModifiersForDefinition(element: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo) {
         if (!ChronicleSettings.getInstance().state.documentation.showGeneratedModifiers) return
 
-        ParadoxModifierService.buildDDocumentationDefinitionForDefinition(element, definitionInfo, this)
+        ParadoxDocumentationService.buildDefinitionPartForDefinition(element, definitionInfo, this)
     }
 
     private fun DocumentationBuilder.addModifierScopeForDefinition(element: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo) {
@@ -817,7 +815,7 @@ object ParadoxDocumentationManager {
 
         val sections = getSections(SECTIONS_INFO) ?: return
         val gameType = definitionInfo.gameType
-        val modifierCategories = ParadoxDefinitionService.getModifierCategories(definitionInfo) ?: return
+        val modifierCategories = ParadoxModifierCategoryService.getModifierCategories(definitionInfo) ?: return
         val categoryNames = modifierCategories.keys
         if (categoryNames.isNotEmpty()) {
             sections[ChronicleBundle.message("doc.sectionTitle.categories")] = getModifierCategoriesText(categoryNames, gameType, element)
@@ -982,7 +980,7 @@ object ParadoxDocumentationManager {
         if (!ChronicleSettings.getInstance().state.documentation.showParameters) return
 
         val sections = getSections(SECTIONS_INFO) ?: return
-        val parameterContextInfo = ParadoxParameterService.getContextInfo(element) ?: return
+        val parameterContextInfo = ParadoxParameterManager.getContextInfo(element) ?: return
         if (parameterContextInfo.parameters.isEmpty()) return // ignore
         val parametersText = buildString {
             append("<pre>")

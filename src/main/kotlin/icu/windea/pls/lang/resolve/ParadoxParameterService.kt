@@ -19,9 +19,9 @@ import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.mapFast
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.collections.process
+import icu.windea.pls.core.collections.processFast
 import icu.windea.pls.core.createPointer
 import icu.windea.pls.core.mergeValue
-import icu.windea.pls.core.text.DocumentationBuilder
 import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.ep.resolve.parameter.ParadoxParameterInferredConfigProvider
 import icu.windea.pls.ep.resolve.parameter.ParadoxParameterSupport
@@ -29,6 +29,7 @@ import icu.windea.pls.lang.match.findByPattern
 import icu.windea.pls.lang.match.matchesByPattern
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.lang.selectGameType
+import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.model.ParadoxParameterContextInfo
 import icu.windea.pls.model.ParadoxParameterContextReferenceInfo
 import icu.windea.pls.model.constants.ChronicleStrings
@@ -48,45 +49,23 @@ import java.util.*
 @Optimized
 object ParadoxParameterService {
     /**
+     * @see ParadoxParameterSupport.isContext
+     */
+    @Suppress("unused")
+    fun isContext(element: ParadoxDefinitionElement): Boolean {
+        val supports = ParadoxParameterSupport.EP_NAME.extensionList
+        return supports.anyFast { support ->
+            support.isContext(element)
+        }
+    }
+
+    /**
      * @see ParadoxParameterSupport.findContext
      */
     fun findContext(element: PsiElement): ParadoxDefinitionElement? {
         val supports = ParadoxParameterSupport.EP_NAME.extensionList
         supports.forEachFast { support ->
             support.findContext(element)?.let { return it }
-        }
-        return null
-    }
-
-    /**
-     * @see ParadoxParameterSupport.getContextKeyFromContext
-     */
-    fun getContextKeyFromContext(element: ParadoxDefinitionElement): String? {
-        val supports = ParadoxParameterSupport.EP_NAME.extensionList
-        supports.forEachFast { support ->
-            support.getContextKeyFromContext(element)?.let { return it }
-        }
-        return null
-    }
-
-    /**
-     * @see ParadoxParameterSupport.getContextInfo
-     */
-    fun getContextInfo(element: ParadoxDefinitionElement): ParadoxParameterContextInfo? {
-        val supports = ParadoxParameterSupport.EP_NAME.extensionList
-        supports.forEachFast { support ->
-            support.getContextInfo(element)?.let { return it }
-        }
-        return null
-    }
-
-    /**
-     * @see ParadoxParameterSupport.getContextReferenceInfo
-     */
-    fun getContextReferenceInfo(element: PsiElement, from: ParadoxParameterContextReferenceInfo.From, vararg extraArgs: Any?): ParadoxParameterContextReferenceInfo? {
-        val supports = ParadoxParameterSupport.EP_NAME.extensionList
-        supports.forEachFast { support ->
-            support.getContextReferenceInfo(element, from, *extraArgs)?.also { it.support = support }?.let { return it }
         }
         return null
     }
@@ -127,10 +106,10 @@ object ParadoxParameterService {
     /**
      * @see ParadoxParameterSupport.processContext
      */
-    fun processContext(parameterElement: ParadoxParameterLightElement, onlyMostRelevant: Boolean, processor: (ParadoxDefinitionElement) -> Boolean): Boolean {
+    fun processContext(element: ParadoxParameterLightElement, onlyMostRelevant: Boolean, processor: (ParadoxDefinitionElement) -> Boolean): Boolean {
         val supports = ParadoxParameterSupport.EP_NAME.extensionList
-        return supports.anyFast { support ->
-            support.processContext(parameterElement, onlyMostRelevant, processor)
+        return supports.processFast { support ->
+            support.processContext(element, onlyMostRelevant, processor)
         }
     }
 
@@ -139,19 +118,31 @@ object ParadoxParameterService {
      */
     fun processContextReference(element: PsiElement, contextReferenceInfo: ParadoxParameterContextReferenceInfo, onlyMostRelevant: Boolean, processor: (ParadoxDefinitionElement) -> Boolean): Boolean {
         val supports = ParadoxParameterSupport.EP_NAME.extensionList
-        return supports.anyFast { support ->
+        return supports.processFast { support ->
             support.processContextReference(element, contextReferenceInfo, onlyMostRelevant, processor)
         }
     }
 
     /**
-     * @see ParadoxParameterSupport.buildDocumentationDefinition
+     * @see ParadoxParameterSupport.getContextReferenceInfo
      */
-    fun buildDocumentationDefinition(parameterElement: ParadoxParameterLightElement, builder: DocumentationBuilder): Boolean {
+    fun getContextReferenceInfo(element: PsiElement, from: ParadoxParameterContextReferenceInfo.From, vararg extraArgs: Any?): ParadoxParameterContextReferenceInfo? {
         val supports = ParadoxParameterSupport.EP_NAME.extensionList
-        return supports.anyFast { support ->
-            support.buildDocumentationDefinition(parameterElement, builder)
+        supports.forEachFast { support ->
+            support.getContextReferenceInfo(element, from, *extraArgs)?.also { it.support = support }?.let { return it }
         }
+        return null
+    }
+
+    /**
+     * @see ParadoxParameterSupport.getContextKeyFromContext
+     */
+    fun getContextKeyFromContext(element: ParadoxDefinitionElement): String? {
+        val supports = ParadoxParameterSupport.EP_NAME.extensionList
+        supports.forEachFast { support ->
+            support.getContextKeyFromContext(element)?.let { return it }
+        }
+        return null
     }
 
     /**
@@ -215,6 +206,20 @@ object ParadoxParameterService {
         return ParadoxParameterContextInfo(parameters, project, gameType)
     }
 
+    fun getParameterizedKeyConfigs(contextConfigs: List<CwtMemberConfig<*>>): List<CwtValueConfig> {
+        val configs = contextConfigs.singleOrNull()?.configs
+            ?.filterNot { it !is CwtValueConfig || it.valueType == CwtExpressionType.Block }
+        if (configs.isNullOrEmpty()) return emptyList()
+        return configs.cast()
+    }
+
+    fun getInferredType(contextConfigs: List<CwtMemberConfig<*>>): String? {
+        val configs = contextConfigs.singleOrNull()?.configs
+        if (configs.isNullOrEmpty()) return null
+        if (configs.anyFast { it !is CwtValueConfig || it.valueType == CwtExpressionType.Block }) return ChronicleStrings.complexText
+        return configs.mapFast { it.configExpression.expressionString }.toSet().joinToString(" | ")
+    }
+
     fun getInferredContextConfigsFromConfig(parameterElement: ParadoxParameterLightElement, fast: Boolean = true): List<CwtMemberConfig<*>> {
         return doGetInferredContextConfigsFromConfig(parameterElement, fast)
     }
@@ -244,11 +249,11 @@ object ParadoxParameterService {
         val result = Ref.create<List<CwtMemberConfig<*>>>()
         processContext(parameterElement, true) p@{ context ->
             ProgressManager.checkCanceled()
-            val contextInfo = getContextInfo(context) ?: return@p true
+            val contextInfo = ParadoxParameterManager.getContextInfo(context) ?: return@p true
             val contextConfigs = doGetInferredContextConfigsFromUsages(parameterElement.name, contextInfo, fast).orNull()
             // merge
             val r = result.mergeValue(contextConfigs) { v1, v2 -> CwtConfigManipulationService.mergeConfigs(v1, v2) }
-            if (fast && isFastAvailable(result)) false else r
+            if (fast && isFastInferenceAvailable(result)) false else r
         }
         return result.get().orEmpty()
     }
@@ -262,30 +267,16 @@ object ParadoxParameterService {
             val contextConfigs = getContextConfigs(parameterInfo, parameterContextInfo).orNull()
             // merge
             val r = result.mergeValue(contextConfigs) { v1, v2 -> CwtConfigManipulationService.mergeConfigs(v1, v2) }
-            if (fast && isFastAvailable(result)) false else r
+            if (fast && isFastInferenceAvailable(result)) false else r
         }
         return result.get().orEmpty()
     }
 
-    private fun isFastAvailable(result: Ref<List<CwtMemberConfig<*>>>): Boolean {
+    private fun isFastInferenceAvailable(result: Ref<List<CwtMemberConfig<*>>>): Boolean {
         val v = result.get()
         if (v.isNullOrEmpty()) return false // empty -> not available
         val c = v.singleOrNull()?.configs?.singleOrNull()
         if (c is CwtValueConfig && c.configExpression.metadata.wildcard) return false // wildcard (e.g., from condition parameter) -> not available
         return true
-    }
-
-    fun getInferredType(contextConfigs: List<CwtMemberConfig<*>>): String? {
-        val configs = contextConfigs.singleOrNull()?.configs
-        if (configs.isNullOrEmpty()) return null
-        if (configs.anyFast { it !is CwtValueConfig || it.valueType == CwtExpressionType.Block }) return ChronicleStrings.complexText
-        return configs.mapFast { it.configExpression.expressionString }.toSet().joinToString(" | ")
-    }
-
-    fun getParameterizedKeyConfigs(contextConfigs: List<CwtMemberConfig<*>>): List<CwtValueConfig> {
-        val configs = contextConfigs.singleOrNull()?.configs
-            ?.filterNot { it !is CwtValueConfig || it.valueType == CwtExpressionType.Block }
-        if (configs.isNullOrEmpty()) return emptyList()
-        return configs.cast()
     }
 }

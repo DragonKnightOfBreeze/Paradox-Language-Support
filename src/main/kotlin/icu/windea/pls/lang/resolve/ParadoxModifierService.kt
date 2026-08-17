@@ -3,7 +3,6 @@ package icu.windea.pls.lang.resolve
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.psi.PsiElement
 import com.intellij.util.Processor
-import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.CaseInsensitiveStringSet
@@ -11,17 +10,14 @@ import icu.windea.pls.core.collections.anyFast
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.processFast
 import icu.windea.pls.core.optimizedIfEmpty
-import icu.windea.pls.core.text.DocumentationBuilder
 import icu.windea.pls.ep.resolve.modifier.ParadoxModifierIconProvider
 import icu.windea.pls.ep.resolve.modifier.ParadoxModifierNameDescProvider
 import icu.windea.pls.ep.resolve.modifier.ParadoxModifierSupport
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.psi.light.ParadoxModifierLightElement
-import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxModifierInfo
 import icu.windea.pls.model.orSpecific
 import icu.windea.pls.model.support
-import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 @Optimized
 object ParadoxModifierService {
@@ -66,7 +62,6 @@ object ParadoxModifierService {
     /**
      * @see ParadoxModifierSupport.processModifier
      */
-    @Suppress("unused")
     fun processModifier(element: PsiElement, configGroup: CwtConfigGroup, processor: Processor<ParadoxModifierLightElement>): Boolean {
         val gameType = configGroup.gameType
         val supports = ParadoxModifierSupport.EP_NAME.extensionList
@@ -77,44 +72,7 @@ object ParadoxModifierService {
     }
 
     /**
-     * @see ParadoxModifierSupport.getModifierCategories
-     */
-    fun getModifierCategories(element: ParadoxModifierLightElement): Map<String, CwtModifierCategoryConfig>? {
-        val gameType = element.gameType
-        val supports = ParadoxModifierSupport.EP_NAME.extensionList
-        supports.forEachFast f@{ ep ->
-            if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f // check game type first
-            ep.getModifierCategories(element)?.let { return it }
-        }
-        return null
-    }
-
-    /**
-     * @see ParadoxModifierSupport.buildDocumentationDefinition
-     */
-    fun buildDocumentationDefinition(element: ParadoxModifierLightElement, builder: DocumentationBuilder): Boolean {
-        val gameType = element.gameType
-        val supports = ParadoxModifierSupport.EP_NAME.extensionList
-        return supports.anyFast f@{ ep ->
-            if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f false // check game type first
-            ep.buildDocumentationDefinition(element, builder)
-        }
-    }
-
-    /**
-     * @see ParadoxModifierSupport.buildDDocumentationDefinitionForDefinition
-     */
-    fun buildDDocumentationDefinitionForDefinition(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo, builder: DocumentationBuilder): Boolean {
-        val gameType = definitionInfo.gameType
-        val supports = ParadoxModifierSupport.EP_NAME.extensionList
-        return supports.anyFast f@{ ep ->
-            if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f false // check game type first
-            ep.buildDDocumentationDefinitionForDefinition(definition, definitionInfo, builder)
-        }
-    }
-
-    /**
-     * @see ParadoxModifierIconProvider.addModifierIconBaseName
+     * @see ParadoxModifierIconProvider.addModifierIconPath
      */
     fun getModifierIconPaths(element: PsiElement, modifierInfo: ParadoxModifierInfo): Set<String> {
         val gameType = modifierInfo.gameType
@@ -122,7 +80,7 @@ object ParadoxModifierService {
         val result = mutableSetOf<String>() // 3.0.1 do not use `CaseInsensitiveStringSet` here
         eps.forEachFast f@{ ep ->
             if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f // check game type first
-            ep.addModifierIconBaseName(modifierInfo, element, result)
+            ep.addModifierIconPath(modifierInfo, element, result)
         }
         return result.optimizedIfEmpty()
     }

@@ -2,26 +2,17 @@ package icu.windea.pls.ep.resolve.parameter
 
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.util.parentOfType
-import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.orNull
-import icu.windea.pls.core.text.DocumentationBuilder
 import icu.windea.pls.core.util.ReadWriteAccess
-import icu.windea.pls.core.util.values.anonymous
-import icu.windea.pls.core.util.values.or
-import icu.windea.pls.core.util.values.unknown
 import icu.windea.pls.lang.psi.light.ParadoxLocalisationParameterLightElement
 import icu.windea.pls.lang.selectGameType
-import icu.windea.pls.lang.text.appendPsiLinkOrUnresolved
 import icu.windea.pls.lang.util.ParadoxLocalisationParameterManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
-import icu.windea.pls.model.ReferenceLinkType
-import icu.windea.pls.model.constants.ChronicleStrings
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 
 class ParadoxBaseLocalisationParameterSupport : ParadoxLocalisationParameterSupport {
@@ -63,20 +54,4 @@ class ParadoxBaseLocalisationParameterSupport : ParadoxLocalisationParameterSupp
         return resolved
     }
 
-    override fun buildDocumentationDefinition(element: ParadoxLocalisationParameterLightElement, builder: DocumentationBuilder): Boolean = with(builder) {
-        // 不加上文件信息
-
-        // 加上名字
-        val name = element.name
-        append(ChronicleStrings.parameterPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
-
-        // 加上所属本地化信息
-        val gameType = element.gameType
-        appendBr().appendIndent()
-        append(ChronicleBundle.message("doc.text.ofLocalisation")).append(" ")
-        val nameOrUnknown = element.localisationName.or.unknown()
-        val link = ReferenceLinkType.Localisation.createLink(nameOrUnknown, gameType)
-        appendPsiLinkOrUnresolved(link.escapeXml(), nameOrUnknown.escapeXml(), context = element)
-        return true
-    }
 }

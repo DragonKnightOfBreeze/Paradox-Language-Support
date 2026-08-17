@@ -5,6 +5,9 @@
     <extensionPoint qualifiedName="icu.windea.pls.rootMetadataProvider" interface="icu.windea.pls.ep.analysis.ParadoxRootMetadataProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.colorProvider" interface="icu.windea.pls.ep.codeInsight.color.ParadoxColorProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.quickDocTextProvider" interface="icu.windea.pls.ep.codeInsight.documentation.ParadoxQuickDocTextProvider" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.modifierQuickDocProvider" interface="icu.windea.pls.ep.codeInsight.documentation.ParadoxModifierQuickDocProvider" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.parameterQuickDocProvider" interface="icu.windea.pls.ep.codeInsight.documentation.ParadoxParameterQuickDocProvider" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.localisationParameterQuickDocProvider" interface="icu.windea.pls.ep.codeInsight.documentation.ParadoxLocalisationParameterQuickDocProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.hintTextProvider" interface="icu.windea.pls.ep.codeInsight.hints.ParadoxHintTextProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.configFilterProvider" interface="icu.windea.pls.ep.config.config.CwtConfigFilterProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.configPostProcessor" interface="icu.windea.pls.ep.config.config.CwtConfigPostProcessor" dynamic="true"/>
@@ -35,9 +38,10 @@
     <extensionPoint qualifiedName="icu.windea.pls.csvExpressionSupport" interface="icu.windea.pls.ep.resolve.expression.ParadoxCsvExpressionSupport" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.pathReferenceExpressionSupport" interface="icu.windea.pls.ep.resolve.expression.ParadoxPathReferenceExpressionSupport" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.definitionInheritSupport" interface="icu.windea.pls.ep.resolve.definition.ParadoxDefinitionInheritSupport" dynamic="true"/>
-    <extensionPoint qualifiedName="icu.windea.pls.definitionModifierProvider" interface="icu.windea.pls.ep.resolve.definition.ParadoxDefinitionModifierProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.localisationIconSupport" interface="icu.windea.pls.ep.resolve.localisation.ParadoxLocalisationIconSupport" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.modifierSupport" interface="icu.windea.pls.ep.resolve.modifier.ParadoxModifierSupport" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.modifierCategoryProvider" interface="icu.windea.pls.ep.resolve.modifier.ParadoxModifierCategoryProvider" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.definitionModifierCategoryProvider" interface="icu.windea.pls.ep.resolve.modifier.ParadoxDefinitionModifierCategoryProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.modifierNameDescProvider" interface="icu.windea.pls.ep.resolve.modifier.ParadoxModifierNameDescProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.modifierIconProvider" interface="icu.windea.pls.ep.resolve.modifier.ParadoxModifierIconProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.parameterSupport" interface="icu.windea.pls.ep.resolve.parameter.ParadoxParameterSupport" dynamic="true"/>
@@ -84,6 +88,14 @@
     <quickDocTextProvider implementation="icu.windea.pls.ep.codeInsight.documentation.ParadoxExtendedComplexEnumValueQuickDocTextProvider"/>
     <quickDocTextProvider implementation="icu.windea.pls.ep.codeInsight.documentation.ParadoxExtendedDynamicValueQuickDocTextProvider"/>
     <quickDocTextProvider implementation="icu.windea.pls.ep.codeInsight.documentation.ParadoxExtendedInlineScriptQuickDocTextProvider"/>
+
+    <modifierQuickDocProvider implementation="icu.windea.pls.ep.codeInsight.documentation.ParadoxTemplateModifierQuickDocProvider"/>
+    <modifierQuickDocProvider implementation="icu.windea.pls.ep.codeInsight.documentation.ParadoxEconomicCategoryModifierQuickDocProvider"/>
+
+    <parameterQuickDocProvider implementation="icu.windea.pls.ep.codeInsight.documentation.ParadoxDefinitionParameterQuickDocProvider"/>
+    <parameterQuickDocProvider implementation="icu.windea.pls.ep.codeInsight.documentation.ParadoxInlineScriptParameterQuickDocProvider"/>
+
+    <localisationParameterQuickDocProvider implementation="icu.windea.pls.ep.codeInsight.documentation.ParadoxBaseLocalisationParameterQuickDocProvider"/>
 
     <hintTextProvider implementation="icu.windea.pls.ep.codeInsight.hints.ParadoxDefinitionHintTextProvider"/>
     <hintTextProvider implementation="icu.windea.pls.ep.codeInsight.hints.ParadoxInferredScriptedVariableHintTextProvider"/>
@@ -271,14 +283,18 @@
     <definitionInheritSupport implementation="icu.windea.pls.ep.resolve.definition.ParadoxSwappedTypeInheritSupport"/>
     <definitionInheritSupport implementation="icu.windea.pls.ep.resolve.definition.StellarisEventInheritSupport"/>
 
-    <definitionModifierProvider implementation="icu.windea.pls.ep.resolve.definition.StellarisScriptedModifierDefinitionModifierProvider"/>
-
     <localisationIconSupport implementation="icu.windea.pls.ep.resolve.localisation.ParadoxBaseLocalisationIconSupport" order="last"/>
     <localisationIconSupport implementation="icu.windea.pls.ep.resolve.localisation.ParadoxBaseLocalisationIconSupport$Stellaris"/>
 
     <modifierSupport implementation="icu.windea.pls.ep.resolve.modifier.ParadoxPredefinedModifierSupport"/>
     <modifierSupport implementation="icu.windea.pls.ep.resolve.modifier.ParadoxTemplateModifierSupport"/>
     <modifierSupport implementation="icu.windea.pls.ep.resolve.modifier.ParadoxEconomicCategoryModifierSupport"/>
+
+    <modifierCategoryProvider implementation="icu.windea.pls.ep.resolve.modifier.ParadoxPredefinedModifierCategoryProvider"/>
+    <modifierCategoryProvider implementation="icu.windea.pls.ep.resolve.modifier.ParadoxTemplateModifierCategoryProvider"/>
+    <modifierCategoryProvider implementation="icu.windea.pls.ep.resolve.modifier.ParadoxEconomicCategoryModifierCategoryProvider"/>
+
+    <definitionModifierCategoryProvider implementation="icu.windea.pls.ep.resolve.modifier.ParadoxScriptedModifierCategoryProvider"/>
 
     <modifierNameDescProvider implementation="icu.windea.pls.ep.resolve.modifier.ParadoxBaseModifierNameDescProvider"/>
 
@@ -287,8 +303,8 @@
     <modifierIconProvider implementation="icu.windea.pls.ep.resolve.modifier.ParadoxEconomicCategoryBasedModifierIconProvider"/>
 
     <parameterSupport implementation="icu.windea.pls.ep.resolve.parameter.ParadoxDefinitionParameterSupport"/>
-    <parameterSupport implementation="icu.windea.pls.ep.resolve.parameter.ParadoxScriptValueInlineParameterSupport"/>
     <parameterSupport implementation="icu.windea.pls.ep.resolve.parameter.ParadoxInlineScriptParameterSupport"/>
+    <parameterSupport implementation="icu.windea.pls.ep.resolve.parameter.ParadoxScriptValueInlineParameterSupport"/>
 
     <parameterInferredConfigProvider id="default" implementation="icu.windea.pls.ep.resolve.parameter.ParadoxDefaultExpressionParameterInferredConfigProvider" order="last"/>
     <parameterInferredConfigProvider implementation="icu.windea.pls.ep.resolve.parameter.ParadoxBaseParameterInferredConfigProvider"/>

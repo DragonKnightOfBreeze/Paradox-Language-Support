@@ -5,9 +5,8 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
+import com.intellij.util.Processor
 import icu.windea.pls.ChronicleFacade
-import icu.windea.pls.config.config.delegated.CwtEnumConfig
-import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cache.CacheBuilder
@@ -78,6 +77,11 @@ object ParadoxModifierManager {
     fun completeModifier(context: ParadoxCompletionContext, result: CompletionResultSet) {
         if (context.contextElement !is ParadoxScriptStringExpressionElement) return
         ParadoxModifierService.completeModifier(context, result)
+    }
+
+    @Suppress("unused")
+    fun processModifier(element: PsiElement, configGroup: CwtConfigGroup, processor: Processor<ParadoxModifierLightElement>): Boolean {
+        return ParadoxModifierService.processModifier(element, configGroup, processor)
     }
 
     fun getModifierInfo(name: String, element: PsiElement, configGroup: CwtConfigGroup, useSupport: ParadoxModifierSupport? = null): ParadoxModifierInfo? {
@@ -156,27 +160,5 @@ object ParadoxModifierManager {
             val nameLocalisations = ParadoxLocalisationSearch.searchNormal(key, selector).findAll()
             nameLocalisations.mapNotNullFast { ParadoxLocalisationManager.getPresentableText(it) }.toSet().orNull()
         }.orEmpty()
-    }
-
-    fun resolveModifierCategory(value: String?, configGroup: CwtConfigGroup): Map<String, CwtModifierCategoryConfig> {
-        val finalValue = value ?: "economic_unit" // default to economic_unit
-        val enumConfig = configGroup.enums["scripted_modifier_category"] ?: return emptyMap() // unexpected
-        var keys = getModifierCategoryOptionValues(enumConfig, finalValue)
-        if (keys == null) keys = getModifierCategoryOptionValues(enumConfig, "economic_unit")
-        if (keys == null) keys = emptySet() // unexpected
-        if (keys.isEmpty()) return emptyMap()
-        val modifierCategories = configGroup.modifierCategories
-        val result = mutableMapOf<String, CwtModifierCategoryConfig>()
-        for (key in keys) {
-            val config = modifierCategories[key] ?: continue
-            result[key] = config
-        }
-        return result
-    }
-
-    private fun getModifierCategoryOptionValues(enumConfig: CwtEnumConfig, finalValue: String): Set<String>? {
-        val valueConfig = enumConfig.valueConfigMap[finalValue] ?: return null
-        // 统一使用选项元数据访问器的缓存
-        return valueConfig.optionMetadata.modifierCategories
     }
 }

@@ -39,7 +39,6 @@ import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.tupleOf
-import icu.windea.pls.ep.resolve.parameter.ParadoxParameterSupport
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionLookupProvider
 import icu.windea.pls.lang.codeInsight.completion.ParadoxExtendedCompletionManager
@@ -80,21 +79,35 @@ object ParadoxParameterManager {
         }
     }
 
-    /**
-     * 得到 [element] 对应的参数上下文信息。
-     *
-     * 这个方法不会判断 [element] 是否是合法的参数上下文，如果需要，考虑使用 [ParadoxParameterSupport.getContextInfo]。
-     */
-    fun getContextInfo(element: ParadoxDefinitionElement): ParadoxParameterContextInfo? {
-        // from cache
-        return getContextInfoFromCache(element)
+    @Suppress("unused")
+    fun processContext(element: ParadoxParameterLightElement, onlyMostRelevant: Boolean, processor: (ParadoxDefinitionElement) -> Boolean): Boolean {
+        return ParadoxParameterService.processContext(element, onlyMostRelevant, processor)
     }
 
-    private fun getContextInfoFromCache(element: ParadoxDefinitionElement): ParadoxParameterContextInfo? {
+    fun processContextReference(element: PsiElement, contextReferenceInfo: ParadoxParameterContextReferenceInfo, onlyMostRelevant: Boolean, processor: (ParadoxDefinitionElement) -> Boolean): Boolean {
+        return ParadoxParameterService.processContextReference(element, contextReferenceInfo, onlyMostRelevant, processor)
+    }
+
+    /**
+     * 得到 [element] 对应的参数上下文信息。这里的参数使用读访问。
+     *
+     * 这个方法会首先判断 [element] 是否是合法的参数上下文。如果不是，则会直接返回 `null`。
+     */
+    fun getContextInfo(element: ParadoxDefinitionElement): ParadoxParameterContextInfo? {
+        // precheck
+        if (!ParadoxParameterService.isContext(element)) return null
+        // from cache
         return CachedValuesManager.getCachedValue(element, Keys.cachedParameterContextInfo) {
             val value = ParadoxParameterService.resolveContextInfo(element)
             CachedValueProvider.Result(value, element)
         }
+    }
+
+    /**
+     * 得到 [element] 对应的参数上下文引用信息。这里的参数使用写访问。
+     */
+    fun getContextReferenceInfo(element: PsiElement, from: ParadoxParameterContextReferenceInfo.From, vararg extraArgs: Any?): ParadoxParameterContextReferenceInfo? {
+        return ParadoxParameterService.getContextReferenceInfo(element, from, extraArgs)
     }
 
     /**
@@ -136,7 +149,7 @@ object ParadoxParameterManager {
         }
         ParadoxParameterService.processContextReference(element, contextReferenceInfo, true) p@{
             ProgressManager.checkCanceled()
-            val parameterContextInfo = ParadoxParameterService.getContextInfo(it) ?: return@p true
+            val parameterContextInfo = getContextInfo(it) ?: return@p true
             if (parameterContextInfo.parameters.isEmpty()) return@p true
             for (parameterName in parameterContextInfo.parameters.keys) {
                 // Skip checked parameters
@@ -193,7 +206,7 @@ object ParadoxParameterManager {
         ProgressManager.checkCanceled()
         // 向上找到参数上下文
         val parameterContext = ParadoxParameterService.findContext(element) ?: return
-        val parameterContextInfo = ParadoxParameterService.getContextInfo(parameterContext) ?: return
+        val parameterContextInfo = getContextInfo(parameterContext) ?: return
         if (parameterContextInfo.parameters.isEmpty()) return
         for (parameterInfos in parameterContextInfo.parameters.values) {
             ProgressManager.checkCanceled()
@@ -227,7 +240,7 @@ object ParadoxParameterManager {
         // 整合查找到的所有参数上下文
         ParadoxParameterService.processContextReference(element, contextReferenceInfo, true) p@{ parameterContext ->
             ProgressManager.checkCanceled()
-            val parameterContextInfo = ParadoxParameterService.getContextInfo(parameterContext) ?: return@p true
+            val parameterContextInfo = getContextInfo(parameterContext) ?: return@p true
             if (parameterContextInfo.parameters.isEmpty()) return@p true
             for ((parameterName, parameterInfos) in parameterContextInfo.parameters) {
                 // 排除已输入的
@@ -279,6 +292,25 @@ object ParadoxParameterManager {
     }
 
     /**
+     * 尝试推断得到带参数的键对应的匹配的规则。
+     */
+    fun getParameterizedKeyConfigs(element: ParadoxScriptProperty): List<CwtValueConfig> {
+        val propertyKey = element.propertyKey
+        val parameter = propertyKey.findChild<ParadoxParameter>() ?: return emptyList()
+        val parameterElement = getParameterElement(parameter) ?: return emptyList()
+        val contextConfigs = getInferredContextConfigsFromConfig(parameterElement)
+        return ParadoxParameterService.getParameterizedKeyConfigs(contextConfigs)
+    }
+
+    /**
+     * 尝试推断得到参数的类型。仅用于显示。
+     */
+    fun getInferredType(parameterElement: ParadoxParameterLightElement): String? {
+        val contextConfigs = getInferredContextConfigs(parameterElement)
+        return ParadoxParameterService.getInferredType(contextConfigs)
+    }
+
+    /**
      * 尝试推断得到参数的上下文规则。基于用法和扩展规则。
      */
     fun getInferredContextConfigs(parameterElement: ParadoxParameterLightElement): List<CwtMemberConfig<*>> {
@@ -304,7 +336,7 @@ object ParadoxParameterManager {
     }
 
     /**
-     * 尝试推断得到参数的上下文规则。基于扩展规则。
+     * 尝试推断得到参数的上下文规则。仅基于扩展规则。
      */
     fun getInferredContextConfigsFromConfig(parameterElement: ParadoxParameterLightElement): List<CwtMemberConfig<*>> {
         val inferenceSettings = ChronicleSettings.getInstance().state.inference
@@ -312,25 +344,6 @@ object ParadoxParameterManager {
         val fast = inferenceSettings.configContextForParametersFast
 
         return ParadoxParameterService.getInferredContextConfigsFromConfig(parameterElement, fast)
-    }
-
-    /**
-     * 尝试推断得到参数的类型。仅用于显示。
-     */
-    fun getInferredType(parameterElement: ParadoxParameterLightElement): String? {
-        val contextConfigs = getInferredContextConfigs(parameterElement)
-        return ParadoxParameterService.getInferredType(contextConfigs)
-    }
-
-    /**
-     * 尝试推断得到带参数的键对应的匹配的规则。
-     */
-    fun getParameterizedKeyConfigs(element: ParadoxScriptProperty): List<CwtValueConfig> {
-        val propertyKey = element.propertyKey
-        val parameter = propertyKey.findChild<ParadoxParameter>() ?: return emptyList()
-        val parameterElement = getParameterElement(parameter) ?: return emptyList()
-        val contextConfigs = getInferredContextConfigsFromConfig(parameterElement)
-        return ParadoxParameterService.getParameterizedKeyConfigs(contextConfigs)
     }
 
     /**

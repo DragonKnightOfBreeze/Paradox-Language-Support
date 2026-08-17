@@ -21,14 +21,14 @@ import icu.windea.pls.model.templateExpression
 import icu.windea.pls.script.psi.ParadoxScriptString
 
 class ParadoxBaseModifierIconProvider : ParadoxModifierIconProvider {
-    override fun addModifierIconBaseName(modifierInfo: ParadoxModifierInfo, element: PsiElement, registry: MutableSet<String>) {
+    override fun addModifierIconPath(modifierInfo: ParadoxModifierInfo, element: PsiElement, registry: MutableSet<String>) {
         // gfx/interface/icons/modifiers/mod_$
         registry += "gfx/interface/icons/modifiers/mod_${modifierInfo.name}"
     }
 }
 
 /**
- * 对于从岗位（`job`）生成的那些修正，需要应用特殊的图标继承逻辑。
+ * 适用于从岗位（`job`）生成的修正。这些修正存在特殊的图标继承逻辑。
  */
 @ForGameType(ParadoxGameType.Stellaris)
 class ParadoxJobBasedModifierIconProvider : ParadoxModifierIconProvider {
@@ -36,7 +36,7 @@ class ParadoxJobBasedModifierIconProvider : ParadoxModifierIconProvider {
 
     override fun supports(gameType: ParadoxGameType) = gameType == ParadoxGameType.Stellaris
 
-    override fun addModifierIconBaseName(modifierInfo: ParadoxModifierInfo, element: PsiElement, registry: MutableSet<String>) {
+    override fun addModifierIconPath(modifierInfo: ParadoxModifierInfo, element: PsiElement, registry: MutableSet<String>) {
         val modifierConfig = modifierInfo.modifierConfig ?: return
         val templateExpression = modifierInfo.templateExpression ?: return
         val snippetNode = templateExpression.nodes
@@ -60,13 +60,13 @@ class ParadoxJobBasedModifierIconProvider : ParadoxModifierIconProvider {
 }
 
 /**
- * 对于从经济分类（`economic_category`）生成的那些修正，需要应用特殊的图标继承逻辑。
+ * 适用于从经济分类（`economic_category`）生成的修正。这些修正存在特殊的图标继承逻辑。
  */
 @ForGameType(ParadoxGameType.Stellaris)
 class ParadoxEconomicCategoryBasedModifierIconProvider : ParadoxModifierIconProvider {
     override fun supports(gameType: ParadoxGameType) = gameType == ParadoxGameType.Stellaris
 
-    override fun addModifierIconBaseName(modifierInfo: ParadoxModifierInfo, element: PsiElement, registry: MutableSet<String>) {
+    override fun addModifierIconPath(modifierInfo: ParadoxModifierInfo, element: PsiElement, registry: MutableSet<String>) {
         val economicCategoryInfo = modifierInfo.economicCategoryInfo ?: return
         val economicCategoryModifierInfo = modifierInfo.economicCategoryModifierInfo ?: return
         if (economicCategoryModifierInfo.useParentIcon) {

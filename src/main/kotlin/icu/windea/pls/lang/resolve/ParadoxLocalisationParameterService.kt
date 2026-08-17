@@ -3,9 +3,7 @@ package icu.windea.pls.lang.resolve
 import com.intellij.openapi.util.TextRange
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.core.annotations.Optimized
-import icu.windea.pls.core.collections.anyFast
 import icu.windea.pls.core.collections.forEachFast
-import icu.windea.pls.core.text.DocumentationBuilder
 import icu.windea.pls.ep.resolve.parameter.ParadoxLocalisationParameterSupport
 import icu.windea.pls.lang.psi.light.ParadoxLocalisationParameterLightElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
@@ -45,15 +43,5 @@ object ParadoxLocalisationParameterService {
             support.resolveArgument(element, rangeInElement, config)?.let { return it }
         }
         return null
-    }
-
-    /**
-     * @see ParadoxLocalisationParameterSupport.buildDocumentationDefinition
-     */
-    fun buildDocumentationDefinition(element: ParadoxLocalisationParameterLightElement, builder: DocumentationBuilder): Boolean {
-        val supports = ParadoxLocalisationParameterSupport.EP_NAME.extensionList
-        return supports.anyFast { support ->
-            support.buildDocumentationDefinition(element, builder)
-        }
     }
 }

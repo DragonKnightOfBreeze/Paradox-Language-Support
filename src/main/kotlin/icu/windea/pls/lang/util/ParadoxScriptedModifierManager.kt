@@ -15,6 +15,6 @@ object ParadoxScriptedModifierManager {
         val configGroup = definitionInfo.configGroup
         val property = selectScope { definition.properties().ofKey("category").one() }
         val value = property?.propertyValue?.stringValue()
-        return ParadoxModifierManager.resolveModifierCategory(value, configGroup)
+        return ParadoxConfigManager.getModifierCategory(value, configGroup)
     }
 }
