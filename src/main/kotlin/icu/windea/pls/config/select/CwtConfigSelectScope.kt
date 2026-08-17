@@ -120,6 +120,6 @@ interface CwtConfigSelectScope {
     // endregion
 
     companion object {
-        @JvmStatic val INSTANCE = CwtConfigSelectScopeImpl()
+        @JvmField val INSTANCE: CwtConfigSelectScope = CwtConfigSelectScopeImpl()
     }
 }

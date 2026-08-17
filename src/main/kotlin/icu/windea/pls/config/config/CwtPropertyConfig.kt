@@ -10,7 +10,7 @@ import icu.windea.pls.config.configExpression.CwtDataExpressionRole
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.option.CwtOptionMetadata
 import icu.windea.pls.config.option.CwtOptionMetadataBase
-import icu.windea.pls.config.option.CwtOptionMetadataProcessor
+import icu.windea.pls.config.option.CwtOptionMetadataService
 import icu.windea.pls.config.util.CwtConfigResolverManager
 import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.config.util.CwtMemberConfigVisitor
@@ -146,7 +146,7 @@ private object CwtPropertyConfigResolver : CwtConfigResolverScope {
         val valueType = CwtTypeResolver.resolveExpressionType(valueElement)
         val config = create(pointer, configGroup, keyExpression, valueExpression, valueType, separatorType, configs, injectable = true)
         val optionConfigs = CwtConfigResolverManager.getOptionConfigs(element, configGroup)
-        CwtOptionMetadataProcessor.process(config.optionMetadata, optionConfigs, configGroup) // initialize option metadata
+        CwtOptionMetadataService.process(config.optionMetadata, optionConfigs, configGroup) // initialize option metadata
         when {
             configs == null -> logger.traceWithPrefix(element, configGroup) { "Resolved property config (key: ${config.key}, value: ${config.value})." }
             configs.isEmpty() -> logger.traceWithPrefix(element, configGroup) { "Resolved property config (key: ${config.key}, empty member configs)." }

@@ -1,5 +1,6 @@
 package icu.windea.pls.images.dds.info
 
+import icu.windea.pls.core.optimized
 import icu.windea.pls.images.dds.info.DdsConstants.make4CC
 
 /**
@@ -77,10 +78,11 @@ enum class D3dFormat(val value: Int) {
     ;
 
     companion object {
-        @JvmStatic
-        private val map = entries.associateBy { it.value }
+        private val map = entries.associateBy { it.value }.optimized()
 
         @JvmStatic
-        fun get(value: Int): D3dFormat = map[value] ?: throw NoSuchElementException("unknown d3d format from value $value")
+        fun get(value: Int): D3dFormat {
+            return map[value] ?: throw NoSuchElementException("unknown D3D format from value $value")
+        }
     }
 }

@@ -23,7 +23,7 @@ import icu.windea.pls.model.scope.ParadoxScopeContext
 import icu.windea.pls.model.type.CwtSeparatorType
 
 @Optimized
-object CwtOptionMetadataProcessor : CwtConfigResolverScope {
+object CwtOptionMetadataService : CwtConfigResolverScope {
     fun process(optionMetadata: CwtOptionMetadata, optionConfigs: List<CwtOptionMemberConfig<*>>, configGroup: CwtConfigGroup) {
         if (optionMetadata !is CwtOptionMetadataBase) return
         if (optionConfigs.isEmpty()) return

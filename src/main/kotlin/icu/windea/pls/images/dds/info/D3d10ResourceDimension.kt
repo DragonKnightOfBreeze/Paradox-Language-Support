@@ -1,5 +1,7 @@
 package icu.windea.pls.images.dds.info
 
+import icu.windea.pls.core.optimized
+
 /**
  * 标识正在使用的资源的类型。
  *
@@ -14,10 +16,11 @@ enum class D3d10ResourceDimension(val value: Int) {
     ;
 
     companion object {
-        @JvmStatic
-        private val map = entries.associateBy { it.value }
+        private val map = entries.associateBy { it.value }.optimized()
 
         @JvmStatic
-        fun get(value: Int): D3d10ResourceDimension = map[value] ?: throw NoSuchElementException("unknown resource dimension from value $value")
+        fun get(value: Int): D3d10ResourceDimension {
+            return map[value] ?: throw NoSuchElementException("unknown resource dimension from value $value")
+        }
     }
 }

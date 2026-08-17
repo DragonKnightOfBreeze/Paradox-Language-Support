@@ -101,7 +101,7 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
 
         // 3.0.1 optimize: restrict types and supports via strategies, config attributes, etc.
         val optimizers = ParadoxMergedIndexOptimizer.EP_NAME.extensionList
-        val allTypes = ImmutableSet.copyOf(ParadoxMergedIndexType.entries)
+        val allTypes = ImmutableSet.copyOf(ParadoxMergedIndexType.entries.values)
         val availableTypes = if (useLazyIndex) allTypes else ParadoxMergedIndexService.getAvailableTypes(file, optimizers)
         if (availableTypes.isEmpty()) return // fast return
         val allSupports = ParadoxMergedIndexSupport.EP_NAME.extensionList

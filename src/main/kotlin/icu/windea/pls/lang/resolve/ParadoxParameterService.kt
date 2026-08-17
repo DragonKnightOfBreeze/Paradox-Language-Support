@@ -147,7 +147,7 @@ object ParadoxParameterService {
     /**
      * @see ParadoxParameterSupport.buildDocumentationDefinition
      */
-    fun getDocumentationDefinition(parameterElement: ParadoxParameterLightElement, builder: DocumentationBuilder): Boolean {
+    fun buildDocumentationDefinition(parameterElement: ParadoxParameterLightElement, builder: DocumentationBuilder): Boolean {
         val supports = ParadoxParameterSupport.EP_NAME.extensionList
         return supports.anyFast { support ->
             support.buildDocumentationDefinition(parameterElement, builder)

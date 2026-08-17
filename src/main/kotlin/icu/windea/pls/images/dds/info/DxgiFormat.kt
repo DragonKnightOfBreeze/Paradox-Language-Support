@@ -1,7 +1,9 @@
 package icu.windea.pls.images.dds.info
 
+import icu.windea.pls.core.optimized
+
 /**
- * 定义指定资源数据格式的常量，包括完全类型化和无类型格式。 页面底部的修饰符列表更充分地描述了每种格式类型。
+ * 定义指定资源数据格式的常量，包括完全类型化和无类型格式。页面底部的修饰符列表更充分地描述了每种格式类型。
  *
  * 参见：[DXGI_FORMAT （dxgiformat.h） - Win32 apps | Microsoft Learn](https://learn.microsoft.com/windows/win32/api/dxgiformat/ne-dxgiformat-dxgi_format)
  */
@@ -132,10 +134,11 @@ enum class DxgiFormat(val value: Int) {
     ;
 
     companion object {
-        @JvmStatic
-        private val map = entries.associateBy { it.value }
+        private val map = entries.associateBy { it.value }.optimized()
 
         @JvmStatic
-        fun get(value: Int): DxgiFormat = map[value] ?: throw NoSuchElementException("unknown dxgi format from value $value")
+        fun get(value: Int): DxgiFormat {
+            return map[value] ?: throw NoSuchElementException("unknown DXGI format from value $value")
+        }
     }
 }

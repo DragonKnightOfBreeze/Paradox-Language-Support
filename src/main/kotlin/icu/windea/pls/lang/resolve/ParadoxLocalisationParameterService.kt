@@ -50,7 +50,7 @@ object ParadoxLocalisationParameterService {
     /**
      * @see ParadoxLocalisationParameterSupport.buildDocumentationDefinition
      */
-    fun getDocumentationDefinition(element: ParadoxLocalisationParameterLightElement, builder: DocumentationBuilder): Boolean {
+    fun buildDocumentationDefinition(element: ParadoxLocalisationParameterLightElement, builder: DocumentationBuilder): Boolean {
         val supports = ParadoxLocalisationParameterSupport.EP_NAME.extensionList
         return supports.anyFast { support ->
             support.buildDocumentationDefinition(element, builder)

@@ -1,6 +1,7 @@
 package icu.windea.pls.lang.overrides
 
 import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.core.optimized
 
 /**
  * 覆盖策略。
@@ -30,8 +31,7 @@ enum class ParadoxOverrideStrategy(val id: String, val text: String) {
     override fun toString() = id
 
     companion object {
-        @JvmStatic
-        private val map = entries.associateBy { it.id }
+        private val map = entries.associateBy { it.id }.optimized()
 
         @JvmStatic
         fun get(id: String): ParadoxOverrideStrategy? = map[id]

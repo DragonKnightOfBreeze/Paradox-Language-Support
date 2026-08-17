@@ -402,7 +402,7 @@ object ParadoxDocumentationManager {
     private fun DocumentationBuilder.buildParameterDefinition(element: ParadoxParameterLightElement) {
         val name = element.name
         definition {
-            val r = ParadoxParameterService.getDocumentationDefinition(element, this)
+            val r = ParadoxParameterService.buildDocumentationDefinition(element, this)
             if (!r) {
                 // 显示默认的快速文档
                 append(ChronicleStrings.parameterPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
@@ -413,7 +413,7 @@ object ParadoxDocumentationManager {
     private fun DocumentationBuilder.buildLocalisationParameterDefinition(element: ParadoxLocalisationParameterLightElement) {
         val name = element.name
         definition {
-            val r = ParadoxLocalisationParameterService.getDocumentationDefinition(element, this)
+            val r = ParadoxLocalisationParameterService.buildDocumentationDefinition(element, this)
             if (!r) {
                 // 显示默认的快速文档
                 append(ChronicleStrings.parameterPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
@@ -424,7 +424,7 @@ object ParadoxDocumentationManager {
     private fun DocumentationBuilder.buildModifierDefinition(element: ParadoxModifierLightElement) {
         val name = element.name
         definition {
-            val r = ParadoxModifierService.getDocumentationDefinition(element, this)
+            val r = ParadoxModifierService.buildDocumentationDefinition(element, this)
             if (!r) {
                 // 显示默认的快速文档
                 append(ChronicleStrings.modifierPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")

@@ -5,7 +5,7 @@ data class ParadoxMatchOccurrence(
     var min: Int?,
     var max: Int?,
     val lenientMin: Boolean = false,
-    val lenientMax: Boolean = false
+    val lenientMax: Boolean = false,
 ) {
     var minDefine: String? = null
     var maxDefine: String? = null

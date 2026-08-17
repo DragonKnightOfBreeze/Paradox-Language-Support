@@ -92,7 +92,7 @@ object ParadoxModifierService {
     /**
      * @see ParadoxModifierSupport.buildDocumentationDefinition
      */
-    fun getDocumentationDefinition(element: ParadoxModifierLightElement, builder: DocumentationBuilder): Boolean {
+    fun buildDocumentationDefinition(element: ParadoxModifierLightElement, builder: DocumentationBuilder): Boolean {
         val gameType = element.gameType
         val supports = ParadoxModifierSupport.EP_NAME.extensionList
         return supports.anyFast f@{ ep ->

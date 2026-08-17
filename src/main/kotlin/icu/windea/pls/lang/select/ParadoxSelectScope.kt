@@ -173,6 +173,6 @@ interface ParadoxSelectScope {
     // endregion
 
     companion object {
-        @JvmStatic val INSTANCE = ParadoxSelectScopeImpl()
+        @JvmField val INSTANCE: ParadoxSelectScope = ParadoxSelectScopeImpl()
     }
 }

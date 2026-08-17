@@ -1,5 +1,7 @@
 package icu.windea.pls.config
 
+import icu.windea.pls.core.optimized
+
 /**
  * 规则的 API 状态。
  *
@@ -29,8 +31,7 @@ enum class CwtConfigApiStatus(
     ;
 
     companion object {
-        @JvmStatic
-        private val map = entries.associateBy { it.id }
+        private val map = entries.associateBy { it.id }.optimized()
 
         @JvmStatic
         fun get(id: String): CwtConfigApiStatus? = map[id.lowercase()]
