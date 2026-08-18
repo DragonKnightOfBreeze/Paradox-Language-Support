@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package icu.windea.pls.core.text
 
 import com.intellij.lang.documentation.DocumentationMarkup
@@ -15,7 +17,7 @@ inline fun buildDocumentation(block: DocumentationBuilder.() -> Unit): String {
     return builder.toString()
 }
 
-interface DocumentationBuilder {
+interface DocumentationBuilder : Appendable {
     val content: StringBuilder
 
     fun append(string: String): DocumentationBuilder
@@ -24,15 +26,15 @@ interface DocumentationBuilder {
 
     override fun toString(): String
 
-    fun appendBr(): DocumentationBuilder
+    fun indent(): DocumentationBuilder
 
-    fun appendIndent(): DocumentationBuilder
+    fun br(): DocumentationBuilder
 
-    fun appendLink(refText: String, label: String, escapeLabel: Boolean = true): DocumentationBuilder
+    fun link(refText: String, label: String, escapeLabel: Boolean = true): DocumentationBuilder
 
-    fun appendImage(url: String, local: Boolean = true): DocumentationBuilder
+    fun image(url: String, local: Boolean = true): DocumentationBuilder
 
-    fun appendImage(url: String, width: Int, height: Int, local: Boolean = true): DocumentationBuilder
+    fun image(url: String, width: Int, height: Int, local: Boolean = true): DocumentationBuilder
 
     fun definition(block: DocumentationBuilder.() -> Unit): DocumentationBuilder
 
@@ -53,10 +55,10 @@ interface DocumentationBuilder {
 
 // region Implementations
 
-private class DocumentationBuilderImpl : DocumentationBuilder {
-    private var sectionGroup: SortedMap<Int, MutableMap<String, String>>? = null
-
+private class DocumentationBuilderImpl(
     override val content: StringBuilder = StringBuilder()
+) : DocumentationBuilder, Appendable by content {
+    private var sectionGroup: SortedMap<Int, MutableMap<String, String>>? = null
 
     override fun append(string: String) = apply { content.append(string) }
 
@@ -64,24 +66,24 @@ private class DocumentationBuilderImpl : DocumentationBuilder {
 
     override fun toString() = content.toString()
 
-    override fun appendBr() = append("<br>")
+    override fun indent() = append("&nbsp;&nbsp;&nbsp;&nbsp;")
 
-    override fun appendIndent() = append("&nbsp;&nbsp;&nbsp;&nbsp;")
+    override fun br() = append("<br/>")
 
-    override fun appendLink(refText: String, label: String, escapeLabel: Boolean): DocumentationBuilder {
+    override fun link(refText: String, label: String, escapeLabel: Boolean): DocumentationBuilder {
         append("<a href=\"").append(refText).append("\">")
         if (escapeLabel) append(label.escapeXml()) else append(label)
         append("</a>")
         return this
     }
 
-    override fun appendImage(url: String, local: Boolean): DocumentationBuilder {
+    override fun image(url: String, local: Boolean): DocumentationBuilder {
         val finalUrl = if (local) url.toFileUrl() else url
         append("<img src=\"").append(finalUrl).append("\"/>")
         return this
     }
 
-    override fun appendImage(url: String, width: Int, height: Int, local: Boolean): DocumentationBuilder {
+    override fun image(url: String, width: Int, height: Int, local: Boolean): DocumentationBuilder {
         // NOTE 这里存在限制，不能使用 `style="..."`
         val finalUrl = if (local) url.toFileUrl() else url
         append("<img src=\"").append(finalUrl).append("\"")

@@ -21,7 +21,7 @@ class ParadoxBaseLocalisationParameterQuickDocProvider: ParadoxLocalisationParam
 
         // 加上所属本地化信息
         val gameType = element.gameType
-        appendBr().appendIndent()
+        br().indent()
         append(ChronicleBundle.message("doc.text.ofLocalisation")).append(" ")
         val nameOrUnknown = element.localisationName.or.unknown()
         val link = ReferenceLinkType.Localisation.createLink(nameOrUnknown, gameType)

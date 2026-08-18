@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package icu.windea.pls.core.text
 
 import icu.windea.pls.core.escapeXml
@@ -7,14 +9,13 @@ fun buildHtml(): HtmlBuilder {
     return HtmlBuilderImpl()
 }
 
-@Suppress("unused")
 inline fun buildHtml(block: HtmlBuilder.() -> Unit): String {
     val builder = buildHtml()
     builder.block()
     return builder.toString()
 }
 
-interface HtmlBuilder {
+interface HtmlBuilder : Appendable {
     val content: StringBuilder
 
     fun append(string: String): HtmlBuilder
@@ -23,38 +24,48 @@ interface HtmlBuilder {
 
     override fun toString(): String
 
-    fun appendLink(refText: String, label: String, escapeLabel: Boolean = true): HtmlBuilder
+    fun indent(): HtmlBuilder
 
-    fun appendImage(url: String, local: Boolean = true): HtmlBuilder
+    fun br(): HtmlBuilder
 
-    fun appendImage(url: String, width: Int, height: Int, local: Boolean = true): HtmlBuilder
+    fun link(refText: String, label: String, escapeLabel: Boolean = true): HtmlBuilder
+
+    fun image(url: String, local: Boolean = true): HtmlBuilder
+
+    fun image(url: String, width: Int, height: Int, local: Boolean = true): HtmlBuilder
 }
 
 // region Implementations
 
-private class HtmlBuilderImpl : HtmlBuilder {
+private class HtmlBuilderImpl(
     override val content: StringBuilder = StringBuilder()
-
+) : HtmlBuilder, Appendable by content {
     override fun append(string: String) = apply { content.append(string) }
 
     override fun append(value: Any?) = apply { content.append(value) }
 
     override fun toString() = content.toString()
 
-    override fun appendLink(refText: String, label: String, escapeLabel: Boolean): HtmlBuilder {
-        append("<a href=\"").append(refText.escapeXml()).append("\">")
-        if (escapeLabel) append(label.escapeXml()) else append(label)
+    override fun indent() = append("&nbsp;&nbsp;&nbsp;&nbsp;")
+
+    override fun br() = append("<br/>")
+
+    override fun link(refText: String, label: String, escapeLabel: Boolean): HtmlBuilder {
+        val finalRefText = refText.escapeXml()
+        content.append("<a href=\"").append(finalRefText).append("\">")
+        val finalLabel = if (escapeLabel) label.escapeXml() else label
+        append(finalLabel)
         append("</a>")
         return this
     }
 
-    override fun appendImage(url: String, local: Boolean): HtmlBuilder {
+    override fun image(url: String, local: Boolean): HtmlBuilder {
         val finalUrl = if (local) url.toFileUrl() else url
         append("<img src=\"").append(finalUrl).append("\"/>")
         return this
     }
 
-    override fun appendImage(url: String, width: Int, height: Int, local: Boolean): HtmlBuilder {
+    override fun image(url: String, width: Int, height: Int, local: Boolean): HtmlBuilder {
         val finalUrl = if (local) url.toFileUrl() else url
         append("<img src=\"").append(finalUrl).append("\"")
         append(" style=\"width:").append(width).append("px; height:").append(height).append("px;\"")

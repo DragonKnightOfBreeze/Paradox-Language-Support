@@ -47,7 +47,6 @@ import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.search.util.preferLocale
 import icu.windea.pls.lang.search.util.withConstraint
-import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.lang.text.appendConfigFileInfoHeader
 import icu.windea.pls.lang.text.appendPsiLinkOrUnresolved
@@ -226,7 +225,7 @@ object CwtDocumentationManager {
             val prefix = when {
                 semanticProperty != null -> semanticProperty
                 element is CwtProperty -> ChronicleStrings.propertyPrefix
-                element is CwtString -> ChronicleStrings.stringPrefix
+                element is CwtValue -> ChronicleStrings.valuePrefix
                 else -> null
             }
             if (prefix != null) {
@@ -248,14 +247,15 @@ object CwtDocumentationManager {
                 }
             }
 
+            // source prefix + source name
             val sourceName = if (semanticName == name) null else name.orNull()
             if (sourceName != null) {
                 val sourcePrefix = when {
                     element is CwtProperty -> ChronicleStrings.sourcePropertyPrefix
-                    element is CwtString -> ChronicleStrings.sourceStringPrefix
+                    element is CwtString -> ChronicleStrings.sourceValuePrefix
                     else -> ChronicleStrings.sourcePrefix
                 }
-                appendBr()
+                br()
                 grayed {
                     append(sourcePrefix).append(" ").append(sourceName.escapeXml())
                 }
@@ -304,14 +304,14 @@ object CwtDocumentationManager {
         // 如果没找到的话，不要在文档中显示相关信息
         run {
             if (nameLocalisation == null) return@run
-            appendBr()
+            br()
             append(ChronicleStrings.relatedLocalisationPrefix).append(" ")
             val link = ReferenceLinkType.Localisation.createLink(nameLocalisation.name, gameType)
             append("name = ").appendPsiLinkOrUnresolved(link.escapeXml(), nameLocalisation.name.escapeXml(), context = contextElement)
         }
         run {
             if (descLocalisation == null) return@run
-            appendBr()
+            br()
             append(ChronicleStrings.relatedLocalisationPrefix).append(" ")
             val link = ReferenceLinkType.Localisation.createLink(descLocalisation.name, gameType)
             append("desc = ").appendPsiLinkOrUnresolved(link.escapeXml(), descLocalisation.name.escapeXml(), context = contextElement)
@@ -349,7 +349,7 @@ object CwtDocumentationManager {
         run {
             if (iconFile == null) return@run
             val iconPath = iconFile.fileInfo?.path?.path ?: return@run
-            appendBr()
+            br()
             append(ChronicleStrings.relatedImagePrefix).append(" ")
             val link = ReferenceLinkType.FilePath.createLink(iconPath, gameType)
             append("icon = ").appendPsiLinkOrUnresolved(link.escapeXml(), iconPath.escapeXml(), context = contextElement)
@@ -360,7 +360,7 @@ object CwtDocumentationManager {
             run {
                 if (iconFile == null) return@run
                 val url = ParadoxImageManager.resolveUrlByFile(iconFile, project) ?: return@run
-                sections["icon"] = buildDocumentation { appendImage(url) }
+                sections["icon"] = buildDocumentation { image(url) }
             }
         }
     }
@@ -481,8 +481,7 @@ object CwtDocumentationManager {
 
     private fun getConfigGroup(element: PsiElement, originalElement: PsiElement?, project: Project): CwtConfigGroup? {
         if (originalElement != null && originalElement.language is ParadoxLanguage) {
-            val gameType = selectGameType(originalElement)
-            if (gameType != null) return ChronicleFacade.getConfigGroup(project, gameType)
+            return ChronicleFacade.getConfigGroup(project, originalElement)
         }
         if (element.language === CwtLanguage) {
             return CwtConfigManager.getContainingConfigGroup(element)

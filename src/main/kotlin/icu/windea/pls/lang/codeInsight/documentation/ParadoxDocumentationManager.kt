@@ -328,7 +328,7 @@ object ParadoxDocumentationManager {
         // 如果没找到的话，不要在文档中显示相关信息
         run {
             if (nameLocalisation == null) return@run
-            appendBr()
+            br()
             append(ChronicleStrings.relatedLocalisationPrefix).append(" ")
             val link = ReferenceLinkType.Localisation.createLink(nameLocalisation.name, gameType)
             append("name = ").appendPsiLinkOrUnresolved(link.escapeXml(), nameLocalisation.name.escapeXml(), context = element)
@@ -381,7 +381,7 @@ object ParadoxDocumentationManager {
         // 如果没找到的话，不要在文档中显示相关信息
         run {
             if (nameLocalisation == null) return@run
-            appendBr()
+            br()
             append(ChronicleStrings.relatedLocalisationPrefix).append(" ")
             val link = ReferenceLinkType.Localisation.createLink(nameLocalisation.name, gameType)
             append("name = ").appendPsiLinkOrUnresolved(link.escapeXml(), nameLocalisation.name.escapeXml(), context = element)
@@ -463,14 +463,14 @@ object ParadoxDocumentationManager {
         // 如果没找到的话，不要在文档中显示相关信息
         run {
             if (nameLocalisation == null) return@run
-            appendBr()
+            br()
             append(ChronicleStrings.relatedLocalisationPrefix).append(" ")
             val link = ReferenceLinkType.Localisation.createLink(nameLocalisation.name, gameType)
             append("name = ").appendPsiLinkOrUnresolved(link.escapeXml(), nameLocalisation.name.escapeXml(), context = element)
         }
         run {
             if (descLocalisation == null) return@run
-            appendBr()
+            br()
             append(ChronicleStrings.relatedLocalisationPrefix).append(" ")
             val link = ReferenceLinkType.Localisation.createLink(descLocalisation.name, gameType)
             append("desc = ").appendPsiLinkOrUnresolved(link.escapeXml(), descLocalisation.name.escapeXml(), context = element)
@@ -506,7 +506,7 @@ object ParadoxDocumentationManager {
         run {
             if (iconFile == null) return@run
             val iconPath = iconFile.fileInfo?.path?.path ?: return@run
-            appendBr()
+            br()
             append(ChronicleStrings.relatedImagePrefix).append(" ")
             val link = ReferenceLinkType.FilePath.createLink(iconPath, gameType)
             append("icon = ").appendPsiLinkOrUnresolved(link.escapeXml(), iconPath.escapeXml(), context = element)
@@ -517,7 +517,7 @@ object ParadoxDocumentationManager {
             run {
                 if (iconFile == null) return@run
                 val url = ParadoxImageManager.resolveUrlByFile(iconFile, project) ?: return@run
-                sections["icon"] = buildDocumentation { appendImage(url) }
+                sections["icon"] = buildDocumentation { image(url) }
             }
         }
     }
@@ -594,7 +594,7 @@ object ParadoxDocumentationManager {
         // 如果没找到的话，不要在文档中显示相关信息
         run {
             if (nameLocalisation == null) return@run
-            appendBr()
+            br()
             append(ChronicleStrings.relatedLocalisationPrefix).append(" ")
             val link = ReferenceLinkType.Localisation.createLink(nameLocalisation.name, gameType)
             append("name = ").appendPsiLinkOrUnresolved(link.escapeXml(), nameLocalisation.name.escapeXml(), context = element)
@@ -635,7 +635,7 @@ object ParadoxDocumentationManager {
             val superDefinition = ParadoxDefinitionService.getSuperDefinition(definitionInfo)
             val superDefinitionInfo = superDefinition?.definitionInfo
             if (superDefinitionInfo != null) {
-                appendBr()
+                br()
                 addSuperDefinitionInfo(superDefinition, superDefinitionInfo)
             }
 
@@ -688,7 +688,7 @@ object ParadoxDocumentationManager {
     private fun DocumentationBuilder.addSuperDefinitionInfo(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo) {
         val gameType = definitionInfo.gameType
         val categories = ReferenceLinkType.CwtConfig.Categories
-        appendIndent().append(ChronicleBundle.message("doc.text.inherits")).append(" ")
+        indent().append(ChronicleBundle.message("doc.text.inherits")).append(" ")
         val name = definitionInfo.name
         val link = ReferenceLinkType.Definition.createLink(name, definitionInfo.type, gameType)
         appendPsiLinkOrUnresolved(link.escapeXml(), name.escapeXml().or.anonymous(), context = definition)
@@ -740,7 +740,7 @@ object ParadoxDocumentationManager {
             }
         }
         for ((key, value) in map) {
-            appendBr()
+            br()
             append(ChronicleStrings.relatedLocalisationPrefix).append(" ").append(key).append(" = ").append(value)
         }
     }
@@ -785,7 +785,7 @@ object ParadoxDocumentationManager {
                                 else -> null
                             }
                             if (url != null) {
-                                sections[key] = buildDocumentation { appendImage(url) }
+                                sections[key] = buildDocumentation { image(url) }
                             }
                         }
                     } else if (required) {
@@ -798,7 +798,7 @@ object ParadoxDocumentationManager {
             }
         }
         for ((key, value) in map) {
-            appendBr()
+            br()
             append(ChronicleStrings.relatedImagePrefix).append(" ").append(key).append(" = ").append(value)
         }
     }
@@ -851,7 +851,7 @@ object ParadoxDocumentationManager {
         val config = definitionInfo.configGroup.extendedOnActions.findByPattern(definitionInfo.name, element, definitionInfo.configGroup)
         if (config == null) return
         val eventType = config.eventType
-        appendBr()
+        br()
         val categories = ReferenceLinkType.CwtConfig.Categories
         val typeLink = ReferenceLinkType.CwtConfig.createLink(categories.types, "event/$eventType", gameType)
         append(ChronicleStrings.eventTypePrefix).append(" ").appendPsiLinkOrUnresolved(typeLink.escapeXml(), eventType.escapeXml())
@@ -929,7 +929,7 @@ object ParadoxDocumentationManager {
         if (relatedDefinitions.isEmpty()) return
         for (relatedDefinition in relatedDefinitions) {
             val relatedDefinitionInfo = relatedDefinition.definitionInfo ?: continue
-            appendBr()
+            br()
             addDefinitionInfo(relatedDefinition, relatedDefinitionInfo, usePrefix = ChronicleStrings.relatedDefinitionPrefix)
         }
     }

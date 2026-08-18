@@ -181,7 +181,7 @@ class ParadoxLocalisationTextHtmlRenderContext(
             val scale = scaleByDocFontSize * scaleByIcon
             val finalIconWidth = (iconWidth * scale).toInt()
             val finalIconHeight = (iconHeight * scale).toInt()
-            builder.appendImage(iconUrl, finalIconWidth, finalIconHeight)
+            builder.image(iconUrl, finalIconWidth, finalIconHeight)
             return
         }
 

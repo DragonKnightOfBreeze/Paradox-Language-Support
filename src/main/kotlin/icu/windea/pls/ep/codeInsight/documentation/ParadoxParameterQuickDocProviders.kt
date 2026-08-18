@@ -39,7 +39,7 @@ class ParadoxDefinitionParameterQuickDocProvider: ParadoxParameterQuickDocProvid
         // 加上所属定义信息
         val gameType = element.gameType
         val categories = ReferenceLinkType.CwtConfig.Categories
-        appendBr().appendIndent()
+        br().indent()
         append(ChronicleBundle.message("doc.text.ofDefinition")).append(" ")
         val link = ReferenceLinkType.Definition.createLink(definitionName, definitionType.first(), gameType)
         appendPsiLinkOrUnresolved(link.escapeXml(), definitionName.escapeXml(), context = element)
@@ -79,7 +79,7 @@ class ParadoxInlineScriptParameterQuickDocProvider: ParadoxParameterQuickDocProv
         }
         // 加上所属内联脚本信息
         val gameType = element.gameType
-        appendBr().appendIndent()
+        br().indent()
         append(ChronicleBundle.message("doc.text.ofInlineScript")).append(" ")
         val link = ReferenceLinkType.FilePath.createLink(filePath, gameType)
         appendPsiLinkOrUnresolved(link.escapeXml(), inlineScriptExpression.escapeXml(), context = element)

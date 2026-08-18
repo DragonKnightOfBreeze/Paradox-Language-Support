@@ -52,7 +52,7 @@ class ParadoxTemplateModifierQuickDocProvider : ParadoxModifierQuickDocProvider 
         if (templateConfigExpression.expressionString.isNotEmpty()) {
             val templateString = templateConfigExpression.expressionString
 
-            appendBr().appendIndent()
+            br().indent()
             append(ChronicleBundle.message("doc.text.fromTemplate")).append(" ")
             val templateLink = ReferenceLinkType.CwtConfig.createLink(ReferenceLinkType.CwtConfig.Categories.modifiers, templateString, gameType)
             appendPsiLinkOrUnresolved(templateLink.escapeXml(), templateString.escapeXml())
@@ -62,7 +62,7 @@ class ParadoxTemplateModifierQuickDocProvider : ParadoxModifierQuickDocProvider 
             if (snippetNodes.isNotEmpty()) {
                 for (snippetNode in snippetNodes) {
                     ProgressManager.checkCanceled()
-                    appendBr().appendIndent()
+                    br().indent()
                     val configExpression = snippetNode.configExpression
                     when (configExpression.type) {
                         CwtDataTypes.Definition -> {
@@ -140,7 +140,7 @@ class ParadoxTemplateModifierQuickDocProvider : ParadoxModifierQuickDocProvider 
         val gameType = definitionInfo.gameType
         for (modifier in modifiers) {
             ProgressManager.checkCanceled()
-            appendBr()
+            br()
             append(ChronicleStrings.generatedModifierPrefix).append(" ")
             val link = ReferenceLinkType.Modifier.createLink(modifier.name, gameType)
             appendPsiLink(link.escapeXml(), modifier.name.escapeXml())
@@ -177,13 +177,13 @@ class ParadoxEconomicCategoryModifierQuickDocProvider : ParadoxModifierQuickDocP
         val name = element.name.orNull()
         append(ChronicleStrings.modifierPrefix).append(" <b>").append(name?.escapeXml().or.anonymous()).append("</b>")
         // 加上经济分类信息
-        appendBr().appendIndent()
+        br().indent()
         append(ChronicleBundle.message("doc.text.generatedFromEconomicCategory"))
         append(" ")
         val ecLink = ReferenceLinkType.Definition.createLink(economicCategoryInfo.name, ParadoxDefinitionTypes.economicCategory, gameType)
         appendPsiLinkOrUnresolved(ecLink.escapeXml(), economicCategoryInfo.name.escapeXml(), context = element)
         if (modifierInfo.resource != null) {
-            appendBr().appendIndent()
+            br().indent()
             append(ChronicleBundle.message("doc.text.generatedFromResource"))
             append(" ")
             val resourceLink = ReferenceLinkType.Definition.createLink(modifierInfo.resource, ParadoxDefinitionTypes.resource, gameType)
@@ -204,7 +204,7 @@ class ParadoxEconomicCategoryModifierQuickDocProvider : ParadoxModifierQuickDocP
         val gameType = definitionInfo.gameType
         for (modifierInfo in economicCategoryInfo.modifiers) {
             ProgressManager.checkCanceled()
-            appendBr()
+            br()
             append(ChronicleStrings.generatedModifierPrefix).append(" ")
             val modifierLink = ReferenceLinkType.Modifier.createLink(modifierInfo.name, gameType)
             appendPsiLink(modifierLink.escapeXml(), modifierInfo.name.escapeXml())

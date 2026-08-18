@@ -62,7 +62,7 @@ fun DocumentationBuilder.appendFileInfoHeader(element: PsiElement): Documentatio
         // 相关链接
         // 通过这种方式获取需要的 url，使用 rootPath 而非 `gameRootPath`
         val rootUri = rootInfo.rootFile.toNioPath().toUri().toString()
-        appendLink(rootUri, ChronicleBundle.message("doc.link.local"))
+        link(rootUri, ChronicleBundle.message("doc.link.local"))
 
         val steamId = rootInfo.steamId
         if (steamId != null) {
@@ -71,18 +71,18 @@ fun DocumentationBuilder.appendFileInfoHeader(element: PsiElement): Documentatio
                 is ParadoxRootInfo.Game -> SpecialUrlService.getInstance().getSteamGameStoreUrlInSteam(steamId)
                 is ParadoxRootInfo.Mod -> SpecialUrlService.getInstance().getSteamWorkshopUrlInSteam(steamId)
             }
-            appendLink(workshopUrlInSteam, ChronicleBundle.message("doc.link.steam")) // 自带外部链接图标
+            link(workshopUrlInSteam, ChronicleBundle.message("doc.link.steam")) // 自带外部链接图标
             appendExternalLinkIcon() // 使用翻译插件翻译文档注释后，这里会出现不必要的换行 - 已被修复
             append(" | ")
             val workshopUrl = when (rootInfo) {
                 is ParadoxRootInfo.Game -> SpecialUrlService.getInstance().getSteamGameStoreUrl(steamId)
                 is ParadoxRootInfo.Mod -> SpecialUrlService.getInstance().getSteamWorkshopUrl(steamId)
             }
-            appendLink(workshopUrl, ChronicleBundle.message("doc.link.steamWebsite")) // 自带外部链接图标
+            link(workshopUrl, ChronicleBundle.message("doc.link.steamWebsite")) // 自带外部链接图标
         }
     }
     append("</span>")
-    appendBr()
+    br()
 
     // 文件信息 - 相对于入口目录的路径、入口名（如果不为空）
     append("[").append(fileInfo.path.path.escapeXml()).append("]")
@@ -90,7 +90,7 @@ fun DocumentationBuilder.appendFileInfoHeader(element: PsiElement): Documentatio
     if (entryName.isNotEmpty()) {
         grayed { append(" of ").append(entryName.escapeXml()) }
     }
-    appendBr()
+    br()
 
     return this
 }
@@ -119,11 +119,11 @@ fun DocumentationBuilder.appendConfigFileInfoHeader(element: PsiElement): Docume
             append(hintMessage)
         }
     }
-    appendBr()
+    br()
 
     // 文件信息 - 相对于规则分组根目录的路径
     append("[").append(filePath.escapeXml()).append("]")
-    appendBr()
+    br()
 
     return this
 }
@@ -143,7 +143,7 @@ fun DocumentationBuilder.buildScopeContextDoc(scopeContext: ParadoxScopeContext,
     val categories = ReferenceLinkType.CwtConfig.Categories
     val m = OnceMarker()
     scopeContext.toScopeMap().forEach { (systemScope, scope) ->
-        if (m.mark()) appendBr()
+        if (m.mark()) br()
         val systemScopeLink = ReferenceLinkType.CwtConfig.createLink(categories.systemScopes, systemScope, gameType)
         appendPsiLinkOrUnresolved(systemScopeLink.escapeXml(), systemScope.escapeXml(), context = contextElement)
         append(" = ")

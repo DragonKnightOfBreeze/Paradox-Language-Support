@@ -13,12 +13,12 @@ import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.core.text.TextPattern
 import icu.windea.pls.core.text.TextPatternBasedBuilder
 import icu.windea.pls.core.text.TextPatternBasedProvider
-import icu.windea.pls.core.text.TextPatternMatchResult
+import icu.windea.pls.core.text.TextPatternResult
 
 abstract class CwtTextPatternBasedDataExpressionSupport : CwtDataExpressionSupport {
     private data class Context(val dataType: CwtDataType, val metadataBuilder: CwtDataExpressionMetadataBuilder? = null)
     // NOTE 3.0.1 nested supports are not supported atm
-    private val providers = mutableListOf<TextPatternBasedProvider<Context, out TextPatternMatchResult>>()
+    private val providers = mutableListOf<TextPatternBasedProvider<Context, out TextPatternResult>>()
     private val builder = TextPatternBasedBuilder(providers)
 
     init {
@@ -27,16 +27,16 @@ abstract class CwtTextPatternBasedDataExpressionSupport : CwtDataExpressionSuppo
 
     protected abstract fun registerProviders()
 
-    protected fun fromLiteral(dataType: CwtDataType, value: String, metadataBuilder: CwtDataExpressionMetadataBuilder? = null) {
-        providers += TextPatternBasedProvider(TextPattern.from(value)) { _, _ -> Context(dataType, metadataBuilder) }
+    protected fun register(dataType: CwtDataType, value: String, metadataBuilder: CwtDataExpressionMetadataBuilder? = null) {
+        providers += TextPatternBasedProvider(TextPattern.Literal(value)) { _, _ -> Context(dataType, metadataBuilder) }
     }
 
-    protected fun fromParameterized(dataType: CwtDataType, prefix: String, suffix: String, metadataBuilder: CwtDataExpressionMetadataBuilderWithInput? = null) {
-        providers += TextPatternBasedProvider(TextPattern.from(prefix, suffix)) { _, r -> Context(dataType, metadataBuilder?.acceptInput(r.value)) }
+    protected fun register(dataType: CwtDataType, prefix: String, suffix: String, metadataBuilder: CwtDataExpressionMetadataBuilderWithInput? = null) {
+        providers += TextPatternBasedProvider(TextPattern.WithSurrounding(prefix, suffix)) { _, r -> Context(dataType, metadataBuilder?.acceptInput(r.value)) }
     }
 
-    protected fun fromRanged(dataType: CwtDataType, prefix: String, metadataBuilder: CwtDataExpressionMetadataBuilderWithInput? = null) {
-        providers += TextPatternBasedProvider(TextPattern.from(prefix, "")) { _, r -> if (isRangeLike(r.value)) Context(dataType, metadataBuilder?.acceptInput(r.value)) else null }
+    protected fun registerRanged(dataType: CwtDataType, prefix: String, metadataBuilder: CwtDataExpressionMetadataBuilderWithInput? = null) {
+        providers += TextPatternBasedProvider(TextPattern.WithPrefix(prefix)) { _, r -> if (isRangeLike(r.value)) Context(dataType, metadataBuilder?.acceptInput(r.value)) else null }
     }
 
     private fun isRangeLike(v: String): Boolean {
@@ -68,7 +68,7 @@ abstract class CwtPrefixBasedDataExpressionSupport : CwtDataExpressionSupport {
 
     protected abstract fun registerProviders()
 
-    protected fun from(dataType: CwtDataType, prefix: String, ignoreCase: Boolean) {
+    protected fun register(dataType: CwtDataType, prefix: String, ignoreCase: Boolean) {
         providers += Provider(dataType, prefix, ignoreCase)
     }
 

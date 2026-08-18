@@ -355,8 +355,8 @@
 
 | 生产文件 | 可测试性 | 说明 |
 |---|---|---|
-| `TextPatterns.kt` | **高优先级可测试** | 非平凡解析/构建逻辑。`TextPattern` 密封接口 + 4 个子类型、`TextPatternMatchResult` + 3 个子类型、`TextPatternBasedProvider`、`TextPatternBasedBuilder`。纯字符串操作，零平台依赖。 |
-| `HtmlBuilder.kt` | **可测试** | 纯字符串构建器，`append`/`appendLink`/`appendImage` 产出确定性 HTML。零平台依赖。 |
+| `TextPatterns.kt` | **高优先级可测试** | 非平凡解析/构建逻辑。`TextPattern` 密封接口 + 4 个子类型、`TextPatternResult` + 3 个子类型、`TextPatternBasedProvider`、`TextPatternBasedBuilder`。纯字符串操作，零平台依赖。 |
+| `HtmlBuilder.kt` | **可测试** | 纯字符串构建器，`append`/`link`/`image` 产出确定性 HTML。零平台依赖。 |
 | `DocumentationBuilder.kt` | **可测试** | 类似 HtmlBuilder，使用 `DocumentationMarkup` 常量生成确定性字符串。轻度依赖 `toFileUrl()` 但可互换。 |
 | `EscapeType.kt` | 低价值 | 纯枚举，3 个值。不建议单独测试。 |
 

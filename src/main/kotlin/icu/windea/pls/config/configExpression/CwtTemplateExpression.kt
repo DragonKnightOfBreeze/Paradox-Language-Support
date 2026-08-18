@@ -90,7 +90,7 @@ private object CwtTemplateExpressionResolver {
             // 在剩余字符串中，计算所有可拆分的文本模式的最早出现位置，选择最靠左者
             val tuples = buildList {
                 CwtConfigExpressionService.processTextPatterns p@{ pattern ->
-                    if (pattern !is TextPattern.Parameterized) return@p true
+                    if (pattern !is TextPattern.WithSurrounding) return@p true
                     val (prefix, suffix) = pattern
                     if (prefix.isEmpty() || suffix.isEmpty()) return@p true
                     val i1 = expressionString.indexOf(prefix, startIndex).takeIf { it != -1 } ?: return@p true
