@@ -84,7 +84,6 @@ class CwtDefinitionConfigContextProvider : CwtConfigContextProvider {
         val context = CwtConfigContext.createFromMember(configGroup, memberRole, memberPathFromFile, memberPath, this)
         context.element = element // necessary
         context.rootFile = selectRootFile(file) // necessary
-        context.declarationRoot = memberPath.isEmpty()
         context.definitionInfo = definitionInfo
         return context
     }
@@ -133,7 +132,6 @@ class CwtDefineVariableConfigContextProvider : CwtConfigContextProvider {
         val context = CwtConfigContext.createFromMember(configGroup, memberRole, memberPathFromFile, memberPath, this)
         context.element = element // necessary
         context.rootFile = selectRootFile(file) // necessary
-        context.declarationRoot = memberPath.isEmpty()
         context.defineVariableInfo = defineVariableInfo
         return context
     }
@@ -356,7 +354,6 @@ class CwtDefinitionInjectionConfigContextProvider : CwtConfigContextProvider {
         val context = CwtConfigContext.createFromMember(configGroup, memberRole, memberPathFromFile, memberPath, this)
         context.element = element // necessary
         context.rootFile = selectRootFile(file) // necessary
-        context.declarationRoot = memberPath.isEmpty()
         context.definitionInjectionInfo = definitionInjectionInfo
         return context
     }

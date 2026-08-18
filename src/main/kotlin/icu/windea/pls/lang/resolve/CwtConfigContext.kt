@@ -53,7 +53,6 @@ interface CwtConfigContext : UserDataHolder {
     val element: ParadoxScriptMember?
     val rootFile: VirtualFile?
     val dynamic: Boolean
-    val declarationRoot: Boolean
 
     val project: Project get() = configGroup.project
     val gameType: ParadoxGameType get() = configGroup.gameType
@@ -61,8 +60,12 @@ interface CwtConfigContext : UserDataHolder {
     /** 将当前的上下文对象标记动态的。这意味着获取上下文规则时，会改为从上下文对象上的缓存中获取，而非从规则分组上的缓存中获取。 */
     fun markDynamic()
 
-    /** 是否存在。 */
+    /** 是否是某种根上下文，或其任意深度的子上下文。 */
     fun inRoot(): Boolean
+
+    /** 是否是某种特定声明（如定义、定义注入、定值变量）的根上下文，或其任意深度的子上下文。 */
+    @Suppress("unused")
+    fun inDeclarationRoot(): Boolean
 
     /** 是否是某种特定声明（如定义、定义注入、定值变量）的根上下文。 */
     fun isDeclarationRoot(): Boolean
@@ -129,7 +132,7 @@ var CwtConfigContext.definitionInjectionInfo: ParadoxDefinitionInjectionInfo? by
 
 // region Implementations
 
-// 12 + 5 * 4 + 2 = 34 -> 40
+// 12 + 6 * 4 + 1 = 37 -> 40
 sealed class CwtConfigContextBase(
     override val configGroup: CwtConfigGroup,
     override val memberRole: ParadoxMemberRole, // 3.0.1 use `memberRole` directly here, no optimization (compress to byte) since it's cached on PSI level
@@ -137,7 +140,6 @@ sealed class CwtConfigContextBase(
 ) : UserDataHolderBase(), CwtConfigContext {
     @Volatile override var rootFile: VirtualFile? = null // 3.0.1 used to get cache from config group faster
     @Volatile override var element: ParadoxScriptMember? = null // 3.0.1 use `element` directly here, no smart pointer since it's cached on PSI level
-    @Volatile override var declarationRoot: Boolean = false
     @Volatile override var dynamic: Boolean = false // 3.0.1 optimize: declared as field to optimize access performance
 
     override fun markDynamic() {
@@ -145,11 +147,20 @@ sealed class CwtConfigContextBase(
     }
 
     override fun inRoot(): Boolean {
+        val memberPath = memberPath
+        return memberPath != null
+    }
+
+    override fun inDeclarationRoot(): Boolean {
+        if (this is CwtBaseConfigContext) return false
+        val memberPath = memberPath
         return memberPath != null
     }
 
     override fun isDeclarationRoot(): Boolean {
-        return memberPath != null && declarationRoot
+        if (this is CwtBaseConfigContext) return false
+        val memberPath = memberPath
+        return memberPath != null && memberPath.isEmpty()
     }
 
     override fun getConfigs(options: ParadoxMatchOptions?): List<CwtMemberConfig<*>> {
@@ -169,14 +180,13 @@ sealed class CwtConfigContextBase(
             ", memberRole=$memberRole" +
             ", memberPathFromFile=$memberPathFromFile" +
             ", memberPath=$memberPath" +
-            ", declarationRoot=$declarationRoot" +
             ", dynamic=$dynamic" +
             ", provider=$provider" +
             ")"
     }
 }
 
-// 12 + 6 * 4 + 2 = 38 -> 40
+// 12 + 7 * 4 + 1 = 41 -> 48
 private class CwtBaseConfigContext(
     configGroup: CwtConfigGroup,
     memberRole: ParadoxMemberRole,
@@ -187,7 +197,7 @@ private class CwtBaseConfigContext(
     override val memberPath: ParadoxMemberPath? get() = null
 }
 
-// 12 + 6 * 4 + 2 = 38 -> 40
+// 12 + 7 * 4 + 1 = 41 -> 48
 private class CwtFromFileConfigContext(
     configGroup: CwtConfigGroup,
     memberRole: ParadoxMemberRole,
@@ -198,7 +208,7 @@ private class CwtFromFileConfigContext(
     override val memberPath: ParadoxMemberPath? get() = memberPathFromFile
 }
 
-// 12 + 7 * 4 + 2 = 42 -> 48
+// 12 + 8 * 4 + 1 = 45 -> 48
 private class CwtFromMemberConfigContext(
     configGroup: CwtConfigGroup,
     memberRole: ParadoxMemberRole,
