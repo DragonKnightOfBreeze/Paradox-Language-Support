@@ -187,7 +187,6 @@ class Issue383Test : BasePlatformTestCase(), ChronicleTestScope {
     }
 
     private fun enableAllNeededInspections() {
-
         // enable all needed expression inspections
         myFixture.enableInspections(UnresolvedExpressionInspection::class.java)
         myFixture.enableInspections(ConflictingResolvedExpressionInspection::class.java)

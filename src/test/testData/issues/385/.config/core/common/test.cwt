@@ -1,0 +1,10 @@
+types = {
+    type[test] = {
+        path = common/test
+    }
+}
+
+test = {
+    ## cardinality = 0..inf
+    modifier = <modifier>
+}

@@ -1,0 +1,6 @@
+# 剑
+sword
+# 枪械
+rifle
+# 书籍
+book

@@ -1,0 +1,42 @@
+# <weapon> + enum[weapon_type] + value[weapon_tag]
+
+types = {
+    type[weapon] = {
+        path = common/weapons
+        path_extension = .txt
+    }
+}
+
+weapon = {
+    ## cardinality = 1..1
+    type = enum[weapon_type]
+    ## cardinality = 0..inf
+    tag = value[weapon_tag]
+    ## cardinality = 0..1
+    damage = int
+    ## cardinality = 0..1
+    magic_power = int
+}
+
+enums = {
+    complex_enum[weapon_type] = {
+        path = common/weapons/types
+        name = {
+            enum = {
+                enum_name
+            }
+        }
+    }
+}
+
+modifiers = {
+    weapon_damage_mult = weapon
+    weapon_<weapon>_damage_mult = weapon
+    weapon_type_enum[weapon_type]_damage_mult = weapon
+    weapon_tag_value[weapon_tag]_damage_mult = weapon
+    weapon_magic_power_mult = weapon
+    weapon_<weapon>_magic_power_mult = weapon
+    weapon_type_enum[weapon_tag]_magic_power_mult = weapon
+    weapon_tag_value[weapon_tag]_magic_power_mult = weapon
+    # and ec modifiers can also be used
+}

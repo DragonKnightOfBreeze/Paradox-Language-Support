@@ -1,0 +1,39 @@
+# 破魔军刀
+anti_evil_saber = {
+    type = sword
+    damage = 140
+}
+# 风语长剑
+windea_long_sword = {
+    type = sword
+    tag = special
+    damage = 150
+}
+# 探求者步枪
+seeker_rifle = {
+    type = rifle
+    damage = 80
+}
+# 风语步枪
+windea_rifle = {
+    type = rifle
+    tag = special
+    tag = spirit_art
+    damage = 90
+}
+# 探求者手册
+guidance_for_seekers = {
+    type = book
+    tag = elemental_art_caster
+    tag = spirit_art_caster
+    damage = 10
+    magic_power = 125
+}
+# 龙骑士的颂歌
+ode_to_the_dragon_knight = {
+    type = book
+    tag = special
+    tag = spirit_art_caster
+    damage = 10
+    magic_power = 180
+}
