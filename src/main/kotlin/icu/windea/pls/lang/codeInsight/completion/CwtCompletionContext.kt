@@ -1,9 +1,11 @@
 package icu.windea.pls.lang.codeInsight.completion
 
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.parentOfType
 import com.intellij.psi.util.siblings
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.internal.CwtSchemaConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
@@ -29,10 +31,10 @@ import icu.windea.pls.cwt.psi.isOptionDirectValue
 import icu.windea.pls.cwt.psi.isOptionValue
 import icu.windea.pls.cwt.psi.isPropertyValue
 
-data class CwtConfigCompletionContext(
+data class CwtCompletionContext(
     override val globalContext: GlobalCompletionContext,
+    val keyword: String,
     val configGroup: CwtConfigGroup,
-    override val keyword: String,
     val expressionElement: CwtExpressionElement? = null,
     val containerElement: PsiElement? = null,
     val keyToMatch: String? = null,
@@ -52,27 +54,26 @@ data class CwtConfigCompletionContext(
 ) : GlobalBasedCompletionContext() {
     companion object {
         @JvmStatic
-        fun create(globalContext: GlobalCompletionContext): CwtConfigCompletionContext? {
-            return CwtConfigCompletionContextBuilder.create(globalContext)
+        fun create(globalContext: GlobalCompletionContext): CwtCompletionContext {
+            return CwtCompletionContextBuilder.create(globalContext)
         }
     }
 }
 
 // region Implementations
 
-private object CwtConfigCompletionContextBuilder {
-    fun create(globalContext: GlobalCompletionContext): CwtConfigCompletionContext? {
+private object CwtCompletionContextBuilder {
+    fun create(globalContext: GlobalCompletionContext): CwtCompletionContext {
         val contextElement = globalContext.contextElement
 
-        val configGroup = CwtConfigManager.getContainingConfigGroup(globalContext.file) ?: return null
         val keyword = getKeyword(globalContext.contextElement, globalContext.offsetInParent)
-        val expressionElement = getExpressionElement(globalContext.contextElement) ?: return null
-        val containerElement = getContainerElement(expressionElement) ?: return null
-        val keyToMatch = getKeyToMatch(globalContext.contextElement)
+        val configGroup = getConfigGroup(globalContext)
+        val expressionElement = getExpressionElement(contextElement)
+        val containerElement = getContainerElement(expressionElement)
+        val keyToMatch = getKeyToMatch(contextElement)
         val optionContainerIdToMatch = getOptionContainerIdToMatch(expressionElement)
-
-        val schema = configGroup.schemas.firstOrNull() ?: return null
-        val contextConfigs = CwtConfigSchemaManager.getContextConfigs(expressionElement, containerElement, globalContext.file, schema)
+        val schema = getSchema(configGroup)
+        val contextConfigs = getContextConfigs(expressionElement, containerElement, globalContext.file, schema)
 
         val isOptionKey = contextElement is CwtOptionKey || (contextElement is CwtString && contextElement.isOptionDirectValue())
         val isOptionDirectValue = contextElement is CwtString && contextElement.isOptionDirectValue()
@@ -87,7 +88,7 @@ private object CwtConfigCompletionContextBuilder {
         val isKeyOnly = contextElement is CwtOptionKey || contextElement is CwtPropertyKey
         val isValueOnly = contextElement is CwtString && if (inOption) !isOptionKey else !isPropertyKey
 
-        return CwtConfigCompletionContext(
+        return CwtCompletionContext(
             globalContext = globalContext,
             configGroup = configGroup,
             keyword = keyword,
@@ -114,6 +115,11 @@ private object CwtConfigCompletionContextBuilder {
         return element.text.substring(0, offsetInParent).unquote()
     }
 
+    private fun getConfigGroup(globalContext: GlobalCompletionContext): CwtConfigGroup {
+        // 3.0.2 如果无法获取所属的规则分组，仍然回退到通用的规则分组
+        return CwtConfigManager.getContainingConfigGroup(globalContext.file) ?: ChronicleFacade.getConfigGroup(globalContext.file)
+    }
+
     private fun getExpressionElement(element: PsiElement): CwtExpressionElement? {
         if (element is CwtOptionKey || (element is CwtString && (element.isOptionValue() || element.isOptionDirectValue()))) {
             val parentElementType = element.parent.elementType ?: return null
@@ -128,7 +134,8 @@ private object CwtConfigCompletionContextBuilder {
         return element.castOrNull()
     }
 
-    private fun getContainerElement(expressionElement: PsiElement): PsiElement? {
+    private fun getContainerElement(expressionElement: PsiElement?): PsiElement? {
+        if (expressionElement == null) return null
         val result = when {
             expressionElement is CwtPropertyKey -> expressionElement.parent?.parent
             expressionElement is CwtString -> expressionElement.parent
@@ -144,12 +151,23 @@ private object CwtConfigCompletionContextBuilder {
         return keyElement.text.unquote()
     }
 
-    private fun getOptionContainerIdToMatch(expressionElement: PsiElement): String? {
+    private fun getOptionContainerIdToMatch(expressionElement: PsiElement?): String? {
+        if (expressionElement == null) return null
         return when {
             expressionElement is CwtPropertyKey -> "#" + expressionElement.value
             expressionElement is CwtValue -> expressionElement.value
             else -> null
         }
+    }
+
+    private fun getSchema(configGroup: CwtConfigGroup?): CwtSchemaConfig? {
+        if (configGroup == null) return null
+        return configGroup.schemas.firstOrNull()
+    }
+
+    private fun getContextConfigs(expressionElement: CwtExpressionElement?, containerElement: PsiElement?, file: PsiFile, schema: CwtSchemaConfig?): List<CwtMemberConfig<*>> {
+        if (expressionElement == null || containerElement == null || schema == null) return emptyList()
+        return CwtConfigSchemaManager.getContextConfigs(expressionElement, containerElement, file, schema)
     }
 }
 

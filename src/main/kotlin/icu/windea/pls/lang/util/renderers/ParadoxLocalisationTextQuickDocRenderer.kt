@@ -9,22 +9,22 @@ import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.forEachChild
 import icu.windea.pls.core.psi.light.LightElementBase
 import icu.windea.pls.core.runCatchingCancelable
-import icu.windea.pls.core.text.DocumentationBuilder
 import icu.windea.pls.core.text.EscapeType
-import icu.windea.pls.core.text.buildDocumentation
 import icu.windea.pls.core.toFileUrl
 import icu.windea.pls.core.toIconOrNull
+import icu.windea.pls.core.util.builders.DocumentationBuilder
+import icu.windea.pls.core.util.builders.buildDocumentation
 import icu.windea.pls.core.util.values.FallbackStrings
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
 import icu.windea.pls.images.ImageFrameInfo
+import icu.windea.pls.lang.codeInsight.documentation.psiLinkOrUnresolved
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.getDocumentationFontSize
 import icu.windea.pls.lang.psi.resolveLocalisation
 import icu.windea.pls.lang.psi.resolveScriptedVariable
 import icu.windea.pls.lang.resolve.ReferenceLinkService
 import icu.windea.pls.lang.settings.ChronicleInternalSettings
-import icu.windea.pls.lang.text.appendPsiLinkOrUnresolved
 import icu.windea.pls.lang.util.ParadoxEscapeManager
 import icu.windea.pls.lang.util.ParadoxGameConceptManager
 import icu.windea.pls.lang.util.ParadoxImageManager
@@ -270,7 +270,7 @@ class ParadoxLocalisationTextQuickDocRenderContext(
         val definitionType = definitionInfo.type
         withColorSpan(conceptColor) {
             val link = ReferenceLinkType.Definition.createLink(definitionName, definitionType, definitionInfo.gameType)
-            builder.appendPsiLinkOrUnresolved(link.escapeXml(), conceptText, context = referenceElement)
+            builder.psiLinkOrUnresolved(link.escapeXml(), conceptText, context = referenceElement)
         }
     }
 

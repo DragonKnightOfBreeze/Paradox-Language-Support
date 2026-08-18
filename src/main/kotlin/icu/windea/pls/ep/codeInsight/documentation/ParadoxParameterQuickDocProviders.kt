@@ -2,13 +2,13 @@ package icu.windea.pls.ep.codeInsight.documentation
 
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.escapeXml
-import icu.windea.pls.core.text.DocumentationBuilder
+import icu.windea.pls.core.util.builders.DocumentationBuilder
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
 import icu.windea.pls.ep.resolve.parameter.ParadoxDefinitionParameterSupport
 import icu.windea.pls.ep.resolve.parameter.ParadoxInlineScriptParameterSupport
+import icu.windea.pls.lang.codeInsight.documentation.psiLinkOrUnresolved
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
-import icu.windea.pls.lang.text.appendPsiLinkOrUnresolved
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.model.ReferenceLinkType
@@ -42,16 +42,16 @@ class ParadoxDefinitionParameterQuickDocProvider: ParadoxParameterQuickDocProvid
         br().indent()
         append(ChronicleBundle.message("doc.text.ofDefinition")).append(" ")
         val link = ReferenceLinkType.Definition.createLink(definitionName, definitionType.first(), gameType)
-        appendPsiLinkOrUnresolved(link.escapeXml(), definitionName.escapeXml(), context = element)
+        psiLinkOrUnresolved(link.escapeXml(), definitionName.escapeXml(), context = element)
         append(": ")
         val type = definitionType.first()
         val typeLink = ReferenceLinkType.CwtConfig.createLink(categories.types, type, gameType)
-        appendPsiLinkOrUnresolved(typeLink.escapeXml(), type.escapeXml())
+        psiLinkOrUnresolved(typeLink.escapeXml(), type.escapeXml())
         for ((index, t) in definitionType.withIndex()) {
             if (index == 0) continue
             append(", ")
             val subtypeLink = ReferenceLinkType.CwtConfig.createLink(categories.types, "$type/$t", gameType)
-            appendPsiLinkOrUnresolved(subtypeLink.escapeXml(), t.escapeXml())
+            psiLinkOrUnresolved(subtypeLink.escapeXml(), t.escapeXml())
         }
 
         return true
@@ -82,7 +82,7 @@ class ParadoxInlineScriptParameterQuickDocProvider: ParadoxParameterQuickDocProv
         br().indent()
         append(ChronicleBundle.message("doc.text.ofInlineScript")).append(" ")
         val link = ReferenceLinkType.FilePath.createLink(filePath, gameType)
-        appendPsiLinkOrUnresolved(link.escapeXml(), inlineScriptExpression.escapeXml(), context = element)
+        psiLinkOrUnresolved(link.escapeXml(), inlineScriptExpression.escapeXml(), context = element)
 
         return true
     }

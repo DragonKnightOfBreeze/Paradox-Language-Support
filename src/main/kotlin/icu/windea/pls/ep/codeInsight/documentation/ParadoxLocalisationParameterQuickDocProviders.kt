@@ -2,12 +2,12 @@ package icu.windea.pls.ep.codeInsight.documentation
 
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.escapeXml
-import icu.windea.pls.core.text.DocumentationBuilder
+import icu.windea.pls.core.util.builders.DocumentationBuilder
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
 import icu.windea.pls.core.util.values.unknown
+import icu.windea.pls.lang.codeInsight.documentation.psiLinkOrUnresolved
 import icu.windea.pls.lang.psi.light.ParadoxLocalisationParameterLightElement
-import icu.windea.pls.lang.text.appendPsiLinkOrUnresolved
 import icu.windea.pls.model.ReferenceLinkType
 import icu.windea.pls.model.constants.ChronicleStrings
 
@@ -25,7 +25,7 @@ class ParadoxBaseLocalisationParameterQuickDocProvider: ParadoxLocalisationParam
         append(ChronicleBundle.message("doc.text.ofLocalisation")).append(" ")
         val nameOrUnknown = element.localisationName.or.unknown()
         val link = ReferenceLinkType.Localisation.createLink(nameOrUnknown, gameType)
-        appendPsiLinkOrUnresolved(link.escapeXml(), nameOrUnknown.escapeXml(), context = element)
+        psiLinkOrUnresolved(link.escapeXml(), nameOrUnknown.escapeXml(), context = element)
 
         return true
     }

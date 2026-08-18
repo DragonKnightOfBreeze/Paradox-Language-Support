@@ -4,6 +4,7 @@ import com.intellij.psi.TokenType
 import com.intellij.psi.tree.TokenSet
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 
+@Suppress("unused")
 object ParadoxLocalisationTokenSets {
     @JvmField val WHITE_SPACES = TokenSet.create(TokenType.WHITE_SPACE)
     @JvmField val COMMENTS = TokenSet.create(COMMENT)

@@ -1,30 +1,35 @@
 @file:Suppress("unused")
 
-package icu.windea.pls.core.text
+package icu.windea.pls.core.util.builders
 
 import com.intellij.lang.documentation.DocumentationMarkup
+import com.intellij.platform.backend.documentation.DocumentationResult
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.toFileUrl
+import java.awt.Image
 import java.util.*
 
-fun buildDocumentation(): DocumentationBuilder {
-    return DocumentationBuilderImpl()
+fun buildDocumentation(hint: Boolean = true): DocumentationBuilder {
+    return DocumentationBuilderImpl(hint)
 }
 
-inline fun buildDocumentation(block: DocumentationBuilder.() -> Unit): String {
-    val builder = buildDocumentation()
-    builder.block()
-    return builder.toString()
+inline fun buildDocumentation(hint: Boolean = true, block: DocumentationBuilder.() -> Unit): DocumentationBuilder {
+    return buildDocumentation(hint).apply(block)
 }
 
 interface DocumentationBuilder : Appendable {
+    val hint: Boolean
     val content: StringBuilder
+
+    fun isEmpty(): Boolean
 
     fun append(string: String): DocumentationBuilder
 
     fun append(value: Any?): DocumentationBuilder
 
     override fun toString(): String
+
+    fun toDocumentation(): DocumentationResult.Documentation
 
     fun indent(): DocumentationBuilder
 
@@ -40,25 +45,32 @@ interface DocumentationBuilder : Appendable {
 
     fun content(block: DocumentationBuilder.() -> Unit): DocumentationBuilder
 
+    fun grayed(block: DocumentationBuilder.() -> Unit): DocumentationBuilder
+
     fun sections(block: DocumentationBuilder.() -> Unit): DocumentationBuilder
 
     fun section(title: CharSequence, value: CharSequence): DocumentationBuilder
 
-    fun grayed(block: DocumentationBuilder.() -> Unit): DocumentationBuilder
-
-    fun initSections()
-
-    fun getSections(index: Int): MutableMap<String, String>?
+    fun getSections(index: Int): MutableMap<String, String>
 
     fun buildSections()
+
+    fun registerImages(images: Map<String, Image>): DocumentationBuilder
+
+    fun registerExternalUrl(externalUrl: String?): DocumentationBuilder
 }
 
 // region Implementations
 
 private class DocumentationBuilderImpl(
+    override val hint: Boolean,
     override val content: StringBuilder = StringBuilder()
 ) : DocumentationBuilder, Appendable by content {
-    private var sectionGroup: SortedMap<Int, MutableMap<String, String>>? = null
+    private val sectionGroups: SortedMap<Int, MutableMap<String, String>> = sortedMapOf()
+    private var images: Map<String, Image> = emptyMap()
+    private var externalUrl: String? = null
+
+    override fun isEmpty() = content.isEmpty()
 
     override fun append(string: String) = apply { content.append(string) }
 
@@ -66,9 +78,17 @@ private class DocumentationBuilderImpl(
 
     override fun toString() = content.toString()
 
-    override fun indent() = append("&nbsp;&nbsp;&nbsp;&nbsp;")
+    override fun toDocumentation(): DocumentationResult.Documentation {
+        return DocumentationResult.documentation(content.toString()).images(images).externalUrl(externalUrl)
+    }
 
-    override fun br() = append("<br/>")
+    override fun indent(): DocumentationBuilderImpl {
+        return append("&nbsp;&nbsp;&nbsp;&nbsp;")
+    }
+
+    override fun br(): DocumentationBuilderImpl {
+        return append("<br/>")
+    }
 
     override fun link(refText: String, label: String, escapeLabel: Boolean): DocumentationBuilder {
         append("<a href=\"").append(refText).append("\">")
@@ -84,7 +104,7 @@ private class DocumentationBuilderImpl(
     }
 
     override fun image(url: String, width: Int, height: Int, local: Boolean): DocumentationBuilder {
-        // NOTE 这里存在限制，不能使用 `style="..."`
+        // 注意：这里存在限制，不能使用 `style="..."`
         val finalUrl = if (local) url.toFileUrl() else url
         append("<img src=\"").append(finalUrl).append("\"")
         append(" width=\"").append(width).append("\" height=\"").append(height).append("\" vspace=\"0\" hspace=\"0\"")
@@ -106,6 +126,13 @@ private class DocumentationBuilderImpl(
         return this
     }
 
+    override fun grayed(block: DocumentationBuilder.() -> Unit): DocumentationBuilder {
+        append(DocumentationMarkup.GRAYED_START)
+        block(this)
+        append(DocumentationMarkup.GRAYED_END)
+        return this
+    }
+
     override fun sections(block: DocumentationBuilder.() -> Unit): DocumentationBuilder {
         append(DocumentationMarkup.SECTIONS_START)
         block(this)
@@ -122,24 +149,13 @@ private class DocumentationBuilderImpl(
         return this
     }
 
-    override fun grayed(block: DocumentationBuilder.() -> Unit): DocumentationBuilder {
-        append(DocumentationMarkup.GRAYED_START)
-        block(this)
-        append(DocumentationMarkup.GRAYED_END)
-        return this
-    }
-
-    override fun initSections() {
-        sectionGroup = sortedMapOf()
-    }
-
-    override fun getSections(index: Int): MutableMap<String, String>? {
-        return sectionGroup?.getOrPut(index) { mutableMapOf() }
+    override fun getSections(index: Int): MutableMap<String, String> {
+        return sectionGroups.getOrPut(index) { mutableMapOf() }
     }
 
     override fun buildSections() {
-        val sectionGroup = sectionGroup
-        if (sectionGroup.isNullOrEmpty()) return
+        val sectionGroup = sectionGroups
+        if (sectionGroup.isEmpty()) return
         sections {
             for (sections in sectionGroup.values) {
                 for ((key, value) in sections) {
@@ -147,6 +163,16 @@ private class DocumentationBuilderImpl(
                 }
             }
         }
+    }
+
+    override fun registerImages(images: Map<String, Image>): DocumentationBuilder {
+        this.images = images
+        return this
+    }
+
+    override fun registerExternalUrl(externalUrl: String?): DocumentationBuilder {
+        this.externalUrl = externalUrl
+        return this
     }
 }
 

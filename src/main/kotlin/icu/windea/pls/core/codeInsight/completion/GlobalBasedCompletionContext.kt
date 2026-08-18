@@ -6,12 +6,10 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.util.ProcessingContext
-import icu.windea.pls.core.isIdentifier
 
 @Suppress("unused")
 abstract class GlobalBasedCompletionContext : CompletionContext {
     abstract val globalContext: GlobalCompletionContext
-    abstract val keyword: String
 
     val contextElement: PsiElement get() = globalContext.contextElement
     val offsetInParent: Int get() = globalContext.offsetInParent
@@ -25,9 +23,4 @@ abstract class GlobalBasedCompletionContext : CompletionContext {
     final override val offset: Int get() = globalContext.offset
     final override val editor: Editor get() = globalContext.editor
     final override val project: Project get() = globalContext.project
-
-    fun isIdentifierKeyword(): Boolean {
-        val keyword = keyword
-        return keyword.isEmpty() || keyword.isIdentifier()
-    }
 }

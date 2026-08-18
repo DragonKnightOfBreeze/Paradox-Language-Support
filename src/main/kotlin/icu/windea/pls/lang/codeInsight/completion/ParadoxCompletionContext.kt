@@ -6,6 +6,7 @@ import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.codeInsight.completion.GlobalBasedCompletionContext
 import icu.windea.pls.core.codeInsight.completion.GlobalCompletionContext
+import icu.windea.pls.core.isIdentifier
 import icu.windea.pls.core.unquote
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.lang.selectGameType
@@ -14,7 +15,7 @@ import icu.windea.pls.model.scope.ParadoxScopeContext
 
 data class ParadoxCompletionContext(
     override val globalContext: GlobalCompletionContext,
-    override val keyword: String,
+    val keyword: String,
     val configGroup: CwtConfigGroup,
     val keywordOffset: Int = 0,
     val expressionOffset: Int = 0,
@@ -37,6 +38,11 @@ data class ParadoxCompletionContext(
 ) : GlobalBasedCompletionContext() {
     val offsetInExpression: Int get() = offsetInParent - expressionOffset
     val gameType: ParadoxGameType get() = configGroup.gameType
+
+    fun isIdentifierKeyword(): Boolean {
+        val keyword = keyword
+        return keyword.isEmpty() || keyword.isIdentifier()
+    }
 
     companion object {
         @JvmStatic

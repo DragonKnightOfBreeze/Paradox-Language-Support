@@ -105,7 +105,7 @@ fun LookupElementBuilder.withModifierPresentableNames(modifierName: String, cont
     return withLookupStrings(presentableNames)
 }
 
-fun LookupElementBuilder.wrapForConfig(context: CwtConfigCompletionContext, config: CwtConfig<*>, schemaExpression: CwtSchemaExpression): LookupElement? {
+fun LookupElementBuilder.wrapForConfig(context: CwtCompletionContext, config: CwtConfig<*>, schemaExpression: CwtSchemaExpression): LookupElement? {
     return CwtCompletionLookupProvider.wrapForConfig(this, context, config, schemaExpression)
 }
 

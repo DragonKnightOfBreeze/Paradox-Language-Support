@@ -1,6 +1,6 @@
 @file:Suppress("unused")
 
-package icu.windea.pls.core.text
+package icu.windea.pls.core.util.builders
 
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.toFileUrl
@@ -9,14 +9,14 @@ fun buildHtml(): HtmlBuilder {
     return HtmlBuilderImpl()
 }
 
-inline fun buildHtml(block: HtmlBuilder.() -> Unit): String {
-    val builder = buildHtml()
-    builder.block()
-    return builder.toString()
+inline fun buildHtml(block: HtmlBuilder.() -> Unit): HtmlBuilder {
+    return buildHtml().apply(block)
 }
 
 interface HtmlBuilder : Appendable {
     val content: StringBuilder
+
+    fun isEmpty(): Boolean
 
     fun append(string: String): HtmlBuilder
 
@@ -40,15 +40,21 @@ interface HtmlBuilder : Appendable {
 private class HtmlBuilderImpl(
     override val content: StringBuilder = StringBuilder()
 ) : HtmlBuilder, Appendable by content {
+    override fun isEmpty() = content.isEmpty()
+
     override fun append(string: String) = apply { content.append(string) }
 
     override fun append(value: Any?) = apply { content.append(value) }
 
     override fun toString() = content.toString()
 
-    override fun indent() = append("&nbsp;&nbsp;&nbsp;&nbsp;")
+    override fun indent(): HtmlBuilderImpl {
+        return append("&nbsp;&nbsp;&nbsp;&nbsp;")
+    }
 
-    override fun br() = append("<br/>")
+    override fun br(): HtmlBuilderImpl {
+        return append("<br/>")
+    }
 
     override fun link(refText: String, label: String, escapeLabel: Boolean): HtmlBuilder {
         val finalRefText = refText.escapeXml()

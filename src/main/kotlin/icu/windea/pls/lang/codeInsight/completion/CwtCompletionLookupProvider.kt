@@ -114,7 +114,7 @@ object CwtCompletionLookupProvider {
 
     // region Wrappers
 
-    fun wrapForConfig(lookupElement: LookupElementBuilder, context: CwtConfigCompletionContext, config: CwtConfig<*>, schemaExpression: CwtSchemaExpression): LookupElement? {
+    fun wrapForConfig(lookupElement: LookupElementBuilder, context: CwtCompletionContext, config: CwtConfig<*>, schemaExpression: CwtSchemaExpression): LookupElement? {
         if (lookupElement in forKeyword()) return lookupElement
 
         val isKeyConfig = config is CwtOptionConfig || config is CwtPropertyConfig
@@ -196,7 +196,7 @@ object CwtCompletionLookupProvider {
     }
 
     private open class KeyOrValueOnlyInsertHandler<T : LookupElement>(
-        private val context: CwtConfigCompletionContext,
+        private val context: CwtCompletionContext,
     ) : InsertHandler<T> {
         override fun handleInsert(c: InsertionContext, item: T) {
             // `isKey` 如果是 `null`，则表示已经填充的只是键或值的其中一部分
@@ -220,7 +220,7 @@ object CwtCompletionLookupProvider {
     }
 
     private open class KeyWithValueInsertHandler<T : LookupElement>(
-        context: CwtConfigCompletionContext,
+        context: CwtCompletionContext,
         private val insertCurlyBraces: Boolean,
     ) : KeyOrValueOnlyInsertHandler<T>(context) {
         override fun handleInsert(c: InsertionContext, item: T) {
@@ -249,7 +249,7 @@ object CwtCompletionLookupProvider {
     }
 
     private open class TemplateInsertHandler<T : LookupElement>(
-        private val context: CwtConfigCompletionContext,
+        private val context: CwtCompletionContext,
         private val schemaExpression: CwtSchemaExpression.Template,
         private val oldInsertHandler: InsertHandler<LookupElement>?,
     ) : InsertHandler<T> {
@@ -275,7 +275,7 @@ object CwtCompletionLookupProvider {
                     val shift = element.startOffset + if (context.leftQuoted) 1 else 0
                     schemaExpression.parameterRanges.forEach { parameterRange ->
                         val parameterText = parameterRange.substring(schemaExpression.expressionString)
-                        val expression = CwtConfigCompletionTemplateExpression.resolve(context, parameterRange, parameterText)
+                        val expression = CwtCompletionTemplateExpression.resolve(context, parameterRange, parameterText)
                             ?: TextExpression(parameterText)
                         templateBuilder.replaceRange(parameterRange.shiftRight(shift), expression)
                     }

@@ -86,8 +86,7 @@
     <codeInsight.gotoSuper language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.navigation.GotoSuperDefinitionActionHandler"/>
 
     <completion.contributor language="CWT" implementationClass="icu.windea.pls.lang.codeInsight.completion.cwt.CwtCompletionContributor"/>
-    <!-- icu.windea.pls.lang.codeInsight.completion.cwt.CwtKeywordCompletionProvider -->
-    <!-- icu.windea.pls.lang.codeInsight.completion.cwt.CwtConfigCompletionProvider -->
+    <!-- icu.windea.pls.lang.codeInsight.completion.cwt.CwtCompletionProvider -->
     <completion.contributor language="PARADOX_CSV" implementationClass="icu.windea.pls.lang.codeInsight.completion.csv.ParadoxCsvCompletionContributor"/>
     <!-- icu.windea.pls.lang.codeInsight.completion.csv.ParadoxCsvExpressionCompletionProvider -->
     <completion.contributor language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.completion.script.ParadoxScriptCompletionContributor"/>

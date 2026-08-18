@@ -4,6 +4,7 @@ import com.intellij.psi.TokenType
 import com.intellij.psi.tree.TokenSet
 import icu.windea.pls.cwt.psi.CwtElementTypes.*
 
+@Suppress("unused")
 object CwtTokenSets {
     @JvmField val WHITE_SPACES = TokenSet.create(TokenType.WHITE_SPACE, EOL)
     @JvmField val COMMENTS = TokenSet.create(COMMENT) // DO NOT add DOC_COMMENT here

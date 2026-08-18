@@ -1,5 +1,3 @@
-@file:Suppress("UnstableApiUsage", "UNUSED_PARAMETER")
-
 package icu.windea.pls.lang.codeInsight.documentation
 
 import com.intellij.model.Pointer
@@ -16,8 +14,11 @@ import icu.windea.pls.ep.codeInsight.documentation.ParadoxQuickDocTextProvider
 // org.jetbrains.kotlin.idea.k2.codeinsight.quickDoc.KotlinDocumentationTarget
 
 /**
+ * @see ParadoxDocumentationManager
+ * @see ParadoxDocumentationService
  * @see ParadoxQuickDocTextProvider
  */
+@Suppress("UnstableApiUsage")
 class ParadoxDocumentationTarget(
     val element: PsiElement,
     val originalElement: PsiElement?
@@ -39,13 +40,12 @@ class ParadoxDocumentationTarget(
     }
 
     override fun computeDocumentationHint(): String? {
-        return runSmartReadAction { ParadoxDocumentationManager.computeLocalDocumentation(element, originalElement, hint = true) }
+        return runSmartReadAction { ParadoxDocumentationManager.compute(element, originalElement, hint = true)?.toString() }
     }
 
     override fun computeDocumentation(): DocumentationResult {
         return DocumentationResult.asyncDocumentation {
-            val html = readAction { ParadoxDocumentationManager.computeLocalDocumentation(element, originalElement, hint = false) }
-            html?.let { DocumentationResult.documentation(it) }
+            readAction { ParadoxDocumentationManager.compute(element, originalElement, hint = false)?.toDocumentation() }
         }
     }
 }

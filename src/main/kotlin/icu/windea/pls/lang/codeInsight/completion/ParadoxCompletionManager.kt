@@ -171,7 +171,7 @@ object ParadoxCompletionManager {
         }
     }
 
-    private fun shouldComplete(config: CwtPropertyConfig, occurrences: Map<CwtDataExpression, ParadoxMatchOccurrence>): Boolean {
+    fun shouldComplete(config: CwtPropertyConfig, occurrences: Map<CwtDataExpression, ParadoxMatchOccurrence>): Boolean {
         val expression = config.keyExpression
         // 如果类型是 `aliasName`，则无论 `cardinality` 如何定义，都应该提供补全（某些规则文件未正确编写）
         if (expression.type == CwtDataTypes.AliasName) return true
@@ -187,7 +187,7 @@ object ParadoxCompletionManager {
         return maxCount == null || actualCount < maxCount
     }
 
-    private fun shouldComplete(config: CwtValueConfig, occurrences: Map<CwtDataExpression, ParadoxMatchOccurrence>): Boolean {
+    fun shouldComplete(config: CwtValueConfig, occurrences: Map<CwtDataExpression, ParadoxMatchOccurrence>): Boolean {
         val expression = config.valueExpression
         val actualCount = occurrences[expression]?.actual ?: 0
         // 如果写明了 `cardinality`，则为 `cardinality.max`，否则如果类型为常量，则为1，否则为 `null`，`null` 表示没有限制

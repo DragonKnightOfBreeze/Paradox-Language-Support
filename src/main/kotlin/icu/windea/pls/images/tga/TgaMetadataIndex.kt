@@ -1,6 +1,7 @@
 package icu.windea.pls.images.tga
 
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.registry.Registry
 import com.intellij.openapi.vfs.VirtualFile
@@ -43,5 +44,10 @@ class TgaMetadataIndex {
 
     fun getMetadata(file: VirtualFile, project: Project): TgaMetadata? {
         return gist.getFileData(project, file)
+    }
+
+    companion object {
+        @JvmStatic
+        fun getInstance(): TgaMetadataIndex = service()
     }
 }

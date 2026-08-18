@@ -1,6 +1,5 @@
 package icu.windea.pls.images.dds
 
-import com.intellij.openapi.components.service
 import com.intellij.openapi.fileTypes.FileType
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Couple
@@ -20,7 +19,7 @@ class DdsLookupInfoProvider : FileLookupInfoProvider() {
 
     override fun getLookupInfo(file: VirtualFile, project: Project?): Pair<String, String>? {
         if (project == null) return null
-        val metadata = runSmartReadAction { service<DdsMetadataIndex>().getMetadata(file, project) } ?: return null
+        val metadata = runSmartReadAction { DdsMetadataIndex.getInstance().getMetadata(file, project) } ?: return null
         return Couple.of(file.name, "${metadata.width}x${metadata.height}")
     }
 }

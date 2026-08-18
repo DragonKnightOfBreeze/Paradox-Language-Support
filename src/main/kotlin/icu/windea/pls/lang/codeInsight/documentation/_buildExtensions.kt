@@ -1,4 +1,6 @@
-package icu.windea.pls.lang.text
+@file:Suppress("unused")
+
+package icu.windea.pls.lang.codeInsight.documentation
 
 import com.intellij.codeInsight.documentation.DocumentationManagerUtil
 import com.intellij.openapi.vfs.VfsUtil
@@ -7,9 +9,9 @@ import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.orNull
-import icu.windea.pls.core.text.DocumentationBuilder
-import icu.windea.pls.core.text.buildDocumentation
 import icu.windea.pls.core.util.OnceMarker
+import icu.windea.pls.core.util.builders.DocumentationBuilder
+import icu.windea.pls.core.util.builders.buildDocumentation
 import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.cwt.CwtLanguage
@@ -24,28 +26,28 @@ import icu.windea.pls.model.ReferenceLinkType
 import icu.windea.pls.model.scope.ParadoxScope
 import icu.windea.pls.model.scope.ParadoxScopeContext
 
-fun DocumentationBuilder.appendPsiLink(refText: String, label: String, plainLink: Boolean = true): DocumentationBuilder {
-    DocumentationManagerUtil.createHyperlink(content, refText, label, plainLink)
-    return this
-}
-
-fun DocumentationBuilder.appendUnresolvedLink(label: String): DocumentationBuilder {
+fun DocumentationBuilder.unresolvedLink(label: String): DocumentationBuilder {
     append(label) // 直接显示对应的标签文本
     return this
 }
 
-fun DocumentationBuilder.appendPsiLinkOrUnresolved(refText: String, label: String, plainLink: Boolean = true, context: PsiElement? = null): DocumentationBuilder {
-    if (context != null && ReferenceLinkService.resolve(refText, context) == null) return appendUnresolvedLink(label)
+fun DocumentationBuilder.psiLink(refText: String, label: String, plainLink: Boolean = true): DocumentationBuilder {
     DocumentationManagerUtil.createHyperlink(content, refText, label, plainLink)
     return this
 }
 
-fun DocumentationBuilder.appendExternalLinkIcon(): DocumentationBuilder {
+fun DocumentationBuilder.psiLinkOrUnresolved(refText: String, label: String, plainLink: Boolean = true, context: PsiElement? = null): DocumentationBuilder {
+    if (context != null && ReferenceLinkService.resolve(refText, context) == null) return unresolvedLink(label)
+    DocumentationManagerUtil.createHyperlink(content, refText, label, plainLink)
+    return this
+}
+
+fun DocumentationBuilder.externalLinkIcon(): DocumentationBuilder {
     append("<icon src='ide/external_link_arrow.svg'/>")
     return this
 }
 
-fun DocumentationBuilder.appendFileInfoHeader(element: PsiElement): DocumentationBuilder {
+fun DocumentationBuilder.fileInfoHeader(element: PsiElement): DocumentationBuilder {
     val file = selectFile(element) ?: return this
     if (VirtualFileService.isInjectedFile(file)) return this // ignored for injected PSI
     val fileInfo = file.fileInfo ?: return this
@@ -72,7 +74,7 @@ fun DocumentationBuilder.appendFileInfoHeader(element: PsiElement): Documentatio
                 is ParadoxRootInfo.Mod -> SpecialUrlService.getInstance().getSteamWorkshopUrlInSteam(steamId)
             }
             link(workshopUrlInSteam, ChronicleBundle.message("doc.link.steam")) // 自带外部链接图标
-            appendExternalLinkIcon() // 使用翻译插件翻译文档注释后，这里会出现不必要的换行 - 已被修复
+            externalLinkIcon() // 使用翻译插件翻译文档注释后，这里会出现不必要的换行 - 已被修复
             append(" | ")
             val workshopUrl = when (rootInfo) {
                 is ParadoxRootInfo.Game -> SpecialUrlService.getInstance().getSteamGameStoreUrl(steamId)
@@ -95,7 +97,7 @@ fun DocumentationBuilder.appendFileInfoHeader(element: PsiElement): Documentatio
     return this
 }
 
-fun DocumentationBuilder.appendConfigFileInfoHeader(element: PsiElement): DocumentationBuilder {
+fun DocumentationBuilder.configFileInfoHeader(element: PsiElement): DocumentationBuilder {
     if (element.language !== CwtLanguage) return this
     val file = element.containingFile ?: return this
     val vFile = file.virtualFile ?: return this
@@ -128,35 +130,6 @@ fun DocumentationBuilder.appendConfigFileInfoHeader(element: PsiElement): Docume
     return this
 }
 
-fun DocumentationBuilder.buildScopeDoc(scopeId: String, gameType: ParadoxGameType, contextElement: PsiElement): DocumentationBuilder {
-    if (ParadoxScope.resolve(scopeId).isUnsure()) {
-        append(scopeId)
-    } else {
-        val category = ReferenceLinkType.CwtConfig.Categories.scopes
-        val link = ReferenceLinkType.CwtConfig.createLink(category, scopeId, gameType)
-        appendPsiLinkOrUnresolved(link.escapeXml(), scopeId.escapeXml(), context = contextElement)
-    }
-    return this
-}
-
-fun DocumentationBuilder.buildScopeContextDoc(scopeContext: ParadoxScopeContext, gameType: ParadoxGameType, contextElement: PsiElement): DocumentationBuilder {
-    val categories = ReferenceLinkType.CwtConfig.Categories
-    val m = OnceMarker()
-    scopeContext.toScopeMap().forEach { (systemScope, scope) ->
-        if (m.mark()) br()
-        val systemScopeLink = ReferenceLinkType.CwtConfig.createLink(categories.systemScopes, systemScope, gameType)
-        appendPsiLinkOrUnresolved(systemScopeLink.escapeXml(), systemScope.escapeXml(), context = contextElement)
-        append(" = ")
-        if (scope.isUnsure()) {
-            append(scope.id)
-        } else {
-            val scopeLink = ReferenceLinkType.CwtConfig.createLink(categories.scopes, scope.id, gameType)
-            appendPsiLinkOrUnresolved(scopeLink.escapeXml(), scope.id.escapeXml(), context = contextElement)
-        }
-    }
-    return this
-}
-
 @Suppress("UnusedReceiverParameter")
 fun DocumentationBuilder.getModifierCategoriesText(modifierCategories: Set<String>, gameType: ParadoxGameType, contextElement: PsiElement): String {
     if (modifierCategories.isEmpty()) return ""
@@ -167,10 +140,10 @@ fun DocumentationBuilder.getModifierCategoriesText(modifierCategories: Set<Strin
             if (m.mark()) append(", ")
             val category = ReferenceLinkType.CwtConfig.Categories.modifierCategories
             val link = ReferenceLinkType.CwtConfig.createLink(category, modifierCategory, gameType)
-            appendPsiLinkOrUnresolved(link.escapeXml(), modifierCategory.escapeXml(), context = contextElement)
+            psiLinkOrUnresolved(link.escapeXml(), modifierCategory.escapeXml(), context = contextElement)
         }
         append("</pre>")
-    }
+    }.toString()
 }
 
 @Suppress("UnusedReceiverParameter")
@@ -179,7 +152,7 @@ fun DocumentationBuilder.getScopeText(scopeId: String, gameType: ParadoxGameType
         append("<pre>")
         buildScopeDoc(scopeId, gameType, contextElement)
         append("</pre>")
-    }
+    }.toString()
 }
 
 @Suppress("UnusedReceiverParameter")
@@ -193,7 +166,7 @@ fun DocumentationBuilder.getScopesText(scopeIds: Set<String>, gameType: ParadoxG
             buildScopeDoc(scopeId, gameType, contextElement)
         }
         append("</pre>")
-    }
+    }.toString()
 }
 
 @Suppress("UnusedReceiverParameter")
@@ -202,5 +175,34 @@ fun DocumentationBuilder.getScopeContextText(scopeContext: ParadoxScopeContext, 
         append("<pre>")
         buildScopeContextDoc(scopeContext, gameType, contextElement)
         append("</pre>")
+    }.toString()
+}
+
+private fun DocumentationBuilder.buildScopeDoc(scopeId: String, gameType: ParadoxGameType, contextElement: PsiElement): DocumentationBuilder {
+    if (ParadoxScope.resolve(scopeId).isUnsure()) {
+        append(scopeId)
+    } else {
+        val category = ReferenceLinkType.CwtConfig.Categories.scopes
+        val link = ReferenceLinkType.CwtConfig.createLink(category, scopeId, gameType)
+        psiLinkOrUnresolved(link.escapeXml(), scopeId.escapeXml(), context = contextElement)
     }
+    return this
+}
+
+private fun DocumentationBuilder.buildScopeContextDoc(scopeContext: ParadoxScopeContext, gameType: ParadoxGameType, contextElement: PsiElement): DocumentationBuilder {
+    val categories = ReferenceLinkType.CwtConfig.Categories
+    val m = OnceMarker()
+    scopeContext.toScopeMap().forEach { (systemScope, scope) ->
+        if (m.mark()) br()
+        val systemScopeLink = ReferenceLinkType.CwtConfig.createLink(categories.systemScopes, systemScope, gameType)
+        psiLinkOrUnresolved(systemScopeLink.escapeXml(), systemScope.escapeXml(), context = contextElement)
+        append(" = ")
+        if (scope.isUnsure()) {
+            append(scope.id)
+        } else {
+            val scopeLink = ReferenceLinkType.CwtConfig.createLink(categories.scopes, scope.id, gameType)
+            psiLinkOrUnresolved(scopeLink.escapeXml(), scope.id.escapeXml(), context = contextElement)
+        }
+    }
+    return this
 }

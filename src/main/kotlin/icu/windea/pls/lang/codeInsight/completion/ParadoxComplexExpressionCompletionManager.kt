@@ -151,7 +151,7 @@ object ParadoxComplexExpressionCompletionManager {
 
     // endregion
 
-    // region Navigation Completion Methods
+    // region Dispatch Completion Methods
 
     private fun completeForTemplateExpression(context: ParadoxCompletionContext, result: CompletionResultSet, expression: ParadoxTemplateExpression) {
         val context = context.copy(isKey = null, scopeContext = null)

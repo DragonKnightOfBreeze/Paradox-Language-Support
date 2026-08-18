@@ -9,8 +9,8 @@ import com.intellij.openapi.util.TextRange
 import icu.windea.pls.core.collections.toArray
 import icu.windea.pls.core.removeSurroundingOrNull
 
-sealed class CwtConfigCompletionTemplateExpression(
-    val context: CwtConfigCompletionContext,
+sealed class CwtCompletionTemplateExpression(
+    val context: CwtCompletionContext,
     val range: TextRange,
     val text: String,
 ) : Expression() {
@@ -20,7 +20,7 @@ sealed class CwtConfigCompletionTemplateExpression(
 
     override fun calculateLookupItems(context: ExpressionContext): Array<out LookupElement>? {
         val lookupElements = mutableListOf<LookupElement>()
-        CwtConfigCompletionManager.completeFromTemplateExpression(this, context) {
+        CwtCompletionManager.completeFromTemplateExpression(this, context) {
             lookupElements.add(it)
             true
         }
@@ -31,13 +31,13 @@ sealed class CwtConfigCompletionTemplateExpression(
         return false
     }
 
-    class Enum(context: CwtConfigCompletionContext, range: TextRange, text: String, val name: String) : CwtConfigCompletionTemplateExpression(context, range, text)
+    class Enum(context: CwtCompletionContext, range: TextRange, text: String, val name: String) : CwtCompletionTemplateExpression(context, range, text)
 
-    class Parameter(context: CwtConfigCompletionContext, range: TextRange, text: String, val name: String) : CwtConfigCompletionTemplateExpression(context, range, text)
+    class Parameter(context: CwtCompletionContext, range: TextRange, text: String, val name: String) : CwtCompletionTemplateExpression(context, range, text)
 
     companion object {
         @JvmStatic
-        fun resolve(context: CwtConfigCompletionContext, range: TextRange, text: String): CwtConfigCompletionTemplateExpression? {
+        fun resolve(context: CwtCompletionContext, range: TextRange, text: String): CwtCompletionTemplateExpression? {
             run {
                 val enumName = text.removeSurroundingOrNull("\$enum:", "$") ?: return@run
                 return Enum(context, range, text, enumName)

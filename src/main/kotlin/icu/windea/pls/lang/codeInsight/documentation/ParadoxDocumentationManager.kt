@@ -1,5 +1,3 @@
-@file:Suppress("unused")
-
 package icu.windea.pls.lang.codeInsight.documentation
 
 import com.intellij.openapi.progress.ProgressManager
@@ -11,9 +9,9 @@ import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.isNotNullOrEmpty
-import icu.windea.pls.core.text.DocumentationBuilder
-import icu.windea.pls.core.text.buildDocumentation
 import icu.windea.pls.core.util.OnceMarker
+import icu.windea.pls.core.util.builders.DocumentationBuilder
+import icu.windea.pls.core.util.builders.buildDocumentation
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
 import icu.windea.pls.lang.defineInfo
@@ -43,11 +41,6 @@ import icu.windea.pls.lang.search.util.withConstraint
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.selectLocale
 import icu.windea.pls.lang.settings.ChronicleSettings
-import icu.windea.pls.lang.text.appendFileInfoHeader
-import icu.windea.pls.lang.text.appendPsiLinkOrUnresolved
-import icu.windea.pls.lang.text.getModifierCategoriesText
-import icu.windea.pls.lang.text.getScopeContextText
-import icu.windea.pls.lang.text.getScopesText
 import icu.windea.pls.lang.util.ParadoxComplexEnumValueManager
 import icu.windea.pls.lang.util.ParadoxDynamicValueManager
 import icu.windea.pls.lang.util.ParadoxImageManager
@@ -61,8 +54,6 @@ import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.lang.util.ParadoxScriptedVariableManager
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextQuickDocRenderer
 import icu.windea.pls.localisation.psi.ParadoxLocalisationArgument
-import icu.windea.pls.localisation.psi.ParadoxLocalisationColorfulText
-import icu.windea.pls.localisation.psi.ParadoxLocalisationIcon
 import icu.windea.pls.localisation.psi.ParadoxLocalisationIconArgument
 import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
@@ -81,222 +72,182 @@ import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
-import icu.windea.pls.script.psi.ParadoxScriptString
-import icu.windea.pls.script.psi.ParadoxScriptValue
 
+@Suppress("unused")
 object ParadoxDocumentationManager {
     private const val SECTIONS_INFO = 0
     private const val SECTIONS_IMAGES = 1
     private const val SECTIONS_LOC = 2
     private const val SECTIONS_EXTRA = 3
 
-    fun computeLocalDocumentation(element: PsiElement, originalElement: PsiElement?, hint: Boolean): String? {
-        return when (element) {
-            is ParadoxComplexEnumValueLightElement -> getComplexEnumValueDoc(element, originalElement, hint)
-            is ParadoxDynamicValueLightElement -> getDynamicValueDoc(element, originalElement, hint)
-            is ParadoxParameterLightElement -> getParameterDoc(element, originalElement, hint)
-            is ParadoxLocalisationParameterLightElement -> getLocalisationParameterDoc(element, originalElement, hint)
-            is ParadoxModifierLightElement -> getModifierDoc(element, originalElement, hint)
-            is ParadoxShaderEffectLightElement -> getShaderEffectDoc(element, originalElement, hint)
-            is ParadoxMeshLocatorLightElement -> getMeshLocatorDoc(element, originalElement, hint)
-            is ParadoxScriptScriptedVariable -> getScriptedVariableDoc(element, originalElement, hint)
-            is ParadoxScriptProperty -> getPropertyDoc(element, originalElement, hint)
-            is ParadoxScriptFile -> getScriptFileDoc(element, originalElement, hint)
-            is ParadoxScriptPropertyKey -> computeLocalDocumentation(element.parent, originalElement, hint)
-            is ParadoxLocalisationLocale -> getLocalisationLocaleDoc(element, originalElement, hint)
-            is ParadoxLocalisationProperty -> getLocalisationPropertyDoc(element, originalElement, hint)
-            is ParadoxLocalisationIcon -> getLocalisationIconDoc(element, originalElement, hint)
-            is ParadoxLocalisationColorfulText -> getLocalisationColorDoc(element, originalElement, hint)
-            is ParadoxLocalisationArgument -> getLocalisationArgumentDoc(element, originalElement, hint)
-            else -> null
+    // region Entry Documentation Methods
+
+    fun compute(element: PsiElement, originalElement: PsiElement?, hint: Boolean): DocumentationBuilder? {
+        return buildDocumentation(hint) { build(element, originalElement) }.takeUnless { it.isEmpty() }
+    }
+
+    private fun DocumentationBuilder.build(element: PsiElement, originalElement: PsiElement?) {
+        when (element) {
+            is ParadoxComplexEnumValueLightElement -> buildForComplexEnumValue(element, originalElement)
+            is ParadoxDynamicValueLightElement -> buildForDynamicValue(element, originalElement)
+            is ParadoxParameterLightElement -> buildForParameter(element, originalElement)
+            is ParadoxLocalisationParameterLightElement -> buildForLocalisationParameter(element, originalElement)
+            is ParadoxModifierLightElement -> buildForModifier(element, originalElement)
+            is ParadoxShaderEffectLightElement -> buildForShaderEffect(element, originalElement)
+            is ParadoxMeshLocatorLightElement -> buildForMeshLocator(element, originalElement)
+            is ParadoxScriptScriptedVariable -> buildForScriptedVariable(element, originalElement)
+            is ParadoxScriptProperty -> buildForScriptProperty(element, originalElement)
+            is ParadoxScriptFile -> buildForScriptFile(element, originalElement)
+            is ParadoxScriptPropertyKey -> build(element.parent, originalElement)
+            is ParadoxLocalisationLocale -> buildForLocalisationLocale(element, originalElement)
+            is ParadoxLocalisationProperty -> buildForLocalisationProperty(element, originalElement)
+            is ParadoxLocalisationArgument -> buildForLocalisationArgument(element, originalElement)
         }
     }
 
-    private fun getComplexEnumValueDoc(element: ParadoxComplexEnumValueLightElement, originalElement: PsiElement?, hint: Boolean): String {
-        return buildDocumentation {
-            if (!hint) initSections()
-            buildComplexEnumValueDefinition(element)
-            if (hint) return@buildDocumentation
-            buildDocumentationContent(element)
-            buildSections()
-        }
+    // endregion
+
+    // region Dispatch Documentation Methods
+
+    private fun DocumentationBuilder.buildForComplexEnumValue(element: ParadoxComplexEnumValueLightElement, originalElement: PsiElement?) {
+        buildDefinitionPartForComplexEnumValue(element)
+        if (hint) return
+        buildDocumentationContent(element)
+        buildSections()
     }
 
-    private fun getDynamicValueDoc(element: ParadoxDynamicValueLightElement, originalElement: PsiElement?, hint: Boolean): String {
-        return buildDocumentation {
-            if (!hint) initSections()
-            buildDynamicValueDefinition(element)
-            if (hint) return@buildDocumentation
-            buildDocumentationContent(element)
-            buildSections()
-        }
+    private fun DocumentationBuilder.buildForDynamicValue(element: ParadoxDynamicValueLightElement, originalElement: PsiElement?) {
+        buildDefinitionPartForDynamicValue(element)
+        if (hint) return
+        buildDocumentationContent(element)
+        buildSections()
     }
 
-    private fun getParameterDoc(element: ParadoxParameterLightElement, originalElement: PsiElement?, hint: Boolean): String {
-        return buildDocumentation {
-            buildParameterDefinition(element)
-            if (hint) return@buildDocumentation
-            buildDocumentationContent(element)
-        }
+    private fun DocumentationBuilder.buildForParameter(element: ParadoxParameterLightElement, originalElement: PsiElement?) {
+        buildDefinitionPartForParameter(element)
+        if (hint) return
+        buildDocumentationContent(element)
     }
 
-    private fun getLocalisationParameterDoc(element: ParadoxLocalisationParameterLightElement, originalElement: PsiElement?, hint: Boolean): String {
-        return buildDocumentation {
-            buildLocalisationParameterDefinition(element)
-        }
+    private fun DocumentationBuilder.buildForLocalisationParameter(element: ParadoxLocalisationParameterLightElement, originalElement: PsiElement?) {
+        buildDefinitionPartForLocalisationParameter(element)
     }
 
-    private fun getModifierDoc(element: ParadoxModifierLightElement, originalElement: PsiElement?, hint: Boolean): String {
-        return buildDocumentation {
-            if (!hint) initSections()
-            buildModifierDefinition(element)
-            if (hint) return@buildDocumentation
-            buildSections()
-        }
+    private fun DocumentationBuilder.buildForModifier(element: ParadoxModifierLightElement, originalElement: PsiElement?) {
+        buildDefinitionPartForModifier(element)
+        if (hint) return
+        buildSections()
     }
 
-    private fun getShaderEffectDoc(element: ParadoxShaderEffectLightElement, originalElement: PsiElement?, hint: Boolean): String {
-        return buildDocumentation {
-            buildShaderEffectDefinition(element)
-        }
+    private fun DocumentationBuilder.buildForShaderEffect(element: ParadoxShaderEffectLightElement, originalElement: PsiElement?) {
+        buildDefinitionPartForShaderEffect(element)
     }
 
-    private fun getMeshLocatorDoc(element: ParadoxMeshLocatorLightElement, originalElement: PsiElement?, hint: Boolean): String {
-        return buildDocumentation {
-            buildMeshLocatorDefinition(element)
-        }
+    private fun DocumentationBuilder.buildForMeshLocator(element: ParadoxMeshLocatorLightElement, originalElement: PsiElement?) {
+        buildDefinitionPartForMeshLocator(element)
     }
 
-    private fun getScriptedVariableDoc(element: ParadoxScriptScriptedVariable, originalElement: PsiElement?, hint: Boolean): String? {
-        val name = element.name ?: return null
-        return buildDocumentation {
-            if (!hint) initSections()
-            buildScriptedVariableDefinition(element, name)
-            if (hint) return@buildDocumentation
-            buildDocumentationContent(element)
-            buildLineCommentContent(element)
-            addOverrideStrategy(element)
-            buildSections()
-        }
+    private fun DocumentationBuilder.buildForScriptedVariable(element: ParadoxScriptScriptedVariable, originalElement: PsiElement?) {
+        val name = element.name ?: return
+        buildDefinitionPartForScriptedVariable(element, name)
+        if (hint) return
+        buildDocumentationContent(element)
+        buildLineCommentContent(element)
+        addOverrideStrategy(element)
+        buildSections()
     }
 
-    private fun getPropertyDoc(element: ParadoxScriptProperty, originalElement: PsiElement?, hint: Boolean): String? {
-        val definitionInfo = element.definitionInfo
-        if (definitionInfo != null) return getDefinitionDoc(element, definitionInfo, originalElement, hint)
-
-        val defineInfo = element.defineInfo
-        if (defineInfo != null) return getDefineDoc(element, defineInfo, originalElement, hint)
+    private fun DocumentationBuilder.buildForScriptProperty(element: ParadoxScriptProperty, originalElement: PsiElement?) {
+        run {
+            val definitionInfo = element.definitionInfo ?: return@run
+            return buildForDefinition(element, definitionInfo, originalElement)
+        }
+        run {
+            val defineInfo = element.defineInfo ?: return@run
+            return buildForDefine(element, defineInfo, originalElement)
+        }
 
         val name = element.name
-        return buildDocumentation {
-            buildPropertyDefinition(element, name)
-            if (hint) return@buildDocumentation
-            buildLineCommentContent(element)
+        buildDefinitionPartForProperty(element, name)
+        if (hint) return
+        buildLineCommentContent(element)
+    }
+
+    private fun DocumentationBuilder.buildForScriptFile(element: ParadoxScriptFile, originalElement: PsiElement?) {
+        run {
+            val definitionInfo = element.definitionInfo ?: return@run
+            return buildForDefinition(element, definitionInfo, originalElement)
         }
+        run {
+            val inlineScriptExpression = ParadoxInlineScriptManager.getInlineScriptExpression(element) ?: return@run
+            return buildForInlineScript(element, inlineScriptExpression, originalElement)
+        }
+        // nothing now
     }
 
-    private fun getScriptFileDoc(element: ParadoxScriptFile, originalElement: PsiElement?, hint: Boolean): String? {
-        val definitionInfo = element.definitionInfo
-        if (definitionInfo != null) return getDefinitionDoc(element, definitionInfo, originalElement, hint)
-
-        val expression = ParadoxInlineScriptManager.getInlineScriptExpression(element)
-        if (expression != null) return getInlineScriptDoc(element, expression, originalElement, hint)
-
-        return null // nothing now
-    }
-
-    private fun getDefinitionDoc(element: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo, originalElement: PsiElement?, hint: Boolean): String? {
+    private fun DocumentationBuilder.buildForDefinition(element: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo, originalElement: PsiElement?) {
         // 忽略内联或注入的定义
-        if (definitionInfo.source == ParadoxDefinitionSource.Inline || definitionInfo.source == ParadoxDefinitionSource.Injection) return null
+        if (definitionInfo.source == ParadoxDefinitionSource.Inline || definitionInfo.source == ParadoxDefinitionSource.Injection) return
 
         // 注意：对于相关图片的信息，在 definition 部分显示在相关本地化的信息之后，在 sections 部分则显示在之前
-        return buildDocumentation {
-            if (!hint) initSections()
-            buildDefinitionDefinition(element, definitionInfo)
-            if (hint) return@buildDocumentation
-            buildDocumentationContent(element)
-            buildLineCommentContent(element)
-            addOverrideStrategy(element)
-            buildSections()
-        }
+        buildDefinitionPartForDefinition(element, definitionInfo)
+        if (hint) return
+        buildDocumentationContent(element)
+        buildLineCommentContent(element)
+        addOverrideStrategy(element)
+        buildSections()
     }
 
-    private fun getDefineDoc(element: ParadoxScriptProperty, defineInfo: ParadoxDefineInfo, originalElement: PsiElement?, hint: Boolean): String {
-        return buildDocumentation {
-            if (!hint) initSections()
-            buildDefineDefinition(element, defineInfo)
-            if (hint) return@buildDocumentation
-            buildDocumentationContent(element)
-            buildLineCommentContent(element)
-            addOverrideStrategy(element)
-            buildSections()
-        }
+    private fun DocumentationBuilder.buildForDefine(element: ParadoxScriptProperty, defineInfo: ParadoxDefineInfo, originalElement: PsiElement?) {
+        buildDefinitionPartForDefine(element, defineInfo)
+        if (hint) return
+        buildDocumentationContent(element)
+        buildLineCommentContent(element)
+        addOverrideStrategy(element)
+        buildSections()
     }
 
-    private fun getInlineScriptDoc(element: ParadoxScriptFile, expression: String, originalElement: PsiElement?, hint: Boolean): String {
-        return buildDocumentation {
-            if (!hint) initSections()
-            buildInlineScriptDefinition(element, expression)
-            if (hint) return@buildDocumentation
-            buildDocumentationContent(element)
-            buildSections()
-        }
+    private fun DocumentationBuilder.buildForInlineScript(element: ParadoxScriptFile, expression: String, originalElement: PsiElement?) {
+        buildDefinitionPartForInlineScript(element, expression)
+        if (hint) return
+        buildDocumentationContent(element)
+        buildSections()
     }
 
-    private fun getLocalisationPropertyDoc(element: ParadoxLocalisationProperty, originalElement: PsiElement?, hint: Boolean): String {
-        val localisationType = element.type
-        if (localisationType != null) return getLocalisationDoc(element, localisationType, originalElement, hint)
-
-        return buildDocumentation {
-            buildLocalisationPropertyDefinition(element)
+    private fun DocumentationBuilder.buildForLocalisationProperty(element: ParadoxLocalisationProperty, originalElement: PsiElement?) {
+        run {
+            val localisationType = element.type ?: return@run
+            return buildForLocalisation(element, localisationType, originalElement)
         }
+        buildDefinitionPartForLocalisationProperty(element)
     }
 
-    private fun getLocalisationLocaleDoc(element: ParadoxLocalisationLocale, originalElement: PsiElement?, hint: Boolean): String {
+    private fun DocumentationBuilder.buildForLocalisationLocale(element: ParadoxLocalisationLocale, originalElement: PsiElement?) {
         val name = element.name
-        return buildDocumentation {
-            buildLocalisationLocaleDefinition(name)
-        }
+        buildDefinitionPartForLocalisationLocale(name)
     }
 
-    private fun getLocalisationDoc(element: ParadoxLocalisationProperty, localisationType: ParadoxLocalisationType, originalElement: PsiElement?, hint: Boolean): String {
-        return buildDocumentation {
-            if (!hint) initSections()
-            buildLocalisationDefinition(element, localisationType)
-            if (hint) return@buildDocumentation
-            buildLineCommentContent(element)
-            addTextForLocalisation(element)
-            addOverrideStrategy(element)
-            buildSections()
-        }
+    private fun DocumentationBuilder.buildForLocalisation(element: ParadoxLocalisationProperty, localisationType: ParadoxLocalisationType, originalElement: PsiElement?) {
+        buildDefinitionPartForLocalisation(element, localisationType)
+        if (hint) return
+        buildLineCommentContent(element)
+        addTextForLocalisation(element)
+        addOverrideStrategy(element)
+        buildSections()
     }
 
-    private fun getLocalisationIconDoc(element: ParadoxLocalisationIcon, originalElement: PsiElement?, hint: Boolean): String? {
-        val name = element.name ?: return null
-        return buildDocumentation {
-            buildLocalisationIconDefinition(name)
-        }
+    private fun DocumentationBuilder.buildForLocalisationArgument(element: ParadoxLocalisationArgument, originalElement: PsiElement?) {
+        if (hint) return // skip for hint
+        if (element is ParadoxLocalisationIconArgument) return // skip for icon frames
+        buildLocalisationArgumentInfo(element)
+        buildSections()
     }
 
-    private fun getLocalisationColorDoc(element: ParadoxLocalisationColorfulText, originalElement: PsiElement?, hint: Boolean): String? {
-        val name = element.name ?: return null
-        return buildDocumentation {
-            // 加上元素定义信息
-            buildLocalisationColorDefinition(name)
-        }
-    }
+    // endregion
 
-    private fun getLocalisationArgumentDoc(element: ParadoxLocalisationArgument, originalElement: PsiElement?, hint: Boolean): String? {
-        if (hint) return null
-        if (element is ParadoxLocalisationIconArgument) return null
-        return buildDocumentation {
-            initSections()
-            buildLocalisationArgumentInfo(element)
-            buildSections()
-        }
-    }
+    // region Implementation Documentation Methods
 
-    private fun DocumentationBuilder.buildComplexEnumValueDefinition(element: ParadoxComplexEnumValueLightElement) {
+    private fun DocumentationBuilder.buildDefinitionPartForComplexEnumValue(element: ParadoxComplexEnumValueLightElement) {
         definition {
             val name = element.name
             val enumName = element.enumName
@@ -307,7 +258,7 @@ object ParadoxDocumentationManager {
             if (complexEnumConfig != null) {
                 val category = ReferenceLinkType.CwtConfig.Categories.complexEnums
                 val typeLink = ReferenceLinkType.CwtConfig.createLink(category, enumName, gameType)
-                append(": ").appendPsiLinkOrUnresolved(typeLink.escapeXml(), enumName.escapeXml())
+                append(": ").psiLinkOrUnresolved(typeLink.escapeXml(), enumName.escapeXml())
             } else {
                 append(": ").append(enumName)
             }
@@ -321,7 +272,6 @@ object ParadoxDocumentationManager {
     }
 
     private fun DocumentationBuilder.addRelatedLocalisationsForComplexEnumValue(element: ParadoxComplexEnumValueLightElement) {
-        val render = ChronicleSettings.getInstance().state.documentation.renderRelatedLocalisationsForComplexEnumValues
         val gameType = element.gameType
         val usedLocale = ParadoxLocaleManager.getResolvedLocaleConfigInDocumentation(element)
         val nameLocalisation = ParadoxComplexEnumValueManager.getNameLocalisation(element.name, element, usedLocale)
@@ -331,20 +281,18 @@ object ParadoxDocumentationManager {
             br()
             append(ChronicleStrings.relatedLocalisationPrefix).append(" ")
             val link = ReferenceLinkType.Localisation.createLink(nameLocalisation.name, gameType)
-            append("name = ").appendPsiLinkOrUnresolved(link.escapeXml(), nameLocalisation.name.escapeXml(), context = element)
+            append("name = ").psiLinkOrUnresolved(link.escapeXml(), nameLocalisation.name.escapeXml(), context = element)
         }
-        run rs@{
-            val sections = getSections(SECTIONS_LOC)
-            if (sections == null || !render) return@rs
-            run {
-                if (nameLocalisation == null) return@run
-                val richText = ParadoxLocalisationTextQuickDocRenderer().render(nameLocalisation)
-                sections["name"] = richText
-            }
+        if (hint) return
+        if (!ChronicleSettings.getInstance().state.documentation.renderRelatedLocalisationsForComplexEnumValues) return
+        val sections = getSections(SECTIONS_LOC)
+        run {
+            if (nameLocalisation == null) return@run
+            sections["name"] = ParadoxLocalisationTextQuickDocRenderer().render(nameLocalisation)
         }
     }
 
-    private fun DocumentationBuilder.buildDynamicValueDefinition(element: ParadoxDynamicValueLightElement) {
+    private fun DocumentationBuilder.buildDefinitionPartForDynamicValue(element: ParadoxDynamicValueLightElement) {
         val name = element.name
         val dynamicValueTypes = element.types
         val gameType = element.gameType
@@ -359,7 +307,7 @@ object ParadoxDocumentationManager {
                 if (valueConfig != null) {
                     val category = ReferenceLinkType.CwtConfig.Categories.values
                     val typeLink = ReferenceLinkType.CwtConfig.createLink(category, dynamicValueType, gameType)
-                    appendPsiLinkOrUnresolved(typeLink.escapeXml(), dynamicValueType.escapeXml())
+                    psiLinkOrUnresolved(typeLink.escapeXml(), dynamicValueType.escapeXml())
                 } else {
                     append(dynamicValueType)
                 }
@@ -374,7 +322,6 @@ object ParadoxDocumentationManager {
     }
 
     private fun DocumentationBuilder.addRelatedLocalisationsForDynamicValue(element: ParadoxDynamicValueLightElement) {
-        val render = ChronicleSettings.getInstance().state.documentation.renderRelatedLocalisationsForDynamicValues
         val gameType = element.gameType
         val usedLocale = ParadoxLocaleManager.getResolvedLocaleConfigInDocumentation(element)
         val nameLocalisation = ParadoxDynamicValueManager.getNameLocalisation(element.name, element, usedLocale)
@@ -384,53 +331,56 @@ object ParadoxDocumentationManager {
             br()
             append(ChronicleStrings.relatedLocalisationPrefix).append(" ")
             val link = ReferenceLinkType.Localisation.createLink(nameLocalisation.name, gameType)
-            append("name = ").appendPsiLinkOrUnresolved(link.escapeXml(), nameLocalisation.name.escapeXml(), context = element)
+            append("name = ").psiLinkOrUnresolved(link.escapeXml(), nameLocalisation.name.escapeXml(), context = element)
         }
-        run rs@{
-            val sections = getSections(SECTIONS_LOC)
-            if (sections == null || !render) return@rs
+        if (hint) return
+        if (!ChronicleSettings.getInstance().state.documentation.renderRelatedLocalisationsForDynamicValues) return
+        val sections = getSections(SECTIONS_LOC)
+        run {
+            if (nameLocalisation == null) return@run
+            sections["name"] = ParadoxLocalisationTextQuickDocRenderer().render(nameLocalisation)
+        }
+    }
+
+    private fun DocumentationBuilder.buildDefinitionPartForParameter(element: ParadoxParameterLightElement) {
+        val name = element.name
+        definition {
             run {
-                if (nameLocalisation == null) return@run
-                val richText = ParadoxLocalisationTextQuickDocRenderer().render(nameLocalisation)
-                sections["name"] = richText
-            }
-        }
-    }
-
-    private fun DocumentationBuilder.buildParameterDefinition(element: ParadoxParameterLightElement) {
-        val name = element.name
-        definition {
-            val r = ParadoxDocumentationService.buildDefinitionPart(element, this)
-            if (!r) {
+                // 显示来自 EP 的快速文档
+                val r = ParadoxDocumentationService.buildDefinitionPart(element, this)
+                if (r) return@run
                 // 显示默认的快速文档
                 append(ChronicleStrings.parameterPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
             }
         }
     }
 
-    private fun DocumentationBuilder.buildLocalisationParameterDefinition(element: ParadoxLocalisationParameterLightElement) {
+    private fun DocumentationBuilder.buildDefinitionPartForLocalisationParameter(element: ParadoxLocalisationParameterLightElement) {
         val name = element.name
         definition {
-            val r = ParadoxDocumentationService.buildDefinitionPart(element, this)
-            if (!r) {
+            run {
+                // 显示来自 EP 的快速文档
+                val r = ParadoxDocumentationService.buildDefinitionPart(element, this)
+                if (r) return@run
                 // 显示默认的快速文档
                 append(ChronicleStrings.parameterPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
             }
         }
     }
 
-    private fun DocumentationBuilder.buildModifierDefinition(element: ParadoxModifierLightElement) {
+    private fun DocumentationBuilder.buildDefinitionPartForModifier(element: ParadoxModifierLightElement) {
         val name = element.name
         definition {
-            val r = ParadoxDocumentationService.buildDefinitionPart(element, this)
-            if (!r) {
+            run {
+                // 显示来自 EP 的快速文档
+                val r = ParadoxDocumentationService.buildDefinitionPart(element, this)
+                if (r) return@run
                 // 显示默认的快速文档
                 append(ChronicleStrings.modifierPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
             }
 
             val configGroup = ChronicleFacade.getConfigGroup(element.project, element.gameType)
             addModifierRelatedLocalisations(element, name, configGroup)
-
             addModifierIcon(element, name, configGroup)
             addModifierScope(element, name, configGroup)
             addScopeContext(element, name, configGroup)
@@ -438,7 +388,6 @@ object ParadoxDocumentationManager {
     }
 
     private fun DocumentationBuilder.addModifierRelatedLocalisations(element: ParadoxModifierLightElement, name: String, configGroup: CwtConfigGroup) {
-        val render = ChronicleSettings.getInstance().state.documentation.renderNameDescForModifiers
         val gameType = configGroup.gameType
         val project = configGroup.project
         val usedLocale = ParadoxLocaleManager.getResolvedLocaleConfigInDocumentation(element)
@@ -466,33 +415,29 @@ object ParadoxDocumentationManager {
             br()
             append(ChronicleStrings.relatedLocalisationPrefix).append(" ")
             val link = ReferenceLinkType.Localisation.createLink(nameLocalisation.name, gameType)
-            append("name = ").appendPsiLinkOrUnresolved(link.escapeXml(), nameLocalisation.name.escapeXml(), context = element)
+            append("name = ").psiLinkOrUnresolved(link.escapeXml(), nameLocalisation.name.escapeXml(), context = element)
         }
         run {
             if (descLocalisation == null) return@run
             br()
             append(ChronicleStrings.relatedLocalisationPrefix).append(" ")
             val link = ReferenceLinkType.Localisation.createLink(descLocalisation.name, gameType)
-            append("desc = ").appendPsiLinkOrUnresolved(link.escapeXml(), descLocalisation.name.escapeXml(), context = element)
+            append("desc = ").psiLinkOrUnresolved(link.escapeXml(), descLocalisation.name.escapeXml(), context = element)
         }
-        run rs@{
-            val sections = getSections(SECTIONS_LOC)
-            if (sections == null || !render) return@rs
-            run {
-                if (nameLocalisation == null) return@run
-                val richText = ParadoxLocalisationTextQuickDocRenderer().render(nameLocalisation)
-                sections["name"] = richText
-            }
-            run {
-                if (descLocalisation == null) return@run
-                val richText = ParadoxLocalisationTextQuickDocRenderer().render(descLocalisation)
-                sections["desc"] = richText
-            }
+        if (hint) return
+        if (!ChronicleSettings.getInstance().state.documentation.renderNameDescForModifiers) return
+        val sections = getSections(SECTIONS_LOC)
+        run {
+            if (nameLocalisation == null) return@run
+            sections["name"] = ParadoxLocalisationTextQuickDocRenderer().render(nameLocalisation)
+        }
+        run {
+            if (descLocalisation == null) return@run
+            sections["desc"] = ParadoxLocalisationTextQuickDocRenderer().render(descLocalisation)
         }
     }
 
     private fun DocumentationBuilder.addModifierIcon(element: ParadoxModifierLightElement, name: String, configGroup: CwtConfigGroup) {
-        val render = ChronicleSettings.getInstance().state.documentation.renderIconForModifiers
         val gameType = configGroup.gameType
         val project = configGroup.project
         val iconFile = run {
@@ -509,24 +454,25 @@ object ParadoxDocumentationManager {
             br()
             append(ChronicleStrings.relatedImagePrefix).append(" ")
             val link = ReferenceLinkType.FilePath.createLink(iconPath, gameType)
-            append("icon = ").appendPsiLinkOrUnresolved(link.escapeXml(), iconPath.escapeXml(), context = element)
+            append("icon = ").psiLinkOrUnresolved(link.escapeXml(), iconPath.escapeXml(), context = element)
         }
-        run rs@{
-            val sections = getSections(SECTIONS_IMAGES)
-            if (sections == null || !render) return@rs
-            run {
-                if (iconFile == null) return@run
-                val url = ParadoxImageManager.resolveUrlByFile(iconFile, project) ?: return@run
-                sections["icon"] = buildDocumentation { image(url) }
-            }
+        if (hint) return
+        if (!ChronicleSettings.getInstance().state.documentation.renderIconForModifiers) return
+        val sections = getSections(SECTIONS_IMAGES)
+        run {
+            if (iconFile == null) return@run
+            val url = ParadoxImageManager.resolveUrlByFile(iconFile, project) ?: return@run
+            sections["icon"] = buildDocumentation { image(url) }.toString()
         }
     }
 
     private fun DocumentationBuilder.addModifierScope(element: ParadoxModifierLightElement, name: String, configGroup: CwtConfigGroup) {
-        // 即使是在 CWT 文件中，如果可以推断得到规则分组，也显示作用域信息
+        if (hint) return
         if (!ChronicleSettings.getInstance().state.documentation.showScopes) return
 
-        val sections = getSections(SECTIONS_INFO) ?: return
+        // 即使是在 CWT 文件中，如果可以推断得到规则分组，也显示作用域信息
+
+        val sections = getSections(SECTIONS_INFO)
         val gameType = configGroup.gameType
         val modifierCategories = ParadoxModifierCategoryService.getModifierCategories(element) ?: return
         val contextElement = element
@@ -539,47 +485,26 @@ object ParadoxDocumentationManager {
         sections[ChronicleBundle.message("doc.sectionTitle.supportedScopes")] = getScopesText(supportedScopes, gameType, contextElement)
     }
 
-    private fun DocumentationBuilder.buildShaderEffectDefinition(element: ParadoxShaderEffectLightElement) {
+    private fun DocumentationBuilder.buildDefinitionPartForShaderEffect(element: ParadoxShaderEffectLightElement) {
         definition {
             append(ChronicleStrings.shaderEffectPrefix).append(" <b>").append(element.name.escapeXml().or.anonymous()).append("</b>")
         }
     }
 
-    private fun DocumentationBuilder.buildMeshLocatorDefinition(element: ParadoxMeshLocatorLightElement) {
+    private fun DocumentationBuilder.buildDefinitionPartForMeshLocator(element: ParadoxMeshLocatorLightElement) {
         definition {
             append(ChronicleStrings.meshLocatorPrefix).append(" <b>").append(element.name.escapeXml().or.anonymous()).append("</b>")
         }
     }
 
-    private fun DocumentationBuilder.addScopeContext(element: PsiElement, name: String, configGroup: CwtConfigGroup) {
-        // 进行代码提示时也显示作用域上下文信息
-        // @Suppress("DEPRECATION")
-        // if (DocumentationManager.IS_FROM_LOOKUP.get(element) == true) return
-
-        if (!ChronicleSettings.getInstance().state.documentation.showScopeContext) return
-
-        val sections = getSections(SECTIONS_INFO) ?: return
-        val gameType = configGroup.gameType
-        val memberElement = element.parentOfType<ParadoxScriptMember>(true) ?: return
-        if (!ParadoxScopeManager.isScopeContextSupported(memberElement, indirect = true)) return
-        val scopeContext = ParadoxScopeManager.getScopeContext(memberElement)
-        if (scopeContext == null) return
-        // TODO 如果作用域引用位于脚本表达式中，应当使用那个位置的作用域上下文，但是目前实现不了
-        //  因为这里的 `referenceElement` 是整个 `stringExpression`，得到的作用域上下文会是脚本表达式最终的作用域上下文
-        sections[ChronicleBundle.message("doc.sectionTitle.scopeContext")] = getScopeContextText(scopeContext, gameType, element)
-    }
-
-    private fun DocumentationBuilder.buildScriptedVariableDefinition(element: ParadoxScriptScriptedVariable, name: String) {
+    private fun DocumentationBuilder.buildDefinitionPartForScriptedVariable(element: ParadoxScriptScriptedVariable, name: String) {
         definition {
             // 加上文件信息
-            appendFileInfoHeader(element)
+            fileInfoHeader(element)
             // 加上基本信息
             append(ChronicleStrings.scriptedVariablePrefix).append(" <b>@").append(name.escapeXml().or.anonymous()).append("</b>")
             val valueElement = element.scriptedVariableValue
-            when (valueElement) {
-                is ParadoxScriptString -> append(" = ").append(valueElement.text.escapeXml())
-                is ParadoxScriptValue -> append(" = ").append(valueElement.value.escapeXml())
-            }
+            if (valueElement != null) append(" = ").append(valueElement.expression.escapeXml())
 
             // 加上相关本地化的信息：同名的本地化
             addRelatedLocalisationsForScriptedVariable(element, name)
@@ -587,7 +512,6 @@ object ParadoxDocumentationManager {
     }
 
     private fun DocumentationBuilder.addRelatedLocalisationsForScriptedVariable(element: ParadoxScriptScriptedVariable, name: String) {
-        val render = ChronicleSettings.getInstance().state.documentation.renderRelatedLocalisationsForScriptedVariables
         val gameType = selectGameType(element) ?: return
         val usedLocale = ParadoxLocaleManager.getResolvedLocaleConfigInDocumentation(element)
         val nameLocalisation = ParadoxScriptedVariableManager.getNameLocalisation(name, element, usedLocale)
@@ -597,37 +521,32 @@ object ParadoxDocumentationManager {
             br()
             append(ChronicleStrings.relatedLocalisationPrefix).append(" ")
             val link = ReferenceLinkType.Localisation.createLink(nameLocalisation.name, gameType)
-            append("name = ").appendPsiLinkOrUnresolved(link.escapeXml(), nameLocalisation.name.escapeXml(), context = element)
+            append("name = ").psiLinkOrUnresolved(link.escapeXml(), nameLocalisation.name.escapeXml(), context = element)
         }
-        run rs@{
-            val sections = getSections(SECTIONS_LOC)
-            if (sections == null || !render) return@rs
-            run {
-                if (nameLocalisation == null) return@run
-                val richText = ParadoxLocalisationTextQuickDocRenderer().render(nameLocalisation)
-                sections["name"] = richText
-            }
+        if (hint) return
+        if (!ChronicleSettings.getInstance().state.documentation.renderRelatedLocalisationsForScriptedVariables) return
+        val sections = getSections(SECTIONS_LOC)
+        run {
+            if (nameLocalisation == null) return@run
+            sections["name"] = ParadoxLocalisationTextQuickDocRenderer().render(nameLocalisation)
         }
     }
 
-    private fun DocumentationBuilder.buildPropertyDefinition(element: ParadoxScriptProperty, name: String) {
+    private fun DocumentationBuilder.buildDefinitionPartForProperty(element: ParadoxScriptProperty, name: String) {
         definition {
             // 加上文件信息
-            appendFileInfoHeader(element)
+            fileInfoHeader(element)
             // 加上基本信息
             append(ChronicleStrings.propertyPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
             val valueElement = element.propertyValue
-            when (valueElement) {
-                is ParadoxScriptString -> append(" = ").append(valueElement.text.escapeXml())
-                is ParadoxScriptValue -> append(" = ").append(valueElement.value.escapeXml())
-            }
+            if (valueElement != null) append(" = ").append(valueElement.expression.escapeXml())
         }
     }
 
-    private fun DocumentationBuilder.buildDefinitionDefinition(element: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo) {
+    private fun DocumentationBuilder.buildDefinitionPartForDefinition(element: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo) {
         definition {
             // 加上文件信息
-            appendFileInfoHeader(element)
+            fileInfoHeader(element)
             // 加上定义信息
             addDefinitionInfo(element, definitionInfo)
 
@@ -670,17 +589,17 @@ object ParadoxDocumentationManager {
             append("<b>").append(name.escapeXml().or.anonymous()).append("</b>")
         } else {
             val link = ReferenceLinkType.Definition.createLink(name, definitionInfo.type, gameType)
-            appendPsiLinkOrUnresolved(link.escapeXml(), name.escapeXml().or.anonymous(), context = definition)
+            psiLinkOrUnresolved(link.escapeXml(), name.escapeXml().or.anonymous(), context = definition)
         }
         append(": ")
         val typeConfig = definitionInfo.typeConfig
         val typeLink = ReferenceLinkType.CwtConfig.createLink(categories.types, typeConfig.name, gameType)
-        appendPsiLinkOrUnresolved(typeLink.escapeXml(), typeConfig.name.escapeXml())
+        psiLinkOrUnresolved(typeLink.escapeXml(), typeConfig.name.escapeXml())
         val subtypeConfigs = definitionInfo.subtypeConfigs
         if (subtypeConfigs.isNotEmpty()) {
             for (subtypeConfig in subtypeConfigs) {
                 val subtypeLink = ReferenceLinkType.CwtConfig.createLink(categories.types, "${typeConfig.name}/${subtypeConfig.name}", gameType)
-                append(", ").appendPsiLinkOrUnresolved(subtypeLink.escapeXml(), subtypeConfig.name.escapeXml())
+                append(", ").psiLinkOrUnresolved(subtypeLink.escapeXml(), subtypeConfig.name.escapeXml())
             }
         }
     }
@@ -691,21 +610,22 @@ object ParadoxDocumentationManager {
         indent().append(ChronicleBundle.message("doc.text.inherits")).append(" ")
         val name = definitionInfo.name
         val link = ReferenceLinkType.Definition.createLink(name, definitionInfo.type, gameType)
-        appendPsiLinkOrUnresolved(link.escapeXml(), name.escapeXml().or.anonymous(), context = definition)
+        psiLinkOrUnresolved(link.escapeXml(), name.escapeXml().or.anonymous(), context = definition)
         append(": ")
         val typeConfig = definitionInfo.typeConfig
         val typeLink = ReferenceLinkType.CwtConfig.createLink(categories.types, typeConfig.name, gameType)
-        appendPsiLinkOrUnresolved(typeLink.escapeXml(), typeConfig.name.escapeXml())
+        psiLinkOrUnresolved(typeLink.escapeXml(), typeConfig.name.escapeXml())
         val subtypeConfigs = definitionInfo.subtypeConfigs
         if (subtypeConfigs.isNotEmpty()) {
             for (subtypeConfig in subtypeConfigs) {
                 val subtypeLink = ReferenceLinkType.CwtConfig.createLink(categories.types, "${typeConfig.name}/${subtypeConfig.name}", gameType)
-                append(", ").appendPsiLinkOrUnresolved(subtypeLink.escapeXml(), subtypeConfig.name.escapeXml())
+                append(", ").psiLinkOrUnresolved(subtypeLink.escapeXml(), subtypeConfig.name.escapeXml())
             }
         }
     }
 
     private fun DocumentationBuilder.addRelatedLocalisationsForDefinition(element: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo) {
+        val render = ChronicleSettings.getInstance().state.documentation.renderRelatedLocalisationsForDefinitions
         val localisationInfos = definitionInfo.localisations
         if (localisationInfos.isEmpty()) return
         val usedLocale = ParadoxLocaleManager.getResolvedLocaleConfigInDocumentation(element)
@@ -722,13 +642,12 @@ object ParadoxDocumentationManager {
                     if (resolvedElement != null) {
                         map[key] = buildDocumentation {
                             val link = ReferenceLinkType.Localisation.createLink(resolveResult.name, definitionInfo.gameType)
-                            appendPsiLinkOrUnresolved(link.escapeXml(), resolveResult.name.escapeXml(), context = element)
-                        }
+                            psiLinkOrUnresolved(link.escapeXml(), resolveResult.name.escapeXml(), context = element)
+                        }.toString()
                         sectionKeys.add(key)
-                        if (sections != null && ChronicleSettings.getInstance().state.documentation.renderRelatedLocalisationsForDefinitions) {
+                        if (!hint && render) {
                             // 加上渲染后的相关本地化文本
-                            val richText = ParadoxLocalisationTextQuickDocRenderer().render(resolvedElement)
-                            sections[key] = richText
+                            sections[key] = ParadoxLocalisationTextQuickDocRenderer().render(resolvedElement)
                         }
                     } else if (required) {
                         map.putIfAbsent(key, resolveResult.name.escapeXml())
@@ -765,15 +684,15 @@ object ParadoxDocumentationManager {
                         map[key] = when {
                             name.startsWith("GFX") -> buildDocumentation {
                                 val link = ReferenceLinkType.Definition.createLink(name, ParadoxDefinitionTypes.sprite, gameType)
-                                appendPsiLinkOrUnresolved(link.escapeXml(), name.escapeXml(), context = element)
-                            }
+                                psiLinkOrUnresolved(link.escapeXml(), name.escapeXml(), context = element)
+                            }.toString()
                             else -> buildDocumentation {
                                 val link = ReferenceLinkType.FilePath.createLink(name, gameType)
-                                appendPsiLinkOrUnresolved(link.escapeXml(), name.escapeXml(), context = element)
-                            }
+                                psiLinkOrUnresolved(link.escapeXml(), name.escapeXml(), context = element)
+                            }.toString()
                         }
                         sectionKeys.add(key)
-                        if (render && sections != null) {
+                        if (!hint && render) {
                             // 渲染图片
                             val url = when {
                                 resolvedElement is ParadoxDefinitionElement && resolvedElement.definitionInfo != null -> {
@@ -785,7 +704,7 @@ object ParadoxDocumentationManager {
                                 else -> null
                             }
                             if (url != null) {
-                                sections[key] = buildDocumentation { image(url) }
+                                sections[key] = buildDocumentation { image(url) }.toString()
                             }
                         }
                     } else if (required) {
@@ -810,10 +729,12 @@ object ParadoxDocumentationManager {
     }
 
     private fun DocumentationBuilder.addModifierScopeForDefinition(element: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo) {
-        // 即使是在 CWT 文件中，如果可以推断得到规则分组，也显示作用域信息
+        if (hint) return
         if (!ChronicleSettings.getInstance().state.documentation.showScopes) return
 
-        val sections = getSections(SECTIONS_INFO) ?: return
+        // 即使是在 CWT 文件中，如果可以推断得到规则分组，也显示作用域信息
+
+        val sections = getSections(SECTIONS_INFO)
         val gameType = definitionInfo.gameType
         val modifierCategories = ParadoxModifierCategoryService.getModifierCategories(definitionInfo) ?: return
         val categoryNames = modifierCategories.keys
@@ -832,9 +753,10 @@ object ParadoxDocumentationManager {
         // @Suppress("DEPRECATION")
         // if (DocumentationManager.IS_FROM_LOOKUP.get(element) == true) return
 
+        if (hint) return
         if (!ChronicleSettings.getInstance().state.documentation.showScopeContext) return
 
-        val sections = getSections(SECTIONS_INFO) ?: return
+        val sections = getSections(SECTIONS_INFO)
         val gameType = definitionInfo.gameType
         if (!ParadoxScopeManager.isScopeContextSupported(element, indirect = true)) return
         val scopeContext = ParadoxScopeManager.getScopeContext(element)
@@ -854,13 +776,13 @@ object ParadoxDocumentationManager {
         br()
         val categories = ReferenceLinkType.CwtConfig.Categories
         val typeLink = ReferenceLinkType.CwtConfig.createLink(categories.types, "event/$eventType", gameType)
-        append(ChronicleStrings.eventTypePrefix).append(" ").appendPsiLinkOrUnresolved(typeLink.escapeXml(), eventType.escapeXml())
+        append(ChronicleStrings.eventTypePrefix).append(" ").psiLinkOrUnresolved(typeLink.escapeXml(), eventType.escapeXml())
     }
 
-    private fun DocumentationBuilder.buildDefineDefinition(element: ParadoxScriptProperty, defineInfo: ParadoxDefineInfo) {
+    private fun DocumentationBuilder.buildDefinitionPartForDefine(element: ParadoxScriptProperty, defineInfo: ParadoxDefineInfo) {
         definition {
             // 加上文件信息
-            appendFileInfoHeader(element)
+            fileInfoHeader(element)
             // 加上基本信息
             when (defineInfo) {
                 is ParadoxDefineNamespaceInfo -> {
@@ -875,10 +797,10 @@ object ParadoxDocumentationManager {
         }
     }
 
-    private fun DocumentationBuilder.buildInlineScriptDefinition(element: ParadoxScriptFile, expression: String) {
+    private fun DocumentationBuilder.buildDefinitionPartForInlineScript(element: ParadoxScriptFile, expression: String) {
         definition {
             // 加上文件信息
-            appendFileInfoHeader(element)
+            fileInfoHeader(element)
             // 加上基本信息
             append(ChronicleStrings.inlineScriptPrefix).append(" <b>").append(expression.escapeXml()).append("</b>")
 
@@ -887,26 +809,26 @@ object ParadoxDocumentationManager {
         }
     }
 
-    private fun DocumentationBuilder.buildLocalisationLocaleDefinition(name: String) {
+    private fun DocumentationBuilder.buildDefinitionPartForLocalisationLocale(name: String) {
         definition {
             // 加上元素定义信息
             append(ChronicleStrings.localePrefix).append(" <b>").append(name).append("</b>")
         }
     }
 
-    private fun DocumentationBuilder.buildLocalisationPropertyDefinition(element: ParadoxLocalisationProperty) {
+    private fun DocumentationBuilder.buildDefinitionPartForLocalisationProperty(element: ParadoxLocalisationProperty) {
         definition {
             // 加上文件信息
-            appendFileInfoHeader(element)
+            fileInfoHeader(element)
             // 加上元素定义信息
             append(ChronicleStrings.localisationPropertyPrefix).append(" <b>").append(element.name).append("</b>")
         }
     }
 
-    private fun DocumentationBuilder.buildLocalisationDefinition(element: ParadoxLocalisationProperty, localisationType: ParadoxLocalisationType) {
+    private fun DocumentationBuilder.buildDefinitionPartForLocalisation(element: ParadoxLocalisationProperty, localisationType: ParadoxLocalisationType) {
         definition {
             // 加上文件信息
-            appendFileInfoHeader(element)
+            fileInfoHeader(element)
             // 加上定义信息
             addLocalisationInfo(element, localisationType)
 
@@ -935,10 +857,11 @@ object ParadoxDocumentationManager {
     }
 
     private fun DocumentationBuilder.addTextForLocalisation(element: ParadoxLocalisationProperty) {
-        // 加上渲染后的本地化文本
+        if(hint) return
         if (!ChronicleSettings.getInstance().state.documentation.renderLocalisationForLocalisations) return
 
-        val sections = getSections(SECTIONS_LOC) ?: return
+        // 加上渲染后的本地化文本
+        val sections = getSections(SECTIONS_LOC)
         val locale = selectLocale(element)
         val usedLocale = ParadoxLocaleManager.getResolvedLocaleConfigInDocumentation(element, locale)
         val usedElement = when {
@@ -955,31 +878,19 @@ object ParadoxDocumentationManager {
         sections[ChronicleBundle.message("doc.sectionTitle.text")] = richText
     }
 
-    private fun DocumentationBuilder.buildLocalisationIconDefinition(name: String) {
-        definition {
-            // 加上元素定义信息
-            append(ChronicleStrings.localisationIconPrefix).append(" <b>").append(name).append("</b>")
-        }
-    }
-
-    private fun DocumentationBuilder.buildLocalisationColorDefinition(name: String) {
-        definition {
-            // 加上元素定义信息
-            append(ChronicleStrings.localisationColorPrefix).append(" <b>").append(name).append("</b>")
-        }
-    }
-
     private fun DocumentationBuilder.buildLocalisationArgumentInfo(element: ParadoxLocalisationArgument) {
-        val sections = getSections(SECTIONS_INFO) ?: return
+        if(hint) return
+        val sections = getSections(SECTIONS_INFO)
         ParadoxLocalisationArgumentManager.getInfo(element).let {
             sections.put(ChronicleBundle.message("doc.sectionTitle.formattingTags"), it)
         }
     }
 
     private fun DocumentationBuilder.addParameters(element: ParadoxDefinitionElement) {
+        if(hint) return
         if (!ChronicleSettings.getInstance().state.documentation.showParameters) return
 
-        val sections = getSections(SECTIONS_INFO) ?: return
+        val sections = getSections(SECTIONS_INFO)
         val parameterContextInfo = ParadoxParameterManager.getContextInfo(element) ?: return
         if (parameterContextInfo.parameters.isEmpty()) return // ignore
         val parametersText = buildString {
@@ -1000,12 +911,23 @@ object ParadoxDocumentationManager {
         sections[ChronicleBundle.message("doc.sectionTitle.parameters")] = parametersText
     }
 
-    private fun DocumentationBuilder.addOverrideStrategy(element: PsiElement) {
-        if (!ChronicleSettings.getInstance().state.documentation.showOverrideStrategy) return
+    private fun DocumentationBuilder.addScopeContext(element: PsiElement, name: String, configGroup: CwtConfigGroup) {
+        // 进行代码提示时也显示作用域上下文信息
+        // @Suppress("DEPRECATION")
+        // if (DocumentationManager.IS_FROM_LOOKUP.get(element) == true) return
 
-        val sections = getSections(SECTIONS_EXTRA) ?: return
-        val overrideStrategy = ParadoxOverrideService.getOverrideStrategy(element) ?: return
-        sections[ChronicleBundle.message("doc.sectionTitle.overrideStrategy")] = overrideStrategy.id + " - " + overrideStrategy.text
+        if (hint) return
+        if (!ChronicleSettings.getInstance().state.documentation.showScopeContext) return
+
+        val sections = getSections(SECTIONS_INFO)
+        val gameType = configGroup.gameType
+        val memberElement = element.parentOfType<ParadoxScriptMember>(true) ?: return
+        if (!ParadoxScopeManager.isScopeContextSupported(memberElement, indirect = true)) return
+        val scopeContext = ParadoxScopeManager.getScopeContext(memberElement)
+        if (scopeContext == null) return
+        // TODO 如果作用域引用位于脚本表达式中，应当使用那个位置的作用域上下文，但是目前实现不了
+        //  因为这里的 `referenceElement` 是整个 `stringExpression`，得到的作用域上下文会是脚本表达式最终的作用域上下文
+        sections[ChronicleBundle.message("doc.sectionTitle.scopeContext")] = getScopeContextText(scopeContext, gameType, element)
     }
 
     private fun DocumentationBuilder.buildDocumentationContent(element: PsiElement) {
@@ -1022,4 +944,15 @@ object ParadoxDocumentationManager {
         if (commentText.isNullOrEmpty()) return
         content { append(commentText) }
     }
+
+    private fun DocumentationBuilder.addOverrideStrategy(element: PsiElement) {
+        if (hint) return
+        if (!ChronicleSettings.getInstance().state.documentation.showOverrideStrategy) return
+
+        val sections = getSections(SECTIONS_EXTRA)
+        val overrideStrategy = ParadoxOverrideService.getOverrideStrategy(element) ?: return
+        sections[ChronicleBundle.message("doc.sectionTitle.overrideStrategy")] = overrideStrategy.id + " - " + overrideStrategy.text
+    }
+
+    // endregion
 }

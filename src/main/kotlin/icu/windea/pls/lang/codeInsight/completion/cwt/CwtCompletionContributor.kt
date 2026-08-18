@@ -4,13 +4,11 @@ import com.intellij.codeInsight.completion.CompletionContributor
 import com.intellij.codeInsight.completion.CompletionInitializationContext
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionResultSet
-import com.intellij.codeInsight.completion.CompletionType
 import icu.windea.pls.model.constants.ChronicleConstants
 
 class CwtCompletionContributor : CompletionContributor() {
     init {
-        CwtKeywordCompletionProvider().let { extend(CompletionType.BASIC, it.elementPattern, it) }
-        CwtConfigCompletionProvider().let { extend(null, it.elementPattern, it) }
+        CwtCompletionProvider().let { extend(null, it.elementPattern, it) }
     }
 
     override fun beforeCompletion(context: CompletionInitializationContext) {

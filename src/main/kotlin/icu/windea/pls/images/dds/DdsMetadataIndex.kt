@@ -1,6 +1,7 @@
 package icu.windea.pls.images.dds
 
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.registry.Registry
 import com.intellij.openapi.vfs.VirtualFile
@@ -45,5 +46,10 @@ class DdsMetadataIndex {
 
     fun getMetadata(file: VirtualFile, project: Project): DdsMetadata? {
         return gist.getFileData(project, file)
+    }
+
+    companion object {
+        @JvmStatic
+        fun getInstance(): DdsMetadataIndex = service()
     }
 }

@@ -13,6 +13,8 @@ import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.model.expressions.ParadoxDefinitionTypeExpression
 
 object ParadoxExtendedCompletionManager {
+    // region General Completion Methods
+
     fun completeExtendedScriptedVariable(context: ParadoxCompletionContext, result: CompletionResultSet) {
         if (!ChronicleSettings.getInstance().state.completion.completeByExtendedConfigs) return
         ProgressManager.checkCanceled()
@@ -162,4 +164,6 @@ object ParadoxExtendedCompletionManager {
         if (text.any { it in ignoredCharsForExtendedConfigName }) return true
         return false
     }
+
+    // endregion
 }

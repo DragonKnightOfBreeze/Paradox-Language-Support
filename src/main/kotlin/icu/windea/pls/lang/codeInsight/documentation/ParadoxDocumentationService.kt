@@ -5,7 +5,7 @@ import icu.windea.pls.core.collections.anyFast
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.forEachReversedFast
 import icu.windea.pls.core.orNull
-import icu.windea.pls.core.text.DocumentationBuilder
+import icu.windea.pls.core.util.builders.DocumentationBuilder
 import icu.windea.pls.ep.codeInsight.documentation.ParadoxLocalisationParameterQuickDocProvider
 import icu.windea.pls.ep.codeInsight.documentation.ParadoxModifierQuickDocProvider
 import icu.windea.pls.ep.codeInsight.documentation.ParadoxParameterQuickDocProvider

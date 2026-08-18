@@ -1,5 +1,3 @@
-@file:Suppress("UnstableApiUsage")
-
 package icu.windea.pls.lang.codeInsight.documentation
 
 import com.intellij.model.Pointer
@@ -14,6 +12,10 @@ import icu.windea.pls.core.runSmartReadAction
 
 // org.jetbrains.kotlin.idea.k2.codeinsight.quickDoc.KotlinDocumentationTarget
 
+/**
+ * @see CwtDocumentationManager
+ */
+@Suppress("UnstableApiUsage")
 class CwtDocumentationTarget(
     val element: PsiElement,
     val originalElement: PsiElement?
@@ -35,13 +37,12 @@ class CwtDocumentationTarget(
     }
 
     override fun computeDocumentationHint(): String? {
-        return runSmartReadAction { CwtDocumentationManager.computeLocalDocumentation(element, originalElement, hint = true) }
+        return runSmartReadAction { CwtDocumentationManager.compute(element, originalElement, hint = true)?.toString() }
     }
 
     override fun computeDocumentation(): DocumentationResult {
         return DocumentationResult.asyncDocumentation {
-            val html = readAction { CwtDocumentationManager.computeLocalDocumentation(element, originalElement, hint = false) }
-            html?.let { DocumentationResult.documentation(it) }
+            readAction { CwtDocumentationManager.compute(element, originalElement, hint = false)?.toDocumentation() }
         }
     }
 }

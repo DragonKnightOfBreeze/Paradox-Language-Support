@@ -1,5 +1,3 @@
-@file:Suppress("unused")
-
 package icu.windea.pls.lang.codeInsight.documentation
 
 import com.intellij.openapi.project.Project
@@ -16,6 +14,7 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.documentation
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.isSamePosition
@@ -24,14 +23,15 @@ import icu.windea.pls.core.pass
 import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.substringIn
-import icu.windea.pls.core.text.DocumentationBuilder
-import icu.windea.pls.core.text.buildDocumentation
+import icu.windea.pls.core.util.builders.DocumentationBuilder
+import icu.windea.pls.core.util.builders.buildDocumentation
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
 import icu.windea.pls.cwt.CwtLanguage
 import icu.windea.pls.cwt.psi.CwtOption
-import icu.windea.pls.cwt.psi.CwtOptionMember
+import icu.windea.pls.cwt.psi.CwtOptionKey
 import icu.windea.pls.cwt.psi.CwtProperty
+import icu.windea.pls.cwt.psi.CwtPropertyKey
 import icu.windea.pls.cwt.psi.CwtString
 import icu.windea.pls.cwt.psi.CwtValue
 import icu.windea.pls.cwt.psi.isDataExpression
@@ -48,12 +48,6 @@ import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.search.util.preferLocale
 import icu.windea.pls.lang.search.util.withConstraint
 import icu.windea.pls.lang.settings.ChronicleSettings
-import icu.windea.pls.lang.text.appendConfigFileInfoHeader
-import icu.windea.pls.lang.text.appendPsiLinkOrUnresolved
-import icu.windea.pls.lang.text.getModifierCategoriesText
-import icu.windea.pls.lang.text.getScopeContextText
-import icu.windea.pls.lang.text.getScopeText
-import icu.windea.pls.lang.text.getScopesText
 import icu.windea.pls.lang.util.ParadoxImageManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
@@ -67,171 +61,171 @@ import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptValue
 
+@Suppress("unused")
 object CwtDocumentationManager {
     private const val SECTIONS_INFO = 0
     private const val SECTIONS_IMAGES = 1
     private const val SECTIONS_LOC = 2
 
-    fun computeLocalDocumentation(element: PsiElement, originalElement: PsiElement?, hint: Boolean): String? {
-        if (element is CwtOptionMember) {
-            getOptionMemberDoc(element, originalElement, hint)?.let { return it }
-        }
-        return when (element) {
-            is CwtConfigSymbolLightElement -> getConfigSymbolDoc(element, originalElement, hint)
-            is CwtMemberConfigLightElement -> getMemberConfigDoc(element, originalElement, hint)
-            is CwtProperty -> getPropertyDoc(element, originalElement, hint)
-            is CwtString -> getStringDoc(element, originalElement, hint)
-            else -> null
+    // region Entry Documentation Methods
+
+    fun compute(element: PsiElement, originalElement: PsiElement?, hint: Boolean): DocumentationBuilder? {
+        return buildDocumentation(hint) { build(element, originalElement) }.takeUnless { it.isEmpty() }
+    }
+
+    private fun DocumentationBuilder.build(element: PsiElement, originalElement: PsiElement?) {
+        when(element) {
+            is CwtConfigSymbolLightElement -> buildForConfigSymbol(element, originalElement)
+            is CwtMemberConfigLightElement -> buildForMemberConfig(element, originalElement)
+            is CwtOption -> buildForOption(element, originalElement)
+            is CwtOptionKey -> build(element.parent, originalElement)
+            is CwtProperty -> buildForProperty(element, originalElement)
+            is CwtPropertyKey -> build(element.parent, originalElement)
+            is CwtString -> buildForValue(element, originalElement)
         }
     }
 
-    private fun getOptionMemberDoc(element: CwtOptionMember, originalElement: PsiElement?, hint: Boolean): String? {
-        // 2.1.8 为规则选项提供文档注释，基于 schema 规则文件
-        return when (element) {
-            is CwtOption -> getOptionDoc(element, originalElement, hint)
-            is CwtValue -> if (element.isOptionValue()) getOptionFlagDoc(element, originalElement, hint) else null
-            else -> null
+    // endregion
+
+    // region Dispatch Documentation Methods
+
+    private fun DocumentationBuilder.buildForConfigSymbol(element: CwtConfigSymbolLightElement, originalElement: PsiElement?) {
+        val name = element.name
+        val configType = element.configType
+        buildDefinitionPartForConfigSymbol(element, name, configType)
+    }
+
+    private fun DocumentationBuilder.buildForMemberConfig(element: CwtMemberConfigLightElement, originalElement: PsiElement?) {
+        val name = element.name
+        val configType = null
+        val project = element.project
+        val configGroup = ChronicleFacade.getConfigGroup(project, element.gameType)
+        buildDefinitionPartForMember(element, originalElement, name, configType, configGroup)
+        if (hint) return
+        buildDocumentationContent(element)
+        buildSections()
+    }
+
+    private fun DocumentationBuilder.buildForOption(element: CwtOption, originalElement: PsiElement?) {
+        val name = element.name.orNull() ?: return
+        buildDefinitionPartForOption(name)
+        if (hint) return
+        val configGroup = getConfigGroup(element, originalElement, element.project) ?: return
+        buildDocumentationContentFromConstraint(name, "options", configGroup)
+    }
+
+    private fun DocumentationBuilder.buildForOptionFlag(element: CwtValue, originalElement: PsiElement?) {
+        val name = element.name.orNull() ?: return
+        buildDefinitionPartForOptionFlag(name)
+        if (hint) return
+        val configGroup = getConfigGroup(element, originalElement, element.project) ?: return
+        buildDocumentationContentFromConstraint(name, "option_flags", configGroup)
+    }
+
+    private fun DocumentationBuilder.buildForProperty(element: CwtProperty, originalElement: PsiElement?) {
+        val name = element.name
+        val configType = CwtConfigManager.getConfigType(element)
+        val project = element.project
+        val configGroup = getConfigGroup(element, originalElement, project)
+        buildDefinitionPartForMember(element, originalElement, name, configType, configGroup)
+        if (hint) return
+        buildDocumentationContent(element)
+        buildSections()
+    }
+
+    private fun DocumentationBuilder.buildForValue(element: CwtValue, originalElement: PsiElement?) {
+        // dispatch for option flags
+        if(element.isOptionValue()) return buildForOptionFlag(element, originalElement)
+
+        // only for property value or block value
+        if (!element.isDataExpression()) return
+
+        val name = element.name
+        val project = element.project
+        val configType = CwtConfigManager.getConfigType(element)
+        val configGroup = getConfigGroup(element, originalElement, project)
+        buildDefinitionPartForMember(element, originalElement, name, configType, configGroup)
+        if (hint) return
+        buildDocumentationContent(element)
+        buildSections()
+    }
+
+    // endregion
+
+    // region Implementation Documentation Methods
+
+    private fun DocumentationBuilder.buildDefinitionPartForOption(name: String) {
+        definition {
+            append(ChronicleStrings.optionPrefix).append(" ").append(name)
         }
     }
 
-    private fun getOptionDoc(element: CwtOption, originalElement: PsiElement?, hint: Boolean): String? {
-        val name = element.name.orNull() ?: return null
-        return buildDocumentation {
-            definition {
-                append(ChronicleStrings.optionPrefix).append(" ").append(name)
-            }
-            if (hint) return@buildDocumentation
-            val configGroup = getConfigGroup(element, originalElement, element.project) ?: return@buildDocumentation
-            buildDocumentationContentForOption(name, "options", configGroup)
+    private fun DocumentationBuilder.buildDefinitionPartForOptionFlag(name: String) {
+        definition {
+            append(ChronicleStrings.optionFlagPrefix).append(" ").append(name)
         }
     }
 
-    private fun getOptionFlagDoc(element: CwtValue, originalElement: PsiElement?, hint: Boolean): String? {
-        val name = element.name.orNull() ?: return null
-        return buildDocumentation {
-            definition {
-                append(ChronicleStrings.optionFlagPrefix).append(" ").append(name)
-            }
-            if (hint) return@buildDocumentation
-            val configGroup = getConfigGroup(element, originalElement, element.project) ?: return@buildDocumentation
-            buildDocumentationContentForOption(name, "option_flags", configGroup)
-        }
-    }
-
-    private fun DocumentationBuilder.buildDocumentationContentForOption(name: String, constraint: String, configGroup: CwtConfigGroup) {
+    private fun DocumentationBuilder.buildDocumentationContentFromConstraint(name: String, constraint: String, configGroup: CwtConfigGroup) {
         val schema = configGroup.schemas.firstOrNull() ?: return
         val constraint = schema.constraints[constraint] ?: return
-        constraint.configs?.forEach { config ->
+        val configs = constraint.configs?.orNull() ?: return
+        for (config in configs) {
             val r = when (config) {
                 is CwtPropertyConfig -> config.key == name
                 is CwtValueConfig -> config.value == name
             }
-            if (!r) return@forEach
+            if (!r) continue
             val documentation = config.documentation
-            if (documentation.isNullOrEmpty()) return@forEach
+            if (documentation.isNullOrEmpty()) continue
             content {
                 append(documentation)
             }
         }
     }
 
-    private fun getConfigSymbolDoc(element: CwtConfigSymbolLightElement, originalElement: PsiElement?, hint: Boolean): String {
-        return buildDocumentation {
-            val name = element.name
-            val configType = element.configType
-            val project = element.project
-            val configGroup = ChronicleFacade.getConfigGroup(project, element.gameType)
-            buildConfigSymbolDefinition(element, originalElement, name, configType, configGroup)
-        }
-    }
-
-    private fun getMemberConfigDoc(element: CwtMemberConfigLightElement, originalElement: PsiElement?, hint: Boolean): String {
-        return buildDocumentation {
-            val name = element.name
-            val configType = null
-            val project = element.project
-            val configGroup = ChronicleFacade.getConfigGroup(project, element.gameType)
-            if (!hint) initSections()
-            buildPropertyOrStringDefinition(element, originalElement, name, configType, configGroup)
-            if (hint) return@buildDocumentation
-            buildDocumentationContent(element)
-            buildSections()
-        }
-    }
-
-    private fun getPropertyDoc(element: CwtProperty, originalElement: PsiElement?, hint: Boolean): String {
-        return buildDocumentation {
-            val name = element.name
-            val configType = CwtConfigManager.getConfigType(element)
-            val project = element.project
-            val configGroup = getConfigGroup(element, originalElement, project)
-            if (!hint) initSections()
-            buildPropertyOrStringDefinition(element, originalElement, name, configType, configGroup)
-            if (hint) return@buildDocumentation
-            buildDocumentationContent(element)
-            buildSections()
-        }
-    }
-
-    private fun getStringDoc(element: CwtString, originalElement: PsiElement?, hint: Boolean): String? {
-        // only for property value or block value
-        if (!element.isDataExpression()) return null
-
-        return buildDocumentation {
-            val name = element.name
-            val project = element.project
-            val configType = CwtConfigManager.getConfigType(element)
-            val configGroup = getConfigGroup(element, originalElement, project)
-            if (!hint) initSections()
-            buildPropertyOrStringDefinition(element, originalElement, name, configType, configGroup)
-            if (hint) return@buildDocumentation
-            buildDocumentationContent(element)
-            buildSections()
-        }
-    }
-
-    private fun DocumentationBuilder.buildConfigSymbolDefinition(element: PsiElement, originalElement: PsiElement?, name: String, configType: CwtConfigType, configGroup: CwtConfigGroup) {
+    private fun DocumentationBuilder.buildDefinitionPartForConfigSymbol(element: PsiElement, name: String, configType: CwtConfigType) {
         definition {
-            appendConfigFileInfoHeader(element)
-
+            // 加上文件信息
+            configFileInfoHeader(element)
+            // 加上基本信息
             val prefix = configType.prefix
-
-            if (prefix != null) {
-                append(prefix).append(" ")
-            }
+            if (prefix != null) append(prefix).append(" ")
             append("<b>").append(name.escapeXml().or.anonymous()).append("</b>")
         }
     }
 
-    private fun DocumentationBuilder.buildPropertyOrStringDefinition(element: PsiElement, originalElement: PsiElement?, name: String, configType: CwtConfigType?, configGroup: CwtConfigGroup?) {
+    private fun DocumentationBuilder.buildDefinitionPartForMember(element: PsiElement, originalElement: PsiElement?, name: String, configType: CwtConfigType?, configGroup: CwtConfigGroup?) {
         definition {
-            appendConfigFileInfoHeader(element)
-
+            // 加上文件信息
+            configFileInfoHeader(element)
+            // 加上基本信息
             val config = element.getUserData(CwtConfigManager.Keys.config)
             val tagType = config?.castOrNull<CwtValueConfig>()?.tagType
             val referenceElement = PsiService.getReferenceElement(originalElement)
 
-            val semanticName = configType?.let { CwtConfigManager.getNameByConfigType(name, it) } ?: name
-            val semanticProperty = when {
+            // prefix
+            val finalPrefix = when {
                 referenceElement != null && tagType != null -> "($tagType)" // 处理特殊标签
                 configType?.isReference == true -> configType.prefix
-                referenceElement is ParadoxScriptPropertyKey -> ChronicleStrings.definitionPropertyPrefix
-                referenceElement is ParadoxScriptValue -> ChronicleStrings.definitionValuePrefix
-                element is CwtMemberConfigLightElement && element.config is CwtPropertyConfig -> ChronicleStrings.definitionPropertyPrefix
-                element is CwtMemberConfigLightElement && element.config is CwtValueConfig -> ChronicleStrings.definitionValuePrefix
-                else -> configType?.prefix
-            }
-
-            val prefix = when {
-                semanticProperty != null -> semanticProperty
+                referenceElement is ParadoxScriptPropertyKey -> ChronicleStrings.propertyPrefix
+                referenceElement is ParadoxScriptValue -> ChronicleStrings.valuePrefix
+                element is CwtMemberConfigLightElement && element.config is CwtPropertyConfig -> ChronicleStrings.propertyPrefix
+                element is CwtMemberConfigLightElement && element.config is CwtValueConfig -> ChronicleStrings.valuePrefix
+                configType?.prefix != null -> configType.prefix
                 element is CwtProperty -> ChronicleStrings.propertyPrefix
                 element is CwtValue -> ChronicleStrings.valuePrefix
                 else -> null
             }
-            if (prefix != null) {
-                append(prefix).append(" ")
+            if (finalPrefix != null) {
+                append(finalPrefix).append(" ")
             }
-            append("<b>").append(semanticName.escapeXml().or.anonymous()).append("</b>")
+
+            // name
+            val finalName = configType?.let { CwtConfigManager.getNameByConfigType(name, it) } ?: name
+            append("<b>").append(finalName.escapeXml().or.anonymous()).append("</b>")
+
+            // type
             if (configType?.category != null) {
                 val typeElement = element.parentOfType<CwtProperty>()
                 val typeName = typeElement?.name?.substringIn('[', ']')?.orNull()
@@ -240,7 +234,7 @@ object CwtDocumentationManager {
                     if (configGroup != null) {
                         val gameType = configGroup.gameType
                         val typeLink = ReferenceLinkType.CwtConfig.createLink(configType.category, typeName, gameType)
-                        append(": ").appendPsiLinkOrUnresolved(typeLink.escapeXml(), typeName.escapeXml(), context = typeElement)
+                        append(": ").psiLinkOrUnresolved(typeLink.escapeXml(), typeName.escapeXml(), context = typeElement)
                     } else {
                         append(": ").append(typeName.escapeXml())
                     }
@@ -248,7 +242,7 @@ object CwtDocumentationManager {
             }
 
             // source prefix + source name
-            val sourceName = if (semanticName == name) null else name.orNull()
+            val sourceName = if (finalName == name) null else name.orNull()
             if (sourceName != null) {
                 val sourcePrefix = when {
                     element is CwtProperty -> ChronicleStrings.sourcePropertyPrefix
@@ -263,26 +257,25 @@ object CwtDocumentationManager {
 
             if (configGroup != null) {
                 if (referenceElement != null && configType == CwtConfigTypes.Modifier) {
-                    addModifierRelatedLocalisations(element, referenceElement, name, configGroup)
-                    addModifierIcon(element, referenceElement, name, configGroup)
+                    addModifierRelatedLocalisations(referenceElement, name, configGroup)
+                    addModifierIcon(referenceElement, name, configGroup)
                 }
                 if (element is CwtProperty || (element is CwtMemberConfigLightElement && element.config is CwtPropertyConfig)) {
                     addScope(element, name, configType, configGroup)
                 }
                 if (referenceElement != null) {
-                    addScopeContext(element, referenceElement, configGroup)
+                    addScopeContext(referenceElement, configGroup)
                 }
             }
         }
     }
 
-    private fun DocumentationBuilder.addModifierRelatedLocalisations(element: PsiElement, referenceElement: PsiElement, name: String, configGroup: CwtConfigGroup) {
-        val render = ChronicleSettings.getInstance().state.documentation.renderNameDescForModifiers
+    private fun DocumentationBuilder.addModifierRelatedLocalisations(referenceElement: PsiElement, name: String, configGroup: CwtConfigGroup) {
         val contextElement = referenceElement
         if (contextElement !is ParadoxScriptStringExpressionElement) return
         val gameType = configGroup.gameType
         val project = configGroup.project
-        val usedLocale = ParadoxLocaleManager.getResolvedLocaleConfigInDocumentation(element)
+        val usedLocale = ParadoxLocaleManager.getResolvedLocaleConfigInDocumentation(contextElement)
         val nameLocalisation = run {
             val keys = ParadoxModifierManager.getModifierNameKeys(name, contextElement)
             keys.firstNotNullOfOrNull { key ->
@@ -307,33 +300,29 @@ object CwtDocumentationManager {
             br()
             append(ChronicleStrings.relatedLocalisationPrefix).append(" ")
             val link = ReferenceLinkType.Localisation.createLink(nameLocalisation.name, gameType)
-            append("name = ").appendPsiLinkOrUnresolved(link.escapeXml(), nameLocalisation.name.escapeXml(), context = contextElement)
+            append("name = ").psiLinkOrUnresolved(link.escapeXml(), nameLocalisation.name.escapeXml(), context = contextElement)
         }
         run {
             if (descLocalisation == null) return@run
             br()
             append(ChronicleStrings.relatedLocalisationPrefix).append(" ")
             val link = ReferenceLinkType.Localisation.createLink(descLocalisation.name, gameType)
-            append("desc = ").appendPsiLinkOrUnresolved(link.escapeXml(), descLocalisation.name.escapeXml(), context = contextElement)
+            append("desc = ").psiLinkOrUnresolved(link.escapeXml(), descLocalisation.name.escapeXml(), context = contextElement)
         }
-        run rs@{
-            val sections = getSections(SECTIONS_LOC)
-            if (sections == null || render) return@rs
-            run {
-                if (nameLocalisation == null) return@run
-                val richText = ParadoxLocalisationTextQuickDocRenderer().render(nameLocalisation)
-                sections["name"] = richText
-            }
-            run {
-                if (descLocalisation == null) return@run
-                val richText = ParadoxLocalisationTextQuickDocRenderer().render(descLocalisation)
-                sections["desc"] = richText
-            }
+        if (hint) return
+        if (!ChronicleSettings.getInstance().state.documentation.renderNameDescForModifiers) return
+        val sections = getSections(SECTIONS_LOC)
+        run {
+            if (nameLocalisation == null) return@run
+            sections["name"] = ParadoxLocalisationTextQuickDocRenderer().render(nameLocalisation)
+        }
+        run {
+            if (descLocalisation == null) return@run
+            sections["desc"] = ParadoxLocalisationTextQuickDocRenderer().render(descLocalisation)
         }
     }
 
-    private fun DocumentationBuilder.addModifierIcon(element: PsiElement, referenceElement: PsiElement, name: String, configGroup: CwtConfigGroup) {
-        val render = ChronicleSettings.getInstance().state.documentation.renderIconForModifiers
+    private fun DocumentationBuilder.addModifierIcon(referenceElement: PsiElement, name: String, configGroup: CwtConfigGroup) {
         val contextElement = referenceElement
         if (contextElement !is ParadoxScriptStringExpressionElement) return
         val gameType = configGroup.gameType
@@ -341,7 +330,7 @@ object CwtDocumentationManager {
         val iconFile = run {
             val paths = ParadoxModifierManager.getModifierIconPaths(name, contextElement)
             paths.firstNotNullOfOrNull { path ->
-                val iconSelector = ParadoxFilePathSearch.selector(project, element).contextSensitive()
+                val iconSelector = ParadoxFilePathSearch.selector(project, referenceElement).contextSensitive()
                 ParadoxFilePathSearch.searchIcon(path, iconSelector).find()
             }
         }
@@ -352,83 +341,69 @@ object CwtDocumentationManager {
             br()
             append(ChronicleStrings.relatedImagePrefix).append(" ")
             val link = ReferenceLinkType.FilePath.createLink(iconPath, gameType)
-            append("icon = ").appendPsiLinkOrUnresolved(link.escapeXml(), iconPath.escapeXml(), context = contextElement)
+            append("icon = ").psiLinkOrUnresolved(link.escapeXml(), iconPath.escapeXml(), context = referenceElement)
         }
-        run rs@{
-            val sections = getSections(SECTIONS_IMAGES)
-            if (sections == null || render) return@rs
-            run {
-                if (iconFile == null) return@run
-                val url = ParadoxImageManager.resolveUrlByFile(iconFile, project) ?: return@run
-                sections["icon"] = buildDocumentation { image(url) }
-            }
+        if (hint) return
+        if (!ChronicleSettings.getInstance().state.documentation.renderIconForModifiers) return
+        val sections = getSections(SECTIONS_IMAGES)
+        run {
+            if (iconFile == null) return@run
+            val url = ParadoxImageManager.resolveUrlByFile(iconFile, project) ?: return@run
+            sections["icon"] = buildDocumentation { image(url) }.toString()
         }
     }
 
     private fun DocumentationBuilder.addScope(element: PsiElement, name: String, configType: CwtConfigType?, configGroup: CwtConfigGroup) {
-        // 即使是在CWT文件中，如果可以推断得到规则分组，也显示作用域信息
+        // 即使是在 CWT 文件中，如果可以推断得到规则分组，也显示作用域信息
 
+        if (hint) return
         if (!ChronicleSettings.getInstance().state.documentation.showScopes) return
 
         // 为 `link` 提示名字、描述、输入作用域、输出作用域的文档注释
         // 为 `alias` `modifier` `localisation_command` 等提供分类、支持的作用域的文档注释
         // 仅为脚本文件和本地化文件中的引用提供
+
         val sections = getSections(SECTIONS_INFO)
         val gameType = configGroup.gameType
         val contextElement = element
         when (configType) {
             CwtConfigTypes.Link -> {
                 val linkConfig = configGroup.links[name] ?: return
-                if (sections != null) {
-                    val inputScopes = linkConfig.inputScopes
-                    sections[ChronicleBundle.message("doc.sectionTitle.inputScopes")] = getScopesText(inputScopes, gameType, contextElement)
-
-                    val outputScope = linkConfig.outputScope ?: ParadoxScopeConstants.anyScope
-                    sections[ChronicleBundle.message("doc.sectionTitle.outputScope")] = getScopeText(outputScope, gameType, contextElement)
-                }
+                val inputScopes = linkConfig.inputScopes
+                sections[ChronicleBundle.message("doc.sectionTitle.inputScopes")] = getScopesText(inputScopes, gameType, contextElement)
+                val outputScope = linkConfig.outputScope ?: ParadoxScopeConstants.anyScope
+                sections[ChronicleBundle.message("doc.sectionTitle.outputScope")] = getScopeText(outputScope, gameType, contextElement)
             }
             CwtConfigTypes.LocalisationLink -> {
                 val linkConfig = configGroup.localisationLinks[name] ?: return
-                if (sections != null) {
-                    val inputScopes = linkConfig.inputScopes
-                    sections[ChronicleBundle.message("doc.sectionTitle.inputScopes")] = getScopesText(inputScopes, gameType, contextElement)
-
-                    val outputScope = linkConfig.outputScope ?: ParadoxScopeConstants.anyScope
-                    sections[ChronicleBundle.message("doc.sectionTitle.outputScope")] = getScopeText(outputScope, gameType, contextElement)
-                }
+                val inputScopes = linkConfig.inputScopes
+                sections[ChronicleBundle.message("doc.sectionTitle.inputScopes")] = getScopesText(inputScopes, gameType, contextElement)
+                val outputScope = linkConfig.outputScope ?: ParadoxScopeConstants.anyScope
+                sections[ChronicleBundle.message("doc.sectionTitle.outputScope")] = getScopeText(outputScope, gameType, contextElement)
             }
             CwtConfigTypes.Modifier -> {
                 val modifierConfig = configGroup.modifiers[name] ?: return
-                if (sections != null) {
-                    val categoryNames = modifierConfig.categoryConfigMap.keys
-                    if (categoryNames.isNotEmpty()) {
-                        sections[ChronicleBundle.message("doc.sectionTitle.categories")] = getModifierCategoriesText(categoryNames, gameType, contextElement)
-                    }
-
-                    val supportedScopes = modifierConfig.supportedScopes
-                    sections[ChronicleBundle.message("doc.sectionTitle.supportedScopes")] = getScopesText(supportedScopes, gameType, contextElement)
+                val categoryNames = modifierConfig.categoryConfigMap.keys
+                if (categoryNames.isNotEmpty()) {
+                    sections[ChronicleBundle.message("doc.sectionTitle.categories")] = getModifierCategoriesText(categoryNames, gameType, contextElement)
                 }
+                val supportedScopes = modifierConfig.supportedScopes
+                sections[ChronicleBundle.message("doc.sectionTitle.supportedScopes")] = getScopesText(supportedScopes, gameType, contextElement)
             }
             CwtConfigTypes.ModifierCategory -> {
                 val modifierCategoryConfig = configGroup.modifierCategories[name] ?: return
-                if (sections != null) {
-                    val supportedScopes = modifierCategoryConfig.supportedScopes
-                    sections[ChronicleBundle.message("doc.sectionTitle.supportedScopes")] = getScopesText(supportedScopes, gameType, contextElement)
-                }
+                val supportedScopes = modifierCategoryConfig.supportedScopes
+                sections[ChronicleBundle.message("doc.sectionTitle.supportedScopes")] = getScopesText(supportedScopes, gameType, contextElement)
             }
             CwtConfigTypes.LocalisationPromotion -> {
                 val localisationPromotionConfig = configGroup.localisationPromotions[name] ?: return
-                if (sections != null) {
-                    val supportedScopes = localisationPromotionConfig.supportedScopes
-                    sections[ChronicleBundle.message("doc.sectionTitle.supportedScopes")] = getScopesText(supportedScopes, gameType, contextElement)
-                }
+                val supportedScopes = localisationPromotionConfig.supportedScopes
+                sections[ChronicleBundle.message("doc.sectionTitle.supportedScopes")] = getScopesText(supportedScopes, gameType, contextElement)
             }
             CwtConfigTypes.LocalisationCommand -> {
                 val localisationCommandConfig = configGroup.localisationCommands[name] ?: return
-                if (sections != null) {
-                    val supportedScopes = localisationCommandConfig.supportedScopes
-                    sections[ChronicleBundle.message("doc.sectionTitle.supportedScopes")] = getScopesText(supportedScopes, gameType, contextElement)
-                }
+                val supportedScopes = localisationCommandConfig.supportedScopes
+                sections[ChronicleBundle.message("doc.sectionTitle.supportedScopes")] = getScopesText(supportedScopes, gameType, contextElement)
             }
             CwtConfigTypes.Alias, CwtConfigTypes.Trigger, CwtConfigTypes.Effect -> {
                 val (aliasName, aliasSubName) = name.removeSurroundingOrNull("alias[", "]")?.split(':') ?: return
@@ -438,28 +413,26 @@ object CwtDocumentationManager {
                     ?: aliasConfigs.find { element.isSamePosition(it.pointer.element) }
                     ?: return
                 if (aliasConfig.name !in configGroup.aliasNamesSupportScope) return
-                if (sections != null) {
-                    val supportedScopes = aliasConfig.supportedScopes
-                    sections[ChronicleBundle.message("doc.sectionTitle.supportedScopes")] = getScopesText(supportedScopes, gameType, contextElement)
-
-                    val outputScope = aliasConfig.outputScope
-                    if (outputScope != null) {
-                        sections[ChronicleBundle.message("doc.sectionTitle.outputScope")] = getScopeText(outputScope, gameType, contextElement)
-                    }
+                val supportedScopes = aliasConfig.supportedScopes
+                sections[ChronicleBundle.message("doc.sectionTitle.supportedScopes")] = getScopesText(supportedScopes, gameType, contextElement)
+                val outputScope = aliasConfig.outputScope
+                if (outputScope != null) {
+                    sections[ChronicleBundle.message("doc.sectionTitle.outputScope")] = getScopeText(outputScope, gameType, contextElement)
                 }
             }
             else -> pass()
         }
     }
 
-    private fun DocumentationBuilder.addScopeContext(element: PsiElement, referenceElement: PsiElement, configGroup: CwtConfigGroup) {
+    private fun DocumentationBuilder.addScopeContext(referenceElement: PsiElement, configGroup: CwtConfigGroup) {
         // 进行代码提示时也显示作用域上下文信息
         // @Suppress("DEPRECATION")
         // if (DocumentationManager.IS_FROM_LOOKUP.get(element) == true) return
 
+        if (hint) return
         if (!ChronicleSettings.getInstance().state.documentation.showScopeContext) return
 
-        val sections = getSections(0) ?: return
+        val sections = getSections(SECTIONS_INFO)
         val gameType = configGroup.gameType
         val memberElement = referenceElement.parentOfType<ParadoxScriptMember>(true) ?: return
         if (!ParadoxScopeManager.isScopeContextSupported(memberElement, indirect = true)) return
@@ -467,16 +440,14 @@ object CwtDocumentationManager {
         if (scopeContext == null) return
         // TODO 如果作用域引用位于脚本表达式中，应当使用那个位置的作用域上下文，但是目前实现不了
         //  因为这里的 `referenceElement` 是整个 `stringExpression`，得到的作用域上下文会是脚本表达式最终的作用域上下文
-        sections[ChronicleBundle.message("doc.sectionTitle.scopeContext")] = getScopeContextText(scopeContext, gameType, element)
+        sections[ChronicleBundle.message("doc.sectionTitle.scopeContext")] = getScopeContextText(scopeContext, gameType, referenceElement)
     }
 
     private fun DocumentationBuilder.buildDocumentationContent(element: PsiElement) {
         val ownedComments = CwtPsiService.getOwnedDocComments(element)
         val documentation = CwtPsiService.getDocCommentText(ownedComments)
         if (documentation.isNullOrEmpty()) return
-        content {
-            append(documentation)
-        }
+        content { append(documentation) }
     }
 
     private fun getConfigGroup(element: PsiElement, originalElement: PsiElement?, project: Project): CwtConfigGroup? {
@@ -488,4 +459,6 @@ object CwtDocumentationManager {
         }
         return null
     }
+
+    // endregion
 }

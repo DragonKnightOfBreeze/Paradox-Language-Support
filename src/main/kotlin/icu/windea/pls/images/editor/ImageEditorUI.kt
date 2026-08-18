@@ -15,7 +15,6 @@ import com.intellij.openapi.actionSystem.DataSink
 import com.intellij.openapi.actionSystem.PlatformCoreDataKeys
 import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.openapi.actionSystem.UiDataProvider
-import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.colors.EditorColors
 import com.intellij.openapi.editor.colors.EditorColorsManager
 import com.intellij.openapi.ide.CopyPasteManager
@@ -216,7 +215,7 @@ class ImageEditorUI(
         run {
             if (file == null || project == null) return@run
             if (fileType !== DdsFileType) return@run
-            val metadata = runSmartReadAction(this) { service<DdsMetadataIndex>().getMetadata(file, project) } ?: return@run
+            val metadata = runSmartReadAction(this) { DdsMetadataIndex.getInstance().getMetadata(file, project) } ?: return@run
             infoLabel.text = buildString {
                 append(metadata.width).append("\u00D7").append(metadata.height)
                 append(" ").append(format)
@@ -228,7 +227,7 @@ class ImageEditorUI(
         run {
             if (file == null || project == null) return@run
             if (fileType !== TgaFileType) return@run
-            val metadata = runSmartReadAction(this) { service<TgaMetadataIndex>().getMetadata(file, project) } ?: return@run
+            val metadata = runSmartReadAction(this) { TgaMetadataIndex.getInstance().getMetadata(file, project) } ?: return@run
             infoLabel.text = buildString {
                 append(metadata.width).append("\u00D7").append(metadata.height)
                 append(" ").append(format)

@@ -22,10 +22,10 @@ import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.model.paths.CwtConfigPath
 import icu.windea.pls.model.type.CwtExpressionType
 
-object CwtConfigCompletionManager {
+object CwtCompletionManager {
     // region Entry Completion Extensions
 
-    fun addConfigCompletions(context: CwtConfigCompletionContext, result: CompletionResultSet) {
+    fun addConfigCompletions(context: CwtCompletionContext, result: CompletionResultSet) {
         val schema = context.schema!!
         val contextConfigs = context.contextConfigs
         if (contextConfigs.isEmpty()) {
@@ -38,14 +38,14 @@ object CwtConfigCompletionManager {
 
     // region General Completion Extensions
 
-    private fun completeByDeclarationConfig(context: CwtConfigCompletionContext, result: CompletionResultSet, schema: CwtSchemaConfig) {
+    private fun completeByDeclarationConfig(context: CwtCompletionContext, result: CompletionResultSet, schema: CwtSchemaConfig) {
         val declarationConfig = schema.constraints["declaration"] ?: return
         if (context.inOption) {
             return completeByOptionConfigs(context, result, schema, declarationConfig)
         }
     }
 
-    private fun completeByContextConfigs(context: CwtConfigCompletionContext, result: CompletionResultSet, schema: CwtSchemaConfig, contextConfigs: List<CwtMemberConfig<*>>) {
+    private fun completeByContextConfigs(context: CwtCompletionContext, result: CompletionResultSet, schema: CwtSchemaConfig, contextConfigs: List<CwtMemberConfig<*>>) {
         if (contextConfigs.isEmpty()) return
         val contextConfigsGroup = contextConfigs.groupBy { config ->
             when (config) {
@@ -70,7 +70,7 @@ object CwtConfigCompletionManager {
         }
     }
 
-    private fun completeByConfig(context: CwtConfigCompletionContext, result: CompletionResultSet, schema: CwtSchemaConfig, config: CwtMemberConfig<*>) {
+    private fun completeByConfig(context: CwtCompletionContext, result: CompletionResultSet, schema: CwtSchemaConfig, config: CwtMemberConfig<*>) {
         when (config) {
             is CwtPropertyConfig -> {
                 if (context.isPropertyKey) {
@@ -100,7 +100,7 @@ object CwtConfigCompletionManager {
         }
     }
 
-    private fun completeByOptionConfigs(context: CwtConfigCompletionContext, result: CompletionResultSet, schema: CwtSchemaConfig, config: CwtMemberConfig<*>) {
+    private fun completeByOptionConfigs(context: CwtCompletionContext, result: CompletionResultSet, schema: CwtSchemaConfig, config: CwtMemberConfig<*>) {
         val optionConfigs = config.optionMetadata.optionConfigs
         if (optionConfigs.isEmpty()) return
         val optionConfigsGroup = optionConfigs.groupBy { optionConfig ->
@@ -120,7 +120,7 @@ object CwtConfigCompletionManager {
         }
     }
 
-    private fun completeByOptionConfig(context: CwtConfigCompletionContext, result: CompletionResultSet, schema: CwtSchemaConfig, config: CwtOptionMemberConfig<*>) {
+    private fun completeByOptionConfig(context: CwtCompletionContext, result: CompletionResultSet, schema: CwtSchemaConfig, config: CwtOptionMemberConfig<*>) {
         when (config) {
             is CwtOptionConfig -> {
                 if (context.isOptionKey) {
@@ -150,7 +150,7 @@ object CwtConfigCompletionManager {
         }
     }
 
-    private fun completeBySchemaExpression(context: CwtConfigCompletionContext, result: CompletionResultSet, schema: CwtSchemaConfig, config: CwtConfig<*>, schemaExpression: CwtSchemaExpression) {
+    private fun completeBySchemaExpression(context: CwtCompletionContext, result: CompletionResultSet, schema: CwtSchemaConfig, config: CwtConfig<*>, schemaExpression: CwtSchemaExpression) {
         completeFromSchemaExpression(schema, config, schemaExpression) {
             it.wrapForConfig(context, config, schemaExpression).addToResult(context, result)
         }
@@ -208,12 +208,12 @@ object CwtConfigCompletionManager {
         }
     }
 
-    fun completeFromTemplateExpression(templateExpression: CwtConfigCompletionTemplateExpression, context: ExpressionContext, processor: Processor<LookupElementBuilder>): Boolean {
+    fun completeFromTemplateExpression(templateExpression: CwtCompletionTemplateExpression, context: ExpressionContext, processor: Processor<LookupElementBuilder>): Boolean {
         val configGroup = templateExpression.context.configGroup
-        val schema = configGroup.schemas.firstOrNull() ?: return true
+        val schema = templateExpression.context.schema ?: return true
         val hintText = " by ${templateExpression.text}"
         return when (templateExpression) {
-            is CwtConfigCompletionTemplateExpression.Enum -> {
+            is CwtCompletionTemplateExpression.Enum -> {
                 fun processLookupElement(config: CwtValueConfig? = null): Boolean {
                     if (config == null) return true
                     val lookupString = config.stringValue ?: return true
@@ -227,7 +227,7 @@ object CwtConfigCompletionManager {
                 val finalConfigs = schema.enums[enumName]?.values ?: return true
                 finalConfigs.process { processLookupElement(it) }
             }
-            is CwtConfigCompletionTemplateExpression.Parameter -> {
+            is CwtCompletionTemplateExpression.Parameter -> {
                 fun processLookupElement(name: String, config: CwtConfig<*>? = null): Boolean {
                     if (config == null) return true
                     val lookupString = name

@@ -1,6 +1,7 @@
-package icu.windea.pls.lang.text
+@file:Suppress("unused")
 
-@Suppress("unused")
+package icu.windea.pls.lang.util.builders
+
 object ParadoxLocalisationTextBuilder {
     fun colorfulText(colorId: String, text: String) = "§${colorId}${text}§!"
     fun parameter(name: String) = "$${name}$"
