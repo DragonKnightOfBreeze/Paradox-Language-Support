@@ -33,7 +33,8 @@ guidance_for_seekers = {
 ode_to_the_dragon_knight = {
     type = book
     tag = special
+    tag = elemental_art_caster
     tag = spirit_art_caster
     damage = 10
-    magic_power = 180
+    magic_power = 200
 }
