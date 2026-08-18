@@ -857,7 +857,7 @@ localisation_promotions = {
 
 # Standalone modifier declarations
 modifiers = {
-    pop_happiness = { Pops }
+    pop_happiness = Pops
     job_<job>_add = { Planets }
 }
 

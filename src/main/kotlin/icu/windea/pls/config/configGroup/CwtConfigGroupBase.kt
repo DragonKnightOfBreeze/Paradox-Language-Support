@@ -108,8 +108,8 @@ class CwtConfigGroupBase(
     override val scopes get() = dataModel.scopes
     override val scopeAliasMap get() = dataModel.scopeAliasMap
     override val scopeGroups get() = dataModel.scopeGroups
-    override val modifierCategories get() = dataModel.modifierCategories
     override val modifiers get() = dataModel.modifiers
+    override val modifierCategories get() = dataModel.modifierCategories
     override val databaseObjectTypes get() = dataModel.databaseObjectTypes
     override val aliasGroups get() = dataModel.aliasGroups
     override val singleAliases get() = dataModel.singleAliases

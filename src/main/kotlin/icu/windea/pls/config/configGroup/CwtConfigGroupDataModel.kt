@@ -113,10 +113,10 @@ interface CwtConfigGroupDataModel {
     val scopeAliasMap: Map<@CaseInsensitive String, CwtScopeConfig> get() = emptyMap()
     val scopeGroups: Map<@CaseInsensitive String, CwtScopeGroupConfig> get() = emptyMap()
 
-    // name - config
-    val modifierCategories: Map<String, CwtModifierCategoryConfig> get() = emptyMap()
     // template_expression - config
     val modifiers: Map<@CaseInsensitive String, CwtModifierConfig> get() = emptyMap()
+    // name - config
+    val modifierCategories: Map<@CaseInsensitive String, CwtModifierCategoryConfig> get() = emptyMap()
 
     // name - config
     val databaseObjectTypes: Map<String, CwtDatabaseObjectTypeConfig> get() = emptyMap()

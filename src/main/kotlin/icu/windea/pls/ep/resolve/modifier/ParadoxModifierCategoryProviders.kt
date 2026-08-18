@@ -4,7 +4,7 @@ import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.base.annotations.ForGameType
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.lang.psi.light.ParadoxModifierLightElement
-import icu.windea.pls.lang.util.ParadoxConfigManager
+import icu.windea.pls.lang.util.ParadoxEconomicCategoryManager
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxModifierInfo
 import icu.windea.pls.model.economicCategoryInfo
@@ -51,13 +51,13 @@ class ParadoxEconomicCategoryModifierCategoryProvider: ParadoxModifierCategoryPr
         val economicCategoryInfo = modifier.economicCategoryInfo ?: return null
         val modifierCategory = economicCategoryInfo.modifierCategory // may be null
         val configGroup = ChronicleFacade.getConfigGroup(modifier.project, modifier.gameType)
-        return ParadoxConfigManager.getModifierCategory(modifierCategory, configGroup)
+        return ParadoxEconomicCategoryManager.getModifierCategories(modifierCategory, configGroup)
     }
 
     override fun getModifierCategories(modifierInfo: ParadoxModifierInfo): Map<String, CwtModifierCategoryConfig>? {
         val economicCategoryInfo = modifierInfo.economicCategoryInfo ?: return null
         val modifierCategory = economicCategoryInfo.modifierCategory // may be null
         val configGroup = ChronicleFacade.getConfigGroup(modifierInfo.project, modifierInfo.gameType)
-        return ParadoxConfigManager.getModifierCategory(modifierCategory, configGroup)
+        return ParadoxEconomicCategoryManager.getModifierCategories(modifierCategory, configGroup)
     }
 }

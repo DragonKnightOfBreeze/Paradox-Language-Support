@@ -4,6 +4,8 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
 import icu.windea.pls.base.annotations.ForGameType
+import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
+import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getValue
@@ -34,5 +36,12 @@ object ParadoxEconomicCategoryManager {
                 value.withDependencyItems(definition)
             }
         }
+    }
+
+    fun getModifierCategories(value: String?, configGroup: CwtConfigGroup): Map<String, CwtModifierCategoryConfig> {
+        val result = ParadoxConfigManager.getModifierCategories(value, configGroup)
+        if (result.isNotEmpty()) return result
+        // fallback: default to `economic_unit`
+        return ParadoxConfigManager.getModifierCategories("economic_unit", configGroup)
     }
 }

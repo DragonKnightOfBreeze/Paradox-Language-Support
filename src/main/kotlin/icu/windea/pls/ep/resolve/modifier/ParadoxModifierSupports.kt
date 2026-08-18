@@ -20,7 +20,7 @@ import icu.windea.pls.lang.psi.light.ParadoxModifierLightElement
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxTemplateExpression
 import icu.windea.pls.lang.resolve.util.ParadoxModifierUtil
 import icu.windea.pls.lang.settings.ChronicleSettings
-import icu.windea.pls.lang.util.ParadoxConfigManager
+import icu.windea.pls.lang.util.ParadoxEconomicCategoryManager
 import icu.windea.pls.lang.util.ParadoxModificationTrackers
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
@@ -230,7 +230,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
 
         ParadoxModifierUtil.processEconomicCategoryInfo(element, configGroup) p@{ economicCategoryInfo ->
             // 排除不匹配 modifier 的 supported_scopes 的情况
-            val modifierCategories = ParadoxConfigManager.getModifierCategory(economicCategoryInfo.modifierCategory, configGroup)
+            val modifierCategories = ParadoxEconomicCategoryManager.getModifierCategories(economicCategoryInfo.modifierCategory, configGroup)
             val supportedScopes = ParadoxScopeManager.getSupportedScopes(modifierCategories)
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, supportedScopes, configGroup)
             if (!scopeMatched && completeOnlyScopeIsMatched) return@p true

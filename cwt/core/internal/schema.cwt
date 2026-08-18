@@ -652,20 +652,17 @@ $$options = {
     #### Example: `## severity = warning`
     severity
 
-    #### Specifies the set of allowed file extensions (file_extensions).
+    #### Specifies the set of modifier categories (modifier_categories).
     ####
-    #### Used to constrain path references, thereby providing code inspections and filtering code completion.
+    #### Specifies the mapping relation, from enum values for categories of scripted modifiers, to the set of modifier categories.
     ####
-    #### Applicable to: Member configs whose value is a path reference.
-    ####
-    #### Example: `## file_extensions = { png dds tga }`
-    file_extensions
-
-    #### Specifies the set of modifier category keys (modifier_categories).
-    ####
-    #### The set of category keys used by scripted modifier categories, driving completion, grouping, and display.
-    ####
-    #### Example: `## modifier_categories = { economic_unit planet }`
+    #### Example:
+    #### ```cwt
+    #### enum[scripted_modifier_category] = {
+    ####     ## modifier_categories = { Planets "AI Economy" }
+    ####     planet
+    #### }
+    #### ```
     modifier_categories
 
     #### Specifies the color type (`hex` / `rgb` / `hsv` / `hsv360`).
@@ -674,8 +671,27 @@ $$options = {
     ####
     #### Applicable to: Configs corresponding to definition members (including the root property) that carry color information.
     ####
-    #### Example: `## color_type = rgb`
+    #### Example:
+    #### ```cwt
+    #### ## color_type = hex
+    #### color_hex = scalar
+    ####
+    #### ## color_type = rgb
+    #### color_rgb = {
+    ####     ## cardinality = 3..3
+    ####     float
+    #### }
+    #### ```
     color_type
+
+    #### Specifies the set of allowed file extensions (file_extensions).
+    ####
+    #### Used to constrain path references, thereby providing code inspections and filtering code completion.
+    ####
+    #### Applicable to: Member configs whose value is a path reference.
+    ####
+    #### Example: `## file_extensions = { png dds tga }`
+    file_extensions
 
     #### Specifies the path of a group of member configs to be injected to become sub-configs of the current member config.
     ####

@@ -12,6 +12,7 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.option.CwtOptionMetadata
 import icu.windea.pls.config.util.CwtConfigResolverScope
+import icu.windea.pls.core.collections.getOne
 import icu.windea.pls.core.optimized
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.model.scope.ParadoxScope
@@ -72,8 +73,9 @@ private object CwtModifierCategoryConfigResolver : CwtConfigResolverScope {
             logger.warnWithPrefix(config, "Skipped invalid modifier category config (name: $name): Missing properties.")
             return null
         }
+        val propGroup = propConfigs.groupBy { it.key }
         // may be empty here (e.g., "AI Economy")
-        val supportedScopes = propConfigs.find { it.key == "supported_scopes" }?.let { prop ->
+        val supportedScopes = propGroup.getOne("supported_scopes")?.let { prop ->
             buildSet {
                 prop.stringValue?.let { v -> add(ParadoxScope.getId(v)) }
                 prop.values?.forEach { it.stringValue?.let { v -> add(ParadoxScope.getId(v)) } }

@@ -141,17 +141,15 @@ object ParadoxConfigManager {
         }
     }
 
-    fun getModifierCategory(value: String?, configGroup: CwtConfigGroup): Map<String, CwtModifierCategoryConfig> {
-        val finalValue = value ?: "economic_unit" // default to economic_unit
-        val enumConfig = configGroup.enums["scripted_modifier_category"] ?: return emptyMap() // unexpected
-        return doGetModifierCategory(finalValue, enumConfig)
+    fun getModifierCategories(value: String?, configGroup: CwtConfigGroup): Map<String, CwtModifierCategoryConfig> {
+        if (value.isNullOrEmpty()) return emptyMap()
+        val enumConfig = configGroup.enums["scripted_modifier_category"] ?: return emptyMap()
+        return doGetModifierCategories(value, enumConfig)
     }
 
-    private fun doGetModifierCategory(value: String, enumConfig: CwtEnumConfig): Map<String, CwtModifierCategoryConfig> {
-        var keys = doGetModifierCategoryOptionMetadata(value, enumConfig)
-        if (keys == null) keys = doGetModifierCategoryOptionMetadata("economic_unit", enumConfig)
-        if (keys == null) keys = emptySet() // unexpected
-        if (keys.isEmpty()) return emptyMap()
+    private fun doGetModifierCategories(value: String, enumConfig: CwtEnumConfig): Map<String, CwtModifierCategoryConfig> {
+        val keys = doGetModifierCategoriesOptionMetadata(value, enumConfig)
+        if (keys.isNullOrEmpty()) return emptyMap()
         val modifierCategories = enumConfig.configGroup.modifierCategories
         val result = mutableMapOf<String, CwtModifierCategoryConfig>()
         for (key in keys) {
@@ -161,7 +159,7 @@ object ParadoxConfigManager {
         return result
     }
 
-    private fun doGetModifierCategoryOptionMetadata(value: String, enumConfig: CwtEnumConfig): Set<String>? {
+    private fun doGetModifierCategoriesOptionMetadata(value: String, enumConfig: CwtEnumConfig): Set<String>? {
         val valueConfig = enumConfig.valueConfigMap[value] ?: return null
         return valueConfig.optionMetadata.modifierCategories
     }

@@ -5,6 +5,8 @@ import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.CwtConfigType
 import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.config.CwtDataTypes
+import icu.windea.pls.config.annotations.FromMember
+import icu.windea.pls.config.annotations.FromName
 import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtIdMatchableConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
@@ -12,6 +14,9 @@ import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
 import icu.windea.pls.config.option.CwtOptionMetadata
 import icu.windea.pls.config.util.CwtConfigResolverScope
+import icu.windea.pls.core.annotations.CaseInsensitive
+import icu.windea.pls.core.collections.CaseInsensitiveStringKeyMap
+import icu.windea.pls.core.collections.CaseInsensitiveStringSet
 import icu.windea.pls.core.optimized
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.lang.util.ParadoxScopeManager
@@ -40,7 +45,7 @@ import icu.windea.pls.lang.util.ParadoxScopeManager
  * ```cwt
  * # 来自 modifiers.cwt
  * modifiers = {
- *     pop_happiness = { Pops } # `Pops` is the modifier category
+ *     pop_happiness = Pops # `Pops` is the modifier category
  *     job_<job>_add = { Planets } # for generated modifiers
  *     # ...
  * }
@@ -69,13 +74,18 @@ import icu.windea.pls.lang.util.ParadoxScopeManager
  * @see CwtOptionMetadata.pushScope
  */
 interface CwtModifierConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, CwtIdMatchableConfig<CwtProperty> {
+    @FromName
     val name: String
-    val categories: Set<String> // category names
-    val categoryConfigMap: MutableMap<String, CwtModifierCategoryConfig>
+    @FromMember(": string | string[]")
+    val categories: Set<@CaseInsensitive String> // category names
+
+    val categoryConfigMap: Map<@CaseInsensitive String, CwtModifierCategoryConfig>
     val template: CwtTemplateExpression
     val supportedScopes: Set<String>
 
     override val configType: CwtConfigType get() = CwtConfigTypes.Modifier
+
+    fun bindCategoryConfig(name: @CaseInsensitive String, config: CwtModifierCategoryConfig)
 
     companion object {
         /** 由属性规则解析为修正规则。 */
@@ -98,26 +108,28 @@ private object CwtModifierConfigResolver : CwtConfigResolverScope {
     private val logger = thisLogger()
 
     fun resolve(config: CwtPropertyConfig, name: String): CwtModifierConfig? {
-        // string | string[]
-        val categories = config.stringValue?.let { setOf(it) } ?: config.values?.mapNotNullTo(mutableSetOf()) { it.stringValue }?.optimized()
-        if (categories == null) {
-            logger.warnWithPrefix(config, "Skipped invalid modifier config (name: $name): Null categories")
+        val categories = CaseInsensitiveStringSet()
+        config.stringValue?.let { v -> categories.add(v) }
+        config.values?.forEach { it.stringValue?.let { v -> categories.add(v) } }
+        if (categories.isEmpty()) {
+            logger.warnWithPrefix(config, "Skipped invalid modifier config (name: $name): Empty categories")
             return null
         }
         logger.debugWithPrefix(config) { "Resolved modifier config (name: $name)." }
-        return CwtModifierConfigImpl(config, name, categories)
+        return CwtModifierConfigImpl(config, name, categories.optimized())
     }
 
     fun resolveFromDefinitionModifier(config: CwtPropertyConfig, name: String, typeExpression: String): CwtModifierConfig? {
-        // string | string[]
-        val categories = config.stringValue?.let { setOf(it) } ?: config.values?.mapNotNullTo(mutableSetOf()) { it.stringValue }?.optimized()
-        if (categories == null) {
-            logger.debugWithPrefix(config) { "Skipped invalid modifier config from definition modifier (name: $name): Null categories" }
+        val categories = CaseInsensitiveStringSet()
+        config.stringValue?.let { v -> categories.add(v) }
+        config.values?.forEach { it.stringValue?.let { v -> categories.add(v) } }
+        if (categories.isEmpty()) {
+            logger.warnWithPrefix(config, "Skipped invalid modifier config from definition modifier (name: $name): Empty categories")
             return null
         }
-        val modifierName = name.replace("$", "<$typeExpression>").optimized()
+        val modifierName = name.replace("$", "<$typeExpression>")
         logger.debugWithPrefix(config) { "Resolved modifier config from definition modifier (name: $name, type expression: $typeExpression)." }
-        return CwtModifierConfigImpl(config, modifierName, categories)
+        return CwtModifierConfigImpl(config, modifierName.optimized(), categories.optimized())
     }
 }
 
@@ -126,7 +138,7 @@ private class CwtModifierConfigImpl(
     override val name: String, // template name, not actual modifier name!
     override val categories: Set<String> = emptySet() // category names
 ) : UserDataHolderBase(), CwtModifierConfig {
-    override val categoryConfigMap: MutableMap<String, CwtModifierCategoryConfig> = mutableMapOf()
+    override val categoryConfigMap: MutableMap<String, CwtModifierCategoryConfig> = CaseInsensitiveStringKeyMap()
     override val template: CwtTemplateExpression = CwtTemplateExpression.resolve(name)
     override val supportedScopes: Set<String> by lazy { computeSupportedScopes() }
 
@@ -135,6 +147,10 @@ private class CwtModifierConfigImpl(
             categoryConfigMap.isNotEmpty() -> ParadoxScopeManager.getSupportedScopes(categoryConfigMap)
             else -> config.optionMetadata.supportedScopes
         }
+    }
+
+    override fun bindCategoryConfig(name: String, config: CwtModifierCategoryConfig) {
+        categoryConfigMap[name] = config
     }
 
     override fun toString() = "CwtModifierConfigImpl(name='$name')"

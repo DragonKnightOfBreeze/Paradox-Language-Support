@@ -102,16 +102,16 @@ sealed interface TextPattern<out R : TextPatternResult> {
             }
         }
 
-        private fun selectLiteralOrPrefix(pattern: TextPattern<TextPatternResult>): Int {
+        private fun selectLiteralOrPrefix(pattern: TextPattern<TextPatternResult>): String? {
             return when (pattern) {
-                is Literal -> pattern.value.length
-                is WithPrefix -> pattern.prefix.length
-                is WithSuffix -> Int.MAX_VALUE
-                is WithSurrounding -> pattern.prefix.length
-                is Delimited -> Int.MAX_VALUE
-                is DelimitedWithPrefix -> pattern.prefix.length
-                is DelimitedWithSuffix -> Int.MAX_VALUE
-                is DelimitedWithSurrounding -> pattern.prefix.length
+                is Literal -> pattern.value
+                is WithPrefix -> pattern.prefix
+                is WithSuffix -> null
+                is WithSurrounding -> pattern.prefix
+                is Delimited -> null
+                is DelimitedWithPrefix -> pattern.prefix
+                is DelimitedWithSuffix -> null
+                is DelimitedWithSurrounding -> pattern.prefix
             }
         }
     }

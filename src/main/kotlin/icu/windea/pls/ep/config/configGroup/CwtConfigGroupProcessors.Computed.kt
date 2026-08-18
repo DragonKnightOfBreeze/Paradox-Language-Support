@@ -161,7 +161,7 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
         for (modifier in initializer.modifiers.values) {
             for (category in modifier.categories) {
                 val categoryConfig = initializer.modifierCategories[category] ?: continue
-                modifier.categoryConfigMap[categoryConfig.name] = categoryConfig
+                modifier.bindCategoryConfig(categoryConfig.name, categoryConfig)
             }
         }
     }

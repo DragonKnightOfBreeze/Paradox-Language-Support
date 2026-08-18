@@ -440,14 +440,17 @@ interface CwtOptionMetadata : MetadataMap {
     val severity: String? get() = null
 
     /**
-     * 修正分类键集合（modifier categories）。
+     * 修正分类集合（modifier categories）。
      *
-     * 脚本化修正分类用到的类别键集合，驱动补全、分组与展示。
+     * 指定封装修正（scripted modifiers）的分类的枚举值到修正分类集合的映射。
      *
      * 示例：
      *
      * ```cwt
-     * ## modifier_categories = { economic_unit planet }
+     * enum[scripted_modifier_category] = {
+     *     ## modifier_categories = { Planets "AI Economy" }
+     *     planet
+     * }
      * ```
      *
      * > CWTools 兼容性：不兼容。插件作为扩展提供。
