@@ -21,14 +21,14 @@ sealed interface TextPattern<out R : TextPatternResult> {
 
     data class WithPrefix(val prefix: String) : TextPattern<TextPatternResult.Single> {
         override fun matches(text: String): TextPatternResult.Single? {
-            val result = text.removePrefixOrNull(text) ?: return null
+            val result = text.removePrefixOrNull(prefix) ?: return null
             return TextPatternResult.Single(result)
         }
     }
 
     data class WithSuffix(val suffix: String) : TextPattern<TextPatternResult.Single> {
         override fun matches(text: String): TextPatternResult.Single? {
-            val result = text.removeSuffixOrNull(text) ?: return null
+            val result = text.removeSuffixOrNull(suffix) ?: return null
             return TextPatternResult.Single(result)
         }
     }
@@ -102,16 +102,16 @@ sealed interface TextPattern<out R : TextPatternResult> {
             }
         }
 
-        private fun selectLiteralOrPrefix(pattern: TextPattern<TextPatternResult>): String {
+        private fun selectLiteralOrPrefix(pattern: TextPattern<TextPatternResult>): Int {
             return when (pattern) {
-                is Literal -> pattern.value
-                is WithPrefix -> pattern.prefix
-                is WithSuffix -> ""
-                is WithSurrounding -> pattern.prefix
-                is Delimited -> ""
-                is DelimitedWithPrefix -> pattern.prefix
-                is DelimitedWithSuffix -> ""
-                is DelimitedWithSurrounding -> pattern.prefix
+                is Literal -> pattern.value.length
+                is WithPrefix -> pattern.prefix.length
+                is WithSuffix -> Int.MAX_VALUE
+                is WithSurrounding -> pattern.prefix.length
+                is Delimited -> Int.MAX_VALUE
+                is DelimitedWithPrefix -> pattern.prefix.length
+                is DelimitedWithSuffix -> Int.MAX_VALUE
+                is DelimitedWithSurrounding -> pattern.prefix.length
             }
         }
     }
