@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package icu.windea.pls.test.dsl
 
 import com.intellij.openapi.editor.colors.TextAttributesKey
@@ -8,10 +10,8 @@ import com.intellij.testFramework.fixtures.CodeInsightTestFixture
 @DslMarker
 annotation class HighlightingDsl
 
-@Suppress("unused")
 inline fun <R> highlightingScope(block: HighlightingScope.() -> R): R = HighlightingScope.block()
 
-@Suppress("unused")
 @HighlightingDsl
 object HighlightingScope {
     const val errorMarker = CodeInsightTestFixture.ERROR_MARKER
