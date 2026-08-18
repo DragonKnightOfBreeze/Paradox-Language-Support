@@ -243,11 +243,23 @@ class StdlibExtensionsTest {
 
     @Test
     fun convertPath_test() {
-        Assert.assertEquals("foo/bar.after.txt", "foo/bar.txt".convertPath { b, e -> "$b.after$e" })
-        Assert.assertEquals("foo/bar.after.test.txt", "foo/bar.test.txt".convertPath { b, e -> "$b.after$e" })
-        Assert.assertEquals("foo/bar.after", "foo/bar".convertPath { b, e -> "$b.after$e" })
-        Assert.assertEquals("bar.after", "bar".convertPath { b, e -> "$b.after$e" })
-        Assert.assertEquals(".after", "".convertPath { b, e -> "$b.after$e" })
+        Assert.assertEquals("foo/bar", "foo/bar.txt".convertPath(greedyExtension = false) { b, _ -> b })
+        Assert.assertEquals("foo/.txt", "foo/bar.txt".convertPath(greedyExtension = false) { _, e -> e })
+        Assert.assertEquals("foo/bar.txt", "foo/bar.txt.bak".convertPath(greedyExtension = false) { b, _ -> b })
+        Assert.assertEquals("foo/.bak", "foo/bar.txt.bak".convertPath(greedyExtension = false) { _, e -> e })
+        Assert.assertEquals("foo/bar.after", "foo/bar".convertPath(greedyExtension = false) { b, e -> "$b.after$e" })
+        Assert.assertEquals("foo/bar.test.after.txt", "foo/bar.test.txt".convertPath(greedyExtension = false) { b, e -> "$b.after$e" })
+        Assert.assertEquals(".after", "".convertPath(greedyExtension = false) { b, e -> "$b.after$e" })
+        Assert.assertEquals("bar.after", "bar".convertPath(greedyExtension = false) { b, e -> "$b.after$e" })
+
+        Assert.assertEquals("foo/bar", "foo/bar.txt".convertPath(greedyExtension = true) { b, _ -> b })
+        Assert.assertEquals("foo/.txt", "foo/bar.txt".convertPath(greedyExtension = true) { _, e -> e })
+        Assert.assertEquals("foo/bar", "foo/bar.txt.bak".convertPath(greedyExtension = true) { b, _ -> b })
+        Assert.assertEquals("foo/.txt.bak", "foo/bar.txt.bak".convertPath(greedyExtension = true) { _, e -> e })
+        Assert.assertEquals("foo/bar.after", "foo/bar".convertPath(greedyExtension = true) { b, e -> "$b.after$e" })
+        Assert.assertEquals("foo/bar.after.test.txt", "foo/bar.test.txt".convertPath(greedyExtension = true) { b, e -> "$b.after$e" })
+        Assert.assertEquals(".after", "".convertPath(greedyExtension = true) { b, e -> "$b.after$e" })
+        Assert.assertEquals("bar.after", "bar".convertPath(greedyExtension = true) { b, e -> "$b.after$e" })
     }
 
     @Test

@@ -514,15 +514,18 @@ fun String.normalizePath(): String {
 /**
  * 转化当前路径中的文件名部分。
  *
+ * 如果 [greedyExtension] 为 `true`，则将文件名部分中第一个（而非最后一个） `.` 以及之后的文本视为扩展名部分。
+ *
  * - 格式：`{parent}{baseName}{fileExtension}`
  * - 示例：`"foo/bar.txt".convertPath { b, e -> "$b.after$e" }` -> `"foo/bar.after.txt"`
  */
-inline fun String.convertPath(transform: (baseName: String, extension: String) -> String): String {
-    val separatorIndex = lastIndexOf('/')
-    val dotIndex = if (separatorIndex == -1) -1 else indexOf('.', separatorIndex + 1)
-    val parent = if (separatorIndex == -1) "" else substring(0, separatorIndex + 1)
-    val baseName = if (dotIndex == -1) substring(separatorIndex + 1) else substring(separatorIndex + 1, dotIndex)
-    val extension = if (dotIndex == -1) "" else substring(dotIndex)
+fun String.convertPath(greedyExtension: Boolean = false, transform: (baseName: String, extension: String) -> String): String {
+    val separatorIndex = this.lastIndexOf('/')
+    val parent = if (separatorIndex == -1) "" else this.substring(0, separatorIndex + 1)
+    val fileName = if (separatorIndex == -1) this else this.substring(separatorIndex + 1)
+    val dotIndex = if (greedyExtension) fileName.indexOf('.') else fileName.lastIndexOf('.')
+    val baseName = if (dotIndex == -1) fileName else fileName.substring(0, dotIndex)
+    val extension = if (dotIndex == -1) "" else fileName.substring(dotIndex)
     return parent + transform(baseName, extension)
 }
 

@@ -4,7 +4,7 @@
 
 ## 3.0.2-dev
 
-- [ ] Generated modifiers should not have case-sensitive parts ([#385](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/385))
+- [x] Generated modifiers should not have case-sensitive parts ([#385](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/385))
 - [ ] Missing error on invalid syntax which can cause cascading errors in-game ([#386](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/386))
 - [x] complex_enum的匹配问题 ([#389](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/389))
 - [x] Bug: Broken syntax highlighting on event targets ([#390](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/390))

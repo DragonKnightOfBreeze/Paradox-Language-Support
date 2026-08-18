@@ -14,7 +14,7 @@ interface ParadoxModifierIconProvider {
     fun supports(gameType: ParadoxGameType) = true
 
     // TODO 3.0.1 clarify: ignore case (for file names only) (#385)
-    /** 根据传入的 [modifierInfo] 和 [element]，加入作为候选的修正图标的文件路径（不包括形如 `.dds` 的扩展名）到 [registry]。 */
+    /** 根据传入的 [modifierInfo] 和 [element]，加入作为候选的修正图标的文件路径（不包括形如 `.dds` 的文件扩展名）到 [registry]。 */
     fun addModifierIconPath(modifierInfo: ParadoxModifierInfo, element: PsiElement, registry: MutableSet<String>)
 
     companion object INSTANCE {

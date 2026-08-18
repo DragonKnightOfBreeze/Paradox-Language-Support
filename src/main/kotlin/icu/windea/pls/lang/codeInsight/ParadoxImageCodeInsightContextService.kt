@@ -94,7 +94,7 @@ object ParadoxImageCodeInsightContextService {
                 val check = inspection == null || inspection.checkGeneratedModifierIconsForDefinitions
                 val paths = ParadoxModifierManager.getModifierIconPaths(modifierName, definition)
                 val pathToUse = paths.firstOrNull() ?: return@run
-                val missing = paths.all { path -> isMissing(path, project, definition) }
+                val missing = paths.all { path -> isMissingForModifierIcon(path, project, definition) }
                 val codeInsightInfo = ParadoxImageCodeInsightInfo(type, pathToUse, null, null, check, missing, false)
                 codeInsightInfos += codeInsightInfo
             }
@@ -132,7 +132,7 @@ object ParadoxImageCodeInsightContextService {
             val check = inspection == null || inspection.checkModifierIcons
             val paths = ParadoxModifierManager.getModifierIconPaths(modifierName, element)
             val pathToUse = paths.firstOrNull() ?: return@run
-            val missing = paths.all { path -> isMissing(path, project, element) }
+            val missing = paths.all { path -> isMissingForModifierIcon(path, project, element) }
             val codeInsightInfo = ParadoxImageCodeInsightInfo(type, pathToUse, null, null, check, missing, false)
             codeInsightInfos += codeInsightInfo
         }
@@ -140,9 +140,9 @@ object ParadoxImageCodeInsightContextService {
         return ParadoxImageCodeInsightContext(Type.Modifier, modifierName, codeInsightInfos, fromInspection = fromInspection)
     }
 
-    private fun isMissing(iconPath: String, project: Project, element: PsiElement): Boolean {
+    private fun isMissingForModifierIcon(iconPath: String, project: Project, element: PsiElement): Boolean {
         val iconSelector = ParadoxFilePathSearch.selector(project, element)
-        val missing = ParadoxFilePathSearch.searchIcon(iconPath, iconSelector).findFirst() == null
+        val missing = ParadoxFilePathSearch.searchModifierIcon(iconPath, iconSelector).findFirst() == null
         return missing
     }
 

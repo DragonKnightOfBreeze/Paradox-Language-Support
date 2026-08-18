@@ -55,7 +55,7 @@ class ParadoxModifierIconHintsProvider : ParadoxHintsProvider() {
         val paths = ParadoxModifierManager.getModifierIconPaths(name, element)
         val iconFile = paths.firstNotNullOfOrNull { path ->
             val iconSelector = ParadoxFilePathSearch.selector(project, element).contextSensitive()
-            ParadoxFilePathSearch.searchIcon(path, iconSelector).find()
+            ParadoxFilePathSearch.searchModifierIcon(path, iconSelector).find()
         }
         val iconUrl = when {
             iconFile != null -> ParadoxImageManager.resolveUrlByFile(iconFile, project)

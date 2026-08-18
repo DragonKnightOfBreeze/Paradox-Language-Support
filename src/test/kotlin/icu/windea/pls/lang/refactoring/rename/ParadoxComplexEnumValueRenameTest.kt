@@ -109,8 +109,9 @@ class ParadoxComplexEnumValueRenameTest : BasePlatformTestCase(), ChronicleTestS
         return testDataPath
     }
 
+    @Suppress("SameParameterValue")
     private fun checkMarkedResult(@TestDataFile testDataPath: String, tag: String) {
-        val expectedPath = testDataPath.convertPath { b, e -> "$b.$tag$e" }
+        val expectedPath = testDataPath.convertPath(greedyExtension = true) { b, e -> "$b.$tag$e" }
         myFixture.checkResultByFile(testDataPath, expectedPath, true)
     }
 }

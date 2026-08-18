@@ -21,7 +21,7 @@ import icu.windea.pls.model.paths.ParadoxPath
  *
  * **关于游戏的可执行文件：**
  *
- * - 这里列出的是相对于游戏根目录，去除扩展名（如 `.exe`）后的文件名。
+ * - 这里列出的是相对于游戏根目录或者其特定子目录（如 `binaries`），且去除扩展名（如 `.exe`）后的文件名。
  *
  * @see ParadoxGameType
  */

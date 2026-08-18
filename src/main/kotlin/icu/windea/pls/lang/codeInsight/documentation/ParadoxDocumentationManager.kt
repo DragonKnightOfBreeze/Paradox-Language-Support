@@ -444,7 +444,7 @@ object ParadoxDocumentationManager {
             val paths = ParadoxModifierManager.getModifierIconPaths(name, element)
             paths.firstNotNullOfOrNull { path ->
                 val iconSelector = ParadoxFilePathSearch.selector(project, element).contextSensitive()
-                ParadoxFilePathSearch.searchIcon(path, iconSelector).find()
+                ParadoxFilePathSearch.searchModifierIcon(path, iconSelector).find()
             }
         }
         // 如果没找到的话，不要在文档中显示相关信息
