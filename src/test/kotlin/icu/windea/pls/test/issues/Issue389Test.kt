@@ -9,12 +9,12 @@ import icu.windea.pls.lang.references.ParadoxComplexEnumValuePsiReference
 import icu.windea.pls.lang.references.script.ParadoxScriptExpressionPsiReference
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.ChronicleTestScope
+import icu.windea.pls.test.dsl.expectScope
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import kotlin.test.assertIs
 
 /**
  * See: [#389](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/389)
@@ -47,14 +47,14 @@ class Issue389Test : BasePlatformTestCase(), ChronicleTestScope {
             }
         """.trimIndent())
         IndexingTestUtil.waitUntilIndexesAreReady(project)
-        run {
-            val reference = myFixture.findReferenceAtCaret()!!
-            assertIs<ParadoxComplexEnumValuePsiReference>(reference)
-            val resolved = reference.resolve()
-            assertIs<ParadoxComplexEnumValueLightElement>(resolved)
-            assertEquals("123", resolved.name)
-            assertEquals("test_enum", resolved.enumName)
-            assertEquals(ReadWriteAccess.Write, resolved.readWriteAccess)
+        expectScope {
+            val reference = myFixture.findReferenceAtCaret().expectNotNull()
+            reference.expectIs<ParadoxComplexEnumValuePsiReference>()
+            val resolved = reference.resolve().expectNotNull()
+            resolved.expectIs<ParadoxComplexEnumValueLightElement>()
+            resolved.name.expectEquals("123")
+            resolved.enumName.expectEquals("test_enum")
+            resolved.readWriteAccess.expectEquals(ReadWriteAccess.Write)
         }
     }
 
@@ -70,14 +70,14 @@ class Issue389Test : BasePlatformTestCase(), ChronicleTestScope {
             }
         """.trimIndent())
         IndexingTestUtil.waitUntilIndexesAreReady(project)
-        run {
-            val reference = myFixture.findReferenceAtCaret()!!
-            assertIs<ParadoxComplexEnumValuePsiReference>(reference)
-            val resolved = reference.resolve()
-            assertIs<ParadoxComplexEnumValueLightElement>(resolved)
-            assertEquals("abc", resolved.name)
-            assertEquals("test_enum", resolved.enumName)
-            assertEquals(ReadWriteAccess.Write, resolved.readWriteAccess)
+        expectScope {
+            val reference = myFixture.findReferenceAtCaret().expectNotNull()
+            reference.expectIs<ParadoxComplexEnumValuePsiReference>()
+            val resolved = reference.resolve().expectNotNull()
+            resolved.expectIs<ParadoxComplexEnumValueLightElement>()
+            resolved.name.expectEquals("abc")
+            resolved.enumName.expectEquals("test_enum")
+            resolved.readWriteAccess.expectEquals(ReadWriteAccess.Write)
         }
     }
 
@@ -93,14 +93,14 @@ class Issue389Test : BasePlatformTestCase(), ChronicleTestScope {
             }
         """.trimIndent())
         IndexingTestUtil.waitUntilIndexesAreReady(project)
-        run {
-            val reference = myFixture.findReferenceAtCaret()!!
-            assertIs<ParadoxScriptExpressionPsiReference>(reference)
-            val resolved = reference.resolve()
-            assertIs<ParadoxComplexEnumValueLightElement>(resolved)
-            assertEquals("123", resolved.name)
-            assertEquals("test_enum", resolved.enumName)
-            assertEquals(ReadWriteAccess.Read, resolved.readWriteAccess)
+        expectScope {
+            val reference = myFixture.findReferenceAtCaret().expectNotNull()
+            reference.expectIs<ParadoxScriptExpressionPsiReference>()
+            val resolved = reference.resolve().expectNotNull()
+            resolved.expectIs<ParadoxComplexEnumValueLightElement>()
+            resolved.name.expectEquals("123")
+            resolved.enumName.expectEquals("test_enum")
+            resolved.readWriteAccess.expectEquals(ReadWriteAccess.Read)
         }
     }
 
@@ -116,14 +116,14 @@ class Issue389Test : BasePlatformTestCase(), ChronicleTestScope {
             }
         """.trimIndent())
         IndexingTestUtil.waitUntilIndexesAreReady(project)
-        run {
-            val reference = myFixture.findReferenceAtCaret()!!
-            assertIs<ParadoxScriptExpressionPsiReference>(reference)
-            val resolved = reference.resolve()
-            assertIs<ParadoxComplexEnumValueLightElement>(resolved)
-            assertEquals("abc", resolved.name)
-            assertEquals("test_enum", resolved.enumName)
-            assertEquals(ReadWriteAccess.Read, resolved.readWriteAccess)
+        expectScope {
+            val reference = myFixture.findReferenceAtCaret().expectNotNull()
+            reference.expectIs<ParadoxScriptExpressionPsiReference>()
+            val resolved = reference.resolve().expectNotNull()
+            resolved.expectIs<ParadoxComplexEnumValueLightElement>()
+            resolved.name.expectEquals("abc")
+            resolved.enumName.expectEquals("test_enum")
+            resolved.readWriteAccess.expectEquals(ReadWriteAccess.Read)
         }
     }
 }

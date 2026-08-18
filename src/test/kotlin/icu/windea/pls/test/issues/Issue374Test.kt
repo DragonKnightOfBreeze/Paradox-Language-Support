@@ -9,6 +9,7 @@ import icu.windea.pls.lang.inspections.script.expression.UnresolvedExpressionIns
 import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.ChronicleTestScope
+import icu.windea.pls.test.dsl.expectScope
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -67,9 +68,12 @@ class Issue374Test : BasePlatformTestCase(), ChronicleTestScope {
 
         IndexingTestUtil.waitUntilIndexesAreReady(project)
 
-        val reference = myFixture.findReferenceAtCaret()!!
-        val resolved = reference.resolve()!!
-        assertTrue(resolved is CwtString && resolved.name == "v1")
+        expectScope {
+            val reference = myFixture.findReferenceAtCaret().expectNotNull()
+            val resolved = reference.resolve().expectNotNull()
+            resolved.expectIs<CwtString>()
+            resolved.name.expectEquals("v1")
+        }
 
         myFixture.checkHighlighting()
     }
@@ -87,9 +91,13 @@ class Issue374Test : BasePlatformTestCase(), ChronicleTestScope {
 
         IndexingTestUtil.waitUntilIndexesAreReady(project)
 
-        val reference = myFixture.findReferenceAtCaret()!!
-        val resolved = reference.resolve()!!
-        assertTrue(resolved is ParadoxDynamicValueLightElement && resolved.name == "some_flag" && resolved.presentableType == "test_flag")
+        expectScope {
+            val reference = myFixture.findReferenceAtCaret().expectNotNull()
+            val resolved = reference.resolve().expectNotNull()
+            resolved.expectIs<ParadoxDynamicValueLightElement>()
+            resolved.name.expectEquals("some_flag")
+            resolved.presentableType.expectEquals("test_flag")
+        }
 
         myFixture.checkHighlighting()
     }

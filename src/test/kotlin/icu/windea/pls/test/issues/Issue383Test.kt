@@ -27,6 +27,7 @@ import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.test.ChronicleTestScope
+import icu.windea.pls.test.dsl.expectScope
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -120,15 +121,21 @@ class Issue383Test : BasePlatformTestCase(), ChronicleTestScope {
 
         IndexingTestUtil.waitUntilIndexesAreReady(project)
 
-        val reference = myFixture.findReferenceAtCaret()!!
-        val resolved = reference.resolve()!!
-        assertTrue(resolved is ParadoxDynamicValueLightElement && resolved.name == "created_by" && resolved.presentableType == "country_flag")
+        expectScope {
+            val reference = myFixture.findReferenceAtCaret().expectNotNull()
+            val resolved = reference.resolve().expectNotNull()
+            resolved.expectIs<ParadoxDynamicValueLightElement>()
+            resolved.name.expectEquals("created_by")
+            resolved.presentableType.expectEquals("country_flag")
+        }
 
         // check scope context
-        val element = myFixture.findElementAtCaret()!!
-        val property = element.parentOfType<ParadoxScriptProperty>()!!
-        val scopeContext = ParadoxScopeManager.getScopeContext(property)!!
-        assertEquals(mapOf("this" to "country", "root" to "any", "prev" to "any"), scopeContext.toScopeIdMap())
+        expectScope {
+            val element = myFixture.findElementAtCaret().expectNotNull()
+            val property = element.parentOfType<ParadoxScriptProperty>().expectNotNull()
+            val scopeContext = ParadoxScopeManager.getScopeContext(property).expectNotNull()
+            scopeContext.toScopeIdMap().expectEquals(mapOf("this" to "country", "root" to "any", "prev" to "any"))
+        }
     }
 
     @Test
@@ -149,32 +156,34 @@ class Issue383Test : BasePlatformTestCase(), ChronicleTestScope {
 
         IndexingTestUtil.waitUntilIndexesAreReady(project)
 
-        val reference = myFixture.findReferenceAtCaret()!!
-        assertTrue(reference is PsiMultiReference)
-        reference as PsiMultiReference
-        val parameterReference = reference.references[0]
-        assertTrue(parameterReference is ParadoxParameterPsiReference)
-        val expressionReference = reference.references[1]
-        assertTrue(expressionReference is ParadoxScriptExpressionPsiReference)
+        expectScope {
+            val reference = myFixture.findReferenceAtCaret().expectNotNull()
+            reference.expectIs<PsiMultiReference>()
+            val parameterReference = reference.references[0]
+            parameterReference.expectIs<ParadoxParameterPsiReference>()
+            val expressionReference = reference.references[1]
+            expressionReference.expectIs<ParadoxScriptExpressionPsiReference>()
 
-        parameterReference as ParadoxParameterPsiReference
-        val resolved = parameterReference.resolve()!!
-        assertTrue(resolved is ParadoxParameterLightElement && resolved.name == "TYPE" && resolved.contextKey == "script_value@num_starbase_modules_of_type")
+            val resolved = parameterReference.resolve().expectNotNull()
+            resolved.expectIs<ParadoxParameterLightElement>()
+            resolved.name.expectEquals("TYPE")
+            resolved.contextKey.expectEquals("script_value@num_starbase_modules_of_type")
 
-        // check inferred type
-        resolved as ParadoxParameterLightElement
-        val inferredType = ParadoxParameterManager.getInferredType(resolved)
-        assertEquals("<starbase_module>", inferredType)
+            // check inferred type
+            val inferredType = ParadoxParameterManager.getInferredType(resolved)
+            inferredType.expectEquals("<starbase_module>")
 
-        expressionReference as ParadoxScriptExpressionPsiReference
-        val config = expressionReference.config
-        assertEquals("<starbase_module>", config.configExpression.expressionString)
+            val config = expressionReference.config
+            config.configExpression.expressionString.expectEquals("<starbase_module>")
+        }
 
         // check scope context
-        val element = myFixture.findElementAtCaret()!!
-        val property = element.parentOfType<ParadoxScriptProperty>()!!
-        val scopeContext = ParadoxScopeManager.getScopeContext(property)!!
-        assertEquals(mapOf("this" to "any", "root" to "any"), scopeContext.toScopeIdMap())
+        expectScope {
+            val element = myFixture.findElementAtCaret().expectNotNull()
+            val property = element.parentOfType<ParadoxScriptProperty>().expectNotNull()
+            val scopeContext = ParadoxScopeManager.getScopeContext(property).expectNotNull()
+            scopeContext.toScopeIdMap().expectEquals(mapOf("this" to "any", "root" to "any"))
+        }
     }
 
     private fun enableAllNeededInspections() {

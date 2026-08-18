@@ -5,6 +5,8 @@ import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.ChronicleTestScope
+import icu.windea.pls.test.dsl.ExpectScope.expectOrderedEquals
+import icu.windea.pls.test.dsl.expectScope
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -42,29 +44,29 @@ class Issue324Test : BasePlatformTestCase(), ChronicleTestScope {
         assertNotNull(typeLocalisationConfig)
         typeLocalisationConfig!!
 
-        run {
+        expectScope {
             val r = typeLocalisationConfig.getLocationConfigs(emptyList()).map { it.key }
-            assertSameElements(r, "name", "desc")
+            r.expectOrderedEquals("name", "desc")
         }
         run {
             val r = typeLocalisationConfig.getLocationConfigs(listOf("blade_weapon", "sword")).map { it.key }
-            assertSameElements(r, "name", "desc", "blade_attack_desc", "sword_size")
+            r.expectOrderedEquals("name", "desc", "blade_attack_desc", "sword_size")
         }
         run {
             val r = typeLocalisationConfig.getLocationConfigs(listOf("blade_weapon", "spear")).map { it.key }
-            assertSameElements(r, "name", "desc", "blade_attack_desc", "spear_size")
+            r.expectOrderedEquals("name", "desc", "blade_attack_desc", "spear_size")
         }
         run {
             val r = typeLocalisationConfig.getLocationConfigs(listOf("strike_weapon", "whip")).map { it.key }
-            assertSameElements(r, "name", "desc", "strike_attack_desc")
+            r.expectOrderedEquals("name", "desc", "strike_attack_desc")
         }
         run {
             val r = typeLocalisationConfig.getLocationConfigs(listOf("ranged_weapon", "bow")).map { it.key }
-            assertSameElements(r, "name", "desc", "default_arrow", "bonus_desc")
+            r.expectOrderedEquals("name", "desc", "default_arrow", "bonus_desc")
         }
         run {
             val r = typeLocalisationConfig.getLocationConfigs(listOf("ranged_weapon", "crossbow")).map { it.key }
-            assertSameElements(r, "name", "desc", "default_arrow")
+            r.expectOrderedEquals("name", "desc", "default_arrow")
         }
     }
 }
