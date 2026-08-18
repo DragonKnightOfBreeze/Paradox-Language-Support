@@ -18,7 +18,6 @@ import icu.windea.pls.lang.references.localisation.ParadoxLocalisationExpression
 import icu.windea.pls.lang.references.script.ParadoxScriptExpressionPsiReference
 import icu.windea.pls.lang.resolve.ParadoxConfigService
 import icu.windea.pls.lang.resolve.ParadoxExpressionService
-import icu.windea.pls.lang.resolve.ParadoxExpressionService.getExpressionTextRange
 import icu.windea.pls.lang.util.ParadoxCsvManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
@@ -72,7 +71,8 @@ class ParadoxMergedIndexScriptContextBase(
         val configs = configs
         if (configs.isEmpty()) return PsiReference.EMPTY_ARRAY
         val role = ParadoxTypeResolver.resolveExpressionRole(element)
-        val referenceRange = getExpressionTextRange(element) // unquoted text
+        val referenceRange = ParadoxExpressionService.getExpressionRangeInElement(element)
+        if (referenceRange.isEmpty) return PsiReference.EMPTY_ARRAY
         val reference = ParadoxScriptExpressionPsiReference(element, referenceRange, configs, role)
         return reference.collectReferences()
     }
@@ -117,7 +117,8 @@ class ParadoxMergedIndexLocalisationContextBase(
 
     private fun computeExpressionReferences(): Array<out PsiReference> {
         val element = expressionElement ?: return PsiReference.EMPTY_ARRAY
-        val referenceRange = getExpressionTextRange(element)
+        val referenceRange = ParadoxExpressionService.getExpressionRangeInElement(element)
+        if (referenceRange.isEmpty) return PsiReference.EMPTY_ARRAY
         val reference = ParadoxLocalisationExpressionPsiReference(element, referenceRange)
         return reference.collectReferences()
     }
@@ -153,8 +154,9 @@ class ParadoxMergedIndexCsvContextBase(
     private fun computeExpressionReferences(): Array<out PsiReference> {
         val element = expressionElement ?: return PsiReference.EMPTY_ARRAY
         val columnConfig = columnConfig ?: return PsiReference.EMPTY_ARRAY
-        val textRange = getExpressionTextRange(element) // unquoted text
-        val reference = ParadoxCsvExpressionPsiReference(element, textRange, columnConfig)
+        val referenceRange = ParadoxExpressionService.getExpressionRangeInElement(element)
+        if (referenceRange.isEmpty) return PsiReference.EMPTY_ARRAY
+        val reference = ParadoxCsvExpressionPsiReference(element, referenceRange, columnConfig)
         return arrayOf(reference)
     }
 

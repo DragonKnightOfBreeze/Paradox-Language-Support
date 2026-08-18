@@ -35,16 +35,16 @@ interface ParadoxCsvExpressionSupport {
 
     fun supports(dataType: CwtDataType): Boolean
 
-    fun annotate(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, text: String, config: CwtValueConfig, holder: AnnotationHolder) {
+    fun annotate(element: ParadoxCsvExpressionElement, text: String, rangeInExpression: TextRange, config: CwtValueConfig, holder: AnnotationHolder) {
         // by default nothing
     }
 
-    fun resolve(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, text: String, config: CwtValueConfig): PsiElement? {
+    fun resolve(element: ParadoxCsvExpressionElement, text: String, rangeInExpression: TextRange, config: CwtValueConfig): PsiElement? {
         return null
     }
 
-    fun resolveAll(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, text: String, config: CwtValueConfig): List<PsiElement> {
-        return resolve(element, rangeInElement, text, config).to.singletonListOrEmpty()
+    fun resolveAll(element: ParadoxCsvExpressionElement, text: String, rangeInExpression: TextRange, config: CwtValueConfig): List<PsiElement> {
+        return resolve(element, text, rangeInExpression, config).to.singletonListOrEmpty()
     }
 
     fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {

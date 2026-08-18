@@ -7,13 +7,12 @@ import com.intellij.psi.PsiElement
 import icu.windea.pls.config.CwtDataType
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
-import icu.windea.pls.core.unquote
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.codeInsight.completion.ParadoxExpressionCompletionManager
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
-import icu.windea.pls.lang.resolve.util.ParadoxAnnotateProvider
-import icu.windea.pls.lang.resolve.util.ParadoxResolveProvider
+import icu.windea.pls.lang.resolve.util.ParadoxAnnotateUtil
+import icu.windea.pls.lang.resolve.util.ParadoxResolveUtil
 import icu.windea.pls.model.type.ParadoxExpressionRole
 import icu.windea.pls.script.editor.ParadoxScriptHighlighterColors
 
@@ -27,16 +26,14 @@ class ParadoxShaderEffectExpressionSupport : ParadoxScriptExpressionSupport {
         return dataType == CwtDataTypes.ShaderEffect
     }
 
-    override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, holder: AnnotationHolder) {
+    override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder) {
         val attributesKey = ParadoxScriptHighlighterColors.SHADER_EFFECT_REFERENCE
-        val textRange = element.textRange
-        val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
-        ParadoxAnnotateProvider.annotateExpression(element, range, holder, attributesKey)
+        ParadoxAnnotateUtil.annotateExpression(element, rangeInExpression, holder, attributesKey)
     }
 
-    override fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement {
+    override fun resolve(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement {
         val configGroup = config.configGroup
-        return ParadoxResolveProvider.resolveShaderEffect(element, text, configGroup)
+        return ParadoxResolveUtil.resolveShaderEffect(element, text, configGroup)
     }
 
     override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
@@ -53,16 +50,14 @@ class ParadoxMeshLocatorExpressionSupport : ParadoxScriptExpressionSupport {
         return dataType == CwtDataTypes.MeshLocator
     }
 
-    override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, holder: AnnotationHolder) {
+    override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder) {
         val attributesKey = ParadoxScriptHighlighterColors.MESH_LOCATOR_REFERENCE
-        val textRange = element.textRange
-        val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
-        ParadoxAnnotateProvider.annotateExpression(element, range, holder, attributesKey)
+        ParadoxAnnotateUtil.annotateExpression(element, rangeInExpression, holder, attributesKey)
     }
 
-    override fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement {
+    override fun resolve(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement {
         val configGroup = config.configGroup
-        return ParadoxResolveProvider.resolveMeshLocator(element, text, configGroup)
+        return ParadoxResolveUtil.resolveMeshLocator(element, text, configGroup)
     }
 
     override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {

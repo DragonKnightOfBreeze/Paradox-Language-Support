@@ -18,7 +18,7 @@ import icu.windea.pls.lang.util.ParadoxDynamicValueManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
-object ParadoxResolveProvider {
+object ParadoxResolveUtil {
     fun resolveModifier(element: ParadoxExpressionElement, name: String, configGroup: CwtConfigGroup): PsiElement? {
         if (element !is ParadoxScriptStringExpressionElement) return null // NOTE 1.4.0 - unnecessary to support yet
         return ParadoxModifierManager.resolveModifier(name, element, configGroup)

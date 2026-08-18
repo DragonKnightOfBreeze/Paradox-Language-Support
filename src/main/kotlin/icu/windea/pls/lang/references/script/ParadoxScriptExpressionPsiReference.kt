@@ -80,6 +80,7 @@ class ParadoxScriptExpressionPsiReference(
 
     private fun doResolve(): PsiElement? {
         // 根据对应的 expression 进行解析
+        val element = element
         val rangeInElement = rangeInElement
         configs.forEachFast { config ->
             ParadoxExpressionManager.resolveScriptExpression(element, rangeInElement, config, role)?.let { return it }
@@ -89,6 +90,7 @@ class ParadoxScriptExpressionPsiReference(
 
     private fun doMultiResolve(): Array<out ResolveResult> {
         // 根据对应的 expression 进行解析
+        val element = element
         val rangeInElement = rangeInElement
         val resolved = configs.flatMapFast { config ->
             ParadoxExpressionManager.resolveAllScriptExpression(element, rangeInElement, config, role)

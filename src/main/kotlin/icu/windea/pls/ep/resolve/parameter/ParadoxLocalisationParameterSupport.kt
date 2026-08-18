@@ -18,7 +18,7 @@ interface ParadoxLocalisationParameterSupport {
 
     fun resolveParameter(element: ParadoxLocalisationParameter): ParadoxLocalisationParameterLightElement?
 
-    fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>): ParadoxLocalisationParameterLightElement?
+    fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInExpression: TextRange?, config: CwtConfig<*>): ParadoxLocalisationParameterLightElement?
 
     companion object INSTANCE {
         @JvmField val EP_NAME = ExtensionPointName<ParadoxLocalisationParameterSupport>("icu.windea.pls.localisationParameterSupport")

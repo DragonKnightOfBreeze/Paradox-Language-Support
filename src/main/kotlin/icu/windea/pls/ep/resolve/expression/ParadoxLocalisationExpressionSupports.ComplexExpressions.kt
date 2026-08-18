@@ -10,11 +10,10 @@ import icu.windea.pls.lang.codeInsight.completion.ParadoxComplexExpressionComple
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.isCommandExpression
 import icu.windea.pls.lang.psi.isDatabaseObjectExpression
-import icu.windea.pls.lang.resolve.ParadoxExpressionService
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxCommandExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDatabaseObjectExpression
-import icu.windea.pls.lang.resolve.util.ParadoxAnnotateProvider
+import icu.windea.pls.lang.resolve.util.ParadoxAnnotateUtil
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 
@@ -26,20 +25,16 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 abstract class ParadoxLocalisationComplexExpressionSupportBase : ParadoxLocalisationExpressionSupport {
     // NOTE 2.0.6 - unnecessary to support for `ParadoxScriptExpressionElement` yet
 
-    override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, holder: AnnotationHolder) {
+    override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, holder: AnnotationHolder) {
         if (element !is ParadoxLocalisationExpressionElement) return
         val configGroup = ChronicleFacade.getConfigGroup(element.project, selectGameType(element))
-        val offset = ParadoxExpressionService.getExpressionOffset(element)
-        val rangeInExpression = rangeInElement?.shiftLeft(offset) // #390
         val complexExpression = ParadoxComplexExpression.resolve(element, rangeInExpression, configGroup) ?: return
-        ParadoxAnnotateProvider.annotateComplexExpression(element, complexExpression, holder)
+        ParadoxAnnotateUtil.annotateComplexExpression(element, complexExpression, holder)
     }
 
-    override fun getReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String): List<PsiReference> {
+    override fun getReferences(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange): List<PsiReference> {
         if (element !is ParadoxLocalisationExpressionElement) return emptyList()
         val configGroup = ChronicleFacade.getConfigGroup(element.project, selectGameType(element))
-        val offset = ParadoxExpressionService.getExpressionOffset(element)
-        val rangeInExpression = rangeInElement?.shiftLeft(offset) // #390
         val complexExpression = ParadoxComplexExpression.resolve(element, rangeInExpression, configGroup) ?: return emptyList()
         val references = complexExpression.getAllReferences(element)
         if (references.isEmpty()) return emptyList()

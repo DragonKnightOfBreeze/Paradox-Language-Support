@@ -7,7 +7,6 @@ import com.intellij.psi.PsiElement
 import icu.windea.pls.config.CwtDataType
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
-import icu.windea.pls.core.unquote
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.codeInsight.completion.ParadoxExpressionCompletionManager
 import icu.windea.pls.lang.editor.ParadoxSemanticHighlighterColors
@@ -15,7 +14,7 @@ import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.ParadoxLocalisationParameterService
 import icu.windea.pls.lang.resolve.ParadoxParameterService
-import icu.windea.pls.lang.resolve.util.ParadoxAnnotateProvider
+import icu.windea.pls.lang.resolve.util.ParadoxAnnotateUtil
 import icu.windea.pls.model.type.ParadoxExpressionRole
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
@@ -29,17 +28,15 @@ class ParadoxScriptParameterExpressionSupport : ParadoxScriptExpressionSupport {
         return dataType == CwtDataTypes.Parameter
     }
 
-    override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, holder: AnnotationHolder) {
+    override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder) {
         if (element !is ParadoxScriptStringExpressionElement) return // only for string expressions in script files
         val attributesKey = ParadoxSemanticHighlighterColors.argument()
-        val textRange = element.textRange
-        val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
-        ParadoxAnnotateProvider.annotateExpression(element, range, holder, attributesKey)
+        ParadoxAnnotateUtil.annotateExpression(element, rangeInExpression, holder, attributesKey)
     }
 
-    override fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
+    override fun resolve(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
         if (element !is ParadoxScriptStringExpressionElement) return null // only for string expressions in script files
-        return ParadoxParameterService.resolveArgument(element, rangeInElement, config)
+        return ParadoxParameterService.resolveArgument(element, rangeInExpression, config)
     }
 
     override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
@@ -56,17 +53,15 @@ class ParadoxScriptLocalisationParameterExpressionSupport : ParadoxScriptExpress
         return dataType == CwtDataTypes.LocalisationParameter
     }
 
-    override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, holder: AnnotationHolder) {
+    override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder) {
         if (element !is ParadoxScriptStringExpressionElement) return // only for string expressions in script files
         val attributesKey = ParadoxSemanticHighlighterColors.argument()
-        val textRange = element.textRange
-        val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
-        ParadoxAnnotateProvider.annotateExpression(element, range, holder, attributesKey)
+        ParadoxAnnotateUtil.annotateExpression(element, rangeInExpression, holder, attributesKey)
     }
 
-    override fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
+    override fun resolve(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
         if (element !is ParadoxScriptStringExpressionElement) return null // only for string expressions in script files
-        return ParadoxLocalisationParameterService.resolveArgument(element, rangeInElement, config)
+        return ParadoxLocalisationParameterService.resolveArgument(element, rangeInExpression, config)
     }
 
     override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {

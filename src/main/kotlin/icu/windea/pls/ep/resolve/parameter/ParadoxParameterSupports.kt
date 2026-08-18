@@ -105,7 +105,7 @@ class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         return result
     }
 
-    override fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>): ParadoxParameterLightElement? {
+    override fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInExpression: TextRange?, config: CwtConfig<*>): ParadoxParameterLightElement? {
         if (element !is ParadoxScriptPropertyKey) return null
         if (config !is CwtPropertyConfig || config.configExpression.type != CwtDataTypes.Parameter) return null
         return doResolveArgument(element, config)
@@ -282,7 +282,7 @@ class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         return result
     }
 
-    override fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>): ParadoxParameterLightElement? {
+    override fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInExpression: TextRange?, config: CwtConfig<*>): ParadoxParameterLightElement? {
         if (element !is ParadoxScriptPropertyKey) return null
         if (config !is CwtPropertyConfig || config.configExpression.type != CwtDataTypes.Parameter) return null
         return doResolveArgument(element, config)
@@ -427,8 +427,8 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
 
     override fun resolveConditionParameter(element: ParadoxConditionParameter) = null
 
-    override fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>): ParadoxParameterLightElement? {
-        if (rangeInElement == null) return null
+    override fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInExpression: TextRange?, config: CwtConfig<*>): ParadoxParameterLightElement? {
+        if (rangeInExpression == null) return null
         if (config !is CwtMemberConfig<*>) return null
         if (config.configExpression.type !in CwtDataTypeSets.ValueField) return null
         val expressionString = element.value
@@ -440,10 +440,9 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
         val definitionName = scriptValueNode.text
         if (definitionName.isParameterized()) return null // skip if context name is parameterized
         val definitionTypes = listOf(ParadoxDefinitionTypes.scriptValue)
-        val offset = ParadoxExpressionService.getExpressionOffset(element)
         val argumentNode = scriptValueReferenceExpression.nodes.find f@{
             if (it !is ParadoxScriptValueArgumentNameNode) return@f false
-            if (it.rangeInExpression.shiftRight(offset) != rangeInElement) return@f false
+            if (it.rangeInExpression != rangeInExpression) return@f false
             true
         } as? ParadoxScriptValueArgumentNameNode ?: return null
         val name = argumentNode.text.orNull() ?: return null

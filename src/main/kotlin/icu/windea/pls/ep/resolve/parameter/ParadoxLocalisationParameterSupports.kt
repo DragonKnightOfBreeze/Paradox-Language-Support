@@ -40,9 +40,9 @@ class ParadoxBaseLocalisationParameterSupport : ParadoxLocalisationParameterSupp
         return resolved
     }
 
-    override fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>): ParadoxLocalisationParameterLightElement? {
+    override fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInExpression: TextRange?, config: CwtConfig<*>): ParadoxLocalisationParameterLightElement? {
         if (config !is CwtPropertyConfig || config.configExpression.type != CwtDataTypes.LocalisationParameter) return null
-        val name = (rangeInElement?.substring(element.text) ?: element.name).orNull() ?: return null
+        val name = rangeInExpression?.substring(element.value) ?: element.name
         val localisationReferenceElement = ParadoxLocalisationParameterManager.getLocalisationReferenceElement(element, config) ?: return null
         val localisationName = localisationReferenceElement.name.orNull() ?: return null
         val localisationIcon = ChronicleIcons.Nodes.Localisation

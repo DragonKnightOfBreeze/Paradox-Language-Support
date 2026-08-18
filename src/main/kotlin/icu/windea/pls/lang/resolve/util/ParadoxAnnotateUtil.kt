@@ -11,6 +11,7 @@ import com.intellij.openapi.editor.markup.TextAttributes
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.util.startOffset
 import com.intellij.util.text.TextRangeUtil
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
@@ -19,23 +20,30 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.script.editor.ParadoxScriptHighlighterColors
 
-object ParadoxAnnotateProvider {
-    fun annotateExpression(element: ParadoxExpressionElement, range: TextRange, holder: AnnotationHolder, attributesKey: TextAttributesKey) {
-        if (range.isEmpty) return
-        // skip parameter ranges
+object ParadoxAnnotateUtil {
+    fun annotateExpression(element: ParadoxExpressionElement, rangeInExpression: TextRange, holder: AnnotationHolder, attributesKey: TextAttributesKey) {
+        if (rangeInExpression.isEmpty) return
+        val offset = element.startOffset + ParadoxExpressionService.getExpressionOffset(element)
+        val range = rangeInExpression.shiftRight(offset)
+
         val parameterRanges = ParadoxExpressionService.getParameterRangesInExpression(element)
-        if (parameterRanges.isEmpty()) {
-            holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(range).textAttributes(attributesKey).create()
+        if (parameterRanges.isNotEmpty()) {
+            val finalRanges = TextRangeUtil.excludeRanges(range, parameterRanges)
+            if (finalRanges is List<*> && finalRanges.isEmpty()) return
+            finalRanges.forEach { finalRange ->
+                if (finalRange.isEmpty) return@forEach
+                holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(finalRange).textAttributes(attributesKey).create()
+            }
             return
         }
-        val finalRanges = TextRangeUtil.excludeRanges(range, parameterRanges)
-        for (r in finalRanges) {
-            if (r.isEmpty) continue
-            holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(r).textAttributes(attributesKey).create()
-        }
+
+        holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(range).textAttributes(attributesKey).create()
     }
 
-    fun annotateExpressionAsHighlightedReference(range: TextRange, holder: AnnotationHolder) {
+    fun annotateExpressionAsHighlightedReference(element: ParadoxExpressionElement, rangeInExpression: TextRange, holder: AnnotationHolder) {
+        if (rangeInExpression.isEmpty) return
+        val offset = element.startOffset + ParadoxExpressionService.getExpressionOffset(element)
+        val range = rangeInExpression.shiftRight(offset)
         val attributesKey = DefaultLanguageHighlighterColors.HIGHLIGHTED_REFERENCE
         holder.newSilentAnnotation(HighlightInfoType.HIGHLIGHTED_REFERENCE_SEVERITY).range(range).textAttributes(attributesKey).create()
     }
@@ -47,8 +55,8 @@ object ParadoxAnnotateProvider {
     private fun annotateComplexExpressionNode(element: ParadoxExpressionElement, node: ParadoxComplexExpressionNode, holder: AnnotationHolder, config: CwtConfig<*>? = null) {
         if (node.text.isEmpty()) return
 
-        val attributesKey = node.getAttributesKey(element)
         run {
+            val attributesKey = node.getAttributesKey(element)
             val mustUseAttributesKey = attributesKey != ParadoxScriptHighlighterColors.PROPERTY_KEY && attributesKey != ParadoxScriptHighlighterColors.STRING
             if (attributesKey != null && mustUseAttributesKey) {
                 annotateComplexExpressionNode(element, node, holder, attributesKey)
@@ -56,10 +64,7 @@ object ParadoxAnnotateProvider {
             }
             val attributesKeyConfig = node.getAttributesKeyConfig(element)
             if (attributesKeyConfig != null) {
-                val offset = ParadoxExpressionService.getExpressionOffset(element)
-                val rangeInElement = node.rangeInExpression.shiftRight(offset)
-                val expressionText = ParadoxExpressionService.getExpressionText(element, rangeInElement)
-                ParadoxExpressionService.annotateScriptExpression(element, rangeInElement, expressionText, attributesKeyConfig, holder)
+                ParadoxExpressionService.annotateScriptExpression(element, node.text, node.rangeInExpression, attributesKeyConfig, holder)
                 return@run
             }
             if (attributesKey != null) {
@@ -67,30 +72,28 @@ object ParadoxAnnotateProvider {
             }
         }
 
-        if (node.nodes.isNotEmpty()) {
-            node.nodes.forEachFast { node ->
-                annotateComplexExpressionNode(element, node, holder, config)
-            }
+        node.nodes.forEachFast { node ->
+            annotateComplexExpressionNode(element, node, holder, config)
         }
     }
 
     private fun annotateComplexExpressionNode(element: ParadoxExpressionElement, node: ParadoxComplexExpressionNode, holder: AnnotationHolder, attributesKey: TextAttributesKey) {
         if (node.text.isEmpty()) return
 
-        val offset = element.startOffset + ParadoxExpressionService.getExpressionOffset(element)
-        val rangeToAnnotate = node.rangeInExpression.shiftRight(offset)
-
         // merge text attributes from HighlighterColors.TEXT and attributesKey for token nodes (in case foreground is not set)
-        if (node is ParadoxTokenNode) {
+        // do not apply this logic in tests
+        if (node is ParadoxTokenNode && !ChronicleFacade.isUnitTestMode()) {
             val editorColorsManager = EditorColorsManager.getInstance()
             val schema = editorColorsManager.activeVisibleScheme ?: editorColorsManager.schemeForCurrentUITheme
             val textAttributes1 = schema.getAttributes(HighlighterColors.TEXT)
             val textAttributes2 = schema.getAttributes(attributesKey)
             val textAttributes = TextAttributes.merge(textAttributes1, textAttributes2)
-            holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(rangeToAnnotate).enforcedTextAttributes(textAttributes).create()
+            val offset = element.startOffset + ParadoxExpressionService.getExpressionOffset(element)
+            val range = node.rangeInExpression.shiftRight(offset)
+            holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(range).enforcedTextAttributes(textAttributes).create()
             return
         }
 
-        annotateExpression(element, rangeToAnnotate, holder, attributesKey)
+        annotateExpression(element, node.rangeInExpression, holder, attributesKey)
     }
 }

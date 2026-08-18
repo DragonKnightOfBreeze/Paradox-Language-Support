@@ -10,15 +10,14 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.runWithRecursionGuard
-import icu.windea.pls.core.unquote
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.codeInsight.completion.ParadoxExpressionCompletionManager
 import icu.windea.pls.lang.editor.ParadoxSemanticHighlighterColors
 import icu.windea.pls.lang.match.ParadoxExpressionMatchService
 import icu.windea.pls.lang.resolve.ParadoxExpressionService
-import icu.windea.pls.lang.resolve.util.ParadoxAnnotateProvider
-import icu.windea.pls.lang.resolve.util.ParadoxResolveProvider
+import icu.windea.pls.lang.resolve.util.ParadoxAnnotateUtil
+import icu.windea.pls.lang.resolve.util.ParadoxResolveUtil
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.model.expressions.ParadoxExpression
@@ -31,14 +30,12 @@ import icu.windea.pls.model.expressions.ParadoxExpression
 class ParadoxCsvDefinitionExpressionSupport : ParadoxCsvExpressionSupport {
     override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.Definition
 
-    override fun annotate(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, text: String, config: CwtValueConfig, holder: AnnotationHolder) {
+    override fun annotate(element: ParadoxCsvExpressionElement, text: String, rangeInExpression: TextRange, config: CwtValueConfig, holder: AnnotationHolder) {
         val attributesKey = ParadoxSemanticHighlighterColors.definitionReference(element.language)
-        val textRange = element.textRange
-        val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
-        ParadoxAnnotateProvider.annotateExpression(element, range, holder, attributesKey)
+        ParadoxAnnotateUtil.annotateExpression(element, rangeInExpression, holder, attributesKey)
     }
 
-    override fun resolve(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, text: String, config: CwtValueConfig): PsiElement? {
+    override fun resolve(element: ParadoxCsvExpressionElement, text: String, rangeInExpression: TextRange, config: CwtValueConfig): PsiElement? {
         val configGroup = config.configGroup
         val project = configGroup.project
         val typeExpression = config.configExpression.metadata.value ?: return null
@@ -47,7 +44,7 @@ class ParadoxCsvDefinitionExpressionSupport : ParadoxCsvExpressionSupport {
         return ParadoxDefinitionSearch.searchElement(text, type, selector).find()
     }
 
-    override fun resolveAll(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, text: String, config: CwtValueConfig): List<PsiElement> {
+    override fun resolveAll(element: ParadoxCsvExpressionElement, text: String, rangeInExpression: TextRange, config: CwtValueConfig): List<PsiElement> {
         val configGroup = config.configGroup
         val project = configGroup.project
         val typeExpression = config.configExpression.metadata.value ?: return emptyList()
@@ -67,20 +64,18 @@ class ParadoxCsvDefinitionExpressionSupport : ParadoxCsvExpressionSupport {
 class ParadoxCsvEnumValueExpressionSupport : ParadoxCsvExpressionSupport {
     override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.EnumValue
 
-    override fun annotate(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, text: String, config: CwtValueConfig, holder: AnnotationHolder) {
+    override fun annotate(element: ParadoxCsvExpressionElement, text: String, rangeInExpression: TextRange, config: CwtValueConfig, holder: AnnotationHolder) {
         val configGroup = config.configGroup
         val enumName = config.configExpression.metadata.value ?: return
         val attributesKey = when {
             configGroup.complexEnums[enumName] != null -> ParadoxSemanticHighlighterColors.complexEnumValue(element.language)
             else -> ParadoxSemanticHighlighterColors.enumValue(element.language)
         }
-        val textRange = element.textRange
-        val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
-        ParadoxAnnotateProvider.annotateExpression(element, range, holder, attributesKey)
+        ParadoxAnnotateUtil.annotateExpression(element, rangeInExpression, holder, attributesKey)
     }
 
-    override fun resolve(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, text: String, config: CwtValueConfig): PsiElement? {
-        return ParadoxResolveProvider.resolveEnumValue(element, text, config)
+    override fun resolve(element: ParadoxCsvExpressionElement, text: String, rangeInExpression: TextRange, config: CwtValueConfig): PsiElement? {
+        return ParadoxResolveUtil.resolveEnumValue(element, text, config)
     }
 
     override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
@@ -96,7 +91,7 @@ class ParadoxCsvUnionValueExpressionSupport : ParadoxCsvExpressionSupport {
 
     // NOTE 3.0.1 recursion guard is required here for various operations
 
-    override fun annotate(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, text: String, config: CwtValueConfig, holder: AnnotationHolder) {
+    override fun annotate(element: ParadoxCsvExpressionElement, text: String, rangeInExpression: TextRange, config: CwtValueConfig, holder: AnnotationHolder) {
         val configGroup = config.configGroup
         val unionName = config.configExpression.metadata.value ?: return
         // NOTE 3.0.1 recursion guard is required here
@@ -104,11 +99,11 @@ class ParadoxCsvUnionValueExpressionSupport : ParadoxCsvExpressionSupport {
             val quoted = element.text.isLeftQuoted()
             val expression = ParadoxExpression.resolve(text, quoted)
             val valueConfig = ParadoxExpressionMatchService.getMatchedCsvUnionCandidate(element, expression, unionName, configGroup) ?: return
-            ParadoxExpressionService.annotateCsvExpression(element, rangeInElement, text, valueConfig, holder)
+            ParadoxExpressionService.annotateCsvExpression(element, text, rangeInExpression, valueConfig, holder)
         }
     }
 
-    override fun resolve(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, text: String, config: CwtValueConfig): PsiElement? {
+    override fun resolve(element: ParadoxCsvExpressionElement, text: String, rangeInExpression: TextRange, config: CwtValueConfig): PsiElement? {
         val configGroup = config.configGroup
         val unionName = config.configExpression.metadata.value ?: return null
         // NOTE 3.0.1 recursion guard is required here
@@ -116,12 +111,12 @@ class ParadoxCsvUnionValueExpressionSupport : ParadoxCsvExpressionSupport {
             val quoted = element.text.isLeftQuoted()
             val expression = ParadoxExpression.resolve(text, quoted)
             val valueConfig = ParadoxExpressionMatchService.getMatchedCsvUnionCandidate(element, expression, unionName, configGroup) ?: return null
-            return ParadoxExpressionService.resolveCsvExpression(element, rangeInElement, text, valueConfig)
+            return ParadoxExpressionService.resolveCsvExpression(element, text, rangeInExpression, valueConfig)
         }
         return null
     }
 
-    override fun resolveAll(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, text: String, config: CwtValueConfig): List<PsiElement> {
+    override fun resolveAll(element: ParadoxCsvExpressionElement, text: String, rangeInExpression: TextRange, config: CwtValueConfig): List<PsiElement> {
         val configGroup = config.configGroup
         val unionName = config.configExpression.metadata.value ?: return emptyList()
         // NOTE 3.0.1 recursion guard is required here
@@ -129,7 +124,7 @@ class ParadoxCsvUnionValueExpressionSupport : ParadoxCsvExpressionSupport {
             val quoted = element.text.isLeftQuoted()
             val expression = ParadoxExpression.resolve(text, quoted)
             val valueConfig = ParadoxExpressionMatchService.getMatchedCsvUnionCandidate(element, expression, unionName, configGroup) ?: return emptyList()
-            return ParadoxExpressionService.resolveAllCsvExpression(element, rangeInElement, text, valueConfig)
+            return ParadoxExpressionService.resolveAllCsvExpression(element, text, rangeInExpression, valueConfig)
         }
         return emptyList()
     }
@@ -146,15 +141,13 @@ class ParadoxCsvUnionValueExpressionSupport : ParadoxCsvExpressionSupport {
 class ParadoxCsvDynamicValueExpressionSupport : ParadoxCsvExpressionSupport {
     override fun supports(dataType: CwtDataType) = dataType in CwtDataTypeSets.DynamicValue
 
-    override fun annotate(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, text: String, config: CwtValueConfig, holder: AnnotationHolder) {
+    override fun annotate(element: ParadoxCsvExpressionElement, text: String, rangeInExpression: TextRange, config: CwtValueConfig, holder: AnnotationHolder) {
         val attributesKey = ParadoxSemanticHighlighterColors.dynamicValue(element.language)
-        val textRange = element.textRange
-        val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
-        ParadoxAnnotateProvider.annotateExpression(element, range, holder, attributesKey)
+        ParadoxAnnotateUtil.annotateExpression(element, rangeInExpression, holder, attributesKey)
     }
 
-    override fun resolve(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, text: String, config: CwtValueConfig): PsiElement? {
-        return ParadoxResolveProvider.resolveDynamicValue(element, text, config)
+    override fun resolve(element: ParadoxCsvExpressionElement, text: String, rangeInExpression: TextRange, config: CwtValueConfig): PsiElement? {
+        return ParadoxResolveUtil.resolveDynamicValue(element, text, config)
     }
 
     override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {

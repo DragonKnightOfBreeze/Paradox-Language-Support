@@ -27,7 +27,6 @@ import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.csv.psi.ParadoxCsvPsiService
-import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchService
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.isComplexExpression
@@ -206,26 +205,30 @@ object ParadoxExpressionManager {
     /**
      * @see ParadoxExpressionService.annotateScriptExpression
      */
-    fun annotateScriptExpression(element: ParadoxExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>, holder: AnnotationHolder) {
-        val expressionText = ParadoxExpressionService.getExpressionText(element, rangeInElement)
-        ParadoxExpressionService.annotateScriptExpression(element, rangeInElement, expressionText, config, holder)
+    fun annotateScriptExpression(element: ParadoxExpressionElement, config: CwtConfig<*>, holder: AnnotationHolder) {
+        if (config.configExpression == null) return
+        val text = ParadoxExpressionService.getExpressionText(element)
+        val rangeInExpression = TextRange.from(0, text.length)
+        ParadoxExpressionService.annotateScriptExpression(element, text, rangeInExpression, config, holder)
     }
 
     /**
      * @see ParadoxExpressionService.annotateLocalisationExpression
      */
-    fun annotateLocalisationExpression(element: ParadoxExpressionElement, rangeInElement: TextRange?, holder: AnnotationHolder) {
-        val expressionText = ParadoxExpressionService.getExpressionText(element, rangeInElement)
-        ParadoxExpressionService.annotateLocalisationExpression(element, rangeInElement, expressionText, holder)
+    fun annotateLocalisationExpression(element: ParadoxExpressionElement, holder: AnnotationHolder) {
+        val text = ParadoxExpressionService.getExpressionText(element)
+        val rangeInExpression = TextRange.from(0, text.length)
+        ParadoxExpressionService.annotateLocalisationExpression(element, text, rangeInExpression, holder)
     }
 
     /**
      * @see ParadoxExpressionService.annotateCsvExpression
      */
-    fun annotateCsvExpression(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, config: CwtValueConfig, holder: AnnotationHolder) {
+    fun annotateCsvExpression(element: ParadoxCsvExpressionElement, config: CwtValueConfig, holder: AnnotationHolder) {
         if (element is ParadoxCsvColumn && ParadoxCsvPsiService.isHeaderColumn(element)) return
-        val expressionText = ParadoxExpressionService.getExpressionText(element, rangeInElement)
-        ParadoxExpressionService.annotateCsvExpression(element, rangeInElement, expressionText, config, holder)
+        val text = ParadoxExpressionService.getExpressionText(element)
+        val rangeInExpression = TextRange.from(0, text.length)
+        ParadoxExpressionService.annotateCsvExpression(element, text, rangeInExpression, config, holder)
     }
 
     // endregion
@@ -237,11 +240,9 @@ object ParadoxExpressionManager {
      */
     fun resolveScriptExpression(element: ParadoxExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
         if (config.configExpression == null) return null
-        val expressionText = ParadoxExpressionService.getExpressionText(element, rangeInElement)
-        if (expressionText.isParameterized()) return null // 排除文本带参数的情况
-
-        ProgressManager.checkCanceled()
-        return ParadoxExpressionService.resolveScriptExpression(element, rangeInElement, expressionText, config, role)
+        val text = ParadoxExpressionService.getExpressionText(element, rangeInElement)
+        val rangeInExpression = ParadoxExpressionService.getExpressionRangeInExpression(element, rangeInElement)
+        return ParadoxExpressionService.resolveScriptExpression(element, text, rangeInExpression, config, role)
     }
 
     /**
@@ -249,49 +250,45 @@ object ParadoxExpressionManager {
      */
     fun resolveAllScriptExpression(element: ParadoxExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiElement> {
         if (config.configExpression == null) return emptyList()
-        val expressionText = ParadoxExpressionService.getExpressionText(element, rangeInElement)
-        if (expressionText.isParameterized()) return emptyList() // 排除文本带参数的情况
-
-        ProgressManager.checkCanceled()
-        return ParadoxExpressionService.resolveAllScriptExpression(element, rangeInElement, expressionText, config, role)
+        val text = ParadoxExpressionService.getExpressionText(element, rangeInElement)
+        val rangeInExpression = ParadoxExpressionService.getExpressionRangeInExpression(element, rangeInElement)
+        return ParadoxExpressionService.resolveAllScriptExpression(element, text, rangeInExpression, config, role)
     }
 
     /**
      * @see ParadoxExpressionService.getScriptExpressionReferences
      */
     fun getScriptExpressionReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiReference> {
-        val expressionText = ParadoxExpressionService.getExpressionText(element, rangeInElement)
-        return ParadoxExpressionService.getScriptExpressionReferences(element, rangeInElement, expressionText, config, role)
+        val text = ParadoxExpressionService.getExpressionText(element, rangeInElement)
+        val rangeInExpression = ParadoxExpressionService.getExpressionRangeInExpression(element, rangeInElement)
+        return ParadoxExpressionService.getScriptExpressionReferences(element, text, rangeInExpression, config, role)
     }
 
     /**
      * @see ParadoxExpressionService.resolveLocalisationExpression
      */
     fun resolveLocalisationExpression(element: ParadoxLocalisationExpressionElement, rangeInElement: TextRange?): PsiElement? {
-        val expressionText = ParadoxExpressionService.getExpressionText(element, rangeInElement)
-        if (expressionText.isParameterized()) return null // 排除文本带参数的情况
-
-        ProgressManager.checkCanceled()
-        return ParadoxExpressionService.resolveLocalisationExpression(element, rangeInElement, expressionText)
+        val text = ParadoxExpressionService.getExpressionText(element, rangeInElement)
+        val rangeInExpression = ParadoxExpressionService.getExpressionRangeInExpression(element, rangeInElement)
+        return ParadoxExpressionService.resolveLocalisationExpression(element, text, rangeInExpression)
     }
 
     /**
      * @see ParadoxExpressionService.resolveAllLocalisationExpression
      */
     fun resolveAllLocalisationExpression(element: ParadoxLocalisationExpressionElement, rangeInElement: TextRange?): List<PsiElement> {
-        val expressionText = ParadoxExpressionService.getExpressionText(element, rangeInElement)
-        if (expressionText.isParameterized()) return emptyList() // 排除文本带参数的情况
-
-        ProgressManager.checkCanceled()
-        return ParadoxExpressionService.resolveAllLocalisationExpression(element, rangeInElement, expressionText)
+        val text = ParadoxExpressionService.getExpressionText(element, rangeInElement)
+        val rangeInExpression = ParadoxExpressionService.getExpressionRangeInExpression(element, rangeInElement)
+        return ParadoxExpressionService.resolveAllLocalisationExpression(element, text, rangeInExpression)
     }
 
     /**
      * @see ParadoxExpressionService.getLocalisationExpressionReferences
      */
     fun getLocalisationExpressionReferences(element: ParadoxLocalisationExpressionElement, rangeInElement: TextRange?): List<PsiReference> {
-        val expressionText = ParadoxExpressionService.getExpressionText(element, rangeInElement)
-        return ParadoxExpressionService.getLocalisationExpressionReferences(element, rangeInElement, expressionText)
+        val text = ParadoxExpressionService.getExpressionText(element, rangeInElement)
+        val rangeInExpression = ParadoxExpressionService.getExpressionRangeInExpression(element, rangeInElement)
+        return ParadoxExpressionService.getLocalisationExpressionReferences(element, text, rangeInExpression)
     }
 
     /**
@@ -299,10 +296,9 @@ object ParadoxExpressionManager {
      */
     fun resolveCsvExpression(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, config: CwtValueConfig): PsiElement? {
         if (element is ParadoxCsvColumn && ParadoxCsvPsiService.isHeaderColumn(element)) return null
-        val expressionText = ParadoxExpressionService.getExpressionText(element, rangeInElement)
-
-        ProgressManager.checkCanceled()
-        return ParadoxExpressionService.resolveCsvExpression(element, rangeInElement, expressionText, config)
+        val text = ParadoxExpressionService.getExpressionText(element, rangeInElement)
+        val rangeInExpression = ParadoxExpressionService.getExpressionRangeInExpression(element, rangeInElement)
+        return ParadoxExpressionService.resolveCsvExpression(element, text, rangeInExpression, config)
     }
 
     /**
@@ -310,10 +306,9 @@ object ParadoxExpressionManager {
      */
     fun resolveAllCsvExpression(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, config: CwtValueConfig): List<PsiElement> {
         if (element is ParadoxCsvColumn && ParadoxCsvPsiService.isHeaderColumn(element)) return emptyList()
-        val expressionText = ParadoxExpressionService.getExpressionText(element, rangeInElement)
-
-        ProgressManager.checkCanceled()
-        return ParadoxExpressionService.resolveAllCsvExpression(element, rangeInElement, expressionText, config)
+        val text = ParadoxExpressionService.getExpressionText(element, rangeInElement)
+        val rangeInExpression = ParadoxExpressionService.getExpressionRangeInExpression(element, rangeInElement)
+        return ParadoxExpressionService.resolveAllCsvExpression(element, text, rangeInExpression, config)
     }
 
     // endregion
@@ -382,6 +377,8 @@ object ParadoxExpressionManager {
     }
 
     private fun resolveExpressionReferences(element: ParadoxExpressionElement): Array<out PsiReference> {
+        val rangeInElement = ParadoxExpressionService.getExpressionRangeInElement(element) // unquoted text
+        if (rangeInElement.isEmpty) return PsiReference.EMPTY_ARRAY
         return when (element) {
             is ParadoxScriptExpressionElement -> ParadoxExpressionService.resolveScriptExpressionReferences(element)
             is ParadoxLocalisationExpressionElement -> ParadoxExpressionService.resolveLocalisationExpressionReferences(element)

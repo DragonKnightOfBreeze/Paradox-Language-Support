@@ -2,7 +2,6 @@ package icu.windea.pls.ep.resolve.expression
 
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.lang.annotation.AnnotationHolder
-import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiReference
 import icu.windea.pls.base.annotations.ForGameType
@@ -11,13 +10,13 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.core.isExactDigit
-import icu.windea.pls.core.unquote
 import icu.windea.pls.core.util.values.singletonList
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.references.script.ParadoxScriptExpressionPsiReference
-import icu.windea.pls.lang.resolve.util.ParadoxAnnotateProvider
+import icu.windea.pls.lang.resolve.ParadoxExpressionService
+import icu.windea.pls.lang.resolve.util.ParadoxAnnotateUtil
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.type.ParadoxExpressionRole
 import icu.windea.pls.script.editor.ParadoxScriptHighlighterColors
@@ -38,24 +37,22 @@ class ParadoxScriptTechnologyWithLevelExpressionSupport : ParadoxScriptExpressio
 
     override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.TechnologyWithLevel
 
-    override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, holder: AnnotationHolder) {
+    override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder) {
         if (element !is ParadoxScriptStringExpressionElement) return
         val separatorIndex = text.indexOf('@')
         if (separatorIndex == -1) return
-        val textRange = element.textRange
-        val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
         run {
             val offset = separatorIndex
             if (offset <= 0) return@run
             val attributesKey = ParadoxScriptHighlighterColors.DEFINITION_REFERENCE
-            val range1 = range.let { TextRange.create(it.startOffset, it.startOffset + offset) }
-            ParadoxAnnotateProvider.annotateExpression(element, range1, holder, attributesKey)
+            val rangeInExpression = TextRange.create(rangeInExpression.startOffset, rangeInExpression.startOffset + offset)
+            ParadoxAnnotateUtil.annotateExpression(element, rangeInExpression, holder, attributesKey)
         }
         run {
             val offset = separatorIndex
             val attributesKey = ParadoxScriptHighlighterColors.SEMANTIC_MARKER
-            val range2 = range.let { TextRange.create(it.startOffset + offset, it.startOffset + offset + 1) }
-            holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(range2).textAttributes(attributesKey).create()
+            val rangeInExpression = TextRange.create(rangeInExpression.startOffset + offset, rangeInExpression.startOffset + offset + 1)
+            ParadoxAnnotateUtil.annotateExpression(element, rangeInExpression, holder, attributesKey)
         }
         run {
             val offset = text.length - separatorIndex - 1
@@ -63,18 +60,18 @@ class ParadoxScriptTechnologyWithLevelExpressionSupport : ParadoxScriptExpressio
             // annotate only if snippet after '@' is number like
             if (!text.substring(separatorIndex + 1).all { it.isExactDigit() }) return@run
             val attributesKey = ParadoxScriptHighlighterColors.NUMBER
-            val range3 = range.let { TextRange.create(it.endOffset - offset, it.endOffset) }
-            holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(range3).textAttributes(attributesKey).create()
+            val rangeInExpression = TextRange.create(rangeInExpression.endOffset - offset, rangeInExpression.endOffset)
+            ParadoxAnnotateUtil.annotateExpression(element, rangeInExpression, holder, attributesKey)
         }
     }
 
-    override fun getReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiReference> {
+    override fun getReferences(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiReference> {
         if (element !is ParadoxScriptStringExpressionElement) return emptyList()
         val separatorIndex = text.indexOf('@')
         if (separatorIndex == -1) return emptyList() // no `@` -> ignore
         if (separatorIndex == 0) return emptyList() // no tech node -> ignore
-        val range = rangeInElement ?: TextRange.create(0, text.length).unquote(text)
-        val referenceRange = range.let { TextRange.create(it.startOffset, it.startOffset + separatorIndex) }
+        val offset = ParadoxExpressionService.getExpressionOffset(element)
+        val referenceRange = TextRange.from(rangeInExpression.startOffset + offset, separatorIndex)
         val referenceConfigs = listOf(CwtValueConfig.createMock(config.configGroup, typeExpression))
         val referenceRole = ParadoxExpressionRole.Other
         val reference = ParadoxScriptExpressionPsiReference(element, referenceRange, referenceConfigs, referenceRole)

@@ -42,9 +42,13 @@ class Issue390Test : BasePlatformTestCase(), ChronicleTestScope {
         markFileInfo(ParadoxGameType.Stellaris, "common/scripted_effects/test.txt")
         highlightingScope {
             myFixture.configureByText("test.txt", """
-                ${info(Colors.DEFINITION)}test_effect${infoEnd()} = {
+                ${info(Colors.DEFINITION)}test_effect_1${infoEnd()} = {
                     ${info(Colors.SCOPE_PREFIX)}event_target:${infoEnd()}${info(Colors.DYNAMIC_VALUE)}test_target${infoEnd()} = {}
-                    ${info(Colors.SYSTEM_SCOPE)}root${infoEnd()}${info(Colors.OPERATOR)}.${infoEnd()}${info(Colors.SCOPE_PREFIX)}event_target:${infoEnd()}${info(Colors.DYNAMIC_VALUE)}test_target${infoEnd()} = {}
+                    ${info(Colors.SYSTEM_SCOPE)}root${infoEnd()}${info(Colors.SEMANTIC_OPERATOR)}.${infoEnd()}${info(Colors.SCOPE_PREFIX)}event_target:${infoEnd()}${info(Colors.DYNAMIC_VALUE)}test_target${infoEnd()} = {}
+                }
+                ${info(Colors.DEFINITION)}"test_effect_2"${infoEnd()} = {
+                    "${info(Colors.SCOPE_PREFIX)}event_target:${infoEnd()}${info(Colors.DYNAMIC_VALUE)}test_target${infoEnd()}" = {}
+                    "${info(Colors.SYSTEM_SCOPE)}root${infoEnd()}${info(Colors.SEMANTIC_OPERATOR)}.${infoEnd()}${info(Colors.SCOPE_PREFIX)}event_target:${infoEnd()}${info(Colors.DYNAMIC_VALUE)}test_target${infoEnd()}" = {}
                 }
             """.trimIndent())
         }

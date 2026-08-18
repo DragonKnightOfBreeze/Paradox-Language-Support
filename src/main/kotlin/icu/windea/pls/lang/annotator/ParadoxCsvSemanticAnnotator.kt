@@ -30,7 +30,7 @@ class ParadoxCsvSemanticAnnotator : Annotator {
 
         val columnConfig = ParadoxCsvManager.getColumnConfig(element)
         val config = columnConfig?.valueConfig ?: return
-        ParadoxExpressionManager.annotateCsvExpression(element, null, config, holder)
+        ParadoxExpressionManager.annotateCsvExpression(element, config, holder)
     }
 
     private fun annotateComplexEnumValue(element: ParadoxCsvExpressionElement, holder: AnnotationHolder): Boolean {

@@ -174,9 +174,8 @@ class ParadoxComplexExpressionNodeParameterInferredConfigProvider : ParadoxParam
             }
             node is ParadoxScriptValueArgumentValueNode -> {
                 val argumentNode = node.argumentNode ?: return emptyList()
-                val offset = ParadoxExpressionService.getExpressionOffset(element)
-                val rangeInElement = argumentNode.rangeInExpression.shiftRight(offset)
-                val passingParameterElement = ParadoxParameterService.resolveArgument(element, rangeInElement, config) ?: return emptyList()
+                val rangeInExpression = argumentNode.rangeInExpression
+                val passingParameterElement = ParadoxParameterService.resolveArgument(element, rangeInExpression, config) ?: return emptyList()
                 val passingContextConfigs = ParadoxParameterManager.getInferredContextConfigs(passingParameterElement)
                 val passingConfigs = passingContextConfigs.singleOrNull()?.configs?.filterIsInstance<CwtValueConfig>().orEmpty()
                 passingConfigs

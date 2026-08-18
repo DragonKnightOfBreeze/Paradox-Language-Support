@@ -72,6 +72,6 @@ class ParadoxLocalisationSemanticAnnotator : Annotator {
     }
 
     private fun annotateExpression(element: ParadoxLocalisationExpressionElement, holder: AnnotationHolder) {
-        ParadoxExpressionManager.annotateLocalisationExpression(element, null, holder)
+        ParadoxExpressionManager.annotateLocalisationExpression(element, holder)
     }
 }

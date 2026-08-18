@@ -95,10 +95,10 @@ object ParadoxParameterService {
     /**
      * @see ParadoxParameterSupport.resolveArgument
      */
-    fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>): ParadoxParameterLightElement? {
+    fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInExpression: TextRange?, config: CwtConfig<*>): ParadoxParameterLightElement? {
         val supports = ParadoxParameterSupport.EP_NAME.extensionList
         supports.forEachFast { support ->
-            support.resolveArgument(element, rangeInElement, config)?.also { it.support = support }?.let { return it }
+            support.resolveArgument(element, rangeInExpression, config)?.also { it.support = support }?.let { return it }
         }
         return null
     }

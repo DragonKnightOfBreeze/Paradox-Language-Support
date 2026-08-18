@@ -18,8 +18,8 @@ import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.isEmpty
 import icu.windea.pls.core.isLeftQuoted
+import icu.windea.pls.core.isRightQuoted
 import icu.windea.pls.core.processChild
-import icu.windea.pls.core.unquote
 import icu.windea.pls.core.util.values.singletonListOrEmpty
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
@@ -28,6 +28,7 @@ import icu.windea.pls.ep.resolve.expression.ParadoxCsvExpressionSupport
 import icu.windea.pls.ep.resolve.expression.ParadoxLocalisationExpressionSupport
 import icu.windea.pls.ep.resolve.expression.ParadoxScriptExpressionSupport
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
+import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.ParadoxMatchService
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
@@ -59,27 +60,49 @@ object ParadoxExpressionService {
 
     /**
      * 得到 [element] 的用于语义解析的表达式文本。
-     * */
+     */
     fun getExpressionText(element: ParadoxExpressionElement, rangeInElement: TextRange? = null): String {
-        return when {
-            element is ParadoxScriptBlock -> "" // should not be used
-            element is ParadoxScriptInlineMath -> "" // should not be used
-            rangeInElement != null -> rangeInElement.substring(element.text)
-            element is ParadoxScriptStringExpressionElement -> element.value // = element.text.unquote()
-            element is ParadoxCsvColumn -> element.value // = element.text.unquote()
-            else -> element.text
+        return when (element) {
+            is ParadoxScriptBlock -> "" // should not be used
+            is ParadoxScriptInlineMath -> "" // should not be used
+            is ParadoxScriptStringExpressionElement, is ParadoxCsvColumn -> rangeInElement?.substring(element.text) ?: element.value
+            else -> rangeInElement?.substring(element.text) ?: element.text
         }
     }
 
     /**
-     * 得到 [element] 的用于语义解析的表达式文本范围。
-     * */
-    fun getExpressionTextRange(element: ParadoxExpressionElement): TextRange {
+     * 得到 [element] 的用于语义解析的表达式文本范围。相对于完整的表达式文本。
+     */
+    fun getExpressionRangeInExpression(element: ParadoxExpressionElement, rangeInElement: TextRange? = null): TextRange {
+        return when (element) {
+            is ParadoxScriptBlock -> TextRange.EMPTY_RANGE // should not be used
+            is ParadoxScriptInlineMath -> TextRange.EMPTY_RANGE // should not be used
+            is ParadoxScriptStringExpressionElement, is ParadoxCsvColumn -> {
+                if (rangeInElement == null) return TextRange.create(0, element.value.length)
+                val text = element.text
+                if (text.isEmpty()) return TextRange.EMPTY_RANGE
+                val startOffset = if (text.isLeftQuoted() && rangeInElement.startOffset <= 0) 1 else 0
+                val endOffset = if (text.isRightQuoted() && rangeInElement.endOffset >= text.length) 1 else 0
+                TextRange.create(startOffset, text.length - endOffset)
+            }
+            else -> rangeInElement ?: TextRange.create(0, element.textLength)
+        }
+    }
+
+    /**
+     * 得到 [element] 的用于语义解析的表达式文本范围。相对于表达式 PSI 元素。
+     */
+    fun getExpressionRangeInElement(element: ParadoxExpressionElement): TextRange {
         return when (element) {
             is ParadoxScriptBlock -> TextRange.create(0, 1) // `{`
             is ParadoxScriptInlineMath -> element.firstChild.textRangeInParent // `@[` or `@\[`
-            is ParadoxScriptStringExpressionElement -> TextRange.create(0, element.textLength).unquote(element.text)
-            is ParadoxCsvColumn -> TextRange.create(0, element.textLength).unquote(element.text)
+            is ParadoxScriptStringExpressionElement, is ParadoxCsvColumn -> {
+                val text = element.text
+                if (text.isEmpty()) return TextRange.EMPTY_RANGE
+                val startOffset = if (text.isLeftQuoted()) 1 else 0
+                val endOffset = if (text.isRightQuoted()) 1 else 0
+                TextRange.create(startOffset, text.length - endOffset)
+            }
             else -> TextRange.create(0, element.textLength)
         }
     }
@@ -88,9 +111,8 @@ object ParadoxExpressionService {
      * 得到 [element] 的用于语义解析的表达式文本的开始偏移（相对于 [element]）。
      */
     fun getExpressionOffset(element: ParadoxExpressionElement): Int {
-        return when {
-            element is ParadoxScriptStringExpressionElement && element.text.isLeftQuoted() -> 1
-            element is ParadoxCsvColumn && element.text.isLeftQuoted() -> 1
+        return when (element) {
+            is ParadoxScriptStringExpressionElement, is ParadoxCsvColumn -> if (element.text.isLeftQuoted()) 1 else 0
             else -> 0
         }
     }
@@ -119,8 +141,9 @@ object ParadoxExpressionService {
     /**
      * @see ParadoxScriptExpressionSupport.annotate
      */
-    fun annotateScriptExpression(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, holder: AnnotationHolder) {
-        if (text.isEmpty()) return // skip if expression is empty
+    fun annotateScriptExpression(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder) {
+        if (text.isEmpty()) return // skip if expression text is empty
+        if (rangeInExpression.isEmpty) return
         val configExpression = config.configExpression ?: return
         val dataType = configExpression.type
         val gameType = config.configGroup.gameType
@@ -128,29 +151,31 @@ object ParadoxExpressionService {
         supports.forEachFast f@{ support ->
             if (gameType.orSpecific() != null && !support.supports(gameType)) return@f // check game type first
             ProgressManager.checkCanceled() // 3.0.1 optimize: check canceled immediately before applying logic
-            support.annotate(element, rangeInElement, text, config, holder)
+            support.annotate(element, text, rangeInExpression, config, holder)
         }
     }
 
     /**
      * @see ParadoxLocalisationExpressionSupport.annotate
      */
-    fun annotateLocalisationExpression(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, holder: AnnotationHolder) {
-        if (text.isEmpty()) return // skip if expression is empty
+    fun annotateLocalisationExpression(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, holder: AnnotationHolder) {
+        if (text.isEmpty()) return // skip if expression text is empty
+        if (rangeInExpression.isEmpty) return
         val gameType = selectGameType(element)
         val supports = ParadoxLocalisationExpressionSupport.getAll() // 3.0.1 use global cache (all supports)
         supports.forEachFast f@{ support ->
             if (gameType.orSpecific() != null && !support.supports(gameType)) return@f // check game type first
             ProgressManager.checkCanceled() // 3.0.1 optimize: check canceled immediately before applying logic
-            support.annotate(element, rangeInElement, text, holder)
+            support.annotate(element, text, rangeInExpression, holder)
         }
     }
 
     /**
      * @see ParadoxCsvExpressionSupport.annotate
      */
-    fun annotateCsvExpression(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, text: String, config: CwtValueConfig, holder: AnnotationHolder) {
-        if (text.isEmpty()) return // skip if expression is empty
+    fun annotateCsvExpression(element: ParadoxCsvExpressionElement, text: String, rangeInExpression: TextRange, config: CwtValueConfig, holder: AnnotationHolder) {
+        if (text.isEmpty()) return // skip if expression text is empty
+        if (rangeInExpression.isEmpty) return
         val configExpression = config.configExpression
         val dataType = configExpression.type
         val gameType = config.configGroup.gameType
@@ -158,7 +183,7 @@ object ParadoxExpressionService {
         supports.forEachFast f@{ support ->
             if (gameType.orSpecific() != null && !support.supports(gameType)) return@f // check game type first
             ProgressManager.checkCanceled() // 3.0.1 optimize: check canceled immediately before applying logic
-            support.annotate(element, rangeInElement, text, config, holder)
+            support.annotate(element, text, rangeInExpression, config, holder)
         }
     }
 
@@ -169,8 +194,9 @@ object ParadoxExpressionService {
     /**
      * @see ParadoxScriptExpressionSupport.resolve
      */
-    fun resolveScriptExpression(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
-        if (text.isEmpty()) return null // ignore if expression is empty
+    fun resolveScriptExpression(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
+        if (text.isEmpty()) return null // ignore if expression text is empty
+        if (text.isParameterized()) return null // ignore if expression text is parameterized
         val configExpression = config.configExpression ?: return null
         val dataType = configExpression.type
         val gameType = config.configGroup.gameType
@@ -178,7 +204,7 @@ object ParadoxExpressionService {
         supports.forEachFast f@{ support ->
             if (gameType.orSpecific() != null && !support.supports(gameType)) return@f // check game type first
             ProgressManager.checkCanceled() // 3.0.1 optimize: check canceled immediately before applying logic
-            support.resolve(element, rangeInElement, text, config, role)?.let { return it }
+            support.resolve(element, text, rangeInExpression, config, role)?.let { return it }
         }
         if (configExpression.role.isKey()) {
             return getResolvedConfigElement(element, config, config.configGroup)
@@ -189,8 +215,9 @@ object ParadoxExpressionService {
     /**
      * @see ParadoxScriptExpressionSupport.resolveAll
      */
-    fun resolveAllScriptExpression(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiElement> {
-        if (text.isEmpty()) return emptyList() // ignore if expression is empty
+    fun resolveAllScriptExpression(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiElement> {
+        if (text.isEmpty()) return emptyList() // ignore if expression text is empty
+        if (text.isParameterized()) return emptyList() // ignore if expression text is parameterized
         val configExpression = config.configExpression ?: return emptyList()
         val dataType = configExpression.type
         val gameType = config.configGroup.gameType
@@ -198,7 +225,7 @@ object ParadoxExpressionService {
         supports.forEachFast f@{ support ->
             if (gameType.orSpecific() != null && !support.supports(gameType)) return@f // check game type first
             ProgressManager.checkCanceled() // 3.0.1 optimize: check canceled immediately before applying logic
-            support.resolveAll(element, rangeInElement, text, config, role).orNull()?.let { return it }
+            support.resolveAll(element, text, rangeInExpression, config, role).orNull()?.let { return it }
         }
         if (configExpression.role.isKey()) {
             return getResolvedConfigElement(element, config, config.configGroup).to.singletonListOrEmpty()
@@ -209,8 +236,8 @@ object ParadoxExpressionService {
     /**
      * @see ParadoxScriptExpressionSupport.getReferences
      */
-    fun getScriptExpressionReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiReference> {
-        if (text.isEmpty()) return emptyList() // ignore if expression is empty
+    fun getScriptExpressionReferences(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiReference> {
+        if (text.isEmpty()) return emptyList() // ignore if expression text is empty
         val configExpression = config.configExpression ?: return emptyList()
         val dataType = configExpression.type
         val gameType = config.configGroup.gameType
@@ -218,7 +245,7 @@ object ParadoxExpressionService {
         supports.forEachFast f@{ support ->
             if (gameType.orSpecific() != null && !support.supports(gameType)) return@f // check game type first
             ProgressManager.checkCanceled() // 3.0.1 optimize: check canceled immediately before applying logic
-            support.getReferences(element, rangeInElement, text, config, role).orNull()?.let { return it }
+            support.getReferences(element, text, rangeInExpression, config, role).orNull()?.let { return it }
         }
         return emptyList()
     }
@@ -226,15 +253,16 @@ object ParadoxExpressionService {
     /**
      * @see ParadoxLocalisationExpressionSupport.resolve
      */
-    fun resolveLocalisationExpression(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String): PsiElement? {
-        if (text.isEmpty()) return null // ignore if expression is empty
+    fun resolveLocalisationExpression(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange): PsiElement? {
+        if (text.isEmpty()) return null // ignore if expression text is empty
+        if (text.isParameterized()) return null // ignore if expression text is parameterized
         val gameType = selectGameType(element)
         val supports = ParadoxLocalisationExpressionSupport.getAll() // 3.0.1 use global cache (all supports)
         supports.forEachFast f@{ support ->
             if (gameType.orSpecific() != null && !support.supports(gameType)) return@f // check game type first
             if (!support.supports(element)) return@f // 3.0.1 still check here
             ProgressManager.checkCanceled() // 3.0.1 optimize: check canceled immediately before applying logic
-            support.resolve(element, rangeInElement, text)?.let { return it }
+            support.resolve(element, text, rangeInExpression)?.let { return it }
         }
         return null
     }
@@ -242,15 +270,16 @@ object ParadoxExpressionService {
     /**
      * @see ParadoxLocalisationExpressionSupport.resolveAll
      */
-    fun resolveAllLocalisationExpression(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String): List<PsiElement> {
-        if (text.isEmpty()) return emptyList() // ignore if expression is empty
+    fun resolveAllLocalisationExpression(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange): List<PsiElement> {
+        if (text.isEmpty()) return emptyList() // ignore if expression text is empty
+        if (text.isParameterized()) return emptyList() // ignore if expression text is parameterized
         val gameType = selectGameType(element)
         val supports = ParadoxLocalisationExpressionSupport.getAll() // 3.0.1 use global cache (all supports)
         supports.forEachFast f@{ support ->
             if (gameType.orSpecific() != null && !support.supports(gameType)) return@f // check game type first
             if (!support.supports(element)) return@f // 3.0.1 still check here
             ProgressManager.checkCanceled() // 3.0.1 optimize: check canceled immediately before applying logic
-            support.resolveAll(element, rangeInElement, text).orNull()?.let { return it }
+            support.resolveAll(element, text, rangeInExpression).orNull()?.let { return it }
         }
         return emptyList()
     }
@@ -258,15 +287,15 @@ object ParadoxExpressionService {
     /**
      * @see ParadoxLocalisationExpressionSupport.getReferences
      */
-    fun getLocalisationExpressionReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String): List<PsiReference> {
-        if (text.isEmpty()) return emptyList() // ignore if expression is empty
+    fun getLocalisationExpressionReferences(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange): List<PsiReference> {
+        if (text.isEmpty()) return emptyList() // ignore if expression text is empty
         val gameType = selectGameType(element)
         val supports = ParadoxLocalisationExpressionSupport.getAll() // 3.0.1 use global cache (all supports)
         supports.forEachFast f@{ support ->
             if (gameType.orSpecific() != null && !support.supports(gameType)) return@f // check game type first
             if (!support.supports(element)) return@f // 3.0.1 still check here
             ProgressManager.checkCanceled() // 3.0.1 optimize: check canceled immediately before applying logic
-            support.getReferences(element, rangeInElement, text).orNull()?.let { return it }
+            support.getReferences(element, text, rangeInExpression).orNull()?.let { return it }
         }
         return emptyList()
     }
@@ -274,8 +303,8 @@ object ParadoxExpressionService {
     /**
      * @see ParadoxCsvExpressionSupport.resolve
      */
-    fun resolveCsvExpression(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, text: String, config: CwtValueConfig): PsiElement? {
-        if (text.isEmpty()) return null // ignore if expression is empty
+    fun resolveCsvExpression(element: ParadoxCsvExpressionElement, text: String, rangeInExpression: TextRange, config: CwtValueConfig): PsiElement? {
+        if (text.isEmpty()) return null // ignore if expression text is empty
         val configExpression = config.configExpression
         val dataType = configExpression.type
         val gameType = config.configGroup.gameType
@@ -283,7 +312,7 @@ object ParadoxExpressionService {
         supports.forEachFast f@{ support ->
             if (gameType.orSpecific() != null && !support.supports(gameType)) return@f // check game type first
             ProgressManager.checkCanceled() // 3.0.1 optimize: check canceled immediately before applying logic
-            support.resolve(element, rangeInElement, text, config)?.let { return it }
+            support.resolve(element, text, rangeInExpression, config)?.let { return it }
         }
         return null
     }
@@ -291,8 +320,8 @@ object ParadoxExpressionService {
     /**
      * @see ParadoxCsvExpressionSupport.resolveAll
      */
-    fun resolveAllCsvExpression(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, text: String, config: CwtValueConfig): List<PsiElement> {
-        if (text.isEmpty()) return emptyList() // ignore if expression is empty
+    fun resolveAllCsvExpression(element: ParadoxCsvExpressionElement, text: String, rangeInExpression: TextRange, config: CwtValueConfig): List<PsiElement> {
+        if (text.isEmpty()) return emptyList() // ignore if expression text is empty
         val configExpression = config.configExpression
         val dataType = configExpression.type
         val gameType = config.configGroup.gameType
@@ -300,7 +329,7 @@ object ParadoxExpressionService {
         supports.forEachFast f@{ support ->
             if (gameType.orSpecific() != null && !support.supports(gameType)) return@f // check game type first
             ProgressManager.checkCanceled() // 3.0.1 optimize: check canceled immediately before applying logic
-            support.resolveAll(element, rangeInElement, text, config).orNull()?.let { return it }
+            support.resolveAll(element, text, rangeInExpression, config).orNull()?.let { return it }
         }
         return emptyList()
     }
@@ -326,7 +355,8 @@ object ParadoxExpressionService {
         run {
             if (element is ParadoxScriptBlock) return@run
             val complexEnumValueInfo = ParadoxComplexEnumValueManager.getInfo(element) ?: return@run
-            val referenceRange = ParadoxExpressionService.getExpressionTextRange(element) // unquoted text
+            val referenceRange = getExpressionRangeInElement(element)
+            if (referenceRange.isEmpty) return PsiReference.EMPTY_ARRAY
             val reference = ParadoxComplexEnumValuePsiReference(element, referenceRange, complexEnumValueInfo)
             return arrayOf(reference)
         }
@@ -338,14 +368,16 @@ object ParadoxExpressionService {
         val configs = ParadoxConfigManager.getConfigs(element, options.copy(fallback = isKey))
         if (configs.isEmpty()) return PsiReference.EMPTY_ARRAY
         val role = ParadoxTypeResolver.resolveExpressionRole(element)
-        val referenceRange = getExpressionTextRange(element) // unquoted text
+        val referenceRange = getExpressionRangeInElement(element)
+        if (referenceRange.isEmpty) return PsiReference.EMPTY_ARRAY
         val reference = ParadoxScriptExpressionPsiReference(element, referenceRange, configs, role)
         return reference.collectReferences()
     }
 
     fun resolveLocalisationExpressionReferences(element: ParadoxLocalisationExpressionElement): Array<out PsiReference> {
         // 尝试解析为复杂表达式
-        val referenceRange = getExpressionTextRange(element)
+        val referenceRange = getExpressionRangeInElement(element)
+        if (referenceRange.isEmpty) return PsiReference.EMPTY_ARRAY
         val reference = ParadoxLocalisationExpressionPsiReference(element, referenceRange)
         return reference.collectReferences()
     }
@@ -354,7 +386,8 @@ object ParadoxExpressionService {
         // 尝试解析为复杂枚举值声明
         run {
             val complexEnumValueInfo = ParadoxComplexEnumValueManager.getInfo(element) ?: return@run
-            val referenceRange = ParadoxExpressionService.getExpressionTextRange(element) // unquoted text
+            val referenceRange = getExpressionRangeInElement(element)
+            if (referenceRange.isEmpty) return PsiReference.EMPTY_ARRAY
             val reference = ParadoxComplexEnumValuePsiReference(element, referenceRange, complexEnumValueInfo)
             return arrayOf(reference)
         }
@@ -363,8 +396,9 @@ object ParadoxExpressionService {
         if (element !is ParadoxCsvColumn) return PsiReference.EMPTY_ARRAY
         val columnConfig = ParadoxCsvManager.getColumnConfig(element)
         if (columnConfig == null) return PsiReference.EMPTY_ARRAY
-        val textRange = getExpressionTextRange(element) // unquoted text
-        val reference = ParadoxCsvExpressionPsiReference(element, textRange, columnConfig)
+        val referenceRange = getExpressionRangeInElement(element)
+        if (referenceRange.isEmpty) return PsiReference.EMPTY_ARRAY
+        val reference = ParadoxCsvExpressionPsiReference(element, referenceRange, columnConfig)
         return arrayOf(reference)
     }
 

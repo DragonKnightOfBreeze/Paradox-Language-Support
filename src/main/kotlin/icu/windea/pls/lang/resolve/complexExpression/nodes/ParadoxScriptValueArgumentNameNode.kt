@@ -33,7 +33,7 @@ class ParadoxScriptValueArgumentNameNode(
         val reference = valueNode.getReference(element)
         if (reference == null) return null
         val offset = ParadoxExpressionService.getExpressionOffset(element)
-        return Reference(element, rangeInExpression.shiftRight(offset))
+        return Reference(element, rangeInExpression.shiftRight(offset), rangeInExpression)
     }
 
     /**
@@ -41,7 +41,8 @@ class ParadoxScriptValueArgumentNameNode(
      */
     class Reference(
         element: ParadoxScriptStringExpressionElement,
-        rangeInElement: TextRange
+        rangeInElement: TextRange,
+        private val rangeInExpression: TextRange,
     ) : PsiReferenceBase<ParadoxScriptStringExpressionElement>(element, rangeInElement), ParadoxIdentifierNode.Reference {
         override fun handleElementRename(newElementName: String): PsiElement {
             return element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
@@ -49,7 +50,7 @@ class ParadoxScriptValueArgumentNameNode(
 
         override fun resolve(): ParadoxParameterLightElement? {
             val config = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(fallback = false)).firstOrNull() ?: return null
-            return ParadoxParameterService.resolveArgument(element, rangeInElement, config)
+            return ParadoxParameterService.resolveArgument(element, rangeInExpression, config)
         }
 
         override fun canResolveFor(constraint: ParadoxReferenceConstraint): Boolean {

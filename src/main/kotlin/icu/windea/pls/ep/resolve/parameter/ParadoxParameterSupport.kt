@@ -31,7 +31,7 @@ interface ParadoxParameterSupport {
 
     fun resolveConditionParameter(element: ParadoxConditionParameter): ParadoxParameterLightElement?
 
-    fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>): ParadoxParameterLightElement?
+    fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInExpression: TextRange?, config: CwtConfig<*>): ParadoxParameterLightElement?
 
     /**
      * 根据指定的 [element]，遍历所有作为参数上下文的目标（[ParadoxDefinitionElement]）。这里的参数使用读访问。

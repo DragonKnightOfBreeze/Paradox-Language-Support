@@ -29,19 +29,19 @@ interface ParadoxLocalisationExpressionSupport {
 
     fun supports(element: ParadoxExpressionElement): Boolean
 
-    fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String, holder: AnnotationHolder) {
+    fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, holder: AnnotationHolder) {
         // by default nothing
     }
 
-    fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String): PsiElement? {
+    fun resolve(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange): PsiElement? {
         return null
     }
 
-    fun resolveAll(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String): List<PsiElement> {
-        return resolve(element, rangeInElement, text).to.singletonListOrEmpty()
+    fun resolveAll(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange): List<PsiElement> {
+        return resolve(element, text, rangeInExpression).to.singletonListOrEmpty()
     }
 
-    fun getReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, text: String): List<PsiReference> {
+    fun getReferences(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange): List<PsiReference> {
         return emptyList()
     }
 
