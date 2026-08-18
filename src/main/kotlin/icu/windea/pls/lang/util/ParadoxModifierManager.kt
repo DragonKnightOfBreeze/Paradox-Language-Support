@@ -146,6 +146,18 @@ object ParadoxModifierManager {
         }
     }
 
+    fun getModifierPresentableName(name: String, element: PsiElement, project: Project): String? {
+        ProgressManager.checkCanceled()
+        val keys = getModifierNameKeys(name, element)
+        return keys.firstNotNullOfOrNull { key ->
+            val selector = ParadoxLocalisationSearch.selector(project, element)
+                .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
+                .withConstraint(ParadoxLocalisationIndexConstraint.Modifier) // so ignore case
+            val nameLocalisation = ParadoxLocalisationSearch.searchNormal(key, selector).find()
+            nameLocalisation?.let { ParadoxLocalisationManager.getPresentableText(it) }
+        }
+    }
+
     fun getModifierPresentableNames(name: String, element: PsiElement, project: Project): Set<String> {
         ProgressManager.checkCanceled()
         val keys = getModifierNameKeys(name, element)
