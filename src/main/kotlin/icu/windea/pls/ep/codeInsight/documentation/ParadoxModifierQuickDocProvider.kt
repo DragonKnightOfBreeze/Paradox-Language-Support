@@ -2,10 +2,10 @@ package icu.windea.pls.ep.codeInsight.documentation
 
 import com.intellij.openapi.extensions.ExtensionPointName
 import icu.windea.pls.core.util.builders.DocumentationBuilder
+import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.psi.light.ParadoxModifierLightElement
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 /**
  * 指定与修正有关的快速文档的构建逻辑。

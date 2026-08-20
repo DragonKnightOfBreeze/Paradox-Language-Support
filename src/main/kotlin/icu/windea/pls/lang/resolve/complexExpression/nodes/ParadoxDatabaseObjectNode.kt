@@ -14,6 +14,7 @@ import icu.windea.pls.core.resolveFirst
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.editor.ParadoxSemanticHighlighterColors
 import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.ParadoxPsiService
 import icu.windea.pls.lang.resolve.ParadoxDefinitionService
@@ -30,7 +31,6 @@ import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.constraints.ParadoxReferenceConstraint
 import icu.windea.pls.model.expressions.ParadoxDefinitionTypeExpression
-import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 class ParadoxDatabaseObjectNode(
     override val text: String,

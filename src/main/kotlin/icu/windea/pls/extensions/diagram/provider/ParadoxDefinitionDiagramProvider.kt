@@ -15,6 +15,7 @@ import icu.windea.pls.extensions.diagram.ParadoxDiagramNode
 import icu.windea.pls.extensions.diagram.settings.ParadoxDiagramSettings
 import icu.windea.pls.lang.ParadoxLanguage
 import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.scope.ParadoxSearchScopeTypes
 import icu.windea.pls.lang.search.util.contextSensitive
@@ -22,7 +23,6 @@ import icu.windea.pls.lang.search.util.withGameType
 import icu.windea.pls.lang.search.util.withSearchScope
 import icu.windea.pls.lang.search.util.withSearchScopeType
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 
 abstract class ParadoxDefinitionDiagramProvider(gameType: ParadoxGameType) : ParadoxDiagramProvider(gameType) {

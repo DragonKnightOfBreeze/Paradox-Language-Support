@@ -20,7 +20,7 @@ import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.hierarchy.ParadoxHierarchyActions
 import icu.windea.pls.lang.hierarchy.ParadoxHierarchyManager
 import icu.windea.pls.lang.project
-import icu.windea.pls.script.psi.ParadoxDefinitionElement
+import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import java.text.MessageFormat
 import java.util.function.Supplier
 import javax.swing.JPanel

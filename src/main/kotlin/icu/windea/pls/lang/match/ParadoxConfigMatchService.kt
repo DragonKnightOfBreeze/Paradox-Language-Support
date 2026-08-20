@@ -38,6 +38,7 @@ import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKeyWithThis
 import icu.windea.pls.csv.psi.ParadoxCsvFile
+import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.psi.values
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
@@ -45,7 +46,6 @@ import icu.windea.pls.model.constants.ChronicleConstants
 import icu.windea.pls.model.expressions.ParadoxExpression
 import icu.windea.pls.model.paths.ParadoxPath
 import icu.windea.pls.model.type.CwtExpressionType
-import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptBoolean
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*

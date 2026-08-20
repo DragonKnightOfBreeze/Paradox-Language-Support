@@ -6,9 +6,9 @@ import com.intellij.psi.PsiNamedElement
 import com.intellij.refactoring.rename.naming.AutomaticRenamer
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.util.contextSensitive
-import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 class ParadoxDefinitionsAutomaticRenamer(element: PsiElement, newName: String) : AutomaticRenamer() {
     init {

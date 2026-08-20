@@ -6,7 +6,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.script.psi.ParadoxDefinitionElement
+import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import javax.swing.Icon
 
 interface ParadoxDefinitionHierarchyActions {

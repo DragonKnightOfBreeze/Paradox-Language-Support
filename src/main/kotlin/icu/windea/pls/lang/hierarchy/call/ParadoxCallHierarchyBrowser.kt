@@ -21,8 +21,8 @@ import icu.windea.pls.lang.element
 import icu.windea.pls.lang.hierarchy.ParadoxHierarchyActions
 import icu.windea.pls.lang.hierarchy.ParadoxHierarchyManager
 import icu.windea.pls.lang.project
+import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
-import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import java.text.MessageFormat
 import javax.swing.JTree

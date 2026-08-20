@@ -1,7 +1,7 @@
 package icu.windea.pls.ep.util.presentation
 
 import icu.windea.pls.core.createPointer
-import icu.windea.pls.script.psi.ParadoxDefinitionElement
+import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 
 abstract class ParadoxDefinitionPresentationBase(
     element: ParadoxDefinitionElement

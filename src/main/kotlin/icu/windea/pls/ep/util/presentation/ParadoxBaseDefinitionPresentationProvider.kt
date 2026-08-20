@@ -14,8 +14,8 @@ import icu.windea.pls.core.cast
 import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.util.ParadoxModificationTrackers
-import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import kotlinx.coroutines.CancellationException
 
 /**

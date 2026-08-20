@@ -1,7 +1,7 @@
 package icu.windea.pls.ep.util.presentation
 
 import com.intellij.openapi.extensions.ExtensionPointName
-import icu.windea.pls.script.psi.ParadoxDefinitionElement
+import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 
 /**
  * 用于得到定义的图形展示。

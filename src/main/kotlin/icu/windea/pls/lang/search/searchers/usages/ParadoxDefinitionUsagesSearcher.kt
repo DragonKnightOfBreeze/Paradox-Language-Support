@@ -13,13 +13,13 @@ import icu.windea.pls.ep.util.data.StellarisGameConceptData
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.getDefinitionData
 import icu.windea.pls.lang.index.constraints.ParadoxDefinitionIndexConstraint
+import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.resolve.ParadoxLocalisationIconService
 import icu.windea.pls.lang.wordRequests
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxDefinitionInjectionInfo
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.model.constraints.ParadoxReferenceConstraint
-import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import kotlin.experimental.or
 
 /**

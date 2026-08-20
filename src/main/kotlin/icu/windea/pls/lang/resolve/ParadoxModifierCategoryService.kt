@@ -4,12 +4,12 @@ import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.ep.resolve.modifier.ParadoxDefinitionModifierCategoryProvider
 import icu.windea.pls.ep.resolve.modifier.ParadoxModifierCategoryProvider
+import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.psi.light.ParadoxModifierLightElement
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxModifierInfo
 import icu.windea.pls.model.orSpecific
-import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 object ParadoxModifierCategoryService {
     /**

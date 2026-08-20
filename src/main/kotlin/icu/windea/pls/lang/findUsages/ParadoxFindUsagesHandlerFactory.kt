@@ -6,8 +6,8 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import icu.windea.pls.lang.ParadoxLanguage
 import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
-import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 class ParadoxFindUsagesHandlerFactory(project: Project) : FindUsagesHandlerFactory() {
     val findOptions = ParadoxFindUsagesOptions(project)

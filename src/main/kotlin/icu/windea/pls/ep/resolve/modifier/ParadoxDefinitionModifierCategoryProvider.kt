@@ -2,9 +2,9 @@ package icu.windea.pls.ep.resolve.modifier
 
 import com.intellij.openapi.extensions.ExtensionPointName
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
+import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 /**
  * 指定定义的修正分类。

@@ -17,6 +17,7 @@ import icu.windea.pls.lang.defineInfo
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOptions
+import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.psi.ParadoxPsiMatchService
 import icu.windea.pls.lang.psi.isResolvableLiteralExpression
 import icu.windea.pls.lang.resolve.ParadoxExpressionService
@@ -31,7 +32,6 @@ import icu.windea.pls.model.ParadoxDefineVariableInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.annotator.ParadoxScriptSyntaxAnnotator
 import icu.windea.pls.script.editor.ParadoxScriptHighlighterColors
-import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptProperty

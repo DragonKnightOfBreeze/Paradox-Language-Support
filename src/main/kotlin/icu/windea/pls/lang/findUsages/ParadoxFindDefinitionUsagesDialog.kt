@@ -4,7 +4,7 @@ import com.intellij.find.findUsages.FindUsagesOptions
 import com.intellij.openapi.project.Project
 import com.intellij.ui.StateRestoringCheckBox
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.script.psi.ParadoxDefinitionElement
+import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import javax.swing.BoxLayout
 import javax.swing.JPanel
 

@@ -10,13 +10,13 @@ import icu.windea.pls.ep.codeInsight.documentation.ParadoxLocalisationParameterQ
 import icu.windea.pls.ep.codeInsight.documentation.ParadoxModifierQuickDocProvider
 import icu.windea.pls.ep.codeInsight.documentation.ParadoxParameterQuickDocProvider
 import icu.windea.pls.ep.codeInsight.documentation.ParadoxQuickDocTextProvider
+import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.psi.light.ParadoxLocalisationParameterLightElement
 import icu.windea.pls.lang.psi.light.ParadoxModifierLightElement
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.orSpecific
-import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 object ParadoxDocumentationService {
     /**

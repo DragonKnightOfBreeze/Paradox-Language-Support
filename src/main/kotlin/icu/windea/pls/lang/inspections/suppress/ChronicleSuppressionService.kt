@@ -10,9 +10,9 @@ import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.optimizedIfEmpty
 import icu.windea.pls.ep.inspections.ParadoxDefinitionInspectionSuppressionProvider
 import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.orSpecific
-import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import java.util.regex.Pattern
 
 object ChronicleSuppressionService {

@@ -10,6 +10,7 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.optimizedIfEmpty
 import icu.windea.pls.core.process
 import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.references.script.ParadoxScriptExpressionPsiReference
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.util.withGameType
@@ -19,7 +20,6 @@ import icu.windea.pls.lang.util.ParadoxEventManager.getInvocations
 import icu.windea.pls.lang.util.ParadoxEventManager.isValidEventId
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
-import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPsiService
 import icu.windea.pls.script.psi.ParadoxScriptString

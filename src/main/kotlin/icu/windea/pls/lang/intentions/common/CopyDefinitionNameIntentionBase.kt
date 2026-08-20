@@ -8,8 +8,8 @@ import com.intellij.openapi.project.DumbAware
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.psi.ParadoxPsiFileService
-import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 /**
  * 复制定义的名字到剪贴板。

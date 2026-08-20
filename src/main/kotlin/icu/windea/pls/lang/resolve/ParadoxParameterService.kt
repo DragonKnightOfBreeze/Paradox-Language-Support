@@ -27,6 +27,7 @@ import icu.windea.pls.ep.resolve.parameter.ParadoxParameterInferredConfigProvide
 import icu.windea.pls.ep.resolve.parameter.ParadoxParameterSupport
 import icu.windea.pls.lang.match.findByPattern
 import icu.windea.pls.lang.match.matchesByPattern
+import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxParameterManager
@@ -38,7 +39,6 @@ import icu.windea.pls.model.orSpecific
 import icu.windea.pls.model.support
 import icu.windea.pls.model.type.CwtExpressionType
 import icu.windea.pls.script.psi.ParadoxConditionParameter
-import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxParameter
 import icu.windea.pls.script.psi.ParadoxScriptConditionalBlock
 import icu.windea.pls.script.psi.ParadoxScriptConditionalBlockExpression

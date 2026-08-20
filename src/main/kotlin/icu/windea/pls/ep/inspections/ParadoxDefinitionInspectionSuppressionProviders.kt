@@ -1,9 +1,9 @@
 package icu.windea.pls.ep.inspections
 
 import icu.windea.pls.base.annotations.ForGameType
+import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 class ParadoxBaseDefinitionInspectionSuppressionProvider : ParadoxDefinitionInspectionSuppressionProvider {
     override fun getSuppressedToolIds(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Set<String> {

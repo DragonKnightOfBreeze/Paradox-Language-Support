@@ -9,11 +9,11 @@ import com.intellij.ui.JBColor
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.configExpression.CwtSchemaExpression
 import icu.windea.pls.core.codeInsight.completion.CompletionContext
+import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.lang.util.ParadoxScriptedVariableManager
-import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import javax.swing.Icon
 

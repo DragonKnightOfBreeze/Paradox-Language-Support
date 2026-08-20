@@ -10,11 +10,11 @@ import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.findFast
 import icu.windea.pls.core.collections.flatMapFast
 import icu.windea.pls.core.collections.forEachFast
+import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.psi.intValue
 import icu.windea.pls.lang.psi.members
 import icu.windea.pls.lang.util.ParadoxDefineManager
 import icu.windea.pls.model.expressions.ParadoxExpression
-import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptMemberContainer
 import icu.windea.pls.script.psi.ParadoxScriptProperty

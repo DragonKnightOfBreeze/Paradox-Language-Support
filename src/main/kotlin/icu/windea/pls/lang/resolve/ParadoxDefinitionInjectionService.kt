@@ -13,6 +13,7 @@ import icu.windea.pls.lang.match.CwtSubtypeConfigMatchContext
 import icu.windea.pls.lang.match.CwtTypeConfigMatchContext
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.match.ParadoxMatchOptions
+import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.util.ParadoxConfigManager
@@ -21,7 +22,6 @@ import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager.getModeFromExp
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager.getTargetFromExpression
 import icu.windea.pls.lang.util.ParadoxModificationTrackers
 import icu.windea.pls.model.ParadoxDefinitionInjectionInfo
-import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 object ParadoxDefinitionInjectionService {

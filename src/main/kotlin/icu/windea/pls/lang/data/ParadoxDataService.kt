@@ -2,7 +2,7 @@ package icu.windea.pls.lang.data
 
 import icu.windea.pls.ep.util.data.ParadoxDefinitionData
 import icu.windea.pls.ep.util.data.ParadoxDefinitionDataProvider
-import icu.windea.pls.script.psi.ParadoxDefinitionElement
+import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 
 object ParadoxDataService {
     inline fun <reified T : ParadoxDefinitionData> getDefinitionData(element: ParadoxDefinitionElement, lenient: Boolean = false): T? {

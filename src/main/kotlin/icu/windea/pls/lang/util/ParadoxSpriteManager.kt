@@ -3,7 +3,7 @@ package icu.windea.pls.lang.util
 import icu.windea.pls.ep.util.data.ParadoxSpriteData
 import icu.windea.pls.images.ImageFrameInfo
 import icu.windea.pls.lang.getDefinitionData
-import icu.windea.pls.script.psi.ParadoxDefinitionElement
+import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 
 object ParadoxSpriteManager {
     fun getFrameInfo(element: ParadoxDefinitionElement): ImageFrameInfo? {

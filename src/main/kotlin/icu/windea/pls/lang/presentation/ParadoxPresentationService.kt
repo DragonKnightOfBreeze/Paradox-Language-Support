@@ -2,7 +2,7 @@ package icu.windea.pls.lang.presentation
 
 import icu.windea.pls.ep.util.presentation.ParadoxDefinitionPresentation
 import icu.windea.pls.ep.util.presentation.ParadoxDefinitionPresentationProvider
-import icu.windea.pls.script.psi.ParadoxDefinitionElement
+import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 
 object ParadoxPresentationService {
     inline fun <reified T : ParadoxDefinitionPresentation> getDefinitionPresentation(element: ParadoxDefinitionElement, lenient: Boolean = false): T? {

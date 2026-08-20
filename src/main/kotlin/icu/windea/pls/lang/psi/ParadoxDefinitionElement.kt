@@ -1,12 +1,15 @@
-package icu.windea.pls.script.psi
+package icu.windea.pls.lang.psi
 
 import com.intellij.psi.NavigatablePsiElement
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.PsiNamedElement
-import icu.windea.pls.lang.psi.ParadoxPsiElementVisitor
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxDefinitionInjectionInfo
+import icu.windea.pls.script.psi.ParadoxScriptFile
+import icu.windea.pls.script.psi.ParadoxScriptMemberContainer
+import icu.windea.pls.script.psi.ParadoxScriptMemberContext
+import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 /**
  * 可能是定义的 PSI 元素。
@@ -26,6 +29,7 @@ interface ParadoxDefinitionElement : PsiNamedElement, PsiNameIdentifierOwner, Na
      * - 定义的名字（[ParadoxDefinitionInfo.name]）。
      * - 属性定义的类型键（[ParadoxDefinitionInfo.typeKey]）。
      * - 定义注入的表达式（[ParadoxDefinitionInjectionInfo.expression]）。
+     * - 不属于以上任一种情况，只是一个普通的文件名、属性名等。
      */
     override fun getName(): String
 
@@ -33,4 +37,3 @@ interface ParadoxDefinitionElement : PsiNamedElement, PsiNameIdentifierOwner, Na
 
     val block: ParadoxScriptMemberContainer?
 }
-

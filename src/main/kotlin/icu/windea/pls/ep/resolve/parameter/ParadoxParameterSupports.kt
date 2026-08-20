@@ -28,6 +28,7 @@ import icu.windea.pls.core.util.ReadWriteAccess
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.injection.ChronicleInjectionManager
 import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.resolve.ParadoxExpressionService
@@ -52,7 +53,6 @@ import icu.windea.pls.model.definitionName
 import icu.windea.pls.model.definitionTypes
 import icu.windea.pls.model.inlineScriptExpression
 import icu.windea.pls.script.psi.ParadoxConditionParameter
-import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxParameter
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes

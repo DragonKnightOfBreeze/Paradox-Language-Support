@@ -3,10 +3,10 @@ package icu.windea.pls.ep.resolve.modifier
 import icu.windea.pls.base.annotations.ForGameType
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.util.ParadoxScriptedModifierManager
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 /**
  * （仅限 Stellaris）适用于封装修正（`scripted_modifier`）。

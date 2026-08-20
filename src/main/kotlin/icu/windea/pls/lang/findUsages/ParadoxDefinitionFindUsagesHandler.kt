@@ -2,7 +2,7 @@ package icu.windea.pls.lang.findUsages
 
 import com.intellij.find.findUsages.AbstractFindUsagesDialog
 import com.intellij.openapi.actionSystem.DataContext
-import icu.windea.pls.script.psi.ParadoxDefinitionElement
+import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 
 class ParadoxDefinitionFindUsagesHandler(
     private val element: ParadoxDefinitionElement,

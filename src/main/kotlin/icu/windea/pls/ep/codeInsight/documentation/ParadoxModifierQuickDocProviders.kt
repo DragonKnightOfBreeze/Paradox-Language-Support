@@ -15,6 +15,7 @@ import icu.windea.pls.ep.resolve.modifier.ParadoxTemplateModifierSupport
 import icu.windea.pls.lang.codeInsight.documentation.psiLink
 import icu.windea.pls.lang.codeInsight.documentation.psiLinkOrUnresolved
 import icu.windea.pls.lang.index.constraints.ParadoxDefinitionIndexConstraint
+import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.psi.light.ParadoxModifierLightElement
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
@@ -30,7 +31,6 @@ import icu.windea.pls.model.economicCategoryInfo
 import icu.windea.pls.model.economicCategoryModifierInfo
 import icu.windea.pls.model.modifierConfig
 import icu.windea.pls.model.templateExpression
-import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 /***
  * 适用于从模板表达式生成的修正。

@@ -8,8 +8,8 @@ import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
 import icu.windea.pls.lang.ParadoxLanguage
 import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.psi.ParadoxPsiFileService
-import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 /**
  * 提供定义的类型层级视图。（定义类型/定义子类型 > 定义）

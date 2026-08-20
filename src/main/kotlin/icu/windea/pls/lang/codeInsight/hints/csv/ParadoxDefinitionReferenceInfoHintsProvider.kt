@@ -8,8 +8,8 @@ import icu.windea.pls.lang.codeInsight.hints.ParadoxDeclarativeHintsSettings
 import icu.windea.pls.lang.codeInsight.hints.addInlinePresentation
 import icu.windea.pls.lang.codeInsight.hints.text
 import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.model.constraints.ParadoxReferenceConstraint
-import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 /**
  * 通过内嵌提示显示定义引用信息，包括类型和子类型。

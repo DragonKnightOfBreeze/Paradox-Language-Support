@@ -5,9 +5,9 @@ import icu.windea.pls.core.addExtensionPointListener
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.util.values.LazyValue
 import icu.windea.pls.lang.inspections.suppress.ParadoxScriptInspectionSuppressor
+import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 /**
  * 用于在定义级别提供相关代码检查的抑制策略。

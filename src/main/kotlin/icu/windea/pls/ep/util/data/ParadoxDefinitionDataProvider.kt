@@ -1,7 +1,7 @@
 package icu.windea.pls.ep.util.data
 
 import com.intellij.openapi.extensions.ExtensionPointName
-import icu.windea.pls.script.psi.ParadoxDefinitionElement
+import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 
 /**
  * 用于得到定义的数据。

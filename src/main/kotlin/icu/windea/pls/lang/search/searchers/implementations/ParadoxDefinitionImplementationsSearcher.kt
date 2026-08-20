@@ -9,9 +9,9 @@ import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.util.withSearchScope
-import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 /**
  * 定义的实现的查询器。加入所有作用域内的同名定义。

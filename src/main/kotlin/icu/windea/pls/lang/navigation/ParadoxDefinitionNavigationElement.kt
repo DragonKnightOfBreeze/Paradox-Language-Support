@@ -2,8 +2,8 @@ package icu.windea.pls.lang.navigation
 
 import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.core.navigation.NavigationElement
+import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.model.ParadoxDefinitionInfo
-import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 class ParadoxDefinitionNavigationElement(
     parent: ParadoxDefinitionElement,

@@ -9,8 +9,8 @@ import com.intellij.refactoring.util.RefactoringDescriptionLocation
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
-import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 class ParadoxRefactoringElementDescriptorProvider : ElementDescriptionProvider {

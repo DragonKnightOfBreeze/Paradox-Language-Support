@@ -9,9 +9,9 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.psi.ParadoxPsiFileService
 import icu.windea.pls.lang.resolve.ParadoxDefinitionService
-import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 // com.intellij.codeInsight.navigation.JavaGotoSuperHandler
 // org.jetbrains.kotlin.idea.codeInsight.GotoSuperActionHandler

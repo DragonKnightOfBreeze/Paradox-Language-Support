@@ -2,8 +2,8 @@ package icu.windea.pls.lang.select
 
 import com.intellij.psi.PsiElement
 import com.intellij.util.containers.TreeTraversal
+import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.model.paths.ParadoxMemberPath
-import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptMember
