@@ -75,12 +75,13 @@ object ParadoxExpressionInspectionService {
 
         // skip if config context not exists
         val configContext = ParadoxConfigManager.getConfigContext(element) ?: return
-        // skip if config context is not suitable
-        if (!configContext.inRoot()) return
-        if (element is ParadoxScriptPropertyKey && configContext.isDeclarationRoot()) return
+        // skip if config context should be skipped (mainly by member path and member role)
+        if (configContext.skipUnresolvedExpressionCheck()) return
+
         // skip if there are no context configs
         if (configContext.getConfigs().isEmpty()) return
 
+        // skip if there are any matched configs
         val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(fallback = false))
         if (configs.isNotEmpty()) return
 

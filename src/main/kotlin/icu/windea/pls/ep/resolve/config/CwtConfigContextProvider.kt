@@ -34,7 +34,9 @@ interface CwtConfigContextProvider {
 
     fun getCacheKey(context: CwtConfigContext, options: ParadoxMatchOptions? = null): String?
 
-    fun getConfigs(context: CwtConfigContext, options: ParadoxMatchOptions? = null): List<CwtMemberConfig<*>>?
+    fun getConfigs(context: CwtConfigContext, options: ParadoxMatchOptions? = null): List<CwtMemberConfig<*>>
+
+    fun skipUnresolvedExpressionCheck(context: CwtConfigContext) = false
 
     fun skipMissingExpressionCheck(context: CwtConfigContext) = false
 

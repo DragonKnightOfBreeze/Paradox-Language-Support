@@ -58,13 +58,15 @@ class CwtBaseConfigContextProvider : CwtConfigContextProvider {
         return context
     }
 
-    override fun getCacheKey(context: CwtConfigContext, options: ParadoxMatchOptions?): String? {
-        return null
-    }
+    override fun getCacheKey(context: CwtConfigContext, options: ParadoxMatchOptions?) = null
 
-    override fun getConfigs(context: CwtConfigContext, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>>? {
-        return null
-    }
+    override fun getConfigs(context: CwtConfigContext, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>> = emptyList()
+
+    override fun skipMissingExpressionCheck(context: CwtConfigContext) = true
+
+    override fun skipUnresolvedExpressionCheck(context: CwtConfigContext) = true
+
+    override fun skipTooManyExpressionCheck(context: CwtConfigContext) = true
 }
 
 /**
@@ -108,13 +110,18 @@ class CwtDefinitionConfigContextProvider : CwtConfigContextProvider {
         }
     }
 
-    override fun getConfigs(context: CwtConfigContext, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>>? {
-        val memberPath = context.memberPath ?: return null
+    override fun getConfigs(context: CwtConfigContext, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>> {
+        val memberPath = context.memberPath ?: return emptyList()
         if (memberPath.isNotEmpty()) return ParadoxConfigService.getFlattenedConfigsForConfigContext(context, options)
-        val definitionInfo = context.definitionInfo ?: return null
-        val declarationConfig = definitionInfo.getDeclaration(options) ?: return null
+        val definitionInfo = context.definitionInfo ?: return emptyList()
+        val declarationConfig = definitionInfo.getDeclaration(options) ?: return emptyList()
         val rootConfigs = declarationConfig.to.singletonList()
         return ParadoxConfigService.getTopConfigsForConfigContext(context, rootConfigs)
+    }
+
+    override fun skipUnresolvedExpressionCheck(context: CwtConfigContext): Boolean {
+        // skip for root key
+        return context.isDeclarationRoot() && context.memberRole == ParadoxMemberRole.Property
     }
 }
 
@@ -153,13 +160,18 @@ class CwtDefineVariableConfigContextProvider : CwtConfigContextProvider {
         }
     }
 
-    override fun getConfigs(context: CwtConfigContext, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>>? {
-        val memberPath = context.memberPath ?: return null
+    override fun getConfigs(context: CwtConfigContext, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>> {
+        val memberPath = context.memberPath ?: return emptyList()
         if (memberPath.isNotEmpty()) return ParadoxConfigService.getFlattenedConfigsForConfigContext(context, options)
-        val defineVariableInfo = context.defineVariableInfo ?: return null
-        val rootConfig = defineVariableInfo.config?.rootConfig ?: return null // NOTE 2.1.8 inline or deep copy ops should be unnecessary here
+        val defineVariableInfo = context.defineVariableInfo ?: return emptyList()
+        val rootConfig = defineVariableInfo.config?.rootConfig ?: return emptyList() // NOTE 2.1.8 inline or deep copy ops should be unnecessary here
         val rootConfigs = listOf(rootConfig)
         return ParadoxConfigService.getTopConfigsForConfigContext(context, rootConfigs)
+    }
+
+    override fun skipUnresolvedExpressionCheck(context: CwtConfigContext): Boolean {
+        // skip for root key (define variable name)
+        return context.isDeclarationRoot() && context.memberRole == ParadoxMemberRole.Property
     }
 }
 
@@ -206,10 +218,10 @@ class CwtParameterValueConfigContextProvider : CwtConfigContextProvider {
         }
     }
 
-    override fun getConfigs(context: CwtConfigContext, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>>? {
-        val memberPath = context.memberPath ?: return null
+    override fun getConfigs(context: CwtConfigContext, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>> {
+        val memberPath = context.memberPath ?: return emptyList()
         if (memberPath.isNotEmpty()) return ParadoxConfigService.getFlattenedConfigsForConfigContext(context, options)
-        val parameterElement = context.parameterElement ?: return null
+        val parameterElement = context.parameterElement ?: return emptyList()
         val rootConfigs = ParadoxParameterManager.getInferredContextConfigs(parameterElement)
         return ParadoxConfigService.getTopConfigsForConfigContext(context, rootConfigs)
     }
@@ -259,12 +271,17 @@ class CwtInlineScriptUsageConfigContextProvider : CwtConfigContextProvider {
         }
     }
 
-    override fun getConfigs(context: CwtConfigContext, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>>? {
-        val memberPath = context.memberPath ?: return null
+    override fun getConfigs(context: CwtConfigContext, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>> {
+        val memberPath = context.memberPath ?: return emptyList()
         if (memberPath.isNotEmpty()) return ParadoxConfigService.getFlattenedConfigsForConfigContext(context, options)
-        val inlineConfigs = context.configGroup.macrosModel.forInlineScripts.orNull() ?: return null
+        val inlineConfigs = context.configGroup.macrosModel.forInlineScripts.orNull() ?: return emptyList()
         val rootConfigs = inlineConfigs.mapFast { CwtConfigManipulationService.inlineMacro(it) }
         return ParadoxConfigService.getTopConfigsForConfigContext(context, rootConfigs)
+    }
+
+    override fun skipUnresolvedExpressionCheck(context: CwtConfigContext): Boolean {
+        // skip for root key
+        return context.isDeclarationRoot() && context.memberRole == ParadoxMemberRole.Property
     }
 }
 
@@ -309,11 +326,11 @@ class CwtInlineScriptFileConfigContextProvider : CwtConfigContextProvider {
         }
     }
 
-    override fun getConfigs(context: CwtConfigContext, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>>? {
-        val memberPath = context.memberPath ?: return null // null -> unexpected
-        val element = context.element ?: return null // null -> unexpected
+    override fun getConfigs(context: CwtConfigContext, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>> {
+        val memberPath = context.memberPath ?: return emptyList() // null -> unexpected
+        val element = context.element ?: return emptyList() // null -> unexpected
         if (memberPath.isNotEmpty()) return ParadoxConfigService.getFlattenedConfigsForConfigContext(context, options)
-        val inlineScriptExpression = context.inlineScriptExpression ?: return null
+        val inlineScriptExpression = context.inlineScriptExpression ?: return emptyList()
         val rootConfigs = ParadoxInlineScriptManager.getInferredContextConfigs(inlineScriptExpression, element, context, options)
         return ParadoxConfigService.getTopConfigsForConfigContext(context, rootConfigs)
     }
@@ -371,13 +388,18 @@ class CwtDefinitionInjectionConfigContextProvider : CwtConfigContextProvider {
         }
     }
 
-    override fun getConfigs(context: CwtConfigContext, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>>? {
-        val memberPath = context.memberPath ?: return null
+    override fun getConfigs(context: CwtConfigContext, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>> {
+        val memberPath = context.memberPath ?: return emptyList()
         if (memberPath.isNotEmpty()) return ParadoxConfigService.getFlattenedConfigsForConfigContext(context, options)
-        val definitionInjectionInfo = context.definitionInjectionInfo ?: return null
-        val declaration = definitionInjectionInfo.declaration ?: return null
+        val definitionInjectionInfo = context.definitionInjectionInfo ?: return emptyList()
+        val declaration = definitionInjectionInfo.declaration ?: return emptyList()
         val rootConfigs = declaration.to.singletonList()
         return ParadoxConfigService.getTopConfigsForConfigContext(context, rootConfigs)
+    }
+
+    override fun skipUnresolvedExpressionCheck(context: CwtConfigContext): Boolean {
+        // skip for root key (definition injection expression)
+        return context.isDeclarationRoot() && context.memberRole == ParadoxMemberRole.Property
     }
 
     override fun skipMissingExpressionCheck(context: CwtConfigContext): Boolean {

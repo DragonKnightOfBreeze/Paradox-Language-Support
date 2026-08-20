@@ -14,8 +14,6 @@ import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.setValue
 import icu.windea.pls.ep.resolve.config.CwtConfigContextProvider
-import icu.windea.pls.lang.inspections.script.expression.MissingExpressionInspection
-import icu.windea.pls.lang.inspections.script.expression.TooManyExpressionInspection
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.model.ParadoxDefineVariableInfo
@@ -60,23 +58,39 @@ interface CwtConfigContext : UserDataHolder {
     /** 将当前的上下文对象标记动态的。这意味着获取上下文规则时，会改为从上下文对象上的缓存中获取，而非从规则分组上的缓存中获取。 */
     fun markDynamic()
 
-    /** 是否是某种根上下文，或其任意深度的子上下文。 */
+    /** 是否是某种根上下文，或其任意深度的子上下文。不检查 [memberRole]。 */
     fun inRoot(): Boolean
 
-    /** 是否是某种特定声明（如定义、定义注入、定值变量）的根上下文，或其任意深度的子上下文。 */
+    /** 是否是某种特定声明（如定义、定义注入、定值变量）的根上下文，或其任意深度的子上下文。不检查 [memberRole]。 */
     @Suppress("unused")
     fun inDeclarationRoot(): Boolean
 
-    /** 是否是某种特定声明（如定义、定义注入、定值变量）的根上下文。 */
+    /** 是否是某种特定声明（如定义、定义注入、定值变量）的根上下文。不检查 [memberRole]。 */
     fun isDeclarationRoot(): Boolean
 
     /** 得到一组作为上下文的成员规则。 */
     fun getConfigs(options: ParadoxMatchOptions? = null): List<CwtMemberConfig<*>>
 
-    /** 是否跳过代码检查 [MissingExpressionInspection] */
+    /**
+     * 是否跳过无法解析的表达式的代码检查。
+     *
+     * @see icu.windea.pls.lang.inspections.script.expression.UnresolvedExpressionInspection
+     * @see icu.windea.pls.lang.inspections.csv.expression.UnresolvedExpressionInspection
+     */
+    fun skipUnresolvedExpressionCheck(): Boolean = false
+
+    /**
+     * 是否跳过缺失的表达式的代码检查。
+     *
+     * @see icu.windea.pls.lang.inspections.script.expression.MissingExpressionInspection
+     */
     fun skipMissingExpressionCheck(): Boolean = false
 
-    /** 是否跳过代码检查 [TooManyExpressionInspection] */
+    /**
+     * 是否跳过过多的表达式的代码检查。
+     *
+     * @see icu.windea.pls.lang.inspections.script.expression.TooManyExpressionInspection
+     */
     fun skipTooManyExpressionCheck(): Boolean = false
 
     object Keys : KeyRegistry()
@@ -165,6 +179,10 @@ sealed class CwtConfigContextBase(
 
     override fun getConfigs(options: ParadoxMatchOptions?): List<CwtMemberConfig<*>> {
         return ParadoxConfigService.getConfigsForConfigContext(this, options)
+    }
+
+    override fun skipUnresolvedExpressionCheck(): Boolean {
+        return provider.skipUnresolvedExpressionCheck(this)
     }
 
     override fun skipMissingExpressionCheck(): Boolean {

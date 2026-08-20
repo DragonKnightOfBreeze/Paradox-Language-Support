@@ -172,7 +172,7 @@ object ParadoxConfigService {
                     // use lock-freeze `ConcurrentMap.getOrPut` to prevent IDE freezing problems (WARNING: or will cause deadlock!)
                     cache.asMap().getOrPut(cacheKey) {
                         val result = provider.getConfigs(context, options)
-                        result?.optimized().orEmpty()
+                        result.optimized()
                     }
                 } finally {
                     resolvingStack.pollLast()
@@ -228,6 +228,7 @@ object ParadoxConfigService {
         val parentSubPath = subPaths.getOrNull(subPaths.lastIndex - 1)
         val parentExpression = parentSubPath?.let { ParadoxExpression.resolve(it, quoted = false, role = ParadoxExpressionRole.Key) }
 
+        val configGroup = context.configGroup
         val element = context.element ?: return emptyList() // null -> unexpected (should be bound first)
         val containingDirectMember = element.containingDirectMember
         val parentMember = containingDirectMember.parents(withSelf = false).findIsInstance<ParadoxScriptMember> { it is ParadoxScriptFile || it.isDirectMember() } ?: return emptyList()
@@ -237,76 +238,86 @@ object ParadoxConfigService {
         // NOTE 2.1.2 如果父上下文是动态的，也需要把子上下文标记为动态的
         if (parentContext.dynamic) context.markDynamic()
 
+        // 得到父上下文的上下文规则
         val parentConfigs = parentContext.getConfigs(options)
         if (parentConfigs.isEmpty()) return emptyList() // 忽略
 
-        val configGroup = context.configGroup
-        var result = buildList {
-            // `parentConfigs` 是上下文规则，因此如果 `parentSubPath` 对应一个脚本属性，需要先进行一次匹配
-            val matchedParentConfigs = when {
-                parentExpression != null && parentMember is ParadoxScriptProperty -> matchConfigsForConfigContext(parentMember, parentExpression, parentConfigs, configGroup, options)
-                else -> parentConfigs
-            }
-
-            // 按照 `subPath` 打平规则，并进行必要的处理
-            if (subPath == "-") {
-                matchedParentConfigs.forEachFast f1@{ parentConfig ->
-                    val configs = parentConfig.values
-                    if (configs.isNullOrEmpty()) return@f1
-                    configs.forEachFast { config ->
-                        this += config
-                    }
-                }
-            } else {
-                val parameterizedKeyConfigs by lazy { getParameterizedKeyConfigs(containingDirectMember, expression) }
-
-                matchedParentConfigs.forEachFast f1@{ parentConfig ->
-                    val configs = parentConfig.properties
-                    if (configs.isNullOrEmpty()) return@f1
-
-                    val exactMatchedConfigs = mutableListOf<CwtMemberConfig<*>>()
-                    val lenientMatchedConfigs = mutableListOf<CwtMemberConfig<*>>()
-
-                    configs.forEachFast { config ->
-                        // 打平后需要首先进行必要的内联
-                        // 如果别名规则内联后涉及单别名规则，会继续内联
-                        val inlinedConfigs = CwtConfigManipulationService.inlineForConfigContext(config, subPath)
-                        val matchedConfigs = when {
-                            inlinedConfigs == null -> listOf(config)
-                            else -> inlinedConfigs
-                        }
-
-                        // 如果当前路径是整个作为参数的，需要检查精确匹配与宽松匹配
-                        // 如果存在精确匹配的规则，则仅使用那些规则；否则，如果存在宽松匹配的规则且是唯一的，则仅使用那个规则
-                        matchedConfigs.forEachFast { matchedConfig ->
-                            if (matchedConfig is CwtPropertyConfig) {
-                                val m = matchesParameterizedKeyConfigs(parameterizedKeyConfigs, matchedConfig.keyExpression)
-                                when (m) {
-                                    null -> this += matchedConfig
-                                    true -> exactMatchedConfigs += matchedConfig
-                                    false -> lenientMatchedConfigs += matchedConfig
-                                }
-                            } else {
-                                this += matchedConfig
-                            }
-                        }
-                    }
-
-                    if (exactMatchedConfigs.isNotEmpty()) {
-                        addAll(exactMatchedConfigs)
-                    } else if (lenientMatchedConfigs.size == 1) {
-                        this += lenientMatchedConfigs.single()
-                    }
-                }
-            }
+        // `parentConfigs` 是上下文规则，因此如果 `parentSubPath` 对应一个脚本属性，需要先进行一次匹配
+        val matchedParentConfigs = when {
+            parentExpression != null && parentMember is ParadoxScriptProperty -> matchConfigsForConfigContext(parentMember, parentExpression, parentConfigs, configGroup, options)
+            else -> parentConfigs
         }
+        if (matchedParentConfigs.isEmpty()) return emptyList() // 忽略
+
+        // 按照 `subPath` 打平规则，并进行必要的处理
+        val result = buildConfigsForConfigContext(expression, matchedParentConfigs, containingDirectMember)
+        if (result.isEmpty()) return emptyList()
 
         // 如果 `element` 是属性值，则需要再次进行匹配，并接着转换为属性值对应的规则
         if (context.memberRole == ParadoxMemberRole.PropertyValue) {
-            result = matchConfigsForConfigContext(element, expression, result, configGroup, options)
-            result = result.mapNotNullFast { if (it is CwtPropertyConfig) it.valueConfig else null }
+            val matchedResult = matchConfigsForConfigContext(element, expression, result, configGroup, options)
+            return matchedResult.mapNotNullFast { if (it is CwtPropertyConfig) it.valueConfig else null }
         }
 
+        return result
+    }
+
+    private fun buildConfigsForConfigContext(expression: ParadoxExpression, parentConfigs: List<CwtMemberConfig<*>>, containingDirectMember: ParadoxScriptMember): MutableList<CwtMemberConfig<*>> {
+        // TODO 3.0.2 #386
+
+        val result = mutableListOf<CwtMemberConfig<*>>()
+        if (expression.value == "-") {
+            parentConfigs.forEachFast f1@{ parentConfig ->
+                val configs = parentConfig.values
+                if (configs.isNullOrEmpty()) return@f1
+                configs.forEachFast { config ->
+                    result.add(config)
+                }
+            }
+        } else {
+            val parameterizedKeyConfigs by lazy { getParameterizedKeyConfigs(containingDirectMember, expression) }
+
+            parentConfigs.forEachFast f1@{ parentConfig ->
+                val configs = parentConfig.properties
+                if (configs.isNullOrEmpty()) return@f1
+
+                val exactMatchedConfigs = mutableListOf<CwtMemberConfig<*>>()
+                val lenientMatchedConfigs = mutableListOf<CwtMemberConfig<*>>()
+
+                configs.forEachFast { config ->
+                    // 打平后需要首先进行必要的内联
+                    // 如果别名规则内联后涉及单别名规则，会继续内联
+                    val inlinedConfigs = CwtConfigManipulationService.inlineForConfigContext(config, expression.value)
+                    val matchedConfigs = when {
+                        inlinedConfigs == null -> listOf(config)
+                        else -> inlinedConfigs
+                    }
+
+                    // 如果当前路径是整个作为参数的，需要检查精确匹配与宽松匹配
+                    // 如果存在精确匹配的规则，则仅使用那些规则
+                    // 否则，如果存在宽松匹配的规则且是唯一的，则仅使用那个规则
+                    matchedConfigs.forEachFast { matchedConfig ->
+                        if (matchedConfig is CwtPropertyConfig) {
+                            val m = matchesParameterizedKeyConfigs(parameterizedKeyConfigs, matchedConfig.keyExpression)
+                            when (m) {
+                                null -> result.add(matchedConfig)
+                                true -> exactMatchedConfigs.add(matchedConfig)
+                                false -> lenientMatchedConfigs.add(matchedConfig)
+                            }
+                        } else {
+                            result.add(matchedConfig)
+                        }
+                    }
+                }
+
+                if (exactMatchedConfigs.isNotEmpty()) {
+                    result.addAll(exactMatchedConfigs)
+                } else if (lenientMatchedConfigs.size == 1) {
+                    // TODO 3.0.2 #386
+                    result.add(lenientMatchedConfigs.single())
+                }
+            }
+        }
         return result
     }
 
