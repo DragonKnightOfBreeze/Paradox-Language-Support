@@ -3,18 +3,16 @@ package icu.windea.pls.lang.inspections.localisation.common
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.codeInspection.options.OptPane
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
-import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.matchesPatterns
-import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.localisation.psi.ParadoxLocalisationIcon
 import icu.windea.pls.localisation.psi.ParadoxLocalisationVisitor
-import javax.swing.JComponent
 
 /**
  * 无法解析的图标的代码检查。
@@ -25,6 +23,13 @@ import javax.swing.JComponent
 class UnresolvedIconInspection : LocalInspectionTool() {
     @JvmField var ignoredNames = ""
     @JvmField var ignoredInInjectedFiles = false
+
+    override fun getOptionsPane(): OptPane {
+        return OptPane.pane(
+            OptPane.checkbox("ignoredNames", ChronicleBundle.message("inspection.localisation.unresolvedIcon.option.ignoredNames")),
+            OptPane.checkbox("ignoredInInjectedFiles", ChronicleBundle.message("inspection.option.ignoredInInjectedFiles")),
+        )
+    }
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 按需忽略注入的文件
@@ -40,33 +45,23 @@ class UnresolvedIconInspection : LocalInspectionTool() {
         return object : ParadoxLocalisationVisitor() {
             override fun visitIcon(element: ParadoxLocalisationIcon) {
                 ProgressManager.checkCanceled()
-                val name = element.name ?: return
-                if (name.matchesPatterns(ignoredNames, ignoreCase = true)) return // 忽略
-                val reference = element.reference
-                if (reference == null || reference.resolve() != null) return
-                val location = element.idElement ?: return
-                val description = ChronicleBundle.message("inspection.localisation.unresolvedIcon.desc", name)
-                holder.registerProblem(location, description, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
+                check(element, holder)
             }
         }
     }
 
-    override fun createOptionsPanel(): JComponent {
-        return panel {
-            // ignoredNames
-            row {
-                label(ChronicleBundle.message("inspection.localisation.unresolvedIcon.option.ignoredNames"))
-                textField()
-                    .bindText(::ignoredNames.toAtomicProperty())
-                    .comment(ChronicleBundle.message("comment.patterns"))
-                    .align(Align.FILL)
-                    .resizableColumn()
-            }
-            // ignoredInInjectedFile
-            row {
-                checkBox(ChronicleBundle.message("inspection.option.ignoredInInjectedFiles"))
-                    .bindSelected(::ignoredInInjectedFiles.toAtomicProperty())
-            }
-        }
+    private fun check(element: ParadoxLocalisationIcon, holder: ProblemsHolder) {
+        val name = element.name ?: return
+        if (skip(name)) return // 忽略
+        val reference = element.reference
+        if (reference == null || reference.resolve() != null) return
+        val location = element.idElement ?: return
+        val description = ChronicleBundle.message("inspection.localisation.unresolvedIcon.desc", name)
+        holder.registerProblem(location, description, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
+    }
+
+    private fun skip(name: String): Boolean {
+        if (ignoredNames.isNotEmpty() && name.matchesPatterns(ignoredNames, ignoreCase = true)) return true
+        return false
     }
 }

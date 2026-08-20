@@ -31,16 +31,19 @@ class OverrideForDefineVariableInspection : OverrideRelatedInspectionBase() {
         return object : ParadoxScriptVisitor() {
             override fun visitProperty(element: ParadoxScriptProperty) {
                 ProgressManager.checkCanceled()
-
-                val overrideResult = ParadoxOverrideService.getOverrideResultForDefineVariable(element, holder.file)
-                if (overrideResult == null) return
-
-                val locationElement = element.propertyKey
-                val (key, target, results) = overrideResult
-                val description = ChronicleBundle.message("inspection.overrideForDefineVariable.desc", key)
-                val fix = NavigateToOverridingDefineVariablesFix(key, target, results)
-                holder.registerProblem(locationElement, description, fix)
+                check(element, holder)
             }
         }
+    }
+
+    private fun check(element: ParadoxScriptProperty, holder: ProblemsHolder) {
+        val overrideResult = ParadoxOverrideService.getOverrideResultForDefineVariable(element, holder.file)
+        if (overrideResult == null) return
+
+        val locationElement = element.propertyKey
+        val (key, target, results) = overrideResult
+        val description = ChronicleBundle.message("inspection.overrideForDefineVariable.desc", key)
+        val fix = NavigateToOverridingDefineVariablesFix(key, target, results)
+        holder.registerProblem(locationElement, description, fix)
     }
 }

@@ -1,10 +1,14 @@
 package icu.windea.pls.lang.inspections.csv.common
 
-import com.intellij.codeInspection.InspectionManager
 import com.intellij.codeInspection.LocalInspectionTool
-import com.intellij.codeInspection.ProblemDescriptor
+import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.codeInspection.options.OptPane
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.DumbAware
+import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
+import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.core.psi.PsiFileOnlyVisitor
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.inspections.ParadoxFileInspectionService
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
@@ -22,9 +26,20 @@ import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
  * 提供快速修复：
  * - 改为正确的文件编码
  *
+ * @property ignoredFilePaths （配置项）需要忽略的文件路径。一组 ANT 路径模式，分号分隔，忽略大小写。
+ *
  * @see icu.windea.pls.lang.ParadoxUtf8BomOptionProvider
  */
 class IncorrectFileEncodingInspection : LocalInspectionTool(), DumbAware {
+    @JvmField var ignoredFilePaths = ""
+
+    override fun getOptionsPane(): OptPane {
+        return OptPane.pane(
+            OptPane.expandableString("ignoredFilePaths", ChronicleBundle.message("incorrectFileEncoding.option.ignoredFilePaths"), ",")
+                .description(ChronicleBundle.message("comment.antPatterns"))
+        )
+    }
+
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 跳过内存文件和注入的文件
         val vFile = file.virtualFile
@@ -34,7 +49,13 @@ class IncorrectFileEncodingInspection : LocalInspectionTool(), DumbAware {
         return ParadoxPsiFileMatchService.isCsvFile(file)
     }
 
-    override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
-        return ParadoxFileInspectionService.checkFileEncoding(file, manager, isOnTheFly)
+    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
+        val context = ParadoxFileInspectionService.createContext(this, holder, ignoredFilePaths)
+        return object : PsiFileOnlyVisitor() {
+            override fun visitFile(file: PsiFile) {
+                ProgressManager.checkCanceled()
+                ParadoxFileInspectionService.checkForIncorrectFileEncoding(file, context)
+            }
+        }
     }
 }

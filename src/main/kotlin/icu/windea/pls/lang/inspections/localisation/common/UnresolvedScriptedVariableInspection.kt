@@ -4,12 +4,11 @@ import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.codeInspection.options.OptPane
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
-import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.fixes.IntroduceGlobalVariableFix
 import icu.windea.pls.lang.fixes.IntroduceLocalScriptedVariableFix
@@ -17,7 +16,6 @@ import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.localisation.psi.ParadoxLocalisationScriptedVariableReference
 import icu.windea.pls.localisation.psi.ParadoxLocalisationVisitor
-import javax.swing.JComponent
 
 /**
  * 无法解析的封装变量引用的代码检查。
@@ -31,6 +29,12 @@ import javax.swing.JComponent
 class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
     @JvmField var ignoredInInjectedFiles = false
 
+    override fun getOptionsPane(): OptPane {
+        return OptPane.pane(
+            OptPane.checkbox("ignoredInInjectedFiles", ChronicleBundle.message("inspection.option.ignoredInInjectedFiles"))
+        )
+    }
+
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 按需忽略注入的文件
         val vFile = file.virtualFile
@@ -43,15 +47,19 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
         return object : ParadoxLocalisationVisitor() {
             override fun visitScriptedVariableReference(element: ParadoxLocalisationScriptedVariableReference) {
                 ProgressManager.checkCanceled()
-                val name = element.name ?: return
-                if (name.isParameterized()) return // skip if name is parameterized
-                val reference = element.reference ?: return
-                if (reference.resolve() != null) return
-                val description = ChronicleBundle.message("inspection.localisation.unresolvedScriptedVariable.desc", name)
-                val fixes = getFixes(element, name)
-                holder.registerProblem(element, description, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL, *fixes)
+                check(element, holder)
             }
         }
+    }
+
+    private fun check(element: ParadoxLocalisationScriptedVariableReference, holder: ProblemsHolder) {
+        val name = element.name ?: return
+        if (name.isParameterized()) return // skip if name is parameterized
+        val reference = element.reference ?: return
+        if (reference.resolve() != null) return
+        val description = ChronicleBundle.message("inspection.localisation.unresolvedScriptedVariable.desc", name)
+        val fixes = getFixes(element, name)
+        holder.registerProblem(element, description, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL, *fixes)
     }
 
     private fun getFixes(element: ParadoxLocalisationScriptedVariableReference, name: String): Array<LocalQuickFix> {
@@ -59,15 +67,5 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
             IntroduceLocalScriptedVariableFix(name, element),
             IntroduceGlobalVariableFix(name, element),
         )
-    }
-
-    override fun createOptionsPanel(): JComponent {
-        return panel {
-            // ignoredInInjectedFile
-            row {
-                checkBox(ChronicleBundle.message("inspection.option.ignoredInInjectedFiles"))
-                    .bindSelected(::ignoredInInjectedFiles.toAtomicProperty())
-            }
-        }
     }
 }

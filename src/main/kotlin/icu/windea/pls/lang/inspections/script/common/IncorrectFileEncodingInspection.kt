@@ -23,6 +23,8 @@ import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
  * 提供快速修复：
  * - 改为正确的文件编码
  *
+ * @property ignoredFilePaths （配置项）需要忽略的文件路径。一组 ANT 路径模式，分号分隔，忽略大小写。
+ *
  * @see ParadoxUtf8BomOptionProvider
  */
 class IncorrectFileEncodingInspection : LocalInspectionTool(), DumbAware {
@@ -36,6 +38,6 @@ class IncorrectFileEncodingInspection : LocalInspectionTool(), DumbAware {
     }
 
     override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
-        return ParadoxFileInspectionService.checkFileEncoding(file, manager, isOnTheFly)
+        return ParadoxFileInspectionService.checkForIncorrectFileEncoding(file, manager, isOnTheFly)
     }
 }

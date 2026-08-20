@@ -6,12 +6,20 @@ import com.intellij.codeInspection.ProblemsHolder
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.CwtMemberConfig
+import icu.windea.pls.config.config.CwtPropertyConfig
+import icu.windea.pls.config.config.CwtValueConfig
+import icu.windea.pls.config.config.delegated.CwtRowConfig
 import icu.windea.pls.config.util.CwtConfigManager
+import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.mapFast
 import icu.windea.pls.core.match.similarity.SimilarityMatchOptions
 import icu.windea.pls.core.match.similarity.SimilarityMatchService
 import icu.windea.pls.core.truncate
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
+import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
+import icu.windea.pls.csv.psi.ParadoxCsvPsiService
+import icu.windea.pls.ep.inspections.ParadoxIncorrectExpressionChecker
+import icu.windea.pls.ep.inspections.ParadoxUnresolvedExpressionChecker
 import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContextService
 import icu.windea.pls.lang.fixes.GenerateLocalisationsFix
 import icu.windea.pls.lang.fixes.GenerateLocalisationsInFileFix
@@ -20,20 +28,65 @@ import icu.windea.pls.lang.fixes.ReplaceWithSimilarExpressionInListFix
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.settings.ChronicleInternalSettings
+import icu.windea.pls.lang.util.ParadoxConfigManager
+import icu.windea.pls.lang.util.ParadoxCsvManager
+import icu.windea.pls.model.orSpecific
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 object ParadoxExpressionInspectionService {
-    fun createContext(tool: LocalInspectionTool, holder: ProblemsHolder): ParadoxExpressionInspectionContext {
+    fun createContext(tool: LocalInspectionTool, holder: ProblemsHolder, ignoredByConfig: Boolean = false, showExpectInfo: Boolean = true): ParadoxExpressionInspectionContext {
         val gameType = selectGameType(holder.file)
         val configGroup = ChronicleFacade.getConfigGroup(holder.project, gameType)
-        return ParadoxExpressionInspectionContext(tool, holder, configGroup)
+        return ParadoxExpressionInspectionContext(tool, holder, configGroup, ignoredByConfig, showExpectInfo)
+    }
+
+    // unresolvedExpression
+
+    fun checkForUnresolvedExpression(element: ParadoxCsvExpressionElement, rowConfig: CwtRowConfig, context: ParadoxExpressionInspectionContext) {
+        if (element !is ParadoxCsvColumn) return
+
+        if (ParadoxCsvPsiService.isHeaderColumn(element)) return // skip header columns
+
+        // - 如果不存在对应的列规则，则直接跳过
+        // - 如果存在对应的列规则且匹配，则直接跳过
+        // - 按需忽略最后一行
+
+        val columnConfig = ParadoxCsvManager.getColumnConfig(element, rowConfig) ?: return // skip (checked by `IncorrectColumnSizeInspection`)
+        if (ParadoxCsvManager.isMatchedColumnConfig(element, columnConfig)) return
+
+        val expectedConfigs = getExpectedConfigs(columnConfig)
+        if (skipForUnresolvedExpression(element, expectedConfigs, context)) return
+
+        applyUnresolvedExpressionCheckers(element, expectedConfigs, context)
+    }
+
+    private fun getExpectedConfigs(columnConfig: CwtPropertyConfig): List<CwtValueConfig> {
+        val valueConfig = columnConfig.valueConfig ?: return emptyList()
+        return listOf(valueConfig)
+    }
+
+    private fun skipForUnresolvedExpression(element: ParadoxCsvExpressionElement, expectedConfigs: List<CwtValueConfig>, context: ParadoxExpressionInspectionContext): Boolean {
+        if (expectedConfigs.isEmpty()) return false
+        if (context.ignoredByConfig && ParadoxConfigManager.checkExtendedConfig(element, expectedConfigs)) return true
+        return false
+    }
+
+    fun applyUnresolvedExpressionCheckers(element: ParadoxExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>, context: ParadoxExpressionInspectionContext): Boolean {
+        val gameType = context.gameType
+        val checkers = ParadoxUnresolvedExpressionChecker.EP_NAME.extensionList
+        checkers.forEachFast f@{ ep ->
+            if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f // check game type first
+            val r = ep.check(element, expectedConfigs, context)
+            if (!r) return false
+        }
+        return true
     }
 
     fun getDefaultDescriptionForUnresolvedExpression(element: ParadoxExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>, context: ParadoxExpressionInspectionContext): String {
         val expression = element.expression
         val expect = when {
             expectedConfigs.isEmpty() -> ""
-            showExpectInfo(context) -> expectedConfigs.mapFast { it.configExpression.expressionString }.toSet()
+            context.showExpectInfo -> expectedConfigs.mapFast { it.configExpression.expressionString }.toSet()
                 .truncate(ChronicleInternalSettings.getInstance().itemLimit).joinToString()
             else -> null
         }
@@ -43,15 +96,6 @@ object ParadoxExpressionInspectionService {
             else -> ChronicleBundle.message("unresolvedExpression.desc.noExpect", expression)
         }
         return message
-    }
-
-    private fun showExpectInfo(context: ParadoxExpressionInspectionContext): Boolean {
-        val tool = context.tool
-        return when (tool) {
-            is icu.windea.pls.lang.inspections.script.expression.UnresolvedExpressionInspection -> tool.showExpectInfo
-            is icu.windea.pls.lang.inspections.csv.expression.UnresolvedExpressionInspection -> tool.showExpectInfo
-            else -> true
-        }
     }
 
     fun getSimilarityBasedFixesForUnresolvedExpression(element: ParadoxExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>): List<LocalQuickFix> {
@@ -95,5 +139,33 @@ object ParadoxExpressionInspectionService {
             GenerateLocalisationsFix(element, context),
             GenerateLocalisationsInFileFix(element),
         )
+    }
+
+    // incorrectExpression
+
+    fun checkForIncorrectExpression(element: ParadoxCsvExpressionElement, rowConfig: CwtRowConfig, context: ParadoxExpressionInspectionContext) {
+        if (element !is ParadoxCsvColumn) return
+
+        if (ParadoxCsvPsiService.isHeaderColumn(element)) return // skip header columns
+        if (ParadoxCsvPsiService.isEmptyColumn(element)) return // skip empty columns
+
+        // 得到完全匹配的规则
+        val columnConfig = ParadoxCsvManager.getColumnConfig(element, rowConfig) ?: return // skip (checked by `IncorrectColumnSizeInspection`)
+        if (!ParadoxCsvManager.isMatchedColumnConfig(element, columnConfig)) return // skip (checked by `UnresolvedExpressionInspection`)
+        val config = columnConfig.valueConfig ?: return
+
+        // 开始检查
+        applyIncorrectExpressionCheckers(element, config, context)
+    }
+
+    private fun applyIncorrectExpressionCheckers(element: ParadoxExpressionElement, config: CwtMemberConfig<*>, context: ParadoxExpressionInspectionContext): Boolean {
+        val gameType = context.gameType
+        val checkers = ParadoxIncorrectExpressionChecker.EP_NAME.extensionList
+        checkers.forEachFast f@{ ep ->
+            if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f // check game type first
+            val r = ep.check(element, config, context)
+            if (!r) return false
+        }
+        return true
     }
 }

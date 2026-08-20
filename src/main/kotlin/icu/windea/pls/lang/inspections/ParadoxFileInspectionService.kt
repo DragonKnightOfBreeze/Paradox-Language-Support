@@ -2,7 +2,7 @@ package icu.windea.pls.lang.inspections
 
 import com.intellij.codeInsight.intention.PriorityAction
 import com.intellij.codeInsight.intention.preview.IntentionPreviewInfo
-import com.intellij.codeInspection.InspectionManager
+import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.LocalQuickFixAndIntentionActionOnPsiElement
 import com.intellij.codeInspection.ProblemDescriptor
@@ -39,16 +39,20 @@ import icu.windea.pls.model.constraints.matchesBy
 import icu.windea.pls.script.psi.ParadoxScriptFile
 
 object ParadoxFileInspectionService {
-    fun checkFileEncoding(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
-        if (!file.isValid) return null
-        if (file.textLength == 0) return null // 2.2.0 lenient check (skip for empty files)
-        if (file !is ParadoxFile) return null
+    fun createContext(tool: LocalInspectionTool, holder: ProblemsHolder, ignoredFilePaths: String = ""): ParadoxFileInspectionContext {
+        return ParadoxFileInspectionContext(tool, holder, ignoredFilePaths)
+    }
 
-        val virtualFile = file.virtualFile ?: return null
-        if (VirtualFileService.isStubFile(virtualFile)) return null
-        if (!virtualFile.isValid) return null
-        if (virtualFile.length == 0L) return null // 2.2.0 lenient check (skip for empty files)
-        val fileInfo = virtualFile.fileInfo ?: return null // 无法获取文件信息时跳过检查
+    fun checkForIncorrectFileEncoding(file: PsiFile, context: ParadoxFileInspectionContext) {
+        if (!file.isValid) return
+        if (file.textLength == 0) return // 2.2.0 lenient check (skip for empty files)
+        if (file !is ParadoxFile) return
+
+        val virtualFile = file.virtualFile ?: return
+        if (VirtualFileService.isStubFile(virtualFile)) return
+        if (!virtualFile.isValid) return
+        if (virtualFile.length == 0L) return // 2.2.0 lenient check (skip for empty files)
+        val fileInfo = virtualFile.fileInfo ?: return // 无法获取文件信息时跳过检查
 
         val expectedCharset = ParadoxFileEncodingService.useCharset()
         val charset = virtualFile.charset
@@ -56,86 +60,76 @@ object ParadoxFileInspectionService {
         val useBom = ParadoxFileEncodingService.useBom(file, fileInfo)
         val hasBom = VirtualFileBomService.hasBom(virtualFile, VirtualFileBomService.utf8Bom)
         val isValidBom = useBom == null || useBom == hasBom
-        if (isValidCharset && isValidBom) return null
+        if (isValidCharset && isValidBom) return
 
         val expect = expectedCharset.displayName() + if (useBom == null) "" else if (useBom) " BOM" else " NO BOM"
         val actual = charset.displayName() + if (hasBom) " BOM" else " NO BOM"
 
-        val holder = ProblemsHolder(manager, file, isOnTheFly)
         val description = ChronicleBundle.message("incorrectFileEncoding.desc", actual, expect)
-        val fix = ChangeFileEncodingFix(file, expectedCharset, true)
-        holder.registerProblem(file, description, fix)
-        return holder.resultsArray
+        val fix = ChangeFileEncodingFix(file, expectedCharset, useBom)
+        context.holder.registerProblem(file, description, fix)
     }
 
-    fun checkFileName(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean, ignoredFilePaths: String): Array<ProblemDescriptor>? {
-        if (!file.isValid) return null
-        if (file !is ParadoxLocalisationFile) return null
+    fun checkForIncorrectFileName(file: PsiFile, context: ParadoxFileInspectionContext) {
+        if (!file.isValid) return
+        if (file !is ParadoxLocalisationFile) return
 
-        val virtualFile = file.virtualFile ?: return null
-        if (VirtualFileService.isStubFile(virtualFile)) return null
-        if (!virtualFile.isValid) return null
-        val fileInfo = virtualFile.fileInfo ?: return null // 无法获取文件信息时跳过检查
+        val virtualFile = file.virtualFile ?: return
+        if (VirtualFileService.isStubFile(virtualFile)) return
+        if (!virtualFile.isValid) return
+        val fileInfo = virtualFile.fileInfo ?: return // 无法获取文件信息时跳过检查
 
         // 排除忽略的文件
-        if (fileInfo.path.path.matchesAntPatterns(ignoredFilePaths, ignoreCase = true)) return null // 忽略
+        if (fileInfo.path.path.matchesAntPatterns(context.ignoredFilePaths, ignoreCase = true)) return // 忽略
 
         // 仅对于存在且仅存在一个locale的本地化文件
-        val singlePropertyList = file.children().filterIsInstance<ParadoxLocalisationPropertyList>().singleOrNull() ?: return null
-        val locale = singlePropertyList.locale ?: return null
-        if (!locale.isValid) return null // locale尚未填写完成时也跳过检查
-        val localeConfig = selectLocale(locale) ?: return null // locale不支持时也跳过检查
+        val singlePropertyList = file.children().filterIsInstance<ParadoxLocalisationPropertyList>().singleOrNull() ?: return
+        val locale = singlePropertyList.locale ?: return
+        if (!locale.isValid) return // locale尚未填写完成时也跳过检查
+        val localeConfig = selectLocale(locale) ?: return // locale不支持时也跳过检查
         val localeId = localeConfig.name
         val localeIdFromFile = ParadoxLocalisationFileManager.getLocaleIdFromFileName(file)
-        if (localeIdFromFile == localeId) return null // 匹配语言环境，跳过
+        if (localeIdFromFile == localeId) return // 匹配语言环境，跳过
         val expectedFileName = ParadoxLocalisationFileManager.getExpectedFileName(file, localeId)
 
-        val holder = ProblemsHolder(manager, file, isOnTheFly)
         val location = locale // 不要直接注册到文件上
         val description = ChronicleBundle.message("incorrectFileName.desc", file.name, localeId)
-        val fixes = getFileNameFixes(locale, expectedFileName, localeIdFromFile)
-        holder.registerProblem(location, description, *fixes)
-        return holder.resultsArray
+        val fixes = buildList {
+            this += RenameFileFix(locale, expectedFileName)
+            if (localeIdFromFile != null) this += RenameLocaleFix(locale, localeIdFromFile)
+        }.toArray(LocalQuickFix.EMPTY_ARRAY)
+        context.holder.registerProblem(location, description, *fixes)
     }
 
-    fun checkFileMatched(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean, ignoredFilePaths: String): Array<ProblemDescriptor>? {
-        if (file !is ParadoxFile) return null
-        val virtualFile = file.virtualFile ?: return null
-        val fileInfo = virtualFile.fileInfo ?: return null // 无法获取文件信息时跳过检查
+    fun checkForUnmatchedFile(file: PsiFile, context: ParadoxFileInspectionContext) {
+        if (file !is ParadoxFile) return
+        val virtualFile = file.virtualFile ?: return
+        val fileInfo = virtualFile.fileInfo ?: return // 无法获取文件信息时跳过检查
 
         // 忽略一些特殊的脚本文件
-        if (file is ParadoxScriptFile && fileInfo.path matchesBy ParadoxPathConstraint.SpecialScriptFile) return null
+        if (file is ParadoxScriptFile && fileInfo.path matchesBy ParadoxPathConstraint.SpecialScriptFile) return
 
         // 排除忽略的文件
-        if (fileInfo.path.path.matchesAntPatterns(ignoredFilePaths, ignoreCase = true)) return null // 忽略
+        if (fileInfo.path.path.matchesAntPatterns(context.ignoredFilePaths, ignoreCase = true)) return // 忽略
 
         val gameType = fileInfo.gameType
         val configGroup = ChronicleFacade.getConfigGroup(file.project, gameType)
         val matched = ParadoxConfigMatchService.isMatchedOnFileLevel(file, configGroup, fileInfo.path)
-        if (matched) return null
+        if (matched) return
 
-        val holder = ProblemsHolder(manager, file, isOnTheFly)
         val description = when {
             file is ParadoxScriptFile -> ChronicleBundle.message("unmatchedFile.desc.script")
             file is ParadoxCsvFile -> ChronicleBundle.message("unmatchedFile.desc.csv")
-            else -> return null
+            else -> return
         }
         val fixes = arrayOf(
             BrowseUrlFix(ChronicleBundle.message("unmatchedFile.fix.1"), ChronicleUrls.contributing),
             BrowseUrlFix(ChronicleBundle.message("unmatchedFile.fix.2"), ChronicleUrls.configRepositories),
         )
-        holder.registerProblem(file, description, *fixes)
-        return holder.resultsArray
+        context.holder.registerProblem(file, description, *fixes)
     }
 
     // region Fixes
-
-    private fun getFileNameFixes(locale: ParadoxLocalisationLocale, expectedFileName: String, localeIdFromFile: String?): Array<LocalQuickFix> {
-        return buildList {
-            this += RenameFileFix(locale, expectedFileName)
-            if (localeIdFromFile != null) this += RenameLocaleFix(locale, localeIdFromFile)
-        }.toArray(LocalQuickFix.EMPTY_ARRAY)
-    }
 
     // org.jetbrains.kotlin.idea.intentions.RenameFileToMatchClassIntention
 

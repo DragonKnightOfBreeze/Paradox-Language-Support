@@ -1,14 +1,12 @@
 package icu.windea.pls.lang.inspections.localisation.scope
 
 import com.intellij.codeInspection.ProblemsHolder
-import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.TextRange
-import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.lang.psi.ParadoxExpressionElement
+import icu.windea.pls.lang.psi.ParadoxExpressionElementVisitor
 import icu.windea.pls.lang.psi.isCommandExpression
 import icu.windea.pls.lang.resolve.ParadoxExpressionService
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxCommandExpression
@@ -22,22 +20,23 @@ import icu.windea.pls.model.scope.ParadoxScopeContext
 class IncorrectScopeInspection : ScopeInspectionBase() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         val configGroup = ChronicleFacade.getConfigGroup(holder.project, selectGameType(holder.file))
-        return object : PsiElementVisitor() {
-            override fun visitElement(element: PsiElement) {
-                if (element is ParadoxLocalisationExpressionElement) visitExpressionElement(element)
-            }
-
-            private fun visitExpressionElement(element: ParadoxLocalisationExpressionElement) {
-                ProgressManager.checkCanceled()
-                if (!element.isCommandExpression()) return
-                val value = element.value
-                val commandExpression = ParadoxCommandExpression.resolve(value, null, configGroup) ?: return
-                checkExpression(element, commandExpression, configGroup, holder)
+        return object : ParadoxExpressionElementVisitor() {
+            override fun visitExpressionElement(element: ParadoxLocalisationExpressionElement) {
+                super.visitExpressionElement(element)
+                check(element, configGroup, holder)
             }
         }
     }
 
-    private fun checkExpression(element: ParadoxExpressionElement, complexExpression: ParadoxComplexExpression, configGroup: CwtConfigGroup, holder: ProblemsHolder) {
+    private fun check(element: ParadoxLocalisationExpressionElement, configGroup: CwtConfigGroup, holder: ProblemsHolder) {
+        if (element.isCommandExpression()) {
+            val value = element.value
+            val commandExpression = ParadoxCommandExpression.resolve(value, null, configGroup) ?: return
+            check(element, commandExpression, configGroup, holder)
+        }
+    }
+
+    private fun check(element: ParadoxLocalisationExpressionElement, complexExpression: ParadoxComplexExpression, configGroup: CwtConfigGroup, holder: ProblemsHolder) {
         var inputScopeContext = ParadoxScopeContext.resolveAny()
         when (complexExpression) {
             is ParadoxCommandExpression -> {

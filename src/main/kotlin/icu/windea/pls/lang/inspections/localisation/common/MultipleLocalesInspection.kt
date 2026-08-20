@@ -1,22 +1,19 @@
 package icu.windea.pls.lang.inspections.localisation.common
 
-import com.intellij.codeInspection.InspectionManager
 import com.intellij.codeInspection.LocalInspectionTool
-import com.intellij.codeInspection.ProblemDescriptor
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.codeInspection.options.OptPane
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.DumbAware
+import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
-import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.matchesPatterns
-import icu.windea.pls.core.toAtomicProperty
-import icu.windea.pls.core.toDelimitedMutableList
-import icu.windea.pls.core.toDelimitedString
+import icu.windea.pls.core.psi.PsiFileOnlyVisitor
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
-import javax.swing.JComponent
 
 /**
  * 检查本地化文件中是否包含多个语言环境声明。
@@ -26,9 +23,16 @@ import javax.swing.JComponent
 class MultipleLocalesInspection : LocalInspectionTool(), DumbAware {
     @JvmField var ignoredFileNames = "languages.yml"
 
+    override fun getOptionsPane(): OptPane {
+        return OptPane.pane(
+            OptPane.expandableString("ignoredFileNames", ChronicleBundle.message("inspection.localisation.multipleLocales.option.ignoredFileNames"), ",")
+                .description(ChronicleBundle.message("comment.patterns"))
+        )
+    }
+
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 跳过需要忽略的文件
-        if (isIgnoredFile(file)) return false
+        if (file.name.matchesPatterns(ignoredFileNames, ignoreCase = true)) return false
         // 跳过内存文件和注入的文件
         val vFile = file.virtualFile
         if (VirtualFileService.isLightFile(vFile)) return false
@@ -37,30 +41,19 @@ class MultipleLocalesInspection : LocalInspectionTool(), DumbAware {
         return ParadoxPsiFileMatchService.isLocalisationFile(file)
     }
 
-    private fun isIgnoredFile(file: PsiFile): Boolean {
-        return file.name.matchesPatterns(ignoredFileNames, ignoreCase = true)
-    }
-
-    override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
-        if (file !is ParadoxLocalisationFile) return null
-        if (file.propertyLists.size <= 1) return null // 不存在多个语言环境，忽略
-        val holder = ProblemsHolder(manager, file, isOnTheFly)
-        val description = ChronicleBundle.message("inspection.localisation.multipleLocales.desc")
-        holder.registerProblem(file, description, ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
-        return holder.resultsArray
-    }
-
-    override fun createOptionsPanel(): JComponent {
-        return panel {
-            // ignoredFileNames
-            row {
-                label(ChronicleBundle.message("inspection.localisation.multipleLocales.option.ignoredFileNames"))
-                expandableTextField({ it.toDelimitedMutableList() }, { it.toDelimitedString() })
-                    .bindText(::ignoredFileNames.toAtomicProperty())
-                    .comment(ChronicleBundle.message("comment.patterns"))
-                    .align(Align.FILL)
-                    .resizableColumn()
+    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
+        return object : PsiFileOnlyVisitor() {
+            override fun visitFile(file: PsiFile) {
+                ProgressManager.checkCanceled()
+                check(file, holder)
             }
         }
+    }
+
+    private fun check(file: PsiFile, holder: ProblemsHolder) {
+        if (file !is ParadoxLocalisationFile) return
+        if (file.propertyLists.size <= 1) return // 不存在多个语言环境，忽略
+        val description = ChronicleBundle.message("inspection.localisation.multipleLocales.desc")
+        holder.registerProblem(file, description, ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
     }
 }

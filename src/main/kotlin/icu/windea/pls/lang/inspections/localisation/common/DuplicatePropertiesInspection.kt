@@ -22,19 +22,23 @@ class DuplicatePropertiesInspection : LocalInspectionTool(), DumbAware {
         return object : ParadoxLocalisationVisitor() {
             override fun visitPropertyList(element: ParadoxLocalisationPropertyList) {
                 ProgressManager.checkCanceled()
-                val propertyGroup = element.propertyList.groupBy { it.name }
-                if (propertyGroup.isEmpty()) return
-                for ((key, values) in propertyGroup) {
-                    ProgressManager.checkCanceled()
-                    if (values.size <= 1) continue
-                    values.forEachFast { value ->
-                        // 第一个元素指定为file，则是在文档头部弹出，否则从psiElement上通过contextActions显示
-                        val location = value.propertyKey
-                        val fix = NavigateToDuplicatesFix(key, value, values)
-                        val description = ChronicleBundle.message("inspection.localisation.duplicateProperties.desc", key)
-                        holder.registerProblem(location, description, fix)
-                    }
-                }
+                check(element, holder)
+            }
+        }
+    }
+
+    private fun check(element: ParadoxLocalisationPropertyList, holder: ProblemsHolder) {
+        val propertyGroup = element.propertyList.groupBy { it.name }
+        if (propertyGroup.isEmpty()) return
+        for ((key, values) in propertyGroup) {
+            ProgressManager.checkCanceled()
+            if (values.size <= 1) continue
+            values.forEachFast { value ->
+                // 第一个元素指定为 file，则是在文档头部弹出，否则从 element 上通过 contextActions 显示
+                val location = value.propertyKey
+                val fix = NavigateToDuplicatesFix(key, value, values)
+                val description = ChronicleBundle.message("inspection.localisation.duplicateProperties.desc", key)
+                holder.registerProblem(location, description, fix)
             }
         }
     }

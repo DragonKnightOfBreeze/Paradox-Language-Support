@@ -2,15 +2,14 @@ package icu.windea.pls.lang.inspections.script.common
 
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.codeInspection.options.OptPane
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.startOffset
-import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
@@ -19,7 +18,6 @@ import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.model.ParadoxParameterContextReferenceInfo
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptString
-import javax.swing.JComponent
 
 /**
  * 缺失的参数的代码检查。
@@ -28,6 +26,12 @@ import javax.swing.JComponent
  */
 class MissingParameterInspection : LocalInspectionTool() {
     @JvmField var ignoredInInjectedFiles = false
+
+    override fun getOptionsPane(): OptPane {
+        return OptPane.pane(
+            OptPane.checkbox("ignoredInInjectedFiles", ChronicleBundle.message("inspection.option.ignoredInInjectedFiles"))
+        )
+    }
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 按需忽略注入的文件
@@ -67,16 +71,6 @@ class MissingParameterInspection : LocalInspectionTool() {
                     else -> ChronicleBundle.message("inspection.script.missingParameter.desc.2", names.joinToString(", "))
                 }
                 holder.registerProblem(element, rangeInElement, description)
-            }
-        }
-    }
-
-    override fun createOptionsPanel(): JComponent {
-        return panel {
-            // ignoredInInjectedFile
-            row {
-                checkBox(ChronicleBundle.message("inspection.option.ignoredInInjectedFiles"))
-                    .bindSelected(::ignoredInInjectedFiles.toAtomicProperty())
             }
         }
     }

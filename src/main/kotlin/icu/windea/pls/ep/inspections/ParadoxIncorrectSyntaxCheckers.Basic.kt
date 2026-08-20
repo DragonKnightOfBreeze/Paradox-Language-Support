@@ -14,7 +14,6 @@ import icu.windea.pls.lang.fixes.ReplaceStringFix
 import icu.windea.pls.lang.inspections.ParadoxSyntaxInspectionContext
 import icu.windea.pls.lang.inspections.ParadoxSyntaxInspectionService
 import icu.windea.pls.lang.resolve.ParadoxSyntaxService
-import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constraints.ParadoxSyntaxConstraint
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes
@@ -73,7 +72,7 @@ class ParadoxSafeAssignOperatorChecker : ParadoxIncorrectSyntaxChecker {
 
         val constraint = ParadoxSyntaxConstraint.SafeAssignOperator
         val name = ChronicleBundle.message("incorrectSyntax.desc.safeAssignOperators")
-        if (!ParadoxSyntaxInspectionService.checkByConstraint(element, context, constraint, name)) return true
+        if (!ParadoxSyntaxInspectionService.checkForIncorrectSyntaxByConstraint(element, context, constraint, name)) return true
 
         // check on grammar level
 
@@ -109,7 +108,7 @@ class ParadoxSafeAssignOperatorChecker : ParadoxIncorrectSyntaxChecker {
 
         val constraint = ParadoxSyntaxConstraint.SafeCallAssignOperator
         val name = ChronicleBundle.message("incorrectSyntax.desc.safeCallAssignOperators")
-        if (!ParadoxSyntaxInspectionService.checkByConstraint(element, context, constraint, name)) return true
+        if (!ParadoxSyntaxInspectionService.checkForIncorrectSyntaxByConstraint(element, context, constraint, name)) return true
 
         // check on grammar level
 

@@ -3,34 +3,45 @@ package icu.windea.pls.lang.inspections.localisation.common
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.codeInspection.options.OptPane
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
-import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.core.collections.findFast
-import icu.windea.pls.core.toAtomicProperty
+import icu.windea.pls.core.matchesPatterns
 import icu.windea.pls.core.vfs.VirtualFileService
-import icu.windea.pls.lang.match.findByPattern
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.lang.selectGameType
+import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationConceptCommand
 import icu.windea.pls.localisation.psi.ParadoxLocalisationVisitor
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
-import icu.windea.pls.model.expressions.ParadoxDefinitionTypeExpression
-import javax.swing.JComponent
 
 /**
  * 无法解析的概念的代码检查。
  *
- * @property ignoredByConfigs （配置项）如果对应的扩展的规则存在，是否需要忽略此代码检查。
+ * @property ignoredNames （配置项）需要忽略的名字。一组模式，分号分隔，忽略大小写。
  * @property ignoredInInjectedFiles （配置项）是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
+ * @property ignoredByConfigs （配置项）如果对应的扩展的规则存在，是否需要忽略此代码检查。
  */
 class UnresolvedConceptInspection : LocalInspectionTool() {
+    object Constants {
+        const val definitionType = ParadoxDefinitionTypes.gameConcept
+    }
+
+    @JvmField var ignoredNames = ""
     @JvmField var ignoredInInjectedFiles = false
     @JvmField var ignoredByConfigs = false
+
+    override fun getOptionsPane(): OptPane {
+        return OptPane.pane(
+            OptPane.checkbox("ignoredNames", ChronicleBundle.message("inspection.localisation.unresolvedConcept.option.ignoredNames")),
+            OptPane.checkbox("ignoredInInjectedFiles", ChronicleBundle.message("inspection.option.ignoredInInjectedFiles")),
+            OptPane.checkbox("ignoredByConfigs", ChronicleBundle.message("inspection.option.ignoredByConfigs")),
+        )
+    }
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 按需忽略注入的文件
@@ -47,38 +58,24 @@ class UnresolvedConceptInspection : LocalInspectionTool() {
         return object : ParadoxLocalisationVisitor() {
             override fun visitConceptCommand(element: ParadoxLocalisationConceptCommand) {
                 ProgressManager.checkCanceled()
-                if (isIgnoredByConfigs(element, configGroup)) return
-                val name = element.name
-                val reference = element.reference
-                if (reference == null || reference.resolve() != null) return
-                val location = element.conceptName ?: return
-                val description = ChronicleBundle.message("inspection.localisation.unresolvedConcept.desc", name)
-                holder.registerProblem(location, description, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
+                check(element, configGroup, holder)
             }
         }
     }
 
-    private fun isIgnoredByConfigs(element: ParadoxLocalisationConceptCommand, configGroup: CwtConfigGroup): Boolean {
-        if (!ignoredByConfigs) return false
+    private fun check(element: ParadoxLocalisationConceptCommand, configGroup: CwtConfigGroup, holder: ProblemsHolder) {
         val name = element.name
-        val configs = configGroup.extendedDefinitions.findByPattern(name, element, configGroup).orEmpty()
-        val config = configs.findFast { ParadoxDefinitionTypeExpression.resolve(it.type).matches(ParadoxDefinitionTypes.gameConcept) }
-        if (config != null) return true
-        return false
+        if (skip(name, element, configGroup)) return // 忽略
+        val reference = element.reference
+        if (reference == null || reference.resolve() != null) return
+        val location = element.conceptName ?: return
+        val description = ChronicleBundle.message("inspection.localisation.unresolvedConcept.desc", name)
+        holder.registerProblem(location, description, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
     }
 
-    override fun createOptionsPanel(): JComponent {
-        return panel {
-            // ignoredInInjectedFile
-            row {
-                checkBox(ChronicleBundle.message("inspection.option.ignoredInInjectedFiles"))
-                    .bindSelected(::ignoredInInjectedFiles.toAtomicProperty())
-            }
-            // ignoredByConfigs
-            row {
-                checkBox(ChronicleBundle.message("inspection.localisation.unresolvedConcept.option.ignoredByConfigs"))
-                    .bindSelected(::ignoredByConfigs.toAtomicProperty())
-            }
-        }
+    private fun skip(name: String, element: ParadoxLocalisationConceptCommand, configGroup: CwtConfigGroup): Boolean {
+        if (ignoredNames.isNotEmpty() && name.matchesPatterns(ignoredNames, ignoreCase = true)) return true
+        if (ignoredByConfigs && ParadoxConfigManager.checkExtendedConfig(name, Constants.definitionType, element, configGroup)) return true
+        return false
     }
 }

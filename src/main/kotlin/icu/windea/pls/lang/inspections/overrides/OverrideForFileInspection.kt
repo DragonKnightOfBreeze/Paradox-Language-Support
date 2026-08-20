@@ -1,9 +1,11 @@
 package icu.windea.pls.lang.inspections.overrides
 
 import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.core.psi.PsiFileOnlyVisitor
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.fixes.navigation.NavigateToOverridingFilesFix
 import icu.windea.pls.lang.overrides.ParadoxOverrideService
@@ -26,18 +28,22 @@ class OverrideForFileInspection : OverrideRelatedInspectionBase() {
         val fileInfo = file.fileInfo
         if (fileInfo == null) return PsiElementVisitor.EMPTY_VISITOR
         if (!ParadoxFileManager.canOverrideFile(file, fileInfo.group)) return PsiElementVisitor.EMPTY_VISITOR
-
-        return object : PsiElementVisitor() {
+        return object : PsiFileOnlyVisitor() {
             override fun visitFile(file: PsiFile) {
-                val overrideResult = ParadoxOverrideService.getOverrideResultForFile(file)
-                if (overrideResult == null) return
-
-                val locationElement = file
-                val (key, target, results) = overrideResult
-                val description = ChronicleBundle.message("inspection.overrideForFile.desc", key)
-                val fix = NavigateToOverridingFilesFix(key, target, results)
-                holder.registerProblem(locationElement, description, fix)
+                ProgressManager.checkCanceled()
+                check(file, holder)
             }
         }
+    }
+
+    private fun check(file: PsiFile, holder: ProblemsHolder) {
+        val overrideResult = ParadoxOverrideService.getOverrideResultForFile(file)
+        if (overrideResult == null) return
+
+        val locationElement = file
+        val (key, target, results) = overrideResult
+        val description = ChronicleBundle.message("inspection.overrideForFile.desc", key)
+        val fix = NavigateToOverridingFilesFix(key, target, results)
+        holder.registerProblem(locationElement, description, fix)
     }
 }

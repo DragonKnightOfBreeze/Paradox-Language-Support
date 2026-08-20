@@ -5,14 +5,17 @@ import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElement
 import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.toArray
 import icu.windea.pls.core.psi.PsiService
+import icu.windea.pls.ep.inspections.ParadoxIncorrectSyntaxChecker
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.fixes.ReplaceStringFix
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constraints.ParadoxSyntaxConstraint
+import icu.windea.pls.model.orSpecific
 import icu.windea.pls.script.formatter.ParadoxScriptCodeStyleSettings
 
 object ParadoxSyntaxInspectionService {
@@ -25,7 +28,22 @@ object ParadoxSyntaxInspectionService {
         return ParadoxSyntaxInspectionContext(tool, holder, file, rootFile, gameType, gameVersion)
     }
 
-    fun checkByConstraint(element: PsiElement, context: ParadoxSyntaxInspectionContext, constraint: ParadoxSyntaxConstraint, name: String): Boolean {
+    fun checkForIncorrectSyntax(element: PsiElement, context: ParadoxSyntaxInspectionContext): Boolean {
+        return applyIncorrectSyntaxCheckers(context, element)
+    }
+
+    private fun applyIncorrectSyntaxCheckers(context: ParadoxSyntaxInspectionContext, element: PsiElement): Boolean {
+        val gameType = context.gameType
+        val checkers = ParadoxIncorrectSyntaxChecker.EP_NAME.extensionList
+        checkers.forEachFast f@{ ep ->
+            if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f // check game type first
+            val r = ep.check(element, context)
+            if (!r) return false
+        }
+        return true
+    }
+
+    fun checkForIncorrectSyntaxByConstraint(element: PsiElement, context: ParadoxSyntaxInspectionContext, constraint: ParadoxSyntaxConstraint, name: String): Boolean {
         if (context.gameType == null || context.gameType == ParadoxGameType.Core) return true
         val testResult = constraint.getTestResult(context.gameType, context.gameVersion)
         if (!testResult.strictValue) {
@@ -33,7 +51,7 @@ object ParadoxSyntaxInspectionService {
                 testResult.sinceGameVersion == null -> ChronicleBundle.message("incorrectSyntax.desc.in.game", name, context.gameType.title)
                 else -> ChronicleBundle.message("incorrectSyntax.desc.since.gameVersion", name, context.gameType.title, testResult.sinceGameVersion)
             }
-            val fixes = getFixes(element, context, constraint, testResult)
+            val fixes = getFixesForIncorrectSyntax(element, context, constraint, testResult)
             context.holder.registerProblem(element, description, *fixes)
             return false
         }
@@ -41,7 +59,7 @@ object ParadoxSyntaxInspectionService {
     }
 
     @Suppress("UNUSED_PARAMETER")
-    fun getFixes(element: PsiElement, context: ParadoxSyntaxInspectionContext, constraint: ParadoxSyntaxConstraint, testResult: ParadoxSyntaxConstraint.TestResult): Array<LocalQuickFix> {
+    private fun getFixesForIncorrectSyntax(element: PsiElement, context: ParadoxSyntaxInspectionContext, constraint: ParadoxSyntaxConstraint, testResult: ParadoxSyntaxConstraint.TestResult): Array<LocalQuickFix> {
         if (testResult.strictValue) return LocalQuickFix.EMPTY_ARRAY // 严格匹配 -> 不报错，直接返回
         if (testResult.value) return LocalQuickFix.EMPTY_ARRAY // 游戏版本不匹配，但游戏类型匹配 -> 直接返回
         val result = mutableListOf<LocalQuickFix>()

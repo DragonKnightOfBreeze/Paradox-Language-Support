@@ -12,7 +12,6 @@ import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.ep.inspections.ParadoxIncorrectExpressionChecker
 import icu.windea.pls.lang.inspections.ParadoxExpressionInspectionService
-import icu.windea.pls.lang.inspections.ParadoxInspectionService
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.lang.util.ParadoxConfigManager
@@ -65,7 +64,7 @@ class IncorrectExpressionInspection : LocalInspectionTool() {
                 val config = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(fallback = false)).firstOrNull() ?: return
 
                 // 开始检查
-                ParadoxInspectionService.checkIncorrectExpression(element, config, context, checkers)
+                ParadoxExpressionInspectionService.applyIncorrectExpressionCheckers(element, config, context)
 
                 // TODO 1.3.26+ 应当也适用于各种复杂表达式中的数据源
             }

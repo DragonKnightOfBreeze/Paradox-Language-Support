@@ -2,12 +2,12 @@ package icu.windea.pls.lang.inspections.csv.common
 
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.codeInspection.options.OptPane
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
-import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.core.toAtomicProperty
+import icu.windea.pls.config.config.delegated.CwtRowConfig
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.csv.psi.ParadoxCsvColumnContainer
 import icu.windea.pls.csv.psi.ParadoxCsvFile
@@ -15,7 +15,6 @@ import icu.windea.pls.csv.psi.ParadoxCsvPsiService
 import icu.windea.pls.csv.psi.ParadoxCsvVisitor
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.lang.util.ParadoxCsvManager
-import javax.swing.JComponent
 
 /**
  * （CSV 文件中的）不正确的列数量的代码检查。
@@ -24,6 +23,12 @@ import javax.swing.JComponent
  */
 class IncorrectColumnSizeInspection : LocalInspectionTool() {
     @JvmField var ignoredInInjectedFiles = false
+
+    override fun getOptionsPane(): OptPane {
+        return OptPane.pane(
+            OptPane.checkbox("ignoredInInjectedFiles", ChronicleBundle.message("inspection.option.ignoredInInjectedFiles"))
+        )
+    }
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 按需忽略注入的文件
@@ -40,29 +45,22 @@ class IncorrectColumnSizeInspection : LocalInspectionTool() {
         if (file !is ParadoxCsvFile) return PsiElementVisitor.EMPTY_VISITOR
         val rowConfig = ParadoxCsvManager.getRowConfig(file)
         if (rowConfig == null) return PsiElementVisitor.EMPTY_VISITOR
-
         return object : ParadoxCsvVisitor() {
             override fun visitColumnContainer(element: ParadoxCsvColumnContainer) {
                 ProgressManager.checkCanceled()
-                if (rowConfig.skipLastRow && ParadoxCsvPsiService.isLastRow(element)) return // ignored
-                val columnSize = ParadoxCsvPsiService.getColumnSize(element)
-                val expectColumnSize = rowConfig.columns.size
-                if (columnSize == expectColumnSize) return
-                if (rowConfig.skipLastColumn && columnSize == expectColumnSize + 1) return // ignored
-                val location = element.lastChild ?: return // latest non-empty column or separator
-                val description = ChronicleBundle.message("inspection.csv.incorrectColumnSize.desc.1", rowConfig.name, expectColumnSize, columnSize)
-                holder.registerProblem(location, description)
+                check(element, rowConfig, holder)
             }
         }
     }
 
-    override fun createOptionsPanel(): JComponent {
-        return panel {
-            // ignoredInInjectedFile
-            row {
-                checkBox(ChronicleBundle.message("inspection.option.ignoredInInjectedFiles"))
-                    .bindSelected(::ignoredInInjectedFiles.toAtomicProperty())
-            }
-        }
+    private fun check(element: ParadoxCsvColumnContainer, rowConfig: CwtRowConfig, holder: ProblemsHolder) {
+        if (rowConfig.skipLastRow && ParadoxCsvPsiService.isLastRow(element)) return // ignored
+        val columnSize = ParadoxCsvPsiService.getColumnSize(element)
+        val expectColumnSize = rowConfig.columns.size
+        if (columnSize == expectColumnSize) return
+        if (rowConfig.skipLastColumn && columnSize == expectColumnSize + 1) return // ignored
+        val location = element.lastChild ?: return // latest non-empty column or separator
+        val description = ChronicleBundle.message("inspection.csv.incorrectColumnSize.desc.1", rowConfig.name, expectColumnSize, columnSize)
+        holder.registerProblem(location, description)
     }
 }

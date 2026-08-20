@@ -32,16 +32,19 @@ class OverrideForScriptedVariableInspection : OverrideRelatedInspectionBase() {
         return object : ParadoxScriptVisitor() {
             override fun visitScriptedVariable(element: ParadoxScriptScriptedVariable) {
                 ProgressManager.checkCanceled()
-
-                val overrideResult = ParadoxOverrideService.getOverrideResultForGlobalScriptedVariable(element, holder.file)
-                if (overrideResult == null) return
-
-                val locationElement = element.scriptedVariableName
-                val (key, target, results) = overrideResult
-                val description = ChronicleBundle.message("inspection.overrideForScriptedVariable.desc", key)
-                val fix = NavigateToOverridingScriptedVariablesFix(key, target, results)
-                holder.registerProblem(locationElement, description, fix)
+                check(element, holder)
             }
         }
+    }
+
+    private fun check(element: ParadoxScriptScriptedVariable, holder: ProblemsHolder) {
+        val overrideResult = ParadoxOverrideService.getOverrideResultForGlobalScriptedVariable(element, holder.file)
+        if (overrideResult == null) return
+
+        val locationElement = element.scriptedVariableName
+        val (key, target, results) = overrideResult
+        val description = ChronicleBundle.message("inspection.overrideForScriptedVariable.desc", key)
+        val fix = NavigateToOverridingScriptedVariablesFix(key, target, results)
+        holder.registerProblem(locationElement, description, fix)
     }
 }

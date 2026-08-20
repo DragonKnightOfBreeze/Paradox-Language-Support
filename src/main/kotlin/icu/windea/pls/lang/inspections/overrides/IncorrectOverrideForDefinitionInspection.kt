@@ -4,7 +4,6 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElementVisitor
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.fixes.navigation.NavigateToOverridingDefinitionsFix
 import icu.windea.pls.lang.overrides.ParadoxOverrideService
 import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
@@ -27,24 +26,23 @@ import icu.windea.pls.script.psi.ParadoxScriptVisitor
  */
 class IncorrectOverrideForDefinitionInspection : OverrideRelatedInspectionBase() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        val file = holder.file
-        val fileInfo = file.fileInfo
-        if (fileInfo == null) return PsiElementVisitor.EMPTY_VISITOR
-
         return object : ParadoxScriptVisitor() {
             override fun visitProperty(element: ParadoxScriptProperty) {
                 ProgressManager.checkCanceled()
-
-                val overrideResult = ParadoxOverrideService.getOverrideResultForDefinition(element, file)
-                if (overrideResult == null) return
-                if (ParadoxOverrideService.isOverrideCorrect(overrideResult)) return
-
-                val locationElement = element.propertyKey
-                val (key, target, results, overrideStrategy) = overrideResult
-                val description = ChronicleBundle.message("inspection.incorrectOverrideForDefinition.desc", key, overrideStrategy)
-                val fix = NavigateToOverridingDefinitionsFix(key, target, results)
-                holder.registerProblem(locationElement, description, fix)
+                check(element, holder)
             }
         }
+    }
+
+    private fun check(element: ParadoxScriptProperty, holder: ProblemsHolder) {
+        val overrideResult = ParadoxOverrideService.getOverrideResultForDefinition(element, holder.file)
+        if (overrideResult == null) return
+        if (ParadoxOverrideService.isOverrideCorrect(overrideResult)) return
+
+        val locationElement = element.propertyKey
+        val (key, target, results, overrideStrategy) = overrideResult
+        val description = ChronicleBundle.message("inspection.incorrectOverrideForDefinition.desc", key, overrideStrategy)
+        val fix = NavigateToOverridingDefinitionsFix(key, target, results)
+        holder.registerProblem(locationElement, description, fix)
     }
 }

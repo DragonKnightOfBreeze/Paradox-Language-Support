@@ -48,7 +48,7 @@ class UnmatchedFileInspection : InlineScriptInspectionBase() {
     }
 
     override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
-        return ParadoxFileInspectionService.checkFileMatched(file, manager, isOnTheFly, ignoredFilePaths)
+        return ParadoxFileInspectionService.checkForUnmatchedFile(file, manager, isOnTheFly, ignoredFilePaths)
     }
 
     override fun createOptionsPanel(): JComponent {

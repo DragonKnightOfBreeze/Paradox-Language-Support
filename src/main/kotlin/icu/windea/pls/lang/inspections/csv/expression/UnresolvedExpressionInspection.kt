@@ -2,26 +2,17 @@ package icu.windea.pls.lang.inspections.csv.expression
 
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemsHolder
-import com.intellij.openapi.progress.ProgressManager
+import com.intellij.codeInspection.options.OptPane
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
-import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.config.config.CwtValueConfig
-import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.core.vfs.VirtualFileService
-import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.csv.psi.ParadoxCsvFile
-import icu.windea.pls.csv.psi.ParadoxCsvPsiService
-import icu.windea.pls.csv.psi.ParadoxCsvVisitor
-import icu.windea.pls.ep.inspections.ParadoxUnresolvedExpressionChecker
 import icu.windea.pls.lang.inspections.ParadoxExpressionInspectionService
-import icu.windea.pls.lang.inspections.ParadoxInspectionService
+import icu.windea.pls.lang.psi.ParadoxExpressionElementVisitor
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.lang.util.ParadoxCsvManager
-import javax.swing.JComponent
 
 /**
  * （脚本文件中的）无法解析的表达式的代码检查。
@@ -33,6 +24,14 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
     @JvmField var ignoredInInjectedFiles = false
     @JvmField var ignoredByConfigs = false
     @JvmField var showExpectInfo = true
+
+    override fun getOptionsPane(): OptPane {
+        return OptPane.pane(
+            OptPane.checkbox("ignoredInInjectedFiles", ChronicleBundle.message("inspection.option.ignoredInInjectedFiles")),
+            OptPane.checkbox("ignoredByConfigs", ChronicleBundle.message("inspection.option.ignoredByConfigs")),
+            OptPane.checkbox("showExpectInfo", ChronicleBundle.message("inspection.option.showExpectInfo")),
+        )
+    }
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 按需忽略注入的文件
@@ -49,59 +48,11 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
         if (file !is ParadoxCsvFile) return PsiElementVisitor.EMPTY_VISITOR
         val rowConfig = ParadoxCsvManager.getRowConfig(file)
         if (rowConfig == null) return PsiElementVisitor.EMPTY_VISITOR
-
-        val context = ParadoxExpressionInspectionService.createContext(this, holder)
-        val checkers = ParadoxUnresolvedExpressionChecker.EP_NAME.extensionList
-        return object : ParadoxCsvVisitor() {
-            override fun visitColumn(element: ParadoxCsvColumn) {
-                ProgressManager.checkCanceled()
-                if (ParadoxCsvPsiService.isHeaderColumn(element)) return // skip header column
-
-                // - 如果不存在对应的列规则，则直接跳过
-                // - 如果存在对应的列规则且匹配，则直接跳过
-                // - 按需忽略最后一行
-
-                val columnConfig = ParadoxCsvManager.getColumnConfig(element, rowConfig) ?: return // skip (checked by `IncorrectColumnSizeInspection`)
-                if (ParadoxCsvManager.isMatchedColumnConfig(element, columnConfig)) return
-
-                val expectedConfigs = getExpectedConfigs(columnConfig)
-                if (isIgnored(element, expectedConfigs)) return
-
-                ParadoxInspectionService.checkUnresolvedExpression(element, expectedConfigs, context, checkers)
-            }
-
-            private fun getExpectedConfigs(columnConfig: CwtPropertyConfig): List<CwtValueConfig> {
-                val valueConfig = columnConfig.valueConfig ?: return emptyList()
-                return listOf(valueConfig)
-            }
-
-            private fun isIgnored(element: ParadoxCsvExpressionElement, expectedConfigs: List<CwtValueConfig>): Boolean {
-                if (expectedConfigs.isEmpty()) return false
-                return isIgnoredByConfigs(element, expectedConfigs)
-            }
-
-            private fun isIgnoredByConfigs(element: ParadoxCsvExpressionElement, expectedConfigs: List<CwtValueConfig>): Boolean {
-                return ignoredByConfigs && ParadoxInspectionService.checkExtendedConfig(element, expectedConfigs)
-            }
-        }
-    }
-
-    override fun createOptionsPanel(): JComponent {
-        return panel {
-            // ignoredInInjectedFile
-            row {
-                checkBox(ChronicleBundle.message("inspection.option.ignoredInInjectedFiles"))
-                    .bindSelected(::ignoredInInjectedFiles.toAtomicProperty())
-            }
-            // ignoredByConfigs
-            row {
-                checkBox(ChronicleBundle.message("inspection.option.ignoredByConfigs"))
-                    .bindSelected(::ignoredByConfigs.toAtomicProperty())
-            }
-            // showExpectInfo
-            row {
-                checkBox(ChronicleBundle.message("inspection.option.showExpectInfo"))
-                    .bindSelected(::showExpectInfo.toAtomicProperty())
+        val context = ParadoxExpressionInspectionService.createContext(this, holder, ignoredByConfigs, showExpectInfo)
+        return object : ParadoxExpressionElementVisitor() {
+            override fun visitExpressionElement(element: ParadoxCsvExpressionElement) {
+                super.visitExpressionElement(element)
+                ParadoxExpressionInspectionService.checkForUnresolvedExpression(element, rowConfig, context)
             }
         }
     }

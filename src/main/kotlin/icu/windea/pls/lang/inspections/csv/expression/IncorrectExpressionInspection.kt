@@ -2,23 +2,18 @@ package icu.windea.pls.lang.inspections.csv.expression
 
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemsHolder
-import com.intellij.openapi.progress.ProgressManager
+import com.intellij.codeInspection.options.OptPane
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
-import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.core.vfs.VirtualFileService
-import icu.windea.pls.csv.psi.ParadoxCsvColumn
+import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.csv.psi.ParadoxCsvFile
-import icu.windea.pls.csv.psi.ParadoxCsvPsiService
-import icu.windea.pls.csv.psi.ParadoxCsvVisitor
 import icu.windea.pls.ep.inspections.ParadoxIncorrectExpressionChecker
 import icu.windea.pls.lang.inspections.ParadoxExpressionInspectionService
-import icu.windea.pls.lang.inspections.ParadoxInspectionService
+import icu.windea.pls.lang.psi.ParadoxExpressionElementVisitor
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.lang.util.ParadoxCsvManager
-import javax.swing.JComponent
 
 /**
  * （CSV 文件中的）不正确的表达式的代码检查。
@@ -29,6 +24,12 @@ import javax.swing.JComponent
  */
 class IncorrectExpressionInspection : LocalInspectionTool() {
     @JvmField var ignoredInInjectedFiles = false
+
+    override fun getOptionsPane(): OptPane {
+        return OptPane.pane(
+            OptPane.checkbox("ignoredInInjectedFiles", ChronicleBundle.message("inspection.option.ignoredInInjectedFiles"))
+        )
+    }
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 按需忽略注入的文件
@@ -45,32 +46,11 @@ class IncorrectExpressionInspection : LocalInspectionTool() {
         if (file !is ParadoxCsvFile) return PsiElementVisitor.EMPTY_VISITOR
         val rowConfig = ParadoxCsvManager.getRowConfig(file)
         if (rowConfig == null) return PsiElementVisitor.EMPTY_VISITOR
-
         val context = ParadoxExpressionInspectionService.createContext(this, holder)
-        val checkers = ParadoxIncorrectExpressionChecker.EP_NAME.extensionList
-        return object : ParadoxCsvVisitor() {
-            override fun visitColumn(element: ParadoxCsvColumn) {
-                ProgressManager.checkCanceled()
-                if (ParadoxCsvPsiService.isHeaderColumn(element)) return // skip header columns
-                if (ParadoxCsvPsiService.isEmptyColumn(element)) return // skip empty columns
-
-                // 得到完全匹配的规则
-                val columnConfig = ParadoxCsvManager.getColumnConfig(element, rowConfig) ?: return // skip (checked by `IncorrectColumnSizeInspection`)
-                if (!ParadoxCsvManager.isMatchedColumnConfig(element, columnConfig)) return // skip (checked by `UnresolvedExpressionInspection`)
-                val config = columnConfig.valueConfig ?: return
-
-                // 开始检查
-                ParadoxInspectionService.checkIncorrectExpression(element, config, context, checkers)
-            }
-        }
-    }
-
-    override fun createOptionsPanel(): JComponent {
-        return panel {
-            // ignoredInInjectedFile
-            row {
-                checkBox(ChronicleBundle.message("inspection.option.ignoredInInjectedFiles"))
-                    .bindSelected(::ignoredInInjectedFiles.toAtomicProperty())
+        return object : ParadoxExpressionElementVisitor() {
+            override fun visitExpressionElement(element: ParadoxCsvExpressionElement) {
+                super.visitExpressionElement(element)
+                ParadoxExpressionInspectionService.checkForIncorrectExpression(element, rowConfig, context)
             }
         }
     }

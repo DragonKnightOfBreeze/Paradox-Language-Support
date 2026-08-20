@@ -19,9 +19,7 @@ import icu.windea.pls.core.collections.anyFast
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.core.vfs.VirtualFileService
-import icu.windea.pls.ep.inspections.ParadoxUnresolvedExpressionChecker
 import icu.windea.pls.lang.inspections.ParadoxExpressionInspectionService
-import icu.windea.pls.lang.inspections.ParadoxInspectionService
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
@@ -67,7 +65,6 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean, session: LocalInspectionToolSession): PsiElementVisitor {
         val context = ParadoxExpressionInspectionService.createContext(this, holder)
-        val checkers = ParadoxUnresolvedExpressionChecker.EP_NAME.extensionList
         return object : PsiElementVisitor() {
             private var disabledElement: PsiElement? = null
 
@@ -104,7 +101,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                 val expectedConfigs = getExpectedConfigs(element)
                 if (isIgnored(propertyKey, expectedConfigs)) return true
 
-                ParadoxInspectionService.checkUnresolvedExpression(propertyKey, expectedConfigs, context, checkers)
+                ParadoxExpressionInspectionService.applyUnresolvedExpressionCheckers(propertyKey, expectedConfigs, context)
 
                 // skip checking children if parent has problems
                 return false
@@ -139,7 +136,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                 val expectedConfigs = getExpectedConfigs(element, configContext)
                 if (isIgnored(element, expectedConfigs)) return true
 
-                ParadoxInspectionService.checkUnresolvedExpression(element, expectedConfigs, context, checkers)
+                ParadoxExpressionInspectionService.applyUnresolvedExpressionCheckers(element, expectedConfigs, context)
 
                 // skip checking children if parent has problems
                 return false
@@ -184,7 +181,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
             }
 
             private fun isIgnoredByConfigs(element: ParadoxScriptExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>): Boolean {
-                return ignoredByConfigs && ParadoxInspectionService.checkExtendedConfig(element, expectedConfigs)
+                return ignoredByConfigs && ParadoxConfigManager.checkExtendedConfig(element, expectedConfigs)
             }
         }
     }

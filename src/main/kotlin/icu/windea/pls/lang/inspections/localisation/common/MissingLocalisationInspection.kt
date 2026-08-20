@@ -28,7 +28,6 @@ import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.ui.ParadoxLocaleCheckBoxDialog
 import icu.windea.pls.lang.ui.ParadoxPreferredLocaleDialog
 import icu.windea.pls.lang.util.ParadoxLocaleManager
-import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.localisation.psi.ParadoxLocalisationVisitor
 import javax.swing.JComponent
@@ -46,80 +45,6 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 
     @Suppress("ktPropBy")
     var localeSet: Set<String> by ::locales.fromDelimitedString()
-
-    override fun isAvailableForFile(file: PsiFile): Boolean {
-        // 跳过需要忽略的文件
-        if (isIgnoredFile(file)) return false
-        // 要求是语义上有效的本地化文件
-        return ParadoxPsiFileMatchService.isLocalisationFile(file)
-    }
-
-    private fun isIgnoredFile(file: PsiFile): Boolean {
-        return file.name.matchesPatterns(ignoredFileNames, ignoreCase = true)
-    }
-
-    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        val configGroup = ChronicleFacade.getConfigGroup(holder.project, selectGameType(holder.file))
-        val supportedLocales = ParadoxLocaleManager.getSupportedLocales(configGroup)
-        val supportedLocaleMap = supportedLocales.associateBy { it.name }
-        val locales = mutableSetOf<CwtLocaleConfig>()
-        if (checkForPreferredLocale) locales.add(ParadoxLocaleManager.getPreferredLocaleConfig())
-        if (checkForSpecificLocales) localeSet.mapNotNullTo(locales) { supportedLocaleMap.get(it) }
-        if (locales.isEmpty()) return PsiElementVisitor.EMPTY_VISITOR
-        return object : ParadoxLocalisationVisitor() {
-            override fun visitProperty(element: ParadoxLocalisationProperty) {
-                ProgressManager.checkCanceled()
-                val context = ParadoxLocalisationCodeInsightContextService.fromLocalisation(element, locales, fromInspection = true)
-                if (context == null || context.infos.isEmpty()) return
-                registerProblems(context, element, holder)
-            }
-
-            private fun registerProblems(context: ParadoxLocalisationCodeInsightContext, element: PsiElement, holder: ProblemsHolder) {
-                val location = when {
-                    element is ParadoxLocalisationFile -> element
-                    element is ParadoxLocalisationProperty -> element.propertyKey
-                    else -> return
-                }
-                val messages = getDescriptions(context)
-                if (messages.isEmpty()) return
-                val fixes = getFixes(element, context)
-                messages.forEachFast { description ->
-                    holder.registerProblem(location, description, *fixes)
-                }
-            }
-        }
-    }
-
-    private fun getDescriptions(context: ParadoxLocalisationCodeInsightContext): List<String> {
-        val includeMap = mutableMapOf<String, ParadoxLocalisationCodeInsightInfo>()
-        val excludeKeys = mutableSetOf<String>()
-        context.infos.forEachFast f@{ codeInsightInfo ->
-            if (!codeInsightInfo.check) return@f
-            val key = codeInsightInfo.key ?: return@f
-            if (excludeKeys.contains(key)) return@f
-            if (codeInsightInfo.missing) {
-                includeMap.putIfAbsent(key, codeInsightInfo)
-            } else {
-                includeMap.remove(key)
-                excludeKeys.add(key)
-            }
-        }
-        return includeMap.values.mapNotNull { getDescription(it) }
-    }
-
-    private fun getDescription(codeInsightInfo: ParadoxLocalisationCodeInsightInfo): String? {
-        val localeId = codeInsightInfo.locale.name
-        codeInsightInfo.name
-            ?.let { return ChronicleBundle.message("inspection.localisation.missingLocalisation.desc.1", localeId, it) }
-        return null
-    }
-
-    private fun getFixes(element: PsiElement, context: ParadoxLocalisationCodeInsightContext): Array<LocalQuickFix> {
-        return arrayOf(
-            GenerateLocalisationsFix(element, context),
-            GenerateLocalisationsInFileFix(element),
-        )
-    }
 
     override fun createOptionsPanel(): JComponent {
         return panel {
@@ -161,5 +86,70 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                 })
             }
         }
+    }
+
+    override fun isAvailableForFile(file: PsiFile): Boolean {
+        // 跳过需要忽略的文件
+        if (file.name.matchesPatterns(ignoredFileNames, ignoreCase = true)) return false
+        // 要求是语义上有效的本地化文件
+        return ParadoxPsiFileMatchService.isLocalisationFile(file)
+    }
+
+    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
+        val configGroup = ChronicleFacade.getConfigGroup(holder.project, selectGameType(holder.file))
+        val supportedLocales = ParadoxLocaleManager.getSupportedLocales(configGroup)
+        val supportedLocaleMap = supportedLocales.associateBy { it.name }
+        val locales = mutableSetOf<CwtLocaleConfig>()
+        if (checkForPreferredLocale) locales.add(ParadoxLocaleManager.getPreferredLocaleConfig())
+        if (checkForSpecificLocales) localeSet.mapNotNullTo(locales) { supportedLocaleMap.get(it) }
+        if (locales.isEmpty()) return PsiElementVisitor.EMPTY_VISITOR
+        return object : ParadoxLocalisationVisitor() {
+            override fun visitProperty(element: ParadoxLocalisationProperty) {
+                ProgressManager.checkCanceled()
+                check(element, locales, holder)
+            }
+        }
+    }
+
+    private fun check(element: ParadoxLocalisationProperty, locales: MutableSet<CwtLocaleConfig>, holder: ProblemsHolder) {
+        val context = ParadoxLocalisationCodeInsightContextService.fromLocalisation(element, locales, fromInspection = true)
+        if (context == null || context.infos.isEmpty()) return
+        val location = element.propertyKey
+        val messages = getDescriptions(context)
+        if (messages.isEmpty()) return
+        val fixes = getFixes(element, context)
+        messages.forEachFast { description ->
+            holder.registerProblem(location, description, *fixes)
+        }
+    }
+
+    private fun getDescriptions(context: ParadoxLocalisationCodeInsightContext): List<String> {
+        val includeMap = mutableMapOf<String, ParadoxLocalisationCodeInsightInfo>()
+        val excludeKeys = mutableSetOf<String>()
+        context.infos.forEachFast f@{ codeInsightInfo ->
+            if (!codeInsightInfo.check) return@f
+            val key = codeInsightInfo.key ?: return@f
+            if (excludeKeys.contains(key)) return@f
+            if (codeInsightInfo.missing) {
+                includeMap.putIfAbsent(key, codeInsightInfo)
+            } else {
+                includeMap.remove(key)
+                excludeKeys.add(key)
+            }
+        }
+        return includeMap.values.mapNotNull { getDescription(it) }
+    }
+
+    private fun getDescription(codeInsightInfo: ParadoxLocalisationCodeInsightInfo): String? {
+        val localeId = codeInsightInfo.locale.name
+        codeInsightInfo.name?.let { return ChronicleBundle.message("inspection.localisation.missingLocalisation.desc.1", localeId, it) }
+        return null
+    }
+
+    private fun getFixes(element: PsiElement, context: ParadoxLocalisationCodeInsightContext): Array<LocalQuickFix> {
+        return arrayOf(
+            GenerateLocalisationsFix(element, context),
+            GenerateLocalisationsInFileFix(element),
+        )
     }
 }
