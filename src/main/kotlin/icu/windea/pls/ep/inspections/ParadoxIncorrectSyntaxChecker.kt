@@ -3,6 +3,9 @@ package icu.windea.pls.ep.inspections
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiElement
+import icu.windea.pls.core.addExtensionPointListener
+import icu.windea.pls.core.optimized
+import icu.windea.pls.core.util.values.LazyValue
 import icu.windea.pls.lang.inspections.ParadoxSyntaxInspectionContext
 import icu.windea.pls.model.ParadoxGameType
 
@@ -33,5 +36,21 @@ interface ParadoxIncorrectSyntaxChecker : DumbAware {
 
     companion object INSTANCE {
         @JvmField val EP_NAME = ExtensionPointName<ParadoxIncorrectSyntaxChecker>("icu.windea.pls.incorrectSyntaxChecker")
+        @JvmField val CACHE = LazyValue<List<ParadoxIncorrectSyntaxChecker>>()
+
+        fun getAll(): List<ParadoxIncorrectSyntaxChecker> = CACHE.get().orEmpty()
+
+        // region Implementations
+
+        init {
+            CACHE.initialize { computeCache() }
+            EP_NAME.addExtensionPointListener { CACHE.reinitialize { computeCache() } }
+        }
+
+        private fun computeCache(): List<ParadoxIncorrectSyntaxChecker> {
+            return EP_NAME.extensionList.optimized()
+        }
+
+        // endregion
     }
 }

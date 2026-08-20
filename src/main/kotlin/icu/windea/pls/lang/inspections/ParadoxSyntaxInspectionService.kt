@@ -34,7 +34,7 @@ object ParadoxSyntaxInspectionService {
 
     private fun applyIncorrectSyntaxCheckers(context: ParadoxSyntaxInspectionContext, element: PsiElement): Boolean {
         val gameType = context.gameType
-        val checkers = ParadoxIncorrectSyntaxChecker.EP_NAME.extensionList
+        val checkers = ParadoxIncorrectSyntaxChecker.getAll()
         checkers.forEachFast f@{ ep ->
             if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f // check game type first
             val r = ep.check(element, context)

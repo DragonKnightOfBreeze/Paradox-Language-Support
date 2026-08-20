@@ -59,7 +59,7 @@ object ChronicleSuppressionService {
     fun getSuppressedToolIds(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Set<String> {
         val gameType = definitionInfo.gameType
         val result = mutableSetOf<String>()
-        val eps = ParadoxDefinitionInspectionSuppressionProvider.EP_NAME.extensionList
+        val eps = ParadoxDefinitionInspectionSuppressionProvider.getAll()
         eps.forEachFast f@{ ep ->
             if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f // check game type first
             result += ep.getSuppressedToolIds(definition, definitionInfo)

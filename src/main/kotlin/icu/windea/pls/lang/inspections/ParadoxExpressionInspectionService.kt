@@ -150,7 +150,7 @@ object ParadoxExpressionInspectionService {
 
     fun applyUnresolvedExpressionCheckers(element: ParadoxExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>, context: ParadoxExpressionInspectionContext): Boolean {
         val gameType = context.gameType
-        val checkers = ParadoxUnresolvedExpressionChecker.EP_NAME.extensionList
+        val checkers = ParadoxUnresolvedExpressionChecker.getAll()
         checkers.forEachFast f@{ ep ->
             if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f // check game type first
             val r = ep.check(element, expectedConfigs, context)
@@ -250,7 +250,7 @@ object ParadoxExpressionInspectionService {
 
     private fun applyIncorrectExpressionCheckers(element: ParadoxExpressionElement, config: CwtMemberConfig<*>, context: ParadoxExpressionInspectionContext): Boolean {
         val gameType = context.gameType
-        val checkers = ParadoxIncorrectExpressionChecker.EP_NAME.extensionList
+        val checkers = ParadoxIncorrectExpressionChecker.getAll()
         checkers.forEachFast f@{ ep ->
             if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f // check game type first
             val r = ep.check(element, config, context)

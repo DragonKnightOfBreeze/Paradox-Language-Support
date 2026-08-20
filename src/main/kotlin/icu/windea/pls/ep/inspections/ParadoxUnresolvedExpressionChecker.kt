@@ -2,6 +2,9 @@ package icu.windea.pls.ep.inspections
 
 import com.intellij.openapi.extensions.ExtensionPointName
 import icu.windea.pls.config.config.CwtMemberConfig
+import icu.windea.pls.core.addExtensionPointListener
+import icu.windea.pls.core.optimized
+import icu.windea.pls.core.util.values.LazyValue
 import icu.windea.pls.lang.inspections.ParadoxExpressionInspectionContext
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.model.ParadoxGameType
@@ -31,5 +34,21 @@ interface ParadoxUnresolvedExpressionChecker {
 
     companion object INSTANCE {
         @JvmField val EP_NAME = ExtensionPointName<ParadoxUnresolvedExpressionChecker>("icu.windea.pls.unresolvedExpressionChecker")
+        @JvmField val CACHE = LazyValue<List<ParadoxUnresolvedExpressionChecker>>()
+
+        fun getAll(): List<ParadoxUnresolvedExpressionChecker> = CACHE.get().orEmpty()
+
+        // region Implementations
+
+        init {
+            CACHE.initialize { computeCache() }
+            EP_NAME.addExtensionPointListener { CACHE.reinitialize { computeCache() } }
+        }
+
+        private fun computeCache(): List<ParadoxUnresolvedExpressionChecker> {
+            return EP_NAME.extensionList.optimized()
+        }
+
+        // endregion
     }
 }
