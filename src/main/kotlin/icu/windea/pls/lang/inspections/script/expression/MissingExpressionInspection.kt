@@ -11,15 +11,11 @@ import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
-import icu.windea.pls.config.config.overriddenProvider
 import icu.windea.pls.config.configExpression.CwtDataExpression
-import icu.windea.pls.config.select.selectConfigScope
-import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.findChild
 import icu.windea.pls.core.inspections.InspectionService
 import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.core.vfs.VirtualFileService
-import icu.windea.pls.ep.resolve.config.CwtOverriddenConfigProvider
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOccurrence
 import icu.windea.pls.lang.match.ParadoxMatchOptions
@@ -96,7 +92,7 @@ class MissingExpressionInspection : LocalInspectionTool() {
                 if (skipCheck(element, configs)) return
                 val occurrences = ParadoxConfigManager.getChildOccurrences(element, configs)
                 if (occurrences.isEmpty()) return
-                val overriddenProvider = getOverriddenProvider(configs)
+                val overriddenProvider = ParadoxConfigManager.getOverriddenProvider(configs)
                 occurrences.forEach { (configExpression, occurrence) ->
                     if (overriddenProvider != null && overriddenProvider.skipMissingExpressionCheck(configs, configExpression)) return@forEach
                     val r = doCheckOccurrence(element, position, occurrence, configExpression)
@@ -113,17 +109,6 @@ class MissingExpressionInspection : LocalInspectionTool() {
                     element is ParadoxScriptBlock && element.members().none() -> false
                     else -> true
                 }
-            }
-
-            private fun getOverriddenProvider(configs: List<CwtMemberConfig<*>>): CwtOverriddenConfigProvider? {
-                configs.forEachFast { c1 ->
-                    c1.overriddenProvider?.let { return it }
-                    val pc1 = selectConfigScope { c1.asValue()?.propertyConfig }
-                    pc1?.overriddenProvider?.let { return it }
-                    val cs = selectConfigScope { (pc1 ?: c1).walkUp() }
-                    cs.forEach { c2 -> c2.overriddenProvider?.let { return it } }
-                }
-                return null
             }
 
             private fun doCheckOccurrence(element: ParadoxScriptMember, position: PsiElement, occurrence: ParadoxMatchOccurrence, configExpression: CwtDataExpression): Boolean {

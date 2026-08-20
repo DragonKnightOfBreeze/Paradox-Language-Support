@@ -10,8 +10,10 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.delegated.CwtEnumConfig
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
+import icu.windea.pls.config.config.overriddenProvider
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.select.selectConfigScope
 import icu.windea.pls.config.util.CwtConfigKeyManager
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.buildImmutableList
@@ -24,6 +26,7 @@ import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.values.SoftValue
 import icu.windea.pls.core.withDependencyItems
+import icu.windea.pls.ep.resolve.config.CwtOverriddenConfigProvider
 import icu.windea.pls.lang.match.ParadoxMatchOccurrence
 import icu.windea.pls.lang.match.ParadoxMatchOccurrenceService
 import icu.windea.pls.lang.match.ParadoxMatchOptions
@@ -113,6 +116,17 @@ object ParadoxConfigManager {
         } else {
             result.add(config)
         }
+    }
+
+    fun getOverriddenProvider(configs: List<CwtMemberConfig<*>>): CwtOverriddenConfigProvider? {
+        configs.forEachFast { c1 ->
+            c1.overriddenProvider?.let { return it }
+            val pc1 = selectConfigScope { c1.asValue()?.propertyConfig }
+            pc1?.overriddenProvider?.let { return it }
+            val cs = selectConfigScope { (pc1 ?: c1).walkUp() }
+            cs.forEach { c2 -> c2.overriddenProvider?.let { return it } }
+        }
+        return null
     }
 
     fun getSubtypes(subtypeConfigs: List<CwtSubtypeConfig>): List<String> {

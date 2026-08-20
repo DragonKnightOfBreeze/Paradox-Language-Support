@@ -16,4 +16,3 @@ data class ParadoxSyntaxInspectionContext(
 ) {
     val project: Project get() = holder.project
 }
-

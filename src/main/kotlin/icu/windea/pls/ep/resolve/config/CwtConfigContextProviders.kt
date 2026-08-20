@@ -214,16 +214,14 @@ class CwtParameterValueConfigContextProvider : CwtConfigContextProvider {
         return ParadoxConfigService.getTopConfigsForConfigContext(context, rootConfigs)
     }
 
-    // skip `MissingExpressionInspection` and `TooManyExpressionInspection` at root level
-
     override fun skipMissingExpressionCheck(context: CwtConfigContext): Boolean {
-        val memberPath = context.memberPath ?: return false
-        return memberPath.isEmpty()
+        // skip for declaration roots
+        return context.isDeclarationRoot()
     }
 
     override fun skipTooManyExpressionCheck(context: CwtConfigContext): Boolean {
-        val memberPath = context.memberPath ?: return false
-        return memberPath.isEmpty()
+        // skip for declaration roots
+        return context.isDeclarationRoot()
     }
 }
 
@@ -320,16 +318,14 @@ class CwtInlineScriptFileConfigContextProvider : CwtConfigContextProvider {
         return ParadoxConfigService.getTopConfigsForConfigContext(context, rootConfigs)
     }
 
-    // skip `MissingExpressionInspection` and `TooManyExpressionInspection` at root level
-
     override fun skipMissingExpressionCheck(context: CwtConfigContext): Boolean {
-        val memberPath = context.memberPath ?: return false
-        return memberPath.isEmpty()
+        // skip for declaration roots
+        return context.isDeclarationRoot()
     }
 
     override fun skipTooManyExpressionCheck(context: CwtConfigContext): Boolean {
-        val memberPath = context.memberPath ?: return false
-        return memberPath.isEmpty()
+        // skip for declaration roots
+        return context.isDeclarationRoot()
     }
 }
 
@@ -384,15 +380,13 @@ class CwtDefinitionInjectionConfigContextProvider : CwtConfigContextProvider {
         return ParadoxConfigService.getTopConfigsForConfigContext(context, rootConfigs)
     }
 
-    // skip `MissingExpressionInspection` and `TooManyExpressionInspection` at root level
-
     override fun skipMissingExpressionCheck(context: CwtConfigContext): Boolean {
-        val memberPath = context.memberPath ?: return false
-        return memberPath.isEmpty()
+        // skip for declaration roots
+        return context.isDeclarationRoot()
     }
 
     override fun skipTooManyExpressionCheck(context: CwtConfigContext): Boolean {
-        val memberPath = context.memberPath ?: return false
-        return memberPath.isEmpty()
+        // skip for declaration roots
+        return context.isDeclarationRoot()
     }
 }

@@ -37,7 +37,7 @@ sealed interface ParadoxMergedIndexContext {
     val expressionReferences: Array<out PsiReference>
 }
 
-interface ParadoxMergedIndexScriptContext : ParadoxMergedIndexContext {
+sealed interface ParadoxMergedIndexScriptContext : ParadoxMergedIndexContext {
     override val file: ParadoxScriptFile
     override val expressionElement: ParadoxScriptStringExpressionElement?
     val configs: List<CwtMemberConfig<*>>
@@ -49,7 +49,7 @@ interface ParadoxMergedIndexScriptContext : ParadoxMergedIndexContext {
 /**
  * @see ParadoxExpressionService.resolveScriptExpressionReferences
  */
-class ParadoxMergedIndexScriptContextBase(
+data class ParadoxMergedIndexScriptContextBase(
     override val file: ParadoxScriptFile,
     override val fileData: MutableMap<String, List<ParadoxIndexInfo>>,
 ) : ParadoxMergedIndexScriptContext {
@@ -94,7 +94,7 @@ class ParadoxMergedIndexScriptContextBase(
     }
 }
 
-interface ParadoxMergedIndexLocalisationContext : ParadoxMergedIndexContext {
+sealed interface ParadoxMergedIndexLocalisationContext : ParadoxMergedIndexContext {
     override val file: ParadoxLocalisationFile
     override val expressionElement: ParadoxLocalisationExpressionElement?
     val localisation: ParadoxLocalisationProperty?
@@ -103,7 +103,7 @@ interface ParadoxMergedIndexLocalisationContext : ParadoxMergedIndexContext {
 /**
  * @see ParadoxExpressionService.resolveLocalisationExpressionReferences
  */
-class ParadoxMergedIndexLocalisationContextBase(
+data class ParadoxMergedIndexLocalisationContextBase(
     override val file: ParadoxLocalisationFile,
     override val fileData: MutableMap<String, List<ParadoxIndexInfo>>,
 ) : ParadoxMergedIndexLocalisationContext {
@@ -128,7 +128,7 @@ class ParadoxMergedIndexLocalisationContextBase(
     }
 }
 
-interface ParadoxMergedIndexCsvContext : ParadoxMergedIndexContext {
+sealed interface ParadoxMergedIndexCsvContext : ParadoxMergedIndexContext {
     override val file: ParadoxCsvFile
     override val expressionElement: ParadoxCsvExpressionElement?
     val columnConfig: CwtPropertyConfig?
@@ -137,7 +137,7 @@ interface ParadoxMergedIndexCsvContext : ParadoxMergedIndexContext {
 /**
  * @see ParadoxExpressionService.resolveCsvExpressionReferences
  */
-class ParadoxMergedIndexCsvContextBase(
+data class ParadoxMergedIndexCsvContextBase(
     override val file: ParadoxCsvFile,
     override val fileData: MutableMap<String, List<ParadoxIndexInfo>>,
 ) : ParadoxMergedIndexCsvContext {
