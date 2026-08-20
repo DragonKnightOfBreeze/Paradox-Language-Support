@@ -1,10 +1,11 @@
 package icu.windea.pls.lang.inspections.script.event
 
-import com.intellij.codeInspection.InspectionManager
-import com.intellij.codeInspection.ProblemDescriptor
 import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.core.psi.PsiFileOnlyVisitor
 import icu.windea.pls.lang.manipulation.ParadoxEventManipulationService
 import icu.windea.pls.script.psi.ParadoxScriptFile
 
@@ -17,12 +18,19 @@ import icu.windea.pls.script.psi.ParadoxScriptFile
  * - 实际上，事件脚本文件中可以不声明或者声明多个事件命名空间，事件ID不需要严格匹配同文件中的先前声明的事件命名空间。
  */
 class MissingEventNamespaceInspection : EventInspectionBase() {
-    override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
-        if (file !is ParadoxScriptFile) return null
-        if (!ParadoxEventManipulationService.isMissingEventNamespaceDeclarationInFile(file)) return null
-        val holder = ProblemsHolder(manager, file, isOnTheFly)
+    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
+        return object : PsiFileOnlyVisitor() {
+            override fun visitFile(file: PsiFile) {
+                ProgressManager.checkCanceled()
+                check(file, holder)
+            }
+        }
+    }
+
+    private fun check(file: PsiFile, holder: ProblemsHolder) {
+        if (file !is ParadoxScriptFile) return
+        if (!ParadoxEventManipulationService.isMissingEventNamespaceDeclarationInFile(file)) return
         val description = ChronicleBundle.message("inspection.script.missingEventNamespace.desc")
         holder.registerProblem(file, description)
-        return holder.resultsArray
     }
 }

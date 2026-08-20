@@ -4,21 +4,18 @@ import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
-import com.intellij.openapi.progress.ProgressManager
-import com.intellij.psi.PsiElement
+import com.intellij.codeInspection.options.OptPane
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
-import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.fixes.IntroduceGlobalVariableFix
 import icu.windea.pls.lang.fixes.IntroduceLocalScriptedVariableFix
 import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.psi.ParadoxPsiElementVisitor
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
-import javax.swing.JComponent
 
 /**
  * 无法解析的封装变量引用的代码检查。
@@ -35,6 +32,13 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
     @JvmField var ignoredInInjectedFiles = false
     @JvmField var ignoredInInlineScriptFiles = false
 
+    override fun getOptionsPane(): OptPane {
+        return OptPane.pane(
+            OptPane.checkbox("ignoredInInjectedFiles", ChronicleBundle.message("inspection.option.ignoredInInjectedFiles")),
+            OptPane.checkbox("ignoredInInlineScriptFiles", ChronicleBundle.message("inspection.option.ignoredInInlineScriptFiles")),
+        )
+    }
+
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 按需忽略注入的文件
         val vFile = file.virtualFile
@@ -46,22 +50,22 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        return object : PsiElementVisitor() {
-            override fun visitElement(element: PsiElement) {
-                if (element is ParadoxScriptedVariableReference) visitScriptedVariableReference(element)
-            }
-
-            private fun visitScriptedVariableReference(element: ParadoxScriptedVariableReference) {
-                ProgressManager.checkCanceled()
-                val name = element.name ?: return
-                if (name.isParameterized()) return // skip if name is parameterized
-                val reference = element.reference ?: return
-                if (reference.resolve() != null) return
-                val description = ChronicleBundle.message("inspection.script.unresolvedScriptedVariable.desc", name)
-                val fixes = getFixes(element, name)
-                holder.registerProblem(element, description, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL, *fixes)
+        return object : ParadoxPsiElementVisitor() {
+            override fun visitScriptedVariableReference(element: ParadoxScriptedVariableReference) {
+                super.visitScriptedVariableReference(element)
+                check(element, holder)
             }
         }
+    }
+
+    private fun check(element: ParadoxScriptedVariableReference, holder: ProblemsHolder) {
+        val name = element.name ?: return
+        if (name.isParameterized()) return // skip if name is parameterized
+        val reference = element.reference ?: return
+        if (reference.resolve() != null) return
+        val description = ChronicleBundle.message("inspection.script.unresolvedScriptedVariable.desc", name)
+        val fixes = getFixes(element, name)
+        holder.registerProblem(element, description, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL, *fixes)
     }
 
     private fun getFixes(element: ParadoxScriptedVariableReference, name: String): Array<LocalQuickFix> {
@@ -69,21 +73,6 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
             IntroduceLocalScriptedVariableFix(name, element),
             IntroduceGlobalVariableFix(name, element),
         )
-    }
-
-    override fun createOptionsPanel(): JComponent {
-        return panel {
-            // ignoredInInjectedFile
-            row {
-                checkBox(ChronicleBundle.message("inspection.option.ignoredInInjectedFiles"))
-                    .bindSelected(::ignoredInInjectedFiles.toAtomicProperty())
-            }
-            // ignoredInInlineScriptFiles
-            row {
-                checkBox(ChronicleBundle.message("inspection.option.ignoredInInlineScriptFiles"))
-                    .bindSelected(::ignoredInInlineScriptFiles.toAtomicProperty())
-            }
-        }
     }
 }
 

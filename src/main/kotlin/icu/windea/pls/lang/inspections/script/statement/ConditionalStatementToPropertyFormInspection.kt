@@ -27,11 +27,15 @@ class ConditionalStatementToPropertyFormInspection : LocalInspectionTool(), Dumb
         return object : ParadoxScriptVisitor() {
             override fun visitConditionalBlock(element: ParadoxScriptConditionalBlock) {
                 ProgressManager.checkCanceled()
-                if (!ParadoxConditionalStatementManipulationService.canConvertToPropertyForm(element)) return
-                val description = ChronicleBundle.message("inspection.script.conditionalStatementToPropertyForm.desc")
-                holder.registerProblem(element, description, Fix())
+                check(element, holder)
             }
         }
+    }
+
+    private fun check(element: ParadoxScriptConditionalBlock, holder: ProblemsHolder) {
+        if (!ParadoxConditionalStatementManipulationService.canConvertToPropertyForm(element)) return
+        val description = ChronicleBundle.message("inspection.script.conditionalStatementToPropertyForm.desc")
+        holder.registerProblem(element, description, Fix())
     }
 
     private class Fix : PsiUpdateModCommandQuickFix() {

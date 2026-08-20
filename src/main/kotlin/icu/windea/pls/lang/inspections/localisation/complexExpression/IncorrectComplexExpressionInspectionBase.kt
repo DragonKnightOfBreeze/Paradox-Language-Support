@@ -8,7 +8,7 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.collections.forEachFast
-import icu.windea.pls.lang.psi.ParadoxExpressionElementVisitor
+import icu.windea.pls.lang.psi.ParadoxPsiElementVisitor
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
@@ -28,7 +28,7 @@ abstract class IncorrectComplexExpressionInspectionBase : LocalInspectionTool() 
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         val configGroup = ChronicleFacade.getConfigGroup(holder.project, selectGameType(holder.file))
-        return object : ParadoxExpressionElementVisitor() {
+        return object : ParadoxPsiElementVisitor() {
             override fun visitExpressionElement(element: ParadoxLocalisationExpressionElement) {
                 super.visitExpressionElement(element)
                 check(element, configGroup, holder)
@@ -49,7 +49,11 @@ abstract class IncorrectComplexExpressionInspectionBase : LocalInspectionTool() 
         return ParadoxComplexExpression.resolve(element, configGroup)
     }
 
-    protected abstract fun isAvailable(element: ParadoxLocalisationExpressionElement): Boolean
+    protected open fun isAvailable(element: ParadoxLocalisationExpressionElement): Boolean {
+        return true
+    }
 
-    protected abstract fun getFixes(element: ParadoxLocalisationExpressionElement, complexExpression: ParadoxComplexExpression, errors: List<ParadoxComplexExpressionError>): Array<LocalQuickFix>
+    protected open fun getFixes(element: ParadoxLocalisationExpressionElement, complexExpression: ParadoxComplexExpression, errors: List<ParadoxComplexExpressionError>): Array<LocalQuickFix> {
+        return LocalQuickFix.EMPTY_ARRAY
+    }
 }

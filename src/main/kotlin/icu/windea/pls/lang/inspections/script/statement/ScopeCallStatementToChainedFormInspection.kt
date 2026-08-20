@@ -30,12 +30,16 @@ class ScopeCallStatementToChainedFormInspection : LocalInspectionTool(), DumbAwa
         return object : ParadoxScriptVisitor() {
             override fun visitProperty(element: ParadoxScriptProperty) {
                 ProgressManager.checkCanceled()
-                if (!ParadoxScopeCallStatementManipulationService.canConvertToChainedForm(element, gameType)) return
-                val range = ParadoxScopeCallStatementManipulationService.getHighlightingRange(element)
-                val description = ChronicleBundle.message("inspection.script.scopeCallStatementToChainedForm.desc")
-                holder.registerProblem(element, range, description, Fix(gameType))
+                check(element, gameType, holder)
             }
         }
+    }
+
+    private fun check(element: ParadoxScriptProperty, gameType: ParadoxGameType?, holder: ProblemsHolder) {
+        if (!ParadoxScopeCallStatementManipulationService.canConvertToChainedForm(element, gameType)) return
+        val range = ParadoxScopeCallStatementManipulationService.getHighlightingRange(element)
+        val description = ChronicleBundle.message("inspection.script.scopeCallStatementToChainedForm.desc")
+        holder.registerProblem(element, range, description, Fix(gameType))
     }
 
     private class Fix(private val gameType: ParadoxGameType?) : PsiUpdateModCommandQuickFix() {

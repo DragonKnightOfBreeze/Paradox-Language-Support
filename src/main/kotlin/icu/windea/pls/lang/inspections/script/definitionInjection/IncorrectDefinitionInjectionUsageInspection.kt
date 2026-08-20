@@ -1,18 +1,16 @@
 package icu.windea.pls.lang.inspections.script.definitionInjection
 
 import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.codeInspection.options.OptPane
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.DumbService
 import com.intellij.psi.PsiElementVisitor
-import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.inspections.InspectionService
-import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.model.ParadoxDefinitionInjectionInfo
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptVisitor
-import javax.swing.JComponent
 
 /**
  * 检查定义注入的用法是否正确。
@@ -22,6 +20,13 @@ import javax.swing.JComponent
  */
 class IncorrectDefinitionInjectionUsageInspection : DefinitionInjectionInspectionBase() {
     private var checkForLenientModes = false
+
+    override fun getOptionsPane(): OptPane {
+        return OptPane.pane(
+            OptPane.checkbox("checkForLenientModes", ChronicleBundle.message("inspection.script.incorrectDefinitionInjectionUsage.option.checkForLenientModes"))
+                .description(ChronicleBundle.message("inspection.script.incorrectDefinitionInjectionUsage.option.checkForLenientModes.tip"))
+        )
+    }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         return object : ParadoxScriptVisitor() {
@@ -58,17 +63,6 @@ class IncorrectDefinitionInjectionUsageInspection : DefinitionInjectionInspectio
         } else {
             val description = ChronicleBundle.message("inspection.script.incorrectDefinitionInjectionUsage.desc.2", target, type)
             holder.registerProblem(element.propertyKey, description)
-        }
-    }
-
-    override fun createOptionsPanel(): JComponent {
-        return panel {
-            // checkForLenientModes
-            row {
-                checkBox(ChronicleBundle.message("inspection.script.incorrectDefinitionInjectionUsage.option.checkForLenientModes"))
-                    .bindSelected(::checkForLenientModes.toAtomicProperty())
-                contextHelp(ChronicleBundle.message("inspection.script.incorrectDefinitionInjectionUsage.option.checkForLenientModes.tip"))
-            }
         }
     }
 }

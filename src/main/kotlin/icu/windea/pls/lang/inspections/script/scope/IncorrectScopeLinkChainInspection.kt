@@ -1,14 +1,14 @@
 package icu.windea.pls.lang.inspections.script.scope
 
 import com.intellij.codeInspection.ProblemsHolder
-import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.TextRange
-import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.CwtDataTypeSets
+import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
+import icu.windea.pls.lang.psi.ParadoxPsiElementVisitor
 import icu.windea.pls.lang.resolve.ParadoxExpressionService
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDynamicValueExpression
@@ -26,40 +26,40 @@ import icu.windea.pls.script.psi.isDataExpression
 class IncorrectScopeLinkChainInspection : ScopeInspectionBase() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         val configGroup = ChronicleFacade.getConfigGroup(holder.project, selectGameType(holder.file))
-        return object : PsiElementVisitor() {
-            override fun visitElement(element: PsiElement) {
-                if (element is ParadoxScriptStringExpressionElement) visitStringExpressionElement(element)
-            }
-
-            private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
-                ProgressManager.checkCanceled()
-                if (!element.isDataExpression()) return
-                val config = ParadoxConfigManager.getConfigs(element).firstOrNull() ?: return
-                val dataType = config.configExpression.type
-                val value = element.value
-                val complexExpression = when {
-                    dataType in CwtDataTypeSets.DynamicValue -> ParadoxDynamicValueExpression.resolve(value, null, configGroup, config)
-                    dataType in CwtDataTypeSets.ScopeField -> ParadoxScopeFieldExpression.resolve(value, null, configGroup)
-                    dataType in CwtDataTypeSets.ValueField -> ParadoxValueFieldExpression.resolve(value, null, configGroup)
-                    dataType in CwtDataTypeSets.VariableField -> ParadoxVariableFieldExpression.resolve(value, null, configGroup)
-                    else -> null
-                }
-                if (complexExpression == null) return
-                checkExpression(element, complexExpression, holder)
+        return object : ParadoxPsiElementVisitor() {
+            override fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
+                super.visitStringExpressionElement(element)
+                check(element, configGroup, holder)
             }
         }
     }
 
-    private fun checkExpression(element: ParadoxExpressionElement, complexExpression: ParadoxComplexExpression, holder: ProblemsHolder) {
+    private fun check(element: ParadoxScriptStringExpressionElement, configGroup: CwtConfigGroup, holder: ProblemsHolder) {
+        if (!element.isDataExpression()) return
+        val config = ParadoxConfigManager.getConfigs(element).firstOrNull() ?: return
+        val dataType = config.configExpression.type
+        val value = element.value
+        val complexExpression = when {
+            dataType in CwtDataTypeSets.DynamicValue -> ParadoxDynamicValueExpression.resolve(value, null, configGroup, config)
+            dataType in CwtDataTypeSets.ScopeField -> ParadoxScopeFieldExpression.resolve(value, null, configGroup)
+            dataType in CwtDataTypeSets.ValueField -> ParadoxValueFieldExpression.resolve(value, null, configGroup)
+            dataType in CwtDataTypeSets.VariableField -> ParadoxVariableFieldExpression.resolve(value, null, configGroup)
+            else -> null
+        }
+        if (complexExpression == null) return
+        check(element, complexExpression, holder)
+    }
+
+    private fun check(element: ParadoxExpressionElement, complexExpression: ParadoxComplexExpression, holder: ProblemsHolder) {
         complexExpression.accept(object : ParadoxComplexExpressionRecursiveVisitor() {
             override fun visit(node: ParadoxComplexExpressionNode): Boolean {
-                if (node is ParadoxComplexExpression) checkInExpression(element, node, holder)
+                if (node is ParadoxComplexExpression) checkIn(element, node, holder)
                 return super.visit(node)
             }
         })
     }
 
-    private fun checkInExpression(element: ParadoxExpressionElement, complexExpression: ParadoxComplexExpression, holder: ProblemsHolder) {
+    private fun checkIn(element: ParadoxExpressionElement, complexExpression: ParadoxComplexExpression, holder: ProblemsHolder) {
         val scopeNodes = complexExpression.nodes.filterIsInstance<ParadoxScopeNode>()
         val max = ParadoxScopeManager.maxScopeLinkSize
         val actual = scopeNodes.size

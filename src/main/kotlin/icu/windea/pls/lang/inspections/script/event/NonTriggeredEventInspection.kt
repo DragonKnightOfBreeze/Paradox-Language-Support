@@ -1,18 +1,18 @@
 package icu.windea.pls.lang.inspections.script.event
 
-import com.intellij.codeInspection.InspectionManager
 import com.intellij.codeInspection.LocalQuickFix
-import com.intellij.codeInspection.ProblemDescriptor
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.modcommand.ModPsiUpdater
 import com.intellij.modcommand.PsiUpdateModCommandQuickFix
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.parentOfType
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.collections.toArray
+import icu.windea.pls.core.psi.PsiFileOnlyVisitor
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.select.selectScope
@@ -24,10 +24,17 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 class NonTriggeredEventInspection : EventInspectionBase() {
     // https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/88
 
-    override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
-        if (file !is ParadoxScriptFile) return null
-        val holder = ProblemsHolder(manager, file, isOnTheFly)
+    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
+        return object : PsiFileOnlyVisitor() {
+            override fun visitFile(file: PsiFile) {
+                ProgressManager.checkCanceled()
+                check(file, holder)
+            }
+        }
+    }
 
+    private fun check(file: PsiFile, holder: ProblemsHolder) {
+        if (file !is ParadoxScriptFile) return
         val elements = file.properties(inline = true)
         for (element in elements) {
             ProgressManager.checkCanceled()
@@ -40,8 +47,6 @@ class NonTriggeredEventInspection : EventInspectionBase() {
             val fixes = getFixes(element)
             holder.registerProblem(element.propertyKey, description, *fixes)
         }
-
-        return holder.resultsArray
     }
 
     private fun getFixes(element: ParadoxScriptProperty): Array<LocalQuickFix> {

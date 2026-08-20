@@ -5,18 +5,17 @@ import com.intellij.psi.NavigatablePsiElement
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.util.IncorrectOperationException
-import icu.windea.pls.lang.psi.ParadoxDefinitionElementVisitor
-import icu.windea.pls.lang.psi.ParadoxExpressionElementVisitor
+import icu.windea.pls.lang.psi.ParadoxPsiElementVisitor
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxDefinitionInjectionInfo
 
 /**
  * 可能是定义的 PSI 元素。
  *
- * 注意：如果更改了继承关系，需要对应地更改 [ParadoxExpressionElementVisitor]。
+ * 注意：如果更改了继承关系，需要对应地更改 [ParadoxPsiElementVisitor]。
  *
  * @see ParadoxDefinitionInfo
- * @see ParadoxDefinitionElementVisitor
+ * @see ParadoxPsiElementVisitor
  * @see ParadoxScriptFile
  * @see ParadoxScriptProperty
  */

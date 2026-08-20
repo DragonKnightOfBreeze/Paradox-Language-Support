@@ -11,7 +11,7 @@
     <!--suppress PluginXmlValidity -->
     <inspection.basicVisitor class="icu.windea.pls.csv.psi.ParadoxCsvVisitor"/>
     <!--suppress PluginXmlValidity -->
-    <inspection.basicVisitor class="icu.windea.pls.lang.psi.ParadoxExpressionElementVisitor"/>
+    <inspection.basicVisitor class="icu.windea.pls.lang.psi.ParadoxPsiElementVisitor"/>
 
     <lang.inspectionSuppressor language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.inspections.suppress.ParadoxScriptInspectionSuppressor"/>
     <lang.inspectionSuppressor language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.lang.inspections.suppress.ParadoxLocalisationInspectionSuppressor"/>

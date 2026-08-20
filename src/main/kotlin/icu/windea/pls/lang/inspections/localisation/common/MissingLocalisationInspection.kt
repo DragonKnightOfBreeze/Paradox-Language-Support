@@ -106,14 +106,18 @@ class MissingLocalisationInspection : LocalInspectionTool() {
         return object : ParadoxLocalisationVisitor() {
             override fun visitProperty(element: ParadoxLocalisationProperty) {
                 ProgressManager.checkCanceled()
-                check(element, locales, holder)
+                checkFromLocalisation(element, locales, holder)
             }
         }
     }
 
-    private fun check(element: ParadoxLocalisationProperty, locales: MutableSet<CwtLocaleConfig>, holder: ProblemsHolder) {
+    private fun checkFromLocalisation(element: ParadoxLocalisationProperty, locales: Set<CwtLocaleConfig>, holder: ProblemsHolder) {
         val context = ParadoxLocalisationCodeInsightContextService.fromLocalisation(element, locales, fromInspection = true)
         if (context == null || context.infos.isEmpty()) return
+        registerProblems(element, context, holder)
+    }
+
+    private fun registerProblems(element: ParadoxLocalisationProperty, context: ParadoxLocalisationCodeInsightContext, holder: ProblemsHolder) {
         val location = element.propertyKey
         val messages = getDescriptions(context)
         if (messages.isEmpty()) return

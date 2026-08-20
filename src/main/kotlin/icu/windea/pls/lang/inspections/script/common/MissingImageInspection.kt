@@ -3,7 +3,6 @@ package icu.windea.pls.lang.inspections.script.common
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.ProblemsHolder
-import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
@@ -16,6 +15,7 @@ import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.codeInsight.ParadoxImageCodeInsightContext
 import icu.windea.pls.lang.codeInsight.ParadoxImageCodeInsightContextService
 import icu.windea.pls.lang.codeInsight.ParadoxImageCodeInsightInfo
+import icu.windea.pls.lang.psi.ParadoxPsiElementVisitor
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
@@ -37,91 +37,6 @@ class MissingImageInspection : LocalInspectionTool() {
     @JvmField var checkForModifiers = false
     @JvmField var checkModifierIcons = true
     @JvmField var ignoredInInjectedFiles = false
-
-    override fun isAvailableForFile(file: PsiFile): Boolean {
-        // 按需忽略注入的文件
-        val vFile = file.virtualFile
-        if (ignoredInInjectedFiles && VirtualFileService.isInjectedFile(vFile)) return false
-        // 要求规则分组数据已加载完毕
-        if (!ParadoxPsiFileMatchService.checkConfigGroupInitialized(file)) return false
-        // 要求是语义上有效的脚本文件
-        return ParadoxPsiFileMatchService.isScriptFile(file)
-    }
-
-    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        return object : PsiElementVisitor() {
-            override fun visitElement(element: PsiElement) {
-                when (element) {
-                    is ParadoxDefinitionElement -> visitDefinitionElement(element)
-                    is ParadoxScriptStringExpressionElement -> visitStringExpressionElement(element)
-                }
-            }
-
-            private fun visitDefinitionElement(definition: ParadoxDefinitionElement) {
-                ProgressManager.checkCanceled()
-                val context = ParadoxImageCodeInsightContextService.fromDefinition(definition, fromInspection = true)
-                if (context == null || context.infos.isEmpty()) return
-                registerProblems(holder, definition, context)
-            }
-
-            private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
-                ProgressManager.checkCanceled()
-                if (!element.isDataExpression()) return
-                val context = ParadoxImageCodeInsightContextService.fromExpression(element, fromInspection = true)
-                if (context == null || context.infos.isEmpty()) return
-                registerProblems(holder, element, context)
-            }
-
-            private fun registerProblems(holder: ProblemsHolder, element: PsiElement, context: ParadoxImageCodeInsightContext) {
-                val location = when {
-                    element is ParadoxScriptFile -> element
-                    element is ParadoxScriptProperty -> element.propertyKey
-                    element is ParadoxScriptStringExpressionElement -> element
-                    else -> return
-                }
-                val descriptions = getDescriptions(context)
-                if (descriptions.isEmpty()) return
-                val fixes = getFixes(element, context)
-                for (description in descriptions) {
-                    holder.registerProblem(location, description, *fixes)
-                }
-            }
-        }
-    }
-
-    private fun getDescriptions(context: ParadoxImageCodeInsightContext): List<String> {
-        val includeMap = mutableMapOf<String, ParadoxImageCodeInsightInfo>()
-        val excludeKeys = mutableSetOf<String>()
-        context.infos.forEachFast f@{ codeInsightInfo ->
-            if (!codeInsightInfo.check) return@f
-            val key = codeInsightInfo.key ?: return@f
-            if (excludeKeys.contains(key)) return@f
-            if (codeInsightInfo.missing) {
-                includeMap.putIfAbsent(key, codeInsightInfo)
-            } else {
-                includeMap.remove(key)
-                excludeKeys.add(key)
-            }
-        }
-        return includeMap.values.mapNotNull { getDescription(it) }
-    }
-
-    private fun getDescription(codeInsightInfo: ParadoxImageCodeInsightInfo): String? {
-        val locationExpression = codeInsightInfo.relatedImageInfo?.locationExpression
-        locationExpression?.takeUnless { it.isPlaceholder }?.location
-            ?.let { return ChronicleBundle.message("inspection.script.missingImage.desc.3", it) }
-        codeInsightInfo.gfxName
-            ?.let { return ChronicleBundle.message("inspection.script.missingImage.desc.2", it) }
-        codeInsightInfo.filePath
-            ?.let { return ChronicleBundle.message("inspection.script.missingImage.desc.1", it) }
-        return null
-    }
-
-    @Suppress("unused")
-    private fun getFixes(element: PsiElement, context: ParadoxImageCodeInsightContext): Array<LocalQuickFix> {
-        // nothing now
-        return LocalQuickFix.EMPTY_ARRAY
-    }
 
     override fun createOptionsPanel(): JComponent {
         lateinit var checkForDefinitionsCb: Cell<JBCheckBox>
@@ -179,5 +94,91 @@ class MissingImageInspection : LocalInspectionTool() {
                     .bindSelected(::ignoredInInjectedFiles.toAtomicProperty())
             }
         }
+    }
+
+    override fun isAvailableForFile(file: PsiFile): Boolean {
+        // 按需忽略注入的文件
+        val vFile = file.virtualFile
+        if (ignoredInInjectedFiles && VirtualFileService.isInjectedFile(vFile)) return false
+        // 要求规则分组数据已加载完毕
+        if (!ParadoxPsiFileMatchService.checkConfigGroupInitialized(file)) return false
+        // 要求是语义上有效的脚本文件
+        return ParadoxPsiFileMatchService.isScriptFile(file)
+    }
+
+    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
+        return object : ParadoxPsiElementVisitor() {
+            override fun visitDefinitionElement(element: ParadoxDefinitionElement) {
+                super.visitDefinitionElement(element)
+                checkFromDefinition(element, holder)
+            }
+
+            override fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
+                super.visitStringExpressionElement(element)
+                if (!element.isDataExpression()) return
+                checkFromExpression(element, holder)
+            }
+        }
+    }
+
+    private fun checkFromDefinition(element: ParadoxDefinitionElement, holder: ProblemsHolder) {
+        val context = ParadoxImageCodeInsightContextService.fromDefinition(element, fromInspection = true)
+        if (context == null || context.infos.isEmpty()) return
+        registerProblems(element, context, holder)
+    }
+
+    private fun checkFromExpression(element: ParadoxScriptStringExpressionElement, holder: ProblemsHolder) {
+        val context = ParadoxImageCodeInsightContextService.fromExpression(element, fromInspection = true)
+        if (context == null || context.infos.isEmpty()) return
+        registerProblems(element, context, holder)
+    }
+
+    private fun registerProblems(element: PsiElement, context: ParadoxImageCodeInsightContext, holder: ProblemsHolder) {
+        val location = when {
+            element is ParadoxScriptFile -> element
+            element is ParadoxScriptProperty -> element.propertyKey
+            element is ParadoxScriptStringExpressionElement -> element
+            else -> return
+        }
+        val descriptions = getDescriptions(context)
+        if (descriptions.isEmpty()) return
+        val fixes = getFixes(element, context)
+        for (description in descriptions) {
+            holder.registerProblem(location, description, *fixes)
+        }
+    }
+
+    private fun getDescriptions(context: ParadoxImageCodeInsightContext): List<String> {
+        val includeMap = mutableMapOf<String, ParadoxImageCodeInsightInfo>()
+        val excludeKeys = mutableSetOf<String>()
+        context.infos.forEachFast f@{ codeInsightInfo ->
+            if (!codeInsightInfo.check) return@f
+            val key = codeInsightInfo.key ?: return@f
+            if (excludeKeys.contains(key)) return@f
+            if (codeInsightInfo.missing) {
+                includeMap.putIfAbsent(key, codeInsightInfo)
+            } else {
+                includeMap.remove(key)
+                excludeKeys.add(key)
+            }
+        }
+        return includeMap.values.mapNotNull { getDescription(it) }
+    }
+
+    private fun getDescription(codeInsightInfo: ParadoxImageCodeInsightInfo): String? {
+        val locationExpression = codeInsightInfo.relatedImageInfo?.locationExpression
+        locationExpression?.takeUnless { it.isPlaceholder }?.location
+            ?.let { return ChronicleBundle.message("inspection.script.missingImage.desc.3", it) }
+        codeInsightInfo.gfxName
+            ?.let { return ChronicleBundle.message("inspection.script.missingImage.desc.2", it) }
+        codeInsightInfo.filePath
+            ?.let { return ChronicleBundle.message("inspection.script.missingImage.desc.1", it) }
+        return null
+    }
+
+    @Suppress("unused")
+    private fun getFixes(element: PsiElement, context: ParadoxImageCodeInsightContext): Array<LocalQuickFix> {
+        // nothing now
+        return LocalQuickFix.EMPTY_ARRAY
     }
 }

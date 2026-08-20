@@ -32,12 +32,12 @@ class UnsupportedRecursionInspection : LocalInspectionTool(), DumbAware {
         return object : ParadoxLocalisationVisitor() {
             override fun visitProperty(element: ParadoxLocalisationProperty) {
                 ProgressManager.checkCanceled()
-                check(element, holder)
+                checkLocalisation(element, holder)
             }
         }
     }
 
-    private fun check(element: ParadoxLocalisationProperty, holder: ProblemsHolder) {
+    private fun checkLocalisation(element: ParadoxLocalisationProperty, holder: ProblemsHolder) {
         val name = element.name
         if (name.isEmpty()) return
         val recursions = mutableSetOf<PsiElement>()

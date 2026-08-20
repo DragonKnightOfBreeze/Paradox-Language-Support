@@ -1,15 +1,13 @@
 package icu.windea.pls.lang.inspections.script.scope
 
 import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.codeInspection.options.OptPane
 import com.intellij.openapi.progress.ProgressManager
-import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
-import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.core.pass
-import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.util.ParadoxConfigManager
@@ -18,30 +16,35 @@ import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.model.scope.ParadoxScopeConstants
 import icu.windea.pls.script.psi.ParadoxScriptProperty
-import javax.swing.JComponent
+import icu.windea.pls.script.psi.ParadoxScriptVisitor
 
 class IncorrectScopeSwitchInspection : ScopeInspectionBase() {
     private var checkForSystemScopes = false
 
-    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        return object : PsiElementVisitor() {
-            override fun visitElement(element: PsiElement) {
-                if (element is ParadoxScriptProperty) visitProperty(element)
-            }
+    override fun getOptionsPane(): OptPane {
+        return OptPane.pane(
+            OptPane.checkbox("checkForSystemScopes", ChronicleBundle.message("inspection.script.incorrectScopeSwitch.option.checkForSystemScope"))
+        )
+    }
 
-            private fun visitProperty(element: ParadoxScriptProperty) {
+    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
+        return object : ParadoxScriptVisitor() {
+            override fun visitProperty(element: ParadoxScriptProperty) {
                 ProgressManager.checkCanceled()
-                val configs = ParadoxConfigManager.getConfigs(element)
-                val config = configs.firstOrNull() ?: return
-                if (config.configExpression.type != CwtDataTypes.ScopeField) return
-                if (config !is CwtPropertyConfig) return
-                checkExpression(element, config, holder)
-                return
+                check(element, holder)
             }
         }
     }
 
-    private fun checkExpression(element: ParadoxScriptProperty, config: CwtPropertyConfig, holder: ProblemsHolder) {
+    private fun check(element: ParadoxScriptProperty, holder: ProblemsHolder) {
+        val configs = ParadoxConfigManager.getConfigs(element)
+        val config = configs.firstOrNull() ?: return
+        if (config.configExpression.type != CwtDataTypes.ScopeField) return
+        if (config !is CwtPropertyConfig) return
+        check(element, config, holder)
+    }
+
+    private fun check(element: ParadoxScriptProperty, config: CwtPropertyConfig, holder: ProblemsHolder) {
         val resultScopeContext = ParadoxScopeManager.getScopeContext(element) ?: return
         val links = resultScopeContext.links
         if (links.isEmpty()) return
@@ -87,15 +90,5 @@ class IncorrectScopeSwitchInspection : ScopeInspectionBase() {
             ParadoxDefinitionInjectionManager.getType(fromElement)?.let { return it }
         }
         return null
-    }
-
-    override fun createOptionsPanel(): JComponent {
-        return panel {
-            // checkForSystemScopes
-            row {
-                checkBox(ChronicleBundle.message("inspection.script.incorrectScopeSwitch.option.checkForSystemScope"))
-                    .bindSelected(::checkForSystemScopes.toAtomicProperty())
-            }
-        }
     }
 }

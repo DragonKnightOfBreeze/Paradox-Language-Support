@@ -6,7 +6,7 @@ import com.intellij.psi.PsiElementVisitor
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.lang.psi.ParadoxExpressionElementVisitor
+import icu.windea.pls.lang.psi.ParadoxPsiElementVisitor
 import icu.windea.pls.lang.psi.isCommandExpression
 import icu.windea.pls.lang.resolve.ParadoxExpressionService
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxCommandExpression
@@ -20,7 +20,7 @@ import icu.windea.pls.model.scope.ParadoxScopeContext
 class IncorrectScopeInspection : ScopeInspectionBase() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         val configGroup = ChronicleFacade.getConfigGroup(holder.project, selectGameType(holder.file))
-        return object : ParadoxExpressionElementVisitor() {
+        return object : ParadoxPsiElementVisitor() {
             override fun visitExpressionElement(element: ParadoxLocalisationExpressionElement) {
                 super.visitExpressionElement(element)
                 check(element, configGroup, holder)

@@ -29,12 +29,16 @@ class ScopeCallStatementToSafeFormInspection : LocalInspectionTool(), DumbAware 
         return object : ParadoxScriptVisitor() {
             override fun visitProperty(element: ParadoxScriptProperty) {
                 ProgressManager.checkCanceled()
-                if (!ParadoxScopeCallStatementManipulationService.canConvertToSafeForm(element)) return
-                val range = ParadoxScopeCallStatementManipulationService.getHighlightingRange(element)
-                val description = ChronicleBundle.message("inspection.script.scopeCallStatementToSafeForm.desc")
-                holder.registerProblem(element, range, description, Fix())
+                check(element, holder)
             }
         }
+    }
+
+    private fun check(element: ParadoxScriptProperty, holder: ProblemsHolder) {
+        if (!ParadoxScopeCallStatementManipulationService.canConvertToSafeForm(element)) return
+        val range = ParadoxScopeCallStatementManipulationService.getHighlightingRange(element)
+        val description = ChronicleBundle.message("inspection.script.scopeCallStatementToSafeForm.desc")
+        holder.registerProblem(element, range, description, Fix())
     }
 
     private class Fix : PsiUpdateModCommandQuickFix() {

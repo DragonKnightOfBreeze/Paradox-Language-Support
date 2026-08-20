@@ -1,11 +1,11 @@
 package icu.windea.pls.lang.inspections.script.event
 
-import com.intellij.codeInspection.InspectionManager
-import com.intellij.codeInspection.ProblemDescriptor
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.openapi.progress.ProgressManager
+import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.core.psi.PsiFileOnlyVisitor
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.select.selectScope
@@ -18,12 +18,19 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
  * 事件脚本文件中（位于事件声明中的）的不正确的事件ID的代码检查。
  */
 class IncorrectEventIdInspection : EventInspectionBase() {
-    override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
-        if (file !is ParadoxScriptFile) return null
-        val holder = ProblemsHolder(manager, file, isOnTheFly)
+    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
+        return object : PsiFileOnlyVisitor() {
+            override fun visitFile(file: PsiFile) {
+                ProgressManager.checkCanceled()
+                check(file, holder)
+            }
+        }
+    }
+
+    private fun check(file: PsiFile, holder: ProblemsHolder) {
+        if (file !is ParadoxScriptFile) return
         val elements = file.properties(inline = true)
         for (element in elements) checkEventIdForEventDeclaration(element, holder)
-        return holder.resultsArray
     }
 
     private fun checkEventIdForEventDeclaration(element: ParadoxScriptProperty, holder: ProblemsHolder) {

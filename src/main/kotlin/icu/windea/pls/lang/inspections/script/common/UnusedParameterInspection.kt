@@ -1,30 +1,20 @@
 package icu.windea.pls.lang.inspections.script.common
 
-import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector.*
 import com.intellij.codeInspection.LocalInspectionTool
-import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
-import com.intellij.openapi.progress.ProgressManager
-import com.intellij.openapi.util.TextRange
-import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
-import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.core.processAsync
+import icu.windea.pls.lang.inspections.ParadoxAccessInspectionService
 import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.psi.ParadoxPsiElementVisitor
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
-import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
-import icu.windea.pls.lang.search.ParadoxParameterSearch
-import icu.windea.pls.lang.search.scope.ParadoxSearchScope
-import icu.windea.pls.lang.search.util.withSearchScope
-import icu.windea.pls.model.constraints.ParadoxReferenceConstraint
 import icu.windea.pls.script.psi.ParadoxConditionParameter
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 /**
- * 参数被设置/引用但未被使用的代码检查。
+ * 参数被设值但未被使用的代码检查。
  *
- * 例如：有`some_effect = {PARAM = some_value}`但没有`some_effect = { some_prop = $PARAM$ }`，后者是定义的声明。
+ * 例如：有 `some_effect = {PARAM = some_value}` 但没有 `some_effect = { some_prop = $PARAM$ }`，后者是定义的声明。
  */
 class UnusedParameterInspection : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {
@@ -33,68 +23,18 @@ class UnusedParameterInspection : LocalInspectionTool() {
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        val project = holder.project
-        val file = holder.file
-        return object : PsiElementVisitor() {
-            // it's unnecessary to make it synced
-            private val statusMap = mutableMapOf<PsiElement, Boolean>()
-            // compute once per file
-            private val searchScope by lazy { ParadoxSearchScope.fromFile(project, file.virtualFile) }
-
-            private fun shouldVisit(element: PsiElement): Boolean {
-                return when {
-                    element is ParadoxScriptStringExpressionElement -> !element.text.isParameterized()
-                    element is ParadoxConditionParameter -> true
-                    else -> false
-                }
+        val context = ParadoxAccessInspectionService.createContext(this, holder)
+        return object : ParadoxPsiElementVisitor() {
+            override fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
+                super.visitStringExpressionElement(element)
+                if(element.text.isParameterized()) return // skip if parameterized
+                ParadoxAccessInspectionService.checkForUnusedParameter(element, context)
             }
 
-            override fun visitElement(element: PsiElement) {
-                ProgressManager.checkCanceled()
-                if (!shouldVisit(element)) return
-
-                val references = element.references
-                for (reference in references) {
-                    ProgressManager.checkCanceled()
-                    if (!ParadoxReferenceConstraint.Parameter.canResolve(reference)) continue
-                    val resolved = reference.resolve()
-                    if (resolved !is ParadoxParameterLightElement) continue
-                    if (resolved.contextName.isParameterized()) continue // skip if context name is parameterized
-                    if (resolved.readWriteAccess != Access.Write) continue
-                    val cachedStatus = statusMap[resolved]
-                    val status = if (cachedStatus == null) {
-                        ProgressManager.checkCanceled()
-                        val selector = ParadoxParameterSearch.selector(project, file).withSearchScope(searchScope) // use file as context
-                        val r = ParadoxParameterSearch.search(resolved.name, resolved.contextKey, selector).processAsync p@{
-                            ProgressManager.checkCanceled()
-                            if (it.readWriteAccess == Access.Read) {
-                                statusMap[resolved] = true
-                                false
-                            } else {
-                                true
-                            }
-                        }
-
-                        if (r) {
-                            statusMap[resolved] = false
-                            false
-                        } else {
-                            true
-                        }
-                    } else {
-                        cachedStatus
-                    }
-                    if (!status) {
-                        registerProblem(element, resolved.name, reference.rangeInElement)
-                    }
-                }
-            }
-
-            private fun registerProblem(element: PsiElement, name: String, range: TextRange) {
-                val description = ChronicleBundle.message("inspection.script.unusedParameter.desc", name)
-                holder.registerProblem(element, description, ProblemHighlightType.LIKE_UNUSED_SYMBOL, range)
+            override fun visitConditionParameter(element: ParadoxConditionParameter) {
+                super.visitConditionParameter(element)
+                ParadoxAccessInspectionService.checkForUnusedParameter(element, context)
             }
         }
     }
 }
-

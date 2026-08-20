@@ -5,7 +5,6 @@ import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.codeInspection.options.OptPane
-import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleBundle
@@ -13,9 +12,9 @@ import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.fixes.IntroduceGlobalVariableFix
 import icu.windea.pls.lang.fixes.IntroduceLocalScriptedVariableFix
 import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.psi.ParadoxPsiElementVisitor
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
-import icu.windea.pls.localisation.psi.ParadoxLocalisationScriptedVariableReference
-import icu.windea.pls.localisation.psi.ParadoxLocalisationVisitor
+import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
 
 /**
  * 无法解析的封装变量引用的代码检查。
@@ -44,15 +43,15 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        return object : ParadoxLocalisationVisitor() {
-            override fun visitScriptedVariableReference(element: ParadoxLocalisationScriptedVariableReference) {
-                ProgressManager.checkCanceled()
+        return object : ParadoxPsiElementVisitor() {
+            override fun visitScriptedVariableReference(element: ParadoxScriptedVariableReference) {
+                super.visitScriptedVariableReference(element)
                 check(element, holder)
             }
         }
     }
 
-    private fun check(element: ParadoxLocalisationScriptedVariableReference, holder: ProblemsHolder) {
+    private fun check(element: ParadoxScriptedVariableReference, holder: ProblemsHolder) {
         val name = element.name ?: return
         if (name.isParameterized()) return // skip if name is parameterized
         val reference = element.reference ?: return
@@ -62,7 +61,7 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
         holder.registerProblem(element, description, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL, *fixes)
     }
 
-    private fun getFixes(element: ParadoxLocalisationScriptedVariableReference, name: String): Array<LocalQuickFix> {
+    private fun getFixes(element: ParadoxScriptedVariableReference, name: String): Array<LocalQuickFix> {
         return arrayOf(
             IntroduceLocalScriptedVariableFix(name, element),
             IntroduceGlobalVariableFix(name, element),

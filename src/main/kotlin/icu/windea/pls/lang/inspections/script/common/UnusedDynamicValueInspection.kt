@@ -1,30 +1,19 @@
 package icu.windea.pls.lang.inspections.script.common
 
-import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector.*
 import com.intellij.codeInspection.LocalInspectionTool
-import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
-import com.intellij.openapi.progress.ProgressManager
-import com.intellij.openapi.util.TextRange
-import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
-import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.core.processAsync
-import icu.windea.pls.core.resolveFirst
+import icu.windea.pls.lang.inspections.ParadoxAccessInspectionService
 import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.psi.ParadoxPsiElementVisitor
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
-import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
-import icu.windea.pls.lang.search.ParadoxDynamicValueSearch
-import icu.windea.pls.lang.search.scope.ParadoxSearchScope
-import icu.windea.pls.lang.search.util.withSearchScope
-import icu.windea.pls.model.constraints.ParadoxReferenceConstraint
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 /**
  * 动态值被设置但未被使用的代码检查。
  *
- * 例如，有`set_flag = xxx`但没有`has_flag = xxx`。
+ * 例如，有 `set_flag = xxx` 但没有 `has_flag = xxx`。
  *
  * 默认不启用。
  */
@@ -35,66 +24,13 @@ class UnusedDynamicValueInspection : LocalInspectionTool() {
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        val project = holder.project
-        val file = holder.file
-        return object : PsiElementVisitor() {
-            // it's unnecessary to make it synced
-            private val statusMap = mutableMapOf<PsiElement, Boolean>()
-            // compute once per file
-            private val searchScope by lazy { ParadoxSearchScope.fromFile(project, file.virtualFile) }
-
-            private fun shouldVisit(element: PsiElement): Boolean {
-                return when {
-                    element is ParadoxScriptStringExpressionElement -> !element.text.isParameterized()
-                    else -> false
-                }
-            }
-
-            override fun visitElement(element: PsiElement) {
-                ProgressManager.checkCanceled()
-                if (!shouldVisit(element)) return
-
-                val references = element.references
-                for (reference in references) {
-                    ProgressManager.checkCanceled()
-                    if (!ParadoxReferenceConstraint.DynamicValue.canResolve(reference)) continue
-                    val resolved = reference.resolveFirst()
-                    if (resolved !is ParadoxDynamicValueLightElement) continue
-                    if (resolved.readWriteAccess != Access.Write) continue
-                    val cachedStatus = statusMap[resolved]
-                    val status = if (cachedStatus == null) {
-                        ProgressManager.checkCanceled()
-                        val selector = ParadoxDynamicValueSearch.selector(project, file).withSearchScope(searchScope) // use file as context
-                        val r = ParadoxDynamicValueSearch.search(resolved.name, resolved.types, selector).processAsync p@{
-                            ProgressManager.checkCanceled()
-                            if (it.readWriteAccess == Access.Read) {
-                                statusMap[resolved] = true
-                                false
-                            } else {
-                                true
-                            }
-                        }
-
-                        if (r) {
-                            statusMap[resolved] = false
-                            false
-                        } else {
-                            true
-                        }
-                    } else {
-                        cachedStatus
-                    }
-                    if (!status) {
-                        registerProblem(element, resolved.name, resolved.types.joinToString(), reference.rangeInElement)
-                    }
-                }
-            }
-
-            private fun registerProblem(element: PsiElement, name: String, dynamicValueType: String, range: TextRange) {
-                val description = ChronicleBundle.message("inspection.script.unusedDynamicValue.desc", name, dynamicValueType)
-                holder.registerProblem(element, description, ProblemHighlightType.LIKE_UNUSED_SYMBOL, range)
+        val context = ParadoxAccessInspectionService.createContext(this, holder)
+        return object : ParadoxPsiElementVisitor() {
+            override fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
+                super.visitStringExpressionElement(element)
+                if (element.text.isParameterized()) return // skip if parameterized
+                ParadoxAccessInspectionService.checkForUnusedDynamicValue(element, context)
             }
         }
     }
 }
-

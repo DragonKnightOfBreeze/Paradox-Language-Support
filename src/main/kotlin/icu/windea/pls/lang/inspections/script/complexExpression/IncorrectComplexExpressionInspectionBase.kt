@@ -3,8 +3,6 @@ package icu.windea.pls.lang.inspections.script.complexExpression
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.ProblemsHolder
-import com.intellij.openapi.progress.ProgressManager
-import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleFacade
@@ -13,6 +11,7 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.toArray
 import icu.windea.pls.lang.fixes.QuoteLiteralFix
+import icu.windea.pls.lang.psi.ParadoxPsiElementVisitor
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.lang.resolve.ParadoxExpressionService
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
@@ -36,31 +35,38 @@ abstract class IncorrectComplexExpressionInspectionBase : LocalInspectionTool() 
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         val configGroup = ChronicleFacade.getConfigGroup(holder.project, selectGameType(holder.file))
-        return object : PsiElementVisitor() {
-            override fun visitElement(element: PsiElement) {
-                if (element is ParadoxScriptStringExpressionElement) visitStringExpressionElement(element)
-            }
-
-            private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
-                ProgressManager.checkCanceled()
-                if (!element.isDataExpression()) return
-                val complexExpression = resolveComplexExpression(element, configGroup) ?: return
-                val errors = complexExpression.getAllErrors(element)
-                if (errors.isEmpty()) return
-                val fixes = getFixes(element, complexExpression, errors)
-                errors.forEach { error -> error.register(element, holder, *fixes) }
+        return object : ParadoxPsiElementVisitor() {
+            override fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
+                super.visitStringExpressionElement(element)
+                check(element, configGroup, holder)
             }
         }
     }
 
+    private fun check(element: ParadoxScriptStringExpressionElement, configGroup: CwtConfigGroup, holder: ProblemsHolder) {
+        if (!element.isDataExpression()) return
+        val complexExpression = resolveComplexExpression(element, configGroup) ?: return
+        val errors = complexExpression.getAllErrors(element)
+        if (errors.isEmpty()) return
+        val fixes = getFixes(element, complexExpression, errors)
+        errors.forEach { error -> error.register(element, holder, *fixes) }
+    }
+
     protected open fun resolveComplexExpression(element: ParadoxScriptStringExpressionElement, configGroup: CwtConfigGroup): ParadoxComplexExpression? {
+        if ((!isAvailable(element))) return null
         val config = ParadoxConfigManager.getConfigs(element).firstOrNull() ?: return null
         if (!isAvailableForConfig(config)) return null
         val expressionText = ParadoxExpressionService.getExpressionText(element)
         return ParadoxComplexExpression.resolveByConfig(expressionText, configGroup, config)
     }
 
-    protected abstract fun isAvailableForConfig(config: CwtMemberConfig<*>): Boolean
+    protected open fun isAvailable(element: ParadoxScriptStringExpressionElement): Boolean {
+        return true
+    }
+
+    protected open fun isAvailableForConfig(config: CwtMemberConfig<*>): Boolean {
+        return true
+    }
 
     protected open fun getFixes(element: ParadoxScriptStringExpressionElement, complexExpression: ParadoxComplexExpression, errors: List<ParadoxComplexExpressionError>): Array<LocalQuickFix> {
         val result = mutableListOf<LocalQuickFix>()

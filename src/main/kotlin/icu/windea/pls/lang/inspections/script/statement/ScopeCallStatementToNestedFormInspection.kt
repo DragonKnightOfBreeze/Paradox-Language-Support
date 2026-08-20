@@ -30,12 +30,16 @@ class ScopeCallStatementToNestedFormInspection : LocalInspectionTool(), DumbAwar
         return object : ParadoxScriptVisitor() {
             override fun visitProperty(element: ParadoxScriptProperty) {
                 ProgressManager.checkCanceled()
-                if (!ParadoxScopeCallStatementManipulationService.canConvertToNestedForm(element, gameType)) return
-                val range = ParadoxScopeCallStatementManipulationService.getHighlightingRange(element)
-                val description = ChronicleBundle.message("inspection.script.scopeCallStatementToNestedForm.desc")
-                holder.registerProblem(element, range, description, Fix(gameType))
+                check(element, gameType, holder)
             }
         }
+    }
+
+    private fun check(element: ParadoxScriptProperty, gameType: ParadoxGameType?, holder: ProblemsHolder) {
+        if (!ParadoxScopeCallStatementManipulationService.canConvertToNestedForm(element, gameType)) return
+        val range = ParadoxScopeCallStatementManipulationService.getHighlightingRange(element)
+        val description = ChronicleBundle.message("inspection.script.scopeCallStatementToNestedForm.desc")
+        holder.registerProblem(element, range, description, Fix(gameType))
     }
 
     private class Fix(private val gameType: ParadoxGameType?) : PsiUpdateModCommandQuickFix() {

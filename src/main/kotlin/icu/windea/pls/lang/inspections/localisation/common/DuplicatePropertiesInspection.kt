@@ -7,7 +7,9 @@ import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiElementVisitor
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.collections.forEachFast
+import icu.windea.pls.core.findChildren
 import icu.windea.pls.lang.fixes.navigation.NavigateToDuplicatesFix
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyList
 import icu.windea.pls.localisation.psi.ParadoxLocalisationVisitor
 
@@ -27,17 +29,17 @@ class DuplicatePropertiesInspection : LocalInspectionTool(), DumbAware {
         }
     }
 
-    private fun check(element: ParadoxLocalisationPropertyList, holder: ProblemsHolder) {
-        val propertyGroup = element.propertyList.groupBy { it.name }
-        if (propertyGroup.isEmpty()) return
-        for ((key, values) in propertyGroup) {
+    private fun check(containerElement: ParadoxLocalisationPropertyList, holder: ProblemsHolder) {
+        val elementGroup = containerElement.findChildren<ParadoxLocalisationProperty>().groupBy { it.name }
+        if (elementGroup.isEmpty()) return
+        for ((name, elements) in elementGroup) {
             ProgressManager.checkCanceled()
-            if (values.size <= 1) continue
-            values.forEachFast { value ->
-                // 第一个元素指定为 file，则是在文档头部弹出，否则从 element 上通过 contextActions 显示
-                val location = value.propertyKey
-                val fix = NavigateToDuplicatesFix(key, value, values)
-                val description = ChronicleBundle.message("inspection.localisation.duplicateProperties.desc", key)
+            if (name.isEmpty()) continue
+            if (elements.size <= 1) continue
+            elements.forEachFast { element ->
+                val location = element.propertyKey
+                val description = ChronicleBundle.message("inspection.localisation.duplicateProperties.desc", name)
+                val fix = NavigateToDuplicatesFix(name, element, elements)
                 holder.registerProblem(location, description, fix)
             }
         }

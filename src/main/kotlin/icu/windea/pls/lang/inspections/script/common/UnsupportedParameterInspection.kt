@@ -2,18 +2,17 @@ package icu.windea.pls.lang.inspections.script.common
 
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemsHolder
-import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.lang.fixes.DeleteStringByElementTypeFix
+import icu.windea.pls.lang.psi.ParadoxPsiElementVisitor
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.script.psi.ParadoxConditionParameter
 import icu.windea.pls.script.psi.ParadoxParameter
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes
-import icu.windea.pls.script.psi.ParadoxScriptParameter
 
 /**
  * （脚本文件中的）不支持的参数的代码检查。
@@ -31,28 +30,36 @@ class UnsupportedParameterInspection : LocalInspectionTool() {
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        return object : PsiElementVisitor() {
-            override fun visitElement(element: PsiElement) {
-                ProgressManager.checkCanceled()
+        return object : ParadoxPsiElementVisitor() {
+            override fun visitConditionParameter(element: ParadoxConditionParameter) {
+                super.visitConditionParameter(element)
+                checkGeneral(element, holder)
+            }
+
+            override fun visitParameter(element: ParadoxParameter) {
+                super.visitParameter(element)
                 checkGeneral(element, holder)
                 checkInlineScript(element, holder)
             }
         }
     }
 
-    private fun checkGeneral(element: PsiElement, holder: ProblemsHolder) {
-        if (element !is ParadoxParameter && element !is ParadoxConditionParameter) return
+    private fun checkGeneral(element: ParadoxConditionParameter, holder: ProblemsHolder) {
+        if (element.reference?.resolve() != null) return
+        holder.registerProblem(element, ChronicleBundle.message("inspection.script.unsupportedParameter.desc.2"))
+    }
+
+    private fun checkGeneral(element: ParadoxParameter, holder: ProblemsHolder) {
         if (element.reference?.resolve() != null) return
         holder.registerProblem(element, ChronicleBundle.message("inspection.script.unsupportedParameter.desc.1"))
     }
 
-    private fun checkInlineScript(element: PsiElement, holder: ProblemsHolder) {
-        if (element !is ParadoxScriptParameter) return
+    private fun checkInlineScript(element: ParadoxParameter, holder: ProblemsHolder) {
         if (element.defaultValue == null) return
         val file = element.containingFile ?: return
         if (ParadoxInlineScriptManager.getInlineScriptExpression(file) == null) return
         val fix = getDeleteDefaultValueFix(element)
-        holder.registerProblem(element, ChronicleBundle.message("inspection.script.unsupportedParameter.desc.2"), fix)
+        holder.registerProblem(element, ChronicleBundle.message("inspection.script.unsupportedParameter.desc.3"), fix)
     }
 
     private fun getDeleteDefaultValueFix(element: PsiElement): DeleteStringByElementTypeFix {

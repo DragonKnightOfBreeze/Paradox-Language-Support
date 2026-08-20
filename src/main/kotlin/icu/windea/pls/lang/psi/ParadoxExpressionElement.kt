@@ -9,10 +9,10 @@ import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 /**
  * 作为表达式的 PSI 元素。
  *
- * 注意：如果更改了继承关系，需要对应地更改 [ParadoxExpressionElementVisitor]。
+ * 注意：如果更改了继承关系，需要对应地更改 [ParadoxPsiElementVisitor]。
  *
  * @see ParadoxExpression
- * @see ParadoxExpressionElementVisitor
+ * @see ParadoxPsiElementVisitor
  * @see ParadoxScriptExpressionElement
  * @see ParadoxLocalisationExpressionElement
  * @see ParadoxCsvExpressionElement

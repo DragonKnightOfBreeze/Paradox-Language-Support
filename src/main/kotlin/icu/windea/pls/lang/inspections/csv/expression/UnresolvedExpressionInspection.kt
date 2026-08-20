@@ -10,7 +10,7 @@ import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.lang.inspections.ParadoxExpressionInspectionService
-import icu.windea.pls.lang.psi.ParadoxExpressionElementVisitor
+import icu.windea.pls.lang.psi.ParadoxPsiElementVisitor
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.lang.util.ParadoxCsvManager
 
@@ -49,7 +49,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
         val rowConfig = ParadoxCsvManager.getRowConfig(file)
         if (rowConfig == null) return PsiElementVisitor.EMPTY_VISITOR
         val context = ParadoxExpressionInspectionService.createContext(this, holder, ignoredByConfigs, showExpectInfo)
-        return object : ParadoxExpressionElementVisitor() {
+        return object : ParadoxPsiElementVisitor() {
             override fun visitExpressionElement(element: ParadoxCsvExpressionElement) {
                 super.visitExpressionElement(element)
                 ParadoxExpressionInspectionService.checkForUnresolvedExpression(element, rowConfig, context)

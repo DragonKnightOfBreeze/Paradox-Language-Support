@@ -16,8 +16,10 @@ import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.model.ParadoxParameterContextReferenceInfo
+import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptProperty
-import icu.windea.pls.script.psi.ParadoxScriptString
+import icu.windea.pls.script.psi.ParadoxScriptValue
+import icu.windea.pls.script.psi.ParadoxScriptVisitor
 
 /**
  * 缺失的参数的代码检查。
@@ -44,34 +46,38 @@ class MissingParameterInspection : LocalInspectionTool() {
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        return object : PsiElementVisitor() {
-            private fun shouldVisit(element: PsiElement): Boolean {
-                return (element is ParadoxScriptProperty && !element.name.isParameterized()) || element is ParadoxScriptString
-            }
-
-            override fun visitElement(element: PsiElement) {
+        return object : ParadoxScriptVisitor() {
+            override fun visitProperty(element: ParadoxScriptProperty) {
                 ProgressManager.checkCanceled()
-                if (!shouldVisit(element)) return
-
-                val from = ParadoxParameterContextReferenceInfo.From.ContextReference
-                val contextConfig = ParadoxConfigManager.getConfigs(element).firstOrNull() ?: return
-                val contextReferenceInfo = ParadoxParameterManager.getContextReferenceInfo(element, from, contextConfig) ?: return
-                if (contextReferenceInfo.contextName.isParameterized()) return // skip if context name is parameterized
-                val requiredParameterNames = ParadoxParameterManager.getRequiredParameterNames(element, contextReferenceInfo)
-                if (requiredParameterNames.isEmpty()) return
-                val rangeInElement = contextReferenceInfo.contextNameRange.shiftLeft(element.startOffset)
-                if (rangeInElement.isEmpty || rangeInElement.startOffset < 0) return // 防止意外
-                registerProblem(element, requiredParameterNames, rangeInElement)
+                if (element.name.isParameterized()) return // skip if property key is parameterized
+                check(element, holder)
             }
 
-            private fun registerProblem(element: PsiElement, names: Set<String>, rangeInElement: TextRange? = null) {
-                val description = when {
-                    names.isEmpty() -> return
-                    names.size == 1 -> ChronicleBundle.message("inspection.script.missingParameter.desc.1", names.single())
-                    else -> ChronicleBundle.message("inspection.script.missingParameter.desc.2", names.joinToString(", "))
-                }
-                holder.registerProblem(element, rangeInElement, description)
+            override fun visitValue(element: ParadoxScriptValue) {
+                ProgressManager.checkCanceled()
+                check(element, holder)
             }
         }
+    }
+
+    private fun check(element: ParadoxScriptMember, holder: ProblemsHolder) {
+        val from = ParadoxParameterContextReferenceInfo.From.ContextReference
+        val contextConfig = ParadoxConfigManager.getConfigs(element).firstOrNull() ?: return
+        val contextReferenceInfo = ParadoxParameterManager.getContextReferenceInfo(element, from, contextConfig) ?: return
+        if (contextReferenceInfo.contextName.isParameterized()) return // skip if context name is parameterized
+        val requiredParameterNames = ParadoxParameterManager.getRequiredParameterNames(element, contextReferenceInfo)
+        if (requiredParameterNames.isEmpty()) return
+        val rangeInElement = contextReferenceInfo.contextNameRange.shiftLeft(element.startOffset)
+        if (rangeInElement.isEmpty || rangeInElement.startOffset < 0) return // 防止意外
+        registerProblem(element, requiredParameterNames, rangeInElement, holder)
+    }
+
+    private fun registerProblem(element: PsiElement, names: Set<String>, rangeInElement: TextRange? = null, holder: ProblemsHolder) {
+        val description = when {
+            names.isEmpty() -> return
+            names.size == 1 -> ChronicleBundle.message("inspection.script.missingParameter.desc.1", names.single())
+            else -> ChronicleBundle.message("inspection.script.missingParameter.desc.2", names.joinToString(", "))
+        }
+        holder.registerProblem(element, rangeInElement, description)
     }
 }

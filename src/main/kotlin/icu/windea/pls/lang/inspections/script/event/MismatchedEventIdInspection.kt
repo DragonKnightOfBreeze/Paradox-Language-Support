@@ -1,11 +1,11 @@
 package icu.windea.pls.lang.inspections.script.event
 
-import com.intellij.codeInspection.InspectionManager
-import com.intellij.codeInspection.ProblemDescriptor
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.openapi.progress.ProgressManager
+import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.core.psi.PsiFileOnlyVisitor
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.manipulation.ParadoxEventManipulationService
 import icu.windea.pls.lang.psi.stringValue
@@ -23,17 +23,24 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
  * - 实际上，事件脚本文件中可以不声明或者声明多个事件命名空间，事件ID不需要严格匹配同文件中的先前声明的事件命名空间。
  */
 class MismatchedEventIdInspection : EventInspectionBase() {
-    override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
-        if (file !is ParadoxScriptFile) return null
+    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
+        return object : PsiFileOnlyVisitor() {
+            override fun visitFile(file: PsiFile) {
+                ProgressManager.checkCanceled()
+                check(file, holder)
+            }
+        }
+    }
+
+    private fun check(file: PsiFile, holder: ProblemsHolder) {
+        if (file !is ParadoxScriptFile) return
         val map = ParadoxEventManipulationService.getBoundEventDeclarationsInFile(file)
-        if (map.isEmpty()) return null
-        val holder = ProblemsHolder(manager, file, isOnTheFly)
+        if (map.isEmpty()) return
         for ((namespace, events) in map) {
             ProgressManager.checkCanceled()
             if (events.isEmpty()) continue
             for (event in events) checkEventIdForEventDeclaration(event, namespace, holder)
         }
-        return holder.resultsArray
     }
 
     private fun checkEventIdForEventDeclaration(element: ParadoxScriptProperty, namespace: String, holder: ProblemsHolder) {
