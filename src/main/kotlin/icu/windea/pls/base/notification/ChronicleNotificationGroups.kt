@@ -1,4 +1,4 @@
-package icu.windea.pls.ide.notification
+package icu.windea.pls.base.notification
 
 import com.intellij.notification.NotificationGroup
 import com.intellij.notification.NotificationGroupManager

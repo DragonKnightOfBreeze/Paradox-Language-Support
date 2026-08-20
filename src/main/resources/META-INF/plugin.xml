@@ -20,7 +20,6 @@
   <!-- Chapters of the guide book -->
   <xi:include href="/META-INF/chronicle-inject.xml"/> <!-- Chapter of the code injection magic needs to be put at the very front -->
   <xi:include href="/META-INF/chronicle-base.xml"/>
-  <xi:include href="/META-INF/chronicle-ide.xml"/>
   <xi:include href="/META-INF/chronicle-cwt.xml"/>
   <xi:include href="/META-INF/chronicle-script.xml"/>
   <xi:include href="/META-INF/chronicle-localisation.xml"/>

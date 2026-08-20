@@ -1,4 +1,4 @@
-package icu.windea.pls.ide.help
+package icu.windea.pls.base.help
 
 object ChronicleHelpTopics {
     const val configSettings = "icu.windea.pls.config.settings"

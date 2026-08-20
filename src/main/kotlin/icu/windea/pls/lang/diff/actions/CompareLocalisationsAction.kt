@@ -25,13 +25,13 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.platform.ide.progress.runWithModalProgressBlocking
 import com.intellij.util.Consumer
 import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.base.notification.ChronicleNotificationGroups
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.editor
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.isSamePosition
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.toPsiFile
-import icu.windea.pls.ide.notification.ChronicleNotificationGroups
 import icu.windea.pls.lang.analysis.ParadoxAnalysisInjectionManager
 import icu.windea.pls.lang.diff.FileDocumentFragmentContent
 import icu.windea.pls.lang.fileInfo

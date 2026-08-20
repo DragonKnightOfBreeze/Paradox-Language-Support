@@ -1,4 +1,4 @@
-package icu.windea.pls.ide.analysis
+package icu.windea.pls.base.analysis
 
 import com.intellij.codeInsight.daemon.DaemonCodeAnalyzer
 import com.intellij.codeInsight.daemon.impl.InlayHintsPassFactoryInternal

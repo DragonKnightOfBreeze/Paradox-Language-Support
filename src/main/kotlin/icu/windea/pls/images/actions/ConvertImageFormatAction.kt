@@ -20,6 +20,7 @@ import com.intellij.util.IncorrectOperationException
 import com.intellij.util.ThrowableRunnable
 import com.intellij.util.containers.MultiMap
 import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.base.notification.ChronicleNotificationGroups
 import icu.windea.pls.core.cast
 import icu.windea.pls.core.executeCommand
 import icu.windea.pls.core.executeWriteCommand
@@ -28,7 +29,6 @@ import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.core.vfs.VirtualFileService
-import icu.windea.pls.ide.notification.ChronicleNotificationGroups
 import icu.windea.pls.images.ImageService
 import java.io.IOException
 import java.util.concurrent.atomic.AtomicReference

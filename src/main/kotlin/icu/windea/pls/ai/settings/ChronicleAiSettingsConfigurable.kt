@@ -18,7 +18,7 @@ import icu.windea.pls.ai.providers.ChatModelProvider
 import icu.windea.pls.ai.providers.ChatModelProviderType
 import icu.windea.pls.ai.providers.LocalChatModelProvider
 import icu.windea.pls.ai.providers.OpenAiChatModelProvider
-import icu.windea.pls.ide.help.ChronicleHelpTopics
+import icu.windea.pls.base.help.ChronicleHelpTopics
 
 class ChronicleAiSettingsConfigurable : BoundConfigurable(ChronicleAiBundle.message("settings.ai")), SearchableConfigurable {
     override fun getId() = "chronicle.ai"

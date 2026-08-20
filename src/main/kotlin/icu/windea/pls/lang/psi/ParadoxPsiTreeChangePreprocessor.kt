@@ -4,9 +4,9 @@ import com.intellij.openapi.project.DumbService
 import com.intellij.psi.impl.PsiModificationTrackerImpl
 import com.intellij.psi.impl.PsiTreeChangeEventImpl
 import com.intellij.psi.impl.PsiTreeChangePreprocessor
+import icu.windea.pls.base.analysis.ChronicleAnalysisManager
 import icu.windea.pls.core.matchesAntPattern
 import icu.windea.pls.csv.psi.ParadoxCsvFile
-import icu.windea.pls.ide.analysis.ChronicleAnalysisManager
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.util.ParadoxModificationTrackers
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile

@@ -6,9 +6,9 @@ import com.intellij.openapi.options.SearchableConfigurable
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.ui.dsl.builder.*
+import icu.windea.pls.base.help.ChronicleHelpTopics
 import icu.windea.pls.extensions.diagram.ChronicleDiagramBundle
 import icu.windea.pls.extensions.diagram.provider.ParadoxDiagramProvider
-import icu.windea.pls.ide.help.ChronicleHelpTopics
 
 class ChronicleDiagramSettingsConfigurable(
     private val project: Project

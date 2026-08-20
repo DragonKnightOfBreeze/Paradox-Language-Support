@@ -4,11 +4,11 @@ import com.intellij.openapi.ui.TextFieldWithBrowseButton
 import com.intellij.openapi.ui.ValidationInfo
 import com.intellij.ui.layout.ValidationInfoBuilder
 import icu.windea.pls.ai.settings.ChronicleAiSettingsConfigurable
+import icu.windea.pls.base.analysis.ChronicleAnalysisManager
 import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.options.OptionsService
 import icu.windea.pls.core.util.CallbackLock
 import icu.windea.pls.core.util.tupleOf
-import icu.windea.pls.ide.analysis.ChronicleAnalysisManager
 import icu.windea.pls.integrations.ChronicleIntegrationsBundle
 import icu.windea.pls.integrations.images.ImageToolProvider
 import icu.windea.pls.integrations.images.providers.MagickToolProvider

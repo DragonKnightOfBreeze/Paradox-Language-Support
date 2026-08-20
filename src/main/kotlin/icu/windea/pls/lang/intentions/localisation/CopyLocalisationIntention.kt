@@ -8,7 +8,7 @@ import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.ide.notification.ChronicleNotificationGroups
+import icu.windea.pls.base.notification.ChronicleNotificationGroups
 import java.awt.datatransfer.StringSelection
 
 /**

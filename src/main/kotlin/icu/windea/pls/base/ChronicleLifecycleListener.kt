@@ -1,10 +1,9 @@
-package icu.windea.pls.ide
+package icu.windea.pls.base
 
 import com.intellij.ide.AppLifecycleListener
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.ProjectActivity
 import icu.windea.pls.ChronicleFacade
-import icu.windea.pls.base.ChronicleCapacities
 import icu.windea.pls.config.configGroup.CwtConfigGroupService
 import icu.windea.pls.core.withDoubleLock
 import icu.windea.pls.lang.tools.SpecialPathService

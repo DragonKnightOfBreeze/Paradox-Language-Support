@@ -10,8 +10,8 @@ import com.intellij.openapi.ui.popup.util.BaseListPopupStep
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.platform.ide.progress.runWithModalProgressBlocking
 import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.base.notification.ChronicleNotificationGroups
 import icu.windea.pls.ep.tools.exporter.ParadoxModExporter
-import icu.windea.pls.ide.notification.ChronicleNotificationGroups
 import icu.windea.pls.lang.actions.ChronicleDataKeys
 import icu.windea.pls.lang.settings.ParadoxGameOrModSettingsState
 import icu.windea.pls.lang.settings.qualifiedName

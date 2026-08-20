@@ -8,8 +8,8 @@ import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.base.notification.ChronicleNotificationGroups
 import icu.windea.pls.core.util.values.FallbackStrings
-import icu.windea.pls.ide.notification.ChronicleNotificationGroups
 import icu.windea.pls.lang.selectLocale
 import icu.windea.pls.lang.util.ParadoxLocalisationListManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyList

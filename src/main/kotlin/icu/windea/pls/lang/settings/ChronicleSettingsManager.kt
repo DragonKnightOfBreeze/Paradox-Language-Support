@@ -1,8 +1,8 @@
 package icu.windea.pls.lang.settings
 
 import com.intellij.util.application
+import icu.windea.pls.base.analysis.ChronicleAnalysisManager
 import icu.windea.pls.core.util.CallbackLock
-import icu.windea.pls.ide.analysis.ChronicleAnalysisManager
 import icu.windea.pls.lang.listeners.ParadoxDefaultGameDirectoriesListener
 import icu.windea.pls.lang.listeners.ParadoxDefaultGameTypeListener
 import icu.windea.pls.lang.listeners.ParadoxPreferredLocaleListener

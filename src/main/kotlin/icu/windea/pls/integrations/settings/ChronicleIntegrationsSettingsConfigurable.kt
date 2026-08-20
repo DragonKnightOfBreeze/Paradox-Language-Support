@@ -7,8 +7,8 @@ import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.ui.setEmptyState
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.base.help.ChronicleHelpTopics
 import icu.windea.pls.core.util.CallbackLock
-import icu.windea.pls.ide.help.ChronicleHelpTopics
 import icu.windea.pls.integrations.ChronicleIntegrationsBundle
 import icu.windea.pls.integrations.images.ImageToolConstants
 import icu.windea.pls.integrations.lints.LintToolConstants

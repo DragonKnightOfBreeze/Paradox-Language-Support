@@ -16,7 +16,7 @@ import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.ui.AnActionButton
 import com.intellij.ui.AnActionButtonRunnable
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.ide.notification.ChronicleNotificationGroups
+import icu.windea.pls.base.notification.ChronicleNotificationGroups
 import icu.windea.pls.lang.actions.ChronicleDataKeys
 import icu.windea.pls.lang.rootInfo
 import icu.windea.pls.lang.settings.ParadoxModDependencySettingsState

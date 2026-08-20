@@ -10,11 +10,11 @@ import com.intellij.platform.ide.progress.withBackgroundProgress
 import com.intellij.platform.util.coroutines.forEachConcurrent
 import com.intellij.platform.util.progress.reportRawProgress
 import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.base.notification.ChronicleNotificationGroups
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.collections.synced
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.withErrorRef
-import icu.windea.pls.ide.notification.ChronicleNotificationGroups
 import icu.windea.pls.integrations.translation.TranslationToolService
 import icu.windea.pls.lang.manipulation.ParadoxLocalisationManipulationContext
 import icu.windea.pls.lang.manipulation.ParadoxLocalisationManipulationService

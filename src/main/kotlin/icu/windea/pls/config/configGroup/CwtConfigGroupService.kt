@@ -17,12 +17,12 @@ import com.intellij.platform.util.progress.reportProgress
 import com.intellij.util.application
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleFacade
+import icu.windea.pls.base.analysis.ChronicleAnalysisManager
+import icu.windea.pls.base.notification.ChronicleNotificationGroups
 import icu.windea.pls.config.listeners.CwtConfigGroupRefreshStatusListener
 import icu.windea.pls.core.getDefaultProject
 import icu.windea.pls.core.optimized
 import icu.windea.pls.ep.config.configGroup.CwtConfigGroupFileProvider
-import icu.windea.pls.ide.analysis.ChronicleAnalysisManager
-import icu.windea.pls.ide.notification.ChronicleNotificationGroups
 import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers

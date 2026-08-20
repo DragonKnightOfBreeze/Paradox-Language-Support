@@ -3,10 +3,10 @@ package icu.windea.pls.lang.listeners
 import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.roots.ProjectFileIndex
 import com.intellij.openapi.vfs.VfsUtil
+import icu.windea.pls.base.analysis.ChronicleAnalysisManager
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.toVirtualFile
-import icu.windea.pls.ide.analysis.ChronicleAnalysisManager
 import icu.windea.pls.lang.roots.ParadoxLibrary
 import icu.windea.pls.lang.roots.ParadoxLibraryService
 import icu.windea.pls.lang.settings.ParadoxGameSettingsState

@@ -9,8 +9,8 @@ import com.intellij.openapi.vfs.newvfs.events.VFileDeleteEvent
 import com.intellij.openapi.vfs.newvfs.events.VFileEvent
 import com.intellij.openapi.vfs.newvfs.events.VFileMoveEvent
 import com.intellij.openapi.vfs.newvfs.events.VFilePropertyChangeEvent
+import icu.windea.pls.base.analysis.ChronicleAnalysisManager
 import icu.windea.pls.core.annotations.Optimized
-import icu.windea.pls.ide.analysis.ChronicleAnalysisManager
 import icu.windea.pls.lang.analysis.ParadoxAnalysisDataManager
 import icu.windea.pls.lang.analysis.ParadoxAnalysisScope
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager

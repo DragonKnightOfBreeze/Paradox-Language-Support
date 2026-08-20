@@ -19,8 +19,8 @@ import icu.windea.pls.ai.manipulation.ParadoxLocalisationAiManipulationService
 import icu.windea.pls.ai.model.requests.PolishLocalisationAiRequest
 import icu.windea.pls.ai.model.results.LocalisationAiResult
 import icu.windea.pls.ai.settings.ChronicleAiSettings
+import icu.windea.pls.base.notification.ChronicleNotificationGroups
 import icu.windea.pls.core.withErrorRef
-import icu.windea.pls.ide.notification.ChronicleNotificationGroups
 import icu.windea.pls.lang.intentions.localisation.ManipulateLocalisationIntentionBase
 import icu.windea.pls.lang.manipulation.ParadoxLocalisationManipulationContext
 import icu.windea.pls.lang.manipulation.ParadoxLocalisationManipulationService

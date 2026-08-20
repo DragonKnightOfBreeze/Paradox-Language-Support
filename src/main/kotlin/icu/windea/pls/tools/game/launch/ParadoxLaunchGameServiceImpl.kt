@@ -5,7 +5,7 @@ import com.intellij.openapi.application.EDT
 import com.intellij.openapi.project.Project
 import com.intellij.util.application
 import icu.windea.pls.ChronicleFacade
-import icu.windea.pls.ide.notification.ChronicleNotificationGroups
+import icu.windea.pls.base.notification.ChronicleNotificationGroups
 import icu.windea.pls.lang.tools.SpecialUrlService
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.tools.ChronicleToolsBundle

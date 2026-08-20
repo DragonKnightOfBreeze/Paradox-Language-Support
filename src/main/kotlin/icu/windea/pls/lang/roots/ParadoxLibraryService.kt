@@ -10,8 +10,8 @@ import com.intellij.openapi.roots.ProjectFileIndex
 import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleFacade
+import icu.windea.pls.base.analysis.ChronicleAnalysisManager
 import icu.windea.pls.core.toVirtualFile
-import icu.windea.pls.ide.analysis.ChronicleAnalysisManager
 import icu.windea.pls.lang.settings.ChronicleProfilesSettings
 import kotlinx.coroutines.launch
 

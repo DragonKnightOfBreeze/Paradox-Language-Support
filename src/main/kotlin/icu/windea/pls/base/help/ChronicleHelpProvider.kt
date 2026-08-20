@@ -1,4 +1,4 @@
-package icu.windea.pls.ide.help
+package icu.windea.pls.base.help
 
 import com.intellij.openapi.help.WebHelpProvider
 import icu.windea.pls.model.constants.ChronicleUrls

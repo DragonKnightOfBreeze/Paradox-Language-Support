@@ -2,7 +2,7 @@ package icu.windea.pls.lang.listeners
 
 import com.intellij.openapi.project.ProjectManager
 import com.intellij.ui.EditorNotifications
-import icu.windea.pls.ide.analysis.ChronicleAnalysisManager
+import icu.windea.pls.base.analysis.ChronicleAnalysisManager
 import icu.windea.pls.lang.editor.ParadoxGameDirectoryNotConfiguredEditorNotificationProvider
 import icu.windea.pls.lang.roots.ParadoxLibrary
 import icu.windea.pls.lang.roots.ParadoxLibraryService

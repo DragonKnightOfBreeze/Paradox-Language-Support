@@ -5,8 +5,8 @@ import com.intellij.openapi.options.SearchableConfigurable
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.base.help.ChronicleHelpTopics
 import icu.windea.pls.extensions.ChronicleExtensionsBundle
-import icu.windea.pls.ide.help.ChronicleHelpTopics
 import icu.windea.pls.model.constants.ChronicleUrls
 
 class ChronicleExtensionsSettingsConfigurable : BoundConfigurable(ChronicleExtensionsBundle.message("settings")), SearchableConfigurable {
