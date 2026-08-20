@@ -1,6 +1,7 @@
 package icu.windea.pls.lang.inspections.script.scope
 
 import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElementVisitor
 import icu.windea.pls.ChronicleBundle
@@ -28,7 +29,7 @@ class IncorrectScopeLinkChainInspection : ScopeInspectionBase() {
         val configGroup = ChronicleFacade.getConfigGroup(holder.project, selectGameType(holder.file))
         return object : ParadoxPsiElementVisitor() {
             override fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
-                super.visitStringExpressionElement(element)
+                ProgressManager.checkCanceled()
                 check(element, configGroup, holder)
             }
         }

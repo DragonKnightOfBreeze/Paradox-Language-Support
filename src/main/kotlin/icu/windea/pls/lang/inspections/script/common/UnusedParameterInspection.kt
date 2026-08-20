@@ -2,6 +2,7 @@ package icu.windea.pls.lang.inspections.script.common
 
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import icu.windea.pls.lang.inspections.ParadoxAccessInspectionService
@@ -26,7 +27,7 @@ class UnusedParameterInspection : LocalInspectionTool() {
         val context = ParadoxAccessInspectionService.createContext(this, holder)
         return object : ParadoxPsiElementVisitor() {
             override fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
-                super.visitStringExpressionElement(element)
+                ProgressManager.checkCanceled()
                 if(element.text.isParameterized()) return // skip if parameterized
                 ParadoxAccessInspectionService.checkForUnusedParameter(element, context)
             }

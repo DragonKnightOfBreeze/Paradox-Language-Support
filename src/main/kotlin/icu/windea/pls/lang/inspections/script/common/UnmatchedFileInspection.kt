@@ -34,7 +34,7 @@ class UnmatchedFileInspection : InlineScriptInspectionBase() {
 
     override fun getOptionsPane(): OptPane {
         return OptPane.pane(
-            OptPane.expandableString("ignoredFilePaths", ChronicleBundle.message("incorrectFileEncoding.option.ignoredFilePaths"), ",")
+            OptPane.expandableString("ignoredFilePaths", ChronicleBundle.message("unmatchedFile.option.ignoredFilePaths"), ",")
                 .description(ChronicleBundle.message("comment.antPatterns"))
         )
     }

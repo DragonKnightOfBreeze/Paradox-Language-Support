@@ -2,24 +2,22 @@ package icu.windea.pls.lang.inspections.script.expression
 
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.codeInspection.options.OptPane
 import com.intellij.openapi.progress.ProgressManager
-import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
-import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
-import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOptions
+import icu.windea.pls.lang.psi.ParadoxPsiElementVisitor
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.isDataExpression
-import javax.swing.JComponent
 
 /**
  * （脚本文件中的）不正确的路径引用的代码检查。
@@ -30,6 +28,13 @@ import javax.swing.JComponent
 class IncorrectPathReferenceInspection : LocalInspectionTool() {
     @JvmField var ignoredInInjectedFiles = false
     @JvmField var ignoredInInlineScriptFiles = false
+
+    override fun getOptionsPane(): OptPane {
+        return OptPane.pane(
+            OptPane.checkbox("ignoredInInjectedFiles", ChronicleBundle.message("inspection.option.ignoredInInjectedFiles")),
+            OptPane.checkbox("ignoredInInlineScriptFiles", ChronicleBundle.message("inspection.option.ignoredInInlineScriptFiles")),
+        )
+    }
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 按需忽略注入的文件
@@ -44,48 +49,30 @@ class IncorrectPathReferenceInspection : LocalInspectionTool() {
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        return object : PsiElementVisitor() {
-            override fun visitElement(element: PsiElement) {
-                if (element is ParadoxScriptStringExpressionElement) visitExpressionElement(element)
-            }
-
-            private fun visitExpressionElement(element: ParadoxScriptStringExpressionElement) {
+        return object : ParadoxPsiElementVisitor() {
+            override fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
                 ProgressManager.checkCanceled()
-                if (!element.isDataExpression()) return // skip check if element is not an expression
-
-                // 忽略可能包含参数的表达式
-                if (element.text.isParameterized()) return
-
-                // 得到完全匹配的规则
-                val config = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(fallback = false)).firstOrNull() ?: return
-
-                val configExpression = config.configExpression
-                val dataType = configExpression.type
-                if (dataType !in CwtDataTypeSets.PathReference) return
-                if (dataType == CwtDataTypes.Icon) return // no file extension in expression
-                val expectFileExtensions = config.optionMetadata.fileExtensions.orEmpty()
-                if (expectFileExtensions.isEmpty()) return
-                val value = element.value
-                val fileExtension = value.substringAfterLast('.', "")
-                if (expectFileExtensions.any { fileExtension.equals(it, true) }) return
-                val description = ChronicleBundle.message("inspection.script.incorrectPathReference.desc.1", value, expectFileExtensions.joinToString())
-                holder.registerProblem(element, description)
+                check(element, holder)
             }
         }
     }
 
-    override fun createOptionsPanel(): JComponent {
-        return panel {
-            // ignoredInInjectedFile
-            row {
-                checkBox(ChronicleBundle.message("inspection.option.ignoredInInjectedFiles"))
-                    .bindSelected(::ignoredInInjectedFiles.toAtomicProperty())
-            }
-            // ignoredInInlineScriptFiles
-            row {
-                checkBox(ChronicleBundle.message("inspection.option.ignoredInInlineScriptFiles"))
-                    .bindSelected(::ignoredInInlineScriptFiles.toAtomicProperty())
-            }
-        }
+    private fun check(element: ParadoxScriptStringExpressionElement, holder: ProblemsHolder) {
+        if (!element.isDataExpression()) return // skip if is not a data expression
+        if (element.text.isParameterized()) return // skip if is parameterized
+
+        // 得到完全匹配的规则
+        val config = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(fallback = false)).firstOrNull() ?: return
+        val configExpression = config.configExpression
+        val dataType = configExpression.type
+        if (dataType !in CwtDataTypeSets.PathReference) return
+        if (dataType == CwtDataTypes.Icon) return // no file extension in expression
+        val expectFileExtensions = config.optionMetadata.fileExtensions.orEmpty()
+        if (expectFileExtensions.isEmpty()) return
+        val value = element.value
+        val fileExtension = value.substringAfterLast('.', "")
+        if (expectFileExtensions.any { fileExtension.equals(it, true) }) return
+        val description = ChronicleBundle.message("inspection.script.incorrectPathReference.desc.1", value, expectFileExtensions.joinToString())
+        holder.registerProblem(element, description)
     }
 }

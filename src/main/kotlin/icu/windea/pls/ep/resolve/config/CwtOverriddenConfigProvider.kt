@@ -7,6 +7,8 @@ import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.core.addExtensionPointListener
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.util.values.LazyValue
+import icu.windea.pls.lang.inspections.script.expression.MissingExpressionInspection
+import icu.windea.pls.lang.inspections.script.expression.TooManyExpressionInspection
 import icu.windea.pls.model.ParadoxGameType
 
 /**
@@ -28,18 +30,10 @@ interface CwtOverriddenConfigProvider {
      */
     fun <T : CwtMemberConfig<*>> getOverriddenConfigs(contextElement: PsiElement, config: T): List<T>
 
-    /**
-     * 是否跳过缺失的表达式的代码检查。
-     *
-     * @see icu.windea.pls.lang.inspections.script.expression.MissingExpressionInspection
-     */
+    /** 是否跳过代码检查 [MissingExpressionInspection] */
     fun skipMissingExpressionCheck(configs: List<CwtMemberConfig<*>>, configExpression: CwtDataExpression) = false
 
-    /**
-     * 是否跳过过多的表达式的代码检查。
-     *
-     * @see icu.windea.pls.lang.inspections.script.expression.TooManyExpressionInspection
-     */
+    /** 是否跳过代码检查 [TooManyExpressionInspection] */
     fun skipTooManyExpressionCheck(configs: List<CwtMemberConfig<*>>, configExpression: CwtDataExpression) = false
 
     companion object INSTANCE {

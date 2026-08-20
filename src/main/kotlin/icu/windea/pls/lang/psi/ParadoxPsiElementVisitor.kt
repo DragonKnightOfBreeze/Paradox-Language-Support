@@ -9,9 +9,7 @@ import icu.windea.pls.script.psi.ParadoxConditionParameter
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxParameter
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
-import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptNumberExpressionElement
-import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 /**
@@ -21,7 +19,24 @@ abstract class ParadoxPsiElementVisitor : PsiElementVisitor() {
     override fun visitElement(element: PsiElement) {
         super.visitElement(element)
         if (element is ParadoxDefinitionElement) visitDefinitionElement(element)
-        if (element is ParadoxExpressionElement) visitExpressionElement(element)
+        if (element is ParadoxExpressionElement) {
+            visitExpressionElement(element)
+            when (element) {
+                is ParadoxScriptExpressionElement -> {
+                    visitExpressionElement(element)
+                    when (element) {
+                        is ParadoxScriptNumberExpressionElement -> visitNumberExpressionElement(element)
+                        is ParadoxScriptStringExpressionElement -> visitStringExpressionElement(element)
+                    }
+                }
+                is ParadoxLocalisationExpressionElement -> {
+                    visitExpressionElement(element)
+                }
+                is ParadoxCsvExpressionElement -> {
+                    visitExpressionElement(element)
+                }
+            }
+        }
         if (element is ParadoxScriptedVariableReference) visitScriptedVariableReference(element)
         if (element is ParadoxConditionParameter) visitConditionParameter(element)
         if (element is ParadoxParameter) visitParameter(element)
@@ -29,25 +44,15 @@ abstract class ParadoxPsiElementVisitor : PsiElementVisitor() {
     }
 
     open fun visitDefinitionElement(element: ParadoxDefinitionElement) {
-        when (element) {
-            is ParadoxScriptFile -> visitDefinitionElement(element)
-            is ParadoxScriptProperty -> visitDefinitionElement(element)
-        }
+
     }
 
     open fun visitExpressionElement(element: ParadoxExpressionElement) {
-        when (element) {
-            is ParadoxScriptExpressionElement -> visitExpressionElement(element)
-            is ParadoxLocalisationExpressionElement -> visitExpressionElement(element)
-            is ParadoxCsvExpressionElement -> visitExpressionElement(element)
-        }
+
     }
 
     open fun visitExpressionElement(element: ParadoxScriptExpressionElement) {
-        when (element) {
-            is ParadoxScriptNumberExpressionElement -> visitNumberExpressionElement(element)
-            is ParadoxScriptStringExpressionElement -> visitStringExpressionElement(element)
-        }
+
     }
 
     open fun visitNumberExpressionElement(element: ParadoxScriptNumberExpressionElement) {

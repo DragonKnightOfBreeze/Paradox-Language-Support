@@ -3,6 +3,7 @@ package icu.windea.pls.lang.inspections.script.common
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
@@ -109,12 +110,12 @@ class MissingImageInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         return object : ParadoxPsiElementVisitor() {
             override fun visitDefinitionElement(element: ParadoxDefinitionElement) {
-                super.visitDefinitionElement(element)
+                ProgressManager.checkCanceled()
                 checkFromDefinition(element, holder)
             }
 
             override fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
-                super.visitStringExpressionElement(element)
+                ProgressManager.checkCanceled()
                 if (!element.isDataExpression()) return
                 checkFromExpression(element, holder)
             }

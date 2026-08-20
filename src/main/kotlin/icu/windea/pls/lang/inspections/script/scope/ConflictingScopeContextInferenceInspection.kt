@@ -1,6 +1,7 @@
 package icu.windea.pls.lang.inspections.script.scope
 
 import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElementVisitor
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.ParadoxPsiElementVisitor
@@ -15,7 +16,7 @@ class ConflictingScopeContextInferenceInspection : ScopeInspectionBase() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         return object : ParadoxPsiElementVisitor() {
             override fun visitDefinitionElement(element: ParadoxDefinitionElement) {
-                super.visitDefinitionElement(element)
+                ProgressManager.checkCanceled()
                 check(element, holder)
             }
         }

@@ -3,6 +3,7 @@ package icu.windea.pls.lang.inspections.localisation.complexExpression
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleFacade
@@ -30,7 +31,7 @@ abstract class IncorrectComplexExpressionInspectionBase : LocalInspectionTool() 
         val configGroup = ChronicleFacade.getConfigGroup(holder.project, selectGameType(holder.file))
         return object : ParadoxPsiElementVisitor() {
             override fun visitExpressionElement(element: ParadoxLocalisationExpressionElement) {
-                super.visitExpressionElement(element)
+                ProgressManager.checkCanceled()
                 check(element, configGroup, holder)
             }
         }

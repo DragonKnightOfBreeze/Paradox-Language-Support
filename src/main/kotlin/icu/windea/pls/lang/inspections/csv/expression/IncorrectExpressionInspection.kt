@@ -3,6 +3,7 @@ package icu.windea.pls.lang.inspections.csv.expression
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.codeInspection.options.OptPane
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleBundle
@@ -49,7 +50,7 @@ class IncorrectExpressionInspection : LocalInspectionTool() {
         val context = ParadoxExpressionInspectionService.createContext(this, holder)
         return object : ParadoxPsiElementVisitor() {
             override fun visitExpressionElement(element: ParadoxCsvExpressionElement) {
-                super.visitExpressionElement(element)
+                ProgressManager.checkCanceled()
                 ParadoxExpressionInspectionService.checkForIncorrectExpression(element, rowConfig, context)
             }
         }
