@@ -1,14 +1,13 @@
 package icu.windea.pls.lang.inspections.localisation.scope
 
 import com.intellij.codeInspection.ProblemsHolder
-import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.TextRange
-import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
+import icu.windea.pls.lang.psi.ParadoxExpressionElementVisitor
 import icu.windea.pls.lang.psi.isCommandExpression
 import icu.windea.pls.lang.resolve.ParadoxExpressionService
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxCommandExpression
@@ -22,13 +21,9 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 class IncorrectScopeLinkChainInspection : ScopeInspectionBase() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         val configGroup = ChronicleFacade.getConfigGroup(holder.project, selectGameType(holder.file))
-        return object : PsiElementVisitor() {
-            override fun visitElement(element: PsiElement) {
-                if (element is ParadoxLocalisationExpressionElement) visitExpressionElement(element)
-            }
-
-            private fun visitExpressionElement(element: ParadoxLocalisationExpressionElement) {
-                ProgressManager.checkCanceled()
+        return object : ParadoxExpressionElementVisitor() {
+            override fun visitExpressionElement(element: ParadoxLocalisationExpressionElement) {
+                super.visitExpressionElement(element)
                 check(element, configGroup, holder)
             }
         }

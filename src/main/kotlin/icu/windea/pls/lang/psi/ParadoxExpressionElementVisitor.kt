@@ -8,6 +8,9 @@ import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptNumberExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
+/**
+ * @see ParadoxExpressionElement
+ */
 abstract class ParadoxExpressionElementVisitor : PsiElementVisitor() {
     override fun visitElement(element: PsiElement) {
         super.visitElement(element)
