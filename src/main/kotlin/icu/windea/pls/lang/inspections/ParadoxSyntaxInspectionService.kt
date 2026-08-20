@@ -43,7 +43,7 @@ object ParadoxSyntaxInspectionService {
         return true
     }
 
-    fun checkForIncorrectSyntaxByConstraint(element: PsiElement, context: ParadoxSyntaxInspectionContext, constraint: ParadoxSyntaxConstraint, name: String): Boolean {
+    fun checkByConstraint(element: PsiElement, context: ParadoxSyntaxInspectionContext, constraint: ParadoxSyntaxConstraint, name: String): Boolean {
         if (context.gameType == null || context.gameType == ParadoxGameType.Core) return true
         val testResult = constraint.getTestResult(context.gameType, context.gameVersion)
         if (!testResult.strictValue) {
@@ -51,7 +51,7 @@ object ParadoxSyntaxInspectionService {
                 testResult.sinceGameVersion == null -> ChronicleBundle.message("incorrectSyntax.desc.in.game", name, context.gameType.title)
                 else -> ChronicleBundle.message("incorrectSyntax.desc.since.gameVersion", name, context.gameType.title, testResult.sinceGameVersion)
             }
-            val fixes = getFixesForIncorrectSyntax(element, context, constraint, testResult)
+            val fixes = getFixesByConstraint(element, context, constraint, testResult)
             context.holder.registerProblem(element, description, *fixes)
             return false
         }
@@ -59,7 +59,7 @@ object ParadoxSyntaxInspectionService {
     }
 
     @Suppress("UNUSED_PARAMETER")
-    private fun getFixesForIncorrectSyntax(element: PsiElement, context: ParadoxSyntaxInspectionContext, constraint: ParadoxSyntaxConstraint, testResult: ParadoxSyntaxConstraint.TestResult): Array<LocalQuickFix> {
+    private fun getFixesByConstraint(element: PsiElement, context: ParadoxSyntaxInspectionContext, constraint: ParadoxSyntaxConstraint, testResult: ParadoxSyntaxConstraint.TestResult): Array<LocalQuickFix> {
         if (testResult.strictValue) return LocalQuickFix.EMPTY_ARRAY // 严格匹配 -> 不报错，直接返回
         if (testResult.value) return LocalQuickFix.EMPTY_ARRAY // 游戏版本不匹配，但游戏类型匹配 -> 直接返回
         val result = mutableListOf<LocalQuickFix>()

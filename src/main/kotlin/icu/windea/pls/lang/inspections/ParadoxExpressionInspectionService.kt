@@ -3,6 +3,7 @@ package icu.windea.pls.lang.inspections
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.psi.PsiElement
 import com.intellij.psi.util.parentOfType
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleFacade
@@ -89,6 +90,23 @@ object ParadoxExpressionInspectionService {
         applyUnresolvedExpressionCheckers(element, expectedConfigs, context)
     }
 
+    fun checkForUnresolvedExpression(element: ParadoxCsvExpressionElement, rowConfig: CwtRowConfig, context: ParadoxExpressionInspectionContext) {
+        if (element !is ParadoxCsvColumn) return
+        if (ParadoxCsvPsiService.isHeaderColumn(element)) return // skip header columns
+
+        // - 如果不存在对应的列规则，则直接跳过
+        // - 如果存在对应的列规则且匹配，则直接跳过
+        // - 按需忽略最后一行
+
+        val columnConfig = ParadoxCsvManager.getColumnConfig(element, rowConfig) ?: return // skip (checked by `IncorrectColumnSizeInspection`)
+        if (ParadoxCsvManager.isMatchedColumnConfig(element, columnConfig)) return
+
+        val expectedConfigs = getExpectedConfigs(columnConfig)
+        if (skipForUnresolvedExpression(element, expectedConfigs, context)) return
+
+        applyUnresolvedExpressionCheckers(element, expectedConfigs, context)
+    }
+
     private fun getExpectedConfigs(element: ParadoxScriptExpressionElement, configContext: CwtConfigContext): List<CwtMemberConfig<*>> {
         when (element) {
             is ParadoxScriptPropertyKey -> {
@@ -118,23 +136,6 @@ object ParadoxExpressionInspectionService {
             }
             else -> return emptyList()
         }
-    }
-
-    fun checkForUnresolvedExpression(element: ParadoxCsvExpressionElement, rowConfig: CwtRowConfig, context: ParadoxExpressionInspectionContext) {
-        if (element !is ParadoxCsvColumn) return
-        if (ParadoxCsvPsiService.isHeaderColumn(element)) return // skip header columns
-
-        // - 如果不存在对应的列规则，则直接跳过
-        // - 如果存在对应的列规则且匹配，则直接跳过
-        // - 按需忽略最后一行
-
-        val columnConfig = ParadoxCsvManager.getColumnConfig(element, rowConfig) ?: return // skip (checked by `IncorrectColumnSizeInspection`)
-        if (ParadoxCsvManager.isMatchedColumnConfig(element, columnConfig)) return
-
-        val expectedConfigs = getExpectedConfigs(columnConfig)
-        if (skipForUnresolvedExpression(element, expectedConfigs, context)) return
-
-        applyUnresolvedExpressionCheckers(element, expectedConfigs, context)
     }
 
     private fun getExpectedConfigs(columnConfig: CwtPropertyConfig): List<CwtValueConfig> {
@@ -173,6 +174,13 @@ object ParadoxExpressionInspectionService {
             else -> ChronicleBundle.message("unresolvedExpression.desc.noExpect", expression)
         }
         return message
+    }
+
+    fun getDefaultLocationForUnresolvedExpression(element: ParadoxExpressionElement): PsiElement {
+        if (element is ParadoxCsvColumn && ParadoxCsvPsiService.isEmptyColumn(element)) {
+            return ParadoxCsvPsiService.getLocationForEmptyColumn(element) // in case
+        }
+        return element
     }
 
     fun getSimilarityBasedFixesForUnresolvedExpression(element: ParadoxExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>): List<LocalQuickFix> {

@@ -72,7 +72,7 @@ class ParadoxSafeAssignOperatorChecker : ParadoxIncorrectSyntaxChecker {
 
         val constraint = ParadoxSyntaxConstraint.SafeAssignOperator
         val name = ChronicleBundle.message("incorrectSyntax.desc.safeAssignOperators")
-        if (!ParadoxSyntaxInspectionService.checkForIncorrectSyntaxByConstraint(element, context, constraint, name)) return true
+        if (!ParadoxSyntaxInspectionService.checkByConstraint(element, context, constraint, name)) return true
 
         // check on grammar level
 
@@ -108,7 +108,7 @@ class ParadoxSafeAssignOperatorChecker : ParadoxIncorrectSyntaxChecker {
 
         val constraint = ParadoxSyntaxConstraint.SafeCallAssignOperator
         val name = ChronicleBundle.message("incorrectSyntax.desc.safeCallAssignOperators")
-        if (!ParadoxSyntaxInspectionService.checkForIncorrectSyntaxByConstraint(element, context, constraint, name)) return true
+        if (!ParadoxSyntaxInspectionService.checkByConstraint(element, context, constraint, name)) return true
 
         // check on grammar level
 

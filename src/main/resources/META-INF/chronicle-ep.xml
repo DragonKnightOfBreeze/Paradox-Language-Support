@@ -178,6 +178,7 @@
     <incorrectExpressionChecker implementation="icu.windea.pls.ep.inspections.ParadoxTriggerInWithParametersStatementsChecker"/>
 
     <unresolvedExpressionChecker implementation="icu.windea.pls.ep.inspections.ParadoxDefaultUnresolvedExpressionChecker" order="last"/>
+    <unresolvedExpressionChecker implementation="icu.windea.pls.ep.inspections.ParadoxWrongBooleanUnresolvedExpressionChecker" order="last"/>
 
     <scriptExpressionMatcher id="basic" implementation="icu.windea.pls.ep.match.expression.ParadoxScriptBasicExpressionMatcher"/>
     <scriptExpressionMatcher id="extraBasic" implementation="icu.windea.pls.ep.match.expression.ParadoxScriptExtraBasicExpressionMatcher"/>

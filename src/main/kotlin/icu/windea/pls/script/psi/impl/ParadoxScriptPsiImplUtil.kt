@@ -245,9 +245,9 @@ object ParadoxScriptPsiImplUtil {
     }
 
     @JvmStatic
-    fun setValue(element: ParadoxScriptString, value: String): ParadoxScriptString {
+    fun setValue(element: ParadoxScriptString, value: String): ParadoxScriptValue {
         val newValue = value.quoteIfNeeded()
-        val newElement = ParadoxScriptElementFactory.createStringFromText(element.project, newValue)
+        val newElement = ParadoxScriptElementFactory.createValueFromText(element.project, newValue) // can also be boolean or number
         return element.replace(newElement).cast()
     }
 

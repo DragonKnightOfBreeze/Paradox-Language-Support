@@ -2,23 +2,26 @@ package icu.windea.pls.ep.inspections
 
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.ProblemHighlightType
-import com.intellij.psi.PsiElement
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.expandConfigExpression
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.toArray
-import icu.windea.pls.core.inspections.InspectionService
+import icu.windea.pls.core.util.ProcessorScope
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvPsiService
+import icu.windea.pls.ep.ChronicleEpBundle
+import icu.windea.pls.lang.fixes.ReplaceWithExpressionFix
 import icu.windea.pls.lang.inspections.ParadoxExpressionInspectionContext
 import icu.windea.pls.lang.inspections.ParadoxExpressionInspectionService
 import icu.windea.pls.lang.match.util.ParadoxMatchProvider
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
 import icu.windea.pls.lang.psi.resolved
+import icu.windea.pls.model.constants.ChronicleStrings
 import icu.windea.pls.script.psi.ParadoxScriptFloat
+import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 /**
@@ -30,19 +33,12 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
  */
 class ParadoxDefaultUnresolvedExpressionChecker : ParadoxUnresolvedExpressionChecker {
     override fun check(element: ParadoxExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>, context: ParadoxExpressionInspectionContext): Boolean {
-        val location = getLocation(element)
+        val location = ParadoxExpressionInspectionService.getDefaultLocationForUnresolvedExpression(element)
         val description = ParadoxExpressionInspectionService.getDefaultDescriptionForUnresolvedExpression(element, expectedConfigs, context)
         val highlightType = getHighlightType(element, expectedConfigs, context)
         val fixes = getFixes(element, expectedConfigs)
         context.holder.registerProblem(location, description, highlightType, *fixes)
         return false
-    }
-
-    private fun getLocation(element: ParadoxExpressionElement): PsiElement {
-        if (element is ParadoxCsvColumn && ParadoxCsvPsiService.isEmptyColumn(element)) {
-            return ParadoxCsvPsiService.getLocationForEmptyColumn(element) // in case
-        }
-        return element
     }
 
     private fun getHighlightType(element: ParadoxExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>, context: ParadoxExpressionInspectionContext): ProblemHighlightType {
@@ -56,19 +52,19 @@ class ParadoxDefaultUnresolvedExpressionChecker : ParadoxUnresolvedExpressionChe
             when (configExpression.type) {
                 in CwtDataTypeSets.IntField -> {
                     if (element is ParadoxScriptFloat || element.castOrNull<ParadoxScriptedVariableReference>()?.resolved() is ParadoxScriptFloat) {
-                        result = getWeakerHighlightType(context)
+                        result = context.getWeakerHighlightType()
                         return@p false
                     }
                 }
                 CwtDataTypes.IntPercentageField -> {
                     if (ParadoxMatchProvider.matchesFloatPercentageField(element.value)) {
-                        result = getWeakerHighlightType(context)
+                        result = context.getWeakerHighlightType()
                         return@p false
                     }
                 }
                 in CwtDataTypeSets.LocalisationReference -> {
                     if (element is ParadoxScriptStringExpressionElement) {
-                        result = getWeakerHighlightType(context)
+                        result = context.getWeakerHighlightType()
                         return@p false
                     }
                 }
@@ -76,10 +72,6 @@ class ParadoxDefaultUnresolvedExpressionChecker : ParadoxUnresolvedExpressionChe
             true
         }
         return result
-    }
-
-    private fun getWeakerHighlightType(context: ParadoxExpressionInspectionContext): ProblemHighlightType {
-        return with(context.tool) { InspectionService.getWeakerHighlightType() }
     }
 
     private fun getFixes(element: ParadoxExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>): Array<LocalQuickFix> {
@@ -94,5 +86,32 @@ class ParadoxDefaultUnresolvedExpressionChecker : ParadoxUnresolvedExpressionChe
         result += ParadoxExpressionInspectionService.getSimilarityBasedFixesForUnresolvedExpression(element, expectedConfigs)
         result += ParadoxExpressionInspectionService.getLocalisationReferenceFixesForUnresolvedExpression(element, expectedConfigs)
         return result.toArray(LocalQuickFix.EMPTY_ARRAY)
+    }
+}
+
+/**
+ * 如果期望布尔值，但实际上是一个格式错误的标识符（如 `true` `Yes` `ON`），则提供额外的快速修复。
+ */
+class ParadoxWrongBooleanUnresolvedExpressionChecker : ParadoxUnresolvedExpressionChecker {
+    override fun check(element: ParadoxExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>, context: ParadoxExpressionInspectionContext): Boolean {
+        // for boolean only (after expansion)
+        val configExpression = ProcessorScope.findFrom({ expectedConfigs.expandConfigExpression { process(it) } }) { it.type == CwtDataTypes.Bool }
+        if (configExpression == null) return true
+
+        if (element !is ParadoxScriptString && element !is ParadoxCsvColumn) return true
+        val text = element.text
+        if (text.isEmpty()) return true
+        // if (text == ChronicleStrings.yesKeyword || text == ChronicleStrings.noKeyword) return true // should not be
+        val value = element.value
+        if (value.isEmpty()) return true
+        val expected = when {
+            value.equals("yes", true) || value.equals("true", true) || value.equals("on", true) -> ChronicleStrings.yesKeyword
+            value.equals("no", true) || value.equals("false", true) || value.equals("off", true) -> ChronicleStrings.noKeyword
+            else -> null
+        } ?: return true
+        val description = ChronicleEpBundle.message("unresolvedExpression.wrongBoolean.desc", expected, text)
+        val fix = ReplaceWithExpressionFix(expected)
+        context.holder.registerProblem(element, description, fix)
+        return false
     }
 }
