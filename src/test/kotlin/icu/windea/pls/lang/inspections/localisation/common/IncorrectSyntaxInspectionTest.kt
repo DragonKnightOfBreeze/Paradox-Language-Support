@@ -21,6 +21,7 @@ class IncorrectSyntaxInspectionTest : BasePlatformTestCase(), ChronicleTestScope
     @Before
     fun doSetUp() {
         markIntegrationTest()
+        // initInjectedConfigGroups(project, ParadoxGameType.Stellaris) // unnecessary
         myFixture.enableInspections(IncorrectSyntaxInspection::class.java)
     }
 

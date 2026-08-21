@@ -23,7 +23,7 @@ class IncorrectColumnNameInspectionTest : BasePlatformTestCase(), ChronicleTestS
         markIntegrationTest()
         markRootDirectory("features/inspections")
         markConfigDirectory("features/inspections/.config")
-        initConfigGroups(project, ParadoxGameType.Stellaris)
+        initInjectedConfigGroups(project, ParadoxGameType.Stellaris) // on demand
         myFixture.enableInspections(IncorrectColumnNameInspection::class.java)
     }
 
@@ -39,8 +39,6 @@ class IncorrectColumnNameInspectionTest : BasePlatformTestCase(), ChronicleTestS
             id;number;status;flag
             k1;0;yes;red_flag
         """.trimIndent())
-
-        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
         myFixture.checkHighlighting()
     }
 
@@ -55,8 +53,6 @@ class IncorrectColumnNameInspectionTest : BasePlatformTestCase(), ChronicleTestS
             id;number;status;flag
             k1;0;yes;red_flag
         """.trimIndent())
-
-        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
         myFixture.checkHighlighting()
     }
 
@@ -67,8 +63,6 @@ class IncorrectColumnNameInspectionTest : BasePlatformTestCase(), ChronicleTestS
             id;number;status
             k1;0;yes
         """.trimIndent())
-
-        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
         myFixture.checkHighlighting()
     }
 
@@ -79,8 +73,6 @@ class IncorrectColumnNameInspectionTest : BasePlatformTestCase(), ChronicleTestS
             id;number;flag;status
             k1;0;red_flag;yes
         """.trimIndent())
-
-        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
         myFixture.checkHighlighting()
     }
 
@@ -93,8 +85,6 @@ class IncorrectColumnNameInspectionTest : BasePlatformTestCase(), ChronicleTestS
             id;number;status;${tag.start}unknown${tag.end}
             k1;0;yes;unknown
         """.trimIndent())
-
-        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
         myFixture.checkHighlighting()
     }
 
@@ -107,8 +97,6 @@ class IncorrectColumnNameInspectionTest : BasePlatformTestCase(), ChronicleTestS
             id;number;status;flag;${tag.start}unknown${tag.end}
             k1;0;yes;red_flag;unknown
         """.trimIndent())
-
-        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
         myFixture.checkHighlighting()
     }
 
@@ -121,8 +109,6 @@ class IncorrectColumnNameInspectionTest : BasePlatformTestCase(), ChronicleTestS
             id;number;status;flag;${tag.start}plus${tag.end}
             k1;0;yes;red_flag
         """.trimIndent())
-
-        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
         myFixture.checkHighlighting()
     }
 
@@ -133,8 +119,6 @@ class IncorrectColumnNameInspectionTest : BasePlatformTestCase(), ChronicleTestS
             id;number;status;flag
             k1;0;yes;red_flag;plus;plus
         """.trimIndent())
-
-        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
         myFixture.checkHighlighting()
     }
 
@@ -145,8 +129,6 @@ class IncorrectColumnNameInspectionTest : BasePlatformTestCase(), ChronicleTestS
             id;number;status;flag
             k1;0;yes;red_flag
         """.trimIndent())
-
-        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
         myFixture.checkHighlighting()
     }
 
@@ -157,8 +139,6 @@ class IncorrectColumnNameInspectionTest : BasePlatformTestCase(), ChronicleTestS
             id;number;status;flag;end_column
             k1;0;yes;red_flag;
         """.trimIndent())
-
-        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
         myFixture.checkHighlighting()
     }
 
@@ -169,8 +149,6 @@ class IncorrectColumnNameInspectionTest : BasePlatformTestCase(), ChronicleTestS
             id;number;status;flag;end_column
             k1;0;yes;red_flag;123
         """.trimIndent())
-
-        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
         myFixture.checkHighlighting()
     }
 
@@ -185,8 +163,6 @@ class IncorrectColumnNameInspectionTest : BasePlatformTestCase(), ChronicleTestS
             id;number;status;flag;status
             k1;0;yes;red_flag;no
         """.trimIndent())
-
-        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
         myFixture.checkHighlighting()
     }
 
@@ -197,8 +173,6 @@ class IncorrectColumnNameInspectionTest : BasePlatformTestCase(), ChronicleTestS
             id;number;status
             k1;0;yes
         """.trimIndent())
-
-        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
         myFixture.checkHighlighting()
     }
 
@@ -212,8 +186,6 @@ class IncorrectColumnNameInspectionTest : BasePlatformTestCase(), ChronicleTestS
             id;number;${tag2.start}flag${tag2.end};${tag3.start}status${tag3.end};status
             k1;0;red_flag;yes;no
         """.trimIndent())
-
-        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
         myFixture.checkHighlighting()
     }
 
@@ -226,8 +198,6 @@ class IncorrectColumnNameInspectionTest : BasePlatformTestCase(), ChronicleTestS
              id;number;status;flag;${tag.start}unknown${tag.end}
             k1;0;yes;red_flag;unknown
         """.trimIndent())
-
-        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
         myFixture.checkHighlighting()
     }
 
@@ -240,8 +210,6 @@ class IncorrectColumnNameInspectionTest : BasePlatformTestCase(), ChronicleTestS
              id;number;status;flag;status;${tag.start}unknown${tag.end}
             k1;0;yes;red_flag;no;unknown
         """.trimIndent())
-
-        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
         myFixture.checkHighlighting()
     }
 
@@ -254,8 +222,6 @@ class IncorrectColumnNameInspectionTest : BasePlatformTestCase(), ChronicleTestS
             id;number;status;flag;status;${tag.start}addon${tag.end}
             k1;0;yes;red_flag;no
         """.trimIndent())
-
-        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
         myFixture.checkHighlighting()
     }
 
@@ -266,8 +232,6 @@ class IncorrectColumnNameInspectionTest : BasePlatformTestCase(), ChronicleTestS
             id;number;status;flag;status
             k1;0;yes;red_flag;no;addon;another
         """.trimIndent())
-
-        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
         myFixture.checkHighlighting()
     }
 
@@ -278,8 +242,6 @@ class IncorrectColumnNameInspectionTest : BasePlatformTestCase(), ChronicleTestS
             id;number;status;flag;status
             k1;0;yes;red_flag;no
         """.trimIndent())
-
-        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
         myFixture.checkHighlighting()
     }
 
@@ -290,8 +252,6 @@ class IncorrectColumnNameInspectionTest : BasePlatformTestCase(), ChronicleTestS
             id;number;status;flag;status;end_column
             k1;0;yes;red_flag;no
         """.trimIndent())
-
-        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
         myFixture.checkHighlighting()
     }
 
@@ -302,8 +262,6 @@ class IncorrectColumnNameInspectionTest : BasePlatformTestCase(), ChronicleTestS
             id;number;status;flag;status;end_column
             k1;0;yes;red_flag;no;123
         """.trimIndent())
-
-        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
         myFixture.checkHighlighting()
     }
 

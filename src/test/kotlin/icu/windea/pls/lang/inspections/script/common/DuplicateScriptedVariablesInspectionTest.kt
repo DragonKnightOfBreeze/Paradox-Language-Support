@@ -22,7 +22,7 @@ class DuplicateScriptedVariablesInspectionTest : BasePlatformTestCase(), Chronic
     @Before
     fun doSetUp() {
         markIntegrationTest()
-        initConfigGroups(project, ParadoxGameType.Stellaris)
+        // initInjectedConfigGroups(project, ParadoxGameType.Stellaris) // unnecessary
         myFixture.enableInspections(DuplicateScriptedVariablesInspection::class.java)
     }
 
@@ -35,8 +35,6 @@ class DuplicateScriptedVariablesInspectionTest : BasePlatformTestCase(), Chronic
         myFixture.configureByText("test.txt", """
             @message = "Hello world"
         """.trimIndent())
-
-        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
         myFixture.checkHighlighting()
     }
 
@@ -47,8 +45,6 @@ class DuplicateScriptedVariablesInspectionTest : BasePlatformTestCase(), Chronic
             @message = "Hello world"
             @new_message = "Hello the real world"
         """.trimIndent())
-
-        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
         myFixture.checkHighlighting()
     }
 
@@ -62,8 +58,6 @@ class DuplicateScriptedVariablesInspectionTest : BasePlatformTestCase(), Chronic
             ${tag.start}@message${tag.end} = "Hello world"
             ${tag.start}@message${tag.end} = "Hello the real world"
         """.trimIndent())
-
-        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
         myFixture.checkHighlighting()
     }
 }

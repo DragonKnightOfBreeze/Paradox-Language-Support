@@ -22,7 +22,7 @@ class DuplicatePropertiesInspectionTest : BasePlatformTestCase(), ChronicleTestS
     @Before
     fun doSetUp() {
         markIntegrationTest()
-        initConfigGroups(project, ParadoxGameType.Stellaris)
+        // initInjectedConfigGroups(project, ParadoxGameType.Stellaris) // unnecessary
         myFixture.enableInspections(DuplicatePropertiesInspection::class.java)
     }
 
@@ -36,8 +36,6 @@ class DuplicatePropertiesInspectionTest : BasePlatformTestCase(), ChronicleTestS
             l_english:
               message: "Hello world"
         """.trimIndent())
-
-        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
         myFixture.checkHighlighting()
     }
 
@@ -49,8 +47,6 @@ class DuplicatePropertiesInspectionTest : BasePlatformTestCase(), ChronicleTestS
               message: "Hello world"
               new_message: "Hello the real world"
         """.trimIndent())
-
-        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
         myFixture.checkHighlighting()
     }
 
@@ -65,8 +61,6 @@ class DuplicatePropertiesInspectionTest : BasePlatformTestCase(), ChronicleTestS
               ${tag.start}message${tag.end}: "Hello world"
               ${tag.start}message${tag.end}: "Hello the real world"
         """.trimIndent())
-
-        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
         myFixture.checkHighlighting()
     }
 }

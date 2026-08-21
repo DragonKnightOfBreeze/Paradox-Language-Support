@@ -23,7 +23,7 @@ class IncorrectExpressionInspectionTest : BasePlatformTestCase(), ChronicleTestS
         markIntegrationTest()
         markRootDirectory("features/inspections")
         markConfigDirectory("features/inspections/.config")
-        initConfigGroups(project, ParadoxGameType.Stellaris)
+        initInjectedConfigGroups(project, ParadoxGameType.Stellaris) // on demand
         myFixture.enableInspections(IncorrectExpressionInspection::class.java)
     }
 
@@ -39,8 +39,6 @@ class IncorrectExpressionInspectionTest : BasePlatformTestCase(), ChronicleTestS
             id;number;status;flag
             k1;0;yes;red_flag
         """.trimIndent())
-
-        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
         myFixture.checkHighlighting()
     }
 
@@ -55,8 +53,6 @@ class IncorrectExpressionInspectionTest : BasePlatformTestCase(), ChronicleTestS
             id;number;status;flag
             k1;0;yes;red_flag
         """.trimIndent())
-
-        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
         myFixture.checkHighlighting()
     }
 
@@ -69,8 +65,6 @@ class IncorrectExpressionInspectionTest : BasePlatformTestCase(), ChronicleTestS
             id;number;status;flag
             k1;${tag.start}9999${tag.end};yes;red_flag
         """.trimIndent())
-
-        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
         myFixture.checkHighlighting()
     }
 
@@ -82,8 +76,6 @@ class IncorrectExpressionInspectionTest : BasePlatformTestCase(), ChronicleTestS
             k1;0;yes;red_flag
             k1;4444;yes;red_flag
         """.trimIndent())
-
-        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
         myFixture.checkHighlighting()
     }
 
@@ -94,8 +86,6 @@ class IncorrectExpressionInspectionTest : BasePlatformTestCase(), ChronicleTestS
             id;number;status;flag;ignored
             k1;0;yes;red_flag;ignored
         """.trimIndent())
-
-        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
         myFixture.checkHighlighting()
     }
 
@@ -110,8 +100,6 @@ class IncorrectExpressionInspectionTest : BasePlatformTestCase(), ChronicleTestS
             id;number;status;flag;status
             k1;0;yes;red_flag;no
         """.trimIndent())
-
-        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
         myFixture.checkHighlighting()
     }
 
@@ -124,8 +112,6 @@ class IncorrectExpressionInspectionTest : BasePlatformTestCase(), ChronicleTestS
             id;number;status;flag;status
             k1;${tag.start}9999${tag.end};yes;red_flag;no
         """.trimIndent())
-
-        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
         myFixture.checkHighlighting()
     }
 
@@ -137,8 +123,6 @@ class IncorrectExpressionInspectionTest : BasePlatformTestCase(), ChronicleTestS
             k1;0;yes;red_flag;no
             k1;4444;yes;red_flag;no
         """.trimIndent())
-
-        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
         myFixture.checkHighlighting()
     }
 
@@ -149,8 +133,6 @@ class IncorrectExpressionInspectionTest : BasePlatformTestCase(), ChronicleTestS
             id;number;status;flag;status;ignored
             k1;0;yes;red_flag;no;ignored
         """.trimIndent())
-
-        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
         myFixture.checkHighlighting()
     }
 

@@ -23,6 +23,7 @@ class UnsupportedInlineMathInspectionTest : BasePlatformTestCase(), ChronicleTes
     @Before
     fun doSetUp() {
         markIntegrationTest()
+        // initInjectedConfigGroups(project, ParadoxGameType.Stellaris) // unnecessary
         myFixture.enableInspections(UnsupportedInlineMathInspection::class.java)
     }
 

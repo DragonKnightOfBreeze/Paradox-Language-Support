@@ -24,7 +24,7 @@ class UnsupportedLocaleInspectionTest : BasePlatformTestCase(), ChronicleTestSco
         markIntegrationTest()
         markRootDirectory("features/inspections")
         markConfigDirectory("features/inspections/.config")
-        initConfigGroups(project, ParadoxGameType.Stellaris)
+        initInjectedConfigGroups(project, ParadoxGameType.Stellaris) // on demand
         myFixture.enableInspections(UnsupportedLocaleInspection::class.java)
     }
 
