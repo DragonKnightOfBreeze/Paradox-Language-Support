@@ -2,43 +2,78 @@ package icu.windea.pls.ep.match.expression
 
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
+import icu.windea.pls.config.manipulation.CwtConfigManipulationService
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.filterFast
 import icu.windea.pls.core.collections.filterIsInstanceFast
 import icu.windea.pls.core.collections.forEachFast
+import icu.windea.pls.core.findChild
 import icu.windea.pls.lang.match.ParadoxExpressionMatchService
 import icu.windea.pls.lang.match.ParadoxScriptExpressionMatchContext
 import icu.windea.pls.lang.match.ParadoxScriptExpressionMatchOptimizerContext
 import icu.windea.pls.lang.resolve.ParadoxConfigService
+import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.model.expressions.ParadoxExpression
 import icu.windea.pls.model.type.CwtExpressionType
 import icu.windea.pls.model.type.ParadoxExpressionType
+import icu.windea.pls.script.psi.ParadoxParameter
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.ParadoxScriptValue
 
+/**
+ * 如果要匹配的是字符串，且匹配结果中存在作为常量匹配的规则，则仅保留这些规则。
+ */
+@Optimized
 class ParadoxScriptExpressionConstantMatchOptimizer : ParadoxScriptExpressionMatchOptimizer {
-    // 如果要匹配的是字符串，且匹配结果中存在作为常量匹配的规则，则仅保留这些规则
-
     @Optimized
-    override fun <T : CwtMemberConfig<*>> optimize(configs: List<T>, context: ParadoxScriptExpressionMatchOptimizerContext): List<T>? {
-        if (configs.size <= 1) return null
+    override fun <T : CwtMemberConfig<*>> optimize(input: List<T>, context: ParadoxScriptExpressionMatchOptimizerContext): List<T>? {
+        if (input.size <= 1) return null
         if (context.expression.type != ParadoxExpressionType.String) return null
-        val filtered = configs.filterFast { ParadoxExpressionMatchService.matchesConstant(context.expression, it.configExpression, context.configGroup) }
+        val filtered = input.filterFast { ParadoxExpressionMatchService.matchesConstant(context.expression, it.configExpression, context.configGroup) }
         if (filtered.isEmpty()) return null
         return filtered
     }
 }
 
-class ParadoxScriptExpressionBlockMatchOptimizer : ParadoxScriptExpressionMatchOptimizer {
-    // 如果匹配结果中存在键相同的规则，且其值是子句，则尝试根据子句内容进行进一步的匹配
+/**
+ * 如果参与匹配的表达式带参数，且是整个作为参数，且可以（基于扩展规则，而非用法）推断得到参数的上下文规则，则尝试根据这些规则进行进一步的匹配。
+ */
+@Optimized
+class ParadoxScriptExpressionParameterizedMatchOptimizer : ParadoxScriptExpressionMatchOptimizer {
+    override fun <T : CwtMemberConfig<*>> optimize(input: List<T>, context: ParadoxScriptExpressionMatchOptimizerContext): List<T>? {
+        if (!context.expression.isFullParameterized()) return null
+        val element = context.element
+        val expressionElement = when (element) {
+            is ParadoxScriptProperty -> element.propertyKey
+            is ParadoxScriptValue -> element
+            else -> return null
+        }
+        val parameterElement = expressionElement.findChild<ParadoxParameter>() ?: return null
+        val inferredConfigs = ParadoxParameterManager.getInferredConfigsForLiteral(parameterElement)
+        if (inferredConfigs.isEmpty()) return null
+        var result: MutableList<T>? = null
+        input.forEachFast { config ->
+            if (CwtConfigManipulationService.mergeAndMatchValueConfigs(inferredConfigs, config.configExpression)) {
+                val result = result ?: mutableListOf<T>().also { result = it }
+                result += config
+            }
+        }
+        return result
+    }
+}
 
+/**
+ * 如果匹配结果中存在键相同的规则，且其值是子句，则尝试根据子句内容进行进一步的匹配。
+ */
+@Optimized
+class ParadoxScriptExpressionBlockMatchOptimizer : ParadoxScriptExpressionMatchOptimizer {
     override fun isDynamic(context: ParadoxScriptExpressionMatchOptimizerContext) = true
 
-    @Optimized
-    override fun <T : CwtMemberConfig<*>> optimize(configs: List<T>, context: ParadoxScriptExpressionMatchOptimizerContext): List<T>? {
-        if (configs.size <= 1) return null
-        val filtered = configs.filterIsInstanceFast<CwtPropertyConfig> { it.valueType == CwtExpressionType.Block }
+    override fun <T : CwtMemberConfig<*>> optimize(input: List<T>, context: ParadoxScriptExpressionMatchOptimizerContext): List<T>? {
+        if (input.size <= 1) return null
+        val filtered = input.filterIsInstanceFast<CwtPropertyConfig> { it.valueType == CwtExpressionType.Block }
         if (filtered.isEmpty()) return null
         val filteredGroup = mutableMapOf<String, MutableList<CwtPropertyConfig>>()
         filtered.forEachFast { c -> filteredGroup.getOrPut(c.key) { mutableListOf() } += c }
@@ -59,20 +94,22 @@ class ParadoxScriptExpressionBlockMatchOptimizer : ParadoxScriptExpressionMatchO
             }
         }
         if (configsToRemove == null) return null
-        return configs.filterFast { it is CwtPropertyConfig && it !in configsToRemove }
+        val result = input.filterFast { it is CwtPropertyConfig && it !in configsToRemove }
+        return result
     }
 }
 
+/**
+ * 如果匹配结果中存在需要重载的规则，则替换成重载后的规则并再次进行匹配。
+ */
+@Optimized
 class ParadoxScriptExpressionOverriddenMatchOptimizer : ParadoxScriptExpressionMatchOptimizer {
-    // 如果结果中存在需要重载的规则，则替换成重载后的规则并再次进行匹配
-
     override fun isDynamic(context: ParadoxScriptExpressionMatchOptimizerContext) = true
 
-    @Optimized
-    override fun <T : CwtMemberConfig<*>> optimize(configs: List<T>, context: ParadoxScriptExpressionMatchOptimizerContext): List<T>? {
-        if (configs.isEmpty()) return null
+    override fun <T : CwtMemberConfig<*>> optimize(input: List<T>, context: ParadoxScriptExpressionMatchOptimizerContext): List<T>? {
+        if (input.isEmpty()) return null
         var result: MutableList<T>? = null
-        configs.forEachFast f1@{ config ->
+        input.forEachFast f1@{ config ->
             val overriddenConfigs = ParadoxConfigService.getOverriddenConfigs(context.element, config)
             if (overriddenConfigs.isEmpty()) {
                 val result = result ?: mutableListOf<T>().also { result = it }

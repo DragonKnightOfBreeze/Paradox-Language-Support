@@ -12,12 +12,10 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.declarationConfigCacheKey
 import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
 import icu.windea.pls.config.config.originalConfig
 import icu.windea.pls.config.config.overriddenProvider
-import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.mockConfigModel
 import icu.windea.pls.config.filterProperties
@@ -53,7 +51,6 @@ import icu.windea.pls.lang.select.*
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxModificationTrackers
-import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.model.expressions.ParadoxExpression
 import icu.windea.pls.model.orSpecific
 import icu.windea.pls.model.type.ParadoxExpressionRole
@@ -391,25 +388,5 @@ object ParadoxConfigService {
                 return result // 返回最终匹配的规则
             }
         }
-    }
-
-    private fun getParameterizedKeyConfigs(element: ParadoxScriptMember, expression: ParadoxExpression): List<CwtValueConfig>? {
-        // 脚本表达式必须带参数（目前来说，如果不是整个作为参数，则直接返回空列表）
-
-        val memberElement = element.containingDirectMember
-        if (memberElement !is ParadoxScriptProperty) return null
-        if (!expression.isParameterized()) return null
-        if (!expression.isFullParameterized()) return emptyList()
-        return ParadoxParameterManager.getParameterizedKeyConfigs(memberElement)
-    }
-
-    private fun matchesParameterizedKeyConfigs(configs: List<CwtValueConfig>?, configExpression: CwtDataExpression): Boolean? {
-        // 如果作为参数的键的规则类型可以（从扩展的规则）推断出来且是匹配的，则需要继续向下匹配
-        // 目前要求推断结果必须是唯一的
-        // 目前不支持从参数的使用处推断 - 这可能会导致规则上下文的递归解析
-
-        if (configs == null) return null // 不是作为参数的键，不作特殊处理
-        if (configs.size != 1) return false // 推断结果不是唯一的，要求后续宽松匹配的结果是唯一的，否则认为没有最终匹配的结果
-        return CwtConfigManipulationService.mergeAndMatchValueConfigs(configs, configExpression)
     }
 }

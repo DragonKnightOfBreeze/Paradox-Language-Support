@@ -206,7 +206,7 @@ object ParadoxParameterService {
         return ParadoxParameterContextInfo(parameters, project, gameType)
     }
 
-    fun getParameterizedKeyConfigs(contextConfigs: List<CwtMemberConfig<*>>): List<CwtValueConfig> {
+    fun getInferredConfigsForLiteral(contextConfigs: List<CwtMemberConfig<*>>): List<CwtValueConfig> {
         val configs = contextConfigs.singleOrNull()?.configs
             ?.filterNot { it !is CwtValueConfig || it.valueType == CwtExpressionType.Block }
         if (configs.isNullOrEmpty()) return emptyList()

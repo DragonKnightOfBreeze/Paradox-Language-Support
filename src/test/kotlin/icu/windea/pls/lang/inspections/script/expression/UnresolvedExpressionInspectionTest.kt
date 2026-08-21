@@ -74,7 +74,7 @@ class UnresolvedExpressionInspectionTest : BasePlatformTestCase(), ChronicleTest
     fun semantic_smoke_unresolvedTopPropertyKey_failed() {
         markFileInfo(ParadoxGameType.Stellaris, "common/messages/test.txt")
         myFixture.configureByText("test.txt") {
-            val m1 = "Cannot resolve key expression `say` (expect matching: index, tags, message_part, include)"
+            val m1 = "Cannot resolve key expression `say` (expect matching: index, tags, message_part, include, notes)"
             """
             start_message = {
                 ${error(m1)}say${errorEnd()} = hello
@@ -156,7 +156,7 @@ class UnresolvedExpressionInspectionTest : BasePlatformTestCase(), ChronicleTest
 
         markFileInfo(ParadoxGameType.Stellaris, "common/messages/test.txt")
         myFixture.configureByText("test.txt") {
-            val m1 = "Cannot resolve key expression `info_\$param\$` (expect matching: index, tags, message_part, include)"
+            val m1 = "Cannot resolve key expression `info_\$param\$` (expect matching: index, tags, message_part, include, notes)"
             """
             start_message = {
                 ${error(m1)}info_$p${errorEnd()} = { say = hello_world }
@@ -172,25 +172,7 @@ class UnresolvedExpressionInspectionTest : BasePlatformTestCase(), ChronicleTest
 
         markFileInfo(ParadoxGameType.Stellaris, "common/messages/test.txt")
         myFixture.configureByText("test.txt") {
-            val m1 = "Cannot resolve key expression `info_\$param\$` (expect matching: index, tags, message_part, include)"
-            """
-            start_message = {
-                index = 0
-                tags = { start }
-                ${error(m1)}info_$p${errorEnd()} = { send = farewell }
-            }
-            """.trimIndent()
-        }
-        myFixture.checkHighlighting()
-    }
-
-    @Test
-    fun semantic_smoke_mismatchedParameterizedTopProperty_unresolvedLeafPropertyValue_failed() {
-        val p = "\$param$"
-
-        markFileInfo(ParadoxGameType.Stellaris, "common/messages/test.txt")
-        myFixture.configureByText("test.txt") {
-            val m1 = "Cannot resolve key expression `info_\$param\$` (expect matching: index, tags, message_part, include)"
+            val m1 = "Cannot resolve key expression `info_\$param\$` (expect matching: index, tags, message_part, include, notes)"
             """
             start_message = {
                 index = 0
@@ -208,7 +190,7 @@ class UnresolvedExpressionInspectionTest : BasePlatformTestCase(), ChronicleTest
 
         markFileInfo(ParadoxGameType.Stellaris, "common/messages/test.txt")
         myFixture.configureByText("test.txt") {
-            val m1 = "Cannot resolve key expression `info_\$param\$` (expect matching: index, tags, message_part, include)"
+            val m1 = "Cannot resolve key expression `info_\$param\$` (expect matching: index, tags, message_part, include, notes)"
             """
             start_message = {
                 index = 0
@@ -290,10 +272,25 @@ class UnresolvedExpressionInspectionTest : BasePlatformTestCase(), ChronicleTest
     }
 
     @Test
+    fun semantic_smoke_parameterizedTopProperty_withInferredType_noEffect_success() {
+        val p = "\$part$"
+
+        markFileInfo(ParadoxGameType.Stellaris, "common/messages/test.txt")
+        myFixture.configureByText("test.txt") {
+            """
+            start_message = {
+                message_$p = { say = hello_world }
+            }
+            """.trimIndent()
+        }
+        myFixture.checkHighlighting()
+    }
+
+    @Test
     fun semantic_smoke_fullParameterizedTopProperty_success() {
         val p = "\$param$"
 
-        // $param$ -> message_part -> (matched)
+        // $param$ -> message_part (matched)
         markFileInfo(ParadoxGameType.Stellaris, "common/messages/test.txt")
         myFixture.configureByText("test.txt") {
             """
@@ -309,10 +306,10 @@ class UnresolvedExpressionInspectionTest : BasePlatformTestCase(), ChronicleTest
     fun semantic_smoke_fullParameterizedTopProperty_unresolvedLeafPropertyKey_failed() {
         val p = "\$param$"
 
-        // $param$ -> message_part -> (mismatched)
+        // $param$ -> message_part (mismatched)
         markFileInfo(ParadoxGameType.Stellaris, "common/messages/test.txt")
         myFixture.configureByText("test.txt") {
-            val m1 = "Cannot resolve key expression `send` (expect matching: hint, say)"
+            val m1 = "Cannot resolve key expression `send` (expect matching: hint, say, note)"
             """
             start_message = {
                 index = 0
@@ -328,10 +325,13 @@ class UnresolvedExpressionInspectionTest : BasePlatformTestCase(), ChronicleTest
     fun semantic_smoke_fullParameterizedTopProperty_unresolvedLeafPropertyValue_failed() {
         val p = "\$param$"
 
-        // $param$ -> message_part -> (mismatched)
+        // $param$ -> message_part (mismatched)
+        // contextConfigs = [hint, say] (no `note`)
+        // expectedConfigs = [hint, say, note] (flatten and collect context configs from parent context configs)
+        // this is correct and designed so atm for full parameterized property keys
         markFileInfo(ParadoxGameType.Stellaris, "common/messages/test.txt")
         myFixture.configureByText("test.txt") {
-            val m1 = "Cannot resolve key expression `send` (expect matching: hint, say)"
+            val m1 = "Cannot resolve key expression `send` (expect matching: hint, say, note)"
             """
             start_message = {
                 index = 0
@@ -347,7 +347,7 @@ class UnresolvedExpressionInspectionTest : BasePlatformTestCase(), ChronicleTest
     fun semantic_smoke_fullParameterizedTopProperty_lenientMatchedLeafDirectValue_success() {
         val p = "\$param$"
 
-        // $param$ -> tags -> (matched)
+        // $param$ -> tags (matched)
         markFileInfo(ParadoxGameType.Stellaris, "common/messages/test.txt")
         myFixture.configureByText("test.txt") {
             """
@@ -365,7 +365,7 @@ class UnresolvedExpressionInspectionTest : BasePlatformTestCase(), ChronicleTest
     fun semantic_smoke_fullParameterizedTopProperty_unresolvedLeafDirectValue_failed() {
         val p = "\$param$"
 
-        // $param$ -> ? -> (mismatched)
+        // $param$ -> ? (mismatched)
         markFileInfo(ParadoxGameType.Stellaris, "common/messages/test.txt")
         myFixture.configureByText("test.txt") {
             val m1 = "Cannot resolve value expression `{...}` (expect matching: hidden, value[message_tag])"
@@ -381,10 +381,29 @@ class UnresolvedExpressionInspectionTest : BasePlatformTestCase(), ChronicleTest
     }
 
     @Test
+    fun semantic_smoke_fullParameterizedTopProperty_withInferredType_mismatchedLeafPropertyKey_failed() {
+        val p = "\$message_part$"
+
+        // $param$ -> message_part (mismatched)
+        markFileInfo(ParadoxGameType.Stellaris, "common/messages/test.txt")
+        myFixture.configureByText("test.txt") {
+            val m1 = "Cannot resolve key expression `send` (expect matching: hint, say, note)"
+            """
+            start_message = {
+                index = 0
+                tags = { start }
+                $p = { ${error(m1)}send${errorEnd()} = farewell }
+            }
+            """.trimIndent()
+        }
+        myFixture.checkHighlighting()
+    }
+
+    @Test
     fun semantic_smoke_fullParameterizedTopProperty_withInferredType_exactMatchedLeafDirectValue_success() {
         val p = "\$message_part$"
 
-        // $param$ -> message_part -> (matched)
+        // $param$ -> message_part (matched)
         markFileInfo(ParadoxGameType.Stellaris, "common/messages/test.txt")
         myFixture.configureByText("test.txt") {
             """
@@ -398,24 +417,24 @@ class UnresolvedExpressionInspectionTest : BasePlatformTestCase(), ChronicleTest
         myFixture.checkHighlighting()
     }
 
-    // @Test
-    // fun semantic_smoke_fullParameterizedTopProperty_withInferredType_lenientMatchedLeafDirectValue_failed() {
-    //     val p = "\$message_part$"
-    //
-    //     // $param$ -> message_part -> (mismatched)
-    //     markFileInfo(ParadoxGameType.Stellaris, "common/messages/test.txt")
-    //     myFixture.configureByText("test.txt") {
-    //         val m1 = "Cannot resolve value expression `hidden` (expect matching: hidden)"
-    //         """
-    //         start_message = {
-    //             index = 0
-    //             tags = { start }
-    //             $p = { ${error(m1)}delay${errorEnd()} }
-    //         }
-    //         """.trimIndent()
-    //     }
-    //     myFixture.checkHighlighting()
-    // }
+    @Test
+    fun semantic_smoke_fullParameterizedTopProperty_withInferredType_lenientMatchedLeafDirectValue_failed() {
+        val p = "\$message_part$"
+
+        // $param$ -> message_part (mismatched)
+        markFileInfo(ParadoxGameType.Stellaris, "common/messages/test.txt")
+        myFixture.configureByText("test.txt") {
+            val m1 = "Cannot resolve value expression `delay` (expect matching: hidden)"
+            """
+            start_message = {
+                index = 0
+                tags = { start }
+                $p = { ${error(m1)}delay${errorEnd()} }
+            }
+            """.trimIndent()
+        }
+        myFixture.checkHighlighting()
+    }
 
     // endregion
 

@@ -25,12 +25,20 @@ message = {
     ## file_extensions = { txt }
     ## cardinality = 0..inf
     include = filepath
+
+    ## cardinality = 0..inf
+    notes = {
+        ## cardinality = 0..inf
+        note = scalar
+    }
 }
 
 # inject `configGroup.extendedParameters`
 parameters = {
-    ## context_key = message
-    $message_part$ = message_part
+    ## context_key = message@start_message
+    part = part
+    ## context_key = message@start_message
+    message_part = message_part
 }
 
 # inject `configGroup.typeModel.supportParameters`

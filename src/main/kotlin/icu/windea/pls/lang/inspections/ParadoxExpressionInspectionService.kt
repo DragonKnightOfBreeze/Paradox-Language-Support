@@ -64,10 +64,6 @@ object ParadoxExpressionInspectionService {
         // skip if config context should be skipped (mainly based on member path and member role)
         if (configContext.skipUnresolvedExpressionCheck()) return
 
-        val configsNoFallback = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(fallback = false))
-        val contextConfigs = configContext.getConfigs()
-        val contextConfigsNoFallback = configContext.getConfigs(ParadoxMatchOptions(fallback = false))
-
         // skip if there are any matched configs (use fallback if is property key)
         val fallback = element is ParadoxScriptPropertyKey
         val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(fallback = fallback))
@@ -114,7 +110,7 @@ object ParadoxExpressionInspectionService {
         when (element) {
             is ParadoxScriptPropertyKey -> {
                 if (parentConfigContext != null) {
-                    // merge context configs from same property keys first
+                    // flatten and collect context configs from parent context configs
                     val parentContextConfigs = parentConfigContext.getConfigs()
                     parentContextConfigs.forEachFast { parentContextConfig ->
                         val contextConfigs = parentContextConfig.configs

@@ -58,7 +58,6 @@ import icu.windea.pls.script.psi.ParadoxConditionParameter
 import icu.windea.pls.script.psi.ParadoxParameter
 import icu.windea.pls.script.psi.ParadoxScriptConditionalBlock
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes
-import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
@@ -292,14 +291,12 @@ object ParadoxParameterManager {
     }
 
     /**
-     * 尝试推断得到带参数的键对应的匹配的规则。
+     * 尝试推断得到参数的上下文规则。仅适用于解析后是字面量（如数字、字符串）的参数。
      */
-    fun getParameterizedKeyConfigs(element: ParadoxScriptProperty): List<CwtValueConfig> {
-        val propertyKey = element.propertyKey
-        val parameter = propertyKey.findChild<ParadoxParameter>() ?: return emptyList()
-        val parameterElement = getParameterElement(parameter) ?: return emptyList()
+    fun getInferredConfigsForLiteral(element: ParadoxParameter): List<CwtValueConfig> {
+        val parameterElement = getParameterElement(element) ?: return emptyList()
         val contextConfigs = getInferredContextConfigsFromConfig(parameterElement)
-        return ParadoxParameterService.getParameterizedKeyConfigs(contextConfigs)
+        return ParadoxParameterService.getInferredConfigsForLiteral(contextConfigs)
     }
 
     /**
