@@ -1,0 +1,166 @@
+package icu.windea.pls.test.issues
+
+import com.intellij.testFramework.IndexingTestUtil
+import com.intellij.testFramework.TestDataPath
+import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.lang.inspections.script.expression.ConflictingResolvedExpressionInspection
+import icu.windea.pls.lang.inspections.script.expression.IncorrectExpressionInspection
+import icu.windea.pls.lang.inspections.script.expression.MissingExpressionInspection
+import icu.windea.pls.lang.inspections.script.expression.TooManyExpressionInspection
+import icu.windea.pls.lang.inspections.script.expression.UnresolvedExpressionInspection
+import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.test.ChronicleTestScope
+import icu.windea.pls.test.dsl.highlightingScope
+import org.junit.After
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
+
+/**
+ * See: [#386](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/386)
+ *
+ * @see UnresolvedExpressionInspection
+ */
+@RunWith(JUnit4::class)
+@TestDataPath("\$CONTENT_ROOT/testData")
+class Issue386Test : BasePlatformTestCase(), ChronicleTestScope {
+    override fun getTestDataPath() = "src/test/testData"
+
+    @Before
+    fun doSetUp() {
+        markIntegrationTest()
+        markRootDirectory("issues/386")
+        markConfigDirectory("issues/386/.config")
+        initInjectedConfigGroups(project, ParadoxGameType.Stellaris) // on demand
+    }
+
+    @After
+    fun doTearDown() = clearIntegrationTest()
+
+    @Test
+    fun testInspection_AllResolved_Success() {
+        enableAllNeededInspections()
+        markFileInfo(ParadoxGameType.Stellaris, "common/test/test.txt")
+        myFixture.configureByText("test.txt", """
+            test = {
+                members = {
+                    key = value
+                    value
+                }
+                properties = {
+                    key = value
+                }
+                values = {
+                    value
+                }
+            }
+        """.trimIndent())
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+        myFixture.checkHighlighting()
+    }
+
+    @Test
+    fun testInspection_UnresolvedLeafNodes_NotMixed_Failed() {
+        enableAllNeededInspections()
+        markFileInfo(ParadoxGameType.Stellaris, "common/test/test.txt")
+        myFixture.configureByText("test.txt", highlightingScope {
+            """
+            test = {
+                properties = {
+                    ${error(message("unresolved", ""))}unresolved${errorEnd()}
+                }
+                values = {
+                    ${error(message("unresolved", ""))}unresolved${errorEnd()} = unresolved_skipped
+                }
+            }
+            """.trimIndent()
+        })
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+        myFixture.checkHighlighting()
+    }
+
+    @Test
+    fun testInspection_UnresolvedLeafNodes_Failed() {
+        enableAllNeededInspections()
+        markFileInfo(ParadoxGameType.Stellaris, "common/test/test.txt")
+        myFixture.configureByText("test.txt", highlightingScope {
+            """
+            test = {
+                members = {
+                    ${error(message("unresolved", "key"))}unresolved${errorEnd()} = unresolved_skipped
+                    ${error(message("unresolved", "value"))}unresolved${errorEnd()}
+                }
+                properties = {
+                    ${error(message("unresolved", "key"))}unresolved${errorEnd()} = unresolved_skipped
+                    ${error(message("unresolved", ""))}unresolved${errorEnd()}
+                }
+                values = {
+                    ${error(message("unresolved", ""))}unresolved${errorEnd()} = unresolved_skipped
+                    ${error(message("unresolved", "value"))}unresolved${errorEnd()}
+                }
+            }
+            """.trimIndent()
+        })
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+        myFixture.checkHighlighting()
+    }
+
+    @Test
+    fun testInspection_UnresolvedTopNodes_Failed() {
+        enableAllNeededInspections()
+        markFileInfo(ParadoxGameType.Stellaris, "common/test/test.txt")
+        myFixture.configureByText("test.txt", highlightingScope {
+            """
+            test = {
+                ${error(message("unresolved_key", "members, properties, values"))}unresolved_key${errorEnd()} = value
+                ${error(message("unresolved_key", "members, properties, values"))}unresolved_key${errorEnd()} = {}
+                ${error(message("unresolved_key", "members, properties, values"))}unresolved_key${errorEnd()} = {
+                    unresolved
+                }
+
+                ${error(message("unresolved_value", ""))}unresolved_value${errorEnd()}
+                ${error(message("{...}", ""))}{}${errorEnd()}
+                ${error(message("{...}", ""))}{
+                    unresolved
+                }${errorEnd()}
+            }
+            """.trimIndent()
+        })
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+        myFixture.checkHighlighting()
+    }
+
+    @Test
+    fun testInspection_UnresolvedOuterNodes_Ignored() {
+        enableAllNeededInspections()
+        markFileInfo(ParadoxGameType.Stellaris, "common/test/test.txt")
+        myFixture.configureByText("test.txt", """
+            unresolved = unresolved # property value is not a block
+            unresolved
+            test = {
+                members = {}
+            }
+        """.trimIndent())
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+        myFixture.checkHighlighting()
+    }
+
+    private fun enableAllNeededInspections() {
+        // enable all needed expression inspections
+        myFixture.enableInspections(UnresolvedExpressionInspection::class.java)
+        myFixture.enableInspections(ConflictingResolvedExpressionInspection::class.java)
+        myFixture.enableInspections(MissingExpressionInspection::class.java)
+        myFixture.enableInspections(TooManyExpressionInspection::class.java)
+        myFixture.enableInspections(IncorrectExpressionInspection::class.java)
+    }
+
+    private fun message(expression: String, expect: String?): String {
+        return when {
+            expect == null -> ChronicleBundle.message("unresolvedExpression.desc.withoutExpect", expression)
+            expect.isNotEmpty() -> ChronicleBundle.message("unresolvedExpression.desc.withExpect", expression, expect)
+            else -> ChronicleBundle.message("unresolvedExpression.desc.noExpect", expression)
+        }
+    }
+}

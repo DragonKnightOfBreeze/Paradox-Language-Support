@@ -8,6 +8,7 @@ import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.parentOfType
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.config.CwtMemberConfig
+import icu.windea.pls.config.config.CwtMemberType
 import icu.windea.pls.config.config.delegated.CwtEnumConfig
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
@@ -117,7 +118,14 @@ object ParadoxConfigManager {
         }
     }
 
-    fun <C : CwtMemberConfig<*>> collectConfigWithOverridden(element: PsiElement, config: C, result: MutableList<C>) {
+    fun collectConfigsWithOverridden(element: PsiElement, configs: List<CwtMemberConfig<*>>?, result: MutableList<CwtMemberConfig<*>>, type: CwtMemberType? = null) {
+        if (configs == null) return
+        configs.forEachFast { collectConfigsWithOverridden(element, it, result, type) }
+    }
+
+    fun collectConfigsWithOverridden(element: PsiElement, config: CwtMemberConfig<*>?, result: MutableList<CwtMemberConfig<*>>, type: CwtMemberType? = null) {
+        if (config == null) return
+        if (type != null && type != config.memberType) return
         val overriddenConfigs = ParadoxConfigService.getOverriddenConfigs(element, config)
         if (overriddenConfigs.isNotEmpty()) {
             result.addAll(overriddenConfigs)

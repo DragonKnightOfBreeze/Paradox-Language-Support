@@ -1,0 +1,25 @@
+types = {
+    type[test] = {
+        path = common/test
+    }
+}
+
+test = {
+    ## cardinality = 0..inf
+    members = {
+        ## cardinality = 0..inf
+        key = value
+        ## cardinality = 0..inf
+        value
+    }
+    ## cardinality = 0..inf
+    properties = {
+        ## cardinality = 0..inf
+        key = value
+    }
+    ## cardinality = 0..inf
+    values = {
+        ## cardinality = 0..inf
+        value
+    }
+}
