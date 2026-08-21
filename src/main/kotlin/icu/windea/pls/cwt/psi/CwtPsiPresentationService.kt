@@ -4,8 +4,6 @@ import com.intellij.psi.NavigatablePsiElement
 import com.intellij.psi.PsiElement
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.icon
-import icu.windea.pls.core.truncate
-import icu.windea.pls.lang.settings.ChronicleInternalSettings
 import javax.swing.Icon
 
 object CwtPsiPresentationService {
@@ -35,8 +33,8 @@ object CwtPsiPresentationService {
             is CwtFile -> element.name
             // 名字
             is CwtProperty -> element.name
-            // 截断后的名字
-            is CwtValue -> element.name.formatted()
+            // 展示文本
+            is CwtValue -> element.presentableText
             // 回退
             is NavigatablePsiElement -> element.name
             else -> null
@@ -58,12 +56,5 @@ object CwtPsiPresentationService {
     @Suppress("unused")
     fun getTreeLocationString(element: PsiElement): String? {
         return null
-    }
-
-    private fun String.formatted(): String {
-        return when {
-            isEmpty() -> "\"\""
-            else -> truncate(ChronicleInternalSettings.getInstance().presentableTextLimit)
-        }
     }
 }

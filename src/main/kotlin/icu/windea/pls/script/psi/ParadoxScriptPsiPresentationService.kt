@@ -6,7 +6,6 @@ import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
-import icu.windea.pls.core.truncate
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
 import icu.windea.pls.core.util.values.unresolved
@@ -17,7 +16,6 @@ import icu.windea.pls.lang.psi.ParadoxPsiMatchService
 import icu.windea.pls.lang.psi.ParadoxPsiPresentationService
 import icu.windea.pls.lang.resolve.ParadoxInlineScriptService
 import icu.windea.pls.lang.selectGameType
-import icu.windea.pls.lang.settings.ChronicleInternalSettings
 import icu.windea.pls.lang.util.ParadoxComplexEnumValueManager
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.ParadoxScriptedVariableManager
@@ -113,17 +111,17 @@ object ParadoxScriptPsiPresentationService {
                 }
                 element.name
             }
-            // 复杂枚举值的名字，或者截断后的名字
+            // 复杂枚举值的名字，或者展示文本
             is ParadoxScriptStringExpressionElement -> {
                 run {
                     // 复杂枚举值的名字
                     val complexEnumValueInfo = element.complexEnumValueInfo ?: return@run
                     return complexEnumValueInfo.name
                 }
-                element.value.formatted()
+                element.presentableText
             }
-            // 截断后的名字
-            is ParadoxScriptValue -> element.value.formatted()
+            // 展示文本
+            is ParadoxScriptValue -> element.presentableText
             // 名字
             is ParadoxScriptScriptedVariable -> "@" + element.name.or.unresolved()
             // 表达式
@@ -189,20 +187,13 @@ object ParadoxScriptPsiPresentationService {
                 null
             }
             is ParadoxScriptScriptedVariable -> {
-                // 封装变量的值和展示名字
+                // 封装变量的值的战士文本，及其展示名字
                 buildString {
-                    element.value?.let { append(" = ").append(it) }
+                    element.scriptedVariableValue?.let { append(" = ").append(it.presentableText) }
                     ParadoxScriptedVariableManager.getPresentableName(element)?.let { append(" ").append(it) }
                 }.orNull()
             }
             else -> null
-        }
-    }
-
-    private fun String.formatted(): String {
-        return when {
-            isEmpty() -> "\"\""
-            else -> truncate(ChronicleInternalSettings.getInstance().presentableTextLimit)
         }
     }
 }

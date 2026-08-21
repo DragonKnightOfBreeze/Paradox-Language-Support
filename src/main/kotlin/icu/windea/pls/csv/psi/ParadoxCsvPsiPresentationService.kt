@@ -3,9 +3,7 @@ package icu.windea.pls.csv.psi
 import com.intellij.psi.NavigatablePsiElement
 import com.intellij.psi.PsiElement
 import icu.windea.pls.core.icon
-import icu.windea.pls.core.truncate
 import icu.windea.pls.lang.psi.ParadoxPsiPresentationService
-import icu.windea.pls.lang.settings.ChronicleInternalSettings
 import icu.windea.pls.model.constants.ChronicleStrings
 import javax.swing.Icon
 
@@ -37,8 +35,8 @@ object ParadoxCsvPsiPresentationService {
             is ParadoxCsvHeader -> ChronicleStrings.headerText
             // 特殊标记
             is ParadoxCsvRow -> ChronicleStrings.rowText
-            // 截断后的名字
-            is ParadoxCsvColumn -> element.name.formatted()
+            // 展示文本
+            is ParadoxCsvColumn -> element.presentableText
             // 回退
             is NavigatablePsiElement -> element.name
             else -> null
@@ -63,15 +61,8 @@ object ParadoxCsvPsiPresentationService {
     fun getTreeLocationString(element: PsiElement): String? {
         return when (element) {
             // 截断后的对应的表头列的名字
-            is ParadoxCsvColumn -> ParadoxCsvPsiService.getHeaderColumn(element)?.name?.formatted()
+            is ParadoxCsvColumn -> ParadoxCsvPsiService.getHeaderColumn(element)?.presentableText
             else -> null
-        }
-    }
-
-    private fun String.formatted(): String {
-        return when {
-            isEmpty() -> "\"\""
-            else -> truncate(ChronicleInternalSettings.getInstance().presentableTextLimit)
         }
     }
 }
