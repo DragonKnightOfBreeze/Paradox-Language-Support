@@ -118,11 +118,12 @@ class UnresolvedExpressionInspectionTest : BasePlatformTestCase(), ChronicleTest
     fun semantic_smoke_unresolvedLeafDirectValue_failed() {
         markFileInfo(ParadoxGameType.Stellaris, "common/messages/test.txt")
         myFixture.configureByText("test.txt") {
+            val m1 = "Cannot resolve value expression `delay` (expect matching: hidden)"
             """
             start_message = {
                 index = 0
                 tags = { start }
-                message_part = { delay }
+                message_part = { ${error(m1)}delay${errorEnd()} }
             }
             """.trimIndent()
         }

@@ -71,7 +71,7 @@ class Issue386Test : BasePlatformTestCase(), ChronicleTestScope {
             """
             test = {
                 properties = {
-                    ${error(forKey("unresolved", ""))}unresolved${errorEnd()}
+                    ${error(forValue("unresolved", ""))}unresolved${errorEnd()}
                 }
                 values = {
                     ${error(forKey("unresolved", ""))}unresolved${errorEnd()} = unresolved_skipped
@@ -163,16 +163,16 @@ class Issue386Test : BasePlatformTestCase(), ChronicleTestScope {
     private fun forKey(expression: String, expect: String): String {
         val expressionType = ChronicleBundle.message("expression.type.key")
         return when {
-            expect.isNotEmpty() -> ChronicleBundle.message("unresolvedExpression.desc.1", expressionType, expression, expect)
-            else -> ChronicleBundle.message("unresolvedExpression.desc.2", expressionType, expression)
+            expect.isEmpty() -> ChronicleBundle.message("unresolvedExpression.desc.1", expressionType, expression)
+            else -> ChronicleBundle.message("unresolvedExpression.desc.2", expressionType, expression, expect)
         }
     }
 
     private fun forValue(expression: String, expect: String): String {
         val expressionType = ChronicleBundle.message("expression.type.value")
         return when {
-            expect.isNotEmpty() -> ChronicleBundle.message("unresolvedExpression.desc.1", expressionType, expression, expect)
-            else -> ChronicleBundle.message("unresolvedExpression.desc.2", expressionType, expression)
+            expect.isEmpty() -> ChronicleBundle.message("unresolvedExpression.desc.1", expressionType, expression)
+            else -> ChronicleBundle.message("unresolvedExpression.desc.2", expressionType, expression, expect)
         }
     }
 }
