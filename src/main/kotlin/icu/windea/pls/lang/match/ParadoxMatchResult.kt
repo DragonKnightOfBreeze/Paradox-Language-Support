@@ -91,11 +91,11 @@ sealed interface ParadoxMatchResult {
         }
     }
 
-    class LazyTemplateAwareMatch(predicate: () -> Boolean) : LazyMatch(predicate), DirectMatch
+    class LazyBlockAwareMatch(predicate: () -> Boolean) : LazyMatch(predicate), DirectMatch
 
     class LazyIndexAwareMatch(predicate: () -> Boolean) : LazyMatch(predicate), DirectMatch
 
-    class LazyBlockAwareMatch(predicate: () -> Boolean) : LazyMatch(predicate), DirectMatch
+    class LazyTemplateAwareMatch(predicate: () -> Boolean) : LazyMatch(predicate), DirectMatch
 
     class LazyScopeAwareMatch(predicate: () -> Boolean) : LazyMatch(predicate), DirectMatch
 

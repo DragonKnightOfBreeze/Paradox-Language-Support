@@ -13,6 +13,28 @@ import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.expressions.ParadoxExpression
 
 /**
+ * 模式匹配上下文。
+ *
+ * 要匹配的文本以及匹配时是否忽略大小写等选项并未保存在此上下文对象中。
+ *
+ * @property element 上下文 PSI 元素。
+ * @property configExpression 可作为模式来源的规则表达式。
+ * @property configGroup 规则分组。
+ *
+ * @see ParadoxScriptExpressionMatcher
+ */
+data class ParadoxPatternMatchContext(
+    val element: PsiElement,
+    val configExpression: CwtDataExpression,
+    val configGroup: CwtConfigGroup,
+    val options: ParadoxMatchOptions? = null,
+) {
+    val project: Project get() = configGroup.project
+    val gameType: ParadoxGameType get() = configGroup.gameType
+    val dataType: CwtDataType get() = configExpression.type
+}
+
+/**
  * 脚本表达式的匹配上下文。
  *
  * @property element 上下文 PSI 元素。
@@ -33,28 +55,10 @@ data class ParadoxScriptExpressionMatchContext(
 ) {
     val project: Project get() = configGroup.project
     val gameType: ParadoxGameType get() = configGroup.gameType
+    val dataType: CwtDataType get() = configExpression.type
 
-    val dataType: CwtDataType = configExpression.type  // 3.0.1 optimize: declared as field to optimize access performance
-    val usePredicateBasedMatch: Boolean = configGroup.attribute.usePredicateBasedMatch // 3.0.1 optimize: use attribute to apply fast return
-}
-
-/**
- * 脚本表达式的优化上下文。
- *
- * @property element 上下文 PSI 元素。
- * @property expression 脚本表达式。
- * @property configGroup 规则分组。
- *
- * @see ParadoxScriptExpressionMatchOptimizer
- */
-data class ParadoxScriptExpressionMatchOptimizerContext(
-    val element: PsiElement,
-    val expression: ParadoxExpression,
-    val configGroup: CwtConfigGroup,
-    val options: ParadoxMatchOptions? = null,
-) {
-    val project: Project get() = configGroup.project
-    val gameType: ParadoxGameType get() = configGroup.gameType
+    // 3.0.1 optimize: use attribute to apply fast return
+    val usePredicateBasedMatch: Boolean = configGroup.attribute.usePredicateBasedMatch
 }
 
 /**
@@ -75,6 +79,24 @@ data class ParadoxCsvExpressionMatchContext(
 ) {
     val project: Project get() = configGroup.project
     val gameType: ParadoxGameType get() = configGroup.gameType
+    val dataType: CwtDataType get() = configExpression.type
+}
 
-    val dataType: CwtDataType = configExpression.type  // 3.0.1 optimize: declared as field to optimize access performance
+/**
+ * 脚本表达式的优化上下文。
+ *
+ * @property element 上下文 PSI 元素。
+ * @property expression 脚本表达式。
+ * @property configGroup 规则分组。
+ *
+ * @see ParadoxScriptExpressionMatchOptimizer
+ */
+data class ParadoxScriptExpressionMatchOptimizerContext(
+    val element: PsiElement,
+    val expression: ParadoxExpression,
+    val configGroup: CwtConfigGroup,
+    val options: ParadoxMatchOptions? = null,
+) {
+    val project: Project get() = configGroup.project
+    val gameType: ParadoxGameType get() = configGroup.gameType
 }

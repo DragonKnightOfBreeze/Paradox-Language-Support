@@ -1786,7 +1786,7 @@ Format of corresponding data expressions:
 - `<{type}>` – where `{type}` matches a type name.
 - `<{type}.{subtypes}>` – where `{type}` matches a type name and `{subtypes}` matches a dot-separated list of subtype names.
 
-Examples of corresponding data expressions:
+Examples of Corresponding data expressions:
 - `<building>` – matches a building name reference.
 - `<event>` – matches an event ID reference.
 - `<event.country>` – matches an event ID reference.
@@ -1852,7 +1852,7 @@ For simple enums, it matches exactly against the list of enum values; for comple
 Format of corresponding data expressions:
 - `enum[{name}]` – where `{name}` matches an enum name.
 
-Examples of corresponding data expressions:
+Examples of Corresponding data expressions:
 - `enum[weight_or_base]`
 - `enum[ship_class]`
 
@@ -1867,7 +1867,7 @@ Matches one of the candidates in the corresponding union config.
 Format of corresponding data expressions:
 - `union[{name}]` – where `{name}` matches a union name.
 
-Examples of corresponding data expressions:
+Examples of Corresponding data expressions:
 - `union[loc_or_text]`
 
 > CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
@@ -1882,7 +1882,7 @@ The dynamic value name must be a valid identifier (`.` is allowed).
 Format of corresponding data expressions:
 - `value[{name}]` – where `{name}` matches a dynamic value type name.
 
-Examples of corresponding data expressions:
+Examples of Corresponding data expressions:
 - `value[event_target]`
 
 > CWTools Compatibility: Compatible.
@@ -1897,7 +1897,7 @@ The dynamic value name must be a valid identifier (`.` is allowed).
 Format of corresponding data expressions:
 - `value_set[{name}]` – where `{name}` matches a dynamic value type name.
 
-Examples of corresponding data expressions:
+Examples of Corresponding data expressions:
 - `value_set[event_target]`
 
 > CWTools Compatibility: Compatible.
@@ -1912,7 +1912,7 @@ The dynamic value name must be a valid identifier (`.` is allowed).
 Format of corresponding data expressions:
 - `dynamic_value[{name}]` – where `{name}` matches a dynamic value type name.
 
-Examples of corresponding data expressions:
+Examples of Corresponding data expressions:
 - `dynamic_value[event_target]`
 
 > CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
@@ -1938,7 +1938,7 @@ When the parameter is `any`, it is equivalent to [ScopeField](#data-type-scope-f
 Format of corresponding data expressions:
 - `scope[{type}]` – where `{type}` matches a scope type name. Use `any` for any type.
 
-Examples of corresponding data expressions:
+Examples of Corresponding data expressions:
 - `scope[country]`
 - `scope[any]`
 
@@ -1953,7 +1953,7 @@ Matches a scope field expression (consisting of multiple scope nodes separated b
 Format of corresponding data expressions:
 - `scope_group[{name}]` – where `{name}` matches a scope group name.
 
-Examples of corresponding data expressions:
+Examples of Corresponding data expressions:
 - `scope_group[economic_categories]`
 
 > CWTools Compatibility: Compatible.
@@ -1971,7 +1971,7 @@ Format of corresponding data expressions:
 - `value_field`
 - `value_field{range}` – where `{range}` matches a range parameter (e.g., `[0.0..1.0]`, `[-100.0..100.0)`, `[0.0..inf)`).
 
-Examples of corresponding data expressions:
+Examples of Corresponding data expressions:
 - `value_field`
 - `value_field[0.0..1.0]`
 
@@ -1990,7 +1990,7 @@ Format of corresponding data expressions:
 - `int_value_field`
 - `int_value_field{range}` – where `{range}` matches a range parameter (e.g., `[0..1]`, `[-100..100)`, `[0..inf)`).
 
-Examples of corresponding data expressions:
+Examples of Corresponding data expressions:
 - `int_value_field`
 - `int_value_field[-100..100]`
 
@@ -2012,7 +2012,7 @@ Format of corresponding data expressions:
 - `variable_field_32` – 32-bit variant.
 - `variable_field_32{range}` – 32-bit variant, where `{range}` matches a range parameter (e.g., `[0.0..1.0]`, `[-100.0..100.0)`, `[0.0..inf)`).
 
-Examples of corresponding data expressions:
+Examples of Corresponding data expressions:
 - `variable_field`
 - `variable_field[0.0..1.0]`
 - `variable_field_32`
@@ -2035,7 +2035,7 @@ Format of corresponding data expressions:
 - `int_variable_field_32` – 32-bit variant.
 - `int_variable_field_32{range}` – 32-bit variant, where `{range}` matches a range parameter (e.g., `[0..1]`, `[-100..100)`, `[0..inf)`).
 
-Examples of corresponding data expressions:
+Examples of Corresponding data expressions:
 - `int_variable_field`
 - `int_variable_field[-100..100]`
 - `int_variable_field_32`
@@ -2259,10 +2259,10 @@ Notes:
 - For path references, separators as prefixes are not supported; i.e., absolute path form is **not supported**.
 - File extensions are not distinguished.
 
-Corresponding data expression format:
+- Format of corresponding data expressions:
 - `icon[{path}]` – where `{path}` matches a path pattern (e.g., `gfx/interface/icons`).
 
-Corresponding data expression Examples:
+Examples of Corresponding data expressions:
 - `icon[gfx/interface/icons]`
 
 > CWTools Compatibility: Compatible.
@@ -2278,12 +2278,12 @@ Notes:
 - For path references, "/", "\", repeated separators, or separators appearing as suffixes are all supported and will be normalized.
 - For path references, separators as prefixes are supported and will be ignored; i.e., absolute path form is **supported**.
 
-Corresponding data expression format:
+- Format of corresponding data expressions:
 - `filepath` – locates relative to the entry path.
 - `filepath[./]` – locates relative to the current script file.
 - `filepath[{path}]` – where `{path}` matches a path pattern.
 
-Corresponding data expression examples:
+Examples of Corresponding data expressions:
 - `filepath`
 - `filepath[./]`
 - `filepath[flags/]`
@@ -2303,11 +2303,11 @@ Notes:
 - For path references, separators as prefixes are not supported; i.e., absolute path form is **not supported**.
 - Only the file name is distinguished.
 
-Corresponding data expression format:
+- Format of corresponding data expressions:
 - `filename`
 - `filename[{path}]` – where `{path}` matches a path pattern.
 
-Corresponding data expression examples:
+Examples of Corresponding data expressions:
 - `filename`
 - `filename[gfx/models]`
 
@@ -2334,11 +2334,16 @@ The following data types adopt special pattern-matching strategies. The constant
 Constant type.
 
 Matches an expression that is exactly identical to the constant value.
-When used as a value, boolean constants (`yes` / `no`) will not match quoted string literals.
+If the expression is not quoted, it cannot be used to match boolean keywords (`yes` and `no`).
 Additionally, string literals that do not contain special characters (`:.@[]<>`) are resolved as this type as a fallback.
 
 Format of corresponding data expressions:
-- Use the constant value directly as the data expression string itself, e.g., `yes`, `10`, `trigger`, etc.
+- Use the constant value itself directly as the data expression string
+
+Examples of Corresponding data expressions:
+- `yes`
+- `10`
+- `trigger`
 
 > CWTools Compatibility: Compatible.
 
@@ -2349,11 +2354,12 @@ Template expression type.
 A pattern consisting of alternating constant text fragments and reference fragments.
 When matching, the script expression is split according to the template structure, and each reference fragment is validated individually.
 
-Examples of corresponding data expressions:
+Examples of Corresponding data expressions:
+- Use the template itself directly as the data expression string (see [Template Expression](#config-expression-template)).
+
+Examples of Corresponding data expressions:
 - `a_<b>_enum[c]_value[d]`
 - `job_<job>_add`
-
-This is a pattern-aware type, and its data expression format is the template expression itself (see [Template Expression](#config-expression-template)).
 
 > CWTools Compatibility: Partially compatible. Have different resolving and processing logic.
 
@@ -2369,7 +2375,7 @@ Format of corresponding data expressions:
 - `glob:{pattern}` – where `{pattern}` matches the pattern.
 - `glob.i:{pattern}` – case-insensitive variant.
 
-Examples of corresponding data expressions:
+Examples of Corresponding data expressions:
 - `glob:name?`
 - `glob.i:*desc`
 
@@ -2387,7 +2393,7 @@ Format of corresponding data expressions:
 - `ant:{pattern}` – where `{pattern}` matches the pattern.
 - `ant.i:{pattern}` – case-insensitive variant.
 
-Examples of corresponding data expressions:
+Examples of Corresponding data expressions:
 - `ant:**/*.txt`
 - `ant.i:common/**/*`
 
@@ -2405,7 +2411,7 @@ Format of corresponding data expressions:
 - `re:{pattern}` – where `{pattern}` matches the pattern.
 - `re.i:{pattern}` – case-insensitive variant.
 
-Examples of corresponding data expressions:
+Examples of Corresponding data expressions:
 - `re:^country_.*`
 - `re.i:event_.*`
 

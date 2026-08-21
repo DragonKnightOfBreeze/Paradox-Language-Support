@@ -113,8 +113,8 @@ object ParadoxExpressionMatchService {
             unionConfig.expandUnionCandidates { valueConfig ->
                 ProgressManager.checkCanceled()
                 val configExpression = valueConfig.configExpression
-                val context = ParadoxScriptExpressionMatchContext(element, expression, configExpression, valueConfig, configGroup, options)
-                if (matchScriptExpression(context).get(options)) process(valueConfig)
+                val matchContext = ParadoxScriptExpressionMatchContext(element, expression, configExpression, valueConfig, configGroup, options)
+                if (matchScriptExpression(matchContext).get(options)) process(valueConfig)
                 else true
             }
         }
@@ -127,8 +127,8 @@ object ParadoxExpressionMatchService {
             unionConfig.expandUnionCandidates { valueConfig ->
                 ProgressManager.checkCanceled()
                 val configExpression = valueConfig.configExpression
-                val context = ParadoxCsvExpressionMatchContext(element, expression, configExpression, configGroup)
-                if (matchCsvExpression(context).get()) process(valueConfig)
+                val matchContext = ParadoxCsvExpressionMatchContext(element, expression, configExpression, configGroup)
+                if (matchCsvExpression(matchContext).get()) process(valueConfig)
                 else true
             }
         }
@@ -141,8 +141,8 @@ object ParadoxExpressionMatchService {
         return keys.find { key ->
             ProgressManager.checkCanceled() // check cancellation
             val configExpression = CwtDataExpression.resolve(key)
-            val context = ParadoxScriptExpressionMatchContext(element, expression, configExpression, null, configGroup, options)
-            matchScriptExpression(context).get(options)
+            val matchContext = ParadoxScriptExpressionMatchContext(element, expression, configExpression, null, configGroup, options)
+            matchScriptExpression(matchContext).get(options)
         }
     }
 }

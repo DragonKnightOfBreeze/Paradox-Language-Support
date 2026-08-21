@@ -1,11 +1,14 @@
 package icu.windea.pls.ep.match.expression
 
 import com.intellij.openapi.progress.ProgressManager
+import icu.windea.pls.config.CwtDataType
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.expandUnionCandidates
 import icu.windea.pls.core.isIdentifier
-import icu.windea.pls.core.isLeftQuoted
+import icu.windea.pls.core.matchesAntPattern
+import icu.windea.pls.core.matchesPattern
+import icu.windea.pls.core.matchesRegex
 import icu.windea.pls.core.runWithRecursionGuard
 import icu.windea.pls.core.util.ProcessorScope
 import icu.windea.pls.lang.match.ParadoxCsvExpressionMatchContext
@@ -149,14 +152,27 @@ class ParadoxCsvConstantExpressionMatcher : ParadoxCsvCompositeExpressionMatcher
     }
 
     private fun matchConstant(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult {
-        val value = context.configExpression.expressionString
-        if (context.configExpression.role.isValue()) {
-            // 作为常量的值也可能是布尔值（`yes` / `no`）
-            val text = context.expression.value
-            if ((value == "yes" || value == "no") && text.isLeftQuoted()) return ParadoxMatchResult.NotMatch
-        }
+        val expression = context.expression
+        val configExpression = context.configExpression
         // 兼容空字符串，兼容带参数的情况
-        val r = context.expression.matchesConstant(value)
+        val r = expression.matchesConstant(configExpression.expressionString)
+        return ParadoxMatchResult.exactOrNot(r)
+    }
+}
+
+class ParadoxCsvPatternExpressionMatcher : ParadoxCsvSimpleExpressionMatcher() {
+    override val dataTypes: Array<CwtDataType> = CwtDataTypeSets.Pattern
+
+    override fun match(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult? {
+        val pattern = context.configExpression.metadata.value ?: return null
+        val ignoreCase = context.configExpression.metadata.ignoreCase
+        val value = context.expression.value
+        val r = when (context.dataType) {
+            CwtDataTypes.Glob -> value.matchesPattern(pattern, ignoreCase)
+            CwtDataTypes.Ant -> value.matchesAntPattern(pattern, ignoreCase)
+            CwtDataTypes.Regex -> value.matchesRegex(pattern, ignoreCase)
+            else -> return null
+        }
         return ParadoxMatchResult.exactOrNot(r)
     }
 }

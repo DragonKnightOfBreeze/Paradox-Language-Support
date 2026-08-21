@@ -23,6 +23,7 @@
     <extensionPoint qualifiedName="icu.windea.pls.incorrectSyntaxChecker" interface="icu.windea.pls.ep.inspections.ParadoxIncorrectSyntaxChecker" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.incorrectExpressionChecker" interface="icu.windea.pls.ep.inspections.ParadoxIncorrectExpressionChecker" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.unresolvedExpressionChecker" interface="icu.windea.pls.ep.inspections.ParadoxUnresolvedExpressionChecker" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.patternMatcher" interface="icu.windea.pls.ep.match.ParadoxPatternMatcher" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.scriptExpressionMatcher" interface="icu.windea.pls.ep.match.expression.ParadoxScriptExpressionMatcher" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.csvExpressionMatcher" interface="icu.windea.pls.ep.match.expression.ParadoxCsvExpressionMatcher" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.scriptExpressionMatchOptimizer" interface="icu.windea.pls.ep.match.expression.ParadoxScriptExpressionMatchOptimizer" dynamic="true"/>
@@ -180,11 +181,13 @@
     <unresolvedExpressionChecker id="default" implementation="icu.windea.pls.ep.inspections.ParadoxDefaultUnresolvedExpressionChecker" order="last"/>
     <unresolvedExpressionChecker implementation="icu.windea.pls.ep.inspections.ParadoxWrongBooleanUnresolvedExpressionChecker"/>
 
+    <patternMatcher id="default" implementation="icu.windea.pls.ep.match.ParadoxDefaultPatternMatcher"/>
+    <patternMatcher id="template" implementation="icu.windea.pls.ep.match.ParadoxTemplatePatternMatcher"/>
+
     <scriptExpressionMatcher id="basic" implementation="icu.windea.pls.ep.match.expression.ParadoxScriptBasicExpressionMatcher"/>
     <scriptExpressionMatcher id="extraBasic" implementation="icu.windea.pls.ep.match.expression.ParadoxScriptExtraBasicExpressionMatcher"/>
     <scriptExpressionMatcher id="core" implementation="icu.windea.pls.ep.match.expression.ParadoxScriptCoreExpressionMatcher"/>
     <scriptExpressionMatcher id="constant" implementation="icu.windea.pls.ep.match.expression.ParadoxScriptConstantExpressionMatcher"/>
-    <scriptExpressionMatcher id="template" implementation="icu.windea.pls.ep.match.expression.ParadoxScriptTemplateExpressionMatcher"/>
     <scriptExpressionMatcher id="pattern" implementation="icu.windea.pls.ep.match.expression.ParadoxScriptPatternExpressionMatcher"/>
     <scriptExpressionMatcher id="predicateBased" implementation="icu.windea.pls.ep.match.expression.ParadoxScriptPredicateBasedExpressionMatcher" order="first"/>
 
@@ -192,6 +195,7 @@
     <csvExpressionMatcher id="extraBasic" implementation="icu.windea.pls.ep.match.expression.ParadoxExtraBasicCsvExpressionMatcher"/>
     <csvExpressionMatcher id="core" implementation="icu.windea.pls.ep.match.expression.ParadoxCsvCoreExpressionMatcher"/>
     <csvExpressionMatcher id="constant" implementation="icu.windea.pls.ep.match.expression.ParadoxCsvConstantExpressionMatcher"/>
+    <csvExpressionMatcher id="pattern" implementation="icu.windea.pls.ep.match.expression.ParadoxCsvPatternExpressionMatcher"/>
 
     <scriptExpressionMatchOptimizer id="constant" implementation="icu.windea.pls.ep.match.expression.ParadoxScriptExpressionConstantMatchOptimizer" order="first"/>
     <scriptExpressionMatchOptimizer id="block" implementation="icu.windea.pls.ep.match.expression.ParadoxScriptExpressionBlockMatchOptimizer"/>

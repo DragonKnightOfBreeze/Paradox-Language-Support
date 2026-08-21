@@ -56,8 +56,8 @@ interface ParadoxExpression {
 
     fun matchesInt(): Boolean
     fun matchesFloat(): Boolean
-    fun matchesRegex(v: String): Boolean
-    fun matchesConstant(v: String): Boolean
+    fun matchesRegex(input: String): Boolean
+    fun matchesConstant(input: String): Boolean
 
     override fun equals(other: Any?): Boolean // NOTE 3.0.1 only based on `text`
     override fun hashCode(): Int // NOTE 3.0.1 only based on `text`
@@ -155,15 +155,17 @@ private sealed class ParadoxExpressionBase : ParadoxExpression {
 
     override fun matchesFloat(): Boolean = float
 
-    override fun matchesRegex(v: String): Boolean {
-        return regex.matches(v)
+    override fun matchesRegex(input: String): Boolean {
+        return regex.matches(input)
     }
 
-    override fun matchesConstant(v: String): Boolean {
+    override fun matchesConstant(input: String): Boolean {
+        // 如果表达式未用引号括起，不能用来匹配布尔关键字
+        if (quoted && (ChronicleStrings.yesKeyword.equalsFast(input) || ChronicleStrings.noKeyword.equalsFast(input))) return false
         // 兼容带参数的情况（此时先转化为正则表达式，再进行匹配）
-        if (isParameterized()) return matchesRegex(v)
+        if (isParameterized()) return matchesRegex(input)
         // 忽略大小写
-        return value.equalsFast(v, true) // 3.0.1 radical optimization
+        return value.equalsFast(input, true) // 3.0.1 radical optimization
     }
 
     override fun equals(other: Any?) = this === other || other is ParadoxExpression && text == other.text

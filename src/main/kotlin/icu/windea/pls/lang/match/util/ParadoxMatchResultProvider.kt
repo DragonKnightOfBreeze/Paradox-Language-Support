@@ -187,18 +187,17 @@ object ParadoxMatchResultProvider {
         }
     }
 
-    fun forTemplate(element: PsiElement, configGroup: CwtConfigGroup, expression: String, configExpression: CwtDataExpression, options: ParadoxMatchOptions? = null): ParadoxMatchResult {
+    fun forTemplate(element: PsiElement, configGroup: CwtConfigGroup, text: String, configExpression: CwtDataExpression, options: ParadoxMatchOptions? = null): ParadoxMatchResult {
         // NOTE 2.1.5 indexing -> should not visit indices -> still need to match constant snippets
         // if (ParadoxMatchService.skipIndex()) return ParadoxMatchResult.ExactMatch
 
         val template = configExpression.expressionString
         val key = ParadoxMatchResultContext.Keys.cacheForTemplates
-        val cacheKey = "${template}#${expression}\u0000${options.toHashString(forMatched = false)}"
-        options.toHashString(forMatched = false)
+        val cacheKey = "${template}#${text}\u0000${options.toHashString(forMatched = false)}"
         return ParadoxMatchResultContext.getFromCache(element, configGroup.project, key, cacheKey) {
             ProgressManager.checkCanceled() // check cancellation before lazy match
             ParadoxMatchResult.LazyTemplateAwareMatch {
-                ParadoxMatchProvider.matchesTemplate(element, configGroup, expression, template, options)
+                ParadoxMatchProvider.matchesTemplate(element, configGroup, text, template, options)
             }
         }
     }
@@ -226,7 +225,7 @@ object ParadoxMatchResultProvider {
         }
     }
 
-    fun forScopeFieldExpression(configGroup: CwtConfigGroup, text: String, configExpression: CwtDataExpression, element: PsiElement): ParadoxMatchResult {
+    fun forScopeFieldExpression(element: PsiElement, configGroup: CwtConfigGroup, text: String, configExpression: CwtDataExpression): ParadoxMatchResult {
         val complexExpression = ParadoxScopeFieldExpression.resolve(text, null, configGroup) ?: return ParadoxMatchResult.NotMatch
         if (complexExpression.getAllErrors().isNotEmpty()) return ParadoxMatchResult.PartialMatch
         return forScopeField(element, configGroup, complexExpression, configExpression)

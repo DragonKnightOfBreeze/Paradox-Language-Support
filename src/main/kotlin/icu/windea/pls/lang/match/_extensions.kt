@@ -19,12 +19,12 @@ typealias ParadoxMatchResultNestedCacheKeyProvider = KeyProviderWithFactory<Cach
  */
 fun String.matchesByPattern(
     key: String,
-    contextElement: PsiElement,
+    element: PsiElement,
     configGroup: CwtConfigGroup,
     options: ParadoxMatchOptions? = null,
     fromIndex: Int = 0,
 ): Boolean {
-    return ParadoxPatternMatchService.matches(this, key, contextElement, configGroup, options, fromIndex)
+    return ParadoxPatternMatchService.matches(this, key, element, configGroup, options, fromIndex)
 }
 
 /**
@@ -32,12 +32,12 @@ fun String.matchesByPattern(
  */
 fun <V> Map<String, V>.findByPattern(
     key: String,
-    contextElement: PsiElement,
+    element: PsiElement,
     configGroup: CwtConfigGroup,
     options: ParadoxMatchOptions? = null,
     fromIndex: Int = 0,
 ): V? {
-    return ParadoxPatternMatchService.find(this, key, contextElement, configGroup, options, fromIndex)
+    return ParadoxPatternMatchService.find(this, key, element, configGroup, options, fromIndex)
 }
 
 /**
@@ -45,10 +45,10 @@ fun <V> Map<String, V>.findByPattern(
  */
 fun <V> Map<String, V>.filterByPattern(
     key: String,
-    contextElement: PsiElement,
+    element: PsiElement,
     configGroup: CwtConfigGroup,
     options: ParadoxMatchOptions? = null,
     fromIndex: Int = 0,
 ): Collection<V> {
-    return ParadoxPatternMatchService.filter(this, key, contextElement, configGroup, options, fromIndex)
+    return ParadoxPatternMatchService.filter(this, key, element, configGroup, options, fromIndex)
 }

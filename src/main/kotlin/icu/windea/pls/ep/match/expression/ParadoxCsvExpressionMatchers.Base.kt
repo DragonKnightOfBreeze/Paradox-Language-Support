@@ -53,7 +53,6 @@ abstract class ParadoxCsvCompositeExpressionMatcher : ParadoxCsvExpressionMatche
     }
 }
 
-@Suppress("unused")
 abstract class ParadoxCsvSimpleExpressionMatcher : ParadoxCsvExpressionMatcher {
     abstract val dataTypes: Array<CwtDataType>
 }

@@ -128,7 +128,7 @@ class CwtTemplateDataExpressionSupport : CwtDataExpressionSupport {
     }
 
     override fun resolveTemplate(expressionString: String): CwtDataExpression? {
-        return null
+        return null // explicitly unsupported
     }
 }
 
@@ -142,6 +142,10 @@ class CwtPatternDataExpressionSupport : CwtPrefixBasedDataExpressionSupport() {
         register(CwtDataTypes.Regex, "re.i:", true)
         register(CwtDataTypes.Regex, "regex:", false) // for compatibility
         register(CwtDataTypes.Regex, "regex.i:", true) // for compatibility
+    }
+
+    override fun resolveTemplate(expressionString: String): CwtDataExpression? {
+        return null // explicitly unsupported
     }
 }
 

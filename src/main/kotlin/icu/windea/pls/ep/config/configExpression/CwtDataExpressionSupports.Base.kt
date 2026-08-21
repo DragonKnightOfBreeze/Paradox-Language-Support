@@ -79,8 +79,4 @@ abstract class CwtPrefixBasedDataExpressionSupport : CwtDataExpressionSupport {
         }
         return null
     }
-
-    final override fun resolveTemplate(expressionString: String): CwtDataExpression? {
-        return null // unsupported
-    }
 }

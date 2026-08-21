@@ -60,6 +60,12 @@ object CwtDataTypeSets {
         CwtDataTypes.Icon,
         CwtDataTypes.AbsoluteFilePath,
     )
+    /** 可作为模式来源的数据类型。 */
+    val Pattern = arrayOf(
+        CwtDataTypes.Glob,
+        CwtDataTypes.Ant,
+        CwtDataTypes.Regex,
+    )
 
     /** 可包含常量文本的数据类型。 */
     val ConstantAware = arrayOf(
