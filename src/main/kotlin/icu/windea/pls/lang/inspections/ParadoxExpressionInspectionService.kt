@@ -64,8 +64,13 @@ object ParadoxExpressionInspectionService {
         // skip if config context should be skipped (mainly based on member path and member role)
         if (configContext.skipUnresolvedExpressionCheck()) return
 
-        // skip if there are any matched configs (use fallback)
-        val configs = ParadoxConfigManager.getConfigs(element)
+        val configsNoFallback = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(fallback = false))
+        val contextConfigs = configContext.getConfigs()
+        val contextConfigsNoFallback = configContext.getConfigs(ParadoxMatchOptions(fallback = false))
+
+        // skip if there are any matched configs (use fallback if is property key)
+        val fallback = element is ParadoxScriptPropertyKey
+        val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(fallback = fallback))
         if (configs.isNotEmpty()) return
 
         var parentConfigContext: CwtConfigContext? = null
@@ -78,9 +83,6 @@ object ParadoxExpressionInspectionService {
             if (configs.isNotEmpty()) return@run
             return // skip if the parent node also fails the check
         }
-
-        val contextConfigs = configContext.getConfigs()
-        val contextConfigsNoFallback = configContext.getConfigs(ParadoxMatchOptions(fallback = false))
 
         val expectedConfigs = getExpectedConfigs(element, configContext, parentConfigContext)
         if (skipForUnresolvedExpression(element, expectedConfigs, context)) return

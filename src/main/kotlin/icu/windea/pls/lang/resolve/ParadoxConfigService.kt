@@ -252,7 +252,7 @@ object ParadoxConfigService {
         if (matchedParentConfigs.isEmpty()) return emptyList() // 忽略
 
         // 按照 `subPath` 打平规则，并进行必要的处理
-        val result = buildConfigsForConfigContext(element, expression, matchedParentConfigs, configGroup)
+        val result = collectConfigsForConfigContext(expression, matchedParentConfigs, configGroup)
         if (result.isEmpty()) return emptyList()
 
         // 如果 `element` 是属性值，则需要再次进行匹配，并接着转换为属性值对应的规则
@@ -264,7 +264,7 @@ object ParadoxConfigService {
         return result
     }
 
-    private fun buildConfigsForConfigContext(element: ParadoxScriptMember, expression: ParadoxExpression, parentConfigs: List<CwtMemberConfig<*>>, configGroup: CwtConfigGroup): List<CwtMemberConfig<*>> {
+    private fun collectConfigsForConfigContext(expression: ParadoxExpression, parentConfigs: List<CwtMemberConfig<*>>, configGroup: CwtConfigGroup): List<CwtMemberConfig<*>> {
         val result = mutableListOf<CwtMemberConfig<*>>()
         if (expression.value == "-") {
             // 如果父规则的值表达式的数据类型是 `Any`，则仅使用 `$any`
@@ -282,11 +282,6 @@ object ParadoxConfigService {
             }
         } else {
             // 如果父规则的值表达式的数据类型是 `Any`，则仅使用 `$any = $any`
-            // 如果当前路径是整个作为参数的，需要检查精确匹配与宽松匹配
-            // 如果存在精确匹配的规则，则仅使用那些规则
-            // 否则，如果存在宽松匹配的规则且是唯一的，则仅使用那个规则，如果不唯一则返回模拟规则（`$any = $any`）
-
-            val parameterizedKeyConfigs by lazy { getParameterizedKeyConfigs(element, expression) }
 
             parentConfigs.forEachFast f1@{ parentConfig ->
                 // NOTE #386 use `$any = $any` only, if value expression of parent config is `$any`
@@ -295,36 +290,15 @@ object ParadoxConfigService {
                 val configs = parentConfig.properties
                 if (configs.isNullOrEmpty()) return@f1
 
-                val exactMatchedConfigs = mutableListOf<CwtMemberConfig<*>>()
-                val lenientMatchedConfigs = mutableListOf<CwtMemberConfig<*>>()
-
                 configs.forEachFast { config ->
                     // 打平后需要首先进行必要的内联
                     // 如果别名规则内联后涉及单别名规则，会继续内联
                     val inlinedConfigs = CwtConfigManipulationService.inlineForConfigContext(config, expression.value)
-                    val matchedConfigs = when {
-                        inlinedConfigs == null -> listOf(config)
-                        else -> inlinedConfigs
+                    if(inlinedConfigs != null) {
+                        result.addAll(inlinedConfigs)
+                    } else {
+                        result.add(config)
                     }
-                    matchedConfigs.forEachFast { matchedConfig ->
-                        if (matchedConfig is CwtPropertyConfig) {
-                            val m = matchesParameterizedKeyConfigs(parameterizedKeyConfigs, matchedConfig.keyExpression)
-                            when (m) {
-                                null -> result.add(matchedConfig)
-                                true -> exactMatchedConfigs.add(matchedConfig)
-                                false -> lenientMatchedConfigs.add(matchedConfig)
-                            }
-                        } else {
-                            result.add(matchedConfig)
-                        }
-                    }
-                }
-
-                if (exactMatchedConfigs.isNotEmpty()) {
-                    result.addAll(exactMatchedConfigs)
-                } else if (lenientMatchedConfigs.isNotEmpty()) {
-                    // NOTE #386 use the only lenient matched config, or `$any = $any`
-                    result.add(lenientMatchedConfigs.singleOrNull() ?: configGroup.mockConfigModel.anyProperty)
                 }
             }
         }
@@ -342,32 +316,12 @@ object ParadoxConfigService {
         return result
     }
 
-    private fun getParameterizedKeyConfigs(element: ParadoxScriptMember, expression: ParadoxExpression): List<CwtValueConfig>? {
-        // 脚本表达式必须带参数（目前来说，如果不是整个作为参数，则直接返回空列表）
-
-        val memberElement = element.containingDirectMember
-        if (memberElement !is ParadoxScriptProperty) return null
-        if (!expression.isParameterized()) return null
-        if (!expression.isFullParameterized()) return emptyList()
-        return ParadoxParameterManager.getParameterizedKeyConfigs(memberElement)
-    }
-
-    private fun matchesParameterizedKeyConfigs(configs: List<CwtValueConfig>?, configExpression: CwtDataExpression): Boolean? {
-        // 如果作为参数的键的规则类型可以（从扩展的规则）推断出来且是匹配的，则需要继续向下匹配
-        // 目前要求推断结果必须是唯一的
-        // 目前不支持从参数的使用处推断 - 这可能会导致规则上下文的递归解析
-
-        if (configs == null) return null // 不是作为参数的键，不作特殊处理
-        if (configs.size != 1) return false // 推断结果不是唯一的，要求后续宽松匹配的结果是唯一的，否则认为没有最终匹配的结果
-        return CwtConfigManipulationService.mergeAndMatchValueConfigs(configs, configExpression)
-    }
-
     fun getConfigs(element: ParadoxScriptMember, options: ParadoxMatchOptions? = null): List<CwtMemberConfig<*>> {
-        val result = resolveConfigs(element, options)
+        val result = matchConfigs(element, options)
         return result.sortedByPriority({ it.configExpression }, { it.configGroup }) // 按优先级排序
     }
 
-    private fun resolveConfigs(element: ParadoxScriptMember, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>> {
+    private fun matchConfigs(element: ParadoxScriptMember, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>> {
         ProgressManager.checkCanceled()
         val configContext = ParadoxConfigManager.getConfigContext(element)
         if (configContext == null) return emptyList()
@@ -437,5 +391,25 @@ object ParadoxConfigService {
                 return result // 返回最终匹配的规则
             }
         }
+    }
+
+    private fun getParameterizedKeyConfigs(element: ParadoxScriptMember, expression: ParadoxExpression): List<CwtValueConfig>? {
+        // 脚本表达式必须带参数（目前来说，如果不是整个作为参数，则直接返回空列表）
+
+        val memberElement = element.containingDirectMember
+        if (memberElement !is ParadoxScriptProperty) return null
+        if (!expression.isParameterized()) return null
+        if (!expression.isFullParameterized()) return emptyList()
+        return ParadoxParameterManager.getParameterizedKeyConfigs(memberElement)
+    }
+
+    private fun matchesParameterizedKeyConfigs(configs: List<CwtValueConfig>?, configExpression: CwtDataExpression): Boolean? {
+        // 如果作为参数的键的规则类型可以（从扩展的规则）推断出来且是匹配的，则需要继续向下匹配
+        // 目前要求推断结果必须是唯一的
+        // 目前不支持从参数的使用处推断 - 这可能会导致规则上下文的递归解析
+
+        if (configs == null) return null // 不是作为参数的键，不作特殊处理
+        if (configs.size != 1) return false // 推断结果不是唯一的，要求后续宽松匹配的结果是唯一的，否则认为没有最终匹配的结果
+        return CwtConfigManipulationService.mergeAndMatchValueConfigs(configs, configExpression)
     }
 }

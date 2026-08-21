@@ -95,8 +95,8 @@ class CwtBaseRelatedConfigProvider : CwtRelatedConfigProvider {
 
         // 基于所有匹配的规则
         run {
-            val isKey = element is ParadoxScriptPropertyKey
-            val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(fallback = isKey, forDeclarationRoot = true))
+            val fallback = element is ParadoxScriptPropertyKey
+            val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(fallback = fallback, forDeclarationRoot = true))
             if (configs.isEmpty()) return@run
             for (config in configs) {
                 result += config
@@ -270,8 +270,8 @@ class CwtExtendedRelatedConfigProvider : CwtRelatedConfigProvider {
                 }
             }
 
-            val isKey = element is ParadoxScriptPropertyKey
-            val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(fallback = isKey, forDeclarationRoot = true))
+            val fallback = element is ParadoxScriptPropertyKey
+            val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(fallback = fallback, forDeclarationRoot = true))
             for (config in configs) {
                 val configExpression = config.configExpression
                 if (configExpression == ParadoxInlineScriptManager.inlineScriptPathExpression) {

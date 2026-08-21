@@ -80,8 +80,8 @@ class ParadoxScriptSemanticAnnotator : Annotator {
         // 高亮复杂枚举值声明
         if (annotateComplexEnumValue(element, holder)) return
 
-        val isKey = element is ParadoxScriptPropertyKey
-        val config = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(fallback = isKey)).firstOrNull()
+        val fallback = element is ParadoxScriptPropertyKey
+        val config = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(fallback = fallback)).firstOrNull()
         if (config != null) {
             // 如果不是字符串，除非是定义引用，否则不作高亮
             if (element !is ParadoxScriptStringExpressionElement && config.configExpression.type != CwtDataTypes.Definition) return
