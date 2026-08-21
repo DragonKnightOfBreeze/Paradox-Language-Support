@@ -181,8 +181,8 @@ class ParadoxLocalisationTextQuickDocRenderContext(
             // 如果图标高度在 `localisationFontSize` 到 `localisationTextIconSizeLimit` 之间，则将图标大小缩放到文档字体大小，否则需要基于文档字体大小进行缩放
             // 实际上，本地化文本可以嵌入任意大小的图片
             val docFontSize = getDocumentationFontSize().size
-            val locFontSize = ChronicleInternalSettings.getInstance().localisationFontSize
-            val locMaxTextIconSize = ChronicleInternalSettings.getInstance().localisationTextIconSizeLimit
+            val locFontSize = ChronicleInternalSettings.getInstance().localisationTextFontSizeForQuickDoc
+            val locMaxTextIconSize = ChronicleInternalSettings.getInstance().textIconSizeLimitForQuickDoc
             val scaleByDocFontSize = when {
                 originalIconHeight in locFontSize..locMaxTextIconSize -> docFontSize.toFloat() / originalIconHeight
                 else -> docFontSize.toFloat() / locFontSize

@@ -33,7 +33,7 @@ public interface ParadoxScriptProperty extends ParadoxScriptNamedElement, Parado
 
   @Nullable String getValue();
 
-  @NotNull String getExpression();
+  @NotNull String getPresentableText();
 
   @Nullable ParadoxScriptBlock getBlock();
 

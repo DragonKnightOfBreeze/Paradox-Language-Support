@@ -33,34 +33,12 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableName
-import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptTokenSets
 import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.psi.isDataExpression
 import icu.windea.pls.script.psi.parentProperty
 
 object ParadoxPsiFileService {
-    // region Find Extensions (from elementOffset)
-
-    @Suppress("unused")
-    fun findStringExpressionElementFromStartOffset(file: PsiFile, offset: Int): ParadoxScriptStringExpressionElement? {
-        if (offset < 0) return null
-        if (file.language !== ParadoxScriptLanguage) return null
-        return file.findElementAt(offset)
-            ?.takeIf { it.elementType in ParadoxScriptTokenSets.STRING_EXPRESSION_TOKENS }
-            ?.parentOfType<ParadoxScriptStringExpressionElement>()
-    }
-
-    fun findPropertyFromStartOffset(file: PsiFile, offset: Int): ParadoxScriptProperty? {
-        if (offset < 0) return null
-        if (file.language !== ParadoxScriptLanguage) return null
-        return file.findElementAt(offset)
-            ?.takeIf { it.elementType == ParadoxScriptElementTypes.PROPERTY_KEY_TOKEN }
-            ?.parentOfType<ParadoxScriptProperty>()
-    }
-
-    // endregion
-
     // region Find Extensions
 
     object ScriptedVariableOptions {

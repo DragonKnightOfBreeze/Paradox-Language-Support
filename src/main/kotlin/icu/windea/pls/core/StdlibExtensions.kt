@@ -376,12 +376,15 @@ fun String.escapeBlank(): String {
 /** 超出 [limit] 时截断并追加 [ellipsis]。 */
 fun String.truncate(limit: Int, ellipsis: String = "..."): String {
     if (limit <= 0) return this
+    if (this.isEmpty()) return this
     return if (this.length <= limit) this else this.take(limit) + ellipsis
 }
 
 /** 截断字符串但尽量保留引号对称性。 */
 fun String.truncateAndKeepQuotes(limit: Int, ellipsis: String = "..."): String {
     if (limit <= 0) return this
+    if (this.isEmpty()) return this
+    if (this == "\"" || this == "\"\"") return this
     if (this.isLeftQuoted()) {
         return if (this.length - 2 <= limit) this else this.take(limit + 1) + ellipsis + "\""
     } else {

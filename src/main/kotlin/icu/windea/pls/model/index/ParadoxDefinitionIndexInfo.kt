@@ -2,11 +2,11 @@ package icu.windea.pls.model.index
 
 import icu.windea.pls.lang.index.ParadoxDefinitionIndex
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
-import icu.windea.pls.lang.psi.ParadoxPsiFileService
 import icu.windea.pls.model.ParadoxDefinitionSource
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.ParadoxScriptPsiService
 
 /**
  * @see ParadoxDefinitionIndex
@@ -25,7 +25,7 @@ data class ParadoxDefinitionIndexInfo(
     val element: ParadoxDefinitionElement?
         get() = when (source) {
             ParadoxDefinitionSource.File -> file as? ParadoxScriptFile
-            else -> file?.let { file -> ParadoxPsiFileService.findPropertyFromStartOffset(file, elementOffset) }
+            else -> file?.let { file -> ParadoxScriptPsiService.findPropertyFromStartOffset(file, elementOffset) }
         }
     val fileElement: ParadoxScriptFile?
         get() = when (source) {
@@ -35,6 +35,6 @@ data class ParadoxDefinitionIndexInfo(
     val propertyElement: ParadoxScriptProperty?
         get() = when (source) {
             ParadoxDefinitionSource.File -> null
-            else -> file?.let { file -> ParadoxPsiFileService.findPropertyFromStartOffset(file, elementOffset) }
+            else -> file?.let { file -> ParadoxScriptPsiService.findPropertyFromStartOffset(file, elementOffset) }
         }
 }

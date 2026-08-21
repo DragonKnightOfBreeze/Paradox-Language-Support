@@ -1,11 +1,10 @@
-package icu.windea.pls.lang.psi
+package icu.windea.pls.cwt.psi
 
 import com.intellij.psi.PsiComment
 import com.intellij.psi.util.parentOfType
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.core.psi.PsiService
-import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.test.ChronicleTestScope
 import org.junit.After
 import org.junit.Before
@@ -17,7 +16,7 @@ import org.junit.runners.JUnit4
  * @see CwtPsiService
  */
 @RunWith(JUnit4::class)
-@TestDataPath("\$CONTENT_ROOT/testData")
+@TestDataPath("/testData")
 class CwtPsiServiceTest : BasePlatformTestCase(), ChronicleTestScope {
     override fun getTestDataPath() = "src/test/testData"
 
@@ -41,7 +40,7 @@ class CwtPsiServiceTest : BasePlatformTestCase(), ChronicleTestScope {
             val property = myFixture.findElementAtCaret()?.parentOfType<CwtProperty>()!!
             val r = CwtPsiService.getOwnedDocComments(property)
             assertEquals(1, r.size)
-            assertTrue(r[0] is icu.windea.pls.cwt.psi.CwtDocComment)
+            assertTrue(r[0] is CwtDocComment)
             assertEquals("attached doc", r[0].text.trimStart('#').trim())
         }
 

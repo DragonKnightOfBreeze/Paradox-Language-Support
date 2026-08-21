@@ -100,8 +100,8 @@ object ParadoxCsvPsiImplUtil {
     }
 
     @JvmStatic
-    fun getExpression(element: ParadoxCsvExpressionElement): String {
-        return element.text
+    fun getPresentableText(element: ParadoxCsvExpressionElement): String {
+        return ParadoxCsvPsiService.getPresentableText(element)
     }
 
     @JvmStatic

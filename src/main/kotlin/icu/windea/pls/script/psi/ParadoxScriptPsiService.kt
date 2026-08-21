@@ -1,13 +1,48 @@
 package icu.windea.pls.script.psi
 
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
 import com.intellij.psi.util.elementType
+import com.intellij.psi.util.parentOfType
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.forEachChild
 import icu.windea.pls.core.psi.PsiBoundElement
 import icu.windea.pls.core.psi.PsiService
+import icu.windea.pls.core.truncateAndKeepQuotes
+import icu.windea.pls.core.util.values.FallbackStrings
+import icu.windea.pls.lang.settings.ChronicleInternalSettings
+import icu.windea.pls.script.ParadoxScriptLanguage
 
 @Suppress("unused")
 object ParadoxScriptPsiService {
+    fun getPresentableText(element: ParadoxScriptProperty): String {
+        var keyElement: ParadoxScriptPropertyKey? = null
+        var separatorElement: PsiElement? = null
+        var valueElement: ParadoxScriptValue? = null
+        element.forEachChild { e ->
+            when {
+                e is ParadoxScriptPropertyKey -> keyElement = e
+                isPropertySeparator(e) -> separatorElement = e
+                e is ParadoxScriptValue -> valueElement = e
+            }
+        }
+        return buildString {
+            if (keyElement != null) append(getPresentableText(keyElement)) else append(FallbackStrings.unresolved)
+            if (separatorElement?.elementType != ParadoxScriptElementTypes.SAFE_CALL_ASSIGN_SIGN) append(" ")
+            append(separatorElement?.text ?: "=")
+            append(" ")
+            if (valueElement != null) append(getPresentableText(valueElement)) else append(FallbackStrings.unresolved)
+        }
+    }
+
+    fun getPresentableText(element: ParadoxScriptExpressionElement): String {
+        if (element is ParadoxScriptStringExpressionElement) {
+            val limit = ChronicleInternalSettings.getInstance().presentableTextLimit
+            return element.text.truncateAndKeepQuotes(limit)
+        }
+        return element.value
+    }
+
     fun canAttachComment(element: PsiElement): Boolean {
         return element is ParadoxScriptProperty || (element is ParadoxScriptString && element.isDirectValue())
     }
@@ -38,5 +73,22 @@ object ParadoxScriptPsiService {
     fun isBeforeBlockLeftBoundEnd(element: ParadoxScriptProperty, offset: Int): Boolean {
         val block = element.propertyValue?.castOrNull<ParadoxScriptBlock>() ?: return true
         return PsiService.isBeforeLeftBoundEnd(block, offset)
+    }
+
+    @Suppress("unused")
+    fun findStringExpressionElementFromStartOffset(file: PsiFile, offset: Int): ParadoxScriptStringExpressionElement? {
+        if (offset < 0) return null
+        if (file.language !== ParadoxScriptLanguage) return null
+        return file.findElementAt(offset)
+            ?.takeIf { it.elementType in ParadoxScriptTokenSets.STRING_EXPRESSION_TOKENS }
+            ?.parentOfType<ParadoxScriptStringExpressionElement>()
+    }
+
+    fun findPropertyFromStartOffset(file: PsiFile, offset: Int): ParadoxScriptProperty? {
+        if (offset < 0) return null
+        if (file.language !== ParadoxScriptLanguage) return null
+        return file.findElementAt(offset)
+            ?.takeIf { it.elementType == ParadoxScriptElementTypes.PROPERTY_KEY_TOKEN }
+            ?.parentOfType<ParadoxScriptProperty>()
     }
 }

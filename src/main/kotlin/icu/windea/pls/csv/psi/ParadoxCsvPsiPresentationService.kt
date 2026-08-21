@@ -71,7 +71,7 @@ object ParadoxCsvPsiPresentationService {
     private fun String.formatted(): String {
         return when {
             isEmpty() -> "\"\""
-            else -> truncate(ChronicleInternalSettings.getInstance().textLengthLimitForPresentation)
+            else -> truncate(ChronicleInternalSettings.getInstance().presentableTextLimit)
         }
     }
 }

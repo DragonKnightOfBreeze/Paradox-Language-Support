@@ -9,13 +9,23 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.children
 import icu.windea.pls.core.findChild
 import icu.windea.pls.core.optimized
+import icu.windea.pls.core.truncateAndKeepQuotes
 import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.withDependencyItems
+import icu.windea.pls.lang.settings.ChronicleInternalSettings
 
 @Suppress("unused")
 object ParadoxCsvPsiService {
     private val cachedColumnNamesKey = createKey<CachedValue<List<String>>>("cached.paradox.csv.columnNames")
     private const val SEPARATOR = ';'
+
+    fun getPresentableText(element: ParadoxCsvExpressionElement): String {
+        if (element is ParadoxCsvColumn) {
+            val limit = ChronicleInternalSettings.getInstance().presentableTextLimit
+            return element.text.truncateAndKeepQuotes(limit)
+        }
+        return element.value
+    }
 
     fun getSeparator(): Char {
         return SEPARATOR

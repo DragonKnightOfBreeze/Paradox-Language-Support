@@ -62,7 +62,7 @@ object CwtTypeManager {
      */
     fun getExpression(element: PsiElement): String? {
         return when (element) {
-            is CwtExpressionElement -> element.expression
+            is CwtExpressionElement -> element.presentableText
             else -> null
         }
     }

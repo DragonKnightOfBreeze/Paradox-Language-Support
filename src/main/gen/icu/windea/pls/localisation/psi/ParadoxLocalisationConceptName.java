@@ -19,7 +19,7 @@ public interface ParadoxLocalisationConceptName extends ParadoxLocalisationExpre
 
   @NotNull ParadoxLocalisationConceptName setValue(@NotNull String value);
 
-  @NotNull String getExpression();
+  @NotNull String getPresentableText();
 
   @Nullable PsiReference getReference();
 

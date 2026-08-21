@@ -4,7 +4,7 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.platform.backend.documentation.DocumentationTarget
 import com.intellij.platform.backend.documentation.InlineDocumentation
 import icu.windea.pls.cwt.psi.CwtDocComment
-import icu.windea.pls.lang.psi.CwtPsiService
+import icu.windea.pls.cwt.psi.CwtPsiService
 
 @Suppress("UnstableApiUsage")
 class CwtInlineDocumentation(

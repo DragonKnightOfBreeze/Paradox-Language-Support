@@ -13,5 +13,5 @@ interface CwtExpressionElement : NavigatablePsiElement {
 
     fun setValue(value: String): CwtExpressionElement
 
-    val expression: String
+    val presentableText: String
 }

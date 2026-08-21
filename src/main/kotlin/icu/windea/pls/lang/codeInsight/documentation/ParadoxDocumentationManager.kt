@@ -504,7 +504,7 @@ object ParadoxDocumentationManager {
             // 加上基本信息
             append(ChronicleStrings.scriptedVariablePrefix).append(" <b>@").append(name.escapeXml().or.anonymous()).append("</b>")
             val valueElement = element.scriptedVariableValue
-            if (valueElement != null) append(" = ").append(valueElement.expression.escapeXml())
+            if (valueElement != null) append(" = ").append(valueElement.presentableText.escapeXml())
 
             // 加上相关本地化的信息：同名的本地化
             addRelatedLocalisationsForScriptedVariable(element, name)
@@ -539,7 +539,7 @@ object ParadoxDocumentationManager {
             // 加上基本信息
             append(ChronicleStrings.propertyPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
             val valueElement = element.propertyValue
-            if (valueElement != null) append(" = ").append(valueElement.expression.escapeXml())
+            if (valueElement != null) append(" = ").append(valueElement.presentableText.escapeXml())
         }
     }
 

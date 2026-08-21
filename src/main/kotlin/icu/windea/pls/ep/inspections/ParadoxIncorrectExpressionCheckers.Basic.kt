@@ -173,7 +173,7 @@ class ParadoxIntValueFieldChecker : ParadoxIncorrectExpressionChecker {
         val intRange = configExpression.metadata.intRange
         if (intValue == null) {
             val description = when {
-                context.showExpect -> ChronicleEpBundle.message("incorrectExpression.intValueField.desc.1", evaluated.expression)
+                context.showExpect -> ChronicleEpBundle.message("incorrectExpression.intValueField.desc.1", evaluated.value)
                 else -> ChronicleEpBundle.message("incorrectExpression.intValueField.desc.0")
             }
             context.holder.registerProblem(element, description)
@@ -181,7 +181,7 @@ class ParadoxIntValueFieldChecker : ParadoxIncorrectExpressionChecker {
         }
         if (intRange != null && intValue !in intRange) {
             val description = when {
-                context.showExpect -> ChronicleEpBundle.message("incorrectExpression.intValueFieldRange.desc.1", evaluated.expression, intRange.expression, intValue)
+                context.showExpect -> ChronicleEpBundle.message("incorrectExpression.intValueFieldRange.desc.1", evaluated.value, intRange.expression, intValue)
                 else -> ChronicleEpBundle.message("incorrectExpression.intValueFieldRange.desc.0")
             }
             context.holder.registerProblem(element, description)
@@ -207,7 +207,7 @@ class ParadoxFloatValueFieldChecker : ParadoxIncorrectExpressionChecker {
         val floatRange = configExpression.metadata.floatRange
         if (floatValue == null && floatRange != null) { // NOTE 2.2.0 may not be a number after evaluation, if range is not specified
             val description = when {
-                context.showExpect -> ChronicleEpBundle.message("incorrectExpression.floatValueField.desc.1", evaluated.expression)
+                context.showExpect -> ChronicleEpBundle.message("incorrectExpression.floatValueField.desc.1", evaluated.value)
                 else -> ChronicleEpBundle.message("incorrectExpression.floatValueField.desc.0")
             }
             context.holder.registerProblem(element, description)
@@ -216,7 +216,7 @@ class ParadoxFloatValueFieldChecker : ParadoxIncorrectExpressionChecker {
         if (floatValue == null) return true
         if (floatRange != null && floatValue !in floatRange) {
             val description = when {
-                context.showExpect -> ChronicleEpBundle.message("incorrectExpression.floatValueFieldRange.desc.1", evaluated.expression, floatRange.expression, floatValue)
+                context.showExpect -> ChronicleEpBundle.message("incorrectExpression.floatValueFieldRange.desc.1", evaluated.value, floatRange.expression, floatValue)
                 else -> ChronicleEpBundle.message("incorrectExpression.floatValueFieldRange.desc.0")
             }
             context.holder.registerProblem(element, description)

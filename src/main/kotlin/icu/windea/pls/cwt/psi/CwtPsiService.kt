@@ -1,13 +1,49 @@
 package icu.windea.pls.cwt.psi
 
+import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
 import com.intellij.psi.util.elementType
+import com.intellij.psi.util.parentOfType
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.forEachChild
 import icu.windea.pls.core.psi.PsiBoundElement
 import icu.windea.pls.core.psi.PsiService
+import icu.windea.pls.core.truncateAndKeepQuotes
+import icu.windea.pls.core.util.values.FallbackStrings
+import icu.windea.pls.cwt.CwtLanguage
+import icu.windea.pls.lang.settings.ChronicleInternalSettings
 
 @Suppress("unused")
 object CwtPsiService {
+    fun getPresentableText(element: CwtProperty): String {
+        var keyElement: CwtPropertyKey? = null
+        var separatorElement: PsiElement? = null
+        var valueElement: CwtValue? = null
+        element.forEachChild { e ->
+            when {
+                e is CwtPropertyKey -> keyElement = e
+                isPropertySeparator(e) -> separatorElement = e
+                e is CwtValue -> valueElement = e
+            }
+        }
+        return buildString {
+            if (keyElement != null) append(getPresentableText(keyElement)) else append(FallbackStrings.unresolved)
+            append(" ")
+            append(separatorElement?.text ?: "=")
+            append(" ")
+            if (valueElement != null) append(getPresentableText(valueElement)) else append(FallbackStrings.unresolved)
+        }
+    }
+
+    fun getPresentableText(element: CwtExpressionElement): String {
+        if (element is CwtStringExpressionElement) {
+            val limit = ChronicleInternalSettings.getInstance().presentableTextLimit
+            return element.text.truncateAndKeepQuotes(limit)
+        }
+        return element.value
+    }
+
     fun canAttachComment(element: PsiElement): Boolean {
         return element is CwtProperty || (element is CwtString && element.isDirectValue())
     }
@@ -32,5 +68,31 @@ object CwtPsiService {
     fun isBeforeBlockLeftBoundEnd(element: CwtProperty, offset: Int): Boolean {
         val block = element.propertyValue?.castOrNull<CwtBlock>() ?: return true
         return PsiService.isBeforeLeftBoundEnd(block, offset)
+    }
+
+    fun getOwnedDocComments(element: PsiElement): List<PsiComment> {
+        return PsiService.getOwnedComments(element) { it is CwtDocComment }
+    }
+
+    fun getDocCommentText(comments: List<PsiComment>): String? {
+        // 如果某行注释至少存在4个前导的 `#`，则将注释文本视为 Markdown 文本
+        return PsiService.getDocCommentText(comments) { it.startsWith("####") }
+    }
+
+    fun findStringExpressionElementFromStartOffset(file: PsiFile, offset: Int): CwtStringExpressionElement? {
+        if (offset < 0) return null
+        if (file.language !== CwtLanguage) return null
+        return file.findElementAt(offset)
+            ?.takeIf { it.elementType in CwtTokenSets.STRING_EXPRESSION_TOKENS }
+            ?.parentOfType<CwtStringExpressionElement>()
+    }
+
+    @Suppress("unused")
+    fun findPropertyFromStartOffset(file: PsiFile, offset: Int): CwtProperty? {
+        if (offset < 0) return null
+        if (file.language !== CwtLanguage) return null
+        return file.findElementAt(offset)
+            ?.takeIf { it.elementType == CwtElementTypes.PROPERTY_KEY_TOKEN }
+            ?.parentOfType<CwtProperty>()
     }
 }

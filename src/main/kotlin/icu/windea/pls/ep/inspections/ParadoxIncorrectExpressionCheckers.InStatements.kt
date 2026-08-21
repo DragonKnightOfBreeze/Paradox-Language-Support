@@ -45,7 +45,7 @@ class ParadoxTriggerInSwitchStatementsChecker : ParadoxIncorrectExpressionChecke
         val resultTriggerConfigs = configGroup.aliasGroups.get("trigger")?.get(triggerName)?.orNull() ?: return true
 
         if (resultTriggerConfigs.none { it.config.valueType != CwtExpressionType.Block }) {
-            context.holder.registerProblem(element, ChronicleEpBundle.message("incorrectExpression.simpleTrigger.desc.0", element.expression))
+            context.holder.registerProblem(element, ChronicleEpBundle.message("incorrectExpression.simpleTrigger.desc.0"))
         }
         return true
     }
@@ -86,7 +86,7 @@ class ParadoxTriggerInWithParametersStatementsChecker : ParadoxIncorrectExpressi
         val hasParameters = selectScope { element.queryParentBy("*/*").asProperty().queryBy("parameters").asProperty().any() }
         if (hasParameters) {
             if (resultTriggerConfigs.none { it.config.valueType == CwtExpressionType.Block }) {
-                context.holder.registerProblem(element, ChronicleEpBundle.message("incorrectExpression.complexTrigger.desc.0", element.expression))
+                context.holder.registerProblem(element, ChronicleEpBundle.message("incorrectExpression.complexTrigger.desc.0"))
             }
         } else {
             // can also be complex trigger here, for some parameters can be ignored (like `count = xxx`)

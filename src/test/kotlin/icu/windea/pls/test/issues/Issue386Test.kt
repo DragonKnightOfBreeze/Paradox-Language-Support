@@ -122,7 +122,7 @@ class Issue386Test : BasePlatformTestCase(), ChronicleTestScope {
                     unresolved
                 }
 
-                ${error(forKey("unresolved_value", ""))}unresolved_value${errorEnd()}
+                ${error(forValue("unresolved_value", ""))}unresolved_value${errorEnd()}
                 ${error(forValue("{...}", ""))}{}${errorEnd()}
                 ${error(forValue("{...}", ""))}{
                     unresolved

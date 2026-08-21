@@ -23,7 +23,7 @@ public interface ParadoxCsvColumn extends ParadoxCsvLiteralValue, ParadoxCsvExpr
 
   @NotNull ParadoxCsvColumn setValue(@NotNull String value);
 
-  @NotNull String getExpression();
+  @NotNull String getPresentableText();
 
   @Nullable PsiReference getReference();
 

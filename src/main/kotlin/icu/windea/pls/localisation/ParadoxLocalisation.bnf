@@ -204,7 +204,7 @@ command_text ::= (COMMAND_TEXT_TOKEN | parameter) + {
   ]
   methods=[
     getIdElement parameter=""
-    getName getValue setValue getExpression getReference getReferences
+    getName getValue setValue getPresentableText getReference getReferences
   ]
 }
 private command_argument_part ::= PIPE command_argument ?
@@ -233,7 +233,7 @@ concept_name ::= (CONCEPT_NAME_TOKEN | parameter) + {
   ]
   methods=[
     getIdElement parameter=""
-    getName getValue setValue getExpression getReference getReferences
+    getName getValue setValue getPresentableText getReference getReferences
   ]
 }
 private concept_text_part ::= COMMA concept_text ?

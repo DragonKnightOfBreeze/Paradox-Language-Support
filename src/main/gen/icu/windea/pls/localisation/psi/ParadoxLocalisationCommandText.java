@@ -19,7 +19,7 @@ public interface ParadoxLocalisationCommandText extends ParadoxLocalisationExpre
 
   @NotNull ParadoxLocalisationCommandText setValue(@NotNull String value);
 
-  @NotNull String getExpression();
+  @NotNull String getPresentableText();
 
   @Nullable PsiReference getReference();
 

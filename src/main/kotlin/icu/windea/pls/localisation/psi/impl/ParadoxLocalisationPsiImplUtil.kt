@@ -479,8 +479,8 @@ object ParadoxLocalisationPsiImplUtil {
     }
 
     @JvmStatic
-    fun getExpression(element: ParadoxLocalisationExpressionElement): String {
-        return element.text
+    fun getPresentableText(element: ParadoxLocalisationExpressionElement): String {
+        return ParadoxLocalisationPsiService.getPresentableText(element)
     }
 
     @JvmStatic

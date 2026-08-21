@@ -79,6 +79,9 @@ object ParadoxExpressionInspectionService {
             return // skip if the parent node also fails the check
         }
 
+        val contextConfigs = configContext.getConfigs()
+        val contextConfigsNoFallback = configContext.getConfigs(ParadoxMatchOptions(fallback = false))
+
         val expectedConfigs = getExpectedConfigs(element, configContext, parentConfigContext)
         if (skipForUnresolvedExpression(element, expectedConfigs, context)) return
 
@@ -162,14 +165,14 @@ object ParadoxExpressionInspectionService {
 
     fun getDefaultDescriptionForUnresolvedExpression(element: ParadoxExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>, context: ParadoxExpressionInspectionContext): String {
         val expressionType = ChronicleBundle.expressionType(element)
-        val expression = element.expression
+        val text = element.presentableText
         val description = when {
-            !context.showExpect -> ChronicleBundle.message("unresolvedExpression.desc.0", expressionType, expression)
-            expectedConfigs.isEmpty() -> ChronicleBundle.message("unresolvedExpression.desc.1", expressionType, expression)
+            !context.showExpect -> ChronicleBundle.message("unresolvedExpression.desc.0", expressionType, text)
+            expectedConfigs.isEmpty() -> ChronicleBundle.message("unresolvedExpression.desc.1", expressionType, text)
             else -> {
                 val expectedConfigExpressions = expectedConfigs.mapFast { it.configExpression.expressionString }.toSet()
                 val expectText = expectedConfigExpressions.truncate(context.truncateExpect).joinToString()
-                ChronicleBundle.message("unresolvedExpression.desc.2", expressionType, expression, expectText)
+                ChronicleBundle.message("unresolvedExpression.desc.2", expressionType, text, expectText)
             }
         }
         return description

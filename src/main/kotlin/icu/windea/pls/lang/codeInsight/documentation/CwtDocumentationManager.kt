@@ -32,6 +32,7 @@ import icu.windea.pls.cwt.psi.CwtOption
 import icu.windea.pls.cwt.psi.CwtOptionKey
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.cwt.psi.CwtPropertyKey
+import icu.windea.pls.cwt.psi.CwtPsiService
 import icu.windea.pls.cwt.psi.CwtString
 import icu.windea.pls.cwt.psi.CwtValue
 import icu.windea.pls.cwt.psi.isDataExpression
@@ -39,7 +40,6 @@ import icu.windea.pls.cwt.psi.isOptionValue
 import icu.windea.pls.lang.ParadoxLanguage
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.index.constraints.ParadoxLocalisationIndexConstraint
-import icu.windea.pls.lang.psi.CwtPsiService
 import icu.windea.pls.lang.psi.light.CwtConfigSymbolLightElement
 import icu.windea.pls.lang.psi.light.CwtMemberConfigLightElement
 import icu.windea.pls.lang.search.ParadoxFilePathSearch

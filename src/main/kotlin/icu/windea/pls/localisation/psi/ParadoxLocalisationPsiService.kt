@@ -5,8 +5,15 @@ import com.intellij.psi.TokenType
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.prevLeaf
 import icu.windea.pls.core.isExactLineBreak
+import icu.windea.pls.core.truncate
+import icu.windea.pls.lang.settings.ChronicleInternalSettings
 
 object ParadoxLocalisationPsiService {
+    fun getPresentableText(element: ParadoxLocalisationExpressionElement): String {
+        val limit = ChronicleInternalSettings.getInstance().presentableTextLimit
+        return element.text.truncate(limit)
+    }
+
     fun canAttachComment(element: PsiElement): Boolean {
         return element is ParadoxLocalisationProperty
     }

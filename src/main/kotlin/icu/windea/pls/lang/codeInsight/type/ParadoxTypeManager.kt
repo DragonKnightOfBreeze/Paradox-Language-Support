@@ -179,7 +179,7 @@ object ParadoxTypeManager {
      */
     fun getExpression(element: PsiElement): String? {
         return when (element) {
-            is ParadoxExpressionElement -> element.expression
+            is ParadoxExpressionElement -> element.presentableText
             else -> null
         }
     }

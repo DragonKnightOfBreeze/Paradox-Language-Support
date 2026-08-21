@@ -14,7 +14,6 @@ import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.PsiService
-import icu.windea.pls.core.util.values.FallbackStrings
 import icu.windea.pls.ep.codeInsight.hints.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.codeInsight.color.ParadoxColorService
@@ -143,13 +142,6 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun getValue(element: ParadoxScriptProperty): String? {
         return element.propertyValue?.value
-    }
-
-    @JvmStatic
-    fun getExpression(element: ParadoxScriptProperty): String {
-        val keyExpression = element.propertyKey.expression
-        val valueExpression = element.propertyValue?.expression ?: FallbackStrings.unknown
-        return "$keyExpression = $valueExpression"
     }
 
     @JvmStatic
@@ -286,11 +278,6 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getValue(element: ParadoxScriptBlock): String {
-        return ChronicleStrings.blockFolder
-    }
-
-    @JvmStatic
-    fun getExpression(element: ParadoxScriptBlock): String {
         return ChronicleStrings.blockFolder
     }
 
@@ -452,11 +439,6 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getValue(element: ParadoxScriptInlineMath): String {
-        return ChronicleStrings.inlineMathFolder
-    }
-
-    @JvmStatic
-    fun getExpression(element: ParadoxScriptInlineMath): String {
         return ChronicleStrings.inlineMathFolder
     }
 
@@ -669,8 +651,13 @@ object ParadoxScriptPsiImplUtil {
     }
 
     @JvmStatic
-    fun getExpression(element: ParadoxScriptExpressionElement): String {
-        return element.text
+    fun getPresentableText(element: ParadoxScriptProperty): String {
+        return ParadoxScriptPsiService.getPresentableText(element)
+    }
+
+    @JvmStatic
+    fun getPresentableText(element: ParadoxScriptExpressionElement): String {
+        return ParadoxScriptPsiService.getPresentableText(element)
     }
 
     @JvmStatic

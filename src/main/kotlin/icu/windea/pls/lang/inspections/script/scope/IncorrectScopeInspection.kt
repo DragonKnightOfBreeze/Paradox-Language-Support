@@ -49,11 +49,11 @@ class IncorrectScopeInspection : ScopeInspectionBase() {
             val currentScopeText = parentScopeContext.scope.id
             if (element is ParadoxScriptProperty) {
                 val propertyKey = element.propertyKey
-                val text = propertyKey.expression
+                val text = propertyKey.presentableText
                 val description = ChronicleBundle.message("inspection.script.incorrectScope.desc.1", text, supportedScopesText, currentScopeText)
                 holder.registerProblem(propertyKey, description)
             } else if (element is ParadoxScriptString && config.configExpression.type == CwtDataTypes.AliasKeysField) {
-                val text = element.expression
+                val text = element.presentableText
                 val description = ChronicleBundle.message("inspection.script.incorrectScope.desc.2", text, supportedScopesText, currentScopeText)
                 holder.registerProblem(element, description)
             }

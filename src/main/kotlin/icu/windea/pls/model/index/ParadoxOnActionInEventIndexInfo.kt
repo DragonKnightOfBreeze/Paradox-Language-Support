@@ -2,9 +2,9 @@ package icu.windea.pls.model.index
 
 import icu.windea.pls.ep.index.ParadoxOnActionInEventMergedIndexSupport
 import icu.windea.pls.lang.index.ParadoxMergedIndex
-import icu.windea.pls.lang.psi.ParadoxPsiFileService
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.ParadoxScriptPsiService
 
 /**
  * @see ParadoxMergedIndex
@@ -18,5 +18,5 @@ data class ParadoxOnActionInEventIndexInfo(
     override val gameType: ParadoxGameType,
 ) : ParadoxIndexInfo() {
     val scopesElement: ParadoxScriptProperty?
-        get() = file?.let { file -> ParadoxPsiFileService.findPropertyFromStartOffset(file, scopesElementOffset) }
+        get() = file?.let { file -> ParadoxScriptPsiService.findPropertyFromStartOffset(file, scopesElementOffset) }
 }

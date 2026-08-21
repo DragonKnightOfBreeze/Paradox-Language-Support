@@ -30,13 +30,13 @@ import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.cwt.psi.CwtMember
 import icu.windea.pls.cwt.psi.CwtProperty
+import icu.windea.pls.cwt.psi.CwtPsiService
 import icu.windea.pls.cwt.psi.CwtValue
 import icu.windea.pls.cwt.psi.isDirectValue
 import icu.windea.pls.ep.config.config.CwtConfigFilterProvider
 import icu.windea.pls.ep.config.config.CwtConfigPostProcessor
 import icu.windea.pls.ep.config.config.CwtInjectedConfigProvider
 import icu.windea.pls.ep.config.configGroup.CwtConfigGroupFileProvider
-import icu.windea.pls.lang.psi.CwtPsiService
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.orSpecific
 import icu.windea.pls.model.paths.CwtConfigPath

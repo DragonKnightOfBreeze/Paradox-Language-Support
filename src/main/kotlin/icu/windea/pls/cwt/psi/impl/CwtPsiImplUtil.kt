@@ -20,7 +20,6 @@ import icu.windea.pls.core.findChildren
 import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.core.quoteIfNeeded
 import icu.windea.pls.core.unquote
-import icu.windea.pls.core.util.values.FallbackStrings
 import icu.windea.pls.cwt.psi.CwtBlock
 import icu.windea.pls.cwt.psi.CwtDocComment
 import icu.windea.pls.cwt.psi.CwtElementFactory
@@ -137,13 +136,6 @@ object CwtPsiImplUtil {
     }
 
     @JvmStatic
-    fun getExpression(element: CwtProperty): String {
-        val keyExpression = element.propertyKey.expression
-        val valueExpression = element.propertyValue?.expression ?: FallbackStrings.unknown
-        return "$keyExpression = $valueExpression"
-    }
-
-    @JvmStatic
     fun getMemberContainer(element: CwtProperty): CwtBlock? {
         return element.propertyValue?.castOrNull<CwtBlock>()
     }
@@ -236,11 +228,6 @@ object CwtPsiImplUtil {
     }
 
     @JvmStatic
-    fun getExpression(element: CwtBlock): String {
-        return ChronicleStrings.blockFolder
-    }
-
-    @JvmStatic
     fun getMemberContainer(element: CwtBlock): CwtBlock {
         return element
     }
@@ -308,8 +295,13 @@ object CwtPsiImplUtil {
     }
 
     @JvmStatic
-    fun getExpression(element: CwtExpressionElement): String {
-        return element.text
+    fun getPresentableText(element: CwtProperty): String {
+        return CwtPsiService.getPresentableText(element)
+    }
+
+    @JvmStatic
+    fun getPresentableText(element: CwtExpressionElement): String {
+        return CwtPsiService.getPresentableText(element)
     }
 
     @JvmStatic

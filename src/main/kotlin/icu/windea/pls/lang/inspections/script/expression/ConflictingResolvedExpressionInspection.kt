@@ -78,18 +78,18 @@ class ConflictingResolvedExpressionInspection : LocalInspectionTool() {
             ?.also { if (it.text.isParameterized()) return }
             ?: element.findChild { it.elementType == ParadoxScriptElementTypes.LEFT_BRACE }
             ?: return
-        val expression = property?.expression ?: element.expression
+        val text = property?.presentableText ?: element.presentableText
         val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(forDeclarationRoot = true))
-        check(element, position, configs, expression, holder)
+        check(element, position, configs, text, holder)
     }
 
     @Suppress("UNUSED_PARAMETER")
-    private fun check(element: ParadoxScriptMember, position: PsiElement, configs: List<CwtMemberConfig<*>>, expression: String, holder: ProblemsHolder) {
+    private fun check(element: ParadoxScriptMember, position: PsiElement, configs: List<CwtMemberConfig<*>>, text: String, holder: ProblemsHolder) {
         if (skip(element, configs)) return
         val isKey = position is ParadoxScriptPropertyKey
         val description = when {
-            isKey -> ChronicleBundle.message("inspection.script.conflictingResolvedExpression.desc.1", expression)
-            else -> ChronicleBundle.message("inspection.script.conflictingResolvedExpression.desc.2", expression)
+            isKey -> ChronicleBundle.message("inspection.script.conflictingResolvedExpression.desc.1", text)
+            else -> ChronicleBundle.message("inspection.script.conflictingResolvedExpression.desc.2", text)
         }
         holder.registerProblem(position, description)
     }

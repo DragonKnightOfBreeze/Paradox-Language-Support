@@ -24,5 +24,5 @@ interface ParadoxExpressionElement : NavigatablePsiElement {
 
     fun setValue(value: String): ParadoxExpressionElement
 
-    val expression: String
+    val presentableText: String
 }
