@@ -27,7 +27,6 @@ import icu.windea.pls.lang.fixes.GenerateLocalisationsFix
 import icu.windea.pls.lang.fixes.GenerateLocalisationsInFileFix
 import icu.windea.pls.lang.fixes.ReplaceWithSimilarExpressionFix
 import icu.windea.pls.lang.fixes.ReplaceWithSimilarExpressionInListFix
-import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.CwtConfigContext
@@ -37,7 +36,6 @@ import icu.windea.pls.lang.tagType
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxCsvManager
 import icu.windea.pls.model.orSpecific
-import icu.windea.pls.script.psi.ParadoxParameterAwareElement
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptBoolean
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
@@ -60,28 +58,24 @@ object ParadoxExpressionInspectionService {
     fun checkForUnresolvedExpression(element: ParadoxScriptExpressionElement, context: ParadoxExpressionInspectionContext) {
         if (!element.isDataExpression()) return // skip if is not a data expression
 
-        // skip if it is parameterized
-        if (element is ParadoxParameterAwareElement && element.text.isParameterized()) return
+        // TODO 3.0.2 #386
 
+        // 如果存在匹配的规则，则直接跳过
+
+        // NOTE 3.0.2 do not skip by default (try to match with parameters if possible)
+        //// skip if it is parameterized
+        // if (element is ParadoxParameterAwareElement && element.text.isParameterized()) return
+
+        // NOTE 3.0.2 not very necessary, but in case
         // skip if it is a special tag (Do not consider whether matched configs exist)
         if (element is ParadoxScriptString && element.tagType != null) return
 
-        // 如果表达式是块（`{...}`），需要递归向下检查其中的表达式（键/值）
-        // 如果存在错误，则不再递归向下检查
-        // 如果匹配的规则的数据类型为 `Any`，则不再递归向下检查
-        // 如果因为其他原因被忽略，仍然需要在必要时递归向下检查
-
-        // TODO 3.0.2 #386
-
         // skip if config context not exists
         val configContext = ParadoxConfigManager.getConfigContext(element) ?: return
-        // skip if config context should be skipped (mainly by member path and member role)
+        // skip if config context should be skipped (mainly based on member path and member role)
         if (configContext.skipUnresolvedExpressionCheck()) return
 
-        // skip if there are no context configs
-        if (configContext.getConfigs().isEmpty()) return
-
-        // skip if there are any matched configs
+        // skip if there are any matched configs (strictly)
         val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(fallback = false))
         if (configs.isNotEmpty()) return
 
@@ -95,10 +89,11 @@ object ParadoxExpressionInspectionService {
         if (element !is ParadoxCsvColumn) return
         if (ParadoxCsvPsiService.isHeaderColumn(element)) return // skip header columns
 
-        // - 如果不存在对应的列规则，则直接跳过
-        // - 如果存在对应的列规则且匹配，则直接跳过
-        // - 按需忽略最后一行
+        // 如果不存在对应的列规则，则直接跳过
+        // 如果存在对应的列规则且匹配，则直接跳过
+        // 按需忽略最后一行
 
+        // skip if the column config can be matched (strictly)
         val columnConfig = ParadoxCsvManager.getColumnConfig(element, rowConfig) ?: return // skip (checked by `IncorrectColumnSizeInspection`)
         if (ParadoxCsvManager.isMatchedColumnConfig(element, columnConfig)) return
 

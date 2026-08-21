@@ -8,6 +8,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.util.parents
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.base.context.ChronicleThreadContext
+import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
@@ -18,6 +19,7 @@ import icu.windea.pls.config.config.originalConfig
 import icu.windea.pls.config.config.overriddenProvider
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.configGroup.mockConfigModel
 import icu.windea.pls.config.filterProperties
 import icu.windea.pls.config.filterValues
 import icu.windea.pls.config.manipulation.CwtConfigManipulationService
@@ -230,8 +232,8 @@ object ParadoxConfigService {
 
         val configGroup = context.configGroup
         val element = context.element ?: return emptyList() // null -> unexpected (should be bound first)
-        val containingDirectMember = element.containingDirectMember
-        val parentMember = containingDirectMember.parents(withSelf = false).findIsInstance<ParadoxScriptMember> { it is ParadoxScriptFile || it.isDirectMember() } ?: return emptyList()
+        val member = element.containingDirectMember
+        val parentMember = member.parents(withSelf = false).findIsInstance<ParadoxScriptMember> { it is ParadoxScriptFile || it.isDirectMember() } ?: return emptyList()
 
         // 从存储于 PSI 的上级缓存中获取 `parentContext`（父上下文），然后再从存储于规则分组的缓存中获取 `parentConfigs`（父上下文规则）
         val parentContext = ParadoxConfigManager.getConfigContext(parentMember) ?: return emptyList()
@@ -250,7 +252,7 @@ object ParadoxConfigService {
         if (matchedParentConfigs.isEmpty()) return emptyList() // 忽略
 
         // 按照 `subPath` 打平规则，并进行必要的处理
-        val result = buildConfigsForConfigContext(expression, matchedParentConfigs, containingDirectMember)
+        val result = buildConfigsForConfigContext(element, expression, matchedParentConfigs, configGroup)
         if (result.isEmpty()) return emptyList()
 
         // 如果 `element` 是属性值，则需要再次进行匹配，并接着转换为属性值对应的规则
@@ -262,22 +264,34 @@ object ParadoxConfigService {
         return result
     }
 
-    private fun buildConfigsForConfigContext(expression: ParadoxExpression, parentConfigs: List<CwtMemberConfig<*>>, containingDirectMember: ParadoxScriptMember): MutableList<CwtMemberConfig<*>> {
-        // TODO 3.0.2 #386
-
+    private fun buildConfigsForConfigContext(element: ParadoxScriptMember, expression: ParadoxExpression, parentConfigs: List<CwtMemberConfig<*>>, configGroup: CwtConfigGroup): List<CwtMemberConfig<*>> {
         val result = mutableListOf<CwtMemberConfig<*>>()
         if (expression.value == "-") {
+            // 如果父规则的值表达式的数据类型是 `Any`，则仅使用 `$any`
+
             parentConfigs.forEachFast f1@{ parentConfig ->
+                // NOTE #386 use `$any` only, if value expression of parent config is `$any`
+                if (parentConfig.valueExpression.type == CwtDataTypes.Any) return listOf(configGroup.mockConfigModel.anyValue)
+
                 val configs = parentConfig.values
                 if (configs.isNullOrEmpty()) return@f1
+
                 configs.forEachFast { config ->
                     result.add(config)
                 }
             }
         } else {
-            val parameterizedKeyConfigs by lazy { getParameterizedKeyConfigs(containingDirectMember, expression) }
+            // 如果父规则的值表达式的数据类型是 `Any`，则仅使用 `$any = $any`
+            // 如果当前路径是整个作为参数的，需要检查精确匹配与宽松匹配
+            // 如果存在精确匹配的规则，则仅使用那些规则
+            // 否则，如果存在宽松匹配的规则且是唯一的，则仅使用那个规则，如果不唯一则返回模拟规则（`$any = $any`）
+
+            val parameterizedKeyConfigs by lazy { getParameterizedKeyConfigs(element, expression) }
 
             parentConfigs.forEachFast f1@{ parentConfig ->
+                // NOTE #386 use `$any = $any` only, if value expression of parent config is `$any`
+                if (parentConfig.valueExpression.type == CwtDataTypes.Any) return listOf(configGroup.mockConfigModel.anyProperty)
+
                 val configs = parentConfig.properties
                 if (configs.isNullOrEmpty()) return@f1
 
@@ -292,10 +306,6 @@ object ParadoxConfigService {
                         inlinedConfigs == null -> listOf(config)
                         else -> inlinedConfigs
                     }
-
-                    // 如果当前路径是整个作为参数的，需要检查精确匹配与宽松匹配
-                    // 如果存在精确匹配的规则，则仅使用那些规则
-                    // 否则，如果存在宽松匹配的规则且是唯一的，则仅使用那个规则
                     matchedConfigs.forEachFast { matchedConfig ->
                         if (matchedConfig is CwtPropertyConfig) {
                             val m = matchesParameterizedKeyConfigs(parameterizedKeyConfigs, matchedConfig.keyExpression)
@@ -312,16 +322,16 @@ object ParadoxConfigService {
 
                 if (exactMatchedConfigs.isNotEmpty()) {
                     result.addAll(exactMatchedConfigs)
-                } else if (lenientMatchedConfigs.size == 1) {
-                    // TODO 3.0.2 #386
-                    result.add(lenientMatchedConfigs.single())
+                } else if (lenientMatchedConfigs.isNotEmpty()) {
+                    // NOTE #386 use the only lenient matched config, or `$any = $any`
+                    result.add(lenientMatchedConfigs.singleOrNull() ?: configGroup.mockConfigModel.anyProperty)
                 }
             }
         }
         return result
     }
 
-    private fun matchConfigsForConfigContext(element: PsiElement, expression: ParadoxExpression, configs: List<CwtMemberConfig<*>>, configGroup: CwtConfigGroup, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>> {
+    private fun matchConfigsForConfigContext(element: ParadoxScriptMember, expression: ParadoxExpression, configs: List<CwtMemberConfig<*>>, configGroup: CwtConfigGroup, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>> {
         ProgressManager.checkCanceled()
         val candidates = ParadoxMatchService.collectCandidates(configs) { config ->
             val context = ParadoxScriptExpressionMatchContext(element, expression, config.configExpression, config, configGroup, options)
@@ -335,10 +345,11 @@ object ParadoxConfigService {
     private fun getParameterizedKeyConfigs(element: ParadoxScriptMember, expression: ParadoxExpression): List<CwtValueConfig>? {
         // 脚本表达式必须带参数（目前来说，如果不是整个作为参数，则直接返回空列表）
 
-        if (element !is ParadoxScriptProperty) return null
+        val memberElement = element.containingDirectMember
+        if (memberElement !is ParadoxScriptProperty) return null
         if (!expression.isParameterized()) return null
         if (!expression.isFullParameterized()) return emptyList()
-        return ParadoxParameterManager.getParameterizedKeyConfigs(element)
+        return ParadoxParameterManager.getParameterizedKeyConfigs(memberElement)
     }
 
     private fun matchesParameterizedKeyConfigs(configs: List<CwtValueConfig>?, configExpression: CwtDataExpression): Boolean? {

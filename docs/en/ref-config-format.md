@@ -2259,7 +2259,7 @@ Notes:
 - For path references, separators as prefixes are not supported; i.e., absolute path form is **not supported**.
 - File extensions are not distinguished.
 
-- Format of corresponding data expressions:
+Format of corresponding data expressions:
 - `icon[{path}]` – where `{path}` matches a path pattern (e.g., `gfx/interface/icons`).
 
 Examples of Corresponding data expressions:
@@ -2278,7 +2278,7 @@ Notes:
 - For path references, "/", "\", repeated separators, or separators appearing as suffixes are all supported and will be normalized.
 - For path references, separators as prefixes are supported and will be ignored; i.e., absolute path form is **supported**.
 
-- Format of corresponding data expressions:
+Format of corresponding data expressions:
 - `filepath` – locates relative to the entry path.
 - `filepath[./]` – locates relative to the current script file.
 - `filepath[{path}]` – where `{path}` matches a path pattern.
@@ -2303,7 +2303,7 @@ Notes:
 - For path references, separators as prefixes are not supported; i.e., absolute path form is **not supported**.
 - Only the file name is distinguished.
 
-- Format of corresponding data expressions:
+Format of corresponding data expressions:
 - `filename`
 - `filename[{path}]` – where `{path}` matches a path pattern.
 
