@@ -25,7 +25,7 @@ class MultipleLocalesInspection : LocalInspectionTool(), DumbAware {
 
     override fun getOptionsPane(): OptPane {
         return OptPane.pane(
-            OptPane.expandableString("ignoredFileNames", ChronicleBundle.message("inspection.localisation.multipleLocales.option.ignoredFileNames"), ",")
+            OptPane.expandableString("ignoredFileNames", ChronicleBundle.message("inspection.option.ignoredFileNames"), ",")
                 .description(ChronicleBundle.message("comment.patterns"))
         )
     }

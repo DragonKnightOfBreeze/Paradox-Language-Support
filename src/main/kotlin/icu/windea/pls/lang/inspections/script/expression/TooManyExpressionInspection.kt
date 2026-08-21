@@ -128,19 +128,13 @@ class TooManyExpressionInspection : LocalInspectionTool() {
     private fun checkOccurrence(element: ParadoxScriptMember, position: PsiElement, occurrence: ParadoxMatchOccurrence, configExpression: CwtDataExpression, holder: ProblemsHolder): Boolean {
         val (actual, _, max, _, lenientMax) = occurrence
         if (max != null && actual > max) {
-            val isKey = configExpression.role.isKey()
+            val expressionType = ChronicleBundle.expressionType(configExpression)
             val isConst = configExpression.type == CwtDataTypes.Constant
-            val description = if (isKey) {
+            val description =
                 when {
-                    isConst -> ChronicleBundle.message("inspection.script.tooManyExpression.desc.1.1", configExpression)
-                    else -> ChronicleBundle.message("inspection.script.tooManyExpression.desc.1.2", configExpression)
+                    isConst -> ChronicleBundle.message("inspection.script.tooManyExpression.desc.1", expressionType, configExpression)
+                    else -> ChronicleBundle.message("inspection.script.tooManyExpression.desc.2", expressionType, configExpression)
                 }
-            } else {
-                when {
-                    isConst -> ChronicleBundle.message("inspection.script.tooManyExpression.desc.2.1", configExpression)
-                    else -> ChronicleBundle.message("inspection.script.tooManyExpression.desc.2.2", configExpression)
-                }
-            }
             val maxDefine = occurrence.maxDefine
             val detail = when {
                 maxDefine == null -> ChronicleBundle.message("inspection.script.tooManyExpression.desc.detail.1", max, actual)

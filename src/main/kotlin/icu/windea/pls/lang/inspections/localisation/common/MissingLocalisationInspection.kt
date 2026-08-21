@@ -50,7 +50,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
         return panel {
             // ignoredFileNames
             row {
-                label(ChronicleBundle.message("inspection.localisation.missingLocalisation.option.ignoredFileNames"))
+                label(ChronicleBundle.message("inspection.option.ignoredFileNames"))
                 expandableTextField({ it.toDelimitedMutableList() }, { it.toDelimitedString() })
                     .bindText(::ignoredFileNames.toAtomicProperty())
                     .comment(ChronicleBundle.message("comment.patterns"))

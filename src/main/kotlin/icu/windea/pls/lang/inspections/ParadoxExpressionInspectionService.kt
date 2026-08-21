@@ -164,6 +164,13 @@ object ParadoxExpressionInspectionService {
         return true
     }
 
+    fun getDefaultLocationForUnresolvedExpression(element: ParadoxExpressionElement): PsiElement {
+        if (element is ParadoxCsvColumn && ParadoxCsvPsiService.isEmptyColumn(element)) {
+            return ParadoxCsvPsiService.getLocationForEmptyColumn(element) // in case
+        }
+        return element
+    }
+
     fun getDefaultDescriptionForUnresolvedExpression(element: ParadoxExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>, context: ParadoxExpressionInspectionContext): String {
         val expression = element.expression
         val expect = when {
@@ -178,13 +185,6 @@ object ParadoxExpressionInspectionService {
             else -> ChronicleBundle.message("unresolvedExpression.desc.noExpect", expression)
         }
         return message
-    }
-
-    fun getDefaultLocationForUnresolvedExpression(element: ParadoxExpressionElement): PsiElement {
-        if (element is ParadoxCsvColumn && ParadoxCsvPsiService.isEmptyColumn(element)) {
-            return ParadoxCsvPsiService.getLocationForEmptyColumn(element) // in case
-        }
-        return element
     }
 
     fun getSimilarityBasedFixesForUnresolvedExpression(element: ParadoxExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>): List<LocalQuickFix> {

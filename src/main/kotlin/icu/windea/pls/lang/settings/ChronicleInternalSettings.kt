@@ -48,11 +48,6 @@ class ChronicleInternalSettings {
     val itemLimit get() = Registry.intValue("chronicle.settings.itemLimit", 5).coerceAtLeast(0)
 
     /**
-     * 定义相对于脚本文件的最大深度（用于优化性能）。从0开始。
-     */
-    val maxDefinitionDepth get() = Registry.intValue("chronicle.settings.maxDefinitionDepth", 4).coerceAtLeast(0)
-
-    /**
      * 默认的封装变量的名字（执行重构与生成操作时会用到）。
      */
     val defaultScriptedVariableName get() = Registry.stringValue("chronicle.settings.defaultScriptedVariableName").orNull() ?: "var"

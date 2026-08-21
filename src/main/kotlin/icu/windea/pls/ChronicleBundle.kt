@@ -1,6 +1,14 @@
 package icu.windea.pls
 
 import com.intellij.DynamicBundle
+import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.config.configExpression.CwtDataExpressionRole
+import icu.windea.pls.csv.psi.ParadoxCsvColumn
+import icu.windea.pls.lang.psi.ParadoxExpressionElement
+import icu.windea.pls.model.expressions.ParadoxExpression
+import icu.windea.pls.model.type.ParadoxExpressionRole
+import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
+import icu.windea.pls.script.psi.ParadoxScriptValue
 import org.jetbrains.annotations.Nls
 import org.jetbrains.annotations.NonNls
 import org.jetbrains.annotations.PropertyKey
@@ -23,7 +31,7 @@ object ChronicleBundle {
         return INSTANCE.getLazyMessage(key, *params)
     }
 
-    // methods to get specific messages
+    // region methods to get specific messages
 
     @JvmStatic
     @Nls
@@ -31,4 +39,37 @@ object ChronicleBundle {
         if (message.isNullOrEmpty()) return ""
         return INSTANCE.getMessage("error.details")
     }
+
+    @JvmStatic
+    @Nls
+    fun expressionType(value: ParadoxExpressionElement) : String {
+        return when(value) {
+            is ParadoxScriptPropertyKey -> INSTANCE.getMessage("expression.type.key")
+            is ParadoxScriptValue -> INSTANCE.getMessage("expression.type.value")
+            is ParadoxCsvColumn -> INSTANCE.getMessage("expression.type.column")
+            else -> INSTANCE.getMessage("expression.type.other")
+        }
+    }
+
+    @JvmStatic
+    @Nls
+    fun expressionType(value: ParadoxExpression) : String {
+        return when(value.role) {
+            ParadoxExpressionRole.Key -> INSTANCE.getMessage("expression.type.key")
+            ParadoxExpressionRole.Value -> INSTANCE.getMessage("expression.type.value")
+            else -> INSTANCE.getMessage("expression.type.other")
+        }
+    }
+
+    @JvmStatic
+    @Nls
+    fun expressionType(value: CwtDataExpression) : String {
+        return when(value.role) {
+            CwtDataExpressionRole.Key -> INSTANCE.getMessage("expression.type.key")
+            CwtDataExpressionRole.Value -> INSTANCE.getMessage("expression.type.value")
+            else -> INSTANCE.getMessage("expression.type.other")
+        }
+    }
+
+    // endregion
 }

@@ -4,6 +4,7 @@ import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.ChronicleTestScope
+import icu.windea.pls.test.dsl.configureByText
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -49,108 +50,124 @@ class IncorrectColumnSizeInspectionTest : BasePlatformTestCase(), ChronicleTestS
     @Test
     fun rowTypeIsKey_success() {
         markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/key/test.csv")
-        myFixture.configureByText("test.csv", """
+        myFixture.configureByText("test.csv") {
+            """
             id;number;status;flag
             k1;0;yes;red_flag
-        """.trimIndent())
+            """.trimIndent()
+        }
         myFixture.checkHighlighting()
     }
 
     @Test
     fun rowTypeIsKey_missing_failed() {
-        val tag = "Incorrect column size (row config: test_row_key, expect: 4, actual: 3)".toErrorTag()
-
         markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/key/test.csv")
-        myFixture.configureByText("test.csv", """
-            id;number;${tag.start}status${tag.end}
-            k1;0;${tag.start}yes${tag.end}
-        """.trimIndent())
+        myFixture.configureByText("test.csv") {
+            val m1 = "Incorrect column size (row config: test_row_key, expect: 4, actual: 3)"
+            """
+            id;number;${error(m1)}status${errorEnd()}
+            k1;0;${error(m1)}yes${errorEnd()}
+            """.trimIndent()
+        }
         myFixture.checkHighlighting()
     }
 
     @Test
     fun rowTypeIsKey_unsorted_success() {
         markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/key/test.csv")
-        myFixture.configureByText("test.csv", """
+        myFixture.configureByText("test.csv") {
+            """
             id;number;flag;status
             k1;0;red_flag;yes
-        """.trimIndent())
+            """.trimIndent()
+        }
         myFixture.checkHighlighting()
     }
 
     @Test
     fun rowTypeIsKey_unknown_success() {
         markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/key/test.csv")
-        myFixture.configureByText("test.csv", """
+        myFixture.configureByText("test.csv") {
+            """
             id;number;status;unknown
             k1;0;yes;unknown
-        """.trimIndent())
+            """.trimIndent()
+        }
         myFixture.checkHighlighting()
     }
 
     @Test
     fun rowTypeIsKey_extraUnknown_failed() {
-        val tag = "Incorrect column size (row config: test_row_key, expect: 4, actual: 5)".toErrorTag()
-
         markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/key/test.csv")
-        myFixture.configureByText("test.csv", """
-            id;number;status;flag;${tag.start}unknown${tag.end}
-            k1;0;yes;red_flag;${tag.start}unknown${tag.end}
-        """.trimIndent())
+        myFixture.configureByText("test.csv") {
+            val m1 = "Incorrect column size (row config: test_row_key, expect: 4, actual: 5)"
+            """
+            id;number;status;flag;${error(m1)}unknown${errorEnd()}
+            k1;0;yes;red_flag;${error(m1)}unknown${errorEnd()}
+            """.trimIndent()
+        }
         myFixture.checkHighlighting()
     }
 
     @Test
     fun rowTypeIsKey_mismatchedHeaderSize_failed() {
-        val tag = "Incorrect column size (row config: test_row_key, expect: 4, actual: 5)".toErrorTag()
-
         markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/key/test.csv")
-        myFixture.configureByText("test.csv", """
-            id;number;status;flag;${tag.start}plus${tag.end}
+        myFixture.configureByText("test.csv") {
+            val m1 = "Incorrect column size (row config: test_row_key, expect: 4, actual: 5)"
+            """
+            id;number;status;flag;${error(m1)}plus${errorEnd()}
             k1;0;yes;red_flag
-        """.trimIndent())
+            """.trimIndent()
+        }
         myFixture.checkHighlighting()
     }
 
     @Test
     fun rowTypeIsKey_mismatchedRowSize_failed() {
-        val tag = "Incorrect column size (row config: test_row_key, expect: 4, actual: 6)".toErrorTag()
-
         markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/key/test.csv")
-        myFixture.configureByText("test.csv", """
+        myFixture.configureByText("test.csv") {
+            val m1 = "Incorrect column size (row config: test_row_key, expect: 4, actual: 6)"
+            """
             id;number;status;flag
-            k1;0;yes;red_flag;plus;${tag.start}plus${tag.end}
-        """.trimIndent())
+            k1;0;yes;red_flag;plus;${error(m1)}plus${errorEnd()}
+            """.trimIndent()
+        }
         myFixture.checkHighlighting()
     }
 
     @Test
     fun rowTypeIsKey_skipLastColumn_correct_success() {
         markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/key_skip_last_column/test.csv")
-        myFixture.configureByText("test.csv", """
+        myFixture.configureByText("test.csv") {
+            """
             id;number;status;flag
             k1;0;yes;red_flag
-        """.trimIndent())
+            """.trimIndent()
+        }
         myFixture.checkHighlighting()
     }
 
     @Test
     fun rowTypeIsKey_skipLastColumn_ignoreHeaderColumn_success() {
         markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/key_skip_last_column/test.csv")
-        myFixture.configureByText("test.csv", """
+        myFixture.configureByText("test.csv") {
+            """
             id;number;status;flag;end_column
             k1;0;yes;red_flag;
-        """.trimIndent())
+            """.trimIndent()
+        }
         myFixture.checkHighlighting()
     }
 
     @Test
     fun rowTypeIsKey_skipLastColumn_ignoreRowColumn_success() {
         markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/key_skip_last_column/test.csv")
-        myFixture.configureByText("test.csv", """
+        myFixture.configureByText("test.csv") {
+            """
             id;number;status;flag;end_column
             k1;0;yes;red_flag;123
-        """.trimIndent())
+            """.trimIndent()
+        }
         myFixture.checkHighlighting()
     }
 

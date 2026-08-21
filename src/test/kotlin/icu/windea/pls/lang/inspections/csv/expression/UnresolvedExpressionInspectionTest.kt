@@ -4,6 +4,7 @@ import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.ChronicleTestScope
+import icu.windea.pls.test.dsl.configureByText
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -49,44 +50,51 @@ class UnresolvedExpressionInspectionTest : BasePlatformTestCase(), ChronicleTest
     @Test
     fun rowTypeIsKey_success() {
         markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/key/test.csv")
-        myFixture.configureByText("test.csv", """
+        myFixture.configureByText("test.csv") {
+            """
             id;number;status;flag
             k1;0;yes;red_flag
-        """.trimIndent())
+            """.trimIndent()
+        }
         myFixture.checkHighlighting()
     }
 
     @Test
     fun rowTypeIsKey_failed() {
-        val tag1 = "Cannot resolve expression `1.234` (expect matching: int[0..10])".toErrorTag()
-        val tag2 = "Cannot resolve expression `not` (expect matching: bool)".toErrorTag()
-
         markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/key/test.csv")
-        myFixture.configureByText("test.csv", """
+        myFixture.configureByText("test.csv") {
+            val m1 = "Cannot resolve expression `1.234` (expect matching: int[0..10])"
+            val m2 = "Cannot resolve expression `not` (expect matching: bool)"
+            """
             id;number;status;flag;status
-            id_is;${tag1.start}1.234${tag1.end};${tag2.start}not${tag2.end};valid;yes
-        """.trimIndent())
+            id_is;${error(m1)}1.234${errorEnd()};${error(m2)}not${errorEnd()};valid;yes
+            """.trimIndent()
+        }
         myFixture.checkHighlighting()
     }
 
     @Test
     fun rowTypeIsKey_skipLastRow_success() {
         markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/key_skip_last_row/test.csv")
-        myFixture.configureByText("test.csv", """
+        myFixture.configureByText("test.csv") {
+            """
             id;number;status;flag
             k1;0;yes;red_flag
             yes;it's;some;thing;to;be;ignored
-        """.trimIndent())
+            """.trimIndent()
+        }
         myFixture.checkHighlighting()
     }
 
     @Test
     fun rowTypeIsKey_skipLastColumn_success() {
         markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/key_skip_last_column/test.csv")
-        myFixture.configureByText("test.csv", """
+        myFixture.configureByText("test.csv") {
+            """
             id;number;status;flag;ignored
             k1;0;yes;red_flag;ignored
-        """.trimIndent())
+            """.trimIndent()
+        }
         myFixture.checkHighlighting()
     }
 
@@ -97,44 +105,51 @@ class UnresolvedExpressionInspectionTest : BasePlatformTestCase(), ChronicleTest
     @Test
     fun rowTypeIsIndex_success() {
         markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/index/test.csv")
-        myFixture.configureByText("test.csv", """
+        myFixture.configureByText("test.csv") {
+            """
             id;number;status;flag;status
             k1;0;yes;red_flag;no
-        """.trimIndent())
+            """.trimIndent()
+        }
         myFixture.checkHighlighting()
     }
 
     @Test
     fun rowTypeIsIndex_failed() {
-        val tag1 = "Cannot resolve expression `1.234` (expect matching: int[0..10])".toErrorTag()
-        val tag2 = "Cannot resolve expression `not` (expect matching: bool)".toErrorTag()
-
         markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/index/test.csv")
-        myFixture.configureByText("test.csv", """
+        myFixture.configureByText("test.csv") {
+            val m1 = "Cannot resolve expression `1.234` (expect matching: int[0..10])"
+            val m2 = "Cannot resolve expression `not` (expect matching: bool)"
+            """
             id;number;status;flag;status
-            id_is;${tag1.start}1.234${tag1.end};${tag2.start}not${tag2.end};valid;no
-        """.trimIndent())
+            id_is;${error(m1)}1.234${errorEnd()};${error(m2)}not${errorEnd()};valid;no
+            """.trimIndent()
+        }
         myFixture.checkHighlighting()
     }
 
     @Test
     fun rowTypeIsIndex_skipLastRow_success() {
         markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/index_skip_last_row/test.csv")
-        myFixture.configureByText("test.csv", """
+        myFixture.configureByText("test.csv") {
+            """
             id;number;status;flag;status
             k1;0;yes;red_flag;no
             yes;it's;some;thing;to;be;ignored
-        """.trimIndent())
+            """.trimIndent()
+        }
         myFixture.checkHighlighting()
     }
 
     @Test
     fun rowTypeIsIndex_skipLastColumn_success() {
         markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/index_skip_last_column/test.csv")
-        myFixture.configureByText("test.csv", """
+        myFixture.configureByText("test.csv") {
+            """
             id;number;status;flag;status;ignored
             k1;0;yes;red_flag;no;ignored
-        """.trimIndent())
+            """.trimIndent()
+        }
         myFixture.checkHighlighting()
     }
 

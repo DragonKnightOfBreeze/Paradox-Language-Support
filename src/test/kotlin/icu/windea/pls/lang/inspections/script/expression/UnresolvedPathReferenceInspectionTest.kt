@@ -4,6 +4,7 @@ import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.ChronicleTestScope
+import icu.windea.pls.test.dsl.configureByText
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -23,7 +24,7 @@ class UnresolvedPathReferenceInspectionTest : BasePlatformTestCase(), ChronicleT
         markIntegrationTest()
         markRootDirectory("features/inspections")
         markConfigDirectory("features/inspections/.config")
-        initConfigGroups(project, ParadoxGameType.Stellaris)
+        initInjectedConfigGroups(project, ParadoxGameType.Stellaris) // on demand
         myFixture.enableInspections(UnresolvedPathReferenceInspection::class.java)
     }
 
@@ -34,7 +35,7 @@ class UnresolvedPathReferenceInspectionTest : BasePlatformTestCase(), ChronicleT
 
     @Test
     fun noSemantic_success() {
-        markFileInfo(ParadoxGameType.Stellaris, "common/test/test.csv")
+        markFileInfo(ParadoxGameType.Stellaris, "common/test/test.txt")
         myFixture.configureByText("test.txt", """
             hint = hello_world
         """.trimIndent())
@@ -43,5 +44,76 @@ class UnresolvedPathReferenceInspectionTest : BasePlatformTestCase(), ChronicleT
 
     // endregion
 
-    // TODO 3.0.2+ more tests
+    // region semantic
+
+    @Test
+    fun outOfDefinitionDeclaration_ignored() {
+        markFileInfo(ParadoxGameType.Stellaris, "common/messages/test.txt")
+        myFixture.configureByText("test.txt", """
+            hint = hello_world
+        """.trimIndent())
+        myFixture.checkHighlighting()
+    }
+
+    @Test
+    fun semantic_smoke_success() {
+        markFileInfo(ParadoxGameType.Stellaris, "common/includes/include.txt")
+        myFixture.configureByText("include.txt", "# nothing")
+
+        markFileInfo(ParadoxGameType.Stellaris, "common/messages/test.txt")
+        myFixture.configureByText("test.txt") {
+            """
+            start_message = {
+                index = 0
+                tags = { start }
+                message_part = { say = hello_world }
+                include = "common/includes/include.txt"
+            }
+            """.trimIndent()
+        }
+        myFixture.checkHighlighting()
+    }
+
+    @Test
+    fun semantic_smoke_incorrectFileExtension_success() {
+        markFileInfo(ParadoxGameType.Stellaris, "common/includes/include.gfx")
+        myFixture.configureByText("include.gfx", "# nothing")
+
+        markFileInfo(ParadoxGameType.Stellaris, "common/messages/test.txt")
+        myFixture.configureByText("test.txt") {
+            """
+            start_message = {
+                index = 0
+                tags = { start }
+                message_part = { say = hello_world }
+                include = "common/includes/include.gfx"
+            }
+            """.trimIndent()
+        }
+        myFixture.checkHighlighting()
+    }
+
+    @Test
+    fun semantic_smoke_unresolvedPathReference_failed() {
+        markFileInfo(ParadoxGameType.Stellaris, "common/includes/include.txt")
+        myFixture.configureByText("include.txt", "# nothing")
+
+        markFileInfo(ParadoxGameType.Stellaris, "common/messages/test.txt")
+        myFixture.configureByText("test.txt") {
+            val m1 = "Cannot resolve file path reference `common/includes/unresolved.txt` (expect matching: filepath)"
+            """
+            start_message = {
+                index = 0
+                tags = { start }
+                message_part = { say = hello_world }
+                include = ${error(m1)}"common/includes/unresolved.txt"${errorEnd()}
+            }
+            """.trimIndent()
+        }
+        myFixture.checkHighlighting()
+    }
+
+    // endregion
+
+    // TODO [test] more tests
 }

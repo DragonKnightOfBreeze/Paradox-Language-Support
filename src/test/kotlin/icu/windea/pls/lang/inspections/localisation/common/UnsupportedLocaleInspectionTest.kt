@@ -38,8 +38,6 @@ class UnsupportedLocaleInspectionTest : BasePlatformTestCase(), ChronicleTestSco
             l_english:
               message: "Hello world"
         """.trimIndent())
-
-        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
         myFixture.checkHighlighting()
     }
 
@@ -53,8 +51,6 @@ class UnsupportedLocaleInspectionTest : BasePlatformTestCase(), ChronicleTestSco
             ${tag.start}l_neko${tag.end}:
               message: "Meo~ Meo~"
         """.trimIndent())
-
-        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
         myFixture.checkHighlighting()
     }
 
@@ -68,8 +64,6 @@ class UnsupportedLocaleInspectionTest : BasePlatformTestCase(), ChronicleTestSco
             ${tag.start}l_turkish${tag.end}:
               message: "..."
         """.trimIndent())
-
-        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
         myFixture.checkHighlighting()
     }
 }

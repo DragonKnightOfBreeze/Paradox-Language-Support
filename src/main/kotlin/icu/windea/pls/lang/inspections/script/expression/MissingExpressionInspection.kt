@@ -128,19 +128,13 @@ class MissingExpressionInspection : LocalInspectionTool() {
     private fun checkOccurrence(element: ParadoxScriptMember, position: PsiElement, occurrence: ParadoxMatchOccurrence, configExpression: CwtDataExpression, holder: ProblemsHolder): Boolean {
         val (actual, min, _, lenientMin) = occurrence
         if (min != null && actual < min) {
-            val isKey = configExpression.role.isKey()
+            val expressionType = ChronicleBundle.expressionType(configExpression)
             val isConst = configExpression.type == CwtDataTypes.Constant
-            val description = if (isKey) {
+            val description =
                 when {
-                    isConst -> ChronicleBundle.message("inspection.script.missingExpression.desc.1.1", configExpression)
-                    else -> ChronicleBundle.message("inspection.script.missingExpression.desc.1.2", configExpression)
+                    isConst -> ChronicleBundle.message("inspection.script.missingExpression.desc.1", expressionType, configExpression)
+                    else -> ChronicleBundle.message("inspection.script.missingExpression.desc.2", expressionType, configExpression)
                 }
-            } else {
-                when {
-                    isConst -> ChronicleBundle.message("inspection.script.missingExpression.desc.2.1", configExpression)
-                    else -> ChronicleBundle.message("inspection.script.missingExpression.desc.2.2", configExpression)
-                }
-            }
             val minDefine = occurrence.minDefine
             val detail = when {
                 minDefine == null -> ChronicleBundle.message("inspection.script.missingExpression.desc.detail.1", min, actual)

@@ -3,6 +3,8 @@
 package icu.windea.pls.test.dsl
 
 import com.intellij.openapi.editor.colors.TextAttributesKey
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.PsiFile
 import com.intellij.testFramework.fixtures.CodeInsightTestFixture
 
 // see: https://plugins.jetbrains.com/docs/intellij/testing-highlighting.html
@@ -11,6 +13,10 @@ import com.intellij.testFramework.fixtures.CodeInsightTestFixture
 annotation class HighlightingDsl
 
 inline fun <R> highlightingScope(block: HighlightingScope.() -> R): R = HighlightingScope.block()
+
+inline fun CodeInsightTestFixture.configureByText(fileName: String, block: HighlightingScope.() -> String): PsiFile = configureByText(fileName, HighlightingScope.block())
+
+inline fun CodeInsightTestFixture.createFile(fileName: String, block: HighlightingScope.() -> String): VirtualFile = createFile(fileName, HighlightingScope.block())
 
 @HighlightingDsl
 object HighlightingScope {
@@ -33,7 +39,7 @@ object HighlightingScope {
 
     fun errorEnd() = "</$errorMarker>"
 
-    fun warnEnd() = "</$warningMarker>"
+    fun warningEnd() = "</$warningMarker>"
 
     fun weakWarningEnd() = "</$weakWarningMarker>"
 

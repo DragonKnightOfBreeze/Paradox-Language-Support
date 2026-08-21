@@ -40,7 +40,7 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
 
     override fun getOptionsPane(): OptPane {
         return OptPane.pane(
-            OptPane.expandableString("ignoredFileNames", ChronicleBundle.message("inspection.script.unresolvedPathReference.option.ignoredFileNames"), ",")
+            OptPane.expandableString("ignoredFileNames", ChronicleBundle.message("inspection.option.ignoredFileNames"), ",")
                 .description(ChronicleBundle.message("comment.patterns")),
             OptPane.checkbox("ignoredInInjectedFiles", ChronicleBundle.message("inspection.option.ignoredInInjectedFiles")),
             OptPane.checkbox("ignoredInInlineScriptFiles", ChronicleBundle.message("inspection.option.ignoredInInlineScriptFiles")),

@@ -13,7 +13,7 @@ import icu.windea.pls.lang.inspections.ParadoxExpressionInspectionService
 import icu.windea.pls.lang.psi.ParadoxPsiElementVisitor
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
-import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
+import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 
 /**
  * （脚本文件中的）不正确的表达式的代码检查。
@@ -49,7 +49,7 @@ class IncorrectExpressionInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         val context = ParadoxExpressionInspectionService.createContext(this, holder)
         return object : ParadoxPsiElementVisitor() {
-            override fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
+            override fun visitExpressionElement(element: ParadoxScriptExpressionElement) {
                 ProgressManager.checkCanceled()
                 ParadoxExpressionInspectionService.checkForIncorrectExpression(element, context)
             }

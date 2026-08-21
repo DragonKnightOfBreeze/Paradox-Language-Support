@@ -34,7 +34,7 @@ object ChronicleDocBundle {
         return INSTANCE.getLazyMessage(key, *params)
     }
 
-    // methods to get specific messages
+    // region methods to get specific messages
 
     @JvmStatic
     @Nls
@@ -106,4 +106,6 @@ object ChronicleDocBundle {
             ?: INSTANCE.messageOrNull("general.technology.attribute.$name")
             ?: INSTANCE.getMessage("default.technology.attribute", name)
     }
+
+    // endregion
 }

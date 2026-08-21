@@ -1,0 +1,28 @@
+types = {
+    type[message] = {
+        path = common/messages
+        path_extension = .txt
+    }
+}
+
+message = {
+    ## cardinality = 1..1
+    index = int[0..inf]
+    ## cardinality = 0..1
+    tags = {
+        ## cardinality = 0..inf
+        value[message_tag]
+    }
+    ## cardinality = 0..inf
+    message_part = {
+        ## tag
+        hidden
+        ## cardinality = 0..inf
+        hint = scalar
+        ## cardinality = 0..inf
+        say = scalar
+    }
+    ## file_extensions = { txt }
+    ## cardinality = 0..inf
+    include = filepath
+}

@@ -4,6 +4,7 @@ import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.ChronicleTestScope
+import icu.windea.pls.test.dsl.configureByText
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -23,7 +24,7 @@ class IncorrectExpressionInspectionTest : BasePlatformTestCase(), ChronicleTestS
         markIntegrationTest()
         markRootDirectory("features/inspections")
         markConfigDirectory("features/inspections/.config")
-        initConfigGroups(project, ParadoxGameType.Stellaris)
+        initInjectedConfigGroups(project, ParadoxGameType.Stellaris) // on demand
         myFixture.enableInspections(IncorrectExpressionInspection::class.java)
     }
 
@@ -34,7 +35,7 @@ class IncorrectExpressionInspectionTest : BasePlatformTestCase(), ChronicleTestS
 
     @Test
     fun noSemantic_success() {
-        markFileInfo(ParadoxGameType.Stellaris, "common/test/test.csv")
+        markFileInfo(ParadoxGameType.Stellaris, "common/test/test.txt")
         myFixture.configureByText("test.txt", """
             hint = hello_world
         """.trimIndent())
@@ -43,5 +44,49 @@ class IncorrectExpressionInspectionTest : BasePlatformTestCase(), ChronicleTestS
 
     // endregion
 
-    // TODO 3.0.2+ more tests
+    // region semantic
+
+    @Test
+    fun outOfDefinitionDeclaration_ignored() {
+        markFileInfo(ParadoxGameType.Stellaris, "common/messages/test.txt")
+        myFixture.configureByText("test.txt", """
+            hint = hello_world
+        """.trimIndent())
+        myFixture.checkHighlighting()
+    }
+
+    @Test
+    fun semantic_smoke_success() {
+        markFileInfo(ParadoxGameType.Stellaris, "common/messages/test.txt")
+        myFixture.configureByText("test.txt") {
+            """
+            start_message = {
+                index = 0
+                tags = { start }
+                message_part = { say = hello_world }
+            }
+            """.trimIndent()
+        }
+        myFixture.checkHighlighting()
+    }
+
+    @Test
+    fun semantic_smoke_failed() {
+        markFileInfo(ParadoxGameType.Stellaris, "common/messages/test.txt")
+        myFixture.configureByText("test.txt") {
+            val m1 = "Number out of range (expect matching range: [0..null], actual: -1)"
+            """
+            start_message = {
+                index = ${warning(m1)}-1${warningEnd()}
+                tags = { start }
+                message_part = { say = hello_world }
+            }
+            """.trimIndent()
+        }
+        myFixture.checkHighlighting()
+    }
+
+    // endregion
+
+    // TODO [test] more tests
 }

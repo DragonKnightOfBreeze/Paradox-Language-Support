@@ -11,7 +11,7 @@ import icu.windea.pls.lang.inspections.script.expression.TooManyExpressionInspec
 import icu.windea.pls.lang.inspections.script.expression.UnresolvedExpressionInspection
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.ChronicleTestScope
-import icu.windea.pls.test.dsl.highlightingScope
+import icu.windea.pls.test.dsl.configureByText
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -43,7 +43,8 @@ class Issue386Test : BasePlatformTestCase(), ChronicleTestScope {
     fun testInspection_AllResolved_Success() {
         enableAllNeededInspections()
         markFileInfo(ParadoxGameType.Stellaris, "common/test/test.txt")
-        myFixture.configureByText("test.txt", """
+        myFixture.configureByText("test.txt") {
+            """
             test = {
                 members = {
                     key = value
@@ -56,7 +57,8 @@ class Issue386Test : BasePlatformTestCase(), ChronicleTestScope {
                     value
                 }
             }
-        """.trimIndent())
+            """.trimIndent()
+        }
         IndexingTestUtil.waitUntilIndexesAreReady(project)
         myFixture.checkHighlighting()
     }
@@ -65,7 +67,7 @@ class Issue386Test : BasePlatformTestCase(), ChronicleTestScope {
     fun testInspection_UnresolvedLeafNodes_NotMixed_Failed() {
         enableAllNeededInspections()
         markFileInfo(ParadoxGameType.Stellaris, "common/test/test.txt")
-        myFixture.configureByText("test.txt", highlightingScope {
+        myFixture.configureByText("test.txt") {
             """
             test = {
                 properties = {
@@ -76,7 +78,7 @@ class Issue386Test : BasePlatformTestCase(), ChronicleTestScope {
                 }
             }
             """.trimIndent()
-        })
+        }
         IndexingTestUtil.waitUntilIndexesAreReady(project)
         myFixture.checkHighlighting()
     }
@@ -85,7 +87,7 @@ class Issue386Test : BasePlatformTestCase(), ChronicleTestScope {
     fun testInspection_UnresolvedLeafNodes_Failed() {
         enableAllNeededInspections()
         markFileInfo(ParadoxGameType.Stellaris, "common/test/test.txt")
-        myFixture.configureByText("test.txt", highlightingScope {
+        myFixture.configureByText("test.txt") {
             """
             test = {
                 members = {
@@ -102,7 +104,7 @@ class Issue386Test : BasePlatformTestCase(), ChronicleTestScope {
                 }
             }
             """.trimIndent()
-        })
+        }
         IndexingTestUtil.waitUntilIndexesAreReady(project)
         myFixture.checkHighlighting()
     }
@@ -111,7 +113,7 @@ class Issue386Test : BasePlatformTestCase(), ChronicleTestScope {
     fun testInspection_UnresolvedTopNodes_Failed() {
         enableAllNeededInspections()
         markFileInfo(ParadoxGameType.Stellaris, "common/test/test.txt")
-        myFixture.configureByText("test.txt", highlightingScope {
+        myFixture.configureByText("test.txt") {
             """
             test = {
                 ${error(message("unresolved_key", "members, properties, values"))}unresolved_key${errorEnd()} = value
@@ -127,7 +129,7 @@ class Issue386Test : BasePlatformTestCase(), ChronicleTestScope {
                 }${errorEnd()}
             }
             """.trimIndent()
-        })
+        }
         IndexingTestUtil.waitUntilIndexesAreReady(project)
         myFixture.checkHighlighting()
     }
@@ -136,13 +138,15 @@ class Issue386Test : BasePlatformTestCase(), ChronicleTestScope {
     fun testInspection_UnresolvedOuterNodes_Ignored() {
         enableAllNeededInspections()
         markFileInfo(ParadoxGameType.Stellaris, "common/test/test.txt")
-        myFixture.configureByText("test.txt", """
+        myFixture.configureByText("test.txt") {
+            """
             unresolved = unresolved # property value is not a block
             unresolved
             test = {
                 members = {}
             }
-        """.trimIndent())
+            """.trimIndent()
+        }
         IndexingTestUtil.waitUntilIndexesAreReady(project)
         myFixture.checkHighlighting()
     }

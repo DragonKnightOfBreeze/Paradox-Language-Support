@@ -6,7 +6,7 @@ import icu.windea.pls.ep.resolve.expression.ParadoxScriptExpressionSupport
 import icu.windea.pls.lang.annotator.ParadoxScriptSemanticAnnotator
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.ChronicleTestScope
-import icu.windea.pls.test.dsl.highlightingScope
+import icu.windea.pls.test.dsl.configureByText
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -40,7 +40,7 @@ class Issue390Test : BasePlatformTestCase(), ChronicleTestScope {
     @Test
     fun testSemanticAnnotator() {
         markFileInfo(ParadoxGameType.Stellaris, "common/scripted_effects/test.txt")
-        myFixture.configureByText("test.txt", highlightingScope {
+        myFixture.configureByText("test.txt") {
             """
             ${info(Colors.DEFINITION)}test_effect_1${infoEnd()} = {
                 ${info(Colors.SCOPE_PREFIX)}event_target:${infoEnd()}${info(Colors.DYNAMIC_VALUE)}test_target${infoEnd()} = {}
@@ -51,7 +51,7 @@ class Issue390Test : BasePlatformTestCase(), ChronicleTestScope {
                 "${info(Colors.SYSTEM_SCOPE)}root${infoEnd()}${info(Colors.SEMANTIC_OPERATOR)}.${infoEnd()}${info(Colors.SCOPE_PREFIX)}event_target:${infoEnd()}${info(Colors.DYNAMIC_VALUE)}test_target${infoEnd()}" = {}
             }
             """.trimIndent()
-        })
+        }
         myFixture.checkHighlighting(false, true, false)
     }
 }

@@ -45,18 +45,16 @@ class IncorrectScopeInspection : ScopeInspectionBase() {
         val supportedScopes = getSupportedScopes(element, config) ?: return
         val configGroup = config.configGroup
         if (!ParadoxScopeManager.matchesScope(parentScopeContext, supportedScopes, configGroup)) {
+            val supportedScopesText = supportedScopes.joinToString()
+            val currentScopeText = parentScopeContext.scope.id
             if (element is ParadoxScriptProperty) {
                 val propertyKey = element.propertyKey
-                val description = ChronicleBundle.message(
-                    "inspection.script.incorrectScope.desc.1",
-                    propertyKey.expression, supportedScopes.joinToString(), parentScopeContext.scope.id
-                )
+                val text = propertyKey.expression
+                val description = ChronicleBundle.message("inspection.script.incorrectScope.desc.1", text, supportedScopesText, currentScopeText)
                 holder.registerProblem(propertyKey, description)
             } else if (element is ParadoxScriptString && config.configExpression.type == CwtDataTypes.AliasKeysField) {
-                val description = ChronicleBundle.message(
-                    "inspection.script.incorrectScope.desc.2",
-                    element.expression, supportedScopes.joinToString(), parentScopeContext.scope.id
-                )
+                val text = element.expression
+                val description = ChronicleBundle.message("inspection.script.incorrectScope.desc.2", text, supportedScopesText, currentScopeText)
                 holder.registerProblem(element, description)
             }
         }
