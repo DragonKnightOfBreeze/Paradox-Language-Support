@@ -378,8 +378,6 @@ class ParadoxScriptConstantExpressionMatcher : ParadoxScriptCompositeExpressionM
 class ParadoxScriptPatternExpressionMatcher : ParadoxScriptSimpleExpressionMatcher() {
     override val dataTypes: Array<CwtDataType> = CwtDataTypeSets.Pattern
 
-    override fun isPatternAware(context: ParadoxScriptExpressionMatchContext) = true
-
     override fun match(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult? {
         val pattern = context.configExpression.metadata.value ?: return null
         val ignoreCase = context.configExpression.metadata.ignoreCase
