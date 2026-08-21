@@ -380,6 +380,43 @@ class UnresolvedExpressionInspectionTest : BasePlatformTestCase(), ChronicleTest
         myFixture.checkHighlighting()
     }
 
+    @Test
+    fun semantic_smoke_fullParameterizedTopProperty_withInferredType_exactMatchedLeafDirectValue_success() {
+        val p = "\$message_part$"
+
+        // $param$ -> message_part -> (matched)
+        markFileInfo(ParadoxGameType.Stellaris, "common/messages/test.txt")
+        myFixture.configureByText("test.txt") {
+            """
+            start_message = {
+                index = 0
+                tags = { start }
+                $p = { hidden }
+            }
+            """.trimIndent()
+        }
+        myFixture.checkHighlighting()
+    }
+
+    // @Test
+    // fun semantic_smoke_fullParameterizedTopProperty_withInferredType_lenientMatchedLeafDirectValue_failed() {
+    //     val p = "\$message_part$"
+    //
+    //     // $param$ -> message_part -> (mismatched)
+    //     markFileInfo(ParadoxGameType.Stellaris, "common/messages/test.txt")
+    //     myFixture.configureByText("test.txt") {
+    //         val m1 = "Cannot resolve value expression `hidden` (expect matching: hidden)"
+    //         """
+    //         start_message = {
+    //             index = 0
+    //             tags = { start }
+    //             $p = { ${error(m1)}delay${errorEnd()} }
+    //         }
+    //         """.trimIndent()
+    //     }
+    //     myFixture.checkHighlighting()
+    // }
+
     // endregion
 
     // TODO [test] more tests

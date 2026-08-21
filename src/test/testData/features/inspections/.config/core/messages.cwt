@@ -26,3 +26,15 @@ message = {
     ## cardinality = 0..inf
     include = filepath
 }
+
+# inject `configGroup.extendedParameters`
+parameters = {
+    ## context_key = message
+    $message_part$ = message_part
+}
+
+# inject `configGroup.typeModel.supportParameters`
+alias[effect:<message>] = {
+    ## cardinality = 0..inf
+    $parameter = $parameter_value
+}
