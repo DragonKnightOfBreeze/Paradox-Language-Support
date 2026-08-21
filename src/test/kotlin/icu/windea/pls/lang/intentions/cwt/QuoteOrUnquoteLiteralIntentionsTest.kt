@@ -28,7 +28,7 @@ class QuoteOrUnquoteLiteralIntentionsTest : BasePlatformTestCase(), ChronicleTes
 
     @Test
     fun testQuoteLiteral_propertyKey() {
-        val intentionName = ChronicleBundle.message("intention.quoteIdentifier")
+        val intentionName = ChronicleBundle.message("intention.quoteLiteral")
         myFixture.configureByText("quote_property_key.test.cwt", "<caret>k = v")
         val intention = myFixture.findSingleIntention(intentionName)
         myFixture.launchAction(intention)
@@ -37,7 +37,7 @@ class QuoteOrUnquoteLiteralIntentionsTest : BasePlatformTestCase(), ChronicleTes
 
     @Test
     fun testQuoteLiteral_stringValue() {
-        val intentionName = ChronicleBundle.message("intention.quoteIdentifier")
+        val intentionName = ChronicleBundle.message("intention.quoteLiteral")
         myFixture.configureByText("quote_string_value.test.cwt", "k = <caret>v")
         val intention = myFixture.findSingleIntention(intentionName)
         myFixture.launchAction(intention)
@@ -46,7 +46,7 @@ class QuoteOrUnquoteLiteralIntentionsTest : BasePlatformTestCase(), ChronicleTes
 
     @Test
     fun testQuoteLiteral_intValue() {
-        val intentionName = ChronicleBundle.message("intention.quoteIdentifier")
+        val intentionName = ChronicleBundle.message("intention.quoteLiteral")
         myFixture.configureByText("quote_int_value.test.cwt", "k = <caret>1")
         val intention = myFixture.findSingleIntention(intentionName)
         myFixture.launchAction(intention)
@@ -55,7 +55,7 @@ class QuoteOrUnquoteLiteralIntentionsTest : BasePlatformTestCase(), ChronicleTes
 
     @Test
     fun testQuoteLiteral_floatValue() {
-        val intentionName = ChronicleBundle.message("intention.quoteIdentifier")
+        val intentionName = ChronicleBundle.message("intention.quoteLiteral")
         myFixture.configureByText("quote_float_value.test.cwt", "k = <caret>1.5")
         val intention = myFixture.findSingleIntention(intentionName)
         myFixture.launchAction(intention)
@@ -64,7 +64,7 @@ class QuoteOrUnquoteLiteralIntentionsTest : BasePlatformTestCase(), ChronicleTes
 
     @Test
     fun testQuoteLiteral_nested() {
-        val intentionName = ChronicleBundle.message("intention.quoteIdentifier")
+        val intentionName = ChronicleBundle.message("intention.quoteLiteral")
         myFixture.configureByText("quote_string_value.test.cwt", "K = { k = <caret>v }")
         val intention = myFixture.findSingleIntention(intentionName)
         myFixture.launchAction(intention)
@@ -73,7 +73,7 @@ class QuoteOrUnquoteLiteralIntentionsTest : BasePlatformTestCase(), ChronicleTes
 
     @Test
     fun testQuoteLiteral_availableForOptionValue() {
-        val intentionName = ChronicleBundle.message("intention.quoteIdentifier")
+        val intentionName = ChronicleBundle.message("intention.quoteLiteral")
         myFixture.configureByText("quote_not_available_option_value.test.cwt", "## k = <caret>v")
         val available = myFixture.availableIntentions
         assertTrue(available.any { it.text == intentionName })
@@ -81,7 +81,7 @@ class QuoteOrUnquoteLiteralIntentionsTest : BasePlatformTestCase(), ChronicleTes
 
     @Test
     fun testQuoteLiteral_notAvailableWhenAlreadyQuoted() {
-        val intentionName = ChronicleBundle.message("intention.quoteIdentifier")
+        val intentionName = ChronicleBundle.message("intention.quoteLiteral")
         myFixture.configureByText("quote_not_available_quoted.test.cwt", "<caret>\"k\" = \"v\"")
         val available = myFixture.availableIntentions
         assertFalse(available.any { it.text == intentionName })
@@ -89,7 +89,7 @@ class QuoteOrUnquoteLiteralIntentionsTest : BasePlatformTestCase(), ChronicleTes
 
     @Test
     fun testUnquoteLiteral_propertyKey() {
-        val intentionName = ChronicleBundle.message("intention.unquoteIdentifier")
+        val intentionName = ChronicleBundle.message("intention.unquoteLiteral")
         myFixture.configureByText("unquote_property_key.test.cwt", "<caret>\"k\" = v")
         val intention = myFixture.findSingleIntention(intentionName)
         myFixture.launchAction(intention)
@@ -98,7 +98,7 @@ class QuoteOrUnquoteLiteralIntentionsTest : BasePlatformTestCase(), ChronicleTes
 
     @Test
     fun testUnquoteLiteral_stringValue() {
-        val intentionName = ChronicleBundle.message("intention.unquoteIdentifier")
+        val intentionName = ChronicleBundle.message("intention.unquoteLiteral")
         myFixture.configureByText("unquote_string_value.test.cwt", "k = <caret>\"v\"")
         val intention = myFixture.findSingleIntention(intentionName)
         myFixture.launchAction(intention)
@@ -107,7 +107,7 @@ class QuoteOrUnquoteLiteralIntentionsTest : BasePlatformTestCase(), ChronicleTes
 
     @Test
     fun testUnquoteLiteral_nested() {
-        val intentionName = ChronicleBundle.message("intention.unquoteIdentifier")
+        val intentionName = ChronicleBundle.message("intention.unquoteLiteral")
         myFixture.configureByText("unquote_string_value.test.cwt", "k = { k = <caret>\"v\" }")
         val intention = myFixture.findSingleIntention(intentionName)
         myFixture.launchAction(intention)
@@ -116,7 +116,7 @@ class QuoteOrUnquoteLiteralIntentionsTest : BasePlatformTestCase(), ChronicleTes
 
     @Test
     fun testUnquoteLiteral_notAvailableWhenUnquoted() {
-        val intentionName = ChronicleBundle.message("intention.unquoteIdentifier")
+        val intentionName = ChronicleBundle.message("intention.unquoteLiteral")
         myFixture.configureByText("unquote_not_available_unquoted.test.cwt", "k = <caret>v")
         val available = myFixture.availableIntentions
         assertFalse(available.any { it.text == intentionName })
@@ -125,7 +125,7 @@ class QuoteOrUnquoteLiteralIntentionsTest : BasePlatformTestCase(), ChronicleTes
     // 3.0.1 available now
     @Test
     fun testUnquoteLiteral_availableForOptionValue() {
-        val intentionName = ChronicleBundle.message("intention.unquoteIdentifier")
+        val intentionName = ChronicleBundle.message("intention.unquoteLiteral")
         myFixture.configureByText("unquote_not_available_option_value.test.cwt", "## k = <caret>\"v\"")
         val available = myFixture.availableIntentions
         assertTrue(available.any { it.text == intentionName })
@@ -133,7 +133,7 @@ class QuoteOrUnquoteLiteralIntentionsTest : BasePlatformTestCase(), ChronicleTes
 
     @Test
     fun testUnquoteLiteral_notAvailableWhenContainsBlank() {
-        val intentionName = ChronicleBundle.message("intention.unquoteIdentifier")
+        val intentionName = ChronicleBundle.message("intention.unquoteLiteral")
         myFixture.configureByText("unquote_not_available_blank.test.cwt", "k = <caret>\"a b\"")
         val available = myFixture.availableIntentions
         assertFalse(available.any { it.text == intentionName })

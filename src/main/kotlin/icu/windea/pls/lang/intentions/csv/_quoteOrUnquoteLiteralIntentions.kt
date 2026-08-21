@@ -33,7 +33,7 @@ abstract class QuoteOrUnquoteLiteralIntentionBase : PsiUpdateModCommandAction<Pa
 }
 
 class QuoteLiteralIntention : QuoteOrUnquoteLiteralIntentionBase() {
-    override fun getFamilyName() = ChronicleBundle.message("intention.quoteIdentifier")
+    override fun getFamilyName() = ChronicleBundle.message("intention.quoteLiteral")
 
     override fun invoke(context: ActionContext, element: ParadoxCsvExpressionElement, updater: ModPsiUpdater) {
         ElementManipulators.handleContentChange(element, element.text.quote())
@@ -45,7 +45,7 @@ class QuoteLiteralIntention : QuoteOrUnquoteLiteralIntentionBase() {
 }
 
 class UnquoteLiteralIntention : QuoteOrUnquoteLiteralIntentionBase() {
-    override fun getFamilyName() = ChronicleBundle.message("intention.unquoteIdentifier")
+    override fun getFamilyName() = ChronicleBundle.message("intention.unquoteLiteral")
 
     override fun invoke(context: ActionContext, element: ParadoxCsvExpressionElement, updater: ModPsiUpdater) {
         ElementManipulators.handleContentChange(element, element.text.unquote())

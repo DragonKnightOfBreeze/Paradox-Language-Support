@@ -35,7 +35,7 @@ abstract class QuoteOrUnquoteLiteralIntentionBase : PsiUpdateModCommandAction<Pa
 }
 
 class QuoteLiteralIntention : QuoteOrUnquoteLiteralIntentionBase() {
-    override fun getFamilyName() = ChronicleBundle.message("intention.quoteIdentifier")
+    override fun getFamilyName() = ChronicleBundle.message("intention.quoteLiteral")
 
     // NOTE 1.3.0+ 目前无法适用于用引号括起的参数值中的那些字面量（例如，`p = "\"v\""` 中的 `\"v\"` ）
 
@@ -44,7 +44,7 @@ class QuoteLiteralIntention : QuoteOrUnquoteLiteralIntentionBase() {
     }
 
     override fun isElementApplicable(element: ParadoxScriptExpressionElement, context: ActionContext): Boolean {
-        // can also be applied to number value tokens
+        // can also be applied to number literals
         return when (element) {
             is ParadoxScriptPropertyKey -> canQuote(element)
             is ParadoxScriptString -> canQuote(element)
@@ -55,7 +55,7 @@ class QuoteLiteralIntention : QuoteOrUnquoteLiteralIntentionBase() {
 }
 
 class UnquoteLiteralIntention : QuoteOrUnquoteLiteralIntentionBase() {
-    override fun getFamilyName() = ChronicleBundle.message("intention.unquoteIdentifier")
+    override fun getFamilyName() = ChronicleBundle.message("intention.unquoteLiteral")
 
     // NOTE 1.3.0+ 目前无法适用于用引号括起的参数值中的那些字面量（例如，`p = "\"v\""` 中的 `\"v\"` ）
 

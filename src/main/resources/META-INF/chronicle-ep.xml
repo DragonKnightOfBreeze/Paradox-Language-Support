@@ -153,9 +153,9 @@
     <mergedIndexSupport implementation="icu.windea.pls.ep.index.ParadoxShaderEffectMergedIndexSupport"/>
     <mergedIndexSupport implementation="icu.windea.pls.ep.index.ParadoxMeshLocatorMergedIndexSupport"/>
 
+    <mergedIndexOptimizer id="default" implementation="icu.windea.pls.ep.index.ParadoxDefaultFileLevelMergedIndexOptimizer" order="last"/>
     <mergedIndexOptimizer implementation="icu.windea.pls.ep.index.ParadoxDefinitionBasedMergedIndexOptimizer"/>
     <mergedIndexOptimizer implementation="icu.windea.pls.ep.index.ParadoxRowBasedMergedIndexOptimizer"/>
-    <mergedIndexOptimizer implementation="icu.windea.pls.ep.index.ParadoxDefaultFileLevelMergedIndexOptimizer" order="last"/>
 
     <definitionInspectionSuppressionProvider implementation="icu.windea.pls.ep.inspections.ParadoxBaseDefinitionInspectionSuppressionProvider"/>
     <definitionInspectionSuppressionProvider implementation="icu.windea.pls.ep.inspections.StellarisBaseDefinitionInspectionSuppressionProvider"/>
@@ -177,8 +177,8 @@
     <incorrectExpressionChecker implementation="icu.windea.pls.ep.inspections.ParadoxTriggerInSwitchStatementsChecker"/>
     <incorrectExpressionChecker implementation="icu.windea.pls.ep.inspections.ParadoxTriggerInWithParametersStatementsChecker"/>
 
-    <unresolvedExpressionChecker implementation="icu.windea.pls.ep.inspections.ParadoxDefaultUnresolvedExpressionChecker" order="last"/>
-    <unresolvedExpressionChecker implementation="icu.windea.pls.ep.inspections.ParadoxWrongBooleanUnresolvedExpressionChecker" order="last"/>
+    <unresolvedExpressionChecker id="default" implementation="icu.windea.pls.ep.inspections.ParadoxDefaultUnresolvedExpressionChecker" order="last"/>
+    <unresolvedExpressionChecker implementation="icu.windea.pls.ep.inspections.ParadoxWrongBooleanUnresolvedExpressionChecker"/>
 
     <scriptExpressionMatcher id="basic" implementation="icu.windea.pls.ep.match.expression.ParadoxScriptBasicExpressionMatcher"/>
     <scriptExpressionMatcher id="extraBasic" implementation="icu.windea.pls.ep.match.expression.ParadoxScriptExtraBasicExpressionMatcher"/>
@@ -243,8 +243,8 @@
     <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxScriptEnumValueExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxScriptUnionValueExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxScriptAliasNameExpressionSupport"/>
-    <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxScriptConstantExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxScriptPathReferenceExpressionSupport"/>
+    <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxScriptConstantExpressionSupport"/>
     <!-- Complex Expressions -->
     <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxScriptTemplateExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxScriptDynamicValueExpressionSupport"/>

@@ -36,14 +36,14 @@ abstract class QuoteOrUnquoteLiteralIntentionBase : PsiUpdateModCommandAction<Cw
 }
 
 class QuoteLiteralIntention : QuoteOrUnquoteLiteralIntentionBase() {
-    override fun getFamilyName() = ChronicleBundle.message("intention.quoteIdentifier")
+    override fun getFamilyName() = ChronicleBundle.message("intention.quoteLiteral")
 
     override fun invoke(context: ActionContext, element: CwtExpressionElement, updater: ModPsiUpdater) {
         ElementManipulators.handleContentChange(element, element.text.quote())
     }
 
     override fun isElementApplicable(element: CwtExpressionElement, context: ActionContext): Boolean {
-        // can also be applied to number value tokens
+        // can also be applied to number literals
         return when (element) {
             is CwtPropertyKey -> canQuote(element)
             is CwtString -> canQuote(element)
@@ -55,7 +55,7 @@ class QuoteLiteralIntention : QuoteOrUnquoteLiteralIntentionBase() {
 }
 
 class UnquoteLiteralIntention : QuoteOrUnquoteLiteralIntentionBase() {
-    override fun getFamilyName() = ChronicleBundle.message("intention.unquoteIdentifier")
+    override fun getFamilyName() = ChronicleBundle.message("intention.unquoteLiteral")
 
     override fun invoke(context: ActionContext, element: CwtExpressionElement, updater: ModPsiUpdater) {
         ElementManipulators.handleContentChange(element, element.text.unquote())
