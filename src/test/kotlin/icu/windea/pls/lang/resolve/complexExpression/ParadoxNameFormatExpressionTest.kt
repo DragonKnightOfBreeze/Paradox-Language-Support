@@ -32,7 +32,7 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
 
     private fun resolve(text: String, formatName: String, gameType: ParadoxGameType, incomplete: Boolean = false): ParadoxNameFormatExpression? {
         val configGroup = ChronicleFacade.getConfigGroup(project, gameType)
-        val config = CwtValueConfig.createMock(configGroup, "name_format[$formatName]")
+        val config = CwtValueConfig.mock(configGroup, "name_format[$formatName]")
         return markIncomplete(incomplete) { ParadoxNameFormatExpression.resolve(text, null, configGroup, config) }
     }
 

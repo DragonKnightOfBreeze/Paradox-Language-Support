@@ -16,8 +16,7 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtMacroConfig
 import icu.windea.pls.config.config.inlineConfig
-import icu.windea.pls.config.configGroup.definitionParameterModificationTracker
-import icu.windea.pls.config.configGroup.scriptValueModificationTracker
+import icu.windea.pls.config.configGroup.modificationTrackerModel
 import icu.windea.pls.config.select.selectConfigScope
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.findIsInstance
@@ -240,7 +239,7 @@ class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
 
     override fun getModificationTracker(parameterInfo: ParadoxParameterInfo): ModificationTracker {
         val configGroup = ChronicleFacade.getConfigGroup(parameterInfo.project, parameterInfo.gameType)
-        return configGroup.definitionParameterModificationTracker
+        return configGroup.modificationTrackerModel.definitionParameter
     }
 }
 
@@ -558,6 +557,6 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
 
     override fun getModificationTracker(parameterInfo: ParadoxParameterInfo): ModificationTracker {
         val configGroup = ChronicleFacade.getConfigGroup(parameterInfo.project, parameterInfo.gameType)
-        return configGroup.scriptValueModificationTracker
+        return configGroup.modificationTrackerModel.scriptValue
     }
 }

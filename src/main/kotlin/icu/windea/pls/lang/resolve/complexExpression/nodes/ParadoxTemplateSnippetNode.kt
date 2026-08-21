@@ -37,7 +37,7 @@ class ParadoxTemplateSnippetNode(
     val configExpression: CwtDataExpression
 ) : ParadoxComplexExpressionNodeBase(), ParadoxIdentifierNode, ParadoxDynamicDataNode {
     fun getMockConfig(): CwtValueConfig {
-        return CwtValueConfig.createMock(configGroup, configExpression.expressionString)
+        return CwtValueConfig.mock(configGroup, configExpression.expressionString)
     }
 
     override fun getAttributesKeyConfig(element: ParadoxExpressionElement): CwtConfig<*>? {

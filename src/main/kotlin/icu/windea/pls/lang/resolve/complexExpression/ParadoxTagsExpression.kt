@@ -68,7 +68,7 @@ private object ParadoxTagsExpressionResolver {
         val type = config.configExpression?.metadata?.value ?: return null
         val condition = config.configExpression?.metadata?.condition ?: false
         val dynamicValueConfigText = if (condition) "value[$type]" else "value_set[$type]"
-        val dynamicValueConfigs = CwtValueConfig.createMock(configGroup, dynamicValueConfigText).to.singletonList()
+        val dynamicValueConfigs = CwtValueConfig.mock(configGroup, dynamicValueConfigText).to.singletonList()
 
         val nodes = mutableListOf<ParadoxComplexExpressionNode>()
         val offset = range?.startOffset ?: 0

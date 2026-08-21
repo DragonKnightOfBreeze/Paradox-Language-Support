@@ -33,7 +33,7 @@ class ParadoxNameFormatDefinitionNode(
 ) : ParadoxComplexExpressionNodeBase(), ParadoxIdentifierNode, ParadoxDynamicDataNode {
     fun getMockConfig(): CwtValueConfig? {
         if (definitionType.isNullOrEmpty()) return null
-        return CwtValueConfig.createMock(configGroup, "<$definitionType>")
+        return CwtValueConfig.mock(configGroup, "<$definitionType>")
     }
 
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {

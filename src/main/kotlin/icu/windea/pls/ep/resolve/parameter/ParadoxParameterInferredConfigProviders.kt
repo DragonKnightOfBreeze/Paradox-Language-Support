@@ -6,6 +6,7 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.configGroup.mockConfigModel
 import icu.windea.pls.config.manipulation.CwtConfigManipulationService
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.isNotNullOrEmpty
@@ -47,15 +48,15 @@ class ParadoxDefaultExpressionParameterInferredConfigProvider : ParadoxParameter
         val parentElement = parameterInfo.parentElement ?: return null
         return when (element) {
             is ParadoxConditionParameter -> {
-                CwtValueConfig.createMock(configGroup, "wildcard_scalar")
+                configGroup.mockConfigModel.wildcardScalar
             }
             is ParadoxScriptParameter -> {
                 if (parentElement.text.isParameterized(full = true)) return null
-                CwtValueConfig.createMock(configGroup, "wildcard_scalar")
+                configGroup.mockConfigModel.wildcardScalar
             }
             is ParadoxScriptInlineMathParameter -> {
-                if (parentElement.text.isParameterized(full = true)) return CwtValueConfig.createMock(configGroup, "float")
-                CwtValueConfig.createMock(configGroup, "wildcard_scalar")
+                if (parentElement.text.isParameterized(full = true)) return configGroup.mockConfigModel.float
+                configGroup.mockConfigModel.wildcardScalar
             }
             else -> null
         }
@@ -97,7 +98,7 @@ class ParadoxBaseParameterInferredConfigProvider : ParadoxParameterInferredConfi
         }
         val finalConfigs = inlinedContextConfigs.map { config ->
             if (config is CwtPropertyConfig && parentElement is ParadoxScriptPropertyKey) {
-                return@map CwtValueConfig.createMock(configGroup, config.key)
+                return@map CwtValueConfig.mock(configGroup, config.key)
             }
             val delegatedConfig = config.delegated(CwtConfigManipulationService.deepCopyConfigs(config)).also { it.withParentConfig(config.parentConfig) }
             delegatedConfig.postOptimize() // 进行后续优化
@@ -158,19 +159,19 @@ class ParadoxComplexExpressionNodeParameterInferredConfigProvider : ParadoxParam
         val configGroup = config.configGroup
         return when {
             node is ParadoxDataSourceNode -> {
-                node.linkConfigs.mapNotNull { it.configExpression?.let { e -> CwtValueConfig.createMock(configGroup, e.expressionString) } }
+                node.linkConfigs.mapNotNull { it.configExpression?.let { e -> CwtValueConfig.mock(configGroup, e.expressionString) } }
             }
             node is ParadoxDynamicValueNode -> {
-                node.configs.mapNotNull { it.configExpression?.let { e -> CwtValueConfig.createMock(configGroup, e.expressionString) } }
+                node.configs.mapNotNull { it.configExpression?.let { e -> CwtValueConfig.mock(configGroup, e.expressionString) } }
             }
             node is ParadoxScriptValueNode -> {
-                node.config.to.singletonList().mapNotNull { it.configExpression?.let { e -> CwtValueConfig.createMock(configGroup, e.expressionString) } }
+                node.config.to.singletonList().mapNotNull { it.configExpression?.let { e -> CwtValueConfig.mock(configGroup, e.expressionString) } }
             }
             node is ParadoxScopeNode -> {
-                CwtValueConfig.createMock(configGroup, "scope_field").to.singletonList()
+                CwtValueConfig.mock(configGroup, "scope_field").to.singletonList()
             }
             node is ParadoxValueFieldNode -> {
-                CwtValueConfig.createMock(configGroup, "value_field").to.singletonList()
+                CwtValueConfig.mock(configGroup, "value_field").to.singletonList()
             }
             node is ParadoxScriptValueArgumentValueNode -> {
                 val argumentNode = node.argumentNode ?: return emptyList()

@@ -14,7 +14,7 @@ class ParadoxTemplateSnippetConstantNode(
     override val configGroup: CwtConfigGroup
 ) : ParadoxComplexExpressionNodeBase() {
     fun getMockConfig(): CwtValueConfig {
-        return CwtValueConfig.createMock(configGroup, text)
+        return CwtValueConfig.mock(configGroup, text)
     }
 
     companion object {

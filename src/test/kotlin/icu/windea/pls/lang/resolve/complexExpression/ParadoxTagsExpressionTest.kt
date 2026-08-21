@@ -33,7 +33,7 @@ class ParadoxTagsExpressionTest : ParadoxComplexExpressionTest() {
 
     private fun resolve(text: String, gameType: ParadoxGameType, incomplete: Boolean = false): ParadoxTagsExpression? {
         val configGroup = ChronicleFacade.getConfigGroup(project, gameType)
-        val config = CwtValueConfig.createMock(configGroup, "value[tag]")
+        val config = CwtValueConfig.mock(configGroup, "value[tag]")
         return markIncomplete(incomplete) { ParadoxTagsExpression.resolve(text, null, configGroup, config) }
     }
 

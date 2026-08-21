@@ -5,7 +5,7 @@ import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.configGroup.mockScriptValueConfig
+import icu.windea.pls.config.configGroup.mockConfigModel
 import icu.windea.pls.core.cast
 import icu.windea.pls.core.collections.anyFast
 import icu.windea.pls.core.isIdentifier
@@ -80,7 +80,7 @@ private object ParadoxScriptValueReferenceExpressionResolver {
 
         val parameterRanges = text.getParameterRanges()
 
-        val config = configGroup.mockScriptValueConfig
+        val config = configGroup.mockConfigModel.scriptValue
         val nodes = mutableListOf<ParadoxComplexExpressionNode>()
         val range = range ?: TextRange.create(0, text.length)
         val expression = ParadoxScriptValueReferenceExpressionImpl(text, range, configGroup, config, nodes)

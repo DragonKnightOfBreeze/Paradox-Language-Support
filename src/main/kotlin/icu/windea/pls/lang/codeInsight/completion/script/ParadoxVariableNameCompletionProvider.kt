@@ -6,7 +6,7 @@ import com.intellij.patterns.PlatformPatterns.*
 import com.intellij.psi.util.parentOfType
 import com.intellij.util.ProcessingContext
 import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.config.configGroup.mockVariableConfig
+import icu.windea.pls.config.configGroup.mockConfigModel
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.codeInsight.completion.GlobalCompletionContext
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
@@ -55,7 +55,7 @@ class ParadoxVariableNameCompletionProvider : ParadoxCompletionProvider() {
         val globalContext = GlobalCompletionContext.create(element, parameters, context)
         val context = ParadoxCompletionContext.create(globalContext).copy(
             expressionOffset = ParadoxExpressionService.getExpressionOffset(element),
-            config = configGroup.mockVariableConfig,
+            config = configGroup.mockConfigModel.variable,
         )
 
         ParadoxComplexExpressionCompletionManager.completeDynamicValueExpression(context, result)

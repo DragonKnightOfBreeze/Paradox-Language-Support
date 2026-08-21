@@ -32,7 +32,7 @@ class ParadoxNameFormatLocalisationNode(
     override val configGroup: CwtConfigGroup,
 ) : ParadoxComplexExpressionNodeBase(), ParadoxIdentifierNode, ParadoxDynamicDataNode {
     fun getMockConfig(): CwtValueConfig {
-        return CwtValueConfig.createMock(configGroup, "localisation")
+        return CwtValueConfig.mock(configGroup, "localisation")
     }
 
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {

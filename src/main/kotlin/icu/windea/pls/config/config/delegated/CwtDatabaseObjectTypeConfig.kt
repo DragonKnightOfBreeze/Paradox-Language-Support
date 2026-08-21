@@ -112,7 +112,7 @@ private class CwtDatabaseObjectTypeConfigImpl(
             else -> swapType?.let { "<$it>" }
         }
         if (expressionString == null) return null
-        return CwtValueConfig.createMock(configGroup, expressionString)
+        return CwtValueConfig.mock(configGroup, expressionString)
     }
 
     override fun toString() = "CwtDatabaseObjectTypeConfigImpl(name='$name')"

@@ -101,6 +101,10 @@ interface CwtPropertyConfig : CwtMemberConfig<CwtProperty> {
             separatorType: CwtSeparatorType = sourceConfig.separatorType,
             configs: List<CwtMemberConfig<*>>? = sourceConfig.configs,
         ): CwtPropertyConfig = CwtPropertyConfigResolver.copy(sourceConfig, pointer, keyExpression, valueExpression, valueType, separatorType, configs)
+
+        /** 创建基于指定的字符串字面量 [key] 和 [value] 的模拟规则，使用空指针。这些规则是合成的，规则文件中不存在声明处。 */
+        @JvmStatic
+        fun mock(configGroup: CwtConfigGroup, key: String, value: String): CwtPropertyConfig = CwtPropertyConfigResolver.mock(configGroup, key, value)
     }
 }
 
@@ -185,6 +189,12 @@ private object CwtPropertyConfigResolver : CwtConfigResolverScope {
     ): CwtPropertyConfig {
         val config = create(pointer, sourceConfig.configGroup, keyExpression, valueExpression, valueType, separatorType, configs, injectable = true)
         return config
+    }
+
+    fun mock(configGroup: CwtConfigGroup, key: String, value: String): CwtPropertyConfig {
+        val keyExpression = CwtDataExpression.resolve(key, CwtDataExpressionRole.Key)
+        val valueExpression = CwtDataExpression.resolve(value, CwtDataExpressionRole.Value)
+        return CwtPropertyConfigMock(configGroup, keyExpression, valueExpression)
     }
 }
 
@@ -395,6 +405,21 @@ private class CwtPropertyConfigDelegateWithKeyAndValue(
 
     override val keyExpression: CwtDataExpression = CwtDataExpression.resolve(key, CwtDataExpressionRole.Key) // as field directly
     override val valueExpression: CwtDataExpression = CwtDataExpression.resolve(value, CwtDataExpressionRole.Value) // as field directly
+}
+
+// 12 + 5 * 4 = 32 -> 32
+private class CwtPropertyConfigMock(
+    override val configGroup: CwtConfigGroup,
+    override val keyExpression: CwtDataExpression, // as constructor argument and field directly
+    override val valueExpression: CwtDataExpression, // as constructor argument and field directly
+) : CwtPropertyConfigBase() {
+    override val pointer: SmartPsiElementPointer<out CwtProperty> get() = emptyPointer()
+
+    override val key: String get() = keyExpression.expressionString
+    override val value: String get() = valueExpression.expressionString
+    override val valueType: CwtExpressionType get() = CwtExpressionType.String
+    override val separatorType: CwtSeparatorType get() = CwtSeparatorType.Equal
+    override val configs: List<CwtMemberConfig<*>>? get() = null
 }
 
 // endregion

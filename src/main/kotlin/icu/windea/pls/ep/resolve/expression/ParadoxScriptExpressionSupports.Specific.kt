@@ -72,7 +72,7 @@ class ParadoxScriptTechnologyWithLevelExpressionSupport : ParadoxScriptExpressio
         if (separatorIndex == 0) return emptyList() // no tech node -> ignore
         val offset = ParadoxExpressionService.getExpressionOffset(element)
         val referenceRange = TextRange.from(rangeInExpression.startOffset + offset, separatorIndex)
-        val referenceConfigs = listOf(CwtValueConfig.createMock(config.configGroup, typeExpression))
+        val referenceConfigs = listOf(CwtValueConfig.mock(config.configGroup, typeExpression))
         val referenceRole = ParadoxExpressionRole.Other
         val reference = ParadoxScriptExpressionPsiReference(element, referenceRange, referenceConfigs, referenceRole)
         return reference.to.singletonList()
@@ -84,7 +84,7 @@ class ParadoxScriptTechnologyWithLevelExpressionSupport : ParadoxScriptExpressio
         val separatorIndex = context.keyword.indexOf('@')
         if (separatorIndex != -1 && context.keywordOffset - separatorIndex > 0) return
 
-        val config = CwtValueConfig.createMock(context.configGroup, typeExpression)
+        val config = CwtValueConfig.mock(context.configGroup, typeExpression)
         val context = context.copy(isKey = null, config = config, configs = emptySet())
         definitionScriptExpressionSupport.complete(context, result)
     }

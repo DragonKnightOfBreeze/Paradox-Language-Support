@@ -38,7 +38,7 @@ object ParadoxExtendedCompletionManager {
         val contextConfig = context.config ?: return
         val configGroup = contextConfig.configGroup
         val config = when (contextConfig) {
-            is CwtPropertyConfig -> CwtValueConfig.createMock(configGroup, "<${contextConfig.key}>")
+            is CwtPropertyConfig -> CwtValueConfig.mock(configGroup, "<${contextConfig.key}>")
             else -> contextConfig
         }
         val typeExpression = config.configExpression?.metadata?.value ?: return
