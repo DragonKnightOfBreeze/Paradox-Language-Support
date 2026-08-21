@@ -415,6 +415,8 @@ private class CwtPropertyConfigMock(
 ) : CwtPropertyConfigBase() {
     override val pointer: SmartPsiElementPointer<out CwtProperty> get() = emptyPointer()
 
+    override val valueConfig: CwtValueConfig = CwtValueConfig.mock(configGroup, valueExpression.expressionString)
+
     override val key: String get() = keyExpression.expressionString
     override val value: String get() = valueExpression.expressionString
     override val valueType: CwtExpressionType get() = CwtExpressionType.String

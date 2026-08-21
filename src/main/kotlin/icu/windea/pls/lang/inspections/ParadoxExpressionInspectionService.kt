@@ -48,7 +48,7 @@ object ParadoxExpressionInspectionService {
 
         // 如果不存在规则上下文，则直接跳过
         // 如果存在规则上下文，但指定要跳过检查，则直接跳过
-        // 如果存在可严格匹配的规则，则直接跳过
+        // 如果存在匹配的规则，则直接跳过
         // 如果当前节点未通过检查，而父节点也未通过检查，也需要跳过，避免冗余的报错
 
         // NOTE 3.0.2 do not skip by default (try to match with parameters if possible)
@@ -64,8 +64,8 @@ object ParadoxExpressionInspectionService {
         // skip if config context should be skipped (mainly based on member path and member role)
         if (configContext.skipUnresolvedExpressionCheck()) return
 
-        // skip if there are any matched configs (strictly)
-        val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(fallback = false))
+        // skip if there are any matched configs (use fallback)
+        val configs = ParadoxConfigManager.getConfigs(element)
         if (configs.isNotEmpty()) return
 
         var parentConfigContext: CwtConfigContext? = null
@@ -74,7 +74,7 @@ object ParadoxExpressionInspectionService {
             if (parent == null) return@run
             parentConfigContext = ParadoxConfigManager.getConfigContext(parent) ?: return@run
             if (parentConfigContext.skipUnresolvedExpressionCheck()) return@run
-            val configs = ParadoxConfigManager.getConfigs(parent, ParadoxMatchOptions(fallback = false))
+            val configs = ParadoxConfigManager.getConfigs(parent)
             if (configs.isNotEmpty()) return@run
             return // skip if the parent node also fails the check
         }
@@ -93,10 +93,10 @@ object ParadoxExpressionInspectionService {
         if (ParadoxCsvPsiService.isHeaderColumn(element)) return // skip header columns
 
         // 如果不存在对应的列规则，则直接跳过
-        // 如果存在对应的列规则且严格匹配，则直接跳过
+        // 如果存在对应的列规则且匹配，则直接跳过
         // 按需忽略最后一行
 
-        // skip if the column config can be matched (strictly)
+        // skip if the column config can be matched
         val columnConfig = ParadoxCsvManager.getColumnConfig(element, rowConfig) ?: return // skip (checked by `IncorrectColumnSizeInspection`)
         if (ParadoxCsvManager.isMatchedColumnConfig(element, columnConfig)) return
 
