@@ -60,7 +60,7 @@ class IncorrectScopeSwitchInspection : ScopeInspectionBase() {
                     if (!checkForSystemScopes) continue
                     if (scopeContext.scope.id == ParadoxScopeConstants.unknownScope) {
                         val definitionType = definitionType ?: continue
-                        if (definitionType in config.configGroup.typesModel.skipCheckSystemScope) continue
+                        if (definitionType in config.configGroup.typeModel.skipCheckSystemScope) continue
                         val description = ChronicleBundle.message("inspection.script.incorrectScopeSwitch.desc.3", node.text)
                         holder.registerProblem(propertyKey, rangeInExpression, description)
                     }

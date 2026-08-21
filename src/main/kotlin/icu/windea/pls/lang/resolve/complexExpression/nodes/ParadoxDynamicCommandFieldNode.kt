@@ -34,7 +34,7 @@ class ParadoxDynamicCommandFieldNode(
             run r1@{
                 val prefix = text.substringBefore('(', "")
                 if (prefix.isEmpty()) return@r1
-                val linkConfigs = configGroup.localisationLinksModel.forValueFromArgumentSortedByPrefix[prefix]
+                val linkConfigs = configGroup.localisationLinkModel.forValueFromArgumentSortedByPrefix[prefix]
                 if (linkConfigs.isNullOrEmpty()) return@r1
                 run r2@{
                     val nodeText = prefix // = linkConfigs.first().prefixFromArgument!!
@@ -68,7 +68,7 @@ class ParadoxDynamicCommandFieldNode(
 
             // 匹配某一前缀的场合（如 `event_target:some_job`）
             run r1@{
-                val linkConfigs = configGroup.localisationLinksModel.forValueFromDataSorted
+                val linkConfigs = configGroup.localisationLinkModel.forValueFromDataSorted
                     .filterFast { text.startsWith(it.prefix!!, ignoreCase = true) } // 3.0.1 clarify: ignore case
                 if (linkConfigs.isEmpty()) return@r1
                 run r2@{
@@ -89,7 +89,7 @@ class ParadoxDynamicCommandFieldNode(
 
             // 没有前缀且允许没有前缀的场合
             run r1@{
-                val linkConfigs = configGroup.localisationLinksModel.forValueNoPrefixSorted
+                val linkConfigs = configGroup.localisationLinkModel.forValueNoPrefixSorted
                 if (linkConfigs.isEmpty()) return@r1
                 val node = ParadoxCommandFieldValueNode.resolve(text, textRange, configGroup, linkConfigs)
                 nodes += node

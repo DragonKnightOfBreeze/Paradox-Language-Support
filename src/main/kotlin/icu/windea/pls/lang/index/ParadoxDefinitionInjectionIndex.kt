@@ -74,7 +74,7 @@ class ParadoxDefinitionInjectionIndex : ParadoxIndexInfoAwareFileBasedIndex<List
 
         if (!ParadoxDefinitionInjectionManager.isSupported(gameType)) return // optimize (fast return if the game type not supports)
         val configGroup = ChronicleFacade.getConfigGroup(psiFile.project, gameType)
-        val config = configGroup.macrosModel.forDefinitionInjections ?: return
+        val config = configGroup.macroModel.forDefinitionInjections ?: return
         val fileLevelMatchContext = CwtTypeConfigMatchContext(configGroup, fileInfo.path)
         val fileLevelTypeConfigs = getFileLevelTypeConfigs(fileLevelMatchContext)
         if (fileLevelTypeConfigs.isEmpty()) return // optimize (fast return if there are no candidates)

@@ -322,7 +322,7 @@ object ParadoxCompletionManager {
     fun completeInlineScriptUsage(context: ParadoxCompletionContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
         val configGroup = context.configGroup
-        val configs = configGroup.macrosModel.forInlineScripts.orNull() ?: return
+        val configs = configGroup.macroModel.forInlineScripts.orNull() ?: return
         for (config in configs) {
             ProgressManager.checkCanceled()
             val context = context.copy(config = config, isKey = true)
@@ -333,7 +333,7 @@ object ParadoxCompletionManager {
     fun completeDefinitionInjectionExpression(context: ParadoxCompletionContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
         val configGroup = context.configGroup
-        val config = configGroup.macrosModel.forDefinitionInjections ?: return
+        val config = configGroup.macroModel.forDefinitionInjections ?: return
         val element = context.contextElement.castOrNull<ParadoxScriptStringExpressionElement>() ?: return
         val fileInfo = context.file.fileInfo ?: return
         val path = fileInfo.path

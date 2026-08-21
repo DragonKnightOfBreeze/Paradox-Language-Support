@@ -39,7 +39,7 @@ class ChangeDefinitionInjectionModeIntention : ModCommandAction {
         val element = findElement(context) ?: return ModCommand.nop()
         val gameType = selectGameType(context.file) ?: return ModCommand.nop()
         val configGroup = ChronicleFacade.getConfigGroup(gameType)
-        val modes = configGroup.macrosModel.forDefinitionInjections?.modeConfigs?.keys?.orNull() ?: return ModCommand.nop()
+        val modes = configGroup.macroModel.forDefinitionInjections?.modeConfigs?.keys?.orNull() ?: return ModCommand.nop()
         val items = modes.map { ItemIntention(element, it) }
         return ModCommand.chooseAction(ChronicleBundle.message("intention.changeDefinitionInjectionMode.title"), items)
     }

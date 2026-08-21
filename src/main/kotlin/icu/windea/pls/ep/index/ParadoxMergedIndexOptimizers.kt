@@ -85,7 +85,7 @@ class ParadoxDefinitionBasedMergedIndexOptimizer : ParadoxMergedIndexOptimizer {
     }
 
     private fun checkTypeConfig(typeConfig: CwtTypeConfig, builder: ImmutableSet.Builder<ParadoxMergedIndexType<*>>) {
-        val typesModel = typeConfig.configGroup.typesModel
+        val typesModel = typeConfig.configGroup.typeModel
         // see: icu.windea.pls.ep.index.ParadoxParameterWithReadAccessMergedIndexSupport
         // TODO 3.0.1+ need further check
         if (typeConfig.name in typesModel.supportParameters) builder.add(ParadoxMergedIndexTypes.ParameterWithReadAccess)

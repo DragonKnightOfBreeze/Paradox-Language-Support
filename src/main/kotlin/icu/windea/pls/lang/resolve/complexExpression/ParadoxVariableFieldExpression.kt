@@ -128,7 +128,7 @@ private object ParadoxVariableFieldExpressionResolver {
             val end = textLength
             val nodeText = text.substring(startIndex, end)
             val nodeTextRange = TextRange.create(startIndex + offset, end + offset)
-            val node = ParadoxDataSourceNode.resolve(nodeText, nodeTextRange, configGroup, configGroup.linksModel.variable)
+            val node = ParadoxDataSourceNode.resolve(nodeText, nodeTextRange, configGroup, configGroup.linkModel.variable)
             // if (!incomplete && nodes.isEmpty() && node is ParadoxErrorNode) return null
             nodes += node
         }

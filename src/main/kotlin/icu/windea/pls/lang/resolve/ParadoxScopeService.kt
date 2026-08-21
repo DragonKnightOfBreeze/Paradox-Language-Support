@@ -229,8 +229,8 @@ object ParadoxScopeService {
 
         val configGroup = definitionInfo.configGroup
         val definitionType = definitionInfo.type
-        if (definitionType in configGroup.typesModel.supportScope) return true
-        if (indirect && definitionType in configGroup.typesModel.supportIndirectScope) return true
+        if (definitionType in configGroup.typeModel.supportScope) return true
+        if (indirect && definitionType in configGroup.typeModel.supportIndirectScope) return true
         return false
     }
 

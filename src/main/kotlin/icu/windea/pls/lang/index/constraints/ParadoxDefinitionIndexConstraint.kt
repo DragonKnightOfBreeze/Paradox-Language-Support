@@ -2,7 +2,7 @@ package icu.windea.pls.lang.index.constraints
 
 import com.intellij.util.indexing.ID
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.configGroup.CwtTypesModel
+import icu.windea.pls.config.configGroup.CwtTypeModel
 import icu.windea.pls.ep.resolve.localisation.ParadoxCompositeLocalisationIconSupport
 import icu.windea.pls.ep.resolve.localisation.ParadoxLocalisationIconSupport
 import icu.windea.pls.ep.resolve.modifier.ParadoxEconomicCategoryModifierSupport
@@ -73,11 +73,11 @@ enum class ParadoxDefinitionIndexConstraint(
      * @see ParadoxLocalisationIconPsiReference
      * @see ParadoxLocalisationIconSupport
      * @see ParadoxCompositeLocalisationIconSupport.fromDefinition
-     * @see CwtTypesModel.localisationIconResolvable
+     * @see CwtTypeModel.localisationIconResolvable
      */
     LocalisationIconResolvable(ChronicleIndexKeys.DefinitionForLocalisationIconResolvable) {
         override fun test(definitionType: String, configGroup: CwtConfigGroup): Boolean {
-            return configGroup.typesModel.localisationIconResolvable.contains(definitionType)
+            return configGroup.typeModel.localisationIconResolvable.contains(definitionType)
         }
     },
     ;

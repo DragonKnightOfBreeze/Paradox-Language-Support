@@ -22,7 +22,7 @@ object CwtConfigExpressionMatchService {
     fun matchesScopeInferrableDefinitionReference(dataExpression: CwtDataExpression, configGroup: CwtConfigGroup): Boolean {
         if (dataExpression.type != CwtDataTypes.Definition) return false
         val definitionType = dataExpression.metadata.value?.substringBefore('.') ?: return false
-        return definitionType in configGroup.typesModel.supportScopeInference
+        return definitionType in configGroup.typeModel.supportScopeInference
     }
 
     fun matchesOnActionReference(dataExpression: CwtDataExpression): Boolean {

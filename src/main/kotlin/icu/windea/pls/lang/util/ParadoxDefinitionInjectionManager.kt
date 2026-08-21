@@ -186,7 +186,7 @@ object ParadoxDefinitionInjectionManager {
     fun isLenientMode(definitionInjectionInfo: ParadoxDefinitionInjectionInfo): Boolean {
         val mode = definitionInjectionInfo.mode
         val configGroup = definitionInjectionInfo.configGroup
-        val config = configGroup.macrosModel.forDefinitionInjections ?: return false
+        val config = configGroup.macroModel.forDefinitionInjections ?: return false
         return mode in config.lenientModes
     }
 
@@ -196,7 +196,7 @@ object ParadoxDefinitionInjectionManager {
     fun isReplaceMode(definitionInjectionInfo: ParadoxDefinitionInjectionInfo): Boolean {
         val mode = definitionInjectionInfo.mode
         val configGroup = definitionInjectionInfo.configGroup
-        val config = configGroup.macrosModel.forDefinitionInjections ?: return false
+        val config = configGroup.macroModel.forDefinitionInjections ?: return false
         return mode in config.replaceModes
     }
 
@@ -207,7 +207,7 @@ object ParadoxDefinitionInjectionManager {
     fun isCreateMode(definitionInjectionInfo: ParadoxDefinitionInjectionInfo): Boolean {
         val mode = definitionInjectionInfo.mode
         val configGroup = definitionInjectionInfo.configGroup
-        val config = configGroup.macrosModel.forDefinitionInjections ?: return false
+        val config = configGroup.macroModel.forDefinitionInjections ?: return false
         return mode in config.createModes
     }
 
@@ -215,7 +215,7 @@ object ParadoxDefinitionInjectionManager {
      * 检查指定模式是否应被识别为定义声明（可以被索引和搜索）。
      */
     fun isCreateMode(mode: String, configGroup: CwtConfigGroup): Boolean {
-        val config = configGroup.macrosModel.forDefinitionInjections ?: return false
+        val config = configGroup.macroModel.forDefinitionInjections ?: return false
         return mode in config.createModes
     }
 

@@ -21,7 +21,7 @@ class CwtPredefinedConfigGroupProcessor : CwtConfigGroupProcessor {
         for (json in jsonList) {
             initializer.aliasNamesSupportScope += json.aliasNamesSupportScope
 
-            val typesModel = initializer.typesModel
+            val typesModel = initializer.typeModel
             typesModel.supportScope += json.typesSupportScope
             typesModel.supportIndirectScope += json.typesSupportIndirectScope
             typesModel.supportScopeInference += json.typesSupportScopeInference

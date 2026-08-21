@@ -13,7 +13,7 @@ import icu.windea.pls.config.config.prefixFromArgument
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.CwtDataExpressionRole
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.configGroup.CwtLinksModelBase
+import icu.windea.pls.config.configGroup.CwtLinkModelBase
 import icu.windea.pls.config.filePathPatterns
 import icu.windea.pls.config.select.selectConfigScope
 import icu.windea.pls.config.sortedByPriority
@@ -61,10 +61,10 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
         computeTypesModel(configGroup)
 
         checkCanceled()
-        computeLinksModel(configGroup, configGroup.initializer.linksModel, configGroup.initializer.links.values)
+        computeLinksModel(configGroup, configGroup.initializer.linkModel, configGroup.initializer.links.values)
 
         checkCanceled()
-        computeLinksModel(configGroup, configGroup.initializer.localisationLinksModel, configGroup.initializer.localisationLinks.values)
+        computeLinksModel(configGroup, configGroup.initializer.localisationLinkModel, configGroup.initializer.localisationLinks.values)
 
         checkCanceled()
         computeMacrosModel(configGroup)
@@ -212,7 +212,7 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
 
     private fun computeTypesModel(configGroup: CwtConfigGroup) {
         val initializer = configGroup.initializer
-        with(initializer.typesModel) {
+        with(initializer.typeModel) {
             initializer.types.values.forEach { c ->
                 if (c.baseType.isNotNullOrEmpty()) {
                     base2Swapped[c.baseType] = c.name
@@ -244,7 +244,7 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
         }
     }
 
-    private fun computeLinksModel(configGroup: CwtConfigGroup, linksModel: CwtLinksModelBase, links: Collection<CwtLinkConfig>) {
+    private fun computeLinksModel(configGroup: CwtConfigGroup, linksModel: CwtLinkModelBase, links: Collection<CwtLinkConfig>) {
         with(linksModel) {
             val staticLinks = links.filter { it.isStatic }
             staticLinks.forEach { c ->
@@ -294,7 +294,7 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
     private fun computeMacrosModel(configGroup: CwtConfigGroup) {
         val initializer = configGroup.initializer
         val attribute = initializer.attribute
-        with(initializer.macrosModel) {
+        with(initializer.macroModel) {
             initializer.macros.forEach { c ->
                 when (c) {
                     is CwtMacroConfig.InlineScript -> {

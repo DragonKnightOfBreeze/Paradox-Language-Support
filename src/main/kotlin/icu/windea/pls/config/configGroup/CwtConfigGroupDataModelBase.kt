@@ -94,10 +94,10 @@ open class CwtConfigGroupDataModelBase : CwtConfigGroupDataModel {
     final override val aliasKeysGroupNoConst: Object2ObjectLinkedOpenHashMap<String, ObjectLinkedOpenHashSet<String>> = Object2ObjectLinkedOpenHashMap()
     final override val aliasNamesSupportScope: ObjectLinkedOpenHashSet<String> = ObjectLinkedOpenHashSet()
     final override val relatedLocalisationPatterns: ObjectLinkedOpenHashSet<Tuple2<String, String>> = ObjectLinkedOpenHashSet()
-    final override val typesModel: CwtTypesModelBase = CwtTypesModelBase()
-    final override val linksModel: CwtLinksModelBase = CwtLinksModelBase()
-    final override val localisationLinksModel: CwtLinksModelBase = CwtLinksModelBase()
-    final override val macrosModel: CwtMacrosModelBase = CwtMacrosModelBase()
+    final override val typeModel: CwtTypeModelBase = CwtTypeModelBase()
+    final override val linkModel: CwtLinkModelBase = CwtLinkModelBase()
+    final override val localisationLinkModel: CwtLinkModelBase = CwtLinkModelBase()
+    final override val macroModel: CwtMacroModelBase = CwtMacroModelBase()
     final override val attribute: CwtConfigGroupAttributesBase = CwtConfigGroupAttributesBase()
 
     val unionAttributes: Object2ObjectLinkedOpenHashMap<String, CwtExpandableConfigAttributes> = Object2ObjectLinkedOpenHashMap<String, CwtExpandableConfigAttributes>()
@@ -185,15 +185,15 @@ open class CwtConfigGroupDataModelBase : CwtConfigGroupDataModel {
         aliasKeysGroupNoConst.trim()
         aliasNamesSupportScope.trim()
         relatedLocalisationPatterns.trim()
-        linksModel.trim()
-        localisationLinksModel.trim()
-        macrosModel.trim()
-        typesModel.trim()
+        linkModel.trim()
+        localisationLinkModel.trim()
+        macroModel.trim()
+        typeModel.trim()
         attribute.trim()
     }
 }
 
-class CwtTypesModelBase : CwtTypesModel {
+class CwtTypeModelBase : CwtTypeModel {
     override val base2Swapped: Object2ObjectLinkedOpenHashMap<String, String> = Object2ObjectLinkedOpenHashMap()
     override val swapped2Base: Object2ObjectLinkedOpenHashMap<String, String> = Object2ObjectLinkedOpenHashMap()
     override val supportScope: ObjectLinkedOpenHashSet<String> = ObjectLinkedOpenHashSet()
@@ -217,7 +217,7 @@ class CwtTypesModelBase : CwtTypesModel {
     }
 }
 
-class CwtLinksModelBase : CwtLinksModel {
+class CwtLinkModelBase : CwtLinkModel {
     override val variable: ObjectArrayList<CwtLinkConfig> = ObjectArrayList()
     override val forScopeStatic: ObjectArrayList<CwtLinkConfig> = ObjectArrayList()
     override val forScopeNoPrefixSorted: ObjectArrayList<CwtLinkConfig> = ObjectArrayList()
@@ -247,7 +247,7 @@ class CwtLinksModelBase : CwtLinksModel {
     }
 }
 
-class CwtMacrosModelBase : CwtMacrosModel {
+class CwtMacroModelBase : CwtMacroModel {
     override val forInlineScripts: ObjectArrayList<CwtMacroConfig.InlineScript> = ObjectArrayList()
     override var forDefinitionInjections: CwtMacroConfig.DefinitionInjection? = null
 

@@ -176,13 +176,13 @@ interface CwtConfigGroupDataModel {
     // region Models
 
     /** 获取符合特定条件的定义类型。 */
-    val typesModel: CwtTypesModel get() = CwtTypesModel.Empty
+    val typeModel: CwtTypeModel get() = CwtTypeModel.Empty
     /** 获取符合特定条件的链接规则。 */
-    val linksModel: CwtLinksModel get() = CwtLinksModel.Empty
+    val linkModel: CwtLinkModel get() = CwtLinkModel.Empty
     /** 获取符合特定条件的本地化的链接规则。 */
-    val localisationLinksModel: CwtLinksModel get() = CwtLinksModel.Empty
+    val localisationLinkModel: CwtLinkModel get() = CwtLinkModel.Empty
     /** 获取符合特定条件的宏规则。 */
-    val macrosModel: CwtMacrosModel get() = CwtMacrosModel.Empty
+    val macroModel: CwtMacroModel get() = CwtMacroModel.Empty
 
     // endregion
 
@@ -203,7 +203,7 @@ interface CwtConfigGroupDataModel {
 }
 
 /** 定义类型的数据模型。用于保存和获取符合特定条件的定义类型。 */
-interface CwtTypesModel {
+interface CwtTypeModel {
     /** 基础类型到切换类型的映射。 */
     val base2Swapped: Map<String, String> get() = emptyMap()
     /** 切换类型到基础类型的映射。 */
@@ -234,11 +234,11 @@ interface CwtTypesModel {
      */
     val localisationIconResolvable: Set<String> get() = emptySet()
 
-    object Empty : CwtTypesModel
+    object Empty : CwtTypeModel
 }
 
 /** 链接规则的数据模型。用于保存和获取符合特定条件的链接规则。 */
-interface CwtLinksModel {
+interface CwtLinkModel {
     /** 变量对应的链接规则的列表。 */
     val variable: List<CwtLinkConfig> get() = emptyList()
     val forScopeStatic: List<CwtLinkConfig> get() = emptyList()
@@ -252,13 +252,13 @@ interface CwtLinksModel {
     val forValueFromArgumentSorted: List<CwtLinkConfig> get() = emptyList()
     val forValueFromArgumentSortedByPrefix: Map<@CaseInsensitive String, List<CwtLinkConfig>> get() = emptyMap()
 
-    object Empty : CwtLinksModel
+    object Empty : CwtLinkModel
 }
 
 /** 宏规则的数据模型。用于保存和获取符合特定条件的宏规则。 */
-interface CwtMacrosModel {
+interface CwtMacroModel {
     val forInlineScripts: List<CwtMacroConfig.InlineScript> get() = emptyList()
     val forDefinitionInjections: CwtMacroConfig.DefinitionInjection? get() = null
 
-    object Empty : CwtMacrosModel
+    object Empty : CwtMacroModel
 }

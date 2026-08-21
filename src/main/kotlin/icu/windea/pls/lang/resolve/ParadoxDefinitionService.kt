@@ -295,7 +295,7 @@ object ParadoxDefinitionService {
         if (typeConfig.skipRootKey.isNotEmpty()) return listOf(file)
 
         // 如果可能存在 typeKeyPrefix，则需要依赖父节点
-        if (typeConfig.typeKeyPrefixConfig != null || typeConfig.name in typeConfig.configGroup.typesModel.typeKeyPrefixAware) return listOf(element.parent)
+        if (typeConfig.typeKeyPrefixConfig != null || typeConfig.name in typeConfig.configGroup.typeModel.typeKeyPrefixAware) return listOf(element.parent)
 
         // 其余情况，直接依赖 element
         return listOf(element)

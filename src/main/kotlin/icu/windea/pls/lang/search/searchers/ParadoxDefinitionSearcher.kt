@@ -136,6 +136,6 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxDefinitionIndexInfo, 
     ) : ParadoxSearchContext {
         val configGroup: CwtConfigGroup = ChronicleFacade.getConfigGroup(project, gameType)
         val typeConfig: CwtTypeConfig? = type?.orNull()?.let { configGroup.types[it] }
-        val swappedType: String? = type?.orNull()?.let { configGroup.typesModel.base2Swapped[it] }?.takeIf { it != type }
+        val swappedType: String? = type?.orNull()?.let { configGroup.typeModel.base2Swapped[it] }?.takeIf { it != type }
     }
 }

@@ -274,7 +274,7 @@ class CwtInlineScriptUsageConfigContextProvider : CwtConfigContextProvider {
     override fun getConfigs(context: CwtConfigContext, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>> {
         val memberPath = context.memberPath ?: return emptyList()
         if (memberPath.isNotEmpty()) return ParadoxConfigService.getFlattenedConfigsForConfigContext(context, options)
-        val inlineConfigs = context.configGroup.macrosModel.forInlineScripts.orNull() ?: return emptyList()
+        val inlineConfigs = context.configGroup.macroModel.forInlineScripts.orNull() ?: return emptyList()
         val rootConfigs = inlineConfigs.mapFast { CwtConfigManipulationService.inlineMacro(it) }
         return ParadoxConfigService.getTopConfigsForConfigContext(context, rootConfigs)
     }

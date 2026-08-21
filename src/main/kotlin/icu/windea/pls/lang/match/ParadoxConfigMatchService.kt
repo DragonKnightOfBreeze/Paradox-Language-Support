@@ -222,7 +222,7 @@ object ParadoxConfigMatchService {
             }
         }
 
-        if (context.lazyTypeKeyPrefix != null && typeConfig.name in typeConfig.configGroup.typesModel.typeKeyPrefixAware) {
+        if (context.lazyTypeKeyPrefix != null && typeConfig.name in typeConfig.configGroup.typeModel.typeKeyPrefixAware) {
             // 如果属性 type_key_prefix 存在，则要求其与 typeKeyPrefix 必须匹配（忽略大小写）
             // 如果属性 type_key_prefix 不存在，则在必要时，要求 typeKeyPrefix 也不存在
             val expectedTypeKeyPrefix = context.lazyTypeKeyPrefix.value

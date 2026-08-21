@@ -6,7 +6,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.CwtDataExpressionRole
-import icu.windea.pls.config.configGroup.CwtTypesModel
+import icu.windea.pls.config.configGroup.CwtTypeModel
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.mapNotNullFast
 import icu.windea.pls.core.collections.orNull
@@ -40,7 +40,7 @@ abstract class ParadoxCompositeLocalisationIconSupport : ParadoxLocalisationIcon
     /**
      * 注意：这里的注册信息发生更改时，受约束索引的构建逻辑也会发生变化，因此需要同步更新对应的索引版本。
      *
-     * @see CwtTypesModel.localisationIconResolvable
+     * @see CwtTypeModel.localisationIconResolvable
      * @see ParadoxDefinitionIndexConstraint.LocalisationIconResolvable
      */
     protected fun fromDefinition(definitionType: String) {
@@ -50,7 +50,7 @@ abstract class ParadoxCompositeLocalisationIconSupport : ParadoxLocalisationIcon
     /**
      * 注意：这里的注册信息发生更改时，受约束索引的构建逻辑也会发生变化，因此需要同步更新对应的索引版本。
      *
-     * @see CwtTypesModel.localisationIconResolvable
+     * @see CwtTypeModel.localisationIconResolvable
      * @see ParadoxDefinitionIndexConstraint.LocalisationIconResolvable
      */
     protected fun fromDefinition(definitionType: String, definitionNameGetter: (name: String) -> String?, nameGetter: (definitionName: String) -> String?) {
