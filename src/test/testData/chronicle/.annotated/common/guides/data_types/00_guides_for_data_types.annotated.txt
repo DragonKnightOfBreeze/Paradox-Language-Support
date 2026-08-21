@@ -9,14 +9,28 @@ guide = {
     ## @type string = string
     ## @config_expression category = enum[guide_category]
     category = basic
+    ## @type string = int
+    ## @config_expression d_any = $any
+    d_any = 01
     ## @type string = string
     ## @config_expression d_any = $any
-    d_any = hello_world
+    d_any = secret
     ## @type string = block
     ## @config_expression d_any = $any
     d_any = {
         ## @type string
-        hello_world
+        ## @config_expression $any
+        hint
+    }
+    ## @type string = block
+    ## @config_expression d_any = $any
+    d_any = {
+        ## @type string
+        ## @config_expression $any
+        hint
+        ## @type string = string
+        ## @config_expression $any = $any
+        say = hello_world
     }
     ## @type string = boolean
     ## @config_expression d_bool = bool

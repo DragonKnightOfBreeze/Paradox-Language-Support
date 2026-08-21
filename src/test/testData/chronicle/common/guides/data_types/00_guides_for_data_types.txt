@@ -4,8 +4,13 @@ guide = {
 
     # start
 
-    d_any = hello_world
-    d_any = { hello_world }
+    d_any = 01
+    d_any = secret
+    d_any = { hint }
+    d_any = {
+        hint
+        say = hello_world
+    }
 
     d_bool = yes
     d_bool = no

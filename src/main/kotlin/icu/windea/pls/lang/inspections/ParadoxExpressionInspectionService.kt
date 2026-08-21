@@ -156,7 +156,7 @@ object ParadoxExpressionInspectionService {
         return false
     }
 
-    fun applyUnresolvedExpressionCheckers(element: ParadoxExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>, context: ParadoxExpressionInspectionContext): Boolean {
+    private fun applyUnresolvedExpressionCheckers(element: ParadoxExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>, context: ParadoxExpressionInspectionContext): Boolean {
         val gameType = context.gameType
         val checkers = ParadoxUnresolvedExpressionChecker.getAll()
         checkers.forEachFast f@{ ep ->
