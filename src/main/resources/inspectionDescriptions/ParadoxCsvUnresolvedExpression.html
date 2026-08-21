@@ -1,6 +1,13 @@
 <html>
 <body>
   Reports unresolved expressions in CSV files.
+<p>
+    If the current node has a corresponding row config, but no column config that strictly matches, the check is considered failed.
+  </p>
+  <p>
+    This code inspection is directly skipped when certain special cases are involved.
+    For example: it is ignored because a matching extension config exists.
+  </p>
   <p>
     <strong>NOTE:</strong>
     This code inspection is based on config files, so if it produces false positives, it usually indicates that the config files for current game type is incomplete.

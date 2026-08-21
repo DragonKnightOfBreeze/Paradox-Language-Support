@@ -2,13 +2,16 @@
 <body>
   Reports unresolved expressions in script files.
   <p>
-    An expression (key / value) in a definition declaration will be considered as unresolved in following situations:
+    If a config context exists for the current node, but no configs that strictly matches are found, the check is considered failed.
   </p>
-  <ul>
-    <li>It's a key expression, but does not match any config expression.</li>
-    <li>It's a key expression, but value expression of it does not match any config expression.</li>
-    <li>It's a value expression, but does not match any config expression.</li>
-  </ul>
+  <p>
+    This code inspection is directly skipped when certain special cases are involved.
+    For example: when its config context specifies to skip the check, or when it is ignored because a matched extension config exists.
+  </p>
+  <p>
+    If the current node fails the check and the parent node also fails the check, this code check is skipped to avoid redundant error reporting.
+    For example: if a property key cannot be resolved, then the property value will not be further checked. If a block cannot be resolved, then its members will not be further checked.
+  </p>
   <p>
     <strong>NOTE:</strong>
     This code inspection is based on config files, so if it produces false positives, it usually indicates that the config files for current game type is incomplete.

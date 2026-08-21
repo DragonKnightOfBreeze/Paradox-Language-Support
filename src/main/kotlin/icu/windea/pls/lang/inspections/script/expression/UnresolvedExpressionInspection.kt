@@ -18,6 +18,14 @@ import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 /**
  * （脚本文件中的）无法解析的表达式的代码检查。
  *
+ * 如果当前节点存在对应的规则上下文，但不存在可严格匹配的规则，则认为未通过检查。
+ *
+ * 当涉及部分特殊情况时，此代码检查会被直接跳过。
+ * 例如：其规则上下文指定跳过检查。因为存在匹配的扩展规则而被忽略。
+ *
+ * 如果当前节点未通过检查，而父节点也未通过检查，此代码检查会被跳过，避免冗余的报错。
+ * 例如：如果属性键无法解析，不会继续检查属性值。如果块无法解析，不会继续检查其中的成员。
+ *
  * @property ignoredInInjectedFiles （配置项）是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
  * @property ignoredInInlineScriptFiles （配置项）是否在内联脚本文件中忽略此代码检查。
  * @property ignoredByConfigs （配置项）如果对应的扩展的规则存在，是否需要忽略此代码检查。

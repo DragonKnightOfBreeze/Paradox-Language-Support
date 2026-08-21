@@ -58,9 +58,10 @@ object ParadoxExpressionInspectionService {
     fun checkForUnresolvedExpression(element: ParadoxScriptExpressionElement, context: ParadoxExpressionInspectionContext) {
         if (!element.isDataExpression()) return // skip if is not a data expression
 
-        // TODO 3.0.2 #386
-
-        // 如果存在匹配的规则，则直接跳过
+        // 如果不存在规则上下文，则直接跳过
+        // 如果存在规则上下文，但指定要跳过检查，则直接跳过
+        // 如果存在可严格匹配的规则，则直接跳过
+        // 如果当前节点未通过检查，而父节点也未通过检查，也需要跳过，避免冗余的报错
 
         // NOTE 3.0.2 do not skip by default (try to match with parameters if possible)
         //// skip if it is parameterized
@@ -79,6 +80,16 @@ object ParadoxExpressionInspectionService {
         val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(fallback = false))
         if (configs.isNotEmpty()) return
 
+        run {
+            val parent = if (element is ParadoxScriptPropertyKey) element.parent?.parent else element.parent
+            if (parent == null) return@run
+            val parentConfigContext = ParadoxConfigManager.getConfigContext(parent) ?: return@run
+            if (parentConfigContext.skipUnresolvedExpressionCheck()) return@run
+            val configs = ParadoxConfigManager.getConfigs(parent, ParadoxMatchOptions(fallback = false))
+            if (configs.isNotEmpty()) return@run
+            return // skip if the parent node also fails the check
+        }
+
         val expectedConfigs = getExpectedConfigs(element, configContext)
         if (skipForUnresolvedExpression(element, expectedConfigs, context)) return
 
@@ -90,7 +101,7 @@ object ParadoxExpressionInspectionService {
         if (ParadoxCsvPsiService.isHeaderColumn(element)) return // skip header columns
 
         // 如果不存在对应的列规则，则直接跳过
-        // 如果存在对应的列规则且匹配，则直接跳过
+        // 如果存在对应的列规则且严格匹配，则直接跳过
         // 按需忽略最后一行
 
         // skip if the column config can be matched (strictly)

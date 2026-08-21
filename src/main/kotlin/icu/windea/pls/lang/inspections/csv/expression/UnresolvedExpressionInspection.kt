@@ -16,7 +16,12 @@ import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.lang.util.ParadoxCsvManager
 
 /**
- * （脚本文件中的）无法解析的表达式的代码检查。
+ * （CSV 文件中的）无法解析的表达式的代码检查。
+ *
+ * 如果当前节点存在对应的行规则，但不存在可严格匹配的列规则，则认为未通过检查。
+ *
+ * 当涉及部分特殊情况时，此代码检查会被直接跳过。
+ * 例如：因为存在匹配的扩展规则而被忽略。
  *
  * @property ignoredInInjectedFiles （配置项）是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
  * @property ignoredByConfigs （配置项）如果对应的扩展的规则存在，是否需要忽略此代码检查。
