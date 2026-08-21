@@ -11,6 +11,7 @@ import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.psi.PsiFileOnlyVisitor
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.ParadoxUtf8BomOptionProvider
+import icu.windea.pls.lang.inspections.ParadoxFileInspectionContext
 import icu.windea.pls.lang.inspections.ParadoxFileInspectionService
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 
@@ -31,7 +32,7 @@ import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
  *
  * @see ParadoxUtf8BomOptionProvider
  */
-class IncorrectFileEncodingInspection : LocalInspectionTool(), DumbAware {
+class IncorrectFileEncodingInspection : LocalInspectionTool(), DumbAware, ParadoxFileInspectionContext.Aware {
     @JvmField var ignoredFilePaths = ""
 
     override fun getOptionsPane(): OptPane {
@@ -51,12 +52,16 @@ class IncorrectFileEncodingInspection : LocalInspectionTool(), DumbAware {
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        val context = ParadoxFileInspectionService.createContext(this, holder, ignoredFilePaths)
+        val context = createContext(holder)
         return object : PsiFileOnlyVisitor() {
             override fun visitFile(file: PsiFile) {
                 ProgressManager.checkCanceled()
                 ParadoxFileInspectionService.checkForIncorrectFileEncoding(file, context)
             }
         }
+    }
+
+    override fun createContext(holder: ProblemsHolder): ParadoxFileInspectionContext {
+        return ParadoxFileInspectionContext(this, holder, ignoredFilePaths)
     }
 }

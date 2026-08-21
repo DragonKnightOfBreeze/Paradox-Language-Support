@@ -63,8 +63,8 @@ class UnresolvedExpressionInspectionTest : BasePlatformTestCase(), ChronicleTest
     fun rowTypeIsKey_failed() {
         markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/key/test.csv")
         myFixture.configureByText("test.csv") {
-            val m1 = "Cannot resolve expression `1.234` (expect matching: int[0..10])"
-            val m2 = "Cannot resolve expression `not` (expect matching: bool)"
+            val m1 = "Cannot resolve column expression `1.234` (expect matching: int[0..10])"
+            val m2 = "Cannot resolve column expression `not` (expect matching: bool)"
             """
             id;number;status;flag;status
             id_is;${error(m1)}1.234${errorEnd()};${error(m2)}not${errorEnd()};valid;yes
@@ -118,8 +118,8 @@ class UnresolvedExpressionInspectionTest : BasePlatformTestCase(), ChronicleTest
     fun rowTypeIsIndex_failed() {
         markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/index/test.csv")
         myFixture.configureByText("test.csv") {
-            val m1 = "Cannot resolve expression `1.234` (expect matching: int[0..10])"
-            val m2 = "Cannot resolve expression `not` (expect matching: bool)"
+            val m1 = "Cannot resolve column expression `1.234` (expect matching: int[0..10])"
+            val m2 = "Cannot resolve column expression `not` (expect matching: bool)"
             """
             id;number;status;flag;status
             id_is;${error(m1)}1.234${errorEnd()};${error(m2)}not${errorEnd()};valid;no

@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.inspections.csv.common
+package icu.windea.pls.lang.inspections.csv.expression
 
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemsHolder
@@ -23,10 +23,12 @@ import icu.windea.pls.lang.util.ParadoxCsvManager
  */
 class IncorrectColumnSizeInspection : LocalInspectionTool() {
     @JvmField var ignoredInInjectedFiles = false
+    @JvmField var showExpect = true
 
     override fun getOptionsPane(): OptPane {
         return OptPane.pane(
-            OptPane.checkbox("ignoredInInjectedFiles", ChronicleBundle.message("inspection.option.ignoredInInjectedFiles"))
+            OptPane.checkbox("ignoredInInjectedFiles", ChronicleBundle.message("inspection.option.ignoredInInjectedFiles")),
+            OptPane.checkbox("showExpect", ChronicleBundle.message("inspection.option.showExpect")),
         )
     }
 
@@ -60,7 +62,10 @@ class IncorrectColumnSizeInspection : LocalInspectionTool() {
         if (columnSize == expectColumnSize) return
         if (rowConfig.skipLastColumn && columnSize == expectColumnSize + 1) return // ignored
         val location = element.lastChild ?: return // latest non-empty column or separator
-        val description = ChronicleBundle.message("inspection.csv.incorrectColumnSize.desc.1", rowConfig.name, expectColumnSize, columnSize)
+        val description = when {
+            showExpect -> ChronicleBundle.message("inspection.csv.incorrectColumnSize.desc.1", rowConfig.name, expectColumnSize, columnSize)
+            else -> ChronicleBundle.message("inspection.csv.incorrectColumnSize.desc.0")
+        }
         holder.registerProblem(location, description)
     }
 }

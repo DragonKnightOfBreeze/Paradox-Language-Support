@@ -10,6 +10,7 @@ import icu.windea.pls.config.config.CwtFilePathMatchableConfig
 import icu.windea.pls.config.config.delegated.CwtRowConfig
 import icu.windea.pls.core.psi.PsiFileOnlyVisitor
 import icu.windea.pls.core.vfs.VirtualFileService
+import icu.windea.pls.lang.inspections.ParadoxFileInspectionContext
 import icu.windea.pls.lang.inspections.ParadoxFileInspectionService
 import icu.windea.pls.lang.inspections.script.inlineScript.InlineScriptInspectionBase
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
@@ -26,7 +27,7 @@ import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
  * @see CwtFilePathMatchableConfig
  * @see CwtRowConfig
  */
-class UnmatchedFileInspection : InlineScriptInspectionBase() {
+class UnmatchedFileInspection : InlineScriptInspectionBase(), ParadoxFileInspectionContext.Aware {
     @JvmField var ignoredFilePaths = ""
 
     override fun getOptionsPane(): OptPane {
@@ -50,12 +51,16 @@ class UnmatchedFileInspection : InlineScriptInspectionBase() {
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        val context = ParadoxFileInspectionService.createContext(this, holder, ignoredFilePaths)
+        val context = createContext(holder)
         return object : PsiFileOnlyVisitor() {
             override fun visitFile(file: PsiFile) {
                 ProgressManager.checkCanceled()
                 ParadoxFileInspectionService.checkForUnmatchedFile(file, context)
             }
         }
+    }
+
+    override fun createContext(holder: ProblemsHolder): ParadoxFileInspectionContext {
+        return ParadoxFileInspectionContext(this, holder, ignoredFilePaths)
     }
 }

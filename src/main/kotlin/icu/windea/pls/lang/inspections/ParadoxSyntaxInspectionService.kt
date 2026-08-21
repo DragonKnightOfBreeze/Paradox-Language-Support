@@ -1,33 +1,20 @@
 package icu.windea.pls.lang.inspections
 
-import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.LocalQuickFix
-import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElement
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.toArray
 import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.ep.inspections.ParadoxIncorrectSyntaxChecker
-import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.fixes.ReplaceStringFix
-import icu.windea.pls.lang.selectFile
-import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constraints.ParadoxSyntaxConstraint
 import icu.windea.pls.model.orSpecific
 import icu.windea.pls.script.formatter.ParadoxScriptCodeStyleSettings
 
 object ParadoxSyntaxInspectionService {
-    fun createContext(tool: LocalInspectionTool, holder: ProblemsHolder): ParadoxSyntaxInspectionContext {
-        val file = selectFile(holder.file)
-        val rootFile = selectRootFile(holder.file)
-        val rootInfo = file?.fileInfo?.rootInfo
-        val gameType = rootInfo?.gameType
-        val gameVersion = rootInfo?.gameVersion
-        return ParadoxSyntaxInspectionContext(tool, holder, file, rootFile, gameType, gameVersion)
-    }
-
+    // region IncorrectSyntaxInspection
     fun checkForIncorrectSyntax(element: PsiElement, context: ParadoxSyntaxInspectionContext): Boolean {
         return applyIncorrectSyntaxCheckers(context, element)
     }
@@ -110,4 +97,6 @@ object ParadoxSyntaxInspectionService {
         val fix = ReplaceStringFix(element, ChronicleBundle.message("incorrectSyntax.safeAssign.fix.3"), string, offset, length)
         return fix
     }
+
+    // endregion
 }

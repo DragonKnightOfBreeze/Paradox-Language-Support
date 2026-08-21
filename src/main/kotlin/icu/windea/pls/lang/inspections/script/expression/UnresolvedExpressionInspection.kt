@@ -9,6 +9,7 @@ import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.vfs.VirtualFileService
+import icu.windea.pls.lang.inspections.ParadoxExpressionInspectionContext
 import icu.windea.pls.lang.inspections.ParadoxExpressionInspectionService
 import icu.windea.pls.lang.psi.ParadoxPsiElementVisitor
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
@@ -30,18 +31,20 @@ import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
  * @property ignoredInInlineScriptFiles （配置项）是否在内联脚本文件中忽略此代码检查。
  * @property ignoredByConfigs （配置项）如果对应的扩展的规则存在，是否需要忽略此代码检查。
  */
-class UnresolvedExpressionInspection : LocalInspectionTool() {
+class UnresolvedExpressionInspection : LocalInspectionTool(), ParadoxExpressionInspectionContext.Aware {
     @JvmField var ignoredInInjectedFiles = false
     @JvmField var ignoredInInlineScriptFiles = false
     @JvmField var ignoredByConfigs = false
-    @JvmField var showExpectInfo = true
+    @JvmField var showExpect = true
+    @JvmField var truncateExpect = -1
 
     override fun getOptionsPane(): OptPane {
         return OptPane.pane(
             OptPane.checkbox("ignoredInInjectedFiles", ChronicleBundle.message("inspection.option.ignoredInInjectedFiles")),
             OptPane.checkbox("ignoredInInlineScriptFiles", ChronicleBundle.message("inspection.option.ignoredInInlineScriptFiles")),
             OptPane.checkbox("ignoredByConfigs", ChronicleBundle.message("inspection.option.ignoredByConfigs")),
-            OptPane.checkbox("showExpectInfo", ChronicleBundle.message("inspection.option.showExpectInfo")),
+            OptPane.checkbox("showExpect", ChronicleBundle.message("inspection.option.showExpect")),
+            OptPane.number("truncateExpect", ChronicleBundle.message("inspection.option.truncateExpect"), Int.MIN_VALUE, Int.MAX_VALUE),
         )
     }
 
@@ -58,12 +61,16 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean, session: LocalInspectionToolSession): PsiElementVisitor {
-        val context = ParadoxExpressionInspectionService.createContext(this, holder, ignoredByConfigs, showExpectInfo)
+        val context = createContext(holder)
         return object : ParadoxPsiElementVisitor() {
             override fun visitExpressionElement(element: ParadoxScriptExpressionElement) {
                 ProgressManager.checkCanceled()
                 ParadoxExpressionInspectionService.checkForUnresolvedExpression(element, context)
             }
         }
+    }
+
+    override fun createContext(holder: ProblemsHolder): ParadoxExpressionInspectionContext {
+        return ParadoxExpressionInspectionContext(this, holder, ignoredByConfigs, showExpect, truncateExpect)
     }
 }

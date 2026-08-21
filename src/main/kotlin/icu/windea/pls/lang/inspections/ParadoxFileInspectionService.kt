@@ -2,11 +2,9 @@ package icu.windea.pls.lang.inspections
 
 import com.intellij.codeInsight.intention.PriorityAction
 import com.intellij.codeInsight.intention.preview.IntentionPreviewInfo
-import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.LocalQuickFixAndIntentionActionOnPsiElement
 import com.intellij.codeInspection.ProblemDescriptor
-import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
@@ -39,9 +37,7 @@ import icu.windea.pls.model.constraints.matchesBy
 import icu.windea.pls.script.psi.ParadoxScriptFile
 
 object ParadoxFileInspectionService {
-    fun createContext(tool: LocalInspectionTool, holder: ProblemsHolder, ignoredFilePaths: String = ""): ParadoxFileInspectionContext {
-        return ParadoxFileInspectionContext(tool, holder, ignoredFilePaths)
-    }
+    // region IncorrectFileEncodingInspection
 
     fun checkForIncorrectFileEncoding(file: PsiFile, context: ParadoxFileInspectionContext) {
         if (!file.isValid) return
@@ -69,6 +65,10 @@ object ParadoxFileInspectionService {
         val fix = ChangeFileEncodingFix(file, expectedCharset, useBom)
         context.holder.registerProblem(file, description, fix)
     }
+
+    // endregion
+
+    // region IncorrectFileNameInspection
 
     fun checkForIncorrectFileName(file: PsiFile, context: ParadoxFileInspectionContext) {
         if (!file.isValid) return
@@ -100,36 +100,6 @@ object ParadoxFileInspectionService {
         }.toArray(LocalQuickFix.EMPTY_ARRAY)
         context.holder.registerProblem(location, description, *fixes)
     }
-
-    fun checkForUnmatchedFile(file: PsiFile, context: ParadoxFileInspectionContext) {
-        if (file !is ParadoxFile) return
-        val virtualFile = file.virtualFile ?: return
-        val fileInfo = virtualFile.fileInfo ?: return // 无法获取文件信息时跳过检查
-
-        // 忽略一些特殊的脚本文件
-        if (file is ParadoxScriptFile && fileInfo.path matchesBy ParadoxPathConstraint.SpecialScriptFile) return
-
-        // 排除忽略的文件
-        if (fileInfo.path.path.matchesAntPatterns(context.ignoredFilePaths, ignoreCase = true)) return // 忽略
-
-        val gameType = fileInfo.gameType
-        val configGroup = ChronicleFacade.getConfigGroup(file.project, gameType)
-        val matched = ParadoxConfigMatchService.isMatchedOnFileLevel(file, configGroup, fileInfo.path)
-        if (matched) return
-
-        val description = when {
-            file is ParadoxScriptFile -> ChronicleBundle.message("unmatchedFile.desc.script")
-            file is ParadoxCsvFile -> ChronicleBundle.message("unmatchedFile.desc.csv")
-            else -> return
-        }
-        val fixes = arrayOf(
-            BrowseUrlFix(ChronicleBundle.message("unmatchedFile.fix.1"), ChronicleUrls.contributing),
-            BrowseUrlFix(ChronicleBundle.message("unmatchedFile.fix.2"), ChronicleUrls.configRepositories),
-        )
-        context.holder.registerProblem(file, description, *fixes)
-    }
-
-    // region Fixes
 
     // org.jetbrains.kotlin.idea.intentions.RenameFileToMatchClassIntention
 
@@ -174,6 +144,38 @@ object ParadoxFileInspectionService {
             val locale = startElement.castOrNull<ParadoxLocalisationLocale>() ?: return
             locale.name = expectedLocaleId
         }
+    }
+
+    // endregion
+
+    // region UnmatchedFileInspection
+
+    fun checkForUnmatchedFile(file: PsiFile, context: ParadoxFileInspectionContext) {
+        if (file !is ParadoxFile) return
+        val virtualFile = file.virtualFile ?: return
+        val fileInfo = virtualFile.fileInfo ?: return // 无法获取文件信息时跳过检查
+
+        // 忽略一些特殊的脚本文件
+        if (file is ParadoxScriptFile && fileInfo.path matchesBy ParadoxPathConstraint.SpecialScriptFile) return
+
+        // 排除忽略的文件
+        if (fileInfo.path.path.matchesAntPatterns(context.ignoredFilePaths, ignoreCase = true)) return // 忽略
+
+        val gameType = fileInfo.gameType
+        val configGroup = ChronicleFacade.getConfigGroup(file.project, gameType)
+        val matched = ParadoxConfigMatchService.isMatchedOnFileLevel(file, configGroup, fileInfo.path)
+        if (matched) return
+
+        val description = when {
+            file is ParadoxScriptFile -> ChronicleBundle.message("unmatchedFile.desc.script")
+            file is ParadoxCsvFile -> ChronicleBundle.message("unmatchedFile.desc.csv")
+            else -> return
+        }
+        val fixes = arrayOf(
+            BrowseUrlFix(ChronicleBundle.message("unmatchedFile.fix.1"), ChronicleUrls.contributing),
+            BrowseUrlFix(ChronicleBundle.message("unmatchedFile.fix.2"), ChronicleUrls.configRepositories),
+        )
+        context.holder.registerProblem(file, description, *fixes)
     }
 
     // endregion

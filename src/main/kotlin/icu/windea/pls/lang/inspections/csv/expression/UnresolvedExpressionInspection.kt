@@ -10,6 +10,7 @@ import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.csv.psi.ParadoxCsvFile
+import icu.windea.pls.lang.inspections.ParadoxExpressionInspectionContext
 import icu.windea.pls.lang.inspections.ParadoxExpressionInspectionService
 import icu.windea.pls.lang.psi.ParadoxPsiElementVisitor
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
@@ -26,16 +27,16 @@ import icu.windea.pls.lang.util.ParadoxCsvManager
  * @property ignoredInInjectedFiles （配置项）是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
  * @property ignoredByConfigs （配置项）如果对应的扩展的规则存在，是否需要忽略此代码检查。
  */
-class UnresolvedExpressionInspection : LocalInspectionTool() {
+class UnresolvedExpressionInspection : LocalInspectionTool(), ParadoxExpressionInspectionContext.Aware {
     @JvmField var ignoredInInjectedFiles = false
     @JvmField var ignoredByConfigs = false
-    @JvmField var showExpectInfo = true
+    @JvmField var showExpect = true
 
     override fun getOptionsPane(): OptPane {
         return OptPane.pane(
             OptPane.checkbox("ignoredInInjectedFiles", ChronicleBundle.message("inspection.option.ignoredInInjectedFiles")),
             OptPane.checkbox("ignoredByConfigs", ChronicleBundle.message("inspection.option.ignoredByConfigs")),
-            OptPane.checkbox("showExpectInfo", ChronicleBundle.message("inspection.option.showExpectInfo")),
+            OptPane.checkbox("showExpect", ChronicleBundle.message("inspection.option.showExpect")),
         )
     }
 
@@ -54,12 +55,16 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
         if (file !is ParadoxCsvFile) return PsiElementVisitor.EMPTY_VISITOR
         val rowConfig = ParadoxCsvManager.getRowConfig(file)
         if (rowConfig == null) return PsiElementVisitor.EMPTY_VISITOR
-        val context = ParadoxExpressionInspectionService.createContext(this, holder, ignoredByConfigs, showExpectInfo)
+        val context = createContext( holder)
         return object : ParadoxPsiElementVisitor() {
             override fun visitExpressionElement(element: ParadoxCsvExpressionElement) {
                 ProgressManager.checkCanceled()
                 ParadoxExpressionInspectionService.checkForUnresolvedExpression(element, rowConfig, context)
             }
         }
+    }
+
+    override fun createContext(holder: ProblemsHolder): ParadoxExpressionInspectionContext {
+        return ParadoxExpressionInspectionContext(this, holder, ignoredByConfigs, showExpect)
     }
 }

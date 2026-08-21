@@ -4,6 +4,7 @@ import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.codeInspection.options.OptPane
 import com.intellij.openapi.progress.ProgressManager
+import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleBundle
@@ -28,11 +29,13 @@ import icu.windea.pls.script.psi.isDataExpression
 class IncorrectPathReferenceInspection : LocalInspectionTool() {
     @JvmField var ignoredInInjectedFiles = false
     @JvmField var ignoredInInlineScriptFiles = false
+    @JvmField var showExpect = true
 
     override fun getOptionsPane(): OptPane {
         return OptPane.pane(
             OptPane.checkbox("ignoredInInjectedFiles", ChronicleBundle.message("inspection.option.ignoredInInjectedFiles")),
             OptPane.checkbox("ignoredInInlineScriptFiles", ChronicleBundle.message("inspection.option.ignoredInInlineScriptFiles")),
+            OptPane.checkbox("showExpect", ChronicleBundle.message("inspection.option.showExpect")),
         )
     }
 
@@ -67,12 +70,20 @@ class IncorrectPathReferenceInspection : LocalInspectionTool() {
         val dataType = configExpression.type
         if (dataType !in CwtDataTypeSets.PathReference) return
         if (dataType == CwtDataTypes.Icon) return // no file extension in expression
-        val expectFileExtensions = config.optionMetadata.fileExtensions.orEmpty()
-        if (expectFileExtensions.isEmpty()) return
+        val expectedFileExtensions = config.optionMetadata.fileExtensions.orEmpty()
+        if (expectedFileExtensions.isEmpty()) return
         val value = element.value
         val fileExtension = value.substringAfterLast('.', "")
-        if (expectFileExtensions.any { fileExtension.equals(it, true) }) return
-        val description = ChronicleBundle.message("inspection.script.incorrectPathReference.desc.1", value, expectFileExtensions.joinToString())
-        holder.registerProblem(element, description)
+        if (expectedFileExtensions.any { fileExtension.equals(it, true) }) return
+        reportProblem(element, value, expectedFileExtensions, holder)
+    }
+
+    private fun reportProblem(location: PsiElement, value: String, expectFileExtensions: Set<String>, holder: ProblemsHolder) {
+        val expectText = expectFileExtensions.joinToString()
+        val description = when {
+            showExpect -> ChronicleBundle.message("inspection.script.incorrectPathReference.desc.1", value, expectText)
+            else -> ChronicleBundle.message("inspection.script.incorrectPathReference.desc.0", value)
+        }
+        holder.registerProblem(location, description)
     }
 }

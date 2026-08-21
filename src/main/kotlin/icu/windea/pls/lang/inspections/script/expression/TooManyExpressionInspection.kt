@@ -44,6 +44,7 @@ class TooManyExpressionInspection : LocalInspectionTool() {
     @JvmField var firstOnlyOnFile = true
     @JvmField var ignoredInInjectedFiles = false
     @JvmField var ignoredInInlineScriptFiles = false
+    @JvmField var showExpect = true
 
     override fun getOptionsPane(): OptPane {
         return OptPane.pane(
@@ -51,6 +52,7 @@ class TooManyExpressionInspection : LocalInspectionTool() {
             OptPane.checkbox("firstOnlyOnFile", ChronicleBundle.message("inspection.script.tooManyExpression.option.firstOnlyOnFile")),
             OptPane.checkbox("ignoredInInjectedFiles", ChronicleBundle.message("inspection.option.ignoredInInjectedFiles")),
             OptPane.checkbox("ignoredInInlineScriptFiles", ChronicleBundle.message("inspection.option.ignoredInInlineScriptFiles")),
+            OptPane.checkbox("showExpect", ChronicleBundle.message("inspection.option.showExpect")),
         )
     }
 
@@ -130,21 +132,26 @@ class TooManyExpressionInspection : LocalInspectionTool() {
         if (max != null && actual > max) {
             val expressionType = ChronicleBundle.expressionType(configExpression)
             val isConst = configExpression.type == CwtDataTypes.Constant
-            val description =
-                when {
-                    isConst -> ChronicleBundle.message("inspection.script.tooManyExpression.desc.1", expressionType, configExpression)
-                    else -> ChronicleBundle.message("inspection.script.tooManyExpression.desc.2", expressionType, configExpression)
+            val shortDescription = when {
+                isConst -> ChronicleBundle.message("inspection.script.tooManyExpression.desc.1", expressionType, configExpression)
+                else -> ChronicleBundle.message("inspection.script.tooManyExpression.desc.2", expressionType, configExpression)
+            }
+            val description = when {
+                showExpect -> {
+                    val maxDefine = occurrence.maxDefine
+                    val detail = when {
+                        maxDefine == null -> ChronicleBundle.message("inspection.script.tooManyExpression.desc.detail.1", max, actual)
+                        else -> ChronicleBundle.message("inspection.script.tooManyExpression.desc.detail.2", max, actual, maxDefine)
+                    }
+                    "$shortDescription$detail"
                 }
-            val maxDefine = occurrence.maxDefine
-            val detail = when {
-                maxDefine == null -> ChronicleBundle.message("inspection.script.tooManyExpression.desc.detail.1", max, actual)
-                else -> ChronicleBundle.message("inspection.script.tooManyExpression.desc.detail.2", max, actual, maxDefine)
+                else -> shortDescription
             }
             val highlightType = InspectionService.getWeakerHighlightType(lenientMax)
             val fileLevel = element is PsiFile
             if (!fileLevel && firstOnly && holder.hasResults()) return false
             if (fileLevel && firstOnlyOnFile && holder.hasResults()) return false
-            holder.registerProblem(position, "$description $detail", highlightType)
+            holder.registerProblem(position, description, highlightType)
         }
         return true
     }

@@ -72,14 +72,6 @@ interface CwtConfigContext : UserDataHolder {
     fun getConfigs(options: ParadoxMatchOptions? = null): List<CwtMemberConfig<*>>
 
     /**
-     * 是否跳过无法解析的表达式的代码检查。
-     *
-     * @see icu.windea.pls.lang.inspections.script.expression.UnresolvedExpressionInspection
-     * @see icu.windea.pls.lang.inspections.csv.expression.UnresolvedExpressionInspection
-     */
-    fun skipUnresolvedExpressionCheck(): Boolean = false
-
-    /**
      * 是否跳过缺失的表达式的代码检查。
      *
      * @see icu.windea.pls.lang.inspections.script.expression.MissingExpressionInspection
@@ -92,6 +84,14 @@ interface CwtConfigContext : UserDataHolder {
      * @see icu.windea.pls.lang.inspections.script.expression.TooManyExpressionInspection
      */
     fun skipTooManyExpressionCheck(): Boolean = false
+
+    /**
+     * 是否跳过无法解析的表达式的代码检查。
+     *
+     * @see icu.windea.pls.lang.inspections.script.expression.UnresolvedExpressionInspection
+     * @see icu.windea.pls.lang.inspections.csv.expression.UnresolvedExpressionInspection
+     */
+    fun skipUnresolvedExpressionCheck(): Boolean = false
 
     object Keys : KeyRegistry()
 
@@ -181,16 +181,16 @@ sealed class CwtConfigContextBase(
         return ParadoxConfigService.getConfigsForConfigContext(this, options)
     }
 
-    override fun skipUnresolvedExpressionCheck(): Boolean {
-        return provider.skipUnresolvedExpressionCheck(this)
-    }
-
     override fun skipMissingExpressionCheck(): Boolean {
         return provider.skipMissingExpressionCheck(this)
     }
 
     override fun skipTooManyExpressionCheck(): Boolean {
         return provider.skipTooManyExpressionCheck(this)
+    }
+
+    override fun skipUnresolvedExpressionCheck(): Boolean {
+        return provider.skipUnresolvedExpressionCheck(this)
     }
 
     override fun toString(): String {

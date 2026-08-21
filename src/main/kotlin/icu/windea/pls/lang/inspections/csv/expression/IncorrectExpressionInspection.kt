@@ -11,6 +11,7 @@ import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.ep.inspections.ParadoxIncorrectExpressionChecker
+import icu.windea.pls.lang.inspections.ParadoxExpressionInspectionContext
 import icu.windea.pls.lang.inspections.ParadoxExpressionInspectionService
 import icu.windea.pls.lang.psi.ParadoxPsiElementVisitor
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
@@ -23,12 +24,14 @@ import icu.windea.pls.lang.util.ParadoxCsvManager
  *
  * @see ParadoxIncorrectExpressionChecker
  */
-class IncorrectExpressionInspection : LocalInspectionTool() {
+class IncorrectExpressionInspection : LocalInspectionTool(), ParadoxExpressionInspectionContext.Aware {
     @JvmField var ignoredInInjectedFiles = false
+    @JvmField var showExpect = true
 
     override fun getOptionsPane(): OptPane {
         return OptPane.pane(
-            OptPane.checkbox("ignoredInInjectedFiles", ChronicleBundle.message("inspection.option.ignoredInInjectedFiles"))
+            OptPane.checkbox("ignoredInInjectedFiles", ChronicleBundle.message("inspection.option.ignoredInInjectedFiles")),
+            OptPane.checkbox("showExpect", ChronicleBundle.message("inspection.option.showExpect")),
         )
     }
 
@@ -47,12 +50,16 @@ class IncorrectExpressionInspection : LocalInspectionTool() {
         if (file !is ParadoxCsvFile) return PsiElementVisitor.EMPTY_VISITOR
         val rowConfig = ParadoxCsvManager.getRowConfig(file)
         if (rowConfig == null) return PsiElementVisitor.EMPTY_VISITOR
-        val context = ParadoxExpressionInspectionService.createContext(this, holder)
+        val context = createContext(holder)
         return object : ParadoxPsiElementVisitor() {
             override fun visitExpressionElement(element: ParadoxCsvExpressionElement) {
                 ProgressManager.checkCanceled()
                 ParadoxExpressionInspectionService.checkForIncorrectExpression(element, rowConfig, context)
             }
         }
+    }
+
+    override fun createContext(holder: ProblemsHolder): ParadoxExpressionInspectionContext {
+        return ParadoxExpressionInspectionContext(this, holder, false, showExpect)
     }
 }

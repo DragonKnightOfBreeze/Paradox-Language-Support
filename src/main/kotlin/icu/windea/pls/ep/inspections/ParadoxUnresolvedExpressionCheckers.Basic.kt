@@ -109,7 +109,10 @@ class ParadoxWrongBooleanUnresolvedExpressionChecker : ParadoxUnresolvedExpressi
             value.equals("no", true) || value.equals("false", true) || value.equals("off", true) -> ChronicleStrings.noKeyword
             else -> null
         } ?: return true
-        val description = ChronicleEpBundle.message("unresolvedExpression.wrongBoolean.desc", expected, text)
+        val description = when {
+            context.showExpect -> ChronicleEpBundle.message("unresolvedExpression.wrongBoolean.desc.1", expected, text)
+            else -> ChronicleEpBundle.message("unresolvedExpression.wrongBoolean.desc.0")
+        }
         val fix = ReplaceWithExpressionFix(expected)
         context.holder.registerProblem(element, description, fix)
         return false

@@ -36,11 +36,11 @@ interface CwtConfigContextProvider {
 
     fun getConfigs(context: CwtConfigContext, options: ParadoxMatchOptions? = null): List<CwtMemberConfig<*>>
 
-    fun skipUnresolvedExpressionCheck(context: CwtConfigContext) = false
-
     fun skipMissingExpressionCheck(context: CwtConfigContext) = false
 
     fun skipTooManyExpressionCheck(context: CwtConfigContext) = false
+
+    fun skipUnresolvedExpressionCheck(context: CwtConfigContext) = false
 
     companion object INSTANCE {
         @JvmField val EP_NAME = ExtensionPointName<CwtConfigContextProvider>("icu.windea.pls.configContextProvider")

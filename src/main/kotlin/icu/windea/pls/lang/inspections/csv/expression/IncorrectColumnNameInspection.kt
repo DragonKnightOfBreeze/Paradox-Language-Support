@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.inspections.csv.common
+package icu.windea.pls.lang.inspections.csv.expression
 
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemsHolder
@@ -10,6 +10,7 @@ import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.config.config.CwtRowType
 import icu.windea.pls.config.config.delegated.CwtRowConfig
 import icu.windea.pls.core.collections.forEachIndexedFast
+import icu.windea.pls.core.truncate
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.csv.psi.ParadoxCsvHeader
@@ -26,10 +27,14 @@ import icu.windea.pls.lang.util.ParadoxCsvManager
  */
 class IncorrectColumnNameInspection : LocalInspectionTool() {
     @JvmField var ignoredInInjectedFiles = false
+    @JvmField var showExpect = true
+    @JvmField var truncateExpect = -1
 
     override fun getOptionsPane(): OptPane {
         return OptPane.pane(
-            OptPane.checkbox("ignoredInInjectedFiles", ChronicleBundle.message("inspection.option.ignoredInInjectedFiles"))
+            OptPane.checkbox("ignoredInInjectedFiles", ChronicleBundle.message("inspection.option.ignoredInInjectedFiles")),
+            OptPane.checkbox("showExpect", ChronicleBundle.message("inspection.option.showExpect")),
+            OptPane.number("truncateExpect", ChronicleBundle.message("inspection.option.truncateExpect"), Int.MIN_VALUE, Int.MAX_VALUE),
         )
     }
 
@@ -63,18 +68,24 @@ class IncorrectColumnNameInspection : LocalInspectionTool() {
                 if (allColumnNames.isEmpty()) return // skip (checked by `IncorrectColumnSizeInspection`)
                 val existingColumnNames = ParadoxCsvPsiService.getColumnNames(element)
                 val expectColumnNames = mutableSetOf<String>().apply { addAll(allColumnNames) }.apply { removeAll(existingColumnNames) }
-                val expect = expectColumnNames.joinToString()
+                val expectText = expectColumnNames.truncate(truncateExpect).joinToString()
                 element.columnList.forEachIndexedFast f@{ columnIndex, columnElement ->
                     if (rowConfig.skipLastColumn && columnIndex == rowConfig.columns.size) return@f // ignored
                     if (columnIndex >= rowConfig.columns.size) {
-                        val description = ChronicleBundle.message("inspection.csv.incorrectColumnName.desc.4", rowConfig.name)
+                        val description = when {
+                            showExpect -> ChronicleBundle.message("inspection.csv.incorrectColumnName.desc.4", rowConfig.name)
+                            else -> ChronicleBundle.message("inspection.csv.incorrectColumnName.desc.0")
+                        }
                         holder.registerProblem(columnElement, description)
                         return // skip (no future checks)
                     }
                     if (columnElement.name in allColumnNames) return@f // continue (matched)
-                    if (expect.isNotEmpty()) {
+                    if (expectColumnNames.isNotEmpty()) {
+                        val description = when {
+                            showExpect -> ChronicleBundle.message("inspection.csv.incorrectColumnName.desc.1", rowConfig.name, expectText)
+                            else -> ChronicleBundle.message("inspection.csv.incorrectColumnName.desc.0")
+                        }
                         val expectColumnNamePreferred = rowConfig.columns[columnIndex].key
-                        val description = ChronicleBundle.message("inspection.csv.incorrectColumnName.desc.1", rowConfig.name, expect)
                         if (expectColumnNamePreferred in expectColumnNames) {
                             val fix = ReplaceWithExpressionFix(expectColumnNamePreferred)
                             holder.registerProblem(columnElement, description, fix)
@@ -82,7 +93,10 @@ class IncorrectColumnNameInspection : LocalInspectionTool() {
                             holder.registerProblem(columnElement, description)
                         }
                     } else {
-                        val description = ChronicleBundle.message("inspection.csv.incorrectColumnName.desc.3", rowConfig.name, expect)
+                        val description = when {
+                            showExpect -> ChronicleBundle.message("inspection.csv.incorrectColumnName.desc.3", rowConfig.name, expectText)
+                            else -> ChronicleBundle.message("inspection.csv.incorrectColumnName.desc.0")
+                        }
                         holder.registerProblem(columnElement, description)
                     }
                 }
@@ -91,13 +105,19 @@ class IncorrectColumnNameInspection : LocalInspectionTool() {
                 element.columnList.forEachIndexedFast f@{ columnIndex, columnElement ->
                     if (rowConfig.skipLastColumn && columnIndex == rowConfig.columns.size) return@f // ignored
                     if (columnIndex >= rowConfig.columns.size) {
-                        val description = ChronicleBundle.message("inspection.csv.incorrectColumnName.desc.4", rowConfig.name)
+                        val description = when {
+                            showExpect -> ChronicleBundle.message("inspection.csv.incorrectColumnName.desc.4", rowConfig.name)
+                            else -> ChronicleBundle.message("inspection.csv.incorrectColumnName.desc.0")
+                        }
                         holder.registerProblem(columnElement, description)
                         return // skip (no future checks)
                     }
                     val expectColumnName = rowConfig.columns[columnIndex].key
                     if (expectColumnName == columnElement.name) return@f // continue (matched)
-                    val description = ChronicleBundle.message("inspection.csv.incorrectColumnName.desc.2", rowConfig.name, expectColumnName)
+                    val description = when {
+                        showExpect -> ChronicleBundle.message("inspection.csv.incorrectColumnName.desc.2", rowConfig.name, expectColumnName)
+                        else -> ChronicleBundle.message("inspection.csv.incorrectColumnName.desc.0")
+                    }
                     val fix = ReplaceWithExpressionFix(expectColumnName)
                     holder.registerProblem(columnElement, description, fix)
                 }

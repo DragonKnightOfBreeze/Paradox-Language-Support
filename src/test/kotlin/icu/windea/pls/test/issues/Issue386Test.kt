@@ -71,10 +71,10 @@ class Issue386Test : BasePlatformTestCase(), ChronicleTestScope {
             """
             test = {
                 properties = {
-                    ${error(message("unresolved", ""))}unresolved${errorEnd()}
+                    ${error(forKey("unresolved", ""))}unresolved${errorEnd()}
                 }
                 values = {
-                    ${error(message("unresolved", ""))}unresolved${errorEnd()} = unresolved_skipped
+                    ${error(forKey("unresolved", ""))}unresolved${errorEnd()} = unresolved_skipped
                 }
             }
             """.trimIndent()
@@ -91,16 +91,16 @@ class Issue386Test : BasePlatformTestCase(), ChronicleTestScope {
             """
             test = {
                 members = {
-                    ${error(message("unresolved", "key"))}unresolved${errorEnd()} = unresolved_skipped
-                    ${error(message("unresolved", "value"))}unresolved${errorEnd()}
+                    ${error(forKey("unresolved", "key"))}unresolved${errorEnd()} = unresolved_skipped
+                    ${error(forValue("unresolved", "value"))}unresolved${errorEnd()}
                 }
                 properties = {
-                    ${error(message("unresolved", "key"))}unresolved${errorEnd()} = unresolved_skipped
-                    ${error(message("unresolved", ""))}unresolved${errorEnd()}
+                    ${error(forKey("unresolved", "key"))}unresolved${errorEnd()} = unresolved_skipped
+                    ${error(forValue("unresolved", ""))}unresolved${errorEnd()}
                 }
                 values = {
-                    ${error(message("unresolved", ""))}unresolved${errorEnd()} = unresolved_skipped
-                    ${error(message("unresolved", "value"))}unresolved${errorEnd()}
+                    ${error(forKey("unresolved", ""))}unresolved${errorEnd()} = unresolved_skipped
+                    ${error(forValue("unresolved", "value"))}unresolved${errorEnd()}
                 }
             }
             """.trimIndent()
@@ -116,15 +116,15 @@ class Issue386Test : BasePlatformTestCase(), ChronicleTestScope {
         myFixture.configureByText("test.txt") {
             """
             test = {
-                ${error(message("unresolved_key", "members, properties, values"))}unresolved_key${errorEnd()} = value
-                ${error(message("unresolved_key", "members, properties, values"))}unresolved_key${errorEnd()} = {}
-                ${error(message("unresolved_key", "members, properties, values"))}unresolved_key${errorEnd()} = {
+                ${error(forKey("unresolved_key", "members, properties, values"))}unresolved_key${errorEnd()} = value
+                ${error(forKey("unresolved_key", "members, properties, values"))}unresolved_key${errorEnd()} = {}
+                ${error(forKey("unresolved_key", "members, properties, values"))}unresolved_key${errorEnd()} = {
                     unresolved
                 }
 
-                ${error(message("unresolved_value", ""))}unresolved_value${errorEnd()}
-                ${error(message("{...}", ""))}{}${errorEnd()}
-                ${error(message("{...}", ""))}{
+                ${error(forKey("unresolved_value", ""))}unresolved_value${errorEnd()}
+                ${error(forValue("{...}", ""))}{}${errorEnd()}
+                ${error(forValue("{...}", ""))}{
                     unresolved
                 }${errorEnd()}
             }
@@ -153,18 +153,26 @@ class Issue386Test : BasePlatformTestCase(), ChronicleTestScope {
 
     private fun enableAllNeededInspections() {
         // enable all needed expression inspections
-        myFixture.enableInspections(UnresolvedExpressionInspection::class.java)
-        myFixture.enableInspections(ConflictingResolvedExpressionInspection::class.java)
         myFixture.enableInspections(MissingExpressionInspection::class.java)
         myFixture.enableInspections(TooManyExpressionInspection::class.java)
+        myFixture.enableInspections(UnresolvedExpressionInspection::class.java)
+        myFixture.enableInspections(ConflictingResolvedExpressionInspection::class.java)
         myFixture.enableInspections(IncorrectExpressionInspection::class.java)
     }
 
-    private fun message(expression: String, expect: String?): String {
+    private fun forKey(expression: String, expect: String): String {
+        val expressionType = ChronicleBundle.message("expression.type.key")
         return when {
-            expect == null -> ChronicleBundle.message("unresolvedExpression.desc.withoutExpect", expression)
-            expect.isNotEmpty() -> ChronicleBundle.message("unresolvedExpression.desc.withExpect", expression, expect)
-            else -> ChronicleBundle.message("unresolvedExpression.desc.noExpect", expression)
+            expect.isNotEmpty() -> ChronicleBundle.message("unresolvedExpression.desc.1", expressionType, expression, expect)
+            else -> ChronicleBundle.message("unresolvedExpression.desc.2", expressionType, expression)
+        }
+    }
+
+    private fun forValue(expression: String, expect: String): String {
+        val expressionType = ChronicleBundle.message("expression.type.value")
+        return when {
+            expect.isNotEmpty() -> ChronicleBundle.message("unresolvedExpression.desc.1", expressionType, expression, expect)
+            else -> ChronicleBundle.message("unresolvedExpression.desc.2", expressionType, expression)
         }
     }
 }

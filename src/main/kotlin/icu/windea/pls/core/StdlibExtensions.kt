@@ -477,9 +477,13 @@ fun CharSequence.indicesOf(text: String, startIndex: Int = 0, ignoreCase: Boolea
     return indices ?: emptyList()
 }
 
-/** 截断到前 [limit] 项，超出则在末尾追加 [ellipsis]。 */
+/** 截断到前 [limit] 项，并在末尾追加 [ellipsis]。如果 [limit] 为负数或者超出集合大小，则则意味着不进行截断。 */
 fun Collection<String>.truncate(limit: Int, ellipsis: String = "..."): List<String> {
-    return take(limit).let { if (size > limit) it + ellipsis else it }
+    return when {
+        limit < 0 -> toList()
+        limit < size -> take(limit) + ellipsis
+        else -> toList()
+    }
 }
 
 /** 非空断言式转化（不安全）：将对象强转为 [T]。 */

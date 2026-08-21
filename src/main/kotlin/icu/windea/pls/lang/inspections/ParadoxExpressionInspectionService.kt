@@ -1,11 +1,8 @@
 package icu.windea.pls.lang.inspections
 
-import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.LocalQuickFix
-import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElement
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtMemberType
 import icu.windea.pls.config.config.CwtPropertyConfig
@@ -30,8 +27,6 @@ import icu.windea.pls.lang.fixes.ReplaceWithSimilarExpressionInListFix
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.CwtConfigContext
-import icu.windea.pls.lang.selectGameType
-import icu.windea.pls.lang.settings.ChronicleInternalSettings
 import icu.windea.pls.lang.tagType
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxCsvManager
@@ -46,13 +41,7 @@ import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.psi.isDataExpression
 
 object ParadoxExpressionInspectionService {
-    fun createContext(tool: LocalInspectionTool, holder: ProblemsHolder, ignoredByConfig: Boolean = false, showExpectInfo: Boolean = true): ParadoxExpressionInspectionContext {
-        val gameType = selectGameType(holder.file)
-        val configGroup = ChronicleFacade.getConfigGroup(holder.project, gameType)
-        return ParadoxExpressionInspectionContext(tool, holder, configGroup, ignoredByConfig, showExpectInfo)
-    }
-
-    // unresolvedExpression
+    // region UnresolvedExpressionInspection
 
     fun checkForUnresolvedExpression(element: ParadoxScriptExpressionElement, context: ParadoxExpressionInspectionContext) {
         if (!element.isDataExpression()) return // skip if is not a data expression
@@ -172,19 +161,18 @@ object ParadoxExpressionInspectionService {
     }
 
     fun getDefaultDescriptionForUnresolvedExpression(element: ParadoxExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>, context: ParadoxExpressionInspectionContext): String {
+        val expressionType = ChronicleBundle.expressionType(element)
         val expression = element.expression
-        val expect = when {
-            expectedConfigs.isEmpty() -> ""
-            context.showExpectInfo -> expectedConfigs.mapFast { it.configExpression.expressionString }.toSet()
-                .truncate(ChronicleInternalSettings.getInstance().itemLimit).joinToString()
-            else -> null
+        val description = when {
+            !context.showExpect -> ChronicleBundle.message("unresolvedExpression.desc.0", expressionType, expression)
+            expectedConfigs.isEmpty() -> ChronicleBundle.message("unresolvedExpression.desc.1", expressionType, expression)
+            else -> {
+                val expectedConfigExpressions = expectedConfigs.mapFast { it.configExpression.expressionString }.toSet()
+                val expectText = expectedConfigExpressions.truncate(context.truncateExpect).joinToString()
+                ChronicleBundle.message("unresolvedExpression.desc.2", expressionType, expression, expectText)
+            }
         }
-        val message = when {
-            expect == null -> ChronicleBundle.message("unresolvedExpression.desc.withoutExpect", expression)
-            expect.isNotEmpty() -> ChronicleBundle.message("unresolvedExpression.desc.withExpect", expression, expect)
-            else -> ChronicleBundle.message("unresolvedExpression.desc.noExpect", expression)
-        }
-        return message
+        return description
     }
 
     fun getSimilarityBasedFixesForUnresolvedExpression(element: ParadoxExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>): List<LocalQuickFix> {
@@ -230,7 +218,9 @@ object ParadoxExpressionInspectionService {
         )
     }
 
-    // incorrectExpression
+    // endregion
+
+    // region IncorrectExpressionInspection
 
     fun checkForIncorrectExpression(element: ParadoxScriptExpressionElement, context: ParadoxExpressionInspectionContext) {
         if (!element.isDataExpression()) return // skip if is not a data expression
@@ -270,4 +260,6 @@ object ParadoxExpressionInspectionService {
         }
         return true
     }
+
+    // endregion
 }

@@ -10,6 +10,7 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.psi.PsiFileOnlyVisitor
 import icu.windea.pls.core.vfs.VirtualFileService
+import icu.windea.pls.lang.inspections.ParadoxFileInspectionContext
 import icu.windea.pls.lang.inspections.ParadoxFileInspectionService
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.model.constraints.ParadoxPathConstraint
@@ -27,7 +28,7 @@ import icu.windea.pls.model.constraints.ParadoxPathConstraint
  *
  * @property ignoredFilePaths （配置项）需要忽略的文件路径。一组 ANT 路径模式，分号分隔，忽略大小写。
  */
-class IncorrectFileNameInspection : LocalInspectionTool(), DumbAware {
+class IncorrectFileNameInspection : LocalInspectionTool(), DumbAware, ParadoxFileInspectionContext.Aware {
     @JvmField var ignoredFilePaths = "**/languages.yml"
 
     override fun getOptionsPane(): OptPane {
@@ -47,12 +48,16 @@ class IncorrectFileNameInspection : LocalInspectionTool(), DumbAware {
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        val context = ParadoxFileInspectionService.createContext(this, holder, ignoredFilePaths)
+        val context = createContext(holder)
         return object : PsiFileOnlyVisitor() {
             override fun visitFile(file: PsiFile) {
                 ProgressManager.checkCanceled()
                 ParadoxFileInspectionService.checkForIncorrectFileName(file, context)
             }
         }
+    }
+
+    override fun createContext(holder: ProblemsHolder): ParadoxFileInspectionContext {
+        return ParadoxFileInspectionContext(this, holder, ignoredFilePaths)
     }
 }

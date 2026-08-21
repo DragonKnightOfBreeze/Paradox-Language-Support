@@ -72,14 +72,14 @@ object ChronicleInspections {
 
         // Paradox Script/Expressions
 
-        /** @see icu.windea.pls.lang.inspections.script.expression.UnresolvedExpressionInspection */
-        const val UnresolvedExpression = "ParadoxScriptUnresolvedExpression"
-        /** @see icu.windea.pls.lang.inspections.script.expression.ConflictingResolvedExpressionInspection */
-        const val ConflictingResolvedExpression = "ParadoxScriptConflictingResolvedExpression"
         /** @see icu.windea.pls.lang.inspections.script.expression.MissingExpressionInspection */
         const val MissingExpression = "ParadoxScriptMissingExpression"
         /** @see icu.windea.pls.lang.inspections.script.expression.TooManyExpressionInspection */
         const val TooManyExpression = "ParadoxScriptTooManyExpression"
+        /** @see icu.windea.pls.lang.inspections.script.expression.UnresolvedExpressionInspection */
+        const val UnresolvedExpression = "ParadoxScriptUnresolvedExpression"
+        /** @see icu.windea.pls.lang.inspections.script.expression.ConflictingResolvedExpressionInspection */
+        const val ConflictingResolvedExpression = "ParadoxScriptConflictingResolvedExpression"
         /** @see icu.windea.pls.lang.inspections.script.expression.IncorrectExpressionInspection */
         const val IncorrectExpression = "ParadoxScriptIncorrectExpression"
         /** @see icu.windea.pls.lang.inspections.script.expression.UnresolvedPathReferenceInspection */
@@ -211,13 +211,13 @@ object ChronicleInspections {
         const val IncorrectFileEncoding = "ParadoxCsvIncorrectFileEncoding"
         /** @see icu.windea.pls.lang.inspections.csv.common.UnmatchedFileInspection */
         const val UnmatchedFile = "ParadoxCsvUnmatchedFile"
-        /** @see icu.windea.pls.lang.inspections.csv.common.IncorrectColumnNameInspection */
-        const val IncorrectColumnName = "ParadoxCsvIncorrectColumnName"
-        /** @see icu.windea.pls.lang.inspections.csv.common.IncorrectColumnSizeInspection */
-        const val IncorrectColumnSize = "ParadoxCsvIncorrectColumnSize"
 
         // Paradox CSV/Expressions
 
+        /** @see icu.windea.pls.lang.inspections.csv.expression.IncorrectColumnNameInspection */
+        const val IncorrectColumnName = "ParadoxCsvIncorrectColumnName"
+        /** @see icu.windea.pls.lang.inspections.csv.expression.IncorrectColumnSizeInspection */
+        const val IncorrectColumnSize = "ParadoxCsvIncorrectColumnSize"
         /** @see icu.windea.pls.lang.inspections.csv.expression.UnresolvedExpressionInspection */
         const val UnresolvedExpression = "ParadoxCsvUnresolvedExpression"
         /** @see icu.windea.pls.lang.inspections.csv.expression.IncorrectExpressionInspection */

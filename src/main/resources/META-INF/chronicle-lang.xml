@@ -453,7 +453,6 @@
     <registryKey key="chronicle.settings.localisationTextLengthLimit.for.inlay" defaultValue="36" description="See PlsInternalSettings on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>
     <registryKey key="chronicle.settings.iconHeightLimit.for.inlay" defaultValue="36" description="See PlsInternalSettings on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>
     <registryKey key="chronicle.settings.textLengthLimit.for.presentation" defaultValue="36" description="See PlsInternalSettings on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>
-    <registryKey key="chronicle.settings.itemLimit" defaultValue="5" description="See PlsInternalSettings on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>
     <registryKey key="chronicle.settings.defaultScriptedVariableName" defaultValue="var" description="See PlsInternalSettings on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>
   </extensions>
 

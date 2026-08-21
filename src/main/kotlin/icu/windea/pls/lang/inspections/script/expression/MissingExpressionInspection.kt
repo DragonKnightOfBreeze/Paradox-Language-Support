@@ -43,6 +43,7 @@ class MissingExpressionInspection : LocalInspectionTool() {
     @JvmField var firstOnlyOnFile = true
     @JvmField var ignoredInInjectedFiles = false
     @JvmField var ignoredInInlineScriptFiles = false
+    @JvmField var showExpect = true
 
     override fun getOptionsPane(): OptPane {
         return OptPane.pane(
@@ -50,6 +51,7 @@ class MissingExpressionInspection : LocalInspectionTool() {
             OptPane.checkbox("firstOnlyOnFile", ChronicleBundle.message("inspection.script.missingExpression.option.firstOnlyOnFile")),
             OptPane.checkbox("ignoredInInjectedFiles", ChronicleBundle.message("inspection.option.ignoredInInjectedFiles")),
             OptPane.checkbox("ignoredInInlineScriptFiles", ChronicleBundle.message("inspection.option.ignoredInInlineScriptFiles")),
+            OptPane.checkbox("showExpect", ChronicleBundle.message("inspection.option.showExpect")),
         )
     }
 
@@ -130,21 +132,26 @@ class MissingExpressionInspection : LocalInspectionTool() {
         if (min != null && actual < min) {
             val expressionType = ChronicleBundle.expressionType(configExpression)
             val isConst = configExpression.type == CwtDataTypes.Constant
-            val description =
-                when {
-                    isConst -> ChronicleBundle.message("inspection.script.missingExpression.desc.1", expressionType, configExpression)
-                    else -> ChronicleBundle.message("inspection.script.missingExpression.desc.2", expressionType, configExpression)
+            val shortDescription = when {
+                isConst -> ChronicleBundle.message("inspection.script.missingExpression.desc.1", expressionType, configExpression)
+                else -> ChronicleBundle.message("inspection.script.missingExpression.desc.2", expressionType, configExpression)
+            }
+            val description = when {
+                showExpect -> {
+                    val minDefine = occurrence.minDefine
+                    val detail = when {
+                        minDefine == null -> ChronicleBundle.message("inspection.script.missingExpression.desc.detail.1", min, actual)
+                        else -> ChronicleBundle.message("inspection.script.missingExpression.desc.detail.2", min, actual, minDefine)
+                    }
+                    "$shortDescription$detail"
                 }
-            val minDefine = occurrence.minDefine
-            val detail = when {
-                minDefine == null -> ChronicleBundle.message("inspection.script.missingExpression.desc.detail.1", min, actual)
-                else -> ChronicleBundle.message("inspection.script.missingExpression.desc.detail.2", min, actual, minDefine)
+                else -> shortDescription
             }
             val highlightType = InspectionService.getWeakerHighlightType(lenientMin)
             val fileLevel = element is PsiFile
             if (!fileLevel && firstOnly && holder.hasResults()) return false
             if (fileLevel && firstOnlyOnFile && holder.hasResults()) return false
-            holder.registerProblem(position, "$description $detail", highlightType)
+            holder.registerProblem(position, description, highlightType)
         }
         return true
     }

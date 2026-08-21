@@ -37,6 +37,7 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
     @JvmField var ignoredInInjectedFiles = false
     @JvmField var ignoredInInlineScriptFiles = false
     @JvmField var ignoredByConfigs = false
+    @JvmField var showExpect = true
 
     override fun getOptionsPane(): OptPane {
         return OptPane.pane(
@@ -45,6 +46,7 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
             OptPane.checkbox("ignoredInInjectedFiles", ChronicleBundle.message("inspection.option.ignoredInInjectedFiles")),
             OptPane.checkbox("ignoredInInlineScriptFiles", ChronicleBundle.message("inspection.option.ignoredInInlineScriptFiles")),
             OptPane.checkbox("ignoredByConfigs", ChronicleBundle.message("inspection.option.ignoredByConfigs")),
+            OptPane.checkbox("showExpect", ChronicleBundle.message("inspection.option.showExpect")),
         )
     }
 
@@ -75,20 +77,19 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
 
         // 得到匹配的第一个规则
         val valueConfig = ParadoxConfigManager.getConfigs(element).firstOrNull() ?: return
-        val filePath = element.value
-        if (skip(filePath, element, valueConfig)) return
+        val value = element.value
+        if (skip(value, element, valueConfig)) return
         val configExpression = valueConfig.configExpression
         val location = element
         if (configExpression.type == CwtDataTypes.AbsoluteFilePath) {
-            val virtualFile = filePath.toVirtualFile()
+            val virtualFile = value.toVirtualFile()
             if (virtualFile != null) return
-            val description = getDescription(configExpression, filePath)
-            holder.registerProblem(location, description, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
+            reportProblem(location, value, configExpression, holder)
             return
         }
         val pathReferenceExpressionSupport = ParadoxPathReferenceExpressionSupport.get(configExpression.type)
         if (pathReferenceExpressionSupport != null) {
-            val pathReference = element.value.normalizePath()
+            val pathReference = value.normalizePath()
             run {
                 val fileNames = pathReferenceExpressionSupport.resolveFileName(configExpression, pathReference)
                 if (fileNames.isNullOrEmpty()) return@run
@@ -96,8 +97,7 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
             }
             val selector = ParadoxFilePathSearch.selector(holder.project, holder.file) // use file as context
             if (ParadoxFilePathSearch.search(pathReference, configExpression, selector).findFirst() != null) return
-            val description = getDescription(configExpression, pathReference)
-            holder.registerProblem(location, description, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
+            reportProblem(location, value, configExpression, holder)
         }
     }
 
@@ -106,13 +106,21 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
         return false
     }
 
-    private fun getDescription(configExpression: CwtDataExpression, pathReference: String): String {
-        return when (configExpression.type) {
-            CwtDataTypes.Icon -> ChronicleBundle.message("inspection.script.unresolvedPathReference.desc.icon", pathReference, configExpression)
-            CwtDataTypes.FilePath -> ChronicleBundle.message("inspection.script.unresolvedPathReference.desc.filePath", pathReference, configExpression)
-            CwtDataTypes.FileName -> ChronicleBundle.message("inspection.script.unresolvedPathReference.desc.fileName", pathReference, configExpression)
-            CwtDataTypes.AbsoluteFilePath -> ChronicleBundle.message("inspection.script.unresolvedPathReference.desc.abs", pathReference)
-            else -> ChronicleBundle.message("inspection.script.unresolvedPathReference.desc", pathReference, configExpression)
+    private fun reportProblem(location: ParadoxScriptStringExpressionElement, value: String, configExpression: CwtDataExpression, holder: ProblemsHolder) {
+        val shortDescription = when (configExpression.type) {
+            CwtDataTypes.Icon -> ChronicleBundle.message("inspection.script.unresolvedPathReference.desc.icon", value)
+            CwtDataTypes.FilePath -> ChronicleBundle.message("inspection.script.unresolvedPathReference.desc.filePath", value)
+            CwtDataTypes.FileName -> ChronicleBundle.message("inspection.script.unresolvedPathReference.desc.fileName", value)
+            CwtDataTypes.AbsoluteFilePath -> ChronicleBundle.message("inspection.script.unresolvedPathReference.desc.abs", value)
+            else -> ChronicleBundle.message("inspection.script.unresolvedPathReference.desc", value)
         }
+        val description = when {
+            showExpect -> {
+                val detail = ChronicleBundle.message("inspection.script.unresolvedPathReference.detail", configExpression)
+                "$shortDescription$detail"
+            }
+            else -> shortDescription
+        }
+        holder.registerProblem(location, description, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
     }
 }

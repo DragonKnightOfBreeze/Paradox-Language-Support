@@ -43,11 +43,6 @@ class ChronicleInternalSettings {
     val textLengthLimitForPresentation get() = Registry.intValue("chronicle.settings.textLengthLimit.for.presentation", 60).coerceAtLeast(0)
 
     /**
-     * 在提示信息中显示的条目的数量限制（某些提示文本会用到）。
-     */
-    val itemLimit get() = Registry.intValue("chronicle.settings.itemLimit", 5).coerceAtLeast(0)
-
-    /**
      * 默认的封装变量的名字（执行重构与生成操作时会用到）。
      */
     val defaultScriptedVariableName get() = Registry.stringValue("chronicle.settings.defaultScriptedVariableName").orNull() ?: "var"

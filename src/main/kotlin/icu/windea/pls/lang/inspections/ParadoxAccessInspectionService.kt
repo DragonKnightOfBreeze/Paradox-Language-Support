@@ -1,9 +1,7 @@
 package icu.windea.pls.lang.inspections
 
 import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector.*
-import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemHighlightType
-import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import icu.windea.pls.ChronicleBundle
@@ -24,9 +22,7 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
  * @see ReadWriteAccess
  */
 object ParadoxAccessInspectionService {
-    fun createContext(tool: LocalInspectionTool, holder: ProblemsHolder): ParadoxAccessInspectionContext {
-        return ParadoxAccessInspectionContext(tool, holder)
-    }
+    // region UnusedParameterInspection
 
     fun checkForUnusedParameter(element: PsiElement, context: ParadoxAccessInspectionContext) {
         if (element !is ParadoxScriptStringExpressionElement && element !is ParadoxConditionParameter) return
@@ -149,4 +145,6 @@ object ParadoxAccessInspectionService {
             }
         }
     }
+
+    // endregion
 }

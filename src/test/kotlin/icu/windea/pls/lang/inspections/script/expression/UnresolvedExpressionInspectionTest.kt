@@ -74,7 +74,7 @@ class UnresolvedExpressionInspectionTest : BasePlatformTestCase(), ChronicleTest
     fun semantic_smoke_unresolvedTopProperty_failed() {
         markFileInfo(ParadoxGameType.Stellaris, "common/messages/test.txt")
         myFixture.configureByText("test.txt") {
-            val m1 = "Cannot resolve expression `say` (expect matching: index, tags, message_part, include)"
+            val m1 = "Cannot resolve key expression `say` (expect matching: index, tags, message_part, include)"
             """
                 ${error(m1)}start_message${errorEnd()} = {
                     say = hello
@@ -102,7 +102,7 @@ class UnresolvedExpressionInspectionTest : BasePlatformTestCase(), ChronicleTest
     fun semantic_smoke_unresolvedLeafProperty_failed() {
         markFileInfo(ParadoxGameType.Stellaris, "common/messages/test.txt")
         myFixture.configureByText("test.txt") {
-            val m1 = "Cannot resolve expression `send` (expect matching: hint, say)"
+            val m1 = "Cannot resolve key expression `send` (expect matching: hint, say)"
             """
             start_message = {
                 index = 0

@@ -17,4 +17,8 @@ data class ParadoxAccessInspectionContext(
     val statusMap = mutableMapOf<PsiElement, Boolean>()
     // compute once per file
     val searchScope by lazy { ParadoxSearchScope.fromFile(holder.project, holder.file.virtualFile) }
+
+    interface Aware {
+        fun createContext(holder: ProblemsHolder): ParadoxAccessInspectionContext
+    }
 }

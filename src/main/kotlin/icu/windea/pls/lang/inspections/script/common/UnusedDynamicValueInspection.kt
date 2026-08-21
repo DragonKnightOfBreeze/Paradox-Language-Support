@@ -5,6 +5,7 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
+import icu.windea.pls.lang.inspections.ParadoxAccessInspectionContext
 import icu.windea.pls.lang.inspections.ParadoxAccessInspectionService
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxPsiElementVisitor
@@ -18,14 +19,14 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
  *
  * 默认不启用。
  */
-class UnusedDynamicValueInspection : LocalInspectionTool() {
+class UnusedDynamicValueInspection : LocalInspectionTool(), ParadoxAccessInspectionContext.Aware {
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 要求是语义上有效的脚本文件
         return ParadoxPsiFileMatchService.isScriptFile(file)
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        val context = ParadoxAccessInspectionService.createContext(this, holder)
+        val context = createContext(holder)
         return object : ParadoxPsiElementVisitor() {
             override fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
                 ProgressManager.checkCanceled()
@@ -33,5 +34,9 @@ class UnusedDynamicValueInspection : LocalInspectionTool() {
                 ParadoxAccessInspectionService.checkForUnusedDynamicValue(element, context)
             }
         }
+    }
+
+    override fun createContext(holder: ProblemsHolder): ParadoxAccessInspectionContext {
+        return ParadoxAccessInspectionContext(this, holder)
     }
 }

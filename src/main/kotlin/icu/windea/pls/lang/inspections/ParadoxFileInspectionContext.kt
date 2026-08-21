@@ -7,4 +7,8 @@ data class ParadoxFileInspectionContext(
     val tool: LocalInspectionTool,
     val holder: ProblemsHolder,
     val ignoredFilePaths: String = "",
-)
+) {
+    interface Aware {
+        fun createContext(holder: ProblemsHolder): ParadoxFileInspectionContext
+    }
+}
