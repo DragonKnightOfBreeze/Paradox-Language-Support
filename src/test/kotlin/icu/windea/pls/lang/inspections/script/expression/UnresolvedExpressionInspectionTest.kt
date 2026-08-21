@@ -76,9 +76,9 @@ class UnresolvedExpressionInspectionTest : BasePlatformTestCase(), ChronicleTest
         myFixture.configureByText("test.txt") {
             val m1 = "Cannot resolve key expression `say` (expect matching: index, tags, message_part, include)"
             """
-                ${error(m1)}start_message${errorEnd()} = {
-                    say = hello
-                }
+            start_message = {
+                ${error(m1)}say${errorEnd()} = hello
+            }
             """.trimIndent()
         }
         myFixture.checkHighlighting()

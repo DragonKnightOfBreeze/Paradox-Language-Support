@@ -68,7 +68,7 @@ class ParadoxModDependenciesImportPopup(
         } catch (e: Exception) {
             if (e is ProcessCanceledException || e is CancellationException) throw e
             logger.warn(e)
-            val content = ChronicleBundle.message("mod.dependencies.import.error") + ChronicleBundle.errorDetails(e.message)
+            val content = ChronicleBundle.message("mod.dependencies.import.error").let { ChronicleBundle.errorDescription(it, e) }
             ChronicleNotificationGroups.settings().createNotification(qualifiedName, content, NotificationType.WARNING).notify(project)
             return
         }
@@ -83,7 +83,7 @@ class ParadoxModDependenciesImportPopup(
         table.addModDependencies(result.newModSetInfo.toModDependencies())
 
         if (result.warning != null) {
-            val content = ChronicleBundle.message("mod.dependencies.import.info", from, result.actualTotal) + ChronicleBundle.errorDetails(result.warning)
+            val content = ChronicleBundle.message("mod.dependencies.import.info", from, result.actualTotal).let { ChronicleBundle.errorDescription(it, result.warning) }
             ChronicleNotificationGroups.settings().createNotification(qualifiedName, content, NotificationType.WARNING).notify(project)
             return
         }

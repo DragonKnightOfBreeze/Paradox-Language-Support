@@ -35,15 +35,30 @@ object ChronicleBundle {
 
     @JvmStatic
     @Nls
-    fun errorDetails(message: String?): String {
-        if (message.isNullOrEmpty()) return ""
-        return INSTANCE.getMessage("error.details")
+    fun errorDescription(description: String, error: Throwable): String {
+        val details = error.message
+        if (details.isNullOrEmpty()) return description
+        return INSTANCE.getMessage("error.description", description, details)
     }
 
     @JvmStatic
     @Nls
-    fun expressionType(value: ParadoxExpressionElement) : String {
-        return when(value) {
+    fun errorDescription(description: String, details: String?): String {
+        if (details.isNullOrEmpty()) return description
+        return INSTANCE.getMessage("error.description", description, details)
+    }
+
+    @JvmStatic
+    @Nls
+    fun inspectionDescription(description: String, details: String?): String {
+        if (details.isNullOrEmpty()) return ""
+        return INSTANCE.getMessage("inspection.description", description, details)
+    }
+
+    @JvmStatic
+    @Nls
+    fun expressionType(value: ParadoxExpressionElement): String {
+        return when (value) {
             is ParadoxScriptPropertyKey -> INSTANCE.getMessage("expression.type.key")
             is ParadoxScriptValue -> INSTANCE.getMessage("expression.type.value")
             is ParadoxCsvColumn -> INSTANCE.getMessage("expression.type.column")
@@ -51,10 +66,11 @@ object ChronicleBundle {
         }
     }
 
+    @Suppress("unused")
     @JvmStatic
     @Nls
-    fun expressionType(value: ParadoxExpression) : String {
-        return when(value.role) {
+    fun expressionType(value: ParadoxExpression): String {
+        return when (value.role) {
             ParadoxExpressionRole.Key -> INSTANCE.getMessage("expression.type.key")
             ParadoxExpressionRole.Value -> INSTANCE.getMessage("expression.type.value")
             else -> INSTANCE.getMessage("expression.type.other")
@@ -63,8 +79,8 @@ object ChronicleBundle {
 
     @JvmStatic
     @Nls
-    fun expressionType(value: CwtDataExpression) : String {
-        return when(value.role) {
+    fun expressionType(value: CwtDataExpression): String {
+        return when (value.role) {
             CwtDataExpressionRole.Key -> INSTANCE.getMessage("expression.type.key")
             CwtDataExpressionRole.Value -> INSTANCE.getMessage("expression.type.value")
             else -> INSTANCE.getMessage("expression.type.other")

@@ -196,7 +196,7 @@ class ParadoxInlineMathEvaluatorDialog(
             }
             isInitialized = true
             currentResult = null
-            currentResultText = ChronicleBundle.message("ui.dialog.evaluator.inlineMath.message.exception") + ChronicleBundle.errorDetails(message)
+            currentResultText = ChronicleBundle.message("ui.dialog.evaluator.inlineMath.message.exception").let { ChronicleBundle.errorDescription(it, e) }
         }
     }
 

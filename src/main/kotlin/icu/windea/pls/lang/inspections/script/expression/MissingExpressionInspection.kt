@@ -139,11 +139,11 @@ class MissingExpressionInspection : LocalInspectionTool() {
             val description = when {
                 showExpect -> {
                     val minDefine = occurrence.minDefine
-                    val detail = when {
-                        minDefine == null -> ChronicleBundle.message("inspection.script.missingExpression.desc.detail.1", min, actual)
-                        else -> ChronicleBundle.message("inspection.script.missingExpression.desc.detail.2", min, actual, minDefine)
+                    val details = when {
+                        minDefine == null -> ChronicleBundle.message("inspection.script.missingExpression.details.1", min, actual)
+                        else -> ChronicleBundle.message("inspection.script.missingExpression.details.2", min, actual, minDefine)
                     }
-                    "$shortDescription$detail"
+                    ChronicleBundle.inspectionDescription(shortDescription, details)
                 }
                 else -> shortDescription
             }

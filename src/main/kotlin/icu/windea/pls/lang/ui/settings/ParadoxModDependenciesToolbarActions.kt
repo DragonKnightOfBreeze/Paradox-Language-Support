@@ -61,7 +61,7 @@ interface ParadoxModDependenciesToolbarActions {
                 } catch (e: Exception) {
                     if (e is ProcessCanceledException || e is CancellationException) throw e
                     thisLogger().warn(e)
-                    val content = ChronicleBundle.message("mod.dependencies.add.error") + ChronicleBundle.errorDetails(e.message)
+                    val content = ChronicleBundle.message("mod.dependencies.add.error").let { ChronicleBundle.errorDescription(it, e) }
                     ChronicleNotificationGroups.settings().createNotification(qualifiedName, content, NotificationType.WARNING).notify(project)
                 }
             }

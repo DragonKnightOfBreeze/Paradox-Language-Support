@@ -65,7 +65,7 @@ class ParadoxModDependenciesExportPopup(
         } catch (e: Exception) {
             if (e is ProcessCanceledException || e is CancellationException) throw e
             logger.warn(e)
-            val content = ChronicleBundle.message("mod.dependencies.export.error") + ChronicleBundle.errorDetails(e.message)
+            val content = ChronicleBundle.message("mod.dependencies.export.error").let { ChronicleBundle.errorDescription(it, e) }
             ChronicleNotificationGroups.settings().createNotification(qualifiedName, content, NotificationType.WARNING).notify(project)
             return
         }
@@ -77,7 +77,7 @@ class ParadoxModDependenciesExportPopup(
         }
 
         if (result.warning != null) {
-            val content = ChronicleBundle.message("mod.dependencies.export.info", from, result.actualTotal) + ChronicleBundle.errorDetails(result.warning)
+            val content = ChronicleBundle.message("mod.dependencies.export.info", from, result.actualTotal).let { ChronicleBundle.errorDescription(it, result.warning) }
             ChronicleNotificationGroups.settings().createNotification(qualifiedName, content, NotificationType.WARNING).notify(project)
             return
         }

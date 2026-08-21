@@ -139,11 +139,11 @@ class TooManyExpressionInspection : LocalInspectionTool() {
             val description = when {
                 showExpect -> {
                     val maxDefine = occurrence.maxDefine
-                    val detail = when {
-                        maxDefine == null -> ChronicleBundle.message("inspection.script.tooManyExpression.desc.detail.1", max, actual)
-                        else -> ChronicleBundle.message("inspection.script.tooManyExpression.desc.detail.2", max, actual, maxDefine)
+                    val details = when {
+                        maxDefine == null -> ChronicleBundle.message("inspection.script.tooManyExpression.details.1", max, actual)
+                        else -> ChronicleBundle.message("inspection.script.tooManyExpression.details.2", max, actual, maxDefine)
                     }
-                    "$shortDescription$detail"
+                    ChronicleBundle.inspectionDescription(shortDescription, details)
                 }
                 else -> shortDescription
             }

@@ -116,8 +116,8 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
         }
         val description = when {
             showExpect -> {
-                val detail = ChronicleBundle.message("inspection.script.unresolvedPathReference.detail", configExpression)
-                "$shortDescription$detail"
+                val details = ChronicleBundle.message("inspection.script.unresolvedPathReference.details", configExpression)
+                ChronicleBundle.inspectionDescription(shortDescription, details)
             }
             else -> shortDescription
         }

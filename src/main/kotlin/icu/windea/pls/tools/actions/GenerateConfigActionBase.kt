@@ -105,7 +105,7 @@ abstract class GenerateConfigActionBase : DumbAwareAction() {
         } catch (e: Exception) {
             if (e is ProcessCanceledException || e is CancellationException) throw e
             logger.warn(e)
-            val content = ChronicleToolsBundle.message("config.generation.notification.failed") + ChronicleBundle.errorDetails(e.message)
+            val content = ChronicleToolsBundle.message("config.generation.notification.failed").let { ChronicleBundle.errorDescription(it, e) }
             ChronicleNotificationGroups.global().createNotification(generator.getName(), content, NotificationType.WARNING).notify(project)
             null
         }
