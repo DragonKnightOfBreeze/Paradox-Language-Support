@@ -1,0 +1,18 @@
+<html>
+<body>
+  报告解析结果存在冲突的表达式。
+  <p>
+    如果脚本表达式的匹配多个值为块（<code>{...}</code>）的规则，且根据这些规则进行进一步的匹配后存在冲突，则认为其解析结果存在冲突。
+    例如，<code>k = { x = 1 height = 1 }</code> VS <code>k = { x = int y = int } k = { width = int height = int }</code>。
+  </p>
+  <p>
+    <strong>备注：</strong>
+    此代码检查默认禁用，由于匹配逻辑和检查逻辑存在一些细节上的缺陷和限制，可能产生误报和误导。
+  </p>
+  <p>
+    <strong>备注：</strong>
+    此代码检查基于规则文件，如果产生了误报，通常表明当前游戏类型的规则文件是不完善的。
+    考虑按需禁用或抑制此代码检查，或者<a href="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support#contribution-and-support">贡献规则</a>。
+  </p>
+</body>
+</html>

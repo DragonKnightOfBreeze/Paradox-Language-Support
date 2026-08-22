@@ -1,0 +1,19 @@
+<html>
+<body>
+  Reports expressions with conflicting resolution results.
+  <p>
+    Resolution results of a expression will be considered as conflicting if it matches multiple configs,
+    whose values are blocks (<code>{...}</code>), and there is a conflict after further matching according to these configs.
+    For example, <code>k = { x = 1 height = 1 }</code> vs. <code>k = { x = int y = int } k = { width = int height = int }</code>.
+  </p>
+  <p>
+    <strong>NOTE:</strong>
+    This code inspection is disabled by default, because there are some flaws and limitations in the matching and checking logic, which may lead to false positives and misleading results.
+  </p>
+  <p>
+    <strong>NOTE:</strong>
+    This code inspection is based on config files, so if it produces false positives, it usually indicates that the config files for current game type is incomplete.
+    Consider disabling or suppressing this code inspection if needed, or <a href="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support#contribution-and-support">contributing configs</a>.
+  </p>
+</body>
+</html>

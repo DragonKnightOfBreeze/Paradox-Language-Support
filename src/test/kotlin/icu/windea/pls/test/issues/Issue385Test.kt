@@ -4,7 +4,7 @@ import com.intellij.testFramework.IndexingTestUtil
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.ep.resolve.modifier.ParadoxModifierSupport
-import icu.windea.pls.lang.inspections.script.expression.ConflictingResolvedExpressionInspection
+import icu.windea.pls.lang.inspections.script.expression.ConflictingExpressionInspection
 import icu.windea.pls.lang.inspections.script.expression.IncorrectExpressionInspection
 import icu.windea.pls.lang.inspections.script.expression.MissingExpressionInspection
 import icu.windea.pls.lang.inspections.script.expression.TooManyExpressionInspection
@@ -152,7 +152,7 @@ class Issue385Test : BasePlatformTestCase(), ChronicleTestScope {
         myFixture.enableInspections(MissingExpressionInspection::class.java)
         myFixture.enableInspections(TooManyExpressionInspection::class.java)
         myFixture.enableInspections(UnresolvedExpressionInspection::class.java)
-        myFixture.enableInspections(ConflictingResolvedExpressionInspection::class.java)
+        myFixture.enableInspections(ConflictingExpressionInspection::class.java)
         myFixture.enableInspections(IncorrectExpressionInspection::class.java)
     }
 }

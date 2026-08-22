@@ -50,19 +50,19 @@ object ParadoxMatchResultProvider {
     }
 
     fun forBlock(element: PsiElement, config: CwtMemberConfig<*>): ParadoxMatchResult {
-        val block = when (element) {
+        val blockElement = when (element) {
             is ParadoxScriptProperty -> element.propertyValue()
             is ParadoxScriptBlock -> element
             else -> null
         } ?: return ParadoxMatchResult.NotMatch
         // 如果子句规则内容为空，则仅当子句内容为空时才认为匹配
         if (config.configs.isNullOrEmpty()) {
-            val r = block.members().none()
+            val r = blockElement.members().none()
             return ParadoxMatchResult.exactOrFallback(r)
         }
         // 使用检测子句内容的匹配
         ProgressManager.checkCanceled() // check cancellation before lazy match
-        return ParadoxMatchResult.LazyBlockAwareMatch { ParadoxMatchProvider.matchesBlock(block, config) }
+        return ParadoxMatchResult.LazyBlockAwareMatch { ParadoxMatchProvider.matchesBlock(blockElement, config) }
     }
 
     fun forDefinition(element: PsiElement, project: Project, expression: String, configExpression: CwtDataExpression): ParadoxMatchResult {

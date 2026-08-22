@@ -3,7 +3,7 @@ package icu.windea.pls.test.issues
 import com.intellij.testFramework.IndexingTestUtil
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.lang.inspections.script.expression.ConflictingResolvedExpressionInspection
+import icu.windea.pls.lang.inspections.script.expression.ConflictingExpressionInspection
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.ChronicleTestScope
 import org.junit.After
@@ -17,7 +17,7 @@ import org.junit.runners.JUnit4
  *
  * See: [#284](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/284)
  *
- * @see ConflictingResolvedExpressionInspection
+ * @see ConflictingExpressionInspection
  */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
@@ -29,7 +29,7 @@ class Issue284Test : BasePlatformTestCase(), ChronicleTestScope {
         markIntegrationTest()
         markRootDirectory("issues/284")
         initConfigGroups(project, ParadoxGameType.Vic3)
-        myFixture.enableInspections(ConflictingResolvedExpressionInspection::class.java)
+        myFixture.enableInspections(ConflictingExpressionInspection::class.java)
     }
 
     @After

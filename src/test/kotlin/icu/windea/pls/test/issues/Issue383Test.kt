@@ -9,7 +9,7 @@ import icu.windea.pls.ep.resolve.config.CwtTriggerWithParametersAwareOverriddenC
 import icu.windea.pls.lang.inspections.script.common.MissingParameterInspection
 import icu.windea.pls.lang.inspections.script.common.UnsupportedParameterInspection
 import icu.windea.pls.lang.inspections.script.common.UnusedParameterInspection
-import icu.windea.pls.lang.inspections.script.expression.ConflictingResolvedExpressionInspection
+import icu.windea.pls.lang.inspections.script.expression.ConflictingExpressionInspection
 import icu.windea.pls.lang.inspections.script.expression.IncorrectExpressionInspection
 import icu.windea.pls.lang.inspections.script.expression.MissingExpressionInspection
 import icu.windea.pls.lang.inspections.script.expression.TooManyExpressionInspection
@@ -191,7 +191,7 @@ class Issue383Test : BasePlatformTestCase(), ChronicleTestScope {
         myFixture.enableInspections(MissingExpressionInspection::class.java)
         myFixture.enableInspections(TooManyExpressionInspection::class.java)
         myFixture.enableInspections(UnresolvedExpressionInspection::class.java)
-        myFixture.enableInspections(ConflictingResolvedExpressionInspection::class.java)
+        myFixture.enableInspections(ConflictingExpressionInspection::class.java)
         myFixture.enableInspections(IncorrectExpressionInspection::class.java)
         // enable all scope inspections
         myFixture.enableInspections(IncorrectScopeInspection::class.java)

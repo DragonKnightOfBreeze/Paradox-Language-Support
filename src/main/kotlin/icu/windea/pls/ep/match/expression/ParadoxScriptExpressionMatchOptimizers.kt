@@ -65,7 +65,12 @@ class ParadoxScriptExpressionParameterizedMatchOptimizer : ParadoxScriptExpressi
 }
 
 /**
- * 如果匹配结果中存在键相同的规则，且其值是块（`{...}`），则尝试根据块中的内容进行进一步的匹配。
+ * 如果匹配结果中的规则在分组后，同一分组后存在多个值为块（`{...}`）的规则，则尝试根据块中的内容进行进一步的匹配。
+ * 如果是属性规则则按照属性键分组，如果是指规则则单独分组。
+ *
+ * TODO 如果匹配时发现存在冲突，应直接移除所有参与匹配的规则。
+ *  例如，块中使用到了属性键分别为 X 和 Y 的属性，而这两个属性键分别匹配两个不同的属性规则。
+ *  另外，对应的代码检查中应提供特殊的报错信息。
  */
 @Optimized
 class ParadoxScriptExpressionBlockMatchOptimizer : ParadoxScriptExpressionMatchOptimizer {

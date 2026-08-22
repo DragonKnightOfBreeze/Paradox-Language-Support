@@ -78,10 +78,10 @@ object ChronicleInspections {
         const val TooManyExpression = "ParadoxScriptTooManyExpression"
         /** @see icu.windea.pls.lang.inspections.script.expression.UnresolvedExpressionInspection */
         const val UnresolvedExpression = "ParadoxScriptUnresolvedExpression"
-        /** @see icu.windea.pls.lang.inspections.script.expression.ConflictingResolvedExpressionInspection */
-        const val ConflictingResolvedExpression = "ParadoxScriptConflictingResolvedExpression"
         /** @see icu.windea.pls.lang.inspections.script.expression.IncorrectExpressionInspection */
         const val IncorrectExpression = "ParadoxScriptIncorrectExpression"
+        /** @see icu.windea.pls.lang.inspections.script.expression.ConflictingExpressionInspection */
+        const val ConflictingExpression = "ParadoxScriptConflictingExpression"
         /** @see icu.windea.pls.lang.inspections.script.expression.UnresolvedPathReferenceInspection */
         const val UnresolvedPathReference = "ParadoxScriptUnresolvedPathReference"
         /** @see icu.windea.pls.lang.inspections.script.expression.IncorrectPathReferenceInspection */

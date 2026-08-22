@@ -32,12 +32,12 @@ import icu.windea.pls.script.psi.isDataExpression
 import icu.windea.pls.script.psi.parentProperty
 
 /**
- * 对应的规则有多个且存在冲突的表达式的代码检查。
+ * 表达式的解析结果存在冲突的代码检查。
  *
  * @property ignoredInInjectedFiles （配置项）是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
  * @property ignoredInInlineScriptFiles （配置项）是否在内联脚本文件中忽略此代码检查。
  */
-class ConflictingResolvedExpressionInspection : LocalInspectionTool() {
+class ConflictingExpressionInspection : LocalInspectionTool() {
     @JvmField var ignoredInInjectedFiles = false
     @JvmField var ignoredInInlineScriptFiles = false
 
@@ -70,7 +70,7 @@ class ConflictingResolvedExpressionInspection : LocalInspectionTool() {
     }
 
     // NOTE 3.0.2 由于匹配逻辑和检查逻辑存在一些细节上的缺陷，改为默认禁用，避免误报和误导
-    // TODO 3.0.2+ 进一步完善 `ParadoxScriptExpressionBlockMatchOptimizer`，不再限于键为，从而进行更准确的匹配和检查
+    // TODO 3.0.2+ 考虑进一步完善相关的匹配逻辑和检查逻辑
 
     private fun check(element: ParadoxScriptBlock, holder: ProblemsHolder) {
         if (!element.isDataExpression()) return // skip if is not a data expression
@@ -91,8 +91,8 @@ class ConflictingResolvedExpressionInspection : LocalInspectionTool() {
         if (skip(element, configs)) return
         val isKey = position is ParadoxScriptPropertyKey
         val description = when {
-            isKey -> ChronicleBundle.message("inspection.script.conflictingResolvedExpression.desc.1", text)
-            else -> ChronicleBundle.message("inspection.script.conflictingResolvedExpression.desc.2", text)
+            isKey -> ChronicleBundle.message("inspection.script.conflictingExpression.desc.1", text)
+            else -> ChronicleBundle.message("inspection.script.conflictingExpression.desc.2", text)
         }
         holder.registerProblem(position, description)
     }

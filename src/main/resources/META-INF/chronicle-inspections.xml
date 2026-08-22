@@ -152,14 +152,14 @@
                      key="inspection.script.unresolvedExpression" groupKey="inspection.script.expression.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="ERROR"
                      implementationClass="icu.windea.pls.lang.inspections.script.expression.UnresolvedExpressionInspection"/>
-    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptConflictingResolvedExpression"
-                     key="inspection.script.conflictingResolvedExpression" groupKey="inspection.script.expression.group" groupPathKey="inspection.script.groupPath"
-                     enabledByDefault="true" level="WARNING"
-                     implementationClass="icu.windea.pls.lang.inspections.script.expression.ConflictingResolvedExpressionInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectExpression"
                      key="inspection.script.incorrectExpression" groupKey="inspection.script.expression.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="WARNING"
                      implementationClass="icu.windea.pls.lang.inspections.script.expression.IncorrectExpressionInspection"/>
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptConflictingExpression"
+                     key="inspection.script.conflictingExpression" groupKey="inspection.script.expression.group" groupPathKey="inspection.script.groupPath"
+                     enabledByDefault="false" level="WARNING"
+                     implementationClass="icu.windea.pls.lang.inspections.script.expression.ConflictingExpressionInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnresolvedPathReference"
                      key="inspection.script.unresolvedPathReference" groupKey="inspection.script.common.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="ERROR"

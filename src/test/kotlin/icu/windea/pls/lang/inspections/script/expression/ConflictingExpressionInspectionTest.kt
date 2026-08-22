@@ -12,11 +12,11 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 /**
- * @see ConflictingResolvedExpressionInspection
+ * @see ConflictingExpressionInspection
  */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
-class ConflictingResolvedExpressionInspectionTest : BasePlatformTestCase(), ChronicleTestScope {
+class ConflictingExpressionInspectionTest : BasePlatformTestCase(), ChronicleTestScope {
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
@@ -25,7 +25,7 @@ class ConflictingResolvedExpressionInspectionTest : BasePlatformTestCase(), Chro
         markRootDirectory("features/inspections")
         markConfigDirectory("features/inspections/.config")
         initInjectedConfigGroups(project, ParadoxGameType.Stellaris) // on demand
-        myFixture.enableInspections(ConflictingResolvedExpressionInspection::class.java)
+        myFixture.enableInspections(ConflictingExpressionInspection::class.java)
     }
 
     @After
