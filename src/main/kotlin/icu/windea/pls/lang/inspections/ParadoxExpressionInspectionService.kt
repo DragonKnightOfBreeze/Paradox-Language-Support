@@ -10,6 +10,7 @@ import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtRowType
+import icu.windea.pls.config.config.expandConfigExpression
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.collections.forEachIndexedFast
@@ -22,6 +23,7 @@ import icu.windea.pls.core.matchesPatterns
 import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.core.truncate
+import icu.windea.pls.core.util.ProcessorScope
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvColumnContainer
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
@@ -283,6 +285,8 @@ object ParadoxExpressionInspectionService {
 
     private fun skipForUnresolvedExpression(element: ParadoxExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>, context: ParadoxExpressionInspectionContext): Boolean {
         if (expectedConfigs.isEmpty()) return false
+        val isPathReference = ProcessorScope.allFrom({ expectedConfigs.expandConfigExpression { process(it) } }) { it.type in CwtDataTypeSets.PathReference }
+        if (isPathReference) return true // will be checked by `UnresolvedPathReferenceInspection` instead
         if (context.ignoredByConfigs && ParadoxConfigManager.checkExtendedConfig(element, expectedConfigs)) return true
         return false
     }
