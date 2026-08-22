@@ -84,13 +84,14 @@ property ::= property_key property_separator property_value {
 // can be parameterized
 property_key ::= property_key_part (<<processSnippet>> property_key_part) * {
   implements=[
+    "icu.windea.pls.core.psi.PsiQuoteAwareElement"
     "icu.windea.pls.script.psi.ParadoxScriptLiteralValue"
     "icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement"
     "icu.windea.pls.script.psi.ParadoxParameterAwareElement"
   ]
   methods=[
     getIdElement parameter=""
-    getIcon getName getValue setValue getPresentableText
+    getIcon getName getValue setValue getPresentableText needQuote
     getReference getReferences
   ]
 }
@@ -147,13 +148,14 @@ float ::= FLOAT_TOKEN {
 string ::= string_part <<postProcessFirstSnippet>> (<<processSnippet>> string_part) * {
   extends=value
   implements=[
+    "icu.windea.pls.core.psi.PsiQuoteAwareElement"
     "icu.windea.pls.script.psi.ParadoxScriptLiteralValue"
     "icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement"
     "icu.windea.pls.script.psi.ParadoxParameterAwareElement"
   ]
   methods=[
     getIdElement parameter=""
-    getIcon getValue setValue
+    getIcon getValue setValue needQuote
     getReference getReferences
   ]
 }

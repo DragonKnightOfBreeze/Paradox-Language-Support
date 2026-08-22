@@ -10,9 +10,9 @@ import com.intellij.util.ui.table.JBTableRow
 import com.intellij.util.ui.table.JBTableRowEditor
 import com.intellij.util.ui.table.JBTableRowRenderer
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.core.quoteIfNeeded
 import icu.windea.pls.model.type.ParadoxSeparatorType
 import icu.windea.pls.script.ParadoxScriptLanguage
+import icu.windea.pls.script.psi.ParadoxScriptPsiManipulationService
 import javax.swing.BoxLayout
 import javax.swing.JComponent
 import javax.swing.JPanel
@@ -35,14 +35,14 @@ class ElementsListTable(
                 }
                 is ElementDescriptors.Property -> {
                     buildString {
-                        append(item.name.quoteIfNeeded())
+                        append(ParadoxScriptPsiManipulationService.quoteIfNeeded(item.name))
                         append(" ")
                         append(item.separator)
                         append(" ")
                         if (item.value.isEmpty()) {
                             append("\"\"").append(" # ").append(ChronicleBundle.message("ui.table.element.column.tooltip.editInTemplate"))
                         } else {
-                            append(item.value.quoteIfNeeded())
+                            append(ParadoxScriptPsiManipulationService.quoteIfNeeded(item.value))
                         }
                     }
                 }

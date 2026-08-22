@@ -57,6 +57,11 @@ public class CwtPropertyKeyImpl extends ASTWrapperPsiElement implements CwtPrope
   }
 
   @Override
+  public boolean needQuote() {
+    return CwtPsiImplUtil.needQuote(this);
+  }
+
+  @Override
   public @Nullable PsiReference getReference() {
     return CwtPsiImplUtil.getReference(this);
   }

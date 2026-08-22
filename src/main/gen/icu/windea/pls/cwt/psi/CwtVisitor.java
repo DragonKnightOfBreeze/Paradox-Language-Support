@@ -1,11 +1,12 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.cwt.psi;
 
-import org.jetbrains.annotations.*;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiDocCommentBase;
 import com.intellij.psi.PsiComment;
+import com.intellij.psi.PsiDocCommentBase;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiElementVisitor;
+import icu.windea.pls.core.psi.PsiQuoteAwareElement;
+import org.jetbrains.annotations.NotNull;
 
 public class CwtVisitor extends PsiElementVisitor {
 
@@ -46,7 +47,7 @@ public class CwtVisitor extends PsiElementVisitor {
   }
 
   public void visitOptionKey(@NotNull CwtOptionKey o) {
-    visitPsiElement(o);
+    visitPsiQuoteAwareElement(o);
   }
 
   public void visitProperty(@NotNull CwtProperty o) {
@@ -55,7 +56,8 @@ public class CwtVisitor extends PsiElementVisitor {
   }
 
   public void visitPropertyKey(@NotNull CwtPropertyKey o) {
-    visitLiteralValue(o);
+    visitPsiQuoteAwareElement(o);
+    // visitLiteralValue(o);
     // visitStringExpressionElement(o);
   }
 
@@ -65,6 +67,7 @@ public class CwtVisitor extends PsiElementVisitor {
 
   public void visitString(@NotNull CwtString o) {
     visitValue(o);
+    // visitPsiQuoteAwareElement(o);
     // visitNamedElement(o);
     // visitLiteralValue(o);
     // visitStringExpressionElement(o);
@@ -84,11 +87,11 @@ public class CwtVisitor extends PsiElementVisitor {
     visitElement(o);
   }
 
-  public void visitExpressionElement(@NotNull CwtExpressionElement o) {
-    visitPsiElement(o);
+  public void visitPsiQuoteAwareElement(@NotNull PsiQuoteAwareElement o) {
+    visitElement(o);
   }
 
-  public void visitLiteralValue(@NotNull CwtLiteralValue o) {
+  public void visitExpressionElement(@NotNull CwtExpressionElement o) {
     visitPsiElement(o);
   }
 

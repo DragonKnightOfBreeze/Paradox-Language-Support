@@ -28,9 +28,9 @@ import icu.windea.pls.core.codeInsight.TemplateEditingFinishedListener
 import icu.windea.pls.core.executeWriteCommand
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.isEscapedCharAt
-import icu.windea.pls.core.quoteIfNeeded
 import icu.windea.pls.cwt.formatter.CwtCodeStyleSettings
 import icu.windea.pls.cwt.psi.CwtPropertyKey
+import icu.windea.pls.cwt.psi.CwtPsiManipulationService
 import icu.windea.pls.cwt.psi.CwtString
 import icu.windea.pls.model.constants.ChronicleStrings
 import icu.windea.pls.model.type.CwtExpressionType
@@ -121,7 +121,7 @@ object CwtCompletionLookupProvider {
 
         val lookupString = when {
             context.leftQuoted -> lookupElement.lookupString // already quoted
-            else -> lookupElement.lookupString.quoteIfNeeded() // #369 should be quoted if is blank or contains blank
+            else -> CwtPsiManipulationService.quoteIfNeeded(lookupElement.lookupString) // #369 should be quoted if is necessary
         }
         val insertCurlyBraces = when {
             config is CwtOptionMemberConfig<*> -> config.valueType == CwtExpressionType.Block

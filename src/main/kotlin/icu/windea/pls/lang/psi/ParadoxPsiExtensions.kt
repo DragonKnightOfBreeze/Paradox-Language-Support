@@ -8,12 +8,16 @@ import icu.windea.pls.core.collections.WalkingSequence
 import icu.windea.pls.core.collections.context
 import icu.windea.pls.core.collections.transform
 import icu.windea.pls.core.math.MathResult
-import icu.windea.pls.core.quoteIfNeeded
+import icu.windea.pls.core.quote
 import icu.windea.pls.core.toBooleanYesNo
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.setValue
+import icu.windea.pls.csv.psi.ParadoxCsvColumn
+import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
+import icu.windea.pls.csv.psi.ParadoxCsvPsiManipulationService
+import icu.windea.pls.csv.psi.ParadoxCsvPsiService
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.manipulation.ParadoxScriptFileManipulationService
 import icu.windea.pls.lang.match.ParadoxMatchOptions
@@ -39,6 +43,7 @@ import icu.windea.pls.script.psi.ParadoxScriptMemberContext
 import icu.windea.pls.script.psi.ParadoxScriptNumberExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
+import icu.windea.pls.script.psi.ParadoxScriptPsiManipulationService
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableReference
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
@@ -126,13 +131,23 @@ fun ParadoxScriptExpressionElement.inlineMathValue(resolve: Boolean = true): Mat
     return ParadoxInlineMathExpressionEvaluator().evaluateOrNull(element)
 }
 
-fun ParadoxScriptExpressionElement.formattedValue(resolve: Boolean = true): String? {
+fun ParadoxScriptExpressionElement.formattedValue(resolve: Boolean = true, detail: Boolean = true): String? {
     val element = if (resolve) resolved() else this
     if (element == null) return null
     return when (element) {
-        is ParadoxScriptStringExpressionElement -> element.value.quoteIfNeeded()
+        is ParadoxScriptInlineMath -> if(detail) element.text else element.value
+        is ParadoxScriptStringExpressionElement -> ParadoxScriptPsiManipulationService.quoteIfNeeded(element.value)
         else -> element.value
     }
+}
+
+fun ParadoxCsvExpressionElement.formattedValue(): String {
+    if (this !is ParadoxCsvColumn) return text
+    if (ParadoxCsvPsiService.isEmptyColumn(this)) return ""
+    val value = value
+    val needQuoteBecauseBoundaryBlank = value.isNotEmpty() && (value.first().isWhitespace() || value.last().isWhitespace())
+    if (needQuoteBecauseBoundaryBlank) return value.quote()
+    return ParadoxCsvPsiManipulationService.quoteIfNeeded(value)
 }
 
 // endregion

@@ -114,15 +114,15 @@ WHITE_SPACE=[\s&&[^\r\n]]+
 BLANK=\s+
 COMMENT=#[^\r\n]*
 
-SCRIPTED_VARIABLE_NAME_PATTERN=[A-Za-z_$\[][^@#={}\s\"]* // leading number is not permitted
+SCRIPTED_VARIABLE_NAME_PATTERN=[A-Za-z_$\[][^@#={}\"\s]* // leading number is not permitted
 SCRIPTED_VARIABLE_NAME_TRAILING=\s*=
 SCRIPTED_VARIABLE_NAME_TOKEN=[A-Za-z0-9_]+ // leading number is not permitted
 
 PROPERTY_KEY_PATTERN={UNQUOTED_PROPERTY_KEY_PATTERN}|{QUOTED_PROPERTY_KEY_PATTERN}
 PROPERTY_KEY_TRAILING=\s*[=<>!?]
-UNQUOTED_PROPERTY_KEY_PATTERN=[^@#=<>!?{}\[\s\"][^#=<>!?{}\s\"]*\"?
+UNQUOTED_PROPERTY_KEY_PATTERN=[^@#=<>!?{}\[\"\s][^#=<>!?{}\"\s]*\"?
 QUOTED_PROPERTY_KEY_PATTERN=\"([^\"\r\n\\]|\\.)*\"?
-UNQUOTED_PROPERTY_KEY_TOKEN=[^@#$=<>!?{}\[\]\s\"][^#$=<>!?{}\[\]\s\"]*\"?
+UNQUOTED_PROPERTY_KEY_TOKEN=[^@#$=<>!?{}\[\]\"\s][^#$=<>!?{}\[\]\"\s]*\"?
 QUOTED_PROPERTY_KEY_TOKEN=([^\"$\\\r\n]|\\[\s\S])+ // without surrounding quotes
 
 BOOLEAN_TOKEN=(yes)|(no)
@@ -133,9 +133,9 @@ FLOAT_TOKEN=[+-]?{FLOAT_NUMBER_TOKEN}
 COLOR_TOKEN=(rgb|hsv|hsv360)[ \t]*\{[\d.\s&&[^\r\n]]*} // #103 hsv360 (from vic3)
 
 STRING_PATTERN={UNQUOTED_STRING_PATTERN}|{QUOTED_STRING_PATTERN}
-UNQUOTED_STRING_PATTERN=[^@#=<>!?{}\s\"][^#=<>!?{}\s\"]*\"?
+UNQUOTED_STRING_PATTERN=[^@#=<>!?{}\"\s][^#=<>!?{}\"\s]*\"?
 QUOTED_STRING_PATTERN=\"([^\"\\]|\\[\s\S])*\"?
-UNQUOTED_STRING_TOKEN=[^@#$=<>!?{}\[\]\s\"][^#$=<>!?{}\[\]\s\"]*\"?
+UNQUOTED_STRING_TOKEN=[^@#$=<>!?{}\[\]\"\s][^#$=<>!?{}\[\]\"\s]*\"?
 QUOTED_STRING_TOKEN=([^\"$\\]|\\[\s\S])+ // without surrounding quotes
 
 // leading number is not permitted for parameter names

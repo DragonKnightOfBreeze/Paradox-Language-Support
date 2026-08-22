@@ -35,7 +35,6 @@ import icu.windea.pls.core.isEscapedCharAt
 import icu.windea.pls.core.letIf
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.psi.light.LightElementBase
-import icu.windea.pls.core.quoteIfNeeded
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.ep.resolve.expression.ParadoxPathReferenceExpressionSupport
 import icu.windea.pls.lang.defineNamespaceInfo
@@ -50,6 +49,7 @@ import icu.windea.pls.lang.psi.light.ParadoxModifierLightElement
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.localisation.ParadoxLocalisationFileType
+import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxTextColorInfo
 import icu.windea.pls.model.constants.ChronicleStrings
@@ -57,6 +57,7 @@ import icu.windea.pls.model.type.CwtExpressionType
 import icu.windea.pls.script.formatter.ParadoxScriptCodeStyleSettings
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
+import icu.windea.pls.script.psi.ParadoxScriptPsiManipulationService
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.ParadoxScriptString
 import javax.swing.Icon
@@ -695,8 +696,8 @@ object ParadoxCompletionLookupProvider {
         val isBlockConfig = targetConfig?.let { it.valueType == CwtExpressionType.Block } ?: false
 
         val lookupString = when {
-            context.leftQuoted -> lookupElement.lookupString // already quoted
-            else -> lookupElement.lookupString.quoteIfNeeded() // #369 should be quoted if is blank or contains blank
+            context.leftQuoted || context.file is ParadoxLocalisationFile -> lookupElement.lookupString // already quoted, or in localisation file
+            else ->  ParadoxScriptPsiManipulationService.quoteIfNeeded(lookupElement.lookupString) // #369 should be quoted if is necessary
         }
         val constantValue = when {
             completeWithValue -> targetConfig?.valueExpression?.takeIf { it.type == CwtDataTypes.Constant }?.expressionString

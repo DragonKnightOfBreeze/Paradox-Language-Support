@@ -2,6 +2,7 @@ package icu.windea.pls.script.psi
 
 import com.intellij.psi.ElementManipulators
 import com.intellij.psi.LiteralTextEscaper
+import icu.windea.pls.core.psi.PsiQuoteAwareElement
 import icu.windea.pls.lang.psi.ParadoxLanguageInjectionHost
 import icu.windea.pls.lang.psi.ParadoxScriptExpressionLiteralTextEscaper
 
@@ -9,7 +10,7 @@ import icu.windea.pls.lang.psi.ParadoxScriptExpressionLiteralTextEscaper
  * @see ParadoxScriptPropertyKey
  * @see ParadoxScriptString
  */
-interface ParadoxScriptStringExpressionElement : ParadoxScriptExpressionElement, ParadoxScriptLiteralValue, ParadoxLanguageInjectionHost {
+interface ParadoxScriptStringExpressionElement : ParadoxScriptExpressionElement, ParadoxScriptLiteralValue, ParadoxLanguageInjectionHost, PsiQuoteAwareElement {
     override fun isValidHost(): Boolean {
         return true
     }
@@ -22,4 +23,3 @@ interface ParadoxScriptStringExpressionElement : ParadoxScriptExpressionElement,
         return ParadoxScriptExpressionLiteralTextEscaper(this)
     }
 }
-

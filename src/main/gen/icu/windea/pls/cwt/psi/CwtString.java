@@ -1,17 +1,18 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.cwt.psi;
 
-import java.util.List;
-import org.jetbrains.annotations.*;
-import com.intellij.psi.PsiElement;
 import com.intellij.navigation.ItemPresentation;
-import com.intellij.openapi.util.Iconable.IconFlags;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
-import javax.swing.Icon;
+import icu.windea.pls.core.psi.PsiQuoteAwareElement;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public interface CwtString extends CwtValue, CwtNamedElement, CwtLiteralValue, CwtStringExpressionElement {
+import javax.swing.*;
+
+public interface CwtString extends CwtValue, PsiQuoteAwareElement, CwtNamedElement, CwtLiteralValue, CwtStringExpressionElement {
 
   @NotNull Icon getIcon(@IconFlags int flags);
 
@@ -24,6 +25,8 @@ public interface CwtString extends CwtValue, CwtNamedElement, CwtLiteralValue, C
   @NotNull String getValue();
 
   @NotNull CwtValue setValue(@NotNull String value);
+
+  boolean needQuote();
 
   @Nullable PsiReference getReference();
 

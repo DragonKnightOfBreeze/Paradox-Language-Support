@@ -195,9 +195,14 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun setValue(element: ParadoxScriptPropertyKey, value: String): ParadoxScriptPropertyKey {
-        val newValue = value.quoteIfNeeded()
+        val newValue = ParadoxScriptPsiManipulationService.quoteIfNeeded(value)
         val newElement = ParadoxScriptElementFactory.createPropertyKeyFromText(element.project, newValue)
         return element.replace(newElement).cast()
+    }
+
+    @JvmStatic
+    fun needQuote(element: ParadoxScriptPropertyKey): Boolean {
+        return ParadoxScriptPsiManipulationService.needQuote(element.text)
     }
 
     // endregion
@@ -238,9 +243,14 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun setValue(element: ParadoxScriptString, value: String): ParadoxScriptValue {
-        val newValue = value.quoteIfNeeded()
+        val newValue = ParadoxScriptPsiManipulationService.quoteIfNeeded(value)
         val newElement = ParadoxScriptElementFactory.createValueFromText(element.project, newValue) // can also be boolean or number
         return element.replace(newElement).cast()
+    }
+
+    @JvmStatic
+    fun needQuote(element: ParadoxScriptString): Boolean {
+        return ParadoxScriptPsiManipulationService.needQuote(element.text)
     }
 
     // endregion

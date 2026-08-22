@@ -59,11 +59,12 @@ property ::= property_key property_separator property_value {
 }
 property_key ::= PROPERTY_KEY_TOKEN {
   implements=[
+    "icu.windea.pls.core.psi.PsiQuoteAwareElement"
     "icu.windea.pls.cwt.psi.CwtLiteralValue"
     "icu.windea.pls.cwt.psi.CwtStringExpressionElement"
   ]
   methods=[
-    getIcon getName getValue setValue getPresentableText
+    getIcon getName getValue setValue getPresentableText needQuote
     getReference getReferences
   ]
 }
@@ -101,12 +102,13 @@ float ::= FLOAT_TOKEN {
 string ::= STRING_TOKEN {
   extends=value
   implements=[
+    "icu.windea.pls.core.psi.PsiQuoteAwareElement"
     "icu.windea.pls.cwt.psi.CwtNamedElement"
     "icu.windea.pls.cwt.psi.CwtLiteralValue"
     "icu.windea.pls.cwt.psi.CwtStringExpressionElement"
   ]
   methods=[
-    getIcon getName setName getNameIdentifier getValue setValue
+    getIcon getName setName getNameIdentifier getValue setValue needQuote
     getReference getReferences
   ]
 }
@@ -150,7 +152,10 @@ option ::= option_key option_separator option_value {
   ]
 }
 option_key ::= OPTION_KEY_TOKEN {
-  methods=[getIcon getName getValue]
+  implements=[
+    "icu.windea.pls.core.psi.PsiQuoteAwareElement"
+  ]
+  methods=[getIcon getName getValue needQuote]
 }
 private option_separator ::= EQUAL_SIGN | NOT_EQUAL_SIGN | DOUBLE_EQUAL_SIGN
 private option_value ::= value

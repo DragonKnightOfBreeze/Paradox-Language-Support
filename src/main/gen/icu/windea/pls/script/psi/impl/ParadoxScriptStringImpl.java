@@ -1,20 +1,23 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.script.psi.impl;
 
-import java.util.List;
-import org.jetbrains.annotations.*;
 import com.intellij.lang.ASTNode;
+import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.util.PsiTreeUtil;
-import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
-import icu.windea.pls.script.psi.*;
-import com.intellij.navigation.ItemPresentation;
-import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
-import javax.swing.Icon;
+import com.intellij.psi.util.PsiTreeUtil;
+import icu.windea.pls.script.psi.ParadoxScriptInlineConditionalBlock;
+import icu.windea.pls.script.psi.ParadoxScriptString;
+import icu.windea.pls.script.psi.ParadoxScriptValue;
+import icu.windea.pls.script.psi.ParadoxScriptVisitor;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import javax.swing.*;
+import java.util.List;
 
 public class ParadoxScriptStringImpl extends ParadoxScriptValueImpl implements ParadoxScriptString {
 
@@ -57,6 +60,11 @@ public class ParadoxScriptStringImpl extends ParadoxScriptValueImpl implements P
   @Override
   public @NotNull ParadoxScriptValue setValue(@NotNull String value) {
     return ParadoxScriptPsiImplUtil.setValue(this, value);
+  }
+
+  @Override
+  public boolean needQuote() {
+    return ParadoxScriptPsiImplUtil.needQuote(this);
   }
 
   @Override

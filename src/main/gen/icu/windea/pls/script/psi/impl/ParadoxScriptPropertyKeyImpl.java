@@ -72,6 +72,11 @@ public class ParadoxScriptPropertyKeyImpl extends ASTWrapperPsiElement implement
   }
 
   @Override
+  public boolean needQuote() {
+    return ParadoxScriptPsiImplUtil.needQuote(this);
+  }
+
+  @Override
   public @Nullable PsiReference getReference() {
     return ParadoxScriptPsiImplUtil.getReference(this);
   }

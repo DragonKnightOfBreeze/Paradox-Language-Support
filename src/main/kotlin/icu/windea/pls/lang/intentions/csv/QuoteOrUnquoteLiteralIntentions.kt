@@ -8,31 +8,13 @@ import com.intellij.modcommand.PsiUpdateModCommandAction
 import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.ElementManipulators
 import com.intellij.psi.PsiElement
-import icu.windea.pls.core.containsBlank
-import icu.windea.pls.core.isQuoted
 import icu.windea.pls.core.quote
 import icu.windea.pls.core.unquote
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.lang.intentions.ChronicleIntentionBundle
 
-abstract class QuoteOrUnquoteLiteralIntentionBase : PsiUpdateModCommandAction<ParadoxCsvExpressionElement>(ParadoxCsvExpressionElement::class.java), DumbAware {
-    override fun stopSearchAt(element: PsiElement, context: ActionContext): Boolean {
-        return element is ParadoxCsvExpressionElement
-    }
-
-    protected fun canQuote(element: ParadoxCsvExpressionElement): Boolean {
-        val text = element.text
-        return !text.isQuoted()
-    }
-
-    protected fun canUnquote(element: ParadoxCsvExpressionElement): Boolean {
-        val text = element.text
-        return text.isQuoted() && !text.containsBlank()
-    }
-}
-
-class QuoteLiteralIntention : QuoteOrUnquoteLiteralIntentionBase() {
+class QuoteLiteralIntention : PsiUpdateModCommandAction<ParadoxCsvExpressionElement>(ParadoxCsvExpressionElement::class.java), DumbAware {
     override fun getFamilyName() = ChronicleIntentionBundle.message("intention.quoteLiteral")
 
     override fun invoke(context: ActionContext, element: ParadoxCsvExpressionElement, updater: ModPsiUpdater) {
@@ -40,11 +22,14 @@ class QuoteLiteralIntention : QuoteOrUnquoteLiteralIntentionBase() {
     }
 
     override fun isElementApplicable(element: ParadoxCsvExpressionElement, context: ActionContext): Boolean {
-        return element is ParadoxCsvColumn && canQuote(element)
+        return element is ParadoxCsvColumn && element.canQuote()
+    }
+    override fun stopSearchAt(element: PsiElement, context: ActionContext): Boolean {
+        return element is ParadoxCsvExpressionElement
     }
 }
 
-class UnquoteLiteralIntention : QuoteOrUnquoteLiteralIntentionBase() {
+class UnquoteLiteralIntention : PsiUpdateModCommandAction<ParadoxCsvExpressionElement>(ParadoxCsvExpressionElement::class.java), DumbAware {
     override fun getFamilyName() = ChronicleIntentionBundle.message("intention.unquoteLiteral")
 
     override fun invoke(context: ActionContext, element: ParadoxCsvExpressionElement, updater: ModPsiUpdater) {
@@ -52,6 +37,9 @@ class UnquoteLiteralIntention : QuoteOrUnquoteLiteralIntentionBase() {
     }
 
     override fun isElementApplicable(element: ParadoxCsvExpressionElement, context: ActionContext): Boolean {
-        return element is ParadoxCsvColumn && canUnquote(element)
+        return element is ParadoxCsvColumn && element.canUnquote()
+    }
+    override fun stopSearchAt(element: PsiElement, context: ActionContext): Boolean {
+        return element is ParadoxCsvExpressionElement
     }
 }

@@ -6,13 +6,14 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
+import icu.windea.pls.core.psi.PsiQuoteAwareElement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.util.List;
 
-public interface ParadoxScriptPropertyKey extends ParadoxScriptLiteralValue, ParadoxScriptStringExpressionElement, ParadoxParameterAwareElement {
+public interface ParadoxScriptPropertyKey extends PsiQuoteAwareElement, ParadoxScriptLiteralValue, ParadoxScriptStringExpressionElement, ParadoxParameterAwareElement {
 
   @NotNull
   List<ParadoxScriptInlineConditionalBlock> getInlineConditionalBlockList();
@@ -28,6 +29,8 @@ public interface ParadoxScriptPropertyKey extends ParadoxScriptLiteralValue, Par
   @NotNull ParadoxScriptPropertyKey setValue(@NotNull String value);
 
   @NotNull String getPresentableText();
+
+  boolean needQuote();
 
   @Nullable PsiReference getReference();
 

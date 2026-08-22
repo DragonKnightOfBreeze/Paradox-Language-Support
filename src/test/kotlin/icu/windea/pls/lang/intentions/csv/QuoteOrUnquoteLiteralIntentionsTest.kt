@@ -11,7 +11,6 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 /**
- * @see QuoteOrUnquoteLiteralIntentionBase
  * @see QuoteLiteralIntention
  * @see UnquoteLiteralIntention
  */

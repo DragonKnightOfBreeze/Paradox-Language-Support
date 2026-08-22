@@ -45,8 +45,9 @@ private column_item ::= <<checkEol>> SEPARATOR [<<checkEol>> column]
 // Empty first/middle columns are allowed
 column ::= <<checkColumnToken>> COLUMN_TOKEN ? {
   implements=[
+    "icu.windea.pls.core.psi.PsiQuoteAwareElement"
     "icu.windea.pls.csv.psi.ParadoxCsvLiteralValue"
     "icu.windea.pls.csv.psi.ParadoxCsvExpressionElement"
   ]
-  methods=[getIdElement getIcon getName getValue setValue getPresentableText getReference getReferences]
+  methods=[getIdElement getIcon getName getValue setValue getPresentableText needQuote getReference getReferences]
 }

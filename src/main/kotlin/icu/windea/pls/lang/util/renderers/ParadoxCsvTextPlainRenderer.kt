@@ -2,13 +2,12 @@ package icu.windea.pls.lang.util.renderers
 
 import com.intellij.openapi.progress.ProgressManager
 import icu.windea.pls.core.collections.forEachFast
-import icu.windea.pls.core.quote
-import icu.windea.pls.core.quoteIfNeeded
 import icu.windea.pls.core.util.OnceMarker
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvColumnContainer
 import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.csv.psi.ParadoxCsvPsiService
+import icu.windea.pls.lang.psi.formattedValue
 
 /**
  * 将 CSV 文本渲染为纯文本的渲染器。
@@ -61,24 +60,12 @@ open class ParadoxCsvTextPlainRenderContext(
     }
 
     override fun renderColumn(element: ParadoxCsvColumn) {
-        val text = getColumnText(element)
-        builder.append(text)
+        val v = element.formattedValue()
+        builder.append(v)
     }
 
     fun renderSeparator() {
         builder.append(settings.separator)
-    }
-
-    fun getColumnText(column: ParadoxCsvColumn): String {
-        if (ParadoxCsvPsiService.isEmptyColumn(column)) return ""
-
-        val value = column.value
-
-        val needQuoteBecauseBoundaryBlank = value.isNotEmpty() && (value.first().isWhitespace() || value.last().isWhitespace())
-        if (needQuoteBecauseBoundaryBlank) return value.quote()
-
-        val extraChars = ParadoxCsvPsiService.getSeparator().toString() + "#"
-        return value.quoteIfNeeded(containAnyChar = extraChars, containBlank = false)
     }
 
     fun hasTrailingSeparator(element: ParadoxCsvColumnContainer): Boolean {

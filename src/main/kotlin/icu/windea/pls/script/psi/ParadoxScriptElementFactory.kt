@@ -35,6 +35,12 @@ object ParadoxScriptElementFactory {
     }
 
     @JvmStatic
+    fun createScriptedVariable(project: Project, name: String, value: String): ParadoxScriptScriptedVariable {
+        val text = "@$name = ${ParadoxScriptPsiManipulationService.quoteIfNeeded(value)}"
+        return createScriptedVariableFromText(project, text)
+    }
+
+    @JvmStatic
     fun createScriptedVariableNameFromText(project: Project, text: String): ParadoxScriptScriptedVariableName {
         return createScriptedVariableFromText(project, "@$text = ${"0"}")
             .findChild<ParadoxScriptScriptedVariableName>() ?: throw IncorrectOperationException()

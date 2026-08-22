@@ -25,7 +25,6 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.codeInsight.TemplateEditingFinishedListener
 import icu.windea.pls.core.executeWriteCommand
 import icu.windea.pls.core.processChild
-import icu.windea.pls.core.quoteIfNeeded
 import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.lang.ui.clause.ElementDescriptor
 import icu.windea.pls.lang.ui.clause.ElementDescriptors
@@ -36,6 +35,7 @@ import icu.windea.pls.script.formatter.ParadoxScriptCodeStyleSettings
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
 import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.ParadoxScriptPsiManipulationService
 import icu.windea.pls.script.psi.ParadoxScriptValue
 
 @Suppress("UnstableApiUsage")
@@ -245,10 +245,10 @@ object ParadoxClauseTemplateCompletionManager {
             descriptors.forEach {
                 when (it) {
                     is ElementDescriptors.Value -> {
-                        append(it.name.quoteIfNeeded())
+                        append(ParadoxScriptPsiManipulationService.quoteIfNeeded(it.name))
                     }
                     is ElementDescriptors.Property -> {
-                        append(it.name.quoteIfNeeded())
+                        append(ParadoxScriptPsiManipulationService.quoteIfNeeded(it.name))
                         if (around) append(" ")
                         append(it.separator)
                         if (around) append(" ")
@@ -268,7 +268,7 @@ object ParadoxClauseTemplateCompletionManager {
                 val descriptor = descriptors[i]
                 if (descriptor.editInTemplate) {
                     if (e is ParadoxScriptProperty && descriptor is ElementDescriptors.Property) {
-                        val string = if (descriptor.value.isNotEmpty()) descriptor.value.quoteIfNeeded() else ""
+                        val string = if (descriptor.value.isNotEmpty()) ParadoxScriptPsiManipulationService.quoteIfNeeded(descriptor.value) else ""
                         val expression = TextExpression(string)
                         templateBuilder.replaceElement(e.propertyValue!!, "${descriptor.name}_$i", expression, true)
                     }

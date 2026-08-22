@@ -5,12 +5,13 @@ import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
+import icu.windea.pls.core.psi.PsiQuoteAwareElement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-public interface CwtPropertyKey extends CwtLiteralValue, CwtStringExpressionElement {
+public interface CwtPropertyKey extends PsiQuoteAwareElement, CwtLiteralValue, CwtStringExpressionElement {
 
   @NotNull Icon getIcon(@IconFlags int flags);
 
@@ -21,6 +22,8 @@ public interface CwtPropertyKey extends CwtLiteralValue, CwtStringExpressionElem
   @NotNull CwtPropertyKey setValue(@NotNull String value);
 
   @NotNull String getPresentableText();
+
+  boolean needQuote();
 
   @Nullable PsiReference getReference();
 

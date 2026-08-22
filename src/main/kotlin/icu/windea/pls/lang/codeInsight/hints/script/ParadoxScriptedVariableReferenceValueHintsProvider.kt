@@ -19,7 +19,7 @@ class ParadoxScriptedVariableReferenceValueHintsProvider : ParadoxDeclarativeHin
         if (element.name.isNullOrEmpty()) return
 
         val resolved = element.resolved() ?: return
-        val value = resolved.formattedValue()
+        val value = resolved.formattedValue(detail = false)
         sink.addInlinePresentation(element.endOffset) {
             text("=> $value".optimized())
         }

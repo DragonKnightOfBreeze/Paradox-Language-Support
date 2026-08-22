@@ -63,6 +63,11 @@ public class ParadoxCsvColumnImpl extends ASTWrapperPsiElement implements Parado
   }
 
   @Override
+  public boolean needQuote() {
+    return ParadoxCsvPsiImplUtil.needQuote(this);
+  }
+
+  @Override
   public @Nullable PsiReference getReference() {
     return ParadoxCsvPsiImplUtil.getReference(this);
   }

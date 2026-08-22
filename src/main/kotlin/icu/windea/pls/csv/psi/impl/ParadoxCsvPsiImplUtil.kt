@@ -15,13 +15,13 @@ import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.core.cast
 import icu.windea.pls.core.findChildren
 import icu.windea.pls.core.psi.PsiService
-import icu.windea.pls.core.quoteIfNeeded
 import icu.windea.pls.core.unquote
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvElementFactory
 import icu.windea.pls.csv.psi.ParadoxCsvElementTypes.*
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.csv.psi.ParadoxCsvHeader
+import icu.windea.pls.csv.psi.ParadoxCsvPsiManipulationService
 import icu.windea.pls.csv.psi.ParadoxCsvPsiPresentation
 import icu.windea.pls.csv.psi.ParadoxCsvPsiService
 import icu.windea.pls.csv.psi.ParadoxCsvRow
@@ -69,10 +69,14 @@ object ParadoxCsvPsiImplUtil {
 
     @JvmStatic
     fun setValue(element: ParadoxCsvColumn, value: String): ParadoxCsvColumn {
-        val extraChars = ParadoxCsvPsiService.getSeparator().toString()
-        val newValue = value.quoteIfNeeded(containAnyChar = extraChars, containBlank = false)
+        val newValue = ParadoxCsvPsiManipulationService.quoteIfNeeded(value)
         val newElement = ParadoxCsvElementFactory.createColumnFromText(element.project, newValue)
         return element.replace(newElement).cast()
+    }
+
+    @JvmStatic
+    fun needQuote(element: ParadoxCsvColumn): Boolean {
+        return ParadoxCsvPsiManipulationService.needQuote(element.text)
     }
 
     // endregion

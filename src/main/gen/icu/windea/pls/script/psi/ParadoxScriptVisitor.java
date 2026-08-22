@@ -4,6 +4,7 @@ package icu.windea.pls.script.psi;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import icu.windea.pls.core.psi.PsiBoundElement;
+import icu.windea.pls.core.psi.PsiQuoteAwareElement;
 import org.jetbrains.annotations.NotNull;
 
 public class ParadoxScriptVisitor extends PsiElementVisitor {
@@ -115,7 +116,8 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
   }
 
   public void visitPropertyKey(@NotNull ParadoxScriptPropertyKey o) {
-    visitLiteralValue(o);
+    visitPsiQuoteAwareElement(o);
+    // visitLiteralValue(o);
     // visitStringExpressionElement(o);
     // visitParadoxParameterAwareElement(o);
   }
@@ -141,6 +143,7 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
 
   public void visitString(@NotNull ParadoxScriptString o) {
     visitValue(o);
+    // visitPsiQuoteAwareElement(o);
     // visitLiteralValue(o);
     // visitStringExpressionElement(o);
     // visitParadoxParameterAwareElement(o);
@@ -152,6 +155,10 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
   }
 
   public void visitPsiBoundElement(@NotNull PsiBoundElement o) {
+    visitElement(o);
+  }
+
+  public void visitPsiQuoteAwareElement(@NotNull PsiQuoteAwareElement o) {
     visitElement(o);
   }
 
@@ -172,10 +179,6 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
   }
 
   public void visitExpressionElement(@NotNull ParadoxScriptExpressionElement o) {
-    visitPsiElement(o);
-  }
-
-  public void visitLiteralValue(@NotNull ParadoxScriptLiteralValue o) {
     visitPsiElement(o);
   }
 

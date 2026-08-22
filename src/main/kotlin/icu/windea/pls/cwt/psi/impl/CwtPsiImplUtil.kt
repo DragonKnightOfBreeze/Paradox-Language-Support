@@ -15,10 +15,8 @@ import com.intellij.util.IncorrectOperationException
 import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.core.cast
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.findChild
 import icu.windea.pls.core.findChildren
 import icu.windea.pls.core.psi.PsiService
-import icu.windea.pls.core.quoteIfNeeded
 import icu.windea.pls.core.unquote
 import icu.windea.pls.cwt.psi.CwtBlock
 import icu.windea.pls.cwt.psi.CwtDocComment
@@ -31,6 +29,7 @@ import icu.windea.pls.cwt.psi.CwtOptionComment
 import icu.windea.pls.cwt.psi.CwtOptionKey
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.cwt.psi.CwtPropertyKey
+import icu.windea.pls.cwt.psi.CwtPsiManipulationService
 import icu.windea.pls.cwt.psi.CwtPsiPresentation
 import icu.windea.pls.cwt.psi.CwtPsiService
 import icu.windea.pls.cwt.psi.CwtRootBlock
@@ -103,7 +102,12 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun getValue(element: CwtOptionKey): String {
-        return element.findChild { it.elementType == OPTION_KEY_TOKEN }!!.text.unquote()
+        return element.text.unquote()
+    }
+
+    @JvmStatic
+    fun needQuote(element: CwtOptionKey): Boolean {
+        return CwtPsiManipulationService.needQuote(element.text)
     }
 
     // endregion
@@ -161,9 +165,14 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun setValue(element: CwtPropertyKey, value: String): CwtPropertyKey {
-        val newValue = value.quoteIfNeeded()
+        val newValue = CwtPsiManipulationService.quoteIfNeeded(value)
         val newElement = CwtElementFactory.createPropertyKeyFromText(element.project, newValue)
         return element.replace(newElement).cast()
+    }
+
+    @JvmStatic
+    fun needQuote(element: CwtPropertyKey): Boolean {
+        return CwtPsiManipulationService.needQuote(element.text)
     }
 
     // endregion
@@ -208,9 +217,14 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun setValue(element: CwtString, value: String): CwtString {
-        val newValue = value.quoteIfNeeded()
+        val newValue = CwtPsiManipulationService.quoteIfNeeded(value)
         val newElement = CwtElementFactory.createStringFromText(element.project, newValue)
         return element.replace(newElement).cast()
+    }
+
+    @JvmStatic
+    fun needQuote(element: CwtString): Boolean {
+        return CwtPsiManipulationService.needQuote(element.text)
     }
 
     // endregion

@@ -3,18 +3,15 @@ package icu.windea.pls.lang.util.renderers
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.util.elementType
 import icu.windea.pls.core.findChild
-import icu.windea.pls.core.quoteIfNeeded
 import icu.windea.pls.core.util.OnceMarker
 import icu.windea.pls.core.util.values.FallbackStrings
+import icu.windea.pls.lang.psi.formattedValue
 import icu.windea.pls.lang.psi.members
-import icu.windea.pls.lang.psi.resolved
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
-import icu.windea.pls.script.psi.ParadoxScriptInlineMath
 import icu.windea.pls.script.psi.ParadoxScriptProperty
-import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptTokenSets
 import icu.windea.pls.script.psi.ParadoxScriptValue
 
@@ -83,12 +80,7 @@ open class ParadoxScriptTextPlainRenderContext(
     }
 
     override fun renderExpressionElement(element: ParadoxScriptExpressionElement) {
-        val resolved = element.resolved()
-        val v = when (resolved) {
-            is ParadoxScriptInlineMath -> resolved.text
-            is ParadoxScriptStringExpressionElement -> resolved.value.quoteIfNeeded()
-            else -> resolved?.value
-        }
+        val v = element.formattedValue()
         builder.append(v ?: FallbackStrings.unresolved)
     }
 

@@ -57,7 +57,7 @@
             {
               "name": "keyword.other.scripted-variable.paradox.script",
               "begin": "(?<=^|[\\s\\[\\]{}<>=])(?=[A-Za-z_$\\[])",
-              "end": "$|(?=[@#={}\\s\"])",
+              "end": "$|(?=[@#={}\\"\s])",
               "patterns": [
                 { "include": "#parameters" }
               ]
@@ -79,7 +79,7 @@
         {
           "name": "keyword.other.scripted-variable.paradox.script",
           "begin": "(?<=^|[\\s\\[\\]{}<>=])@(?=[A-Za-z_$\\[])",
-          "end": "$|(?=[@#={}\\s\"])",
+          "end": "$|(?=[@#={}\\"\s])",
           "patterns": [
             { "include": "#parameters" }
           ]

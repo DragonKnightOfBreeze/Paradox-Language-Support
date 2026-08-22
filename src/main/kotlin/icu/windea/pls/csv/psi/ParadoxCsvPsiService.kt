@@ -16,8 +16,9 @@ import icu.windea.pls.lang.settings.ChronicleInternalSettings
 
 @Suppress("unused")
 object ParadoxCsvPsiService {
-    private val cachedColumnNamesKey = createKey<CachedValue<List<String>>>("cached.paradox.csv.columnNames")
     private const val SEPARATOR = ';'
+
+    private val cachedColumnNamesKey = createKey<CachedValue<List<String>>>("cached.paradox.csv.columnNames")
 
     fun getPresentableText(element: ParadoxCsvExpressionElement): String {
         if (element is ParadoxCsvColumn) {

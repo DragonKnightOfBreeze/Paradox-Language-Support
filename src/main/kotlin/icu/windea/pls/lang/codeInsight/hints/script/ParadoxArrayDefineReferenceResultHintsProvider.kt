@@ -39,7 +39,7 @@ class ParadoxArrayDefineReferenceResultHintsProvider : ParadoxDeclarativeHintsPr
     private fun formatValue(element: ParadoxScriptValue): String? {
         return when (element) {
             is ParadoxScriptBlock -> formatArrayValue(element)
-            else -> element.formattedValue()
+            else -> element.formattedValue(detail = false)
         }
     }
 
@@ -49,6 +49,6 @@ class ParadoxArrayDefineReferenceResultHintsProvider : ParadoxDeclarativeHintsPr
         val limit = settings.truncateArrayValueForDefines
         val values = element.values().letIf(limit >= 0) { it.take(limit) }.toList()
         if (values.isEmpty()) return "{}"
-        return values.joinToString(" ", "{ ", " }") { it.formattedValue().or.unresolved() }
+        return values.joinToString(" ", "{ ", " }") { it.formattedValue(detail = false).or.unresolved() }
     }
 }

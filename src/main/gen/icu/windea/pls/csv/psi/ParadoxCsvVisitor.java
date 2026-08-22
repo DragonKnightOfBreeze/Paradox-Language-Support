@@ -3,12 +3,14 @@ package icu.windea.pls.csv.psi;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
+import icu.windea.pls.core.psi.PsiQuoteAwareElement;
 import org.jetbrains.annotations.NotNull;
 
 public class ParadoxCsvVisitor extends PsiElementVisitor {
 
   public void visitColumn(@NotNull ParadoxCsvColumn o) {
-    visitLiteralValue(o);
+    visitPsiQuoteAwareElement(o);
+    // visitLiteralValue(o);
     // visitExpressionElement(o);
   }
 
@@ -20,11 +22,11 @@ public class ParadoxCsvVisitor extends PsiElementVisitor {
     visitColumnContainer(o);
   }
 
-  public void visitColumnContainer(@NotNull ParadoxCsvColumnContainer o) {
-    visitPsiElement(o);
+  public void visitPsiQuoteAwareElement(@NotNull PsiQuoteAwareElement o) {
+    visitElement(o);
   }
 
-  public void visitLiteralValue(@NotNull ParadoxCsvLiteralValue o) {
+  public void visitColumnContainer(@NotNull ParadoxCsvColumnContainer o) {
     visitPsiElement(o);
   }
 

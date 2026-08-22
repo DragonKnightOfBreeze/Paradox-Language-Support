@@ -6,12 +6,13 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
+import icu.windea.pls.core.psi.PsiQuoteAwareElement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-public interface ParadoxCsvColumn extends ParadoxCsvLiteralValue, ParadoxCsvExpressionElement {
+public interface ParadoxCsvColumn extends PsiQuoteAwareElement, ParadoxCsvLiteralValue, ParadoxCsvExpressionElement {
 
   @Nullable PsiElement getIdElement();
 
@@ -24,6 +25,8 @@ public interface ParadoxCsvColumn extends ParadoxCsvLiteralValue, ParadoxCsvExpr
   @NotNull ParadoxCsvColumn setValue(@NotNull String value);
 
   @NotNull String getPresentableText();
+
+  boolean needQuote();
 
   @Nullable PsiReference getReference();
 

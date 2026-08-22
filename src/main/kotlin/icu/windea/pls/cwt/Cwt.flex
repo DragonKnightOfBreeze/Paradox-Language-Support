@@ -41,14 +41,14 @@ COMMENT=#[^\r\n]*
 OPTION_COMMENT=##[^\r\n]*
 DOC_COMMENT=###[^\r\n]*
 
-// [^#\={}\s\"]+\"?
+// [^#\={}\"\s]+\"?
 
 PROPERTY_KEY_TOKEN=({UNQUOTED_PROPERTY_KEY_TOKEN})|({QUOTED_PROPERTY_KEY_TOKEN})
-UNQUOTED_PROPERTY_KEY_TOKEN=[^#={}\s\"]+\"?
+UNQUOTED_PROPERTY_KEY_TOKEN=[^#={}\"\s]+\"?
 QUOTED_PROPERTY_KEY_TOKEN=\"([^\"\\\r\n]|\\[\s\S])*\"?
 PROPERTY_KEY_TRAILING=\s*(=|\!=|<>|==)
 
-UNQUOTED_STRING_TOKEN=[^#={}\s\"]+\"?
+UNQUOTED_STRING_TOKEN=[^#={}\"\s]+\"?
 QUOTED_STRING_TOKEN=\"([^\"\\\r\n]|\\[\s\S])*\"?
 
 BOOLEAN_TOKEN=(yes|no)
@@ -57,13 +57,13 @@ FLOAT_TOKEN=[+-]?\d*\.\d+ // leading zero is allowed
 STRING_TOKEN=({UNQUOTED_STRING_TOKEN})|({QUOTED_STRING_TOKEN})
 
 OPTION_KEY_TOKEN=({UNQUOTED_OPTION_KEY_TOKEN})|({QUOTED_OPTION_KEY_TOKEN})
-UNQUOTED_OPTION_KEY_TOKEN=[^#={}\s\"]+\"?
+UNQUOTED_OPTION_KEY_TOKEN=[^#={}\"\s]+\"?
 QUOTED_OPTION_KEY_TOKEN=\"([^\"\\\r\n]|\\[\s\S])*\"?
 OPTION_KEY_TRAILING=\s*(=|\!=|<>|==)
 
 // top level option text (value in option comment, or option value of some option in option comment)
 // inner whitespaces are allowed and required
-OPTION_TEXT_TOKEN=[^#=!<>{}\s\"]([^#=!<>{}\r\n]*[^#=!<>{}\s])+
+OPTION_TEXT_TOKEN=[^#=!<>{}\"\s]([^#=!<>{}\r\n]*[^#=!<>{}\s])+
 
 %%
 
