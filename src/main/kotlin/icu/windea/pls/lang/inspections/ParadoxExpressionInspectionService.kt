@@ -4,23 +4,28 @@ import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import com.intellij.psi.util.elementType
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
+import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtRowType
+import icu.windea.pls.config.config.containingDirectConfig
 import icu.windea.pls.config.config.expandConfigExpression
+import icu.windea.pls.config.config.overriddenProvider
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.util.CwtConfigManager
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.collections.anyFast
+import icu.windea.pls.core.collections.filterFast
 import icu.windea.pls.core.collections.forEachIndexedFast
 import icu.windea.pls.core.collections.mapFast
-import icu.windea.pls.core.findChild
 import icu.windea.pls.core.inspections.InspectionService
 import icu.windea.pls.core.match.similarity.SimilarityMatchOptions
 import icu.windea.pls.core.match.similarity.SimilarityMatchService
 import icu.windea.pls.core.matchesPatterns
 import icu.windea.pls.core.normalizePath
+import icu.windea.pls.core.psi.PsiBoundElement
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.core.truncate
 import icu.windea.pls.core.util.ProcessorScope
@@ -47,50 +52,109 @@ import icu.windea.pls.lang.tagType
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptBoolean
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptMemberContainer
+import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
+import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.psi.isDataExpression
-import icu.windea.pls.script.psi.parentProperty
+import icu.windea.pls.script.psi.propertyKey
 
 object ParadoxExpressionInspectionService {
+    // region Common Methods
+
+    fun getDefaultLocationForContainer(element: ParadoxScriptMember): PsiElement? {
+        return when (element) {
+            is ParadoxScriptFile -> element
+            is ParadoxScriptProperty -> element.propertyKey
+            is ParadoxScriptValue -> {
+                element.propertyKey?.let { return it } // `k` for `k = v`
+                if(element is PsiBoundElement) return element.leftBound // `{` for `{...}`
+                element
+            }
+            else -> element
+        }
+    }
+
+    fun getSimilarityBasedFixes(element: ParadoxExpressionElement, configs: List<CwtMemberConfig<*>>): List<LocalQuickFix> {
+        val literals = CwtConfigManager.findLiterals(configs)
+        if (literals.isEmpty()) return emptyList()
+
+        val input = element.value
+        if (input.isEmpty()) return emptyList()
+        val ignoreCase = when (element) {
+            is ParadoxScriptStringExpressionElement -> true
+            is ParadoxCsvColumn -> true
+            else -> false
+        }
+        val options = if (ignoreCase) SimilarityMatchOptions.IGNORE_CASE else SimilarityMatchOptions.DEFAULT
+
+        // 查询输入项的最佳匹配，但排除完全匹配的相似项
+        val matches = SimilarityMatchService.findBestMatches(input, literals, options).filter { it.score < 1.0 }
+        if (matches.isEmpty()) return emptyList()
+
+        // 为最匹配的项提供单独的快速修复（直接替换）
+        // 如果匹配项不唯一，再为所有匹配项提供一个快速修复（弹出列表） - 如果分别提供快速修复，这些快速修复最终会按名字正序排序（这不符合预期）
+        val fixes = mutableListOf<LocalQuickFix>()
+        val first = matches.first()
+        fixes += ReplaceWithSimilarExpressionFix(element, first)
+        val remain = matches.drop(1)
+        if (remain.isNotEmpty()) {
+            fixes += ReplaceWithSimilarExpressionInListFix(element, matches)
+        }
+
+        return fixes
+    }
+
+    fun getLocalisationReferenceFixes(element: ParadoxExpressionElement, configs: List<CwtMemberConfig<*>>): List<LocalQuickFix> {
+        if (configs.isEmpty()) return emptyList()
+        if (element !is ParadoxScriptStringExpressionElement) return emptyList()
+        val context = configs.firstNotNullOfOrNull {
+            ParadoxLocalisationCodeInsightContextService.fromReference(element, it, fromInspection = true)
+        }
+        if (context == null) return emptyList()
+        return listOf(
+            GenerateLocalisationsFix(element, context),
+            GenerateLocalisationsInFileFix(element),
+        )
+    }
+
+    // endregion
+
     // region MissingExpressionInspection
 
     fun checkForMissingExpression(file: ParadoxScriptFile, context: ParadoxExpressionInspectionContext) {
         val configContext = ParadoxConfigManager.getConfigContext(file) ?: return
         if (configContext.skipMissingExpressionCheck()) return
         val configs = ParadoxConfigManager.getConfigs(file, ParadoxMatchOptions(forDeclarationRoot = true))
-        checkForMissingExpression(file, file, configs, context)
+        checkForMissingExpression(file, configs, context)
     }
 
     fun checkForMissingExpression(element: ParadoxScriptBlock, context: ParadoxExpressionInspectionContext) {
-        if (!element.isDataExpression()) return // skip check if element is not an expression
-        // skip checking property if its property key may contain parameters
-        // position: (in property) property key / (standalone) left curly brace
-        val property = element.parentProperty
-        val position = property?.propertyKey
-            ?.also { if (it.text.isParameterized()) return }
-            ?: element.findChild { it.elementType == ParadoxScriptElementTypes.LEFT_BRACE }
-            ?: return
+        // skip if is not a data expression
+        if (!element.isDataExpression()) return
+        // skip if containing property key is parameterized
+        val propertyKey = element.propertyKey
+        if (propertyKey != null && propertyKey.text.isParameterized()) return
+
         val configContext = ParadoxConfigManager.getConfigContext(element) ?: return
         if (configContext.skipMissingExpressionCheck()) return
         val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(forDeclarationRoot = true))
-        checkForMissingExpression(element, position, configs, context)
+        checkForMissingExpression(element, configs, context)
     }
 
-    private fun checkForMissingExpression(element: ParadoxScriptMember, position: PsiElement, configs: List<CwtMemberConfig<*>>, context: ParadoxExpressionInspectionContext) {
+    private fun checkForMissingExpression(element: ParadoxScriptMember, configs: List<CwtMemberConfig<*>>, context: ParadoxExpressionInspectionContext) {
         if (skipForMissingExpression(element, configs)) return
         val occurrences = ParadoxConfigManager.getChildOccurrences(element, configs)
         if (occurrences.isEmpty()) return
         val overriddenProvider = ParadoxConfigManager.getOverriddenProvider(configs)
         occurrences.forEach { (configExpression, occurrence) ->
             if (overriddenProvider != null && overriddenProvider.skipMissingExpressionCheck(configs, configExpression)) return@forEach
-            val r = checkMinOccurrence(element, position, occurrence, configExpression, context)
+            val r = checkMinOccurrence(element, occurrence, configExpression, context)
             if (!r) return
         }
     }
@@ -106,8 +170,9 @@ object ParadoxExpressionInspectionService {
         }
     }
 
-    private fun checkMinOccurrence(element: ParadoxScriptMember, position: PsiElement, occurrence: ParadoxMatchOccurrence, configExpression: CwtDataExpression, context: ParadoxExpressionInspectionContext): Boolean {
+    private fun checkMinOccurrence(element: ParadoxScriptMember, occurrence: ParadoxMatchOccurrence, configExpression: CwtDataExpression, context: ParadoxExpressionInspectionContext): Boolean {
         val holder = context.holder
+        val location = getDefaultLocationForContainer(element) ?: return true
         val (actual, min, _, lenientMin) = occurrence
         if (min != null && actual < min) {
             val expressionType = ChronicleBundle.expressionType(configExpression)
@@ -131,7 +196,7 @@ object ParadoxExpressionInspectionService {
             val fileLevel = element is PsiFile
             if (!fileLevel && context.firstOnly && holder.hasResults()) return false
             if (fileLevel && context.firstOnlyOnFile && holder.hasResults()) return false
-            holder.registerProblem(position, description, highlightType)
+            holder.registerProblem(location, description, highlightType)
         }
         return true
     }
@@ -144,32 +209,30 @@ object ParadoxExpressionInspectionService {
         val configContext = ParadoxConfigManager.getConfigContext(file) ?: return
         if (configContext.skipTooManyExpressionCheck()) return
         val configs = ParadoxConfigManager.getConfigs(file, ParadoxMatchOptions(forDeclarationRoot = true))
-        checkForTooManyExpression(file, file, configs, context)
+        checkForTooManyExpression(file, configs, context)
     }
 
     fun checkForTooManyExpression(element: ParadoxScriptBlock, context: ParadoxExpressionInspectionContext) {
-        if (!element.isDataExpression()) return // skip if is not a data expression
-        // skip checking property if its property key may contain parameters
-        // position: (in property) property key / (standalone) left curly brace
-        val property = element.parentProperty
-        val position = property?.propertyKey
-            ?.also { if (it.text.isParameterized()) return }
-            ?: element.findChild { it.elementType == ParadoxScriptElementTypes.LEFT_BRACE }
-            ?: return
+        // skip if is not a data expression
+        if (!element.isDataExpression()) return
+        // skip if containing property key is parameterized
+        val propertyKey = element.propertyKey
+        if (propertyKey != null && propertyKey.text.isParameterized()) return
+
         val configContext = ParadoxConfigManager.getConfigContext(element) ?: return
         if (configContext.skipTooManyExpressionCheck()) return
         val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(forDeclarationRoot = true))
-        checkForTooManyExpression(element, position, configs, context)
+        checkForTooManyExpression(element, configs, context)
     }
 
-    private fun checkForTooManyExpression(element: ParadoxScriptMember, position: PsiElement, configs: List<CwtMemberConfig<*>>, context: ParadoxExpressionInspectionContext) {
+    private fun checkForTooManyExpression(element: ParadoxScriptMember, configs: List<CwtMemberConfig<*>>, context: ParadoxExpressionInspectionContext) {
         if (skipForTooManyExpression(element, configs)) return
         val occurrences = ParadoxConfigManager.getChildOccurrences(element, configs)
         if (occurrences.isEmpty()) return
         val overriddenProvider = ParadoxConfigManager.getOverriddenProvider(configs)
         occurrences.forEach { (configExpression, occurrence) ->
             if (overriddenProvider != null && overriddenProvider.skipTooManyExpressionCheck(configs, configExpression)) return@forEach
-            val r = checkMaxOccurrence(element, position, occurrence, configExpression, context)
+            val r = checkMaxOccurrence(element, occurrence, configExpression, context)
             if (!r) return
         }
     }
@@ -184,8 +247,9 @@ object ParadoxExpressionInspectionService {
         }
     }
 
-    private fun checkMaxOccurrence(element: ParadoxScriptMember, position: PsiElement, occurrence: ParadoxMatchOccurrence, configExpression: CwtDataExpression, context: ParadoxExpressionInspectionContext): Boolean {
+    private fun checkMaxOccurrence(element: ParadoxScriptMember, occurrence: ParadoxMatchOccurrence, configExpression: CwtDataExpression, context: ParadoxExpressionInspectionContext): Boolean {
         val holder = context.holder
+        val location = getDefaultLocationForContainer(element) ?: return true
         val (actual, _, max, _, lenientMax) = occurrence
         if (max != null && actual > max) {
             val expressionType = ChronicleBundle.expressionType(configExpression)
@@ -209,7 +273,7 @@ object ParadoxExpressionInspectionService {
             val fileLevel = element is PsiFile
             if (!fileLevel && context.firstOnly && holder.hasResults()) return false
             if (fileLevel && context.firstOnlyOnFile && holder.hasResults()) return false
-            holder.registerProblem(position, description, highlightType)
+            holder.registerProblem(location, description, highlightType)
         }
         return true
     }
@@ -219,13 +283,8 @@ object ParadoxExpressionInspectionService {
     // region UnresolvedExpressionInspection
 
     fun checkForUnresolvedExpression(element: ParadoxScriptExpressionElement, context: ParadoxExpressionInspectionContext) {
-        if (!element.isDataExpression()) return // skip if is not a data expression
-
-        // 如果不存在规则上下文，则直接跳过
-        // 如果存在规则上下文，但指定要跳过检查，则直接跳过
-        // 如果存在匹配的规则，则直接跳过
-        // 如果当前节点未通过检查，而父节点也未通过检查，也需要跳过，避免冗余的报错
-
+        // skip if is not a data expression
+        if (!element.isDataExpression()) return
         // NOTE 3.0.2 do not skip by default (try to match with parameters if possible)
         //// skip if it is parameterized
         // if (element is ParadoxParameterAwareElement && element.text.isParameterized()) return
@@ -233,6 +292,11 @@ object ParadoxExpressionInspectionService {
         // NOTE 3.0.2 not very necessary, but in case
         // skip if it is a special tag (Do not consider whether matched configs exist)
         if (element is ParadoxScriptString && element.tagType != null) return
+
+        // 如果不存在规则上下文，则直接跳过
+        // 如果存在规则上下文，但指定要跳过检查，则直接跳过
+        // 如果存在匹配的规则，则直接跳过
+        // 如果当前节点未通过检查，而父节点也未通过检查，也需要跳过，避免冗余的报错
 
         // skip if config context not exists
         val configContext = ParadoxConfigManager.getConfigContext(element) ?: return
@@ -313,57 +377,16 @@ object ParadoxExpressionInspectionService {
         return description
     }
 
-    fun getSimilarityBasedFixesForUnresolvedExpression(element: ParadoxExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>): List<LocalQuickFix> {
-        val literals = CwtConfigManager.findLiterals(expectedConfigs)
-        if (literals.isEmpty()) return emptyList()
-
-        val input = element.value
-        if (input.isEmpty()) return emptyList()
-        val ignoreCase = when (element) {
-            is ParadoxScriptStringExpressionElement -> true
-            is ParadoxCsvColumn -> true
-            else -> false
-        }
-        val options = if (ignoreCase) SimilarityMatchOptions.IGNORE_CASE else SimilarityMatchOptions.DEFAULT
-
-        // 查询输入项的最佳匹配，但排除完全匹配的相似项
-        val matches = SimilarityMatchService.findBestMatches(input, literals, options).filter { it.score < 1.0 }
-        if (matches.isEmpty()) return emptyList()
-
-        // 为最匹配的项提供单独的快速修复（直接替换）
-        // 如果匹配项不唯一，再为所有匹配项提供一个快速修复（弹出列表） - 如果分别提供快速修复，这些快速修复最终会按名字正序排序（这不符合预期）
-        val fixes = mutableListOf<LocalQuickFix>()
-        val first = matches.first()
-        fixes += ReplaceWithSimilarExpressionFix(element, first)
-        val remain = matches.drop(1)
-        if (remain.isNotEmpty()) {
-            fixes += ReplaceWithSimilarExpressionInListFix(element, matches)
-        }
-
-        return fixes
-    }
-
-    fun getLocalisationReferenceFixesForUnresolvedExpression(element: ParadoxExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>): List<LocalQuickFix> {
-        if (expectedConfigs.isEmpty()) return emptyList()
-        if (element !is ParadoxScriptStringExpressionElement) return emptyList()
-        val context = expectedConfigs.firstNotNullOfOrNull {
-            ParadoxLocalisationCodeInsightContextService.fromReference(element, it, fromInspection = true)
-        }
-        if (context == null) return emptyList()
-        return listOf(
-            GenerateLocalisationsFix(element, context),
-            GenerateLocalisationsInFileFix(element),
-        )
-    }
-
     // endregion
 
     // region IncorrectExpressionInspection
 
     fun checkForIncorrectExpression(element: ParadoxScriptExpressionElement, context: ParadoxExpressionInspectionContext) {
-        if (!element.isDataExpression()) return // skip if is not a data expression
         if (element is ParadoxScriptBlock) return // skip
         if (element is ParadoxScriptBoolean) return // skip
+
+        // skip if is not a data expression
+        if (!element.isDataExpression()) return
 
         // 得到完全匹配的规则
         val config = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(fallback = false)).firstOrNull() ?: return
@@ -392,23 +415,84 @@ object ParadoxExpressionInspectionService {
 
     // endregion
 
+    // region ConflictingExpressionInspection
+
+    // NOTE 3.0.2 由于匹配逻辑和检查逻辑存在一些细节上的缺陷，改为默认禁用，避免误报和误导
+    // TODO 3.0.2+ 考虑进一步完善相关的匹配逻辑和检查逻辑
+
+    fun checkForConflictingExpression(element: ParadoxScriptBlock, context: ParadoxExpressionInspectionContext) {
+        // skip if is not a data expression
+        if (!element.isDataExpression()) return
+        // skip if containing property key is parameterized
+        val propertyKey = element.propertyKey
+        if (propertyKey != null && propertyKey.text.isParameterized()) return
+
+        val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(forDeclarationRoot = true))
+        if (skipForConflictingExpression(element, configs)) return
+        reportForConflictingExpression(element, context)
+    }
+
+    @Suppress("UNUSED_PARAMETER")
+    private fun skipForConflictingExpression(element: ParadoxScriptMember, configs: List<CwtMemberConfig<*>>): Boolean {
+        // 子句可以精确匹配多个子句规则时，适用此检查
+        if (configs.isEmpty()) return true
+        // 这里需要先按实际对应的规则位置去重
+        if (configs.distinctBy { it.pointer }.size == 1) return true
+        // 如果是重载后提供的规则，跳过此检查
+        if (isOverriddenConfigsForConflictingExpression(configs)) return true
+        // 如果存在规则，规则的子句中的所有 key 和 value 都可以分别被另一个规则的子句中的所有 key 和 value 包含，则仅使用这些规则
+        val configsToCheck = filterConfigsForConflictingExpression(configs)
+        if (configsToCheck.size == 1) return true
+        return false
+    }
+
+    private fun isOverriddenConfigsForConflictingExpression(configs: List<CwtMemberConfig<*>>): Boolean {
+        return configs.anyFast { it.containingDirectConfig.castOrNull<CwtPropertyConfig>()?.overriddenProvider != null }
+    }
+
+    private fun filterConfigsForConflictingExpression(configs: List<CwtMemberConfig<*>>): List<CwtMemberConfig<*>> {
+        val configsToCheck = configs.filterFast { config ->
+            val childConfigs = config.configs
+            childConfigs != null && configs.anyFast { config0 ->
+                val childConfigs0 = config0.configs
+                config0 != config && childConfigs0 != null && childConfigs0.containsAll(childConfigs)
+            }
+        }
+        return configsToCheck.ifEmpty { configs }
+    }
+
+    private fun reportForConflictingExpression(element: ParadoxScriptMember, context: ParadoxExpressionInspectionContext) {
+        // TODO 3.0.2
+        val holder = context.holder
+        val location = getDefaultLocationForContainer(element) ?: return
+        val text = ""
+        val isKey = location is ParadoxScriptPropertyKey
+        val description = when {
+            isKey -> ChronicleBundle.message("inspection.script.conflictingExpression.desc.1", text)
+            else -> ChronicleBundle.message("inspection.script.conflictingExpression.desc.2", text)
+        }
+        holder.registerProblem(location, description)
+    }
+
+    // endregion
+
     // region UnresolvedPathReferenceInspection
 
     fun checkForUnresolvedPathReference(element: ParadoxScriptStringExpressionElement, context: ParadoxExpressionInspectionContext) {
-        val holder = context.holder
-        if (!element.isDataExpression()) return // skip if is not a data expression
-        if (element.text.isParameterized()) return // skip if is parameterized
+        // skip if is not a data expression
+        if (!element.isDataExpression()) return
+        // skip if is parameterized
+        if (element.text.isParameterized()) return
 
         // 得到匹配的第一个规则
         val valueConfig = ParadoxConfigManager.getConfigs(element).firstOrNull() ?: return
         val value = element.value
-        if (skipForUnresolvedPathReference(value, element, valueConfig, context)) return
+        if (skipForUnresolvedPathReference(element, value, valueConfig, context)) return
         val configExpression = valueConfig.configExpression
-        val location = element
         if (configExpression.type == CwtDataTypes.AbsoluteFilePath) {
             val virtualFile = value.toVirtualFile()
             if (virtualFile != null) return
-            reportForUnresolvedPathReference(location, value, configExpression, context)
+            reportForUnresolvedPathReference(element, value, configExpression, context)
             return
         }
         val pathReferenceExpressionSupport = ParadoxPathReferenceExpressionSupport.get(configExpression.type)
@@ -419,18 +503,18 @@ object ParadoxExpressionInspectionService {
                 if (fileNames.isNullOrEmpty()) return@run
                 if (fileNames.any { fileName -> fileName.matchesPatterns(context.ignoredFileNames, ignoreCase = true) }) return // 忽略
             }
-            val selector = ParadoxFilePathSearch.selector(holder.project, holder.file) // use file as context
+            val selector = ParadoxFilePathSearch.selector(context.holder.project, context.holder.file) // use file as context
             if (ParadoxFilePathSearch.search(pathReference, configExpression, selector).findFirst() != null) return
-            reportForUnresolvedPathReference(location, value, configExpression, context)
+            reportForUnresolvedPathReference(element, value, configExpression, context)
         }
     }
 
-    private fun skipForUnresolvedPathReference(filePath: String, element: ParadoxScriptStringExpressionElement, memberConfig: CwtMemberConfig<*>, context: ParadoxExpressionInspectionContext): Boolean {
-        if (context.ignoredByConfigs && ParadoxConfigManager.checkExtendedConfig(filePath, element, memberConfig)) return true
+    private fun skipForUnresolvedPathReference(element: ParadoxScriptStringExpressionElement, value: String, memberConfig: CwtMemberConfig<*>, context: ParadoxExpressionInspectionContext): Boolean {
+        if (context.ignoredByConfigs && ParadoxConfigManager.checkExtendedConfig(value, element, memberConfig)) return true
         return false
     }
 
-    private fun reportForUnresolvedPathReference(location: ParadoxScriptStringExpressionElement, value: String, configExpression: CwtDataExpression, context: ParadoxExpressionInspectionContext) {
+    private fun reportForUnresolvedPathReference(element: ParadoxScriptStringExpressionElement, value: String, configExpression: CwtDataExpression, context: ParadoxExpressionInspectionContext) {
         val holder = context.holder
         val shortDescription = when (configExpression.type) {
             CwtDataTypes.Icon -> ChronicleBundle.message("inspection.script.unresolvedPathReference.desc.icon", value)
@@ -446,7 +530,7 @@ object ParadoxExpressionInspectionService {
             }
             else -> shortDescription
         }
-        holder.registerProblem(location, description, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
+        holder.registerProblem(element, description, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
     }
 
     // endregion
@@ -454,8 +538,10 @@ object ParadoxExpressionInspectionService {
     // region IncorrectPathReferenceInspection
 
     fun checkForIncorrectPathReference(element: ParadoxScriptStringExpressionElement, context: ParadoxExpressionInspectionContext) {
-        if (!element.isDataExpression()) return // skip if is not a data expression
-        if (element.text.isParameterized()) return // skip if is parameterized
+        // skip if is not a data expression
+        if (!element.isDataExpression()) return
+        // skip if is parameterized
+        if (element.text.isParameterized()) return
 
         // 得到完全匹配的规则
         val config = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(fallback = false)).firstOrNull() ?: return

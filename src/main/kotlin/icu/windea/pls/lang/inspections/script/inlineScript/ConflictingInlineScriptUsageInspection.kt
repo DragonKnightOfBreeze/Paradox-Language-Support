@@ -13,6 +13,9 @@ import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 
 /**
  * 检查内联脚本是否存在冲突的用法。
+ *
+ * 如果同一个内联脚本的用法具有存在冲突的规则上下文，则会被视为存在冲突。
+ * 例如，`alias_name[trigger]` VS `alias_name[effect]`。
  */
 class ConflictingInlineScriptUsageInspection : InlineScriptInspectionBase() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {

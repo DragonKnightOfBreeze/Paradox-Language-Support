@@ -84,8 +84,8 @@ class ParadoxDefaultUnresolvedExpressionChecker : ParadoxUnresolvedExpressionChe
             return LocalQuickFix.EMPTY_ARRAY // in case
         }
         val result = mutableListOf<LocalQuickFix>()
-        result += ParadoxExpressionInspectionService.getSimilarityBasedFixesForUnresolvedExpression(element, expectedConfigs)
-        result += ParadoxExpressionInspectionService.getLocalisationReferenceFixesForUnresolvedExpression(element, expectedConfigs)
+        result += ParadoxExpressionInspectionService.getSimilarityBasedFixes(element, expectedConfigs)
+        result += ParadoxExpressionInspectionService.getLocalisationReferenceFixes(element, expectedConfigs)
         return result.toArray(LocalQuickFix.EMPTY_ARRAY)
     }
 }
