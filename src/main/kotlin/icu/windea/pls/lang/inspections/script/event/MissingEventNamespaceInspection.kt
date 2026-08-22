@@ -4,8 +4,8 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
-import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.psi.PsiFileOnlyVisitor
+import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import icu.windea.pls.lang.manipulation.ParadoxEventManipulationService
 import icu.windea.pls.script.psi.ParadoxScriptFile
 
@@ -30,7 +30,7 @@ class MissingEventNamespaceInspection : EventInspectionBase() {
     private fun check(file: PsiFile, holder: ProblemsHolder) {
         if (file !is ParadoxScriptFile) return
         if (!ParadoxEventManipulationService.isMissingEventNamespaceDeclarationInFile(file)) return
-        val description = ChronicleBundle.message("inspection.script.missingEventNamespace.desc")
+        val description = ChronicleInspectionBundle.message("inspection.script.missingEventNamespace.desc")
         holder.registerProblem(file, description)
     }
 }

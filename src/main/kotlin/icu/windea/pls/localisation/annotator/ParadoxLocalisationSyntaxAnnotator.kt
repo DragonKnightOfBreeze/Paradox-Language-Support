@@ -21,7 +21,7 @@ class ParadoxLocalisationSyntaxAnnotator : Annotator, DumbAware {
         if (element !is ParadoxLocalisationIcon) return
         if (element.prevSibling !is ParadoxLocalisationIcon) return
         holder.newAnnotation(HighlightSeverity.ERROR, ChronicleBundle.message("message.adjacent.icon.unexpected"))
-            .withFix(InsertStringFix(element, ChronicleBundle.message("fix.adjacent.icon.unexpected"), " ", element.startOffset))
+            .withFix(InsertStringFix(element, ChronicleBundle.message("annotator.adjacent.icon.unexpected"), " ", element.startOffset))
             .create()
     }
 }

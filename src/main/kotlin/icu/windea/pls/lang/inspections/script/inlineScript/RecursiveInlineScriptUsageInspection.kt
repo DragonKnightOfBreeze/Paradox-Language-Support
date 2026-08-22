@@ -4,9 +4,9 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
-import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.psi.PsiFileOnlyVisitor
 import icu.windea.pls.lang.fixes.GotoInlineScriptUsagesFix
+import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import icu.windea.pls.lang.resolve.inlineScriptHasRecursion
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
@@ -32,7 +32,7 @@ class RecursiveInlineScriptUsageInspection : InlineScriptInspectionBase() {
         val configContext = ParadoxConfigManager.getConfigContext(file) ?: return
         if (configContext.inlineScriptHasRecursion != true) return
 
-        val description = ChronicleBundle.message("inspection.script.recursiveInlineScriptUsage.desc", inlineScriptExpression)
+        val description = ChronicleInspectionBundle.message("inspection.script.recursiveInlineScriptUsage.desc", inlineScriptExpression)
         holder.registerProblem(file, description, GotoInlineScriptUsagesFix(file))
     }
 }

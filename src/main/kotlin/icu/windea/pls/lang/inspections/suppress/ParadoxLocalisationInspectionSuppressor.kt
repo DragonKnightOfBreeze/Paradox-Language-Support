@@ -7,9 +7,9 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.parentOfType
-import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.collections.toArray
 import icu.windea.pls.core.inspections.SuppressionService
+import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
@@ -49,8 +49,8 @@ class ParadoxLocalisationInspectionSuppressor : InspectionSuppressor {
     ) : ParadoxSuppressByCommentFix(toolId, ParadoxLocalisationFile::class.java) {
         override fun getText(): String {
             return when (toolId) {
-                SuppressionUtil.ALL -> ChronicleBundle.message("suppress.for.file.all", fileName)
-                else -> ChronicleBundle.message("suppress.for.file", fileName)
+                SuppressionUtil.ALL -> ChronicleInspectionBundle.message("suppress.for.file.all", fileName)
+                else -> ChronicleInspectionBundle.message("suppress.for.file", fileName)
             }
         }
 
@@ -66,7 +66,7 @@ class ParadoxLocalisationInspectionSuppressor : InspectionSuppressor {
         toolId: String
     ) : ParadoxSuppressByCommentFix(toolId, ParadoxLocalisationProperty::class.java) {
         override fun getText(): String {
-            return ChronicleBundle.message("suppress.for.property")
+            return ChronicleInspectionBundle.message("suppress.for.property")
         }
     }
 }

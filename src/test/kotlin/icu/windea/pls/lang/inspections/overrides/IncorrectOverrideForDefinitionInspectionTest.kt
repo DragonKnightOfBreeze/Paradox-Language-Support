@@ -2,7 +2,7 @@ package icu.windea.pls.lang.inspections.overrides
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.ChronicleTestScope
@@ -38,7 +38,7 @@ class IncorrectOverrideForDefinitionInspectionTest : BasePlatformTestCase(), Chr
     fun simple_fios_armies() {
         val key = "defense_army"
         val overrideStrategy = ParadoxOverrideStrategy.LIOS
-        val tag = ChronicleBundle.message("inspection.incorrectOverrideForDefinition.desc", key, overrideStrategy).toWarningTag()
+        val tag = ChronicleInspectionBundle.message("inspection.incorrectOverrideForDefinition.desc", key, overrideStrategy).toWarningTag()
 
         markFileInfo(gameType, "common/armies/99_defense_armies.txt")
         myFixture.configureByText("99_defense_armies.txt", """
@@ -132,7 +132,7 @@ class IncorrectOverrideForDefinitionInspectionTest : BasePlatformTestCase(), Chr
     fun simple_lios_events() {
         val key = "test.1"
         val overrideStrategy = ParadoxOverrideStrategy.FIOS
-        val tag = ChronicleBundle.message("inspection.incorrectOverrideForDefinition.desc", key, overrideStrategy).toWarningTag()
+        val tag = ChronicleInspectionBundle.message("inspection.incorrectOverrideForDefinition.desc", key, overrideStrategy).toWarningTag()
 
         markFileInfo(gameType, "events/01_test_events.txt")
         myFixture.configureByText("01_test_events.txt", """

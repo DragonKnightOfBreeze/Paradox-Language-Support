@@ -10,10 +10,10 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.parentOfType
-import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.collections.toArray
 import icu.windea.pls.core.psi.PsiFileOnlyVisitor
 import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
@@ -43,7 +43,7 @@ class NonTriggeredEventInspection : EventInspectionBase() {
             if ("triggered" !in definitionInfo.typeConfig.subtypes.keys) continue  // no `triggered` subtype declared, skip
             if ("inherited" in definitionInfo.subtypes) continue  // ignore inherited events
             if ("triggered" in definitionInfo.subtypes) continue
-            val description = ChronicleBundle.message("inspection.script.nonTriggeredEvent.desc")
+            val description = ChronicleInspectionBundle.message("inspection.script.nonTriggeredEvent.desc")
             val fixes = getFixes(element)
             holder.registerProblem(element.propertyKey, description, *fixes)
         }
@@ -56,7 +56,7 @@ class NonTriggeredEventInspection : EventInspectionBase() {
     }
 
     private class Fix : PsiUpdateModCommandQuickFix() {
-        override fun getFamilyName() = ChronicleBundle.message("inspection.script.nonTriggeredEvent.fix.1.name")
+        override fun getFamilyName() = ChronicleInspectionBundle.message("inspection.script.nonTriggeredEvent.fix.1.name")
 
         override fun applyFix(project: Project, element: PsiElement, updater: ModPsiUpdater) {
             val element = element.parentOfType<ParadoxScriptProperty>(withSelf = true) ?: return

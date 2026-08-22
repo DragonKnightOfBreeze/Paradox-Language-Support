@@ -2,7 +2,7 @@ package icu.windea.pls.lang.inspections.script.event
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.ChronicleTestScope
 import org.junit.After
@@ -84,7 +84,7 @@ class MismatchedEventIdInspectionTest : BasePlatformTestCase(), ChronicleTestSco
     fun stellaris_mismatchedSingle() {
         val eventId = "bar.1"
         val namespace = "foo"
-        val tag = ChronicleBundle.message("inspection.script.mismatchedEventId.desc.2", eventId, namespace).toWarningTag()
+        val tag = ChronicleInspectionBundle.message("inspection.script.mismatchedEventId.desc.2", eventId, namespace).toWarningTag()
 
         markFileInfo(ParadoxGameType.Stellaris, "events/test_events.txt")
         myFixture.configureByText("test_events.txt", """
@@ -100,7 +100,7 @@ class MismatchedEventIdInspectionTest : BasePlatformTestCase(), ChronicleTestSco
     fun stellaris_mismatchedAfterSwitch() {
         val eventId = "foo.2"
         val namespace = "bar"
-        val tag = ChronicleBundle.message("inspection.script.mismatchedEventId.desc.2", eventId, namespace).toWarningTag()
+        val tag = ChronicleInspectionBundle.message("inspection.script.mismatchedEventId.desc.2", eventId, namespace).toWarningTag()
 
         markFileInfo(ParadoxGameType.Stellaris, "events/test_events.txt")
         myFixture.configureByText("test_events.txt", """
@@ -123,7 +123,7 @@ class MismatchedEventIdInspectionTest : BasePlatformTestCase(), ChronicleTestSco
     @Test
     fun stellaris_noNamespace() {
         val eventId = "foo.1"
-        val tag = ChronicleBundle.message("inspection.script.mismatchedEventId.desc.1", eventId).toWarningTag()
+        val tag = ChronicleInspectionBundle.message("inspection.script.mismatchedEventId.desc.1", eventId).toWarningTag()
 
         markFileInfo(ParadoxGameType.Stellaris, "events/test_events.txt")
         myFixture.configureByText("test_events.txt", """
@@ -173,7 +173,7 @@ class MismatchedEventIdInspectionTest : BasePlatformTestCase(), ChronicleTestSco
     @Test
     fun eu5_unboundNoMatchingNamespace() {
         val eventId = "bar.1"
-        val tag = ChronicleBundle.message("inspection.script.mismatchedEventId.desc.1", eventId).toWarningTag()
+        val tag = ChronicleInspectionBundle.message("inspection.script.mismatchedEventId.desc.1", eventId).toWarningTag()
 
         markFileInfo(ParadoxGameType.Eu5, "events/test_events.txt")
         myFixture.configureByText("test_events.txt", """
@@ -188,7 +188,7 @@ class MismatchedEventIdInspectionTest : BasePlatformTestCase(), ChronicleTestSco
     @Test
     fun eu5_unboundNoNamespace() {
         val eventId = "foo.1"
-        val tag = ChronicleBundle.message("inspection.script.mismatchedEventId.desc.1", eventId).toWarningTag()
+        val tag = ChronicleInspectionBundle.message("inspection.script.mismatchedEventId.desc.1", eventId).toWarningTag()
 
         markFileInfo(ParadoxGameType.Eu5, "events/test_events.txt")
         myFixture.configureByText("test_events.txt", """

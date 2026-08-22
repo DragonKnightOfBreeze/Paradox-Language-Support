@@ -2,7 +2,7 @@ package icu.windea.pls.lang.inspections.script.event
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.ChronicleTestScope
 import org.junit.After
@@ -75,7 +75,7 @@ class IncorrectEventNamespaceInspectionTest : BasePlatformTestCase(), ChronicleT
 
     @Test
     fun invalidHyphen() {
-        val tag = ChronicleBundle.message("inspection.script.incorrectEventNamespace.desc", "my-namespace").toWarningTag()
+        val tag = ChronicleInspectionBundle.message("inspection.script.incorrectEventNamespace.desc", "my-namespace").toWarningTag()
 
         markFileInfo(ParadoxGameType.Stellaris, "events/test_events.txt")
         myFixture.configureByText("test_events.txt", """
@@ -89,7 +89,7 @@ class IncorrectEventNamespaceInspectionTest : BasePlatformTestCase(), ChronicleT
 
     @Test
     fun invalidDot() {
-        val tag = ChronicleBundle.message("inspection.script.incorrectEventNamespace.desc", "namespace.1").toWarningTag()
+        val tag = ChronicleInspectionBundle.message("inspection.script.incorrectEventNamespace.desc", "namespace.1").toWarningTag()
 
         markFileInfo(ParadoxGameType.Stellaris, "events/test_events.txt")
         myFixture.configureByText("test_events.txt", """
@@ -103,7 +103,7 @@ class IncorrectEventNamespaceInspectionTest : BasePlatformTestCase(), ChronicleT
 
     @Test
     fun invalidSpace() {
-        val tag = ChronicleBundle.message("inspection.script.incorrectEventNamespace.desc", "my namespace").toWarningTag()
+        val tag = ChronicleInspectionBundle.message("inspection.script.incorrectEventNamespace.desc", "my namespace").toWarningTag()
 
         markFileInfo(ParadoxGameType.Stellaris, "events/test_events.txt")
         myFixture.configureByText("test_events.txt", """

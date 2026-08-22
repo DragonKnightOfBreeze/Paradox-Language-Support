@@ -9,13 +9,13 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
 import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContext
 import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContext.*
 import icu.windea.pls.lang.codeInsight.generation.GenerateLocalisationsHandler
+import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -27,16 +27,16 @@ class GenerateLocalisationsFix(
     override fun getText(): String {
         val contextName = context.name.or.anonymous()
         return when (context.type) {
-            Type.Definition -> ChronicleBundle.message("fix.generateLocalisations.name.1", contextName)
-            Type.Modifier -> ChronicleBundle.message("fix.generateLocalisations.name.2", contextName)
-            Type.LocalisationReference -> ChronicleBundle.message("fix.generateLocalisations.name.3", contextName)
-            Type.SyncedLocalisationReference -> ChronicleBundle.message("fix.generateLocalisations.name.4", contextName)
-            Type.Localisation -> ChronicleBundle.message("fix.generateLocalisations.name.5", contextName)
+            Type.Definition -> ChronicleInspectionBundle.message("fix.generateLocalisations.name.1", contextName)
+            Type.Modifier -> ChronicleInspectionBundle.message("fix.generateLocalisations.name.2", contextName)
+            Type.LocalisationReference -> ChronicleInspectionBundle.message("fix.generateLocalisations.name.3", contextName)
+            Type.SyncedLocalisationReference -> ChronicleInspectionBundle.message("fix.generateLocalisations.name.4", contextName)
+            Type.Localisation -> ChronicleInspectionBundle.message("fix.generateLocalisations.name.5", contextName)
             else -> throw IllegalStateException()
         }
     }
 
-    override fun getFamilyName() = ChronicleBundle.message("fix.generateLocalisations.familyName")
+    override fun getFamilyName() = ChronicleInspectionBundle.message("fix.generateLocalisations.familyName")
 
     override fun getPriority() = PriorityAction.Priority.HIGH
 

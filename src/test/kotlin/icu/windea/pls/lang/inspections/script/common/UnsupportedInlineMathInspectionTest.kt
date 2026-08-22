@@ -2,7 +2,7 @@ package icu.windea.pls.lang.inspections.script.common
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.ChronicleTestScope
 import org.junit.After
@@ -46,7 +46,7 @@ class UnsupportedInlineMathInspectionTest : BasePlatformTestCase(), ChronicleTes
 
     @Test
     fun assetFile_stellaris() {
-        val tag = ChronicleBundle.message("inspection.script.unsupportedInlineMath.desc.1").toWarningTag()
+        val tag = ChronicleInspectionBundle.message("inspection.script.unsupportedInlineMath.desc.1").toWarningTag()
 
         markFileInfo(ParadoxGameType.Stellaris, "common/test/test.stellaris.asset")
         myFixture.configureByText("test.stellaris.asset", "key = ${tag.start}@[ 1 + 1 ]${tag.end}")

@@ -11,6 +11,7 @@ import icu.windea.pls.config.config.delegated.CwtComplexEnumConfig
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.core.psi.PsiFileOnlyVisitor
 import icu.windea.pls.core.vfs.VirtualFileService
+import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import icu.windea.pls.lang.inspections.ParadoxFileInspectionContext
 import icu.windea.pls.lang.inspections.ParadoxFileInspectionService
 import icu.windea.pls.lang.inspections.script.inlineScript.InlineScriptInspectionBase
@@ -35,7 +36,7 @@ class UnmatchedFileInspection : InlineScriptInspectionBase() {
 
     override fun getOptionsPane(): OptPane {
         return OptPane.pane(
-            OptPane.expandableString("ignoredFilePaths", ChronicleBundle.message("inspection.option.ignoredFilePaths"), ",")
+            OptPane.expandableString("ignoredFilePaths", ChronicleInspectionBundle.message("inspection.option.ignoredFilePaths"), ",")
                 .description(ChronicleBundle.message("comment.antPatterns"))
         )
     }

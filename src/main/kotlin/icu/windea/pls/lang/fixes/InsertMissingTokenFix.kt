@@ -5,7 +5,7 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
-import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 
 // com.intellij.codeInsight.daemon.impl.quickfix.InsertMissingTokenFix
 
@@ -13,7 +13,7 @@ class InsertMissingTokenFix(
     private val token: String,
     private val offset: Int
 ) : IntentionAction, DumbAware {
-    override fun getText() = ChronicleBundle.message("fix.insertMissingToken", token)
+    override fun getText() = ChronicleInspectionBundle.message("fix.insertMissingToken", token)
 
     override fun getFamilyName() = text
 

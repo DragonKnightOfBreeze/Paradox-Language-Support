@@ -47,7 +47,7 @@ class ParadoxScriptSyntaxAnnotator : Annotator, DumbAware {
             if (leadingBlank != null) {
                 holder.newAnnotation(HighlightSeverity.ERROR, ChronicleBundle.message("message.leading.blank.unexpected.1"))
                     .range(element)
-                    .withFix(DeleteStringByElementTypeFix(leadingBlank, ChronicleBundle.message("fix.leading.blank.unexpected")))
+                    .withFix(DeleteStringByElementTypeFix(leadingBlank, ChronicleBundle.message("annotator.leading.blank.unexpected")))
                     .create()
             }
         }
@@ -60,7 +60,7 @@ class ParadoxScriptSyntaxAnnotator : Annotator, DumbAware {
         if (leadingAt != null) {
             holder.newAnnotation(HighlightSeverity.ERROR, ChronicleBundle.message("message.leading.at.unexpected.1"))
                 .range(leadingAt)
-                .withFix(DeleteStringByElementTypeFix(leadingAt, ChronicleBundle.message("fix.leading.at.unexpected")))
+                .withFix(DeleteStringByElementTypeFix(leadingAt, ChronicleBundle.message("annotator.leading.at.unexpected")))
                 .create()
         }
     }

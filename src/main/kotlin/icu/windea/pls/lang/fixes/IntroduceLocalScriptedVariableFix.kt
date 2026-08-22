@@ -12,6 +12,7 @@ import com.intellij.psi.util.endOffset
 import com.intellij.psi.util.startOffset
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.executeWriteCommand
+import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import icu.windea.pls.lang.psi.ParadoxPsiService
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
 import icu.windea.pls.lang.select.selectScope
@@ -21,9 +22,9 @@ class IntroduceLocalScriptedVariableFix(
     private val variableName: String,
     element: ParadoxScriptedVariableReference
 ) : LocalQuickFixAndIntentionActionOnPsiElement(element), PriorityAction {
-    override fun getText() = ChronicleBundle.message("fix.introduceLocalScriptedVariable.name", variableName)
+    override fun getText() = ChronicleInspectionBundle.message("fix.introduceLocalScriptedVariable.name", variableName)
 
-    override fun getFamilyName() = ChronicleBundle.message("fix.introduceLocalScriptedVariable.familyName")
+    override fun getFamilyName() = ChronicleInspectionBundle.message("fix.introduceLocalScriptedVariable.familyName")
 
     override fun getPriority() = PriorityAction.Priority.TOP // 最高优先级，如果可用
 

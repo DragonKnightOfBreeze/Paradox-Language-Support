@@ -5,12 +5,12 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.startOffset
-import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.ep.ChronicleEpBundle
 import icu.windea.pls.lang.fixes.DeleteStringByElementTypeFix
 import icu.windea.pls.lang.fixes.ReplaceStringFix
+import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import icu.windea.pls.lang.inspections.ParadoxSyntaxInspectionContext
 import icu.windea.pls.lang.inspections.ParadoxSyntaxInspectionService
 import icu.windea.pls.lang.resolve.ParadoxSyntaxService
@@ -73,7 +73,7 @@ class ParadoxSafeAssignOperatorChecker : ParadoxIncorrectSyntaxChecker {
         // check game type
 
         val constraint = ParadoxSyntaxConstraint.SafeAssignOperator
-        val name = ChronicleBundle.message("inspection.incorrectSyntax.desc.safeAssignOperators")
+        val name = ChronicleInspectionBundle.message("inspection.incorrectSyntax.desc.safeAssignOperators")
         if (!ParadoxSyntaxInspectionService.checkByConstraint(element, context, constraint, name)) return true
 
         // check on grammar level
@@ -109,7 +109,7 @@ class ParadoxSafeAssignOperatorChecker : ParadoxIncorrectSyntaxChecker {
         // check game type
 
         val constraint = ParadoxSyntaxConstraint.SafeCallAssignOperator
-        val name = ChronicleBundle.message("inspection.incorrectSyntax.desc.safeCallAssignOperators")
+        val name = ChronicleInspectionBundle.message("inspection.incorrectSyntax.desc.safeCallAssignOperators")
         if (!ParadoxSyntaxInspectionService.checkByConstraint(element, context, constraint, name)) return true
 
         // check on grammar level

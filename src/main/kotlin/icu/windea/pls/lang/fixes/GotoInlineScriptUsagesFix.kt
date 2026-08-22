@@ -8,7 +8,7 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 
 class GotoInlineScriptUsagesFix(
@@ -16,7 +16,7 @@ class GotoInlineScriptUsagesFix(
 ) : LocalQuickFixAndIntentionActionOnPsiElement(element) {
     override fun getText() = familyName
 
-    override fun getFamilyName() = ChronicleBundle.message("fix.gotoInlineScriptUsages.fix")
+    override fun getFamilyName() = ChronicleInspectionBundle.message("fix.gotoInlineScriptUsages.fix")
 
     override fun isAvailable(project: Project, file: PsiFile, startElement: PsiElement, endElement: PsiElement): Boolean {
         return ParadoxInlineScriptManager.isInlineScriptFile(file)

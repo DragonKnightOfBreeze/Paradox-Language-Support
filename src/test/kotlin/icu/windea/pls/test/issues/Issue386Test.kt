@@ -4,6 +4,7 @@ import com.intellij.testFramework.IndexingTestUtil
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import icu.windea.pls.lang.inspections.script.expression.ConflictingExpressionInspection
 import icu.windea.pls.lang.inspections.script.expression.IncorrectExpressionInspection
 import icu.windea.pls.lang.inspections.script.expression.MissingExpressionInspection
@@ -163,16 +164,16 @@ class Issue386Test : BasePlatformTestCase(), ChronicleTestScope {
     private fun forKey(expression: String, expect: String): String {
         val expressionType = ChronicleBundle.message("expression.type.key")
         return when {
-            expect.isEmpty() -> ChronicleBundle.message("inspection.unresolvedExpression.desc.1", expressionType, expression)
-            else -> ChronicleBundle.message("inspection.unresolvedExpression.desc.2", expressionType, expression, expect)
+            expect.isEmpty() -> ChronicleInspectionBundle.message("inspection.unresolvedExpression.desc.1", expressionType, expression)
+            else -> ChronicleInspectionBundle.message("inspection.unresolvedExpression.desc.2", expressionType, expression, expect)
         }
     }
 
     private fun forValue(expression: String, expect: String): String {
         val expressionType = ChronicleBundle.message("expression.type.value")
         return when {
-            expect.isEmpty() -> ChronicleBundle.message("inspection.unresolvedExpression.desc.1", expressionType, expression)
-            else -> ChronicleBundle.message("inspection.unresolvedExpression.desc.2", expressionType, expression, expect)
+            expect.isEmpty() -> ChronicleInspectionBundle.message("inspection.unresolvedExpression.desc.1", expressionType, expression)
+            else -> ChronicleInspectionBundle.message("inspection.unresolvedExpression.desc.2", expressionType, expression, expect)
         }
     }
 }

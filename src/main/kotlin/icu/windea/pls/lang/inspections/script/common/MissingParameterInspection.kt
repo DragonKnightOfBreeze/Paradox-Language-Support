@@ -9,8 +9,8 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.startOffset
-import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.vfs.VirtualFileService
+import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.lang.util.ParadoxConfigManager
@@ -31,7 +31,7 @@ class MissingParameterInspection : LocalInspectionTool() {
 
     override fun getOptionsPane(): OptPane {
         return OptPane.pane(
-            OptPane.checkbox("ignoredInInjectedFiles", ChronicleBundle.message("inspection.option.ignoredInInjectedFiles"))
+            OptPane.checkbox("ignoredInInjectedFiles", ChronicleInspectionBundle.message("inspection.option.ignoredInInjectedFiles"))
         )
     }
 
@@ -75,8 +75,8 @@ class MissingParameterInspection : LocalInspectionTool() {
     private fun registerProblem(element: PsiElement, names: Set<String>, rangeInElement: TextRange? = null, holder: ProblemsHolder) {
         val description = when {
             names.isEmpty() -> return
-            names.size == 1 -> ChronicleBundle.message("inspection.script.missingParameter.desc.1", names.single())
-            else -> ChronicleBundle.message("inspection.script.missingParameter.desc.2", names.joinToString(", "))
+            names.size == 1 -> ChronicleInspectionBundle.message("inspection.script.missingParameter.desc.1", names.single())
+            else -> ChronicleInspectionBundle.message("inspection.script.missingParameter.desc.2", names.joinToString(", "))
         }
         holder.registerProblem(element, rangeInElement, description)
     }

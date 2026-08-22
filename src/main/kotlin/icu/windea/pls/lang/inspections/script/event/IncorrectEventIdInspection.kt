@@ -4,9 +4,9 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
-import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.psi.PsiFileOnlyVisitor
 import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.util.ParadoxEventManager
@@ -41,7 +41,7 @@ class IncorrectEventIdInspection : EventInspectionBase() {
         val eventId = definitionInfo.name
         if (ParadoxEventManager.isValidEventId(eventId)) return
         val nameElement = selectScope { element.nameElement(nameField) } ?: return
-        val description = ChronicleBundle.message("inspection.script.incorrectEventId.desc", eventId)
+        val description = ChronicleInspectionBundle.message("inspection.script.incorrectEventId.desc", eventId)
         holder.registerProblem(nameElement, description)
     }
 }

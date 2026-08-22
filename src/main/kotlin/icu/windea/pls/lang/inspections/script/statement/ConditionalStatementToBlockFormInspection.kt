@@ -10,7 +10,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.util.parentOfType
-import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import icu.windea.pls.lang.manipulation.ParadoxConditionalStatementManipulationService
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptVisitor
@@ -34,12 +34,12 @@ class ConditionalStatementToBlockFormInspection : LocalInspectionTool(), DumbAwa
 
     private fun check(element: ParadoxScriptProperty, holder: ProblemsHolder) {
         if (!ParadoxConditionalStatementManipulationService.canConvertToBlockForm(element)) return
-        val description = ChronicleBundle.message("inspection.script.conditionalStatementToBlockForm.desc")
+        val description = ChronicleInspectionBundle.message("inspection.script.conditionalStatementToBlockForm.desc")
         holder.registerProblem(element.propertyKey, description, Fix())
     }
 
     private class Fix : PsiUpdateModCommandQuickFix() {
-        override fun getFamilyName() = ChronicleBundle.message("inspection.script.conditionalStatementToBlockForm.fix.1.name")
+        override fun getFamilyName() = ChronicleInspectionBundle.message("inspection.script.conditionalStatementToBlockForm.fix.1.name")
 
         override fun applyFix(project: Project, element: PsiElement, updater: ModPsiUpdater) {
             val element = element.parentOfType<ParadoxScriptProperty>(withSelf = true) ?: return

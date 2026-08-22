@@ -6,9 +6,9 @@ import com.intellij.codeInspection.SuppressionUtil
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.collections.toArray
 import icu.windea.pls.core.inspections.SuppressionService
+import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.model.constants.ChronicleConstants
@@ -41,8 +41,8 @@ class ParadoxCsvInspectionSuppressor : InspectionSuppressor {
     ) : ParadoxSuppressByCommentFix(toolId, ParadoxLocalisationFile::class.java) {
         override fun getText(): String {
             return when (toolId) {
-                SuppressionUtil.ALL -> ChronicleBundle.message("suppress.for.file.all", fileName)
-                else -> ChronicleBundle.message("suppress.for.file", fileName)
+                SuppressionUtil.ALL -> ChronicleInspectionBundle.message("suppress.for.file.all", fileName)
+                else -> ChronicleInspectionBundle.message("suppress.for.file", fileName)
             }
         }
 

@@ -2,9 +2,9 @@ package icu.windea.pls.lang.fixes.navigation
 
 import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiElement
-import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import icu.windea.pls.model.ParadoxRootInfo
 
 class NavigateToOverridingScriptedVariablesFix(
@@ -12,15 +12,15 @@ class NavigateToOverridingScriptedVariablesFix(
     target: PsiElement,
     elements: Collection<PsiElement>
 ) : NavigateToFix(target, elements) {
-    override fun getFamilyName() = ChronicleBundle.message("fix.navigateTo.overridingScriptedVariables.name")
+    override fun getFamilyName() = ChronicleInspectionBundle.message("fix.navigateTo.overridingScriptedVariables.name")
 
-    override fun getPopupTitle(editor: Editor) = ChronicleBundle.message("fix.navigateTo.overridingScriptedVariables.popup.title", key)
+    override fun getPopupTitle(editor: Editor) = ChronicleInspectionBundle.message("fix.navigateTo.overridingScriptedVariables.popup.title", key)
 
     override fun getPopupText(editor: Editor, value: PsiElement): String {
-        val file = runSmartReadAction { value.containingFile } ?: return ChronicleBundle.message("fix.navigate.popup.text.0", key)
-        val fileInfo = file.fileInfo ?: return ChronicleBundle.message("fix.navigate.popup.text.0", key)
+        val file = runSmartReadAction { value.containingFile } ?: return ChronicleInspectionBundle.message("fix.navigate.popup.text.0", key)
+        val fileInfo = file.fileInfo ?: return ChronicleInspectionBundle.message("fix.navigate.popup.text.0", key)
         val rootInfo = fileInfo.rootInfo
-        if ((rootInfo !is ParadoxRootInfo.MetadataBased)) return ChronicleBundle.message("fix.navigate.popup.text.0", key)
-        return ChronicleBundle.message("fix.navigate.popup.text.2", key, fileInfo.path, rootInfo.qualifiedName)
+        if ((rootInfo !is ParadoxRootInfo.MetadataBased)) return ChronicleInspectionBundle.message("fix.navigate.popup.text.0", key)
+        return ChronicleInspectionBundle.message("fix.navigate.popup.text.2", key, fileInfo.path, rootInfo.qualifiedName)
     }
 }

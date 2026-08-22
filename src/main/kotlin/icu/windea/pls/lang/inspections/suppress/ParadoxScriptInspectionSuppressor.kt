@@ -9,12 +9,12 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.SmartPsiElementPointer
 import com.intellij.psi.util.parents
-import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.collections.toArray
 import icu.windea.pls.core.createPointer
 import icu.windea.pls.core.inspections.SuppressionService
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.definitionInjectionInfo
+import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import icu.windea.pls.lang.inspections.ParadoxSuppressionService
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.model.constants.ChronicleConstants
@@ -79,8 +79,8 @@ class ParadoxScriptInspectionSuppressor : InspectionSuppressor {
     ) : ParadoxSuppressByCommentFix(toolId, ParadoxScriptFile::class.java) {
         override fun getText(): String {
             return when (toolId) {
-                SuppressionUtil.ALL -> ChronicleBundle.message("suppress.for.file.all", fileName)
-                else -> ChronicleBundle.message("suppress.for.file", fileName)
+                SuppressionUtil.ALL -> ChronicleInspectionBundle.message("suppress.for.file.all", fileName)
+                else -> ChronicleInspectionBundle.message("suppress.for.file", fileName)
             }
         }
 
@@ -100,7 +100,7 @@ class ParadoxScriptInspectionSuppressor : InspectionSuppressor {
         // definition here should be a property, not a file
 
         override fun getText(): String {
-            return ChronicleBundle.message("suppress.for.definition", name)
+            return ChronicleInspectionBundle.message("suppress.for.definition", name)
         }
 
         override fun getContainer(context: PsiElement?): PsiElement? {
@@ -116,7 +116,7 @@ class ParadoxScriptInspectionSuppressor : InspectionSuppressor {
         // definition here should be a property, not a file
 
         override fun getText(): String {
-            return ChronicleBundle.message("suppress.for.definitionInjection", name)
+            return ChronicleInspectionBundle.message("suppress.for.definitionInjection", name)
         }
 
         override fun getContainer(context: PsiElement?): PsiElement? {
@@ -128,7 +128,7 @@ class ParadoxScriptInspectionSuppressor : InspectionSuppressor {
         toolId: String
     ) : ParadoxSuppressByCommentFix(toolId, ParadoxScriptMember::class.java) {
         override fun getText(): String {
-            return ChronicleBundle.message("suppress.for.member")
+            return ChronicleInspectionBundle.message("suppress.for.member")
         }
 
         override fun getContainer(context: PsiElement?): PsiElement? {

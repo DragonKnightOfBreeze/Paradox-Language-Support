@@ -11,6 +11,7 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.executeWriteCommand
 import icu.windea.pls.core.toPsiFile
+import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import icu.windea.pls.lang.psi.ParadoxPsiService
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
 import icu.windea.pls.lang.refactoring.actions.IntroduceGlobalScriptedVariableDialog
@@ -21,9 +22,9 @@ class IntroduceGlobalVariableFix(
     private val variableName: String,
     element: ParadoxScriptedVariableReference,
 ) : LocalQuickFixAndIntentionActionOnPsiElement(element), PriorityAction {
-    override fun getText() = ChronicleBundle.message("fix.introduceGlobalScriptedVariable.name", variableName)
+    override fun getText() = ChronicleInspectionBundle.message("fix.introduceGlobalScriptedVariable.name", variableName)
 
-    override fun getFamilyName() = ChronicleBundle.message("fix.introduceGlobalScriptedVariable.familyName")
+    override fun getFamilyName() = ChronicleInspectionBundle.message("fix.introduceGlobalScriptedVariable.familyName")
 
     override fun getPriority() = PriorityAction.Priority.HIGH
 

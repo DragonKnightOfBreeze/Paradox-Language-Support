@@ -178,15 +178,15 @@ object ParadoxExpressionInspectionService {
             val expressionType = ChronicleBundle.expressionType(configExpression)
             val isConst = configExpression.type == CwtDataTypes.Constant
             val shortDescription = when {
-                isConst -> ChronicleBundle.message("inspection.missingExpression.desc.1", expressionType, configExpression)
-                else -> ChronicleBundle.message("inspection.missingExpression.desc.2", expressionType, configExpression)
+                isConst -> ChronicleInspectionBundle.message("inspection.missingExpression.desc.1", expressionType, configExpression)
+                else -> ChronicleInspectionBundle.message("inspection.missingExpression.desc.2", expressionType, configExpression)
             }
             val description = when {
                 context.showExpect -> {
                     val minDefine = occurrence.minDefine
                     val details = when {
-                        minDefine == null -> ChronicleBundle.message("inspection.missingExpression.details.1", min, actual)
-                        else -> ChronicleBundle.message("inspection.missingExpression.details.2", min, actual, minDefine)
+                        minDefine == null -> ChronicleInspectionBundle.message("inspection.missingExpression.details.1", min, actual)
+                        else -> ChronicleInspectionBundle.message("inspection.missingExpression.details.2", min, actual, minDefine)
                     }
                     ChronicleBundle.inspectionDescription(shortDescription, details)
                 }
@@ -255,15 +255,15 @@ object ParadoxExpressionInspectionService {
             val expressionType = ChronicleBundle.expressionType(configExpression)
             val isConst = configExpression.type == CwtDataTypes.Constant
             val shortDescription = when {
-                isConst -> ChronicleBundle.message("inspection.tooManyExpression.desc.1", expressionType, configExpression)
-                else -> ChronicleBundle.message("inspection.tooManyExpression.desc.2", expressionType, configExpression)
+                isConst -> ChronicleInspectionBundle.message("inspection.tooManyExpression.desc.1", expressionType, configExpression)
+                else -> ChronicleInspectionBundle.message("inspection.tooManyExpression.desc.2", expressionType, configExpression)
             }
             val description = when {
                 context.showExpect -> {
                     val maxDefine = occurrence.maxDefine
                     val details = when {
-                        maxDefine == null -> ChronicleBundle.message("inspection.tooManyExpression.details.1", max, actual)
-                        else -> ChronicleBundle.message("inspection.tooManyExpression.details.2", max, actual, maxDefine)
+                        maxDefine == null -> ChronicleInspectionBundle.message("inspection.tooManyExpression.details.1", max, actual)
+                        else -> ChronicleInspectionBundle.message("inspection.tooManyExpression.details.2", max, actual, maxDefine)
                     }
                     ChronicleBundle.inspectionDescription(shortDescription, details)
                 }
@@ -366,12 +366,12 @@ object ParadoxExpressionInspectionService {
         val expressionType = ChronicleBundle.expressionType(element)
         val text = element.presentableText
         val description = when {
-            !context.showExpect -> ChronicleBundle.message("inspection.unresolvedExpression.desc.0", expressionType, text)
-            expectedConfigs.isEmpty() -> ChronicleBundle.message("inspection.unresolvedExpression.desc.1", expressionType, text)
+            !context.showExpect -> ChronicleInspectionBundle.message("inspection.unresolvedExpression.desc.0", expressionType, text)
+            expectedConfigs.isEmpty() -> ChronicleInspectionBundle.message("inspection.unresolvedExpression.desc.1", expressionType, text)
             else -> {
                 val expectedConfigExpressions = expectedConfigs.mapFast { it.configExpression.expressionString }.toSet()
                 val expectText = expectedConfigExpressions.truncate(context.truncateExpect).joinToString()
-                ChronicleBundle.message("inspection.unresolvedExpression.desc.2", expressionType, text, expectText)
+                ChronicleInspectionBundle.message("inspection.unresolvedExpression.desc.2", expressionType, text, expectText)
             }
         }
         return description
@@ -468,8 +468,8 @@ object ParadoxExpressionInspectionService {
         val text = ""
         val isKey = location is ParadoxScriptPropertyKey
         val description = when {
-            isKey -> ChronicleBundle.message("inspection.conflictingExpression.desc.1", text)
-            else -> ChronicleBundle.message("inspection.conflictingExpression.desc.2", text)
+            isKey -> ChronicleInspectionBundle.message("inspection.conflictingExpression.desc.1", text)
+            else -> ChronicleInspectionBundle.message("inspection.conflictingExpression.desc.2", text)
         }
         holder.registerProblem(location, description)
     }
@@ -517,15 +517,15 @@ object ParadoxExpressionInspectionService {
     private fun reportForUnresolvedPathReference(element: ParadoxScriptStringExpressionElement, value: String, configExpression: CwtDataExpression, context: ParadoxExpressionInspectionContext) {
         val holder = context.holder
         val shortDescription = when (configExpression.type) {
-            CwtDataTypes.Icon -> ChronicleBundle.message("inspection.unresolvedPathReference.desc.icon", value)
-            CwtDataTypes.FilePath -> ChronicleBundle.message("inspection.unresolvedPathReference.desc.filePath", value)
-            CwtDataTypes.FileName -> ChronicleBundle.message("inspection.unresolvedPathReference.desc.fileName", value)
-            CwtDataTypes.AbsoluteFilePath -> ChronicleBundle.message("inspection.unresolvedPathReference.desc.abs", value)
-            else -> ChronicleBundle.message("inspection.unresolvedPathReference.desc", value)
+            CwtDataTypes.Icon -> ChronicleInspectionBundle.message("inspection.unresolvedPathReference.desc.icon", value)
+            CwtDataTypes.FilePath -> ChronicleInspectionBundle.message("inspection.unresolvedPathReference.desc.filePath", value)
+            CwtDataTypes.FileName -> ChronicleInspectionBundle.message("inspection.unresolvedPathReference.desc.fileName", value)
+            CwtDataTypes.AbsoluteFilePath -> ChronicleInspectionBundle.message("inspection.unresolvedPathReference.desc.abs", value)
+            else -> ChronicleInspectionBundle.message("inspection.unresolvedPathReference.desc", value)
         }
         val description = when {
             context.showExpect -> {
-                val details = ChronicleBundle.message("inspection.unresolvedPathReference.details", configExpression)
+                val details = ChronicleInspectionBundle.message("inspection.unresolvedPathReference.details", configExpression)
                 ChronicleBundle.inspectionDescription(shortDescription, details)
             }
             else -> shortDescription
@@ -561,8 +561,8 @@ object ParadoxExpressionInspectionService {
         val holder = context.holder
         val expectText = expectFileExtensions.joinToString()
         val description = when {
-            context.showExpect -> ChronicleBundle.message("inspection.incorrectPathReference.desc.1", value, expectText)
-            else -> ChronicleBundle.message("inspection.incorrectPathReference.desc.0", value)
+            context.showExpect -> ChronicleInspectionBundle.message("inspection.incorrectPathReference.desc.1", value, expectText)
+            else -> ChronicleInspectionBundle.message("inspection.incorrectPathReference.desc.0", value)
         }
         holder.registerProblem(location, description)
     }
@@ -586,8 +586,8 @@ object ParadoxExpressionInspectionService {
                     if (rowConfig.skipLastColumn && columnIndex == rowConfig.columns.size) return@f // ignored
                     if (columnIndex >= rowConfig.columns.size) {
                         val description = when {
-                            context.showExpect -> ChronicleBundle.message("inspection.incorrectColumnName.desc.4", rowConfig.name)
-                            else -> ChronicleBundle.message("inspection.incorrectColumnName.desc.0")
+                            context.showExpect -> ChronicleInspectionBundle.message("inspection.incorrectColumnName.desc.4", rowConfig.name)
+                            else -> ChronicleInspectionBundle.message("inspection.incorrectColumnName.desc.0")
                         }
                         holder.registerProblem(columnElement, description)
                         return // skip (no future checks)
@@ -595,8 +595,8 @@ object ParadoxExpressionInspectionService {
                     if (columnElement.name in allColumnNames) return@f // continue (matched)
                     if (expectColumnNames.isNotEmpty()) {
                         val description = when {
-                            context.showExpect -> ChronicleBundle.message("inspection.incorrectColumnName.desc.1", rowConfig.name, expectText)
-                            else -> ChronicleBundle.message("inspection.incorrectColumnName.desc.0")
+                            context.showExpect -> ChronicleInspectionBundle.message("inspection.incorrectColumnName.desc.1", rowConfig.name, expectText)
+                            else -> ChronicleInspectionBundle.message("inspection.incorrectColumnName.desc.0")
                         }
                         val expectColumnNamePreferred = rowConfig.columns[columnIndex].key
                         if (expectColumnNamePreferred in expectColumnNames) {
@@ -607,8 +607,8 @@ object ParadoxExpressionInspectionService {
                         }
                     } else {
                         val description = when {
-                            context.showExpect -> ChronicleBundle.message("inspection.incorrectColumnName.desc.3", rowConfig.name, expectText)
-                            else -> ChronicleBundle.message("inspection.incorrectColumnName.desc.0")
+                            context.showExpect -> ChronicleInspectionBundle.message("inspection.incorrectColumnName.desc.3", rowConfig.name, expectText)
+                            else -> ChronicleInspectionBundle.message("inspection.incorrectColumnName.desc.0")
                         }
                         holder.registerProblem(columnElement, description)
                     }
@@ -619,8 +619,8 @@ object ParadoxExpressionInspectionService {
                     if (rowConfig.skipLastColumn && columnIndex == rowConfig.columns.size) return@f // ignored
                     if (columnIndex >= rowConfig.columns.size) {
                         val description = when {
-                            context.showExpect -> ChronicleBundle.message("inspection.incorrectColumnName.desc.4", rowConfig.name)
-                            else -> ChronicleBundle.message("inspection.incorrectColumnName.desc.0")
+                            context.showExpect -> ChronicleInspectionBundle.message("inspection.incorrectColumnName.desc.4", rowConfig.name)
+                            else -> ChronicleInspectionBundle.message("inspection.incorrectColumnName.desc.0")
                         }
                         holder.registerProblem(columnElement, description)
                         return // skip (no future checks)
@@ -628,8 +628,8 @@ object ParadoxExpressionInspectionService {
                     val expectColumnName = rowConfig.columns[columnIndex].key
                     if (expectColumnName == columnElement.name) return@f // continue (matched)
                     val description = when {
-                        context.showExpect -> ChronicleBundle.message("inspection.incorrectColumnName.desc.2", rowConfig.name, expectColumnName)
-                        else -> ChronicleBundle.message("inspection.incorrectColumnName.desc.0")
+                        context.showExpect -> ChronicleInspectionBundle.message("inspection.incorrectColumnName.desc.2", rowConfig.name, expectColumnName)
+                        else -> ChronicleInspectionBundle.message("inspection.incorrectColumnName.desc.0")
                     }
                     val fix = ReplaceWithExpressionFix(expectColumnName)
                     holder.registerProblem(columnElement, description, fix)
@@ -653,8 +653,8 @@ object ParadoxExpressionInspectionService {
         if (rowConfig.skipLastColumn && columnSize == expectColumnSize + 1) return // ignored
         val location = element.lastChild ?: return // latest non-empty column or separator
         val description = when {
-            context.showExpect -> ChronicleBundle.message("inspection.incorrectColumnSize.desc.1", rowConfig.name, expectColumnSize, columnSize)
-            else -> ChronicleBundle.message("inspection.incorrectColumnSize.desc.0")
+            context.showExpect -> ChronicleInspectionBundle.message("inspection.incorrectColumnSize.desc.1", rowConfig.name, expectColumnSize, columnSize)
+            else -> ChronicleInspectionBundle.message("inspection.incorrectColumnSize.desc.0")
         }
         holder.registerProblem(location, description)
     }

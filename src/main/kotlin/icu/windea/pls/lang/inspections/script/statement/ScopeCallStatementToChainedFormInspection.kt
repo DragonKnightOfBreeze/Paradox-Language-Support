@@ -10,7 +10,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.util.parentOfType
-import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import icu.windea.pls.lang.manipulation.ParadoxScopeCallStatementManipulationService
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.model.ParadoxGameType
@@ -38,12 +38,12 @@ class ScopeCallStatementToChainedFormInspection : LocalInspectionTool(), DumbAwa
     private fun check(element: ParadoxScriptProperty, gameType: ParadoxGameType?, holder: ProblemsHolder) {
         if (!ParadoxScopeCallStatementManipulationService.canConvertToChainedForm(element, gameType)) return
         val range = ParadoxScopeCallStatementManipulationService.getHighlightingRange(element)
-        val description = ChronicleBundle.message("inspection.script.scopeCallStatementToChainedForm.desc")
+        val description = ChronicleInspectionBundle.message("inspection.script.scopeCallStatementToChainedForm.desc")
         holder.registerProblem(element, range, description, Fix(gameType))
     }
 
     private class Fix(private val gameType: ParadoxGameType?) : PsiUpdateModCommandQuickFix() {
-        override fun getFamilyName() = ChronicleBundle.message("inspection.script.scopeCallStatementToChainedForm.fix.1.name")
+        override fun getFamilyName() = ChronicleInspectionBundle.message("inspection.script.scopeCallStatementToChainedForm.fix.1.name")
 
         override fun applyFix(project: Project, element: PsiElement, updater: ModPsiUpdater) {
             val element = element.parentOfType<ParadoxScriptProperty>(withSelf = true) ?: return

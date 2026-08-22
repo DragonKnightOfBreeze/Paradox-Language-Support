@@ -10,7 +10,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.util.parentOfType
-import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import icu.windea.pls.lang.manipulation.ParadoxScopeCallStatementManipulationService
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptVisitor
@@ -37,12 +37,12 @@ class ScopeCallStatementToNormalFormInspection : LocalInspectionTool(), DumbAwar
     private fun check(element: ParadoxScriptProperty, holder: ProblemsHolder) {
         if (!ParadoxScopeCallStatementManipulationService.canConvertToNormalForm(element)) return
         val range = ParadoxScopeCallStatementManipulationService.getHighlightingRange(element)
-        val description = ChronicleBundle.message("inspection.script.scopeCallStatementToNormalForm.desc")
+        val description = ChronicleInspectionBundle.message("inspection.script.scopeCallStatementToNormalForm.desc")
         holder.registerProblem(element, range, description, Fix())
     }
 
     private class Fix : PsiUpdateModCommandQuickFix() {
-        override fun getFamilyName() = ChronicleBundle.message("inspection.script.scopeCallStatementToNormalForm.fix.1.name")
+        override fun getFamilyName() = ChronicleInspectionBundle.message("inspection.script.scopeCallStatementToNormalForm.fix.1.name")
 
         override fun applyFix(project: Project, element: PsiElement, updater: ModPsiUpdater) {
             val element = element.parentOfType<ParadoxScriptProperty>(withSelf = true) ?: return

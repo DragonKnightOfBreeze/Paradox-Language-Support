@@ -4,10 +4,10 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElementVisitor
-import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.collections.forEachFast
+import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.ParadoxPsiElementVisitor
 import icu.windea.pls.lang.psi.isCommandExpression
@@ -57,7 +57,7 @@ class IncorrectScopeSwitchInspection : ScopeInspectionBase() {
                     val startOffset = offset + node.rangeInExpression.startOffset
                     val endOffset = offset + node.rangeInExpression.endOffset
                     val range = TextRange.create(startOffset, endOffset)
-                    val description = ChronicleBundle.message("inspection.localisation.incorrectScopeSwitch.desc.1", node.text, supportedScopes.joinToString(), outputScopeContext.scope)
+                    val description = ChronicleInspectionBundle.message("inspection.localisation.incorrectScopeSwitch.desc.1", node.text, supportedScopes.joinToString(), outputScopeContext.scope)
                     holder.registerProblem(element, range, description)
                     return // only reports first problem per complex expression
                 }

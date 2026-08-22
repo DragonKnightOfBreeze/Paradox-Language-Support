@@ -4,10 +4,10 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
-import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.psi.PsiFileOnlyVisitor
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.fixes.navigation.NavigateToOverridingFilesFix
+import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import icu.windea.pls.lang.overrides.ParadoxOverrideService
 import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
 import icu.windea.pls.lang.util.ParadoxFileManager
@@ -42,7 +42,7 @@ class OverrideForFileInspection : OverrideRelatedInspectionBase() {
 
         val locationElement = file
         val (key, target, results) = overrideResult
-        val description = ChronicleBundle.message("inspection.overrideForFile.desc", key)
+        val description = ChronicleInspectionBundle.message("inspection.overrideForFile.desc", key)
         val fix = NavigateToOverridingFilesFix(key, target, results)
         holder.registerProblem(locationElement, description, fix)
     }

@@ -7,9 +7,9 @@ import com.intellij.codeInspection.options.OptPane
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
-import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.matchesPatterns
 import icu.windea.pls.core.vfs.VirtualFileService
+import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.localisation.psi.ParadoxLocalisationIcon
 import icu.windea.pls.localisation.psi.ParadoxLocalisationVisitor
@@ -26,8 +26,8 @@ class UnresolvedIconInspection : LocalInspectionTool() {
 
     override fun getOptionsPane(): OptPane {
         return OptPane.pane(
-            OptPane.checkbox("ignoredNames", ChronicleBundle.message("inspection.localisation.unresolvedIcon.option.ignoredNames")),
-            OptPane.checkbox("ignoredInInjectedFiles", ChronicleBundle.message("inspection.option.ignoredInInjectedFiles")),
+            OptPane.checkbox("ignoredNames", ChronicleInspectionBundle.message("inspection.localisation.unresolvedIcon.option.ignoredNames")),
+            OptPane.checkbox("ignoredInInjectedFiles", ChronicleInspectionBundle.message("inspection.option.ignoredInInjectedFiles")),
         )
     }
 
@@ -56,7 +56,7 @@ class UnresolvedIconInspection : LocalInspectionTool() {
         val reference = element.reference
         if (reference == null || reference.resolve() != null) return
         val location = element.idElement ?: return
-        val description = ChronicleBundle.message("inspection.localisation.unresolvedIcon.desc", name)
+        val description = ChronicleInspectionBundle.message("inspection.localisation.unresolvedIcon.desc", name)
         holder.registerProblem(location, description, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
     }
 

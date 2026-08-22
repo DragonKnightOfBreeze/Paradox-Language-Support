@@ -7,8 +7,8 @@ import com.intellij.codeInspection.options.OptPane
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
-import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.vfs.VirtualFileService
+import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.localisation.psi.ParadoxLocalisationColorfulText
 import icu.windea.pls.localisation.psi.ParadoxLocalisationVisitor
@@ -23,7 +23,7 @@ class UnresolvedColorInspection : LocalInspectionTool() {
 
     override fun getOptionsPane(): OptPane {
         return OptPane.pane(
-            OptPane.checkbox("ignoredInInjectedFiles", ChronicleBundle.message("inspection.option.ignoredInInjectedFiles"))
+            OptPane.checkbox("ignoredInInjectedFiles", ChronicleInspectionBundle.message("inspection.option.ignoredInInjectedFiles"))
         )
     }
 
@@ -51,7 +51,7 @@ class UnresolvedColorInspection : LocalInspectionTool() {
         val reference = element.reference
         if (reference == null || reference.resolve() != null) return
         val location = element.idElement ?: return
-        val description = ChronicleBundle.message("inspection.localisation.unresolvedColor.desc", name)
+        val description = ChronicleInspectionBundle.message("inspection.localisation.unresolvedColor.desc", name)
         holder.registerProblem(location, description, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
     }
 }

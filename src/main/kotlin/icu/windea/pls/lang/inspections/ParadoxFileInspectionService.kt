@@ -11,7 +11,6 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.refactoring.RefactoringSettings
 import com.intellij.refactoring.rename.RenameProcessor
-import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.children
@@ -62,7 +61,7 @@ object ParadoxFileInspectionService {
         val expect = expectedCharset.displayName() + if (useBom == null) "" else if (useBom) " BOM" else " NO BOM"
         val actual = charset.displayName() + if (hasBom) " BOM" else " NO BOM"
 
-        val description = ChronicleBundle.message("inspection.incorrectFileEncoding.desc", actual, expect)
+        val description = ChronicleInspectionBundle.message("inspection.incorrectFileEncoding.desc", actual, expect)
         val fix = ChangeFileEncodingFix(file, expectedCharset, useBom)
         holder.registerProblem(file, description, fix)
     }
@@ -95,7 +94,7 @@ object ParadoxFileInspectionService {
         val expectedFileName = ParadoxLocalisationFileManager.getExpectedFileName(file, localeId)
 
         val location = locale // 不要直接注册到文件上
-        val description = ChronicleBundle.message("inspection.incorrectFileName.desc", file.name, localeId)
+        val description = ChronicleInspectionBundle.message("inspection.incorrectFileName.desc", file.name, localeId)
         val fixes = buildList {
             this += RenameFileFix(locale, expectedFileName)
             if (localeIdFromFile != null) this += RenameLocaleFix(locale, localeIdFromFile)
@@ -109,9 +108,9 @@ object ParadoxFileInspectionService {
         element: ParadoxLocalisationLocale,
         private val expectedFileName: String
     ) : LocalQuickFixAndIntentionActionOnPsiElement(element), PriorityAction {
-        override fun getText() = ChronicleBundle.message("inspection.incorrectFileName.fix.1.name", expectedFileName)
+        override fun getText() = ChronicleInspectionBundle.message("inspection.incorrectFileName.fix.1.name", expectedFileName)
 
-        override fun getFamilyName() = ChronicleBundle.message("inspection.incorrectFileName.fix.1.familyName")
+        override fun getFamilyName() = ChronicleInspectionBundle.message("inspection.incorrectFileName.fix.1.familyName")
 
         override fun getPriority() = PriorityAction.Priority.HIGH
 
@@ -136,9 +135,9 @@ object ParadoxFileInspectionService {
         element: ParadoxLocalisationLocale,
         private val expectedLocaleId: String
     ) : LocalQuickFixAndIntentionActionOnPsiElement(element), PriorityAction {
-        override fun getText() = ChronicleBundle.message("inspection.incorrectFileName.fix.2.name", expectedLocaleId)
+        override fun getText() = ChronicleInspectionBundle.message("inspection.incorrectFileName.fix.2.name", expectedLocaleId)
 
-        override fun getFamilyName() = ChronicleBundle.message("inspection.incorrectFileName.fix.2.familyName")
+        override fun getFamilyName() = ChronicleInspectionBundle.message("inspection.incorrectFileName.fix.2.familyName")
 
         override fun getPriority() = PriorityAction.Priority.TOP // 最高优先级，如果可用
 
@@ -170,13 +169,13 @@ object ParadoxFileInspectionService {
         if (matched) return
 
         val description = when {
-            file is ParadoxScriptFile -> ChronicleBundle.message("inspection.unmatchedFile.desc.script")
-            file is ParadoxCsvFile -> ChronicleBundle.message("inspection.unmatchedFile.desc.csv")
+            file is ParadoxScriptFile -> ChronicleInspectionBundle.message("inspection.unmatchedFile.desc.script")
+            file is ParadoxCsvFile -> ChronicleInspectionBundle.message("inspection.unmatchedFile.desc.csv")
             else -> return
         }
         val fixes = arrayOf(
-            BrowseUrlFix(ChronicleBundle.message("inspection.unmatchedFile.fix.1"), ChronicleUrls.contributing),
-            BrowseUrlFix(ChronicleBundle.message("inspection.unmatchedFile.fix.2"), ChronicleUrls.configRepositories),
+            BrowseUrlFix(ChronicleInspectionBundle.message("inspection.unmatchedFile.fix.1"), ChronicleUrls.contributing),
+            BrowseUrlFix(ChronicleInspectionBundle.message("inspection.unmatchedFile.fix.2"), ChronicleUrls.configRepositories),
         )
         holder.registerProblem(file, description, *fixes)
     }

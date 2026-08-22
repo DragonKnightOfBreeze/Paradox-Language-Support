@@ -5,8 +5,8 @@ import com.intellij.psi.util.parentOfType
 import com.intellij.testFramework.IndexingTestUtil
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import icu.windea.pls.lang.inspections.script.common.DuplicateScriptedVariablesInspection
 import icu.windea.pls.lang.references.ParadoxScriptedVariablePsiReference
 import icu.windea.pls.model.ParadoxGameType
@@ -103,7 +103,7 @@ class ChronicleScopedTest : BasePlatformTestCase(), ChronicleTestScope {
     fun the_waked_highlighting_test() {
         myFixture.enableInspections(DuplicateScriptedVariablesInspection::class.java)
 
-        val tag = ChronicleBundle.message("inspection.script.duplicateScriptedVariables.desc", "answer").toWarningTag()
+        val tag = ChronicleInspectionBundle.message("inspection.script.duplicateScriptedVariables.desc", "answer").toWarningTag()
 
         // tag markers should be surrounding `@v`, rather than `@v = v`
         markFileInfo(ParadoxGameType.Stellaris, "common/tests/greetings")

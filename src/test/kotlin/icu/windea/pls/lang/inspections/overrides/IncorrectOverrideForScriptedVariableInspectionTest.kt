@@ -2,7 +2,7 @@ package icu.windea.pls.lang.inspections.overrides
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.ChronicleTestScope
@@ -54,7 +54,7 @@ class IncorrectOverrideForScriptedVariableInspectionTest : BasePlatformTestCase(
     fun simple_lios() {
         val key = "var"
         val overrideStrategy = ParadoxOverrideStrategy.FIOS
-        val tag = ChronicleBundle.message("inspection.incorrectOverrideForScriptedVariable.desc", key, overrideStrategy).toWarningTag()
+        val tag = ChronicleInspectionBundle.message("inspection.incorrectOverrideForScriptedVariable.desc", key, overrideStrategy).toWarningTag()
 
         markFileInfo(gameType, "common/scripted_variables/01_scripted_variables.txt")
         myFixture.configureByText("01_scripted_variables.txt", """

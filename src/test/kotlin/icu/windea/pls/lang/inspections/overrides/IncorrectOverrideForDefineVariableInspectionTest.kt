@@ -2,7 +2,7 @@ package icu.windea.pls.lang.inspections.overrides
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.ChronicleTestScope
@@ -38,7 +38,7 @@ class IncorrectOverrideForDefineVariableInspectionTest : BasePlatformTestCase(),
     fun simple_fios() {
         val key = "Namespace.Variable"
         val overrideStrategy = ParadoxOverrideStrategy.LIOS
-        val tag = ChronicleBundle.message("inspection.incorrectOverrideForDefineVariable.desc", key, overrideStrategy).toWarningTag()
+        val tag = ChronicleInspectionBundle.message("inspection.incorrectOverrideForDefineVariable.desc", key, overrideStrategy).toWarningTag()
 
         markFileInfo(gameType, "common/defines/99_defines.txt")
         myFixture.configureByText("99_defines.txt", """

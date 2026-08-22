@@ -5,10 +5,10 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiElementVisitor
-import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.findChildren
 import icu.windea.pls.lang.fixes.navigation.NavigateToDuplicatesFix
+import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptConditionalBlock
 import icu.windea.pls.script.psi.ParadoxScriptMemberContainer
@@ -51,7 +51,7 @@ class DuplicateScriptedVariablesInspection : LocalInspectionTool(), DumbAware {
             if (elements.size <= 1) continue
             elements.forEachFast { element ->
                 val location = element.scriptedVariableName
-                val description = ChronicleBundle.message("inspection.script.duplicateScriptedVariables.desc", name)
+                val description = ChronicleInspectionBundle.message("inspection.script.duplicateScriptedVariables.desc", name)
                 val fix = NavigateToDuplicatesFix(name, element, elements)
                 holder.registerProblem(location, description, fix)
             }

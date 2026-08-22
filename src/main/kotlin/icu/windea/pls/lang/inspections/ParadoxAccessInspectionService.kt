@@ -4,7 +4,6 @@ import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector.*
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
-import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.processAsync
 import icu.windea.pls.core.resolveFirst
 import icu.windea.pls.core.util.ReadWriteAccess
@@ -59,7 +58,7 @@ object ParadoxAccessInspectionService {
                 cachedStatus
             }
             if (!status) {
-                val description = ChronicleBundle.message("inspection.script.unusedParameter.desc", resolved.name)
+                val description = ChronicleInspectionBundle.message("inspection.script.unusedParameter.desc", resolved.name)
                 holder.registerProblem(element, description, ProblemHighlightType.LIKE_UNUSED_SYMBOL, reference.rangeInElement)
             }
         }
@@ -102,7 +101,7 @@ object ParadoxAccessInspectionService {
                 cachedStatus
             }
             if (!status) {
-                val description = ChronicleBundle.message("inspection.script.unusedDynamicValue.desc", resolved.name, resolved.types.joinToString())
+                val description = ChronicleInspectionBundle.message("inspection.script.unusedDynamicValue.desc", resolved.name, resolved.types.joinToString())
                 holder.registerProblem(element, description, ProblemHighlightType.LIKE_UNUSED_SYMBOL, reference.rangeInElement)
             }
         }
@@ -145,7 +144,7 @@ object ParadoxAccessInspectionService {
                 cachedStatus
             }
             if (!status) {
-                val description = ChronicleBundle.message("inspection.script.unsetDynamicValue.desc", resolved.name, resolved.types.joinToString())
+                val description = ChronicleInspectionBundle.message("inspection.script.unsetDynamicValue.desc", resolved.name, resolved.types.joinToString())
                 holder.registerProblem(element, description, ProblemHighlightType.GENERIC_ERROR_OR_WARNING, reference.rangeInElement)
             }
         }

@@ -6,8 +6,8 @@ import com.intellij.codeInspection.options.OptPane
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
-import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.vfs.VirtualFileService
+import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import icu.windea.pls.lang.inspections.ParadoxExpressionInspectionContext
 import icu.windea.pls.lang.inspections.ParadoxExpressionInspectionService
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
@@ -33,11 +33,11 @@ class MissingExpressionInspection : LocalInspectionTool() {
 
     override fun getOptionsPane(): OptPane {
         return OptPane.pane(
-            OptPane.checkbox("ignoredInInjectedFiles", ChronicleBundle.message("inspection.option.ignoredInInjectedFiles")),
-            OptPane.checkbox("ignoredInInlineScriptFiles", ChronicleBundle.message("inspection.option.ignoredInInlineScriptFiles")),
-            OptPane.checkbox("showExpect", ChronicleBundle.message("inspection.option.showExpect")),
-            OptPane.checkbox("firstOnly", ChronicleBundle.message("inspection.missingExpression.option.firstOnly")),
-            OptPane.checkbox("firstOnlyOnFile", ChronicleBundle.message("inspection.missingExpression.option.firstOnlyOnFile")),
+            OptPane.checkbox("ignoredInInjectedFiles", ChronicleInspectionBundle.message("inspection.option.ignoredInInjectedFiles")),
+            OptPane.checkbox("ignoredInInlineScriptFiles", ChronicleInspectionBundle.message("inspection.option.ignoredInInlineScriptFiles")),
+            OptPane.checkbox("showExpect", ChronicleInspectionBundle.message("inspection.option.showExpect")),
+            OptPane.checkbox("firstOnly", ChronicleInspectionBundle.message("inspection.missingExpression.option.firstOnly")),
+            OptPane.checkbox("firstOnlyOnFile", ChronicleInspectionBundle.message("inspection.missingExpression.option.firstOnlyOnFile")),
         )
     }
 

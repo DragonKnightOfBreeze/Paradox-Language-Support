@@ -2,7 +2,7 @@ package icu.windea.pls.lang.inspections.overrides
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.ChronicleTestScope
 import org.junit.After
@@ -36,7 +36,7 @@ class OverrideForScriptedVariableInspectionTest : BasePlatformTestCase(), Chroni
     @Test
     fun simple_fios() {
         val key = "var"
-        val tag = ChronicleBundle.message("inspection.overrideForScriptedVariable.desc", key).toWeakWarningTag()
+        val tag = ChronicleInspectionBundle.message("inspection.overrideForScriptedVariable.desc", key).toWeakWarningTag()
 
         markFileInfo(gameType, "common/scripted_variables/99_scripted_variables.txt")
         myFixture.configureByText("99_scripted_variables.txt", """
@@ -55,7 +55,7 @@ class OverrideForScriptedVariableInspectionTest : BasePlatformTestCase(), Chroni
     @Test
     fun simple_lios() {
         val key = "var"
-        val tag = ChronicleBundle.message("inspection.overrideForScriptedVariable.desc", key).toWeakWarningTag()
+        val tag = ChronicleInspectionBundle.message("inspection.overrideForScriptedVariable.desc", key).toWeakWarningTag()
 
         markFileInfo(gameType, "common/scripted_variables/01_scripted_variables.txt")
         myFixture.configureByText("01_scripted_variables.txt", """
@@ -74,7 +74,7 @@ class OverrideForScriptedVariableInspectionTest : BasePlatformTestCase(), Chroni
     @Test
     fun simple_samePath() {
         val key = "var"
-        val tag = ChronicleBundle.message("inspection.overrideForScriptedVariable.desc", key).toWeakWarningTag()
+        val tag = ChronicleInspectionBundle.message("inspection.overrideForScriptedVariable.desc", key).toWeakWarningTag()
 
         markFileInfo(gameType, "common/scripted_variables/01_scripted_variables.txt")
         myFixture.configureByText("01_scripted_variables.txt", """

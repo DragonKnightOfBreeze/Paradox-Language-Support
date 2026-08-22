@@ -2,7 +2,7 @@ package icu.windea.pls.lang.inspections.localisation.common
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.ChronicleTestScope
 import org.junit.After
@@ -44,7 +44,7 @@ class UnsupportedLocaleInspectionTest : BasePlatformTestCase(), ChronicleTestSco
     @Test
     fun smokeTest_failed() {
         val key = "l_neko"
-        val tag = ChronicleBundle.message("inspection.localisation.unsupportedLocale.desc.1", key).toErrorTag()
+        val tag = ChronicleInspectionBundle.message("inspection.localisation.unsupportedLocale.desc.1", key).toErrorTag()
 
         markFileInfo(ParadoxGameType.Stellaris, "localisation/test.yml")
         myFixture.configureByText("test.yml", """
@@ -57,7 +57,7 @@ class UnsupportedLocaleInspectionTest : BasePlatformTestCase(), ChronicleTestSco
     @Test
     fun smokeTest_failed_forGameType() {
         val key = "l_turkish"
-        val tag = ChronicleBundle.message("inspection.localisation.unsupportedLocale.desc.2", key, ParadoxGameType.Stellaris).toErrorTag()
+        val tag = ChronicleInspectionBundle.message("inspection.localisation.unsupportedLocale.desc.2", key, ParadoxGameType.Stellaris).toErrorTag()
 
         markFileInfo(ParadoxGameType.Stellaris, "localisation/test.yml")
         myFixture.configureByText("test.yml", """

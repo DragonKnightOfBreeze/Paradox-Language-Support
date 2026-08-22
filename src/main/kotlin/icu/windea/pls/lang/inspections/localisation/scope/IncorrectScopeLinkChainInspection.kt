@@ -4,9 +4,9 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElementVisitor
-import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.ParadoxPsiElementVisitor
 import icu.windea.pls.lang.psi.isCommandExpression
@@ -56,7 +56,7 @@ class IncorrectScopeLinkChainInspection : ScopeInspectionBase() {
         val startOffset = offset + scopeNodes.first().rangeInExpression.startOffset
         val endOffset = offset + scopeNodes.last().rangeInExpression.endOffset
         val range = TextRange.create(startOffset, endOffset)
-        val description = ChronicleBundle.message("inspection.localisation.incorrectScopeLinkChain.desc.1", max, actual)
+        val description = ChronicleInspectionBundle.message("inspection.localisation.incorrectScopeLinkChain.desc.1", max, actual)
         holder.registerProblem(element, range, description)
     }
 }

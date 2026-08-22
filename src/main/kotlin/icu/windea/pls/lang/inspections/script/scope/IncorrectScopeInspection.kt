@@ -3,10 +3,10 @@ package icu.windea.pls.lang.inspections.script.scope
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElementVisitor
-import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.psi.light.ParadoxModifierLightElement
 import icu.windea.pls.lang.resolve.ParadoxModifierCategoryService
@@ -50,11 +50,11 @@ class IncorrectScopeInspection : ScopeInspectionBase() {
             if (element is ParadoxScriptProperty) {
                 val propertyKey = element.propertyKey
                 val text = propertyKey.presentableText
-                val description = ChronicleBundle.message("inspection.script.incorrectScope.desc.1", text, supportedScopesText, currentScopeText)
+                val description = ChronicleInspectionBundle.message("inspection.script.incorrectScope.desc.1", text, supportedScopesText, currentScopeText)
                 holder.registerProblem(propertyKey, description)
             } else if (element is ParadoxScriptString && config.configExpression.type == CwtDataTypes.AliasKeysField) {
                 val text = element.presentableText
-                val description = ChronicleBundle.message("inspection.script.incorrectScope.desc.2", text, supportedScopesText, currentScopeText)
+                val description = ChronicleInspectionBundle.message("inspection.script.incorrectScope.desc.2", text, supportedScopesText, currentScopeText)
                 holder.registerProblem(element, description)
             }
         }

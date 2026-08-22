@@ -11,6 +11,7 @@ import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.matchesPatterns
 import icu.windea.pls.core.psi.PsiFileOnlyVisitor
 import icu.windea.pls.core.vfs.VirtualFileService
+import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 
@@ -24,7 +25,7 @@ class MissingLocaleInspection : LocalInspectionTool(), DumbAware {
 
     override fun getOptionsPane(): OptPane {
         return OptPane.pane(
-            OptPane.expandableString("ignoredFileNames", ChronicleBundle.message("inspection.option.ignoredFileNames"), ",")
+            OptPane.expandableString("ignoredFileNames", ChronicleInspectionBundle.message("inspection.option.ignoredFileNames"), ",")
                 .description(ChronicleBundle.message("comment.patterns"))
         )
     }
@@ -52,7 +53,7 @@ class MissingLocaleInspection : LocalInspectionTool(), DumbAware {
     private fun check(file: PsiFile, holder: ProblemsHolder) {
         if (file !is ParadoxLocalisationFile) return
         if (file.propertyLists.all { it.locale != null }) return // 没有问题，跳过
-        val description = ChronicleBundle.message("inspection.localisation.missingLocale.desc")
+        val description = ChronicleInspectionBundle.message("inspection.localisation.missingLocale.desc")
         holder.registerProblem(file, description)
     }
 }

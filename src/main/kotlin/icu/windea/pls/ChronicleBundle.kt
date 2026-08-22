@@ -4,6 +4,7 @@ import com.intellij.DynamicBundle
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.CwtDataExpressionRole
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
+import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.model.expressions.ParadoxExpression
 import icu.windea.pls.model.type.ParadoxExpressionRole
@@ -29,6 +30,12 @@ object ChronicleBundle {
     @Nls
     fun lazyMessage(@PropertyKey(resourceBundle = BUNDLE) key: String, vararg params: Any): Supplier<String> {
         return INSTANCE.getLazyMessage(key, *params)
+    }
+
+    @JvmStatic
+    @Nls
+    fun messageInspection(@PropertyKey(resourceBundle = BUNDLE) key: String, vararg params: Any): String {
+        return ChronicleInspectionBundle.message(key, *params)
     }
 
     // region methods to get specific messages

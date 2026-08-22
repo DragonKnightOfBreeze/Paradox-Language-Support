@@ -10,9 +10,9 @@ import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.openapi.ui.popup.util.BaseListPopupStep
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.core.match.similarity.SimilarityMatchResult
+import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import kotlinx.coroutines.launch
 
@@ -20,9 +20,9 @@ class ReplaceWithSimilarExpressionInListFix(
     element: PsiElement,
     private val replacements: Collection<SimilarityMatchResult>,
 ) : LocalQuickFixAndIntentionActionOnPsiElement(element), PriorityAction, DumbAware {
-    override fun getText() = ChronicleBundle.message("fix.replaceWithSimilarExpressionInList.name")
+    override fun getText() = ChronicleInspectionBundle.message("fix.replaceWithSimilarExpressionInList.name")
 
-    override fun getFamilyName() = ChronicleBundle.message("fix.replaceWithSimilarExpressionInList.familyName")
+    override fun getFamilyName() = ChronicleInspectionBundle.message("fix.replaceWithSimilarExpressionInList.familyName")
 
     override fun getPriority() = PriorityAction.Priority.HIGH
 
@@ -36,7 +36,7 @@ class ReplaceWithSimilarExpressionInListFix(
             return
         }
 
-        val step = object : BaseListPopupStep<SimilarityMatchResult>(ChronicleBundle.message("fix.replaceWithSimilarExpressionInList.popup.title"), items) {
+        val step = object : BaseListPopupStep<SimilarityMatchResult>(ChronicleInspectionBundle.message("fix.replaceWithSimilarExpressionInList.popup.title"), items) {
             override fun getTextFor(value: SimilarityMatchResult) = value.render()
 
             override fun getDefaultOptionIndex() = 0
@@ -54,7 +54,7 @@ class ReplaceWithSimilarExpressionInListFix(
     private fun doReplace(project: Project, element: ParadoxExpressionElement, replacement: SimilarityMatchResult) {
         val coroutineScope = ChronicleFacade.getCoroutineScope(project)
         coroutineScope.launch {
-            writeCommandAction(project, ChronicleBundle.message("fix.replaceWithSimilarExpression.command")) {
+            writeCommandAction(project, ChronicleInspectionBundle.message("fix.replaceWithSimilarExpression.command")) {
                 element.setValue(replacement.value)
             }
         }

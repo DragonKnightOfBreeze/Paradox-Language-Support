@@ -2,7 +2,7 @@ package icu.windea.pls.lang.inspections.overrides
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.ChronicleTestScope
 import org.junit.After
@@ -36,7 +36,7 @@ class OverrideForDefineVariableInspectionTest : BasePlatformTestCase(), Chronicl
     @Test
     fun simple_fios() {
         val key = "Namespace.Variable"
-        val tag = ChronicleBundle.message("inspection.overrideForDefineVariable.desc", key).toWeakWarningTag()
+        val tag = ChronicleInspectionBundle.message("inspection.overrideForDefineVariable.desc", key).toWeakWarningTag()
 
         markFileInfo(gameType, "common/defines/99_defines.txt")
         myFixture.configureByText("99_defines.txt", """
@@ -59,7 +59,7 @@ class OverrideForDefineVariableInspectionTest : BasePlatformTestCase(), Chronicl
     @Test
     fun simple_lios() {
         val key = "Namespace.Variable"
-        val tag = ChronicleBundle.message("inspection.overrideForDefineVariable.desc", key).toWeakWarningTag()
+        val tag = ChronicleInspectionBundle.message("inspection.overrideForDefineVariable.desc", key).toWeakWarningTag()
 
         markFileInfo(gameType, "common/defines/01_defines.txt")
         myFixture.configureByText("01_defines.txt", """
@@ -82,7 +82,7 @@ class OverrideForDefineVariableInspectionTest : BasePlatformTestCase(), Chronicl
     @Test
     fun simple_samePath() {
         val key = "Namespace.Variable"
-        val tag = ChronicleBundle.message("inspection.overrideForDefineVariable.desc", key).toWeakWarningTag()
+        val tag = ChronicleInspectionBundle.message("inspection.overrideForDefineVariable.desc", key).toWeakWarningTag()
 
         markFileInfo(gameType, "common/defines/01_defines.txt")
         myFixture.configureByText("01_defines.txt", """

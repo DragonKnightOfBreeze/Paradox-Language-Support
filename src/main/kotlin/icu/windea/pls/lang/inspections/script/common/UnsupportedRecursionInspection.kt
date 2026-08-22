@@ -7,9 +7,9 @@ import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
-import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fixes.navigation.NavigateToRecursionsFix
+import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.lang.psi.ParadoxPsiMatchService
 import icu.windea.pls.lang.util.ParadoxRecursionManager
@@ -55,7 +55,7 @@ class UnsupportedRecursionInspection : LocalInspectionTool(), DumbAware {
         val recursions = mutableSetOf<PsiElement>()
         ParadoxRecursionManager.checkScriptedVariable(element, recursions)
         if (recursions.isEmpty()) return
-        val description = ChronicleBundle.message("inspection.script.unsupportedRecursion.desc.1")
+        val description = ChronicleInspectionBundle.message("inspection.script.unsupportedRecursion.desc.1")
         val location = element.scriptedVariableName
         holder.registerProblem(location, description, NavigateToRecursionsFix(name, element, recursions))
     }
@@ -69,8 +69,8 @@ class UnsupportedRecursionInspection : LocalInspectionTool(), DumbAware {
         ParadoxRecursionManager.checkDefinition(element, recursions) { _, re -> ParadoxPsiMatchService.isDefinitionCall(element, re) }
         if (recursions.isEmpty()) return
         val description = when {
-            definitionInfo.type == "scripted_trigger" -> ChronicleBundle.message("inspection.script.unsupportedRecursion.desc.2")
-            definitionInfo.type == "scripted_effect" -> ChronicleBundle.message("inspection.script.unsupportedRecursion.desc.3")
+            definitionInfo.type == "scripted_trigger" -> ChronicleInspectionBundle.message("inspection.script.unsupportedRecursion.desc.2")
+            definitionInfo.type == "scripted_effect" -> ChronicleInspectionBundle.message("inspection.script.unsupportedRecursion.desc.3")
             else -> return
         }
         val location = element.propertyKey

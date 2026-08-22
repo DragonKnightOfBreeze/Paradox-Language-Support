@@ -7,10 +7,10 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.codeInspection.options.OptPane
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
-import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.fixes.IntroduceGlobalVariableFix
 import icu.windea.pls.lang.fixes.IntroduceLocalScriptedVariableFix
+import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxPsiElementVisitor
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
@@ -34,8 +34,8 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
 
     override fun getOptionsPane(): OptPane {
         return OptPane.pane(
-            OptPane.checkbox("ignoredInInjectedFiles", ChronicleBundle.message("inspection.option.ignoredInInjectedFiles")),
-            OptPane.checkbox("ignoredInInlineScriptFiles", ChronicleBundle.message("inspection.option.ignoredInInlineScriptFiles")),
+            OptPane.checkbox("ignoredInInjectedFiles", ChronicleInspectionBundle.message("inspection.option.ignoredInInjectedFiles")),
+            OptPane.checkbox("ignoredInInlineScriptFiles", ChronicleInspectionBundle.message("inspection.option.ignoredInInlineScriptFiles")),
         )
     }
 
@@ -63,7 +63,7 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
         if (name.isParameterized()) return // skip if name is parameterized
         val reference = element.reference ?: return
         if (reference.resolve() != null) return
-        val description = ChronicleBundle.message("inspection.script.unresolvedScriptedVariable.desc", name)
+        val description = ChronicleInspectionBundle.message("inspection.script.unresolvedScriptedVariable.desc", name)
         val fixes = getFixes(element, name)
         holder.registerProblem(element, description, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL, *fixes)
     }

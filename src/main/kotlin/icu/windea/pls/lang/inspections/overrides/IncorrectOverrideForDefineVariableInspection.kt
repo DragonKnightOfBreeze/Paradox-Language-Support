@@ -4,8 +4,8 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
-import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.lang.fixes.navigation.NavigateToOverridingDefineVariablesFix
+import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import icu.windea.pls.lang.overrides.ParadoxOverrideService
 import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
 import icu.windea.pls.lang.util.ParadoxDefineManager
@@ -46,7 +46,7 @@ class IncorrectOverrideForDefineVariableInspection : OverrideRelatedInspectionBa
 
         val locationElement = element.propertyKey
         val (key, target, results, overrideStrategy) = overrideResult
-        val description = ChronicleBundle.message("inspection.incorrectOverrideForDefineVariable.desc", key, overrideStrategy)
+        val description = ChronicleInspectionBundle.message("inspection.incorrectOverrideForDefineVariable.desc", key, overrideStrategy)
         val fix = NavigateToOverridingDefineVariablesFix(key, target, results)
         holder.registerProblem(locationElement, description, fix)
     }

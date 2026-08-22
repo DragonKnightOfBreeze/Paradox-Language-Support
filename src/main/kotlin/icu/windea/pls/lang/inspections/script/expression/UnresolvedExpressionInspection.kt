@@ -7,8 +7,8 @@ import com.intellij.codeInspection.options.OptPane
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
-import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.vfs.VirtualFileService
+import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import icu.windea.pls.lang.inspections.ParadoxExpressionInspectionContext
 import icu.windea.pls.lang.inspections.ParadoxExpressionInspectionService
 import icu.windea.pls.lang.psi.ParadoxPsiElementVisitor
@@ -40,11 +40,11 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
 
     override fun getOptionsPane(): OptPane {
         return OptPane.pane(
-            OptPane.checkbox("ignoredInInjectedFiles", ChronicleBundle.message("inspection.option.ignoredInInjectedFiles")),
-            OptPane.checkbox("ignoredInInlineScriptFiles", ChronicleBundle.message("inspection.option.ignoredInInlineScriptFiles")),
-            OptPane.checkbox("ignoredByConfigs", ChronicleBundle.message("inspection.option.ignoredByConfigs")),
-            OptPane.checkbox("showExpect", ChronicleBundle.message("inspection.option.showExpect")),
-            OptPane.number("truncateExpect", ChronicleBundle.message("inspection.option.truncateExpect"), Int.MIN_VALUE, Int.MAX_VALUE),
+            OptPane.checkbox("ignoredInInjectedFiles", ChronicleInspectionBundle.message("inspection.option.ignoredInInjectedFiles")),
+            OptPane.checkbox("ignoredInInlineScriptFiles", ChronicleInspectionBundle.message("inspection.option.ignoredInInlineScriptFiles")),
+            OptPane.checkbox("ignoredByConfigs", ChronicleInspectionBundle.message("inspection.option.ignoredByConfigs")),
+            OptPane.checkbox("showExpect", ChronicleInspectionBundle.message("inspection.option.showExpect")),
+            OptPane.number("truncateExpect", ChronicleInspectionBundle.message("inspection.option.truncateExpect"), Int.MIN_VALUE, Int.MAX_VALUE),
         )
     }
 

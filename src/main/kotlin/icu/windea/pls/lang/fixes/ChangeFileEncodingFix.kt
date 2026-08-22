@@ -12,9 +12,9 @@ import com.intellij.openapi.vfs.encoding.ChangeFileEncodingAction
 import com.intellij.openapi.vfs.encoding.EncodingUtil
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.vfs.VirtualFileBomService
+import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import java.nio.charset.Charset
 
 class ChangeFileEncodingFix(
@@ -24,7 +24,7 @@ class ChangeFileEncodingFix(
 ) : LocalQuickFixAndIntentionActionOnPsiElement(element), IntentionActionWithFixAllOption {
     override fun getText() = familyName
 
-    override fun getFamilyName() = ChronicleBundle.message("fix.changeFileEncoding.name")
+    override fun getFamilyName() = ChronicleInspectionBundle.message("fix.changeFileEncoding.name")
 
     override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
         val virtualFile = file.virtualFile

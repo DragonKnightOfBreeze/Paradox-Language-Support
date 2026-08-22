@@ -7,11 +7,11 @@ import com.intellij.codeInspection.options.OptPane
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
-import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.matchesPatterns
 import icu.windea.pls.core.vfs.VirtualFileService
+import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxConfigManager
@@ -37,9 +37,9 @@ class UnresolvedConceptInspection : LocalInspectionTool() {
 
     override fun getOptionsPane(): OptPane {
         return OptPane.pane(
-            OptPane.checkbox("ignoredNames", ChronicleBundle.message("inspection.localisation.unresolvedConcept.option.ignoredNames")),
-            OptPane.checkbox("ignoredInInjectedFiles", ChronicleBundle.message("inspection.option.ignoredInInjectedFiles")),
-            OptPane.checkbox("ignoredByConfigs", ChronicleBundle.message("inspection.option.ignoredByConfigs")),
+            OptPane.checkbox("ignoredNames", ChronicleInspectionBundle.message("inspection.localisation.unresolvedConcept.option.ignoredNames")),
+            OptPane.checkbox("ignoredInInjectedFiles", ChronicleInspectionBundle.message("inspection.option.ignoredInInjectedFiles")),
+            OptPane.checkbox("ignoredByConfigs", ChronicleInspectionBundle.message("inspection.option.ignoredByConfigs")),
         )
     }
 
@@ -69,7 +69,7 @@ class UnresolvedConceptInspection : LocalInspectionTool() {
         val reference = element.reference
         if (reference == null || reference.resolve() != null) return
         val location = element.conceptName ?: return
-        val description = ChronicleBundle.message("inspection.localisation.unresolvedConcept.desc", name)
+        val description = ChronicleInspectionBundle.message("inspection.localisation.unresolvedConcept.desc", name)
         holder.registerProblem(location, description, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
     }
 

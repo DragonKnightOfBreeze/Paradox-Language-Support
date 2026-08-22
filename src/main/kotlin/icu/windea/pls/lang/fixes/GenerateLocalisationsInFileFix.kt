@@ -9,11 +9,11 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
 import icu.windea.pls.lang.codeInsight.generation.GenerateLocalisationsInFileHandler
+import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -23,10 +23,10 @@ class GenerateLocalisationsInFileFix(
 ) : LocalQuickFixAndIntentionActionOnPsiElement(element), PriorityAction {
     override fun getText(): String {
         val fileName = startElement.containingFile?.name.or.anonymous()
-        return ChronicleBundle.message("fix.generateLocalisationsInFile.name", fileName)
+        return ChronicleInspectionBundle.message("fix.generateLocalisationsInFile.name", fileName)
     }
 
-    override fun getFamilyName() = ChronicleBundle.message("fix.generateLocalisationsInFile.familyName")
+    override fun getFamilyName() = ChronicleInspectionBundle.message("fix.generateLocalisationsInFile.familyName")
 
     override fun getPriority() = PriorityAction.Priority.HIGH
 

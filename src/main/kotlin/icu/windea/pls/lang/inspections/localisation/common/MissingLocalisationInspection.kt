@@ -23,6 +23,7 @@ import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContextServ
 import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightInfo
 import icu.windea.pls.lang.fixes.GenerateLocalisationsFix
 import icu.windea.pls.lang.fixes.GenerateLocalisationsInFileFix
+import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.ui.ParadoxLocaleCheckBoxDialog
@@ -50,7 +51,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
         return panel {
             // ignoredFileNames
             row {
-                label(ChronicleBundle.message("inspection.option.ignoredFileNames"))
+                label(ChronicleInspectionBundle.message("inspection.option.ignoredFileNames"))
                 expandableTextField({ it.toDelimitedMutableList() }, { it.toDelimitedString() })
                     .bindText(::ignoredFileNames.toAtomicProperty())
                     .comment(ChronicleBundle.message("comment.patterns"))
@@ -59,7 +60,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
             }
             // checkForPreferredLocale
             row {
-                checkBox(ChronicleBundle.message("inspection.localisation.missingLocalisation.option.checkForPreferredLocale"))
+                checkBox(ChronicleInspectionBundle.message("inspection.localisation.missingLocalisation.option.checkForPreferredLocale"))
                     .bindSelected(::checkForPreferredLocale.toAtomicProperty())
                 cell(ActionLink(ChronicleBundle.message("link.configure")) {
                     // ShowSettingsUtil.getInstance().showSettingsDialog(null, ParadoxSettingsConfigurable::class.java)
@@ -69,7 +70,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
             }
             // checkForSpecificLocales
             row {
-                checkBox(ChronicleBundle.message("inspection.localisation.missingLocalisation.option.checkForSpecificLocales"))
+                checkBox(ChronicleInspectionBundle.message("inspection.localisation.missingLocalisation.option.checkForSpecificLocales"))
                     .bindSelected(::checkForSpecificLocales.toAtomicProperty())
                 val cb = textField().bindText(::locales.toAtomicProperty()).visible(false).component
                 cell(ActionLink(ChronicleBundle.message("link.configure")) {
@@ -146,7 +147,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 
     private fun getDescription(codeInsightInfo: ParadoxLocalisationCodeInsightInfo): String? {
         val localeId = codeInsightInfo.locale.name
-        codeInsightInfo.name?.let { return ChronicleBundle.message("inspection.localisation.missingLocalisation.desc.1", localeId, it) }
+        codeInsightInfo.name?.let { return ChronicleInspectionBundle.message("inspection.localisation.missingLocalisation.desc.1", localeId, it) }
         return null
     }
 

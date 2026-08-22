@@ -39,7 +39,7 @@ class ParadoxLocalisationSyntaxAnnotatorTest : BasePlatformTestCase(), Chronicle
         myFixture.checkHighlighting(true, true, true)
 
         // Quick Fix: 插入空格
-        val fixName = ChronicleBundle.message("fix.adjacent.icon.unexpected")
+        val fixName = ChronicleBundle.message("annotator.adjacent.icon.unexpected")
         myFixture.configureByText(
             "annotator_adjacent_icons_apply.test.yml",
             """
