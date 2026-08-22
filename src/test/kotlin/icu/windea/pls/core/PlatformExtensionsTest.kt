@@ -50,6 +50,7 @@ class PlatformExtensionsTest {
         }
     }
 
+    @Suppress("DEPRECATION")
     @Test
     fun replaceAndQuoteIfNeeded_test() {
         // 覆盖全长替换 -> 直接按需要包围引号

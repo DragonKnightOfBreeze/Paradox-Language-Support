@@ -64,7 +64,7 @@ public class CwtStringImpl extends CwtValueImpl implements CwtString {
   }
 
   @Override
-  public boolean needQuote() {
+  public boolean needQuote(@NotNull String text) {
     return CwtPsiImplUtil.needQuote(this);
   }
 

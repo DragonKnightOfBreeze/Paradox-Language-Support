@@ -26,7 +26,7 @@ public interface CwtPropertyKey extends PsiQuoteAwareElement, CwtLiteralValue, C
 
   @NotNull CwtPropertyKey setContent(@NotNull String content, @NotNull TextRange range);
 
-  boolean needQuote();
+  boolean needQuote(@NotNull String text);
 
   @Nullable PsiReference getReference();
 

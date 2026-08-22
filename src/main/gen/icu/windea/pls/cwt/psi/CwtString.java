@@ -26,7 +26,7 @@ public interface CwtString extends CwtValue, PsiQuoteAwareElement, CwtNamedEleme
 
   @NotNull CwtValue setValue(@NotNull String value);
 
-  boolean needQuote();
+  boolean needQuote(@NotNull String text);
 
   @Nullable PsiReference getReference();
 

@@ -1,7 +1,8 @@
 package icu.windea.pls.core.psi
 
 import com.intellij.psi.PsiElement
-import icu.windea.pls.core.isQuoted
+import icu.windea.pls.core.isLeftQuoted
+import icu.windea.pls.core.isRightQuoted
 
 /**
  * 可以用引号括起的 PSI 元素。一般也可以不用引号括起。
@@ -11,9 +12,16 @@ import icu.windea.pls.core.isQuoted
 interface PsiQuoteAwareElement : PsiElement {
     val quoteChar: Char get() = '"'
 
-    fun needQuote(): Boolean
+    /** 根据输入的 [text]，检查是否需要首尾的引号，无论 [text] 是否已经用引号括起。 */
+    fun needQuote(text: String): Boolean
 
-    fun canQuote(): Boolean = !text.isQuoted(quoteChar)
+    /** 根据输入的 [text]，检查是否可以添加周围的引号。 */
+    fun canQuote(text: String): Boolean {
+        return !text.isLeftQuoted(quoteChar) || !text.isRightQuoted(quoteChar)
+    }
 
-    fun canUnquote(): Boolean = text.isQuoted(quoteChar) && !needQuote()
+    /** 根据输入的 [text]，检查是否可以去除周围的引号。 */
+    fun canUnquote(text: String): Boolean {
+        return (text.isLeftQuoted(quoteChar) || text.isRightQuoted(quoteChar)) && !needQuote(text)
+    }
 }

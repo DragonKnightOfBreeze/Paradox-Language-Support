@@ -71,6 +71,16 @@ class QuoteOrUnquoteLiteralIntentionsTest : BasePlatformTestCase(), ChronicleTes
     }
 
     @Test
+    fun testQuoteLiteral_onlyLeftQuoted() {
+        val intentionName = ChronicleIntentionBundle.message("intention.quoteLiteral")
+        myFixture.configureByText("test.txt", "<caret>\"k = v")
+        val intention = myFixture.findSingleIntention(intentionName)
+        myFixture.launchAction(intention)
+        myFixture.checkResult("\"k = v\"")
+        // myFixture.checkResult("\"k\" = v") // NOT THIS
+    }
+
+    @Test
     fun testQuoteLiteral_onlyRightQuoted() {
         val intentionName = ChronicleIntentionBundle.message("intention.quoteLiteral")
         myFixture.configureByText("test.txt", "<caret>k\" = v")

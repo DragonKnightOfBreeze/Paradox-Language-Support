@@ -18,13 +18,14 @@ class QuoteLiteralIntention : PsiUpdateModCommandAction<ParadoxCsvExpressionElem
     override fun getFamilyName() = ChronicleIntentionBundle.message("intention.quoteLiteral")
 
     override fun invoke(context: ActionContext, element: ParadoxCsvExpressionElement, updater: ModPsiUpdater) {
-        val newText = element.text.unquote().quote() // unquote first
+        val newText = element.text.quote(lenient = true)
         ElementManipulators.handleContentChange(element, newText)
     }
 
     override fun isElementApplicable(element: ParadoxCsvExpressionElement, context: ActionContext): Boolean {
-        return element is ParadoxCsvColumn && element.canQuote()
+        return element is ParadoxCsvColumn && element.canQuote(element.text)
     }
+
     override fun stopSearchAt(element: PsiElement, context: ActionContext): Boolean {
         return element is ParadoxCsvExpressionElement
     }
@@ -39,8 +40,9 @@ class UnquoteLiteralIntention : PsiUpdateModCommandAction<ParadoxCsvExpressionEl
     }
 
     override fun isElementApplicable(element: ParadoxCsvExpressionElement, context: ActionContext): Boolean {
-        return element is ParadoxCsvColumn && element.canUnquote()
+        return element is ParadoxCsvColumn && element.canUnquote(element.text)
     }
+
     override fun stopSearchAt(element: PsiElement, context: ActionContext): Boolean {
         return element is ParadoxCsvExpressionElement
     }

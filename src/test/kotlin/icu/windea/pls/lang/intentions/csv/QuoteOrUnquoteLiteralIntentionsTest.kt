@@ -87,11 +87,14 @@ class QuoteOrUnquoteLiteralIntentionsTest : BasePlatformTestCase(), ChronicleTes
     }
 
     @Test
-    fun testUnquoteLiteral_notAvailableWhenContainsBlank() {
+    fun testUnquoteLiteral_availableWhenContainsBlank() {
         val intentionName = ChronicleIntentionBundle.message("intention.unquoteLiteral")
         myFixture.configureByText("test.csv", "name;desc\nalice;<caret>\"a b\"")
         val available = myFixture.availableIntentions
-        assertFalse(available.any { it.text == intentionName })
+        assertTrue(available.any { it.text == intentionName })
+        val intention = myFixture.findSingleIntention(intentionName)
+        myFixture.launchAction(intention)
+        myFixture.checkResult("name;desc\nalice;a b")
     }
 
     @Test

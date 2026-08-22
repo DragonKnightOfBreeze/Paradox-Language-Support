@@ -194,6 +194,7 @@ fun TextRange.unquote(text: String, quote: Char = '"'): TextRange {
  *
  * 当替换段长度与整体长度关系满足条件时，避免重复包围引号并保留必要的转义。
  */
+@Deprecated("Use detailed logic instead")
 fun TextRange.replaceAndQuoteIfNeeded(original: String, replacement: String, quote: Char = '"', containAnyChar: String = "", containBlank: Boolean = true): String {
     if (this.length >= original.length - 1) {
         return replacement.quoteIfNeeded(quote, containAnyChar, containBlank)

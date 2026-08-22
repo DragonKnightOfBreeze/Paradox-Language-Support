@@ -29,7 +29,7 @@ public interface ParadoxCsvColumn extends PsiQuoteAwareElement, ParadoxCsvLitera
 
   @NotNull ParadoxCsvColumn setContent(@NotNull String content, @NotNull TextRange range);
 
-  boolean needQuote();
+  boolean needQuote(@NotNull String text);
 
   @Nullable PsiReference getReference();
 

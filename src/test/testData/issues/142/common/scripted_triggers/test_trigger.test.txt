@@ -7,19 +7,19 @@
 
 # case 1: `var:test` with trigger-only block content - conflict happens - no inlining yet
 test_trigger_with_var_simple = {
-    <warning descr="Expression `var:test = {...}` is resolved into conflicting configs">var:test</warning> = {
+    <warning descr="Expression `var:test = {...}` matches multiple configs with conflicts">var:test</warning> = {
         always = yes
     }
 }
 
 # case 2: `var:test` with ambiguous block content - conflict happens - no non-constant match yet
 test_trigger_with_var_complex = {
-    <warning descr="Expression `var:test = {...}` is resolved into conflicting configs">var:test</warning> = {
+    <warning descr="Expression `var:test = {...}` matches multiple configs with conflicts">var:test</warning> = {
         root = root
     }
 }
 
 # case 3: `var:test` with empty block - conflict happens - exactly ambiguous
 test_trigger_with_var_empty = {
-    <warning descr="Expression `var:test = {...}` is resolved into conflicting configs">var:test</warning> = {}
+    <warning descr="Expression `var:test = {...}` matches multiple configs with conflicts">var:test</warning> = {}
 }

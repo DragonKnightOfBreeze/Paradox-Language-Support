@@ -33,7 +33,7 @@ public interface ParadoxScriptPropertyKey extends PsiQuoteAwareElement, ParadoxS
 
   @NotNull ParadoxScriptPropertyKey setContent(@NotNull String content, @NotNull TextRange range);
 
-  boolean needQuote();
+  boolean needQuote(@NotNull String text);
 
   @Nullable PsiReference getReference();
 

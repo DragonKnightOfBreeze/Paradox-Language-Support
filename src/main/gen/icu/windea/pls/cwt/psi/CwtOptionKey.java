@@ -17,7 +17,7 @@ public interface CwtOptionKey extends PsiQuoteAwareElement {
 
   @NotNull String getValue();
 
-  boolean needQuote();
+  boolean needQuote(@NotNull String text);
 
   @NotNull GlobalSearchScope getResolveScope();
 

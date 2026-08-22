@@ -5,19 +5,26 @@ import icu.windea.pls.core.cast
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.isRightQuoted
 import icu.windea.pls.core.quote
-import icu.windea.pls.core.unquote
 
 object ParadoxScriptPsiManipulationService {
     private const val FORCE_QUOTED_CHARS = "@#=<>!?{}[\""
 
     fun needQuote(expression: String): Boolean {
-        return expression.any { it.isWhitespace() || it in FORCE_QUOTED_CHARS }
+        val s = expression
+        if (s.isEmpty() || s == "\"") return true
+        val lastIndex = s.lastIndex
+        s.forEachIndexed f@{ i, c ->
+            if ((i == 0 || i == lastIndex) && c == '\"') return@f
+            if (c.isWhitespace()) return true // whitespaces are not allowed
+            if (c in FORCE_QUOTED_CHARS) return true
+        }
+        return false
     }
 
     fun quoteIfNeeded(expression: String): String {
         if (expression.isLeftQuoted() && expression.isRightQuoted()) return expression
         if (!needQuote(expression)) return expression
-        return expression.unquote().quote() // unquote first
+        return expression.quote(lenient = true)
     }
 
     fun changeContent(element: ParadoxScriptPropertyKey, newContent: String, range: TextRange? = null): ParadoxScriptPropertyKey {
@@ -28,7 +35,7 @@ object ParadoxScriptPsiManipulationService {
     }
 
     fun changeContent(element: ParadoxScriptValue, newContent: String, range: TextRange? = null): ParadoxScriptValue {
-        if(element is ParadoxScriptString) return changeContent(element, newContent, range)
+        if (element is ParadoxScriptString) return changeContent(element, newContent, range)
 
         val newValue = range?.replace(element.text, newContent) ?: newContent
         val newText = newValue // not quoted here

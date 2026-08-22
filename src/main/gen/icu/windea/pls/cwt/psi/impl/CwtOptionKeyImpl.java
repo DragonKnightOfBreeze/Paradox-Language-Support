@@ -45,7 +45,7 @@ public class CwtOptionKeyImpl extends ASTWrapperPsiElement implements CwtOptionK
   }
 
   @Override
-  public boolean needQuote() {
+  public boolean needQuote(@NotNull String text) {
     return CwtPsiImplUtil.needQuote(this);
   }
 

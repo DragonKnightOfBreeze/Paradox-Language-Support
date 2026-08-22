@@ -69,7 +69,7 @@ public class ParadoxScriptStringImpl extends ParadoxScriptValueImpl implements P
   }
 
   @Override
-  public boolean needQuote() {
+  public boolean needQuote(@NotNull String text) {
     return ParadoxScriptPsiImplUtil.needQuote(this);
   }
 

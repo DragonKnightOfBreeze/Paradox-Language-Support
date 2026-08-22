@@ -19,14 +19,14 @@ class QuoteLiteralIntention : PsiUpdateModCommandAction<CwtExpressionElement>(Cw
     override fun getFamilyName() = ChronicleIntentionBundle.message("intention.quoteLiteral")
 
     override fun invoke(context: ActionContext, element: CwtExpressionElement, updater: ModPsiUpdater) {
-        val newText = element.text.unquote().quote() // unquote first
+        val newText = element.text.quote(lenient = true)
         ElementManipulators.handleContentChange(element, newText)
     }
 
     override fun isElementApplicable(element: CwtExpressionElement, context: ActionContext): Boolean {
         // can also be applied to number literals
         if (element is CwtNumberExpressionElement) return true
-        return element is CwtStringExpressionElement && element.canQuote()
+        return element is CwtStringExpressionElement && element.canQuote(element.text)
     }
 
     override fun stopSearchAt(element: PsiElement, context: ActionContext): Boolean {
@@ -43,7 +43,7 @@ class UnquoteLiteralIntention : PsiUpdateModCommandAction<CwtExpressionElement>(
     }
 
     override fun isElementApplicable(element: CwtExpressionElement, context: ActionContext): Boolean {
-        return element is CwtStringExpressionElement && element.canUnquote()
+        return element is CwtStringExpressionElement && element.canUnquote(element.text)
     }
 
     override fun stopSearchAt(element: PsiElement, context: ActionContext): Boolean {

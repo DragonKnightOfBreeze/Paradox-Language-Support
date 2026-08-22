@@ -21,14 +21,14 @@ class QuoteLiteralIntention : PsiUpdateModCommandAction<ParadoxScriptExpressionE
     // NOTE 1.3.0+ 目前无法适用于用引号括起的参数值中的那些字面量（例如，`p = "\"v\""` 中的 `\"v\"` ）
 
     override fun invoke(context: ActionContext, element: ParadoxScriptExpressionElement, updater: ModPsiUpdater) {
-        val newText = element.text.unquote().quote() // unquote first
+        val newText = element.text.quote(lenient = true)
         ElementManipulators.handleContentChange(element, newText)
     }
 
     override fun isElementApplicable(element: ParadoxScriptExpressionElement, context: ActionContext): Boolean {
         // can also be applied to number literals
         if (element is ParadoxScriptNumberExpressionElement) return true
-        return element is ParadoxScriptStringExpressionElement && element.canQuote()
+        return element is ParadoxScriptStringExpressionElement && element.canQuote(element.text)
     }
 
     override fun stopSearchAt(element: PsiElement, context: ActionContext): Boolean {
@@ -47,7 +47,7 @@ class UnquoteLiteralIntention : PsiUpdateModCommandAction<ParadoxScriptExpressio
     }
 
     override fun isElementApplicable(element: ParadoxScriptExpressionElement, context: ActionContext): Boolean {
-        return element is ParadoxScriptStringExpressionElement && element.canUnquote()
+        return element is ParadoxScriptStringExpressionElement && element.canUnquote(element.text)
     }
 
     override fun stopSearchAt(element: PsiElement, context: ActionContext): Boolean {

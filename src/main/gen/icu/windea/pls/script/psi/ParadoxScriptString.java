@@ -29,7 +29,7 @@ public interface ParadoxScriptString extends ParadoxScriptValue, PsiQuoteAwareEl
 
   @NotNull ParadoxScriptValue setContent(@NotNull String content, @NotNull TextRange range);
 
-  boolean needQuote();
+  boolean needQuote(@NotNull String text);
 
   @Nullable PsiReference getReference();
 
