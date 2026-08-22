@@ -15,16 +15,17 @@ import icu.windea.pls.cwt.psi.CwtNumberExpressionElement
 import icu.windea.pls.cwt.psi.CwtStringExpressionElement
 import icu.windea.pls.lang.intentions.ChronicleIntentionBundle
 
-class QuoteLiteralIntention : PsiUpdateModCommandAction<CwtExpressionElement>(CwtExpressionElement::class.java), DumbAware  {
+class QuoteLiteralIntention : PsiUpdateModCommandAction<CwtExpressionElement>(CwtExpressionElement::class.java), DumbAware {
     override fun getFamilyName() = ChronicleIntentionBundle.message("intention.quoteLiteral")
 
     override fun invoke(context: ActionContext, element: CwtExpressionElement, updater: ModPsiUpdater) {
-        ElementManipulators.handleContentChange(element, element.text.quote())
+        val newText = element.text.unquote().quote() // unquote first
+        ElementManipulators.handleContentChange(element, newText)
     }
 
     override fun isElementApplicable(element: CwtExpressionElement, context: ActionContext): Boolean {
         // can also be applied to number literals
-        if(element is CwtNumberExpressionElement) return true
+        if (element is CwtNumberExpressionElement) return true
         return element is CwtStringExpressionElement && element.canQuote()
     }
 
@@ -33,11 +34,12 @@ class QuoteLiteralIntention : PsiUpdateModCommandAction<CwtExpressionElement>(Cw
     }
 }
 
-class UnquoteLiteralIntention : PsiUpdateModCommandAction<CwtExpressionElement>(CwtExpressionElement::class.java), DumbAware  {
+class UnquoteLiteralIntention : PsiUpdateModCommandAction<CwtExpressionElement>(CwtExpressionElement::class.java), DumbAware {
     override fun getFamilyName() = ChronicleIntentionBundle.message("intention.unquoteLiteral")
 
     override fun invoke(context: ActionContext, element: CwtExpressionElement, updater: ModPsiUpdater) {
-        ElementManipulators.handleContentChange(element, element.text.unquote())
+        val newText = element.text.unquote()
+        ElementManipulators.handleContentChange(element, newText)
     }
 
     override fun isElementApplicable(element: CwtExpressionElement, context: ActionContext): Boolean {

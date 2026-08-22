@@ -44,10 +44,6 @@
                              implementationClass="icu.windea.pls.script.psi.ParadoxScriptElementManipulators$ValueManipulator"/>
     <lang.elementManipulator forClass="icu.windea.pls.script.psi.ParadoxScriptString"
                              implementationClass="icu.windea.pls.script.psi.ParadoxScriptElementManipulators$StringManipulator"/>
-    <lang.elementManipulator forClass="icu.windea.pls.script.psi.ParadoxScriptParameter"
-                             implementationClass="icu.windea.pls.script.psi.ParadoxScriptElementManipulators$ParameterManipulator"/>
-    <lang.elementManipulator forClass="icu.windea.pls.script.psi.ParadoxScriptInlineMathParameter"
-                             implementationClass="icu.windea.pls.script.psi.ParadoxScriptElementManipulators$InlineMathParameterManipulator"/>
 
     <additionalTextAttributes scheme="Default" file="colorSchemes/ParadoxScriptDefault.xml"/>
     <additionalTextAttributes scheme="Darcula" file="colorSchemes/ParadoxScriptDarcula.xml"/>

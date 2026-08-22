@@ -337,8 +337,8 @@ fun String.unquote(quote: Char = '"'): String {
 
 /** 在必要时自动加引号。 */
 fun String.quoteIfNeeded(quote: Char = '"', containAnyChar: String = "", containBlank: Boolean = true, isBlank: Boolean = true): String {
-    val shouldQuote = (isBlank && isBlank()) || any { it == quote || (containBlank && it.isWhitespace()) || it in containAnyChar }
-    return if (shouldQuote) this.quote(quote) else this
+    val needQuote = (isBlank && isBlank()) || any { it == quote || (containBlank && it.isWhitespace()) || it in containAnyChar }
+    return if (needQuote) this.unquote().quote(quote) else this
 }
 
 /** 判断当前字符串中的指定索引 [index] 的字符是否被转义（在前面有连续的奇数个反斜线）。 */

@@ -5,11 +5,14 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
+import icu.windea.pls.csv.psi.ParadoxCsvPsiManipulationService
 import icu.windea.pls.cwt.*
 import icu.windea.pls.cwt.psi.CwtElementTypes.*
 
 @Suppress("unused")
 object CwtElementFactory {
+    // create from text
+
     @JvmStatic
     fun createFileFromText(project: Project, text: String): CwtFile {
         return PsiFileFactory.getInstance(project).createFileFromText(CwtLanguage, text)
@@ -65,8 +68,40 @@ object CwtElementFactory {
     }
 
     @JvmStatic
-    fun createBlockFromTextFromText(project: Project, text: String): CwtBlock {
+    fun createBlockFromText(project: Project, text: String): CwtBlock {
         return createValueFromText(project, text)
             .castOrNull<CwtBlock>() ?: throw IncorrectOperationException()
+    }
+
+    // create smartly
+
+    @JvmStatic
+    fun createOption(project: Project, key: String, value: String): CwtOption {
+        val text = "${ParadoxCsvPsiManipulationService.quoteIfNeeded(key)} = ${ParadoxCsvPsiManipulationService.quoteIfNeeded(value)}"
+        return createOptionFromText(project, text)
+    }
+
+    @JvmStatic
+    fun createProperty(project: Project, key: String, value: String, separatorString: String = " = "): CwtProperty {
+        val text = "${CwtPsiManipulationService.quoteIfNeeded(key)}$separatorString${CwtPsiManipulationService.quoteIfNeeded(value)}"
+        return createPropertyFromText(project, text)
+    }
+
+    @JvmStatic
+    fun createOptionKey(project: Project, value: String): CwtOptionKey {
+        val text = CwtPsiManipulationService.quoteIfNeeded(value)
+        return createOptionKeyFromText(project, text)
+    }
+
+    @JvmStatic
+    fun createPropertyKey(project: Project, value: String): CwtPropertyKey {
+        val text = CwtPsiManipulationService.quoteIfNeeded(value)
+        return createPropertyKeyFromText(project, text)
+    }
+
+    @JvmStatic
+    fun createString(project: Project, value: String): CwtString {
+        val text = CwtPsiManipulationService.quoteIfNeeded(value)
+        return createStringFromText(project, text)
     }
 }

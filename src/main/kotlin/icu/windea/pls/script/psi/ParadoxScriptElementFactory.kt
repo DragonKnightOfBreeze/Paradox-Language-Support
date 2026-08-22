@@ -11,6 +11,8 @@ import icu.windea.pls.script.ParadoxScriptLanguage
 
 @Suppress("unused")
 object ParadoxScriptElementFactory {
+    // create from text
+
     @JvmStatic
     fun createFileFromText(project: Project, text: String): ParadoxScriptFile {
         return PsiFileFactory.getInstance(project).createFileFromText(ParadoxScriptLanguage, text)
@@ -32,12 +34,6 @@ object ParadoxScriptElementFactory {
     fun createScriptedVariableFromText(project: Project, text: String): ParadoxScriptScriptedVariable {
         return createRootBlockFromText(project, text)
             .findChild<ParadoxScriptScriptedVariable>() ?: throw IncorrectOperationException()
-    }
-
-    @JvmStatic
-    fun createScriptedVariable(project: Project, name: String, value: String): ParadoxScriptScriptedVariable {
-        val text = "@$name = ${ParadoxScriptPsiManipulationService.quoteIfNeeded(value)}"
-        return createScriptedVariableFromText(project, text)
     }
 
     @JvmStatic
@@ -89,11 +85,6 @@ object ParadoxScriptElementFactory {
     }
 
     @JvmStatic
-    fun createScriptedVariableReference(project: Project, name: String): ParadoxScriptScriptedVariableReference {
-        return createScriptedVariableReferenceFromText(project, "@$name")
-    }
-
-    @JvmStatic
     fun createConditionalBlockFromText(project: Project, text: String): ParadoxScriptConditionalBlock {
         return createRootBlockFromText(project, "a = { $text }")
             .findChild<ParadoxScriptProperty>()
@@ -102,8 +93,9 @@ object ParadoxScriptElementFactory {
     }
 
     @JvmStatic
-    fun createConditionalBlock(project: Project, expression: String, itemsText: String): ParadoxScriptConditionalBlock {
-        return createConditionalBlockFromText(project, "[[$expression] $itemsText ]")
+    fun createInlineMathFromText(project: Project, text: String): ParadoxScriptInlineMath {
+        return createValueFromText(project, text)
+            .castOrNull() ?: throw IncorrectOperationException()
     }
 
     @JvmStatic
@@ -114,30 +106,9 @@ object ParadoxScriptElementFactory {
     }
 
     @JvmStatic
-    fun createConditionalBlockParameter(project: Project, name: String): ParadoxScriptConditionalBlockParameter {
-        return createConditionalBlockParameterFromText(project, name)
-    }
-
-    @JvmStatic
-    fun createInlineMathFromText(project: Project, text: String): ParadoxScriptInlineMath {
-        return createValueFromText(project, text)
-            .castOrNull() ?: throw IncorrectOperationException()
-    }
-
-    @JvmStatic
-    fun createInlineMath(project: Project, expression: String): ParadoxScriptInlineMath {
-        return createInlineMathFromText(project, "@[$expression]")
-    }
-
-    @JvmStatic
     fun createInlineMathScriptedVariableReferenceFromText(project: Project, name: String): ParadoxScriptInlineMathScriptedVariableReference {
         return createInlineMath(project, name)
             .findChild<ParadoxScriptInlineMathScriptedVariableReference>() ?: throw IncorrectOperationException()
-    }
-
-    @JvmStatic
-    fun createInlineMathScriptedVariableReference(project: Project, name: String): ParadoxScriptInlineMathScriptedVariableReference {
-        return createInlineMathScriptedVariableReferenceFromText(project, name)
     }
 
     @JvmStatic
@@ -147,15 +118,66 @@ object ParadoxScriptElementFactory {
     }
 
     @JvmStatic
-    fun createParameter(project: Project, name: String, defaultValue: String? = null): ParadoxScriptParameter {
-        val text = if (defaultValue == null) "$$name$" else "$$name|$defaultValue$"
-        return createParameterFromText(project, text)
-    }
-
-    @JvmStatic
     fun createInlineMathParameterFromText(project: Project, text: String): ParadoxScriptInlineMathParameter {
         return createInlineMath(project, text)
             .findChild<ParadoxScriptInlineMathParameter>() ?: throw IncorrectOperationException()
+    }
+
+    // create smartly
+
+    @JvmStatic
+    fun createScriptedVariable(project: Project, name: String, value: String): ParadoxScriptScriptedVariable {
+        val text = "@$name = ${ParadoxScriptPsiManipulationService.quoteIfNeeded(value)}"
+        return createScriptedVariableFromText(project, text)
+    }
+
+    @JvmStatic
+    fun createProperty(project: Project, key: String, value: String, separatorString: String = " = "): ParadoxScriptProperty {
+        val text = "$${ParadoxScriptPsiManipulationService.quoteIfNeeded(key)}$separatorString${ParadoxScriptPsiManipulationService.quoteIfNeeded(value)}"
+        return createPropertyFromText(project, text)
+    }
+
+    @JvmStatic
+    fun createPropertyKey(project: Project, value: String): ParadoxScriptPropertyKey {
+        val text = ParadoxScriptPsiManipulationService.quoteIfNeeded(value)
+        return createPropertyKeyFromText(project, text)
+    }
+
+    @JvmStatic
+    fun createString(project: Project, value: String): ParadoxScriptString {
+        val text = ParadoxScriptPsiManipulationService.quoteIfNeeded(value)
+        return createStringFromText(project, text)
+    }
+
+    @JvmStatic
+    fun createScriptedVariableReference(project: Project, name: String): ParadoxScriptScriptedVariableReference {
+        return createScriptedVariableReferenceFromText(project, "@$name")
+    }
+
+    @JvmStatic
+    fun createInlineMathScriptedVariableReference(project: Project, name: String): ParadoxScriptInlineMathScriptedVariableReference {
+        return createInlineMathScriptedVariableReferenceFromText(project, name)
+    }
+
+    @JvmStatic
+    fun createInlineMath(project: Project, expression: String): ParadoxScriptInlineMath {
+        return createInlineMathFromText(project, "@[$expression]")
+    }
+
+    @JvmStatic
+    fun createConditionalBlock(project: Project, expression: String, itemsText: String): ParadoxScriptConditionalBlock {
+        return createConditionalBlockFromText(project, "[[$expression] $itemsText ]")
+    }
+
+    @JvmStatic
+    fun createConditionalBlockParameter(project: Project, name: String): ParadoxScriptConditionalBlockParameter {
+        return createConditionalBlockParameterFromText(project, name)
+    }
+
+    @JvmStatic
+    fun createParameter(project: Project, name: String, defaultValue: String? = null): ParadoxScriptParameter {
+        val text = if (defaultValue == null) "$$name$" else "$$name|$defaultValue$"
+        return createParameterFromText(project, text)
     }
 
     @JvmStatic

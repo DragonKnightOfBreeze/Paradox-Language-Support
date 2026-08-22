@@ -11,6 +11,8 @@ import icu.windea.pls.localisation.ParadoxLocalisationLanguage
 
 @Suppress("unused")
 object ParadoxLocalisationElementFactory {
+    // create from text
+
     @JvmStatic
     fun createFileFromText(project: Project, text: String): ParadoxLocalisationFile {
         return PsiFileFactory.getInstance(project).createFileFromText(ParadoxLocalisationLanguage, text)
@@ -23,16 +25,18 @@ object ParadoxLocalisationElementFactory {
     }
 
     @JvmStatic
-    fun createLocale(project: Project, locale: String): ParadoxLocalisationLocale {
-        return createFileFromText(project, "$locale:\n")
-            .propertyList?.locale ?: throw IncorrectOperationException()
-    }
-
-    @JvmStatic
     fun createPropertyFromText(project: Project, text: String): ParadoxLocalisationProperty {
         return createFileFromText(project, "l_english:\n$text")
             .findChild<ParadoxLocalisationPropertyList>()
             ?.findChild<ParadoxLocalisationProperty>() ?: throw IncorrectOperationException()
+    }
+
+    // create smartly
+
+    @JvmStatic
+    fun createLocale(project: Project, locale: String): ParadoxLocalisationLocale {
+        return createFileFromText(project, "$locale:\n")
+            .propertyList?.locale ?: throw IncorrectOperationException()
     }
 
     @JvmStatic

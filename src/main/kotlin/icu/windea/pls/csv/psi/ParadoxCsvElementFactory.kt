@@ -13,6 +13,8 @@ import icu.windea.pls.csv.psi.ParadoxCsvElementTypes.*
 
 @Suppress("unused")
 object ParadoxCsvElementFactory {
+    // create from text
+
     @JvmStatic
     fun createFileFromText(project: Project, text: String): ParadoxCsvFile {
         return PsiFileFactory.getInstance(project).createFileFromText(ParadoxCsvLanguage, text)
@@ -23,6 +25,16 @@ object ParadoxCsvElementFactory {
     fun createWhiteSpaceFromText(project: Project, text: String): PsiElement {
         return PsiParserFacade.getInstance(project).createWhiteSpaceFromText(text)
     }
+
+    @JvmStatic
+    fun createColumnFromText(project: Project, text: String): ParadoxCsvColumn {
+        val fileText = text
+        return createFileFromText(project, fileText)
+            .findChild<ParadoxCsvColumnContainer>()
+            ?.findChild<ParadoxCsvColumn>() ?: throw IncorrectOperationException()
+    }
+
+    // create smartly
 
     @JvmStatic
     fun createEmptyHeader(project: Project, length: Int): ParadoxCsvHeader {
@@ -44,14 +56,6 @@ object ParadoxCsvElementFactory {
         return createFileFromText(project, fileText)
             .findChild<ParadoxCsvColumnContainer>()
             ?.findChild { it.elementType == SEPARATOR } ?: throw IncorrectOperationException()
-    }
-
-    @JvmStatic
-    fun createColumnFromText(project: Project, text: String): ParadoxCsvColumn {
-        val fileText = text
-        return createFileFromText(project, fileText)
-            .findChild<ParadoxCsvColumnContainer>()
-            ?.findChild<ParadoxCsvColumn>() ?: throw IncorrectOperationException()
     }
 
     @JvmStatic

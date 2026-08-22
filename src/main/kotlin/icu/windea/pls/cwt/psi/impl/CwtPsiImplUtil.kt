@@ -13,14 +13,12 @@ import com.intellij.psi.tree.IElementType
 import com.intellij.psi.util.elementType
 import com.intellij.util.IncorrectOperationException
 import icu.windea.pls.ChronicleIcons
-import icu.windea.pls.core.cast
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.findChildren
 import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.core.unquote
 import icu.windea.pls.cwt.psi.CwtBlock
 import icu.windea.pls.cwt.psi.CwtDocComment
-import icu.windea.pls.cwt.psi.CwtElementFactory
 import icu.windea.pls.cwt.psi.CwtElementTypes.*
 import icu.windea.pls.cwt.psi.CwtExpressionElement
 import icu.windea.pls.cwt.psi.CwtMember
@@ -165,9 +163,7 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun setValue(element: CwtPropertyKey, value: String): CwtPropertyKey {
-        val newValue = CwtPsiManipulationService.quoteIfNeeded(value)
-        val newElement = CwtElementFactory.createPropertyKeyFromText(element.project, newValue)
-        return element.replace(newElement).cast()
+        return CwtPsiManipulationService.changeContent(element, value)
     }
 
     @JvmStatic
@@ -186,9 +182,7 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun setValue(element: CwtValue, value: String): CwtValue {
-        if (element is CwtString) return setValue(element, value)
-        val newElement = CwtElementFactory.createValueFromText(element.project, value)
-        return element.replace(newElement).cast()
+        return CwtPsiManipulationService.changeContent(element, value)
     }
 
     // endregion
@@ -217,9 +211,7 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun setValue(element: CwtString, value: String): CwtString {
-        val newValue = CwtPsiManipulationService.quoteIfNeeded(value)
-        val newElement = CwtElementFactory.createStringFromText(element.project, newValue)
-        return element.replace(newElement).cast()
+        return CwtPsiManipulationService.changeContent(element, value)
     }
 
     @JvmStatic

@@ -2,9 +2,10 @@ package icu.windea.pls.cwt.psi
 
 import com.intellij.openapi.util.TextRange
 import icu.windea.pls.core.cast
-import icu.windea.pls.core.isQuoted
+import icu.windea.pls.core.isLeftQuoted
+import icu.windea.pls.core.isRightQuoted
 import icu.windea.pls.core.quote
-import icu.windea.pls.core.replaceAndQuoteIfNeeded
+import icu.windea.pls.core.unquote
 
 object CwtPsiManipulationService {
     private const val FORCE_QUOTED_CHARS = "#={}\""
@@ -14,35 +15,37 @@ object CwtPsiManipulationService {
     }
 
     fun quoteIfNeeded(expression: String): String {
-        return if (!expression.isQuoted() && needQuote(expression)) expression.quote() else expression
+        if (expression.isLeftQuoted() && expression.isRightQuoted()) return expression
+        if (!needQuote(expression)) return expression
+        return expression.unquote().quote() // unquote first
     }
 
-    fun changeContent(element: CwtOptionKey, range: TextRange, newContent: String): CwtOptionKey {
-        val text = element.text
-        val newText = range.replaceAndQuoteIfNeeded(text, newContent)
+    fun changeContent(element: CwtOptionKey, newContent: String, range: TextRange? = null): CwtOptionKey {
+        val newValue = range?.replace(element.text, newContent) ?: newContent
+        val newText = quoteIfNeeded(newValue)
         val newElement = CwtElementFactory.createOptionKeyFromText(element.project, newText)
         return element.replace(newElement).cast()
     }
 
-    fun changeContent(element: CwtPropertyKey, range: TextRange, newContent: String): CwtPropertyKey {
-        val text = element.text
-        val newText = range.replaceAndQuoteIfNeeded(text, newContent)
+    fun changeContent(element: CwtPropertyKey, newContent: String, range: TextRange? = null): CwtPropertyKey {
+        val newValue = range?.replace(element.text, newContent) ?: newContent
+        val newText = quoteIfNeeded(newValue)
         val newElement = CwtElementFactory.createPropertyKeyFromText(element.project, newText)
         return element.replace(newElement).cast()
     }
 
-    fun changeContent(element: CwtValue, range: TextRange, newContent: String): CwtValue {
-        if (element is CwtString) return changeContent(element, range, newContent)
+    fun changeContent(element: CwtValue, newContent: String, range: TextRange? = null): CwtValue {
+        if (element is CwtString) return changeContent(element, newContent, range)
 
-        val text = element.text
-        val newText = range.replace(text, newContent)
+        val newValue = range?.replace(element.text, newContent) ?: newContent
+        val newText = newValue // not quoted here
         val newElement = CwtElementFactory.createValueFromText(element.project, newText)
         return element.replace(newElement).cast()
     }
 
-    fun changeContent(element: CwtString, range: TextRange, newContent: String): CwtString {
-        val text = element.text
-        val newText = range.replaceAndQuoteIfNeeded(text, newContent)
+    fun changeContent(element: CwtString, newContent: String, range: TextRange? = null): CwtString {
+        val newValue = range?.replace(element.text, newContent) ?: newContent
+        val newText = quoteIfNeeded(newValue)
         val newElement = CwtElementFactory.createStringFromText(element.project, newText)
         return element.replace(newElement).cast()
     }

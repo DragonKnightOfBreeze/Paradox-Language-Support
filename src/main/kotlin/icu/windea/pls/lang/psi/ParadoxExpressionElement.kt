@@ -1,5 +1,6 @@
 package icu.windea.pls.lang.psi
 
+import com.intellij.openapi.util.TextRange
 import com.intellij.psi.NavigatablePsiElement
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
@@ -22,7 +23,9 @@ interface ParadoxExpressionElement : NavigatablePsiElement {
 
     val value: String
 
+    val presentableText: String
+
     fun setValue(value: String): ParadoxExpressionElement
 
-    val presentableText: String
+    fun setContent(content: String, range: TextRange): ParadoxExpressionElement
 }

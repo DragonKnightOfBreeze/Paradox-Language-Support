@@ -2,8 +2,10 @@ package icu.windea.pls.script.psi
 
 import com.intellij.openapi.util.TextRange
 import icu.windea.pls.core.cast
+import icu.windea.pls.core.isLeftQuoted
+import icu.windea.pls.core.isRightQuoted
 import icu.windea.pls.core.quote
-import icu.windea.pls.core.replaceAndQuoteIfNeeded
+import icu.windea.pls.core.unquote
 
 object ParadoxScriptPsiManipulationService {
     private const val FORCE_QUOTED_CHARS = "@#=<>!?{}[\""
@@ -13,43 +15,35 @@ object ParadoxScriptPsiManipulationService {
     }
 
     fun quoteIfNeeded(expression: String): String {
-        return if (needQuote(expression)) expression.quote() else expression
+        if (expression.isLeftQuoted() && expression.isRightQuoted()) return expression
+        if (!needQuote(expression)) return expression
+        return expression.unquote().quote() // unquote first
     }
 
-    fun changeContent(element: ParadoxScriptPropertyKey, range: TextRange, newContent: String): ParadoxScriptPropertyKey {
-        val text = element.text
-        val newText = range.replaceAndQuoteIfNeeded(text, newContent)
+    fun changeContent(element: ParadoxScriptExpressionElement): ParadoxScriptExpressionElement {
+
+    }
+
+    fun changeContent(element: ParadoxScriptPropertyKey, newContent: String, range: TextRange? = null): ParadoxScriptPropertyKey {
+        val newValue = range?.replace(element.text, newContent) ?: newContent
+        val newText = quoteIfNeeded(newValue)
         val newElement = ParadoxScriptElementFactory.createPropertyKeyFromText(element.project, newText)
         return element.replace(newElement).cast()
     }
 
-    fun changeContent(element: ParadoxScriptValue, range: TextRange, newContent: String): ParadoxScriptValue {
-        if(element is ParadoxScriptString) return changeContent(element, range, newContent)
+    fun changeContent(element: ParadoxScriptValue, newContent: String, range: TextRange? = null): ParadoxScriptValue {
+        if(element is ParadoxScriptString) return changeContent(element, newContent, range)
 
-        val text = element.text
-        val newText = range.replace(text, newContent)
+        val newValue = range?.replace(element.text, newContent) ?: newContent
+        val newText = newValue // not quoted here
         val newElement = ParadoxScriptElementFactory.createValueFromText(element.project, newText)
         return element.replace(newElement).cast()
     }
 
-    fun changeContent(element: ParadoxScriptString, range: TextRange, newContent: String): ParadoxScriptString {
-        val text = element.text
-        val newText = range.replaceAndQuoteIfNeeded(text, newContent)
+    fun changeContent(element: ParadoxScriptString, newContent: String, range: TextRange? = null): ParadoxScriptString {
+        val newValue = range?.replace(element.text, newContent) ?: newContent
+        val newText = quoteIfNeeded(newValue)
         val newElement = ParadoxScriptElementFactory.createStringFromText(element.project, newText)
-        return element.replace(newElement).cast()
-    }
-
-    fun changeContent(element: ParadoxScriptParameter, range: TextRange, newContent: String): ParadoxScriptParameter {
-        val text = element.text
-        val newText = range.replace(text, newContent)
-        val newElement = ParadoxScriptElementFactory.createParameterFromText(element.project, newText)
-        return element.replace(newElement).cast()
-    }
-
-    fun changeContent(element: ParadoxScriptInlineMathParameter, range: TextRange, newContent: String): ParadoxScriptInlineMathParameter {
-        val text = element.text
-        val newText = range.replaceAndQuoteIfNeeded(text, newContent)
-        val newElement = ParadoxScriptElementFactory.createInlineMathParameterFromText(element.project, newText)
         return element.replace(newElement).cast()
     }
 }

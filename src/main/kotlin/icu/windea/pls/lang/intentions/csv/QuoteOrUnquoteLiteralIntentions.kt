@@ -12,13 +12,15 @@ import icu.windea.pls.core.quote
 import icu.windea.pls.core.unquote
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
+import icu.windea.pls.cwt.psi.CwtExpressionElement
 import icu.windea.pls.lang.intentions.ChronicleIntentionBundle
 
 class QuoteLiteralIntention : PsiUpdateModCommandAction<ParadoxCsvExpressionElement>(ParadoxCsvExpressionElement::class.java), DumbAware {
     override fun getFamilyName() = ChronicleIntentionBundle.message("intention.quoteLiteral")
 
-    override fun invoke(context: ActionContext, element: ParadoxCsvExpressionElement, updater: ModPsiUpdater) {
-        ElementManipulators.handleContentChange(element, element.text.quote())
+    override fun invoke(context: ActionContext, element: CwtExpressionElement, updater: ModPsiUpdater) {
+        val newText = element.text.unquote().quote() // unquote first
+        ElementManipulators.handleContentChange(element, newText)
     }
 
     override fun isElementApplicable(element: ParadoxCsvExpressionElement, context: ActionContext): Boolean {
@@ -32,8 +34,9 @@ class QuoteLiteralIntention : PsiUpdateModCommandAction<ParadoxCsvExpressionElem
 class UnquoteLiteralIntention : PsiUpdateModCommandAction<ParadoxCsvExpressionElement>(ParadoxCsvExpressionElement::class.java), DumbAware {
     override fun getFamilyName() = ChronicleIntentionBundle.message("intention.unquoteLiteral")
 
-    override fun invoke(context: ActionContext, element: ParadoxCsvExpressionElement, updater: ModPsiUpdater) {
-        ElementManipulators.handleContentChange(element, element.text.unquote())
+    override fun invoke(context: ActionContext, element: CwtExpressionElement, updater: ModPsiUpdater) {
+        val newText = element.text.unquote()
+        ElementManipulators.handleContentChange(element, newText)
     }
 
     override fun isElementApplicable(element: ParadoxCsvExpressionElement, context: ActionContext): Boolean {

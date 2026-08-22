@@ -30,7 +30,7 @@ class PutMembersOnSeparateLinesIntention : PutMembersIntentionBase() {
 
         // 由于后续会自动格式化，这里只需处理换行即可
         val newText = "{\n${membersText}\n}"
-        val newElement = CwtElementFactory.createBlockFromTextFromText(context.project, newText)
+        val newElement = CwtElementFactory.createBlockFromText(context.project, newText)
         element.replace(newElement)
     }
 

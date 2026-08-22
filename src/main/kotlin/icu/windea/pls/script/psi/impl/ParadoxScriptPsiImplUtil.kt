@@ -195,9 +195,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun setValue(element: ParadoxScriptPropertyKey, value: String): ParadoxScriptPropertyKey {
-        val newValue = ParadoxScriptPsiManipulationService.quoteIfNeeded(value)
-        val newElement = ParadoxScriptElementFactory.createPropertyKeyFromText(element.project, newValue)
-        return element.replace(newElement).cast()
+        return ParadoxScriptPsiManipulationService.changeContent(element, value)
     }
 
     @JvmStatic
@@ -216,9 +214,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun setValue(element: ParadoxScriptValue, value: String): ParadoxScriptValue {
-        if (element is ParadoxScriptString) return setValue(element, value)
-        val newElement = ParadoxScriptElementFactory.createValueFromText(element.project, value)
-        return element.replace(newElement).cast()
+        return ParadoxScriptPsiManipulationService.changeContent(element, value)
     }
 
     // endregion
@@ -243,9 +239,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun setValue(element: ParadoxScriptString, value: String): ParadoxScriptValue {
-        val newValue = ParadoxScriptPsiManipulationService.quoteIfNeeded(value)
-        val newElement = ParadoxScriptElementFactory.createValueFromText(element.project, newValue) // can also be boolean or number
-        return element.replace(newElement).cast()
+        return ParadoxScriptPsiManipulationService.changeContent(element, value)
     }
 
     @JvmStatic

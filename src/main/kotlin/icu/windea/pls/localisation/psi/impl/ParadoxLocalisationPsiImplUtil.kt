@@ -353,8 +353,7 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun setValue(element: ParadoxLocalisationCommandText, value: String): ParadoxLocalisationCommandText {
-        val newElement = ParadoxLocalisationElementFactory.createCommandText(element.project, value)
-        return element.replace(newElement).cast()
+        return ParadoxLocalisationPsiManipulationService.changeContent(element, value)
     }
 
     // endregion
@@ -399,8 +398,7 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun setValue(element: ParadoxLocalisationConceptName, value: String): ParadoxLocalisationConceptName {
-        val newElement = ParadoxLocalisationElementFactory.createConceptName(element.project, value)
-        return element.replace(newElement).cast()
+        return ParadoxLocalisationPsiManipulationService.changeContent(element, value)
     }
 
     // endregion
