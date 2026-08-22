@@ -53,4 +53,10 @@ object ParadoxCsvElementFactory {
             .findChild<ParadoxCsvColumnContainer>()
             ?.findChild<ParadoxCsvColumn>() ?: throw IncorrectOperationException()
     }
+
+    @JvmStatic
+    fun createColumn(project: Project, value: String): ParadoxCsvColumn {
+        val text = ParadoxCsvPsiManipulationService.quoteIfNeeded(value)
+        return createColumn(project, text)
+    }
 }

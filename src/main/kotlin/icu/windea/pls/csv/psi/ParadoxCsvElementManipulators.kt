@@ -6,7 +6,7 @@ import com.intellij.psi.AbstractElementManipulator
 interface ParadoxCsvElementManipulators {
     class ColumnManipulator : AbstractElementManipulator<ParadoxCsvColumn>() {
         override fun handleContentChange(element: ParadoxCsvColumn, range: TextRange, newContent: String): ParadoxCsvColumn {
-            return ParadoxCsvPsiManipulationService.changeContent(element, range, newContent)
+            return ParadoxCsvPsiManipulationService.changeContent(element, newContent, range)
         }
     }
 }
