@@ -141,11 +141,11 @@
     <!-- endregion -->
     <!-- region Paradox Script/Expressions -->
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptMissingExpression"
-                     key="inspection.script.missingExpression" groupKey="inspection.script.expression.group" groupPathKey="inspection.script.groupPath"
+                     key="inspection.missingExpression" groupKey="inspection.script.expression.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="ERROR"
                      implementationClass="icu.windea.pls.lang.inspections.script.expression.MissingExpressionInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptTooManyExpression"
-                     key="inspection.script.tooManyExpression" groupKey="inspection.script.expression.group" groupPathKey="inspection.script.groupPath"
+                     key="inspection.tooManyExpression" groupKey="inspection.script.expression.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="WEAK WARNING"
                      implementationClass="icu.windea.pls.lang.inspections.script.expression.TooManyExpressionInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnresolvedExpression"
@@ -157,11 +157,11 @@
                      enabledByDefault="true" level="WARNING"
                      implementationClass="icu.windea.pls.lang.inspections.script.expression.IncorrectExpressionInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptConflictingExpression"
-                     key="inspection.script.conflictingExpression" groupKey="inspection.script.expression.group" groupPathKey="inspection.script.groupPath"
+                     key="inspection.conflictingExpression" groupKey="inspection.script.expression.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="false" level="WARNING"
                      implementationClass="icu.windea.pls.lang.inspections.script.expression.ConflictingExpressionInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnresolvedPathReference"
-                     key="inspection.script.unresolvedPathReference" groupKey="inspection.script.common.group" groupPathKey="inspection.script.groupPath"
+                     key="inspection.unresolvedPathReference" groupKey="inspection.script.common.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="ERROR"
                      implementationClass="icu.windea.pls.lang.inspections.script.expression.UnresolvedPathReferenceInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectPathReference"

@@ -178,15 +178,15 @@ object ParadoxExpressionInspectionService {
             val expressionType = ChronicleBundle.expressionType(configExpression)
             val isConst = configExpression.type == CwtDataTypes.Constant
             val shortDescription = when {
-                isConst -> ChronicleBundle.message("inspection.script.missingExpression.desc.1", expressionType, configExpression)
-                else -> ChronicleBundle.message("inspection.script.missingExpression.desc.2", expressionType, configExpression)
+                isConst -> ChronicleBundle.message("inspection.missingExpression.desc.1", expressionType, configExpression)
+                else -> ChronicleBundle.message("inspection.missingExpression.desc.2", expressionType, configExpression)
             }
             val description = when {
                 context.showExpect -> {
                     val minDefine = occurrence.minDefine
                     val details = when {
-                        minDefine == null -> ChronicleBundle.message("inspection.script.missingExpression.details.1", min, actual)
-                        else -> ChronicleBundle.message("inspection.script.missingExpression.details.2", min, actual, minDefine)
+                        minDefine == null -> ChronicleBundle.message("inspection.missingExpression.details.1", min, actual)
+                        else -> ChronicleBundle.message("inspection.missingExpression.details.2", min, actual, minDefine)
                     }
                     ChronicleBundle.inspectionDescription(shortDescription, details)
                 }
@@ -255,15 +255,15 @@ object ParadoxExpressionInspectionService {
             val expressionType = ChronicleBundle.expressionType(configExpression)
             val isConst = configExpression.type == CwtDataTypes.Constant
             val shortDescription = when {
-                isConst -> ChronicleBundle.message("inspection.script.tooManyExpression.desc.1", expressionType, configExpression)
-                else -> ChronicleBundle.message("inspection.script.tooManyExpression.desc.2", expressionType, configExpression)
+                isConst -> ChronicleBundle.message("inspection.tooManyExpression.desc.1", expressionType, configExpression)
+                else -> ChronicleBundle.message("inspection.tooManyExpression.desc.2", expressionType, configExpression)
             }
             val description = when {
                 context.showExpect -> {
                     val maxDefine = occurrence.maxDefine
                     val details = when {
-                        maxDefine == null -> ChronicleBundle.message("inspection.script.tooManyExpression.details.1", max, actual)
-                        else -> ChronicleBundle.message("inspection.script.tooManyExpression.details.2", max, actual, maxDefine)
+                        maxDefine == null -> ChronicleBundle.message("inspection.tooManyExpression.details.1", max, actual)
+                        else -> ChronicleBundle.message("inspection.tooManyExpression.details.2", max, actual, maxDefine)
                     }
                     ChronicleBundle.inspectionDescription(shortDescription, details)
                 }
@@ -468,8 +468,8 @@ object ParadoxExpressionInspectionService {
         val text = ""
         val isKey = location is ParadoxScriptPropertyKey
         val description = when {
-            isKey -> ChronicleBundle.message("inspection.script.conflictingExpression.desc.1", text)
-            else -> ChronicleBundle.message("inspection.script.conflictingExpression.desc.2", text)
+            isKey -> ChronicleBundle.message("inspection.conflictingExpression.desc.1", text)
+            else -> ChronicleBundle.message("inspection.conflictingExpression.desc.2", text)
         }
         holder.registerProblem(location, description)
     }
@@ -517,15 +517,15 @@ object ParadoxExpressionInspectionService {
     private fun reportForUnresolvedPathReference(element: ParadoxScriptStringExpressionElement, value: String, configExpression: CwtDataExpression, context: ParadoxExpressionInspectionContext) {
         val holder = context.holder
         val shortDescription = when (configExpression.type) {
-            CwtDataTypes.Icon -> ChronicleBundle.message("inspection.script.unresolvedPathReference.desc.icon", value)
-            CwtDataTypes.FilePath -> ChronicleBundle.message("inspection.script.unresolvedPathReference.desc.filePath", value)
-            CwtDataTypes.FileName -> ChronicleBundle.message("inspection.script.unresolvedPathReference.desc.fileName", value)
-            CwtDataTypes.AbsoluteFilePath -> ChronicleBundle.message("inspection.script.unresolvedPathReference.desc.abs", value)
-            else -> ChronicleBundle.message("inspection.script.unresolvedPathReference.desc", value)
+            CwtDataTypes.Icon -> ChronicleBundle.message("inspection.unresolvedPathReference.desc.icon", value)
+            CwtDataTypes.FilePath -> ChronicleBundle.message("inspection.unresolvedPathReference.desc.filePath", value)
+            CwtDataTypes.FileName -> ChronicleBundle.message("inspection.unresolvedPathReference.desc.fileName", value)
+            CwtDataTypes.AbsoluteFilePath -> ChronicleBundle.message("inspection.unresolvedPathReference.desc.abs", value)
+            else -> ChronicleBundle.message("inspection.unresolvedPathReference.desc", value)
         }
         val description = when {
             context.showExpect -> {
-                val details = ChronicleBundle.message("inspection.script.unresolvedPathReference.details", configExpression)
+                val details = ChronicleBundle.message("inspection.unresolvedPathReference.details", configExpression)
                 ChronicleBundle.inspectionDescription(shortDescription, details)
             }
             else -> shortDescription
@@ -561,8 +561,8 @@ object ParadoxExpressionInspectionService {
         val holder = context.holder
         val expectText = expectFileExtensions.joinToString()
         val description = when {
-            context.showExpect -> ChronicleBundle.message("inspection.script.incorrectPathReference.desc.1", value, expectText)
-            else -> ChronicleBundle.message("inspection.script.incorrectPathReference.desc.0", value)
+            context.showExpect -> ChronicleBundle.message("inspection.incorrectPathReference.desc.1", value, expectText)
+            else -> ChronicleBundle.message("inspection.incorrectPathReference.desc.0", value)
         }
         holder.registerProblem(location, description)
     }

@@ -33,8 +33,8 @@ class TooManyExpressionInspection : LocalInspectionTool() {
 
     override fun getOptionsPane(): OptPane {
         return OptPane.pane(
-            OptPane.checkbox("firstOnly", ChronicleBundle.message("inspection.script.tooManyExpression.option.firstOnly")),
-            OptPane.checkbox("firstOnlyOnFile", ChronicleBundle.message("inspection.script.tooManyExpression.option.firstOnlyOnFile")),
+            OptPane.checkbox("firstOnly", ChronicleBundle.message("inspection.tooManyExpression.option.firstOnly")),
+            OptPane.checkbox("firstOnlyOnFile", ChronicleBundle.message("inspection.tooManyExpression.option.firstOnlyOnFile")),
             OptPane.checkbox("ignoredInInjectedFiles", ChronicleBundle.message("inspection.option.ignoredInInjectedFiles")),
             OptPane.checkbox("ignoredInInlineScriptFiles", ChronicleBundle.message("inspection.option.ignoredInInlineScriptFiles")),
             OptPane.checkbox("showExpect", ChronicleBundle.message("inspection.option.showExpect")),

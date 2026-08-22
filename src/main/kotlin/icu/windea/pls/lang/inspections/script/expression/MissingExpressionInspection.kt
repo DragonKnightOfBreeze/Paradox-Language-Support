@@ -36,8 +36,8 @@ class MissingExpressionInspection : LocalInspectionTool() {
             OptPane.checkbox("ignoredInInjectedFiles", ChronicleBundle.message("inspection.option.ignoredInInjectedFiles")),
             OptPane.checkbox("ignoredInInlineScriptFiles", ChronicleBundle.message("inspection.option.ignoredInInlineScriptFiles")),
             OptPane.checkbox("showExpect", ChronicleBundle.message("inspection.option.showExpect")),
-            OptPane.checkbox("firstOnly", ChronicleBundle.message("inspection.script.missingExpression.option.firstOnly")),
-            OptPane.checkbox("firstOnlyOnFile", ChronicleBundle.message("inspection.script.missingExpression.option.firstOnlyOnFile")),
+            OptPane.checkbox("firstOnly", ChronicleBundle.message("inspection.missingExpression.option.firstOnly")),
+            OptPane.checkbox("firstOnlyOnFile", ChronicleBundle.message("inspection.missingExpression.option.firstOnlyOnFile")),
         )
     }
 
