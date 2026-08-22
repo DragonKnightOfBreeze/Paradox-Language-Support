@@ -1,0 +1,58 @@
+package icu.windea.pls.lang.intentions.script
+
+import com.intellij.modcommand.ActionContext
+import com.intellij.modcommand.ModPsiUpdater
+import icu.windea.pls.lang.intentions.ChronicleIntentionBundle
+import icu.windea.pls.script.psi.ParadoxScriptBlock
+import icu.windea.pls.script.psi.ParadoxScriptBoundMemberContainer
+import icu.windea.pls.script.psi.ParadoxScriptConditionalBlock
+import icu.windea.pls.script.psi.ParadoxScriptElementFactory
+
+/**
+ * 将成员放到不同的行。适用于 [ParadoxScriptBlock] 和 [ParadoxScriptConditionalBlock]。
+ *
+ * ```paradox_script
+ * # before
+ * { V K = V }
+ * [[P] V K = V ]
+ *
+ * # after
+ * {
+ *     V
+ *     K = V
+ * }
+ * [[P]
+ *     V
+ *     K = V
+ * ]
+ * ```
+ */
+@Suppress("UnstableApiUsage")
+class PutMembersOnSeparateLinesIntention : PutMembersIntentionBase() {
+    override fun getFamilyName() = ChronicleIntentionBundle.message("intention.putMembersOnSeparateLines")
+
+    override fun invoke(context: ActionContext, element: ParadoxScriptBoundMemberContainer, updater: ModPsiUpdater) {
+        if (!checkElementAvailable(element)) return
+
+        val membersText = getMemberTextSequence(element).joinToString("\n")
+        if (membersText.isEmpty()) return
+
+        // 由于后续会自动格式化，这里只需处理换行即可
+        val newElement = when (element) {
+            is ParadoxScriptConditionalBlock -> {
+                val conditionExpression = element.conditionExpression ?: return
+                val newText = "[[${conditionExpression}]\n${membersText}\n]"
+                ParadoxScriptElementFactory.createConditionalBlockFromText(context.project, newText)
+            }
+            else -> {
+                val newText = "{\n${membersText}\n}"
+                ParadoxScriptElementFactory.createBlockFromText(context.project, newText)
+            }
+        }
+        element.replace(newElement)
+    }
+
+    override fun isElementApplicable(element: ParadoxScriptBoundMemberContainer, context: ActionContext): Boolean {
+        return checkElementAvailable(element, hasLineBreak = false)
+    }
+}

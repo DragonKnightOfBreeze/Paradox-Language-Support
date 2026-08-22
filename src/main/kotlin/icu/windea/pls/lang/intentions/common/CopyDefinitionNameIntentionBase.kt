@@ -36,3 +36,4 @@ abstract class CopyDefinitionNameIntentionBase : ModCommandAction, DumbAware {
         return ParadoxPsiFileService.findDefinition(context.file, context.offset) { DEFAULT or BY_REFERENCE }
     }
 }
+

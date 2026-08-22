@@ -70,54 +70,6 @@
       <language>PARADOX_SCRIPT</language>
       <bundleName>messages.ChronicleIntentionBundle</bundleName>
       <categoryKey>intention.category.script</categoryKey>
-      <className>icu.windea.pls.lang.intentions.script.CopyScriptedVariableNameIntention</className>
-    </intentionAction>
-    <intentionAction>
-      <language>PARADOX_SCRIPT</language>
-      <bundleName>messages.ChronicleIntentionBundle</bundleName>
-      <categoryKey>intention.category.script</categoryKey>
-      <className>icu.windea.pls.lang.intentions.script.CopyScriptedVariablePresentableNameIntention</className>
-    </intentionAction>
-    <intentionAction>
-      <language>PARADOX_SCRIPT</language>
-      <bundleName>messages.ChronicleIntentionBundle</bundleName>
-      <categoryKey>intention.category.script</categoryKey>
-      <className>icu.windea.pls.lang.intentions.script.CopyDefinitionNameIntention</className>
-    </intentionAction>
-    <intentionAction>
-      <language>PARADOX_SCRIPT</language>
-      <bundleName>messages.ChronicleIntentionBundle</bundleName>
-      <categoryKey>intention.category.script</categoryKey>
-      <className>icu.windea.pls.lang.intentions.script.CopyDefinitionPresentableNameIntention</className>
-    </intentionAction>
-    <intentionAction>
-      <language>PARADOX_SCRIPT</language>
-      <bundleName>messages.ChronicleIntentionBundle</bundleName>
-      <categoryKey>intention.category.script</categoryKey>
-      <className>icu.windea.pls.lang.intentions.script.CopyLocalisationNameIntention</className>
-    </intentionAction>
-    <intentionAction>
-      <language>PARADOX_SCRIPT</language>
-      <bundleName>messages.ChronicleIntentionBundle</bundleName>
-      <categoryKey>intention.category.script</categoryKey>
-      <className>icu.windea.pls.lang.intentions.script.CopyLocalisationTextIntention</className>
-    </intentionAction>
-    <intentionAction>
-      <language>PARADOX_SCRIPT</language>
-      <bundleName>messages.ChronicleIntentionBundle</bundleName>
-      <categoryKey>intention.category.script</categoryKey>
-      <className>icu.windea.pls.lang.intentions.script.CopyLocalisationTextAsPlainIntention</className>
-    </intentionAction>
-    <intentionAction>
-      <language>PARADOX_SCRIPT</language>
-      <bundleName>messages.ChronicleIntentionBundle</bundleName>
-      <categoryKey>intention.category.script</categoryKey>
-      <className>icu.windea.pls.lang.intentions.script.CopyLocalisationTextAsHtmlIntention</className>
-    </intentionAction>
-    <intentionAction>
-      <language>PARADOX_SCRIPT</language>
-      <bundleName>messages.ChronicleIntentionBundle</bundleName>
-      <categoryKey>intention.category.script</categoryKey>
       <className>icu.windea.pls.lang.intentions.script.ReplaceScriptedVariableReferenceWithResolvedValueIntention</className>
     </intentionAction>
     <intentionAction>
@@ -180,6 +132,56 @@
       <categoryKey>intention.category.script</categoryKey>
       <className>icu.windea.pls.lang.intentions.script.ScopeCallStatementToNestedFormIntention</className>
     </intentionAction>
+    <!-- region CopyOnElementIntentions -->
+    <intentionAction>
+      <language>PARADOX_SCRIPT</language>
+      <bundleName>messages.ChronicleIntentionBundle</bundleName>
+      <categoryKey>intention.category.script</categoryKey>
+      <className>icu.windea.pls.lang.intentions.script.CopyScriptedVariableNameIntention</className>
+    </intentionAction>
+    <intentionAction>
+      <language>PARADOX_SCRIPT</language>
+      <bundleName>messages.ChronicleIntentionBundle</bundleName>
+      <categoryKey>intention.category.script</categoryKey>
+      <className>icu.windea.pls.lang.intentions.script.CopyScriptedVariablePresentableNameIntention</className>
+    </intentionAction>
+    <intentionAction>
+      <language>PARADOX_SCRIPT</language>
+      <bundleName>messages.ChronicleIntentionBundle</bundleName>
+      <categoryKey>intention.category.script</categoryKey>
+      <className>icu.windea.pls.lang.intentions.script.CopyDefinitionNameIntention</className>
+    </intentionAction>
+    <intentionAction>
+      <language>PARADOX_SCRIPT</language>
+      <bundleName>messages.ChronicleIntentionBundle</bundleName>
+      <categoryKey>intention.category.script</categoryKey>
+      <className>icu.windea.pls.lang.intentions.script.CopyDefinitionPresentableNameIntention</className>
+    </intentionAction>
+    <intentionAction>
+      <language>PARADOX_SCRIPT</language>
+      <bundleName>messages.ChronicleIntentionBundle</bundleName>
+      <categoryKey>intention.category.script</categoryKey>
+      <className>icu.windea.pls.lang.intentions.script.CopyLocalisationNameIntention</className>
+    </intentionAction>
+    <intentionAction>
+      <language>PARADOX_SCRIPT</language>
+      <bundleName>messages.ChronicleIntentionBundle</bundleName>
+      <categoryKey>intention.category.script</categoryKey>
+      <className>icu.windea.pls.lang.intentions.script.CopyLocalisationTextIntention</className>
+    </intentionAction>
+    <intentionAction>
+      <language>PARADOX_SCRIPT</language>
+      <bundleName>messages.ChronicleIntentionBundle</bundleName>
+      <categoryKey>intention.category.script</categoryKey>
+      <className>icu.windea.pls.lang.intentions.script.CopyLocalisationTextAsPlainIntention</className>
+    </intentionAction>
+    <intentionAction>
+      <language>PARADOX_SCRIPT</language>
+      <bundleName>messages.ChronicleIntentionBundle</bundleName>
+      <categoryKey>intention.category.script</categoryKey>
+      <className>icu.windea.pls.lang.intentions.script.CopyLocalisationTextAsHtmlIntention</className>
+    </intentionAction>
+    <!-- endregion -->
     <!-- endregion -->
 
     <!-- region Paradox Localisation -->
@@ -195,6 +197,13 @@
       <categoryKey>intention.category.localisation</categoryKey>
       <className>icu.windea.pls.lang.intentions.localisation.ChangeLocalisationColorIntention</className>
     </intentionAction>
+    <intentionAction>
+      <language>PARADOX_LOCALISATION</language>
+      <bundleName>messages.ChronicleIntentionBundle</bundleName>
+      <categoryKey>intention.category.script</categoryKey>
+      <className>icu.windea.pls.lang.intentions.localisation.ReplaceScriptedVariableReferenceWithResolvedValueIntention</className>
+    </intentionAction>
+    <!-- region CopyOnElementIntentions -->
     <intentionAction>
       <language>PARADOX_LOCALISATION</language>
       <bundleName>messages.ChronicleIntentionBundle</bundleName>
@@ -243,6 +252,22 @@
       <categoryKey>intention.category.localisation</categoryKey>
       <className>icu.windea.pls.lang.intentions.localisation.CopyLocalisationTextAsHtmlIntention</className>
     </intentionAction>
+    <!-- endregion -->
+    <!-- region ManipulateLocalisationListIntentions -->
+    <intentionAction>
+      <language>PARADOX_LOCALISATION</language>
+      <bundleName>messages.ChronicleIntentionBundle</bundleName>
+      <categoryKey>intention.category.localisation</categoryKey>
+      <className>icu.windea.pls.lang.intentions.localisation.CopyLocalisationListWithLocaleIntention</className>
+    </intentionAction>
+    <intentionAction>
+      <language>PARADOX_LOCALISATION</language>
+      <bundleName>messages.ChronicleIntentionBundle</bundleName>
+      <categoryKey>intention.category.localisation</categoryKey>
+      <className>icu.windea.pls.lang.intentions.localisation.CopyLocalisationListWithoutLocaleIntention</className>
+    </intentionAction>
+    <!-- endregion -->
+    <!-- region ManipulateLocalisationIntentions -->
     <intentionAction>
       <language>PARADOX_LOCALISATION</language>
       <bundleName>messages.ChronicleIntentionBundle</bundleName>
@@ -285,24 +310,7 @@
       <categoryKey>intention.category.localisation</categoryKey>
       <className>icu.windea.pls.lang.intentions.localisation.ReplaceLocalisationWithTranslationFromLocaleIntention</className>
     </intentionAction>
-    <intentionAction>
-      <language>PARADOX_LOCALISATION</language>
-      <bundleName>messages.ChronicleIntentionBundle</bundleName>
-      <categoryKey>intention.category.localisation</categoryKey>
-      <className>icu.windea.pls.lang.intentions.localisation.CopyLocalisationListWithLocaleIntention</className>
-    </intentionAction>
-    <intentionAction>
-      <language>PARADOX_LOCALISATION</language>
-      <bundleName>messages.ChronicleIntentionBundle</bundleName>
-      <categoryKey>intention.category.localisation</categoryKey>
-      <className>icu.windea.pls.lang.intentions.localisation.CopyLocalisationListWithoutLocaleIntention</className>
-    </intentionAction>
-    <intentionAction>
-      <language>PARADOX_LOCALISATION</language>
-      <bundleName>messages.ChronicleIntentionBundle</bundleName>
-      <categoryKey>intention.category.script</categoryKey>
-      <className>icu.windea.pls.lang.intentions.localisation.ReplaceScriptedVariableReferenceWithResolvedValueIntention</className>
-    </intentionAction>
+    <!-- endregion -->
     <!-- endregion -->
 
     <!-- region Paradox CSV -->
@@ -320,6 +328,20 @@
       <className>icu.windea.pls.lang.intentions.csv.UnquoteLiteralIntention</className>
       <descriptionDirectoryName>UnquoteLiteralIntentionForCsv</descriptionDirectoryName>
     </intentionAction>
+    <!-- region CopyOnElementIntentions -->
+    <intentionAction>
+      <language>PARADOX_CSV</language>
+      <bundleName>messages.ChronicleIntentionBundle</bundleName>
+      <categoryKey>intention.category.csv</categoryKey>
+      <className>icu.windea.pls.lang.intentions.csv.CopyDefinitionNameIntention</className>
+    </intentionAction>
+    <intentionAction>
+      <language>PARADOX_CSV</language>
+      <bundleName>messages.ChronicleIntentionBundle</bundleName>
+      <categoryKey>intention.category.csv</categoryKey>
+      <className>icu.windea.pls.lang.intentions.csv.CopyDefinitionPresentableNameIntention</className>
+    </intentionAction>
+    <!-- endregion -->
     <!-- endregion -->
   </extensions>
 </idea-plugin>
