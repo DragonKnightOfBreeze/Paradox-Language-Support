@@ -64,7 +64,7 @@ property_key ::= PROPERTY_KEY_TOKEN {
     "icu.windea.pls.cwt.psi.CwtStringExpressionElement"
   ]
   methods=[
-    getIcon getName getValue setValue getPresentableText needQuote
+    getIcon getName getValue getPresentableText setValue setContent needQuote
     getReference getReferences
   ]
 }
@@ -77,7 +77,7 @@ value ::= boolean | int | float | string | block {
     "icu.windea.pls.cwt.psi.CwtMember"
     "icu.windea.pls.cwt.psi.CwtOptionMember"
   ]
-  methods=[getIcon getName getValue setValue getPresentableText]
+  methods=[getIcon getName getValue getPresentableText setValue setContent]
 }
 boolean ::= BOOLEAN_TOKEN {
   extends=value

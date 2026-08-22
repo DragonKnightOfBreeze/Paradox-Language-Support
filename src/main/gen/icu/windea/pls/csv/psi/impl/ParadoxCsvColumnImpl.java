@@ -4,6 +4,7 @@ package icu.windea.pls.csv.psi.impl;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
+import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiReference;
@@ -53,13 +54,18 @@ public class ParadoxCsvColumnImpl extends ASTWrapperPsiElement implements Parado
   }
 
   @Override
+  public @NotNull String getPresentableText() {
+    return ParadoxCsvPsiImplUtil.getPresentableText(this);
+  }
+
+  @Override
   public @NotNull ParadoxCsvColumn setValue(@NotNull String value) {
     return ParadoxCsvPsiImplUtil.setValue(this, value);
   }
 
   @Override
-  public @NotNull String getPresentableText() {
-    return ParadoxCsvPsiImplUtil.getPresentableText(this);
+  public @NotNull ParadoxCsvColumn setContent(@NotNull String content, @NotNull TextRange range) {
+    return ParadoxCsvPsiImplUtil.setContent(this, content, range);
   }
 
   @Override

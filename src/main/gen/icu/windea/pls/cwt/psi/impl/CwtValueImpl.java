@@ -4,6 +4,7 @@ package icu.windea.pls.cwt.psi.impl;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
+import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
@@ -45,13 +46,18 @@ public abstract class CwtValueImpl extends ASTWrapperPsiElement implements CwtVa
   }
 
   @Override
+  public @NotNull String getPresentableText() {
+    return CwtPsiImplUtil.getPresentableText(this);
+  }
+
+  @Override
   public @NotNull CwtValue setValue(@NotNull String value) {
     return CwtPsiImplUtil.setValue(this, value);
   }
 
   @Override
-  public @NotNull String getPresentableText() {
-    return CwtPsiImplUtil.getPresentableText(this);
+  public @NotNull CwtValue setContent(@NotNull String content, @NotNull TextRange range) {
+    return CwtPsiImplUtil.setContent(this, content, range);
   }
 
   @Override

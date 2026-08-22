@@ -2,6 +2,7 @@ package icu.windea.pls.cwt.psi.impl
 
 import com.intellij.navigation.ItemPresentation
 import com.intellij.openapi.util.Iconable
+import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiListLikeElement
 import com.intellij.psi.PsiReference
@@ -167,6 +168,11 @@ object CwtPsiImplUtil {
     }
 
     @JvmStatic
+    fun setContent(element: CwtPropertyKey, content: String, range: TextRange): CwtPropertyKey {
+        return CwtPsiManipulationService.changeContent(element, content, range)
+    }
+
+    @JvmStatic
     fun needQuote(element: CwtPropertyKey): Boolean {
         return CwtPsiManipulationService.needQuote(element.text)
     }
@@ -183,6 +189,11 @@ object CwtPsiImplUtil {
     @JvmStatic
     fun setValue(element: CwtValue, value: String): CwtValue {
         return CwtPsiManipulationService.changeContent(element, value)
+    }
+
+    @JvmStatic
+    fun setContent(element: CwtValue, content: String, range: TextRange): CwtValue {
+        return CwtPsiManipulationService.changeContent(element, content, range)
     }
 
     // endregion
@@ -212,6 +223,11 @@ object CwtPsiImplUtil {
     @JvmStatic
     fun setValue(element: CwtString, value: String): CwtString {
         return CwtPsiManipulationService.changeContent(element, value)
+    }
+
+    @JvmStatic
+    fun setContent(element: CwtString, content: String, range: TextRange): CwtString {
+        return CwtPsiManipulationService.changeContent(element, content, range)
     }
 
     @JvmStatic
@@ -296,11 +312,6 @@ object CwtPsiImplUtil {
     }
 
     @JvmStatic
-    fun setValue(element: CwtExpressionElement, value: String): CwtExpressionElement {
-        throw IncorrectOperationException()
-    }
-
-    @JvmStatic
     fun getPresentableText(element: CwtProperty): String {
         return CwtPsiService.getPresentableText(element)
     }
@@ -308,6 +319,16 @@ object CwtPsiImplUtil {
     @JvmStatic
     fun getPresentableText(element: CwtExpressionElement): String {
         return CwtPsiService.getPresentableText(element)
+    }
+
+    @JvmStatic
+    fun setValue(element: CwtExpressionElement, value: String): CwtExpressionElement {
+        throw IncorrectOperationException()
+    }
+
+    @JvmStatic
+    fun setContent(element: CwtExpressionElement, content: String, range: TextRange): CwtExpressionElement {
+        throw IncorrectOperationException()
     }
 
     @JvmStatic

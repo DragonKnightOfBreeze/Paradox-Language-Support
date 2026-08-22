@@ -2,6 +2,7 @@
 package icu.windea.pls.script.psi;
 
 import com.intellij.navigation.ItemPresentation;
+import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import org.jetbrains.annotations.NotNull;
@@ -16,9 +17,11 @@ public interface ParadoxScriptValue extends ParadoxScriptExpressionElement, Para
 
   @NotNull String getValue();
 
+  @NotNull String getPresentableText();
+
   @NotNull ParadoxScriptValue setValue(@NotNull String value);
 
-  @NotNull String getPresentableText();
+  @NotNull ParadoxScriptValue setContent(@NotNull String content, @NotNull TextRange range);
 
   @NotNull GlobalSearchScope getResolveScope();
 

@@ -2,6 +2,7 @@ package icu.windea.pls.csv.psi.impl
 
 import com.intellij.navigation.ItemPresentation
 import com.intellij.openapi.util.Iconable
+import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiListLikeElement
 import com.intellij.psi.PsiReference
@@ -71,6 +72,11 @@ object ParadoxCsvPsiImplUtil {
     }
 
     @JvmStatic
+    fun setContent(element: ParadoxCsvColumn, content: String, range: TextRange): ParadoxCsvColumn {
+        return ParadoxCsvPsiManipulationService.changeContent(element, content, range)
+    }
+
+    @JvmStatic
     fun needQuote(element: ParadoxCsvColumn): Boolean {
         return ParadoxCsvPsiManipulationService.needQuote(element.text)
     }
@@ -95,13 +101,18 @@ object ParadoxCsvPsiImplUtil {
     }
 
     @JvmStatic
+    fun getPresentableText(element: ParadoxCsvExpressionElement): String {
+        return ParadoxCsvPsiService.getPresentableText(element)
+    }
+
+    @JvmStatic
     fun setValue(element: ParadoxCsvExpressionElement, value: String): ParadoxScriptExpressionElement {
         throw IncorrectOperationException()
     }
 
     @JvmStatic
-    fun getPresentableText(element: ParadoxCsvExpressionElement): String {
-        return ParadoxCsvPsiService.getPresentableText(element)
+    fun setContent(element: ParadoxCsvExpressionElement, content: String, range: TextRange): ParadoxScriptExpressionElement {
+        throw IncorrectOperationException()
     }
 
     @JvmStatic

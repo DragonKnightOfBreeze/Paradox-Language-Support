@@ -2,6 +2,7 @@
 package icu.windea.pls.cwt.psi;
 
 import com.intellij.navigation.ItemPresentation;
+import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import org.jetbrains.annotations.NotNull;
@@ -16,9 +17,11 @@ public interface CwtValue extends CwtExpressionElement, CwtMember, CwtOptionMemb
 
   @NotNull String getValue();
 
+  @NotNull String getPresentableText();
+
   @NotNull CwtValue setValue(@NotNull String value);
 
-  @NotNull String getPresentableText();
+  @NotNull CwtValue setContent(@NotNull String content, @NotNull TextRange range);
 
   @NotNull GlobalSearchScope getResolveScope();
 

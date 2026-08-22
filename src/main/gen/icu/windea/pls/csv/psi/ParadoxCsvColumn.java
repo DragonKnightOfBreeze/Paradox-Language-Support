@@ -2,6 +2,7 @@
 package icu.windea.pls.csv.psi;
 
 import com.intellij.navigation.ItemPresentation;
+import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
@@ -22,9 +23,11 @@ public interface ParadoxCsvColumn extends PsiQuoteAwareElement, ParadoxCsvLitera
 
   @NotNull String getValue();
 
+  @NotNull String getPresentableText();
+
   @NotNull ParadoxCsvColumn setValue(@NotNull String value);
 
-  @NotNull String getPresentableText();
+  @NotNull ParadoxCsvColumn setContent(@NotNull String content, @NotNull TextRange range);
 
   boolean needQuote();
 

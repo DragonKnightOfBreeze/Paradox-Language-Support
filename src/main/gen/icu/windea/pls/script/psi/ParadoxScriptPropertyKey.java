@@ -2,6 +2,7 @@
 package icu.windea.pls.script.psi;
 
 import com.intellij.navigation.ItemPresentation;
+import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
@@ -26,9 +27,11 @@ public interface ParadoxScriptPropertyKey extends PsiQuoteAwareElement, ParadoxS
 
   @NotNull String getValue();
 
+  @NotNull String getPresentableText();
+
   @NotNull ParadoxScriptPropertyKey setValue(@NotNull String value);
 
-  @NotNull String getPresentableText();
+  @NotNull ParadoxScriptPropertyKey setContent(@NotNull String content, @NotNull TextRange range);
 
   boolean needQuote();
 

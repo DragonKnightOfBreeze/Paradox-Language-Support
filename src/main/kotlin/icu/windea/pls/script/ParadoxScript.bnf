@@ -91,7 +91,7 @@ property_key ::= property_key_part (<<processSnippet>> property_key_part) * {
   ]
   methods=[
     getIdElement parameter=""
-    getIcon getName getValue setValue getPresentableText needQuote
+    getIcon getName getValue getPresentableText setValue setContent needQuote
     getReference getReferences
   ]
 }
@@ -106,7 +106,7 @@ value ::= scripted_variable_reference | boolean | int | float | string | color |
     "icu.windea.pls.script.psi.ParadoxScriptExpressionElement"
     "icu.windea.pls.script.psi.ParadoxScriptMember"
   ]
-  methods=[getIcon getName getValue setValue getPresentableText]
+  methods=[getIcon getName getValue getPresentableText setValue setContent]
 }
 // can be parameterized
 scripted_variable_reference ::= AT scripted_variable_reference_part <<postProcessFirstSnippet>> (<<processSnippet>> scripted_variable_reference_part) * {
@@ -117,7 +117,7 @@ scripted_variable_reference ::= AT scripted_variable_reference_part <<postProces
   ]
   methods=[
     getIdElement parameter=""
-    getIcon getName setName getValue setValue getPresentableText
+    getIcon getName setName getValue getPresentableText
     getReference getReferences
   ]
 }
@@ -155,7 +155,7 @@ string ::= string_part <<postProcessFirstSnippet>> (<<processSnippet>> string_pa
   ]
   methods=[
     getIdElement parameter=""
-    getIcon getValue setValue needQuote
+    getIcon getValue setValue setContent needQuote
     getReference getReferences
   ]
 }

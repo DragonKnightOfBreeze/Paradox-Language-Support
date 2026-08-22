@@ -10,7 +10,6 @@ import com.intellij.psi.ElementManipulators
 import com.intellij.psi.PsiElement
 import icu.windea.pls.core.quote
 import icu.windea.pls.core.unquote
-import icu.windea.pls.cwt.psi.CwtExpressionElement
 import icu.windea.pls.lang.intentions.ChronicleIntentionBundle
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptNumberExpressionElement
@@ -21,7 +20,7 @@ class QuoteLiteralIntention : PsiUpdateModCommandAction<ParadoxScriptExpressionE
 
     // NOTE 1.3.0+ 目前无法适用于用引号括起的参数值中的那些字面量（例如，`p = "\"v\""` 中的 `\"v\"` ）
 
-    override fun invoke(context: ActionContext, element: CwtExpressionElement, updater: ModPsiUpdater) {
+    override fun invoke(context: ActionContext, element: ParadoxScriptExpressionElement, updater: ModPsiUpdater) {
         val newText = element.text.unquote().quote() // unquote first
         ElementManipulators.handleContentChange(element, newText)
     }
@@ -42,7 +41,7 @@ class UnquoteLiteralIntention : PsiUpdateModCommandAction<ParadoxScriptExpressio
 
     // NOTE 1.3.0+ 目前无法适用于用引号括起的参数值中的那些字面量（例如，`p = "\"v\""` 中的 `\"v\"` ）
 
-    override fun invoke(context: ActionContext, element: CwtExpressionElement, updater: ModPsiUpdater) {
+    override fun invoke(context: ActionContext, element: ParadoxScriptExpressionElement, updater: ModPsiUpdater) {
         val newText = element.text.unquote()
         ElementManipulators.handleContentChange(element, newText)
     }

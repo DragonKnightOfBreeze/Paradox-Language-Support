@@ -199,6 +199,11 @@ object ParadoxScriptPsiImplUtil {
     }
 
     @JvmStatic
+    fun setContent(element: ParadoxScriptPropertyKey, content: String, range: TextRange): ParadoxScriptPropertyKey {
+        return ParadoxScriptPsiManipulationService.changeContent(element, content, range)
+    }
+
+    @JvmStatic
     fun needQuote(element: ParadoxScriptPropertyKey): Boolean {
         return ParadoxScriptPsiManipulationService.needQuote(element.text)
     }
@@ -215,6 +220,11 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun setValue(element: ParadoxScriptValue, value: String): ParadoxScriptValue {
         return ParadoxScriptPsiManipulationService.changeContent(element, value)
+    }
+
+    @JvmStatic
+    fun setContent(element: ParadoxScriptValue, content: String, range: TextRange): ParadoxScriptValue {
+        return ParadoxScriptPsiManipulationService.changeContent(element, content, range)
     }
 
     // endregion
@@ -240,6 +250,11 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun setValue(element: ParadoxScriptString, value: String): ParadoxScriptValue {
         return ParadoxScriptPsiManipulationService.changeContent(element, value)
+    }
+
+    @JvmStatic
+    fun setContent(element: ParadoxScriptString, content: String, range: TextRange): ParadoxScriptValue {
+        return ParadoxScriptPsiManipulationService.changeContent(element, content, range)
     }
 
     @JvmStatic
@@ -650,11 +665,6 @@ object ParadoxScriptPsiImplUtil {
     }
 
     @JvmStatic
-    fun setValue(element: ParadoxScriptExpressionElement, value: String): ParadoxScriptExpressionElement {
-        throw IncorrectOperationException()
-    }
-
-    @JvmStatic
     fun getPresentableText(element: ParadoxScriptProperty): String {
         return ParadoxScriptPsiService.getPresentableText(element)
     }
@@ -662,6 +672,16 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun getPresentableText(element: ParadoxScriptExpressionElement): String {
         return ParadoxScriptPsiService.getPresentableText(element)
+    }
+
+    @JvmStatic
+    fun setValue(element: ParadoxScriptExpressionElement, value: String): ParadoxScriptExpressionElement {
+        throw IncorrectOperationException()
+    }
+
+    @JvmStatic
+    fun setContent(element: ParadoxScriptExpressionElement, content: String, range: TextRange): ParadoxScriptExpressionElement {
+        throw IncorrectOperationException()
     }
 
     @JvmStatic

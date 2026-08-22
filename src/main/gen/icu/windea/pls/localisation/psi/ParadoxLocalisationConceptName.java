@@ -2,6 +2,7 @@
 package icu.windea.pls.localisation.psi;
 
 import com.intellij.navigation.ItemPresentation;
+import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
@@ -17,9 +18,11 @@ public interface ParadoxLocalisationConceptName extends ParadoxLocalisationExpre
 
   @NotNull String getValue();
 
+  @NotNull String getPresentableText();
+
   @NotNull ParadoxLocalisationConceptName setValue(@NotNull String value);
 
-  @NotNull String getPresentableText();
+  @NotNull ParadoxLocalisationConceptName setContent(@NotNull String content, @NotNull TextRange range);
 
   @Nullable PsiReference getReference();
 

@@ -3,6 +3,7 @@ package icu.windea.pls.script.psi.impl;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
+import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiReference;
@@ -60,6 +61,11 @@ public class ParadoxScriptStringImpl extends ParadoxScriptValueImpl implements P
   @Override
   public @NotNull ParadoxScriptValue setValue(@NotNull String value) {
     return ParadoxScriptPsiImplUtil.setValue(this, value);
+  }
+
+  @Override
+  public @NotNull ParadoxScriptValue setContent(@NotNull String content, @NotNull TextRange range) {
+    return ParadoxScriptPsiImplUtil.setContent(this, content, range);
   }
 
   @Override

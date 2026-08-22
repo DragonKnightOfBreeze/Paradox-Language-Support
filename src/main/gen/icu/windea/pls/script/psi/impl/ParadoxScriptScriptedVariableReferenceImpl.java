@@ -11,7 +11,6 @@ import com.intellij.psi.search.SearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import icu.windea.pls.script.psi.ParadoxScriptInlineConditionalBlock;
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableReference;
-import icu.windea.pls.script.psi.ParadoxScriptValue;
 import icu.windea.pls.script.psi.ParadoxScriptVisitor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -65,11 +64,6 @@ public class ParadoxScriptScriptedVariableReferenceImpl extends ParadoxScriptVal
   @Override
   public @NotNull String getValue() {
     return ParadoxScriptPsiImplUtil.getValue(this);
-  }
-
-  @Override
-  public @NotNull ParadoxScriptValue setValue(@NotNull String value) {
-    return ParadoxScriptPsiImplUtil.setValue(this, value);
   }
 
   @Override

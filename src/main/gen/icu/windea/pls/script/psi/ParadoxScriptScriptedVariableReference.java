@@ -28,8 +28,6 @@ public interface ParadoxScriptScriptedVariableReference extends ParadoxScriptVal
 
   @NotNull String getValue();
 
-  @NotNull ParadoxScriptValue setValue(@NotNull String value);
-
   @NotNull String getPresentableText();
 
   @Nullable PsiReference getReference();

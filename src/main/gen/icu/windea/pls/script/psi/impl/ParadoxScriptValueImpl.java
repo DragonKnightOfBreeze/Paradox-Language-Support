@@ -4,6 +4,7 @@ package icu.windea.pls.script.psi.impl;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
+import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
@@ -45,13 +46,18 @@ public abstract class ParadoxScriptValueImpl extends ASTWrapperPsiElement implem
   }
 
   @Override
+  public @NotNull String getPresentableText() {
+    return ParadoxScriptPsiImplUtil.getPresentableText(this);
+  }
+
+  @Override
   public @NotNull ParadoxScriptValue setValue(@NotNull String value) {
     return ParadoxScriptPsiImplUtil.setValue(this, value);
   }
 
   @Override
-  public @NotNull String getPresentableText() {
-    return ParadoxScriptPsiImplUtil.getPresentableText(this);
+  public @NotNull ParadoxScriptValue setContent(@NotNull String content, @NotNull TextRange range) {
+    return ParadoxScriptPsiImplUtil.setContent(this, content, range);
   }
 
   @Override

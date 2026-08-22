@@ -20,10 +20,6 @@ object ParadoxScriptPsiManipulationService {
         return expression.unquote().quote() // unquote first
     }
 
-    fun changeContent(element: ParadoxScriptExpressionElement): ParadoxScriptExpressionElement {
-
-    }
-
     fun changeContent(element: ParadoxScriptPropertyKey, newContent: String, range: TextRange? = null): ParadoxScriptPropertyKey {
         val newValue = range?.replace(element.text, newContent) ?: newContent
         val newText = quoteIfNeeded(newValue)

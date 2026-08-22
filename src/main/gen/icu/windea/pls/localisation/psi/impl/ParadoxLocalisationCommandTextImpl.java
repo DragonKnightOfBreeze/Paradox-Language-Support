@@ -4,6 +4,7 @@ package icu.windea.pls.localisation.psi.impl;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
+import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiReference;
@@ -46,13 +47,18 @@ public class ParadoxLocalisationCommandTextImpl extends ASTWrapperPsiElement imp
   }
 
   @Override
+  public @NotNull String getPresentableText() {
+    return ParadoxLocalisationPsiImplUtil.getPresentableText(this);
+  }
+
+  @Override
   public @NotNull ParadoxLocalisationCommandText setValue(@NotNull String value) {
     return ParadoxLocalisationPsiImplUtil.setValue(this, value);
   }
 
   @Override
-  public @NotNull String getPresentableText() {
-    return ParadoxLocalisationPsiImplUtil.getPresentableText(this);
+  public @NotNull ParadoxLocalisationCommandText setContent(@NotNull String content, @NotNull TextRange range) {
+    return ParadoxLocalisationPsiImplUtil.setContent(this, content, range);
   }
 
   @Override

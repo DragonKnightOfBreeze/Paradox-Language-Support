@@ -23,7 +23,6 @@ import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 import icu.windea.pls.model.*
-import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import javax.swing.*
 
 @Suppress("UNUSED_PARAMETER")
@@ -356,6 +355,11 @@ object ParadoxLocalisationPsiImplUtil {
         return ParadoxLocalisationPsiManipulationService.changeContent(element, value)
     }
 
+    @JvmStatic
+    fun setContent(element: ParadoxLocalisationCommandText, content: String, range: TextRange): ParadoxLocalisationCommandText {
+        return ParadoxLocalisationPsiManipulationService.changeContent(element, content, range)
+    }
+
     // endregion
 
     // region ParadoxLocalisationCommandArgument
@@ -399,6 +403,11 @@ object ParadoxLocalisationPsiImplUtil {
     @JvmStatic
     fun setValue(element: ParadoxLocalisationConceptName, value: String): ParadoxLocalisationConceptName {
         return ParadoxLocalisationPsiManipulationService.changeContent(element, value)
+    }
+
+    @JvmStatic
+    fun setContent(element: ParadoxLocalisationConceptName, content: String, range: TextRange): ParadoxLocalisationConceptName {
+        return ParadoxLocalisationPsiManipulationService.changeContent(element, content, range)
     }
 
     // endregion
@@ -472,13 +481,18 @@ object ParadoxLocalisationPsiImplUtil {
     }
 
     @JvmStatic
-    fun setValue(element: ParadoxLocalisationExpressionElement, value: String): ParadoxScriptExpressionElement {
+    fun getPresentableText(element: ParadoxLocalisationExpressionElement): String {
+        return ParadoxLocalisationPsiService.getPresentableText(element)
+    }
+
+    @JvmStatic
+    fun setValue(element: ParadoxLocalisationExpressionElement, value: String): ParadoxLocalisationExpressionElement {
         throw IncorrectOperationException()
     }
 
     @JvmStatic
-    fun getPresentableText(element: ParadoxLocalisationExpressionElement): String {
-        return ParadoxLocalisationPsiService.getPresentableText(element)
+    fun setContent(element: ParadoxLocalisationExpressionElement, content: String, range: TextRange): ParadoxLocalisationExpressionElement {
+        throw IncorrectOperationException()
     }
 
     @JvmStatic
