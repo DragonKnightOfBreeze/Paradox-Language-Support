@@ -36,7 +36,7 @@ class OverrideForDefineVariableInspectionTest : BasePlatformTestCase(), Chronicl
     @Test
     fun simple_fios() {
         val key = "Namespace.Variable"
-        val tag = ChronicleInspectionBundle.message("inspection.overrideForDefineVariable.desc", key).toWeakWarningTag()
+        val tag = ChronicleInspectionBundle.message("overrides.overrideForDefineVariable.desc", key).toWeakWarningTag()
 
         markFileInfo(gameType, "common/defines/99_defines.txt")
         myFixture.configureByText("99_defines.txt", """
@@ -59,7 +59,7 @@ class OverrideForDefineVariableInspectionTest : BasePlatformTestCase(), Chronicl
     @Test
     fun simple_lios() {
         val key = "Namespace.Variable"
-        val tag = ChronicleInspectionBundle.message("inspection.overrideForDefineVariable.desc", key).toWeakWarningTag()
+        val tag = ChronicleInspectionBundle.message("overrides.overrideForDefineVariable.desc", key).toWeakWarningTag()
 
         markFileInfo(gameType, "common/defines/01_defines.txt")
         myFixture.configureByText("01_defines.txt", """
@@ -82,7 +82,7 @@ class OverrideForDefineVariableInspectionTest : BasePlatformTestCase(), Chronicl
     @Test
     fun simple_samePath() {
         val key = "Namespace.Variable"
-        val tag = ChronicleInspectionBundle.message("inspection.overrideForDefineVariable.desc", key).toWeakWarningTag()
+        val tag = ChronicleInspectionBundle.message("overrides.overrideForDefineVariable.desc", key).toWeakWarningTag()
 
         markFileInfo(gameType, "common/defines/01_defines.txt")
         myFixture.configureByText("01_defines.txt", """

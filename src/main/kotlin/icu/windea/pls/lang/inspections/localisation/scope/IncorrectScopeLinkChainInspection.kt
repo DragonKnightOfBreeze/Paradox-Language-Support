@@ -56,7 +56,7 @@ class IncorrectScopeLinkChainInspection : ScopeInspectionBase() {
         val startOffset = offset + scopeNodes.first().rangeInExpression.startOffset
         val endOffset = offset + scopeNodes.last().rangeInExpression.endOffset
         val range = TextRange.create(startOffset, endOffset)
-        val description = ChronicleInspectionBundle.message("inspection.localisation.incorrectScopeLinkChain.desc.1", max, actual)
+        val description = ChronicleInspectionBundle.message("localisation.incorrectScopeLinkChain.desc.1", max, actual)
         holder.registerProblem(element, range, description)
     }
 }

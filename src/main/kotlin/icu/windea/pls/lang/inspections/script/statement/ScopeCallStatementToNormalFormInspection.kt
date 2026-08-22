@@ -37,12 +37,12 @@ class ScopeCallStatementToNormalFormInspection : LocalInspectionTool(), DumbAwar
     private fun check(element: ParadoxScriptProperty, holder: ProblemsHolder) {
         if (!ParadoxScopeCallStatementManipulationService.canConvertToNormalForm(element)) return
         val range = ParadoxScopeCallStatementManipulationService.getHighlightingRange(element)
-        val description = ChronicleInspectionBundle.message("inspection.script.scopeCallStatementToNormalForm.desc")
+        val description = ChronicleInspectionBundle.message("script.scopeCallStatementToNormalForm.desc")
         holder.registerProblem(element, range, description, Fix())
     }
 
     private class Fix : PsiUpdateModCommandQuickFix() {
-        override fun getFamilyName() = ChronicleInspectionBundle.message("inspection.script.scopeCallStatementToNormalForm.fix.1.name")
+        override fun getFamilyName() = ChronicleInspectionBundle.message("script.scopeCallStatementToNormalForm.fix.1.name")
 
         override fun applyFix(project: Project, element: PsiElement, updater: ModPsiUpdater) {
             val element = element.parentOfType<ParadoxScriptProperty>(withSelf = true) ?: return

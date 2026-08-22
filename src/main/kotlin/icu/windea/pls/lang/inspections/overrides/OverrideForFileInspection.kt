@@ -42,7 +42,7 @@ class OverrideForFileInspection : OverrideRelatedInspectionBase() {
 
         val locationElement = file
         val (key, target, results) = overrideResult
-        val description = ChronicleInspectionBundle.message("inspection.overrideForFile.desc", key)
+        val description = ChronicleInspectionBundle.message("overrides.overrideForFile.desc", key)
         val fix = NavigateToOverridingFilesFix(key, target, results)
         holder.registerProblem(locationElement, description, fix)
     }

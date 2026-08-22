@@ -25,7 +25,7 @@ class MissingLocaleInspection : LocalInspectionTool(), DumbAware {
 
     override fun getOptionsPane(): OptPane {
         return OptPane.pane(
-            OptPane.expandableString("ignoredFileNames", ChronicleInspectionBundle.message("inspection.option.ignoredFileNames"), ",")
+            OptPane.expandableString("ignoredFileNames", ChronicleInspectionBundle.message("option.ignoredFileNames"), ",")
                 .description(ChronicleBundle.message("comment.patterns"))
         )
     }
@@ -53,7 +53,7 @@ class MissingLocaleInspection : LocalInspectionTool(), DumbAware {
     private fun check(file: PsiFile, holder: ProblemsHolder) {
         if (file !is ParadoxLocalisationFile) return
         if (file.propertyLists.all { it.locale != null }) return // 没有问题，跳过
-        val description = ChronicleInspectionBundle.message("inspection.localisation.missingLocale.desc")
+        val description = ChronicleInspectionBundle.message("localisation.missingLocale.desc")
         holder.registerProblem(file, description)
     }
 }

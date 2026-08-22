@@ -36,12 +36,12 @@ class UnsupportedLocaleInspection : LocalInspectionTool() {
         val locale = selectLocale(element)
         if (locale == null) {
             val location = element.idElement
-            val description = ChronicleInspectionBundle.message("inspection.localisation.unsupportedLocale.desc.1", element.name)
+            val description = ChronicleInspectionBundle.message("localisation.unsupportedLocale.desc.1", element.name)
             holder.registerProblem(location, description, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
         } else if (!locale.supports) {
             val gameType = locale.configGroup.gameType
             val location = element.idElement
-            val description = ChronicleInspectionBundle.message("inspection.localisation.unsupportedLocale.desc.2", element.name, gameType.title)
+            val description = ChronicleInspectionBundle.message("localisation.unsupportedLocale.desc.2", element.name, gameType.title)
             holder.registerProblem(location, description)
         }
     }

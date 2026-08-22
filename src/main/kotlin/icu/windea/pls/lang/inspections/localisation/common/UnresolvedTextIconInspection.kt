@@ -41,9 +41,9 @@ class UnresolvedTextIconInspection : LocalInspectionTool() {
 
     override fun getOptionsPane(): OptPane {
         return OptPane.pane(
-            OptPane.checkbox("ignoredNames", ChronicleInspectionBundle.message("inspection.localisation.unresolvedTextIcon.option.ignoredNames")),
-            OptPane.checkbox("ignoredInInjectedFiles", ChronicleInspectionBundle.message("inspection.option.ignoredInInjectedFiles")),
-            OptPane.checkbox("ignoredByConfigs", ChronicleInspectionBundle.message("inspection.option.ignoredByConfigs")),
+            OptPane.checkbox("ignoredNames", ChronicleInspectionBundle.message("localisation.unresolvedTextIcon.option.ignoredNames")),
+            OptPane.checkbox("ignoredInInjectedFiles", ChronicleInspectionBundle.message("option.ignoredInInjectedFiles")),
+            OptPane.checkbox("ignoredByConfigs", ChronicleInspectionBundle.message("option.ignoredByConfigs")),
         )
     }
 
@@ -75,7 +75,7 @@ class UnresolvedTextIconInspection : LocalInspectionTool() {
         val reference = element.reference
         if (reference == null || reference.resolve() != null) return
         val location = element.idElement ?: return
-        val description = ChronicleInspectionBundle.message("inspection.localisation.unresolvedTextIcon.desc", name)
+        val description = ChronicleInspectionBundle.message("localisation.unresolvedTextIcon.desc", name)
         holder.registerProblem(location, description, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
     }
 

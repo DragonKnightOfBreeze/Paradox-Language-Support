@@ -41,7 +41,7 @@ class IncorrectEventNamespaceInspection : EventInspectionBase() {
         val eventNamespace = definitionInfo.name
         if (ParadoxEventManager.isValidEventNamespace(eventNamespace)) return
         val nameElement = selectScope { element.nameElement(nameField) } ?: return
-        val description = ChronicleInspectionBundle.message("inspection.script.incorrectEventNamespace.desc", eventNamespace)
+        val description = ChronicleInspectionBundle.message("script.incorrectEventNamespace.desc", eventNamespace)
         holder.registerProblem(nameElement, description)
     }
 }

@@ -103,7 +103,7 @@ class ChronicleScopedTest : BasePlatformTestCase(), ChronicleTestScope {
     fun the_waked_highlighting_test() {
         myFixture.enableInspections(DuplicateScriptedVariablesInspection::class.java)
 
-        val tag = ChronicleInspectionBundle.message("inspection.script.duplicateScriptedVariables.desc", "answer").toWarningTag()
+        val tag = ChronicleInspectionBundle.message("script.duplicateScriptedVariables.desc", "answer").toWarningTag()
 
         // tag markers should be surrounding `@v`, rather than `@v = v`
         markFileInfo(ParadoxGameType.Stellaris, "common/tests/greetings")

@@ -66,7 +66,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
         return panel {
             // checkForPreferredLocale
             row {
-                checkBox(ChronicleInspectionBundle.message("inspection.script.missingLocalisation.option.checkForPreferredLocale"))
+                checkBox(ChronicleInspectionBundle.message("script.missingLocalisation.option.checkForPreferredLocale"))
                     .bindSelected(::checkForPreferredLocale.toAtomicProperty())
                 cell(ActionLink(ChronicleBundle.message("link.configure")) {
                     // ShowSettingsUtil.getInstance().showSettingsDialog(null, ParadoxSettingsConfigurable::class.java)
@@ -76,7 +76,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
             }
             // checkForSpecificLocales
             row {
-                checkBox(ChronicleInspectionBundle.message("inspection.script.missingLocalisation.option.checkForSpecificLocales"))
+                checkBox(ChronicleInspectionBundle.message("script.missingLocalisation.option.checkForSpecificLocales"))
                     .bindSelected(::checkForSpecificLocales.toAtomicProperty())
                 val cb = textField().bindText(::locales.toAtomicProperty()).visible(false).component
                 cell(ActionLink(ChronicleBundle.message("link.configure")) {
@@ -94,33 +94,33 @@ class MissingLocalisationInspection : LocalInspectionTool() {
             }
             // checkForDefinitions
             row {
-                checkBox(ChronicleInspectionBundle.message("inspection.script.missingLocalisation.option.checkForDefinitions"))
+                checkBox(ChronicleInspectionBundle.message("script.missingLocalisation.option.checkForDefinitions"))
                     .bindSelected(::checkForDefinitions.toAtomicProperty())
                     .also { checkForDefinitionsCb = it }
             }
             indent {
                 // checkRequiredForDefinitions
                 row {
-                    checkBox(ChronicleInspectionBundle.message("inspection.script.missingLocalisation.option.checkRequiredForDefinitions"))
+                    checkBox(ChronicleInspectionBundle.message("script.missingLocalisation.option.checkRequiredForDefinitions"))
                         .selected(true)
                         .enabled(false)
                 }
                 // checkPrimaryForDefinitions
                 row {
-                    checkBox(ChronicleInspectionBundle.message("inspection.script.missingLocalisation.option.checkPrimaryForDefinitions"))
+                    checkBox(ChronicleInspectionBundle.message("script.missingLocalisation.option.checkPrimaryForDefinitions"))
                         .bindSelected(::checkPrimaryForDefinitions.toAtomicProperty())
                         .enabledIf(checkForDefinitionsCb.selected)
                 }
                 // checkOptionalForDefinitions
                 row {
-                    checkBox(ChronicleInspectionBundle.message("inspection.script.missingLocalisation.option.checkOptionalForDefinitions")).apply {
+                    checkBox(ChronicleInspectionBundle.message("script.missingLocalisation.option.checkOptionalForDefinitions")).apply {
                         bindSelected(::checkOptionalForDefinitions.toAtomicProperty())
                             .enabledIf(checkForDefinitionsCb.selected)
                     }
                 }
                 // checkGeneratedModifiersForDefinitions
                 row {
-                    checkBox(ChronicleInspectionBundle.message("inspection.script.missingLocalisation.option.checkGeneratedModifiersForDefinitions"))
+                    checkBox(ChronicleInspectionBundle.message("script.missingLocalisation.option.checkGeneratedModifiersForDefinitions"))
                         .bindSelected(::checkGeneratedModifiersForDefinitions.toAtomicProperty())
                         .also { checkGeneratedModifiersForDefinitionsCb = it }
                         .enabledIf(checkForDefinitionsCb.selected)
@@ -128,14 +128,14 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                 indent {
                     // checkGeneratedModifierNamesForDefinitions
                     row {
-                        checkBox(ChronicleInspectionBundle.message("inspection.script.missingLocalisation.option.checkGeneratedModifierNamesForDefinitions")).apply {
+                        checkBox(ChronicleInspectionBundle.message("script.missingLocalisation.option.checkGeneratedModifierNamesForDefinitions")).apply {
                             bindSelected(::checkGeneratedModifierNamesForDefinitions.toAtomicProperty())
                                 .enabledIf(checkGeneratedModifiersForDefinitionsCb.selected)
                         }
                     }
                     // checkGeneratedModifierDescriptionsForDefinitions
                     row {
-                        checkBox(ChronicleInspectionBundle.message("inspection.script.missingLocalisation.option.checkGeneratedModifierDescriptionsForDefinitions")).apply {
+                        checkBox(ChronicleInspectionBundle.message("script.missingLocalisation.option.checkGeneratedModifierDescriptionsForDefinitions")).apply {
                             bindSelected(::checkGeneratedModifierDescriptionsForDefinitions.toAtomicProperty())
                                 .enabledIf(checkGeneratedModifiersForDefinitionsCb.selected)
                         }
@@ -144,27 +144,27 @@ class MissingLocalisationInspection : LocalInspectionTool() {
             }
             // checkForModifiers
             row {
-                checkBox(ChronicleInspectionBundle.message("inspection.script.missingLocalisation.option.checkForModifiers"))
+                checkBox(ChronicleInspectionBundle.message("script.missingLocalisation.option.checkForModifiers"))
                     .bindSelected(::checkForModifiers.toAtomicProperty())
                     .also { checkForModifiersCb = it }
             }
             indent {
                 // checkModifierNames
                 row {
-                    checkBox(ChronicleInspectionBundle.message("inspection.script.missingLocalisation.option.checkModifierNames"))
+                    checkBox(ChronicleInspectionBundle.message("script.missingLocalisation.option.checkModifierNames"))
                         .bindSelected(::checkModifierNames.toAtomicProperty())
                         .enabledIf(checkForModifiersCb.selected)
                 }
                 // checkModifierDescriptions
                 row {
-                    checkBox(ChronicleInspectionBundle.message("inspection.script.missingLocalisation.option.checkModifierDescriptions"))
+                    checkBox(ChronicleInspectionBundle.message("script.missingLocalisation.option.checkModifierDescriptions"))
                         .bindSelected(::checkModifierDescriptions.toAtomicProperty())
                         .enabledIf(checkForModifiersCb.selected)
                 }
             }
             // ignoredInInjectedFile
             row {
-                checkBox(ChronicleInspectionBundle.message("inspection.option.ignoredInInjectedFiles"))
+                checkBox(ChronicleInspectionBundle.message("option.ignoredInInjectedFiles"))
                     .bindSelected(::ignoredInInjectedFiles.toAtomicProperty())
             }
         }
@@ -250,9 +250,9 @@ class MissingLocalisationInspection : LocalInspectionTool() {
         val localeId = codeInsightInfo.locale.name
         val locationExpression = codeInsightInfo.relatedLocalisationInfo?.locationExpression
         locationExpression?.takeUnless { it.isPlaceholder }?.location
-            ?.let { return ChronicleInspectionBundle.message("inspection.script.missingLocalisation.desc.2", localeId, it) }
+            ?.let { return ChronicleInspectionBundle.message("script.missingLocalisation.desc.2", localeId, it) }
         codeInsightInfo.name
-            ?.let { return ChronicleInspectionBundle.message("inspection.script.missingLocalisation.desc.1", localeId, it) }
+            ?.let { return ChronicleInspectionBundle.message("script.missingLocalisation.desc.1", localeId, it) }
         return null
     }
 

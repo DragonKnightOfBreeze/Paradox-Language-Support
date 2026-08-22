@@ -32,7 +32,7 @@ class UnusedInlineScriptInspection : InlineScriptInspectionBase() {
         val hasUsages = ParadoxInlineScriptUsageSearch.search(inlineScriptExpression, selector).findFirst() != null
         if (hasUsages) return
 
-        val description = ChronicleInspectionBundle.message("inspection.script.unusedInlineScript.desc", inlineScriptExpression)
+        val description = ChronicleInspectionBundle.message("script.unusedInlineScript.desc", inlineScriptExpression)
         holder.registerProblem(file, description, ProblemHighlightType.LIKE_UNUSED_SYMBOL)
     }
 }

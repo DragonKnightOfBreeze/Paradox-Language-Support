@@ -32,7 +32,7 @@ class RecursiveInlineScriptUsageInspection : InlineScriptInspectionBase() {
         val configContext = ParadoxConfigManager.getConfigContext(file) ?: return
         if (configContext.inlineScriptHasRecursion != true) return
 
-        val description = ChronicleInspectionBundle.message("inspection.script.recursiveInlineScriptUsage.desc", inlineScriptExpression)
+        val description = ChronicleInspectionBundle.message("script.recursiveInlineScriptUsage.desc", inlineScriptExpression)
         holder.registerProblem(file, description, GotoInlineScriptUsagesFix(file))
     }
 }

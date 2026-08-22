@@ -46,6 +46,6 @@ class UnsupportedInlineMathInspection : LocalInspectionTool(), DumbAware {
     }
 
     private fun checkInAssetFile(element: ParadoxScriptInlineMath, holder: ProblemsHolder) {
-        holder.registerProblem(element, ChronicleInspectionBundle.message("inspection.script.unsupportedInlineMath.desc.1"))
+        holder.registerProblem(element, ChronicleInspectionBundle.message("script.unsupportedInlineMath.desc.1"))
     }
 }

@@ -46,7 +46,7 @@ class IncorrectOverrideForDefineVariableInspection : OverrideRelatedInspectionBa
 
         val locationElement = element.propertyKey
         val (key, target, results, overrideStrategy) = overrideResult
-        val description = ChronicleInspectionBundle.message("inspection.incorrectOverrideForDefineVariable.desc", key, overrideStrategy)
+        val description = ChronicleInspectionBundle.message("overrides.incorrectOverrideForDefineVariable.desc", key, overrideStrategy)
         val fix = NavigateToOverridingDefineVariablesFix(key, target, results)
         holder.registerProblem(locationElement, description, fix)
     }

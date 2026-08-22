@@ -30,7 +30,7 @@ class UnsupportedInlineScriptUsageInspection : InlineScriptInspectionBase()/*, D
 
     private fun checkInAssetFile(element: ParadoxScriptProperty, holder: ProblemsHolder) {
         if (!ParadoxInlineScriptManager.isMatched(element.name)) return
-        val description = ChronicleInspectionBundle.message("inspection.script.unsupportedInlineScriptUsage.desc.1")
+        val description = ChronicleInspectionBundle.message("script.unsupportedInlineScriptUsage.desc.1")
         holder.registerProblem(element.propertyKey, description)
     }
 }

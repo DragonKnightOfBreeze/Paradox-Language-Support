@@ -50,11 +50,11 @@ class IncorrectScopeInspection : ScopeInspectionBase() {
             if (element is ParadoxScriptProperty) {
                 val propertyKey = element.propertyKey
                 val text = propertyKey.presentableText
-                val description = ChronicleInspectionBundle.message("inspection.script.incorrectScope.desc.1", text, supportedScopesText, currentScopeText)
+                val description = ChronicleInspectionBundle.message("script.incorrectScope.desc.1", text, supportedScopesText, currentScopeText)
                 holder.registerProblem(propertyKey, description)
             } else if (element is ParadoxScriptString && config.configExpression.type == CwtDataTypes.AliasKeysField) {
                 val text = element.presentableText
-                val description = ChronicleInspectionBundle.message("inspection.script.incorrectScope.desc.2", text, supportedScopesText, currentScopeText)
+                val description = ChronicleInspectionBundle.message("script.incorrectScope.desc.2", text, supportedScopesText, currentScopeText)
                 holder.registerProblem(element, description)
             }
         }

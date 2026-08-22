@@ -44,7 +44,7 @@ class UnsupportedRecursionInspection : LocalInspectionTool(), DumbAware {
         ParadoxRecursionManager.checkLocalisation(element, recursions)
         if (recursions.isEmpty()) return
         val location = element.propertyKey
-        val description = ChronicleInspectionBundle.message("inspection.localisation.unsupportedRecursion.desc.1")
+        val description = ChronicleInspectionBundle.message("localisation.unsupportedRecursion.desc.1")
         holder.registerProblem(location, description, NavigateToRecursionsFix(name, element, recursions))
     }
 }

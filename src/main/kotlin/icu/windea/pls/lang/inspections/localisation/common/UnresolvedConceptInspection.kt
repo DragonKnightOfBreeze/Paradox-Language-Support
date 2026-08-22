@@ -37,9 +37,9 @@ class UnresolvedConceptInspection : LocalInspectionTool() {
 
     override fun getOptionsPane(): OptPane {
         return OptPane.pane(
-            OptPane.checkbox("ignoredNames", ChronicleInspectionBundle.message("inspection.localisation.unresolvedConcept.option.ignoredNames")),
-            OptPane.checkbox("ignoredInInjectedFiles", ChronicleInspectionBundle.message("inspection.option.ignoredInInjectedFiles")),
-            OptPane.checkbox("ignoredByConfigs", ChronicleInspectionBundle.message("inspection.option.ignoredByConfigs")),
+            OptPane.checkbox("ignoredNames", ChronicleInspectionBundle.message("localisation.unresolvedConcept.option.ignoredNames")),
+            OptPane.checkbox("ignoredInInjectedFiles", ChronicleInspectionBundle.message("option.ignoredInInjectedFiles")),
+            OptPane.checkbox("ignoredByConfigs", ChronicleInspectionBundle.message("option.ignoredByConfigs")),
         )
     }
 
@@ -69,7 +69,7 @@ class UnresolvedConceptInspection : LocalInspectionTool() {
         val reference = element.reference
         if (reference == null || reference.resolve() != null) return
         val location = element.conceptName ?: return
-        val description = ChronicleInspectionBundle.message("inspection.localisation.unresolvedConcept.desc", name)
+        val description = ChronicleInspectionBundle.message("localisation.unresolvedConcept.desc", name)
         holder.registerProblem(location, description, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
     }
 

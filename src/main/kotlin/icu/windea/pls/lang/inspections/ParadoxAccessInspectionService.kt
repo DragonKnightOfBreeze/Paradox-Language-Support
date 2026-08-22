@@ -58,7 +58,7 @@ object ParadoxAccessInspectionService {
                 cachedStatus
             }
             if (!status) {
-                val description = ChronicleInspectionBundle.message("inspection.script.unusedParameter.desc", resolved.name)
+                val description = ChronicleInspectionBundle.message("script.unusedParameter.desc", resolved.name)
                 holder.registerProblem(element, description, ProblemHighlightType.LIKE_UNUSED_SYMBOL, reference.rangeInElement)
             }
         }
@@ -101,7 +101,7 @@ object ParadoxAccessInspectionService {
                 cachedStatus
             }
             if (!status) {
-                val description = ChronicleInspectionBundle.message("inspection.script.unusedDynamicValue.desc", resolved.name, resolved.types.joinToString())
+                val description = ChronicleInspectionBundle.message("script.unusedDynamicValue.desc", resolved.name, resolved.types.joinToString())
                 holder.registerProblem(element, description, ProblemHighlightType.LIKE_UNUSED_SYMBOL, reference.rangeInElement)
             }
         }
@@ -144,7 +144,7 @@ object ParadoxAccessInspectionService {
                 cachedStatus
             }
             if (!status) {
-                val description = ChronicleInspectionBundle.message("inspection.script.unsetDynamicValue.desc", resolved.name, resolved.types.joinToString())
+                val description = ChronicleInspectionBundle.message("script.unsetDynamicValue.desc", resolved.name, resolved.types.joinToString())
                 holder.registerProblem(element, description, ProblemHighlightType.GENERIC_ERROR_OR_WARNING, reference.rangeInElement)
             }
         }

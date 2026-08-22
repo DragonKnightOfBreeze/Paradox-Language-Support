@@ -38,7 +38,7 @@ class DuplicatePropertiesInspection : LocalInspectionTool(), DumbAware {
             if (elements.size <= 1) continue
             elements.forEachFast { element ->
                 val location = element.propertyKey
-                val description = ChronicleInspectionBundle.message("inspection.localisation.duplicateProperties.desc", name)
+                val description = ChronicleInspectionBundle.message("localisation.duplicateProperties.desc", name)
                 val fix = NavigateToDuplicatesFix(name, element, elements)
                 holder.registerProblem(location, description, fix)
             }

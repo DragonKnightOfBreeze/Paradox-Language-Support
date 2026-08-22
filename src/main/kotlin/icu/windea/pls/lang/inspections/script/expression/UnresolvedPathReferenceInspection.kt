@@ -32,12 +32,12 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
 
     override fun getOptionsPane(): OptPane {
         return OptPane.pane(
-            OptPane.checkbox("ignoredInInjectedFiles", ChronicleInspectionBundle.message("inspection.option.ignoredInInjectedFiles")),
-            OptPane.checkbox("ignoredInInlineScriptFiles", ChronicleInspectionBundle.message("inspection.option.ignoredInInlineScriptFiles")),
-            OptPane.checkbox("ignoredByConfigs", ChronicleInspectionBundle.message("inspection.option.ignoredByConfigs")),
-            OptPane.expandableString("ignoredFileNames", ChronicleInspectionBundle.message("inspection.option.ignoredFileNames"), ",")
+            OptPane.checkbox("ignoredInInjectedFiles", ChronicleInspectionBundle.message("option.ignoredInInjectedFiles")),
+            OptPane.checkbox("ignoredInInlineScriptFiles", ChronicleInspectionBundle.message("option.ignoredInInlineScriptFiles")),
+            OptPane.checkbox("ignoredByConfigs", ChronicleInspectionBundle.message("option.ignoredByConfigs")),
+            OptPane.expandableString("ignoredFileNames", ChronicleInspectionBundle.message("option.ignoredFileNames"), ",")
                 .description(ChronicleBundle.message("comment.patterns")),
-            OptPane.checkbox("showExpect", ChronicleInspectionBundle.message("inspection.option.showExpect")),
+            OptPane.checkbox("showExpect", ChronicleInspectionBundle.message("option.showExpect")),
         )
     }
 

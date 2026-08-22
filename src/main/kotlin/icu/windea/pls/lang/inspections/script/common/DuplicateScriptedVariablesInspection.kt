@@ -51,7 +51,7 @@ class DuplicateScriptedVariablesInspection : LocalInspectionTool(), DumbAware {
             if (elements.size <= 1) continue
             elements.forEachFast { element ->
                 val location = element.scriptedVariableName
-                val description = ChronicleInspectionBundle.message("inspection.script.duplicateScriptedVariables.desc", name)
+                val description = ChronicleInspectionBundle.message("script.duplicateScriptedVariables.desc", name)
                 val fix = NavigateToDuplicatesFix(name, element, elements)
                 holder.registerProblem(location, description, fix)
             }

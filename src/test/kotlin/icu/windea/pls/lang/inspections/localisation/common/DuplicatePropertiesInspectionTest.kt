@@ -53,7 +53,7 @@ class DuplicatePropertiesInspectionTest : BasePlatformTestCase(), ChronicleTestS
     @Test
     fun smokeTest_failed() {
         val key = "message"
-        val tag = ChronicleInspectionBundle.message("inspection.localisation.duplicateProperties.desc", key).toWarningTag()
+        val tag = ChronicleInspectionBundle.message("localisation.duplicateProperties.desc", key).toWarningTag()
 
         markFileInfo(ParadoxGameType.Stellaris, "localisation/test.yml")
         myFixture.configureByText("test.yml", """

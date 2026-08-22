@@ -34,12 +34,12 @@ class ConditionalStatementToPropertyFormInspection : LocalInspectionTool(), Dumb
 
     private fun check(element: ParadoxScriptConditionalBlock, holder: ProblemsHolder) {
         if (!ParadoxConditionalStatementManipulationService.canConvertToPropertyForm(element)) return
-        val description = ChronicleInspectionBundle.message("inspection.script.conditionalStatementToPropertyForm.desc")
+        val description = ChronicleInspectionBundle.message("script.conditionalStatementToPropertyForm.desc")
         holder.registerProblem(element, description, Fix())
     }
 
     private class Fix : PsiUpdateModCommandQuickFix() {
-        override fun getFamilyName() = ChronicleInspectionBundle.message("inspection.script.conditionalStatementToPropertyForm.fix.1.name")
+        override fun getFamilyName() = ChronicleInspectionBundle.message("script.conditionalStatementToPropertyForm.fix.1.name")
 
         override fun applyFix(project: Project, element: PsiElement, updater: ModPsiUpdater) {
             val element = element.parentOfType<ParadoxScriptConditionalBlock>(withSelf = true) ?: return

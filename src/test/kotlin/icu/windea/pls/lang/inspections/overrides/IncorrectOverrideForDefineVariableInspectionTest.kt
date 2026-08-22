@@ -38,7 +38,7 @@ class IncorrectOverrideForDefineVariableInspectionTest : BasePlatformTestCase(),
     fun simple_fios() {
         val key = "Namespace.Variable"
         val overrideStrategy = ParadoxOverrideStrategy.LIOS
-        val tag = ChronicleInspectionBundle.message("inspection.incorrectOverrideForDefineVariable.desc", key, overrideStrategy).toWarningTag()
+        val tag = ChronicleInspectionBundle.message("overrides.incorrectOverrideForDefineVariable.desc", key, overrideStrategy).toWarningTag()
 
         markFileInfo(gameType, "common/defines/99_defines.txt")
         myFixture.configureByText("99_defines.txt", """

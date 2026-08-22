@@ -75,7 +75,7 @@ class IncorrectEventNamespaceInspectionTest : BasePlatformTestCase(), ChronicleT
 
     @Test
     fun invalidHyphen() {
-        val tag = ChronicleInspectionBundle.message("inspection.script.incorrectEventNamespace.desc", "my-namespace").toWarningTag()
+        val tag = ChronicleInspectionBundle.message("script.incorrectEventNamespace.desc", "my-namespace").toWarningTag()
 
         markFileInfo(ParadoxGameType.Stellaris, "events/test_events.txt")
         myFixture.configureByText("test_events.txt", """
@@ -89,7 +89,7 @@ class IncorrectEventNamespaceInspectionTest : BasePlatformTestCase(), ChronicleT
 
     @Test
     fun invalidDot() {
-        val tag = ChronicleInspectionBundle.message("inspection.script.incorrectEventNamespace.desc", "namespace.1").toWarningTag()
+        val tag = ChronicleInspectionBundle.message("script.incorrectEventNamespace.desc", "namespace.1").toWarningTag()
 
         markFileInfo(ParadoxGameType.Stellaris, "events/test_events.txt")
         myFixture.configureByText("test_events.txt", """
@@ -103,7 +103,7 @@ class IncorrectEventNamespaceInspectionTest : BasePlatformTestCase(), ChronicleT
 
     @Test
     fun invalidSpace() {
-        val tag = ChronicleInspectionBundle.message("inspection.script.incorrectEventNamespace.desc", "my namespace").toWarningTag()
+        val tag = ChronicleInspectionBundle.message("script.incorrectEventNamespace.desc", "my namespace").toWarningTag()
 
         markFileInfo(ParadoxGameType.Stellaris, "events/test_events.txt")
         myFixture.configureByText("test_events.txt", """

@@ -26,7 +26,7 @@ class MultipleLocalesInspection : LocalInspectionTool(), DumbAware {
 
     override fun getOptionsPane(): OptPane {
         return OptPane.pane(
-            OptPane.expandableString("ignoredFileNames", ChronicleInspectionBundle.message("inspection.option.ignoredFileNames"), ",")
+            OptPane.expandableString("ignoredFileNames", ChronicleInspectionBundle.message("option.ignoredFileNames"), ",")
                 .description(ChronicleBundle.message("comment.patterns"))
         )
     }
@@ -54,7 +54,7 @@ class MultipleLocalesInspection : LocalInspectionTool(), DumbAware {
     private fun check(file: PsiFile, holder: ProblemsHolder) {
         if (file !is ParadoxLocalisationFile) return
         if (file.propertyLists.size <= 1) return // 不存在多个语言环境，忽略
-        val description = ChronicleInspectionBundle.message("inspection.localisation.multipleLocales.desc")
+        val description = ChronicleInspectionBundle.message("localisation.multipleLocales.desc")
         holder.registerProblem(file, description, ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
     }
 }

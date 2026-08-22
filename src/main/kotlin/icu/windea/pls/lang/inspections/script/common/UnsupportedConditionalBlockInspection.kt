@@ -36,6 +36,6 @@ class UnsupportedConditionalBlockInspection : LocalInspectionTool(), DumbAware {
     private fun checkInlineScript(element: ParadoxScriptConditionalBlock, holder: ProblemsHolder) {
         val file = element.containingFile ?: return
         if (ParadoxInlineScriptManager.getInlineScriptExpression(file) == null) return
-        holder.registerProblem(element, ChronicleInspectionBundle.message("inspection.script.unsupportedConditionalBlock.desc.1"))
+        holder.registerProblem(element, ChronicleInspectionBundle.message("script.unsupportedConditionalBlock.desc.1"))
     }
 }

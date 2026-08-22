@@ -43,7 +43,7 @@ class NonTriggeredEventInspection : EventInspectionBase() {
             if ("triggered" !in definitionInfo.typeConfig.subtypes.keys) continue  // no `triggered` subtype declared, skip
             if ("inherited" in definitionInfo.subtypes) continue  // ignore inherited events
             if ("triggered" in definitionInfo.subtypes) continue
-            val description = ChronicleInspectionBundle.message("inspection.script.nonTriggeredEvent.desc")
+            val description = ChronicleInspectionBundle.message("script.nonTriggeredEvent.desc")
             val fixes = getFixes(element)
             holder.registerProblem(element.propertyKey, description, *fixes)
         }
@@ -56,7 +56,7 @@ class NonTriggeredEventInspection : EventInspectionBase() {
     }
 
     private class Fix : PsiUpdateModCommandQuickFix() {
-        override fun getFamilyName() = ChronicleInspectionBundle.message("inspection.script.nonTriggeredEvent.fix.1.name")
+        override fun getFamilyName() = ChronicleInspectionBundle.message("script.nonTriggeredEvent.fix.1.name")
 
         override fun applyFix(project: Project, element: PsiElement, updater: ModPsiUpdater) {
             val element = element.parentOfType<ParadoxScriptProperty>(withSelf = true) ?: return

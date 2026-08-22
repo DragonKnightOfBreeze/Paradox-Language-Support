@@ -31,7 +31,7 @@ class MissingParameterInspection : LocalInspectionTool() {
 
     override fun getOptionsPane(): OptPane {
         return OptPane.pane(
-            OptPane.checkbox("ignoredInInjectedFiles", ChronicleInspectionBundle.message("inspection.option.ignoredInInjectedFiles"))
+            OptPane.checkbox("ignoredInInjectedFiles", ChronicleInspectionBundle.message("option.ignoredInInjectedFiles"))
         )
     }
 
@@ -75,8 +75,8 @@ class MissingParameterInspection : LocalInspectionTool() {
     private fun registerProblem(element: PsiElement, names: Set<String>, rangeInElement: TextRange? = null, holder: ProblemsHolder) {
         val description = when {
             names.isEmpty() -> return
-            names.size == 1 -> ChronicleInspectionBundle.message("inspection.script.missingParameter.desc.1", names.single())
-            else -> ChronicleInspectionBundle.message("inspection.script.missingParameter.desc.2", names.joinToString(", "))
+            names.size == 1 -> ChronicleInspectionBundle.message("script.missingParameter.desc.1", names.single())
+            else -> ChronicleInspectionBundle.message("script.missingParameter.desc.2", names.joinToString(", "))
         }
         holder.registerProblem(element, rangeInElement, description)
     }

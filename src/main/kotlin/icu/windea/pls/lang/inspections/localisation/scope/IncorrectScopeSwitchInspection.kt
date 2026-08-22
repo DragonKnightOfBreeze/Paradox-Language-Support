@@ -57,7 +57,7 @@ class IncorrectScopeSwitchInspection : ScopeInspectionBase() {
                     val startOffset = offset + node.rangeInExpression.startOffset
                     val endOffset = offset + node.rangeInExpression.endOffset
                     val range = TextRange.create(startOffset, endOffset)
-                    val description = ChronicleInspectionBundle.message("inspection.localisation.incorrectScopeSwitch.desc.1", node.text, supportedScopes.joinToString(), outputScopeContext.scope)
+                    val description = ChronicleInspectionBundle.message("localisation.incorrectScopeSwitch.desc.1", node.text, supportedScopes.joinToString(), outputScopeContext.scope)
                     holder.registerProblem(element, range, description)
                     return // only reports first problem per complex expression
                 }

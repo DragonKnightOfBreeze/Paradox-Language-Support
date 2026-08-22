@@ -23,7 +23,7 @@ class UnresolvedColorInspection : LocalInspectionTool() {
 
     override fun getOptionsPane(): OptPane {
         return OptPane.pane(
-            OptPane.checkbox("ignoredInInjectedFiles", ChronicleInspectionBundle.message("inspection.option.ignoredInInjectedFiles"))
+            OptPane.checkbox("ignoredInInjectedFiles", ChronicleInspectionBundle.message("option.ignoredInInjectedFiles"))
         )
     }
 
@@ -51,7 +51,7 @@ class UnresolvedColorInspection : LocalInspectionTool() {
         val reference = element.reference
         if (reference == null || reference.resolve() != null) return
         val location = element.idElement ?: return
-        val description = ChronicleInspectionBundle.message("inspection.localisation.unresolvedColor.desc", name)
+        val description = ChronicleInspectionBundle.message("localisation.unresolvedColor.desc", name)
         holder.registerProblem(location, description, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
     }
 }

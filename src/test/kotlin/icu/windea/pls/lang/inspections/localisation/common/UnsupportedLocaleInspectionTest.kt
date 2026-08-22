@@ -44,7 +44,7 @@ class UnsupportedLocaleInspectionTest : BasePlatformTestCase(), ChronicleTestSco
     @Test
     fun smokeTest_failed() {
         val key = "l_neko"
-        val tag = ChronicleInspectionBundle.message("inspection.localisation.unsupportedLocale.desc.1", key).toErrorTag()
+        val tag = ChronicleInspectionBundle.message("localisation.unsupportedLocale.desc.1", key).toErrorTag()
 
         markFileInfo(ParadoxGameType.Stellaris, "localisation/test.yml")
         myFixture.configureByText("test.yml", """
@@ -57,7 +57,7 @@ class UnsupportedLocaleInspectionTest : BasePlatformTestCase(), ChronicleTestSco
     @Test
     fun smokeTest_failed_forGameType() {
         val key = "l_turkish"
-        val tag = ChronicleInspectionBundle.message("inspection.localisation.unsupportedLocale.desc.2", key, ParadoxGameType.Stellaris).toErrorTag()
+        val tag = ChronicleInspectionBundle.message("localisation.unsupportedLocale.desc.2", key, ParadoxGameType.Stellaris).toErrorTag()
 
         markFileInfo(ParadoxGameType.Stellaris, "localisation/test.yml")
         myFixture.configureByText("test.yml", """

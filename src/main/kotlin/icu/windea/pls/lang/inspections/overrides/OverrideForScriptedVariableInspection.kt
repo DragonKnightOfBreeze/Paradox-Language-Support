@@ -43,7 +43,7 @@ class OverrideForScriptedVariableInspection : OverrideRelatedInspectionBase() {
 
         val locationElement = element.scriptedVariableName
         val (key, target, results) = overrideResult
-        val description = ChronicleInspectionBundle.message("inspection.overrideForScriptedVariable.desc", key)
+        val description = ChronicleInspectionBundle.message("overrides.overrideForScriptedVariable.desc", key)
         val fix = NavigateToOverridingScriptedVariablesFix(key, target, results)
         holder.registerProblem(locationElement, description, fix)
     }

@@ -34,7 +34,7 @@ class IncorrectFileNameInspection : LocalInspectionTool(), DumbAware {
 
     override fun getOptionsPane(): OptPane {
         return OptPane.pane(
-            OptPane.expandableString("ignoredFilePaths", ChronicleInspectionBundle.message("inspection.option.ignoredFilePaths"), ",")
+            OptPane.expandableString("ignoredFilePaths", ChronicleInspectionBundle.message("option.ignoredFilePaths"), ",")
                 .description(ChronicleBundle.message("comment.antPatterns"))
         )
     }

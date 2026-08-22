@@ -55,7 +55,7 @@ class UnsupportedRecursionInspection : LocalInspectionTool(), DumbAware {
         val recursions = mutableSetOf<PsiElement>()
         ParadoxRecursionManager.checkScriptedVariable(element, recursions)
         if (recursions.isEmpty()) return
-        val description = ChronicleInspectionBundle.message("inspection.script.unsupportedRecursion.desc.1")
+        val description = ChronicleInspectionBundle.message("script.unsupportedRecursion.desc.1")
         val location = element.scriptedVariableName
         holder.registerProblem(location, description, NavigateToRecursionsFix(name, element, recursions))
     }
@@ -69,8 +69,8 @@ class UnsupportedRecursionInspection : LocalInspectionTool(), DumbAware {
         ParadoxRecursionManager.checkDefinition(element, recursions) { _, re -> ParadoxPsiMatchService.isDefinitionCall(element, re) }
         if (recursions.isEmpty()) return
         val description = when {
-            definitionInfo.type == "scripted_trigger" -> ChronicleInspectionBundle.message("inspection.script.unsupportedRecursion.desc.2")
-            definitionInfo.type == "scripted_effect" -> ChronicleInspectionBundle.message("inspection.script.unsupportedRecursion.desc.3")
+            definitionInfo.type == "scripted_trigger" -> ChronicleInspectionBundle.message("script.unsupportedRecursion.desc.2")
+            definitionInfo.type == "scripted_effect" -> ChronicleInspectionBundle.message("script.unsupportedRecursion.desc.3")
             else -> return
         }
         val location = element.propertyKey

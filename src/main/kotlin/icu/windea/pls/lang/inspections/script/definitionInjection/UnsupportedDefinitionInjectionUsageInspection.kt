@@ -30,6 +30,6 @@ class UnsupportedDefinitionInjectionUsageInspection : DefinitionInjectionInspect
         if (definitionInjectionInfo.target.isNullOrEmpty()) return // considered "incorrect"
         if (!definitionInjectionInfo.type.isNullOrEmpty()) return
         if (definitionInjectionInfo.typeConfig != null) return
-        holder.registerProblem(element.propertyKey, ChronicleInspectionBundle.message("inspection.script.unsupportedDefinitionInjectionUsage.desc.1"))
+        holder.registerProblem(element.propertyKey, ChronicleInspectionBundle.message("script.unsupportedDefinitionInjectionUsage.desc.1"))
     }
 }

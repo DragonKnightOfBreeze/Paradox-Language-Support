@@ -49,13 +49,13 @@ class MismatchedEventIdInspection : EventInspectionBase() {
         val nameElement = selectScope { element.nameElement(nameField) } ?: return
         val eventId = nameElement.stringValue() ?: return
         if (namespace.isEmpty()) {
-            val description = ChronicleInspectionBundle.message("inspection.script.mismatchedEventId.desc.1", eventId)
+            val description = ChronicleInspectionBundle.message("script.mismatchedEventId.desc.1", eventId)
             holder.registerProblem(nameElement, description)
             // 不存在绑定的命名空间
         } else {
             // 存在绑定的命名空间但不匹配
             if (ParadoxEventManager.isMatchedEventId(eventId, namespace)) return
-            val description = ChronicleInspectionBundle.message("inspection.script.mismatchedEventId.desc.2", eventId, namespace)
+            val description = ChronicleInspectionBundle.message("script.mismatchedEventId.desc.2", eventId, namespace)
             holder.registerProblem(nameElement, description)
         }
     }

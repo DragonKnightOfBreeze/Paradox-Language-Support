@@ -41,7 +41,7 @@ class IncorrectOverrideForDefinitionInspection : OverrideRelatedInspectionBase()
 
         val locationElement = element.propertyKey
         val (key, target, results, overrideStrategy) = overrideResult
-        val description = ChronicleInspectionBundle.message("inspection.incorrectOverrideForDefinition.desc", key, overrideStrategy)
+        val description = ChronicleInspectionBundle.message("overrides.incorrectOverrideForDefinition.desc", key, overrideStrategy)
         val fix = NavigateToOverridingDefinitionsFix(key, target, results)
         holder.registerProblem(locationElement, description, fix)
     }

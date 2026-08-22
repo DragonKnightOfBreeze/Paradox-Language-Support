@@ -35,7 +35,7 @@ class ConflictingInlineScriptUsageInspection : InlineScriptInspectionBase() {
         val configContext = ParadoxConfigManager.getConfigContext(file) ?: return
         if (configContext.inlineScriptHasConflict != true) return
 
-        val description = ChronicleInspectionBundle.message("inspection.script.conflictingInlineScriptUsage.desc", inlineScriptExpression)
+        val description = ChronicleInspectionBundle.message("script.conflictingInlineScriptUsage.desc", inlineScriptExpression)
         holder.registerProblem(file, description, GotoInlineScriptUsagesFix(file))
     }
 }

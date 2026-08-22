@@ -45,53 +45,53 @@ class MissingImageInspection : LocalInspectionTool() {
         return panel {
             // checkForDefinitions
             row {
-                checkBox(ChronicleInspectionBundle.message("inspection.script.missingImage.option.checkForDefinitions"))
+                checkBox(ChronicleInspectionBundle.message("script.missingImage.option.checkForDefinitions"))
                     .bindSelected(::checkForDefinitions.toAtomicProperty())
                     .also { checkForDefinitionsCb = it }
             }
             indent {
                 // checkRequiredForDefinitions
                 row {
-                    checkBox(ChronicleInspectionBundle.message("inspection.script.missingImage.option.checkRequiredForDefinitions"))
+                    checkBox(ChronicleInspectionBundle.message("script.missingImage.option.checkRequiredForDefinitions"))
                         .selected(true)
                         .enabled(false)
                 }
                 // checkPrimaryForDefinitions
                 row {
-                    checkBox(ChronicleInspectionBundle.message("inspection.script.missingImage.option.checkPrimaryForDefinitions"))
+                    checkBox(ChronicleInspectionBundle.message("script.missingImage.option.checkPrimaryForDefinitions"))
                         .bindSelected(::checkPrimaryForDefinitions.toAtomicProperty())
                         .enabledIf(checkForDefinitionsCb.selected)
                 }
                 // checkOptionalForDefinitions
                 row {
-                    checkBox(ChronicleInspectionBundle.message("inspection.script.missingImage.option.checkOptionalForDefinitions"))
+                    checkBox(ChronicleInspectionBundle.message("script.missingImage.option.checkOptionalForDefinitions"))
                         .bindSelected(::checkOptionalForDefinitions.toAtomicProperty())
                         .enabledIf(checkForDefinitionsCb.selected)
                 }
                 // checkGeneratedModifierIconsForDefinitions
                 row {
-                    checkBox(ChronicleInspectionBundle.message("inspection.script.missingImage.option.checkGeneratedModifierIconsForDefinitions"))
+                    checkBox(ChronicleInspectionBundle.message("script.missingImage.option.checkGeneratedModifierIconsForDefinitions"))
                         .bindSelected(::checkGeneratedModifierIconsForDefinitions.toAtomicProperty())
                         .enabledIf(checkForDefinitionsCb.selected)
                 }
             }
             // checkForModifiers
             row {
-                checkBox(ChronicleInspectionBundle.message("inspection.script.missingImage.option.checkForModifiers"))
+                checkBox(ChronicleInspectionBundle.message("script.missingImage.option.checkForModifiers"))
                     .bindSelected(::checkForModifiers.toAtomicProperty())
                     .also { checkForModifiersCb = it }
             }
             indent {
                 // checkModifierIcons
                 row {
-                    checkBox(ChronicleInspectionBundle.message("inspection.script.missingImage.option.checkModifierIcons"))
+                    checkBox(ChronicleInspectionBundle.message("script.missingImage.option.checkModifierIcons"))
                         .bindSelected(::checkModifierIcons.toAtomicProperty())
                         .enabledIf(checkForModifiersCb.selected)
                 }
             }
             // ignoredInInjectedFile
             row {
-                checkBox(ChronicleInspectionBundle.message("inspection.option.ignoredInInjectedFiles"))
+                checkBox(ChronicleInspectionBundle.message("option.ignoredInInjectedFiles"))
                     .bindSelected(::ignoredInInjectedFiles.toAtomicProperty())
             }
         }
@@ -169,11 +169,11 @@ class MissingImageInspection : LocalInspectionTool() {
     private fun getDescription(codeInsightInfo: ParadoxImageCodeInsightInfo): String? {
         val locationExpression = codeInsightInfo.relatedImageInfo?.locationExpression
         locationExpression?.takeUnless { it.isPlaceholder }?.location
-            ?.let { return ChronicleInspectionBundle.message("inspection.script.missingImage.desc.3", it) }
+            ?.let { return ChronicleInspectionBundle.message("script.missingImage.desc.3", it) }
         codeInsightInfo.gfxName
-            ?.let { return ChronicleInspectionBundle.message("inspection.script.missingImage.desc.2", it) }
+            ?.let { return ChronicleInspectionBundle.message("script.missingImage.desc.2", it) }
         codeInsightInfo.filePath
-            ?.let { return ChronicleInspectionBundle.message("inspection.script.missingImage.desc.1", it) }
+            ?.let { return ChronicleInspectionBundle.message("script.missingImage.desc.1", it) }
         return null
     }
 

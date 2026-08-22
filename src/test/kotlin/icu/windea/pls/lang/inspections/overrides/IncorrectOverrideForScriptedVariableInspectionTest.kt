@@ -54,7 +54,7 @@ class IncorrectOverrideForScriptedVariableInspectionTest : BasePlatformTestCase(
     fun simple_lios() {
         val key = "var"
         val overrideStrategy = ParadoxOverrideStrategy.FIOS
-        val tag = ChronicleInspectionBundle.message("inspection.incorrectOverrideForScriptedVariable.desc", key, overrideStrategy).toWarningTag()
+        val tag = ChronicleInspectionBundle.message("overrides.incorrectOverrideForScriptedVariable.desc", key, overrideStrategy).toWarningTag()
 
         markFileInfo(gameType, "common/scripted_variables/01_scripted_variables.txt")
         myFixture.configureByText("01_scripted_variables.txt", """

@@ -23,7 +23,7 @@ class IncorrectScopeSwitchInspection : ScopeInspectionBase() {
 
     override fun getOptionsPane(): OptPane {
         return OptPane.pane(
-            OptPane.checkbox("checkForSystemScopes", ChronicleInspectionBundle.message("inspection.script.incorrectScopeSwitch.option.checkForSystemScope"))
+            OptPane.checkbox("checkForSystemScopes", ChronicleInspectionBundle.message("script.incorrectScopeSwitch.option.checkForSystemScope"))
         )
     }
 
@@ -61,7 +61,7 @@ class IncorrectScopeSwitchInspection : ScopeInspectionBase() {
                     if (scopeContext.scope.id == ParadoxScopeConstants.unknownScope) {
                         val definitionType = definitionType ?: continue
                         if (definitionType in config.configGroup.typeModel.skipCheckSystemScope) continue
-                        val description = ChronicleInspectionBundle.message("inspection.script.incorrectScopeSwitch.desc.3", node.text)
+                        val description = ChronicleInspectionBundle.message("script.incorrectScopeSwitch.desc.3", node.text)
                         holder.registerProblem(propertyKey, rangeInExpression, description)
                     }
                 }
@@ -70,7 +70,7 @@ class IncorrectScopeSwitchInspection : ScopeInspectionBase() {
                     val inputScopes = node.config.inputScopes
                     val configGroup = config.configGroup
                     if (ParadoxScopeManager.matchesScope(parentScopeContext, inputScopes, configGroup)) continue
-                    val description = ChronicleInspectionBundle.message("inspection.script.incorrectScopeSwitch.desc.1", node.text, inputScopes.joinToString(), parentScopeContext.scope.id)
+                    val description = ChronicleInspectionBundle.message("script.incorrectScopeSwitch.desc.1", node.text, inputScopes.joinToString(), parentScopeContext.scope.id)
                     holder.registerProblem(propertyKey, rangeInExpression, description)
                 }
                 // TODO 1.3.0+ dynamic value

@@ -51,7 +51,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
         return panel {
             // ignoredFileNames
             row {
-                label(ChronicleInspectionBundle.message("inspection.option.ignoredFileNames"))
+                label(ChronicleInspectionBundle.message("option.ignoredFileNames"))
                 expandableTextField({ it.toDelimitedMutableList() }, { it.toDelimitedString() })
                     .bindText(::ignoredFileNames.toAtomicProperty())
                     .comment(ChronicleBundle.message("comment.patterns"))
@@ -60,7 +60,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
             }
             // checkForPreferredLocale
             row {
-                checkBox(ChronicleInspectionBundle.message("inspection.localisation.missingLocalisation.option.checkForPreferredLocale"))
+                checkBox(ChronicleInspectionBundle.message("localisation.missingLocalisation.option.checkForPreferredLocale"))
                     .bindSelected(::checkForPreferredLocale.toAtomicProperty())
                 cell(ActionLink(ChronicleBundle.message("link.configure")) {
                     // ShowSettingsUtil.getInstance().showSettingsDialog(null, ParadoxSettingsConfigurable::class.java)
@@ -70,7 +70,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
             }
             // checkForSpecificLocales
             row {
-                checkBox(ChronicleInspectionBundle.message("inspection.localisation.missingLocalisation.option.checkForSpecificLocales"))
+                checkBox(ChronicleInspectionBundle.message("localisation.missingLocalisation.option.checkForSpecificLocales"))
                     .bindSelected(::checkForSpecificLocales.toAtomicProperty())
                 val cb = textField().bindText(::locales.toAtomicProperty()).visible(false).component
                 cell(ActionLink(ChronicleBundle.message("link.configure")) {
@@ -147,7 +147,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 
     private fun getDescription(codeInsightInfo: ParadoxLocalisationCodeInsightInfo): String? {
         val localeId = codeInsightInfo.locale.name
-        codeInsightInfo.name?.let { return ChronicleInspectionBundle.message("inspection.localisation.missingLocalisation.desc.1", localeId, it) }
+        codeInsightInfo.name?.let { return ChronicleInspectionBundle.message("localisation.missingLocalisation.desc.1", localeId, it) }
         return null
     }
 

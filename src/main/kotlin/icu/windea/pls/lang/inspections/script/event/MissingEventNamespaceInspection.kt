@@ -30,7 +30,7 @@ class MissingEventNamespaceInspection : EventInspectionBase() {
     private fun check(file: PsiFile, holder: ProblemsHolder) {
         if (file !is ParadoxScriptFile) return
         if (!ParadoxEventManipulationService.isMissingEventNamespaceDeclarationInFile(file)) return
-        val description = ChronicleInspectionBundle.message("inspection.script.missingEventNamespace.desc")
+        val description = ChronicleInspectionBundle.message("script.missingEventNamespace.desc")
         holder.registerProblem(file, description)
     }
 }

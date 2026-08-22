@@ -40,11 +40,11 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
 
     override fun getOptionsPane(): OptPane {
         return OptPane.pane(
-            OptPane.checkbox("ignoredInInjectedFiles", ChronicleInspectionBundle.message("inspection.option.ignoredInInjectedFiles")),
-            OptPane.checkbox("ignoredInInlineScriptFiles", ChronicleInspectionBundle.message("inspection.option.ignoredInInlineScriptFiles")),
-            OptPane.checkbox("ignoredByConfigs", ChronicleInspectionBundle.message("inspection.option.ignoredByConfigs")),
-            OptPane.checkbox("showExpect", ChronicleInspectionBundle.message("inspection.option.showExpect")),
-            OptPane.number("truncateExpect", ChronicleInspectionBundle.message("inspection.option.truncateExpect"), Int.MIN_VALUE, Int.MAX_VALUE),
+            OptPane.checkbox("ignoredInInjectedFiles", ChronicleInspectionBundle.message("option.ignoredInInjectedFiles")),
+            OptPane.checkbox("ignoredInInlineScriptFiles", ChronicleInspectionBundle.message("option.ignoredInInlineScriptFiles")),
+            OptPane.checkbox("ignoredByConfigs", ChronicleInspectionBundle.message("option.ignoredByConfigs")),
+            OptPane.checkbox("showExpect", ChronicleInspectionBundle.message("option.showExpect")),
+            OptPane.number("truncateExpect", ChronicleInspectionBundle.message("option.truncateExpect"), Int.MIN_VALUE, Int.MAX_VALUE),
         )
     }
 

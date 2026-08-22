@@ -37,12 +37,12 @@ class ScopeCallStatementToSafeFormInspection : LocalInspectionTool(), DumbAware 
     private fun check(element: ParadoxScriptProperty, holder: ProblemsHolder) {
         if (!ParadoxScopeCallStatementManipulationService.canConvertToSafeForm(element)) return
         val range = ParadoxScopeCallStatementManipulationService.getHighlightingRange(element)
-        val description = ChronicleInspectionBundle.message("inspection.script.scopeCallStatementToSafeForm.desc")
+        val description = ChronicleInspectionBundle.message("script.scopeCallStatementToSafeForm.desc")
         holder.registerProblem(element, range, description, Fix())
     }
 
     private class Fix : PsiUpdateModCommandQuickFix() {
-        override fun getFamilyName() = ChronicleInspectionBundle.message("inspection.script.scopeCallStatementToSafeForm.fix.1.name")
+        override fun getFamilyName() = ChronicleInspectionBundle.message("script.scopeCallStatementToSafeForm.fix.1.name")
 
         override fun applyFix(project: Project, element: PsiElement, updater: ModPsiUpdater) {
             val element = element.parentOfType<ParadoxScriptProperty>(withSelf = true) ?: return

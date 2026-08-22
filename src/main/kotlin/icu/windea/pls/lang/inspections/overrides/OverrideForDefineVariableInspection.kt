@@ -42,7 +42,7 @@ class OverrideForDefineVariableInspection : OverrideRelatedInspectionBase() {
 
         val locationElement = element.propertyKey
         val (key, target, results) = overrideResult
-        val description = ChronicleInspectionBundle.message("inspection.overrideForDefineVariable.desc", key)
+        val description = ChronicleInspectionBundle.message("overrides.overrideForDefineVariable.desc", key)
         val fix = NavigateToOverridingDefineVariablesFix(key, target, results)
         holder.registerProblem(locationElement, description, fix)
     }

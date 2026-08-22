@@ -41,7 +41,7 @@ class IncorrectEventIdInspection : EventInspectionBase() {
         val eventId = definitionInfo.name
         if (ParadoxEventManager.isValidEventId(eventId)) return
         val nameElement = selectScope { element.nameElement(nameField) } ?: return
-        val description = ChronicleInspectionBundle.message("inspection.script.incorrectEventId.desc", eventId)
+        val description = ChronicleInspectionBundle.message("script.incorrectEventId.desc", eventId)
         holder.registerProblem(nameElement, description)
     }
 }
