@@ -9,7 +9,7 @@ import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.csv.psi.ParadoxCsvPsiService
 import icu.windea.pls.lang.complexEnumValueInfo
-import icu.windea.pls.lang.util.ParadoxCsvManager
+import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.script.editor.ParadoxScriptHighlighterColors
 
@@ -28,7 +28,7 @@ class ParadoxCsvSemanticAnnotator : Annotator {
         // 高亮复杂枚举值声明
         if (annotateComplexEnumValue(element, holder)) return
 
-        val columnConfig = ParadoxCsvManager.getColumnConfig(element)
+        val columnConfig = ParadoxConfigManager.getColumnConfig(element)
         val config = columnConfig?.valueConfig ?: return
         ParadoxExpressionManager.annotateCsvExpression(element, config, holder)
     }

@@ -4,7 +4,7 @@ import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.util.values.FallbackStrings
 import icu.windea.pls.csv.psi.ParadoxCsvColumnContainer
 import icu.windea.pls.csv.psi.ParadoxCsvHeader
-import icu.windea.pls.lang.util.ParadoxCsvManager
+import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.model.type.ParadoxTypeResolver
 
 object ParadoxCsvAnnotatedManager {
@@ -38,11 +38,11 @@ object ParadoxCsvAnnotatedManager {
      */
     fun getConfigExpressionAnnotation(element: ParadoxCsvColumnContainer): String? {
         if (element is ParadoxCsvHeader) return null // skip for header
-        val rowConfig = ParadoxCsvManager.getRowConfig(element) ?: return null
+        val rowConfig = ParadoxConfigManager.getRowConfig(element) ?: return null
         val columns = element.columnList.orNull() ?: return null
         val configExpressions = columns.map { column ->
-            val columnConfig = ParadoxCsvManager.getColumnConfig(column, rowConfig) ?: return@map FallbackStrings.unknown
-            if (!ParadoxCsvManager.isMatchedColumnConfig(column, columnConfig)) return@map FallbackStrings.unknown // require matched
+            val columnConfig = ParadoxConfigManager.getColumnConfig(column, rowConfig) ?: return@map FallbackStrings.unknown
+            if (!ParadoxConfigManager.isMatchedColumnConfig(column, columnConfig)) return@map FallbackStrings.unknown // require matched
             columnConfig.value
         }
         return configExpressions.joinToString(";", "## $configExpressionPrefix ")

@@ -9,8 +9,10 @@ import com.intellij.psi.util.parentOfType
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtMemberType
+import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtEnumConfig
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
+import icu.windea.pls.config.config.delegated.CwtRowConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.config.config.expandConfigExpression
 import icu.windea.pls.config.config.overriddenProvider
@@ -19,11 +21,13 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.select.selectConfigScope
 import icu.windea.pls.config.util.CwtConfigKeyManager
 import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.buildImmutableList
 import icu.windea.pls.core.collections.findFast
 import icu.windea.pls.core.collections.flatMapFast
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.optimized
+import icu.windea.pls.core.util.ComputedModificationTracker
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.ProcessorScope
 import icu.windea.pls.core.util.getValue
@@ -31,7 +35,11 @@ import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.values.SoftValue
 import icu.windea.pls.core.withDependencyItems
+import icu.windea.pls.csv.ParadoxCsvLanguage
+import icu.windea.pls.csv.psi.ParadoxCsvColumn
+import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.ep.resolve.config.CwtOverriddenConfigProvider
+import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.match.ParadoxMatchOccurrence
 import icu.windea.pls.lang.match.ParadoxMatchOccurrenceService
 import icu.windea.pls.lang.match.ParadoxMatchOptions
@@ -42,6 +50,7 @@ import icu.windea.pls.lang.resolve.CwtConfigContext
 import icu.windea.pls.lang.resolve.ParadoxConfigService
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.model.expressions.ParadoxDefinitionTypeExpression
+import icu.windea.pls.script.ParadoxScriptLanguage
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import java.util.concurrent.ConcurrentMap
 
@@ -51,12 +60,14 @@ object ParadoxConfigManager {
         val cachedConfigContext by registerKey<CachedValue<CwtConfigContext>>(Keys)
         val cachedConfigsCache by registerKey<CachedValue<SoftValue<ConcurrentMap<String, List<CwtMemberConfig<*>>>>>>(Keys)
         val cachedChildOccurrencesCache by registerKey<CachedValue<SoftValue<ConcurrentMap<String, Map<CwtDataExpression, ParadoxMatchOccurrence>>>>>(Keys)
+        val cachedRowConfig by registerKey<CachedValue<CwtRowConfig>>(Keys)
     }
 
     /**
-     * 得到 [element] 对应的脚本成员的规则上下文。
+     * 得到 [element] 对应的脚本成员（[ParadoxScriptMember]）的规则上下文。
      */
     fun getConfigContext(element: PsiElement): CwtConfigContext? {
+        if (element.language !== ParadoxScriptLanguage) return null
         val memberElement = element.parentOfType<ParadoxScriptMember>(withSelf = true) ?: return null
         return getConfigContextFromCache(memberElement)
     }
@@ -70,18 +81,20 @@ object ParadoxConfigManager {
     }
 
     /**
-     * 得到 [element] 对应的脚本成员的一组作为上下文的成员规则。如果当前位置不存在规则上下文，则返回空列表。
+     * 得到 [element] 对应的脚本成员（[ParadoxScriptMember]）的一组作为上下文的成员规则。如果当前位置不存在规则上下文，则返回空列表。
      */
     fun getContextConfigs(element: PsiElement, options: ParadoxMatchOptions? = null): List<CwtMemberConfig<*>> {
+        if (element.language !== ParadoxScriptLanguage) return emptyList()
         val memberElement = element.parentOfType<ParadoxScriptMember>(withSelf = true) ?: return emptyList()
         val configContext = getConfigContextFromCache(memberElement) ?: return emptyList()
         return configContext.getConfigs(options)
     }
 
     /**
-     * 得到 [element] 对应的脚本成员的一组匹配的成员规则。
+     * 得到 [element] 对应的脚本成员（[ParadoxScriptMember]）的一组匹配的成员规则。
      */
     fun getConfigs(element: PsiElement, options: ParadoxMatchOptions? = null): List<CwtMemberConfig<*>> {
+        if (element.language !== ParadoxScriptLanguage) return emptyList()
         val memberElement = element.parentOfType<ParadoxScriptMember>(withSelf = true) ?: return emptyList()
         ProgressManager.checkCanceled()
         val cacheKey = options.toHashString().optimized() // optimized to optimize memory
@@ -98,16 +111,18 @@ object ParadoxConfigManager {
     }
 
     /**
-     * 得到 [element] 对应的脚本成员的作为值的子句中的子成员的出现次数信息。
+     * 得到 [element] 对应的脚本成员（[ParadoxScriptMember]）的作为值的子句中的子成员的出现次数信息。
      */
-    fun getChildOccurrences(element: ParadoxScriptMember, configs: List<CwtMemberConfig<*>>): Map<CwtDataExpression, ParadoxMatchOccurrence> {
+    fun getChildOccurrences(element: PsiElement, configs: List<CwtMemberConfig<*>>): Map<CwtDataExpression, ParadoxMatchOccurrence> {
+        if (element.language !== ParadoxScriptLanguage) return emptyMap()
+        val memberElement = element.parentOfType<ParadoxScriptMember>(withSelf = true) ?: return emptyMap()
         if (configs.isEmpty()) return emptyMap()
         val childConfigs = configs.flatMapFast { it.configs.orEmpty() }
         if (childConfigs.isEmpty()) return emptyMap()
         ProgressManager.checkCanceled()
         val cacheKey = CwtConfigKeyManager.getIdentifierKey(childConfigs, "\u0000", 1).optimized() // optimized to optimize memory
-        val cache = getChildOccurrencesCacheFromCache(element).dereference()
-        return cache.getOrPut(cacheKey) { ParadoxMatchOccurrenceService.getChildOccurrences(element, configs).optimized() }
+        val cache = getChildOccurrencesCacheFromCache(memberElement).dereference()
+        return cache.getOrPut(cacheKey) { ParadoxMatchOccurrenceService.getChildOccurrences(memberElement, configs).optimized() }
     }
 
     private fun getChildOccurrencesCacheFromCache(element: ParadoxScriptMember): SoftValue<ConcurrentMap<String, Map<CwtDataExpression, ParadoxMatchOccurrence>>> {
@@ -116,6 +131,37 @@ object ParadoxConfigManager {
             val value = SoftValue.ofConcurrentMap<String, Map<CwtDataExpression, ParadoxMatchOccurrence>>()
             value.withDependencyItems(element, ParadoxModificationTrackers.ConfigResolution)
         }
+    }
+
+    /**
+     * 得到 [element] 对应的 CSV 文件（[ParadoxCsvFile]）的行规则。
+     */
+    fun getRowConfig(element: PsiElement): CwtRowConfig? {
+        if(element.language !== ParadoxCsvLanguage) return null
+        val file = element.containingFile?.castOrNull<ParadoxCsvFile>() ?: return null
+        // from cache
+        return getRowConfigFromCache(file)
+    }
+
+    private fun getRowConfigFromCache(file: ParadoxCsvFile): CwtRowConfig? {
+        // when the file content changes, the cache here does not need to be refreshed
+        return CachedValuesManager.getCachedValue(file, Keys.cachedRowConfig) {
+            val value = ParadoxConfigService.resolveRowConfig(file)
+            value.withDependencyItems(ComputedModificationTracker { file.fileInfo })
+        }
+    }
+
+    fun getColumnConfig(element: ParadoxCsvColumn, rowConfig: CwtRowConfig): CwtPropertyConfig? {
+        return ParadoxConfigService.getColumnConfig(element, rowConfig)
+    }
+
+    fun getColumnConfig(element: ParadoxCsvColumn): CwtPropertyConfig? {
+        val rowConfig = getRowConfig(element) ?: return null
+        return getColumnConfig(element, rowConfig)
+    }
+
+    fun isMatchedColumnConfig(column: ParadoxCsvColumn, columnConfig: CwtPropertyConfig): Boolean {
+        return ParadoxConfigService.isMatchedColumnConfig(column, columnConfig)
     }
 
     fun collectConfigsWithOverridden(element: PsiElement, configs: List<CwtMemberConfig<*>>?, result: MutableList<CwtMemberConfig<*>>, type: CwtMemberType? = null) {

@@ -14,7 +14,7 @@ import icu.windea.pls.lang.inspections.ParadoxExpressionInspectionContext
 import icu.windea.pls.lang.inspections.ParadoxExpressionInspectionService
 import icu.windea.pls.lang.psi.ParadoxPsiElementVisitor
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
-import icu.windea.pls.lang.util.ParadoxCsvManager
+import icu.windea.pls.lang.util.ParadoxConfigManager
 
 /**
  * （CSV 文件中的）无法解析的表达式的代码检查。
@@ -53,7 +53,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool(), ParadoxExpressionI
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         val file = holder.file
         if (file !is ParadoxCsvFile) return PsiElementVisitor.EMPTY_VISITOR
-        val rowConfig = ParadoxCsvManager.getRowConfig(file)
+        val rowConfig = ParadoxConfigManager.getRowConfig(file)
         if (rowConfig == null) return PsiElementVisitor.EMPTY_VISITOR
         val context = createContext( holder)
         return object : ParadoxPsiElementVisitor() {

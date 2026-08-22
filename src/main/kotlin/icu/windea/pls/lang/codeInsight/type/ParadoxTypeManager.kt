@@ -22,7 +22,6 @@ import icu.windea.pls.lang.psi.isDefinitionName
 import icu.windea.pls.lang.psi.resolveLocalisation
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.util.ParadoxConfigManager
-import icu.windea.pls.lang.util.ParadoxCsvManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
@@ -205,11 +204,11 @@ object ParadoxTypeManager {
             }
             is ParadoxCsvExpressionElement -> {
                 if (element !is ParadoxCsvColumn) return null
-                val columnConfig = ParadoxCsvManager.getColumnConfig(element) ?: return null
+                val columnConfig = ParadoxConfigManager.getColumnConfig(element) ?: return null
                 when {
                     ParadoxCsvPsiService.isHeaderColumn(element) -> columnConfig.key
                     else -> {
-                        if (!ParadoxCsvManager.isMatchedColumnConfig(element, columnConfig)) return null // require matched
+                        if (!ParadoxConfigManager.isMatchedColumnConfig(element, columnConfig)) return null // require matched
                         columnConfig.value
                     }
                 }

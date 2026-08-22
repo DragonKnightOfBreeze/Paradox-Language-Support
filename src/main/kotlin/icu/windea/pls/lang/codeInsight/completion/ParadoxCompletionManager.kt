@@ -48,7 +48,6 @@ import icu.windea.pls.lang.search.util.filterBy
 import icu.windea.pls.lang.search.util.preferLocale
 import icu.windea.pls.lang.search.util.withConstraint
 import icu.windea.pls.lang.util.ParadoxConfigManager
-import icu.windea.pls.lang.util.ParadoxCsvManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.ParadoxLocalisationFileManager
 import icu.windea.pls.lang.util.ParadoxLocalisationIconManager
@@ -210,7 +209,7 @@ object ParadoxCompletionManager {
             return
         }
 
-        val columnConfig = ParadoxCsvManager.getColumnConfig(columnElement) ?: return
+        val columnConfig = ParadoxConfigManager.getColumnConfig(columnElement) ?: return
         val config = columnConfig.valueConfig ?: return
         val context = context.copy(isKey = null, config = config)
         completeColumn(context, result)
@@ -472,7 +471,7 @@ object ParadoxCompletionManager {
     fun completeHeaderColumn(context: ParadoxCompletionContext, result: CompletionResultSet) {
         val column = context.contextElement.castOrNull<ParadoxCsvColumn>() ?: return
         val header = column.parent?.castOrNull<ParadoxCsvHeader>() ?: return
-        val rowConfig = ParadoxCsvManager.getRowConfig(header) ?: return
+        val rowConfig = ParadoxConfigManager.getRowConfig(header) ?: return
         val columnConfigs = rowConfig.columns
         if (columnConfigs.isEmpty()) return
         // #134 updated logic to get expected column configs

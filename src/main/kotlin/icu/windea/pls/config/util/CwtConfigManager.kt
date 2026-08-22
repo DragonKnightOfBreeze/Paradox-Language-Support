@@ -18,10 +18,8 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.aliasConfig
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
-import icu.windea.pls.config.config.delegated.CwtEnumConfig
 import icu.windea.pls.config.config.delegated.CwtMacroConfig
 import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
-import icu.windea.pls.config.config.delegated.CwtUnionConfig
 import icu.windea.pls.config.config.inlineConfig
 import icu.windea.pls.config.config.singleAliasConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
@@ -175,26 +173,6 @@ object CwtConfigManager {
             val configGroup = configGroupProvider(it)
             CwtConfigExpressionManager.getPriority(expression, configGroup)
         }
-    }
-
-    inline fun processCandidateConfigs(config: CwtEnumConfig, processor: (candidateConfig: CwtValueConfig) -> Boolean): Boolean {
-        if (config.valueConfigMap.isEmpty()) return true
-        // NOTE 3.0.1 recursion guard should not be directly used here, since the context may be different
-        config.valueConfigMap.values.forEach { valueConfig ->
-            val r = processor(valueConfig)
-            if (!r) return false
-        }
-        return true
-    }
-
-    inline fun processCandidateConfigs(config: CwtUnionConfig, processor: (candidateConfig: CwtValueConfig) -> Boolean): Boolean {
-        if (config.valueConfigs.isEmpty()) return true
-        // NOTE 3.0.1 recursion guard should not be directly used here, since the context may be different
-        config.valueConfigs.forEachFast { valueConfig ->
-            val r = processor(valueConfig)
-            if (!r) return false
-        }
-        return true
     }
 
     fun getAliasKeys(configGroup: CwtConfigGroup, aliasName: String, key: String): Set<String> {

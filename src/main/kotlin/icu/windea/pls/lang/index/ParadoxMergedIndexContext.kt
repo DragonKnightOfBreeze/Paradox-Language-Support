@@ -18,7 +18,7 @@ import icu.windea.pls.lang.references.localisation.ParadoxLocalisationExpression
 import icu.windea.pls.lang.references.script.ParadoxScriptExpressionPsiReference
 import icu.windea.pls.lang.resolve.ParadoxConfigService
 import icu.windea.pls.lang.resolve.ParadoxExpressionService
-import icu.windea.pls.lang.util.ParadoxCsvManager
+import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
@@ -163,7 +163,7 @@ data class ParadoxMergedIndexCsvContextBase(
     private fun computeColumnConfig(): CwtPropertyConfig? {
         val element = expressionElement ?: return null
         if (element !is ParadoxCsvColumn) return null
-        val columnConfig = ParadoxCsvManager.getColumnConfig(element)
+        val columnConfig = ParadoxConfigManager.getColumnConfig(element)
         return columnConfig
     }
 

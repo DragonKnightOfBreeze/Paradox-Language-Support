@@ -40,7 +40,6 @@ import icu.windea.pls.lang.references.script.ParadoxScriptExpressionPsiReference
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxComplexEnumValueManager
 import icu.windea.pls.lang.util.ParadoxConfigManager
-import icu.windea.pls.lang.util.ParadoxCsvManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
 import icu.windea.pls.model.orSpecific
@@ -394,7 +393,7 @@ object ParadoxExpressionService {
 
         // 尝试基于规则进行解析
         if (element !is ParadoxCsvColumn) return PsiReference.EMPTY_ARRAY
-        val columnConfig = ParadoxCsvManager.getColumnConfig(element)
+        val columnConfig = ParadoxConfigManager.getColumnConfig(element)
         if (columnConfig == null) return PsiReference.EMPTY_ARRAY
         val referenceRange = getExpressionRangeInElement(element)
         if (referenceRange.isEmpty) return PsiReference.EMPTY_ARRAY

@@ -19,7 +19,6 @@ import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueLightElement
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.util.ParadoxConfigManager
-import icu.windea.pls.lang.util.ParadoxCsvManager
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationColorfulText
 import icu.windea.pls.localisation.psi.ParadoxLocalisationCommandText
@@ -130,7 +129,7 @@ class ParadoxUsageTypeProvider : UsageTypeProviderEx {
             return ParadoxUsageTypes.HEADER_COLUMN
         }
 
-        val columnConfig = ParadoxCsvManager.getColumnConfig(element) ?: return null
+        val columnConfig = ParadoxConfigManager.getColumnConfig(element) ?: return null
         val config = columnConfig.valueConfig ?: return null
         val configExpression = config.configExpression
         // from config expression

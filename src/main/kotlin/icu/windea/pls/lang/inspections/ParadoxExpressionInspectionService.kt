@@ -29,7 +29,6 @@ import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.CwtConfigContext
 import icu.windea.pls.lang.tagType
 import icu.windea.pls.lang.util.ParadoxConfigManager
-import icu.windea.pls.lang.util.ParadoxCsvManager
 import icu.windea.pls.model.orSpecific
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptBoolean
@@ -95,8 +94,8 @@ object ParadoxExpressionInspectionService {
         // 按需忽略最后一行
 
         // skip if the column config can be matched
-        val columnConfig = ParadoxCsvManager.getColumnConfig(element, rowConfig) ?: return // skip (checked by `IncorrectColumnSizeInspection`)
-        if (ParadoxCsvManager.isMatchedColumnConfig(element, columnConfig)) return
+        val columnConfig = ParadoxConfigManager.getColumnConfig(element, rowConfig) ?: return // skip (checked by `IncorrectColumnSizeInspection`)
+        if (ParadoxConfigManager.isMatchedColumnConfig(element, columnConfig)) return
 
         val expectedConfigs = getExpectedConfigs(columnConfig)
         if (skipForUnresolvedExpression(element, expectedConfigs, context)) return
@@ -243,8 +242,8 @@ object ParadoxExpressionInspectionService {
         if (ParadoxCsvPsiService.isEmptyColumn(element)) return // skip empty columns
 
         // 得到完全匹配的规则
-        val columnConfig = ParadoxCsvManager.getColumnConfig(element, rowConfig) ?: return // skip (checked by `IncorrectColumnSizeInspection`)
-        if (!ParadoxCsvManager.isMatchedColumnConfig(element, columnConfig)) return // skip (checked by `UnresolvedExpressionInspection`)
+        val columnConfig = ParadoxConfigManager.getColumnConfig(element, rowConfig) ?: return // skip (checked by `IncorrectColumnSizeInspection`)
+        if (!ParadoxConfigManager.isMatchedColumnConfig(element, columnConfig)) return // skip (checked by `UnresolvedExpressionInspection`)
         val config = columnConfig.valueConfig ?: return
 
         // 开始检查

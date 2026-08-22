@@ -14,6 +14,7 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.declarationConfigCacheKey
 import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
+import icu.windea.pls.config.config.delegated.CwtRowConfig
 import icu.windea.pls.config.config.originalConfig
 import icu.windea.pls.config.config.overriddenProvider
 import icu.windea.pls.config.configGroup.CwtConfigGroup
@@ -26,6 +27,7 @@ import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.cache.cancelable
 import icu.windea.pls.core.cache.createNestedCache
+import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.mapFast
@@ -38,10 +40,18 @@ import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKeyWithThis
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.core.withRecursionGuard
+import icu.windea.pls.csv.psi.ParadoxCsvColumn
+import icu.windea.pls.csv.psi.ParadoxCsvColumnContainer
+import icu.windea.pls.csv.psi.ParadoxCsvFile
+import icu.windea.pls.csv.psi.ParadoxCsvPsiService
 import icu.windea.pls.ep.resolve.config.CwtConfigContextProvider
 import icu.windea.pls.ep.resolve.config.CwtDeclarationConfigContextProvider
 import icu.windea.pls.ep.resolve.config.CwtOverriddenConfigProvider
 import icu.windea.pls.ep.resolve.config.CwtRelatedConfigProvider
+import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.match.CwtRowConfigMatchContext
+import icu.windea.pls.lang.match.ParadoxConfigMatchService
+import icu.windea.pls.lang.match.ParadoxCsvExpressionMatchContext
 import icu.windea.pls.lang.match.ParadoxExpressionMatchService
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.ParadoxMatchService
@@ -291,7 +301,7 @@ object ParadoxConfigService {
                     // 打平后需要首先进行必要的内联
                     // 如果别名规则内联后涉及单别名规则，会继续内联
                     val inlinedConfigs = CwtConfigManipulationService.inlineForConfigContext(config, expression.value)
-                    if(inlinedConfigs != null) {
+                    if (inlinedConfigs != null) {
                         result.addAll(inlinedConfigs)
                     } else {
                         result.add(config)
@@ -388,5 +398,35 @@ object ParadoxConfigService {
                 return result // 返回最终匹配的规则
             }
         }
+    }
+
+    fun resolveRowConfig(file: ParadoxCsvFile): CwtRowConfig? {
+        val project = file.project
+        val fileInfo = file.fileInfo ?: return null
+        val path = fileInfo.path
+        val gameType = fileInfo.gameType
+        val configGroup = ChronicleFacade.getConfigGroup(project, gameType)
+        val matchContext = CwtRowConfigMatchContext(configGroup, path)
+        val rowConfig = ParadoxConfigMatchService.getMatchedRowConfig(matchContext)
+        return rowConfig
+    }
+
+    fun getColumnConfig(element: ParadoxCsvColumn, rowConfig: CwtRowConfig): CwtPropertyConfig? {
+        val rowElement = element.parent?.castOrNull<ParadoxCsvColumnContainer>() ?: return null
+        if (rowConfig.skipLastRow && ParadoxCsvPsiService.isLastRow(rowElement)) return null // #314
+        // if (rowConfig.skipLastColumn && ParadoxCsvPsiService.isLastColumn(element)) return null // #314 (not here, not such logic)
+        val columnNames = ParadoxCsvPsiService.getColumnNames(rowElement).orNull() ?: return null
+        val columnIndex = ParadoxCsvPsiService.getColumnIndex(element)
+        return ParadoxConfigMatchService.getColumnConfig(rowConfig, columnNames, columnIndex)
+    }
+
+    fun isMatchedColumnConfig(column: ParadoxCsvColumn, columnConfig: CwtPropertyConfig): Boolean {
+        if (ParadoxCsvPsiService.isHeaderColumn(column)) return true // header column -> always true
+
+        val configExpression = columnConfig.valueConfig?.configExpression ?: return false
+        val configGroup = columnConfig.configGroup
+        val expression = ParadoxExpression.resolve(column)
+        val context = ParadoxCsvExpressionMatchContext(column, expression, configExpression, configGroup)
+        return ParadoxExpressionMatchService.matchCsvExpression(context).get()
     }
 }

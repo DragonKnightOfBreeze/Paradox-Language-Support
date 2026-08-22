@@ -18,7 +18,7 @@ import icu.windea.pls.csv.psi.ParadoxCsvPsiService
 import icu.windea.pls.csv.psi.ParadoxCsvVisitor
 import icu.windea.pls.lang.fixes.ReplaceWithExpressionFix
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
-import icu.windea.pls.lang.util.ParadoxCsvManager
+import icu.windea.pls.lang.util.ParadoxConfigManager
 
 /**
  * （CSV 文件中的）不正确的列名的代码检查。
@@ -51,7 +51,7 @@ class IncorrectColumnNameInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         val file = holder.file
         if (file !is ParadoxCsvFile) return PsiElementVisitor.EMPTY_VISITOR
-        val rowConfig = ParadoxCsvManager.getRowConfig(file)
+        val rowConfig = ParadoxConfigManager.getRowConfig(file)
         if (rowConfig == null) return PsiElementVisitor.EMPTY_VISITOR
         return object : ParadoxCsvVisitor() {
             override fun visitHeader(element: ParadoxCsvHeader) {

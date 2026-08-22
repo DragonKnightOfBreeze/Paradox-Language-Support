@@ -35,7 +35,6 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionRecursiveVisitor
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxConfigManager
-import icu.windea.pls.lang.util.ParadoxCsvManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.lang.util.ParadoxParameterManager
@@ -302,7 +301,7 @@ class CwtColumnRelatedConfigProvider : CwtRelatedConfigProvider {
 
         // 基于匹配的规则
         if (element !is ParadoxCsvColumn) return emptySet()
-        val columnConfig = ParadoxCsvManager.getColumnConfig(element) ?: return emptySet()
+        val columnConfig = ParadoxConfigManager.getColumnConfig(element) ?: return emptySet()
         if (ParadoxCsvPsiService.isHeaderColumn(element)) {
             result += columnConfig
         } else {
