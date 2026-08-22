@@ -8,7 +8,6 @@ import com.intellij.modcommand.PsiUpdateModCommandAction
 import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.ElementManipulators
 import com.intellij.psi.PsiElement
-import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.containsBlank
 import icu.windea.pls.core.isQuoted
 import icu.windea.pls.core.quote
@@ -18,6 +17,7 @@ import icu.windea.pls.cwt.psi.CwtFloat
 import icu.windea.pls.cwt.psi.CwtInt
 import icu.windea.pls.cwt.psi.CwtPropertyKey
 import icu.windea.pls.cwt.psi.CwtString
+import icu.windea.pls.lang.intentions.ChronicleIntentionBundle
 
 abstract class QuoteOrUnquoteLiteralIntentionBase : PsiUpdateModCommandAction<CwtExpressionElement>(CwtExpressionElement::class.java), DumbAware {
     override fun stopSearchAt(element: PsiElement, context: ActionContext): Boolean {
@@ -36,7 +36,7 @@ abstract class QuoteOrUnquoteLiteralIntentionBase : PsiUpdateModCommandAction<Cw
 }
 
 class QuoteLiteralIntention : QuoteOrUnquoteLiteralIntentionBase() {
-    override fun getFamilyName() = ChronicleBundle.message("intention.quoteLiteral")
+    override fun getFamilyName() = ChronicleIntentionBundle.message("intention.quoteLiteral")
 
     override fun invoke(context: ActionContext, element: CwtExpressionElement, updater: ModPsiUpdater) {
         ElementManipulators.handleContentChange(element, element.text.quote())
@@ -55,7 +55,7 @@ class QuoteLiteralIntention : QuoteOrUnquoteLiteralIntentionBase() {
 }
 
 class UnquoteLiteralIntention : QuoteOrUnquoteLiteralIntentionBase() {
-    override fun getFamilyName() = ChronicleBundle.message("intention.unquoteLiteral")
+    override fun getFamilyName() = ChronicleIntentionBundle.message("intention.unquoteLiteral")
 
     override fun invoke(context: ActionContext, element: CwtExpressionElement, updater: ModPsiUpdater) {
         ElementManipulators.handleContentChange(element, element.text.unquote())

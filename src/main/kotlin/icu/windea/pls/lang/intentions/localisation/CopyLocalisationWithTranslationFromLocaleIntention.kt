@@ -17,6 +17,7 @@ import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.withErrorRef
 import icu.windea.pls.integrations.translation.TranslationToolService
+import icu.windea.pls.lang.intentions.ChronicleIntentionBundle
 import icu.windea.pls.lang.manipulation.ParadoxLocalisationManipulationContext
 import icu.windea.pls.lang.manipulation.ParadoxLocalisationManipulationService
 import icu.windea.pls.lang.selectLocale
@@ -29,7 +30,7 @@ import java.util.concurrent.atomic.AtomicReference
  * 复制的文本格式为：`KEY:0 "TEXT"`
  */
 class CopyLocalisationWithTranslationFromLocaleIntention : ManipulateLocalisationIntentionBase.WithLocalePopup() {
-    override fun getFamilyName() = ChronicleBundle.message("intention.copyLocalisationWithTranslationFromLocale")
+    override fun getFamilyName() = ChronicleIntentionBundle.message("intention.copyLocalisationWithTranslationFromLocale")
 
     override fun isAvailable(project: Project, editor: Editor, file: PsiFile): Boolean {
         return super.isAvailable(project, editor, file) && TranslationToolService.getInstance().findTool() != null
@@ -38,7 +39,7 @@ class CopyLocalisationWithTranslationFromLocaleIntention : ManipulateLocalisatio
     @Suppress("UnstableApiUsage")
     override suspend fun doHandle(project: Project, file: PsiFile, context: Context) {
         val (elements, selectedLocale) = context
-        withBackgroundProgress(project, ChronicleBundle.message("intention.copyLocalisationWithTranslationFromLocale.progress.title", selectedLocale.text)) action@{
+        withBackgroundProgress(project, ChronicleIntentionBundle.message("intention.copyLocalisationWithTranslationFromLocale.progress.title", selectedLocale.text)) action@{
             val contexts = readAction { elements.map { ParadoxLocalisationManipulationContext.create(it) }.toList() }
             val contextsToHandle = contexts.filter { context -> context.needProcess }
             val errorRef = AtomicReference<Throwable>()
@@ -70,13 +71,13 @@ class CopyLocalisationWithTranslationFromLocaleIntention : ManipulateLocalisatio
 
     private fun createNotification(selectedLocale: CwtLocaleConfig, error: Throwable?): Notification {
         if (error == null) {
-            val content = ChronicleBundle.message("intention.copyLocalisationWithTranslationFromLocale.notification", selectedLocale.text, Messages.success())
+            val content = ChronicleIntentionBundle.message("intention.copyLocalisationWithTranslationFromLocale.notification", selectedLocale.text, Messages.success())
             return ChronicleNotificationGroups.manipulation().createNotification(content, NotificationType.INFORMATION)
         }
 
         thisLogger().warn(error)
         val errorDetails = error.message?.let { ChronicleBundle.message("manipulation.localisation.error", it) }.orEmpty()
-        val content = ChronicleBundle.message("intention.copyLocalisationWithTranslationFromLocale.notification", selectedLocale.text, Messages.failed()) + errorDetails
+        val content = ChronicleIntentionBundle.message("intention.copyLocalisationWithTranslationFromLocale.notification", selectedLocale.text, Messages.failed()) + errorDetails
         return ChronicleNotificationGroups.manipulation().createNotification(content, NotificationType.WARNING)
     }
 }

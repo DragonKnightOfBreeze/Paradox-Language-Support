@@ -5,8 +5,8 @@ import com.intellij.modcommand.ModCommand
 import com.intellij.modcommand.ModCommandAction
 import com.intellij.modcommand.Presentation
 import com.intellij.openapi.project.DumbAware
-import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.orNull
+import icu.windea.pls.lang.intentions.ChronicleIntentionBundle
 import icu.windea.pls.lang.psi.ParadoxPsiFileService
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
@@ -14,7 +14,7 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
  * 复制封装变量的名字到剪贴板。
  */
 abstract class CopyScriptedVariableNameIntentionBase : ModCommandAction, DumbAware {
-    override fun getFamilyName() = ChronicleBundle.message("intention.copyScriptedVariableName")
+    override fun getFamilyName() = ChronicleIntentionBundle.message("intention.copyScriptedVariableName")
 
     override fun getPresentation(context: ActionContext): Presentation? {
         getText(context) ?: return null

@@ -2,7 +2,7 @@ package icu.windea.pls.lang.intentions.localisation
 
 import com.intellij.openapi.ide.CopyPasteManager
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.lang.intentions.ChronicleIntentionBundle
 import icu.windea.pls.test.ChronicleTestScope
 import org.junit.After
 import org.junit.Before
@@ -38,7 +38,7 @@ class CopyLocalisationListIntentionsTest : BasePlatformTestCase(), ChronicleTest
  OTHER_KEY:0 "Some other text."
         """.trimIndent())
 
-        myFixture.launchAction(ChronicleBundle.message("intention.copyLocalisationListWithLocale"))
+        myFixture.launchAction(ChronicleIntentionBundle.message("intention.copyLocalisationListWithLocale"))
         checkClipboard("""
 l_english:
  # Comment
@@ -46,7 +46,7 @@ l_english:
  OTHER_KEY:0 "Some other text."
         """.trimIndent())
 
-        myFixture.launchAction(ChronicleBundle.message("intention.copyLocalisationListWithoutLocale"))
+        myFixture.launchAction(ChronicleIntentionBundle.message("intention.copyLocalisationListWithoutLocale"))
         checkClipboard("""
 # Comment
 KEY:0 "Some text."

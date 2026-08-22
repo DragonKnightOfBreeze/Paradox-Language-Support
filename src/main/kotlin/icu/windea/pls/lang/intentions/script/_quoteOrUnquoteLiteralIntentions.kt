@@ -8,11 +8,11 @@ import com.intellij.modcommand.PsiUpdateModCommandAction
 import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.ElementManipulators
 import com.intellij.psi.PsiElement
-import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.containsBlank
 import icu.windea.pls.core.isQuoted
 import icu.windea.pls.core.quote
 import icu.windea.pls.core.unquote
+import icu.windea.pls.lang.intentions.ChronicleIntentionBundle
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptNumberExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
@@ -35,7 +35,7 @@ abstract class QuoteOrUnquoteLiteralIntentionBase : PsiUpdateModCommandAction<Pa
 }
 
 class QuoteLiteralIntention : QuoteOrUnquoteLiteralIntentionBase() {
-    override fun getFamilyName() = ChronicleBundle.message("intention.quoteLiteral")
+    override fun getFamilyName() = ChronicleIntentionBundle.message("intention.quoteLiteral")
 
     // NOTE 1.3.0+ 目前无法适用于用引号括起的参数值中的那些字面量（例如，`p = "\"v\""` 中的 `\"v\"` ）
 
@@ -55,7 +55,7 @@ class QuoteLiteralIntention : QuoteOrUnquoteLiteralIntentionBase() {
 }
 
 class UnquoteLiteralIntention : QuoteOrUnquoteLiteralIntentionBase() {
-    override fun getFamilyName() = ChronicleBundle.message("intention.unquoteLiteral")
+    override fun getFamilyName() = ChronicleIntentionBundle.message("intention.unquoteLiteral")
 
     // NOTE 1.3.0+ 目前无法适用于用引号括起的参数值中的那些字面量（例如，`p = "\"v\""` 中的 `\"v\"` ）
 

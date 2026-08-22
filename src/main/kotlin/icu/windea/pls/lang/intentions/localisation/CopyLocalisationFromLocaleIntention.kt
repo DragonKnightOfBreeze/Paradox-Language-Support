@@ -15,6 +15,7 @@ import icu.windea.pls.base.notification.ChronicleNotificationGroups
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.withErrorRef
+import icu.windea.pls.lang.intentions.ChronicleIntentionBundle
 import icu.windea.pls.lang.manipulation.ParadoxLocalisationManipulationContext
 import icu.windea.pls.lang.manipulation.ParadoxLocalisationManipulationService
 import java.awt.datatransfer.StringSelection
@@ -26,12 +27,12 @@ import java.util.concurrent.atomic.AtomicReference
  * 复制的文本格式为：`KEY:0 "TEXT"`
  */
 class CopyLocalisationFromLocaleIntention : ManipulateLocalisationIntentionBase.WithLocalePopup() {
-    override fun getFamilyName() = ChronicleBundle.message("intention.copyLocalisationFromLocale")
+    override fun getFamilyName() = ChronicleIntentionBundle.message("intention.copyLocalisationFromLocale")
 
     @Suppress("UnstableApiUsage")
     override suspend fun doHandle(project: Project, file: PsiFile, context: Context) {
         val (elements, selectedLocale) = context
-        withBackgroundProgress(project, ChronicleBundle.message("intention.copyLocalisationFromLocale.progress.title", selectedLocale.text)) action@{
+        withBackgroundProgress(project, ChronicleIntentionBundle.message("intention.copyLocalisationFromLocale.progress.title", selectedLocale.text)) action@{
             val contexts = readAction { elements.map { ParadoxLocalisationManipulationContext.create(it) }.toList() }
             val contextsToHandle = contexts.filter { context -> context.needProcess }
             val errorRef = AtomicReference<Throwable>()
@@ -61,13 +62,13 @@ class CopyLocalisationFromLocaleIntention : ManipulateLocalisationIntentionBase.
 
     private fun createNotification(selectedLocale: CwtLocaleConfig, error: Throwable?): Notification {
         if (error == null) {
-            val content = ChronicleBundle.message("intention.copyLocalisationFromLocale.notification", selectedLocale.text, Messages.success())
+            val content = ChronicleIntentionBundle.message("intention.copyLocalisationFromLocale.notification", selectedLocale.text, Messages.success())
             return ChronicleNotificationGroups.manipulation().createNotification(content, NotificationType.INFORMATION)
         }
 
         thisLogger().warn(error)
         val errorDetails = error.message?.let { ChronicleBundle.message("manipulation.localisation.error", it) }.orEmpty()
-        val content = ChronicleBundle.message("intention.copyLocalisationFromLocale.notification", selectedLocale.text, Messages.failed()) + errorDetails
+        val content = ChronicleIntentionBundle.message("intention.copyLocalisationFromLocale.notification", selectedLocale.text, Messages.failed()) + errorDetails
         return ChronicleNotificationGroups.manipulation().createNotification(content, NotificationType.WARNING)
     }
 }

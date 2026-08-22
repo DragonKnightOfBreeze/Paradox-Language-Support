@@ -2,7 +2,7 @@ package icu.windea.pls.lang.intentions.script
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.lang.intentions.ChronicleIntentionBundle
 import icu.windea.pls.lang.manipulation.ParadoxScopeCallStatementManipulationService
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.ChronicleTestScope
@@ -38,7 +38,7 @@ class ScopeCallStatementNormalSafeIntentionsTest : BasePlatformTestCase(), Chron
     @Test
     fun testScopeCallToNormalForm_basic() {
         markFileInfo(ParadoxGameType.Eu5, "common/scripted_effects/normal_safe.test.txt")
-        val intentionName = ChronicleBundle.message("intention.scopeCallStatementToNormalForm")
+        val intentionName = ChronicleIntentionBundle.message("intention.scopeCallStatementToNormalForm")
         myFixture.configureByText(
             "normal_safe.test.txt",
             "test_effect = { <caret>owner ?= v }"
@@ -53,7 +53,7 @@ class ScopeCallStatementNormalSafeIntentionsTest : BasePlatformTestCase(), Chron
     @Test
     fun testScopeCallToNormalForm_stellaris() {
         markFileInfo(ParadoxGameType.Stellaris, "common/scripted_effects/normal_safe.test.txt")
-        val intentionName = ChronicleBundle.message("intention.scopeCallStatementToNormalForm")
+        val intentionName = ChronicleIntentionBundle.message("intention.scopeCallStatementToNormalForm")
         myFixture.configureByText(
             "normal_safe.test.txt",
             "test_effect = { <caret>owner? = v }"
@@ -68,7 +68,7 @@ class ScopeCallStatementNormalSafeIntentionsTest : BasePlatformTestCase(), Chron
     @Test
     fun testScopeCallToNormalForm_withQuotedKey() {
         markFileInfo(ParadoxGameType.Eu5, "common/scripted_effects/normal_safe.test.txt")
-        val intentionName = ChronicleBundle.message("intention.scopeCallStatementToNormalForm")
+        val intentionName = ChronicleIntentionBundle.message("intention.scopeCallStatementToNormalForm")
         myFixture.configureByText(
             "normal_safe.test.txt",
             "test_effect = { <caret>\"owner\" ?= v }"
@@ -83,7 +83,7 @@ class ScopeCallStatementNormalSafeIntentionsTest : BasePlatformTestCase(), Chron
     @Test
     fun testScopeCallToNormalForm_notAvailableWhenNotScopeLink() {
         markFileInfo(ParadoxGameType.Eu5, "common/test/normal_safe.test.txt")
-        val intentionName = ChronicleBundle.message("intention.scopeCallStatementToNormalForm")
+        val intentionName = ChronicleIntentionBundle.message("intention.scopeCallStatementToNormalForm")
         myFixture.configureByText(
             "normal_safe.test.txt",
             "test_effect = { <caret>owner ?= v }"
@@ -95,7 +95,7 @@ class ScopeCallStatementNormalSafeIntentionsTest : BasePlatformTestCase(), Chron
     @Test
     fun testScopeCallToNormalForm_notAvailableWhenNotAssignOperator() {
         markFileInfo(ParadoxGameType.Eu5, "common/test/normal_safe.test.txt")
-        val intentionName = ChronicleBundle.message("intention.scopeCallStatementToNormalForm")
+        val intentionName = ChronicleIntentionBundle.message("intention.scopeCallStatementToNormalForm")
         myFixture.configureByText(
             "normal_safe.test.txt",
             "test_effect = { <caret>owner <= v }"
@@ -107,7 +107,7 @@ class ScopeCallStatementNormalSafeIntentionsTest : BasePlatformTestCase(), Chron
     @Test
     fun testScopeCallToNormalForm_notAvailableWhenAlreadyNormalForm() {
         markFileInfo(ParadoxGameType.Eu5, "common/scripted_effects/normal_safe.test.txt")
-        val intentionName = ChronicleBundle.message("intention.scopeCallStatementToNormalForm")
+        val intentionName = ChronicleIntentionBundle.message("intention.scopeCallStatementToNormalForm")
         myFixture.configureByText(
             "normal_safe.test.txt",
             "test_effect = { <caret>owner = v }"
@@ -123,7 +123,7 @@ class ScopeCallStatementNormalSafeIntentionsTest : BasePlatformTestCase(), Chron
     @Test
     fun testScopeCallToSafeForm_basic() {
         markFileInfo(ParadoxGameType.Eu5, "common/scripted_effects/normal_safe.test.txt")
-        val intentionName = ChronicleBundle.message("intention.scopeCallStatementToSafeForm")
+        val intentionName = ChronicleIntentionBundle.message("intention.scopeCallStatementToSafeForm")
         myFixture.configureByText(
             "normal_safe.test.txt",
             "test_effect = { <caret>owner = v }"
@@ -138,7 +138,7 @@ class ScopeCallStatementNormalSafeIntentionsTest : BasePlatformTestCase(), Chron
     @Test
     fun testScopeCallToSafeForm_stellaris() {
         markFileInfo(ParadoxGameType.Stellaris, "common/scripted_effects/normal_safe.test.txt")
-        val intentionName = ChronicleBundle.message("intention.scopeCallStatementToSafeForm")
+        val intentionName = ChronicleIntentionBundle.message("intention.scopeCallStatementToSafeForm")
         myFixture.configureByText(
             "normal_safe.test.txt",
             "test_effect = { <caret>owner = v }"
@@ -153,7 +153,7 @@ class ScopeCallStatementNormalSafeIntentionsTest : BasePlatformTestCase(), Chron
     @Test
     fun testScopeCallToSafeForm_withExists() {
         markFileInfo(ParadoxGameType.Eu5, "common/scripted_triggers/normal_safe.test.txt")
-        val intentionName = ChronicleBundle.message("intention.scopeCallStatementToSafeForm")
+        val intentionName = ChronicleIntentionBundle.message("intention.scopeCallStatementToSafeForm")
         myFixture.configureByText(
             "normal_safe.test.txt",
             """
@@ -177,7 +177,7 @@ class ScopeCallStatementNormalSafeIntentionsTest : BasePlatformTestCase(), Chron
     @Test
     fun testScopeCallToSafeForm_withMultiExists() {
         markFileInfo(ParadoxGameType.Eu5, "common/scripted_triggers/normal_safe.test.txt")
-        val intentionName = ChronicleBundle.message("intention.scopeCallStatementToSafeForm")
+        val intentionName = ChronicleIntentionBundle.message("intention.scopeCallStatementToSafeForm")
         myFixture.configureByText(
             "normal_safe.test.txt",
             """
@@ -212,7 +212,7 @@ class ScopeCallStatementNormalSafeIntentionsTest : BasePlatformTestCase(), Chron
     @Test
     fun testScopeCallToSafeForm_withQuotedKey() {
         markFileInfo(ParadoxGameType.Eu5, "common/scripted_effects/normal_safe.test.txt")
-        val intentionName = ChronicleBundle.message("intention.scopeCallStatementToSafeForm")
+        val intentionName = ChronicleIntentionBundle.message("intention.scopeCallStatementToSafeForm")
         myFixture.configureByText(
             "normal_safe.test.txt",
             "test_effect = { <caret>\"owner\" = v }"
@@ -227,7 +227,7 @@ class ScopeCallStatementNormalSafeIntentionsTest : BasePlatformTestCase(), Chron
     @Test
     fun testScopeCallToSafeForm_notAvailableWhenNotScopeLink() {
         markFileInfo(ParadoxGameType.Eu5, "common/test/normal_safe.test.txt")
-        val intentionName = ChronicleBundle.message("intention.scopeCallStatementToSafeForm")
+        val intentionName = ChronicleIntentionBundle.message("intention.scopeCallStatementToSafeForm")
         myFixture.configureByText(
             "normal_safe.test.txt",
             "test_effect = { <caret>owner = v }"
@@ -239,7 +239,7 @@ class ScopeCallStatementNormalSafeIntentionsTest : BasePlatformTestCase(), Chron
     @Test
     fun testScopeCallToSafeForm_notAvailableWhenNotAssignOperator() {
         markFileInfo(ParadoxGameType.Eu5, "common/test/normal_safe.test.txt")
-        val intentionName = ChronicleBundle.message("intention.scopeCallStatementToSafeForm")
+        val intentionName = ChronicleIntentionBundle.message("intention.scopeCallStatementToSafeForm")
         myFixture.configureByText(
             "normal_safe.test.txt",
             "test_effect = { <caret>owner <= v }"
@@ -251,7 +251,7 @@ class ScopeCallStatementNormalSafeIntentionsTest : BasePlatformTestCase(), Chron
     @Test
     fun testScopeCallToSafeForm_notAvailableWhenAlreadySafeForm() {
         markFileInfo(ParadoxGameType.Eu5, "common/scripted_effects/normal_safe.test.txt")
-        val intentionName = ChronicleBundle.message("intention.scopeCallStatementToSafeForm")
+        val intentionName = ChronicleIntentionBundle.message("intention.scopeCallStatementToSafeForm")
         myFixture.configureByText(
             "normal_safe.test.txt",
             "test_effect = { <caret>owner ?= v }"
@@ -263,7 +263,7 @@ class ScopeCallStatementNormalSafeIntentionsTest : BasePlatformTestCase(), Chron
     @Test
     fun testScopeCallToSafeForm_notAvailableWhenAlreadySafeCallForm() {
         markFileInfo(ParadoxGameType.Eu5, "common/scripted_effects/normal_safe.test.txt")
-        val intentionName = ChronicleBundle.message("intention.scopeCallStatementToSafeForm")
+        val intentionName = ChronicleIntentionBundle.message("intention.scopeCallStatementToSafeForm")
         myFixture.configureByText(
             "normal_safe.test.txt",
             "test_effect = { <caret>owner? = v }"

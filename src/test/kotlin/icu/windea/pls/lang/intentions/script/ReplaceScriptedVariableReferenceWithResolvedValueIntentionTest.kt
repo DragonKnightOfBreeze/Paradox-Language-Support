@@ -2,7 +2,7 @@ package icu.windea.pls.lang.intentions.script
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.lang.intentions.ChronicleIntentionBundle
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.ChronicleTestScope
 import org.junit.After
@@ -27,7 +27,7 @@ class ReplaceScriptedVariableReferenceWithResolvedValueIntentionTest : BasePlatf
 
     @Test
     fun smoke_test() {
-        val intentionName = ChronicleBundle.message("intention.replaceScriptedVariableReferenceWithResolvedValue")
+        val intentionName = ChronicleIntentionBundle.message("intention.replaceScriptedVariableReferenceWithResolvedValue")
 
         markFileInfo(ParadoxGameType.Stellaris, "common/test/scripted_variable_references.test.txt")
         myFixture.configureByText("scripted_variable_references.test.txt", "@var = 1\nkey = <caret>@var")
@@ -38,7 +38,7 @@ class ReplaceScriptedVariableReferenceWithResolvedValueIntentionTest : BasePlatf
 
     @Test
     fun unresolved_notAvailable_test() {
-        val intentionName = ChronicleBundle.message("intention.replaceScriptedVariableReferenceWithResolvedValue")
+        val intentionName = ChronicleIntentionBundle.message("intention.replaceScriptedVariableReferenceWithResolvedValue")
 
         markFileInfo(ParadoxGameType.Stellaris, "common/test/scripted_variable_references.test.txt")
         myFixture.configureByText("scripted_variable_references.test.txt", "@var = 1\nkey = <caret>@v")

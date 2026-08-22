@@ -9,10 +9,10 @@ import com.intellij.modcommand.ModCommandAction
 import com.intellij.modcommand.ModPsiUpdater
 import com.intellij.modcommand.Presentation
 import com.intellij.modcommand.PsiUpdateModCommandAction
-import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
+import icu.windea.pls.lang.intentions.ChronicleIntentionBundle
 import icu.windea.pls.lang.psi.ParadoxPsiFileService
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
@@ -21,7 +21,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
  * 更改本地化语言环境。
  */
 class ChangeLocalisationLocaleIntention : ModCommandAction {
-    override fun getFamilyName() = ChronicleBundle.message("intention.changeLocalisationLocale")
+    override fun getFamilyName() = ChronicleIntentionBundle.message("intention.changeLocalisationLocale")
 
     override fun getPresentation(context: ActionContext): Presentation? {
         findElement(context) ?: return null
@@ -36,7 +36,7 @@ class ChangeLocalisationLocaleIntention : ModCommandAction {
         val localeConfigs = configGroup.supportedLocales
         if (localeConfigs.isEmpty()) return ModCommand.nop()
         val items = localeConfigs.map { ItemIntention(element, it) }
-        return ModCommand.chooseAction(ChronicleBundle.message("intention.changeLocalisationLocale.title"), items)
+        return ModCommand.chooseAction(ChronicleIntentionBundle.message("intention.changeLocalisationLocale.title"), items)
     }
 
     private fun findElement(context: ActionContext): ParadoxLocalisationLocale? {
@@ -47,7 +47,7 @@ class ChangeLocalisationLocaleIntention : ModCommandAction {
         element: ParadoxLocalisationLocale,
         private val localeConfig: CwtLocaleConfig,
     ) : PsiUpdateModCommandAction<ParadoxLocalisationLocale>(element) {
-        override fun getFamilyName() = ChronicleBundle.message("intention.changeLocalisationLocale.item", localeConfig.name)
+        override fun getFamilyName() = ChronicleIntentionBundle.message("intention.changeLocalisationLocale.item", localeConfig.name)
 
         override fun getPresentation(context: ActionContext, element: ParadoxLocalisationLocale): Presentation {
             return Presentation.of(localeConfig.idWithText).withIcon(ChronicleIcons.Nodes.LocalisationLocale)

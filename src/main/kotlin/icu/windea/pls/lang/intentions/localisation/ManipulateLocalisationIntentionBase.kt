@@ -7,10 +7,10 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.popup.JBPopup
 import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.psi.PsiFile
-import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.collections.WalkingSequence
+import icu.windea.pls.lang.intentions.ChronicleIntentionBundle
 import icu.windea.pls.lang.manipulation.ParadoxLocalisationFileManipulationService
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.ui.ParadoxLocaleListPopup
@@ -144,8 +144,8 @@ abstract class ManipulateLocalisationIntentionBase<C> : IntentionAction {
     }
 
     object Messages {
-        fun success() = ChronicleBundle.message("intention.manipulateLocalisation.status.0")
-        fun failed() = ChronicleBundle.message("intention.manipulateLocalisation.status.1")
-        fun partialSuccess() = ChronicleBundle.message("intention.manipulateLocalisation.status.2")
+        fun success() = ChronicleIntentionBundle.message("intention.manipulateLocalisation.status.0")
+        fun failed() = ChronicleIntentionBundle.message("intention.manipulateLocalisation.status.1")
+        fun partialSuccess() = ChronicleIntentionBundle.message("intention.manipulateLocalisation.status.2")
     }
 }

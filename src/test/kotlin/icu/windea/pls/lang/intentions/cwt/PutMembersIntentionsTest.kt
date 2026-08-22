@@ -2,7 +2,7 @@ package icu.windea.pls.lang.intentions.cwt
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.lang.intentions.ChronicleIntentionBundle
 import icu.windea.pls.test.ChronicleTestScope
 import org.junit.After
 import org.junit.Before
@@ -28,7 +28,7 @@ class PutMembersIntentionsTest : BasePlatformTestCase(), ChronicleTestScope {
 
     @Test
     fun testPutMembersOnOneLine_basic() {
-        val intentionName = ChronicleBundle.message("intention.putMembersOnOneLine")
+        val intentionName = ChronicleIntentionBundle.message("intention.putMembersOnOneLine")
         myFixture.configureByText(
             "put_members_on_one_line_basic.test.cwt",
             """
@@ -45,7 +45,7 @@ class PutMembersIntentionsTest : BasePlatformTestCase(), ChronicleTestScope {
 
     @Test
     fun testPutMembersOnSeparateLines_basic() {
-        val intentionName = ChronicleBundle.message("intention.putMembersOnSeparateLines")
+        val intentionName = ChronicleIntentionBundle.message("intention.putMembersOnSeparateLines")
         myFixture.configureByText(
             "put_members_on_separate_lines_basic.test.cwt",
             "{ <caret>a = 1 b }"
@@ -64,7 +64,7 @@ class PutMembersIntentionsTest : BasePlatformTestCase(), ChronicleTestScope {
 
     @Test
     fun testPutMembersOnOneLine_notAvailableWhenAlreadyOneLine() {
-        val intentionName = ChronicleBundle.message("intention.putMembersOnOneLine")
+        val intentionName = ChronicleIntentionBundle.message("intention.putMembersOnOneLine")
         myFixture.configureByText(
             "put_members_on_one_line_not_available.test.cwt",
             "{ <caret>a = 1 b }"
@@ -75,7 +75,7 @@ class PutMembersIntentionsTest : BasePlatformTestCase(), ChronicleTestScope {
 
     @Test
     fun testPutMembersOnSeparateLines_notAvailableWhenAlreadySeparateLines() {
-        val intentionName = ChronicleBundle.message("intention.putMembersOnSeparateLines")
+        val intentionName = ChronicleIntentionBundle.message("intention.putMembersOnSeparateLines")
         myFixture.configureByText(
             "put_members_on_separate_lines_not_available.test.cwt",
             """
@@ -91,8 +91,8 @@ class PutMembersIntentionsTest : BasePlatformTestCase(), ChronicleTestScope {
 
     @Test
     fun testNotAvailableWhenCommentExists() {
-        val oneLineName = ChronicleBundle.message("intention.putMembersOnOneLine")
-        val separateLinesName = ChronicleBundle.message("intention.putMembersOnSeparateLines")
+        val oneLineName = ChronicleIntentionBundle.message("intention.putMembersOnOneLine")
+        val separateLinesName = ChronicleIntentionBundle.message("intention.putMembersOnSeparateLines")
         myFixture.configureByText(
             "put_members_not_available_comment.test.cwt",
             """
@@ -110,8 +110,8 @@ class PutMembersIntentionsTest : BasePlatformTestCase(), ChronicleTestScope {
 
     @Test
     fun testNotAvailableWhenOptionCommentExists() {
-        val oneLineName = ChronicleBundle.message("intention.putMembersOnOneLine")
-        val separateLinesName = ChronicleBundle.message("intention.putMembersOnSeparateLines")
+        val oneLineName = ChronicleIntentionBundle.message("intention.putMembersOnOneLine")
+        val separateLinesName = ChronicleIntentionBundle.message("intention.putMembersOnSeparateLines")
         myFixture.configureByText(
             "put_members_not_available_option_comment.test.cwt",
             """
@@ -129,7 +129,7 @@ class PutMembersIntentionsTest : BasePlatformTestCase(), ChronicleTestScope {
 
     @Test
     fun testSingleMemberConversions() {
-        val oneLineName = ChronicleBundle.message("intention.putMembersOnOneLine")
+        val oneLineName = ChronicleIntentionBundle.message("intention.putMembersOnOneLine")
         myFixture.configureByText(
             "put_members_single_member_to_one_line.test.cwt",
             """
@@ -142,7 +142,7 @@ class PutMembersIntentionsTest : BasePlatformTestCase(), ChronicleTestScope {
         myFixture.launchAction(toOneLine)
         myFixture.checkResult("k = { a }")
 
-        val separateLinesName = ChronicleBundle.message("intention.putMembersOnSeparateLines")
+        val separateLinesName = ChronicleIntentionBundle.message("intention.putMembersOnSeparateLines")
         myFixture.configureByText(
             "put_members_single_member_to_separate_lines.test.cwt",
             "k = { <caret>a }"
@@ -160,7 +160,7 @@ class PutMembersIntentionsTest : BasePlatformTestCase(), ChronicleTestScope {
 
     @Test
     fun testPutMembersOnSeparateLines_nestedBlock() {
-        val intentionName = ChronicleBundle.message("intention.putMembersOnSeparateLines")
+        val intentionName = ChronicleIntentionBundle.message("intention.putMembersOnSeparateLines")
         myFixture.configureByText(
             "put_members_on_separate_lines_nested_block.test.cwt",
             """
@@ -185,7 +185,7 @@ class PutMembersIntentionsTest : BasePlatformTestCase(), ChronicleTestScope {
 
     @Test
     fun testPutMembersOnOneLine_nestedBlock() {
-        val intentionName = ChronicleBundle.message("intention.putMembersOnOneLine")
+        val intentionName = ChronicleIntentionBundle.message("intention.putMembersOnOneLine")
         myFixture.configureByText(
             "put_members_on_one_line_nested_block.test.cwt",
             """

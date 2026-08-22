@@ -11,10 +11,10 @@ import com.intellij.modcommand.Presentation
 import com.intellij.modcommand.PsiUpdateModCommandAction
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.ElementManipulators
-import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.core.collections.orNull
+import icu.windea.pls.lang.intentions.ChronicleIntentionBundle
 import icu.windea.pls.lang.psi.ParadoxPsiFileService
 import icu.windea.pls.lang.psi.ParadoxPsiMatchService
 import icu.windea.pls.lang.resolve.ParadoxExpressionService
@@ -28,7 +28,7 @@ import icu.windea.pls.script.psi.parentProperty
  * 更改定义注入模式。
  */
 class ChangeDefinitionInjectionModeIntention : ModCommandAction {
-    override fun getFamilyName() = ChronicleBundle.message("intention.changeDefinitionInjectionMode")
+    override fun getFamilyName() = ChronicleIntentionBundle.message("intention.changeDefinitionInjectionMode")
 
     override fun getPresentation(context: ActionContext): Presentation? {
         findElement(context) ?: return null
@@ -41,7 +41,7 @@ class ChangeDefinitionInjectionModeIntention : ModCommandAction {
         val configGroup = ChronicleFacade.getConfigGroup(gameType)
         val modes = configGroup.macroModel.forDefinitionInjections?.modeConfigs?.keys?.orNull() ?: return ModCommand.nop()
         val items = modes.map { ItemIntention(element, it) }
-        return ModCommand.chooseAction(ChronicleBundle.message("intention.changeDefinitionInjectionMode.title"), items)
+        return ModCommand.chooseAction(ChronicleIntentionBundle.message("intention.changeDefinitionInjectionMode.title"), items)
     }
 
     private fun findElement(context: ActionContext): ParadoxScriptProperty? {
@@ -58,7 +58,7 @@ class ChangeDefinitionInjectionModeIntention : ModCommandAction {
         element: ParadoxScriptProperty,
         private val mode: String,
     ) : PsiUpdateModCommandAction<ParadoxScriptProperty>(element) {
-        override fun getFamilyName() = ChronicleBundle.message("intention.changeDefinitionInjectionMode.item", mode)
+        override fun getFamilyName() = ChronicleIntentionBundle.message("intention.changeDefinitionInjectionMode.item", mode)
 
         override fun getPresentation(context: ActionContext, element: ParadoxScriptProperty): Presentation {
             return Presentation.of(mode).withIcon(ChronicleIcons.Nodes.Macro)

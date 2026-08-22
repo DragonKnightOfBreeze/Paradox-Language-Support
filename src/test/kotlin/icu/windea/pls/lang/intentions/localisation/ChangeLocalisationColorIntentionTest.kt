@@ -3,7 +3,7 @@ package icu.windea.pls.lang.intentions.localisation
 import com.intellij.testFramework.IndexingTestUtil
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.lang.intentions.ChronicleIntentionBundle
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.ChronicleTestScope
 import org.junit.After
@@ -43,7 +43,7 @@ class ChangeLocalisationColorIntentionTest : BasePlatformTestCase(), ChronicleTe
     @Test
     fun testAvailable_onColorToken() {
         configureColorFile()
-        val intentionName = ChronicleBundle.message("intention.changeLocalisationColor")
+        val intentionName = ChronicleIntentionBundle.message("intention.changeLocalisationColor")
         markFileInfo(gameType, "localisation/test.yml")
         myFixture.configureByText("color.test.yml", "l_english:\n key: \"§<caret>RRed text§!\"")
         val intention = myFixture.findSingleIntention(intentionName)
@@ -53,7 +53,7 @@ class ChangeLocalisationColorIntentionTest : BasePlatformTestCase(), ChronicleTe
     @Test
     fun testNotAvailable_beforeColorMarker() {
         configureColorFile()
-        val intentionName = ChronicleBundle.message("intention.changeLocalisationColor")
+        val intentionName = ChronicleIntentionBundle.message("intention.changeLocalisationColor")
         markFileInfo(gameType, "localisation/test.yml")
         myFixture.configureByText("color.test.yml", "l_english:\n key: \"<caret>§RRed text§!\"")
         val available = myFixture.availableIntentions
@@ -63,7 +63,7 @@ class ChangeLocalisationColorIntentionTest : BasePlatformTestCase(), ChronicleTe
     @Test
     fun testNotAvailable_outsideColorToken() {
         configureColorFile()
-        val intentionName = ChronicleBundle.message("intention.changeLocalisationColor")
+        val intentionName = ChronicleIntentionBundle.message("intention.changeLocalisationColor")
         markFileInfo(gameType, "localisation/test.yml")
         myFixture.configureByText("color.test.yml", "l_english:\n key: \"<caret>Plain text\"")
         val available = myFixture.availableIntentions
@@ -73,7 +73,7 @@ class ChangeLocalisationColorIntentionTest : BasePlatformTestCase(), ChronicleTe
     @Test
     fun testNotAvailable_betweenColorTokens() {
         configureColorFile()
-        val intentionName = ChronicleBundle.message("intention.changeLocalisationColor")
+        val intentionName = ChronicleIntentionBundle.message("intention.changeLocalisationColor")
         markFileInfo(gameType, "localisation/test.yml")
         myFixture.configureByText("color.test.yml", "l_english:\n key: \"§RRed§! <caret>§GGreen§!\"")
         val available = myFixture.availableIntentions
@@ -83,7 +83,7 @@ class ChangeLocalisationColorIntentionTest : BasePlatformTestCase(), ChronicleTe
     @Test
     fun testNotAvailable_onKey() {
         configureColorFile()
-        val intentionName = ChronicleBundle.message("intention.changeLocalisationColor")
+        val intentionName = ChronicleIntentionBundle.message("intention.changeLocalisationColor")
         markFileInfo(gameType, "localisation/test.yml")
         myFixture.configureByText("color.test.yml", "l_english:\n <caret>key: \"§RRed text§!\"")
         val available = myFixture.availableIntentions
@@ -93,7 +93,7 @@ class ChangeLocalisationColorIntentionTest : BasePlatformTestCase(), ChronicleTe
     @Test
     fun testAvailable_onBlueColor() {
         configureColorFile()
-        val intentionName = ChronicleBundle.message("intention.changeLocalisationColor")
+        val intentionName = ChronicleIntentionBundle.message("intention.changeLocalisationColor")
         markFileInfo(gameType, "localisation/test.yml")
         myFixture.configureByText("color.test.yml", "l_english:\n key: \"§<caret>BBlue text§!\"")
         val intention = myFixture.findSingleIntention(intentionName)
@@ -103,7 +103,7 @@ class ChangeLocalisationColorIntentionTest : BasePlatformTestCase(), ChronicleTe
     @Test
     fun testAvailable_multipleTokensInLine() {
         configureColorFile()
-        val intentionName = ChronicleBundle.message("intention.changeLocalisationColor")
+        val intentionName = ChronicleIntentionBundle.message("intention.changeLocalisationColor")
         markFileInfo(gameType, "localisation/test.yml")
         myFixture.configureByText("color.test.yml", "l_english:\n key: \"§RFirst§! and §<caret>GSecond§!\"")
         val intention = myFixture.findSingleIntention(intentionName)

@@ -9,9 +9,9 @@ import com.intellij.modcommand.ModCommandAction
 import com.intellij.modcommand.ModPsiUpdater
 import com.intellij.modcommand.Presentation
 import com.intellij.modcommand.PsiUpdateModCommandAction
-import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.DelegatedIcon
 import icu.windea.pls.core.collections.orNull
+import icu.windea.pls.lang.intentions.ChronicleIntentionBundle
 import icu.windea.pls.lang.psi.ParadoxPsiFileService
 import icu.windea.pls.lang.util.ParadoxTextColorManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationColorfulText
@@ -21,7 +21,7 @@ import icu.windea.pls.model.ParadoxTextColorInfo
  * 更改本地化颜色。
  */
 class ChangeLocalisationColorIntention : ModCommandAction {
-    override fun getFamilyName() = ChronicleBundle.message("intention.changeLocalisationColor")
+    override fun getFamilyName() = ChronicleIntentionBundle.message("intention.changeLocalisationColor")
 
     override fun getPresentation(context: ActionContext): Presentation? {
         findElement(context) ?: return null
@@ -33,7 +33,7 @@ class ChangeLocalisationColorIntention : ModCommandAction {
         val infos = ParadoxTextColorManager.getInfos(context.project, context.file).orNull()
         if (infos.isNullOrEmpty()) return ModCommand.nop()
         val items = infos.map { ItemIntention(element, it) }
-        return ModCommand.chooseAction(ChronicleBundle.message("intention.changeLocalisationColor.title"), items)
+        return ModCommand.chooseAction(ChronicleIntentionBundle.message("intention.changeLocalisationColor.title"), items)
     }
 
     private fun findElement(context: ActionContext): ParadoxLocalisationColorfulText? {
@@ -44,7 +44,7 @@ class ChangeLocalisationColorIntention : ModCommandAction {
         element: ParadoxLocalisationColorfulText,
         private val colorConfig: ParadoxTextColorInfo,
     ) : PsiUpdateModCommandAction<ParadoxLocalisationColorfulText>(element) {
-        override fun getFamilyName() = ChronicleBundle.message("intention.changeLocalisationColor.item", colorConfig.name)
+        override fun getFamilyName() = ChronicleIntentionBundle.message("intention.changeLocalisationColor.item", colorConfig.name)
 
         override fun getPresentation(context: ActionContext, element: ParadoxLocalisationColorfulText): Presentation {
             // NOTE 2.1.6 Cannot use `colorConfig.icon` directly here, or will not be rendered
