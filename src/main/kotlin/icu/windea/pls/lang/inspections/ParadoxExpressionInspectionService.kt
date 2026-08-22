@@ -61,6 +61,7 @@ import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptValue
+import icu.windea.pls.script.psi.containingDirectMember
 import icu.windea.pls.script.psi.isDataExpression
 import icu.windea.pls.script.psi.propertyKey
 
@@ -73,10 +74,20 @@ object ParadoxExpressionInspectionService {
             is ParadoxScriptProperty -> element.propertyKey
             is ParadoxScriptValue -> {
                 element.propertyKey?.let { return it } // `k` for `k = v`
-                if(element is PsiBoundElement) return element.leftBound // `{` for `{...}`
+                if (element is PsiBoundElement) return element.leftBound // `{` for `{...}`
                 element
             }
             else -> element
+        }
+    }
+
+    fun getPresentableTextForContainer(element: ParadoxScriptMember): String? {
+        val container = element.containingDirectMember
+        return when (container) {
+            is ParadoxScriptFile -> null
+            is ParadoxScriptProperty -> container.presentableText
+            is ParadoxScriptValue -> container.presentableText
+            else -> null
         }
     }
 
@@ -462,15 +473,10 @@ object ParadoxExpressionInspectionService {
     }
 
     private fun reportForConflictingExpression(element: ParadoxScriptMember, context: ParadoxExpressionInspectionContext) {
-        // TODO 3.0.2
         val holder = context.holder
         val location = getDefaultLocationForContainer(element) ?: return
-        val text = ""
-        val isKey = location is ParadoxScriptPropertyKey
-        val description = when {
-            isKey -> ChronicleInspectionBundle.message("lang.conflictingExpression.desc.1", text)
-            else -> ChronicleInspectionBundle.message("lang.conflictingExpression.desc.2", text)
-        }
+        val text = getPresentableTextForContainer(element) ?: return
+        val description = ChronicleInspectionBundle.message("lang.conflictingExpression.desc.1", text)
         holder.registerProblem(location, description)
     }
 
