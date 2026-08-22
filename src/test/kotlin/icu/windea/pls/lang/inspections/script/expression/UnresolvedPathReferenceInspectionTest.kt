@@ -31,32 +31,10 @@ class UnresolvedPathReferenceInspectionTest : BasePlatformTestCase(), ChronicleT
     @After
     fun doTearDown() = clearIntegrationTest()
 
-    // region noSmantic
+    // region basic
 
     @Test
-    fun noSemantic_success() {
-        markFileInfo(ParadoxGameType.Stellaris, "common/test/test.txt")
-        myFixture.configureByText("test.txt", """
-            hint = hello_world
-        """.trimIndent())
-        myFixture.checkHighlighting()
-    }
-
-    // endregion
-
-    // region semantic
-
-    @Test
-    fun outOfDefinitionDeclaration_ignored() {
-        markFileInfo(ParadoxGameType.Stellaris, "common/messages/test.txt")
-        myFixture.configureByText("test.txt", """
-            hint = hello_world
-        """.trimIndent())
-        myFixture.checkHighlighting()
-    }
-
-    @Test
-    fun semantic_smoke_success() {
+    fun smoke_success() {
         markFileInfo(ParadoxGameType.Stellaris, "common/includes/include.txt")
         myFixture.configureByText("include.txt", "# nothing")
 
@@ -75,7 +53,7 @@ class UnresolvedPathReferenceInspectionTest : BasePlatformTestCase(), ChronicleT
     }
 
     @Test
-    fun semantic_smoke_incorrectFileExtension_success() {
+    fun incorrectFileExtension_success() {
         markFileInfo(ParadoxGameType.Stellaris, "common/includes/include.gfx")
         myFixture.configureByText("include.gfx", "# nothing")
 
@@ -94,7 +72,7 @@ class UnresolvedPathReferenceInspectionTest : BasePlatformTestCase(), ChronicleT
     }
 
     @Test
-    fun semantic_smoke_unresolvedPathReference_failed() {
+    fun unresolvedPathReference_failed() {
         markFileInfo(ParadoxGameType.Stellaris, "common/includes/include.txt")
         myFixture.configureByText("include.txt", "# nothing")
 
@@ -110,6 +88,28 @@ class UnresolvedPathReferenceInspectionTest : BasePlatformTestCase(), ChronicleT
             }
             """.trimIndent()
         }
+        myFixture.checkHighlighting()
+    }
+
+    // endregion
+
+    // region ignored
+
+    @Test
+    fun noSemantic_ignored() {
+        markFileInfo(ParadoxGameType.Stellaris, "common/test/test.txt")
+        myFixture.configureByText("test.txt", """
+            hint = hello_world
+        """.trimIndent())
+        myFixture.checkHighlighting()
+    }
+
+    @Test
+    fun outOfDefinitionDeclaration_ignored() {
+        markFileInfo(ParadoxGameType.Stellaris, "common/messages/test.txt")
+        myFixture.configureByText("test.txt", """
+            hint = hello_world
+        """.trimIndent())
         myFixture.checkHighlighting()
     }
 

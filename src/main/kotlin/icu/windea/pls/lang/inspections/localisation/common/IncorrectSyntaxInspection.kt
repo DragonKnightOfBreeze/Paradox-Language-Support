@@ -7,6 +7,7 @@ import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import icu.windea.pls.ep.inspections.ParadoxIncorrectSyntaxChecker
+import icu.windea.pls.lang.inspections.ParadoxSyntaxInspectionContext
 import icu.windea.pls.lang.inspections.ParadoxSyntaxInspectionService
 
 /**
@@ -18,7 +19,7 @@ import icu.windea.pls.lang.inspections.ParadoxSyntaxInspectionService
  */
 class IncorrectSyntaxInspection : LocalInspectionTool(), DumbAware {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        val context = ParadoxSyntaxInspectionService.Context(this, holder)
+        val context = ParadoxSyntaxInspectionContext(this, holder)
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 ProgressManager.checkCanceled()

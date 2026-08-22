@@ -31,32 +31,10 @@ class TooManyExpressionInspectionTest : BasePlatformTestCase(), ChronicleTestSco
     @After
     fun doTearDown() = clearIntegrationTest()
 
-    // region noSmantic
+    // region basic
 
     @Test
-    fun noSemantic_success() {
-        markFileInfo(ParadoxGameType.Stellaris, "common/test/test.txt")
-        myFixture.configureByText("test.txt", """
-            hint = hello_world
-        """.trimIndent())
-        myFixture.checkHighlighting()
-    }
-
-    // endregion
-
-    // region semantic
-
-    @Test
-    fun outOfDefinitionDeclaration_ignored() {
-        markFileInfo(ParadoxGameType.Stellaris, "common/messages/test.txt")
-        myFixture.configureByText("test.txt", """
-            hint = hello_world
-        """.trimIndent())
-        myFixture.checkHighlighting()
-    }
-
-    @Test
-    fun semantic_smoke_success() {
+    fun smoke_success() {
         markFileInfo(ParadoxGameType.Stellaris, "common/messages/test.txt")
         myFixture.configureByText("test.txt") {
             """
@@ -71,7 +49,7 @@ class TooManyExpressionInspectionTest : BasePlatformTestCase(), ChronicleTestSco
     }
 
     @Test
-    fun semantic_smoke_failed() {
+    fun smoke_failed() {
         markFileInfo(ParadoxGameType.Stellaris, "common/messages/test.txt")
         myFixture.configureByText("test.txt") {
             val m1 = "Too many key expression `index` (expect at most 1, actual 2)"
@@ -84,6 +62,28 @@ class TooManyExpressionInspectionTest : BasePlatformTestCase(), ChronicleTestSco
             }
             """.trimIndent()
         }
+        myFixture.checkHighlighting()
+    }
+
+    // endregion
+
+    // region ignored
+
+    @Test
+    fun noSemantic_ignored() {
+        markFileInfo(ParadoxGameType.Stellaris, "common/test/test.txt")
+        myFixture.configureByText("test.txt", """
+            hint = hello_world
+        """.trimIndent())
+        myFixture.checkHighlighting()
+    }
+
+    @Test
+    fun outOfDefinitionDeclaration_ignored() {
+        markFileInfo(ParadoxGameType.Stellaris, "common/messages/test.txt")
+        myFixture.configureByText("test.txt", """
+            hint = hello_world
+        """.trimIndent())
         myFixture.checkHighlighting()
     }
 

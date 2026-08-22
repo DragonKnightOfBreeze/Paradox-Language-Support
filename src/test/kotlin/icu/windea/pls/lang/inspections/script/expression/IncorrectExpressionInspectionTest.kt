@@ -31,32 +31,10 @@ class IncorrectExpressionInspectionTest : BasePlatformTestCase(), ChronicleTestS
     @After
     fun doTearDown() = clearIntegrationTest()
 
-    // region noSmantic
+    // region basic
 
     @Test
-    fun noSemantic_success() {
-        markFileInfo(ParadoxGameType.Stellaris, "common/test/test.txt")
-        myFixture.configureByText("test.txt", """
-            hint = hello_world
-        """.trimIndent())
-        myFixture.checkHighlighting()
-    }
-
-    // endregion
-
-    // region semantic
-
-    @Test
-    fun outOfDefinitionDeclaration_ignored() {
-        markFileInfo(ParadoxGameType.Stellaris, "common/messages/test.txt")
-        myFixture.configureByText("test.txt", """
-            hint = hello_world
-        """.trimIndent())
-        myFixture.checkHighlighting()
-    }
-
-    @Test
-    fun semantic_smoke_success() {
+    fun smoke_success() {
         markFileInfo(ParadoxGameType.Stellaris, "common/messages/test.txt")
         myFixture.configureByText("test.txt") {
             """
@@ -71,7 +49,7 @@ class IncorrectExpressionInspectionTest : BasePlatformTestCase(), ChronicleTestS
     }
 
     @Test
-    fun semantic_smoke_failed() {
+    fun smoke_failed() {
         markFileInfo(ParadoxGameType.Stellaris, "common/messages/test.txt")
         myFixture.configureByText("test.txt") {
             val m1 = "Number out of range (expect matching range: [0..null], actual: -1)"
@@ -80,6 +58,66 @@ class IncorrectExpressionInspectionTest : BasePlatformTestCase(), ChronicleTestS
                 index = ${warning(m1)}-1${warningEnd()}
                 tags = { start }
                 message_part = { say = hello_world }
+            }
+            """.trimIndent()
+        }
+        myFixture.checkHighlighting()
+    }
+
+    // endregion
+
+    // region ignored
+
+    @Test
+    fun noSemantic_ignored() {
+        markFileInfo(ParadoxGameType.Stellaris, "common/test/test.txt")
+        myFixture.configureByText("test.txt", """
+            hint = hello_world
+        """.trimIndent())
+        myFixture.checkHighlighting()
+    }
+
+    @Test
+    fun outOfDefinitionDeclaration_ignored() {
+        markFileInfo(ParadoxGameType.Stellaris, "common/messages/test.txt")
+        myFixture.configureByText("test.txt", """
+            hint = hello_world
+        """.trimIndent())
+        myFixture.checkHighlighting()
+    }
+
+    @Test
+    fun smoke_incorrectFileExtension_ignored() {
+        markFileInfo(ParadoxGameType.Stellaris, "common/includes/include.gfx")
+        myFixture.configureByText("include.gfx", "# nothing")
+
+        markFileInfo(ParadoxGameType.Stellaris, "common/messages/test.txt")
+        myFixture.configureByText("test.txt") {
+            """
+            start_message = {
+                index = 0
+                tags = { start }
+                message_part = { say = hello_world }
+                include = "common/includes/include.gfx"
+            }
+            """.trimIndent()
+        }
+        myFixture.checkHighlighting()
+    }
+
+    @Test
+    fun smoke_unresolvedPathReference_ignored() {
+        markFileInfo(ParadoxGameType.Stellaris, "common/includes/include.txt")
+        myFixture.configureByText("include.txt", "# nothing")
+
+        markFileInfo(ParadoxGameType.Stellaris, "common/messages/test.txt")
+        myFixture.configureByText("test.txt") {
+            """
+            start_message = {
+                index = 0
+                tags = { start }
+                message_part = { say = hello_world }
+                include = "common/includes/unresolved.txt"
             }
             """.trimIndent()
         }

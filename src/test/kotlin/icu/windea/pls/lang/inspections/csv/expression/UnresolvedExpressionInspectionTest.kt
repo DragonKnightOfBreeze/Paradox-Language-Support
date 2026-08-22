@@ -31,20 +31,6 @@ class UnresolvedExpressionInspectionTest : BasePlatformTestCase(), ChronicleTest
     @After
     fun doTearDown() = clearIntegrationTest()
 
-    // region noSmantic
-
-    @Test
-    fun noSemantic_success() {
-        markFileInfo(ParadoxGameType.Stellaris, "common/test/test.csv")
-        myFixture.configureByText("test.csv", """
-            id;number;status;flag
-            k1;0;yes;red_flag
-        """.trimIndent())
-        myFixture.checkHighlighting()
-    }
-
-    // endregion
-
     // region rowTypeIsKey
 
     @Test
@@ -150,6 +136,20 @@ class UnresolvedExpressionInspectionTest : BasePlatformTestCase(), ChronicleTest
             k1;0;yes;red_flag;no;ignored
             """.trimIndent()
         }
+        myFixture.checkHighlighting()
+    }
+
+    // endregion
+
+    // region ignored
+
+    @Test
+    fun noSemantic_ignored() {
+        markFileInfo(ParadoxGameType.Stellaris, "common/test/test.csv")
+        myFixture.configureByText("test.csv", """
+            id;number;status;flag
+            k1;0;yes;red_flag
+        """.trimIndent())
         myFixture.checkHighlighting()
     }
 

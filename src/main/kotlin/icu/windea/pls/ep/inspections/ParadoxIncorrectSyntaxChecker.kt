@@ -6,7 +6,7 @@ import com.intellij.psi.PsiElement
 import icu.windea.pls.core.addExtensionPointListener
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.util.values.LazyValue
-import icu.windea.pls.lang.inspections.ParadoxSyntaxInspectionService
+import icu.windea.pls.lang.inspections.ParadoxSyntaxInspectionContext
 import icu.windea.pls.model.ParadoxGameType
 
 /**
@@ -32,7 +32,7 @@ interface ParadoxIncorrectSyntaxChecker : DumbAware {
      * @param context 文件级别的上下文。
      * @return 是否继续执行下一个检查器。
      */
-    fun check(element: PsiElement, context: ParadoxSyntaxInspectionService.Context): Boolean
+    fun check(element: PsiElement, context: ParadoxSyntaxInspectionContext): Boolean
 
     companion object INSTANCE {
         @JvmField val EP_NAME = ExtensionPointName<ParadoxIncorrectSyntaxChecker>("icu.windea.pls.incorrectSyntaxChecker")

@@ -14,9 +14,11 @@ import icu.windea.pls.lang.fixes.ReplaceStringFix
 import icu.windea.pls.lang.inspections.ParadoxSyntaxInspectionContext
 import icu.windea.pls.lang.inspections.ParadoxSyntaxInspectionService
 import icu.windea.pls.lang.resolve.ParadoxSyntaxService
+import icu.windea.pls.localisation.psi.ParadoxLocalisationColorfulText
+import icu.windea.pls.localisation.psi.ParadoxLocalisationTextFormat
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constraints.ParadoxSyntaxConstraint
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 /**
@@ -66,7 +68,7 @@ class ParadoxSafeAssignOperatorChecker : ParadoxIncorrectSyntaxChecker {
     }
 
     private fun checkSafeAssignOperator(element: PsiElement, propertyElement: ParadoxScriptProperty, context: ParadoxSyntaxInspectionContext): Boolean {
-        if (element.elementType != ParadoxScriptElementTypes.SAFE_ASSIGN_SIGN) return true
+        if (element.elementType != SAFE_ASSIGN_SIGN) return true
 
         // check game type
 
@@ -102,7 +104,7 @@ class ParadoxSafeAssignOperatorChecker : ParadoxIncorrectSyntaxChecker {
     }
 
     private fun checkSafeCallAssignOperator(element: PsiElement, propertyElement: ParadoxScriptProperty, context: ParadoxSyntaxInspectionContext): Boolean {
-        if (element.elementType != ParadoxScriptElementTypes.SAFE_CALL_ASSIGN_SIGN) return true
+        if (element.elementType != SAFE_CALL_ASSIGN_SIGN) return true
 
         // check game type
 
@@ -142,8 +144,8 @@ class ParadoxSafeAssignOperatorChecker : ParadoxIncorrectSyntaxChecker {
  * 检查本地化文件中的悬挂的富文本结束标记。
  *
  * 包括：
- * - 悬挂的彩色文本（[COLORFUL_TEXT]）的结束标记（[COLORFUL_TEXT_END]，`§!`）。
- * - 悬挂的文本格式（[TEXT_FORMAT]）的结束标记（[TEXT_FORMAT_END]，`#!`）。
+ * - 悬挂的彩色文本（[ParadoxLocalisationColorfulText]）的结束标记。
+ * - 悬挂的文本格式（[ParadoxLocalisationTextFormat]）的结束标记。
  */
 class ParadoxDanglingRichTextEndMarkerChecker : ParadoxIncorrectSyntaxChecker {
     override fun check(element: PsiElement, context: ParadoxSyntaxInspectionContext): Boolean {
@@ -170,7 +172,7 @@ class ParadoxDanglingRichTextEndMarkerChecker : ParadoxIncorrectSyntaxChecker {
 }
 
 /**
- * 检查本地化文件中的不正确的对左方括号（[LEFT_BRACKET]）的转义。
+ * 检查本地化文件中的不正确的对左方括号的转义。
  */
 class ParadoxLeftBracketEscapeChecker : ParadoxIncorrectSyntaxChecker {
     override fun check(element: PsiElement, context: ParadoxSyntaxInspectionContext): Boolean {

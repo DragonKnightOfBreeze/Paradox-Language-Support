@@ -1,0 +1,23 @@
+types = {
+    type[dimension] = {
+        path = common/dimensions
+        path_extension = .txt
+    }
+}
+
+dimension = {
+    ## cardinality = 0..inf
+    set = { x = int y = int }
+    ## cardinality = 0..inf
+    set = { width = int height = int }
+
+    ## cardinality = 0..inf
+    set_empty = {}
+
+    ## cardinality = 0..inf
+    set_or_empty = {}
+    ## cardinality = 0..inf
+    set_or_empty = { x = int y = int }
+    ## cardinality = 0..inf
+    set_or_empty = { width = int height = int }
+}
