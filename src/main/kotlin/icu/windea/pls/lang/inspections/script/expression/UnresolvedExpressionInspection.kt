@@ -17,7 +17,7 @@ import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 
 /**
- * （脚本文件中的）无法解析的表达式的代码检查。
+ * 检查是否存在无法解析的表达式。
  *
  * 如果当前节点存在对应的规则上下文，但不存在匹配的规则，则认为未通过检查。
  *

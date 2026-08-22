@@ -17,7 +17,7 @@ import icu.windea.pls.lang.inspections.script.inlineScript.InlineScriptInspectio
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 
 /**
- * 检查当前脚本文件是否无法匹配任何规则（包括：行规则）。
+ * 检查当前文件是否无法匹配任何规则（包括：行规则）。
  *
  * 说明：
  * - 忽略注入的文件和临时文件。

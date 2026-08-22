@@ -13,7 +13,7 @@ import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
 import icu.windea.pls.lang.util.ParadoxFileManager
 
 /**
- * 对文件的重载的代码检查。
+ * 检测是否存在对当前文件的重载。
  *
  * 说明：
  * - 如果当前上下文中存在同路径（相对于入口目录）的文件，那么就说存在对此文件的重载。

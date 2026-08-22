@@ -17,7 +17,7 @@ import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 
 /**
- * 检查本地化文件中是否包含多个语言环境声明。
+ * 检查当前本地化文件中是否包含多个语言环境声明。
  *
  * @property ignoredFileNames （配置项）需要忽略检查的文件名。一组模式，分号分隔，忽略大小写。
  */

@@ -16,7 +16,7 @@ import icu.windea.pls.lang.inspections.ParadoxExpressionInspectionService
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 
 /**
- * （CSV 文件中的）不正确的列名的代码检查。
+ * 检查是否存在不正确的列名。
  *
  * @property ignoredInInjectedFiles （配置项）是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
  */

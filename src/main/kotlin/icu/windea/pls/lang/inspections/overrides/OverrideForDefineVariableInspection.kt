@@ -13,7 +13,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptVisitor
 
 /**
- * 对定值变量的重载的代码检查。
+ * 检查是否存在对定值变量（define variable）的重载。
  *
  * 说明：
  * - 如果当前上下文中存在同名同命名空间的定值变量，那么就说存在对此定值变量的重载。

@@ -16,7 +16,7 @@ import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 /**
- * （脚本文件中的）不正确的路径引用的代码检查。
+ * 检查是否存在不正确的路径引用。
  *
  * @property ignoredInInjectedFiles （配置项）是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
  * @property ignoredInInlineScriptFiles （配置项）是否在内联脚本文件中忽略此代码检查。

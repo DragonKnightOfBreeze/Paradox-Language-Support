@@ -17,7 +17,7 @@ import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptVisitor
 
 /**
- * 缺失的表达式的代码检查。
+ * 检查是否存在缺失的表达式。
  *
  * @property firstOnly （配置项）是否仅标出第一个错误。
  * @property firstOnlyOnFile （配置项）在文件级别上，是否仅标出第一个错误。

@@ -13,7 +13,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
 import icu.windea.pls.localisation.psi.ParadoxLocalisationVisitor
 
 /**
- * （本地化文件中的）不支持的语言环境的代码检查。
+ * 检查当前本地化文件中是否使用了不支持的语言环境。
  */
 class UnsupportedLocaleInspection : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {

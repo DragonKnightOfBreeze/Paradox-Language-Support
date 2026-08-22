@@ -17,7 +17,7 @@ import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
 
 /**
- * 无法解析的封装变量引用的代码检查。
+ * 检查是否存在无法解析的封装变量引用。
  *
  * 提供快速修复：
  * - 声明全局封装变量（在 `common/scripted_variables` 目录下的某一文件中）

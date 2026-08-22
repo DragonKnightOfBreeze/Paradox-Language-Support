@@ -15,7 +15,7 @@ import icu.windea.pls.script.psi.ParadoxParameter
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes
 
 /**
- * （脚本文件中的）不支持的参数的代码检查。
+ * 检查是否在不支持的上下文中使用了参数。
  *
  * 规则如下：
  * - 仅支持在支持参数的定义声明中，或者内联脚本文件中使用参数。

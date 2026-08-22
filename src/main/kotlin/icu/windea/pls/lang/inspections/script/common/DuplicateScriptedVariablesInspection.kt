@@ -17,7 +17,7 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.ParadoxScriptVisitor
 
 /**
- * 同一文件中（且位于同一上下文中）的重复的封装变量声明的代码检查。
+ * 检查当前脚本文件中是否存在（位于同一上下文中的）重复的封装变量声明。
  *
  * 提供快速修复：
  * - 导航到重复项

@@ -14,7 +14,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyList
 import icu.windea.pls.localisation.psi.ParadoxLocalisationVisitor
 
 /**
- * 同一文件中重复的（同一语言环境的）属性声明的代码检查。
+ * 检查当前本地化文件中是否存在（位于同一属性列表中的）重复的属性声明。
  *
  * 提供快速修复：
  * - 导航到重复项

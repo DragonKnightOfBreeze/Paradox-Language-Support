@@ -15,7 +15,7 @@ import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 /**
- * 事件脚本文件中的（位于事件声明中的）不匹配事件命名空间的事件ID的代码检查。
+ * 检查事件脚本文件中的（位于事件声明中的）事件ID是否不匹配事件命名空间。
  *
  * 说明：
  * - 此代码检查是启发式的，可能存在误报。

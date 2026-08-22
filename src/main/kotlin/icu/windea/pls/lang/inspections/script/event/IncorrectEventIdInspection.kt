@@ -15,7 +15,7 @@ import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 /**
- * 事件脚本文件中（位于事件声明中的）的不正确的事件ID的代码检查。
+ * 检查事件脚本文件中的（位于事件声明中的）事件ID是否不正确。
  */
 class IncorrectEventIdInspection : EventInspectionBase() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {

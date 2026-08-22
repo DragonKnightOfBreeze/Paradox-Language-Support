@@ -22,7 +22,7 @@ import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.psi.ParadoxScriptVisitor
 
 /**
- * 缺失的参数的代码检查。
+ * 检查是否存在缺失的（传入）参数。
  *
  * @property ignoredInInjectedFiles （配置项）是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
  */

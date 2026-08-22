@@ -13,9 +13,9 @@ import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 /**
- * 动态值值被使用但未被设置的代码检查。
+ * 检查是否存在已被使用但未被设置的动态值。
  *
- * 例如，有`has_flag = xxx`但没有`set_flag = xxx`。
+ * 例如，有 `has_flag = xxx` 但没有 `set_flag = xxx`。
  *
  * 默认不启用。
  */

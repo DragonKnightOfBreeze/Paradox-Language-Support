@@ -9,7 +9,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptVisitor
 
 /**
- * 检查是否在不支持的地方使用了定义注入。
+ * 检查是否在不支持的上下文中使用了定义注入。
  *
  * 说明：
  * - 必须存在可以匹配的定义类型（在脚本文件的顶层声明定义，使用类型键作为定义的名字，且不存在类型键前缀）。

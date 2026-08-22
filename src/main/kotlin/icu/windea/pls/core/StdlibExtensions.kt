@@ -137,7 +137,7 @@ fun CharSequence.addSurrounding(prefix: CharSequence, suffix: CharSequence): Str
     return prefix.toString() + this.toString() + suffix.toString()
 }
 
-/** 如果当前字符序列存在指定的前缀，则去除并返回，否则返回具有相同字符的新字符序列。。 */
+/** 如果当前字符序列存在指定的前缀，则去除并返回，否则返回具有相同字符的新字符序列。 */
 fun CharSequence.removeSurrounding(prefix: CharSequence, suffix: CharSequence): CharSequence {
     return removePrefix(prefix).removeSuffix(suffix)
 }

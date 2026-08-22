@@ -16,7 +16,7 @@ import icu.windea.pls.lang.psi.ParadoxPsiElementVisitor
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 
 /**
- * （CSV 文件中的）无法解析的表达式的代码检查。
+ * 检查是否存在无法解析的表达式。
  *
  * 如果当前节点存在对应的行规则和列规则，但列规则不匹配，则认为未通过检查。
  *

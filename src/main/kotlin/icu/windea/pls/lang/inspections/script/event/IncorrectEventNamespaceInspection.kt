@@ -15,7 +15,7 @@ import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 /**
- * 事件脚本文件中的不正确的事件命名空间声明的代码检查。
+ * 检查事件脚本文件中的事件命名空间声明是否不正确。
  */
 class IncorrectEventNamespaceInspection : EventInspectionBase() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {

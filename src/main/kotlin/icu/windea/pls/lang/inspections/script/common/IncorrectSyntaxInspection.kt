@@ -11,7 +11,7 @@ import icu.windea.pls.lang.inspections.ParadoxSyntaxInspectionContext
 import icu.windea.pls.lang.inspections.ParadoxSyntaxInspectionService
 
 /**
- * （脚本文件中的）不正确的语法的代码检查。
+ * 查是否存在不正确的语法。
  *
  * 可能检测于游戏类型级别、文法级别或语义级别。
  *

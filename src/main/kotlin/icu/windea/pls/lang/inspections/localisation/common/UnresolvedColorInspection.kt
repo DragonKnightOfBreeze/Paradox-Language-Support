@@ -14,7 +14,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationColorfulText
 import icu.windea.pls.localisation.psi.ParadoxLocalisationVisitor
 
 /**
- * 无法解析的颜色的代码检查。
+ * 检查是否存在无法解析的文本颜色引用。
  *
  * @property ignoredInInjectedFiles （配置项）是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
  */

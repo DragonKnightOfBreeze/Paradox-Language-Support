@@ -16,7 +16,7 @@ import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptVisitor
 
 /**
- * 表达式的解析结果存在冲突的代码检查。
+ * 检查是否存在解析结果存在冲突的表达式。
  *
  * 如果脚本表达式的匹配多个值为块（`{...}`）的规则，且根据这些规则进行进一步的匹配后存在冲突，则认为其解析结果存在冲突。
  * 例如：`k = { x = 1 height = 1 }` VS `k = { x = int y = int } k = { width = int height = int }`。

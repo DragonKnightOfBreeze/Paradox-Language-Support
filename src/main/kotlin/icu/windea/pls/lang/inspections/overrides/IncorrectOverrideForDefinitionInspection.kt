@@ -11,7 +11,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptVisitor
 
 /**
- * 对定义的不正确的重载的代码检查。
+ * 检查是否存在不正确的对定义（definition）的重载。
  *
  * 说明：
  * - 如果当前上下文中存在同名同类型的定义，那么就说存在对此定义的重载。

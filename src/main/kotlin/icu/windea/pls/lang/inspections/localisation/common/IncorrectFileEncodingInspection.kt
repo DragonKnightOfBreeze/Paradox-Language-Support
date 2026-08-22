@@ -19,7 +19,7 @@ import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 // com.intellij.openapi.editor.actions.RemoveBomAction
 
 /**
- * 检查当前本地化文件是否使用了正确的文件编码。
+ * 检查当前文件是否使用了正确的文件编码。
  *
  * 说明：
  * - 忽略注入的文件和临时文件。

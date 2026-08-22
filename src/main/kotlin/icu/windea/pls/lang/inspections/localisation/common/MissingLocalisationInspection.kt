@@ -34,7 +34,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationVisitor
 import javax.swing.JComponent
 
 /**
- * 缺失的本地化的代码检查。
+ * 检查是否存在缺失的（其他特定语言区域的）本地化。
  *
  * @property ignoredFileNames （配置项）需要忽略检查的文件名。一组模式，分号分隔，忽略大小写。
  */

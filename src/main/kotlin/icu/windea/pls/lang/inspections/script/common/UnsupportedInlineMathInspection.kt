@@ -15,7 +15,7 @@ import icu.windea.pls.script.psi.ParadoxScriptInlineMath
 import icu.windea.pls.script.psi.ParadoxScriptVisitor
 
 /**
- * （脚本文件中的）不支持的内联数学块的代码检查。
+ * 检查是否在不支持的上下文中使用了内联数学块。
  *
  * 规则如下：
  * - 不支持在资源文件中使用内联数学块，除非是基于 Jomini 的游戏类型。

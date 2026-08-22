@@ -20,7 +20,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationVisitor
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 
 /**
- * 无法解析的概念的代码检查。
+ * 检查是否存在无法解析的概念引用。
  *
  * @property ignoredNames （配置项）需要忽略的名字。一组模式，分号分隔，忽略大小写。
  * @property ignoredInInjectedFiles （配置项）是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。

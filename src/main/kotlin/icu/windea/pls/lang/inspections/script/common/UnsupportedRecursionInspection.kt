@@ -18,7 +18,7 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.ParadoxScriptVisitor
 
 /**
- * （脚本文件中的）不支持的递归的代码检查。
+ * 检查当前文件中是否存在不支持的递归。
  *
  * 规则如下：
  * - 不支持递归的封装变量（scripted variable）引用。

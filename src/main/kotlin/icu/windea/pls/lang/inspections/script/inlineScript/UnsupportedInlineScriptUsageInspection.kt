@@ -9,7 +9,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptVisitor
 
 /**
- * 检查是否在不支持的地方使用了内联脚本。
+ * 检查是否在不支持的上下文中使用了内联脚本。
  */
 class UnsupportedInlineScriptUsageInspection : InlineScriptInspectionBase()/*, DumbAware*/ {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {

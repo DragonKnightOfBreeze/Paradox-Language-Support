@@ -13,7 +13,7 @@ import icu.windea.pls.script.psi.ParadoxScriptConditionalBlock
 import icu.windea.pls.script.psi.ParadoxScriptVisitor
 
 /**
- * （脚本文件中的）不支持的参数化快的代码检查。
+ * 检查是否在不支持的上下文中使用了参数化块。
  *
  * 规则如下：
  * - 不支持在内联脚本文件中使用参数化快。

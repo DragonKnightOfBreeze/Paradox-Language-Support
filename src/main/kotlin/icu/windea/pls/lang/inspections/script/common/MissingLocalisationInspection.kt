@@ -37,7 +37,7 @@ import icu.windea.pls.script.psi.isDataExpression
 import javax.swing.JComponent
 
 /**
- * 缺失的本地化的代码检查。
+ * 检查是否存在缺失的（特定语言区域的）本地化。
  *
  * @property ignoredInInjectedFiles （配置项）是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
  */

@@ -10,7 +10,7 @@ import icu.windea.pls.lang.manipulation.ParadoxEventManipulationService
 import icu.windea.pls.script.psi.ParadoxScriptFile
 
 /**
- * 事件脚本文件中的缺失的事件命名空间声明的代码检查。
+ * 检查事件脚本文件中是否缺失事件命名空间声明。
  *
  * 说明：
  * - 此代码检查是启发式的，可能存在误报。
