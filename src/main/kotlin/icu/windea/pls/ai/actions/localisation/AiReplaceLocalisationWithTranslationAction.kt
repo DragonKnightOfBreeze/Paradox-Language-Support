@@ -46,7 +46,7 @@ class AiReplaceLocalisationWithTranslationAction : ManipulateLocalisationActionB
 
         val (files, selectedLocale, data) = context
         val description = AiManipulationService.getOptimizedDescription(data)
-        withBackgroundProgress(project, ChronicleAiBundle.message("ai.action.replaceLocalisationWithTranslation.progress.title", selectedLocale.text)) action@{
+        withBackgroundProgress(project, ChronicleAiBundle.message("action.replaceLocalisationWithTranslation.progress.title", selectedLocale.text)) action@{
             val total = files.size
             val allContexts = mutableListOf<ParadoxLocalisationManipulationContext>().synced()
             val processedRef = AtomicInteger()
@@ -101,17 +101,17 @@ class AiReplaceLocalisationWithTranslationAction : ManipulateLocalisationActionB
     private fun createNotification(selectedLocale: CwtLocaleConfig, processed: Int, error: Throwable?, withWarnings: Boolean): Notification {
         if (error == null) {
             if (!withWarnings) {
-                val content = ChronicleAiBundle.message("ai.action.replaceLocalisationWithTranslation.notification", selectedLocale.text, Messages.success(processed))
+                val content = ChronicleAiBundle.message("action.replaceLocalisationWithTranslation.notification", selectedLocale.text, Messages.success(processed))
                 return ChronicleNotificationGroups.manipulation().createNotification(content, NotificationType.INFORMATION)
             }
-            val content = ChronicleAiBundle.message("ai.action.replaceLocalisationWithTranslation.notification", selectedLocale.text, Messages.partialSuccess(processed))
+            val content = ChronicleAiBundle.message("action.replaceLocalisationWithTranslation.notification", selectedLocale.text, Messages.partialSuccess(processed))
             return ChronicleNotificationGroups.manipulation().createNotification(content, NotificationType.WARNING)
         }
 
         thisLogger().warn(error)
         val errorMessage = AiManipulationService.getOptimizedErrorMessage(error)
         val errorDetails = errorMessage?.let { ChronicleBundle.message("manipulation.localisation.error", it) }.orEmpty()
-        val content = ChronicleAiBundle.message("ai.action.replaceLocalisationWithTranslation.notification", selectedLocale.text, Messages.partialSuccess(processed)) + errorDetails
+        val content = ChronicleAiBundle.message("action.replaceLocalisationWithTranslation.notification", selectedLocale.text, Messages.partialSuccess(processed)) + errorDetails
         return ChronicleNotificationGroups.manipulation().createNotification(content, NotificationType.WARNING)
     }
 }

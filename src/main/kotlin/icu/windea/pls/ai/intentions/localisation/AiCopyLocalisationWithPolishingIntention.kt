@@ -33,7 +33,7 @@ import java.util.concurrent.atomic.AtomicReference
  * 复制的文本格式为：`KEY:0 "TEXT"`
  */
 class AiCopyLocalisationWithPolishingIntention : ManipulateLocalisationIntentionBase.WithPopup<String>(), DumbAware {
-    override fun getFamilyName() = ChronicleAiBundle.message("ai.intention.copyLocalisationWithPolishing")
+    override fun getFamilyName() = ChronicleAiBundle.message("intention.copyLocalisationWithPolishing")
 
     override fun isAvailable(project: Project, editor: Editor, file: PsiFile): Boolean {
         return super.isAvailable(project, editor, file) && ChronicleAiSettings.getInstance().isEnabled()
@@ -47,7 +47,7 @@ class AiCopyLocalisationWithPolishingIntention : ManipulateLocalisationIntention
     override suspend fun doHandle(project: Project, file: PsiFile, context: Context<String>) {
         val (elements, data) = context
         val description = AiManipulationService.getOptimizedDescription(data)
-        withBackgroundProgress(project, ChronicleAiBundle.message("ai.intention.copyLocalisationWithPolishing.progress.title")) action@{
+        withBackgroundProgress(project, ChronicleAiBundle.message("intention.copyLocalisationWithPolishing.progress.title")) action@{
             val contexts = readAction { elements.map { ParadoxLocalisationManipulationContext.create(it) }.toList() }
             val contextsToHandle = contexts.filter { context -> context.needProcess }
             val errorRef = AtomicReference<Throwable>()
@@ -89,17 +89,17 @@ class AiCopyLocalisationWithPolishingIntention : ManipulateLocalisationIntention
     private fun createNotification(error: Throwable?, withWarnings: Boolean): Notification {
         if (error == null) {
             if (!withWarnings) {
-                val content = ChronicleAiBundle.message("ai.intention.copyLocalisationWithPolishing.notification", Messages.success())
+                val content = ChronicleAiBundle.message("intention.copyLocalisationWithPolishing.notification", Messages.success())
                 return ChronicleNotificationGroups.manipulation().createNotification(content, NotificationType.INFORMATION)
             }
-            val content = ChronicleAiBundle.message("ai.intention.copyLocalisationWithPolishing.notification", Messages.partialSuccess())
+            val content = ChronicleAiBundle.message("intention.copyLocalisationWithPolishing.notification", Messages.partialSuccess())
             return ChronicleNotificationGroups.manipulation().createNotification(content, NotificationType.WARNING)
         }
 
         thisLogger().warn(error)
         val errorMessage = AiManipulationService.getOptimizedErrorMessage(error)
         val errorDetails = errorMessage?.let { ChronicleBundle.message("manipulation.localisation.error", it) }.orEmpty()
-        val content = ChronicleAiBundle.message("ai.intention.copyLocalisationWithPolishing.notification", Messages.partialSuccess()) + errorDetails
+        val content = ChronicleAiBundle.message("intention.copyLocalisationWithPolishing.notification", Messages.partialSuccess()) + errorDetails
         return ChronicleNotificationGroups.manipulation().createNotification(content, NotificationType.WARNING)
     }
 }

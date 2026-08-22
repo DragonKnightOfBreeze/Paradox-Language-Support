@@ -11,15 +11,15 @@ enum class ChatModelProviderType(val text: String) {
     /**
      * 使用 [OPEN AI](https://openai.com) 的 API。
      */
-    OPEN_AI(ChronicleAiBundle.message("ai.providerType.openAI")),
+    OPEN_AI(ChronicleAiBundle.message("providerType.openAI")),
     /**
      * 使用 [ANTHROPIC](https://www.anthropic.com) 的 API。
      */
-    ANTHROPIC(ChronicleAiBundle.message("ai.providerType.anthropic")),
+    ANTHROPIC(ChronicleAiBundle.message("providerType.anthropic")),
     /**
      * 使用 [Ollama](https://ollama.com)。
      */
-    LOCAL(ChronicleAiBundle.message("ai.providerType.local")),
+    LOCAL(ChronicleAiBundle.message("providerType.local")),
     ;
 
     companion object {

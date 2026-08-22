@@ -46,7 +46,7 @@ abstract class ChatModelProviderBase<S : ChatModelProvider.Options> : ChatModelP
     final override fun checkStatus(options: S?): ChatModelProvider.StatusResult {
         val options = options
         if (options == null) {
-            return ChatModelProvider.StatusResult(false, ChronicleAiBundle.message("ai.test.error.title"), ChronicleAiBundle.message("ai.test.error.missingConfig"))
+            return ChatModelProvider.StatusResult(false, ChronicleAiBundle.message("test.error.title"), ChronicleAiBundle.message("test.error.missingConfig"))
         }
         return doCheckStatus(options)
     }

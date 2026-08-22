@@ -12,7 +12,7 @@
     <intentionAction>
       <language>PARADOX_LOCALISATION</language>
       <bundleName>messages.ChronicleIntentionBundle</bundleName>
-      <categoryKey>intention.localisation.category</categoryKey>
+      <categoryKey>intention.category.localisation</categoryKey>
       <className>icu.windea.pls.ai.intentions.localisation.AiReplaceLocalisationWithTranslationIntention</className>
     </intentionAction>
     <intentionAction>
@@ -23,19 +23,19 @@
     <intentionAction>
       <language>PARADOX_LOCALISATION</language>
       <bundleName>messages.ChronicleIntentionBundle</bundleName>
-      <categoryKey>intention.localisation.category</categoryKey>
+      <categoryKey>intention.category.localisation</categoryKey>
       <className>icu.windea.pls.ai.intentions.localisation.AiReplaceLocalisationWithTranslationFromLocaleIntention</className>
     </intentionAction>
     <intentionAction>
       <language>PARADOX_LOCALISATION</language>
       <bundleName>messages.ChronicleIntentionBundle</bundleName>
-      <categoryKey>intention.localisation.category</categoryKey>
+      <categoryKey>intention.category.localisation</categoryKey>
       <className>icu.windea.pls.ai.intentions.localisation.AiCopyLocalisationWithPolishingIntention</className>
     </intentionAction>
     <intentionAction>
       <language>PARADOX_LOCALISATION</language>
       <bundleName>messages.ChronicleIntentionBundle</bundleName>
-      <categoryKey>intention.localisation.category</categoryKey>
+      <categoryKey>intention.category.localisation</categoryKey>
       <className>icu.windea.pls.ai.intentions.localisation.AiReplaceLocalisationWithPolishingIntention</className>
     </intentionAction>
   </extensions>

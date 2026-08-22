@@ -249,19 +249,19 @@ class ChronicleAiSettingsConfigurable : BoundConfigurable(ChronicleAiBundle.mess
     }
 
     private fun validateModelName(builder: ValidationInfoBuilder, field: JBTextField, skip: Boolean): ValidationInfo? {
-        if (!skip && field.text.isEmpty()) return builder.warning(ChronicleAiBundle.message("ai.validation.missingModelName"))
+        if (!skip && field.text.isEmpty()) return builder.warning(ChronicleAiBundle.message("validation.missingModelName"))
         return null
     }
 
     // private fun validateApiEndpoint(builder: ValidationInfoBuilder, field: JBTextField, skip: Boolean): ValidationInfo? {
-    //     if (!skip && field.text.isEmpty()) return builder.warning(ChronicleAiBundle.message("ai.validation.missingApiEndpoint"))
+    //     if (!skip && field.text.isEmpty()) return builder.warning(ChronicleAiBundle.message("validation.missingApiEndpoint"))
     //     return null
     // }
 
     private fun validateApiKey(builder: ValidationInfoBuilder, field: JBPasswordField, skip: Boolean): ValidationInfo? {
         // 目前仅在输入时验证，不在应用时验证
         // 如果启用 AI 集成，但是这里的验证并未通过，相关功能仍然可用，只是使用后会给出警告
-        if (!skip && field.password.isEmpty()) return builder.warning(ChronicleAiBundle.message("ai.validation.missingApiKey"))
+        if (!skip && field.password.isEmpty()) return builder.warning(ChronicleAiBundle.message("validation.missingApiKey"))
         return null
     }
 

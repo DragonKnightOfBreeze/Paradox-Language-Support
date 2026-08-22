@@ -30,7 +30,7 @@ import java.util.concurrent.atomic.AtomicReference
  * 【AI】替换为翻译后的本地化（光标位置对应的本地化，或者光标选取范围涉及到的所有本地化）。
  */
 class AiReplaceLocalisationWithTranslationIntention : ManipulateLocalisationIntentionBase.WithLocalePopupAndPopup<String>(), DumbAware {
-    override fun getFamilyName() = ChronicleAiBundle.message("ai.intention.replaceLocalisationWithTranslation")
+    override fun getFamilyName() = ChronicleAiBundle.message("intention.replaceLocalisationWithTranslation")
 
     override fun isAvailable(project: Project, editor: Editor, file: PsiFile): Boolean {
         return super.isAvailable(project, editor, file) && ChronicleAiSettings.getInstance().isEnabled()
@@ -44,7 +44,7 @@ class AiReplaceLocalisationWithTranslationIntention : ManipulateLocalisationInte
     override suspend fun doHandle(project: Project, file: PsiFile, context: Context<String>) {
         val (elements, selectedLocale, data) = context
         val description = AiManipulationService.getOptimizedDescription(data)
-        withBackgroundProgress(project, ChronicleAiBundle.message("ai.intention.replaceLocalisationWithTranslation.progress.title", selectedLocale.text)) action@{
+        withBackgroundProgress(project, ChronicleAiBundle.message("intention.replaceLocalisationWithTranslation.progress.title", selectedLocale.text)) action@{
             val contexts = readAction { elements.map { ParadoxLocalisationManipulationContext.create(it) }.toList() }
             val contextsToHandle = contexts.filter { context -> context.needProcess }
             val errorRef = AtomicReference<Throwable>()
@@ -93,17 +93,17 @@ class AiReplaceLocalisationWithTranslationIntention : ManipulateLocalisationInte
     private fun createNotification(selectedLocale: CwtLocaleConfig, error: Throwable?, withWarnings: Boolean): Notification {
         if (error == null) {
             if (!withWarnings) {
-                val content = ChronicleAiBundle.message("ai.intention.replaceLocalisationWithTranslation.notification", selectedLocale.text, Messages.success())
+                val content = ChronicleAiBundle.message("intention.replaceLocalisationWithTranslation.notification", selectedLocale.text, Messages.success())
                 return ChronicleNotificationGroups.manipulation().createNotification(content, NotificationType.INFORMATION)
             }
-            val content = ChronicleAiBundle.message("ai.intention.replaceLocalisationWithTranslation.notification", selectedLocale.text, Messages.partialSuccess())
+            val content = ChronicleAiBundle.message("intention.replaceLocalisationWithTranslation.notification", selectedLocale.text, Messages.partialSuccess())
             return ChronicleNotificationGroups.manipulation().createNotification(content, NotificationType.WARNING)
         }
 
         thisLogger().warn(error)
         val errorMessage = AiManipulationService.getOptimizedErrorMessage(error)
         val errorDetails = errorMessage?.let { ChronicleBundle.message("manipulation.localisation.error", it) }.orEmpty()
-        val content = ChronicleAiBundle.message("ai.intention.replaceLocalisationWithTranslation.notification", selectedLocale.text, Messages.partialSuccess()) + errorDetails
+        val content = ChronicleAiBundle.message("intention.replaceLocalisationWithTranslation.notification", selectedLocale.text, Messages.partialSuccess()) + errorDetails
         return ChronicleNotificationGroups.manipulation().createNotification(content, NotificationType.WARNING)
     }
 }

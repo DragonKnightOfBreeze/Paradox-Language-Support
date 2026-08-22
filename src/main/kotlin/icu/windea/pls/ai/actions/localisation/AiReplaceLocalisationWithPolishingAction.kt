@@ -45,7 +45,7 @@ class AiReplaceLocalisationWithPolishingAction : ManipulateLocalisationActionBas
 
         val (files, data) = context
         val description = AiManipulationService.getOptimizedDescription(data)
-        withBackgroundProgress(project, ChronicleAiBundle.message("ai.action.replaceLocalisationWithPolishing.progress.title")) action@{
+        withBackgroundProgress(project, ChronicleAiBundle.message("action.replaceLocalisationWithPolishing.progress.title")) action@{
             val total = files.size
             val allContexts = mutableListOf<ParadoxLocalisationManipulationContext>().synced()
             val processedRef = AtomicInteger()
@@ -100,17 +100,17 @@ class AiReplaceLocalisationWithPolishingAction : ManipulateLocalisationActionBas
     private fun createNotification(processed: Int, error: Throwable?, withWarnings: Boolean): Notification {
         if (error == null) {
             if (!withWarnings) {
-                val content = ChronicleAiBundle.message("ai.action.replaceLocalisationWithPolishing.notification", Messages.success(processed))
+                val content = ChronicleAiBundle.message("action.replaceLocalisationWithPolishing.notification", Messages.success(processed))
                 return ChronicleNotificationGroups.manipulation().createNotification(content, NotificationType.INFORMATION)
             }
-            val content = ChronicleAiBundle.message("ai.action.replaceLocalisationWithPolishing.notification", Messages.partialSuccess(processed))
+            val content = ChronicleAiBundle.message("action.replaceLocalisationWithPolishing.notification", Messages.partialSuccess(processed))
             return ChronicleNotificationGroups.manipulation().createNotification(content, NotificationType.WARNING)
         }
 
         thisLogger().warn(error)
         val errorMessage = AiManipulationService.getOptimizedErrorMessage(error)
         val errorDetails = errorMessage?.let { ChronicleBundle.message("manipulation.localisation.error", it) }.orEmpty()
-        val content = ChronicleAiBundle.message("ai.action.replaceLocalisationWithPolishing.notification", Messages.partialSuccess(processed)) + errorDetails
+        val content = ChronicleAiBundle.message("action.replaceLocalisationWithPolishing.notification", Messages.partialSuccess(processed)) + errorDetails
         return ChronicleNotificationGroups.manipulation().createNotification(content, NotificationType.WARNING)
     }
 }
