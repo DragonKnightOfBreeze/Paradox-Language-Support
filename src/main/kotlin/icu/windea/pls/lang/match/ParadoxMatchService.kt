@@ -1,7 +1,6 @@
 package icu.windea.pls.lang.match
 
 import com.intellij.psi.PsiElement
-import com.intellij.util.SmartList
 import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.core.annotations.Optimized
@@ -54,28 +53,28 @@ object ParadoxMatchService {
      * 根据来自 [matchResultProvider] 的匹配结果，从输入的一组成员规则 [configs] 收集匹配候选项。
      */
     inline fun <T : CwtMemberConfig<*>> collectCandidates(configs: List<T>, matchResultProvider: (T) -> ParadoxMatchResult): List<ParadoxMatchCandidate> {
-        if (configs.isEmpty()) return emptyList()
-        val result = SmartList<ParadoxMatchCandidate>() // 3.0.1 optimize: use SmartList (0 or 1 elements in most situations)
-        configs.forEachFast f@{ config ->
-            val matchResult = matchResultProvider(config)
-            if (matchResult === ParadoxMatchResult.NotMatch) return@f
-            val matchCandidate = ParadoxMatchCandidate(config, matchResult)
-            result += matchCandidate
-        }
+        val result = ParadoxMatchCandidateService.collect(configs, matchResultProvider)
         return result
     }
 
     /**
-     * 处理输入的一组匹配候选项 [candidates]，进行进一步的匹配。基于匹配结果的类型。
+     * 处理输入的一组匹配候选项 [candidates]，进行进一步的匹配。
      */
-    fun process(candidates: List<ParadoxMatchCandidate>, options: ParadoxMatchOptions? = null): List<CwtMemberConfig<*>> {
-        if (candidates.isEmpty()) return emptyList()
-        val matched = ParadoxMatchCandidateService.process(candidates, options)
-        return matched.mapFast { it.value }
+    fun processCandidates(candidates: List<ParadoxMatchCandidate>, options: ParadoxMatchOptions? = null): List<CwtMemberConfig<*>> {
+        val result = ParadoxMatchCandidateService.process(candidates, options).mapFast { it.value }
+        return result
     }
 
     /**
-     * 对输入的一组已处理过的成员规则 [configs] 进行后续优化。基于 [ParadoxScriptExpressionMatchOptimizer]。
+     * 处理输入的一组匹配候选项 [candidates]，进行进一步的匹配，接着再进行后续优化。
+     */
+    fun processAndOptimizeCandidates(candidates: List<ParadoxMatchCandidate>, element: PsiElement, expression: ParadoxExpression, options: ParadoxMatchOptions? = null): List<CwtMemberConfig<*>> {
+        val result = ParadoxMatchCandidateService.process(candidates, options).mapFast { it.value }
+        return optimize(result, element, expression, options)
+    }
+
+    /**
+     * @see ParadoxScriptExpressionMatchOptimizer
      */
     fun <T : CwtMemberConfig<*>> optimize(configs: List<T>, element: PsiElement, expression: ParadoxExpression, options: ParadoxMatchOptions? = null): List<T> {
         if (configs.isEmpty()) return emptyList()

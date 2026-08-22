@@ -262,7 +262,7 @@ object ParadoxConfigService {
         val result = collectConfigsForConfigContext(expression, matchedParentConfigs, configGroup)
         if (result.isEmpty()) return emptyList()
 
-        // 如果 `element` 是属性值，则需要再次进行匹配，并接着转换为属性值对应的规则
+        // 如果 `element` 是属性值，需要再次进行匹配，并接着转换为属性值对应的规则
         if (context.memberRole == ParadoxMemberRole.PropertyValue) {
             val matchedResult = matchConfigsForConfigContext(element, expression, result, configGroup, options)
             return matchedResult.mapNotNullFast { if (it is CwtPropertyConfig) it.valueConfig else null }
@@ -318,8 +318,7 @@ object ParadoxConfigService {
             val context = ParadoxScriptExpressionMatchContext(element, expression, config.configExpression, config, configGroup, options)
             ParadoxExpressionMatchService.matchScriptExpression(context)
         }
-        val result = ParadoxMatchService.process(candidates, options)
-            .let { ParadoxMatchService.optimize(it, element, expression, options) }
+        val result = ParadoxMatchService.processAndOptimizeCandidates(candidates, element, expression, options)
         return result
     }
 
@@ -359,9 +358,9 @@ object ParadoxConfigService {
                     val context = ParadoxScriptExpressionMatchContext(element, keyExpression, config.keyExpression, config, configGroup, options)
                     ParadoxExpressionMatchService.matchScriptExpression(context)
                 }
-                val resultForKey = ParadoxMatchService.process(candidatesForKey, options)
-                    .let { ParadoxMatchService.optimize(it, element, keyExpression, options) }
-                if (resultForKey.isEmpty()) return emptyList() // 如果无结果，则直接返回空列表
+                if (candidatesForKey.isEmpty()) return emptyList() // 如果无结果，需要直接返回空列表
+                val resultForKey = ParadoxMatchService.processAndOptimizeCandidates(candidatesForKey, element, keyExpression, options)
+                if (resultForKey.isEmpty()) return candidatesForKey.mapFast { it.value } // 如果无结果，需要考虑回退
 
                 ProgressManager.checkCanceled()
                 val valueExpression = element.propertyValue?.let { ParadoxExpression.resolve(it, options) }
@@ -370,9 +369,9 @@ object ParadoxConfigService {
                     val context = ParadoxScriptExpressionMatchContext(element, valueExpression, config.valueExpression, config, configGroup, options)
                     ParadoxExpressionMatchService.matchScriptExpression(context)
                 }
-                if (candidates.isEmpty() && fallback) return resultForKey // 如果无结果，则需要考虑回退
-                val result = ParadoxMatchService.process(candidates, options)
-                if (result.isEmpty() && fallback) return candidates.mapFast { it.value } // 如果无结果，则需要考虑回退
+                if (candidates.isEmpty() && fallback) return resultForKey // 如果无结果，需要考虑回退
+                val result = ParadoxMatchService.processCandidates(candidates, options) // 不进行后续优化
+                if (result.isEmpty() && fallback) return candidates.mapFast { it.value } // 如果无结果，需要考虑回退
                 return result // 返回最终匹配的规则
             }
             else -> {
@@ -391,10 +390,9 @@ object ParadoxConfigService {
                     val context = ParadoxScriptExpressionMatchContext(element, valueExpression, config.valueExpression, config, configGroup, options)
                     ParadoxExpressionMatchService.matchScriptExpression(context)
                 }
-                if (candidates.isEmpty() && fallback) return configs // 如果无结果，则需要考虑回退
-                val result = ParadoxMatchService.process(candidates, options)
-                    .let { ParadoxMatchService.optimize(it, element, valueExpression, options) }
-                if (result.isEmpty() && fallback) return candidates.mapFast { it.value } // 如果无结果，则需要考虑回退
+                if (candidates.isEmpty() && fallback) return configs // 如果无结果，需要考虑回退
+                val result = ParadoxMatchService.processAndOptimizeCandidates(candidates, element, valueExpression, options)
+                if (result.isEmpty() && fallback) return candidates.mapFast { it.value } // 如果无结果，需要考虑回退
                 return result // 返回最终匹配的规则
             }
         }

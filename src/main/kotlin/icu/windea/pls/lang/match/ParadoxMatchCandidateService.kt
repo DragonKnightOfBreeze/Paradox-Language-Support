@@ -1,12 +1,32 @@
 package icu.windea.pls.lang.match
 
 import com.intellij.util.SmartList
+import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.forEachFast
 
 @Optimized
 object ParadoxMatchCandidateService {
+    inline fun <T : CwtMemberConfig<*>> collect(configs: List<T>, matchResultProvider: (T) -> ParadoxMatchResult): List<ParadoxMatchCandidate> {
+        if (configs.isEmpty()) return emptyList()
+        val result = SmartList<ParadoxMatchCandidate>() // 3.0.1 optimize: use SmartList (0 or 1 elements in most situations)
+        configs.forEachFast f@{ config ->
+            val matchResult = matchResultProvider(config)
+            if (matchResult === ParadoxMatchResult.NotMatch) return@f
+            val matchCandidate = ParadoxMatchCandidate(config, matchResult)
+            result += matchCandidate
+        }
+        return result
+    }
+
     fun process(candidates: List<ParadoxMatchCandidate>, options: ParadoxMatchOptions?): List<ParadoxMatchCandidate> {
+        if (candidates.isEmpty()) return emptyList()
+        val result = SmartList<ParadoxMatchCandidate>() // 3.0.1 optimize: use SmartList (0 or 1 elements in most situations)
+        processInternal(candidates, result, options)
+        return result
+    }
+
+    private fun processInternal(candidates: List<ParadoxMatchCandidate>, matched: MutableList<ParadoxMatchCandidate>, options: ParadoxMatchOptions?) {
         // 步骤：
         // - 处理精确匹配（`ExactMatch` `LenientExactMatch`），如果有结果，则仅使用这些结果，并直接返回
         // - 处理需要检测子句内容的匹配（`LazyBlockAwareMatch`），如果存在匹配项，则保留所有匹配项或者第一个候选项
@@ -18,13 +38,6 @@ object ParadoxMatchCandidateService {
         // - 处理回退匹配（`FallbackMatch`），如果有结果，则仅使用这些结果
         // - 如果不是直接返回的情况，还需要处理带参数的匹配（`ParameterizedMatch`），如果有结果，则需要加入最终的结果中
 
-        if (candidates.isEmpty()) return emptyList()
-        val matched = SmartList<ParadoxMatchCandidate>() // 3.0.1 optimize: use SmartList (0 or 1 elements in most situations)
-        process(candidates, matched, options)
-        return matched
-    }
-
-    private fun process(candidates: List<ParadoxMatchCandidate>, matched: MutableList<ParadoxMatchCandidate>, options: ParadoxMatchOptions?) {
         processUnchecked(candidates, matched) { it.result is ParadoxMatchResult.ExactMatch || it.result is ParadoxMatchResult.LenientExactMatch }
         if (matched.isNotEmpty()) return
 

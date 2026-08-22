@@ -159,6 +159,11 @@ object ParadoxExpressionInspectionService {
         // skip if config context should be skipped (mainly based on member path and member role)
         if (configContext.skipUnresolvedExpressionCheck()) return
 
+        val r1 = ParadoxConfigManager.getConfigs(element)
+        val r2 = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(fallback = false))
+        val r3 = configContext.getConfigs()
+        val r4 = configContext.getConfigs(ParadoxMatchOptions(fallback = false))
+
         // skip if there are any matched configs (use fallback if is property key)
         val fallback = element is ParadoxScriptPropertyKey
         val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(fallback = fallback))

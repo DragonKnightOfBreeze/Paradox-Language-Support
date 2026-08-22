@@ -118,12 +118,13 @@ class ConflictingExpressionInspectionTest : BasePlatformTestCase(), ChronicleTes
     }
 
     @Test
-    fun blockMatch_conflicting_vs_notEmpty_TODO() {
+    fun blockMatch_conflicting_vs_notEmpty_failed() {
         markFileInfo(ParadoxGameType.Stellaris, "common/dimensions/test.txt")
         myFixture.configureByText("test.txt") {
+            val m1 = "Expression `set = {...}` matches multiple configs with conflicts"
             """
             test_dimension = {
-                set = { x = 1 height = 1 }
+                ${warning(m1)}set${warningEnd()} = { x = 1 height = 1 }
             }
             """.trimIndent()
         }

@@ -445,7 +445,7 @@ class UnresolvedExpressionInspectionTest : BasePlatformTestCase(), ChronicleTest
     }
 
     @Test
-    fun blockMatch_empty_vs_notEmpty_TODO() {
+    fun blockMatch_empty_vs_notEmpty_success() {
         markFileInfo(ParadoxGameType.Stellaris, "common/dimensions/test.txt")
         myFixture.configureByText("test.txt") {
             """
@@ -498,12 +498,13 @@ class UnresolvedExpressionInspectionTest : BasePlatformTestCase(), ChronicleTest
     }
 
     @Test
-    fun blockMatch_mismatched_vs_notEmpty_TODO() {
+    fun blockMatch_mismatched_vs_notEmpty_failed() {
         markFileInfo(ParadoxGameType.Stellaris, "common/dimensions/test.txt")
         myFixture.configureByText("test.txt") {
+            val m1 = "Cannot resolve key expression `z` (expect matching: x, y, width, height)"
             """
             test_dimension = {
-                set = { z = 1 }
+                set = { ${error(m1)}z${errorEnd()} = 1 }
             }
             """.trimIndent()
         }
