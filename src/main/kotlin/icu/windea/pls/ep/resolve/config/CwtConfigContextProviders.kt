@@ -62,11 +62,11 @@ class CwtBaseConfigContextProvider : CwtConfigContextProvider {
 
     override fun getConfigs(context: CwtConfigContext, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>> = emptyList()
 
+    override fun skipUnresolvedExpressionCheck(context: CwtConfigContext) = true
+
     override fun skipMissingExpressionCheck(context: CwtConfigContext) = true
 
     override fun skipTooManyExpressionCheck(context: CwtConfigContext) = true
-
-    override fun skipUnresolvedExpressionCheck(context: CwtConfigContext) = true
 }
 
 /**

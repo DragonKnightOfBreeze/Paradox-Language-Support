@@ -188,11 +188,11 @@ class Issue383Test : BasePlatformTestCase(), ChronicleTestScope {
 
     private fun enableAllNeededInspections() {
         // enable all needed expression inspections
+        myFixture.enableInspections(UnresolvedExpressionInspection::class.java)
+        myFixture.enableInspections(IncorrectExpressionInspection::class.java)
         myFixture.enableInspections(MissingExpressionInspection::class.java)
         myFixture.enableInspections(TooManyExpressionInspection::class.java)
-        myFixture.enableInspections(UnresolvedExpressionInspection::class.java)
         myFixture.enableInspections(ConflictingExpressionInspection::class.java)
-        myFixture.enableInspections(IncorrectExpressionInspection::class.java)
         // enable all scope inspections
         myFixture.enableInspections(IncorrectScopeInspection::class.java)
         myFixture.enableInspections(IncorrectScopeSwitchInspection::class.java)

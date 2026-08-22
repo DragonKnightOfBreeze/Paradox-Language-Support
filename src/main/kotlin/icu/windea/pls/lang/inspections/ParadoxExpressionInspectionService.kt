@@ -125,6 +125,141 @@ object ParadoxExpressionInspectionService {
 
     // endregion
 
+    // region UnresolvedExpressionInspection
+
+    fun checkForUnresolvedExpression(element: ParadoxScriptExpressionElement, context: ParadoxExpressionInspectionContext) {
+        // skip if is not a data expression
+        if (!element.isDataExpression()) return
+        // NOTE 3.0.2 do not skip by default (try to match with parameters if possible)
+        //// skip if it is parameterized
+        // if (element is ParadoxParameterAwareElement && element.text.isParameterized()) return
+
+        // NOTE 3.0.2 not very necessary, but in case
+        // skip if it is a special tag (Do not consider whether matched configs exist)
+        if (element is ParadoxScriptString && element.tagType != null) return
+
+        // 如果不存在规则上下文，则直接跳过
+        // 如果存在规则上下文，但指定要跳过检查，则直接跳过
+        // 如果存在匹配的规则，则直接跳过
+        // 如果当前节点未通过检查，而父节点也未通过检查，也需要跳过，避免冗余的报错
+
+        // skip if config context not exists
+        val configContext = ParadoxConfigManager.getConfigContext(element) ?: return
+        // skip if config context should be skipped (mainly based on member path and member role)
+        if (configContext.skipUnresolvedExpressionCheck()) return
+
+        // skip if there are any matched configs (use fallback if is property key)
+        val fallback = element is ParadoxScriptPropertyKey
+        val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(fallback = fallback))
+        if (configs.isNotEmpty()) return
+
+        var parentConfigContext: CwtConfigContext? = null
+        run {
+            val parent = if (element is ParadoxScriptPropertyKey) element.parent?.parent else element.parent
+            if (parent == null) return@run
+            parentConfigContext = ParadoxConfigManager.getConfigContext(parent) ?: return@run
+            if (parentConfigContext.skipUnresolvedExpressionCheck()) return@run
+            val configs = ParadoxConfigManager.getConfigs(parent)
+            if (configs.isNotEmpty()) return@run
+            return // skip if the parent node also fails the check
+        }
+
+        val expectedConfigs = ParadoxConfigManager.getExpectedConfigs(element, configContext, parentConfigContext)
+        if (skipForUnresolvedExpression(element, expectedConfigs, context)) return
+
+        // 开始检查
+        ParadoxInspectionService.applyUnresolvedExpressionCheckers(element, expectedConfigs, context)
+    }
+
+    fun checkForUnresolvedExpression(element: ParadoxCsvExpressionElement, context: ParadoxExpressionInspectionContext) {
+        val rowConfig = context.rowConfig
+        if (rowConfig == null) return
+        if (element !is ParadoxCsvColumn) return
+        if (ParadoxCsvPsiService.isHeaderColumn(element)) return // skip header columns
+
+        // 如果不存在对应的列规则，则直接跳过
+        // 如果存在对应的列规则且匹配，则直接跳过
+        // 按需忽略最后一行
+
+        // skip if the column config can be matched
+        val columnConfig = ParadoxConfigManager.getColumnConfig(element, context.rowConfig) ?: return // skip (checked by `IncorrectColumnSizeInspection`)
+        if (ParadoxConfigManager.isMatchedColumnConfig(element, columnConfig)) return
+
+        val expectedConfigs = ParadoxConfigManager.getExpectedConfigs(columnConfig)
+        if (skipForUnresolvedExpression(element, expectedConfigs, context)) return
+
+        // 开始检查
+        ParadoxInspectionService.applyUnresolvedExpressionCheckers(element, expectedConfigs, context)
+    }
+
+    private fun skipForUnresolvedExpression(element: ParadoxExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>, context: ParadoxExpressionInspectionContext): Boolean {
+        if (expectedConfigs.isEmpty()) return false
+        val isPathReference = ProcessorScope.allFrom({ expectedConfigs.expandConfigExpression { process(it) } }) { it.type in CwtDataTypeSets.PathReference }
+        if (isPathReference) return true // will be checked by `UnresolvedPathReferenceInspection` instead
+        if (context.ignoredByConfigs && ParadoxConfigManager.checkExtendedConfig(element, expectedConfigs)) return true
+        return false
+    }
+
+    fun getDefaultLocationForUnresolvedExpression(element: ParadoxExpressionElement): PsiElement {
+        if (element is ParadoxCsvColumn && ParadoxCsvPsiService.isEmptyColumn(element)) {
+            return ParadoxCsvPsiService.getLocationForEmptyColumn(element) // in case
+        }
+        return element
+    }
+
+    fun getDefaultDescriptionForUnresolvedExpression(element: ParadoxExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>, context: ParadoxExpressionInspectionContext): String {
+        val expressionType = ChronicleBundle.expressionType(element)
+        val text = element.presentableText
+        val description = when {
+            !context.showExpect -> ChronicleInspectionBundle.message("lang.unresolvedExpression.desc.0", expressionType, text)
+            expectedConfigs.isEmpty() -> ChronicleInspectionBundle.message("lang.unresolvedExpression.desc.1", expressionType, text)
+            else -> {
+                val expectedConfigExpressions = expectedConfigs.mapFast { it.configExpression.expressionString }.toSet()
+                val expectText = expectedConfigExpressions.truncate(context.truncateExpect).joinToString()
+                ChronicleInspectionBundle.message("lang.unresolvedExpression.desc.2", expressionType, text, expectText)
+            }
+        }
+        return description
+    }
+
+    // endregion
+
+    // region IncorrectExpressionInspection
+
+    fun checkForIncorrectExpression(element: ParadoxScriptExpressionElement, context: ParadoxExpressionInspectionContext) {
+        if (element is ParadoxScriptBlock) return // skip
+        if (element is ParadoxScriptBoolean) return // skip
+
+        // skip if is not a data expression
+        if (!element.isDataExpression()) return
+
+        // 得到完全匹配的规则
+        val config = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(fallback = false)).firstOrNull() ?: return
+
+        // 开始检查
+        ParadoxInspectionService.applyIncorrectExpressionCheckers(element, config, context)
+
+        // TODO 1.3.26+ 应当也适用于各种复杂表达式中的数据源
+    }
+
+    fun checkForIncorrectExpression(element: ParadoxCsvExpressionElement, context: ParadoxExpressionInspectionContext) {
+        val rowConfig = context.rowConfig
+        if (rowConfig == null) return
+        if (element !is ParadoxCsvColumn) return
+        if (ParadoxCsvPsiService.isHeaderColumn(element)) return // skip header columns
+        if (ParadoxCsvPsiService.isEmptyColumn(element)) return // skip empty columns
+
+        // 得到完全匹配的规则
+        val columnConfig = ParadoxConfigManager.getColumnConfig(element, rowConfig) ?: return // skip (checked by `IncorrectColumnSizeInspection`)
+        if (!ParadoxConfigManager.isMatchedColumnConfig(element, columnConfig)) return // skip (checked by `UnresolvedExpressionInspection`)
+        val config = columnConfig.valueConfig ?: return
+
+        // 开始检查
+        ParadoxInspectionService.applyIncorrectExpressionCheckers(element, config, context)
+    }
+
+    // endregion
+
     // region MissingExpressionInspection
 
     fun checkForMissingExpression(file: ParadoxScriptFile, context: ParadoxExpressionInspectionContext) {
@@ -276,141 +411,6 @@ object ParadoxExpressionInspectionService {
             holder.registerProblem(location, description, highlightType)
         }
         return true
-    }
-
-    // endregion
-
-    // region UnresolvedExpressionInspection
-
-    fun checkForUnresolvedExpression(element: ParadoxScriptExpressionElement, context: ParadoxExpressionInspectionContext) {
-        // skip if is not a data expression
-        if (!element.isDataExpression()) return
-        // NOTE 3.0.2 do not skip by default (try to match with parameters if possible)
-        //// skip if it is parameterized
-        // if (element is ParadoxParameterAwareElement && element.text.isParameterized()) return
-
-        // NOTE 3.0.2 not very necessary, but in case
-        // skip if it is a special tag (Do not consider whether matched configs exist)
-        if (element is ParadoxScriptString && element.tagType != null) return
-
-        // 如果不存在规则上下文，则直接跳过
-        // 如果存在规则上下文，但指定要跳过检查，则直接跳过
-        // 如果存在匹配的规则，则直接跳过
-        // 如果当前节点未通过检查，而父节点也未通过检查，也需要跳过，避免冗余的报错
-
-        // skip if config context not exists
-        val configContext = ParadoxConfigManager.getConfigContext(element) ?: return
-        // skip if config context should be skipped (mainly based on member path and member role)
-        if (configContext.skipUnresolvedExpressionCheck()) return
-
-        // skip if there are any matched configs (use fallback if is property key)
-        val fallback = element is ParadoxScriptPropertyKey
-        val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(fallback = fallback))
-        if (configs.isNotEmpty()) return
-
-        var parentConfigContext: CwtConfigContext? = null
-        run {
-            val parent = if (element is ParadoxScriptPropertyKey) element.parent?.parent else element.parent
-            if (parent == null) return@run
-            parentConfigContext = ParadoxConfigManager.getConfigContext(parent) ?: return@run
-            if (parentConfigContext.skipUnresolvedExpressionCheck()) return@run
-            val configs = ParadoxConfigManager.getConfigs(parent)
-            if (configs.isNotEmpty()) return@run
-            return // skip if the parent node also fails the check
-        }
-
-        val expectedConfigs = ParadoxConfigManager.getExpectedConfigs(element, configContext, parentConfigContext)
-        if (skipForUnresolvedExpression(element, expectedConfigs, context)) return
-
-        // 开始检查
-        ParadoxInspectionService.applyUnresolvedExpressionCheckers(element, expectedConfigs, context)
-    }
-
-    fun checkForUnresolvedExpression(element: ParadoxCsvExpressionElement, context: ParadoxExpressionInspectionContext) {
-        val rowConfig = context.rowConfig
-        if (rowConfig == null) return
-        if (element !is ParadoxCsvColumn) return
-        if (ParadoxCsvPsiService.isHeaderColumn(element)) return // skip header columns
-
-        // 如果不存在对应的列规则，则直接跳过
-        // 如果存在对应的列规则且匹配，则直接跳过
-        // 按需忽略最后一行
-
-        // skip if the column config can be matched
-        val columnConfig = ParadoxConfigManager.getColumnConfig(element, context.rowConfig) ?: return // skip (checked by `IncorrectColumnSizeInspection`)
-        if (ParadoxConfigManager.isMatchedColumnConfig(element, columnConfig)) return
-
-        val expectedConfigs = ParadoxConfigManager.getExpectedConfigs(columnConfig)
-        if (skipForUnresolvedExpression(element, expectedConfigs, context)) return
-
-        // 开始检查
-        ParadoxInspectionService.applyUnresolvedExpressionCheckers(element, expectedConfigs, context)
-    }
-
-    private fun skipForUnresolvedExpression(element: ParadoxExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>, context: ParadoxExpressionInspectionContext): Boolean {
-        if (expectedConfigs.isEmpty()) return false
-        val isPathReference = ProcessorScope.allFrom({ expectedConfigs.expandConfigExpression { process(it) } }) { it.type in CwtDataTypeSets.PathReference }
-        if (isPathReference) return true // will be checked by `UnresolvedPathReferenceInspection` instead
-        if (context.ignoredByConfigs && ParadoxConfigManager.checkExtendedConfig(element, expectedConfigs)) return true
-        return false
-    }
-
-    fun getDefaultLocationForUnresolvedExpression(element: ParadoxExpressionElement): PsiElement {
-        if (element is ParadoxCsvColumn && ParadoxCsvPsiService.isEmptyColumn(element)) {
-            return ParadoxCsvPsiService.getLocationForEmptyColumn(element) // in case
-        }
-        return element
-    }
-
-    fun getDefaultDescriptionForUnresolvedExpression(element: ParadoxExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>, context: ParadoxExpressionInspectionContext): String {
-        val expressionType = ChronicleBundle.expressionType(element)
-        val text = element.presentableText
-        val description = when {
-            !context.showExpect -> ChronicleInspectionBundle.message("lang.unresolvedExpression.desc.0", expressionType, text)
-            expectedConfigs.isEmpty() -> ChronicleInspectionBundle.message("lang.unresolvedExpression.desc.1", expressionType, text)
-            else -> {
-                val expectedConfigExpressions = expectedConfigs.mapFast { it.configExpression.expressionString }.toSet()
-                val expectText = expectedConfigExpressions.truncate(context.truncateExpect).joinToString()
-                ChronicleInspectionBundle.message("lang.unresolvedExpression.desc.2", expressionType, text, expectText)
-            }
-        }
-        return description
-    }
-
-    // endregion
-
-    // region IncorrectExpressionInspection
-
-    fun checkForIncorrectExpression(element: ParadoxScriptExpressionElement, context: ParadoxExpressionInspectionContext) {
-        if (element is ParadoxScriptBlock) return // skip
-        if (element is ParadoxScriptBoolean) return // skip
-
-        // skip if is not a data expression
-        if (!element.isDataExpression()) return
-
-        // 得到完全匹配的规则
-        val config = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(fallback = false)).firstOrNull() ?: return
-
-        // 开始检查
-        ParadoxInspectionService.applyIncorrectExpressionCheckers(element, config, context)
-
-        // TODO 1.3.26+ 应当也适用于各种复杂表达式中的数据源
-    }
-
-    fun checkForIncorrectExpression(element: ParadoxCsvExpressionElement, context: ParadoxExpressionInspectionContext) {
-        val rowConfig = context.rowConfig
-        if (rowConfig == null) return
-        if (element !is ParadoxCsvColumn) return
-        if (ParadoxCsvPsiService.isHeaderColumn(element)) return // skip header columns
-        if (ParadoxCsvPsiService.isEmptyColumn(element)) return // skip empty columns
-
-        // 得到完全匹配的规则
-        val columnConfig = ParadoxConfigManager.getColumnConfig(element, rowConfig) ?: return // skip (checked by `IncorrectColumnSizeInspection`)
-        if (!ParadoxConfigManager.isMatchedColumnConfig(element, columnConfig)) return // skip (checked by `UnresolvedExpressionInspection`)
-        val config = columnConfig.valueConfig ?: return
-
-        // 开始检查
-        ParadoxInspectionService.applyIncorrectExpressionCheckers(element, config, context)
     }
 
     // endregion

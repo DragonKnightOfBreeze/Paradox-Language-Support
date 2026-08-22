@@ -138,14 +138,6 @@
                      implementationClass="icu.windea.pls.lang.inspections.script.statement.ScopeCallStatementToNestedFormInspection"/>
     <!-- endregion -->
     <!-- region Paradox Script/Expressions -->
-    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptMissingExpression" enabledByDefault="true" level="ERROR"
-                     bundle="messages.ChronicleInspectionBundle"
-                     key="script.missingExpression" groupKey="group.script.expression" groupPathKey="group.script"
-                     implementationClass="icu.windea.pls.lang.inspections.script.expression.MissingExpressionInspection"/>
-    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptTooManyExpression" enabledByDefault="true" level="WEAK WARNING"
-                     bundle="messages.ChronicleInspectionBundle"
-                     key="script.tooManyExpression" groupKey="group.script.expression" groupPathKey="group.script"
-                     implementationClass="icu.windea.pls.lang.inspections.script.expression.TooManyExpressionInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnresolvedExpression" enabledByDefault="true" level="ERROR"
                      bundle="messages.ChronicleInspectionBundle"
                      key="script.unresolvedExpression" groupKey="group.script.expression" groupPathKey="group.script"
@@ -154,6 +146,14 @@
                      bundle="messages.ChronicleInspectionBundle"
                      key="script.incorrectExpression" groupKey="group.script.expression" groupPathKey="group.script"
                      implementationClass="icu.windea.pls.lang.inspections.script.expression.IncorrectExpressionInspection"/>
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptMissingExpression" enabledByDefault="true" level="ERROR"
+                     bundle="messages.ChronicleInspectionBundle"
+                     key="script.missingExpression" groupKey="group.script.expression" groupPathKey="group.script"
+                     implementationClass="icu.windea.pls.lang.inspections.script.expression.MissingExpressionInspection"/>
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptTooManyExpression" enabledByDefault="true" level="WEAK WARNING"
+                     bundle="messages.ChronicleInspectionBundle"
+                     key="script.tooManyExpression" groupKey="group.script.expression" groupPathKey="group.script"
+                     implementationClass="icu.windea.pls.lang.inspections.script.expression.TooManyExpressionInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptConflictingExpression" enabledByDefault="false" level="WARNING"
                      bundle="messages.ChronicleInspectionBundle"
                      key="script.conflictingExpression" groupKey="group.script.expression" groupPathKey="group.script"

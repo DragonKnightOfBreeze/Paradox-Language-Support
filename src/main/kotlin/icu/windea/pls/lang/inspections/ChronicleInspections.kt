@@ -72,15 +72,15 @@ object ChronicleInspections {
 
         // Paradox Script/Expressions
 
+        const val UnresolvedExpression = "ParadoxScriptUnresolvedExpression"
+        /** @see icu.windea.pls.lang.inspections.script.expression.IncorrectExpressionInspection */
+        const val IncorrectExpression = "ParadoxScriptIncorrectExpression"
+        /** @see icu.windea.pls.lang.inspections.script.expression.ConflictingExpressionInspection */
         /** @see icu.windea.pls.lang.inspections.script.expression.MissingExpressionInspection */
         const val MissingExpression = "ParadoxScriptMissingExpression"
         /** @see icu.windea.pls.lang.inspections.script.expression.TooManyExpressionInspection */
         const val TooManyExpression = "ParadoxScriptTooManyExpression"
         /** @see icu.windea.pls.lang.inspections.script.expression.UnresolvedExpressionInspection */
-        const val UnresolvedExpression = "ParadoxScriptUnresolvedExpression"
-        /** @see icu.windea.pls.lang.inspections.script.expression.IncorrectExpressionInspection */
-        const val IncorrectExpression = "ParadoxScriptIncorrectExpression"
-        /** @see icu.windea.pls.lang.inspections.script.expression.ConflictingExpressionInspection */
         const val ConflictingExpression = "ParadoxScriptConflictingExpression"
         /** @see icu.windea.pls.lang.inspections.script.expression.UnresolvedPathReferenceInspection */
         const val UnresolvedPathReference = "ParadoxScriptUnresolvedPathReference"
