@@ -33,7 +33,7 @@
     <breadcrumbsInfoProvider implementation="icu.windea.pls.localisation.breadcrumbs.ParadoxLocalisationBreadCrumbsProvider"/>
 
     <lang.elementManipulator forClass="icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyKey"
-                             implementationClass="icu.windea.pls.localisation.psi.manipulators.ParadoxLocalisationPropertyKeyManipulator"/>
+                             implementationClass="icu.windea.pls.localisation.psi.ParadoxLocalisationElementManipulators$PropertyKeyManipulator"/>
 
     <additionalTextAttributes scheme="Default" file="colorSchemes/ParadoxLocalisationDefault.xml"/>
     <additionalTextAttributes scheme="Darcula" file="colorSchemes/ParadoxLocalisationDarcula.xml"/>

@@ -33,12 +33,12 @@
     <breadcrumbsInfoProvider implementation="icu.windea.pls.cwt.breadcrumbs.CwtBreadCrumbsProvider"/>
 
     <lang.elementManipulator forClass="icu.windea.pls.cwt.psi.CwtOptionKey"
-                             implementationClass="icu.windea.pls.cwt.psi.manipulators.CwtOptionKeyManipulator"/>
+                             implementationClass="icu.windea.pls.cwt.psi.CwtElementManipulators$OptionKeyManipulator"/>
     <lang.elementManipulator forClass="icu.windea.pls.cwt.psi.CwtPropertyKey"
-                             implementationClass="icu.windea.pls.cwt.psi.manipulators.CwtPropertyKeyManipulator"/>
+                             implementationClass="icu.windea.pls.cwt.psi.CwtElementManipulators$PropertyKeyManipulator"/>
     <lang.elementManipulator forClass="icu.windea.pls.cwt.psi.CwtString"
-                             implementationClass="icu.windea.pls.cwt.psi.manipulators.CwtStringManipulator"/>
+                             implementationClass="icu.windea.pls.cwt.psi.CwtElementManipulators$StringManipulator"/>
     <lang.elementManipulator forClass="icu.windea.pls.cwt.psi.CwtValue"
-                             implementationClass="icu.windea.pls.cwt.psi.manipulators.CwtValueManipulator"/>
+                             implementationClass="icu.windea.pls.cwt.psi.CwtElementManipulators$ValueManipulator"/>
   </extensions>
 </idea-plugin>

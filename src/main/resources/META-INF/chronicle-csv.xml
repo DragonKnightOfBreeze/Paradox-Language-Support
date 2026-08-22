@@ -22,6 +22,6 @@
     <breadcrumbsInfoProvider implementation="icu.windea.pls.csv.breadcrumbs.ParadoxCsvBreadCrumbsProvider"/>
 
     <lang.elementManipulator forClass="icu.windea.pls.csv.psi.ParadoxCsvColumn"
-                             implementationClass="icu.windea.pls.csv.psi.ParadoxCsvElementManipulators$Column"/>
+                             implementationClass="icu.windea.pls.csv.psi.ParadoxCsvElementManipulators$ColumnManipulator"/>
   </extensions>
 </idea-plugin>

@@ -39,15 +39,15 @@
     <breadcrumbsInfoProvider implementation="icu.windea.pls.script.breadcrumbs.ParadoxScriptBreadCrumbsProvider"/>
 
     <lang.elementManipulator forClass="icu.windea.pls.script.psi.ParadoxScriptPropertyKey"
-                             implementationClass="icu.windea.pls.script.psi.manipulators.ParadoxScriptPropertyKeyManipulator"/>
-    <lang.elementManipulator forClass="icu.windea.pls.script.psi.ParadoxScriptString"
-                             implementationClass="icu.windea.pls.script.psi.manipulators.ParadoxScriptStringManipulator"/>
+                             implementationClass="icu.windea.pls.script.psi.ParadoxScriptElementManipulators$PropertyKeyManipulator"/>
     <lang.elementManipulator forClass="icu.windea.pls.script.psi.ParadoxScriptValue"
-                             implementationClass="icu.windea.pls.script.psi.manipulators.ParadoxScriptValueManipulator"/>
+                             implementationClass="icu.windea.pls.script.psi.ParadoxScriptElementManipulators$ValueManipulator"/>
+    <lang.elementManipulator forClass="icu.windea.pls.script.psi.ParadoxScriptString"
+                             implementationClass="icu.windea.pls.script.psi.ParadoxScriptElementManipulators$StringManipulator"/>
     <lang.elementManipulator forClass="icu.windea.pls.script.psi.ParadoxScriptParameter"
-                             implementationClass="icu.windea.pls.script.psi.manipulators.ParadoxScriptParameterManipulator"/>
+                             implementationClass="icu.windea.pls.script.psi.ParadoxScriptElementManipulators$ParameterManipulator"/>
     <lang.elementManipulator forClass="icu.windea.pls.script.psi.ParadoxScriptInlineMathParameter"
-                             implementationClass="icu.windea.pls.script.psi.manipulators.ParadoxScriptInlineMathParameterManipulator"/>
+                             implementationClass="icu.windea.pls.script.psi.ParadoxScriptElementManipulators$InlineMathParameterManipulator"/>
 
     <additionalTextAttributes scheme="Default" file="colorSchemes/ParadoxScriptDefault.xml"/>
     <additionalTextAttributes scheme="Darcula" file="colorSchemes/ParadoxScriptDarcula.xml"/>
