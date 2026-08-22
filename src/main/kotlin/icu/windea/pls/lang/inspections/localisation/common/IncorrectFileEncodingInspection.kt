@@ -31,7 +31,7 @@ import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
  *
  * @see icu.windea.pls.lang.ParadoxUtf8BomOptionProvider
  */
-class IncorrectFileEncodingInspection : LocalInspectionTool(), DumbAware, ParadoxFileInspectionContext.Aware {
+class IncorrectFileEncodingInspection : LocalInspectionTool(), DumbAware {
     @JvmField var ignoredFilePaths = ""
 
     override fun getOptionsPane(): OptPane {
@@ -60,7 +60,7 @@ class IncorrectFileEncodingInspection : LocalInspectionTool(), DumbAware, Parado
         }
     }
 
-    override fun createContext(holder: ProblemsHolder): ParadoxFileInspectionContext {
+    private fun createContext(holder: ProblemsHolder): ParadoxFileInspectionContext {
         return ParadoxFileInspectionContext(this, holder, ignoredFilePaths)
     }
 }

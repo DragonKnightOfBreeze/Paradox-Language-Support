@@ -31,7 +31,7 @@ import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
  *
  * @see icu.windea.pls.lang.ParadoxUtf8BomOptionProvider
  */
-class IncorrectFileEncodingInspection : LocalInspectionTool(), DumbAware, ParadoxFileInspectionContext.Aware {
+class IncorrectFileEncodingInspection : LocalInspectionTool(), DumbAware {
     @JvmField var ignoredFilePaths = ""
 
     override fun getOptionsPane(): OptPane {
@@ -51,12 +51,16 @@ class IncorrectFileEncodingInspection : LocalInspectionTool(), DumbAware, Parado
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        val context = ParadoxFileInspectionContext(this, holder, ignoredFilePaths)
+        val context = createContext(holder)
         return object : PsiFileOnlyVisitor() {
             override fun visitFile(file: PsiFile) {
                 ProgressManager.checkCanceled()
                 ParadoxFileInspectionService.checkForIncorrectFileEncoding(file, context)
             }
         }
+    }
+
+    private fun createContext(holder: ProblemsHolder): ParadoxFileInspectionContext {
+        return ParadoxFileInspectionContext(this, holder, ignoredFilePaths)
     }
 }

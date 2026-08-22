@@ -27,7 +27,7 @@ import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
  * @see CwtFilePathMatchableConfig
  * @see CwtRowConfig
  */
-class UnmatchedFileInspection : InlineScriptInspectionBase(), ParadoxFileInspectionContext.Aware {
+class UnmatchedFileInspection : InlineScriptInspectionBase() {
     @JvmField var ignoredFilePaths = ""
 
     override fun getOptionsPane(): OptPane {
@@ -60,7 +60,7 @@ class UnmatchedFileInspection : InlineScriptInspectionBase(), ParadoxFileInspect
         }
     }
 
-    override fun createContext(holder: ProblemsHolder): ParadoxFileInspectionContext {
+    private fun createContext(holder: ProblemsHolder): ParadoxFileInspectionContext {
         return ParadoxFileInspectionContext(this, holder, ignoredFilePaths)
     }
 }

@@ -65,7 +65,7 @@ class ParadoxScriptExpressionParameterizedMatchOptimizer : ParadoxScriptExpressi
 }
 
 /**
- * 如果匹配结果中存在键相同的规则，且其值是子句，则尝试根据子句内容进行进一步的匹配。
+ * 如果匹配结果中存在键相同的规则，且其值是块（`{...}`），则尝试根据块中的内容进行进一步的匹配。
  */
 @Optimized
 class ParadoxScriptExpressionBlockMatchOptimizer : ParadoxScriptExpressionMatchOptimizer {

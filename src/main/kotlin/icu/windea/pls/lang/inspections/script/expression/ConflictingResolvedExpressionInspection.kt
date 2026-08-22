@@ -69,6 +69,9 @@ class ConflictingResolvedExpressionInspection : LocalInspectionTool() {
         }
     }
 
+    // NOTE 3.0.2 由于匹配逻辑和检查逻辑存在一些细节上的缺陷，改为默认禁用，避免误报和误导
+    // TODO 3.0.2+ 进一步完善 `ParadoxScriptExpressionBlockMatchOptimizer`，不再限于键为，从而进行更准确的匹配和检查
+
     private fun check(element: ParadoxScriptBlock, holder: ProblemsHolder) {
         if (!element.isDataExpression()) return // skip if is not a data expression
         // skip checking property if its property key may contain parameters

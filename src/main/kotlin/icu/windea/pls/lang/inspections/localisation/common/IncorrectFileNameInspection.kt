@@ -28,7 +28,7 @@ import icu.windea.pls.model.constraints.ParadoxPathConstraint
  *
  * @property ignoredFilePaths （配置项）需要忽略的文件路径。一组 ANT 路径模式，分号分隔，忽略大小写。
  */
-class IncorrectFileNameInspection : LocalInspectionTool(), DumbAware, ParadoxFileInspectionContext.Aware {
+class IncorrectFileNameInspection : LocalInspectionTool(), DumbAware {
     @JvmField var ignoredFilePaths = "**/languages.yml"
 
     override fun getOptionsPane(): OptPane {
@@ -57,7 +57,7 @@ class IncorrectFileNameInspection : LocalInspectionTool(), DumbAware, ParadoxFil
         }
     }
 
-    override fun createContext(holder: ProblemsHolder): ParadoxFileInspectionContext {
+    private fun createContext(holder: ProblemsHolder): ParadoxFileInspectionContext {
         return ParadoxFileInspectionContext(this, holder, ignoredFilePaths)
     }
 }
