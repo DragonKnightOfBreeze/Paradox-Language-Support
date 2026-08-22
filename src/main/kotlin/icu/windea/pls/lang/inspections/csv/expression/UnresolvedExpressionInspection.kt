@@ -14,7 +14,6 @@ import icu.windea.pls.lang.inspections.ParadoxExpressionInspectionContext
 import icu.windea.pls.lang.inspections.ParadoxExpressionInspectionService
 import icu.windea.pls.lang.psi.ParadoxPsiElementVisitor
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
-import icu.windea.pls.lang.util.ParadoxConfigManager
 
 /**
  * （CSV 文件中的）无法解析的表达式的代码检查。
@@ -27,7 +26,7 @@ import icu.windea.pls.lang.util.ParadoxConfigManager
  * @property ignoredInInjectedFiles （配置项）是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
  * @property ignoredByConfigs （配置项）如果对应的扩展的规则存在，是否需要忽略此代码检查。
  */
-class UnresolvedExpressionInspection : LocalInspectionTool(), ParadoxExpressionInspectionContext.Aware {
+class UnresolvedExpressionInspection : LocalInspectionTool() {
     @JvmField var ignoredInInjectedFiles = false
     @JvmField var ignoredByConfigs = false
     @JvmField var showExpect = true
@@ -53,18 +52,17 @@ class UnresolvedExpressionInspection : LocalInspectionTool(), ParadoxExpressionI
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         val file = holder.file
         if (file !is ParadoxCsvFile) return PsiElementVisitor.EMPTY_VISITOR
-        val rowConfig = ParadoxConfigManager.getRowConfig(file)
-        if (rowConfig == null) return PsiElementVisitor.EMPTY_VISITOR
-        val context = createContext( holder)
+        val context = createContext(holder)
+        if (context.rowConfig == null) return PsiElementVisitor.EMPTY_VISITOR
         return object : ParadoxPsiElementVisitor() {
             override fun visitExpressionElement(element: ParadoxCsvExpressionElement) {
                 ProgressManager.checkCanceled()
-                ParadoxExpressionInspectionService.checkForUnresolvedExpression(element, rowConfig, context)
+                ParadoxExpressionInspectionService.checkForUnresolvedExpression(element, context)
             }
         }
     }
 
-    override fun createContext(holder: ProblemsHolder): ParadoxExpressionInspectionContext {
-        return ParadoxExpressionInspectionContext(this, holder, ignoredByConfigs, showExpect)
+    private fun createContext(holder: ProblemsHolder): ParadoxExpressionInspectionContext {
+        return ParadoxExpressionInspectionContext(this, holder, ignoredByConfigs = ignoredByConfigs, showExpect = showExpect, )
     }
 }

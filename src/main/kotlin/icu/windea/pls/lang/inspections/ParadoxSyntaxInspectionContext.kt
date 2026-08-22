@@ -20,8 +20,4 @@ data class ParadoxSyntaxInspectionContext(
     val rootInfo: ParadoxRootInfo? = fileInfo?.rootInfo
     val gameType: ParadoxGameType? = rootInfo?.gameType
     val gameVersion: String? = rootInfo?.gameVersion
-
-    interface Aware {
-        fun createContext(holder: ProblemsHolder): ParadoxSyntaxInspectionContext
-    }
 }

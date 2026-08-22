@@ -31,7 +31,7 @@ import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
  * @property ignoredInInlineScriptFiles （配置项）是否在内联脚本文件中忽略此代码检查。
  * @property ignoredByConfigs （配置项）如果对应的扩展的规则存在，是否需要忽略此代码检查。
  */
-class UnresolvedExpressionInspection : LocalInspectionTool(), ParadoxExpressionInspectionContext.Aware {
+class UnresolvedExpressionInspection : LocalInspectionTool() {
     @JvmField var ignoredInInjectedFiles = false
     @JvmField var ignoredInInlineScriptFiles = false
     @JvmField var ignoredByConfigs = false
@@ -70,7 +70,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool(), ParadoxExpressionI
         }
     }
 
-    override fun createContext(holder: ProblemsHolder): ParadoxExpressionInspectionContext {
-        return ParadoxExpressionInspectionContext(this, holder, ignoredByConfigs, showExpect, truncateExpect)
+    private fun createContext(holder: ProblemsHolder): ParadoxExpressionInspectionContext {
+        return ParadoxExpressionInspectionContext(this, holder, ignoredByConfigs = ignoredByConfigs, showExpect = showExpect, truncateExpect = truncateExpect, )
     }
 }

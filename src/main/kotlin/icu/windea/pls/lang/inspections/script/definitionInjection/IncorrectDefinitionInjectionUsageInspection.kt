@@ -57,7 +57,7 @@ class IncorrectDefinitionInjectionUsageInspection : DefinitionInjectionInspectio
         if (definitionInjectionInfo.isLenientMode()) {
             if (checkForLenientModes) {
                 val description = ChronicleBundle.message("inspection.script.incorrectDefinitionInjectionUsage.desc.3", target, type)
-                val highlightType = InspectionService.getWeakerHighlightType() // use weaker highlight type
+                val highlightType = InspectionService.getWeakerHighlightType(this) // use weaker highlight type
                 holder.registerProblem(element.propertyKey, description, highlightType)
             }
         } else {

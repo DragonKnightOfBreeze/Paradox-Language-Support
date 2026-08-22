@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.inspections.suppress
+package icu.windea.pls.core.inspections
 
 import com.intellij.codeInspection.SuppressionUtil
 import com.intellij.psi.PsiComment
@@ -6,16 +6,9 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.util.siblings
-import icu.windea.pls.core.collections.forEachFast
-import icu.windea.pls.core.optimizedIfEmpty
-import icu.windea.pls.ep.inspections.ParadoxDefinitionInspectionSuppressionProvider
-import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.psi.ParadoxDefinitionElement
-import icu.windea.pls.model.ParadoxDefinitionInfo
-import icu.windea.pls.model.orSpecific
 import java.util.regex.Pattern
 
-object ChronicleSuppressionService {
+object SuppressionService {
     // com.intellij.codeInspection.SuppressionUtil
     // com.intellij.lang.properties.codeInspection.PropertiesInspectionSuppressor
     // org.intellij.grammar.inspection.BnfInspectionSuppressor
@@ -47,23 +40,5 @@ object ChronicleSuppressionService {
             }
         }
         return false
-    }
-
-    fun isSuppressedForDefinition(element: PsiElement, toolId: String): Boolean {
-        if (element !is ParadoxDefinitionElement) return false
-        val definitionInfo = element.definitionInfo ?: return false
-        val suppressedToolIds = getSuppressedToolIds(element, definitionInfo)
-        return toolId in suppressedToolIds
-    }
-
-    fun getSuppressedToolIds(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Set<String> {
-        val gameType = definitionInfo.gameType
-        val result = mutableSetOf<String>()
-        val eps = ParadoxDefinitionInspectionSuppressionProvider.getAll()
-        eps.forEachFast f@{ ep ->
-            if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f // check game type first
-            result += ep.getSuppressedToolIds(definition, definitionInfo)
-        }
-        return result.optimizedIfEmpty()
     }
 }

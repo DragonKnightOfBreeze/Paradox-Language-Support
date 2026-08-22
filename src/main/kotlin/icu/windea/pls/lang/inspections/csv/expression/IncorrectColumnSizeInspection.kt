@@ -7,14 +7,13 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.config.config.delegated.CwtRowConfig
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.csv.psi.ParadoxCsvColumnContainer
 import icu.windea.pls.csv.psi.ParadoxCsvFile
-import icu.windea.pls.csv.psi.ParadoxCsvPsiService
 import icu.windea.pls.csv.psi.ParadoxCsvVisitor
+import icu.windea.pls.lang.inspections.ParadoxExpressionInspectionContext
+import icu.windea.pls.lang.inspections.ParadoxExpressionInspectionService
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
-import icu.windea.pls.lang.util.ParadoxConfigManager
 
 /**
  * （CSV 文件中的）不正确的列数量的代码检查。
@@ -45,27 +44,17 @@ class IncorrectColumnSizeInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         val file = holder.file
         if (file !is ParadoxCsvFile) return PsiElementVisitor.EMPTY_VISITOR
-        val rowConfig = ParadoxConfigManager.getRowConfig(file)
-        if (rowConfig == null) return PsiElementVisitor.EMPTY_VISITOR
+        val context = createContext(holder)
+        if (context.rowConfig == null) return PsiElementVisitor.EMPTY_VISITOR
         return object : ParadoxCsvVisitor() {
             override fun visitColumnContainer(element: ParadoxCsvColumnContainer) {
                 ProgressManager.checkCanceled()
-                check(element, rowConfig, holder)
+                ParadoxExpressionInspectionService.checkForIncorrectColumnSize(element, context)
             }
         }
     }
 
-    private fun check(element: ParadoxCsvColumnContainer, rowConfig: CwtRowConfig, holder: ProblemsHolder) {
-        if (rowConfig.skipLastRow && ParadoxCsvPsiService.isLastRow(element)) return // ignored
-        val columnSize = ParadoxCsvPsiService.getColumnSize(element)
-        val expectColumnSize = rowConfig.columns.size
-        if (columnSize == expectColumnSize) return
-        if (rowConfig.skipLastColumn && columnSize == expectColumnSize + 1) return // ignored
-        val location = element.lastChild ?: return // latest non-empty column or separator
-        val description = when {
-            showExpect -> ChronicleBundle.message("inspection.csv.incorrectColumnSize.desc.1", rowConfig.name, expectColumnSize, columnSize)
-            else -> ChronicleBundle.message("inspection.csv.incorrectColumnSize.desc.0")
-        }
-        holder.registerProblem(location, description)
+    private fun createContext(holder: ProblemsHolder): ParadoxExpressionInspectionContext {
+        return ParadoxExpressionInspectionContext(this, holder, showExpect = showExpect, )
     }
 }

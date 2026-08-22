@@ -24,7 +24,7 @@ import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
  *
  * @see ParadoxIncorrectExpressionChecker
  */
-class IncorrectExpressionInspection : LocalInspectionTool(), ParadoxExpressionInspectionContext.Aware {
+class IncorrectExpressionInspection : LocalInspectionTool() {
     @JvmField var ignoredInInjectedFiles = false
     @JvmField var ignoredInInlineScriptFiles = false
     @JvmField var showExpect = true
@@ -59,7 +59,7 @@ class IncorrectExpressionInspection : LocalInspectionTool(), ParadoxExpressionIn
         }
     }
 
-    override fun createContext(holder: ProblemsHolder): ParadoxExpressionInspectionContext {
-        return ParadoxExpressionInspectionContext(this, holder, false, showExpect)
+    private fun createContext(holder: ProblemsHolder): ParadoxExpressionInspectionContext {
+        return ParadoxExpressionInspectionContext(this, holder, showExpect = showExpect, )
     }
 }

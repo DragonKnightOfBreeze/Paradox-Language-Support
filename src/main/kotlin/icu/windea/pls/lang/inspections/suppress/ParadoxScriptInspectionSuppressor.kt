@@ -12,8 +12,10 @@ import com.intellij.psi.util.parents
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.collections.toArray
 import icu.windea.pls.core.createPointer
+import icu.windea.pls.core.inspections.SuppressionService
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.definitionInjectionInfo
+import icu.windea.pls.lang.inspections.ParadoxSuppressionService
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.model.constants.ChronicleConstants
 import icu.windea.pls.script.ParadoxScriptLanguage
@@ -29,17 +31,17 @@ import icu.windea.pls.script.psi.isDirectValue
 class ParadoxScriptInspectionSuppressor : InspectionSuppressor {
     override fun isSuppressedFor(element: PsiElement, toolId: String): Boolean {
         var current = element
-        if (ChronicleSuppressionService.isSuppressedInComment(current, toolId)) return true
-        if (ChronicleSuppressionService.isSuppressedForDefinition(element, toolId)) return true
+        if (SuppressionService.isSuppressedInComment(current, toolId)) return true
+        if (ParadoxSuppressionService.isSuppressedForDefinition(element, toolId)) return true
         while (current !is PsiFile) {
             current = current.parent ?: return false
             ProgressManager.checkCanceled()
             if (current is ParadoxScriptProperty || (current is ParadoxScriptValue && current.isDirectValue())) {
-                if (ChronicleSuppressionService.isSuppressedInComment(current, toolId)) return true
-                if (ChronicleSuppressionService.isSuppressedForDefinition(current, toolId)) return true
+                if (SuppressionService.isSuppressedInComment(current, toolId)) return true
+                if (ParadoxSuppressionService.isSuppressedForDefinition(current, toolId)) return true
             }
         }
-        if (ChronicleSuppressionService.isSuppressedInComment(current, toolId)) return true
+        if (SuppressionService.isSuppressedInComment(current, toolId)) return true
         return false
     }
 

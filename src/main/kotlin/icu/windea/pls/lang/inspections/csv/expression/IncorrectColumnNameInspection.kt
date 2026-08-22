@@ -7,18 +7,13 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.config.config.CwtRowType
-import icu.windea.pls.config.config.delegated.CwtRowConfig
-import icu.windea.pls.core.collections.forEachIndexedFast
-import icu.windea.pls.core.truncate
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.csv.psi.ParadoxCsvHeader
-import icu.windea.pls.csv.psi.ParadoxCsvPsiService
 import icu.windea.pls.csv.psi.ParadoxCsvVisitor
-import icu.windea.pls.lang.fixes.ReplaceWithExpressionFix
+import icu.windea.pls.lang.inspections.ParadoxExpressionInspectionContext
+import icu.windea.pls.lang.inspections.ParadoxExpressionInspectionService
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
-import icu.windea.pls.lang.util.ParadoxConfigManager
 
 /**
  * （CSV 文件中的）不正确的列名的代码检查。
@@ -51,77 +46,17 @@ class IncorrectColumnNameInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         val file = holder.file
         if (file !is ParadoxCsvFile) return PsiElementVisitor.EMPTY_VISITOR
-        val rowConfig = ParadoxConfigManager.getRowConfig(file)
-        if (rowConfig == null) return PsiElementVisitor.EMPTY_VISITOR
+        val context = createContext(holder)
+        if (context.rowConfig == null) return PsiElementVisitor.EMPTY_VISITOR
         return object : ParadoxCsvVisitor() {
             override fun visitHeader(element: ParadoxCsvHeader) {
                 ProgressManager.checkCanceled()
-                check(element, rowConfig, holder)
+                ParadoxExpressionInspectionService.checkForIncorrectColumnName(element, context)
             }
         }
     }
 
-    private fun check(element: ParadoxCsvHeader, rowConfig: CwtRowConfig, holder: ProblemsHolder) {
-        when (rowConfig.type) {
-            CwtRowType.Key -> {
-                val allColumnNames = rowConfig.columns.map { it.key }
-                if (allColumnNames.isEmpty()) return // skip (checked by `IncorrectColumnSizeInspection`)
-                val existingColumnNames = ParadoxCsvPsiService.getColumnNames(element)
-                val expectColumnNames = mutableSetOf<String>().apply { addAll(allColumnNames) }.apply { removeAll(existingColumnNames) }
-                val expectText = expectColumnNames.truncate(truncateExpect).joinToString()
-                element.columnList.forEachIndexedFast f@{ columnIndex, columnElement ->
-                    if (rowConfig.skipLastColumn && columnIndex == rowConfig.columns.size) return@f // ignored
-                    if (columnIndex >= rowConfig.columns.size) {
-                        val description = when {
-                            showExpect -> ChronicleBundle.message("inspection.csv.incorrectColumnName.desc.4", rowConfig.name)
-                            else -> ChronicleBundle.message("inspection.csv.incorrectColumnName.desc.0")
-                        }
-                        holder.registerProblem(columnElement, description)
-                        return // skip (no future checks)
-                    }
-                    if (columnElement.name in allColumnNames) return@f // continue (matched)
-                    if (expectColumnNames.isNotEmpty()) {
-                        val description = when {
-                            showExpect -> ChronicleBundle.message("inspection.csv.incorrectColumnName.desc.1", rowConfig.name, expectText)
-                            else -> ChronicleBundle.message("inspection.csv.incorrectColumnName.desc.0")
-                        }
-                        val expectColumnNamePreferred = rowConfig.columns[columnIndex].key
-                        if (expectColumnNamePreferred in expectColumnNames) {
-                            val fix = ReplaceWithExpressionFix(expectColumnNamePreferred)
-                            holder.registerProblem(columnElement, description, fix)
-                        } else {
-                            holder.registerProblem(columnElement, description)
-                        }
-                    } else {
-                        val description = when {
-                            showExpect -> ChronicleBundle.message("inspection.csv.incorrectColumnName.desc.3", rowConfig.name, expectText)
-                            else -> ChronicleBundle.message("inspection.csv.incorrectColumnName.desc.0")
-                        }
-                        holder.registerProblem(columnElement, description)
-                    }
-                }
-            }
-            CwtRowType.Index -> {
-                element.columnList.forEachIndexedFast f@{ columnIndex, columnElement ->
-                    if (rowConfig.skipLastColumn && columnIndex == rowConfig.columns.size) return@f // ignored
-                    if (columnIndex >= rowConfig.columns.size) {
-                        val description = when {
-                            showExpect -> ChronicleBundle.message("inspection.csv.incorrectColumnName.desc.4", rowConfig.name)
-                            else -> ChronicleBundle.message("inspection.csv.incorrectColumnName.desc.0")
-                        }
-                        holder.registerProblem(columnElement, description)
-                        return // skip (no future checks)
-                    }
-                    val expectColumnName = rowConfig.columns[columnIndex].key
-                    if (expectColumnName == columnElement.name) return@f // continue (matched)
-                    val description = when {
-                        showExpect -> ChronicleBundle.message("inspection.csv.incorrectColumnName.desc.2", rowConfig.name, expectColumnName)
-                        else -> ChronicleBundle.message("inspection.csv.incorrectColumnName.desc.0")
-                    }
-                    val fix = ReplaceWithExpressionFix(expectColumnName)
-                    holder.registerProblem(columnElement, description, fix)
-                }
-            }
-        }
+    private fun createContext(holder: ProblemsHolder): ParadoxExpressionInspectionContext {
+        return ParadoxExpressionInspectionContext(this, holder, showExpect = showExpect, truncateExpect = truncateExpect, )
     }
 }

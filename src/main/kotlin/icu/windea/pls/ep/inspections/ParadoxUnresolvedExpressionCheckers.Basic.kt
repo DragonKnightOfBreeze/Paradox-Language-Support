@@ -8,6 +8,7 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.expandConfigExpression
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.toArray
+import icu.windea.pls.core.inspections.InspectionService
 import icu.windea.pls.core.util.ProcessorScope
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvPsiService
@@ -52,19 +53,19 @@ class ParadoxDefaultUnresolvedExpressionChecker : ParadoxUnresolvedExpressionChe
             when (configExpression.type) {
                 in CwtDataTypeSets.IntField -> {
                     if (element is ParadoxScriptFloat || element.castOrNull<ParadoxScriptedVariableReference>()?.resolved() is ParadoxScriptFloat) {
-                        result = context.getWeakerHighlightType()
+                        result = InspectionService.getWeakerHighlightType(context.tool)
                         return@p false
                     }
                 }
                 CwtDataTypes.IntPercentageField -> {
                     if (ParadoxMatchProvider.matchesFloatPercentageField(element.value)) {
-                        result = context.getWeakerHighlightType()
+                        result = InspectionService.getWeakerHighlightType(context.tool)
                         return@p false
                     }
                 }
                 in CwtDataTypeSets.LocalisationReference -> {
                     if (element is ParadoxScriptStringExpressionElement) {
-                        result = context.getWeakerHighlightType()
+                        result = InspectionService.getWeakerHighlightType(context.tool)
                         return@p false
                     }
                 }

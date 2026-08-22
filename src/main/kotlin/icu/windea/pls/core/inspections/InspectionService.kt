@@ -11,8 +11,7 @@ import com.intellij.psi.PsiElement
 
 @Suppress("unused")
 object InspectionService {
-    context(tool: LocalInspectionTool)
-    fun getWeakerHighlightType(condition: Boolean = true): ProblemHighlightType {
+    fun getWeakerHighlightType(tool: LocalInspectionTool, condition: Boolean = true): ProblemHighlightType {
         if (!condition) return ProblemHighlightType.GENERIC_ERROR_OR_WARNING
         val current = tool.defaultLevel.severity
         return when {

@@ -25,9 +25,8 @@ object ParadoxAccessInspectionService {
     // region UnusedParameterInspection
 
     fun checkForUnusedParameter(element: PsiElement, context: ParadoxAccessInspectionContext) {
+        val holder = context.holder
         if (element !is ParadoxScriptStringExpressionElement && element !is ParadoxConditionParameter) return
-        val project = context.holder.project
-        val file = context.holder.file
         val references = element.references
         for (reference in references) {
             ProgressManager.checkCanceled()
@@ -39,7 +38,7 @@ object ParadoxAccessInspectionService {
             val cachedStatus = context.statusMap[resolved]
             val status = if (cachedStatus == null) {
                 ProgressManager.checkCanceled()
-                val selector = ParadoxParameterSearch.selector(project, file).withSearchScope(context.searchScope) // use file as context
+                val selector = ParadoxParameterSearch.selector(holder.project, holder.file).withSearchScope(context.searchScope) // use file as context
                 val r = ParadoxParameterSearch.search(resolved.name, resolved.contextKey, selector).processAsync p@{
                     ProgressManager.checkCanceled()
                     if (it.readWriteAccess == ReadWriteAccess.Read) {
@@ -61,14 +60,17 @@ object ParadoxAccessInspectionService {
             }
             if (!status) {
                 val description = ChronicleBundle.message("inspection.script.unusedParameter.desc", resolved.name)
-                context.holder.registerProblem(element, description, ProblemHighlightType.LIKE_UNUSED_SYMBOL, reference.rangeInElement)
+                holder.registerProblem(element, description, ProblemHighlightType.LIKE_UNUSED_SYMBOL, reference.rangeInElement)
             }
         }
     }
 
+    // endregion
+
+    // endregion UnusedDynamicValueInspection
+
     fun checkForUnusedDynamicValue(element: ParadoxScriptStringExpressionElement, context: ParadoxAccessInspectionContext) {
-        val project = context.holder.project
-        val file = context.holder.file
+        val holder = context.holder
         val references = element.references
         for (reference in references) {
             ProgressManager.checkCanceled()
@@ -79,7 +81,7 @@ object ParadoxAccessInspectionService {
             val cachedStatus = context.statusMap[resolved]
             val status = if (cachedStatus == null) {
                 ProgressManager.checkCanceled()
-                val selector = ParadoxDynamicValueSearch.selector(project, file).withSearchScope(context.searchScope) // use file as context
+                val selector = ParadoxDynamicValueSearch.selector(holder.project, holder.file).withSearchScope(context.searchScope) // use file as context
                 val r = ParadoxDynamicValueSearch.search(resolved.name, resolved.types, selector).processAsync p@{
                     ProgressManager.checkCanceled()
                     if (it.readWriteAccess == Access.Read) {
@@ -101,14 +103,17 @@ object ParadoxAccessInspectionService {
             }
             if (!status) {
                 val description = ChronicleBundle.message("inspection.script.unusedDynamicValue.desc", resolved.name, resolved.types.joinToString())
-                context.holder.registerProblem(element, description, ProblemHighlightType.LIKE_UNUSED_SYMBOL, reference.rangeInElement)
+                holder.registerProblem(element, description, ProblemHighlightType.LIKE_UNUSED_SYMBOL, reference.rangeInElement)
             }
         }
     }
 
+    // endregion
+
+    // region UnsetDynamicValueInspection
+
     fun checkForUnsetDynamicValue(element: ParadoxScriptStringExpressionElement, context: ParadoxAccessInspectionContext) {
-        val project = context.holder.project
-        val file = context.holder.file
+        val holder = context.holder
         val references = element.references
         for (reference in references) {
             ProgressManager.checkCanceled()
@@ -119,7 +124,7 @@ object ParadoxAccessInspectionService {
             val cachedStatus = context.statusMap[resolved]
             val status = if (cachedStatus == null) {
                 ProgressManager.checkCanceled()
-                val selector = ParadoxDynamicValueSearch.selector(project, file).withSearchScope(context.searchScope) // use file as context
+                val selector = ParadoxDynamicValueSearch.selector(holder.project, holder.file).withSearchScope(context.searchScope) // use file as context
                 val r = ParadoxDynamicValueSearch.search(resolved.name, resolved.types, selector).processAsync p@{
                     ProgressManager.checkCanceled()
                     if (it.readWriteAccess == Access.Write) {
@@ -141,7 +146,7 @@ object ParadoxAccessInspectionService {
             }
             if (!status) {
                 val description = ChronicleBundle.message("inspection.script.unsetDynamicValue.desc", resolved.name, resolved.types.joinToString())
-                context.holder.registerProblem(element, description, ProblemHighlightType.GENERIC_ERROR_OR_WARNING, reference.rangeInElement)
+                holder.registerProblem(element, description, ProblemHighlightType.GENERIC_ERROR_OR_WARNING, reference.rangeInElement)
             }
         }
     }

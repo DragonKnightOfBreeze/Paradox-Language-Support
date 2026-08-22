@@ -214,14 +214,14 @@ object ChronicleInspections {
 
         // Paradox CSV/Expressions
 
-        /** @see icu.windea.pls.lang.inspections.csv.expression.IncorrectColumnNameInspection */
-        const val IncorrectColumnName = "ParadoxCsvIncorrectColumnName"
-        /** @see icu.windea.pls.lang.inspections.csv.expression.IncorrectColumnSizeInspection */
-        const val IncorrectColumnSize = "ParadoxCsvIncorrectColumnSize"
         /** @see icu.windea.pls.lang.inspections.csv.expression.UnresolvedExpressionInspection */
         const val UnresolvedExpression = "ParadoxCsvUnresolvedExpression"
         /** @see icu.windea.pls.lang.inspections.csv.expression.IncorrectExpressionInspection */
         const val IncorrectExpression = "ParadoxCsvIncorrectExpression"
+        /** @see icu.windea.pls.lang.inspections.csv.expression.IncorrectColumnNameInspection */
+        const val IncorrectColumnName = "ParadoxCsvIncorrectColumnName"
+        /** @see icu.windea.pls.lang.inspections.csv.expression.IncorrectColumnSizeInspection */
+        const val IncorrectColumnSize = "ParadoxCsvIncorrectColumnSize"
     }
 
     object Lints {

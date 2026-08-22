@@ -10,6 +10,7 @@ import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtMemberType
 import icu.windea.pls.config.config.CwtPropertyConfig
+import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.delegated.CwtEnumConfig
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.config.config.delegated.CwtRowConfig
@@ -51,7 +52,10 @@ import icu.windea.pls.lang.resolve.ParadoxConfigService
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.model.expressions.ParadoxDefinitionTypeExpression
 import icu.windea.pls.script.ParadoxScriptLanguage
+import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptMember
+import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
+import icu.windea.pls.script.psi.ParadoxScriptValue
 import java.util.concurrent.ConcurrentMap
 
 @Optimized
@@ -162,6 +166,39 @@ object ParadoxConfigManager {
 
     fun isMatchedColumnConfig(column: ParadoxCsvColumn, columnConfig: CwtPropertyConfig): Boolean {
         return ParadoxConfigService.isMatchedColumnConfig(column, columnConfig)
+    }
+
+    fun getExpectedConfigs(element: ParadoxScriptExpressionElement, configContext: CwtConfigContext, parentConfigContext: CwtConfigContext?): List<CwtMemberConfig<*>> {
+        // 优先使用重载后的规则
+        val result = mutableListOf<CwtMemberConfig<*>>()
+        when (element) {
+            is ParadoxScriptPropertyKey -> {
+                if (parentConfigContext != null) {
+                    // flatten and collect context configs from parent context configs
+                    val parentContextConfigs = parentConfigContext.getConfigs()
+                    parentContextConfigs.forEachFast { parentContextConfig ->
+                        val contextConfigs = parentContextConfig.configs
+                        collectConfigsWithOverridden(element, contextConfigs, result, CwtMemberType.PROPERTY)
+                    }
+                } else {
+                    // collect from context configs
+                    val contextConfigs = configContext.getConfigs()
+                    collectConfigsWithOverridden(element, contextConfigs, result, CwtMemberType.PROPERTY)
+                }
+            }
+            is ParadoxScriptValue -> {
+                // collect from context configs
+                val contextConfigs = configContext.getConfigs()
+                collectConfigsWithOverridden(element, contextConfigs, result, CwtMemberType.VALUE)
+            }
+        }
+        if (result.isEmpty()) return emptyList()
+        return result
+    }
+
+    fun getExpectedConfigs(columnConfig: CwtPropertyConfig): List<CwtValueConfig> {
+        val valueConfig = columnConfig.valueConfig ?: return emptyList()
+        return listOf(valueConfig)
     }
 
     fun collectConfigsWithOverridden(element: PsiElement, configs: List<CwtMemberConfig<*>>?, result: MutableList<CwtMemberConfig<*>>, type: CwtMemberType? = null) {

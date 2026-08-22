@@ -382,14 +382,6 @@
                      implementationClass="icu.windea.pls.lang.inspections.csv.common.UnmatchedFileInspection"/>
     <!-- endregion -->
     <!-- region Paradox CSV/Expressions -->
-    <localInspection language="PARADOX_CSV" shortName="ParadoxCsvIncorrectColumnName"
-                     key="inspection.csv.incorrectColumnName" groupKey="inspection.csv.common.group" groupPathKey="inspection.csv.groupPath"
-                     enabledByDefault="true" level="ERROR"
-                     implementationClass="icu.windea.pls.lang.inspections.csv.expression.IncorrectColumnNameInspection"/>
-    <localInspection language="PARADOX_CSV" shortName="ParadoxCsvIncorrectColumnSize"
-                     key="inspection.csv.incorrectColumnSize" groupKey="inspection.csv.common.group" groupPathKey="inspection.csv.groupPath"
-                     enabledByDefault="true" level="ERROR"
-                     implementationClass="icu.windea.pls.lang.inspections.csv.expression.IncorrectColumnSizeInspection"/>
     <localInspection language="PARADOX_CSV" shortName="ParadoxCsvUnresolvedExpression"
                      key="inspection.csv.unresolvedExpression" groupKey="inspection.csv.expression.group" groupPathKey="inspection.csv.groupPath"
                      enabledByDefault="true" level="ERROR"
@@ -398,6 +390,14 @@
                      key="inspection.csv.incorrectExpression" groupKey="inspection.csv.expression.group" groupPathKey="inspection.csv.groupPath"
                      enabledByDefault="true" level="WARNING"
                      implementationClass="icu.windea.pls.lang.inspections.csv.expression.IncorrectExpressionInspection"/>
+    <localInspection language="PARADOX_CSV" shortName="ParadoxCsvIncorrectColumnName"
+                     key="inspection.csv.incorrectColumnName" groupKey="inspection.csv.common.group" groupPathKey="inspection.csv.groupPath"
+                     enabledByDefault="true" level="ERROR"
+                     implementationClass="icu.windea.pls.lang.inspections.csv.expression.IncorrectColumnNameInspection"/>
+    <localInspection language="PARADOX_CSV" shortName="ParadoxCsvIncorrectColumnSize"
+                     key="inspection.csv.incorrectColumnSize" groupKey="inspection.csv.common.group" groupPathKey="inspection.csv.groupPath"
+                     enabledByDefault="true" level="ERROR"
+                     implementationClass="icu.windea.pls.lang.inspections.csv.expression.IncorrectColumnSizeInspection"/>
     <!-- endregion -->
     <!-- endregion -->
 

@@ -51,16 +51,12 @@ class IncorrectFileEncodingInspection : LocalInspectionTool(), DumbAware, Parado
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        val context = createContext(holder)
+        val context = ParadoxFileInspectionContext(this, holder, ignoredFilePaths)
         return object : PsiFileOnlyVisitor() {
             override fun visitFile(file: PsiFile) {
                 ProgressManager.checkCanceled()
                 ParadoxFileInspectionService.checkForIncorrectFileEncoding(file, context)
             }
         }
-    }
-
-    override fun createContext(holder: ProblemsHolder): ParadoxFileInspectionContext {
-        return ParadoxFileInspectionContext(this, holder, ignoredFilePaths)
     }
 }

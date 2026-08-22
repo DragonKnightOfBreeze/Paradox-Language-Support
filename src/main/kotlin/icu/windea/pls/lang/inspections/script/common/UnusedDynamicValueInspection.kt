@@ -19,7 +19,7 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
  *
  * 默认不启用。
  */
-class UnusedDynamicValueInspection : LocalInspectionTool(), ParadoxAccessInspectionContext.Aware {
+class UnusedDynamicValueInspection : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 要求是语义上有效的脚本文件
         return ParadoxPsiFileMatchService.isScriptFile(file)
@@ -36,7 +36,7 @@ class UnusedDynamicValueInspection : LocalInspectionTool(), ParadoxAccessInspect
         }
     }
 
-    override fun createContext(holder: ProblemsHolder): ParadoxAccessInspectionContext {
+    private fun createContext(holder: ProblemsHolder): ParadoxAccessInspectionContext {
         return ParadoxAccessInspectionContext(this, holder)
     }
 }

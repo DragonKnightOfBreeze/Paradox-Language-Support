@@ -8,6 +8,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.collections.toArray
+import icu.windea.pls.core.inspections.SuppressionService
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.model.constants.ChronicleConstants
@@ -18,7 +19,7 @@ import icu.windea.pls.model.constants.ChronicleConstants
 class ParadoxCsvInspectionSuppressor : InspectionSuppressor {
     override fun isSuppressedFor(element: PsiElement, toolId: String): Boolean {
         val file = element.containingFile
-        if (file != null && ChronicleSuppressionService.isSuppressedInComment(file, toolId)) return true
+        if (file != null && SuppressionService.isSuppressedInComment(file, toolId)) return true
         return false
     }
 

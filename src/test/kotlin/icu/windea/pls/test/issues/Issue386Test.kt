@@ -163,16 +163,16 @@ class Issue386Test : BasePlatformTestCase(), ChronicleTestScope {
     private fun forKey(expression: String, expect: String): String {
         val expressionType = ChronicleBundle.message("expression.type.key")
         return when {
-            expect.isEmpty() -> ChronicleBundle.message("unresolvedExpression.desc.1", expressionType, expression)
-            else -> ChronicleBundle.message("unresolvedExpression.desc.2", expressionType, expression, expect)
+            expect.isEmpty() -> ChronicleBundle.message("inspection.unresolvedExpression.desc.1", expressionType, expression)
+            else -> ChronicleBundle.message("inspection.unresolvedExpression.desc.2", expressionType, expression, expect)
         }
     }
 
     private fun forValue(expression: String, expect: String): String {
         val expressionType = ChronicleBundle.message("expression.type.value")
         return when {
-            expect.isEmpty() -> ChronicleBundle.message("unresolvedExpression.desc.1", expressionType, expression)
-            else -> ChronicleBundle.message("unresolvedExpression.desc.2", expressionType, expression, expect)
+            expect.isEmpty() -> ChronicleBundle.message("inspection.unresolvedExpression.desc.1", expressionType, expression)
+            else -> ChronicleBundle.message("inspection.unresolvedExpression.desc.2", expressionType, expression, expect)
         }
     }
 }

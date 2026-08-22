@@ -18,7 +18,7 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
  *
  * 例如：有 `some_effect = {PARAM = some_value}` 但没有 `some_effect = { some_prop = $PARAM$ }`，后者是定义的声明。
  */
-class UnusedParameterInspection : LocalInspectionTool(), ParadoxAccessInspectionContext.Aware {
+class UnusedParameterInspection : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 要求是语义上有效的脚本文件
         return ParadoxPsiFileMatchService.isScriptFile(file)
@@ -40,7 +40,7 @@ class UnusedParameterInspection : LocalInspectionTool(), ParadoxAccessInspection
         }
     }
 
-    override fun createContext(holder: ProblemsHolder): ParadoxAccessInspectionContext {
+    private fun createContext(holder: ProblemsHolder): ParadoxAccessInspectionContext {
         return ParadoxAccessInspectionContext(this, holder)
     }
 }
