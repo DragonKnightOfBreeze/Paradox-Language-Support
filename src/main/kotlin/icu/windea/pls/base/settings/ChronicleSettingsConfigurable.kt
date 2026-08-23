@@ -11,6 +11,7 @@ import com.intellij.ui.dsl.listCellRenderer.*
 import com.intellij.ui.layout.selected
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.base.ChronicleBaseBundle
+import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.toDelimitedMutableList
 import icu.windea.pls.core.toDelimitedString
 import icu.windea.pls.core.util.CallbackLock
@@ -724,6 +725,37 @@ class ChronicleSettingsConfigurable : BoundConfigurable(ChronicleBaseBundle.mess
             checkBox(ChronicleBaseBundle.message("settings.others.renderLocalisationColorfulText"))
                 .bindSelected(settings::renderLocalisationColorfulText)
                 .onApply { ChronicleSettingsManager.refreshFiles(callbackLock) }
+        }
+    }
+
+    object Factory {
+        fun Panel.configureForLocalisationGeneration(configGroup: CwtConfigGroup? = null) {
+            val settings = ChronicleSettings.getInstance().state.generation
+            val locales = if(configGroup != null) ParadoxLocaleManager.getSupportedLocales(configGroup, includeAuto = true)
+            else ParadoxLocaleManager.getGlobalLocales(includeAuto = true)
+
+            // localisationStrategy
+            row {
+                val property = AtomicProperty(settings.localisationStrategy)
+                label(ChronicleBaseBundle.message("settings.generation.localisationStrategy"))
+                comboBox(ParadoxLocalisationGenerationStrategy.entries, textListCellRenderer { it?.text })
+                    .bindItem(settings::localisationStrategy.toNullableProperty())
+                    .bindItem(property)
+                textField().bindText(settings::localisationStrategyText.toNonNullableProperty(""))
+                    .visibleIf(property.transform { it == ParadoxLocalisationGenerationStrategy.SpecificText })
+                localeComboBox(locales).bindItem(settings::localisationStrategyLocale.toNullableProperty())
+                    .visibleIf(property.transform { it == ParadoxLocalisationGenerationStrategy.FromLocale })
+            }
+            // blankLineBetweenLocalisationGroups
+            row {
+                checkBox(ChronicleBaseBundle.message("settings.generation.blankLineBetweenLocalisationGroups"))
+                    .bindSelected(settings::blankLineBetweenLocalisationGroups)
+            }
+            // moveIntoLocalisationGroups
+            row {
+                checkBox(ChronicleBaseBundle.message("settings.generation.moveIntoLocalisationGroups"))
+                    .bindSelected(settings::moveIntoLocalisationGroups)
+            }
         }
     }
 }

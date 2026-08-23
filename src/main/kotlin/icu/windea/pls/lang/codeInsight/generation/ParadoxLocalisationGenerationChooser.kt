@@ -3,18 +3,11 @@ package icu.windea.pls.lang.codeInsight.generation
 import com.intellij.codeInsight.generation.MemberChooserObject
 import com.intellij.icons.AllIcons
 import com.intellij.ide.util.MemberChooser
-import com.intellij.openapi.observable.properties.AtomicProperty
-import com.intellij.openapi.observable.util.transform
 import com.intellij.openapi.project.Project
 import com.intellij.ui.dsl.builder.*
-import com.intellij.ui.dsl.listCellRenderer.*
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleFacade
-import icu.windea.pls.base.settings.ChronicleSettings
-import icu.windea.pls.core.toAtomicProperty
-import icu.windea.pls.lang.ui.localeComboBox
-import icu.windea.pls.lang.util.ParadoxLocaleManager
-import icu.windea.pls.model.policies.ParadoxLocalisationGenerationStrategy
+import icu.windea.pls.base.settings.ChronicleSettingsConfigurable
 import java.awt.event.ActionEvent
 import javax.swing.AbstractAction
 import javax.swing.Action
@@ -59,31 +52,9 @@ class ParadoxLocalisationGenerationChooser(
     }
 
     private fun Panel.configureOptionsGroup() {
-        val settings = ChronicleSettings.getInstance().state.generation
         val configGroup = context.locales.firstOrNull()?.configGroup ?: ChronicleFacade.getConfigGroup()
-        val locales = ParadoxLocaleManager.getSupportedLocales(configGroup, includeAuto = true)
-
-        // localisationStrategy
-        row {
-            val property = AtomicProperty(settings.localisationStrategy)
-            label(ChronicleBundle.message("settings.generation.localisationStrategy"))
-            comboBox(ParadoxLocalisationGenerationStrategy.entries, textListCellRenderer { it?.text })
-                .bindItem(settings::localisationStrategy.toAtomicProperty())
-                .bindItem(property)
-            textField().bindText(settings::localisationStrategyText.toAtomicProperty(""))
-                .visibleIf(property.transform { it == ParadoxLocalisationGenerationStrategy.SpecificText })
-            localeComboBox(locales).bindItem(settings::localisationStrategyLocale.toAtomicProperty(ParadoxLocaleManager.ID_AUTO))
-                .visibleIf(property.transform { it == ParadoxLocalisationGenerationStrategy.FromLocale })
-        }
-        // blankLineBetweenLocalisationGroups
-        row {
-            checkBox(ChronicleBundle.message("settings.generation.blankLineBetweenLocalisationGroups"))
-                .bindSelected(settings::blankLineBetweenLocalisationGroups.toAtomicProperty())
-        }
-        // moveIntoLocalisationGroups
-        row {
-            checkBox(ChronicleBundle.message("settings.generation.moveIntoLocalisationGroups"))
-                .bindSelected(settings::moveIntoLocalisationGroups.toAtomicProperty())
+        with(ChronicleSettingsConfigurable.Factory) {
+            configureForLocalisationGeneration(configGroup)
         }
     }
 

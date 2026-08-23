@@ -144,4 +144,19 @@ class ChronicleIntegrationsSettingsConfigurable : BoundConfigurable(ChronicleBas
             contextHelp(ChronicleBaseBundle.message("settings.integrations.lint.tigerHighlight.tip"))
         }
     }
+
+    object Factory {
+        fun Panel.configureForHighlight(callbackLock: CallbackLock) {
+            row {
+                label(ChronicleBaseBundle.message("settings.integrations.lint.tigerHighlight"))
+                contextHelp(ChronicleBaseBundle.message("settings.integrations.lint.tigerHighlight.tip"))
+
+                link(ChronicleBundle.message("link.configure")) {
+                    // Tiger highlight mapping - open dialog - save settings and refresh files after dialog closed with ok
+                    val dialog = TigerHighlightDialog()
+                    if (dialog.showAndGet()) ChronicleIntegrationsSettingsManager.onTigerSettingsChanged(callbackLock)
+                }
+            }
+        }
+    }
 }
