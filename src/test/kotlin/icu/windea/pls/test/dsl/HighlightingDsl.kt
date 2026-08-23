@@ -9,15 +9,35 @@ import com.intellij.testFramework.fixtures.CodeInsightTestFixture
 
 // see: https://plugins.jetbrains.com/docs/intellij/testing-highlighting.html
 
+/**
+ * 这个 DSL 提供了一组作用域方法，从而支持以字符串插值的格式构建用于检查代码高亮结果的测试数据文本。
+ *
+ * 这种方式相比直接使用原始文本或原始文件，更加可读和可维护。
+ *
+ * 示例：
+ * - `myFixture.configureByText("test.txt") { "${error(message)}key${errorEnd} = value" }`
+ */
 @DslMarker
 annotation class HighlightingDsl
 
+/**
+ * @see HighlightingDsl
+ */
 inline fun <R> highlightingScope(block: HighlightingScope.() -> R): R = HighlightingScope.block()
 
+/**
+ * @see HighlightingDsl
+ */
 inline fun CodeInsightTestFixture.configureByText(fileName: String, block: HighlightingScope.() -> String): PsiFile = configureByText(fileName, HighlightingScope.block())
 
+/**
+ * @see HighlightingDsl
+ */
 inline fun CodeInsightTestFixture.createFile(fileName: String, block: HighlightingScope.() -> String): VirtualFile = createFile(fileName, HighlightingScope.block())
 
+/**
+ * @see HighlightingDsl
+ */
 @HighlightingDsl
 object HighlightingScope {
     const val errorMarker = CodeInsightTestFixture.ERROR_MARKER

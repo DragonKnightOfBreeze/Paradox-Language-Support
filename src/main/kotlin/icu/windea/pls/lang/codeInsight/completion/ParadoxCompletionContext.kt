@@ -47,14 +47,14 @@ data class ParadoxCompletionContext(
     companion object {
         @JvmStatic
         fun create(globalContext: GlobalCompletionContext): ParadoxCompletionContext {
-            return ParadoxCompletionContextBuilder.create(globalContext)
+            return ParadoxCompletionContextFactory.create(globalContext)
         }
     }
 }
 
 // region Implementations
 
-private object ParadoxCompletionContextBuilder {
+private object ParadoxCompletionContextFactory {
     fun create(globalContext: GlobalCompletionContext): ParadoxCompletionContext {
         val gameType = selectGameType(globalContext.file)
         val keyword = getKeyword(globalContext.contextElement, globalContext.offsetInParent)

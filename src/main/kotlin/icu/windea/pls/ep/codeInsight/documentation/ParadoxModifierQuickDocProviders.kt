@@ -4,10 +4,10 @@ import com.intellij.openapi.progress.ProgressManager
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.base.annotations.ForGameType
 import icu.windea.pls.config.CwtDataTypes
+import icu.windea.pls.core.codeInsight.documentation.DocumentationBuilder
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.pass
-import icu.windea.pls.core.util.builders.DocumentationBuilder
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
 import icu.windea.pls.ep.resolve.modifier.ParadoxEconomicCategoryModifierSupport

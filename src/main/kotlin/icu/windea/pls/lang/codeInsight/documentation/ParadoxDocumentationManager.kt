@@ -8,11 +8,11 @@ import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.base.settings.ChronicleSettings
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.codeInsight.documentation.DocumentationBuilder
+import icu.windea.pls.core.codeInsight.documentation.buildDocumentation
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.util.OnceMarker
-import icu.windea.pls.core.util.builders.DocumentationBuilder
-import icu.windea.pls.core.util.builders.buildDocumentation
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
 import icu.windea.pls.lang.defineInfo

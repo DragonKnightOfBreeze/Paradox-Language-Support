@@ -1,7 +1,7 @@
 package icu.windea.pls.ep.codeInsight.documentation
 
 import com.intellij.openapi.extensions.ExtensionPointName
-import icu.windea.pls.core.util.builders.DocumentationBuilder
+import icu.windea.pls.core.codeInsight.documentation.DocumentationBuilder
 import icu.windea.pls.lang.psi.light.ParadoxLocalisationParameterLightElement
 
 /**

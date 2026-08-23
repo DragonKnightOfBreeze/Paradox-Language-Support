@@ -1,8 +1,8 @@
 package icu.windea.pls.ep.codeInsight.documentation
 
 import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.core.codeInsight.documentation.DocumentationBuilder
 import icu.windea.pls.core.escapeXml
-import icu.windea.pls.core.util.builders.DocumentationBuilder
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
 import icu.windea.pls.ep.resolve.parameter.ParadoxDefinitionParameterSupport

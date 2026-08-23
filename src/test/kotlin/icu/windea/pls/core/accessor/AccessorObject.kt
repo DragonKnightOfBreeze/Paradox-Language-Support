@@ -6,7 +6,7 @@ class AccessorObject(
     val name: String,
     val gender: String,
     val race: String,
-    val age: Int
+    val age: Int,
 ) {
     private var awakenStatus = false
 

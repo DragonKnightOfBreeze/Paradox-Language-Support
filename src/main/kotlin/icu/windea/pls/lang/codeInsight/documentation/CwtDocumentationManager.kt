@@ -15,6 +15,8 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.documentation
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.codeInsight.documentation.DocumentationBuilder
+import icu.windea.pls.core.codeInsight.documentation.buildDocumentation
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.isNotNullOrEmpty
@@ -24,8 +26,6 @@ import icu.windea.pls.core.pass
 import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.substringIn
-import icu.windea.pls.core.util.builders.DocumentationBuilder
-import icu.windea.pls.core.util.builders.buildDocumentation
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
 import icu.windea.pls.cwt.CwtLanguage

@@ -6,12 +6,12 @@ import com.intellij.codeInsight.documentation.DocumentationManagerUtil
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.psi.PsiElement
 import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.core.codeInsight.documentation.DocumentationBuilder
+import icu.windea.pls.core.codeInsight.documentation.buildDocumentation
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.util.OnceMarker
-import icu.windea.pls.core.util.builders.DocumentationBuilder
-import icu.windea.pls.core.util.builders.buildDocumentation
 import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.cwt.CwtLanguage

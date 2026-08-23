@@ -7,9 +7,9 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFileSystemItem
 import icu.windea.pls.base.settings.ChronicleInternalSettings
+import icu.windea.pls.core.codeInsight.documentation.DocumentationBuilder
+import icu.windea.pls.core.codeInsight.documentation.buildDocumentation
 import icu.windea.pls.core.runSmartReadAction
-import icu.windea.pls.core.util.builders.DocumentationBuilder
-import icu.windea.pls.core.util.builders.buildDocumentation
 
 // org.intellij.images.fileTypes.ImageDocumentationProvider
 

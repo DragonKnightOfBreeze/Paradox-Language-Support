@@ -11,7 +11,7 @@ class ObservableTest {
     class Role(
         var name: String,
         val title: String,
-        var tag: String
+        var tag: String,
     ) {
         val displayName: String by ::name.observe { "$it, $title" }
         var tagSet: Set<String> by ::tag.fromDelimitedString()

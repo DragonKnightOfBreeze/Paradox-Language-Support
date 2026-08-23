@@ -1,6 +1,6 @@
 @file:Suppress("unused")
 
-package icu.windea.pls.core.util.builders
+package icu.windea.pls.core.text
 
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.toFileUrl

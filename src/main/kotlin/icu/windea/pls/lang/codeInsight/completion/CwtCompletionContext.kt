@@ -55,14 +55,14 @@ data class CwtCompletionContext(
     companion object {
         @JvmStatic
         fun create(globalContext: GlobalCompletionContext): CwtCompletionContext {
-            return CwtCompletionContextBuilder.create(globalContext)
+            return CwtCompletionContextFactory.create(globalContext)
         }
     }
 }
 
 // region Implementations
 
-private object CwtCompletionContextBuilder {
+private object CwtCompletionContextFactory {
     fun create(globalContext: GlobalCompletionContext): CwtCompletionContext {
         val contextElement = globalContext.contextElement
 

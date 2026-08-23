@@ -18,7 +18,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import icu.windea.pls.lang.util.builders.ParadoxScriptTextBuilder.parameter as p
+import icu.windea.pls.script.text.ParadoxScriptTextBuilder.parameter as p
 
 /**
  * @see ParadoxMemberService

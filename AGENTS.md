@@ -137,7 +137,7 @@ Additionally, the plugin provides some DSLs for unit tests and platform tasks, w
 They are defined in package `icu.windea.pls.test.dsl`, with corresponding DSL marker annotations, scope objects and scope methods. These scope methods should be used on certain limited scope.
 
 Introduce to these DSLs:
-- `ExpectDsl.kt` can be used to write assertions in extension-method style, which will apply type convertion and Kotlin Contract when necessary. It's not forced at this moment.
+- `ExpectDsl.kt` can be used to write assertions in extension-function style, which will apply type convertion and Kotlin Contract when necessary. It's not forced at this moment.
 - `HighlightingDsl.kt` can be used to build text for checking highlighting in string-interpolation style, which are more readable and maintainable comparing to raw text or raw files. It's preferred at this moment.
 
 Examples:

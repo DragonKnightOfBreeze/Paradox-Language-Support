@@ -6,6 +6,8 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.ui.ColorUtil
 import icu.windea.pls.base.settings.ChronicleInternalSettings
+import icu.windea.pls.core.codeInsight.documentation.DocumentationBuilder
+import icu.windea.pls.core.codeInsight.documentation.buildDocumentation
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.forEachChild
 import icu.windea.pls.core.psi.light.LightElementBase
@@ -13,8 +15,6 @@ import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.text.EscapeType
 import icu.windea.pls.core.toFileUrl
 import icu.windea.pls.core.toIconOrNull
-import icu.windea.pls.core.util.builders.DocumentationBuilder
-import icu.windea.pls.core.util.builders.buildDocumentation
 import icu.windea.pls.core.util.values.FallbackStrings
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or

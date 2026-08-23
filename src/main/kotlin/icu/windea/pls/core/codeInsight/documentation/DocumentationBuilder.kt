@@ -1,6 +1,6 @@
 @file:Suppress("unused")
 
-package icu.windea.pls.core.util.builders
+package icu.windea.pls.core.codeInsight.documentation
 
 import com.intellij.lang.documentation.DocumentationMarkup
 import com.intellij.platform.backend.documentation.DocumentationResult

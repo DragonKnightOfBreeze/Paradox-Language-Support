@@ -16,11 +16,26 @@ import kotlin.test.assertNull
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
+/**
+ * 这个 DSL 提供了一组作用域方法，从而支持以扩展函数的形式进行断言。
+ *
+ * 这些函数直接返回其接收者，并在必要时适用 kotlin Contract 以及更改返回类型。
+ *
+ * 示例：
+ * - `expectScope { result.expectNotNull().someMethodForNonNullType() }`
+ * - `expectScope { result.expectIs<SomeType>().someMethodForThisType() }`
+ */
 @DslMarker
 annotation class ExpectDsl
 
+/**
+ * @see ExpectDsl
+ */
 inline fun <R> expectScope(block: ExpectScope.() -> R): R = ExpectScope.block()
 
+/**
+ * @see ExpectDsl
+ */
 @Suppress("NOTHING_TO_INLINE")
 @OptIn(ExperimentalContracts::class)
 @ExpectDsl
@@ -63,13 +78,13 @@ object ExpectScope {
         return this
     }
 
-    inline fun <T: Any> T?.expectNotNull(message: String? = null): T {
+    inline fun <T : Any> T?.expectNotNull(message: String? = null): T {
         contract { returns() implies (this@expectNotNull != null) }
         assertNotNull(this, message)
         return this
     }
 
-    inline fun <T: Any> T?.expectNull(message: String? = null): T? {
+    inline fun <T : Any> T?.expectNull(message: String? = null): T? {
         contract { returns() implies (this@expectNull == null) }
         assertNull(this, message)
         return this
