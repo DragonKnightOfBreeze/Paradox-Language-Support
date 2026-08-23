@@ -30,11 +30,11 @@ import com.intellij.unscramble.AnalyzeStacktraceUtil
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.base.notification.ChronicleNotificationGroups
+import icu.windea.pls.core.execution.filters.ShowDiffWindowHyperlinkInfo
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.cwt.CwtFileType
-import icu.windea.pls.lang.execution.filters.ShowDiffWindowHyperlinkInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.tools.ChronicleToolsBundle
 import icu.windea.pls.tools.config.generators.CwtConfigGenerator

@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.execution.filters
+package icu.windea.pls.core.execution.filters
 
 import com.intellij.diff.DiffDialogHints
 import com.intellij.diff.DiffManager
