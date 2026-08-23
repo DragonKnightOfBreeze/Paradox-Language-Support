@@ -25,7 +25,7 @@ import java.nio.file.Path
  */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
-class ChronicleInspectionsSnapshotTest : ChronicleSnapshotTest() {
+class ChronicleInspectionBasedSnapshotTest : ChronicleSnapshotTest() {
     private val gameType = ParadoxGameType.Stellaris
 
     override fun getTestDataPath() = "src/test/testData"
@@ -45,6 +45,7 @@ class ChronicleInspectionsSnapshotTest : ChronicleSnapshotTest() {
     fun test() {
         val dataFilePaths = getDataFiles()
         val files = configureDataFiles(dataFilePaths)
+
         IndexingTestUtil.waitUntilIndexesAreReady(project)
         highlightDataFiles(files)
     }

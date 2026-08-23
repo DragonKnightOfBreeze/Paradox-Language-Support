@@ -41,7 +41,6 @@ class Issue142Test : BasePlatformTestCase(), ChronicleTestScope {
         myFixture.configureByFile("issues/142/common/scripted_triggers/test_trigger.test.txt")
 
         IndexingTestUtil.waitUntilIndexesAreReady(project)
-
         myFixture.checkHighlighting()
     }
 
@@ -51,7 +50,6 @@ class Issue142Test : BasePlatformTestCase(), ChronicleTestScope {
         myFixture.configureByFile("issues/142/common/scripted_effects/test_effect.test.txt")
 
         IndexingTestUtil.waitUntilIndexesAreReady(project)
-
         myFixture.checkHighlighting()
     }
 

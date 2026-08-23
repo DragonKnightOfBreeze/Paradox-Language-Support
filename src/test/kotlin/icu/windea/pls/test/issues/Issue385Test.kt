@@ -71,6 +71,7 @@ class Issue385Test : BasePlatformTestCase(), ChronicleTestScope {
                 modifier = Weapon_Tag_Spirit_Art_Caster_Magic_Power_Mult
             }
         """.trimIndent())
+
         IndexingTestUtil.waitUntilIndexesAreReady(project)
         myFixture.checkHighlighting()
     }
@@ -87,6 +88,7 @@ class Issue385Test : BasePlatformTestCase(), ChronicleTestScope {
                 modifier = <caret>weapon_windea_long_sword_damage_mult
             }
         """.trimIndent())
+
         IndexingTestUtil.waitUntilIndexesAreReady(project)
         expectScope {
             val reference = myFixture.findReferenceAtCaret().expectNotNull()
@@ -104,6 +106,7 @@ class Issue385Test : BasePlatformTestCase(), ChronicleTestScope {
                 modifier = <caret>weapon_ode_to_THE_DRAGON_KNIGHT_magic_power_mult
             }
         """.trimIndent())
+
         IndexingTestUtil.waitUntilIndexesAreReady(project)
         expectScope {
             val reference = myFixture.findReferenceAtCaret().expectNotNull()
@@ -126,8 +129,8 @@ class Issue385Test : BasePlatformTestCase(), ChronicleTestScope {
              mod_weapon_windea_long_sword_damage_mult: "风语长剑的伤害加成"
              mod_WEAPON_ODE_TO_THE_DRAGON_KNIGHT_MAGIC_POWER_MULT: "《龙骑士的颂歌》的魔法强度加成"
         """.trimIndent())
-        IndexingTestUtil.waitUntilIndexesAreReady(project)
 
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
         val contextElement = myFixture.file
         val project = myFixture.project
         expectScope {

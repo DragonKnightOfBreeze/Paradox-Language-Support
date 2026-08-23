@@ -64,13 +64,13 @@ class Issue387Test : BasePlatformTestCase(), ChronicleTestScope {
              dk_breeze: "the Dragon Knight of Breeze"
              the_dragon_name: "<secret>"
         """.trimIndent())
-        IndexingTestUtil.waitUntilIndexesAreReady(project)
 
         markFileInfo(ParadoxGameType.Stellaris, "localisation/01_dk_l_simp_chinese.yml")
         myFixture.configureByText("01_dk_l_simp_chinese.yml", """
             l_english:
              intro: "From [<caret>GetName], [GetDragonKnightTitle]."
         """.trimIndent())
+
         IndexingTestUtil.waitUntilIndexesAreReady(project)
         expectScope {
             val reference = myFixture.findReferenceAtCaret().expectNotNull()
@@ -85,6 +85,7 @@ class Issue387Test : BasePlatformTestCase(), ChronicleTestScope {
             l_english:
              intro: "From [GetName], [<caret>GetDragonKnightTitle]."
         """.trimIndent())
+
         IndexingTestUtil.waitUntilIndexesAreReady(project)
         expectScope {
             val reference = myFixture.findReferenceAtCaret().expectNotNull()
@@ -103,6 +104,8 @@ class Issue387Test : BasePlatformTestCase(), ChronicleTestScope {
             l_english:
              intro: "From Windea, the curious seeker who has tamed the dragon named [<caret>the_dragon_name]."
         """.trimIndent())
+
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
         expectScope {
             val reference = myFixture.findReferenceAtCaret().expectNotNull()
             reference.expectIs<ParadoxDataSourceNode.Reference>()
@@ -117,6 +120,8 @@ class Issue387Test : BasePlatformTestCase(), ChronicleTestScope {
             l_english:
              intro: "From Windea, the curious seeker who has tamed the dragon named [<caret>the_dragon_name@root]."
         """.trimIndent())
+
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
         expectScope {
             val reference = myFixture.findReferenceAtCaret().expectNotNull()
             reference.expectIs<ParadoxDynamicValueNode.Reference>()

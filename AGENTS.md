@@ -92,6 +92,12 @@ If missing (common in CI), Gradle can download ZIPs and unzip them into `build/g
   - Integration tests for syntax/semantic/PSI/index/config-driven logic.
 - A full `./gradlew test` run can take tens of minutes; don't run it casually during iterative development.
 
+### IntelliJ platform test patterns
+
+- **Parsing tests** (syntax/PSI snapshots): use `ParsingTestCase`, comparing the parsed tree output against a stored snapshot (e.g. `icu.windea.pls.script.ParadoxScriptParsingTest`).
+- **Fixture-based tests**: use `BasePlatformTestCase` + `myFixture.configureByText(fileName, text)` (preferred for simple cases) or `myFixture.configureByFile(filePath)` (for more complex, file-based cases).
+- **Highlighting tests** (annotators/inspections): build the text to check highlighting programmatically with the help of needed scope methods, then call `myFixture.checkHighlighting(...)`.
+
 ### Test data conventions
 
 - Most platform/integration tests use test data under `src/test/testData`.
@@ -101,20 +107,13 @@ If missing (common in CI), Gradle can download ZIPs and unzip them into `build/g
 - `src/test/testData/issues/<issueNumber>[_shortDesc]/` holds regression test data for GitHub-issue-specific tests (see `icu.windea.pls.test.issues.IssueNNNTest` below), typically with a `README.md` describing the scenario.
 - `src/test/testData/chronicle/` is a self-contained showcase "game/mod" content tree (see Snapshot tests below) and follows common file naming (e.g. `00_events.txt`) instead of the `.test.` convention, since it simulates real game/mod content rather than being a narrow test fixture.
 
-### IntelliJ platform test patterns
-
-- **Parsing tests** (syntax/PSI snapshots): use `ParsingTestCase`, comparing the parsed tree output against a stored snapshot (e.g. `icu.windea.pls.script.ParadoxScriptParsingTest`).
-- **Fixture-based tests**: use `BasePlatformTestCase` + `myFixture.configureByText(fileName, text)` (preferred for simple cases) or `myFixture.configureByFile(filePath)` (for more complex, file-based cases).
-- **Highlighting tests** (annotators/inspections): wrap the expected-diagnostic span in the source text using the `ChronicleTestScope` helpers `String.toErrorTag()` / `.toWarningTag()` / `.toWeakWarningTag()` / `.toInfoTag()` (usually applied to a `*Bundle.message(...)` string), then call `myFixture.checkHighlighting(...)`. Handwritten `<warning descr="...">...</warning>`-style markup is also acceptable when the diagnostic text isn't retrieved from i18n bundles (or not that easy).
-
-### Config-driven integration tests (config groups + context injection)
+### About test scope
 
 The plugin is config-driven. Many features (e.g. type inference, scope inference, macros) depend on **CWT config groups** and a simulated “game/mod context”.
 
 A set of scope methods, defined in interface `icu.windea.pls.test.ChronicleTestScope`, makes these tests deterministic. It's mixed into test classes via interface composition (not a shared base class): `class XxxTest : BasePlatformTestCase(), ChronicleTestScope`. There is no common `ChronicleBasePlatformTestCase`; only a few narrower abstract bases exist for specific test families (e.g. `ParadoxComplexExpressionTest`).
 
 Key `ChronicleTestScope` methods:
-
 - `findElementAtCaret()` / `findReferenceAtCaret()` are `CodeInsightTestFixture` extensions for caret-based lookups.
 - `addAdditionalAllowedRoots(...)` whitelists extra filesystem roots for VFS access checks (used e.g. to reach a real local Steam/game path in `ParadoxModImporterTest`).
 - `markIntegrationTest()` / `clearIntegrationTest()` toggle integration-test-only behavior (inferring file type/game type from file name) and clean up injected state.
@@ -123,22 +122,37 @@ Key `ChronicleTestScope` methods:
 - `markFileInfo(gameType or rootInfo, path, entry = "", group = null)` (for a file to be configured afterward, e.g. via `myFixture.configureByFile`) and `VirtualFile.injectFileInfo(...)` (for an already-existing `VirtualFile`) inject per-file metadata; both have an overload taking a pre-built `ParadoxRootInfo` (from `createRootInfo`) instead of a bare `gameType`.
 - `initConfigGroups(project, ...gameTypes)` initializes the required config groups for the specified game types. Use built-in and injected config files, and the general config group (`core`) is always initialized.
 
-For the showcase test demonstrating `ChronicleTestScope` usage, see:
-
-- `icu.windea.pls.test.chronicle.ChronicleScopedTest` - checkout it if your task involves to platform tests.
-
 Notes:
 - The marked config directory SHOULD NOT directly contain config files, place them in the `core` (or some game type id like `stellaris`, see `ParadoxGameType` for details about game types) subdirectory.
 - The marked file path DO NOT start with `game/` (see `ParadoxGameTypeMetadata` for details about root directories VS entry directories).
 - Alignment between real file path and marked file path is not required.
 - If a config-driven test fails unexpectedly, first check whether `markRootDirectory(...)` was omitted (some caches are keyed at the root-directory level), the config files were not correctly injected, or the relevant config groups were not correctly loaded.
 
+For the showcase test demonstrating `ChronicleTestScope` usage, see `icu.windea.pls.test.chronicle.ChronicleHelloWorldTest`.
+
+### About test DSL
+
+Additionally, the plugin provides some DSLs for unit tests and platform tasks, which can be used to write tests that are simpler and clearer.
+
+They are defined in package `icu.windea.pls.test.dsl`, with corresponding DSL marker annotations, scope objects and scope methods. These scope methods should be used on certain limited scope.
+
+Introduce to these DSLs:
+- `ExpectDsl.kt` can be used to write assertions in extension-method style, which will apply type convertion and Kotlin Contract when necessary. It's not forced at this moment.
+- `HighlightingDsl.kt` can be used to build text for checking highlighting in string-interpolation style, which are more readable and maintainable comparing to raw text or raw files. It's preferred at this moment.
+
+Examples:
+- `expectScope { result.expectNotNull().someMethodForNonNullType() }`
+- `expectScope { result.expectIs<SomeType>().someMethodForThisType() }`
+- `myFixture.configureByText("test.txt") { "${error(message)}key${errorEnd} = value" }`
+
+For the showcase test demonstrating `ChronicleTestScope` usage in DSL-style, see `icu.windea.pls.test.chronicle.ChronicleHelloWorldDslTest`.
+
 ### Snapshot tests
 
 Package `icu.windea.pls.test.chronicle` hosts a family of "snapshot" tests driven by the showcase content tree `src/test/testData/chronicle/`:
 
 - `ChronicleSnapshotTest` - abstract base providing `computeDataFilePaths()` over the `chronicle/` directory.
-- `ChronicleInspectionsSnapshotTest` - runs every bundled `LocalInspectionTool` (filtered to this plugin) over all files under `chronicle/` and asserts no warnings/errors are produced.
+- `ChronicleInspectionBasedSnapshotTest` - runs every bundled `LocalInspectionTool` (filtered to this plugin) over all files under `chronicle/` and asserts no warnings/errors are produced.
 - `ChronicleAnnotatedSnapshotTest` - renders script/CSV files via `ParadoxScriptTextAnnotatedRenderer` / `ParadoxCsvTextAnnotatedRenderer` and diffs the result against expected files under `chronicle/.annotated/**/*.annotated.*`.
 
 ### Optional / on-demand tests (assume-based)

@@ -38,7 +38,6 @@ class Issue288Test : BasePlatformTestCase(), ChronicleTestScope {
         myFixture.configureByFile("issues/288/common/location_ranks/issue_288_eu5.test.txt")
 
         IndexingTestUtil.waitUntilIndexesAreReady(project)
-
         myFixture.checkHighlighting()
     }
 }

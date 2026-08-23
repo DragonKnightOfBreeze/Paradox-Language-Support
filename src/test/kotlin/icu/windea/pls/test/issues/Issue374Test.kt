@@ -51,7 +51,6 @@ class Issue374Test : BasePlatformTestCase(), ChronicleTestScope {
         """.trimIndent())
 
         IndexingTestUtil.waitUntilIndexesAreReady(project)
-
         myFixture.checkHighlighting()
     }
 
@@ -67,14 +66,12 @@ class Issue374Test : BasePlatformTestCase(), ChronicleTestScope {
         """.trimIndent())
 
         IndexingTestUtil.waitUntilIndexesAreReady(project)
-
         expectScope {
             val reference = myFixture.findReferenceAtCaret().expectNotNull()
             val resolved = reference.resolve().expectNotNull()
             resolved.expectIs<CwtString>()
             resolved.name.expectEquals("v1")
         }
-
         myFixture.checkHighlighting()
     }
 
@@ -90,7 +87,6 @@ class Issue374Test : BasePlatformTestCase(), ChronicleTestScope {
         """.trimIndent())
 
         IndexingTestUtil.waitUntilIndexesAreReady(project)
-
         expectScope {
             val reference = myFixture.findReferenceAtCaret().expectNotNull()
             val resolved = reference.resolve().expectNotNull()
@@ -98,7 +94,6 @@ class Issue374Test : BasePlatformTestCase(), ChronicleTestScope {
             resolved.name.expectEquals("some_flag")
             resolved.presentableType.expectEquals("test_flag")
         }
-
         myFixture.checkHighlighting()
     }
 
@@ -119,7 +114,6 @@ class Issue374Test : BasePlatformTestCase(), ChronicleTestScope {
         """.trimIndent())
 
         IndexingTestUtil.waitUntilIndexesAreReady(project)
-
         myFixture.complete(CompletionType.BASIC)
         val lookupElementStrings = myFixture.lookupElementStrings!!
         assertSameElements(lookupElementStrings, "v1", "v2")
@@ -147,7 +141,6 @@ class Issue374Test : BasePlatformTestCase(), ChronicleTestScope {
         """.trimIndent())
 
         IndexingTestUtil.waitUntilIndexesAreReady(project)
-
         myFixture.complete(CompletionType.BASIC)
         val lookupElementStrings = myFixture.lookupElementStrings!!
         assertSameElements(lookupElementStrings, "some_flag", "some_other_flag")

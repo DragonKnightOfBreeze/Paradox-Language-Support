@@ -57,7 +57,6 @@ class Issue369Test : BasePlatformTestCase(), ChronicleTestScope {
         """.trimIndent())
 
         IndexingTestUtil.waitUntilIndexesAreReady(project)
-
         myFixture.checkHighlighting()
     }
 
@@ -78,7 +77,6 @@ class Issue369Test : BasePlatformTestCase(), ChronicleTestScope {
         """.trimIndent())
 
         IndexingTestUtil.waitUntilIndexesAreReady(project)
-
         myFixture.complete(CompletionType.BASIC)
         val lookupElementStrings = myFixture.lookupElementStrings!!
         assertSameElements(lookupElementStrings, "no_spaces", "spaced out".quote()) // should be quoted if is blank or contains blank
@@ -101,7 +99,6 @@ class Issue369Test : BasePlatformTestCase(), ChronicleTestScope {
         """.trimIndent())
 
         IndexingTestUtil.waitUntilIndexesAreReady(project)
-
         myFixture.complete(CompletionType.BASIC)
         val lookupElementStrings = myFixture.lookupElementStrings!!
         assertSameElements(lookupElementStrings, "no_spaces", "spaced out".quote()) // should be quoted if is blank or contains blank
@@ -124,7 +121,6 @@ class Issue369Test : BasePlatformTestCase(), ChronicleTestScope {
         """.trimIndent())
 
         IndexingTestUtil.waitUntilIndexesAreReady(project)
-
         myFixture.complete(CompletionType.BASIC)
         val lookupElementStrings = myFixture.lookupElementStrings!!
         assertSameElements(lookupElementStrings, "no_spaces", "spaced out") // should not be quoted since already quoted
@@ -147,7 +143,6 @@ class Issue369Test : BasePlatformTestCase(), ChronicleTestScope {
         """.trimIndent())
 
         IndexingTestUtil.waitUntilIndexesAreReady(project)
-
         myFixture.complete(CompletionType.BASIC)
         val lookupElementStrings = myFixture.lookupElementStrings!!
         assertSameElements(lookupElementStrings, "no_spaces", "spaced out") // should not be quoted since already quoted (even only left quoted)

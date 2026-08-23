@@ -75,7 +75,6 @@ class Issue383Test : BasePlatformTestCase(), ChronicleTestScope {
         """.trimIndent())
 
         IndexingTestUtil.waitUntilIndexesAreReady(project)
-
         myFixture.checkHighlighting()
     }
 
@@ -98,7 +97,6 @@ class Issue383Test : BasePlatformTestCase(), ChronicleTestScope {
         """.trimIndent())
 
         IndexingTestUtil.waitUntilIndexesAreReady(project)
-
         myFixture.checkHighlighting()
     }
 
@@ -120,7 +118,6 @@ class Issue383Test : BasePlatformTestCase(), ChronicleTestScope {
         """.trimIndent())
 
         IndexingTestUtil.waitUntilIndexesAreReady(project)
-
         expectScope {
             val reference = myFixture.findReferenceAtCaret().expectNotNull()
             val resolved = reference.resolve().expectNotNull()
@@ -128,7 +125,6 @@ class Issue383Test : BasePlatformTestCase(), ChronicleTestScope {
             resolved.name.expectEquals("created_by")
             resolved.presentableType.expectEquals("country_flag")
         }
-
         // check scope context
         expectScope {
             val element = myFixture.findElementAtCaret().expectNotNull()
@@ -155,7 +151,6 @@ class Issue383Test : BasePlatformTestCase(), ChronicleTestScope {
         """.trimIndent())
 
         IndexingTestUtil.waitUntilIndexesAreReady(project)
-
         expectScope {
             val reference = myFixture.findReferenceAtCaret().expectNotNull()
             reference.expectIs<PsiMultiReference>()
@@ -176,7 +171,6 @@ class Issue383Test : BasePlatformTestCase(), ChronicleTestScope {
             val config = expressionReference.config
             config.configExpression.expressionString.expectEquals("<starbase_module>")
         }
-
         // check scope context
         expectScope {
             val element = myFixture.findElementAtCaret().expectNotNull()

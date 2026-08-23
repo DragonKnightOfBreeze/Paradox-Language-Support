@@ -46,6 +46,7 @@ class Issue389Test : BasePlatformTestCase(), ChronicleTestScope {
                 }
             }
         """.trimIndent())
+
         IndexingTestUtil.waitUntilIndexesAreReady(project)
         expectScope {
             val reference = myFixture.findReferenceAtCaret().expectNotNull()
@@ -69,6 +70,7 @@ class Issue389Test : BasePlatformTestCase(), ChronicleTestScope {
                 }
             }
         """.trimIndent())
+
         IndexingTestUtil.waitUntilIndexesAreReady(project)
         expectScope {
             val reference = myFixture.findReferenceAtCaret().expectNotNull()
@@ -92,6 +94,7 @@ class Issue389Test : BasePlatformTestCase(), ChronicleTestScope {
                 }
             }
         """.trimIndent())
+
         IndexingTestUtil.waitUntilIndexesAreReady(project)
         expectScope {
             val reference = myFixture.findReferenceAtCaret().expectNotNull()
@@ -115,6 +118,7 @@ class Issue389Test : BasePlatformTestCase(), ChronicleTestScope {
                 }
             }
         """.trimIndent())
+
         IndexingTestUtil.waitUntilIndexesAreReady(project)
         expectScope {
             val reference = myFixture.findReferenceAtCaret().expectNotNull()

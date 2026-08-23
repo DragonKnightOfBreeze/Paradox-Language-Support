@@ -37,6 +37,7 @@ class ChangeLocalisationColorIntentionTest : BasePlatformTestCase(), ChronicleTe
     private fun configureColorFile() {
         markFileInfo(gameType, "interface/fonts.gfx")
         myFixture.configureByFile("features/intentions/interface/fonts.gfx")
+
         IndexingTestUtil.waitUntilIndexesAreReady(project)
     }
 

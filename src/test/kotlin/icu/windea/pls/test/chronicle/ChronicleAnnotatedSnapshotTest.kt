@@ -49,6 +49,7 @@ class ChronicleAnnotatedSnapshotTest : ChronicleSnapshotTest() {
     fun test() {
         val dataFilePaths = getDataFiles()
         val files = configureDataFiles(dataFilePaths)
+
         IndexingTestUtil.waitUntilIndexesAreReady(project)
         annotateDataFiles(files)
     }
