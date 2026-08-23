@@ -7,8 +7,8 @@
     <!-- commented out since it's light service -->
     <!-- <applicationService serviceImplementation="icu.windea.pls.config.configGroup.CwtConfigGroupService"/> -->
 
-    <editorNotificationProvider implementation="icu.windea.pls.config.configGroup.CwtConfigGroupEditorNotificationProvider"/>
-    <editorFloatingToolbarProvider implementation="icu.windea.pls.config.configGroup.ConfigGroupRefreshFloatingProvider"/>
+    <editorNotificationProvider implementation="icu.windea.pls.lang.editor.CwtConfigGroupEditorNotificationProvider"/>
+    <editorFloatingToolbarProvider implementation="icu.windea.pls.lang.editor.CwtConfigGroupRefreshFloatingProvider"/>
     <psi.treeChangePreprocessor implementation="icu.windea.pls.config.configGroup.CwtConfigGroupPsiTreeChangePreprocessor"/>
     <vfs.asyncListener implementation="icu.windea.pls.config.configGroup.CwtConfigFileListener"/>
   </extensions>

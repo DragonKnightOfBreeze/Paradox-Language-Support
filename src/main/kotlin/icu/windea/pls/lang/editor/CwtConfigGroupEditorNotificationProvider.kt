@@ -1,4 +1,4 @@
-package icu.windea.pls.config.configGroup
+package icu.windea.pls.lang.editor
 
 import com.intellij.ide.BrowserUtil
 import com.intellij.openapi.fileEditor.FileEditor
@@ -32,13 +32,13 @@ class CwtConfigGroupEditorNotificationProvider : EditorNotificationProvider, Dum
         return Function f@{ fileEditor ->
             if (fileEditor !is TextEditor) return@f null
             val panel = EditorNotificationPanel(fileEditor, EditorNotificationPanel.Status.Info).text(message)
-            panel.createActionLabel(ChronicleBundle.message("configGroup.notification.action.documentation")) {
+            panel.createActionLabel(ChronicleBundle.message("editor.notification.configGroup.action.documentation")) {
                 BrowserUtil.browse(ChronicleUrls.configDoc)
             }
-            panel.createActionLabel(ChronicleBundle.message("configGroup.notification.action.manual")) {
+            panel.createActionLabel(ChronicleBundle.message("editor.notification.configGroup.action.manual")) {
                 BrowserUtil.browse(ChronicleUrls.configFormatManualDoc)
             }
-            panel.createActionLabel(ChronicleBundle.message("configGroup.notification.action.repositories")) {
+            panel.createActionLabel(ChronicleBundle.message("editor.notification.configGroup.action.repositories")) {
                 BrowserUtil.browse(ChronicleUrls.configRepositories)
             }
             panel

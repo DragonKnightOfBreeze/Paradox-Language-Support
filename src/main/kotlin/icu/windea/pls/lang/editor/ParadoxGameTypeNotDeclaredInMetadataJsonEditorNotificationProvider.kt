@@ -44,11 +44,11 @@ class ParadoxGameTypeNotDeclaredInMetadataJsonEditorNotificationProvider : Edito
 
         return Function f@{ fileEditor ->
             if (fileEditor !is TextEditor) return@f null
-            val message = ChronicleBundle.message("editor.notification.2.text")
+            val message = ChronicleBundle.message("editor.notification.gameTypeNotDeclaredInMetadataJson.text")
             val panel = EditorNotificationPanel(fileEditor, EditorNotificationPanel.Status.Warning).text(message)
             val gameTypes = ParadoxGameTypeConstraint.MetadataJsonUsed.list()
             for (gameType in gameTypes) {
-                panel.createActionLabel(ChronicleBundle.message("editor.notification.2.action", gameType.gameId, gameType.title)) action@{
+                panel.createActionLabel(ChronicleBundle.message("editor.notification.gameTypeNotDeclaredInMetadataJson.action", gameType.gameId, gameType.title)) action@{
                     declareGameType(project, gameType, metadata)
                 }
             }
@@ -59,7 +59,7 @@ class ParadoxGameTypeNotDeclaredInMetadataJsonEditorNotificationProvider : Edito
     private fun declareGameType(project: Project, gameType: ParadoxGameType, metadata: ParadoxMetadataJsonBasedModMetadata) {
         val coroutineScope = ChronicleFacade.getCoroutineScope()
         coroutineScope.launch {
-            writeCommandAction(project, ChronicleBundle.message("editor.notification.2.action.command")) {
+            writeCommandAction(project, ChronicleBundle.message("editor.notification.gameTypeNotDeclaredInMetadataJson.action.command")) {
                 updateGameType(metadata, gameType)
             }
         }

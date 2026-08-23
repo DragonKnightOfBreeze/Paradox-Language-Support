@@ -35,13 +35,13 @@ class ParadoxGameTypeMismatchedEditorNotificationProvider : EditorNotificationPr
             is ParadoxDescriptorModBasedModMetadata -> {
                 when {
                     gameType matchesBy ParadoxGameTypeConstraint.DescriptorModUsed -> null
-                    else -> ChronicleBundle.message("editor.notification.3.text.1", gameType.title)
+                    else -> ChronicleBundle.message("editor.notification.GameTypeMismatched.text.1", gameType.title)
                 }
             }
             is ParadoxMetadataJsonBasedModMetadata -> {
                 when {
                     gameType matchesBy ParadoxGameTypeConstraint.MetadataJsonUsed -> null
-                    else -> ChronicleBundle.message("editor.notification.3.text.2", gameType.title)
+                    else -> ChronicleBundle.message("editor.notification.GameTypeMismatched.text.2", gameType.title)
                 }
             }
             else -> null

@@ -1,4 +1,4 @@
-package icu.windea.pls.config.configGroup
+package icu.windea.pls.lang.editor
 
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.CommonDataKeys.*
@@ -10,6 +10,7 @@ import com.intellij.openapi.editor.toolbar.floating.isInsideMainEditor
 import com.intellij.openapi.project.Project
 import com.intellij.util.application
 import icu.windea.pls.ChronicleFacade
+import icu.windea.pls.config.configGroup.CwtConfigGroupService
 import icu.windea.pls.lang.listeners.CwtConfigGroupRefreshStatusListener
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -17,7 +18,7 @@ import kotlinx.coroutines.withContext
 
 // com.intellij.openapi.externalSystem.autoimport.ProjectRefreshFloatingProvider
 
-class ConfigGroupRefreshFloatingProvider : AbstractFloatingToolbarProvider("Pls.ConfigGroupRefreshActionGroup") {
+class CwtConfigGroupRefreshFloatingProvider : AbstractFloatingToolbarProvider("Pls.ConfigGroupRefreshActionGroup") {
     override val autoHideable = false
 
     // NOTE 3.0.0 [compatibility] `FloatingToolbarProvider.isApplicable(DataContext)` is deprecated since IDEA-262

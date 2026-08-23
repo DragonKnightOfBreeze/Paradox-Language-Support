@@ -2,10 +2,10 @@ package icu.windea.pls.lang.listeners
 
 import com.intellij.openapi.project.ProjectManager
 import com.intellij.ui.EditorNotifications
-import icu.windea.pls.config.configGroup.ConfigGroupRefreshFloatingProvider
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.configGroup.CwtConfigGroupEditorNotificationProvider
 import icu.windea.pls.config.configGroup.CwtConfigGroupService
+import icu.windea.pls.lang.editor.CwtConfigGroupEditorNotificationProvider
+import icu.windea.pls.lang.editor.CwtConfigGroupRefreshFloatingProvider
 import icu.windea.pls.lang.roots.CwtConfigGroupLibrary
 import icu.windea.pls.lang.roots.CwtConfigGroupLibraryService
 
@@ -42,7 +42,7 @@ class CwtUpdateLibraryOnConfigDirectoriesChangedListener : CwtConfigDirectoriesL
  * 当更改规则目录后，刷新规则分组的修改状态。
  *
  * @see CwtConfigGroup
- * @see ConfigGroupRefreshFloatingProvider
+ * @see CwtConfigGroupRefreshFloatingProvider
  */
 class CwtUpdateConfigGroupOnConfigDirectoriesChangedListener : CwtConfigDirectoriesListener {
     override fun onChange() {

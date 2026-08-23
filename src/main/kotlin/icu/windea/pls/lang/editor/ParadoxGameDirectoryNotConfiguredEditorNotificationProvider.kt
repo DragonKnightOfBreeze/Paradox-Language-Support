@@ -45,12 +45,12 @@ class ParadoxGameDirectoryNotConfiguredEditorNotificationProvider : EditorNotifi
 
         return Function f@{ fileEditor ->
             if (fileEditor !is TextEditor) return@f null
-            val message = ChronicleBundle.message("editor.notification.1.text")
+            val message = ChronicleBundle.message("editor.notification.gameDirectoryNotConfigured.text")
             val panel = EditorNotificationPanel(fileEditor, EditorNotificationPanel.Status.Warning).text(message)
-            panel.createActionLabel(ChronicleBundle.message("editor.notification.1.action.1")) {
+            panel.createActionLabel(ChronicleBundle.message("editor.notification.gameDirectoryNotConfigured.action.1")) {
                 showModSettingsDialog(project, rootInfo, modSettings)
             }
-            panel.createActionLabel(ChronicleBundle.message("editor.notification.1.action.2")) action@{
+            panel.createActionLabel(ChronicleBundle.message("editor.notification.gameDirectoryNotConfigured.action.2")) action@{
                 configureDefaultGameDirectories()
             }
             panel
