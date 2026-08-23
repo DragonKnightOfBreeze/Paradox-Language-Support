@@ -11,10 +11,10 @@ import com.intellij.ui.dsl.listCellRenderer.*
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.base.settings.ChronicleSettings
-import icu.windea.pls.base.settings.ChronicleSettingsStrategies.*
 import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.lang.ui.localeComboBox
 import icu.windea.pls.lang.util.ParadoxLocaleManager
+import icu.windea.pls.model.policies.ParadoxLocalisationGenerationStrategy
 import java.awt.event.ActionEvent
 import javax.swing.AbstractAction
 import javax.swing.Action
@@ -67,13 +67,13 @@ class ParadoxLocalisationGenerationChooser(
         row {
             val property = AtomicProperty(settings.localisationStrategy)
             label(ChronicleBundle.message("settings.generation.localisationStrategy"))
-            comboBox(LocalisationGeneration.entries, textListCellRenderer { it?.text })
+            comboBox(ParadoxLocalisationGenerationStrategy.entries, textListCellRenderer { it?.text })
                 .bindItem(settings::localisationStrategy.toAtomicProperty())
                 .bindItem(property)
             textField().bindText(settings::localisationStrategyText.toAtomicProperty(""))
-                .visibleIf(property.transform { it == LocalisationGeneration.SpecificText })
+                .visibleIf(property.transform { it == ParadoxLocalisationGenerationStrategy.SpecificText })
             localeComboBox(locales).bindItem(settings::localisationStrategyLocale.toAtomicProperty(ParadoxLocaleManager.ID_AUTO))
-                .visibleIf(property.transform { it == LocalisationGeneration.FromLocale })
+                .visibleIf(property.transform { it == ParadoxLocalisationGenerationStrategy.FromLocale })
         }
         // blankLineBetweenLocalisationGroups
         row {

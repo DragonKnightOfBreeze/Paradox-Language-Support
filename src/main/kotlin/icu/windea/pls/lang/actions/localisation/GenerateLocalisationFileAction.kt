@@ -18,7 +18,6 @@ import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.base.notification.ChronicleNotificationGroups
 import icu.windea.pls.base.settings.ChronicleSettings
-import icu.windea.pls.base.settings.ChronicleSettingsStrategies
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.executeWriteCommand
@@ -38,6 +37,7 @@ import icu.windea.pls.localisation.ParadoxLocalisationFileType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.model.policies.ParadoxLocalisationGenerationStrategy
 import kotlinx.coroutines.CancellationException
 
 /**
@@ -126,13 +126,13 @@ class GenerateLocalisationFileAction : AnAction() {
                                     e.setName(missingLocaleConfig.name)
                                 } else if (e is ParadoxLocalisationProperty) {
                                     when (strategy) {
-                                        ChronicleSettingsStrategies.LocalisationGeneration.EmptyText -> {
+                                        ParadoxLocalisationGenerationStrategy.EmptyText -> {
                                             e.setValue("")
                                         }
-                                        ChronicleSettingsStrategies.LocalisationGeneration.SpecificText -> {
+                                        ParadoxLocalisationGenerationStrategy.SpecificText -> {
                                             e.setValue(specificText)
                                         }
-                                        ChronicleSettingsStrategies.LocalisationGeneration.FromLocale -> {
+                                        ParadoxLocalisationGenerationStrategy.FromLocale -> {
                                             // 使用对应语言环境的文本，如果不存在，或者其他任何意外，直接使用空字符串
                                             val selector = ParadoxLocalisationSearch.selector(project, baseFile).contextSensitive().locale(fromLocale)
                                             val localisation = ParadoxLocalisationSearch.searchNormal(e.name, selector).find()

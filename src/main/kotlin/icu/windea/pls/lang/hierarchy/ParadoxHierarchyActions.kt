@@ -12,8 +12,6 @@ import com.intellij.util.application
 import com.intellij.util.ui.JBUI
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.base.settings.ChronicleSettings
-import icu.windea.pls.base.settings.ChronicleSettingsStrategies
-import icu.windea.pls.base.settings.ChronicleSettingsStrategy
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.function
 import icu.windea.pls.lang.element
@@ -21,6 +19,8 @@ import icu.windea.pls.lang.hierarchy.type.ParadoxDefinitionHierarchyBrowser
 import icu.windea.pls.lang.project
 import icu.windea.pls.lang.search.scope.ParadoxSearchScopeType
 import icu.windea.pls.lang.search.scope.ParadoxSearchScopeTypes
+import icu.windea.pls.model.policies.ParadoxHierarchyGroupingPolicy
+import icu.windea.pls.model.policies.ParadoxHierarchyGroupingPolicy.*
 import java.awt.GridBagConstraints
 import java.awt.GridBagLayout
 import javax.swing.JComponent
@@ -75,7 +75,7 @@ interface ParadoxHierarchyActions {
         }
     }
 
-    class ChangeGroupingStrategyAction(
+    class ChangeGroupingPolicyAction(
         val browser: HierarchyBrowserBaseEx
     ) : ComboBoxAction() {
         override fun getActionUpdateThread() = ActionUpdateThread.EDT
@@ -95,15 +95,15 @@ interface ParadoxHierarchyActions {
 
         override fun createPopupActionGroup(button: JComponent, dataContext: DataContext): DefaultActionGroup {
             val type = browser.castOrNull<ParadoxDefinitionHierarchyBrowser>()?.type
-            val strategies = when (type) {
-                Type.EventTreeInvoker, Type.EventTreeInvoked -> ChronicleSettingsStrategies.EventTreeGrouping.entries
-                Type.TechTreePre, Type.TechTreePost -> ChronicleSettingsStrategies.TechTreeGrouping.entries
+            val policies = when (type) {
+                Type.EventTreeInvoker, Type.EventTreeInvoked -> EventTree.entries
+                Type.TechTreePre, Type.TechTreePost -> TechTree.entries
                 else -> emptyList()
             }
 
             val group = DefaultActionGroup()
-            for (strategy in strategies) {
-                group.add(MenuAction(strategy))
+            for (policy in policies) {
+                group.add(MenuAction(policy))
             }
             return group
         }
@@ -121,11 +121,11 @@ interface ParadoxHierarchyActions {
             return panel
         }
 
-        private inner class MenuAction(val strategy: ChronicleSettingsStrategy) : AnAction(strategy.text) {
+        private inner class MenuAction(val policy: ParadoxHierarchyGroupingPolicy) : AnAction(policy.text) {
             override fun actionPerformed(e: AnActionEvent) {
-                when (strategy) {
-                    is ChronicleSettingsStrategies.EventTreeGrouping -> ChronicleSettings.getInstance().state.hierarchy.eventTreeGrouping = strategy
-                    is ChronicleSettingsStrategies.TechTreeGrouping -> ChronicleSettings.getInstance().state.hierarchy.techTreeGrouping = strategy
+                when (policy) {
+                    is EventTree -> ChronicleSettings.getInstance().state.hierarchy.eventTreeGrouping = policy
+                    is TechTree -> ChronicleSettings.getInstance().state.hierarchy.techTreeGrouping = policy
                 }
 
                 // invokeLater is called to update state of button before long tree building operation

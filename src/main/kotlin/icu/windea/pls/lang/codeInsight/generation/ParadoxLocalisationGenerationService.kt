@@ -17,7 +17,7 @@ import icu.windea.pls.lang.util.ParadoxFileManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.localisation.ParadoxLocalisationFileType
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
-import icu.windea.pls.base.settings.ChronicleSettingsStrategies.LocalisationGeneration as LocalisationGenerationStrategy
+import icu.windea.pls.model.policies.ParadoxLocalisationGenerationStrategy as LocalisationGenerationStrategy
 
 object ParadoxLocalisationGenerationService {
     val fileLocaleKey = createKey<CwtLocaleConfig>("chronicle.localiation.generation.file.locale")

@@ -15,6 +15,9 @@ import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.ChronicleConstants
 import icu.windea.pls.model.expressions.ParadoxDefinitionTypeExpression
+import icu.windea.pls.model.policies.ParadoxDiffGroupingPolicy
+import icu.windea.pls.model.policies.ParadoxHierarchyGroupingPolicy
+import icu.windea.pls.model.policies.ParadoxLocalisationGenerationStrategy
 
 /**
  * 插件的全局设置。
@@ -141,7 +144,7 @@ class ChronicleSettings : SimplePersistentStateComponent<ChronicleSettings.State
      */
     @Tag("generation")
     class GenerationState : BaseState() {
-        var localisationStrategy by enum(ChronicleSettingsStrategies.LocalisationGeneration.SpecificText)
+        var localisationStrategy by enum(ParadoxLocalisationGenerationStrategy.SpecificText)
         var localisationStrategyText by string("REPLACE_ME")
         var localisationStrategyLocale by string(ParadoxLocaleManager.ID_AUTO)
         var blankLineBetweenLocalisationGroups by property(true)
@@ -240,8 +243,8 @@ class ChronicleSettings : SimplePersistentStateComponent<ChronicleSettings.State
         var showTechInfoByCategories by property(true)
         var showTechInfoByAttributes by property(false)
 
-        var eventTreeGrouping by enum(ChronicleSettingsStrategies.EventTreeGrouping.None)
-        var techTreeGrouping by enum(ChronicleSettingsStrategies.TechTreeGrouping.None)
+        var eventTreeGrouping by enum(ParadoxHierarchyGroupingPolicy.EventTree.None)
+        var techTreeGrouping by enum(ParadoxHierarchyGroupingPolicy.TechTree.None)
 
         fun showDefinitionsInCallHierarchyByBindings(rootDefinitionInfo: ParadoxDefinitionInfo?, definitionInfo: ParadoxDefinitionInfo?): Boolean {
             if (rootDefinitionInfo == null || definitionInfo == null) return true
@@ -260,7 +263,7 @@ class ChronicleSettings : SimplePersistentStateComponent<ChronicleSettings.State
      */
     @Tag("diff")
     class DiffState : BaseState() {
-        var defaultDiffGroup by enum(ChronicleSettingsStrategies.DiffGroup.Current)
+        var defaultDiffGroup by enum(ParadoxDiffGroupingPolicy.Current)
     }
 
     /**

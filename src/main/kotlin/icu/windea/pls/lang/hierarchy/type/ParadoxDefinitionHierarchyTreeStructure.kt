@@ -7,7 +7,6 @@ import com.intellij.psi.PsiElement
 import com.intellij.ui.tree.LeafState
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.base.settings.ChronicleSettings
-import icu.windea.pls.base.settings.ChronicleSettingsStrategies.*
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.toArray
@@ -24,6 +23,7 @@ import icu.windea.pls.lang.util.ParadoxEventManager
 import icu.windea.pls.lang.util.ParadoxTechnologyManager
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
+import icu.windea.pls.model.policies.ParadoxHierarchyGroupingPolicy.*
 import icu.windea.pls.lang.hierarchy.type.ParadoxDefinitionHierarchyNodeType as NodeType
 import icu.windea.pls.lang.hierarchy.type.ParadoxDefinitionHierarchyType as Type
 
@@ -32,7 +32,7 @@ class ParadoxDefinitionHierarchyTreeStructure(
     baseDescriptor: ParadoxDefinitionHierarchyNodeDescriptor,
     element: PsiElement,
     val typeConfig: CwtTypeConfig,
-    val type: Type
+    val type: Type,
 ) : HierarchyTreeStructure(project, baseDescriptor) {
     private val elementPointer = element.createPointer()
 
@@ -87,7 +87,7 @@ class ParadoxDefinitionHierarchyTreeStructure(
         when (descriptor.nodeType) {
             NodeType.Type -> {
                 when (groupingStrategy) {
-                    EventTreeGrouping.Type -> {
+                    EventTree.Type -> {
                         return doBuildEventTreeChildren(descriptor, descriptors, NodeType.EventType)
                     }
                     else -> {}
@@ -122,13 +122,13 @@ class ParadoxDefinitionHierarchyTreeStructure(
         when (descriptor.nodeType) {
             NodeType.Type -> {
                 when (groupingStrategy) {
-                    TechTreeGrouping.Tier, TechTreeGrouping.Tier2Area, TechTreeGrouping.Tier2Category -> {
+                    TechTree.Tier, TechTree.Tier2Area, TechTree.Tier2Category -> {
                         return doBuildTechTreeChildren(descriptor, descriptors, NodeType.TechTier)
                     }
-                    TechTreeGrouping.Area, TechTreeGrouping.Area2Tier -> {
+                    TechTree.Area, TechTree.Area2Tier -> {
                         return doBuildTechTreeChildren(descriptor, descriptors, NodeType.TechArea)
                     }
-                    TechTreeGrouping.Category, TechTreeGrouping.Category2Tier -> {
+                    TechTree.Category, TechTree.Category2Tier -> {
                         return doBuildTechTreeChildren(descriptor, descriptors, NodeType.TechCategory)
                     }
                     else -> {}
@@ -136,10 +136,10 @@ class ParadoxDefinitionHierarchyTreeStructure(
             }
             NodeType.TechTier -> {
                 when (groupingStrategy) {
-                    TechTreeGrouping.Tier2Area -> {
+                    TechTree.Tier2Area -> {
                         return doBuildTechTreeChildren(descriptor, descriptors, NodeType.TechArea)
                     }
-                    TechTreeGrouping.Tier2Category -> {
+                    TechTree.Tier2Category -> {
                         return doBuildTechTreeChildren(descriptor, descriptors, NodeType.TechCategory)
                     }
                     else -> {}
@@ -147,7 +147,7 @@ class ParadoxDefinitionHierarchyTreeStructure(
             }
             NodeType.TechArea -> {
                 when (groupingStrategy) {
-                    TechTreeGrouping.Area2Tier -> {
+                    TechTree.Area2Tier -> {
                         return doBuildTechTreeChildren(descriptor, descriptors, NodeType.TechTier)
                     }
                     else -> {}
@@ -155,7 +155,7 @@ class ParadoxDefinitionHierarchyTreeStructure(
             }
             NodeType.TechCategory -> {
                 when (groupingStrategy) {
-                    TechTreeGrouping.Category2Tier -> {
+                    TechTree.Category2Tier -> {
                         return doBuildTechTreeChildren(descriptor, descriptors, NodeType.TechTier)
                     }
                     else -> {}
@@ -235,7 +235,7 @@ class ParadoxDefinitionHierarchyTreeStructure(
 
     private fun filterDefinitionChild(descriptor: ParadoxDefinitionHierarchyNodeDescriptor, definition: ParadoxDefinitionElement, groupingRules: List<Tuple2<NodeType, String>>): Boolean {
         val definitionInfo = definition.definitionInfo ?: return false
-        if (descriptor.nodeType == NodeType.NoSubtype && !definitionInfo.subtypes.isEmpty()) return false
+        if (descriptor.nodeType == NodeType.NoSubtype && definitionInfo.subtypes.isNotEmpty()) return false
         for ((nodeType, name) in groupingRules) {
             when {
                 nodeType == NodeType.EventType -> {

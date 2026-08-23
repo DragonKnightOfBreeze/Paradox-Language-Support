@@ -19,6 +19,9 @@ import icu.windea.pls.core.util.toMutableMap
 import icu.windea.pls.lang.ui.localeComboBox
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.policies.ParadoxDiffGroupingPolicy
+import icu.windea.pls.model.policies.ParadoxHierarchyGroupingPolicy
+import icu.windea.pls.model.policies.ParadoxLocalisationGenerationStrategy
 import java.awt.event.ActionEvent
 
 class ChronicleSettingsConfigurable : BoundConfigurable(ChronicleBaseBundle.message("settings")), SearchableConfigurable {
@@ -417,13 +420,13 @@ class ChronicleSettingsConfigurable : BoundConfigurable(ChronicleBaseBundle.mess
         row {
             val property = AtomicProperty(settings.localisationStrategy)
             label(ChronicleBaseBundle.message("settings.generation.localisationStrategy"))
-            comboBox(ChronicleSettingsStrategies.LocalisationGeneration.entries, textListCellRenderer { it?.text })
+            comboBox(ParadoxLocalisationGenerationStrategy.entries, textListCellRenderer { it?.text })
                 .bindItem(settings::localisationStrategy.toNullableProperty())
                 .bindItem(property)
             textField().bindText(settings::localisationStrategyText.toNonNullableProperty(""))
-                .visibleIf(property.transform { it == ChronicleSettingsStrategies.LocalisationGeneration.SpecificText })
+                .visibleIf(property.transform { it == ParadoxLocalisationGenerationStrategy.SpecificText })
             localeComboBox(locales).bindItem(settings::localisationStrategyLocale.toNullableProperty())
-                .visibleIf(property.transform { it == ChronicleSettingsStrategies.LocalisationGeneration.FromLocale })
+                .visibleIf(property.transform { it == ParadoxLocalisationGenerationStrategy.FromLocale })
         }
         // blankLineBetweenLocalisationGroups
         row {
@@ -523,13 +526,13 @@ class ChronicleSettingsConfigurable : BoundConfigurable(ChronicleBaseBundle.mess
         // eventTreeGrouping
         row {
             label(ChronicleBaseBundle.message("settings.hierarchy.eventTreeGrouping"))
-            comboBox(ChronicleSettingsStrategies.EventTreeGrouping.entries, textListCellRenderer { it?.text })
+            comboBox(ParadoxHierarchyGroupingPolicy.EventTree.entries, textListCellRenderer { it?.text })
                 .bindItem(settings::eventTreeGrouping.toNullableProperty())
         }
         // techTreeGrouping
         row {
             label(ChronicleBaseBundle.message("settings.hierarchy.techTreeGrouping"))
-            comboBox(ChronicleSettingsStrategies.TechTreeGrouping.entries, textListCellRenderer { it?.text })
+            comboBox(ParadoxHierarchyGroupingPolicy.TechTree.entries, textListCellRenderer { it?.text })
                 .bindItem(settings::techTreeGrouping.toNullableProperty())
         }
     }
@@ -540,7 +543,7 @@ class ChronicleSettingsConfigurable : BoundConfigurable(ChronicleBaseBundle.mess
         // defaultDiffGroup
         row {
             label(ChronicleBaseBundle.message("settings.diff.defaultDiffGroup"))
-            comboBox(ChronicleSettingsStrategies.DiffGroup.entries, textListCellRenderer { it?.text })
+            comboBox(ParadoxDiffGroupingPolicy.entries, textListCellRenderer { it?.text })
                 .bindItem(settings::defaultDiffGroup.toNullableProperty())
         }
     }
