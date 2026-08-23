@@ -8,11 +8,21 @@ import icu.windea.pls.core.removeSurroundingOrNull
 
 /**
  * 文本模式。
+ *
+ * 用于（基于可能的前缀、后缀、分隔符等）进行文本匹配。
+ *
+ * 作为一种模型策略，既包含用于文本匹配的元数据，也作为对文本匹配逻辑的策略。
  */
-sealed interface TextPattern<out R : TextPatternResult> {
+interface TextPattern<out R : TextPatternResult> {
+    val priority: Int get() = 0
+    val orderString: String? get() = null
+
     fun matches(text: String): R?
 
     data class Literal(val value: String) : TextPattern<TextPatternResult.Empty> {
+        override val priority: Int get() = 100
+        override val orderString: String get() = value
+
         override fun matches(text: String): TextPatternResult.Empty? {
             if (text != value) return null
             return TextPatternResult.Empty
@@ -20,6 +30,9 @@ sealed interface TextPattern<out R : TextPatternResult> {
     }
 
     data class WithPrefix(val prefix: String) : TextPattern<TextPatternResult.Single> {
+        override val priority: Int get() = 80
+        override val orderString: String get() = prefix
+
         override fun matches(text: String): TextPatternResult.Single? {
             val result = text.removePrefixOrNull(prefix) ?: return null
             return TextPatternResult.Single(result)
@@ -27,6 +40,8 @@ sealed interface TextPattern<out R : TextPatternResult> {
     }
 
     data class WithSuffix(val suffix: String) : TextPattern<TextPatternResult.Single> {
+        override val priority: Int get() = 70
+
         override fun matches(text: String): TextPatternResult.Single? {
             val result = text.removeSuffixOrNull(suffix) ?: return null
             return TextPatternResult.Single(result)
@@ -34,6 +49,9 @@ sealed interface TextPattern<out R : TextPatternResult> {
     }
 
     data class WithSurrounding(val prefix: String, val suffix: String) : TextPattern<TextPatternResult.Single> {
+        override val priority: Int get() = 90
+        override val orderString: String get() = prefix
+
         override fun matches(text: String): TextPatternResult.Single? {
             val result = text.removeSurroundingOrNull(prefix, suffix) ?: return null
             return TextPatternResult.Single(result)
@@ -41,6 +59,8 @@ sealed interface TextPattern<out R : TextPatternResult> {
     }
 
     data class Delimited(val delimiter: String) : TextPattern<TextPatternResult.Pair> {
+        override val priority: Int get() = 0
+
         override fun matches(text: String): TextPatternResult.Pair? {
             val input = text
             val delimiterIndex = input.indexOf(delimiter)
@@ -52,6 +72,9 @@ sealed interface TextPattern<out R : TextPatternResult> {
     }
 
     data class DelimitedWithPrefix(val delimiter: String, val prefix: String) : TextPattern<TextPatternResult.Pair> {
+        override val priority: Int get() = 80
+        override val orderString: String get() = prefix
+
         override fun matches(text: String): TextPatternResult.Pair? {
             val input = text.removePrefixOrNull(prefix) ?: return null
             val delimiterIndex = input.indexOf(delimiter)
@@ -63,6 +86,8 @@ sealed interface TextPattern<out R : TextPatternResult> {
     }
 
     data class DelimitedWithSuffix(val delimiter: String, val suffix: String) : TextPattern<TextPatternResult.Pair> {
+        override val priority: Int get() = 70
+
         override fun matches(text: String): TextPatternResult.Pair? {
             val input = text.removeSuffixOrNull(suffix) ?: return null
             val delimiterIndex = input.indexOf(delimiter)
@@ -74,6 +99,9 @@ sealed interface TextPattern<out R : TextPatternResult> {
     }
 
     data class DelimitedWithSurrounding(val delimiter: String, val prefix: String, val suffix: String) : TextPattern<TextPatternResult.Pair> {
+        override val priority: Int get() = 90
+        override val orderString: String get() = prefix
+
         override fun matches(text: String): TextPatternResult.Pair? {
             val input = text.removeSurroundingOrNull(prefix, suffix) ?: return null
             val delimiterIndex = input.indexOf(delimiter)
@@ -86,33 +114,7 @@ sealed interface TextPattern<out R : TextPatternResult> {
 
     object Comparator : kotlin.Comparator<TextPattern<*>> {
         override fun compare(a: TextPattern<*>, b: TextPattern<*>): Int {
-            return compareValuesBy(a, b, { selectPriority(it) }, { selectLiteralOrPrefix(it) })
-        }
-
-        private fun selectPriority(pattern: TextPattern<TextPatternResult>): Int {
-            return when (pattern) {
-                is Literal -> 100
-                is WithPrefix -> 80
-                is WithSuffix -> 70
-                is WithSurrounding -> 90
-                is Delimited -> 0
-                is DelimitedWithPrefix -> 80
-                is DelimitedWithSuffix -> 70
-                is DelimitedWithSurrounding -> 90
-            }
-        }
-
-        private fun selectLiteralOrPrefix(pattern: TextPattern<TextPatternResult>): String? {
-            return when (pattern) {
-                is Literal -> pattern.value
-                is WithPrefix -> pattern.prefix
-                is WithSuffix -> null
-                is WithSurrounding -> pattern.prefix
-                is Delimited -> null
-                is DelimitedWithPrefix -> pattern.prefix
-                is DelimitedWithSuffix -> null
-                is DelimitedWithSurrounding -> pattern.prefix
-            }
+            return compareValuesBy(a, b, { it.priority }, { it.orderString })
         }
     }
 }
