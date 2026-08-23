@@ -1,4 +1,4 @@
-package icu.windea.pls.config.listeners
+package icu.windea.pls.lang.listeners
 
 import icu.windea.pls.config.util.CwtConfigRepositoryManager
 

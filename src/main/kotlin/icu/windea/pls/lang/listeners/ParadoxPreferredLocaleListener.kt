@@ -13,4 +13,3 @@ interface ParadoxPreferredLocaleListener {
         val TOPIC = Topic(ParadoxPreferredLocaleListener::class.java, Topic.BroadcastDirection.NONE)
     }
 }
-

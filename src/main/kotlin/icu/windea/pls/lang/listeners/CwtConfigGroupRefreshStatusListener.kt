@@ -1,4 +1,4 @@
-package icu.windea.pls.config.listeners
+package icu.windea.pls.lang.listeners
 
 import com.intellij.openapi.project.Project
 import com.intellij.util.messages.Topic

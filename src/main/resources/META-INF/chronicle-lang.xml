@@ -48,9 +48,10 @@
     <!-- make first to optimize performance (before JSLibraryOverrider) -->
     <fileTypeOverrider implementation="icu.windea.pls.lang.ParadoxFileTypeOverrider" order="first"/>
 
+    <additionalLibraryRootsProvider implementation="icu.windea.pls.lang.roots.CwtConfigGroupLibraryProvider"/>
     <additionalLibraryRootsProvider implementation="icu.windea.pls.lang.roots.ParadoxLibraryProvider"/>
-    <utf8BomOptionProvider implementation="icu.windea.pls.lang.ParadoxUtf8BomOptionProvider"/>
     <vfs.asyncListener implementation="icu.windea.pls.lang.ParadoxFileListener"/>
+    <utf8BomOptionProvider implementation="icu.windea.pls.lang.ParadoxUtf8BomOptionProvider"/>
 
     <projectViewPane implementation="icu.windea.pls.lang.projectView.CwtConfigFilesViewPane"/>
     <projectViewPane implementation="icu.windea.pls.lang.projectView.ParadoxFilesViewPane"/>
@@ -465,6 +466,17 @@
     <applicationService serviceInterface="icu.windea.pls.lang.tools.SpecialPathService" serviceImplementation="icu.windea.pls.lang.tools.SpecialPathServiceImpl"/>
     <applicationService serviceInterface="icu.windea.pls.lang.tools.SpecialUrlService" serviceImplementation="icu.windea.pls.lang.tools.SpecialUrlServiceImpl"/>
   </extensions>
+
+  <applicationListeners>
+    <listener class="icu.windea.pls.lang.listeners.CwtUpdateEditorNotificationsOnConfigDirectoriesChangedListener"
+              topic="icu.windea.pls.lang.listeners.CwtConfigDirectoriesListener"/>
+    <listener class="icu.windea.pls.lang.listeners.CwtUpdateLibraryOnConfigDirectoriesChangedListener"
+              topic="icu.windea.pls.lang.listeners.CwtConfigDirectoriesListener"/>
+    <listener class="icu.windea.pls.lang.listeners.CwtUpdateConfigGroupOnConfigDirectoriesChangedListener"
+              topic="icu.windea.pls.lang.listeners.CwtConfigDirectoriesListener"/>
+    <listener class="icu.windea.pls.lang.listeners.CwtSyncOnConfigRepositoryUrlsChangedListener"
+              topic="icu.windea.pls.lang.listeners.CwtConfigRepositoryUrlsListener"/>
+  </applicationListeners>
 
   <applicationListeners>
     <listener class="icu.windea.pls.lang.listeners.ParadoxUpdateEditorNotificationsOnDefaultGameDirectoriesChangedListener"

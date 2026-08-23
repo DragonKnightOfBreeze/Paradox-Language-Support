@@ -1,4 +1,4 @@
-package icu.windea.pls.config.listeners
+package icu.windea.pls.lang.listeners
 
 import com.intellij.openapi.project.ProjectManager
 import com.intellij.ui.EditorNotifications

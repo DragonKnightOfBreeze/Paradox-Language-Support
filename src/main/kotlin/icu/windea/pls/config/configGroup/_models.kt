@@ -9,7 +9,6 @@ import icu.windea.pls.ep.config.configGroup.CwtFileBasedConfigGroupProcessor
 import icu.windea.pls.lang.util.ParadoxModificationTrackers
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 
-
 /**
  * 规则分组文件信息。
  *

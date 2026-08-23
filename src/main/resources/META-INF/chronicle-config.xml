@@ -9,19 +9,7 @@
 
     <editorNotificationProvider implementation="icu.windea.pls.config.configGroup.CwtConfigGroupEditorNotificationProvider"/>
     <editorFloatingToolbarProvider implementation="icu.windea.pls.config.configGroup.ConfigGroupRefreshFloatingProvider"/>
-    <additionalLibraryRootsProvider implementation="icu.windea.pls.lang.roots.CwtConfigGroupLibraryProvider"/>
     <psi.treeChangePreprocessor implementation="icu.windea.pls.config.configGroup.CwtConfigGroupPsiTreeChangePreprocessor"/>
     <vfs.asyncListener implementation="icu.windea.pls.config.configGroup.CwtConfigFileListener"/>
   </extensions>
-
-  <applicationListeners>
-    <listener class="icu.windea.pls.config.listeners.CwtUpdateEditorNotificationsOnConfigDirectoriesChangedListener"
-              topic="icu.windea.pls.config.listeners.CwtConfigDirectoriesListener"/>
-    <listener class="icu.windea.pls.config.listeners.CwtUpdateLibraryOnConfigDirectoriesChangedListener"
-              topic="icu.windea.pls.config.listeners.CwtConfigDirectoriesListener"/>
-    <listener class="icu.windea.pls.config.listeners.CwtUpdateConfigGroupOnConfigDirectoriesChangedListener"
-              topic="icu.windea.pls.config.listeners.CwtConfigDirectoriesListener"/>
-    <listener class="icu.windea.pls.config.listeners.CwtSyncOnConfigRepositoryUrlsChangedListener"
-              topic="icu.windea.pls.config.listeners.CwtConfigRepositoryUrlsListener"/>
-  </applicationListeners>
 </idea-plugin>
