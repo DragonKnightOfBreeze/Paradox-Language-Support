@@ -48,6 +48,8 @@ object ChronicleStrings {
 
     const val parameterStartMarker = "$"
     const val parameterEndMarker = "$"
+    const val inlineMathStart = "@["
+    const val inlineMathEnd = "]"
     const val commandStartMarker = "["
     const val commandEndMarker = "]"
     const val colorStartMarker = "§"

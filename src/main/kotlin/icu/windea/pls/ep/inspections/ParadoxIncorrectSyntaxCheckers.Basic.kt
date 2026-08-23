@@ -7,9 +7,9 @@ import com.intellij.psi.util.elementType
 import com.intellij.psi.util.startOffset
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.fixes.DeleteStringByElementTypeFix
+import icu.windea.pls.core.fixes.ReplaceStringFix
 import icu.windea.pls.ep.ChronicleEpBundle
-import icu.windea.pls.lang.fixes.DeleteStringByElementTypeFix
-import icu.windea.pls.lang.fixes.ReplaceStringFix
 import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import icu.windea.pls.lang.inspections.ParadoxSyntaxInspectionContext
 import icu.windea.pls.lang.inspections.ParadoxSyntaxInspectionService

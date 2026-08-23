@@ -15,13 +15,13 @@ import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.children
 import icu.windea.pls.core.collections.toArray
+import icu.windea.pls.core.fixes.BrowseUrlFix
 import icu.windea.pls.core.matchesAntPatterns
 import icu.windea.pls.core.vfs.VirtualFileBomService
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.lang.analysis.ParadoxFileEncodingService
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.fixes.BrowseUrlFix
 import icu.windea.pls.lang.fixes.ChangeFileEncodingFix
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.psi.ParadoxFile

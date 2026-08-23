@@ -3,8 +3,8 @@ package icu.windea.pls.lang.inspections
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.psi.PsiElement
 import icu.windea.pls.core.collections.toArray
+import icu.windea.pls.core.fixes.ReplaceStringFix
 import icu.windea.pls.core.psi.PsiService
-import icu.windea.pls.lang.fixes.ReplaceStringFix
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constraints.ParadoxSyntaxConstraint
 import icu.windea.pls.script.formatter.ParadoxScriptCodeStyleSettings

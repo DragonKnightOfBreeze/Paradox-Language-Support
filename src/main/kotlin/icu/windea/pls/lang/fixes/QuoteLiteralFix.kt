@@ -2,6 +2,7 @@ package icu.windea.pls.lang.fixes
 
 import com.intellij.modcommand.ModPsiUpdater
 import com.intellij.modcommand.PsiUpdateModCommandQuickFix
+import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.psi.ElementManipulators
 import com.intellij.psi.PsiElement
@@ -9,7 +10,7 @@ import com.intellij.psi.PsiLiteralValue
 import icu.windea.pls.core.quote
 import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 
-class QuoteLiteralFix : PsiUpdateModCommandQuickFix() {
+class QuoteLiteralFix : PsiUpdateModCommandQuickFix(), DumbAware {
     override fun getFamilyName() = ChronicleInspectionBundle.message("fix.quoteLiteral.name")
 
     override fun applyFix(project: Project, element: PsiElement, updater: ModPsiUpdater) {

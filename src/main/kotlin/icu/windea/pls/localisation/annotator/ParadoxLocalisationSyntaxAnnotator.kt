@@ -7,7 +7,7 @@ import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.startOffset
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.lang.fixes.InsertStringFix
+import icu.windea.pls.core.fixes.InsertStringFix
 import icu.windea.pls.localisation.psi.ParadoxLocalisationIcon
 
 class ParadoxLocalisationSyntaxAnnotator : Annotator, DumbAware {
