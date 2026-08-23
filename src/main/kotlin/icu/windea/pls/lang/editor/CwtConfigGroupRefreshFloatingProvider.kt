@@ -10,8 +10,8 @@ import com.intellij.openapi.editor.toolbar.floating.isInsideMainEditor
 import com.intellij.openapi.project.Project
 import com.intellij.util.application
 import icu.windea.pls.ChronicleFacade
+import icu.windea.pls.config.configGroup.CwtConfigGroupRefreshStatusListener
 import icu.windea.pls.config.configGroup.CwtConfigGroupService
-import icu.windea.pls.lang.listeners.CwtConfigGroupRefreshStatusListener
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

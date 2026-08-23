@@ -22,7 +22,6 @@ import icu.windea.pls.base.notification.ChronicleNotificationGroups
 import icu.windea.pls.core.getDefaultProject
 import icu.windea.pls.core.optimized
 import icu.windea.pls.ep.config.configGroup.CwtConfigGroupFileProvider
-import icu.windea.pls.lang.listeners.CwtConfigGroupRefreshStatusListener
 import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
