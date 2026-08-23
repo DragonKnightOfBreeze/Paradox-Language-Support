@@ -4,15 +4,28 @@ import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import com.intellij.openapi.options.BoundConfigurable
 import com.intellij.openapi.options.SearchableConfigurable
 import com.intellij.openapi.ui.DialogPanel
+import com.intellij.openapi.ui.TextFieldWithBrowseButton
+import com.intellij.openapi.ui.ValidationInfo
 import com.intellij.openapi.ui.setEmptyState
 import com.intellij.ui.dsl.builder.*
+import com.intellij.ui.layout.ValidationInfoBuilder
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.base.ChronicleBaseBundle
+import icu.windea.pls.base.analysis.ChronicleAnalysisManager
 import icu.windea.pls.base.help.ChronicleHelpTopics
+import icu.windea.pls.core.collections.findIsInstance
+import icu.windea.pls.core.options.OptionsService
 import icu.windea.pls.core.util.CallbackLock
+import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.integrations.images.ImageToolConstants
+import icu.windea.pls.integrations.images.ImageToolProvider
+import icu.windea.pls.integrations.images.providers.MagickToolProvider
 import icu.windea.pls.integrations.lints.LintToolConstants
+import icu.windea.pls.integrations.lints.LintToolProvider
+import icu.windea.pls.integrations.lints.TigerLintToolService
+import icu.windea.pls.integrations.lints.providers.TigerLintToolProvider
 import icu.windea.pls.integrations.translation.TranslationToolConstants
+import icu.windea.pls.model.ParadoxGameType
 
 @Suppress("UnstableApiUsage")
 class ChronicleIntegrationsSettingsConfigurable : BoundConfigurable(ChronicleBaseBundle.message("settings.integrations")), SearchableConfigurable {
@@ -67,7 +80,7 @@ class ChronicleIntegrationsSettingsConfigurable : BoundConfigurable(ChronicleBas
                 .bindText(settings::magickPath.toNonNullableProperty(""))
                 .applyToComponent { setEmptyState(ImageToolConstants.Magick.pathTip()) }
                 .align(Align.FILL)
-                .validationOnInput { ChronicleIntegrationsSettingsManager.validateMagickPath(this, it) }
+                .validationOnInput { Manager.validateMagickPath(this, it) }
         }
     }
 
@@ -79,12 +92,12 @@ class ChronicleIntegrationsSettingsConfigurable : BoundConfigurable(ChronicleBas
             checkBox(ChronicleBaseBundle.message("settings.integrations.translation.from.tp")).selected(true).enabled(false)
                 .comment(ChronicleBaseBundle.message("settings.integrations.translation.from.tp.comment"), MAX_LINE_LENGTH_WORD_WRAP)
             browserLink(ChronicleBundle.message("link.website"), TranslationToolConstants.TranslationPlugin.url)
-            link(ChronicleBundle.message("link.install")) { ChronicleIntegrationsSettingsManager.installTranslationPlugin() }
+            link(ChronicleBundle.message("link.install")) { Manager.installTranslationPlugin() }
         }
         row {
             checkBox(ChronicleBaseBundle.message("settings.integrations.translation.from.ai")).selected(true).enabled(false)
                 .comment(ChronicleBaseBundle.message("settings.integrations.translation.from.ai.comment"), MAX_LINE_LENGTH_WORD_WRAP)
-            link(ChronicleBundle.message("link.configureInSettingsPage")) { ChronicleIntegrationsSettingsManager.openAiSettingsPage() }
+            link(ChronicleBundle.message("link.configureInSettingsPage")) { Manager.openAiSettingsPage() }
         }
     }
 
@@ -100,11 +113,11 @@ class ChronicleIntegrationsSettingsConfigurable : BoundConfigurable(ChronicleBas
             checkBox(ChronicleBaseBundle.message("settings.integrations.lint.tiger"))
                 .comment(ChronicleBaseBundle.message("settings.integrations.lint.tiger.comment"), MAX_LINE_LENGTH_WORD_WRAP)
                 .bindSelected(settings::enableTiger)
-                .onApply { ChronicleIntegrationsSettingsManager.onTigerSettingsChanged(callbackLock) }
+                .onApply { Manager.onTigerSettingsChanged(callbackLock) }
             browserLink(ChronicleBundle.message("link.website"), LintToolConstants.Tiger.url)
         }
 
-        val map = ChronicleIntegrationsSettingsManager.getTigerSettingsMap(ChronicleIntegrationsSettings.getInstance().state)
+        val map = Manager.getTigerSettingsMap(ChronicleIntegrationsSettings.getInstance().state)
         map.forEach { (gameType, tuple) ->
             val (name, pathProp, confPathProp) = tuple
 
@@ -116,8 +129,8 @@ class ChronicleIntegrationsSettingsConfigurable : BoundConfigurable(ChronicleBas
                     .bindText(pathProp.toNonNullableProperty(""))
                     .applyToComponent { setEmptyState(LintToolConstants.Tiger.pathTip(gameType)) }
                     .align(Align.FILL)
-                    .validationOnInput { ChronicleIntegrationsSettingsManager.validateTigerPath(this, it, gameType) }
-                    .onApply { ChronicleIntegrationsSettingsManager.onTigerSettingsChanged(gameType, callbackLock) }
+                    .validationOnInput { Manager.validateTigerPath(this, it, gameType) }
+                    .onApply { Manager.onTigerSettingsChanged(gameType, callbackLock) }
             }
             row {
                 label(ChronicleBaseBundle.message("settings.integrations.lint.tigerConfPath", name)).widthGroup(groupName)
@@ -127,22 +140,14 @@ class ChronicleIntegrationsSettingsConfigurable : BoundConfigurable(ChronicleBas
                 textFieldWithBrowseButton(descriptor, null)
                     .bindText(confPathProp.toNonNullableProperty(""))
                     .applyToComponent { setEmptyState(LintToolConstants.Tiger.confPathTip(gameType)) }
-                    .validationOnInput { ChronicleIntegrationsSettingsManager.validateTigerConfPath(this, it, gameType) }
+                    .validationOnInput { Manager.validateTigerConfPath(this, it, gameType) }
                     .align(Align.FILL)
-                    .onApply { ChronicleIntegrationsSettingsManager.onTigerSettingsChanged(gameType, callbackLock) }
+                    .onApply { Manager.onTigerSettingsChanged(gameType, callbackLock) }
             }
         }
 
         // tigerHighlighting
-        row {
-            label(ChronicleBaseBundle.message("settings.integrations.lint.tigerHighlight"))
-            link(ChronicleBundle.message("link.configure")) {
-                // Tiger highlight mapping - open dialog - save settings and refresh files after dialog closed with ok
-                val dialog = TigerHighlightDialog()
-                if (dialog.showAndGet()) ChronicleIntegrationsSettingsManager.onTigerSettingsChanged(callbackLock)
-            }
-            contextHelp(ChronicleBaseBundle.message("settings.integrations.lint.tigerHighlight.tip"))
-        }
+        with(Factory) { configureForHighlight(callbackLock) }
     }
 
     object Factory {
@@ -154,9 +159,66 @@ class ChronicleIntegrationsSettingsConfigurable : BoundConfigurable(ChronicleBas
                 link(ChronicleBundle.message("link.configure")) {
                     // Tiger highlight mapping - open dialog - save settings and refresh files after dialog closed with ok
                     val dialog = TigerHighlightDialog()
-                    if (dialog.showAndGet()) ChronicleIntegrationsSettingsManager.onTigerSettingsChanged(callbackLock)
+                    if (dialog.showAndGet()) Manager.onTigerSettingsChanged(callbackLock)
                 }
             }
+        }
+    }
+
+    object Manager {
+        // Image Tools
+
+        fun validateMagickPath(builder: ValidationInfoBuilder, button: TextFieldWithBrowseButton): ValidationInfo? {
+            val path = button.text.trim()
+            if (path.isEmpty()) return null
+            val tool = ImageToolProvider.EP_NAME.findExtension(MagickToolProvider::class.java) ?: return null
+            if (tool.isValidExePath(path)) return null
+            return builder.warning(ChronicleBaseBundle.message("settings.integrations.validation.invalidPath"))
+        }
+
+        // Translation Tools
+
+        fun installTranslationPlugin() {
+            // NOTE 这里需要先切换到插件市场分页，并设置查询关键字
+            OptionsService.selectPlugin("Translation", openMarketplaceTab = true)
+        }
+
+        fun openAiSettingsPage() {
+            OptionsService.select<ChronicleAiSettingsConfigurable>()
+        }
+
+        // Lint Tools
+
+        fun getTigerSettingsMap(settings: ChronicleIntegrationsSettings.State) = buildMap {
+            put(ParadoxGameType.Ck3, tupleOf("ck3-tiger", settings.lint::ck3TigerPath, settings.lint::ck3TigerConfPath))
+            put(ParadoxGameType.Ir, tupleOf("imperator-tiger", settings.lint::irTigerPath, settings.lint::irTigerConfPath))
+            put(ParadoxGameType.Vic3, tupleOf("vic3-tiger", settings.lint::vic3TigerPath, settings.lint::vic3TigerConfPath))
+        }
+
+        fun validateTigerPath(builder: ValidationInfoBuilder, button: TextFieldWithBrowseButton, gameType: ParadoxGameType): ValidationInfo? {
+            val path = button.text.trim()
+            if (path.isEmpty()) return null
+            val tool = LintToolProvider.EP_NAME.extensionList.findIsInstance<TigerLintToolProvider> { it.isAvailable(gameType) } ?: return null
+            if (tool.isValidExePath(path)) return null
+            return builder.warning(ChronicleBaseBundle.message("settings.integrations.lint.tigerPath.invalid"))
+        }
+
+        @Suppress("UNUSED_PARAMETER")
+        fun validateTigerConfPath(builder: ValidationInfoBuilder, button: TextFieldWithBrowseButton, gameType: ParadoxGameType): ValidationInfo? {
+            val path = button.text.trim()
+            if (path.endsWith(".conf", true)) return null
+            return builder.warning(ChronicleBaseBundle.message("settings.integrations.lint.tigerConfPath.invalid"))
+        }
+
+        fun onTigerSettingsChanged(callbackLock: CallbackLock) {
+            if (!callbackLock.check("onTigerSettingsChanged")) return
+            ChronicleAnalysisManager.refreshInlayHints()
+        }
+
+        fun onTigerSettingsChanged(gameType: ParadoxGameType, callbackLock: CallbackLock) {
+            onTigerSettingsChanged(callbackLock)
+            if (!callbackLock.check("onTigerSettingsChanged.${gameType.id}")) return
+            TigerLintToolService.getInstance().getModificationTracker(gameType).incModificationCount()
         }
     }
 }

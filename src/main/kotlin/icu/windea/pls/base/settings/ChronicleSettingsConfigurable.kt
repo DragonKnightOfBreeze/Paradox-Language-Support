@@ -9,15 +9,22 @@ import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.listCellRenderer.*
 import com.intellij.ui.layout.selected
+import com.intellij.util.application
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.base.ChronicleBaseBundle
+import icu.windea.pls.base.ChronicleModificationTrackers
+import icu.windea.pls.base.analysis.ChronicleAnalysisManager
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.toDelimitedMutableList
 import icu.windea.pls.core.toDelimitedString
 import icu.windea.pls.core.util.CallbackLock
 import icu.windea.pls.core.util.toMutableEntryList
 import icu.windea.pls.core.util.toMutableMap
+import icu.windea.pls.lang.listeners.ParadoxDefaultGameDirectoriesListener
+import icu.windea.pls.lang.listeners.ParadoxDefaultGameTypeListener
+import icu.windea.pls.lang.listeners.ParadoxPreferredLocaleListener
 import icu.windea.pls.lang.ui.localeComboBox
+import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.policies.ParadoxDiffGroupingPolicy
@@ -74,7 +81,7 @@ class ChronicleSettingsConfigurable : BoundConfigurable(ChronicleBaseBundle.mess
                     val newDefaultGameType = settings.defaultGameType
                     if (oldDefaultGameType == newDefaultGameType) return@onApply
                     defaultGameType = newDefaultGameType
-                    ChronicleSettingsManager.onDefaultGameTypeChanged(callbackLock, oldDefaultGameType, newDefaultGameType)
+                    Manager.onDefaultGameTypeChanged(callbackLock, oldDefaultGameType, newDefaultGameType)
                 }
         }
         // defaultGameDirectories
@@ -95,7 +102,7 @@ class ChronicleSettingsConfigurable : BoundConfigurable(ChronicleBaseBundle.mess
                     val newDefaultGameDirectories = list.toMutableMap()
                     if (oldDefaultGameDirectories == newDefaultGameDirectories) return@onApply
                     settings.defaultGameDirectories = newDefaultGameDirectories
-                    ChronicleSettingsManager.onDefaultGameDirectoriesChanged(callbackLock, oldDefaultGameDirectories, newDefaultGameDirectories)
+                    Manager.onDefaultGameDirectoriesChanged(callbackLock, oldDefaultGameDirectories, newDefaultGameDirectories)
                 }
                 .onReset { list = defaultList }
                 .onIsModified { list != defaultList }
@@ -112,7 +119,7 @@ class ChronicleSettingsConfigurable : BoundConfigurable(ChronicleBaseBundle.mess
                     val newPreferredLocale = settings.preferredLocale.orEmpty()
                     if (oldPreferredLocale == newPreferredLocale) return@onApply
                     preferredLocale = newPreferredLocale
-                    ChronicleSettingsManager.onPreferredLocaleChanged(callbackLock, oldPreferredLocale, newPreferredLocale)
+                    Manager.onPreferredLocaleChanged(callbackLock, oldPreferredLocale, newPreferredLocale)
                 }
         }
         // ignoredFileNames
@@ -133,7 +140,7 @@ class ChronicleSettingsConfigurable : BoundConfigurable(ChronicleBaseBundle.mess
                     fileNames += oldIgnoredFileNameSet
                     fileNames += newIgnoredFileNameSet
                     // 设置中的被忽略文件名被更改时，需要重新解析相关文件
-                    ChronicleSettingsManager.refreshForFilesByFileNames(callbackLock, fileNames, caseSensitive = false)
+                    Manager.refreshForFilesByFileNames(callbackLock, fileNames, caseSensitive = false)
                 }
         }
     }
@@ -414,31 +421,7 @@ class ChronicleSettingsConfigurable : BoundConfigurable(ChronicleBaseBundle.mess
     }
 
     private fun Panel.configureGroupForGeneration() {
-        val settings = ChronicleSettings.getInstance().state.generation
-        val locales = ParadoxLocaleManager.getGlobalLocales(includeAuto = true)
-
-        // localisationStrategy
-        row {
-            val property = AtomicProperty(settings.localisationStrategy)
-            label(ChronicleBaseBundle.message("settings.generation.localisationStrategy"))
-            comboBox(ParadoxLocalisationGenerationStrategy.entries, textListCellRenderer { it?.text })
-                .bindItem(settings::localisationStrategy.toNullableProperty())
-                .bindItem(property)
-            textField().bindText(settings::localisationStrategyText.toNonNullableProperty(""))
-                .visibleIf(property.transform { it == ParadoxLocalisationGenerationStrategy.SpecificText })
-            localeComboBox(locales).bindItem(settings::localisationStrategyLocale.toNullableProperty())
-                .visibleIf(property.transform { it == ParadoxLocalisationGenerationStrategy.FromLocale })
-        }
-        // blankLineBetweenLocalisationGroups
-        row {
-            checkBox(ChronicleBaseBundle.message("settings.generation.blankLineBetweenLocalisationGroups"))
-                .bindSelected(settings::blankLineBetweenLocalisationGroups)
-        }
-        // moveIntoLocalisationGroups
-        row {
-            checkBox(ChronicleBaseBundle.message("settings.generation.moveIntoLocalisationGroups"))
-                .bindSelected(settings::moveIntoLocalisationGroups)
-        }
+        with(Factory) { configureForLocalisationGeneration() }
     }
 
     private fun Panel.configureGroupForHierarchy() {
@@ -603,14 +586,14 @@ class ChronicleSettingsConfigurable : BoundConfigurable(ChronicleBaseBundle.mess
         row {
             checkBox(ChronicleBaseBundle.message("settings.inference.injectionForParameterValue"))
                 .bindSelected(settings::injectionForParameterValue)
-                .onApply { ChronicleSettingsManager.refreshFiles(callbackLock) }
+                .onApply { Manager.refreshFiles(callbackLock) }
             contextHelp(ChronicleBaseBundle.message("settings.inference.injectionForParameterValue.tip"))
         }
         // injectionForLocalisationText
         row {
             checkBox(ChronicleBaseBundle.message("settings.inference.injectionForLocalisationText"))
                 .bindSelected(settings::injectionForLocalisationText)
-                .onApply { ChronicleSettingsManager.refreshFiles(callbackLock) }
+                .onApply { Manager.refreshFiles(callbackLock) }
             contextHelp(ChronicleBaseBundle.message("settings.inference.injectionForLocalisationText.tip"))
         }
         // configContextForParameters
@@ -618,28 +601,28 @@ class ChronicleSettingsConfigurable : BoundConfigurable(ChronicleBaseBundle.mess
             lateinit var cb: JBCheckBox
             checkBox(ChronicleBaseBundle.message("settings.inference.configContextForParameters"))
                 .bindSelected(settings::configContextForParameters)
-                .onApply { ChronicleSettingsManager.refreshForParameterInference(callbackLock) }
+                .onApply { Manager.refreshForParameterInference(callbackLock) }
                 .applyToComponent { cb = this }
             contextHelp(ChronicleBaseBundle.message("settings.inference.configContextForParameters.tip"))
 
             // configContextForParametersFast
             checkBox(ChronicleBaseBundle.message("settings.inference.fast"))
                 .bindSelected(settings::configContextForParametersFast)
-                .onApply { ChronicleSettingsManager.refreshForParameterInference(callbackLock) }
+                .onApply { Manager.refreshForParameterInference(callbackLock) }
                 .enabledIf(cb.selected)
             contextHelp(ChronicleBaseBundle.message("settings.inference.fast.tip"))
 
             // configContextForParametersFromUsages
             checkBox(ChronicleBaseBundle.message("settings.inference.fromUsages"))
                 .bindSelected(settings::configContextForParametersFromUsages)
-                .onApply { ChronicleSettingsManager.refreshForParameterInference(callbackLock) }
+                .onApply { Manager.refreshForParameterInference(callbackLock) }
                 .enabledIf(cb.selected)
             contextHelp(ChronicleBaseBundle.message("settings.inference.fromUsages.tip"))
 
             // configContextForParametersFromConfig
             checkBox(ChronicleBaseBundle.message("settings.inference.fromConfig"))
                 .bindSelected(settings::configContextForParametersFromConfig)
-                .onApply { ChronicleSettingsManager.refreshForParameterInference(callbackLock) }
+                .onApply { Manager.refreshForParameterInference(callbackLock) }
                 .enabledIf(cb.selected)
             contextHelp(ChronicleBaseBundle.message("settings.inference.fromConfig.tip"))
         }
@@ -648,28 +631,28 @@ class ChronicleSettingsConfigurable : BoundConfigurable(ChronicleBaseBundle.mess
             lateinit var cb: JBCheckBox
             checkBox(ChronicleBaseBundle.message("settings.inference.configContextForInlineScripts"))
                 .bindSelected(settings::configContextForInlineScripts)
-                .onApply { ChronicleSettingsManager.refreshForInlineScriptInference(callbackLock) }
+                .onApply { Manager.refreshForInlineScriptInference(callbackLock) }
                 .applyToComponent { cb = this }
             contextHelp(ChronicleBaseBundle.message("settings.inference.configContextForInlineScripts.tip"))
 
             // configContextForInlineScriptsFast
             checkBox(ChronicleBaseBundle.message("settings.inference.fast"))
                 .bindSelected(settings::configContextForInlineScriptsFast)
-                .onApply { ChronicleSettingsManager.refreshForInlineScriptInference(callbackLock) }
+                .onApply { Manager.refreshForInlineScriptInference(callbackLock) }
                 .enabledIf(cb.selected)
             contextHelp(ChronicleBaseBundle.message("settings.inference.fast.tip"))
 
             // configContextForInlineScriptsFromUsages
             checkBox(ChronicleBaseBundle.message("settings.inference.fromUsages"))
                 .bindSelected(settings::configContextForInlineScriptsFromUsages)
-                .onApply { ChronicleSettingsManager.refreshForInlineScriptInference(callbackLock) }
+                .onApply { Manager.refreshForInlineScriptInference(callbackLock) }
                 .enabledIf(cb.selected)
             contextHelp(ChronicleBaseBundle.message("settings.inference.fromUsages.tip"))
 
             // configContextForInlineScriptsFromConfig
             checkBox(ChronicleBaseBundle.message("settings.inference.fromConfig"))
                 .bindSelected(settings::configContextForInlineScriptsFromConfig)
-                .onApply { ChronicleSettingsManager.refreshForInlineScriptInference(callbackLock) }
+                .onApply { Manager.refreshForInlineScriptInference(callbackLock) }
                 .enabledIf(cb.selected)
             contextHelp(ChronicleBaseBundle.message("settings.inference.fromConfig.tip"))
         }
@@ -677,21 +660,21 @@ class ChronicleSettingsConfigurable : BoundConfigurable(ChronicleBaseBundle.mess
         row {
             checkBox(ChronicleBaseBundle.message("settings.inference.scopeContext"))
                 .bindSelected(settings::scopeContext)
-                .onApply { ChronicleSettingsManager.refreshForScopeContextInference(callbackLock) }
+                .onApply { Manager.refreshForScopeContextInference(callbackLock) }
             contextHelp(ChronicleBaseBundle.message("settings.inference.scopeContext.tip"))
         }
         // scopeContextForEvents
         row {
             checkBox(ChronicleBaseBundle.message("settings.inference.scopeContextForEvents"))
                 .bindSelected(settings::scopeContextForEvents)
-                .onApply { ChronicleSettingsManager.refreshForScopeContextInference(callbackLock) }
+                .onApply { Manager.refreshForScopeContextInference(callbackLock) }
             contextHelp(ChronicleBaseBundle.message("settings.inference.scopeContextForEvents.tip"))
         }
         // scopeContextForOnActions
         row {
             checkBox(ChronicleBaseBundle.message("settings.inference.scopeContextForOnActions"))
                 .bindSelected(settings::scopeContextForOnActions)
-                .onApply { ChronicleSettingsManager.refreshForScopeContextInference(callbackLock) }
+                .onApply { Manager.refreshForScopeContextInference(callbackLock) }
             contextHelp(ChronicleBaseBundle.message("settings.inference.scopeContextForOnActions.tip"))
         }
     }
@@ -718,20 +701,20 @@ class ChronicleSettingsConfigurable : BoundConfigurable(ChronicleBaseBundle.mess
         row {
             checkBox(ChronicleBaseBundle.message("settings.others.highlightLocalisationColorId"))
                 .bindSelected(settings::highlightLocalisationColorId)
-                .onApply { ChronicleSettingsManager.refreshFiles(callbackLock) }
+                .onApply { Manager.refreshFiles(callbackLock) }
         }
         // renderLocalisationColorfulText
         row {
             checkBox(ChronicleBaseBundle.message("settings.others.renderLocalisationColorfulText"))
                 .bindSelected(settings::renderLocalisationColorfulText)
-                .onApply { ChronicleSettingsManager.refreshFiles(callbackLock) }
+                .onApply { Manager.refreshFiles(callbackLock) }
         }
     }
 
     object Factory {
         fun Panel.configureForLocalisationGeneration(configGroup: CwtConfigGroup? = null) {
             val settings = ChronicleSettings.getInstance().state.generation
-            val locales = if(configGroup != null) ParadoxLocaleManager.getSupportedLocales(configGroup, includeAuto = true)
+            val locales = if (configGroup != null) ParadoxLocaleManager.getSupportedLocales(configGroup, includeAuto = true)
             else ParadoxLocaleManager.getGlobalLocales(includeAuto = true)
 
             // localisationStrategy
@@ -756,6 +739,68 @@ class ChronicleSettingsConfigurable : BoundConfigurable(ChronicleBaseBundle.mess
                 checkBox(ChronicleBaseBundle.message("settings.generation.moveIntoLocalisationGroups"))
                     .bindSelected(settings::moveIntoLocalisationGroups)
             }
+        }
+    }
+
+    object Manager {
+        fun onDefaultGameTypeChanged(callbackLock: CallbackLock, oldDefaultGameType: ParadoxGameType, newDefaultGameType: ParadoxGameType) {
+            if (!callbackLock.check("onDefaultGameTypeChanged")) return
+            val messageBus = application.messageBus
+            messageBus.syncPublisher(ParadoxDefaultGameTypeListener.TOPIC).onChange(oldDefaultGameType, newDefaultGameType)
+        }
+
+        fun onDefaultGameDirectoriesChanged(callbackLock: CallbackLock, oldDefaultGameDirectories: MutableMap<String, String>, newDefaultGameDirectories: MutableMap<String, String>) {
+            if (!callbackLock.check("onDefaultGameDirectoriesChanged")) return
+            val messageBus = application.messageBus
+            messageBus.syncPublisher(ParadoxDefaultGameDirectoriesListener.TOPIC).onChange(oldDefaultGameDirectories, newDefaultGameDirectories)
+        }
+
+        fun onPreferredLocaleChanged(callbackLock: CallbackLock, oldPreferredLocale: String, newPreferredLocale: String) {
+            if (!callbackLock.check("onPreferredLocaleChanged")) return
+            ChronicleModificationTrackers.PreferredLocale.incModificationCount()
+            val messageBus = application.messageBus
+            messageBus.syncPublisher(ParadoxPreferredLocaleListener.TOPIC).onChange(oldPreferredLocale, newPreferredLocale)
+            refreshInlayHints(callbackLock)
+        }
+
+        fun refreshForFilesByFileNames(callbackLock: CallbackLock, fileNames: MutableSet<String>, caseSensitive: Boolean) {
+            if (!callbackLock.check("refreshForFilesByFileNames")) return
+            val files = ChronicleAnalysisManager.findAllFilesByFileNames(fileNames, caseSensitive)
+            ChronicleAnalysisManager.reparseFiles(files)
+        }
+
+        fun refreshForParameterInference(callbackLock: CallbackLock) {
+            if (!callbackLock.check("refreshForParameterInference")) return
+            ChronicleModificationTrackers.ParameterConfigInference.incModificationCount()
+            refreshFiles(callbackLock)
+            refreshInlayHints(callbackLock)
+        }
+
+        fun refreshForInlineScriptInference(callbackLock: CallbackLock) {
+            if (!callbackLock.check("refreshForInlineScriptInference")) return
+            ChronicleModificationTrackers.ScriptFile.incModificationCount()
+            ChronicleModificationTrackers.InlineScripts.incModificationCount()
+            ChronicleModificationTrackers.InlineScriptConfigInference.incModificationCount()
+            // 这里只用刷新内联脚本文件
+            val files = ChronicleAnalysisManager.findAllOpenFiles().filter { ParadoxInlineScriptManager.isInlineScriptFile(it) }
+            ChronicleAnalysisManager.reparseFiles(files)
+        }
+
+        fun refreshForScopeContextInference(callbackLock: CallbackLock) {
+            if (!callbackLock.check("refreshForScopeContextInference")) return
+            ChronicleModificationTrackers.DefinitionScopeContextInference.incModificationCount()
+            refreshFiles(callbackLock)
+            refreshInlayHints(callbackLock)
+        }
+
+        fun refreshFiles(callbackLock: CallbackLock) {
+            if (!callbackLock.check("refreshFiles")) return
+            ChronicleAnalysisManager.refreshFiles()
+        }
+
+        fun refreshInlayHints(callbackLock: CallbackLock) {
+            if (!callbackLock.check("refreshInlayHints")) return
+            ChronicleAnalysisManager.refreshInlayHints()
         }
     }
 }

@@ -4,7 +4,7 @@ import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.base.settings.ChronicleSettings
-import icu.windea.pls.base.settings.ChronicleSettingsManager
+import icu.windea.pls.base.settings.ChronicleSettingsConfigurable
 import icu.windea.pls.core.util.CallbackLock
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 
@@ -28,7 +28,7 @@ class ParadoxPreferredLocaleDialog : DialogWrapper(null, false) {
                     val newPreferredLocale = settings.preferredLocale.orEmpty()
                     if (oldPreferredLocale == newPreferredLocale) return@onApply
                     preferredLocale = newPreferredLocale
-                    ChronicleSettingsManager.onPreferredLocaleChanged(callbackLock, oldPreferredLocale, newPreferredLocale)
+                    ChronicleSettingsConfigurable.Manager.onPreferredLocaleChanged(callbackLock, oldPreferredLocale, newPreferredLocale)
                 }
         }
     }

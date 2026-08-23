@@ -6,12 +6,15 @@ import com.intellij.openapi.options.SearchableConfigurable
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.ui.setEmptyState
 import com.intellij.ui.dsl.builder.*
+import com.intellij.util.application
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.base.ChronicleBaseBundle
 import icu.windea.pls.base.help.ChronicleHelpTopics
 import icu.windea.pls.core.util.CallbackLock
 import icu.windea.pls.core.util.toMutableEntryList
 import icu.windea.pls.core.util.toMutableMap
+import icu.windea.pls.lang.listeners.CwtConfigDirectoriesListener
+import icu.windea.pls.lang.listeners.CwtConfigRepositoryUrlsListener
 import icu.windea.pls.lang.util.CwtConfigRepositoryManager
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.ChronicleUrls
@@ -46,7 +49,7 @@ class ChronicleConfigSettingsConfigurable : BoundConfigurable(ChronicleBaseBundl
             checkBox(ChronicleBaseBundle.message("settings.config.enableBuiltInConfigGroups"))
                 .comment(ChronicleBaseBundle.message("settings.config.enableBuiltInConfigGroups.comment", MAX_LINE_LENGTH_WORD_WRAP))
                 .bindSelected(settings::enableBuiltInConfigGroups)
-                .onApply { ChronicleConfigSettingsManager.onConfigDirectoriesChanged(callbackLock) }
+                .onApply { Manager.onConfigDirectoriesChanged(callbackLock) }
             browserLink(ChronicleBundle.message("link.documentation"), ChronicleUrls.refDoc("config.html#config-group-builtin"))
         }
         // enableRemoteConfigGroups
@@ -54,7 +57,7 @@ class ChronicleConfigSettingsConfigurable : BoundConfigurable(ChronicleBaseBundl
             checkBox(ChronicleBaseBundle.message("settings.config.enableRemoteConfigGroups"))
                 .comment(ChronicleBaseBundle.message("settings.config.enableRemoteConfigGroups.comment", MAX_LINE_LENGTH_WORD_WRAP))
                 .bindSelected(settings::enableRemoteConfigGroups)
-                .onApply { ChronicleConfigSettingsManager.onConfigDirectoriesChanged(callbackLock) }
+                .onApply { Manager.onConfigDirectoriesChanged(callbackLock) }
             browserLink(ChronicleBundle.message("link.documentation"), ChronicleUrls.refDoc("config.html#config-group-remote"))
         }
         // enableLocalConfigGroups
@@ -62,7 +65,7 @@ class ChronicleConfigSettingsConfigurable : BoundConfigurable(ChronicleBaseBundl
             checkBox(ChronicleBaseBundle.message("settings.config.enableLocalConfigGroups"))
                 .comment(ChronicleBaseBundle.message("settings.config.enableLocalConfigGroups.comment"), MAX_LINE_LENGTH_WORD_WRAP)
                 .bindSelected(settings::enableLocalConfigGroups)
-                .onApply { ChronicleConfigSettingsManager.onConfigDirectoriesChanged(callbackLock) }
+                .onApply { Manager.onConfigDirectoriesChanged(callbackLock) }
             browserLink(ChronicleBundle.message("link.documentation"), ChronicleUrls.refDoc("config.html#config-group-local"))
         }
         // enableProjectLocalConfigGroups
@@ -70,7 +73,7 @@ class ChronicleConfigSettingsConfigurable : BoundConfigurable(ChronicleBaseBundl
             checkBox(ChronicleBaseBundle.message("settings.config.enableProjectLocalConfigGroups"))
                 .comment(ChronicleBaseBundle.message("settings.config.enableProjectLocalConfigGroups.comment"), MAX_LINE_LENGTH_WORD_WRAP)
                 .bindSelected(settings::enableProjectLocalConfigGroups)
-                .onApply { ChronicleConfigSettingsManager.onConfigDirectoriesChanged(callbackLock) }
+                .onApply { Manager.onConfigDirectoriesChanged(callbackLock) }
             browserLink(ChronicleBundle.message("link.documentation"), ChronicleUrls.refDoc("config.html#config-group-project-local"))
         }
 
@@ -85,8 +88,8 @@ class ChronicleConfigSettingsConfigurable : BoundConfigurable(ChronicleBaseBundl
                 .applyToComponent { setEmptyState(ChronicleBundle.message("not.configured")) }
                 .align(Align.FILL)
                 .onApply {
-                    ChronicleConfigSettingsManager.onConfigDirectoriesChanged(callbackLock)
-                    ChronicleConfigSettingsManager.onRemoteConfigDirectoriesChanged(callbackLock)
+                    Manager.onConfigDirectoriesChanged(callbackLock)
+                    Manager.onRemoteConfigDirectoriesChanged(callbackLock)
                 }
         }
         // configRepositoryUrls
@@ -107,7 +110,7 @@ class ChronicleConfigSettingsConfigurable : BoundConfigurable(ChronicleBaseBundl
                     val newConfigRepositoryUrls = list.toMutableMap()
                     if (oldConfigRepositoryUrls == newConfigRepositoryUrls) return@onApply
                     settings.configRepositoryUrls = newConfigRepositoryUrls
-                    ChronicleConfigSettingsManager.onRemoteConfigDirectoriesChanged(callbackLock)
+                    Manager.onRemoteConfigDirectoriesChanged(callbackLock)
                 }
                 .onReset { list = defaultList }
                 .onIsModified { list != defaultList }
@@ -122,7 +125,7 @@ class ChronicleConfigSettingsConfigurable : BoundConfigurable(ChronicleBaseBundl
                 .bindText(settings::localConfigDirectory.toNonNullableProperty(""))
                 .applyToComponent { setEmptyState(ChronicleBundle.message("not.configured")) }
                 .align(Align.FILL)
-                .onApply { ChronicleConfigSettingsManager.onConfigDirectoriesChanged(callbackLock) }
+                .onApply { Manager.onConfigDirectoriesChanged(callbackLock) }
         }
         // projectLocalConfigDirectoryName
         row {
@@ -131,13 +134,13 @@ class ChronicleConfigSettingsConfigurable : BoundConfigurable(ChronicleBaseBundl
             textField()
                 .bindText(settings::projectLocalConfigDirectoryName.toNonNullableProperty(""))
                 .applyToComponent { setEmptyState(".config") }
-                .onApply { ChronicleConfigSettingsManager.onConfigDirectoriesChanged(callbackLock) }
+                .onApply { Manager.onConfigDirectoriesChanged(callbackLock) }
         }
         // overrideBuiltIn
         row {
             checkBox(ChronicleBaseBundle.message("settings.config.overrideBuiltIn"))
                 .bindSelected(settings::overrideBuiltIn)
-                .onApply { ChronicleConfigSettingsManager.onRemoteConfigDirectoriesChanged(callbackLock) }
+                .onApply { Manager.onRemoteConfigDirectoriesChanged(callbackLock) }
         }
     }
 
@@ -150,6 +153,21 @@ class ChronicleConfigSettingsConfigurable : BoundConfigurable(ChronicleBaseBundl
             checkBox(ChronicleBaseBundle.message("settings.config.features.checkComparisonOperators"))
                 .bindSelected(settings::checkComparisonOperators)
             contextHelp(ChronicleBaseBundle.message("settings.config.features.checkComparisonOperators.tip"))
+        }
+    }
+
+    object Manager {
+        fun onConfigDirectoriesChanged(callbackLock: CallbackLock) {
+            if (!callbackLock.check("onConfigDirectoriesChanged")) return
+            application.messageBus.syncPublisher(CwtConfigDirectoriesListener.TOPIC).onChange()
+        }
+
+        fun onRemoteConfigDirectoriesChanged(callbackLock: CallbackLock) {
+            if (!callbackLock.check("onRemoteConfigDirectoriesChanged")) return
+            // NOTE 这里需要先验证是否真的需要刷新
+            if (!CwtConfigRepositoryManager.isValidToSync()) return
+            application.messageBus.syncPublisher(CwtConfigRepositoryUrlsListener.TOPIC).onChange()
+            // 等到从远程仓库异步同步完毕后，再通知规则目录发生更改，从而允许刷新规则分组数据
         }
     }
 }
