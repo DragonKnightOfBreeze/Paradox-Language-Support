@@ -396,7 +396,6 @@
     <fileBasedIndex implementation="icu.windea.pls.lang.index.ParadoxComplexEnumValueIndex"/>
     <fileBasedIndex implementation="icu.windea.pls.lang.index.ParadoxMergedIndex"/>
 
-
     <searchScopesProvider implementation="icu.windea.pls.lang.search.scope.ParadoxSearchScopeProvider"/>
 
     <definitionsScopedSearch implementation="icu.windea.pls.lang.search.searchers.implementations.ParadoxScriptedVariableImplementationsSearcher"/>
@@ -425,8 +424,11 @@
     <!-- icu.windea.pls.lang.references.localisation.ParadoxLocalisationPsiReferenceProvider -->
     <psi.referenceContributor language="PARADOX_CSV" implementation="icu.windea.pls.lang.references.csv.ParadoxCsvPsiReferenceContributor"/>
     <!-- icu.windea.pls.lang.references.csv.ParadoxCsvExpressionPsiReferenceProvider -->
-
     <pathReferenceProvider implementation="icu.windea.pls.lang.references.paths.ParadoxPathReferenceProvider" order="first"/>
+
+    <fileStructureGroupRuleProvider implementation="icu.windea.pls.lang.usages.ParadoxDefinitionFileStructureGroupRuleProvider"/>
+    <fileStructureGroupRuleProvider implementation="icu.windea.pls.lang.usages.ParadoxDefinitionInjectionFileStructureGroupRuleProvider"/>
+    <fileStructureGroupRuleProvider implementation="icu.windea.pls.lang.usages.ParadoxLocalisationLocaleFileStructureGroupRuleProvider"/>
 
     <multiHostInjector implementation="icu.windea.pls.lang.injection.ParadoxScriptLanguageInjector"/>
 
