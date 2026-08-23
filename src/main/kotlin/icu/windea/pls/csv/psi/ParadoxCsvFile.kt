@@ -1,20 +1,21 @@
 package icu.windea.pls.csv.psi
 
-import com.intellij.extapi.psi.*
-import com.intellij.navigation.*
-import com.intellij.psi.*
-import com.intellij.psi.tree.*
-import icu.windea.pls.core.*
+import com.intellij.extapi.psi.PsiFileBase
+import com.intellij.psi.FileViewProvider
+import com.intellij.psi.PsiElement
+import com.intellij.psi.tree.IFileElementType
+import icu.windea.pls.core.findChild
+import icu.windea.pls.core.findChildren
 import icu.windea.pls.core.psi.PsiService
-import icu.windea.pls.csv.*
-import icu.windea.pls.lang.*
+import icu.windea.pls.csv.ParadoxCsvFileType
+import icu.windea.pls.csv.ParadoxCsvLanguage
 import icu.windea.pls.lang.psi.ParadoxFile
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.*
+import icu.windea.pls.lang.util.ParadoxFileManager
+import icu.windea.pls.model.ParadoxGameType
 
 class ParadoxCsvFile(
     viewProvider: FileViewProvider,
-    val gameType: ParadoxGameType? = null
+    val gameType: ParadoxGameType? = null,
 ) : PsiFileBase(viewProvider, ParadoxCsvLanguage), ParadoxFile {
     companion object {
         @JvmField val ELEMENT_TYPE: IFileElementType = IFileElementType("PARADOX_CSV_FILE", ParadoxCsvLanguage)

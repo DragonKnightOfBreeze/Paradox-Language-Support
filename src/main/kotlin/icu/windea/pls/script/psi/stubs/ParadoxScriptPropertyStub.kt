@@ -3,7 +3,6 @@ package icu.windea.pls.script.psi.stubs
 import com.intellij.psi.stubs.StubBase
 import com.intellij.psi.stubs.StubElement
 import icu.windea.pls.lang.psi.stubs.ParadoxStub
-import icu.windea.pls.localisation.psi.stubs.ParadoxLocalisationPropertyListStub
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -61,7 +60,7 @@ sealed interface ParadoxScriptPropertyStub : ParadoxStub<ParadoxScriptProperty> 
      * （作为脚本属性的）内联脚本的传入参数的存根。
      *
      * @property argumentName 传入参数的名字。等同于 [ParadoxScriptPropertyStub.name]。
-     * @property expression 内联脚本表达式。来自父存根（[ParadoxLocalisationPropertyListStub]）。
+     * @property expression 内联脚本表达式。来自父存根（[ParadoxScriptPropertyStub]）。
      */
     sealed interface InlineScriptArgument : ParadoxScriptPropertyStub {
         val argumentName: String

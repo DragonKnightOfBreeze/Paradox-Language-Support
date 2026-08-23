@@ -1,29 +1,30 @@
 package icu.windea.pls.localisation.psi.impl
 
-import com.intellij.navigation.*
-import com.intellij.openapi.application.*
-import com.intellij.openapi.util.*
-import com.intellij.psi.*
-import com.intellij.psi.impl.*
-import com.intellij.psi.impl.source.resolve.reference.*
-import com.intellij.psi.search.*
-import com.intellij.psi.tree.*
-import com.intellij.psi.util.*
-import com.intellij.util.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
+import com.intellij.navigation.ItemPresentation
+import com.intellij.openapi.util.Iconable
+import com.intellij.openapi.util.TextRange
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiReference
+import com.intellij.psi.impl.ResolveScopeManager
+import com.intellij.psi.impl.source.resolve.reference.ReferenceProvidersRegistry
+import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.psi.search.SearchScope
+import com.intellij.psi.tree.IElementType
+import com.intellij.psi.util.elementType
+import com.intellij.util.IncorrectOperationException
+import icu.windea.pls.ChronicleIcons
+import icu.windea.pls.core.findChild
+import icu.windea.pls.core.findChildren
+import icu.windea.pls.core.orNull
 import icu.windea.pls.core.psi.PsiService
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.navigation.*
-import icu.windea.pls.lang.psi.*
-import icu.windea.pls.lang.psi.light.*
-import icu.windea.pls.lang.references.*
-import icu.windea.pls.lang.search.scope.*
-import icu.windea.pls.lang.util.*
+import icu.windea.pls.core.unquote
+import icu.windea.pls.lang.search.scope.ParadoxSearchScope
+import icu.windea.pls.lang.selectGameType
+import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
-import icu.windea.pls.model.*
-import javax.swing.*
+import icu.windea.pls.model.ParadoxLocalisationType
+import javax.swing.Icon
 
 @Suppress("UNUSED_PARAMETER")
 object ParadoxLocalisationPsiImplUtil {

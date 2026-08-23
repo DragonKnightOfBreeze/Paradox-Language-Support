@@ -1,12 +1,14 @@
 package icu.windea.pls.cwt.psi
 
-import com.intellij.openapi.project.*
-import com.intellij.psi.*
-import com.intellij.psi.util.*
-import com.intellij.util.*
-import icu.windea.pls.core.*
-import icu.windea.pls.csv.psi.ParadoxCsvPsiManipulationService
-import icu.windea.pls.cwt.*
+
+import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFileFactory
+import com.intellij.psi.PsiParserFacade
+import com.intellij.util.IncorrectOperationException
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.findChild
+import icu.windea.pls.cwt.CwtLanguage
 import icu.windea.pls.cwt.psi.CwtElementTypes.*
 
 @Suppress("unused")
@@ -77,7 +79,7 @@ object CwtElementFactory {
 
     @JvmStatic
     fun createOption(project: Project, key: String, value: String): CwtOption {
-        val text = "${ParadoxCsvPsiManipulationService.quoteIfNeeded(key)} = ${ParadoxCsvPsiManipulationService.quoteIfNeeded(value)}"
+        val text = "${CwtPsiManipulationService.quoteIfNeeded(key)} = ${CwtPsiManipulationService.quoteIfNeeded(value)}"
         return createOptionFromText(project, text)
     }
 

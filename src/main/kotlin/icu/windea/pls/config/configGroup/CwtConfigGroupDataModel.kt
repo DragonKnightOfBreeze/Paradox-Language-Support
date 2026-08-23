@@ -75,6 +75,7 @@ interface CwtConfigGroupDataModel {
 
     // region Core
 
+    // TODO 3.0.2+ [refactor] introduce `CwtOverrideConfig` or just use `Map<String, String>` and convert to `ParadoxOverrideStrategy` somewhere else, since `ParadoxOverrideStrategy` is in `lang.overrides` atm
     val priorities: Map<String, ParadoxOverrideStrategy> get() = emptyMap()
     val systemScopes: Map<@CaseInsensitive String, CwtSystemScopeConfig> get() = emptyMap()
     val locales: Map<String, CwtLocaleConfig> get() = emptyMap()

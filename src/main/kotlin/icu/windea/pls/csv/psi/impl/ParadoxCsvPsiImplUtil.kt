@@ -16,17 +16,10 @@ import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.core.findChildren
 import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.core.unquote
-import icu.windea.pls.csv.psi.ParadoxCsvColumn
+import icu.windea.pls.csv.psi.*
 import icu.windea.pls.csv.psi.ParadoxCsvElementTypes.*
-import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
-import icu.windea.pls.csv.psi.ParadoxCsvHeader
-import icu.windea.pls.csv.psi.ParadoxCsvPsiManipulationService
-import icu.windea.pls.csv.psi.ParadoxCsvPsiPresentation
-import icu.windea.pls.csv.psi.ParadoxCsvPsiService
-import icu.windea.pls.csv.psi.ParadoxCsvRow
 import icu.windea.pls.lang.search.scope.ParadoxSearchScope
 import icu.windea.pls.lang.util.ParadoxExpressionManager
-import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import javax.swing.Icon
 
 @Suppress("UNUSED_PARAMETER")
@@ -106,12 +99,12 @@ object ParadoxCsvPsiImplUtil {
     }
 
     @JvmStatic
-    fun setValue(element: ParadoxCsvExpressionElement, value: String): ParadoxScriptExpressionElement {
+    fun setValue(element: ParadoxCsvExpressionElement, value: String): ParadoxCsvExpressionElement {
         throw IncorrectOperationException()
     }
 
     @JvmStatic
-    fun setContent(element: ParadoxCsvExpressionElement, content: String, range: TextRange): ParadoxScriptExpressionElement {
+    fun setContent(element: ParadoxCsvExpressionElement, content: String, range: TextRange): ParadoxCsvExpressionElement {
         throw IncorrectOperationException()
     }
 
