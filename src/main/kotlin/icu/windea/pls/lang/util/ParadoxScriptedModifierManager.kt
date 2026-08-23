@@ -4,6 +4,7 @@ import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.psi.stringValue
+import icu.windea.pls.lang.resolve.ParadoxConfigService
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.model.ParadoxDefinitionInfo
 
@@ -15,6 +16,6 @@ object ParadoxScriptedModifierManager {
         val configGroup = definitionInfo.configGroup
         val property = selectScope { definition.properties().ofKey("category").one() }
         val value = property?.propertyValue?.stringValue()
-        return ParadoxConfigManager.getModifierCategories(value, configGroup)
+        return ParadoxConfigService.getModifierCategories(value, configGroup)
     }
 }

@@ -11,8 +11,6 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtMemberType
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
-import icu.windea.pls.config.config.delegated.CwtEnumConfig
-import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.config.config.delegated.CwtRowConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.config.config.expandConfigExpression
@@ -65,6 +63,7 @@ object ParadoxConfigManager {
         val cachedConfigsCache by registerKey<CachedValue<SoftValue<ConcurrentMap<String, List<CwtMemberConfig<*>>>>>>(Keys)
         val cachedChildOccurrencesCache by registerKey<CachedValue<SoftValue<ConcurrentMap<String, Map<CwtDataExpression, ParadoxMatchOccurrence>>>>>(Keys)
         val cachedRowConfig by registerKey<CachedValue<CwtRowConfig>>(Keys)
+        val inBlockKeys by registerKey<Set<String>>(this)
     }
 
     /**
@@ -292,28 +291,5 @@ object ParadoxConfigManager {
             append(type)
             subtypeConfigs.forEachFast { append(", ").append(it.name) }
         }
-    }
-
-    fun getModifierCategories(value: String?, configGroup: CwtConfigGroup): Map<String, CwtModifierCategoryConfig> {
-        if (value.isNullOrEmpty()) return emptyMap()
-        val enumConfig = configGroup.enums["scripted_modifier_category"] ?: return emptyMap()
-        return doGetModifierCategories(value, enumConfig)
-    }
-
-    private fun doGetModifierCategories(value: String, enumConfig: CwtEnumConfig): Map<String, CwtModifierCategoryConfig> {
-        val keys = doGetModifierCategoriesOptionMetadata(value, enumConfig)
-        if (keys.isNullOrEmpty()) return emptyMap()
-        val modifierCategories = enumConfig.configGroup.modifierCategories
-        val result = mutableMapOf<String, CwtModifierCategoryConfig>()
-        for (key in keys) {
-            val config = modifierCategories[key] ?: continue
-            result[key] = config
-        }
-        return result
-    }
-
-    private fun doGetModifierCategoriesOptionMetadata(value: String, enumConfig: CwtEnumConfig): Set<String>? {
-        val valueConfig = enumConfig.valueConfigMap[value] ?: return null
-        return valueConfig.optionMetadata.modifierCategories
     }
 }

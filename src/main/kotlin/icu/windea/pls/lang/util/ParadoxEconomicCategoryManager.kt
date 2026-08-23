@@ -12,6 +12,7 @@ import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.withDependencyItems
+import icu.windea.pls.lang.resolve.ParadoxConfigService
 import icu.windea.pls.lang.resolve.ParadoxEconomicCategoryService
 import icu.windea.pls.model.ParadoxEconomicCategoryInfo
 import icu.windea.pls.model.ParadoxGameType
@@ -39,9 +40,9 @@ object ParadoxEconomicCategoryManager {
     }
 
     fun getModifierCategories(value: String?, configGroup: CwtConfigGroup): Map<String, CwtModifierCategoryConfig> {
-        val result = ParadoxConfigManager.getModifierCategories(value, configGroup)
+        val result = ParadoxConfigService.getModifierCategories(value, configGroup)
         if (result.isNotEmpty()) return result
         // fallback: default to `economic_unit`
-        return ParadoxConfigManager.getModifierCategories("economic_unit", configGroup)
+        return ParadoxConfigService.getModifierCategories("economic_unit", configGroup)
     }
 }

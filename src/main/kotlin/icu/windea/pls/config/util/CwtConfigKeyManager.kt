@@ -1,26 +1,17 @@
 package icu.windea.pls.config.util
 
-import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtOptionConfig
 import icu.windea.pls.config.config.CwtOptionMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.config.config.CwtValueConfig
-import icu.windea.pls.config.config.isSamePointer
 import icu.windea.pls.config.config.singleAliasConfig
 import icu.windea.pls.config.manipulation.CwtConfigManipulationService
-import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.annotations.Optimized
-import icu.windea.pls.core.collections.CaseInsensitiveStringSet
-import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.mapFast
-import icu.windea.pls.core.optimized
 import icu.windea.pls.core.util.KeyRegistry
-import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
-import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 
 @Suppress("unused")
 @Optimized
@@ -117,50 +108,5 @@ object CwtConfigKeyManager {
                 else -> append('{').append(children.mapFast { doGetDistinctKey(it, guardStack) }.sorted().joinToString("\u0000")).append('}')
             }
         }
-    }
-
-    fun getInBlockKeys(config: CwtMemberConfig<*>): Set<String> {
-        return config.getOrPutUserData(Keys.inBlockKeys) { doGetInBlockKeys(config).optimized() }
-    }
-
-    private fun doGetInBlockKeys(config: CwtMemberConfig<*>): Set<@CaseInsensitive String> {
-        val childConfigs = config.configs
-        if (childConfigs.isNullOrEmpty()) return emptySet()
-        val keys = CaseInsensitiveStringSet()
-        childConfigs.forEachFast { if (it is CwtPropertyConfig && isInBlockKey(it)) keys.add(it.key) }
-        if (keys.isEmpty()) return emptySet()
-        when (config) {
-            is CwtPropertyConfig -> {
-                val propertyConfig = config
-                val configs1 = propertyConfig.parentConfig?.configs
-                if (configs1.isNullOrEmpty()) return keys
-                configs1.forEachFast f@{ c ->
-                    val childConfigs1 = c.configs
-                    if (childConfigs1.isNullOrEmpty()) return@f
-                    if (c.isSamePointer(propertyConfig) || c !is CwtPropertyConfig || !c.key.equals(propertyConfig.key, true)) return@f
-                    childConfigs1.forEachFast { if (it is CwtPropertyConfig && isInBlockKey(it)) keys.remove(it.key) }
-                }
-            }
-            is CwtValueConfig -> {
-                val propertyConfig = config.propertyConfig
-                val configs1 = propertyConfig?.parentConfig?.configs
-                if (configs1.isNullOrEmpty()) return keys
-                configs1.forEachFast f@{ c ->
-                    val childConfigs1 = c.configs
-                    if (childConfigs1.isNullOrEmpty()) return@f
-                    if (c.isSamePointer(propertyConfig) || c !is CwtPropertyConfig || !c.key.equals(propertyConfig.key, true)) return@f
-                    childConfigs1.forEachFast { if (it is CwtPropertyConfig && isInBlockKey(it)) keys.remove(it.key) }
-                }
-            }
-        }
-        return keys
-    }
-
-    private fun isInBlockKey(config: CwtPropertyConfig): Boolean {
-        val gameType = config.configGroup.gameType
-        if (config.keyExpression.type != CwtDataTypes.Constant) return false
-        if (config.optionMetadata.cardinality?.isRequired() == false) return false
-        if (ParadoxInlineScriptManager.isMatched(config.key, gameType)) return false // 排除是内联脚本用法的情况
-        return true
     }
 }
