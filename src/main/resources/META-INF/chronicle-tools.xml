@@ -25,7 +25,7 @@
     <group id="Pls.Tools" popup="true">
       <reference ref="Pls.OpenGameSettings"/>
       <reference ref="Pls.OpenModSettings"/>
-      <reference ref="Pls.SyncConfigGroupFromRemote"/>
+      <reference ref="Pls.ConfigGroupSyncFromRemote"/>
 
       <reference ref="Pls.LaunchGame.InSteam"/> <!-- put the most commonly used launch strategy outside -->
       <group id="Pls.Tools.LaunchGame" popup="true">
@@ -48,12 +48,7 @@
       </group>
 
       <group id="Pls.Tools.Config" popup="true">
-        <reference ref="Pls.ConfigGroupRefreshAction"/>
-        <reference ref="Pls.HideConfigGroupRefreshAction"/>
-        <separator/>
-        <reference ref="Pls.SyncConfigGroupFromRemote"/>
-        <reference ref="Pls.ConfigGroupForceRefreshAction"/>
-        <reference ref="Pls.ConfigGroupForcePlusRefreshAction"/>
+        <reference ref="Pls.Config"/>
       </group>
       <group id="Pls.Tools.ConfigGeneration" popup="true">
         <reference ref="Pls.ConfigGeneration"/>

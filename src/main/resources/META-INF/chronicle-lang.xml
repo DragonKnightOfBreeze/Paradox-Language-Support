@@ -493,6 +493,26 @@
   </projectListeners>
 
   <actions resource-bundle="messages.ChronicleBundle">
+    <group id="Pls.Config">
+      <action id="Pls.ConfigGroupRefresh" class="icu.windea.pls.lang.actions.config.ConfigGroupRefreshAction">
+        <keyboard-shortcut first-keystroke="control shift g" keymap="$default"/>
+      </action>
+      <action id="Pls.ConfigGroupHideRefresh" class="icu.windea.pls.lang.actions.config.ConfigGroupHideRefreshAction"/>
+      <separator/>
+      <action id="Pls.ConfigGroupSyncFromRemote" class="icu.windea.pls.lang.actions.config.ConfigGroupSyncFromRemoteAction">
+        <keyboard-shortcut keymap="$default" first-keystroke="alt t"/>
+        <add-to-group group-id="EditorContextBarMenu" anchor="last"/>
+      </action>
+      <action id="Pls.ConfigGroupForceRefresh" class="icu.windea.pls.lang.actions.config.ConfigGroupForceRefreshAction"/>
+      <action id="Pls.ConfigGroupForcePlusRefresh" class="icu.windea.pls.lang.actions.config.ConfigGroupForcePlusRefreshAction"/>
+    </group>
+
+    <!-- ExternalSystem.ProjectRefreshActionGroup -->
+    <group id="Pls.ConfigGroupRefreshActionGroup">
+      <reference ref="Pls.ConfigGroupRefresh"/>
+      <reference ref="Pls.ConfigGroupHideRefresh"/>
+    </group>
+
     <group id="Pls.Documentation.PrimaryGroup">
       <separator/>
       <action id="Pls.Documentation.ChangeLocale" class="icu.windea.pls.lang.codeInsight.documentation.actions.ChangeQuickDocLocalisationLocaleAction"/>

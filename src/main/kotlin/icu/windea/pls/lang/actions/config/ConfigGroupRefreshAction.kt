@@ -1,11 +1,10 @@
-package icu.windea.pls.config.actions
+package icu.windea.pls.lang.actions.config
 
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.actionSystem.ex.TooltipDescriptionProvider
 import com.intellij.openapi.project.DumbAwareAction
-import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.config.configGroup.CwtConfigGroupService
 import icu.windea.pls.lang.fileInfo
@@ -15,8 +14,6 @@ import icu.windea.pls.lang.fileInfo
 class ConfigGroupRefreshAction : DumbAwareAction(), TooltipDescriptionProvider {
     init {
         templatePresentation.icon = ChronicleIcons.Actions.RefreshConfigGroups
-        templatePresentation.text = ChronicleBundle.message("configGroup.action.refresh.text")
-        templatePresentation.description = ChronicleBundle.message("configGroup.action.refresh.desc")
     }
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT

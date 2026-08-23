@@ -1,10 +1,9 @@
-package icu.windea.pls.config.actions
+package icu.windea.pls.lang.actions.config
 
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.project.DumbAwareAction
-import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.config.util.CwtConfigRepositoryManager
 import icu.windea.pls.lang.fileInfo
@@ -12,8 +11,6 @@ import icu.windea.pls.lang.fileInfo
 class ConfigGroupSyncFromRemoteAction : DumbAwareAction() {
     init {
         templatePresentation.icon = ChronicleIcons.Actions.SyncConfigGroupsFromRemote
-        templatePresentation.text = ChronicleBundle.message("configGroup.action.syncFromRemote.text")
-        templatePresentation.description = ChronicleBundle.message("configGroup.action.syncFromRemote.desc")
     }
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT

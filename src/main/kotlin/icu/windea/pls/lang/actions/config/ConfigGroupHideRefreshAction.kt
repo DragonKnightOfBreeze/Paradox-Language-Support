@@ -1,22 +1,19 @@
-package icu.windea.pls.config.actions
+package icu.windea.pls.lang.actions.config
 
+import com.intellij.icons.AllIcons
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
-import com.intellij.openapi.actionSystem.ex.TooltipDescriptionProvider
 import com.intellij.openapi.project.DumbAwareAction
-import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.config.configGroup.CwtConfigGroupService
 import icu.windea.pls.lang.fileInfo
 
-// com.intellij.openapi.externalSystem.autoimport.ProjectRefreshAction
+// com.intellij.openapi.externalSystem.autoimport.HideProjectRefreshActions
 
-class ConfigGroupForceRefreshAction : DumbAwareAction(), TooltipDescriptionProvider {
+class ConfigGroupHideRefreshAction : DumbAwareAction() {
     init {
-        templatePresentation.icon = ChronicleIcons.Actions.ForceRefreshConfigGroups
-        templatePresentation.text = ChronicleBundle.message("configGroup.action.refresh.force.text")
-        templatePresentation.description = ChronicleBundle.message("configGroup.action.refresh.force.desc")
+        templatePresentation.icon = AllIcons.Actions.Close
+        templatePresentation.hoveredIcon = AllIcons.Actions.CloseHovered
     }
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
@@ -25,14 +22,18 @@ class ConfigGroupForceRefreshAction : DumbAwareAction(), TooltipDescriptionProvi
         e.presentation.isEnabledAndVisible = false
         val file = e.getData(CommonDataKeys.VIRTUAL_FILE)
         if (file?.fileInfo == null) return
-        e.presentation.isEnabledAndVisible = true
+        e.presentation.isVisible = true
+        val project = e.project ?: return
+        val configGroupService = CwtConfigGroupService.getInstance(project)
+        val configGroups = configGroupService.getConfigGroups().values.filter { it.changed }
+        e.presentation.isEnabled = configGroups.isNotEmpty()
     }
 
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
         val configGroupService = CwtConfigGroupService.getInstance(project)
-        val configGroups = configGroupService.getConfigGroups().values
+        val configGroups = configGroupService.getConfigGroups().values.filter { it.changed }
         configGroups.forEach { configGroup -> configGroup.changed = false }
-        configGroupService.refreshConfigGroupsAsync(configGroups)
+        configGroupService.updateRefreshStatus()
     }
 }
