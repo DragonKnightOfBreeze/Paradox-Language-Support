@@ -15,6 +15,7 @@ import com.intellij.psi.search.FilenameIndex
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.FileContentUtilCore
 import icu.windea.pls.ChronicleFacade
+import icu.windea.pls.base.ChronicleModificationTrackers
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.toPsiFile
@@ -24,7 +25,6 @@ import icu.windea.pls.lang.analysis.ParadoxAnalysisDataManager
 import icu.windea.pls.lang.roots.CwtConfigGroupLibraryService
 import icu.windea.pls.lang.roots.ParadoxLibraryService
 import icu.windea.pls.lang.settings.ChronicleProfilesSettings
-import icu.windea.pls.lang.util.ParadoxModificationTrackers
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -111,13 +111,13 @@ object ChronicleAnalysisManager {
     }
 
     /**
-     * 刷新 [ParadoxModificationTrackers] 中的所有文件更改追踪器。
+     * 刷新 [ChronicleModificationTrackers] 中的所有文件更改追踪器。
      */
     fun refreshFileModificationTrackers() {
-        ParadoxModificationTrackers.ScriptFile.incModificationCount()
-        ParadoxModificationTrackers.LocalisationFile.incModificationCount()
-        ParadoxModificationTrackers.CsvFile.incModificationCount()
-        ParadoxModificationTrackers.ScriptFileMap.values.forEach { it.incModificationCount() }
+        ChronicleModificationTrackers.ScriptFile.incModificationCount()
+        ChronicleModificationTrackers.LocalisationFile.incModificationCount()
+        ChronicleModificationTrackers.CsvFile.incModificationCount()
+        ChronicleModificationTrackers.ScriptFileMap.values.forEach { it.incModificationCount() }
     }
 
     /**

@@ -11,6 +11,7 @@ import com.intellij.psi.impl.source.resolve.reference.ReferenceProvidersRegistry
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.PsiModificationTracker
+import icu.windea.pls.base.ChronicleModificationTrackers
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.core.annotations.Optimized
@@ -329,7 +330,7 @@ object ParadoxExpressionManager {
         return CachedValuesManager.getCachedValue(element, cacheKey) {
             ProgressManager.checkCanceled()
             val value = resolveReferences(element)
-            val tracker = ParadoxModificationTrackers.expression(element)
+            val tracker = ChronicleModificationTrackers.expression(element)
             value.withDependencyItems(element, PsiModificationTracker.MODIFICATION_COUNT, tracker)
         }
     }
@@ -371,7 +372,7 @@ object ParadoxExpressionManager {
         return CachedValuesManager.getCachedValue(element, cacheKey) {
             ProgressManager.checkCanceled()
             val value = resolveExpressionReferences(element)
-            val tracker = ParadoxModificationTrackers.expression(element)
+            val tracker = ChronicleModificationTrackers.expression(element)
             value.withDependencyItems(element, tracker)
         }
     }

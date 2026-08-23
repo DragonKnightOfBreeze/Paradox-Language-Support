@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.util
+package icu.windea.pls.base
 
 import com.intellij.openapi.util.ModificationTracker
 import com.intellij.openapi.util.SimpleModificationTracker
@@ -13,7 +13,9 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import java.util.concurrent.ConcurrentHashMap
 
-object ParadoxModificationTrackers {
+object ChronicleModificationTrackers {
+    // 3.0.2+ may be better to move to `icu.windea.pls.base.analysis`?
+
     val PreferredLocale = SimpleModificationTracker()
     val FilePath = SimpleModificationTracker()
     val ParameterConfigInference = SimpleModificationTracker()

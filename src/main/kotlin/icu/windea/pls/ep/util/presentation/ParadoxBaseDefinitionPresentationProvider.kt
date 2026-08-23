@@ -6,6 +6,7 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.Key
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
+import icu.windea.pls.base.ChronicleModificationTrackers
 import icu.windea.pls.base.annotations.ChronicleAnnotationService
 import icu.windea.pls.base.annotations.ForDefinitionType
 import icu.windea.pls.base.annotations.ForGameType
@@ -15,7 +16,6 @@ import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
-import icu.windea.pls.lang.util.ParadoxModificationTrackers
 import kotlinx.coroutines.CancellationException
 
 /**
@@ -46,7 +46,7 @@ class ParadoxBaseDefinitionPresentationProvider : ParadoxDefinitionPresentationP
         return CachedValuesManager.getCachedValue(element, key) {
             ProgressManager.checkCanceled()
             val value = getPresentation(element, type)
-            val trackers = with(ParadoxModificationTrackers) {
+            val trackers = with(ChronicleModificationTrackers) {
                 listOf(element, ScriptFile, LocalisationFile)
             }
             value.withDependencyItems(trackers)

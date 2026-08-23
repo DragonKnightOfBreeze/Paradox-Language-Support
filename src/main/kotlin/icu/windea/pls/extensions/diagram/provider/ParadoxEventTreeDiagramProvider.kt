@@ -18,6 +18,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.ui.SimpleColoredText
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.ChronicleIcons
+import icu.windea.pls.base.ChronicleModificationTrackers
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getValue
@@ -32,7 +33,6 @@ import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.presentation.ParadoxPresentationUtil
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.util.ParadoxEventManager
-import icu.windea.pls.lang.util.ParadoxModificationTrackers
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.script.psi.ParadoxScriptFile
@@ -268,7 +268,7 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
 
         override fun getModificationTracker(): ModificationTracker {
             val configGroup = ChronicleFacade.getConfigGroup(project, provider.gameType)
-            return ParadoxModificationTrackers.scriptFileFromDefinitionTypes(configGroup, definitionType)
+            return ChronicleModificationTrackers.scriptFileFromDefinitionTypes(configGroup, definitionType)
         }
     }
 }

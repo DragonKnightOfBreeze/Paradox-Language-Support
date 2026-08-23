@@ -6,6 +6,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.parentOfType
+import icu.windea.pls.base.ChronicleModificationTrackers
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtMemberType
@@ -79,7 +80,7 @@ object ParadoxConfigManager {
         return CachedValuesManager.getCachedValue(element, Keys.cachedConfigContext) {
             ProgressManager.checkCanceled()
             val value = ParadoxConfigService.getConfigContext(element)
-            value.withDependencyItems(element, ParadoxModificationTrackers.ConfigResolution)
+            value.withDependencyItems(element, ChronicleModificationTrackers.ConfigResolution)
         }
     }
 
@@ -109,7 +110,7 @@ object ParadoxConfigManager {
         return CachedValuesManager.getCachedValue(element, Keys.cachedConfigsCache) {
             // use soft referenced concurrent map to optimize more memory
             val value = SoftValue.ofConcurrentMap<String, List<CwtMemberConfig<*>>>()
-            value.withDependencyItems(element, ParadoxModificationTrackers.ConfigResolution)
+            value.withDependencyItems(element, ChronicleModificationTrackers.ConfigResolution)
         }
     }
 
@@ -132,7 +133,7 @@ object ParadoxConfigManager {
         return CachedValuesManager.getCachedValue(element, Keys.cachedChildOccurrencesCache) {
             // use soft referenced concurrent map to optimize more memory
             val value = SoftValue.ofConcurrentMap<String, Map<CwtDataExpression, ParadoxMatchOccurrence>>()
-            value.withDependencyItems(element, ParadoxModificationTrackers.ConfigResolution)
+            value.withDependencyItems(element, ChronicleModificationTrackers.ConfigResolution)
         }
     }
 

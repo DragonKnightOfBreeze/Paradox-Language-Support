@@ -9,11 +9,11 @@ import com.intellij.openapi.util.ModificationTracker
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFileSystemItem
+import icu.windea.pls.base.ChronicleModificationTrackers
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
 import icu.windea.pls.extensions.diagram.provider.ParadoxDiagramProvider
-import icu.windea.pls.lang.util.ParadoxModificationTrackers
 
 // com.intellij.uml.java.JavaUmlDataModel
 
@@ -61,6 +61,6 @@ abstract class ParadoxDiagramDataModel(
     protected abstract fun updateDataModel()
 
     override fun getModificationTracker(): ModificationTracker {
-        return ParadoxModificationTrackers.ScriptFile
+        return ChronicleModificationTrackers.ScriptFile
     }
 }

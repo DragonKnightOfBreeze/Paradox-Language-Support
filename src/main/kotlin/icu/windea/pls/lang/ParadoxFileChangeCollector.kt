@@ -9,12 +9,12 @@ import com.intellij.openapi.vfs.newvfs.events.VFileDeleteEvent
 import com.intellij.openapi.vfs.newvfs.events.VFileEvent
 import com.intellij.openapi.vfs.newvfs.events.VFileMoveEvent
 import com.intellij.openapi.vfs.newvfs.events.VFilePropertyChangeEvent
+import icu.windea.pls.base.ChronicleModificationTrackers
 import icu.windea.pls.base.analysis.ChronicleAnalysisManager
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.lang.analysis.ParadoxAnalysisDataManager
 import icu.windea.pls.lang.analysis.ParadoxAnalysisScope
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
-import icu.windea.pls.lang.util.ParadoxModificationTrackers
 import icu.windea.pls.model.constants.ChronicleConstants
 
 @Optimized
@@ -189,11 +189,11 @@ class ParadoxFileChangeCollector : ParadoxAnalysisScope {
 
         // 通知更改 & 重新解析和索引相关文件
         if (refreshFilePaths) {
-            ParadoxModificationTrackers.FilePath.incModificationCount()
+            ChronicleModificationTrackers.FilePath.incModificationCount()
         }
         if (refreshInlineScripts) {
-            ParadoxModificationTrackers.ScriptFile.incModificationCount()
-            ParadoxModificationTrackers.InlineScripts.incModificationCount()
+            ChronicleModificationTrackers.ScriptFile.incModificationCount()
+            ChronicleModificationTrackers.InlineScripts.incModificationCount()
         }
         if (reparseAllOpenFiles) {
             // 重新解析所有项目的所有已打开的文件

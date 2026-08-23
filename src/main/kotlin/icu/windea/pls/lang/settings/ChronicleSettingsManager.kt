@@ -1,13 +1,13 @@
 package icu.windea.pls.lang.settings
 
 import com.intellij.util.application
+import icu.windea.pls.base.ChronicleModificationTrackers
 import icu.windea.pls.base.analysis.ChronicleAnalysisManager
 import icu.windea.pls.core.util.CallbackLock
 import icu.windea.pls.lang.listeners.ParadoxDefaultGameDirectoriesListener
 import icu.windea.pls.lang.listeners.ParadoxDefaultGameTypeListener
 import icu.windea.pls.lang.listeners.ParadoxPreferredLocaleListener
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
-import icu.windea.pls.lang.util.ParadoxModificationTrackers
 import icu.windea.pls.model.ParadoxGameType
 
 object ChronicleSettingsManager {
@@ -28,7 +28,7 @@ object ChronicleSettingsManager {
     fun onPreferredLocaleChanged(callbackLock: CallbackLock, oldPreferredLocale: String, newPreferredLocale: String) {
         if (!callbackLock.check("onPreferredLocaleChanged")) return
 
-        ParadoxModificationTrackers.PreferredLocale.incModificationCount()
+        ChronicleModificationTrackers.PreferredLocale.incModificationCount()
 
         val messageBus = application.messageBus
         messageBus.syncPublisher(ParadoxPreferredLocaleListener.TOPIC).onChange(oldPreferredLocale, newPreferredLocale)
@@ -46,7 +46,7 @@ object ChronicleSettingsManager {
     fun refreshForParameterInference(callbackLock: CallbackLock) {
         if (!callbackLock.check("refreshForParameterInference")) return
 
-        ParadoxModificationTrackers.ParameterConfigInference.incModificationCount()
+        ChronicleModificationTrackers.ParameterConfigInference.incModificationCount()
 
         refreshFiles(callbackLock)
         refreshInlayHints(callbackLock)
@@ -55,9 +55,9 @@ object ChronicleSettingsManager {
     fun refreshForInlineScriptInference(callbackLock: CallbackLock) {
         if (!callbackLock.check("refreshForInlineScriptInference")) return
 
-        ParadoxModificationTrackers.ScriptFile.incModificationCount()
-        ParadoxModificationTrackers.InlineScripts.incModificationCount()
-        ParadoxModificationTrackers.InlineScriptConfigInference.incModificationCount()
+        ChronicleModificationTrackers.ScriptFile.incModificationCount()
+        ChronicleModificationTrackers.InlineScripts.incModificationCount()
+        ChronicleModificationTrackers.InlineScriptConfigInference.incModificationCount()
 
         // 这里只用刷新内联脚本文件
         val files = ChronicleAnalysisManager.findAllOpenFiles().filter { ParadoxInlineScriptManager.isInlineScriptFile(it) }
@@ -67,7 +67,7 @@ object ChronicleSettingsManager {
     fun refreshForScopeContextInference(callbackLock: CallbackLock) {
         if (!callbackLock.check("refreshForScopeContextInference")) return
 
-        ParadoxModificationTrackers.DefinitionScopeContextInference.incModificationCount()
+        ChronicleModificationTrackers.DefinitionScopeContextInference.incModificationCount()
 
         refreshFiles(callbackLock)
         refreshInlayHints(callbackLock)

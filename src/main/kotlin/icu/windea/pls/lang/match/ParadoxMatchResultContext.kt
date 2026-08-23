@@ -5,6 +5,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import icu.windea.pls.ChronicleFacade
+import icu.windea.pls.base.ChronicleModificationTrackers
 import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.cache.cancelable
 import icu.windea.pls.core.cache.createNestedCache
@@ -13,17 +14,16 @@ import icu.windea.pls.core.util.*
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.selectRootFile
-import icu.windea.pls.lang.util.ParadoxModificationTrackers
 
 object ParadoxMatchResultContext {
     object Keys : KeyRegistry() {
-        val cacheForDefinitions by registerKeyForCache(ParadoxModificationTrackers.ScriptFile)
-        val cacheForLocalisations by registerKeyForCache(ParadoxModificationTrackers.LocalisationFile, ParadoxModificationTrackers.PreferredLocale)
-        val cacheForSyncedLocalisations by registerKeyForCache(ParadoxModificationTrackers.LocalisationFile, ParadoxModificationTrackers.PreferredLocale)
-        val cacheForPathReferences by registerKeyForCache(ParadoxModificationTrackers.FilePath)
-        val cacheForComplexEnumValues by registerKeyForCache(ParadoxModificationTrackers.ScriptFile)
-        val cacheForModifiers by registerKeyForCache(ParadoxModificationTrackers.ScriptFile)
-        val cacheForTemplates by registerKeyForCache(ParadoxModificationTrackers.ScriptFile, ParadoxModificationTrackers.LocalisationFile, ParadoxModificationTrackers.PreferredLocale)
+        val cacheForDefinitions by registerKeyForCache(ChronicleModificationTrackers.ScriptFile)
+        val cacheForLocalisations by registerKeyForCache(ChronicleModificationTrackers.LocalisationFile, ChronicleModificationTrackers.PreferredLocale)
+        val cacheForSyncedLocalisations by registerKeyForCache(ChronicleModificationTrackers.LocalisationFile, ChronicleModificationTrackers.PreferredLocale)
+        val cacheForPathReferences by registerKeyForCache(ChronicleModificationTrackers.FilePath)
+        val cacheForComplexEnumValues by registerKeyForCache(ChronicleModificationTrackers.ScriptFile)
+        val cacheForModifiers by registerKeyForCache(ChronicleModificationTrackers.ScriptFile)
+        val cacheForTemplates by registerKeyForCache(ChronicleModificationTrackers.ScriptFile, ChronicleModificationTrackers.LocalisationFile, ChronicleModificationTrackers.PreferredLocale)
     }
 
     fun registerKeyForCache(vararg dependencies: Any): ParadoxMatchResultNestedCacheKeyProvider {

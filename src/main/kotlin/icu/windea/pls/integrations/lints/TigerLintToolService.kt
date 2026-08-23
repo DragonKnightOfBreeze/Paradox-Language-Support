@@ -11,6 +11,7 @@ import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
+import icu.windea.pls.base.ChronicleModificationTrackers
 import icu.windea.pls.base.notification.ChronicleNotificationGroups
 import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.toPsiDirectory
@@ -24,7 +25,6 @@ import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.settings.ChronicleProfilesSettings
-import icu.windea.pls.lang.util.ParadoxModificationTrackers
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
 import java.util.concurrent.ConcurrentHashMap
@@ -126,8 +126,8 @@ class TigerLintToolService : Disposable {
                 this += getModificationTracker(gameType)
                 // 如果执行 Tiger 检查工具失败，当任意脚本或本地化文件发生变化时，不会刷新缓存
                 if (value == null || value.error != null) {
-                    this += ParadoxModificationTrackers.ScriptFile
-                    this += ParadoxModificationTrackers.LocalisationFile
+                    this += ChronicleModificationTrackers.ScriptFile
+                    this += ChronicleModificationTrackers.LocalisationFile
                 }
             }
             value.withDependencyItems(trackers)

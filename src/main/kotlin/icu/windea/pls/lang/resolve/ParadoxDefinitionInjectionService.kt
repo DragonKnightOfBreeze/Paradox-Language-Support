@@ -2,6 +2,7 @@ package icu.windea.pls.lang.resolve
 
 import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleFacade
+import icu.windea.pls.base.ChronicleModificationTrackers
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.core.collections.orNull
@@ -20,7 +21,6 @@ import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager.getModeFromExpression
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager.getTargetFromExpression
-import icu.windea.pls.lang.util.ParadoxModificationTrackers
 import icu.windea.pls.model.ParadoxDefinitionInjectionInfo
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
@@ -116,6 +116,6 @@ object ParadoxDefinitionInjectionService {
         if (allFastMatch) return listOf(element)
 
         // 需要依赖声明结构
-        return listOf(element, ParadoxModificationTrackers.ScriptFile)
+        return listOf(element, ChronicleModificationTrackers.ScriptFile)
     }
 }

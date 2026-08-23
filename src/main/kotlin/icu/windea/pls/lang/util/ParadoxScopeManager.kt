@@ -5,6 +5,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.parents
+import icu.windea.pls.base.ChronicleModificationTrackers
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.config.config.resolved
@@ -85,7 +86,7 @@ object ParadoxScopeManager {
             ProgressManager.checkCanceled()
             runSmartReadAction {
                 val value = ParadoxScopeService.evaluateScopeContextForMember(element)
-                value.withDependencyItems(element.containingFile, ParadoxModificationTrackers.ScopeResolution)
+                value.withDependencyItems(element.containingFile, ChronicleModificationTrackers.ScopeResolution)
             }
         }
     }

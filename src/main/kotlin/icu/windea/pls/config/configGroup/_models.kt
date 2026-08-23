@@ -2,11 +2,11 @@ package icu.windea.pls.config.configGroup
 
 import com.intellij.openapi.util.ModificationTracker
 import com.intellij.openapi.vfs.VirtualFile
+import icu.windea.pls.base.ChronicleModificationTrackers
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroupDataModel.Empty.typeModel
 import icu.windea.pls.ep.config.configGroup.CwtFileBasedConfigGroupProcessor
-import icu.windea.pls.lang.util.ParadoxModificationTrackers
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 
 /**
@@ -53,7 +53,7 @@ class CwtConfigGroupMockConfigModel(configGroup: CwtConfigGroup) {
  * 提供一组预定义的绑定到指定规则分组的 [ModificationTracker]。
  */
 class CwtConfigGroupModificationTrackerModel(configGroup: CwtConfigGroup) {
-    val scriptValue = ParadoxModificationTrackers.scriptFileFromDefinitionTypes(configGroup, ParadoxDefinitionTypes.scriptValue)
-    val definitionParameter = ParadoxModificationTrackers.scriptFileFromDefinitionTypes(configGroup, typeModel.supportParameters)
-    val definitionScopeContext = ParadoxModificationTrackers.scriptFileFromDefinitionTypes(configGroup, typeModel.supportScopeInference)
+    val scriptValue = ChronicleModificationTrackers.scriptFileFromDefinitionTypes(configGroup, ParadoxDefinitionTypes.scriptValue)
+    val definitionParameter = ChronicleModificationTrackers.scriptFileFromDefinitionTypes(configGroup, typeModel.supportParameters)
+    val definitionScopeContext = ChronicleModificationTrackers.scriptFileFromDefinitionTypes(configGroup, typeModel.supportScopeInference)
 }

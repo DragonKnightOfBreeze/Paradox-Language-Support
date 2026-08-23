@@ -7,6 +7,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.parents
 import icu.windea.pls.ChronicleFacade
+import icu.windea.pls.base.ChronicleModificationTrackers
 import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
@@ -70,7 +71,6 @@ import icu.windea.pls.lang.select.*
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
-import icu.windea.pls.lang.util.ParadoxModificationTrackers
 import icu.windea.pls.model.expressions.ParadoxExpression
 import icu.windea.pls.model.orSpecific
 import icu.windea.pls.model.type.ParadoxExpressionRole
@@ -93,7 +93,7 @@ object ParadoxConfigService {
             // use soft values to optimize memory
             createNestedCache<VirtualFile, _, _> {
                 CacheBuilder().softValues().build<String, List<CwtMemberConfig<*>>>().cancelable()
-            }.withDependencyItems(ParadoxModificationTrackers.ConfigResolution)
+            }.withDependencyItems(ChronicleModificationTrackers.ConfigResolution)
         }
     }
 

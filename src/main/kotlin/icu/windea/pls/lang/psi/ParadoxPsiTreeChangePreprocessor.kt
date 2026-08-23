@@ -4,11 +4,11 @@ import com.intellij.openapi.project.DumbService
 import com.intellij.psi.impl.PsiModificationTrackerImpl
 import com.intellij.psi.impl.PsiTreeChangeEventImpl
 import com.intellij.psi.impl.PsiTreeChangePreprocessor
+import icu.windea.pls.base.ChronicleModificationTrackers
 import icu.windea.pls.base.analysis.ChronicleAnalysisManager
 import icu.windea.pls.core.matchesAntPattern
 import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.util.ParadoxModificationTrackers
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.script.psi.ParadoxScriptFile
 
@@ -35,8 +35,8 @@ class ParadoxPsiTreeChangePreprocessor : PsiTreeChangePreprocessor {
         val fileInfo = file.fileInfo ?: return
         when (file) {
             is ParadoxScriptFile -> {
-                ParadoxModificationTrackers.ScriptFile.incModificationCount()
-                val trackers = ParadoxModificationTrackers.ScriptFileMap.values
+                ChronicleModificationTrackers.ScriptFile.incModificationCount()
+                val trackers = ChronicleModificationTrackers.ScriptFileMap.values
                 for (tracker in trackers) {
                     val patterns = tracker.patterns
                     for (pattern in patterns) {
@@ -48,10 +48,10 @@ class ParadoxPsiTreeChangePreprocessor : PsiTreeChangePreprocessor {
                 }
             }
             is ParadoxLocalisationFile -> {
-                ParadoxModificationTrackers.LocalisationFile.incModificationCount()
+                ChronicleModificationTrackers.LocalisationFile.incModificationCount()
             }
             is ParadoxCsvFile -> {
-                ParadoxModificationTrackers.CsvFile.incModificationCount()
+                ChronicleModificationTrackers.CsvFile.incModificationCount()
             }
         }
     }

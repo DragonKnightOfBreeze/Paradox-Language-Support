@@ -4,6 +4,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.base.ChronicleCapacities
+import icu.windea.pls.base.ChronicleModificationTrackers
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
@@ -37,7 +38,6 @@ import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager.getTargetFromE
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.ParadoxDefinitionManager.Keys
 import icu.windea.pls.lang.util.ParadoxLocaleManager
-import icu.windea.pls.lang.util.ParadoxModificationTrackers
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxDefinitionSource
@@ -312,18 +312,18 @@ object ParadoxDefinitionService {
         if (allFastMatch) return listOf(element)
 
         // 如果需要依赖声明结构，则需要依赖任何脚本文件
-        return listOf(element.containingFile, ParadoxModificationTrackers.ScriptFile)
+        return listOf(element.containingFile, ChronicleModificationTrackers.ScriptFile)
     }
 
     fun getRelatedLocalisationKeyAwareDependencies(element: ParadoxDefinitionElement): List<Any> {
-        return listOf(element.containingFile, ParadoxModificationTrackers.LocalisationFile)
+        return listOf(element.containingFile, ChronicleModificationTrackers.LocalisationFile)
     }
 
     fun getRelatedLocalisationAwareDependencies(element: ParadoxDefinitionElement): List<Any> {
-        return listOf(element.containingFile, ParadoxModificationTrackers.LocalisationFile, ParadoxModificationTrackers.PreferredLocale)
+        return listOf(element.containingFile, ChronicleModificationTrackers.LocalisationFile, ChronicleModificationTrackers.PreferredLocale)
     }
 
     fun getRelatedImageAwareDependencies(element: ParadoxDefinitionElement): List<Any> {
-        return listOf(element.containingFile, ParadoxModificationTrackers.ScriptFile)
+        return listOf(element.containingFile, ChronicleModificationTrackers.ScriptFile)
     }
 }
