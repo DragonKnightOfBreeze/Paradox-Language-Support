@@ -14,7 +14,7 @@ import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.lang.selectGameType
-import icu.windea.pls.lang.util.ParadoxConfigManager
+import icu.windea.pls.lang.util.ParadoxExtendedConfigManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationConceptCommand
 import icu.windea.pls.localisation.psi.ParadoxLocalisationVisitor
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
@@ -75,7 +75,7 @@ class UnresolvedConceptInspection : LocalInspectionTool() {
 
     private fun skip(name: String, element: ParadoxLocalisationConceptCommand, configGroup: CwtConfigGroup): Boolean {
         if (ignoredNames.isNotEmpty() && name.matchesPatterns(ignoredNames, ignoreCase = true)) return true
-        if (ignoredByConfigs && ParadoxConfigManager.checkExtendedConfig(name, Constants.definitionType, element, configGroup)) return true
+        if (ignoredByConfigs && ParadoxExtendedConfigManager.checkExtendedConfig(name, Constants.definitionType, element, configGroup)) return true
         return false
     }
 }

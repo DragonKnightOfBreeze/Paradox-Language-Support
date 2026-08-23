@@ -448,7 +448,7 @@ object ParadoxScopeService {
             val configGroup = node.configGroup
             val configs = configGroup.extendedParameters.findByPattern(parameterElement.name, parameterElement, configGroup).orEmpty()
             val config = configs.findLastFast { it.contextKey.matchesByPattern(parameterElement.contextKey, parameterElement, configGroup) } ?: return@r1
-            val contextContainerConfig = config.getContextContainerConfig(parameterElement)
+            val contextContainerConfig = ParadoxExtendedConfigService.getContextContainerConfig(config, parameterElement)
 
             // ex_param = scope[country]
             // result: country (don't validate & inline allowed)

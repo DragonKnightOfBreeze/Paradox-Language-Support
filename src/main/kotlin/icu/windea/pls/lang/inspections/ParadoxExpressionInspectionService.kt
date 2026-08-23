@@ -50,6 +50,7 @@ import icu.windea.pls.lang.resolve.overriddenProvider
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.tagType
 import icu.windea.pls.lang.util.ParadoxConfigManager
+import icu.windea.pls.lang.util.ParadoxExtendedConfigManager
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptBoolean
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
@@ -159,11 +160,6 @@ object ParadoxExpressionInspectionService {
         // skip if config context should be skipped (mainly based on member path and member role)
         if (configContext.skipUnresolvedExpressionCheck()) return
 
-        val r1 = ParadoxConfigManager.getConfigs(element)
-        val r2 = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(fallback = false))
-        val r3 = configContext.getConfigs()
-        val r4 = configContext.getConfigs(ParadoxMatchOptions(fallback = false))
-
         // skip if there are any matched configs (use fallback if is property key)
         val fallback = element is ParadoxScriptPropertyKey
         val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(fallback = fallback))
@@ -212,7 +208,7 @@ object ParadoxExpressionInspectionService {
         if (expectedConfigs.isEmpty()) return false
         val isPathReference = ProcessorScope.allFrom({ expectedConfigs.expandConfigExpression { process(it) } }) { it.type in CwtDataTypeSets.PathReference }
         if (isPathReference) return true // will be checked by `UnresolvedPathReferenceInspection` instead
-        if (context.ignoredByConfigs && ParadoxConfigManager.checkExtendedConfig(element, expectedConfigs)) return true
+        if (context.ignoredByConfigs && ParadoxExtendedConfigManager.checkExtendedConfig(element, expectedConfigs)) return true
         return false
     }
 
@@ -521,7 +517,7 @@ object ParadoxExpressionInspectionService {
     }
 
     private fun skipForUnresolvedPathReference(element: ParadoxScriptStringExpressionElement, value: String, memberConfig: CwtMemberConfig<*>, context: ParadoxExpressionInspectionContext): Boolean {
-        if (context.ignoredByConfigs && ParadoxConfigManager.checkExtendedConfig(value, element, memberConfig)) return true
+        if (context.ignoredByConfigs && ParadoxExtendedConfigManager.checkExtendedConfig(value, element, memberConfig)) return true
         return false
     }
 

@@ -233,7 +233,7 @@ object ParadoxParameterService {
             else -> configs.findLastFast { it.contextKey.matchesByPattern(parameterElement.contextKey, parameterElement, configGroup) }
         }
         if (config == null) return emptyList()
-        return config.getContextConfigs(parameterElement)
+        return ParadoxExtendedConfigService.getContextConfigs(config, parameterElement)
     }
 
     fun getInferredContextConfigsFromUsages(parameterElement: ParadoxParameterLightElement, fast: Boolean = true): List<CwtMemberConfig<*>> {

@@ -59,6 +59,7 @@ import icu.windea.pls.cwt.psi.CwtMember
  *
  * @see CwtOptionMetadata.replaceScopes
  * @see CwtOptionMetadata.pushScope
+ * @see icu.windea.pls.lang.resolve.ParadoxExtendedConfigService
  */
 interface CwtExtendedInlineScriptConfig : CwtDelegatedConfig<CwtMember, CwtMemberConfig<*>>, CwtIdMatchableConfig<CwtMember> {
     @FromName

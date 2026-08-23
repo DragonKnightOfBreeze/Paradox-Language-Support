@@ -118,7 +118,7 @@ object ParadoxInlineScriptService {
         val configGroup = context.configGroup
         val config = configGroup.extendedInlineScripts.findByPattern(expression, contextElement, configGroup, options)
         if (config == null) return emptyList()
-        return config.getContextConfigs()
+        return ParadoxExtendedConfigService.getContextConfigs(config)
     }
 
     fun getInferredContextConfigsFromUsages(expression: String, contextElement: ParadoxScriptMember, context: CwtConfigContext, options: ParadoxMatchOptions? = null, fast: Boolean = true): List<CwtMemberConfig<*>> {

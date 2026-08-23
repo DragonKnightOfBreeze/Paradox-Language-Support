@@ -2,8 +2,6 @@ package icu.windea.pls.config.config.extended
 
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
-import com.intellij.psi.util.parentOfType
-import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.config.CwtConfigType
 import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.config.CwtDataTypeSets
@@ -20,10 +18,6 @@ import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.core.util.values.singletonListOrEmpty
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.cwt.psi.CwtMember
-import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
-import icu.windea.pls.lang.util.ParadoxConfigManager
-import icu.windea.pls.model.containingContextReference
-import icu.windea.pls.script.psi.ParadoxScriptMember
 
 /**
  * 参数的扩展规则。
@@ -68,6 +62,7 @@ import icu.windea.pls.script.psi.ParadoxScriptMember
  *
  * @see CwtOptionMetadata.replaceScopes
  * @see CwtOptionMetadata.pushScope
+ * @see icu.windea.pls.lang.resolve.ParadoxExtendedConfigService
  */
 interface CwtExtendedParameterConfig : CwtDelegatedConfig<CwtMember, CwtMemberConfig<*>>, CwtIdMatchableConfig<CwtMember> {
     @FromName
@@ -82,10 +77,10 @@ interface CwtExtendedParameterConfig : CwtDelegatedConfig<CwtMember, CwtMemberCo
     override val configType: CwtConfigType get() = CwtConfigTypes.ExtendedParameter
 
     /** 得到经过处理后的上下文容器规则。在后续的语义解析流程中，需要获取的通常是上下文规则，而非上下文容器规则。 */
-    fun getContextContainerConfig(parameterElement: ParadoxParameterLightElement): CwtMemberConfig<*>
+    fun getContextContainerConfig(): CwtMemberConfig<*>
 
-    /** 得到由其声明的一组上下文规则。在后续的语义解析流程中，会加入作为从扩展规则推断的上下文规则。 */
-    fun getContextConfigs(parameterElement: ParadoxParameterLightElement): List<CwtMemberConfig<*>>
+    /** 得到由其声明的一组上下文规则。在后续的语义解析流程中，会加入作为从扩展规则推断的上下文规则。注意这里不会检查 [inherit]。 */
+    fun getContextConfigs(): List<CwtMemberConfig<*>>
 
     companion object {
         /** 由成员规则解析为参数的扩展规则。 */
@@ -125,21 +120,11 @@ private class CwtExtendedParameterConfigImpl(
     private val _contextContainerConfig by lazy { computeContextContainerConfig() }
     private val _contextConfigs by lazy { computeContextConfigs() }
 
-    override fun getContextContainerConfig(parameterElement: ParadoxParameterLightElement): CwtMemberConfig<*> {
+    override fun getContextContainerConfig(): CwtMemberConfig<*> {
         return _contextContainerConfig
     }
 
-    override fun getContextConfigs(parameterElement: ParadoxParameterLightElement): List<CwtMemberConfig<*>> {
-        if (inherit) {
-            run {
-                val contextReferenceElement = parameterElement.containingContextReference?.element ?: return@run
-                val parentElement = contextReferenceElement.parentOfType<ParadoxScriptMember>(false) ?: return@run
-                val contextConfigs = ParadoxConfigManager.getContextConfigs(parentElement)
-                ChronicleThreadContext.resolvingConfigContextStack.get()?.peekLast()?.markDynamic() // NOTE 2.1.2 需要把正在解析的规则上下文标记为动态的
-                return contextConfigs
-            }
-            return emptyList()
-        }
+    override fun getContextConfigs(): List<CwtMemberConfig<*>> {
         return _contextConfigs
     }
 
