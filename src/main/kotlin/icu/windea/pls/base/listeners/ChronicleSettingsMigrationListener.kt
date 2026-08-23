@@ -1,4 +1,4 @@
-package icu.windea.pls.base.settings
+package icu.windea.pls.base.listeners
 
 import com.intellij.ide.AppLifecycleListener
 import com.intellij.ide.util.PropertiesComponent
@@ -12,7 +12,7 @@ import kotlin.io.path.notExists
 import kotlin.io.path.readText
 import kotlin.io.path.writeText
 
-class ChronicleSettingsMigrator : AppLifecycleListener {
+class ChronicleSettingsMigrationListener : AppLifecycleListener {
     private val logger = thisLogger()
     private val migrationPropertyName = "pls.settings.migration"
     private val migrationVersion = 2

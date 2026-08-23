@@ -1,7 +1,7 @@
 <idea-plugin>
   <extensions defaultExtensionNs="com.intellij">
     <postStartupActivity implementation="icu.windea.pls.base.ChronicleCapacities$Listener"/>
-    <postStartupActivity implementation="icu.windea.pls.base.ChronicleLifecycleListener"/>
+    <postStartupActivity implementation="icu.windea.pls.base.listeners.ChronicleLifecycleListener"/>
 
     <applicationService serviceInterface="icu.windea.pls.base.io.ChronicleDataPathService" serviceImplementation="icu.windea.pls.base.io.ChronicleDataPathServiceImpl"/>
     <applicationService serviceInterface="icu.windea.pls.base.io.ChronicleGitService" serviceImplementation="icu.windea.pls.base.io.ChronicleGitServiceImpl"/>
@@ -33,7 +33,7 @@
   </extensions>
 
   <applicationListeners>
-    <listener class="icu.windea.pls.base.ChronicleLifecycleListener" topic="com.intellij.ide.AppLifecycleListener"/>
-    <listener class="icu.windea.pls.base.settings.ChronicleSettingsMigrator" topic="com.intellij.ide.AppLifecycleListener"/>
+    <listener class="icu.windea.pls.base.listeners.ChronicleLifecycleListener" topic="com.intellij.ide.AppLifecycleListener"/>
+    <listener class="icu.windea.pls.base.listeners.ChronicleSettingsMigrationListener" topic="com.intellij.ide.AppLifecycleListener"/>
   </applicationListeners>
 </idea-plugin>
