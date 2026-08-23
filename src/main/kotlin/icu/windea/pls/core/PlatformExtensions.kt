@@ -190,26 +190,6 @@ fun TextRange.unquote(text: String, quote: Char = '"'): TextRange {
 }
 
 /**
- * 将 [original] 中 [this] 范围替换为 [replacement]，必要时自动加引号。
- *
- * 当替换段长度与整体长度关系满足条件时，避免重复包围引号并保留必要的转义。
- */
-@Deprecated("Use detailed logic instead")
-fun TextRange.replaceAndQuoteIfNeeded(original: String, replacement: String, quote: Char = '"', containAnyChar: String = "", containBlank: Boolean = true): String {
-    if (this.length >= original.length - 1) {
-        return replacement.quoteIfNeeded(quote, containAnyChar, containBlank)
-    } else {
-        var replacement0 = replacement.quoteIfNeeded(quote, containAnyChar, containBlank)
-        if (replacement0.isLeftQuoted(quote) && replacement0.isRightQuoted(quote)) {
-            replacement0 = replacement0.substring(1, replacement0.length - 1)
-        }
-        val prefix = original.substring(0, startOffset)
-        val suffix = original.substring(endOffset)
-        return prefix + replacement0 + suffix
-    }
-}
-
-/**
  * 在输入的文本中查找关键字的出现位置，返回关键字与文本范围组成的元组的列表，按起始位置排序。
  */
 fun String.findKeywordsWithTextRanges(keywords: Collection<String>): List<Tuple2<String, TextRange>> {
