@@ -5,8 +5,10 @@ import com.intellij.testFramework.IndexingTestUtil
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.core.quote
+import icu.windea.pls.core.text.QuotePatterns
 import icu.windea.pls.lang.inspections.script.expression.UnresolvedExpressionInspection
 import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.script.text.ParadoxScript
 import icu.windea.pls.test.ChronicleTestScope
 import org.junit.After
 import org.junit.Before
@@ -79,7 +81,7 @@ class Issue369Test : BasePlatformTestCase(), ChronicleTestScope {
         IndexingTestUtil.waitUntilIndexesAreReady(project)
         myFixture.complete(CompletionType.BASIC)
         val lookupElementStrings = myFixture.lookupElementStrings!!
-        assertSameElements(lookupElementStrings, "no_spaces", "spaced out".quote()) // should be quoted if is blank or contains blank
+        assertSameElements(lookupElementStrings, "no_spaces", "spaced out".quote(QuotePatterns.ParadoxScript)) // should be quoted if is blank or contains blank
     }
 
     @Test
@@ -101,7 +103,7 @@ class Issue369Test : BasePlatformTestCase(), ChronicleTestScope {
         IndexingTestUtil.waitUntilIndexesAreReady(project)
         myFixture.complete(CompletionType.BASIC)
         val lookupElementStrings = myFixture.lookupElementStrings!!
-        assertSameElements(lookupElementStrings, "no_spaces", "spaced out".quote()) // should be quoted if is blank or contains blank
+        assertSameElements(lookupElementStrings, "no_spaces", "spaced out".quote(QuotePatterns.ParadoxScript)) // should be quoted if is blank or contains blank
     }
 
     @Test

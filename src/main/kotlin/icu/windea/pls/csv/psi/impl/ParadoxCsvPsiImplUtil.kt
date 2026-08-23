@@ -15,9 +15,12 @@ import com.intellij.util.IncorrectOperationException
 import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.core.findChildren
 import icu.windea.pls.core.psi.PsiService
+import icu.windea.pls.core.text.QuotePattern
+import icu.windea.pls.core.text.QuotePatterns
 import icu.windea.pls.core.unquote
 import icu.windea.pls.csv.psi.*
 import icu.windea.pls.csv.psi.ParadoxCsvElementTypes.*
+import icu.windea.pls.csv.text.ParadoxCsv
 import icu.windea.pls.lang.search.scope.ParadoxSearchScope
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import javax.swing.Icon
@@ -56,7 +59,7 @@ object ParadoxCsvPsiImplUtil {
 
     @JvmStatic
     fun getValue(element: ParadoxCsvColumn): String {
-        return element.text.unquote()
+        return element.text.unquote(QuotePatterns.ParadoxCsv)
     }
 
     @JvmStatic
@@ -70,8 +73,8 @@ object ParadoxCsvPsiImplUtil {
     }
 
     @JvmStatic
-    fun needQuote(element: ParadoxCsvColumn): Boolean {
-        return ParadoxCsvPsiManipulationService.needQuote(element.text)
+    fun getQuotePattern(element: ParadoxCsvColumn): QuotePattern {
+        return QuotePatterns.ParadoxCsv
     }
 
     // endregion

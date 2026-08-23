@@ -8,7 +8,11 @@ import com.intellij.modcommand.PsiUpdateModCommandAction
 import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.ElementManipulators
 import com.intellij.psi.PsiElement
+import icu.windea.pls.core.canQuote
+import icu.windea.pls.core.canUnquote
+import icu.windea.pls.core.psi.PsiQuoteAwareElement
 import icu.windea.pls.core.quote
+import icu.windea.pls.core.text.QuotePatterns
 import icu.windea.pls.core.unquote
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
@@ -18,12 +22,13 @@ class QuoteLiteralIntention : PsiUpdateModCommandAction<ParadoxCsvExpressionElem
     override fun getFamilyName() = ChronicleIntentionBundle.message("intention.quoteLiteral")
 
     override fun invoke(context: ActionContext, element: ParadoxCsvExpressionElement, updater: ModPsiUpdater) {
-        val newText = element.text.quote(lenient = true)
+        val quotePattern = if (element is PsiQuoteAwareElement) element.quotePattern else QuotePatterns.Default
+        val newText = element.text.quote(quotePattern, lenient = true)
         ElementManipulators.handleContentChange(element, newText)
     }
 
     override fun isElementApplicable(element: ParadoxCsvExpressionElement, context: ActionContext): Boolean {
-        return element is ParadoxCsvColumn && element.canQuote(element.text)
+        return element is ParadoxCsvColumn && element.text.canQuote(element.quotePattern)
     }
 
     override fun stopSearchAt(element: PsiElement, context: ActionContext): Boolean {
@@ -35,12 +40,13 @@ class UnquoteLiteralIntention : PsiUpdateModCommandAction<ParadoxCsvExpressionEl
     override fun getFamilyName() = ChronicleIntentionBundle.message("intention.unquoteLiteral")
 
     override fun invoke(context: ActionContext, element: ParadoxCsvExpressionElement, updater: ModPsiUpdater) {
-        val newText = element.text.unquote()
+        val quotePattern = if (element is PsiQuoteAwareElement) element.quotePattern else QuotePatterns.Default
+        val newText = element.text.unquote(quotePattern)
         ElementManipulators.handleContentChange(element, newText)
     }
 
     override fun isElementApplicable(element: ParadoxCsvExpressionElement, context: ActionContext): Boolean {
-        return element is ParadoxCsvColumn && element.canUnquote(element.text)
+        return element is ParadoxCsvColumn && element.text.canUnquote(element.quotePattern)
     }
 
     override fun stopSearchAt(element: PsiElement, context: ActionContext): Boolean {

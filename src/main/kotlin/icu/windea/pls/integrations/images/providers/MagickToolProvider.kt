@@ -8,6 +8,7 @@ import icu.windea.pls.core.executeCommandLine
 import icu.windea.pls.core.quote
 import icu.windea.pls.core.quoteIfNeeded
 import icu.windea.pls.core.runCatchingCancelable
+import icu.windea.pls.core.text.QuotePatterns
 import icu.windea.pls.core.toPath
 import java.nio.file.Path
 import kotlin.io.path.createDirectories
@@ -81,9 +82,9 @@ class MagickToolProvider : CommandBasedImageToolProvider() {
 
         val fullExePath = toolPath.toPath()
         val wd = fullExePath.parent?.toFile()
-        val exe = fullExePath.name.quoteIfNeeded('\'')
-        val input = path.toString().quote('\'')
-        val output = outputPath.toString().quote('\'')
+        val exe = fullExePath.name.quoteIfNeeded(QuotePatterns.CommandLine)
+        val input = path.toString().quote(QuotePatterns.CommandLine)
+        val output = outputPath.toString().quote(QuotePatterns.CommandLine)
 
         ProgressManager.checkCanceled() // 在执行命令前检查进度是否被取消
 

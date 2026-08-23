@@ -285,66 +285,6 @@ fun String.isIdentifier(extraChars: String = ""): Boolean {
     return true
 }
 
-/** 是否以 [quote] 起始。 */
-fun String.isLeftQuoted(quote: Char = '"'): Boolean {
-    return startsWith(quote)
-}
-
-/** 是否以 [quote] 结尾（考虑转义）。 */
-fun String.isRightQuoted(quote: Char = '"'): Boolean {
-    return length > 1 && endsWith(quote) && !isEscapedCharAt(lastIndex)
-}
-
-/** 是否左右被 [quote] 包围。 */
-fun String.isQuoted(quote: Char = '"'): Boolean {
-    return isLeftQuoted(quote) || isRightQuoted(quote)
-}
-
-/** 为字符串添加引号，并对内部的引号进行转义。如果 [lenient] 为 `true`，则处理时会先忽略首尾的引号。 */
-fun String.quote(quote: Char = '"', lenient: Boolean = true): String {
-    val s = this
-    if (s.isEmpty()) return "$quote$quote"
-    val start = isLeftQuoted(quote)
-    val end = isRightQuoted(quote)
-    if (start && end) return s
-    return buildString {
-        append(quote)
-        val lastIndex = s.lastIndex
-        s.forEachIndexed f@{ i, c ->
-            if (lenient && start && i == 0) return@f
-            if (lenient && end && i == lastIndex) return@f
-            if (c == quote && !s.isEscapedCharAt(i)) append('\\')
-            append(c)
-        }
-        append(quote)
-    }
-}
-
-/** 去除文本首尾的引号，并对内部已转义的引号进行反转义。 */
-fun String.unquote(quote: Char = '"'): String {
-    val s = this
-    if (s.isEmpty()) return ""
-    val start = isLeftQuoted(quote)
-    val end = isRightQuoted(quote)
-    if (!start && !end) return s
-    var offset = if (start) 1 else 0
-    return buildString {
-        val lastIndex = s.lastIndex
-        s.forEachIndexed f@{ i, c ->
-            if (start && i == 0) return@f
-            if (end && i == lastIndex) return@f
-            if (c == quote && s.isEscapedCharAt(i)) deleteCharAt(i - 1 - offset++)
-            append(c)
-        }
-    }
-}
-
-/** 在必要时自动加引号。 */
-fun String.quoteIfNeeded(quote: Char = '"', containAnyChar: String = "", containBlank: Boolean = true, isBlank: Boolean = true): String {
-    val needQuote = (isBlank && isBlank()) || any { it == quote || (containBlank && it.isWhitespace()) || it in containAnyChar }
-    return if (needQuote) this.quote(quote) else this
-}
-
 /** 判断当前字符串中的指定索引 [index] 的字符是否被转义（在前面有连续的奇数个反斜线）。 */
 fun CharSequence.isEscapedCharAt(index: Int): Boolean {
     if (index == 0) return false

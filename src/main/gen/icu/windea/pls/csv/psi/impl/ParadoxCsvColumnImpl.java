@@ -10,6 +10,7 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
+import icu.windea.pls.core.text.QuotePattern;
 import icu.windea.pls.csv.psi.ParadoxCsvColumn;
 import icu.windea.pls.csv.psi.ParadoxCsvVisitor;
 import org.jetbrains.annotations.NotNull;
@@ -69,8 +70,8 @@ public class ParadoxCsvColumnImpl extends ASTWrapperPsiElement implements Parado
   }
 
   @Override
-  public boolean needQuote(@NotNull String text) {
-    return ParadoxCsvPsiImplUtil.needQuote(this);
+  public @NotNull QuotePattern getQuotePattern() {
+    return ParadoxCsvPsiImplUtil.getQuotePattern(this);
   }
 
   @Override

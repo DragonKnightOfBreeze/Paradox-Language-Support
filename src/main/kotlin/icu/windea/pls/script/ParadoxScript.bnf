@@ -91,7 +91,7 @@ property_key ::= property_key_part (<<processSnippet>> property_key_part) * {
   ]
   methods=[
     getIdElement parameter=""
-    getIcon getName getValue getPresentableText setValue setContent needQuote
+    getIcon getName getValue getPresentableText setValue setContent getQuotePattern
     getReference getReferences
   ]
 }
@@ -155,7 +155,7 @@ string ::= string_part <<postProcessFirstSnippet>> (<<processSnippet>> string_pa
   ]
   methods=[
     getIdElement parameter=""
-    getIcon getValue setValue setContent needQuote
+    getIcon getValue setValue setContent getQuotePattern
     getReference getReferences
   ]
 }

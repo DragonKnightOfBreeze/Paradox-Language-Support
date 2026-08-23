@@ -7,7 +7,10 @@ import com.intellij.psi.PsiParserFacade
 import com.intellij.util.IncorrectOperationException
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.findChild
+import icu.windea.pls.core.quoteIfNeeded
+import icu.windea.pls.core.text.QuotePatterns
 import icu.windea.pls.script.ParadoxScriptLanguage
+import icu.windea.pls.script.text.ParadoxScript
 
 @Suppress("unused")
 object ParadoxScriptElementFactory {
@@ -127,25 +130,25 @@ object ParadoxScriptElementFactory {
 
     @JvmStatic
     fun createScriptedVariable(project: Project, name: String, value: String): ParadoxScriptScriptedVariable {
-        val text = "@$name = ${ParadoxScriptPsiManipulationService.quoteIfNeeded(value)}"
+        val text = "@$name = ${value.quoteIfNeeded(QuotePatterns.ParadoxScript)}"
         return createScriptedVariableFromText(project, text)
     }
 
     @JvmStatic
     fun createProperty(project: Project, key: String, value: String, separatorString: String = " = "): ParadoxScriptProperty {
-        val text = "$${ParadoxScriptPsiManipulationService.quoteIfNeeded(key)}$separatorString${ParadoxScriptPsiManipulationService.quoteIfNeeded(value)}"
+        val text = "$${key.quoteIfNeeded(QuotePatterns.ParadoxScript)}$separatorString${value.quoteIfNeeded(QuotePatterns.ParadoxScript)}"
         return createPropertyFromText(project, text)
     }
 
     @JvmStatic
     fun createPropertyKey(project: Project, value: String): ParadoxScriptPropertyKey {
-        val text = ParadoxScriptPsiManipulationService.quoteIfNeeded(value)
+        val text = value.quoteIfNeeded(QuotePatterns.ParadoxScript)
         return createPropertyKeyFromText(project, text)
     }
 
     @JvmStatic
     fun createString(project: Project, value: String): ParadoxScriptString {
-        val text = ParadoxScriptPsiManipulationService.quoteIfNeeded(value)
+        val text = value.quoteIfNeeded(QuotePatterns.ParadoxScript)
         return createStringFromText(project, text)
     }
 

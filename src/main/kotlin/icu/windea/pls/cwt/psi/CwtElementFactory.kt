@@ -8,8 +8,11 @@ import com.intellij.psi.PsiParserFacade
 import com.intellij.util.IncorrectOperationException
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.findChild
+import icu.windea.pls.core.quoteIfNeeded
+import icu.windea.pls.core.text.QuotePatterns
 import icu.windea.pls.cwt.CwtLanguage
 import icu.windea.pls.cwt.psi.CwtElementTypes.*
+import icu.windea.pls.cwt.text.Cwt
 
 @Suppress("unused")
 object CwtElementFactory {
@@ -79,31 +82,31 @@ object CwtElementFactory {
 
     @JvmStatic
     fun createOption(project: Project, key: String, value: String): CwtOption {
-        val text = "${CwtPsiManipulationService.quoteIfNeeded(key)} = ${CwtPsiManipulationService.quoteIfNeeded(value)}"
+        val text = "${key.quoteIfNeeded(QuotePatterns.Cwt)} = ${value.quoteIfNeeded(QuotePatterns.Cwt)}"
         return createOptionFromText(project, text)
     }
 
     @JvmStatic
     fun createProperty(project: Project, key: String, value: String, separatorString: String = " = "): CwtProperty {
-        val text = "${CwtPsiManipulationService.quoteIfNeeded(key)}$separatorString${CwtPsiManipulationService.quoteIfNeeded(value)}"
+        val text = "${key.quoteIfNeeded(QuotePatterns.Cwt)}$separatorString${value.quoteIfNeeded(QuotePatterns.Cwt)}"
         return createPropertyFromText(project, text)
     }
 
     @JvmStatic
     fun createOptionKey(project: Project, value: String): CwtOptionKey {
-        val text = CwtPsiManipulationService.quoteIfNeeded(value)
+        val text = value.quoteIfNeeded(QuotePatterns.Cwt)
         return createOptionKeyFromText(project, text)
     }
 
     @JvmStatic
     fun createPropertyKey(project: Project, value: String): CwtPropertyKey {
-        val text = CwtPsiManipulationService.quoteIfNeeded(value)
+        val text = value.quoteIfNeeded(QuotePatterns.Cwt)
         return createPropertyKeyFromText(project, text)
     }
 
     @JvmStatic
     fun createString(project: Project, value: String): CwtString {
-        val text = CwtPsiManipulationService.quoteIfNeeded(value)
+        val text = value.quoteIfNeeded(QuotePatterns.Cwt)
         return createStringFromText(project, text)
     }
 }

@@ -6,6 +6,7 @@ import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.core.children
 import icu.windea.pls.core.collections.CaseInsensitiveStringSet
 import icu.windea.pls.core.quoteIfNeeded
+import icu.windea.pls.core.text.QuotePatterns
 import icu.windea.pls.core.toFile
 import icu.windea.pls.core.unquote
 import icu.windea.pls.core.util.KeyRegistry
@@ -14,6 +15,7 @@ import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.cwt.psi.CwtElementFactory
 import icu.windea.pls.cwt.psi.CwtProperty
+import icu.windea.pls.cwt.text.Cwt
 import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -69,13 +71,14 @@ class CwtModifierCategoriesConfigGenerator(override val project: Project) : CwtC
     private suspend fun parseConfigFile(outputPath: String): Set<String> {
         val file = outputPath.toFile()
         if (!file.exists()) return emptySet() // file not exist -> return empty
+        val quotePattern = QuotePatterns.Cwt
         val text = withContext(Dispatchers.IO) { file.readText() }
         val psiFile = readAction { CwtElementFactory.createFileFromText(project, text) }
         return readAction {
             val rootProps = psiFile.block?.children()?.filterIsInstance<CwtProperty>()?.toList().orEmpty()
             val container = rootProps.find { it.name == CONTAINER_MODIFIER_CATEGORIES }
             container?.propertyValue?.children()?.filterIsInstance<CwtProperty>()
-                ?.mapTo(mutableSetOf()) { it.name.unquote() } ?: emptySet()
+                ?.mapTo(mutableSetOf()) { it.name.unquote(quotePattern) } ?: emptySet()
         }
     }
 
@@ -95,7 +98,7 @@ class CwtModifierCategoriesConfigGenerator(override val project: Project) : CwtC
             if (missingNames.isNotEmpty()) {
                 appendLine(TODO_MISSING_MODIFIER_CATEGORIES)
                 for (name in missingNames.sorted()) {
-                    val key = name.quoteIfNeeded()
+                    val key = name.quoteIfNeeded(QuotePatterns.Cwt)
                     appendLine("${key} = {")
                     appendLine("# TODO choose supported scopes".prependIndent())
                     appendLine("supported_scopes = {}".prependIndent())

@@ -178,18 +178,6 @@ operator fun Segment.contains(other: Segment): Boolean {
 }
 
 /**
- * 去除文本范围首尾的引号。返回处理后的新的文本范围。
- */
-fun TextRange.unquote(text: String, quote: Char = '"'): TextRange {
-    if (text.isEmpty()) return TextRange.EMPTY_RANGE
-    val leftQuoted = text.isLeftQuoted(quote)
-    val rightQuoted = text.isRightQuoted(quote)
-    val startOffset = if (leftQuoted) startOffset + 1 else startOffset
-    val endOffset = if (rightQuoted) endOffset - 1 else endOffset
-    return TextRange.create(startOffset, endOffset)
-}
-
-/**
  * 在输入的文本中查找关键字的出现位置，返回关键字与文本范围组成的元组的列表，按起始位置排序。
  */
 fun String.findKeywordsWithTextRanges(keywords: Collection<String>): List<Tuple2<String, TextRange>> {

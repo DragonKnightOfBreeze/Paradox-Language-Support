@@ -17,6 +17,7 @@ import icu.windea.pls.core.findChild
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.core.quote
+import icu.windea.pls.core.text.QuotePatterns
 import icu.windea.pls.lang.analysis.ParadoxAnalysisManager
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.resolve.ParadoxExpressionService
@@ -29,6 +30,7 @@ import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constraints.ParadoxSyntaxConstraint
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
 import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.text.ParadoxScript
 
 /**
  * 用于操作脚本文件中的作用域调用语句（scope call statement）。
@@ -396,9 +398,10 @@ object ParadoxScopeCallStatementManipulationService {
         val separator = propertyKey.siblings(withSelf = false).find { ParadoxSyntaxService.isPropertySeparator(it) }
         val separatorText = separator?.text ?: "="
 
-        val wasQuoted = propertyKey.text.isLeftQuoted()
-        val newOuterKeyText = if (wasQuoted) outerKey.quote() else outerKey
-        val newInnerKeyText = if (wasQuoted) innerKey.quote() else innerKey
+        val quotePattern = QuotePatterns.ParadoxScript
+        val wasQuoted = propertyKey.text.isLeftQuoted(quotePattern)
+        val newOuterKeyText = if (wasQuoted) outerKey.quote(quotePattern) else outerKey
+        val newInnerKeyText = if (wasQuoted) innerKey.quote(quotePattern) else innerKey
         val newSeparatorText = separatorText // NOTE separator should be kept in all depths
         val newValueText = element.propertyValue?.text.orEmpty() // property value can be null here
         val newText = "$newOuterKeyText $newSeparatorText {\n$newInnerKeyText $newSeparatorText $newValueText\n}"
@@ -475,9 +478,10 @@ object ParadoxScopeCallStatementManipulationService {
         val innerSeparator = innerPropertyKey.siblings(withSelf = false).find { ParadoxSyntaxService.isPropertySeparator(it) }
         val innerSeparatorText = innerSeparator?.text ?: "="
 
+        val quotePattern = QuotePatterns.ParadoxScript
         val newKey = "$outerKey.$innerKey"
-        val wasQuoted = propertyKey.text.isLeftQuoted()
-        val newKeyText = if (wasQuoted) newKey.quote() else newKey
+        val wasQuoted = propertyKey.text.isLeftQuoted(quotePattern)
+        val newKeyText = if (wasQuoted) newKey.quote(quotePattern) else newKey
         val newSeparatorText = innerSeparatorText // NOTE outer separator text will be lost here, if is not `=`
         val newValueText = innerProperty.propertyValue?.text.orEmpty() // property value can be null here
         val newText = "$newKeyText $newSeparatorText $newValueText"

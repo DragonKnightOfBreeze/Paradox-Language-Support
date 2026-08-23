@@ -115,36 +115,6 @@ class StdlibExtensionsTest {
     // endregion
 
     @Test
-    fun isQuoted_test() {
-        Assert.assertFalse("123".isRightQuoted())
-        Assert.assertTrue("123\"".isRightQuoted())
-        Assert.assertFalse("123\\\"".isRightQuoted())
-        Assert.assertTrue("123\\\\\"".isRightQuoted())
-        Assert.assertTrue("\\\\\"".isRightQuoted())
-    }
-
-    @Test
-    fun quoteAndUnquote_test() {
-        Assert.assertEquals("""" abc\"abc """", """ abc"abc """.quote())
-        Assert.assertEquals("""" abc\"abc """", """ abc\"abc """.quote())
-        Assert.assertEquals("""" abc\\\"abc """", """ abc\\"abc """.quote())
-        Assert.assertEquals("""" abc\\\"abc """", """ abc\\\"abc """.quote())
-
-        Assert.assertEquals("""" abc"abc """", """" abc"abc """".quote())
-        Assert.assertEquals("""" abc\"abc """", """" abc\"abc """".quote())
-        Assert.assertEquals("""" abc\\"abc """", """" abc\\"abc """".quote())
-
-        Assert.assertEquals(""" abc"abc """, """" abc"abc """".unquote())
-        Assert.assertEquals(""" abc"abc """, """" abc\"abc """".unquote())
-        Assert.assertEquals(""" abc\\"abc """, """" abc\\"abc """".unquote())
-        Assert.assertEquals(""" abc\\"abc """, """" abc\\\"abc """".unquote())
-
-        Assert.assertEquals(""" abc"abc """, """ abc"abc """.unquote())
-        Assert.assertEquals(""" abc\"abc """, """ abc\"abc """.unquote())
-        Assert.assertEquals(""" abc\\"abc """, """ abc\\"abc """.unquote())
-    }
-
-    @Test
     fun isEscapedCharAt_test() {
         Assert.assertFalse("abcd".isEscapedCharAt(3))
         Assert.assertTrue("ab\\d".isEscapedCharAt(3))
@@ -159,22 +129,6 @@ class StdlibExtensionsTest {
         Assert.assertEquals("abc&nbsp;&nbsp;", "abc  ".escapeBlank())
         Assert.assertEquals("&nbsp;abc&nbsp;&nbsp;", " abc  ".escapeBlank())
         Assert.assertEquals("&nbsp;a&nbsp;bc&nbsp;&nbsp;", " a bc  ".escapeBlank())
-    }
-
-    @Test
-    fun quote_unquote_and_escape_test() {
-        val s = "ab\"c"
-        val quoted = s.quote()
-        val unquoted = quoted.unquote()
-        Assert.assertEquals(s, unquoted)
-
-        val s2 = "a\\\"b" // a, \\, ", b
-        val i = s2.indexOf('"')
-        Assert.assertTrue(s2.isEscapedCharAt(i))
-
-        val s3 = "a b"
-        Assert.assertEquals("\"a b\"", s3.quoteIfNeeded())
-        Assert.assertEquals(s3, s3.unquote())
     }
 
     @Test

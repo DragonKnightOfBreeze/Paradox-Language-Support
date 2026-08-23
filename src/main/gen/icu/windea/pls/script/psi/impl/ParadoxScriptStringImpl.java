@@ -10,6 +10,7 @@ import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
+import icu.windea.pls.core.text.QuotePattern;
 import icu.windea.pls.script.psi.ParadoxScriptInlineConditionalBlock;
 import icu.windea.pls.script.psi.ParadoxScriptString;
 import icu.windea.pls.script.psi.ParadoxScriptValue;
@@ -69,8 +70,8 @@ public class ParadoxScriptStringImpl extends ParadoxScriptValueImpl implements P
   }
 
   @Override
-  public boolean needQuote(@NotNull String text) {
-    return ParadoxScriptPsiImplUtil.needQuote(this);
+  public @NotNull QuotePattern getQuotePattern() {
+    return ParadoxScriptPsiImplUtil.getQuotePattern(this);
   }
 
   @Override

@@ -64,7 +64,7 @@ property_key ::= PROPERTY_KEY_TOKEN {
     "icu.windea.pls.cwt.psi.CwtStringExpressionElement"
   ]
   methods=[
-    getIcon getName getValue getPresentableText setValue setContent needQuote
+    getIcon getName getValue getPresentableText setValue setContent getQuotePattern
     getReference getReferences
   ]
 }
@@ -108,7 +108,7 @@ string ::= STRING_TOKEN {
     "icu.windea.pls.cwt.psi.CwtStringExpressionElement"
   ]
   methods=[
-    getIcon getName setName getNameIdentifier getValue setValue needQuote
+    getIcon getName setName getNameIdentifier getValue setValue getQuotePattern
     getReference getReferences
   ]
 }
@@ -155,7 +155,7 @@ option_key ::= OPTION_KEY_TOKEN {
   implements=[
     "icu.windea.pls.core.psi.PsiQuoteAwareElement"
   ]
-  methods=[getIcon getName getValue needQuote]
+  methods=[getIcon getName getValue getQuotePattern]
 }
 private option_separator ::= EQUAL_SIGN | NOT_EQUAL_SIGN | DOUBLE_EQUAL_SIGN
 private option_value ::= value

@@ -10,6 +10,7 @@ import icu.windea.pls.core.executeCommandLine
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.quote
 import icu.windea.pls.core.runCatchingCancelable
+import icu.windea.pls.core.text.QuotePatterns
 import icu.windea.pls.core.toPath
 import icu.windea.pls.core.toUuidString
 import icu.windea.pls.integrations.lints.TigerLintResult
@@ -81,14 +82,14 @@ abstract class TigerLintToolProvider : CommandBasedLintToolProvider() {
         val rootFile = rootInfo.rootFile
         val rootPath = rootFile.path
         val modSettings = ChronicleProfilesSettings.getInstance().state.modSettings.get(rootPath)
-        val argGamePath = modSettings?.finalGameDirectory?.orNull()?.quote('\'')
-        val argConfPath = confPath?.orNull()?.quote('\'')
-        val argPath = rootPath.quote('\'') // 这里应该都可以直接输入模组目录
+        val argGamePath = modSettings?.finalGameDirectory?.orNull()?.quote(QuotePatterns.CommandLine)
+        val argConfPath = confPath?.orNull()?.quote(QuotePatterns.CommandLine)
+        val argPath = rootPath.quote(QuotePatterns.CommandLine) // 这里应该都可以直接输入模组目录
 
         // 必须指定输出的 json 文件，然后从中读取检查结果（之后不删除这个临时文件）
         val lintResultsPath = ChronicleDataPathService.getInstance().lintResultsPath
         val outputPath = lintResultsPath.resolve("$name-result@${rootDirectory.url.toUuidString()}.json")
-        val argOutputPath = outputPath.toString().quote('\'')
+        val argOutputPath = outputPath.toString().quote(QuotePatterns.CommandLine)
 
         ProgressManager.checkCanceled() // 在执行命令前检查进度是否被取消
         val command = buildString {

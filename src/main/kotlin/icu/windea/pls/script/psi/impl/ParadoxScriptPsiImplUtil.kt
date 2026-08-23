@@ -24,6 +24,8 @@ import icu.windea.pls.core.processChild
 import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.core.splitByBlank
 import icu.windea.pls.core.substringIn
+import icu.windea.pls.core.text.QuotePattern
+import icu.windea.pls.core.text.QuotePatterns
 import icu.windea.pls.core.unquote
 import icu.windea.pls.lang.codeInsight.color.ParadoxColorService
 import icu.windea.pls.lang.definitionInfo
@@ -34,6 +36,7 @@ import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.model.constants.ChronicleStrings
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
+import icu.windea.pls.script.text.ParadoxScript
 import java.awt.Color
 import javax.swing.Icon
 
@@ -87,7 +90,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getValue(element: ParadoxScriptScriptedVariable): String? {
-        return element.scriptedVariableValue?.text?.unquote()
+        return element.scriptedVariableValue?.value
     }
 
     @JvmStatic
@@ -196,7 +199,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getValue(element: ParadoxScriptPropertyKey): String {
-        return element.text.unquote()
+        return element.text.unquote(QuotePatterns.ParadoxScript)
     }
 
     @JvmStatic
@@ -210,8 +213,8 @@ object ParadoxScriptPsiImplUtil {
     }
 
     @JvmStatic
-    fun needQuote(element: ParadoxScriptPropertyKey): Boolean {
-        return ParadoxScriptPsiManipulationService.needQuote(element.text)
+    fun getQuotePattern(element: ParadoxScriptPropertyKey): QuotePattern {
+        return QuotePatterns.ParadoxScript
     }
 
     // endregion
@@ -250,7 +253,7 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun getValue(element: ParadoxScriptString): String {
         if (element.text.containsLineBreak()) return "..."
-        return element.text.unquote()
+        return element.text.unquote(QuotePatterns.ParadoxScript)
     }
 
     @JvmStatic
@@ -264,8 +267,8 @@ object ParadoxScriptPsiImplUtil {
     }
 
     @JvmStatic
-    fun needQuote(element: ParadoxScriptString): Boolean {
-        return ParadoxScriptPsiManipulationService.needQuote(element.text)
+    fun getQuotePattern(element: ParadoxScriptString): QuotePattern {
+        return QuotePatterns.ParadoxScript
     }
 
     // endregion

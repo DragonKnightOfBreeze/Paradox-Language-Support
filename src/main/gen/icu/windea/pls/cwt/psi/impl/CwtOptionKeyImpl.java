@@ -7,6 +7,7 @@ import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
+import icu.windea.pls.core.text.QuotePattern;
 import icu.windea.pls.cwt.psi.CwtOptionKey;
 import icu.windea.pls.cwt.psi.CwtVisitor;
 import org.jetbrains.annotations.NotNull;
@@ -45,8 +46,8 @@ public class CwtOptionKeyImpl extends ASTWrapperPsiElement implements CwtOptionK
   }
 
   @Override
-  public boolean needQuote(@NotNull String text) {
-    return CwtPsiImplUtil.needQuote(this);
+  public @NotNull QuotePattern getQuotePattern() {
+    return CwtPsiImplUtil.getQuotePattern(this);
   }
 
   @Override

@@ -3,9 +3,10 @@
 package icu.windea.pls.script.text
 
 import icu.windea.pls.core.text.QuotePattern
+import icu.windea.pls.core.text.QuotePatterns
 
 @Suppress("UnusedReceiverParameter")
-val QuotePattern.ParadoxScript: QuotePattern.Base get() = ParadoxScriptQuotePattern
+val QuotePatterns.ParadoxScript: QuotePattern.Base get() = ParadoxScriptQuotePattern
 
 private object ParadoxScriptQuotePattern : QuotePattern.Base('"') {
     private const val FORCE_QUOTED_CHARS = "@#=<>!?{}[\""

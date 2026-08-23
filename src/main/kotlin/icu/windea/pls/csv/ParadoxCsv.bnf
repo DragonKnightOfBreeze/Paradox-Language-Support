@@ -50,7 +50,7 @@ column ::= <<checkColumnToken>> COLUMN_TOKEN ? {
     "icu.windea.pls.csv.psi.ParadoxCsvExpressionElement"
   ]
   methods=[
-    getIdElement getIcon getName getValue getPresentableText setValue setContent needQuote
+    getIdElement getIcon getName getValue getPresentableText setValue setContent getQuotePattern
     getReference getReferences
   ]
 }

@@ -6,8 +6,10 @@ import icu.windea.pls.core.children
 import icu.windea.pls.core.childrenOfType
 import icu.windea.pls.core.firstChild
 import icu.windea.pls.core.internNode
+import icu.windea.pls.core.text.QuotePatterns
 import icu.windea.pls.core.unquote
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
+import icu.windea.pls.script.text.ParadoxScript
 
 object ParadoxScriptLightTreeUtil {
     fun getNameFromScriptedVariableNode(node: LighterASTNode, tree: LighterAST): String? {
@@ -23,14 +25,14 @@ object ParadoxScriptLightTreeUtil {
         // 如果带有参数，则直接返回 null
         return node.firstChild(tree, PROPERTY_KEY)
             ?.childrenOfType(tree, PROPERTY_KEY_TOKEN)?.singleOrNull()
-            ?.internNode(tree)?.toString()?.unquote()
+            ?.internNode(tree)?.toString()?.unquote(QuotePatterns.ParadoxScript)
     }
 
     fun getStringValueFromPropertyNode(node: LighterASTNode, tree: LighterAST): String? {
         // 如果带有参数，则直接返回 null
         return node.firstChild(tree, STRING)
             ?.childrenOfType(tree, STRING_TOKEN)?.singleOrNull()
-            ?.internNode(tree)?.toString()?.unquote()
+            ?.internNode(tree)?.toString()?.unquote(QuotePatterns.ParadoxScript)
     }
 
     fun findPropertyFromPropertyNode(node: LighterASTNode, tree: LighterAST, name: String, ignoreCase: Boolean = true): LighterASTNode? {

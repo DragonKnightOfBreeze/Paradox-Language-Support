@@ -10,6 +10,8 @@ import icu.windea.pls.core.isEscapedCharAt
  * 用于处理文本中的引号，涉及各种断言和修改操作。
  *
  * 作为一种模型策略，既包含相关的元数据，也作为对断言和修改逻辑的策略。
+ *
+ * @see QuotePatterns
  */
 interface QuotePattern {
     val quoteChar: Char
@@ -118,28 +120,5 @@ interface QuotePattern {
             if (!needQuote(text)) return text
             return quote(text, lenient = true)
         }
-    }
-
-    /**
-     * 默认的引号模式使用双引号，并检查空白和引号字符本身，如果包含这些字符则要求用引号包围。
-     */
-    object Default : Base('"') {
-        override fun checkUnquotedChar(char: Char) = char.isWhitespace() || char == quoteChar
-    }
-
-    /**
-     * 类似 [Default]，但是使用单引号。
-     */
-    object SingleQuote: Base('"') {
-        override fun checkUnquotedChar(char: Char) = char.isWhitespace() || char == quoteChar
-    }
-
-    /**
-     * 用于构建命令行文本。
-     *
-     * TODO 目前仅出于兼容性的目的提供。实际上，应当总是优先考虑传入精确的命令参数，然后再执行命令。
-     */
-    object CommandLine: Base('"') {
-        override fun checkUnquotedChar(char: Char) = char.isWhitespace() || char == quoteChar
     }
 }

@@ -11,6 +11,7 @@ import icu.windea.pls.core.collections.CaseInsensitiveStringSet
 import icu.windea.pls.core.isIdentifier
 import icu.windea.pls.core.quoteIfNeeded
 import icu.windea.pls.core.removeSuffixOrNull
+import icu.windea.pls.core.text.QuotePatterns
 import icu.windea.pls.core.toDelimitedSet
 import icu.windea.pls.core.toFile
 import icu.windea.pls.core.util.KeyRegistry
@@ -20,6 +21,7 @@ import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.cwt.psi.CwtElementFactory
 import icu.windea.pls.cwt.psi.CwtMember
 import icu.windea.pls.cwt.psi.CwtProperty
+import icu.windea.pls.cwt.text.Cwt
 import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -169,7 +171,7 @@ class CwtModifierConfigGenerator(override val project: Project) : CwtConfigGener
                     val categories = filteredInfos[name]?.categories.orEmpty().sorted()
                     val valueText = when {
                         categories.isEmpty() -> "{}"
-                        else -> categories.joinToString(" ", "{ ", " }") { it.quoteIfNeeded() }
+                        else -> categories.joinToString(" ", "{ ", " }") { it.quoteIfNeeded(QuotePatterns.Cwt) }
                     }
                     appendLine("${name} = ${valueText}")
                 }

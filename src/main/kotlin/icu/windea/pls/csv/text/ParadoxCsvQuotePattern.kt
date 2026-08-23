@@ -3,9 +3,10 @@
 package icu.windea.pls.csv.text
 
 import icu.windea.pls.core.text.QuotePattern
+import icu.windea.pls.core.text.QuotePatterns
 
 @Suppress("UnusedReceiverParameter")
-val QuotePattern.ParadoxCsv: QuotePattern.Base get() = ParadoxCsvQuotePattern
+val QuotePatterns.ParadoxCsv: QuotePattern.Base get() = ParadoxCsvQuotePattern
 
 private object ParadoxCsvQuotePattern : QuotePattern.Base('"') {
     private const val FORCE_QUOTED_CHARS = "#;\""

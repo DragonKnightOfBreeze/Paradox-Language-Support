@@ -3,9 +3,10 @@
 package icu.windea.pls.cwt.text
 
 import icu.windea.pls.core.text.QuotePattern
+import icu.windea.pls.core.text.QuotePatterns
 
 @Suppress("UnusedReceiverParameter")
-val QuotePattern.Cwt: QuotePattern.Base get() = CwtQuotePattern
+val QuotePatterns.Cwt: QuotePattern.Base get() = CwtQuotePattern
 
 private object CwtQuotePattern : QuotePattern.Base('"') {
     private const val FORCE_QUOTED_CHARS = "#={}\""

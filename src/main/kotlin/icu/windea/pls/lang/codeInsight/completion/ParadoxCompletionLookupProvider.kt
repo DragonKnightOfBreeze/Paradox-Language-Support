@@ -36,6 +36,8 @@ import icu.windea.pls.core.isEscapedCharAt
 import icu.windea.pls.core.letIf
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.psi.light.LightElementBase
+import icu.windea.pls.core.quoteIfNeeded
+import icu.windea.pls.core.text.QuotePatterns
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.ep.resolve.expression.ParadoxPathReferenceExpressionSupport
 import icu.windea.pls.lang.defineNamespaceInfo
@@ -57,9 +59,9 @@ import icu.windea.pls.model.type.CwtExpressionType
 import icu.windea.pls.script.formatter.ParadoxScriptCodeStyleSettings
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
-import icu.windea.pls.script.psi.ParadoxScriptPsiManipulationService
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.ParadoxScriptString
+import icu.windea.pls.script.text.ParadoxScript
 import javax.swing.Icon
 
 object ParadoxCompletionLookupProvider {
@@ -697,7 +699,7 @@ object ParadoxCompletionLookupProvider {
 
         val lookupString = when {
             context.leftQuoted || context.file is ParadoxLocalisationFile -> lookupElement.lookupString // already quoted, or in localisation file
-            else ->  ParadoxScriptPsiManipulationService.quoteIfNeeded(lookupElement.lookupString) // #369 should be quoted if is necessary
+            else -> lookupElement.lookupString.quoteIfNeeded(QuotePatterns.ParadoxScript) // #369 should be quoted if is necessary
         }
         val constantValue = when {
             completeWithValue -> targetConfig?.valueExpression?.takeIf { it.type == CwtDataTypes.Constant }?.expressionString

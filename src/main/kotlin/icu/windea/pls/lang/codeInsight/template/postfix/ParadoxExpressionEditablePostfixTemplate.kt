@@ -8,6 +8,11 @@ import com.intellij.psi.PsiElement
 import icu.windea.pls.base.annotations.FromInternalConfig
 import icu.windea.pls.config.config.internal.CwtPostfixTemplateSettingsConfig
 import icu.windea.pls.core.quote
+import icu.windea.pls.core.text.QuotePatterns
+import icu.windea.pls.csv.ParadoxCsvLanguage
+import icu.windea.pls.csv.text.ParadoxCsv
+import icu.windea.pls.script.ParadoxScriptLanguage
+import icu.windea.pls.script.text.ParadoxScript
 
 @FromInternalConfig("builtin/postfix_template_settings.cwt", CwtPostfixTemplateSettingsConfig::class)
 abstract class ParadoxExpressionEditablePostfixTemplate(
@@ -23,8 +28,13 @@ abstract class ParadoxExpressionEditablePostfixTemplate(
     override fun addTemplateVariables(element: PsiElement, template: Template) {
         val variables = setting.variables
         if (variables.isEmpty()) return
+        val quotePattern = when(element.language) {
+            ParadoxScriptLanguage -> QuotePatterns.ParadoxScript
+            ParadoxCsvLanguage -> QuotePatterns.ParadoxCsv
+            else -> QuotePatterns.Default
+        }
         for (variable in variables) {
-            template.addVariable(variable.key, "", variable.value.quote(), true)
+            template.addVariable(variable.key, "", variable.value.quote(quotePattern), true)
         }
     }
 

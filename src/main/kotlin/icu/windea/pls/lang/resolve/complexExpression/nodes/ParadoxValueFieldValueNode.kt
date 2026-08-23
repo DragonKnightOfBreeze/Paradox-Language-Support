@@ -13,6 +13,8 @@ import icu.windea.pls.core.collections.mapNotNullFast
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.isEscapedCharAt
 import icu.windea.pls.core.isQuoted
+import icu.windea.pls.core.text.QuotePatterns
+import icu.windea.pls.expression.text.ParadoxLiteralNode
 import icu.windea.pls.lang.getParameterRanges
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxArrayDefineReferenceExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDefineReferenceExpression
@@ -88,7 +90,7 @@ class ParadoxValueFieldValueNode(
                 if (b >= a) {
                     val coreText = text.substring(a, b + 1)
                     val coreRange = TextRange.create(a + offset, b + 1 + offset)
-                    if (coreText.isQuoted('\'')) {
+                    if (coreText.isQuoted(QuotePatterns.ParadoxLiteralNode)) {
                         nodes += ParadoxStringLiteralNode(coreText, coreRange, configGroup)
                     } else {
                         val linkConfigsForDs = linkConfigs.mapNotNullFast { CwtLinkConfig.delegatedWith(it, argIndex) }.ifEmpty { linkConfigs }

@@ -17,9 +17,12 @@ import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.findChildren
 import icu.windea.pls.core.psi.PsiService
+import icu.windea.pls.core.text.QuotePattern
+import icu.windea.pls.core.text.QuotePatterns
 import icu.windea.pls.core.unquote
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.cwt.psi.CwtElementTypes.*
+import icu.windea.pls.cwt.text.Cwt
 import icu.windea.pls.model.constants.ChronicleStrings
 import javax.swing.Icon
 
@@ -86,12 +89,12 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun getValue(element: CwtOptionKey): String {
-        return element.text.unquote()
+        return element.text.unquote(QuotePatterns.Cwt)
     }
 
     @JvmStatic
-    fun needQuote(element: CwtOptionKey): Boolean {
-        return CwtPsiManipulationService.needQuote(element.text)
+    fun getQuotePattern(element: CwtOptionKey): QuotePattern {
+        return QuotePatterns.Cwt
     }
 
     // endregion
@@ -144,7 +147,7 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun getValue(element: CwtPropertyKey): String {
-        return element.text.unquote()
+        return element.text.unquote(QuotePatterns.Cwt)
     }
 
     @JvmStatic
@@ -158,8 +161,8 @@ object CwtPsiImplUtil {
     }
 
     @JvmStatic
-    fun needQuote(element: CwtPropertyKey): Boolean {
-        return CwtPsiManipulationService.needQuote(element.text)
+    fun getQuotePattern(element: CwtPropertyKey): QuotePattern {
+        return QuotePatterns.Cwt
     }
 
     // endregion
@@ -202,7 +205,7 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun getValue(element: CwtString): String {
-        return element.text.unquote()
+        return element.text.unquote(QuotePatterns.Cwt)
     }
 
     @JvmStatic
@@ -216,8 +219,8 @@ object CwtPsiImplUtil {
     }
 
     @JvmStatic
-    fun needQuote(element: CwtString): Boolean {
-        return CwtPsiManipulationService.needQuote(element.text)
+    fun getQuotePattern(element: CwtString): QuotePattern {
+        return QuotePatterns.Cwt
     }
 
     // endregion

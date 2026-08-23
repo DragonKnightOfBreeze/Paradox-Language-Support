@@ -7,7 +7,9 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.ElementManipulators
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiLiteralValue
+import icu.windea.pls.core.psi.PsiQuoteAwareElement
 import icu.windea.pls.core.quote
+import icu.windea.pls.core.text.QuotePatterns
 import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 
 class QuoteLiteralFix : PsiUpdateModCommandQuickFix(), DumbAware {
@@ -15,6 +17,7 @@ class QuoteLiteralFix : PsiUpdateModCommandQuickFix(), DumbAware {
 
     override fun applyFix(project: Project, element: PsiElement, updater: ModPsiUpdater) {
         if (element !is PsiLiteralValue) return
-        ElementManipulators.handleContentChange(element, element.text.quote())
+        val quotePattern = if (element is PsiQuoteAwareElement) element.quotePattern else QuotePatterns.Default
+        ElementManipulators.handleContentChange(element, element.text.quote(quotePattern))
     }
 }

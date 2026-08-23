@@ -7,6 +7,7 @@ import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import icu.windea.pls.core.psi.PsiQuoteAwareElement;
+import icu.windea.pls.core.text.QuotePattern;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -26,7 +27,7 @@ public interface CwtPropertyKey extends PsiQuoteAwareElement, CwtLiteralValue, C
 
   @NotNull CwtPropertyKey setContent(@NotNull String content, @NotNull TextRange range);
 
-  boolean needQuote(@NotNull String text);
+  @NotNull QuotePattern getQuotePattern();
 
   @Nullable PsiReference getReference();
 

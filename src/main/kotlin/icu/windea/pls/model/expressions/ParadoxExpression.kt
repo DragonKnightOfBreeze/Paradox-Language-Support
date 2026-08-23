@@ -7,6 +7,7 @@ import icu.windea.pls.core.equalsFast
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.match.TextMatcher
 import icu.windea.pls.core.quote
+import icu.windea.pls.core.text.QuotePatterns
 import icu.windea.pls.core.unquote
 import icu.windea.pls.core.util.values.LazyValue
 import icu.windea.pls.ep.match.expression.ParadoxCsvExpressionMatcher
@@ -28,6 +29,7 @@ import icu.windea.pls.model.type.ParadoxTypeResolver
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableReference
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
+import icu.windea.pls.script.text.ParadoxScript
 
 /**
  * 脚本文件、本地化文件或者 CSV 文件中的各种表达式，
@@ -194,7 +196,7 @@ private class ParadoxQuotedValueBasedExpression(
     override val value: String,
     override val role: ParadoxExpressionRole,
 ) : ParadoxExpressionBase() {
-    override val text: String = value.quote()
+    override val text: String = value.quote(QuotePatterns.ParadoxScript)
     override val quoted: Boolean get() = true
     override val type: ParadoxExpressionType get() = ParadoxExpressionType.String
 }

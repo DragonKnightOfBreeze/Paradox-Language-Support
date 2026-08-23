@@ -9,6 +9,7 @@ import icu.windea.pls.core.executeCommandLine
 import icu.windea.pls.core.quote
 import icu.windea.pls.core.quoteIfNeeded
 import icu.windea.pls.core.runCatchingCancelable
+import icu.windea.pls.core.text.QuotePatterns
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.StandardCopyOption
@@ -54,9 +55,9 @@ class TexconvToolProvider : CommandBasedImageToolProvider() {
 
         val exePath = ChronicleDataPathService.getInstance().texconvExePath
         val wd = exePath.parent?.toFile()
-        val exe = exePath.name.quoteIfNeeded('\'')
-        val input = path.toString().quote('\'')
-        val output = outputDirectoryPath.toString().quote('\'')
+        val exe = exePath.name.quoteIfNeeded(QuotePatterns.CommandLine)
+        val input = path.toString().quote(QuotePatterns.CommandLine)
+        val output = outputDirectoryPath.toString().quote(QuotePatterns.CommandLine)
 
         ProgressManager.checkCanceled() // 在执行命令前检查进度是否被取消
 

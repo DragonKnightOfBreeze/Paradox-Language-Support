@@ -26,6 +26,8 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.codeInsight.TemplateEditingFinishedListener
 import icu.windea.pls.core.executeWriteCommand
 import icu.windea.pls.core.processChild
+import icu.windea.pls.core.quoteIfNeeded
+import icu.windea.pls.core.text.QuotePatterns
 import icu.windea.pls.lang.ui.clause.ElementDescriptor
 import icu.windea.pls.lang.ui.clause.ElementDescriptors
 import icu.windea.pls.lang.ui.clause.ElementsContext
@@ -35,8 +37,8 @@ import icu.windea.pls.script.formatter.ParadoxScriptCodeStyleSettings
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
 import icu.windea.pls.script.psi.ParadoxScriptProperty
-import icu.windea.pls.script.psi.ParadoxScriptPsiManipulationService
 import icu.windea.pls.script.psi.ParadoxScriptValue
+import icu.windea.pls.script.text.ParadoxScript
 
 @Suppress("UnstableApiUsage")
 object ParadoxClauseTemplateCompletionManager {
@@ -245,10 +247,10 @@ object ParadoxClauseTemplateCompletionManager {
             descriptors.forEach {
                 when (it) {
                     is ElementDescriptors.Value -> {
-                        append(ParadoxScriptPsiManipulationService.quoteIfNeeded(it.name))
+                        append(it.name.quoteIfNeeded(QuotePatterns.ParadoxScript))
                     }
                     is ElementDescriptors.Property -> {
-                        append(ParadoxScriptPsiManipulationService.quoteIfNeeded(it.name))
+                        append(it.name.quoteIfNeeded(QuotePatterns.ParadoxScript))
                         if (around) append(" ")
                         append(it.separator)
                         if (around) append(" ")
@@ -268,7 +270,7 @@ object ParadoxClauseTemplateCompletionManager {
                 val descriptor = descriptors[i]
                 if (descriptor.editInTemplate) {
                     if (e is ParadoxScriptProperty && descriptor is ElementDescriptors.Property) {
-                        val string = if (descriptor.value.isNotEmpty()) ParadoxScriptPsiManipulationService.quoteIfNeeded(descriptor.value) else ""
+                        val string = if (descriptor.value.isNotEmpty()) descriptor.value.quoteIfNeeded(QuotePatterns.ParadoxScript) else ""
                         val expression = TextExpression(string)
                         templateBuilder.replaceElement(e.propertyValue!!, "${descriptor.name}_$i", expression, true)
                     }

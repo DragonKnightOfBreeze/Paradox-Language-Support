@@ -9,6 +9,8 @@ import icu.windea.pls.core.collections.context
 import icu.windea.pls.core.collections.transform
 import icu.windea.pls.core.math.MathResult
 import icu.windea.pls.core.quote
+import icu.windea.pls.core.quoteIfNeeded
+import icu.windea.pls.core.text.QuotePatterns
 import icu.windea.pls.core.toBooleanYesNo
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
@@ -16,8 +18,8 @@ import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.setValue
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
-import icu.windea.pls.csv.psi.ParadoxCsvPsiManipulationService
 import icu.windea.pls.csv.psi.ParadoxCsvPsiService
+import icu.windea.pls.csv.text.ParadoxCsv
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.manipulation.ParadoxScriptFileManipulationService
 import icu.windea.pls.lang.match.ParadoxMatchOptions
@@ -43,13 +45,13 @@ import icu.windea.pls.script.psi.ParadoxScriptMemberContext
 import icu.windea.pls.script.psi.ParadoxScriptNumberExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
-import icu.windea.pls.script.psi.ParadoxScriptPsiManipulationService
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableReference
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.psi.parentBlock
 import icu.windea.pls.script.psi.parentProperty
+import icu.windea.pls.script.text.ParadoxScript
 import java.awt.Color
 import java.math.BigDecimal
 
@@ -136,7 +138,7 @@ fun ParadoxScriptExpressionElement.formattedValue(resolve: Boolean = true, detai
     if (element == null) return null
     return when (element) {
         is ParadoxScriptInlineMath -> if(detail) element.text else element.value
-        is ParadoxScriptStringExpressionElement -> ParadoxScriptPsiManipulationService.quoteIfNeeded(element.value)
+        is ParadoxScriptStringExpressionElement -> element.value.quoteIfNeeded(QuotePatterns.ParadoxScript)
         else -> element.value
     }
 }
@@ -146,8 +148,8 @@ fun ParadoxCsvExpressionElement.formattedValue(): String {
     if (ParadoxCsvPsiService.isEmptyColumn(this)) return ""
     val value = value
     val needQuoteBecauseBoundaryBlank = value.isNotEmpty() && (value.first().isWhitespace() || value.last().isWhitespace())
-    if (needQuoteBecauseBoundaryBlank) return value.quote()
-    return ParadoxCsvPsiManipulationService.quoteIfNeeded(value)
+    if (needQuoteBecauseBoundaryBlank) return value.quote(QuotePatterns.ParadoxCsv)
+    return value.quoteIfNeeded(QuotePatterns.ParadoxCsv)
 }
 
 // endregion
