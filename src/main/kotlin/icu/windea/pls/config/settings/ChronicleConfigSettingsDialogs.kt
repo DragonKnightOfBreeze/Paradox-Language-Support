@@ -6,8 +6,8 @@ import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.openapi.ui.setEmptyState
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.config.util.CwtConfigRepositoryManager
 import icu.windea.pls.core.util.Entry
+import icu.windea.pls.lang.util.CwtConfigRepositoryManager
 import icu.windea.pls.model.ParadoxGameType
 
 class ConfigRepositoryUrlsDialog(val list: MutableList<Entry<String, String>>) : DialogWrapper(null) {

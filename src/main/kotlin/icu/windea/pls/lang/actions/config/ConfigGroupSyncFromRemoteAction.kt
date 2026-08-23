@@ -5,8 +5,8 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.project.DumbAwareAction
 import icu.windea.pls.ChronicleIcons
-import icu.windea.pls.config.util.CwtConfigRepositoryManager
 import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.util.CwtConfigRepositoryManager
 
 class ConfigGroupSyncFromRemoteAction : DumbAwareAction() {
     init {

@@ -8,10 +8,10 @@ import com.intellij.openapi.ui.setEmptyState
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.base.help.ChronicleHelpTopics
-import icu.windea.pls.config.util.CwtConfigRepositoryManager
 import icu.windea.pls.core.util.CallbackLock
 import icu.windea.pls.core.util.toMutableEntryList
 import icu.windea.pls.core.util.toMutableMap
+import icu.windea.pls.lang.util.CwtConfigRepositoryManager
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.ChronicleUrls
 import java.awt.event.ActionEvent

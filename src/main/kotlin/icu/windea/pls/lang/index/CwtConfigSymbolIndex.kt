@@ -5,7 +5,6 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor
-import icu.windea.pls.config.util.CwtConfigSymbolManager
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.asMutable
 import icu.windea.pls.core.collections.buildImmutableList
@@ -21,6 +20,7 @@ import icu.windea.pls.cwt.CwtFileType
 import icu.windea.pls.cwt.psi.CwtPsiService
 import icu.windea.pls.cwt.psi.CwtStringExpressionElement
 import icu.windea.pls.lang.index.statistics.ChronicleIndexStatisticService
+import icu.windea.pls.lang.util.CwtConfigSymbolManager
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.index.CwtConfigSymbolIndexInfo
 import java.io.DataInput

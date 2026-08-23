@@ -1,4 +1,4 @@
-package icu.windea.pls.config.util
+package icu.windea.pls.lang.util
 
 import com.intellij.ide.BrowserUtil
 import com.intellij.notification.NotificationAction
@@ -25,7 +25,6 @@ import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.getCurrentProject
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.orNull
-import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toPath
 import icu.windea.pls.lang.listeners.CwtConfigDirectoriesListener
@@ -42,15 +41,6 @@ import kotlinx.coroutines.withContext
 object CwtConfigRepositoryManager {
     fun getDefaultUrl(gameType: ParadoxGameType): String {
         return "https://github.com/DragonKnightOfBreeze/cwtools-${gameType.id}-config"
-    }
-
-    @Suppress("unused")
-    fun getDefaultDirectoryName(gameType: ParadoxGameType): String {
-        return "cwtools-${gameType.id}-config"
-    }
-
-    fun getGameTypeIdFromDefaultDirectoryName(directoryName: String): String? {
-        return directoryName.removeSurroundingOrNull("cwtools-", "-config")
     }
 
     fun validateUrl(builder: ValidationInfoBuilder, gameType: ParadoxGameType, url: String): ValidationInfo? {

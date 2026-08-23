@@ -11,9 +11,9 @@ import icu.windea.pls.base.io.ChronicleGitService
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.CwtConfigGroupFileSource
 import icu.windea.pls.config.settings.ChronicleConfigSettings
-import icu.windea.pls.config.util.CwtConfigRepositoryManager
 import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.orNull
+import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.toClasspathUrl
 import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.core.toVirtualFile
@@ -140,8 +140,6 @@ class CwtBuiltInConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
  *
  * 更改配置后，插件会自动从配置的远程仓库中克隆和拉取这些规则分组。
  * 在自动或手动同步后，才允许刷新规则分组数据。
- *
- * @see CwtConfigRepositoryManager
  */
 class CwtRemoteConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
     override val source get() = CwtConfigGroupFileSource.Remote
@@ -174,7 +172,7 @@ class CwtRemoteConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
 
     override fun getGameTypeIdFromDirectoryName(project: Project, directoryName: String): String? {
         if (directoryName == "core") return directoryName
-        val fromDefault = CwtConfigRepositoryManager.getGameTypeIdFromDefaultDirectoryName(directoryName)
+        val fromDefault = directoryName.removeSurroundingOrNull("cwtools-", "-config")
         if (fromDefault != null) return fromDefault
         val fromConfig = ChronicleConfigSettings.getInstance().state.configRepositoryUrls.entries
             .find { ChronicleGitService.getInstance().getRepositoryPathFromUrl(it.value) == directoryName }

@@ -5,8 +5,8 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import com.intellij.psi.PsiReferenceProvider
 import com.intellij.util.ProcessingContext
-import icu.windea.pls.config.util.CwtConfigSymbolManager
 import icu.windea.pls.cwt.psi.CwtStringExpressionElement
+import icu.windea.pls.lang.util.CwtConfigSymbolManager
 
 class CwtConfigSymbolPsiReferenceProvider : PsiReferenceProvider() {
     override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<out PsiReference?> {

@@ -1,4 +1,4 @@
-package icu.windea.pls.config.util
+package icu.windea.pls.lang.util
 
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.TextRange
@@ -12,6 +12,7 @@ import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.CwtDataExpressionRole
+import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.mapToArray

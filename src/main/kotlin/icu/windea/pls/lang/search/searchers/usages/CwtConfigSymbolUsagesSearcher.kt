@@ -7,13 +7,13 @@ import com.intellij.psi.search.GlobalSearchScopeUtil
 import com.intellij.psi.search.UsageSearchContext
 import com.intellij.psi.search.searches.ReferencesSearch
 import com.intellij.util.Processor
-import icu.windea.pls.config.util.CwtConfigSymbolManager
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.cwt.CwtFileType
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.cwt.psi.CwtStringExpressionElement
 import icu.windea.pls.lang.search.scope.withFileTypes
+import icu.windea.pls.lang.util.CwtConfigSymbolManager
 
 /**
  * 规则符号的用法的查询器。
