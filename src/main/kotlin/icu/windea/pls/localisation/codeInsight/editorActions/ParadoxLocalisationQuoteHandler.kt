@@ -8,4 +8,6 @@ class ParadoxLocalisationQuoteHandler : SimpleTokenSetQuoteHandler(
     ParadoxLocalisationElementTypes.LEFT_QUOTE,
     ParadoxLocalisationElementTypes.RIGHT_QUOTE,
     ParadoxLocalisationElementTypes.LEFT_SINGLE_QUOTE,
-    ParadoxLocalisationElementTypes.RIGHT_SINGLE_QUOTE, TokenType.BAD_CHARACTER)
+    ParadoxLocalisationElementTypes.RIGHT_SINGLE_QUOTE,
+    TokenType.BAD_CHARACTER,
+)

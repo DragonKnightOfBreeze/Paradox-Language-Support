@@ -18,8 +18,8 @@ class CwtSyntaxAnnotatorTest : BasePlatformTestCase(), ChronicleTestScope {
 
     @Test
     fun testMissingQuotes_errors() {
-        val openingTag = ChronicleBundle.message("message.missing.opening.quote").toErrorTag()
-        val closingTag = ChronicleBundle.message("message.missing.closing.quote").toErrorTag()
+        val openingTag = ChronicleBundle.message("annotator.message.missing.opening.quote").toErrorTag()
+        val closingTag = ChronicleBundle.message("annotator.message.missing.closing.quote").toErrorTag()
 
         // 两个标注：value" 缺失开引号；"value 缺失闭引号
         myFixture.configureByText(

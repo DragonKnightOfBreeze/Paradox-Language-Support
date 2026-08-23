@@ -131,6 +131,19 @@ class ConflictingExpressionInspectionTest : BasePlatformTestCase(), ChronicleTes
         myFixture.checkHighlighting()
     }
 
+    @Test
+    fun blockMatch_mismatched_vs_notEmpty_ignored() {
+        markFileInfo(ParadoxGameType.Stellaris, "common/dimensions/test.txt")
+        myFixture.configureByText("test.txt") {
+            """
+            test_dimension = {
+                set = { z = 1 }
+            }
+            """.trimIndent()
+        }
+        myFixture.checkHighlighting()
+    }
+
     // endregion
 
     // region ignored

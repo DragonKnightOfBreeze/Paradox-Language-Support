@@ -26,9 +26,9 @@ class CwtSyntaxAnnotator : Annotator, DumbAware {
         val isLeftQuoted = text.isLeftQuoted()
         val isRightQuoted = text.isRightQuoted()
         if (!isLeftQuoted && isRightQuoted) {
-            holder.newAnnotation(HighlightSeverity.ERROR, ChronicleBundle.message("message.missing.opening.quote")).create()
+            holder.newAnnotation(HighlightSeverity.ERROR, ChronicleBundle.message("annotator.message.missing.opening.quote")).create()
         } else if (isLeftQuoted && !isRightQuoted) {
-            holder.newAnnotation(HighlightSeverity.ERROR, ChronicleBundle.message("message.missing.closing.quote")).create()
+            holder.newAnnotation(HighlightSeverity.ERROR, ChronicleBundle.message("annotator.message.missing.closing.quote")).create()
         }
     }
 }

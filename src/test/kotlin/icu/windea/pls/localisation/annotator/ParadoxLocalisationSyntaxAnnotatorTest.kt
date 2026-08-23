@@ -26,7 +26,7 @@ class ParadoxLocalisationSyntaxAnnotatorTest : BasePlatformTestCase(), Chronicle
 
     @Test
     fun testAdjacentIcons_errorAndFix() {
-        val tag = ChronicleBundle.message("message.adjacent.icon.unexpected").toErrorTag()
+        val tag = ChronicleBundle.message("annotator.message.adjacent.icon.unexpected").toErrorTag()
 
         // 两个相邻图标：£a££b£，应在第二个图标上报错
         myFixture.configureByText(

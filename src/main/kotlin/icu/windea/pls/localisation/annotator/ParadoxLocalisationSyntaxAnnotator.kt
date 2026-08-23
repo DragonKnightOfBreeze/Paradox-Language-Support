@@ -20,7 +20,7 @@ class ParadoxLocalisationSyntaxAnnotator : Annotator, DumbAware {
         // 不允许紧邻的图标
         if (element !is ParadoxLocalisationIcon) return
         if (element.prevSibling !is ParadoxLocalisationIcon) return
-        holder.newAnnotation(HighlightSeverity.ERROR, ChronicleBundle.message("message.adjacent.icon.unexpected"))
+        holder.newAnnotation(HighlightSeverity.ERROR, ChronicleBundle.message("annotator.message.adjacent.icon.unexpected"))
             .withFix(InsertStringFix(element, ChronicleBundle.message("annotator.adjacent.icon.unexpected"), " ", element.startOffset))
             .create()
     }

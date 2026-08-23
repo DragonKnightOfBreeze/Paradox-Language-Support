@@ -484,7 +484,7 @@ class UnresolvedExpressionInspectionTest : BasePlatformTestCase(), ChronicleTest
     }
 
     @Test
-    fun blockMatch_conflicting_vs_notEmpty_success() {
+    fun blockMatch_conflicting_vs_notEmpty_ignored() {
         // checked by `ConflictingExpressionInspection`
         markFileInfo(ParadoxGameType.Stellaris, "common/dimensions/test.txt")
         myFixture.configureByText("test.txt") {

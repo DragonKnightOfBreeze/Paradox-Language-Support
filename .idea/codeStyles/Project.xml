@@ -57,6 +57,13 @@
       <option name="LINE_BREAK_AFTER_MULTILINE_WHEN_ENTRY" value="false" />
       <option name="NAME_COUNT_TO_USE_STAR_IMPORT" value="50" />
       <option name="NAME_COUNT_TO_USE_STAR_IMPORT_FOR_MEMBERS" value="1" />
+      <option name="ALLOW_TRAILING_COMMA" value="true" />
+      <option name="ALLOW_TRAILING_COMMA_TYPE_PARAMETER_LIST" value="false" />
+      <option name="ALLOW_TRAILING_COMMA_DESTRUCTURING_DECLARATION" value="false" />
+      <option name="ALLOW_TRAILING_COMMA_WHEN_ENTRY" value="false" />
+      <option name="ALLOW_TRAILING_COMMA_FUNCTION_LITERAL" value="false" />
+      <option name="ALLOW_TRAILING_COMMA_CONTEXT_RECEIVER_LIST" value="false" />
+      <option name="ALLOW_TRAILING_COMMA_VALUE_ARGUMENT_LIST" value="true" />
       <option name="BLANK_LINES_BEFORE_DECLARATION_WITH_COMMENT_OR_ANNOTATION_ON_SEPARATE_LINE" value="0" />
     </JetCodeStyleSettings>
     <PARADOX_SCRIPT>
@@ -131,8 +138,6 @@
       <option name="BLOCK_COMMENT_ADD_SPACE" value="true" />
       <option name="LINE_COMMENT_ADD_SPACE_ON_REFORMAT" value="true" />
       <option name="CALL_PARAMETERS_WRAP" value="1" />
-      <option name="CALL_PARAMETERS_LPAREN_ON_NEXT_LINE" value="false" />
-      <option name="CALL_PARAMETERS_RPAREN_ON_NEXT_LINE" value="false" />
       <option name="FIELD_ANNOTATION_WRAP" value="1" />
       <option name="WRAP_ON_TYPING" value="0" />
       <indentOptions>

@@ -26,8 +26,8 @@ class ParadoxScriptSyntaxAnnotatorTest : BasePlatformTestCase(), ChronicleTestSc
 
     @Test
     fun testMissingQuotes_errors() {
-        val openingTag = ChronicleBundle.message("message.missing.opening.quote").toErrorTag()
-        val closingTag = ChronicleBundle.message("message.missing.closing.quote").toErrorTag()
+        val openingTag = ChronicleBundle.message("annotator.message.missing.opening.quote").toErrorTag()
+        val closingTag = ChronicleBundle.message("annotator.message.missing.closing.quote").toErrorTag()
 
         // 两个标注：value" 缺失开引号；"value 缺失闭引号
         myFixture.configureByText(
@@ -42,7 +42,7 @@ class ParadoxScriptSyntaxAnnotatorTest : BasePlatformTestCase(), ChronicleTestSc
 
     @Test
     fun testOperator() {
-        val tag = ChronicleBundle.message("message.leading.blank.unexpected.1").toErrorTag()
+        val tag = ChronicleBundle.message("annotator.message.leading.blank.unexpected.1").toErrorTag()
 
         myFixture.configureByText(
             "annotator_operator.test.txt",
@@ -62,7 +62,7 @@ class ParadoxScriptSyntaxAnnotatorTest : BasePlatformTestCase(), ChronicleTestSc
 
     @Test
     fun testInlineMathScriptedVariableReference() {
-        val tag = ChronicleBundle.message("message.leading.at.unexpected.1").toErrorTag()
+        val tag = ChronicleBundle.message("annotator.message.leading.at.unexpected.1").toErrorTag()
 
         myFixture.configureByText(
             "annotator_inline_math_scripted_variable_reference.test.txt",
