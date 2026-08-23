@@ -1,4 +1,4 @@
-package icu.windea.pls.ai.settings
+package icu.windea.pls.base.settings
 
 import com.intellij.openapi.options.BoundConfigurable
 import com.intellij.openapi.options.SearchableConfigurable
@@ -11,16 +11,16 @@ import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.listCellRenderer.*
 import com.intellij.ui.layout.ValidationInfoBuilder
-import icu.windea.pls.ai.AiConstants
-import icu.windea.pls.ai.ChronicleAiBundle
+import icu.windea.pls.ai.model.AiConstants
 import icu.windea.pls.ai.providers.AnthropicChatModelProvider
 import icu.windea.pls.ai.providers.ChatModelProvider
 import icu.windea.pls.ai.providers.ChatModelProviderType
 import icu.windea.pls.ai.providers.LocalChatModelProvider
 import icu.windea.pls.ai.providers.OpenAiChatModelProvider
+import icu.windea.pls.base.ChronicleBaseBundle
 import icu.windea.pls.base.help.ChronicleHelpTopics
 
-class ChronicleAiSettingsConfigurable : BoundConfigurable(ChronicleAiBundle.message("settings.ai")), SearchableConfigurable {
+class ChronicleAiSettingsConfigurable : BoundConfigurable(ChronicleBaseBundle.message("settings.ai")), SearchableConfigurable {
     override fun getId() = "chronicle.ai"
 
     override fun getHelpTopic() = ChronicleHelpTopics.aiSettings
@@ -28,15 +28,15 @@ class ChronicleAiSettingsConfigurable : BoundConfigurable(ChronicleAiBundle.mess
     override fun createPanel(): DialogPanel {
         return panel {
             // general
-            group(ChronicleAiBundle.message("settings.ai.general")) { configureGroupForGeneral() }
+            group(ChronicleBaseBundle.message("settings.ai.general")) { configureGroupForGeneral() }
             // features
-            collapsibleGroup(ChronicleAiBundle.message("settings.ai.features")) { configureGroupForFeatures() }
+            collapsibleGroup(ChronicleBaseBundle.message("settings.ai.features")) { configureGroupForFeatures() }
             // openAI
-            collapsibleGroup(ChronicleAiBundle.message("settings.ai.openAI")) { configureGroupForOpenAi() }
+            collapsibleGroup(ChronicleBaseBundle.message("settings.ai.openAI")) { configureGroupForOpenAi() }
             // anthropic
-            collapsibleGroup(ChronicleAiBundle.message("settings.ai.anthropic")) { configureGroupForAnthropic() }
+            collapsibleGroup(ChronicleBaseBundle.message("settings.ai.anthropic")) { configureGroupForAnthropic() }
             // local (Ollama)
-            collapsibleGroup(ChronicleAiBundle.message("settings.ai.local")) { configureGroupForLocal() }
+            collapsibleGroup(ChronicleBaseBundle.message("settings.ai.local")) { configureGroupForLocal() }
         }
     }
 
@@ -45,17 +45,17 @@ class ChronicleAiSettingsConfigurable : BoundConfigurable(ChronicleAiBundle.mess
 
         // enable
         row {
-            checkBox(ChronicleAiBundle.message("settings.ai.general.enable")).bindSelected(settings::enable)
-            contextHelp(ChronicleAiBundle.message("settings.ai.general.enable.tip"))
+            checkBox(ChronicleBaseBundle.message("settings.ai.general.enable")).bindSelected(settings::enable)
+            contextHelp(ChronicleBaseBundle.message("settings.ai.general.enable.tip"))
         }
         // withContext
         row {
-            checkBox(ChronicleAiBundle.message("settings.ai.general.withContext")).bindSelected(settings::withContext)
-            contextHelp(ChronicleAiBundle.message("settings.ai.general.withContext.tip"))
+            checkBox(ChronicleBaseBundle.message("settings.ai.general.withContext")).bindSelected(settings::withContext)
+            contextHelp(ChronicleBaseBundle.message("settings.ai.general.withContext.tip"))
         }
         // providerType
         row {
-            label(ChronicleAiBundle.message("settings.ai.general.providerType"))
+            label(ChronicleBaseBundle.message("settings.ai.general.providerType"))
             comboBox(ChatModelProviderType.entries, textListCellRenderer { it?.text })
                 .bindItem(settings::providerType.toNullableProperty())
         }
@@ -67,15 +67,15 @@ class ChronicleAiSettingsConfigurable : BoundConfigurable(ChronicleAiBundle.mess
 
         // localisationBatchSize
         row {
-            label(ChronicleAiBundle.message("settings.ai.features.localisationChunkSize")).widthGroup(group)
+            label(ChronicleBaseBundle.message("settings.ai.features.localisationChunkSize")).widthGroup(group)
             intTextField(1..Int.MAX_VALUE, 1).bindIntText(settings::localisationChunkSize)
-            contextHelp(ChronicleAiBundle.message("settings.ai.features.localisationChunkSize.tip"))
+            contextHelp(ChronicleBaseBundle.message("settings.ai.features.localisationChunkSize.tip"))
         }
         // localisationMemorySize
         row {
-            label(ChronicleAiBundle.message("settings.ai.features.localisationMemorySize")).widthGroup(group)
+            label(ChronicleBaseBundle.message("settings.ai.features.localisationMemorySize")).widthGroup(group)
             intTextField(0..Int.MAX_VALUE, 1).bindIntText(settings::localisationMemorySize)
-            contextHelp(ChronicleAiBundle.message("settings.ai.features.localisationMemorySize.tip"))
+            contextHelp(ChronicleBaseBundle.message("settings.ai.features.localisationMemorySize.tip"))
         }
     }
 
@@ -86,13 +86,13 @@ class ChronicleAiSettingsConfigurable : BoundConfigurable(ChronicleAiBundle.mess
 
         // modelName
         row {
-            label(ChronicleAiBundle.message("settings.ai.modelName")).widthGroup(group)
+            label(ChronicleBaseBundle.message("settings.ai.modelName")).widthGroup(group)
             textField().columns(COLUMNS_MEDIUM)
                 .bindText(properties.modelName)
                 .bindText(settings::modelName.toNonNullableProperty(""))
                 .applyToComponent { setEmptyState(AiConstants.OpenAi.defaultModelFromLocale) }
 
-            label(ChronicleAiBundle.message("settings.ai.env")).visibleIf(properties.fromEnv)
+            label(ChronicleBaseBundle.message("settings.ai.env")).visibleIf(properties.fromEnv)
             textField().columns(COLUMNS_SHORT).visibleIf(properties.fromEnv)
                 .bindText(properties.modelNameEnv)
                 .bindText(settings::modelNameEnv.toNonNullableProperty(""))
@@ -100,13 +100,13 @@ class ChronicleAiSettingsConfigurable : BoundConfigurable(ChronicleAiBundle.mess
         }
         // apiEndpoint
         row {
-            label(ChronicleAiBundle.message("settings.ai.apiEndpoint")).widthGroup(group)
+            label(ChronicleBaseBundle.message("settings.ai.apiEndpoint")).widthGroup(group)
             textField().columns(COLUMNS_MEDIUM)
                 .bindText(properties.apiEndpoint)
                 .bindText(settings::apiEndpoint.toNonNullableProperty(""))
                 .applyToComponent { setEmptyState(AiConstants.OpenAi.defaultBaseUrlFromLocale) }
 
-            label(ChronicleAiBundle.message("settings.ai.env")).visibleIf(properties.fromEnv)
+            label(ChronicleBaseBundle.message("settings.ai.env")).visibleIf(properties.fromEnv)
             textField().columns(COLUMNS_SHORT).visibleIf(properties.fromEnv)
                 .bindText(properties.apiEndpointEnv)
                 .bindText(settings::apiEndpointEnv.toNonNullableProperty(""))
@@ -114,13 +114,13 @@ class ChronicleAiSettingsConfigurable : BoundConfigurable(ChronicleAiBundle.mess
         }
         // apiKey
         row {
-            label(ChronicleAiBundle.message("settings.ai.apiKey")).widthGroup(group)
+            label(ChronicleBaseBundle.message("settings.ai.apiKey")).widthGroup(group)
             passwordField().columns(COLUMNS_MEDIUM)
                 .bindText(properties.apiKey)
                 .bindText(settings::apiKey.toNonNullableProperty(""))
                 .validationOnInput { validateApiKey(this, it, properties.fromEnv.get()) }
 
-            label(ChronicleAiBundle.message("settings.ai.env")).visibleIf(properties.fromEnv)
+            label(ChronicleBaseBundle.message("settings.ai.env")).visibleIf(properties.fromEnv)
             passwordField().columns(COLUMNS_SHORT).visibleIf(properties.fromEnv)
                 .bindText(properties.apiKeyEnv)
                 .bindText(settings::apiKeyEnv.toNonNullableProperty(""))
@@ -128,13 +128,13 @@ class ChronicleAiSettingsConfigurable : BoundConfigurable(ChronicleAiBundle.mess
         }
         // operations
         row {
-            button(ChronicleAiBundle.message("settings.ai.test")) {
+            button(ChronicleBaseBundle.message("settings.ai.test")) {
                 // 注意这里需要基于可能尚未保存的配置项进行测试
                 val options = OpenAiChatModelProvider.Options.fromProperties(properties.toProperties())
                 val r = OpenAiChatModelProvider.INSTANCE.checkStatus(options)
                 showTestMessage(r)
             }
-            checkBox(ChronicleAiBundle.message("settings.ai.fromEnv"))
+            checkBox(ChronicleBaseBundle.message("settings.ai.fromEnv"))
                 .bindSelected(properties.fromEnv)
                 .bindSelected(settings::fromEnv)
         }
@@ -147,13 +147,13 @@ class ChronicleAiSettingsConfigurable : BoundConfigurable(ChronicleAiBundle.mess
 
         // modelName
         row {
-            label(ChronicleAiBundle.message("settings.ai.modelName")).widthGroup(group)
+            label(ChronicleBaseBundle.message("settings.ai.modelName")).widthGroup(group)
             textField().columns(COLUMNS_MEDIUM)
                 .bindText(properties.modelName)
                 .bindText(settings::modelName.toNonNullableProperty(""))
                 .applyToComponent { setEmptyState(AiConstants.Anthropic.defaultModelFromLocale) }
 
-            label(ChronicleAiBundle.message("settings.ai.env")).visibleIf(properties.fromEnv)
+            label(ChronicleBaseBundle.message("settings.ai.env")).visibleIf(properties.fromEnv)
             textField().columns(COLUMNS_SHORT).visibleIf(properties.fromEnv)
                 .bindText(properties.modelNameEnv)
                 .bindText(settings::modelNameEnv.toNonNullableProperty(""))
@@ -161,13 +161,13 @@ class ChronicleAiSettingsConfigurable : BoundConfigurable(ChronicleAiBundle.mess
         }
         // apiEndpoint
         row {
-            label(ChronicleAiBundle.message("settings.ai.apiEndpoint")).widthGroup(group)
+            label(ChronicleBaseBundle.message("settings.ai.apiEndpoint")).widthGroup(group)
             textField().columns(COLUMNS_MEDIUM)
                 .bindText(properties.apiEndpoint)
                 .bindText(settings::apiEndpoint.toNonNullableProperty(""))
                 .applyToComponent { setEmptyState(AiConstants.Anthropic.defaultBaseUrlFromLocale) }
 
-            label(ChronicleAiBundle.message("settings.ai.env")).visibleIf(properties.fromEnv)
+            label(ChronicleBaseBundle.message("settings.ai.env")).visibleIf(properties.fromEnv)
             textField().columns(COLUMNS_SHORT).visibleIf(properties.fromEnv)
                 .bindText(properties.apiEndpointEnv)
                 .bindText(settings::apiEndpointEnv.toNonNullableProperty(""))
@@ -175,13 +175,13 @@ class ChronicleAiSettingsConfigurable : BoundConfigurable(ChronicleAiBundle.mess
         }
         // apiKey
         row {
-            label(ChronicleAiBundle.message("settings.ai.apiKey")).widthGroup(group)
+            label(ChronicleBaseBundle.message("settings.ai.apiKey")).widthGroup(group)
             passwordField().columns(COLUMNS_MEDIUM)
                 .bindText(properties.apiKey)
                 .bindText(settings::apiKey.toNonNullableProperty(""))
                 .validationOnInput { validateApiKey(this, it, properties.fromEnv.get()) }
 
-            label(ChronicleAiBundle.message("settings.ai.env")).visibleIf(properties.fromEnv)
+            label(ChronicleBaseBundle.message("settings.ai.env")).visibleIf(properties.fromEnv)
             passwordField().columns(COLUMNS_SHORT).visibleIf(properties.fromEnv)
                 .bindText(properties.apiKeyEnv)
                 .bindText(settings::apiKeyEnv.toNonNullableProperty(""))
@@ -189,13 +189,13 @@ class ChronicleAiSettingsConfigurable : BoundConfigurable(ChronicleAiBundle.mess
         }
         // operations
         row {
-            button(ChronicleAiBundle.message("settings.ai.test")) {
+            button(ChronicleBaseBundle.message("settings.ai.test")) {
                 // 注意这里需要基于可能尚未保存的配置项进行测试
                 val options = AnthropicChatModelProvider.Options.fromProperties(properties.toProperties())
                 val r = AnthropicChatModelProvider.INSTANCE.checkStatus(options)
                 showTestMessage(r)
             }
-            checkBox(ChronicleAiBundle.message("settings.ai.fromEnv"))
+            checkBox(ChronicleBaseBundle.message("settings.ai.fromEnv"))
                 .bindSelected(properties.fromEnv)
                 .bindSelected(settings::fromEnv)
         }
@@ -208,13 +208,13 @@ class ChronicleAiSettingsConfigurable : BoundConfigurable(ChronicleAiBundle.mess
 
         // modelName
         row {
-            label(ChronicleAiBundle.message("settings.ai.modelName")).widthGroup(group)
+            label(ChronicleBaseBundle.message("settings.ai.modelName")).widthGroup(group)
             textField().columns(COLUMNS_MEDIUM)
                 .bindText(properties.modelName)
                 .bindText(settings::modelName.toNonNullableProperty(""))
                 .validationOnInput { validateModelName(this, it, properties.fromEnv.get()) }
 
-            label(ChronicleAiBundle.message("settings.ai.env")).visibleIf(properties.fromEnv)
+            label(ChronicleBaseBundle.message("settings.ai.env")).visibleIf(properties.fromEnv)
             textField().columns(COLUMNS_SHORT).visibleIf(properties.fromEnv)
                 .bindText(properties.modelNameEnv)
                 .bindText(settings::modelNameEnv.toNonNullableProperty(""))
@@ -222,13 +222,13 @@ class ChronicleAiSettingsConfigurable : BoundConfigurable(ChronicleAiBundle.mess
         }
         // apiEndpoint
         row {
-            label(ChronicleAiBundle.message("settings.ai.apiEndpoint")).widthGroup(group)
+            label(ChronicleBaseBundle.message("settings.ai.apiEndpoint")).widthGroup(group)
             textField().columns(COLUMNS_MEDIUM)
                 .bindText(properties.apiEndpoint)
                 .bindText(settings::apiEndpoint.toNonNullableProperty(""))
                 .applyToComponent { setEmptyState(AiConstants.Local.defaultBaseUrl) }
 
-            label(ChronicleAiBundle.message("settings.ai.env")).visibleIf(properties.fromEnv)
+            label(ChronicleBaseBundle.message("settings.ai.env")).visibleIf(properties.fromEnv)
             textField().columns(COLUMNS_SHORT).visibleIf(properties.fromEnv)
                 .bindText(properties.apiEndpointEnv)
                 .bindText(settings::apiEndpointEnv.toNonNullableProperty(""))
@@ -236,32 +236,32 @@ class ChronicleAiSettingsConfigurable : BoundConfigurable(ChronicleAiBundle.mess
         }
         // operations
         row {
-            button(ChronicleAiBundle.message("settings.ai.test")) {
+            button(ChronicleBaseBundle.message("settings.ai.test")) {
                 // 注意这里需要基于可能尚未保存的配置项进行测试
                 val options = LocalChatModelProvider.Options.fromProperties(properties.toProperties())
                 val r = LocalChatModelProvider.INSTANCE.checkStatus(options)
                 showTestMessage(r)
             }
-            checkBox(ChronicleAiBundle.message("settings.ai.fromEnv"))
+            checkBox(ChronicleBaseBundle.message("settings.ai.fromEnv"))
                 .bindSelected(properties.fromEnv)
                 .bindSelected(settings::fromEnv)
         }
     }
 
     private fun validateModelName(builder: ValidationInfoBuilder, field: JBTextField, skip: Boolean): ValidationInfo? {
-        if (!skip && field.text.isEmpty()) return builder.warning(ChronicleAiBundle.message("validation.missingModelName"))
+        if (!skip && field.text.isEmpty()) return builder.warning(ChronicleBaseBundle.message("settings.ai.validation.missingModelName"))
         return null
     }
 
     // private fun validateApiEndpoint(builder: ValidationInfoBuilder, field: JBTextField, skip: Boolean): ValidationInfo? {
-    //     if (!skip && field.text.isEmpty()) return builder.warning(ChronicleAiBundle.message("validation.missingApiEndpoint"))
+    //     if (!skip && field.text.isEmpty()) return builder.warning(ChronicleBaseBundle.message("validation.missingApiEndpoint"))
     //     return null
     // }
 
     private fun validateApiKey(builder: ValidationInfoBuilder, field: JBPasswordField, skip: Boolean): ValidationInfo? {
         // 目前仅在输入时验证，不在应用时验证
         // 如果启用 AI 集成，但是这里的验证并未通过，相关功能仍然可用，只是使用后会给出警告
-        if (!skip && field.password.isEmpty()) return builder.warning(ChronicleAiBundle.message("validation.missingApiKey"))
+        if (!skip && field.password.isEmpty()) return builder.warning(ChronicleBaseBundle.message("settings.ai.validation.missingApiKey"))
         return null
     }
 

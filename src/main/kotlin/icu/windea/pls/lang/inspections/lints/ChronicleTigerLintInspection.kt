@@ -7,12 +7,12 @@ import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiElement
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.base.settings.ChronicleIntegrationsSettingsManager
+import icu.windea.pls.base.settings.TigerHighlightDialog
 import icu.windea.pls.core.util.CallbackLock
 import icu.windea.pls.integrations.ChronicleIntegrationsBundle
 import icu.windea.pls.integrations.lints.TigerLintResult
 import icu.windea.pls.integrations.lints.providers.TigerLintToolProvider
-import icu.windea.pls.integrations.settings.ChronicleIntegrationsSettingsManager
-import icu.windea.pls.integrations.settings.TigerHighlightDialog
 import javax.swing.JComponent
 
 // com.intellij.codeInspection.javaDoc.JavadocHtmlLintInspection

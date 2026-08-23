@@ -1,22 +1,18 @@
-package icu.windea.pls.ai
+package icu.windea.pls.ai.model
 
 import com.intellij.DynamicBundle
 import java.util.*
 
 object AiConstants {
-    object Settings {
-        const val defaultLocalisationChunkSize: Int = 100
-        const val defaultLocalisationMemorySize: Int = 10000
-    }
-
+    @Suppress("unused")
     object Models {
         const val deepseekFlash = "deepseek-v4-flash"
         const val deepseekPro = "deepseek-v4-pro"
-        const val claudeHaiku = "claude-haiku-4.6"
-        const val claudeSonnet = "claude-sonnet-4.6"
-        const val claudeOpus = "claude-opus-4.6"
-        const val gptMini = "gpt-5.4-mini"
-        const val gpt = "gpt-5.4"
+        const val claudeHaiku = "claude-haiku-5.0"
+        const val claudeSonnet = "claude-sonnet-5.0"
+        const val claudeOpus = "claude-opus-5.0"
+        const val gptMini = "gpt-5.6-lunar"
+        const val gpt = "gpt-5.6"
     }
 
     object BaseUrls {

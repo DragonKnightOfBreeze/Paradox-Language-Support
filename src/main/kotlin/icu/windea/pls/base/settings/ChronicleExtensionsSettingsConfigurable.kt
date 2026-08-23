@@ -1,15 +1,15 @@
-package icu.windea.pls.extensions.settings
+package icu.windea.pls.base.settings
 
 import com.intellij.openapi.options.BoundConfigurable
 import com.intellij.openapi.options.SearchableConfigurable
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.base.ChronicleBaseBundle
 import icu.windea.pls.base.help.ChronicleHelpTopics
-import icu.windea.pls.extensions.ChronicleExtensionsBundle
 import icu.windea.pls.model.constants.ChronicleUrls
 
-class ChronicleExtensionsSettingsConfigurable : BoundConfigurable(ChronicleExtensionsBundle.message("settings")), SearchableConfigurable {
+class ChronicleExtensionsSettingsConfigurable : BoundConfigurable(ChronicleBaseBundle.message("settings")), SearchableConfigurable {
     // private val callbackLock = CallbackLock()
 
     override fun getId() = "chronicle.extensions"
@@ -20,7 +20,7 @@ class ChronicleExtensionsSettingsConfigurable : BoundConfigurable(ChronicleExten
         // callbackLock.reset()
         return panel {
             // markdown
-            group(ChronicleExtensionsBundle.message("settings.markdown")) { configureGroupForMarkdown() }
+            group(ChronicleBaseBundle.message("settings.extensions.markdown")) { configureGroupForMarkdown() }
         }
     }
 
@@ -29,20 +29,20 @@ class ChronicleExtensionsSettingsConfigurable : BoundConfigurable(ChronicleExten
 
         // resolveLinks
         row {
-            checkBox(ChronicleExtensionsBundle.message("settings.markdown.resolveLinks")).bindSelected(settings::resolveLinks)
-            contextHelp(ChronicleExtensionsBundle.message("settings.markdown.resolveLinks.tip"))
+            checkBox(ChronicleBaseBundle.message("settings.extensions.markdown.resolveLinks")).bindSelected(settings::resolveLinks)
+            contextHelp(ChronicleBaseBundle.message("settings.extensions.markdown.resolveLinks.tip"))
             browserLink(ChronicleBundle.message("link.documentation"), ChronicleUrls.refDoc("extensions.html#md-link"))
         }
         // resolveInlineCodes
         row {
-            checkBox(ChronicleExtensionsBundle.message("settings.markdown.resolveInlineCodes")).bindSelected(settings::resolveInlineCodes)
-            contextHelp(ChronicleExtensionsBundle.message("settings.markdown.resolveInlineCodes.tip"))
+            checkBox(ChronicleBaseBundle.message("settings.extensions.markdown.resolveInlineCodes")).bindSelected(settings::resolveInlineCodes)
+            contextHelp(ChronicleBaseBundle.message("settings.extensions.markdown.resolveInlineCodes.tip"))
             browserLink(ChronicleBundle.message("link.documentation"), ChronicleUrls.refDoc("extensions.html#md-inline-code"))
         }
         // injectCodeBlocks
         row {
-            checkBox(ChronicleExtensionsBundle.message("settings.markdown.injectCodeBlocks")).bindSelected(settings::injectCodeBlocks)
-            contextHelp(ChronicleExtensionsBundle.message("settings.markdown.injectCodeBlocks.tip"))
+            checkBox(ChronicleBaseBundle.message("settings.extensions.markdown.injectCodeBlocks")).bindSelected(settings::injectCodeBlocks)
+            contextHelp(ChronicleBaseBundle.message("settings.extensions.markdown.injectCodeBlocks.tip"))
             browserLink(ChronicleBundle.message("link.documentation"), ChronicleUrls.refDoc("extensions.html#md-code-block"))
         }
     }

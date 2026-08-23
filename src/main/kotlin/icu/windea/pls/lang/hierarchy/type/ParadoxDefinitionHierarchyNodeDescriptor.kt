@@ -9,6 +9,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.ui.SimpleTextAttributes
 import icu.windea.pls.ChronicleDocBundle
 import icu.windea.pls.ChronicleIcons
+import icu.windea.pls.base.settings.ChronicleSettings
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.util.values.anonymous
@@ -17,7 +18,6 @@ import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.selectGameType
-import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.ParadoxEventManager
 import icu.windea.pls.lang.util.ParadoxTechnologyManager

@@ -1,9 +1,9 @@
 package icu.windea.pls.model.tools
 
+import icu.windea.pls.base.settings.ParadoxModDependencySettingsState
+import icu.windea.pls.base.settings.ParadoxModDescriptorSettingsState
 import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.analysis.util.ParadoxMetadataUtil
-import icu.windea.pls.lang.settings.ParadoxModDependencySettingsState
-import icu.windea.pls.lang.settings.ParadoxModDescriptorSettingsState
 import icu.windea.pls.model.ParadoxModSource
 
 /**

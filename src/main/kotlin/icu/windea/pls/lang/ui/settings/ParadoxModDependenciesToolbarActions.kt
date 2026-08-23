@@ -17,10 +17,10 @@ import com.intellij.ui.AnActionButton
 import com.intellij.ui.AnActionButtonRunnable
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.base.notification.ChronicleNotificationGroups
+import icu.windea.pls.base.settings.ParadoxModDependencySettingsState
+import icu.windea.pls.base.settings.qualifiedName
 import icu.windea.pls.lang.actions.ChronicleDataKeys
 import icu.windea.pls.lang.rootInfo
-import icu.windea.pls.lang.settings.ParadoxModDependencySettingsState
-import icu.windea.pls.lang.settings.qualifiedName
 import kotlinx.coroutines.CancellationException
 
 @Suppress("unused")

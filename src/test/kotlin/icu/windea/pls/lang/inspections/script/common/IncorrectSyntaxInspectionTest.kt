@@ -2,7 +2,7 @@ package icu.windea.pls.lang.inspections.script.common
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.config.settings.ChronicleConfigSettings
+import icu.windea.pls.base.settings.ChronicleConfigSettings
 import icu.windea.pls.ep.ChronicleEpBundle
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.ChronicleTestScope

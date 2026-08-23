@@ -6,10 +6,10 @@ import com.intellij.diff.chains.DiffRequestChain
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
+import icu.windea.pls.base.settings.ChronicleSettings
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.model.ParadoxRootInfo
-import icu.windea.pls.lang.settings.ChronicleSettingsStrategies.DiffGroup as DiffGroupStrategy
+import icu.windea.pls.base.settings.ChronicleSettingsStrategies.DiffGroup as DiffGroupStrategy
 
 // com.intellij.diff.actions.BaseShowDiffAction
 

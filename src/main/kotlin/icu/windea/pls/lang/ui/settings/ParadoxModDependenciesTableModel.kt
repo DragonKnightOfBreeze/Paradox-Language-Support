@@ -5,9 +5,9 @@ import com.intellij.ui.BooleanTableCellRenderer
 import com.intellij.util.ui.ColumnInfo
 import com.intellij.util.ui.ListTableModel
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.lang.settings.ParadoxGameOrModSettingsState
-import icu.windea.pls.lang.settings.ParadoxModDependencySettingsState
-import icu.windea.pls.lang.settings.ParadoxModSettingsState
+import icu.windea.pls.base.settings.ParadoxGameOrModSettingsState
+import icu.windea.pls.base.settings.ParadoxModDependencySettingsState
+import icu.windea.pls.base.settings.ParadoxModSettingsState
 
 // com.intellij.openapi.roots.ui.configuration.classpath.ClasspathTableModel
 

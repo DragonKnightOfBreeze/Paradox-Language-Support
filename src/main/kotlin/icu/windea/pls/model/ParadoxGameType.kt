@@ -1,9 +1,9 @@
 package icu.windea.pls.model
 
+import icu.windea.pls.base.settings.ChronicleSettings
 import icu.windea.pls.core.optimized
 import icu.windea.pls.ep.analysis.ParadoxInferredGameTypeProvider
 import icu.windea.pls.lang.analysis.ParadoxGameTypeManager
-import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.model.analysis.ParadoxGameTypeMetadata
 import icu.windea.pls.model.constraints.ParadoxGameTypeConstraint
 

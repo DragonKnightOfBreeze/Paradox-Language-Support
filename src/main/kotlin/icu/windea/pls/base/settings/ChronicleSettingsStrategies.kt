@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.settings
+package icu.windea.pls.base.settings
 
 import icu.windea.pls.ChronicleBundle
 

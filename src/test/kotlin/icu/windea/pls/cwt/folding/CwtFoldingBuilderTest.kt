@@ -2,7 +2,7 @@ package icu.windea.pls.cwt.folding
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.lang.settings.ChronicleSettings
+import icu.windea.pls.base.settings.ChronicleSettings
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4

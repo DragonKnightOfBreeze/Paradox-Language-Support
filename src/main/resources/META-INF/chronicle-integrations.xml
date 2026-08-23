@@ -20,9 +20,6 @@
   </extensions>
 
   <extensions defaultExtensionNs="com.intellij">
-    <applicationConfigurable id="chronicle.integrations" parentId="chronicle" groupWeight="80"
-                             bundle="messages.ChronicleIntegrationsBundle" key="settings.integrations"
-                             instance="icu.windea.pls.integrations.settings.ChronicleIntegrationsSettingsConfigurable"/>
     <vfs.asyncListener implementation="icu.windea.pls.integrations.lints.TigerConfFileListener"/>
   </extensions>
 </idea-plugin>

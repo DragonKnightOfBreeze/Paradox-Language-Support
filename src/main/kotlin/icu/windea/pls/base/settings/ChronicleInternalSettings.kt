@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.settings
+package icu.windea.pls.base.settings
 
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service

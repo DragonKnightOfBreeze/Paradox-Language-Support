@@ -3,7 +3,7 @@ package icu.windea.pls.ai.providers
 import dev.langchain4j.model.chat.ChatModel
 import dev.langchain4j.model.chat.StreamingChatModel
 import icu.windea.pls.ChronicleFacade
-import icu.windea.pls.ai.settings.ChronicleAiSettings
+import icu.windea.pls.base.settings.ChronicleAiSettings
 
 @Suppress("unused")
 object ChatModelManager {

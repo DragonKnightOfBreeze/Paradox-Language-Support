@@ -5,6 +5,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.parentOfType
+import icu.windea.pls.base.settings.ChronicleInternalSettings
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.forEachChild
 import icu.windea.pls.core.psi.PsiBoundElement
@@ -12,7 +13,6 @@ import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.core.truncateAndKeepQuotes
 import icu.windea.pls.core.util.values.FallbackStrings
 import icu.windea.pls.cwt.CwtLanguage
-import icu.windea.pls.lang.settings.ChronicleInternalSettings
 
 @Suppress("unused")
 object CwtPsiService {

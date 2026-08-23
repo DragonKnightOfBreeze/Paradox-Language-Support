@@ -13,13 +13,13 @@ import com.intellij.ui.ToolbarDecorator
 import com.intellij.ui.scale.JBUIScale
 import com.intellij.ui.table.JBTable
 import com.intellij.util.ui.TextTransferable
+import icu.windea.pls.base.settings.ChronicleProfilesSettings
+import icu.windea.pls.base.settings.ParadoxGameOrModSettingsState
+import icu.windea.pls.base.settings.ParadoxModDependencySettingsState
+import icu.windea.pls.base.settings.ParadoxModSettingsState
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.registerDoubleClickListener
 import icu.windea.pls.lang.actions.ChronicleActionPlaces
-import icu.windea.pls.lang.settings.ChronicleProfilesSettings
-import icu.windea.pls.lang.settings.ParadoxGameOrModSettingsState
-import icu.windea.pls.lang.settings.ParadoxModDependencySettingsState
-import icu.windea.pls.lang.settings.ParadoxModSettingsState
 import javax.swing.JPanel
 
 class ParadoxModDependenciesTable(

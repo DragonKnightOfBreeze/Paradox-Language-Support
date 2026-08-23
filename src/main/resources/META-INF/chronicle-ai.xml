@@ -1,9 +1,5 @@
 <idea-plugin>
   <extensions defaultExtensionNs="com.intellij">
-    <applicationConfigurable id="chronicle.ai" parentId="chronicle" groupWeight="60"
-                             bundle="messages.ChronicleAiBundle" key="settings.ai"
-                             instance="icu.windea.pls.ai.settings.ChronicleAiSettingsConfigurable"/>
-
     <intentionAction>
       <language>PARADOX_LOCALISATION</language>
       <bundleName>messages.ChronicleIntentionBundle</bundleName>

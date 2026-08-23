@@ -11,6 +11,9 @@ import com.intellij.openapi.actionSystem.ex.ComboBoxAction
 import com.intellij.util.application
 import com.intellij.util.ui.JBUI
 import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.base.settings.ChronicleSettings
+import icu.windea.pls.base.settings.ChronicleSettingsStrategies
+import icu.windea.pls.base.settings.ChronicleSettingsStrategy
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.function
 import icu.windea.pls.lang.element
@@ -18,9 +21,6 @@ import icu.windea.pls.lang.hierarchy.type.ParadoxDefinitionHierarchyBrowser
 import icu.windea.pls.lang.project
 import icu.windea.pls.lang.search.scope.ParadoxSearchScopeType
 import icu.windea.pls.lang.search.scope.ParadoxSearchScopeTypes
-import icu.windea.pls.lang.settings.ChronicleSettings
-import icu.windea.pls.lang.settings.ChronicleSettingsStrategies
-import icu.windea.pls.lang.settings.ChronicleSettingsStrategy
 import java.awt.GridBagConstraints
 import java.awt.GridBagLayout
 import javax.swing.JComponent

@@ -7,6 +7,7 @@ import com.intellij.psi.search.GlobalSearchScopeUtil
 import com.intellij.util.Processor
 import com.intellij.util.indexing.FindSymbolParameters
 import com.intellij.util.indexing.IdFilter
+import icu.windea.pls.base.settings.ChronicleSettings
 import icu.windea.pls.core.getCurrentProject
 import icu.windea.pls.core.process
 import icu.windea.pls.lang.analysis.ParadoxAnalysisManager
@@ -14,7 +15,6 @@ import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.util.withGameType
 import icu.windea.pls.lang.search.util.withSearchScope
-import icu.windea.pls.lang.settings.ChronicleSettings
 
 /**
  * 用于在 *随处搜索（Search Everywhere）* 中查找定义。

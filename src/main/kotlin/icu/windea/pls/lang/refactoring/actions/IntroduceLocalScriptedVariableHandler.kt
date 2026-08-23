@@ -16,6 +16,7 @@ import com.intellij.psi.util.elementType
 import com.intellij.psi.util.endOffset
 import com.intellij.psi.util.startOffset
 import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.base.settings.ChronicleInternalSettings
 import icu.windea.pls.core.buildInlineTemplate
 import icu.windea.pls.core.cast
 import icu.windea.pls.core.codeInsight.TemplateEditingFinishedListener
@@ -24,7 +25,6 @@ import icu.windea.pls.core.findElementAt
 import icu.windea.pls.lang.psi.ParadoxPsiService
 import icu.windea.pls.lang.refactoring.ContextAwareRefactoringActionHandler
 import icu.windea.pls.lang.select.selectScope
-import icu.windea.pls.lang.settings.ChronicleInternalSettings
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableReference
 import icu.windea.pls.script.psi.ParadoxScriptTokenSets

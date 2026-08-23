@@ -16,11 +16,11 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.Processor
 import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.base.settings.ChronicleSettings
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.navigation.NavigationElement
 import icu.windea.pls.core.process
 import icu.windea.pls.lang.search.ParadoxTargetByTextSearch
-import icu.windea.pls.lang.settings.ChronicleSettings
 
 /**
  * 提供来自本地化文本片段的随处搜索（Search Everywhere）。

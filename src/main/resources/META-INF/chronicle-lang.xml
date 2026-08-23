@@ -41,10 +41,6 @@
   </extensions>
 
   <extensions defaultExtensionNs="com.intellij">
-    <applicationConfigurable id="chronicle" groupId="language"
-                             bundle="messages.ChronicleBundle" key="settings"
-                             instance="icu.windea.pls.lang.settings.ChronicleSettingsConfigurable"/>
-
     <!-- make first to optimize performance (before JSLibraryOverrider) -->
     <fileTypeOverrider implementation="icu.windea.pls.lang.ParadoxFileTypeOverrider" order="first"/>
 

@@ -7,6 +7,22 @@
     <applicationService serviceInterface="icu.windea.pls.base.io.ChronicleGitService" serviceImplementation="icu.windea.pls.base.io.ChronicleGitServiceImpl"/>
     <applicationService serviceInterface="icu.windea.pls.base.io.ChronicleSqliteService" serviceImplementation="icu.windea.pls.base.io.ChronicleSqliteServiceImpl"/>
 
+    <applicationConfigurable id="chronicle" groupId="language"
+                             bundle="messages.ChronicleBaseBundle" key="settings"
+                             instance="icu.windea.pls.base.settings.ChronicleSettingsConfigurable"/>
+    <applicationConfigurable id="chronicle.config" parentId="chronicle" groupWeight="90"
+                             bundle="messages.ChronicleBaseBundle" key="settings.config"
+                             instance="icu.windea.pls.base.settings.ChronicleConfigSettingsConfigurable"/>
+    <applicationConfigurable id="chronicle.integrations" parentId="chronicle" groupWeight="80"
+                             bundle="messages.ChronicleBaseBundle" key="settings.integrations"
+                             instance="icu.windea.pls.base.settings.ChronicleIntegrationsSettingsConfigurable"/>
+    <applicationConfigurable id="chronicle.extensions" parentId="chronicle" groupWeight="70"
+                             bundle="messages.ChronicleBaseBundle" key="settings"
+                             instance="icu.windea.pls.base.settings.ChronicleExtensionsSettingsConfigurable"/>
+    <applicationConfigurable id="chronicle.ai" parentId="chronicle" groupWeight="60"
+                             bundle="messages.ChronicleBaseBundle" key="settings.ai"
+                             instance="icu.windea.pls.base.settings.ChronicleAiSettingsConfigurable"/>
+
     <notificationGroup id="chronicle" displayType="BALLOON" isLogByDefault="true" bundle="messages.ChronicleBundle" key="notificationGroup"/>
     <notificationGroup id="chronicle.settings" displayType="BALLOON" isLogByDefault="true" bundle="messages.ChronicleBundle" key="notificationGroup.settings"/>
     <notificationGroup id="chronicle.diff" displayType="BALLOON" isLogByDefault="true" bundle="messages.ChronicleBundle" key="notificationGroup.diff"/>

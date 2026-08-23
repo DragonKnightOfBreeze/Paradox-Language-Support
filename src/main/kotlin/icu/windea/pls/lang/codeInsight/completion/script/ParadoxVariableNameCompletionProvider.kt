@@ -5,6 +5,7 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.patterns.PlatformPatterns.*
 import com.intellij.psi.util.parentOfType
 import com.intellij.util.ProcessingContext
+import icu.windea.pls.base.settings.ChronicleSettings
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.configGroup.mockConfigModel
 import icu.windea.pls.core.castOrNull
@@ -16,7 +17,6 @@ import icu.windea.pls.lang.codeInsight.template.postfix.ParadoxVariableOperation
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.resolve.ParadoxExpressionService
-import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptString

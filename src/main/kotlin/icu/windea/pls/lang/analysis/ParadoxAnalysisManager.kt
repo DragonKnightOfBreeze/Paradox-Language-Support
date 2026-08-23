@@ -16,6 +16,7 @@ import com.intellij.testFramework.LightVirtualFile
 import com.intellij.testFramework.LightVirtualFileBase
 import com.intellij.util.application
 import icu.windea.pls.ChronicleFacade
+import icu.windea.pls.base.settings.ChronicleSettings
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.runCatchingCancelable
@@ -32,7 +33,6 @@ import icu.windea.pls.lang.psi.light.CwtConfigLightElementBase
 import icu.windea.pls.lang.psi.light.ParadoxLightElementBase
 import icu.windea.pls.lang.psi.stubs.ParadoxLocaleAwareStub
 import icu.windea.pls.lang.psi.stubs.ParadoxStub
-import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
 import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale

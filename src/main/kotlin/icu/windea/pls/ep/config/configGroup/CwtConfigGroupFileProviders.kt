@@ -8,9 +8,9 @@ import com.intellij.openapi.vfs.VirtualFileVisitor
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.base.io.ChronicleGitService
+import icu.windea.pls.base.settings.ChronicleConfigSettings
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.CwtConfigGroupFileSource
-import icu.windea.pls.config.settings.ChronicleConfigSettings
 import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removeSurroundingOrNull

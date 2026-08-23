@@ -10,10 +10,10 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.endOffset
 import com.intellij.psi.util.startOffset
+import icu.windea.pls.base.settings.ChronicleSettings
 import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.csv.psi.ParadoxCsvElementTypes.*
 import icu.windea.pls.csv.psi.ParadoxCsvFile
-import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.model.constants.ChronicleStrings
 
 class ParadoxCsvFoldingBuilder : CustomFoldingBuilder(), DumbAware {

@@ -1,4 +1,4 @@
-package icu.windea.pls.config.settings
+package icu.windea.pls.base.settings
 
 import com.intellij.util.application
 import icu.windea.pls.core.util.CallbackLock

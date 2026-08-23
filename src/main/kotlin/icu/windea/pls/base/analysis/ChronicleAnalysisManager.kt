@@ -16,6 +16,7 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.FileContentUtilCore
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.base.ChronicleModificationTrackers
+import icu.windea.pls.base.settings.ChronicleProfilesSettings
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.toPsiFile
@@ -24,7 +25,6 @@ import icu.windea.pls.lang.ParadoxFileType
 import icu.windea.pls.lang.analysis.ParadoxAnalysisDataManager
 import icu.windea.pls.lang.roots.CwtConfigGroupLibraryService
 import icu.windea.pls.lang.roots.ParadoxLibraryService
-import icu.windea.pls.lang.settings.ChronicleProfilesSettings
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

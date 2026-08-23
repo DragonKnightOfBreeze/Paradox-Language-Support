@@ -5,6 +5,7 @@ import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.siblings
+import icu.windea.pls.base.settings.ChronicleInternalSettings
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.children
 import icu.windea.pls.core.findChild
@@ -12,7 +13,6 @@ import icu.windea.pls.core.optimized
 import icu.windea.pls.core.truncateAndKeepQuotes
 import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.withDependencyItems
-import icu.windea.pls.lang.settings.ChronicleInternalSettings
 
 @Suppress("unused")
 object ParadoxCsvPsiService {

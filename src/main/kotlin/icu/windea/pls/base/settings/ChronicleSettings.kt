@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.settings
+package icu.windea.pls.base.settings
 
 import com.intellij.openapi.components.BaseState
 import com.intellij.openapi.components.Service
@@ -10,7 +10,6 @@ import com.intellij.util.xmlb.annotations.Property
 import com.intellij.util.xmlb.annotations.Tag
 import icu.windea.pls.core.toDelimitedSet
 import icu.windea.pls.core.util.properties.fromDelimitedString
-import icu.windea.pls.lang.settings.ChronicleSettingsStrategies.*
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxGameType
@@ -142,7 +141,7 @@ class ChronicleSettings : SimplePersistentStateComponent<ChronicleSettings.State
      */
     @Tag("generation")
     class GenerationState : BaseState() {
-        var localisationStrategy by enum(LocalisationGeneration.SpecificText)
+        var localisationStrategy by enum(ChronicleSettingsStrategies.LocalisationGeneration.SpecificText)
         var localisationStrategyText by string("REPLACE_ME")
         var localisationStrategyLocale by string(ParadoxLocaleManager.ID_AUTO)
         var blankLineBetweenLocalisationGroups by property(true)
@@ -241,8 +240,8 @@ class ChronicleSettings : SimplePersistentStateComponent<ChronicleSettings.State
         var showTechInfoByCategories by property(true)
         var showTechInfoByAttributes by property(false)
 
-        var eventTreeGrouping by enum(EventTreeGrouping.None)
-        var techTreeGrouping by enum(TechTreeGrouping.None)
+        var eventTreeGrouping by enum(ChronicleSettingsStrategies.EventTreeGrouping.None)
+        var techTreeGrouping by enum(ChronicleSettingsStrategies.TechTreeGrouping.None)
 
         fun showDefinitionsInCallHierarchyByBindings(rootDefinitionInfo: ParadoxDefinitionInfo?, definitionInfo: ParadoxDefinitionInfo?): Boolean {
             if (rootDefinitionInfo == null || definitionInfo == null) return true
@@ -261,7 +260,7 @@ class ChronicleSettings : SimplePersistentStateComponent<ChronicleSettings.State
      */
     @Tag("diff")
     class DiffState : BaseState() {
-        var defaultDiffGroup by enum(DiffGroup.Current)
+        var defaultDiffGroup by enum(ChronicleSettingsStrategies.DiffGroup.Current)
     }
 
     /**

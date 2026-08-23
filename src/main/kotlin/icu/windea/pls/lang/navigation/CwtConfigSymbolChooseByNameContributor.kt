@@ -6,6 +6,7 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.Processor
 import com.intellij.util.indexing.FindSymbolParameters
 import com.intellij.util.indexing.IdFilter
+import icu.windea.pls.base.settings.ChronicleSettings
 import icu.windea.pls.config.CwtConfigType
 import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.core.getCurrentProject
@@ -13,7 +14,6 @@ import icu.windea.pls.core.process
 import icu.windea.pls.core.util.ReadWriteAccess
 import icu.windea.pls.lang.analysis.ParadoxAnalysisManager
 import icu.windea.pls.lang.search.CwtConfigSymbolSearch
-import icu.windea.pls.lang.settings.ChronicleSettings
 
 /**
  * 用于在 *随处搜索（Search Everywhere）* 中查找规则符号。

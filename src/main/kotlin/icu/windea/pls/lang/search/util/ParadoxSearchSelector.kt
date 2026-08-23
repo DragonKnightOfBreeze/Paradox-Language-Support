@@ -2,6 +2,8 @@ package icu.windea.pls.lang.search.util
 
 import com.intellij.openapi.project.Project
 import com.intellij.psi.search.GlobalSearchScope
+import icu.windea.pls.base.settings.ChronicleProfilesSettings
+import icu.windea.pls.base.settings.ParadoxGameOrModSettingsState
 import icu.windea.pls.core.thenPossible
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.search.scope.ParadoxSearchScope
@@ -9,8 +11,6 @@ import icu.windea.pls.lang.search.scope.withFileExtensions
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.selectRootFile
-import icu.windea.pls.lang.settings.ChronicleProfilesSettings
-import icu.windea.pls.lang.settings.ParadoxGameOrModSettingsState
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
 import java.util.function.Function

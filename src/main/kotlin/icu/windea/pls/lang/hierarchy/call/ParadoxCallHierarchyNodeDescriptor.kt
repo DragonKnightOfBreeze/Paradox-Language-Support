@@ -15,12 +15,12 @@ import com.intellij.psi.PsiReference
 import com.intellij.psi.util.PsiEditorUtil
 import com.intellij.ui.SimpleTextAttributes
 import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.base.settings.ChronicleSettings
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
-import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.ParadoxScriptedVariableManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty

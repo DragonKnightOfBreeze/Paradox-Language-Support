@@ -1,7 +1,7 @@
 package icu.windea.pls.lang.listeners
 
 import com.intellij.util.messages.Topic
-import icu.windea.pls.lang.settings.ParadoxModSettingsState
+import icu.windea.pls.base.settings.ParadoxModSettingsState
 
 /**
  * 监听模组设置的更改。

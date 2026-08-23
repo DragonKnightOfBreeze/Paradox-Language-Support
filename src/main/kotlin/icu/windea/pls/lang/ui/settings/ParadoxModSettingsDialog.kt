@@ -12,18 +12,18 @@ import com.intellij.ui.dsl.listCellRenderer.*
 import com.intellij.ui.layout.ValidationInfoBuilder
 import com.intellij.util.application
 import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.base.settings.ChronicleIntegrationsSettingsManager
+import icu.windea.pls.base.settings.ChronicleProfilesSettings
+import icu.windea.pls.base.settings.ChronicleSettings
+import icu.windea.pls.base.settings.ParadoxModDependencySettingsState
+import icu.windea.pls.base.settings.ParadoxModSettingsState
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.util.CallbackLock
 import icu.windea.pls.integrations.lints.LintToolConstants
-import icu.windea.pls.integrations.settings.ChronicleIntegrationsSettingsManager
 import icu.windea.pls.lang.actions.ChronicleDataKeys
 import icu.windea.pls.lang.analysis.ParadoxGameManager
 import icu.windea.pls.lang.listeners.ParadoxModGameTypeListener
 import icu.windea.pls.lang.listeners.ParadoxModSettingsListener
-import icu.windea.pls.lang.settings.ChronicleProfilesSettings
-import icu.windea.pls.lang.settings.ChronicleSettings
-import icu.windea.pls.lang.settings.ParadoxModDependencySettingsState
-import icu.windea.pls.lang.settings.ParadoxModSettingsState
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
 

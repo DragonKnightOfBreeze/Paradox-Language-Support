@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.settings
+package icu.windea.pls.base.settings
 
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import com.intellij.openapi.observable.properties.AtomicProperty
@@ -7,6 +7,7 @@ import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.base.ChronicleBaseBundle
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.ui.EntryListTableModel
 import icu.windea.pls.core.util.Entry
@@ -23,7 +24,7 @@ class DefaultGameDirectoriesDialog(val list: MutableList<Entry<String, String>>)
     val properties = list.associateBy({ it.key }, { graph.property(it.value) })
 
     init {
-        title = ChronicleBundle.message("settings.general.defaultGameDirectories.dialog.title")
+        title = ChronicleBaseBundle.message("settings.general.defaultGameDirectories.dialog.title")
         init()
     }
 
@@ -75,22 +76,22 @@ class DefinitionTypeBindingsInCallHierarchyDialog(val list: MutableList<Entry<St
     val resultList = list.mapTo(mutableListOf()) { it.copy() }
 
     init {
-        title = ChronicleBundle.message("settings.hierarchy.definitionTypeBindings.dialog.title")
+        title = ChronicleBaseBundle.message("settings.hierarchy.definitionTypeBindings.dialog.title")
         init()
     }
 
     override fun createCenterPanel(): JComponent {
         return panel {
             row {
-                val keyName = ChronicleBundle.message("settings.configure.definitionTypeBindings.dialog.key")
-                val valueName = ChronicleBundle.message("settings.hierarchy.definitionTypeBindings.dialog.value")
+                val keyName = ChronicleBaseBundle.message("settings.configure.definitionTypeBindings.dialog.key")
+                val valueName = ChronicleBaseBundle.message("settings.hierarchy.definitionTypeBindings.dialog.value")
                 cell(EntryListTableModel.createStringMapPanel(resultList, keyName, valueName)).align(Align.FILL)
             }.resizableRow() // 占据额外的垂直空间
             row {
-                comment(ChronicleBundle.message("settings.hierarchy.definitionTypeBindings.dialog.comment.1"), MAX_LINE_LENGTH_WORD_WRAP)
+                comment(ChronicleBaseBundle.message("settings.hierarchy.definitionTypeBindings.dialog.comment.1"), MAX_LINE_LENGTH_WORD_WRAP)
             }
             row {
-                comment(ChronicleBundle.message("settings.hierarchy.definitionTypeBindings.dialog.comment.2"), MAX_LINE_LENGTH_WORD_WRAP)
+                comment(ChronicleBaseBundle.message("settings.hierarchy.definitionTypeBindings.dialog.comment.2"), MAX_LINE_LENGTH_WORD_WRAP)
             }
         }
     }
@@ -100,7 +101,7 @@ class DefinitionTypeBindingsInCallHierarchyDialog(val list: MutableList<Entry<St
 
 class ClauseTemplateSettingsDialog : DialogWrapper(null) {
     init {
-        title = ChronicleBundle.message("settings.completion.clauseTemplate.dialog.title")
+        title = ChronicleBaseBundle.message("settings.completion.clauseTemplate.dialog.title")
         init()
     }
 
@@ -109,9 +110,9 @@ class ClauseTemplateSettingsDialog : DialogWrapper(null) {
         return panel {
             // maxExpressionCountInOneLine
             row {
-                label(ChronicleBundle.message("settings.completion.clauseTemplate.dialog.maxMemberCountInOneLine"))
+                label(ChronicleBaseBundle.message("settings.completion.clauseTemplate.dialog.maxMemberCountInOneLine"))
                 intTextField(1..10).bindIntText(settings::maxMemberCountInOneLine)
-                contextHelp(ChronicleBundle.message("settings.completion.clauseTemplate.dialog.maxMemberCountInOneLine.tip"))
+                contextHelp(ChronicleBaseBundle.message("settings.completion.clauseTemplate.dialog.maxMemberCountInOneLine.tip"))
             }
         }
     }

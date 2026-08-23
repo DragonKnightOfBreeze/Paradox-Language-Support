@@ -1,4 +1,4 @@
-package icu.windea.pls.integrations.settings
+package icu.windea.pls.base.settings
 
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import com.intellij.openapi.options.BoundConfigurable
@@ -7,15 +7,15 @@ import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.ui.setEmptyState
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.base.ChronicleBaseBundle
 import icu.windea.pls.base.help.ChronicleHelpTopics
 import icu.windea.pls.core.util.CallbackLock
-import icu.windea.pls.integrations.ChronicleIntegrationsBundle
 import icu.windea.pls.integrations.images.ImageToolConstants
 import icu.windea.pls.integrations.lints.LintToolConstants
 import icu.windea.pls.integrations.translation.TranslationToolConstants
 
 @Suppress("UnstableApiUsage")
-class ChronicleIntegrationsSettingsConfigurable : BoundConfigurable(ChronicleIntegrationsBundle.message("settings.integrations")), SearchableConfigurable {
+class ChronicleIntegrationsSettingsConfigurable : BoundConfigurable(ChronicleBaseBundle.message("settings.integrations")), SearchableConfigurable {
     private val callbackLock = CallbackLock()
 
     override fun getId() = "chronicle.integrations"
@@ -26,11 +26,11 @@ class ChronicleIntegrationsSettingsConfigurable : BoundConfigurable(ChronicleInt
         callbackLock.reset()
         return panel {
             // image tools
-            group(ChronicleIntegrationsBundle.message("settings.integrations.image")) { configureGroupForImage() }
+            group(ChronicleBaseBundle.message("settings.integrations.image")) { configureGroupForImage() }
             // translation tools
-            group(ChronicleIntegrationsBundle.message("settings.integrations.translation")) { configureGroupForTranslation() }
+            group(ChronicleBaseBundle.message("settings.integrations.translation")) { configureGroupForTranslation() }
             // linting tools
-            group(ChronicleIntegrationsBundle.message("settings.integrations.lint")) { configureGroupForLint() }
+            group(ChronicleBaseBundle.message("settings.integrations.lint")) { configureGroupForLint() }
         }
     }
 
@@ -39,30 +39,30 @@ class ChronicleIntegrationsSettingsConfigurable : BoundConfigurable(ChronicleInt
         val settings = ChronicleIntegrationsSettings.getInstance().state.image
 
         row {
-            comment(ChronicleIntegrationsBundle.message("settings.integrations.image.comment"), MAX_LINE_LENGTH_WORD_WRAP)
+            comment(ChronicleBaseBundle.message("settings.integrations.image.comment"), MAX_LINE_LENGTH_WORD_WRAP)
         }
         row {
-            comment(ChronicleIntegrationsBundle.message("settings.integrations.image.comment.impl"), MAX_LINE_LENGTH_WORD_WRAP)
+            comment(ChronicleBaseBundle.message("settings.integrations.image.comment.impl"), MAX_LINE_LENGTH_WORD_WRAP)
         }
         // enableTexconv
         row {
-            checkBox(ChronicleIntegrationsBundle.message("settings.integrations.image.from.texconv"))
-                .comment(ChronicleIntegrationsBundle.message("settings.integrations.image.from.texconv.comment"), MAX_LINE_LENGTH_WORD_WRAP)
+            checkBox(ChronicleBaseBundle.message("settings.integrations.image.from.texconv"))
+                .comment(ChronicleBaseBundle.message("settings.integrations.image.from.texconv.comment"), MAX_LINE_LENGTH_WORD_WRAP)
                 .bindSelected(settings::enableTexconv)
             browserLink(ChronicleBundle.message("link.website"), ImageToolConstants.Texconv.url)
         }
         // enableMagick
         row {
-            checkBox(ChronicleIntegrationsBundle.message("settings.integrations.image.from.magick"))
-                .comment(ChronicleIntegrationsBundle.message("settings.integrations.image.from.magick.comment"), MAX_LINE_LENGTH_WORD_WRAP)
+            checkBox(ChronicleBaseBundle.message("settings.integrations.image.from.magick"))
+                .comment(ChronicleBaseBundle.message("settings.integrations.image.from.magick.comment"), MAX_LINE_LENGTH_WORD_WRAP)
                 .bindSelected(settings::enableMagick)
             browserLink(ChronicleBundle.message("link.website"), ImageToolConstants.Magick.url)
         }
         // magickPath
         row {
-            label(ChronicleIntegrationsBundle.message("settings.integrations.image.magickPath")).widthGroup(groupName)
+            label(ChronicleBaseBundle.message("settings.integrations.image.magickPath")).widthGroup(groupName)
             val descriptor = FileChooserDescriptorFactory.singleFile()
-                .withTitle(ChronicleIntegrationsBundle.message("settings.integrations.image.magickPath.title"))
+                .withTitle(ChronicleBaseBundle.message("settings.integrations.image.magickPath.title"))
             textFieldWithBrowseButton(descriptor, null)
                 .bindText(settings::magickPath.toNonNullableProperty(""))
                 .applyToComponent { setEmptyState(ImageToolConstants.Magick.pathTip()) }
@@ -73,17 +73,17 @@ class ChronicleIntegrationsSettingsConfigurable : BoundConfigurable(ChronicleInt
 
     private fun Panel.configureGroupForTranslation() {
         row {
-            comment(ChronicleIntegrationsBundle.message("settings.integrations.translation.comment"), MAX_LINE_LENGTH_WORD_WRAP)
+            comment(ChronicleBaseBundle.message("settings.integrations.translation.comment"), MAX_LINE_LENGTH_WORD_WRAP)
         }
         row {
-            checkBox(ChronicleIntegrationsBundle.message("settings.integrations.translation.from.tp")).selected(true).enabled(false)
-                .comment(ChronicleIntegrationsBundle.message("settings.integrations.translation.from.tp.comment"), MAX_LINE_LENGTH_WORD_WRAP)
+            checkBox(ChronicleBaseBundle.message("settings.integrations.translation.from.tp")).selected(true).enabled(false)
+                .comment(ChronicleBaseBundle.message("settings.integrations.translation.from.tp.comment"), MAX_LINE_LENGTH_WORD_WRAP)
             browserLink(ChronicleBundle.message("link.website"), TranslationToolConstants.TranslationPlugin.url)
             link(ChronicleBundle.message("link.install")) { ChronicleIntegrationsSettingsManager.installTranslationPlugin() }
         }
         row {
-            checkBox(ChronicleIntegrationsBundle.message("settings.integrations.translation.from.ai")).selected(true).enabled(false)
-                .comment(ChronicleIntegrationsBundle.message("settings.integrations.translation.from.ai.comment"), MAX_LINE_LENGTH_WORD_WRAP)
+            checkBox(ChronicleBaseBundle.message("settings.integrations.translation.from.ai")).selected(true).enabled(false)
+                .comment(ChronicleBaseBundle.message("settings.integrations.translation.from.ai.comment"), MAX_LINE_LENGTH_WORD_WRAP)
             link(ChronicleBundle.message("link.configureInSettingsPage")) { ChronicleIntegrationsSettingsManager.openAiSettingsPage() }
         }
     }
@@ -93,12 +93,12 @@ class ChronicleIntegrationsSettingsConfigurable : BoundConfigurable(ChronicleInt
         val settings = ChronicleIntegrationsSettings.getInstance().state.lint
 
         row {
-            comment(ChronicleIntegrationsBundle.message("settings.integrations.lint.comment"), MAX_LINE_LENGTH_WORD_WRAP)
+            comment(ChronicleBaseBundle.message("settings.integrations.lint.comment"), MAX_LINE_LENGTH_WORD_WRAP)
         }
         // enableTiger
         row {
-            checkBox(ChronicleIntegrationsBundle.message("settings.integrations.lint.tiger"))
-                .comment(ChronicleIntegrationsBundle.message("settings.integrations.lint.tiger.comment"), MAX_LINE_LENGTH_WORD_WRAP)
+            checkBox(ChronicleBaseBundle.message("settings.integrations.lint.tiger"))
+                .comment(ChronicleBaseBundle.message("settings.integrations.lint.tiger.comment"), MAX_LINE_LENGTH_WORD_WRAP)
                 .bindSelected(settings::enableTiger)
                 .onApply { ChronicleIntegrationsSettingsManager.onTigerSettingsChanged(callbackLock) }
             browserLink(ChronicleBundle.message("link.website"), LintToolConstants.Tiger.url)
@@ -109,9 +109,9 @@ class ChronicleIntegrationsSettingsConfigurable : BoundConfigurable(ChronicleInt
             val (name, pathProp, confPathProp) = tuple
 
             row {
-                label(ChronicleIntegrationsBundle.message("settings.integrations.lint.tigerPath", name)).widthGroup(groupName)
+                label(ChronicleBaseBundle.message("settings.integrations.lint.tigerPath", name)).widthGroup(groupName)
                 val descriptor = FileChooserDescriptorFactory.singleFile()
-                    .withTitle(ChronicleIntegrationsBundle.message("settings.integrations.lint.tigerPath.title", name))
+                    .withTitle(ChronicleBaseBundle.message("settings.integrations.lint.tigerPath.title", name))
                 textFieldWithBrowseButton(descriptor, null)
                     .bindText(pathProp.toNonNullableProperty(""))
                     .applyToComponent { setEmptyState(LintToolConstants.Tiger.pathTip(gameType)) }
@@ -120,10 +120,10 @@ class ChronicleIntegrationsSettingsConfigurable : BoundConfigurable(ChronicleInt
                     .onApply { ChronicleIntegrationsSettingsManager.onTigerSettingsChanged(gameType, callbackLock) }
             }
             row {
-                label(ChronicleIntegrationsBundle.message("settings.integrations.lint.tigerConfPath", name)).widthGroup(groupName)
+                label(ChronicleBaseBundle.message("settings.integrations.lint.tigerConfPath", name)).widthGroup(groupName)
                 val descriptor = FileChooserDescriptorFactory.singleFile()
                     // .withExtensionFilter("conf") // 这里不预先按扩展名过滤
-                    .withTitle(ChronicleIntegrationsBundle.message("settings.integrations.lint.tigerConfPath.title", name))
+                    .withTitle(ChronicleBaseBundle.message("settings.integrations.lint.tigerConfPath.title", name))
                 textFieldWithBrowseButton(descriptor, null)
                     .bindText(confPathProp.toNonNullableProperty(""))
                     .applyToComponent { setEmptyState(LintToolConstants.Tiger.confPathTip(gameType)) }
@@ -135,13 +135,13 @@ class ChronicleIntegrationsSettingsConfigurable : BoundConfigurable(ChronicleInt
 
         // tigerHighlighting
         row {
-            label(ChronicleIntegrationsBundle.message("settings.integrations.lint.tigerHighlight"))
+            label(ChronicleBaseBundle.message("settings.integrations.lint.tigerHighlight"))
             link(ChronicleBundle.message("link.configure")) {
                 // Tiger highlight mapping - open dialog - save settings and refresh files after dialog closed with ok
                 val dialog = TigerHighlightDialog()
                 if (dialog.showAndGet()) ChronicleIntegrationsSettingsManager.onTigerSettingsChanged(callbackLock)
             }
-            contextHelp(ChronicleIntegrationsBundle.message("settings.integrations.lint.tigerHighlight.tip"))
+            contextHelp(ChronicleBaseBundle.message("settings.integrations.lint.tigerHighlight.tip"))
         }
     }
 }

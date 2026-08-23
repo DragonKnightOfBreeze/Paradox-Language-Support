@@ -17,6 +17,8 @@ import com.intellij.psi.PsiDocumentManager
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.base.notification.ChronicleNotificationGroups
+import icu.windea.pls.base.settings.ChronicleSettings
+import icu.windea.pls.base.settings.ChronicleSettingsStrategies
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.executeWriteCommand
@@ -31,8 +33,6 @@ import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.search.util.locale
 import icu.windea.pls.lang.selectLocale
-import icu.windea.pls.lang.settings.ChronicleSettings
-import icu.windea.pls.lang.settings.ChronicleSettingsStrategies
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.localisation.ParadoxLocalisationFileType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile

@@ -11,10 +11,10 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ProjectFileIndex
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.util.application
+import icu.windea.pls.base.settings.ChronicleSettings
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.listeners.ParadoxRootInfoListener
-import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.model.ParadoxRootInfo
 
 sealed class OpenSettingsActionBase : DumbAwareAction() {

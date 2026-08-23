@@ -4,7 +4,7 @@ import dev.langchain4j.memory.ChatMemory
 import dev.langchain4j.memory.chat.MessageWindowChatMemory
 import icu.windea.pls.ai.model.requests.ManipulateLocalisationAiRequest
 import icu.windea.pls.ai.model.results.LocalisationAiResult
-import icu.windea.pls.ai.settings.ChronicleAiSettings
+import icu.windea.pls.base.settings.ChronicleAiSettings
 import kotlinx.coroutines.flow.Flow
 
 abstract class ManipulateLocalisationAiService<R : ManipulateLocalisationAiRequest> : AiService {

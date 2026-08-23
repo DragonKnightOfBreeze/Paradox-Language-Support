@@ -2,7 +2,7 @@ package icu.windea.pls.tools.actions
 
 import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.AnActionEvent
-import icu.windea.pls.lang.settings.ChronicleSettings
+import icu.windea.pls.base.settings.ChronicleSettings
 import icu.windea.pls.tools.ChronicleToolsBundle
 import icu.windea.pls.tools.game.launch.ParadoxLaunchGameService
 

@@ -5,13 +5,13 @@ import com.intellij.openapi.roots.ProjectFileIndex
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.ui.EditorNotifications
 import icu.windea.pls.base.analysis.ChronicleAnalysisManager
+import icu.windea.pls.base.settings.ParadoxModSettingsState
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.lang.editor.ParadoxGameDirectoryNotConfiguredEditorNotificationProvider
 import icu.windea.pls.lang.roots.ParadoxLibrary
 import icu.windea.pls.lang.roots.ParadoxLibraryService
-import icu.windea.pls.lang.settings.ParadoxModSettingsState
 
 /**
  * 当添加或更改模组设置后，刷新库信息。

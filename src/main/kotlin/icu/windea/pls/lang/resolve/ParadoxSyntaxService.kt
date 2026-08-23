@@ -3,10 +3,10 @@ package icu.windea.pls.lang.resolve
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.elementType
+import icu.windea.pls.base.settings.ChronicleConfigSettings
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.settings.ChronicleConfigSettings
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.anyFast
 import icu.windea.pls.core.indicesOf

@@ -6,7 +6,7 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
-import icu.windea.pls.extensions.settings.ChronicleExtensionsSettings
+import icu.windea.pls.base.settings.ChronicleExtensionsSettings
 import icu.windea.pls.lang.references.paths.ParadoxPathReference
 import org.intellij.plugins.markdown.lang.psi.MarkdownElementVisitor
 import org.intellij.plugins.markdown.lang.psi.impl.MarkdownLinkDestination

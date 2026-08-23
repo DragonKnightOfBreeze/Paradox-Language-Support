@@ -6,10 +6,10 @@ import com.intellij.openapi.util.text.HtmlChunk
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFileSystemItem
+import icu.windea.pls.base.settings.ChronicleInternalSettings
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.util.builders.DocumentationBuilder
 import icu.windea.pls.core.util.builders.buildDocumentation
-import icu.windea.pls.lang.settings.ChronicleInternalSettings
 
 // org.intellij.images.fileTypes.ImageDocumentationProvider
 

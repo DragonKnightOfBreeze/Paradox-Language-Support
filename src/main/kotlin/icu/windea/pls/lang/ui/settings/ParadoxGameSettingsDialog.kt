@@ -9,13 +9,13 @@ import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.listCellRenderer.*
 import com.intellij.util.application
 import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.base.settings.ChronicleIntegrationsSettingsManager
+import icu.windea.pls.base.settings.ChronicleProfilesSettings
+import icu.windea.pls.base.settings.ParadoxGameSettingsState
 import icu.windea.pls.core.util.CallbackLock
 import icu.windea.pls.integrations.lints.LintToolConstants
-import icu.windea.pls.integrations.settings.ChronicleIntegrationsSettingsManager
 import icu.windea.pls.lang.actions.ChronicleDataKeys
 import icu.windea.pls.lang.listeners.ParadoxGameSettingsListener
-import icu.windea.pls.lang.settings.ChronicleProfilesSettings
-import icu.windea.pls.lang.settings.ParadoxGameSettingsState
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
 

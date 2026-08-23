@@ -7,11 +7,11 @@ import com.intellij.openapi.roots.ProjectFileIndex
 import com.intellij.psi.search.SearchScope
 import com.intellij.psi.search.SearchScopeProvider
 import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.base.settings.ChronicleProfilesSettings
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.lang.injection.ChronicleInjectionManager
 import icu.windea.pls.lang.rootInfo
 import icu.windea.pls.lang.selectRootFile
-import icu.windea.pls.lang.settings.ChronicleProfilesSettings
 import icu.windea.pls.model.ParadoxRootInfo
 
 /**

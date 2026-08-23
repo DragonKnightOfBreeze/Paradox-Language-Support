@@ -1,6 +1,6 @@
 package icu.windea.pls.model.tools
 
-import icu.windea.pls.lang.settings.ParadoxModDependencySettingsState
+import icu.windea.pls.base.settings.ParadoxModDependencySettingsState
 import icu.windea.pls.model.ParadoxGameType
 
 /**

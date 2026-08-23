@@ -2,7 +2,7 @@ package icu.windea.pls.ai.model.requests
 
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
-import icu.windea.pls.ai.settings.ChronicleAiSettings
+import icu.windea.pls.base.settings.ChronicleAiSettings
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.manipulation.ParadoxLocalisationManipulationContext

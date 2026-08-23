@@ -6,10 +6,10 @@ import com.intellij.platform.ide.progress.runWithModalProgressBlocking
 import dev.langchain4j.model.anthropic.AnthropicChatModel
 import dev.langchain4j.model.anthropic.AnthropicStreamingChatModel
 import icu.windea.pls.ChronicleFacade
-import icu.windea.pls.ai.AiConstants
 import icu.windea.pls.ai.ChronicleAiBundle
+import icu.windea.pls.ai.model.AiConstants
 import icu.windea.pls.ai.providers.ChatModelProvider.*
-import icu.windea.pls.ai.settings.ChronicleAiSettings
+import icu.windea.pls.base.settings.ChronicleAiSettings
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.util.OptionProvider
 import kotlinx.coroutines.CoroutineScope

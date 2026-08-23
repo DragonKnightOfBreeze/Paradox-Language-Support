@@ -8,8 +8,8 @@ import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.listCellRenderer.*
 import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.base.settings.ParadoxModDependencySettingsState
 import icu.windea.pls.lang.actions.ChronicleDataKeys
-import icu.windea.pls.lang.settings.ParadoxModDependencySettingsState
 import icu.windea.pls.model.ParadoxGameType
 import java.awt.Component
 

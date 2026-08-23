@@ -1,15 +1,14 @@
-package icu.windea.pls.integrations.settings
+package icu.windea.pls.base.settings
 
 import com.intellij.openapi.ui.TextFieldWithBrowseButton
 import com.intellij.openapi.ui.ValidationInfo
 import com.intellij.ui.layout.ValidationInfoBuilder
-import icu.windea.pls.ai.settings.ChronicleAiSettingsConfigurable
+import icu.windea.pls.base.ChronicleBaseBundle
 import icu.windea.pls.base.analysis.ChronicleAnalysisManager
 import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.options.OptionsService
 import icu.windea.pls.core.util.CallbackLock
 import icu.windea.pls.core.util.tupleOf
-import icu.windea.pls.integrations.ChronicleIntegrationsBundle
 import icu.windea.pls.integrations.images.ImageToolProvider
 import icu.windea.pls.integrations.images.providers.MagickToolProvider
 import icu.windea.pls.integrations.lints.LintToolProvider
@@ -25,7 +24,7 @@ object ChronicleIntegrationsSettingsManager {
         if (path.isEmpty()) return null
         val tool = ImageToolProvider.EP_NAME.findExtension(MagickToolProvider::class.java) ?: return null
         if (tool.isValidExePath(path)) return null
-        return builder.warning(ChronicleIntegrationsBundle.message("settings.integrations.invalidPath"))
+        return builder.warning(ChronicleBaseBundle.message("settings.integrations.validation.invalidPath"))
     }
 
     // Translation Tools
@@ -52,14 +51,14 @@ object ChronicleIntegrationsSettingsManager {
         if (path.isEmpty()) return null
         val tool = LintToolProvider.EP_NAME.extensionList.findIsInstance<TigerLintToolProvider> { it.isAvailable(gameType) } ?: return null
         if (tool.isValidExePath(path)) return null
-        return builder.warning(ChronicleIntegrationsBundle.message("settings.integrations.lint.tigerPath.invalid"))
+        return builder.warning(ChronicleBaseBundle.message("settings.integrations.lint.tigerPath.invalid"))
     }
 
     @Suppress("UNUSED_PARAMETER")
     fun validateTigerConfPath(builder: ValidationInfoBuilder, button: TextFieldWithBrowseButton, gameType: ParadoxGameType): ValidationInfo? {
         val path = button.text.trim()
         if (path.endsWith(".conf", true)) return null
-        return builder.warning(ChronicleIntegrationsBundle.message("settings.integrations.lint.tigerConfPath.invalid"))
+        return builder.warning(ChronicleBaseBundle.message("settings.integrations.lint.tigerConfPath.invalid"))
     }
 
     fun onTigerSettingsChanged(callbackLock: CallbackLock) {

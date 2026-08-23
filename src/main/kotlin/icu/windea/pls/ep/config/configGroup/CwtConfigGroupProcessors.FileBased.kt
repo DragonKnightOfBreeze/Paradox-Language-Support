@@ -4,6 +4,7 @@ import com.intellij.openapi.application.readAction
 import com.intellij.openapi.progress.checkCanceled
 import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.base.context.ChronicleThreadContext
+import icu.windea.pls.base.settings.ChronicleConfigSettings
 import icu.windea.pls.config.config.CwtConfigService
 import icu.windea.pls.config.config.CwtFileConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
@@ -43,7 +44,6 @@ import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.CwtConfigGroupFileInfo
 import icu.windea.pls.config.configGroup.CwtConfigGroupFileSource
-import icu.windea.pls.config.settings.ChronicleConfigSettings
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.core.collections.process

@@ -14,6 +14,7 @@ import com.intellij.openapi.editor.EditorModificationUtil
 import com.intellij.openapi.editor.ScrollType
 import com.intellij.psi.PsiDocumentManager
 import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.base.settings.ChronicleSettings
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtMemberConfig
@@ -25,7 +26,6 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.codeInsight.TemplateEditingFinishedListener
 import icu.windea.pls.core.executeWriteCommand
 import icu.windea.pls.core.processChild
-import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.lang.ui.clause.ElementDescriptor
 import icu.windea.pls.lang.ui.clause.ElementDescriptors
 import icu.windea.pls.lang.ui.clause.ElementsContext

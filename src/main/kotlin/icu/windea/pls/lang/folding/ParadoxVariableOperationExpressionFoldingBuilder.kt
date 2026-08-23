@@ -5,7 +5,7 @@ import com.intellij.lang.folding.FoldingDescriptor
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.editor.FoldingGroup
 import com.intellij.psi.PsiElement
-import icu.windea.pls.lang.settings.ChronicleSettings
+import icu.windea.pls.base.settings.ChronicleSettings
 
 class ParadoxVariableOperationExpressionFoldingBuilder : ParadoxExpressionFoldingBuilder() {
     object Constants {

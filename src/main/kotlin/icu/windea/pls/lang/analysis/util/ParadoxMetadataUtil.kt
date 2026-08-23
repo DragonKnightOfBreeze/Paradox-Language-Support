@@ -42,7 +42,7 @@ object ParadoxMetadataUtil {
     /**
      * 从模组目录获取模组信息，从而统一获取各种需要进一步获取的信息。
      *
-     * 注意：需要调用这个方法以确保模组信息被解析，相关的配置项（[icu.windea.pls.lang.settings.ParadoxModDescriptorSettingsState]）被创建。
+     * 注意：需要调用这个方法以确保模组信息被解析，相关的配置项（[icu.windea.pls.base.settings.ParadoxModDescriptorSettingsState]）被创建。
      */
     fun getModInfoFromModDirectory(modDirectory: String?): ParadoxRootInfo.Mod? {
         if (modDirectory.isNullOrEmpty()) return null

@@ -10,10 +10,10 @@ import com.intellij.openapi.module.Module
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ProjectFileIndex
 import com.intellij.openapi.vfs.VirtualFile
+import icu.windea.pls.base.settings.ChronicleProfilesSettings
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.selectGameType
-import icu.windea.pls.lang.settings.ChronicleProfilesSettings
 
 class ParadoxFilesViewProjectNode(
     project: Project,

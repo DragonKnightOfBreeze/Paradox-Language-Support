@@ -3,6 +3,7 @@ package icu.windea.pls.lang.codeInsight.generation
 import com.intellij.application.options.CodeStyle
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiFile
+import icu.windea.pls.base.settings.ChronicleSettings
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.core.util.OnceMarker
@@ -12,12 +13,11 @@ import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContext.*
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.search.util.locale
-import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.lang.util.ParadoxFileManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.localisation.ParadoxLocalisationFileType
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
-import icu.windea.pls.lang.settings.ChronicleSettingsStrategies.LocalisationGeneration as LocalisationGenerationStrategy
+import icu.windea.pls.base.settings.ChronicleSettingsStrategies.LocalisationGeneration as LocalisationGenerationStrategy
 
 object ParadoxLocalisationGenerationService {
     val fileLocaleKey = createKey<CwtLocaleConfig>("chronicle.localiation.generation.file.locale")

@@ -1,8 +1,8 @@
 package icu.windea.pls.integrations.lints
 
+import icu.windea.pls.base.settings.ChronicleIntegrationsSettings
 import icu.windea.pls.integrations.ChronicleIntegrationsBundle
 import icu.windea.pls.integrations.lints.TigerLintResult.*
-import icu.windea.pls.integrations.settings.ChronicleIntegrationsSettings
 import icu.windea.pls.lang.inspections.lints.ChronicleTigerLintAnnotator
 import icu.windea.pls.lang.inspections.lints.ChronicleTigerLintInspection
 import kotlin.reflect.KMutableProperty0

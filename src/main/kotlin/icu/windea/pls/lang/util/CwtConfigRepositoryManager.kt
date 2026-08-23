@@ -16,7 +16,7 @@ import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.base.io.ChronicleGitService
 import icu.windea.pls.base.notification.ChronicleNotificationGroups
-import icu.windea.pls.config.settings.ChronicleConfigSettings
+import icu.windea.pls.base.settings.ChronicleConfigSettings
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.anyFast
 import icu.windea.pls.core.collections.filterFast

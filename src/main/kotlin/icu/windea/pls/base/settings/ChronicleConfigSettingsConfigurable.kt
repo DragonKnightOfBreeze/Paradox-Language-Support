@@ -1,4 +1,4 @@
-package icu.windea.pls.config.settings
+package icu.windea.pls.base.settings
 
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import com.intellij.openapi.options.BoundConfigurable
@@ -7,6 +7,7 @@ import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.ui.setEmptyState
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.base.ChronicleBaseBundle
 import icu.windea.pls.base.help.ChronicleHelpTopics
 import icu.windea.pls.core.util.CallbackLock
 import icu.windea.pls.core.util.toMutableEntryList
@@ -17,7 +18,7 @@ import icu.windea.pls.model.constants.ChronicleUrls
 import java.awt.event.ActionEvent
 
 @Suppress("UnstableApiUsage")
-class ChronicleConfigSettingsConfigurable : BoundConfigurable(ChronicleBundle.message("settings.config")), SearchableConfigurable {
+class ChronicleConfigSettingsConfigurable : BoundConfigurable(ChronicleBaseBundle.message("settings.config")), SearchableConfigurable {
     private val callbackLock = CallbackLock()
 
     override fun getId() = "chronicle.config"
@@ -27,9 +28,9 @@ class ChronicleConfigSettingsConfigurable : BoundConfigurable(ChronicleBundle.me
     override fun createPanel(): DialogPanel {
         callbackLock.reset()
         return panel {
-            group(ChronicleBundle.message("settings.config.configGroups")) { configureGroupForConfigGroups() }
+            group(ChronicleBaseBundle.message("settings.config.configGroups")) { configureGroupForConfigGroups() }
             // features
-            collapsibleGroup(ChronicleBundle.message("settings.config.features")) { configureGroupForFeatures() }
+            collapsibleGroup(ChronicleBaseBundle.message("settings.config.features")) { configureGroupForFeatures() }
         }
     }
 
@@ -38,36 +39,36 @@ class ChronicleConfigSettingsConfigurable : BoundConfigurable(ChronicleBundle.me
         val settings = ChronicleConfigSettings.getInstance().state
 
         row {
-            comment(ChronicleBundle.message("settings.config.configGroups.comment", MAX_LINE_LENGTH_WORD_WRAP))
+            comment(ChronicleBaseBundle.message("settings.config.configGroups.comment", MAX_LINE_LENGTH_WORD_WRAP))
         }
         // enableBuiltInConfigGroups
         row {
-            checkBox(ChronicleBundle.message("settings.config.enableBuiltInConfigGroups"))
-                .comment(ChronicleBundle.message("settings.config.enableBuiltInConfigGroups.comment", MAX_LINE_LENGTH_WORD_WRAP))
+            checkBox(ChronicleBaseBundle.message("settings.config.enableBuiltInConfigGroups"))
+                .comment(ChronicleBaseBundle.message("settings.config.enableBuiltInConfigGroups.comment", MAX_LINE_LENGTH_WORD_WRAP))
                 .bindSelected(settings::enableBuiltInConfigGroups)
                 .onApply { ChronicleConfigSettingsManager.onConfigDirectoriesChanged(callbackLock) }
             browserLink(ChronicleBundle.message("link.documentation"), ChronicleUrls.refDoc("config.html#config-group-builtin"))
         }
         // enableRemoteConfigGroups
         row {
-            checkBox(ChronicleBundle.message("settings.config.enableRemoteConfigGroups"))
-                .comment(ChronicleBundle.message("settings.config.enableRemoteConfigGroups.comment", MAX_LINE_LENGTH_WORD_WRAP))
+            checkBox(ChronicleBaseBundle.message("settings.config.enableRemoteConfigGroups"))
+                .comment(ChronicleBaseBundle.message("settings.config.enableRemoteConfigGroups.comment", MAX_LINE_LENGTH_WORD_WRAP))
                 .bindSelected(settings::enableRemoteConfigGroups)
                 .onApply { ChronicleConfigSettingsManager.onConfigDirectoriesChanged(callbackLock) }
             browserLink(ChronicleBundle.message("link.documentation"), ChronicleUrls.refDoc("config.html#config-group-remote"))
         }
         // enableLocalConfigGroups
         row {
-            checkBox(ChronicleBundle.message("settings.config.enableLocalConfigGroups"))
-                .comment(ChronicleBundle.message("settings.config.enableLocalConfigGroups.comment"), MAX_LINE_LENGTH_WORD_WRAP)
+            checkBox(ChronicleBaseBundle.message("settings.config.enableLocalConfigGroups"))
+                .comment(ChronicleBaseBundle.message("settings.config.enableLocalConfigGroups.comment"), MAX_LINE_LENGTH_WORD_WRAP)
                 .bindSelected(settings::enableLocalConfigGroups)
                 .onApply { ChronicleConfigSettingsManager.onConfigDirectoriesChanged(callbackLock) }
             browserLink(ChronicleBundle.message("link.documentation"), ChronicleUrls.refDoc("config.html#config-group-local"))
         }
         // enableProjectLocalConfigGroups
         row {
-            checkBox(ChronicleBundle.message("settings.config.enableProjectLocalConfigGroups"))
-                .comment(ChronicleBundle.message("settings.config.enableProjectLocalConfigGroups.comment"), MAX_LINE_LENGTH_WORD_WRAP)
+            checkBox(ChronicleBaseBundle.message("settings.config.enableProjectLocalConfigGroups"))
+                .comment(ChronicleBaseBundle.message("settings.config.enableProjectLocalConfigGroups.comment"), MAX_LINE_LENGTH_WORD_WRAP)
                 .bindSelected(settings::enableProjectLocalConfigGroups)
                 .onApply { ChronicleConfigSettingsManager.onConfigDirectoriesChanged(callbackLock) }
             browserLink(ChronicleBundle.message("link.documentation"), ChronicleUrls.refDoc("config.html#config-group-project-local"))
@@ -75,10 +76,10 @@ class ChronicleConfigSettingsConfigurable : BoundConfigurable(ChronicleBundle.me
 
         // remoteConfigDirectory
         row {
-            label(ChronicleBundle.message("settings.config.remoteConfigDirectory")).widthGroup(groupName)
-                .comment(ChronicleBundle.message("settings.config.remoteConfigDirectory.comment"), MAX_LINE_LENGTH_WORD_WRAP)
+            label(ChronicleBaseBundle.message("settings.config.remoteConfigDirectory")).widthGroup(groupName)
+                .comment(ChronicleBaseBundle.message("settings.config.remoteConfigDirectory.comment"), MAX_LINE_LENGTH_WORD_WRAP)
             val descriptor = FileChooserDescriptorFactory.singleDir()
-                .withTitle(ChronicleBundle.message("settings.config.remoteConfigDirectory.title"))
+                .withTitle(ChronicleBaseBundle.message("settings.config.remoteConfigDirectory.title"))
             textFieldWithBrowseButton(descriptor, null)
                 .bindText(settings::remoteConfigDirectory.toNonNullableProperty(""))
                 .applyToComponent { setEmptyState(ChronicleBundle.message("not.configured")) }
@@ -90,8 +91,8 @@ class ChronicleConfigSettingsConfigurable : BoundConfigurable(ChronicleBundle.me
         }
         // configRepositoryUrls
         row {
-            label(ChronicleBundle.message("settings.config.configRepositoryUrls")).widthGroup(groupName)
-                .comment(ChronicleBundle.message("settings.config.configRepositoryUrls.comment"), MAX_LINE_LENGTH_WORD_WRAP)
+            label(ChronicleBaseBundle.message("settings.config.configRepositoryUrls")).widthGroup(groupName)
+                .comment(ChronicleBaseBundle.message("settings.config.configRepositoryUrls.comment"), MAX_LINE_LENGTH_WORD_WRAP)
             val configRepositoryUrls = settings.configRepositoryUrls
             ParadoxGameType.getAllSpecific().forEach { configRepositoryUrls.putIfAbsent(it.id, CwtConfigRepositoryManager.getDefaultUrl(it)) }
             val defaultList = configRepositoryUrls.toMutableEntryList()
@@ -113,10 +114,10 @@ class ChronicleConfigSettingsConfigurable : BoundConfigurable(ChronicleBundle.me
         }
         // localConfigDirectory
         row {
-            label(ChronicleBundle.message("settings.config.localConfigDirectory")).widthGroup(groupName)
-                .comment(ChronicleBundle.message("settings.config.localConfigDirectory.comment"), MAX_LINE_LENGTH_WORD_WRAP)
+            label(ChronicleBaseBundle.message("settings.config.localConfigDirectory")).widthGroup(groupName)
+                .comment(ChronicleBaseBundle.message("settings.config.localConfigDirectory.comment"), MAX_LINE_LENGTH_WORD_WRAP)
             val descriptor = FileChooserDescriptorFactory.singleDir()
-                .withTitle(ChronicleBundle.message("settings.config.localConfigDirectory.title"))
+                .withTitle(ChronicleBaseBundle.message("settings.config.localConfigDirectory.title"))
             textFieldWithBrowseButton(descriptor, null)
                 .bindText(settings::localConfigDirectory.toNonNullableProperty(""))
                 .applyToComponent { setEmptyState(ChronicleBundle.message("not.configured")) }
@@ -125,8 +126,8 @@ class ChronicleConfigSettingsConfigurable : BoundConfigurable(ChronicleBundle.me
         }
         // projectLocalConfigDirectoryName
         row {
-            label(ChronicleBundle.message("settings.config.projectLocalConfigDirectoryName")).widthGroup(groupName)
-                .comment(ChronicleBundle.message("settings.config.projectLocalConfigDirectoryName.comment"), MAX_LINE_LENGTH_WORD_WRAP)
+            label(ChronicleBaseBundle.message("settings.config.projectLocalConfigDirectoryName")).widthGroup(groupName)
+                .comment(ChronicleBaseBundle.message("settings.config.projectLocalConfigDirectoryName.comment"), MAX_LINE_LENGTH_WORD_WRAP)
             textField()
                 .bindText(settings::projectLocalConfigDirectoryName.toNonNullableProperty(""))
                 .applyToComponent { setEmptyState(".config") }
@@ -134,7 +135,7 @@ class ChronicleConfigSettingsConfigurable : BoundConfigurable(ChronicleBundle.me
         }
         // overrideBuiltIn
         row {
-            checkBox(ChronicleBundle.message("settings.config.overrideBuiltIn"))
+            checkBox(ChronicleBaseBundle.message("settings.config.overrideBuiltIn"))
                 .bindSelected(settings::overrideBuiltIn)
                 .onApply { ChronicleConfigSettingsManager.onRemoteConfigDirectoriesChanged(callbackLock) }
         }
@@ -146,9 +147,9 @@ class ChronicleConfigSettingsConfigurable : BoundConfigurable(ChronicleBundle.me
 
         // checkComparisonOperators
         row {
-            checkBox(ChronicleBundle.message("settings.config.features.checkComparisonOperators"))
+            checkBox(ChronicleBaseBundle.message("settings.config.features.checkComparisonOperators"))
                 .bindSelected(settings::checkComparisonOperators)
-            contextHelp(ChronicleBundle.message("settings.config.features.checkComparisonOperators.tip"))
+            contextHelp(ChronicleBaseBundle.message("settings.config.features.checkComparisonOperators.tip"))
         }
     }
 }

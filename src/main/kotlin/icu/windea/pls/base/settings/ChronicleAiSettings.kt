@@ -1,4 +1,4 @@
-package icu.windea.pls.ai.settings
+package icu.windea.pls.base.settings
 
 import com.intellij.credentialStore.CredentialAttributes
 import com.intellij.openapi.components.BaseState
@@ -9,7 +9,6 @@ import com.intellij.openapi.components.Storage
 import com.intellij.openapi.components.service
 import com.intellij.util.xmlb.annotations.Property
 import com.intellij.util.xmlb.annotations.Tag
-import icu.windea.pls.ai.AiConstants
 import icu.windea.pls.ai.providers.ChatModelProviderType
 import icu.windea.pls.core.getValue
 import icu.windea.pls.core.setValue
@@ -57,8 +56,8 @@ class ChronicleAiSettings : SimplePersistentStateComponent<ChronicleAiSettings.S
      */
     @Tag("features")
     class FeaturesState : BaseState() {
-        var localisationChunkSize by property(AiConstants.Settings.defaultLocalisationChunkSize)
-        var localisationMemorySize by property(AiConstants.Settings.defaultLocalisationMemorySize)
+        var localisationChunkSize by property(100)
+        var localisationMemorySize by property(10000)
     }
 
     /**

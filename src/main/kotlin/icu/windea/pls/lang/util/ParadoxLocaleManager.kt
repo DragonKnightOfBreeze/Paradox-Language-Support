@@ -3,6 +3,7 @@ package icu.windea.pls.lang.util
 import com.intellij.DynamicBundle
 import com.intellij.psi.PsiElement
 import icu.windea.pls.ChronicleFacade
+import icu.windea.pls.base.settings.ChronicleSettings
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.collections.pinned
@@ -10,7 +11,6 @@ import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
-import icu.windea.pls.lang.settings.ChronicleSettings
 
 object ParadoxLocaleManager {
     object Keys : KeyRegistry() {

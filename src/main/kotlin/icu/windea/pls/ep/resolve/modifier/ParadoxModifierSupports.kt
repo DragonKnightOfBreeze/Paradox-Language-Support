@@ -8,6 +8,7 @@ import com.intellij.util.SmartList
 import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.base.ChronicleModificationTrackers
 import icu.windea.pls.base.annotations.ForGameType
+import icu.windea.pls.base.settings.ChronicleSettings
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.annotations.CaseInsensitive
@@ -20,7 +21,6 @@ import icu.windea.pls.lang.codeInsight.completion.addToResult
 import icu.windea.pls.lang.psi.light.ParadoxModifierLightElement
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxTemplateExpression
 import icu.windea.pls.lang.resolve.util.ParadoxModifierUtil
-import icu.windea.pls.lang.settings.ChronicleSettings
 import icu.windea.pls.lang.util.ParadoxEconomicCategoryManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
