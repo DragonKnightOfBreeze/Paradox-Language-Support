@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.diff
+package icu.windea.pls.core.diff
 
 import com.intellij.diff.DiffDialogHints
 import com.intellij.diff.chains.DiffRequestChain

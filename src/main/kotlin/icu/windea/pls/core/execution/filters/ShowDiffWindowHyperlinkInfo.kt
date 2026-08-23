@@ -7,7 +7,7 @@ import com.intellij.execution.filters.HyperlinkInfo
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
-import icu.windea.pls.lang.diff.DiffWindowWrapper
+import icu.windea.pls.core.diff.DiffWindowWrapper
 
 /**
  * 控制台文本中的超链接信息，点击打开 DIFF 窗口。
