@@ -5,10 +5,10 @@ import com.intellij.openapi.diagnostic.thisLogger
 import icu.windea.pls.base.annotations.ForGameType
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
-import icu.windea.pls.config.config.declarationConfigContext
 import icu.windea.pls.config.config.parents
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.manipulation.CwtConfigScopeAwareManipulationService
+import icu.windea.pls.lang.resolve.declarationConfigContext
 import icu.windea.pls.lang.resolve.onActionConfig
 import icu.windea.pls.lang.util.ParadoxEventManager
 import icu.windea.pls.model.ParadoxGameType

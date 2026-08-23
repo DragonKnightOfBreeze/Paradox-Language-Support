@@ -12,7 +12,6 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtRowType
 import icu.windea.pls.config.config.containingDirectConfig
 import icu.windea.pls.config.config.expandConfigExpression
-import icu.windea.pls.config.config.overriddenProvider
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.castOrNull
@@ -47,6 +46,7 @@ import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.members
 import icu.windea.pls.lang.resolve.CwtConfigContext
+import icu.windea.pls.lang.resolve.overriddenProvider
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.tagType
 import icu.windea.pls.lang.util.ParadoxConfigManager

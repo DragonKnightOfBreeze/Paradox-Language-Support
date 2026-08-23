@@ -2,7 +2,6 @@ package icu.windea.pls.ep.resolve.config
 
 import com.intellij.psi.PsiElement
 import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.config.config.declarationConfigContext
 import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
 import icu.windea.pls.config.config.extended.CwtExtendedGameRuleConfig
 import icu.windea.pls.config.config.extended.CwtExtendedOnActionConfig
@@ -12,6 +11,7 @@ import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.lang.match.findByPattern
 import icu.windea.pls.lang.resolve.CwtDeclarationConfigContext
+import icu.windea.pls.lang.resolve.declarationConfigContext
 import icu.windea.pls.lang.resolve.gameRuleConfig
 import icu.windea.pls.lang.resolve.onActionConfig
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes

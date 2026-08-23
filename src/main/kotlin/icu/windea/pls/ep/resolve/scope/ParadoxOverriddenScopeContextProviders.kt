@@ -7,7 +7,6 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.aliasConfig
-import icu.windea.pls.config.config.originalConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.CwtDataExpressionRole
 import icu.windea.pls.core.annotations.Optimized
@@ -18,6 +17,7 @@ import icu.windea.pls.core.equalsFast
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.psi.stringValue
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
+import icu.windea.pls.lang.resolve.originalConfig
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxScopeManager

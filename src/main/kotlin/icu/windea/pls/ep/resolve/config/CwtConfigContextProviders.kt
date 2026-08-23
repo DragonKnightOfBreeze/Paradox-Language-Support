@@ -2,7 +2,6 @@ package icu.windea.pls.ep.resolve.config
 
 import com.intellij.psi.PsiFile
 import icu.windea.pls.config.config.CwtMemberConfig
-import icu.windea.pls.config.config.declarationConfigCacheKey
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.manipulation.CwtConfigManipulationService
 import icu.windea.pls.core.collections.dropFast
@@ -22,6 +21,7 @@ import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.toHashString
 import icu.windea.pls.lang.resolve.CwtConfigContext
 import icu.windea.pls.lang.resolve.ParadoxConfigService
+import icu.windea.pls.lang.resolve.declarationConfigCacheKey
 import icu.windea.pls.lang.resolve.defineVariableInfo
 import icu.windea.pls.lang.resolve.definitionInfo
 import icu.windea.pls.lang.resolve.definitionInjectionInfo
