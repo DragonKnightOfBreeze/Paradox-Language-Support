@@ -38,7 +38,6 @@ import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.util.values.singletonList
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.core.withRecursionGuard
-import icu.windea.pls.lang.resolve.CwtDeclarationConfigContext
 import icu.windea.pls.model.expressions.ParadoxDefinitionSubtypeExpression
 import icu.windea.pls.model.type.CwtExpressionType
 
@@ -63,13 +62,6 @@ object CwtConfigManipulationService {
         return doDeepCopyConfigs(parentConfig, containerConfig)
     }
 
-    /**
-     * 在声明规则上下文 [context] 中中，递归拷贝 [parentConfig] 中的所有子节点，并加入作为 [containerConfig] 的子规则。
-     */
-    fun deepCopyConfigsInDeclaration(parentConfig: CwtMemberConfig<*>, containerConfig: CwtMemberConfig<*> = parentConfig, context: CwtDeclarationConfigContext): List<CwtMemberConfig<*>>? {
-        return doDeepCopyConfigsInDeclaration(parentConfig, containerConfig, context)
-    }
-
     private fun doDeepCopyConfigs(parentConfig: CwtMemberConfig<*>, containerConfig: CwtMemberConfig<*>): List<CwtMemberConfig<*>>? {
         val configs = parentConfig.configs?.optimized() ?: return null // 这里需要兼容并同样处理子规则列表为空的情况
         if (configs.isEmpty()) return configs
@@ -87,26 +79,37 @@ object CwtConfigManipulationService {
         return result // 这里需要直接返回可变列表
     }
 
-    private fun doDeepCopyConfigsInDeclaration(parentConfig: CwtMemberConfig<*>, containerConfig: CwtMemberConfig<*>, context: CwtDeclarationConfigContext): List<CwtMemberConfig<*>>? {
+    /**
+     * 递归拷贝 [parentConfig] 中的所有子节点，并加入作为 [containerConfig] 的子规则。
+     *
+     * 在这之前，首先会展开 [parentConfig] 的子规则中的所有形如 `subtype[{expression}] = {...}` 的属性规则中的子规则。
+     *
+     * @param subtypes 作为候选项的一组子类型。如果为 `null`（不是空列表），则会直接跳过展开逻辑。
+     */
+    fun deepCopyConfigsBySubtypeExpression(parentConfig: CwtMemberConfig<*>, containerConfig: CwtMemberConfig<*> = parentConfig, subtypes: List<String>?): List<CwtMemberConfig<*>>? {
+        return doDeepCopyConfigsInDeclaration(parentConfig, containerConfig, subtypes)
+    }
+
+    private fun doDeepCopyConfigsInDeclaration(parentConfig: CwtMemberConfig<*>, containerConfig: CwtMemberConfig<*>, subtypes: List<String>?): List<CwtMemberConfig<*>>? {
         val configs = parentConfig.configs?.optimized() ?: return null // 这里需要兼容并同样处理子规则列表为空的情况
         if (configs.isEmpty()) return configs
         val result = createListForDeepCopy(/* expectedSize = configs.size */)
         configs.forEachFast f@{ config ->
             run r@{
                 // 如果匹配子类型表达式，打平其中的子规则并加入结果，否则直接跳过
-                val subtypes = context.definitionSubtypes ?: return@r
+                if (subtypes == null) return@r
                 val subtypeExpression = extractSubtypeExpression(config) ?: return@r
                 if (config.configs.isNullOrEmpty()) return@f // skip
                 val matched = ParadoxDefinitionSubtypeExpression.resolve(subtypeExpression).matches(subtypes)
                 if (!matched) return@f // skip
-                result += deepCopyConfigsInDeclaration(config, containerConfig, context).orEmpty()
+                result += deepCopyConfigsBySubtypeExpression(config, containerConfig, subtypes).orEmpty()
                 return@f
             }
 
             val childConfigs = config.configs
             val childResult = if (childConfigs != null) createListForDeepCopy(/* expectedSize = childConfigs.size */) else null
             val delegatedConfig = config.delegated(childResult).also { it.withParentConfig(containerConfig) }
-            if (childResult != null) childResult += deepCopyConfigsInDeclaration(config, delegatedConfig, context).orEmpty()
+            if (childResult != null) childResult += deepCopyConfigsBySubtypeExpression(config, delegatedConfig, subtypes).orEmpty()
             delegatedConfig.postOptimize() // 进行后续优化
             result += delegatedConfig
         }

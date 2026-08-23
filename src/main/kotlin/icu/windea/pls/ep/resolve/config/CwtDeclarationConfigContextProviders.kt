@@ -49,7 +49,7 @@ class CwtBaseDeclarationConfigContextProvider : CwtDeclarationConfigContextProvi
         val configs = if (childConfigs != null) CwtConfigManipulationService.createListForDeepCopy(expectedSize = childConfigs.size) else null
         val finalRootConfig = rootConfig.delegated(configs)
         finalRootConfig.declarationConfigContext = context
-        if (configs != null) configs += CwtConfigManipulationService.deepCopyConfigsInDeclaration(rootConfig, finalRootConfig, context).orEmpty()
+        if (configs != null) configs += CwtConfigManipulationService.deepCopyConfigsBySubtypeExpression(rootConfig, finalRootConfig, context.definitionSubtypes).orEmpty()
         finalRootConfig.postOptimize() // 进行后续优化
         return finalRootConfig
     }
@@ -86,7 +86,7 @@ class CwtGameRuleDeclarationConfigContextProvider : CwtDeclarationConfigContextP
         val configs = if (childConfigs != null) CwtConfigManipulationService.createListForDeepCopy(expectedSize = childConfigs.size) else null
         val finalRootConfig = rootConfig.delegated(configs)
         finalRootConfig.declarationConfigContext = context
-        if (configs != null) configs += CwtConfigManipulationService.deepCopyConfigsInDeclaration(rootConfig, finalRootConfig, context).orEmpty()
+        if (configs != null) configs += CwtConfigManipulationService.deepCopyConfigsBySubtypeExpression(rootConfig, finalRootConfig, context.definitionSubtypes).orEmpty()
         finalRootConfig.postOptimize() // 进行后续优化
         return finalRootConfig
     }
@@ -123,7 +123,7 @@ class CwtOnActionDeclarationConfigContextProvider : CwtDeclarationConfigContextP
         val configs = if (childConfigs != null) CwtConfigManipulationService.createListForDeepCopy(expectedSize = childConfigs.size) else null
         val finalRootConfig = rootConfig.delegated(configs)
         finalRootConfig.declarationConfigContext = context
-        if (configs != null) configs += CwtConfigManipulationService.deepCopyConfigsInDeclaration(rootConfig, finalRootConfig, context).orEmpty()
+        if (configs != null) configs += CwtConfigManipulationService.deepCopyConfigsBySubtypeExpression(rootConfig, finalRootConfig, context.definitionSubtypes).orEmpty()
         finalRootConfig.postOptimize() // 进行后续优化
         return finalRootConfig
     }

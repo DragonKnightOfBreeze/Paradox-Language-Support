@@ -16,8 +16,6 @@ import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.cwt.psi.CwtProperty
-import icu.windea.pls.ep.resolve.config.CwtBaseDeclarationConfigContextProvider
-import icu.windea.pls.lang.resolve.CwtDeclarationConfigContext
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.type.CwtExpressionType
 import icu.windea.pls.test.ChronicleTestScope
@@ -79,10 +77,9 @@ class CwtConfigManipulationServiceTest : BasePlatformTestCase(), ChronicleTestSc
 
         val p = root.findChild<CwtProperty> { it.name == "decl" }!!
         val container = CwtPropertyConfig.resolve(p, file, configGroup)!!
+
         // only subtype[foo] should be flattened; subtype[bar] should be skipped
-        val context = CwtDeclarationConfigContext.create(configGroup, "test", listOf("foo"), CwtBaseDeclarationConfigContextProvider()
-        )
-        val copied = CwtConfigManipulationService.deepCopyConfigsInDeclaration(container, containerConfig = container, context = context)
+        val copied = CwtConfigManipulationService.deepCopyConfigsBySubtypeExpression(container, containerConfig = container, listOf("foo"))
         assertNotNull(copied)
         val list = copied!!
         // expect: a (prop), b (prop), v1 (value). No subtype[...] nodes and no c.
@@ -193,8 +190,8 @@ class CwtConfigManipulationServiceTest : BasePlatformTestCase(), ChronicleTestSc
         val strProp = root.findChild<CwtProperty> { it.name == "str_prop" }!! // non-block -> configs == null
         val container = CwtPropertyConfig.resolve(strProp, file, configGroup)!!
         val parentBefore = container.parentConfig
-        val context = CwtDeclarationConfigContext.create(configGroup, "test", null, CwtBaseDeclarationConfigContextProvider())
-        val copied = CwtConfigManipulationService.deepCopyConfigsInDeclaration(container, containerConfig = container, context = context)
+
+        val copied = CwtConfigManipulationService.deepCopyConfigsBySubtypeExpression(container, container, null)
         assertNull(copied)
         assertSame(parentBefore, container.parentConfig)
     }
@@ -210,8 +207,8 @@ class CwtConfigManipulationServiceTest : BasePlatformTestCase(), ChronicleTestSc
         val emptyProp = root.findChild<CwtProperty> { it.name == "empty_prop" }!! // block {} -> configs.isEmpty()
         val container = CwtPropertyConfig.resolve(emptyProp, file, configGroup)!!
         val parentBefore = container.parentConfig
-        val context = CwtDeclarationConfigContext.create(configGroup, "test", null, CwtBaseDeclarationConfigContextProvider())
-        val copied = CwtConfigManipulationService.deepCopyConfigsInDeclaration(container, containerConfig = container, context = context)
+
+        val copied = CwtConfigManipulationService.deepCopyConfigsBySubtypeExpression(container, container, null)
         assertNotNull(copied)
         assertTrue(copied!!.isEmpty())
         assertSame(parentBefore, container.parentConfig)
@@ -253,9 +250,8 @@ class CwtConfigManipulationServiceTest : BasePlatformTestCase(), ChronicleTestSc
         val parentBefore = container.parentConfig
         val blockProp = root.findChild<CwtProperty> { it.name == "block_prop" }!!
         val otherParent = CwtPropertyConfig.resolve(blockProp, file, configGroup)!!
-        val context = CwtDeclarationConfigContext.create(configGroup, "test", null, CwtBaseDeclarationConfigContextProvider())
 
-        val copied = CwtConfigManipulationService.deepCopyConfigsInDeclaration(container, containerConfig = otherParent, context = context)
+        val copied = CwtConfigManipulationService.deepCopyConfigsBySubtypeExpression(container, otherParent, null)
         assertNull(copied)
         assertSame(parentBefore, container.parentConfig)
         val otherChildren = otherParent.configs?.size
