@@ -4,7 +4,6 @@ import com.intellij.psi.ElementManipulators
 import com.intellij.psi.LiteralTextEscaper
 import icu.windea.pls.core.psi.PsiQuoteAwareElement
 import icu.windea.pls.lang.psi.ParadoxLanguageInjectionHost
-import icu.windea.pls.lang.psi.ParadoxScriptExpressionLiteralTextEscaper
 
 /**
  * @see ParadoxScriptPropertyKey

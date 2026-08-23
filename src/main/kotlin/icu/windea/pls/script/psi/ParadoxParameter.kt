@@ -5,7 +5,6 @@ import com.intellij.psi.LiteralTextEscaper
 import com.intellij.psi.NavigatablePsiElement
 import com.intellij.psi.PsiElement
 import icu.windea.pls.lang.psi.ParadoxLanguageInjectionHost
-import icu.windea.pls.lang.psi.ParadoxScriptExpressionLiteralTextEscaper
 
 /**
  * 参数。
