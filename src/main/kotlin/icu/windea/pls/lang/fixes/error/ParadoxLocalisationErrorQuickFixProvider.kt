@@ -1,4 +1,4 @@
-package icu.windea.pls.localisation.codeInsight
+package icu.windea.pls.lang.fixes.error
 
 import com.intellij.codeInsight.daemon.impl.HighlightInfo
 import com.intellij.codeInsight.daemon.impl.analysis.ErrorQuickFixProvider

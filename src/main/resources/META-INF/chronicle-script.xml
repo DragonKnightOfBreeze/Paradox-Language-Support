@@ -17,7 +17,6 @@
     <elementDescriptionProvider implementation="icu.windea.pls.script.findUsages.ParadoxScriptElementDescriptionProvider"/>
     <lang.foldingBuilder language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.folding.ParadoxScriptFoldingBuilder"/>
     <lang.implementationTextSelectioner language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.ParadoxScriptImplementationTextSelectioner"/>
-    <errorQuickFixProvider implementation="icu.windea.pls.script.codeInsight.ParadoxScriptErrorQuickFixProvider"/>
     <lang.braceMatcher language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.highlighting.ParadoxScriptBraceMatcher"/>
     <lang.quoteHandler language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.editorActions.ParadoxScriptQuoteHandler"/>
     <lang.smartEnterProcessor language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.editorActions.ParadoxScriptSmartEnterProcessor"/>

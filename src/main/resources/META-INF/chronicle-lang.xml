@@ -111,11 +111,17 @@
     <!-- icu.windea.pls.lang.codeInsight.completion.localisation.ParadoxLocalisationTextIconCompletionProvider -->
     <!-- icu.windea.pls.lang.codeInsight.completion.localisation.ParadoxLocalisationTextFormatCompletionProvider -->
 
+    <platform.backend.documentation.psiTargetProvider implementation="icu.windea.pls.lang.codeInsight.documentation.CwtPsiDocumentationTargetProvider"/>
+    <platform.backend.documentation.psiTargetProvider implementation="icu.windea.pls.lang.codeInsight.documentation.ParadoxPsiDocumentationTargetProvider"/>
+    <platform.backend.documentation.inlineDocumentationProvider implementation="icu.windea.pls.lang.codeInsight.documentation.CwtInlineDocumentationProvider"/>
+    <platform.backend.documentation.linkHandler implementation="icu.windea.pls.lang.codeInsight.documentation.CwtDocumentationLinkHandler"/>
+    <platform.backend.documentation.linkHandler implementation="icu.windea.pls.lang.codeInsight.documentation.ParadoxDocumentationLinkHandler"/>
+
+    <typedHandler implementation="icu.windea.pls.lang.codeInsight.editorActions.ParadoxTypedHandler"/>
+
     <heavyBracesHighlighter implementation="icu.windea.pls.lang.codeInsight.highlighting.ParadoxHeavyBraceHighlighter"/>
     <readWriteAccessDetector implementation="icu.windea.pls.lang.codeInsight.highlighting.CwtConfigReadWriteAccessDetector"/>
     <readWriteAccessDetector implementation="icu.windea.pls.lang.codeInsight.highlighting.ParadoxReadWriteAccessDetector"/>
-
-    <typedHandler implementation="icu.windea.pls.lang.codeInsight.editorActions.ParadoxTypedHandler"/>
 
     <codeInsight.declarativeInlayProvider
         language="PARADOX_SCRIPT"
@@ -302,11 +308,8 @@
     <usageTypeProvider implementation="icu.windea.pls.lang.findUsages.ParadoxUsageTypeProvider"/>
     <findUsagesHandlerFactory implementation="icu.windea.pls.lang.findUsages.ParadoxFindUsagesHandlerFactory"/>
 
-    <platform.backend.documentation.psiTargetProvider implementation="icu.windea.pls.lang.codeInsight.documentation.CwtPsiDocumentationTargetProvider"/>
-    <platform.backend.documentation.psiTargetProvider implementation="icu.windea.pls.lang.codeInsight.documentation.ParadoxPsiDocumentationTargetProvider"/>
-    <platform.backend.documentation.inlineDocumentationProvider implementation="icu.windea.pls.lang.codeInsight.documentation.CwtInlineDocumentationProvider"/>
-    <platform.backend.documentation.linkHandler implementation="icu.windea.pls.lang.codeInsight.documentation.CwtDocumentationLinkHandler"/>
-    <platform.backend.documentation.linkHandler implementation="icu.windea.pls.lang.codeInsight.documentation.ParadoxDocumentationLinkHandler"/>
+    <errorQuickFixProvider implementation="icu.windea.pls.lang.fixes.error.ParadoxScriptErrorQuickFixProvider"/>
+    <errorQuickFixProvider implementation="icu.windea.pls.lang.fixes.error.ParadoxLocalisationErrorQuickFixProvider"/>
 
     <extendWordSelectionHandler implementation="icu.windea.pls.lang.editor.ParadoxScriptSemanticWordSelectionHandler"/>
     <extendWordSelectionHandler implementation="icu.windea.pls.lang.editor.ParadoxLocalisationSemanticWordSelectionHandler"/>

@@ -15,7 +15,6 @@
     <lang.foldingBuilder language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.folding.ParadoxLocalisationFoldingBuilder"/>
     <declarationRangeHandler key="icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyList" implementationClass="icu.windea.pls.localisation.codeInsight.ParadoxLocalisationDeclarationRangeHandler"/>
     <lang.implementationTextSelectioner language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.codeInsight.ParadoxLocalisationImplementationTextSelectioner"/>
-    <errorQuickFixProvider implementation="icu.windea.pls.localisation.codeInsight.ParadoxLocalisationErrorQuickFixProvider"/>
     <lang.braceMatcher language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.codeInsight.highlighting.ParadoxLocalisationBraceMatcher"/>
     <lang.quoteHandler language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.codeInsight.editorActions.ParadoxLocalisationQuoteHandler"/>
     <statementUpDownMover implementation="icu.windea.pls.localisation.codeInsight.editorActions.ParadoxLocalisationMover"/>
