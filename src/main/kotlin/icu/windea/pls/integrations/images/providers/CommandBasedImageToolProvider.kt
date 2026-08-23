@@ -1,7 +1,7 @@
 package icu.windea.pls.integrations.images.providers
 
 import icu.windea.pls.base.io.ChronicleDataPathService
-import icu.windea.pls.images.ImageInputStreamAdapter
+import icu.windea.pls.core.io.ImageInputStreamAdapter
 import icu.windea.pls.integrations.images.ImageToolProvider
 import org.apache.commons.io.IOUtils
 import java.awt.image.BufferedImage

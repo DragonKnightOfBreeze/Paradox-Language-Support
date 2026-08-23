@@ -1,4 +1,4 @@
-package icu.windea.pls.images
+package icu.windea.pls.core.io
 
 import java.io.IOException
 import java.io.InputStream
