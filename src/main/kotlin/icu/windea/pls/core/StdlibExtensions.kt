@@ -114,12 +114,13 @@ inline fun <T : CharSequence> T.orNull() = takeIf { it.isNotEmpty() }
 
 /** 判断是否以指定前缀/后缀包围（基于单个字符）。 */
 fun CharSequence.surroundsWith(prefix: Char, suffix: Char, ignoreCase: Boolean = false): Boolean {
-    return startsWith(prefix, ignoreCase) && endsWith(suffix, ignoreCase)
+    return length >= 2 && startsWith(prefix, ignoreCase) && endsWith(suffix, ignoreCase)
 }
 
 /** 判断是否以指定前缀/后缀包围（先匹配后缀以略微优化）。 */
 fun CharSequence.surroundsWith(prefix: CharSequence, suffix: CharSequence, ignoreCase: Boolean = false): Boolean {
-    return endsWith(suffix, ignoreCase) && startsWith(prefix, ignoreCase) // 先匹配后缀，这样可能会提高性能
+    // 先匹配后缀，这样可能会提高性能
+    return length >= (prefix.length + suffix.length) && endsWith(suffix, ignoreCase) && startsWith(prefix, ignoreCase)
 }
 
 /** 返回添加前缀后的字符串。 */
