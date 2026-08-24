@@ -254,21 +254,22 @@ class StdlibExtensionsTest {
 
     // region isNotNullOrEmpty
 
+    @Suppress("KotlinConstantConditions")
     @Test
     fun isNotNullOrEmpty_test() {
-        val s: String? = "abc"
+        val s = "abc"
         Assert.assertTrue(s.isNotNullOrEmpty())
         Assert.assertFalse("".isNotNullOrEmpty())
         val sn: String? = null
         Assert.assertFalse(sn.isNotNullOrEmpty())
 
-        val a: Array<Int>? = arrayOf(1, 2)
+        val a: Array<Int> = arrayOf(1, 2)
         Assert.assertTrue(a.isNotNullOrEmpty())
         Assert.assertFalse(emptyArray<Int>().isNotNullOrEmpty())
         val an: Array<Int>? = null
         Assert.assertFalse(an.isNotNullOrEmpty())
 
-        val c: List<Int>? = listOf(1)
+        val c: List<Int> = listOf(1)
         Assert.assertTrue(c.isNotNullOrEmpty())
         Assert.assertFalse(emptyList<Int>().isNotNullOrEmpty())
         val cn: List<Int>? = null
@@ -433,14 +434,14 @@ class StdlibExtensionsTest {
 
     @Test
     fun cast_test() {
-        val obj: Any? = "abc"
+        val obj: Any = "abc"
         Assert.assertEquals("abc", obj.cast<String>())
         Assert.assertThrows(ClassCastException::class.java) { obj.cast<Int>() }
     }
 
     @Test
     fun castOrNull_test() {
-        val obj: Any? = "abc"
+        val obj: Any = "abc"
         Assert.assertEquals("abc", obj.castOrNull<String>())
         Assert.assertNull(obj.castOrNull<Int>())
         Assert.assertNull(null.castOrNull<String>())

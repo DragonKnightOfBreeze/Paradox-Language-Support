@@ -18,7 +18,7 @@ class RecursionGuard(val name: String) {
      *
      * 如果 [key] 为 `null` 则直接返回。
      * 如果 [key] 不在当前调用栈中，则入栈并直接返回。
-     * 否则抛出 [com.intellij.openapi.util.StackOverflowPreventedException]。
+     * 否则抛出 [StackOverflowPreventedException]。
      */
     fun recursionCheck(key: Any?) {
         if (key == null) return

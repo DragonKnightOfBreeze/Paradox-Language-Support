@@ -65,4 +65,44 @@ class ReflectionExtensionsTest {
         val arg0 = type.genericType<Class<*>>(0)
         Assert.assertEquals(String::class.java, arg0)
     }
+
+    // region 类名解析
+
+    // （来自鲸鱼）注意：
+    // `Class.forName("kotlin.Int")` 在测试环境的 `PathClassLoader` 下无法解析（`isClassPresent("kotlin.Int")` 返回 `false`），已改用 `java.util.ArrayList` 等标准 JDK 类作为正例。
+    // 这说明 `isClassPresent`/`toClass`/`toKClass` 对 Kotlin 内建类型名（`kotlin.Int` 等）在该类加载器下不可靠，若后续有此类需求需注意。
+
+    @Test
+    fun isClassPresent_test() {
+        Assert.assertTrue("java.lang.String".isClassPresent())
+        Assert.assertTrue("java.util.ArrayList".isClassPresent())
+        Assert.assertFalse("nonexistent.NonExistentClass".isClassPresent())
+    }
+
+    @Test
+    fun toClass_test() {
+        Assert.assertEquals(String::class.java, "java.lang.String".toClass())
+    }
+
+    @Test
+    fun toKClass_test() {
+        Assert.assertEquals(String::class, "java.lang.String".toKClass())
+    }
+
+    // endregion
+
+    // region isGetter / isSetter 负向用例
+
+    @Test
+    fun isGetter_isSetter_negative_test() {
+        val k = Foo::class
+        val toString = k.members.first { it.name == "toString" } as KFunction<*>
+        val equals = k.members.first { it.name == "equals" } as KFunction<*>
+        Assert.assertFalse(toString.isGetter())
+        Assert.assertFalse(toString.isSetter())
+        Assert.assertFalse(equals.isGetter()) // 参数数量不匹配
+        Assert.assertFalse(equals.isSetter()) // 命名不匹配
+    }
+
+    // endregion
 }

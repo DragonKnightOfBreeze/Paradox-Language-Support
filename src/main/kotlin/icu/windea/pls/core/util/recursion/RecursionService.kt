@@ -7,6 +7,7 @@ object RecursionService {
     /**
      * 执行一段代码，通过维护在当前线程中的名为 [name] 的 [RecursionGuard] 尝试避免递归导致的堆栈溢出。
      * 捕获 [StackOverflowError] 和 [StackOverflowPreventedException] 并返回 `null`。
+     *
      * 如果不需要为递归守卫指定具体的名字，可以在调用时直接传入 `{}.javaClass.name`。
      */
     inline fun <T> withRecursionGuard(name: String, action: RecursionGuard.() -> T): T? {
@@ -27,6 +28,7 @@ object RecursionService {
     /**
      * 执行一段代码，通过维护在当前上下文对象中的名为 [name] 的 [RecursionGuard] 尝试避免递归导致的堆栈溢出。
      * 捕获 [StackOverflowError] 和 [StackOverflowPreventedException] 并返回 `null`。
+     *
      * 如果不需要为递归守卫指定具体的名字，可以在调用时直接传入 `{}.javaClass.name`。
      *
      * 适合在序列构建器和协程上下文中使用。
