@@ -71,14 +71,13 @@ class CwtModifierCategoriesConfigGenerator(override val project: Project) : CwtC
     private suspend fun parseConfigFile(outputPath: String): Set<String> {
         val file = outputPath.toFile()
         if (!file.exists()) return emptySet() // file not exist -> return empty
-        val quotePattern = QuotePatterns.Cwt
         val text = withContext(Dispatchers.IO) { file.readText() }
         val psiFile = readAction { CwtElementFactory.createFileFromText(project, text) }
         return readAction {
             val rootProps = psiFile.block?.children()?.filterIsInstance<CwtProperty>()?.toList().orEmpty()
             val container = rootProps.find { it.name == CONTAINER_MODIFIER_CATEGORIES }
             container?.propertyValue?.children()?.filterIsInstance<CwtProperty>()
-                ?.mapTo(mutableSetOf()) { it.name.unquote(quotePattern) } ?: emptySet()
+                ?.mapTo(mutableSetOf()) { it.name.unquote(QuotePatterns.Cwt) } ?: emptySet()
         }
     }
 

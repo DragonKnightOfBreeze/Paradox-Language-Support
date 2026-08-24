@@ -26,7 +26,7 @@ class QuoteLiteralIntention : PsiUpdateModCommandAction<ParadoxScriptExpressionE
 
     override fun invoke(context: ActionContext, element: ParadoxScriptExpressionElement, updater: ModPsiUpdater) {
         val quotePattern = if (element is PsiQuoteAwareElement) element.quotePattern else QuotePatterns.Default
-        val newText = element.text.quote(quotePattern, lenient = true)
+        val newText = element.text.quote(quotePattern)
         ElementManipulators.handleContentChange(element, newText)
     }
 

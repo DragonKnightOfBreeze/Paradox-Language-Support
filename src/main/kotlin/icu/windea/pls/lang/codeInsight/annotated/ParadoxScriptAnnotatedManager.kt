@@ -3,6 +3,7 @@ package icu.windea.pls.lang.codeInsight.annotated
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.core.quoteIfNeeded
+import icu.windea.pls.core.text.QuotePatterns
 import icu.windea.pls.core.util.values.FallbackStrings
 import icu.windea.pls.lang.definitionCandidateInfo
 import icu.windea.pls.lang.match.ParadoxMatchOptions
@@ -14,6 +15,7 @@ import icu.windea.pls.model.type.ParadoxTypeResolver
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptValue
+import icu.windea.pls.script.text.ParadoxScript
 
 object ParadoxScriptAnnotatedManager {
     // region Prefixes
@@ -73,17 +75,18 @@ object ParadoxScriptAnnotatedManager {
     fun getConfigExpressionAnnotation(element: ParadoxScriptMember): String? {
         val options = ParadoxMatchOptions(forDeclarationRoot = true)
         val config = ParadoxConfigManager.getConfigs(element, options).firstOrNull() ?: return null
+        val quotePattern = QuotePatterns.ParadoxScript
         return when (element) {
             is ParadoxScriptProperty -> {
                 if (config !is CwtPropertyConfig) return null
                 val key = config.key
                 val value = config.value
-                "## $configExpressionPrefix ${key.quoteIfNeeded()} = ${value.quoteIfNeeded()}"
+                "## $configExpressionPrefix ${key.quoteIfNeeded(quotePattern)} = ${value.quoteIfNeeded(quotePattern)}"
             }
             is ParadoxScriptValue -> {
                 if (config !is CwtValueConfig) return null
                 val value = config.value
-                "## $configExpressionPrefix ${value.quoteIfNeeded()}"
+                "## $configExpressionPrefix ${value.quoteIfNeeded(quotePattern)}"
             }
             else -> null
         }

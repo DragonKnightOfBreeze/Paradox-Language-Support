@@ -13,12 +13,12 @@ object QuotePatterns {
         override fun checkUnquotedChar(char: Char) = char.isWhitespace() || char == quoteChar
     }
 
-    /**
-     * 类似 [Default]，但是使用单引号。
-     */
-    object SingleQuote: QuotePattern.Base('\'') {
-        override fun checkUnquotedChar(char: Char) = char.isWhitespace() || char == quoteChar
-    }
+    // /**
+    //  * 类似 [Default]，但是使用单引号。
+    //  */
+    // object SingleQuote: QuotePattern.Base('\'') {
+    //     override fun checkUnquotedChar(char: Char) = char.isWhitespace() || char == quoteChar
+    // }
 
     /**
      * 用于构建命令行文本。

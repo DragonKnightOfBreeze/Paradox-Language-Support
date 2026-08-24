@@ -9,7 +9,7 @@ import icu.windea.pls.core.text.QuotePatterns
 // QuotePattern
 
 /** @see QuotePattern.needQuote */
-inline fun String.needQuote(quotePattern: QuotePattern = QuotePatterns.Default, lenient: Boolean = true): Boolean = quotePattern.needQuote(this, lenient)
+inline fun String.needQuote(quotePattern: QuotePattern = QuotePatterns.Default): Boolean = quotePattern.needQuote(this)
 
 /** @see QuotePattern.canQuote */
 inline fun String.canQuote(quotePattern: QuotePattern = QuotePatterns.Default): Boolean = quotePattern.canQuote(this)
@@ -26,14 +26,14 @@ inline fun String.isRightQuoted(quotePattern: QuotePattern = QuotePatterns.Defau
 /** @see QuotePattern.isQuoted */
 inline fun String.isQuoted(quotePattern: QuotePattern = QuotePatterns.Default): Boolean = quotePattern.isQuoted(this)
 
+/** @see QuotePattern.quoteIfNeeded */
+inline fun String.quoteIfNeeded(quotePattern: QuotePattern = QuotePatterns.Default): String = quotePattern.quoteIfNeeded(this)
+
 /** @see QuotePattern.quote */
-inline fun String.quote(quotePattern: QuotePattern = QuotePatterns.Default, lenient: Boolean = true): String = quotePattern.quote(this, lenient)
+inline fun String.quote(quotePattern: QuotePattern = QuotePatterns.Default): String = quotePattern.quote(this)
 
 /** @see QuotePattern.unquote */
 inline fun String.unquote(quotePattern: QuotePattern = QuotePatterns.Default): String = quotePattern.unquote(this)
-
-/** @see QuotePattern.quoteIfNeeded */
-inline fun String.quoteIfNeeded(quotePattern: QuotePattern = QuotePatterns.Default): String = quotePattern.quoteIfNeeded(this)
 
 /**
  * 去除文本范围首尾的引号。返回处理后的新的文本范围。

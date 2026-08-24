@@ -24,7 +24,7 @@ class QuoteLiteralIntention : PsiUpdateModCommandAction<CwtExpressionElement>(Cw
 
     override fun invoke(context: ActionContext, element: CwtExpressionElement, updater: ModPsiUpdater) {
         val quotePattern = if (element is PsiQuoteAwareElement) element.quotePattern else QuotePatterns.Default
-        val newText = element.text.quote(quotePattern, lenient = true)
+        val newText = element.text.quote(quotePattern)
         ElementManipulators.handleContentChange(element, newText)
     }
 

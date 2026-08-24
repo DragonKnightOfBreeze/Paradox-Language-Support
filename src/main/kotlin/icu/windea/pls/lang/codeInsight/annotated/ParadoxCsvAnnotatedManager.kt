@@ -1,9 +1,12 @@
 package icu.windea.pls.lang.codeInsight.annotated
 
 import icu.windea.pls.core.collections.orNull
+import icu.windea.pls.core.quoteIfNeeded
+import icu.windea.pls.core.text.QuotePatterns
 import icu.windea.pls.core.util.values.FallbackStrings
 import icu.windea.pls.csv.psi.ParadoxCsvColumnContainer
 import icu.windea.pls.csv.psi.ParadoxCsvHeader
+import icu.windea.pls.csv.text.ParadoxCsv
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.model.type.ParadoxTypeResolver
 
@@ -45,7 +48,8 @@ object ParadoxCsvAnnotatedManager {
             if (!ParadoxConfigManager.isMatchedColumnConfig(column, columnConfig)) return@map FallbackStrings.unknown // require matched
             columnConfig.value
         }
-        return configExpressions.joinToString(";", "## $configExpressionPrefix ")
+        val quotePattern = QuotePatterns.ParadoxCsv
+        return configExpressions.joinToString(";", "## $configExpressionPrefix ") { it.quoteIfNeeded(quotePattern) }
     }
 
     // endregion

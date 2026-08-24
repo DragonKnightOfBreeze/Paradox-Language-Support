@@ -18,7 +18,6 @@ import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.isRightQuoted
 import icu.windea.pls.core.orNull
-import icu.windea.pls.core.text.QuotePatterns
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.unquote
 import icu.windea.pls.core.util.KeyRegistry
@@ -41,7 +40,6 @@ import icu.windea.pls.script.psi.ParadoxParameter
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.propertyKey
-import icu.windea.pls.script.text.ParadoxScript
 
 @Optimized
 object ParadoxScriptInjectionManager {
@@ -128,7 +126,7 @@ object ParadoxScriptInjectionManager {
     }
 
     private fun shouldApplyParameterValueInjection(value: String): Boolean {
-        val normalized = value.unquote(QuotePatterns.ParadoxScript).trim()
+        val normalized = value.unquote().trim()
         if (ParadoxSeparatorType.entries.anyFast { it.text == normalized }) return true // 为一些狡猾人行方便
         return false
     }
@@ -162,7 +160,7 @@ object ParadoxScriptInjectionManager {
         // 要求用引号括起，且首尾引号都存在
         if (!text.isLeftQuoted() || !text.isRightQuoted()) return false
         // 要求看起来像是富文本
-        return ParadoxLocalisationManager.isRichText(text.unquote(QuotePatterns.ParadoxScript))
+        return ParadoxLocalisationManager.isRichText(text.unquote())
     }
 
     private fun shouldApplyLocalisationTextInjection(configs: List<CwtConfig<*>>): Boolean {

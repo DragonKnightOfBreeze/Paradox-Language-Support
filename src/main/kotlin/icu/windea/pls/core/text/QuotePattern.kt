@@ -14,10 +14,13 @@ import icu.windea.pls.core.isEscapedCharAt
  * @see QuotePatterns
  */
 interface QuotePattern {
+    /** 使用的引号字符。 */
     val quoteChar: Char
+    /** 处理时是否会先忽略首尾的引号。 */
+    val lenient: Boolean
 
-    /** 根据输入的 [text]，检查是否（绝对）需要首尾的引号，如果 [lenient] 为 `true`，则处理时会先忽略首尾的引号。 */
-    fun needQuote(text: String, lenient: Boolean = true): Boolean
+    /** 根据输入的 [text]，检查是否（绝对）需要首尾的引号。 */
+    fun needQuote(text: String): Boolean
 
     /** 根据输入的 [text]，检查是否可以添加周围的引号。 */
     fun canQuote(text: String): Boolean
@@ -34,19 +37,22 @@ interface QuotePattern {
     /** 根据输入的 [text]，检查是否已经被 [quoteChar] 包围（包括仅一侧存在 [quoteChar] 的情况）。 */
     fun isQuoted(text: String): Boolean
 
-    /** 添加 [text] 周围的引号（考虑转义）。如果 [lenient] 为 `true`，则处理时会先忽略首尾的引号。 */
-    fun quote(text: String, lenient: Boolean = true): String
+    /** 如果（绝对）需要首尾的引号，则添加 [text] 周围的引号（考虑转义）。 */
+    fun quoteIfNeeded(text: String): String
+
+    /** 添加 [text] 周围的引号（考虑转义）。 */
+    fun quote(text: String): String
 
     /** 去除 [text] 周围的引号（考虑转义）。 */
     fun unquote(text: String): String
 
-    /** 如果（绝对）需要首尾的引号，则添加 [text] 周围的引号（考虑转义）。 */
-    fun quoteIfNeeded(text: String): String
-
-    abstract class Base(override val quoteChar: Char) : QuotePattern {
+    abstract class Base(
+        override val quoteChar: Char,
+        override val lenient: Boolean = true,
+    ) : QuotePattern {
         abstract fun checkUnquotedChar(char: Char): Boolean
 
-        override fun needQuote(text: String, lenient: Boolean): Boolean {
+        override fun needQuote(text: String): Boolean {
             val s = text
             if (s.isEmpty() || s == quoteChar.toString()) return true
             val lastIndex = s.lastIndex
@@ -78,7 +84,13 @@ interface QuotePattern {
             return isLeftQuoted(text) || isRightQuoted(text)
         }
 
-        override fun quote(text: String, lenient: Boolean): String {
+        override fun quoteIfNeeded(text: String): String {
+            if (isLeftQuoted(text) && isRightQuoted(text)) return text
+            if (!needQuote(text)) return text
+            return quote(text)
+        }
+
+        override fun quote(text: String): String {
             // TODO 3.0.2 optimize memory: do not create build string at all if not necessary
             if (text.isEmpty()) return "$quoteChar$quoteChar"
             val start = isLeftQuoted(text)
@@ -113,12 +125,6 @@ interface QuotePattern {
                     append(c)
                 }
             }
-        }
-
-        override fun quoteIfNeeded(text: String): String {
-            if (isLeftQuoted(text) && isRightQuoted(text)) return text
-            if (!needQuote(text)) return text
-            return quote(text, lenient = true)
         }
     }
 }
