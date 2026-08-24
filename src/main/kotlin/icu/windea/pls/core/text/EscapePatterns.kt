@@ -2,6 +2,8 @@
 
 package icu.windea.pls.core.text
 
+import icu.windea.pls.core.annotations.Optimized
+
 /**
  * @see EscapePattern
  */
@@ -10,6 +12,7 @@ object EscapePatterns {
      * 默认的转义模式在转义时仅处理特殊空白字符，在反转义时处理任何字符。
      */
     object Default : EscapePattern.Base() {
+        @Optimized
         override fun escape(text: String): String {
             // optimize: build string only if necessary
             var builder: StringBuilder? = null
@@ -36,6 +39,7 @@ object EscapePatterns {
             return builder?.toString() ?: text
         }
 
+        @Optimized
         override fun unescape(text: String): String {
             // optimize: build string only if necessary
             var builder: StringBuilder? = null
@@ -75,6 +79,7 @@ object EscapePatterns {
      * 反转义时对应地将 `<br>`（及其后可能跟随的换行符）还原为换行符，将 `&emsp;` 还原为制表符。
      */
     object HtmlLineBreak: EscapePattern.Base() {
+        @Optimized
         override fun escape(text: String): String {
             // optimize: build string only if necessary
             var builder: StringBuilder? = null
@@ -101,6 +106,7 @@ object EscapePatterns {
             return builder?.toString() ?: text
         }
 
+        @Optimized
         override fun unescape(text: String): String {
             // optimize: build string only if necessary
             var builder: StringBuilder? = null

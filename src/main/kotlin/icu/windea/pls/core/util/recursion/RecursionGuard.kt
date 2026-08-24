@@ -1,5 +1,6 @@
 package icu.windea.pls.core.util.recursion
 
+import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.util.StackOverflowPreventedException
 import java.util.*
 
@@ -23,7 +24,8 @@ class RecursionGuard(val name: String) {
     fun recursionCheck(key: Any?) {
         if (key == null) return
         if (stackTrace.contains(key)) {
-            throw StackOverflowPreventedException("")
+            RecursionGuardContext.logger.debug { "Unexpected recursion prevented (key: $key, stackTrace: $stackTrace)" }
+            throw StackOverflowPreventedException("Unexpected recursion prevented (key: $key, stackTrace: $stackTrace)")
         }
         stackTrace.addLast(key)
     }
@@ -38,6 +40,7 @@ class RecursionGuard(val name: String) {
     inline fun <T> withRecursionCheck(key: Any?, action: () -> T): T? {
         if (key == null) return action()
         if (stackTrace.contains(key)) {
+            RecursionGuardContext.logger.debug { "Unexpected recursion prevented (key: $key, stackTrace: $stackTrace)" }
             return null
         }
         stackTrace.addLast(key)

@@ -1,5 +1,6 @@
 package icu.windea.pls.core.util.recursion
 
+import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.util.StackOverflowPreventedException
 import com.intellij.openapi.util.UserDataHolder
 
@@ -17,8 +18,10 @@ object RecursionService {
             val recursionGuard = cached ?: RecursionGuardContext.createRecursionGuard(recursionGuardCache, name)
             return recursionGuard.action()
         } catch (_: StackOverflowError) {
+            RecursionGuardContext.logger.debug { "Unexpected recursion prevented (recursion guard name: $name)" }
             return null
         } catch (_: StackOverflowPreventedException) {
+            RecursionGuardContext.logger.debug { "Unexpected recursion prevented (recursion guard name: $name)" }
             return null
         } finally {
             if (cached == null) RecursionGuardContext.clearRecursionGuard(recursionGuardCache, name)
@@ -40,8 +43,10 @@ object RecursionService {
             val recursionGuard = cached ?: RecursionGuardContext.createRecursionGuard(recursionGuardCache, name)
             return recursionGuard.action()
         } catch (_: StackOverflowError) {
+            RecursionGuardContext.logger.debug { "Unexpected recursion prevented (recursion guard name: $name)" }
             return null
         } catch (_: StackOverflowPreventedException) {
+            RecursionGuardContext.logger.debug { "Unexpected recursion prevented (recursion guard name: $name)" }
             return null
         } finally {
             if (cached == null) RecursionGuardContext.clearContextRecursionGuard(context, recursionGuardCache, name)

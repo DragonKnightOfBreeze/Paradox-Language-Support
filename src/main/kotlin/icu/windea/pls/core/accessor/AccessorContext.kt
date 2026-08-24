@@ -10,10 +10,11 @@ import kotlin.reflect.KClass
 
 @PublishedApi
 internal object AccessorContext {
-    private val logger = thisLogger()
     private val reported = ConcurrentHashMap.newKeySet<String>()
-
     private val cache = ConcurrentHashMap<KClass<*>, AccessorProvider<*>>()
+
+    @PublishedApi
+    internal val logger = thisLogger()
 
     /**
      * 获取目标类型 [targetClass] 对应的 [AccessorProvider]，若不存在则创建并缓存。
