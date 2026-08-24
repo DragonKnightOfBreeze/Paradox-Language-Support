@@ -8,10 +8,10 @@ import icu.windea.pls.core.text.QuotePatterns
 @Suppress("UnusedReceiverParameter")
 val QuotePatterns.ParadoxCsv: QuotePattern.Base get() = ParadoxCsvQuotePattern
 
-private object ParadoxCsvQuotePattern : QuotePattern.Base('"') {
-    private const val FORCE_QUOTED_CHARS = "#;\""
+private const val FORCE_QUOTED_CHARS = "#;\""
 
-    override fun checkUnquotedChar(char: Char): Boolean {
+private object ParadoxCsvQuotePattern : QuotePattern.Base('"') {
+    override fun checkChar(char: Char): Boolean {
         // whitespaces are allowed
         return char in FORCE_QUOTED_CHARS
     }

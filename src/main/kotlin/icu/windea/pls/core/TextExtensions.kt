@@ -3,6 +3,7 @@
 package icu.windea.pls.core
 
 import com.intellij.openapi.util.TextRange
+import icu.windea.pls.core.text.EscapePattern
 import icu.windea.pls.core.text.QuotePattern
 import icu.windea.pls.core.text.QuotePatterns
 
@@ -46,3 +47,11 @@ fun TextRange.unquote(text: String, quotePattern: QuotePattern = QuotePatterns.D
     val endOffset = if (rightQuoted) endOffset - 1 else endOffset
     return TextRange.create(startOffset, endOffset)
 }
+
+// EscapePattern
+
+/** @see EscapePattern.escape */
+inline fun String.escape(escapePattern: EscapePattern): String = escapePattern.escape(this)
+
+/** @see EscapePattern.unescape */
+inline fun String.unescape(escapePattern: EscapePattern): String = escapePattern.unescape(this)

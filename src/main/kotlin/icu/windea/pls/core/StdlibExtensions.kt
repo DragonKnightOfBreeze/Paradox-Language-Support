@@ -296,25 +296,22 @@ fun CharSequence.isEscapedCharAt(index: Int): Boolean {
 }
 
 /** 转义 XML 特殊字符。 */
-fun String.escapeXml() = if (this.isEmpty()) "" else StringUtil.escapeXmlEntities(this)
-
-/** 将空白渲染为 `&nbsp;`，便于在 HTML 中显示。 */
-fun String.escapeBlank(): String {
-    var builder: StringBuilder? = null
-    for ((i, c) in this.withIndex()) {
-        if (c.isWhitespace()) {
-            if (builder == null) builder = StringBuilder(substring(0, i))
-            builder.append("&nbsp;")
-        } else {
-            builder?.append(c)
-        }
-    }
-    return builder?.toString() ?: this
+fun String.escapeXml(): String {
+    return if (this.isEmpty()) "" else StringUtil.escapeXmlEntities(this)
 }
 
-// /** 拆分后逐项 trim 并丢弃空串的轻量实现。 */
-// fun String.splitOptimized(vararg delimiters: Char, ignoreCase: Boolean = false, limit: Int = 0): List<String> {
-//     return this.split(*delimiters, ignoreCase = ignoreCase, limit = limit).mapNotNull { it.trim().orNull() }
+// /** 将空白渲染为 `&nbsp;`，便于在 HTML 中显示。 */
+// fun String.escapeBlank(): String {
+//     var builder: StringBuilder? = null
+//     for ((i, c) in this.withIndex()) {
+//         if (c.isWhitespace()) {
+//             if (builder == null) builder = StringBuilder(substring(0, i))
+//             builder.append("&nbsp;")
+//         } else {
+//             builder?.append(c)
+//         }
+//     }
+//     return builder?.toString() ?: this
 // }
 
 /** 超出 [limit] 时截断并追加 [ellipsis]。 */

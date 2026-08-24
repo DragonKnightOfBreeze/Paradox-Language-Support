@@ -9,7 +9,7 @@ import icu.windea.pls.core.isEscapedCharAt
  *
  * 用于处理文本中的引号，涉及各种断言和修改操作。
  *
- * 作为一种模型策略，既包含相关的元数据，也作为对断言和修改逻辑的策略。
+ * 包含相关的元数据，同时也作为对断言和修改逻辑的策略。
  *
  * @see QuotePatterns
  */
@@ -50,7 +50,7 @@ interface QuotePattern {
         override val quoteChar: Char,
         override val lenient: Boolean = true,
     ) : QuotePattern {
-        abstract fun checkUnquotedChar(char: Char): Boolean
+        abstract fun checkChar(char: Char): Boolean
 
         override fun needQuote(text: String): Boolean {
             val s = text
@@ -58,7 +58,7 @@ interface QuotePattern {
             val lastIndex = s.lastIndex
             s.forEachIndexed f@{ i, c ->
                 if (lenient && (i == 0 || i == lastIndex) && c == quoteChar) return@f
-                if (checkUnquotedChar(c)) return true
+                if (checkChar(c)) return true
             }
             return false
         }
@@ -91,7 +91,6 @@ interface QuotePattern {
         }
 
         override fun quote(text: String): String {
-            // TODO 3.0.2 optimize memory: do not create build string at all if not necessary
             if (text.isEmpty()) return "$quoteChar$quoteChar"
             val start = isLeftQuoted(text)
             val end = isRightQuoted(text)
@@ -110,7 +109,6 @@ interface QuotePattern {
         }
 
         override fun unquote(text: String): String {
-            // TODO 3.0.2 optimize memory: do not create build string at all if not necessary
             if (text.isEmpty()) return ""
             val start = isLeftQuoted(text)
             val end = isRightQuoted(text)

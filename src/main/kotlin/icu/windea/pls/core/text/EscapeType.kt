@@ -6,3 +6,4 @@ package icu.windea.pls.core.text
 enum class EscapeType {
     Default, Html, Inlay
 }
+
