@@ -15,10 +15,11 @@ import icu.windea.pls.core.forEachChild
 import icu.windea.pls.core.letIf
 import icu.windea.pls.core.psi.light.LightElementBase
 import icu.windea.pls.core.runCatchingCancelable
-import icu.windea.pls.core.text.EscapeType
+import icu.windea.pls.core.text.EscapePatterns
 import icu.windea.pls.core.toFileUrl
 import icu.windea.pls.core.toIconOrNull
 import icu.windea.pls.core.ui.UiService
+import icu.windea.pls.core.unescape
 import icu.windea.pls.core.util.values.FallbackStrings
 import icu.windea.pls.images.ImageFrameInfo
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsContext
@@ -26,7 +27,6 @@ import icu.windea.pls.lang.editor.ParadoxSemanticHighlighterColors
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.psi.resolveLocalisation
 import icu.windea.pls.lang.psi.resolveScriptedVariable
-import icu.windea.pls.lang.util.ParadoxEscapeManager
 import icu.windea.pls.lang.util.ParadoxGameConceptManager
 import icu.windea.pls.lang.util.ParadoxImageManager
 import icu.windea.pls.lang.util.ParadoxLocalisationIconManager
@@ -44,6 +44,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationRichText
 import icu.windea.pls.localisation.psi.ParadoxLocalisationText
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextFormat
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextIcon
+import icu.windea.pls.localisation.text.ParadoxLocalisation
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import java.awt.Color
 import java.util.concurrent.atomic.AtomicInteger
@@ -57,7 +58,7 @@ import javax.imageio.ImageIO
  * - 仅渲染单行文本，从第二行开始的文本会被截断。
  */
 class ParadoxLocalisationTextInlayRenderer(
-    val hintsContext: ParadoxHintsContext
+    val hintsContext: ParadoxHintsContext,
 ) : ParadoxLocalisationTextRenderer<InlayPresentation?, ParadoxLocalisationTextInlayRenderContext, ParadoxLocalisationTextInlayRenderSettings>() {
     override val settings = ParadoxLocalisationTextInlayRenderSettings()
 
@@ -135,7 +136,8 @@ class ParadoxLocalisationTextInlayRenderContext(
 
     override fun renderText(element: ParadoxLocalisationText) {
         if (truncated) return
-        val text = ParadoxEscapeManager.unescapeLocalisationText(element.text, EscapeType.Inlay)
+        // 3.0.2 original text -> unescape localisation text by EscapePattern
+        val text = element.text.unescape(EscapePatterns.ParadoxLocalisation)
         builder.add(truncatedSmallText(text))
         updateTruncationState()
     }
@@ -327,9 +329,13 @@ class ParadoxLocalisationTextInlayRenderContext(
     }
 
     private fun truncatedSmallText(text: String): InlayPresentation {
+        // truncated by configured limit if necessary
         val limit = hintsContext.settings.localisationTextLengthLimit
         val truncatedText = if (limit > 0) text.take(truncateRemain.get()) else text
-        val truncatedTextSingleLine = truncatedText.substringBefore('\n')
+        // truncated to first line if necessary
+        val lineBreakIndex = truncatedText.indexOfFirst { it == '\n' || it == '\r' }
+        val truncatedTextSingleLine = if (lineBreakIndex != -1) truncatedText.take(lineBreakIndex) else text
+        // then final text
         val finalText = truncatedTextSingleLine
         val result = factory.smallText(finalText)
         if (truncatedTextSingleLine.length != truncatedText.length) {

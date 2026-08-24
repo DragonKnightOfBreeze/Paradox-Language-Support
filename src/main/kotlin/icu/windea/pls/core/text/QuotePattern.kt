@@ -55,9 +55,11 @@ interface QuotePattern {
         override fun needQuote(text: String): Boolean {
             val s = text
             if (s.isEmpty() || s == quoteChar.toString()) return true
-            val lastIndex = s.lastIndex
-            s.forEachIndexed f@{ i, c ->
-                if (lenient && (i == 0 || i == lastIndex) && c == quoteChar) return@f
+            var index = -1
+            val length = text.length
+            while (index < length - 1) {
+                val c = text[++index]
+                if (lenient && (index == 0 || index == length - 1) && c == quoteChar) continue
                 if (checkChar(c)) return true
             }
             return false
@@ -97,11 +99,13 @@ interface QuotePattern {
             if (start && end) return text
             return buildString {
                 append(quoteChar)
-                val lastIndex = text.lastIndex
-                text.forEachIndexed f@{ i, c ->
-                    if (lenient && start && i == 0) return@f
-                    if (lenient && end && i == lastIndex) return@f
-                    if (c == quoteChar && !text.isEscapedCharAt(i)) append('\\')
+                var index = -1
+                val length = text.length
+                while (index < length - 1) {
+                    val c = text[++index]
+                    if (lenient && start && index == 0) continue
+                    if (lenient && end && index == length - 1) continue
+                    if (c == quoteChar && !text.isEscapedCharAt(index)) append('\\')
                     append(c)
                 }
                 append(quoteChar)
@@ -115,11 +119,13 @@ interface QuotePattern {
             if (!start && !end) return text
             var offset = if (start) 1 else 0
             return buildString {
-                val lastIndex = text.lastIndex
-                text.forEachIndexed f@{ i, c ->
-                    if (start && i == 0) return@f
-                    if (end && i == lastIndex) return@f
-                    if (c == quoteChar && text.isEscapedCharAt(i)) deleteCharAt(i - 1 - offset++)
+                var index = -1
+                val length = text.length
+                while (index < length - 1) {
+                    val c = text[++index]
+                    if (start && index == 0) continue
+                    if (end && index == length - 1) continue
+                    if (c == quoteChar && text.isEscapedCharAt(index)) deleteCharAt(index - 1 - offset++)
                     append(c)
                 }
             }

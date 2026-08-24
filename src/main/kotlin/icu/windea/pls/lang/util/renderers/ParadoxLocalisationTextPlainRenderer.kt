@@ -1,10 +1,10 @@
 package icu.windea.pls.lang.util.renderers
 
-import icu.windea.pls.core.text.EscapeType
+import icu.windea.pls.core.text.EscapePatterns
+import icu.windea.pls.core.unescape
 import icu.windea.pls.core.util.values.FallbackStrings
 import icu.windea.pls.lang.psi.resolveLocalisation
 import icu.windea.pls.lang.psi.resolveScriptedVariable
-import icu.windea.pls.lang.util.ParadoxEscapeManager
 import icu.windea.pls.lang.util.ParadoxGameConceptManager
 import icu.windea.pls.lang.util.ParadoxLocalisationManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationColorfulText
@@ -17,6 +17,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.localisation.psi.ParadoxLocalisationText
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextFormat
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextIcon
+import icu.windea.pls.localisation.text.ParadoxLocalisation
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 /**
@@ -47,7 +48,8 @@ class ParadoxLocalisationTextPlainRenderContext(
     }
 
     override fun renderText(element: ParadoxLocalisationText) {
-        val text = ParadoxEscapeManager.unescapeLocalisationText(element.text, EscapeType.Default)
+        // 3.0.2 original text -> unescape localisation text by EscapePattern
+        val text = element.text.unescape(EscapePatterns.ParadoxLocalisation)
         builder.append(text)
     }
 
