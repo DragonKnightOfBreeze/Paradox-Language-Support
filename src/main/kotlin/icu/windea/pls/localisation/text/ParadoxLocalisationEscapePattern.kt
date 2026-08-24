@@ -44,17 +44,15 @@ private object ParadoxLocalisationEscapePattern : EscapePattern.Base() {
             val c = text[++index]
 
             // `[[` -> `[`
-            if (c == '[') {
-                val nc = text[++index]
-                if (nc == '[') {
-                    if (builder == null) builder = StringBuilder(text.substring(0, index - 1))
-                    builder.append('[')
-                    continue
-                }
+            if (c == '[' && index < length - 1 && text[index + 1] == '[') {
+                if (builder == null) builder = StringBuilder(text.substring(0, index))
+                builder.append('[')
+                index += 1
+                continue
             }
 
-            if (c == '\\') {
-                val nc = text[++index]
+            if (c == '\\' && index < length - 1) {
+                val nc = text[index + 1]
                 val r = when (nc) {
                     'n' -> '\n'
                     'r' -> '\r'
@@ -62,8 +60,9 @@ private object ParadoxLocalisationEscapePattern : EscapePattern.Base() {
                     '\\' -> '\\' // also for backslash itself
                     else -> nc // also for any other character
                 }
-                if (builder == null) builder = StringBuilder(text.substring(0, index - 1))
+                if (builder == null) builder = StringBuilder(text.substring(0, index))
                 builder.append(r)
+                index += 1
                 continue
             }
 

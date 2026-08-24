@@ -2,6 +2,11 @@
 
 package icu.windea.pls.localisation.text
 
+/**
+ * 这个构建器提供了一组常见的构建方法，从而支持以字符串插值的格式，或者说类 DSL 的格式，构建本地化文本。
+ *
+ * 并且，可以用来规避讨厌的 $ 以及其他特殊标记字符。
+ */
 object ParadoxLocalisationTextBuilder {
     fun colorfulText(colorId: String, text: String) = "§${colorId}${text}§!"
     fun parameter(name: String) = "$${name}$"
