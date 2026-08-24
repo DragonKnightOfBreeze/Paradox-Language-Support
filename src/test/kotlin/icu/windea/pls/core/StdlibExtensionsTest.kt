@@ -2,6 +2,10 @@ package icu.windea.pls.core
 
 import org.junit.Assert
 import org.junit.Test
+import java.io.File
+import java.nio.file.Files
+import java.nio.file.Path
+import java.nio.file.Paths
 
 class StdlibExtensionsTest {
     // region isIdentifierChar
@@ -222,4 +226,345 @@ class StdlibExtensionsTest {
         Assert.assertTrue("abc".matchesRegex("[a-z]+"))
         Assert.assertFalse("abc".matchesRegex("[0-9]+"))
     }
+
+    // region letIf / letUnless / alsoIf / alsoUnless
+
+    @Test
+    fun letIf_letUnless_test() {
+        Assert.assertEquals(2, 1.letIf(true) { it + 1 })
+        Assert.assertEquals(1, 1.letIf(false) { it + 1 })
+        Assert.assertEquals(2, 1.letUnless(false) { it + 1 })
+        Assert.assertEquals(1, 1.letUnless(true) { it + 1 })
+    }
+
+    @Test
+    fun alsoIf_alsoUnless_test() {
+        var count = 0
+        Assert.assertEquals("a", "a".alsoIf(true) { count++ })
+        Assert.assertEquals(1, count)
+        "a".alsoIf(false) { count++ }
+        Assert.assertEquals(1, count)
+        "a".alsoUnless(false) { count++ }
+        Assert.assertEquals(2, count)
+        "a".alsoUnless(true) { count++ }
+        Assert.assertEquals(2, count)
+    }
+
+    // endregion
+
+    // region isNotNullOrEmpty
+
+    @Test
+    fun isNotNullOrEmpty_test() {
+        val s: String? = "abc"
+        Assert.assertTrue(s.isNotNullOrEmpty())
+        Assert.assertFalse("".isNotNullOrEmpty())
+        val sn: String? = null
+        Assert.assertFalse(sn.isNotNullOrEmpty())
+
+        val a: Array<Int>? = arrayOf(1, 2)
+        Assert.assertTrue(a.isNotNullOrEmpty())
+        Assert.assertFalse(emptyArray<Int>().isNotNullOrEmpty())
+        val an: Array<Int>? = null
+        Assert.assertFalse(an.isNotNullOrEmpty())
+
+        val c: List<Int>? = listOf(1)
+        Assert.assertTrue(c.isNotNullOrEmpty())
+        Assert.assertFalse(emptyList<Int>().isNotNullOrEmpty())
+        val cn: List<Int>? = null
+        Assert.assertFalse(cn.isNotNullOrEmpty())
+    }
+
+    // endregion
+
+    // region orNull
+
+    @Test
+    fun orNull_test() {
+        Assert.assertEquals(true, true.orNull())
+        Assert.assertNull(false.orNull())
+        Assert.assertEquals("abc", "abc".orNull())
+        Assert.assertNull("".orNull())
+    }
+
+    // endregion
+
+    // region surroundsWith
+
+    @Test
+    fun surroundsWith_char_test() {
+        Assert.assertTrue("[]".surroundsWith('[', ']'))
+        Assert.assertFalse("[".surroundsWith('[', ']')) // 长度不足
+        Assert.assertFalse("[]".surroundsWith('(', ')'))
+        Assert.assertFalse("[x)".surroundsWith('[', ']'))
+        Assert.assertTrue("[X]".surroundsWith('[', ']', ignoreCase = true))
+    }
+
+    @Test
+    fun surroundsWith_string_test() {
+        Assert.assertTrue("<<abc>>".surroundsWith("<<", ">>"))
+        Assert.assertFalse("<abc>".surroundsWith("<<", ">>")) // 前缀长度不足
+        Assert.assertFalse("<<abc>>".surroundsWith("<<", "}}")) // 后缀不匹配
+        Assert.assertTrue("[[abc]]".surroundsWith("[[", "]]", ignoreCase = true))
+    }
+
+    // endregion
+
+    // region add / remove prefix / suffix / surrounding
+
+    @Test
+    fun add_prefix_suffix_surrounding_test() {
+        Assert.assertEquals("preabc", "abc".addPrefix("pre"))
+        Assert.assertEquals("abcsuf", "abc".addSuffix("suf"))
+        Assert.assertEquals("preabcsuf", "abc".addSurrounding("pre", "suf"))
+    }
+
+    @Test
+    fun removeSurrounding_test() {
+        Assert.assertEquals("b", "abc".removeSurrounding("a", "c"))
+        // 与 OrNull 版本不同，缺失前后缀时保持原样
+        Assert.assertEquals("abc", "abc".removeSurrounding("x", "y"))
+        Assert.assertEquals("bc", "abc".removeSurrounding("a", "y"))
+    }
+
+    @Test
+    fun removePrefixOrNull_test() {
+        Assert.assertEquals("bc", "abc".removePrefixOrNull("a"))
+        Assert.assertNull("abc".removePrefixOrNull("x"))
+        Assert.assertEquals("BC", "ABC".removePrefixOrNull("a", ignoreCase = true))
+        Assert.assertEquals("", "a".removePrefixOrNull("a"))
+    }
+
+    @Test
+    fun removeSuffixOrNull_test() {
+        Assert.assertEquals("ab", "abc".removeSuffixOrNull("c"))
+        Assert.assertNull("abc".removeSuffixOrNull("x"))
+        Assert.assertEquals("AB", "ABC".removeSuffixOrNull("c", ignoreCase = true))
+        Assert.assertEquals("", "a".removeSuffixOrNull("a"))
+    }
+
+    @Test
+    fun removeSurroundingOrNull_test() {
+        Assert.assertEquals("b", "abc".removeSurroundingOrNull("a", "c"))
+        Assert.assertNull("abc".removeSurroundingOrNull("x", "c"))
+        Assert.assertNull("abc".removeSurroundingOrNull("a", "x"))
+        Assert.assertEquals("B", "aBc".removeSurroundingOrNull("a", "c", ignoreCase = true))
+    }
+
+    // endregion
+
+    // region exact char checks
+
+    @Test
+    fun exactCharChecks_test() {
+        Assert.assertTrue('\n'.isExactLineBreak())
+        Assert.assertTrue('\r'.isExactLineBreak())
+        Assert.assertFalse('a'.isExactLineBreak())
+
+        Assert.assertTrue('a'.isExactLetter())
+        Assert.assertTrue('Z'.isExactLetter())
+        Assert.assertFalse('1'.isExactLetter())
+
+        Assert.assertTrue('1'.isExactDigit())
+        Assert.assertFalse('a'.isExactDigit())
+
+        Assert.assertTrue('a'.isExactWord())
+        Assert.assertTrue('1'.isExactWord())
+        Assert.assertTrue('_'.isExactWord())
+        Assert.assertFalse('-'.isExactWord())
+    }
+
+    // endregion
+
+    // region escapeXml
+
+    @Test
+    fun escapeXml_test() {
+        Assert.assertEquals("abc", "abc".escapeXml())
+        Assert.assertEquals("", "".escapeXml())
+        Assert.assertEquals("&lt;&gt;&amp;&quot;", "<>&\"".escapeXml())
+        Assert.assertEquals("&lt;&gt;&amp;&quot;&#39;", "<>&\"'".escapeXml()) // 单引号转义为 &#39;
+    }
+
+    // endregion
+
+    // region truncate
+
+    @Test
+    fun truncate_edges_test() {
+        Assert.assertEquals("abcdef", "abcdef".truncate(6))
+        Assert.assertEquals("abcdef", "abcdef".truncate(100))
+        Assert.assertEquals("abcdef", "abcdef".truncate(0)) // limit <= 0 不截断
+        Assert.assertEquals("abcdef", "abcdef".truncate(-1))
+        Assert.assertEquals("", "".truncate(3))
+        Assert.assertEquals("ab..", "abcdef".truncate(2, ellipsis = ".."))
+    }
+
+    // endregion
+
+    // region indexOf / lastIndexOf (predicate)
+
+    @Test
+    fun indexOf_predicate_test() {
+        Assert.assertEquals(2, "abcde".indexOf(0) { it == 'c' })
+        Assert.assertEquals(4, "abcde".indexOf(3) { it == 'e' })
+        Assert.assertEquals(-1, "abcde".indexOf(0) { it == 'z' })
+        Assert.assertEquals(4, "abcde".lastIndexOf(4) { it == 'e' })
+        Assert.assertEquals(0, "abcde".lastIndexOf(4) { it == 'a' })
+        Assert.assertEquals(-1, "abcde".lastIndexOf(4) { it == 'z' })
+    }
+
+    // endregion
+
+    // region collection truncate
+
+    @Test
+    fun collection_truncate_test() {
+        val list = listOf("a", "b", "c", "d")
+        Assert.assertEquals(listOf("a", "b", "..."), list.truncate(2))
+        Assert.assertEquals(list, list.truncate(10)) // 超出大小不截断
+        Assert.assertEquals(list, list.truncate(-1)) // 负数不截断
+        Assert.assertEquals(list, list.truncate(4)) // 恰好等于大小不截断
+    }
+
+    // endregion
+
+    // region cast / castOrNull
+
+    @Test
+    fun cast_test() {
+        val obj: Any? = "abc"
+        Assert.assertEquals("abc", obj.cast<String>())
+        Assert.assertThrows(ClassCastException::class.java) { obj.cast<Int>() }
+    }
+
+    @Test
+    fun castOrNull_test() {
+        val obj: Any? = "abc"
+        Assert.assertEquals("abc", obj.castOrNull<String>())
+        Assert.assertNull(obj.castOrNull<Int>())
+        Assert.assertNull(null.castOrNull<String>())
+    }
+
+    // endregion
+
+    // region boolean / byte / yes-no conversions
+
+    @Test
+    fun boolean_byte_conversions_test() {
+        Assert.assertEquals(1.toByte(), true.toByte())
+        Assert.assertEquals(0.toByte(), false.toByte())
+        Assert.assertTrue(1.toByte().toBoolean())
+        Assert.assertTrue((-1).toByte().toBoolean())
+        Assert.assertFalse(0.toByte().toBoolean())
+    }
+
+    @Test
+    fun toBooleanYesNo_test() {
+        Assert.assertTrue("yes".toBooleanYesNo())
+        Assert.assertFalse("no".toBooleanYesNo())
+        Assert.assertFalse("Yes".toBooleanYesNo()) // 区分大小写
+        Assert.assertFalse(null.toBooleanYesNo())
+        Assert.assertEquals(true, "yes".toBooleanYesNoOrNull())
+        Assert.assertEquals(false, "no".toBooleanYesNoOrNull())
+        Assert.assertNull("maybe".toBooleanYesNoOrNull())
+        Assert.assertNull(null.toBooleanYesNoOrNull())
+    }
+
+    @Test
+    fun toStringOrEmpty_test() {
+        Assert.assertEquals("abc", "abc".toStringOrEmpty())
+        Assert.assertEquals("123", 123.toStringOrEmpty())
+        Assert.assertEquals("", null.toStringOrEmpty())
+    }
+
+    // endregion
+
+    // region UUID
+
+    @Test
+    fun toUUID_test() {
+        val u1 = "abc".toUUID()
+        Assert.assertEquals(u1, "abc".toUUID()) // 基于内容，稳定
+        Assert.assertFalse(u1 == "abd".toUUID())
+        Assert.assertEquals(u1.toString(), "abc".toUuidString())
+    }
+
+    // endregion
+
+    // region substringIn / substringInLast 边界
+
+    @Test
+    fun substringIn_missingDelimiter_test() {
+        Assert.assertEquals("abc", "abc".substringIn('<', '>')) // 默认返回自身
+        Assert.assertEquals("none", "abc".substringIn('<', '>', missingDelimiterValue = "none"))
+        Assert.assertEquals("none", "a<b".substringIn('<', '>', missingDelimiterValue = "none")) // 有前缀无后缀
+        Assert.assertEquals("none", "abc".substringInLast('<', '>', missingDelimiterValue = "none"))
+    }
+
+    // endregion
+
+    // region containsBlankLine 边界
+
+    @Test
+    fun containsBlankLine_edges_test() {
+        Assert.assertFalse("a\nb".containsBlankLine())
+        Assert.assertTrue("a\n\nb".containsBlankLine())
+        Assert.assertTrue("a\r\rb".containsBlankLine()) // 两个单独的 \r
+        Assert.assertTrue("a\r\n\r\nb".containsBlankLine()) // 两个 \r\n
+        Assert.assertFalse("a\r\nb".containsBlankLine()) // \r\n 视为一个换行
+        Assert.assertFalse("a\r".containsBlankLine()) // 末尾孤立 \r 不应越界
+        Assert.assertFalse("a\r\n".containsBlankLine())
+    }
+
+    // endregion
+
+    // region path / file / url conversions
+
+    @Test
+    fun toFile_toPath_test() {
+        Assert.assertEquals(File("foo/bar.txt"), "foo/bar.txt".toFile())
+        Assert.assertEquals(Path.of("foo/bar.txt"), "foo/bar.txt".toPath())
+        Assert.assertEquals(File("foo/bar.txt"), "foo/bar.txt".toFileOrNull())
+        Assert.assertEquals(Path.of("foo/bar.txt"), "foo/bar.txt".toPathOrNull())
+    }
+
+    @Test
+    fun toPathOrNull_invalid_test() {
+        // NUL 字符无法构成路径
+        Assert.assertNull("\u0000".toPathOrNull())
+    }
+
+    @Test
+    fun toFileUrl_and_urlRoundTrip_test() {
+        val url = "foo/bar.png".toFileUrl()
+        Assert.assertTrue(url.toString().startsWith("file:"))
+        Assert.assertTrue(url.toString().contains("foo/bar.png"))
+        Assert.assertEquals(url.toFile().toPath(), url.toPath())
+    }
+
+    @Test
+    fun path_formatted_test() {
+        val formatted = Paths.get("a", "b", "c").formatted()
+        Assert.assertTrue(formatted.isAbsolute)
+        Assert.assertEquals("c", formatted.fileName.toString())
+    }
+
+    @Test
+    fun path_create_test() {
+        val tmp = Files.createTempDirectory("pls-core-test-")
+        try {
+            val file = tmp.resolve("sub/dir/file.txt")
+            file.create()
+            Assert.assertTrue(Files.isRegularFile(file))
+            Assert.assertTrue(Files.isDirectory(file.parent))
+            // 幂等：重复调用不抛异常
+            file.create()
+            Assert.assertTrue(Files.isRegularFile(file))
+        } finally {
+            tmp.toFile().deleteRecursively()
+        }
+    }
+
+    // endregion
 }

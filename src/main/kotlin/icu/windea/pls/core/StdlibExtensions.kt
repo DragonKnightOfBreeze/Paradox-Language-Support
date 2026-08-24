@@ -174,8 +174,8 @@ fun CharSequence.removeSurroundingOrNull(prefix: CharSequence, suffix: CharSeque
 }
 
 /** 如果当前字符串存在指定的前后缀，则去除并返回，否则返回 `null`。 */
-fun String.removeSurroundingOrNull(prefix: CharSequence, suffix: CharSequence): String? {
-    return if (surroundsWith(prefix, suffix)) substring(prefix.length, length - suffix.length) else null
+fun String.removeSurroundingOrNull(prefix: CharSequence, suffix: CharSequence, ignoreCase: Boolean = false): String? {
+    return if (surroundsWith(prefix, suffix, ignoreCase)) substring(prefix.length, length - suffix.length) else null
 }
 
 /**
@@ -245,7 +245,9 @@ fun String.containsBlankLine(): Boolean {
     val chars = toCharArray()
     for (i in chars.indices) {
         val char = chars[i]
-        if ((char == '\r' && chars[i + 1] != '\n') || char == '\n') newLine++
+        // `\r\n` 视为单个换行符，单独的 `\r` 视为换行符
+        val isNewLine = char == '\n' || (char == '\r' && (i + 1 >= chars.size || chars[i + 1] != '\n'))
+        if (isNewLine) newLine++
         if (newLine >= 2) return true
     }
     return false
