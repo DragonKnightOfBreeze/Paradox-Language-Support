@@ -12,6 +12,9 @@ import icu.windea.pls.core.removeSurroundingOrNull
  * 用于（基于可能的前缀、后缀、分隔符等）进行文本匹配。
  *
  * 包含用于文本匹配的元数据，同时也作为对文本匹配逻辑的策略。
+ *
+ * @see TextPatternBasedProvider
+ * @see TextPatternBasedBuilder
  */
 interface TextPattern<out R : TextPatternResult> {
     val priority: Int get() = 0

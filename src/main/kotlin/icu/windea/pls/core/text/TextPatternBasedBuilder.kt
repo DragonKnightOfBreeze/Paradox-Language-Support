@@ -17,7 +17,7 @@ import icu.windea.pls.core.optimized
  */
 @Optimized
 class TextPatternBasedBuilder<T>(
-    val providers: List<TextPatternBasedProvider<T, *>>
+    val providers: List<TextPatternBasedProvider<T, *>>,
 ) {
     private val literalProviderMap by lazy { computeLiteralProviderMap().optimized() }
     private val nonLiteralProviders by lazy { computeNonLiteralProviders().optimized() }
@@ -35,9 +35,9 @@ class TextPatternBasedBuilder<T>(
     }
 
     fun build(text: String): T? {
-        val literalProvider = literalProviderMap[text]
-        if (literalProvider != null) {
-            return literalProvider.get(text)
+        run r@{
+            val literalProvider = literalProviderMap[text] ?: return@r
+            return literalProvider.get(text) ?: return@r
         }
         nonLiteralProviders.forEachFast f@{ provider ->
             return provider.get(text) ?: return@f

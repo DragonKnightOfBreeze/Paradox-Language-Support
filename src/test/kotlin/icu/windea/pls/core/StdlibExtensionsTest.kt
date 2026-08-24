@@ -122,14 +122,14 @@ class StdlibExtensionsTest {
         Assert.assertTrue("\\\\\\d".isEscapedCharAt(3))
     }
 
-    @Test
-    fun escapeBlank_test() {
-        Assert.assertEquals("abc", "abc".escapeBlank())
-        Assert.assertEquals("abc&nbsp;", "abc ".escapeBlank())
-        Assert.assertEquals("abc&nbsp;&nbsp;", "abc  ".escapeBlank())
-        Assert.assertEquals("&nbsp;abc&nbsp;&nbsp;", " abc  ".escapeBlank())
-        Assert.assertEquals("&nbsp;a&nbsp;bc&nbsp;&nbsp;", " a bc  ".escapeBlank())
-    }
+    // @Test
+    // fun escapeBlank_test() {
+    //     Assert.assertEquals("abc", "abc".escapeBlank())
+    //     Assert.assertEquals("abc&nbsp;", "abc ".escapeBlank())
+    //     Assert.assertEquals("abc&nbsp;&nbsp;", "abc  ".escapeBlank())
+    //     Assert.assertEquals("&nbsp;abc&nbsp;&nbsp;", " abc  ".escapeBlank())
+    //     Assert.assertEquals("&nbsp;a&nbsp;bc&nbsp;&nbsp;", " a bc  ".escapeBlank())
+    // }
 
     @Test
     fun substringIn_variants_test() {

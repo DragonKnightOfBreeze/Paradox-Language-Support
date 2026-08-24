@@ -19,7 +19,7 @@ interface QuotePattern {
     /** 处理时是否会先忽略首尾的引号。 */
     val lenient: Boolean
 
-    /** 根据输入的 [text]，检查是否（绝对）需要首尾的引号。 */
+    /** 根据输入的 [text]，检查是否需要首尾的引号。如果 [lenient] 为 `true`，则会忽略首尾的引号。 */
     fun needQuote(text: String): Boolean
 
     /** 根据输入的 [text]，检查是否可以添加周围的引号。 */
@@ -28,7 +28,7 @@ interface QuotePattern {
     /** 根据输入的 [text]，检查是否可以去除周围的引号。 */
     fun canUnquote(text: String): Boolean
 
-    /** 根据输入的 [text]，检查是否已经以 [quoteChar] 开始（考虑转义）。 */
+    /** 根据输入的 [text]，检查是否已经以 [quoteChar] 开始。 */
     fun isLeftQuoted(text: String): Boolean
 
     /** 根据输入的 [text]，检查是否已经以 [quoteChar] 结尾（考虑转义）。 */
@@ -37,20 +37,20 @@ interface QuotePattern {
     /** 根据输入的 [text]，检查是否已经被 [quoteChar] 包围（包括仅一侧存在 [quoteChar] 的情况）。 */
     fun isQuoted(text: String): Boolean
 
-    /** 如果（绝对）需要首尾的引号，则添加 [text] 周围的引号（考虑转义）。 */
+    /** 如果需要首尾的引号，则添加 [text] 周围的引号。如果需要添加，则应同时考虑转义其中的引号。如果 [lenient] 为 `true`，则会忽略首尾的引号。 */
     fun quoteIfNeeded(text: String): String
 
-    /** 添加 [text] 周围的引号（考虑转义）。 */
+    /** 添加 [text] 周围的引号。如果需要添加，则应同时考虑转义其中的引号。如果 [lenient] 为 `true`，则会忽略首尾的引号。 */
     fun quote(text: String): String
 
-    /** 去除 [text] 周围的引号（考虑转义）。 */
+    /** 去除 [text] 周围的引号。如果需要去除，则应同时考虑反转义其中的引号。 */
     fun unquote(text: String): String
 
     abstract class Base(
         override val quoteChar: Char,
         override val lenient: Boolean = true,
     ) : QuotePattern {
-        abstract fun checkChar(char: Char): Boolean
+        abstract fun checkChar(text: String, index: Int, char: Char): Boolean
 
         override fun needQuote(text: String): Boolean {
             val s = text
@@ -60,7 +60,7 @@ interface QuotePattern {
             while (index < length - 1) {
                 val c = text[++index]
                 if (lenient && (index == 0 || index == length - 1) && c == quoteChar) continue
-                if (checkChar(c)) return true
+                if (checkChar(text, index, c)) return true
             }
             return false
         }

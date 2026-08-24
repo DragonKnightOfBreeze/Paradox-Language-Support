@@ -8,6 +8,7 @@ import com.intellij.ui.ColorUtil
 import icu.windea.pls.base.settings.ChronicleInternalSettings
 import icu.windea.pls.core.codeInsight.documentation.DocumentationBuilder
 import icu.windea.pls.core.codeInsight.documentation.buildDocumentation
+import icu.windea.pls.core.escape
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.forEachChild
 import icu.windea.pls.core.psi.light.LightElementBase
@@ -109,8 +110,8 @@ class ParadoxLocalisationTextQuickDocRenderContext(
     }
 
     override fun renderText(element: ParadoxLocalisationText) {
-        // 3.0.2 original text -> unescape localisation text by EscapePattern -> escape XML
-        val text = element.text.unescape(EscapePatterns.ParadoxLocalisation).escapeXml()
+        // 3.0.2 original text -> unescape localisation text -> escape XML -> escape line breaks to HTML form
+        val text = element.text.unescape(EscapePatterns.ParadoxLocalisation).escapeXml().escape(EscapePatterns.HtmlLineBreak)
         builder.append(text)
     }
 

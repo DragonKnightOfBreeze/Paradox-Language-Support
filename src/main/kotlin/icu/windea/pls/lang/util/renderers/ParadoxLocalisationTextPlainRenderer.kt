@@ -48,7 +48,7 @@ class ParadoxLocalisationTextPlainRenderContext(
     }
 
     override fun renderText(element: ParadoxLocalisationText) {
-        // 3.0.2 original text -> unescape localisation text by EscapePattern
+        // 3.0.2 original text -> unescape localisation text
         val text = element.text.unescape(EscapePatterns.ParadoxLocalisation)
         builder.append(text)
     }

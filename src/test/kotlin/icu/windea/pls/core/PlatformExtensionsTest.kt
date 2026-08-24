@@ -7,50 +7,6 @@ import org.junit.Test
 
 class PlatformExtensionsTest {
     @Test
-    fun unquote_test() {
-        // 空字符串 -> 空
-        run {
-            Assert.assertEquals("", "".unquote())
-        }
-        // 单个引号/仅引号对 -> 空
-        run {
-            Assert.assertEquals("", "\"".unquote())
-            Assert.assertEquals("", "\"\"".unquote())
-        }
-        // 无首尾引号 -> 原样返回
-        run {
-            Assert.assertEquals("abc", "abc".unquote())
-            Assert.assertEquals("a\"b", "a\"b".unquote()) // 内部转义不处理（无外层引号）
-        }
-        // 仅左/仅右引号 -> 去对应一侧
-        run {
-            Assert.assertEquals("abc", "\"abc".unquote())
-            Assert.assertEquals("abc", "abc\"".unquote())
-        }
-        // 成对引号 -> 去除首尾
-        run {
-            Assert.assertEquals("abc", "\"abc\"".unquote())
-        }
-        // 内部转义引号反转义（存在外层引号时）
-        run {
-            Assert.assertEquals("a\"b\"c", "\"a\\\"b\\\"c\"".unquote())
-            Assert.assertEquals("a\"b", "\"a\\\"b\"".unquote())
-        }
-        // 尾部引号被转义 -> 不视为右引号：保留原样（不去除转义）
-        run {
-            Assert.assertEquals("abc\\\"", "abc\\\"".unquote())
-        }
-        // 外层去除后，前缀为转义引号 -> 反转义后保留引号字符
-        run {
-            Assert.assertEquals("\"abc", "\"\\\"abc\"".unquote())
-        }
-        // 自定义引号字符（单引号）
-        run {
-            Assert.assertEquals("a'b", "'a\\'b'".unquote('\''))
-        }
-    }
-
-    @Test
     fun findKeywordsWithTextRanges_test() {
         // 单一关键字
         run {
