@@ -16,7 +16,7 @@ import icu.windea.pls.ep.ChronicleEpBundle
 import icu.windea.pls.lang.fixes.ReplaceWithExpressionFix
 import icu.windea.pls.lang.inspections.ParadoxExpressionInspectionContext
 import icu.windea.pls.lang.inspections.ParadoxExpressionInspectionService
-import icu.windea.pls.lang.match.util.ParadoxMatchProvider
+import icu.windea.pls.lang.match.util.ParadoxMatchFactory
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
 import icu.windea.pls.lang.psi.resolved
@@ -58,7 +58,7 @@ class ParadoxDefaultUnresolvedExpressionChecker : ParadoxUnresolvedExpressionChe
                     }
                 }
                 CwtDataTypes.IntPercentageField -> {
-                    if (ParadoxMatchProvider.matchesFloatPercentageField(element.value)) {
+                    if (ParadoxMatchFactory.matchesFloatPercentageField(element.value)) {
                         result = InspectionService.getWeakerHighlightType(context.tool)
                         return@p false
                     }

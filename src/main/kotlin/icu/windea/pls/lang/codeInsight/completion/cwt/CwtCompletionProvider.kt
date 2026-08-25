@@ -10,7 +10,7 @@ import icu.windea.pls.cwt.psi.CwtPropertyKey
 import icu.windea.pls.cwt.psi.CwtString
 import icu.windea.pls.cwt.psi.CwtTokenSets.KEY_OR_STRING_TOKENS
 import icu.windea.pls.lang.codeInsight.completion.CwtCompletionContext
-import icu.windea.pls.lang.codeInsight.completion.CwtCompletionLookupProvider
+import icu.windea.pls.lang.codeInsight.completion.CwtCompletionFactory
 import icu.windea.pls.lang.codeInsight.completion.CwtCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.CwtCompletionProvider
 import icu.windea.pls.lang.codeInsight.completion.addToResult
@@ -36,7 +36,7 @@ class CwtCompletionProvider : CwtCompletionProvider() {
 
         // 作为回退，提示关键字
         if (context.contextElement is CwtString && !context.leftQuoted) {
-            CwtCompletionLookupProvider.forKeyword().addToResult(globalContext, result)
+            CwtCompletionFactory.forKeyword().addToResult(globalContext, result)
         }
     }
 }

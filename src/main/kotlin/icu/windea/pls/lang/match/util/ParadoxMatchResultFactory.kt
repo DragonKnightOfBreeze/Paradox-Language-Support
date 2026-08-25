@@ -34,7 +34,7 @@ import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.propertyValue
 
-object ParadoxMatchResultProvider {
+object ParadoxMatchResultFactory {
     fun forRangedInt(expression: ParadoxExpression, configExpression: CwtDataExpression): ParadoxMatchResult? {
         val intRange = configExpression.metadata.intRange ?: return null
         val intValue = expression.value.toIntOrNull() ?: return null
@@ -62,7 +62,7 @@ object ParadoxMatchResultProvider {
         }
         // 使用检测子句内容的匹配
         ProgressManager.checkCanceled() // check cancellation before lazy match
-        return ParadoxMatchResult.LazyBlockAwareMatch { ParadoxMatchProvider.matchesBlock(blockElement, config) }
+        return ParadoxMatchResult.LazyBlockAwareMatch { ParadoxMatchFactory.matchesBlock(blockElement, config) }
     }
 
     fun forDefinition(element: PsiElement, project: Project, expression: String, configExpression: CwtDataExpression): ParadoxMatchResult {
@@ -80,8 +80,8 @@ object ParadoxMatchResultProvider {
             ProgressManager.checkCanceled() // check cancellation before lazy match
             ParadoxMatchResult.LazyIndexAwareMatch {
                 when {
-                    suffixes.isEmpty() -> ParadoxMatchProvider.matchesDefinition(element, project, expression, typeExpression)
-                    else -> suffixes.any { ParadoxMatchProvider.matchesDefinition(element, project, expression + it, typeExpression) }
+                    suffixes.isEmpty() -> ParadoxMatchFactory.matchesDefinition(element, project, expression, typeExpression)
+                    else -> suffixes.any { ParadoxMatchFactory.matchesDefinition(element, project, expression + it, typeExpression) }
                 }
             }
         }
@@ -101,8 +101,8 @@ object ParadoxMatchResultProvider {
             ProgressManager.checkCanceled() // check cancellation before lazy match
             ParadoxMatchResult.LazyIndexAwareMatch {
                 when {
-                    suffixes.isEmpty() -> ParadoxMatchProvider.matchesLocalisation(element, project, expression)
-                    else -> suffixes.any { ParadoxMatchProvider.matchesLocalisation(element, project, expression + it) }
+                    suffixes.isEmpty() -> ParadoxMatchFactory.matchesLocalisation(element, project, expression)
+                    else -> suffixes.any { ParadoxMatchFactory.matchesLocalisation(element, project, expression + it) }
                 }
             }
         }
@@ -122,8 +122,8 @@ object ParadoxMatchResultProvider {
             ProgressManager.checkCanceled() // check cancellation before lazy match
             ParadoxMatchResult.LazyIndexAwareMatch {
                 when {
-                    suffixes.isEmpty() -> ParadoxMatchProvider.matchesSyncedLocalisation(element, project, expression)
-                    else -> suffixes.any { ParadoxMatchProvider.matchesSyncedLocalisation(element, project, expression + it) }
+                    suffixes.isEmpty() -> ParadoxMatchFactory.matchesSyncedLocalisation(element, project, expression)
+                    else -> suffixes.any { ParadoxMatchFactory.matchesSyncedLocalisation(element, project, expression + it) }
                 }
             }
         }
@@ -145,7 +145,7 @@ object ParadoxMatchResultProvider {
         return ParadoxMatchResultContext.getFromCache(element, project, key, cacheKey) {
             ProgressManager.checkCanceled() // check cancellation before lazy match
             ParadoxMatchResult.LazyIndexAwareMatch {
-                ParadoxMatchProvider.matchesPathReference(element, project, pathReference, configExpression)
+                ParadoxMatchFactory.matchesPathReference(element, project, pathReference, configExpression)
             }
         }
     }
@@ -159,7 +159,7 @@ object ParadoxMatchResultProvider {
         if (searchScopeType != null) {
             ProgressManager.checkCanceled() // check cancellation before lazy match
             return ParadoxMatchResult.LazyIndexAwareMatch {
-                ParadoxMatchProvider.matchesComplexEnumValue(element, project, name, enumName, searchScopeType)
+                ParadoxMatchFactory.matchesComplexEnumValue(element, project, name, enumName, searchScopeType)
             }
         }
 
@@ -168,7 +168,7 @@ object ParadoxMatchResultProvider {
         return ParadoxMatchResultContext.getFromCache(element, project, key, cacheKey) {
             ProgressManager.checkCanceled() // check cancellation before lazy match
             ParadoxMatchResult.LazyIndexAwareMatch {
-                ParadoxMatchProvider.matchesComplexEnumValue(element, project, name, enumName)
+                ParadoxMatchFactory.matchesComplexEnumValue(element, project, name, enumName)
             }
         }
     }
@@ -182,7 +182,7 @@ object ParadoxMatchResultProvider {
         return ParadoxMatchResultContext.getFromCache(element, configGroup.project, key, cacheKey) {
             ProgressManager.checkCanceled() // check cancellation before lazy match
             ParadoxMatchResult.LazyIndexAwareMatch {
-                ParadoxMatchProvider.matchesModifier(element, configGroup, name)
+                ParadoxMatchFactory.matchesModifier(element, configGroup, name)
             }
         }
     }
@@ -197,7 +197,7 @@ object ParadoxMatchResultProvider {
         return ParadoxMatchResultContext.getFromCache(element, configGroup.project, key, cacheKey) {
             ProgressManager.checkCanceled() // check cancellation before lazy match
             ParadoxMatchResult.LazyTemplateAwareMatch {
-                ParadoxMatchProvider.matchesTemplate(element, configGroup, text, template, options)
+                ParadoxMatchFactory.matchesTemplate(element, configGroup, text, template, options)
             }
         }
     }

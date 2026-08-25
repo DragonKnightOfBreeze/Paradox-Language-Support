@@ -106,9 +106,9 @@ fun LookupElementBuilder.withModifierPresentableNames(modifierName: String, cont
 }
 
 fun LookupElementBuilder.wrapForConfig(context: CwtCompletionContext, config: CwtConfig<*>, schemaExpression: CwtSchemaExpression): LookupElement? {
-    return CwtCompletionLookupProvider.wrapForConfig(this, context, config, schemaExpression)
+    return CwtCompletionFactory.wrapForConfig(this, context, config, schemaExpression)
 }
 
 fun LookupElementBuilder.wrapForExpression(context: ParadoxCompletionContext): LookupElementBuilder? {
-    return ParadoxCompletionLookupProvider.wrapForExpression(this, context)
+    return ParadoxCompletionFactory.wrapForExpression(this, context)
 }

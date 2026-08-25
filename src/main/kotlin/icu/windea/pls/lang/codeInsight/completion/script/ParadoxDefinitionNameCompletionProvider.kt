@@ -10,7 +10,7 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.codeInsight.completion.GlobalCompletionContext
 import icu.windea.pls.core.processAsync
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
-import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionLookupProvider
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionFactory
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionProvider
 import icu.windea.pls.lang.codeInsight.completion.ParadoxExtendedCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.addToResult
@@ -76,7 +76,7 @@ class ParadoxDefinitionNameCompletionProvider : ParadoxCompletionProvider() {
                         val selector = ParadoxDefinitionSearch.selector(context.project, context.file).contextSensitive().distinct()
                             .filterBy { it.name != context.keyword } // skip if name = input
                         ParadoxDefinitionSearch.searchProperty(null, type, selector).processAsync {
-                            ParadoxCompletionLookupProvider.fromDefinition(context, it).addToResult(context, result)
+                            ParadoxCompletionFactory.fromDefinition(context, it).addToResult(context, result)
                         }
 
                         ParadoxExtendedCompletionManager.completeExtendedDefinition(context, result)
@@ -100,7 +100,7 @@ class ParadoxDefinitionNameCompletionProvider : ParadoxCompletionProvider() {
                         val selector = ParadoxDefinitionSearch.selector(context.project, context.file).contextSensitive().distinct()
                             .filterBy { it.name != context.keyword } // skip if name = input
                         ParadoxDefinitionSearch.searchProperty(null, type, selector).processAsync {
-                            ParadoxCompletionLookupProvider.fromDefinition(context, it).addToResult(context, result)
+                            ParadoxCompletionFactory.fromDefinition(context, it).addToResult(context, result)
                         }
 
                         ParadoxExtendedCompletionManager.completeExtendedDefinition(context, result)

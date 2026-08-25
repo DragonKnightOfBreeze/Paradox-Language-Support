@@ -64,7 +64,7 @@ import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.text.ParadoxScript
 import javax.swing.Icon
 
-object ParadoxCompletionLookupProvider {
+object ParadoxCompletionFactory {
     // region Constants
 
     private val LOOKUP_ELEMENT_YES = LookupElementBuilder.create("yes").bold()
@@ -79,7 +79,7 @@ object ParadoxCompletionLookupProvider {
 
     // endregion
 
-    // region Providers (keywords)
+    // region Lookup Elements (keywords)
 
     fun forYesKeyword(): LookupElementBuilder = LOOKUP_ELEMENT_YES
     fun forNoKeyword(): LookupElementBuilder = LOOKUP_ELEMENT_NO
@@ -89,7 +89,7 @@ object ParadoxCompletionLookupProvider {
 
     // endregion
 
-    // region Providers (wrapped)
+    // region Lookup Elements (wrapped)
 
     fun fromScriptedVariable(context: ParadoxCompletionContext, element: ParadoxScriptScriptedVariable, hintText: String? = null): LookupElementBuilder? {
         // 不自动插入后面的等号
@@ -284,7 +284,7 @@ object ParadoxCompletionLookupProvider {
 
     // endregion
 
-    // region Providers (unwrapped)
+    // region Lookup Elements (unwrapped)
 
     fun forEventNamespace(element: ParadoxScriptProperty): LookupElementBuilder? {
         val name = element.value ?: return null
@@ -632,7 +632,7 @@ object ParadoxCompletionLookupProvider {
 
     // endregion
 
-    // region Providers (extended)
+    // region Lookup Elements (extended)
 
     fun forExtendedConfig(config: CwtConfig<*>, name: String, icon: Icon?): LookupElementBuilder {
         val element = config.pointer.element // can be null

@@ -14,7 +14,7 @@ import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.ParadoxLocalisationParameterService
 import icu.windea.pls.lang.resolve.ParadoxParameterService
-import icu.windea.pls.lang.resolve.util.ParadoxAnnotateUtil
+import icu.windea.pls.lang.resolve.util.ParadoxExpressionSupportFactory
 import icu.windea.pls.model.type.ParadoxExpressionRole
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
@@ -31,7 +31,7 @@ class ParadoxScriptParameterExpressionSupport : ParadoxScriptExpressionSupport {
     override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder) {
         if (element !is ParadoxScriptStringExpressionElement) return // only for string expressions in script files
         val attributesKey = ParadoxSemanticHighlighterColors.argument()
-        ParadoxAnnotateUtil.annotateExpression(element, rangeInExpression, holder, attributesKey)
+        ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
     }
 
     override fun resolve(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
@@ -56,7 +56,7 @@ class ParadoxScriptLocalisationParameterExpressionSupport : ParadoxScriptExpress
     override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder) {
         if (element !is ParadoxScriptStringExpressionElement) return // only for string expressions in script files
         val attributesKey = ParadoxSemanticHighlighterColors.argument()
-        ParadoxAnnotateUtil.annotateExpression(element, rangeInExpression, holder, attributesKey)
+        ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
     }
 
     override fun resolve(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {

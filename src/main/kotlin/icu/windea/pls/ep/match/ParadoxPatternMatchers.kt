@@ -6,7 +6,7 @@ import icu.windea.pls.core.matchesAntPattern
 import icu.windea.pls.core.matchesPattern
 import icu.windea.pls.core.matchesRegex
 import icu.windea.pls.lang.match.ParadoxPatternMatchContext
-import icu.windea.pls.lang.match.util.ParadoxMatchResultProvider
+import icu.windea.pls.lang.match.util.ParadoxMatchResultFactory
 
 class ParadoxDefaultPatternMatcher : ParadoxPatternMatcher {
     override fun matches(text: String, ignoreCase: Boolean, context: ParadoxPatternMatchContext): Boolean {
@@ -26,7 +26,7 @@ class ParadoxDefaultPatternMatcher : ParadoxPatternMatcher {
 class ParadoxTemplatePatternMatcher : ParadoxPatternMatcher {
     override fun matches(text: String, ignoreCase: Boolean, context: ParadoxPatternMatchContext): Boolean {
         if (context.dataType != CwtDataTypes.Template) return false
-        val r = ParadoxMatchResultProvider.forTemplate(context.element, context.configGroup, text, context.configExpression, context.options)
+        val r = ParadoxMatchResultFactory.forTemplate(context.element, context.configGroup, text, context.configExpression, context.options)
         return r.get(context.options)
     }
 }

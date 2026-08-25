@@ -16,7 +16,7 @@ import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.references.script.ParadoxScriptExpressionPsiReference
 import icu.windea.pls.lang.resolve.ParadoxExpressionService
-import icu.windea.pls.lang.resolve.util.ParadoxAnnotateUtil
+import icu.windea.pls.lang.resolve.util.ParadoxExpressionSupportFactory
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.type.ParadoxExpressionRole
 import icu.windea.pls.script.editor.ParadoxScriptHighlighterColors
@@ -46,13 +46,13 @@ class ParadoxScriptTechnologyWithLevelExpressionSupport : ParadoxScriptExpressio
             if (offset <= 0) return@run
             val attributesKey = ParadoxScriptHighlighterColors.DEFINITION_REFERENCE
             val rangeInExpression = TextRange.create(rangeInExpression.startOffset, rangeInExpression.startOffset + offset)
-            ParadoxAnnotateUtil.annotateExpression(element, rangeInExpression, holder, attributesKey)
+            ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
         }
         run {
             val offset = separatorIndex
             val attributesKey = ParadoxScriptHighlighterColors.SEMANTIC_MARKER
             val rangeInExpression = TextRange.create(rangeInExpression.startOffset + offset, rangeInExpression.startOffset + offset + 1)
-            ParadoxAnnotateUtil.annotateExpression(element, rangeInExpression, holder, attributesKey)
+            ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
         }
         run {
             val offset = text.length - separatorIndex - 1
@@ -61,7 +61,7 @@ class ParadoxScriptTechnologyWithLevelExpressionSupport : ParadoxScriptExpressio
             if (!text.substring(separatorIndex + 1).all { it.isExactDigit() }) return@run
             val attributesKey = ParadoxScriptHighlighterColors.NUMBER
             val rangeInExpression = TextRange.create(rangeInExpression.endOffset - offset, rangeInExpression.endOffset)
-            ParadoxAnnotateUtil.annotateExpression(element, rangeInExpression, holder, attributesKey)
+            ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
         }
     }
 

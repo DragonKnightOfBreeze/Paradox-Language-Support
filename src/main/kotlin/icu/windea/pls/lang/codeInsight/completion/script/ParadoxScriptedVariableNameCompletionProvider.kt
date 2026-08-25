@@ -9,7 +9,7 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.codeInsight.completion.GlobalCompletionContext
 import icu.windea.pls.core.processAsync
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
-import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionLookupProvider
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionFactory
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionProvider
 import icu.windea.pls.lang.codeInsight.completion.ParadoxExtendedCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.addToResult
@@ -40,7 +40,7 @@ class ParadoxScriptedVariableNameCompletionProvider : ParadoxCompletionProvider(
         val selector = ParadoxScriptedVariableSearch.selector(context.project, element).contextSensitive().distinct()
             .filterBy { it.name != context.keyword } // skip if name = input
         ParadoxScriptedVariableSearch.searchGlobal(null, selector).processAsync { element ->
-            ParadoxCompletionLookupProvider.fromScriptedVariable(context, element).addToResult(context, result)
+            ParadoxCompletionFactory.fromScriptedVariable(context, element).addToResult(context, result)
         }
 
         ParadoxExtendedCompletionManager.completeExtendedScriptedVariable(context, result)

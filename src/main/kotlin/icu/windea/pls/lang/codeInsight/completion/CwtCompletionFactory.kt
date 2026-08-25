@@ -38,7 +38,7 @@ import icu.windea.pls.model.constants.ChronicleStrings
 import icu.windea.pls.model.type.CwtExpressionType
 import javax.swing.Icon
 
-object CwtCompletionLookupProvider {
+object CwtCompletionFactory {
     // region Constants
 
     private val LOOKUP_ELEMENT_YES = LookupElementBuilder.create(ChronicleStrings.yesKeyword).bold()
@@ -61,7 +61,7 @@ object CwtCompletionLookupProvider {
 
     // endregion
 
-    // region Providers (keywords)
+    // region Lookup Elements (keywords)
 
     @Suppress("unused")
     fun forYesKeyword(): LookupElementBuilder = LOOKUP_ELEMENT_YES
@@ -74,7 +74,7 @@ object CwtCompletionLookupProvider {
 
     // endregion
 
-    // region Providers (schema)
+    // region Lookup Elements (schema)
 
     fun forSchemaConstant(lookupString: String, element: PsiElement? = null, typeFile: PsiFile? = null, icon: Icon? = null, hintText: String? = null): LookupElementBuilder {
         return LookupElementBuilder.create(lookupString).withPsiElement(element)

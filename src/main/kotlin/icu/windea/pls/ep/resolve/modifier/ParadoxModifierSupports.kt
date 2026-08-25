@@ -16,11 +16,11 @@ import icu.windea.pls.core.collections.findFast
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.icon
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
-import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionLookupProvider
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionFactory
 import icu.windea.pls.lang.codeInsight.completion.addToResult
 import icu.windea.pls.lang.psi.light.ParadoxModifierLightElement
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxTemplateExpression
-import icu.windea.pls.lang.resolve.util.ParadoxModifierUtil
+import icu.windea.pls.lang.resolve.util.ParadoxModifierSupportFactory
 import icu.windea.pls.lang.util.ParadoxEconomicCategoryManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
@@ -59,7 +59,7 @@ class ParadoxPredefinedModifierSupport : ParadoxModifierSupport {
         val scopeContext = context.scopeContext
         val completeOnlyScopeIsMatched = ChronicleSettings.getInstance().state.completion.completeOnlyScopeIsMatched
 
-        ParadoxModifierUtil.processPredefinedModifierConfig(configGroup) p@{ modifierConfig ->
+        ParadoxModifierSupportFactory.processPredefinedModifierConfig(configGroup) p@{ modifierConfig ->
             // 排除重复的
             if (!modifierNames.add(modifierConfig.name)) return@p true
 
@@ -67,7 +67,7 @@ class ParadoxPredefinedModifierSupport : ParadoxModifierSupport {
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, modifierConfig.supportedScopes, configGroup)
             if (!scopeMatched && completeOnlyScopeIsMatched) return@p true
 
-            val hintText = ParadoxCompletionLookupProvider.getConfigBasedHintText(context, modifierConfig.config, withConfigExpression = false)
+            val hintText = ParadoxCompletionFactory.getConfigBasedHintText(context, modifierConfig.config, withConfigExpression = false)
             val template = modifierConfig.template
             if (template.expressionString.isNotEmpty()) return@p true
             val typeFile = modifierConfig.pointer.containingFile
@@ -75,13 +75,13 @@ class ParadoxPredefinedModifierSupport : ParadoxModifierSupport {
             val typeIcon = typeFile?.icon
             val name = modifierConfig.name
             val modifierElement = ParadoxModifierManager.resolveModifier(name, element, configGroup, this) ?: return@p true
-            val lookupElement = ParadoxCompletionLookupProvider.fromModifier(context, modifierElement, typeText, typeIcon, hintText)
+            val lookupElement = ParadoxCompletionFactory.fromModifier(context, modifierElement, typeText, typeIcon, hintText)
             lookupElement.addToResult(context, result)
         }
     }
 
     override fun processModifier(element: PsiElement, configGroup: CwtConfigGroup, processor: Processor<ParadoxModifierLightElement>): Boolean {
-        return ParadoxModifierUtil.processPredefinedModifierConfig(configGroup) p@{ modifierConfig ->
+        return ParadoxModifierSupportFactory.processPredefinedModifierConfig(configGroup) p@{ modifierConfig ->
             val name = modifierConfig.name
             val modifierElement = ParadoxModifierManager.resolveModifier(name, element, configGroup, this) ?: return@p true
             processor.process(modifierElement)
@@ -104,7 +104,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
     override fun matchesModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): Boolean {
         val modifierName = name
         var matched = false
-        ParadoxModifierUtil.processGeneratedModifierConfig(configGroup) p@{ modifierConfig ->
+        ParadoxModifierSupportFactory.processGeneratedModifierConfig(configGroup) p@{ modifierConfig ->
             val templateExpression = ParadoxTemplateExpression.resolve(modifierName, null, configGroup, modifierConfig)
             if (templateExpression == null) return@p true
             matched = true
@@ -119,13 +119,13 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
         val gameType = configGroup.gameType
         val project = configGroup.project
         val modifierInfoCandidates = SmartList<ParadoxModifierInfo>() // optimize: should be often 0 or 1 element here
-        ParadoxModifierUtil.processGeneratedModifierConfig(configGroup) p@{ modifierConfig ->
+        ParadoxModifierSupportFactory.processGeneratedModifierConfig(configGroup) p@{ modifierConfig ->
             val templateExpression = ParadoxTemplateExpression.resolve(modifierName, null, configGroup, modifierConfig)
             if (templateExpression == null) return@p true
             val modifierInfo = ParadoxModifierInfo(modifierName, project, gameType)
             modifierInfo.modifierConfig = modifierConfig
             modifierInfo.templateExpression = templateExpression
-            if (ParadoxModifierUtil.checkModifierTemplate(templateExpression)) {
+            if (ParadoxModifierSupportFactory.checkModifierTemplate(templateExpression)) {
                 modifierInfoCandidates.clear()
                 modifierInfoCandidates.add(modifierInfo)
                 false
@@ -136,7 +136,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
         }
         if (modifierInfoCandidates.isEmpty()) return null
         return modifierInfoCandidates.singleOrNull()
-            ?: modifierInfoCandidates.findFast { ParadoxModifierUtil.checkModifierTemplate(it.templateExpression!!, element) }
+            ?: modifierInfoCandidates.findFast { ParadoxModifierSupportFactory.checkModifierTemplate(it.templateExpression!!, element) }
             ?: modifierInfoCandidates.firstOrNull()
     }
 
@@ -147,7 +147,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
         val scopeContext = context.scopeContext
         val completeOnlyScopeIsMatched = ChronicleSettings.getInstance().state.completion.completeOnlyScopeIsMatched
 
-        ParadoxModifierUtil.processGeneratedModifierConfig(configGroup) p@{ modifierConfig ->
+        ParadoxModifierSupportFactory.processGeneratedModifierConfig(configGroup) p@{ modifierConfig ->
             // 排除不匹配 modifier 的 supported_scopes 的情况
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, modifierConfig.supportedScopes, configGroup)
             if (!scopeMatched && completeOnlyScopeIsMatched) return@p true
@@ -155,22 +155,22 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
             val typeFile = modifierConfig.pointer.containingFile
             val typeText = typeFile?.name
             val typeIcon = typeFile?.icon
-            val hintText = ParadoxCompletionLookupProvider.getConfigBasedHintText(context, modifierConfig.config, withConfigExpression = true)
+            val hintText = ParadoxCompletionFactory.getConfigBasedHintText(context, modifierConfig.config, withConfigExpression = true)
             // 生成的 modifier
-            ParadoxModifierUtil.processModifierTemplate(element, configGroup, modifierConfig.template) p1@{ name ->
+            ParadoxModifierSupportFactory.processModifierTemplate(element, configGroup, modifierConfig.template) p1@{ name ->
                 // 排除重复的
                 if (!modifierNames.add(modifierConfig.name)) return@p1 true
 
                 val modifierElement = ParadoxModifierManager.resolveModifier(name, element, configGroup, this) ?: return@p1 true
-                val lookupElement = ParadoxCompletionLookupProvider.fromModifier(context, modifierElement, typeText, typeIcon, hintText)
+                val lookupElement = ParadoxCompletionFactory.fromModifier(context, modifierElement, typeText, typeIcon, hintText)
                 lookupElement.addToResult(context, result)
             }
         }
     }
 
     override fun processModifier(element: PsiElement, configGroup: CwtConfigGroup, processor: Processor<ParadoxModifierLightElement>): Boolean {
-        return ParadoxModifierUtil.processGeneratedModifierConfig(configGroup) p@{ modifierConfig ->
-            ParadoxModifierUtil.processModifierTemplate(element, configGroup, modifierConfig.template) p1@{ name ->
+        return ParadoxModifierSupportFactory.processGeneratedModifierConfig(configGroup) p@{ modifierConfig ->
+            ParadoxModifierSupportFactory.processModifierTemplate(element, configGroup, modifierConfig.template) p1@{ name ->
                 val modifierElement = ParadoxModifierManager.resolveModifier(name, element, configGroup, this) ?: return@p1 true
                 processor.process(modifierElement)
             }
@@ -195,7 +195,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
     override fun matchesModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): Boolean {
         val modifierName = name
         var matched = false
-        ParadoxModifierUtil.processEconomicCategoryInfo(element, configGroup) p@{ economicCategoryInfo ->
+        ParadoxModifierSupportFactory.processEconomicCategoryInfo(element, configGroup) p@{ economicCategoryInfo ->
             economicCategoryInfo.modifiers.process p1@{ economicCategoryModifierInfo ->
                 if (!economicCategoryModifierInfo.name.equals(modifierName, ignoreCase = true)) return@p1 true
                 matched = true
@@ -208,7 +208,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
     override fun resolveModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): ParadoxModifierInfo? {
         val modifierName = name
         var result: ParadoxModifierInfo? = null
-        ParadoxModifierUtil.processOrderedEconomicCategoryInfo(element, configGroup) p@{ economicCategoryInfo ->
+        ParadoxModifierSupportFactory.processOrderedEconomicCategoryInfo(element, configGroup) p@{ economicCategoryInfo ->
             economicCategoryInfo.modifiers.process p1@{ economicCategoryModifierInfo ->
                 if (!economicCategoryModifierInfo.name.equals(modifierName, ignoreCase = true)) return@p1 true
                 val modifierInfo = ParadoxModifierInfo(modifierName, configGroup.project, configGroup.gameType)
@@ -228,7 +228,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
         val scopeContext = context.scopeContext
         val completeOnlyScopeIsMatched = ChronicleSettings.getInstance().state.completion.completeOnlyScopeIsMatched
 
-        ParadoxModifierUtil.processEconomicCategoryInfo(element, configGroup) p@{ economicCategoryInfo ->
+        ParadoxModifierSupportFactory.processEconomicCategoryInfo(element, configGroup) p@{ economicCategoryInfo ->
             // 排除不匹配 modifier 的 supported_scopes 的情况
             val modifierCategories = ParadoxEconomicCategoryManager.getModifierCategories(economicCategoryInfo.modifierCategory, configGroup)
             val supportedScopes = ParadoxScopeManager.getSupportedScopes(modifierCategories)
@@ -242,14 +242,14 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
                 val name = economicCategoryModifierInfo.name
                 if (!modifierNames.add(name)) return@p1 true // 排除重复的
                 val modifierElement = ParadoxModifierManager.resolveModifier(name, element, configGroup, this) ?: return@p1 true
-                val lookupElement = ParadoxCompletionLookupProvider.fromModifier(context, modifierElement, typeText, typeIcon, hintText)
+                val lookupElement = ParadoxCompletionFactory.fromModifier(context, modifierElement, typeText, typeIcon, hintText)
                 lookupElement.addToResult(context, result)
             }
         }
     }
 
     override fun processModifier(element: PsiElement, configGroup: CwtConfigGroup, processor: Processor<ParadoxModifierLightElement>): Boolean {
-        return ParadoxModifierUtil.processEconomicCategoryInfo(element, configGroup) p@{ economicCategoryInfo ->
+        return ParadoxModifierSupportFactory.processEconomicCategoryInfo(element, configGroup) p@{ economicCategoryInfo ->
             economicCategoryInfo.modifiers.process p1@{ economicCategoryModifierInfo ->
                 val name = economicCategoryModifierInfo.name
                 val modifierElement = ParadoxModifierManager.resolveModifier(name, element, configGroup, this) ?: return@p1 true

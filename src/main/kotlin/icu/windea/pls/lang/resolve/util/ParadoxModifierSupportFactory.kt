@@ -27,7 +27,7 @@ import icu.windea.pls.lang.util.ParadoxEconomicCategoryManager
 import icu.windea.pls.model.ParadoxEconomicCategoryInfo
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 
-object ParadoxModifierUtil {
+object ParadoxModifierSupportFactory {
     fun processPredefinedModifierConfig(configGroup: CwtConfigGroup, processor: Processor<CwtModifierConfig>): Boolean {
         val modifiers = configGroup.predefinedModifiers
         if (modifiers.isEmpty()) return true

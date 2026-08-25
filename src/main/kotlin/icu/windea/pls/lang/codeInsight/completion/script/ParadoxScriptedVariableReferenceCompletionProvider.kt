@@ -8,7 +8,7 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.codeInsight.completion.GlobalCompletionContext
 import icu.windea.pls.core.processAsync
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
-import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionLookupProvider
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionFactory
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionProvider
 import icu.windea.pls.lang.codeInsight.completion.ParadoxExtendedCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.addToResult
@@ -37,10 +37,10 @@ class ParadoxScriptedVariableReferenceCompletionProvider : ParadoxCompletionProv
         // 需要同时查找当前文件中的和全局的
         val selector = ParadoxScriptedVariableSearch.selector(project, element).contextSensitive().distinct()
         ParadoxScriptedVariableSearch.searchLocal(null, selector).processAsync {
-            ParadoxCompletionLookupProvider.fromScriptedVariable(context, it).addToResult(context, result)
+            ParadoxCompletionFactory.fromScriptedVariable(context, it).addToResult(context, result)
         }
         ParadoxScriptedVariableSearch.searchGlobal(null, selector).processAsync {
-            ParadoxCompletionLookupProvider.fromScriptedVariable(context, it).addToResult(context, result)
+            ParadoxCompletionFactory.fromScriptedVariable(context, it).addToResult(context, result)
         }
 
         ParadoxExtendedCompletionManager.completeExtendedScriptedVariable(context, result)

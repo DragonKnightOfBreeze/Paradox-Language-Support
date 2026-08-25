@@ -13,7 +13,7 @@ import icu.windea.pls.lang.psi.isDatabaseObjectExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxCommandExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDatabaseObjectExpression
-import icu.windea.pls.lang.resolve.util.ParadoxAnnotateUtil
+import icu.windea.pls.lang.resolve.util.ParadoxExpressionSupportFactory
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 
@@ -29,7 +29,7 @@ abstract class ParadoxLocalisationComplexExpressionSupportBase : ParadoxLocalisa
         if (element !is ParadoxLocalisationExpressionElement) return
         val configGroup = ChronicleFacade.getConfigGroup(element.project, selectGameType(element))
         val complexExpression = ParadoxComplexExpression.resolve(element, rangeInExpression, configGroup) ?: return
-        ParadoxAnnotateUtil.annotateComplexExpression(element, complexExpression, holder)
+        ParadoxExpressionSupportFactory.annotateComplexExpression(element, complexExpression, holder)
     }
 
     override fun getReferences(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange): List<PsiReference> {

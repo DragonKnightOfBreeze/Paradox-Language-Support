@@ -286,7 +286,7 @@ object ParadoxCompletionManager {
             val hintText = typeConfigsToUse.joinToString(", ", " for ") { typeConfig -> typeConfig.name }
             val typeFile = config.pointer.containingFile
             val context = context.copy(isKey = false, config = config)
-            ParadoxCompletionLookupProvider.fromRootKey(context, key, element, typeFile, icon, hintText).addToResult(context, result)
+            ParadoxCompletionFactory.fromRootKey(context, key, element, typeFile, icon, hintText).addToResult(context, result)
         }
         for ((key, tuples) in infoMapForKey) {
             ProgressManager.checkCanceled()
@@ -314,7 +314,7 @@ object ParadoxCompletionManager {
             val typeFile = config?.pointer?.containingFile
             val forceInsertCurlyBraces = tuples.isEmpty()
             val context = context.copy(config = config)
-            ParadoxCompletionLookupProvider.fromRootKey(context, key, element, typeFile, icon, hintText, forceInsertCurlyBraces).addToResult(context, result)
+            ParadoxCompletionFactory.fromRootKey(context, key, element, typeFile, icon, hintText, forceInsertCurlyBraces).addToResult(context, result)
         }
     }
 
@@ -325,7 +325,7 @@ object ParadoxCompletionManager {
         for (config in configs) {
             ProgressManager.checkCanceled()
             val context = context.copy(config = config, isKey = true)
-            ParadoxCompletionLookupProvider.fromInlineScriptMacro(context, config).addToResult(context, result)
+            ParadoxCompletionFactory.fromInlineScriptMacro(context, config).addToResult(context, result)
         }
     }
 
@@ -352,7 +352,7 @@ object ParadoxCompletionManager {
             val result = result.withPrefixMatcher(context.keyword)
             val selector = ParadoxDefinitionSearch.selector(context.project, context.file).contextSensitive().distinct()
             ParadoxDefinitionSearch.searchProperty(null, type, selector).processAsync { definition ->
-                ParadoxCompletionLookupProvider.fromDefinition(context, definition).addToResult(context, result)
+                ParadoxCompletionFactory.fromDefinition(context, definition).addToResult(context, result)
             }
             ParadoxExtendedCompletionManager.completeExtendedDefinition(context, result)
         }
@@ -366,7 +366,7 @@ object ParadoxCompletionManager {
         for (modeConfig in modeConfigs) {
             ProgressManager.checkCanceled()
             val context = context.copy(config = modeConfig)
-            ParadoxCompletionLookupProvider.fromDefinitionInjectionMode(context, modeConfig, hintText).addToResult(context, result)
+            ParadoxCompletionFactory.fromDefinitionInjectionMode(context, modeConfig, hintText).addToResult(context, result)
         }
     }
 
@@ -380,7 +380,7 @@ object ParadoxCompletionManager {
             ProgressManager.checkCanceled()
             val hintText = " " + locale.text
             val matched = localeIdFromFileName?.let { it == locale.name }
-            val lookupElement = ParadoxCompletionLookupProvider.forLocalisationLocale(locale, hintText, postHandle = true)
+            val lookupElement = ParadoxCompletionFactory.forLocalisationLocale(locale, hintText, postHandle = true)
                 ?.letIf(matched == false) {
                     it.withItemTextForeground(JBColor.GRAY) // 将不匹配的语言环境的提示项置灰
                 }
@@ -406,7 +406,7 @@ object ParadoxCompletionManager {
             .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
             .filterBy { it.name != context.keyword } // skip if name = input
         val processor = LimitedCompletionProcessor<ParadoxLocalisationProperty> { element ->
-            ParadoxCompletionLookupProvider.forLocalisationName(element).addToResult(context, result)
+            ParadoxCompletionFactory.forLocalisationName(element).addToResult(context, result)
         }
         // 保证索引在此 readAction 中可用
         runSmartReadAction(context.project, inSmartMode = true) {
@@ -422,7 +422,7 @@ object ParadoxCompletionManager {
         val hintText = " from <text_color>"
         for (colorInfo in colorInfos) {
             ProgressManager.checkCanceled()
-            ParadoxCompletionLookupProvider.forLocalisationColor(colorInfo, hintText, postHandle).addToResult(context, result)
+            ParadoxCompletionFactory.forLocalisationColor(colorInfo, hintText, postHandle).addToResult(context, result)
         }
     }
 
@@ -437,11 +437,11 @@ object ParadoxCompletionManager {
         ParadoxDefinitionSearch.searchProperty(null, ParadoxDefinitionTypes.gameConcept, conceptSelector).processAsync { concept ->
             val name = concept.name
             if (keysToDistinct.add(name)) {
-                ParadoxCompletionLookupProvider.forLocalisationConcept(concept, concept.name, hintText).addToResult(context, result)
+                ParadoxCompletionFactory.forLocalisationConcept(concept, concept.name, hintText).addToResult(context, result)
             }
             concept.getDefinitionData<StellarisGameConceptData>()?.alias?.forEach { alias ->
                 if (keysToDistinct.add(alias)) {
-                    ParadoxCompletionLookupProvider.forLocalisationConcept(concept, alias, hintText).addToResult(context, result)
+                    ParadoxCompletionFactory.forLocalisationConcept(concept, alias, hintText).addToResult(context, result)
                 }
             }
             true
@@ -454,7 +454,7 @@ object ParadoxCompletionManager {
         val definitionSelector = ParadoxDefinitionSearch.selector(context.project, context.file).contextSensitive().distinct()
             .withConstraint(ParadoxDefinitionIndexConstraint.TextIcon) // 3.0.1 optimize: apply constraint
         ParadoxDefinitionSearch.searchProperty(null, definitionType, definitionSelector).processAsync { definition ->
-            ParadoxCompletionLookupProvider.forLocalisationTextIcon(definition, hintText).addToResult(context, result)
+            ParadoxCompletionFactory.forLocalisationTextIcon(definition, hintText).addToResult(context, result)
         }
     }
 
@@ -464,7 +464,7 @@ object ParadoxCompletionManager {
         val definitionSelector = ParadoxDefinitionSearch.selector(context.project, context.file).contextSensitive().distinct()
             .withConstraint(ParadoxDefinitionIndexConstraint.TextFormat) // 3.0.1 optimize: apply constraint
         ParadoxDefinitionSearch.searchProperty(null, definitionType, definitionSelector).processAsync { definition ->
-            ParadoxCompletionLookupProvider.forLocalisationTextFormat(definition, hintText).addToResult(context, result)
+            ParadoxCompletionFactory.forLocalisationTextFormat(definition, hintText).addToResult(context, result)
         }
     }
 
@@ -488,7 +488,7 @@ object ParadoxCompletionManager {
         for (columnConfig in expectedColumnConfigs) {
             ProgressManager.checkCanceled()
             val context = context.copy(config = columnConfig)
-            ParadoxCompletionLookupProvider.forHeaderColumn(columnConfig).addToResult(context, result)
+            ParadoxCompletionFactory.forHeaderColumn(columnConfig).addToResult(context, result)
         }
     }
 

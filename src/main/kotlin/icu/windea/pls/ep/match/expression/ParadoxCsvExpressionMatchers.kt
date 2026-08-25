@@ -14,8 +14,8 @@ import icu.windea.pls.core.util.ProcessorScope
 import icu.windea.pls.lang.match.ParadoxCsvExpressionMatchContext
 import icu.windea.pls.lang.match.ParadoxExpressionMatchService
 import icu.windea.pls.lang.match.ParadoxMatchResult
-import icu.windea.pls.lang.match.util.ParadoxMatchProvider
-import icu.windea.pls.lang.match.util.ParadoxMatchResultProvider
+import icu.windea.pls.lang.match.util.ParadoxMatchFactory
+import icu.windea.pls.lang.match.util.ParadoxMatchResultFactory
 import icu.windea.pls.model.type.ParadoxExpressionType
 
 class ParadoxCsvBasicExpressionMatcher : ParadoxCsvCompositeExpressionMatcher() {
@@ -37,7 +37,7 @@ class ParadoxCsvBasicExpressionMatcher : ParadoxCsvCompositeExpressionMatcher() 
         if (context.expression.value.isEmpty()) return ParadoxMatchResult.ExactMatch
         // quoted number (e.g., "1") -> ok according to vanilla game files
         if (context.expression.matchesInt()) {
-            ParadoxMatchResultProvider.forRangedInt(context.expression, context.configExpression)?.let { return it }
+            ParadoxMatchResultFactory.forRangedInt(context.expression, context.configExpression)?.let { return it }
             return ParadoxMatchResult.ExactMatch
         }
         return ParadoxMatchResult.NotMatch
@@ -48,7 +48,7 @@ class ParadoxCsvBasicExpressionMatcher : ParadoxCsvCompositeExpressionMatcher() 
         if (context.expression.value.isEmpty()) return ParadoxMatchResult.ExactMatch
         // quoted number (e.g., "1.0") -> ok according to vanilla game files
         if (context.expression.matchesFloat()) {
-            ParadoxMatchResultProvider.forRangedFloat(context.expression, context.configExpression)?.let { return it }
+            ParadoxMatchResultFactory.forRangedFloat(context.expression, context.configExpression)?.let { return it }
             return ParadoxMatchResult.ExactMatch
         }
         return ParadoxMatchResult.NotMatch
@@ -69,20 +69,20 @@ class ParadoxExtraBasicCsvExpressionMatcher : ParadoxCsvCompositeExpressionMatch
 
     private fun matchPercentageField(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult {
         if (!context.expression.type.isLenientString()) return ParadoxMatchResult.NotMatch
-        val r = ParadoxMatchProvider.matchesFloatPercentageField(context.expression.value)
+        val r = ParadoxMatchFactory.matchesFloatPercentageField(context.expression.value)
         return ParadoxMatchResult.exactOrNot(r)
     }
 
     private fun matchIntPercentageField(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult {
         if (!context.expression.type.isLenientString()) return ParadoxMatchResult.NotMatch
-        val r = ParadoxMatchProvider.matchesIntPercentageField(context.expression.value)
+        val r = ParadoxMatchFactory.matchesIntPercentageField(context.expression.value)
         return ParadoxMatchResult.exactOrNot(r)
     }
 
     private fun matchDataField(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult {
         if (!context.expression.type.isLenientString()) return ParadoxMatchResult.NotMatch
         val datePattern = context.configExpression.metadata.value
-        val r = ParadoxMatchProvider.matchesDateField(context.expression.value, datePattern)
+        val r = ParadoxMatchFactory.matchesDateField(context.expression.value, datePattern)
         return ParadoxMatchResult.exactOrNot(r)
     }
 }
@@ -100,7 +100,7 @@ class ParadoxCsvCoreExpressionMatcher : ParadoxCsvCompositeExpressionMatcher() {
         // can be an int or float here (e.g., for <technology_tier>)
         if (!context.expression.type.isNumberOrLenientString()) return ParadoxMatchResult.NotMatch
         // if (!expression.isIdentifier(".-")) return ParadoxMatchResult.NotMatch // #369 can also be any string literals
-        return ParadoxMatchResultProvider.forDefinition(context.element, context.project, expression, context.configExpression)
+        return ParadoxMatchResultFactory.forDefinition(context.element, context.project, expression, context.configExpression)
     }
 
     private fun matchEnumValue(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult {
@@ -115,7 +115,7 @@ class ParadoxCsvCoreExpressionMatcher : ParadoxCsvCompositeExpressionMatcher() {
         // match complex enums
         val complexEnumConfig = context.configGroup.complexEnums[enumName]
         if (complexEnumConfig != null) {
-            return ParadoxMatchResultProvider.forComplexEnumValue(context.element, context.project, name, enumName, complexEnumConfig)
+            return ParadoxMatchResultFactory.forComplexEnumValue(context.element, context.project, name, enumName, complexEnumConfig)
         }
         return ParadoxMatchResult.NotMatch
     }

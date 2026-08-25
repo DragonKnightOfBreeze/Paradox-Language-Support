@@ -25,7 +25,7 @@ object ParadoxExtendedCompletionManager {
             ProgressManager.checkCanceled()
             val name = extendedConfig.name
             if (checkExtendedConfigName(name)) return@f
-            ParadoxCompletionLookupProvider.forExtendedConfig(extendedConfig, name, icon).addToResult(context, result)
+            ParadoxCompletionFactory.forExtendedConfig(extendedConfig, name, icon).addToResult(context, result)
         }
     }
 
@@ -42,7 +42,7 @@ object ParadoxExtendedCompletionManager {
             else -> contextConfig
         }
         val typeExpression = config.configExpression?.metadata?.value ?: return
-        val hintText = ParadoxCompletionLookupProvider.getConfigBasedHintText(context, config)
+        val hintText = ParadoxCompletionFactory.getConfigBasedHintText(context, config)
         run r1@{
             val icon = ChronicleIcons.Configs.ExtendedDefinition
             configGroup.extendedDefinitions.values.forEach { extendedConfigs ->
@@ -53,7 +53,7 @@ object ParadoxExtendedCompletionManager {
                     if (checkExtendedConfigName(name)) return@f
                     val type = extendedConfig.type
                     if (!ParadoxDefinitionTypeExpression.resolve(type).matches(typeExpression)) return@f
-                    ParadoxCompletionLookupProvider.fromExtendedConfig(context, extendedConfig, name, icon, hintText).addToResult(context, result)
+                    ParadoxCompletionFactory.fromExtendedConfig(context, extendedConfig, name, icon, hintText).addToResult(context, result)
                 }
             }
         }
@@ -64,7 +64,7 @@ object ParadoxExtendedCompletionManager {
                 ProgressManager.checkCanceled()
                 val name = extendedConfig.name
                 if (checkExtendedConfigName(name)) return@f
-                ParadoxCompletionLookupProvider.fromExtendedConfig(context, extendedConfig, name, icon, hintText).addToResult(context, result)
+                ParadoxCompletionFactory.fromExtendedConfig(context, extendedConfig, name, icon, hintText).addToResult(context, result)
             }
         }
         run r1@{
@@ -74,7 +74,7 @@ object ParadoxExtendedCompletionManager {
                 ProgressManager.checkCanceled()
                 val name = extendedConfig.name
                 if (checkExtendedConfigName(name)) return@f
-                ParadoxCompletionLookupProvider.fromExtendedConfig(context, extendedConfig, name, icon, hintText).addToResult(context, result)
+                ParadoxCompletionFactory.fromExtendedConfig(context, extendedConfig, name, icon, hintText).addToResult(context, result)
             }
         }
     }
@@ -94,7 +94,7 @@ object ParadoxExtendedCompletionManager {
                 val name = extendedConfig.name
                 if (checkExtendedConfigName(name)) return@f
                 if (argumentNames != null && !argumentNames.add(name)) return@f  // 排除已输入的
-                ParadoxCompletionLookupProvider.fromExtendedConfig(context, extendedConfig, name, icon).addToResult(context, result)
+                ParadoxCompletionFactory.fromExtendedConfig(context, extendedConfig, name, icon).addToResult(context, result)
             }
         }
     }
@@ -106,13 +106,13 @@ object ParadoxExtendedCompletionManager {
         val config = context.config ?: return
         val enumName = config.configExpression?.metadata?.value ?: return
         val configGroup = config.configGroup
-        val hintText = ParadoxCompletionLookupProvider.getConfigBasedHintText(context, config)
+        val hintText = ParadoxCompletionFactory.getConfigBasedHintText(context, config)
         val icon = ChronicleIcons.Configs.ExtendedComplexEnumValue
         configGroup.extendedComplexEnumValues[enumName]?.values?.forEach f@{ extendedConfig ->
             ProgressManager.checkCanceled()
             val name = extendedConfig.name
             if (checkExtendedConfigName(name)) return@f
-            ParadoxCompletionLookupProvider.fromExtendedConfig(context, extendedConfig, name, icon, hintText).addToResult(context, result)
+            ParadoxCompletionFactory.fromExtendedConfig(context, extendedConfig, name, icon, hintText).addToResult(context, result)
         }
     }
 
@@ -127,14 +127,14 @@ object ParadoxExtendedCompletionManager {
         for (config in finalConfigs) {
             val dynamicValueType = config.configExpression?.metadata?.value ?: continue
             val configGroup = config.configGroup
-            val hintText = ParadoxCompletionLookupProvider.getConfigBasedHintText(context, config)
+            val hintText = ParadoxCompletionFactory.getConfigBasedHintText(context, config)
 
             val icon = ChronicleIcons.Nodes.DynamicValue(dynamicValueType)
             configGroup.extendedDynamicValues[dynamicValueType]?.values?.forEach f@{ extendedConfig ->
                 ProgressManager.checkCanceled()
                 val name = extendedConfig.name
                 if (checkExtendedConfigName(name)) return@f
-                ParadoxCompletionLookupProvider.fromExtendedConfig(context, extendedConfig, name, icon, hintText).addToResult(context, result)
+                ParadoxCompletionFactory.fromExtendedConfig(context, extendedConfig, name, icon, hintText).addToResult(context, result)
             }
         }
     }
@@ -145,13 +145,13 @@ object ParadoxExtendedCompletionManager {
 
         val config = context.config ?: return
         val configGroup = config.configGroup
-        val hintText = ParadoxCompletionLookupProvider.getConfigBasedHintText(context, config)
+        val hintText = ParadoxCompletionFactory.getConfigBasedHintText(context, config)
         val icon = ChronicleIcons.Configs.ExtendedInlineScript
         configGroup.extendedInlineScripts.values.forEach f@{ extendedConfig ->
             ProgressManager.checkCanceled()
             val name = extendedConfig.name
             if (checkExtendedConfigName(name)) return@f
-            ParadoxCompletionLookupProvider.fromExtendedConfig(context, extendedConfig, name, icon, hintText).addToResult(context, result)
+            ParadoxCompletionFactory.fromExtendedConfig(context, extendedConfig, name, icon, hintText).addToResult(context, result)
         }
     }
 

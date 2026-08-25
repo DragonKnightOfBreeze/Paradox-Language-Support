@@ -7,7 +7,7 @@ import com.intellij.util.ProcessingContext
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.codeInsight.completion.GlobalCompletionContext
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
-import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionLookupProvider
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionFactory
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionProvider
 import icu.windea.pls.lang.codeInsight.completion.addToResult
 import icu.windea.pls.lang.isParameterized
@@ -38,7 +38,7 @@ class ParadoxEventNamespaceCompletionProvider : ParadoxCompletionProvider() {
         if (boundEventNamespaces.isEmpty()) return
 
         for (eventNamespace in boundEventNamespaces) {
-            ParadoxCompletionLookupProvider.forEventNamespace(eventNamespace).addToResult(context, result)
+            ParadoxCompletionFactory.forEventNamespace(eventNamespace).addToResult(context, result)
         }
     }
 }

@@ -7,7 +7,7 @@ import com.intellij.util.ProcessingContext
 import icu.windea.pls.core.codeInsight.completion.GlobalCompletionContext
 import icu.windea.pls.core.processAsync
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
-import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionLookupProvider
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionFactory
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionProvider
 import icu.windea.pls.lang.codeInsight.completion.ParadoxExtendedCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.addToResult
@@ -26,7 +26,7 @@ class ParadoxLocalisationScriptedVariableReferenceCompletionProvider : ParadoxCo
 
         val selector = ParadoxScriptedVariableSearch.selector(context.project, element).contextSensitive().distinct()
         ParadoxScriptedVariableSearch.searchGlobal(null, selector).processAsync { element ->
-            ParadoxCompletionLookupProvider.forLocalisationScriptedVariable(element).addToResult(context, result)
+            ParadoxCompletionFactory.forLocalisationScriptedVariable(element).addToResult(context, result)
         }
 
         ParadoxExtendedCompletionManager.completeExtendedScriptedVariable(context, result)

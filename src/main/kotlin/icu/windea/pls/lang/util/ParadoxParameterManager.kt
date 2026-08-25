@@ -41,7 +41,7 @@ import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
-import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionLookupProvider
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionFactory
 import icu.windea.pls.lang.codeInsight.completion.ParadoxExtendedCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.addToResult
 import icu.windea.pls.lang.isParameterized
@@ -49,6 +49,7 @@ import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.psi.ParadoxPsiService
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.lang.resolve.ParadoxParameterService
+import icu.windea.pls.lang.resolve.util.ParadoxParameterSupportFactory
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.model.ParadoxParameterContextInfo
 import icu.windea.pls.model.ParadoxParameterContextReferenceInfo
@@ -88,7 +89,7 @@ object ParadoxParameterManager {
     }
 
     /**
-     * 得到 [element] 对应的参数上下文信息。这里的参数使用读访问。
+     * 得到 [element] 对应的参数上下文信息。这里的参数使用读访问（read access）。
      *
      * 这个方法会首先判断 [element] 是否是合法的参数上下文。如果不是，则会直接返回 `null`。
      */
@@ -97,13 +98,13 @@ object ParadoxParameterManager {
         if (!ParadoxParameterService.isContext(element)) return null
         // from cache
         return CachedValuesManager.getCachedValue(element, Keys.cachedParameterContextInfo) {
-            val value = ParadoxParameterService.resolveContextInfo(element)
+            val value = ParadoxParameterService.getContextInfo(element)
             CachedValueProvider.Result(value, element)
         }
     }
 
     /**
-     * 得到 [element] 对应的参数上下文引用信息。这里的参数使用写访问。
+     * 得到 [element] 对应的参数上下文引用信息。这里的参数使用写访问（write access）。
      */
     fun getContextReferenceInfo(element: PsiElement, from: ParadoxParameterContextReferenceInfo.From, vararg extraArgs: Any?): ParadoxParameterContextReferenceInfo? {
         return ParadoxParameterService.getContextReferenceInfo(element, from, extraArgs)
@@ -217,7 +218,7 @@ object ParadoxParameterManager {
                 parameter is ParadoxParameter -> ParadoxParameterService.resolveParameter(parameter)
                 else -> null
             } ?: continue
-            ParadoxCompletionLookupProvider.fromParameter(context, parameterElement).addToResult(context, result)
+            ParadoxCompletionFactory.fromParameter(context, parameterElement).addToResult(context, result)
         }
 
         val contextKey = ParadoxParameterService.getContextKeyFromContext(parameterContext) ?: return
@@ -251,7 +252,7 @@ object ParadoxParameterManager {
                     parameter is ParadoxParameter -> ParadoxParameterService.resolveParameter(parameter)
                     else -> null
                 } ?: continue
-                ParadoxCompletionLookupProvider.fromParameter(context, parameterElement).addToResult(context, result)
+                ParadoxCompletionFactory.fromParameter(context, parameterElement).addToResult(context, result)
             }
             true
         }
@@ -261,12 +262,9 @@ object ParadoxParameterManager {
         ParadoxExtendedCompletionManager.completeExtendedParameter(context, result)
     }
 
+    @Suppress("unused")
     fun getReadWriteAccess(element: PsiElement): ReadWriteAccess {
-        return when {
-            element is ParadoxParameter -> ReadWriteAccess.Read
-            element is ParadoxConditionParameter -> ReadWriteAccess.Read
-            else -> ReadWriteAccess.Write
-        }
+        return ParadoxParameterSupportFactory.getReadWriteAccess(element)
     }
 
     fun getParameterElement(element: PsiElement): ParadoxParameterLightElement? {

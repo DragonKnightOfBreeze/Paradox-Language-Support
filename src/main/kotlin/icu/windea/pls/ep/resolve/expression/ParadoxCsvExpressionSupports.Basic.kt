@@ -4,7 +4,7 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import icu.windea.pls.config.CwtDataType
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
-import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionLookupProvider
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionFactory
 import icu.windea.pls.lang.codeInsight.completion.addToResult
 
 // Basic
@@ -16,6 +16,6 @@ class ParadoxCsvBoolExpressionSupport : ParadoxCsvExpressionSupport {
     override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.Bool
 
     override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
-        ParadoxCompletionLookupProvider.forBool().addToResult(context, result)
+        ParadoxCompletionFactory.forBool().addToResult(context, result)
     }
 }

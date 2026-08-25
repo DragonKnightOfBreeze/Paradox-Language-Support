@@ -13,7 +13,7 @@ import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.processAsync
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
-import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionLookupProvider
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionFactory
 import icu.windea.pls.lang.codeInsight.completion.addToResult
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.index.constraints.ParadoxDefinitionIndexConstraint
@@ -121,7 +121,7 @@ class ParadoxDefinitionBasedLocalisationIconSupport(
             if (name.isNullOrEmpty()) return@p true
             val typeFile = definition.containingFile
             val hintText = " from ${definitionInfo.type} ${definitionInfo.name}"
-            val lookupElement = ParadoxCompletionLookupProvider.forLocalisationIcon(definition, name, typeFile, hintText)
+            val lookupElement = ParadoxCompletionFactory.forLocalisationIcon(definition, name, typeFile, hintText)
             lookupElement.addToResult(context, result)
             true
         }
@@ -154,7 +154,7 @@ class ParadoxImageFileBasedLocalisationIconSupport(
             val name = file.nameWithoutExtension
             if (name.isEmpty()) return@p true
             val psiFile = file.toPsiFile(context.project) ?: return@p true
-            val lookupElement = ParadoxCompletionLookupProvider.forLocalisationIcon(psiFile, name, psiFile, hintText)
+            val lookupElement = ParadoxCompletionFactory.forLocalisationIcon(psiFile, name, psiFile, hintText)
             lookupElement.addToResult(context, result)
         }
     }

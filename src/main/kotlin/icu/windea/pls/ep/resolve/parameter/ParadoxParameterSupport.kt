@@ -10,6 +10,7 @@ import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
+import icu.windea.pls.model.ParadoxParameterContextInfo
 import icu.windea.pls.model.ParadoxParameterContextReferenceInfo
 import icu.windea.pls.model.ParadoxParameterInfo
 import icu.windea.pls.script.psi.ParadoxConditionParameter
@@ -48,7 +49,12 @@ interface ParadoxParameterSupport {
     fun processContextReference(element: PsiElement, contextReferenceInfo: ParadoxParameterContextReferenceInfo, onlyMostRelevant: Boolean, processor: (ParadoxDefinitionElement) -> Boolean): Boolean
 
     /**
-     * 向上查找参数的上下文引用信息。
+     * 得到参数的参数上下文信息。这里的参数使用读访问（read access）。
+     */
+    fun getContextInfo(element: ParadoxDefinitionElement): ParadoxParameterContextInfo?
+
+    /**
+     * 向上查找参数的上下文引用信息。这里的参数使用写访问（write access）。
      *
      * @param element 开始查找的位置。
      * @param from 从哪里向上查找。

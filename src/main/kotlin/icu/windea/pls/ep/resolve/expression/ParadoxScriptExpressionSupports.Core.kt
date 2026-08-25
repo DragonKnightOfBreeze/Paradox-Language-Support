@@ -29,8 +29,7 @@ import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxExpressionMatchService
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.ParadoxExpressionService
-import icu.windea.pls.lang.resolve.util.ParadoxAnnotateUtil
-import icu.windea.pls.lang.resolve.util.ParadoxResolveUtil
+import icu.windea.pls.lang.resolve.util.ParadoxExpressionSupportFactory
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
@@ -57,9 +56,9 @@ class ParadoxScriptDefinitionExpressionSupport : ParadoxScriptExpressionSupport 
         val attributesKey = ParadoxScriptHighlighterColors.DEFINITION_REFERENCE
         if (config.configExpression?.type?.isSuffixAware == true) {
             // 使用特殊的高亮（HIGHLIGHTED_REFERENCE）
-            return ParadoxAnnotateUtil.annotateExpressionAsHighlightedReference(element, rangeInExpression, holder)
+            return ParadoxExpressionSupportFactory.annotateExpressionAsHighlightedReference(element, rangeInExpression, holder)
         }
-        ParadoxAnnotateUtil.annotateExpression(element, rangeInExpression, holder, attributesKey)
+        ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
     }
 
     override fun resolve(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
@@ -105,9 +104,9 @@ class ParadoxScriptLocalisationExpressionSupport : ParadoxScriptExpressionSuppor
         val attributesKey = ParadoxScriptHighlighterColors.LOCALISATION_REFERENCE
         if (config.configExpression?.type?.isSuffixAware == true) {
             // 使用特殊的高亮（HIGHLIGHTED_REFERENCE）
-            return ParadoxAnnotateUtil.annotateExpressionAsHighlightedReference(element, rangeInExpression, holder)
+            return ParadoxExpressionSupportFactory.annotateExpressionAsHighlightedReference(element, rangeInExpression, holder)
         }
-        ParadoxAnnotateUtil.annotateExpression(element, rangeInExpression, holder, attributesKey)
+        ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
     }
 
     override fun resolve(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
@@ -149,9 +148,9 @@ class ParadoxScriptSyncedLocalisationExpressionSupport : ParadoxScriptExpression
         val attributesKey = ParadoxScriptHighlighterColors.LOCALISATION_REFERENCE
         if (config.configExpression?.type?.isSuffixAware == true) {
             // 使用特殊的高亮（HIGHLIGHTED_REFERENCE）
-            return ParadoxAnnotateUtil.annotateExpressionAsHighlightedReference(element, rangeInExpression, holder)
+            return ParadoxExpressionSupportFactory.annotateExpressionAsHighlightedReference(element, rangeInExpression, holder)
         }
-        ParadoxAnnotateUtil.annotateExpression(element, rangeInExpression, holder, attributesKey)
+        ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
     }
 
     override fun resolve(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
@@ -191,7 +190,7 @@ class ParadoxScriptInlineLocalisationExpressionSupport : ParadoxScriptExpression
     override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder) {
         if (text.isLeftQuoted()) return
         val attributesKey = ParadoxScriptHighlighterColors.LOCALISATION_REFERENCE
-        ParadoxAnnotateUtil.annotateExpression(element, rangeInExpression, holder, attributesKey)
+        ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
     }
 
     override fun resolve(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
@@ -227,12 +226,12 @@ class ParadoxScriptModifierExpressionSupport : ParadoxScriptExpressionSupport {
 
     override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder) {
         val attributesKey = ParadoxScriptHighlighterColors.MODIFIER
-        ParadoxAnnotateUtil.annotateExpression(element, rangeInExpression, holder, attributesKey)
+        ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
     }
 
     override fun resolve(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
         val configGroup = config.configGroup
-        return ParadoxResolveUtil.resolveModifier(element, text, configGroup)
+        return ParadoxExpressionSupportFactory.resolveModifier(element, text, configGroup)
     }
 
     override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
@@ -257,11 +256,11 @@ class ParadoxScriptEnumValueExpressionSupport : ParadoxScriptExpressionSupport {
             configGroup.complexEnums[enumName] != null -> ParadoxScriptHighlighterColors.COMPLEX_ENUM_VALUE
             else -> ParadoxScriptHighlighterColors.ENUM_VALUE
         }
-        ParadoxAnnotateUtil.annotateExpression(element, rangeInExpression, holder, attributesKey)
+        ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
     }
 
     override fun resolve(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
-        return ParadoxResolveUtil.resolveEnumValue(element, text, config)
+        return ParadoxExpressionSupportFactory.resolveEnumValue(element, text, config)
     }
 
     override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
@@ -410,7 +409,7 @@ class ParadoxScriptPathReferenceExpressionSupport : ParadoxScriptExpressionSuppo
 
     override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder) {
         val attributesKey = ParadoxScriptHighlighterColors.PATH_REFERENCE
-        ParadoxAnnotateUtil.annotateExpression(element, rangeInExpression, holder, attributesKey)
+        ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
     }
 
     override fun resolve(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
@@ -469,7 +468,7 @@ class ParadoxScriptConstantExpressionSupport : ParadoxScriptExpressionSupport {
             role == CwtDataExpressionRole.Key -> {
                 if (element is ParadoxScriptPropertyKey && rangeInExpression.startOffset == 0 && rangeInExpression.endOffset == text.length) return // unnecessary
                 val attributesKey = ParadoxScriptHighlighterColors.PROPERTY_KEY
-                ParadoxAnnotateUtil.annotateExpression(element, rangeInExpression, holder, attributesKey)
+                ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
             }
         }
     }
@@ -489,7 +488,7 @@ class ParadoxScriptConstantExpressionSupport : ParadoxScriptExpressionSupport {
             aliasName == "effect" -> ParadoxScriptHighlighterColors.EFFECT
             else -> return false
         }
-        ParadoxAnnotateUtil.annotateExpression(element, rangeInExpression, holder, attributesKey)
+        ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
         return true
     }
 

@@ -8,7 +8,7 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.lang.codeInsight.completion.ParadoxClauseTemplateCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
-import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionLookupProvider
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionFactory
 import icu.windea.pls.lang.codeInsight.completion.addToResult
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.model.type.ParadoxExpressionRole
@@ -24,7 +24,7 @@ class ParadoxScriptBoolExpressionSupport : ParadoxScriptExpressionSupport {
     }
 
     override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
-        ParadoxCompletionLookupProvider.forBool().addToResult(context, result)
+        ParadoxCompletionFactory.forBool().addToResult(context, result)
     }
 }
 
@@ -41,7 +41,7 @@ class ParadoxScriptBlockExpressionSupport : ParadoxScriptExpressionSupport {
     }
 
     override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
-        ParadoxCompletionLookupProvider.forBlockKeyword().addToResult(context, result)
+        ParadoxCompletionFactory.forBlockKeyword().addToResult(context, result)
 
         // 进行提示并在提示后插入子句内联模板（仅当子句中允许键为常量字符串的属性时才会提示）
         val config = context.config!!

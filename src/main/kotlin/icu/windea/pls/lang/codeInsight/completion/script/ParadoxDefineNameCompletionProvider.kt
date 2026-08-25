@@ -9,7 +9,7 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.codeInsight.completion.GlobalCompletionContext
 import icu.windea.pls.core.processAsync
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
-import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionLookupProvider
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionFactory
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionProvider
 import icu.windea.pls.lang.codeInsight.completion.addToResult
 import icu.windea.pls.lang.isParameterized
@@ -59,7 +59,7 @@ class ParadoxDefineNameCompletionProvider : ParadoxCompletionProvider() {
                 val selector = ParadoxDefineNamespaceSearch.selector(context.project, element).contextSensitive().distinct()
                     .filterBy { it.name != context.keyword } // skip if name = input
                 ParadoxDefineNamespaceSearch.search(null, selector).processAsync {
-                    ParadoxCompletionLookupProvider.fromDefineNamespace(context, it).addToResult(context, result)
+                    ParadoxCompletionFactory.fromDefineNamespace(context, it).addToResult(context, result)
                 }
             }
             // possible define variable input
@@ -72,7 +72,7 @@ class ParadoxDefineNameCompletionProvider : ParadoxCompletionProvider() {
                 val selector = ParadoxDefineVariableSearch.selector(context.project, element).contextSensitive().distinct()
                     .filterBy { it.name != context.keyword } // skip if name = input
                 ParadoxDefineVariableSearch.search(namespace, null, selector).processAsync {
-                    ParadoxCompletionLookupProvider.fromDefineVariable(context, it).addToResult(context, result)
+                    ParadoxCompletionFactory.fromDefineVariable(context, it).addToResult(context, result)
                 }
             }
         }

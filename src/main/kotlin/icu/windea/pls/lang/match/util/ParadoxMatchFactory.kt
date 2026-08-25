@@ -25,7 +25,7 @@ import icu.windea.pls.model.expressions.ParadoxExpression
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
-object ParadoxMatchProvider {
+object ParadoxMatchFactory {
     fun matchesBlock(element: ParadoxScriptBlock, config: CwtMemberConfig<*>): Boolean {
         val keys = ParadoxConfigService.getInBlockKeys(config)
         if (keys.isEmpty()) return true

@@ -95,7 +95,7 @@ object ParadoxExpressionCompletionManager {
         val scopeContext = context.scopeContext
         val typeExpression = config.configExpression?.metadata?.value ?: return
         val configGroup = config.configGroup
-        val hintText = ParadoxCompletionLookupProvider.getConfigBasedHintText(context, config)
+        val hintText = ParadoxCompletionFactory.getConfigBasedHintText(context, config)
         val selector = ParadoxDefinitionSearch.selector(context.project, context.contextElement).contextSensitive().distinct()
         ParadoxDefinitionSearch.searchElement(null, typeExpression, selector).processAsync p@{ definition ->
             ProgressManager.checkCanceled()
@@ -109,7 +109,7 @@ object ParadoxExpressionCompletionManager {
             val supportedScopes = ParadoxScopeService.getSupportedScopes(definition, definitionInfo)
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, supportedScopes, configGroup)
             if (!scopeMatched && ChronicleSettings.getInstance().state.completion.completeOnlyScopeIsMatched) return@p true
-            ParadoxCompletionLookupProvider.fromDefinition(context, definition, hintText, scopeMatched).addToResult(context, result)
+            ParadoxCompletionFactory.fromDefinition(context, definition, hintText, scopeMatched).addToResult(context, result)
         }
 
         ParadoxExtendedCompletionManager.completeExtendedDefinition(context, result)
@@ -124,13 +124,13 @@ object ParadoxExpressionCompletionManager {
         // 本地化的提示结果可能有上千条，因此这里改为先按照输入的关键字过滤结果，关键字变更时重新提示
         result.restartCompletionOnPrefixChange(StandardPatterns.string().shorterThan(context.keyword.length))
 
-        val hintText = ParadoxCompletionLookupProvider.getConfigBasedHintText(context, config)
+        val hintText = ParadoxCompletionFactory.getConfigBasedHintText(context, config)
         val selector = ParadoxLocalisationSearch.selector(context.project, context.contextElement)
             .contextSensitive()
             .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
         val processor = LimitedCompletionProcessor<ParadoxLocalisationProperty> p@{ localisation ->
             if (context.extraFilter?.invoke(localisation) == false) return@p true // apply extraFilter since it's necessary
-            ParadoxCompletionLookupProvider.fromLocalisation(context, localisation, hintText).addToResult(context, result)
+            ParadoxCompletionFactory.fromLocalisation(context, localisation, hintText).addToResult(context, result)
         }
         // 保证索引在此 readAction 中可用
         runSmartReadAction(context.project, inSmartMode = true) {
@@ -147,13 +147,13 @@ object ParadoxExpressionCompletionManager {
         // 本地化的提示结果可能有上千条，因此这里改为先按照输入的关键字过滤结果，关键字变更时重新提示
         result.restartCompletionOnPrefixChange(StandardPatterns.string().shorterThan(context.keyword.length))
 
-        val hintText = ParadoxCompletionLookupProvider.getConfigBasedHintText(context, config)
+        val hintText = ParadoxCompletionFactory.getConfigBasedHintText(context, config)
         val selector = ParadoxLocalisationSearch.selector(context.project, context.contextElement)
             .contextSensitive()
             .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
         val processor = LimitedCompletionProcessor<ParadoxLocalisationProperty> p@{ localisation ->
             if (context.extraFilter?.invoke(localisation) == false) return@p true // apply extraFilter since it's necessary
-            ParadoxCompletionLookupProvider.fromLocalisation(context, localisation, hintText).addToResult(context, result)
+            ParadoxCompletionFactory.fromLocalisation(context, localisation, hintText).addToResult(context, result)
         }
         // 保证索引在此 readAction 中可用
         runSmartReadAction(context.project, inSmartMode = true) {
@@ -166,7 +166,7 @@ object ParadoxExpressionCompletionManager {
         val configExpression = config.configExpression ?: return
         val support = ParadoxPathReferenceExpressionSupport.get(configExpression.type)
         if (support != null) {
-            val hintText = ParadoxCompletionLookupProvider.getConfigBasedHintText(context, config)
+            val hintText = ParadoxCompletionFactory.getConfigBasedHintText(context, config)
             val fileExtensions = when (config) {
                 is CwtMemberConfig<*> -> config.optionMetadata.fileExtensions.orEmpty()
                 else -> emptySet()
@@ -175,7 +175,7 @@ object ParadoxExpressionCompletionManager {
             val selector = ParadoxFilePathSearch.selector(context.project, context.contextElement).contextSensitive().distinct()
                 .withFileExtensions(fileExtensions)
             ParadoxFilePathSearch.search(null, configExpression, selector).processAsync p@{ virtualFile ->
-                ParadoxCompletionLookupProvider.fromPathReference(context, config, virtualFile, support, hintText).addToResult(context, result)
+                ParadoxCompletionFactory.fromPathReference(context, config, virtualFile, support, hintText).addToResult(context, result)
             }
             if (config.configExpression == ParadoxInlineScriptManager.inlineScriptPathExpression) {
                 ParadoxExtendedCompletionManager.completeExtendedInlineScript(context, result)
@@ -199,14 +199,14 @@ object ParadoxExpressionCompletionManager {
         val configGroup = context.configGroup
         val config = context.config ?: return
         val enumName = config.configExpression?.metadata?.value ?: return
-        val hintText = ParadoxCompletionLookupProvider.getConfigBasedHintText(context, config)
+        val hintText = ParadoxCompletionFactory.getConfigBasedHintText(context, config)
         val enumConfig = configGroup.enums[enumName] ?: return
         val enumValueConfigs = enumConfig.valueConfigMap.values
         if (enumValueConfigs.isEmpty()) return
         val typeFile = enumConfig.pointer.containingFile
         for (enumValueConfig in enumValueConfigs) {
             ProgressManager.checkCanceled()
-            ParadoxCompletionLookupProvider.fromStaticEnumValue(context, enumValueConfig, typeFile, hintText).addToResult(context, result)
+            ParadoxCompletionFactory.fromStaticEnumValue(context, enumValueConfig, typeFile, hintText).addToResult(context, result)
         }
     }
 
@@ -215,7 +215,7 @@ object ParadoxExpressionCompletionManager {
         val configGroup = context.configGroup
         val config = context.config ?: return
         val enumName = config.configExpression?.metadata?.value ?: return
-        val hintText = ParadoxCompletionLookupProvider.getConfigBasedHintText(context, config)
+        val hintText = ParadoxCompletionFactory.getConfigBasedHintText(context, config)
         val complexEnumConfig = configGroup.complexEnums[enumName] ?: return
         val typeFile = complexEnumConfig.pointer.containingFile
         val searchScopeType = complexEnumConfig.searchScopeType
@@ -226,7 +226,7 @@ object ParadoxExpressionCompletionManager {
             val name = info.name
             val readWriteAccess = Access.Write // write (declaration)
             val element = ParadoxComplexEnumValueLightElement(context.contextElement, name, enumName, readWriteAccess, configGroup.gameType, configGroup.project)
-            ParadoxCompletionLookupProvider.fromComplexEnumValue(context, element, typeFile, hintText).addToResult(context, result)
+            ParadoxCompletionFactory.fromComplexEnumValue(context, element, typeFile, hintText).addToResult(context, result)
         }
     }
 
@@ -281,14 +281,14 @@ object ParadoxExpressionCompletionManager {
         val configExpression = config.configExpression ?: return
         val dynamicValueType = configExpression.metadata.value ?: return
         if (configExpression.type != CwtDataTypes.Value && configExpression.type != CwtDataTypes.DynamicValue) return
-        val hintText = ParadoxCompletionLookupProvider.getConfigBasedHintText(context, config)
+        val hintText = ParadoxCompletionFactory.getConfigBasedHintText(context, config)
         val dynamicValueTypeConfig = configGroup.dynamicValueTypes[dynamicValueType] ?: return
         val valueConfigs = dynamicValueTypeConfig.valueConfigMap.values
         if (valueConfigs.isEmpty()) return
         val typeFile = dynamicValueTypeConfig.pointer.containingFile
         for (valueConfig in valueConfigs) {
             ProgressManager.checkCanceled()
-            ParadoxCompletionLookupProvider.fromPredefinedDynamicValue(context, valueConfig, dynamicValueType, typeFile, hintText).addToResult(context, result)
+            ParadoxCompletionFactory.fromPredefinedDynamicValue(context, valueConfig, dynamicValueType, typeFile, hintText).addToResult(context, result)
         }
     }
 
@@ -305,7 +305,7 @@ object ParadoxExpressionCompletionManager {
             if (name == context.keyword) return@p true // 排除和当前输入的同名的
             val readWriteAccess = info.readWriteAccess
             val element = ParadoxDynamicValueLightElement(context.contextElement, name, dynamicValueType, readWriteAccess, configGroup.gameType, configGroup.project)
-            ParadoxCompletionLookupProvider.fromIndexedDynamicValue(context, element, hintText).addToResult(context, result)
+            ParadoxCompletionFactory.fromIndexedDynamicValue(context, element, hintText).addToResult(context, result)
         }
     }
 
@@ -338,18 +338,18 @@ object ParadoxExpressionCompletionManager {
             // 常量的值也可能是yes/no
             if (name == "yes") {
                 if (context.leftQuoted) return
-                ParadoxCompletionLookupProvider.forYesKeyword().addToResult(context, result)
+                ParadoxCompletionFactory.forYesKeyword().addToResult(context, result)
                 return
             }
             if (name == "no") {
                 if (context.leftQuoted) return
-                ParadoxCompletionLookupProvider.forNoKeyword().addToResult(context, result)
+                ParadoxCompletionFactory.forNoKeyword().addToResult(context, result)
                 return
             }
         }
         val element = config.resolved().pointer.element ?: return
         val typeFile = config.resolved().pointer.containingFile
-        ParadoxCompletionLookupProvider.fromConstant(context, name, element, typeFile, icon).addToResult(context, result)
+        ParadoxCompletionFactory.fromConstant(context, name, element, typeFile, icon).addToResult(context, result)
     }
 
     fun completeArgument(context: ParadoxCompletionContext, result: CompletionResultSet) {
@@ -376,7 +376,7 @@ object ParadoxExpressionCompletionManager {
             val name = info.name
             if (name == context.keyword) return@p true // 排除和当前输入的同名的
             val element = ParadoxShaderEffectLightElement(context.contextElement, name, configGroup.gameType, configGroup.project)
-            ParadoxCompletionLookupProvider.fromIndexedExternalReference(context, element, hintText).addToResult(context, result)
+            ParadoxCompletionFactory.fromIndexedExternalReference(context, element, hintText).addToResult(context, result)
         }
     }
 
@@ -396,7 +396,7 @@ object ParadoxExpressionCompletionManager {
             val name = info.name
             if (name == context.keyword) return@p true // 排除和当前输入的同名的
             val element = ParadoxMeshLocatorLightElement(context.contextElement, name, configGroup.gameType, configGroup.project)
-            ParadoxCompletionLookupProvider.fromIndexedExternalReference(context, element, hintText).addToResult(context, result)
+            ParadoxCompletionFactory.fromIndexedExternalReference(context, element, hintText).addToResult(context, result)
         }
     }
 

@@ -16,8 +16,7 @@ import icu.windea.pls.lang.codeInsight.completion.ParadoxExpressionCompletionMan
 import icu.windea.pls.lang.editor.ParadoxSemanticHighlighterColors
 import icu.windea.pls.lang.match.ParadoxExpressionMatchService
 import icu.windea.pls.lang.resolve.ParadoxExpressionService
-import icu.windea.pls.lang.resolve.util.ParadoxAnnotateUtil
-import icu.windea.pls.lang.resolve.util.ParadoxResolveUtil
+import icu.windea.pls.lang.resolve.util.ParadoxExpressionSupportFactory
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.model.expressions.ParadoxExpression
@@ -32,7 +31,7 @@ class ParadoxCsvDefinitionExpressionSupport : ParadoxCsvExpressionSupport {
 
     override fun annotate(element: ParadoxCsvExpressionElement, text: String, rangeInExpression: TextRange, config: CwtValueConfig, holder: AnnotationHolder) {
         val attributesKey = ParadoxSemanticHighlighterColors.definitionReference(element.language)
-        ParadoxAnnotateUtil.annotateExpression(element, rangeInExpression, holder, attributesKey)
+        ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
     }
 
     override fun resolve(element: ParadoxCsvExpressionElement, text: String, rangeInExpression: TextRange, config: CwtValueConfig): PsiElement? {
@@ -71,11 +70,11 @@ class ParadoxCsvEnumValueExpressionSupport : ParadoxCsvExpressionSupport {
             configGroup.complexEnums[enumName] != null -> ParadoxSemanticHighlighterColors.complexEnumValue(element.language)
             else -> ParadoxSemanticHighlighterColors.enumValue(element.language)
         }
-        ParadoxAnnotateUtil.annotateExpression(element, rangeInExpression, holder, attributesKey)
+        ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
     }
 
     override fun resolve(element: ParadoxCsvExpressionElement, text: String, rangeInExpression: TextRange, config: CwtValueConfig): PsiElement? {
-        return ParadoxResolveUtil.resolveEnumValue(element, text, config)
+        return ParadoxExpressionSupportFactory.resolveEnumValue(element, text, config)
     }
 
     override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
@@ -143,11 +142,11 @@ class ParadoxCsvDynamicValueExpressionSupport : ParadoxCsvExpressionSupport {
 
     override fun annotate(element: ParadoxCsvExpressionElement, text: String, rangeInExpression: TextRange, config: CwtValueConfig, holder: AnnotationHolder) {
         val attributesKey = ParadoxSemanticHighlighterColors.dynamicValue(element.language)
-        ParadoxAnnotateUtil.annotateExpression(element, rangeInExpression, holder, attributesKey)
+        ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
     }
 
     override fun resolve(element: ParadoxCsvExpressionElement, text: String, rangeInExpression: TextRange, config: CwtValueConfig): PsiElement? {
-        return ParadoxResolveUtil.resolveDynamicValue(element, text, config)
+        return ParadoxExpressionSupportFactory.resolveDynamicValue(element, text, config)
     }
 
     override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {

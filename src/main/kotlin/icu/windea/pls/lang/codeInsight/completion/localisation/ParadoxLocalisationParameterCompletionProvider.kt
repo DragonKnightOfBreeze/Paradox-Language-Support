@@ -10,7 +10,7 @@ import icu.windea.pls.core.codeInsight.LimitedCompletionProcessor
 import icu.windea.pls.core.codeInsight.completion.GlobalCompletionContext
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
-import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionLookupProvider
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionFactory
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionProvider
 import icu.windea.pls.lang.codeInsight.completion.addToResult
 import icu.windea.pls.lang.resolve.ParadoxLocalisationParameterService
@@ -48,7 +48,7 @@ class ParadoxLocalisationParameterCompletionProvider : ParadoxCompletionProvider
             if (parameterNames.isNotEmpty()) {
                 for (parameterName in parameterNames) {
                     val parameter = ParadoxLocalisationParameterService.resolveParameter(property, parameterName) ?: continue
-                    ParadoxCompletionLookupProvider.forLocalisationParameter(parameter).addToResult(context, result)
+                    ParadoxCompletionFactory.forLocalisationParameter(parameter).addToResult(context, result)
                 }
             }
         }
@@ -61,7 +61,7 @@ class ParadoxLocalisationParameterCompletionProvider : ParadoxCompletionProvider
             .contextSensitive()
             .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
         val processor = LimitedCompletionProcessor<ParadoxLocalisationProperty> { localisation ->
-            ParadoxCompletionLookupProvider.forLocalisationName(localisation).addToResult(context, result)
+            ParadoxCompletionFactory.forLocalisationName(localisation).addToResult(context, result)
         }
         // 保证索引在此 readAction 中可用
         runSmartReadAction(project, inSmartMode = true) {

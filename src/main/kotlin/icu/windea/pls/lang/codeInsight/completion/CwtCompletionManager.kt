@@ -83,7 +83,7 @@ object CwtCompletionManager {
                         val schemaExpression = CwtSchemaExpression.resolve(config.value)
                         completeBySchemaExpression(context, result, schema, config, schemaExpression)
                     } else {
-                        CwtCompletionLookupProvider.forBlockKeyword().addToResult(context, result)
+                        CwtCompletionFactory.forBlockKeyword().addToResult(context, result)
                     }
                 }
             }
@@ -93,7 +93,7 @@ object CwtCompletionManager {
                         val schemaExpression = CwtSchemaExpression.resolve(config.value)
                         completeBySchemaExpression(context, result, schema, config, schemaExpression)
                     } else {
-                        CwtCompletionLookupProvider.forBlockKeyword().addToResult(context, result)
+                        CwtCompletionFactory.forBlockKeyword().addToResult(context, result)
                     }
                 }
             }
@@ -133,7 +133,7 @@ object CwtCompletionManager {
                         val schemaExpression = CwtSchemaExpression.resolve(config.value)
                         completeBySchemaExpression(context, result, schema, config, schemaExpression)
                     } else {
-                        CwtCompletionLookupProvider.forBlockKeyword().addToResult(context, result)
+                        CwtCompletionFactory.forBlockKeyword().addToResult(context, result)
                     }
                 }
             }
@@ -143,7 +143,7 @@ object CwtCompletionManager {
                         val schemaExpression = CwtSchemaExpression.resolve(config.value)
                         completeBySchemaExpression(context, result, schema, config, schemaExpression)
                     } else {
-                        CwtCompletionLookupProvider.forBlockKeyword().addToResult(context, result)
+                        CwtCompletionFactory.forBlockKeyword().addToResult(context, result)
                     }
                 }
             }
@@ -170,7 +170,7 @@ object CwtCompletionManager {
             is CwtSchemaExpression.Constant -> {
                 val lookupString = schemaExpression.expressionString
                 val element = config.pointer.element
-                val lookupElement = CwtCompletionLookupProvider.forSchemaConstant(lookupString, element, typeFile, icon)
+                val lookupElement = CwtCompletionFactory.forSchemaConstant(lookupString, element, typeFile, icon)
                 processor.process(lookupElement)
             }
             is CwtSchemaExpression.Enum -> {
@@ -180,7 +180,7 @@ object CwtCompletionManager {
                     if (config == null) return true
                     val lookupString = config.stringValue ?: return true
                     val element = config.pointer.element
-                    val lookupElement = CwtCompletionLookupProvider.forSchemaEnumValue(lookupString, element, typeFile, icon, hintText)
+                    val lookupElement = CwtCompletionFactory.forSchemaEnumValue(lookupString, element, typeFile, icon, hintText)
                     return processor.process(lookupElement)
                 }
 
@@ -192,14 +192,14 @@ object CwtCompletionManager {
                 val lookupString = schemaExpression.expressionString
                 val element = config.pointer.element
                 val hintText = " (template)"
-                val lookupElement = CwtCompletionLookupProvider.forSchemaTemplate(lookupString, element, typeFile, icon, hintText)
+                val lookupElement = CwtCompletionFactory.forSchemaTemplate(lookupString, element, typeFile, icon, hintText)
                 processor.process(lookupElement)
             }
             is CwtSchemaExpression.Type -> {
                 when (schemaExpression.name) {
-                    "any" -> CwtCompletionLookupProvider.forKeyword().forEach { processor.process(it) }
-                    "bool" -> CwtCompletionLookupProvider.forBool().forEach { processor.process(it) }
-                    "cardinality" -> CwtCompletionLookupProvider.forCardinality().forEach { processor.process(it) }
+                    "any" -> CwtCompletionFactory.forKeyword().forEach { processor.process(it) }
+                    "bool" -> CwtCompletionFactory.forBool().forEach { processor.process(it) }
+                    "cardinality" -> CwtCompletionFactory.forCardinality().forEach { processor.process(it) }
                 }
                 true
             }
@@ -219,7 +219,7 @@ object CwtCompletionManager {
                     val lookupString = config.stringValue ?: return true
                     val element = config.pointer.element
                     val typeFile = config.pointer.containingFile
-                    val lookupElement = CwtCompletionLookupProvider.forSchemaTemplateEnum(lookupString, element, typeFile, hintText)
+                    val lookupElement = CwtCompletionFactory.forSchemaTemplateEnum(lookupString, element, typeFile, hintText)
                     return processor.process(lookupElement)
                 }
 
@@ -232,7 +232,7 @@ object CwtCompletionManager {
                     if (config == null) return true
                     val lookupString = name
                     val element = config.pointer.element
-                    val lookupElement = CwtCompletionLookupProvider.forSchemaTemplateParameter(lookupString, element, hintText)
+                    val lookupElement = CwtCompletionFactory.forSchemaTemplateParameter(lookupString, element, hintText)
                     return processor.process(lookupElement)
                 }
 
