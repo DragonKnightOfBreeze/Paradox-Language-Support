@@ -37,14 +37,18 @@ import icu.windea.pls.config.config.internal.CwtFoldingSettingsConfig
 import icu.windea.pls.config.config.internal.CwtPostfixTemplateSettingsConfig
 import icu.windea.pls.config.config.internal.CwtSchemaConfig
 import icu.windea.pls.core.annotations.CaseInsensitive
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.CaseInsensitiveStringKeyMap
 import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
+import it.unimi.dsi.fastutil.ints.IntArraySet
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenCustomHashMap
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap
 import it.unimi.dsi.fastutil.objects.ObjectArrayList
 import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet
 
+@Optimized
 open class CwtConfigGroupDataModelBase : CwtConfigGroupDataModel {
     final override val fileConfigs: Object2ObjectLinkedOpenHashMap<String, CwtFileConfig> = Object2ObjectLinkedOpenHashMap()
     final override val configPostProcessActions: ObjectArrayList<Runnable> = ObjectArrayList()
@@ -95,6 +99,7 @@ open class CwtConfigGroupDataModelBase : CwtConfigGroupDataModel {
     final override val aliasNamesSupportScope: ObjectLinkedOpenHashSet<String> = ObjectLinkedOpenHashSet()
     final override val relatedLocalisationPatterns: ObjectLinkedOpenHashSet<Tuple2<String, String>> = ObjectLinkedOpenHashSet()
     final override val typeModel: CwtTypeModelBase = CwtTypeModelBase()
+    final override val scopeModel: CwtScopeModelBase = CwtScopeModelBase()
     final override val linkModel: CwtLinkModelBase = CwtLinkModelBase()
     final override val localisationLinkModel: CwtLinkModelBase = CwtLinkModelBase()
     final override val macroModel: CwtMacroModelBase = CwtMacroModelBase()
@@ -185,14 +190,16 @@ open class CwtConfigGroupDataModelBase : CwtConfigGroupDataModel {
         aliasKeysGroupNoConst.trim()
         aliasNamesSupportScope.trim()
         relatedLocalisationPatterns.trim()
+        typeModel.trim()
+        scopeModel.trim()
         linkModel.trim()
         localisationLinkModel.trim()
         macroModel.trim()
-        typeModel.trim()
         attribute.trim()
     }
 }
 
+@Optimized
 class CwtTypeModelBase : CwtTypeModel {
     override val base2Swapped: Object2ObjectLinkedOpenHashMap<String, String> = Object2ObjectLinkedOpenHashMap()
     override val swapped2Base: Object2ObjectLinkedOpenHashMap<String, String> = Object2ObjectLinkedOpenHashMap()
@@ -217,6 +224,22 @@ class CwtTypeModelBase : CwtTypeModel {
     }
 }
 
+@Optimized
+class CwtScopeModelBase : CwtScopeModel {
+    override val base2Aliases: Int2ObjectOpenHashMap<IntArraySet> get() = Int2ObjectOpenHashMap()
+    override val base2Parents: Int2ObjectOpenHashMap<IntArraySet> get() = Int2ObjectOpenHashMap()
+    // override val base2Promotions: Int2ObjectOpenHashMap<IntArraySet> get() = Int2ObjectOpenHashMap()
+    override val base2MatchedScopes: Int2ObjectOpenHashMap<IntArraySet> get() = Int2ObjectOpenHashMap()
+
+    fun trim() {
+        base2Aliases.trim()
+        // base2Promotions.trim()
+        base2Parents.trim()
+        base2MatchedScopes.trim()
+    }
+}
+
+@Optimized
 class CwtLinkModelBase : CwtLinkModel {
     override val variable: ObjectArrayList<CwtLinkConfig> = ObjectArrayList()
     override val forScopeStatic: ObjectArrayList<CwtLinkConfig> = ObjectArrayList()
@@ -247,6 +270,7 @@ class CwtLinkModelBase : CwtLinkModel {
     }
 }
 
+@Optimized
 class CwtMacroModelBase : CwtMacroModel {
     override val forInlineScripts: ObjectArrayList<CwtMacroConfig.InlineScript> = ObjectArrayList()
     override var forDefinitionInjections: CwtMacroConfig.DefinitionInjection? = null

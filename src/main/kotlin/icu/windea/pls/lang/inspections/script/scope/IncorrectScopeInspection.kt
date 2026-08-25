@@ -10,6 +10,7 @@ import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.psi.light.ParadoxModifierLightElement
 import icu.windea.pls.lang.resolve.ParadoxModifierCategoryService
+import icu.windea.pls.lang.scope.ParadoxScopeMatchService
 import icu.windea.pls.lang.scope.ParadoxScopeService
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
@@ -44,7 +45,7 @@ class IncorrectScopeInspection : ScopeInspectionBase() {
         val parentScopeContext = ParadoxScopeManager.getScopeContext(parentMember) ?: return
         val supportedScopes = getSupportedScopes(element, config) ?: return
         val configGroup = config.configGroup
-        if (!ParadoxScopeManager.matchesScope(parentScopeContext, supportedScopes, configGroup)) {
+        if (!ParadoxScopeMatchService.matchesScope(parentScopeContext, supportedScopes, configGroup)) {
             val supportedScopesText = supportedScopes.joinToString()
             val currentScopeText = parentScopeContext.scope.id
             if (element is ParadoxScriptProperty) {

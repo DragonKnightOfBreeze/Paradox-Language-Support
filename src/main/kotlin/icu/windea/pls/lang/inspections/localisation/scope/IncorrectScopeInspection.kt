@@ -13,6 +13,7 @@ import icu.windea.pls.lang.resolve.ParadoxExpressionService
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxCommandExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
+import icu.windea.pls.lang.scope.ParadoxScopeMatchService
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
@@ -50,7 +51,7 @@ class IncorrectScopeInspection : ScopeInspectionBase() {
                         }
                         is ParadoxCommandFieldNode -> {
                             val supportedScopes = ParadoxScopeManager.getSupportedScopes(element, node, inputScopeContext)
-                            val matched = ParadoxScopeManager.matchesScope(inputScopeContext, supportedScopes, configGroup)
+                            val matched = ParadoxScopeMatchService.matchesScope(inputScopeContext, supportedScopes, configGroup)
                             val outputScopeContext = ParadoxScopeManager.getScopeContext(element, node, inputScopeContext)
                             inputScopeContext = outputScopeContext
 

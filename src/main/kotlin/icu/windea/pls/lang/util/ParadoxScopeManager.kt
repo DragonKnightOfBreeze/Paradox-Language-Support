@@ -11,7 +11,6 @@ import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.config.config.resolved
 import icu.windea.pls.config.config.resolvedOrNull
 import icu.windea.pls.config.configExpression.CwtDataExpression
-import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.util.KeyRegistry
@@ -24,7 +23,6 @@ import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
-import icu.windea.pls.lang.scope.ParadoxScopeMatchService
 import icu.windea.pls.lang.scope.ParadoxScopeService
 import icu.windea.pls.model.scope.ParadoxScopeConstants
 import icu.windea.pls.model.scope.ParadoxScopeContext
@@ -44,18 +42,6 @@ object ParadoxScopeManager {
         return element.parents(withSelf)
             .find { it is ParadoxDefinitionElement || (it is ParadoxScriptBlock && it.isDirectValue()) }
             .castOrNull<ParadoxScriptMember>()
-    }
-
-    fun matchesScope(scopeContext: ParadoxScopeContext?, scopeToMatch: String, configGroup: CwtConfigGroup): Boolean {
-        return ParadoxScopeMatchService.matchesScope(scopeContext, scopeToMatch, configGroup)
-    }
-
-    fun matchesScope(scopeContext: ParadoxScopeContext?, scopesToMatch: Set<String>?, configGroup: CwtConfigGroup): Boolean {
-        return ParadoxScopeMatchService.matchesScope(scopeContext, scopesToMatch, configGroup)
-    }
-
-    fun matchesScopeGroup(scopeContext: ParadoxScopeContext?, scopeGroupToMatch: String, configGroup: CwtConfigGroup): Boolean {
-        return ParadoxScopeMatchService.matchesScopeGroup(scopeContext, scopeGroupToMatch, configGroup)
     }
 
     fun isScopeContextChanged(element: ParadoxScriptMember, scopeContext: ParadoxScopeContext): Boolean {

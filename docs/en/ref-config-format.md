@@ -901,6 +901,11 @@ Path Location:
 - Scope: `scopes/{name}`, where `{name}` is the config name.
 - Scope group: `scope_groups/{name}`, where `{name}` is the config name.
 
+Field Explanation for scope configs:
+
+- `aliases`: The set of aliases for this scope, which can be empty. Used for scope matching.
+- `is_subscope_of`: The parent scope of this scope, which can be empty. Used for scope matching.
+
 Examples:
 
 ```cwt
@@ -1044,7 +1049,7 @@ Provides additional context and hint information for specific "definitions", inc
 Path Location:
 - `definitions/{name}`, where `{name}` is the config name. The name supports constants, template expressions, ANT path patterns, and regular expressions.
 
-Field description:
+Field Explanation:
 
 - `## type` (option / required): Declares the definition type.
 - `## hint`(option): Specifies optional hint text. Used to provide additional inlay hints.
@@ -1088,7 +1093,7 @@ Config names can be constants, template expressions, ANT expressions, or regular
 Path Location:
 - `game_rules/{name}`, where `{name}` is the config name.
 
-Field description:
+Field Explanation:
 
 - `## hint`(option): Specifies optional hint text. Used to provide additional inlay hints.
 - `## replace_scopes` (option): Specifies explicit scope context.

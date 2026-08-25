@@ -19,6 +19,7 @@ import icu.windea.pls.lang.psi.floatValue
 import icu.windea.pls.lang.psi.intValue
 import icu.windea.pls.lang.psi.resolved
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
+import icu.windea.pls.lang.scope.ParadoxScopeMatchService
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.lang.util.evaluators.ParadoxComplexExpressionEvaluator
@@ -120,7 +121,7 @@ class ParadoxScopeBasedScopeFieldExpressionChecker : ParadoxIncorrectExpressionC
         val memberElement = element.parentOfType<ParadoxScriptMember>(withSelf = true) ?: return true
         val parentScopeContext = ParadoxScopeManager.getScopeContext(memberElement) ?: ParadoxScopeContext.resolveAny()
         val scopeContext = ParadoxScopeManager.getScopeContext(element, scopeFieldExpression, parentScopeContext)
-        if (ParadoxScopeManager.matchesScope(scopeContext, expectedScope, context.configGroup)) return true
+        if (ParadoxScopeMatchService.matchesScope(scopeContext, expectedScope, context.configGroup)) return true
         val description = when {
             context.showExpect -> ChronicleEpBundle.message("incorrectExpression.scope.desc.1", expectedScope, scopeContext.scope.id)
             else -> ChronicleEpBundle.message("incorrectExpression.scope.desc.0")
@@ -147,7 +148,7 @@ class ParadoxScopeGroupBasedScopeFieldExpressionChecker : ParadoxIncorrectExpres
         val memberElement = element.parentOfType<ParadoxScriptMember>(withSelf = true) ?: return true
         val parentScopeContext = ParadoxScopeManager.getScopeContext(memberElement) ?: ParadoxScopeContext.resolveAny()
         val scopeContext = ParadoxScopeManager.getScopeContext(element, scopeFieldExpression, parentScopeContext)
-        if (ParadoxScopeManager.matchesScopeGroup(scopeContext, expectedScopeGroup, configGroup)) return true
+        if (ParadoxScopeMatchService.matchesScopeGroup(scopeContext, expectedScopeGroup, configGroup)) return true
         val description = when {
             context.showExpect -> ChronicleEpBundle.message("incorrectExpression.scopeGroup.desc.1", expectedScopeGroup, scopeContext.scope.id)
             else -> ChronicleEpBundle.message("incorrectExpression.scopeGroup.desc.0")

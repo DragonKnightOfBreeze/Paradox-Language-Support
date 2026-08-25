@@ -1,6 +1,7 @@
 package icu.windea.pls.ep.config.configGroup
 
 import com.intellij.openapi.application.readAction
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.progress.checkCanceled
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtPropertyConfig
@@ -8,6 +9,7 @@ import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.config.delegated.CwtMacroConfig
 import icu.windea.pls.config.config.delegated.CwtModifierConfig
+import icu.windea.pls.config.config.delegated.CwtScopeConfig
 import icu.windea.pls.config.config.isStatic
 import icu.windea.pls.config.config.prefixFromArgument
 import icu.windea.pls.config.configExpression.CwtDataExpression
@@ -24,6 +26,8 @@ import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.lang.resolve.ParadoxLocalisationIconService
 import icu.windea.pls.model.paths.CwtConfigPath
+import icu.windea.pls.model.scope.ParadoxScope
+import it.unimi.dsi.fastutil.ints.IntArraySet
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap
 import it.unimi.dsi.fastutil.objects.ObjectArrayList
 import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet
@@ -32,6 +36,8 @@ import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet
  * 用于初始化规则分组中需要经过计算的那些数据。
  */
 class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
+    private val logger = thisLogger()
+
     override suspend fun process(configGroup: CwtConfigGroup) {
         checkCanceled()
         computeLocales(configGroup)
@@ -58,16 +64,19 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
         computeRelatedLocalisationPatterns(configGroup)
 
         checkCanceled()
-        computeTypesModel(configGroup)
+        computeTypeModel(configGroup)
 
         checkCanceled()
-        computeLinksModel(configGroup, configGroup.initializer.linkModel, configGroup.initializer.links.values)
+        computeScopeModel(configGroup)
 
         checkCanceled()
-        computeLinksModel(configGroup, configGroup.initializer.localisationLinkModel, configGroup.initializer.localisationLinks.values)
+        computeLinkModel(configGroup, configGroup.initializer.linkModel, configGroup.initializer.links.values)
 
         checkCanceled()
-        computeMacrosModel(configGroup)
+        computeLinkModel(configGroup, configGroup.initializer.localisationLinkModel, configGroup.initializer.localisationLinks.values)
+
+        checkCanceled()
+        computeMacroModel(configGroup)
     }
 
     private fun computeLocales(configGroup: CwtConfigGroup) {
@@ -143,6 +152,7 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
             // read action is required here (for logging)
             val declarationConfig = readAction { CwtDeclarationConfig.resolve(config, name = typeName) } ?: continue
             initializer.declarations[typeName] = declarationConfig
+            logger.info("Computed missing declarations for swapped type '$typeName' from base type '$baseTypeName'.")
         }
     }
 
@@ -152,7 +162,9 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
         if (localisationLinksStatic.isNotEmpty()) return
         val linksStatic = initializer.links.values.filter { it.dataSources.isEmpty() }
         for (linkConfig in linksStatic) {
-            initializer.localisationLinks[linkConfig.name] = CwtLinkConfig.resolveForLocalisation(linkConfig)
+            val linkName = linkConfig.name
+            initializer.localisationLinks[linkName] = CwtLinkConfig.resolveForLocalisation(linkConfig)
+            logger.info("Added missing localisation link '$linkName' from normal links.")
         }
     }
 
@@ -210,7 +222,7 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
         }
     }
 
-    private fun computeTypesModel(configGroup: CwtConfigGroup) {
+    private fun computeTypeModel(configGroup: CwtConfigGroup) {
         val initializer = configGroup.initializer
         with(initializer.typeModel) {
             initializer.types.values.forEach { c ->
@@ -244,7 +256,42 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
         }
     }
 
-    private fun computeLinksModel(configGroup: CwtConfigGroup, linksModel: CwtLinkModelBase, links: Collection<CwtLinkConfig>) {
+    private fun computeScopeModel(configGroup: CwtConfigGroup) {
+        val initializer = configGroup.initializer
+        with(initializer.scopeModel) {
+            initializer.scopes.values.forEach { c ->
+                val index = ParadoxScope.resolve(c.name).index
+                val aliasesResult = IntArraySet()
+                val parentsResult = IntArraySet()
+                computeScopeModelForAliases(c, aliasesResult)
+                computeScopeModelForParents(c, parentsResult)
+                base2Aliases.put(index, aliasesResult)
+                base2Parents.put(index, parentsResult)
+                val matchedScopesResult = IntArraySet()
+                matchedScopesResult.add(index)
+                matchedScopesResult.addAll(aliasesResult)
+                matchedScopesResult.addAll(parentsResult)
+                base2MatchedScopes.put(index, matchedScopesResult)
+            }
+        }
+    }
+
+    private fun computeScopeModelForAliases(config: CwtScopeConfig, result: IntArraySet) {
+        config.aliases.forEach { alias ->
+            val aliasIndex = ParadoxScope.resolve(alias).index
+            result.add(aliasIndex)
+        }
+    }
+
+    private fun computeScopeModelForParents(config: CwtScopeConfig, result: IntArraySet) {
+        // TODO 3.0.2 collect recursively (and present recursions)
+        config.isSubscopeOf?.let { parent ->
+            val parentIndex = ParadoxScope.resolve(parent).index
+            result.add(parentIndex)
+        }
+    }
+
+    private fun computeLinkModel(configGroup: CwtConfigGroup, linksModel: CwtLinkModelBase, links: Collection<CwtLinkConfig>) {
         with(linksModel) {
             val staticLinks = links.filter { it.isStatic }
             staticLinks.forEach { c ->
@@ -291,7 +338,7 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
         }
     }
 
-    private fun computeMacrosModel(configGroup: CwtConfigGroup) {
+    private fun computeMacroModel(configGroup: CwtConfigGroup) {
         val initializer = configGroup.initializer
         val attribute = initializer.attribute
         with(initializer.macroModel) {

@@ -92,7 +92,7 @@ class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInfer
         definitionInfo: ParadoxDefinitionInfo,
         searchScope: GlobalSearchScope,
         scopeContextMap: MutableMap<String, String>,
-        configGroup: CwtConfigGroup
+        configGroup: CwtConfigGroup,
     ): Boolean {
         ProgressManager.checkCanceled()
         val project = configGroup.project
@@ -117,7 +117,7 @@ class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInfer
                             }
                         }
                         if (scopeContextMap.isNotEmpty()) {
-                            val mergedMap = ParadoxScopeMergeService.mergeScopeContextMap(scopeContextMap, map, true)
+                            val mergedMap = ParadoxScopeMergeService.mergeScopeContextMap(scopeContextMap, map, configGroup, true)
                             if (mergedMap != null) {
                                 scopeContextMap.clear()
                                 scopeContextMap.putAll(mergedMap)
@@ -201,7 +201,7 @@ class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInfe
         searchScope: GlobalSearchScope,
         scopeContextMap: MutableMap<String, String>,
         configGroup: CwtConfigGroup,
-        depth: Int = 1
+        depth: Int = 1,
     ): Boolean {
         ProgressManager.checkCanceled()
         val project = configGroup.project
@@ -224,7 +224,7 @@ class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInfe
                         if (config.eventType != thisEventType) return@f // invalid (mismatch)
                         val map = config.config.optionMetadata.replaceScopes ?: return@f
                         if (scopeContextMap.isNotEmpty()) {
-                            val mergedMap = ParadoxScopeMergeService.mergeScopeContextMap(scopeContextMap, map, true)
+                            val mergedMap = ParadoxScopeMergeService.mergeScopeContextMap(scopeContextMap, map, configGroup, true)
                             if (mergedMap != null) {
                                 scopeContextMap.clear()
                                 scopeContextMap.putAll(mergedMap)
@@ -313,7 +313,7 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
         searchScope: GlobalSearchScope,
         scopeContextMap: MutableMap<String, String>,
         configGroup: CwtConfigGroup,
-        depth: Int = 1
+        depth: Int = 1,
     ): Boolean {
         ProgressManager.checkCanceled()
         val project = configGroup.project
@@ -355,7 +355,7 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
                             if (map.isEmpty()) return@p false
 
                             if (scopeContextMap.isNotEmpty()) {
-                                val mergedMap = ParadoxScopeMergeService.mergeScopeContextMap(scopeContextMap, map, true)
+                                val mergedMap = ParadoxScopeMergeService.mergeScopeContextMap(scopeContextMap, map, configGroup, true)
                                 if (mergedMap != null) {
                                     scopeContextMap.clear()
                                     scopeContextMap.putAll(mergedMap)
@@ -376,7 +376,7 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
                             if (oldRefScope == null) {
                                 scopeContextMap.put(toRef, newRefScope)
                             } else {
-                                val refScope = ParadoxScopeMergeService.mergeScopeId(oldRefScope, newRefScope)
+                                val refScope = ParadoxScopeMergeService.mergeScope(oldRefScope, newRefScope, configGroup)
                                 if (refScope == null) {
                                     return@p false
                                 }
@@ -467,7 +467,7 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
         searchScope: GlobalSearchScope,
         scopeContextMap: MutableMap<String, String>,
         configGroup: CwtConfigGroup,
-        depth: Int = 1
+        depth: Int = 1,
     ): Boolean {
         ProgressManager.checkCanceled()
         val project = configGroup.project
@@ -509,7 +509,7 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
                             if (map.isEmpty()) return@p false
 
                             if (scopeContextMap.isNotEmpty()) {
-                                val mergedMap = ParadoxScopeMergeService.mergeScopeContextMap(scopeContextMap, map, true)
+                                val mergedMap = ParadoxScopeMergeService.mergeScopeContextMap(scopeContextMap, map, configGroup, true)
                                 if (mergedMap != null) {
                                     scopeContextMap.clear()
                                     scopeContextMap.putAll(mergedMap)
@@ -530,7 +530,7 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
                             if (oldRefScope == null) {
                                 scopeContextMap.put(toRef, newRefScope)
                             } else {
-                                val refScope = ParadoxScopeMergeService.mergeScopeId(oldRefScope, newRefScope)
+                                val refScope = ParadoxScopeMergeService.mergeScope(oldRefScope, newRefScope, configGroup)
                                 if (refScope == null) {
                                     return@p false
                                 }

@@ -11,8 +11,6 @@ import icu.windea.pls.config.config.CwtIdMatchableConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.util.CwtConfigResolverScope
-import icu.windea.pls.core.annotations.CaseInsensitive
-import icu.windea.pls.core.collections.CaseInsensitiveStringSet
 import icu.windea.pls.core.collections.getOne
 import icu.windea.pls.core.optimized
 import icu.windea.pls.cwt.psi.CwtProperty
@@ -38,8 +36,8 @@ import icu.windea.pls.model.scope.ParadoxScopeContext
  * > CWTools 兼容性：兼容。
  *
  * @property name 规则名称。
- * @property aliases 该作用域的别名集合（忽略大小写）。
- * @property isSubscopeOf TODO [config-system] 暂不支持。
+ * @property aliases 该作用域的别名集合。可以为空。用于作用域匹配。
+ * @property isSubscopeOf 该作用域的父作用域。可以为空。用于作用域匹配。
  *
  * @see ParadoxScope
  * @see ParadoxScopeContext
@@ -48,7 +46,7 @@ interface CwtScopeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, C
     @FromName
     val name: String
     @FromMember("aliases: string[]")
-    val aliases: Set<@CaseInsensitive String>
+    val aliases: Set<String>
     @FromMember("is_subscope_of: string?")
     val isSubscopeOf: String?
 
@@ -69,19 +67,23 @@ private object CwtScopeConfigResolver : CwtConfigResolverScope {
     private val logger = thisLogger()
 
     fun resolve(config: CwtPropertyConfig): CwtScopeConfig? {
-        val name = config.key
+        val name = config.key // no normalization here
         val propConfigs = config.properties
         if (propConfigs == null) {
             logger.warnWithPrefix(config, "Skipped invalid scope config (name: $name): Null properties.")
             return null
         }
         val propGroup = propConfigs.groupBy { it.key }
-        val aliases = propGroup.getOne("aliases")?.let { prop ->
-            prop.values?.mapNotNullTo(CaseInsensitiveStringSet()) { it.stringValue }
-        }?.optimized().orEmpty()
-        val isSubscopeOf = propGroup.getOne("is_subscope_of")?.stringValue
+        val aliases = mutableSetOf<String>()
+        propGroup.getOne("aliases")?.let { prop ->
+            prop.values?.forEach f@{ value ->
+                val alias = value.stringValue?.let { ParadoxScope.getId(it) } ?: return@f
+                aliases.add(alias)
+            }
+        }
+        val isSubscopeOf = propGroup.getOne("is_subscope_of")?.stringValue?.let { ParadoxScope.getId(it) }
         logger.debugWithPrefix(config) { "Resolved scope config (name: $name)." }
-        return CwtScopeConfigImpl(config, name, aliases, isSubscopeOf)
+        return CwtScopeConfigImpl(config, name, aliases.optimized(), isSubscopeOf)
     }
 }
 

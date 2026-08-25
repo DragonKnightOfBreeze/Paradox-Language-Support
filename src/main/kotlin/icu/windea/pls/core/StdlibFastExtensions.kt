@@ -40,6 +40,12 @@ fun String?.equalsFast(other: String?, ignoreCase: Boolean = false): Boolean {
 
 /** @see kotlin.text.equals */
 @Fast
+fun String.equalsAnyFast(other: Array<String>, ignoreCase: Boolean = false): Boolean {
+    return other.any { equalsFast(it, ignoreCase) }
+}
+
+/** @see kotlin.text.equals */
+@Fast
 fun Array<String>.equalsAnyFast(other: String, ignoreCase: Boolean = false): Boolean {
     return any { it.equalsFast(other, ignoreCase) }
 }

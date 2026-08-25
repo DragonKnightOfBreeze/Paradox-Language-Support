@@ -21,7 +21,8 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
  * - **事件对象（event target）**：用于保存需要的作用域，以便后续复用。
  * - **变量（variable）**：用于保存需要的变量（数值、字符串等），以便后续复用。
  *
- * @property id 作用域的ID。指示作用域类型。
+ * @property id 作用域的 ID。指示作用域类型。
+ * @property index 索引计数。用于优化内存占用，以及匹配和合并作用域时的性能。
  *
  * @see ParadoxScopeContext
  * @see CwtScopeConfig
@@ -30,13 +31,14 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
  */
 sealed interface ParadoxScope {
     val id: String
+    val index: Int
 
     fun isUnsure(): Boolean
 
     /**
      * 默认作用域。
      */
-    class Default(override val id: String) : ParadoxScope {
+    class Default internal constructor(override val id: String, override val index: Int) : ParadoxScope {
         override fun isUnsure(): Boolean = false
 
         override fun toString() = id
@@ -49,6 +51,7 @@ sealed interface ParadoxScope {
      */
     object Any : ParadoxScope {
         override val id: String = ParadoxScopeConstants.anyScope
+        override val index: Int get() = -1
 
         override fun isUnsure(): Boolean = true
 
@@ -64,6 +67,7 @@ sealed interface ParadoxScope {
      */
     object Unknown : ParadoxScope {
         override val id: String = ParadoxScopeConstants.unknownScope
+        override val index: Int get() = -2
 
         override fun isUnsure(): Boolean = true
 

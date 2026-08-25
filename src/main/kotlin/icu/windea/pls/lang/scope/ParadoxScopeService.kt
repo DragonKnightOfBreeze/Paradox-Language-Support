@@ -3,6 +3,7 @@ package icu.windea.pls.lang.scope
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.parentOfType
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
@@ -97,6 +98,7 @@ object ParadoxScopeService {
      */
     fun getInferredScopeContext(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContext? {
         val gameType = definitionInfo.gameType
+        val configGroup = definitionInfo.configGroup
         var map: Map<String, String>? = null
         val eps = ParadoxDefinitionInferredScopeContextProvider.EP_NAME.extensionList
         eps.forEachFast f@{ ep ->
@@ -108,7 +110,7 @@ object ParadoxScopeService {
             if (map == null) {
                 map = info.scopeContextMap
             } else {
-                map = ParadoxScopeMergeService.mergeScopeContextMap(map, info.scopeContextMap)
+                map = ParadoxScopeMergeService.mergeScopeContextMap(map, info.scopeContextMap, configGroup)
             }
         }
         val resultMap = map ?: return null
@@ -179,6 +181,7 @@ object ParadoxScopeService {
      */
     fun getInferredScopeContext(dynamicValue: ParadoxDynamicValueLightElement): ParadoxScopeContext? {
         val gameType = dynamicValue.gameType
+        val configGroup = ChronicleFacade.getConfigGroup(dynamicValue.project, gameType)
         var map: Map<String, String>? = null
         val eps = ParadoxDynamicValueInferredScopeContextProvider.EP_NAME.extensionList
         eps.forEachFast f@{ ep ->
@@ -190,7 +193,7 @@ object ParadoxScopeService {
             if (map == null) {
                 map = info.scopeContextMap
             } else {
-                map = ParadoxScopeMergeService.mergeScopeContextMap(map, info.scopeContextMap)
+                map = ParadoxScopeMergeService.mergeScopeContextMap(map, info.scopeContextMap, configGroup)
             }
         }
         val resultMap = map ?: return null
@@ -298,7 +301,11 @@ object ParadoxScopeService {
 
         // get inferred scope context from EPs, and use the merged result if exists
         val inferredScopeContext = getInferredScopeContext(element, definitionInfo)
-        if (inferredScopeContext != null) return ParadoxScopeMergeService.mergeScopeContext(scopeContext, inferredScopeContext) ?: ParadoxScopeContext.resolveAny()
+        if (inferredScopeContext != null) {
+            val configGroup = definitionInfo.configGroup
+            val mergedScopeContext = ParadoxScopeMergeService.mergeScopeContext(scopeContext, inferredScopeContext, configGroup)
+            return mergedScopeContext ?: ParadoxScopeContext.resolveAny()
+        }
 
         return scopeContext ?: ParadoxScopeContext.resolveAny()
     }
@@ -338,7 +345,11 @@ object ParadoxScopeService {
 
         // get inferred scope context from EPs, and use the merged result if exists
         val inferredScopeContext = getInferredScopeContext(element)
-        if (inferredScopeContext != null) return ParadoxScopeMergeService.mergeScopeContext(scopeContext, inferredScopeContext) ?: ParadoxScopeContext.resolveAny()
+        if (inferredScopeContext != null) {
+            val configGroup = ChronicleFacade.getConfigGroup(element.project, element.gameType)
+            val mergedScopeContext = ParadoxScopeMergeService.mergeScopeContext(scopeContext, inferredScopeContext, configGroup)
+            return mergedScopeContext ?: ParadoxScopeContext.resolveAny()
+        }
 
         return scopeContext ?: ParadoxScopeContext.resolveAny()
     }

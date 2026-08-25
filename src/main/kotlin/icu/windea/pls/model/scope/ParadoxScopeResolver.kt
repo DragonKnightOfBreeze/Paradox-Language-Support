@@ -4,39 +4,56 @@ import com.github.benmanes.caffeine.cache.Interner.*
 import com.google.common.collect.ImmutableList
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.annotations.Optimized
-import icu.windea.pls.core.cache.CacheBuilder
+import icu.windea.pls.core.equalsFast
 import icu.windea.pls.core.toCapitalizedWords
 import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.atomic.AtomicInteger
 
 @Optimized
 object ParadoxScopeResolver {
     private val interner = newWeakInterner<String>()
-    private val cache = CacheBuilder("expireAfterAccess=30m").build<String, ParadoxScope> { ParadoxScope.Default(it) }
+    private val indexCounter = AtomicInteger()
+    // order-insensitive & cannot use weak value map atm (since scope objects are not directly stored in config groups)
+    private val cache = ConcurrentHashMap<String, ParadoxScope>()
+    // optimize memory & not thread safe & cannot use weak value map atm (since scope objects are not directly stored in config groups)
+    private val indexMap = Int2ObjectOpenHashMap<ParadoxScope>()
 
     fun getScopeId(scope: String): String {
         val scopeId = scope.lowercase().replace(' ', '_')
         // "all" scope is always resolved as "any" scope
-        if (scopeId == ParadoxScopeConstants.allScope) return ParadoxScopeConstants.anyScope
+        if (scopeId.equalsFast(ParadoxScopeConstants.allScope)) return ParadoxScopeConstants.anyScope
         // intern to optimize memory
         return interner.intern(scopeId)
     }
 
     fun getScopeName(scope: String, configGroup: CwtConfigGroup): String {
         // handle "any" and "all" scope
-        if (scope.equals(ParadoxScopeConstants.anyScope, true)) return "Any"
-        if (scope.equals(ParadoxScopeConstants.allScope, true)) return "All"
+        if (scope.equalsFast(ParadoxScopeConstants.anyScope, true)) return "Any"
+        if (scope.equalsFast(ParadoxScopeConstants.allScope, true)) return "All"
         // a scope may not have aliases, or not defined in scopes.cwt
         return configGroup.scopes[scope]?.name
             ?: configGroup.scopeAliasMap[scope]?.name
             ?: scope.toCapitalizedWords()
     }
 
+    @Suppress("unused")
+    fun getScopeByIndex(index: Int): ParadoxScope? {
+        if (index == -1) return ParadoxScope.Any
+        if (index == -2) return ParadoxScope.Unknown
+        return synchronized(indexMap) { indexMap.get(index) }
+    }
+
     fun resolveScope(id: String): ParadoxScope {
-        return when {
-            id == ParadoxScope.Any.id -> ParadoxScope.Any
-            id == ParadoxScope.Unknown.id -> ParadoxScope.Unknown
-            else -> cache.get(id)
+        if (id.equalsFast(ParadoxScopeConstants.anyScope)) return ParadoxScope.Any
+        if (id.equalsFast(ParadoxScopeConstants.allScope)) return ParadoxScope.Any
+        if (id.equalsFast(ParadoxScopeConstants.unknownScope)) return ParadoxScope.Unknown
+        return cache.computeIfAbsent(id) {
+            ParadoxScope.Default(id, indexCounter.getAndIncrement()).also {
+                synchronized(indexMap) { indexMap.put(it.index, it) }
+            }
         }
     }
 

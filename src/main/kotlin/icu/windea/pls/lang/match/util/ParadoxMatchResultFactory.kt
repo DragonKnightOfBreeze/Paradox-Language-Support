@@ -28,6 +28,7 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxTagsExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxValueFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxVariableFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.attributes.ParadoxComplexExpressionAttributesEvaluator
+import icu.windea.pls.lang.scope.ParadoxScopeMatchService
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.model.expressions.ParadoxExpression
 import icu.windea.pls.script.psi.ParadoxScriptBlock
@@ -210,7 +211,7 @@ object ParadoxMatchResultFactory {
                 ProgressManager.checkCanceled() // check cancellation before lazy match
                 ParadoxMatchResult.LazyScopeAwareMatch {
                     val scopeContext = ParadoxScopeManager.getScopeContext(element, scopeFieldExpression, configExpression)
-                    ParadoxScopeManager.matchesScope(scopeContext, expectedScope, configGroup)
+                    ParadoxScopeMatchService.matchesScope(scopeContext, expectedScope, configGroup)
                 }
             }
             CwtDataTypes.ScopeGroup -> {
@@ -218,7 +219,7 @@ object ParadoxMatchResultFactory {
                 ProgressManager.checkCanceled() // check cancellation before lazy match
                 ParadoxMatchResult.LazyScopeAwareMatch {
                     val scopeContext = ParadoxScopeManager.getScopeContext(element, scopeFieldExpression, configExpression)
-                    ParadoxScopeManager.matchesScopeGroup(scopeContext, expectedScopeGroup, configGroup)
+                    ParadoxScopeMatchService.matchesScopeGroup(scopeContext, expectedScopeGroup, configGroup)
                 }
             }
             else -> ParadoxMatchResult.NotMatch

@@ -178,6 +178,8 @@ interface CwtConfigGroupDataModel {
 
     /** 获取符合特定条件的定义类型。 */
     val typeModel: CwtTypeModel get() = CwtTypeModel.Empty
+    /** 获取作用域的关系信息。 */
+    val scopeModel: CwtScopeModel get() = CwtScopeModel.Empty
     /** 获取符合特定条件的链接规则。 */
     val linkModel: CwtLinkModel get() = CwtLinkModel.Empty
     /** 获取符合特定条件的本地化的链接规则。 */
@@ -236,6 +238,20 @@ interface CwtTypeModel {
     val localisationIconResolvable: Set<String> get() = emptySet()
 
     object Empty : CwtTypeModel
+}
+
+/** 作用域的数据模型。用于保存和获取作用域的关系信息（别名、继承等），以优化匹配和合并作用域时的性能。 */
+interface CwtScopeModel {
+    /** 基础作用域到匹配其别名的作用域的集合（仅保存索引计数）。 */
+    val base2Aliases: Map<Int, Set<Int>> get() = emptyMap()
+    /** 基础作用域到父作用域的集合（仅保存索引计数，兼容别名形式）。 */
+    val base2Parents: Map<Int, Set<Int>> get() = emptyMap()
+    // /** 基础作用域到提升后的作用域的集合（仅保存索引计数，兼容别名形式）。 */
+    // val base2Promotions: Map<Int, Set<Int>> get() = emptyMap()
+    /** 基础作用域到匹配的作用域的集合（仅保存索引计数，兼容别名形式）。 */
+    val base2MatchedScopes: Map<Int, Set<Int>> get() = emptyMap()
+
+    object Empty : CwtScopeModel
 }
 
 /** 链接规则的数据模型。用于保存和获取符合特定条件的链接规则。 */

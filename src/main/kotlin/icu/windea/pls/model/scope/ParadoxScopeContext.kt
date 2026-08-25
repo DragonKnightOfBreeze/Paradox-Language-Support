@@ -86,7 +86,7 @@ sealed interface ParadoxScopeContext : UserDataHolder {
         return ParadoxScopeResolver.toPresentableString(this, separator, showFrom, showPrev)
     }
 
-    class Simple(
+    class Simple internal constructor(
         override val scope: ParadoxScope,
         override val root: ParadoxScopeContext? = null,
     ) : UserDataHolderBase(), ParadoxScopeContext {
@@ -100,7 +100,7 @@ sealed interface ParadoxScopeContext : UserDataHolder {
         override fun toString() = toPresentableString()
     }
 
-    class Complex(
+    class Complex internal constructor(
         override val scope: ParadoxScope,
         override val root: ParadoxScopeContext? = null,
         override val from: ParadoxScopeContext? = null,
@@ -114,7 +114,7 @@ sealed interface ParadoxScopeContext : UserDataHolder {
         override fun toString() = toPresentableString()
     }
 
-    class Linked(
+    class Linked internal constructor(
         override val links: List<Tuple2<ParadoxScopeNode, ParadoxScopeContext>>,
         override val prevStack: List<ParadoxScopeContext> = emptyList(),
     ) : UserDataHolderBase(), ParadoxScopeContext {

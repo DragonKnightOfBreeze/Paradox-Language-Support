@@ -9,6 +9,7 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.core.pass
 import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
+import icu.windea.pls.lang.scope.ParadoxScopeMatchService
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
@@ -69,7 +70,7 @@ class IncorrectScopeSwitchInspection : ScopeInspectionBase() {
                     val parentScopeContext = scopeContext.prev ?: continue
                     val inputScopes = node.config.inputScopes
                     val configGroup = config.configGroup
-                    if (ParadoxScopeManager.matchesScope(parentScopeContext, inputScopes, configGroup)) continue
+                    if (ParadoxScopeMatchService.matchesScope(parentScopeContext, inputScopes, configGroup)) continue
                     val description = ChronicleInspectionBundle.message("script.incorrectScopeSwitch.desc.1", node.text, inputScopes.joinToString(), parentScopeContext.scope.id)
                     holder.registerProblem(propertyKey, rangeInExpression, description)
                 }

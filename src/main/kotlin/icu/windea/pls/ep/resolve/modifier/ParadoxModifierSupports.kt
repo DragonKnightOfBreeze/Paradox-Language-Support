@@ -21,6 +21,7 @@ import icu.windea.pls.lang.codeInsight.completion.addToResult
 import icu.windea.pls.lang.psi.light.ParadoxModifierLightElement
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxTemplateExpression
 import icu.windea.pls.lang.resolve.util.ParadoxModifierSupportFactory
+import icu.windea.pls.lang.scope.ParadoxScopeMatchService
 import icu.windea.pls.lang.util.ParadoxEconomicCategoryManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
@@ -64,7 +65,7 @@ class ParadoxPredefinedModifierSupport : ParadoxModifierSupport {
             if (!modifierNames.add(modifierConfig.name)) return@p true
 
             // 排除不匹配 modifier 的 supported_scopes 的情况
-            val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, modifierConfig.supportedScopes, configGroup)
+            val scopeMatched = ParadoxScopeMatchService.matchesScope(scopeContext, modifierConfig.supportedScopes, configGroup)
             if (!scopeMatched && completeOnlyScopeIsMatched) return@p true
 
             val hintText = ParadoxCompletionFactory.getConfigBasedHintText(context, modifierConfig.config, withConfigExpression = false)
@@ -149,7 +150,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
 
         ParadoxModifierSupportFactory.processGeneratedModifierConfig(configGroup) p@{ modifierConfig ->
             // 排除不匹配 modifier 的 supported_scopes 的情况
-            val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, modifierConfig.supportedScopes, configGroup)
+            val scopeMatched = ParadoxScopeMatchService.matchesScope(scopeContext, modifierConfig.supportedScopes, configGroup)
             if (!scopeMatched && completeOnlyScopeIsMatched) return@p true
 
             val typeFile = modifierConfig.pointer.containingFile
@@ -232,7 +233,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
             // 排除不匹配 modifier 的 supported_scopes 的情况
             val modifierCategories = ParadoxEconomicCategoryManager.getModifierCategories(economicCategoryInfo.modifierCategory, configGroup)
             val supportedScopes = ParadoxScopeManager.getSupportedScopes(modifierCategories)
-            val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, supportedScopes, configGroup)
+            val scopeMatched = ParadoxScopeMatchService.matchesScope(scopeContext, supportedScopes, configGroup)
             if (!scopeMatched && completeOnlyScopeIsMatched) return@p true
 
             val typeText = economicCategoryInfo.name

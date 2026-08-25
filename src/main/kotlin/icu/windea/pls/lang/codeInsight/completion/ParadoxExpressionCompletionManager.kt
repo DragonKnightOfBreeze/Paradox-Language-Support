@@ -27,6 +27,7 @@ import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
 import icu.windea.pls.lang.psi.light.ParadoxMeshLocatorLightElement
 import icu.windea.pls.lang.psi.light.ParadoxShaderEffectLightElement
 import icu.windea.pls.lang.resolve.ParadoxExpressionService
+import icu.windea.pls.lang.scope.ParadoxScopeMatchService
 import icu.windea.pls.lang.scope.ParadoxScopeService
 import icu.windea.pls.lang.search.ParadoxComplexEnumValueSearch
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
@@ -44,7 +45,6 @@ import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.lang.util.ParadoxNameValidators
 import icu.windea.pls.lang.util.ParadoxParameterManager
-import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 
 object ParadoxExpressionCompletionManager {
@@ -82,7 +82,7 @@ object ParadoxExpressionCompletionManager {
         }
         return when {
             context.scopeContext == null -> true
-            else -> ParadoxScopeManager.matchesScope(context.scopeContext, supportedScopes, context.configGroup)
+            else -> ParadoxScopeMatchService.matchesScope(context.scopeContext, supportedScopes, context.configGroup)
         }
     }
 
@@ -107,7 +107,7 @@ object ParadoxExpressionCompletionManager {
 
             // 排除不匹配可能存在的 `supported_scopes` 的情况
             val supportedScopes = ParadoxScopeService.getSupportedScopes(definition, definitionInfo)
-            val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, supportedScopes, configGroup)
+            val scopeMatched = ParadoxScopeMatchService.matchesScope(scopeContext, supportedScopes, configGroup)
             if (!scopeMatched && ChronicleSettings.getInstance().state.completion.completeOnlyScopeIsMatched) return@p true
             ParadoxCompletionFactory.fromDefinition(context, definition, hintText, scopeMatched).addToResult(context, result)
         }

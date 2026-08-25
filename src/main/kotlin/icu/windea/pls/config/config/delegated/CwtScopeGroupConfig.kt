@@ -8,10 +8,8 @@ import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtIdMatchableConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
+import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.util.CwtConfigResolverScope
-import icu.windea.pls.core.annotations.CaseInsensitive
-import icu.windea.pls.core.collections.CaseInsensitiveStringKeyMap
-import icu.windea.pls.core.collections.CaseInsensitiveStringSet
 import icu.windea.pls.core.optimized
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.model.scope.ParadoxScope
@@ -37,8 +35,8 @@ import icu.windea.pls.model.scope.ParadoxScopeContext
  *
  * > CWTools 兼容性：兼容。
  *
- * @property name 规则名称（即分组名）。
- * @property values 分组内的作用域 ID 集合（忽略大小写）。
+ * @property name 规则名称。
+ * @property values 分组内的作用域 ID 集合。
  * @property valueConfigMap 每个作用域 ID 到其原始值规则的映射。
  *
  * @see ParadoxScope
@@ -48,9 +46,9 @@ interface CwtScopeGroupConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfi
     @FromName
     val name: String
     @FromMember(": string[]")
-    val values: Set<@CaseInsensitive String>
+    val values: Set<String>
 
-    val valueConfigMap: Map<@CaseInsensitive String, CwtValueConfig>
+    val valueConfigMap: Map<String, CwtValueConfig>
 
     companion object {
         /** 由属性规则解析为作用域分组规则。 */
@@ -77,11 +75,12 @@ private object CwtScopeGroupConfigResolver : CwtConfigResolverScope {
             logger.debugWithPrefix(config) { "Resolved scope group config with empty values (name: $name)." }
             return CwtScopeGroupConfigImpl(config, name, emptySet(), emptyMap())
         }
-        val values = CaseInsensitiveStringSet()
-        val valueConfigMap = CaseInsensitiveStringKeyMap<CwtValueConfig>()
-        for (valueElement in valueConfigs) {
-            values.add(valueElement.value)
-            valueConfigMap.put(valueElement.value, valueElement)
+        val values = mutableSetOf<String>()
+        val valueConfigMap = mutableMapOf<String, CwtValueConfig>()
+        valueConfigs.forEach f@{ valueElement ->
+            val scopeId = valueElement.stringValue?.let { ParadoxScope.getId(it) } ?: return@f
+            values.add(scopeId)
+            valueConfigMap.put(scopeId, valueElement)
         }
         logger.debugWithPrefix(config) { "Resolved scope group config (name: $name)." }
         return CwtScopeGroupConfigImpl(config, name, values.optimized(), valueConfigMap.optimized())
@@ -92,7 +91,7 @@ private class CwtScopeGroupConfigImpl(
     override val config: CwtPropertyConfig,
     override val name: String,
     override val values: Set<String>,
-    override val valueConfigMap: Map<String, CwtValueConfig>
+    override val valueConfigMap: Map<String, CwtValueConfig>,
 ) : UserDataHolderBase(), CwtScopeGroupConfig {
     override fun toString() = "CwtScopeGroupConfigImpl(name='$name')"
 }
