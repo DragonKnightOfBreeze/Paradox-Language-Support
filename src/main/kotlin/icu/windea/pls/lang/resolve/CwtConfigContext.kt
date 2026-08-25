@@ -1,24 +1,14 @@
 package icu.windea.pls.lang.resolve
 
-import com.github.benmanes.caffeine.cache.Cache
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.UserDataHolder
 import com.intellij.openapi.util.UserDataHolderBase
 import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.util.KeyRegistry
-import icu.windea.pls.core.util.getValue
-import icu.windea.pls.core.util.provideDelegate
-import icu.windea.pls.core.util.registerKey
-import icu.windea.pls.core.util.setValue
 import icu.windea.pls.ep.resolve.config.CwtConfigContextProvider
 import icu.windea.pls.lang.match.ParadoxMatchOptions
-import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
-import icu.windea.pls.model.ParadoxDefineVariableInfo
-import icu.windea.pls.model.ParadoxDefinitionInfo
-import icu.windea.pls.model.ParadoxDefinitionInjectionInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.paths.ParadoxMemberPath
 import icu.windea.pls.model.type.ParadoxMemberRole
@@ -128,21 +118,6 @@ interface CwtConfigContext : UserDataHolder {
         }
     }
 }
-
-// region Accessors
-
-val CwtConfigContext.dynamicCache: Cache<String, List<CwtMemberConfig<*>>> by registerKey(CwtConfigContext.Keys) { CacheBuilder().build() }
-
-var CwtConfigContext.definitionInfo: ParadoxDefinitionInfo? by registerKey(CwtConfigContext.Keys)
-var CwtConfigContext.defineVariableInfo: ParadoxDefineVariableInfo? by registerKey(CwtConfigContext.Keys)
-var CwtConfigContext.parameterElement: ParadoxParameterLightElement? by registerKey(CwtConfigContext.Keys)
-var CwtConfigContext.parameterValueQuoted: Boolean? by registerKey(CwtConfigContext.Keys)
-var CwtConfigContext.inlineScriptExpression: String? by registerKey(CwtConfigContext.Keys)
-var CwtConfigContext.inlineScriptHasConflict: Boolean? by registerKey(CwtConfigContext.Keys)
-var CwtConfigContext.inlineScriptHasRecursion: Boolean? by registerKey(CwtConfigContext.Keys)
-var CwtConfigContext.definitionInjectionInfo: ParadoxDefinitionInjectionInfo? by registerKey(CwtConfigContext.Keys)
-
-// endregion
 
 // region Implementations
 
