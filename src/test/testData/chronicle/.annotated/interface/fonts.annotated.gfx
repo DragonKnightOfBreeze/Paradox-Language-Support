@@ -3,8 +3,8 @@ bitmapfonts = {
     ## @type string = block
     textcolors = {
         ## @type string = block
-        ## @definition_type text_color
         ## @config_expression text_color = {...}
+        ## @definition_type text_color
         ## @override_strategy LIOS
         M = {
             ## @type int
@@ -18,8 +18,8 @@ bitmapfonts = {
             238
         }
         ## @type string = block
-        ## @definition_type text_color
         ## @config_expression text_color = {...}
+        ## @definition_type text_color
         ## @override_strategy LIOS
         L = {
             ## @type int
@@ -33,8 +33,8 @@ bitmapfonts = {
             145
         }
         ## @type string = block
-        ## @definition_type text_color
         ## @config_expression text_color = {...}
+        ## @definition_type text_color
         ## @override_strategy LIOS
         G = {
             ## @type int
@@ -48,8 +48,8 @@ bitmapfonts = {
             38
         }
         ## @type string = block
-        ## @definition_type text_color
         ## @config_expression text_color = {...}
+        ## @definition_type text_color
         ## @override_strategy LIOS
         R = {
             ## @type int
@@ -63,8 +63,8 @@ bitmapfonts = {
             70
         }
         ## @type string = block
-        ## @definition_type text_color
         ## @config_expression text_color = {...}
+        ## @definition_type text_color
         ## @override_strategy LIOS
         B = {
             ## @type int
@@ -78,8 +78,8 @@ bitmapfonts = {
             255
         }
         ## @type string = block
-        ## @definition_type text_color
         ## @config_expression text_color = {...}
+        ## @definition_type text_color
         ## @override_strategy LIOS
         Y = {
             ## @type int
@@ -93,8 +93,8 @@ bitmapfonts = {
             52
         }
         ## @type string = block
-        ## @definition_type text_color
         ## @config_expression text_color = {...}
+        ## @definition_type text_color
         ## @override_strategy LIOS
         H = {
             ## @type int
@@ -108,8 +108,8 @@ bitmapfonts = {
             41
         }
         ## @type string = block
-        ## @definition_type text_color
         ## @config_expression text_color = {...}
+        ## @definition_type text_color
         ## @override_strategy LIOS
         C = {
             ## @type int
@@ -123,8 +123,8 @@ bitmapfonts = {
             202
         }
         ## @type string = block
-        ## @definition_type text_color
         ## @config_expression text_color = {...}
+        ## @definition_type text_color
         ## @override_strategy LIOS
         K = {
             ## @type int
@@ -138,8 +138,8 @@ bitmapfonts = {
             41
         }
         ## @type string = block
-        ## @definition_type text_color
         ## @config_expression text_color = {...}
+        ## @definition_type text_color
         ## @override_strategy LIOS
         I = {
             ## @type int
@@ -153,8 +153,8 @@ bitmapfonts = {
             52
         }
         ## @type string = block
-        ## @definition_type text_color
         ## @config_expression text_color = {...}
+        ## @definition_type text_color
         ## @override_strategy LIOS
         T = {
             ## @type int
@@ -168,8 +168,8 @@ bitmapfonts = {
             255
         }
         ## @type string = block
-        ## @definition_type text_color
         ## @config_expression text_color = {...}
+        ## @definition_type text_color
         ## @override_strategy LIOS
         t = {
             ## @type int
@@ -183,8 +183,8 @@ bitmapfonts = {
             198
         }
         ## @type string = block
-        ## @definition_type text_color
         ## @config_expression text_color = {...}
+        ## @definition_type text_color
         ## @override_strategy LIOS
         E = {
             ## @type int
@@ -198,8 +198,8 @@ bitmapfonts = {
             207
         }
         ## @type string = block
-        ## @definition_type text_color
         ## @config_expression text_color = {...}
+        ## @definition_type text_color
         ## @override_strategy LIOS
         S = {
             ## @type int
@@ -213,8 +213,8 @@ bitmapfonts = {
             42
         }
         ## @type string = block
-        ## @definition_type text_color
         ## @config_expression text_color = {...}
+        ## @definition_type text_color
         ## @override_strategy LIOS
         W = {
             ## @type int
@@ -228,8 +228,8 @@ bitmapfonts = {
             255
         }
         ## @type string = block
-        ## @definition_type text_color
         ## @config_expression text_color = {...}
+        ## @definition_type text_color
         ## @override_strategy LIOS
         P = {
             ## @type int
@@ -243,8 +243,8 @@ bitmapfonts = {
             110
         }
         ## @type string = block
-        ## @definition_type text_color
         ## @config_expression text_color = {...}
+        ## @definition_type text_color
         ## @override_strategy LIOS
         V = {
             ## @type int
@@ -258,8 +258,8 @@ bitmapfonts = {
             113
         }
         ## @type string = block
-        ## @definition_type text_color
         ## @config_expression text_color = {...}
+        ## @definition_type text_color
         ## @override_strategy LIOS
         g = {
             ## @type int
@@ -273,8 +273,8 @@ bitmapfonts = {
             128
         }
         ## @type string = block
-        ## @definition_type text_color
         ## @config_expression text_color = {...}
+        ## @definition_type text_color
         ## @override_strategy LIOS
         _ = {
             ## @type int
@@ -288,8 +288,8 @@ bitmapfonts = {
             255
         }
         ## @type string = block
-        ## @definition_type text_color
         ## @config_expression text_color = {...}
+        ## @definition_type text_color
         ## @override_strategy LIOS
         U = {
             ## @type int
@@ -303,8 +303,8 @@ bitmapfonts = {
             255
         }
         ## @type string = block
-        ## @definition_type text_color
         ## @config_expression text_color = {...}
+        ## @definition_type text_color
         ## @override_strategy LIOS
         A = {
             ## @type int
@@ -318,8 +318,8 @@ bitmapfonts = {
             59
         }
         ## @type string = block
-        ## @definition_type text_color
         ## @config_expression text_color = {...}
+        ## @definition_type text_color
         ## @override_strategy LIOS
         c = {
             ## @type int
@@ -333,8 +333,8 @@ bitmapfonts = {
             146
         }
         ## @type string = block
-        ## @definition_type text_color
         ## @config_expression text_color = {...}
+        ## @definition_type text_color
         ## @override_strategy LIOS
         v = {
             ## @type int
@@ -348,8 +348,8 @@ bitmapfonts = {
             162
         }
         ## @type string = block
-        ## @definition_type text_color
         ## @config_expression text_color = {...}
+        ## @definition_type text_color
         ## @override_strategy LIOS
         d = {
             ## @type int
@@ -363,8 +363,8 @@ bitmapfonts = {
             122
         }
         ## @type string = block
-        ## @definition_type text_color
         ## @config_expression text_color = {...}
+        ## @definition_type text_color
         ## @override_strategy LIOS
         r = {
             ## @type int
@@ -378,8 +378,8 @@ bitmapfonts = {
             255
         }
         ## @type string = block
-        ## @definition_type text_color
         ## @config_expression text_color = {...}
+        ## @definition_type text_color
         ## @override_strategy LIOS
         l = {
             ## @type int
@@ -393,8 +393,8 @@ bitmapfonts = {
             104
         }
         ## @type int = block
-        ## @definition_type text_color
         ## @config_expression text_color = {...}
+        ## @definition_type text_color
         ## @override_strategy LIOS
         0 = {
             ## @type int
@@ -408,8 +408,8 @@ bitmapfonts = {
             202
         }
         ## @type int = block
-        ## @definition_type text_color
         ## @config_expression text_color = {...}
+        ## @definition_type text_color
         ## @override_strategy LIOS
         1 = {
             ## @type int
@@ -423,8 +423,8 @@ bitmapfonts = {
             255
         }
         ## @type int = block
-        ## @definition_type text_color
         ## @config_expression text_color = {...}
+        ## @definition_type text_color
         ## @override_strategy LIOS
         2 = {
             ## @type int
@@ -438,8 +438,8 @@ bitmapfonts = {
             238
         }
         ## @type int = block
-        ## @definition_type text_color
         ## @config_expression text_color = {...}
+        ## @definition_type text_color
         ## @override_strategy LIOS
         3 = {
             ## @type int

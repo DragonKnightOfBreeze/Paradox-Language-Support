@@ -1,6 +1,6 @@
 ## @type string = block
-## @definition_type chapter
 ## @config_expression chapter = {...}
+## @definition_type chapter
 ## @override_strategy LIOS
 awakening = {
     ## @type string = string
@@ -14,8 +14,8 @@ awakening = {
     category = narrative
 }
 ## @type string = block
-## @definition_type chapter
 ## @config_expression chapter = {...}
+## @definition_type chapter
 ## @override_strategy LIOS
 guidance = {
     ## @type string = string

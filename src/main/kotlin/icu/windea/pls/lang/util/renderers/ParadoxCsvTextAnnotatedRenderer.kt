@@ -2,8 +2,9 @@ package icu.windea.pls.lang.util.renderers
 
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.csv.psi.ParadoxCsvColumnContainer
-import icu.windea.pls.lang.codeInsight.annotated.ParadoxCsvAnnotatedManager
-import icu.windea.pls.lang.data.annotated.ParadoxAnnotatedLevel
+import icu.windea.pls.lang.data.annotated.ParadoxAnnotatedDataFactory
+import icu.windea.pls.model.data.annotated.ParadoxAnnotatedData
+import icu.windea.pls.model.data.annotated.ParadoxAnnotatedLevel
 
 /**
  * 将 CSV 文本渲染为带注解的文本的渲染器。
@@ -25,26 +26,26 @@ class ParadoxCsvTextAnnotatedRenderContext(
     private val settings: ParadoxCsvTextAnnotatedRenderSettings,
 ) : ParadoxCsvTextPlainRenderContext(settings.toPlainSettings()) {
     override fun renderColumnContainer(element: ParadoxCsvColumnContainer) {
-        renderAnnotations(element)
+        renderAnnotationComments(element)
         super.renderColumnContainer(element)
     }
 
-    fun renderAnnotations(element: ParadoxCsvColumnContainer) {
+    fun renderAnnotationComments(element: ParadoxCsvColumnContainer) {
         val annotations = getAnnotations(element)
         if (annotations.isEmpty()) return
         annotations.forEachFast { annotation ->
-            builder.append(annotation)
+            builder.append(annotation.toComment())
             builder.append('\n')
         }
     }
 
-    fun getAnnotations(element: ParadoxCsvColumnContainer): List<String> {
+    fun getAnnotations(element: ParadoxCsvColumnContainer): List<ParadoxAnnotatedData> {
         return buildList {
             if (settings.level.includeType) {
-                ParadoxCsvAnnotatedManager.getTypeAnnotation(element)?.let { add(it) }
+                ParadoxAnnotatedDataFactory.createType(element)?.let { add(it) }
             }
             if (settings.level.includeConfigExpression) {
-                ParadoxCsvAnnotatedManager.getConfigExpressionAnnotation(element)?.let { add(it) }
+                ParadoxAnnotatedDataFactory.createConfigExpression(element)?.let { add(it) }
             }
         }
     }

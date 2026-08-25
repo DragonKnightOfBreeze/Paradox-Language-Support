@@ -8,11 +8,11 @@ import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.util.Tuple3
 import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.csv.psi.ParadoxCsvFile
-import icu.windea.pls.lang.data.annotated.ParadoxAnnotatedLevel
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.util.renderers.ParadoxCsvTextAnnotatedRenderer
 import icu.windea.pls.lang.util.renderers.ParadoxScriptTextAnnotatedRenderer
 import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.data.annotated.ParadoxAnnotatedLevel
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import org.junit.After
 import org.junit.Before
