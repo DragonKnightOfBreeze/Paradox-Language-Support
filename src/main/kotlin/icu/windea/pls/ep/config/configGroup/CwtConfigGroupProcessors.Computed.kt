@@ -284,7 +284,7 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
     }
 
     private fun computeScopeModelForParents(config: CwtScopeConfig, result: IntArraySet) {
-        // 3.0.2 collect recursively (and present recursions)
+        // 3.0.2 collect recursively (and prevent recursions)
         var parent = config.isSubscopeOf ?: return
         val guardStack = mutableSetOf<String>()
         while (true) {

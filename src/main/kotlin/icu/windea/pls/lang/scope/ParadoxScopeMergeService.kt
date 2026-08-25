@@ -7,6 +7,8 @@ import icu.windea.pls.core.equalsFast
 import icu.windea.pls.model.scope.ParadoxScope
 import icu.windea.pls.model.scope.ParadoxScopeConstants
 import icu.windea.pls.model.scope.ParadoxScopeContext
+import icu.windea.pls.model.scope.ParadoxScopeResolver
+import it.unimi.dsi.fastutil.ints.IntArraySet
 
 @Suppress("unused")
 @Optimized
@@ -59,15 +61,22 @@ object ParadoxScopeMergeService {
         // optimize: access scope model and check scope indexes for better performance
         val scopeModel = configGroup.scopeModel
         // bidirectional
-        run {
-            val matched = scopeModel.base2MatchedScopes.get(scope.index)
-            if (matched.isNullOrEmpty()) return@run
+        val matched = scopeModel.base2MatchedScopes.get(scope.index).orEmpty()
+        if (matched.isNotEmpty()) {
+            // child A VS parent C -> parent C
             if (matched.contains(scopeToMerge.index)) return scopeToMerge
         }
-        run {
-            val matched = scopeModel.base2MatchedScopes.get(scopeToMerge.index)
-            if (matched.isNullOrEmpty()) return@run
-            if (matched.contains(scope.index)) return scope
+        val matchedToMerge = scopeModel.base2MatchedScopes.get(scopeToMerge.index).orEmpty()
+        if (matchedToMerge.isNotEmpty()) {
+            // parent C VS child B -> parent C
+            if (matchedToMerge.contains(scope.index)) return scope
+        }
+        if (matched.isNotEmpty() && matchedToMerge.isNotEmpty()) {
+            // child A VS child B -> parent C
+            val indexSet = IntArraySet(matched)
+            indexSet.retainAll(matchedToMerge)
+            val index = indexSet.firstOrNull()
+            if (index != null) return ParadoxScopeResolver.getScopeByIndex(index)
         }
         return null
     }

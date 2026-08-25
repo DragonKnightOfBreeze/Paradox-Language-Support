@@ -109,19 +109,21 @@ object ParadoxScopeMatchService {
     private fun matchesScopeFromModel(scope: ParadoxScope, scopeToMatch: String, configGroup: CwtConfigGroup): Boolean {
         // optimize: access scope model and check scope indexes for better performance
         val scopeModel = configGroup.scopeModel
-        val matched = scopeModel.base2MatchedScopes.get(scope.index)
-        if (matched.isNullOrEmpty()) return false
-        if (matched.contains(ParadoxScope.resolve(scopeToMatch).index)) return true
+        val matched = scopeModel.base2MatchedScopes.get(scope.index).orEmpty()
+        if(matched.isNotEmpty()) {
+            if (matched.contains(ParadoxScope.resolve(scopeToMatch).index)) return true
+        }
         return false
     }
 
     private fun matchesScopeFromModel(scope: ParadoxScope, scopesToMatch: Set<String>, configGroup: CwtConfigGroup): Boolean {
         // optimize: access scope model and check scope indexes for better performance
         val scopeModel = configGroup.scopeModel
-        val matched = scopeModel.base2MatchedScopes.get(scope.index)
-        if (matched.isNullOrEmpty()) return false
-        for (scopeToMatch in scopesToMatch) {
-            if (matched.contains(ParadoxScope.resolve(scopeToMatch).index)) return true
+        val matched = scopeModel.base2MatchedScopes.get(scope.index).orEmpty()
+        if (matched.isNotEmpty()) {
+            for (scopeToMatch in scopesToMatch) {
+                if (matched.contains(ParadoxScope.resolve(scopeToMatch).index)) return true
+            }
         }
         return false
     }
