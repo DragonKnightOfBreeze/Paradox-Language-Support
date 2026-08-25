@@ -1,5 +1,3 @@
-@file:Optimized
-
 package icu.windea.pls.ep.scope
 
 import com.intellij.openapi.progress.ProgressManager
@@ -43,6 +41,7 @@ import icu.windea.pls.model.scope.ParadoxScopeContextInferenceInfo
  * 推断 `scripted_trigger`、`scripted_effect` 等的作用域上下文。
  * 仅推断 `this` 与 `root` 系统作用域。
  */
+@Optimized
 class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInferredScopeContextProvider {
     object Keys : KeyRegistry() {
         val cachedScopeContextInferenceInfo by registerKey<CachedValue<ParadoxScopeContextInferenceInfo>>(Keys)
@@ -148,6 +147,7 @@ class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInfer
  * 如果 `event` E 在 `on_action` A 的声明中被调用，
  * 则将 E 的 `from` 型系统作用域推断成 E 的对应的系统作用域。
  */
+@Optimized
 class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInferredScopeContextProvider {
     object Keys : KeyRegistry() {
         val cachedScopeContextInferenceInfo by registerKey<CachedValue<ParadoxScopeContextInferenceInfo>>(Keys)
@@ -259,6 +259,7 @@ class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInfe
  * 如果在调用时有写明 `scopes = { from = s }`，则改为推断成 s，
  * 依次类推直到 `fromfromfromfrom` 系统作用域。
  */
+@Optimized
 class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferredScopeContextProvider {
     object Keys : KeyRegistry() {
         val cachedScopeContextInferenceInfo by registerKey<CachedValue<ParadoxScopeContextInferenceInfo>>(Keys)
@@ -409,6 +410,7 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
  * 如果在调用时有写明 `scopes = { from = s }`，则改为推断成 s，
  * 依次类推直到 `fromfromfromfrom` 系统作用域。
  */
+@Optimized
 class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInferredScopeContextProvider {
     object Keys : KeyRegistry() {
         val cachedScopeContextInferenceInfo by registerKey<CachedValue<ParadoxScopeContextInferenceInfo>>(Keys)

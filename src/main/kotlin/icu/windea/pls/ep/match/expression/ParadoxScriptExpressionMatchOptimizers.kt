@@ -27,7 +27,6 @@ import icu.windea.pls.script.psi.ParadoxScriptValue
  */
 @Optimized
 class ParadoxScriptExpressionConstantMatchOptimizer : ParadoxScriptExpressionMatchOptimizer {
-    @Optimized
     override fun <T : CwtMemberConfig<*>> optimize(input: List<T>, context: ParadoxScriptExpressionMatchOptimizerContext): List<T>? {
         if (input.size <= 1) return null
         if (context.expression.type != ParadoxExpressionType.String) return null
