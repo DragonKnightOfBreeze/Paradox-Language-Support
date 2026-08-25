@@ -8,6 +8,7 @@ import com.intellij.ui.ColorUtil.*
 import com.intellij.ui.Gray
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.util.values.FallbackStrings
+import icu.windea.pls.lang.type.CwtTypeService
 
 /**
  * 用于显示各种类型信息（`View > Type Info`）。
@@ -19,11 +20,11 @@ class CwtTypeProvider : ExpressionTypeProvider<PsiElement>() {
     // com.intellij.codeInsight.hint.JavaTypeProvider
 
     override fun getExpressionsAt(elementAt: PsiElement): List<PsiElement> {
-        return CwtTypeManager.findTypedElements(elementAt)
+        return CwtTypeService.findTypedElements(elementAt)
     }
 
     override fun getInformationHint(element: PsiElement): @NlsContexts.HintText String {
-        CwtTypeManager.getType(element)?.let { return it.id }
+        CwtTypeService.getType(element)?.let { return it.id }
         return FallbackStrings.unknown
     }
 
@@ -37,13 +38,13 @@ class CwtTypeProvider : ExpressionTypeProvider<PsiElement>() {
 
     override fun getAdvancedInformationHint(element: PsiElement): @NlsContexts.HintText String {
         val map = buildMap {
-            val type = CwtTypeManager.getType(element)
+            val type = CwtTypeService.getType(element)
             type?.let { this[ChronicleBundle.message("title.type")] = it.id }
 
-            val configType = CwtTypeManager.getConfigType(element)
+            val configType = CwtTypeService.getConfigType(element)
             configType?.let { this[ChronicleBundle.message("title.configType")] = it.id }
 
-            val expression = CwtTypeManager.getExpression(element)
+            val expression = CwtTypeService.getExpression(element)
             expression?.let { this[ChronicleBundle.message("title.expression")] = it }
         }
         return buildHtml(map)

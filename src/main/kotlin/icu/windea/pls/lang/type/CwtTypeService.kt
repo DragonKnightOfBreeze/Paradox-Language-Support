@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.codeInsight.type
+package icu.windea.pls.lang.type
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.parents
@@ -13,7 +13,7 @@ import icu.windea.pls.cwt.psi.CwtValue
 import icu.windea.pls.model.type.CwtType
 import icu.windea.pls.model.type.CwtTypeResolver
 
-object CwtTypeManager {
+object CwtTypeService {
     fun isTypedElement(element: PsiElement): Boolean {
         if (element.language !== CwtLanguage) return false
         return when {

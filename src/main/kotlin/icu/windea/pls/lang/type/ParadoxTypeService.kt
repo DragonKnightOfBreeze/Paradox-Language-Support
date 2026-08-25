@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.codeInsight.type
+package icu.windea.pls.lang.type
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.parents
@@ -39,7 +39,7 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableReference
 import icu.windea.pls.script.psi.ParadoxScriptValue
 
-object ParadoxTypeManager {
+object ParadoxTypeService {
     fun isTypedElement(element: PsiElement): Boolean {
         if (element.language !is ParadoxLanguage) return false
         return when (element) {
