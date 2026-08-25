@@ -14,7 +14,6 @@ import it.unimi.dsi.fastutil.ints.IntArraySet
 @Optimized
 object ParadoxScopeMergeService {
     // NOTE 3.0.2 support to merge union scopes (promote to super scopes if necessary)
-    // TODO 3.0.2 introduce `ParadoxScopeMergeContext` (required for merging union scopes, so fast return may not applicable)
 
     // 作用域的合并逻辑（scope -> scopeToMerge）：
     // - scope 是输入的数据（从上下文中获取或推断）。
@@ -36,7 +35,7 @@ object ParadoxScopeMergeService {
      * @see ParadoxScope
      * @see ParadoxScopeContext
      */
-    fun mergeScope(scope: String?, scopeToMerge: String?, configGroup: CwtConfigGroup): String? {
+    fun mergeScopeId(scope: String?, scopeToMerge: String?, configGroup: CwtConfigGroup): String? {
         if (scope == null && scopeToMerge == null) return null
         if (scope == null || scopeToMerge == null) return scope ?: scopeToMerge
         if (scope.equalsFast(scopeToMerge)) return scope
@@ -91,7 +90,7 @@ object ParadoxScopeMergeService {
     fun mergeScopeContextMap(map: Map<String, String>, otherMap: Map<String, String>, configGroup: CwtConfigGroup, orUnknown: Boolean = false): Map<String, String>? {
         val c = ParadoxScopeConstants
         val result = mutableMapOf<String, String>()
-        fun putScopeId(key: String) = mergeScope(map[key], otherMap[key], configGroup)?.let { result[key] = it }
+        fun putScopeId(key: String) = mergeScopeId(map[key], otherMap[key], configGroup)?.let { result[key] = it }
         putScopeId(c.thisScope)
         putScopeId(c.rootScope)
         putScopeId(c.fromScope)

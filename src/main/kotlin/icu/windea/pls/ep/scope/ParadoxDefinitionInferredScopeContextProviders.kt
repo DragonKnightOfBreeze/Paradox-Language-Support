@@ -376,7 +376,7 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
                             if (oldRefScope == null) {
                                 scopeContextMap.put(toRef, newRefScope)
                             } else {
-                                val refScope = ParadoxScopeMergeService.mergeScope(oldRefScope, newRefScope, configGroup)
+                                val refScope = ParadoxScopeMergeService.mergeScopeId(oldRefScope, newRefScope, configGroup)
                                 if (refScope == null) {
                                     return@p false
                                 }
@@ -530,7 +530,7 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
                             if (oldRefScope == null) {
                                 scopeContextMap.put(toRef, newRefScope)
                             } else {
-                                val refScope = ParadoxScopeMergeService.mergeScope(oldRefScope, newRefScope, configGroup)
+                                val refScope = ParadoxScopeMergeService.mergeScopeId(oldRefScope, newRefScope, configGroup)
                                 if (refScope == null) {
                                     return@p false
                                 }

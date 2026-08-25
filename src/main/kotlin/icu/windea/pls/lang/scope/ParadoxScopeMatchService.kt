@@ -33,7 +33,7 @@ object ParadoxScopeMatchService {
      * @see ParadoxScope
      * @see ParadoxScopeContext
      */
-    fun matchesScope(scope: String?, scopeToMatch: String, configGroup: CwtConfigGroup): Boolean {
+    fun matchesScopeId(scope: String?, scopeToMatch: String, configGroup: CwtConfigGroup): Boolean {
         // 3.0.2 for any, all, union (e.g., carrier), and other normal scopes
         if (scope == null) return true
         if (scopeToMatch.equalsFast(ParadoxScopeConstants.anyScope)) return true
