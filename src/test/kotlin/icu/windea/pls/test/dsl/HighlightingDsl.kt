@@ -6,11 +6,12 @@ import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiFile
 import com.intellij.testFramework.fixtures.CodeInsightTestFixture
+import icu.windea.pls.script.text.buildScriptText
 
 // see: https://plugins.jetbrains.com/docs/intellij/testing-highlighting.html
 
 /**
- * 这个 DSL 提供了一组作用域方法，从而支持以字符串插值的格式构建用于检查代码高亮结果的测试数据文本。
+ * 这个 DSL 提供了一组作用域方法，从而支持以字符串插值的风格，或者说类 DSL 风格，构建用于检查代码高亮结果的测试数据文本。
  *
  * 这种方式相比直接使用原始文本或原始文件，更加可读和可维护。
  *
@@ -64,4 +65,10 @@ object HighlightingScope {
     fun weakWarningEnd() = "</$weakWarningMarker>"
 
     fun infoEnd() = "</$infoMarker>"
+}
+
+fun main() {
+    highlightingScope {
+        buildScriptText { "${errorEnd()} 12${parameter("")}3" }
+    }
 }

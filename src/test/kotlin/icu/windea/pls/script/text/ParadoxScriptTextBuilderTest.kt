@@ -9,21 +9,47 @@ import org.junit.Test
 class ParadoxScriptTextBuilderTest {
     @Test
     fun inlineMath() {
-        Assert.assertEquals("@[ 1+1 ]", ParadoxScriptTextBuilder.inlineMath("1+1"))
+        with(ParadoxScriptTextBuilder) {
+            Assert.assertEquals("@[ 1+1 ]", inlineMath("1+1"))
+        }
     }
 
     @Test
     fun parameter() {
-        Assert.assertEquals("\$foo\$", ParadoxScriptTextBuilder.parameter("foo"))
+        with(ParadoxScriptTextBuilder) {
+            Assert.assertEquals("\$foo$", parameter("foo"))
+        }
     }
 
     @Test
     fun parameter_withDefault() {
-        Assert.assertEquals("\$foo|bar\$", ParadoxScriptTextBuilder.parameter("foo", "bar"))
+        with(ParadoxScriptTextBuilder) {
+            Assert.assertEquals("\$foo|bar$", parameter("foo", "bar"))
+        }
     }
 
     @Test
     fun conditionalBlock() {
-        Assert.assertEquals("[[expr] block ]", ParadoxScriptTextBuilder.conditionalBlock("expr", "block"))
+        with(ParadoxScriptTextBuilder) {
+            Assert.assertEquals("[[expr] block ]", conditionalBlock("expr", "block"))
+            Assert.assertEquals("[[expr] block ]", conditionalBlock("expr") { "block" })
+        }
+    }
+
+    @Test
+    fun complex() {
+        val expect = buildString {
+            appendLine("key = \$PARAM|0$")
+            appendLine("value = @[ 1 + 1 ]")
+            appendLine("[[INPUT] input = yes ]")
+        }
+        val actual = buildScriptText {
+            """
+                key = ${parameter("PARAM", "0")}
+                value = ${inlineMath("1 + 1")}
+                ${conditionalBlock("INPUT") { "input = true" }}
+            """.trimIndent()
+        }
+        Assert.assertEquals(expect, actual)
     }
 }

@@ -9,56 +9,91 @@ import org.junit.Test
 class ParadoxLocalisationTextBuilderTest {
     @Test
     fun colorfulText() {
-        Assert.assertEquals("§Rtext§!", ParadoxLocalisationTextBuilder.colorfulText("R", "text"))
+        with(ParadoxLocalisationTextBuilder) {
+            Assert.assertEquals("§Rtext§!",colorfulText("R", "text"))
+        }
     }
 
     @Test
     fun parameter() {
-        Assert.assertEquals("\$name\$", ParadoxLocalisationTextBuilder.parameter("name"))
+        with(ParadoxLocalisationTextBuilder) {
+            Assert.assertEquals("\$name$", parameter("name"))
+        }
     }
 
     @Test
     fun parameter_withArgument() {
-        Assert.assertEquals("\$name|arg\$", ParadoxLocalisationTextBuilder.parameter("name", "arg"))
+        with(ParadoxLocalisationTextBuilder) {
+            Assert.assertEquals("\$name|arg$", parameter("name", "arg"))
+        }
     }
 
     @Test
     fun scriptedVariableReference() {
-        Assert.assertEquals("\$@name\$", ParadoxLocalisationTextBuilder.scriptedVariableReference("name"))
+        with(ParadoxLocalisationTextBuilder) {
+            Assert.assertEquals("$@name$", scriptedVariableReference("name"))
+        }
     }
 
     @Test
     fun command() {
-        Assert.assertEquals("[name]", ParadoxLocalisationTextBuilder.command("name"))
+        with(ParadoxLocalisationTextBuilder) {
+            Assert.assertEquals("[name]", command("name"))
+        }
     }
 
     @Test
     fun icon() {
-        Assert.assertEquals("£name£", ParadoxLocalisationTextBuilder.icon("name"))
+        with(ParadoxLocalisationTextBuilder) {
+            Assert.assertEquals("£name£", icon("name"))
+        }
     }
 
     @Test
     fun icon_withArgument() {
-        Assert.assertEquals("£name|arg£", ParadoxLocalisationTextBuilder.icon("name", "arg"))
+        with(ParadoxLocalisationTextBuilder) {
+            Assert.assertEquals("£name|arg£", icon("name", "arg"))
+        }
     }
 
     @Test
     fun conceptCommand() {
-        Assert.assertEquals("['name']", ParadoxLocalisationTextBuilder.conceptCommand("name"))
+        with(ParadoxLocalisationTextBuilder) {
+            Assert.assertEquals("['name']", conceptCommand("name"))
+        }
     }
 
     @Test
     fun conceptCommand_withText() {
-        Assert.assertEquals("['name', text]", ParadoxLocalisationTextBuilder.conceptCommand("name", "text"))
+        with(ParadoxLocalisationTextBuilder) {
+            Assert.assertEquals("['name', text]", conceptCommand("name", "text"))
+        }
     }
 
     @Test
     fun textFormat() {
-        Assert.assertEquals("#name text#!", ParadoxLocalisationTextBuilder.textFormat("name", "text"))
+        with(ParadoxLocalisationTextBuilder) {
+            Assert.assertEquals("#name text#!", textFormat("name", "text"))
+        }
     }
 
     @Test
     fun textIcon() {
-        Assert.assertEquals("@name!", ParadoxLocalisationTextBuilder.textIcon("name"))
+        with(ParadoxLocalisationTextBuilder) {
+            Assert.assertEquals("@name!", textIcon("name"))
+        }
+    }
+
+    @Test
+    fun complex() {
+        val expect = buildString {
+            appendLine("Here is a ")
+            appendLine("value = @[ 1 + 1 ]")
+            appendLine("[[INPUT] input = yes ]")
+        }
+        val actual = buildLocalisationText {
+            "colorful text: ${colorfulText("R", "red text")}, parameter: ${parameter("NAME")}, command : ${command("Root.GetName")}"
+        }
+        Assert.assertEquals(expect, actual)
     }
 }
