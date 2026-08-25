@@ -20,6 +20,7 @@ import icu.windea.pls.config.filePathPatterns
 import icu.windea.pls.config.select.selectConfigScope
 import icu.windea.pls.config.sortedByPriority
 import icu.windea.pls.core.collections.CaseInsensitiveStringKeyMap
+import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.removeSurroundingOrNull
@@ -27,6 +28,7 @@ import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.lang.resolve.ParadoxLocalisationIconService
 import icu.windea.pls.model.paths.CwtConfigPath
 import icu.windea.pls.model.scope.ParadoxScope
+import it.unimi.dsi.fastutil.ints.IntArrayList
 import it.unimi.dsi.fastutil.ints.IntArraySet
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap
 import it.unimi.dsi.fastutil.objects.ObjectArrayList
@@ -260,31 +262,44 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
         val initializer = configGroup.initializer
         with(initializer.scopeModel) {
             initializer.scopes.values.forEach { c ->
-                val index = ParadoxScope.resolve(c.name).index
-                val aliasesResult = IntArraySet()
-                val parentsResult = IntArraySet()
+                val scopeId = ParadoxScope.getId(c.name)
+                val scopeIndex = ParadoxScope.resolve(scopeId).index
+                val aliasesResult = IntArrayList()
+                val parentsResult = IntArrayList()
                 computeScopeModelForAliases(c, aliasesResult)
                 computeScopeModelForParents(c, parentsResult)
-                base2Aliases.put(index, aliasesResult)
-                base2Parents.put(index, parentsResult)
-                val matchedScopesResult = IntArraySet()
-                matchedScopesResult.add(index)
-                matchedScopesResult.addAll(aliasesResult)
-                matchedScopesResult.addAll(parentsResult)
-                base2MatchedScopes.put(index, matchedScopesResult)
+                if (aliasesResult.isNotEmpty()) {
+                    base2Aliases.getOrPut(scopeIndex) { IntArraySet() }.addAll(aliasesResult)
+                    aliasesResult.forEachFast { scopeIndex -> base2Aliases.getOrPut(scopeIndex) { IntArraySet() }.addAll(aliasesResult) }
+                }
+                if (parentsResult.isNotEmpty()) {
+                    base2Parents.getOrPut(scopeIndex) { IntArraySet() }.addAll(parentsResult)
+                    aliasesResult.forEachFast { scopeIndex -> base2Parents.getOrPut(scopeIndex) { IntArraySet() }.addAll(parentsResult) }
+                }
+            }
+            for(value in base2Parents.values) {
+                val aliasesResult = IntArrayList()
+                value.forEach { scopeIndex -> base2Aliases[scopeIndex]?.let { aliasesResult.addAll(it) } }
+                value.addAll(aliasesResult)
+            }
+            for ((key, value) in base2Aliases) {
+                base2MatchedScopes.getOrPut(key) { IntArraySet() }.addAll(value)
+            }
+            for ((key, value) in base2Parents) {
+                base2MatchedScopes.getOrPut(key) { IntArraySet() }.addAll(value)
             }
         }
     }
 
-    private fun computeScopeModelForAliases(config: CwtScopeConfig, result: IntArraySet) {
+    private fun computeScopeModelForAliases(config: CwtScopeConfig, result: IntArrayList) {
         config.aliases.forEach { alias ->
             val aliasIndex = ParadoxScope.resolve(alias).index
             result.add(aliasIndex)
         }
     }
 
-    private fun computeScopeModelForParents(config: CwtScopeConfig, result: IntArraySet) {
-        // 3.0.2 collect recursively (and prevent recursions)
+    private fun computeScopeModelForParents(config: CwtScopeConfig, result: IntArrayList) {
+        // 3.0.2 collect recursively (cyclic parents are guarded here)
         var parent = config.isSubscopeOf ?: return
         val guardStack = mutableSetOf<String>()
         while (true) {

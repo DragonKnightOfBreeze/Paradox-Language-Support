@@ -47,12 +47,21 @@ object ParadoxScopeMergeService {
         return null
     }
 
-    fun mergeScope(scope: ParadoxScope?, otherScope: ParadoxScope?): ParadoxScope? {
-        if (scope == otherScope) return scope ?: ParadoxScope.Unknown
-        if (scope == ParadoxScope.Any || otherScope == ParadoxScope.Any) return ParadoxScope.Any
-        if (scope == ParadoxScope.Unknown || otherScope == ParadoxScope.Unknown) return ParadoxScope.Unknown
-        if (scope == null) return otherScope
-        if (otherScope == null) return scope
+    /**
+     * 合并作用域。兼容通配形式和别名形式。兼容继承关系（子作用域会提升到父作用域）。
+     *
+     * [scope] 是输入的作用域，[scopeToMerge] 是另一个输入的作用域。
+     *
+     * @see ParadoxScope
+     * @see ParadoxScopeContext
+     */
+    fun mergeScope(scope: ParadoxScope?, scopeToMerge: ParadoxScope?, configGroup: CwtConfigGroup): ParadoxScope? {
+        if (scope == null && scopeToMerge == null) return null
+        if (scope == null || scopeToMerge == null) return scope ?: scopeToMerge
+        if (scope === ParadoxScope.Any || scopeToMerge === ParadoxScope.Any) return ParadoxScope.Any
+        if (scope === ParadoxScope.Unknown || scopeToMerge === ParadoxScope.Unknown) return ParadoxScope.Unknown
+        if (scope.id.equalsFast(scopeToMerge.id)) return scope
+        mergeScopeFromModel(scope, scopeToMerge, configGroup)?.let { return it }
         return null
     }
 

@@ -1,0 +1,66 @@
+scopes = {
+    Country = {
+        aliases = { country }
+    }
+    Leader = {
+        aliases = { leader }
+    }
+    System = {
+        aliases = { system galactic_object }
+    }
+    Planet = {
+        aliases = { planet }
+        is_subscope_of = carrier
+    }
+    Colony = {
+        aliases = { colony }
+        # is_subscope_of = carrier # only for `planet` and `ship` atm
+    }
+    Ship = {
+        aliases = { ship }
+        is_subscope_of = carrier
+    }
+    Carrier = {
+        aliases = { carrier }
+    }
+    Fleet = {
+        aliases = { fleet }
+    }
+    World = {
+        aliases = { world celestial_body }
+        is_subscope_of = carrier
+    }
+    Moon = {
+        aliases = { moon }
+        is_subscope_of = galactic_object # parent declared via alias
+    }
+    Star = {
+        aliases = { star }
+        is_subscope_of = system # parent declared via base name
+    }
+    Army = {
+        aliases = { army }
+        is_subscope_of = ship # multi-level parent: army -> ship -> carrier
+    }
+    Satellite = {
+        aliases = { satellite }
+        is_subscope_of = moon # multi-level parent via an alias-declared parent: satellite -> moon -> galactic_object
+    }
+    Alpha = {
+        aliases = { alpha }
+        is_subscope_of = beta # cyclic parents are guarded during scope model computation
+    }
+    Beta = {
+        aliases = { beta }
+        is_subscope_of = alpha # cyclic parents are guarded during scope model computation
+    }
+}
+
+scope_groups = {
+    empty = {}
+    country = { country }
+    leader_and_system = { leader system }
+    planet_and_colony = { planet colony }
+    carrier_based = { carrier }
+    galactic = { galactic_object }
+}

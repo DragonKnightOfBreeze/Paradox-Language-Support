@@ -226,10 +226,10 @@ class CwtTypeModelBase : CwtTypeModel {
 
 @Optimized
 class CwtScopeModelBase : CwtScopeModel {
-    override val base2Aliases: Int2ObjectOpenHashMap<IntArraySet> get() = Int2ObjectOpenHashMap()
-    override val base2Parents: Int2ObjectOpenHashMap<IntArraySet> get() = Int2ObjectOpenHashMap()
-    // override val base2Promotions: Int2ObjectOpenHashMap<IntArraySet> get() = Int2ObjectOpenHashMap()
-    override val base2MatchedScopes: Int2ObjectOpenHashMap<IntArraySet> get() = Int2ObjectOpenHashMap()
+    override val base2Aliases: Int2ObjectOpenHashMap<IntArraySet>  = Int2ObjectOpenHashMap()
+    override val base2Parents: Int2ObjectOpenHashMap<IntArraySet> = Int2ObjectOpenHashMap()
+    // override val base2Promotions: Int2ObjectOpenHashMap<IntArraySet> = Int2ObjectOpenHashMap()
+    override val base2MatchedScopes: Int2ObjectOpenHashMap<IntArraySet> = Int2ObjectOpenHashMap()
 
     fun trim() {
         base2Aliases.trim()

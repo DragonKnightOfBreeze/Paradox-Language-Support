@@ -39,7 +39,6 @@ object ParadoxScopeResolver {
             ?: scope.toCapitalizedWords()
     }
 
-    @Suppress("unused")
     fun getScopeByIndex(index: Int): ParadoxScope? {
         if (index == -1) return ParadoxScope.Any
         if (index == -2) return ParadoxScope.Unknown
