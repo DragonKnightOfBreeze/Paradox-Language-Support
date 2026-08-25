@@ -1,4 +1,4 @@
-package icu.windea.pls.ep.resolve.scope
+package icu.windea.pls.ep.scope
 
 import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
 import icu.windea.pls.model.scope.ParadoxScopeContextInferenceInfo

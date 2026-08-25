@@ -1,4 +1,4 @@
-package icu.windea.pls.ep.resolve.scope
+package icu.windea.pls.ep.scope
 
 import com.intellij.openapi.extensions.ExtensionPointName
 import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement

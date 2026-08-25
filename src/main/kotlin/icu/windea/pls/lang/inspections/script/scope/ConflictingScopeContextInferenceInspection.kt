@@ -6,7 +6,7 @@ import com.intellij.psi.PsiElementVisitor
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.psi.ParadoxPsiElementVisitor
-import icu.windea.pls.lang.resolve.ParadoxScopeService
+import icu.windea.pls.lang.scope.ParadoxScopeService
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 /**

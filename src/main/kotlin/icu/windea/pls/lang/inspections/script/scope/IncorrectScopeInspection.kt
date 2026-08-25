@@ -10,7 +10,7 @@ import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.psi.light.ParadoxModifierLightElement
 import icu.windea.pls.lang.resolve.ParadoxModifierCategoryService
-import icu.windea.pls.lang.resolve.ParadoxScopeService
+import icu.windea.pls.lang.scope.ParadoxScopeService
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement

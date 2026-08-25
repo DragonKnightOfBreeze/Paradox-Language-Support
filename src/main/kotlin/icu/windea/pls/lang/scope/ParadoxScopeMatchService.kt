@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.match
+package icu.windea.pls.lang.scope
 
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.model.scope.ParadoxScopeConstants
@@ -6,7 +6,7 @@ import icu.windea.pls.model.scope.ParadoxScopeContext
 import icu.windea.pls.model.scope.promotions
 
 object ParadoxScopeMatchService {
-    // TODO 3.0.2 refactor but should not be a lot
+    // NOTE 3.0.2 support to match union scopes (super scopes will not match sub scopes)
 
     @Suppress("unused")
     fun matchesScope(thisScope: String, scopeToMatch: String, configGroup: CwtConfigGroup): Boolean {

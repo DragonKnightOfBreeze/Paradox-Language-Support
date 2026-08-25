@@ -1,4 +1,4 @@
-package icu.windea.pls.ep.resolve.scope
+package icu.windea.pls.ep.scope
 
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement

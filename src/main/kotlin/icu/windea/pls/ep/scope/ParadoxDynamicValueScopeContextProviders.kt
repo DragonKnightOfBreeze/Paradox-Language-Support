@@ -1,4 +1,4 @@
-package icu.windea.pls.ep.resolve.scope
+package icu.windea.pls.ep.scope
 
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.lang.match.findByPattern

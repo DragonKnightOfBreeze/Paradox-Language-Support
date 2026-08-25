@@ -1,11 +1,13 @@
-package icu.windea.pls.lang.manipulation
+package icu.windea.pls.lang.scope
 
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.model.scope.ParadoxScope
 import icu.windea.pls.model.scope.ParadoxScopeConstants
 import icu.windea.pls.model.scope.ParadoxScopeContext
 
-object ParadoxScopeManipulationService {
+object ParadoxScopeMergeService {
+    // NOTE 3.0.2 support to merge union scopes (promote to super scopes if necessary)
+
     fun mergeScopeId(scopeId: String?, otherScopeId: String?): String? {
         if (scopeId == otherScopeId) return scopeId
         if (scopeId == ParadoxScopeConstants.anyScope || otherScopeId == ParadoxScopeConstants.anyScope) return ParadoxScopeConstants.anyScope

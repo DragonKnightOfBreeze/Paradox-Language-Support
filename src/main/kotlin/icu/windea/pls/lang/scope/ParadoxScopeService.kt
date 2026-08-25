@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.resolve
+package icu.windea.pls.lang.scope
 
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
@@ -23,21 +23,22 @@ import icu.windea.pls.core.collections.mapNotNullFast
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.util.Tuple2
-import icu.windea.pls.ep.resolve.scope.ParadoxDefinitionInferredScopeContextProvider
-import icu.windea.pls.ep.resolve.scope.ParadoxDefinitionScopeContextProvider
-import icu.windea.pls.ep.resolve.scope.ParadoxDefinitionSupportedScopesProvider
-import icu.windea.pls.ep.resolve.scope.ParadoxDynamicValueInferredScopeContextProvider
-import icu.windea.pls.ep.resolve.scope.ParadoxDynamicValueScopeContextProvider
-import icu.windea.pls.ep.resolve.scope.ParadoxOverriddenScopeContextProvider
+import icu.windea.pls.ep.scope.ParadoxDefinitionInferredScopeContextProvider
+import icu.windea.pls.ep.scope.ParadoxDefinitionScopeContextProvider
+import icu.windea.pls.ep.scope.ParadoxDefinitionSupportedScopesProvider
+import icu.windea.pls.ep.scope.ParadoxDynamicValueInferredScopeContextProvider
+import icu.windea.pls.ep.scope.ParadoxDynamicValueScopeContextProvider
+import icu.windea.pls.ep.scope.ParadoxOverriddenScopeContextProvider
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.isParameterized
-import icu.windea.pls.lang.manipulation.ParadoxScopeManipulationService
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.findByPattern
 import icu.windea.pls.lang.match.matchesByPattern
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
+import icu.windea.pls.lang.resolve.ParadoxExpressionService
+import icu.windea.pls.lang.resolve.ParadoxExtendedConfigService
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDynamicValueExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
@@ -107,7 +108,7 @@ object ParadoxScopeService {
             if (map == null) {
                 map = info.scopeContextMap
             } else {
-                map = ParadoxScopeManipulationService.mergeScopeContextMap(map, info.scopeContextMap)
+                map = ParadoxScopeMergeService.mergeScopeContextMap(map, info.scopeContextMap)
             }
         }
         val resultMap = map ?: return null
@@ -189,7 +190,7 @@ object ParadoxScopeService {
             if (map == null) {
                 map = info.scopeContextMap
             } else {
-                map = ParadoxScopeManipulationService.mergeScopeContextMap(map, info.scopeContextMap)
+                map = ParadoxScopeMergeService.mergeScopeContextMap(map, info.scopeContextMap)
             }
         }
         val resultMap = map ?: return null
@@ -297,7 +298,7 @@ object ParadoxScopeService {
 
         // get inferred scope context from EPs, and use the merged result if exists
         val inferredScopeContext = getInferredScopeContext(element, definitionInfo)
-        if (inferredScopeContext != null) return ParadoxScopeManipulationService.mergeScopeContext(scopeContext, inferredScopeContext) ?: ParadoxScopeContext.resolveAny()
+        if (inferredScopeContext != null) return ParadoxScopeMergeService.mergeScopeContext(scopeContext, inferredScopeContext) ?: ParadoxScopeContext.resolveAny()
 
         return scopeContext ?: ParadoxScopeContext.resolveAny()
     }
@@ -337,7 +338,7 @@ object ParadoxScopeService {
 
         // get inferred scope context from EPs, and use the merged result if exists
         val inferredScopeContext = getInferredScopeContext(element)
-        if (inferredScopeContext != null) return ParadoxScopeManipulationService.mergeScopeContext(scopeContext, inferredScopeContext) ?: ParadoxScopeContext.resolveAny()
+        if (inferredScopeContext != null) return ParadoxScopeMergeService.mergeScopeContext(scopeContext, inferredScopeContext) ?: ParadoxScopeContext.resolveAny()
 
         return scopeContext ?: ParadoxScopeContext.resolveAny()
     }
