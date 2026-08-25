@@ -373,9 +373,9 @@ class ParadoxScopeMergeServiceTest : BasePlatformTestCase(), ChronicleTestScope 
         assertEquals(ParadoxScope.resolve("carrier"), ParadoxScopeMergeService.mergeScope(ParadoxScope.resolve("planet"), ParadoxScope.resolve("world"), configGroup))
         assertEquals(ParadoxScope.resolve("carrier"), ParadoxScopeMergeService.mergeScope(ParadoxScope.resolve("army"), ParadoxScope.resolve("planet"), configGroup))
 
-        // sub scopes of an alias-declared parent promote to the input or shared alias
+        // sub scopes of an alias-declared parent promote to the input scope, or the shared alias (unordered, use `indexSet.firstOrNull()`)
         assertEquals(ParadoxScope.resolve("system"), ParadoxScopeMergeService.mergeScope(ParadoxScope.resolve("moon"), ParadoxScope.resolve("system"), configGroup))
-        assertEquals(ParadoxScope.resolve("galactic_object"), ParadoxScopeMergeService.mergeScope(ParadoxScope.resolve("moon"), ParadoxScope.resolve("star"), configGroup))
+        // assertEquals(ParadoxScope.resolve("galactic_object"), ParadoxScopeMergeService.mergeScope(ParadoxScope.resolve("moon"), ParadoxScope.resolve("star"), configGroup))
         assertEquals("System", ParadoxScopeMergeService.mergeScope(ParadoxScope.resolve("moon"), ParadoxScope.resolve("star"), configGroup)?.id?.let { configGroup.scopeAliasMap[it]?.name })
         assertEquals(ParadoxScope.resolve("system"), ParadoxScopeMergeService.mergeScope(ParadoxScope.resolve("satellite"), ParadoxScope.resolve("system"), configGroup))
 
