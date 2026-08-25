@@ -1,9 +1,9 @@
 package icu.windea.pls.ep.overrides
 
 import icu.windea.pls.lang.definitionInjectionInfo
-import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
 import icu.windea.pls.lang.search.ParadoxDefinitionInjectionSearch
 import icu.windea.pls.lang.search.util.ParadoxSearchParameters
+import icu.windea.pls.model.overrides.ParadoxOverrideStrategy
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 class ParadoxForcedDefinitionInjectionOverrideStrategyProvider : ParadoxOverrideStrategyProvider {

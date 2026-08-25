@@ -7,7 +7,6 @@ import icu.windea.pls.core.matchesPath
 import icu.windea.pls.lang.defineVariableInfo
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.search.ParadoxDefineVariableSearch
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
@@ -19,6 +18,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxLocalisationType
 import icu.windea.pls.model.ParadoxScriptedVariableType
+import icu.windea.pls.model.overrides.ParadoxOverrideStrategy
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 

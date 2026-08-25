@@ -2,9 +2,9 @@ package icu.windea.pls.ep.overrides
 
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiFileSystemItem
-import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.util.ParadoxSearchParameters
+import icu.windea.pls.model.overrides.ParadoxOverrideStrategy
 
 class ParadoxForcedFileOverrideStrategyProvider : ParadoxOverrideStrategyProvider {
     override fun get(target: Any): ParadoxOverrideStrategy? {

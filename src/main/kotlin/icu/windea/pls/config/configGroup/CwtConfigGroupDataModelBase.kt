@@ -40,7 +40,7 @@ import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.CaseInsensitiveStringKeyMap
 import icu.windea.pls.core.util.Tuple2
-import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
+import icu.windea.pls.model.overrides.ParadoxOverrideStrategy
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import it.unimi.dsi.fastutil.ints.IntArraySet
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenCustomHashMap

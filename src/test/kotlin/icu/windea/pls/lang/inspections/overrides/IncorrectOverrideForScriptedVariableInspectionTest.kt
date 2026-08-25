@@ -3,8 +3,8 @@ package icu.windea.pls.lang.inspections.overrides
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
-import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
 import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.overrides.ParadoxOverrideStrategy
 import icu.windea.pls.test.ChronicleTestScope
 import org.junit.After
 import org.junit.Before

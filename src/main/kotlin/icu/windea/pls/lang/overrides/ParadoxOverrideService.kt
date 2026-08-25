@@ -26,6 +26,8 @@ import icu.windea.pls.lang.util.ParadoxFileManager
 import icu.windea.pls.model.ParadoxFileInfo
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.orSpecific
+import icu.windea.pls.model.overrides.ParadoxOverrideResult
+import icu.windea.pls.model.overrides.ParadoxOverrideStrategy
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 

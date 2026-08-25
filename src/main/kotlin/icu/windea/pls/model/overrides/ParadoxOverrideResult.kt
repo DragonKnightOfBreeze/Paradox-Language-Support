@@ -1,6 +1,7 @@
-package icu.windea.pls.lang.overrides
+package icu.windea.pls.model.overrides
 
 import com.intellij.psi.PsiElement
+import icu.windea.pls.lang.overrides.ParadoxOverrideService
 
 /**
  * 重载结果。

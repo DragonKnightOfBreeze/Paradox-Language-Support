@@ -9,7 +9,7 @@ import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.joinToStringFast
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.quoteIfNeeded
-import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
+import icu.windea.pls.model.overrides.ParadoxOverrideStrategy
 import icu.windea.pls.model.scope.ParadoxScopeContext
 import icu.windea.pls.model.type.ParadoxExpressionType
 

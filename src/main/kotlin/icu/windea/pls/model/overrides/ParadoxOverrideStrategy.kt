@@ -1,7 +1,8 @@
-package icu.windea.pls.lang.overrides
+package icu.windea.pls.model.overrides
 
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.optimized
+import icu.windea.pls.lang.overrides.ParadoxOverrideService
 
 /**
  * 覆盖策略。

@@ -7,8 +7,8 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.lang.fixes.navigation.NavigateToOverridingDefineVariablesFix
 import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import icu.windea.pls.lang.overrides.ParadoxOverrideService
-import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
 import icu.windea.pls.lang.util.ParadoxDefineManager
+import icu.windea.pls.model.overrides.ParadoxOverrideStrategy
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptVisitor
 

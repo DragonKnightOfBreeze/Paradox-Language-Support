@@ -9,8 +9,8 @@ import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.fixes.navigation.NavigateToOverridingFilesFix
 import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import icu.windea.pls.lang.overrides.ParadoxOverrideService
-import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
 import icu.windea.pls.lang.util.ParadoxFileManager
+import icu.windea.pls.model.overrides.ParadoxOverrideStrategy
 
 /**
  * 检测是否存在对当前文件的重载。

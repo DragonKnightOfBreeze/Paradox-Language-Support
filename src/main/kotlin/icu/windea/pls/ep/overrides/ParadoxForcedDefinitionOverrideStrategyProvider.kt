@@ -3,10 +3,10 @@ package icu.windea.pls.ep.overrides
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.util.ParadoxSearchParameters
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
+import icu.windea.pls.model.overrides.ParadoxOverrideStrategy
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 class ParadoxForcedDefinitionOverrideStrategyProvider : ParadoxOverrideStrategyProvider {

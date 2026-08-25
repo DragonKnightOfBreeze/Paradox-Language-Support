@@ -7,8 +7,8 @@ import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.overrides.ParadoxOverrideService
-import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
 import icu.windea.pls.model.ParadoxRootInfo
+import icu.windea.pls.model.overrides.ParadoxOverrideStrategy
 
 /**
  * 与重载相关的代码检查的基类。

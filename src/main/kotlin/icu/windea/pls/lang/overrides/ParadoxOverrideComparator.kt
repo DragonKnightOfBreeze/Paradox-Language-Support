@@ -7,6 +7,7 @@ import icu.windea.pls.lang.search.util.ParadoxSearchParameters
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.model.ParadoxFileInfo
 import icu.windea.pls.model.ParadoxRootInfo
+import icu.windea.pls.model.overrides.ParadoxOverrideStrategy
 
 /**
  * 基于覆盖顺序的目标的排序器。
@@ -17,7 +18,7 @@ import icu.windea.pls.model.ParadoxRootInfo
  * - 文件路径相同时，按照所在根目录在当前上下文中的顺序，由大到小排序。
  * - 文件路径不同时，基于覆盖策略进行排序（对于 `LIOS` 和 `DUPL`，后到者优先）。
  *
- * @see ParadoxOverrideStrategy
+ * @see icu.windea.pls.model.overrides.ParadoxOverrideStrategy
  * @see ParadoxOverrideService
  */
 class ParadoxOverrideComparator<T>(

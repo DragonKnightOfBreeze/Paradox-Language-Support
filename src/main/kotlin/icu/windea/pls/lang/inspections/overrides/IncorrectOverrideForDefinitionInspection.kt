@@ -6,7 +6,7 @@ import com.intellij.psi.PsiElementVisitor
 import icu.windea.pls.lang.fixes.navigation.NavigateToOverridingDefinitionsFix
 import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import icu.windea.pls.lang.overrides.ParadoxOverrideService
-import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
+import icu.windea.pls.model.overrides.ParadoxOverrideStrategy
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptVisitor
 

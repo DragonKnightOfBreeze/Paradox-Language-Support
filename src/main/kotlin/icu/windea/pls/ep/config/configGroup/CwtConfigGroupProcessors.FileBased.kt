@@ -49,8 +49,8 @@ import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.withState
-import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
 import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.overrides.ParadoxOverrideStrategy
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap
 import it.unimi.dsi.fastutil.objects.ObjectArrayList
 import kotlinx.coroutines.currentCoroutineContext

@@ -42,8 +42,8 @@ import icu.windea.pls.ep.config.config.CwtConfigPostProcessor
 import icu.windea.pls.ep.resolve.localisation.ParadoxCompositeLocalisationIconSupport
 import icu.windea.pls.ep.resolve.localisation.ParadoxLocalisationIconSupport
 import icu.windea.pls.lang.index.constraints.ParadoxDefinitionIndexConstraint
-import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
 import icu.windea.pls.lang.references.localisation.ParadoxLocalisationIconPsiReference
+import icu.windea.pls.model.overrides.ParadoxOverrideStrategy
 
 /**
  * 规则分组的数据模型。
@@ -75,7 +75,6 @@ interface CwtConfigGroupDataModel {
 
     // region Core
 
-    // TODO 3.0.2+ [refactor] introduce `CwtOverrideConfig` or just use `Map<String, String>` and convert to `ParadoxOverrideStrategy` somewhere else, since `ParadoxOverrideStrategy` is in `lang.overrides` atm
     val priorities: Map<String, ParadoxOverrideStrategy> get() = emptyMap()
     val systemScopes: Map<@CaseInsensitive String, CwtSystemScopeConfig> get() = emptyMap()
     val locales: Map<String, CwtLocaleConfig> get() = emptyMap()
