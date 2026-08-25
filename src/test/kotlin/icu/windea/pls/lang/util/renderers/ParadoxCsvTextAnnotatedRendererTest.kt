@@ -5,7 +5,7 @@ import com.intellij.testFramework.TestDataFile
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.csv.psi.ParadoxCsvFile
-import icu.windea.pls.lang.codeInsight.annotated.ParadoxAnnotatedLevel
+import icu.windea.pls.lang.data.annotated.ParadoxAnnotatedLevel
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.ChronicleTestScope
 import org.junit.After

@@ -1,9 +1,8 @@
-package icu.windea.pls.lang.codeInsight.annotated
+package icu.windea.pls.lang.data.annotated
 
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.core.quoteIfNeeded
-import icu.windea.pls.core.text.QuotePatterns
 import icu.windea.pls.core.util.values.FallbackStrings
 import icu.windea.pls.lang.definitionCandidateInfo
 import icu.windea.pls.lang.match.ParadoxMatchOptions
@@ -15,7 +14,6 @@ import icu.windea.pls.model.type.ParadoxTypeResolver
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptValue
-import icu.windea.pls.script.text.ParadoxScript
 
 object ParadoxScriptAnnotatedManager {
     // region Prefixes
@@ -30,6 +28,8 @@ object ParadoxScriptAnnotatedManager {
 
     // region Annotation Getters
 
+    // 3.0.2 `QuotePatterns.Default` should be used here to quote literal if needed
+
     /**
      * 得到类型信息的注解。
      *
@@ -42,11 +42,11 @@ object ParadoxScriptAnnotatedManager {
             is ParadoxScriptProperty -> {
                 val keyType = element.propertyKey.resolved()?.let { ParadoxTypeResolver.resolveExpressionType(it) }?.text ?: FallbackStrings.unknown
                 val valueType = element.propertyValue?.resolved()?.let { ParadoxTypeResolver.resolveExpressionType(it) }?.text ?: FallbackStrings.unknown
-                "## $typePrefix ${keyType} = ${valueType}"
+                "## $typePrefix ${keyType.quoteIfNeeded()} = ${valueType.quoteIfNeeded()}"
             }
             is ParadoxScriptValue -> {
                 val valueType = element.resolved()?.let { ParadoxTypeResolver.resolveExpressionType(it) }?.text ?: FallbackStrings.unknown
-                "## $typePrefix ${valueType}"
+                "## $typePrefix ${valueType.quoteIfNeeded()}"
             }
             else -> null
         }
@@ -62,7 +62,7 @@ object ParadoxScriptAnnotatedManager {
     fun getDefinitionTypeAnnotation(element: ParadoxScriptMember): String? {
         if (element !is ParadoxScriptProperty) return null
         val definitionType = element.definitionCandidateInfo?.typeText ?: return null
-        return "## $definitionTypePrefix ${definitionType}"
+        return "## $definitionTypePrefix ${definitionType.quoteIfNeeded()}"
     }
 
     /**
@@ -75,18 +75,17 @@ object ParadoxScriptAnnotatedManager {
     fun getConfigExpressionAnnotation(element: ParadoxScriptMember): String? {
         val options = ParadoxMatchOptions(forDeclarationRoot = true)
         val config = ParadoxConfigManager.getConfigs(element, options).firstOrNull() ?: return null
-        val quotePattern = QuotePatterns.ParadoxScript
         return when (element) {
             is ParadoxScriptProperty -> {
                 if (config !is CwtPropertyConfig) return null
                 val key = config.key
                 val value = config.value
-                "## $configExpressionPrefix ${key.quoteIfNeeded(quotePattern)} = ${value.quoteIfNeeded(quotePattern)}"
+                "## $configExpressionPrefix ${key.quoteIfNeeded()} = ${value.quoteIfNeeded()}"
             }
             is ParadoxScriptValue -> {
                 if (config !is CwtValueConfig) return null
                 val value = config.value
-                "## $configExpressionPrefix ${value.quoteIfNeeded(quotePattern)}"
+                "## $configExpressionPrefix ${value.quoteIfNeeded()}"
             }
             else -> null
         }
@@ -117,7 +116,7 @@ object ParadoxScriptAnnotatedManager {
         val scopeContext = ParadoxScopeManager.getScopeContext(element) ?: return null
         if (!unchanged && !ParadoxScopeManager.isScopeContextChanged(element, scopeContext)) return null
         val presentableString = scopeContext.toPresentableString(showPrev = detailed)
-        return "## $scopeContextPrefix $presentableString"
+        return "## $scopeContextPrefix ${presentableString.quoteIfNeeded()}"
     }
 
     // endregion

@@ -8,7 +8,7 @@ import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.util.Tuple3
 import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.csv.psi.ParadoxCsvFile
-import icu.windea.pls.lang.codeInsight.annotated.ParadoxAnnotatedLevel
+import icu.windea.pls.lang.data.annotated.ParadoxAnnotatedLevel
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.util.renderers.ParadoxCsvTextAnnotatedRenderer
 import icu.windea.pls.lang.util.renderers.ParadoxScriptTextAnnotatedRenderer

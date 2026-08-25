@@ -1,7 +1,9 @@
-package icu.windea.pls.lang.codeInsight.annotated
+package icu.windea.pls.lang.data.annotated
 
 /**
- * 注解级别。用于配置要包含的注解。
+ * 注解级别。
+ *
+ * 用于配置要启用的注解数据。
  *
  * @property includeType 是否包含类型信息。
  * @property includeDefinitionType 是否包含定义类型信息。
@@ -11,8 +13,7 @@ package icu.windea.pls.lang.codeInsight.annotated
  * @property includeUnchancedScopeContext 是否包含未发生更改的作用域上下文信息。
  * @property includeDetailedScopeContext 是否包含详细的作用域上下文信息。这意味着会包含 `prev` `prevprev` 等回溯型系统作用域。
  *
- * @see ParadoxScriptAnnotatedManager
- * @see ParadoxCsvAnnotatedManager
+ * @see ParadoxAnnotatedData
  */
 @Suppress("unused")
 data class ParadoxAnnotatedLevel(

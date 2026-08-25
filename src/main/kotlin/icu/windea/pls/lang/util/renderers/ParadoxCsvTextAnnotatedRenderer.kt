@@ -2,8 +2,8 @@ package icu.windea.pls.lang.util.renderers
 
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.csv.psi.ParadoxCsvColumnContainer
-import icu.windea.pls.lang.codeInsight.annotated.ParadoxAnnotatedLevel
 import icu.windea.pls.lang.codeInsight.annotated.ParadoxCsvAnnotatedManager
+import icu.windea.pls.lang.data.annotated.ParadoxAnnotatedLevel
 
 /**
  * 将 CSV 文本渲染为带注解的文本的渲染器。

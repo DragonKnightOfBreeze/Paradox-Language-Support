@@ -2,8 +2,8 @@ package icu.windea.pls.lang.util.renderers
 
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.util.OnceMarker
-import icu.windea.pls.lang.codeInsight.annotated.ParadoxAnnotatedLevel
-import icu.windea.pls.lang.codeInsight.annotated.ParadoxScriptAnnotatedManager
+import icu.windea.pls.lang.data.annotated.ParadoxAnnotatedLevel
+import icu.windea.pls.lang.data.annotated.ParadoxScriptAnnotatedManager
 import icu.windea.pls.script.psi.ParadoxScriptMember
 
 /**
