@@ -284,10 +284,15 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
     }
 
     private fun computeScopeModelForParents(config: CwtScopeConfig, result: IntArraySet) {
-        // TODO 3.0.2 collect recursively (and present recursions)
-        config.isSubscopeOf?.let { parent ->
+        // 3.0.2 collect recursively (and present recursions)
+        var parent = config.isSubscopeOf ?: return
+        val guardStack = mutableSetOf<String>()
+        while (true) {
+            if (!guardStack.add(parent)) break
             val parentIndex = ParadoxScope.resolve(parent).index
             result.add(parentIndex)
+            val parentConfig = config.configGroup.initializer.scopes[parent] ?: break
+            parent = parentConfig.isSubscopeOf ?: break
         }
     }
 

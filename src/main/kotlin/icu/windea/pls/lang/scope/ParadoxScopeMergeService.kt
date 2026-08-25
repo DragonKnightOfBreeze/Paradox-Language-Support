@@ -12,6 +12,7 @@ import icu.windea.pls.model.scope.ParadoxScopeContext
 @Optimized
 object ParadoxScopeMergeService {
     // NOTE 3.0.2 support to merge union scopes (promote to super scopes if necessary)
+    // TODO 3.0.2 introduce `ParadoxScopeMergeContext` (required for merging union scopes, so fast return may not applicable)
 
     // 作用域的合并逻辑（scope -> scopeToMerge）：
     // - scope 是输入的数据（从上下文中获取或推断）。
