@@ -6,7 +6,7 @@ This repository contains **Paradox Chronicle** (formerly **Paradox Language Supp
 
 On narrative level, this plugin symbolizes the book also titled **Paradox Chronicle**. While playing on the double meaning of **Chronicle** and **Prophecy Book**, it is, indeed, also the guide book, to the paradox universe.
 
-Given the large codebase (over 100k lines of Kotlin production code) and high complexity (platform & domain & architecture), make this project a challenging undertaking.
+Given the large codebase (over 120k lines of Kotlin production code) and high complexity (platform & domain & architecture), make this project a challenging undertaking.
 
 As you embark on this journey, keep serious, cautious, and curious.
 
