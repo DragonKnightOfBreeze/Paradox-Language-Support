@@ -8,7 +8,6 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.util.parents
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.base.ChronicleModificationTrackers
-import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtMemberConfig
@@ -55,6 +54,7 @@ import icu.windea.pls.ep.resolve.config.CwtConfigContextProvider
 import icu.windea.pls.ep.resolve.config.CwtDeclarationConfigContextProvider
 import icu.windea.pls.ep.resolve.config.CwtOverriddenConfigProvider
 import icu.windea.pls.ep.resolve.config.CwtRelatedConfigProvider
+import icu.windea.pls.lang.ParadoxThreadContext
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.match.CwtRowConfigMatchContext
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
@@ -186,7 +186,7 @@ object ParadoxConfigService {
         val cacheKey = provider.getCacheKey(context, options) ?: return emptyList()
         val cached = withRecursionGuard("ParadoxConfigService.getConfigsForConfigContext") {
             withRecursionCheck(cacheKey) {
-                val resolvingStack = ChronicleThreadContext.resolvingConfigContextStack.getOrSet { ArrayDeque() }
+                val resolvingStack = ParadoxThreadContext.resolvingConfigContextStack.getOrSet { ArrayDeque() }
                 resolvingStack.addLast(context)
                 try {
                     // use lock-freeze `ConcurrentMap.getOrPut` to prevent IDE freezing problems (WARNING: or will cause deadlock!)
@@ -200,7 +200,7 @@ object ParadoxConfigService {
                         // invalidate in-config-group cache if result context configs are dynamic (e.g., based on script context)
                         cache.invalidate(cacheKey)
                     }
-                    if (resolvingStack.isEmpty()) ChronicleThreadContext.resolvingConfigContextStack.remove()
+                    if (resolvingStack.isEmpty()) ParadoxThreadContext.resolvingConfigContextStack.remove()
                 }
             }
         } ?: return emptyList() // unexpected recursion, return empty list

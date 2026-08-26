@@ -39,7 +39,7 @@ class AddonExtensionsTest {
     fun withState_setsAndClears_test() {
         val state = ThreadLocal<Boolean>()
         var inside: Boolean? = null
-        val r = withState(state) {
+        val r = state.withState {
             inside = state.get()
             "done"
         }
@@ -52,7 +52,7 @@ class AddonExtensionsTest {
     fun withState_clearsOnException_test() {
         val state = ThreadLocal<Boolean>()
         Assert.assertThrows(RuntimeException::class.java) {
-            withState(state) { throw RuntimeException("boom") }
+            state.withState { throw RuntimeException("boom") }
         }
         Assert.assertNull(state.get())
     }

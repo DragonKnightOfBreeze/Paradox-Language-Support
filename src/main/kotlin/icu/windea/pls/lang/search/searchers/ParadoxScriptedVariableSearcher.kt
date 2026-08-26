@@ -8,16 +8,17 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.startOffset
 import com.intellij.util.Processor
-import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.process
+import icu.windea.pls.core.hasState
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.index.ChronicleIndexKeys
 import icu.windea.pls.lang.index.ChronicleIndexService
+import icu.windea.pls.lang.index.ParadoxMergedIndexThreadContext
 import icu.windea.pls.lang.injection.ParadoxScriptInjectionManager
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.search.ParadoxInlineScriptUsageSearch
@@ -45,7 +46,7 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 class ParadoxScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScriptedVariable, ParadoxScriptedVariableSearch.Parameters>() {
     override fun processQuery(queryParameters: ParadoxScriptedVariableSearch.Parameters, consumer: Processor<in ParadoxScriptScriptedVariable>) {
         // #141 如果正在为 ParadoxMergedIndex 编制索引并且正在解析引用，则直接跳过
-        if (ChronicleThreadContext.resolveForMergedIndex.get() == true) return
+        if (ParadoxMergedIndexThreadContext.isResolving.hasState()) return
 
         ProgressManager.checkCanceled()
         val context = queryParameters.createContext()

@@ -1,7 +1,6 @@
 package icu.windea.pls.ep.index
 
 import com.intellij.psi.PsiElement
-import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.core.readOrReadFrom
 import icu.windea.pls.core.readUTFFast
 import icu.windea.pls.core.util.ReadWriteAccessC
@@ -12,6 +11,7 @@ import icu.windea.pls.core.writeOrWriteFrom
 import icu.windea.pls.core.writeUTFFast
 import icu.windea.pls.lang.index.ParadoxMergedIndexContext
 import icu.windea.pls.lang.index.ParadoxMergedIndexScriptContext
+import icu.windea.pls.lang.index.ParadoxMergedIndexThreadContext
 import icu.windea.pls.lang.index.ParadoxMergedIndexTypes
 import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
 import icu.windea.pls.lang.psi.light.ParadoxLocalisationParameterLightElement
@@ -134,7 +134,7 @@ class ParadoxParameterWithReadAccessMergedIndexSupport : ParadoxMergedIndexSuppo
         // 3.0.1 although it's not very necessary
         if (!checkAvailable(context)) return
 
-        val resolved = withState(ChronicleThreadContext.resolveForMergedIndex) { resolve(element) }
+        val resolved = ParadoxMergedIndexThreadContext.isResolving.withState { resolve(element) }
         if (resolved == null) return
         val info = ParadoxParameterIndexInfo(resolved.name, resolved.contextKey, resolved.readWriteAccess, resolved.gameType)
         addToFileData(info, context)

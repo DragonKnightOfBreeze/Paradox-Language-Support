@@ -2,7 +2,6 @@ package icu.windea.pls.ep.index
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
-import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.core.collections.asMutable
 import icu.windea.pls.core.withState
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
@@ -10,6 +9,7 @@ import icu.windea.pls.lang.index.ParadoxMergedIndexContext
 import icu.windea.pls.lang.index.ParadoxMergedIndexCsvContext
 import icu.windea.pls.lang.index.ParadoxMergedIndexLocalisationContext
 import icu.windea.pls.lang.index.ParadoxMergedIndexScriptContext
+import icu.windea.pls.lang.index.ParadoxMergedIndexThreadContext
 import icu.windea.pls.lang.index.statistics.ChronicleIndexStatisticService
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
@@ -60,7 +60,7 @@ abstract class ParadoxMergedIndexSupportFromExpressionReferencesBase<T : Paradox
 
     protected fun buildDataFromReference(reference: PsiReference, context: ParadoxMergedIndexContext) {
         if (!constraint.canResolve(reference)) return
-        val resolved = withState(ChronicleThreadContext.resolveForMergedIndex) { reference.resolve() }
+        val resolved = ParadoxMergedIndexThreadContext.isResolving.withState { reference.resolve() }
         if (resolved == null) return
         buildDataFromResolved(resolved, context)
     }

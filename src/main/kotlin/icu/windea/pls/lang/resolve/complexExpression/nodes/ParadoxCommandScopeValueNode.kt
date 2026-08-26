@@ -1,7 +1,6 @@
 package icu.windea.pls.lang.resolve.complexExpression.nodes
 
 import com.intellij.openapi.util.TextRange
-import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
@@ -10,10 +9,12 @@ import icu.windea.pls.core.collections.anyFast
 import icu.windea.pls.core.collections.filterFast
 import icu.windea.pls.core.collections.mapNotNullFast
 import icu.windea.pls.core.collections.orNull
+import icu.windea.pls.core.hasState
 import icu.windea.pls.core.isEscapedCharAt
 import icu.windea.pls.core.isQuoted
 import icu.windea.pls.core.text.QuotePatterns
 import icu.windea.pls.expression.text.ParadoxLiteralNode
+import icu.windea.pls.lang.ParadoxThreadContext
 import icu.windea.pls.lang.getParameterRanges
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxCommandExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDynamicValueExpression
@@ -28,7 +29,7 @@ class ParadoxCommandScopeValueNode(
     companion object {
         @JvmStatic
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, linkConfigs: List<CwtLinkConfig>): ParadoxCommandScopeValueNode {
-            val incomplete = ChronicleThreadContext.incompleteComplexExpression.get() ?: false
+            val incomplete = ParadoxThreadContext.incompleteComplexExpression.hasState()
             val parameterRanges = text.getParameterRanges()
             val separatorChar = if (linkConfigs.anyFast { it.argumentSeparator.usePipe() }) '|' else ','
 

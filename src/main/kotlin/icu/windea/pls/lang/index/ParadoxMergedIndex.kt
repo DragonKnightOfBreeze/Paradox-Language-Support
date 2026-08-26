@@ -8,7 +8,6 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor
 import com.intellij.util.gist.VirtualFileGist
-import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.buildImmutableList
 import icu.windea.pls.core.collections.filterFast
@@ -86,7 +85,7 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
     }
 
     private fun buildData(file: PsiFile, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
-        withState(ChronicleThreadContext.processMergedIndex) {
+        ParadoxMergedIndexThreadContext.isProcessing.withState {
             when (file) {
                 is ParadoxScriptFile -> buildDataForScriptFile(file, fileData)
                 is ParadoxLocalisationFile -> buildDataForLocalisationFile(file, fileData)

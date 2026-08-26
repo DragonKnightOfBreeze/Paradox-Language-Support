@@ -4,7 +4,6 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
-import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.base.settings.ChronicleSettings
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
@@ -16,6 +15,7 @@ import icu.windea.pls.core.processAsync
 import icu.windea.pls.core.util.values.singletonListOrEmpty
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.core.withState
+import icu.windea.pls.lang.ParadoxThreadContext
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxArrayDefineReferenceExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxCommandExpression
@@ -147,7 +147,7 @@ object ParadoxComplexExpressionCompletionManager {
     }
 
     private inline fun <T> markIncomplete(action: () -> T): T {
-        return withState(ChronicleThreadContext.incompleteComplexExpression, action)
+        return ParadoxThreadContext.incompleteComplexExpression.withState(action)
     }
 
     // endregion

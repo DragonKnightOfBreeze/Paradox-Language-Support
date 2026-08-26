@@ -1,14 +1,15 @@
 package icu.windea.pls.lang.resolve.complexExpression
 
 import com.intellij.openapi.util.TextRange
-import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.cast
 import icu.windea.pls.core.collections.anyFast
 import icu.windea.pls.core.collections.filterIsInstanceFast
+import icu.windea.pls.core.hasState
 import icu.windea.pls.core.match.TextMatcher
+import icu.windea.pls.lang.ParadoxThreadContext
 import icu.windea.pls.lang.getParameterRanges
 import icu.windea.pls.lang.isParameterAwareIdentifier
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
@@ -103,7 +104,7 @@ interface ParadoxValueFieldExpression : ParadoxComplexExpression, ParadoxLinkedE
 
 private object ParadoxValueFieldExpressionResolver {
     fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup): ParadoxValueFieldExpression? {
-        val incomplete = ChronicleThreadContext.incompleteComplexExpression.get() ?: false
+        val incomplete = ParadoxThreadContext.incompleteComplexExpression.hasState()
         if (!incomplete && text.isEmpty()) return null
 
         // skip if text is a number

@@ -1,11 +1,11 @@
 package icu.windea.pls.lang.resolve
 
 import com.intellij.psi.util.parentOfType
-import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.extended.CwtExtendedInlineScriptConfig
 import icu.windea.pls.config.config.extended.CwtExtendedParameterConfig
 import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.lang.ParadoxThreadContext
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.model.containingContextReference
@@ -32,7 +32,10 @@ object ParadoxExtendedConfigService {
                 val contextReferenceElement = parameterElement.containingContextReference?.element ?: return@run
                 val parentElement = contextReferenceElement.parentOfType<ParadoxScriptMember>(false) ?: return@run
                 val contextConfigs = ParadoxConfigManager.getContextConfigs(parentElement)
-                ChronicleThreadContext.resolvingConfigContextStack.get()?.peekLast()?.markDynamic() // NOTE 2.1.2 需要把正在解析的规则上下文标记为动态的
+
+                // NOTE 2.1.2 需要把正在解析的规则上下文标记为动态的
+                ParadoxThreadContext.resolvingConfigContext?.markDynamic()
+
                 return contextConfigs
             }
             return emptyList()

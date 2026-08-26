@@ -1,8 +1,8 @@
 package icu.windea.pls.config.option
 
 import icu.windea.pls.base.ChronicleCapacities
-import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.config.CwtConfigApiStatus
+import icu.windea.pls.config.CwtConfigThreadContext
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtOptionConfig
@@ -16,6 +16,7 @@ import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.CaseInsensitiveStringSet
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.orNull
+import icu.windea.pls.core.hasState
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.util.values.ReversibleValue
 import icu.windea.pls.model.scope.ParadoxScope
@@ -27,7 +28,7 @@ object CwtOptionMetadataService : CwtConfigResolverScope {
     fun process(optionMetadata: CwtOptionMetadata, optionConfigs: List<CwtOptionMemberConfig<*>>, configGroup: CwtConfigGroup) {
         if (optionMetadata !is CwtOptionMetadataBase) return
         if (optionConfigs.isEmpty()) return
-        val skipProcessing = ChronicleThreadContext.skipProcessingOptionMetadata.get() == true
+        val skipProcessing = CwtConfigThreadContext.skipProcessingOptionMetadata.hasState()
         val keepOptionConfigs = skipProcessing || ChronicleCapacities.keepOptionConfigs()
         if (keepOptionConfigs) {
             optionMetadata.optionConfigs = optionConfigs.optimized() // optimized to optimize memory

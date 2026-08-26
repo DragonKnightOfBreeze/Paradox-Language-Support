@@ -1,11 +1,12 @@
 package icu.windea.pls.lang.resolve.complexExpression.nodes
 
 import com.intellij.openapi.util.TextRange
-import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.hasState
 import icu.windea.pls.core.indexOf
+import icu.windea.pls.lang.ParadoxThreadContext
 
 class ParadoxNegatedDynamicValueNode(
     override val text: String,
@@ -20,7 +21,7 @@ class ParadoxNegatedDynamicValueNode(
             if (text.isEmpty()) return null
             if (!text.startsWith("not")) return null
 
-            val incomplete = ChronicleThreadContext.incompleteComplexExpression.get() ?: false
+            val incomplete = ParadoxThreadContext.incompleteComplexExpression.hasState()
 
             val nodes = mutableListOf<ParadoxComplexExpressionNode>()
             val offset = range.startOffset

@@ -1,12 +1,14 @@
 package icu.windea.pls.lang.match
 
 import com.intellij.psi.PsiElement
-import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.mapFast
+import icu.windea.pls.core.hasState
 import icu.windea.pls.ep.match.expression.ParadoxScriptExpressionMatchOptimizer
+import icu.windea.pls.lang.ParadoxThreadContext
+import icu.windea.pls.lang.index.ParadoxMergedIndexThreadContext
 import icu.windea.pls.model.expressions.ParadoxExpression
 
 @Optimized
@@ -15,7 +17,7 @@ object ParadoxMatchService {
 
     fun isDumb(options: ParadoxMatchOptions? = null): Boolean {
         val options = options.normalized()
-        return options.skipIndex || options.skipScope || processingMergedIndex()
+        return options.skipIndex || options.skipScope || ParadoxMergedIndexThreadContext.isProcessing.hasState()
     }
 
     fun fallback(options: ParadoxMatchOptions? = null): Boolean {
@@ -35,15 +37,13 @@ object ParadoxMatchService {
 
     fun skipIndex(options: ParadoxMatchOptions? = null): Boolean {
         val options = options.normalized()
-        return options.skipIndex || processingMergedIndex()
+        return options.skipIndex || ParadoxMergedIndexThreadContext.isProcessing.hasState()
     }
 
     fun skipScope(options: ParadoxMatchOptions? = null): Boolean {
         val options = options.normalized()
-        return options.skipScope || processingMergedIndex()
+        return options.skipScope || ParadoxMergedIndexThreadContext.isProcessing.hasState()
     }
-
-    private fun processingMergedIndex() = ChronicleThreadContext.processMergedIndex.get() == true
 
     // endregion
 
@@ -92,12 +92,10 @@ object ParadoxMatchService {
         }
 
         // NOTE 2.1.2 如果是动态的优化器，需要把正在解析的规则上下文标记为动态的
-        if (dynamic) getResolvingConfigContext()?.markDynamic()
+        if (dynamic) ParadoxThreadContext.resolvingConfigContext?.markDynamic()
 
         return result
     }
-
-    private fun getResolvingConfigContext() = ChronicleThreadContext.resolvingConfigContextStack.get()?.peekLast()
 
     // endregion
 }

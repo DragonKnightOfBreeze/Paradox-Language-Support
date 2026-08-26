@@ -3,8 +3,8 @@ package icu.windea.pls.ep.config.configGroup
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.progress.checkCanceled
 import com.intellij.openapi.vfs.VirtualFile
-import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.base.settings.ChronicleConfigSettings
+import icu.windea.pls.config.CwtConfigThreadContext
 import icu.windea.pls.config.config.CwtConfigService
 import icu.windea.pls.config.config.CwtFileConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
@@ -136,7 +136,7 @@ class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor, CwtConfigResol
     }
 
     private fun resolveInternalFileConfig(configGroup: CwtConfigGroup, file: VirtualFile, filePath: String): CwtFileConfig? {
-        return withState(ChronicleThreadContext.skipProcessingOptionMetadata) {
+        return CwtConfigThreadContext.skipProcessingOptionMetadata.withState {
             CwtFileConfig.resolve(file, configGroup, filePath)
         }
     }

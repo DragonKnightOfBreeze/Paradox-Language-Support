@@ -6,14 +6,15 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.Processor
-import icu.windea.pls.base.context.ChronicleThreadContext
 import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.processFast
+import icu.windea.pls.core.hasState
 import icu.windea.pls.csv.ParadoxCsvFileType
 import icu.windea.pls.lang.index.ChronicleIndexKeys
 import icu.windea.pls.lang.index.ChronicleIndexService
 import icu.windea.pls.lang.index.ChronicleIndexUtil
+import icu.windea.pls.lang.index.ParadoxMergedIndexThreadContext
 import icu.windea.pls.lang.search.ParadoxComplexEnumValueSearch
 import icu.windea.pls.lang.search.scope.withConfig
 import icu.windea.pls.lang.search.scope.withFileTypes
@@ -31,7 +32,7 @@ import icu.windea.pls.script.ParadoxScriptFileType
 class ParadoxComplexEnumValueSearcher : QueryExecutorBase<ParadoxComplexEnumValueIndexInfo, ParadoxComplexEnumValueSearch.Parameters>() {
     override fun processQuery(queryParameters: ParadoxComplexEnumValueSearch.Parameters, consumer: Processor<in ParadoxComplexEnumValueIndexInfo>) {
         // #141 如果正在为 ParadoxMergedIndex 编制索引并且正在解析引用，则直接跳过
-        if (ChronicleThreadContext.resolveForMergedIndex.get() == true) return
+        if (ParadoxMergedIndexThreadContext.isResolving.hasState()) return
 
         ProgressManager.checkCanceled()
         val context = queryParameters.createContext()
