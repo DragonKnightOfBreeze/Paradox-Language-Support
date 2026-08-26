@@ -280,9 +280,9 @@ scopes = {
     #### Introduce a [Scope Config](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-scope),
     #### to define a scope type and its aliases.
     $scope_name$ = {
-        #### The alias set of this scope (case-insensitive).
+        #### The set of aliases for this scope, which can be empty. Used for scope matching.
         aliases = { $scope$ }
-        #### (TODO) Not supported yet.
+        #### The parent scope of this scope, which can be empty. Used for scope matching.
         is_subscope_of = $scope$
     }
 }
