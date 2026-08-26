@@ -14,14 +14,70 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 %%
 
 %{
+    // stack for context states (states that need to fallback when exit some constructs)
+    private IntStack stateStack = null;
+    // stack for expected construct types (e.g., EXPECT_PROPERTY_KEY)
+    private IntStack expectStack = null;
+
+    private static int EXPECT_PROPERTY_KEY = 1;
+    private static int EXPECT_STRING = 2;
+    private static int EXPECT_SCRIPTED_VARIABLE_NAME = 3;
+    private static int EXPECT_SCRIPTED_VARIABLE_REFERENCE = 4;
+    private static int EXPECT_INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE = 5;
+
+    // region TODO 3.0.2 to refactor
     private final Deque<Integer> stack = new ArrayDeque<>();
     private final AtomicInteger templateStateRef = new AtomicInteger(-1);
     private final AtomicInteger parameterStateRef = new AtomicInteger(-1);
+    // endregion
 
     public _ParadoxScriptLexer() {
         this((java.io.Reader)null);
     }
 
+    private void enterState(int state, int expect) {
+        if (stateStack == null) {
+            stateStack = new IntArrayList();
+        }
+        if (expectStack == null) {
+            expectStack = new IntArrayList();
+        }
+        stateStack.push(state);
+        expectStack.push(expect);
+        yybegin(state);
+    }
+
+    private void exitState(int expect) {
+        if (stateStack == null || stateStack.isEmpty()) {
+            yybegin(YYINITIAL);
+            return;
+        }
+        if (expectStack == null || expectStack.isEmpty()) {
+            yybegin(YYINITIAL);
+            return;
+        }
+        int currentExpect = expectStack.topInt();
+        if (currentExpect != expect) return;
+        expectStack.popInt();
+        int currentState = stateStack.popInt();
+        yybegin(currentState);
+    }
+
+    private void exitState() {
+        if (stateStack == null || stateStack.isEmpty()) {
+            yybegin(YYINITIAL);
+            return;
+        }
+        if (expectStack == null || expectStack.isEmpty()) {
+            yybegin(YYINITIAL);
+            return;
+        }
+        expectStack.popInt();
+        int currentState = stateStack.popInt();
+        yybegin(currentState);
+    }
+
+    // region TODO 3.0.2 to refactor
     private void enterState(Deque<Integer> stack, int state) {
         stack.offerLast(state);
         yybegin(state);
@@ -67,6 +123,7 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
             return false;
         }
     }
+    // endregion
 
     private void recoverState(AtomicInteger stateRef) {
         int state = stateRef.get();
