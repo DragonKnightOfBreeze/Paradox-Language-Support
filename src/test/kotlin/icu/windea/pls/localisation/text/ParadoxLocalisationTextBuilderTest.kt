@@ -86,13 +86,9 @@ class ParadoxLocalisationTextBuilderTest {
 
     @Test
     fun complex() {
-        val expect = buildString {
-            append("Here is a ")
-            append("value = @[ 1 + 1 ]")
-            append("[[INPUT] input = yes ]")
-        }.trim()
+        val expect = "colorful text: §RRed text§!, parameter: \$NAME$, command : [Root.GetName]"
         val actual = buildLocalisationText {
-            "colorful text: ${colorfulText("R", "red text")}, parameter: ${parameter("NAME")}, command : ${command("Root.GetName")}"
+            "colorful text: ${colorfulText("R", "Red text")}, parameter: ${parameter("NAME")}, command : ${command("Root.GetName")}"
         }
         Assert.assertEquals(expect, actual)
     }
