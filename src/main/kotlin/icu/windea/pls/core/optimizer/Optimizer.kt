@@ -29,4 +29,3 @@ interface Optimizer<T : Any, R : Any> {
      */
     interface Unary<T : Any> : Optimizer<T, T>
 }
-

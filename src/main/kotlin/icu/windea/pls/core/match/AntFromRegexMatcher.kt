@@ -43,6 +43,7 @@ object AntFromRegexMatcher {
     }
 
     private fun String.antPatternToRegexString(): String {
+        // 这里的正则转换逻辑依赖字符串 `replace` 处理 `**` 与相邻通配符，较为脆弱
         val s = this
         var r = buildString {
             append("\\Q")

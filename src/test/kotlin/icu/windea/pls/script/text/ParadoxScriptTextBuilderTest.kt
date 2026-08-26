@@ -42,12 +42,12 @@ class ParadoxScriptTextBuilderTest {
             appendLine("key = \$PARAM|0$")
             appendLine("value = @[ 1 + 1 ]")
             appendLine("[[INPUT] input = yes ]")
-        }
+        }.trim()
         val actual = buildScriptText {
             """
                 key = ${parameter("PARAM", "0")}
                 value = ${inlineMath("1 + 1")}
-                ${conditionalBlock("INPUT") { "input = true" }}
+                ${conditionalBlock("INPUT") { "input = yes" }}
             """.trimIndent()
         }
         Assert.assertEquals(expect, actual)

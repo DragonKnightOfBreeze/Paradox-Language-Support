@@ -26,21 +26,21 @@ class MergedModificationTracker(vararg val modificationTrackers: ModificationTra
     }
 
     companion object {
-        @JvmField val NEVEL_CHANGED = MergedModificationTracker()
+        @JvmField val NEVER_CHANGED = MergedModificationTracker()
     }
 }
 
 /**
  * 计算型修改追踪器。
  *
- * 每次调用 [getModificationCount] 时执行 [computable] 获取“当前计算值”，若与上次不同则自增一次修改计数。
+ * 每次调用 [getModificationCount] 时执行 [computable] 以计算值，如果计算结果与上次不同（包括为 `null` 的情况），则自增一次修改计数。
  */
 class ComputedModificationTracker(private val computable: () -> Any?) : SimpleModificationTracker() {
     var computed: Any? = EMPTY_OBJECT
 
     override fun getModificationCount(): Long {
         val newComputed = computable()
-        if (computed != EMPTY_OBJECT && ((computed == null && newComputed == null) || computed != newComputed)) {
+        if (computed != EMPTY_OBJECT && computed != newComputed) {
             incModificationCount()
         }
         computed = newComputed
@@ -48,6 +48,6 @@ class ComputedModificationTracker(private val computable: () -> Any?) : SimpleMo
     }
 
     companion object {
-        @JvmField val NEVEL_CHANGED = ComputedModificationTracker({ null })
+        @JvmField val NEVER_CHANGED = ComputedModificationTracker({ null })
     }
 }

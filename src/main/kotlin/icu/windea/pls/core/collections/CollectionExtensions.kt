@@ -45,15 +45,15 @@ inline fun <T> MutableSet<T>.synced(): MutableSet<T> = Collections.synchronizedS
 @Suppress("NOTHING_TO_INLINE")
 inline fun <K, V> MutableMap<K, V>.synced(): MutableMap<K, V> = Collections.synchronizedMap(this)
 
-inline fun <T, K> Iterable<T>.associateByNotNull(keySelector: (T) -> K?): Map<K, T> {
+inline fun <T, K : Any> Iterable<T>.associateByNotNull(keySelector: (T) -> K?): Map<K, T> {
     return associateByNotNullTo(LinkedHashMap(), keySelector)
 }
 
-inline fun <T, K, V> Iterable<T>.associateByNotNull(keySelector: (T) -> K, valueTransform: (T) -> V): Map<K, V> {
+inline fun <T, K : Any, V> Iterable<T>.associateByNotNull(keySelector: (T) -> K?, valueTransform: (T) -> V): Map<K, V> {
     return associateByNotNullTo(LinkedHashMap(), keySelector, valueTransform)
 }
 
-inline fun <T, K, M : MutableMap<in K, in T>> Iterable<T>.associateByNotNullTo(destination: M, keySelector: (T) -> K?): M {
+inline fun <T, K : Any, M : MutableMap<in K, in T>> Iterable<T>.associateByNotNullTo(destination: M, keySelector: (T) -> K?): M {
     for (element in this) {
         val key = keySelector(element) ?: continue
         destination.put(key, element)

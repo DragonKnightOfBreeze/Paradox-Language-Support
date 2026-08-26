@@ -87,10 +87,10 @@ class ParadoxLocalisationTextBuilderTest {
     @Test
     fun complex() {
         val expect = buildString {
-            appendLine("Here is a ")
-            appendLine("value = @[ 1 + 1 ]")
-            appendLine("[[INPUT] input = yes ]")
-        }
+            append("Here is a ")
+            append("value = @[ 1 + 1 ]")
+            append("[[INPUT] input = yes ]")
+        }.trim()
         val actual = buildLocalisationText {
             "colorful text: ${colorfulText("R", "red text")}, parameter: ${parameter("NAME")}, command : ${command("Root.GetName")}"
         }
