@@ -14,8 +14,8 @@
 - [ ] 完善脚本文件的 lexer：更好的对可选空白和高级插值语法（如 `a_$p$_[[p]b]`）的支持） / Improve lexer for script files: better support for optional blank and advanced interpolation syntax (e.g., `a_$p$_[[p]b]`)
 - [ ] 分析与优化构建索引时的性能和内存占用 / Analyze and optimize performance and memory during indexing
 - [ ] 分析与优化完成项目分析后的性能和内存占用 / Analyze and optimize performance and memory after finishing project analysis
-- [ ] 完善测试用例（通用模块） / Improve test cases (for the common module).
-- [ ] 其他优化与BUG修复 / Other optimizations and bug fixes
+- [x] 完善测试用例（通用模块） / Improve test cases (for the common module).
+- [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 3.0.1 - 2026-08-05
 
