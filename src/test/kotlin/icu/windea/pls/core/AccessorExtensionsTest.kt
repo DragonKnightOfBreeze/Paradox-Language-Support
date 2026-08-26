@@ -5,7 +5,7 @@ import org.junit.Assert
 import org.junit.Test
 
 class AccessorExtensionsTest {
-    private val obj = AccessorObject("Windea", "Female", "Utopian Sapient", 24)
+    private val obj = AccessorObject("Windea", "Female", 10000)
     private val targetClassName = AccessorObject::class.java.name
 
     @Test
@@ -22,25 +22,25 @@ class AccessorExtensionsTest {
 
     @Test
     fun staticProperty_smokeTest() {
-        Assert.assertEquals(AccessorObject.initializedStatus, staticProperty<AccessorObject, Boolean>("initializedStatus").get())
-        Assert.assertEquals(AccessorObject.initializedStatus, staticProperty<Boolean>("initializedStatus", targetClassName).get())
+        Assert.assertEquals(AccessorObject.information, staticProperty<AccessorObject, String>("information").get())
+        Assert.assertEquals(AccessorObject.information, staticProperty<String>("information", targetClassName).get())
     }
 
     @Test
     fun function_smokeTest() {
         Assert.assertEquals(obj.helloWorld(), obj.function("helloWorld").call())
-        Assert.assertEquals(obj.hello("my dragon"), function(obj, "hello", targetClassName).call("my dragon"))
+        Assert.assertEquals(obj.hello("the world"), function(obj, "hello", targetClassName).call("the world"))
     }
 
     @Test
     fun memberFunction_smokeTest() {
         Assert.assertEquals(obj.helloWorld(), memberFunction<AccessorObject>("helloWorld").call(obj))
-        Assert.assertEquals(obj.hello("my dragon"), memberFunction("hello", targetClassName).call(obj, "my dragon"))
+        Assert.assertEquals(obj.hello("the world"), memberFunction("hello", targetClassName).call(obj, "the world"))
     }
 
     @Test
     fun staticFunction_smokeTest() {
-        Assert.assertEquals(AccessorObject.initialize(), staticFunction<AccessorObject>("initialize").call())
-        Assert.assertEquals(AccessorObject.initialize(), staticFunction("initialize", targetClassName).call())
+        Assert.assertEquals(AccessorObject.greetings(), staticFunction<AccessorObject>("greetings").call())
+        Assert.assertEquals(AccessorObject.greetings(), staticFunction("greetings", targetClassName).call())
     }
 }

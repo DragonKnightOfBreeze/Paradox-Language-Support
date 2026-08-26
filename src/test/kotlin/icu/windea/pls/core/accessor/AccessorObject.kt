@@ -5,10 +5,10 @@ package icu.windea.pls.core.accessor
 class AccessorObject(
     val name: String,
     val gender: String,
-    val race: String,
     val age: Int,
 ) {
     private var awakenStatus = false
+    var introduce = "(no introduce)"
 
     init {
         awake()
@@ -23,8 +23,8 @@ class AccessorObject(
         return "awakened"
     }
 
-    val displayName: String get() = "$name ($gender, $race)"
-    val description: String = "name: $name, gender: $gender, race: $race, age: $age"
+    val text: String get() = "$name ($gender)"
+    val description: String = "name: $name, gender: $gender, age: $age"
 
     fun helloWorld(): String {
         return "hello world"
@@ -39,7 +39,12 @@ class AccessorObject(
     }
 
     companion object {
-        var initializedStatus = false
+        private var initializedStatus = false
+        var information = "(no information)"
+
+        init {
+            initialize()
+        }
 
         @JvmStatic
         fun initialize(): String {
@@ -49,6 +54,21 @@ class AccessorObject(
         private fun doInitialize(): String {
             initializedStatus = true
             return "initialized"
+        }
+
+        @JvmStatic
+        fun greetings(): String {
+            return "greetings!"
+        }
+
+        @JvmStatic
+        fun greetings(arg: String): String {
+            return "greetings, $arg"
+        }
+
+        @JvmStatic
+        fun greetingsAll(vararg args: String): String {
+            return "greetings, ${args.joinToString(", ")}"
         }
     }
 }

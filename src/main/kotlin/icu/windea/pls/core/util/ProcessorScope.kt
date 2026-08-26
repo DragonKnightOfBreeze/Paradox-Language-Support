@@ -7,7 +7,17 @@ import kotlin.experimental.ExperimentalTypeInference
 
 @Suppress("unused")
 object ProcessorScope {
-    // NOTE 3.0.2 这些方法的主要目的就在于 `@BuilderInference`，通过这个注解可以避免不必要的类型声明。
+    // These methods support several distinct usage styles:
+    // - Assertions occur within `predicate`. This style treats `buildAction` as a pure `processProvider`, which is more intuitive.
+    // - Assertions occur directly within `buildAction`. This style often requires combining conditional statements, and is more direct.
+    // - Assertions occur in both `buildAction` and `predicate`.
+    //
+    // Examples:
+    // - `ProcessorScope.findFrom { processSomething { if (otherPredicate()) process(it) else true } }`
+    // - `ProcessorScope.findFrom({ processSomething { process(it) } }) { predicate() }`
+    // - `ProcessorScope.findFrom({ processSomething { if (otherPredicate()) process(it) else true } }) { predicate() }`
+    //
+    // The primary purpose of these methods is the `@BuilderInference` annotation, which helps avoid unnecessary type declarations regardless of the usage style.
 
     @OptIn(ExperimentalTypeInference::class, ExperimentalContracts::class)
     inline fun <T> findFrom(@BuilderInference buildAction: FindProcessor<T>.() -> Unit): T? {
