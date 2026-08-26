@@ -6,7 +6,7 @@ import icu.windea.pls.inject.annotations.OptimizedField
 import it.unimi.dsi.fastutil.objects.ObjectArraySet
 
 interface OptimizedFieldCodeInjectors {
-    // 用于优化内存
+    // 用于优化内存占用
 
     /** @see com.intellij.codeInsight.hints.presentation.BasePresentation */
     @InjectionTarget("com.intellij.codeInsight.hints.presentation.BasePresentation")
