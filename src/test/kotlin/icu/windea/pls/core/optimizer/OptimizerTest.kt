@@ -3,6 +3,8 @@ package icu.windea.pls.core.optimizer
 import com.google.common.collect.ImmutableList
 import com.google.common.collect.ImmutableMap
 import com.google.common.collect.ImmutableSet
+import icu.windea.pls.core.collections.CaseInsensitiveStringKeyMap
+import icu.windea.pls.core.collections.CaseInsensitiveStringSet
 import org.junit.Assert.*
 import org.junit.Test
 
@@ -208,6 +210,53 @@ class OptimizerTest {
         // 大集合不驻留，应直接返回自身
         assertSame(input, result)
         assertEquals(9, result.size)
+    }
+
+    // endregion
+
+    // region OptimizerFactory.create / get / getTyped
+
+    @Test
+    fun testCreate_singleArg_optimizeAndDefaultDeoptimizeThrows() {
+        val optimizer = OptimizerFactory.create<String, String> { it + "!" }
+        assertEquals("abc!", optimizer.optimize("abc"))
+        // 未提供 deoptimizeAction 时，默认 deoptimize 抛出异常
+        assertThrows(UnsupportedOperationException::class.java) {
+            optimizer.deoptimize("abc!")
+        }
+    }
+
+    @Test
+    fun testGet_and_getTyped() {
+        val stringOptimizer = OptimizerFactory.forString()
+        assertSame(stringOptimizer, OptimizerFactory.get(stringOptimizer))
+
+        // getTyped 是类型擦除下的强转，返回同一实例
+        val anyListOptimizer: Optimizer.Unary<List<Any>> = OptimizerFactory.forList()
+        val stringListOptimizer: Optimizer.Unary<List<String>> = OptimizerFactory.getTyped(anyListOptimizer)
+        assertSame(anyListOptimizer, stringListOptimizer)
+    }
+
+    // endregion
+
+    // region 自定义哈希策略的集合应被跳过（input is Hash）
+
+    @Test
+    fun testSetOptimizer_ignore_hash_returnsSelf() {
+        val optimizer = OptimizerFactory.forSet<String>()
+        val input = CaseInsensitiveStringSet()
+        input.add("a")
+        val result = optimizer.optimize(input)
+        assertSame(input, result)
+    }
+
+    @Test
+    fun testMapOptimizer_ignore_hash_returnsSelf() {
+        val optimizer = OptimizerFactory.forMap<String, Int>()
+        val input = CaseInsensitiveStringKeyMap<Int>()
+        input["a"] = 1
+        val result = optimizer.optimize(input)
+        assertSame(input, result)
     }
 
     // endregion

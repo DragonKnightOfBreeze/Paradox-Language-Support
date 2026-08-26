@@ -28,4 +28,17 @@ class KeywordMatcherTest {
         Assert.assertTrue(KeywordMatcher.matches("Foo", "foo"))
         Assert.assertTrue(KeywordMatcher.matches("Foo", listOf("foo", "bar", "")))
     }
+
+    @Test
+    fun matches_null_input_test() {
+        Assert.assertFalse(KeywordMatcher.matches(null, "foo"))
+        Assert.assertFalse(KeywordMatcher.matches(null, arrayOf("foo")))
+        Assert.assertFalse(KeywordMatcher.matches(null, listOf("foo")))
+    }
+
+    @Test
+    fun matches_array_test() {
+        Assert.assertTrue(KeywordMatcher.matches("foo", arrayOf("bar", "foo")))
+        Assert.assertFalse(KeywordMatcher.matches("baz", arrayOf("bar", "foo")))
+    }
 }

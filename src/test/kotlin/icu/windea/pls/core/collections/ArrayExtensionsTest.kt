@@ -40,4 +40,11 @@ class ArrayExtensionsTest {
         val arr = setOf("a", "b", "c").mapToArray(empty) { it.repeat(1) }
         assertArrayEquals(arrayOf("a", "b", "c"), arr)
     }
+
+    @Test
+    fun toArray_test() {
+        val empty = emptyArray<String>()
+        assertSame(empty, emptyList<String>().toArray(empty))
+        assertArrayEquals(arrayOf("a", "b"), listOf("a", "b").toArray(empty))
+    }
 }

@@ -278,6 +278,78 @@ class CollectionExtensionsTest {
         assertEquals(7, h.backing["count"])
     }
 
+    @Test
+    fun associateByNotNull_test() {
+        val list = listOf("a", "bb", "c")
+        val m = list.associateByNotNull { if (it.length > 1) it.uppercase() else null }
+        assertEquals(mapOf("BB" to "bb"), m)
+    }
+
+    @Test
+    fun associateByNotNull_with_transform_test() {
+        val list = listOf(1, 2, 3)
+        val m = list.associateByNotNull({ it * 10 }, { it.toString() })
+        assertEquals(mapOf(10 to "1", 20 to "2", 30 to "3"), m)
+    }
+
+    @Test
+    fun associateByNotNullTo_test() {
+        val dest = linkedMapOf<String, Int>()
+        val ref = listOf(1, 2, 3).associateByNotNullTo(dest) { if (it % 2 == 0) "e$it" else null }
+        assertSame(dest, ref)
+        assertEquals(mapOf("e2" to 2), dest)
+    }
+
+    @Test
+    fun filterIsInstanceTo_test() {
+        val dest = mutableListOf<String>()
+        val list: List<Any?> = listOf(1, "a", "abc", 2)
+        val ref = list.filterIsInstanceTo(dest) { it.length == 3 }
+        assertSame(dest, ref)
+        assertEquals(listOf("abc"), dest)
+    }
+
+    @Test
+    fun findLastIsInstance_test() {
+        val list: List<Any?> = listOf("a", 1, "abc", 2, "abcd")
+        assertEquals("abcd", list.findLastIsInstance<String> { it.length >= 3 })
+        assertNull(list.findLastIsInstance<String> { it.length == 5 })
+    }
+
+    @Test
+    fun processValue_test() {
+        val map = mapOf("a" to 1, "b" to 2)
+        val seen = mutableListOf<Int>()
+        assertTrue(map.processValue("a") { seen += it; true })
+        assertEquals(listOf(1), seen)
+        // 不存在的键：不处理，返回 true
+        assertTrue(map.processValue("missing") { seen += it; true })
+        assertEquals(listOf(1), seen)
+        // key 为 null：逐个处理值，短路
+        assertFalse(map.processValue(null) { it < 2 })
+    }
+
+    @Test
+    fun getOne_getAll_test() {
+        val map = mapOf("a" to listOf(1, 2, 3), "b" to emptyList())
+        assertEquals(3, map.getOne("a"))
+        assertNull(map.getOne("b"))
+        assertNull(map.getOne("c"))
+        assertEquals(listOf(1, 2, 3), map.getAll("a"))
+        assertEquals(emptyList<Int>(), map.getAll("b"))
+        assertEquals(emptyList<Int>(), map.getAll("c"))
+    }
+
+    @Test
+    fun synced_list_set_test() {
+        val l = mutableListOf(1, 2)
+        l.synced().add(3)
+        assertEquals(listOf(1, 2, 3), l)
+        val s = mutableSetOf(1, 2)
+        s.synced().add(3)
+        assertEquals(setOf(1, 2, 3), s)
+    }
+
     // region helpers
 
     private fun <T> iterableOf(vararg elements: T): Iterable<T> = object : Iterable<T> {

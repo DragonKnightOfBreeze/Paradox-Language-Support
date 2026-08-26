@@ -88,4 +88,15 @@ class PathMatcherTest {
         val otherWithPattern = listOf("f*", "bar", "x")
         Assert.assertEquals("bar", PathMatcher.relative(listOf("foo"), otherWithPattern, usePattern = true))
     }
+
+    @Test
+    fun matches_list_size_mismatch_test() {
+        Assert.assertFalse(PathMatcher.matches(listOf("foo"), listOf("foo", "bar")))
+        Assert.assertFalse(PathMatcher.matches(listOf("foo", "bar"), listOf("foo")))
+    }
+
+    @Test
+    fun relative_empty_input_test() {
+        Assert.assertEquals("a", PathMatcher.relative(emptyList(), listOf("a", "b")))
+    }
 }

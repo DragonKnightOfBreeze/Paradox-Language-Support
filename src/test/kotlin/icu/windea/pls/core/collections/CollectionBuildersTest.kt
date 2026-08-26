@@ -35,4 +35,33 @@ class CollectionBuildersTest {
         assertSame(dest, ref)
         assertEquals(listOf(1, 2), dest)
     }
+
+    @Test
+    fun mutableStringSet_caseInsensitive_test() {
+        val s = MutableStringSet(caseInsensitive = true)
+        s.add("Foo")
+        assertTrue(s.contains("foo"))
+        s.add("FOO") // 大小写不敏感去重
+        assertEquals(1, s.size)
+    }
+
+    @Test
+    fun mutableStringKeyMap_caseInsensitive_test() {
+        val m = MutableStringKeyMap<Int>(caseInsensitive = true)
+        m["Foo"] = 1
+        assertEquals(1, m["foo"])
+        m["FOO"] = 2 // 覆盖
+        assertEquals(1, m.size)
+        assertEquals(2, m["foo"])
+    }
+
+    @Test
+    fun caseInsensitiveStringHashingStrategy_test() {
+        val s = CaseInsensitiveStringHashingStrategy
+        assertEquals(s.hashCode("Foo"), s.hashCode("foo"))
+        assertTrue(s.equals("Foo", "foo"))
+        assertFalse(s.equals("Foo", "bar"))
+        assertEquals(0, s.hashCode(null))
+        assertTrue(s.equals(null, null))
+    }
 }

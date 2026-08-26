@@ -38,4 +38,16 @@ class SequenceBuildersTest {
         val result = generateSequenceFromSeed<Int>(TreeTraversal.PRE_ORDER_DFS, null) { emptyList() }.toList()
         assertEquals(emptyList<Int>(), result)
     }
+
+    @Test
+    fun generateSequence_from_seeds_bfs_test() {
+        val result = generateSequenceFromSeeds(TreeTraversal.PLAIN_BFS, listOf(1)) { n -> children[n] ?: emptyList() }.toList()
+        assertEquals(listOf(1, 2, 3, 4, 5, 6), result)
+    }
+
+    @Test
+    fun generateSequence_from_seeds_null_and_empty_test() {
+        assertEquals(emptyList<Int>(), generateSequenceFromSeeds<Int>(TreeTraversal.PLAIN_BFS, null) { emptyList() }.toList())
+        assertEquals(emptyList<Int>(), generateSequenceFromSeeds(TreeTraversal.PLAIN_BFS, emptyList<Int>()) { emptyList() }.toList())
+    }
 }

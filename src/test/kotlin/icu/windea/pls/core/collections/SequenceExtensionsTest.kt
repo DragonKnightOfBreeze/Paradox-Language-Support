@@ -5,17 +5,29 @@ import org.junit.Test
 
 class SequenceExtensionsTest {
     @Test
-    fun filterIsInstance_and_findIsInstance_test() {
+    fun filterIsInstance_test() {
         val seq1: Sequence<Any?> = sequenceOf(1, "a", null, "abc", 2)
         val onlyOneChar = seq1.filterIsInstance<String> { it.length == 1 }.toList()
         assertEquals(listOf("a"), onlyOneChar)
+    }
 
-        val seq2: Sequence<Any?> = sequenceOf(1, "a", null, "abc", 2)
-        val firstLen3 = seq2.findIsInstance<String> { it.length == 3 }
+    @Test
+    fun filterIsInstanceTo_test() {
+        val dest = mutableListOf<String>()
+        val seq: Sequence<Any?> = sequenceOf(1, "a", "abc", 2)
+        val ref = seq.filterIsInstanceTo(dest) { it.length == 3 }
+        assertSame(dest, ref)
+        assertEquals(listOf("abc"), dest)
+    }
+
+    @Test
+    fun findIsInstance_test() {
+        val seq: Sequence<Any?> = sequenceOf(1, "a", null, "abc", 2)
+
+        val firstLen3 = seq.findIsInstance<String> { it.length == 3 }
         assertEquals("abc", firstLen3)
 
-        val seq3: Sequence<Any?> = sequenceOf(1, "a", null, "abc", 2)
-        val none = seq3.findIsInstance<String> { it.length == 4 }
+        val none = seq.findIsInstance<String> { it.length == 4 }
         assertNull(none)
     }
 
