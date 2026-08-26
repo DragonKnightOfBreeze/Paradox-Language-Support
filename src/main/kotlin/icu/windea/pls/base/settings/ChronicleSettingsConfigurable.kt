@@ -709,6 +709,12 @@ class ChronicleSettingsConfigurable : BoundConfigurable(ChronicleBaseBundle.mess
                 .bindSelected(settings::renderLocalisationColorfulText)
                 .onApply { Manager.refreshFiles(callbackLock) }
         }
+        // renderRootFileComment
+        row {
+            checkBox(ChronicleBaseBundle.message("settings.others.renderRootFileComment"))
+                .bindSelected(settings::renderRootFileComment)
+            contextHelp(ChronicleBaseBundle.message("settings.others.renderRootFileComment.tip"))
+        }
     }
 
     object Factory {

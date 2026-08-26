@@ -328,6 +328,7 @@ class ChronicleSettings : SimplePersistentStateComponent<ChronicleSettings.State
      * @property showLocalisationFloatingToolbar 是否在选中本地化文本时显示悬浮工具栏。
      * @property highlightLocalisationColorId 是否用对应的颜色高亮本地化颜色ID。
      * @property renderLocalisationColorfulText 是否用对应的颜色渲染本地化彩色文本。
+     * @property renderRootFileComment 是否在各种 UI（列表/表格/树）中渲染文件节点时，为游戏或模组目录渲染额外的注释文本。包括游戏版本、模组名、模组版本等信息。
      */
     @Tag("others")
     class OthersState : BaseState() {
@@ -336,5 +337,6 @@ class ChronicleSettings : SimplePersistentStateComponent<ChronicleSettings.State
         var showLocalisationFloatingToolbar by property(true)
         var highlightLocalisationColorId by property(true)
         var renderLocalisationColorfulText by property(true)
+        var renderRootFileComment by property(true)
     }
 }
