@@ -6,6 +6,7 @@ import com.intellij.psi.PsiDocCommentBase;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import icu.windea.pls.core.psi.PsiQuoteAwareElement;
+import icu.windea.pls.core.psi.PsiRootBlock;
 import org.jetbrains.annotations.NotNull;
 
 public class CwtVisitor extends PsiElementVisitor {
@@ -62,7 +63,8 @@ public class CwtVisitor extends PsiElementVisitor {
   }
 
   public void visitRootBlock(@NotNull CwtRootBlock o) {
-    visitMemberContainer(o);
+    visitPsiRootBlock(o);
+    // visitMemberContainer(o);
   }
 
   public void visitString(@NotNull CwtString o) {
@@ -91,11 +93,11 @@ public class CwtVisitor extends PsiElementVisitor {
     visitElement(o);
   }
 
-  public void visitExpressionElement(@NotNull CwtExpressionElement o) {
-    visitPsiElement(o);
+  public void visitPsiRootBlock(@NotNull PsiRootBlock o) {
+    visitElement(o);
   }
 
-  public void visitMemberContainer(@NotNull CwtMemberContainer o) {
+  public void visitExpressionElement(@NotNull CwtExpressionElement o) {
     visitPsiElement(o);
   }
 

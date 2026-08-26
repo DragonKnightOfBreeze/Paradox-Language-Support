@@ -25,7 +25,36 @@ class SuppressionServiceTest : BasePlatformTestCase(), ChronicleTestScope {
     // region getCommentsForSuppression
 
     @Test
-    fun getCommentsForSuppression_property() {
+    fun getCommentsForSuppression_forFile() {
+        // 文件顶层的注释会被收集（兼容 `PsiRootBlock`），顺序从前到后
+        myFixture.configureByText("test.cwt", """
+            # comment 1
+            # comment 2
+            key = value
+        """.trimIndent())
+        val file = myFixture.file
+        val comments = SuppressionService.getCommentsForSuppression(file).toList()
+        assertEquals(2, comments.size)
+        assertEquals("comment 1", comments[0].commentText)
+        assertEquals("comment 2", comments[1].commentText)
+    }
+
+    @Test
+    fun getCommentsForSuppression_forFile_blankLineDoesNotSeparate() {
+        // 与 `PsiService.getAttachedComments` 不同，空白行（仍属于空白）不会中断收集
+        myFixture.configureByText("test.cwt", """
+            # comment
+
+            key = value
+        """.trimIndent())
+        val file = myFixture.file
+        val comments = SuppressionService.getCommentsForSuppression(file).toList()
+        assertEquals(1, comments.size)
+        assertEquals("comment", comments[0].commentText)
+    }
+
+    @Test
+    fun getCommentsForSuppression_forProperty() {
         // 紧邻属性的注释会被收集，顺序从近到远
         myFixture.configureByText("test.cwt", """
             # comment 1
@@ -40,7 +69,7 @@ class SuppressionServiceTest : BasePlatformTestCase(), ChronicleTestScope {
     }
 
     @Test
-    fun getCommentsForSuppression_blankLineDoesNotSeparate() {
+    fun getCommentsForSuppression_forProperty_blankLineDoesNotSeparate() {
         // 与 `PsiService.getAttachedComments` 不同，空白行（仍属于空白）不会中断收集
         myFixture.configureByText("test.cwt", """
             # comment
@@ -54,7 +83,7 @@ class SuppressionServiceTest : BasePlatformTestCase(), ChronicleTestScope {
     }
 
     @Test
-    fun getCommentsForSuppression_stopsAtPreviousProperty() {
+    fun getCommentsForSuppression_forProperty_stopsAtPreviousProperty() {
         // 遇到上一个非注释、非空白的元素（如属性）时停止
         myFixture.configureByText("test.cwt", """
             key_a = value_a
@@ -72,7 +101,40 @@ class SuppressionServiceTest : BasePlatformTestCase(), ChronicleTestScope {
     // region isSuppressedInComment
 
     @Test
-    fun isSuppressedInComment_property() {
+    fun isSuppressedInComment_forFile() {
+        myFixture.configureByText("test.cwt", """
+            # noinspection ParadoxScriptIncorrectSyntax
+            key = value
+        """.trimIndent())
+        val file = myFixture.file
+        assertTrue(SuppressionService.isSuppressedInComment(file, "ParadoxScriptIncorrectSyntax"))
+        assertFalse(SuppressionService.isSuppressedInComment(file, "ParadoxScriptUnresolvedExpression"))
+    }
+
+    @Test
+    fun isSuppressedInComment_forFile_multipleTools() {
+        myFixture.configureByText("test.cwt", """
+            # noinspection ToolA, ToolB
+            key = value
+        """.trimIndent())
+        val file = myFixture.file
+        assertTrue(SuppressionService.isSuppressedInComment(file, "ToolA"))
+        assertTrue(SuppressionService.isSuppressedInComment(file, "ToolB"))
+        assertFalse(SuppressionService.isSuppressedInComment(file, "ToolC"))
+    }
+
+    @Test
+    fun isSuppressedInComment_forFile_regularComment() {
+        myFixture.configureByText("test.cwt", """
+            # just a regular comment
+            key = value
+        """.trimIndent())
+        val file = myFixture.file
+        assertFalse(SuppressionService.isSuppressedInComment(file, "SomeToolId"))
+    }
+
+    @Test
+    fun isSuppressedInComment_forProperty() {
         myFixture.configureByText("test.cwt", """
             # noinspection ParadoxScriptIncorrectSyntax
             key = <caret>value
@@ -83,7 +145,7 @@ class SuppressionServiceTest : BasePlatformTestCase(), ChronicleTestScope {
     }
 
     @Test
-    fun isSuppressedInComment_multipleTools() {
+    fun isSuppressedInComment_forProperty_multipleTools() {
         myFixture.configureByText("test.cwt", """
             # noinspection ToolA, ToolB
             key = <caret>value
@@ -95,7 +157,7 @@ class SuppressionServiceTest : BasePlatformTestCase(), ChronicleTestScope {
     }
 
     @Test
-    fun isSuppressedInComment_regularComment() {
+    fun isSuppressedInComment_forProperty_regularComment() {
         myFixture.configureByText("test.cwt", """
             # just a regular comment
             key = <caret>value

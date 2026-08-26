@@ -6,6 +6,7 @@ import com.intellij.psi.NavigatablePsiElement
 import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
+import com.intellij.psi.PsiFileSystemItem
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.TokenType
@@ -131,7 +132,9 @@ object PsiService {
      * 向前遍历，仅采用注释以及不包含空白行的空白，然后返回其中的所有注释。
      */
     fun getAttachedComments(element: PsiElement): Sequence<PsiComment> {
-        if (element is PsiComment || element is PsiWhiteSpace) return emptySequence()
+        if (element is PsiFileSystemItem) return emptySequence()
+        if (element is PsiWhiteSpace) return emptySequence()
+        if (element is PsiComment) return emptySequence()
         return element.siblings(forward = false, withSelf = false)
             .takeWhile { it is PsiComment || (it is PsiWhiteSpace && !containsBlankLine(it)) }
             .filterIsInstance<PsiComment>()
@@ -166,8 +169,11 @@ object PsiService {
         return result
     }
 
-    fun findAllSiblingCommentsIn(parentElement: PsiElement, predicate: (PsiComment) -> Boolean = { true }): List<List<PsiComment>> {
-        var current = parentElement.firstChild
+    fun findAllSiblingCommentsIn(element: PsiElement, predicate: (PsiComment) -> Boolean = { true }): List<List<PsiComment>> {
+        // 3.0.2 compatible with root blocks specially
+        var current = element.firstChild
+        if (current is PsiRootBlock) current = current.firstChild
+        if (current == null) return emptyList()
         val result = mutableListOf<List<PsiComment>>()
         while (current != null) {
             if (current is PsiComment) {

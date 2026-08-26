@@ -27,6 +27,7 @@ root ::= root_block ?
 root_block ::= root_block_item + {
   hooks=[wsBinders="GREEDY_LEFT_BINDER, GREEDY_RIGHT_BINDER"]
   implements=[
+    "icu.windea.pls.core.psi.PsiRootBlock"
     "icu.windea.pls.script.psi.ParadoxScriptMemberContainer"
   ]
   methods=[getMemberContainer getMembers getComponents]

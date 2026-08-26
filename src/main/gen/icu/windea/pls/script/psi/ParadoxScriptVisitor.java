@@ -5,6 +5,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import icu.windea.pls.core.psi.PsiBoundElement;
 import icu.windea.pls.core.psi.PsiQuoteAwareElement;
+import icu.windea.pls.core.psi.PsiRootBlock;
 import org.jetbrains.annotations.NotNull;
 
 public class ParadoxScriptVisitor extends PsiElementVisitor {
@@ -123,7 +124,8 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
   }
 
   public void visitRootBlock(@NotNull ParadoxScriptRootBlock o) {
-    visitMemberContainer(o);
+    visitPsiRootBlock(o);
+    // visitMemberContainer(o);
   }
 
   public void visitScriptedVariable(@NotNull ParadoxScriptScriptedVariable o) {
@@ -162,6 +164,10 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
     visitElement(o);
   }
 
+  public void visitPsiRootBlock(@NotNull PsiRootBlock o) {
+    visitElement(o);
+  }
+
   public void visitParadoxArgument(@NotNull ParadoxArgument o) {
     visitElement(o);
   }
@@ -179,10 +185,6 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
   }
 
   public void visitExpressionElement(@NotNull ParadoxScriptExpressionElement o) {
-    visitPsiElement(o);
-  }
-
-  public void visitMemberContainer(@NotNull ParadoxScriptMemberContainer o) {
     visitPsiElement(o);
   }
 

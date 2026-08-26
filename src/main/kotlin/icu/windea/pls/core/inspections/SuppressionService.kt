@@ -6,6 +6,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.util.siblings
+import icu.windea.pls.core.psi.PsiRootBlock
 import java.util.regex.Pattern
 
 object SuppressionService {
@@ -17,7 +18,10 @@ object SuppressionService {
 
     fun getCommentsForSuppression(element: PsiElement): Sequence<PsiElement> {
         return if (element is PsiFile) {
-            val context = element.firstChild ?: return emptySequence()
+            var current = element.firstChild
+            if (current is PsiRootBlock) current = current.firstChild
+            if (current == null) return emptySequence()
+            val context = current
             context.siblings(forward = true, withSelf = true)
                 .takeWhile { it is PsiWhiteSpace || it is PsiComment }
                 .filter { it is PsiComment }
