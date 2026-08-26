@@ -4,13 +4,15 @@ import org.junit.Assert
 import org.junit.Test
 
 /**
- * @see Tuples
+ * @see Tuple2
+ * @see Tuple3
+ * @see Tuple4
  */
 class TuplesTest {
     @Test
     fun tupleOf_test() {
-        Assert.assertEquals(Pair(1, "a"), tupleOf(1, "a"))
-        Assert.assertEquals(Triple(1, "a", true), tupleOf(1, "a", true))
+        Assert.assertEquals(Tuple2(1, "a"), tupleOf(1, "a"))
+        Assert.assertEquals(Tuple3(1, "a", true), tupleOf(1, "a", true))
         Assert.assertEquals(Tuple4(1, 2, 3, 4), tupleOf(1, 2, 3, 4))
     }
 

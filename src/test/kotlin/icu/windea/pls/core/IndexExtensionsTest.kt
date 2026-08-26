@@ -81,7 +81,7 @@ class IndexExtensionsTest {
                 val indexToKey = it.readIndexedStringList()
                 Assert.assertEquals(keyToIndex!!.size, indexToKey.size)
                 // 写入返回的 key->index 与读取的 index->key 应保持一致
-                indexToKey.forEach { idx, key -> Assert.assertEquals(idx, keyToIndex!!.getInt(key)) }
+                indexToKey.forEach { (idx, key) -> Assert.assertEquals(idx, keyToIndex.getInt(key)) }
             },
         )
     }

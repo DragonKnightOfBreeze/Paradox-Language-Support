@@ -218,7 +218,7 @@ class OptimizerTest {
 
     @Test
     fun testCreate_singleArg_optimizeAndDefaultDeoptimizeThrows() {
-        val optimizer = OptimizerFactory.create<String, String> { it + "!" }
+        val optimizer = OptimizerFactory.create<String, String> { "$it!" }
         assertEquals("abc!", optimizer.optimize("abc"))
         // 未提供 deoptimizeAction 时，默认 deoptimize 抛出异常
         assertThrows(UnsupportedOperationException::class.java) {

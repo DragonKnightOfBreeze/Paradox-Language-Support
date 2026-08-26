@@ -36,4 +36,13 @@ class ReversibleValueTest {
         Assert.assertEquals(ReversibleValue("a", true), ReversibleValue.from("  a  "))
         Assert.assertEquals(ReversibleValue("a", false), ReversibleValue.from("!  a"))
     }
+
+    @Test
+    fun from_expression_edge_cases_test() {
+        Assert.assertEquals(ReversibleValue("!a", false), ReversibleValue.from("!!a")) // 仅取第一个 ! 表示取反
+        Assert.assertEquals(ReversibleValue("", false), ReversibleValue.from("!"))
+        Assert.assertEquals(ReversibleValue("", true), ReversibleValue.from(""))
+        Assert.assertEquals(ReversibleValue("", true), ReversibleValue.from("   ")) // 整体 trim
+        Assert.assertEquals(ReversibleValue("", false), ReversibleValue.from(" ! "))
+    }
 }

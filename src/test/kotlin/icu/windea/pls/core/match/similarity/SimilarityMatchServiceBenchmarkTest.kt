@@ -1,3 +1,5 @@
+@file:Suppress("UnusedVariable")
+
 package icu.windea.pls.core.match.similarity
 
 import com.github.benmanes.caffeine.cache.Cache
@@ -189,6 +191,7 @@ class SimilarityMatchServiceBenchmarkTest {
      * 场景C：超过缓存容量时的淘汰行为采样（不做严格性能断言）。
      * 预期：第二轮命中数小于输入总数，且不超过最大容量 5000。
      */
+    @Suppress("unused")
     @Test
     fun capacityEvictionBehaviorSample() {
         val inputs = buildUniqueInputs(seed = 23, size = 6_000) // 超过 maximumSize=5000
@@ -197,7 +200,6 @@ class SimilarityMatchServiceBenchmarkTest {
 
         // 清理一次，避免前序测试影响
         cache().invalidateAll()
-
         val s0 = stats()
         for (input in inputs) {
             SimilarityMatchService.findBestMatches(input, candidates, opts)
@@ -218,8 +220,9 @@ class SimilarityMatchServiceBenchmarkTest {
     }
 
     /**
-     * 场景D：多种选项组合烟囱测试，验证不同组合下第二轮存在有效命中。
+     * 场景D：多种选项组合冒烟测试，验证不同组合下第二轮存在有效命中。
      */
+    @Suppress("unused")
     @Test
     fun optionsMatrixSmoke() {
         val optionsList = listOf(
@@ -301,6 +304,7 @@ class SimilarityMatchServiceBenchmarkTest {
         }
     }
 
+    @Suppress("SameParameterValue")
     private fun buildInputs(seed: Int, size: Int): List<String> {
         val rnd = Random(seed)
         val letters = ('a'..'z').toList()

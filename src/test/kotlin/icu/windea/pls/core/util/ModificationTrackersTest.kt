@@ -5,7 +5,8 @@ import org.junit.Assert
 import org.junit.Test
 
 /**
- * @see ModificationTrackers
+ * @see MergedModificationTracker
+ * @see ComputedModificationTracker
  */
 class ModificationTrackersTest {
     @Test

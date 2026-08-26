@@ -4,7 +4,8 @@ import org.junit.Assert
 import org.junit.Test
 
 /**
- * @see Markers
+ * @see ToggleMarker
+ * @see OnceMarker
  */
 class MarkersTest {
     @Test

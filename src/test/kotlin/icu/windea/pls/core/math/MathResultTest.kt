@@ -7,7 +7,7 @@ import org.junit.Test
  * @see MathResult
  */
 class MathResultTest {
-    // region from 工厂方法
+    // region from factory methods
 
     @Test
     fun from_factories_test() {

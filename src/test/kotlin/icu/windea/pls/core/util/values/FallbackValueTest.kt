@@ -30,4 +30,14 @@ class FallbackValueTest {
         Assert.assertEquals("(unknown)", null.or.unknown())
         Assert.assertEquals("(unresolved)", "".or.unresolved())
     }
+
+    @Test
+    fun fallback_onlyNullOrEmpty_test() {
+        // 仅 null 或空字符串触发回退，空白字符串（非空）不会触发
+        Assert.assertEquals("   ", "   ".or.anonymous())
+        Assert.assertEquals("a", "a".or.unknown())
+        Assert.assertEquals("a", "a".or.unresolved())
+        Assert.assertEquals("(unknown)", "".or.unknown())
+        Assert.assertEquals("(unresolved)", null.or.unresolved())
+    }
 }

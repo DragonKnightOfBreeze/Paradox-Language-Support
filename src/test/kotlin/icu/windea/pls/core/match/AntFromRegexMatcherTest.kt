@@ -6,6 +6,7 @@ import org.junit.Test
 /**
  * @see AntFromRegexMatcher
  */
+@Suppress("DEPRECATION")
 class AntFromRegexMatcherTest {
     @Test
     fun matches_basic() {

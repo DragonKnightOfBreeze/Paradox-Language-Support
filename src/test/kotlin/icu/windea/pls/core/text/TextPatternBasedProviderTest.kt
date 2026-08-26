@@ -9,7 +9,7 @@ import org.junit.Test
 class TextPatternBasedProviderTest {
     @Test
     fun get_matches() {
-        val provider = TextPatternBasedProvider<String, TextPatternResult.Single>(
+        val provider = TextPatternBasedProvider(
             TextPattern.WithPrefix("prefix-")
         ) { _, r -> "value=${r.value}" }
         Assert.assertEquals("value=abc", provider.get("prefix-abc"))
@@ -17,7 +17,7 @@ class TextPatternBasedProviderTest {
 
     @Test
     fun get_passesOriginalText() {
-        val provider = TextPatternBasedProvider<String, TextPatternResult.Single>(
+        val provider = TextPatternBasedProvider(
             TextPattern.WithPrefix("prefix-")
         ) { text, _ -> text }
         Assert.assertEquals("prefix-abc", provider.get("prefix-abc"))
@@ -25,7 +25,7 @@ class TextPatternBasedProviderTest {
 
     @Test
     fun get_passesMatchResult() {
-        val provider = TextPatternBasedProvider<String, TextPatternResult.Pair>(
+        val provider = TextPatternBasedProvider(
             TextPattern.Delimited(":")
         ) { _, r -> "${r.left}|${r.right}" }
         Assert.assertEquals("a|b", provider.get("a:b"))
@@ -34,7 +34,7 @@ class TextPatternBasedProviderTest {
     @Test
     fun get_notMatching_actionNotInvoked() {
         var invoked = false
-        val provider = TextPatternBasedProvider<String, TextPatternResult.Single>(
+        val provider = TextPatternBasedProvider(
             TextPattern.WithPrefix("prefix-")
         ) { _, _ -> invoked = true; "result" }
         Assert.assertNull(provider.get("abc"))
