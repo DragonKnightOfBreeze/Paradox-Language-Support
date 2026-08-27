@@ -18,7 +18,7 @@ import icu.windea.pls.script.psi.ParadoxScriptMemberContext
 import icu.windea.pls.script.psi.ParadoxScriptRootBlock
 
 /**
- * 用于在脚本文件中，为成员（封装变量、属性、单独的值）适配 *上移/下移声明* 的功能。兼容附加的注释。
+ * 用于在脚本文件中，为成员（封装变量、属性、直接的值）适配 *上移/下移声明* 的功能。兼容附加的注释。
  *
  * 入口：主菜单，点击 `Code -> Move Statement Up/Down`。
  */

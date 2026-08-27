@@ -18,7 +18,7 @@ import icu.windea.pls.cwt.psi.CwtOptionMember
 import icu.windea.pls.cwt.psi.CwtRootBlock
 
 /**
- * 用于在 CWT 文件中，为成员（属性、单独的值）适配 *上移/下移声明* 的功能。兼容附加的注释。
+ * 用于在 CWT 文件中，为成员（属性、直接的值）适配 *上移/下移声明* 的功能。兼容附加的注释。
  *
  * 入口：主菜单，点击 `Code -> Move Statement Up/Down`。
  */

@@ -221,7 +221,7 @@ Paradox Script extends CWT's base value types with several additional types.
 **Blocks** are enclosed in curly braces `{ ... }` and may contain a mix of expressions (properties and values), scripted variables, conditional blocks and comments. Can be nested multiple levels.
 
 **Scripted variable references** start with `@` followed by the variable name, such as `@my_var`, and are used to reference previously declared scripted variables.
-Scripted variable references can appear in multiple contexts: as standalone values (`cost = @my_var`), embedded within unquoted strings (`key = prefix_@my_var_suffix`), and as factors within inline math expressions (`@[ base_cost * bonus ]`, without the `@` prefix in this case).
+Scripted variable references can appear in multiple contexts: as direct values (`cost = @my_var`), embedded within unquoted strings (`key = prefix_@my_var_suffix`), and as factors within inline math expressions (`@[ base_cost * bonus ]`, without the `@` prefix in this case).
 Like string expressions (keys and strings), they can also contain several advanced interpolation syntaxes (e.g., parameters `$PARAM$` and inline conditional blocks `[[PARAM]text]`).
 Additionally, scripted variable references can also be used in parameters in localisation text (e.g., `$@my_var$`).
 

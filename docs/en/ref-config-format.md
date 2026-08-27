@@ -2715,7 +2715,7 @@ k3 = {
 
 Notes:
 - The part before `@` is the config file path relative to the config group directory (e.g. the `config/stellaris` directory inside the plugin's JAR), and must match exactly (no wildcards, case-sensitive).
-- The part after `@` is the config path; the sub-path `-` matches all standalone values, while other cases serve as wildcards (case-insensitive, using `any` or `*` to match any character, `?` to match a single character) matching all properties with the corresponding key.
+- The part after `@` is the config path; the sub-path `-` matches all direct values, while other cases serve as wildcards (case-insensitive, using `any` or `*` to match any character, `?` to match a single character) matching all properties with the corresponding key.
 - Only applicable to configs with clause values (i.e. `k = {...}` or `{...}`); matched configs are injected at the end of the clause as sub-configs of the target config.
 - Config injection is processed only once during the config file resolving phase, so injection can be performed at any location in any config file.
 - If the injection fails (the matching config does not exist, there is recursion, etc.), it will be ignored directly and a warning log will be printed.

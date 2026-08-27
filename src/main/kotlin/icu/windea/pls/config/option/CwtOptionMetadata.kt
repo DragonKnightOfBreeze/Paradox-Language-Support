@@ -562,11 +562,11 @@ interface CwtOptionMetadata : MetadataMap {
     val inherit: Boolean get() = false
 
     /**
-     * 将匹配的单独的值标记为预定义的标签。
+     * 将匹配的直接的值标记为预定义的标签。
      * 脚本文件中的对应的值会启用特殊的语义高亮和文档注释。
      *
      * 适用对象：
-     * - 作为单独的值的成员规则（[CwtValueConfig]）。
+     * - 作为直接的值的成员规则（[CwtValueConfig]）。
      *
      * > CWTools 兼容性：不兼容。插件作为扩展提供。
      *

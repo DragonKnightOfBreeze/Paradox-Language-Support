@@ -386,7 +386,7 @@ object ParadoxConfigService {
                 return result // 返回最终匹配的规则
             }
             else -> {
-                // 匹配文件或单独的值
+                // 匹配文件或直接的值
                 val configs = contextConfigs.filterValues()
                 if (configs.isEmpty()) return emptyList() // 如果无结果，则直接返回空列表
 
