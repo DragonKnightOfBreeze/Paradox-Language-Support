@@ -4,7 +4,6 @@ package icu.windea.pls.model.expressions
 
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.util.values.ReversibleValue
-import icu.windea.pls.script.psi.ParadoxScriptConditionalBlockExpression
 
 /**
  * 参数化块表达式。
@@ -20,9 +19,9 @@ import icu.windea.pls.script.psi.ParadoxScriptConditionalBlockExpression
  * !PARAM
  * ```
  *
- * @see ParadoxScriptConditionalBlockExpression
+ * @see icu.windea.pls.script.psi.ParadoxScriptConditionalExpression
  */
-interface ParadoxConditionalBlockExpression {
+interface ParadoxConditionalExpression {
     val text: String
     val part: ReversibleValue<String>
 
@@ -33,35 +32,35 @@ interface ParadoxConditionalBlockExpression {
     override fun toString(): String
 
     interface Resolver {
-        fun resolve(expressionString: String): ParadoxConditionalBlockExpression
+        fun resolve(expressionString: String): ParadoxConditionalExpression
     }
 
     companion object {
         @JvmStatic
-        fun resolve(expressionString: String): ParadoxConditionalBlockExpression {
-            return ParadoxConditionalBlockExpressionResolver.resolve(expressionString)
+        fun resolve(expressionString: String): ParadoxConditionalExpression {
+            return ParadoxConditionalExpressionResolver.resolve(expressionString)
         }
     }
 }
 
 // region Implementations
 
-private object ParadoxConditionalBlockExpressionResolver {
-    fun resolve(expressionString: String): ParadoxConditionalBlockExpression {
-        return ParadoxConditionalBlockExpressionImpl(expressionString)
+private object ParadoxConditionalExpressionResolver {
+    fun resolve(expressionString: String): ParadoxConditionalExpression {
+        return ParadoxConditionalExpressionImpl(expressionString)
     }
 }
 
-private class ParadoxConditionalBlockExpressionImpl(
+private class ParadoxConditionalExpressionImpl(
     override val text: String
-) : ParadoxConditionalBlockExpression {
+) : ParadoxConditionalExpression {
     override val part: ReversibleValue<String> = ReversibleValue.from(text)
 
     override fun matches(argumentNames: Collection<String>?): Boolean {
         return part.withOperator { argumentNames != null && it in argumentNames }
     }
 
-    override fun equals(other: Any?) = this === other || other is ParadoxConditionalBlockExpression && text == other.text
+    override fun equals(other: Any?) = this === other || other is ParadoxConditionalExpression && text == other.text
     override fun hashCode() = text.hashCode()
     override fun toString() = text
 }

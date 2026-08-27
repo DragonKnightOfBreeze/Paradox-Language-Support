@@ -28,6 +28,6 @@ class ParadoxScriptConditionalBlockSurrounder : ParadoxScriptSurrounder() {
         var newElement = ParadoxScriptElementFactory.createConditionalBlockFromText(project, "[[P]\n$replacedText\n]")
         newElement = firstElement.replace(newElement) as ParadoxScriptConditionalBlock
         newElement = CodeStyleManager.getInstance(project).reformat(newElement, true) as ParadoxScriptConditionalBlock
-        return newElement.conditionalBlockExpression!!.textRange
+        return newElement.conditionalExpression!!.textRange
     }
 }

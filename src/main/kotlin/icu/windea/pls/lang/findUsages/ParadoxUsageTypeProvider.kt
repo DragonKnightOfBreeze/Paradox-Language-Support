@@ -29,7 +29,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationScriptedVariableRefere
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextFormat
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextIcon
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
-import icu.windea.pls.script.psi.ParadoxScriptConditionalBlockParameter
+import icu.windea.pls.script.psi.ParadoxScriptConditionalParameter
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptInlineMathParameter
 import icu.windea.pls.script.psi.ParadoxScriptInlineMathScriptedVariableReference
@@ -56,7 +56,7 @@ class ParadoxUsageTypeProvider : UsageTypeProviderEx {
             is ParadoxScriptExpressionElement -> doGetUsageType(element, targets)
             is ParadoxScriptParameter -> ParadoxUsageTypes.PARAMETER_REFERENCE
             is ParadoxScriptInlineMathParameter -> ParadoxUsageTypes.PARAMETER_REFERENCE_1
-            is ParadoxScriptConditionalBlockParameter -> ParadoxUsageTypes.PARAMETER_REFERENCE_2
+            is ParadoxScriptConditionalParameter -> ParadoxUsageTypes.PARAMETER_REFERENCE_2
             is ParadoxLocalisationParameter -> ParadoxUsageTypes.LOCALISATION_PARAMETER
             is ParadoxLocalisationColorfulText -> ParadoxUsageTypes.LOCALISATION_COLOR
             is ParadoxLocalisationIcon -> ParadoxUsageTypes.LOCALISATION_ICON

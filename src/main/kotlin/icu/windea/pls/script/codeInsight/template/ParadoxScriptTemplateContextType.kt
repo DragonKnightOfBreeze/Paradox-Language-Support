@@ -10,7 +10,7 @@ import com.intellij.psi.util.startOffset
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.script.ParadoxScriptLanguage
 import icu.windea.pls.script.editor.ParadoxScriptSyntaxHighlighter
-import icu.windea.pls.script.psi.ParadoxScriptConditionalBlockExpression
+import icu.windea.pls.script.psi.ParadoxScriptConditionalExpression
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes
 import icu.windea.pls.script.psi.ParadoxScriptInlineMath
 import icu.windea.pls.script.psi.ParadoxScriptMember
@@ -42,7 +42,7 @@ abstract class ParadoxScriptTemplateContextType(presentableName: String) : Templ
             val startElement = start.parents(withSelf = false)
                 .find {
                     if (it is ParadoxScriptInlineMath && it.startOffset != startOffset) return false
-                    if (it is ParadoxScriptConditionalBlockExpression && it.startOffset != startOffset) return false
+                    if (it is ParadoxScriptConditionalExpression && it.startOffset != startOffset) return false
                     it is ParadoxScriptMember
                 }
             return startElement != null

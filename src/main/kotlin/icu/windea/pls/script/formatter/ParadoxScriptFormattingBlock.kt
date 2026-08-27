@@ -27,7 +27,7 @@ class ParadoxScriptFormattingBlock(
         private val INLINE_MATH_OPERATORS = TokenSet.create(PLUS_SIGN, MINUS_SIGN, TIMES_SIGN, DIV_SIGN, MOD_SIGN, LABS_SIGN, RABS_SIGN, LP_SIGN, RP_SIGN)
         private val SHOULD_INDENT_PARENT_TYPES = TokenSet.create(BLOCK, CONDITIONAL_BLOCK)
         private val SHOULD_INDENT_TYPES = TokenSet.create(SCRIPTED_VARIABLE, PROPERTY, BOOLEAN, INT, FLOAT, STRING, COLOR, INLINE_MATH, PARAMETER, BLOCK, CONDITIONAL_BLOCK, COMMENT)
-        private val SHOULD_CHILD_INDENT_TYPES = TokenSet.create(BLOCK, CONDITIONAL_BLOCK, CONDITIONAL_BLOCK_EXPRESSION)
+        private val SHOULD_CHILD_INDENT_TYPES = TokenSet.create(BLOCK, CONDITIONAL_BLOCK, CONDITIONAL_EXPRESSION)
 
         private fun createWrap(): Wrap? {
             return null
@@ -54,7 +54,7 @@ class ParadoxScriptFormattingBlock(
                 .between(LEFT_BRACE, RIGHT_BRACE).spaceIf(customSettings.SPACE_WITHIN_EMPTY_BRACES) // 花括号之间按情况可能需要空格
                 .withinPair(LEFT_BRACE, RIGHT_BRACE).spaceIf(customSettings.SPACE_WITHIN_BRACES, true) // 花括号内侧按情况可能需要空格
                 .between(NESTED_LEFT_BRACKET, NESTED_RIGHT_BRACKET).none() // 参数化块表达式如果为空则不需要空格（尽管这是语法错误）
-                .withinPair(NESTED_LEFT_BRACKET, NESTED_RIGHT_BRACKET).spaceIf(customSettings.SPACE_WITHIN_CONDITIONAL_BLOCK_EXPRESSION_BRACKETS) // 参数化块表达式内侧非换行按情况可能需要空格
+                .withinPair(NESTED_LEFT_BRACKET, NESTED_RIGHT_BRACKET).spaceIf(customSettings.SPACE_WITHIN_CONDITIONAL_EXPRESSION_BRACKETS) // 参数化块表达式内侧非换行按情况可能需要空格
                 .between(NESTED_RIGHT_BRACKET, RIGHT_BRACKET).none() // 参数化块代码块如果为空则不需要空格
                 .between(NESTED_RIGHT_BRACKET, MEMBERS).spaceIf(customSettings.SPACE_WITHIN_CONDITIONAL_BLOCK_BRACKETS, true)
                 .between(MEMBERS, RIGHT_BRACKET).spaceIf(customSettings.SPACE_WITHIN_CONDITIONAL_BLOCK_BRACKETS, true)
@@ -89,7 +89,7 @@ class ParadoxScriptFormattingBlock(
     override fun getChildIndent(): Indent? {
         // 配置换行时的自动缩进
         // 在 `file` 和 `rootBlock` 中不要缩进
-        // 在 `block` `conditional_block` `conditional_block_expression` 中需要缩进
+        // 在 `block` `conditional_block` `conditional_expression` 中需要缩进
         val elementType = myNode.elementType
         return when {
             elementType is IFileElementType -> Indent.getNoneIndent()

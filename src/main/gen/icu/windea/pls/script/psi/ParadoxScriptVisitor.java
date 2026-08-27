@@ -31,11 +31,11 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
     // visitBoundMemberContainer(o);
   }
 
-  public void visitConditionalBlockExpression(@NotNull ParadoxScriptConditionalBlockExpression o) {
+  public void visitConditionalExpression(@NotNull ParadoxScriptConditionalExpression o) {
     visitPsiElement(o);
   }
 
-  public void visitConditionalBlockParameter(@NotNull ParadoxScriptConditionalBlockParameter o) {
+  public void visitConditionalParameter(@NotNull ParadoxScriptConditionalParameter o) {
     visitParadoxConditionParameter(o);
   }
 

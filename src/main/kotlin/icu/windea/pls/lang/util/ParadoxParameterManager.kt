@@ -369,8 +369,8 @@ object ParadoxParameterManager {
                 override fun elementFinished(element: PsiElement) {
                     run {
                         if (element !is ParadoxScriptConditionalBlock) return@run
-                        val conditionExpression = element.conditionalBlockExpression ?: return@run
-                        val parameter = conditionExpression.conditionalBlockParameter
+                        val conditionExpression = element.conditionalExpression ?: return@run
+                        val parameter = conditionExpression.conditionalParameter
                         val name = parameter.name
                         val v = argMap[name] ?: return@run
                         val revert = v.equals("no", true)

@@ -102,10 +102,10 @@ object ParadoxScriptElementFactory {
     }
 
     @JvmStatic
-    fun createConditionalBlockParameterFromText(project: Project, text: String): ParadoxScriptConditionalBlockParameter {
+    fun createConditionalParameterFromText(project: Project, text: String): ParadoxScriptConditionalParameter {
         return createConditionalBlock(project, text, "a")
-            .findChild<ParadoxScriptConditionalBlockExpression>()
-            ?.findChild<ParadoxScriptConditionalBlockParameter>() ?: throw IncorrectOperationException()
+            .findChild<ParadoxScriptConditionalExpression>()
+            ?.findChild<ParadoxScriptConditionalParameter>() ?: throw IncorrectOperationException()
     }
 
     @JvmStatic
@@ -173,8 +173,8 @@ object ParadoxScriptElementFactory {
     }
 
     @JvmStatic
-    fun createConditionalBlockParameter(project: Project, name: String): ParadoxScriptConditionalBlockParameter {
-        return createConditionalBlockParameterFromText(project, name)
+    fun createConditionalParameter(project: Project, name: String): ParadoxScriptConditionalParameter {
+        return createConditionalParameterFromText(project, name)
     }
 
     @JvmStatic

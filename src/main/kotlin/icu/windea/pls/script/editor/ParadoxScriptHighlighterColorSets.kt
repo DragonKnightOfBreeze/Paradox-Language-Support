@@ -7,7 +7,7 @@ object ParadoxScriptHighlighterColorSets {
     @JvmField val OPERATOR = arrayOf(Colors.OPERATOR)
     @JvmField val MARKER = arrayOf(Colors.MARKER)
     @JvmField val CONDITIONAL_BLOCK_BRACKETS = arrayOf(Colors.CONDITIONAL_BLOCK_BRACKETS)
-    @JvmField val CONDITIONAL_BLOCK_EXPRESSION_BRACKETS = arrayOf(Colors.CONDITIONAL_BLOCK_EXPRESSION_BRACKETS)
+    @JvmField val CONDITIONAL_EXPRESSION_BRACKETS = arrayOf(Colors.CONDITIONAL_EXPRESSION_BRACKETS)
     @JvmField val INLINE_MATH_BRACKETS = arrayOf(Colors.INLINE_MATH_BRACKETS)
     @JvmField val INLINE_MATH_OPERATOR = arrayOf(Colors.INLINE_MATH_OPERATOR)
     @JvmField val COMMENT = arrayOf(Colors.COMMENT)

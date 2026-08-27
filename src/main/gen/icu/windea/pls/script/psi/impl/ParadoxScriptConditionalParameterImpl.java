@@ -9,21 +9,21 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
-import icu.windea.pls.script.psi.ParadoxScriptConditionalBlockParameter;
+import icu.windea.pls.script.psi.ParadoxScriptConditionalParameter;
 import icu.windea.pls.script.psi.ParadoxScriptVisitor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-public class ParadoxScriptConditionalBlockParameterImpl extends ASTWrapperPsiElement implements ParadoxScriptConditionalBlockParameter {
+public class ParadoxScriptConditionalParameterImpl extends ASTWrapperPsiElement implements ParadoxScriptConditionalParameter {
 
-  public ParadoxScriptConditionalBlockParameterImpl(@NotNull ASTNode node) {
+  public ParadoxScriptConditionalParameterImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull ParadoxScriptVisitor visitor) {
-    visitor.visitConditionalBlockParameter(this);
+    visitor.visitConditionalParameter(this);
   }
 
   @Override
@@ -48,7 +48,7 @@ public class ParadoxScriptConditionalBlockParameterImpl extends ASTWrapperPsiEle
   }
 
   @Override
-  public @NotNull ParadoxScriptConditionalBlockParameter setName(@NotNull String name) {
+  public @NotNull ParadoxScriptConditionalParameter setName(@NotNull String name) {
     return ParadoxScriptPsiImplUtil.setName(this, name);
   }
 

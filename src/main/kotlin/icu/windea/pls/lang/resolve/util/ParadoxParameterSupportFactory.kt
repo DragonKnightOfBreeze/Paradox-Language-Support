@@ -42,13 +42,13 @@ import icu.windea.pls.model.containingContext
 import icu.windea.pls.model.containingContextReference
 import icu.windea.pls.model.definitionName
 import icu.windea.pls.model.definitionTypes
-import icu.windea.pls.model.expressions.ParadoxConditionalBlockExpression
+import icu.windea.pls.model.expressions.ParadoxConditionalExpression
 import icu.windea.pls.model.inlineScriptExpression
 import icu.windea.pls.script.psi.ParadoxConditionParameter
 import icu.windea.pls.script.psi.ParadoxParameter
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptConditionalBlock
-import icu.windea.pls.script.psi.ParadoxScriptConditionalBlockExpression
+import icu.windea.pls.script.psi.ParadoxScriptConditionalExpression
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
@@ -182,18 +182,18 @@ object ParadoxParameterSupportFactory {
         val project = file.project
         val gameType = selectGameType(file) ?: return null
         val parameters = sortedMapOf<String, MutableList<ParadoxParameterContextInfo.Parameter>>() // 按名字进行排序
-        val fileConditionExpressions = ArrayDeque<ParadoxConditionalBlockExpression>()
+        val fileConditionExpressions = ArrayDeque<ParadoxConditionalExpression>()
         element.accept(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
-                if (element is ParadoxScriptConditionalBlockExpression) return visitConditionalBlockExpression(element)
+                if (element is ParadoxScriptConditionalExpression) return visitConditionalExpression(element)
                 if (element is ParadoxConditionParameter) return visitConditionParameter(element)
                 if (element is ParadoxParameter) return visitParameter(element)
                 super.visitElement(element)
             }
 
-            private fun visitConditionalBlockExpression(element: ParadoxScriptConditionalBlockExpression) {
+            private fun visitConditionalExpression(element: ParadoxScriptConditionalExpression) {
                 // value may be empty (invalid condition expression)
-                fileConditionExpressions.addLast(ParadoxConditionalBlockExpression.resolve(element.text))
+                fileConditionExpressions.addLast(ParadoxConditionalExpression.resolve(element.text))
                 super.visitElement(element)
             }
 

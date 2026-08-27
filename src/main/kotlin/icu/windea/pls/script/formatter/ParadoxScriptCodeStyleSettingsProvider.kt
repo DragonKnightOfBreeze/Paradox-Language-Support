@@ -77,7 +77,7 @@ class ParadoxScriptCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider
         consumer.showCustomOption(ParadoxScriptCodeStyleSettings::SPACE_WITHIN_BRACES, ChronicleBundle.message("script.codeStyleSettings.spacing.withIn.braces"), spacesWithinGroup)
         consumer.showCustomOption(ParadoxScriptCodeStyleSettings::SPACE_WITHIN_EMPTY_BRACES, ChronicleBundle.message("script.codeStyleSettings.spacing.withIn.emptyBraces"), spacesWithinGroup)
         consumer.showCustomOption(ParadoxScriptCodeStyleSettings::SPACE_WITHIN_CONDITIONAL_BLOCK_BRACKETS, ChronicleBundle.message("script.codeStyleSettings.spacing.withIn.conditionalBlockBrackets"), spacesWithinGroup)
-        consumer.showCustomOption(ParadoxScriptCodeStyleSettings::SPACE_WITHIN_CONDITIONAL_BLOCK_EXPRESSION_BRACKETS, ChronicleBundle.message("script.codeStyleSettings.spacing.withIn.conditionalBlockExpressionBrackets"), spacesWithinGroup)
+        consumer.showCustomOption(ParadoxScriptCodeStyleSettings::SPACE_WITHIN_CONDITIONAL_EXPRESSION_BRACKETS, ChronicleBundle.message("script.codeStyleSettings.spacing.withIn.conditionalExpressionBrackets"), spacesWithinGroup)
         consumer.showCustomOption(ParadoxScriptCodeStyleSettings::SPACE_WITHIN_INLINE_MATH_BRACKETS, ChronicleBundle.message("script.codeStyleSettings.spacing.withIn.inlineMathBrackets"), spacesWithinGroup)
     }
 

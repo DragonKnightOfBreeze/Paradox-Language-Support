@@ -1,9 +1,9 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.script.psi;
 
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.PsiElement;
 import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.tree.IElementType;
 import icu.windea.pls.script.psi.impl.*;
 
 public interface ParadoxScriptElementTypes {
@@ -12,8 +12,8 @@ public interface ParadoxScriptElementTypes {
   IElementType BOOLEAN = ParadoxScriptElementTypeFactory.getElementType("BOOLEAN");
   IElementType COLOR = ParadoxScriptElementTypeFactory.getElementType("COLOR");
   IElementType CONDITIONAL_BLOCK = ParadoxScriptElementTypeFactory.getElementType("CONDITIONAL_BLOCK");
-  IElementType CONDITIONAL_BLOCK_EXPRESSION = ParadoxScriptElementTypeFactory.getElementType("CONDITIONAL_BLOCK_EXPRESSION");
-  IElementType CONDITIONAL_BLOCK_PARAMETER = ParadoxScriptElementTypeFactory.getElementType("CONDITIONAL_BLOCK_PARAMETER");
+  IElementType CONDITIONAL_EXPRESSION = ParadoxScriptElementTypeFactory.getElementType("CONDITIONAL_EXPRESSION");
+  IElementType CONDITIONAL_PARAMETER = ParadoxScriptElementTypeFactory.getElementType("CONDITIONAL_PARAMETER");
   IElementType FLOAT = ParadoxScriptElementTypeFactory.getElementType("FLOAT");
   IElementType INLINE_CONDITIONAL_BLOCK = ParadoxScriptElementTypeFactory.getElementType("INLINE_CONDITIONAL_BLOCK");
   IElementType INLINE_MATH = ParadoxScriptElementTypeFactory.getElementType("INLINE_MATH");
@@ -99,11 +99,11 @@ public interface ParadoxScriptElementTypes {
       else if (type == CONDITIONAL_BLOCK) {
         return new ParadoxScriptConditionalBlockImpl(node);
       }
-      else if (type == CONDITIONAL_BLOCK_EXPRESSION) {
-        return new ParadoxScriptConditionalBlockExpressionImpl(node);
+      else if (type == CONDITIONAL_EXPRESSION) {
+        return new ParadoxScriptConditionalExpressionImpl(node);
       }
-      else if (type == CONDITIONAL_BLOCK_PARAMETER) {
-        return new ParadoxScriptConditionalBlockParameterImpl(node);
+      else if (type == CONDITIONAL_PARAMETER) {
+        return new ParadoxScriptConditionalParameterImpl(node);
       }
       else if (type == FLOAT) {
         return new ParadoxScriptFloatImpl(node);

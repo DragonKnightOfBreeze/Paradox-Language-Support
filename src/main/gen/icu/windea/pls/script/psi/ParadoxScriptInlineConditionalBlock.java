@@ -1,20 +1,21 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.script.psi;
 
-import java.util.List;
-import org.jetbrains.annotations.*;
-import com.intellij.psi.PsiElement;
-import icu.windea.pls.core.psi.PsiBoundElement;
 import com.intellij.navigation.ItemPresentation;
-import com.intellij.openapi.util.Iconable.IconFlags;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
-import javax.swing.Icon;
+import icu.windea.pls.core.psi.PsiBoundElement;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import javax.swing.*;
+import java.util.List;
 
 public interface ParadoxScriptInlineConditionalBlock extends PsiBoundElement {
 
   @Nullable
-  ParadoxScriptConditionalBlockExpression getConditionalBlockExpression();
+  ParadoxScriptConditionalExpression getConditionalExpression();
 
   @NotNull
   List<ParadoxScriptInlineConditionalBlock> getInlineConditionalBlockList();

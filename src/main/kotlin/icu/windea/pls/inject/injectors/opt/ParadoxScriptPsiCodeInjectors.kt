@@ -67,11 +67,11 @@ interface ParadoxScriptPsiCodeInjectors {
     @FieldCache("getExpression", cleanUp = "subtreeChanged")
     class InlineMath : CodeInjectorBase()
 
-    /** @see icu.windea.pls.script.psi.ParadoxScriptConditionalBlockParameter */
-    @InjectionTarget("icu.windea.pls.script.psi.impl.ParadoxScriptConditionalBlockParameterImpl", pluginId = "icu.windea.pls")
+    /** @see icu.windea.pls.script.psi.ParadoxScriptConditionalParameter */
+    @InjectionTarget("icu.windea.pls.script.psi.impl.ParadoxScriptConditionalParameterImpl", pluginId = "icu.windea.pls")
     @FieldCache("getText", cleanUp = "subtreeChanged")
     @FieldCache("getName", cleanUp = "subtreeChanged")
-    class ConditionalBlockParameter : CodeInjectorBase()
+    class ConditionalParameter : CodeInjectorBase()
 
     /** @see icu.windea.pls.script.psi.ParadoxScriptParameter */
     @InjectionTarget("icu.windea.pls.script.psi.impl.ParadoxScriptParameterImpl", pluginId = "icu.windea.pls")

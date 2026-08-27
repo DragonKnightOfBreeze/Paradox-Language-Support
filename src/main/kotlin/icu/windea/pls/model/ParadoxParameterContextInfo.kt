@@ -5,7 +5,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.SmartPsiElementPointer
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.lang.util.ParadoxParameterManager
-import icu.windea.pls.model.expressions.ParadoxConditionalBlockExpression
+import icu.windea.pls.model.expressions.ParadoxConditionalExpression
 import icu.windea.pls.script.psi.ParadoxConditionParameter
 import java.util.*
 
@@ -28,7 +28,7 @@ class ParadoxParameterContextInfo(
         private val elementPointer: SmartPsiElementPointer<PsiElement>, // ParadoxConditionParameter | ParadoxParameter
         val name: String,
         val defaultValue: String? = null,
-        val conditionExpressions: Deque<ParadoxConditionalBlockExpression>? = null,
+        val conditionExpressions: Deque<ParadoxConditionalExpression>? = null,
         val project: Project,
         val gameType: ParadoxGameType,
     ) {

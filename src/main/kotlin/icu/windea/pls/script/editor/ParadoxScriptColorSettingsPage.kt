@@ -15,7 +15,7 @@ class ParadoxScriptColorSettingsPage : ColorSettingsPage {
         AttributesDescriptor(ChronicleBundle.message("script.displayName.operator"), ParadoxScriptHighlighterColors.OPERATOR),
         AttributesDescriptor(ChronicleBundle.message("script.displayName.marker"), ParadoxScriptHighlighterColors.MARKER),
         AttributesDescriptor(ChronicleBundle.message("script.displayName.conditionalBlockBrackets"), ParadoxScriptHighlighterColors.CONDITIONAL_BLOCK_BRACKETS),
-        AttributesDescriptor(ChronicleBundle.message("script.displayName.conditionalBlockExpressionBrackets"), ParadoxScriptHighlighterColors.CONDITIONAL_BLOCK_EXPRESSION_BRACKETS),
+        AttributesDescriptor(ChronicleBundle.message("script.displayName.conditionalExpressionBrackets"), ParadoxScriptHighlighterColors.CONDITIONAL_EXPRESSION_BRACKETS),
         AttributesDescriptor(ChronicleBundle.message("script.displayName.inlineMathBrackets"), ParadoxScriptHighlighterColors.INLINE_MATH_BRACKETS),
         AttributesDescriptor(ChronicleBundle.message("script.displayName.inlineMathOperators"), ParadoxScriptHighlighterColors.INLINE_MATH_OPERATOR),
         AttributesDescriptor(ChronicleBundle.message("script.displayName.comment"), ParadoxScriptHighlighterColors.COMMENT),

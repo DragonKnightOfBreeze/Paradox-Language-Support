@@ -6,7 +6,7 @@ import com.intellij.psi.PsiElement
 /**
  * 条件参数。
  *
- * @see ParadoxScriptConditionalBlockParameter
+ * @see ParadoxScriptConditionalParameter
  */
 interface ParadoxConditionParameter : NavigatablePsiElement {
     val idElement: PsiElement?

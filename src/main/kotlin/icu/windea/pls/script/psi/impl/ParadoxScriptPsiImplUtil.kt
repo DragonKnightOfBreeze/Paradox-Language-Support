@@ -340,11 +340,11 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getConditionExpression(element: ParadoxScriptConditionalBlock): String? {
-        val conditionExpression = element.conditionalBlockExpression ?: return null
+        val conditionExpression = element.conditionalExpression ?: return null
         val builder = StringBuilder()
         conditionExpression.processChild {
             when {
-                it is ParadoxScriptConditionalBlockParameter -> {
+                it is ParadoxScriptConditionalParameter -> {
                     builder.append(it.name)
                     false
                 }
@@ -395,11 +395,11 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getConditionExpression(element: ParadoxScriptInlineConditionalBlock): String? {
-        val conditionExpression = element.conditionalBlockExpression ?: return null
+        val conditionExpression = element.conditionalExpression ?: return null
         val builder = StringBuilder()
         conditionExpression.processChild {
             when {
-                it is ParadoxScriptConditionalBlockParameter -> {
+                it is ParadoxScriptConditionalParameter -> {
                     builder.append(it.name)
                     false
                 }
@@ -431,33 +431,33 @@ object ParadoxScriptPsiImplUtil {
 
     // endregion
 
-    // region ParadoxScriptConditionalBlockParameter
+    // region ParadoxScriptConditionalParameter
 
     @JvmStatic
-    fun getIdElement(element: ParadoxScriptConditionalBlockParameter): PsiElement {
+    fun getIdElement(element: ParadoxScriptConditionalParameter): PsiElement {
         return element.findChild { it.elementType == CONDITION_PARAMETER_TOKEN }!!
     }
 
     @JvmStatic
-    fun getIcon(element: ParadoxScriptConditionalBlockParameter, @Iconable.IconFlags flags: Int): Icon {
+    fun getIcon(element: ParadoxScriptConditionalParameter, @Iconable.IconFlags flags: Int): Icon {
         return ChronicleIcons.Nodes.Parameter
     }
 
     @JvmStatic
-    fun getName(element: ParadoxScriptConditionalBlockParameter): String {
+    fun getName(element: ParadoxScriptConditionalParameter): String {
         return element.idElement.text
     }
 
     @JvmStatic
-    fun setName(element: ParadoxScriptConditionalBlockParameter, name: String): ParadoxScriptConditionalBlockParameter {
+    fun setName(element: ParadoxScriptConditionalParameter, name: String): ParadoxScriptConditionalParameter {
         val idElement = element.idElement
-        val newIdElement = ParadoxScriptElementFactory.createConditionalBlockParameter(element.project, name).idElement
+        val newIdElement = ParadoxScriptElementFactory.createConditionalParameter(element.project, name).idElement
         idElement.replace(newIdElement)
         return element
     }
 
     @JvmStatic
-    fun getTextOffset(element: ParadoxScriptConditionalBlockParameter): Int {
+    fun getTextOffset(element: ParadoxScriptConditionalParameter): Int {
         return element.node.startOffset
     }
 

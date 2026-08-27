@@ -5,18 +5,17 @@ package icu.windea.pls.script.lexer;
 
 import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.tree.IElementType;
-import java.util.*;
-import java.util.concurrent.atomic.*;
-import icu.windea.pls.model.constraints.ParadoxSyntaxConstraint;
 
-import static com.intellij.psi.TokenType.*;
+import java.util.ArrayDeque;
+import java.util.BitSet;
+import java.util.Deque;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static com.intellij.psi.TokenType.BAD_CHARACTER;
+import static com.intellij.psi.TokenType.WHITE_SPACE;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 
 // Lexer for Paradox Script.
-
-
-
-import java.util.BitSet;
 
 public class _ParadoxScriptLexer implements FlexLexer {
   /** This character denotes the end of file */
@@ -42,7 +41,7 @@ public class _ParadoxScriptLexer implements FlexLexer {
   public static final int IN_PARAMETER_ARGUMENT = 26;
   public static final int IN_PARAMETER_ARGUMENT_END = 28;
   public static final int IN_CONDITIONAL_BLOCK = 30;
-  public static final int IN_CONDITIONAL_BLOCK_EXPRESSION = 32;
+  public static final int IN_CONDITIONAL_EXPRESSION = 32;
   public static final int IN_CONDITIONAL_BLOCK_BODY = 34;
   public static final int IN_INLINE_MATH = 36;
 
@@ -53,8 +52,8 @@ public class _ParadoxScriptLexer implements FlexLexer {
    * l is of the form l = 2*k, k a non negative integer
    */
   private static final int ZZ_LEXSTATE[] = {
-     0,  0,  1,  1,  2,  2,  3,  3,  4,  4,  5,  5,  6,  6,  7,  7, 
-     8,  8,  9,  9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14, 15, 15, 
+     0,  0,  1,  1,  2,  2,  3,  3,  4,  4,  5,  5,  6,  6,  7,  7,
+     8,  8,  9,  9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14, 15, 15,
     16, 16, 17, 17, 18, 18
   };
 
@@ -961,7 +960,7 @@ public class _ParadoxScriptLexer implements FlexLexer {
           // fall through
           case 86: break;
           case 33:
-            { yybegin(IN_CONDITIONAL_BLOCK_EXPRESSION); return NESTED_LEFT_BRACKET;
+            { yybegin(IN_CONDITIONAL_EXPRESSION); return NESTED_LEFT_BRACKET;
             }
           // fall through
           case 87: break;

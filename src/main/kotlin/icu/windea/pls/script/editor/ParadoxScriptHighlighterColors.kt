@@ -10,7 +10,7 @@ object ParadoxScriptHighlighterColors {
     @JvmField val OPERATOR = createTextAttributesKey("PARADOX_SCRIPT.OPERATOR", DefaultLanguageHighlighterColors.OPERATION_SIGN)
     @JvmField val MARKER = createTextAttributesKey("PARADOX_SCRIPT.MARKER", DefaultLanguageHighlighterColors.KEYWORD)
     @JvmField val CONDITIONAL_BLOCK_BRACKETS = createTextAttributesKey("PARADOX_SCRIPT.CONDITIONAL_BLOCK_BRACKETS", DefaultLanguageHighlighterColors.BRACKETS)
-    @JvmField val CONDITIONAL_BLOCK_EXPRESSION_BRACKETS = createTextAttributesKey("PARADOX_SCRIPT.CONDITIONAL_BLOCK_EXPRESSION_BRACKETS", DefaultLanguageHighlighterColors.BRACKETS)
+    @JvmField val CONDITIONAL_EXPRESSION_BRACKETS = createTextAttributesKey("PARADOX_SCRIPT.CONDITIONAL_EXPRESSION_BRACKETS", DefaultLanguageHighlighterColors.BRACKETS)
     @JvmField val INLINE_MATH_BRACKETS = createTextAttributesKey("PARADOX_SCRIPT.INLINE_MATH_BRACKETS", DefaultLanguageHighlighterColors.BRACKETS)
     @JvmField val INLINE_MATH_OPERATOR = createTextAttributesKey("PARADOX_SCRIPT.INLINE_MATH_OPERATOR", DefaultLanguageHighlighterColors.OPERATION_SIGN)
     @JvmField val COMMENT = createTextAttributesKey("PARADOX_SCRIPT.COMMENT", DefaultLanguageHighlighterColors.LINE_COMMENT)

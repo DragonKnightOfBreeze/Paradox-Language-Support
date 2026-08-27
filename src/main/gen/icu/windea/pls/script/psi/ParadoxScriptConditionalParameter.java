@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-public interface ParadoxScriptConditionalBlockParameter extends ParadoxConditionParameter {
+public interface ParadoxScriptConditionalParameter extends ParadoxConditionParameter {
 
   @NotNull PsiElement getIdElement();
 
@@ -19,7 +19,7 @@ public interface ParadoxScriptConditionalBlockParameter extends ParadoxCondition
 
   @NotNull String getName();
 
-  @NotNull ParadoxScriptConditionalBlockParameter setName(@NotNull String name);
+  @NotNull ParadoxScriptConditionalParameter setName(@NotNull String name);
 
   int getTextOffset();
 

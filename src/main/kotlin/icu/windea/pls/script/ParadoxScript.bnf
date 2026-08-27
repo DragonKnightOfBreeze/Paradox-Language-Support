@@ -279,11 +279,11 @@ private inline_conditional_block_item ::= <<processInlineConditionalBlockItem>> 
 private inline_conditional_block_snippet ::= inline_conditional_block_item_part (<<processPart>> inline_conditional_block_item_part) *
 private inline_conditional_block_item_part ::= ARGUMENT_TOKEN | parameter | inline_conditional_block
 
-private conditional_header ::= NESTED_LEFT_BRACKET conditional_block_expression NESTED_RIGHT_BRACKET {
+private conditional_header ::= NESTED_LEFT_BRACKET conditional_expression NESTED_RIGHT_BRACKET {
   pin=1
 }
-conditional_block_expression ::= NOT_SIGN ? conditional_block_parameter
-conditional_block_parameter ::= CONDITION_PARAMETER_TOKEN {
+conditional_expression ::= NOT_SIGN ? conditional_parameter
+conditional_parameter ::= CONDITION_PARAMETER_TOKEN {
   implements="icu.windea.pls.script.psi.ParadoxConditionParameter"
   methods=[
     getIdElement getIcon getName setName getTextOffset

@@ -20,7 +20,7 @@ class ParadoxScriptCodeStyleSettings(
     @JvmField var SPACE_WITHIN_BRACES = true
     @JvmField var SPACE_WITHIN_EMPTY_BRACES = true
     @JvmField var SPACE_WITHIN_CONDITIONAL_BLOCK_BRACKETS = true
-    @JvmField var SPACE_WITHIN_CONDITIONAL_BLOCK_EXPRESSION_BRACKETS = false
+    @JvmField var SPACE_WITHIN_CONDITIONAL_EXPRESSION_BRACKETS = false
     @JvmField var SPACE_WITHIN_INLINE_MATH_BRACKETS = true
 
     companion object {
