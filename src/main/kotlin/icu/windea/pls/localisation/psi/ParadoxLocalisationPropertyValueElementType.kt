@@ -34,7 +34,8 @@ class ParadoxLocalisationPropertyValueElementType(debugName: String) : IReparsea
     private fun parseContentsFully(chameleon: ASTNode): ASTNode {
         val psi = chameleon.treeParent.psi
         val project: Project = psi.project
-        val lexer = ParadoxLocalisationLexerFactory.createTextLexer(project, selectGameType(psi))
+        val gameType = selectGameType(psi)
+        val lexer = ParadoxLocalisationLexerFactory.createTextLexer(project, gameType)
         val languageForParser = ParadoxLocalisationLanguage
         val builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, lexer, languageForParser, chameleon.chars)
         val parser = ParadoxLocalisationParser()

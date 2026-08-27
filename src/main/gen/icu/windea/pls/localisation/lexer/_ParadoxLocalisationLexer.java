@@ -6,10 +6,9 @@ package icu.windea.pls.localisation.lexer;
 import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.tree.IElementType;
 import icu.windea.pls.model.ParadoxGameType;
-import icu.windea.pls.model.constraints.ParadoxSyntaxConstraint;
 
-import static com.intellij.psi.TokenType.*;
-import static icu.windea.pls.core.StdlibExtensionsKt.*;
+import static com.intellij.psi.TokenType.BAD_CHARACTER;
+import static com.intellij.psi.TokenType.WHITE_SPACE;
 import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 
 // Lexer for Paradox Localisation.
@@ -300,8 +299,20 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
   private boolean zzEOFDone;
 
   /* user code: */
+    private ParadoxGameType gameType;
+
     public _ParadoxLocalisationLexer() {
         this((java.io.Reader)null);
+        this.gameType = null;
+    }
+
+    public _ParadoxLocalisationLexer(ParadoxGameType gameType) {
+        this((java.io.Reader)null);
+        this.gameType = gameType;
+    }
+
+    public ParadoxGameType getGameType() {
+        return this.gameType;
     }
 
     private IElementType handleLocaleToken() {
@@ -545,7 +556,7 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
         case '\u2029':  // fall through
           zzAtBOL = true;
           break;
-        case '\r': 
+        case '\r':
           if (zzMarkedPosL < zzEndReadL)
             zzAtBOL = zzBufferL.charAt(zzMarkedPosL) != '\n';
           else if (zzAtEOF)
@@ -555,9 +566,9 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
             zzMarkedPosL = zzMarkedPos;
             zzEndReadL = zzEndRead;
             zzBufferL = zzBuffer;
-            if (eof) 
+            if (eof)
               zzAtBOL = false;
-            else 
+            else
               zzAtBOL = zzBufferL.charAt(zzMarkedPosL) != '\n';
           }
           break;

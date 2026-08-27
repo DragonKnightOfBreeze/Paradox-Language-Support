@@ -6,5 +6,5 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationTokenSets
 import icu.windea.pls.model.ParadoxGameType
 
 class ParadoxLocalisationTextLexer(
-    gameType: ParadoxGameType? = null
+    val gameType: ParadoxGameType? = null
 ) : MergingLexerAdapter(FlexAdapter(_ParadoxLocalisationTextLexer(gameType)), ParadoxLocalisationTokenSets.MERGED_TEXT_TOKENS)

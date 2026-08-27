@@ -14,8 +14,20 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 %%
 
 %{
+    private ParadoxGameType gameType;
+
     public _ParadoxLocalisationLexer() {
         this((java.io.Reader)null);
+        this.gameType = null;
+    }
+
+    public _ParadoxLocalisationLexer(ParadoxGameType gameType) {
+        this((java.io.Reader)null);
+        this.gameType = gameType;
+    }
+
+    public ParadoxGameType getGameType() {
+        return this.gameType;
     }
 
     private IElementType handleLocaleToken() {

@@ -331,14 +331,14 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
     "\24\0\1\1\1\2\1\3\1\4\1\5\1\1\1\6"+
     "\1\7\1\10\1\11\1\12\1\13\1\14\1\15\1\16"+
     "\1\17\1\20\1\21\1\22\1\23\1\24\1\25\1\26"+
-    "\1\27\1\30\1\31\1\32\1\33\1\3\1\33\1\34"+
+    "\1\27\1\30\1\31\1\32\1\33\1\34\1\35\1\3"+
     "\1\35\1\36\1\37\1\40\1\41\1\42\1\43\1\44"+
-    "\1\45\1\46\1\47\1\50\1\47\1\51\1\52\1\53"+
-    "\1\12\2\15\1\0\1\24\1\30\1\33\1\0\1\43"+
-    "\1\46\1\54";
+    "\1\45\1\46\1\47\1\50\1\51\1\52\1\51\1\53"+
+    "\1\54\1\55\1\12\2\15\1\0\1\25\1\32\1\35"+
+    "\1\0\1\45\1\50\1\56";
 
   private static int [] zzUnpackAction() {
-    int [] result = new int[78];
+    int [] result = new int[80];
     int offset = 0;
     offset = zzUnpackAction(ZZ_ACTION_PACKED_0, offset, result);
     return result;
@@ -367,15 +367,15 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
     "\0\320\0\352\0\u0104\0\u011e\0\u0138\0\u0152\0\u016c\0\u0186"+
     "\0\u01a0\0\u01ba\0\u01d4\0\u01ee\0\u0208\0\u0222\0\u023c\0\u023c"+
     "\0\u023c\0\u0256\0\u023c\0\u023c\0\u0270\0\u023c\0\u028a\0\u023c"+
-    "\0\u023c\0\u02a4\0\u023c\0\u02be\0\u023c\0\u023c\0\u02d8\0\u02f2"+
-    "\0\u030c\0\u0326\0\u023c\0\u023c\0\u0340\0\u023c\0\u035a\0\u0374"+
-    "\0\u0374\0\u038e\0\u023c\0\u023c\0\u023c\0\u023c\0\u03a8\0\u023c"+
-    "\0\u03c2\0\u03dc\0\u023c\0\u03f6\0\u0410\0\u023c\0\u042a\0\u0444"+
-    "\0\u045e\0\u023c\0\u023c\0\u023c\0\u0478\0\u023c\0\u0478\0\u023c"+
-    "\0\u023c\0\u023c\0\u0492\0\u023c\0\u023c\0\u023c";
+    "\0\u023c\0\u02a4\0\u023c\0\u02be\0\u023c\0\u023c\0\u023c\0\u02d8"+
+    "\0\u02f2\0\u030c\0\u0326\0\u023c\0\u023c\0\u023c\0\u0340\0\u023c"+
+    "\0\u035a\0\u0374\0\u0374\0\u038e\0\u023c\0\u023c\0\u023c\0\u023c"+
+    "\0\u03a8\0\u023c\0\u03c2\0\u03dc\0\u023c\0\u03f6\0\u0410\0\u023c"+
+    "\0\u042a\0\u0444\0\u045e\0\u023c\0\u023c\0\u023c\0\u0478\0\u023c"+
+    "\0\u0478\0\u023c\0\u023c\0\u023c\0\u0492\0\u023c\0\u023c\0\u023c";
 
   private static int [] zzUnpackRowMap() {
-    int [] result = new int[78];
+    int [] result = new int[80];
     int offset = 0;
     offset = zzUnpackRowMap(ZZ_ROWMAP_PACKED_0, offset, result);
     return result;
@@ -402,39 +402,39 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
     "\1\33\1\25\1\34\1\35\2\25\27\36\1\37\2\36"+
     "\15\40\1\41\3\40\1\41\6\40\1\41\1\40\7\36"+
     "\1\42\22\36\7\40\1\43\1\44\1\40\2\44\1\40"+
-    "\1\44\2\40\1\45\1\44\1\31\2\40\1\46\4\40"+
-    "\1\47\3\40\1\47\1\40\1\47\1\43\12\47\3\40"+
-    "\1\47\2\40\2\47\7\40\1\43\11\40\1\50\3\40"+
-    "\1\46\4\40\26\36\1\51\3\36\7\40\1\27\2\40"+
-    "\1\52\1\40\2\52\3\40\1\52\1\31\1\52\1\40"+
-    "\1\53\1\54\3\40\1\47\3\40\1\47\1\40\1\47"+
-    "\1\27\12\47\1\31\2\40\1\47\1\54\1\40\2\47"+
-    "\22\36\1\55\7\36\1\56\3\57\26\56\1\60\3\57"+
-    "\3\60\1\61\1\62\11\60\1\40\1\60\1\63\1\64"+
-    "\4\60\1\47\3\40\1\47\1\40\1\47\1\27\12\47"+
-    "\2\40\1\63\1\47\2\40\2\47\1\40\3\57\3\40"+
-    "\1\27\1\65\1\66\3\40\2\67\2\40\1\67\2\40"+
-    "\1\63\5\40\1\70\3\71\26\70\20\36\1\72\11\36"+
-    "\4\40\1\73\2\40\1\27\5\40\1\74\3\40\1\74"+
-    "\1\31\5\40\1\74\1\40\6\36\1\75\23\36\1\76"+
-    "\3\77\2\76\1\100\1\27\5\76\3\101\1\76\1\101"+
-    "\1\31\5\76\1\101\1\76\6\25\2\0\10\25\1\0"+
-    "\1\25\1\0\1\32\1\0\1\25\2\0\2\25\4\0"+
-    "\1\102\57\0\23\25\1\32\6\25\4\0\1\103\25\0"+
-    "\2\104\2\0\25\104\1\0\1\105\1\106\2\0\25\105"+
-    "\1\107\10\0\1\44\1\0\2\44\1\0\1\44\3\0"+
-    "\1\44\10\0\1\47\3\0\1\47\1\0\1\47\1\0"+
-    "\12\47\3\0\1\47\2\0\2\47\15\0\1\50\3\0"+
-    "\1\50\10\0\2\110\2\0\25\110\13\0\1\52\1\0"+
-    "\2\52\3\0\1\52\1\0\1\52\6\0\2\111\2\0"+
-    "\25\111\2\0\3\57\26\0\2\60\1\0\5\60\1\0"+
-    "\11\60\1\0\1\60\2\0\4\60\2\62\1\0\5\62"+
-    "\1\112\12\62\1\113\6\62\15\0\2\67\2\0\1\67"+
-    "\11\0\3\71\26\0\2\114\2\0\25\114\16\0\1\74"+
-    "\3\0\1\74\6\0\1\74\1\0\2\115\2\0\25\115"+
-    "\2\0\3\77\32\0\1\116\42\0\3\101\1\0\1\101"+
-    "\6\0\1\101\1\0\1\107\3\0\3\107\1\105\22\107"+
-    "\32\62";
+    "\1\44\2\40\1\45\1\44\1\31\1\40\1\46\1\47"+
+    "\4\40\1\50\3\40\1\50\1\40\1\50\1\43\12\50"+
+    "\3\40\1\50\2\40\2\50\7\40\1\43\11\40\1\51"+
+    "\3\40\1\47\4\40\26\36\1\52\3\36\7\40\1\27"+
+    "\2\40\1\53\1\40\2\53\3\40\1\53\1\31\1\53"+
+    "\1\46\1\54\1\55\3\40\1\50\3\40\1\50\1\40"+
+    "\1\50\1\27\12\50\1\31\1\40\1\46\1\50\1\56"+
+    "\1\40\2\50\22\36\1\57\7\36\1\60\3\61\26\60"+
+    "\1\62\3\61\3\62\1\63\1\64\11\62\1\40\1\62"+
+    "\1\65\1\66\4\62\1\50\3\40\1\50\1\40\1\50"+
+    "\1\27\12\50\2\40\1\46\1\50\2\40\2\50\1\40"+
+    "\3\61\3\40\1\27\1\67\1\70\3\40\2\71\2\40"+
+    "\1\71\2\40\1\46\5\40\1\72\3\73\26\72\20\36"+
+    "\1\74\11\36\4\40\1\75\2\40\1\27\5\40\1\76"+
+    "\3\40\1\76\1\31\1\40\1\46\3\40\1\76\1\40"+
+    "\6\36\1\77\23\36\1\100\3\101\2\100\1\102\1\27"+
+    "\5\100\3\103\1\100\1\103\1\31\1\100\1\46\3\100"+
+    "\1\103\1\100\6\25\2\0\10\25\1\0\1\25\1\0"+
+    "\1\32\1\0\1\25\2\0\2\25\4\0\1\104\57\0"+
+    "\23\25\1\32\6\25\4\0\1\105\25\0\2\106\2\0"+
+    "\25\106\1\0\1\107\1\110\2\0\25\107\1\111\10\0"+
+    "\1\44\1\0\2\44\1\0\1\44\3\0\1\44\10\0"+
+    "\1\50\3\0\1\50\1\0\1\50\1\0\12\50\3\0"+
+    "\1\50\2\0\2\50\15\0\1\51\3\0\1\51\10\0"+
+    "\2\112\2\0\25\112\13\0\1\53\1\0\2\53\3\0"+
+    "\1\53\1\0\1\53\6\0\2\113\2\0\25\113\2\0"+
+    "\3\61\26\0\2\62\1\0\5\62\1\0\11\62\1\0"+
+    "\1\62\2\0\4\62\2\64\1\0\5\64\1\114\12\64"+
+    "\1\115\6\64\15\0\2\71\2\0\1\71\11\0\3\73"+
+    "\26\0\2\116\2\0\25\116\16\0\1\76\3\0\1\76"+
+    "\6\0\1\76\1\0\2\117\2\0\25\117\2\0\3\101"+
+    "\32\0\1\120\42\0\3\103\1\0\1\103\6\0\1\103"+
+    "\1\0\1\111\3\0\3\111\1\107\22\111\32\64";
 
   private static int [] zzUnpacktrans() {
     int [] result = new int[1196];
@@ -476,13 +476,13 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
 
   private static final String ZZ_ATTRIBUTE_PACKED_0 =
     "\24\0\2\1\3\11\1\1\2\11\1\1\1\11\1\1"+
-    "\2\11\1\1\1\11\1\1\2\11\4\1\2\11\1\1"+
+    "\2\11\1\1\1\11\1\1\3\11\4\1\3\11\1\1"+
     "\1\11\4\1\4\11\1\1\1\11\2\1\1\11\2\1"+
     "\1\11\3\1\3\11\1\1\1\11\1\0\3\11\1\0"+
     "\3\11";
 
   private static int [] zzUnpackAttribute() {
-    int [] result = new int[78];
+    int [] result = new int[80];
     int offset = 0;
     offset = zzUnpackAttribute(ZZ_ATTRIBUTE_PACKED_0, offset, result);
     return result;
@@ -579,6 +579,7 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
     }
 
     private void enterState(int state, int expect) {
+        // enter state to `expect`
         if (stateStack == null) {
             stateStack = new IntArrayList();
         }
@@ -591,6 +592,7 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
     }
 
     private void exitState(int expect) {
+        // exit state to previous only if it matches `expect`
         if (stateStack == null || stateStack.isEmpty()) {
             yybegin(YYINITIAL);
             return;
@@ -607,6 +609,7 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
     }
 
     private void exitState() {
+        // exit state to previous
         if (stateStack == null || stateStack.isEmpty()) {
             yybegin(YYINITIAL);
             return;
@@ -618,6 +621,14 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
         expectStack.popInt();
         int currentState = stateStack.popInt();
         yybegin(currentState);
+    }
+
+    private boolean exitStateForUnexpected() {
+        // exit state for unexpcted tokens (bad character)
+        // heuristic: always exist
+        exitState();
+        yypushback(yylength());
+        return true;
     }
 
     private boolean isColorfulText() {
@@ -905,50 +916,63 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
             { return TEXT_TOKEN;
             }
           // fall through
-          case 45: break;
+          case 47: break;
           case 2:
             { if (!ParadoxSyntaxConstraint.LocalisationTextFormat.testTarget(this)) return TEXT_TOKEN;
-        enterState(yystate(), EXPECT_TEXT_FORMAT); yypushback(yylength()); yybegin(CHECK_TEXT_FORMAT);
-            }
-          // fall through
-          case 46: break;
-          case 3:
-            { enterState(yystate(), EXPECT_PARAMETER); yypushback(yylength()); yybegin(CHECK_PARAMETER);
-            }
-          // fall through
-          case 47: break;
-          case 4:
-            { if (!ParadoxSyntaxConstraint.LocalisationTextIcon.testTarget(this)) return TEXT_TOKEN;
-        enterState(yystate(), EXPECT_TEXT_ICON); yypushback(yylength()); yybegin(CHECK_TEXT_ICON);
+        enterState(yystate(), EXPECT_TEXT_FORMAT);
+        yypushback(yylength());
+        yybegin(CHECK_TEXT_FORMAT);
             }
           // fall through
           case 48: break;
-          case 5:
-            { enterState(yystate(), EXPECT_COMMAND); yypushback(yylength()); yybegin(CHECK_COMMAND);
+          case 3:
+            { enterState(yystate(), EXPECT_PARAMETER);
+        yypushback(yylength());
+        yybegin(CHECK_PARAMETER);
             }
           // fall through
           case 49: break;
-          case 6:
-            { if (yystate() != IN_CONCEPT_TEXT) return TEXT_TOKEN;
-        exitState(EXPECT_COMMAND); return RIGHT_BRACKET;
+          case 4:
+            { if (!ParadoxSyntaxConstraint.LocalisationTextIcon.testTarget(this)) return TEXT_TOKEN;
+        enterState(yystate(), EXPECT_TEXT_ICON);
+        yypushback(yylength());
+        yybegin(CHECK_TEXT_ICON);
             }
           // fall through
           case 50: break;
-          case 7:
-            { enterState(yystate(), EXPECT_ICON); yypushback(yylength()); yybegin(CHECK_ICON);
+          case 5:
+            { enterState(yystate(), EXPECT_COMMAND);
+        yypushback(yylength());
+        yybegin(CHECK_COMMAND);
             }
           // fall through
           case 51: break;
-          case 8:
-            { enterState(yystate(), EXPECT_COLORFUL_TEXT); yypushback(yylength()); yybegin(CHECK_COLORFUL_TEXT);
+          case 6:
+            { if (yystate() != IN_CONCEPT_TEXT) return TEXT_TOKEN;
+        exitState(EXPECT_COMMAND);
+        return RIGHT_BRACKET;
             }
           // fall through
           case 52: break;
+          case 7:
+            { enterState(yystate(), EXPECT_ICON);
+        yypushback(yylength());
+        yybegin(CHECK_ICON);
+            }
+          // fall through
+          case 53: break;
+          case 8:
+            { enterState(yystate(), EXPECT_COLORFUL_TEXT);
+        yypushback(yylength());
+        yybegin(CHECK_COLORFUL_TEXT);
+            }
+          // fall through
+          case 54: break;
           case 9:
             { return BAD_CHARACTER;
             }
           // fall through
-          case 53: break;
+          case 55: break;
           case 10:
             { if (isColorfulText()) {
             yypushback(yylength() - 1);
@@ -962,17 +986,17 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
         }
             }
           // fall through
-          case 54: break;
+          case 56: break;
           case 11:
-            { exitState(); yypushback(yylength());
+            { if (!exitStateForUnexpected()) return BAD_CHARACTER;
             }
           // fall through
-          case 55: break;
+          case 57: break;
           case 12:
             { yybegin(IN_COLORFUL_TEXT); return COLOR_TOKEN;
             }
           // fall through
-          case 56: break;
+          case 58: break;
           case 13:
             { if (isParameter()) {
             yypushback(yylength() - 1);
@@ -985,38 +1009,45 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
         }
             }
           // fall through
-          case 57: break;
+          case 59: break;
           case 14:
-            { exitState(EXPECT_PARAMETER); return PARAMETER_END;
+            { exitState(EXPECT_PARAMETER);
+        return PARAMETER_END;
             }
           // fall through
-          case 58: break;
+          case 60: break;
           case 15:
             { return PARAMETER_TOKEN;
             }
           // fall through
-          case 59: break;
+          case 61: break;
           case 16:
             { yybegin(IN_SCRIPTED_VARIABLE_REFERENCE); return AT;
             }
           // fall through
-          case 60: break;
-          case 17:
-            { yybegin(IN_PARAMETER_ARGUMENT); return PIPE;
-            }
-          // fall through
-          case 61: break;
-          case 18:
-            { return ARGUMENT_TOKEN;
-            }
-          // fall through
           case 62: break;
-          case 19:
-            { return SCRIPTED_VARIABLE_REFERENCE_TOKEN;
+          case 17:
+            { exitState(EXPECT_COMMAND);
+        return RIGHT_BRACKET;
             }
           // fall through
           case 63: break;
+          case 18:
+            { yybegin(IN_PARAMETER_ARGUMENT); return PIPE;
+            }
+          // fall through
+          case 64: break;
+          case 19:
+            { return ARGUMENT_TOKEN;
+            }
+          // fall through
+          case 65: break;
           case 20:
+            { return SCRIPTED_VARIABLE_REFERENCE_TOKEN;
+            }
+          // fall through
+          case 66: break;
+          case 21:
             { if (isIcon()) {
             yypushback(yylength() - 1);
             yybegin(IN_ICON);
@@ -1028,23 +1059,29 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
         }
             }
           // fall through
-          case 64: break;
-          case 21:
+          case 67: break;
+          case 22:
             { return ICON_TOKEN;
             }
           // fall through
-          case 65: break;
-          case 22:
+          case 68: break;
+          case 23:
             { yybegin(IN_ICON_ARGUMENT); return PIPE;
             }
           // fall through
-          case 66: break;
-          case 23:
+          case 69: break;
+          case 24:
+            { exitState(EXPECT_ICON);
+        return ICON_END;
+            }
+          // fall through
+          case 70: break;
+          case 25:
             { exitState(EXPECT_ICON); return ICON_END;
             }
           // fall through
-          case 67: break;
-          case 24:
+          case 71: break;
+          case 26:
             { if (isCommand()) {
             yypushback(yylength() - 1);
             yybegin(IN_COMMAND);
@@ -1055,8 +1092,8 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
         }
             }
           // fall through
-          case 68: break;
-          case 25:
+          case 72: break;
+          case 27:
             { if (yycharat(0) == '\'' && ParadoxSyntaxConstraint.LocalisationConceptCommand.testTarget(this)) {
             yybegin(IN_CONCEPT_NAME);
             return LEFT_SINGLE_QUOTE;
@@ -1065,53 +1102,53 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
         yybegin(IN_COMMAND_TEXT);
             }
           // fall through
-          case 69: break;
-          case 26:
+          case 73: break;
+          case 28:
             { return WHITE_SPACE;
             }
           // fall through
-          case 70: break;
-          case 27:
+          case 74: break;
+          case 29:
             { pushbackIfBlank(); return COMMAND_TEXT_TOKEN;
             }
           // fall through
-          case 71: break;
-          case 28:
+          case 75: break;
+          case 30:
             { exitState(EXPECT_COMMAND); return RIGHT_BRACKET;
             }
           // fall through
-          case 72: break;
-          case 29:
+          case 76: break;
+          case 31:
             { yybegin(IN_COMMAND_ARGUMENT); return PIPE;
             }
           // fall through
-          case 73: break;
-          case 30:
+          case 77: break;
+          case 32:
             { return RIGHT_SINGLE_QUOTE;
             }
           // fall through
-          case 74: break;
-          case 31:
+          case 78: break;
+          case 33:
             { yybegin(IN_CONCEPT_AFTER_COMMA); return COMMA;
             }
           // fall through
-          case 75: break;
-          case 32:
+          case 79: break;
+          case 34:
             { return CONCEPT_NAME_TOKEN;
             }
           // fall through
-          case 76: break;
-          case 33:
+          case 80: break;
+          case 35:
             { yypushback(yylength()); yybegin(IN_CONCEPT_TEXT);
             }
           // fall through
-          case 77: break;
-          case 34:
+          case 81: break;
+          case 36:
             { yybegin(IN_CONCEPT_TEXT); return WHITE_SPACE;
             }
           // fall through
-          case 78: break;
-          case 35:
+          case 82: break;
+          case 37:
             { if (isTextIcon()) {
             yypushback(yylength() - 1);
             yybegin(IN_TEXT_ICON);
@@ -1123,18 +1160,19 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
         }
             }
           // fall through
-          case 79: break;
-          case 36:
-            { exitState(EXPECT_TEXT_ICON); return TEXT_ICON_END;
+          case 83: break;
+          case 38:
+            { exitState(EXPECT_TEXT_ICON);
+        return TEXT_ICON_END;
             }
           // fall through
-          case 80: break;
-          case 37:
+          case 84: break;
+          case 39:
             { return TEXT_ICON_TOKEN;
             }
           // fall through
-          case 81: break;
-          case 38:
+          case 85: break;
+          case 40:
             { if (isTextFormat()) {
             yypushback(yylength() - 1);
             yybegin(IN_TEXT_FORMAT_ID);
@@ -1146,38 +1184,41 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
         }
             }
           // fall through
-          case 82: break;
-          case 39:
+          case 86: break;
+          case 41:
             { yypushback(yylength()); yybegin(IN_TEXT_FORMAT_TEXT);
             }
           // fall through
-          case 83: break;
-          case 40:
+          case 87: break;
+          case 42:
             { yybegin(IN_TEXT_FORMAT_TEXT); return WHITE_SPACE;
             }
           // fall through
-          case 84: break;
-          case 41:
+          case 88: break;
+          case 43:
             { return TEXT_FORMAT_TOKEN;
             }
           // fall through
-          case 85: break;
-          case 42:
-            { if (!ParadoxSyntaxConstraint.LocalisationTextFormat.testTarget(this)) return TEXT_TOKEN;
-        exitState(EXPECT_TEXT_FORMAT); return TEXT_FORMAT_END;
-            }
-          // fall through
-          case 86: break;
-          case 43:
-            { exitState(EXPECT_COLORFUL_TEXT); return COLORFUL_TEXT_END;
-            }
-          // fall through
-          case 87: break;
+          case 89: break;
           case 44:
-            { exitState(EXPECT_TEXT_FORMAT); return TEXT_FORMAT_END;
+            { if (!ParadoxSyntaxConstraint.LocalisationTextFormat.testTarget(this)) return TEXT_TOKEN;
+        exitState(EXPECT_TEXT_FORMAT);
+        return TEXT_FORMAT_END;
             }
           // fall through
-          case 88: break;
+          case 90: break;
+          case 45:
+            { exitState(EXPECT_COLORFUL_TEXT);
+        return COLORFUL_TEXT_END;
+            }
+          // fall through
+          case 91: break;
+          case 46:
+            { exitState(EXPECT_TEXT_FORMAT);
+        return TEXT_FORMAT_END;
+            }
+          // fall through
+          case 92: break;
           default:
             zzScanError(ZZ_NO_MATCH);
           }
