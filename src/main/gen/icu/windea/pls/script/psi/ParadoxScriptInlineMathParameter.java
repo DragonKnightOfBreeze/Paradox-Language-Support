@@ -27,6 +27,10 @@ public interface ParadoxScriptInlineMathParameter extends ParadoxScriptInlineMat
 
   @Nullable String getDefaultValue();
 
+  //WARNING: getPresentableText(...) is skipped
+  //matching getPresentableText(ParadoxScriptInlineMathParameter, ...)
+  //methods are not found in ParadoxScriptPsiImplUtil
+
   @Nullable PsiReference getReference();
 
   @NotNull PsiReference @NotNull [] getReferences();

@@ -21,13 +21,13 @@ public interface CwtPropertyKey extends PsiQuoteAwareElement, CwtLiteralValue, C
 
   @NotNull String getValue();
 
-  @NotNull String getPresentableText();
-
   @NotNull CwtPropertyKey setValue(@NotNull String value);
 
   @NotNull CwtPropertyKey setContent(@NotNull String content, @NotNull TextRange range);
 
   @NotNull QuotePattern getQuotePattern();
+
+  @NotNull String getPresentableText();
 
   @Nullable PsiReference getReference();
 

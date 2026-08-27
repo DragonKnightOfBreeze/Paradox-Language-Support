@@ -65,7 +65,7 @@ property_key ::= PROPERTY_KEY_TOKEN {
     "icu.windea.pls.cwt.psi.CwtStringExpressionElement"
   ]
   methods=[
-    getIcon getName getValue getPresentableText setValue setContent getQuotePattern
+    getIcon getName getValue setValue setContent getQuotePattern getPresentableText
     getReference getReferences
   ]
 }
@@ -78,7 +78,7 @@ value ::= boolean | int | float | string | block {
     "icu.windea.pls.cwt.psi.CwtMember"
     "icu.windea.pls.cwt.psi.CwtOptionMember"
   ]
-  methods=[getIcon getName getValue getPresentableText setValue setContent]
+  methods=[getIcon getName getValue setValue setContent getPresentableText]
 }
 boolean ::= BOOLEAN_TOKEN {
   extends=value
@@ -109,7 +109,7 @@ string ::= STRING_TOKEN {
     "icu.windea.pls.cwt.psi.CwtStringExpressionElement"
   ]
   methods=[
-    getIcon getName setName getNameIdentifier getValue setValue getQuotePattern
+    getIcon getName setName getNameIdentifier getValue setValue setContent getQuotePattern getPresentableText
     getReference getReferences
   ]
 }
@@ -121,8 +121,8 @@ block ::= LEFT_BRACE block_item * RIGHT_BRACE {
     "icu.windea.pls.cwt.psi.CwtBoundMemberContainer"
   ]
   methods=[
-    getIcon getValue getPresentableText
     getMemberContainer getMembers getLeftBound getRightBound getComponents
+    getIcon getValue getPresentableText
   ]
 }
 private block_item ::= general_comment | property | option | value {
@@ -149,11 +149,12 @@ option ::= option_key option_separator option_value {
   ]
   methods=[
     option_key="option_key" option_value="value"
-    getIcon getName setName getNameIdentifier getValue
+    getIcon getName setName getNameIdentifier getValue getPresentableText
   ]
 }
 option_key ::= OPTION_KEY_TOKEN {
   implements=[
+    "com.intellij.psi.NavigatablePsiElement"
     "icu.windea.pls.core.psi.PsiQuoteAwareElement"
   ]
   methods=[getIcon getName getValue getQuotePattern]

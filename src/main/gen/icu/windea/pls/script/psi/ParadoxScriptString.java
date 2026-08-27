@@ -24,6 +24,8 @@ public interface ParadoxScriptString extends ParadoxScriptValue, PsiQuoteAwareEl
 
   @NotNull Icon getIcon(@IconFlags int flags);
 
+  @NotNull String getName();
+
   @NotNull String getValue();
 
   @NotNull ParadoxScriptValue setValue(@NotNull String value);
@@ -31,6 +33,8 @@ public interface ParadoxScriptString extends ParadoxScriptValue, PsiQuoteAwareEl
   @NotNull ParadoxScriptValue setContent(@NotNull String content, @NotNull TextRange range);
 
   @NotNull QuotePattern getQuotePattern();
+
+  @NotNull String getPresentableText();
 
   @Nullable PsiReference getReference();
 

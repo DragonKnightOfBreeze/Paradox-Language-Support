@@ -24,6 +24,8 @@ public interface ParadoxLocalisationConceptCommand extends ParadoxLocalisationRi
 
   @NotNull ParadoxLocalisationConceptCommand setName(@NotNull String name);
 
+  @NotNull String getPresentableText();
+
   @Nullable PsiReference getReference();
 
   @NotNull PsiReference @NotNull [] getReferences();

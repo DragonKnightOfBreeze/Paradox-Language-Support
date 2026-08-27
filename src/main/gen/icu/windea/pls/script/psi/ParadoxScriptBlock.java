@@ -26,16 +26,6 @@ public interface ParadoxScriptBlock extends ParadoxScriptValue, ParadoxScriptMem
   @NotNull
   List<ParadoxScriptValue> getValueList();
 
-  @NotNull Icon getIcon(@IconFlags int flags);
-
-  @NotNull String getValue();
-
-  @NotNull String getPresentableText();
-
-  @Nullable PsiReference getReference();
-
-  @NotNull PsiReference @NotNull [] getReferences();
-
   @NotNull ParadoxScriptBlock getMemberContainer();
 
   @NotNull List<@NotNull ParadoxScriptMember> getMembers();
@@ -45,6 +35,16 @@ public interface ParadoxScriptBlock extends ParadoxScriptValue, ParadoxScriptMem
   @Nullable PsiElement getRightBound();
 
   @NotNull List<@NotNull ParadoxScriptStatement> getComponents();
+
+  @NotNull Icon getIcon(@IconFlags int flags);
+
+  @NotNull String getValue();
+
+  @NotNull String getPresentableText();
+
+  @Nullable PsiReference getReference();
+
+  @NotNull PsiReference @NotNull [] getReferences();
 
   @NotNull GlobalSearchScope getResolveScope();
 

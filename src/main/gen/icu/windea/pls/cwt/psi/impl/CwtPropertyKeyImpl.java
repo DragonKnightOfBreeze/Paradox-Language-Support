@@ -49,11 +49,6 @@ public class CwtPropertyKeyImpl extends ASTWrapperPsiElement implements CwtPrope
   }
 
   @Override
-  public @NotNull String getPresentableText() {
-    return CwtPsiImplUtil.getPresentableText(this);
-  }
-
-  @Override
   public @NotNull CwtPropertyKey setValue(@NotNull String value) {
     return CwtPsiImplUtil.setValue(this, value);
   }
@@ -66,6 +61,11 @@ public class CwtPropertyKeyImpl extends ASTWrapperPsiElement implements CwtPrope
   @Override
   public @NotNull QuotePattern getQuotePattern() {
     return CwtPsiImplUtil.getQuotePattern(this);
+  }
+
+  @Override
+  public @NotNull String getPresentableText() {
+    return CwtPsiImplUtil.getPresentableText(this);
   }
 
   @Override

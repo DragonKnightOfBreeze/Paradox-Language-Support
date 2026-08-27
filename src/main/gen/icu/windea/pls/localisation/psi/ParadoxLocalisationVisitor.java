@@ -91,6 +91,7 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
 
   public void visitRichText(@NotNull ParadoxLocalisationRichText o) {
     visitNavigatablePsiElement(o);
+    // visitPsiPresentableElement(o);
   }
 
   public void visitScriptedVariableReference(@NotNull ParadoxLocalisationScriptedVariableReference o) {

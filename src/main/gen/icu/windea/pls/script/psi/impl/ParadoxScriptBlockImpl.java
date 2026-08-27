@@ -58,31 +58,6 @@ public class ParadoxScriptBlockImpl extends ParadoxScriptValueImpl implements Pa
   }
 
   @Override
-  public @NotNull Icon getIcon(@IconFlags int flags) {
-    return ParadoxScriptPsiImplUtil.getIcon(this, flags);
-  }
-
-  @Override
-  public @NotNull String getValue() {
-    return ParadoxScriptPsiImplUtil.getValue(this);
-  }
-
-  @Override
-  public @NotNull String getPresentableText() {
-    return ParadoxScriptPsiImplUtil.getPresentableText(this);
-  }
-
-  @Override
-  public @Nullable PsiReference getReference() {
-    return ParadoxScriptPsiImplUtil.getReference(this);
-  }
-
-  @Override
-  public @NotNull PsiReference @NotNull [] getReferences() {
-    return ParadoxScriptPsiImplUtil.getReferences(this);
-  }
-
-  @Override
   public @NotNull ParadoxScriptBlock getMemberContainer() {
     return ParadoxScriptPsiImplUtil.getMemberContainer(this);
   }
@@ -105,6 +80,31 @@ public class ParadoxScriptBlockImpl extends ParadoxScriptValueImpl implements Pa
   @Override
   public @NotNull List<@NotNull ParadoxScriptStatement> getComponents() {
     return ParadoxScriptPsiImplUtil.getComponents(this);
+  }
+
+  @Override
+  public @NotNull Icon getIcon(@IconFlags int flags) {
+    return ParadoxScriptPsiImplUtil.getIcon(this, flags);
+  }
+
+  @Override
+  public @NotNull String getValue() {
+    return ParadoxScriptPsiImplUtil.getValue(this);
+  }
+
+  @Override
+  public @NotNull String getPresentableText() {
+    return ParadoxScriptPsiImplUtil.getPresentableText(this);
+  }
+
+  @Override
+  public @Nullable PsiReference getReference() {
+    return ParadoxScriptPsiImplUtil.getReference(this);
+  }
+
+  @Override
+  public @NotNull PsiReference @NotNull [] getReferences() {
+    return ParadoxScriptPsiImplUtil.getReferences(this);
   }
 
   @Override

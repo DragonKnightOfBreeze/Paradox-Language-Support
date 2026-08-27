@@ -22,6 +22,8 @@ public interface ParadoxLocalisationParameter extends ParadoxLocalisationRichTex
 
   @NotNull ParadoxLocalisationParameter setName(@NotNull String name);
 
+  @NotNull String getPresentableText();
+
   @Nullable PsiReference getReference();
 
   @NotNull PsiReference @NotNull [] getReferences();

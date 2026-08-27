@@ -162,8 +162,11 @@ class StdlibExtensionsTest {
 
     @Test
     fun truncate_and_keep_quotes_test() {
+        Assert.assertEquals("abcdef", "abcdef".truncate(0))
         Assert.assertEquals("abc...", "abcdef".truncate(3))
-        Assert.assertEquals("\"abc...\"", "\"abcdef\"".truncateAndKeepQuotes(3))
+        Assert.assertEquals("abcdef", "abcdef".truncate(6))
+        Assert.assertEquals("abcdef", "abcdef".truncate(9))
+        // Assert.assertEquals("\"abc...\"", "\"abcdef\"".truncateAndKeepQuotes(3))
     }
 
     @Test

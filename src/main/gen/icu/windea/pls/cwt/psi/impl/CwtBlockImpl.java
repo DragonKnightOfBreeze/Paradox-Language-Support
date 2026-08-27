@@ -63,21 +63,6 @@ public class CwtBlockImpl extends CwtValueImpl implements CwtBlock {
   }
 
   @Override
-  public @NotNull Icon getIcon(@IconFlags int flags) {
-    return CwtPsiImplUtil.getIcon(this, flags);
-  }
-
-  @Override
-  public @NotNull String getValue() {
-    return CwtPsiImplUtil.getValue(this);
-  }
-
-  @Override
-  public @NotNull String getPresentableText() {
-    return CwtPsiImplUtil.getPresentableText(this);
-  }
-
-  @Override
   public @NotNull CwtBlock getMemberContainer() {
     return CwtPsiImplUtil.getMemberContainer(this);
   }
@@ -100,6 +85,21 @@ public class CwtBlockImpl extends CwtValueImpl implements CwtBlock {
   @Override
   public @NotNull List<@NotNull CwtStatement> getComponents() {
     return CwtPsiImplUtil.getComponents(this);
+  }
+
+  @Override
+  public @NotNull Icon getIcon(@IconFlags int flags) {
+    return CwtPsiImplUtil.getIcon(this, flags);
+  }
+
+  @Override
+  public @NotNull String getValue() {
+    return CwtPsiImplUtil.getValue(this);
+  }
+
+  @Override
+  public @NotNull String getPresentableText() {
+    return CwtPsiImplUtil.getPresentableText(this);
   }
 
   @Override

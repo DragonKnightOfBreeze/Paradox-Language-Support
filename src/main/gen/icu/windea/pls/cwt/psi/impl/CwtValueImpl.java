@@ -46,11 +46,6 @@ public abstract class CwtValueImpl extends ASTWrapperPsiElement implements CwtVa
   }
 
   @Override
-  public @NotNull String getPresentableText() {
-    return CwtPsiImplUtil.getPresentableText(this);
-  }
-
-  @Override
   public @NotNull CwtValue setValue(@NotNull String value) {
     return CwtPsiImplUtil.setValue(this, value);
   }
@@ -58,6 +53,11 @@ public abstract class CwtValueImpl extends ASTWrapperPsiElement implements CwtVa
   @Override
   public @NotNull CwtValue setContent(@NotNull String content, @NotNull TextRange range) {
     return CwtPsiImplUtil.setContent(this, content, range);
+  }
+
+  @Override
+  public @NotNull String getPresentableText() {
+    return CwtPsiImplUtil.getPresentableText(this);
   }
 
   @Override

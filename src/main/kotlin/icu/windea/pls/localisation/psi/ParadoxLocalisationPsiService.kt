@@ -6,12 +6,41 @@ import com.intellij.psi.util.elementType
 import com.intellij.psi.util.prevLeaf
 import icu.windea.pls.base.settings.ChronicleInternalSettings
 import icu.windea.pls.core.isExactLineBreak
+import icu.windea.pls.core.psi.PsiPresentableElement
 import icu.windea.pls.core.truncate
+import icu.windea.pls.core.util.values.or
+import icu.windea.pls.core.util.values.unresolved
+import icu.windea.pls.model.constants.ChronicleStrings
 
 object ParadoxLocalisationPsiService {
-    fun getPresentableText(element: ParadoxLocalisationExpressionElement): String {
-        val limit = ChronicleInternalSettings.getInstance().presentableTextLimit
-        return element.text.truncate(limit)
+    private val presentableTextLimit get() = ChronicleInternalSettings.getInstance().presentableTextLimit
+
+    fun getPresentableText(element: PsiPresentableElement): String {
+        return when (element) {
+            is ParadoxLocalisationExpressionElement -> element.text.truncate(presentableTextLimit)
+            is ParadoxLocalisationColorfulText -> {
+                val name = element.name
+                ChronicleStrings.colorfulTextFolder(name.or.unresolved())
+            }
+            is ParadoxLocalisationCommand -> {
+                val expression = element.commandText?.text
+                ChronicleStrings.commandFolder(expression.orEmpty().truncate(presentableTextLimit))
+            }
+            is ParadoxLocalisationConceptCommand -> {
+                val expression = element.conceptName?.text
+                val withText = element.conceptText != null
+                if (withText) {
+                    ChronicleStrings.conceptCommandFolder(expression.orEmpty().truncate(presentableTextLimit))
+                } else {
+                    ChronicleStrings.conceptCommandWithTextFolder(expression.orEmpty().truncate(presentableTextLimit))
+                }
+            }
+            is ParadoxLocalisationTextFormat -> {
+                val name = element.name
+                ChronicleStrings.textFormatFolder(name.or.unresolved())
+            }
+            else -> element.text
+        }
     }
 
     fun canAttachComment(element: PsiElement): Boolean {

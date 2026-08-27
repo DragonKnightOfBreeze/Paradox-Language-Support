@@ -43,6 +43,21 @@ public class ParadoxScriptPropertyImpl extends ParadoxScriptStubElementImpl<Para
   }
 
   @Override
+  public @Nullable ParadoxScriptBlock getMemberContainer() {
+    return ParadoxScriptPsiImplUtil.getMemberContainer(this);
+  }
+
+  @Override
+  public @Nullable List<@NotNull ParadoxScriptMember> getMembers() {
+    return ParadoxScriptPsiImplUtil.getMembers(this);
+  }
+
+  @Override
+  public @Nullable ParadoxScriptBlock getBlock() {
+    return ParadoxScriptPsiImplUtil.getBlock(this);
+  }
+
+  @Override
   @NotNull
   public ParadoxScriptPropertyKey getPropertyKey() {
     return notNullChild(PsiTreeUtil.getChildOfType(this, ParadoxScriptPropertyKey.class));
@@ -85,11 +100,6 @@ public class ParadoxScriptPropertyImpl extends ParadoxScriptStubElementImpl<Para
   }
 
   @Override
-  public @Nullable ParadoxScriptBlock getBlock() {
-    return ParadoxScriptPsiImplUtil.getBlock(this);
-  }
-
-  @Override
   public @NotNull IElementType getIElementType() {
     return ParadoxScriptPsiImplUtil.getIElementType(this);
   }
@@ -97,16 +107,6 @@ public class ParadoxScriptPropertyImpl extends ParadoxScriptStubElementImpl<Para
   @Override
   public boolean isEquivalentTo(@NotNull PsiElement another) {
     return ParadoxScriptPsiImplUtil.isEquivalentTo(this, another);
-  }
-
-  @Override
-  public @Nullable ParadoxScriptBlock getMemberContainer() {
-    return ParadoxScriptPsiImplUtil.getMemberContainer(this);
-  }
-
-  @Override
-  public @Nullable List<@NotNull ParadoxScriptMember> getMembers() {
-    return ParadoxScriptPsiImplUtil.getMembers(this);
   }
 
   @Override

@@ -1,22 +1,24 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.script.psi.impl;
 
-import java.util.List;
-import org.jetbrains.annotations.*;
 import com.intellij.lang.ASTNode;
+import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.util.PsiTreeUtil;
-import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
-import icu.windea.pls.script.psi.stubs.ParadoxScriptScriptedVariableStub;
-import icu.windea.pls.script.psi.*;
-import com.intellij.navigation.ItemPresentation;
-import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
-import com.intellij.psi.tree.IElementType;
-import javax.swing.Icon;
 import com.intellij.psi.stubs.IStubElementType;
+import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.util.PsiTreeUtil;
+import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable;
+import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableName;
+import icu.windea.pls.script.psi.ParadoxScriptValue;
+import icu.windea.pls.script.psi.ParadoxScriptVisitor;
+import icu.windea.pls.script.psi.stubs.ParadoxScriptScriptedVariableStub;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import javax.swing.*;
 
 public class ParadoxScriptScriptedVariableImpl extends ParadoxScriptStubElementImpl<ParadoxScriptScriptedVariableStub> implements ParadoxScriptScriptedVariable {
 
@@ -82,6 +84,11 @@ public class ParadoxScriptScriptedVariableImpl extends ParadoxScriptStubElementI
   @Override
   public @Nullable String getValue() {
     return ParadoxScriptPsiImplUtil.getValue(this);
+  }
+
+  @Override
+  public @NotNull String getPresentableText() {
+    return ParadoxScriptPsiImplUtil.getPresentableText(this);
   }
 
   @Override

@@ -28,13 +28,13 @@ public interface ParadoxScriptPropertyKey extends PsiQuoteAwareElement, ParadoxS
 
   @NotNull String getValue();
 
-  @NotNull String getPresentableText();
-
   @NotNull ParadoxScriptPropertyKey setValue(@NotNull String value);
 
   @NotNull ParadoxScriptPropertyKey setContent(@NotNull String content, @NotNull TextRange range);
 
   @NotNull QuotePattern getQuotePattern();
+
+  @NotNull String getPresentableText();
 
   @Nullable PsiReference getReference();
 

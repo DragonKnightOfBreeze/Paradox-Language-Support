@@ -21,6 +21,8 @@ import icu.windea.pls.core.findChildren
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.processChild
+import icu.windea.pls.core.psi.PsiPresentableElement
+import icu.windea.pls.core.psi.PsiQuoteAwareElement
 import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.core.splitByBlank
 import icu.windea.pls.core.substringIn
@@ -127,6 +129,21 @@ object ParadoxScriptPsiImplUtil {
     // region ParadoxScriptProperty
 
     @JvmStatic
+    fun getMemberContainer(element: ParadoxScriptProperty): ParadoxScriptBlock? {
+        return element.propertyValue.castOrNull()
+    }
+
+    @JvmStatic
+    fun getMembers(element: ParadoxScriptProperty): List<ParadoxScriptMember>? {
+        return getMemberContainer(element)?.findChildren<_>()
+    }
+
+    @JvmStatic
+    fun getBlock(element: ParadoxScriptProperty): ParadoxScriptBlock? {
+        return element.findChild<ParadoxScriptBlock>(forward = false)
+    }
+
+    @JvmStatic
     fun getIcon(element: ParadoxScriptProperty, @Iconable.IconFlags flags: Int): Icon {
         return ChronicleIcons.Nodes.Property
     }
@@ -154,11 +171,6 @@ object ParadoxScriptPsiImplUtil {
     }
 
     @JvmStatic
-    fun getBlock(element: ParadoxScriptProperty): ParadoxScriptBlock? {
-        return element.findChild<ParadoxScriptBlock>(forward = false)
-    }
-
-    @JvmStatic
     fun getIElementType(element: ParadoxScriptProperty): IElementType {
         return PROPERTY
     }
@@ -171,16 +183,6 @@ object ParadoxScriptPsiImplUtil {
         if (element.definitionInfo.let { it == null || it != another.definitionInfo }) return false
         // if (selectGameType(element) != selectGameType(another)) return false // unnecessary
         return true
-    }
-
-    @JvmStatic
-    fun getMemberContainer(element: ParadoxScriptProperty): ParadoxScriptBlock? {
-        return element.propertyValue.castOrNull()
-    }
-
-    @JvmStatic
-    fun getMembers(element: ParadoxScriptProperty): List<ParadoxScriptMember>? {
-        return getMemberContainer(element)?.findChildren<_>()
     }
 
     // endregion
@@ -210,11 +212,6 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun setContent(element: ParadoxScriptPropertyKey, content: String, range: TextRange): ParadoxScriptPropertyKey {
         return ParadoxScriptPsiManipulationService.changeContent(element, content, range)
-    }
-
-    @JvmStatic
-    fun getQuotePattern(element: ParadoxScriptPropertyKey): QuotePattern {
-        return QuotePatterns.ParadoxScript
     }
 
     // endregion
@@ -266,11 +263,6 @@ object ParadoxScriptPsiImplUtil {
         return ParadoxScriptPsiManipulationService.changeContent(element, content, range)
     }
 
-    @JvmStatic
-    fun getQuotePattern(element: ParadoxScriptString): QuotePattern {
-        return QuotePatterns.ParadoxScript
-    }
-
     // endregion
 
     // region ParadoxScriptColor
@@ -300,16 +292,6 @@ object ParadoxScriptPsiImplUtil {
     // region ParadoxScriptBlock
 
     @JvmStatic
-    fun getIcon(element: ParadoxScriptBlock, @Iconable.IconFlags flags: Int): Icon {
-        return ChronicleIcons.Nodes.Block
-    }
-
-    @JvmStatic
-    fun getValue(element: ParadoxScriptBlock): String {
-        return ChronicleStrings.blockFolder
-    }
-
-    @JvmStatic
     fun getMemberContainer(element: ParadoxScriptBlock): ParadoxScriptBlock {
         return element
     }
@@ -327,6 +309,16 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun getRightBound(element: ParadoxScriptBlock): PsiElement? {
         return element.lastChild?.takeIf { it.elementType == RIGHT_BRACE }
+    }
+
+    @JvmStatic
+    fun getIcon(element: ParadoxScriptBlock, @Iconable.IconFlags flags: Int): Icon {
+        return ChronicleIcons.Nodes.Block
+    }
+
+    @JvmStatic
+    fun getValue(element: ParadoxScriptBlock): String {
+        return ChronicleStrings.blockFolder
     }
 
     // endregion
@@ -356,11 +348,6 @@ object ParadoxScriptPsiImplUtil {
             }
         }
         return builder.toString().optimized() // optimized to optimize memory
-    }
-
-    @JvmStatic
-    fun getPresentationText(element: ParadoxScriptConditionalBlock): String? {
-        return element.conditionExpression?.let { ChronicleStrings.conditionalBlockFolder(it) }
     }
 
     @JvmStatic
@@ -413,10 +400,10 @@ object ParadoxScriptPsiImplUtil {
         return builder.toString().optimized() // optimized to optimize memory
     }
 
-    @JvmStatic
-    fun getPresentationText(element: ParadoxScriptInlineConditionalBlock): String? {
-        return element.conditionExpression?.let { ChronicleStrings.conditionalBlockFolder(it) }
-    }
+    // @JvmStatic
+    // fun getPresentableText(element: ParadoxScriptInlineConditionalBlock): String? {
+    //     return element.conditionExpression?.let { ChronicleStrings.(getConditionalBlockFolder())(it) }
+    // }
 
     @JvmStatic
     fun getLeftBound(element: ParadoxScriptInlineConditionalBlock): PsiElement? {
@@ -674,16 +661,6 @@ object ParadoxScriptPsiImplUtil {
     }
 
     @JvmStatic
-    fun getPresentableText(element: ParadoxScriptProperty): String {
-        return ParadoxScriptPsiService.getPresentableText(element)
-    }
-
-    @JvmStatic
-    fun getPresentableText(element: ParadoxScriptExpressionElement): String {
-        return ParadoxScriptPsiService.getPresentableText(element)
-    }
-
-    @JvmStatic
     fun setValue(element: ParadoxScriptExpressionElement, value: String): ParadoxScriptExpressionElement {
         throw IncorrectOperationException()
     }
@@ -691,6 +668,16 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun setContent(element: ParadoxScriptExpressionElement, content: String, range: TextRange): ParadoxScriptExpressionElement {
         throw IncorrectOperationException()
+    }
+
+    @JvmStatic
+    fun getQuotePattern(element: PsiQuoteAwareElement): QuotePattern {
+        return QuotePatterns.ParadoxScript
+    }
+
+    @JvmStatic
+    fun getPresentableText(element: PsiPresentableElement): String {
+        return ParadoxScriptPsiService.getPresentableText(element)
     }
 
     @JvmStatic

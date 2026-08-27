@@ -16,6 +16,7 @@ import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.core.findChild
 import icu.windea.pls.core.findChildren
 import icu.windea.pls.core.orNull
+import icu.windea.pls.core.psi.PsiPresentableElement
 import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.core.unquote
 import icu.windea.pls.lang.search.scope.ParadoxSearchScope
@@ -482,11 +483,6 @@ object ParadoxLocalisationPsiImplUtil {
     }
 
     @JvmStatic
-    fun getPresentableText(element: ParadoxLocalisationExpressionElement): String {
-        return ParadoxLocalisationPsiService.getPresentableText(element)
-    }
-
-    @JvmStatic
     fun setValue(element: ParadoxLocalisationExpressionElement, value: String): ParadoxLocalisationExpressionElement {
         throw IncorrectOperationException()
     }
@@ -494,6 +490,11 @@ object ParadoxLocalisationPsiImplUtil {
     @JvmStatic
     fun setContent(element: ParadoxLocalisationExpressionElement, content: String, range: TextRange): ParadoxLocalisationExpressionElement {
         throw IncorrectOperationException()
+    }
+
+    @JvmStatic
+    fun getPresentableText(element: PsiPresentableElement): String {
+        return ParadoxLocalisationPsiService.getPresentableText(element)
     }
 
     @JvmStatic

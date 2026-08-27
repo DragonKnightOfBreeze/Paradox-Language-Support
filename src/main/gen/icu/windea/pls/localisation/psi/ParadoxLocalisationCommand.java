@@ -18,6 +18,8 @@ public interface ParadoxLocalisationCommand extends ParadoxLocalisationRichText,
 
   @NotNull Icon getIcon(@IconFlags int flags);
 
+  @NotNull String getPresentableText();
+
   @NotNull GlobalSearchScope getResolveScope();
 
   @NotNull SearchScope getUseScope();

@@ -8,41 +8,70 @@ import icu.windea.pls.base.settings.ChronicleInternalSettings
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.forEachChild
 import icu.windea.pls.core.psi.PsiBoundElement
+import icu.windea.pls.core.psi.PsiPresentableElement
 import icu.windea.pls.core.psi.PsiService
-import icu.windea.pls.core.truncateAndKeepQuotes
+import icu.windea.pls.core.transformAndKeepQuotes
+import icu.windea.pls.core.truncate
 import icu.windea.pls.core.util.values.FallbackStrings
+import icu.windea.pls.core.util.values.or
+import icu.windea.pls.core.util.values.unresolved
+import icu.windea.pls.model.constants.ChronicleStrings
 import icu.windea.pls.script.ParadoxScriptLanguage
 import java.util.*
 import java.util.function.IntUnaryOperator
 
 @Suppress("unused")
 object ParadoxScriptPsiService {
-    fun getPresentableText(element: ParadoxScriptProperty): String {
-        var keyElement: ParadoxScriptPropertyKey? = null
-        var separatorElement: PsiElement? = null
-        var valueElement: ParadoxScriptValue? = null
-        element.forEachChild { e ->
-            when {
-                e is ParadoxScriptPropertyKey -> keyElement = e
-                isPropertySeparator(e) -> separatorElement = e
-                e is ParadoxScriptValue -> valueElement = e
-            }
-        }
-        return buildString {
-            if (keyElement != null) append(getPresentableText(keyElement)) else append(FallbackStrings.unresolved)
-            if (separatorElement?.elementType != ParadoxScriptElementTypes.SAFE_CALL_ASSIGN_SIGN) append(" ")
-            append(separatorElement?.text ?: "=")
-            append(" ")
-            if (valueElement != null) append(getPresentableText(valueElement)) else append(FallbackStrings.unresolved)
-        }
-    }
+    private val presentableTextLimit get() =  ChronicleInternalSettings.getInstance().presentableTextLimit
 
-    fun getPresentableText(element: ParadoxScriptExpressionElement): String {
-        if (element is ParadoxScriptStringExpressionElement) {
-            val limit = ChronicleInternalSettings.getInstance().presentableTextLimit
-            return element.text.truncateAndKeepQuotes(limit)
+    fun getPresentableText(element: PsiPresentableElement): String {
+        return when(element) {
+            is ParadoxScriptProperty -> {
+                var keyElement: ParadoxScriptPropertyKey? = null
+                var separatorElement: PsiElement? = null
+                var valueElement: ParadoxScriptValue? = null
+                element.forEachChild { e ->
+                    when {
+                        e is ParadoxScriptPropertyKey -> keyElement = e
+                        isPropertySeparator(e) -> separatorElement = e
+                        e is ParadoxScriptValue -> valueElement = e
+                    }
+                }
+                buildString {
+                    if (keyElement != null) append(getPresentableText(keyElement)) else append(FallbackStrings.unresolved)
+                    if (separatorElement?.elementType != ParadoxScriptElementTypes.SAFE_CALL_ASSIGN_SIGN) append(" ")
+                    append(separatorElement?.text ?: "=")
+                    append(" ")
+                    if (valueElement != null) append(getPresentableText(valueElement)) else append(FallbackStrings.unresolved)
+                }
+            }
+            is ParadoxScriptScriptedVariable -> {
+                var nameElementElement: ParadoxScriptScriptedVariableName? = null
+                var valueElement: ParadoxScriptValue? = null
+                element.forEachChild { e ->
+                    when {
+                        e is ParadoxScriptScriptedVariableName -> nameElementElement = e
+                        e is ParadoxScriptValue -> valueElement = e
+                    }
+                }
+                buildString {
+                    if (nameElementElement != null) append(nameElementElement.text) else append(FallbackStrings.unresolved)
+                    append(" = ")
+                    if (valueElement != null) append(getPresentableText(valueElement)) else append(FallbackStrings.unresolved)
+                }
+            }
+            is ParadoxScriptConditionalBlock -> {
+                val expression = element.conditionExpression
+                ChronicleStrings.conditionalBlockFolder(expression.or.unresolved())
+            }
+            is ParadoxScriptInlineConditionalBlock -> {
+                val expression = element.conditionExpression
+                ChronicleStrings.conditionalBlockFolder(expression.or.unresolved())
+            }
+            is ParadoxScriptStringExpressionElement -> element.text.transformAndKeepQuotes { it.truncate(presentableTextLimit) }
+            is ParadoxScriptExpressionElement -> element.value
+            else -> element.text
         }
-        return element.value
     }
 
     fun canAttachComment(element: PsiElement): Boolean {

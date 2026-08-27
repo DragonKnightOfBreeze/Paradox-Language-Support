@@ -8,7 +8,7 @@ import icu.windea.pls.script.psi.ParadoxScriptConditionalBlock
 
 class ParadoxScriptConditionalBlockUnwrapper : ParadoxScriptUnwrapper() {
     override fun getDescription(e: PsiElement): String {
-        val name = if (e is ParadoxScriptConditionalBlock) e.presentationText.or.unresolved() else ""
+        val name = if (e is ParadoxScriptConditionalBlock) e.presentableText.or.unresolved() else ""
         return ChronicleBundle.message("script.unwrap.conditionalBlock", name)
     }
 

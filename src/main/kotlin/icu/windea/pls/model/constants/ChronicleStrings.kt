@@ -56,10 +56,10 @@ object ChronicleStrings {
     const val colorEndMarker = "§!"
     const val iconStartMarker = "£"
     const val iconEndMarker = "£"
-    const val textFormatStartMarker = "#"
-    const val textFormatEndMarker = "#!"
     const val textIconStartMarker = "@"
     const val textIconEndMarker = "!"
+    const val textFormatStartMarker = "#"
+    const val textFormatEndMarker = "#!"
 
     const val yesKeyword = "yes"
     const val noKeyword = "no"
@@ -69,8 +69,13 @@ object ChronicleStrings {
     const val quotedFolder = "\"...\""
     const val blockFolder = "{...}"
     const val inlineMathFolder = "@[...]"
-    val conditionalBlockFolder = { expression: String -> "[[$expression]...]" }
+    fun conditionalBlockFolder(expression: String) =  "[[${expression}]...]"
     const val commandFolder = "[...]"
     const val conceptCommandFolder = "['...']"
     const val conceptCommandWithTextFolder = "['...', ...]"
+    fun commandFolder(expression: String) = "[${expression}]"
+    fun conceptCommandFolder(expression: String) = "['${expression}']"
+    fun conceptCommandWithTextFolder(expression: String) = "['${expression}', ...]"
+    fun colorfulTextFolder(name: String) = "§${name}...§!"
+    fun textFormatFolder(name: String) = "#${name}...#!"
 }

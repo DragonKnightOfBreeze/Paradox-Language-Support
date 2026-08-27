@@ -1,18 +1,20 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.localisation.psi.impl;
 
-import java.util.List;
-import org.jetbrains.annotations.*;
 import com.intellij.lang.ASTNode;
+import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.util.PsiTreeUtil;
-import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
-import icu.windea.pls.localisation.psi.*;
-import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
+import com.intellij.psi.util.PsiTreeUtil;
+import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter;
+import icu.windea.pls.localisation.psi.ParadoxLocalisationParameterArgument;
+import icu.windea.pls.localisation.psi.ParadoxLocalisationScriptedVariableReference;
+import icu.windea.pls.localisation.psi.ParadoxLocalisationVisitor;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ParadoxLocalisationParameterImpl extends ParadoxLocalisationRichTextImpl implements ParadoxLocalisationParameter {
 
@@ -55,6 +57,11 @@ public class ParadoxLocalisationParameterImpl extends ParadoxLocalisationRichTex
   @Override
   public @NotNull ParadoxLocalisationParameter setName(@NotNull String name) {
     return ParadoxLocalisationPsiImplUtil.setName(this, name);
+  }
+
+  @Override
+  public @NotNull String getPresentableText() {
+    return ParadoxLocalisationPsiImplUtil.getPresentableText(this);
   }
 
   @Override

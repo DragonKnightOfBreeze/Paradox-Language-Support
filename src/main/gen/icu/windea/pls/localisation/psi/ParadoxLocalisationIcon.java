@@ -23,6 +23,8 @@ public interface ParadoxLocalisationIcon extends ParadoxLocalisationRichText, Pa
 
   @NotNull ParadoxLocalisationIcon setName(@NotNull String name);
 
+  @NotNull String getPresentableText();
+
   @Nullable PsiReference getReference();
 
   @NotNull PsiReference @NotNull [] getReferences();

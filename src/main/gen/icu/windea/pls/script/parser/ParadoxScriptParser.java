@@ -161,26 +161,6 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // NOT_SIGN ? conditional_parameter
-  public static boolean conditional_expression(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "conditional_expression")) return false;
-    if (!nextTokenIs(b, "<conditional block expression>", CONDITION_PARAMETER_TOKEN, NOT_SIGN)) return false;
-    boolean r;
-    Marker m = enter_section_(b, l, _NONE_, CONDITIONAL_EXPRESSION, "<conditional block expression>");
-    r = conditional_expression_0(b, l + 1);
-    r = r && conditional_parameter(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
-    return r;
-  }
-
-  // NOT_SIGN ?
-  private static boolean conditional_expression_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "conditional_expression_0")) return false;
-    consumeToken(b, NOT_SIGN);
-    return true;
-  }
-
-  /* ********************************************************** */
   // COMMENT | conditional_block_value | property | conditional_block
   static boolean conditional_block_item(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "conditional_block_item")) return false;
@@ -191,18 +171,6 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
     if (!r) r = property(b, l + 1);
     if (!r) r = conditional_block(b, l + 1);
     exit_section_(b, l, m, r, false, conditional_block_item_auto_recover_);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // CONDITION_PARAMETER_TOKEN
-  public static boolean conditional_parameter(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "conditional_parameter")) return false;
-    if (!nextTokenIs(b, CONDITION_PARAMETER_TOKEN)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, CONDITION_PARAMETER_TOKEN);
-    exit_section_(b, m, CONDITIONAL_PARAMETER, r);
     return r;
   }
 
@@ -223,6 +191,26 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // NOT_SIGN ? conditional_parameter
+  public static boolean conditional_expression(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "conditional_expression")) return false;
+    if (!nextTokenIs(b, "<conditional expression>", CONDITION_PARAMETER_TOKEN, NOT_SIGN)) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, CONDITIONAL_EXPRESSION, "<conditional expression>");
+    r = conditional_expression_0(b, l + 1);
+    r = r && conditional_parameter(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // NOT_SIGN ?
+  private static boolean conditional_expression_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "conditional_expression_0")) return false;
+    consumeToken(b, NOT_SIGN);
+    return true;
+  }
+
+  /* ********************************************************** */
   // NESTED_LEFT_BRACKET conditional_expression NESTED_RIGHT_BRACKET
   static boolean conditional_header(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "conditional_header")) return false;
@@ -235,6 +223,18 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
     r = p && consumeToken(b, NESTED_RIGHT_BRACKET) && r;
     exit_section_(b, l, m, r, p, null);
     return r || p;
+  }
+
+  /* ********************************************************** */
+  // CONDITION_PARAMETER_TOKEN
+  public static boolean conditional_parameter(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "conditional_parameter")) return false;
+    if (!nextTokenIs(b, CONDITION_PARAMETER_TOKEN)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, CONDITION_PARAMETER_TOKEN);
+    exit_section_(b, m, CONDITIONAL_PARAMETER, r);
+    return r;
   }
 
   /* ********************************************************** */

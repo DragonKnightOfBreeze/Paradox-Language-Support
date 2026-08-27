@@ -324,17 +324,17 @@ fun String.truncate(limit: Int, ellipsis: String = "..."): String {
     return if (this.length <= limit) this else this.take(limit) + ellipsis
 }
 
-/** 截断字符串但尽量保留引号对称性。 */
-fun String.truncateAndKeepQuotes(limit: Int, ellipsis: String = "..."): String {
-    if (limit <= 0) return this
-    if (this.isEmpty()) return this
-    if (this == "\"" || this == "\"\"") return this
-    if (this.isLeftQuoted()) {
-        return if (this.length - 2 <= limit) this else this.take(limit + 1) + ellipsis + "\""
-    } else {
-        return if (this.length <= limit) this else this.take(limit) + ellipsis
-    }
-}
+// /** 截断字符串但尽量保留引号对称性。 */
+// fun String.truncateAndKeepQuotes(limit: Int, ellipsis: String = "..."): String {
+//     if (limit <= 0) return this
+//     if (this.isEmpty()) return this
+//     if (this == "\"" || this == "\"\"") return this
+//     if (this.isLeftQuoted()) {
+//         return if (this.length - 2 <= limit) this else this.take(limit + 1) + ellipsis + "\""
+//     } else {
+//         return if (this.length <= limit) this else this.take(limit) + ellipsis
+//     }
+// }
 
 /** 以单个字符分隔符拆分为键值对。找不到分隔符时返回 `null`。 */
 fun String.splitToPair(delimiter: Char): Pair<String, String>? {

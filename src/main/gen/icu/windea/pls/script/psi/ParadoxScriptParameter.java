@@ -27,6 +27,10 @@ public interface ParadoxScriptParameter extends ParadoxParameter, ParadoxArgumen
 
   @Nullable String getDefaultValue();
 
+  //WARNING: getPresentableText(...) is skipped
+  //matching getPresentableText(ParadoxScriptParameter, ...)
+  //methods are not found in ParadoxScriptPsiImplUtil
+
   @Nullable PsiReference getReference();
 
   @NotNull PsiReference @NotNull [] getReferences();

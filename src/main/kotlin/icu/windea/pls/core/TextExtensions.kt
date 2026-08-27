@@ -37,12 +37,31 @@ inline fun String.quote(quotePattern: QuotePattern = QuotePatterns.Default): Str
 inline fun String.unquote(quotePattern: QuotePattern = QuotePatterns.Default): String = quotePattern.unquote(this)
 
 /**
+ * 转换引号之间的文本内容，并保留可能存在的周围的引号。
+ */
+fun String.transformAndKeepQuotes(quotePattern: QuotePattern = QuotePatterns.Default, transform: (String) -> String): String {
+    val text = this
+    if (text.isEmpty()) return ""
+    val leftQuoted = text.isLeftQuoted(quotePattern)
+    val rightQuoted = text.isRightQuoted(quotePattern)
+    if(!leftQuoted && !rightQuoted) return this
+    val startOffset = if (leftQuoted) 1 else 0
+    val rightOffset = if (rightQuoted) -1 else 0
+    return buildString {
+        if(leftQuoted) append(quotePattern.quoteChar)
+        append(transform(text.substring(startOffset, text.length + rightOffset)))
+        if(rightQuoted) append(quotePattern.quoteChar)
+    }
+}
+
+/**
  * 去除文本范围首尾的引号。返回处理后的新的文本范围。
  */
 fun TextRange.unquote(text: String, quotePattern: QuotePattern = QuotePatterns.Default): TextRange {
     if (text.isEmpty()) return TextRange.EMPTY_RANGE
     val leftQuoted = text.isLeftQuoted(quotePattern)
     val rightQuoted = text.isRightQuoted(quotePattern)
+    if(!leftQuoted && !rightQuoted) return this
     val startOffset = if (leftQuoted) startOffset + 1 else startOffset
     val endOffset = if (rightQuoted) endOffset - 1 else endOffset
     return TextRange.create(startOffset, endOffset)

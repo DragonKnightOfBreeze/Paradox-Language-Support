@@ -17,6 +17,12 @@ import java.util.List;
 
 public interface ParadoxScriptProperty extends ParadoxScriptNamedElement, ParadoxScriptMember, ParadoxDefinitionElement, StubBasedPsiElement<ParadoxScriptPropertyStub> {
 
+  @Nullable ParadoxScriptBlock getMemberContainer();
+
+  @Nullable List<@NotNull ParadoxScriptMember> getMembers();
+
+  @Nullable ParadoxScriptBlock getBlock();
+
   @NotNull
   ParadoxScriptPropertyKey getPropertyKey();
 
@@ -35,15 +41,9 @@ public interface ParadoxScriptProperty extends ParadoxScriptNamedElement, Parado
 
   @NotNull String getPresentableText();
 
-  @Nullable ParadoxScriptBlock getBlock();
-
   @NotNull IElementType getIElementType();
 
   boolean isEquivalentTo(@NotNull PsiElement another);
-
-  @Nullable ParadoxScriptBlock getMemberContainer();
-
-  @Nullable List<@NotNull ParadoxScriptMember> getMembers();
 
   @NotNull GlobalSearchScope getResolveScope();
 

@@ -16,6 +16,8 @@ import com.intellij.util.IncorrectOperationException
 import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.findChildren
+import icu.windea.pls.core.psi.PsiPresentableElement
+import icu.windea.pls.core.psi.PsiQuoteAwareElement
 import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.core.text.QuotePattern
 import icu.windea.pls.core.text.QuotePatterns
@@ -92,11 +94,6 @@ object CwtPsiImplUtil {
         return element.text.unquote(QuotePatterns.Cwt)
     }
 
-    @JvmStatic
-    fun getQuotePattern(element: CwtOptionKey): QuotePattern {
-        return QuotePatterns.Cwt
-    }
-
     // endregion
 
     // region CwtProperty
@@ -160,11 +157,6 @@ object CwtPsiImplUtil {
         return CwtPsiManipulationService.changeContent(element, content, range)
     }
 
-    @JvmStatic
-    fun getQuotePattern(element: CwtPropertyKey): QuotePattern {
-        return QuotePatterns.Cwt
-    }
-
     // endregion
 
     // region CwtValue
@@ -218,24 +210,9 @@ object CwtPsiImplUtil {
         return CwtPsiManipulationService.changeContent(element, content, range)
     }
 
-    @JvmStatic
-    fun getQuotePattern(element: CwtString): QuotePattern {
-        return QuotePatterns.Cwt
-    }
-
     // endregion
 
     // region CwtBlock
-
-    @JvmStatic
-    fun getIcon(element: CwtBlock, @Iconable.IconFlags flags: Int): Icon {
-        return ChronicleIcons.Nodes.Block
-    }
-
-    @JvmStatic
-    fun getValue(element: CwtBlock): String {
-        return ChronicleStrings.blockFolder
-    }
 
     @JvmStatic
     fun getMemberContainer(element: CwtBlock): CwtBlock {
@@ -255,6 +232,16 @@ object CwtPsiImplUtil {
     @JvmStatic
     fun getRightBound(element: CwtBlock): PsiElement? {
         return element.lastChild?.takeIf { it.elementType == RIGHT_BRACE }
+    }
+
+    @JvmStatic
+    fun getIcon(element: CwtBlock, @Iconable.IconFlags flags: Int): Icon {
+        return ChronicleIcons.Nodes.Block
+    }
+
+    @JvmStatic
+    fun getValue(element: CwtBlock): String {
+        return ChronicleStrings.blockFolder
     }
 
     // endregion
@@ -300,16 +287,6 @@ object CwtPsiImplUtil {
     }
 
     @JvmStatic
-    fun getPresentableText(element: CwtProperty): String {
-        return CwtPsiService.getPresentableText(element)
-    }
-
-    @JvmStatic
-    fun getPresentableText(element: CwtExpressionElement): String {
-        return CwtPsiService.getPresentableText(element)
-    }
-
-    @JvmStatic
     fun setValue(element: CwtExpressionElement, value: String): CwtExpressionElement {
         throw IncorrectOperationException()
     }
@@ -317,6 +294,16 @@ object CwtPsiImplUtil {
     @JvmStatic
     fun setContent(element: CwtExpressionElement, content: String, range: TextRange): CwtExpressionElement {
         throw IncorrectOperationException()
+    }
+
+    @JvmStatic
+    fun getQuotePattern(element: PsiQuoteAwareElement): QuotePattern {
+        return QuotePatterns.Cwt
+    }
+
+    @JvmStatic
+    fun getPresentableText(element: PsiPresentableElement): String {
+        return CwtPsiService.getPresentableText(element)
     }
 
     @JvmStatic

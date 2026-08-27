@@ -23,15 +23,17 @@ public interface ParadoxScriptInlineConditionalBlock extends PsiBoundElement {
   @NotNull
   List<ParadoxScriptParameter> getParameterList();
 
+  @Nullable PsiElement getLeftBound();
+
+  @Nullable PsiElement getRightBound();
+
   @NotNull Icon getIcon(@IconFlags int flags);
 
   @Nullable String getConditionExpression();
 
-  @Nullable String getPresentationText();
-
-  @Nullable PsiElement getLeftBound();
-
-  @Nullable PsiElement getRightBound();
+  //WARNING: getPresentableText(...) is skipped
+  //matching getPresentableText(ParadoxScriptInlineConditionalBlock, ...)
+  //methods are not found in ParadoxScriptPsiImplUtil
 
   @NotNull GlobalSearchScope getResolveScope();
 

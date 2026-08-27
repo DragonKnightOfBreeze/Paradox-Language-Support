@@ -49,11 +49,10 @@ property ::= property_key property_separator property_value {
     "icu.windea.pls.lang.psi.ParadoxDefinitionElement"
   ]
   methods=[
+    getMemberContainer getMembers getBlock
     property_key="property_key" property_value="value"
-    getIcon getName setName getNameIdentifier getValue getPresentableText getBlock
+    getIcon getName setName getNameIdentifier getValue getPresentableText
     getIElementType isEquivalentTo
-    getMemberContainer getMembers
-
   ]
 }
 // can be parameterized
@@ -67,7 +66,7 @@ property_key ::= property_key_part (<<processPart>> property_key_part) * {
   ]
   methods=[
     getIdElement parameter=""
-    getIcon getName getValue getPresentableText setValue setContent getQuotePattern
+    getIcon getName getValue setValue setContent getQuotePattern getPresentableText
     getReference getReferences
   ]
 }
@@ -82,7 +81,7 @@ value ::= scripted_variable_reference | boolean | int | float | string | color |
     "icu.windea.pls.script.psi.ParadoxScriptExpressionElement"
     "icu.windea.pls.script.psi.ParadoxScriptMember"
   ]
-  methods=[getIcon getName getValue getPresentableText setValue setContent]
+  methods=[getIcon getName getValue setValue setContent getPresentableText]
 }
 boolean ::= BOOLEAN_TOKEN {
   extends=value
@@ -118,7 +117,7 @@ string ::= string_part <<postProcessFirstPart>> (<<processPart>> string_part) * 
   ]
   methods=[
     getIdElement parameter=""
-    getIcon getValue setValue setContent getQuotePattern
+    getIcon getName getValue setValue setContent getQuotePattern getPresentableText
     getReference getReferences
   ]
 }
@@ -135,9 +134,9 @@ block ::= LEFT_BRACE block_item * RIGHT_BRACE {
     "icu.windea.pls.script.psi.ParadoxScriptBoundMemberContainer"
   ]
   methods=[
+    getMemberContainer getMembers getLeftBound getRightBound getComponents
     getIcon getValue getPresentableText
     getReference getReferences
-    getMemberContainer getMembers getLeftBound getRightBound getComponents
   ]
 }
 private block_item ::= COMMENT | block_value | property | scripted_variable | conditional_block {
@@ -159,7 +158,7 @@ scripted_variable ::= scripted_variable_name scripted_variable_separator scripte
   ]
   methods=[
     scripted_variable_name="scripted_variable_name" scripted_variable_value="value"
-    getIcon getName setName getNameIdentifier getTextOffset getValue
+    getIcon getName setName getNameIdentifier getTextOffset getValue getPresentableText
     getIElementType isEquivalentTo
   ]
 }
@@ -220,10 +219,11 @@ parameter ::= PARAMETER_START parameter_name parameter_argument_part ? PARAMETER
   ]
   methods=[
     getIdElement getArgumentElement parameter_argument=""
-    getIcon getName setName getTextOffset getDefaultValue
+    getIcon getName setName getTextOffset getDefaultValue getPresentableText
     getReference getReferences
   ]
 }
+
 inline_math_parameter ::= PARAMETER_START parameter_name parameter_argument_part ? PARAMETER_END {
   extends=inline_math_factor
   pin=1
@@ -233,10 +233,11 @@ inline_math_parameter ::= PARAMETER_START parameter_name parameter_argument_part
   ]
   methods=[
     getIdElement getArgumentElement parameter_argument=""
-    getIcon getName setName getTextOffset getDefaultValue
+    getIcon getName setName getTextOffset getDefaultValue getPresentableText
     getReference getReferences
   ]
 }
+
 private parameter_name ::= PARAMETER_TOKEN
 private parameter_argument_part ::= PIPE parameter_argument ?
 parameter_argument ::= ARGUMENT_TOKEN {
@@ -258,8 +259,8 @@ conditional_block ::= LEFT_BRACKET conditional_header conditional_block_item * R
     "icu.windea.pls.script.psi.ParadoxScriptBoundMemberContainer"
   ]
   methods=[
-    getIcon getConditionExpression getPresentationText
-    getMemberContainer getMembers getLeftBound getRightBound getComponents
+    getLeftBound getRightBound getComponents getMemberContainer getMembers
+    getIcon getConditionExpression getPresentableText
   ]
 }
 private conditional_block_item ::= COMMENT | conditional_block_value | property | conditional_block {
@@ -273,7 +274,10 @@ inline_conditional_block ::= LEFT_BRACKET <<processInlineConditionalBlock>> cond
   implements=[
     "icu.windea.pls.core.psi.PsiBoundElement"
   ]
-  methods=[getIcon getConditionExpression getPresentationText getLeftBound getRightBound]
+  methods=[
+    getLeftBound getRightBound
+    getIcon getConditionExpression getPresentableText
+  ]
 }
 private inline_conditional_block_item ::= <<processInlineConditionalBlockItem>> inline_conditional_block_snippet <<postProcessInlineConditionalBlockItem>>
 private inline_conditional_block_snippet ::= inline_conditional_block_item_part (<<processPart>> inline_conditional_block_item_part) *

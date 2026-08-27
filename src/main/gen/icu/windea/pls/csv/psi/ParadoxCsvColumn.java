@@ -24,13 +24,13 @@ public interface ParadoxCsvColumn extends PsiQuoteAwareElement, ParadoxCsvLitera
 
   @NotNull String getValue();
 
-  @NotNull String getPresentableText();
-
   @NotNull ParadoxCsvColumn setValue(@NotNull String value);
 
   @NotNull ParadoxCsvColumn setContent(@NotNull String content, @NotNull TextRange range);
 
   @NotNull QuotePattern getQuotePattern();
+
+  @NotNull String getPresentableText();
 
   @Nullable PsiReference getReference();
 

@@ -47,11 +47,6 @@ public class ParadoxLocalisationCommandTextImpl extends ASTWrapperPsiElement imp
   }
 
   @Override
-  public @NotNull String getPresentableText() {
-    return ParadoxLocalisationPsiImplUtil.getPresentableText(this);
-  }
-
-  @Override
   public @NotNull ParadoxLocalisationCommandText setValue(@NotNull String value) {
     return ParadoxLocalisationPsiImplUtil.setValue(this, value);
   }
@@ -59,6 +54,11 @@ public class ParadoxLocalisationCommandTextImpl extends ASTWrapperPsiElement imp
   @Override
   public @NotNull ParadoxLocalisationCommandText setContent(@NotNull String content, @NotNull TextRange range) {
     return ParadoxLocalisationPsiImplUtil.setContent(this, content, range);
+  }
+
+  @Override
+  public @NotNull String getPresentableText() {
+    return ParadoxLocalisationPsiImplUtil.getPresentableText(this);
   }
 
   @Override

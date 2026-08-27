@@ -24,6 +24,8 @@ public interface ParadoxLocalisationTextFormat extends ParadoxLocalisationRichTe
 
   @NotNull ParadoxLocalisationTextFormat setName(@NotNull String name);
 
+  @NotNull String getPresentableText();
+
   @Nullable PsiReference getReference();
 
   @NotNull PsiReference @NotNull [] getReferences();

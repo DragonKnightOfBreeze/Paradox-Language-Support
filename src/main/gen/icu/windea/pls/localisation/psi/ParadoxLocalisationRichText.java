@@ -5,9 +5,10 @@ import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
+import icu.windea.pls.core.psi.PsiPresentableElement;
 import org.jetbrains.annotations.NotNull;
 
-public interface ParadoxLocalisationRichText extends NavigatablePsiElement {
+public interface ParadoxLocalisationRichText extends NavigatablePsiElement, PsiPresentableElement {
 
   @NotNull GlobalSearchScope getResolveScope();
 

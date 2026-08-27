@@ -33,6 +33,34 @@ class TextExtensionsTest {
 
     // endregion
 
+    // region String.transformAndKeepQuotes
+
+    @Test
+    fun string_transformAndKeepQuotes_smokeTest() {
+        Assert.assertEquals("abcdef", "abcdef".transformAndKeepQuotes { it.truncate(0) })
+        Assert.assertEquals("\"abcdef", "\"abcdef".transformAndKeepQuotes { it.truncate(0) })
+        Assert.assertEquals("abcdef\"", "abcdef\"".transformAndKeepQuotes { it.truncate(0) })
+        Assert.assertEquals("\"abcdef\"", "\"abcdef\"".transformAndKeepQuotes { it.truncate(0) })
+
+        Assert.assertEquals("abc...", "abcdef".transformAndKeepQuotes { it.truncate(3) })
+        Assert.assertEquals("\"abc...", "\"abcdef".transformAndKeepQuotes { it.truncate(3) })
+        Assert.assertEquals("abc...\"", "abcdef\"".transformAndKeepQuotes { it.truncate(3) })
+        Assert.assertEquals("\"abc...\"", "\"abcdef\"".transformAndKeepQuotes { it.truncate(3) })
+
+        Assert.assertEquals("abcdef", "abcdef".transformAndKeepQuotes { it.truncate(6) })
+        Assert.assertEquals("\"abcdef", "\"abcdef".transformAndKeepQuotes { it.truncate(6) })
+        Assert.assertEquals("abcdef\"", "abcdef\"".transformAndKeepQuotes { it.truncate(6) })
+        Assert.assertEquals("\"abcdef\"", "\"abcdef\"".transformAndKeepQuotes { it.truncate(6) })
+
+        Assert.assertEquals("abcdef", "abcdef".transformAndKeepQuotes { it.truncate(9) })
+        Assert.assertEquals("\"abcdef", "\"abcdef".transformAndKeepQuotes { it.truncate(9) })
+        Assert.assertEquals("abcdef\"", "abcdef\"".transformAndKeepQuotes { it.truncate(9) })
+        Assert.assertEquals("\"abcdef\"", "\"abcdef\"".transformAndKeepQuotes { it.truncate(9) })
+    }
+
+    // endregion
+
+
     // region TextRange.unquote
 
     @Test

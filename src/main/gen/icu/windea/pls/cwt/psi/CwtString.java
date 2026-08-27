@@ -2,6 +2,7 @@
 package icu.windea.pls.cwt.psi;
 
 import com.intellij.navigation.ItemPresentation;
+import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
@@ -27,7 +28,11 @@ public interface CwtString extends CwtValue, PsiQuoteAwareElement, CwtNamedEleme
 
   @NotNull CwtValue setValue(@NotNull String value);
 
+  @NotNull CwtValue setContent(@NotNull String content, @NotNull TextRange range);
+
   @NotNull QuotePattern getQuotePattern();
+
+  @NotNull String getPresentableText();
 
   @Nullable PsiReference getReference();
 

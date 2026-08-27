@@ -28,12 +28,6 @@ public interface CwtBlock extends CwtValue, CwtMemberContainer, CwtBoundMemberCo
   @NotNull
   List<CwtValue> getValueList();
 
-  @NotNull Icon getIcon(@IconFlags int flags);
-
-  @NotNull String getValue();
-
-  @NotNull String getPresentableText();
-
   @NotNull CwtBlock getMemberContainer();
 
   @NotNull List<@NotNull CwtMember> getMembers();
@@ -43,6 +37,12 @@ public interface CwtBlock extends CwtValue, CwtMemberContainer, CwtBoundMemberCo
   @Nullable PsiElement getRightBound();
 
   @NotNull List<@NotNull CwtStatement> getComponents();
+
+  @NotNull Icon getIcon(@IconFlags int flags);
+
+  @NotNull String getValue();
+
+  @NotNull String getPresentableText();
 
   @NotNull GlobalSearchScope getResolveScope();
 

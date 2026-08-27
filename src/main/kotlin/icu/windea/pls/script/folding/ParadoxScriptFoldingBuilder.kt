@@ -28,7 +28,7 @@ class ParadoxScriptFoldingBuilder : CustomFoldingBuilder(), DumbAware {
             CONDITIONAL_BLOCK -> {
                 val expression = node.psi.castOrNull<ParadoxScriptConditionalBlock>()?.conditionExpression
                 if (expression == null) return "..."
-                ChronicleStrings.conditionalBlockFolder(expression)
+                ChronicleStrings.(getConditionalBlockFolder())(expression)
             }
             INLINE_MATH -> ChronicleStrings.inlineMathFolder
             else -> null

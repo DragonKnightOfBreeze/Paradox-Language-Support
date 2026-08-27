@@ -14,6 +14,8 @@ import com.intellij.psi.util.elementType
 import com.intellij.util.IncorrectOperationException
 import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.core.findChildren
+import icu.windea.pls.core.psi.PsiPresentableElement
+import icu.windea.pls.core.psi.PsiQuoteAwareElement
 import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.core.text.QuotePattern
 import icu.windea.pls.core.text.QuotePatterns
@@ -72,11 +74,6 @@ object ParadoxCsvPsiImplUtil {
         return ParadoxCsvPsiManipulationService.changeContent(element, content, range)
     }
 
-    @JvmStatic
-    fun getQuotePattern(element: ParadoxCsvColumn): QuotePattern {
-        return QuotePatterns.ParadoxCsv
-    }
-
     // endregion
 
     // region Common Methods
@@ -97,11 +94,6 @@ object ParadoxCsvPsiImplUtil {
     }
 
     @JvmStatic
-    fun getPresentableText(element: ParadoxCsvExpressionElement): String {
-        return ParadoxCsvPsiService.getPresentableText(element)
-    }
-
-    @JvmStatic
     fun setValue(element: ParadoxCsvExpressionElement, value: String): ParadoxCsvExpressionElement {
         throw IncorrectOperationException()
     }
@@ -109,6 +101,16 @@ object ParadoxCsvPsiImplUtil {
     @JvmStatic
     fun setContent(element: ParadoxCsvExpressionElement, content: String, range: TextRange): ParadoxCsvExpressionElement {
         throw IncorrectOperationException()
+    }
+
+    @JvmStatic
+    fun getQuotePattern(element: PsiQuoteAwareElement): QuotePattern {
+        return QuotePatterns.ParadoxCsv
+    }
+
+    @JvmStatic
+    fun getPresentableText(element: PsiPresentableElement): String {
+        return ParadoxCsvPsiService.getPresentableText(element)
     }
 
     @JvmStatic

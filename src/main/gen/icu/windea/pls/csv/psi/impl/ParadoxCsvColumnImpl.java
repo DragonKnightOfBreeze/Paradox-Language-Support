@@ -55,11 +55,6 @@ public class ParadoxCsvColumnImpl extends ASTWrapperPsiElement implements Parado
   }
 
   @Override
-  public @NotNull String getPresentableText() {
-    return ParadoxCsvPsiImplUtil.getPresentableText(this);
-  }
-
-  @Override
   public @NotNull ParadoxCsvColumn setValue(@NotNull String value) {
     return ParadoxCsvPsiImplUtil.setValue(this, value);
   }
@@ -72,6 +67,11 @@ public class ParadoxCsvColumnImpl extends ASTWrapperPsiElement implements Parado
   @Override
   public @NotNull QuotePattern getQuotePattern() {
     return ParadoxCsvPsiImplUtil.getQuotePattern(this);
+  }
+
+  @Override
+  public @NotNull String getPresentableText() {
+    return ParadoxCsvPsiImplUtil.getPresentableText(this);
   }
 
   @Override

@@ -57,18 +57,18 @@ public class ParadoxScriptConditionalBlockImpl extends ASTWrapperPsiElement impl
   }
 
   @Override
-  public @NotNull Icon getIcon(@IconFlags int flags) {
-    return ParadoxScriptPsiImplUtil.getIcon(this, flags);
+  public @Nullable PsiElement getLeftBound() {
+    return ParadoxScriptPsiImplUtil.getLeftBound(this);
   }
 
   @Override
-  public @Nullable String getConditionExpression() {
-    return ParadoxScriptPsiImplUtil.getConditionExpression(this);
+  public @Nullable PsiElement getRightBound() {
+    return ParadoxScriptPsiImplUtil.getRightBound(this);
   }
 
   @Override
-  public @Nullable String getPresentationText() {
-    return ParadoxScriptPsiImplUtil.getPresentationText(this);
+  public @NotNull List<@NotNull ParadoxScriptStatement> getComponents() {
+    return ParadoxScriptPsiImplUtil.getComponents(this);
   }
 
   @Override
@@ -82,18 +82,18 @@ public class ParadoxScriptConditionalBlockImpl extends ASTWrapperPsiElement impl
   }
 
   @Override
-  public @Nullable PsiElement getLeftBound() {
-    return ParadoxScriptPsiImplUtil.getLeftBound(this);
+  public @NotNull Icon getIcon(@IconFlags int flags) {
+    return ParadoxScriptPsiImplUtil.getIcon(this, flags);
   }
 
   @Override
-  public @Nullable PsiElement getRightBound() {
-    return ParadoxScriptPsiImplUtil.getRightBound(this);
+  public @Nullable String getConditionExpression() {
+    return ParadoxScriptPsiImplUtil.getConditionExpression(this);
   }
 
   @Override
-  public @NotNull List<@NotNull ParadoxScriptStatement> getComponents() {
-    return ParadoxScriptPsiImplUtil.getComponents(this);
+  public @NotNull String getPresentableText() {
+    return ParadoxScriptPsiImplUtil.getPresentableText(this);
   }
 
   @Override

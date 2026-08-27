@@ -17,11 +17,11 @@ public interface ParadoxScriptValue extends ParadoxScriptExpressionElement, Para
 
   @NotNull String getValue();
 
-  @NotNull String getPresentableText();
-
   @NotNull ParadoxScriptValue setValue(@NotNull String value);
 
   @NotNull ParadoxScriptValue setContent(@NotNull String content, @NotNull TextRange range);
+
+  @NotNull String getPresentableText();
 
   @NotNull GlobalSearchScope getResolveScope();
 

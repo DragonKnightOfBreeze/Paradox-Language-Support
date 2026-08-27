@@ -25,21 +25,21 @@ public interface ParadoxScriptConditionalBlock extends ParadoxScriptStatement, P
   @NotNull
   List<ParadoxScriptValue> getValueList();
 
-  @NotNull Icon getIcon(@IconFlags int flags);
-
-  @Nullable String getConditionExpression();
-
-  @Nullable String getPresentationText();
-
-  @NotNull ParadoxScriptConditionalBlock getMemberContainer();
-
-  @NotNull List<@NotNull ParadoxScriptMember> getMembers();
-
   @Nullable PsiElement getLeftBound();
 
   @Nullable PsiElement getRightBound();
 
   @NotNull List<@NotNull ParadoxScriptStatement> getComponents();
+
+  @NotNull ParadoxScriptConditionalBlock getMemberContainer();
+
+  @NotNull List<@NotNull ParadoxScriptMember> getMembers();
+
+  @NotNull Icon getIcon(@IconFlags int flags);
+
+  @Nullable String getConditionExpression();
+
+  @NotNull String getPresentableText();
 
   @NotNull GlobalSearchScope getResolveScope();
 

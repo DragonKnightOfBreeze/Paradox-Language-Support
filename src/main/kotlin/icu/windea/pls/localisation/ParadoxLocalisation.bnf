@@ -95,6 +95,7 @@ private text_item ::= rich_text | COLORFUL_TEXT_END | TEXT_FORMAT_END
 rich_text ::= text | colorful_text | parameter | icon | command | concept_command | text_icon | text_format {
   implements=[
     "com.intellij.psi.NavigatablePsiElement"
+    "icu.windea.pls.core.psi.PsiPresentableElement"
   ]
 }
 
@@ -113,7 +114,7 @@ colorful_text ::= COLORFUL_TEXT_START color_name colorful_text_part ? COLORFUL_T
     "icu.windea.pls.localisation.psi.ParadoxLocalisationTextColorAwareElement"
     "icu.windea.pls.localisation.psi.ParadoxLocalisationRichTextContainer"
   ]
-  methods=[getIdElement getName setName getReference getReferences]
+  methods=[getIdElement getName setName getPresentableText getReference getReferences]
 }
 private color_name ::= COLOR_TOKEN
 private colorful_text_part ::= colorful_text_item +
@@ -132,7 +133,7 @@ parameter ::= PARAMETER_START parameter_name parameter_argument_part ? PARAMETER
   ]
   methods=[
     getIdElement getArgumentElement parameter_argument="" command=""
-    getName setName getReference getReferences
+    getName setName getPresentableText getReference getReferences
   ]
 }
 // can be command or scripted variable reference
@@ -167,7 +168,7 @@ icon ::= ICON_START icon_name icon_argument_part ? ICON_END {
   ]
   methods=[
     getIdElement getArgumentElement icon_argument="" rich_text=""
-    getIcon getName setName getReference getReferences
+    getIcon getName setName getPresentableText getReference getReferences
   ]
 }
 // can be parameterized (via parameters and commands)
@@ -193,7 +194,7 @@ command ::= <<isCommand>> LEFT_BRACKET command_text ? command_argument_part ? RI
   ]
   methods=[
     getArgumentElement command_argument=""
-    getIcon
+    getIcon getPresentableText
   ]
 }
 // can be parameterized (via parameters)
@@ -204,7 +205,7 @@ command_text ::= (COMMAND_TEXT_TOKEN | parameter) + {
   ]
   methods=[
     getIdElement parameter=""
-    getName getValue getPresentableText setValue setContent getReference getReferences
+    getName getValue setValue setContent getPresentableText getReference getReferences
   ]
 }
 private command_argument_part ::= PIPE command_argument ?
@@ -223,7 +224,7 @@ command_argument ::= (ARGUMENT_TOKEN | parameter) + {
 concept_command ::= LEFT_BRACKET LEFT_SINGLE_QUOTE concept_name ? RIGHT_SINGLE_QUOTE concept_text_part ? RIGHT_BRACKET {
   pin=2
   extends=rich_text
-  methods=[getIcon getName setName getReference getReferences]
+  methods=[getIcon getName setName getPresentableText getReference getReferences]
 }
 // can be parameterized (via parameters)
 concept_name ::= (CONCEPT_NAME_TOKEN | parameter) + {
@@ -255,7 +256,7 @@ text_icon ::= TEXT_ICON_START text_icon_name TEXT_ICON_END {
   ]
   methods=[
     getIdElement rich_text=""
-    getIcon getName setName getReference getReferences
+    getIcon getName setName getPresentableText getReference getReferences
   ]
 }
 // can be parameterized (via parameters and commands)
@@ -272,7 +273,7 @@ text_format ::= TEXT_FORMAT_START text_format_name text_format_text_part ? TEXT_
   ]
   methods=[
     getIdElement rich_text=""
-    getIcon getName setName getReference getReferences
+    getIcon getName setName getPresentableText getReference getReferences
   ]
 }
 // can be parameterized (via parameters and commands)

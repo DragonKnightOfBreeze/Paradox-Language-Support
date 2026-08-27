@@ -54,21 +54,6 @@ public class ParadoxScriptInlineConditionalBlockImpl extends ASTWrapperPsiElemen
   }
 
   @Override
-  public @NotNull Icon getIcon(@IconFlags int flags) {
-    return ParadoxScriptPsiImplUtil.getIcon(this, flags);
-  }
-
-  @Override
-  public @Nullable String getConditionExpression() {
-    return ParadoxScriptPsiImplUtil.getConditionExpression(this);
-  }
-
-  @Override
-  public @Nullable String getPresentationText() {
-    return ParadoxScriptPsiImplUtil.getPresentationText(this);
-  }
-
-  @Override
   public @Nullable PsiElement getLeftBound() {
     return ParadoxScriptPsiImplUtil.getLeftBound(this);
   }
@@ -76,6 +61,16 @@ public class ParadoxScriptInlineConditionalBlockImpl extends ASTWrapperPsiElemen
   @Override
   public @Nullable PsiElement getRightBound() {
     return ParadoxScriptPsiImplUtil.getRightBound(this);
+  }
+
+  @Override
+  public @NotNull Icon getIcon(@IconFlags int flags) {
+    return ParadoxScriptPsiImplUtil.getIcon(this, flags);
+  }
+
+  @Override
+  public @Nullable String getConditionExpression() {
+    return ParadoxScriptPsiImplUtil.getConditionExpression(this);
   }
 
   @Override

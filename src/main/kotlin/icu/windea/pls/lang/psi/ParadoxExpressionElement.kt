@@ -2,6 +2,8 @@ package icu.windea.pls.lang.psi
 
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.NavigatablePsiElement
+import com.intellij.util.IncorrectOperationException
+import icu.windea.pls.core.psi.PsiPresentableElement
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.model.expressions.ParadoxExpression
@@ -18,14 +20,12 @@ import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
  * @see ParadoxLocalisationExpressionElement
  * @see ParadoxCsvExpressionElement
  */
-interface ParadoxExpressionElement : NavigatablePsiElement {
+interface ParadoxExpressionElement : NavigatablePsiElement, PsiPresentableElement {
     override fun getName(): String
 
-    val value: String
+    val value: String get() = text
 
-    val presentableText: String
+    fun setValue(value: String): ParadoxExpressionElement = throw IncorrectOperationException()
 
-    fun setValue(value: String): ParadoxExpressionElement
-
-    fun setContent(content: String, range: TextRange): ParadoxExpressionElement
+    fun setContent(content: String, range: TextRange): ParadoxExpressionElement = throw IncorrectOperationException()
 }

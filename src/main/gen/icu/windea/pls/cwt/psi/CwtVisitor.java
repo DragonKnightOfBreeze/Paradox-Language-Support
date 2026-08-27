@@ -1,10 +1,7 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.cwt.psi;
 
-import com.intellij.psi.PsiComment;
-import com.intellij.psi.PsiDocCommentBase;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementVisitor;
+import com.intellij.psi.*;
 import icu.windea.pls.core.psi.PsiQuoteAwareElement;
 import icu.windea.pls.core.psi.PsiRootBlock;
 import org.jetbrains.annotations.NotNull;
@@ -48,7 +45,8 @@ public class CwtVisitor extends PsiElementVisitor {
   }
 
   public void visitOptionKey(@NotNull CwtOptionKey o) {
-    visitPsiQuoteAwareElement(o);
+    visitNavigatablePsiElement(o);
+    // visitPsiQuoteAwareElement(o);
   }
 
   public void visitProperty(@NotNull CwtProperty o) {
@@ -79,6 +77,10 @@ public class CwtVisitor extends PsiElementVisitor {
     visitExpressionElement(o);
     // visitMember(o);
     // visitOptionMember(o);
+  }
+
+  public void visitNavigatablePsiElement(@NotNull NavigatablePsiElement o) {
+    visitElement(o);
   }
 
   public void visitPsiComment(@NotNull PsiComment o) {

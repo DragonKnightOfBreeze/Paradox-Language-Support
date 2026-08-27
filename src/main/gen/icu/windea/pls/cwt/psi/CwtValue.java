@@ -17,11 +17,11 @@ public interface CwtValue extends CwtExpressionElement, CwtMember, CwtOptionMemb
 
   @NotNull String getValue();
 
-  @NotNull String getPresentableText();
-
   @NotNull CwtValue setValue(@NotNull String value);
 
   @NotNull CwtValue setContent(@NotNull String content, @NotNull TextRange range);
+
+  @NotNull String getPresentableText();
 
   @NotNull GlobalSearchScope getResolveScope();
 

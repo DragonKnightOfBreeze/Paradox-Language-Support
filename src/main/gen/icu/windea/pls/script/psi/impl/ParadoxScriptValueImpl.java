@@ -46,11 +46,6 @@ public abstract class ParadoxScriptValueImpl extends ASTWrapperPsiElement implem
   }
 
   @Override
-  public @NotNull String getPresentableText() {
-    return ParadoxScriptPsiImplUtil.getPresentableText(this);
-  }
-
-  @Override
   public @NotNull ParadoxScriptValue setValue(@NotNull String value) {
     return ParadoxScriptPsiImplUtil.setValue(this, value);
   }
@@ -58,6 +53,11 @@ public abstract class ParadoxScriptValueImpl extends ASTWrapperPsiElement implem
   @Override
   public @NotNull ParadoxScriptValue setContent(@NotNull String content, @NotNull TextRange range) {
     return ParadoxScriptPsiImplUtil.setContent(this, content, range);
+  }
+
+  @Override
+  public @NotNull String getPresentableText() {
+    return ParadoxScriptPsiImplUtil.getPresentableText(this);
   }
 
   @Override

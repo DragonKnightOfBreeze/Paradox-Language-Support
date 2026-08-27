@@ -2,6 +2,7 @@
 package icu.windea.pls.cwt.psi;
 
 import com.intellij.navigation.ItemPresentation;
+import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import icu.windea.pls.core.psi.PsiQuoteAwareElement;
@@ -10,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 
-public interface CwtOptionKey extends PsiQuoteAwareElement {
+public interface CwtOptionKey extends NavigatablePsiElement, PsiQuoteAwareElement {
 
   @NotNull Icon getIcon(@IconFlags int flags);
 

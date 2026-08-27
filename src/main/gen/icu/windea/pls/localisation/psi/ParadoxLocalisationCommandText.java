@@ -18,11 +18,11 @@ public interface ParadoxLocalisationCommandText extends ParadoxLocalisationExpre
 
   @NotNull String getValue();
 
-  @NotNull String getPresentableText();
-
   @NotNull ParadoxLocalisationCommandText setValue(@NotNull String value);
 
   @NotNull ParadoxLocalisationCommandText setContent(@NotNull String content, @NotNull TextRange range);
+
+  @NotNull String getPresentableText();
 
   @Nullable PsiReference getReference();
 

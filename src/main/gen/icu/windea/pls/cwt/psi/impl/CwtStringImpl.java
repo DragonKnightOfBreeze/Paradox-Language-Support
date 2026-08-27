@@ -3,6 +3,7 @@ package icu.windea.pls.cwt.psi.impl;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
+import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiReference;
@@ -65,8 +66,18 @@ public class CwtStringImpl extends CwtValueImpl implements CwtString {
   }
 
   @Override
+  public @NotNull CwtValue setContent(@NotNull String content, @NotNull TextRange range) {
+    return CwtPsiImplUtil.setContent(this, content, range);
+  }
+
+  @Override
   public @NotNull QuotePattern getQuotePattern() {
     return CwtPsiImplUtil.getQuotePattern(this);
+  }
+
+  @Override
+  public @NotNull String getPresentableText() {
+    return CwtPsiImplUtil.getPresentableText(this);
   }
 
   @Override

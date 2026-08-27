@@ -64,11 +64,6 @@ public class ParadoxScriptPropertyKeyImpl extends ASTWrapperPsiElement implement
   }
 
   @Override
-  public @NotNull String getPresentableText() {
-    return ParadoxScriptPsiImplUtil.getPresentableText(this);
-  }
-
-  @Override
   public @NotNull ParadoxScriptPropertyKey setValue(@NotNull String value) {
     return ParadoxScriptPsiImplUtil.setValue(this, value);
   }
@@ -81,6 +76,11 @@ public class ParadoxScriptPropertyKeyImpl extends ASTWrapperPsiElement implement
   @Override
   public @NotNull QuotePattern getQuotePattern() {
     return ParadoxScriptPsiImplUtil.getQuotePattern(this);
+  }
+
+  @Override
+  public @NotNull String getPresentableText() {
+    return ParadoxScriptPsiImplUtil.getPresentableText(this);
   }
 
   @Override
