@@ -40,8 +40,8 @@ class PutMembersOnOneLineIntention : PutMembersIntentionBase() {
         // 由于后续会自动格式化，这里只需处理换行即可
         val newElement = when (element) {
             is ParadoxScriptConditionalBlock -> {
-                val conditionExpression = element.conditionExpression ?: return
-                val newText = "[[${conditionExpression}] ${membersText} ]"
+                val expressionText = element.conditionalExpression?.presentableText ?: return
+                val newText = "[[${expressionText}] ${membersText} ]"
                 ParadoxScriptElementFactory.createConditionalBlockFromText(context.project, newText)
             }
             else -> {

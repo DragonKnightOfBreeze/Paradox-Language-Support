@@ -16,6 +16,10 @@ public interface ParadoxScriptInlineMathScriptedVariableReference extends Parado
 
   @Nullable PsiElement getIdElement();
 
+  //WARNING: inline_conditional_block(...) is skipped
+  //matching inline_conditional_block(ParadoxScriptInlineMathScriptedVariableReference, ...)
+  //methods are not found in ParadoxScriptPsiImplUtil
+
   @NotNull Icon getIcon(@IconFlags int flags);
 
   @Nullable String getName();

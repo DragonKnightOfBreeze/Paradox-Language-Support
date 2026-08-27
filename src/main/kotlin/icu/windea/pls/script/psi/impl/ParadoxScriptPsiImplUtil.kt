@@ -20,7 +20,6 @@ import icu.windea.pls.core.findChild
 import icu.windea.pls.core.findChildren
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
-import icu.windea.pls.core.processChild
 import icu.windea.pls.core.psi.PsiPresentableElement
 import icu.windea.pls.core.psi.PsiQuoteAwareElement
 import icu.windea.pls.core.psi.PsiService
@@ -331,26 +330,6 @@ object ParadoxScriptPsiImplUtil {
     }
 
     @JvmStatic
-    fun getConditionExpression(element: ParadoxScriptConditionalBlock): String? {
-        val conditionExpression = element.conditionalExpression ?: return null
-        val builder = StringBuilder()
-        conditionExpression.processChild {
-            when {
-                it is ParadoxScriptConditionalParameter -> {
-                    builder.append(it.name)
-                    false
-                }
-                it.elementType == NOT_EQUAL_SIGN -> {
-                    builder.append("!")
-                    true
-                }
-                else -> true
-            }
-        }
-        return builder.toString().optimized() // optimized to optimize memory
-    }
-
-    @JvmStatic
     fun getMemberContainer(element: ParadoxScriptConditionalBlock): ParadoxScriptConditionalBlock {
         return element
     }
@@ -379,31 +358,6 @@ object ParadoxScriptPsiImplUtil {
     fun getIcon(element: ParadoxScriptInlineConditionalBlock, @Iconable.IconFlags flags: Int): Icon {
         return ChronicleIcons.Nodes.ConditionalBlock
     }
-
-    @JvmStatic
-    fun getConditionExpression(element: ParadoxScriptInlineConditionalBlock): String? {
-        val conditionExpression = element.conditionalExpression ?: return null
-        val builder = StringBuilder()
-        conditionExpression.processChild {
-            when {
-                it is ParadoxScriptConditionalParameter -> {
-                    builder.append(it.name)
-                    false
-                }
-                it.elementType == NOT_EQUAL_SIGN -> {
-                    builder.append("!")
-                    true
-                }
-                else -> true
-            }
-        }
-        return builder.toString().optimized() // optimized to optimize memory
-    }
-
-    // @JvmStatic
-    // fun getPresentableText(element: ParadoxScriptInlineConditionalBlock): String? {
-    //     return element.conditionExpression?.let { ChronicleStrings.(getConditionalBlockFolder())(it) }
-    // }
 
     @JvmStatic
     fun getLeftBound(element: ParadoxScriptInlineConditionalBlock): PsiElement? {

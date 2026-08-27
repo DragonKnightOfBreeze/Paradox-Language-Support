@@ -125,7 +125,7 @@ object ParadoxScriptPsiPresentationService {
             // 名字
             is ParadoxScriptScriptedVariable -> "@" + element.name.or.unresolved()
             // 表达式
-            is ParadoxScriptConditionalBlock -> element.conditionExpression?.let { "[$it]" }
+            is ParadoxScriptConditionalBlock -> element.conditionalExpression?.presentableText?.let { "[$it]" }
             // 回退
             is NavigatablePsiElement -> element.name
             else -> null

@@ -10,16 +10,13 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
-import com.intellij.psi.util.PsiTreeUtil;
 import icu.windea.pls.core.text.QuotePattern;
-import icu.windea.pls.script.psi.ParadoxScriptInlineConditionalBlock;
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey;
 import icu.windea.pls.script.psi.ParadoxScriptVisitor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
-import java.util.List;
 
 public class ParadoxScriptPropertyKeyImpl extends ASTWrapperPsiElement implements ParadoxScriptPropertyKey {
 
@@ -35,12 +32,6 @@ public class ParadoxScriptPropertyKeyImpl extends ASTWrapperPsiElement implement
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof ParadoxScriptVisitor) accept((ParadoxScriptVisitor)visitor);
     else super.accept(visitor);
-  }
-
-  @Override
-  @NotNull
-  public List<ParadoxScriptInlineConditionalBlock> getInlineConditionalBlockList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptInlineConditionalBlock.class);
   }
 
   @Override

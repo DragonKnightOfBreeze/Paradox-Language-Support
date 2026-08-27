@@ -8,12 +8,7 @@ import com.intellij.psi.search.SearchScope;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
-
 public interface ParadoxScriptScriptedVariableName extends ParadoxScriptInterpolationContainer, ParadoxScriptInlineConditionalBlockAwareElement {
-
-  @NotNull
-  List<ParadoxScriptInlineConditionalBlock> getInlineConditionalBlockList();
 
   @Nullable PsiElement getIdElement();
 

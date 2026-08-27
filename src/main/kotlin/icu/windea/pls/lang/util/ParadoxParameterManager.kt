@@ -180,9 +180,9 @@ object ParadoxParameterManager {
         // 如果带有默认值，则为可选
         if (parameterInfo.defaultValue != null) return true
         // 如果是条件参数，则为可选
-        if (parameterInfo.conditionExpressions == null) return true
+        if (parameterInfo.conditionalExpressions == null) return true
         // 如果从参数化块表达式的堆栈来看是可选的，则为可选
-        if (!parameterInfo.conditionExpressions.all { it.matches(argumentNames) }) return true
+        if (!parameterInfo.conditionalExpressions.all { it.matches(argumentNames) }) return true
         // 如果作为传入参数的值，则认为是可选的
         if (isPassingParameterValue(parameterInfo)) return true
         return false
@@ -369,12 +369,12 @@ object ParadoxParameterManager {
                 override fun elementFinished(element: PsiElement) {
                     run {
                         if (element !is ParadoxScriptConditionalBlock) return@run
-                        val conditionExpression = element.conditionalExpression ?: return@run
-                        val parameter = conditionExpression.conditionalParameter
+                        val conditionalExpression = element.conditionalExpression ?: return@run
+                        val parameter = conditionalExpression.conditionalParameter
                         val name = parameter.name
                         val v = argMap[name] ?: return@run
                         val revert = v.equals("no", true)
-                        val operator = conditionExpression.findChild { it.elementType == ParadoxScriptElementTypes.NOT_SIGN } == null
+                        val operator = conditionalExpression.findChild { it.elementType == ParadoxScriptElementTypes.NOT_SIGN } == null
                         if ((!revert && operator) || (revert && !operator)) {
                             val (start, end) = ParadoxPsiService.findMemberElementsToInline(element)
                             if (start != null && end != null) {

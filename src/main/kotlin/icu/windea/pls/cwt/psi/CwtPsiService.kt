@@ -34,11 +34,11 @@ object CwtPsiService {
                     }
                 }
                 buildString {
-                    if (keyElement != null) append(getPresentableText(keyElement)) else append(DefaultStrings.unresolved)
+                    if (keyElement != null) append(keyElement.presentableText) else append(DefaultStrings.unresolved)
                     append(" ")
                     append(separatorElement?.text ?: "=")
                     append(" ")
-                    if (valueElement != null) append(getPresentableText(valueElement)) else append(DefaultStrings.unresolved)
+                    if (valueElement != null) append(valueElement.presentableText) else append(DefaultStrings.unresolved)
                 }
             }
             is CwtOption -> {
@@ -53,7 +53,7 @@ object CwtPsiService {
                 buildString {
                     if (keyElement != null) append(keyElement.text) else append(DefaultStrings.unresolved)
                     append(" = ")
-                    if (valueElement != null) append(getPresentableText(valueElement)) else append(DefaultStrings.unresolved)
+                    if (valueElement != null) append(valueElement.presentableText) else append(DefaultStrings.unresolved)
                 }
             }
             is CwtStringExpressionElement -> element.text.transformAndKeepQuotes { it.truncate(presentableTextLimit) }

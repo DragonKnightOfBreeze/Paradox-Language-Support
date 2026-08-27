@@ -65,7 +65,7 @@ property_key ::= property_key_part (<<processPart>> property_key_part) * {
     "icu.windea.pls.script.psi.ParadoxScriptInlineConditionalBlockAwareElement"
   ]
   methods=[
-    getIdElement parameter=""
+    getIdElement parameter="" inline_conditional_block=""
     getIcon getName getValue setValue setContent getQuotePattern getPresentableText
     getReference getReferences
   ]
@@ -116,7 +116,7 @@ string ::= string_part <<postProcessFirstPart>> (<<processPart>> string_part) * 
     "icu.windea.pls.script.psi.ParadoxScriptInlineConditionalBlockAwareElement"
   ]
   methods=[
-    getIdElement parameter=""
+    getIdElement parameter="" inline_conditional_block=""
     getIcon getName getValue setValue setContent getQuotePattern getPresentableText
     getReference getReferences
   ]
@@ -169,7 +169,7 @@ scripted_variable_name ::= AT scripted_variable_name_part (<<processPart>> scrip
     "icu.windea.pls.script.psi.ParadoxScriptInterpolationContainer"
     "icu.windea.pls.script.psi.ParadoxScriptInlineConditionalBlockAwareElement"
   ]
-  methods=[getIdElement parameter="" getName]
+  methods=[getIdElement parameter="" inline_conditional_block="" getName]
 }
 private scripted_variable_name_part ::= SCRIPTED_VARIABLE_NAME_TOKEN | parameter | inline_conditional_block
 private scripted_variable_separator ::= EQUAL_SIGN
@@ -185,7 +185,7 @@ scripted_variable_reference ::= AT scripted_variable_reference_part <<postProces
     "icu.windea.pls.script.psi.ParadoxScriptInlineConditionalBlockAwareElement"
   ]
   methods=[
-    getIdElement parameter=""
+    getIdElement parameter="" inline_conditional_block=""
     getIcon getName setName getValue getPresentableText
     getReference getReferences
   ]
@@ -262,7 +262,7 @@ conditional_block ::= LEFT_BRACKET conditional_header conditional_block_item * R
   ]
   methods=[
     getLeftBound getRightBound getComponents getMemberContainer getMembers
-    getIcon getConditionExpression getPresentableText
+    getIcon getPresentableText
   ]
 }
 private conditional_block_item ::= COMMENT | conditional_block_value | property | conditional_block {
@@ -278,8 +278,8 @@ inline_conditional_block ::= LEFT_BRACKET <<processInlineConditionalBlock>> cond
     "icu.windea.pls.script.psi.ParadoxScriptInterpolation"
   ]
   methods=[
-    getLeftBound getRightBound
-    getIcon getConditionExpression getPresentableText
+    getLeftBound getRightBound parameter="" inline_conditional_block=""
+    getIcon getPresentableText
   ]
 }
 private inline_conditional_block_item ::= <<processInlineConditionalBlockItem>> inline_conditional_block_snippet <<postProcessInlineConditionalBlockItem>>
@@ -289,7 +289,10 @@ private inline_conditional_block_item_part ::= ARGUMENT_TOKEN | parameter | inli
 private conditional_header ::= NESTED_LEFT_BRACKET conditional_expression NESTED_RIGHT_BRACKET {
   pin=1
 }
-conditional_expression ::= NOT_SIGN ? conditional_parameter
+conditional_expression ::= NOT_SIGN ? conditional_parameter {
+  implements="icu.windea.pls.core.psi.PsiPresentableElement"
+  methods=[getPresentableText]
+}
 conditional_parameter ::= CONDITION_PARAMETER_TOKEN {
   implements="icu.windea.pls.script.psi.ParadoxConditionParameter"
   methods=[
@@ -388,7 +391,7 @@ inline_math_scripted_variable_reference ::= AT ? inline_math_scripted_variable_r
     "icu.windea.pls.script.psi.ParadoxScriptInlineConditionalBlockAwareElement"
   ]
   methods=[
-    getIdElement inline_math_parameter=""
+    getIdElement inline_math_parameter="" inline_conditional_block=""
     getIcon getName setName
     getReference getReferences
   ]

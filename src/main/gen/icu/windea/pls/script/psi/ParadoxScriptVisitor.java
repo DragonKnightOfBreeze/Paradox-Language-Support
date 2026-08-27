@@ -1,12 +1,15 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.script.psi;
 
-import com.intellij.psi.PsiElement;
+import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElementVisitor;
-import icu.windea.pls.core.psi.PsiBoundElement;
+import com.intellij.psi.PsiElement;
 import icu.windea.pls.core.psi.PsiQuoteAwareElement;
+import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference;
+import icu.windea.pls.core.psi.PsiPresentableElement;
+import icu.windea.pls.lang.psi.ParadoxDefinitionElement;
+import icu.windea.pls.core.psi.PsiBoundElement;
 import icu.windea.pls.core.psi.PsiRootBlock;
-import org.jetbrains.annotations.NotNull;
 
 public class ParadoxScriptVisitor extends PsiElementVisitor {
 
@@ -32,7 +35,7 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
   }
 
   public void visitConditionalExpression(@NotNull ParadoxScriptConditionalExpression o) {
-    visitPsiElement(o);
+    visitPsiPresentableElement(o);
   }
 
   public void visitConditionalParameter(@NotNull ParadoxScriptConditionalParameter o) {
@@ -165,6 +168,10 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
   }
 
   public void visitPsiBoundElement(@NotNull PsiBoundElement o) {
+    visitElement(o);
+  }
+
+  public void visitPsiPresentableElement(@NotNull PsiPresentableElement o) {
     visitElement(o);
   }
 

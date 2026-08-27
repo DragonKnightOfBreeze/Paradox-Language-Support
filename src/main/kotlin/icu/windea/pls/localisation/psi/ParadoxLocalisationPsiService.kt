@@ -23,11 +23,11 @@ object ParadoxLocalisationPsiService {
                 ChronicleStrings.colorfulTextFolder(name.or.unresolved())
             }
             is ParadoxLocalisationCommand -> {
-                val expression = element.commandText?.text
+                val expression = element.commandText?.presentableText
                 ChronicleStrings.commandFolder(expression.orEmpty().truncate(presentableTextLimit))
             }
             is ParadoxLocalisationConceptCommand -> {
-                val expression = element.conceptName?.text
+                val expression = element.conceptName?.presentableText
                 val withText = element.conceptText != null
                 if (withText) {
                     ChronicleStrings.conceptCommandFolder(expression.orEmpty().truncate(presentableTextLimit))

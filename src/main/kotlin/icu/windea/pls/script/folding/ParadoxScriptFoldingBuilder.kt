@@ -14,6 +14,8 @@ import icu.windea.pls.base.settings.ChronicleSettings
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.forEachChild
 import icu.windea.pls.core.psi.PsiService
+import icu.windea.pls.core.util.values.or
+import icu.windea.pls.core.util.values.unresolved
 import icu.windea.pls.model.constants.ChronicleStrings
 import icu.windea.pls.script.psi.ParadoxScriptConditionalBlock
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
@@ -26,9 +28,9 @@ class ParadoxScriptFoldingBuilder : CustomFoldingBuilder(), DumbAware {
             COMMENT -> ChronicleStrings.commentFolder
             BLOCK -> ChronicleStrings.blockFolder
             CONDITIONAL_BLOCK -> {
-                val expression = node.psi.castOrNull<ParadoxScriptConditionalBlock>()?.conditionExpression
-                if (expression == null) return "..."
-                ChronicleStrings.(getConditionalBlockFolder())(expression)
+                val psi = node.psi.castOrNull<ParadoxScriptConditionalBlock>()
+                val expressionText = psi?.conditionalExpression?.presentableText
+                ChronicleStrings.conditionalBlockFolder(expressionText.or.unresolved())
             }
             INLINE_MATH -> ChronicleStrings.inlineMathFolder
             else -> null

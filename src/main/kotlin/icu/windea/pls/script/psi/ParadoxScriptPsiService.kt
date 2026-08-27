@@ -8,6 +8,7 @@ import icu.windea.pls.base.settings.ChronicleInternalSettings
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.constants.DefaultStrings
 import icu.windea.pls.core.forEachChild
+import icu.windea.pls.core.processChild
 import icu.windea.pls.core.psi.PsiBoundElement
 import icu.windea.pls.core.psi.PsiPresentableElement
 import icu.windea.pls.core.psi.PsiService
@@ -17,6 +18,7 @@ import icu.windea.pls.core.util.values.or
 import icu.windea.pls.core.util.values.unresolved
 import icu.windea.pls.model.constants.ChronicleStrings
 import icu.windea.pls.script.ParadoxScriptLanguage
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import java.util.*
 import java.util.function.IntUnaryOperator
 
@@ -38,11 +40,11 @@ object ParadoxScriptPsiService {
                     }
                 }
                 buildString {
-                    if (keyElement != null) append(getPresentableText(keyElement)) else append(DefaultStrings.unresolved)
-                    if (separatorElement?.elementType != ParadoxScriptElementTypes.SAFE_CALL_ASSIGN_SIGN) append(" ")
+                    if (keyElement != null) append(keyElement.presentableText) else append(DefaultStrings.unresolved)
+                    if (separatorElement?.elementType != SAFE_CALL_ASSIGN_SIGN) append(" ")
                     append(separatorElement?.text ?: "=")
                     append(" ")
-                    if (valueElement != null) append(getPresentableText(valueElement)) else append(DefaultStrings.unresolved)
+                    if (valueElement != null) append(valueElement.presentableText) else append(DefaultStrings.unresolved)
                 }
             }
             is ParadoxScriptScriptedVariable -> {
@@ -57,16 +59,33 @@ object ParadoxScriptPsiService {
                 buildString {
                     if (nameElementElement != null) append(nameElementElement.text) else append(DefaultStrings.unresolved)
                     append(" = ")
-                    if (valueElement != null) append(getPresentableText(valueElement)) else append(DefaultStrings.unresolved)
+                    if (valueElement != null) append(valueElement.presentableText) else append(DefaultStrings.unresolved)
                 }
             }
             is ParadoxScriptConditionalBlock -> {
-                val expression = element.conditionExpression
-                ChronicleStrings.conditionalBlockFolder(expression.or.unresolved())
+                val expressionText = element.conditionalExpression?.presentableText
+                ChronicleStrings.conditionalBlockFolder(expressionText.or.unresolved())
             }
             is ParadoxScriptInlineConditionalBlock -> {
-                val expression = element.conditionExpression
-                ChronicleStrings.conditionalBlockFolder(expression.or.unresolved())
+                val expressionText = element.conditionalExpression?.presentableText
+                ChronicleStrings.conditionalBlockFolder(expressionText.or.unresolved())
+            }
+            is ParadoxScriptConditionalParameter -> {
+                buildString {
+                    element.processChild {
+                        when {
+                            it is ParadoxScriptConditionalParameter -> {
+                                append(it.name)
+                                false
+                            }
+                            it.elementType == NOT_EQUAL_SIGN -> {
+                                append("!")
+                                true
+                            }
+                            else -> true
+                        }
+                    }
+                }
             }
             is ParadoxScriptStringExpressionElement -> element.text.transformAndKeepQuotes { it.truncate(presentableTextLimit) }
             is ParadoxScriptExpressionElement -> element.value
