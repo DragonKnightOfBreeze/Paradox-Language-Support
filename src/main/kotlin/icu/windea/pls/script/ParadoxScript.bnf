@@ -62,7 +62,6 @@ property_key ::= property_key_part (<<processPart>> property_key_part) * {
     "icu.windea.pls.script.psi.ParadoxScriptLiteralValue"
     "icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement"
     "icu.windea.pls.script.psi.ParadoxScriptInterpolationContainer"
-    "icu.windea.pls.script.psi.ParadoxScriptInlineConditionalBlockAwareElement"
   ]
   methods=[
     getIdElement parameter="" inline_conditional_block=""
@@ -113,7 +112,6 @@ string ::= string_part <<postProcessFirstPart>> (<<processPart>> string_part) * 
     "icu.windea.pls.script.psi.ParadoxScriptLiteralValue"
     "icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement"
     "icu.windea.pls.script.psi.ParadoxScriptInterpolationContainer"
-    "icu.windea.pls.script.psi.ParadoxScriptInlineConditionalBlockAwareElement"
   ]
   methods=[
     getIdElement parameter="" inline_conditional_block=""
@@ -167,7 +165,6 @@ scripted_variable_name ::= AT scripted_variable_name_part (<<processPart>> scrip
   pin=1
   implements=[
     "icu.windea.pls.script.psi.ParadoxScriptInterpolationContainer"
-    "icu.windea.pls.script.psi.ParadoxScriptInlineConditionalBlockAwareElement"
   ]
   methods=[getIdElement parameter="" inline_conditional_block="" getName]
 }
@@ -182,7 +179,6 @@ scripted_variable_reference ::= AT scripted_variable_reference_part <<postProces
   implements=[
     "icu.windea.pls.lang.psi.ParadoxScriptedVariableReference"
     "icu.windea.pls.script.psi.ParadoxScriptInterpolationContainer"
-    "icu.windea.pls.script.psi.ParadoxScriptInlineConditionalBlockAwareElement"
   ]
   methods=[
     getIdElement parameter="" inline_conditional_block=""
@@ -388,7 +384,6 @@ inline_math_scripted_variable_reference ::= AT ? inline_math_scripted_variable_r
   implements=[
     "icu.windea.pls.lang.psi.ParadoxScriptedVariableReference"
     "icu.windea.pls.script.psi.ParadoxScriptInterpolationContainer"
-    "icu.windea.pls.script.psi.ParadoxScriptInlineConditionalBlockAwareElement"
   ]
   methods=[
     getIdElement inline_math_parameter="" inline_conditional_block=""

@@ -8,7 +8,7 @@ import com.intellij.psi.search.SearchScope;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public interface ParadoxScriptScriptedVariableName extends ParadoxScriptInterpolationContainer, ParadoxScriptInlineConditionalBlockAwareElement {
+public interface ParadoxScriptScriptedVariableName extends ParadoxScriptInterpolationContainer {
 
   @Nullable PsiElement getIdElement();
 

@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-public interface ParadoxScriptString extends ParadoxScriptValue, PsiQuoteAwareElement, ParadoxScriptLiteralValue, ParadoxScriptStringExpressionElement, ParadoxScriptInterpolationContainer, ParadoxScriptInlineConditionalBlockAwareElement {
+public interface ParadoxScriptString extends ParadoxScriptValue, PsiQuoteAwareElement, ParadoxScriptLiteralValue, ParadoxScriptStringExpressionElement, ParadoxScriptInterpolationContainer {
 
   @Nullable PsiElement getIdElement();
 

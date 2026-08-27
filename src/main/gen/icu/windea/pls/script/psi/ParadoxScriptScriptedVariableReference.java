@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-public interface ParadoxScriptScriptedVariableReference extends ParadoxScriptValue, ParadoxScriptedVariableReference, ParadoxScriptInterpolationContainer, ParadoxScriptInlineConditionalBlockAwareElement {
+public interface ParadoxScriptScriptedVariableReference extends ParadoxScriptValue, ParadoxScriptedVariableReference, ParadoxScriptInterpolationContainer {
 
   @Nullable PsiElement getIdElement();
 

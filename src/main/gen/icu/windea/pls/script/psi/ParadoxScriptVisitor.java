@@ -1,15 +1,13 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.script.psi;
 
-import org.jetbrains.annotations.*;
-import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiElement;
-import icu.windea.pls.core.psi.PsiQuoteAwareElement;
-import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference;
-import icu.windea.pls.core.psi.PsiPresentableElement;
-import icu.windea.pls.lang.psi.ParadoxDefinitionElement;
+import com.intellij.psi.PsiElementVisitor;
 import icu.windea.pls.core.psi.PsiBoundElement;
+import icu.windea.pls.core.psi.PsiPresentableElement;
+import icu.windea.pls.core.psi.PsiQuoteAwareElement;
 import icu.windea.pls.core.psi.PsiRootBlock;
+import org.jetbrains.annotations.NotNull;
 
 public class ParadoxScriptVisitor extends PsiElementVisitor {
 
@@ -94,7 +92,6 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
     visitInlineMathFactor(o);
     // visitedVariableReference(o);
     // visitInterpolationContainer(o);
-    // visitInlineConditionalBlockAwareElement(o);
   }
 
   public void visitInlineMathUnaryExpression(@NotNull ParadoxScriptInlineMathUnaryExpression o) {
@@ -128,7 +125,6 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
     // visitLiteralValue(o);
     // visitStringExpressionElement(o);
     // visitInterpolationContainer(o);
-    // visitInlineConditionalBlockAwareElement(o);
   }
 
   public void visitRootBlock(@NotNull ParadoxScriptRootBlock o) {
@@ -143,14 +139,12 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
 
   public void visitScriptedVariableName(@NotNull ParadoxScriptScriptedVariableName o) {
     visitInterpolationContainer(o);
-    // visitInlineConditionalBlockAwareElement(o);
   }
 
   public void visitScriptedVariableReference(@NotNull ParadoxScriptScriptedVariableReference o) {
     visitValue(o);
     // visitedVariableReference(o);
     // visitInterpolationContainer(o);
-    // visitInlineConditionalBlockAwareElement(o);
   }
 
   public void visitString(@NotNull ParadoxScriptString o) {
@@ -159,7 +153,6 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
     // visitLiteralValue(o);
     // visitStringExpressionElement(o);
     // visitInterpolationContainer(o);
-    // visitInlineConditionalBlockAwareElement(o);
   }
 
   public void visitValue(@NotNull ParadoxScriptValue o) {
