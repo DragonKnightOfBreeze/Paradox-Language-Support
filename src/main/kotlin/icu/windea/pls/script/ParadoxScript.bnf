@@ -61,7 +61,7 @@ property_key ::= property_key_part (<<processPart>> property_key_part) * {
     "icu.windea.pls.core.psi.PsiQuoteAwareElement"
     "icu.windea.pls.script.psi.ParadoxScriptLiteralValue"
     "icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement"
-    "icu.windea.pls.script.psi.ParadoxParameterAwareElement"
+    "icu.windea.pls.script.psi.ParadoxScriptInterpolationContainer"
     "icu.windea.pls.script.psi.ParadoxScriptInlineConditionalBlockAwareElement"
   ]
   methods=[
@@ -112,7 +112,7 @@ string ::= string_part <<postProcessFirstPart>> (<<processPart>> string_part) * 
     "icu.windea.pls.core.psi.PsiQuoteAwareElement"
     "icu.windea.pls.script.psi.ParadoxScriptLiteralValue"
     "icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement"
-    "icu.windea.pls.script.psi.ParadoxParameterAwareElement"
+    "icu.windea.pls.script.psi.ParadoxScriptInterpolationContainer"
     "icu.windea.pls.script.psi.ParadoxScriptInlineConditionalBlockAwareElement"
   ]
   methods=[
@@ -166,7 +166,7 @@ scripted_variable ::= scripted_variable_name scripted_variable_separator scripte
 scripted_variable_name ::= AT scripted_variable_name_part (<<processPart>> scripted_variable_name_part) * {
   pin=1
   implements=[
-    "icu.windea.pls.script.psi.ParadoxParameterAwareElement"
+    "icu.windea.pls.script.psi.ParadoxScriptInterpolationContainer"
     "icu.windea.pls.script.psi.ParadoxScriptInlineConditionalBlockAwareElement"
   ]
   methods=[getIdElement parameter="" getName]
@@ -181,7 +181,7 @@ scripted_variable_reference ::= AT scripted_variable_reference_part <<postProces
   extends=value
   implements=[
     "icu.windea.pls.lang.psi.ParadoxScriptedVariableReference"
-    "icu.windea.pls.script.psi.ParadoxParameterAwareElement"
+    "icu.windea.pls.script.psi.ParadoxScriptInterpolationContainer"
     "icu.windea.pls.script.psi.ParadoxScriptInlineConditionalBlockAwareElement"
   ]
   methods=[
@@ -215,6 +215,7 @@ parameter ::= PARAMETER_START parameter_name parameter_argument_part ? PARAMETER
   pin=1
   implements=[
     "icu.windea.pls.script.psi.ParadoxParameter"
+    "icu.windea.pls.script.psi.ParadoxScriptInterpolation"
     "icu.windea.pls.script.psi.ParadoxArgumentAwareElement"
   ]
   methods=[
@@ -229,6 +230,7 @@ inline_math_parameter ::= PARAMETER_START parameter_name parameter_argument_part
   pin=1
   implements=[
     "icu.windea.pls.script.psi.ParadoxParameter"
+    "icu.windea.pls.script.psi.ParadoxScriptInterpolation"
     "icu.windea.pls.script.psi.ParadoxArgumentAwareElement"
   ]
   methods=[
@@ -273,6 +275,7 @@ inline_conditional_block ::= LEFT_BRACKET <<processInlineConditionalBlock>> cond
   pin=2
   implements=[
     "icu.windea.pls.core.psi.PsiBoundElement"
+    "icu.windea.pls.script.psi.ParadoxScriptInterpolation"
   ]
   methods=[
     getLeftBound getRightBound
@@ -381,7 +384,7 @@ inline_math_scripted_variable_reference ::= AT ? inline_math_scripted_variable_r
   extends=inline_math_factor
   implements=[
     "icu.windea.pls.lang.psi.ParadoxScriptedVariableReference"
-    "icu.windea.pls.script.psi.ParadoxParameterAwareElement"
+    "icu.windea.pls.script.psi.ParadoxScriptInterpolationContainer"
     "icu.windea.pls.script.psi.ParadoxScriptInlineConditionalBlockAwareElement"
   ]
   methods=[

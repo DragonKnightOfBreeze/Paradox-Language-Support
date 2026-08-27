@@ -47,6 +47,7 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
 
   public void visitInlineConditionalBlock(@NotNull ParadoxScriptInlineConditionalBlock o) {
     visitPsiBoundElement(o);
+    // visitInterpolation(o);
   }
 
   public void visitInlineMath(@NotNull ParadoxScriptInlineMath o) {
@@ -78,6 +79,7 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
   public void visitInlineMathParameter(@NotNull ParadoxScriptInlineMathParameter o) {
     visitInlineMathFactor(o);
     // visitParadoxParameter(o);
+    // visitInterpolation(o);
     // visitParadoxArgumentAwareElement(o);
   }
 
@@ -88,7 +90,7 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
   public void visitInlineMathScriptedVariableReference(@NotNull ParadoxScriptInlineMathScriptedVariableReference o) {
     visitInlineMathFactor(o);
     // visitedVariableReference(o);
-    // visitParadoxParameterAwareElement(o);
+    // visitInterpolationContainer(o);
     // visitInlineConditionalBlockAwareElement(o);
   }
 
@@ -104,6 +106,7 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
 
   public void visitParameter(@NotNull ParadoxScriptParameter o) {
     visitParadoxParameter(o);
+    // visitInterpolation(o);
     // visitParadoxArgumentAwareElement(o);
   }
 
@@ -121,7 +124,7 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
     visitPsiQuoteAwareElement(o);
     // visitLiteralValue(o);
     // visitStringExpressionElement(o);
-    // visitParadoxParameterAwareElement(o);
+    // visitInterpolationContainer(o);
     // visitInlineConditionalBlockAwareElement(o);
   }
 
@@ -136,14 +139,14 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
   }
 
   public void visitScriptedVariableName(@NotNull ParadoxScriptScriptedVariableName o) {
-    visitParadoxParameterAwareElement(o);
+    visitInterpolationContainer(o);
     // visitInlineConditionalBlockAwareElement(o);
   }
 
   public void visitScriptedVariableReference(@NotNull ParadoxScriptScriptedVariableReference o) {
     visitValue(o);
     // visitedVariableReference(o);
-    // visitParadoxParameterAwareElement(o);
+    // visitInterpolationContainer(o);
     // visitInlineConditionalBlockAwareElement(o);
   }
 
@@ -152,7 +155,7 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
     // visitPsiQuoteAwareElement(o);
     // visitLiteralValue(o);
     // visitStringExpressionElement(o);
-    // visitParadoxParameterAwareElement(o);
+    // visitInterpolationContainer(o);
     // visitInlineConditionalBlockAwareElement(o);
   }
 
@@ -185,11 +188,11 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
     visitElement(o);
   }
 
-  public void visitParadoxParameterAwareElement(@NotNull ParadoxParameterAwareElement o) {
-    visitElement(o);
+  public void visitExpressionElement(@NotNull ParadoxScriptExpressionElement o) {
+    visitPsiElement(o);
   }
 
-  public void visitExpressionElement(@NotNull ParadoxScriptExpressionElement o) {
+  public void visitInterpolationContainer(@NotNull ParadoxScriptInterpolationContainer o) {
     visitPsiElement(o);
   }
 

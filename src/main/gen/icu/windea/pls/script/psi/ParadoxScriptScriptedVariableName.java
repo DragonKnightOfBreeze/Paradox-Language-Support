@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public interface ParadoxScriptScriptedVariableName extends ParadoxParameterAwareElement, ParadoxScriptInlineConditionalBlockAwareElement {
+public interface ParadoxScriptScriptedVariableName extends ParadoxScriptInterpolationContainer, ParadoxScriptInlineConditionalBlockAwareElement {
 
   @NotNull
   List<ParadoxScriptInlineConditionalBlock> getInlineConditionalBlockList();

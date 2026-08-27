@@ -9,7 +9,7 @@ import icu.windea.pls.lang.psi.ParadoxLanguageInjectionHost
  * @see ParadoxScriptPropertyKey
  * @see ParadoxScriptString
  */
-interface ParadoxScriptStringExpressionElement : ParadoxScriptExpressionElement, ParadoxScriptLiteralValue, ParadoxLanguageInjectionHost, PsiQuoteAwareElement {
+interface ParadoxScriptStringExpressionElement : ParadoxScriptExpressionElement, ParadoxScriptLiteralValue, ParadoxScriptInterpolationContainer, ParadoxLanguageInjectionHost, PsiQuoteAwareElement {
     override fun isValidHost(): Boolean {
         return true
     }

@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
 import java.util.List;
 
-public interface ParadoxScriptInlineConditionalBlock extends PsiBoundElement {
+public interface ParadoxScriptInlineConditionalBlock extends PsiBoundElement, ParadoxScriptInterpolation {
 
   @Nullable
   ParadoxScriptConditionalExpression getConditionalExpression();
@@ -31,9 +31,7 @@ public interface ParadoxScriptInlineConditionalBlock extends PsiBoundElement {
 
   @Nullable String getConditionExpression();
 
-  //WARNING: getPresentableText(...) is skipped
-  //matching getPresentableText(ParadoxScriptInlineConditionalBlock, ...)
-  //methods are not found in ParadoxScriptPsiImplUtil
+  @NotNull String getPresentableText();
 
   @NotNull GlobalSearchScope getResolveScope();
 

@@ -69,6 +69,11 @@ public class ParadoxScriptParameterImpl extends ASTWrapperPsiElement implements 
   }
 
   @Override
+  public @NotNull String getPresentableText() {
+    return ParadoxScriptPsiImplUtil.getPresentableText(this);
+  }
+
+  @Override
   public @Nullable PsiReference getReference() {
     return ParadoxScriptPsiImplUtil.getReference(this);
   }

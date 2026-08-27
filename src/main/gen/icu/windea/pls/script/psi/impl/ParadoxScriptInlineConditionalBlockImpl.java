@@ -74,6 +74,11 @@ public class ParadoxScriptInlineConditionalBlockImpl extends ASTWrapperPsiElemen
   }
 
   @Override
+  public @NotNull String getPresentableText() {
+    return ParadoxScriptPsiImplUtil.getPresentableText(this);
+  }
+
+  @Override
   public @NotNull GlobalSearchScope getResolveScope() {
     return ParadoxScriptPsiImplUtil.getResolveScope(this);
   }

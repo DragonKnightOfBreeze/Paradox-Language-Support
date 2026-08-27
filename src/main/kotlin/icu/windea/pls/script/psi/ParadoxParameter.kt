@@ -12,7 +12,7 @@ import icu.windea.pls.lang.psi.ParadoxLanguageInjectionHost
  * @see ParadoxScriptParameter
  * @see ParadoxScriptInlineMathParameter
  */
-interface ParadoxParameter : NavigatablePsiElement, ParadoxLanguageInjectionHost {
+interface ParadoxParameter : ParadoxScriptInterpolation, NavigatablePsiElement, ParadoxLanguageInjectionHost {
     val idElement: PsiElement?
 
     override fun getName(): String?
