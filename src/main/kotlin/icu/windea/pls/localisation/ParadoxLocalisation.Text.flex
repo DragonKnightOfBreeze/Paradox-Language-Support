@@ -25,12 +25,12 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
     // stack for expected construct types (e.g., EXPECT_COLORFUL_TEXT)
     private IntStack expectStack = null;
 
-    private static int EXPECT_COLORFUL_TEXT = 1;
-    private static int EXPECT_PARAMETER = 2;
-    private static int EXPECT_ICON = 3;
-    private static int EXPECT_COMMAND = 4;
-    private static int EXPECT_TEXT_ICON = 5;
-    private static int EXPECT_TEXT_FORMAT = 6;
+    private static final int EXPECT_COLORFUL_TEXT = 1;
+    private static final int EXPECT_PARAMETER = 2;
+    private static final int EXPECT_ICON = 3;
+    private static final int EXPECT_COMMAND = 4;
+    private static final int EXPECT_TEXT_ICON = 5;
+    private static final int EXPECT_TEXT_FORMAT = 6;
 
     public _ParadoxLocalisationTextLexer() {
         this((java.io.Reader)null);

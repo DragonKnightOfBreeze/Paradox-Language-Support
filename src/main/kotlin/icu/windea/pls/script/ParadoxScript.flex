@@ -167,11 +167,11 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 %s IN_PARAMETER_ARGUMENT_END
 
 %s IN_INLINE_CONDITIONAL_BLOCK
-%s IN_INLINE_CONDITIONAL_BLOCK_EXPRESSION
+%s IN_INLINE_CONDITIONAL_EXPRESSION
 %s IN_INLINE_CONDITIONAL_BLOCK_BODY
 
 %s IN_CONDITIONAL_BLOCK
-%s IN_CONDITIONAL_BLOCK_EXPRESSION
+%s IN_CONDITIONAL_EXPRESSION
 %s IN_CONDITIONAL_BLOCK_BODY
 
 %s IN_INLINE_MATH
@@ -353,11 +353,11 @@ INLINE_MATH_TOKEN=[^\r\n#{}\[\]]+
 <IN_CONDITIONAL_BLOCK> {
     "{" { enterState(stack, stack.isEmpty() ? YYINITIAL : IN_PROPERTY_OR_VALUE); return LEFT_BRACE; }
     "}" { exitState(stack, YYINITIAL); return RIGHT_BRACE; }
-    "[" { yybegin(IN_CONDITIONAL_BLOCK_EXPRESSION); return NESTED_LEFT_BRACKET; }
+    "[" { yybegin(IN_CONDITIONAL_EXPRESSION); return NESTED_LEFT_BRACKET; }
     "]" { exitState(stack, YYINITIAL); recoverState(templateStateRef); return RIGHT_BRACKET; }
     {COMMENT} { return COMMENT; }
 }
-<IN_CONDITIONAL_BLOCK_EXPRESSION> {
+<IN_CONDITIONAL_EXPRESSION> {
     "{" { enterState(stack, stack.isEmpty() ? YYINITIAL : IN_PROPERTY_OR_VALUE); return LEFT_BRACE; }
     "}" { exitState(stack, YYINITIAL); return RIGHT_BRACE; }
     "]" { yybegin(IN_CONDITIONAL_BLOCK_BODY); return NESTED_RIGHT_BRACKET; }

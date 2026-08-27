@@ -146,9 +146,7 @@ parameter_argument ::= ARGUMENT_TOKEN {
   ]
   methods=[getIdElement getReference getReferences]
 }
-
-// scripted variable reference rules (in references)
-
+// scripted variable reference (in parameters)
 scripted_variable_reference ::= AT SCRIPTED_VARIABLE_REFERENCE_TOKEN {
   implements=[
     "icu.windea.pls.lang.psi.ParadoxScriptedVariableReference"
