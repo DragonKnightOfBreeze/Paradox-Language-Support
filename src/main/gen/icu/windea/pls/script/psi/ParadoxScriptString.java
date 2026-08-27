@@ -15,7 +15,7 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
 import java.util.List;
 
-public interface ParadoxScriptString extends ParadoxScriptValue, PsiQuoteAwareElement, ParadoxScriptLiteralValue, ParadoxScriptStringExpressionElement, ParadoxParameterAwareElement {
+public interface ParadoxScriptString extends ParadoxScriptValue, PsiQuoteAwareElement, ParadoxScriptLiteralValue, ParadoxScriptStringExpressionElement, ParadoxParameterAwareElement, ParadoxScriptInlineConditionalBlockAwareElement {
 
   @NotNull
   List<ParadoxScriptInlineConditionalBlock> getInlineConditionalBlockList();

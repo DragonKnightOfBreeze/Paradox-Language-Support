@@ -89,6 +89,7 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
     visitInlineMathFactor(o);
     // visitedVariableReference(o);
     // visitParadoxParameterAwareElement(o);
+    // visitInlineConditionalBlockAwareElement(o);
   }
 
   public void visitInlineMathUnaryExpression(@NotNull ParadoxScriptInlineMathUnaryExpression o) {
@@ -121,6 +122,7 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
     // visitLiteralValue(o);
     // visitStringExpressionElement(o);
     // visitParadoxParameterAwareElement(o);
+    // visitInlineConditionalBlockAwareElement(o);
   }
 
   public void visitRootBlock(@NotNull ParadoxScriptRootBlock o) {
@@ -135,12 +137,14 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
 
   public void visitScriptedVariableName(@NotNull ParadoxScriptScriptedVariableName o) {
     visitParadoxParameterAwareElement(o);
+    // visitInlineConditionalBlockAwareElement(o);
   }
 
   public void visitScriptedVariableReference(@NotNull ParadoxScriptScriptedVariableReference o) {
     visitValue(o);
     // visitedVariableReference(o);
     // visitParadoxParameterAwareElement(o);
+    // visitInlineConditionalBlockAwareElement(o);
   }
 
   public void visitString(@NotNull ParadoxScriptString o) {
@@ -149,6 +153,7 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
     // visitLiteralValue(o);
     // visitStringExpressionElement(o);
     // visitParadoxParameterAwareElement(o);
+    // visitInlineConditionalBlockAwareElement(o);
   }
 
   public void visitValue(@NotNull ParadoxScriptValue o) {

@@ -3,6 +3,7 @@ package icu.windea.pls.script.psi
 import com.intellij.psi.*
 import icu.windea.pls.core.*
 
+
 /**
  * 名字中可以包含参数（[ParadoxParameter]）的 PSI 元素。
  *
@@ -14,6 +15,7 @@ import icu.windea.pls.core.*
  * @see ParadoxScriptScriptedVariableReference
  * @see ParadoxScriptInlineMathScriptedVariableReference
  */
+@Suppress("unused")
 interface ParadoxParameterAwareElement : PsiElement {
     val parameters: List<ParadoxParameter> get() = this.findChildren<_>()
 }
