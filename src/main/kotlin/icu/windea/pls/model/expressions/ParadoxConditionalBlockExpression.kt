@@ -7,12 +7,12 @@ import icu.windea.pls.core.util.values.ReversibleValue
 import icu.windea.pls.script.psi.ParadoxScriptConditionalBlockExpression
 
 /**
- * 参数化快表达式。
+ * 参数化块表达式。
  *
  * 其中的标识符为参数名，可以使用 `!` 取反。
  *
  * 用途：
- * - 在脚本文件中，`[[{x}]...]` 表示一个参数化快 ，其中 `{x}` 即是一个参数化快表达式。
+ * - 在脚本文件中，`[[{x}]...]` 表示一个参数化块 ，其中 `{x}` 即是一个参数化块表达式。
  *
  * 示例：
  * ```text

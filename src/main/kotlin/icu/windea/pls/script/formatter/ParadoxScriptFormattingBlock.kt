@@ -43,7 +43,7 @@ class ParadoxScriptFormattingBlock(
             // 变量声明分隔符周围的空格，属性分隔符周围的空格
             val customSettings = settings.getCustomSettings(ParadoxScriptCodeStyleSettings::class.java)
             return SpacingBuilder(settings, ParadoxScriptLanguage)
-                .between(MEMBERS, MEMBERS).spaces(1) // 封装变量/属性/值/参数化快之间需要有空格或者换行
+                .between(MEMBERS, MEMBERS).spaces(1) // 封装变量/属性/值/参数化块之间需要有空格或者换行
                 .aroundInside(NORMAL_SEPARATORS, SCRIPTED_VARIABLE).spaceIf(customSettings.SPACE_AROUND_SCRIPTED_VARIABLE_SEPARATOR) // 间隔符周围按情况可能需要空格
                 .beforeInside(LEADING_SEPARATORS, SCRIPTED_VARIABLE).spaces(0) // 间隔符周围按情况可能需要空格（强制移除左侧空白）
                 .afterInside(LEADING_SEPARATORS, SCRIPTED_VARIABLE).spaceIf(customSettings.SPACE_AROUND_SCRIPTED_VARIABLE_SEPARATOR) // 间隔符周围按情况可能需要空格（强制移除左侧空白）
@@ -53,9 +53,9 @@ class ParadoxScriptFormattingBlock(
                 .around(INLINE_MATH_OPERATORS).spaceIf(customSettings.SPACE_AROUND_INLINE_MATH_OPERATOR) // 内联数学表达式运算符周围按情况可能需要空格
                 .between(LEFT_BRACE, RIGHT_BRACE).spaceIf(customSettings.SPACE_WITHIN_EMPTY_BRACES) // 花括号之间按情况可能需要空格
                 .withinPair(LEFT_BRACE, RIGHT_BRACE).spaceIf(customSettings.SPACE_WITHIN_BRACES, true) // 花括号内侧按情况可能需要空格
-                .between(NESTED_LEFT_BRACKET, NESTED_RIGHT_BRACKET).none() // 参数化快表达式如果为空则不需要空格（尽管这是语法错误）
-                .withinPair(NESTED_LEFT_BRACKET, NESTED_RIGHT_BRACKET).spaceIf(customSettings.SPACE_WITHIN_CONDITIONAL_BLOCK_EXPRESSION_BRACKETS) // 参数化快表达式内侧非换行按情况可能需要空格
-                .between(NESTED_RIGHT_BRACKET, RIGHT_BRACKET).none() // 参数化快代码块如果为空则不需要空格
+                .between(NESTED_LEFT_BRACKET, NESTED_RIGHT_BRACKET).none() // 参数化块表达式如果为空则不需要空格（尽管这是语法错误）
+                .withinPair(NESTED_LEFT_BRACKET, NESTED_RIGHT_BRACKET).spaceIf(customSettings.SPACE_WITHIN_CONDITIONAL_BLOCK_EXPRESSION_BRACKETS) // 参数化块表达式内侧非换行按情况可能需要空格
+                .between(NESTED_RIGHT_BRACKET, RIGHT_BRACKET).none() // 参数化块代码块如果为空则不需要空格
                 .between(NESTED_RIGHT_BRACKET, MEMBERS).spaceIf(customSettings.SPACE_WITHIN_CONDITIONAL_BLOCK_BRACKETS, true)
                 .between(MEMBERS, RIGHT_BRACKET).spaceIf(customSettings.SPACE_WITHIN_CONDITIONAL_BLOCK_BRACKETS, true)
                 .between(INLINE_MATH_START, INLINE_MATH_END).none() // 内联数字表达式如果为空则不需要空格（尽管这是语法错误）

@@ -181,7 +181,7 @@ object ParadoxParameterManager {
         if (parameterInfo.defaultValue != null) return true
         // 如果是条件参数，则为可选
         if (parameterInfo.conditionExpressions == null) return true
-        // 如果从参数化快表达式的堆栈来看是可选的，则为可选
+        // 如果从参数化块表达式的堆栈来看是可选的，则为可选
         if (!parameterInfo.conditionExpressions.all { it.matches(argumentNames) }) return true
         // 如果作为传入参数的值，则认为是可选的
         if (isPassingParameterValue(parameterInfo)) return true
