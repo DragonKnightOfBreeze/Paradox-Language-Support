@@ -271,6 +271,7 @@ inline_conditional_block ::= LEFT_BRACKET <<processInlineConditionalBlock>> cond
   implements=[
     "icu.windea.pls.core.psi.PsiBoundElement"
     "icu.windea.pls.script.psi.ParadoxScriptInterpolation"
+    "icu.windea.pls.script.psi.ParadoxScriptInterpolationContainer"
   ]
   methods=[
     getLeftBound getRightBound parameter="" inline_conditional_block=""

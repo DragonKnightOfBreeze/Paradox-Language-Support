@@ -57,6 +57,6 @@ class ParadoxScriptParsingTest : ParsingTestCase("script/syntax", "test.txt", Pa
     fun construct_conditional_blocks() = doTest(true)
     @Test
     fun construct_inline_conditional_blocks() = doTest(true)
-    // @Test
-    // fun construct_advanced_interpolation() = doTest(true) // TODO 3.0.2 hard to solve...
+    @Test
+    fun construct_advanced_interpolation() = doTest(true) // TODO 3.0.2 hard to solve...
 }

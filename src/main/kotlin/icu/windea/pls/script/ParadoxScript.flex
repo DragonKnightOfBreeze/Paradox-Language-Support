@@ -188,6 +188,7 @@ INLINE_MATH_TOKEN=[^\r\n#{}\[\]]+
     }
     "[" {
         enterState(yystate(), EXPECT_CONDITIONAL_BLOCK);
+        yybegin(IN_CONDITIONAL_BLOCK);
         return LEFT_BRACKET;
     }
     "@" {
@@ -213,6 +214,7 @@ INLINE_MATH_TOKEN=[^\r\n#{}\[\]]+
 <IN_KEY, IN_QUOTED_KEY, IN_STRING, IN_QUOTED_STRING, IN_SCRIPTED_VARIABLE_NAME, IN_SCRIPTED_VARIABLE_REFERENCE> {
     "[" {
         enterState(yystate(), EXPECT_INLINE_CONDITIONAL_BLOCK);
+        yybegin(IN_INLINE_CONDITIONAL_BLOCK);
         return LEFT_BRACKET;
     }
     "$" {
@@ -239,14 +241,10 @@ INLINE_MATH_TOKEN=[^\r\n#{}\[\]]+
         yypushback(yylength());
         yybegin(IN_SCRIPTED_VARIABLE_REFERENCE);
     }
-
-    {BLANK} { return WHITE_SPACE; } // keep atm
-    {COMMENT} { exitState(); return COMMENT; } // keep atm
-    [^] { if (!exitStateForUnexpected()) return BAD_CHARACTER; } // recovery
 }
 <IN_SCRIPTED_VARIABLE_NAME> {
     {SCRIPTED_VARIABLE_NAME_TOKEN} { return SCRIPTED_VARIABLE_NAME_TOKEN; }
-    {BLANK} { return WHITE_SPACE; } // keep atm
+    {BLANK} { exitState(); return WHITE_SPACE; } // keep atm
     {COMMENT} { exitState(); return COMMENT; } // keep atm
     [^] { if (!exitStateForUnexpected()) return BAD_CHARACTER; } // recovery
 }
@@ -261,10 +259,6 @@ INLINE_MATH_TOKEN=[^\r\n#{}\[\]]+
         yypushback(yylength());
         yybegin(IN_SCRIPTED_VARIABLE_REFERENCE);
     }
-
-    {BLANK} { return WHITE_SPACE; } // keep atm
-    {COMMENT} { exitState(); return COMMENT; } // keep atm
-    [^] { if (!exitStateForUnexpected()) return BAD_CHARACTER; } // recovery
 }
 <IN_SCRIPTED_VARIABLE_REFERENCE> {
     {SCRIPTED_VARIABLE_NAME_TOKEN} { return SCRIPTED_VARIABLE_REFERENCE_TOKEN; }

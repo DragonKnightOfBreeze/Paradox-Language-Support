@@ -49,6 +49,7 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
   public void visitInlineConditionalBlock(@NotNull ParadoxScriptInlineConditionalBlock o) {
     visitPsiBoundElement(o);
     // visitInterpolation(o);
+    // visitInterpolationContainer(o);
   }
 
   public void visitInlineMath(@NotNull ParadoxScriptInlineMath o) {
