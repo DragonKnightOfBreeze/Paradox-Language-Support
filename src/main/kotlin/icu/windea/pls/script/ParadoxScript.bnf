@@ -334,11 +334,11 @@ inline_math_binary_expression ::= inline_math_add_expr | inline_math_mul_expr {
 }
 left inline_math_add_expr ::= inline_math_add_op inline_math_expr_factor {
   pin=1
-  elementType=inline_math_binary_expression
+  elementType=inline_math_binary_expression // the intended way to override element type
 }
 left inline_math_mul_expr ::= inline_math_mul_op inline_math_expr_unary {
   pin=1
-  elementType=inline_math_binary_expression
+  elementType=inline_math_binary_expression // the intended way to override element type
 }
 private inline_math_add_op ::= PLUS_SIGN | MINUS_SIGN
 private inline_math_mul_op ::= TIMES_SIGN | DIV_SIGN | MOD_SIGN
