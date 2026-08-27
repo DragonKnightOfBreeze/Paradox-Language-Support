@@ -32,9 +32,9 @@ object ParadoxCsvPsiPresentationService {
             // 文件名
             is ParadoxCsvFile -> element.name
             // 特殊标记
-            is ParadoxCsvHeader -> ChronicleStrings.headerText
+            is ParadoxCsvHeader -> ChronicleStrings.headerPlaceholder
             // 特殊标记
-            is ParadoxCsvRow -> ChronicleStrings.rowText
+            is ParadoxCsvRow -> ChronicleStrings.rowPlaceholder
             // 展示文本
             is ParadoxCsvColumn -> element.presentableText
             // 回退

@@ -1,8 +1,8 @@
 package icu.windea.pls.lang.util.renderers
 
+import icu.windea.pls.core.constants.DefaultStrings
 import icu.windea.pls.core.text.EscapePatterns
 import icu.windea.pls.core.unescape
-import icu.windea.pls.core.util.values.FallbackStrings
 import icu.windea.pls.lang.psi.resolveLocalisation
 import icu.windea.pls.lang.psi.resolveScriptedVariable
 import icu.windea.pls.lang.util.ParadoxGameConceptManager
@@ -78,7 +78,7 @@ class ParadoxLocalisationTextPlainRenderContext(
         // 封装变量
         run {
             if (resolved !is ParadoxScriptScriptedVariable) return@run
-            val v = resolved.value ?: FallbackStrings.unresolved
+            val v = resolved.value ?: DefaultStrings.unresolved
             builder.append(v)
             return
         }

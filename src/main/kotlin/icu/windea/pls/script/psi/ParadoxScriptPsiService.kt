@@ -6,13 +6,13 @@ import com.intellij.psi.util.elementType
 import com.intellij.psi.util.parentOfType
 import icu.windea.pls.base.settings.ChronicleInternalSettings
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.constants.DefaultStrings
 import icu.windea.pls.core.forEachChild
 import icu.windea.pls.core.psi.PsiBoundElement
 import icu.windea.pls.core.psi.PsiPresentableElement
 import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.core.transformAndKeepQuotes
 import icu.windea.pls.core.truncate
-import icu.windea.pls.core.util.values.FallbackStrings
 import icu.windea.pls.core.util.values.or
 import icu.windea.pls.core.util.values.unresolved
 import icu.windea.pls.model.constants.ChronicleStrings
@@ -38,11 +38,11 @@ object ParadoxScriptPsiService {
                     }
                 }
                 buildString {
-                    if (keyElement != null) append(getPresentableText(keyElement)) else append(FallbackStrings.unresolved)
+                    if (keyElement != null) append(getPresentableText(keyElement)) else append(DefaultStrings.unresolved)
                     if (separatorElement?.elementType != ParadoxScriptElementTypes.SAFE_CALL_ASSIGN_SIGN) append(" ")
                     append(separatorElement?.text ?: "=")
                     append(" ")
-                    if (valueElement != null) append(getPresentableText(valueElement)) else append(FallbackStrings.unresolved)
+                    if (valueElement != null) append(getPresentableText(valueElement)) else append(DefaultStrings.unresolved)
                 }
             }
             is ParadoxScriptScriptedVariable -> {
@@ -55,9 +55,9 @@ object ParadoxScriptPsiService {
                     }
                 }
                 buildString {
-                    if (nameElementElement != null) append(nameElementElement.text) else append(FallbackStrings.unresolved)
+                    if (nameElementElement != null) append(nameElementElement.text) else append(DefaultStrings.unresolved)
                     append(" = ")
-                    if (valueElement != null) append(getPresentableText(valueElement)) else append(FallbackStrings.unresolved)
+                    if (valueElement != null) append(getPresentableText(valueElement)) else append(DefaultStrings.unresolved)
                 }
             }
             is ParadoxScriptConditionalBlock -> {

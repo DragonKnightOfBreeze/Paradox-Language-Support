@@ -2,9 +2,9 @@ package icu.windea.pls.lang.util.renderers
 
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.util.elementType
+import icu.windea.pls.core.constants.DefaultStrings
 import icu.windea.pls.core.findChild
 import icu.windea.pls.core.util.OnceMarker
-import icu.windea.pls.core.util.values.FallbackStrings
 import icu.windea.pls.lang.psi.formattedValue
 import icu.windea.pls.lang.psi.members
 import icu.windea.pls.script.psi.ParadoxScriptBlock
@@ -54,7 +54,7 @@ open class ParadoxScriptTextPlainRenderContext(
         renderSeparator(element)
         val propertyValue = element.propertyValue
         if (propertyValue == null) {
-            builder.append(FallbackStrings.unresolved)
+            builder.append(DefaultStrings.unresolved)
             return
         }
         renderValue(propertyValue)
@@ -81,7 +81,7 @@ open class ParadoxScriptTextPlainRenderContext(
 
     override fun renderExpressionElement(element: ParadoxScriptExpressionElement) {
         val v = element.formattedValue()
-        builder.append(v ?: FallbackStrings.unresolved)
+        builder.append(v ?: DefaultStrings.unresolved)
     }
 
     fun renderIndent() {

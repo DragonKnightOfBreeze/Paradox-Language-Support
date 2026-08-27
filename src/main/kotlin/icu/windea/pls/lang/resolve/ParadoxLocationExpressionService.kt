@@ -8,6 +8,7 @@ import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.configExpression.CwtImageLocationExpression
 import icu.windea.pls.config.configExpression.CwtLocalisationLocationExpression
 import icu.windea.pls.config.util.CwtConfigExpressionManager
+import icu.windea.pls.core.constants.StatusStrings
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.withRecursionGuard
@@ -31,7 +32,6 @@ import icu.windea.pls.lang.util.ParadoxImageManager
 import icu.windea.pls.lang.util.ParadoxSpriteManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxDefinitionInfo
-import icu.windea.pls.model.constants.ChronicleStrings
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.model.type.ParadoxExpressionRole
 import icu.windea.pls.script.psi.ParadoxScriptString
@@ -59,16 +59,16 @@ object ParadoxLocationExpressionService {
         val valueElement = findValueElementByPath(definition, location) ?: return null
         val config = ParadoxConfigManager.getConfigs(valueElement).firstOrNull() as? CwtValueConfig ?: return null
         if (config.configExpression.type !in CwtDataTypeSets.LocalisationLocationAware) {
-            return createLocalisationResolveResult(ChronicleStrings.dynamicText)
+            return createLocalisationResolveResult(StatusStrings.dynamic)
         }
         if (valueElement !is ParadoxScriptString) {
             return null
         }
         if (valueElement.text.isParameterized()) {
-            return createLocalisationResolveResult(ChronicleStrings.parameterizedText)
+            return createLocalisationResolveResult(StatusStrings.parameterized)
         }
         if (config.configExpression.type == CwtDataTypes.InlineLocalisation && valueElement.text.isLeftQuoted()) {
-            return createLocalisationResolveResult(ChronicleStrings.inlinedText)
+            return createLocalisationResolveResult(StatusStrings.inlined)
         }
         val name = valueElement.stringValue
         if (name.isEmpty()) return null
@@ -159,13 +159,13 @@ object ParadoxLocationExpressionService {
         val valueElement = findValueElementByPath(definition, location) ?: return null
         val config = ParadoxConfigManager.getConfigs(valueElement).firstOrNull() as? CwtValueConfig ?: return null
         if (config.configExpression.type !in CwtDataTypeSets.ImageLocationAware) {
-            return createImageResolveResult(ChronicleStrings.dynamicText)
+            return createImageResolveResult(StatusStrings.dynamic)
         }
         if (valueElement !is ParadoxScriptString) {
             return null
         }
         if (valueElement.text.isParameterized()) {
-            return createImageResolveResult(ChronicleStrings.parameterizedText)
+            return createImageResolveResult(StatusStrings.parameterized)
         }
         val resolved = ParadoxExpressionManager.resolveScriptExpression(valueElement, null, config, ParadoxExpressionRole.Value)
         when {

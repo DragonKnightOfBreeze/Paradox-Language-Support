@@ -7,7 +7,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.ui.ColorUtil.*
 import com.intellij.ui.Gray
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.core.util.values.FallbackStrings
+import icu.windea.pls.core.constants.DefaultStrings
 import icu.windea.pls.lang.type.CwtTypeService
 
 /**
@@ -25,7 +25,7 @@ class CwtTypeProvider : ExpressionTypeProvider<PsiElement>() {
 
     override fun getInformationHint(element: PsiElement): @NlsContexts.HintText String {
         CwtTypeService.getType(element)?.let { return it.id }
-        return FallbackStrings.unknown
+        return DefaultStrings.unknown
     }
 
     override fun getErrorHint(): @NlsContexts.HintText String {

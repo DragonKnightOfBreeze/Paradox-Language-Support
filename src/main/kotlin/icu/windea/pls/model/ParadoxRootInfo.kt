@@ -1,7 +1,7 @@
 package icu.windea.pls.model
 
 import com.intellij.openapi.vfs.VirtualFile
-import icu.windea.pls.core.util.values.FallbackStrings
+import icu.windea.pls.core.constants.DefaultStrings
 import icu.windea.pls.lang.analysis.ParadoxGameTypeManager
 import icu.windea.pls.model.analysis.ParadoxRootMetadata
 
@@ -92,7 +92,7 @@ sealed interface ParadoxRootInfo {
         override val gameType: ParadoxGameType,
         override val gameVersion: String? = null,
     ) : ParadoxRootInfo {
-        override val qualifiedName: String get() = FallbackStrings.injected
+        override val qualifiedName: String get() = DefaultStrings.injected
         override val steamId: String? get() = null
 
         override fun isValid(): Boolean = true

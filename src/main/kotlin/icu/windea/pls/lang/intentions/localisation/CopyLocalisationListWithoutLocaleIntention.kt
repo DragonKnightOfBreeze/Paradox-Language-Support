@@ -8,7 +8,7 @@ import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
 import icu.windea.pls.base.notification.ChronicleNotificationGroups
-import icu.windea.pls.core.util.values.FallbackStrings
+import icu.windea.pls.core.constants.DefaultStrings
 import icu.windea.pls.lang.intentions.ChronicleIntentionBundle
 import icu.windea.pls.lang.selectLocale
 import icu.windea.pls.lang.util.ParadoxLocalisationListManager
@@ -27,7 +27,7 @@ class CopyLocalisationListWithoutLocaleIntention : ManipulateLocalisationListInt
 
     private fun createNotification(element: ParadoxLocalisationPropertyList): Notification {
         val localeElement = element.locale
-        val locale = selectLocale(localeElement)?.text ?: localeElement?.name ?: FallbackStrings.unknown
+        val locale = selectLocale(localeElement)?.text ?: localeElement?.name ?: DefaultStrings.unknown
         val content = ChronicleIntentionBundle.message("intention.copyLocalisationList.notification", locale)
         return ChronicleNotificationGroups.manipulation().createNotification(content, NotificationType.INFORMATION)
     }

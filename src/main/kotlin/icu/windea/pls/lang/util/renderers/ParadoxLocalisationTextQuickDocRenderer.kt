@@ -8,6 +8,7 @@ import com.intellij.ui.ColorUtil
 import icu.windea.pls.base.settings.ChronicleInternalSettings
 import icu.windea.pls.core.codeInsight.documentation.DocumentationBuilder
 import icu.windea.pls.core.codeInsight.documentation.buildDocumentation
+import icu.windea.pls.core.constants.DefaultStrings
 import icu.windea.pls.core.escape
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.forEachChild
@@ -17,7 +18,6 @@ import icu.windea.pls.core.text.EscapePatterns
 import icu.windea.pls.core.toFileUrl
 import icu.windea.pls.core.toIconOrNull
 import icu.windea.pls.core.unescape
-import icu.windea.pls.core.util.values.FallbackStrings
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
 import icu.windea.pls.images.ImageFrameInfo
@@ -146,7 +146,7 @@ class ParadoxLocalisationTextQuickDocRenderContext(
             // 封装变量
             run {
                 if (resolved !is ParadoxScriptScriptedVariable) return@run
-                val v = resolved.value?.escapeXml() ?: FallbackStrings.unresolved
+                val v = resolved.value?.escapeXml() ?: DefaultStrings.unresolved
                 builder.append(v)
                 return@action
             }

@@ -19,6 +19,7 @@ import icu.windea.pls.core.collections.mapFast
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.collections.processFast
+import icu.windea.pls.core.constants.StatusStrings
 import icu.windea.pls.core.mergeValue
 import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.ep.resolve.parameter.ParadoxParameterInferredConfigProvider
@@ -30,7 +31,6 @@ import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.model.ParadoxParameterContextInfo
 import icu.windea.pls.model.ParadoxParameterContextReferenceInfo
-import icu.windea.pls.model.constants.ChronicleStrings
 import icu.windea.pls.model.orSpecific
 import icu.windea.pls.model.support
 import icu.windea.pls.model.type.CwtExpressionType
@@ -169,7 +169,7 @@ object ParadoxParameterService {
     fun getInferredType(contextConfigs: List<CwtMemberConfig<*>>): String? {
         val configs = contextConfigs.singleOrNull()?.configs
         if (configs.isNullOrEmpty()) return null
-        if (configs.anyFast { it !is CwtValueConfig || it.valueType == CwtExpressionType.Block }) return ChronicleStrings.complexText
+        if (configs.anyFast { it !is CwtValueConfig || it.valueType == CwtExpressionType.Block }) return StatusStrings.complex
         return configs.mapFast { it.configExpression.expressionString }.toSet().joinToString(" | ")
     }
 

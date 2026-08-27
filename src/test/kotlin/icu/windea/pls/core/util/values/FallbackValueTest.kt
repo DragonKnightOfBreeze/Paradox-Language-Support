@@ -1,5 +1,6 @@
 package icu.windea.pls.core.util.values
 
+import icu.windea.pls.core.constants.DefaultStrings
 import org.junit.Assert
 import org.junit.Test
 
@@ -9,11 +10,11 @@ import org.junit.Test
 class FallbackValueTest {
     @Test
     fun fallback_strings_constants_test() {
-        Assert.assertEquals("(anonymous)", FallbackStrings.anonymous)
-        Assert.assertEquals("(unknown)", FallbackStrings.unknown)
-        Assert.assertEquals("(unresolved)", FallbackStrings.unresolved)
-        Assert.assertEquals("(unnamed)", FallbackStrings.unnamed)
-        Assert.assertEquals("(injected)", FallbackStrings.injected)
+        Assert.assertEquals("(anonymous)", DefaultStrings.anonymous)
+        Assert.assertEquals("(unknown)", DefaultStrings.unknown)
+        Assert.assertEquals("(unresolved)", DefaultStrings.unresolved)
+        Assert.assertEquals("(unnamed)", DefaultStrings.unnamed)
+        Assert.assertEquals("(injected)", DefaultStrings.injected)
     }
 
     @Test

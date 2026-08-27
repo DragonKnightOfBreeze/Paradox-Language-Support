@@ -7,13 +7,13 @@ import com.intellij.psi.util.elementType
 import com.intellij.psi.util.parentOfType
 import icu.windea.pls.base.settings.ChronicleInternalSettings
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.constants.DefaultStrings
 import icu.windea.pls.core.forEachChild
 import icu.windea.pls.core.psi.PsiBoundElement
 import icu.windea.pls.core.psi.PsiPresentableElement
 import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.core.transformAndKeepQuotes
 import icu.windea.pls.core.truncate
-import icu.windea.pls.core.util.values.FallbackStrings
 import icu.windea.pls.cwt.CwtLanguage
 
 @Suppress("unused")
@@ -34,11 +34,11 @@ object CwtPsiService {
                     }
                 }
                 buildString {
-                    if (keyElement != null) append(getPresentableText(keyElement)) else append(FallbackStrings.unresolved)
+                    if (keyElement != null) append(getPresentableText(keyElement)) else append(DefaultStrings.unresolved)
                     append(" ")
                     append(separatorElement?.text ?: "=")
                     append(" ")
-                    if (valueElement != null) append(getPresentableText(valueElement)) else append(FallbackStrings.unresolved)
+                    if (valueElement != null) append(getPresentableText(valueElement)) else append(DefaultStrings.unresolved)
                 }
             }
             is CwtOption -> {
@@ -51,9 +51,9 @@ object CwtPsiService {
                     }
                 }
                 buildString {
-                    if (keyElement != null) append(keyElement.text) else append(FallbackStrings.unresolved)
+                    if (keyElement != null) append(keyElement.text) else append(DefaultStrings.unresolved)
                     append(" = ")
-                    if (valueElement != null) append(getPresentableText(valueElement)) else append(FallbackStrings.unresolved)
+                    if (valueElement != null) append(getPresentableText(valueElement)) else append(DefaultStrings.unresolved)
                 }
             }
             is CwtStringExpressionElement -> element.text.transformAndKeepQuotes { it.truncate(presentableTextLimit) }

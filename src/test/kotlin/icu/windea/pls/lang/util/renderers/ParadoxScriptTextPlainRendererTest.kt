@@ -3,7 +3,7 @@ package icu.windea.pls.lang.util.renderers
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.jetbrains.rd.util.AtomicInteger
-import icu.windea.pls.core.util.values.FallbackStrings
+import icu.windea.pls.core.constants.DefaultStrings
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.ChronicleStrings
 import icu.windea.pls.script.psi.ParadoxScriptFile
@@ -23,7 +23,7 @@ import org.junit.runners.JUnit4
 class ParadoxScriptTextPlainRendererTest : BasePlatformTestCase(), ChronicleTestScope {
     private val gameType = ParadoxGameType.Stellaris
     private val counter = AtomicInteger()
-    private val unresolved = FallbackStrings.unresolved
+    private val unresolved = DefaultStrings.unresolved
     private val blockFolder = ChronicleStrings.blockFolder
 
     override fun getTestDataPath() = "src/test/testData"

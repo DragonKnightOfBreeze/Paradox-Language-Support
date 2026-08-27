@@ -6,8 +6,8 @@ import com.intellij.psi.PsiElement
 import com.intellij.ui.ColorUtil.*
 import com.intellij.ui.Gray
 import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.core.constants.DefaultStrings
 import icu.windea.pls.core.escapeXml
-import icu.windea.pls.core.util.values.FallbackStrings
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
 import icu.windea.pls.lang.type.ParadoxTypeService
@@ -39,7 +39,7 @@ class ParadoxTypeProvider : ExpressionTypeProvider<PsiElement>() {
         ParadoxTypeService.getLocalisationType(element)?.let { return it.id }
         ParadoxTypeService.getConfigExpression(element)?.let { return it.escapeXml() }
         ParadoxTypeService.getType(element)?.let { return it.text }
-        return FallbackStrings.unknown
+        return DefaultStrings.unknown
     }
 
     override fun getErrorHint(): String {
