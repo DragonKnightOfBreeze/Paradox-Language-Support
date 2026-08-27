@@ -326,6 +326,9 @@ TEXT_FORMAT_TOKEN=[\w:;]+ // `italic;color:green` is allowed
     "$" {
         enterState(yystate(), EXPECT_PARAMETER); yypushback(yylength()); yybegin(CHECK_PARAMETER);
     }
+    "[" {
+        enterState(yystate(), EXPECT_COMMAND); yypushback(yylength()); yybegin(CHECK_COMMAND);
+    }
 
     "£" {
         exitState(EXPECT_ICON); return ICON_END;
@@ -398,7 +401,6 @@ TEXT_FORMAT_TOKEN=[\w:;]+ // `italic;color:green` is allowed
         exitState(EXPECT_COMMAND); return RIGHT_BRACKET;
     }
 
-    "]" { return RIGHT_BRACKET; }
     "'" { return RIGHT_SINGLE_QUOTE; }
     "," { yybegin(IN_CONCEPT_AFTER_COMMA); return COMMA; }
     {CONCEPT_NAME_TOKEN} { return CONCEPT_NAME_TOKEN; }

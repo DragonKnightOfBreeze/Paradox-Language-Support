@@ -10,8 +10,9 @@ import icu.windea.pls.model.constraints.ParadoxSyntaxConstraint;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntStack;
 
-import static com.intellij.psi.TokenType.*;
-import static icu.windea.pls.core.StdlibExtensionsKt.*;
+import static com.intellij.psi.TokenType.BAD_CHARACTER;
+import static com.intellij.psi.TokenType.WHITE_SPACE;
+import static icu.windea.pls.core.StdlibExtensionsKt.isExactWord;
 import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 
 // Lexer for localisation text of Paradox Localisation.
@@ -58,8 +59,8 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
    * l is of the form l = 2*k, k a non negative integer
    */
   private static final int ZZ_LEXSTATE[] = {
-     0,  0,  1,  1,  2,  2,  0,  0,  3,  3,  4,  4,  5,  5,  6,  6, 
-     7,  7,  8,  8,  9,  9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14, 
+     0,  0,  1,  1,  2,  2,  0,  0,  3,  3,  4,  4,  5,  5,  6,  6,
+     7,  7,  8,  8,  9,  9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14,
     15, 15,  0,  0, 16, 16, 17, 17, 18, 18, 19, 19,  0, 0
   };
 
@@ -407,32 +408,33 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
     "\1\46\4\40\26\36\1\51\3\36\7\40\1\27\2\40"+
     "\1\52\1\40\2\52\3\40\1\52\1\31\1\52\1\40"+
     "\1\53\1\54\3\40\1\47\3\40\1\47\1\40\1\47"+
-    "\1\27\12\47\3\40\1\47\1\54\1\40\2\47\22\36"+
-    "\1\55\7\36\1\56\3\57\26\56\1\60\3\57\3\60"+
-    "\1\61\1\62\11\60\1\40\1\60\1\63\1\64\4\60"+
-    "\1\47\3\40\1\47\1\40\1\47\1\27\12\47\2\40"+
-    "\1\63\1\47\2\40\2\47\1\40\3\57\3\40\1\27"+
-    "\1\65\1\66\3\40\2\67\2\40\1\67\2\40\1\63"+
-    "\5\40\1\70\3\71\26\70\20\36\1\72\11\36\4\40"+
-    "\1\73\2\40\1\27\5\40\1\74\3\40\1\74\1\31"+
-    "\5\40\1\74\1\40\6\36\1\75\23\36\1\76\3\77"+
-    "\2\76\1\100\1\27\5\76\3\101\1\76\1\101\1\31"+
-    "\5\76\1\101\1\76\6\25\2\0\10\25\1\0\1\25"+
-    "\1\0\1\32\1\0\1\25\2\0\2\25\4\0\1\102"+
-    "\57\0\23\25\1\32\6\25\4\0\1\103\25\0\2\104"+
-    "\2\0\25\104\1\0\1\105\1\106\2\0\25\105\1\107"+
-    "\10\0\1\44\1\0\2\44\1\0\1\44\3\0\1\44"+
-    "\10\0\1\47\3\0\1\47\1\0\1\47\1\0\12\47"+
-    "\3\0\1\47\2\0\2\47\15\0\1\50\3\0\1\50"+
-    "\10\0\2\110\2\0\25\110\13\0\1\52\1\0\2\52"+
-    "\3\0\1\52\1\0\1\52\6\0\2\111\2\0\25\111"+
-    "\2\0\3\57\26\0\2\60\1\0\5\60\1\0\11\60"+
-    "\1\0\1\60\2\0\4\60\2\62\1\0\5\62\1\112"+
-    "\12\62\1\113\6\62\15\0\2\67\2\0\1\67\11\0"+
-    "\3\71\26\0\2\114\2\0\25\114\16\0\1\74\3\0"+
-    "\1\74\6\0\1\74\1\0\2\115\2\0\25\115\2\0"+
-    "\3\77\32\0\1\116\42\0\3\101\1\0\1\101\6\0"+
-    "\1\101\1\0\1\107\3\0\3\107\1\105\22\107\32\62";
+    "\1\27\12\47\1\31\2\40\1\47\1\54\1\40\2\47"+
+    "\22\36\1\55\7\36\1\56\3\57\26\56\1\60\3\57"+
+    "\3\60\1\61\1\62\11\60\1\40\1\60\1\63\1\64"+
+    "\4\60\1\47\3\40\1\47\1\40\1\47\1\27\12\47"+
+    "\2\40\1\63\1\47\2\40\2\47\1\40\3\57\3\40"+
+    "\1\27\1\65\1\66\3\40\2\67\2\40\1\67\2\40"+
+    "\1\63\5\40\1\70\3\71\26\70\20\36\1\72\11\36"+
+    "\4\40\1\73\2\40\1\27\5\40\1\74\3\40\1\74"+
+    "\1\31\5\40\1\74\1\40\6\36\1\75\23\36\1\76"+
+    "\3\77\2\76\1\100\1\27\5\76\3\101\1\76\1\101"+
+    "\1\31\5\76\1\101\1\76\6\25\2\0\10\25\1\0"+
+    "\1\25\1\0\1\32\1\0\1\25\2\0\2\25\4\0"+
+    "\1\102\57\0\23\25\1\32\6\25\4\0\1\103\25\0"+
+    "\2\104\2\0\25\104\1\0\1\105\1\106\2\0\25\105"+
+    "\1\107\10\0\1\44\1\0\2\44\1\0\1\44\3\0"+
+    "\1\44\10\0\1\47\3\0\1\47\1\0\1\47\1\0"+
+    "\12\47\3\0\1\47\2\0\2\47\15\0\1\50\3\0"+
+    "\1\50\10\0\2\110\2\0\25\110\13\0\1\52\1\0"+
+    "\2\52\3\0\1\52\1\0\1\52\6\0\2\111\2\0"+
+    "\25\111\2\0\3\57\26\0\2\60\1\0\5\60\1\0"+
+    "\11\60\1\0\1\60\2\0\4\60\2\62\1\0\5\62"+
+    "\1\112\12\62\1\113\6\62\15\0\2\67\2\0\1\67"+
+    "\11\0\3\71\26\0\2\114\2\0\25\114\16\0\1\74"+
+    "\3\0\1\74\6\0\1\74\1\0\2\115\2\0\25\115"+
+    "\2\0\3\77\32\0\1\116\42\0\3\101\1\0\1\101"+
+    "\6\0\1\101\1\0\1\107\3\0\3\107\1\105\22\107"+
+    "\32\62";
 
   private static int [] zzUnpacktrans() {
     int [] result = new int[1196];
@@ -555,12 +557,12 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
     // stack for expected construct types (e.g., EXPECT_COLORFUL_TEXT)
     private IntStack expectStack = null;
 
-    private static int EXPECT_COLORFUL_TEXT = 1;
-    private static int EXPECT_PARAMETER = 2;
-    private static int EXPECT_ICON = 3;
-    private static int EXPECT_COMMAND = 4;
-    private static int EXPECT_TEXT_ICON = 5;
-    private static int EXPECT_TEXT_FORMAT = 6;
+    private static final int EXPECT_COLORFUL_TEXT = 1;
+    private static final int EXPECT_PARAMETER = 2;
+    private static final int EXPECT_ICON = 3;
+    private static final int EXPECT_COMMAND = 4;
+    private static final int EXPECT_TEXT_ICON = 5;
+    private static final int EXPECT_TEXT_FORMAT = 6;
 
     public _ParadoxLocalisationTextLexer() {
         this((java.io.Reader)null);

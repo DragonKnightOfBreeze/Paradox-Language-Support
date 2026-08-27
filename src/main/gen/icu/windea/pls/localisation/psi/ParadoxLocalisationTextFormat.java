@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-public interface ParadoxLocalisationTextFormat extends ParadoxLocalisationRichText, ParadoxLocalisationParameterAwareElement, ParadoxLocalisationCommandAwareElement {
+public interface ParadoxLocalisationTextFormat extends ParadoxLocalisationRichText, ParadoxLocalisationInterpolationContainer {
 
   @Nullable
   ParadoxLocalisationTextFormatText getTextFormatText();

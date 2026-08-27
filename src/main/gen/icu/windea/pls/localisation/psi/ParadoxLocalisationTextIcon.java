@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-public interface ParadoxLocalisationTextIcon extends ParadoxLocalisationRichText, ParadoxLocalisationParameterAwareElement, ParadoxLocalisationCommandAwareElement {
+public interface ParadoxLocalisationTextIcon extends ParadoxLocalisationRichText, ParadoxLocalisationInterpolationContainer {
 
   @Nullable PsiElement getIdElement();
 

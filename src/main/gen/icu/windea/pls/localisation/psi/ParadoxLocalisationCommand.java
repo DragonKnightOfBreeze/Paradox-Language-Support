@@ -9,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-public interface ParadoxLocalisationCommand extends ParadoxLocalisationRichText, ParadoxLocalisationArgumentAwareElement {
+public interface ParadoxLocalisationCommand extends ParadoxLocalisationRichText, ParadoxLocalisationInterpolation, ParadoxLocalisationArgumentAwareElement {
 
   @Nullable
   ParadoxLocalisationCommandText getCommandText();

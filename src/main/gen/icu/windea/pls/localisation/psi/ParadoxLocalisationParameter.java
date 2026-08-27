@@ -9,7 +9,7 @@ import com.intellij.psi.search.SearchScope;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public interface ParadoxLocalisationParameter extends ParadoxLocalisationRichText, ParadoxLocalisationArgumentAwareElement, ParadoxLocalisationCommandAwareElement {
+public interface ParadoxLocalisationParameter extends ParadoxLocalisationRichText, ParadoxLocalisationInterpolation, ParadoxLocalisationInterpolationContainer, ParadoxLocalisationArgumentAwareElement {
 
   @Nullable
   ParadoxLocalisationScriptedVariableReference getScriptedVariableReference();
