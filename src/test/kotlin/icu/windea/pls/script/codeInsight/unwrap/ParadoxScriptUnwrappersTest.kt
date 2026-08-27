@@ -210,8 +210,8 @@ class ParadoxScriptUnwrappersTest : UnwrapTestCase(), ChronicleTestScope {
     fun testInlineConditionalBlockRemover() {
         val before = "key = prefix_<caret>[[A]a]_suffix"
         val after = "key = prefix__suffix"
-        val option1 = ChronicleBundle.message("script.remove.inlineConditionalBlock", ChronicleStrings.(getConditionalBlockFolder())("A"))
-        val option2 = ChronicleBundle.message("script.unwrap.inlineConditionalBlock", ChronicleStrings.(getConditionalBlockFolder())("A"))
+        val option1 = ChronicleBundle.message("script.remove.inlineConditionalBlock", ChronicleStrings.conditionalBlockFolder("A"))
+        val option2 = ChronicleBundle.message("script.unwrap.inlineConditionalBlock", ChronicleStrings.conditionalBlockFolder("A"))
         val option3 = ChronicleBundle.message("script.remove.property", "key")
         assertOptions(before, option1, option2, option3)
         assertUnwrapped(before, after)
@@ -221,8 +221,8 @@ class ParadoxScriptUnwrappersTest : UnwrapTestCase(), ChronicleTestScope {
     fun testInlineConditionalBlockRemover_forNested() {
         val before = "key = prefix_<caret>[[A]a[[B]b]]_suffix"
         val after = "key = prefix__suffix"
-        val option1 = ChronicleBundle.message("script.remove.inlineConditionalBlock", ChronicleStrings.(getConditionalBlockFolder())("A"))
-        val option2 = ChronicleBundle.message("script.unwrap.inlineConditionalBlock", ChronicleStrings.(getConditionalBlockFolder())("A"))
+        val option1 = ChronicleBundle.message("script.remove.inlineConditionalBlock", ChronicleStrings.conditionalBlockFolder("A"))
+        val option2 = ChronicleBundle.message("script.unwrap.inlineConditionalBlock", ChronicleStrings.conditionalBlockFolder("A"))
         val option3 = ChronicleBundle.message("script.remove.property", "key")
         assertOptions(before, option1, option2, option3)
         assertUnwrapped(before, after)
@@ -348,8 +348,8 @@ class ParadoxScriptUnwrappersTest : UnwrapTestCase(), ChronicleTestScope {
         val after = """
             foo = bar
             """.trimIndent()
-        val option1 = ChronicleBundle.message("script.remove.conditionalBlock", ChronicleStrings.(getConditionalBlockFolder())("P"))
-        val option2 = ChronicleBundle.message("script.unwrap.conditionalBlock", ChronicleStrings.(getConditionalBlockFolder())("P"))
+        val option1 = ChronicleBundle.message("script.remove.conditionalBlock", ChronicleStrings.conditionalBlockFolder("P"))
+        val option2 = ChronicleBundle.message("script.unwrap.conditionalBlock", ChronicleStrings.conditionalBlockFolder("P"))
         assertOptions(before, option1, option2)
         assertUnwrapped(before, after, 1)
     }
@@ -413,8 +413,8 @@ class ParadoxScriptUnwrappersTest : UnwrapTestCase(), ChronicleTestScope {
     fun testInlineConditionalBlockUnwrapper() {
         val before = "key = prefix_<caret>[[A]a]_suffix"
         val after = "key = prefix_a_suffix"
-        val option1 = ChronicleBundle.message("script.remove.inlineConditionalBlock", ChronicleStrings.(getConditionalBlockFolder())("A"))
-        val option2 = ChronicleBundle.message("script.unwrap.inlineConditionalBlock", ChronicleStrings.(getConditionalBlockFolder())("A"))
+        val option1 = ChronicleBundle.message("script.remove.inlineConditionalBlock", ChronicleStrings.conditionalBlockFolder("A"))
+        val option2 = ChronicleBundle.message("script.unwrap.inlineConditionalBlock", ChronicleStrings.conditionalBlockFolder("A"))
         val option3 = ChronicleBundle.message("script.remove.property", "key")
         assertOptions(before, option1, option2, option3)
         assertUnwrapped(before, after, 1)
@@ -424,8 +424,8 @@ class ParadoxScriptUnwrappersTest : UnwrapTestCase(), ChronicleTestScope {
     fun testInlineConditionalBlockUnwrapper_forNested() {
         val before = "key = prefix_<caret>[[A]a[[B]b]]_suffix"
         val after = "key = prefix_a[[B]b]_suffix"
-        val option1 = ChronicleBundle.message("script.remove.inlineConditionalBlock", ChronicleStrings.(getConditionalBlockFolder())("A"))
-        val option2 = ChronicleBundle.message("script.unwrap.inlineConditionalBlock", ChronicleStrings.(getConditionalBlockFolder())("A"))
+        val option1 = ChronicleBundle.message("script.remove.inlineConditionalBlock", ChronicleStrings.conditionalBlockFolder("A"))
+        val option2 = ChronicleBundle.message("script.unwrap.inlineConditionalBlock", ChronicleStrings.conditionalBlockFolder("A"))
         val option3 = ChronicleBundle.message("script.remove.property", "key")
         assertOptions(before, option1, option2, option3)
         assertUnwrapped(before, after, 1)
@@ -435,8 +435,8 @@ class ParadoxScriptUnwrappersTest : UnwrapTestCase(), ChronicleTestScope {
     fun testInlineConditionalBlockUnwrapper_forNested_withParameter() {
         val before = "key = prefix_<caret>[[A]a[[B]b]${p("P")}]_suffix"
         val after = "key = prefix_a[[B]b]${p("P")}_suffix"
-        val option1 = ChronicleBundle.message("script.remove.inlineConditionalBlock", ChronicleStrings.(getConditionalBlockFolder())("A"))
-        val option2 = ChronicleBundle.message("script.unwrap.inlineConditionalBlock", ChronicleStrings.(getConditionalBlockFolder())("A"))
+        val option1 = ChronicleBundle.message("script.remove.inlineConditionalBlock", ChronicleStrings.conditionalBlockFolder("A"))
+        val option2 = ChronicleBundle.message("script.unwrap.inlineConditionalBlock", ChronicleStrings.conditionalBlockFolder("A"))
         val option3 = ChronicleBundle.message("script.remove.property", "key")
         assertOptions(before, option1, option2, option3)
         assertUnwrapped(before, after, 1)
