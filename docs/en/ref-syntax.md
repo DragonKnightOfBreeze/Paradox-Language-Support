@@ -191,7 +191,7 @@ Semantically, when the preceding property key of the separator represents a scop
 
 - When not quoted by double quotes, they cannot contain whitespace and some special characters (`@` `#` `$` `=` `<` `>` `!` `?` `{` `}` `[` `]` `"`).
 - Can contain specific escape characters (e.g. `\"` `\n`).
-- In addition, can also contain parameters (e.g., `$PARAM$`) and inline conditional blocks (e.g., `[[PARAM]v]`). See the [Advanced Syntax](#script-advanced) section for details.
+- In addition, can also contain several advanced interpolation syntaxes (e.g., parameters `$PARAM$` and inline conditional blocks `[[PARAM]text]`). See the [Advanced Syntax](#script-advanced) section for details.
 
 Example:
 
@@ -214,7 +214,7 @@ Paradox Script extends CWT's base value types with several additional types.
 
 **Floats** such as `1.0`, `-0.5`, `.25`. The integer part or floating part may be omitted.
 
-**Strings** such as `var` `"hello world"` `"line\nnew line"`. Can contain escape characters, parameters, and inline conditional blocks.
+**Strings** such as `var` `"hello world"` `"line\nnew line"`. Can contain escape characters and several advanced interpolation syntaxes.
 
 **Colors** are composite values in the format of a color type keyword followed by whitespace-separated numbers enclosed in curly braces, such as `rgb { 255 128 0 }`, `hsv { 0.5 0.8 1.0 }`, `hsv360 { 180 80 100 }`. Only numbers and whitespace are allowed inside the curly braces.
 
@@ -222,7 +222,7 @@ Paradox Script extends CWT's base value types with several additional types.
 
 **Scripted variable references** start with `@` followed by the variable name, such as `@my_var`, and are used to reference previously declared scripted variables.
 Scripted variable references can appear in multiple contexts: as standalone values (`cost = @my_var`), embedded within unquoted strings (`key = prefix_@my_var_suffix`), and as factors within inline math expressions (`@[ base_cost * bonus ]`, without the `@` prefix in this case).
-Like string expressions (keys and strings), they can also contain parameters (e.g., `$PARAM$`) and inline conditional blocks (e.g., `[[PARAM]v]`), see the [Advanced Syntax](#script-advanced) section for details.
+Like string expressions (keys and strings), they can also contain several advanced interpolation syntaxes (e.g., parameters `$PARAM$` and inline conditional blocks `[[PARAM]text]`).
 Additionally, scripted variable references can also be used in parameters in localisation text (e.g., `$@my_var$`).
 
 **Inline math expressions** start with `@[` (or `@\[`) and end with `]`, such as `@[ 1 + 2 * var ]`.
@@ -237,17 +237,22 @@ Scripted variable names start with `@`, and the name portion consists of letters
 
 ### Advanced Syntax {#script-advanced}
 
-The following syntax typically only takes effect or is evaluated by the game engine within the declaration context of certain definitions (such as scripted effects, scripted triggers, and script values).
+The following syntax is typically only effective or evaluated by the game engine within the declaration context of specific definitions (such as scripted effects, scripted triggers, and script values).
 
-**Parameters** use the syntax `$name$` or `$name|default_value$` (with default value).
-Parameter names must start with a letter or underscore, followed by letters, digits, and underscores.
-Parameters can appear in scripted variable names, scripted variable reference names, property keys, string values, and inline math expressions.
+**Parameters** follow the syntax form `$PARAM$` or `$PARAM|default_value$` (with a default value).
+Parameters can be regarded as a wildcard form of literals or identifiers, and may additionally specify a default value.
+Parameter names must begin with a letter or underscore, and may subsequently contain letters, digits, and underscores.
+As an advanced interpolation syntax, they can appear in positions such as string expressions (property keys and values), scripted variable names, scripted variable references, and can be used in any combination.
 
-**Conditional blocks** use the syntax `[[<expression>] <members...> ]`, where `<expression>` can be a parameter name or `!<parameter_name>` (negation).
-They are used to conditionally include a group of members based on whether a parameter is present.
+**Inline conditional blocks** follow the syntax form `[[PARAM]text]`.
+Inline conditional blocks can be considered as a conditional wildcard form of literals or identifiers.
+Their text expands only when the corresponding parameter exists in the context (which can be negated).
+For example, `[[PARAM]text]` expands to `text` only when the parameter `PARAM` exists, whereas for `[[!PARAM]text]` the opposite holds.
+As an advanced interpolation syntax, they can appear in positions such as string expressions (property keys and values), scripted variable names, scripted variable references, and can be used in any combination.
 
-**Inline conditional blocks** are used for conditional fragments inside string expressions (keys and strings) and scriped variable references.
-For example, in `"prefix[[PARAM]_$PARAM$]_suffix"`, the `[[PARAM]_$PARAM$]` portion is only expanded when the parameter `PARAM` is present.
+**Conditional blocks** are similar to inline conditional blocks, but occur at the block level.
+Their content (e.g., a set of properties) expands only when the corresponding parameter exists in the context (which can be negated).
+For example, `[[PARAM] key = value ]` expands to `key = value` only when the parameter `PARAM` exists, whereas for `[[!PARAM] key = value ]` the opposite holds.
 
 ### Escaping {#script-escaping}
 
