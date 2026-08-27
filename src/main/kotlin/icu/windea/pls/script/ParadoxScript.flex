@@ -19,16 +19,24 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
     // stack for expected construct types (e.g., EXPECT_PROPERTY_KEY)
     private IntStack expectStack = null;
 
-    private static int EXPECT_PROPERTY_KEY = 1;
-    private static int EXPECT_STRING = 2;
-    private static int EXPECT_SCRIPTED_VARIABLE_NAME = 3;
-    private static int EXPECT_SCRIPTED_VARIABLE_REFERENCE = 4;
-    private static int EXPECT_INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE = 5;
+    private static final int EXPECT_ROOT_BLOCK = 1;
+    private static final int EXPECT_BLOCK = 2;
+    private static final int EXPECT_CONDITIONAL_BLOCK = 3;
+    private static final int EXPECT_SCRIPTED_VARIABLE = 4;
 
-    // region TODO 3.0.2 to refactor
-    private final Deque<Integer> stack = new ArrayDeque<>();
-    private final AtomicInteger templateStateRef = new AtomicInteger(-1);
-    private final AtomicInteger parameterStateRef = new AtomicInteger(-1);
+    private static final int EXPECT_PROPERTY_KEY = 11;
+    private static final int EXPECT_STRING = 12;
+    private static final int EXPECT_SCRIPTED_VARIABLE_NAME = 13;
+    private static final int EXPECT_SCRIPTED_VARIABLE_REFERENCE = 14;
+    private static final int EXPECT_INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE = 15;
+
+    private static final int EXPECT_PARAMETER = 11;
+    private static final int EXPECT_INLINE_CONDITIONAL_BLOCK = 11;
+
+    // region TODO 3.0.2 to remove
+    // private final Deque<Integer> stack = new ArrayDeque<>();
+    // private final AtomicInteger templateStateRef = new AtomicInteger(-1);
+    // private final AtomicInteger parameterStateRef = new AtomicInteger(-1);
     // endregion
 
     public _ParadoxScriptLexer() {
@@ -77,60 +85,60 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
         yybegin(currentState);
     }
 
-    // region TODO 3.0.2 to refactor
-    private void enterState(Deque<Integer> stack, int state) {
-        stack.offerLast(state);
-        yybegin(state);
-    }
-
-    private void exitState(Deque<Integer> stack, int defaultState) {
-        Integer state = stack.pollLast();
-        if(state != null) {
-            yybegin(state);
-        } else {
-            yybegin(defaultState);
-        }
-    }
-
-    private void enterState(AtomicInteger stateRef, int state) {
-        if(stateRef.get() == -1) {
-            stateRef.set(state);
-        }
-    }
-
-    private void exitState(AtomicInteger stateRef) {
-        int state = stateRef.getAndSet(-1);
-        if(state != -1) {
-            if(stateRef == templateStateRef) {
-                state = stack.isEmpty() ? YYINITIAL : stack.peekLast();
-            }
-            yybegin(state);
-        }
-    }
-
-    private boolean exitStateForErrorToken(AtomicInteger stateRef) {
-        int state = stateRef.getAndSet(-1);
-        if(state != -1) {
-            if(stateRef == templateStateRef) {
-                state = stack.isEmpty() ? YYINITIAL : stack.peekLast();
-            }
-            yybegin(state);
-        }
-        if(state != -1) {
-            yypushback(yylength());
-            return true;
-        } else {
-            return false;
-        }
-    }
+    // region TODO 3.0.2 to remove
+    // private void enterState(Deque<Integer> stack, int state) {
+    //     stack.offerLast(state);
+    //     yybegin(state);
+    // }
+    //
+    // private void exitState(Deque<Integer> stack, int defaultState) {
+    //     Integer state = stack.pollLast();
+    //     if(state != null) {
+    //         yybegin(state);
+    //     } else {
+    //         yybegin(defaultState);
+    //     }
+    // }
+    //
+    // private void enterState(AtomicInteger stateRef, int state) {
+    //     if(stateRef.get() == -1) {
+    //         stateRef.set(state);
+    //     }
+    // }
+    //
+    // private void exitState(AtomicInteger stateRef) {
+    //     int state = stateRef.getAndSet(-1);
+    //     if(state != -1) {
+    //         if(stateRef == templateStateRef) {
+    //             state = stack.isEmpty() ? YYINITIAL : stack.peekLast();
+    //         }
+    //         yybegin(state);
+    //     }
+    // }
+    //
+    // private boolean exitStateForErrorToken(AtomicInteger stateRef) {
+    //     int state = stateRef.getAndSet(-1);
+    //     if(state != -1) {
+    //         if(stateRef == templateStateRef) {
+    //             state = stack.isEmpty() ? YYINITIAL : stack.peekLast();
+    //         }
+    //         yybegin(state);
+    //     }
+    //     if(state != -1) {
+    //         yypushback(yylength());
+    //         return true;
+    //     } else {
+    //         return false;
+    //     }
+    // }
+    //
+    // private void recoverState(AtomicInteger stateRef) {
+    //     int state = stateRef.get();
+    //     if(state != -1) {
+    //         yybegin(state);
+    //     }
+    // }
     // endregion
-
-    private void recoverState(AtomicInteger stateRef) {
-        int state = stateRef.get();
-        if(state != -1) {
-            yybegin(state);
-        }
-    }
 %}
 
 %public
@@ -139,7 +147,7 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 %function advance
 %type IElementType
 
-%s IN_SCRIPTED_VARIABLE
+%s CHECK_SCRIPTED_VARIABLE
 %s IN_SCRIPTED_VARIABLE_NAME
 %s IN_SCRIPTED_VARIABLE_VALUE
 
@@ -151,12 +159,16 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 %s IN_STRING
 %s IN_QUOTED_STRING
 
+%s CHECK_SCRIPTED_VARIABLE_REFERENCE
 %s IN_SCRIPTED_VARIABLE_REFERENCE
-%s IN_SCRIPTED_VARIABLE_REFERENCE_NAME
 
 %s IN_PARAMETER
 %s IN_PARAMETER_ARGUMENT
 %s IN_PARAMETER_ARGUMENT_END
+
+%s IN_INLINE_CONDITIONAL_BLOCK
+%s IN_INLINE_CONDITIONAL_BLOCK_EXPRESSION
+%s IN_INLINE_CONDITIONAL_BLOCK_BODY
 
 %s IN_CONDITIONAL_BLOCK
 %s IN_CONDITIONAL_BLOCK_EXPRESSION
@@ -171,16 +183,22 @@ WHITE_SPACE=[\s&&[^\r\n]]+
 BLANK=\s+
 COMMENT=#[^\r\n]*
 
-SCRIPTED_VARIABLE_NAME_PATTERN=[A-Za-z_$\[][^@#={}\"\s]* // leading number is not permitted
+SCRIPTED_VARIABLE_NAME_CHECK=[A-Za-z_$\[][^@#={}\"\s]* // leading number is not permitted
 SCRIPTED_VARIABLE_NAME_TRAILING=\s*=
 SCRIPTED_VARIABLE_NAME_TOKEN=[A-Za-z0-9_]+ // leading number is not permitted
 
-PROPERTY_KEY_PATTERN={UNQUOTED_PROPERTY_KEY_PATTERN}|{QUOTED_PROPERTY_KEY_PATTERN}
+PROPERTY_KEY_CHECK={UNQUOTED_PROPERTY_KEY_CHECK}|{QUOTED_PROPERTY_KEY_CHECK}
 PROPERTY_KEY_TRAILING=\s*[=<>!?]
-UNQUOTED_PROPERTY_KEY_PATTERN=[^@#=<>!?{}\[\"\s][^#=<>!?{}\"\s]*\"?
-QUOTED_PROPERTY_KEY_PATTERN=\"([^\"\r\n\\]|\\.)*\"?
+UNQUOTED_PROPERTY_KEY_CHECK=[^@#=<>!?{}\[\"\s][^#=<>!?{}\"\s]*\"?
+QUOTED_PROPERTY_KEY_CHECK=\"([^\"\r\n\\]|\\.)*\"?
 UNQUOTED_PROPERTY_KEY_TOKEN=[^@#$=<>!?{}\[\]\"\s][^#$=<>!?{}\[\]\"\s]*\"?
 QUOTED_PROPERTY_KEY_TOKEN=([^\"$\\\r\n]|\\[\s\S])+ // without surrounding quotes
+
+STRING_CHECK={UNQUOTED_STRING_CHECK}|{QUOTED_STRING_CHECK}
+UNQUOTED_STRING_CHECK=[^@#=<>!?{}\"\s][^#=<>!?{}\"\s]*\"?
+QUOTED_STRING_CHECK=\"([^\"\\]|\\[\s\S])*\"?
+UNQUOTED_STRING_TOKEN=[^@#$=<>!?{}\[\]\"\s][^#$=<>!?{}\[\]\"\s]*\"?
+QUOTED_STRING_TOKEN=([^\"$\\]|\\[\s\S])+ // without surrounding quotes
 
 BOOLEAN_TOKEN=(yes)|(no)
 INT_NUMBER_TOKEN=[0-9]+ // leading zero is permitted
@@ -189,46 +207,63 @@ FLOAT_NUMBER_TOKEN=[0-9]*(\.[0-9]+) // leading zero is permitted
 FLOAT_TOKEN=[+-]?{FLOAT_NUMBER_TOKEN}
 COLOR_TOKEN=(rgb|hsv|hsv360)[ \t]*\{[\d.\s&&[^\r\n]]*} // #103 hsv360 (from vic3)
 
-STRING_PATTERN={UNQUOTED_STRING_PATTERN}|{QUOTED_STRING_PATTERN}
-UNQUOTED_STRING_PATTERN=[^@#=<>!?{}\"\s][^#=<>!?{}\"\s]*\"?
-QUOTED_STRING_PATTERN=\"([^\"\\]|\\[\s\S])*\"?
-UNQUOTED_STRING_TOKEN=[^@#$=<>!?{}\[\]\"\s][^#$=<>!?{}\[\]\"\s]*\"?
-QUOTED_STRING_TOKEN=([^\"$\\]|\\[\s\S])+ // without surrounding quotes
-
-// leading number is not permitted for parameter names
-PARAMETER_TOKEN=[A-Za-z_][A-Za-z0-9_]*
-// compatible with leading '@'
-ARGUMENT_TOKEN=[^#$=<>!?{}\[\]\s]+
-
+PARAMETER_TOKEN=[A-Za-z_][A-Za-z0-9_]* // leading number is not permitted for parameter names
+ARGUMENT_TOKEN=[^#$=<>!?{}\[\]\s]+ // compatible with leading '@'
 INLINE_MATH_TOKEN=[^\r\n#{}\[\]]+
 
 %%
 
 <YYINITIAL> {
-    "{" { enterState(stack, YYINITIAL); return LEFT_BRACE; }
-    "}" { exitState(stack, YYINITIAL); return RIGHT_BRACE; }
-    "[" { enterState(stack, YYINITIAL); yybegin(IN_CONDITIONAL_BLOCK); return LEFT_BRACKET; }
-    "]" { exitState(stack, YYINITIAL); recoverState(templateStateRef); return RIGHT_BRACKET; }
-    "@" { yybegin(IN_SCRIPTED_VARIABLE); return AT; }
+    "{" {
+        enterState(yystate(), EXPECT_ROOT_BLOCK); return LEFT_BRACE;
+    }
+    "[" {
+        enterState(yystate(), EXPECT_CONDITIONAL_BLOCK); return LEFT_BRACKET;
+    }
+    "@" {
+        enterState(yystate(), EXPECT_SCRIPTED_VARIABLE); yybegin(CHECK_SCRIPTED_VARIABLE); return AT;
+    }
+
+    "}" {
+        exitState(EXPECT_ROOT_BLOCK); return RIGHT_BRACE;
+    }
+    "]" {
+        exitState(EXPECT_CONDITIONAL_BLOCK); return RIGHT_BRACKET;
+    }
+
+    // region TODO 3.0.2 to remove
+    // "{" { enterState(stack, YYINITIAL); return LEFT_BRACE; }
+    // "}" { exitState(stack, YYINITIAL); return RIGHT_BRACE; }
+    // "[" { enterState(stack, YYINITIAL); yybegin(IN_CONDITIONAL_BLOCK); return LEFT_BRACKET; }
+    // "]" { exitState(stack, YYINITIAL); recoverState(templateStateRef); return RIGHT_BRACKET; }
+    // "@" { yybegin(CHECK_SCRIPTED_VARIABLE); return AT; }
+    // endregion
+
     {COMMENT} { return COMMENT; }
 }
 
-<IN_SCRIPTED_VARIABLE> {
-    "{" { enterState(stack, stack.isEmpty() ? YYINITIAL : IN_PROPERTY_OR_VALUE); return LEFT_BRACE; }
-    "}" { exitState(stack, YYINITIAL); return RIGHT_BRACE; }
-    "[" { enterState(stack, stack.isEmpty() ? YYINITIAL : IN_PROPERTY_OR_VALUE); yybegin(IN_CONDITIONAL_BLOCK); return LEFT_BRACKET; }
-    "]" { exitState(stack, YYINITIAL); recoverState(templateStateRef); return RIGHT_BRACKET; }
-    {SCRIPTED_VARIABLE_NAME_PATTERN} / {SCRIPTED_VARIABLE_NAME_TRAILING} {
-        yypushback(yylength());
-        enterState(templateStateRef, yystate());
-        yybegin(IN_SCRIPTED_VARIABLE_NAME);
+<CHECK_SCRIPTED_VARIABLE> {
+    // region TODO 3.0.2 to remove
+    // {SCRIPTED_VARIABLE_NAME_CHECK} / {SCRIPTED_VARIABLE_NAME_TRAILING} {
+    //     yypushback(yylength());
+    //     enterState(templateStateRef, yystate());
+    //     yybegin(IN_SCRIPTED_VARIABLE_NAME);
+    // }
+    // {SCRIPTED_VARIABLE_NAME_CHECK} {
+    //     yypushback(yylength());
+    //     enterState(templateStateRef, yystate());
+    //     yybegin(IN_SCRIPTED_VARIABLE_REFERENCE);
+    // }
+    // endregion
+    {SCRIPTED_VARIABLE_NAME_CHECK} / {SCRIPTED_VARIABLE_NAME_TRAILING} {
+        enterState(yystate(), EXPECT_SCRIPTED_VARIABLE_NAME); yypushback(yylength()); yybegin(IN_SCRIPTED_VARIABLE_NAME);
     }
-    {SCRIPTED_VARIABLE_NAME_PATTERN} {
-        yypushback(yylength());
-        enterState(templateStateRef, yystate());
-        yybegin(IN_SCRIPTED_VARIABLE_REFERENCE_NAME);
+    {SCRIPTED_VARIABLE_NAME_CHECK} {
+        enterState(yystate(), EXPECT_SCRIPTED_VARIABLE_REFERENCE); yypushback(yylength()); yybegin(IN_SCRIPTED_VARIABLE_REFERENCE);
     }
-    {COMMENT} { return COMMENT; }
+
+    {COMMENT} { return COMMENT; } // keep
+    [^] { exitState(); yypushback(yylength()); } // recovery
 }
 
 <IN_SCRIPTED_VARIABLE_NAME> {
@@ -248,19 +283,19 @@ INLINE_MATH_TOKEN=[^\r\n#{}\[\]]+
     {COMMENT} { return COMMENT; }
 }
 
-<IN_SCRIPTED_VARIABLE_REFERENCE> {
+<CHECK_SCRIPTED_VARIABLE_REFERENCE> {
     "{" { enterState(stack, stack.isEmpty() ? YYINITIAL : IN_PROPERTY_OR_VALUE); return LEFT_BRACE; }
     "}" { exitState(stack, YYINITIAL); return RIGHT_BRACE; }
     "[" { enterState(stack, stack.isEmpty() ? YYINITIAL : IN_PROPERTY_OR_VALUE); yybegin(IN_CONDITIONAL_BLOCK); return LEFT_BRACKET; }
     "]" { exitState(stack, YYINITIAL); recoverState(templateStateRef); return RIGHT_BRACKET; }
-    {SCRIPTED_VARIABLE_NAME_PATTERN} {
+    {SCRIPTED_VARIABLE_NAME_CHECK} {
         yypushback(yylength());
         enterState(templateStateRef, yystate());
-        yybegin(IN_SCRIPTED_VARIABLE_REFERENCE_NAME);
+        yybegin(IN_SCRIPTED_VARIABLE_REFERENCE);
     }
     {COMMENT} { return COMMENT; }
 }
-<IN_SCRIPTED_VARIABLE_REFERENCE_NAME> {
+<IN_SCRIPTED_VARIABLE_REFERENCE> {
     "{" { enterState(stack, stack.isEmpty() ? YYINITIAL : IN_PROPERTY_OR_VALUE); return LEFT_BRACE; }
     "}" { exitState(stack, YYINITIAL); return RIGHT_BRACE; }
     "[" { enterState(stack, stack.isEmpty() ? YYINITIAL : IN_PROPERTY_OR_VALUE); yybegin(IN_CONDITIONAL_BLOCK); return LEFT_BRACKET; }
@@ -275,7 +310,7 @@ INLINE_MATH_TOKEN=[^\r\n#{}\[\]]+
     "}" { exitState(stack, YYINITIAL); return RIGHT_BRACE; }
     "[" { enterState(stack, stack.isEmpty() ? YYINITIAL : IN_PROPERTY_OR_VALUE); yybegin(IN_CONDITIONAL_BLOCK); return LEFT_BRACKET; }
     "]" { exitState(stack, YYINITIAL); recoverState(templateStateRef); return RIGHT_BRACKET; }
-    "@" { yybegin(IN_SCRIPTED_VARIABLE); return AT; }
+    "@" { yybegin(CHECK_SCRIPTED_VARIABLE); return AT; }
     {COMMENT} { return COMMENT; }
 }
 <IN_PROPERTY_VALUE> {
@@ -283,7 +318,7 @@ INLINE_MATH_TOKEN=[^\r\n#{}\[\]]+
     "}" { exitState(stack, YYINITIAL); return RIGHT_BRACE; }
     "[" { enterState(stack, stack.isEmpty() ? YYINITIAL : IN_PROPERTY_OR_VALUE); yybegin(IN_CONDITIONAL_BLOCK); return LEFT_BRACKET; }
     "]" { exitState(stack, YYINITIAL); recoverState(templateStateRef); return RIGHT_BRACKET; }
-    "@" { yybegin(IN_SCRIPTED_VARIABLE_REFERENCE); return AT; }
+    "@" { yybegin(CHECK_SCRIPTED_VARIABLE_REFERENCE); return AT; }
     {COMMENT} { return COMMENT; }
 }
 
@@ -349,7 +384,7 @@ INLINE_MATH_TOKEN=[^\r\n#{}\[\]]+
 }
 
 // separators
-<YYINITIAL, IN_SCRIPTED_VARIABLE_NAME, IN_SCRIPTED_VARIABLE, IN_PROPERTY_OR_VALUE, IN_KEY> {
+<YYINITIAL, IN_SCRIPTED_VARIABLE_NAME, CHECK_SCRIPTED_VARIABLE, IN_PROPERTY_OR_VALUE, IN_KEY> {
     "=" { exitState(templateStateRef); yybegin(IN_PROPERTY_VALUE); return EQUAL_SIGN; }
     "!="|"<>" { exitState(templateStateRef); yybegin(IN_PROPERTY_VALUE); return NOT_EQUAL_SIGN; }
     "<" { exitState(templateStateRef); yybegin(IN_PROPERTY_VALUE); return LT_SIGN; }
@@ -376,7 +411,7 @@ INLINE_MATH_TOKEN=[^\r\n#{}\[\]]+
     {INT_TOKEN} { enterState(templateStateRef, yystate()); return INT_TOKEN; }
     {FLOAT_TOKEN} { enterState(templateStateRef, yystate()); return FLOAT_TOKEN; }
     {UNQUOTED_STRING_TOKEN} { enterState(templateStateRef, yystate()); return STRING_TOKEN; }
-    {QUOTED_STRING_PATTERN} { enterState(templateStateRef, yystate()); return STRING_TOKEN; }
+    {QUOTED_STRING_CHECK} { enterState(templateStateRef, yystate()); return STRING_TOKEN; }
 }
 <YYINITIAL, IN_PROPERTY_OR_VALUE, IN_PROPERTY_VALUE, IN_CONDITIONAL_BLOCK_BODY> {
     "@["|"@\\[" {
@@ -385,7 +420,7 @@ INLINE_MATH_TOKEN=[^\r\n#{}\[\]]+
         yybegin(IN_INLINE_MATH);
         return INLINE_MATH_START;
     }
-    {PROPERTY_KEY_PATTERN} / {PROPERTY_KEY_TRAILING} {
+    {PROPERTY_KEY_CHECK} / {PROPERTY_KEY_TRAILING} {
         boolean leftQuoted = yycharat(0) == '"';
         if(leftQuoted) {
             yypushback(yylength() - 1);
@@ -402,7 +437,7 @@ INLINE_MATH_TOKEN=[^\r\n#{}\[\]]+
     {INT_TOKEN} { enterState(templateStateRef, yystate());  return INT_TOKEN; }
     {FLOAT_TOKEN} { enterState(templateStateRef, yystate());  return FLOAT_TOKEN; }
     {COLOR_TOKEN} { enterState(templateStateRef, yystate());  return COLOR_TOKEN; }
-    {STRING_PATTERN} {
+    {STRING_CHECK} {
         boolean leftQuoted = yycharat(0) == '"';
         if(leftQuoted) {
             yypushback(yylength() - 1);
@@ -467,8 +502,8 @@ INLINE_MATH_TOKEN=[^\r\n#{}\[\]]+
 <YYINITIAL> {
     {BLANK} { exitState(templateStateRef); return WHITE_SPACE; }
 }
-<IN_SCRIPTED_VARIABLE, IN_SCRIPTED_VARIABLE_NAME, IN_SCRIPTED_VARIABLE_VALUE,
-IN_SCRIPTED_VARIABLE_REFERENCE, IN_SCRIPTED_VARIABLE_REFERENCE_NAME,
+<CHECK_SCRIPTED_VARIABLE, IN_SCRIPTED_VARIABLE_NAME, IN_SCRIPTED_VARIABLE_VALUE,
+CHECK_SCRIPTED_VARIABLE_REFERENCE, IN_SCRIPTED_VARIABLE_REFERENCE,
 IN_PROPERTY_OR_VALUE, IN_PROPERTY_VALUE,
 IN_CONDITIONAL_BLOCK, IN_CONDITIONAL_BLOCK_BODY> {
     {BLANK} { exitState(templateStateRef); return WHITE_SPACE; }

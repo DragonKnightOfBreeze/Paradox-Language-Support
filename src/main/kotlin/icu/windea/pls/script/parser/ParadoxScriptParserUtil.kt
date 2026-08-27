@@ -8,7 +8,7 @@ import icu.windea.pls.script.psi.ParadoxScriptTokenSets as TokenSets
 @Suppress("UNUSED_PARAMETER")
 object ParadoxScriptParserUtil : GeneratedParserUtilBase() {
     @JvmStatic
-    fun postProcessFirstSnippet(b: PsiBuilder, l: Int): Boolean {
+    fun postProcessFirstPart(b: PsiBuilder, l: Int): Boolean {
         // compact format is allowed, e.g., `k1 = "v1"k2 = v2`
         // a token should not be parsed to a value when with a trailing separator
         var s = -1
@@ -28,7 +28,7 @@ object ParadoxScriptParserUtil : GeneratedParserUtilBase() {
     }
 
     @JvmStatic
-    fun processSnippet(b: PsiBuilder, l: Int): Boolean {
+    fun processPart(b: PsiBuilder, l: Int): Boolean {
         // interrupt parsing when contains whitespaces or comments
         // also for continuous literals
         val t = b.rawLookup(-1)

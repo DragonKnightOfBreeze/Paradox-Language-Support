@@ -35,34 +35,7 @@ root_block ::= root_block_item + {
 private root_block_item ::= COMMENT | root_block_value | property | scripted_variable | conditional_block
 private root_block_value ::= scripted_variable_reference | boolean | int | float | string | color | block | inline_math
 
-// scripted_variable
-scripted_variable ::= scripted_variable_name scripted_variable_separator scripted_variable_value {
-  pin=1
-  recoverWhile="#auto" // continue parsing
-  extends="icu.windea.pls.script.psi.impl.ParadoxScriptStubElementImpl<?>"
-  stubClass="icu.windea.pls.script.psi.stubs.ParadoxScriptScriptedVariableStub"
-  implements=[
-    "icu.windea.pls.script.psi.ParadoxScriptNamedElement"
-    "icu.windea.pls.script.psi.ParadoxScriptStatement"
-  ]
-  methods=[
-    scripted_variable_name="scripted_variable_name" scripted_variable_value="value"
-    getIcon getName setName getNameIdentifier getTextOffset getValue
-    getIElementType isEquivalentTo
-  ]
-}
-// can be parameterized
-scripted_variable_name ::= AT scripted_variable_name_part (<<processSnippet>> scripted_variable_name_part) * {
-  pin=1
-  implements=[
-    "icu.windea.pls.script.psi.ParadoxParameterAwareElement"
-    "icu.windea.pls.script.psi.ParadoxScriptInlineConditionalBlockAwareElement"
-  ]
-  methods=[getIdElement parameter="" getName]
-}
-private scripted_variable_name_part ::= SCRIPTED_VARIABLE_NAME_TOKEN | parameter | inline_conditional_block
-private scripted_variable_separator ::= EQUAL_SIGN
-private scripted_variable_value ::= boolean | int | float | string | inline_math
+// member rules
 
 // property related
 property ::= property_key property_separator property_value {
@@ -84,7 +57,7 @@ property ::= property_key property_separator property_value {
   ]
 }
 // can be parameterized
-property_key ::= property_key_part (<<processSnippet>> property_key_part) * {
+property_key ::= property_key_part (<<processPart>> property_key_part) * {
   implements=[
     "icu.windea.pls.core.psi.PsiQuoteAwareElement"
     "icu.windea.pls.script.psi.ParadoxScriptLiteralValue"
@@ -111,21 +84,6 @@ value ::= scripted_variable_reference | boolean | int | float | string | color |
   ]
   methods=[getIcon getName getValue getPresentableText setValue setContent]
 }
-// can be parameterized
-scripted_variable_reference ::= AT scripted_variable_reference_part <<postProcessFirstSnippet>> (<<processSnippet>> scripted_variable_reference_part) * {
-  extends=value
-  implements=[
-    "icu.windea.pls.lang.psi.ParadoxScriptedVariableReference"
-    "icu.windea.pls.script.psi.ParadoxParameterAwareElement"
-    "icu.windea.pls.script.psi.ParadoxScriptInlineConditionalBlockAwareElement"
-  ]
-  methods=[
-    getIdElement parameter=""
-    getIcon getName setName getValue getPresentableText
-    getReference getReferences
-  ]
-}
-private scripted_variable_reference_part ::= SCRIPTED_VARIABLE_REFERENCE_TOKEN | parameter | inline_conditional_block
 boolean ::= BOOLEAN_TOKEN {
   extends=value
   implements=[
@@ -149,7 +107,7 @@ float ::= FLOAT_TOKEN {
   methods=[getReference getReferences]
 }
 // can be parameterized
-string ::= string_part <<postProcessFirstSnippet>> (<<processSnippet>> string_part) * {
+string ::= string_part <<postProcessFirstPart>> (<<processPart>> string_part) * {
   extends=value
   implements=[
     "icu.windea.pls.core.psi.PsiQuoteAwareElement"
@@ -187,11 +145,61 @@ private block_item ::= COMMENT | block_value | property | scripted_variable | co
 }
 private block_value ::= scripted_variable_reference | boolean | int | float | string | color | block | inline_math
 
+// scripted variable rules
+
+// scripted variable
+scripted_variable ::= scripted_variable_name scripted_variable_separator scripted_variable_value {
+  pin=1
+  recoverWhile="#auto" // continue parsing
+  extends="icu.windea.pls.script.psi.impl.ParadoxScriptStubElementImpl<?>"
+  stubClass="icu.windea.pls.script.psi.stubs.ParadoxScriptScriptedVariableStub"
+  implements=[
+    "icu.windea.pls.script.psi.ParadoxScriptNamedElement"
+    "icu.windea.pls.script.psi.ParadoxScriptStatement"
+  ]
+  methods=[
+    scripted_variable_name="scripted_variable_name" scripted_variable_value="value"
+    getIcon getName setName getNameIdentifier getTextOffset getValue
+    getIElementType isEquivalentTo
+  ]
+}
+// can be parameterized
+scripted_variable_name ::= AT scripted_variable_name_part (<<processPart>> scripted_variable_name_part) * {
+  pin=1
+  implements=[
+    "icu.windea.pls.script.psi.ParadoxParameterAwareElement"
+    "icu.windea.pls.script.psi.ParadoxScriptInlineConditionalBlockAwareElement"
+  ]
+  methods=[getIdElement parameter="" getName]
+}
+private scripted_variable_name_part ::= SCRIPTED_VARIABLE_NAME_TOKEN | parameter | inline_conditional_block
+private scripted_variable_separator ::= EQUAL_SIGN
+private scripted_variable_value ::= boolean | int | float | string | inline_math
+
+// scripted variable reference
+// can be parameterized
+scripted_variable_reference ::= AT scripted_variable_reference_part <<postProcessFirstPart>> (<<processPart>> scripted_variable_reference_part) * {
+  extends=value
+  implements=[
+    "icu.windea.pls.lang.psi.ParadoxScriptedVariableReference"
+    "icu.windea.pls.script.psi.ParadoxParameterAwareElement"
+    "icu.windea.pls.script.psi.ParadoxScriptInlineConditionalBlockAwareElement"
+  ]
+  methods=[
+    getIdElement parameter=""
+    getIcon getName setName getValue getPresentableText
+    getReference getReferences
+  ]
+}
+private scripted_variable_reference_part ::= SCRIPTED_VARIABLE_REFERENCE_TOKEN | parameter | inline_conditional_block
+
+
 // advanced script syntax
 // see: common/scripted_effects/99_advanced_documentation.txt
 // see wiki: https://stellaris.paradoxwikis.com/Dynamic_modding
 
-// tag
+// tag rules
+
 // should in definition declaration (scripted_effect / scripted_trigger)
 // resolved from a string, before any scripted variables, (non-tag) strings and properties
 
@@ -240,9 +248,8 @@ parameter_argument ::= ARGUMENT_TOKEN {
 
 // conditional block rules
 
-// conditional block
 // should in definition declaration (script_value / scripted_effect / scripted_trigger)
-conditional_block ::= LEFT_BRACKET conditional_block_expr conditional_block_item * RIGHT_BRACKET {
+conditional_block ::= LEFT_BRACKET conditional_header conditional_block_item * RIGHT_BRACKET {
   pin=1
   recoverWhile="#auto" // continue parsing
   implements=[
@@ -255,7 +262,24 @@ conditional_block ::= LEFT_BRACKET conditional_block_expr conditional_block_item
     getMemberContainer getMembers getLeftBound getRightBound getComponents
   ]
 }
-private conditional_block_expr ::= NESTED_LEFT_BRACKET conditional_block_expression NESTED_RIGHT_BRACKET {
+private conditional_block_item ::= COMMENT | conditional_block_value | property | conditional_block {
+  recoverWhile="#auto" // continue parsing
+}
+private conditional_block_value ::= scripted_variable_reference | boolean | int | float | string | color | block | inline_math
+
+// used in, such as, dynamic strings (e.g. "a[[b]c]d")
+inline_conditional_block ::= LEFT_BRACKET <<processInlineConditionalBlock>> conditional_header inline_conditional_block_item RIGHT_BRACKET {
+  pin=2
+  implements=[
+    "icu.windea.pls.core.psi.PsiBoundElement"
+  ]
+  methods=[getIcon getConditionExpression getPresentationText getLeftBound getRightBound]
+}
+private inline_conditional_block_item ::= <<processInlineConditionalBlockItem>> inline_conditional_block_snippet <<postProcessInlineConditionalBlockItem>>
+private inline_conditional_block_snippet ::= inline_conditional_block_item_part (<<processPart>> inline_conditional_block_item_part) *
+private inline_conditional_block_item_part ::= ARGUMENT_TOKEN | parameter | inline_conditional_block
+
+private conditional_header ::= NESTED_LEFT_BRACKET conditional_block_expression NESTED_RIGHT_BRACKET {
   pin=1
 }
 conditional_block_expression ::= NOT_SIGN ? conditional_block_parameter
@@ -266,23 +290,6 @@ conditional_block_parameter ::= CONDITION_PARAMETER_TOKEN {
     getReference getReferences
   ]
 }
-private conditional_block_item ::= COMMENT | conditional_block_value | property | conditional_block {
-  recoverWhile="#auto" // continue parsing
-}
-private conditional_block_value ::= scripted_variable_reference | boolean | int | float | string | color | block | inline_math
-
-// inline conditional block
-// used in, such as, dynamic strings (e.g. "a[[b]c]d")
-inline_conditional_block ::= LEFT_BRACKET <<processInlineConditionalBlock>> conditional_block_expr inline_conditional_block_item RIGHT_BRACKET {
-  pin=2
-  implements=[
-    "icu.windea.pls.core.psi.PsiBoundElement"
-  ]
-  methods=[getIcon getConditionExpression getPresentationText getLeftBound getRightBound]
-}
-private inline_conditional_block_item ::= <<processInlineConditionalBlockItem>> inline_conditional_block_snippet <<postProcessInlineConditionalBlockItem>>
-private inline_conditional_block_snippet ::= inline_conditional_block_item_part (<<processSnippet>> inline_conditional_block_item_part) *
-private inline_conditional_block_item_part ::= ARGUMENT_TOKEN | parameter | inline_conditional_block
 
 // inline math rules
 
@@ -364,9 +371,9 @@ inline_math_number ::= INT_NUMBER_TOKEN | FLOAT_NUMBER_TOKEN {
   ]
   methods=[getValue]
 }
-// leading `@` is permitted (on syntax level)
+// leading `@` is permitted (on syntax level) but not allowed (in actual)
 // can be parameterized
-inline_math_scripted_variable_reference ::= AT ? inline_math_scripted_variable_reference_part <<postProcessFirstSnippet>> (<<processSnippet>> inline_math_scripted_variable_reference_part) * {
+inline_math_scripted_variable_reference ::= AT ? inline_math_scripted_variable_reference_part <<postProcessFirstPart>> (<<processPart>> inline_math_scripted_variable_reference_part) * {
   extends=inline_math_factor
   implements=[
     "icu.windea.pls.lang.psi.ParadoxScriptedVariableReference"

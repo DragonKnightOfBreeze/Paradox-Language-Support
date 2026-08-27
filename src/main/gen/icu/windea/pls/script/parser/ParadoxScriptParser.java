@@ -1,16 +1,18 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.script.parser;
 
+import com.intellij.lang.ASTNode;
+import com.intellij.lang.LightPsiParser;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiBuilder.Marker;
-import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
-import static icu.windea.pls.script.parser.ParadoxScriptParserUtil.*;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.tree.TokenSet;
 import com.intellij.lang.PsiParser;
-import com.intellij.lang.LightPsiParser;
-import static com.intellij.lang.WhitespacesBinders.*;
+import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.tree.TokenSet;
+
+import static com.intellij.lang.WhitespacesBinders.GREEDY_LEFT_BINDER;
+import static com.intellij.lang.WhitespacesBinders.GREEDY_RIGHT_BINDER;
+import static icu.windea.pls.script.parser.ParadoxScriptParserUtil.*;
+import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 
 @SuppressWarnings({"SimplifiableIfStatement", "UnusedAssignment"})
 public class ParadoxScriptParser implements PsiParser, LightPsiParser {
@@ -133,14 +135,14 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // LEFT_BRACKET conditional_block_expr conditional_block_item * RIGHT_BRACKET
+  // LEFT_BRACKET conditional_header conditional_block_item * RIGHT_BRACKET
   public static boolean conditional_block(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "conditional_block")) return false;
     boolean r, p;
     Marker m = enter_section_(b, l, _NONE_, CONDITIONAL_BLOCK, "<conditional block>");
     r = consumeToken(b, LEFT_BRACKET);
     p = r; // pin = 1
-    r = r && report_error_(b, conditional_block_expr(b, l + 1));
+    r = r && report_error_(b, conditional_header(b, l + 1));
     r = p && report_error_(b, conditional_block_2(b, l + 1)) && r;
     r = p && consumeToken(b, RIGHT_BRACKET) && r;
     exit_section_(b, l, m, r, p, conditional_block_auto_recover_);
@@ -156,21 +158,6 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
       if (!empty_element_parsed_guard_(b, "conditional_block_2", c)) break;
     }
     return true;
-  }
-
-  /* ********************************************************** */
-  // NESTED_LEFT_BRACKET conditional_block_expression NESTED_RIGHT_BRACKET
-  static boolean conditional_block_expr(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "conditional_block_expr")) return false;
-    if (!nextTokenIs(b, NESTED_LEFT_BRACKET)) return false;
-    boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_);
-    r = consumeToken(b, NESTED_LEFT_BRACKET);
-    p = r; // pin = 1
-    r = r && report_error_(b, conditional_block_expression(b, l + 1));
-    r = p && consumeToken(b, NESTED_RIGHT_BRACKET) && r;
-    exit_section_(b, l, m, r, p, null);
-    return r || p;
   }
 
   /* ********************************************************** */
@@ -236,6 +223,21 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // NESTED_LEFT_BRACKET conditional_block_expression NESTED_RIGHT_BRACKET
+  static boolean conditional_header(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "conditional_header")) return false;
+    if (!nextTokenIs(b, NESTED_LEFT_BRACKET)) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_);
+    r = consumeToken(b, NESTED_LEFT_BRACKET);
+    p = r; // pin = 1
+    r = r && report_error_(b, conditional_block_expression(b, l + 1));
+    r = p && consumeToken(b, NESTED_RIGHT_BRACKET) && r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
+  }
+
+  /* ********************************************************** */
   // FLOAT_TOKEN
   public static boolean float_$(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "float_$")) return false;
@@ -248,7 +250,7 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // LEFT_BRACKET <<processInlineConditionalBlock>> conditional_block_expr inline_conditional_block_item RIGHT_BRACKET
+  // LEFT_BRACKET <<processInlineConditionalBlock>> conditional_header inline_conditional_block_item RIGHT_BRACKET
   public static boolean inline_conditional_block(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "inline_conditional_block")) return false;
     if (!nextTokenIs(b, LEFT_BRACKET)) return false;
@@ -257,7 +259,7 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
     r = consumeToken(b, LEFT_BRACKET);
     r = r && processInlineConditionalBlock(b, l + 1);
     p = r; // pin = 2
-    r = r && report_error_(b, conditional_block_expr(b, l + 1));
+    r = r && report_error_(b, conditional_header(b, l + 1));
     r = p && report_error_(b, inline_conditional_block_item(b, l + 1)) && r;
     r = p && consumeToken(b, RIGHT_BRACKET) && r;
     exit_section_(b, l, m, r, p, null);
@@ -289,7 +291,7 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // inline_conditional_block_item_part (<<processSnippet>> inline_conditional_block_item_part) *
+  // inline_conditional_block_item_part (<<processPart>> inline_conditional_block_item_part) *
   static boolean inline_conditional_block_snippet(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "inline_conditional_block_snippet")) return false;
     boolean r;
@@ -300,7 +302,7 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // (<<processSnippet>> inline_conditional_block_item_part) *
+  // (<<processPart>> inline_conditional_block_item_part) *
   private static boolean inline_conditional_block_snippet_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "inline_conditional_block_snippet_1")) return false;
     while (true) {
@@ -311,12 +313,12 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // <<processSnippet>> inline_conditional_block_item_part
+  // <<processPart>> inline_conditional_block_item_part
   private static boolean inline_conditional_block_snippet_1_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "inline_conditional_block_snippet_1_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = processSnippet(b, l + 1);
+    r = processPart(b, l + 1);
     r = r && inline_conditional_block_item_part(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
@@ -586,14 +588,14 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // AT ? inline_math_scripted_variable_reference_part <<postProcessFirstSnippet>> (<<processSnippet>> inline_math_scripted_variable_reference_part) *
+  // AT ? inline_math_scripted_variable_reference_part <<postProcessFirstPart>> (<<processPart>> inline_math_scripted_variable_reference_part) *
   public static boolean inline_math_scripted_variable_reference(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "inline_math_scripted_variable_reference")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _COLLAPSE_, INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE, "<inline math scripted variable reference>");
     r = inline_math_scripted_variable_reference_0(b, l + 1);
     r = r && inline_math_scripted_variable_reference_part(b, l + 1);
-    r = r && postProcessFirstSnippet(b, l + 1);
+    r = r && postProcessFirstPart(b, l + 1);
     r = r && inline_math_scripted_variable_reference_3(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
@@ -606,7 +608,7 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // (<<processSnippet>> inline_math_scripted_variable_reference_part) *
+  // (<<processPart>> inline_math_scripted_variable_reference_part) *
   private static boolean inline_math_scripted_variable_reference_3(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "inline_math_scripted_variable_reference_3")) return false;
     while (true) {
@@ -617,12 +619,12 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // <<processSnippet>> inline_math_scripted_variable_reference_part
+  // <<processPart>> inline_math_scripted_variable_reference_part
   private static boolean inline_math_scripted_variable_reference_3_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "inline_math_scripted_variable_reference_3_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = processSnippet(b, l + 1);
+    r = processPart(b, l + 1);
     r = r && inline_math_scripted_variable_reference_part(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
@@ -762,7 +764,7 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // property_key_part (<<processSnippet>> property_key_part) *
+  // property_key_part (<<processPart>> property_key_part) *
   public static boolean property_key(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "property_key")) return false;
     boolean r;
@@ -773,7 +775,7 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // (<<processSnippet>> property_key_part) *
+  // (<<processPart>> property_key_part) *
   private static boolean property_key_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "property_key_1")) return false;
     while (true) {
@@ -784,12 +786,12 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // <<processSnippet>> property_key_part
+  // <<processPart>> property_key_part
   private static boolean property_key_1_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "property_key_1_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = processSnippet(b, l + 1);
+    r = processPart(b, l + 1);
     r = r && property_key_part(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
@@ -909,7 +911,7 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // AT scripted_variable_name_part (<<processSnippet>> scripted_variable_name_part) *
+  // AT scripted_variable_name_part (<<processPart>> scripted_variable_name_part) *
   public static boolean scripted_variable_name(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "scripted_variable_name")) return false;
     if (!nextTokenIs(b, AT)) return false;
@@ -923,7 +925,7 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
     return r || p;
   }
 
-  // (<<processSnippet>> scripted_variable_name_part) *
+  // (<<processPart>> scripted_variable_name_part) *
   private static boolean scripted_variable_name_2(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "scripted_variable_name_2")) return false;
     while (true) {
@@ -934,12 +936,12 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // <<processSnippet>> scripted_variable_name_part
+  // <<processPart>> scripted_variable_name_part
   private static boolean scripted_variable_name_2_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "scripted_variable_name_2_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = processSnippet(b, l + 1);
+    r = processPart(b, l + 1);
     r = r && scripted_variable_name_part(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
@@ -957,7 +959,7 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // AT scripted_variable_reference_part <<postProcessFirstSnippet>> (<<processSnippet>> scripted_variable_reference_part) *
+  // AT scripted_variable_reference_part <<postProcessFirstPart>> (<<processPart>> scripted_variable_reference_part) *
   public static boolean scripted_variable_reference(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "scripted_variable_reference")) return false;
     if (!nextTokenIs(b, AT)) return false;
@@ -965,13 +967,13 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b);
     r = consumeToken(b, AT);
     r = r && scripted_variable_reference_part(b, l + 1);
-    r = r && postProcessFirstSnippet(b, l + 1);
+    r = r && postProcessFirstPart(b, l + 1);
     r = r && scripted_variable_reference_3(b, l + 1);
     exit_section_(b, m, SCRIPTED_VARIABLE_REFERENCE, r);
     return r;
   }
 
-  // (<<processSnippet>> scripted_variable_reference_part) *
+  // (<<processPart>> scripted_variable_reference_part) *
   private static boolean scripted_variable_reference_3(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "scripted_variable_reference_3")) return false;
     while (true) {
@@ -982,12 +984,12 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // <<processSnippet>> scripted_variable_reference_part
+  // <<processPart>> scripted_variable_reference_part
   private static boolean scripted_variable_reference_3_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "scripted_variable_reference_3_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = processSnippet(b, l + 1);
+    r = processPart(b, l + 1);
     r = r && scripted_variable_reference_part(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
@@ -1024,19 +1026,19 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // string_part <<postProcessFirstSnippet>> (<<processSnippet>> string_part) *
+  // string_part <<postProcessFirstPart>> (<<processPart>> string_part) *
   public static boolean string(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "string")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _COLLAPSE_, STRING, "<string>");
     r = string_part(b, l + 1);
-    r = r && postProcessFirstSnippet(b, l + 1);
+    r = r && postProcessFirstPart(b, l + 1);
     r = r && string_2(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
 
-  // (<<processSnippet>> string_part) *
+  // (<<processPart>> string_part) *
   private static boolean string_2(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "string_2")) return false;
     while (true) {
@@ -1047,12 +1049,12 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // <<processSnippet>> string_part
+  // <<processPart>> string_part
   private static boolean string_2_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "string_2_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = processSnippet(b, l + 1);
+    r = processPart(b, l + 1);
     r = r && string_part(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
