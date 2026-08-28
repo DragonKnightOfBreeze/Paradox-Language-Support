@@ -21,10 +21,10 @@ import icu.windea.pls.lang.references.localisation.ParadoxLocalisationParameterP
 import icu.windea.pls.lang.references.localisation.ParadoxLocalisationTextColorPsiReference
 import icu.windea.pls.lang.references.localisation.ParadoxLocalisationTextFormatPsiReference
 import icu.windea.pls.lang.references.localisation.ParadoxLocalisationTextIconPsiReference
-import icu.windea.pls.lang.references.script.ParadoxConditionParameterPsiReference
 import icu.windea.pls.lang.references.script.ParadoxDefinitionInjectionTargetPsiReference
 import icu.windea.pls.lang.references.script.ParadoxEventNamespacePsiReference
-import icu.windea.pls.lang.references.script.ParadoxParameterPsiReference
+import icu.windea.pls.lang.references.script.ParadoxScriptConditionParameterPsiReference
+import icu.windea.pls.lang.references.script.ParadoxScriptParameterPsiReference
 import icu.windea.pls.localisation.psi.ParadoxLocalisationConceptCommand
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationIcon
@@ -180,8 +180,8 @@ enum class ParadoxReferenceConstraint {
         override fun canResolve(reference: PsiReference): Boolean {
             return when (reference) {
                 is ParadoxConstrainedPsiReference -> reference.canResolveFor(this)
-                is ParadoxParameterPsiReference -> true
-                is ParadoxConditionParameterPsiReference -> true
+                is ParadoxScriptParameterPsiReference -> true
+                is ParadoxScriptConditionParameterPsiReference -> true
                 else -> false
             }
         }

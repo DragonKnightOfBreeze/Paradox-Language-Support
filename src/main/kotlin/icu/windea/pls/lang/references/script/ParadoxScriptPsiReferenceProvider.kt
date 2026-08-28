@@ -24,14 +24,14 @@ class ParadoxScriptPsiReferenceProvider : PsiReferenceProvider() {
         return arrayOf(reference)
     }
 
-    private fun getReference(element: ParadoxScriptParameter): ParadoxParameterPsiReference? {
+    private fun getReference(element: ParadoxScriptParameter): ParadoxScriptParameterPsiReference? {
         val rangeInElement = element.idElement?.textRangeInParent ?: return null
-        return ParadoxParameterPsiReference(element, rangeInElement)
+        return ParadoxScriptParameterPsiReference(element, rangeInElement)
     }
 
-    private fun getReference(element: ParadoxScriptConditionParameter): ParadoxConditionParameterPsiReference? {
+    private fun getReference(element: ParadoxScriptConditionParameter): ParadoxScriptConditionParameterPsiReference? {
         val rangeInElement = element.idElement?.textRangeInParent ?: return null
-        return ParadoxConditionParameterPsiReference(element, rangeInElement)
+        return ParadoxScriptConditionParameterPsiReference(element, rangeInElement)
     }
 
     private fun getReference(element: ParadoxScriptedVariableReference): ParadoxScriptedVariablePsiReference? {

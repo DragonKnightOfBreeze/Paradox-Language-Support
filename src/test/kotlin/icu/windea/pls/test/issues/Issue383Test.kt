@@ -20,8 +20,8 @@ import icu.windea.pls.lang.inspections.script.scope.IncorrectScopeLinkChainInspe
 import icu.windea.pls.lang.inspections.script.scope.IncorrectScopeSwitchInspection
 import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
-import icu.windea.pls.lang.references.script.ParadoxParameterPsiReference
 import icu.windea.pls.lang.references.script.ParadoxScriptExpressionPsiReference
+import icu.windea.pls.lang.references.script.ParadoxScriptParameterPsiReference
 import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.model.ParadoxGameType
@@ -155,7 +155,7 @@ class Issue383Test : BasePlatformTestCase(), ChronicleTestScope {
             val reference = myFixture.findReferenceAtCaret().expectNotNull()
             reference.expectIs<PsiMultiReference>()
             val parameterReference = reference.references[0]
-            parameterReference.expectIs<ParadoxParameterPsiReference>()
+            parameterReference.expectIs<ParadoxScriptParameterPsiReference>()
             val expressionReference = reference.references[1]
             expressionReference.expectIs<ParadoxScriptExpressionPsiReference>()
 

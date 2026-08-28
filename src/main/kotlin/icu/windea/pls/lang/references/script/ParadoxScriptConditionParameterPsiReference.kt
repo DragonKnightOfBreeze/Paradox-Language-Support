@@ -3,23 +3,23 @@ package icu.windea.pls.lang.references.script
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
-import icu.windea.pls.lang.codeInsight.completion.script.ParadoxParameterCompletionProvider
+import icu.windea.pls.lang.codeInsight.completion.script.ParadoxScriptParameterCompletionProvider
 import icu.windea.pls.lang.resolve.ParadoxParameterService
-import icu.windea.pls.script.psi.ParadoxScriptParameter
+import icu.windea.pls.script.psi.ParadoxScriptConditionParameter
 
 /**
  * @see ParadoxScriptPsiReferenceProvider
- * @see ParadoxParameterCompletionProvider
+ * @see ParadoxScriptParameterCompletionProvider
  */
-class ParadoxParameterPsiReference(
-    element: ParadoxScriptParameter,
+class ParadoxScriptConditionParameterPsiReference(
+    element: ParadoxScriptConditionParameter,
     rangeInElement: TextRange
-) : PsiReferenceBase<ParadoxScriptParameter>(element, rangeInElement) {
+) : PsiReferenceBase<ParadoxScriptConditionParameter>(element, rangeInElement) {
     override fun handleElementRename(newElementName: String): PsiElement {
         return element.setName(newElementName)
     }
 
     override fun resolve(): PsiElement? {
-        return ParadoxParameterService.resolveParameter(element)
+        return ParadoxParameterService.resolveConditionParameter(element)
     }
 }
