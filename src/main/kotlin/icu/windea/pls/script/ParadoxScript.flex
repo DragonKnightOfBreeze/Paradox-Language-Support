@@ -175,6 +175,7 @@ COLOR_TOKEN=(rgb|hsv|hsv360)[ \t]*\{[\d.\s&&[^\r\n]]*} // #103 hsv360 (from vic3
 
 PARAMETER_TOKEN=[A-Za-z_][A-Za-z0-9_]* // leading number is not permitted for parameter names
 ARGUMENT_TOKEN=[^#$=<>!?{}\[\]\s]+ // compatible with leading '@'
+
 INLINE_MATH_TOKEN=[^\r\n#{}\[\]]+
 
 %%
