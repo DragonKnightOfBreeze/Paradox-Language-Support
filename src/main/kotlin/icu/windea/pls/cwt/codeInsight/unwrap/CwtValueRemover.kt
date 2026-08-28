@@ -7,19 +7,19 @@ import icu.windea.pls.cwt.psi.CwtValue
 import icu.windea.pls.cwt.psi.isDirectValue
 
 class CwtValueRemover : CwtUnwrapper() {
-    override fun getDescription(e: PsiElement): String {
-        return when (e) {
-            is CwtBlock -> ChronicleBundle.message("cwt.remove.block")
-            is CwtValue -> ChronicleBundle.message("cwt.remove.value", e.name)
-            else -> throw IllegalStateException()
-        }
+    override fun isApplicableTo(element: PsiElement): Boolean {
+        return element is CwtValue && element.isDirectValue()
     }
 
-    override fun isApplicableTo(e: PsiElement): Boolean {
-        return e is CwtValue && e.isDirectValue()
+    override fun getDescription(element: PsiElement): String {
+        if (element !is CwtValue) return "" // unexpected
+        if (element is CwtBlock) return ChronicleBundle.message("cwt.remove.block")
+        val text = element.presentableText
+        return ChronicleBundle.message("cwt.remove.value", text)
     }
 
     override fun doUnwrap(element: PsiElement, context: Context) {
+        if (element !is CwtValue) return // unexpected
         context.delete(element)
     }
 }

@@ -24,4 +24,3 @@ class ParadoxLocalisationUnwrapDescriptor : UnwrapDescriptorBase() {
         return _unwrappers
     }
 }
-

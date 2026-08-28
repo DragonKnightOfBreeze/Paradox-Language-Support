@@ -7,16 +7,18 @@ import icu.windea.pls.core.util.values.unresolved
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 class ParadoxScriptScriptedVariableRemover : ParadoxScriptUnwrapper() {
-    override fun getDescription(e: PsiElement): String {
-        val name = if (e is ParadoxScriptScriptedVariable) e.name.or.unresolved() else ""
-        return ChronicleBundle.message("script.remove.scriptedVariable", name)
+    override fun isApplicableTo(element: PsiElement): Boolean {
+        return element is ParadoxScriptScriptedVariable
     }
 
-    override fun isApplicableTo(e: PsiElement): Boolean {
-        return e is ParadoxScriptScriptedVariable
+    override fun getDescription(element: PsiElement): String {
+        if (element !is ParadoxScriptScriptedVariable) return "" // unexpected
+        val name = element.name
+        return ChronicleBundle.message("script.remove.scriptedVariable", name.or.unresolved())
     }
 
     override fun doUnwrap(element: PsiElement, context: Context) {
+        if (element !is ParadoxScriptScriptedVariable) return // unexpected
         context.delete(element)
     }
 }

@@ -7,19 +7,19 @@ import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.psi.isDirectValue
 
 class ParadoxScriptValueRemover : ParadoxScriptUnwrapper() {
-    override fun getDescription(e: PsiElement): String {
-        return when (e) {
-            is ParadoxScriptBlock -> ChronicleBundle.message("script.remove.block")
-            is ParadoxScriptValue -> ChronicleBundle.message("script.remove.value", e.name)
-            else -> throw IllegalStateException()
-        }
+    override fun isApplicableTo(element: PsiElement): Boolean {
+        return element is ParadoxScriptValue && element.isDirectValue()
     }
 
-    override fun isApplicableTo(e: PsiElement): Boolean {
-        return e is ParadoxScriptValue && e.isDirectValue()
+    override fun getDescription(element: PsiElement): String {
+        if (element !is ParadoxScriptValue) return "" // unexpected
+        if (element is ParadoxScriptBlock) return ChronicleBundle.message("script.remove.block")
+        val text = element.presentableText
+        return ChronicleBundle.message("script.remove.value", text)
     }
 
     override fun doUnwrap(element: PsiElement, context: Context) {
+        if (element !is ParadoxScriptValue) return // unexpected
         context.delete(element)
     }
 }

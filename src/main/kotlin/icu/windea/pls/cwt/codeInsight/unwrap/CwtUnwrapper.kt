@@ -9,6 +9,12 @@ import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.cwt.psi.CwtValue
 
 abstract class CwtUnwrapper : AbstractUnwrapper<CwtUnwrapper.Context>("") {
+    abstract override fun isApplicableTo(element: PsiElement): Boolean
+
+    override fun getDescription(element: PsiElement): String {
+        return super.getDescription(element)
+    }
+
     override fun createContext(): Context {
         return Context()
     }

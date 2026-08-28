@@ -7,6 +7,12 @@ import icu.windea.pls.core.children
 import icu.windea.pls.localisation.psi.ParadoxLocalisationRichText
 
 abstract class ParadoxLocalisationUnwrapper : AbstractUnwrapper<ParadoxLocalisationUnwrapper.Context>("") {
+    abstract override fun isApplicableTo(element: PsiElement): Boolean
+
+    override fun getDescription(element: PsiElement): String {
+        return super.getDescription(element)
+    }
+
     override fun createContext(): Context {
         return Context()
     }

@@ -2,22 +2,21 @@ package icu.windea.pls.script.codeInsight.unwrap
 
 import com.intellij.psi.PsiElement
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.core.util.values.or
-import icu.windea.pls.core.util.values.unresolved
-import icu.windea.pls.script.psi.ParadoxScriptConditionalBlock
+import icu.windea.pls.script.psi.ParadoxScriptNormalConditionalBlock
 
 class ParadoxScriptConditionalBlockRemover : ParadoxScriptUnwrapper() {
-    override fun getDescription(e: PsiElement): String {
-        e as ParadoxScriptConditionalBlock
-        val name = e.presentableText.or.unresolved()
-        return ChronicleBundle.message("script.remove.conditionalBlock", name)
+    override fun isApplicableTo(element: PsiElement): Boolean {
+        return element is ParadoxScriptNormalConditionalBlock
     }
 
-    override fun isApplicableTo(e: PsiElement): Boolean {
-        return e is ParadoxScriptConditionalBlock
+    override fun getDescription(element: PsiElement): String {
+        if (element !is ParadoxScriptNormalConditionalBlock) return "" // unexpected
+        val text = element.presentableText
+        return ChronicleBundle.message("script.remove.conditionalBlock", text)
     }
 
     override fun doUnwrap(element: PsiElement, context: Context) {
+        if (element !is ParadoxScriptNormalConditionalBlock) return // unexpected
         context.delete(element)
     }
 }

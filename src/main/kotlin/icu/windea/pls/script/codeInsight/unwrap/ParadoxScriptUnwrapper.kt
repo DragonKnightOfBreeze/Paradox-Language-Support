@@ -6,15 +6,21 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.util.elementType
 import icu.windea.pls.core.children
-import icu.windea.pls.script.psi.ParadoxScriptConditionalBlock
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes
 import icu.windea.pls.script.psi.ParadoxScriptInlineConditionalBlock
+import icu.windea.pls.script.psi.ParadoxScriptNormalConditionalBlock
 import icu.windea.pls.script.psi.ParadoxScriptParameter
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.ParadoxScriptValue
 
 abstract class ParadoxScriptUnwrapper : AbstractUnwrapper<ParadoxScriptUnwrapper.Context>("") {
+    abstract override fun isApplicableTo(element: PsiElement): Boolean
+
+    override fun getDescription(element: PsiElement): String {
+        return super.getDescription(element)
+    }
+
     override fun createContext(): Context {
         return Context()
     }
@@ -49,7 +55,7 @@ abstract class ParadoxScriptUnwrapper : AbstractUnwrapper<ParadoxScriptUnwrapper
                 || child is ParadoxScriptProperty
                 || child is ParadoxScriptValue
                 || child is ParadoxScriptScriptedVariable
-                || child is ParadoxScriptConditionalBlock
+                || child is ParadoxScriptNormalConditionalBlock
         }
     }
 }

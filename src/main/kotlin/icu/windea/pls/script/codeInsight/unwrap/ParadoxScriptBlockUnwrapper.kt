@@ -6,16 +6,17 @@ import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.isDirectValue
 
 class ParadoxScriptBlockUnwrapper : ParadoxScriptUnwrapper() {
-    override fun getDescription(e: PsiElement): String {
+    override fun isApplicableTo(element: PsiElement): Boolean {
+        return element is ParadoxScriptBlock && element.isDirectValue()
+    }
+
+    override fun getDescription(element: PsiElement): String {
+        if (element !is ParadoxScriptBlock) return "" // unexpected
         return ChronicleBundle.message("script.unwrap.block")
     }
 
-    override fun isApplicableTo(e: PsiElement): Boolean {
-        return e is ParadoxScriptBlock && e.isDirectValue()
-    }
-
     override fun doUnwrap(element: PsiElement, context: Context) {
-        if (element !is ParadoxScriptBlock) return
+        if (element !is ParadoxScriptBlock) return // unexpected
         context.extract(element, element)
         context.delete(element)
     }
