@@ -77,9 +77,10 @@ private property_number ::= PROPERTY_NUMBER
 property_value ::= LEFT_QUOTE PROPERTY_VALUE_TOKEN ? RIGHT_QUOTE { // lazy-parsing PROPERTY_VALUE_TOKEN
   pin=1
   implements=[
+    "icu.windea.pls.core.psi.PsiQuoteAwareElement"
     "icu.windea.pls.localisation.psi.ParadoxLocalisationRichTextContainer"
   ]
-  methods=[getTokenElement getRichTextList]
+  methods=[getTokenElement getRichTextList getQuotePattern]
 }
 
 // ------

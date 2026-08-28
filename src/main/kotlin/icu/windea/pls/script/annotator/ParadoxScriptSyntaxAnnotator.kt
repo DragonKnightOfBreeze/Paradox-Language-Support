@@ -7,35 +7,41 @@ import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiElement
 import com.intellij.psi.TokenType
 import com.intellij.psi.util.elementType
+import com.intellij.psi.util.endOffset
+import com.intellij.psi.util.startOffset
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.fixes.DeleteStringByElementTypeFix
+import icu.windea.pls.core.fixes.InsertStringFix
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.isRightQuoted
+import icu.windea.pls.core.psi.PsiQuoteAwareElement
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes
 import icu.windea.pls.script.psi.ParadoxScriptInlineMathScriptedVariableReference
-import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
-import icu.windea.pls.script.psi.ParadoxScriptString
 
 class ParadoxScriptSyntaxAnnotator : Annotator, DumbAware {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
-        checkMissingQuote(element, holder)
+        checkQuote(element, holder)
         checkOperator(element, holder)
         checkInlineMathScriptedVariableReference(element, holder)
     }
 
-    private fun checkMissingQuote(element: PsiElement, holder: AnnotationHolder) {
-        // 检查是否缺失左侧或者右侧的双引号
-        val quoteAware = element is ParadoxScriptPropertyKey || element is ParadoxScriptString
-        if (!quoteAware) return
+    private fun checkQuote(element: PsiElement, holder: AnnotationHolder) {
+        // 检查是否缺失左侧或右侧的双引号
+        // TODO 3.0.2 改为直接检查对应的词元（`LEFT_QUOTE` `RIGHT_QUOTE`）是否存在，而非检查文本是否用引号括起
+        if (element !is PsiQuoteAwareElement) return
         val text = element.text
-
-        // 检查是否缺失左侧或者右侧的双引号
-        val isLeftQuoted = text.isLeftQuoted()
-        val isRightQuoted = text.isRightQuoted()
+        val quotePattern = element.quotePattern
+        val quote = quotePattern.quoteChar.toString()
+        val isLeftQuoted = text.isLeftQuoted(quotePattern)
+        val isRightQuoted = text.isRightQuoted(quotePattern)
         if (!isLeftQuoted && isRightQuoted) {
-            holder.newAnnotation(HighlightSeverity.ERROR, ChronicleBundle.message("annotator.message.missing.opening.quote")).create()
+            holder.newAnnotation(HighlightSeverity.ERROR, ChronicleBundle.message("annotator.missing.opening.quote.message"))
+                .withFix(InsertStringFix(element, ChronicleBundle.message("annotator.missing.opening.quote.fix"), quote, element.startOffset))
+                .create()
         } else if (isLeftQuoted && !isRightQuoted) {
-            holder.newAnnotation(HighlightSeverity.ERROR, ChronicleBundle.message("annotator.message.missing.closing.quote")).create()
+            holder.newAnnotation(HighlightSeverity.ERROR, ChronicleBundle.message("annotator.missing.closing.quote.message"))
+                .withFix(InsertStringFix(element, ChronicleBundle.message("annotator.missing.closing.quote.fix"), quote, element.endOffset))
+                .create()
         }
     }
 
@@ -45,9 +51,9 @@ class ParadoxScriptSyntaxAnnotator : Annotator, DumbAware {
             // 2.1.10 #331 对于安全调用赋值运算符，不允许前导空白
             val leadingBlank = element.prevSibling?.takeIf { it.elementType == TokenType.WHITE_SPACE }
             if (leadingBlank != null) {
-                holder.newAnnotation(HighlightSeverity.ERROR, ChronicleBundle.message("annotator.message.leading.blank.unexpected.1"))
+                holder.newAnnotation(HighlightSeverity.ERROR, ChronicleBundle.message("annotator.leading.blank.unexpected.message.1"))
                     .range(element)
-                    .withFix(DeleteStringByElementTypeFix(leadingBlank, ChronicleBundle.message("annotator.leading.blank.unexpected")))
+                    .withFix(DeleteStringByElementTypeFix(leadingBlank, ChronicleBundle.message("annotator.leading.blank.unexpected.fix")))
                     .create()
             }
         }
@@ -58,9 +64,9 @@ class ParadoxScriptSyntaxAnnotator : Annotator, DumbAware {
         if (element !is ParadoxScriptInlineMathScriptedVariableReference) return
         val leadingAt = element.firstChild?.takeIf { it.elementType == ParadoxScriptElementTypes.AT }
         if (leadingAt != null) {
-            holder.newAnnotation(HighlightSeverity.ERROR, ChronicleBundle.message("annotator.message.leading.at.unexpected.1"))
+            holder.newAnnotation(HighlightSeverity.ERROR, ChronicleBundle.message("annotator.leading.at.unexpected.message.1"))
                 .range(leadingAt)
-                .withFix(DeleteStringByElementTypeFix(leadingAt, ChronicleBundle.message("annotator.leading.at.unexpected")))
+                .withFix(DeleteStringByElementTypeFix(leadingAt, ChronicleBundle.message("annotator.leading.at.unexpected.fix")))
                 .create()
         }
     }

@@ -26,7 +26,7 @@ class ParadoxLocalisationSyntaxAnnotatorTest : BasePlatformTestCase(), Chronicle
 
     @Test
     fun testAdjacentIcons_errorAndFix() {
-        val tag = ChronicleBundle.message("annotator.message.adjacent.icon.unexpected").toErrorTag()
+        val tag = ChronicleBundle.message("annotator.adjacent.icon.unexpected.message").toErrorTag()
 
         // 两个相邻图标：£a££b£，应在第二个图标上报错
         myFixture.configureByText(
@@ -39,7 +39,7 @@ class ParadoxLocalisationSyntaxAnnotatorTest : BasePlatformTestCase(), Chronicle
         myFixture.checkHighlighting(true, true, true)
 
         // Quick Fix: 插入空格
-        val fixName = ChronicleBundle.message("annotator.adjacent.icon.unexpected")
+        val fixName = ChronicleBundle.message("annotator.adjacent.icon.unexpected.fix")
         myFixture.configureByText(
             "annotator_adjacent_icons_apply.test.yml",
             """

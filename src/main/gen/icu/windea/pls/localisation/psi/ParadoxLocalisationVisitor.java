@@ -5,6 +5,7 @@ import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiListLikeElement;
+import icu.windea.pls.core.psi.PsiQuoteAwareElement;
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference;
 import org.jetbrains.annotations.NotNull;
 
@@ -87,7 +88,8 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
   }
 
   public void visitPropertyValue(@NotNull ParadoxLocalisationPropertyValue o) {
-    visitRichTextContainer(o);
+    visitPsiQuoteAwareElement(o);
+    // visitRichTextContainer(o);
   }
 
   public void visitRichText(@NotNull ParadoxLocalisationRichText o) {
@@ -126,6 +128,10 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
   }
 
   public void visitPsiListLikeElement(@NotNull PsiListLikeElement o) {
+    visitElement(o);
+  }
+
+  public void visitPsiQuoteAwareElement(@NotNull PsiQuoteAwareElement o) {
     visitElement(o);
   }
 

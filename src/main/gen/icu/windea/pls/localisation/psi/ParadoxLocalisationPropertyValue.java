@@ -5,12 +5,13 @@ import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
+import icu.windea.pls.core.psi.PsiQuoteAwareElement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public interface ParadoxLocalisationPropertyValue extends ParadoxLocalisationRichTextContainer {
+public interface ParadoxLocalisationPropertyValue extends PsiQuoteAwareElement, ParadoxLocalisationRichTextContainer {
 
   @Nullable PsiElement getTokenElement();
 

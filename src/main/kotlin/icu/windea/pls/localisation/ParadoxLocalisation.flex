@@ -36,7 +36,7 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
         // If only whitespace remains until EOL/EOF, treat as a locale header; otherwise, treat as a property key.
 
         try {
-            // Start scanning right after the matched text (token + ':')
+            // Start scanning right after the matched text (token + `:`)
             int i = zzCurrentPos + 1 + yylength();
             int length = zzBuffer.length();
             boolean onlyWhitespaceToEol = true;
@@ -65,8 +65,8 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
     private IElementType handleRightQuote() {
         // Double quotes inside localisation text do not need escaping.
         // Heuristic used by vanilla files and editors:
-        //  - If there is another '"' ahead on the same line, the current '"' is part of the text (not closing).
-        //  - Otherwise, treat the current '"' as the closing quote, even if a trailing comment (e.g. '# ...') exists.
+        //  - If there is another `"` ahead on the same line, the current `"` is part of the text (not closing).
+        //  - Otherwise, treat the current `"` as the closing quote, even if a trailing comment (e.g. `# ...`) exists.
 
         try {
             int i = zzCurrentPos + yylength(); // position right after current match

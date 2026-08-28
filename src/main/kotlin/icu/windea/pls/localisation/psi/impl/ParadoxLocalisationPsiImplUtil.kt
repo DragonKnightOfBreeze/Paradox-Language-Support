@@ -17,13 +17,17 @@ import icu.windea.pls.core.findChild
 import icu.windea.pls.core.findChildren
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.psi.PsiPresentableElement
+import icu.windea.pls.core.psi.PsiQuoteAwareElement
 import icu.windea.pls.core.psi.PsiService
+import icu.windea.pls.core.text.QuotePattern
+import icu.windea.pls.core.text.QuotePatterns
 import icu.windea.pls.core.unquote
 import icu.windea.pls.lang.search.scope.ParadoxSearchScope
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
+import icu.windea.pls.localisation.text.ParadoxLocalisation
 import icu.windea.pls.model.ParadoxLocalisationType
 import javax.swing.Icon
 
@@ -490,6 +494,11 @@ object ParadoxLocalisationPsiImplUtil {
     @JvmStatic
     fun setContent(element: ParadoxLocalisationExpressionElement, content: String, range: TextRange): ParadoxLocalisationExpressionElement {
         throw IncorrectOperationException()
+    }
+
+    @JvmStatic
+    fun getQuotePattern(element: PsiQuoteAwareElement): QuotePattern {
+        return QuotePatterns.ParadoxLocalisation
     }
 
     @JvmStatic
