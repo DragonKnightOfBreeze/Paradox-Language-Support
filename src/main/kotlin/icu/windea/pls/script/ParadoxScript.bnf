@@ -211,7 +211,7 @@ parameter ::= PARAMETER_START parameter_name parameter_argument_part ? PARAMETER
   implements=[
     "icu.windea.pls.script.psi.ParadoxParameter"
     "icu.windea.pls.script.psi.ParadoxScriptInterpolation"
-    "icu.windea.pls.script.psi.ParadoxArgumentAwareElement"
+    "icu.windea.pls.script.psi.ParadoxScriptArgumentAwareElement"
   ]
   methods=[
     getIdElement getArgumentElement parameter_argument=""
@@ -226,7 +226,7 @@ inline_math_parameter ::= PARAMETER_START parameter_name parameter_argument_part
   implements=[
     "icu.windea.pls.script.psi.ParadoxParameter"
     "icu.windea.pls.script.psi.ParadoxScriptInterpolation"
-    "icu.windea.pls.script.psi.ParadoxArgumentAwareElement"
+    "icu.windea.pls.script.psi.ParadoxScriptArgumentAwareElement"
   ]
   methods=[
     getIdElement getArgumentElement parameter_argument=""
@@ -239,7 +239,7 @@ private parameter_name ::= PARAMETER_TOKEN
 private parameter_argument_part ::= PIPE parameter_argument ?
 parameter_argument ::= ARGUMENT_TOKEN {
   implements=[
-    "icu.windea.pls.script.psi.ParadoxArgument"
+    "icu.windea.pls.script.psi.ParadoxScriptArgument"
   ]
   methods=[getIdElement]
 }

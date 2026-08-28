@@ -7,4 +7,4 @@ import com.intellij.psi.NavigatablePsiElement
  *
  * @see ParadoxScriptParameterArgument
  */
-interface ParadoxArgument : NavigatablePsiElement
+interface ParadoxScriptArgument : NavigatablePsiElement

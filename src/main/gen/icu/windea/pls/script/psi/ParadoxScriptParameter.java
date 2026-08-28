@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-public interface ParadoxScriptParameter extends ParadoxParameter, ParadoxScriptInterpolation, ParadoxArgumentAwareElement {
+public interface ParadoxScriptParameter extends ParadoxParameter, ParadoxScriptInterpolation, ParadoxScriptArgumentAwareElement {
 
   @Nullable PsiElement getIdElement();
 
