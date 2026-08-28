@@ -14,42 +14,42 @@ import java.util.List;
 
 public interface ParadoxScriptBlock extends ParadoxScriptValue, ParadoxScriptMemberContainer, ParadoxScriptBoundMemberContainer {
 
-  @NotNull
-  List<ParadoxScriptNormalConditionalBlock> getNormalConditionalBlockList();
+    @NotNull
+    List<ParadoxScriptNormalConditionalBlock> getNormalConditionalBlockList();
 
-  @NotNull
-  List<ParadoxScriptProperty> getPropertyList();
+    @NotNull
+    List<ParadoxScriptProperty> getPropertyList();
 
-  @NotNull
-  List<ParadoxScriptScriptedVariable> getScriptedVariableList();
+    @NotNull
+    List<ParadoxScriptScriptedVariable> getScriptedVariableList();
 
-  @NotNull
-  List<ParadoxScriptValue> getValueList();
+    @NotNull
+    List<ParadoxScriptValue> getValueList();
 
-  @NotNull ParadoxScriptBlock getMemberContainer();
+    @NotNull ParadoxScriptBlock getMemberContainer();
 
-  @NotNull List<@NotNull ParadoxScriptMember> getMembers();
+    @NotNull List<@NotNull ParadoxScriptMember> getMembers();
 
-  @Nullable PsiElement getLeftBound();
+    @Nullable PsiElement getLeftBound();
 
-  @Nullable PsiElement getRightBound();
+    @Nullable PsiElement getRightBound();
 
-  @NotNull List<@NotNull ParadoxScriptStatement> getComponents();
+    @NotNull List<@NotNull ParadoxScriptStatement> getComponents();
 
-  @NotNull Icon getIcon(@IconFlags int flags);
+    @NotNull Icon getIcon(@IconFlags int flags);
 
-  @NotNull String getValue();
+    @NotNull String getValue();
 
-  @NotNull String getPresentableText();
+    @NotNull String getPresentableText();
 
-  @Nullable PsiReference getReference();
+    @Nullable PsiReference getReference();
 
-  @NotNull PsiReference @NotNull [] getReferences();
+    @NotNull PsiReference @NotNull [] getReferences();
 
-  @NotNull GlobalSearchScope getResolveScope();
+    @NotNull GlobalSearchScope getResolveScope();
 
-  @NotNull SearchScope getUseScope();
+    @NotNull SearchScope getUseScope();
 
-  @NotNull ItemPresentation getPresentation();
+    @NotNull ItemPresentation getPresentation();
 
 }

@@ -14,26 +14,26 @@ import javax.swing.*;
 
 public interface ParadoxScriptInlineMathScriptedVariableReference extends ParadoxScriptInlineMathFactor, ParadoxScriptedVariableReference, ParadoxScriptInterpolationContainer {
 
-  @Nullable PsiElement getIdElement();
+    @Nullable PsiElement getIdElement();
 
-  //WARNING: inline_conditional_block(...) is skipped
-  //matching inline_conditional_block(ParadoxScriptInlineMathScriptedVariableReference, ...)
-  //methods are not found in ParadoxScriptPsiImplUtil
+    // WARNING: inline_conditional_block(...) is skipped
+    // matching inline_conditional_block(ParadoxScriptInlineMathScriptedVariableReference, ...)
+    // methods are not found in ParadoxScriptPsiImplUtil
 
-  @NotNull Icon getIcon(@IconFlags int flags);
+    @NotNull Icon getIcon(@IconFlags int flags);
 
-  @Nullable String getName();
+    @Nullable String getName();
 
-  @NotNull ParadoxScriptInlineMathScriptedVariableReference setName(@NotNull String name);
+    @NotNull ParadoxScriptInlineMathScriptedVariableReference setName(@NotNull String name);
 
-  @Nullable PsiReference getReference();
+    @Nullable PsiReference getReference();
 
-  @NotNull PsiReference @NotNull [] getReferences();
+    @NotNull PsiReference @NotNull [] getReferences();
 
-  @NotNull GlobalSearchScope getResolveScope();
+    @NotNull GlobalSearchScope getResolveScope();
 
-  @NotNull SearchScope getUseScope();
+    @NotNull SearchScope getUseScope();
 
-  @NotNull ItemPresentation getPresentation();
+    @NotNull ItemPresentation getPresentation();
 
 }

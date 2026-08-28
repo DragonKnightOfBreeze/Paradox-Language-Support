@@ -1,0 +1,39 @@
+# common examples
+
+@name = value
+@name = $PARAM$
+@name = $PARAM|default_value$
+@$PARAM$ = value
+@$PARAM|default_value$ = value
+@$PARAM$ = $PARAM$
+@$PARAM|default_value$ = $PARAM|default_value$
+
+key = value
+key = $PARAM$
+key = $PARAM|default_value$
+$PARAM$ = value
+$PARAM|default_value$ = value
+$PARAM$ = $PARAM$
+$PARAM|default_value$ = $PARAM|default_value$
+
+key = value
+key = $PARAM$
+key = $PARAM|default_value$
+$PARAM$ = value
+$PARAM|default_value$ = value
+$PARAM$ = $PARAM$
+$PARAM|default_value$ = $PARAM|default_value$
+
+# quoted form should be also permitted
+
+"key" = "value"
+"key" = "$PARAM$"
+"$PARAM$" = "value"
+"$PARAM$" = "$PARAM$"
+
+# `[value]` should be normal string tokens
+
+key = [value]
+key = prefix_[value]_suffix
+key = "[value]"
+key = "prefix_[value]_suffix"

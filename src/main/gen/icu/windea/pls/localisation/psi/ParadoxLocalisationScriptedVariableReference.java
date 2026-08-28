@@ -14,22 +14,22 @@ import javax.swing.*;
 
 public interface ParadoxLocalisationScriptedVariableReference extends ParadoxScriptedVariableReference {
 
-  @Nullable PsiElement getIdElement();
+    @Nullable PsiElement getIdElement();
 
-  @NotNull Icon getIcon(@IconFlags int flags);
+    @NotNull Icon getIcon(@IconFlags int flags);
 
-  @Nullable String getName();
+    @Nullable String getName();
 
-  @NotNull ParadoxLocalisationScriptedVariableReference setName(@NotNull String name);
+    @NotNull ParadoxLocalisationScriptedVariableReference setName(@NotNull String name);
 
-  @Nullable PsiReference getReference();
+    @Nullable PsiReference getReference();
 
-  @NotNull PsiReference @NotNull [] getReferences();
+    @NotNull PsiReference @NotNull [] getReferences();
 
-  @NotNull GlobalSearchScope getResolveScope();
+    @NotNull GlobalSearchScope getResolveScope();
 
-  @NotNull SearchScope getUseScope();
+    @NotNull SearchScope getUseScope();
 
-  @NotNull ItemPresentation getPresentation();
+    @NotNull ItemPresentation getPresentation();
 
 }

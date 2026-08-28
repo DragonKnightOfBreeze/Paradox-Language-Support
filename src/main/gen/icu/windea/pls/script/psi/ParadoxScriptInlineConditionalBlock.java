@@ -13,28 +13,28 @@ import java.util.List;
 
 public interface ParadoxScriptInlineConditionalBlock extends ParadoxScriptConditionalBlock, ParadoxScriptInterpolation, ParadoxScriptInterpolationContainer {
 
-  @Nullable
-  ParadoxScriptConditionalExpression getConditionalExpression();
+    @Nullable
+    ParadoxScriptConditionalExpression getConditionalExpression();
 
-  @NotNull
-  List<ParadoxScriptNormalParameter> getNormalParameterList();
+    @NotNull
+    List<ParadoxScriptNormalParameter> getNormalParameterList();
 
-  @Nullable PsiElement getLeftBound();
+    @Nullable PsiElement getLeftBound();
 
-  @Nullable PsiElement getRightBound();
+    @Nullable PsiElement getRightBound();
 
-  //WARNING: parameter(...) is skipped
-  //matching parameter(ParadoxScriptInlineConditionalBlock, ...)
-  //methods are not found in ParadoxScriptPsiImplUtil
+    // WARNING: parameter(...) is skipped
+    // matching parameter(ParadoxScriptInlineConditionalBlock, ...)
+    // methods are not found in ParadoxScriptPsiImplUtil
 
-  @NotNull Icon getIcon(@IconFlags int flags);
+    @NotNull Icon getIcon(@IconFlags int flags);
 
-  @NotNull String getPresentableText();
+    @NotNull String getPresentableText();
 
-  @NotNull GlobalSearchScope getResolveScope();
+    @NotNull GlobalSearchScope getResolveScope();
 
-  @NotNull SearchScope getUseScope();
+    @NotNull SearchScope getUseScope();
 
-  @NotNull ItemPresentation getPresentation();
+    @NotNull ItemPresentation getPresentation();
 
 }

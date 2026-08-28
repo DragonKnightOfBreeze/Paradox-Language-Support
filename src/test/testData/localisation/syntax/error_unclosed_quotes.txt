@@ -1,4 +1,4 @@
-ParadoxLocalisationFile: error_unclosed_quote.test.yml(0,269)
+ParadoxLocalisationFile: error_unclosed_quotes.test.yml(0,269)
   ParadoxLocalisationPropertyList(0,269)
     ParadoxLocalisationLocale: l_english(0,10)
       PsiElement(LOCALE_TOKEN)('l_english')(0,9)

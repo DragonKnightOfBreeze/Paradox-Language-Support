@@ -76,14 +76,15 @@ private property_number ::= PROPERTY_NUMBER
 
  // lazy-parsing PROPERTY_VALUE_TOKEN
 // 3.0.2 compatible with missing opening quote and missing closing quote
-property_value ::= (LEFT_QUOTE PROPERTY_VALUE_TOKEN ? RIGHT_QUOTE ?) | (PROPERTY_VALUE_TOKEN RIGHT_QUOTE ?) {
-  pin=1
+property_value ::= property_value_quoted | property_value_unquoted  {
   implements=[
     "icu.windea.pls.core.psi.PsiQuoteAwareElement"
     "icu.windea.pls.localisation.psi.ParadoxLocalisationRichTextContainer"
   ]
   methods=[getTokenElement getRichTextList getQuotePattern]
 }
+private property_value_quoted ::= LEFT_QUOTE PROPERTY_VALUE_TOKEN ? RIGHT_QUOTE ? { pin=1 }
+private property_value_unquoted ::= PROPERTY_VALUE_TOKEN RIGHT_QUOTE ?
 
 // ------
 

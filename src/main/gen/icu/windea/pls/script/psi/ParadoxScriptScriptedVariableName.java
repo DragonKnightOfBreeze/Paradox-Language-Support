@@ -12,21 +12,21 @@ import java.util.List;
 
 public interface ParadoxScriptScriptedVariableName extends ParadoxScriptInterpolationContainer {
 
-  @NotNull
-  List<ParadoxScriptNormalParameter> getNormalParameterList();
+    @NotNull
+    List<ParadoxScriptNormalParameter> getNormalParameterList();
 
-  @Nullable PsiElement getIdElement();
+    @Nullable PsiElement getIdElement();
 
-  //WARNING: parameter(...) is skipped
-  //matching parameter(ParadoxScriptScriptedVariableName, ...)
-  //methods are not found in ParadoxScriptPsiImplUtil
+    // WARNING: parameter(...) is skipped
+    // matching parameter(ParadoxScriptScriptedVariableName, ...)
+    // methods are not found in ParadoxScriptPsiImplUtil
 
-  @NotNull String getName();
+    @NotNull String getName();
 
-  @NotNull GlobalSearchScope getResolveScope();
+    @NotNull GlobalSearchScope getResolveScope();
 
-  @NotNull SearchScope getUseScope();
+    @NotNull SearchScope getUseScope();
 
-  @NotNull ItemPresentation getPresentation();
+    @NotNull ItemPresentation getPresentation();
 
 }

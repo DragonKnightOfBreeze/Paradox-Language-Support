@@ -56,7 +56,7 @@ property ::= property_key property_separator property_value {
   ]
 }
 // can be parameterized
-property_key ::= property_key_part (<<processPart>> property_key_part) * {
+property_key ::= property_key_quoted | property_key_unquoted {
   implements=[
     "icu.windea.pls.core.psi.PsiQuoteAwareElement"
     "icu.windea.pls.script.psi.ParadoxScriptLiteralValue"
@@ -69,6 +69,9 @@ property_key ::= property_key_part (<<processPart>> property_key_part) * {
     getReference getReferences
   ]
 }
+private property_key_quoted ::= LEFT_QUOTE property_key_parts ? RIGHT_QUOTE ? { pin=1 }
+private property_key_unquoted ::= property_key_parts RIGHT_QUOTE ?
+private property_key_parts ::= property_key_part (<<processPart>> property_key_part)
 private property_key_part ::= PROPERTY_KEY_TOKEN | normal_parameter | inline_conditional_block
 private property_separator ::= EQUAL_SIGN | LT_SIGN | GT_SIGN | LE_SIGN | GE_SIGN | NOT_EQUAL_SIGN | SAFE_ASSIGN_SIGN | SAFE_CALL_ASSIGN_SIGN
 private property_value ::= scripted_variable_reference | boolean | int | float | string | color | block | inline_math
@@ -105,7 +108,7 @@ float ::= FLOAT_TOKEN {
   methods=[getReference getReferences]
 }
 // can be parameterized
-string ::= string_part <<postProcessFirstPart>> (<<processPart>> string_part) * {
+string ::= string_quoted | string_unquoted {
   extends=value
   implements=[
     "icu.windea.pls.core.psi.PsiQuoteAwareElement"
@@ -119,6 +122,9 @@ string ::= string_part <<postProcessFirstPart>> (<<processPart>> string_part) * 
     getReference getReferences
   ]
 }
+private string_quoted ::= LEFT_QUOTE string_parts ? RIGHT_QUOTE ? { pin=1 }
+private string_unquoted ::= string_parts RIGHT_QUOTE ?
+private string_parts ::= string_part <<postProcessFirstPart>> (<<processPart>> string_part)
 private string_part ::= STRING_TOKEN | normal_parameter | inline_conditional_block
 color ::= COLOR_TOKEN {
   extends=value
@@ -161,20 +167,21 @@ scripted_variable ::= scripted_variable_name scripted_variable_separator scripte
   ]
 }
 // can be parameterized
-scripted_variable_name ::= AT scripted_variable_name_part (<<processPart>> scripted_variable_name_part) * {
+scripted_variable_name ::= AT scripted_variable_name_parts {
   pin=1
   implements=[
     "icu.windea.pls.script.psi.ParadoxScriptInterpolationContainer"
   ]
   methods=[getIdElement parameter="" inline_conditional_block="" getName]
 }
+private scripted_variable_name_parts ::= scripted_variable_name_part (<<processPart>> scripted_variable_name_part) *
 private scripted_variable_name_part ::= SCRIPTED_VARIABLE_NAME_TOKEN | normal_parameter | inline_conditional_block
 private scripted_variable_separator ::= EQUAL_SIGN
 private scripted_variable_value ::= boolean | int | float | string | inline_math
 
 // scripted variable reference
 // can be parameterized
-scripted_variable_reference ::= AT scripted_variable_reference_part <<postProcessFirstPart>> (<<processPart>> scripted_variable_reference_part) * {
+scripted_variable_reference ::= AT scripted_variable_reference_parts {
   extends=value
   implements=[
     "icu.windea.pls.lang.psi.ParadoxScriptedVariableReference"
@@ -186,6 +193,7 @@ scripted_variable_reference ::= AT scripted_variable_reference_part <<postProces
     getReference getReferences
   ]
 }
+private scripted_variable_reference_parts ::= scripted_variable_reference_part <<postProcessFirstPart>> (<<processPart>> scripted_variable_reference_part)
 private scripted_variable_reference_part ::= SCRIPTED_VARIABLE_REFERENCE_TOKEN | normal_parameter | inline_conditional_block
 
 // advanced script syntax
@@ -381,7 +389,7 @@ inline_math_number ::= INT_NUMBER_TOKEN | FLOAT_NUMBER_TOKEN {
 }
 // leading `@` is permitted (on syntax level) but not allowed (in actual)
 // can be parameterized
-inline_math_scripted_variable_reference ::= AT ? inline_math_scripted_variable_reference_part <<postProcessFirstPart>> (<<processPart>> inline_math_scripted_variable_reference_part) * {
+inline_math_scripted_variable_reference ::= AT ? inline_math_scripted_variable_parts {
   extends=inline_math_factor
   implements=[
     "icu.windea.pls.lang.psi.ParadoxScriptedVariableReference"
@@ -393,4 +401,5 @@ inline_math_scripted_variable_reference ::= AT ? inline_math_scripted_variable_r
     getReference getReferences
   ]
 }
+private inline_math_scripted_variable_parts ::= inline_math_scripted_variable_reference_part <<postProcessFirstPart>> (<<processPart>> inline_math_scripted_variable_reference_part) *
 private inline_math_scripted_variable_reference_part ::= SCRIPTED_VARIABLE_REFERENCE_TOKEN | inline_math_parameter

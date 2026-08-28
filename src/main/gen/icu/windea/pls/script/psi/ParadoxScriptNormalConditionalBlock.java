@@ -13,36 +13,36 @@ import java.util.List;
 
 public interface ParadoxScriptNormalConditionalBlock extends ParadoxScriptConditionalBlock, ParadoxScriptStatement, ParadoxScriptMemberContainer, ParadoxScriptBoundMemberContainer {
 
-  @Nullable
-  ParadoxScriptConditionalExpression getConditionalExpression();
+    @Nullable
+    ParadoxScriptConditionalExpression getConditionalExpression();
 
-  @NotNull
-  List<ParadoxScriptNormalConditionalBlock> getNormalConditionalBlockList();
+    @NotNull
+    List<ParadoxScriptNormalConditionalBlock> getNormalConditionalBlockList();
 
-  @NotNull
-  List<ParadoxScriptProperty> getPropertyList();
+    @NotNull
+    List<ParadoxScriptProperty> getPropertyList();
 
-  @NotNull
-  List<ParadoxScriptValue> getValueList();
+    @NotNull
+    List<ParadoxScriptValue> getValueList();
 
-  @Nullable PsiElement getLeftBound();
+    @Nullable PsiElement getLeftBound();
 
-  @Nullable PsiElement getRightBound();
+    @Nullable PsiElement getRightBound();
 
-  @NotNull List<@NotNull ParadoxScriptStatement> getComponents();
+    @NotNull List<@NotNull ParadoxScriptStatement> getComponents();
 
-  @NotNull ParadoxScriptNormalConditionalBlock getMemberContainer();
+    @NotNull ParadoxScriptNormalConditionalBlock getMemberContainer();
 
-  @NotNull List<@NotNull ParadoxScriptMember> getMembers();
+    @NotNull List<@NotNull ParadoxScriptMember> getMembers();
 
-  @NotNull Icon getIcon(@IconFlags int flags);
+    @NotNull Icon getIcon(@IconFlags int flags);
 
-  @NotNull String getPresentableText();
+    @NotNull String getPresentableText();
 
-  @NotNull GlobalSearchScope getResolveScope();
+    @NotNull GlobalSearchScope getResolveScope();
 
-  @NotNull SearchScope getUseScope();
+    @NotNull SearchScope getUseScope();
 
-  @NotNull ItemPresentation getPresentation();
+    @NotNull ItemPresentation getPresentation();
 
 }

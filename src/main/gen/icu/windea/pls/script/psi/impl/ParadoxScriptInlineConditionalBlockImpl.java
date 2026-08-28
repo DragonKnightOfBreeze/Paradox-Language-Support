@@ -21,70 +21,70 @@ import java.util.List;
 
 public class ParadoxScriptInlineConditionalBlockImpl extends ASTWrapperPsiElement implements ParadoxScriptInlineConditionalBlock {
 
-  public ParadoxScriptInlineConditionalBlockImpl(@NotNull ASTNode node) {
-    super(node);
-  }
+    public ParadoxScriptInlineConditionalBlockImpl(@NotNull ASTNode node) {
+        super(node);
+    }
 
-  public void accept(@NotNull ParadoxScriptVisitor visitor) {
-    visitor.visitInlineConditionalBlock(this);
-  }
+    public void accept(@NotNull ParadoxScriptVisitor visitor) {
+        visitor.visitInlineConditionalBlock(this);
+    }
 
-  @Override
-  public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof ParadoxScriptVisitor) accept((ParadoxScriptVisitor)visitor);
-    else super.accept(visitor);
-  }
+    @Override
+    public void accept(@NotNull PsiElementVisitor visitor) {
+        if (visitor instanceof ParadoxScriptVisitor) accept((ParadoxScriptVisitor) visitor);
+        else super.accept(visitor);
+    }
 
-  @Override
-  @Nullable
-  public ParadoxScriptConditionalExpression getConditionalExpression() {
-    return PsiTreeUtil.getChildOfType(this, ParadoxScriptConditionalExpression.class);
-  }
+    @Override
+    @Nullable
+    public ParadoxScriptConditionalExpression getConditionalExpression() {
+        return PsiTreeUtil.getChildOfType(this, ParadoxScriptConditionalExpression.class);
+    }
 
-  @Override
-  @NotNull
-  public List<ParadoxScriptNormalParameter> getNormalParameterList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptNormalParameter.class);
-  }
+    @Override
+    @NotNull
+    public List<ParadoxScriptNormalParameter> getNormalParameterList() {
+        return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptNormalParameter.class);
+    }
 
-  @Override
-  public @Nullable PsiElement getLeftBound() {
-    return ParadoxScriptPsiImplUtil.getLeftBound(this);
-  }
+    @Override
+    public @Nullable PsiElement getLeftBound() {
+        return ParadoxScriptPsiImplUtil.getLeftBound(this);
+    }
 
-  @Override
-  public @Nullable PsiElement getRightBound() {
-    return ParadoxScriptPsiImplUtil.getRightBound(this);
-  }
+    @Override
+    public @Nullable PsiElement getRightBound() {
+        return ParadoxScriptPsiImplUtil.getRightBound(this);
+    }
 
-  @Override
-  public @NotNull Icon getIcon(@IconFlags int flags) {
-    return ParadoxScriptPsiImplUtil.getIcon(this, flags);
-  }
+    @Override
+    public @NotNull Icon getIcon(@IconFlags int flags) {
+        return ParadoxScriptPsiImplUtil.getIcon(this, flags);
+    }
 
-  @Override
-  public @NotNull String getPresentableText() {
-    return ParadoxScriptPsiImplUtil.getPresentableText(this);
-  }
+    @Override
+    public @NotNull String getPresentableText() {
+        return ParadoxScriptPsiImplUtil.getPresentableText(this);
+    }
 
-  @Override
-  public @NotNull GlobalSearchScope getResolveScope() {
-    return ParadoxScriptPsiImplUtil.getResolveScope(this);
-  }
+    @Override
+    public @NotNull GlobalSearchScope getResolveScope() {
+        return ParadoxScriptPsiImplUtil.getResolveScope(this);
+    }
 
-  @Override
-  public @NotNull SearchScope getUseScope() {
-    return ParadoxScriptPsiImplUtil.getUseScope(this);
-  }
+    @Override
+    public @NotNull SearchScope getUseScope() {
+        return ParadoxScriptPsiImplUtil.getUseScope(this);
+    }
 
-  @Override
-  public @NotNull ItemPresentation getPresentation() {
-    return ParadoxScriptPsiImplUtil.getPresentation(this);
-  }
+    @Override
+    public @NotNull ItemPresentation getPresentation() {
+        return ParadoxScriptPsiImplUtil.getPresentation(this);
+    }
 
-  @Override
-  public @NotNull String toString() {
-    return ParadoxScriptPsiImplUtil.toString(this);
-  }
+    @Override
+    public @NotNull String toString() {
+        return ParadoxScriptPsiImplUtil.toString(this);
+    }
 
 }

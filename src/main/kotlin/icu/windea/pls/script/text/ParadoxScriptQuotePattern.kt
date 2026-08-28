@@ -8,7 +8,7 @@ import icu.windea.pls.core.text.QuotePatterns
 @Suppress("UnusedReceiverParameter")
 val QuotePatterns.ParadoxScript: QuotePattern.Base get() = ParadoxScriptQuotePattern
 
-private const val FORCE_QUOTED_CHARS = "@#=<>!?{}[\""
+private const val FORCE_QUOTED_CHARS = "@#=<>!?{}\""
 
 private object ParadoxScriptQuotePattern : QuotePattern.Base('"') {
     override fun checkChar(text: String, index: Int, char: Char): Boolean {

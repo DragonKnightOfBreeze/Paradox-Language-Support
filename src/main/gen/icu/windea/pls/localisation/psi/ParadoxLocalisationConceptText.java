@@ -10,13 +10,13 @@ import java.util.List;
 
 public interface ParadoxLocalisationConceptText extends ParadoxLocalisationRichTextContainer {
 
-  @NotNull
-  List<ParadoxLocalisationRichText> getRichTextList();
+    @NotNull
+    List<ParadoxLocalisationRichText> getRichTextList();
 
-  @NotNull GlobalSearchScope getResolveScope();
+    @NotNull GlobalSearchScope getResolveScope();
 
-  @NotNull SearchScope getUseScope();
+    @NotNull SearchScope getUseScope();
 
-  @NotNull ItemPresentation getPresentation();
+    @NotNull ItemPresentation getPresentation();
 
 }

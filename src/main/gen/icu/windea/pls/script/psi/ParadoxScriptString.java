@@ -17,37 +17,37 @@ import java.util.List;
 
 public interface ParadoxScriptString extends ParadoxScriptValue, PsiQuoteAwareElement, ParadoxScriptLiteralValue, ParadoxScriptStringExpressionElement, ParadoxScriptInterpolationContainer {
 
-  @NotNull
-  List<ParadoxScriptNormalParameter> getNormalParameterList();
+    @NotNull
+    List<ParadoxScriptNormalParameter> getNormalParameterList();
 
-  @Nullable PsiElement getIdElement();
+    @Nullable PsiElement getIdElement();
 
-  //WARNING: parameter(...) is skipped
-  //matching parameter(ParadoxScriptString, ...)
-  //methods are not found in ParadoxScriptPsiImplUtil
+    // WARNING: parameter(...) is skipped
+    // matching parameter(ParadoxScriptString, ...)
+    // methods are not found in ParadoxScriptPsiImplUtil
 
-  @NotNull Icon getIcon(@IconFlags int flags);
+    @NotNull Icon getIcon(@IconFlags int flags);
 
-  @NotNull String getName();
+    @NotNull String getName();
 
-  @NotNull String getValue();
+    @NotNull String getValue();
 
-  @NotNull ParadoxScriptValue setValue(@NotNull String value);
+    @NotNull ParadoxScriptValue setValue(@NotNull String value);
 
-  @NotNull ParadoxScriptValue setContent(@NotNull String content, @NotNull TextRange range);
+    @NotNull ParadoxScriptValue setContent(@NotNull String content, @NotNull TextRange range);
 
-  @NotNull QuotePattern getQuotePattern();
+    @NotNull QuotePattern getQuotePattern();
 
-  @NotNull String getPresentableText();
+    @NotNull String getPresentableText();
 
-  @Nullable PsiReference getReference();
+    @Nullable PsiReference getReference();
 
-  @NotNull PsiReference @NotNull [] getReferences();
+    @NotNull PsiReference @NotNull [] getReferences();
 
-  @NotNull GlobalSearchScope getResolveScope();
+    @NotNull GlobalSearchScope getResolveScope();
 
-  @NotNull SearchScope getUseScope();
+    @NotNull SearchScope getUseScope();
 
-  @NotNull ItemPresentation getPresentation();
+    @NotNull ItemPresentation getPresentation();
 
 }

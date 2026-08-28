@@ -20,7 +20,7 @@ export function registerParadoxLocalisation(Prism) {
   if (!Prism || Prism.languages.paradox_localisation) return;
 
   const parameter = {
-    pattern: /\$(?:@[A-Za-z_]\w*|[A-Za-z0-9_.\-']+)(?:\|[^"§$\[\]\r\n\\]+)?\$/,
+    pattern: /\$(?:@[A-Za-z_]\w*|[A-Za-z0-9_.\-']+)(?:\|[^"§$\[\]\\\r\n]+)?\$/,
     greedy: true,
     alias: 'class-name',
     inside: {
@@ -55,7 +55,7 @@ export function registerParadoxLocalisation(Prism) {
         'color-end': { pattern: /§!/, alias: 'important' },
         'color-start': { pattern: /§[A-Za-z0-9]/, alias: 'important' },
         'parameter': parameter,
-        'icon': { pattern: /£[A-Za-z0-9\-_\/\\]+(?:\|[^"§$\[\]\r\n\\]+)?£/, greedy: true, alias: 'symbol' },
+        'icon': { pattern: /£[A-Za-z0-9\-_\/\\]+(?:\|[^"§$\[\]\\\r\n]+)?£/, greedy: true, alias: 'symbol' },
         'command': { pattern: /\[[^\]\r\n]*]/, greedy: true, alias: 'function' },
         'text-format-start': { pattern: /#(?!!)[\w:;]+/, alias: 'symbol' },
         'text-format-end': { pattern: /#!/, alias: 'symbol' },
