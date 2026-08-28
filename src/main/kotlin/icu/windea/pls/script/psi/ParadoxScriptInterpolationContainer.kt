@@ -22,6 +22,6 @@ import icu.windea.pls.core.*
 @Suppress("unused")
 interface ParadoxScriptInterpolationContainer : NavigatablePsiElement {
     val interpolations: List<ParadoxScriptInterpolation> get() = this.findChildren<_>()
-    val parameters: List<ParadoxParameter> get() = this.findChildren<_>()
+    val parameters: List<ParadoxScriptParameter> get() = this.findChildren<_>()
     val inlineConditionalBlocks: List<ParadoxScriptInlineConditionalBlock> get() = this.findChildren<_>()
 }

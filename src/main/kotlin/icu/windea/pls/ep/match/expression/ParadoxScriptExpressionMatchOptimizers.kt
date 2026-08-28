@@ -17,8 +17,8 @@ import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.model.expressions.ParadoxExpression
 import icu.windea.pls.model.type.CwtExpressionType
 import icu.windea.pls.model.type.ParadoxExpressionType
-import icu.windea.pls.script.psi.ParadoxParameter
 import icu.windea.pls.script.psi.ParadoxScriptBlock
+import icu.windea.pls.script.psi.ParadoxScriptParameter
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptValue
 
@@ -49,7 +49,7 @@ class ParadoxScriptExpressionParameterizedMatchOptimizer : ParadoxScriptExpressi
             is ParadoxScriptValue -> element
             else -> return null
         }
-        val parameterElement = expressionElement.findChild<ParadoxParameter>() ?: return null
+        val parameterElement = expressionElement.findChild<ParadoxScriptParameter>() ?: return null
         val inferredConfigs = ParadoxParameterManager.getInferredConfigsForLiteral(parameterElement)
         if (inferredConfigs.isEmpty()) return null
         var result: MutableList<T>? = null

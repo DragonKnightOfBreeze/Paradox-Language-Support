@@ -45,11 +45,11 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
 import icu.windea.pls.model.orSpecific
 import icu.windea.pls.model.type.ParadoxExpressionRole
 import icu.windea.pls.model.type.ParadoxTypeResolver
-import icu.windea.pls.script.psi.ParadoxParameter
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptInlineConditionalBlock
 import icu.windea.pls.script.psi.ParadoxScriptInlineMath
+import icu.windea.pls.script.psi.ParadoxScriptParameter
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
@@ -130,7 +130,7 @@ object ParadoxExpressionService {
     }
 
     fun isParameterElementInExpression(element: PsiElement): Boolean {
-        return element is ParadoxParameter || element is ParadoxScriptInlineConditionalBlock || element is ParadoxLocalisationParameter
+        return element is ParadoxScriptParameter || element is ParadoxScriptInlineConditionalBlock || element is ParadoxLocalisationParameter
     }
 
     // endregion

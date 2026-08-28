@@ -4,9 +4,9 @@ import com.intellij.patterns.PlatformPatterns.*
 import com.intellij.psi.PsiReferenceContributor
 import com.intellij.psi.PsiReferenceRegistrar
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
-import icu.windea.pls.script.psi.ParadoxParameter
 import icu.windea.pls.script.psi.ParadoxScriptConditionParameter
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
+import icu.windea.pls.script.psi.ParadoxScriptParameter
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptString
 
@@ -19,7 +19,7 @@ class ParadoxScriptPsiReferenceContributor : PsiReferenceContributor() {
 
     override fun registerReferenceProviders(registrar: PsiReferenceRegistrar) {
         registrar.registerReferenceProvider(psiElement(ParadoxScriptConditionParameter::class.java), provider)
-        registrar.registerReferenceProvider(psiElement(ParadoxParameter::class.java), provider)
+        registrar.registerReferenceProvider(psiElement(ParadoxScriptParameter::class.java), provider)
         registrar.registerReferenceProvider(psiElement(ParadoxScriptedVariableReference::class.java), provider)
 
         registrar.registerReferenceProvider(psiElement(ParadoxScriptExpressionElement::class.java), expressionReferenceProvider)

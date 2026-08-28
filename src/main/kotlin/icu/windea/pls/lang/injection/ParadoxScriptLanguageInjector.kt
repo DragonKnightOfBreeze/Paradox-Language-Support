@@ -10,7 +10,7 @@ import icu.windea.pls.localisation.ParadoxLocalisationLanguage
 import icu.windea.pls.model.injection.ParadoxLocalisationTextInjectionInfo
 import icu.windea.pls.model.injection.ParadoxParameterValueInjectionInfo
 import icu.windea.pls.script.ParadoxScriptLanguage
-import icu.windea.pls.script.psi.ParadoxParameter
+import icu.windea.pls.script.psi.ParadoxScriptParameter
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 /**
@@ -31,7 +31,7 @@ class ParadoxScriptLanguageInjector : MultiHostInjector {
 
     private val toInject = listOf(
         ParadoxScriptStringExpressionElement::class.java,
-        ParadoxParameter::class.java
+        ParadoxScriptParameter::class.java
     )
 
     override fun elementsToInjectIn() = toInject

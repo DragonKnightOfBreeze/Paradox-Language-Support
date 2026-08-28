@@ -5,16 +5,16 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
 import icu.windea.pls.lang.codeInsight.completion.script.ParadoxParameterCompletionProvider
 import icu.windea.pls.lang.resolve.ParadoxParameterService
-import icu.windea.pls.script.psi.ParadoxParameter
+import icu.windea.pls.script.psi.ParadoxScriptParameter
 
 /**
  * @see ParadoxScriptPsiReferenceProvider
  * @see ParadoxParameterCompletionProvider
  */
 class ParadoxParameterPsiReference(
-    element: ParadoxParameter,
+    element: ParadoxScriptParameter,
     rangeInElement: TextRange
-) : PsiReferenceBase<ParadoxParameter>(element, rangeInElement) {
+) : PsiReferenceBase<ParadoxScriptParameter>(element, rangeInElement) {
     override fun handleElementRename(newElementName: String): PsiElement {
         return element.setName(newElementName)
     }

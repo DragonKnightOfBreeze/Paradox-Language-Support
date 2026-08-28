@@ -7,15 +7,15 @@ import com.intellij.psi.PsiReferenceProvider
 import com.intellij.util.ProcessingContext
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
 import icu.windea.pls.lang.references.ParadoxScriptedVariablePsiReference
-import icu.windea.pls.script.psi.ParadoxParameter
 import icu.windea.pls.script.psi.ParadoxScriptConditionParameter
+import icu.windea.pls.script.psi.ParadoxScriptParameter
 
 class ParadoxScriptPsiReferenceProvider : PsiReferenceProvider() {
     override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<out PsiReference> {
         ProgressManager.checkCanceled()
 
         val reference = when (element) {
-            is ParadoxParameter -> getReference(element)
+            is ParadoxScriptParameter -> getReference(element)
             is ParadoxScriptConditionParameter -> getReference(element)
             is ParadoxScriptedVariableReference -> getReference(element)
             else -> null
@@ -24,7 +24,7 @@ class ParadoxScriptPsiReferenceProvider : PsiReferenceProvider() {
         return arrayOf(reference)
     }
 
-    private fun getReference(element: ParadoxParameter): ParadoxParameterPsiReference? {
+    private fun getReference(element: ParadoxScriptParameter): ParadoxParameterPsiReference? {
         val rangeInElement = element.idElement?.textRangeInParent ?: return null
         return ParadoxParameterPsiReference(element, rangeInElement)
     }

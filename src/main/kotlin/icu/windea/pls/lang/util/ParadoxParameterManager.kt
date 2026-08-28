@@ -55,10 +55,10 @@ import icu.windea.pls.model.ParadoxParameterContextInfo
 import icu.windea.pls.model.ParadoxParameterContextReferenceInfo
 import icu.windea.pls.model.ParadoxParameterInfo
 import icu.windea.pls.model.toInfo
-import icu.windea.pls.script.psi.ParadoxParameter
 import icu.windea.pls.script.psi.ParadoxScriptConditionParameter
 import icu.windea.pls.script.psi.ParadoxScriptConditionalBlock
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes
+import icu.windea.pls.script.psi.ParadoxScriptParameter
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
@@ -215,7 +215,7 @@ object ParadoxParameterManager {
             if (parameterInfos.size == 1 && element isSamePosition parameter) continue
             val parameterElement = when {
                 parameter is ParadoxScriptConditionParameter -> ParadoxParameterService.resolveConditionParameter(parameter)
-                parameter is ParadoxParameter -> ParadoxParameterService.resolveParameter(parameter)
+                parameter is ParadoxScriptParameter -> ParadoxParameterService.resolveParameter(parameter)
                 else -> null
             } ?: continue
             ParadoxCompletionFactory.fromParameter(context, parameterElement).addToResult(context, result)
@@ -249,7 +249,7 @@ object ParadoxParameterManager {
                 val parameter = parameterInfos.firstNotNullOfOrNull { it.element } ?: continue
                 val parameterElement = when {
                     parameter is ParadoxScriptConditionParameter -> ParadoxParameterService.resolveConditionParameter(parameter)
-                    parameter is ParadoxParameter -> ParadoxParameterService.resolveParameter(parameter)
+                    parameter is ParadoxScriptParameter -> ParadoxParameterService.resolveParameter(parameter)
                     else -> null
                 } ?: continue
                 ParadoxCompletionFactory.fromParameter(context, parameterElement).addToResult(context, result)
@@ -270,7 +270,7 @@ object ParadoxParameterManager {
     fun getParameterElement(element: PsiElement): ParadoxParameterLightElement? {
         return when (element) {
             is ParadoxParameterLightElement -> element
-            is ParadoxParameter -> ParadoxParameterService.resolveParameter(element)
+            is ParadoxScriptParameter -> ParadoxParameterService.resolveParameter(element)
             is ParadoxScriptConditionParameter -> ParadoxParameterService.resolveConditionParameter(element)
             else -> null
         }
@@ -291,7 +291,7 @@ object ParadoxParameterManager {
     /**
      * 尝试推断得到参数的上下文规则。仅适用于解析后是字面量（如数字、字符串）的参数。
      */
-    fun getInferredConfigsForLiteral(element: ParadoxParameter): List<CwtValueConfig> {
+    fun getInferredConfigsForLiteral(element: ParadoxScriptParameter): List<CwtValueConfig> {
         val parameterElement = getParameterElement(element) ?: return emptyList()
         val contextConfigs = getInferredContextConfigsFromConfig(parameterElement)
         return ParadoxParameterService.getInferredConfigsForLiteral(contextConfigs)
@@ -389,7 +389,7 @@ object ParadoxParameterManager {
             element.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
                 override fun visitElement(element: PsiElement) {
                     run {
-                        if (element !is ParadoxParameter) return@run
+                        if (element !is ParadoxScriptParameter) return@run
                         val n = element.name ?: return@run
                         val v0 = argMap[n] ?: return@run
                         val v = v0

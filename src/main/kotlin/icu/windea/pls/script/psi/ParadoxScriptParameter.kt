@@ -13,12 +13,12 @@ import icu.windea.pls.lang.psi.ParadoxLanguageInjectionHost
  * @see ParadoxScriptNormalParameter
  * @see ParadoxScriptInlineMathParameter
  */
-interface ParadoxParameter : NavigatablePsiElement, PsiPresentableElement, ParadoxScriptInterpolation, ParadoxLanguageInjectionHost {
+interface ParadoxScriptParameter : NavigatablePsiElement, PsiPresentableElement, ParadoxScriptInterpolation, ParadoxLanguageInjectionHost {
     val idElement: PsiElement?
 
     override fun getName(): String?
 
-    fun setName(name: String): ParadoxParameter
+    fun setName(name: String): ParadoxScriptParameter
 
     val defaultValue: String? get() = null
 
@@ -26,11 +26,11 @@ interface ParadoxParameter : NavigatablePsiElement, PsiPresentableElement, Parad
         return true
     }
 
-    override fun updateText(text: String): ParadoxParameter {
+    override fun updateText(text: String): ParadoxScriptParameter {
         return ElementManipulators.handleContentChange(this, text)
     }
 
-    override fun createLiteralTextEscaper(): LiteralTextEscaper<ParadoxParameter> {
+    override fun createLiteralTextEscaper(): LiteralTextEscaper<ParadoxScriptParameter> {
         return ParadoxScriptExpressionLiteralTextEscaper(this)
     }
 }

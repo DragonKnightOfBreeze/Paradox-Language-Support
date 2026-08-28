@@ -32,9 +32,9 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextColorAwareElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextFormat
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextIcon
-import icu.windea.pls.script.psi.ParadoxParameter
 import icu.windea.pls.script.psi.ParadoxScriptConditionParameter
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
+import icu.windea.pls.script.psi.ParadoxScriptParameter
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.isDataExpression
 
@@ -170,7 +170,7 @@ enum class ParadoxReferenceConstraint {
     Parameter {
         override fun canResolveReference(element: PsiElement): Boolean {
             return when (element) {
-                is ParadoxParameter -> true
+                is ParadoxScriptParameter -> true
                 is ParadoxScriptConditionParameter -> true
                 is ParadoxScriptStringExpressionElement -> element.isDataExpression()
                 else -> false

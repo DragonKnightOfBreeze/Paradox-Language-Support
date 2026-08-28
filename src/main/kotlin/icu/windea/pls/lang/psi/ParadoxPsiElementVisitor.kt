@@ -5,10 +5,10 @@ import com.intellij.psi.PsiElementVisitor
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
-import icu.windea.pls.script.psi.ParadoxParameter
 import icu.windea.pls.script.psi.ParadoxScriptConditionParameter
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptNumberExpressionElement
+import icu.windea.pls.script.psi.ParadoxScriptParameter
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 /**
@@ -37,7 +37,7 @@ abstract class ParadoxPsiElementVisitor : PsiElementVisitor() {
             }
         }
         if (element is ParadoxScriptedVariableReference) visitScriptedVariableReference(element)
-        if (element is ParadoxParameter) visitParameter(element)
+        if (element is ParadoxScriptParameter) visitParameter(element)
         if (element is ParadoxScriptConditionParameter) visitConditionParameter(element)
         if (element is ParadoxLocalisationParameter) visitLocalisationParameter(element)
     }
@@ -74,7 +74,7 @@ abstract class ParadoxPsiElementVisitor : PsiElementVisitor() {
 
     }
 
-    open fun visitParameter(element: ParadoxParameter) {
+    open fun visitParameter(element: ParadoxScriptParameter) {
 
     }
 

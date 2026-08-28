@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-public interface ParadoxScriptInlineMathParameter extends ParadoxScriptInlineMathFactor, ParadoxParameter, ParadoxScriptInterpolation, ParadoxScriptArgumentAwareElement {
+public interface ParadoxScriptInlineMathParameter extends ParadoxScriptInlineMathFactor, ParadoxScriptParameter, ParadoxScriptInterpolation, ParadoxScriptArgumentAwareElement {
 
   @Nullable PsiElement getIdElement();
 

@@ -55,8 +55,8 @@ import icu.windea.pls.model.scope.ParadoxScopeContext
 import icu.windea.pls.model.scope.isExact
 import icu.windea.pls.model.scope.overriddenProvider
 import icu.windea.pls.model.scope.promotions
-import icu.windea.pls.script.psi.ParadoxParameter
 import icu.windea.pls.script.psi.ParadoxScriptMember
+import icu.windea.pls.script.psi.ParadoxScriptParameter
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptValue
@@ -454,7 +454,7 @@ object ParadoxScopeService {
             if (!node.text.isParameterized(full = true)) return@r1
 
             val startOffset = ParadoxExpressionService.getExpressionOffset(element) + node.rangeInExpression.startOffset
-            val parameter = element.findElementAt(startOffset)?.parentOfType<ParadoxParameter>() ?: return@r1
+            val parameter = element.findElementAt(startOffset)?.parentOfType<ParadoxScriptParameter>() ?: return@r1
             if (parameter.text != node.text) return@r1
             val parameterElement = ParadoxParameterManager.getParameterElement(parameter) ?: return@r1
             val configGroup = node.configGroup

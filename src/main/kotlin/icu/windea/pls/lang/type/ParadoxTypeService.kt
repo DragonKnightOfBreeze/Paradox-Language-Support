@@ -29,10 +29,10 @@ import icu.windea.pls.model.overrides.ParadoxOverrideStrategy
 import icu.windea.pls.model.scope.ParadoxScopeContext
 import icu.windea.pls.model.type.ParadoxType
 import icu.windea.pls.model.type.ParadoxTypeResolver
-import icu.windea.pls.script.psi.ParadoxParameter
 import icu.windea.pls.script.psi.ParadoxScriptConditionParameter
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptInlineMathNumber
+import icu.windea.pls.script.psi.ParadoxScriptParameter
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
@@ -48,7 +48,7 @@ object ParadoxTypeService {
             is ParadoxScriptedVariableReference -> true
             is ParadoxScriptInlineMathNumber -> true
             is ParadoxLocalisationProperty -> true
-            is ParadoxParameter -> true
+            is ParadoxScriptParameter -> true
             is ParadoxScriptConditionParameter -> true
             is ParadoxLocalisationParameter -> true
             else -> false
@@ -137,7 +137,7 @@ object ParadoxTypeService {
                 getName(propertyElement)
             }
             is ParadoxLocalisationProperty -> element.name
-            is ParadoxParameter -> element.name
+            is ParadoxScriptParameter -> element.name
             is ParadoxScriptConditionParameter -> element.name
             is ParadoxLocalisationParameter -> element.name
             else -> null

@@ -36,7 +36,7 @@ import icu.windea.pls.model.ParadoxParameterContextReferenceInfo
 import icu.windea.pls.model.injection.ParadoxLocalisationTextInjectionInfo
 import icu.windea.pls.model.injection.ParadoxParameterValueInjectionInfo
 import icu.windea.pls.model.type.ParadoxSeparatorType
-import icu.windea.pls.script.psi.ParadoxParameter
+import icu.windea.pls.script.psi.ParadoxScriptParameter
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.propertyKey
@@ -48,7 +48,7 @@ object ParadoxScriptInjectionManager {
     }
 
     fun applyParameterValueInjection(host: PsiLanguageInjectionHost): List<ParadoxParameterValueInjectionInfo> {
-        if (host !is ParadoxScriptString && host !is ParadoxParameter) return emptyList()
+        if (host !is ParadoxScriptString && host !is ParadoxScriptParameter) return emptyList()
         val injectionInfos = mutableListOf<ParadoxParameterValueInjectionInfo>()
 
         ProgressManager.checkCanceled()
@@ -106,7 +106,7 @@ object ParadoxScriptInjectionManager {
     }
 
     private fun applyParameterValueInjectionForParameterDefaultValue(host: PsiLanguageInjectionHost, injectionInfos: MutableList<ParadoxParameterValueInjectionInfo>) {
-        if (host !is ParadoxParameter) return
+        if (host !is ParadoxScriptParameter) return
         if (!ChronicleSettings.getInstance().state.inference.injectionForParameterValue) return
 
         val parameterName = host.name?.orNull() ?: return  // 排除参数名不存在或为空的情况
@@ -121,7 +121,7 @@ object ParadoxScriptInjectionManager {
         injectionInfos += injectionInfo
     }
 
-    private fun computeParameterForParameterDefaultValue(host: ParadoxParameter): ParadoxParameterLightElement? {
+    private fun computeParameterForParameterDefaultValue(host: ParadoxScriptParameter): ParadoxParameterLightElement? {
         return ParadoxParameterService.resolveParameter(host)
     }
 
@@ -191,7 +191,7 @@ object ParadoxScriptInjectionManager {
                 // it.rangeInsideHost may not equal to rangeInsideHost, but inside (e.g., there are escaped double quotes)
                 injectionInfos.findFast { it.rangeInsideHost.startOffset in rangeInsideHost }
             }
-            host is ParadoxParameter -> {
+            host is ParadoxScriptParameter -> {
                 // just use the only one
                 injectionInfos.singleOrNull()
             }

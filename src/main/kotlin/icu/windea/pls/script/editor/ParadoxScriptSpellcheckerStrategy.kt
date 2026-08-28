@@ -14,10 +14,10 @@ import com.intellij.spellchecker.tokenizer.Tokenizer
 import icu.windea.pls.core.children
 import icu.windea.pls.core.isIdentifier
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
-import icu.windea.pls.script.psi.ParadoxParameter
 import icu.windea.pls.script.psi.ParadoxScriptArgument
 import icu.windea.pls.script.psi.ParadoxScriptConditionParameter
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
+import icu.windea.pls.script.psi.ParadoxScriptParameter
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableName
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
@@ -41,7 +41,7 @@ class ParadoxScriptSpellcheckerStrategy : SpellcheckingStrategy(), DumbAware {
             is ParadoxScriptScriptedVariableName -> scriptedVariableNameTokenizer
             is ParadoxScriptedVariableReference -> scriptedVariableReferenceTokenizer
             is ParadoxScriptStringExpressionElement -> emptyTokenizer // 目前不做检查
-            is ParadoxParameter -> parameterTokenizer
+            is ParadoxScriptParameter -> parameterTokenizer
             is ParadoxScriptConditionParameter -> conditionParameterTokenizer
             is ParadoxScriptArgument -> argumentTokenizer
             else -> emptyTokenizer

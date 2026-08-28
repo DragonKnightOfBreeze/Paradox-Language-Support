@@ -9,8 +9,8 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.elementType
 import icu.windea.pls.script.editor.ParadoxScriptHighlighterColors
-import icu.windea.pls.script.psi.ParadoxParameter
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes
+import icu.windea.pls.script.psi.ParadoxScriptParameter
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableName
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableReference
@@ -24,7 +24,7 @@ class ParadoxScriptHighlightingAnnotator : Annotator, DumbAware {
     private fun annotateParameterValue(element: PsiElement, holder: AnnotationHolder) {
         val elementType = element.elementType
         if (elementType != ParadoxScriptElementTypes.ARGUMENT_TOKEN) return
-        val parameterElement = element.parent?.parent as? ParadoxParameter ?: return
+        val parameterElement = element.parent?.parent as? ParadoxScriptParameter ?: return
         val templateElement = parameterElement.parent ?: return
         when {
             element.text.startsWith('@') -> annotateRangeWithAtSign(holder, element, ParadoxScriptHighlighterColors.SCRIPTED_VARIABLE_REFERENCE)

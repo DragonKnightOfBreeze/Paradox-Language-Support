@@ -8,8 +8,8 @@ import icu.windea.pls.core.util.ReadWriteAccess
 import icu.windea.pls.core.util.values.LazyValue
 import icu.windea.pls.ep.resolve.parameter.ParadoxParameterSupport
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
-import icu.windea.pls.script.psi.ParadoxParameter
 import icu.windea.pls.script.psi.ParadoxScriptConditionParameter
+import icu.windea.pls.script.psi.ParadoxScriptParameter
 import javax.swing.Icon
 
 /**
@@ -20,7 +20,7 @@ import javax.swing.Icon
  * - 对于内联脚本的参数：`inline_script@<inline_script_expression>`
  *
  * @see ParadoxParameterLightElement
- * @see ParadoxParameter
+ * @see ParadoxScriptParameter
  * @see ParadoxScriptConditionParameter
  * @see ParadoxParameterSupport
  */

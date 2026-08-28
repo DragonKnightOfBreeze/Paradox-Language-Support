@@ -10,9 +10,9 @@ import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import icu.windea.pls.lang.psi.ParadoxPsiElementVisitor
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
-import icu.windea.pls.script.psi.ParadoxParameter
 import icu.windea.pls.script.psi.ParadoxScriptConditionParameter
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes
+import icu.windea.pls.script.psi.ParadoxScriptParameter
 
 /**
  * 检查是否在不支持的上下文中使用了参数。
@@ -31,7 +31,7 @@ class UnsupportedParameterInspection : LocalInspectionTool() {
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         return object : ParadoxPsiElementVisitor() {
-            override fun visitParameter(element: ParadoxParameter) {
+            override fun visitParameter(element: ParadoxScriptParameter) {
                 super.visitParameter(element)
                 checkGeneral(element, holder)
                 checkInlineScript(element, holder)
@@ -49,12 +49,12 @@ class UnsupportedParameterInspection : LocalInspectionTool() {
         holder.registerProblem(element, ChronicleInspectionBundle.message("script.unsupportedParameter.desc.2"))
     }
 
-    private fun checkGeneral(element: ParadoxParameter, holder: ProblemsHolder) {
+    private fun checkGeneral(element: ParadoxScriptParameter, holder: ProblemsHolder) {
         if (element.reference?.resolve() != null) return
         holder.registerProblem(element, ChronicleInspectionBundle.message("script.unsupportedParameter.desc.1"))
     }
 
-    private fun checkInlineScript(element: ParadoxParameter, holder: ProblemsHolder) {
+    private fun checkInlineScript(element: ParadoxScriptParameter, holder: ProblemsHolder) {
         if (element.defaultValue == null) return
         val file = element.containingFile ?: return
         if (ParadoxInlineScriptManager.getInlineScriptExpression(file) == null) return

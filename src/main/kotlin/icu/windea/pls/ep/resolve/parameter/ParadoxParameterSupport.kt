@@ -13,9 +13,9 @@ import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.model.ParadoxParameterContextInfo
 import icu.windea.pls.model.ParadoxParameterContextReferenceInfo
 import icu.windea.pls.model.ParadoxParameterInfo
-import icu.windea.pls.script.psi.ParadoxParameter
 import icu.windea.pls.script.psi.ParadoxScriptConditionParameter
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
+import icu.windea.pls.script.psi.ParadoxScriptParameter
 
 /**
  * 提供对脚本参数的支持。
@@ -28,7 +28,7 @@ interface ParadoxParameterSupport {
 
     fun findContext(element: PsiElement): ParadoxDefinitionElement?
 
-    fun resolveParameter(element: ParadoxParameter): ParadoxParameterLightElement?
+    fun resolveParameter(element: ParadoxScriptParameter): ParadoxParameterLightElement?
 
     fun resolveConditionParameter(element: ParadoxScriptConditionParameter): ParadoxParameterLightElement?
 

@@ -44,7 +44,6 @@ import icu.windea.pls.model.definitionName
 import icu.windea.pls.model.definitionTypes
 import icu.windea.pls.model.expressions.ParadoxConditionalExpression
 import icu.windea.pls.model.inlineScriptExpression
-import icu.windea.pls.script.psi.ParadoxParameter
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptConditionParameter
 import icu.windea.pls.script.psi.ParadoxScriptConditionalBlock
@@ -52,6 +51,7 @@ import icu.windea.pls.script.psi.ParadoxScriptConditionalExpression
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
+import icu.windea.pls.script.psi.ParadoxScriptParameter
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
@@ -60,7 +60,7 @@ import java.util.*
 object ParadoxParameterSupportFactory {
     fun getReadWriteAccess(element: PsiElement): ReadWriteAccess {
         return when {
-            element is ParadoxParameter -> ReadWriteAccess.Read
+            element is ParadoxScriptParameter -> ReadWriteAccess.Read
             element is ParadoxScriptConditionParameter -> ReadWriteAccess.Read
             else -> ReadWriteAccess.Write
         }
@@ -184,13 +184,13 @@ object ParadoxParameterSupportFactory {
         val fileConditionExpressions = ArrayDeque<ParadoxConditionalExpression>()
         element.accept(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
-                if (element is ParadoxParameter) return visitParameter(element)
+                if (element is ParadoxScriptParameter) return visitParameter(element)
                 if (element is ParadoxScriptConditionParameter) return visitConditionParameter(element)
                 if (element is ParadoxScriptConditionalExpression) return visitConditionalExpression(element)
                 super.visitElement(element)
             }
 
-            private fun visitParameter(element: ParadoxParameter) {
+            private fun visitParameter(element: ParadoxScriptParameter) {
                 val name = element.name ?: return
                 val defaultValue = element.defaultValue
                 val conditionalExpressions = ArrayDeque(fileConditionExpressions) // not null

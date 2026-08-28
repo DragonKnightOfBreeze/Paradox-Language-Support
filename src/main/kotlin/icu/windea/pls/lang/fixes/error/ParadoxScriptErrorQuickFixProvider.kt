@@ -8,8 +8,8 @@ import icu.windea.pls.core.fixes.InsertMissingTokenFix
 import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import icu.windea.pls.model.constants.ChronicleStrings
 import icu.windea.pls.script.ParadoxScriptLanguage
-import icu.windea.pls.script.psi.ParadoxParameter
 import icu.windea.pls.script.psi.ParadoxScriptInlineMath
+import icu.windea.pls.script.psi.ParadoxScriptParameter
 
 /**
  * 快速修复一些语法错误。
@@ -18,7 +18,7 @@ class ParadoxScriptErrorQuickFixProvider : ErrorQuickFixProvider {
     override fun registerErrorQuickFix(errorElement: PsiErrorElement, builder: HighlightInfo.Builder) {
         if (errorElement.language !== ParadoxScriptLanguage) return
         when {
-            errorElement.nextSibling == null && errorElement.parent is ParadoxParameter -> {
+            errorElement.nextSibling == null && errorElement.parent is ParadoxScriptParameter -> {
                 // PARAMETER_END
                 val fix = createFix(ChronicleStrings.parameterEndMarker, errorElement.startOffset)
                 builder.registerFix(fix, null, null, null, null)
