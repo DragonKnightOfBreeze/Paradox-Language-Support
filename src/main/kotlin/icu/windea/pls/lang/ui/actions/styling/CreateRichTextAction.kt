@@ -110,7 +110,7 @@ sealed class CreateRichTextAction : ToggleAction(), DumbAware {
         val endElement = file.findElementAt(selectionEnd - 1) ?: return false
 
         // 要求开始位置和结束位置的左边或右边是 TEXT_TOKEN/LEFT_QUOTE/RIGHT_QUOTE
-        val stringOrQuoteTokens = ParadoxLocalisationTokenSets.STRING_OR_QUOTE_TOKENS
+        val stringOrQuoteTokens = ParadoxLocalisationTokenSets.TEXT_OR_QUOTE_TOKENS
         if (startElement.elementType !in stringOrQuoteTokens && startElement.prevLeaf(false).elementType !in stringOrQuoteTokens) return false
         if (endElement.elementType !in stringOrQuoteTokens && endElement.nextLeaf(false).elementType !in stringOrQuoteTokens) return false
 

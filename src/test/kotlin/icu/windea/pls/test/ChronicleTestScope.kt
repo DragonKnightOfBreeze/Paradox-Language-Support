@@ -76,7 +76,7 @@ interface ChronicleTestScope {
     // region Context Related Methods
 
     /**
-     * 启用仅用于平台测试的特殊行为。这会启用从文件名推断文件类型和游戏类型。
+     * 启用适用于于平台测试的特殊行为。这会从文件名推断文件类型和游戏类型。
      */
     fun markIntegrationTest() {
         ParadoxAnalysisInjectionManager.useDefaultFileExtensions(true)
@@ -86,7 +86,7 @@ interface ChronicleTestScope {
     }
 
     /**
-     * 关闭仅用于平台测试的特殊行为。这会一并清空注入状态。
+     * 关闭适用于平台测试的特殊行为。这会一并清空注入状态。
      */
     fun clearIntegrationTest() {
         ParadoxAnalysisInjectionManager.useDefaultFileExtensions(false)
