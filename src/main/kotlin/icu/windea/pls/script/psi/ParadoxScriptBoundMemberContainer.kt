@@ -6,7 +6,7 @@ import icu.windea.pls.core.psi.PsiBoundElement
  * 带边界的成员容器。可以直接包含 [ParadoxScriptMember]。
  *
  * @see ParadoxScriptBlock
- * @see ParadoxScriptConditionalBlock
+ * @see ParadoxScriptNormalConditionalBlock
  */
 interface ParadoxScriptBoundMemberContainer : ParadoxScriptMemberContainer, PsiBoundElement {
     override val memberContainer: ParadoxScriptBoundMemberContainer get() = this

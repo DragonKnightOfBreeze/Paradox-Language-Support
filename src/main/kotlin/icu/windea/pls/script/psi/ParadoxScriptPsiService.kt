@@ -18,16 +18,15 @@ import icu.windea.pls.core.util.values.or
 import icu.windea.pls.core.util.values.unresolved
 import icu.windea.pls.model.constants.ChronicleStrings
 import icu.windea.pls.script.ParadoxScriptLanguage
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import java.util.*
 import java.util.function.IntUnaryOperator
 
 @Suppress("unused")
 object ParadoxScriptPsiService {
-    private val presentableTextLimit get() =  ChronicleInternalSettings.getInstance().presentableTextLimit
+    private val presentableTextLimit get() = ChronicleInternalSettings.getInstance().presentableTextLimit
 
     fun getPresentableText(element: PsiPresentableElement): String {
-        return when(element) {
+        return when (element) {
             is ParadoxScriptProperty -> {
                 var keyElement: ParadoxScriptPropertyKey? = null
                 var separatorElement: PsiElement? = null
@@ -41,7 +40,7 @@ object ParadoxScriptPsiService {
                 }
                 buildString {
                     if (keyElement != null) append(keyElement.presentableText) else append(DefaultStrings.unresolved)
-                    if (separatorElement?.elementType != SAFE_CALL_ASSIGN_SIGN) append(" ")
+                    if (separatorElement?.elementType != ParadoxScriptElementTypes.SAFE_CALL_ASSIGN_SIGN) append(" ")
                     append(separatorElement?.text ?: "=")
                     append(" ")
                     if (valueElement != null) append(valueElement.presentableText) else append(DefaultStrings.unresolved)
@@ -62,15 +61,14 @@ object ParadoxScriptPsiService {
                     if (valueElement != null) append(valueElement.presentableText) else append(DefaultStrings.unresolved)
                 }
             }
+            is ParadoxScriptParameter -> {
+                element.text // use original text
+            }
             is ParadoxScriptConditionalBlock -> {
                 val expressionText = element.conditionalExpression?.presentableText
                 ChronicleStrings.conditionalBlockFolder(expressionText.or.unresolved())
             }
-            is ParadoxScriptInlineConditionalBlock -> {
-                val expressionText = element.conditionalExpression?.presentableText
-                ChronicleStrings.conditionalBlockFolder(expressionText.or.unresolved())
-            }
-            is ParadoxScriptConditionalParameter -> {
+            is ParadoxScriptConditionalExpression -> {
                 buildString {
                     element.processChild {
                         when {
@@ -78,7 +76,7 @@ object ParadoxScriptPsiService {
                                 append(it.name)
                                 false
                             }
-                            it.elementType == NOT_EQUAL_SIGN -> {
+                            it.elementType == ParadoxScriptElementTypes.NOT_EQUAL_SIGN -> {
                                 append("!")
                                 true
                             }

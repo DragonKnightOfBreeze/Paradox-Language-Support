@@ -156,8 +156,10 @@ class ChronicleSettings : SimplePersistentStateComponent<ChronicleSettings.State
      *
      * @property comments 是否允许折叠多行注释。
      * @property commentsByDefault 是否默认折叠多行注释。
-     * @property conditionalBlocks 是否允许折叠参数化块表达式块。
-     * @property conditionalBlocksByDefault 是否默认折叠参数化块表达式块。
+     * @property conditionalBlocks 是否允许折叠（非内联形式的）参数化块。
+     * @property conditionalBlocksByDefault 是否默认折叠（非内联形式的）参数化块。
+     * @property inlineConditionalBlocks 是否允许折叠内联参数化块。
+     * @property inlineConditionalBlocksByDefault 是否默认折叠内联参数化块。
      * @property inlineMaths 是否允许折叠内联数学表达式块。
      * @property inlineMathsByDefault 是否默认折叠内联数学表达式块。
      * @property localisationParametersFully 是否允许折叠本地化参数。完全折叠。
@@ -181,6 +183,8 @@ class ChronicleSettings : SimplePersistentStateComponent<ChronicleSettings.State
         var commentsByDefault by property(false)
         var conditionalBlocks by property(true)
         var conditionalBlocksByDefault by property(false)
+        var inlineConditionalBlocks by property(true)
+        var inlineConditionalBlocksByDefault by property(false)
         var inlineMaths by property(true)
         var inlineMathsByDefault by property(true)
         var localisationTexts by property(false)

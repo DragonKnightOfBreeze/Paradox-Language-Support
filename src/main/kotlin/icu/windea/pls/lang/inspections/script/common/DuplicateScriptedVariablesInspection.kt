@@ -10,8 +10,8 @@ import icu.windea.pls.core.findChildren
 import icu.windea.pls.lang.fixes.navigation.NavigateToDuplicatesFix
 import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import icu.windea.pls.script.psi.ParadoxScriptBlock
-import icu.windea.pls.script.psi.ParadoxScriptConditionalBlock
 import icu.windea.pls.script.psi.ParadoxScriptMemberContainer
+import icu.windea.pls.script.psi.ParadoxScriptNormalConditionalBlock
 import icu.windea.pls.script.psi.ParadoxScriptRootBlock
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.ParadoxScriptVisitor
@@ -25,17 +25,17 @@ import icu.windea.pls.script.psi.ParadoxScriptVisitor
 class DuplicateScriptedVariablesInspection : LocalInspectionTool(), DumbAware {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         return object : ParadoxScriptVisitor() {
-            override fun visitBlock(element: ParadoxScriptBlock) {
-                ProgressManager.checkCanceled()
-                check(element, holder)
-            }
-
             override fun visitRootBlock(element: ParadoxScriptRootBlock) {
                 ProgressManager.checkCanceled()
                 check(element, holder)
             }
 
-            override fun visitConditionalBlock(element: ParadoxScriptConditionalBlock) {
+            override fun visitBlock(element: ParadoxScriptBlock) {
+                ProgressManager.checkCanceled()
+                check(element, holder)
+            }
+
+            override fun visitNormalConditionalBlock(element: ParadoxScriptNormalConditionalBlock) {
                 ProgressManager.checkCanceled()
                 check(element, holder)
             }

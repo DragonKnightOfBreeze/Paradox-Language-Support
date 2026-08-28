@@ -45,7 +45,6 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationElementFactory
 import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyValue
-import icu.windea.pls.localisation.psi.ParadoxLocalisationRichTextContainer
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxDefinitionSource
 import icu.windea.pls.script.ParadoxScriptLanguage
@@ -55,7 +54,6 @@ import icu.windea.pls.script.psi.ParadoxScriptBoundMemberContainer
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptInlineMathScriptedVariableReference
-import icu.windea.pls.script.psi.ParadoxScriptMemberContainer
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptRootBlock
@@ -105,7 +103,7 @@ object ParadoxPsiService {
         }
     }
 
-    fun findMemberElementsToInline(element: ParadoxScriptMemberContainer): Tuple2<PsiElement?, PsiElement?> {
+    fun findMemberElementsToInline(element: PsiElement): Tuple2<PsiElement?, PsiElement?> {
         return when (element) {
             is ParadoxScriptBoundMemberContainer -> {
                 val leftBound = element.leftBound
@@ -122,7 +120,7 @@ object ParadoxPsiService {
         }
     }
 
-    fun findRichTextElementsToInline(element: ParadoxLocalisationRichTextContainer): Tuple2<PsiElement?, PsiElement?> {
+    fun findRichTextElementsToInline(element: PsiElement): Tuple2<PsiElement?, PsiElement?> {
         return when (element) {
             is ParadoxLocalisationPropertyValue -> {
                 val tokenElement = element.tokenElement

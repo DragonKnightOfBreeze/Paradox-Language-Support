@@ -7,7 +7,7 @@ import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiElement
 import icu.windea.pls.lang.intentions.ChronicleIntentionBundle
 import icu.windea.pls.lang.manipulation.ParadoxConditionalStatementManipulationService
-import icu.windea.pls.script.psi.ParadoxScriptConditionalBlock
+import icu.windea.pls.script.psi.ParadoxScriptNormalConditionalBlock
 
 /**
  * 将条件化语句转换为属性形式。
@@ -17,18 +17,18 @@ import icu.windea.pls.script.psi.ParadoxScriptConditionalBlock
  * @see ParadoxConditionalStatementManipulationService
  */
 @Suppress("UnstableApiUsage")
-class ConditionalStatementToPropertyFormIntention : PsiUpdateModCommandAction<ParadoxScriptConditionalBlock>(ParadoxScriptConditionalBlock::class.java), DumbAware {
+class ConditionalStatementToPropertyFormIntention : PsiUpdateModCommandAction<ParadoxScriptNormalConditionalBlock>(ParadoxScriptNormalConditionalBlock::class.java), DumbAware {
     override fun getFamilyName() = ChronicleIntentionBundle.message("intention.conditionalStatementToPropertyForm")
 
-    override fun invoke(context: ActionContext, element: ParadoxScriptConditionalBlock, updater: ModPsiUpdater) {
+    override fun invoke(context: ActionContext, element: ParadoxScriptNormalConditionalBlock, updater: ModPsiUpdater) {
         return ParadoxConditionalStatementManipulationService.convertToPropertyForm(element, context.project)
     }
 
-    override fun isElementApplicable(element: ParadoxScriptConditionalBlock, context: ActionContext): Boolean {
+    override fun isElementApplicable(element: ParadoxScriptNormalConditionalBlock, context: ActionContext): Boolean {
         return ParadoxConditionalStatementManipulationService.canConvertToPropertyForm(element)
     }
 
     override fun stopSearchAt(element: PsiElement, context: ActionContext): Boolean {
-        return element is ParadoxScriptConditionalBlock
+        return element is ParadoxScriptNormalConditionalBlock
     }
 }

@@ -17,9 +17,9 @@ import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.core.util.values.or
 import icu.windea.pls.core.util.values.unresolved
 import icu.windea.pls.model.constants.ChronicleStrings
-import icu.windea.pls.script.psi.ParadoxScriptConditionalBlock
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import icu.windea.pls.script.psi.ParadoxScriptFile
+import icu.windea.pls.script.psi.ParadoxScriptNormalConditionalBlock
 import icu.windea.pls.script.psi.ParadoxScriptPsiService
 
 class ParadoxScriptFoldingBuilder : CustomFoldingBuilder(), DumbAware {
@@ -27,8 +27,8 @@ class ParadoxScriptFoldingBuilder : CustomFoldingBuilder(), DumbAware {
         return when (node.elementType) {
             COMMENT -> ChronicleStrings.commentFolder
             BLOCK -> ChronicleStrings.blockFolder
-            CONDITIONAL_BLOCK -> {
-                val psi = node.psi.castOrNull<ParadoxScriptConditionalBlock>()
+            NORMAL_CONDITIONAL_BLOCK -> {
+                val psi = node.psi.castOrNull<ParadoxScriptNormalConditionalBlock>()
                 val expressionText = psi?.conditionalExpression?.presentableText
                 ChronicleStrings.conditionalBlockFolder(expressionText.or.unresolved())
             }
@@ -42,7 +42,8 @@ class ParadoxScriptFoldingBuilder : CustomFoldingBuilder(), DumbAware {
         return when (node.elementType) {
             COMMENT -> settings.commentsByDefault
             BLOCK -> false
-            CONDITIONAL_BLOCK -> settings.conditionalBlocksByDefault
+            NORMAL_CONDITIONAL_BLOCK -> settings.conditionalBlocksByDefault
+            INLINE_CONDITIONAL_BLOCK -> settings.inlineConditionalBlocksByDefault
             INLINE_MATH -> settings.inlineMathsByDefault
             else -> false
         }
@@ -77,8 +78,12 @@ class ParadoxScriptFoldingBuilder : CustomFoldingBuilder(), DumbAware {
             BLOCK -> {
                 descriptors.add(FoldingDescriptor(element.node, element.textRange))
             }
-            CONDITIONAL_BLOCK -> run r@{
+            NORMAL_CONDITIONAL_BLOCK -> run r@{
                 if (!settings.conditionalBlocks) return@r
+                descriptors.add(FoldingDescriptor(element.node, element.textRange))
+            }
+            INLINE_CONDITIONAL_BLOCK -> run r@{
+                if (!settings.inlineConditionalBlocks) return@r
                 descriptors.add(FoldingDescriptor(element.node, element.textRange))
             }
             INLINE_MATH -> run r@{

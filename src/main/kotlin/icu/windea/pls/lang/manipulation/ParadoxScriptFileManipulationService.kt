@@ -9,10 +9,10 @@ import icu.windea.pls.core.withContextRecursionGuard
 import icu.windea.pls.lang.psi.conditional
 import icu.windea.pls.lang.psi.inline
 import icu.windea.pls.lang.resolve.ParadoxInlineService
-import icu.windea.pls.script.psi.ParadoxScriptConditionalBlock
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptMemberContext
+import icu.windea.pls.script.psi.ParadoxScriptNormalConditionalBlock
 
 object ParadoxScriptFileManipulationService {
     fun members(element: ParadoxScriptMemberContext): WalkingSequence<ParadoxScriptMember> {
@@ -35,7 +35,7 @@ object ParadoxScriptFileManipulationService {
         containerElement.children(context.forward).forEach { child ->
             when (child) {
                 is ParadoxScriptMember -> yieldMember(child)
-                is ParadoxScriptConditionalBlock -> if (context.conditional) yieldConditionalMembers(child)
+                is ParadoxScriptNormalConditionalBlock -> if (context.conditional) yieldConditionalMembers(child)
             }
         }
     }
@@ -48,7 +48,7 @@ object ParadoxScriptFileManipulationService {
     }
 
     context(context: WalkingContext)
-    private suspend fun SequenceScope<ParadoxScriptMember>.yieldConditionalMembers(element: ParadoxScriptConditionalBlock) {
+    private suspend fun SequenceScope<ParadoxScriptMember>.yieldConditionalMembers(element: ParadoxScriptNormalConditionalBlock) {
         ProgressManager.checkCanceled()
         yieldMembers(element)
     }

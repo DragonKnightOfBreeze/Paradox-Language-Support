@@ -2,8 +2,8 @@ package icu.windea.pls.lang.manipulation
 
 import com.intellij.openapi.project.Project
 import icu.windea.pls.core.findChild
-import icu.windea.pls.script.psi.ParadoxScriptConditionalBlock
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
+import icu.windea.pls.script.psi.ParadoxScriptNormalConditionalBlock
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptRootBlock
 
@@ -40,7 +40,7 @@ object ParadoxConditionalStatementManipulationService {
     /**
      * 判断 [element] 是否为块形式。
      */
-    fun isBlockForm(element: ParadoxScriptConditionalBlock): Boolean {
+    fun isBlockForm(element: ParadoxScriptNormalConditionalBlock): Boolean {
         val text = element.text
         return blockFormRegex.matches(text)
     }
@@ -51,7 +51,7 @@ object ParadoxConditionalStatementManipulationService {
      * 说明：
      * - [element] 必须是块形式。参见 [isBlockForm]。
      */
-    fun canConvertToPropertyForm(element: ParadoxScriptConditionalBlock): Boolean {
+    fun canConvertToPropertyForm(element: ParadoxScriptNormalConditionalBlock): Boolean {
         return isBlockForm(element)
     }
 
@@ -78,7 +78,7 @@ object ParadoxConditionalStatementManipulationService {
      * PARAM = $PARAM|no$
      * ```
      */
-    fun convertToPropertyForm(element: ParadoxScriptConditionalBlock, project: Project) {
+    fun convertToPropertyForm(element: ParadoxScriptNormalConditionalBlock, project: Project) {
         val text = element.text
         val matchResult = blockFormRegex.matchEntire(text) ?: return
         val parameterName = matchResult.groupValues.get(1)
@@ -110,7 +110,7 @@ object ParadoxConditionalStatementManipulationService {
         val newText = blockTemplate.invoke(parameterName)
         val newElement = ParadoxScriptElementFactory.createFileFromText(project, newText)
             .findChild<ParadoxScriptRootBlock>()
-            ?.findChild<ParadoxScriptConditionalBlock>()
+            ?.findChild<ParadoxScriptNormalConditionalBlock>()
             ?: return
         element.replace(newElement)
     }

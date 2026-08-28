@@ -7,8 +7,8 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.codeStyle.CodeStyleManager
 import com.intellij.psi.util.endOffset
 import com.intellij.psi.util.startOffset
-import icu.windea.pls.script.psi.ParadoxScriptConditionalBlock
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
+import icu.windea.pls.script.psi.ParadoxScriptNormalConditionalBlock
 
 class ParadoxScriptConditionalBlockSurrounder : ParadoxScriptSurrounder() {
     override fun getTemplateDescription() = "[[PARAM]...]"
@@ -26,8 +26,8 @@ class ParadoxScriptConditionalBlockSurrounder : ParadoxScriptSurrounder() {
             firstElement.parent.deleteChildRange(firstElement.nextSibling, lastElement)
         }
         var newElement = ParadoxScriptElementFactory.createConditionalBlockFromText(project, "[[P]\n$replacedText\n]")
-        newElement = firstElement.replace(newElement) as ParadoxScriptConditionalBlock
-        newElement = CodeStyleManager.getInstance(project).reformat(newElement, true) as ParadoxScriptConditionalBlock
+        newElement = firstElement.replace(newElement) as ParadoxScriptNormalConditionalBlock
+        newElement = CodeStyleManager.getInstance(project).reformat(newElement, true) as ParadoxScriptNormalConditionalBlock
         return newElement.conditionalExpression!!.textRange
     }
 }

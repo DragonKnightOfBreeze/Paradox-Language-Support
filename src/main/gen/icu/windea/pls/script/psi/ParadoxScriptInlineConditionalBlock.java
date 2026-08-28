@@ -5,13 +5,12 @@ import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
-import icu.windea.pls.core.psi.PsiBoundElement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-public interface ParadoxScriptInlineConditionalBlock extends PsiBoundElement, ParadoxScriptInterpolation, ParadoxScriptInterpolationContainer {
+public interface ParadoxScriptInlineConditionalBlock extends ParadoxScriptConditionalBlock, ParadoxScriptInterpolation, ParadoxScriptInterpolationContainer {
 
   @Nullable
   ParadoxScriptConditionalExpression getConditionalExpression();

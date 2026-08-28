@@ -32,7 +32,7 @@ root_block ::= root_block_item + {
   ]
   methods=[getMemberContainer getMembers getComponents]
 }
-private root_block_item ::= COMMENT | root_block_value | property | scripted_variable | conditional_block
+private root_block_item ::= COMMENT | root_block_value | property | scripted_variable | normal_conditional_block
 private root_block_value ::= scripted_variable_reference | boolean | int | float | string | color | block | inline_math
 
 // member and expression rules
@@ -137,7 +137,7 @@ block ::= LEFT_BRACE block_item * RIGHT_BRACE {
     getReference getReferences
   ]
 }
-private block_item ::= COMMENT | block_value | property | scripted_variable | conditional_block {
+private block_item ::= COMMENT | block_value | property | scripted_variable | normal_conditional_block {
   recoverWhile="#auto" // continue parsing
 }
 private block_value ::= scripted_variable_reference | boolean | int | float | string | color | block | inline_math
@@ -247,10 +247,11 @@ parameter_argument ::= ARGUMENT_TOKEN {
 // conditional block rules
 
 // should in definition declaration (script_value / scripted_effect / scripted_trigger)
-conditional_block ::= LEFT_BRACKET conditional_header conditional_block_item * RIGHT_BRACKET {
+normal_conditional_block ::= LEFT_BRACKET conditional_header normal_conditional_block_item * RIGHT_BRACKET {
   pin=1
   recoverWhile="#auto" // continue parsing
   implements=[
+    "icu.windea.pls.script.psi.ParadoxScriptConditionalBlock"
     "icu.windea.pls.script.psi.ParadoxScriptStatement"
     "icu.windea.pls.script.psi.ParadoxScriptMemberContainer"
     "icu.windea.pls.script.psi.ParadoxScriptBoundMemberContainer"
@@ -260,16 +261,16 @@ conditional_block ::= LEFT_BRACKET conditional_header conditional_block_item * R
     getIcon getPresentableText
   ]
 }
-private conditional_block_item ::= COMMENT | conditional_block_value | property | conditional_block {
+private normal_conditional_block_item ::= COMMENT | normal_conditional_block_value | property | normal_conditional_block {
   recoverWhile="#auto" // continue parsing
 }
-private conditional_block_value ::= scripted_variable_reference | boolean | int | float | string | color | block | inline_math
+private normal_conditional_block_value ::= scripted_variable_reference | boolean | int | float | string | color | block | inline_math
 
 // used in, such as, dynamic strings (e.g. "a[[b]c]d")
 inline_conditional_block ::= LEFT_BRACKET <<processInlineConditionalBlock>> conditional_header inline_conditional_block_item RIGHT_BRACKET {
   pin=2
   implements=[
-    "icu.windea.pls.core.psi.PsiBoundElement"
+    "icu.windea.pls.script.psi.ParadoxScriptConditionalBlock"
     "icu.windea.pls.script.psi.ParadoxScriptInterpolation"
     "icu.windea.pls.script.psi.ParadoxScriptInterpolationContainer"
   ]

@@ -1,9 +1,9 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.script.psi;
 
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.PsiElement;
 import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.tree.IElementType;
 import icu.windea.pls.script.psi.impl.*;
 
 public interface ParadoxScriptElementTypes {
@@ -11,7 +11,6 @@ public interface ParadoxScriptElementTypes {
   IElementType BLOCK = ParadoxScriptElementTypeFactory.getElementType("BLOCK");
   IElementType BOOLEAN = ParadoxScriptElementTypeFactory.getElementType("BOOLEAN");
   IElementType COLOR = ParadoxScriptElementTypeFactory.getElementType("COLOR");
-  IElementType CONDITIONAL_BLOCK = ParadoxScriptElementTypeFactory.getElementType("CONDITIONAL_BLOCK");
   IElementType CONDITIONAL_EXPRESSION = ParadoxScriptElementTypeFactory.getElementType("CONDITIONAL_EXPRESSION");
   IElementType CONDITIONAL_PARAMETER = ParadoxScriptElementTypeFactory.getElementType("CONDITIONAL_PARAMETER");
   IElementType FLOAT = ParadoxScriptElementTypeFactory.getElementType("FLOAT");
@@ -27,6 +26,7 @@ public interface ParadoxScriptElementTypes {
   IElementType INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE = ParadoxScriptElementTypeFactory.getElementType("INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE");
   IElementType INLINE_MATH_UNARY_EXPRESSION = ParadoxScriptElementTypeFactory.getElementType("INLINE_MATH_UNARY_EXPRESSION");
   IElementType INT = ParadoxScriptElementTypeFactory.getElementType("INT");
+  IElementType NORMAL_CONDITIONAL_BLOCK = ParadoxScriptElementTypeFactory.getElementType("NORMAL_CONDITIONAL_BLOCK");
   IElementType PARAMETER = ParadoxScriptElementTypeFactory.getElementType("PARAMETER");
   IElementType PARAMETER_ARGUMENT = ParadoxScriptElementTypeFactory.getElementType("PARAMETER_ARGUMENT");
   IElementType PROPERTY = ParadoxScriptElementTypeFactory.getElementType("PROPERTY");
@@ -96,9 +96,6 @@ public interface ParadoxScriptElementTypes {
       else if (type == COLOR) {
         return new ParadoxScriptColorImpl(node);
       }
-      else if (type == CONDITIONAL_BLOCK) {
-        return new ParadoxScriptConditionalBlockImpl(node);
-      }
       else if (type == CONDITIONAL_EXPRESSION) {
         return new ParadoxScriptConditionalExpressionImpl(node);
       }
@@ -137,6 +134,9 @@ public interface ParadoxScriptElementTypes {
       }
       else if (type == INT) {
         return new ParadoxScriptIntImpl(node);
+      }
+      else if (type == NORMAL_CONDITIONAL_BLOCK) {
+        return new ParadoxScriptNormalConditionalBlockImpl(node);
       }
       else if (type == PARAMETER) {
         return new ParadoxScriptParameterImpl(node);

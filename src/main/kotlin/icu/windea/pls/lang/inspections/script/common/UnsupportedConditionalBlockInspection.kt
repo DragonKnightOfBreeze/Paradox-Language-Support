@@ -10,6 +10,8 @@ import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.script.psi.ParadoxScriptConditionalBlock
+import icu.windea.pls.script.psi.ParadoxScriptInlineConditionalBlock
+import icu.windea.pls.script.psi.ParadoxScriptNormalConditionalBlock
 import icu.windea.pls.script.psi.ParadoxScriptVisitor
 
 /**
@@ -26,10 +28,17 @@ class UnsupportedConditionalBlockInspection : LocalInspectionTool(), DumbAware {
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         return object : ParadoxScriptVisitor() {
-            override fun visitConditionalBlock(element: ParadoxScriptConditionalBlock) {
+            override fun visitNormalConditionalBlock(element: ParadoxScriptNormalConditionalBlock) {
                 ProgressManager.checkCanceled()
                 checkInlineScript(element, holder)
             }
+
+            override fun visitInlineConditionalBlock(element: ParadoxScriptInlineConditionalBlock) {
+                ProgressManager.checkCanceled()
+                checkInlineScript(element, holder)
+            }
+
+            // TODO 3.0.2+ for `ParadoxScriptInlineMathConditionalBlock`
         }
     }
 

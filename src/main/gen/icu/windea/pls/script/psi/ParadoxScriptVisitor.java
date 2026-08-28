@@ -3,7 +3,6 @@ package icu.windea.pls.script.psi;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
-import icu.windea.pls.core.psi.PsiBoundElement;
 import icu.windea.pls.core.psi.PsiPresentableElement;
 import icu.windea.pls.core.psi.PsiQuoteAwareElement;
 import icu.windea.pls.core.psi.PsiRootBlock;
@@ -26,12 +25,6 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
     visitValue(o);
   }
 
-  public void visitConditionalBlock(@NotNull ParadoxScriptConditionalBlock o) {
-    visitStatement(o);
-    // visitMemberContainer(o);
-    // visitBoundMemberContainer(o);
-  }
-
   public void visitConditionalExpression(@NotNull ParadoxScriptConditionalExpression o) {
     visitPsiPresentableElement(o);
   }
@@ -47,7 +40,7 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
   }
 
   public void visitInlineConditionalBlock(@NotNull ParadoxScriptInlineConditionalBlock o) {
-    visitPsiBoundElement(o);
+    visitConditionalBlock(o);
     // visitInterpolation(o);
     // visitInterpolationContainer(o);
   }
@@ -103,6 +96,13 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
     visitValue(o);
     // visitLiteralValue(o);
     // visitNumberExpressionElement(o);
+  }
+
+  public void visitNormalConditionalBlock(@NotNull ParadoxScriptNormalConditionalBlock o) {
+    visitConditionalBlock(o);
+    // visitStatement(o);
+    // visitMemberContainer(o);
+    // visitBoundMemberContainer(o);
   }
 
   public void visitParameter(@NotNull ParadoxScriptParameter o) {
@@ -161,10 +161,6 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
     // visitMember(o);
   }
 
-  public void visitPsiBoundElement(@NotNull PsiBoundElement o) {
-    visitElement(o);
-  }
-
   public void visitPsiPresentableElement(@NotNull PsiPresentableElement o) {
     visitElement(o);
   }
@@ -189,6 +185,10 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
     visitElement(o);
   }
 
+  public void visitConditionalBlock(@NotNull ParadoxScriptConditionalBlock o) {
+    visitPsiElement(o);
+  }
+
   public void visitExpressionElement(@NotNull ParadoxScriptExpressionElement o) {
     visitPsiElement(o);
   }
@@ -198,10 +198,6 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
   }
 
   public void visitNamedElement(@NotNull ParadoxScriptNamedElement o) {
-    visitPsiElement(o);
-  }
-
-  public void visitStatement(@NotNull ParadoxScriptStatement o) {
     visitPsiElement(o);
   }
 

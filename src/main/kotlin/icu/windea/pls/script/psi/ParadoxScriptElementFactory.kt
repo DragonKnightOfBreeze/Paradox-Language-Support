@@ -88,17 +88,23 @@ object ParadoxScriptElementFactory {
     }
 
     @JvmStatic
-    fun createConditionalBlockFromText(project: Project, text: String): ParadoxScriptConditionalBlock {
-        return createRootBlockFromText(project, "a = { $text }")
-            .findChild<ParadoxScriptProperty>()
-            ?.findChild<ParadoxScriptBlock>()
-            ?.findChild<ParadoxScriptConditionalBlock>() ?: throw IncorrectOperationException()
+    fun createParameterFromText(project: Project, text: String): ParadoxScriptParameter {
+        return createValueFromText(project, text)
+            .findChild<ParadoxScriptParameter>() ?: throw IncorrectOperationException()
     }
 
     @JvmStatic
-    fun createInlineMathFromText(project: Project, text: String): ParadoxScriptInlineMath {
-        return createValueFromText(project, text)
-            .castOrNull() ?: throw IncorrectOperationException()
+    fun createInlineMathParameterFromText(project: Project, text: String): ParadoxScriptInlineMathParameter {
+        return createInlineMath(project, text)
+            .findChild<ParadoxScriptInlineMathParameter>() ?: throw IncorrectOperationException()
+    }
+
+    @JvmStatic
+    fun createConditionalBlockFromText(project: Project, text: String): ParadoxScriptNormalConditionalBlock {
+        return createRootBlockFromText(project, "a = { $text }")
+            .findChild<ParadoxScriptProperty>()
+            ?.findChild<ParadoxScriptBlock>()
+            ?.findChild<ParadoxScriptNormalConditionalBlock>() ?: throw IncorrectOperationException()
     }
 
     @JvmStatic
@@ -109,21 +115,15 @@ object ParadoxScriptElementFactory {
     }
 
     @JvmStatic
+    fun createInlineMathFromText(project: Project, text: String): ParadoxScriptInlineMath {
+        return createValueFromText(project, text)
+            .castOrNull() ?: throw IncorrectOperationException()
+    }
+
+    @JvmStatic
     fun createInlineMathScriptedVariableReferenceFromText(project: Project, name: String): ParadoxScriptInlineMathScriptedVariableReference {
         return createInlineMath(project, name)
             .findChild<ParadoxScriptInlineMathScriptedVariableReference>() ?: throw IncorrectOperationException()
-    }
-
-    @JvmStatic
-    fun createParameterFromText(project: Project, text: String): ParadoxScriptParameter {
-        return createValueFromText(project, text)
-            .findChild<ParadoxScriptParameter>() ?: throw IncorrectOperationException()
-    }
-
-    @JvmStatic
-    fun createInlineMathParameterFromText(project: Project, text: String): ParadoxScriptInlineMathParameter {
-        return createInlineMath(project, text)
-            .findChild<ParadoxScriptInlineMathParameter>() ?: throw IncorrectOperationException()
     }
 
     // create smartly
@@ -158,17 +158,7 @@ object ParadoxScriptElementFactory {
     }
 
     @JvmStatic
-    fun createInlineMathScriptedVariableReference(project: Project, name: String): ParadoxScriptInlineMathScriptedVariableReference {
-        return createInlineMathScriptedVariableReferenceFromText(project, name)
-    }
-
-    @JvmStatic
-    fun createInlineMath(project: Project, expression: String): ParadoxScriptInlineMath {
-        return createInlineMathFromText(project, "@[$expression]")
-    }
-
-    @JvmStatic
-    fun createConditionalBlock(project: Project, expression: String, itemsText: String): ParadoxScriptConditionalBlock {
+    fun createConditionalBlock(project: Project, expression: String, itemsText: String): ParadoxScriptNormalConditionalBlock {
         return createConditionalBlockFromText(project, "[[$expression] $itemsText ]")
     }
 
@@ -187,5 +177,15 @@ object ParadoxScriptElementFactory {
     fun createInlineMathParameter(project: Project, name: String, defaultValue: String? = null): ParadoxScriptInlineMathParameter {
         val text = if (defaultValue == null) "$$name$" else "$$name|$defaultValue$"
         return createInlineMathParameterFromText(project, text)
+    }
+
+    @JvmStatic
+    fun createInlineMath(project: Project, expression: String): ParadoxScriptInlineMath {
+        return createInlineMathFromText(project, "@[$expression]")
+    }
+
+    @JvmStatic
+    fun createInlineMathScriptedVariableReference(project: Project, name: String): ParadoxScriptInlineMathScriptedVariableReference {
+        return createInlineMathScriptedVariableReferenceFromText(project, name)
     }
 }

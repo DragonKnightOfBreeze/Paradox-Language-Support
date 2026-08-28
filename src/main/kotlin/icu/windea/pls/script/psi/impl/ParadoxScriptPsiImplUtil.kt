@@ -325,28 +325,28 @@ object ParadoxScriptPsiImplUtil {
     // region ParadoxScriptConditionalBlock
 
     @JvmStatic
-    fun getIcon(element: ParadoxScriptConditionalBlock, @Iconable.IconFlags flags: Int): Icon {
+    fun getIcon(element: ParadoxScriptNormalConditionalBlock, @Iconable.IconFlags flags: Int): Icon {
         return ChronicleIcons.Nodes.ConditionalBlock
     }
 
     @JvmStatic
-    fun getMemberContainer(element: ParadoxScriptConditionalBlock): ParadoxScriptConditionalBlock {
+    fun getMemberContainer(element: ParadoxScriptNormalConditionalBlock): ParadoxScriptNormalConditionalBlock {
         return element
     }
 
     @JvmStatic
-    fun getMembers(element: ParadoxScriptConditionalBlock): List<ParadoxScriptMember> {
+    fun getMembers(element: ParadoxScriptNormalConditionalBlock): List<ParadoxScriptMember> {
         return getMemberContainer(element).findChildren<_>()
     }
 
     @JvmStatic
-    fun getLeftBound(element: ParadoxScriptConditionalBlock): PsiElement? {
+    fun getLeftBound(element: ParadoxScriptNormalConditionalBlock): PsiElement? {
         // use simple implementation is enough here
         return element.findChild<PsiElement> { it.elementType == NESTED_RIGHT_BRACKET }
     }
 
     @JvmStatic
-    fun getRightBound(element: ParadoxScriptConditionalBlock): PsiElement? {
+    fun getRightBound(element: ParadoxScriptNormalConditionalBlock): PsiElement? {
         return element.lastChild?.takeIf { it.elementType == RIGHT_BRACKET }
     }
 

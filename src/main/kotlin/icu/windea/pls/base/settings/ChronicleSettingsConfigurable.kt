@@ -330,6 +330,14 @@ class ChronicleSettingsConfigurable : BoundConfigurable(ChronicleBaseBundle.mess
             checkBox(ChronicleBaseBundle.message("settings.folding.byDefault"))
                 .bindSelected(settings::conditionalBlocksByDefault)
         }
+        // inlineConditionalBlocks & inlineConditionalBlocksByDefault
+        row {
+            checkBox(ChronicleBaseBundle.message("settings.folding.inlineConditionalBlocks"))
+                .bindSelected(settings::inlineConditionalBlocks)
+                .enabled(false)
+            checkBox(ChronicleBaseBundle.message("settings.folding.byDefault"))
+                .bindSelected(settings::inlineConditionalBlocksByDefault)
+        }
         // inlineMaths & inlineMathsByDefault
         row {
             checkBox(ChronicleBaseBundle.message("settings.folding.inlineMaths"))

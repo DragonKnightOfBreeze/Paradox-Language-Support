@@ -52,7 +52,6 @@ import icu.windea.pls.script.psi.ParadoxScriptConditionalExpression
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
-import icu.windea.pls.script.psi.ParadoxScriptInlineConditionalBlock
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
@@ -216,7 +215,7 @@ object ParadoxParameterSupportFactory {
             }
 
             override fun elementFinished(element: PsiElement?) {
-                if (element is ParadoxScriptConditionalBlock || element is ParadoxScriptInlineConditionalBlock) {
+                if (element is ParadoxScriptConditionalBlock) {
                     fileConditionExpressions.removeLast()
                 }
             }

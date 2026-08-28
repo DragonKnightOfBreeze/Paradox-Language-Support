@@ -12,7 +12,7 @@ import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.util.parentOfType
 import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import icu.windea.pls.lang.manipulation.ParadoxConditionalStatementManipulationService
-import icu.windea.pls.script.psi.ParadoxScriptConditionalBlock
+import icu.windea.pls.script.psi.ParadoxScriptNormalConditionalBlock
 import icu.windea.pls.script.psi.ParadoxScriptVisitor
 
 /**
@@ -25,14 +25,14 @@ import icu.windea.pls.script.psi.ParadoxScriptVisitor
 class ConditionalStatementToPropertyFormInspection : LocalInspectionTool(), DumbAware {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         return object : ParadoxScriptVisitor() {
-            override fun visitConditionalBlock(element: ParadoxScriptConditionalBlock) {
+            override fun visitNormalConditionalBlock(element: ParadoxScriptNormalConditionalBlock) {
                 ProgressManager.checkCanceled()
                 check(element, holder)
             }
         }
     }
 
-    private fun check(element: ParadoxScriptConditionalBlock, holder: ProblemsHolder) {
+    private fun check(element: ParadoxScriptNormalConditionalBlock, holder: ProblemsHolder) {
         if (!ParadoxConditionalStatementManipulationService.canConvertToPropertyForm(element)) return
         val description = ChronicleInspectionBundle.message("script.conditionalStatementToPropertyForm.desc")
         holder.registerProblem(element, description, Fix())
@@ -42,7 +42,7 @@ class ConditionalStatementToPropertyFormInspection : LocalInspectionTool(), Dumb
         override fun getFamilyName() = ChronicleInspectionBundle.message("script.conditionalStatementToPropertyForm.fix.1.name")
 
         override fun applyFix(project: Project, element: PsiElement, updater: ModPsiUpdater) {
-            val element = element.parentOfType<ParadoxScriptConditionalBlock>(withSelf = true) ?: return
+            val element = element.parentOfType<ParadoxScriptNormalConditionalBlock>(withSelf = true) ?: return
             ParadoxConditionalStatementManipulationService.convertToPropertyForm(element, project)
         }
     }
