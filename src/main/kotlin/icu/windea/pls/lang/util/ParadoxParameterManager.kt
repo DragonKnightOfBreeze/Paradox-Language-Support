@@ -376,7 +376,7 @@ object ParadoxParameterManager {
                         val revert = v.equals("no", true)
                         val operator = conditionalExpression.findChild { it.elementType == ParadoxScriptElementTypes.NOT_SIGN } == null
                         if ((!revert && operator) || (revert && !operator)) {
-                            val (start, end) = ParadoxPsiService.findMemberElementsToInline(element)
+                            val (start, end) = ParadoxPsiService.getElementsToInlineInScriptFile(element)
                             if (start != null && end != null) {
                                 element.parent.addRangeAfter(start, end, element)
                             }

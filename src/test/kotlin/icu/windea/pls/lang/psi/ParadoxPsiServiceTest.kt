@@ -168,17 +168,17 @@ class ParadoxPsiServiceTest : BasePlatformTestCase(), ChronicleTestScope {
 
     // endregion
 
-    // region findMemberElementsToInline
+    // region getElementsToInlineInScriptFile
 
     @Test
-    fun findMemberElementsToInline_basic() {
+    fun getElementsToInlineInScriptFile_basic() {
         // 空块（紧邻的花括号）
         run {
             myFixture.configureByText("test.txt", """
                 trigger_name = <caret>{}
             """.trimIndent())
             val block = myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptBlock>()!!
-            val (first, last) = ParadoxPsiService.findMemberElementsToInline(block)
+            val (first, last) = ParadoxPsiService.getElementsToInlineInScriptFile(block)
             assertNull(first)
             assertNull(last)
         }
@@ -190,7 +190,7 @@ class ParadoxPsiServiceTest : BasePlatformTestCase(), ChronicleTestScope {
                 }
             """.trimIndent())
             val block = myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptBlock>()!!
-            val (first, last) = ParadoxPsiService.findMemberElementsToInline(block)
+            val (first, last) = ParadoxPsiService.getElementsToInlineInScriptFile(block)
             assertNull(first)
             assertNull(last)
         }
@@ -204,7 +204,7 @@ class ParadoxPsiServiceTest : BasePlatformTestCase(), ChronicleTestScope {
                 }
             """.trimIndent())
             val block = myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptBlock>()!!
-            val (first, last) = ParadoxPsiService.findMemberElementsToInline(block)
+            val (first, last) = ParadoxPsiService.getElementsToInlineInScriptFile(block)
             assertNotNull(first)
             assertNotNull(last)
         }
@@ -217,7 +217,7 @@ class ParadoxPsiServiceTest : BasePlatformTestCase(), ChronicleTestScope {
                 }
             """.trimIndent())
             val block = myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptBlock>()!!
-            val (first, last) = ParadoxPsiService.findMemberElementsToInline(block)
+            val (first, last) = ParadoxPsiService.getElementsToInlineInScriptFile(block)
             assertNotNull(first)
             assertNotNull(last)
             assertEquals(first, last)
@@ -234,7 +234,7 @@ class ParadoxPsiServiceTest : BasePlatformTestCase(), ChronicleTestScope {
                 }
             """.trimIndent())
             val block = myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptBlock>()!!
-            val (first, last) = ParadoxPsiService.findMemberElementsToInline(block)
+            val (first, last) = ParadoxPsiService.getElementsToInlineInScriptFile(block)
             assertNotNull(first)
             assertNotNull(last)
             assertEquals(first, last)
@@ -250,7 +250,7 @@ class ParadoxPsiServiceTest : BasePlatformTestCase(), ChronicleTestScope {
                 }
             """.trimIndent())
             val block = myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptBlock>()!!
-            val (first, last) = ParadoxPsiService.findMemberElementsToInline(block)
+            val (first, last) = ParadoxPsiService.getElementsToInlineInScriptFile(block)
             assertNotNull(first)
             assertNotNull(last)
             assertNotEquals(first, last)
@@ -261,10 +261,10 @@ class ParadoxPsiServiceTest : BasePlatformTestCase(), ChronicleTestScope {
 
     // endregion
 
-    // region findRichTextElementsToInline
+    // region getElementsToInlineInLocalisationFile
 
     @Test
-    fun findRichTextElementsToInline_basic() {
+    fun getElementsToInlineInLocalisationFile_basic() {
         // 空文本
         run {
             myFixture.configureByText("test.yml", """
@@ -272,7 +272,7 @@ class ParadoxPsiServiceTest : BasePlatformTestCase(), ChronicleTestScope {
                  my_key:0 <caret>""
             """.trimIndent())
             val value = myFixture.findElementAtCaret()?.parentOfType<ParadoxLocalisationPropertyValue>()!!
-            val (first, last) = ParadoxPsiService.findRichTextElementsToInline(value)
+            val (first, last) = ParadoxPsiService.getElementsToInlineInLocalisationFile(value)
             assertNull(first)
             assertNull(last)
         }
@@ -284,7 +284,7 @@ class ParadoxPsiServiceTest : BasePlatformTestCase(), ChronicleTestScope {
                  my_key:0 <caret>"Hello World"
             """.trimIndent())
             val value = myFixture.findElementAtCaret()?.parentOfType<ParadoxLocalisationPropertyValue>()!!
-            val (first, last) = ParadoxPsiService.findRichTextElementsToInline(value)
+            val (first, last) = ParadoxPsiService.getElementsToInlineInLocalisationFile(value)
             assertNotNull(first)
             assertNotNull(last)
             assertEquals(first, last)
@@ -297,7 +297,7 @@ class ParadoxPsiServiceTest : BasePlatformTestCase(), ChronicleTestScope {
                  my_key:0 <caret>"Hello [Root.GetName]"
             """.trimIndent())
             val value = myFixture.findElementAtCaret()?.parentOfType<ParadoxLocalisationPropertyValue>()!!
-            val (first, last) = ParadoxPsiService.findRichTextElementsToInline(value)
+            val (first, last) = ParadoxPsiService.getElementsToInlineInLocalisationFile(value)
             assertNotNull(first)
             assertNotNull(last)
             assertNotEquals(first, last)
