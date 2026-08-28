@@ -10,7 +10,7 @@ import icu.windea.pls.lang.inspections.ParadoxAccessInspectionService
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxPsiElementVisitor
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
-import icu.windea.pls.script.psi.ParadoxConditionParameter
+import icu.windea.pls.script.psi.ParadoxScriptConditionParameter
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 /**
@@ -33,7 +33,7 @@ class UnusedParameterInspection : LocalInspectionTool() {
                 ParadoxAccessInspectionService.checkForUnusedParameter(element, context)
             }
 
-            override fun visitConditionParameter(element: ParadoxConditionParameter) {
+            override fun visitConditionParameter(element: ParadoxScriptConditionParameter) {
                 super.visitConditionParameter(element)
                 ParadoxAccessInspectionService.checkForUnusedParameter(element, context)
             }

@@ -10,8 +10,8 @@ import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import icu.windea.pls.lang.psi.ParadoxPsiElementVisitor
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
-import icu.windea.pls.script.psi.ParadoxConditionParameter
 import icu.windea.pls.script.psi.ParadoxParameter
+import icu.windea.pls.script.psi.ParadoxScriptConditionParameter
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes
 
 /**
@@ -31,20 +31,20 @@ class UnsupportedParameterInspection : LocalInspectionTool() {
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         return object : ParadoxPsiElementVisitor() {
-            override fun visitConditionParameter(element: ParadoxConditionParameter) {
-                super.visitConditionParameter(element)
-                checkGeneral(element, holder)
-            }
-
             override fun visitParameter(element: ParadoxParameter) {
                 super.visitParameter(element)
                 checkGeneral(element, holder)
                 checkInlineScript(element, holder)
             }
+
+            override fun visitConditionParameter(element: ParadoxScriptConditionParameter) {
+                super.visitConditionParameter(element)
+                checkGeneral(element, holder)
+            }
         }
     }
 
-    private fun checkGeneral(element: ParadoxConditionParameter, holder: ProblemsHolder) {
+    private fun checkGeneral(element: ParadoxScriptConditionParameter, holder: ProblemsHolder) {
         if (element.reference?.resolve() != null) return
         holder.registerProblem(element, ChronicleInspectionBundle.message("script.unsupportedParameter.desc.2"))
     }

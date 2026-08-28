@@ -14,8 +14,9 @@ import com.intellij.spellchecker.tokenizer.Tokenizer
 import icu.windea.pls.core.children
 import icu.windea.pls.core.isIdentifier
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
-import icu.windea.pls.script.psi.ParadoxConditionParameter
+import icu.windea.pls.script.psi.ParadoxArgument
 import icu.windea.pls.script.psi.ParadoxParameter
+import icu.windea.pls.script.psi.ParadoxScriptConditionParameter
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableName
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
@@ -30,6 +31,7 @@ class ParadoxScriptSpellcheckerStrategy : SpellcheckingStrategy(), DumbAware {
     private val scriptedVariableReferenceTokenizer = TokenAwareTokenizer(SCRIPTED_VARIABLE_REFERENCE_TOKEN)
     private val parameterTokenizer = TokenAwareTokenizer(PARAMETER_TOKEN)
     private val conditionParameterTokenizer = TokenAwareTokenizer(CONDITION_PARAMETER_TOKEN)
+    private val argumentTokenizer = TokenAwareTokenizer(CONDITION_PARAMETER_TOKEN)
 
     override fun getTokenizer(element: PsiElement): Tokenizer<*> {
         if (element is PsiWhiteSpace) return emptyTokenizer
@@ -40,7 +42,8 @@ class ParadoxScriptSpellcheckerStrategy : SpellcheckingStrategy(), DumbAware {
             is ParadoxScriptedVariableReference -> scriptedVariableReferenceTokenizer
             is ParadoxScriptStringExpressionElement -> emptyTokenizer // 目前不做检查
             is ParadoxParameter -> parameterTokenizer
-            is ParadoxConditionParameter -> conditionParameterTokenizer
+            is ParadoxScriptConditionParameter -> conditionParameterTokenizer
+            is ParadoxArgument -> argumentTokenizer
             else -> emptyTokenizer
         }
     }

@@ -12,11 +12,11 @@ import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
-import icu.windea.pls.script.psi.ParadoxConditionParameter
 import icu.windea.pls.script.psi.ParadoxParameter
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptBoolean
 import icu.windea.pls.script.psi.ParadoxScriptColor
+import icu.windea.pls.script.psi.ParadoxScriptConditionParameter
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes
 import icu.windea.pls.script.psi.ParadoxScriptFloat
 import icu.windea.pls.script.psi.ParadoxScriptInlineMath
@@ -62,7 +62,7 @@ object ParadoxTypeResolver {
             is ParadoxScriptInlineMathNumber -> resolveType(element.text)
             is ParadoxLocalisationProperty -> ParadoxType.LocalisationProperty
             is ParadoxParameter -> ParadoxType.Parameter
-            is ParadoxConditionParameter -> ParadoxType.ConditionParameter
+            is ParadoxScriptConditionParameter -> ParadoxType.ConditionParameter
             is ParadoxLocalisationParameter -> ParadoxType.LocalisationParameter
             else -> null
         }

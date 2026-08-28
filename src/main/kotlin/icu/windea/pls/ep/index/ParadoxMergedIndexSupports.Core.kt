@@ -22,8 +22,8 @@ import icu.windea.pls.model.constraints.ParadoxReferenceConstraint
 import icu.windea.pls.model.index.ParadoxDynamicValueIndexInfo
 import icu.windea.pls.model.index.ParadoxLocalisationParameterIndexInfo
 import icu.windea.pls.model.index.ParadoxParameterIndexInfo
-import icu.windea.pls.script.psi.ParadoxConditionParameter
 import icu.windea.pls.script.psi.ParadoxParameter
+import icu.windea.pls.script.psi.ParadoxScriptConditionParameter
 import java.io.DataInput
 import java.io.DataOutput
 
@@ -143,7 +143,7 @@ class ParadoxParameterWithReadAccessMergedIndexSupport : ParadoxMergedIndexSuppo
     private fun resolve(element: PsiElement): ParadoxParameterLightElement? {
         return when (element) {
             is ParadoxParameter -> ParadoxParameterService.resolveParameter(element)
-            is ParadoxConditionParameter -> ParadoxParameterService.resolveConditionParameter(element)
+            is ParadoxScriptConditionParameter -> ParadoxParameterService.resolveConditionParameter(element)
             else -> null
         }
     }

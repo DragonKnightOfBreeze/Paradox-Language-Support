@@ -8,10 +8,10 @@ import com.intellij.psi.PsiElement
  *
  * @see ParadoxScriptConditionalParameter
  */
-interface ParadoxConditionParameter : NavigatablePsiElement {
+interface ParadoxScriptConditionParameter : NavigatablePsiElement {
     val idElement: PsiElement?
 
     override fun getName(): String?
 
-    fun setName(name: String): ParadoxConditionParameter
+    fun setName(name: String): ParadoxScriptConditionParameter
 }

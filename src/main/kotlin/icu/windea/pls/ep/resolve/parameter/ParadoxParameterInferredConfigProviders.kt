@@ -20,7 +20,7 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionRecursiveVisitor
 import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.model.ParadoxParameterContextInfo
-import icu.windea.pls.script.psi.ParadoxConditionParameter
+import icu.windea.pls.script.psi.ParadoxScriptConditionParameter
 import icu.windea.pls.script.psi.ParadoxScriptInlineMathParameter
 import icu.windea.pls.script.psi.ParadoxScriptParameter
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
@@ -47,7 +47,7 @@ class ParadoxDefaultExpressionParameterInferredConfigProvider : ParadoxParameter
         val element = parameterInfo.element ?: return null
         val parentElement = parameterInfo.parentElement ?: return null
         return when (element) {
-            is ParadoxConditionParameter -> {
+            is ParadoxScriptConditionParameter -> {
                 configGroup.mockConfigModel.wildcardScalar
             }
             is ParadoxScriptParameter -> {

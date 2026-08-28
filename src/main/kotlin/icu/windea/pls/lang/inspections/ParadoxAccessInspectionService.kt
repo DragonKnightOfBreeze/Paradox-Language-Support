@@ -14,7 +14,7 @@ import icu.windea.pls.lang.search.ParadoxDynamicValueSearch
 import icu.windea.pls.lang.search.ParadoxParameterSearch
 import icu.windea.pls.lang.search.util.withSearchScope
 import icu.windea.pls.model.constraints.ParadoxReferenceConstraint
-import icu.windea.pls.script.psi.ParadoxConditionParameter
+import icu.windea.pls.script.psi.ParadoxScriptConditionParameter
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 /**
@@ -25,7 +25,7 @@ object ParadoxAccessInspectionService {
 
     fun checkForUnusedParameter(element: PsiElement, context: ParadoxAccessInspectionContext) {
         val holder = context.holder
-        if (element !is ParadoxScriptStringExpressionElement && element !is ParadoxConditionParameter) return
+        if (element !is ParadoxScriptStringExpressionElement && element !is ParadoxScriptConditionParameter) return
         val references = element.references
         for (reference in references) {
             ProgressManager.checkCanceled()

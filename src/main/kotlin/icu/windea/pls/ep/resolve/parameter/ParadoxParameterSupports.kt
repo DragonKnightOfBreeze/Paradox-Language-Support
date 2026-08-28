@@ -27,8 +27,8 @@ import icu.windea.pls.model.ParadoxParameterInfo
 import icu.windea.pls.model.definitionName
 import icu.windea.pls.model.definitionTypes
 import icu.windea.pls.model.inlineScriptExpression
-import icu.windea.pls.script.psi.ParadoxConditionParameter
 import icu.windea.pls.script.psi.ParadoxParameter
+import icu.windea.pls.script.psi.ParadoxScriptConditionParameter
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -54,7 +54,7 @@ class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         return ParadoxParameterSupportFactory.resolveParameterForDefinition(element, name, context)
     }
 
-    override fun resolveConditionParameter(element: ParadoxConditionParameter): ParadoxParameterLightElement? {
+    override fun resolveConditionParameter(element: ParadoxScriptConditionParameter): ParadoxParameterLightElement? {
         val name = element.name?.orNull() ?: return null
         val context = findContext(element) ?: return null
         return ParadoxParameterSupportFactory.resolveParameterForDefinition(element, name, context)
@@ -123,7 +123,7 @@ class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         return ParadoxParameterSupportFactory.resolveParameterForInlineScript(element, name, context)
     }
 
-    override fun resolveConditionParameter(element: ParadoxConditionParameter): ParadoxParameterLightElement? {
+    override fun resolveConditionParameter(element: ParadoxScriptConditionParameter): ParadoxParameterLightElement? {
         val name = element.name?.orNull() ?: return null
         val context = findContext(element) as? ParadoxScriptFile ?: return null
         return ParadoxParameterSupportFactory.resolveParameterForInlineScript(element, name, context)
@@ -177,7 +177,7 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
 
     override fun resolveParameter(element: ParadoxParameter) = null
 
-    override fun resolveConditionParameter(element: ParadoxConditionParameter) = null
+    override fun resolveConditionParameter(element: ParadoxScriptConditionParameter) = null
 
     override fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInExpression: TextRange?, config: CwtConfig<*>): ParadoxParameterLightElement? {
         return ParadoxParameterSupportFactory.resolveArgumentForScriptValueReference(element, rangeInExpression, config)

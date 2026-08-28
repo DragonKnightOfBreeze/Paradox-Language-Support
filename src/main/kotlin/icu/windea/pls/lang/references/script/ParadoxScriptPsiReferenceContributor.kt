@@ -4,8 +4,8 @@ import com.intellij.patterns.PlatformPatterns.*
 import com.intellij.psi.PsiReferenceContributor
 import com.intellij.psi.PsiReferenceRegistrar
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
-import icu.windea.pls.script.psi.ParadoxConditionParameter
 import icu.windea.pls.script.psi.ParadoxParameter
+import icu.windea.pls.script.psi.ParadoxScriptConditionParameter
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptString
@@ -18,7 +18,7 @@ class ParadoxScriptPsiReferenceContributor : PsiReferenceContributor() {
     private val definitionInjectionReferenceProvider = ParadoxDefinitionInjectionPsiReferenceProvider()
 
     override fun registerReferenceProviders(registrar: PsiReferenceRegistrar) {
-        registrar.registerReferenceProvider(psiElement(ParadoxConditionParameter::class.java), provider)
+        registrar.registerReferenceProvider(psiElement(ParadoxScriptConditionParameter::class.java), provider)
         registrar.registerReferenceProvider(psiElement(ParadoxParameter::class.java), provider)
         registrar.registerReferenceProvider(psiElement(ParadoxScriptedVariableReference::class.java), provider)
 

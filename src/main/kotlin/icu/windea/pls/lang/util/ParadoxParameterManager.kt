@@ -55,8 +55,8 @@ import icu.windea.pls.model.ParadoxParameterContextInfo
 import icu.windea.pls.model.ParadoxParameterContextReferenceInfo
 import icu.windea.pls.model.ParadoxParameterInfo
 import icu.windea.pls.model.toInfo
-import icu.windea.pls.script.psi.ParadoxConditionParameter
 import icu.windea.pls.script.psi.ParadoxParameter
+import icu.windea.pls.script.psi.ParadoxScriptConditionParameter
 import icu.windea.pls.script.psi.ParadoxScriptConditionalBlock
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
@@ -214,7 +214,7 @@ object ParadoxParameterManager {
             // 排除当前正在输入的那个
             if (parameterInfos.size == 1 && element isSamePosition parameter) continue
             val parameterElement = when {
-                parameter is ParadoxConditionParameter -> ParadoxParameterService.resolveConditionParameter(parameter)
+                parameter is ParadoxScriptConditionParameter -> ParadoxParameterService.resolveConditionParameter(parameter)
                 parameter is ParadoxParameter -> ParadoxParameterService.resolveParameter(parameter)
                 else -> null
             } ?: continue
@@ -248,7 +248,7 @@ object ParadoxParameterManager {
 
                 val parameter = parameterInfos.firstNotNullOfOrNull { it.element } ?: continue
                 val parameterElement = when {
-                    parameter is ParadoxConditionParameter -> ParadoxParameterService.resolveConditionParameter(parameter)
+                    parameter is ParadoxScriptConditionParameter -> ParadoxParameterService.resolveConditionParameter(parameter)
                     parameter is ParadoxParameter -> ParadoxParameterService.resolveParameter(parameter)
                     else -> null
                 } ?: continue
@@ -271,7 +271,7 @@ object ParadoxParameterManager {
         return when (element) {
             is ParadoxParameterLightElement -> element
             is ParadoxParameter -> ParadoxParameterService.resolveParameter(element)
-            is ParadoxConditionParameter -> ParadoxParameterService.resolveConditionParameter(element)
+            is ParadoxScriptConditionParameter -> ParadoxParameterService.resolveConditionParameter(element)
             else -> null
         }
     }

@@ -8,8 +8,8 @@ import icu.windea.pls.core.util.ReadWriteAccess
 import icu.windea.pls.core.util.values.LazyValue
 import icu.windea.pls.ep.resolve.parameter.ParadoxParameterSupport
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
-import icu.windea.pls.script.psi.ParadoxConditionParameter
 import icu.windea.pls.script.psi.ParadoxParameter
+import icu.windea.pls.script.psi.ParadoxScriptConditionParameter
 import javax.swing.Icon
 
 /**
@@ -21,7 +21,7 @@ import javax.swing.Icon
  *
  * @see ParadoxParameterLightElement
  * @see ParadoxParameter
- * @see ParadoxConditionParameter
+ * @see ParadoxScriptConditionParameter
  * @see ParadoxParameterSupport
  */
 class ParadoxParameterInfo(

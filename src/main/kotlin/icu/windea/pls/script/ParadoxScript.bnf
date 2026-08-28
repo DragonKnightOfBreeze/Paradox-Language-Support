@@ -291,7 +291,7 @@ conditional_expression ::= NOT_SIGN ? conditional_parameter {
   methods=[getPresentableText]
 }
 conditional_parameter ::= CONDITION_PARAMETER_TOKEN {
-  implements="icu.windea.pls.script.psi.ParadoxConditionParameter"
+  implements="icu.windea.pls.script.psi.ParadoxScriptConditionParameter"
   methods=[
     getIdElement getIcon getName setName getTextOffset
     getReference getReferences

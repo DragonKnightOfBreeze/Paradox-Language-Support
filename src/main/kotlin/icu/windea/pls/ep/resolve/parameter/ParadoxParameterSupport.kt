@@ -13,8 +13,8 @@ import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.model.ParadoxParameterContextInfo
 import icu.windea.pls.model.ParadoxParameterContextReferenceInfo
 import icu.windea.pls.model.ParadoxParameterInfo
-import icu.windea.pls.script.psi.ParadoxConditionParameter
 import icu.windea.pls.script.psi.ParadoxParameter
+import icu.windea.pls.script.psi.ParadoxScriptConditionParameter
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 
 /**
@@ -30,7 +30,7 @@ interface ParadoxParameterSupport {
 
     fun resolveParameter(element: ParadoxParameter): ParadoxParameterLightElement?
 
-    fun resolveConditionParameter(element: ParadoxConditionParameter): ParadoxParameterLightElement?
+    fun resolveConditionParameter(element: ParadoxScriptConditionParameter): ParadoxParameterLightElement?
 
     fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInExpression: TextRange?, config: CwtConfig<*>): ParadoxParameterLightElement?
 

@@ -34,8 +34,8 @@ import icu.windea.pls.model.ParadoxParameterContextReferenceInfo
 import icu.windea.pls.model.orSpecific
 import icu.windea.pls.model.support
 import icu.windea.pls.model.type.CwtExpressionType
-import icu.windea.pls.script.psi.ParadoxConditionParameter
 import icu.windea.pls.script.psi.ParadoxParameter
+import icu.windea.pls.script.psi.ParadoxScriptConditionParameter
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 
 @Optimized
@@ -76,7 +76,7 @@ object ParadoxParameterService {
     /**
      * @see ParadoxParameterSupport.resolveConditionParameter
      */
-    fun resolveConditionParameter(element: ParadoxConditionParameter): ParadoxParameterLightElement? {
+    fun resolveConditionParameter(element: ParadoxScriptConditionParameter): ParadoxParameterLightElement? {
         val supports = ParadoxParameterSupport.EP_NAME.extensionList
         supports.forEachFast { support ->
             support.resolveConditionParameter(element)?.also { it.support = support }?.let { return it }

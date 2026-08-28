@@ -30,7 +30,7 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
   }
 
   public void visitConditionalParameter(@NotNull ParadoxScriptConditionalParameter o) {
-    visitParadoxConditionParameter(o);
+    visitConditionParameter(o);
   }
 
   public void visitFloat(@NotNull ParadoxScriptFloat o) {
@@ -177,12 +177,12 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
     visitElement(o);
   }
 
-  public void visitParadoxConditionParameter(@NotNull ParadoxConditionParameter o) {
+  public void visitParadoxParameter(@NotNull ParadoxParameter o) {
     visitElement(o);
   }
 
-  public void visitParadoxParameter(@NotNull ParadoxParameter o) {
-    visitElement(o);
+  public void visitConditionParameter(@NotNull ParadoxScriptConditionParameter o) {
+    visitPsiElement(o);
   }
 
   public void visitConditionalBlock(@NotNull ParadoxScriptConditionalBlock o) {
