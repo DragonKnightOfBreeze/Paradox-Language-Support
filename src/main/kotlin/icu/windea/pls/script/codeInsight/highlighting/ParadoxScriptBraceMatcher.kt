@@ -8,6 +8,7 @@ import icu.windea.pls.script.psi.ParadoxScriptElementTypes
 
 class ParadoxScriptBraceMatcher : PairedBraceMatcher {
     private val pairs = arrayOf(
+        BracePair(ParadoxScriptElementTypes.LEFT_QUOTE, ParadoxScriptElementTypes.RIGHT_QUOTE, true),
         BracePair(ParadoxScriptElementTypes.LEFT_BRACE, ParadoxScriptElementTypes.RIGHT_BRACE, true),
         BracePair(ParadoxScriptElementTypes.PARAMETER_START, ParadoxScriptElementTypes.PARAMETER_END, false),
         BracePair(ParadoxScriptElementTypes.LEFT_BRACKET, ParadoxScriptElementTypes.RIGHT_BRACKET, false), // cannot be structural
