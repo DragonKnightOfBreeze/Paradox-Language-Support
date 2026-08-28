@@ -1,19 +1,19 @@
 l_english:
- key:0 "Some text"
- key:0 "Some text
- key:0 Some text"
- key:0 Some text
+ key:0 "some text"
+ key:0 "some text
+ key:0 some text"
+ key:0 some text
 
- key:0"Some text"
- key:0"Some text
- key:0Some text"
- key:0Some text
+ key:0"some text"
+ key:0"some text
+ key:0some text"
+ key:0some text
 
- key: "Some text"
- key: "Some text
- key: Some text"
- key: Some text
+ key: "some text"
+ key: "some text
+ key: some text"
+ key: some text
 
- key:"Some text"
- key:"Some text
- key:Some text
+ key:"some text"
+ key:"some text
+ key:some text

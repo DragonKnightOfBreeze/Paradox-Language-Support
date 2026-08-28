@@ -27,8 +27,8 @@ class ParadoxLocalisationSyntaxAnnotatorTest : BasePlatformTestCase(), Chronicle
 
     @Test
     fun testMissingQuotes_errors() {
-        // 两个标注：value" 缺失开引号；"value 缺失闭引号
-        myFixture.configureByText("annotator_missing_quotes.test.cwt") {
+        // NOTE 3.0.2 `# eof` here is required, or the eof error will be ignored
+        myFixture.configureByText("annotator_missing_quotes.test.yml") {
             val m1 = ChronicleBundle.message("annotator.missing.opening.quote.message")
             val m2 = ChronicleBundle.message("annotator.missing.closing.quote.message")
             """
@@ -38,21 +38,24 @@ class ParadoxLocalisationSyntaxAnnotatorTest : BasePlatformTestCase(), Chronicle
              key: ${error(m1)}${errorEnd()}value"
              key: "value${error(m2)}${errorEnd()}
 
-             key: "value value"
-             key: ${error(m1)}${errorEnd()}value value${error(m2)}${errorEnd()}
-             key: ${error(m1)}${errorEnd()}value value"
-             key: "value value${error(m2)}${errorEnd()}
+             key: "some text"
+             key: ${error(m1)}${errorEnd()}some text${error(m2)}${errorEnd()}
+             key: ${error(m1)}${errorEnd()}some text"
+             key: "some text${error(m2)}${errorEnd()}
+             # eof
             """.trimIndent()
         }
-        myFixture.checkHighlighting(true, true, true)
+        myFixture.checkHighlighting()
     }
 
     @Test
     fun testMissingQuotes_fixes() {
+        // NOTE 3.0.2 `# eof` here is required, or the eof error will be ignored
         run {
             myFixture.configureByText("annotator_adjacent_icons.fix.test.yml", """
                 l_english:
                  key: <caret>value"
+                 # eof
             """.trimIndent())
             val fixName = ChronicleBundle.message("annotator.missing.opening.quote.fix")
             val intention = myFixture.findSingleIntention(fixName)
@@ -60,12 +63,14 @@ class ParadoxLocalisationSyntaxAnnotatorTest : BasePlatformTestCase(), Chronicle
             myFixture.checkResult("""
                 l_english:
                  key: "value"
+                 # eof
             """.trimIndent())
         }
         run {
             myFixture.configureByText("annotator_adjacent_icons.fix.test.yml", """
                 l_english:
                  key: "value<caret>
+                 # eof
             """.trimIndent())
             val fixName = ChronicleBundle.message("annotator.missing.closing.quote.fix")
             val intention = myFixture.findSingleIntention(fixName)
@@ -73,43 +78,50 @@ class ParadoxLocalisationSyntaxAnnotatorTest : BasePlatformTestCase(), Chronicle
             myFixture.checkResult("""
                 l_english:
                  key: "value"
+                 # eof
             """.trimIndent())
         }
 
         run {
             myFixture.configureByText("annotator_adjacent_icons.fix.test.yml", """
                 l_english:
-                 key: <caret>value value"
+                 key: <caret>some text"
+                 # eof
             """.trimIndent())
             val fixName = ChronicleBundle.message("annotator.missing.opening.quote.fix")
             val intention = myFixture.findSingleIntention(fixName)
             myFixture.launchAction(intention)
             myFixture.checkResult("""
                 l_english:
-                 key: "value value"
+                 key: "some text"
+                 # eof
             """.trimIndent())
         }
         run {
             myFixture.configureByText("annotator_adjacent_icons.fix.test.yml", """
                 l_english:
-                 key: "value value<caret>
+                 key: "some text<caret>
+                 # eof
             """.trimIndent())
             val fixName = ChronicleBundle.message("annotator.missing.closing.quote.fix")
             val intention = myFixture.findSingleIntention(fixName)
             myFixture.launchAction(intention)
             myFixture.checkResult("""
                 l_english:
-                 key: "value value"
+                 key: "some text"
+                 # eof
             """.trimIndent())
         }
     }
 
     @Test
-    fun testMissingQuotes_fixes_noAvailable() {
+    fun testMissingQuotes_noAvailableFixes() {
+        // NOTE 3.0.2 `# eof` here is required, or the eof error will be ignored
         run {
             myFixture.configureByText("annotator_adjacent_icons.fix.test.yml", """
                 l_english:
-                 key: <caret>"value value"
+                 key: <caret>"value"
+                 # eof
             """.trimIndent())
             val available = myFixture.availableIntentions
             assertFalse(available.any { it.text == ChronicleBundle.message("annotator.missing.opening.quote.fix") })
@@ -118,7 +130,28 @@ class ParadoxLocalisationSyntaxAnnotatorTest : BasePlatformTestCase(), Chronicle
         run {
             myFixture.configureByText("annotator_adjacent_icons.fix.test.yml", """
                 l_english:
-                 key: "value value"<caret>
+                 key: "value"<caret>
+                 # eof
+            """.trimIndent())
+            val available = myFixture.availableIntentions
+            assertFalse(available.any { it.text == ChronicleBundle.message("annotator.missing.opening.quote.fix") })
+            assertFalse(available.any { it.text == ChronicleBundle.message("annotator.missing.closing.quote.fix") })
+        }
+        run {
+            myFixture.configureByText("annotator_adjacent_icons.fix.test.yml", """
+                l_english:
+                 key: <caret>"some text"
+                 # eof
+            """.trimIndent())
+            val available = myFixture.availableIntentions
+            assertFalse(available.any { it.text == ChronicleBundle.message("annotator.missing.opening.quote.fix") })
+            assertFalse(available.any { it.text == ChronicleBundle.message("annotator.missing.closing.quote.fix") })
+        }
+        run {
+            myFixture.configureByText("annotator_adjacent_icons.fix.test.yml", """
+                l_english:
+                 key: "some text"<caret>
+                 # eof
             """.trimIndent())
             val available = myFixture.availableIntentions
             assertFalse(available.any { it.text == ChronicleBundle.message("annotator.missing.opening.quote.fix") })
@@ -136,7 +169,7 @@ class ParadoxLocalisationSyntaxAnnotatorTest : BasePlatformTestCase(), Chronicle
              KEY1:0 "£a£${error(m1)}£${errorEnd()}b£"
             """.trimIndent()
         }
-        myFixture.checkHighlighting(true, true, true)
+        myFixture.checkHighlighting()
     }
 
     @Test
@@ -156,7 +189,7 @@ class ParadoxLocalisationSyntaxAnnotatorTest : BasePlatformTestCase(), Chronicle
     }
 
     @Test
-    fun testAdjacentIcons_fixes_noAvailable() {
+    fun testAdjacentIcons_noAvailableFixes() {
         myFixture.configureByText("annotator_adjacent_icons.fix.test.yml", """
             l_english:
              KEY1:0 "£a£ <caret>£b£"

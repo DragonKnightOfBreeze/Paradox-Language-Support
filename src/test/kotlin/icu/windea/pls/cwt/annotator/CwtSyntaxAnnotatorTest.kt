@@ -4,6 +4,9 @@ import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.test.ChronicleTestScope
+import icu.windea.pls.test.dsl.configureByText
+import org.junit.After
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -16,20 +19,98 @@ import org.junit.runners.JUnit4
 class CwtSyntaxAnnotatorTest : BasePlatformTestCase(), ChronicleTestScope {
     override fun getTestDataPath() = "src/test/testData"
 
-    @Test
-    fun testMissingQuotes_error() {
-        val openingTag = ChronicleBundle.message("annotator.missing.opening.quote.message").toErrorTag()
-        val closingTag = ChronicleBundle.message("annotator.missing.closing.quote.message").toErrorTag()
+    @Before
+    fun doSetUp() = markIntegrationTest()
 
-        // 两个标注：value" 缺失开引号；"value 缺失闭引号
-        myFixture.configureByText("annotator_missing_quotes.test.cwt",
+    @After
+    fun doTearDown() = clearIntegrationTest()
+
+    @Test
+    fun testMissingQuotes_errors() {
+        // NOTE 3.0.2 `# eof` here is required, or the eof error will be ignored
+        myFixture.configureByText("annotator_missing_quotes.test.cwt") {
+            val m1 = ChronicleBundle.message("annotator.missing.opening.quote.message")
+            val m2 = ChronicleBundle.message("annotator.missing.closing.quote.message")
             """
             "value"
             value
-            ${openingTag.start}value"${openingTag.end}
-            ${closingTag.start}"value${closingTag.end}
+            ${error(m1)}${errorEnd()}value"
+            "value${error(m2)}${errorEnd()}
+            # eof
             """.trimIndent()
-        )
-        myFixture.checkHighlighting(true, true, true)
+        }
+        myFixture.checkHighlighting()
+    }
+
+    @Test
+    fun testMissingQuotes_fixes() {
+        // NOTE 3.0.2 `# eof` here is required, or the eof error will be ignored
+        run {
+            myFixture.configureByText("annotator_adjacent_icons.fix.test.cwt", """
+                <caret>value"
+                # eof
+            """.trimIndent())
+            val fixName = ChronicleBundle.message("annotator.missing.opening.quote.fix")
+            val intention = myFixture.findSingleIntention(fixName)
+            myFixture.launchAction(intention)
+            myFixture.checkResult("""
+                "value"
+                # eof
+            """.trimIndent())
+        }
+        run {
+            myFixture.configureByText("annotator_adjacent_icons.fix.test.cwt", """
+                "value<caret>
+                # eof
+            """.trimIndent())
+            val fixName = ChronicleBundle.message("annotator.missing.closing.quote.fix")
+            val intention = myFixture.findSingleIntention(fixName)
+            myFixture.launchAction(intention)
+            myFixture.checkResult("""
+                "value"
+                # eof
+            """.trimIndent())
+        }
+    }
+
+    @Test
+    fun testMissingQuotes_noAvailableFixes() {
+        // NOTE 3.0.2 `# eof` here is required, or the eof error will be ignored
+        run {
+            myFixture.configureByText("annotator_adjacent_icons.fix.test.cwt", """
+                <caret>"value"
+                # eof
+            """.trimIndent())
+            val available = myFixture.availableIntentions
+            assertFalse(available.any { it.text == ChronicleBundle.message("annotator.missing.opening.quote.fix") })
+            assertFalse(available.any { it.text == ChronicleBundle.message("annotator.missing.closing.quote.fix") })
+        }
+        run {
+            myFixture.configureByText("annotator_adjacent_icons.fix.test.cwt", """
+                "value"<caret>
+                # eof
+            """.trimIndent())
+            val available = myFixture.availableIntentions
+            assertFalse(available.any { it.text == ChronicleBundle.message("annotator.missing.opening.quote.fix") })
+            assertFalse(available.any { it.text == ChronicleBundle.message("annotator.missing.closing.quote.fix") })
+        }
+        run {
+            myFixture.configureByText("annotator_adjacent_icons.fix.test.cwt", """
+                <caret>value
+                # eof
+            """.trimIndent())
+            val available = myFixture.availableIntentions
+            assertFalse(available.any { it.text == ChronicleBundle.message("annotator.missing.opening.quote.fix") })
+            assertFalse(available.any { it.text == ChronicleBundle.message("annotator.missing.closing.quote.fix") })
+        }
+        run {
+            myFixture.configureByText("annotator_adjacent_icons.fix.test.cwt", """
+                value<caret>
+                # eof
+            """.trimIndent())
+            val available = myFixture.availableIntentions
+            assertFalse(available.any { it.text == ChronicleBundle.message("annotator.missing.opening.quote.fix") })
+            assertFalse(available.any { it.text == ChronicleBundle.message("annotator.missing.closing.quote.fix") })
+        }
     }
 }

@@ -23,7 +23,7 @@ class ParadoxLocalisationSyntaxAnnotator : Annotator, DumbAware {
 
     private fun checkQuote(element: PsiElement, holder: AnnotationHolder) {
         // 检查是否缺失左侧或右侧的双引号
-        // 3.0.2 改为直接检查对应的词元（`LEFT_QUOTE` `RIGHT_QUOTE`）是否存在，而非检查文本是否用引号括起
+        // 3.0.2 不再检查文本是否用引号括起，而是直接检查对应的词元（`LEFT_QUOTE` `RIGHT_QUOTE`）是否存在
         if (element !is PsiQuoteAwareElement) return
         val isLeftQuoted = element.firstChild.elementType == ParadoxLocalisationElementTypes.LEFT_QUOTE
         val isRightQuoted = element.lastChild.elementType == ParadoxLocalisationElementTypes.RIGHT_QUOTE
