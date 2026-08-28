@@ -1,4 +1,4 @@
-ParadoxScriptFile: error_unclosed_brace.test.txt(0,18)
+ParadoxScriptFile: error_unclosed_braces.test.txt(0,18)
   ParadoxScriptRootBlock(0,18)
     ParadoxScriptProperty: root(0,18)
       ParadoxScriptPropertyKey: root(0,4)

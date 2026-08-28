@@ -1,0 +1,13 @@
+# 3.0.2 no recover for missing closing quotes, so do not check atm
+
+"key" = value
+key = value
+key" = value
+# "key = value
+
+key = "value"
+key = value
+key = value"
+# key = "value
+
+# eof

@@ -7,9 +7,9 @@ examples = {
     ## @type string = int
     number_value = 1
     ## @type string = string
-    string_value = Foo
+    string_value = text
     ## @type string = string
-    string_value = "Foo\n bar "
+    "string_value" = "text\nsome text"
     ## @type string = block
     values = {
         ## @type int

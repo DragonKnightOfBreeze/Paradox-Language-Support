@@ -32,14 +32,6 @@ class CwtParsingTest : ParsingTestCase("cwt/syntax", "test.cwt", CwtParserDefini
     @Test
     fun template_expression() = doTest(true)
     @Test
-    fun error_missing_property_value() = doTest(true)
-    @Test
-    fun error_missing_option_value() = doTest(true)
-    @Test
-    fun error_unclosed_brace() = doTest(true)
-    @Test
-    fun error_unclosed_quote() = doTest(true)
-    @Test
     fun option_comment_nested_eof() = doTest(true)
     @Test
     fun option_comments() = doTest(true)
@@ -53,4 +45,13 @@ class CwtParsingTest : ParsingTestCase("cwt/syntax", "test.cwt", CwtParserDefini
     fun snippet_alias() = doTest(true)
     @Test
     fun snippet_triggers_has_flag() = doTest(true)
+
+    @Test
+    fun error_missing_property_value() = doTest(true)
+    @Test
+    fun error_missing_option_value() = doTest(true)
+    @Test
+    fun error_unclosed_braces() = doTest(true)
+    @Test
+    fun error_unclosed_quotes() = doTest(true)
 }

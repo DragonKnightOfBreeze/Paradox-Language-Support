@@ -1,0 +1,13 @@
+# 3.0.2 recover at line break for missing closing quotes
+
+"key" = value
+key = value
+key" = value
+"key = value
+
+key = "value"
+key = value
+key = value"
+key = "value
+
+# eof

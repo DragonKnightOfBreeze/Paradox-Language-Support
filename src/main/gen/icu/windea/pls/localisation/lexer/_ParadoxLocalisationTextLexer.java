@@ -623,8 +623,8 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
         yybegin(currentState);
     }
 
-    private boolean exitStateForUnexpected() {
-        // exit state for unexpcted tokens (bad character)
+    private boolean exitStateOnBadCharacter() {
+        // exit state for bad character (as fallback)
         // heuristic: always exist
         exitState();
         yypushback(yylength());
@@ -988,7 +988,7 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
           // fall through
           case 56: break;
           case 11:
-            { if (!exitStateForUnexpected()) return BAD_CHARACTER;
+            { if (!exitStateOnBadCharacter()) return BAD_CHARACTER;
             }
           // fall through
           case 57: break;

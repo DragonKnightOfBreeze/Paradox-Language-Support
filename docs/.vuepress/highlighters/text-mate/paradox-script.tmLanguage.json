@@ -57,7 +57,7 @@
             {
               "name": "keyword.other.scripted-variable.paradox.script",
               "begin": "(?<=^|[\\s\\[\\]{}<>=])(?=[A-Za-z_$\\[])",
-              "end": "$|(?=[@#={}\\"\s])",
+              "end": "$|(?=[@#={}\"\\s])",
               "patterns": [
                 { "include": "#parameters" }
               ]
@@ -79,7 +79,7 @@
         {
           "name": "keyword.other.scripted-variable.paradox.script",
           "begin": "(?<=^|[\\s\\[\\]{}<>=])@(?=[A-Za-z_$\\[])",
-          "end": "$|(?=[@#={}\\"\s])",
+          "end": "$|(?=[@#={}\\\"\\s])",
           "patterns": [
             { "include": "#parameters" }
           ]
@@ -90,7 +90,7 @@
       "patterns": [
         {
           "name": "variable.key.quoted.double.paradox.script",
-          "begin": "\"(?=([^\"\\\\\\r\\n]|\\\\[\\s\\S])*\"?\\s*(?:=|!=|\\?=|<|>|<=|>=))",
+          "begin": "\"(?=([^\"\\\\\\r\\n]|\\\\.)*\"?\\s*(?:=|!=|\\?\\s*=|<|>|<=|>=))",
           "end": "\"",
           "patterns": [
             { "include": "#parameters" },
@@ -99,7 +99,7 @@
         },
         {
           "name": "variable.key.unquoted.paradox.script",
-          "begin": "(?=[^@#=<>!?{}\\[\\]\\s]+\"?\\s*(?:=|!=|\\?=|<|>|<=|>=))",
+          "begin": "(?=[^@#=<>!?{}\\[\\]\\s]+\"?\\s*(?:=|!=|\\?\\s*=|<|>|<=|>=))",
           "end": "$|(?=[@#=<>!?{}\\[\\]\\s])",
           "patterns": [
             { "include": "#parameters" },
@@ -154,7 +154,7 @@
     },
     "operators": {
       "patterns": [
-        { "name": "keyword.operator.comparison.paradox.script", "match": "=|==|!=|<>|\\?=|<=|>=|<|>" },
+        { "name": "keyword.operator.comparison.paradox.script", "match": "=|==|!=|<>|\\?\\s*=|<=|>=|<|>" },
         { "name": "keyword.operator.arithmetic.paradox.script", "match": "[+\\-*/%]" }
       ]
     }

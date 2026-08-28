@@ -79,6 +79,24 @@ class QuoteOrUnquoteLiteralIntentionsTest : BasePlatformTestCase(), ChronicleTes
     }
 
     @Test
+    fun testUnquoteLiteral_onlyLeftQuoted() {
+        val intentionName = ChronicleIntentionBundle.message("intention.unquoteLiteral")
+        myFixture.configureByText("test.csv", "name;age\nalice;<caret>\"18")
+        val intention = myFixture.findSingleIntention(intentionName)
+        myFixture.launchAction(intention)
+        myFixture.checkResult("name;age\nalice;18")
+    }
+
+    @Test
+    fun testUnquoteLiteral_onlyRightQuoted() {
+        val intentionName = ChronicleIntentionBundle.message("intention.unquoteLiteral")
+        myFixture.configureByText("test.csv", "name;age\nalice;<caret>18\"")
+        val intention = myFixture.findSingleIntention(intentionName)
+        myFixture.launchAction(intention)
+        myFixture.checkResult("name;age\nalice;18")
+    }
+
+    @Test
     fun testUnquoteLiteral_notAvailableWhenUnquoted() {
         val intentionName = ChronicleIntentionBundle.message("intention.unquoteLiteral")
         myFixture.configureByText("test.csv", "name;age\nalice;<caret>18")

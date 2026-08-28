@@ -70,7 +70,7 @@ export function registerParadoxScript(Prism) {
     // property key (before separator =, !=, ?=, <, >, <=, >=)
     'property': [
       {
-        pattern: /"(?:[^"\\\r\n]|\\[\s\S])*"?(?=\s*(?:=|!=|\?=|<|>|<=|>=))/,
+        pattern: /"(?:[^"\\\r\n]|\\.)*"?(?=\s*(?:=|!=|\?\s*=|<|>|<=|>=))/,
         greedy: true,
         inside: {
           'parameter': parameter,
@@ -78,7 +78,7 @@ export function registerParadoxScript(Prism) {
         }
       },
       {
-        pattern: /[^@#=<>!?{}\[\]\s"]+"?(?=\s*(?:=|!=|\?=|<|>|<=|>=))/,
+        pattern: /[^@#=<>!?{}"\s][^#=<>!?{}"\s]*"?(?=\s*(?:=|!=|\?\s*=|<|>|<=|>=))/,
         inside: {
           'parameter': parameter,
           'escape': escape,
@@ -89,7 +89,7 @@ export function registerParadoxScript(Prism) {
     'string': [
       // can be multiline
       {
-        pattern: /"(?:[^"\\]|\\[\s\S])*"?/,
+        pattern: /"([^"\\]|\\[\s\S])*"??/,
         greedy: true,
         inside: {
           'parameter': parameter,
@@ -97,7 +97,7 @@ export function registerParadoxScript(Prism) {
         }
       },
       {
-        pattern: /[^@#=<>!?{}\[\]\s"]+"?/, // exclude brackets here for compatibility
+        pattern: /[^@#=<>!?{}"\s][^#=<>!?{}"\s]*"?/, // exclude brackets here for compatibility
         inside: {
           'parameter': parameter,
           'escape': escape,
@@ -108,7 +108,7 @@ export function registerParadoxScript(Prism) {
       { pattern: /[{},]/ },
       { pattern: /[\[\]]/, greedy: true },
     ],
-    'operator': /=|!=|<>|\?=|<|>|<=|>=|[+\-*/%]/,
+    'operator': /=|!=|<>|\?\s*=|<|>|<=|>=|[+\-*/%]/,
   };
 }
 

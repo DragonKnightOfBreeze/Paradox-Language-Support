@@ -55,7 +55,7 @@
         },
         {
           "name": "variable.key.unquoted.cwt",
-          "begin": "(?=[^#={}\\"\s]+\"?\\s*(?:==|=|!=|<>))",
+          "begin": "(?=[^#={}\"\\s]+\"?\\s*(?:==|=|!=|<>))",
           "end": "$|(?=[#={}\\s])",
           "patterns": [
             { "include": "#escapes" }

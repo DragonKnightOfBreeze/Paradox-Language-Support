@@ -39,24 +39,27 @@ class ParadoxScriptParsingTest : ParsingTestCase("script/syntax", "test.txt", Pa
     @Test
     fun mixed_members() = doTest(true)
     @Test
-    fun error_missing_property_value() = doTest(true)
-    @Test
-    fun error_unclosed_brace() = doTest(true)
-    @Test
     fun nested() = doTest(true)
     @Test
     fun attached_comments() = doTest(true)
-    @Test
-    fun unterminated_quoted_string_value() = doTest(true)
 
     @Test
     fun construct_scripted_variables() = doTest(true)
-    @Test
-    fun construct_inline_maths() = doTest(true)
     @Test
     fun construct_conditional_blocks() = doTest(true)
     @Test
     fun construct_inline_conditional_blocks() = doTest(true)
     @Test
-    fun construct_advanced_interpolation() = doTest(true) // TODO 3.0.2 hard to solve...
+    fun construct_interpolations() = doTest(true) // 3.0.2
+    @Test
+    fun construct_complex_interpolations() = doTest(true) // 3.0.2
+    @Test
+    fun construct_inline_maths() = doTest(true)
+
+    @Test
+    fun error_missing_property_value() = doTest(true)
+    @Test
+    fun error_unclosed_braces() = doTest(true)
+    @Test
+    fun error_unclosed_quotes() = doTest(true)
 }

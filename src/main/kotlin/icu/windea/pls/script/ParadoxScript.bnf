@@ -32,6 +32,7 @@ root_block ::= root_block_item + {
   ]
   methods=[getMemberContainer getMembers getComponents]
 }
+ // order-sensitive for items
 private root_block_item ::= COMMENT | root_block_value | property | scripted_variable | normal_conditional_block
 private root_block_value ::= scripted_variable_reference | boolean | int | float | string | color | block | inline_math
 
@@ -56,7 +57,7 @@ property ::= property_key property_separator property_value {
   ]
 }
 // can be parameterized
-property_key ::= property_key_quoted | property_key_unquoted {
+property_key ::= property_key_parts_quoted | property_key_parts_unquoted {
   implements=[
     "icu.windea.pls.core.psi.PsiQuoteAwareElement"
     "icu.windea.pls.script.psi.ParadoxScriptLiteralValue"
@@ -69,9 +70,8 @@ property_key ::= property_key_quoted | property_key_unquoted {
     getReference getReferences
   ]
 }
-private property_key_quoted ::= LEFT_QUOTE property_key_parts ? RIGHT_QUOTE ? { pin=1 }
-private property_key_unquoted ::= property_key_parts RIGHT_QUOTE ?
-private property_key_parts ::= property_key_part (<<processPart>> property_key_part)
+private property_key_parts_quoted ::= LEFT_QUOTE property_key_part ? (<<processPart>> property_key_part) * RIGHT_QUOTE ? // no pin here
+private property_key_parts_unquoted ::= property_key_part (<<processPart>> property_key_part) * RIGHT_QUOTE ?
 private property_key_part ::= PROPERTY_KEY_TOKEN | normal_parameter | inline_conditional_block
 private property_separator ::= EQUAL_SIGN | LT_SIGN | GT_SIGN | LE_SIGN | GE_SIGN | NOT_EQUAL_SIGN | SAFE_ASSIGN_SIGN | SAFE_CALL_ASSIGN_SIGN
 private property_value ::= scripted_variable_reference | boolean | int | float | string | color | block | inline_math
@@ -108,7 +108,7 @@ float ::= FLOAT_TOKEN {
   methods=[getReference getReferences]
 }
 // can be parameterized
-string ::= string_quoted | string_unquoted {
+string ::= string_parts_quoted | string_parts_unquoted {
   extends=value
   implements=[
     "icu.windea.pls.core.psi.PsiQuoteAwareElement"
@@ -122,9 +122,8 @@ string ::= string_quoted | string_unquoted {
     getReference getReferences
   ]
 }
-private string_quoted ::= LEFT_QUOTE string_parts ? RIGHT_QUOTE ? { pin=1 }
-private string_unquoted ::= string_parts RIGHT_QUOTE ?
-private string_parts ::= string_part <<postProcessFirstPart>> (<<processPart>> string_part)
+private string_parts_quoted ::= LEFT_QUOTE <<processRightParts>> string_part ? (<<processPart>> string_part) * RIGHT_QUOTE ? // no pin here
+private string_parts_unquoted ::= string_part <<processRightParts>> (<<processPart>> string_part) * RIGHT_QUOTE ?
 private string_part ::= STRING_TOKEN | normal_parameter | inline_conditional_block
 color ::= COLOR_TOKEN {
   extends=value
@@ -143,6 +142,7 @@ block ::= LEFT_BRACE block_item * RIGHT_BRACE {
     getReference getReferences
   ]
 }
+ // order-sensitive for items
 private block_item ::= COMMENT | block_value | property | scripted_variable | normal_conditional_block {
   recoverWhile="#auto" // continue parsing
 }
@@ -193,7 +193,7 @@ scripted_variable_reference ::= AT scripted_variable_reference_parts {
     getReference getReferences
   ]
 }
-private scripted_variable_reference_parts ::= scripted_variable_reference_part <<postProcessFirstPart>> (<<processPart>> scripted_variable_reference_part)
+private scripted_variable_reference_parts ::= scripted_variable_reference_part <<processRightParts>> (<<processPart>> scripted_variable_reference_part) *
 private scripted_variable_reference_part ::= SCRIPTED_VARIABLE_REFERENCE_TOKEN | normal_parameter | inline_conditional_block
 
 // advanced script syntax
@@ -269,6 +269,7 @@ normal_conditional_block ::= LEFT_BRACKET conditional_header normal_conditional_
     getIcon getPresentableText
   ]
 }
+ // order-sensitive for items
 private normal_conditional_block_item ::= COMMENT | normal_conditional_block_value | property | normal_conditional_block {
   recoverWhile="#auto" // continue parsing
 }
@@ -401,5 +402,5 @@ inline_math_scripted_variable_reference ::= AT ? inline_math_scripted_variable_p
     getReference getReferences
   ]
 }
-private inline_math_scripted_variable_parts ::= inline_math_scripted_variable_reference_part <<postProcessFirstPart>> (<<processPart>> inline_math_scripted_variable_reference_part) *
+private inline_math_scripted_variable_parts ::= inline_math_scripted_variable_reference_part (<<processPart>> inline_math_scripted_variable_reference_part) *
 private inline_math_scripted_variable_reference_part ::= SCRIPTED_VARIABLE_REFERENCE_TOKEN | inline_math_parameter

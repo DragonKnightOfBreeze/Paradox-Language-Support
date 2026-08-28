@@ -10,7 +10,7 @@ examples = {
 
     # bar
     number_value =    @var # var
-    string_value = Foo
+    string_value = text
     string_value   = "Foo\n bar "
     values = {
         foo = bar

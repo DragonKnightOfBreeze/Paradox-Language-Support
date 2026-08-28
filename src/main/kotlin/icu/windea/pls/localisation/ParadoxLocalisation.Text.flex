@@ -91,8 +91,8 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
         yybegin(currentState);
     }
 
-    private boolean exitStateForUnexpected() {
-        // exit state for unexpcted tokens (bad character)
+    private boolean exitStateOnBadCharacter() {
+        // exit state for bad character (as fallback)
         // heuristic: always exist
         exitState();
         yypushback(yylength());
@@ -310,7 +310,7 @@ TEXT_FORMAT_TOKEN=[\w:;]+ // `italic;color:green` is allowed
 }
 <IN_COLOR_ID> {
     {COLOR_TOKEN} { yybegin(IN_COLORFUL_TEXT); return COLOR_TOKEN; }
-    [^] { if (!exitStateForUnexpected()) return BAD_CHARACTER; } // recovery
+    [^] { if (!exitStateOnBadCharacter()) return BAD_CHARACTER; } // recovery
 }
 
 // localisation parameter rules
@@ -338,16 +338,16 @@ TEXT_FORMAT_TOKEN=[\w:;]+ // `italic;color:green` is allowed
     "|" { yybegin(IN_PARAMETER_ARGUMENT); return PIPE; }
     "@" { yybegin(IN_SCRIPTED_VARIABLE_REFERENCE); return AT; }
     {PARAMETER_TOKEN} { return PARAMETER_TOKEN; }
-    [^] { if (!exitStateForUnexpected()) return BAD_CHARACTER; } // recovery
+    [^] { if (!exitStateOnBadCharacter()) return BAD_CHARACTER; } // recovery
 }
 <IN_PARAMETER_ARGUMENT> {
     {ARGUMENT_TOKEN} { return ARGUMENT_TOKEN; }
-    [^] { if (!exitStateForUnexpected()) return BAD_CHARACTER; } // recovery
+    [^] { if (!exitStateOnBadCharacter()) return BAD_CHARACTER; } // recovery
 }
 <IN_SCRIPTED_VARIABLE_REFERENCE> {
     "|" { yybegin(IN_PARAMETER_ARGUMENT); return PIPE; }
     {SCRIPTED_VARIABLE_TOKEN} { return SCRIPTED_VARIABLE_REFERENCE_TOKEN; }
-    [^] { if (!exitStateForUnexpected()) return BAD_CHARACTER; } // recovery
+    [^] { if (!exitStateOnBadCharacter()) return BAD_CHARACTER; } // recovery
 }
 
 // localisation icon rules
@@ -373,7 +373,7 @@ TEXT_FORMAT_TOKEN=[\w:;]+ // `italic;color:green` is allowed
 
     "|" { yybegin(IN_ICON_ARGUMENT); return PIPE; }
     {ICON_TOKEN} { return ICON_TOKEN; }
-    [^] { if (!exitStateForUnexpected()) return BAD_CHARACTER; } // recovery
+    [^] { if (!exitStateOnBadCharacter()) return BAD_CHARACTER; } // recovery
 }
 <IN_ICON_ARGUMENT> {
     "£" {
@@ -381,7 +381,7 @@ TEXT_FORMAT_TOKEN=[\w:;]+ // `italic;color:green` is allowed
     }
 
     {ARGUMENT_TOKEN} { return ARGUMENT_TOKEN; }
-    [^] { if (!exitStateForUnexpected()) return BAD_CHARACTER; } // recovery
+    [^] { if (!exitStateOnBadCharacter()) return BAD_CHARACTER; } // recovery
 }
 
 // localisation command rules
@@ -417,7 +417,7 @@ TEXT_FORMAT_TOKEN=[\w:;]+ // `italic;color:green` is allowed
     "|" { yybegin(IN_COMMAND_ARGUMENT); return PIPE; }
     {COMMAND_TEXT_TOKEN} { pushbackIfBlank(); return COMMAND_TEXT_TOKEN; } // trailing blank should be pushbacked
     {BLANK} { return WHITE_SPACE; } // compatible with blank
-    [^] { if (!exitStateForUnexpected()) return BAD_CHARACTER; } // recovery
+    [^] { if (!exitStateOnBadCharacter()) return BAD_CHARACTER; } // recovery
 }
 <IN_COMMAND_ARGUMENT> {
     "]" {
@@ -426,7 +426,7 @@ TEXT_FORMAT_TOKEN=[\w:;]+ // `italic;color:green` is allowed
     }
 
     {ARGUMENT_TOKEN} { return ARGUMENT_TOKEN; }
-    [^] { if (!exitStateForUnexpected()) return BAD_CHARACTER; } // recovery
+    [^] { if (!exitStateOnBadCharacter()) return BAD_CHARACTER; } // recovery
 }
 
 // [stellaris] localisation concept command rules (as special command rules)
@@ -441,7 +441,7 @@ TEXT_FORMAT_TOKEN=[\w:;]+ // `italic;color:green` is allowed
     "," { yybegin(IN_CONCEPT_AFTER_COMMA); return COMMA; }
     {CONCEPT_NAME_TOKEN} { return CONCEPT_NAME_TOKEN; }
     {BLANK} { return WHITE_SPACE; } // compatible with blank
-    [^] { if (!exitStateForUnexpected()) return BAD_CHARACTER; } // recovery
+    [^] { if (!exitStateOnBadCharacter()) return BAD_CHARACTER; } // recovery
 }
 <IN_CONCEPT_AFTER_COMMA> {
     // enter text section
@@ -472,7 +472,7 @@ TEXT_FORMAT_TOKEN=[\w:;]+ // `italic;color:green` is allowed
     }
 
     {TEXT_ICON_TOKEN} { return TEXT_ICON_TOKEN; }
-    [^] { if (!exitStateForUnexpected()) return BAD_CHARACTER; } // recovery
+    [^] { if (!exitStateOnBadCharacter()) return BAD_CHARACTER; } // recovery
 }
 
 // [ck3, vic3] localisation text format rules
