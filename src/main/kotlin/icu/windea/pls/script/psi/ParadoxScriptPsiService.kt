@@ -61,7 +61,7 @@ object ParadoxScriptPsiService {
                     if (valueElement != null) append(valueElement.presentableText) else append(DefaultStrings.unresolved)
                 }
             }
-            is ParadoxScriptParameter -> {
+            is ParadoxScriptNormalParameter -> {
                 element.text // use original text
             }
             is ParadoxScriptConditionalBlock -> {

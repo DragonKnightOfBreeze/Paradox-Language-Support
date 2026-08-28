@@ -8,10 +8,14 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
+import com.intellij.psi.util.PsiTreeUtil;
+import icu.windea.pls.script.psi.ParadoxScriptNormalParameter;
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableName;
 import icu.windea.pls.script.psi.ParadoxScriptVisitor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public class ParadoxScriptScriptedVariableNameImpl extends ASTWrapperPsiElement implements ParadoxScriptScriptedVariableName {
 
@@ -27,6 +31,12 @@ public class ParadoxScriptScriptedVariableNameImpl extends ASTWrapperPsiElement 
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof ParadoxScriptVisitor) accept((ParadoxScriptVisitor)visitor);
     else super.accept(visitor);
+  }
+
+  @Override
+  @NotNull
+  public List<ParadoxScriptNormalParameter> getNormalParameterList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptNormalParameter.class);
   }
 
   @Override

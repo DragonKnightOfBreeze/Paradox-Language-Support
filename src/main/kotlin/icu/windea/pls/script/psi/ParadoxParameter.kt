@@ -10,7 +10,7 @@ import icu.windea.pls.lang.psi.ParadoxLanguageInjectionHost
 /**
  * 参数。在不同类型的上下文中，存在不同的形式，且属于不同的节点角色。
  *
- * @see ParadoxScriptParameter
+ * @see ParadoxScriptNormalParameter
  * @see ParadoxScriptInlineMathParameter
  */
 interface ParadoxParameter : NavigatablePsiElement, PsiPresentableElement, ParadoxScriptInterpolation, ParadoxLanguageInjectionHost {

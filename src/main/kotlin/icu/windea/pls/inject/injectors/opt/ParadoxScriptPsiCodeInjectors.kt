@@ -73,7 +73,7 @@ interface ParadoxScriptPsiCodeInjectors {
     @FieldCache("getName", cleanUp = "subtreeChanged")
     class ConditionalParameter : CodeInjectorBase()
 
-    /** @see icu.windea.pls.script.psi.ParadoxScriptParameter */
+    /** @see icu.windea.pls.script.psi.ParadoxScriptNormalParameter */
     @InjectionTarget("icu.windea.pls.script.psi.impl.ParadoxScriptParameterImpl", pluginId = "icu.windea.pls")
     @FieldCache("getText", cleanUp = "subtreeChanged")
     @FieldCache("getName", cleanUp = "subtreeChanged")

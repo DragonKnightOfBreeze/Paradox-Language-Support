@@ -88,9 +88,9 @@ object ParadoxScriptElementFactory {
     }
 
     @JvmStatic
-    fun createParameterFromText(project: Project, text: String): ParadoxScriptParameter {
+    fun createParameterFromText(project: Project, text: String): ParadoxScriptNormalParameter {
         return createValueFromText(project, text)
-            .findChild<ParadoxScriptParameter>() ?: throw IncorrectOperationException()
+            .findChild<ParadoxScriptNormalParameter>() ?: throw IncorrectOperationException()
     }
 
     @JvmStatic
@@ -168,7 +168,7 @@ object ParadoxScriptElementFactory {
     }
 
     @JvmStatic
-    fun createParameter(project: Project, name: String, defaultValue: String? = null): ParadoxScriptParameter {
+    fun createParameter(project: Project, name: String, defaultValue: String? = null): ParadoxScriptNormalParameter {
         val text = if (defaultValue == null) "$$name$" else "$$name|$defaultValue$"
         return createParameterFromText(project, text)
     }

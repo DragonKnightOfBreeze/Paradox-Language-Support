@@ -1,30 +1,30 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.script.psi.impl;
 
-import java.util.List;
-import org.jetbrains.annotations.*;
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
+import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.util.PsiTreeUtil;
-import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
-import icu.windea.pls.script.psi.*;
-import com.intellij.navigation.ItemPresentation;
-import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
-import javax.swing.Icon;
+import icu.windea.pls.script.psi.ParadoxScriptNormalParameter;
+import icu.windea.pls.script.psi.ParadoxScriptParameterArgument;
+import icu.windea.pls.script.psi.ParadoxScriptVisitor;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public class ParadoxScriptParameterImpl extends ASTWrapperPsiElement implements ParadoxScriptParameter {
+import javax.swing.*;
 
-  public ParadoxScriptParameterImpl(@NotNull ASTNode node) {
+public class ParadoxScriptNormalParameterImpl extends ASTWrapperPsiElement implements ParadoxScriptNormalParameter {
+
+  public ParadoxScriptNormalParameterImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull ParadoxScriptVisitor visitor) {
-    visitor.visitParameter(this);
+    visitor.visitNormalParameter(this);
   }
 
   @Override
@@ -54,7 +54,7 @@ public class ParadoxScriptParameterImpl extends ASTWrapperPsiElement implements 
   }
 
   @Override
-  public @NotNull ParadoxScriptParameter setName(@NotNull String name) {
+  public @NotNull ParadoxScriptNormalParameter setName(@NotNull String name) {
     return ParadoxScriptPsiImplUtil.setName(this, name);
   }
 

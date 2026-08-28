@@ -69,7 +69,7 @@ property_key ::= property_key_part (<<processPart>> property_key_part) * {
     getReference getReferences
   ]
 }
-private property_key_part ::= PROPERTY_KEY_TOKEN | parameter | inline_conditional_block
+private property_key_part ::= PROPERTY_KEY_TOKEN | normal_parameter | inline_conditional_block
 private property_separator ::= EQUAL_SIGN | LT_SIGN | GT_SIGN | LE_SIGN | GE_SIGN | NOT_EQUAL_SIGN | SAFE_ASSIGN_SIGN | SAFE_CALL_ASSIGN_SIGN
 private property_value ::= scripted_variable_reference | boolean | int | float | string | color | block | inline_math
 
@@ -119,7 +119,7 @@ string ::= string_part <<postProcessFirstPart>> (<<processPart>> string_part) * 
     getReference getReferences
   ]
 }
-private string_part ::= STRING_TOKEN | parameter | inline_conditional_block
+private string_part ::= STRING_TOKEN | normal_parameter | inline_conditional_block
 color ::= COLOR_TOKEN {
   extends=value
   methods=[getColorType getColorArgs getColor setColor]
@@ -168,7 +168,7 @@ scripted_variable_name ::= AT scripted_variable_name_part (<<processPart>> scrip
   ]
   methods=[getIdElement parameter="" inline_conditional_block="" getName]
 }
-private scripted_variable_name_part ::= SCRIPTED_VARIABLE_NAME_TOKEN | parameter | inline_conditional_block
+private scripted_variable_name_part ::= SCRIPTED_VARIABLE_NAME_TOKEN | normal_parameter | inline_conditional_block
 private scripted_variable_separator ::= EQUAL_SIGN
 private scripted_variable_value ::= boolean | int | float | string | inline_math
 
@@ -186,7 +186,7 @@ scripted_variable_reference ::= AT scripted_variable_reference_part <<postProces
     getReference getReferences
   ]
 }
-private scripted_variable_reference_part ::= SCRIPTED_VARIABLE_REFERENCE_TOKEN | parameter | inline_conditional_block
+private scripted_variable_reference_part ::= SCRIPTED_VARIABLE_REFERENCE_TOKEN | normal_parameter | inline_conditional_block
 
 // advanced script syntax
 // see: common/scripted_effects/99_advanced_documentation.txt
@@ -206,7 +206,7 @@ private scripted_variable_reference_part ::= SCRIPTED_VARIABLE_REFERENCE_TOKEN |
 // - values (can be quoted)
 // - inline math expressions
 
-parameter ::= PARAMETER_START parameter_name parameter_argument_part ? PARAMETER_END {
+normal_parameter ::= PARAMETER_START parameter_name parameter_argument_part ? PARAMETER_END {
   pin=1
   implements=[
     "icu.windea.pls.script.psi.ParadoxParameter"
@@ -281,7 +281,7 @@ inline_conditional_block ::= LEFT_BRACKET <<processInlineConditionalBlock>> cond
 }
 private inline_conditional_block_item ::= <<processInlineConditionalBlockItem>> inline_conditional_block_snippet <<postProcessInlineConditionalBlockItem>>
 private inline_conditional_block_snippet ::= inline_conditional_block_item_part (<<processPart>> inline_conditional_block_item_part) *
-private inline_conditional_block_item_part ::= ARGUMENT_TOKEN | parameter | inline_conditional_block
+private inline_conditional_block_item_part ::= ARGUMENT_TOKEN | normal_parameter | inline_conditional_block
 
 private conditional_header ::= NESTED_LEFT_BRACKET conditional_expression NESTED_RIGHT_BRACKET {
   pin=1

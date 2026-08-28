@@ -5,7 +5,7 @@ import com.intellij.psi.PsiElement
 /**
  * 可以带有传入参数（[ParadoxScriptArgument]）的 PSI 元素。
  *
- * @see ParadoxScriptParameter
+ * @see ParadoxScriptNormalParameter
  * @see ParadoxScriptInlineMathParameter
  */
 interface ParadoxScriptArgumentAwareElement : PsiElement {

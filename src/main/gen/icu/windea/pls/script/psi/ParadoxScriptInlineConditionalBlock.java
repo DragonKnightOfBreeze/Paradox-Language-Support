@@ -9,15 +9,23 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
+import java.util.List;
 
 public interface ParadoxScriptInlineConditionalBlock extends ParadoxScriptConditionalBlock, ParadoxScriptInterpolation, ParadoxScriptInterpolationContainer {
 
   @Nullable
   ParadoxScriptConditionalExpression getConditionalExpression();
 
+  @NotNull
+  List<ParadoxScriptNormalParameter> getNormalParameterList();
+
   @Nullable PsiElement getLeftBound();
 
   @Nullable PsiElement getRightBound();
+
+  //WARNING: parameter(...) is skipped
+  //matching parameter(ParadoxScriptInlineConditionalBlock, ...)
+  //methods are not found in ParadoxScriptPsiImplUtil
 
   @NotNull Icon getIcon(@IconFlags int flags);
 

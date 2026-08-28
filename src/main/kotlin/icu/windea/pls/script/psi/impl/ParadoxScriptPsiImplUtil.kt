@@ -505,27 +505,27 @@ object ParadoxScriptPsiImplUtil {
     // region ParadoxScriptParameter
 
     @JvmStatic
-    fun getIdElement(element: ParadoxScriptParameter): PsiElement? {
+    fun getIdElement(element: ParadoxScriptNormalParameter): PsiElement? {
         return element.firstChild?.nextSibling?.takeIf { it.elementType === PARAMETER_TOKEN }
     }
 
     @JvmStatic
-    fun getArgumentElement(element: ParadoxScriptParameter): ParadoxScriptParameterArgument? {
+    fun getArgumentElement(element: ParadoxScriptNormalParameter): ParadoxScriptParameterArgument? {
         return element.findChild<_>(forward = false)
     }
 
     @JvmStatic
-    fun getIcon(element: ParadoxScriptParameter, @Iconable.IconFlags flags: Int): Icon {
+    fun getIcon(element: ParadoxScriptNormalParameter, @Iconable.IconFlags flags: Int): Icon {
         return ChronicleIcons.Nodes.Parameter
     }
 
     @JvmStatic
-    fun getName(element: ParadoxScriptParameter): String? {
+    fun getName(element: ParadoxScriptNormalParameter): String? {
         return element.idElement?.text
     }
 
     @JvmStatic
-    fun setName(element: ParadoxScriptParameter, name: String): ParadoxScriptParameter {
+    fun setName(element: ParadoxScriptNormalParameter, name: String): ParadoxScriptNormalParameter {
         val idElement = element.idElement ?: throw IncorrectOperationException() // 不支持重命名
         val newIdElement = ParadoxScriptElementFactory.createParameter(element.project, name).idElement ?: throw IncorrectOperationException()
         idElement.replace(newIdElement)
@@ -533,12 +533,12 @@ object ParadoxScriptPsiImplUtil {
     }
 
     @JvmStatic
-    fun getTextOffset(element: ParadoxScriptParameter): Int {
+    fun getTextOffset(element: ParadoxScriptNormalParameter): Int {
         return element.node.startOffset + 1
     }
 
     @JvmStatic
-    fun getDefaultValue(element: ParadoxScriptParameter): String? {
+    fun getDefaultValue(element: ParadoxScriptNormalParameter): String? {
         // 兼容默认值为空字符串的情况
         return element.argumentElement?.idElement?.text
     }

@@ -105,7 +105,7 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
     // visitBoundMemberContainer(o);
   }
 
-  public void visitParameter(@NotNull ParadoxScriptParameter o) {
+  public void visitNormalParameter(@NotNull ParadoxScriptNormalParameter o) {
     visitParadoxParameter(o);
     // visitInterpolation(o);
     // visitArgumentAwareElement(o);

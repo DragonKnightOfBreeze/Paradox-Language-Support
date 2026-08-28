@@ -33,7 +33,7 @@ import icu.windea.pls.script.psi.ParadoxScriptConditionalParameter
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptInlineMathParameter
 import icu.windea.pls.script.psi.ParadoxScriptInlineMathScriptedVariableReference
-import icu.windea.pls.script.psi.ParadoxScriptParameter
+import icu.windea.pls.script.psi.ParadoxScriptNormalParameter
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableReference
@@ -54,7 +54,7 @@ class ParadoxUsageTypeProvider : UsageTypeProviderEx {
             is ParadoxScriptInlineMathScriptedVariableReference -> ParadoxUsageTypes.SCRIPTED_VARIABLE_REFERENCE_1
             is ParadoxLocalisationScriptedVariableReference -> ParadoxUsageTypes.SCRIPTED_VARIABLE_REFERENCE_2
             is ParadoxScriptExpressionElement -> doGetUsageType(element, targets)
-            is ParadoxScriptParameter -> ParadoxUsageTypes.PARAMETER_REFERENCE
+            is ParadoxScriptNormalParameter -> ParadoxUsageTypes.PARAMETER_REFERENCE
             is ParadoxScriptInlineMathParameter -> ParadoxUsageTypes.PARAMETER_REFERENCE_1
             is ParadoxScriptConditionalParameter -> ParadoxUsageTypes.PARAMETER_REFERENCE_2
             is ParadoxLocalisationParameter -> ParadoxUsageTypes.LOCALISATION_PARAMETER

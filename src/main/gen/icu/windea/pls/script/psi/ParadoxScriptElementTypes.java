@@ -27,7 +27,7 @@ public interface ParadoxScriptElementTypes {
   IElementType INLINE_MATH_UNARY_EXPRESSION = ParadoxScriptElementTypeFactory.getElementType("INLINE_MATH_UNARY_EXPRESSION");
   IElementType INT = ParadoxScriptElementTypeFactory.getElementType("INT");
   IElementType NORMAL_CONDITIONAL_BLOCK = ParadoxScriptElementTypeFactory.getElementType("NORMAL_CONDITIONAL_BLOCK");
-  IElementType PARAMETER = ParadoxScriptElementTypeFactory.getElementType("PARAMETER");
+  IElementType NORMAL_PARAMETER = ParadoxScriptElementTypeFactory.getElementType("NORMAL_PARAMETER");
   IElementType PARAMETER_ARGUMENT = ParadoxScriptElementTypeFactory.getElementType("PARAMETER_ARGUMENT");
   IElementType PROPERTY = ParadoxScriptElementTypeFactory.getElementType("PROPERTY");
   IElementType PROPERTY_KEY = ParadoxScriptElementTypeFactory.getElementType("PROPERTY_KEY");
@@ -138,8 +138,8 @@ public interface ParadoxScriptElementTypes {
       else if (type == NORMAL_CONDITIONAL_BLOCK) {
         return new ParadoxScriptNormalConditionalBlockImpl(node);
       }
-      else if (type == PARAMETER) {
-        return new ParadoxScriptParameterImpl(node);
+      else if (type == NORMAL_PARAMETER) {
+        return new ParadoxScriptNormalParameterImpl(node);
       }
       else if (type == PARAMETER_ARGUMENT) {
         return new ParadoxScriptParameterArgumentImpl(node);

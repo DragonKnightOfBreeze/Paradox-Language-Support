@@ -9,7 +9,9 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
+import com.intellij.psi.util.PsiTreeUtil;
 import icu.windea.pls.core.text.QuotePattern;
+import icu.windea.pls.script.psi.ParadoxScriptNormalParameter;
 import icu.windea.pls.script.psi.ParadoxScriptString;
 import icu.windea.pls.script.psi.ParadoxScriptValue;
 import icu.windea.pls.script.psi.ParadoxScriptVisitor;
@@ -17,6 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
+import java.util.List;
 
 public class ParadoxScriptStringImpl extends ParadoxScriptValueImpl implements ParadoxScriptString {
 
@@ -33,6 +36,12 @@ public class ParadoxScriptStringImpl extends ParadoxScriptValueImpl implements P
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof ParadoxScriptVisitor) accept((ParadoxScriptVisitor)visitor);
     else super.accept(visitor);
+  }
+
+  @Override
+  @NotNull
+  public List<ParadoxScriptNormalParameter> getNormalParameterList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptNormalParameter.class);
   }
 
   @Override

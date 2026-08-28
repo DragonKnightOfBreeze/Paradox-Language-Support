@@ -11,10 +11,18 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
+import java.util.List;
 
 public interface ParadoxScriptScriptedVariableReference extends ParadoxScriptValue, ParadoxScriptedVariableReference, ParadoxScriptInterpolationContainer {
 
+  @NotNull
+  List<ParadoxScriptNormalParameter> getNormalParameterList();
+
   @Nullable PsiElement getIdElement();
+
+  //WARNING: parameter(...) is skipped
+  //matching parameter(ParadoxScriptScriptedVariableReference, ...)
+  //methods are not found in ParadoxScriptPsiImplUtil
 
   @NotNull Icon getIcon(@IconFlags int flags);
 

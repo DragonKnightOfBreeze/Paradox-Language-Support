@@ -22,7 +22,7 @@ import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.model.ParadoxParameterContextInfo
 import icu.windea.pls.script.psi.ParadoxScriptConditionParameter
 import icu.windea.pls.script.psi.ParadoxScriptInlineMathParameter
-import icu.windea.pls.script.psi.ParadoxScriptParameter
+import icu.windea.pls.script.psi.ParadoxScriptNormalParameter
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptValue
@@ -50,7 +50,7 @@ class ParadoxDefaultExpressionParameterInferredConfigProvider : ParadoxParameter
             is ParadoxScriptConditionParameter -> {
                 configGroup.mockConfigModel.wildcardScalar
             }
-            is ParadoxScriptParameter -> {
+            is ParadoxScriptNormalParameter -> {
                 if (parentElement.text.isParameterized(full = true)) return null
                 configGroup.mockConfigModel.wildcardScalar
             }
