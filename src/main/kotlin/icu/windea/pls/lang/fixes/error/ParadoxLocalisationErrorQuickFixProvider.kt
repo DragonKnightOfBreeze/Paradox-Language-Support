@@ -3,7 +3,6 @@ package icu.windea.pls.lang.fixes.error
 import com.intellij.codeInsight.daemon.impl.HighlightInfo
 import com.intellij.codeInsight.daemon.impl.analysis.ErrorQuickFixProvider
 import com.intellij.psi.PsiErrorElement
-import com.intellij.psi.util.endOffset
 import com.intellij.psi.util.startOffset
 import icu.windea.pls.core.fixes.InsertMissingTokenFix
 import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
@@ -12,7 +11,6 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationCommand
 import icu.windea.pls.localisation.psi.ParadoxLocalisationConceptCommand
 import icu.windea.pls.localisation.psi.ParadoxLocalisationIcon
 import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
-import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyValue
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextFormat
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextIcon
 import icu.windea.pls.model.constants.ChronicleStrings
@@ -24,16 +22,6 @@ class ParadoxLocalisationErrorQuickFixProvider : ErrorQuickFixProvider {
     override fun registerErrorQuickFix(errorElement: PsiErrorElement, builder: HighlightInfo.Builder) {
         if (errorElement.language !== ParadoxLocalisationLanguage) return
         when {
-            errorElement.prevSibling == null && errorElement.parent is ParadoxLocalisationPropertyValue -> {
-                // LEFT_QUOTE
-                val fix = createFix("\"", errorElement.endOffset)
-                builder.registerFix(fix, null, null, null, null)
-            }
-            errorElement.nextSibling == null && errorElement.parent is ParadoxLocalisationPropertyValue -> {
-                // RIGHT_QUOTE
-                val fix = createFix("\"", errorElement.startOffset)
-                builder.registerFix(fix, null, null, null, null)
-            }
             errorElement.nextSibling == null && errorElement.parent is ParadoxLocalisationParameter -> {
                 // PARAMETER_END
                 val fix = createFix(ChronicleStrings.parameterEndMarker, errorElement.startOffset)
