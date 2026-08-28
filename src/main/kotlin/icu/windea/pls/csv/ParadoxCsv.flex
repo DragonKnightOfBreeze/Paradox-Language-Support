@@ -29,7 +29,7 @@ import static icu.windea.pls.csv.psi.ParadoxCsvElementTypes.*;
 %unicode
 
 EOL=\s*\R\s*
-BLANK=[\s&&[^\r\n]]+
+WHITE_SPACE=[\s&&[^\r\n]]+
 COMMENT=#[^\r\n]*
 SEPARATOR=;
 
@@ -43,7 +43,7 @@ QUOTED_COLUMN_TOKEN=\"([^\"\\\r\n]|\\[\s\S])*\"? // closing quote optional for r
 
 <YYINITIAL> {
     {EOL} { return EOL; }
-    {BLANK} { return WHITE_SPACE; }
+    {WHITE_SPACE} { return WHITE_SPACE; }
     {COMMENT} { return COMMENT; }
     {SEPARATOR} { return SEPARATOR; }
     {COLUMN_TOKEN} { return COLUMN_TOKEN; }

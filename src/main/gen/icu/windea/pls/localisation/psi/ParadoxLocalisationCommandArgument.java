@@ -11,16 +11,22 @@ import org.jetbrains.annotations.Nullable;
 
 public interface ParadoxLocalisationCommandArgument extends ParadoxLocalisationArgument, ParadoxLocalisationInterpolationContainer, ParadoxLocalisationTextColorAwareElement {
 
-  @Nullable PsiElement getIdElement();
+    @Nullable
+    PsiElement getIdElement();
 
-  @Nullable PsiReference getReference();
+    @Nullable
+    PsiReference getReference();
 
-  @NotNull PsiReference @NotNull [] getReferences();
+    @NotNull
+    PsiReference @NotNull [] getReferences();
 
-  @NotNull GlobalSearchScope getResolveScope();
+    @NotNull
+    GlobalSearchScope getResolveScope();
 
-  @NotNull SearchScope getUseScope();
+    @NotNull
+    SearchScope getUseScope();
 
-  @NotNull ItemPresentation getPresentation();
+    @NotNull
+    ItemPresentation getPresentation();
 
 }

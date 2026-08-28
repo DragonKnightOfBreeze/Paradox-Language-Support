@@ -308,7 +308,8 @@ conditional_parameter ::= CONDITION_PARAMETER_TOKEN {
 // also support unary operators "+1" "-1", abs operator "| 1 |" and parentheses "( 1 )"
 // inline math factor can also be scripted_variable and (if parameter it self is allowed) parameter
 
-inline_math ::= INLINE_MATH_START INLINE_MATH_TOKEN INLINE_MATH_END { // lazy-parsing INLINE_MATH_TOKEN
+// lazy-parsing INLINE_MATH_TOKEN
+inline_math ::= INLINE_MATH_START INLINE_MATH_TOKEN INLINE_MATH_END {
   pin=1
   extends=value
   implements=[

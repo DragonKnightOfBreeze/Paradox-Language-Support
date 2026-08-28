@@ -81,21 +81,21 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
   private static final int [] ZZ_CMAP_BLOCKS = zzUnpackcmap_blocks();
 
   private static final String ZZ_CMAP_BLOCKS_PACKED_0 =
-    "\11\0\1\1\1\2\2\1\1\2\22\0\1\1\1\0"+
-    "\1\3\1\4\3\0\1\5\5\0\2\5\1\0\12\6"+
-    "\1\7\6\0\32\5\4\0\1\10\1\0\32\10\12\0"+
-    "\1\1\32\0\1\1\u01bf\0\12\11\206\0\12\11\306\0"+
-    "\12\11\234\0\12\11\166\0\12\11\140\0\12\11\166\0"+
-    "\12\11\106\0\12\11\u0116\0\12\11\106\0\12\11\346\0"+
-    "\1\1\u015f\0\12\11\46\0\12\11\u012c\0\12\11\200\0"+
-    "\12\11\246\0\12\11\6\0\12\11\266\0\12\11\126\0"+
-    "\12\11\206\0\12\11\6\0\12\11\246\0\13\1\35\0"+
-    "\2\1\5\0\1\1\57\0\1\1\240\0\1\1\u01cf\0"+
-    "\12\11\46\0\12\11\306\0\12\11\26\0\12\11\126\0"+
-    "\12\11\u0196\0\12\11\246\0\12\11\206\0\12\11\u012c\0"+
-    "\12\11\200\0\12\11\74\0\12\11\220\0\12\11\166\0"+
-    "\12\11\146\0\12\11\206\0\12\11\106\0\12\11\266\0"+
-    "\12\11\u0164\0\62\11\100\0\12\11\266\0";
+    "\11\0\1\1\1\2\2\3\1\2\22\0\1\1\1\0"+
+    "\1\4\1\5\3\0\1\6\5\0\2\6\1\0\12\7"+
+    "\1\10\6\0\32\6\4\0\1\11\1\0\32\11\12\0"+
+    "\1\3\32\0\1\1\u01bf\0\12\12\206\0\12\12\306\0"+
+    "\12\12\234\0\12\12\166\0\12\12\140\0\12\12\166\0"+
+    "\12\12\106\0\12\12\u0116\0\12\12\106\0\12\12\346\0"+
+    "\1\1\u015f\0\12\12\46\0\12\12\u012c\0\12\12\200\0"+
+    "\12\12\246\0\12\12\6\0\12\12\266\0\12\12\126\0"+
+    "\12\12\206\0\12\12\6\0\12\12\246\0\13\1\35\0"+
+    "\2\3\5\0\1\1\57\0\1\1\240\0\1\1\u01cf\0"+
+    "\12\12\46\0\12\12\306\0\12\12\26\0\12\12\126\0"+
+    "\12\12\u0196\0\12\12\246\0\12\12\206\0\12\12\u012c\0"+
+    "\12\12\200\0\12\12\74\0\12\12\220\0\12\12\166\0"+
+    "\12\12\146\0\12\12\206\0\12\12\106\0\12\12\266\0"+
+    "\12\12\u0164\0\62\12\100\0\12\12\266\0";
 
   private static int [] zzUnpackcmap_blocks() {
     int [] result = new int[7680];
@@ -122,11 +122,12 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
   private static final int [] ZZ_ACTION = zzUnpackAction();
 
   private static final String ZZ_ACTION_PACKED_0 =
-    "\7\0\1\1\1\2\1\3\1\4\2\5\1\6\1\7"+
-    "\1\10\1\11\2\12\1\13\1\14";
+    "\7\0\1\1\1\2\1\3\2\4\1\2\1\5\1\6"+
+    "\1\7\1\10\1\11\1\12\1\13\2\14\1\5\1\15"+
+    "\1\16";
 
   private static int [] zzUnpackAction() {
-    int [] result = new int[21];
+    int [] result = new int[25];
     int offset = 0;
     offset = zzUnpackAction(ZZ_ACTION_PACKED_0, offset, result);
     return result;
@@ -151,12 +152,13 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
   private static final int [] ZZ_ROWMAP = zzUnpackRowMap();
 
   private static final String ZZ_ROWMAP_PACKED_0 =
-    "\0\0\0\12\0\24\0\36\0\50\0\62\0\74\0\106"+
-    "\0\120\0\132\0\144\0\156\0\170\0\106\0\106\0\106"+
-    "\0\202\0\214\0\226\0\106\0\106";
+    "\0\0\0\13\0\26\0\41\0\54\0\67\0\102\0\115"+
+    "\0\130\0\143\0\156\0\171\0\204\0\217\0\232\0\115"+
+    "\0\115\0\115\0\115\0\245\0\260\0\273\0\306\0\115"+
+    "\0\115";
 
   private static int [] zzUnpackRowMap() {
-    int [] result = new int[21];
+    int [] result = new int[25];
     int offset = 0;
     offset = zzUnpackRowMap(ZZ_ROWMAP_PACKED_0, offset, result);
     return result;
@@ -179,19 +181,21 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
   private static final int [] ZZ_TRANS = zzUnpacktrans();
 
   private static final String ZZ_TRANS_PACKED_0 =
-    "\1\10\1\11\1\12\1\10\1\13\2\14\1\10\1\14"+
-    "\2\10\1\11\1\12\1\10\1\13\2\14\1\10\1\15"+
-    "\2\10\1\11\1\12\1\10\1\13\2\10\1\16\3\10"+
-    "\1\11\1\12\1\10\1\13\6\10\1\11\1\12\1\10"+
-    "\1\13\2\10\1\17\3\10\1\11\1\12\1\20\1\13"+
-    "\1\10\1\21\2\10\1\21\1\22\1\23\1\12\1\24"+
-    "\6\22\13\0\1\11\1\12\10\0\2\12\7\0\2\13"+
-    "\1\0\7\13\5\0\2\14\1\0\1\14\6\0\2\14"+
-    "\1\25\1\15\7\0\1\21\2\0\1\21\2\22\2\0"+
-    "\7\22\1\23\1\12\1\0\6\22";
+    "\1\10\3\11\1\10\1\12\2\13\1\10\1\13\2\10"+
+    "\3\11\1\10\1\12\2\13\1\10\1\14\2\10\1\15"+
+    "\1\16\1\15\1\10\1\17\2\10\1\20\3\10\1\15"+
+    "\1\16\1\15\1\10\1\17\6\10\1\15\1\16\1\15"+
+    "\1\10\1\17\2\10\1\21\2\10\1\22\1\15\1\16"+
+    "\1\15\1\23\1\17\1\22\1\24\2\22\1\24\1\25"+
+    "\1\26\1\16\1\27\1\30\6\25\14\0\3\11\7\0"+
+    "\2\12\1\0\10\12\6\0\2\13\1\0\1\13\7\0"+
+    "\2\13\1\31\1\14\2\0\1\15\1\16\1\15\10\0"+
+    "\3\16\7\0\2\17\1\0\10\17\7\0\1\24\2\0"+
+    "\1\24\2\25\1\0\1\25\1\0\7\25\1\26\1\16"+
+    "\1\27\1\0\7\25\1\27\1\16\1\27\1\0\6\25";
 
   private static int [] zzUnpacktrans() {
-    int [] result = new int[160];
+    int [] result = new int[209];
     int offset = 0;
     offset = zzUnpacktrans(ZZ_TRANS_PACKED_0, offset, result);
     return result;
@@ -229,10 +233,10 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
   private static final int [] ZZ_ATTRIBUTE = zzUnpackAttribute();
 
   private static final String ZZ_ATTRIBUTE_PACKED_0 =
-    "\7\0\1\11\5\1\3\11\3\1\2\11";
+    "\7\0\1\11\7\1\4\11\4\1\2\11";
 
   private static int [] zzUnpackAttribute() {
-    int [] result = new int[21];
+    int [] result = new int[25];
     int offset = 0;
     offset = zzUnpackAttribute(ZZ_ATTRIBUTE_PACKED_0, offset, result);
     return result;
@@ -321,7 +325,7 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
         // If only whitespace remains until EOL/EOF, treat as a locale header; otherwise, treat as a property key.
 
         try {
-            // Start scanning right after the matched text (token + ':')
+            // Start scanning right after the matched text (token + `:`)
             int i = zzCurrentPos + 1 + yylength();
             int length = zzBuffer.length();
             boolean onlyWhitespaceToEol = true;
@@ -350,8 +354,8 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
     private IElementType handleRightQuote() {
         // Double quotes inside localisation text do not need escaping.
         // Heuristic used by vanilla files and editors:
-        //  - If there is another '"' ahead on the same line, the current '"' is part of the text (not closing).
-        //  - Otherwise, treat the current '"' as the closing quote, even if a trailing comment (e.g. '# ...') exists.
+        //  - If there is another `"` ahead on the same line, the current `"` is part of the text (not closing).
+        //  - Otherwise, treat the current `"` as the closing quote, even if a trailing comment (e.g. `# ...`) exists.
 
         try {
             int i = zzCurrentPos + yylength(); // position right after current match
@@ -649,65 +653,75 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
             { return BAD_CHARACTER;
             }
           // fall through
-          case 13: break;
+          case 15: break;
           case 2:
             { return WHITE_SPACE;
             }
           // fall through
-          case 14: break;
+          case 16: break;
           case 3:
-            { yybegin(YYINITIAL); return WHITE_SPACE;
-            }
-          // fall through
-          case 15: break;
-          case 4:
             { return COMMENT;
             }
           // fall through
-          case 16: break;
-          case 5:
+          case 17: break;
+          case 4:
             { yybegin(IN_PROPERTY_COLON); return PROPERTY_KEY_TOKEN;
             }
           // fall through
-          case 17: break;
-          case 6:
-            { yybegin(IN_LOCALE_END); return COLON;
-            }
-          // fall through
           case 18: break;
-          case 7:
-            { yybegin(IN_PROPERTY_NUMBER); return COLON;
+          case 5:
+            { yybegin(YYINITIAL); return WHITE_SPACE;
             }
           // fall through
           case 19: break;
-          case 8:
-            { yybegin(IN_PROPERTY_VALUE); return LEFT_QUOTE;
+          case 6:
+            { yybegin(YYINITIAL); return COMMENT;
             }
           // fall through
           case 20: break;
-          case 9:
-            { return PROPERTY_NUMBER;
+          case 7:
+            { yybegin(IN_LOCALE_END); return COLON;
             }
           // fall through
           case 21: break;
-          case 10:
-            { return PROPERTY_VALUE_TOKEN;
+          case 8:
+            { yybegin(IN_PROPERTY_NUMBER); return COLON;
             }
           // fall through
           case 22: break;
-          case 11:
-            { return handleRightQuote();
+          case 9:
+            { yypushback(1); yybegin(IN_PROPERTY_VALUE);;
             }
           // fall through
           case 23: break;
+          case 10:
+            { yybegin(IN_PROPERTY_VALUE); return LEFT_QUOTE;
+            }
+          // fall through
+          case 24: break;
+          case 11:
+            { return PROPERTY_NUMBER;
+            }
+          // fall through
+          case 25: break;
           case 12:
+            { return PROPERTY_VALUE_TOKEN;
+            }
+          // fall through
+          case 26: break;
+          case 13:
+            { return handleRightQuote();
+            }
+          // fall through
+          case 27: break;
+          case 14:
             // lookahead expression with fixed lookahead length
             zzMarkedPos = Character.offsetByCodePoints
                 (zzBufferL, zzMarkedPos, -1);
             { return handleLocaleToken();
             }
           // fall through
-          case 24: break;
+          case 28: break;
           default:
             zzScanError(ZZ_NO_MATCH);
           }

@@ -103,6 +103,7 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 
 EOL=\s*\R\s*
 WHITE_SPACE=[\s&&[^\r\n]]+
+BLANK=\s+
 COMMENT=#[^\r\n]*
 
 LOCALE_TOKEN=[a-z_]+
@@ -113,7 +114,7 @@ PROPERTY_VALUE_TOKEN=[^\"\r\n]+ // it's unnecessary to escape double quotes in l
 %%
 
 <YYINITIAL> {
-    {WHITE_SPACE} { return WHITE_SPACE; }
+    {BLANK} { return WHITE_SPACE; }
     {COMMENT} { return COMMENT; }
     // Locale header candidate: start-of-line locale id followed by ':'
     ^ {LOCALE_TOKEN} / ":" { return handleLocaleToken(); }
@@ -121,33 +122,38 @@ PROPERTY_VALUE_TOKEN=[^\"\r\n]+ // it's unnecessary to escape double quotes in l
 }
 <IN_LOCALE_COLON>{
     {WHITE_SPACE} { return WHITE_SPACE; }
-    {COMMENT} { return COMMENT; }
+    {EOL} { yybegin(YYINITIAL); return WHITE_SPACE; }
+    {COMMENT} { yybegin(YYINITIAL); return COMMENT; }
     ":" { yybegin(IN_LOCALE_END); return COLON; }
 }
 <IN_LOCALE_END>{
     {WHITE_SPACE} { return WHITE_SPACE; }
-    {COMMENT} { return COMMENT; }
+    {EOL} { yybegin(YYINITIAL); return WHITE_SPACE; }
+    {COMMENT} { yybegin(YYINITIAL); return COMMENT; }
 }
 <IN_PROPERTY_COLON>{
     {WHITE_SPACE} { return WHITE_SPACE; }
-    {COMMENT} { return COMMENT; }
+    {EOL} { yybegin(YYINITIAL); return WHITE_SPACE; }
+    {COMMENT} { yybegin(YYINITIAL); return COMMENT; }
     ":" { yybegin(IN_PROPERTY_NUMBER); return COLON; }
 }
 <IN_PROPERTY_NUMBER>{
     {WHITE_SPACE} { return WHITE_SPACE; }
-    {COMMENT} { return COMMENT; }
+    {EOL} { yybegin(YYINITIAL); return WHITE_SPACE; }
+    {COMMENT} { yybegin(YYINITIAL); return COMMENT; }
     {PROPERTY_NUMBER} { return PROPERTY_NUMBER; }
     \" { yybegin(IN_PROPERTY_VALUE); return LEFT_QUOTE; }
+    [^] { yypushback(1); yybegin(IN_PROPERTY_VALUE);; } // 3.0.2 compatible with missing opening quote
 }
 <IN_PROPERTY_VALUE> {
+    {EOL} { yybegin(YYINITIAL); return WHITE_SPACE; }
     {PROPERTY_VALUE_TOKEN} { return PROPERTY_VALUE_TOKEN; }
     \" { return handleRightQuote(); }
 }
 <IN_PROPERTY_END>{
     {WHITE_SPACE} { return WHITE_SPACE; }
-    {COMMENT} { return COMMENT; }
+    {EOL} { yybegin(YYINITIAL); return WHITE_SPACE; }
+    {COMMENT} { yybegin(YYINITIAL); return COMMENT; }
 }
-
-{EOL} { yybegin(YYINITIAL); return WHITE_SPACE; }
 
 [^] { return BAD_CHARACTER; }

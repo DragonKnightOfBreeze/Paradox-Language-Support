@@ -1,2 +1,19 @@
 l_english:
- KEY1:0 "This is an unclosed value
+ key:0 "Some text"
+ key:0 "Some text
+ key:0 Some text"
+ key:0 Some text
+
+ key:0"Some text"
+ key:0"Some text
+ key:0Some text"
+ key:0Some text
+
+ key: "Some text"
+ key: "Some text
+ key: Some text"
+ key: Some text
+
+ key:"Some text"
+ key:"Some text
+ key:Some text

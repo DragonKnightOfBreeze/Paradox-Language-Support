@@ -13,25 +13,25 @@ import java.util.List;
 
 public interface ParadoxLocalisationColorfulText extends ParadoxLocalisationRichText, ParadoxLocalisationTextColorAwareElement, ParadoxLocalisationRichTextContainer {
 
-  @NotNull
-  List<ParadoxLocalisationRichText> getRichTextList();
+    @NotNull
+    List<ParadoxLocalisationRichText> getRichTextList();
 
-  @Nullable PsiElement getIdElement();
+    @Nullable PsiElement getIdElement();
 
-  @Nullable String getName();
+    @Nullable String getName();
 
-  @NotNull ParadoxLocalisationColorfulText setName(@NotNull String name);
+    @NotNull ParadoxLocalisationColorfulText setName(@NotNull String name);
 
-  @NotNull String getPresentableText();
+    @NotNull String getPresentableText();
 
-  @Nullable PsiReference getReference();
+    @Nullable PsiReference getReference();
 
-  @NotNull PsiReference @NotNull [] getReferences();
+    @NotNull PsiReference @NotNull [] getReferences();
 
-  @NotNull GlobalSearchScope getResolveScope();
+    @NotNull GlobalSearchScope getResolveScope();
 
-  @NotNull SearchScope getUseScope();
+    @NotNull SearchScope getUseScope();
 
-  @NotNull ItemPresentation getPresentation();
+    @NotNull ItemPresentation getPresentation();
 
 }

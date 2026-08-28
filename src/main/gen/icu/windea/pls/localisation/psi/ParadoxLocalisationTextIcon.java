@@ -13,24 +13,24 @@ import javax.swing.*;
 
 public interface ParadoxLocalisationTextIcon extends ParadoxLocalisationRichText, ParadoxLocalisationInterpolationContainer {
 
-  @Nullable PsiElement getIdElement();
+    @Nullable PsiElement getIdElement();
 
-  @NotNull Icon getIcon(@IconFlags int flags);
+    @NotNull Icon getIcon(@IconFlags int flags);
 
-  @Nullable String getName();
+    @Nullable String getName();
 
-  @NotNull ParadoxLocalisationTextIcon setName(@NotNull String name);
+    @NotNull ParadoxLocalisationTextIcon setName(@NotNull String name);
 
-  @NotNull String getPresentableText();
+    @NotNull String getPresentableText();
 
-  @Nullable PsiReference getReference();
+    @Nullable PsiReference getReference();
 
-  @NotNull PsiReference @NotNull [] getReferences();
+    @NotNull PsiReference @NotNull [] getReferences();
 
-  @NotNull GlobalSearchScope getResolveScope();
+    @NotNull GlobalSearchScope getResolveScope();
 
-  @NotNull SearchScope getUseScope();
+    @NotNull SearchScope getUseScope();
 
-  @NotNull ItemPresentation getPresentation();
+    @NotNull ItemPresentation getPresentation();
 
 }

@@ -11,19 +11,19 @@ import javax.swing.*;
 
 public interface ParadoxLocalisationCommand extends ParadoxLocalisationRichText, ParadoxLocalisationInterpolation, ParadoxLocalisationArgumentAwareElement {
 
-  @Nullable
-  ParadoxLocalisationCommandText getCommandText();
+    @Nullable
+    ParadoxLocalisationCommandText getCommandText();
 
-  @Nullable ParadoxLocalisationCommandArgument getArgumentElement();
+    @Nullable ParadoxLocalisationCommandArgument getArgumentElement();
 
-  @NotNull Icon getIcon(@IconFlags int flags);
+    @NotNull Icon getIcon(@IconFlags int flags);
 
-  @NotNull String getPresentableText();
+    @NotNull String getPresentableText();
 
-  @NotNull GlobalSearchScope getResolveScope();
+    @NotNull GlobalSearchScope getResolveScope();
 
-  @NotNull SearchScope getUseScope();
+    @NotNull SearchScope getUseScope();
 
-  @NotNull ItemPresentation getPresentation();
+    @NotNull ItemPresentation getPresentation();
 
 }

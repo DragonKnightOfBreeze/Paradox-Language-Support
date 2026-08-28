@@ -41,8 +41,6 @@ class ParadoxLocalisationParsingTest : ParsingTestCase("localisation/syntax", "t
     @Test
     fun only_header_eof() = doTest(true)
     @Test
-    fun error_unclosed_quote() = doTest(true)
-    @Test
     fun combined() = doTest(true)
     @Test
     fun header_as_key() = doTest(true)
@@ -71,4 +69,9 @@ class ParadoxLocalisationParsingTest : ParsingTestCase("localisation/syntax", "t
     fun construct_text_formats_vic3() = doTest(true)
     @Test
     fun construct_text_formats_stellaris() = doTest(true)
+
+    @Test
+    fun error_unclosed_quote() = doTest(true)
+    @Test
+    fun error_incomplete_property_line() = doTest(true)
 }

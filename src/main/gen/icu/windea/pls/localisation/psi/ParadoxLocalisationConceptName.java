@@ -12,26 +12,26 @@ import org.jetbrains.annotations.Nullable;
 
 public interface ParadoxLocalisationConceptName extends ParadoxLocalisationExpressionElement, ParadoxLocalisationInterpolationContainer {
 
-  @Nullable PsiElement getIdElement();
+    @Nullable PsiElement getIdElement();
 
-  @NotNull String getName();
+    @NotNull String getName();
 
-  @NotNull String getValue();
+    @NotNull String getValue();
 
-  @NotNull String getPresentableText();
+    @NotNull String getPresentableText();
 
-  @NotNull ParadoxLocalisationConceptName setValue(@NotNull String value);
+    @NotNull ParadoxLocalisationConceptName setValue(@NotNull String value);
 
-  @NotNull ParadoxLocalisationConceptName setContent(@NotNull String content, @NotNull TextRange range);
+    @NotNull ParadoxLocalisationConceptName setContent(@NotNull String content, @NotNull TextRange range);
 
-  @Nullable PsiReference getReference();
+    @Nullable PsiReference getReference();
 
-  @NotNull PsiReference @NotNull [] getReferences();
+    @NotNull PsiReference @NotNull [] getReferences();
 
-  @NotNull GlobalSearchScope getResolveScope();
+    @NotNull GlobalSearchScope getResolveScope();
 
-  @NotNull SearchScope getUseScope();
+    @NotNull SearchScope getUseScope();
 
-  @NotNull ItemPresentation getPresentation();
+    @NotNull ItemPresentation getPresentation();
 
 }

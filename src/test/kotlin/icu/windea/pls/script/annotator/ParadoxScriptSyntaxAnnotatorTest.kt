@@ -41,7 +41,7 @@ class ParadoxScriptSyntaxAnnotatorTest : BasePlatformTestCase(), ChronicleTestSc
     }
 
     @Test
-    fun testOperator() {
+    fun testOperator_error() {
         val tag = ChronicleBundle.message("annotator.leading.blank.unexpected.message.1").toErrorTag()
 
         myFixture.configureByText(
@@ -61,7 +61,7 @@ class ParadoxScriptSyntaxAnnotatorTest : BasePlatformTestCase(), ChronicleTestSc
     }
 
     @Test
-    fun testInlineMathScriptedVariableReference() {
+    fun testInlineMathScriptedVariableReference_error() {
         val tag = ChronicleBundle.message("annotator.leading.at.unexpected.message.1").toErrorTag()
 
         myFixture.configureByText(

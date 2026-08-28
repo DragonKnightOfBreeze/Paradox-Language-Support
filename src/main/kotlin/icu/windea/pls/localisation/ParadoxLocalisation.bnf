@@ -48,7 +48,7 @@ locale ::= LOCALE_TOKEN COLON {
   methods=[getIdElement getIcon getName setName getReference getReferences getIElementType]
 }
 
-property ::= property_key COLON property_number? property_value {
+property ::= property_key COLON property_number ? property_value {
   pin=1
   extends="icu.windea.pls.localisation.psi.impl.ParadoxLocalisationStubElementImpl<?>"
   stubClass="icu.windea.pls.localisation.psi.stubs.ParadoxLocalisationPropertyStub"
@@ -74,7 +74,9 @@ property_key ::= PROPERTY_KEY_TOKEN {
 // https://twitter.com/Martin_Anward/status/1039175213773144066
 private property_number ::= PROPERTY_NUMBER
 
-property_value ::= LEFT_QUOTE PROPERTY_VALUE_TOKEN ? RIGHT_QUOTE { // lazy-parsing PROPERTY_VALUE_TOKEN
+ // lazy-parsing PROPERTY_VALUE_TOKEN
+// 3.0.2 compatible with missing opening quote and missing closing quote
+property_value ::= (LEFT_QUOTE PROPERTY_VALUE_TOKEN ? RIGHT_QUOTE ?) | (PROPERTY_VALUE_TOKEN RIGHT_QUOTE ?) {
   pin=1
   implements=[
     "icu.windea.pls.core.psi.PsiQuoteAwareElement"

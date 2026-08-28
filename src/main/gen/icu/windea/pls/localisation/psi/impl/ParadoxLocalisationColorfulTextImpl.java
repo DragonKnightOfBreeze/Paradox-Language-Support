@@ -19,75 +19,75 @@ import java.util.List;
 
 public class ParadoxLocalisationColorfulTextImpl extends ParadoxLocalisationRichTextImpl implements ParadoxLocalisationColorfulText {
 
-  public ParadoxLocalisationColorfulTextImpl(@NotNull ASTNode node) {
-    super(node);
-  }
+    public ParadoxLocalisationColorfulTextImpl(@NotNull ASTNode node) {
+        super(node);
+    }
 
-  @Override
-  public void accept(@NotNull ParadoxLocalisationVisitor visitor) {
-    visitor.visitColorfulText(this);
-  }
+    @Override
+    public void accept(@NotNull ParadoxLocalisationVisitor visitor) {
+        visitor.visitColorfulText(this);
+    }
 
-  @Override
-  public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof ParadoxLocalisationVisitor) accept((ParadoxLocalisationVisitor)visitor);
-    else super.accept(visitor);
-  }
+    @Override
+    public void accept(@NotNull PsiElementVisitor visitor) {
+        if (visitor instanceof ParadoxLocalisationVisitor) accept((ParadoxLocalisationVisitor) visitor);
+        else super.accept(visitor);
+    }
 
-  @Override
-  @NotNull
-  public List<ParadoxLocalisationRichText> getRichTextList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxLocalisationRichText.class);
-  }
+    @Override
+    @NotNull
+    public List<ParadoxLocalisationRichText> getRichTextList() {
+        return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxLocalisationRichText.class);
+    }
 
-  @Override
-  public @Nullable PsiElement getIdElement() {
-    return ParadoxLocalisationPsiImplUtil.getIdElement(this);
-  }
+    @Override
+    public @Nullable PsiElement getIdElement() {
+        return ParadoxLocalisationPsiImplUtil.getIdElement(this);
+    }
 
-  @Override
-  public @Nullable String getName() {
-    return ParadoxLocalisationPsiImplUtil.getName(this);
-  }
+    @Override
+    public @Nullable String getName() {
+        return ParadoxLocalisationPsiImplUtil.getName(this);
+    }
 
-  @Override
-  public @NotNull ParadoxLocalisationColorfulText setName(@NotNull String name) {
-    return ParadoxLocalisationPsiImplUtil.setName(this, name);
-  }
+    @Override
+    public @NotNull ParadoxLocalisationColorfulText setName(@NotNull String name) {
+        return ParadoxLocalisationPsiImplUtil.setName(this, name);
+    }
 
-  @Override
-  public @NotNull String getPresentableText() {
-    return ParadoxLocalisationPsiImplUtil.getPresentableText(this);
-  }
+    @Override
+    public @NotNull String getPresentableText() {
+        return ParadoxLocalisationPsiImplUtil.getPresentableText(this);
+    }
 
-  @Override
-  public @Nullable PsiReference getReference() {
-    return ParadoxLocalisationPsiImplUtil.getReference(this);
-  }
+    @Override
+    public @Nullable PsiReference getReference() {
+        return ParadoxLocalisationPsiImplUtil.getReference(this);
+    }
 
-  @Override
-  public @NotNull PsiReference @NotNull [] getReferences() {
-    return ParadoxLocalisationPsiImplUtil.getReferences(this);
-  }
+    @Override
+    public @NotNull PsiReference @NotNull [] getReferences() {
+        return ParadoxLocalisationPsiImplUtil.getReferences(this);
+    }
 
-  @Override
-  public @NotNull GlobalSearchScope getResolveScope() {
-    return ParadoxLocalisationPsiImplUtil.getResolveScope(this);
-  }
+    @Override
+    public @NotNull GlobalSearchScope getResolveScope() {
+        return ParadoxLocalisationPsiImplUtil.getResolveScope(this);
+    }
 
-  @Override
-  public @NotNull SearchScope getUseScope() {
-    return ParadoxLocalisationPsiImplUtil.getUseScope(this);
-  }
+    @Override
+    public @NotNull SearchScope getUseScope() {
+        return ParadoxLocalisationPsiImplUtil.getUseScope(this);
+    }
 
-  @Override
-  public @NotNull ItemPresentation getPresentation() {
-    return ParadoxLocalisationPsiImplUtil.getPresentation(this);
-  }
+    @Override
+    public @NotNull ItemPresentation getPresentation() {
+        return ParadoxLocalisationPsiImplUtil.getPresentation(this);
+    }
 
-  @Override
-  public @NotNull String toString() {
-    return ParadoxLocalisationPsiImplUtil.toString(this);
-  }
+    @Override
+    public @NotNull String toString() {
+        return ParadoxLocalisationPsiImplUtil.toString(this);
+    }
 
 }

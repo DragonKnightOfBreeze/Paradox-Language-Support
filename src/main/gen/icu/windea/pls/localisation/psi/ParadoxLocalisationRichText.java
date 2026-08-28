@@ -10,10 +10,10 @@ import org.jetbrains.annotations.NotNull;
 
 public interface ParadoxLocalisationRichText extends NavigatablePsiElement, PsiPresentableElement {
 
-  @NotNull GlobalSearchScope getResolveScope();
+    @NotNull GlobalSearchScope getResolveScope();
 
-  @NotNull SearchScope getUseScope();
+    @NotNull SearchScope getUseScope();
 
-  @NotNull ItemPresentation getPresentation();
+    @NotNull ItemPresentation getPresentation();
 
 }

@@ -13,27 +13,27 @@ import javax.swing.*;
 
 public interface ParadoxLocalisationTextFormat extends ParadoxLocalisationRichText, ParadoxLocalisationInterpolationContainer {
 
-  @Nullable
-  ParadoxLocalisationTextFormatText getTextFormatText();
+    @Nullable
+    ParadoxLocalisationTextFormatText getTextFormatText();
 
-  @Nullable PsiElement getIdElement();
+    @Nullable PsiElement getIdElement();
 
-  @NotNull Icon getIcon(@IconFlags int flags);
+    @NotNull Icon getIcon(@IconFlags int flags);
 
-  @Nullable String getName();
+    @Nullable String getName();
 
-  @NotNull ParadoxLocalisationTextFormat setName(@NotNull String name);
+    @NotNull ParadoxLocalisationTextFormat setName(@NotNull String name);
 
-  @NotNull String getPresentableText();
+    @NotNull String getPresentableText();
 
-  @Nullable PsiReference getReference();
+    @Nullable PsiReference getReference();
 
-  @NotNull PsiReference @NotNull [] getReferences();
+    @NotNull PsiReference @NotNull [] getReferences();
 
-  @NotNull GlobalSearchScope getResolveScope();
+    @NotNull GlobalSearchScope getResolveScope();
 
-  @NotNull SearchScope getUseScope();
+    @NotNull SearchScope getUseScope();
 
-  @NotNull ItemPresentation getPresentation();
+    @NotNull ItemPresentation getPresentation();
 
 }
