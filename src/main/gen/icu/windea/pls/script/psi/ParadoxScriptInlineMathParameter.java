@@ -13,30 +13,30 @@ import javax.swing.*;
 
 public interface ParadoxScriptInlineMathParameter extends ParadoxScriptInlineMathFactor, ParadoxScriptParameter, ParadoxScriptInterpolation, ParadoxScriptArgumentAwareElement {
 
-    @Nullable PsiElement getIdElement();
+  @Nullable PsiElement getIdElement();
 
-    @Nullable ParadoxScriptParameterArgument getArgumentElement();
+  @Nullable ParadoxScriptParameterArgument getArgumentElement();
 
-    @NotNull Icon getIcon(@IconFlags int flags);
+  @NotNull Icon getIcon(@IconFlags int flags);
 
-    @Nullable String getName();
+  @Nullable String getName();
 
-    @NotNull ParadoxScriptInlineMathParameter setName(@NotNull String name);
+  @NotNull ParadoxScriptInlineMathParameter setName(@NotNull String name);
 
-    int getTextOffset();
+  int getTextOffset();
 
-    @Nullable String getDefaultValue();
+  @Nullable String getDefaultValue();
 
-    @NotNull String getPresentableText();
+  @NotNull String getPresentableText();
 
-    @Nullable PsiReference getReference();
+  @Nullable PsiReference getReference();
 
-    @NotNull PsiReference @NotNull [] getReferences();
+  @NotNull PsiReference @NotNull [] getReferences();
 
-    @NotNull GlobalSearchScope getResolveScope();
+  @NotNull GlobalSearchScope getResolveScope();
 
-    @NotNull SearchScope getUseScope();
+  @NotNull SearchScope getUseScope();
 
-    @NotNull ItemPresentation getPresentation();
+  @NotNull ItemPresentation getPresentation();
 
 }

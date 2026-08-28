@@ -71,7 +71,7 @@ class ParadoxLocalisationParsingTest : ParsingTestCase("localisation/syntax", "t
     fun construct_text_formats_stellaris() = doTest(true)
 
     @Test
-    fun error_unclosed_quote() = doTest(true)
+    fun error_unclosed_quotes() = doTest(true)
     @Test
-    fun error_incomplete_property_line() = doTest(true)
+    fun error_incomplete_property_lines() = doTest(true)
 }

@@ -18,97 +18,97 @@ import java.util.List;
 
 public class ParadoxScriptNormalConditionalBlockImpl extends ASTWrapperPsiElement implements ParadoxScriptNormalConditionalBlock {
 
-    public ParadoxScriptNormalConditionalBlockImpl(@NotNull ASTNode node) {
-        super(node);
-    }
+  public ParadoxScriptNormalConditionalBlockImpl(@NotNull ASTNode node) {
+    super(node);
+  }
 
-    public void accept(@NotNull ParadoxScriptVisitor visitor) {
-        visitor.visitNormalConditionalBlock(this);
-    }
+  public void accept(@NotNull ParadoxScriptVisitor visitor) {
+    visitor.visitNormalConditionalBlock(this);
+  }
 
-    @Override
-    public void accept(@NotNull PsiElementVisitor visitor) {
-        if (visitor instanceof ParadoxScriptVisitor) accept((ParadoxScriptVisitor) visitor);
-        else super.accept(visitor);
-    }
+  @Override
+  public void accept(@NotNull PsiElementVisitor visitor) {
+    if (visitor instanceof ParadoxScriptVisitor) accept((ParadoxScriptVisitor)visitor);
+    else super.accept(visitor);
+  }
 
-    @Override
-    @Nullable
-    public ParadoxScriptConditionalExpression getConditionalExpression() {
-        return PsiTreeUtil.getChildOfType(this, ParadoxScriptConditionalExpression.class);
-    }
+  @Override
+  @Nullable
+  public ParadoxScriptConditionalExpression getConditionalExpression() {
+    return PsiTreeUtil.getChildOfType(this, ParadoxScriptConditionalExpression.class);
+  }
 
-    @Override
-    @NotNull
-    public List<ParadoxScriptNormalConditionalBlock> getNormalConditionalBlockList() {
-        return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptNormalConditionalBlock.class);
-    }
+  @Override
+  @NotNull
+  public List<ParadoxScriptNormalConditionalBlock> getNormalConditionalBlockList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptNormalConditionalBlock.class);
+  }
 
-    @Override
-    @NotNull
-    public List<ParadoxScriptProperty> getPropertyList() {
-        return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptProperty.class);
-    }
+  @Override
+  @NotNull
+  public List<ParadoxScriptProperty> getPropertyList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptProperty.class);
+  }
 
-    @Override
-    @NotNull
-    public List<ParadoxScriptValue> getValueList() {
-        return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptValue.class);
-    }
+  @Override
+  @NotNull
+  public List<ParadoxScriptValue> getValueList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptValue.class);
+  }
 
-    @Override
-    public @Nullable PsiElement getLeftBound() {
-        return ParadoxScriptPsiImplUtil.getLeftBound(this);
-    }
+  @Override
+  public @Nullable PsiElement getLeftBound() {
+    return ParadoxScriptPsiImplUtil.getLeftBound(this);
+  }
 
-    @Override
-    public @Nullable PsiElement getRightBound() {
-        return ParadoxScriptPsiImplUtil.getRightBound(this);
-    }
+  @Override
+  public @Nullable PsiElement getRightBound() {
+    return ParadoxScriptPsiImplUtil.getRightBound(this);
+  }
 
-    @Override
-    public @NotNull List<@NotNull ParadoxScriptStatement> getComponents() {
-        return ParadoxScriptPsiImplUtil.getComponents(this);
-    }
+  @Override
+  public @NotNull List<@NotNull ParadoxScriptStatement> getComponents() {
+    return ParadoxScriptPsiImplUtil.getComponents(this);
+  }
 
-    @Override
-    public @NotNull ParadoxScriptNormalConditionalBlock getMemberContainer() {
-        return ParadoxScriptPsiImplUtil.getMemberContainer(this);
-    }
+  @Override
+  public @NotNull ParadoxScriptNormalConditionalBlock getMemberContainer() {
+    return ParadoxScriptPsiImplUtil.getMemberContainer(this);
+  }
 
-    @Override
-    public @NotNull List<@NotNull ParadoxScriptMember> getMembers() {
-        return ParadoxScriptPsiImplUtil.getMembers(this);
-    }
+  @Override
+  public @NotNull List<@NotNull ParadoxScriptMember> getMembers() {
+    return ParadoxScriptPsiImplUtil.getMembers(this);
+  }
 
-    @Override
-    public @NotNull Icon getIcon(@IconFlags int flags) {
-        return ParadoxScriptPsiImplUtil.getIcon(this, flags);
-    }
+  @Override
+  public @NotNull Icon getIcon(@IconFlags int flags) {
+    return ParadoxScriptPsiImplUtil.getIcon(this, flags);
+  }
 
-    @Override
-    public @NotNull String getPresentableText() {
-        return ParadoxScriptPsiImplUtil.getPresentableText(this);
-    }
+  @Override
+  public @NotNull String getPresentableText() {
+    return ParadoxScriptPsiImplUtil.getPresentableText(this);
+  }
 
-    @Override
-    public @NotNull GlobalSearchScope getResolveScope() {
-        return ParadoxScriptPsiImplUtil.getResolveScope(this);
-    }
+  @Override
+  public @NotNull GlobalSearchScope getResolveScope() {
+    return ParadoxScriptPsiImplUtil.getResolveScope(this);
+  }
 
-    @Override
-    public @NotNull SearchScope getUseScope() {
-        return ParadoxScriptPsiImplUtil.getUseScope(this);
-    }
+  @Override
+  public @NotNull SearchScope getUseScope() {
+    return ParadoxScriptPsiImplUtil.getUseScope(this);
+  }
 
-    @Override
-    public @NotNull ItemPresentation getPresentation() {
-        return ParadoxScriptPsiImplUtil.getPresentation(this);
-    }
+  @Override
+  public @NotNull ItemPresentation getPresentation() {
+    return ParadoxScriptPsiImplUtil.getPresentation(this);
+  }
 
-    @Override
-    public @NotNull String toString() {
-        return ParadoxScriptPsiImplUtil.toString(this);
-    }
+  @Override
+  public @NotNull String toString() {
+    return ParadoxScriptPsiImplUtil.toString(this);
+  }
 
 }

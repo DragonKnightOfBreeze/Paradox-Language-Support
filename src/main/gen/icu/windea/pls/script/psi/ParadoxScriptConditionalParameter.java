@@ -13,24 +13,24 @@ import javax.swing.*;
 
 public interface ParadoxScriptConditionalParameter extends ParadoxScriptConditionParameter {
 
-    @NotNull PsiElement getIdElement();
+  @NotNull PsiElement getIdElement();
 
-    @NotNull Icon getIcon(@IconFlags int flags);
+  @NotNull Icon getIcon(@IconFlags int flags);
 
-    @NotNull String getName();
+  @NotNull String getName();
 
-    @NotNull ParadoxScriptConditionalParameter setName(@NotNull String name);
+  @NotNull ParadoxScriptConditionalParameter setName(@NotNull String name);
 
-    int getTextOffset();
+  int getTextOffset();
 
-    @Nullable PsiReference getReference();
+  @Nullable PsiReference getReference();
 
-    @NotNull PsiReference @NotNull [] getReferences();
+  @NotNull PsiReference @NotNull [] getReferences();
 
-    @NotNull GlobalSearchScope getResolveScope();
+  @NotNull GlobalSearchScope getResolveScope();
 
-    @NotNull SearchScope getUseScope();
+  @NotNull SearchScope getUseScope();
 
-    @NotNull ItemPresentation getPresentation();
+  @NotNull ItemPresentation getPresentation();
 
 }

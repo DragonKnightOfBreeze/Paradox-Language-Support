@@ -11,28 +11,28 @@ import java.util.List;
 
 public interface ParadoxScriptRootBlock extends PsiRootBlock, ParadoxScriptMemberContainer {
 
-    @NotNull
-    List<ParadoxScriptNormalConditionalBlock> getNormalConditionalBlockList();
+  @NotNull
+  List<ParadoxScriptNormalConditionalBlock> getNormalConditionalBlockList();
 
-    @NotNull
-    List<ParadoxScriptProperty> getPropertyList();
+  @NotNull
+  List<ParadoxScriptProperty> getPropertyList();
 
-    @NotNull
-    List<ParadoxScriptScriptedVariable> getScriptedVariableList();
+  @NotNull
+  List<ParadoxScriptScriptedVariable> getScriptedVariableList();
 
-    @NotNull
-    List<ParadoxScriptValue> getValueList();
+  @NotNull
+  List<ParadoxScriptValue> getValueList();
 
-    @NotNull ParadoxScriptRootBlock getMemberContainer();
+  @NotNull ParadoxScriptRootBlock getMemberContainer();
 
-    @NotNull List<@NotNull ParadoxScriptMember> getMembers();
+  @NotNull List<@NotNull ParadoxScriptMember> getMembers();
 
-    @NotNull List<@NotNull ParadoxScriptStatement> getComponents();
+  @NotNull List<@NotNull ParadoxScriptStatement> getComponents();
 
-    @NotNull GlobalSearchScope getResolveScope();
+  @NotNull GlobalSearchScope getResolveScope();
 
-    @NotNull SearchScope getUseScope();
+  @NotNull SearchScope getUseScope();
 
-    @NotNull ItemPresentation getPresentation();
+  @NotNull ItemPresentation getPresentation();
 
 }
