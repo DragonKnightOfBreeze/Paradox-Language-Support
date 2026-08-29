@@ -72,13 +72,13 @@ public class ParadoxScriptStringImpl extends ParadoxScriptValueImpl implements P
   }
 
   @Override
-  public @NotNull QuotePattern getQuotePattern() {
-    return ParadoxScriptPsiImplUtil.getQuotePattern(this);
+  public @NotNull String getPresentableText() {
+    return ParadoxScriptPsiImplUtil.getPresentableText(this);
   }
 
   @Override
-  public @NotNull String getPresentableText() {
-    return ParadoxScriptPsiImplUtil.getPresentableText(this);
+  public @NotNull QuotePattern getQuotePattern() {
+    return ParadoxScriptPsiImplUtil.getQuotePattern(this);
   }
 
   @Override

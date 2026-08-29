@@ -28,19 +28,10 @@ import javax.swing.Icon
 
 @Suppress("UNUSED_PARAMETER")
 object ParadoxCsvPsiImplUtil {
-    // region ParadoxCsvRowHeader
+    // region ParadoxCsvColumnContainer
 
     @JvmStatic
-    fun getIcon(element: ParadoxCsvHeader, @Iconable.IconFlags flags: Int): Icon {
-        return ChronicleIcons.Nodes.Row
-    }
-
-    // endregion
-
-    // region ParadoxCsvRow
-
-    @JvmStatic
-    fun getIcon(element: ParadoxCsvRow, @Iconable.IconFlags flags: Int): Icon {
+    fun getIcon(element: ParadoxCsvColumnContainer, @Iconable.IconFlags flags: Int): Icon {
         return ChronicleIcons.Nodes.Row
     }
 
@@ -75,12 +66,7 @@ object ParadoxCsvPsiImplUtil {
 
     // endregion
 
-    // region Common Methods
-
-    @JvmStatic
-    fun getComponents(element: ParadoxCsvColumnContainer): List<ParadoxCsvColumn> {
-        return element.findChildren<_>()
-    }
+    // region ParadoxCsvExpressionElement
 
     @JvmStatic
     fun getName(element: ParadoxCsvExpressionElement): String {
@@ -102,14 +88,23 @@ object ParadoxCsvPsiImplUtil {
         throw IncorrectOperationException()
     }
 
+    // endregion
+
+    // region Common Methods
+
     @JvmStatic
-    fun getQuotePattern(element: PsiQuoteAwareElement): QuotePattern {
-        return QuotePatterns.ParadoxCsv
+    fun getComponents(element: ParadoxCsvColumnContainer): List<ParadoxCsvColumn> {
+        return element.findChildren<_>()
     }
 
     @JvmStatic
     fun getPresentableText(element: PsiPresentableElement): String {
         return ParadoxCsvPsiService.getPresentableText(element)
+    }
+
+    @JvmStatic
+    fun getQuotePattern(element: PsiQuoteAwareElement): QuotePattern {
+        return QuotePatterns.ParadoxCsv
     }
 
     @JvmStatic

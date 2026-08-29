@@ -100,7 +100,7 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
     }
 
     private boolean isExactWord(char c) {
-        return c == '_' || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') && (c >= '0' && c <= '9');
+        return c == '_' || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9');
     }
 
     private boolean isColorfulText() {
@@ -115,16 +115,16 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
         return c == '$'; // parameter end marker at end
     }
 
-    private boolean isIcon() {
-        if (yylength() <= 1) return false;
-        char c = yycharat(1);
-        return c == '[' || c == '$' || isExactWord(c); // exact word (or interpolation start marker) after prefix
-    }
-
     private boolean isCommand() {
         if (yylength() <= 1) return false;
         char c = yycharat(yylength() - 1);
         return c != '['; // not left bracket after prefix (double left brackets -> escaped)
+    }
+
+    private boolean isIcon() {
+        if (yylength() <= 1) return false;
+        char c = yycharat(1);
+        return c == '[' || c == '$' || isExactWord(c); // exact word (or interpolation start marker) after prefix
     }
 
     private boolean isTextIcon() {
@@ -137,12 +137,6 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
         if (yylength() <= 1) return false;
         char c = yycharat(1);
         return c == '[' || c == '$' || isExactWord(c); // exact word (or interpolation start marker) after prefix
-    }
-
-    private void pushbackIfBlank() {
-        int index = 0;
-        while (index < yylength() && Character.isWhitespace(yycharat(yylength() - index - 1))) index++;
-        if (index > 0) yypushback(index);
     }
 %}
 
@@ -185,28 +179,26 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 
 BLANK=\s+
 
-TEXT_TOKEN=([^§£\$\[\]#@]|\\[\s\S])+
-
 IDENTIFIER_CHAR=[A-Za-z0-9_]
 IDENTIFIER_LEAD_CHAR=[A-Za-z_] // leading number is not allowed
 IDENTIFIER_TOKEN={IDENTIFIER_LEAD_CHAR}{IDENTIFIER_CHAR}* // leading number is not allowed
-
-ARGUMENT_CHAR=[^\"§£\$\[\]\\\s] // `|` is allowed?
-ARGUMENT_TOKEN={ARGUMENT_CHAR}+
 
 PARAMETER_CHECK=\$(\S*\$|.?) // no blank in $...$
 PARAMETER_CHAR={IDENTIFIER_CHAR}|[.\-'] // `-'` is allowed additionally
 PARAMETER_LEAD_CHAR={IDENTIFIER_LEAD_CHAR}|[.\-'] // leading number is not allowed & `-'` is allowed additionally
 PARAMETER_TOKEN={PARAMETER_LEAD_CHAR}{PARAMETER_CHAR}* // leading number is not allowed & `-'` is allowed additionally
 
+ARGUMENT_CHAR=[^\"§£\$\[\]\\\s] // `|` is allowed?
+ARGUMENT_TOKEN={ARGUMENT_CHAR}+
+
 SCRIPTED_VARIABLE_TOKEN={IDENTIFIER_TOKEN} // identifier
 
 COLORFUL_TEXT_CHECK=§.?
-COLOR_TOKEN=\w
+COLOR_TOKEN={IDENTIFIER_CHAR} // identifier char
 
 COMMAND_CHECK=\[.?
-COMMAND_TEXT_CHAR=[^'\[\]\|\s] // `[]` within single quotes are not allowed?
-COMMAND_TEXT_BOUND_CHAR=[^'\[\]\|\r\n] // `[]` within single quotes are not allowed?
+COMMAND_TEXT_CHAR=[^\[\]\|\r\n] // `[]` within single quotes are not allowed?
+COMMAND_TEXT_BOUND_CHAR=[^\[\]\|\s] // `[]` within single quotes are not allowed?
 COMMAND_TEXT_TOKEN={COMMAND_TEXT_BOUND_CHAR}({COMMAND_TEXT_CHAR}*{COMMAND_TEXT_BOUND_CHAR})? // inner whitespaces are allowed
 
 CONCEPT_NAME_CHAR=[A-Za-z0-9_:] // `:` is allowed additionally
@@ -224,6 +216,8 @@ TEXT_ICON_TOKEN={TEXT_ICON_CHAR}+ // leading number is allowed
 TEXT_FORMAT_CHECK=#.?
 TEXT_FORMAT_CHAR={IDENTIFIER_CHAR}|[:'] // `:'` is allowed additionally
 TEXT_FORMAT_TOKEN={TEXT_FORMAT_CHAR}+ // leading number is allowed
+
+TEXT_TOKEN=([^§£\$\[\]#@]|\\[\s\S])+
 
 %%
 
@@ -406,7 +400,7 @@ TEXT_FORMAT_TOKEN={TEXT_FORMAT_CHAR}+ // leading number is allowed
 }
 <IN_COMMAND_TEXT> {
     "|" { yybegin(IN_COMMAND_ARGUMENT); return PIPE; }
-    {COMMAND_TEXT_TOKEN} { pushbackIfBlank(); return COMMAND_TEXT_TOKEN; } // trailing blank should be pushbacked
+    {COMMAND_TEXT_TOKEN} { return COMMAND_TEXT_TOKEN; } // trailing blank should be pushbacked
     {BLANK} { return WHITE_SPACE; } // compatible with blank
     [^] { if (!exitStateOnBadCharacter()) return BAD_CHARACTER; } // recovery
 }

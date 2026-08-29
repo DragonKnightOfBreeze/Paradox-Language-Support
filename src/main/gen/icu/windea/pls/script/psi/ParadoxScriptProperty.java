@@ -38,11 +38,11 @@ public interface ParadoxScriptProperty extends ParadoxScriptNamedElement, Parado
 
   @Nullable String getValue();
 
-  @NotNull String getPresentableText();
-
   @NotNull IElementType getIElementType();
 
   boolean isEquivalentTo(@NotNull PsiElement another);
+
+  @NotNull String getPresentableText();
 
   @NotNull GlobalSearchScope getResolveScope();
 

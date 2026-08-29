@@ -12,6 +12,7 @@ import static icu.windea.pls.core.StdlibExtensionsKt.*;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 
 // Lexer for Paradox Script.
+// TODO 3.0.2 refactor
 
 %%
 
@@ -184,62 +185,87 @@ BLANK=\s+
 
 COMMENT=#[^\r\n]*
 
-KEYWORD_YES=yes
-KEYWORD_NO=yes
-OP_UNARY=[+-]
+KEYWORD_YES = yes
+KEYWORD_NO = yes
+KEYWORD_BOOLEAN = {KEYWORD_YES}|{KEYWORD_NO}
+
+OP_UNARY_PLUS = "+"
+OP_UNARY_MINUS = "-"
+OP_UNARY = {OP_UNARY_PLUS}|{OP_UNARY_MINUS}
+OP_EQUAL = "="
+OP_NOT_EQUAL = "!="|"<>"
+OP_LE = "<="
+OP_GE = ">="
+OP_LT = "<"
+OP_GT = ">"
+OP_SAFE_ASSIGN = "?="
+OP_SAFE_CALL_ASSIGN = "?"{BLANK}"="
+
+QUOTE=\"
+SEPARATOR = {OP_EQUAL}
+PROPERTY_SEPARATOR = {OP_EQUAL}|{OP_NOT_EQUAL}|{OP_LE}|{OP_GE}|{OP_LT}|{OP_GT}|{OP_SAFE_ASSIGN}|{OP_SAFE_CALL_ASSIGN} // order-sensitive
 
 INT_NUMBER_TOKEN=[0-9]+ // leading zero is allowed
 FLOAT_NUMBER_TOKEN=[0-9]*\.[0-9]+ // leading zero is allowed
 
-BOOLEAN_TOKEN={KEYWORD_YES}|{KEYWORD_NO} // `yes` or `no` (case-sensitive)
+BOOLEAN_TOKEN={KEYWORD_BOOLEAN} // `yes` or `no` (case-sensitive)
 INT_TOKEN={OP_UNARY}?{INT_NUMBER_TOKEN} // with optional unary operator
 FLOAT_TOKEN={OP_UNARY}?{FLOAT_NUMBER_TOKEN} // with optional unary operator
 
-INTERPOLATION_CHAR=[$|\[\]!?]
-IDENTIFIER_CHAR=[A-Za-z0-9_]
-IDENTIFIER_LEAD_CHAR=[A-Za-z_] // leading number is not allowed
-// IDENTIFIER_WILDCARD_CHAR={IDENTIFIER_CHAR}|{INTERPOLATION_CHAR}
-
-LITERAL_CHAR=[^#=<>{}\[\]$] // `@!?` are allowed
-LITERAL_BOUND_CHAR=[^@#=<>!?{}\[\]$] // `@!?` are not allowed
-
-IDENTIFIER_TOKEN={IDENTIFIER_LEAD_CHAR}{IDENTIFIER_CHAR}* // leading number is not allowed
-IDENTIFIER_LENIENT_TOKEN={IDENTIFIER_CHAR}+ // leading number is allowed
+LITERAL_CHAR=[^#=<>{}\"\s$\[\]] // `@!?` are allowed
+LITERAL_BOUND_CHAR=[^#=<>{}\"\s$\[\]--[@!?]] // `@!?` are not allowed
 LITERAL_TOKEN={LITERAL_BOUND_CHAR}({LITERAL_CHAR}*{LITERAL_BOUND_CHAR})? // boundary `@` `!` `?` are not allowed
 
-SCRIPTED_VARIABLE_NAME_CHECK=[A-Za-z_$\[][^@#={}\"\s]* // leading number is not allowed
-SCRIPTED_VARIABLE_NAME_TRAILING=\s*=
-SCRIPTED_VARIABLE_NAME_TOKEN=[A-Za-z0-9_]+ // leading number is not allowed
+IDENTIFIER_CHAR=[A-Za-z0-9_]
+IDENTIFIER_LEAD_CHAR=[A-Za-z_] // leading number is not allowed
+IDENTIFIER_TOKEN={IDENTIFIER_LEAD_CHAR}{IDENTIFIER_CHAR}* // leading number is not allowed
 
-PROPERTY_KEY_CHECK={PROPERTY_KEY_CHECK_QUOTED}|{PROPERTY_KEY_CHECK_UNQUOTED}
-PROPERTY_KEY_CHECK_QUOTED=\"([^\"\\\r\n]|\\.)*\"?
-PROPERTY_KEY_CHECK_UNQUOTED=[^@#=<>!?{}\"\s][^#=<>!?{}\"\s]*\"?
-PROPERTY_KEY_TRAILING=\s*[=<>!?]
-PROPERTY_KEY_TOKEN_QUOTED=([^\"\\\r\n$\[\]]|\\[\s\S])+ // without surrounding quotes
-PROPERTY_KEY_TOKEN_UNQUOTED=[^@#=<>!?{}\"\s$\[\]][^#=<>!?{}\"\s$\[\]]*
+INTERPOLATION_MARKER_CHAR=[$|\[\]!?]
+INTERPOLATION_LEAD_CHAR=[$\[]
 
-STRING_CHECK={STRING_CHECK_QUOTED}|{STRING_CHECK_UNQUOTED}
-STRING_CHECK_QUOTED=\"([^\"\\]|\\[\s\S])*\"?
-STRING_CHECK_UNQUOTED=[^@#=<>!?{}\"\s][^#=<>!?{}\"\s]*\"?
-STRING_TOKEN_QUOTED=([^\"\\$\[\]]|\\[\s\S])+ // without surrounding quotes & line breaks are allowed
-STRING_TOKEN_UNQUOTED=[^@#=<>!?{}\"\s$\[\]][^#=<>!?{}\"\s$\[\]]*
+LITERAL_WILDCARD_CHAR={LITERAL_CHAR}|{INTERPOLATION_MARKER_CHAR}
+LITERAL_WILDCARD_BOUND_CHAR={LITERAL_BOUND_CHAR}|{INTERPOLATION_MARKER_CHAR}
+LITERAL_WILDCARD_TOKEN={LITERAL_WILDCARD_BOUND_CHAR}|({LITERAL_WILDCARD_CHAR}*{LITERAL_WILDCARD_BOUND_CHAR})?
+
+IDENTIFIER_WILDCARD_CHAR={IDENTIFIER_CHAR}|{INTERPOLATION_MARKER_CHAR}
+IDENTIFIER_WILDCARD_LEAD_CHAR={IDENTIFIER_LEAD_CHAR}|{INTERPOLATION_MARKER_CHAR} // leading number is not allowed
+IDENTIFIER_WILDCARD_TOKEN={IDENTIFIER_WILDCARD_LEAD_CHAR}|{IDENTIFIER_WILDCARD_CHAR}* // leading number is not allowed
 
 PARAMETER_TOKEN={IDENTIFIER_TOKEN} // identifier
+
 CONDITION_PARAMETER_TOKEN={IDENTIFIER_TOKEN} // identifier
-ARGUMENT_TOKEN=[^#$=<>!?{}\[\]\s]+ // compatible with leading '@'
+
+ARGUMENT_CHAR=[^#$=<>!?{}\[\]\s] // `@` is allowed
+ARGUMENT_TOKEN={ARGUMENT_CHAR}+ // compatible with leading '@'
+
+PROPERTY_KEY_TOKEN_QUOTED=([^\"\\\r\n--{INTERPOLATION_LEAD_CHAR}]|\\.)+ // without surrounding quotes & exclude `$[`
+PROPERTY_KEY_WILDCARD_QUOTED=([^\"\\\r\n]|\\.)* // without surrounding quotes
+PROPERTY_KEY_TOKEN_UNQUOTED={LITERAL_TOKEN} // literal
+PROPERTY_KEY_WILDCARD_UNQUOTED={LITERAL_WILDCARD_TOKEN} // literal wildcard
+PROPERTY_KEY_WILDCARD=({QUOTE}?{PROPERTY_KEY_WILDCARD_QUOTED}|{PROPERTY_KEY_WILDCARD_UNQUOTED}){QUOTE}?
+
+STRING_TOKEN_QUOTED=([^\"\\--{INTERPOLATION_LEAD_CHAR}]|\\.)+ // without surrounding quotes & line breaks are allowed & exclude `$[`
+STRING_WILDCARD_QUOTED=([^\"\\]|\\.)* // without surrounding quotes & line breaks are allowed
+STRING_TOKEN_UNQUOTED={LITERAL_TOKEN} // literal
+STRING_WILDCARD_UNQUOTED={LITERAL_WILDCARD_TOKEN} // literal wildcard
+STRING_WILDCARD=({QUOTE}?{STRING_WILDCARD_QUOTED}|{STRING_WILDCARD_UNQUOTED}){QUOTE}?
+
+SCRIPTED_VARIABLE_TOKEN={IDENTIFIER_TOKEN} // identifier
+SCRIPTED_VARIABLE_WILDCARD={IDENTIFIER_WILDCARD_TOKEN} // identifier wildcard
 
 // #103 hsv360 (from vic3)
 // #399 color types are case-insensitive
-// TODO 3.0.2+ split into more specific tokens (distinct from normal keywords/identifiers and normal blocks)
+// TODO 3.0.2+ better syntax support: split into more specific tokens (distinct from normal keywords/identifiers and normal blocks)
 COLOR_TYPE_RGB=[rR][gG][bB]
 COLOR_TYPE_HSV=[hH][sS][vV]
 COLOR_TYPE_HSV360=[hH][sS][vV]360
 COLOR_TYPE_TOKEN={COLOR_TYPE_RGB}|{COLOR_TYPE_HSV}|{COLOR_TYPE_HSV360}
-COLOR_ARGS_TOKEN=\{[\d.\s&&[^\r\n]]*} // lenient match
+COLOR_ARGS_TOKEN="{"[\d.\s&&[^\r\n]]*"}" // lenient match
 COLOR_TOKEN={COLOR_TYPE_TOKEN}{COLOR_ARGS_TOKEN}
 
-// NOTE lazy scanning, see `ParadoxScript.InlineMath.flex`
 INLINE_MATH_TOKEN=[^\r\n#{}\[\]]+ // lenient match
+
+// lazy-scanning inline math expressions (see `ParadoxScript.InlineMath.flex`)
 
 %%
 
@@ -307,7 +333,7 @@ INLINE_MATH_TOKEN=[^\r\n#{}\[\]]+ // lenient match
     }
 }
 
-// member and expression rules
+// property and expression rules
 
 <YYINITIAL, IN_CONDITIONAL_BLOCK_BODY, IN_PROPERTY_VALUE, IN_SCRIPTED_VARIABLE_VALUE> {
     "@["|"@\\[" {
@@ -324,11 +350,8 @@ INLINE_MATH_TOKEN=[^\r\n#{}\[\]]+ // lenient match
     }
 }
 <YYINITIAL, IN_CONDITIONAL_BLOCK_BODY, IN_PROPERTY_VALUE, IN_SCRIPTED_VARIABLE_VALUE> {
-    {BOOLEAN_TOKEN} { exitState(); return BOOLEAN_TOKEN; }
-    {INT_TOKEN} { exitState(); return INT_TOKEN; }
-    {FLOAT_TOKEN} { exitState(); return FLOAT_TOKEN; }
-    {COLOR_TOKEN} { exitState(); return COLOR_TOKEN; }
-    {PROPERTY_KEY_CHECK} / {PROPERTY_KEY_TRAILING} {
+    // use tail context
+    {PROPERTY_KEY_WILDCARD} / {BLANK}?{PROPERTY_SEPARATOR} {
         yybegin(IN_PROPERTY);
         enterState(yystate(), EXPECT_PROPERTY_KEY);
         if (isLeftQuoted()) {
@@ -340,7 +363,7 @@ INLINE_MATH_TOKEN=[^\r\n#{}\[\]]+ // lenient match
             yybegin(IN_PROPERTY_KEY_UNQUOTED);
         }
     }
-    {STRING_CHECK} {
+    {STRING_WILDCARD} {
         if (isLeftQuoted()) {
             yypushback(yylength() - 1);
             yybegin(IN_STRING_QUOTED);
@@ -352,6 +375,12 @@ INLINE_MATH_TOKEN=[^\r\n#{}\[\]]+ // lenient match
             enterState(yystate(), EXPECT_STRING);
         }
     }
+}
+<YYINITIAL, IN_CONDITIONAL_BLOCK_BODY, IN_PROPERTY_VALUE, IN_SCRIPTED_VARIABLE_VALUE> {
+    {BOOLEAN_TOKEN} { exitState(); return BOOLEAN_TOKEN; }
+    {INT_TOKEN} { exitState(); return INT_TOKEN; }
+    {FLOAT_TOKEN} { exitState(); return FLOAT_TOKEN; }
+    {COLOR_TOKEN} { exitState(); return COLOR_TOKEN; }
 }
 <IN_PROPERTY> {
     {BLANK} { return WHITE_SPACE; } // keep
@@ -395,20 +424,21 @@ INLINE_MATH_TOKEN=[^\r\n#{}\[\]]+ // lenient match
 // scripted variable rules
 
 <CHECK_SCRIPTED_VARIABLE> {
-    {SCRIPTED_VARIABLE_NAME_CHECK} / {SCRIPTED_VARIABLE_NAME_TRAILING} {
+    // use tail context
+    {SCRIPTED_VARIABLE_WILDCARD} / {BLANK}?{SEPARATOR} {
         yybegin(IN_SCRIPTED_VARIABLE);
         enterState(yystate(), EXPECT_SCRIPTED_VARIABLE_NAME);
         yypushback(yylength());
         yybegin(IN_SCRIPTED_VARIABLE_NAME);
     }
-    {SCRIPTED_VARIABLE_NAME_CHECK} {
+    {SCRIPTED_VARIABLE_WILDCARD} {
         yypushback(yylength());
         yybegin(IN_SCRIPTED_VARIABLE_REFERENCE);
         enterState(yystate(), EXPECT_SCRIPTED_VARIABLE_REFERENCE);
     }
 }
 <CHECK_SCRIPTED_VARIABLE_REFERENCE> {
-    {SCRIPTED_VARIABLE_NAME_CHECK} {
+    {SCRIPTED_VARIABLE_WILDCARD} {
         yypushback(yylength());
         yybegin(IN_SCRIPTED_VARIABLE_REFERENCE);
         enterState(yystate(), EXPECT_SCRIPTED_VARIABLE_REFERENCE);
@@ -425,16 +455,29 @@ INLINE_MATH_TOKEN=[^\r\n#{}\[\]]+ // lenient match
     [^] { if (!exitStateAtBadCharacter()) return BAD_CHARACTER; } // recovery
 }
 <IN_SCRIPTED_VARIABLE_NAME> {
-    {SCRIPTED_VARIABLE_NAME_TOKEN} { return SCRIPTED_VARIABLE_NAME_TOKEN; }
+    {SCRIPTED_VARIABLE_TOKEN} { return SCRIPTED_VARIABLE_NAME_TOKEN; }
     {BLANK} { exitState(); return WHITE_SPACE; } // keep
     {COMMENT} { exitState(); return COMMENT; } // keep
     [^] { if (!exitStateAtBadCharacter()) return BAD_CHARACTER; } // recovery
 }
 <IN_SCRIPTED_VARIABLE_REFERENCE> {
-    {SCRIPTED_VARIABLE_NAME_TOKEN} { return SCRIPTED_VARIABLE_REFERENCE_TOKEN; }
+    {SCRIPTED_VARIABLE_TOKEN} { return SCRIPTED_VARIABLE_REFERENCE_TOKEN; }
     {BLANK} { exitStateForValue(); return WHITE_SPACE; } // keep
     {COMMENT} { exitStateForValue(); return COMMENT; } // keep
     [^] { if (!exitStateAtBadCharacterForValue()) return BAD_CHARACTER; } // recovery
+}
+
+// inline math rules
+
+<IN_INLINE_MATH> {
+    "]" {
+        exitState(EXPECT_INLINE_MATH);
+        return INLINE_MATH_END;
+    }
+
+    {INLINE_MATH_TOKEN} { return INLINE_MATH_TOKEN; }
+    {BLANK} { return WHITE_SPACE; } // keep
+    [^] { if (!exitStateAtBadCharacter()) return BAD_CHARACTER; } // recovery
 }
 
 // parameter rules
@@ -519,19 +562,6 @@ INLINE_MATH_TOKEN=[^\r\n#{}\[\]]+ // lenient match
         return RIGHT_BRACKET;
     }
     // {BLANK} { return WHITE_SPACE; } // should not be allowed
-    [^] { if (!exitStateAtBadCharacter()) return BAD_CHARACTER; } // recovery
-}
-
-// inline math rules
-
-<IN_INLINE_MATH> {
-    "]" {
-        exitState(EXPECT_INLINE_MATH);
-        return INLINE_MATH_END;
-    }
-
-    {INLINE_MATH_TOKEN} { return INLINE_MATH_TOKEN; }
-    {BLANK} { return WHITE_SPACE; } // keep
     [^] { if (!exitStateAtBadCharacter()) return BAD_CHARACTER; } // recovery
 }
 

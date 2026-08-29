@@ -49,6 +49,31 @@ object CwtPsiImplUtil {
 
     // endregion
 
+    // region CwtDocComment
+
+    @JvmStatic
+    fun getTokenType(element: CwtDocComment): IElementType {
+        return DOC_COMMENT
+    }
+
+    @JvmStatic
+    fun getOwner(element: CwtDocComment): PsiElement? {
+        val attachingElement = PsiService.getAttachingElement(element) ?: return null
+        if (!CwtPsiService.canAttachComment(attachingElement)) return null
+        return attachingElement
+    }
+
+    // endregion
+
+    // region CwtOptionComment
+
+    @JvmStatic
+    fun getTokenType(element: CwtOptionComment): IElementType {
+        return OPTION_COMMENT
+    }
+
+    // endregion
+
     // region CwtOption
 
     @JvmStatic
@@ -246,35 +271,7 @@ object CwtPsiImplUtil {
 
     // endregion
 
-    // region CwtDocComment
-
-    @JvmStatic
-    fun getTokenType(element: CwtDocComment): IElementType {
-        return DOC_COMMENT
-    }
-
-    @JvmStatic
-    fun getOwner(element: CwtDocComment): PsiElement? {
-        val attachingElement = PsiService.getAttachingElement(element) ?: return null
-        if (!CwtPsiService.canAttachComment(attachingElement)) return null
-        return attachingElement
-    }
-
-    // endregion
-
-    // region CwtOptionComment
-
-    @JvmStatic
-    fun getTokenType(element: CwtOptionComment): IElementType {
-        return OPTION_COMMENT
-    }
-
-    // endregion
-
-    @JvmStatic
-    fun getComponents(element: PsiListLikeElement): List<CwtStatement> {
-        return element.findChildren<_>()
-    }
+    // region CwtExpressionElement
 
     @JvmStatic
     fun getName(element: CwtExpressionElement): String {
@@ -296,14 +293,23 @@ object CwtPsiImplUtil {
         throw IncorrectOperationException()
     }
 
+    // endregion
+
+    // region Common Methods
+
     @JvmStatic
-    fun getQuotePattern(element: PsiQuoteAwareElement): QuotePattern {
-        return QuotePatterns.Cwt
+    fun getComponents(element: PsiListLikeElement): List<CwtStatement> {
+        return element.findChildren<_>()
     }
 
     @JvmStatic
     fun getPresentableText(element: PsiPresentableElement): String {
         return CwtPsiService.getPresentableText(element)
+    }
+
+    @JvmStatic
+    fun getQuotePattern(element: PsiQuoteAwareElement): QuotePattern {
+        return QuotePatterns.Cwt
     }
 
     @JvmStatic
@@ -335,4 +341,6 @@ object CwtPsiImplUtil {
     fun toString(element: PsiElement): String {
         return PsiService.toPresentableString(element)
     }
+
+    // endregion
 }

@@ -57,21 +57,6 @@ public class ParadoxScriptNormalConditionalBlockImpl extends ASTWrapperPsiElemen
   }
 
   @Override
-  public @Nullable PsiElement getLeftBound() {
-    return ParadoxScriptPsiImplUtil.getLeftBound(this);
-  }
-
-  @Override
-  public @Nullable PsiElement getRightBound() {
-    return ParadoxScriptPsiImplUtil.getRightBound(this);
-  }
-
-  @Override
-  public @NotNull List<@NotNull ParadoxScriptStatement> getComponents() {
-    return ParadoxScriptPsiImplUtil.getComponents(this);
-  }
-
-  @Override
   public @NotNull ParadoxScriptNormalConditionalBlock getMemberContainer() {
     return ParadoxScriptPsiImplUtil.getMemberContainer(this);
   }
@@ -82,8 +67,23 @@ public class ParadoxScriptNormalConditionalBlockImpl extends ASTWrapperPsiElemen
   }
 
   @Override
+  public @Nullable PsiElement getLeftBound() {
+    return ParadoxScriptPsiImplUtil.getLeftBound(this);
+  }
+
+  @Override
+  public @Nullable PsiElement getRightBound() {
+    return ParadoxScriptPsiImplUtil.getRightBound(this);
+  }
+
+  @Override
   public @NotNull Icon getIcon(@IconFlags int flags) {
     return ParadoxScriptPsiImplUtil.getIcon(this, flags);
+  }
+
+  @Override
+  public @NotNull List<@NotNull ParadoxScriptStatement> getComponents() {
+    return ParadoxScriptPsiImplUtil.getComponents(this);
   }
 
   @Override

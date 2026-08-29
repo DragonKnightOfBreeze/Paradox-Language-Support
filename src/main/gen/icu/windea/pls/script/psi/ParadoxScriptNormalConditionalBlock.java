@@ -24,17 +24,17 @@ public interface ParadoxScriptNormalConditionalBlock extends ParadoxScriptCondit
   @NotNull
   List<ParadoxScriptValue> getValueList();
 
-  @Nullable PsiElement getLeftBound();
-
-  @Nullable PsiElement getRightBound();
-
-  @NotNull List<@NotNull ParadoxScriptStatement> getComponents();
-
   @NotNull ParadoxScriptNormalConditionalBlock getMemberContainer();
 
   @NotNull List<@NotNull ParadoxScriptMember> getMembers();
 
+  @Nullable PsiElement getLeftBound();
+
+  @Nullable PsiElement getRightBound();
+
   @NotNull Icon getIcon(@IconFlags int flags);
+
+  @NotNull List<@NotNull ParadoxScriptStatement> getComponents();
 
   @NotNull String getPresentableText();
 

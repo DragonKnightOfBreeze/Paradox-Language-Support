@@ -34,6 +34,7 @@ BLANK=\s+
 
 COMMENT=#[^\r\n]*
 
+QUOTE=\"
 SEPARATOR=";"
 
 LITERAL_CHAR=[^#;\"\r\n]
@@ -43,9 +44,10 @@ LITERAL_TOKEN_QUOTED=([^\"\\\r\n]|\\[\s\S])*
 
 // no extra token kinds beyond columns (booleans/numbers are treated as plain text)
 
-COLUMN_TOKEN={COLUMN_TOKEN_QUOTED}|{COLUMN_TOKEN_UNQUOTED}
-COLUMN_TOKEN_QUOTED=\"{LITERAL_TOKEN_QUOTED}\"? // compatible with missing closing quote
+// 3.0.2 NOTE not split quotes into individual tokens in columns atm
+COLUMN_TOKEN_QUOTED={LITERAL_TOKEN_QUOTED} // compatible with missing closing quote
 COLUMN_TOKEN_UNQUOTED={LITERAL_TOKEN} // literal
+COLUMN_TOKEN=({QUOTE}{COLUMN_TOKEN_QUOTED}|{COLUMN_TOKEN_UNQUOTED}){QUOTE}?
 
 %%
 

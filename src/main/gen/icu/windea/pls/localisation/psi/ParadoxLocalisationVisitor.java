@@ -89,7 +89,8 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
   }
 
   public void visitPropertyValue(@NotNull ParadoxLocalisationPropertyValue o) {
-    visitPsiQuoteAwareElement(o);
+    visitNavigatablePsiElement(o);
+    // visitPsiQuoteAwareElement(o);
     // visitRichTextContainer(o);
   }
 
@@ -129,10 +130,6 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
   }
 
   public void visitPsiListLikeElement(@NotNull PsiListLikeElement o) {
-    visitElement(o);
-  }
-
-  public void visitPsiQuoteAwareElement(@NotNull PsiQuoteAwareElement o) {
     visitElement(o);
   }
 

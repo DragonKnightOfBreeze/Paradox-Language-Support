@@ -78,11 +78,6 @@ public class ParadoxScriptBlockImpl extends ParadoxScriptValueImpl implements Pa
   }
 
   @Override
-  public @NotNull List<@NotNull ParadoxScriptStatement> getComponents() {
-    return ParadoxScriptPsiImplUtil.getComponents(this);
-  }
-
-  @Override
   public @NotNull Icon getIcon(@IconFlags int flags) {
     return ParadoxScriptPsiImplUtil.getIcon(this, flags);
   }
@@ -90,6 +85,11 @@ public class ParadoxScriptBlockImpl extends ParadoxScriptValueImpl implements Pa
   @Override
   public @NotNull String getValue() {
     return ParadoxScriptPsiImplUtil.getValue(this);
+  }
+
+  @Override
+  public @NotNull List<@NotNull ParadoxScriptStatement> getComponents() {
+    return ParadoxScriptPsiImplUtil.getComponents(this);
   }
 
   @Override

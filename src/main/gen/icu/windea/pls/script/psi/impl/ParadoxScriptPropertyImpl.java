@@ -95,11 +95,6 @@ public class ParadoxScriptPropertyImpl extends ParadoxScriptStubElementImpl<Para
   }
 
   @Override
-  public @NotNull String getPresentableText() {
-    return ParadoxScriptPsiImplUtil.getPresentableText(this);
-  }
-
-  @Override
   public @NotNull IElementType getIElementType() {
     return ParadoxScriptPsiImplUtil.getIElementType(this);
   }
@@ -107,6 +102,11 @@ public class ParadoxScriptPropertyImpl extends ParadoxScriptStubElementImpl<Para
   @Override
   public boolean isEquivalentTo(@NotNull PsiElement another) {
     return ParadoxScriptPsiImplUtil.isEquivalentTo(this, another);
+  }
+
+  @Override
+  public @NotNull String getPresentableText() {
+    return ParadoxScriptPsiImplUtil.getPresentableText(this);
   }
 
   @Override

@@ -55,11 +55,6 @@ public class CwtRootBlockImpl extends ASTWrapperPsiElement implements CwtRootBlo
   }
 
   @Override
-  public @NotNull String getValue() {
-    return CwtPsiImplUtil.getValue(this);
-  }
-
-  @Override
   public @NotNull CwtRootBlock getMemberContainer() {
     return CwtPsiImplUtil.getMemberContainer(this);
   }
@@ -67,6 +62,11 @@ public class CwtRootBlockImpl extends ASTWrapperPsiElement implements CwtRootBlo
   @Override
   public @NotNull List<@NotNull CwtMember> getMembers() {
     return CwtPsiImplUtil.getMembers(this);
+  }
+
+  @Override
+  public @NotNull String getValue() {
+    return CwtPsiImplUtil.getValue(this);
   }
 
   @Override

@@ -1,6 +1,5 @@
 package icu.windea.pls.csv.annotator
 
-import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.ChronicleBundle
@@ -26,34 +25,101 @@ class ParadoxCsvSyntaxAnnotatorTest : BasePlatformTestCase(), ChronicleTestScope
     @After
     fun doTearDown() = clearIntegrationTest()
 
+    // region MissingQuotes
+
     @Test
-    fun testMissingQuotes_errors() {
-        // NOTE 3.0.2 `# eof` here is required, or the eof error will be ignored
-        // for missing closing quotes, not available at middle, but available at end
+    fun testMissingQuotes_valid_noErrors() {
         myFixture.configureByText("annotator_missing_quotes.test.csv") {
-            val m1 = ChronicleBundle.message("annotator.missing.opening.quote.message")
-            val m2 = ChronicleBundle.message("annotator.missing.closing.quote.message")
             """
             name;status
             "value";yes
             value;yes
-            ${error(m1)}${errorEnd()}value";yes
-            "value;yes${error(m2)}${errorEnd()}
-            # eof
+            # comment
             """.trimIndent()
         }
         myFixture.checkHighlighting()
     }
 
     @Test
-    fun testMissingQuotes_fixes() {
-        // NOTE 3.0.2 `# eof` here is required, or the eof error will be ignored
-        // for missing closing quotes, not available at middle, but available at end
+    fun testMissingQuotes_valid_noFixes() {
         run {
-            myFixture.configureByText("annotator_adjacent_icons.fix.test.csv", """
+            myFixture.configureByText("annotator_missing_quotes.test.csv", """
+                name;status
+                <caret>"value";yes
+                # comment
+            """.trimIndent())
+            val available = myFixture.availableIntentions
+            assertFalse(available.any { it.text == ChronicleBundle.message("annotator.missing.opening.quote.fix") })
+            assertFalse(available.any { it.text == ChronicleBundle.message("annotator.missing.closing.quote.fix") })
+        }
+        run {
+            myFixture.configureByText("annotator_missing_quotes.test.csv", """
+                name;status
+                "value"<caret>;yes
+                # comment
+            """.trimIndent())
+            val available = myFixture.availableIntentions
+            assertFalse(available.any { it.text == ChronicleBundle.message("annotator.missing.opening.quote.fix") })
+            assertFalse(available.any { it.text == ChronicleBundle.message("annotator.missing.closing.quote.fix") })
+        }
+        run {
+            myFixture.configureByText("annotator_missing_quotes.test.csv", """
+                name;status
+                <caret>value;yes
+                # comment
+            """.trimIndent())
+            val available = myFixture.availableIntentions
+            assertFalse(available.any { it.text == ChronicleBundle.message("annotator.missing.opening.quote.fix") })
+            assertFalse(available.any { it.text == ChronicleBundle.message("annotator.missing.closing.quote.fix") })
+        }
+        run {
+            myFixture.configureByText("annotator_missing_quotes.test.csv", """
+                name;status
+                value<caret>;yes
+                # comment
+            """.trimIndent())
+            val available = myFixture.availableIntentions
+            assertFalse(available.any { it.text == ChronicleBundle.message("annotator.missing.opening.quote.fix") })
+            assertFalse(available.any { it.text == ChronicleBundle.message("annotator.missing.closing.quote.fix") })
+        }
+    }
+
+    @Test
+    fun testMissingQuotes_opening_errors() {
+        // for missing closing quotes, not available at middle, but available at end
+        myFixture.configureByText("annotator_missing_quotes.test.csv") {
+            val m = ChronicleBundle.message("annotator.missing.opening.quote.message")
+            """
+            name;status
+            ${error(m)}${errorEnd()}value";yes
+            # comment
+            """.trimIndent()
+        }
+        myFixture.checkHighlighting()
+    }
+
+    @Test
+    fun testMissingQuotes_closing_errors() {
+        // NOTE 3.0.2 `# comment` here is required, or the eof error will be ignored
+        // for missing closing quotes, not available at middle, but available at end
+        myFixture.configureByText("annotator_missing_quotes.test.csv") {
+            val m = ChronicleBundle.message("annotator.missing.closing.quote.message")
+            """
+            name;status
+            "value;yes${error(m)}${errorEnd()}
+            # comment
+            """.trimIndent()
+        }
+        myFixture.checkHighlighting()
+    }
+
+    @Test
+    fun testMissingQuotes_opening_fixes() {
+        run {
+            myFixture.configureByText("annotator_missing_quotes.test.csv", """
                 name;status
                 <caret>value";yes
-                # eof
+                # comment
             """.trimIndent())
             val fixName = ChronicleBundle.message("annotator.missing.opening.quote.fix")
             val intention = myFixture.findSingleIntention(fixName)
@@ -61,14 +127,19 @@ class ParadoxCsvSyntaxAnnotatorTest : BasePlatformTestCase(), ChronicleTestScope
             myFixture.checkResult("""
                 name;status
                 "value";yes
-                # eof
+                # comment
             """.trimIndent())
         }
+    }
+
+    @Test
+    fun testMissingQuotes_closing_fixes() {
         run {
-            myFixture.configureByText("annotator_adjacent_icons.fix.test.csv", """
+            // NOTE 3.0.2 `# comment` here is required, or the eof error will be ignored
+            myFixture.configureByText("annotator_missing_quotes.test.csv", """
                 name;status
                 "value<caret>;yes
-                # eof
+                # comment
             """.trimIndent())
             val fixName = ChronicleBundle.message("annotator.missing.closing.quote.fix")
             val intention = myFixture.findSingleIntention(fixName)
@@ -76,14 +147,15 @@ class ParadoxCsvSyntaxAnnotatorTest : BasePlatformTestCase(), ChronicleTestScope
             myFixture.checkResult("""
                 name;status
                 "value;yes"
-                # eof
+                # comment
             """.trimIndent())
         }
         run {
-            myFixture.configureByText("annotator_adjacent_icons.fix.test.csv", """
+            // NOTE 3.0.2 `# comment` here is required, or the eof error will be ignored
+            myFixture.configureByText("annotator_missing_quotes.test.csv", """
                 name;status
                 "value;yes<caret>
-                # eof
+                # comment
             """.trimIndent())
             val fixName = ChronicleBundle.message("annotator.missing.closing.quote.fix")
             val intention = myFixture.findSingleIntention(fixName)
@@ -91,66 +163,10 @@ class ParadoxCsvSyntaxAnnotatorTest : BasePlatformTestCase(), ChronicleTestScope
             myFixture.checkResult("""
                 name;status
                 "value;yes"
-                # eof
+                # comment
             """.trimIndent())
         }
     }
 
-    @Test
-    fun testMissingQuotes_noAvailableFixes() {
-        // NOTE 3.0.2 `# eof` here is required, or the eof error will be ignored
-        run {
-            myFixture.configureByText("annotator_adjacent_icons.fix.test.csv", """
-                name;status
-                <caret>"value";yes
-                # eof
-            """.trimIndent())
-            val available = myFixture.availableIntentions
-            assertFalse(available.any { it.text == ChronicleBundle.message("annotator.missing.opening.quote.fix") })
-            assertFalse(available.any { it.text == ChronicleBundle.message("annotator.missing.closing.quote.fix") })
-        }
-        run {
-            myFixture.configureByText("annotator_adjacent_icons.fix.test.csv", """
-                name;status
-                "value"<caret>;yes
-                # eof
-            """.trimIndent())
-            val available = myFixture.availableIntentions
-            assertFalse(available.any { it.text == ChronicleBundle.message("annotator.missing.opening.quote.fix") })
-            assertFalse(available.any { it.text == ChronicleBundle.message("annotator.missing.closing.quote.fix") })
-        }
-        run {
-            myFixture.configureByText("annotator_adjacent_icons.fix.test.csv", """
-                name;status
-                <caret>value;yes
-                # eof
-            """.trimIndent())
-            val available = myFixture.availableIntentions
-            assertFalse(available.any { it.text == ChronicleBundle.message("annotator.missing.opening.quote.fix") })
-            assertFalse(available.any { it.text == ChronicleBundle.message("annotator.missing.closing.quote.fix") })
-        }
-        run {
-            myFixture.configureByText("annotator_adjacent_icons.fix.test.csv", """
-                name;status
-                value<caret>;yes
-                # eof
-            """.trimIndent())
-            val available = myFixture.availableIntentions
-            assertFalse(available.any { it.text == ChronicleBundle.message("annotator.missing.opening.quote.fix") })
-            assertFalse(available.any { it.text == ChronicleBundle.message("annotator.missing.closing.quote.fix") })
-        }
-    }
-
-    @Test
-    fun testValidCsv_noErrors() {
-        myFixture.configureByText(
-            "annotator_csv_valid.test.csv",
-            """
-            name;age;desc
-            windea;24;dragon_knight
-            """.trimIndent()
-        )
-        val highlights = myFixture.doHighlighting()
-        assertTrue(highlights.none { it.severity == HighlightSeverity.ERROR })
-    }
+    // endregion
 }

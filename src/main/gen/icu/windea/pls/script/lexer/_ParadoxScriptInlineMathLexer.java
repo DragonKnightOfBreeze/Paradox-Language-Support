@@ -27,7 +27,6 @@ public class _ParadoxScriptInlineMathLexer implements FlexLexer {
   public static final int YYINITIAL = 0;
   public static final int IN_PARAMETER = 2;
   public static final int IN_PARAMETER_ARGUMENT = 4;
-  public static final int IN_PARAMETER_ARGUMENT_END = 6;
 
   /**
    * ZZ_LEXSTATE[l] is the state in the DFA for the lexical state l
@@ -36,7 +35,7 @@ public class _ParadoxScriptInlineMathLexer implements FlexLexer {
    * l is of the form l = 2*k, k a non negative integer
    */
   private static final int ZZ_LEXSTATE[] = {
-     0,  0,  1,  1,  2,  2,  3, 3
+     0,  0,  1,  1,  2, 2
   };
 
   /**
@@ -105,12 +104,12 @@ public class _ParadoxScriptInlineMathLexer implements FlexLexer {
   private static final int [] ZZ_ACTION = zzUnpackAction();
 
   private static final String ZZ_ACTION_PACKED_0 =
-    "\4\0\1\1\1\2\1\3\1\4\1\5\1\6\1\7"+
+    "\3\0\1\1\1\2\1\3\1\4\1\5\1\6\1\7"+
     "\1\10\1\11\1\1\1\12\1\13\1\14\1\15\1\16"+
     "\1\17\1\20\1\21\1\22\1\23\1\24\1\0";
 
   private static int [] zzUnpackAction() {
-    int [] result = new int[26];
+    int [] result = new int[25];
     int offset = 0;
     offset = zzUnpackAction(ZZ_ACTION_PACKED_0, offset, result);
     return result;
@@ -135,13 +134,13 @@ public class _ParadoxScriptInlineMathLexer implements FlexLexer {
   private static final int [] ZZ_ROWMAP = zzUnpackRowMap();
 
   private static final String ZZ_ROWMAP_PACKED_0 =
-    "\0\0\0\20\0\40\0\60\0\100\0\120\0\100\0\100"+
-    "\0\100\0\100\0\100\0\100\0\100\0\140\0\100\0\160"+
-    "\0\100\0\200\0\100\0\220\0\100\0\240\0\100\0\260"+
-    "\0\140\0\140";
+    "\0\0\0\20\0\40\0\60\0\100\0\60\0\60\0\60"+
+    "\0\60\0\60\0\60\0\60\0\120\0\60\0\140\0\60"+
+    "\0\160\0\60\0\200\0\60\0\220\0\60\0\240\0\120"+
+    "\0\120";
 
   private static int [] zzUnpackRowMap() {
-    int [] result = new int[26];
+    int [] result = new int[25];
     int offset = 0;
     offset = zzUnpackRowMap(ZZ_ROWMAP_PACKED_0, offset, result);
     return result;
@@ -164,16 +163,16 @@ public class _ParadoxScriptInlineMathLexer implements FlexLexer {
   private static final int [] ZZ_TRANS = zzUnpacktrans();
 
   private static final String ZZ_TRANS_PACKED_0 =
-    "\1\5\1\6\1\5\1\7\1\10\1\11\1\12\1\13"+
-    "\1\14\1\15\1\16\1\17\1\20\1\21\1\22\1\23"+
-    "\1\5\1\24\1\5\1\25\12\5\1\26\1\27\1\30"+
-    "\1\24\1\5\1\25\14\30\1\5\1\24\1\5\1\25"+
-    "\14\5\21\0\1\6\32\0\1\31\15\0\1\32\1\0"+
-    "\1\20\17\0\1\22\1\0\1\22\2\0\1\24\32\0"+
-    "\1\26\1\0\1\26\1\0\1\30\3\0\14\30";
+    "\1\4\1\5\1\4\1\6\1\7\1\10\1\11\1\12"+
+    "\1\13\1\14\1\15\1\16\1\17\1\20\1\21\1\22"+
+    "\1\4\1\23\1\4\1\24\12\4\1\25\1\26\1\27"+
+    "\1\23\1\4\1\24\14\27\21\0\1\5\32\0\1\30"+
+    "\15\0\1\31\1\0\1\17\17\0\1\21\1\0\1\21"+
+    "\2\0\1\23\32\0\1\25\1\0\1\25\1\0\1\27"+
+    "\3\0\14\27";
 
   private static int [] zzUnpacktrans() {
-    int [] result = new int[192];
+    int [] result = new int[176];
     int offset = 0;
     offset = zzUnpacktrans(ZZ_TRANS_PACKED_0, offset, result);
     return result;
@@ -211,11 +210,11 @@ public class _ParadoxScriptInlineMathLexer implements FlexLexer {
   private static final int [] ZZ_ATTRIBUTE = zzUnpackAttribute();
 
   private static final String ZZ_ATTRIBUTE_PACKED_0 =
-    "\4\0\1\11\1\1\7\11\1\1\1\11\1\1\1\11"+
+    "\3\0\1\11\1\1\7\11\1\1\1\11\1\1\1\11"+
     "\1\1\1\11\1\1\1\11\1\1\1\11\2\1\1\0";
 
   private static int [] zzUnpackAttribute() {
-    int [] result = new int[26];
+    int [] result = new int[25];
     int offset = 0;
     offset = zzUnpackAttribute(ZZ_ATTRIBUTE_PACKED_0, offset, result);
     return result;
@@ -629,7 +628,7 @@ public class _ParadoxScriptInlineMathLexer implements FlexLexer {
           // fall through
           case 38: break;
           case 19:
-            { yybegin(IN_PARAMETER_ARGUMENT_END); return ARGUMENT_TOKEN;
+            { return ARGUMENT_TOKEN;
             }
           // fall through
           case 39: break;

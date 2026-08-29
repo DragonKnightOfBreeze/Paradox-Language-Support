@@ -4,13 +4,14 @@ package icu.windea.pls.localisation.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.NavigatablePsiElement;
 import icu.windea.pls.core.psi.PsiQuoteAwareElement;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import icu.windea.pls.core.text.QuotePattern;
 
-public interface ParadoxLocalisationPropertyValue extends PsiQuoteAwareElement, ParadoxLocalisationRichTextContainer {
+public interface ParadoxLocalisationPropertyValue extends NavigatablePsiElement, PsiQuoteAwareElement, ParadoxLocalisationRichTextContainer {
 
   @Nullable PsiElement getTokenElement();
 

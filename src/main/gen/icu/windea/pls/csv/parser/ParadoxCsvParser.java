@@ -37,7 +37,7 @@ public class ParadoxCsvParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // <<checkColumnToken>> COLUMN_TOKEN ?
+  // <<checkColumnToken>> COLUMN_TOKEN?
   public static boolean column(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "column")) return false;
     boolean r;
@@ -48,7 +48,7 @@ public class ParadoxCsvParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // COLUMN_TOKEN ?
+  // COLUMN_TOKEN?
   private static boolean column_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "column_1")) return false;
     consumeToken(b, COLUMN_TOKEN);
@@ -56,73 +56,18 @@ public class ParadoxCsvParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // <<checkEol>> SEPARATOR [<<checkEol>> column]
-  static boolean column_item(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "column_item")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = checkEol(b, l + 1);
-    r = r && consumeToken(b, SEPARATOR);
-    r = r && column_item_2(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // [<<checkEol>> column]
-  private static boolean column_item_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "column_item_2")) return false;
-    column_item_2_0(b, l + 1);
-    return true;
-  }
-
-  // <<checkEol>> column
-  private static boolean column_item_2_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "column_item_2_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = checkEol(b, l + 1);
-    r = r && column(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // column column_item *
-  static boolean column_items(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "column_items")) return false;
-    boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_);
-    r = column(b, l + 1);
-    p = r; // pin = 1
-    r = r && column_items_1(b, l + 1);
-    exit_section_(b, l, m, r, p, null);
-    return r || p;
-  }
-
-  // column_item *
-  private static boolean column_items_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "column_items_1")) return false;
-    while (true) {
-      int c = current_position_(b);
-      if (!column_item(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "column_items_1", c)) break;
-    }
-    return true;
-  }
-
-  /* ********************************************************** */
-  // column_items
+  // row_items
   public static boolean header(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "header")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, HEADER, "<header>");
-    r = column_items(b, l + 1);
+    r = row_items(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
 
   /* ********************************************************** */
-  // COMMENT * header ? (row | COMMENT) *
+  // COMMENT* header? ( row | COMMENT )*
   static boolean root(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "root")) return false;
     boolean r;
@@ -134,7 +79,7 @@ public class ParadoxCsvParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // COMMENT *
+  // COMMENT*
   private static boolean root_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "root_0")) return false;
     while (true) {
@@ -145,14 +90,14 @@ public class ParadoxCsvParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // header ?
+  // header?
   private static boolean root_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "root_1")) return false;
     header(b, l + 1);
     return true;
   }
 
-  // (row | COMMENT) *
+  // ( row | COMMENT )*
   private static boolean root_2(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "root_2")) return false;
     while (true) {
@@ -173,14 +118,69 @@ public class ParadoxCsvParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // column_items
+  // row_items
   public static boolean row(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "row")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, ROW, "<row>");
-    r = column_items(b, l + 1);
+    r = row_items(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
+  }
+
+  /* ********************************************************** */
+  // <<checkEol>> SEPARATOR [ <<checkEol>> column ]
+  static boolean row_item(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "row_item")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = checkEol(b, l + 1);
+    r = r && consumeToken(b, SEPARATOR);
+    r = r && row_item_2(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // [ <<checkEol>> column ]
+  private static boolean row_item_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "row_item_2")) return false;
+    row_item_2_0(b, l + 1);
+    return true;
+  }
+
+  // <<checkEol>> column
+  private static boolean row_item_2_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "row_item_2_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = checkEol(b, l + 1);
+    r = r && column(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // column row_item*
+  static boolean row_items(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "row_items")) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_);
+    r = column(b, l + 1);
+    p = r; // pin = 1
+    r = r && row_items_1(b, l + 1);
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
+  }
+
+  // row_item*
+  private static boolean row_items_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "row_items_1")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!row_item(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "row_items_1", c)) break;
+    }
+    return true;
   }
 
 }

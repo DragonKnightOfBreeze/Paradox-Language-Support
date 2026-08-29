@@ -42,23 +42,60 @@ public class CwtParser implements PsiParser, LightPsiParser {
   };
 
   /* ********************************************************** */
+  // LEFT_BRACE block_items? RIGHT_BRACE
+  public static boolean block(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "block")) return false;
+    if (!nextTokenIs(b, LEFT_BRACE)) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, BLOCK, null);
+    r = consumeToken(b, LEFT_BRACE);
+    p = r; // pin = 1
+    r = r && report_error_(b, block_1(b, l + 1));
+    r = p && consumeToken(b, RIGHT_BRACE) && r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
+  }
+
+  // block_items?
+  private static boolean block_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "block_1")) return false;
+    block_items(b, l + 1);
+    return true;
+  }
+
+  /* ********************************************************** */
+  // general_comment | option | property | value
+  static boolean block_item(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "block_item")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_);
+    r = general_comment(b, l + 1);
+    if (!r) r = option(b, l + 1);
+    if (!r) r = property(b, l + 1);
+    if (!r) r = value(b, l + 1);
+    exit_section_(b, l, m, r, false, CwtParser::block_item_recover);
+    return r;
+  }
+
+  /* ********************************************************** */
   // !( COMMENT | OPTION_COMMENT_START | DOC_COMMENT_TOKEN
-  //   | BOOLEAN_TOKEN | INT_TOKEN | FLOAT_TOKEN | STRING_TOKEN
-  //   | PROPERTY_KEY_TOKEN | OPTION_KEY_TOKEN | LEFT_BRACE | RIGHT_BRACE)
-  static boolean auto_recover(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "auto_recover")) return false;
+  //   | BOOLEAN_TOKEN | INT_TOKEN | FLOAT_TOKEN | STRING_TOKEN | PROPERTY_KEY_TOKEN | OPTION_KEY_TOKEN
+  //   | LEFT_BRACE | RIGHT_BRACE
+  //   )
+  static boolean block_item_recover(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "block_item_recover")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NOT_);
-    r = !auto_recover_0(b, l + 1);
+    r = !block_item_recover_0(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
 
   // COMMENT | OPTION_COMMENT_START | DOC_COMMENT_TOKEN
-  //   | BOOLEAN_TOKEN | INT_TOKEN | FLOAT_TOKEN | STRING_TOKEN
-  //   | PROPERTY_KEY_TOKEN | OPTION_KEY_TOKEN | LEFT_BRACE | RIGHT_BRACE
-  private static boolean auto_recover_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "auto_recover_0")) return false;
+  //   | BOOLEAN_TOKEN | INT_TOKEN | FLOAT_TOKEN | STRING_TOKEN | PROPERTY_KEY_TOKEN | OPTION_KEY_TOKEN
+  //   | LEFT_BRACE | RIGHT_BRACE
+  private static boolean block_item_recover_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "block_item_recover_0")) return false;
     boolean r;
     r = consumeToken(b, COMMENT);
     if (!r) r = consumeToken(b, OPTION_COMMENT_START);
@@ -75,42 +112,18 @@ public class CwtParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // LEFT_BRACE block_item * RIGHT_BRACE
-  public static boolean block(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "block")) return false;
-    if (!nextTokenIs(b, LEFT_BRACE)) return false;
-    boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, BLOCK, null);
-    r = consumeToken(b, LEFT_BRACE);
-    p = r; // pin = 1
-    r = r && report_error_(b, block_1(b, l + 1));
-    r = p && consumeToken(b, RIGHT_BRACE) && r;
-    exit_section_(b, l, m, r, p, null);
-    return r || p;
-  }
-
-  // block_item *
-  private static boolean block_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "block_1")) return false;
-    while (true) {
+  // block_item+
+  static boolean block_items(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "block_items")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = block_item(b, l + 1);
+    while (r) {
       int c = current_position_(b);
       if (!block_item(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "block_1", c)) break;
+      if (!empty_element_parsed_guard_(b, "block_items", c)) break;
     }
-    return true;
-  }
-
-  /* ********************************************************** */
-  // general_comment | property | option | value
-  static boolean block_item(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "block_item")) return false;
-    boolean r;
-    Marker m = enter_section_(b, l, _NONE_);
-    r = general_comment(b, l + 1);
-    if (!r) r = property(b, l + 1);
-    if (!r) r = option(b, l + 1);
-    if (!r) r = value(b, l + 1);
-    exit_section_(b, l, m, r, false, CwtParser::auto_recover);
+    exit_section_(b, m, null, r);
     return r;
   }
 
@@ -183,13 +196,14 @@ public class CwtParser implements PsiParser, LightPsiParser {
   // option_key option_separator option_value
   public static boolean option(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "option")) return false;
+    if (!nextTokenIs(b, OPTION_KEY_TOKEN)) return false;
     boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, OPTION, "<option>");
+    Marker m = enter_section_(b, l, _NONE_, OPTION, null);
     r = option_key(b, l + 1);
     p = r; // pin = 1
     r = r && report_error_(b, option_separator(b, l + 1));
     r = p && option_value(b, l + 1) && r;
-    exit_section_(b, l, m, r, p, CwtParser::auto_recover);
+    exit_section_(b, l, m, r, p, null);
     return r || p;
   }
 
@@ -206,14 +220,14 @@ public class CwtParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // <<checkEol>> (option | option_value)
+  // <<checkEol>> ( option | option_value )
   static boolean option_comment_item(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "option_comment_item")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_);
     r = checkEol(b, l + 1);
     r = r && option_comment_item_1(b, l + 1);
-    exit_section_(b, l, m, r, false, CwtParser::auto_recover);
+    exit_section_(b, l, m, r, false, CwtParser::option_comment_item_recover);
     return r;
   }
 
@@ -221,15 +235,65 @@ public class CwtParser implements PsiParser, LightPsiParser {
   private static boolean option_comment_item_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "option_comment_item_1")) return false;
     boolean r;
-    Marker m = enter_section_(b);
     r = option(b, l + 1);
     if (!r) r = option_value(b, l + 1);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // !( COMMENT | OPTION_COMMENT_START | DOC_COMMENT_TOKEN
+  //   | BOOLEAN_TOKEN | INT_TOKEN | FLOAT_TOKEN | STRING_TOKEN
+  //   | PROPERTY_KEY_TOKEN | OPTION_KEY_TOKEN
+  //   | LEFT_BRACE | RIGHT_BRACE
+  //   )
+  static boolean option_comment_item_recover(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "option_comment_item_recover")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NOT_);
+    r = !option_comment_item_recover_0(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // COMMENT | OPTION_COMMENT_START | DOC_COMMENT_TOKEN
+  //   | BOOLEAN_TOKEN | INT_TOKEN | FLOAT_TOKEN | STRING_TOKEN
+  //   | PROPERTY_KEY_TOKEN | OPTION_KEY_TOKEN
+  //   | LEFT_BRACE | RIGHT_BRACE
+  private static boolean option_comment_item_recover_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "option_comment_item_recover_0")) return false;
+    boolean r;
+    r = consumeToken(b, COMMENT);
+    if (!r) r = consumeToken(b, OPTION_COMMENT_START);
+    if (!r) r = consumeToken(b, DOC_COMMENT_TOKEN);
+    if (!r) r = consumeToken(b, BOOLEAN_TOKEN);
+    if (!r) r = consumeToken(b, INT_TOKEN);
+    if (!r) r = consumeToken(b, FLOAT_TOKEN);
+    if (!r) r = consumeToken(b, STRING_TOKEN);
+    if (!r) r = consumeToken(b, PROPERTY_KEY_TOKEN);
+    if (!r) r = consumeToken(b, OPTION_KEY_TOKEN);
+    if (!r) r = consumeToken(b, LEFT_BRACE);
+    if (!r) r = consumeToken(b, RIGHT_BRACE);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // option_comment_item+
+  static boolean option_comment_items(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "option_comment_items")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = option_comment_item(b, l + 1);
+    while (r) {
+      int c = current_position_(b);
+      if (!option_comment_item(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "option_comment_items", c)) break;
+    }
     exit_section_(b, m, null, r);
     return r;
   }
 
   /* ********************************************************** */
-  // OPTION_COMMENT_START option_comment_item *
+  // OPTION_COMMENT_START option_comment_items?
   static boolean option_comment_root(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "option_comment_root")) return false;
     if (!nextTokenIs(b, OPTION_COMMENT_START)) return false;
@@ -242,14 +306,10 @@ public class CwtParser implements PsiParser, LightPsiParser {
     return r || p;
   }
 
-  // option_comment_item *
+  // option_comment_items?
   private static boolean option_comment_root_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "option_comment_root_1")) return false;
-    while (true) {
-      int c = current_position_(b);
-      if (!option_comment_item(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "option_comment_root_1", c)) break;
-    }
+    option_comment_items(b, l + 1);
     return true;
   }
 
@@ -286,26 +346,33 @@ public class CwtParser implements PsiParser, LightPsiParser {
   // property_key property_separator property_value
   public static boolean property(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "property")) return false;
+    if (!nextTokenIs(b, PROPERTY_KEY_TOKEN)) return false;
     boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, PROPERTY, "<property>");
+    Marker m = enter_section_(b, l, _NONE_, PROPERTY, null);
     r = property_key(b, l + 1);
     p = r; // pin = 1
     r = r && report_error_(b, property_separator(b, l + 1));
     r = p && property_value(b, l + 1) && r;
-    exit_section_(b, l, m, r, p, CwtParser::auto_recover);
+    exit_section_(b, l, m, r, p, null);
     return r || p;
   }
 
   /* ********************************************************** */
-  // PROPERTY_KEY_TOKEN
+  // property_key_content
   public static boolean property_key(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "property_key")) return false;
     if (!nextTokenIs(b, PROPERTY_KEY_TOKEN)) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, PROPERTY_KEY_TOKEN);
+    r = property_key_content(b, l + 1);
     exit_section_(b, m, PROPERTY_KEY, r);
     return r;
+  }
+
+  /* ********************************************************** */
+  // PROPERTY_KEY_TOKEN
+  static boolean property_key_content(PsiBuilder b, int l) {
+    return consumeToken(b, PROPERTY_KEY_TOKEN);
   }
 
   /* ********************************************************** */
@@ -326,7 +393,7 @@ public class CwtParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // root_block ?
+  // root_block?
   static boolean root(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "root")) return false;
     root_block(b, l + 1);
@@ -334,17 +401,12 @@ public class CwtParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // root_block_item +
+  // root_block_items
   public static boolean root_block(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "root_block")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, ROOT_BLOCK, "<root block>");
-    r = root_block_item(b, l + 1);
-    while (r) {
-      int c = current_position_(b);
-      if (!root_block_item(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "root_block", c)) break;
-    }
+    r = root_block_items(b, l + 1);
     register_hook_(b, WS_BINDERS, GREEDY_LEFT_BINDER, GREEDY_RIGHT_BINDER);
     exit_section_(b, l, m, r, false, null);
     return r;
@@ -355,10 +417,59 @@ public class CwtParser implements PsiParser, LightPsiParser {
   static boolean root_block_item(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "root_block_item")) return false;
     boolean r;
-    Marker m = enter_section_(b);
+    Marker m = enter_section_(b, l, _NONE_);
     r = general_comment(b, l + 1);
     if (!r) r = property(b, l + 1);
     if (!r) r = value(b, l + 1);
+    exit_section_(b, l, m, r, false, CwtParser::root_block_item_recover);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // !( COMMENT | OPTION_COMMENT_START | DOC_COMMENT_TOKEN
+  //   | BOOLEAN_TOKEN | INT_TOKEN | FLOAT_TOKEN | STRING_TOKEN | PROPERTY_KEY_TOKEN
+  //   | LEFT_BRACE | RIGHT_BRACE
+  //   )
+  static boolean root_block_item_recover(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "root_block_item_recover")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NOT_);
+    r = !root_block_item_recover_0(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // COMMENT | OPTION_COMMENT_START | DOC_COMMENT_TOKEN
+  //   | BOOLEAN_TOKEN | INT_TOKEN | FLOAT_TOKEN | STRING_TOKEN | PROPERTY_KEY_TOKEN
+  //   | LEFT_BRACE | RIGHT_BRACE
+  private static boolean root_block_item_recover_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "root_block_item_recover_0")) return false;
+    boolean r;
+    r = consumeToken(b, COMMENT);
+    if (!r) r = consumeToken(b, OPTION_COMMENT_START);
+    if (!r) r = consumeToken(b, DOC_COMMENT_TOKEN);
+    if (!r) r = consumeToken(b, BOOLEAN_TOKEN);
+    if (!r) r = consumeToken(b, INT_TOKEN);
+    if (!r) r = consumeToken(b, FLOAT_TOKEN);
+    if (!r) r = consumeToken(b, STRING_TOKEN);
+    if (!r) r = consumeToken(b, PROPERTY_KEY_TOKEN);
+    if (!r) r = consumeToken(b, LEFT_BRACE);
+    if (!r) r = consumeToken(b, RIGHT_BRACE);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // root_block_item+
+  static boolean root_block_items(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "root_block_items")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = root_block_item(b, l + 1);
+    while (r) {
+      int c = current_position_(b);
+      if (!root_block_item(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "root_block_items", c)) break;
+    }
     exit_section_(b, m, null, r);
     return r;
   }

@@ -27,11 +27,11 @@ public interface ParadoxScriptInlineMathParameter extends ParadoxScriptInlineMat
 
   @Nullable String getDefaultValue();
 
-  @NotNull String getPresentableText();
-
   @Nullable PsiReference getReference();
 
   @NotNull PsiReference @NotNull [] getReferences();
+
+  @NotNull String getPresentableText();
 
   @NotNull GlobalSearchScope getResolveScope();
 

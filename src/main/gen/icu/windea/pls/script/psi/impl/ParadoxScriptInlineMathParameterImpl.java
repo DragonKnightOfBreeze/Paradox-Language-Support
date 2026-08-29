@@ -69,11 +69,6 @@ public class ParadoxScriptInlineMathParameterImpl extends ParadoxScriptInlineMat
   }
 
   @Override
-  public @NotNull String getPresentableText() {
-    return ParadoxScriptPsiImplUtil.getPresentableText(this);
-  }
-
-  @Override
   public @Nullable PsiReference getReference() {
     return ParadoxScriptPsiImplUtil.getReference(this);
   }
@@ -81,6 +76,11 @@ public class ParadoxScriptInlineMathParameterImpl extends ParadoxScriptInlineMat
   @Override
   public @NotNull PsiReference @NotNull [] getReferences() {
     return ParadoxScriptPsiImplUtil.getReferences(this);
+  }
+
+  @Override
+  public @NotNull String getPresentableText() {
+    return ParadoxScriptPsiImplUtil.getPresentableText(this);
   }
 
   @Override

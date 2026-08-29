@@ -33,11 +33,11 @@ public interface ParadoxScriptBlock extends ParadoxScriptValue, ParadoxScriptMem
 
   @Nullable PsiElement getRightBound();
 
-  @NotNull List<@NotNull ParadoxScriptStatement> getComponents();
-
   @NotNull Icon getIcon(@IconFlags int flags);
 
   @NotNull String getValue();
+
+  @NotNull List<@NotNull ParadoxScriptStatement> getComponents();
 
   @NotNull String getPresentableText();
 

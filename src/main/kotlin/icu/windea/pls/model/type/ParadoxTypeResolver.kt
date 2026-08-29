@@ -101,10 +101,10 @@ object ParadoxTypeResolver {
         return when (text) {
             "=" -> ParadoxSeparatorType.Equal
             "!=", "<>" -> ParadoxSeparatorType.NotEqual
-            "<" -> ParadoxSeparatorType.Lt
-            ">" -> ParadoxSeparatorType.Gt
             "<=" -> ParadoxSeparatorType.Le
             ">=" -> ParadoxSeparatorType.Ge
+            "<" -> ParadoxSeparatorType.Lt
+            ">" -> ParadoxSeparatorType.Gt
             else -> {
                 // 2.1.10 safe assign && safe call assign
                 if (text == "?=") return ParadoxSeparatorType.SafeAssign
@@ -119,10 +119,10 @@ object ParadoxTypeResolver {
         return when (elementType) {
             ParadoxScriptElementTypes.EQUAL_SIGN -> ParadoxSeparatorType.Equal
             ParadoxScriptElementTypes.NOT_EQUAL_SIGN -> ParadoxSeparatorType.NotEqual
-            ParadoxScriptElementTypes.LT_SIGN -> ParadoxSeparatorType.Lt
-            ParadoxScriptElementTypes.GT_SIGN -> ParadoxSeparatorType.Gt
             ParadoxScriptElementTypes.LE_SIGN -> ParadoxSeparatorType.Le
             ParadoxScriptElementTypes.GE_SIGN -> ParadoxSeparatorType.Ge
+            ParadoxScriptElementTypes.LT_SIGN -> ParadoxSeparatorType.Lt
+            ParadoxScriptElementTypes.GT_SIGN -> ParadoxSeparatorType.Gt
             ParadoxScriptElementTypes.SAFE_ASSIGN_SIGN -> ParadoxSeparatorType.SafeAssign
             ParadoxScriptElementTypes.SAFE_CALL_ASSIGN_SIGN -> ParadoxSeparatorType.SafeCallAssign
             else -> null

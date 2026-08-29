@@ -279,48 +279,6 @@ object ParadoxLocalisationPsiImplUtil {
 
     // endregion
 
-    // region ParadoxLocalisationIcon
-
-    @JvmStatic
-    fun getIdElement(element: ParadoxLocalisationIcon): PsiElement? {
-        return element.firstChild?.nextSibling?.takeIf { it.elementType == ICON_TOKEN }?.takeIf { ParadoxLocalisationPsiService.isIdElement(it) }
-    }
-
-    @JvmStatic
-    fun getArgumentElement(element: ParadoxLocalisationIcon): ParadoxLocalisationIconArgument? {
-        return element.findChild<_>(forward = false)
-    }
-
-    @JvmStatic
-    fun getIcon(element: ParadoxLocalisationIcon, @Iconable.IconFlags flags: Int): Icon {
-        return ChronicleIcons.Nodes.LocalisationIcon
-    }
-
-    @JvmStatic
-    fun getName(element: ParadoxLocalisationIcon): String? {
-        val idElement = element.idElement ?: return null
-        return idElement.text
-    }
-
-    @JvmStatic
-    fun setName(element: ParadoxLocalisationIcon, name: String): ParadoxLocalisationIcon {
-        val idElement = element.idElement ?: throw IncorrectOperationException() // 不支持重命名
-        val newIdElement = ParadoxLocalisationElementFactory.createIcon(element.project, name).idElement ?: throw IncorrectOperationException()
-        idElement.replace(newIdElement)
-        return element
-    }
-
-    // endregion
-
-    // region ParadoxLocalisationIconArgument
-
-    @JvmStatic
-    fun getIdElement(element: ParadoxLocalisationIconArgument): PsiElement? {
-        return element.firstChild?.takeIf { it.elementType == ARGUMENT_TOKEN }?.takeIf { ParadoxLocalisationPsiService.isIdElement(it) }
-    }
-
-    // endregion
-
     // region ParadoxLocalisationCommand
 
     @JvmStatic
@@ -400,6 +358,48 @@ object ParadoxLocalisationPsiImplUtil {
     @JvmStatic
     fun setContent(element: ParadoxLocalisationConceptName, content: String, range: TextRange): ParadoxLocalisationConceptName {
         return ParadoxLocalisationPsiManipulationService.changeContent(element, content, range)
+    }
+
+    // endregion
+
+    // region ParadoxLocalisationIcon
+
+    @JvmStatic
+    fun getIdElement(element: ParadoxLocalisationIcon): PsiElement? {
+        return element.firstChild?.nextSibling?.takeIf { it.elementType == ICON_TOKEN }?.takeIf { ParadoxLocalisationPsiService.isIdElement(it) }
+    }
+
+    @JvmStatic
+    fun getArgumentElement(element: ParadoxLocalisationIcon): ParadoxLocalisationIconArgument? {
+        return element.findChild<_>(forward = false)
+    }
+
+    @JvmStatic
+    fun getIcon(element: ParadoxLocalisationIcon, @Iconable.IconFlags flags: Int): Icon {
+        return ChronicleIcons.Nodes.LocalisationIcon
+    }
+
+    @JvmStatic
+    fun getName(element: ParadoxLocalisationIcon): String? {
+        val idElement = element.idElement ?: return null
+        return idElement.text
+    }
+
+    @JvmStatic
+    fun setName(element: ParadoxLocalisationIcon, name: String): ParadoxLocalisationIcon {
+        val idElement = element.idElement ?: throw IncorrectOperationException() // 不支持重命名
+        val newIdElement = ParadoxLocalisationElementFactory.createIcon(element.project, name).idElement ?: throw IncorrectOperationException()
+        idElement.replace(newIdElement)
+        return element
+    }
+
+    // endregion
+
+    // region ParadoxLocalisationIconArgument
+
+    @JvmStatic
+    fun getIdElement(element: ParadoxLocalisationIconArgument): PsiElement? {
+        return element.firstChild?.takeIf { it.elementType == ARGUMENT_TOKEN }?.takeIf { ParadoxLocalisationPsiService.isIdElement(it) }
     }
 
     // endregion

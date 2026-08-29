@@ -96,7 +96,7 @@ ParadoxLocalisationFile: error_incomplete_property_lines.test.yml(0,208)
       ParadoxLocalisationPropertyKey: key(177,180)
         PsiElement(PROPERTY_KEY_TOKEN)('key')(177,180)
       PsiElement(COLON)(':')(180,181)
-      PsiErrorElement:<property value> or PROPERTY_NUMBER expected, got 'key'(181,181)
+      PsiErrorElement:<property value> or PROPERTY_NUMBER_TOKEN expected, got 'key'(181,181)
         <empty list>
     PsiWhiteSpace('\n ')(181,183)
     PsiComment(COMMENT)('# comment')(183,192)

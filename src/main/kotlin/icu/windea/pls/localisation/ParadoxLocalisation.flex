@@ -107,24 +107,29 @@ BLANK=\s+
 
 COMMENT=#[^\r\n]*
 
+COLON=":"
+QUOTE=\"
+
 LOCALE_TOKEN=[a-z_]+ // lowercase letters and underscore only
 PROPERTY_KEY_TOKEN=[A-Za-z0-9_.\-']+ // `.-'` are allowed additionally
 PROPERTY_NUMBER_TOKEN=\d+ // integer characters only
 PROPERTY_VALUE_TOKEN=[^\"\r\n]+ // it's unnecessary to escape double quotes in loc text in fact
+
+// lazy-scanning localisation text (see `ParadoxLocaliation.Text.flex`)
 
 %%
 
 <YYINITIAL> {
     {BLANK} { return WHITE_SPACE; }
     {COMMENT} { return COMMENT; }
-    ^ {LOCALE_TOKEN} / ":" { return handleLocaleToken(); }
+    ^ {LOCALE_TOKEN} / {COLON} { return handleLocaleToken(); }
     {PROPERTY_KEY_TOKEN} { yybegin(IN_PROPERTY_COLON); return PROPERTY_KEY_TOKEN; }
 }
 <IN_LOCALE_COLON>{
     {WHITE_SPACE} { return WHITE_SPACE; }
     {EOL} { yybegin(YYINITIAL); return WHITE_SPACE; }
     {COMMENT} { yybegin(YYINITIAL); return COMMENT; }
-    ":" { yybegin(IN_LOCALE_END); return COLON; }
+    {COLON} { yybegin(IN_LOCALE_END); return COLON; }
 }
 <IN_LOCALE_END>{
     {WHITE_SPACE} { return WHITE_SPACE; }
@@ -135,20 +140,20 @@ PROPERTY_VALUE_TOKEN=[^\"\r\n]+ // it's unnecessary to escape double quotes in l
     {WHITE_SPACE} { return WHITE_SPACE; }
     {EOL} { yybegin(YYINITIAL); return WHITE_SPACE; }
     {COMMENT} { yybegin(YYINITIAL); return COMMENT; }
-    ":" { yybegin(IN_PROPERTY_NUMBER_TOKEN); return COLON; }
+    {COLON} { yybegin(IN_PROPERTY_NUMBER_TOKEN); return COLON; }
 }
 <IN_PROPERTY_NUMBER_TOKEN>{
     {WHITE_SPACE} { return WHITE_SPACE; }
     {EOL} { yybegin(YYINITIAL); return WHITE_SPACE; }
     {COMMENT} { yybegin(YYINITIAL); return COMMENT; }
     {PROPERTY_NUMBER_TOKEN} { return PROPERTY_NUMBER_TOKEN; }
-    \" { yybegin(IN_PROPERTY_VALUE); return LEFT_QUOTE; }
+    {QUOTE} { yybegin(IN_PROPERTY_VALUE); return LEFT_QUOTE; }
     [^] { yypushback(1); yybegin(IN_PROPERTY_VALUE); } // 3.0.2 compatible with missing opening quote
 }
 <IN_PROPERTY_VALUE> {
     {EOL} { yybegin(YYINITIAL); return WHITE_SPACE; }
     {PROPERTY_VALUE_TOKEN} { return PROPERTY_VALUE_TOKEN; }
-    \" { return handleRightQuote(); }
+    {QUOTE} { return handleRightQuote(); }
 }
 <IN_PROPERTY_END>{
     {WHITE_SPACE} { return WHITE_SPACE; }

@@ -1,53 +1,52 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.cwt.psi;
 
-import com.intellij.navigation.ItemPresentation;
+import java.util.List;
+import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
+import com.intellij.navigation.ItemPresentation;
+import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import javax.swing.*;
-import java.util.List;
+import javax.swing.Icon;
 
 public interface CwtBlock extends CwtValue, CwtMemberContainer, CwtBoundMemberContainer {
 
-    @NotNull
-    List<CwtDocComment> getDocCommentList();
+  @NotNull
+  List<CwtDocComment> getDocCommentList();
 
-    @NotNull
-    List<CwtOption> getOptionList();
+  @NotNull
+  List<CwtOption> getOptionList();
 
-    @NotNull
-    List<CwtOptionComment> getOptionCommentList();
+  @NotNull
+  List<CwtOptionComment> getOptionCommentList();
 
-    @NotNull
-    List<CwtProperty> getPropertyList();
+  @NotNull
+  List<CwtProperty> getPropertyList();
 
-    @NotNull
-    List<CwtValue> getValueList();
+  @NotNull
+  List<CwtValue> getValueList();
 
-    @NotNull CwtBlock getMemberContainer();
+  @NotNull CwtBlock getMemberContainer();
 
-    @NotNull List<@NotNull CwtMember> getMembers();
+  @NotNull List<@NotNull CwtMember> getMembers();
 
-    @Nullable PsiElement getLeftBound();
+  @Nullable PsiElement getLeftBound();
 
-    @Nullable PsiElement getRightBound();
+  @Nullable PsiElement getRightBound();
 
-    @NotNull List<@NotNull CwtStatement> getComponents();
+  @NotNull Icon getIcon(@IconFlags int flags);
 
-    @NotNull Icon getIcon(@IconFlags int flags);
+  @NotNull String getValue();
 
-    @NotNull String getValue();
+  @NotNull List<@NotNull CwtStatement> getComponents();
 
-    @NotNull String getPresentableText();
+  @NotNull String getPresentableText();
 
-    @NotNull GlobalSearchScope getResolveScope();
+  @NotNull GlobalSearchScope getResolveScope();
 
-    @NotNull SearchScope getUseScope();
+  @NotNull SearchScope getUseScope();
 
-    @NotNull ItemPresentation getPresentation();
+  @NotNull ItemPresentation getPresentation();
 
 }

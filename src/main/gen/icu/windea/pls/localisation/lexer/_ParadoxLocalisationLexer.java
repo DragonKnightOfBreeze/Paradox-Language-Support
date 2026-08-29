@@ -7,8 +7,7 @@ import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.tree.IElementType;
 import icu.windea.pls.model.ParadoxGameType;
 
-import static com.intellij.psi.TokenType.BAD_CHARACTER;
-import static com.intellij.psi.TokenType.WHITE_SPACE;
+import static com.intellij.psi.TokenType.*;
 import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 
 // Lexer for Paradox Localisation.
@@ -562,7 +561,7 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
         case '\u2029':  // fall through
           zzAtBOL = true;
           break;
-        case '\r':
+        case '\r': 
           if (zzMarkedPosL < zzEndReadL)
             zzAtBOL = zzBufferL.charAt(zzMarkedPosL) != '\n';
           else if (zzAtEOF)
@@ -572,9 +571,9 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
             zzMarkedPosL = zzMarkedPos;
             zzEndReadL = zzEndRead;
             zzBufferL = zzBuffer;
-            if (eof)
+            if (eof) 
               zzAtBOL = false;
-            else
+            else 
               zzAtBOL = zzBufferL.charAt(zzMarkedPosL) != '\n';
           }
           break;

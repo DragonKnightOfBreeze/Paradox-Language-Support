@@ -85,11 +85,6 @@ public class ParadoxScriptScriptedVariableImpl extends ParadoxScriptStubElementI
   }
 
   @Override
-  public @NotNull String getPresentableText() {
-    return ParadoxScriptPsiImplUtil.getPresentableText(this);
-  }
-
-  @Override
   public @NotNull IElementType getIElementType() {
     return ParadoxScriptPsiImplUtil.getIElementType(this);
   }
@@ -97,6 +92,11 @@ public class ParadoxScriptScriptedVariableImpl extends ParadoxScriptStubElementI
   @Override
   public boolean isEquivalentTo(@NotNull PsiElement another) {
     return ParadoxScriptPsiImplUtil.isEquivalentTo(this, another);
+  }
+
+  @Override
+  public @NotNull String getPresentableText() {
+    return ParadoxScriptPsiImplUtil.getPresentableText(this);
   }
 
   @Override

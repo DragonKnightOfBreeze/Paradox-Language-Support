@@ -27,6 +27,8 @@ public interface ParadoxScriptRootBlock extends PsiRootBlock, ParadoxScriptMembe
 
   @NotNull List<@NotNull ParadoxScriptMember> getMembers();
 
+  @NotNull String getValue();
+
   @NotNull List<@NotNull ParadoxScriptStatement> getComponents();
 
   @NotNull GlobalSearchScope getResolveScope();

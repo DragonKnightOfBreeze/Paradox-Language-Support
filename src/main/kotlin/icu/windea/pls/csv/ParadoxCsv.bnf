@@ -23,7 +23,7 @@
 // - Header and row share the same item structure; EOL is recognized by lexer token.
 // - Empty first/middle columns are allowed; quoted columns can be unterminated for recovery.
 
-root ::= COMMENT * header ? (row | COMMENT) *
+root ::= COMMENT* header? ( row | COMMENT )*
 
 // column container rules
 
@@ -35,7 +35,6 @@ header ::= row_items {
     getIcon getComponents
   ]
 }
-// EOL is recognized by a dedicated lexer token
 row ::= row_items {
   implements=[
     "icu.windea.pls.csv.psi.ParadoxCsvColumnContainer"
@@ -44,13 +43,14 @@ row ::= row_items {
     getIcon getComponents
   ]
 }
-private row_items ::= column row_item * { pin=1 }
-private row_item ::= <<checkEol>> SEPARATOR [<<checkEol>> column]
+private row_items ::= column row_item* { pin=1 }
+// EOL is recognized by a dedicated lexer token
+private row_item ::= <<checkEol>> SEPARATOR [ <<checkEol>> column ]
 
 // column rules
 
 // empty first/middle columns are allowed
-column ::= <<checkColumnToken>> COLUMN_TOKEN ? {
+column ::= <<checkColumnToken>> COLUMN_TOKEN? {
   implements=[
     "icu.windea.pls.core.psi.PsiQuoteAwareElement"
     "icu.windea.pls.csv.psi.ParadoxCsvLiteralValue"
@@ -58,6 +58,6 @@ column ::= <<checkColumnToken>> COLUMN_TOKEN ? {
   ]
   methods=[
     getIdElement
-    getIcon getName getValue setValue setContent getQuotePattern getPresentableText getReference getReferences
+    getIcon getName getValue setValue setContent getPresentableText getQuotePattern getReference getReferences
   ]
 }

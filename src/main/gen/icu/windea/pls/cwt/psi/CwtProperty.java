@@ -1,44 +1,43 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.cwt.psi;
 
-import com.intellij.navigation.ItemPresentation;
+import java.util.List;
+import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
+import com.intellij.navigation.ItemPresentation;
+import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import javax.swing.*;
-import java.util.List;
+import javax.swing.Icon;
 
 public interface CwtProperty extends CwtNamedElement, CwtMember {
 
-    @NotNull
-    CwtPropertyKey getPropertyKey();
+  @Nullable CwtBlock getMemberContainer();
 
-    @Nullable
-    CwtValue getPropertyValue();
+  @Nullable List<@NotNull CwtMember> getMembers();
 
-    @NotNull Icon getIcon(@IconFlags int flags);
+  @NotNull
+  CwtPropertyKey getPropertyKey();
 
-    @NotNull String getName();
+  @Nullable
+  CwtValue getPropertyValue();
 
-    @NotNull CwtProperty setName(@NotNull String name);
+  @NotNull Icon getIcon(@IconFlags int flags);
 
-    @NotNull PsiElement getNameIdentifier();
+  @NotNull String getName();
 
-    @Nullable String getValue();
+  @NotNull CwtProperty setName(@NotNull String name);
 
-    @NotNull String getPresentableText();
+  @NotNull PsiElement getNameIdentifier();
 
-    @Nullable CwtBlock getMemberContainer();
+  @Nullable String getValue();
 
-    @Nullable List<@NotNull CwtMember> getMembers();
+  @NotNull String getPresentableText();
 
-    @NotNull GlobalSearchScope getResolveScope();
+  @NotNull GlobalSearchScope getResolveScope();
 
-    @NotNull SearchScope getUseScope();
+  @NotNull SearchScope getUseScope();
 
-    @NotNull ItemPresentation getPresentation();
+  @NotNull ItemPresentation getPresentation();
 
 }

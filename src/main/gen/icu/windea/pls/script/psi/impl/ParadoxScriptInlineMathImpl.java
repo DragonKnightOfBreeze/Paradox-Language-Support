@@ -31,16 +31,6 @@ public class ParadoxScriptInlineMathImpl extends ParadoxScriptValueImpl implemen
   }
 
   @Override
-  public @NotNull String getValue() {
-    return ParadoxScriptPsiImplUtil.getValue(this);
-  }
-
-  @Override
-  public @NotNull String getPresentableText() {
-    return ParadoxScriptPsiImplUtil.getPresentableText(this);
-  }
-
-  @Override
   public @Nullable PsiElement getTokenElement() {
     return ParadoxScriptPsiImplUtil.getTokenElement(this);
   }
@@ -58,6 +48,16 @@ public class ParadoxScriptInlineMathImpl extends ParadoxScriptValueImpl implemen
   @Override
   public @Nullable PsiElement getRightBound() {
     return ParadoxScriptPsiImplUtil.getRightBound(this);
+  }
+
+  @Override
+  public @NotNull String getValue() {
+    return ParadoxScriptPsiImplUtil.getValue(this);
+  }
+
+  @Override
+  public @NotNull String getPresentableText() {
+    return ParadoxScriptPsiImplUtil.getPresentableText(this);
   }
 
   @Override

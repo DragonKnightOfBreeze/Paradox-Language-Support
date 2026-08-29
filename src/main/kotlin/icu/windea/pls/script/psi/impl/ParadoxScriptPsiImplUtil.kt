@@ -46,6 +46,11 @@ object ParadoxScriptPsiImplUtil {
     // region ParadoxScriptRootBlock
 
     @JvmStatic
+    fun getValue(element: ParadoxScriptRootBlock): String {
+        return ChronicleStrings.blockFolder
+    }
+
+    @JvmStatic
     fun getMemberContainer(element: ParadoxScriptRootBlock): ParadoxScriptRootBlock {
         return element
     }
@@ -53,74 +58,6 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun getMembers(element: ParadoxScriptRootBlock): List<ParadoxScriptMember> {
         return getMemberContainer(element).findChildren<_>()
-    }
-
-    // endregion
-
-    // region ParadoxScriptScriptedVariable
-
-    @JvmStatic
-    fun getIcon(element: ParadoxScriptScriptedVariable, @Iconable.IconFlags flags: Int): Icon {
-        return ChronicleIcons.Nodes.ScriptedVariable
-    }
-
-    @JvmStatic
-    fun getName(element: ParadoxScriptScriptedVariable): String? {
-        element.stub?.name?.orNull()?.let { return it }
-        return element.scriptedVariableName.name.orNull()
-    }
-
-    @JvmStatic
-    fun setName(element: ParadoxScriptScriptedVariable, name: String): ParadoxScriptScriptedVariable {
-        val nameElement = element.scriptedVariableName
-        val idElement = nameElement.idElement ?: throw IncorrectOperationException() // 不支持重命名
-        val newIdElement = ParadoxScriptElementFactory.createScriptedVariableNameFromText(element.project, name).idElement ?: throw IncorrectOperationException()
-        idElement.replace(newIdElement)
-        return element
-    }
-
-    @JvmStatic
-    fun getNameIdentifier(element: ParadoxScriptScriptedVariable): PsiElement? {
-        return element.scriptedVariableName.idElement
-    }
-
-    @JvmStatic
-    fun getTextOffset(element: ParadoxScriptScriptedVariable): Int {
-        return element.node.startOffset + 1
-    }
-
-    @JvmStatic
-    fun getValue(element: ParadoxScriptScriptedVariable): String? {
-        return element.scriptedVariableValue?.value
-    }
-
-    @JvmStatic
-    fun getIElementType(element: ParadoxScriptScriptedVariable): IElementType {
-        return SCRIPTED_VARIABLE
-    }
-
-    @JvmStatic
-    fun isEquivalentTo(element: ParadoxScriptScriptedVariable, another: PsiElement): Boolean {
-        // name & gameType
-        if (another !is ParadoxScriptScriptedVariable) return false
-        if (element.name.let { it.isNullOrEmpty() || it != another.name }) return false
-        if (selectGameType(element) != selectGameType(another)) return false
-        return true
-    }
-
-    // endregion
-
-    // region ParadoxScriptScriptedVariableName
-
-    @JvmStatic
-    fun getIdElement(element: ParadoxScriptScriptedVariableName): PsiElement? {
-        return element.firstChild?.nextSibling?.takeIf { it.elementType == SCRIPTED_VARIABLE_NAME_TOKEN }?.takeIf { ParadoxScriptPsiService.isIdElement(it) }
-    }
-
-    @JvmStatic
-    fun getName(element: ParadoxScriptScriptedVariableName): String {
-        // remove leading `@` & can be parameterized & optimized to optimize memory
-        return element.text.removePrefix("@").optimized()
     }
 
     // endregion
@@ -264,30 +201,6 @@ object ParadoxScriptPsiImplUtil {
 
     // endregion
 
-    // region ParadoxScriptColor
-
-    @JvmStatic
-    fun getColorType(element: ParadoxScriptColor): String {
-        return element.text.substringBefore('{').trim().optimized() // optimized to optimize memory
-    }
-
-    @JvmStatic
-    fun getColorArgs(element: ParadoxScriptColor): List<String> {
-        return element.text.substringIn('{', '}').trim().splitByBlank()
-    }
-
-    @JvmStatic
-    fun getColor(element: ParadoxScriptColor): Color? {
-        return ParadoxColorService.getColor(element, fromToken = false)
-    }
-
-    @JvmStatic
-    fun setColor(element: ParadoxScriptColor, color: Color) {
-        ParadoxColorService.setColor(element, color, fromToken = false)
-    }
-
-    // endregion
-
     // region ParadoxScriptBlock
 
     @JvmStatic
@@ -322,122 +235,70 @@ object ParadoxScriptPsiImplUtil {
 
     // endregion
 
-    // region ParadoxScriptConditionalBlock
+    // region ParadoxScriptScriptedVariable
 
     @JvmStatic
-    fun getIcon(element: ParadoxScriptNormalConditionalBlock, @Iconable.IconFlags flags: Int): Icon {
-        return ChronicleIcons.Nodes.ConditionalBlock
+    fun getIcon(element: ParadoxScriptScriptedVariable, @Iconable.IconFlags flags: Int): Icon {
+        return ChronicleIcons.Nodes.ScriptedVariable
     }
 
     @JvmStatic
-    fun getMemberContainer(element: ParadoxScriptNormalConditionalBlock): ParadoxScriptNormalConditionalBlock {
-        return element
+    fun getName(element: ParadoxScriptScriptedVariable): String? {
+        element.stub?.name?.orNull()?.let { return it }
+        return element.scriptedVariableName.name.orNull()
     }
 
     @JvmStatic
-    fun getMembers(element: ParadoxScriptNormalConditionalBlock): List<ParadoxScriptMember> {
-        return getMemberContainer(element).findChildren<_>()
-    }
-
-    @JvmStatic
-    fun getLeftBound(element: ParadoxScriptNormalConditionalBlock): PsiElement? {
-        // use simple implementation is enough here
-        return element.findChild<PsiElement> { it.elementType == NESTED_RIGHT_BRACKET }
-    }
-
-    @JvmStatic
-    fun getRightBound(element: ParadoxScriptNormalConditionalBlock): PsiElement? {
-        return element.lastChild?.takeIf { it.elementType == RIGHT_BRACKET }
-    }
-
-    // endregion
-
-    // region ParadoxScriptInlineConditionalBlock
-
-    @JvmStatic
-    fun getIcon(element: ParadoxScriptInlineConditionalBlock, @Iconable.IconFlags flags: Int): Icon {
-        return ChronicleIcons.Nodes.ConditionalBlock
-    }
-
-    @JvmStatic
-    fun getLeftBound(element: ParadoxScriptInlineConditionalBlock): PsiElement? {
-        // use simple implementation is enough here
-        return element.findChild<PsiElement> { it.elementType == NESTED_RIGHT_BRACKET }
-    }
-
-    @JvmStatic
-    fun getRightBound(element: ParadoxScriptInlineConditionalBlock): PsiElement? {
-        return element.lastChild?.takeIf { it.elementType == RIGHT_BRACKET }
-    }
-
-    // endregion
-
-    // region ParadoxScriptConditionalParameter
-
-    @JvmStatic
-    fun getIdElement(element: ParadoxScriptConditionalParameter): PsiElement {
-        return element.findChild { it.elementType == CONDITION_PARAMETER_TOKEN }!!
-    }
-
-    @JvmStatic
-    fun getIcon(element: ParadoxScriptConditionalParameter, @Iconable.IconFlags flags: Int): Icon {
-        return ChronicleIcons.Nodes.Parameter
-    }
-
-    @JvmStatic
-    fun getName(element: ParadoxScriptConditionalParameter): String {
-        return element.idElement.text
-    }
-
-    @JvmStatic
-    fun setName(element: ParadoxScriptConditionalParameter, name: String): ParadoxScriptConditionalParameter {
-        val idElement = element.idElement
-        val newIdElement = ParadoxScriptElementFactory.createConditionalParameter(element.project, name).idElement
+    fun setName(element: ParadoxScriptScriptedVariable, name: String): ParadoxScriptScriptedVariable {
+        val nameElement = element.scriptedVariableName
+        val idElement = nameElement.idElement ?: throw IncorrectOperationException() // 不支持重命名
+        val newIdElement = ParadoxScriptElementFactory.createScriptedVariableNameFromText(element.project, name).idElement ?: throw IncorrectOperationException()
         idElement.replace(newIdElement)
         return element
     }
 
     @JvmStatic
-    fun getTextOffset(element: ParadoxScriptConditionalParameter): Int {
-        return element.node.startOffset
+    fun getNameIdentifier(element: ParadoxScriptScriptedVariable): PsiElement? {
+        return element.scriptedVariableName.idElement
+    }
+
+    @JvmStatic
+    fun getTextOffset(element: ParadoxScriptScriptedVariable): Int {
+        return element.node.startOffset + 1
+    }
+
+    @JvmStatic
+    fun getValue(element: ParadoxScriptScriptedVariable): String? {
+        return element.scriptedVariableValue?.value
+    }
+
+    @JvmStatic
+    fun getIElementType(element: ParadoxScriptScriptedVariable): IElementType {
+        return SCRIPTED_VARIABLE
+    }
+
+    @JvmStatic
+    fun isEquivalentTo(element: ParadoxScriptScriptedVariable, another: PsiElement): Boolean {
+        // name & gameType
+        if (another !is ParadoxScriptScriptedVariable) return false
+        if (element.name.let { it.isNullOrEmpty() || it != another.name }) return false
+        if (selectGameType(element) != selectGameType(another)) return false
+        return true
     }
 
     // endregion
 
-    // region ParadoxScriptInlineMath
+    // region ParadoxScriptScriptedVariableName
 
     @JvmStatic
-    fun getValue(element: ParadoxScriptInlineMath): String {
-        return ChronicleStrings.inlineMathFolder
+    fun getIdElement(element: ParadoxScriptScriptedVariableName): PsiElement? {
+        return element.firstChild?.nextSibling?.takeIf { it.elementType == SCRIPTED_VARIABLE_NAME_TOKEN }?.takeIf { ParadoxScriptPsiService.isIdElement(it) }
     }
 
     @JvmStatic
-    fun getTokenElement(element: ParadoxScriptInlineMath): PsiElement? {
-        return element.findChild { it.elementType == INLINE_MATH_TOKEN }
-    }
-
-    @JvmStatic
-    fun getInlineMathExpression(element: ParadoxScriptInlineMath): ParadoxScriptInlineMathExpression? {
-        return element.findChild { it.elementType == INLINE_MATH_TOKEN }?.findChild<_>()
-    }
-
-    @JvmStatic
-    fun getLeftBound(element: ParadoxScriptInlineMath): PsiElement? {
-        return element.firstChild?.takeIf { it.elementType == INLINE_MATH_START }
-    }
-
-    @JvmStatic
-    fun getRightBound(element: ParadoxScriptInlineMath): PsiElement? {
-        return element.lastChild?.takeIf { it.elementType == INLINE_MATH_END }
-    }
-
-    // endregion
-
-    // region ParadoxScriptInlineMathNumber
-
-    @JvmStatic
-    fun getValue(element: ParadoxScriptInlineMathNumber): String {
-        return element.text
+    fun getName(element: ParadoxScriptScriptedVariableName): String {
+        // remove leading `@` & can be parameterized & optimized to optimize memory
+        return element.text.removePrefix("@").optimized()
     }
 
     // endregion
@@ -475,7 +336,7 @@ object ParadoxScriptPsiImplUtil {
 
     // endregion
 
-    // region ParadoxScriptInlineMathVariableReference
+    // region ParadoxScriptInlineMathScriptedVariableReference
 
     @JvmStatic
     fun getIdElement(element: ParadoxScriptInlineMathScriptedVariableReference): PsiElement? {
@@ -498,6 +359,73 @@ object ParadoxScriptPsiImplUtil {
         val newIdElement = ParadoxScriptElementFactory.createInlineMathScriptedVariableReference(element.project, name).idElement ?: throw IncorrectOperationException()
         idElement.replace(newIdElement)
         return element
+    }
+
+    // endregion
+
+    // region ParadoxScriptColor
+
+    @JvmStatic
+    fun getColorType(element: ParadoxScriptColor): String {
+        return element.text.substringBefore('{').trim().optimized() // optimized to optimize memory
+    }
+
+    @JvmStatic
+    fun getColorArgs(element: ParadoxScriptColor): List<String> {
+        return element.text.substringIn('{', '}').trim().splitByBlank()
+    }
+
+    @JvmStatic
+    fun getColor(element: ParadoxScriptColor): Color? {
+        return ParadoxColorService.getColor(element, fromToken = false)
+    }
+
+    @JvmStatic
+    fun setColor(element: ParadoxScriptColor, color: Color) {
+        ParadoxColorService.setColor(element, color, fromToken = false)
+    }
+
+    // endregion
+
+    // region ParadoxScriptInlineMath
+
+    @JvmStatic
+    fun getTokenElement(element: ParadoxScriptInlineMath): PsiElement? {
+        return element.findChild { it.elementType == INLINE_MATH_TOKEN }
+    }
+
+    @JvmStatic
+    fun getInlineMathExpression(element: ParadoxScriptInlineMath): ParadoxScriptInlineMathExpression? {
+        return element.findChild { it.elementType == INLINE_MATH_TOKEN }?.findChild<_>()
+    }
+
+    @JvmStatic
+    fun getLeftBound(element: ParadoxScriptInlineMath): PsiElement? {
+        return element.firstChild?.takeIf { it.elementType == INLINE_MATH_START }
+    }
+
+    @JvmStatic
+    fun getRightBound(element: ParadoxScriptInlineMath): PsiElement? {
+        return element.lastChild?.takeIf { it.elementType == INLINE_MATH_END }
+    }
+
+    @JvmStatic
+    fun getValue(element: ParadoxScriptInlineMath): String {
+        return ChronicleStrings.inlineMathFolder
+    }
+
+    // endregion
+
+    // region ParadoxScriptInlineMathNumber
+
+    @JvmStatic
+    fun getIcon(element: ParadoxScriptInlineMathNumber, @Iconable.IconFlags flags: Int): Icon {
+        return ChronicleIcons.Nodes.Value
+    }
+
+    @JvmStatic
+    fun getValue(element: ParadoxScriptInlineMathNumber): String {
+        return element.text
     }
 
     // endregion
@@ -593,6 +521,88 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun getIdElement(element: ParadoxScriptParameterArgument): PsiElement? {
         return element.firstChild?.takeIf { it.elementType == ARGUMENT_TOKEN }
+    }
+
+    // endregion
+
+    // region ParadoxScriptConditionalBlock
+
+    @JvmStatic
+    fun getMemberContainer(element: ParadoxScriptNormalConditionalBlock): ParadoxScriptNormalConditionalBlock {
+        return element
+    }
+
+    @JvmStatic
+    fun getMembers(element: ParadoxScriptNormalConditionalBlock): List<ParadoxScriptMember> {
+        return getMemberContainer(element).findChildren<_>()
+    }
+
+    @JvmStatic
+    fun getLeftBound(element: ParadoxScriptNormalConditionalBlock): PsiElement? {
+        // use simple implementation is enough here
+        return element.findChild<PsiElement> { it.elementType == NESTED_RIGHT_BRACKET }
+    }
+
+    @JvmStatic
+    fun getRightBound(element: ParadoxScriptNormalConditionalBlock): PsiElement? {
+        return element.lastChild?.takeIf { it.elementType == RIGHT_BRACKET }
+    }
+
+    @JvmStatic
+    fun getIcon(element: ParadoxScriptNormalConditionalBlock, @Iconable.IconFlags flags: Int): Icon {
+        return ChronicleIcons.Nodes.ConditionalBlock
+    }
+
+    // endregion
+
+    // region ParadoxScriptInlineConditionalBlock
+
+    @JvmStatic
+    fun getLeftBound(element: ParadoxScriptInlineConditionalBlock): PsiElement? {
+        // use simple implementation is enough here
+        return element.findChild<PsiElement> { it.elementType == NESTED_RIGHT_BRACKET }
+    }
+
+    @JvmStatic
+    fun getRightBound(element: ParadoxScriptInlineConditionalBlock): PsiElement? {
+        return element.lastChild?.takeIf { it.elementType == RIGHT_BRACKET }
+    }
+
+    @JvmStatic
+    fun getIcon(element: ParadoxScriptInlineConditionalBlock, @Iconable.IconFlags flags: Int): Icon {
+        return ChronicleIcons.Nodes.ConditionalBlock
+    }
+
+    // endregion
+
+    // region ParadoxScriptConditionalParameter
+
+    @JvmStatic
+    fun getIdElement(element: ParadoxScriptConditionalParameter): PsiElement {
+        return element.findChild { it.elementType == CONDITION_PARAMETER_TOKEN }!!
+    }
+
+    @JvmStatic
+    fun getIcon(element: ParadoxScriptConditionalParameter, @Iconable.IconFlags flags: Int): Icon {
+        return ChronicleIcons.Nodes.Parameter
+    }
+
+    @JvmStatic
+    fun getName(element: ParadoxScriptConditionalParameter): String {
+        return element.idElement.text
+    }
+
+    @JvmStatic
+    fun setName(element: ParadoxScriptConditionalParameter, name: String): ParadoxScriptConditionalParameter {
+        val idElement = element.idElement
+        val newIdElement = ParadoxScriptElementFactory.createConditionalParameter(element.project, name).idElement
+        idElement.replace(newIdElement)
+        return element
+    }
+
+    @JvmStatic
+    fun getTextOffset(element: ParadoxScriptConditionalParameter): Int {
+        return element.node.startOffset
     }
 
     // endregion

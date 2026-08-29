@@ -21,18 +21,30 @@
 // Notes:
 // - Supports properties, blocks, and special option/doc comments with lazy parsing.
 
-// core rules
+root ::= root_block?
 
-root ::= root_block ?
-root_block ::= root_block_item + {
-  hooks=[wsBinders="GREEDY_LEFT_BINDER, GREEDY_RIGHT_BINDER"]
+root_block ::= root_block_items {
+  hooks=[wsBinders="GREEDY_LEFT_BINDER, GREEDY_RIGHT_BINDER"] // surrounding whitespaces and comments are greedy
   implements=[
     "icu.windea.pls.core.psi.PsiRootBlock"
     "icu.windea.pls.cwt.psi.CwtMemberContainer"
   ]
-  methods=[getValue getMemberContainer getMembers getComponents]
+  methods=[
+    getMemberContainer getMembers
+    getValue getComponents
+  ]
 }
-private root_block_item ::= general_comment | property | value
+private root_block_items ::= root_block_item+
+private root_block_item ::= general_comment | property | value {
+  // recoverWhile="#auto" // continue parsing
+  recoverWhile=root_block_item_recover // continue parsing
+}
+private root_block_item_recover ::= !( COMMENT | OPTION_COMMENT_START | DOC_COMMENT_TOKEN
+  | BOOLEAN_TOKEN | INT_TOKEN | FLOAT_TOKEN | STRING_TOKEN | PROPERTY_KEY_TOKEN
+  | LEFT_BRACE | RIGHT_BRACE
+  )
+
+// comment rules
 
 private general_comment ::= doc_comment | option_comment | comment
 doc_comment ::= DOC_COMMENT_TOKEN {
@@ -45,32 +57,76 @@ option_comment ::= option_comment_root {
 }
 private comment ::= COMMENT
 
+// within option comment rules
+// 2.0.7 DO NOT use lazy-parsing due to performance reasons
+
+private option_comment_root ::= OPTION_COMMENT_START option_comment_items? {
+  pin=1
+}
+private option_comment_items ::= option_comment_item+
+// EOL is recognized by a dedicated lexer token
+private option_comment_item ::= <<checkEol>> ( option | option_value ) {
+  // recoverWhile="#auto" // continue parsing
+  recoverWhile=option_comment_item_recover // continue parsing
+}
+private option_comment_item_recover ::= !( COMMENT | OPTION_COMMENT_START | DOC_COMMENT_TOKEN
+  | BOOLEAN_TOKEN | INT_TOKEN | FLOAT_TOKEN | STRING_TOKEN
+  | PROPERTY_KEY_TOKEN | OPTION_KEY_TOKEN
+  | LEFT_BRACE | RIGHT_BRACE
+  )
+
+option ::= option_key option_separator option_value {
+  pin=1
+  implements=[
+    "icu.windea.pls.cwt.psi.CwtNamedElement"
+    "icu.windea.pls.cwt.psi.CwtOptionMember"
+  ]
+  methods=[
+    option_key="option_key" option_value="value"
+    getIcon getName setName getNameIdentifier getValue getPresentableText
+  ]
+}
+option_key ::= OPTION_KEY_TOKEN {
+  implements=[
+    "com.intellij.psi.NavigatablePsiElement"
+    "icu.windea.pls.core.psi.PsiQuoteAwareElement"
+  ]
+  methods=[
+    getIcon getName getValue getQuotePattern
+  ]
+}
+private option_separator ::= EQUAL_SIGN | NOT_EQUAL_SIGN | DOUBLE_EQUAL_SIGN
+private option_value ::= value
+
+// property rules
+
 property ::= property_key property_separator property_value {
   pin=1
-  recoverWhile=auto_recover // continue parsing
   implements=[
     "icu.windea.pls.cwt.psi.CwtNamedElement"
     "icu.windea.pls.cwt.psi.CwtMember"
   ]
   methods=[
-    propertyKey="property_key" propertyValue="value"
+    getMemberContainer getMembers propertyKey="property_key" propertyValue="value"
     getIcon getName setName getNameIdentifier getValue getPresentableText
-    getMemberContainer getMembers
   ]
 }
-property_key ::= PROPERTY_KEY_TOKEN {
+property_key ::= property_key_content {
   implements=[
     "icu.windea.pls.core.psi.PsiQuoteAwareElement"
     "icu.windea.pls.cwt.psi.CwtLiteralValue"
     "icu.windea.pls.cwt.psi.CwtStringExpressionElement"
   ]
   methods=[
-    getIcon getName getValue setValue setContent getQuotePattern getPresentableText
+    getIcon getName getValue setValue setContent getPresentableText getQuotePattern
     getReference getReferences
   ]
 }
+private property_key_content ::= PROPERTY_KEY_TOKEN
 private property_separator ::= EQUAL_SIGN | NOT_EQUAL_SIGN | DOUBLE_EQUAL_SIGN
 private property_value ::= value
+
+// value rules
 
 value ::= boolean | int | float | string | block {
   implements=[
@@ -78,8 +134,11 @@ value ::= boolean | int | float | string | block {
     "icu.windea.pls.cwt.psi.CwtMember"
     "icu.windea.pls.cwt.psi.CwtOptionMember"
   ]
-  methods=[getIcon getName getValue setValue setContent getPresentableText]
+  methods=[
+    getIcon getName getValue setValue setContent getPresentableText
+  ]
 }
+
 boolean ::= BOOLEAN_TOKEN {
   extends=value
   implements=[
@@ -100,6 +159,7 @@ float ::= FLOAT_TOKEN {
     "icu.windea.pls.cwt.psi.CwtNumberExpressionElement"
   ]
 }
+
 string ::= STRING_TOKEN {
   extends=value
   implements=[
@@ -109,11 +169,12 @@ string ::= STRING_TOKEN {
     "icu.windea.pls.cwt.psi.CwtStringExpressionElement"
   ]
   methods=[
-    getIcon getName setName getNameIdentifier getValue setValue setContent getQuotePattern getPresentableText
+    getIcon getName setName getNameIdentifier getValue setValue setContent getPresentableText getQuotePattern
     getReference getReferences
   ]
 }
-block ::= LEFT_BRACE block_item * RIGHT_BRACE {
+
+block ::= LEFT_BRACE block_items? RIGHT_BRACE {
   pin=1
   extends=value
   implements=[
@@ -121,49 +182,17 @@ block ::= LEFT_BRACE block_item * RIGHT_BRACE {
     "icu.windea.pls.cwt.psi.CwtBoundMemberContainer"
   ]
   methods=[
-    getMemberContainer getMembers getLeftBound getRightBound getComponents
-    getIcon getValue getPresentableText
+    getMemberContainer getMembers getLeftBound getRightBound
+    getIcon getValue getComponents getPresentableText
   ]
 }
-private block_item ::= general_comment | property | option | value {
-  recoverWhile=auto_recover // continue parsing
+private block_items ::= block_item+
+private block_item ::= general_comment | option | property | value {
+  // recoverWhile="#auto" // continue parsing
+  recoverWhile=block_item_recover // continue parsing
 }
+private block_item_recover ::= !( COMMENT | OPTION_COMMENT_START | DOC_COMMENT_TOKEN
+  | BOOLEAN_TOKEN | INT_TOKEN | FLOAT_TOKEN | STRING_TOKEN | PROPERTY_KEY_TOKEN | OPTION_KEY_TOKEN
+  | LEFT_BRACE | RIGHT_BRACE
+  )
 
-// option comment rules
-// 2.0.7 DO NOT use lazy-parsing due to performance reasons
-
-// EOL is recognized by a dedicated lexer token
-private option_comment_root ::= OPTION_COMMENT_START option_comment_item * {
-  pin=1
-}
-private option_comment_item ::= <<checkEol>> (option | option_value) {
-  recoverWhile=auto_recover // continue parsing
-}
-
-option ::= option_key option_separator option_value {
-  pin=1
-  recoverWhile=auto_recover // continue parsing
-  implements=[
-    "icu.windea.pls.cwt.psi.CwtNamedElement"
-    "icu.windea.pls.cwt.psi.CwtOptionMember"
-  ]
-  methods=[
-    option_key="option_key" option_value="value"
-    getIcon getName setName getNameIdentifier getValue getPresentableText
-  ]
-}
-option_key ::= OPTION_KEY_TOKEN {
-  implements=[
-    "com.intellij.psi.NavigatablePsiElement"
-    "icu.windea.pls.core.psi.PsiQuoteAwareElement"
-  ]
-  methods=[getIcon getName getValue getQuotePattern]
-}
-private option_separator ::= EQUAL_SIGN | NOT_EQUAL_SIGN | DOUBLE_EQUAL_SIGN
-private option_value ::= value
-
-// recover rules
-
-private auto_recover ::= !( COMMENT | OPTION_COMMENT_START | DOC_COMMENT_TOKEN
-  | BOOLEAN_TOKEN | INT_TOKEN | FLOAT_TOKEN | STRING_TOKEN
-  | PROPERTY_KEY_TOKEN | OPTION_KEY_TOKEN | LEFT_BRACE | RIGHT_BRACE)

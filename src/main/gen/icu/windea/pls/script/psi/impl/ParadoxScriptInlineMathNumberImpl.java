@@ -10,8 +10,10 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 import icu.windea.pls.script.psi.*;
 import com.intellij.navigation.ItemPresentation;
+import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
+import javax.swing.Icon;
 
 public class ParadoxScriptInlineMathNumberImpl extends ParadoxScriptInlineMathFactorImpl implements ParadoxScriptInlineMathNumber {
 
@@ -28,6 +30,11 @@ public class ParadoxScriptInlineMathNumberImpl extends ParadoxScriptInlineMathFa
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof ParadoxScriptVisitor) accept((ParadoxScriptVisitor)visitor);
     else super.accept(visitor);
+  }
+
+  @Override
+  public @NotNull Icon getIcon(@IconFlags int flags) {
+    return ParadoxScriptPsiImplUtil.getIcon(this, flags);
   }
 
   @Override

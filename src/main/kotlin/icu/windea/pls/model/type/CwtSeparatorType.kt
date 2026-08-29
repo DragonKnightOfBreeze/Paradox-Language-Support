@@ -1,8 +1,8 @@
 package icu.windea.pls.model.type
 
 enum class CwtSeparatorType(val text: String) {
-    Equal("="), // logic equal
-    NotEqual("!="), // logic not equal
+    Equal("="), // logical equal
+    NotEqual("!="), // logical not equal
     DoubleEqual("=="), // matches comparison operators
     ;
 

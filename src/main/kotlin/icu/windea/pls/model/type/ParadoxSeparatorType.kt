@@ -3,10 +3,10 @@ package icu.windea.pls.model.type
 enum class ParadoxSeparatorType(val text: String) {
     Equal("="),
     NotEqual("!="),
-    Lt("<"),
-    Gt(">"),
     Le("<="),
     Ge(">="),
+    Lt("<"),
+    Gt(">"),
 
     // #86 supported in ck3, vic3, eu5 (preferred format: `k ?= v`)
     SafeAssign("? ="),

@@ -11,10 +11,6 @@ import com.intellij.psi.search.SearchScope;
 
 public interface ParadoxScriptInlineMath extends ParadoxScriptValue, PsiBoundElement {
 
-  @NotNull String getValue();
-
-  @NotNull String getPresentableText();
-
   @Nullable PsiElement getTokenElement();
 
   @Nullable ParadoxScriptInlineMathExpression getInlineMathExpression();
@@ -22,6 +18,10 @@ public interface ParadoxScriptInlineMath extends ParadoxScriptValue, PsiBoundEle
   @Nullable PsiElement getLeftBound();
 
   @Nullable PsiElement getRightBound();
+
+  @NotNull String getValue();
+
+  @NotNull String getPresentableText();
 
   @NotNull GlobalSearchScope getResolveScope();
 
