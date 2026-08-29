@@ -4,7 +4,7 @@ import com.intellij.codeInsight.editorActions.SimpleTokenSetQuoteHandler
 import com.intellij.psi.TokenType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes
 
-// NOTE 1.3.0+ 对于脚本语言，因为允许多行的引号括起的字符串，即使已经注册了对应的QuoteHandler，目前IDE也不会自动插入成对的双引号
+// NOTE 1.3.0+ 对于脚本语言，因为允许多行的引号括起的字符串，即使已经注册了对应的 QuoteHandler，目前 IDE 也不会自动插入成对的双引号
 
 class ParadoxScriptQuoteHandler : SimpleTokenSetQuoteHandler(
     ParadoxLocalisationElementTypes.LEFT_QUOTE,
