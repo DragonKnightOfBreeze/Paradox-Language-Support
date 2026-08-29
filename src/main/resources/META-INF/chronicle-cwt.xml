@@ -5,6 +5,7 @@
     <lang.parserDefinition language="CWT" implementationClass="icu.windea.pls.cwt.CwtParserDefinition"/>
 
     <annotator language="CWT" implementationClass="icu.windea.pls.cwt.annotator.CwtSyntaxAnnotator"/>
+    <annotator language="CWT" implementationClass="icu.windea.pls.cwt.annotator.CwtHighlightingAnnotator"/>
 
     <spellchecker.support language="CWT" implementationClass="icu.windea.pls.cwt.editor.CwtSpellcheckerStrategy"/>
     <lang.syntaxHighlighterFactory language="CWT" implementationClass="icu.windea.pls.cwt.editor.CwtSyntaxHighlighterFactory"/>

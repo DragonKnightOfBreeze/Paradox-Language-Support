@@ -45,7 +45,7 @@ IDENTIFIER_TOKEN={IDENTIFIER_LEAD_CHAR}{IDENTIFIER_CHAR}* // leading number is n
 
 PARAMETER_TOKEN={IDENTIFIER_TOKEN} // identifier
 
-ARGUMENT_CHAR=[^#$=<>!?{}\[\]\\\s] // `@` is allowed
+ARGUMENT_CHAR=[^#=<>!?{}\\\s$\[\]] // `@` is allowed
 ARGUMENT_TOKEN={ARGUMENT_CHAR}+ // compatible with leading '@'
 
 SCRIPTED_VARIABLE_TOKEN={IDENTIFIER_TOKEN} // identifier

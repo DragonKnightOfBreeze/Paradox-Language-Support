@@ -8,6 +8,8 @@ import icu.windea.pls.core.text.QuotePatterns
 @Suppress("UnusedReceiverParameter")
 val QuotePatterns.Cwt: QuotePattern.Base get() = CwtQuotePattern
 
+// TODO 3.0.2 refactor
+
 private const val FORCE_QUOTED_CHARS = "#={}\""
 
 private object CwtQuotePattern : QuotePattern.Base('"') {

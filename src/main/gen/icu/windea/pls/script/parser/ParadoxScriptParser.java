@@ -230,7 +230,7 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // LEFT_BRACKET <<processInlineConditionalBlock>> conditional_header inline_conditional_block_item RIGHT_BRACKET
+  // LEFT_BRACKET <<processInlineConditionalBlock>> conditional_header inline_conditional_block_item? RIGHT_BRACKET
   public static boolean inline_conditional_block(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "inline_conditional_block")) return false;
     if (!nextTokenIs(b, LEFT_BRACKET)) return false;
@@ -240,10 +240,17 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
     r = r && processInlineConditionalBlock(b, l + 1);
     p = r; // pin = 2
     r = r && report_error_(b, conditional_header(b, l + 1));
-    r = p && report_error_(b, inline_conditional_block_item(b, l + 1)) && r;
+    r = p && report_error_(b, inline_conditional_block_3(b, l + 1)) && r;
     r = p && consumeToken(b, RIGHT_BRACKET) && r;
     exit_section_(b, l, m, r, p, null);
     return r || p;
+  }
+
+  // inline_conditional_block_item?
+  private static boolean inline_conditional_block_3(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "inline_conditional_block_3")) return false;
+    inline_conditional_block_item(b, l + 1);
+    return true;
   }
 
   /* ********************************************************** */
@@ -974,16 +981,16 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // EQUAL_SIGN | NOT_EQUAL_SIGN | LT_SIGN | GT_SIGN | LE_SIGN | GE_SIGN | SAFE_ASSIGN_SIGN | SAFE_CALL_ASSIGN_SIGN
+  // EQUAL_SIGN | NOT_EQUAL_SIGN | LE_SIGN | GE_SIGN | LT_SIGN | GT_SIGN | SAFE_ASSIGN_SIGN | SAFE_CALL_ASSIGN_SIGN
   static boolean property_separator(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "property_separator")) return false;
     boolean r;
     r = consumeToken(b, EQUAL_SIGN);
     if (!r) r = consumeToken(b, NOT_EQUAL_SIGN);
-    if (!r) r = consumeToken(b, LT_SIGN);
-    if (!r) r = consumeToken(b, GT_SIGN);
     if (!r) r = consumeToken(b, LE_SIGN);
     if (!r) r = consumeToken(b, GE_SIGN);
+    if (!r) r = consumeToken(b, LT_SIGN);
+    if (!r) r = consumeToken(b, GT_SIGN);
     if (!r) r = consumeToken(b, SAFE_ASSIGN_SIGN);
     if (!r) r = consumeToken(b, SAFE_CALL_ASSIGN_SIGN);
     return r;

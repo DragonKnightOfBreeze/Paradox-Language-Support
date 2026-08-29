@@ -16,6 +16,7 @@ object ParadoxLocalisationTokenSets {
 
     @JvmField val MERGED_TOKENS = TokenSet.create(TokenType.WHITE_SPACE, PROPERTY_VALUE_TOKEN)
     @JvmField val MERGED_TEXT_TOKENS = TokenSet.create(TokenType.WHITE_SPACE, TEXT_TOKEN, COMMAND_TEXT_TOKEN)
+    @JvmField val QUOTE_TOKENS = TokenSet.create(LEFT_QUOTE, RIGHT_QUOTE)
 
     @JvmField val EXPRESSION_TOKENS = TokenSet.create(COMMAND_TEXT_TOKEN, CONCEPT_NAME_TOKEN)
     @JvmField val TEXT_OR_QUOTE_TOKENS = TokenSet.create(TEXT_TOKEN, LEFT_QUOTE, RIGHT_QUOTE)

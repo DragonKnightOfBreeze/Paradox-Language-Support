@@ -44,5 +44,5 @@ CwtFile: option_comment_nested_eof.test.cwt(0,63)
           PsiWhiteSpace(' ')(61,62)
           CwtInt: 2(62,63)
             PsiElement(INT_TOKEN)('2')(62,63)
-        PsiErrorElement:<value>, COMMENT, DOC_COMMENT_TOKEN, OPTION_COMMENT_START, OPTION_KEY_TOKEN, PROPERTY_KEY_TOKEN or RIGHT_BRACE expected(63,63)
+        PsiErrorElement:<option>, <property>, <value>, COMMENT, DOC_COMMENT_TOKEN, OPTION_COMMENT_START or RIGHT_BRACE expected(63,63)
           <empty list>

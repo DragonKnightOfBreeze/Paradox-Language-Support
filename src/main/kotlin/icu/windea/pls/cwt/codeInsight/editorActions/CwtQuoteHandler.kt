@@ -5,8 +5,7 @@ import com.intellij.psi.TokenType
 import icu.windea.pls.cwt.psi.CwtElementTypes
 
 class CwtQuoteHandler : SimpleTokenSetQuoteHandler(
-    CwtElementTypes.PROPERTY_KEY_TOKEN,
-    CwtElementTypes.OPTION_KEY_TOKEN,
-    CwtElementTypes.STRING_TOKEN,
+    CwtElementTypes.LEFT_QUOTE,
+    CwtElementTypes.RIGHT_QUOTE,
     TokenType.BAD_CHARACTER,
 )

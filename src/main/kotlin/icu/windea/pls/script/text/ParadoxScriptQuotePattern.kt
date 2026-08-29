@@ -8,6 +8,8 @@ import icu.windea.pls.core.text.QuotePatterns
 @Suppress("UnusedReceiverParameter")
 val QuotePatterns.ParadoxScript: QuotePattern.Base get() = ParadoxScriptQuotePattern
 
+// TODO 3.0.2 refactor
+
 private const val FORCE_QUOTED_CHARS = "@#=<>!?{}\""
 
 private object ParadoxScriptQuotePattern : QuotePattern.Base('"') {

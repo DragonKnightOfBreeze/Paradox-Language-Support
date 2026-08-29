@@ -31,11 +31,13 @@ public interface CwtElementTypes {
   IElementType FLOAT_TOKEN = CwtElementTypeFactory.getTokenType("FLOAT_TOKEN");
   IElementType INT_TOKEN = CwtElementTypeFactory.getTokenType("INT_TOKEN");
   IElementType LEFT_BRACE = CwtElementTypeFactory.getTokenType("LEFT_BRACE");
+  IElementType LEFT_QUOTE = CwtElementTypeFactory.getTokenType("LEFT_QUOTE");
   IElementType NOT_EQUAL_SIGN = CwtElementTypeFactory.getTokenType("NOT_EQUAL_SIGN");
   IElementType OPTION_COMMENT_START = CwtElementTypeFactory.getTokenType("OPTION_COMMENT_START");
   IElementType OPTION_KEY_TOKEN = CwtElementTypeFactory.getTokenType("OPTION_KEY_TOKEN");
   IElementType PROPERTY_KEY_TOKEN = CwtElementTypeFactory.getTokenType("PROPERTY_KEY_TOKEN");
   IElementType RIGHT_BRACE = CwtElementTypeFactory.getTokenType("RIGHT_BRACE");
+  IElementType RIGHT_QUOTE = CwtElementTypeFactory.getTokenType("RIGHT_QUOTE");
   IElementType STRING_TOKEN = CwtElementTypeFactory.getTokenType("STRING_TOKEN");
 
   class Factory {

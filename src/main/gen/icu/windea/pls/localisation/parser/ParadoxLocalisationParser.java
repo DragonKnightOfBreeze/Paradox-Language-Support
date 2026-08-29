@@ -699,15 +699,25 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // property_value_quoted | property_value_unquoted
+  // property_value_content
   public static boolean property_value(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "property_value")) return false;
     if (!nextTokenIs(b, "<property value>", LEFT_QUOTE, PROPERTY_VALUE_TOKEN)) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, PROPERTY_VALUE, "<property value>");
+    r = property_value_content(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // property_value_quoted | property_value_unquoted
+  static boolean property_value_content(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "property_value_content")) return false;
+    if (!nextTokenIs(b, "", LEFT_QUOTE, PROPERTY_VALUE_TOKEN)) return false;
+    boolean r;
     r = property_value_quoted(b, l + 1);
     if (!r) r = property_value_unquoted(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
     return r;
   }
 

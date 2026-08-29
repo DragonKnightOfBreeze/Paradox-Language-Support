@@ -52,8 +52,8 @@ object ParadoxScriptParserUtil : GeneratedParserUtilBase() {
 
     @JvmStatic
     fun processInlineConditionalBlock(b: PsiBuilder, l: Int): Boolean {
+        // TODO 3.0.2 refactor
         // interrupt parsing when contains whitespaces or comments
-        // also must not be alone in whole expression
         var i = 1
         var n = 1
         while (true) {

@@ -40,7 +40,7 @@ private root_block_item ::= general_comment | property | value {
   recoverWhile=root_block_item_recover // continue parsing
 }
 private root_block_item_recover ::= !( COMMENT | OPTION_COMMENT_START | DOC_COMMENT_TOKEN
-  | BOOLEAN_TOKEN | INT_TOKEN | FLOAT_TOKEN | STRING_TOKEN | PROPERTY_KEY_TOKEN
+  | BOOLEAN_TOKEN | INT_TOKEN | FLOAT_TOKEN | STRING_TOKEN | PROPERTY_KEY_TOKEN | LEFT_QUOTE
   | LEFT_BRACE | RIGHT_BRACE
   )
 
@@ -70,8 +70,7 @@ private option_comment_item ::= <<checkEol>> ( option | option_value ) {
   recoverWhile=option_comment_item_recover // continue parsing
 }
 private option_comment_item_recover ::= !( COMMENT | OPTION_COMMENT_START | DOC_COMMENT_TOKEN
-  | BOOLEAN_TOKEN | INT_TOKEN | FLOAT_TOKEN | STRING_TOKEN
-  | PROPERTY_KEY_TOKEN | OPTION_KEY_TOKEN
+  | BOOLEAN_TOKEN | INT_TOKEN | FLOAT_TOKEN | STRING_TOKEN | PROPERTY_KEY_TOKEN | OPTION_KEY_TOKEN | LEFT_QUOTE
   | LEFT_BRACE | RIGHT_BRACE
   )
 
@@ -86,7 +85,7 @@ option ::= option_key option_separator option_value {
     getIcon getName setName getNameIdentifier getValue getPresentableText
   ]
 }
-option_key ::= OPTION_KEY_TOKEN {
+option_key ::= option_key_content {
   implements=[
     "com.intellij.psi.NavigatablePsiElement"
     "icu.windea.pls.core.psi.PsiQuoteAwareElement"
@@ -95,6 +94,10 @@ option_key ::= OPTION_KEY_TOKEN {
     getIcon getName getValue getQuotePattern
   ]
 }
+// 3.0.2 split out quote tokens
+private option_key_content ::= option_key_quoted | option_key_unquoted
+private option_key_quoted ::= LEFT_QUOTE OPTION_KEY_TOKEN? RIGHT_QUOTE? // 3.0.2 no pin here atm
+private option_key_unquoted ::= OPTION_KEY_TOKEN RIGHT_QUOTE?
 private option_separator ::= EQUAL_SIGN | NOT_EQUAL_SIGN | DOUBLE_EQUAL_SIGN
 private option_value ::= value
 
@@ -122,7 +125,10 @@ property_key ::= property_key_content {
     getReference getReferences
   ]
 }
-private property_key_content ::= PROPERTY_KEY_TOKEN
+// 3.0.2 split out quote tokens
+private property_key_content ::= property_key_quoted | property_key_unquoted
+private property_key_quoted ::= LEFT_QUOTE PROPERTY_KEY_TOKEN? RIGHT_QUOTE? // 3.0.2 no pin here atm
+private property_key_unquoted ::= PROPERTY_KEY_TOKEN RIGHT_QUOTE?
 private property_separator ::= EQUAL_SIGN | NOT_EQUAL_SIGN | DOUBLE_EQUAL_SIGN
 private property_value ::= value
 
@@ -160,7 +166,7 @@ float ::= FLOAT_TOKEN {
   ]
 }
 
-string ::= STRING_TOKEN {
+string ::= string_content {
   extends=value
   implements=[
     "icu.windea.pls.core.psi.PsiQuoteAwareElement"
@@ -173,6 +179,10 @@ string ::= STRING_TOKEN {
     getReference getReferences
   ]
 }
+// 3.0.2 split out quote tokens
+private string_content ::= string_quoted | string_unquoted
+private string_quoted ::= LEFT_QUOTE STRING_TOKEN? RIGHT_QUOTE? // 3.0.2 no pin here atm
+private string_unquoted ::= STRING_TOKEN RIGHT_QUOTE?
 
 block ::= LEFT_BRACE block_items? RIGHT_BRACE {
   pin=1
@@ -192,7 +202,7 @@ private block_item ::= general_comment | option | property | value {
   recoverWhile=block_item_recover // continue parsing
 }
 private block_item_recover ::= !( COMMENT | OPTION_COMMENT_START | DOC_COMMENT_TOKEN
-  | BOOLEAN_TOKEN | INT_TOKEN | FLOAT_TOKEN | STRING_TOKEN | PROPERTY_KEY_TOKEN | OPTION_KEY_TOKEN
+  | BOOLEAN_TOKEN | INT_TOKEN | FLOAT_TOKEN | STRING_TOKEN | PROPERTY_KEY_TOKEN | OPTION_KEY_TOKEN | LEFT_QUOTE
   | LEFT_BRACE | RIGHT_BRACE
   )
 

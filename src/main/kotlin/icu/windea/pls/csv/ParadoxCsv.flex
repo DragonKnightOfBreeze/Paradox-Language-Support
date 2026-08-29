@@ -30,7 +30,7 @@ import static icu.windea.pls.csv.psi.ParadoxCsvElementTypes.*;
 
 EOL=\s*\R\s*
 WHITE_SPACE=[\s&&[^\r\n]]+
-BLANK=\s+
+//BLANK=\s+
 
 COMMENT=#[^\r\n]*
 
@@ -40,7 +40,7 @@ SEPARATOR=";"
 LITERAL_CHAR=[^#;\"\r\n]
 LITERAL_BOUND_CHAR=[^#;\"\s]
 LITERAL_TOKEN={LITERAL_BOUND_CHAR}({LITERAL_CHAR}*{LITERAL_BOUND_CHAR})? // inner whitespaces are allowed
-LITERAL_TOKEN_QUOTED=([^\"\\\r\n]|\\[\s\S])*
+LITERAL_TOKEN_QUOTED=([^\"\\\r\n]|\\.)+
 
 // no extra token kinds beyond columns (booleans/numbers are treated as plain text)
 

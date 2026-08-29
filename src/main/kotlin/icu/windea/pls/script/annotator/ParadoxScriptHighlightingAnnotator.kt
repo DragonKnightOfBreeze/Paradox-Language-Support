@@ -15,10 +15,23 @@ import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableName
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableReference
 import icu.windea.pls.script.psi.ParadoxScriptString
+import icu.windea.pls.script.psi.ParadoxScriptTokenSets
 
 class ParadoxScriptHighlightingAnnotator : Annotator, DumbAware {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
+        annotateQuote(element, holder)
         annotateParameterValue(element, holder)
+    }
+
+    private fun annotateQuote(element: PsiElement, holder: AnnotationHolder) {
+        // 高亮未出现在字符串中的引号为匹配的语言高亮
+        val elementType = element.elementType
+        if (elementType !in ParadoxScriptTokenSets.QUOTE_TOKENS) return
+        val attributesKey = when (element.parent) {
+            is ParadoxScriptPropertyKey -> ParadoxScriptHighlighterColors.PROPERTY_KEY
+            else -> return
+        }
+        holder.newSilentAnnotation(HighlightSeverity.INFORMATION).textAttributes(attributesKey).create()
     }
 
     private fun annotateParameterValue(element: PsiElement, holder: AnnotationHolder) {

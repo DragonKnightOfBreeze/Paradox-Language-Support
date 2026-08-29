@@ -1,0 +1,13 @@
+yes
+no
+YES # not boolean
+NO # not boolean
+Yes # not boolean
+No # not boolean
+
+true # not boolean
+false # not boolean
+TRUE # not boolean
+FALSE # not boolean
+True # not boolean
+False # not boolean

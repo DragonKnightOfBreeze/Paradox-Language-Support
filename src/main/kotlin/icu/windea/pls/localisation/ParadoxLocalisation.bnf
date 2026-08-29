@@ -86,8 +86,7 @@ property_key ::= PROPERTY_KEY_TOKEN {
 private property_number ::= PROPERTY_NUMBER_TOKEN
 
 // lazy-parsing PROPERTY_VALUE_TOKEN
-// 3.0.2 compatible with missing opening quote and missing closing quote
-property_value ::= property_value_quoted | property_value_unquoted  {
+property_value ::= property_value_content  {
   implements=[
     "com.intellij.psi.NavigatablePsiElement"
     "icu.windea.pls.core.psi.PsiQuoteAwareElement"
@@ -98,6 +97,9 @@ property_value ::= property_value_quoted | property_value_unquoted  {
     getQuotePattern
   ]
 }
+// 3.0.2 split out quote tokens
+// 3.0.2 compatible with missing opening quote and missing closing quote
+private property_value_content ::= property_value_quoted | property_value_unquoted
 private property_value_quoted ::= LEFT_QUOTE PROPERTY_VALUE_TOKEN? RIGHT_QUOTE? { pin=1 }
 private property_value_unquoted ::= PROPERTY_VALUE_TOKEN RIGHT_QUOTE?
 
@@ -143,7 +145,7 @@ private colorful_text_item ::= rich_text | TEXT_FORMAT_END
 // localisation parameter rules
 
 // see: https://stellaris.paradoxwikis.com/Localisation_modding#.24_Codes
-// may be resolved to localisation / parameter / system statistics in GUI elements
+// may be resolved to localisation, parameter, or system statistics in GUI elements
 parameter ::= PARAMETER_START parameter_name parameter_suffix? PARAMETER_END {
   pin=1
   extends=rich_text

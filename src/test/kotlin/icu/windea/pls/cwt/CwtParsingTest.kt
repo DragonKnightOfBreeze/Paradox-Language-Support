@@ -47,6 +47,13 @@ class CwtParsingTest : ParsingTestCase("cwt/syntax", "test.cwt", CwtParserDefini
     fun snippet_triggers_has_flag() = doTest(true)
 
     @Test
+    fun construct_boolean_literals() = doTest(true)
+    @Test
+    fun construct_number_literals() = doTest(true)
+    @Test
+    fun construct_expressions() = doTest(true)
+
+    @Test
     fun error_missing_property_value() = doTest(true)
     @Test
     fun error_missing_option_value() = doTest(true)

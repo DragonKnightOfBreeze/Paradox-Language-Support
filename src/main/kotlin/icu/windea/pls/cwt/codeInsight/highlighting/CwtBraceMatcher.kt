@@ -8,6 +8,7 @@ import icu.windea.pls.cwt.psi.CwtElementTypes
 
 class CwtBraceMatcher : PairedBraceMatcher {
     private val pairs = arrayOf(
+        BracePair(CwtElementTypes.LEFT_QUOTE, CwtElementTypes.RIGHT_QUOTE, true),
         BracePair(CwtElementTypes.LEFT_BRACE, CwtElementTypes.RIGHT_BRACE, true),
     )
 

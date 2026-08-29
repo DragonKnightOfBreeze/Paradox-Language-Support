@@ -26,6 +26,7 @@ class CwtSyntaxHighlighter(
             BOOLEAN_TOKEN -> ColorSets.KEYWORD
             INT_TOKEN, FLOAT_TOKEN -> ColorSets.NUMBER
             STRING_TOKEN -> ColorSets.STRING
+            LEFT_QUOTE, RIGHT_QUOTE -> ColorSets.STRING
             VALID_STRING_ESCAPE_TOKEN -> ColorSets.VALID_ESCAPE
             INVALID_CHARACTER_ESCAPE_TOKEN, INVALID_UNICODE_ESCAPE_TOKEN -> ColorSets.INVALID_ESCAPE
             BAD_CHARACTER -> ColorSets.BAD_CHARACTER

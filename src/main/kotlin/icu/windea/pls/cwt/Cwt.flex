@@ -14,6 +14,15 @@ import static icu.windea.pls.cwt.psi.CwtElementTypes.*;
     public _CwtLexer() {
         this((java.io.Reader)null);
     }
+
+    private void beginStateInOption() {
+        int state = yystate();
+        if (state == IN_OPTION) {
+          yybegin(IN_OPTION_NESTED);
+        } else if (state == IN_OPTION_VALUE) {
+          yybegin(IN_OPTION_VALUE_NESTED);
+        }
+    }
 %}
 
 %public
@@ -37,37 +46,61 @@ import static icu.windea.pls.cwt.psi.CwtElementTypes.*;
 EOL=\s*\R\s*
 WHITE_SPACE=[\s&&[^\r\n]]+
 BLANK=\s+
+
 COMMENT=#[^\r\n]*
 OPTION_COMMENT=##[^\r\n]*
 DOC_COMMENT=###[^\r\n]*
 
-// [^#\={}\"\s]+\"?
+KEYWORD_YES = yes
+KEYWORD_NO = no
+KEYWORD_BOOLEAN = {KEYWORD_YES}|{KEYWORD_NO}
 
-PROPERTY_KEY_TOKEN=({UNQUOTED_PROPERTY_KEY_TOKEN})|({QUOTED_PROPERTY_KEY_TOKEN})
-UNQUOTED_PROPERTY_KEY_TOKEN=[^#={}\"\s]+\"?
-QUOTED_PROPERTY_KEY_TOKEN=\"([^\"\\\r\n]|\\.)*\"?
-PROPERTY_KEY_TRAILING=\s*(=|\!=|<>|==)
+OP_UNARY_PLUS = "+"
+OP_UNARY_MINUS = "-"
+OP_EQUAL = "="
+OP_NOT_EQUAL = "!="|"<>"
+OP_DOUBLE_EQUAL = "=="
 
-UNQUOTED_STRING_TOKEN=[^#={}\"\s]+\"?
-QUOTED_STRING_TOKEN=\"([^\"\\\r\n]|\\.)*\"?
+QUOTE=\"
+NUMBER_UNARY = {OP_UNARY_PLUS}|{OP_UNARY_MINUS}
+SEPARATOR = {OP_DOUBLE_EQUAL}|{OP_EQUAL}|{OP_NOT_EQUAL} // order-sensitive
 
-BOOLEAN_TOKEN=(yes|no)
-INT_TOKEN=[+-]?\d+ // leading zero is allowed
-FLOAT_TOKEN=[+-]?\d*\.\d+ // leading zero is allowed
-STRING_TOKEN=({UNQUOTED_STRING_TOKEN})|({QUOTED_STRING_TOKEN})
+INT_NUMBER_TOKEN=[0-9]+ // leading zero is allowed
+FLOAT_NUMBER_TOKEN=[0-9]*\.[0-9]+ // leading zero is allowed
 
-OPTION_KEY_TOKEN=({UNQUOTED_OPTION_KEY_TOKEN})|({QUOTED_OPTION_KEY_TOKEN})
-UNQUOTED_OPTION_KEY_TOKEN=[^#={}\"\s]+\"?
-QUOTED_OPTION_KEY_TOKEN=\"([^\"\\\r\n]|\\.)*\"?
-OPTION_KEY_TRAILING=\s*(=|\!=|<>|==)
+BOOLEAN_TOKEN={KEYWORD_BOOLEAN} // `yes` or `no` (case-sensitive)
+INT_TOKEN={NUMBER_UNARY}?{INT_NUMBER_TOKEN} // with optional unary operator
+FLOAT_TOKEN={NUMBER_UNARY}?{FLOAT_NUMBER_TOKEN} // with optional unary operator
+
+LITERAL_CHAR=[^#={}\"\s] // `!?` are allowed (`<>` are always allowed)
+LITERAL_BOUND_CHAR=[^#={}\"\s!?] // `!?` are not allowed (`<>` are always allowed)
+LITERAL_TOKEN={LITERAL_BOUND_CHAR}({LITERAL_CHAR}*{LITERAL_BOUND_CHAR})? // boundary `@!?` are not allowed (`<>` are always allowed)
+
+// IDENTIFIER_CHAR=[A-Za-z0-9_]
+// IDENTIFIER_LEAD_CHAR=[A-Za-z_] // leading number is not allowed
+// IDENTIFIER_TOKEN={IDENTIFIER_LEAD_CHAR}{IDENTIFIER_CHAR}* // leading number is not allowed
+
+OPTION_KEY_TOKEN_QUOTED=([^\"\\\r\n]|\\.)+ // without surrounding quotes
+OPTION_KEY_TOKEN_UNQUOTED={LITERAL_TOKEN} // literal
+OPTION_KEY_TOKEN=({QUOTE}{OPTION_KEY_TOKEN_QUOTED}|{OPTION_KEY_TOKEN_UNQUOTED}){QUOTE}?
 
 // top level option text (value in option comment, or option value of some option in option comment)
 // inner whitespaces are allowed and required
-OPTION_TEXT_TOKEN=[^#=!<>{}\"\s]([^#=!<>{}\r\n]*[^#=!<>{}\s])+
+OPTION_TEXT_CHAR=[^#=!<>{}\r\n] // heuristic
+OPTION_TEXT_BOUND_CHAR=[^#=!<>{}\"\s] // heuristic
+OPTION_TEXT_TOKEN={OPTION_TEXT_BOUND_CHAR}({OPTION_TEXT_CHAR}*{OPTION_TEXT_BOUND_CHAR})? // heuristic
+
+PROPERTY_KEY_TOKEN_QUOTED=([^\"\\\r\n]|\\.)+ // without surrounding quotes
+PROPERTY_KEY_TOKEN_UNQUOTED={LITERAL_TOKEN} // literal
+PROPERTY_KEY_TOKEN=({QUOTE}{PROPERTY_KEY_TOKEN_QUOTED}|{PROPERTY_KEY_TOKEN_UNQUOTED}){QUOTE}?
+
+STRING_TOKEN_QUOTED=([^\"\\\r\n]|\\.)+ // without surrounding quotes
+STRING_TOKEN_UNQUOTED={LITERAL_TOKEN} // literal
+STRING_TOKEN=({QUOTE}{STRING_TOKEN_QUOTED}|{STRING_TOKEN_UNQUOTED}){QUOTE}?
 
 %%
 
-<YYINITIAL, IN_PROPERTY_VALUE, IN_PROPERTY_SEPARATOR> {
+<YYINITIAL, IN_PROPERTY_SEPARATOR, IN_PROPERTY_VALUE> {
     "{" { return LEFT_BRACE; }
     "}" { return RIGHT_BRACE; }
     {BLANK} { return WHITE_SPACE; }
@@ -76,45 +109,42 @@ OPTION_TEXT_TOKEN=[^#=!<>{}\"\s]([^#=!<>{}\r\n]*[^#=!<>{}\s])+
     {COMMENT} { return COMMENT; }
 }
 <IN_PROPERTY_SEPARATOR> {
-    "=" { yybegin(IN_PROPERTY_VALUE); return EQUAL_SIGN; }
-    "!="|"<>" { yybegin(IN_PROPERTY_VALUE); return NOT_EQUAL_SIGN; }
-    "==" { yybegin(IN_PROPERTY_VALUE); return DOUBLE_EQUAL_SIGN; }
+    {OP_DOUBLE_EQUAL} { yybegin(IN_PROPERTY_VALUE); return DOUBLE_EQUAL_SIGN; }
+    {OP_EQUAL} { yybegin(IN_PROPERTY_VALUE); return EQUAL_SIGN; }
+    {OP_NOT_EQUAL} { yybegin(IN_PROPERTY_VALUE); return NOT_EQUAL_SIGN; }
 }
 <YYINITIAL, IN_PROPERTY_VALUE> {
-    {PROPERTY_KEY_TOKEN} / {PROPERTY_KEY_TRAILING} { yybegin(IN_PROPERTY_SEPARATOR); return PROPERTY_KEY_TOKEN; }
     {BOOLEAN_TOKEN} { yybegin(YYINITIAL); return BOOLEAN_TOKEN; }
     {INT_TOKEN} { yybegin(YYINITIAL); return INT_TOKEN; }
     {FLOAT_TOKEN} { yybegin(YYINITIAL); return FLOAT_TOKEN; }
+    // use tail context (high priority than normal form)
+    {PROPERTY_KEY_TOKEN} / {BLANK}?{SEPARATOR} { yybegin(IN_PROPERTY_SEPARATOR); return PROPERTY_KEY_TOKEN; }
     {STRING_TOKEN} { yybegin(YYINITIAL); return STRING_TOKEN; }
 }
 
-<IN_OPTION, IN_OPTION_VALUE, IN_OPTION_SEPARATOR> {
-    "{" {
-        int state = yystate();
-        if (state == IN_OPTION) yybegin(IN_OPTION_NESTED);
-        else if(state == IN_OPTION_VALUE) yybegin(IN_OPTION_VALUE_NESTED);
-        return LEFT_BRACE;
-    }
+<IN_OPTION, IN_OPTION_SEPARATOR, IN_OPTION_VALUE> {
+    "{" { beginStateInOption(); return LEFT_BRACE; }
     "}" { return RIGHT_BRACE; }
     {EOL} { yybegin(YYINITIAL); return EOL; }
     {WHITE_SPACE} { return WHITE_SPACE; }
     {COMMENT} { yybegin(YYINITIAL);  return COMMENT; }
 }
 <IN_OPTION_SEPARATOR> {
-    "=" { yybegin(IN_OPTION_VALUE); return EQUAL_SIGN; }
-    "!="|"<>" { yybegin(IN_OPTION_VALUE); return NOT_EQUAL_SIGN; }
-    "==" { yybegin(IN_OPTION_VALUE); return DOUBLE_EQUAL_SIGN; }
+    {OP_DOUBLE_EQUAL} { yybegin(IN_OPTION_VALUE); return DOUBLE_EQUAL_SIGN; }
+    {OP_EQUAL} { yybegin(IN_OPTION_VALUE); return EQUAL_SIGN; }
+    {OP_NOT_EQUAL} { yybegin(IN_OPTION_VALUE); return NOT_EQUAL_SIGN; }
 }
 <IN_OPTION, IN_OPTION_VALUE> {
-    {OPTION_KEY_TOKEN} / {OPTION_KEY_TRAILING} { yybegin(IN_OPTION_SEPARATOR); return OPTION_KEY_TOKEN; }
-    {OPTION_TEXT_TOKEN} { yybegin(IN_OPTION); return STRING_TOKEN; }
     {BOOLEAN_TOKEN} { yybegin(IN_OPTION); return BOOLEAN_TOKEN; }
     {INT_TOKEN} { yybegin(IN_OPTION); return INT_TOKEN; }
     {FLOAT_TOKEN} { yybegin(IN_OPTION); return FLOAT_TOKEN; }
     {STRING_TOKEN} { yybegin(IN_OPTION); return STRING_TOKEN; }
+    // use tail context (high priority than normal form)
+    {OPTION_KEY_TOKEN} / {BLANK}?{SEPARATOR} { yybegin(IN_OPTION_SEPARATOR); return OPTION_KEY_TOKEN; }
+    {OPTION_TEXT_TOKEN} { yybegin(IN_OPTION); return STRING_TOKEN; }
 }
 
-<IN_OPTION_NESTED, IN_OPTION_VALUE_NESTED, IN_OPTION_SEPARATOR_NESTED> {
+<IN_OPTION_NESTED, IN_OPTION_SEPARATOR_NESTED, IN_OPTION_VALUE_NESTED> {
     "{" { return LEFT_BRACE; }
     "}" { return RIGHT_BRACE; }
     {EOL} { yybegin(YYINITIAL); return EOL; }
@@ -122,15 +152,16 @@ OPTION_TEXT_TOKEN=[^#=!<>{}\"\s]([^#=!<>{}\r\n]*[^#=!<>{}\s])+
     {COMMENT} { yybegin(YYINITIAL);  return COMMENT; }
 }
 <IN_OPTION_SEPARATOR_NESTED> {
-    "=" { yybegin(IN_OPTION_VALUE_NESTED); return EQUAL_SIGN; }
-    "!="|"<>" { yybegin(IN_OPTION_VALUE_NESTED); return NOT_EQUAL_SIGN; }
-    "==" { yybegin(IN_OPTION_VALUE_NESTED); return DOUBLE_EQUAL_SIGN; }
+    {OP_DOUBLE_EQUAL} { yybegin(IN_OPTION_VALUE_NESTED); return DOUBLE_EQUAL_SIGN; }
+    {OP_EQUAL} { yybegin(IN_OPTION_VALUE_NESTED); return EQUAL_SIGN; }
+    {OP_NOT_EQUAL} { yybegin(IN_OPTION_VALUE_NESTED); return NOT_EQUAL_SIGN; }
 }
 <IN_OPTION_NESTED, IN_OPTION_VALUE_NESTED> {
-    {OPTION_KEY_TOKEN} / {OPTION_KEY_TRAILING} { yybegin(IN_OPTION_SEPARATOR_NESTED); return OPTION_KEY_TOKEN; }
     {BOOLEAN_TOKEN} { yybegin(IN_OPTION_NESTED); return BOOLEAN_TOKEN; }
     {INT_TOKEN} { yybegin(IN_OPTION_NESTED); return INT_TOKEN; }
     {FLOAT_TOKEN} { yybegin(IN_OPTION_NESTED); return FLOAT_TOKEN; }
+    // use tail context (high priority than normal form)
+    {OPTION_KEY_TOKEN} / {BLANK}?{SEPARATOR} { yybegin(IN_OPTION_SEPARATOR_NESTED); return OPTION_KEY_TOKEN; }
     {STRING_TOKEN} { yybegin(IN_OPTION_NESTED); return STRING_TOKEN; }
 }
 

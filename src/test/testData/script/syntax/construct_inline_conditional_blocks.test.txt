@@ -1,8 +1,19 @@
-prefix_[[A]a]_suffix
-prefix_[[A]a[[B]b]]_suffix
 [[A]a]
 [[A]a[[B]b]]
 prefix_[[A]a]
 prefix_[[A]a[[B]b]]
 [[A]a]_suffix
 [[A]a[[B]b]]_suffix
+prefix_[[A]a]_suffix
+prefix_[[A]a[[B]b]]_suffix
+
+# quoted form should be also allowed
+
+""[[A]a]""
+""[[A]a[[B]b]]""
+"prefix_[[A]a]""
+"prefix_[[A]a[[B]b]]""
+""[[A]a]_suffix"
+""[[A]a[[B]b]]_suffix"
+"prefix_[[A]a]_suffix"
+"prefix_[[A]a[[B]b]]_suffix"

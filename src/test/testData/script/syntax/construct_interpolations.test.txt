@@ -24,6 +24,11 @@ $PARAM|default_value$ = value
 $PARAM$ = $PARAM$
 $PARAM|default_value$ = $PARAM|default_value$
 
+key = [[$PARAM$]]
+key = [[$PARAM$]text]
+key = [[!$PARAM$]]
+key = [[!$PARAM$]text]
+
 # quoted form should be also allowed
 
 "key" = "value"
@@ -31,9 +36,22 @@ $PARAM|default_value$ = $PARAM|default_value$
 "$PARAM$" = "value"
 "$PARAM$" = "$PARAM$"
 
+key = "[[$PARAM$]]"
+key = "[[$PARAM$]text]"
+key = "[[!$PARAM$]]"
+key = "[[!$PARAM$]text]"
+
 # `[value]` should be normal string tokens
 
 key = [value]
 key = prefix_[value]_suffix
 key = "[value]"
 key = "prefix_[value]_suffix"
+[value] = value
+prefix_[value]_suffix = value
+"[value]" = value
+"prefix_[value]_suffix" = value
+[value] = [value]
+prefix_[value]_suffix = prefix_[value]_suffix
+"[value]" = "[value]"
+"prefix_[value]_suffix" = "prefix_[value]_suffix"
