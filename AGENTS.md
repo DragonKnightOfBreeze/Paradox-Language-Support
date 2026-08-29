@@ -169,6 +169,54 @@ Some tests are intentionally **disabled by default** and only run when explicitl
 
 `chronicle.test.include.all` (checked via `includeAll()`) unconditionally enables every category above. Example: `./gradlew test -Dchronicle.test.include.local.env=true`.
 
+## Code architecture
+
+### Modules
+
+- `icu.windea.pls.core` - General infrastructure. Including common extensions, utilities and components for stdlib, platform and third-party libraries.
+- `icu.windea.pls.base` - Infrastructure for the plugin itself and platform integration. Including internal state management, external data processing, environment detection, high-level platform integration, etc.
+- `icu.windea.pls.cwt` - Infrastructure to support the CWT language. Usually semantic-free.
+- `icu.windea.pls.script` - Infrastructure to support the script language. Usually semantic-free.
+- `icu.windea.pls.localisation` - Infrastructure to support the localization language. Usually semantic-free.
+- `icu.windea.pls.csv` - Infrastructure to support the CSV language. Usually semantic-free.
+- `icu.windea.pls.config` - Infrastructure for the config system. Including config, config expression, config group, etc.
+- `icu.windea.pls.lang` - The semantic module. Including semantic matching, semantic resolution, language construct support, language feature support, domain-specific logic, etc.
+  - `icu.windea.pls.lang.match` - Semantic-level matching. Mainly based on indices, reference resolution and configs.
+  - `icu.windea.pls.lang.resolve` - Semantic-level resolution. mainly based on indices, reference resolution and configs).
+  - `icu.windea.pls.lang.util` - High-level managers and special components.
+- `icu.windea.pls.integrations` - The integration module. Provides integrations to third-party tools (e.g, image processing tools and linting tools).
+- `icu.windea.pls.extensions` - The extension module. Provides integrations and extensions to third-party plugins (e.g., JSON and Markdown).
+- `icu.windea.pls.tools` - The tool module. Provides several bundled utilities and integrations (e.g., game launchers and config generators).
+- `icu.windea.pls.ep` - Various EP interfaces and implementations to provide language construct support, language feature support and several QoL features.
+
+### Notes
+
+Notes on `icu.windea.pls.config`:
+
+- This is where the infrastructure of the config system is stored, but not all code closely related to the config system. This means they usually not depends on game or mod files.
+- For logic such as config contexts, config matching, template resolution, and template matching, since they occur at semantic-level, is usually located in `lang.match` and `lang.resolve`.
+
+Notes on `icu.windea.pls.lang.match` and `icu.windea.pls.lang.resolve`:
+
+- `lang.match` and `lang.resolve` hold domain-specific, semantic-level matching and resolution logic, and are lower-level than `lang.util.*Manager`.
+- The latter is only extracted/refactored into the former when necessary, most of it can stay as-is.
+- Prefer calling EPs that involve matching/resolution logic only from here (typically in a `*Service`), not from an EP interface's companion object or a `*Manager`.
+
+Notes on `icu.windea.pls.config.manipulation` and `icu.windea.pls.lang.manipulation`:
+
+- These packages hold "manipulation"-focused services plus related model classes, enums, and extension methods.
+- The code here typically transforms or directly mutates the state of a target (a config object, PSI, etc.)
+- It can happen at several different stages/levels (building the resolve context, performing semantic resolution, invoking a language feature).
+- It also serves as infrastructure for parts of semantic resolution as well as some refactorings, intentions, and quick fixes.
+
+Notes on `Service` vs `Manager` vs `Util`:
+
+- `Service` - lower-level, may include domain analysis/matching/resolution logic that's delegated to concrete EP implementations.
+- `Manager` - higher-level, exposes ready-to-use domain methods, which may depend on the corresponding `Service` methods.
+- `Util` - narrowly-scoped helper methods usable only for a specific component/feature, or only in a handful of specific scenarios.
+- `Service` and `Manager` don't need to be declared as IntelliJ services, they can be declared as plain Kotlin singleton objects if stateless.
+- Caching logic usually lives at the `Manager` level, `Service`-level code is usually a direct fetch/resolve without caching.
+
 ## Coding conventions
 
 ### Naming
@@ -214,52 +262,6 @@ For more details, see: `agents/context/importing-conventions.md`
 - Data depending on PSI reference resolve results and/or config data (e.g., definitions, complex enums values): prefer `FileBasedIndex`.
 - For file indices that depend on resolved/matched member configs, prefer unifying via a merged index (e.g. `ParadoxMergedIndex`) for performance.
 - Compress serialized index data when necessary (e.g. via `readOrReadFrom` or `readIndexedStringList`).
-
-### Code structure
-
-Package organization:
-
-- `icu.windea.pls.core` - General infrastructure. Including common extensions, utilities and components for stdlib, platform and third-party libraries.
-- `icu.windea.pls.base` - Infrastructure for the plugin itself and platform integration. Including internal state management, external data processing, environment detection, high-level platform integration, etc.
-- `icu.windea.pls.cwt` - Infrastructure to support the CWT language. Usually semantic-free.
-- `icu.windea.pls.script` - Infrastructure to support the script language. Usually semantic-free.
-- `icu.windea.pls.localisation` - Infrastructure to support the localization language. Usually semantic-free.
-- `icu.windea.pls.csv` - Infrastructure to support the CSV language. Usually semantic-free.
-- `icu.windea.pls.config` - Infrastructure for the config system. Including config, config expression, config group, etc.
-- `icu.windea.pls.lang` - The semantic module. Including semantic matching, semantic resolution, language construct support, language feature support, domain-specific logic, etc.
-  - `icu.windea.pls.lang.match` - Semantic-level matching. Mainly based on indices, reference resolution and configs.
-  - `icu.windea.pls.lang.resolve` - Semantic-level resolution. mainly based on indices, reference resolution and configs).
-  - `icu.windea.pls.lang.util` - High-level managers and special components.
-- `icu.windea.pls.integrations` - The integration module. Provides integrations to third-party tools (e.g, image processing tools and linting tools). 
-- `icu.windea.pls.extensions` - The extension module. Provides integrations and extensions to third-party plugins (e.g., JSON and Markdown).
-- `icu.windea.pls.tools` - The tool module. Provides several bundled utilities and integrations (e.g., game launchers and config generators). 
-- `icu.windea.pls.ep` - Various EP interfaces and implementations to provide language construct support, language feature support and several QoL features.
-
-Notes on `icu.windea.pls.config`:
-
-- This is where the infrastructure of the config system is stored, but not all code closely related to the config system. This means they usually not depends on game or mod files.
-- For logic such as config contexts, config matching, template resolution, and template matching, since they occur at semantic-level, is usually located in `lang.match` and `lang.resolve`.
-
-Notes on `icu.windea.pls.lang.match` and `icu.windea.pls.lang.resolve`:
-
-- `lang.match` and `lang.resolve` hold domain-specific, semantic-level matching and resolution logic, and are lower-level than `lang.util.*Manager`.
-- The latter is only extracted/refactored into the former when necessary, most of it can stay as-is.
-- Prefer calling EPs that involve matching/resolution logic only from here (typically in a `*Service`), not from an EP interface's companion object or a `*Manager`.
-
-Notes on `icu.windea.pls.config.manipulation` and `icu.windea.pls.lang.manipulation`:
-
-- These packages hold "manipulation"-focused services plus related model classes, enums, and extension methods.
-- The code here typically transforms or directly mutates the state of a target (a config object, PSI, etc.)
-- It can happen at several different stages/levels (building the resolve context, performing semantic resolution, invoking a language feature).
-- It also serves as infrastructure for parts of semantic resolution as well as some refactorings, intentions, and quick fixes.
-
-Notes on `Service` vs `Manager` vs `Util`:
-
-- `Service` - lower-level, may include domain analysis/matching/resolution logic that's delegated to concrete EP implementations.
-- `Manager` - higher-level, exposes ready-to-use domain methods, which may depend on the corresponding `Service` methods.
-- `Util` - narrowly-scoped helper methods usable only for a specific component/feature, or only in a handful of specific scenarios.
-- `Service` and `Manager` don't need to be declared as IntelliJ services, they can be declared as plain Kotlin singleton objects if stateless.
-- Caching logic usually lives at the `Manager` level, `Service`-level code is usually a direct fetch/resolve without caching.
 
 ### Code guidance
 
