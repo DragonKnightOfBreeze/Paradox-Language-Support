@@ -25,11 +25,11 @@ public interface ParadoxLocalisationLocale extends NavigatablePsiElement, StubBa
 
   @NotNull ParadoxLocalisationLocale setName(@NotNull String name);
 
+  @NotNull IElementType getIElementType();
+
   @Nullable PsiReference getReference();
 
   @NotNull PsiReference @NotNull [] getReferences();
-
-  @NotNull IElementType getIElementType();
 
   @NotNull GlobalSearchScope getResolveScope();
 

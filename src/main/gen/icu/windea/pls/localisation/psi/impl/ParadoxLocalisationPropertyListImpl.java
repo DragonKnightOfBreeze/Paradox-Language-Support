@@ -60,13 +60,13 @@ public class ParadoxLocalisationPropertyListImpl extends ParadoxLocalisationStub
   }
 
   @Override
-  public @NotNull List<@NotNull ParadoxLocalisationProperty> getComponents() {
-    return ParadoxLocalisationPsiImplUtil.getComponents(this);
+  public @NotNull IElementType getIElementType() {
+    return ParadoxLocalisationPsiImplUtil.getIElementType(this);
   }
 
   @Override
-  public @NotNull IElementType getIElementType() {
-    return ParadoxLocalisationPsiImplUtil.getIElementType(this);
+  public @NotNull List<@NotNull ParadoxLocalisationProperty> getComponents() {
+    return ParadoxLocalisationPsiImplUtil.getComponents(this);
   }
 
   @Override

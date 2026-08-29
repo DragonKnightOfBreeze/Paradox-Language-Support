@@ -11,22 +11,22 @@ import javax.swing.*;
 
 public interface CwtValue extends CwtExpressionElement, CwtMember, CwtOptionMember {
 
-  @NotNull Icon getIcon(@IconFlags int flags);
+    @NotNull Icon getIcon(@IconFlags int flags);
 
-  @NotNull String getName();
+    @NotNull String getName();
 
-  @NotNull String getValue();
+    @NotNull String getValue();
 
-  @NotNull CwtValue setValue(@NotNull String value);
+    @NotNull CwtValue setValue(@NotNull String value);
 
-  @NotNull CwtValue setContent(@NotNull String content, @NotNull TextRange range);
+    @NotNull CwtValue setContent(@NotNull String content, @NotNull TextRange range);
 
-  @NotNull String getPresentableText();
+    @NotNull String getPresentableText();
 
-  @NotNull GlobalSearchScope getResolveScope();
+    @NotNull GlobalSearchScope getResolveScope();
 
-  @NotNull SearchScope getUseScope();
+    @NotNull SearchScope getUseScope();
 
-  @NotNull ItemPresentation getPresentation();
+    @NotNull ItemPresentation getPresentation();
 
 }

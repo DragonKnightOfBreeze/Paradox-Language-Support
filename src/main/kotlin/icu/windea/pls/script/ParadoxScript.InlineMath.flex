@@ -38,10 +38,22 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 BLANK=\s+
 
 INT_NUMBER_TOKEN=[0-9]+ // leading zero is allowed
-FLOAT_NUMBER_TOKEN=[0-9]*(\.[0-9]+) // leading zero is allowed
-SCRIPTED_VARIABLE_NAME_TOKEN=[A-Za-z0-9_]+ // leading number is not allowed
-PARAMETER_TOKEN=[A-Za-z_][A-Za-z0-9_]* // leading number is not allowed
-ARGUMENT_TOKEN=[^#$=<>!?{}\[\]\\\s]+ // compatible with leading '@'
+FLOAT_NUMBER_TOKEN=[0-9]*\.[0-9]+ // leading zero is allowed
+
+IDENTIFIER_CHAR=[A-Za-z0-9_]
+IDENTIFIER_LEAD_CHAR=[A-Za-z_] // leading number is not allowed
+IDENTIFIER_TOKEN={IDENTIFIER_LEAD_CHAR}{IDENTIFIER_CHAR}* // leading number is not allowed
+
+ARGUMENT_CHAR=[^#$=<>!?{}\[\]\\\s] // compatible with leading '@'
+ARGUMENT_TOKEN={ARGUMENT_CHAR}+
+
+PARAMETER_CHAR={IDENTIFIER_CHAR}|[.\-'] // `-'` is allowed additionally
+PARAMETER_LEAD_CHAR={IDENTIFIER_LEAD_CHAR}|[.\-'] // `-'` is allowed additionally
+PARAMETER_TOKEN={PARAMETER_LEAD_CHAR}{PARAMETER_CHAR}* // leading number is not allowed
+
+PARAMETER_TOKEN={IDENTIFIER_TOKEN} // identifier
+
+SCRIPTED_VARIABLE_TOKEN={IDENTIFIER_TOKEN} // identifier
 
 %%
 
@@ -66,7 +78,7 @@ ARGUMENT_TOKEN=[^#$=<>!?{}\[\]\\\s]+ // compatible with leading '@'
     "@" { return AT; } // leading `@` is allowed (on syntax level)
     {INT_NUMBER_TOKEN} { return INT_NUMBER_TOKEN; }
     {FLOAT_NUMBER_TOKEN} { return FLOAT_NUMBER_TOKEN; }
-    {SCRIPTED_VARIABLE_NAME_TOKEN} { return SCRIPTED_VARIABLE_REFERENCE_TOKEN; }
+    {SCRIPTED_VARIABLE_TOKEN} { return SCRIPTED_VARIABLE_REFERENCE_TOKEN; }
     {BLANK} { return WHITE_SPACE; }
 }
 <IN_PARAMETER> {

@@ -52,7 +52,7 @@
             { "name": "support.class.color.start.paradox.localisation", "match": "§[A-Za-z0-9]" },
             { "name": "support.class.color.end.paradox.localisation", "match": "§!" },
             { "include": "#parameters" },
-            { "name": "constant.other.symbol.icon.paradox.localisation", "match": "£[A-Za-z0-9\\-_\\/\\\\]+(?:\\|[^\"§$\\[\\]\\r\\n\\\\]+)?£" },
+            { "name": "constant.other.symbol.icon.paradox.localisation", "match": "£[A-Za-z0-9_\\-/\\\\]+(?:\\|[^\"§$\\[\\]\\r\\n\\\\]+)?£" },
             { "name": "support.function.command.paradox.localisation", "match": "\\[[^\\]\\r\\n]*]"  },
             { "name": "constant.other.symbol.text-format.start.paradox.localisation", "match": "#(?!!)[\\w:;]+" },
             { "name": "constant.other.symbol.text-format.end.paradox.localisation", "match": "#!" },

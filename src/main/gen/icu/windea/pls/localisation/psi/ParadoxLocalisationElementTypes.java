@@ -33,7 +33,7 @@ public interface ParadoxLocalisationElementTypes {
   IElementType TEXT_ROOT = ParadoxLocalisationElementTypeFactory.getElementType("TEXT_ROOT");
 
   IElementType ARGUMENT_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("ARGUMENT_TOKEN");
-  IElementType AT = ParadoxLocalisationElementTypeFactory.getTokenType("AT");
+  IElementType AT = ParadoxLocalisationElementTypeFactory.getTokenType("@");
   IElementType COLON = ParadoxLocalisationElementTypeFactory.getTokenType("COLON");
   IElementType COLORFUL_TEXT_END = ParadoxLocalisationElementTypeFactory.getTokenType("COLORFUL_TEXT_END");
   IElementType COLORFUL_TEXT_START = ParadoxLocalisationElementTypeFactory.getTokenType("COLORFUL_TEXT_START");
@@ -42,6 +42,7 @@ public interface ParadoxLocalisationElementTypes {
   IElementType COMMAND_TEXT_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("COMMAND_TEXT_TOKEN");
   IElementType COMMENT = ParadoxLocalisationElementTypeFactory.getTokenType("COMMENT");
   IElementType CONCEPT_NAME_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("CONCEPT_NAME_TOKEN");
+  IElementType EOL = ParadoxLocalisationElementTypeFactory.getTokenType("<eol>");
   IElementType ICON_END = ParadoxLocalisationElementTypeFactory.getTokenType("ICON_END");
   IElementType ICON_START = ParadoxLocalisationElementTypeFactory.getTokenType("ICON_START");
   IElementType ICON_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("ICON_TOKEN");
@@ -52,9 +53,9 @@ public interface ParadoxLocalisationElementTypes {
   IElementType PARAMETER_END = ParadoxLocalisationElementTypeFactory.getTokenType("PARAMETER_END");
   IElementType PARAMETER_START = ParadoxLocalisationElementTypeFactory.getTokenType("PARAMETER_START");
   IElementType PARAMETER_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("PARAMETER_TOKEN");
-  IElementType PIPE = ParadoxLocalisationElementTypeFactory.getTokenType("PIPE");
+  IElementType PIPE = ParadoxLocalisationElementTypeFactory.getTokenType("|");
   IElementType PROPERTY_KEY_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("PROPERTY_KEY_TOKEN");
-  IElementType PROPERTY_NUMBER = ParadoxLocalisationElementTypeFactory.getTokenType("PROPERTY_NUMBER");
+  IElementType PROPERTY_NUMBER_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("PROPERTY_NUMBER_TOKEN");
   IElementType PROPERTY_VALUE_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("PROPERTY_VALUE_TOKEN");
   IElementType RIGHT_BRACKET = ParadoxLocalisationElementTypeFactory.getTokenType("RIGHT_BRACKET");
   IElementType RIGHT_QUOTE = ParadoxLocalisationElementTypeFactory.getTokenType("RIGHT_QUOTE");

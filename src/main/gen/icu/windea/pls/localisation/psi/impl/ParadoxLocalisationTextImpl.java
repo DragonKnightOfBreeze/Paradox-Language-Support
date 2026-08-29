@@ -31,11 +31,6 @@ public class ParadoxLocalisationTextImpl extends ParadoxLocalisationRichTextImpl
   }
 
   @Override
-  public @NotNull PsiElement getIdElement() {
-    return ParadoxLocalisationPsiImplUtil.getIdElement(this);
-  }
-
-  @Override
   public @NotNull GlobalSearchScope getResolveScope() {
     return ParadoxLocalisationPsiImplUtil.getResolveScope(this);
   }

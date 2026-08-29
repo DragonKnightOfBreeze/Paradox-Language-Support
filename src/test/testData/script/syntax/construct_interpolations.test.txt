@@ -24,7 +24,7 @@ $PARAM|default_value$ = value
 $PARAM$ = $PARAM$
 $PARAM|default_value$ = $PARAM|default_value$
 
-# quoted form should be also permitted
+# quoted form should be also allowed
 
 "key" = "value"
 "key" = "$PARAM$"

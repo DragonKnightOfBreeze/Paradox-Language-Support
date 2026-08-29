@@ -13,41 +13,41 @@ import java.util.List;
 
 public interface CwtBlock extends CwtValue, CwtMemberContainer, CwtBoundMemberContainer {
 
-  @NotNull
-  List<CwtDocComment> getDocCommentList();
+    @NotNull
+    List<CwtDocComment> getDocCommentList();
 
-  @NotNull
-  List<CwtOption> getOptionList();
+    @NotNull
+    List<CwtOption> getOptionList();
 
-  @NotNull
-  List<CwtOptionComment> getOptionCommentList();
+    @NotNull
+    List<CwtOptionComment> getOptionCommentList();
 
-  @NotNull
-  List<CwtProperty> getPropertyList();
+    @NotNull
+    List<CwtProperty> getPropertyList();
 
-  @NotNull
-  List<CwtValue> getValueList();
+    @NotNull
+    List<CwtValue> getValueList();
 
-  @NotNull CwtBlock getMemberContainer();
+    @NotNull CwtBlock getMemberContainer();
 
-  @NotNull List<@NotNull CwtMember> getMembers();
+    @NotNull List<@NotNull CwtMember> getMembers();
 
-  @Nullable PsiElement getLeftBound();
+    @Nullable PsiElement getLeftBound();
 
-  @Nullable PsiElement getRightBound();
+    @Nullable PsiElement getRightBound();
 
-  @NotNull List<@NotNull CwtStatement> getComponents();
+    @NotNull List<@NotNull CwtStatement> getComponents();
 
-  @NotNull Icon getIcon(@IconFlags int flags);
+    @NotNull Icon getIcon(@IconFlags int flags);
 
-  @NotNull String getValue();
+    @NotNull String getValue();
 
-  @NotNull String getPresentableText();
+    @NotNull String getPresentableText();
 
-  @NotNull GlobalSearchScope getResolveScope();
+    @NotNull GlobalSearchScope getResolveScope();
 
-  @NotNull SearchScope getUseScope();
+    @NotNull SearchScope getUseScope();
 
-  @NotNull ItemPresentation getPresentation();
+    @NotNull ItemPresentation getPresentation();
 
 }

@@ -41,11 +41,6 @@ object ParadoxLocalisationPsiImplUtil {
     }
 
     @JvmStatic
-    fun getComponents(element: ParadoxLocalisationPropertyList): List<ParadoxLocalisationProperty> {
-        return element.propertyList
-    }
-
-    @JvmStatic
     fun getIElementType(element: ParadoxLocalisationPropertyList): IElementType {
         return PROPERTY_LIST
     }
@@ -195,15 +190,6 @@ object ParadoxLocalisationPsiImplUtil {
     @JvmStatic
     fun getRichTextList(element: ParadoxLocalisationPropertyValue): List<ParadoxLocalisationRichText> {
         return element.tokenElement?.findChildren<_>() ?: emptyList()
-    }
-
-    // endregion
-
-    // region ParadoxLocalisationText
-
-    @JvmStatic
-    fun getIdElement(element: ParadoxLocalisationText): PsiElement {
-        return element.firstChild?.takeIf { it.elementType === TEXT_TOKEN }!!
     }
 
     // endregion
@@ -474,7 +460,7 @@ object ParadoxLocalisationPsiImplUtil {
 
     // endregion
 
-    // region Common Methods
+    // region ParadoxLocalisationExpressionElement
 
     @JvmStatic
     fun getName(element: ParadoxLocalisationExpressionElement): String {
@@ -496,14 +482,23 @@ object ParadoxLocalisationPsiImplUtil {
         throw IncorrectOperationException()
     }
 
+    // endregion
+
+    // region Common Methods
+
     @JvmStatic
-    fun getQuotePattern(element: PsiQuoteAwareElement): QuotePattern {
-        return QuotePatterns.ParadoxLocalisation
+    fun getComponents(element: ParadoxLocalisationPropertyList): List<ParadoxLocalisationProperty> {
+        return element.propertyList
     }
 
     @JvmStatic
     fun getPresentableText(element: PsiPresentableElement): String {
         return ParadoxLocalisationPsiService.getPresentableText(element)
+    }
+
+    @JvmStatic
+    fun getQuotePattern(element: PsiQuoteAwareElement): QuotePattern {
+        return QuotePatterns.ParadoxLocalisation
     }
 
     @JvmStatic

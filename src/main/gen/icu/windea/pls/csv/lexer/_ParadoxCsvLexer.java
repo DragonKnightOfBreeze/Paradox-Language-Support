@@ -5,8 +5,12 @@ package icu.windea.pls.csv.lexer;
 
 import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.tree.IElementType;
+import java.util.*;
+import java.util.concurrent.atomic.*;
+import icu.windea.pls.model.ParadoxGameType;
+import icu.windea.pls.model.constraints.ParadoxSyntaxConstraint;
 
-import static com.intellij.psi.TokenType.WHITE_SPACE;
+import static com.intellij.psi.TokenType.*;
 import static icu.windea.pls.csv.psi.ParadoxCsvElementTypes.*;
 
 // Lexer for Paradox CSV.
@@ -153,9 +157,9 @@ public class _ParadoxCsvLexer implements FlexLexer {
 
   private static final String ZZ_TRANS_PACKED_0 =
     "\1\2\1\3\2\4\1\5\1\6\1\7\2\2\1\10"+
-    "\1\0\1\10\1\11\2\0\1\2\1\0\1\3\2\4"+
-    "\5\0\3\4\4\0\2\5\1\0\1\5\1\11\2\5"+
-    "\1\12\2\6\1\0\5\6\10\0\10\5";
+    "\1\0\1\10\3\0\1\2\1\0\1\3\2\4\5\0"+
+    "\3\4\4\0\2\5\1\0\1\5\1\11\2\5\1\12"+
+    "\2\6\1\0\5\6\10\0\10\5";
 
   private static int [] zzUnpacktrans() {
     int [] result = new int[64];

@@ -39,7 +39,7 @@ class ParadoxLocalisationFormattingBlock(
             return SpacingBuilder(settings, ParadoxLocalisationLanguage)
                 .between(MEMBERS, MEMBERS).spaces(1)
                 .between(COLON, PROPERTY_VALUE).spaces(1)
-                .between(PROPERTY_NUMBER, PROPERTY_VALUE).spaces(1)
+                .between(PROPERTY_NUMBER_TOKEN, PROPERTY_VALUE).spaces(1)
         }
     }
 

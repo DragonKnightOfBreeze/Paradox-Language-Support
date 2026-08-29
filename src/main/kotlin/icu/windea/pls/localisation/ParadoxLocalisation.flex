@@ -3,10 +3,8 @@ package icu.windea.pls.localisation.lexer;
 import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.tree.IElementType;
 import icu.windea.pls.model.ParadoxGameType;
-import icu.windea.pls.model.constraints.ParadoxSyntaxConstraint;
 
 import static com.intellij.psi.TokenType.*;
-import static icu.windea.pls.core.StdlibExtensionsKt.*;
 import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 
 // Lexer for Paradox Localisation.
@@ -31,12 +29,14 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
     }
 
     private IElementType handleLocaleToken() {
-        // Locale headers may be absent or appear multiple times (e.g. localisation/languages.yml).
-        // This rule matched: ^ {LOCALE_TOKEN} ":" (no trailing part). We now check the remainder of the line.
-        // If only whitespace remains until EOL/EOF, treat as a locale header; otherwise, treat as a property key.
+        // Locale headers may be absent or appear multiple times (e.g. in `localisation/languages.yml`).
+        // This rule matched: ^ {LOCALE_TOKEN} ":" (no trailing part). So, we now check the remainder of the line.
+        // Heuristic:
+        // - If it's at line start, and there are no characters or only whitespaces until EOL/EOF, treat as a locale.
+        // - Otherwise, treat as a property key.
 
         try {
-            // Start scanning right after the matched text (token + `:`)
+            // start scanning right after the matched text (token + `:`)
             int i = zzCurrentPos + 1 + yylength();
             int length = zzBuffer.length();
             boolean onlyWhitespaceToEol = true;
@@ -51,12 +51,12 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
                 yybegin(IN_LOCALE_COLON);
                 return LOCALE_TOKEN;
             } else {
-                // Not a locale header: interpret as a property key
+                // not a locale header: interpret as a property key
                 yybegin(IN_PROPERTY_COLON);
                 return PROPERTY_KEY_TOKEN;
             }
         } catch (Exception e) {
-            // Be lenient on unexpected conditions: assume a locale header
+            // be lenient on unexpected conditions: assume a locale header
             yybegin(IN_LOCALE_COLON);
             return LOCALE_TOKEN;
         }
@@ -64,7 +64,7 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 
     private IElementType handleRightQuote() {
         // Double quotes inside localisation text do not need escaping.
-        // Heuristic used by vanilla files and editors:
+        // Heuristic:
         //  - If there is another `"` ahead on the same line, the current `"` is part of the text (not closing).
         //  - Otherwise, treat the current `"` as the closing quote, even if a trailing comment (e.g. `# ...`) exists.
 
@@ -95,7 +95,7 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 %s IN_LOCALE_COLON
 %s IN_LOCALE_END
 %s IN_PROPERTY_COLON
-%s IN_PROPERTY_NUMBER
+%s IN_PROPERTY_NUMBER_TOKEN
 %s IN_PROPERTY_VALUE
 %s IN_PROPERTY_END
 
@@ -104,11 +104,12 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 EOL=\s*\R\s*
 WHITE_SPACE=[\s&&[^\r\n]]+
 BLANK=\s+
+
 COMMENT=#[^\r\n]*
 
-LOCALE_TOKEN=[a-z_]+
-PROPERTY_NUMBER=\d+
-PROPERTY_KEY_TOKEN=[A-Za-z0-9_.\-']+
+LOCALE_TOKEN=[a-z_]+ // lowercase letters and underscore only
+PROPERTY_KEY_TOKEN=[A-Za-z0-9_.\-']+ // `.-'` are allowed additionally
+PROPERTY_NUMBER_TOKEN=\d+ // integer characters only
 PROPERTY_VALUE_TOKEN=[^\"\r\n]+ // it's unnecessary to escape double quotes in loc text in fact
 
 %%
@@ -116,7 +117,6 @@ PROPERTY_VALUE_TOKEN=[^\"\r\n]+ // it's unnecessary to escape double quotes in l
 <YYINITIAL> {
     {BLANK} { return WHITE_SPACE; }
     {COMMENT} { return COMMENT; }
-    // Locale header candidate: start-of-line locale id followed by ':'
     ^ {LOCALE_TOKEN} / ":" { return handleLocaleToken(); }
     {PROPERTY_KEY_TOKEN} { yybegin(IN_PROPERTY_COLON); return PROPERTY_KEY_TOKEN; }
 }
@@ -135,15 +135,15 @@ PROPERTY_VALUE_TOKEN=[^\"\r\n]+ // it's unnecessary to escape double quotes in l
     {WHITE_SPACE} { return WHITE_SPACE; }
     {EOL} { yybegin(YYINITIAL); return WHITE_SPACE; }
     {COMMENT} { yybegin(YYINITIAL); return COMMENT; }
-    ":" { yybegin(IN_PROPERTY_NUMBER); return COLON; }
+    ":" { yybegin(IN_PROPERTY_NUMBER_TOKEN); return COLON; }
 }
-<IN_PROPERTY_NUMBER>{
+<IN_PROPERTY_NUMBER_TOKEN>{
     {WHITE_SPACE} { return WHITE_SPACE; }
     {EOL} { yybegin(YYINITIAL); return WHITE_SPACE; }
     {COMMENT} { yybegin(YYINITIAL); return COMMENT; }
-    {PROPERTY_NUMBER} { return PROPERTY_NUMBER; }
+    {PROPERTY_NUMBER_TOKEN} { return PROPERTY_NUMBER_TOKEN; }
     \" { yybegin(IN_PROPERTY_VALUE); return LEFT_QUOTE; }
-    [^] { yypushback(1); yybegin(IN_PROPERTY_VALUE);; } // 3.0.2 compatible with missing opening quote
+    [^] { yypushback(1); yybegin(IN_PROPERTY_VALUE); } // 3.0.2 compatible with missing opening quote
 }
 <IN_PROPERTY_VALUE> {
     {EOL} { yybegin(YYINITIAL); return WHITE_SPACE; }

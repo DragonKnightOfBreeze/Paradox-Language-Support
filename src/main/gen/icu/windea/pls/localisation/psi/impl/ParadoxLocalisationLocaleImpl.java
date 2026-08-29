@@ -64,6 +64,11 @@ public class ParadoxLocalisationLocaleImpl extends ParadoxLocalisationStubElemen
   }
 
   @Override
+  public @NotNull IElementType getIElementType() {
+    return ParadoxLocalisationPsiImplUtil.getIElementType(this);
+  }
+
+  @Override
   public @Nullable PsiReference getReference() {
     return ParadoxLocalisationPsiImplUtil.getReference(this);
   }
@@ -71,11 +76,6 @@ public class ParadoxLocalisationLocaleImpl extends ParadoxLocalisationStubElemen
   @Override
   public @NotNull PsiReference @NotNull [] getReferences() {
     return ParadoxLocalisationPsiImplUtil.getReferences(this);
-  }
-
-  @Override
-  public @NotNull IElementType getIElementType() {
-    return ParadoxLocalisationPsiImplUtil.getIElementType(this);
   }
 
   @Override

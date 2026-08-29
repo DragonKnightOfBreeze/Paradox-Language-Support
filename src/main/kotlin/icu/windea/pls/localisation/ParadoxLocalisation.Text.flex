@@ -8,11 +8,11 @@ import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntStack;
 
 import static com.intellij.psi.TokenType.*;
-import static icu.windea.pls.core.StdlibExtensionsKt.*;
 import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 
 // Lexer for localisation text of Paradox Localisation.
 // Notes:
+// - Use `stateStack` and `expectStack` to manage lexer-level states.
 // - Use `ParadoxSyntaxConstraint` to check whether specific syntax is supported in current game type.
 
 %%
@@ -99,37 +99,44 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
         return true;
     }
 
+    private boolean isExactWord(char c) {
+        return c == '_' || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') && (c >= '0' && c <= '9');
+    }
+
     private boolean isColorfulText() {
         if (yylength() <= 1) return false;
-        return isExactWord(yycharat(1)); // exact word after prefix
+        char c = yycharat(1);
+        return isExactWord(c); // exact word after prefix
     }
 
     private boolean isParameter() {
         if (yylength() <= 1) return false;
-        return yycharat(yylength() - 1) == '$';
+        char c = yycharat(yylength() - 1);
+        return c == '$'; // parameter end marker at end
     }
 
     private boolean isIcon() {
         if (yylength() <= 1) return false;
         char c = yycharat(1);
-        return c == '[' || c == '$' || isExactWord(c);
+        return c == '[' || c == '$' || isExactWord(c); // exact word (or interpolation start marker) after prefix
     }
 
     private boolean isCommand() {
         if (yylength() <= 1) return false;
-        return yycharat(yylength() - 1) != '['; // double brackets -> escaped
+        char c = yycharat(yylength() - 1);
+        return c != '['; // not left bracket after prefix (double left brackets -> escaped)
     }
 
     private boolean isTextIcon() {
         if (yylength() <= 1) return false;
         char c = yycharat(1);
-        return c == '[' || c == '$' || isExactWord(c);
+        return c == '[' || c == '$' || isExactWord(c); // exact word (or interpolation start marker) after prefix
     }
 
     private boolean isTextFormat() {
         if (yylength() <= 1) return false;
         char c = yycharat(1);
-        return c == '[' || c == '$' || isExactWord(c);
+        return c == '[' || c == '$' || isExactWord(c); // exact word (or interpolation start marker) after prefix
     }
 
     private void pushbackIfBlank() {
@@ -178,29 +185,45 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 
 BLANK=\s+
 
-PLAIN_TEXT_TOKEN=([^§£\$\[\]#@]|\\[\s\S])+
-ARGUMENT_TOKEN=[^\"§£\$\[\]\\\s]+ // pipe is allowed?
+TEXT_TOKEN=([^§£\$\[\]#@]|\\[\s\S])+
+
+IDENTIFIER_CHAR=[A-Za-z0-9_]
+IDENTIFIER_LEAD_CHAR=[A-Za-z_] // leading number is not allowed
+IDENTIFIER_TOKEN={IDENTIFIER_LEAD_CHAR}{IDENTIFIER_CHAR}* // leading number is not allowed
+
+ARGUMENT_CHAR=[^\"§£\$\[\]\\\s] // `|` is allowed?
+ARGUMENT_TOKEN={ARGUMENT_CHAR}+
+
+PARAMETER_CHECK=\$(\S*\$|.?) // no blank in $...$
+PARAMETER_CHAR={IDENTIFIER_CHAR}|[.\-'] // `-'` is allowed additionally
+PARAMETER_LEAD_CHAR={IDENTIFIER_LEAD_CHAR}|[.\-'] // leading number is not allowed & `-'` is allowed additionally
+PARAMETER_TOKEN={PARAMETER_LEAD_CHAR}{PARAMETER_CHAR}* // leading number is not allowed & `-'` is allowed additionally
+
+SCRIPTED_VARIABLE_TOKEN={IDENTIFIER_TOKEN} // identifier
 
 COLORFUL_TEXT_CHECK=§.?
 COLOR_TOKEN=\w
 
-PARAMETER_CHECK=\$(\S*\$|.?) // no blank in $...$
-PARAMETER_TOKEN=[A-Za-z0-9_.\-']+
-SCRIPTED_VARIABLE_TOKEN=[A-Za-z_][A-Za-z0-9_]*
+COMMAND_CHECK=\[.?
+COMMAND_TEXT_CHAR=[^'\[\]\|\s] // `[]` within single quotes are not allowed?
+COMMAND_TEXT_BOUND_CHAR=[^'\[\]\|\r\n] // `[]` within single quotes are not allowed?
+COMMAND_TEXT_TOKEN={COMMAND_TEXT_BOUND_CHAR}({COMMAND_TEXT_CHAR}*{COMMAND_TEXT_BOUND_CHAR})? // inner whitespaces are allowed
+
+CONCEPT_NAME_CHAR=[A-Za-z0-9_:] // `:` is allowed additionally
+CONCEPT_NAME_TOKEN={CONCEPT_NAME_CHAR}+
 
 ICON_CHECK=£.?
-ICON_TOKEN=[A-Za-z0-9\-_\\/]+
-
-COMMAND_CHECK=\[.?
-COMMAND_TEXT_TOKEN=([^\'\[\]\|\s][^\'\[\]\|\r\n]*)|('([^'\\\r\n]|\\[\s\S])*'?) // middle blank is allowed
-
-CONCEPT_NAME_TOKEN=[A-Za-z0-9_:]+
+ICON_CHAR={IDENTIFIER_CHAR}|[\-/\\] // `-/\` is allowed additionally
+ICON_TOKEN={ICON_CHAR}+ // leading number is allowed
 
 TEXT_ICON_CHECK=@.?
-TEXT_ICON_TOKEN=\w+
+TEXT_ICON_CHAR={IDENTIFIER_CHAR} // identifier
+TEXT_ICON_TOKEN={TEXT_ICON_CHAR}+ // leading number is allowed
 
+// `italic;color:green` form is allowed
 TEXT_FORMAT_CHECK=#.?
-TEXT_FORMAT_TOKEN=[\w:;]+ // `italic;color:green` is allowed
+TEXT_FORMAT_CHAR={IDENTIFIER_CHAR}|[:'] // `:'` is allowed additionally
+TEXT_FORMAT_TOKEN={TEXT_FORMAT_CHAR}+ // leading number is allowed
 
 %%
 
@@ -215,15 +238,15 @@ TEXT_FORMAT_TOKEN=[\w:;]+ // `italic;color:green` is allowed
         yypushback(yylength());
         yybegin(CHECK_PARAMETER);
     }
-    "£" {
-        enterState(yystate(), EXPECT_ICON);
-        yypushback(yylength());
-        yybegin(CHECK_ICON);
-    }
     "[" {
         enterState(yystate(), EXPECT_COMMAND);
         yypushback(yylength());
         yybegin(CHECK_COMMAND);
+    }
+    "£" {
+        enterState(yystate(), EXPECT_ICON);
+        yypushback(yylength());
+        yybegin(CHECK_ICON);
     }
     "@" {
         if (!ParadoxSyntaxConstraint.LocalisationTextIcon.testTarget(this)) return TEXT_TOKEN;
@@ -252,7 +275,7 @@ TEXT_FORMAT_TOKEN=[\w:;]+ // `italic;color:green` is allowed
         return TEXT_FORMAT_END;
     }
 
-    {PLAIN_TEXT_TOKEN} { return TEXT_TOKEN; }
+    {TEXT_TOKEN} { return TEXT_TOKEN; }
 }
 
 // localisation interpolation container rules
@@ -301,7 +324,7 @@ TEXT_FORMAT_TOKEN=[\w:;]+ // `italic;color:green` is allowed
             yybegin(IN_COLOR_ID);
             return COLORFUL_TEXT_START;
         } else {
-            // Enter IN_COLORFUL_TEXT directly for robustness
+            // enter IN_COLORFUL_TEXT directly for robustness
             yypushback(yylength() - 1);
             yybegin(IN_COLORFUL_TEXT);
             return COLORFUL_TEXT_START;
@@ -350,40 +373,6 @@ TEXT_FORMAT_TOKEN=[\w:;]+ // `italic;color:green` is allowed
     [^] { if (!exitStateOnBadCharacter()) return BAD_CHARACTER; } // recovery
 }
 
-// localisation icon rules
-
-<CHECK_ICON> {
-    {ICON_CHECK} {
-        if (isIcon()) {
-            yypushback(yylength() - 1);
-            yybegin(IN_ICON);
-            return ICON_START;
-        } else {
-            exitState();
-            yypushback(yylength() - 1);
-            return TEXT_TOKEN;
-        }
-    }
-}
-<IN_ICON> {
-    "£" {
-        exitState(EXPECT_ICON);
-        return ICON_END;
-    }
-
-    "|" { yybegin(IN_ICON_ARGUMENT); return PIPE; }
-    {ICON_TOKEN} { return ICON_TOKEN; }
-    [^] { if (!exitStateOnBadCharacter()) return BAD_CHARACTER; } // recovery
-}
-<IN_ICON_ARGUMENT> {
-    "£" {
-        exitState(EXPECT_ICON); return ICON_END;
-    }
-
-    {ARGUMENT_TOKEN} { return ARGUMENT_TOKEN; }
-    [^] { if (!exitStateOnBadCharacter()) return BAD_CHARACTER; } // recovery
-}
-
 // localisation command rules
 
 <CHECK_COMMAND> {
@@ -409,22 +398,19 @@ TEXT_FORMAT_TOKEN=[\w:;]+ // `italic;color:green` is allowed
     }
     {BLANK} { return WHITE_SPACE; } // compatible with blank
 }
-<IN_COMMAND_TEXT> {
+<IN_COMMAND_TEXT, IN_COMMAND_ARGUMENT> {
     "]" {
-        exitState(EXPECT_COMMAND); return RIGHT_BRACKET;
+        exitState(EXPECT_COMMAND);
+        return RIGHT_BRACKET;
     }
-
+}
+<IN_COMMAND_TEXT> {
     "|" { yybegin(IN_COMMAND_ARGUMENT); return PIPE; }
     {COMMAND_TEXT_TOKEN} { pushbackIfBlank(); return COMMAND_TEXT_TOKEN; } // trailing blank should be pushbacked
     {BLANK} { return WHITE_SPACE; } // compatible with blank
     [^] { if (!exitStateOnBadCharacter()) return BAD_CHARACTER; } // recovery
 }
 <IN_COMMAND_ARGUMENT> {
-    "]" {
-        exitState(EXPECT_COMMAND);
-        return RIGHT_BRACKET;
-    }
-
     {ARGUMENT_TOKEN} { return ARGUMENT_TOKEN; }
     [^] { if (!exitStateOnBadCharacter()) return BAD_CHARACTER; } // recovery
 }
@@ -436,7 +422,8 @@ TEXT_FORMAT_TOKEN=[\w:;]+ // `italic;color:green` is allowed
         exitState(EXPECT_COMMAND);
         return RIGHT_BRACKET;
     }
-
+}
+<IN_CONCEPT_NAME> {
     "'" { return RIGHT_SINGLE_QUOTE; }
     "," { yybegin(IN_CONCEPT_AFTER_COMMA); return COMMA; }
     {CONCEPT_NAME_TOKEN} { return CONCEPT_NAME_TOKEN; }
@@ -450,7 +437,38 @@ TEXT_FORMAT_TOKEN=[\w:;]+ // `italic;color:green` is allowed
     [^] { yypushback(yylength()); yybegin(IN_CONCEPT_TEXT); }
 }
 
-// [ck3, vic3] localisation text icon rules
+// localisation icon rules
+
+<CHECK_ICON> {
+    {ICON_CHECK} {
+        if (isIcon()) {
+            yypushback(yylength() - 1);
+            yybegin(IN_ICON);
+            return ICON_START;
+        } else {
+            exitState();
+            yypushback(yylength() - 1);
+            return TEXT_TOKEN;
+        }
+    }
+}
+<IN_ICON, IN_ICON_ARGUMENT> {
+    "£" {
+        exitState(EXPECT_ICON);
+        return ICON_END;
+    }
+}
+<IN_ICON> {
+    "|" { yybegin(IN_ICON_ARGUMENT); return PIPE; }
+    {ICON_TOKEN} { return ICON_TOKEN; }
+    [^] { if (!exitStateOnBadCharacter()) return BAD_CHARACTER; } // recovery
+}
+<IN_ICON_ARGUMENT> {
+    {ARGUMENT_TOKEN} { return ARGUMENT_TOKEN; }
+    [^] { if (!exitStateOnBadCharacter()) return BAD_CHARACTER; } // recovery
+}
+
+// [ck3, vic3, eu5] localisation text icon rules
 
 <CHECK_TEXT_ICON> {
     {TEXT_ICON_CHECK} {
@@ -470,12 +488,13 @@ TEXT_FORMAT_TOKEN=[\w:;]+ // `italic;color:green` is allowed
         exitState(EXPECT_TEXT_ICON);
         return TEXT_ICON_END;
     }
-
+}
+<IN_TEXT_ICON> {
     {TEXT_ICON_TOKEN} { return TEXT_ICON_TOKEN; }
     [^] { if (!exitStateOnBadCharacter()) return BAD_CHARACTER; } // recovery
 }
 
-// [ck3, vic3] localisation text format rules
+// [ck3, vic3, eu5] localisation text format rules
 
 <CHECK_TEXT_FORMAT> {
     {TEXT_FORMAT_CHECK} {
@@ -495,12 +514,15 @@ TEXT_FORMAT_TOKEN=[\w:;]+ // `italic;color:green` is allowed
         exitState(EXPECT_TEXT_FORMAT);
         return TEXT_FORMAT_END;
     }
-
+}
+<IN_TEXT_FORMAT_ID> {
     {TEXT_FORMAT_TOKEN} { return TEXT_FORMAT_TOKEN; }
     // enter text section
     {BLANK} { yybegin(IN_TEXT_FORMAT_TEXT); return WHITE_SPACE; }
     // whitespace after TEXT_FORMAT_TOKEN may be absent, if so, treat as valid and still enter text section
     [^] { yypushback(yylength()); yybegin(IN_TEXT_FORMAT_TEXT); }
 }
+
+// fallback
 
 [^] { return BAD_CHARACTER; }

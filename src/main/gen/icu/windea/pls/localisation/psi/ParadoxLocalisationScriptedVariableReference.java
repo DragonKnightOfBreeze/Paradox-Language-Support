@@ -1,35 +1,35 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.localisation.psi;
 
-import com.intellij.navigation.ItemPresentation;
+import java.util.List;
+import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
+import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference;
+import com.intellij.navigation.ItemPresentation;
+import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
-import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import javax.swing.*;
+import javax.swing.Icon;
 
 public interface ParadoxLocalisationScriptedVariableReference extends ParadoxScriptedVariableReference {
 
-    @Nullable PsiElement getIdElement();
+  @Nullable PsiElement getIdElement();
 
-    @NotNull Icon getIcon(@IconFlags int flags);
+  @NotNull Icon getIcon(@IconFlags int flags);
 
-    @Nullable String getName();
+  @Nullable String getName();
 
-    @NotNull ParadoxLocalisationScriptedVariableReference setName(@NotNull String name);
+  @NotNull ParadoxLocalisationScriptedVariableReference setName(@NotNull String name);
 
-    @Nullable PsiReference getReference();
+  @Nullable PsiReference getReference();
 
-    @NotNull PsiReference @NotNull [] getReferences();
+  @NotNull PsiReference @NotNull [] getReferences();
 
-    @NotNull GlobalSearchScope getResolveScope();
+  @NotNull GlobalSearchScope getResolveScope();
 
-    @NotNull SearchScope getUseScope();
+  @NotNull SearchScope getUseScope();
 
-    @NotNull ItemPresentation getPresentation();
+  @NotNull ItemPresentation getPresentation();
 
 }

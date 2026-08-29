@@ -4,7 +4,6 @@ import com.intellij.navigation.ItemPresentation
 import com.intellij.openapi.util.Iconable
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiListLikeElement
 import com.intellij.psi.PsiReference
 import com.intellij.psi.impl.ResolveScopeManager
 import com.intellij.psi.impl.source.resolve.reference.ReferenceProvidersRegistry
@@ -79,7 +78,7 @@ object ParadoxCsvPsiImplUtil {
     // region Common Methods
 
     @JvmStatic
-    fun getComponents(element: PsiListLikeElement): List<ParadoxCsvColumn> {
+    fun getComponents(element: ParadoxCsvColumnContainer): List<ParadoxCsvColumn> {
         return element.findChildren<_>()
     }
 

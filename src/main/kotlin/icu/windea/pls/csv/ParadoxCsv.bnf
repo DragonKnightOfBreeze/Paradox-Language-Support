@@ -11,11 +11,11 @@
   tokenTypeFactory="icu.windea.pls.csv.psi.ParadoxCsvElementTypeFactory.getTokenType"
   psiImplUtilClass="icu.windea.pls.csv.psi.impl.ParadoxCsvPsiImplUtil"
   parserUtilClass="icu.windea.pls.csv.parser.ParadoxCsvParserUtil"
-  tokens=[
-    SEPARATOR=";"
-    EOL="<eol>"
-  ]
   methods(".*")=[getResolveScope getUseScope getPresentation toString]
+  tokens=[
+    EOL="<eol>"
+    SEPARATOR=";"
+  ]
 }
 
 // Grammar for Paradox CSV.
@@ -25,24 +25,31 @@
 
 root ::= COMMENT * header ? (row | COMMENT) *
 
-header ::= column_items {
+// column container rules
+
+header ::= row_items {
   implements=[
     "icu.windea.pls.csv.psi.ParadoxCsvColumnContainer"
   ]
-  methods=[getIcon getComponents]
+  methods=[
+    getIcon getComponents
+  ]
 }
 // EOL is recognized by a dedicated lexer token
-row ::= column_items {
+row ::= row_items {
   implements=[
     "icu.windea.pls.csv.psi.ParadoxCsvColumnContainer"
   ]
-  methods=[getIcon getComponents]
+  methods=[
+    getIcon getComponents
+  ]
 }
-private column_items ::= column column_item * {
-  pin=1
-}
-private column_item ::= <<checkEol>> SEPARATOR [<<checkEol>> column]
-// Empty first/middle columns are allowed
+private row_items ::= column row_item * { pin=1 }
+private row_item ::= <<checkEol>> SEPARATOR [<<checkEol>> column]
+
+// column rules
+
+// empty first/middle columns are allowed
 column ::= <<checkColumnToken>> COLUMN_TOKEN ? {
   implements=[
     "icu.windea.pls.core.psi.PsiQuoteAwareElement"
@@ -50,7 +57,7 @@ column ::= <<checkColumnToken>> COLUMN_TOKEN ? {
     "icu.windea.pls.csv.psi.ParadoxCsvExpressionElement"
   ]
   methods=[
-    getIdElement getIcon getName getValue setValue setContent getQuotePattern getPresentableText
-    getReference getReferences
+    getIdElement
+    getIcon getName getValue setValue setContent getQuotePattern getPresentableText getReference getReferences
   ]
 }

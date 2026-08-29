@@ -11,12 +11,13 @@
   tokenTypeFactory="icu.windea.pls.script.psi.ParadoxScriptElementTypeFactory.getTokenType"
   psiImplUtilClass="icu.windea.pls.script.psi.impl.ParadoxScriptPsiImplUtil"
   parserUtilClass="icu.windea.pls.script.parser.ParadoxScriptParserUtil"
+  extends("inline_math_add_expr")=inline_math_binary_expression
+  methods(".*")=[getResolveScope getUseScope getPresentation toString]
   tokens=[
+    EOL="<eol>"
     AT="@"
     PIPE="|"
   ]
-  methods(".*")=[getResolveScope getUseScope getPresentation toString]
-  extends("inline_math_add_expr")=inline_math_binary_expression
 }
 
 // Grammar for Paradox Script.
@@ -329,7 +330,7 @@ inline_math ::= INLINE_MATH_START INLINE_MATH_TOKEN INLINE_MATH_END {
 
 // ------
 
-// inline math expression rules (lazy-parsing, from INLINE_MATH_TOKEN)
+// within inline math rules (lazy-parsing, from INLINE_MATH_TOKEN)
 
 inline_math_root ::= inline_math_expr {
   extraRoot=true
@@ -388,7 +389,7 @@ inline_math_number ::= INT_NUMBER_TOKEN | FLOAT_NUMBER_TOKEN {
   ]
   methods=[getValue]
 }
-// leading `@` is permitted (on syntax level) but not allowed (in actual)
+// leading `@` is allowed (but not valid in actual)
 // can be parameterized
 inline_math_scripted_variable_reference ::= AT ? inline_math_scripted_variable_parts {
   extends=inline_math_factor

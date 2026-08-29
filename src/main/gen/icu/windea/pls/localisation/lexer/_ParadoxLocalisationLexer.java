@@ -26,7 +26,7 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
   public static final int IN_LOCALE_COLON = 2;
   public static final int IN_LOCALE_END = 4;
   public static final int IN_PROPERTY_COLON = 6;
-  public static final int IN_PROPERTY_NUMBER = 8;
+  public static final int IN_PROPERTY_NUMBER_TOKEN = 8;
   public static final int IN_PROPERTY_VALUE = 10;
   public static final int IN_PROPERTY_END = 12;
 
@@ -320,12 +320,14 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
     }
 
     private IElementType handleLocaleToken() {
-        // Locale headers may be absent or appear multiple times (e.g. localisation/languages.yml).
-        // This rule matched: ^ {LOCALE_TOKEN} ":" (no trailing part). We now check the remainder of the line.
-        // If only whitespace remains until EOL/EOF, treat as a locale header; otherwise, treat as a property key.
+        // Locale headers may be absent or appear multiple times (e.g. in `localisation/languages.yml`).
+        // This rule matched: ^ {LOCALE_TOKEN} ":" (no trailing part). So, we now check the remainder of the line.
+        // Heuristic:
+        // - If it's at line start, and there are no characters or only whitespaces until EOL/EOF, treat as a locale.
+        // - Otherwise, treat as a property key.
 
         try {
-            // Start scanning right after the matched text (token + `:`)
+            // start scanning right after the matched text (token + `:`)
             int i = zzCurrentPos + 1 + yylength();
             int length = zzBuffer.length();
             boolean onlyWhitespaceToEol = true;
@@ -340,12 +342,12 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
                 yybegin(IN_LOCALE_COLON);
                 return LOCALE_TOKEN;
             } else {
-                // Not a locale header: interpret as a property key
+                // not a locale header: interpret as a property key
                 yybegin(IN_PROPERTY_COLON);
                 return PROPERTY_KEY_TOKEN;
             }
         } catch (Exception e) {
-            // Be lenient on unexpected conditions: assume a locale header
+            // be lenient on unexpected conditions: assume a locale header
             yybegin(IN_LOCALE_COLON);
             return LOCALE_TOKEN;
         }
@@ -353,7 +355,7 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
 
     private IElementType handleRightQuote() {
         // Double quotes inside localisation text do not need escaping.
-        // Heuristic used by vanilla files and editors:
+        // Heuristic:
         //  - If there is another `"` ahead on the same line, the current `"` is part of the text (not closing).
         //  - Otherwise, treat the current `"` as the closing quote, even if a trailing comment (e.g. `# ...`) exists.
 
@@ -685,12 +687,12 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
           // fall through
           case 21: break;
           case 8:
-            { yybegin(IN_PROPERTY_NUMBER); return COLON;
+            { yybegin(IN_PROPERTY_NUMBER_TOKEN); return COLON;
             }
           // fall through
           case 22: break;
           case 9:
-            { yypushback(1); yybegin(IN_PROPERTY_VALUE);;
+            { yypushback(1); yybegin(IN_PROPERTY_VALUE);
             }
           // fall through
           case 23: break;
@@ -700,7 +702,7 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
           // fall through
           case 24: break;
           case 11:
-            { return PROPERTY_NUMBER;
+            { return PROPERTY_NUMBER_TOKEN;
             }
           // fall through
           case 25: break;

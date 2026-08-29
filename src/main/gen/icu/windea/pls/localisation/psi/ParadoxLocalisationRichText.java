@@ -1,19 +1,21 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.localisation.psi;
 
-import com.intellij.navigation.ItemPresentation;
+import java.util.List;
+import org.jetbrains.annotations.*;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.NavigatablePsiElement;
+import icu.windea.pls.core.psi.PsiPresentableElement;
+import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
-import icu.windea.pls.core.psi.PsiPresentableElement;
-import org.jetbrains.annotations.NotNull;
 
 public interface ParadoxLocalisationRichText extends NavigatablePsiElement, PsiPresentableElement {
 
-    @NotNull GlobalSearchScope getResolveScope();
+  @NotNull GlobalSearchScope getResolveScope();
 
-    @NotNull SearchScope getUseScope();
+  @NotNull SearchScope getUseScope();
 
-    @NotNull ItemPresentation getPresentation();
+  @NotNull ItemPresentation getPresentation();
 
 }

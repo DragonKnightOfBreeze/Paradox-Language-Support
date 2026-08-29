@@ -13,18 +13,18 @@ import javax.swing.*;
 
 public interface CwtOptionKey extends NavigatablePsiElement, PsiQuoteAwareElement {
 
-  @NotNull Icon getIcon(@IconFlags int flags);
+    @NotNull Icon getIcon(@IconFlags int flags);
 
-  @NotNull String getName();
+    @NotNull String getName();
 
-  @NotNull String getValue();
+    @NotNull String getValue();
 
-  @NotNull QuotePattern getQuotePattern();
+    @NotNull QuotePattern getQuotePattern();
 
-  @NotNull GlobalSearchScope getResolveScope();
+    @NotNull GlobalSearchScope getResolveScope();
 
-  @NotNull SearchScope getUseScope();
+    @NotNull SearchScope getUseScope();
 
-  @NotNull ItemPresentation getPresentation();
+    @NotNull ItemPresentation getPresentation();
 
 }

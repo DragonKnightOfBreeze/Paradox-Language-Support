@@ -16,30 +16,30 @@ import javax.swing.*;
 
 public interface ParadoxCsvColumn extends PsiQuoteAwareElement, ParadoxCsvLiteralValue, ParadoxCsvExpressionElement {
 
-  @Nullable PsiElement getIdElement();
+    @Nullable PsiElement getIdElement();
 
-  @NotNull Icon getIcon(@IconFlags int flags);
+    @NotNull Icon getIcon(@IconFlags int flags);
 
-  @NotNull String getName();
+    @NotNull String getName();
 
-  @NotNull String getValue();
+    @NotNull String getValue();
 
-  @NotNull ParadoxCsvColumn setValue(@NotNull String value);
+    @NotNull ParadoxCsvColumn setValue(@NotNull String value);
 
-  @NotNull ParadoxCsvColumn setContent(@NotNull String content, @NotNull TextRange range);
+    @NotNull ParadoxCsvColumn setContent(@NotNull String content, @NotNull TextRange range);
 
-  @NotNull QuotePattern getQuotePattern();
+    @NotNull QuotePattern getQuotePattern();
 
-  @NotNull String getPresentableText();
+    @NotNull String getPresentableText();
 
-  @Nullable PsiReference getReference();
+    @Nullable PsiReference getReference();
 
-  @NotNull PsiReference @NotNull [] getReferences();
+    @NotNull PsiReference @NotNull [] getReferences();
 
-  @NotNull GlobalSearchScope getResolveScope();
+    @NotNull GlobalSearchScope getResolveScope();
 
-  @NotNull SearchScope getUseScope();
+    @NotNull SearchScope getUseScope();
 
-  @NotNull ItemPresentation getPresentation();
+    @NotNull ItemPresentation getPresentation();
 
 }

@@ -28,7 +28,7 @@ class ParadoxLocalisationSyntaxHighlighter(
             TEXT_FORMAT_START, TEXT_FORMAT_END -> ColorSets.MARKER
             TEXT_ICON_START, TEXT_ICON_END -> ColorSets.MARKER
             COMMENT -> ColorSets.COMMENT
-            PROPERTY_NUMBER -> ColorSets.NUMBER
+            PROPERTY_NUMBER_TOKEN -> ColorSets.NUMBER
             LOCALE_TOKEN -> ColorSets.LOCALE
             PROPERTY_KEY_TOKEN -> ColorSets.PROPERTY_KEY
             ARGUMENT_TOKEN -> ColorSets.ARGUMENT

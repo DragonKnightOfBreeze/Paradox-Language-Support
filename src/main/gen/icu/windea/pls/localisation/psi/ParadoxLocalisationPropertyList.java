@@ -24,9 +24,9 @@ public interface ParadoxLocalisationPropertyList extends PsiListLikeElement, Stu
 
   @NotNull Icon getIcon(@IconFlags int flags);
 
-  @NotNull List<@NotNull ParadoxLocalisationProperty> getComponents();
-
   @NotNull IElementType getIElementType();
+
+  @NotNull List<@NotNull ParadoxLocalisationProperty> getComponents();
 
   @NotNull GlobalSearchScope getResolveScope();
 

@@ -16,58 +16,58 @@ import javax.swing.*;
 
 public class CwtOptionKeyImpl extends ASTWrapperPsiElement implements CwtOptionKey {
 
-  public CwtOptionKeyImpl(@NotNull ASTNode node) {
-    super(node);
-  }
+    public CwtOptionKeyImpl(@NotNull ASTNode node) {
+        super(node);
+    }
 
-  public void accept(@NotNull CwtVisitor visitor) {
-    visitor.visitOptionKey(this);
-  }
+    public void accept(@NotNull CwtVisitor visitor) {
+        visitor.visitOptionKey(this);
+    }
 
-  @Override
-  public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof CwtVisitor) accept((CwtVisitor)visitor);
-    else super.accept(visitor);
-  }
+    @Override
+    public void accept(@NotNull PsiElementVisitor visitor) {
+        if (visitor instanceof CwtVisitor) accept((CwtVisitor) visitor);
+        else super.accept(visitor);
+    }
 
-  @Override
-  public @NotNull Icon getIcon(@IconFlags int flags) {
-    return CwtPsiImplUtil.getIcon(this, flags);
-  }
+    @Override
+    public @NotNull Icon getIcon(@IconFlags int flags) {
+        return CwtPsiImplUtil.getIcon(this, flags);
+    }
 
-  @Override
-  public @NotNull String getName() {
-    return CwtPsiImplUtil.getName(this);
-  }
+    @Override
+    public @NotNull String getName() {
+        return CwtPsiImplUtil.getName(this);
+    }
 
-  @Override
-  public @NotNull String getValue() {
-    return CwtPsiImplUtil.getValue(this);
-  }
+    @Override
+    public @NotNull String getValue() {
+        return CwtPsiImplUtil.getValue(this);
+    }
 
-  @Override
-  public @NotNull QuotePattern getQuotePattern() {
-    return CwtPsiImplUtil.getQuotePattern(this);
-  }
+    @Override
+    public @NotNull QuotePattern getQuotePattern() {
+        return CwtPsiImplUtil.getQuotePattern(this);
+    }
 
-  @Override
-  public @NotNull GlobalSearchScope getResolveScope() {
-    return CwtPsiImplUtil.getResolveScope(this);
-  }
+    @Override
+    public @NotNull GlobalSearchScope getResolveScope() {
+        return CwtPsiImplUtil.getResolveScope(this);
+    }
 
-  @Override
-  public @NotNull SearchScope getUseScope() {
-    return CwtPsiImplUtil.getUseScope(this);
-  }
+    @Override
+    public @NotNull SearchScope getUseScope() {
+        return CwtPsiImplUtil.getUseScope(this);
+    }
 
-  @Override
-  public @NotNull ItemPresentation getPresentation() {
-    return CwtPsiImplUtil.getPresentation(this);
-  }
+    @Override
+    public @NotNull ItemPresentation getPresentation() {
+        return CwtPsiImplUtil.getPresentation(this);
+    }
 
-  @Override
-  public @NotNull String toString() {
-    return CwtPsiImplUtil.toString(this);
-  }
+    @Override
+    public @NotNull String toString() {
+        return CwtPsiImplUtil.toString(this);
+    }
 
 }

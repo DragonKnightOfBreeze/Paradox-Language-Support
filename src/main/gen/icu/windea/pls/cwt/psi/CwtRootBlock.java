@@ -11,30 +11,30 @@ import java.util.List;
 
 public interface CwtRootBlock extends PsiRootBlock, CwtMemberContainer {
 
-  @NotNull
-  List<CwtDocComment> getDocCommentList();
+    @NotNull
+    List<CwtDocComment> getDocCommentList();
 
-  @NotNull
-  List<CwtOptionComment> getOptionCommentList();
+    @NotNull
+    List<CwtOptionComment> getOptionCommentList();
 
-  @NotNull
-  List<CwtProperty> getPropertyList();
+    @NotNull
+    List<CwtProperty> getPropertyList();
 
-  @NotNull
-  List<CwtValue> getValueList();
+    @NotNull
+    List<CwtValue> getValueList();
 
-  @NotNull String getValue();
+    @NotNull String getValue();
 
-  @NotNull CwtRootBlock getMemberContainer();
+    @NotNull CwtRootBlock getMemberContainer();
 
-  @NotNull List<@NotNull CwtMember> getMembers();
+    @NotNull List<@NotNull CwtMember> getMembers();
 
-  @NotNull List<@NotNull CwtStatement> getComponents();
+    @NotNull List<@NotNull CwtStatement> getComponents();
 
-  @NotNull GlobalSearchScope getResolveScope();
+    @NotNull GlobalSearchScope getResolveScope();
 
-  @NotNull SearchScope getUseScope();
+    @NotNull SearchScope getUseScope();
 
-  @NotNull ItemPresentation getPresentation();
+    @NotNull ItemPresentation getPresentation();
 
 }

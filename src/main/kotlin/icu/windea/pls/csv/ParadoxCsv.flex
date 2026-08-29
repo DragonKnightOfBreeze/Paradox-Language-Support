@@ -30,14 +30,22 @@ import static icu.windea.pls.csv.psi.ParadoxCsvElementTypes.*;
 
 EOL=\s*\R\s*
 WHITE_SPACE=[\s&&[^\r\n]]+
+BLANK=\s+
+
 COMMENT=#[^\r\n]*
-SEPARATOR=;
 
-// No extra token kinds beyond columns (booleans/numbers are treated as plain text)
+SEPARATOR=";"
 
-COLUMN_TOKEN=({UNQUOTED_COLUMN_TOKEN})|({QUOTED_COLUMN_TOKEN})
-UNQUOTED_COLUMN_TOKEN=[^#;\"\s]([^#;\"\r\n]*[^#;\s])? // inner whitespaces are allowed
-QUOTED_COLUMN_TOKEN=\"([^\"\\\r\n]|\\[\s\S])*\"? // closing quote optional for recovery
+LITERAL_CHAR=[^#;\"\r\n]
+LITERAL_BOUND_CHAR=[^#;\"\s]
+LITERAL_TOKEN={LITERAL_BOUND_CHAR}({LITERAL_CHAR}*{LITERAL_BOUND_CHAR})? // inner whitespaces are allowed
+LITERAL_TOKEN_QUOTED=([^\"\\\r\n]|\\[\s\S])*
+
+// no extra token kinds beyond columns (booleans/numbers are treated as plain text)
+
+COLUMN_TOKEN={COLUMN_TOKEN_QUOTED}|{COLUMN_TOKEN_UNQUOTED}
+COLUMN_TOKEN_QUOTED=\"{LITERAL_TOKEN_QUOTED}\"? // compatible with missing closing quote
+COLUMN_TOKEN_UNQUOTED={LITERAL_TOKEN} // literal
 
 %%
 

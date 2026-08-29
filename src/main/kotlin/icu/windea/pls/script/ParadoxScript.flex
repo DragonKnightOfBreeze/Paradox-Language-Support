@@ -181,11 +181,35 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 EOL=\s*\R\s*
 WHITE_SPACE=[\s&&[^\r\n]]+
 BLANK=\s+
+
 COMMENT=#[^\r\n]*
 
-SCRIPTED_VARIABLE_NAME_CHECK=[A-Za-z_$\[][^@#={}\"\s]* // leading number is not permitted
+KEYWORD_YES=yes
+KEYWORD_NO=yes
+OP_UNARY=[+-]
+
+INT_NUMBER_TOKEN=[0-9]+ // leading zero is allowed
+FLOAT_NUMBER_TOKEN=[0-9]*\.[0-9]+ // leading zero is allowed
+
+BOOLEAN_TOKEN={KEYWORD_YES}|{KEYWORD_NO} // `yes` or `no` (case-sensitive)
+INT_TOKEN={OP_UNARY}?{INT_NUMBER_TOKEN} // with optional unary operator
+FLOAT_TOKEN={OP_UNARY}?{FLOAT_NUMBER_TOKEN} // with optional unary operator
+
+INTERPOLATION_CHAR=[$|\[\]!?]
+IDENTIFIER_CHAR=[A-Za-z0-9_]
+IDENTIFIER_LEAD_CHAR=[A-Za-z_] // leading number is not allowed
+// IDENTIFIER_WILDCARD_CHAR={IDENTIFIER_CHAR}|{INTERPOLATION_CHAR}
+
+LITERAL_CHAR=[^#=<>{}\[\]$] // `@!?` are allowed
+LITERAL_BOUND_CHAR=[^@#=<>!?{}\[\]$] // `@!?` are not allowed
+
+IDENTIFIER_TOKEN={IDENTIFIER_LEAD_CHAR}{IDENTIFIER_CHAR}* // leading number is not allowed
+IDENTIFIER_LENIENT_TOKEN={IDENTIFIER_CHAR}+ // leading number is allowed
+LITERAL_TOKEN={LITERAL_BOUND_CHAR}({LITERAL_CHAR}*{LITERAL_BOUND_CHAR})? // boundary `@` `!` `?` are not allowed
+
+SCRIPTED_VARIABLE_NAME_CHECK=[A-Za-z_$\[][^@#={}\"\s]* // leading number is not allowed
 SCRIPTED_VARIABLE_NAME_TRAILING=\s*=
-SCRIPTED_VARIABLE_NAME_TOKEN=[A-Za-z0-9_]+ // leading number is not permitted
+SCRIPTED_VARIABLE_NAME_TOKEN=[A-Za-z0-9_]+ // leading number is not allowed
 
 PROPERTY_KEY_CHECK={PROPERTY_KEY_CHECK_QUOTED}|{PROPERTY_KEY_CHECK_UNQUOTED}
 PROPERTY_KEY_CHECK_QUOTED=\"([^\"\\\r\n]|\\.)*\"?
@@ -197,20 +221,25 @@ PROPERTY_KEY_TOKEN_UNQUOTED=[^@#=<>!?{}\"\s$\[\]][^#=<>!?{}\"\s$\[\]]*
 STRING_CHECK={STRING_CHECK_QUOTED}|{STRING_CHECK_UNQUOTED}
 STRING_CHECK_QUOTED=\"([^\"\\]|\\[\s\S])*\"?
 STRING_CHECK_UNQUOTED=[^@#=<>!?{}\"\s][^#=<>!?{}\"\s]*\"?
-STRING_TOKEN_QUOTED=([^\"\\$\[\]]|\\[\s\S])+ // without surrounding quotes & line breaks are permitted
+STRING_TOKEN_QUOTED=([^\"\\$\[\]]|\\[\s\S])+ // without surrounding quotes & line breaks are allowed
 STRING_TOKEN_UNQUOTED=[^@#=<>!?{}\"\s$\[\]][^#=<>!?{}\"\s$\[\]]*
 
-BOOLEAN_TOKEN=(yes)|(no)
-INT_NUMBER_TOKEN=[0-9]+ // leading zero is permitted
-INT_TOKEN=[+-]?{INT_NUMBER_TOKEN}
-FLOAT_NUMBER_TOKEN=[0-9]*(\.[0-9]+) // leading zero is permitted
-FLOAT_TOKEN=[+-]?{FLOAT_NUMBER_TOKEN}
-COLOR_TOKEN=(rgb|hsv|hsv360)[ \t]*\{[\d.\s&&[^\r\n]]*} // #103 hsv360 (from vic3)
-
-PARAMETER_TOKEN=[A-Za-z_][A-Za-z0-9_]* // leading number is not permitted for parameter names
+PARAMETER_TOKEN={IDENTIFIER_TOKEN} // identifier
+CONDITION_PARAMETER_TOKEN={IDENTIFIER_TOKEN} // identifier
 ARGUMENT_TOKEN=[^#$=<>!?{}\[\]\s]+ // compatible with leading '@'
 
-INLINE_MATH_TOKEN=[^\r\n#{}\[\]]+
+// #103 hsv360 (from vic3)
+// #399 color types are case-insensitive
+// TODO 3.0.2+ split into more specific tokens (distinct from normal keywords/identifiers and normal blocks)
+COLOR_TYPE_RGB=[rR][gG][bB]
+COLOR_TYPE_HSV=[hH][sS][vV]
+COLOR_TYPE_HSV360=[hH][sS][vV]360
+COLOR_TYPE_TOKEN={COLOR_TYPE_RGB}|{COLOR_TYPE_HSV}|{COLOR_TYPE_HSV360}
+COLOR_ARGS_TOKEN=\{[\d.\s&&[^\r\n]]*} // lenient match
+COLOR_TOKEN={COLOR_TYPE_TOKEN}{COLOR_ARGS_TOKEN}
+
+// NOTE lazy scanning, see `ParadoxScript.InlineMath.flex`
+INLINE_MATH_TOKEN=[^\r\n#{}\[\]]+ // lenient match
 
 %%
 
@@ -356,7 +385,7 @@ INLINE_MATH_TOKEN=[^\r\n#{}\[\]]+
     [^] { if (!exitStateAtBadCharacterForValue()) return BAD_CHARACTER; } // recovery
 }
 <IN_STRING_QUOTED> {
-    // quoted multiline string is permited (which will break futher scanning and parsing while closing quote is missing)
+    // quoted multiline string is allowed (which will break futher scanning and parsing while closing quote is missing)
     // {EOL} { exitState(); return WHITE_SPACE; }
     {STRING_TOKEN_QUOTED} { return STRING_TOKEN; }
     \" { exitStateForValue(); return RIGHT_QUOTE; }
@@ -476,7 +505,7 @@ INLINE_MATH_TOKEN=[^\r\n#{}\[\]]+
 
     "!" { return NOT_SIGN; }
     {PARAMETER_TOKEN} { return CONDITION_PARAMETER_TOKEN; }
-    // {BLANK} { return WHITE_SPACE; } // should not be permited
+    // {BLANK} { return WHITE_SPACE; } // should not be allowed
     [^] { if (!exitStateAtBadCharacter()) return BAD_CHARACTER; } // recovery
 }
 <IN_INLINE_CONDITIONAL_BLOCK_BODY> {
@@ -489,7 +518,7 @@ INLINE_MATH_TOKEN=[^\r\n#{}\[\]]+
         exitState(EXPECT_INLINE_CONDITIONAL_BLOCK);
         return RIGHT_BRACKET;
     }
-    // {BLANK} { return WHITE_SPACE; } // should not be permited
+    // {BLANK} { return WHITE_SPACE; } // should not be allowed
     [^] { if (!exitStateAtBadCharacter()) return BAD_CHARACTER; } // recovery
 }
 

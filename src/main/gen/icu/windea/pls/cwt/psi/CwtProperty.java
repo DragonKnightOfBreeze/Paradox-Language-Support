@@ -13,32 +13,32 @@ import java.util.List;
 
 public interface CwtProperty extends CwtNamedElement, CwtMember {
 
-  @NotNull
-  CwtPropertyKey getPropertyKey();
+    @NotNull
+    CwtPropertyKey getPropertyKey();
 
-  @Nullable
-  CwtValue getPropertyValue();
+    @Nullable
+    CwtValue getPropertyValue();
 
-  @NotNull Icon getIcon(@IconFlags int flags);
+    @NotNull Icon getIcon(@IconFlags int flags);
 
-  @NotNull String getName();
+    @NotNull String getName();
 
-  @NotNull CwtProperty setName(@NotNull String name);
+    @NotNull CwtProperty setName(@NotNull String name);
 
-  @NotNull PsiElement getNameIdentifier();
+    @NotNull PsiElement getNameIdentifier();
 
-  @Nullable String getValue();
+    @Nullable String getValue();
 
-  @NotNull String getPresentableText();
+    @NotNull String getPresentableText();
 
-  @Nullable CwtBlock getMemberContainer();
+    @Nullable CwtBlock getMemberContainer();
 
-  @Nullable List<@NotNull CwtMember> getMembers();
+    @Nullable List<@NotNull CwtMember> getMembers();
 
-  @NotNull GlobalSearchScope getResolveScope();
+    @NotNull GlobalSearchScope getResolveScope();
 
-  @NotNull SearchScope getUseScope();
+    @NotNull SearchScope getUseScope();
 
-  @NotNull ItemPresentation getPresentation();
+    @NotNull ItemPresentation getPresentation();
 
 }

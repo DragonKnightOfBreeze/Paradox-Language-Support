@@ -11,10 +11,10 @@
   elementTypeFactory="icu.windea.pls.cwt.psi.CwtElementTypeFactory.getElementType"
   psiImplUtilClass="icu.windea.pls.cwt.psi.impl.CwtPsiImplUtil"
   parserUtilClass="icu.windea.pls.cwt.parser.CwtParserUtil"
+  methods(".*")=[getResolveScope getUseScope getPresentation toString]
   tokens=[
     EOL="<eol>"
   ]
-  methods(".*")=[getResolveScope getUseScope getPresentation toString]
 }
 
 // Grammar for CWT.

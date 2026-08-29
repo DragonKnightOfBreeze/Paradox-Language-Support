@@ -37,13 +37,18 @@ open class ParadoxLocalisationParserDefinition : ParserDefinition {
             leftType == LOCALE_TOKEN && rightType == COLON -> MUST_NOT
             rightType == LOCALE_TOKEN -> MUST_LINE_BREAK
             rightType == PROPERTY_KEY_TOKEN -> MUST_LINE_BREAK
+            leftType == PIPE || rightType == PIPE -> MUST_NOT
+            // colorful texts
             leftType == COLORFUL_TEXT_START && rightType == COLOR_TOKEN -> MUST_NOT
+            // parameters
             leftType == PARAMETER_START || rightType == PARAMETER_END -> MUST_NOT
             leftType == AT && rightType == SCRIPTED_VARIABLE_REFERENCE_TOKEN -> MUST_NOT
+            // localisation icons
             leftType == ICON_START || rightType == ICON_END -> MUST_NOT
-            leftType == PIPE || rightType == PIPE -> MUST_NOT
-            leftType == COMMA && rightType != TokenType.WHITE_SPACE -> MUST // [stellaris] localisation concept
-            leftType == TEXT_FORMAT_TOKEN && rightType != TokenType.WHITE_SPACE -> MUST // [ck3, vic3] localisation text format
+            // [stellaris] localisation concept commands
+            leftType == COMMA && rightType != TokenType.WHITE_SPACE -> MUST
+            // [ck3, vic3, eu5] localisation text formats
+            leftType == TEXT_FORMAT_TOKEN && rightType != TokenType.WHITE_SPACE -> MUST
             else -> MAY
         }
     }

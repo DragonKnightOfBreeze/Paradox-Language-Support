@@ -16,32 +16,32 @@ import javax.swing.*;
 
 public interface CwtString extends CwtValue, PsiQuoteAwareElement, CwtNamedElement, CwtLiteralValue, CwtStringExpressionElement {
 
-  @NotNull Icon getIcon(@IconFlags int flags);
+    @NotNull Icon getIcon(@IconFlags int flags);
 
-  @NotNull String getName();
+    @NotNull String getName();
 
-  @NotNull CwtString setName(@NotNull String name);
+    @NotNull CwtString setName(@NotNull String name);
 
-  @NotNull PsiElement getNameIdentifier();
+    @NotNull PsiElement getNameIdentifier();
 
-  @NotNull String getValue();
+    @NotNull String getValue();
 
-  @NotNull CwtValue setValue(@NotNull String value);
+    @NotNull CwtValue setValue(@NotNull String value);
 
-  @NotNull CwtValue setContent(@NotNull String content, @NotNull TextRange range);
+    @NotNull CwtValue setContent(@NotNull String content, @NotNull TextRange range);
 
-  @NotNull QuotePattern getQuotePattern();
+    @NotNull QuotePattern getQuotePattern();
 
-  @NotNull String getPresentableText();
+    @NotNull String getPresentableText();
 
-  @Nullable PsiReference getReference();
+    @Nullable PsiReference getReference();
 
-  @NotNull PsiReference @NotNull [] getReferences();
+    @NotNull PsiReference @NotNull [] getReferences();
 
-  @NotNull GlobalSearchScope getResolveScope();
+    @NotNull GlobalSearchScope getResolveScope();
 
-  @NotNull SearchScope getUseScope();
+    @NotNull SearchScope getUseScope();
 
-  @NotNull ItemPresentation getPresentation();
+    @NotNull ItemPresentation getPresentation();
 
 }

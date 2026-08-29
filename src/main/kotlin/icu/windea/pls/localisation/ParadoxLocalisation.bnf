@@ -11,11 +11,16 @@
   psiImplUtilClass="icu.windea.pls.localisation.psi.impl.ParadoxLocalisationPsiImplUtil"
   parserUtilClass="icu.windea.pls.localisation.parser.ParadoxLocalisationParserUtil"
   methods(".*")=[getResolveScope getUseScope getPresentation toString]
+  tokens=[
+    EOL="<eol>"
+    AT="@"
+    PIPE="|"
+  ]
 }
 
 // Grammar for Paradox Localisation.
 // Notes:
-// - Locale header vs property is resolved by the lexer (see ParadoxLocalisation.flex).
+// - Locale VS property key is resolved by the lexer.
 // - Property values are lazy-parsed to support rich text features without over-tokenizing at top level.
 
 // core rules
@@ -28,7 +33,9 @@ property_list ::= COMMENT * (property_item_list_with_locale | property_item_list
   implements=[
     "com.intellij.psi.PsiListLikeElement"
   ]
-  methods=[getIcon getComponents getIElementType]
+  methods=[
+    getIcon getIElementType getComponents
+  ]
 }
 private property_item_list_with_locale ::= locale property_item * {
   pin=1
@@ -45,7 +52,10 @@ locale ::= LOCALE_TOKEN COLON {
   implements=[
     "com.intellij.psi.NavigatablePsiElement"
   ]
-  methods=[getIdElement getIcon getName setName getReference getReferences getIElementType]
+  methods=[
+    getIdElement
+    getIcon getName setName getIElementType getReference getReferences
+  ]
 }
 
 property ::= property_key COLON property_number ? property_value {
@@ -57,8 +67,7 @@ property ::= property_key COLON property_number ? property_value {
     "icu.windea.pls.localisation.psi.ParadoxLocalisationNamedElement"
   ]
   methods=[
-    getIcon getName setName getNameIdentifier getTextOffset getType getValue setValue
-    getIElementType isEquivalentTo
+    getIcon getName setName getNameIdentifier getTextOffset getType getValue setValue getIElementType isEquivalentTo
   ]
 }
 
@@ -66,29 +75,35 @@ property_key ::= PROPERTY_KEY_TOKEN {
   implements=[
     "com.intellij.psi.NavigatablePsiElement"
   ]
-  methods=[getIdElement getIcon getName setName]
+  methods=[
+    getIdElement
+    getIcon getName setName
+  ]
 }
 
 // The number seen in vanilla files right after the colon can be omitted, as it is only useful for Paradox’s internal translation tracking
-// https://stellaris.paradoxwikis.com/Localisation_modding
-// https://twitter.com/Martin_Anward/status/1039175213773144066
-private property_number ::= PROPERTY_NUMBER
+// see: https://stellaris.paradoxwikis.com/Localisation_modding
+// see: https://twitter.com/Martin_Anward/status/1039175213773144066
+private property_number ::= PROPERTY_NUMBER_TOKEN
 
- // lazy-parsing PROPERTY_VALUE_TOKEN
+// lazy-parsing PROPERTY_VALUE_TOKEN
 // 3.0.2 compatible with missing opening quote and missing closing quote
 property_value ::= property_value_quoted | property_value_unquoted  {
   implements=[
     "icu.windea.pls.core.psi.PsiQuoteAwareElement"
     "icu.windea.pls.localisation.psi.ParadoxLocalisationRichTextContainer"
   ]
-  methods=[getTokenElement getRichTextList getQuotePattern]
+  methods=[
+    getTokenElement getRichTextList
+    getQuotePattern
+  ]
 }
 private property_value_quoted ::= LEFT_QUOTE PROPERTY_VALUE_TOKEN ? RIGHT_QUOTE ? { pin=1 }
 private property_value_unquoted ::= PROPERTY_VALUE_TOKEN RIGHT_QUOTE ?
 
 // ------
 
-// localisation text rules (lazy-parsing, from PROPERTY_VALUE_TOKEN)
+// within localisation text rules (lazy-parsing, from PROPERTY_VALUE_TOKEN)
 
 text_root ::= text_items {
   extraRoot=true
@@ -96,7 +111,7 @@ text_root ::= text_items {
 private text_items ::= text_item +
 private text_item ::= rich_text | COLORFUL_TEXT_END | TEXT_FORMAT_END
 
-rich_text ::= text | colorful_text | parameter | icon | command | concept_command | text_icon | text_format {
+rich_text ::= text | colorful_text | parameter | command | concept_command | icon | text_icon | text_format {
   implements=[
     "com.intellij.psi.NavigatablePsiElement"
     "icu.windea.pls.core.psi.PsiPresentableElement"
@@ -105,26 +120,29 @@ rich_text ::= text | colorful_text | parameter | icon | command | concept_comman
 
 text ::= TEXT_TOKEN {
   extends=rich_text
-  methods=[getIdElement]
 }
 
 // localisation colorful text rules
 
 // see: https://stellaris.paradoxwikis.com/Localisation_modding#Color_Codes
-colorful_text ::= COLORFUL_TEXT_START color_name colorful_text_body ? COLORFUL_TEXT_END ? { // optional end marker
+// end marker is optional
+colorful_text ::= COLORFUL_TEXT_START color_name colorful_text_body ? COLORFUL_TEXT_END ? {
   pin=1
   extends=rich_text
   implements=[
     "icu.windea.pls.localisation.psi.ParadoxLocalisationTextColorAwareElement"
     "icu.windea.pls.localisation.psi.ParadoxLocalisationRichTextContainer"
   ]
-  methods=[getIdElement getName setName getPresentableText getReference getReferences]
+  methods=[
+    getIdElement
+    getName setName getPresentableText getReference getReferences
+  ]
 }
 private color_name ::= COLOR_TOKEN
 private colorful_text_body ::= colorful_text_item +
 private colorful_text_item ::= rich_text | TEXT_FORMAT_END
 
-// localisation reference rules
+// localisation parameter rules
 
 // see: https://stellaris.paradoxwikis.com/Localisation_modding#.24_Codes
 // may be resolved to localisation / parameter / system statistics in GUI elements
@@ -149,42 +167,21 @@ parameter_argument ::= ARGUMENT_TOKEN {
     "icu.windea.pls.localisation.psi.ParadoxLocalisationArgument"
     "icu.windea.pls.localisation.psi.ParadoxLocalisationTextColorAwareElement"
   ]
-  methods=[getIdElement getReference getReferences]
+  methods=[
+    getIdElement
+    getReference getReferences
+  ]
 }
 // scripted variable reference (in parameters)
 scripted_variable_reference ::= AT SCRIPTED_VARIABLE_REFERENCE_TOKEN {
   implements=[
     "icu.windea.pls.lang.psi.ParadoxScriptedVariableReference"
   ]
-  methods=[getIdElement getIcon getName setName getReference getReferences]
-}
-
-// localisation icon rules
-
-icon ::= ICON_START icon_name icon_suffix ? ICON_END {
-  pin=1
-  extends=rich_text
-  implements=[
-    "icu.windea.pls.localisation.psi.ParadoxLocalisationInterpolationContainer"
-    "icu.windea.pls.localisation.psi.ParadoxLocalisationArgumentAwareElement"
-  ]
   methods=[
-    getIdElement getArgumentElement icon_argument="" rich_text=""
-    getIcon getName setName getPresentableText getReference getReferences
+    getIdElement
+    getIcon getName setName getReference getReferences
   ]
 }
-// can be parameterized (by using parameters and commands)
-private icon_name ::= (ICON_TOKEN | parameter | command) +
-private icon_suffix ::= PIPE icon_argument ?
-icon_argument ::= icon_argument_name {
-  implements=[
-    "icu.windea.pls.localisation.psi.ParadoxLocalisationArgument"
-    "icu.windea.pls.localisation.psi.ParadoxLocalisationInterpolationContainer"
-  ]
-  methods=[getIdElement rich_text=""]
-}
-// can be parameterized (by using parameters and commands)
-private icon_argument_name ::= (ARGUMENT_TOKEN | parameter | command) +
 
 // localisation command rules
 
@@ -222,7 +219,10 @@ command_argument ::= (ARGUMENT_TOKEN | parameter) + {
     "icu.windea.pls.localisation.psi.ParadoxLocalisationInterpolationContainer"
     "icu.windea.pls.localisation.psi.ParadoxLocalisationTextColorAwareElement"
   ]
-  methods=[getIdElement parameter="" getReference getReferences]
+  methods=[
+    getIdElement parameter=""
+    getReference getReferences
+  ]
 }
 
 // [stellaris] localisation concept command rules (as special command rules)
@@ -230,7 +230,9 @@ command_argument ::= (ARGUMENT_TOKEN | parameter) + {
 concept_command ::= LEFT_BRACKET LEFT_SINGLE_QUOTE concept_name ? RIGHT_SINGLE_QUOTE concept_command_body ? RIGHT_BRACKET {
   pin=2
   extends=rich_text
-  methods=[getIcon getName setName getPresentableText getReference getReferences]
+  methods=[
+    getIcon getName setName getPresentableText getReference getReferences
+  ]
 }
 concept_name ::= concept_name_parts {
   implements=[
@@ -239,7 +241,7 @@ concept_name ::= concept_name_parts {
   ]
   methods=[
     getIdElement parameter=""
-    getName getValue getPresentableText setValue setContent getReference getReferences
+    getName getValue setValue setContent getPresentableText getReference getReferences
   ]
 }
 // can be parameterized (by using parameters)
@@ -252,7 +254,36 @@ concept_text ::= concept_text_item + {
 }
 private concept_text_item ::= rich_text | COLORFUL_TEXT_END | TEXT_FORMAT_END
 
-// [ck3, vic3] localisation text icon rules
+// localisation icon rules
+
+icon ::= ICON_START icon_name icon_suffix ? ICON_END {
+  pin=1
+  extends=rich_text
+  implements=[
+    "icu.windea.pls.localisation.psi.ParadoxLocalisationInterpolationContainer"
+    "icu.windea.pls.localisation.psi.ParadoxLocalisationArgumentAwareElement"
+  ]
+  methods=[
+    getIdElement getArgumentElement icon_argument="" rich_text=""
+    getIcon getName setName getPresentableText getReference getReferences
+  ]
+}
+// can be parameterized (by using parameters and commands)
+private icon_name ::= (ICON_TOKEN | parameter | command) +
+private icon_suffix ::= PIPE icon_argument ?
+icon_argument ::= icon_argument_name {
+  implements=[
+    "icu.windea.pls.localisation.psi.ParadoxLocalisationArgument"
+    "icu.windea.pls.localisation.psi.ParadoxLocalisationInterpolationContainer"
+  ]
+  methods=[
+    getIdElement rich_text=""
+  ]
+}
+// can be parameterized (by using parameters and commands)
+private icon_argument_name ::= (ARGUMENT_TOKEN | parameter | command) +
+
+// [ck3, vic3, eu5] localisation text icon rules
 
 text_icon ::= TEXT_ICON_START text_icon_name TEXT_ICON_END {
   pin=1
@@ -268,9 +299,10 @@ text_icon ::= TEXT_ICON_START text_icon_name TEXT_ICON_END {
 // can be parameterized (by using parameters and commands)
 private text_icon_name ::= (TEXT_ICON_TOKEN | parameter | command) +
 
-// [ck3, vic3] localisation text format rules
+// [ck3, vic3, eu5] localisation text format rules
 
-text_format ::= TEXT_FORMAT_START text_format_name text_format_text_part ? TEXT_FORMAT_END ? { // optional end marker
+// end marker is optional
+text_format ::= TEXT_FORMAT_START text_format_name text_format_text_part ? TEXT_FORMAT_END ? {
   pin=1
   extends=rich_text
   implements=[
