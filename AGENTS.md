@@ -14,17 +14,18 @@ As you embark on this journey, keep serious, cautious, and curious.
 
 ### What the plugin supports
 
+Following custom languages are supported by the plugin:
 - **Paradox Script** (`PARADOX_SCRIPT`) - used for providing game data and writing game logic.
 - **Paradox Localisation** (`PARADOX_LOCALISATION`) - used for providing i18n text.
 - **Paradox CSV** (`PARADOX_CSV`) - used for describing table data.
 - **CWT** (`CWT`, `*.cwt`) - used for writing CWT config files which drive semantics (completion, inspections, navigation, docs, etc.).
 
 In addition to language features, the plugin also includes:
-
 - **Image support** (DDS/TGA) with optional tool-based rendering/conversion.
 - **Tool integrations** (e.g. ImageMagick, Tiger lint, Translation plugin).
 - **AI integration** (LangChain4j-based) focused on localisation translation/polishing workflows.
-- A substantial internal **extension point (EP)** architecture and a **code injection** subsystem.
+- A substantial internal **extension point (EP)** architecture.
+- A **code injection** subsystem.
 
 ### Key points
 
@@ -65,8 +66,7 @@ This project uses **Gradle** and the **IntelliJ Platform Gradle Plugin**.
 
 The local config repos used are in the `cwt/<repoDir>` directory, and there are also some useful scripts in the `cwt/scripts` directory.
 
-The plugin bundles CWT configs into the plugin JAR under `config/<gameTypeId>`.
-If missing (common in CI), Gradle can download ZIPs and unzip them into `build/generated/cwt/<repoDir>`.
+The plugin bundles CWT configs into the plugin JAR under `config/<gameTypeId>`. If missing (common in CI), Gradle can download ZIPs and unzip them into `build/generated/cwt/<repoDir>`.
 
 ## Testing guidance
 
@@ -182,7 +182,7 @@ Some tests are intentionally **disabled by default** and only run when explicitl
 - `icu.windea.pls.config` - Infrastructure for the config system. Including config, config expression, config group, etc.
 - `icu.windea.pls.lang` - The semantic module. Including semantic matching, semantic resolution, language construct support, language feature support, domain-specific logic, etc.
   - `icu.windea.pls.lang.match` - Semantic-level matching. Mainly based on indices, reference resolution and configs.
-  - `icu.windea.pls.lang.resolve` - Semantic-level resolution. mainly based on indices, reference resolution and configs).
+  - `icu.windea.pls.lang.resolve` - Semantic-level resolution. Mainly based on indices, reference resolution and configs.
   - `icu.windea.pls.lang.util` - High-level managers and special components.
 - `icu.windea.pls.integrations` - The integration module. Provides integrations to third-party tools (e.g, image processing tools and linting tools).
 - `icu.windea.pls.extensions` - The extension module. Provides integrations and extensions to third-party plugins (e.g., JSON and Markdown).
@@ -192,25 +192,21 @@ Some tests are intentionally **disabled by default** and only run when explicitl
 ### Notes
 
 Notes on `icu.windea.pls.config`:
-
 - This is where the infrastructure of the config system is stored, but not all code closely related to the config system. This means they usually not depends on game or mod files.
 - For logic such as config contexts, config matching, template resolution, and template matching, since they occur at semantic-level, is usually located in `lang.match` and `lang.resolve`.
 
 Notes on `icu.windea.pls.lang.match` and `icu.windea.pls.lang.resolve`:
-
 - `lang.match` and `lang.resolve` hold domain-specific, semantic-level matching and resolution logic, and are lower-level than `lang.util.*Manager`.
 - The latter is only extracted/refactored into the former when necessary, most of it can stay as-is.
 - Prefer calling EPs that involve matching/resolution logic only from here (typically in a `*Service`), not from an EP interface's companion object or a `*Manager`.
 
 Notes on `icu.windea.pls.config.manipulation` and `icu.windea.pls.lang.manipulation`:
-
 - These packages hold "manipulation"-focused services plus related model classes, enums, and extension methods.
 - The code here typically transforms or directly mutates the state of a target (a config object, PSI, etc.)
 - It can happen at several different stages/levels (building the resolve context, performing semantic resolution, invoking a language feature).
 - It also serves as infrastructure for parts of semantic resolution as well as some refactorings, intentions, and quick fixes.
 
 Notes on `Service` vs `Manager` vs `Util`:
-
 - `Service` - lower-level, may include domain analysis/matching/resolution logic that's delegated to concrete EP implementations.
 - `Manager` - higher-level, exposes ready-to-use domain methods, which may depend on the corresponding `Service` methods.
 - `Util` - narrowly-scoped helper methods usable only for a specific component/feature, or only in a handful of specific scenarios.
@@ -222,7 +218,6 @@ Notes on `Service` vs `Manager` vs `Util`:
 ### Naming
 
 Here are some common conversions:
-
 - Prefer using prefix for language and domain specific class names (e.g., `Cwt...` `Paradox...` `ParadoxScript...`).
 - prefer using verb form for actions and intentions (e.g, `CopyDefinitionNameIntention`).
 - Prefer word-based or prefix-based abbreviations (e.g., for `scopeContext`: `context`, `sc` or just `c` is good, `ctx` is bad).
@@ -266,7 +261,6 @@ For more details, see: `agents/context/importing-conventions.md`
 ### Code guidance
 
 Here are some common code patterns:
-
 - Get the coroutine scope: Use `ChronicleFacade.getCoroutineScope(project)` (or `ChronicleFacade.getCoroutineScope()` for application level).
 - Get the config group: Use `ChronicleFacade.getConfigGroup(project, gameType)` (or `ChronicleFacade.getConfigGroup(gameType)` for application level).
 - Get the config context: Use `ParadoxConfigManager.getConfigContext(element)`.
@@ -274,9 +268,9 @@ Here are some common code patterns:
 - How to filter and query configs in config trees (e.g., query down, by path): Use the config select API (see `icu.windea.pls.config.select`).
 - How to filter and query members in script files (e.g., query down, query up, by path): Use the select API (see `icu.windea.pls.lang.select`).
 - How to search definitions (e.g., an event with specific event id): Use `ParadoxDefinitionSearch` (so do other `Paradox...Search`s).
-- How to check out domain or topic specific codes (e.g., definition, scope, recursion): Search declarations of `...Info`, `...Data`, `...Util`, `...Service`, `...Manager` and so on.
+- How to check out domain or topic specific codes (e.g., definition, scope, recursion): Search declarations of`...Data`,  `...Info`, `...Util`, `...Service`, `...Manager` and so on.
 - How to check out provided features and domain entries: View relevant docs, check `plugin.xml` (and the including XML configuration files), or search relevant keywords.
-- Assume and search existing extensions, components, utils, services, managers, etc., **before** reinventing the wheel.
+- Assume and search existing extensions, components, utils, services, managers, EPs, etc., **before** reinventing the wheel.
 - Follow the best practice for Kotlin programming and IntelliJ platform development, more importantly, the **conceptual consistency**.
 
 ## Domain terminology and guidance
@@ -286,7 +280,6 @@ Here are some common code patterns:
 Prefer translate *config* to *规则*, and vice versa, if it specifically means *CWT* config.
 
 Here are some common terms:
-
 - scope → 作用域
 - modifier → 修正
 - trigger → 触发器
@@ -304,7 +297,6 @@ For more details, see: `agents/context/translation-terms.md`
 ### Language guidance
 
 For detailed language syntax and recommended examples, see:
-
 - `docs/en/ref-syntax.md`
 - `src/test/testData/cwt/example.test.cwt`
 - `src/test/testData/script/example.test.txt`
@@ -314,7 +306,6 @@ For detailed language syntax and recommended examples, see:
 ### Config system guidance
 
 For the documents and examples, see:
-
 - `docs/en/config.md` (the config system document)
 - `docs/en/ref-config-format.md` (the config format manual)
 - `src/test/testData/chronicle/` (the easter-egg config directory)
@@ -351,28 +342,15 @@ For the documents and examples, see:
 
 ### General operations
 
-- Prefer built-in tools for common operations (e.g., read, write, edit, patch, grep search, glob search).
+- Prefer using built-in tools for common operations (e.g., read, write, edit, patch, grep search, glob search).
 - Prefer using built-in tools to execute commands for build tool operations (e.g., building, running tests), and operations that are more suitable to be done by commands.
 - Prefer using suitable mcp when structured search or semantic search is available.
 - Prefer running IDE inspections provided by intellij mcp or intellij-index mcp before compilation, building, or running tests, if necessary.
 
 ### JetBrains MCP server
 
-When you need to **drive IDE actions** (not just code intelligence), prefer the built-in JetBrains MCP server tools when available:
-
-- **Run configurations**: list via `get_run_configurations`, run via `execute_run_configuration`
-- **IDE inspections**: `get_file_problems`
-- **Reformatting**: `reformat_file`
-- Etc.
+When you need to **drive IDE actions** (not just code intelligence), prefer the built-in JetBrains MCP server tools when available.
 
 ### IDE Index MCP server
 
-When doing **code navigation/refactoring** on symbols, prefer the IDE Index MCP server tools (semantic/index-based) instead of text-based grep when available:
-
-- **Finding references**: use `ide_find_references`
-- **Finding implementations**: use `ide_find_implementations`
-- **Go to definition**: use `ide_find_definition`
-- **Renaming symbols**: use `ide_refactor_rename`
-- **Type hierarchy**: use `ide_type_hierarchy`
-- **Diagnostics**: use `ide_diagnostics`
-- Etc.
+When doing **code navigation/refactoring** on symbols, prefer the IDE Index MCP server tools (semantic/index-based) instead of text-based grep when available.
