@@ -85,7 +85,7 @@ property_key ::= property_key_content {
 }
 // can be parameterized
 // NOTE 3.0.2 DO NOT split out quote tokens (reduced complexity, better performance)
-private property_key_content ::= property_key_part ( <<processPart>> property_key_part )*
+private property_key_content ::= property_key_part <<processLhsContent>> ( <<processPart>> property_key_part )*
 private property_key_part ::= PROPERTY_KEY_TOKEN | normal_parameter | inline_conditional_block
 private property_separator ::= EQUAL_SIGN | NOT_EQUAL_SIGN | LE_SIGN | GE_SIGN | LT_SIGN | GT_SIGN | SAFE_ASSIGN_SIGN | SAFE_CALL_ASSIGN_SIGN
 private property_value ::= value {
@@ -198,9 +198,9 @@ scripted_variable ::= scripted_variable_name scripted_variable_separator scripte
     getIcon getName setName getNameIdentifier getTextOffset getValue getIElementType isEquivalentTo getPresentableText
   ]
 }
-scripted_variable_name ::= AT scripted_variable_name_content {
+scripted_variable_name ::= AT <<processLhsContent>> scripted_variable_name_content {
   name="scripted variable name"
-  pin=1
+  pin=2
   implements=[
     "icu.windea.pls.script.psi.ParadoxScriptInterpolationContainer"
   ]
@@ -220,6 +220,7 @@ private scripted_variable_value ::= boolean | int | float | string | inline_math
 // scripted variable reference
 scripted_variable_reference ::= AT scripted_variable_reference_content {
   name="scripted variable reference"
+  pin=1
   extends=value
   implements=[
     "icu.windea.pls.lang.psi.ParadoxScriptedVariableReference"
@@ -351,9 +352,19 @@ inline_conditional_block ::= LEFT_BRACKET <<processInlineConditionalBlock>> cond
     getIcon getPresentableText
   ]
 }
-private inline_conditional_block_item ::= <<processInlineConditionalBlockItem>> inline_conditional_block_item_content <<postProcessInlineConditionalBlockItem>>
+private inline_conditional_block_item ::= inline_conditional_block_item_content {
+  // recoverWhile="#auto" // continue parsing
+  recoverWhile=inline_normal_conditional_block_item_recover // continue parsing
+}
 private inline_conditional_block_item_content ::= inline_conditional_block_item_part ( <<processPart>> inline_conditional_block_item_part )*
-private inline_conditional_block_item_part ::= ARGUMENT_TOKEN | normal_parameter | inline_conditional_block
+private inline_conditional_block_item_part ::= inline_conditional_block_item_token | normal_parameter | inline_conditional_block
+private inline_conditional_block_item_token ::= PROPERTY_KEY_TOKEN | STRING_TOKEN | SCRIPTED_VARIABLE_NAME_TOKEN | SCRIPTED_VARIABLE_REFERENCE_TOKEN
+private inline_normal_conditional_block_item_recover ::= !( COMMENT
+  | BOOLEAN_TOKEN | INT_TOKEN | FLOAT_TOKEN | STRING_TOKEN | PROPERTY_KEY_TOKEN
+  | AT | COLOR_TOKEN | INLINE_MATH_START
+  | PARAMETER_START | LEFT_BRACKET | RIGHT_BRACKET
+  | LEFT_BRACE | RIGHT_BRACE
+  )
 
 private conditional_header ::= NESTED_LEFT_BRACKET conditional_expression NESTED_RIGHT_BRACKET {
   pin=1

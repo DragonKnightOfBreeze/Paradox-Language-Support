@@ -8,7 +8,6 @@ import com.intellij.psi.tree.IElementType;
 import icu.windea.pls.model.ParadoxGameType;
 import icu.windea.pls.model.constraints.ParadoxSyntaxConstraint;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntStack;
 
 import static com.intellij.psi.TokenType.*;
 import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
@@ -28,14 +27,14 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
 
   /** lexical states */
   public static final int YYINITIAL = 0;
-  public static final int CHECK_COLORFUL_TEXT = 2;
+  public static final int IN_COLORFUL_TEXT_CHECK = 2;
   public static final int IN_COLOR_ID = 4;
   public static final int IN_COLORFUL_TEXT = 6;
-  public static final int CHECK_PARAMETER = 8;
+  public static final int IN_PARAMETER_CHECK = 8;
   public static final int IN_PARAMETER = 10;
   public static final int IN_PARAMETER_ARGUMENT = 12;
   public static final int IN_SCRIPTED_VARIABLE_REFERENCE = 14;
-  public static final int CHECK_COMMAND = 16;
+  public static final int IN_COMMAND_CHECK = 16;
   public static final int IN_COMMAND = 18;
   public static final int IN_COMMAND_TEXT = 20;
   public static final int IN_COMMAND_ARGUMENT = 22;
@@ -349,9 +348,9 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
     private ParadoxGameType gameType;
 
     // stack for context states (states that need to fallback when exit some constructs)
-    private IntStack stateStack = null;
+    private IntArrayList stateStack = null;
     // stack for expected construct types (e.g., EXPECT_COLORFUL_TEXT)
-    private IntStack expectStack = null;
+    private IntArrayList expectStack = null;
 
     private static final int EXPECT_COLORFUL_TEXT = 1;
     private static final int EXPECT_PARAMETER = 2;
@@ -375,7 +374,7 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
     }
 
     private void enterState(int state, int expect) {
-        // enter state to `expect`
+        // enter state
         if (stateStack == null) {
             stateStack = new IntArrayList();
         }
@@ -404,7 +403,7 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
         yybegin(currentState);
     }
 
-    private void exitState() {
+    private void exitStateForRecovery() {
         // exit state to previous
         if (stateStack == null || stateStack.isEmpty()) {
             yybegin(YYINITIAL);
@@ -419,11 +418,16 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
         yybegin(currentState);
     }
 
-    private boolean exitStateOnBadCharacter() {
-        // exit state for bad character (as fallback)
-        // heuristic: always exist
-        exitState();
+    private boolean exitStateForRecoveryIfNeeded() {
+        // used for final recovery
+        if (!needExitStateForRecovery()) return false;
+        exitStateForRecovery();
         yypushback(yylength());
+        return true;
+    }
+
+    private boolean needExitStateForRecovery() {
+        // heuristic: always recovery atm
         return true;
     }
 
@@ -698,15 +702,15 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
           case 42: break;
           case 2:
             { enterState(yystate(), EXPECT_PARAMETER);
-        yypushback(yylength());
-        yybegin(CHECK_PARAMETER);
+            yypushback(yylength());
+            yybegin(IN_PARAMETER_CHECK);
             }
           // fall through
           case 43: break;
           case 3:
             { enterState(yystate(), EXPECT_COMMAND);
-        yypushback(yylength());
-        yybegin(CHECK_COMMAND);
+            yypushback(yylength());
+            yybegin(IN_COMMAND_CHECK);
             }
           // fall through
           case 44: break;
@@ -719,8 +723,8 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
           case 45: break;
           case 5:
             { enterState(yystate(), EXPECT_COLORFUL_TEXT);
-        yypushback(yylength());
-        yybegin(CHECK_COLORFUL_TEXT);
+            yypushback(yylength());
+            yybegin(IN_COLORFUL_TEXT_CHECK);
             }
           // fall through
           case 46: break;
@@ -744,7 +748,7 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
           // fall through
           case 48: break;
           case 8:
-            { if (!exitStateOnBadCharacter()) return BAD_CHARACTER;
+            { if (!exitStateForRecoveryIfNeeded()) return BAD_CHARACTER;
             }
           // fall through
           case 49: break;
@@ -759,7 +763,7 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
             yybegin(IN_PARAMETER);
             return PARAMETER_START;
         } else {
-            exitState();
+            exitState(EXPECT_PARAMETER);
             yypushback(yylength() - 1);
             return TEXT_TOKEN;
         }
@@ -809,7 +813,7 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
             yybegin(IN_COMMAND);
             return LEFT_BRACKET;
         } else {
-            exitState();
+            exitState(EXPECT_COMMAND);
             return TEXT_TOKEN;
         }
             }

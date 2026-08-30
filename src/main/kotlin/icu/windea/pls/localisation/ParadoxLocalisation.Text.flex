@@ -1,10 +1,10 @@
 package icu.windea.pls.localisation.lexer;
 
+import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.tree.IElementType;
 import icu.windea.pls.model.ParadoxGameType;
 import icu.windea.pls.model.constraints.ParadoxSyntaxConstraint;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntStack;
 
 import static com.intellij.psi.TokenType.*;
 import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
@@ -20,9 +20,9 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
     private ParadoxGameType gameType;
 
     // stack for context states (states that need to fallback when exit some constructs)
-    private IntStack stateStack = null;
+    private IntArrayList stateStack = null;
     // stack for expected construct types (e.g., EXPECT_COLORFUL_TEXT)
-    private IntStack expectStack = null;
+    private IntArrayList expectStack = null;
 
     private static final int EXPECT_COLORFUL_TEXT = 1;
     private static final int EXPECT_PARAMETER = 2;
@@ -46,7 +46,7 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
     }
 
     private void enterState(int state, int expect) {
-        // enter state to `expect`
+        // enter state
         if (stateStack == null) {
             stateStack = new IntArrayList();
         }
@@ -75,8 +75,8 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
         yybegin(currentState);
     }
 
-    private void exitState() {
-        // exit state to previous
+    private void exitStateForRecovery() {
+        // used for recovery
         if (stateStack == null || stateStack.isEmpty()) {
             yybegin(YYINITIAL);
             return;
@@ -90,11 +90,16 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
         yybegin(currentState);
     }
 
-    private boolean exitStateOnBadCharacter() {
-        // exit state for bad character (as fallback)
-        // heuristic: always exist
-        exitState();
+    private boolean exitStateForRecoveryIfNeeded() {
+        // used for final recovery
+        if (!needExitStateForRecovery()) return false;
+        exitStateForRecovery();
         yypushback(yylength());
+        return true;
+    }
+
+    private boolean needExitStateForRecovery() {
+        // heuristic: always recovery atm
         return true;
     }
 
@@ -218,14 +223,13 @@ TextToken = ([^§£\$\[\]#@]|\\[\s\S])+
             yypushback(yylength());
             yybegin(IN_COMMAND_CHECK);
         }
-    // use trailing context (high priority than normal form)
+    // use trailing context (higher priority)
     "£" / {IconWildcardLeadChar} {
         enterState(yystate(), EXPECT_ICON);
         yybegin(IN_ICON);
         return ICON_START;
     }
     "£" { return TEXT_TOKEN; }
-    // use trailing context (high priority than normal form)
     "@" / {TextIconWildcardLeadChar} {
         if (!ParadoxSyntaxConstraint.LocalisationTextIcon.testTarget(this)) return TEXT_TOKEN;
         enterState(yystate(), EXPECT_TEXT_ICON);
@@ -233,7 +237,7 @@ TextToken = ([^§£\$\[\]#@]|\\[\s\S])+
         return TEXT_ICON_START;
     }
     "@" { return TEXT_TOKEN; }
-    // use trailing context (high priority than normal form)
+    // use trailing context (higher priority)
     "#" / {TextFormatWildcardLeadChar} {
         if (!ParadoxSyntaxConstraint.LocalisationTextFormat.testTarget(this)) return TEXT_TOKEN;
         enterState(yystate(), EXPECT_TEXT_FORMAT);
@@ -314,7 +318,7 @@ TextToken = ([^§£\$\[\]#@]|\\[\s\S])+
 }
 <IN_COLOR_ID> {
     {ColorToken} { yybegin(IN_COLORFUL_TEXT); return COLOR_TOKEN; }
-    [^] { if (!exitStateOnBadCharacter()) return BAD_CHARACTER; } // recovery
+    [^] { if (!exitStateForRecoveryIfNeeded()) return BAD_CHARACTER; } // recovery
 }
 
 // localisation parameter rules
@@ -326,7 +330,7 @@ TextToken = ([^§£\$\[\]#@]|\\[\s\S])+
             yybegin(IN_PARAMETER);
             return PARAMETER_START;
         } else {
-            exitState();
+            exitState(EXPECT_PARAMETER);
             yypushback(yylength() - 1);
             return TEXT_TOKEN;
         }
@@ -342,16 +346,16 @@ TextToken = ([^§£\$\[\]#@]|\\[\s\S])+
     "|" { yybegin(IN_PARAMETER_ARGUMENT); return PIPE; }
     "@" { yybegin(IN_SCRIPTED_VARIABLE_REFERENCE); return AT; }
     {ParameterToken} { return PARAMETER_TOKEN; }
-    [^] { if (!exitStateOnBadCharacter()) return BAD_CHARACTER; } // recovery
+    [^] { if (!exitStateForRecoveryIfNeeded()) return BAD_CHARACTER; } // recovery
 }
 <IN_PARAMETER_ARGUMENT> {
     {ArgumentToken} { return ARGUMENT_TOKEN; }
-    [^] { if (!exitStateOnBadCharacter()) return BAD_CHARACTER; } // recovery
+    [^] { if (!exitStateForRecoveryIfNeeded()) return BAD_CHARACTER; } // recovery
 }
 <IN_SCRIPTED_VARIABLE_REFERENCE> {
     "|" { yybegin(IN_PARAMETER_ARGUMENT); return PIPE; }
     {ScriptedVariableToken} { return SCRIPTED_VARIABLE_REFERENCE_TOKEN; }
-    [^] { if (!exitStateOnBadCharacter()) return BAD_CHARACTER; } // recovery
+    [^] { if (!exitStateForRecoveryIfNeeded()) return BAD_CHARACTER; } // recovery
 }
 
 // localisation command rules
@@ -363,7 +367,7 @@ TextToken = ([^§£\$\[\]#@]|\\[\s\S])+
             yybegin(IN_COMMAND);
             return LEFT_BRACKET;
         } else {
-            exitState();
+            exitState(EXPECT_COMMAND);
             return TEXT_TOKEN;
         }
     }
@@ -389,11 +393,11 @@ TextToken = ([^§£\$\[\]#@]|\\[\s\S])+
     "|" { yybegin(IN_COMMAND_ARGUMENT); return PIPE; }
     {CommandTextToken} { return COMMAND_TEXT_TOKEN; } // trailing blank should be pushbacked
     {Blank} { return WHITE_SPACE; } // compatible with blank
-    [^] { if (!exitStateOnBadCharacter()) return BAD_CHARACTER; } // recovery
+    [^] { if (!exitStateForRecoveryIfNeeded()) return BAD_CHARACTER; } // recovery
 }
 <IN_COMMAND_ARGUMENT> {
     {ArgumentToken} { return ARGUMENT_TOKEN; }
-    [^] { if (!exitStateOnBadCharacter()) return BAD_CHARACTER; } // recovery
+    [^] { if (!exitStateForRecoveryIfNeeded()) return BAD_CHARACTER; } // recovery
 }
 
 // [stellaris] localisation concept command rules (as special command rules)
@@ -409,7 +413,7 @@ TextToken = ([^§£\$\[\]#@]|\\[\s\S])+
     "," { yybegin(IN_CONCEPT_AFTER_COMMA); return COMMA; }
     {ConceptNameToken} { return CONCEPT_NAME_TOKEN; }
     {Blank} { return WHITE_SPACE; } // compatible with blank
-    [^] { if (!exitStateOnBadCharacter()) return BAD_CHARACTER; } // recovery
+    [^] { if (!exitStateForRecoveryIfNeeded()) return BAD_CHARACTER; } // recovery
 }
 <IN_CONCEPT_AFTER_COMMA> {
     // enter text section
@@ -429,11 +433,11 @@ TextToken = ([^§£\$\[\]#@]|\\[\s\S])+
 <IN_ICON> {
     "|" { yybegin(IN_ICON_ARGUMENT); return PIPE; }
     {IconToken} { return ICON_TOKEN; }
-    [^] { if (!exitStateOnBadCharacter()) return BAD_CHARACTER; } // recovery
+    [^] { if (!exitStateForRecoveryIfNeeded()) return BAD_CHARACTER; } // recovery
 }
 <IN_ICON_ARGUMENT> {
     {ArgumentToken} { return ARGUMENT_TOKEN; }
-    [^] { if (!exitStateOnBadCharacter()) return BAD_CHARACTER; } // recovery
+    [^] { if (!exitStateForRecoveryIfNeeded()) return BAD_CHARACTER; } // recovery
 }
 
 // [ck3, vic3, eu5] localisation text icon rules
@@ -446,7 +450,7 @@ TextToken = ([^§£\$\[\]#@]|\\[\s\S])+
 }
 <IN_TEXT_ICON> {
     {TextIconToken} { return TEXT_ICON_TOKEN; }
-    [^] { if (!exitStateOnBadCharacter()) return BAD_CHARACTER; } // recovery
+    [^] { if (!exitStateForRecoveryIfNeeded()) return BAD_CHARACTER; } // recovery
 }
 
 // [ck3, vic3, eu5] localisation text format rules

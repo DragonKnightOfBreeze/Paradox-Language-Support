@@ -1,17 +1,27 @@
 [[A] tag_a ]
-[[!A] tag_a [[B] tag_b ] ]
-[[A] a = 1 ]
+[[A] tag_a [[B] tag_b ] ]
+[[!A] a = 1 ]
 [[A] a = 1 [[!B] b = 2 ] ]
+
+[ [A] tag_a ]
+[ [A] tag_a [[B] tag_b ] ]
+[ [!A] a = 1 ]
+[ [A] a = 1 [[! B] b = 2 ] ]
+
+[ [ A ] tag_a ]
+[ [ A ] tag_a [[ B ] tag_b ] ]
+[ [ !A ] a = 1 ]
+[ [A] a = 1 [[ ! B ] b = 2 ] ]
 
 [[A]
     tag_a
-    [[!B]
+    [[B]
         tag_b
     ]
 ]
-[[!A]
+[[A]
     a = 1
-    [[B]
+    [[!B]
         b = 2
     ]
 ]

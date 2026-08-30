@@ -33,13 +33,13 @@ key = [[!PARAM]text]
 
 "key" = "value"
 "key" = "$PARAM$"
-"$PARAM$" = "value"
-"$PARAM$" = "$PARAM$"
+"$PARAM$ " = "value"
+"$PARAM$" = " $PARAM$"
 
-key = "[[$PARAM$]]"
-key = "[[$PARAM$]text]"
-key = "[[!$PARAM$]]"
-key = "[[!$PARAM$]text]"
+key = "[[PARAM]]" // TODO
+key = "[[PARAM]text] "
+key = "[[!PARAM]] "
+key = " [ [!PARAM]text]"
 
 # `[value]` should be normal string tokens
 

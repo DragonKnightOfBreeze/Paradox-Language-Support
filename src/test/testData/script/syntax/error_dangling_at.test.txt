@@ -1,8 +1,18 @@
-@name = value
-key = @var
+@var # correct reference
+@ var # middle whitespaces -> reference
+@ # missing identifier -> reference
+@@ # double markers -> reference + reference
 
-@ # eol
-key = @ # eol
+key = @var # correct reference
+key = @ var # middle whitespaces -> reference
+key = @ # missing identifier -> reference
+key=@ # missing identifier -> reference
+key = @@ # double markers -> reference + reference
+key=@@ # double markers -> reference + reference
 
-@ name = value # eol
-key = @ var @ eol
+@name = value # correct declaration
+@ name = value # middle whitespaces -> reference
+@ = value # missing identifier -> declaration
+@=value # missing identifier -> declaration
+@@ = value # double markers -> reference + declaration
+@@=value # double markers -> reference + declaration

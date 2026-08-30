@@ -17,7 +17,7 @@ ParadoxScriptFile: error_unclosed_braces.test.txt(0,29)
           PsiWhiteSpace(' ')(16,17)
           ParadoxScriptString: b(17,18)
             PsiElement(STRING_TOKEN)('b')(17,18)
-        PsiErrorElement:<comment>, <conditional block>, <scripted variable>, <value> or RIGHT_BRACE expected(18,18)
+        PsiErrorElement:<comment>, <conditional block>, <property key>, <scripted variable>, <value> or RIGHT_BRACE expected(18,18)
           <empty list>
     PsiWhiteSpace('\n\n')(18,20)
     PsiComment(COMMENT)('# comment')(20,29)

@@ -9,6 +9,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 object ParadoxLocalisationParserUtil : GeneratedParserUtilBase() {
     @JvmStatic
     fun isCommand(b: PsiBuilder, l: Int): Boolean {
+        // check at the start of each command (`command`)
         val tokenAfterLeftBracket = b.lookup(1, forward = true)
         return tokenAfterLeftBracket != LEFT_SINGLE_QUOTE
     }

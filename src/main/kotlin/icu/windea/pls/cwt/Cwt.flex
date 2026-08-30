@@ -111,7 +111,7 @@ OptionTextToken = {OptionTextBoundChar}({OptionTextChar}*{OptionTextBoundChar})?
     {BooleanToken} { yybegin(YYINITIAL); return BOOLEAN_TOKEN; }
     {IntToken} { yybegin(YYINITIAL); return INT_TOKEN; }
     {FloatToken} { yybegin(YYINITIAL); return FLOAT_TOKEN; }
-    // use trailing context (high priority than normal form)
+    // use trailing context (higher priority)
     {PropertyKeyContent} / {Blank}?{Separator} { yybegin(YYINITIAL); return PROPERTY_KEY_TOKEN; }
     {StringContent} { yybegin(YYINITIAL); return STRING_TOKEN; }
 }
@@ -133,7 +133,7 @@ OptionTextToken = {OptionTextBoundChar}({OptionTextChar}*{OptionTextBoundChar})?
     {IntToken} { yybegin(IN_OPTION); return INT_TOKEN; }
     {FloatToken} { yybegin(IN_OPTION); return FLOAT_TOKEN; }
     {StringContent} { yybegin(IN_OPTION); return STRING_TOKEN; }
-    // use trailing context (high priority than normal form)
+    // use trailing context (higher priority)
     {OptionKeyContent} / {Blank}?{Separator} { yybegin(IN_OPTION); return OPTION_KEY_TOKEN; }
     {OptionTextToken} { yybegin(IN_OPTION); return STRING_TOKEN; }
 }
@@ -154,7 +154,7 @@ OptionTextToken = {OptionTextBoundChar}({OptionTextChar}*{OptionTextBoundChar})?
     {BooleanToken} { yybegin(IN_OPTION_NESTED); return BOOLEAN_TOKEN; }
     {IntToken} { yybegin(IN_OPTION_NESTED); return INT_TOKEN; }
     {FloatToken} { yybegin(IN_OPTION_NESTED); return FLOAT_TOKEN; }
-    // use trailing context (high priority than normal form)
+    // use trailing context (higher priority)
     {OptionKeyContent} / {Blank}?{Separator} { yybegin(IN_OPTION_NESTED); return OPTION_KEY_TOKEN; }
     {StringContent} { yybegin(IN_OPTION_NESTED); return STRING_TOKEN; }
 }
