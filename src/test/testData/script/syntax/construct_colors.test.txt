@@ -1,0 +1,23 @@
+# color_type = rgb
+# format:
+# - rgb { $r $g $b }
+# - rgb { $r $g $b $a }
+# - r,g,b,a - matches int[0..255] or float[0.0..1.0]
+
+color_rgb = rgb { 0 0 0 }
+color_rgb = rgb { 255 255 255 }
+color_rgb = rgb { 0.0 0.0 0.0 }
+color_rgb = rgb { 1.0 1.0 1.0 }
+color_rgb_with_alpha = rgb { 0 0 0 0 }
+color_rgb_with_alpha = rgb { 255 255 255 255 }
+color_rgb_with_alpha = rgb { 0.0 0.0 0.0 0.0 }
+color_rgb_with_alpha = rgb { 1.0 1.0 1.0 1.0 }
+
+# format:
+# - hsv { $h $s $v }
+# - h,s,v - matches float[0.0..1.0]
+
+color_rgb = rgb { 0 0 0 }
+color_rgb = rgb { 255 255 255 }
+color_rgb = rgb { 0.0 0.0 0.0 }
+color_rgb = rgb { 1.0 1.0 1.0 }

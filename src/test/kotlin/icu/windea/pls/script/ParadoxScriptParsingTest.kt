@@ -44,7 +44,19 @@ class ParadoxScriptParsingTest : ParsingTestCase("script/syntax", "test.txt", Pa
     fun attached_comments() = doTest(true)
 
     @Test
+    fun construct_boolean_literals() = doTest(true)
+    @Test
+    fun construct_number_literals() = doTest(true)
+    @Test
+    fun construct_expressions() = doTest(true)
+    @Test
     fun construct_scripted_variables() = doTest(true)
+    @Test
+    fun construct_colors() = doTest(true)
+    @Test
+    fun construct_inline_maths() = doTest(true)
+    @Test
+    fun construct_parameters() = doTest(true)
     @Test
     fun construct_conditional_blocks() = doTest(true)
     @Test
@@ -53,8 +65,6 @@ class ParadoxScriptParsingTest : ParsingTestCase("script/syntax", "test.txt", Pa
     fun construct_interpolations() = doTest(true) // 3.0.2
     @Test
     fun construct_complex_interpolations() = doTest(true) // 3.0.2
-    @Test
-    fun construct_inline_maths() = doTest(true)
 
     @Test
     fun error_missing_property_value() = doTest(true)
