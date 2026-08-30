@@ -2,5 +2,9 @@ l_english:
  text_icon:0 "@icon!"
  text_icon_missing_end_marker:0 "@icon"
 
- text_icon.mixed:0 "@icon! text"
- text_icon_missing_end_marker.mixed:0 "@icon text"
+ text_icon_mixed:0 "@icon! text"
+ text_icon_missing_end_marker_mixed:0 "@icon text"
+
+ text_icon_fallback_1:0 "@"
+ text_icon_fallback_2:0 "@ text"
+ text_icon_fallback_3:0 "@ text !"

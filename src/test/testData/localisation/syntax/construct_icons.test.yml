@@ -4,10 +4,10 @@ l_english:
  icon_with_argument:0 "£leader_skill|3£"
  icon_with_argument_missing_end_marker:0 "£leader_skill|3"
 
- icon.mixed:0 "£unity£ text"
- icon_missing_end_marker.mixed:0 "£unity text"
- icon_with_argument.mixed:0 "£leader_skill|3£ text"
- icon_with_argument_missing_end_marker.mixed:0 "£leader_skill|3 text"
+ icon_mixed:0 "£unity£ text"
+ icon_missing_end_marker_mixed:0 "£unity text"
+ icon_with_argument_mixed:0 "£leader_skill|3£ text"
+ icon_with_argument_missing_end_marker_mixed:0 "£leader_skill|3 text"
 
  icon_parameterized_1:0 "£a_$b$_c£"
  icon_parameterized_2:0 "£a_$b$_[c]_d£"
@@ -18,3 +18,6 @@ l_english:
  icon_parameterized_7:0 "£$b$£"
  icon_parameterized_8:0 "£[c]£"
 
+ icon_fallback_1:0 "£"
+ icon_fallback_2:0 "£ text"
+ icon_fallback_3:0 "£ text £"

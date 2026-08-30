@@ -5,8 +5,12 @@ l_english:
  text_format_no_delimiter:0 "#vtext#!"
  text_format_no_delimiter_dot:0 "#v.text#!"
 
- text_format.mixed:0 "#v text#! text"
- text_format_missing_end_marker.mixed:0 "#v text#! text"
- text_format_empty_body.mixed:0 "#v #! text"
- text_format_no_delimiter.mixed:0 "#vtext#! text"
- text_format_no_delimiter_dot.mixed:0 "#v.text#! text"
+ text_format_mixed:0 "#v text#! text"
+ text_format_missing_end_marker_mixed:0 "#v text#! text"
+ text_format_empty_body_mixed:0 "#v #! text"
+ text_format_no_delimiter_mixed:0 "#vtext#! text"
+ text_format_no_delimiter_dot_mixed:0 "#v.text#! text"
+
+ text_format_fallback_1:0 "#"
+ text_format_fallback_2:0 "# text"
+ text_format_fallback_3:0 "# text #!"
