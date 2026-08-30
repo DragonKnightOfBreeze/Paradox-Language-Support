@@ -62,6 +62,18 @@ public class ParadoxCsvParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // COMMENT
+  static boolean comment(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "comment")) return false;
+    if (!nextTokenIs(b, "<comment>", COMMENT)) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, null, "<comment>");
+    r = consumeToken(b, COMMENT);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  /* ********************************************************** */
   // row_items
   public static boolean header(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "header")) return false;
@@ -73,7 +85,7 @@ public class ParadoxCsvParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // COMMENT* header? ( row | COMMENT )*
+  // comment* header? ( row | comment )*
   static boolean root(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "root")) return false;
     boolean r;
@@ -85,12 +97,12 @@ public class ParadoxCsvParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // COMMENT*
+  // comment*
   private static boolean root_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "root_0")) return false;
     while (true) {
       int c = current_position_(b);
-      if (!consumeToken(b, COMMENT)) break;
+      if (!comment(b, l + 1)) break;
       if (!empty_element_parsed_guard_(b, "root_0", c)) break;
     }
     return true;
@@ -103,7 +115,7 @@ public class ParadoxCsvParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // ( row | COMMENT )*
+  // ( row | comment )*
   private static boolean root_2(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "root_2")) return false;
     while (true) {
@@ -114,12 +126,12 @@ public class ParadoxCsvParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // row | COMMENT
+  // row | comment
   private static boolean root_2_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "root_2_0")) return false;
     boolean r;
     r = row(b, l + 1);
-    if (!r) r = consumeToken(b, COMMENT);
+    if (!r) r = comment(b, l + 1);
     return r;
   }
 

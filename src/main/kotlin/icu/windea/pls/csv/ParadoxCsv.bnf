@@ -23,11 +23,16 @@
 // - Header and row share the same item structure; EOL is recognized by lexer token.
 // - Empty first/middle columns are allowed; quoted columns can be unterminated for recovery.
 
-root ::= COMMENT* header? ( row | COMMENT )*
+root ::= comment* header? ( row | comment )*
+
+private comment ::= COMMENT {
+  name="comment"
+}
 
 // column container rules
 
 header ::= row_items {
+  name="header"
   implements=[
     "icu.windea.pls.csv.psi.ParadoxCsvColumnContainer"
   ]
@@ -36,6 +41,7 @@ header ::= row_items {
   ]
 }
 row ::= row_items {
+  name="row"
   implements=[
     "icu.windea.pls.csv.psi.ParadoxCsvColumnContainer"
   ]
@@ -51,6 +57,7 @@ private row_item ::= <<checkEol>> SEPARATOR [ <<checkEol>> column ]
 
 // empty first/middle columns are allowed
 column ::= <<checkColumnToken>> column_content? {
+  name="column"
   implements=[
     "icu.windea.pls.core.psi.PsiQuoteAwareElement"
     "icu.windea.pls.csv.psi.ParadoxCsvLiteralValue"

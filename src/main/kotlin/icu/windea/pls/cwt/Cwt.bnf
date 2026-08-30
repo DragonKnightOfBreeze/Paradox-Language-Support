@@ -23,6 +23,21 @@
 
 root ::= root_block?
 
+private general_comment ::= doc_comment | option_comment | comment
+doc_comment ::= DOC_COMMENT_TOKEN {
+  name="doc comment"
+  implements=["com.intellij.psi.PsiDocCommentBase"]
+  methods=[getTokenType getOwner]
+}
+option_comment ::= option_comment_root {
+  name="option comment"
+  implements=["com.intellij.psi.PsiComment"]
+  methods=[getTokenType optionList="option" optionValueList="value"]
+}
+private comment ::= COMMENT {
+  name="comment"
+}
+
 root_block ::= root_block_items {
   hooks=[wsBinders="GREEDY_LEFT_BINDER, GREEDY_RIGHT_BINDER"] // surrounding whitespaces and comments are greedy
   implements=[
@@ -44,19 +59,6 @@ private root_block_item_recover ::= !( COMMENT | OPTION_COMMENT_START | DOC_COMM
   | LEFT_BRACE | RIGHT_BRACE
   )
 
-// comment rules
-
-private general_comment ::= doc_comment | option_comment | comment
-doc_comment ::= DOC_COMMENT_TOKEN {
-  implements=["com.intellij.psi.PsiDocCommentBase"]
-  methods=[getTokenType getOwner]
-}
-option_comment ::= option_comment_root {
-  implements=["com.intellij.psi.PsiComment"]
-  methods=[getTokenType optionList="option" optionValueList="value"]
-}
-private comment ::= COMMENT
-
 // within option comment rules
 // 2.0.7 DO NOT use lazy-parsing due to performance reasons
 
@@ -75,6 +77,7 @@ private option_comment_item_recover ::= !( COMMENT | OPTION_COMMENT_START | DOC_
   )
 
 option ::= option_key option_separator option_value {
+  name="option"
   pin=1
   implements=[
     "icu.windea.pls.cwt.psi.CwtNamedElement"
@@ -86,6 +89,7 @@ option ::= option_key option_separator option_value {
   ]
 }
 option_key ::= option_key_content {
+  name="option key"
   implements=[
     "com.intellij.psi.NavigatablePsiElement"
     "icu.windea.pls.core.psi.PsiQuoteAwareElement"
@@ -97,11 +101,14 @@ option_key ::= option_key_content {
 // NOTE 3.0.2 DO NOT split out quote tokens (reduced complexity, better performance)
 private option_key_content ::= OPTION_KEY_TOKEN
 private option_separator ::= EQUAL_SIGN | NOT_EQUAL_SIGN | DOUBLE_EQUAL_SIGN
-private option_value ::= value
+private option_value ::= value {
+  name="option value"
+}
 
 // property rules
 
 property ::= property_key property_separator property_value {
+  name="property"
   pin=1
   implements=[
     "icu.windea.pls.cwt.psi.CwtNamedElement"
@@ -113,6 +120,7 @@ property ::= property_key property_separator property_value {
   ]
 }
 property_key ::= property_key_content {
+  name="property key"
   implements=[
     "icu.windea.pls.core.psi.PsiQuoteAwareElement"
     "icu.windea.pls.cwt.psi.CwtLiteralValue"
@@ -126,11 +134,14 @@ property_key ::= property_key_content {
 // NOTE 3.0.2 DO NOT split out quote tokens (reduced complexity, better performance)
 private property_key_content ::= PROPERTY_KEY_TOKEN
 private property_separator ::= EQUAL_SIGN | NOT_EQUAL_SIGN | DOUBLE_EQUAL_SIGN
-private property_value ::= value
+private property_value ::= value {
+  name="property value"
+}
 
 // value rules
 
 value ::= boolean | int | float | string | block {
+  name="value"
   implements=[
     "icu.windea.pls.cwt.psi.CwtExpressionElement"
     "icu.windea.pls.cwt.psi.CwtMember"
@@ -142,12 +153,14 @@ value ::= boolean | int | float | string | block {
 }
 
 boolean ::= BOOLEAN_TOKEN {
+  name="boolean"
   extends=value
   implements=[
     "icu.windea.pls.cwt.psi.CwtLiteralValue"
   ]
 }
 int ::= INT_TOKEN {
+  name="int"
   extends=value
   implements=[
     "icu.windea.pls.cwt.psi.CwtLiteralValue"
@@ -155,6 +168,7 @@ int ::= INT_TOKEN {
   ]
 }
 float ::= FLOAT_TOKEN {
+  name="float"
   extends=value
   implements=[
     "icu.windea.pls.cwt.psi.CwtLiteralValue"
@@ -163,6 +177,7 @@ float ::= FLOAT_TOKEN {
 }
 
 string ::= string_content {
+  name="string"
   extends=value
   implements=[
     "icu.windea.pls.core.psi.PsiQuoteAwareElement"

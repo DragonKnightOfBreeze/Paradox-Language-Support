@@ -25,7 +25,12 @@
 
 root ::= property_list*
 
-property_list ::= COMMENT* ( property_item_list_with_locale | property_item_list ) {
+private comment ::= COMMENT {
+  name="comment"
+}
+
+property_list ::= comment* ( property_item_list_with_locale | property_item_list ) {
+  name="property list"
   extends="icu.windea.pls.localisation.psi.impl.ParadoxLocalisationStubElementImpl<?>"
   stubClass="icu.windea.pls.localisation.psi.stubs.ParadoxLocalisationPropertyListStub"
   implements=[
@@ -38,13 +43,14 @@ property_list ::= COMMENT* ( property_item_list_with_locale | property_item_list
 private property_item_list_with_locale ::= locale property_items? { pin=1 }
 private property_item_list ::= property_items
 private property_items ::= property_item+
-private property_item ::= COMMENT | property {
+private property_item ::= comment | property {
   // recoverWhile="#auto" // continue parsing
   recoverWhile=property_item_recover // continue parsing
 }
-private property_item_recover ::= !( COMMENT | LOCALE_TOKEN | PROPERTY_KEY_TOKEN )
+private property_item_recover ::= !( comment | LOCALE_TOKEN | PROPERTY_KEY_TOKEN )
 
 locale ::= LOCALE_TOKEN COLON {
+  name="locale"
   pin=1
   extends="icu.windea.pls.localisation.psi.impl.ParadoxLocalisationStubElementImpl<?>"
   stubClass="icu.windea.pls.localisation.psi.stubs.ParadoxLocalisationLocaleStub"
@@ -58,6 +64,7 @@ locale ::= LOCALE_TOKEN COLON {
 }
 
 property ::= property_key COLON property_number? property_value {
+  name="property"
   pin=1
   extends="icu.windea.pls.localisation.psi.impl.ParadoxLocalisationStubElementImpl<?>"
   stubClass="icu.windea.pls.localisation.psi.stubs.ParadoxLocalisationPropertyStub"
@@ -71,6 +78,7 @@ property ::= property_key COLON property_number? property_value {
 }
 
 property_key ::= PROPERTY_KEY_TOKEN {
+  name="property key"
   implements=[
     "com.intellij.psi.NavigatablePsiElement"
   ]
@@ -83,10 +91,13 @@ property_key ::= PROPERTY_KEY_TOKEN {
 // The number seen in vanilla files right after the colon can be omitted, as it is only useful for Paradox’s internal translation tracking
 // see: https://stellaris.paradoxwikis.com/Localisation_modding
 // see: https://twitter.com/Martin_Anward/status/1039175213773144066
-private property_number ::= PROPERTY_NUMBER_TOKEN
+private property_number ::= PROPERTY_NUMBER_TOKEN {
+  name="property number"
+}
 
 // lazy-parsing PROPERTY_VALUE_TOKEN
 property_value ::= property_value_content  {
+  name="property value"
   implements=[
     "com.intellij.psi.NavigatablePsiElement"
     "icu.windea.pls.core.psi.PsiQuoteAwareElement"
