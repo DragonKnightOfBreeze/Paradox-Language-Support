@@ -34,21 +34,21 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 
 %unicode
 
-BLANK=\s+
+Blank = \s+
 
-INT_NUMBER_TOKEN=[0-9]+ // leading zero is allowed
-FLOAT_NUMBER_TOKEN=[0-9]*\.[0-9]+ // leading zero is allowed
+IntNumberToken = [0-9]+ // leading zero is allowed
+FloatNumberToken = [0-9]*\.[0-9]+ // leading zero is allowed
 
-IDENTIFIER_CHAR=[A-Za-z0-9_]
-IDENTIFIER_LEAD_CHAR=[A-Za-z_] // leading number is not allowed
-IDENTIFIER_TOKEN={IDENTIFIER_LEAD_CHAR}{IDENTIFIER_CHAR}* // leading number is not allowed
+IdentifierChar = [A-Za-z0-9_]
+IdentifierLeadChar = [A-Za-z_] // leading number is not allowed
+IdentifierToken = {IdentifierLeadChar}{IdentifierChar}* // leading number is not allowed
 
-PARAMETER_TOKEN={IDENTIFIER_TOKEN} // identifier
+ParameterToken = {IdentifierToken} // identifier
 
-ARGUMENT_CHAR=[^#=<>!?{}\\\s$\[\]] // `@` is allowed
-ARGUMENT_TOKEN={ARGUMENT_CHAR}+ // compatible with leading '@'
+ArgumentChar = [^# = <>!?{}\\\s$\[\]] // `@` is allowed
+ArgumentToken = {ArgumentChar}+ // compatible with leading '@'
 
-SCRIPTED_VARIABLE_TOKEN={IDENTIFIER_TOKEN} // identifier
+ScriptedVariableToken = {IdentifierToken} // identifier
 
 %%
 
@@ -71,10 +71,10 @@ SCRIPTED_VARIABLE_TOKEN={IDENTIFIER_TOKEN} // identifier
     "%" { return MOD_SIGN; }
     "$" { yybegin(IN_PARAMETER); return PARAMETER_START; }
     "@" { return AT; } // leading `@` is allowed here at syntax level (but not valid in actual)
-    {INT_NUMBER_TOKEN} { return INT_NUMBER_TOKEN; }
-    {FLOAT_NUMBER_TOKEN} { return FLOAT_NUMBER_TOKEN; }
-    {SCRIPTED_VARIABLE_TOKEN} { return SCRIPTED_VARIABLE_REFERENCE_TOKEN; }
-    {BLANK} { return WHITE_SPACE; }
+    {IntNumberToken} { return INT_NUMBER_TOKEN; }
+    {FloatNumberToken} { return FLOAT_NUMBER_TOKEN; }
+    {ScriptedVariableToken} { return SCRIPTED_VARIABLE_REFERENCE_TOKEN; }
+    {Blank} { return WHITE_SPACE; }
 }
 
 <IN_PARAMETER, IN_PARAMETER_ARGUMENT> {
@@ -82,12 +82,12 @@ SCRIPTED_VARIABLE_TOKEN={IDENTIFIER_TOKEN} // identifier
 }
 <IN_PARAMETER> {
     "|" { yybegin(IN_PARAMETER_ARGUMENT); return PIPE; }
-    {PARAMETER_TOKEN} { return PARAMETER_TOKEN; }
-    {BLANK} { yybegin(YYINITIAL); return WHITE_SPACE; }
+    {ParameterToken} { return PARAMETER_TOKEN; }
+    {Blank} { yybegin(YYINITIAL); return WHITE_SPACE; }
 }
 <IN_PARAMETER_ARGUMENT> {
-    {ARGUMENT_TOKEN} { return ARGUMENT_TOKEN; }
-    {BLANK} { yybegin(YYINITIAL); return WHITE_SPACE; }
+    {ArgumentToken} { return ARGUMENT_TOKEN; }
+    {Blank} { yybegin(YYINITIAL); return WHITE_SPACE; }
 }
 
 [^] { return BAD_CHARACTER; }

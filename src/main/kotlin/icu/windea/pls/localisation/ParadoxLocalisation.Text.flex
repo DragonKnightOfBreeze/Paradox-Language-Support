@@ -177,47 +177,47 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 
 %unicode
 
-BLANK=\s+
+Blank = \s+
 
-IDENTIFIER_CHAR=[A-Za-z0-9_]
-IDENTIFIER_LEAD_CHAR=[A-Za-z_] // leading number is not allowed
-IDENTIFIER_TOKEN={IDENTIFIER_LEAD_CHAR}{IDENTIFIER_CHAR}* // leading number is not allowed
+IdentifierChar = [A-Za-z0-9_]
+IdentifierLeadChar = [A-Za-z_] // leading number is not allowed
+IdentifierToken = {IdentifierLeadChar}{IdentifierChar}* // leading number is not allowed
 
-PARAMETER_CHECK=\$(\S*\$|.?) // no blank in $...$
-PARAMETER_CHAR={IDENTIFIER_CHAR}|[.\-'] // `-'` is allowed additionally
-PARAMETER_LEAD_CHAR={IDENTIFIER_LEAD_CHAR}|[.\-'] // leading number is not allowed & `-'` is allowed additionally
-PARAMETER_TOKEN={PARAMETER_LEAD_CHAR}{PARAMETER_CHAR}* // leading number is not allowed & `-'` is allowed additionally
+ParameterCheck = \$(\S*\$|.?) // no blank in $...$
+ParameterChar = {IdentifierChar}|[.\-'] // `-'` is allowed additionally
+ParameterLeadChar = {IdentifierLeadChar}|[.\-'] // leading number is not allowed & `-'` is allowed additionally
+ParameterToken = {ParameterLeadChar}{ParameterChar}* // leading number is not allowed & `-'` is allowed additionally
 
-ARGUMENT_CHAR=[^\"§£\$\[\]\\\s] // `|` is allowed?
-ARGUMENT_TOKEN={ARGUMENT_CHAR}+
+ArgumentChar = [^\"§£\$\[\]\\\s] // `|` is allowed?
+ArgumentToken = {ArgumentChar}+
 
-SCRIPTED_VARIABLE_TOKEN={IDENTIFIER_TOKEN} // identifier
+ScriptedVariableToken = {IdentifierToken} // identifier
 
-COLORFUL_TEXT_CHECK=§.?
-COLOR_TOKEN={IDENTIFIER_CHAR} // identifier char
+ColorfulTextCheck = §.?
+ColorToken = {IdentifierChar} // identifier char
 
-COMMAND_CHECK=\[.?
-COMMAND_TEXT_CHAR=[^\[\]\|\r\n] // `[]` within single quotes are not allowed?
-COMMAND_TEXT_BOUND_CHAR=[^\[\]\|\s] // `[]` within single quotes are not allowed?
-COMMAND_TEXT_TOKEN={COMMAND_TEXT_BOUND_CHAR}({COMMAND_TEXT_CHAR}*{COMMAND_TEXT_BOUND_CHAR})? // inner whitespaces are allowed
+CommandCheck = \[.?
+CommandTextChar = [^\[\]\|\r\n] // `[]` within single quotes are not allowed?
+CommandTextBoundChar = [^\[\]\|\s] // `[]` within single quotes are not allowed?
+CommandTextToken = {CommandTextBoundChar}({CommandTextChar}*{CommandTextBoundChar})? // inner whitespaces are allowed
 
-CONCEPT_NAME_CHAR=[A-Za-z0-9_:] // `:` is allowed additionally
-CONCEPT_NAME_TOKEN={CONCEPT_NAME_CHAR}+
+ConceptNameChar = [A-Za-z0-9_:] // `:` is allowed additionally
+ConceptNameToken = {ConceptNameChar}+
 
-ICON_CHECK=£.?
-ICON_CHAR={IDENTIFIER_CHAR}|[\-/\\] // `-/\` is allowed additionally
-ICON_TOKEN={ICON_CHAR}+ // leading number is allowed
+IconCheck = £.?
+IconChar = {IdentifierChar}|[\-/\\] // `-/\` is allowed additionally
+IconToken = {IconChar}+ // leading number is allowed
 
-TEXT_ICON_CHECK=@.?
-TEXT_ICON_CHAR={IDENTIFIER_CHAR} // identifier
-TEXT_ICON_TOKEN={TEXT_ICON_CHAR}+ // leading number is allowed
+TextIconCheck = @.?
+TextIconChar = {IdentifierChar} // identifier
+TextIconToken = {TextIconChar}+ // leading number is allowed
 
 // `italic;color:green` form is allowed
-TEXT_FORMAT_CHECK=#.?
-TEXT_FORMAT_CHAR={IDENTIFIER_CHAR}|[:'] // `:'` is allowed additionally
-TEXT_FORMAT_TOKEN={TEXT_FORMAT_CHAR}+ // leading number is allowed
+TextFormatCheck = #.?
+TextFormatChar = {IdentifierChar}|[:'] // `:'` is allowed additionally
+TextFormatToken = {TextFormatChar}+ // leading number is allowed
 
-TEXT_TOKEN=([^§£\$\[\]#@]|\\[\s\S])+
+TextToken = ([^§£\$\[\]#@]|\\[\s\S])+
 
 %%
 
@@ -269,7 +269,7 @@ TEXT_TOKEN=([^§£\$\[\]#@]|\\[\s\S])+
         return TEXT_FORMAT_END;
     }
 
-    {TEXT_TOKEN} { return TEXT_TOKEN; }
+    {TextToken} { return TEXT_TOKEN; }
 }
 
 // localisation interpolation container rules
@@ -312,7 +312,7 @@ TEXT_TOKEN=([^§£\$\[\]#@]|\\[\s\S])+
 // localisation colorful text rules
 
 <CHECK_COLORFUL_TEXT> {
-    {COLORFUL_TEXT_CHECK} {
+    {ColorfulTextCheck} {
         if (isColorfulText()) {
             yypushback(yylength() - 1);
             yybegin(IN_COLOR_ID);
@@ -326,14 +326,14 @@ TEXT_TOKEN=([^§£\$\[\]#@]|\\[\s\S])+
     }
 }
 <IN_COLOR_ID> {
-    {COLOR_TOKEN} { yybegin(IN_COLORFUL_TEXT); return COLOR_TOKEN; }
+    {ColorToken} { yybegin(IN_COLORFUL_TEXT); return COLOR_TOKEN; }
     [^] { if (!exitStateOnBadCharacter()) return BAD_CHARACTER; } // recovery
 }
 
 // localisation parameter rules
 
 <CHECK_PARAMETER> {
-    {PARAMETER_CHECK} {
+    {ParameterCheck} {
         if (isParameter()) {
             yypushback(yylength() - 1);
             yybegin(IN_PARAMETER);
@@ -354,23 +354,23 @@ TEXT_TOKEN=([^§£\$\[\]#@]|\\[\s\S])+
 <IN_PARAMETER> {
     "|" { yybegin(IN_PARAMETER_ARGUMENT); return PIPE; }
     "@" { yybegin(IN_SCRIPTED_VARIABLE_REFERENCE); return AT; }
-    {PARAMETER_TOKEN} { return PARAMETER_TOKEN; }
+    {ParameterToken} { return PARAMETER_TOKEN; }
     [^] { if (!exitStateOnBadCharacter()) return BAD_CHARACTER; } // recovery
 }
 <IN_PARAMETER_ARGUMENT> {
-    {ARGUMENT_TOKEN} { return ARGUMENT_TOKEN; }
+    {ArgumentToken} { return ARGUMENT_TOKEN; }
     [^] { if (!exitStateOnBadCharacter()) return BAD_CHARACTER; } // recovery
 }
 <IN_SCRIPTED_VARIABLE_REFERENCE> {
     "|" { yybegin(IN_PARAMETER_ARGUMENT); return PIPE; }
-    {SCRIPTED_VARIABLE_TOKEN} { return SCRIPTED_VARIABLE_REFERENCE_TOKEN; }
+    {ScriptedVariableToken} { return SCRIPTED_VARIABLE_REFERENCE_TOKEN; }
     [^] { if (!exitStateOnBadCharacter()) return BAD_CHARACTER; } // recovery
 }
 
 // localisation command rules
 
 <CHECK_COMMAND> {
-    {COMMAND_CHECK} {
+    {CommandCheck} {
         if (isCommand()) {
             yypushback(yylength() - 1);
             yybegin(IN_COMMAND);
@@ -390,7 +390,7 @@ TEXT_TOKEN=([^§£\$\[\]#@]|\\[\s\S])+
         yypushback(1);
         yybegin(IN_COMMAND_TEXT);
     }
-    {BLANK} { return WHITE_SPACE; } // compatible with blank
+    {Blank} { return WHITE_SPACE; } // compatible with blank
 }
 <IN_COMMAND_TEXT, IN_COMMAND_ARGUMENT> {
     "]" {
@@ -400,12 +400,12 @@ TEXT_TOKEN=([^§£\$\[\]#@]|\\[\s\S])+
 }
 <IN_COMMAND_TEXT> {
     "|" { yybegin(IN_COMMAND_ARGUMENT); return PIPE; }
-    {COMMAND_TEXT_TOKEN} { return COMMAND_TEXT_TOKEN; } // trailing blank should be pushbacked
-    {BLANK} { return WHITE_SPACE; } // compatible with blank
+    {CommandTextToken} { return COMMAND_TEXT_TOKEN; } // trailing blank should be pushbacked
+    {Blank} { return WHITE_SPACE; } // compatible with blank
     [^] { if (!exitStateOnBadCharacter()) return BAD_CHARACTER; } // recovery
 }
 <IN_COMMAND_ARGUMENT> {
-    {ARGUMENT_TOKEN} { return ARGUMENT_TOKEN; }
+    {ArgumentToken} { return ARGUMENT_TOKEN; }
     [^] { if (!exitStateOnBadCharacter()) return BAD_CHARACTER; } // recovery
 }
 
@@ -420,13 +420,13 @@ TEXT_TOKEN=([^§£\$\[\]#@]|\\[\s\S])+
 <IN_CONCEPT_NAME> {
     "'" { return RIGHT_SINGLE_QUOTE; }
     "," { yybegin(IN_CONCEPT_AFTER_COMMA); return COMMA; }
-    {CONCEPT_NAME_TOKEN} { return CONCEPT_NAME_TOKEN; }
-    {BLANK} { return WHITE_SPACE; } // compatible with blank
+    {ConceptNameToken} { return CONCEPT_NAME_TOKEN; }
+    {Blank} { return WHITE_SPACE; } // compatible with blank
     [^] { if (!exitStateOnBadCharacter()) return BAD_CHARACTER; } // recovery
 }
 <IN_CONCEPT_AFTER_COMMA> {
     // enter text section
-    {BLANK} { yybegin(IN_CONCEPT_TEXT); return WHITE_SPACE; }
+    {Blank} { yybegin(IN_CONCEPT_TEXT); return WHITE_SPACE; }
     // whitespace after COMMA may be absent, if so, treat as valid and still enter text section
     [^] { yypushback(yylength()); yybegin(IN_CONCEPT_TEXT); }
 }
@@ -434,7 +434,7 @@ TEXT_TOKEN=([^§£\$\[\]#@]|\\[\s\S])+
 // localisation icon rules
 
 <CHECK_ICON> {
-    {ICON_CHECK} {
+    {IconCheck} {
         if (isIcon()) {
             yypushback(yylength() - 1);
             yybegin(IN_ICON);
@@ -454,18 +454,18 @@ TEXT_TOKEN=([^§£\$\[\]#@]|\\[\s\S])+
 }
 <IN_ICON> {
     "|" { yybegin(IN_ICON_ARGUMENT); return PIPE; }
-    {ICON_TOKEN} { return ICON_TOKEN; }
+    {IconToken} { return ICON_TOKEN; }
     [^] { if (!exitStateOnBadCharacter()) return BAD_CHARACTER; } // recovery
 }
 <IN_ICON_ARGUMENT> {
-    {ARGUMENT_TOKEN} { return ARGUMENT_TOKEN; }
+    {ArgumentToken} { return ARGUMENT_TOKEN; }
     [^] { if (!exitStateOnBadCharacter()) return BAD_CHARACTER; } // recovery
 }
 
 // [ck3, vic3, eu5] localisation text icon rules
 
 <CHECK_TEXT_ICON> {
-    {TEXT_ICON_CHECK} {
+    {TextIconCheck} {
         if (isTextIcon()) {
             yypushback(yylength() - 1);
             yybegin(IN_TEXT_ICON);
@@ -484,14 +484,14 @@ TEXT_TOKEN=([^§£\$\[\]#@]|\\[\s\S])+
     }
 }
 <IN_TEXT_ICON> {
-    {TEXT_ICON_TOKEN} { return TEXT_ICON_TOKEN; }
+    {TextIconToken} { return TEXT_ICON_TOKEN; }
     [^] { if (!exitStateOnBadCharacter()) return BAD_CHARACTER; } // recovery
 }
 
 // [ck3, vic3, eu5] localisation text format rules
 
 <CHECK_TEXT_FORMAT> {
-    {TEXT_FORMAT_CHECK} {
+    {TextFormatCheck} {
         if (isTextFormat()) {
             yypushback(yylength() - 1);
             yybegin(IN_TEXT_FORMAT_ID);
@@ -510,9 +510,9 @@ TEXT_TOKEN=([^§£\$\[\]#@]|\\[\s\S])+
     }
 }
 <IN_TEXT_FORMAT_ID> {
-    {TEXT_FORMAT_TOKEN} { return TEXT_FORMAT_TOKEN; }
+    {TextFormatToken} { return TEXT_FORMAT_TOKEN; }
     // enter text section
-    {BLANK} { yybegin(IN_TEXT_FORMAT_TEXT); return WHITE_SPACE; }
+    {Blank} { yybegin(IN_TEXT_FORMAT_TEXT); return WHITE_SPACE; }
     // whitespace after TEXT_FORMAT_TOKEN may be absent, if so, treat as valid and still enter text section
     [^] { yypushback(yylength()); yybegin(IN_TEXT_FORMAT_TEXT); }
 }

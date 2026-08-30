@@ -101,64 +101,64 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 
 %unicode
 
-EOL=\s*\R\s*
-WHITE_SPACE=[\s&&[^\r\n]]+
-BLANK=\s+
+Eol = \s*\R\s*
+WhiteSpace = [\s&&[^\r\n]]+
+Blank = \s+
 
-COMMENT=#[^\r\n]*
+Comment = #[^\r\n]*
 
-COLON=":"
-QUOTE=\"
+Colon = ":"
+Quote = \"
 
-LOCALE_TOKEN=[a-z_]+ // lowercase letters and underscore only
-PROPERTY_KEY_TOKEN=[A-Za-z0-9_.\-']+ // `.-'` are allowed additionally
-PROPERTY_NUMBER_TOKEN=\d+ // integer characters only
-PROPERTY_VALUE_TOKEN=[^\"\r\n]+ // it's unnecessary to escape double quotes in loc text in fact
+LocaleToken = [a-z_]+ // lowercase letters and underscore only
+PropertyKeyToken = [A-Za-z0-9_.\-']+ // `.-'` are allowed additionally
+PropertyNumberToken = \d+ // integer characters only
+PropertyValueToken = [^\"\r\n]+ // it's unnecessary to escape double quotes in loc text in fact
 
 // lazy-scanning localisation text (see `ParadoxLocaliation.Text.flex`)
 
 %%
 
 <YYINITIAL> {
-    {BLANK} { return WHITE_SPACE; }
-    {COMMENT} { return COMMENT; }
-    ^ {LOCALE_TOKEN} / {COLON} { return handleLocaleToken(); }
-    {PROPERTY_KEY_TOKEN} { yybegin(IN_PROPERTY_COLON); return PROPERTY_KEY_TOKEN; }
+    {Blank} { return WHITE_SPACE; }
+    {Comment} { return COMMENT; }
+    ^ {LocaleToken} / {Colon} { return handleLocaleToken(); }
+    {PropertyKeyToken} { yybegin(IN_PROPERTY_COLON); return PROPERTY_KEY_TOKEN; }
 }
 <IN_LOCALE_COLON>{
-    {WHITE_SPACE} { return WHITE_SPACE; }
-    {EOL} { yybegin(YYINITIAL); return WHITE_SPACE; }
-    {COMMENT} { yybegin(YYINITIAL); return COMMENT; }
-    {COLON} { yybegin(IN_LOCALE_END); return COLON; }
+    {WhiteSpace} { return WHITE_SPACE; }
+    {Eol} { yybegin(YYINITIAL); return WHITE_SPACE; }
+    {Comment} { yybegin(YYINITIAL); return COMMENT; }
+    {Colon} { yybegin(IN_LOCALE_END); return COLON; }
 }
 <IN_LOCALE_END>{
-    {WHITE_SPACE} { return WHITE_SPACE; }
-    {EOL} { yybegin(YYINITIAL); return WHITE_SPACE; }
-    {COMMENT} { yybegin(YYINITIAL); return COMMENT; }
+    {WhiteSpace} { return WHITE_SPACE; }
+    {Eol} { yybegin(YYINITIAL); return WHITE_SPACE; }
+    {Comment} { yybegin(YYINITIAL); return COMMENT; }
 }
 <IN_PROPERTY_COLON>{
-    {WHITE_SPACE} { return WHITE_SPACE; }
-    {EOL} { yybegin(YYINITIAL); return WHITE_SPACE; }
-    {COMMENT} { yybegin(YYINITIAL); return COMMENT; }
-    {COLON} { yybegin(IN_PROPERTY_NUMBER_TOKEN); return COLON; }
+    {WhiteSpace} { return WHITE_SPACE; }
+    {Eol} { yybegin(YYINITIAL); return WHITE_SPACE; }
+    {Comment} { yybegin(YYINITIAL); return COMMENT; }
+    {Colon} { yybegin(IN_PROPERTY_NUMBER_TOKEN); return COLON; }
 }
 <IN_PROPERTY_NUMBER_TOKEN>{
-    {WHITE_SPACE} { return WHITE_SPACE; }
-    {EOL} { yybegin(YYINITIAL); return WHITE_SPACE; }
-    {COMMENT} { yybegin(YYINITIAL); return COMMENT; }
-    {PROPERTY_NUMBER_TOKEN} { return PROPERTY_NUMBER_TOKEN; }
-    {QUOTE} { yybegin(IN_PROPERTY_VALUE); return LEFT_QUOTE; }
+    {WhiteSpace} { return WHITE_SPACE; }
+    {Eol} { yybegin(YYINITIAL); return WHITE_SPACE; }
+    {Comment} { yybegin(YYINITIAL); return COMMENT; }
+    {PropertyNumberToken} { return PROPERTY_NUMBER_TOKEN; }
+    {Quote} { yybegin(IN_PROPERTY_VALUE); return LEFT_QUOTE; }
     [^] { yypushback(1); yybegin(IN_PROPERTY_VALUE); } // 3.0.2 compatible with missing opening quote
 }
 <IN_PROPERTY_VALUE> {
-    {EOL} { yybegin(YYINITIAL); return WHITE_SPACE; }
-    {PROPERTY_VALUE_TOKEN} { return PROPERTY_VALUE_TOKEN; }
-    {QUOTE} { return handleRightQuote(); }
+    {Eol} { yybegin(YYINITIAL); return WHITE_SPACE; }
+    {PropertyValueToken} { return PROPERTY_VALUE_TOKEN; }
+    {Quote} { return handleRightQuote(); }
 }
 <IN_PROPERTY_END>{
-    {WHITE_SPACE} { return WHITE_SPACE; }
-    {EOL} { yybegin(YYINITIAL); return WHITE_SPACE; }
-    {COMMENT} { yybegin(YYINITIAL); return COMMENT; }
+    {WhiteSpace} { return WHITE_SPACE; }
+    {Eol} { yybegin(YYINITIAL); return WHITE_SPACE; }
+    {Comment} { yybegin(YYINITIAL); return COMMENT; }
 }
 
 [^] { return BAD_CHARACTER; }

@@ -28,34 +28,34 @@ import static icu.windea.pls.csv.psi.ParadoxCsvElementTypes.*;
 
 %unicode
 
-EOL=\s*\R\s*
-WHITE_SPACE=[\s&&[^\r\n]]+
-//BLANK=\s+
+Eol = \s*\R\s*
+WHITE_SPACE = [\s&&[^\r\n]]+
+// Blank = \s+
 
-COMMENT=#[^\r\n]*
+Comment = #[^\r\n]*
 
-QUOTE=\"
-SEPARATOR=";"
+Quote = \"
+Separator = ";"
 
-LITERAL_CHAR=[^#;\"\r\n]
-LITERAL_BOUND_CHAR=[^#;\"\s]
-LITERAL_TOKEN={LITERAL_BOUND_CHAR}({LITERAL_CHAR}*{LITERAL_BOUND_CHAR})? // inner whitespaces are allowed
-LITERAL_TOKEN_QUOTED=([^\"\\\r\n]|\\.)+
+LiteralChar = [^#;\"\r\n]
+LiteralBoundChar = [^#;\"\s]
+LiteralToken = {LiteralBoundChar}({LiteralChar}*{LiteralBoundChar})? // inner whitespaces are allowed
+LiteralTokenQuoted = ([^\"\\\r\n]|\\.)+
 
 // no extra token kinds beyond columns (booleans/numbers are treated as plain text)
 
-COLUMN_TOKEN_QUOTED={LITERAL_TOKEN_QUOTED} // compatible with missing closing quote
-COLUMN_TOKEN_UNQUOTED={LITERAL_TOKEN} // literal
-COLUMN_CONTENT=({QUOTE}{COLUMN_TOKEN_QUOTED}|{COLUMN_TOKEN_UNQUOTED}){QUOTE}?
+ColumnTokenQuoted = {LiteralTokenQuoted} // compatible with missing closing quote
+ColumnTokenUnquoted = {LiteralToken} // literal
+ColumnContent = ({Quote}{ColumnTokenQuoted}|{ColumnTokenUnquoted}){Quote}?
 
 %%
 
 <YYINITIAL> {
-    {EOL} { return EOL; }
+    {Eol} { return EOL; }
     {WHITE_SPACE} { return WHITE_SPACE; }
-    {COMMENT} { return COMMENT; }
-    {SEPARATOR} { return SEPARATOR; }
-    {COLUMN_CONTENT} { return COLUMN_TOKEN; }
+    {Comment} { return COMMENT; }
+    {Separator} { return SEPARATOR; }
+    {ColumnContent} { return COLUMN_TOKEN; }
 }
 
 [^] { return BAD_CHARACTER; }
