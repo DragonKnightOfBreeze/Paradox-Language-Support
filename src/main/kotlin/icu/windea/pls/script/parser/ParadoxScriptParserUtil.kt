@@ -9,43 +9,42 @@ import icu.windea.pls.script.psi.ParadoxScriptTokenSets as TokenSets
 
 @Suppress("UNUSED_PARAMETER")
 object ParadoxScriptParserUtil : GeneratedParserUtilBase() {
+    private val LHS_SNIPPET_TOKENS = TokenSet.create(PROPERTY_KEY_TOKEN, SCRIPTED_VARIABLE_NAME_TOKEN)
+    private val RHS_SNIPPET_TOKENS = TokenSet.create(STRING_TOKEN, SCRIPTED_VARIABLE_REFERENCE_TOKEN)
     private val SNIPPET_TOKENS = TokenSet.create(PROPERTY_KEY_TOKEN, STRING_TOKEN, SCRIPTED_VARIABLE_NAME_TOKEN, SCRIPTED_VARIABLE_REFERENCE_TOKEN)
-    private val LEFT_SNIPPET_TOKENS = TokenSet.create(AT, PROPERTY_KEY_TOKEN, SCRIPTED_VARIABLE_NAME_TOKEN)
-    private val RIGHT_SNIPPET_TOKENS = TokenSet.create(STRING_TOKEN, SCRIPTED_VARIABLE_REFERENCE_TOKEN)
-    private val BREAK_SNIPPET_TOKENS = TokenSet.create(TokenType.WHITE_SPACE, COMMENT)
-    private val PROPERTY_SEPARATOR_TOKENS = TokenSets.PROPERTY_SEPARATOR_TOKENS
+    private val BREAK_PARTS_TOKENS = TokenSet.create(TokenType.WHITE_SPACE, COMMENT, LEFT_BRACE, RIGHT_BRACE)
+    private val SEPARATOR_TOKENS = TokenSets.PROPERTY_SEPARATOR_TOKENS
+
+    private val LHS_CONTENT_VALID_TOKENS = TokenSet.create(*LHS_SNIPPET_TOKENS.types, *SEPARATOR_TOKENS.types)
+    private val LHS_CONTENT_INVALID_TOKENS = TokenSet.create(*RHS_SNIPPET_TOKENS.types, *BREAK_PARTS_TOKENS.types)
 
     @JvmStatic
-    fun processRightParts(b: PsiBuilder, l: Int): Boolean {
-        // compact format is allowed, e.g., `k1 = "v1"k2 = v2`
-        // a token should not be parsed to a value when with a trailing separator
+    fun processLhsContent(b: PsiBuilder, l: Int): Boolean {
+        // interpolations should be parsed to LHS (property key, scripted variable) parts when with a trailing separator
+        // compatible with compact formats (e.g., `k1 = "v1"k2 = v2`)
         var s = -1
-        var end = false
         while (true) {
             s++
-            val t = b.rawLookup(s)
-            when {
-                t == null -> break
-                t in BREAK_SNIPPET_TOKENS -> end = true
-                t in LEFT_SNIPPET_TOKENS && b.rawLookup(s - 1) in RIGHT_SNIPPET_TOKENS -> break
-                t in PROPERTY_SEPARATOR_TOKENS -> return false
-                else -> if (end) break
+            val t = b.rawLookup(s) // first LHS part (e.g., PROPERTY_KEY_TOKEN)
+            if (t == null) return true // null -> should be EOF -> return true for better error report
+            when (t) {
+                in LHS_CONTENT_VALID_TOKENS -> return true
+                in LHS_CONTENT_INVALID_TOKENS -> return false
             }
         }
-        return true
     }
 
     @JvmStatic
     fun processPart(b: PsiBuilder, l: Int): Boolean {
-        // interrupt parsing when contains whitespaces or comments
-        // also for continuous literals
+        // interrupt parsing interpolation container parts when contains whitespaces or comments
+        // compatible with continuous literals
         val t = b.rawLookup(-1)
         when {
-            t in BREAK_SNIPPET_TOKENS -> return false
             t in SNIPPET_TOKENS -> {
                 val nextTokenType = b.rawLookup(0)
                 if (nextTokenType != null && nextTokenType in SNIPPET_TOKENS) return false
             }
+            t in BREAK_PARTS_TOKENS -> return false
         }
         return true
     }
@@ -59,15 +58,15 @@ object ParadoxScriptParserUtil : GeneratedParserUtilBase() {
         while (true) {
             val t = b.rawLookup(i) ?: break
             when {
-                t in BREAK_SNIPPET_TOKENS -> return false
+                t in BREAK_PARTS_TOKENS -> return false
                 t == LEFT_BRACKET -> n++
                 t == RIGHT_BRACKET -> n--
             }
             if (n == 0) break
             i++
         }
-        if (b.rawLookup(-2) in BREAK_SNIPPET_TOKENS) return false
-        if (b.rawLookup(i + 1) in BREAK_SNIPPET_TOKENS) return false
+        if (b.rawLookup(-2) in BREAK_PARTS_TOKENS) return false
+        if (b.rawLookup(i + 1) in BREAK_PARTS_TOKENS) return false
         return true
     }
 

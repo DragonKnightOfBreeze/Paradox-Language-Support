@@ -67,9 +67,13 @@ class ParadoxScriptParsingTest : ParsingTestCase("script/syntax", "test.txt", Pa
     fun construct_complex_interpolations() = doTest(true) // 3.0.2
 
     @Test
+    fun error_dangling_at() = doTest(true)
+    @Test
     fun error_missing_property_value() = doTest(true)
+    @Test
+    fun error_unclosed_quotes() = doTest(true)
     @Test
     fun error_unclosed_braces() = doTest(true)
     @Test
-    fun error_unclosed_quotes() = doTest(true)
+    fun error_unclosed_braces_eof() = doTest(true)
 }

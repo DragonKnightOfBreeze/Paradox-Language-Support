@@ -18,9 +18,9 @@ import static icu.windea.pls.cwt.psi.CwtElementTypes.*;
     private void beginStateInOption() {
         int state = yystate();
         if (state == IN_OPTION) {
-          yybegin(IN_OPTION_NESTED);
+            yybegin(IN_OPTION_NESTED);
         } else if (state == IN_OPTION_VALUE) {
-          yybegin(IN_OPTION_VALUE_NESTED);
+            yybegin(IN_OPTION_VALUE_NESTED);
         }
     }
 %}

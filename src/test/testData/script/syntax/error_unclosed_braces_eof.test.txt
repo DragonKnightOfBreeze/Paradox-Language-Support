@@ -1,4 +1,2 @@
 root = {
     a = b
-
-# comment

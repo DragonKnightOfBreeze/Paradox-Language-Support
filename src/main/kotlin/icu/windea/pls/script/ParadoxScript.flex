@@ -3,12 +3,10 @@ package icu.windea.pls.script.lexer;
 import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.tree.IElementType;
 import icu.windea.pls.model.ParadoxGameType;
-import icu.windea.pls.model.constraints.ParadoxSyntaxConstraint;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntStack;
 
 import static com.intellij.psi.TokenType.*;
-import static icu.windea.pls.core.StdlibExtensionsKt.*;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 
 // Lexer for Paradox Script.
@@ -31,8 +29,9 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 
     private static final int EXPECT_PROPERTY_KEY = 11;
     private static final int EXPECT_STRING = 12;
-    private static final int EXPECT_SCRIPTED_VARIABLE_NAME = 13;
-    private static final int EXPECT_SCRIPTED_VARIABLE_REFERENCE = 14;
+    private static final int EXPECT_SCRIPTED_VARIABLE_CHECK = 13;
+    private static final int EXPECT_SCRIPTED_VARIABLE_NAME = 14;
+    private static final int EXPECT_SCRIPTED_VARIABLE_REFERENCE = 15;
 
     private static final int EXPECT_PARAMETER = 21;
     private static final int EXPECT_INLINE_CONDITIONAL_BLOCK = 22;
@@ -122,12 +121,11 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 
     private void beginStateAfterSeparator() {
         int state = yystate();
-        if (state == IN_PROPERTY_KEY_UNQUOTED || state == IN_SCRIPTED_VARIABLE) {
-            exitState();
-        }
-        if (state == IN_SCRIPTED_VARIABLE || state == IN_SCRIPTED_VARIABLE_NAME) {
+        if (state == IN_SCRIPTED_VARIABLE_NAME) {
+            exitState(EXPECT_SCRIPTED_VARIABLE_NAME); // exist state if neccessary
             yybegin(IN_SCRIPTED_VARIABLE_VALUE);
         } else {
+            exitState(EXPECT_PROPERTY_KEY); // exist state if neccessary
             yybegin(IN_PROPERTY_VALUE);
         }
     }
@@ -151,18 +149,16 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 %function advance
 %type IElementType
 
-%s IN_PROPERTY
 %s IN_PROPERTY_VALUE
 %s IN_PROPERTY_KEY_UNQUOTED
 %s IN_PROPERTY_KEY_QUOTED
 %s IN_STRING_UNQUOTED
 %s IN_STRING_QUOTED
 
-%s CHECK_SCRIPTED_VARIABLE
-%s CHECK_SCRIPTED_VARIABLE_REFERENCE
-%s IN_SCRIPTED_VARIABLE
-%s IN_SCRIPTED_VARIABLE_VALUE
+%s IN_SCRIPTED_VARIABLE_CHECK
 %s IN_SCRIPTED_VARIABLE_NAME
+%s IN_SCRIPTED_VARIABLE_VALUE
+%s IN_SCRIPTED_VARIABLE_REFERENCE_CHECK
 %s IN_SCRIPTED_VARIABLE_REFERENCE
 
 %s IN_PARAMETER
@@ -271,8 +267,6 @@ InlineMathToken = [^\r\n#{}\[\]]+ // lenient match
 
 %%
 
-// block rules
-
 <YYINITIAL, IN_CONDITIONAL_BLOCK_BODY> {
     "{" {
         enterState(yystate(), EXPECT_BLOCK);
@@ -284,7 +278,8 @@ InlineMathToken = [^\r\n#{}\[\]]+ // lenient match
         return LEFT_BRACKET;
     }
     "@" {
-        yybegin(CHECK_SCRIPTED_VARIABLE);
+        enterState(yystate(), EXPECT_SCRIPTED_VARIABLE_CHECK);
+        yybegin(IN_SCRIPTED_VARIABLE_CHECK);
         return AT;
     }
     "}" {
@@ -299,11 +294,7 @@ InlineMathToken = [^\r\n#{}\[\]]+ // lenient match
     {Blank} { return WHITE_SPACE; }
     {Comment} { return COMMENT; }
 }
-
-// separator rules
-
-// also for `IN_PROPERTY_KEY_UNQUOTED` and `IN_SCRIPTED_VARIABLE_NAME` (be compatible with no arouding whitespaces)
-<YYINITIAL, IN_CONDITIONAL_BLOCK_BODY, IN_PROPERTY, IN_PROPERTY_KEY_UNQUOTED, IN_SCRIPTED_VARIABLE, IN_SCRIPTED_VARIABLE_NAME> {
+<YYINITIAL, IN_CONDITIONAL_BLOCK_BODY, IN_PROPERTY_KEY_UNQUOTED, IN_SCRIPTED_VARIABLE_NAME> {
     {OpEqual} { beginStateAfterSeparator(); return EQUAL_SIGN; }
     {OpNotEqual} { beginStateAfterSeparator(); return NOT_EQUAL_SIGN; }
     {OpLe} { beginStateAfterSeparator(); return LE_SIGN; }
@@ -318,7 +309,7 @@ InlineMathToken = [^\r\n#{}\[\]]+ // lenient match
 
 // interpolation container rules
 
-<IN_PROPERTY_KEY_UNQUOTED, IN_PROPERTY_KEY_QUOTED, IN_STRING_UNQUOTED, IN_STRING_QUOTED, IN_SCRIPTED_VARIABLE_NAME, IN_SCRIPTED_VARIABLE_REFERENCE, IN_INLINE_CONDITIONAL_BLOCK_BODY> {
+<IN_PROPERTY_KEY_UNQUOTED, IN_PROPERTY_KEY_QUOTED, IN_STRING_UNQUOTED, IN_STRING_QUOTED, IN_SCRIPTED_VARIABLE_NAME, IN_SCRIPTED_VARIABLE_REFERENCE> {
     // 3.0.2 may be a command start marker of some injected/embedded localisation text, need lookahead
     // use trailing context (high priority than normal form)
     "[" / {Blank}?"[" {
@@ -348,21 +339,20 @@ InlineMathToken = [^\r\n#{}\[\]]+ // lenient match
 }
 <IN_PROPERTY_VALUE> {
     "@" {
-        // enterState(yystate(), EXPECT_SCRIPTED_VARIABLE_REFERENCE); // commented out, incorrect
-        yybegin(CHECK_SCRIPTED_VARIABLE_REFERENCE);
+        enterState(yystate(), EXPECT_SCRIPTED_VARIABLE_CHECK);
+        yybegin(IN_SCRIPTED_VARIABLE_REFERENCE_CHECK);
         return AT;
     }
 }
 <YYINITIAL, IN_CONDITIONAL_BLOCK_BODY, IN_PROPERTY_VALUE, IN_SCRIPTED_VARIABLE_VALUE> {
-    {BooleanToken} { exitState(); return BOOLEAN_TOKEN; }
-    {IntToken} { exitState(); return INT_TOKEN; }
-    {FloatToken} { exitState(); return FLOAT_TOKEN; }
-    {ColorToken} { exitState(); return COLOR_TOKEN; }
+    {BooleanToken} { yybegin(YYINITIAL); return BOOLEAN_TOKEN; }
+    {IntToken} { yybegin(YYINITIAL); return INT_TOKEN; }
+    {FloatToken} { yybegin(YYINITIAL); return FLOAT_TOKEN; }
+    {ColorToken} { yybegin(YYINITIAL); return COLOR_TOKEN; }
 }
 <YYINITIAL, IN_CONDITIONAL_BLOCK_BODY, IN_PROPERTY_VALUE, IN_SCRIPTED_VARIABLE_VALUE> {
     // use trailing context (high priority than normal form)
     {PropertyKeyContent} / {Blank}?{PropertySeparator} {
-        yybegin(IN_PROPERTY);
         enterState(yystate(), EXPECT_PROPERTY_KEY);
         if (isLeftQuoted()) {
             yypushback(yylength() - 1);
@@ -374,35 +364,29 @@ InlineMathToken = [^\r\n#{}\[\]]+ // lenient match
         }
     }
     {StringContent} {
+        enterState(yystate(), EXPECT_STRING);
         if (isLeftQuoted()) {
             yypushback(yylength() - 1);
             yybegin(IN_STRING_QUOTED);
-            enterState(yystate(), EXPECT_STRING);
             return STRING_TOKEN;
         } else {
             yypushback(yylength());
             yybegin(IN_STRING_UNQUOTED);
-            enterState(yystate(), EXPECT_STRING);
         }
     }
 }
-<IN_PROPERTY> {
-    {Blank} { return WHITE_SPACE; } // keep
-    {Comment} { exitState(); return COMMENT; } // keep
-    [^] { if (!exitStateAtBadCharacter()) return BAD_CHARACTER; } // recovery
-}
 <IN_PROPERTY_VALUE> {
-    {Blank} { return WHITE_SPACE; } // keep
-    {Comment} { exitState(); return COMMENT; } // keep
+    {Blank} { return WHITE_SPACE; }
+    {Comment} { exitState(); return COMMENT; } // recovery
     [^] { if (!exitStateAtBadCharacter()) return BAD_CHARACTER; } // recovery
 }
 
 <IN_PROPERTY_KEY_UNQUOTED> {
     "["|"]" { return PROPERTY_KEY_TOKEN; } // fallback
     {PropertyKeyTokenUnquoted} { return PROPERTY_KEY_TOKEN; }
-    {Blank} { exitState(); return WHITE_SPACE; } // keep
-    {Comment} { exitState(); return COMMENT; } // keep
     {Quote} { exitState(); return PROPERTY_KEY_TOKEN; }
+    {Blank} { exitState(); return WHITE_SPACE; } // recovery
+    {Comment} { exitState(); return COMMENT; } // recovery
     [^] { if (!exitStateAtBadCharacter()) return BAD_CHARACTER; } // recovery
 }
 <IN_PROPERTY_KEY_QUOTED> {
@@ -415,64 +399,64 @@ InlineMathToken = [^\r\n#{}\[\]]+ // lenient match
 <IN_STRING_UNQUOTED> {
     "["|"]" { return STRING_TOKEN; } // fallback
     {StringTokenUnquoted} { return STRING_TOKEN; }
-    {Blank} { exitStateForValue(); return WHITE_SPACE; } // keep
-    {Comment} { exitStateForValue(); return COMMENT; } // keep
-    {Quote} { exitStateForValue(); return STRING_TOKEN; }
-    [^] { if (!exitStateAtBadCharacterForValue()) return BAD_CHARACTER; } // recovery
+    {Quote} { exitState(); return STRING_TOKEN; }
+    {Blank} { exitState(); return WHITE_SPACE; } // recovery
+    {Comment} { exitState(); return COMMENT; } // recovery
+    [^] { if (!exitStateAtBadCharacter()) return BAD_CHARACTER; } // recovery
 }
 <IN_STRING_QUOTED> {
     // quoted multiline string is allowed (which will break futher scanning and parsing while closing quote is missing)
     // {EOL} { exitState(); return WHITE_SPACE; }
     "["|"]" { return STRING_TOKEN; } // fallback
     {StringTokenQuoted} { return STRING_TOKEN; }
-    {Quote} { exitStateForValue(); return STRING_TOKEN; }
-    [^] { if (!exitStateAtBadCharacterForValue()) return BAD_CHARACTER; } // recovery
+    {Quote} { exitState(); return STRING_TOKEN; }
+    [^] { if (!exitStateAtBadCharacter()) return BAD_CHARACTER; } // recovery
 }
 
 // scripted variable rules
 
-<CHECK_SCRIPTED_VARIABLE> {
+<IN_SCRIPTED_VARIABLE_CHECK> {
     // use trailing context (high priority than normal form)
     {ScriptedVariableContent} / {Blank}?{Separator} {
-        yybegin(IN_SCRIPTED_VARIABLE);
+        exitState(EXPECT_SCRIPTED_VARIABLE_CHECK); // exit state if neccesary (or need double-exit later)
         enterState(yystate(), EXPECT_SCRIPTED_VARIABLE_NAME);
         yypushback(yylength());
         yybegin(IN_SCRIPTED_VARIABLE_NAME);
     }
     {ScriptedVariableContent} {
+        exitState(EXPECT_SCRIPTED_VARIABLE_CHECK); // exit state if neccesary (or need double-exit later)
+        enterState(yystate(), EXPECT_SCRIPTED_VARIABLE_REFERENCE);
         yypushback(yylength());
         yybegin(IN_SCRIPTED_VARIABLE_REFERENCE);
-        enterState(yystate(), EXPECT_SCRIPTED_VARIABLE_REFERENCE);
     }
-}
-<CHECK_SCRIPTED_VARIABLE_REFERENCE> {
-    {ScriptedVariableContent} {
-        yypushback(yylength());
-        yybegin(IN_SCRIPTED_VARIABLE_REFERENCE);
-        enterState(yystate(), EXPECT_SCRIPTED_VARIABLE_REFERENCE);
-    }
-}
-<IN_SCRIPTED_VARIABLE> {
-    {Blank} { return WHITE_SPACE; }
-    {Comment} { exitState(); return COMMENT; } // keep
-    [^] { if (!exitStateAtBadCharacter()) return BAD_CHARACTER; } // recovery
-}
-<IN_SCRIPTED_VARIABLE_VALUE> {
-    {Blank} { return WHITE_SPACE; }
-    {Comment} { exitState(); return COMMENT; } // keep
     [^] { if (!exitStateAtBadCharacter()) return BAD_CHARACTER; } // recovery
 }
 <IN_SCRIPTED_VARIABLE_NAME> {
     {ScriptedVariableToken} { return SCRIPTED_VARIABLE_NAME_TOKEN; }
-    {Blank} { exitState(); return WHITE_SPACE; } // keep
-    {Comment} { exitState(); return COMMENT; } // keep
+    {Blank} { exitState(); return WHITE_SPACE; } // recovery
+    {Comment} { exitState(); return COMMENT; } // recovery
+    [^] { if (!exitStateAtBadCharacter()) return BAD_CHARACTER; } // recovery
+}
+<IN_SCRIPTED_VARIABLE_VALUE> {
+    {Blank} { return WHITE_SPACE; }
+    {Comment} { exitState(); return COMMENT; } // recovery
+    [^] { if (!exitStateAtBadCharacter()) return BAD_CHARACTER; } // recovery
+}
+
+<IN_SCRIPTED_VARIABLE_REFERENCE_CHECK> {
+    {ScriptedVariableContent} {
+        exitState(EXPECT_SCRIPTED_VARIABLE_CHECK); // exit state if neccesary (or need double-exit later)
+        enterState(yystate(), EXPECT_SCRIPTED_VARIABLE_REFERENCE);
+        yypushback(yylength());
+        enterState(yystate(), EXPECT_SCRIPTED_VARIABLE_REFERENCE);
+    }
     [^] { if (!exitStateAtBadCharacter()) return BAD_CHARACTER; } // recovery
 }
 <IN_SCRIPTED_VARIABLE_REFERENCE> {
     {ScriptedVariableToken} { return SCRIPTED_VARIABLE_REFERENCE_TOKEN; }
-    {Blank} { exitStateForValue(); return WHITE_SPACE; } // keep
-    {Comment} { exitStateForValue(); return COMMENT; } // keep
-    [^] { if (!exitStateAtBadCharacterForValue()) return BAD_CHARACTER; } // recovery
+    {Blank} { exitState(); return WHITE_SPACE; } // recovery
+    {Comment} { exitState(); return COMMENT; } // recovery
+    [^] { if (!exitStateAtBadCharacter()) return BAD_CHARACTER; } // recovery
 }
 
 // inline math rules
@@ -484,7 +468,7 @@ InlineMathToken = [^\r\n#{}\[\]]+ // lenient match
     }
 
     {InlineMathToken} { return INLINE_MATH_TOKEN; }
-    {Blank} { return WHITE_SPACE; } // keep
+    {Blank} { return WHITE_SPACE; }
     [^] { if (!exitStateAtBadCharacter()) return BAD_CHARACTER; } // recovery
 }
 
@@ -508,7 +492,6 @@ InlineMathToken = [^\r\n#{}\[\]]+ // lenient match
 
 // conditional block rules
 
-// 2. change context when necessary (e.g., remove `IN_PROPERTY` from `stateStack` if meets blank)
 <IN_CONDITIONAL_BLOCK> {
     "[" {
         yybegin(IN_CONDITIONAL_BLOCK_EXPRESSION);

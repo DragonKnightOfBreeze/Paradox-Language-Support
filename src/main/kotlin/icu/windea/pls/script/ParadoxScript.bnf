@@ -42,7 +42,7 @@ root_block ::= root_block_items {
   ]
 }
 private root_block_items ::= root_block_item+
-private root_block_item ::= comment | value | property | scripted_variable | normal_conditional_block {
+private root_block_item ::= comment | scripted_variable | property | value | normal_conditional_block {
   // recoverWhile="#auto" // continue parsing
   recoverWhile=root_block_item_recover // continue parsing
 }
@@ -150,7 +150,7 @@ string ::= string_content {
 }
 // can be parameterized
 // NOTE 3.0.2 DO NOT split out quote tokens (reduced complexity, better performance)
-private string_content ::= string_part <<processRightParts>> ( <<processPart>> string_part )*
+private string_content ::= string_part ( <<processPart>> string_part )*
 private string_part ::= STRING_TOKEN | normal_parameter | inline_conditional_block
 
 block ::= LEFT_BRACE block_items? RIGHT_BRACE {
@@ -166,7 +166,7 @@ block ::= LEFT_BRACE block_items? RIGHT_BRACE {
   ]
 }
 private block_items ::= block_item+
-private block_item ::= comment | value | property | scripted_variable | normal_conditional_block {
+private block_item ::= comment | scripted_variable | property | value | normal_conditional_block {
   // recoverWhile="#auto" // continue parsing
   recoverWhile=block_item_recover // continue parsing
 }
@@ -231,7 +231,7 @@ scripted_variable_reference ::= AT scripted_variable_reference_content {
   ]
 }
 // can be parameterized
-private scripted_variable_reference_content ::= scripted_variable_reference_part <<processRightParts>> ( <<processPart>> scripted_variable_reference_part )*
+private scripted_variable_reference_content ::= scripted_variable_reference_part ( <<processPart>> scripted_variable_reference_part )*
 private scripted_variable_reference_part ::= SCRIPTED_VARIABLE_REFERENCE_TOKEN | normal_parameter | inline_conditional_block
 
 // color rules
@@ -314,7 +314,6 @@ parameter_argument ::= ARGUMENT_TOKEN {
 normal_conditional_block ::= LEFT_BRACKET conditional_header normal_conditional_block_items? RIGHT_BRACKET {
   name="conditional block"
   pin=1
-  recoverWhile="#auto" // continue parsing
   implements=[
     "icu.windea.pls.script.psi.ParadoxScriptConditionalBlock"
     "icu.windea.pls.script.psi.ParadoxScriptStatement"
@@ -327,7 +326,7 @@ normal_conditional_block ::= LEFT_BRACKET conditional_header normal_conditional_
   ]
 }
 private normal_conditional_block_items ::= normal_conditional_block_item+
-private normal_conditional_block_item ::= comment | value | property/* | scripted_variable*/ | normal_conditional_block {
+private normal_conditional_block_item ::= comment/* | scripted_variable*/ | property | value | normal_conditional_block {
   // recoverWhile="#auto" // continue parsing
   recoverWhile=normal_conditional_block_item_recover // continue parsing
 }

@@ -54,11 +54,13 @@ class CwtParsingTest : ParsingTestCase("cwt/syntax", "test.cwt", CwtParserDefini
     fun construct_expressions() = doTest(true)
 
     @Test
+    fun error_missing_option_value() = doTest(true)
+    @Test
     fun error_missing_property_value() = doTest(true)
     @Test
-    fun error_missing_option_value() = doTest(true)
+    fun error_unclosed_quotes() = doTest(true)
     @Test
     fun error_unclosed_braces() = doTest(true)
     @Test
-    fun error_unclosed_quotes() = doTest(true)
+    fun error_unclosed_braces_eof() = doTest(true)
 }

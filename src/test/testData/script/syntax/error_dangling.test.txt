@@ -1,0 +1,8 @@
+@name = value
+key = @var
+
+@ # eol
+key = @ # eol
+
+@ name = value # eol
+key = @ var @ eol

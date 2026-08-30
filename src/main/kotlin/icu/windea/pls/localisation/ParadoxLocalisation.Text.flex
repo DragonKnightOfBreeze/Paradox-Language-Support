@@ -1,6 +1,5 @@
 package icu.windea.pls.localisation.lexer;
 
-import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.tree.IElementType;
 import icu.windea.pls.model.ParadoxGameType;
 import icu.windea.pls.model.constraints.ParadoxSyntaxConstraint;
@@ -128,16 +127,16 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 %function advance
 %type IElementType
 
-%s CHECK_COLORFUL_TEXT
+%s IN_COLORFUL_TEXT_CHECK
 %s IN_COLOR_ID
 %s IN_COLORFUL_TEXT
 
-%s CHECK_PARAMETER
+%s IN_PARAMETER_CHECK
 %s IN_PARAMETER
 %s IN_PARAMETER_ARGUMENT
 %s IN_SCRIPTED_VARIABLE_REFERENCE
 
-%s CHECK_COMMAND
+%s IN_COMMAND_CHECK
 %s IN_COMMAND
 %s IN_COMMAND_TEXT
 %s IN_COMMAND_ARGUMENT
@@ -205,20 +204,20 @@ TextToken = ([^§£\$\[\]#@]|\\[\s\S])+
 
 <YYINITIAL, IN_COLORFUL_TEXT, IN_CONCEPT_TEXT, IN_TEXT_FORMAT_TEXT> {
     "§" {
-        enterState(yystate(), EXPECT_COLORFUL_TEXT);
-        yypushback(yylength());
-        yybegin(CHECK_COLORFUL_TEXT);
-    }
+            enterState(yystate(), EXPECT_COLORFUL_TEXT);
+            yypushback(yylength());
+            yybegin(IN_COLORFUL_TEXT_CHECK);
+        }
     "$" {
-        enterState(yystate(), EXPECT_PARAMETER);
-        yypushback(yylength());
-        yybegin(CHECK_PARAMETER);
-    }
+            enterState(yystate(), EXPECT_PARAMETER);
+            yypushback(yylength());
+            yybegin(IN_PARAMETER_CHECK);
+        }
     "[" {
-        enterState(yystate(), EXPECT_COMMAND);
-        yypushback(yylength());
-        yybegin(CHECK_COMMAND);
-    }
+            enterState(yystate(), EXPECT_COMMAND);
+            yypushback(yylength());
+            yybegin(IN_COMMAND_CHECK);
+        }
     // use trailing context (high priority than normal form)
     "£" / {IconWildcardLeadChar} {
         enterState(yystate(), EXPECT_ICON);
@@ -264,15 +263,15 @@ TextToken = ([^§£\$\[\]#@]|\\[\s\S])+
 
 <IN_ICON, IN_ICON_ARGUMENT, IN_TEXT_ICON, IN_TEXT_FORMAT> {
     "$" {
-        enterState(yystate(), EXPECT_PARAMETER);
-        yypushback(yylength());
-        yybegin(CHECK_PARAMETER);
-    }
+            enterState(yystate(), EXPECT_PARAMETER);
+            yypushback(yylength());
+            yybegin(IN_PARAMETER_CHECK);
+        }
     "[" {
-        enterState(yystate(), EXPECT_COMMAND);
-        yypushback(yylength());
-        yybegin(CHECK_COMMAND);
-    }
+            enterState(yystate(), EXPECT_COMMAND);
+            yypushback(yylength());
+            yybegin(IN_COMMAND_CHECK);
+        }
     "]" {
         exitState(EXPECT_COMMAND);
         return RIGHT_BRACKET;
@@ -280,10 +279,10 @@ TextToken = ([^§£\$\[\]#@]|\\[\s\S])+
 }
 <IN_PARAMETER> {
     "[" {
-        enterState(yystate(), EXPECT_COMMAND);
-        yypushback(yylength());
-        yybegin(CHECK_COMMAND);
-    }
+            enterState(yystate(), EXPECT_COMMAND);
+            yypushback(yylength());
+            yybegin(IN_COMMAND_CHECK);
+        }
     "]" {
         exitState(EXPECT_COMMAND);
         return RIGHT_BRACKET;
@@ -291,15 +290,15 @@ TextToken = ([^§£\$\[\]#@]|\\[\s\S])+
 }
 <IN_COMMAND_TEXT, IN_COMMAND_ARGUMENT, IN_CONCEPT_NAME> {
     "$" {
-        enterState(yystate(), EXPECT_PARAMETER);
-        yypushback(yylength());
-        yybegin(CHECK_PARAMETER);
-    }
+            enterState(yystate(), EXPECT_PARAMETER);
+            yypushback(yylength());
+            yybegin(IN_PARAMETER_CHECK);
+        }
 }
 
 // localisation colorful text rules
 
-<CHECK_COLORFUL_TEXT> {
+<IN_COLORFUL_TEXT_CHECK> {
     {ColorfulTextCheck} {
         if (isColorfulText()) {
             yypushback(yylength() - 1);
@@ -320,7 +319,7 @@ TextToken = ([^§£\$\[\]#@]|\\[\s\S])+
 
 // localisation parameter rules
 
-<CHECK_PARAMETER> {
+<IN_PARAMETER_CHECK> {
     {ParameterCheck} {
         if (isParameter()) {
             yypushback(yylength() - 1);
@@ -357,7 +356,7 @@ TextToken = ([^§£\$\[\]#@]|\\[\s\S])+
 
 // localisation command rules
 
-<CHECK_COMMAND> {
+<IN_COMMAND_CHECK> {
     {CommandCheck} {
         if (isCommand()) {
             yypushback(yylength() - 1);
