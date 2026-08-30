@@ -45,7 +45,7 @@ IdentifierToken = {IdentifierLeadChar}{IdentifierChar}* // leading number is not
 
 ParameterToken = {IdentifierToken} // identifier
 
-ArgumentChar = [^# = <>!?{}\\\s$\[\]] // `@` is allowed
+ArgumentChar = [^#=<>!?{}\\\s$\[\]] // `@` is allowed
 ArgumentToken = {ArgumentChar}+ // compatible with leading '@'
 
 ScriptedVariableToken = {IdentifierToken} // identifier

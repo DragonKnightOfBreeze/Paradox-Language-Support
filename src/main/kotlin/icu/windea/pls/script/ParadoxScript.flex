@@ -193,14 +193,14 @@ OpUnaryPlus = "+"
 OpUnaryMinus = "-"
 OpNot = "!"
 
-OpEqual = " = "
-OpNotEqual = "! = "|"<>"
-OpLe = "< = "
-OpGe = "> = "
+OpEqual = "="
+OpNotEqual = "!="|"<>"
+OpLe = "<="
+OpGe = ">="
 OpLt = "<"
 OpGt = ">"
-OpSafeAssign = "? = "
-OpSafeCallAssign = "?"{Blank}" = "
+OpSafeAssign = "?="
+OpSafeCallAssign = "?"{Blank}"="
 
 Quote = \"
 NumberUnary = {OpUnaryPlus}|{OpUnaryMinus}
@@ -214,8 +214,8 @@ BooleanToken = {KeywordBoolean} // `yes` or `no` (case-sensitive)
 IntToken = {NumberUnary}?{IntNumberToken} // with optional unary operator
 FloatToken = {NumberUnary}?{FloatNumberToken} // with optional unary operator
 
-LiteralChar = [^# = <>{}\"\s$\[\]] // `@!?` are allowed
-LiteralBoundChar = [^# = <>{}\"\s$\[\]@!?] // `@!?` are not allowed
+LiteralChar = [^#=<>{}\"\s$\[\]] // `@!?` are allowed
+LiteralBoundChar = [^#=<>{}\"\s$\[\]@!?] // `@!?` are not allowed
 LiteralToken = {LiteralBoundChar}({LiteralChar}*{LiteralBoundChar})? // boundary `@!?` are not allowed
 
 IdentifierChar = [A-Za-z0-9_]
@@ -237,7 +237,7 @@ ParameterToken = {IdentifierToken} // identifier
 
 ConditionParameterToken = {IdentifierToken} // identifier
 
-ArgumentChar = [^# = <>!?{}\\\s$\[\]] // `@` is allowed
+ArgumentChar = [^#=<>!?{}\\\s$\[\]] // `@` is allowed
 ArgumentToken = {ArgumentChar}+ // compatible with leading '@'
 
 PropertyKeyTokenQuoted = ([^\"\\\r\n$\[]|\\.)+ // without surrounding quotes & exclude `$[`
