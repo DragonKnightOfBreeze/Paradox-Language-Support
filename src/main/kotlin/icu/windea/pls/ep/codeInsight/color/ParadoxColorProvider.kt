@@ -2,6 +2,9 @@ package icu.windea.pls.ep.codeInsight.color
 
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.psi.PsiElement
+import com.intellij.psi.util.CachedValue
+import icu.windea.pls.core.util.KeyRegistry
+import icu.windea.pls.core.util.createKey
 import icu.windea.pls.lang.codeInsight.color.ParadoxColorService
 import icu.windea.pls.lang.codeInsight.color.ParadoxElementColorProvider
 import java.awt.Color
@@ -20,6 +23,10 @@ interface ParadoxColorProvider {
     fun getColor(element: PsiElement): Color?
 
     fun setColor(element: PsiElement, color: Color): Boolean
+
+    object Keys: KeyRegistry() {
+        val cachedColor = createKey<CachedValue<Color>>("cached.color")
+    }
 
     companion object INSTANCE {
         @JvmField val EP_NAME = ExtensionPointName<ParadoxColorProvider>("icu.windea.pls.colorProvider")

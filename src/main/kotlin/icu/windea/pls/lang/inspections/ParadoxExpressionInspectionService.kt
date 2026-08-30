@@ -34,7 +34,7 @@ import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.csv.psi.ParadoxCsvHeader
 import icu.windea.pls.csv.psi.ParadoxCsvPsiService
 import icu.windea.pls.ep.resolve.expression.ParadoxPathReferenceExpressionSupport
-import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContextService
+import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContextFactory
 import icu.windea.pls.lang.fixes.GenerateLocalisationsFix
 import icu.windea.pls.lang.fixes.GenerateLocalisationsInFileFix
 import icu.windea.pls.lang.fixes.ReplaceWithExpressionFix
@@ -126,7 +126,7 @@ object ParadoxExpressionInspectionService {
         if (configs.isEmpty()) return emptyList()
         if (element !is ParadoxScriptStringExpressionElement) return emptyList()
         val context = configs.firstNotNullOfOrNull {
-            ParadoxLocalisationCodeInsightContextService.fromReference(element, it, fromInspection = true)
+            ParadoxLocalisationCodeInsightContextFactory.fromReference(element, it, fromInspection = true)
         }
         if (context == null) return emptyList()
         return listOf(

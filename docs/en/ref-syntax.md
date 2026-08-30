@@ -216,7 +216,7 @@ Paradox Script extends CWT's base value types with several additional types.
 
 **Strings** such as `var` `"hello world"` `"line\nnew line"`. Can contain escape characters and several advanced interpolation syntaxes.
 
-**Colors** are composite values in the format of a color type keyword followed by whitespace-separated numbers enclosed in curly braces, such as `rgb { 255 128 0 }`, `hsv { 0.5 0.8 1.0 }`, `hsv360 { 180 80 100 }`. Only numbers and whitespace are allowed inside the curly braces.
+**Colors** are composite values in the format of a color type keyword followed by whitespace-separated numbers enclosed in curly braces, such as `rgb { 255 0 0 }`, `hsv { 0 1.0 1.0 }`, `hsv360 { 180 80 100 }`. Only numbers and whitespace are allowed inside the curly braces.
 
 **Blocks** are enclosed in curly braces `{ ... }` and may contain a mix of expressions (properties and values), scripted variables, conditional blocks and comments. Can be nested multiple levels.
 

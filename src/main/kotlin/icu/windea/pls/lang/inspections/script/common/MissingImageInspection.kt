@@ -13,7 +13,7 @@ import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.codeInsight.ParadoxImageCodeInsightContext
-import icu.windea.pls.lang.codeInsight.ParadoxImageCodeInsightContextService
+import icu.windea.pls.lang.codeInsight.ParadoxImageCodeInsightContextFactory
 import icu.windea.pls.lang.codeInsight.ParadoxImageCodeInsightInfo
 import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
@@ -123,13 +123,13 @@ class MissingImageInspection : LocalInspectionTool() {
     }
 
     private fun checkFromDefinition(element: ParadoxDefinitionElement, holder: ProblemsHolder) {
-        val context = ParadoxImageCodeInsightContextService.fromDefinition(element, fromInspection = true)
+        val context = ParadoxImageCodeInsightContextFactory.fromDefinition(element, fromInspection = true)
         if (context == null || context.infos.isEmpty()) return
         registerProblems(element, context, holder)
     }
 
     private fun checkFromExpression(element: ParadoxScriptStringExpressionElement, holder: ProblemsHolder) {
-        val context = ParadoxImageCodeInsightContextService.fromExpression(element, fromInspection = true)
+        val context = ParadoxImageCodeInsightContextFactory.fromExpression(element, fromInspection = true)
         if (context == null || context.infos.isEmpty()) return
         registerProblems(element, context, holder)
     }

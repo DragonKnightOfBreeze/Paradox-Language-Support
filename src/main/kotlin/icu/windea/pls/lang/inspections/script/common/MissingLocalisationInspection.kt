@@ -18,7 +18,7 @@ import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.core.util.properties.fromDelimitedString
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContext
-import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContextService
+import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContextFactory
 import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightInfo
 import icu.windea.pls.lang.fixes.GenerateLocalisationsFix
 import icu.windea.pls.lang.fixes.GenerateLocalisationsInFileFix
@@ -203,13 +203,13 @@ class MissingLocalisationInspection : LocalInspectionTool() {
     }
 
     private fun checkForDefinition(element: ParadoxDefinitionElement, locales: Set<CwtLocaleConfig>, holder: ProblemsHolder) {
-        val context = ParadoxLocalisationCodeInsightContextService.fromDefinition(element, locales = locales, fromInspection = true)
+        val context = ParadoxLocalisationCodeInsightContextFactory.fromDefinition(element, locales = locales, fromInspection = true)
         if (context == null || context.infos.isEmpty()) return
         registerProblems(element, context, holder)
     }
 
     private fun checkForExpression(element: ParadoxScriptStringExpressionElement, locales: Set<CwtLocaleConfig>, holder: ProblemsHolder) {
-        val context = ParadoxLocalisationCodeInsightContextService.fromExpression(element, locales = locales, forReference = false, fromInspection = true)
+        val context = ParadoxLocalisationCodeInsightContextFactory.fromExpression(element, locales = locales, forReference = false, fromInspection = true)
         if (context == null || context.infos.isEmpty()) return
         registerProblems(element, context, holder)
     }

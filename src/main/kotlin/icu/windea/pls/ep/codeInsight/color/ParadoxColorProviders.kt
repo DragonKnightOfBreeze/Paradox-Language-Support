@@ -7,22 +7,16 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.CompositeElement
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.elementType
-import com.intellij.ui.ColorUtil
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.withDependencyItems
-import icu.windea.pls.lang.codeInsight.color.ParadoxColorUtil
-import icu.windea.pls.lang.psi.isValidExpression
-import icu.windea.pls.lang.psi.resolved
+import icu.windea.pls.lang.codeInsight.color.ParadoxColorFactory
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptColor
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
-import icu.windea.pls.script.psi.ParadoxScriptNumberExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptString
-import icu.windea.pls.script.psi.containingDirectMember
 import java.awt.Color
 
 /**
@@ -38,7 +32,7 @@ import java.awt.Color
  * 示例（匹配的脚本片段）：
  *
  * ```paradox_script
- * color = 0x2288E1
+ * color = 0xFF0000 # red
  * ```
  */
 class ParadoxScriptStringColorProvider : ParadoxColorProvider {
@@ -60,24 +54,26 @@ class ParadoxScriptStringColorProvider : ParadoxColorProvider {
     }
 
     private fun doGetColor(element: ParadoxScriptString): Color? {
-        val hex = element.value.lowercase().removePrefixOrNull("0x") ?: return null
-        if (hex.length != 6 && hex.length != 8) return null
-        val colorType = ParadoxColorUtil.getColorType(element) ?: return null
+        val colorArg = ParadoxColorFactory.getColorArg(element) ?: return null
+        val colorType = ParadoxColorFactory.getColorType(element) ?: return null
         if (colorType != "hex") return null
-        return ParadoxColorUtil.getColor(hex)
+        return ParadoxColorFactory.getColor(colorArg)
     }
 
     private fun doSetColor(element: ParadoxScriptString, color: Color) {
-        val project = element.project
-        val newText = "0x${ColorUtil.toHex(color, true)}"
+        val colorArg = ParadoxColorFactory.getColorArg(element) ?: return
+        val newColorArg = ParadoxColorFactory.getNewColorArg(colorArg, color) ?: return
+        val file = element.containingFile ?: return
+        val project = file.project
+        val newText = newColorArg
         val newString = ParadoxScriptElementFactory.createValueFromText(project, newText)
         if (newString !is ParadoxScriptString) return
+        val documentManager = PsiDocumentManager.getInstance(project)
+        val document = documentManager.getDocument(file) ?: return
         val command = Runnable {
             // element.replace(newString) // do not do this, element could be reused
             (element.node as CompositeElement).replaceAllChildrenToChildrenOf(newString.node)
         }
-        val documentManager = PsiDocumentManager.getInstance(project)
-        val document = documentManager.getDocument(element.containingFile) ?: return
         CommandProcessor.getInstance().executeCommand(project, command, ChronicleBundle.message("script.command.changeColor.name"), null, document)
         documentManager.doPostponedOperationsAndUnblockDocument(document)
     }
@@ -96,7 +92,7 @@ class ParadoxScriptStringColorProvider : ParadoxColorProvider {
  * }
  * ## color_type = hsv
  * color_hsv = {
- *     ## cardinality = 3..4
+ *     ## cardinality = 3..3
  *     float
  * }
  * ```
@@ -104,8 +100,8 @@ class ParadoxScriptStringColorProvider : ParadoxColorProvider {
  * 示例（匹配的脚本片段）：
  *
  * ```paradox_script
- * color_rgb = { 34 136 225 }
- * color_hsv = { 208 0.849 0.882 }
+ * color_rgb = { 255 0 0 } # red
+ * color_hsv = { 0 1.0 1.0 } # red
  * ```
  */
 class ParadoxScriptBlockColorProvider : ParadoxColorProvider {
@@ -116,7 +112,11 @@ class ParadoxScriptBlockColorProvider : ParadoxColorProvider {
 
     override fun getColor(element: PsiElement): Color? {
         if (element !is ParadoxScriptBlock) return null
-        return runCatchingCancelable { getColorFromCache(element) }.getOrNull()
+        return CachedValuesManager.getCachedValue(element, ParadoxColorProvider.Keys.cachedColor) {
+            ProgressManager.checkCanceled()
+            val value = runCatchingCancelable { doGetColor(element) }.getOrNull()
+            value.withDependencyItems(element)
+        }
     }
 
     override fun setColor(element: PsiElement, color: Color): Boolean {
@@ -125,51 +125,29 @@ class ParadoxScriptBlockColorProvider : ParadoxColorProvider {
         return true
     }
 
-    private fun getColorFromCache(element: ParadoxScriptBlock): Color? {
-        return CachedValuesManager.getCachedValue(element, ParadoxColorUtil.cachedColorKey) {
-            ProgressManager.checkCanceled()
-            val value = doGetColor(element)
-            value.withDependencyItems(element)
-        }
-    }
-
     private fun doGetColor(element: ParadoxScriptBlock): Color? {
-        val colorType = getColorType(element)
-        val colorArgs = getColorArgs(element)
-        if (colorType == null || colorArgs == null) return null
-        return ParadoxColorUtil.getColor(colorType, colorArgs)
+        val colorType = ParadoxColorFactory.getColorType(element) ?: return null
+        val colorArgs = ParadoxColorFactory.getColorArgs(element) ?: return null
+        return ParadoxColorFactory.getColor(colorType, colorArgs)
     }
 
     private fun doSetColor(element: ParadoxScriptBlock, color: Color) {
-        val project = element.project
-        val colorType = getColorType(element)
-        val colorArgs = getColorArgs(element)
-        if (colorType == null || colorArgs == null) return
-        val newColorArgs = ParadoxColorUtil.getNewColorArgs(colorType, colorArgs, color) ?: return
+        val colorType = ParadoxColorFactory.getColorType(element) ?: return
+        val colorArgs = ParadoxColorFactory.getColorArgs(element) ?: return
+        val newColorArgs = ParadoxColorFactory.getNewColorArgs(colorType, colorArgs, color) ?: return
+        val file = element.containingFile ?: return
+        val project = file.project
         val newText = newColorArgs.joinToString(" ", "{ ", " }")
         val newBlock = ParadoxScriptElementFactory.createValueFromText(project, newText)
         if (newBlock !is ParadoxScriptBlock) return
         val documentManager = PsiDocumentManager.getInstance(project)
-        val document = documentManager.getDocument(element.containingFile) ?: return
+        val document = documentManager.getDocument(file) ?: return
         val command = Runnable {
             // element.replace(newBlock) // do not do this, element could be reused
             (element.node as CompositeElement).replaceAllChildrenToChildrenOf(newBlock.node)
         }
         CommandProcessor.getInstance().executeCommand(project, command, ChronicleBundle.message("script.command.changeColor.name"), null, document)
         documentManager.doPostponedOperationsAndUnblockDocument(document)
-    }
-
-    private fun getColorType(element: ParadoxScriptBlock): String? {
-        val memberElement = element.containingDirectMember
-        return ParadoxColorUtil.getColorType(memberElement)
-    }
-
-    private fun getColorArgs(element: ParadoxScriptBlock): List<String>? {
-        return element.valueList
-            .takeIf { (it.size == 3 || it.size == 4) && it.all { v -> v.isValidExpression() } }
-            ?.map { it.resolved() ?: return null }
-            ?.takeIf { it.all { v -> v is ParadoxScriptNumberExpressionElement } }
-            ?.map { it.value }
     }
 }
 
@@ -184,8 +162,8 @@ class ParadoxScriptBlockColorProvider : ParadoxColorProvider {
  *
  * 示例（匹配的脚本片段）：
  * ```paradox_script
- * color_field_rgb = rgb { 34 136 225 }
- * color_field_hsv = hsv { 208 0.849 0.882 }
+ * color_field_rgb = rgb { 255 0 0 } # red
+ * color_field_hsv = hsv { 0 1.0 1.0 } # red
  * ```
  */
 class ParadoxScriptColorFieldColorProvider : ParadoxColorProvider {
@@ -196,7 +174,11 @@ class ParadoxScriptColorFieldColorProvider : ParadoxColorProvider {
 
     override fun getColor(element: PsiElement): Color? {
         if (element !is ParadoxScriptColor) return null
-        return runCatchingCancelable { getColorFromCache(element) }.getOrNull()
+        return CachedValuesManager.getCachedValue(element, ParadoxColorProvider.Keys.cachedColor) {
+            ProgressManager.checkCanceled()
+            val value = runCatchingCancelable { doGetColor(element) }.getOrNull()
+            value.withDependencyItems(element)
+        }
     }
 
     override fun setColor(element: PsiElement, color: Color): Boolean {
@@ -205,25 +187,18 @@ class ParadoxScriptColorFieldColorProvider : ParadoxColorProvider {
         return true
     }
 
-    private fun getColorFromCache(element: ParadoxScriptColor): Color? {
-        return CachedValuesManager.getCachedValue(element, ParadoxColorUtil.cachedColorKey) {
-            ProgressManager.checkCanceled()
-            val value = doGetColor(element)
-            value.withDependencyItems(element)
-        }
-    }
-
     private fun doGetColor(element: ParadoxScriptColor): Color? {
-        val colorType = element.colorType
-        val colorArgs = element.colorArgs
-        return ParadoxColorUtil.getColor(colorType, colorArgs)
+        val colorType = ParadoxColorFactory.getColorType(element) ?: return null
+        val colorArgs = ParadoxColorFactory.getColorArgs(element) ?: return null
+        return ParadoxColorFactory.getColor(colorType, colorArgs)
     }
 
     private fun doSetColor(element: ParadoxScriptColor, color: Color) {
-        val project = element.project
-        val colorType = element.colorType
-        val colorArgs = element.colorArgs
-        val newColorArgs = ParadoxColorUtil.getNewColorArgs(colorType, colorArgs, color) ?: return
+        val colorType = ParadoxColorFactory.getColorType(element) ?: return
+        val colorArgs = ParadoxColorFactory.getColorArgs(element) ?: return
+        val newColorArgs = ParadoxColorFactory.getNewColorArgs(colorType, colorArgs, color) ?: return
+        val file = element.containingFile ?: return
+        val project = file.project
         val newText = newColorArgs.joinToString(" ", "$colorType { ", " }")
         val newColor = ParadoxScriptElementFactory.createValueFromText(project, newText)
         if (newColor !is ParadoxScriptColor) return
@@ -232,7 +207,7 @@ class ParadoxScriptColorFieldColorProvider : ParadoxColorProvider {
             (element.node as CompositeElement).replaceAllChildrenToChildrenOf(newColor.node)
         }
         val documentManager = PsiDocumentManager.getInstance(project)
-        val document = documentManager.getDocument(element.containingFile) ?: return
+        val document = documentManager.getDocument(file) ?: return
         CommandProcessor.getInstance().executeCommand(project, command, ChronicleBundle.message("script.command.changeColor.name"), null, document)
         documentManager.doPostponedOperationsAndUnblockDocument(document)
     }

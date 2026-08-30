@@ -2634,13 +2634,13 @@ color_field_hsv = color[hsv]
 Example (matched script fragments)：
 
 ```paradox_script
-color = 0x2288E1
+color = 0xFF0000 # red
 
-color_rgb = { 34 136 225 }
-color_hsv = { 208 0.849 0.882 }
+color_rgb = { 255 0 0 } # red
+color_hsv = { 0.0 1.0 1.0 } # red
 
-color_field_rgb = rgb { 34 136 225 }
-color_field_hsv = hsv { 208 0.849 0.882 }
+color_field_rgb = rgb { 255 0 0 } # red
+color_field_hsv = hsv { 0.0 1.0 1.0 } # red
 ```
 
 #### How to Specify File Extensions for Path References in Config Files {#faq-file-extensions}

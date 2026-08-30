@@ -7,7 +7,7 @@ import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContext
-import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContextService
+import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContextFactory
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.ui.ParadoxLocaleListPopup
 import icu.windea.pls.lang.util.ParadoxLocaleManager
@@ -31,6 +31,6 @@ class GenerateLocalisationsInFileHandler(
         val project = file.project
         val configGroup = ChronicleFacade.getConfigGroup(project, selectGameType(file))
         val supportedLocales = ParadoxLocaleManager.getSupportedLocales(configGroup)
-        context = ParadoxLocalisationCodeInsightContextService.fromFile(file, supportedLocales, fromInspection)
+        context = ParadoxLocalisationCodeInsightContextFactory.fromFile(file, supportedLocales, fromInspection)
     }
 }

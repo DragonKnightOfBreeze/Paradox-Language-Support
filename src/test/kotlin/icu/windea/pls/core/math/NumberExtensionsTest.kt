@@ -3,7 +3,7 @@ package icu.windea.pls.core.math
 import org.junit.Assert
 import org.junit.Test
 
-class MathExtensionsTest {
+class NumberExtensionsTest {
     @Test
     fun formatted_test_isInteger() {
         Assert.assertEquals("0", 0.formatted(0, isFloatingPoint = false))

@@ -42,7 +42,7 @@ import icu.windea.pls.script.psi.ParadoxScriptPsiService
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.isDataExpression
 
-object ParadoxLocalisationCodeInsightContextService {
+object ParadoxLocalisationCodeInsightContextFactory {
     fun fromContextElement(
         file: PsiFile,
         editor: Editor,
