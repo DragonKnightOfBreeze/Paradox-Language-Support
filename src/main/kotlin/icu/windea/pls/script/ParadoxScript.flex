@@ -240,14 +240,14 @@ ARGUMENT_CHAR=[^#=<>!?{}\\\s$\[\]] // `@` is allowed
 ARGUMENT_TOKEN={ARGUMENT_CHAR}+ // compatible with leading '@'
 
 PROPERTY_KEY_TOKEN_QUOTED=([^\"\\\r\n$\[]|\\.)+ // without surrounding quotes & exclude `$[`
-PROPERTY_KEY_WILDCARD_QUOTED=([^\"\\\r\n]|\\.)+ // without surrounding quotes
 PROPERTY_KEY_TOKEN_UNQUOTED={LITERAL_TOKEN} // literal
+PROPERTY_KEY_WILDCARD_QUOTED=([^\"\\\r\n]|\\.)+ // without surrounding quotes
 PROPERTY_KEY_WILDCARD_UNQUOTED={LITERAL_WILDCARD_TOKEN} // literal wildcard
 PROPERTY_KEY_WILDCARD=({QUOTE}{PROPERTY_KEY_WILDCARD_QUOTED}|{PROPERTY_KEY_WILDCARD_UNQUOTED}){QUOTE}?
 
 STRING_TOKEN_QUOTED=([^\"\\$\[]|\\.)+ // without surrounding quotes & can be multiline & exclude `$[`
-STRING_WILDCARD_QUOTED=([^\"\\]|\\.)+ // without surrounding quotes & can be multiline
 STRING_TOKEN_UNQUOTED={LITERAL_TOKEN} // literal
+STRING_WILDCARD_QUOTED=([^\"\\]|\\.)+ // without surrounding quotes & can be multiline
 STRING_WILDCARD_UNQUOTED={LITERAL_WILDCARD_TOKEN} // literal wildcard
 STRING_WILDCARD=({QUOTE}{STRING_WILDCARD_QUOTED}|{STRING_WILDCARD_UNQUOTED}){QUOTE}?
 
@@ -262,7 +262,7 @@ COLOR_TYPE_HSV=[hH][sS][vV]
 COLOR_TYPE_HSV360=[hH][sS][vV]360
 COLOR_TYPE_TOKEN={COLOR_TYPE_RGB}|{COLOR_TYPE_HSV}|{COLOR_TYPE_HSV360}
 COLOR_ARGS_TOKEN="{"[\d.\s&&[^\r\n]]*"}" // lenient match
-COLOR_TOKEN={COLOR_TYPE_TOKEN}{COLOR_ARGS_TOKEN}
+COLOR_TOKEN={COLOR_TYPE_TOKEN}{BLANK}?{COLOR_ARGS_TOKEN}
 
 INLINE_MATH_TOKEN=[^\r\n#{}\[\]]+ // lenient match
 
@@ -319,7 +319,7 @@ INLINE_MATH_TOKEN=[^\r\n#{}\[\]]+ // lenient match
 
 <IN_PROPERTY_KEY_UNQUOTED, IN_PROPERTY_KEY_QUOTED, IN_STRING_UNQUOTED, IN_STRING_QUOTED, IN_SCRIPTED_VARIABLE_NAME, IN_SCRIPTED_VARIABLE_REFERENCE, IN_INLINE_CONDITIONAL_BLOCK_BODY> {
     // 3.0.2 may be a command start marker of some injected/embedded localisation text, need lookahead
-    // use tail context (high priority than normal form)
+    // use trailing context (high priority than normal form)
     "[" / {BLANK}?"[" {
         enterState(yystate(), EXPECT_INLINE_CONDITIONAL_BLOCK); // TODO check
         yybegin(IN_INLINE_CONDITIONAL_BLOCK);
@@ -359,7 +359,7 @@ INLINE_MATH_TOKEN=[^\r\n#{}\[\]]+ // lenient match
     {COLOR_TOKEN} { exitState(); return COLOR_TOKEN; }
 }
 <YYINITIAL, IN_CONDITIONAL_BLOCK_BODY, IN_PROPERTY_VALUE, IN_SCRIPTED_VARIABLE_VALUE> {
-    // use tail context (high priority than normal form)
+    // use trailing context (high priority than normal form)
     {PROPERTY_KEY_WILDCARD} / {BLANK}?{PROPERTY_SEPARATOR} {
         yybegin(IN_PROPERTY);
         enterState(yystate(), EXPECT_PROPERTY_KEY);
@@ -431,7 +431,7 @@ INLINE_MATH_TOKEN=[^\r\n#{}\[\]]+ // lenient match
 // scripted variable rules
 
 <CHECK_SCRIPTED_VARIABLE> {
-    // use tail context (high priority than normal form)
+    // use trailing context (high priority than normal form)
     {SCRIPTED_VARIABLE_WILDCARD} / {BLANK}?{SEPARATOR} {
         yybegin(IN_SCRIPTED_VARIABLE);
         enterState(yystate(), EXPECT_SCRIPTED_VARIABLE_NAME);

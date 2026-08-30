@@ -1,0 +1,7 @@
+parameter = $PARAM$
+parameter = $PARAM|$
+parameter = $PARAM|yes$
+parameter = $PARAM|0$
+parameter = $PARAM|1.0$
+parameter = $PARAM|text$
+parameter = $PARAM|@var$

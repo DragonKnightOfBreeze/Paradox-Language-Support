@@ -80,23 +80,23 @@ LITERAL_TOKEN={LITERAL_BOUND_CHAR}({LITERAL_CHAR}*{LITERAL_BOUND_CHAR})? // boun
 // IDENTIFIER_LEAD_CHAR=[A-Za-z_] // leading number is not allowed
 // IDENTIFIER_TOKEN={IDENTIFIER_LEAD_CHAR}{IDENTIFIER_CHAR}* // leading number is not allowed
 
+PROPERTY_KEY_TOKEN_QUOTED=([^\"\\\r\n]|\\.)+ // without surrounding quotes
+PROPERTY_KEY_TOKEN_UNQUOTED={LITERAL_TOKEN} // literal
+PROPERTY_KEY_WILDCARD=({QUOTE}{PROPERTY_KEY_TOKEN_QUOTED}|{PROPERTY_KEY_TOKEN_UNQUOTED}){QUOTE}?
+
+STRING_TOKEN_QUOTED=([^\"\\\r\n]|\\.)+ // without surrounding quotes
+STRING_TOKEN_UNQUOTED={LITERAL_TOKEN} // literal
+STRING_WILDCARD=({QUOTE}{STRING_TOKEN_QUOTED}|{STRING_TOKEN_UNQUOTED}){QUOTE}?
+
 OPTION_KEY_TOKEN_QUOTED=([^\"\\\r\n]|\\.)+ // without surrounding quotes
 OPTION_KEY_TOKEN_UNQUOTED={LITERAL_TOKEN} // literal
-OPTION_KEY_TOKEN=({QUOTE}{OPTION_KEY_TOKEN_QUOTED}|{OPTION_KEY_TOKEN_UNQUOTED}){QUOTE}?
+OPTION_KEY_WILDCARD=({QUOTE}{OPTION_KEY_TOKEN_QUOTED}|{OPTION_KEY_TOKEN_UNQUOTED}){QUOTE}?
 
 // top level option text (value in option comment, or option value of some option in option comment)
 // inner whitespaces are allowed and required
 OPTION_TEXT_CHAR=[^#=!<>{}\r\n] // heuristic
 OPTION_TEXT_BOUND_CHAR=[^#=!<>{}\"\s] // heuristic
 OPTION_TEXT_TOKEN={OPTION_TEXT_BOUND_CHAR}({OPTION_TEXT_CHAR}*{OPTION_TEXT_BOUND_CHAR})? // heuristic
-
-PROPERTY_KEY_TOKEN_QUOTED=([^\"\\\r\n]|\\.)+ // without surrounding quotes
-PROPERTY_KEY_TOKEN_UNQUOTED={LITERAL_TOKEN} // literal
-PROPERTY_KEY_TOKEN=({QUOTE}{PROPERTY_KEY_TOKEN_QUOTED}|{PROPERTY_KEY_TOKEN_UNQUOTED}){QUOTE}?
-
-STRING_TOKEN_QUOTED=([^\"\\\r\n]|\\.)+ // without surrounding quotes
-STRING_TOKEN_UNQUOTED={LITERAL_TOKEN} // literal
-STRING_TOKEN=({QUOTE}{STRING_TOKEN_QUOTED}|{STRING_TOKEN_UNQUOTED}){QUOTE}?
 
 %%
 
@@ -117,9 +117,9 @@ STRING_TOKEN=({QUOTE}{STRING_TOKEN_QUOTED}|{STRING_TOKEN_UNQUOTED}){QUOTE}?
     {BOOLEAN_TOKEN} { yybegin(YYINITIAL); return BOOLEAN_TOKEN; }
     {INT_TOKEN} { yybegin(YYINITIAL); return INT_TOKEN; }
     {FLOAT_TOKEN} { yybegin(YYINITIAL); return FLOAT_TOKEN; }
-    // use tail context (high priority than normal form)
-    {PROPERTY_KEY_TOKEN} / {BLANK}?{SEPARATOR} { yybegin(IN_PROPERTY_SEPARATOR); return PROPERTY_KEY_TOKEN; }
-    {STRING_TOKEN} { yybegin(YYINITIAL); return STRING_TOKEN; }
+    // use trailing context (high priority than normal form)
+    {PROPERTY_KEY_WILDCARD} / {BLANK}?{SEPARATOR} { yybegin(IN_PROPERTY_SEPARATOR); return PROPERTY_KEY_TOKEN; }
+    {STRING_WILDCARD} { yybegin(YYINITIAL); return STRING_TOKEN; }
 }
 
 <IN_OPTION, IN_OPTION_SEPARATOR, IN_OPTION_VALUE> {
@@ -138,9 +138,9 @@ STRING_TOKEN=({QUOTE}{STRING_TOKEN_QUOTED}|{STRING_TOKEN_UNQUOTED}){QUOTE}?
     {BOOLEAN_TOKEN} { yybegin(IN_OPTION); return BOOLEAN_TOKEN; }
     {INT_TOKEN} { yybegin(IN_OPTION); return INT_TOKEN; }
     {FLOAT_TOKEN} { yybegin(IN_OPTION); return FLOAT_TOKEN; }
-    {STRING_TOKEN} { yybegin(IN_OPTION); return STRING_TOKEN; }
-    // use tail context (high priority than normal form)
-    {OPTION_KEY_TOKEN} / {BLANK}?{SEPARATOR} { yybegin(IN_OPTION_SEPARATOR); return OPTION_KEY_TOKEN; }
+    {STRING_WILDCARD} { yybegin(IN_OPTION); return STRING_TOKEN; }
+    // use trailing context (high priority than normal form)
+    {OPTION_KEY_WILDCARD} / {BLANK}?{SEPARATOR} { yybegin(IN_OPTION_SEPARATOR); return OPTION_KEY_TOKEN; }
     {OPTION_TEXT_TOKEN} { yybegin(IN_OPTION); return STRING_TOKEN; }
 }
 
@@ -160,9 +160,9 @@ STRING_TOKEN=({QUOTE}{STRING_TOKEN_QUOTED}|{STRING_TOKEN_UNQUOTED}){QUOTE}?
     {BOOLEAN_TOKEN} { yybegin(IN_OPTION_NESTED); return BOOLEAN_TOKEN; }
     {INT_TOKEN} { yybegin(IN_OPTION_NESTED); return INT_TOKEN; }
     {FLOAT_TOKEN} { yybegin(IN_OPTION_NESTED); return FLOAT_TOKEN; }
-    // use tail context (high priority than normal form)
-    {OPTION_KEY_TOKEN} / {BLANK}?{SEPARATOR} { yybegin(IN_OPTION_SEPARATOR_NESTED); return OPTION_KEY_TOKEN; }
-    {STRING_TOKEN} { yybegin(IN_OPTION_NESTED); return STRING_TOKEN; }
+    // use trailing context (high priority than normal form)
+    {OPTION_KEY_WILDCARD} / {BLANK}?{SEPARATOR} { yybegin(IN_OPTION_SEPARATOR_NESTED); return OPTION_KEY_TOKEN; }
+    {STRING_WILDCARD} { yybegin(IN_OPTION_NESTED); return STRING_TOKEN; }
 }
 
 [^] { return BAD_CHARACTER; }
