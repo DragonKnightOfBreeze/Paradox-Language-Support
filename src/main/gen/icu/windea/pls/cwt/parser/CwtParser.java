@@ -79,7 +79,7 @@ public class CwtParser implements PsiParser, LightPsiParser {
 
   /* ********************************************************** */
   // !( COMMENT | OPTION_COMMENT_START | DOC_COMMENT_TOKEN
-  //   | BOOLEAN_TOKEN | INT_TOKEN | FLOAT_TOKEN | STRING_TOKEN | PROPERTY_KEY_TOKEN | OPTION_KEY_TOKEN | LEFT_QUOTE
+  //   | BOOLEAN_TOKEN | INT_TOKEN | FLOAT_TOKEN | STRING_TOKEN | PROPERTY_KEY_TOKEN | OPTION_KEY_TOKEN
   //   | LEFT_BRACE | RIGHT_BRACE
   //   )
   static boolean block_item_recover(PsiBuilder b, int l) {
@@ -92,7 +92,7 @@ public class CwtParser implements PsiParser, LightPsiParser {
   }
 
   // COMMENT | OPTION_COMMENT_START | DOC_COMMENT_TOKEN
-  //   | BOOLEAN_TOKEN | INT_TOKEN | FLOAT_TOKEN | STRING_TOKEN | PROPERTY_KEY_TOKEN | OPTION_KEY_TOKEN | LEFT_QUOTE
+  //   | BOOLEAN_TOKEN | INT_TOKEN | FLOAT_TOKEN | STRING_TOKEN | PROPERTY_KEY_TOKEN | OPTION_KEY_TOKEN
   //   | LEFT_BRACE | RIGHT_BRACE
   private static boolean block_item_recover_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "block_item_recover_0")) return false;
@@ -106,7 +106,6 @@ public class CwtParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, STRING_TOKEN);
     if (!r) r = consumeToken(b, PROPERTY_KEY_TOKEN);
     if (!r) r = consumeToken(b, OPTION_KEY_TOKEN);
-    if (!r) r = consumeToken(b, LEFT_QUOTE);
     if (!r) r = consumeToken(b, LEFT_BRACE);
     if (!r) r = consumeToken(b, RIGHT_BRACE);
     return r;
@@ -197,9 +196,9 @@ public class CwtParser implements PsiParser, LightPsiParser {
   // option_key option_separator option_value
   public static boolean option(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "option")) return false;
-    if (!nextTokenIs(b, "<option>", LEFT_QUOTE, OPTION_KEY_TOKEN)) return false;
+    if (!nextTokenIs(b, OPTION_KEY_TOKEN)) return false;
     boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, OPTION, "<option>");
+    Marker m = enter_section_(b, l, _NONE_, OPTION, null);
     r = option_key(b, l + 1);
     p = r; // pin = 1
     r = r && report_error_(b, option_separator(b, l + 1));
@@ -243,7 +242,7 @@ public class CwtParser implements PsiParser, LightPsiParser {
 
   /* ********************************************************** */
   // !( COMMENT | OPTION_COMMENT_START | DOC_COMMENT_TOKEN
-  //   | BOOLEAN_TOKEN | INT_TOKEN | FLOAT_TOKEN | STRING_TOKEN | PROPERTY_KEY_TOKEN | OPTION_KEY_TOKEN | LEFT_QUOTE
+  //   | BOOLEAN_TOKEN | INT_TOKEN | FLOAT_TOKEN | STRING_TOKEN | PROPERTY_KEY_TOKEN | OPTION_KEY_TOKEN
   //   | LEFT_BRACE | RIGHT_BRACE
   //   )
   static boolean option_comment_item_recover(PsiBuilder b, int l) {
@@ -256,7 +255,7 @@ public class CwtParser implements PsiParser, LightPsiParser {
   }
 
   // COMMENT | OPTION_COMMENT_START | DOC_COMMENT_TOKEN
-  //   | BOOLEAN_TOKEN | INT_TOKEN | FLOAT_TOKEN | STRING_TOKEN | PROPERTY_KEY_TOKEN | OPTION_KEY_TOKEN | LEFT_QUOTE
+  //   | BOOLEAN_TOKEN | INT_TOKEN | FLOAT_TOKEN | STRING_TOKEN | PROPERTY_KEY_TOKEN | OPTION_KEY_TOKEN
   //   | LEFT_BRACE | RIGHT_BRACE
   private static boolean option_comment_item_recover_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "option_comment_item_recover_0")) return false;
@@ -270,7 +269,6 @@ public class CwtParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, STRING_TOKEN);
     if (!r) r = consumeToken(b, PROPERTY_KEY_TOKEN);
     if (!r) r = consumeToken(b, OPTION_KEY_TOKEN);
-    if (!r) r = consumeToken(b, LEFT_QUOTE);
     if (!r) r = consumeToken(b, LEFT_BRACE);
     if (!r) r = consumeToken(b, RIGHT_BRACE);
     return r;
@@ -317,71 +315,18 @@ public class CwtParser implements PsiParser, LightPsiParser {
   // option_key_content
   public static boolean option_key(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "option_key")) return false;
-    if (!nextTokenIs(b, "<option key>", LEFT_QUOTE, OPTION_KEY_TOKEN)) return false;
-    boolean r;
-    Marker m = enter_section_(b, l, _NONE_, OPTION_KEY, "<option key>");
-    r = option_key_content(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // option_key_quoted | option_key_unquoted
-  static boolean option_key_content(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "option_key_content")) return false;
-    if (!nextTokenIs(b, "", LEFT_QUOTE, OPTION_KEY_TOKEN)) return false;
-    boolean r;
-    r = option_key_quoted(b, l + 1);
-    if (!r) r = option_key_unquoted(b, l + 1);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // LEFT_QUOTE OPTION_KEY_TOKEN? RIGHT_QUOTE?
-  static boolean option_key_quoted(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "option_key_quoted")) return false;
-    if (!nextTokenIs(b, LEFT_QUOTE)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, LEFT_QUOTE);
-    r = r && option_key_quoted_1(b, l + 1);
-    r = r && option_key_quoted_2(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // OPTION_KEY_TOKEN?
-  private static boolean option_key_quoted_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "option_key_quoted_1")) return false;
-    consumeToken(b, OPTION_KEY_TOKEN);
-    return true;
-  }
-
-  // RIGHT_QUOTE?
-  private static boolean option_key_quoted_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "option_key_quoted_2")) return false;
-    consumeToken(b, RIGHT_QUOTE);
-    return true;
-  }
-
-  /* ********************************************************** */
-  // OPTION_KEY_TOKEN RIGHT_QUOTE?
-  static boolean option_key_unquoted(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "option_key_unquoted")) return false;
     if (!nextTokenIs(b, OPTION_KEY_TOKEN)) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, OPTION_KEY_TOKEN);
-    r = r && option_key_unquoted_1(b, l + 1);
-    exit_section_(b, m, null, r);
+    r = option_key_content(b, l + 1);
+    exit_section_(b, m, OPTION_KEY, r);
     return r;
   }
 
-  // RIGHT_QUOTE?
-  private static boolean option_key_unquoted_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "option_key_unquoted_1")) return false;
-    consumeToken(b, RIGHT_QUOTE);
-    return true;
+  /* ********************************************************** */
+  // OPTION_KEY_TOKEN
+  static boolean option_key_content(PsiBuilder b, int l) {
+    return consumeToken(b, OPTION_KEY_TOKEN);
   }
 
   /* ********************************************************** */
@@ -405,9 +350,9 @@ public class CwtParser implements PsiParser, LightPsiParser {
   // property_key property_separator property_value
   public static boolean property(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "property")) return false;
-    if (!nextTokenIs(b, "<property>", LEFT_QUOTE, PROPERTY_KEY_TOKEN)) return false;
+    if (!nextTokenIs(b, PROPERTY_KEY_TOKEN)) return false;
     boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, PROPERTY, "<property>");
+    Marker m = enter_section_(b, l, _NONE_, PROPERTY, null);
     r = property_key(b, l + 1);
     p = r; // pin = 1
     r = r && report_error_(b, property_separator(b, l + 1));
@@ -420,71 +365,18 @@ public class CwtParser implements PsiParser, LightPsiParser {
   // property_key_content
   public static boolean property_key(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "property_key")) return false;
-    if (!nextTokenIs(b, "<property key>", LEFT_QUOTE, PROPERTY_KEY_TOKEN)) return false;
-    boolean r;
-    Marker m = enter_section_(b, l, _NONE_, PROPERTY_KEY, "<property key>");
-    r = property_key_content(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // property_key_quoted | property_key_unquoted
-  static boolean property_key_content(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "property_key_content")) return false;
-    if (!nextTokenIs(b, "", LEFT_QUOTE, PROPERTY_KEY_TOKEN)) return false;
-    boolean r;
-    r = property_key_quoted(b, l + 1);
-    if (!r) r = property_key_unquoted(b, l + 1);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // LEFT_QUOTE PROPERTY_KEY_TOKEN? RIGHT_QUOTE?
-  static boolean property_key_quoted(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "property_key_quoted")) return false;
-    if (!nextTokenIs(b, LEFT_QUOTE)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, LEFT_QUOTE);
-    r = r && property_key_quoted_1(b, l + 1);
-    r = r && property_key_quoted_2(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // PROPERTY_KEY_TOKEN?
-  private static boolean property_key_quoted_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "property_key_quoted_1")) return false;
-    consumeToken(b, PROPERTY_KEY_TOKEN);
-    return true;
-  }
-
-  // RIGHT_QUOTE?
-  private static boolean property_key_quoted_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "property_key_quoted_2")) return false;
-    consumeToken(b, RIGHT_QUOTE);
-    return true;
-  }
-
-  /* ********************************************************** */
-  // PROPERTY_KEY_TOKEN RIGHT_QUOTE?
-  static boolean property_key_unquoted(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "property_key_unquoted")) return false;
     if (!nextTokenIs(b, PROPERTY_KEY_TOKEN)) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, PROPERTY_KEY_TOKEN);
-    r = r && property_key_unquoted_1(b, l + 1);
-    exit_section_(b, m, null, r);
+    r = property_key_content(b, l + 1);
+    exit_section_(b, m, PROPERTY_KEY, r);
     return r;
   }
 
-  // RIGHT_QUOTE?
-  private static boolean property_key_unquoted_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "property_key_unquoted_1")) return false;
-    consumeToken(b, RIGHT_QUOTE);
-    return true;
+  /* ********************************************************** */
+  // PROPERTY_KEY_TOKEN
+  static boolean property_key_content(PsiBuilder b, int l) {
+    return consumeToken(b, PROPERTY_KEY_TOKEN);
   }
 
   /* ********************************************************** */
@@ -539,7 +431,7 @@ public class CwtParser implements PsiParser, LightPsiParser {
 
   /* ********************************************************** */
   // !( COMMENT | OPTION_COMMENT_START | DOC_COMMENT_TOKEN
-  //   | BOOLEAN_TOKEN | INT_TOKEN | FLOAT_TOKEN | STRING_TOKEN | PROPERTY_KEY_TOKEN | LEFT_QUOTE
+  //   | BOOLEAN_TOKEN | INT_TOKEN | FLOAT_TOKEN | STRING_TOKEN | PROPERTY_KEY_TOKEN
   //   | LEFT_BRACE | RIGHT_BRACE
   //   )
   static boolean root_block_item_recover(PsiBuilder b, int l) {
@@ -552,7 +444,7 @@ public class CwtParser implements PsiParser, LightPsiParser {
   }
 
   // COMMENT | OPTION_COMMENT_START | DOC_COMMENT_TOKEN
-  //   | BOOLEAN_TOKEN | INT_TOKEN | FLOAT_TOKEN | STRING_TOKEN | PROPERTY_KEY_TOKEN | LEFT_QUOTE
+  //   | BOOLEAN_TOKEN | INT_TOKEN | FLOAT_TOKEN | STRING_TOKEN | PROPERTY_KEY_TOKEN
   //   | LEFT_BRACE | RIGHT_BRACE
   private static boolean root_block_item_recover_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "root_block_item_recover_0")) return false;
@@ -565,7 +457,6 @@ public class CwtParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, FLOAT_TOKEN);
     if (!r) r = consumeToken(b, STRING_TOKEN);
     if (!r) r = consumeToken(b, PROPERTY_KEY_TOKEN);
-    if (!r) r = consumeToken(b, LEFT_QUOTE);
     if (!r) r = consumeToken(b, LEFT_BRACE);
     if (!r) r = consumeToken(b, RIGHT_BRACE);
     return r;
@@ -591,71 +482,18 @@ public class CwtParser implements PsiParser, LightPsiParser {
   // string_content
   public static boolean string(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "string")) return false;
-    if (!nextTokenIs(b, "<string>", LEFT_QUOTE, STRING_TOKEN)) return false;
-    boolean r;
-    Marker m = enter_section_(b, l, _NONE_, STRING, "<string>");
-    r = string_content(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // string_quoted | string_unquoted
-  static boolean string_content(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "string_content")) return false;
-    if (!nextTokenIs(b, "", LEFT_QUOTE, STRING_TOKEN)) return false;
-    boolean r;
-    r = string_quoted(b, l + 1);
-    if (!r) r = string_unquoted(b, l + 1);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // LEFT_QUOTE STRING_TOKEN? RIGHT_QUOTE?
-  static boolean string_quoted(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "string_quoted")) return false;
-    if (!nextTokenIs(b, LEFT_QUOTE)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, LEFT_QUOTE);
-    r = r && string_quoted_1(b, l + 1);
-    r = r && string_quoted_2(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // STRING_TOKEN?
-  private static boolean string_quoted_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "string_quoted_1")) return false;
-    consumeToken(b, STRING_TOKEN);
-    return true;
-  }
-
-  // RIGHT_QUOTE?
-  private static boolean string_quoted_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "string_quoted_2")) return false;
-    consumeToken(b, RIGHT_QUOTE);
-    return true;
-  }
-
-  /* ********************************************************** */
-  // STRING_TOKEN RIGHT_QUOTE?
-  static boolean string_unquoted(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "string_unquoted")) return false;
     if (!nextTokenIs(b, STRING_TOKEN)) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, STRING_TOKEN);
-    r = r && string_unquoted_1(b, l + 1);
-    exit_section_(b, m, null, r);
+    r = string_content(b, l + 1);
+    exit_section_(b, m, STRING, r);
     return r;
   }
 
-  // RIGHT_QUOTE?
-  private static boolean string_unquoted_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "string_unquoted_1")) return false;
-    consumeToken(b, RIGHT_QUOTE);
-    return true;
+  /* ********************************************************** */
+  // STRING_TOKEN
+  static boolean string_content(PsiBuilder b, int l) {
+    return consumeToken(b, STRING_TOKEN);
   }
 
   /* ********************************************************** */

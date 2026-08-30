@@ -243,16 +243,16 @@ PROPERTY_KEY_TOKEN_QUOTED=([^\"\\\r\n$\[]|\\.)+ // without surrounding quotes & 
 PROPERTY_KEY_TOKEN_UNQUOTED={LITERAL_TOKEN} // literal
 PROPERTY_KEY_WILDCARD_QUOTED=([^\"\\\r\n]|\\.)+ // without surrounding quotes
 PROPERTY_KEY_WILDCARD_UNQUOTED={LITERAL_WILDCARD_TOKEN} // literal wildcard
-PROPERTY_KEY_WILDCARD=({QUOTE}{PROPERTY_KEY_WILDCARD_QUOTED}|{PROPERTY_KEY_WILDCARD_UNQUOTED}){QUOTE}?
+PROPERTY_KEY_CONTENT=({QUOTE}{PROPERTY_KEY_WILDCARD_QUOTED}|{PROPERTY_KEY_WILDCARD_UNQUOTED}){QUOTE}?
 
 STRING_TOKEN_QUOTED=([^\"\\$\[]|\\.)+ // without surrounding quotes & can be multiline & exclude `$[`
 STRING_TOKEN_UNQUOTED={LITERAL_TOKEN} // literal
 STRING_WILDCARD_QUOTED=([^\"\\]|\\.)+ // without surrounding quotes & can be multiline
 STRING_WILDCARD_UNQUOTED={LITERAL_WILDCARD_TOKEN} // literal wildcard
-STRING_WILDCARD=({QUOTE}{STRING_WILDCARD_QUOTED}|{STRING_WILDCARD_UNQUOTED}){QUOTE}?
+STRING_CONTENT=({QUOTE}{STRING_WILDCARD_QUOTED}|{STRING_WILDCARD_UNQUOTED}){QUOTE}?
 
 SCRIPTED_VARIABLE_TOKEN={IDENTIFIER_TOKEN} // identifier
-SCRIPTED_VARIABLE_WILDCARD={IDENTIFIER_WILDCARD_TOKEN} // identifier wildcard
+SCRIPTED_VARIABLE_CONTENT={IDENTIFIER_WILDCARD_TOKEN} // identifier wildcard
 
 // #103 hsv360 (from vic3)
 // #399 color types are case-insensitive
@@ -360,24 +360,24 @@ INLINE_MATH_TOKEN=[^\r\n#{}\[\]]+ // lenient match
 }
 <YYINITIAL, IN_CONDITIONAL_BLOCK_BODY, IN_PROPERTY_VALUE, IN_SCRIPTED_VARIABLE_VALUE> {
     // use trailing context (high priority than normal form)
-    {PROPERTY_KEY_WILDCARD} / {BLANK}?{PROPERTY_SEPARATOR} {
+    {PROPERTY_KEY_CONTENT} / {BLANK}?{PROPERTY_SEPARATOR} {
         yybegin(IN_PROPERTY);
         enterState(yystate(), EXPECT_PROPERTY_KEY);
         if (isLeftQuoted()) {
             yypushback(yylength() - 1);
             yybegin(IN_PROPERTY_KEY_QUOTED);
-            return LEFT_QUOTE;
+            return PROPERTY_KEY_TOKEN;
         } else {
             yypushback(yylength());
             yybegin(IN_PROPERTY_KEY_UNQUOTED);
         }
     }
-    {STRING_WILDCARD} {
+    {STRING_CONTENT} {
         if (isLeftQuoted()) {
             yypushback(yylength() - 1);
             yybegin(IN_STRING_QUOTED);
             enterState(yystate(), EXPECT_STRING);
-            return LEFT_QUOTE;
+            return STRING_TOKEN;
         } else {
             yypushback(yylength());
             yybegin(IN_STRING_UNQUOTED);
@@ -401,14 +401,14 @@ INLINE_MATH_TOKEN=[^\r\n#{}\[\]]+ // lenient match
     {PROPERTY_KEY_TOKEN_UNQUOTED} { return PROPERTY_KEY_TOKEN; }
     {BLANK} { exitState(); return WHITE_SPACE; } // keep
     {COMMENT} { exitState(); return COMMENT; } // keep
-    {QUOTE} { exitState(); return RIGHT_QUOTE; }
+    {QUOTE} { exitState(); return PROPERTY_KEY_TOKEN; }
     [^] { if (!exitStateAtBadCharacter()) return BAD_CHARACTER; } // recovery
 }
 <IN_PROPERTY_KEY_QUOTED> {
     {EOL} { exitState(); return WHITE_SPACE; }
     "["|"]" { return PROPERTY_KEY_TOKEN; } // fallback
     {PROPERTY_KEY_TOKEN_QUOTED} { return PROPERTY_KEY_TOKEN; }
-    {QUOTE} { exitState(); return RIGHT_QUOTE; }
+    {QUOTE} { exitState(); return PROPERTY_KEY_TOKEN; }
     [^] { if (!exitStateAtBadCharacter()) return BAD_CHARACTER; } // recovery
 }
 <IN_STRING_UNQUOTED> {
@@ -416,7 +416,7 @@ INLINE_MATH_TOKEN=[^\r\n#{}\[\]]+ // lenient match
     {STRING_TOKEN_UNQUOTED} { return STRING_TOKEN; }
     {BLANK} { exitStateForValue(); return WHITE_SPACE; } // keep
     {COMMENT} { exitStateForValue(); return COMMENT; } // keep
-    {QUOTE} { exitStateForValue(); return RIGHT_QUOTE; }
+    {QUOTE} { exitStateForValue(); return STRING_TOKEN; }
     [^] { if (!exitStateAtBadCharacterForValue()) return BAD_CHARACTER; } // recovery
 }
 <IN_STRING_QUOTED> {
@@ -424,7 +424,7 @@ INLINE_MATH_TOKEN=[^\r\n#{}\[\]]+ // lenient match
     // {EOL} { exitState(); return WHITE_SPACE; }
     "["|"]" { return STRING_TOKEN; } // fallback
     {STRING_TOKEN_QUOTED} { return STRING_TOKEN; }
-    {QUOTE} { exitStateForValue(); return RIGHT_QUOTE; }
+    {QUOTE} { exitStateForValue(); return STRING_TOKEN; }
     [^] { if (!exitStateAtBadCharacterForValue()) return BAD_CHARACTER; } // recovery
 }
 
@@ -432,20 +432,20 @@ INLINE_MATH_TOKEN=[^\r\n#{}\[\]]+ // lenient match
 
 <CHECK_SCRIPTED_VARIABLE> {
     // use trailing context (high priority than normal form)
-    {SCRIPTED_VARIABLE_WILDCARD} / {BLANK}?{SEPARATOR} {
+    {SCRIPTED_VARIABLE_CONTENT} / {BLANK}?{SEPARATOR} {
         yybegin(IN_SCRIPTED_VARIABLE);
         enterState(yystate(), EXPECT_SCRIPTED_VARIABLE_NAME);
         yypushback(yylength());
         yybegin(IN_SCRIPTED_VARIABLE_NAME);
     }
-    {SCRIPTED_VARIABLE_WILDCARD} {
+    {SCRIPTED_VARIABLE_CONTENT} {
         yypushback(yylength());
         yybegin(IN_SCRIPTED_VARIABLE_REFERENCE);
         enterState(yystate(), EXPECT_SCRIPTED_VARIABLE_REFERENCE);
     }
 }
 <CHECK_SCRIPTED_VARIABLE_REFERENCE> {
-    {SCRIPTED_VARIABLE_WILDCARD} {
+    {SCRIPTED_VARIABLE_CONTENT} {
         yypushback(yylength());
         yybegin(IN_SCRIPTED_VARIABLE_REFERENCE);
         enterState(yystate(), EXPECT_SCRIPTED_VARIABLE_REFERENCE);

@@ -6,20 +6,17 @@ package icu.windea.pls.script.lexer;
 import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.tree.IElementType;
 import icu.windea.pls.model.ParadoxGameType;
-import icu.windea.pls.model.constraints.ParadoxSyntaxConstraint;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntStack;
 
-import static com.intellij.psi.TokenType.*;
-import static icu.windea.pls.core.StdlibExtensionsKt.*;
+import java.util.BitSet;
+
+import static com.intellij.psi.TokenType.BAD_CHARACTER;
+import static com.intellij.psi.TokenType.WHITE_SPACE;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 
 // Lexer for Paradox Script.
 // TODO 3.0.2 refactor
-
-
-
-import java.util.BitSet;
 
 public class _ParadoxScriptLexer implements FlexLexer {
   /** This character denotes the end of file */
@@ -59,8 +56,8 @@ public class _ParadoxScriptLexer implements FlexLexer {
    * l is of the form l = 2*k, k a non negative integer
    */
   private static final int ZZ_LEXSTATE[] = {
-     0,  0,  1,  1,  2,  2,  3,  3,  4,  4,  5,  5,  6,  6,  7,  7, 
-     8,  8,  1,  1,  9,  9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14, 
+     0,  0,  1,  1,  2,  2,  3,  3,  4,  4,  5,  5,  6,  6,  7,  7,
+     8,  8,  1,  1,  9,  9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14,
     15, 15, 16, 16, 17, 17, 18, 18, 19, 19, 20, 20
   };
 
@@ -863,7 +860,7 @@ public class _ParadoxScriptLexer implements FlexLexer {
             yypushback(yylength() - 1);
             yybegin(IN_STRING_QUOTED);
             enterState(yystate(), EXPECT_STRING);
-            return LEFT_QUOTE;
+            return STRING_TOKEN;
         } else {
             yypushback(yylength());
             yybegin(IN_STRING_UNQUOTED);
@@ -966,7 +963,7 @@ public class _ParadoxScriptLexer implements FlexLexer {
           // fall through
           case 72: break;
           case 19:
-            { exitState(); return RIGHT_QUOTE;
+            { exitState(); return PROPERTY_KEY_TOKEN;
             }
           // fall through
           case 73: break;
@@ -999,7 +996,7 @@ public class _ParadoxScriptLexer implements FlexLexer {
           // fall through
           case 78: break;
           case 25:
-            { exitStateForValue(); return RIGHT_QUOTE;
+            { exitStateForValue(); return STRING_TOKEN;
             }
           // fall through
           case 79: break;
@@ -1131,7 +1128,7 @@ public class _ParadoxScriptLexer implements FlexLexer {
         if (isLeftQuoted()) {
             yypushback(yylength() - 1);
             yybegin(IN_PROPERTY_KEY_QUOTED);
-            return LEFT_QUOTE;
+            return PROPERTY_KEY_TOKEN;
         } else {
             yypushback(yylength());
             yybegin(IN_PROPERTY_KEY_UNQUOTED);

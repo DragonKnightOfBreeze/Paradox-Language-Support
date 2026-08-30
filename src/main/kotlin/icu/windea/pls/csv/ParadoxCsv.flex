@@ -44,10 +44,9 @@ LITERAL_TOKEN_QUOTED=([^\"\\\r\n]|\\.)+
 
 // no extra token kinds beyond columns (booleans/numbers are treated as plain text)
 
-// 3.0.2 NOTE not split quotes into individual tokens in columns atm
 COLUMN_TOKEN_QUOTED={LITERAL_TOKEN_QUOTED} // compatible with missing closing quote
 COLUMN_TOKEN_UNQUOTED={LITERAL_TOKEN} // literal
-COLUMN_TOKEN=({QUOTE}{COLUMN_TOKEN_QUOTED}|{COLUMN_TOKEN_UNQUOTED}){QUOTE}?
+COLUMN_CONTENT=({QUOTE}{COLUMN_TOKEN_QUOTED}|{COLUMN_TOKEN_UNQUOTED}){QUOTE}?
 
 %%
 
@@ -56,7 +55,7 @@ COLUMN_TOKEN=({QUOTE}{COLUMN_TOKEN_QUOTED}|{COLUMN_TOKEN_UNQUOTED}){QUOTE}?
     {WHITE_SPACE} { return WHITE_SPACE; }
     {COMMENT} { return COMMENT; }
     {SEPARATOR} { return SEPARATOR; }
-    {COLUMN_TOKEN} { return COLUMN_TOKEN; }
+    {COLUMN_CONTENT} { return COLUMN_TOKEN; }
 }
 
 [^] { return BAD_CHARACTER; }

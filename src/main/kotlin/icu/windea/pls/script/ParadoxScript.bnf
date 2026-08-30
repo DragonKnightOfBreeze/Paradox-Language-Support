@@ -42,7 +42,7 @@ private root_block_item ::= COMMENT | value | property | scripted_variable | nor
   recoverWhile=root_block_item_recover // continue parsing
 }
 private root_block_item_recover ::= !( COMMENT
-  | BOOLEAN_TOKEN | INT_TOKEN | FLOAT_TOKEN | STRING_TOKEN | PROPERTY_KEY_TOKEN | LEFT_QUOTE
+  | BOOLEAN_TOKEN | INT_TOKEN | FLOAT_TOKEN | STRING_TOKEN | PROPERTY_KEY_TOKEN
   | AT | COLOR_TOKEN | INLINE_MATH_START
   | PARAMETER_START | LEFT_BRACKET | RIGHT_BRACKET
   | LEFT_BRACE | RIGHT_BRACE
@@ -77,10 +77,8 @@ property_key ::= property_key_content {
   ]
 }
 // can be parameterized
-// 3.0.2 split out quote tokens
-private property_key_content ::= property_key_quoted | property_key_unquoted
-private property_key_quoted ::= LEFT_QUOTE property_key_part? ( <<processPart>> property_key_part )* RIGHT_QUOTE? // 3.0.2 no pin here atm
-private property_key_unquoted ::= property_key_part ( <<processPart>> property_key_part )* RIGHT_QUOTE?
+// NOTE 3.0.2 DO NOT split out quote tokens (reduced complexity, better performance)
+private property_key_content ::= property_key_part ( <<processPart>> property_key_part )*
 private property_key_part ::= PROPERTY_KEY_TOKEN | normal_parameter | inline_conditional_block
 private property_separator ::= EQUAL_SIGN | NOT_EQUAL_SIGN | LE_SIGN | GE_SIGN | LT_SIGN | GT_SIGN | SAFE_ASSIGN_SIGN | SAFE_CALL_ASSIGN_SIGN
 private property_value ::= value
@@ -137,10 +135,8 @@ string ::= string_content {
   ]
 }
 // can be parameterized
-// 3.0.2 split out quote tokens
-private string_content ::= string_quoted | string_unquoted
-private string_quoted ::= LEFT_QUOTE <<processRightParts>> string_part? ( <<processPart>> string_part )* RIGHT_QUOTE? // 3.0.2 no pin here atm
-private string_unquoted ::= string_part <<processRightParts>> ( <<processPart>> string_part )* RIGHT_QUOTE?
+// NOTE 3.0.2 DO NOT split out quote tokens (reduced complexity, better performance)
+private string_content ::= string_part <<processRightParts>> ( <<processPart>> string_part )*
 private string_part ::= STRING_TOKEN | normal_parameter | inline_conditional_block
 
 block ::= LEFT_BRACE block_items? RIGHT_BRACE {
@@ -161,7 +157,7 @@ private block_item ::= COMMENT | value | property | scripted_variable | normal_c
   recoverWhile=block_item_recover // continue parsing
 }
 private block_item_recover ::= !( COMMENT
-  | BOOLEAN_TOKEN | INT_TOKEN | FLOAT_TOKEN | STRING_TOKEN | PROPERTY_KEY_TOKEN | LEFT_QUOTE
+  | BOOLEAN_TOKEN | INT_TOKEN | FLOAT_TOKEN | STRING_TOKEN | PROPERTY_KEY_TOKEN
   | AT | COLOR_TOKEN | INLINE_MATH_START
   | PARAMETER_START | LEFT_BRACKET | RIGHT_BRACKET
   | LEFT_BRACE | RIGHT_BRACE
@@ -312,7 +308,7 @@ private normal_conditional_block_item ::= COMMENT | value | property/* | scripte
   recoverWhile=normal_conditional_block_item_recover // continue parsing
 }
 private normal_conditional_block_item_recover ::= !( COMMENT
-  | BOOLEAN_TOKEN | INT_TOKEN | FLOAT_TOKEN | STRING_TOKEN | PROPERTY_KEY_TOKEN | LEFT_QUOTE
+  | BOOLEAN_TOKEN | INT_TOKEN | FLOAT_TOKEN | STRING_TOKEN | PROPERTY_KEY_TOKEN
   | AT | COLOR_TOKEN | INLINE_MATH_START
   | PARAMETER_START | LEFT_BRACKET | RIGHT_BRACKET
   | LEFT_BRACE | RIGHT_BRACE

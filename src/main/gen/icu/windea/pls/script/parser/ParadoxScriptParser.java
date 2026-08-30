@@ -90,7 +90,7 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
 
   /* ********************************************************** */
   // !( COMMENT
-  //   | BOOLEAN_TOKEN | INT_TOKEN | FLOAT_TOKEN | STRING_TOKEN | PROPERTY_KEY_TOKEN | LEFT_QUOTE
+  //   | BOOLEAN_TOKEN | INT_TOKEN | FLOAT_TOKEN | STRING_TOKEN | PROPERTY_KEY_TOKEN
   //   | AT | COLOR_TOKEN | INLINE_MATH_START
   //   | PARAMETER_START | LEFT_BRACKET | RIGHT_BRACKET
   //   | LEFT_BRACE | RIGHT_BRACE
@@ -105,7 +105,7 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   // COMMENT
-  //   | BOOLEAN_TOKEN | INT_TOKEN | FLOAT_TOKEN | STRING_TOKEN | PROPERTY_KEY_TOKEN | LEFT_QUOTE
+  //   | BOOLEAN_TOKEN | INT_TOKEN | FLOAT_TOKEN | STRING_TOKEN | PROPERTY_KEY_TOKEN
   //   | AT | COLOR_TOKEN | INLINE_MATH_START
   //   | PARAMETER_START | LEFT_BRACKET | RIGHT_BRACKET
   //   | LEFT_BRACE | RIGHT_BRACE
@@ -118,7 +118,6 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, FLOAT_TOKEN);
     if (!r) r = consumeToken(b, STRING_TOKEN);
     if (!r) r = consumeToken(b, PROPERTY_KEY_TOKEN);
-    if (!r) r = consumeToken(b, LEFT_QUOTE);
     if (!r) r = consumeToken(b, AT);
     if (!r) r = consumeToken(b, COLOR_TOKEN);
     if (!r) r = consumeToken(b, INLINE_MATH_START);
@@ -724,7 +723,7 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
 
   /* ********************************************************** */
   // !( COMMENT
-  //   | BOOLEAN_TOKEN | INT_TOKEN | FLOAT_TOKEN | STRING_TOKEN | PROPERTY_KEY_TOKEN | LEFT_QUOTE
+  //   | BOOLEAN_TOKEN | INT_TOKEN | FLOAT_TOKEN | STRING_TOKEN | PROPERTY_KEY_TOKEN
   //   | AT | COLOR_TOKEN | INLINE_MATH_START
   //   | PARAMETER_START | LEFT_BRACKET | RIGHT_BRACKET
   //   | LEFT_BRACE | RIGHT_BRACE
@@ -739,7 +738,7 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   // COMMENT
-  //   | BOOLEAN_TOKEN | INT_TOKEN | FLOAT_TOKEN | STRING_TOKEN | PROPERTY_KEY_TOKEN | LEFT_QUOTE
+  //   | BOOLEAN_TOKEN | INT_TOKEN | FLOAT_TOKEN | STRING_TOKEN | PROPERTY_KEY_TOKEN
   //   | AT | COLOR_TOKEN | INLINE_MATH_START
   //   | PARAMETER_START | LEFT_BRACKET | RIGHT_BRACKET
   //   | LEFT_BRACE | RIGHT_BRACE
@@ -752,7 +751,6 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, FLOAT_TOKEN);
     if (!r) r = consumeToken(b, STRING_TOKEN);
     if (!r) r = consumeToken(b, PROPERTY_KEY_TOKEN);
-    if (!r) r = consumeToken(b, LEFT_QUOTE);
     if (!r) r = consumeToken(b, AT);
     if (!r) r = consumeToken(b, COLOR_TOKEN);
     if (!r) r = consumeToken(b, INLINE_MATH_START);
@@ -867,12 +865,36 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // property_key_quoted | property_key_unquoted
+  // property_key_part ( <<processPart>> property_key_part )*
   static boolean property_key_content(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "property_key_content")) return false;
     boolean r;
-    r = property_key_quoted(b, l + 1);
-    if (!r) r = property_key_unquoted(b, l + 1);
+    Marker m = enter_section_(b);
+    r = property_key_part(b, l + 1);
+    r = r && property_key_content_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // ( <<processPart>> property_key_part )*
+  private static boolean property_key_content_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "property_key_content_1")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!property_key_content_1_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "property_key_content_1", c)) break;
+    }
+    return true;
+  }
+
+  // <<processPart>> property_key_part
+  private static boolean property_key_content_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "property_key_content_1_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = processPart(b, l + 1);
+    r = r && property_key_part(b, l + 1);
+    exit_section_(b, m, null, r);
     return r;
   }
 
@@ -885,99 +907,6 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
     if (!r) r = normal_parameter(b, l + 1);
     if (!r) r = inline_conditional_block(b, l + 1);
     return r;
-  }
-
-  /* ********************************************************** */
-  // LEFT_QUOTE property_key_part? ( <<processPart>> property_key_part )* RIGHT_QUOTE?
-  static boolean property_key_quoted(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "property_key_quoted")) return false;
-    if (!nextTokenIs(b, LEFT_QUOTE)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, LEFT_QUOTE);
-    r = r && property_key_quoted_1(b, l + 1);
-    r = r && property_key_quoted_2(b, l + 1);
-    r = r && property_key_quoted_3(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // property_key_part?
-  private static boolean property_key_quoted_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "property_key_quoted_1")) return false;
-    property_key_part(b, l + 1);
-    return true;
-  }
-
-  // ( <<processPart>> property_key_part )*
-  private static boolean property_key_quoted_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "property_key_quoted_2")) return false;
-    while (true) {
-      int c = current_position_(b);
-      if (!property_key_quoted_2_0(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "property_key_quoted_2", c)) break;
-    }
-    return true;
-  }
-
-  // <<processPart>> property_key_part
-  private static boolean property_key_quoted_2_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "property_key_quoted_2_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = processPart(b, l + 1);
-    r = r && property_key_part(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // RIGHT_QUOTE?
-  private static boolean property_key_quoted_3(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "property_key_quoted_3")) return false;
-    consumeToken(b, RIGHT_QUOTE);
-    return true;
-  }
-
-  /* ********************************************************** */
-  // property_key_part ( <<processPart>> property_key_part )* RIGHT_QUOTE?
-  static boolean property_key_unquoted(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "property_key_unquoted")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = property_key_part(b, l + 1);
-    r = r && property_key_unquoted_1(b, l + 1);
-    r = r && property_key_unquoted_2(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // ( <<processPart>> property_key_part )*
-  private static boolean property_key_unquoted_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "property_key_unquoted_1")) return false;
-    while (true) {
-      int c = current_position_(b);
-      if (!property_key_unquoted_1_0(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "property_key_unquoted_1", c)) break;
-    }
-    return true;
-  }
-
-  // <<processPart>> property_key_part
-  private static boolean property_key_unquoted_1_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "property_key_unquoted_1_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = processPart(b, l + 1);
-    r = r && property_key_part(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // RIGHT_QUOTE?
-  private static boolean property_key_unquoted_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "property_key_unquoted_2")) return false;
-    consumeToken(b, RIGHT_QUOTE);
-    return true;
   }
 
   /* ********************************************************** */
@@ -1039,7 +968,7 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
 
   /* ********************************************************** */
   // !( COMMENT
-  //   | BOOLEAN_TOKEN | INT_TOKEN | FLOAT_TOKEN | STRING_TOKEN | PROPERTY_KEY_TOKEN | LEFT_QUOTE
+  //   | BOOLEAN_TOKEN | INT_TOKEN | FLOAT_TOKEN | STRING_TOKEN | PROPERTY_KEY_TOKEN
   //   | AT | COLOR_TOKEN | INLINE_MATH_START
   //   | PARAMETER_START | LEFT_BRACKET | RIGHT_BRACKET
   //   | LEFT_BRACE | RIGHT_BRACE
@@ -1054,7 +983,7 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   // COMMENT
-  //   | BOOLEAN_TOKEN | INT_TOKEN | FLOAT_TOKEN | STRING_TOKEN | PROPERTY_KEY_TOKEN | LEFT_QUOTE
+  //   | BOOLEAN_TOKEN | INT_TOKEN | FLOAT_TOKEN | STRING_TOKEN | PROPERTY_KEY_TOKEN
   //   | AT | COLOR_TOKEN | INLINE_MATH_START
   //   | PARAMETER_START | LEFT_BRACKET | RIGHT_BRACKET
   //   | LEFT_BRACE | RIGHT_BRACE
@@ -1067,7 +996,6 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, FLOAT_TOKEN);
     if (!r) r = consumeToken(b, STRING_TOKEN);
     if (!r) r = consumeToken(b, PROPERTY_KEY_TOKEN);
-    if (!r) r = consumeToken(b, LEFT_QUOTE);
     if (!r) r = consumeToken(b, AT);
     if (!r) r = consumeToken(b, COLOR_TOKEN);
     if (!r) r = consumeToken(b, INLINE_MATH_START);
@@ -1259,12 +1187,37 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // string_quoted | string_unquoted
+  // string_part <<processRightParts>> ( <<processPart>> string_part )*
   static boolean string_content(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "string_content")) return false;
     boolean r;
-    r = string_quoted(b, l + 1);
-    if (!r) r = string_unquoted(b, l + 1);
+    Marker m = enter_section_(b);
+    r = string_part(b, l + 1);
+    r = r && processRightParts(b, l + 1);
+    r = r && string_content_2(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // ( <<processPart>> string_part )*
+  private static boolean string_content_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "string_content_2")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!string_content_2_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "string_content_2", c)) break;
+    }
+    return true;
+  }
+
+  // <<processPart>> string_part
+  private static boolean string_content_2_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "string_content_2_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = processPart(b, l + 1);
+    r = r && string_part(b, l + 1);
+    exit_section_(b, m, null, r);
     return r;
   }
 
@@ -1277,101 +1230,6 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
     if (!r) r = normal_parameter(b, l + 1);
     if (!r) r = inline_conditional_block(b, l + 1);
     return r;
-  }
-
-  /* ********************************************************** */
-  // LEFT_QUOTE <<processRightParts>> string_part? ( <<processPart>> string_part )* RIGHT_QUOTE?
-  static boolean string_quoted(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "string_quoted")) return false;
-    if (!nextTokenIs(b, LEFT_QUOTE)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, LEFT_QUOTE);
-    r = r && processRightParts(b, l + 1);
-    r = r && string_quoted_2(b, l + 1);
-    r = r && string_quoted_3(b, l + 1);
-    r = r && string_quoted_4(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // string_part?
-  private static boolean string_quoted_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "string_quoted_2")) return false;
-    string_part(b, l + 1);
-    return true;
-  }
-
-  // ( <<processPart>> string_part )*
-  private static boolean string_quoted_3(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "string_quoted_3")) return false;
-    while (true) {
-      int c = current_position_(b);
-      if (!string_quoted_3_0(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "string_quoted_3", c)) break;
-    }
-    return true;
-  }
-
-  // <<processPart>> string_part
-  private static boolean string_quoted_3_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "string_quoted_3_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = processPart(b, l + 1);
-    r = r && string_part(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // RIGHT_QUOTE?
-  private static boolean string_quoted_4(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "string_quoted_4")) return false;
-    consumeToken(b, RIGHT_QUOTE);
-    return true;
-  }
-
-  /* ********************************************************** */
-  // string_part <<processRightParts>> ( <<processPart>> string_part )* RIGHT_QUOTE?
-  static boolean string_unquoted(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "string_unquoted")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = string_part(b, l + 1);
-    r = r && processRightParts(b, l + 1);
-    r = r && string_unquoted_2(b, l + 1);
-    r = r && string_unquoted_3(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // ( <<processPart>> string_part )*
-  private static boolean string_unquoted_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "string_unquoted_2")) return false;
-    while (true) {
-      int c = current_position_(b);
-      if (!string_unquoted_2_0(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "string_unquoted_2", c)) break;
-    }
-    return true;
-  }
-
-  // <<processPart>> string_part
-  private static boolean string_unquoted_2_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "string_unquoted_2_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = processPart(b, l + 1);
-    r = r && string_part(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // RIGHT_QUOTE?
-  private static boolean string_unquoted_3(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "string_unquoted_3")) return false;
-    consumeToken(b, RIGHT_QUOTE);
-    return true;
   }
 
   /* ********************************************************** */
@@ -1394,5 +1252,5 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
 
   static final Parser normal_conditional_block_auto_recover_ = (b, l) -> !nextTokenIsFast(b, AT, BOOLEAN_TOKEN,
     COLOR_TOKEN, COMMENT, FLOAT_TOKEN, INLINE_MATH_START, INT_TOKEN, LEFT_BRACE,
-    LEFT_BRACKET, LEFT_QUOTE, PARAMETER_START, PROPERTY_KEY_TOKEN, RIGHT_BRACE, RIGHT_BRACKET, STRING_TOKEN);
+    LEFT_BRACKET, PARAMETER_START, PROPERTY_KEY_TOKEN, RIGHT_BRACE, RIGHT_BRACKET, STRING_TOKEN);
 }

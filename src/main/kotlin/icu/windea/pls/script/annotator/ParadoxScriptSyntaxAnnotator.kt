@@ -16,7 +16,6 @@ import icu.windea.pls.core.fixes.InsertStringFix
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.isRightQuoted
 import icu.windea.pls.core.psi.PsiQuoteAwareElement
-import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes
 import icu.windea.pls.script.psi.ParadoxScriptInlineMathScriptedVariableReference
 
@@ -29,10 +28,11 @@ class ParadoxScriptSyntaxAnnotator : Annotator, DumbAware {
 
     private fun checkQuote(element: PsiElement, holder: AnnotationHolder) {
         // 检查是否缺失左侧或右侧的双引号
-        // 3.0.2 不再检查文本是否用引号括起，而是直接检查对应的词元（`LEFT_QUOTE` `RIGHT_QUOTE`）是否存在
         if (element !is PsiQuoteAwareElement) return
-        val isLeftQuoted = element.firstChild.elementType == ParadoxScriptElementTypes.LEFT_QUOTE
-        val isRightQuoted = element.lastChild.elementType == ParadoxScriptElementTypes.RIGHT_QUOTE
+        val text = element.text
+        val quotePattern = element.quotePattern
+        val isLeftQuoted = text.isLeftQuoted(quotePattern)
+        val isRightQuoted = text.isRightQuoted(quotePattern)
 
         // 可以完全未用引号包围
         if (!isLeftQuoted && !isRightQuoted) return

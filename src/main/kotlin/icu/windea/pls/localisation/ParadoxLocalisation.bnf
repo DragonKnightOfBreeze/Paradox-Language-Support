@@ -97,8 +97,8 @@ property_value ::= property_value_content  {
     getQuotePattern
   ]
 }
-// 3.0.2 split out quote tokens
-// 3.0.2 compatible with missing opening quote and missing closing quote
+// NOTE 3.0.2 split out quote tokens
+// NOTE 3.0.2 compatible with missing opening quote and missing closing quote
 private property_value_content ::= property_value_quoted | property_value_unquoted
 private property_value_quoted ::= LEFT_QUOTE PROPERTY_VALUE_TOKEN? RIGHT_QUOTE? { pin=1 }
 private property_value_unquoted ::= PROPERTY_VALUE_TOKEN RIGHT_QUOTE?

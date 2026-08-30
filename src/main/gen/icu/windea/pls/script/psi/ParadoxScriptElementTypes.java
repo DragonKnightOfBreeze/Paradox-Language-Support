@@ -59,7 +59,6 @@ public interface ParadoxScriptElementTypes {
   IElementType LABS_SIGN = ParadoxScriptElementTypeFactory.getTokenType("LABS_SIGN");
   IElementType LEFT_BRACE = ParadoxScriptElementTypeFactory.getTokenType("LEFT_BRACE");
   IElementType LEFT_BRACKET = ParadoxScriptElementTypeFactory.getTokenType("LEFT_BRACKET");
-  IElementType LEFT_QUOTE = ParadoxScriptElementTypeFactory.getTokenType("LEFT_QUOTE");
   IElementType LE_SIGN = ParadoxScriptElementTypeFactory.getTokenType("LE_SIGN");
   IElementType LP_SIGN = ParadoxScriptElementTypeFactory.getTokenType("LP_SIGN");
   IElementType LT_SIGN = ParadoxScriptElementTypeFactory.getTokenType("LT_SIGN");
@@ -78,7 +77,6 @@ public interface ParadoxScriptElementTypes {
   IElementType RABS_SIGN = ParadoxScriptElementTypeFactory.getTokenType("RABS_SIGN");
   IElementType RIGHT_BRACE = ParadoxScriptElementTypeFactory.getTokenType("RIGHT_BRACE");
   IElementType RIGHT_BRACKET = ParadoxScriptElementTypeFactory.getTokenType("RIGHT_BRACKET");
-  IElementType RIGHT_QUOTE = ParadoxScriptElementTypeFactory.getTokenType("RIGHT_QUOTE");
   IElementType RP_SIGN = ParadoxScriptElementTypeFactory.getTokenType("RP_SIGN");
   IElementType SAFE_ASSIGN_SIGN = ParadoxScriptElementTypeFactory.getTokenType("SAFE_ASSIGN_SIGN");
   IElementType SAFE_CALL_ASSIGN_SIGN = ParadoxScriptElementTypeFactory.getTokenType("SAFE_CALL_ASSIGN_SIGN");

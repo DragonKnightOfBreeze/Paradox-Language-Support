@@ -37,7 +37,7 @@ public class ParadoxCsvParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // <<checkColumnToken>> COLUMN_TOKEN?
+  // <<checkColumnToken>> column_content?
   public static boolean column(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "column")) return false;
     boolean r;
@@ -48,11 +48,17 @@ public class ParadoxCsvParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // COLUMN_TOKEN?
+  // column_content?
   private static boolean column_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "column_1")) return false;
-    consumeToken(b, COLUMN_TOKEN);
+    column_content(b, l + 1);
     return true;
+  }
+
+  /* ********************************************************** */
+  // COLUMN_TOKEN
+  static boolean column_content(PsiBuilder b, int l) {
+    return consumeToken(b, COLUMN_TOKEN);
   }
 
   /* ********************************************************** */

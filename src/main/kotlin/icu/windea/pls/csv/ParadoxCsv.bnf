@@ -50,7 +50,7 @@ private row_item ::= <<checkEol>> SEPARATOR [ <<checkEol>> column ]
 // column rules
 
 // empty first/middle columns are allowed
-column ::= <<checkColumnToken>> COLUMN_TOKEN? {
+column ::= <<checkColumnToken>> column_content? {
   implements=[
     "icu.windea.pls.core.psi.PsiQuoteAwareElement"
     "icu.windea.pls.csv.psi.ParadoxCsvLiteralValue"
@@ -61,3 +61,5 @@ column ::= <<checkColumnToken>> COLUMN_TOKEN? {
     getIcon getName getValue setValue setContent getPresentableText getQuotePattern getReference getReferences
   ]
 }
+// NOTE 3.0.2 DO NOT split out quote tokens (reduced complexity, better performance)
+private column_content ::= COLUMN_TOKEN
