@@ -32,13 +32,10 @@ import static icu.windea.pls.cwt.psi.CwtElementTypes.*;
 %type IElementType
 
 %s IN_PROPERTY_VALUE
-%s IN_PROPERTY_SEPARATOR
 
 %s IN_OPTION
-%s IN_OPTION_SEPARATOR
 %s IN_OPTION_VALUE
 %s IN_OPTION_NESTED
-%s IN_OPTION_SEPARATOR_NESTED
 %s IN_OPTION_VALUE_NESTED
 
 %unicode
@@ -97,7 +94,7 @@ OptionTextToken = {OptionTextBoundChar}({OptionTextChar}*{OptionTextBoundChar})?
 
 %%
 
-<YYINITIAL, IN_PROPERTY_SEPARATOR, IN_PROPERTY_VALUE> {
+<YYINITIAL, IN_PROPERTY_VALUE> {
     "{" { return LEFT_BRACE; }
     "}" { return RIGHT_BRACE; }
     {Blank} { return WHITE_SPACE; }
@@ -105,29 +102,28 @@ OptionTextToken = {OptionTextBoundChar}({OptionTextChar}*{OptionTextBoundChar})?
     {OptionComment} { yypushback(yylength() - 2); yybegin(IN_OPTION); return OPTION_COMMENT_START; }
     {Comment} { return COMMENT; }
 }
-
-<IN_PROPERTY_SEPARATOR> {
+<YYINITIAL> {
     {OpDoubleEqual} { yybegin(IN_PROPERTY_VALUE); return DOUBLE_EQUAL_SIGN; }
     {OpEqual} { yybegin(IN_PROPERTY_VALUE); return EQUAL_SIGN; }
     {OpNotEqual} { yybegin(IN_PROPERTY_VALUE); return NOT_EQUAL_SIGN; }
 }
-
 <YYINITIAL, IN_PROPERTY_VALUE> {
     {BooleanToken} { yybegin(YYINITIAL); return BOOLEAN_TOKEN; }
     {IntToken} { yybegin(YYINITIAL); return INT_TOKEN; }
     {FloatToken} { yybegin(YYINITIAL); return FLOAT_TOKEN; }
     // use trailing context (high priority than normal form)
-    {PropertyKeyContent} / {Blank}?{Separator} { yybegin(IN_PROPERTY_SEPARATOR); return PROPERTY_KEY_TOKEN; }
+    {PropertyKeyContent} / {Blank}?{Separator} { yybegin(YYINITIAL); return PROPERTY_KEY_TOKEN; }
     {StringContent} { yybegin(YYINITIAL); return STRING_TOKEN; }
 }
-<IN_OPTION, IN_OPTION_SEPARATOR, IN_OPTION_VALUE> {
+
+<IN_OPTION, IN_OPTION_VALUE> {
     "{" { beginStateInOption(); return LEFT_BRACE; }
     "}" { return RIGHT_BRACE; }
     {Eol} { yybegin(YYINITIAL); return EOL; }
     {WhiteSpace} { return WHITE_SPACE; }
     {Comment} { yybegin(YYINITIAL);  return COMMENT; }
 }
-<IN_OPTION_SEPARATOR> {
+<IN_OPTION> {
     {OpDoubleEqual} { yybegin(IN_OPTION_VALUE); return DOUBLE_EQUAL_SIGN; }
     {OpEqual} { yybegin(IN_OPTION_VALUE); return EQUAL_SIGN; }
     {OpNotEqual} { yybegin(IN_OPTION_VALUE); return NOT_EQUAL_SIGN; }
@@ -138,18 +134,18 @@ OptionTextToken = {OptionTextBoundChar}({OptionTextChar}*{OptionTextBoundChar})?
     {FloatToken} { yybegin(IN_OPTION); return FLOAT_TOKEN; }
     {StringContent} { yybegin(IN_OPTION); return STRING_TOKEN; }
     // use trailing context (high priority than normal form)
-    {OptionKeyContent} / {Blank}?{Separator} { yybegin(IN_OPTION_SEPARATOR); return OPTION_KEY_TOKEN; }
+    {OptionKeyContent} / {Blank}?{Separator} { yybegin(IN_OPTION); return OPTION_KEY_TOKEN; }
     {OptionTextToken} { yybegin(IN_OPTION); return STRING_TOKEN; }
 }
 
-<IN_OPTION_NESTED, IN_OPTION_SEPARATOR_NESTED, IN_OPTION_VALUE_NESTED> {
+<IN_OPTION_NESTED, IN_OPTION_VALUE_NESTED> {
     "{" { return LEFT_BRACE; }
     "}" { return RIGHT_BRACE; }
     {Eol} { yybegin(YYINITIAL); return EOL; }
     {WhiteSpace} { return WHITE_SPACE; }
     {Comment} { yybegin(YYINITIAL);  return COMMENT; }
 }
-<IN_OPTION_SEPARATOR_NESTED> {
+<IN_OPTION_NESTED> {
     {OpDoubleEqual} { yybegin(IN_OPTION_VALUE_NESTED); return DOUBLE_EQUAL_SIGN; }
     {OpEqual} { yybegin(IN_OPTION_VALUE_NESTED); return EQUAL_SIGN; }
     {OpNotEqual} { yybegin(IN_OPTION_VALUE_NESTED); return NOT_EQUAL_SIGN; }
@@ -159,7 +155,7 @@ OptionTextToken = {OptionTextBoundChar}({OptionTextChar}*{OptionTextBoundChar})?
     {IntToken} { yybegin(IN_OPTION_NESTED); return INT_TOKEN; }
     {FloatToken} { yybegin(IN_OPTION_NESTED); return FLOAT_TOKEN; }
     // use trailing context (high priority than normal form)
-    {OptionKeyContent} / {Blank}?{Separator} { yybegin(IN_OPTION_SEPARATOR_NESTED); return OPTION_KEY_TOKEN; }
+    {OptionKeyContent} / {Blank}?{Separator} { yybegin(IN_OPTION_NESTED); return OPTION_KEY_TOKEN; }
     {StringContent} { yybegin(IN_OPTION_NESTED); return STRING_TOKEN; }
 }
 
