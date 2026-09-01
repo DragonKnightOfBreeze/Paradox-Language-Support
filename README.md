@@ -193,7 +193,7 @@ These documents inevitably contain errors, shortcomings, missing details, and ar
 
 ### Image Processing
 
-- [haraldk/TwelveMonkeys: TwelveMonkeys ImageIO: Additional plugins and extensions for Java's ImageIO](https://github.com/haraldk/TwelveMonkeys)
+- [TwelveMonkeys ImageIO: Additional plug-ins and extensions for Java's ImageIO](https://github.com/haraldk/TwelveMonkeys)
 - [ImageMagick | Mastering Digital Image Alchemy](https://imagemagick.org/)
 
 ### Community & Modding Resources

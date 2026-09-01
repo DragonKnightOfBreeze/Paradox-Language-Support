@@ -34,7 +34,7 @@ export function registerParadoxScript(Prism) {
     'boolean': /\b(?:yes|no)\b/,
     'number': /\b[+-]?\d+(?:\.\d+)?\b/,
     // color (rgb {...}, hsv {...}, hsv360 {...})
-    'function': /\b(?i)(?:rgb|hsv|hsv360)\b/,
+    'function': /\b(?i:rgb|hsv|hsv360)\b/,
     // inline math (@[ ... ])
     'inline-math': {
       pattern: /@\[[\s\S]*?]/,

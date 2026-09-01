@@ -194,7 +194,7 @@ Paradox Chronicle（曾用名：Paradox Language Support）是为 Paradox Intera
 
 ### 图像处理
 
-- [haraldk/TwelveMonkeys: TwelveMonkeys ImageIO: Additional plug-ins and extensions for Java's ImageIO](https://github.com/haraldk/TwelveMonkeys)
+- [TwelveMonkeys ImageIO: Additional plug-ins and extensions for Java's ImageIO](https://github.com/haraldk/TwelveMonkeys)
 - [ImageMagick | Mastering Digital Image Alchemy](https://imagemagick.org/)
 
 ### 社区 & 模组资源

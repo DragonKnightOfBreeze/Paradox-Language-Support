@@ -20,7 +20,7 @@
     "vuepress-theme-hope": "2.0.0-rc.94",
     "sass-embedded": "^1.92.0"
   },
-  "packageManager": "pnpm@10.15.0+sha1.8e43a0b959a228ea479539575a66f5eafc89023a",
+  "packageManager": "pnpm@11.25.0+sha512.5cde925b4f075f725eb71fbae18a42ffe784524789f19b61c731cb8721ec28aaee160e01a8d5af4fedb2a42cdbf300efe23db356b0d4a17b4d63e11f8ab7c956",
   "dependencies": {
     "prismjs": "^1.30.0",
     "shiki": "^3.12.0"

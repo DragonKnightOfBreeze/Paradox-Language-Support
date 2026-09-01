@@ -54,7 +54,7 @@ The plugin comes with the latest version of built-in configs, ready to use out o
 - For example, the plugin currently does not support definitions declared in inline scripts in Stellaris, or complex localisation commands in Jomini.
 - The quality of the plugin's core language features (such as code completion, code inspection, and quick documentation) largely depends on the completeness and timeliness of the config files. Incomplete or faulty configs may lead to missing features and false positives.
 - Currently, the configs for **Stellaris**, **Victoria 3**, **Europa Universalis V** and **Hearts of Iron IV** are actively maintained, while the configs for other games may be rather incomplete or out of date.
-- For detailed maintenance of config files, please refer to [`CONTRIBUTORS.md`](CONTRIBUTORS.md).
+- For detailed maintenance of config files, please refer to [`CONTRIBUTORS.md`](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/CONTRIBUTORS.md).
 
 ## Contribution and Support
 
@@ -123,7 +123,7 @@ For reference, please read the [documentation for the config system](config.md),
 
 ### Image Processing
 
-- [haraldk/TwelveMonkeys: TwelveMonkeys ImageIO: Additional plug-ins and extensions for Java's ImageIO](https://github.com/haraldk/TwelveMonkeys)
+- [TwelveMonkeys ImageIO: Additional plug-ins and extensions for Java's ImageIO](https://github.com/haraldk/TwelveMonkeys)
 - [ImageMagick | Mastering Digital Image Alchemy](https://imagemagick.org/)
 
 ### Community & Modding Resources
@@ -136,3 +136,11 @@ For reference, please read the [documentation for the config system](config.md),
 - [Stellaris Wiki](https://stellaris.paradoxwikis.com/Stellaris_Wiki) - Stellaris Official wiki
 - [群星中文维基 | Stellaris 攻略资料指南 - 灰机wiki](https://qunxing.huijiwiki.com/wiki/%E9%A6%96%E9%A1%B5) - Stellaris Chinese wiki
 - [Stellaris Mod 教程](https://main--pdxdoc-next.netlify.app) - Stellaris mod tutorial (written in Simplified Chinese)
+
+[url:github]: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support
+[url:issues]: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues
+[url:afdian]: https://afdian.com/a/dk_breeze
+[url:discord]: https://discord.gg/vBpbET2bXT
+[url:qq-group]: https://qm.qq.com/q/oRPgLwrTZm
+
+[mailto]: mailto:dk_breeze@qq.com
