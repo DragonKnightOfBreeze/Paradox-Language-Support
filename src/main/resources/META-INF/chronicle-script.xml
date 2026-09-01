@@ -5,7 +5,6 @@
     <lang.parserDefinition language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.ParadoxScriptParserDefinition"/>
 
     <annotator language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.annotator.ParadoxScriptSyntaxAnnotator"/>
-    <annotator language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.annotator.ParadoxScriptHighlightingAnnotator"/>
 
     <spellchecker.support language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.editor.ParadoxScriptSpellcheckerStrategy"/>
     <lang.syntaxHighlighterFactory language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.editor.ParadoxScriptSyntaxHighlighterFactory"/>
