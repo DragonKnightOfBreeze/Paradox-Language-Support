@@ -86,7 +86,9 @@
   {
     "gameType": "hoi4",
     "gameMainEntries": [
-      ""
+      "",
+      "dlc/*",
+      "integrated_dlc/*",
     ],
     "gameExtraEntries": [
       "clausewitz",
