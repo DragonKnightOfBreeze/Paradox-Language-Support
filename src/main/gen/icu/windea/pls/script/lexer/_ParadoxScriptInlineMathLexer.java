@@ -5,6 +5,8 @@
 // All rights reserved.
 
 // Lexer for inline math of Paradox Script.
+// Notes:
+// - Use trailing context for high-priority rules.
 
 package icu.windea.pls.script.lexer;
 

@@ -5,6 +5,8 @@
 // All rights reserved.
 
 // Lexer for Paradox Localisation.
+// Notes:
+// - Use trailing context for high-priority rules.
 
 package icu.windea.pls.localisation.lexer;
 

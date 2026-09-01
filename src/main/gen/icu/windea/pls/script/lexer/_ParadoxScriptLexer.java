@@ -16,11 +16,12 @@ import com.intellij.psi.tree.IElementType;
 import icu.windea.pls.model.ParadoxGameType;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 
-import java.util.BitSet;
-
-import static com.intellij.psi.TokenType.BAD_CHARACTER;
-import static com.intellij.psi.TokenType.WHITE_SPACE;
+import static com.intellij.psi.TokenType.*;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
+
+
+
+import java.util.BitSet;
 
 public class _ParadoxScriptLexer implements FlexLexer {
   /** This character denotes the end of file */
@@ -54,7 +55,7 @@ public class _ParadoxScriptLexer implements FlexLexer {
    * l is of the form l = 2*k, k a non negative integer
    */
   private static final int ZZ_LEXSTATE[] = {
-     0,  0,  1,  1,  2,  2,  3,  3,  4,  4,  5,  5,  6,  6,  7,  7,
+     0,  0,  1,  1,  2,  2,  3,  3,  4,  4,  5,  5,  6,  6,  7,  7, 
      8,  8,  9,  9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14, 15, 15
   };
 
@@ -613,7 +614,7 @@ public class _ParadoxScriptLexer implements FlexLexer {
 
     private boolean beginStateInConditionalBlockForClosing() {
         // 3.0.2 close conditional block, if needed
-        // if current expect is matched (e.g., EXPECT_CONDITIONAL), close and (double) exit to outer state (e.g., YYINITIAL)
+        // if current expect is matched (e.g., EXPECT_CONDITIONAL), close and exit to outer state (e.g., YYINITIAL)
         // if not, just return false instead
 
         // Example:
