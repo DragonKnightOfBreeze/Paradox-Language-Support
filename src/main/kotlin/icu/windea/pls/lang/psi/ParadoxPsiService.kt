@@ -44,7 +44,7 @@ import icu.windea.pls.localisation.ParadoxLocalisationLanguage
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementFactory
 import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
-import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyValue
+import icu.windea.pls.localisation.psi.ParadoxLocalisationPsiService
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxDefinitionSource
 import icu.windea.pls.script.ParadoxScriptLanguage
@@ -57,6 +57,7 @@ import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptInlineMathScriptedVariableReference
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
+import icu.windea.pls.script.psi.ParadoxScriptPsiService
 import icu.windea.pls.script.psi.ParadoxScriptRootBlock
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.ParadoxScriptString
@@ -100,39 +101,6 @@ object ParadoxPsiService {
                 if (!ParadoxNameValidators.checkParameterName(k)) continue
                 val v = p.propertyValue?.text ?: continue
                 this += tupleOf(k, v)
-            }
-        }
-    }
-
-    fun getElementsToInlineInScriptFile(element: PsiElement): Tuple2<PsiElement?, PsiElement?> {
-        return when (element) {
-            is ParadoxScriptBoundMemberContainer, is ParadoxScriptConditionalBlock -> {
-                val leftBound = element.leftBound
-                val rightBound = element.rightBound
-                val first = leftBound?.siblings(forward = true, withSelf = false)?.takeWhile { it !== rightBound }?.find { it.elementType != TokenType.WHITE_SPACE }
-                val last = rightBound?.siblings(forward = false, withSelf = false)?.takeWhile { it !== leftBound }?.find { it.elementType != TokenType.WHITE_SPACE }
-                first to last
-            }
-            else -> {
-                val first = element.firstChild?.siblings(forward = true, withSelf = true)?.find { it.elementType != TokenType.WHITE_SPACE }
-                val last = element.lastChild?.siblings(forward = false, withSelf = true)?.find { it.elementType != TokenType.WHITE_SPACE }
-                first to last
-            }
-        }
-    }
-
-    fun getElementsToInlineInLocalisationFile(element: PsiElement): Tuple2<PsiElement?, PsiElement?> {
-        return when (element) {
-            is ParadoxLocalisationPropertyValue -> {
-                val tokenElement = element.tokenElement
-                val first = tokenElement?.firstChild
-                val last = tokenElement?.lastChild
-                first to last
-            }
-            else -> {
-                val first = element.firstChild
-                val last = element.lastChild
-                first to last
             }
         }
     }
@@ -208,7 +176,8 @@ object ParadoxPsiService {
         } else {
             val newRef = ParadoxScriptElementFactory.createBlockFromText(project, newText)
             handleInlinedScriptedTrigger(newRef)
-            val (start, end) = getElementsToInlineInScriptFile(newRef)
+            val start = ParadoxScriptPsiService.findStartElementToExtract(newRef)
+            val end = ParadoxScriptPsiService.findEndElementToExtract(newRef)
             if (start != null && end != null) {
                 property.parent.addRangeAfter(start, end, property)
             }
@@ -243,7 +212,8 @@ object ParadoxPsiService {
         }
         val newRef = ParadoxScriptElementFactory.createBlockFromText(project, newText)
         handleInlinedScriptedEffect(newRef)
-        val (start, end) = getElementsToInlineInScriptFile(newRef)
+        val start = ParadoxScriptPsiService.findStartElementToExtract(newRef)
+        val end = ParadoxScriptPsiService.findEndElementToExtract(newRef)
         if (start != null && end != null) {
             property.parent.addRangeAfter(start, end, property)
         }
@@ -269,7 +239,8 @@ object ParadoxPsiService {
             else -> return
         }
         val newRef = ParadoxScriptElementFactory.createRootBlockFromText(project, newText)
-        val (start, end) = getElementsToInlineInScriptFile(newRef)
+        val start = ParadoxScriptPsiService.findStartElementToExtract(newRef)
+        val end = ParadoxScriptPsiService.findEndElementToExtract(newRef)
         if (start != null && end != null) {
             usageElement.parent.addRangeAfter(start, end, usageElement)
         }
@@ -283,7 +254,8 @@ object ParadoxPsiService {
         val toInline = declaration.propertyValue ?: return
         val newText = toInline.text.unquote()
         val newRef = ParadoxLocalisationElementFactory.createPropertyValue(project, newText)
-        val (start, end) = getElementsToInlineInLocalisationFile(newRef)
+        val start = ParadoxLocalisationPsiService.findStartElementToExtract(newRef)
+        val end = ParadoxLocalisationPsiService.findEndElementToExtract(newRef)
         if (start != null && end != null) {
             element.parent.addRangeAfter(start, end, element)
         }

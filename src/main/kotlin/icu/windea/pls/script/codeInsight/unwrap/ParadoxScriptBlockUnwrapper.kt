@@ -7,7 +7,7 @@ import icu.windea.pls.script.psi.isDirectValue
 
 class ParadoxScriptBlockUnwrapper : ParadoxScriptUnwrapper() {
     override fun isApplicableTo(element: PsiElement): Boolean {
-        return element is ParadoxScriptBlock && element.isDirectValue()
+        return element is ParadoxScriptBlock && element.isDirectValue() && element.leftBound != null && element.rightBound != null
     }
 
     override fun getDescription(element: PsiElement): String {

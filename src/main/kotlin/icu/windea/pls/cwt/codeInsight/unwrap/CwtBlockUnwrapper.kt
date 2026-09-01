@@ -7,7 +7,7 @@ import icu.windea.pls.cwt.psi.isDirectValue
 
 class CwtBlockUnwrapper : CwtUnwrapper() {
     override fun isApplicableTo(element: PsiElement): Boolean {
-        return element is CwtBlock && element.isDirectValue()
+        return element is CwtBlock && element.isDirectValue() && element.leftBound != null && element.rightBound != null
     }
 
     override fun getDescription(element: PsiElement): String {

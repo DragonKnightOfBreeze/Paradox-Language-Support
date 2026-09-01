@@ -5,6 +5,7 @@ import com.intellij.psi.TokenType
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.prevLeaf
 import icu.windea.pls.base.settings.ChronicleInternalSettings
+import icu.windea.pls.core.children
 import icu.windea.pls.core.isExactLineBreak
 import icu.windea.pls.core.psi.PsiPresentableElement
 import icu.windea.pls.core.truncate
@@ -92,6 +93,24 @@ object ParadoxLocalisationPsiService {
             else -> {
                 throw UnsupportedOperationException()
             }
+        }
+    }
+
+    fun findStartElementToExtract(element: PsiElement): PsiElement? {
+        // for extract/unwrap/inline operations
+        return when (element) {
+            is ParadoxLocalisationPropertyValue -> element.tokenElement?.firstChild
+            is ParadoxLocalisationRichTextContainer -> element.children(forward = true).find { it is ParadoxLocalisationRichText }
+            else -> element.firstChild
+        }
+    }
+
+    fun findEndElementToExtract(element: PsiElement): PsiElement? {
+        // for extract/unwrap/inline operations
+        return when (element) {
+            is ParadoxLocalisationPropertyValue -> element.tokenElement?.lastChild
+            is ParadoxLocalisationRichTextContainer -> element.children(forward = false).find { it is ParadoxLocalisationRichText }
+            else -> element.lastChild
         }
     }
 }

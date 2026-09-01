@@ -1,8 +1,8 @@
 package icu.windea.pls.core.inspections
 
-import com.intellij.psi.PsiElement
 import com.intellij.psi.util.parentOfType
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import icu.windea.pls.core.commentText
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.test.ChronicleTestScope
 import org.junit.After
@@ -168,9 +168,5 @@ class SuppressionServiceTest : BasePlatformTestCase(), ChronicleTestScope {
 
     // endregion
 
-    private val PsiElement.commentText get() = text.trimStart('#').trim()
-
-    private fun findPropertyAtCaret(): CwtProperty {
-        return myFixture.findElementAtCaret()?.parentOfType<CwtProperty>()!!
-    }
+    private fun findPropertyAtCaret() = myFixture.findElementAtCaret()?.parentOfType<CwtProperty>()!!
 }

@@ -2,10 +2,12 @@ package icu.windea.pls.script.psi
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
+import com.intellij.psi.TokenType
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.parentOfType
 import icu.windea.pls.base.settings.ChronicleInternalSettings
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.children
 import icu.windea.pls.core.constants.DefaultStrings
 import icu.windea.pls.core.forEachChild
 import icu.windea.pls.core.processChild
@@ -179,5 +181,24 @@ object ParadoxScriptPsiService {
         return file.findElementAt(offset)
             ?.takeIf { it.elementType == ParadoxScriptElementTypes.PROPERTY_KEY_TOKEN }
             ?.parentOfType<ParadoxScriptProperty>()
+    }
+
+    fun findStartElementToExtract(element: PsiElement): PsiElement? {
+        val elements = when (element) {
+            is ParadoxScriptBlock, is ParadoxScriptConditionalBlock -> PsiService.collectBetweenLenientBounds(element, forward = true)
+            is ParadoxScriptFile -> element.block?.children(forward = true)
+            else -> element.children(forward = true)
+        }
+        return elements?.find { it.elementType != TokenType.WHITE_SPACE }
+    }
+
+    fun findEndElementToExtract(element: PsiElement): PsiElement? {
+        // for extract/unwrap/inline operations
+        val elements = when (element) {
+            is ParadoxScriptBlock, is ParadoxScriptConditionalBlock -> PsiService.collectBetweenLenientBounds(element, forward = false)
+            is ParadoxScriptFile -> element.block?.children(forward = false)
+            else -> element.children(forward = false)
+        }
+        return elements?.find { it.elementType != TokenType.WHITE_SPACE }
     }
 }

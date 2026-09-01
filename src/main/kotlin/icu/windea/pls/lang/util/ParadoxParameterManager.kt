@@ -46,7 +46,6 @@ import icu.windea.pls.lang.codeInsight.completion.ParadoxExtendedCompletionManag
 import icu.windea.pls.lang.codeInsight.completion.addToResult
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
-import icu.windea.pls.lang.psi.ParadoxPsiService
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.lang.resolve.ParadoxParameterService
 import icu.windea.pls.lang.resolve.util.ParadoxParameterSupportFactory
@@ -60,6 +59,7 @@ import icu.windea.pls.script.psi.ParadoxScriptConditionalBlock
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes
 import icu.windea.pls.script.psi.ParadoxScriptParameter
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
+import icu.windea.pls.script.psi.ParadoxScriptPsiService
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.isDataExpression
@@ -376,7 +376,8 @@ object ParadoxParameterManager {
                         val revert = v.equals("no", true)
                         val operator = conditionalExpression.findChild { it.elementType == ParadoxScriptElementTypes.NOT_SIGN } == null
                         if ((!revert && operator) || (revert && !operator)) {
-                            val (start, end) = ParadoxPsiService.getElementsToInlineInScriptFile(element)
+                            val start = ParadoxScriptPsiService.findStartElementToExtract(element)
+                            val end = ParadoxScriptPsiService.findEndElementToExtract(element)
                             if (start != null && end != null) {
                                 element.parent.addRangeAfter(start, end, element)
                             }

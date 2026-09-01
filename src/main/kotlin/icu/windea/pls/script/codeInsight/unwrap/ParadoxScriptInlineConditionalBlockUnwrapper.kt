@@ -6,7 +6,7 @@ import icu.windea.pls.script.psi.ParadoxScriptInlineConditionalBlock
 
 class ParadoxScriptInlineConditionalBlockUnwrapper : ParadoxScriptUnwrapper() {
     override fun isApplicableTo(element: PsiElement): Boolean {
-        return element is ParadoxScriptInlineConditionalBlock
+        return element is ParadoxScriptInlineConditionalBlock && element.leftBound != null && element.rightBound != null
     }
 
     override fun getDescription(element: PsiElement): String {

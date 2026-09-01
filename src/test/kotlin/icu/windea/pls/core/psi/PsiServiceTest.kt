@@ -3,6 +3,7 @@ package icu.windea.pls.core.psi
 import com.intellij.psi.PsiComment
 import com.intellij.psi.util.parentOfType
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import icu.windea.pls.core.commentText
 import icu.windea.pls.cwt.psi.CwtDocComment
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.test.ChronicleTestScope
@@ -538,8 +539,6 @@ class PsiServiceTest : BasePlatformTestCase(), ChronicleTestScope {
     }
 
     // endregion
-
-    private val PsiComment.commentText get() = text.trimStart('#').trim()
 
     private fun findCommentAtCaret() = myFixture.findElementAtCaret()?.parentOfType<PsiComment>(withSelf = true)
 }

@@ -4,16 +4,13 @@ import com.intellij.codeInsight.unwrap.AbstractUnwrapper
 import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiWhiteSpace
-import com.intellij.psi.util.elementType
 import icu.windea.pls.core.children
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes
+import icu.windea.pls.cwt.psi.CwtPsiService
 import icu.windea.pls.script.psi.ParadoxScriptInlineConditionalBlock
 import icu.windea.pls.script.psi.ParadoxScriptNormalConditionalBlock
-import icu.windea.pls.script.psi.ParadoxScriptNormalParameter
 import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.ParadoxScriptPsiService
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
-import icu.windea.pls.script.psi.ParadoxScriptTokenSets
-import icu.windea.pls.script.psi.ParadoxScriptTokenType
 import icu.windea.pls.script.psi.ParadoxScriptValue
 
 abstract class ParadoxScriptUnwrapper : AbstractUnwrapper<ParadoxScriptUnwrapper.Context>("") {
@@ -33,8 +30,8 @@ abstract class ParadoxScriptUnwrapper : AbstractUnwrapper<ParadoxScriptUnwrapper
         }
 
         fun extract(element: PsiElement, containerElement: PsiElement) {
-            val first = containerElement.children(forward = true).find { isElementToExtract(element, it) } ?: return
-            val last = containerElement.children(forward = false).find { isElementToExtract(element, it) } ?: return
+            val first = ParadoxScriptPsiService.findStartElementToExtract(containerElement) ?: return
+            val last = ParadoxScriptPsiService.findEndElementToExtract(containerElement) ?: return
             var toExtract = first
             if (isEffective) {
                 toExtract = addRangeBefore(first, last, element.parent, element)
@@ -45,17 +42,6 @@ abstract class ParadoxScriptUnwrapper : AbstractUnwrapper<ParadoxScriptUnwrapper
                 toExtract = toExtract.nextSibling
                 current = current?.nextSibling
             } while (current != null && current.prevSibling !== last)
-        }
-
-        private fun isElementToExtract(element: PsiElement, child: PsiElement): Boolean {
-            if (element is ParadoxScriptInlineConditionalBlock) {
-                return true
-            }
-            return child is PsiComment
-                || child is ParadoxScriptProperty
-                || child is ParadoxScriptValue
-                || child is ParadoxScriptScriptedVariable
-                || child is ParadoxScriptNormalConditionalBlock
         }
     }
 }

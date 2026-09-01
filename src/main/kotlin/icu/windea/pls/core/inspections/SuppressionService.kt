@@ -16,7 +16,7 @@ object SuppressionService {
 
     private val SUPPRESS_IN_LINE_COMMENT_PATTERN = Pattern.compile("#" + SuppressionUtil.COMMON_SUPPRESS_REGEXP + ".*")
 
-    fun getCommentsForSuppression(element: PsiElement): Sequence<PsiElement> {
+    fun getCommentsForSuppression(element: PsiElement): Sequence<PsiComment> {
         return if (element is PsiFile) {
             var current = element.firstChild
             if (current is PsiRootBlock) current = current.firstChild
@@ -24,12 +24,12 @@ object SuppressionService {
             val context = current
             context.siblings(forward = true, withSelf = true)
                 .takeWhile { it is PsiWhiteSpace || it is PsiComment }
-                .filter { it is PsiComment }
+                .filterIsInstance<PsiComment>()
         } else {
             val context = element
             context.siblings(forward = false, withSelf = false)
                 .takeWhile { it is PsiWhiteSpace || it is PsiComment }
-                .filter { it is PsiComment }
+                .filterIsInstance<PsiComment>()
         }
     }
 

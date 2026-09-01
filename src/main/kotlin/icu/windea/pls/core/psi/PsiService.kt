@@ -37,7 +37,7 @@ object PsiService {
     /**
      * 收集 [start] 和 [end] 之间的所有兄弟节点。通过 [forward] 指定遍历方向，默认向后遍历。
      */
-    fun collectBetween(start: PsiElement, end: PsiElement, forward: Boolean = true): Sequence<PsiElement> {
+    fun collectBetween(start: PsiElement, end: PsiElement?, forward: Boolean = true): Sequence<PsiElement> {
         return start.siblings(forward, withSelf = false).takeWhile { it !== end }
     }
 
@@ -45,11 +45,24 @@ object PsiService {
      * 收集 [element] 的左边界与右边界之间的所有子节点。通过 [forward] 指定遍历方向，默认向后遍历。如果任意边界不存在，则直接返回 `null`。
      */
     fun collectBetweenBounds(element: PsiBoundElement, forward: Boolean = true): Sequence<PsiElement>? {
-        val leftBound = element.leftBound ?: return null
-        val rightBound = element.rightBound ?: return null
+        val leftBound = element.leftBound
+        val rightBound = element.rightBound
         val start = if (forward) leftBound else rightBound
         val end = if (forward) rightBound else leftBound
-        return start.siblings(forward, withSelf = false).takeWhile { it != end }
+        if (start == null || end == null) return null
+        return collectBetween(start, end, forward)
+    }
+
+    /**
+     * 收集 [element] 的左边界与右边界之间的所有子节点。通过 [forward] 指定遍历方向，默认向后遍历。如果开始遍历的边界不存在，则直接返回 `null`。
+     */
+    fun collectBetweenLenientBounds(element: PsiBoundElement, forward: Boolean = true): Sequence<PsiElement>? {
+        val leftBound = element.leftBound
+        val rightBound = element.rightBound
+        val start = if (forward) leftBound else rightBound
+        val end = if (forward) rightBound else leftBound
+        if (start == null) return null
+        return collectBetween(start, end, forward)
     }
 
     fun isBeforeLeftBound(element: PsiBoundElement, offset: Int): Boolean {

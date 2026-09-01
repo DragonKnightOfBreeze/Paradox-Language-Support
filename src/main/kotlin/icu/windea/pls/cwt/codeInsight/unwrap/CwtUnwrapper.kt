@@ -4,8 +4,8 @@ import com.intellij.codeInsight.unwrap.AbstractUnwrapper
 import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiWhiteSpace
-import icu.windea.pls.core.children
 import icu.windea.pls.cwt.psi.CwtProperty
+import icu.windea.pls.cwt.psi.CwtPsiService
 import icu.windea.pls.cwt.psi.CwtValue
 
 abstract class CwtUnwrapper : AbstractUnwrapper<CwtUnwrapper.Context>("") {
@@ -25,8 +25,8 @@ abstract class CwtUnwrapper : AbstractUnwrapper<CwtUnwrapper.Context>("") {
         }
 
         fun extract(element: PsiElement, containerElement: PsiElement) {
-            val first = containerElement.children(forward = true).find { isElementToExtract(element, it) } ?: return
-            val last = containerElement.children(forward = false).find { isElementToExtract(element, it) } ?: return
+            val first = CwtPsiService.findStartElementToExtract(containerElement) ?: return
+            val last = CwtPsiService.findEndElementToExtract(containerElement) ?: return
             var toExtract = first
             if (isEffective) {
                 toExtract = addRangeBefore(first, last, element.parent, element)
@@ -37,13 +37,6 @@ abstract class CwtUnwrapper : AbstractUnwrapper<CwtUnwrapper.Context>("") {
                 toExtract = toExtract.nextSibling
                 current = current?.nextSibling
             } while (current != null && current.prevSibling !== last)
-        }
-
-        @Suppress("unused")
-        private fun isElementToExtract(element: PsiElement, child: PsiElement): Boolean {
-            return child is PsiComment
-                || child is CwtProperty
-                || child is CwtValue
         }
     }
 }

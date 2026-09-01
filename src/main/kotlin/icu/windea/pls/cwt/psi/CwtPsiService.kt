@@ -3,10 +3,12 @@ package icu.windea.pls.cwt.psi
 import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
+import com.intellij.psi.TokenType
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.parentOfType
 import icu.windea.pls.base.settings.ChronicleInternalSettings
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.children
 import icu.windea.pls.core.constants.DefaultStrings
 import icu.windea.pls.core.forEachChild
 import icu.windea.pls.core.psi.PsiBoundElement
@@ -18,10 +20,10 @@ import icu.windea.pls.cwt.CwtLanguage
 
 @Suppress("unused")
 object CwtPsiService {
-    private val presentableTextLimit get() =  ChronicleInternalSettings.getInstance().presentableTextLimit
+    private val presentableTextLimit get() = ChronicleInternalSettings.getInstance().presentableTextLimit
 
     fun getPresentableText(element: PsiPresentableElement): String {
-        return when(element) {
+        return when (element) {
             is CwtProperty -> {
                 var keyElement: CwtPropertyKey? = null
                 var separatorElement: PsiElement? = null
@@ -112,5 +114,24 @@ object CwtPsiService {
         return file.findElementAt(offset)
             ?.takeIf { it.elementType == CwtElementTypes.PROPERTY_KEY_TOKEN }
             ?.parentOfType<CwtProperty>()
+    }
+
+    fun findStartElementToExtract(element: PsiElement): PsiElement? {
+        val elements = when (element) {
+            is CwtBlock -> PsiService.collectBetweenLenientBounds(element, forward = true)
+            is CwtFile -> element.block?.children(forward = true)
+            else -> element.children(forward = true)
+        }
+        return elements?.find { it.elementType != TokenType.WHITE_SPACE }
+    }
+
+    fun findEndElementToExtract(element: PsiElement): PsiElement? {
+        // for extract/unwrap/inline operations
+        val elements = when (element) {
+            is CwtBlock -> PsiService.collectBetweenLenientBounds(element, forward = false)
+            is CwtFile -> element.block?.children(forward = false)
+            else -> element.children(forward = false)
+        }
+        return elements?.find { it.elementType != TokenType.WHITE_SPACE }
     }
 }

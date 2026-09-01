@@ -4,6 +4,7 @@ import com.intellij.psi.PsiComment
 import com.intellij.psi.util.parentOfType
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import icu.windea.pls.core.commentText
 import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyValue
 import icu.windea.pls.script.psi.ParadoxScriptBlock
@@ -45,8 +46,8 @@ class ParadoxPsiServiceTest : BasePlatformTestCase(), ChronicleTestScope {
                 ?.parentOfType<ParadoxScriptProperty>()!!
             val r = ParadoxPsiService.getOwnedComments(property)
             assertEquals(2, r.size)
-            assertEquals("first", r[0].text.trimStart('#').trim())
-            assertEquals("second", r[1].text.trimStart('#').trim())
+            assertEquals("first", r[0].commentText)
+            assertEquals("second", r[1].commentText)
         }
 
         // 无附着注释
@@ -167,144 +168,4 @@ class ParadoxPsiServiceTest : BasePlatformTestCase(), ChronicleTestScope {
     }
 
     // endregion
-
-    // region getElementsToInlineInScriptFile
-
-    @Test
-    fun getElementsToInlineInScriptFile_basic() {
-        // 空块（紧邻的花括号）
-        run {
-            myFixture.configureByText("test.txt", """
-                trigger_name = <caret>{}
-            """.trimIndent())
-            val block = myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptBlock>()!!
-            val (first, last) = ParadoxPsiService.getElementsToInlineInScriptFile(block)
-            assertNull(first)
-            assertNull(last)
-        }
-
-        // 空块
-        run {
-            myFixture.configureByText("test.txt", """
-                trigger_name = <caret>{
-                }
-            """.trimIndent())
-            val block = myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptBlock>()!!
-            val (first, last) = ParadoxPsiService.getElementsToInlineInScriptFile(block)
-            assertNull(first)
-            assertNull(last)
-        }
-
-        // 非空块：返回边界之间的首末非空白元素
-        run {
-            myFixture.configureByText("test.txt", """
-                trigger_name = <caret>{
-                    key1 = value1
-                    key2 = value2
-                }
-            """.trimIndent())
-            val block = myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptBlock>()!!
-            val (first, last) = ParadoxPsiService.getElementsToInlineInScriptFile(block)
-            assertNotNull(first)
-            assertNotNull(last)
-        }
-
-        // 单元素块
-        run {
-            myFixture.configureByText("test.txt", """
-                trigger_name = <caret>{
-                    only_key = value
-                }
-            """.trimIndent())
-            val block = myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptBlock>()!!
-            val (first, last) = ParadoxPsiService.getElementsToInlineInScriptFile(block)
-            assertNotNull(first)
-            assertNotNull(last)
-            assertEquals(first, last)
-        }
-
-        // 存在首尾空行
-        run {
-            myFixture.configureByText("test.txt", """
-                trigger_name = <caret>{
-
-                    only_key = value
-
-
-                }
-            """.trimIndent())
-            val block = myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptBlock>()!!
-            val (first, last) = ParadoxPsiService.getElementsToInlineInScriptFile(block)
-            assertNotNull(first)
-            assertNotNull(last)
-            assertEquals(first, last)
-        }
-
-        // 存在首尾注释
-        run {
-            myFixture.configureByText("test.txt", """
-                trigger_name = <caret>{
-                    # comment1
-                    only_key = value
-                    # comment2
-                }
-            """.trimIndent())
-            val block = myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptBlock>()!!
-            val (first, last) = ParadoxPsiService.getElementsToInlineInScriptFile(block)
-            assertNotNull(first)
-            assertNotNull(last)
-            assertNotEquals(first, last)
-            assertTrue(first is PsiComment && first.commentText == "comment1")
-            assertTrue(last is PsiComment && last.commentText == "comment2")
-        }
-    }
-
-    // endregion
-
-    // region getElementsToInlineInLocalisationFile
-
-    @Test
-    fun getElementsToInlineInLocalisationFile_basic() {
-        // 空文本
-        run {
-            myFixture.configureByText("test.yml", """
-                l_english:
-                 my_key:0 <caret>""
-            """.trimIndent())
-            val value = myFixture.findElementAtCaret()?.parentOfType<ParadoxLocalisationPropertyValue>()!!
-            val (first, last) = ParadoxPsiService.getElementsToInlineInLocalisationFile(value)
-            assertNull(first)
-            assertNull(last)
-        }
-
-        // 简单文本：tokenElement 的子节点作为首末元素
-        run {
-            myFixture.configureByText("test.yml", """
-                l_english:
-                 my_key:0 <caret>"Hello World"
-            """.trimIndent())
-            val value = myFixture.findElementAtCaret()?.parentOfType<ParadoxLocalisationPropertyValue>()!!
-            val (first, last) = ParadoxPsiService.getElementsToInlineInLocalisationFile(value)
-            assertNotNull(first)
-            assertNotNull(last)
-            assertEquals(first, last)
-        }
-
-        // 复杂文本
-        run {
-            myFixture.configureByText("test.yml", """
-                l_english:
-                 my_key:0 <caret>"Hello [Root.GetName]"
-            """.trimIndent())
-            val value = myFixture.findElementAtCaret()?.parentOfType<ParadoxLocalisationPropertyValue>()!!
-            val (first, last) = ParadoxPsiService.getElementsToInlineInLocalisationFile(value)
-            assertNotNull(first)
-            assertNotNull(last)
-            assertNotEquals(first, last)
-        }
-    }
-
-    // endregion
-
-    private val PsiComment.commentText get() = text.trimStart('#').trim()
 }

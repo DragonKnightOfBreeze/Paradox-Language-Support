@@ -4,6 +4,7 @@ import com.intellij.psi.PsiComment
 import com.intellij.psi.util.parentOfType
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import icu.windea.pls.core.commentText
 import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.test.ChronicleTestScope
 import org.junit.After
@@ -11,6 +12,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import kotlin.test.assertNotEquals
 
 /**
  * @see CwtPsiService
@@ -41,7 +43,7 @@ class CwtPsiServiceTest : BasePlatformTestCase(), ChronicleTestScope {
             val r = CwtPsiService.getOwnedDocComments(property)
             assertEquals(1, r.size)
             assertTrue(r[0] is CwtDocComment)
-            assertEquals("attached doc", r[0].text.trimStart('#').trim())
+            assertEquals("attached doc", r[0].commentText)
         }
 
         // 无文档注释 → 空
@@ -76,7 +78,7 @@ class CwtPsiServiceTest : BasePlatformTestCase(), ChronicleTestScope {
             val property = myFixture.findElementAtCaret()?.parentOfType<CwtProperty>()!!
             val r = CwtPsiService.getOwnedDocComments(property)
             assertEquals(1, r.size)
-            assertEquals("second doc", r[0].text.trimStart('#').trim())
+            assertEquals("second doc", r[0].commentText)
         }
     }
 
@@ -115,6 +117,105 @@ class CwtPsiServiceTest : BasePlatformTestCase(), ChronicleTestScope {
         run {
             val r = CwtPsiService.getDocCommentText(emptyList())
             assertNull(r)
+        }
+    }
+
+    // endregion
+
+    // region findStartElementToExtract + findEndElementToExtract
+
+    @Test
+    fun findElementsToExtract_forBlock() {
+        // 空块（紧邻的花括号）
+        run {
+            myFixture.configureByText("test.cwt", """
+                trigger_name = <caret>{}
+            """.trimIndent())
+            val element = myFixture.findElementAtCaret()?.parentOfType<CwtBlock>()!!
+            val start = CwtPsiService.findStartElementToExtract(element)
+            val end = CwtPsiService.findEndElementToExtract(element)
+            assertNull(start)
+            assertNull(end)
+        }
+
+        // 空块
+        run {
+            myFixture.configureByText("test.cwt", """
+                trigger_name = <caret>{
+                }
+            """.trimIndent())
+            val element = myFixture.findElementAtCaret()?.parentOfType<CwtBlock>()!!
+            val start = CwtPsiService.findStartElementToExtract(element)
+            val end = CwtPsiService.findEndElementToExtract(element)
+            assertNull(start)
+            assertNull(end)
+        }
+
+        // 非空块：返回边界之间的首末非空白元素
+        run {
+            myFixture.configureByText("test.cwt", """
+                trigger_name = <caret>{
+                    key1 = value1
+                    key2 = value2
+                }
+            """.trimIndent())
+            val element = myFixture.findElementAtCaret()?.parentOfType<CwtBlock>()!!
+            val start = CwtPsiService.findStartElementToExtract(element)
+            val end = CwtPsiService.findEndElementToExtract(element)
+            assertNotNull(start)
+            assertNotNull(end)
+        }
+
+        // 单元素块
+        run {
+            myFixture.configureByText("test.cwt", """
+                trigger_name = <caret>{
+                    only_key = value
+                }
+            """.trimIndent())
+            val element = myFixture.findElementAtCaret()?.parentOfType<CwtBlock>()!!
+            val start = CwtPsiService.findStartElementToExtract(element)
+            val end = CwtPsiService.findEndElementToExtract(element)
+            assertNotNull(start)
+            assertNotNull(end)
+            assertEquals(start, end)
+        }
+
+        // 存在首尾空行
+        run {
+            myFixture.configureByText("test.cwt", """
+                trigger_name = <caret>{
+
+                    only_key = value
+
+
+                }
+            """.trimIndent())
+            val element = myFixture.findElementAtCaret()?.parentOfType<CwtBlock>()!!
+            val start = CwtPsiService.findStartElementToExtract(element)
+            val end = CwtPsiService.findEndElementToExtract(element)
+            assertNotNull(start)
+            assertNotNull(end)
+            assertEquals(start, end)
+        }
+
+        // 存在首尾注释
+        run {
+            myFixture.configureByText("test.cwt", """
+                trigger_name = <caret>{
+                    # comment1
+                    only_key = value
+                    # comment2
+                }
+            """.trimIndent())
+            val element = myFixture.findElementAtCaret()?.parentOfType<CwtBlock>()!!
+            val start = CwtPsiService.findStartElementToExtract(element)
+            val end = CwtPsiService.findEndElementToExtract(element)
+            assertNotNull(start)
+            assertNotNull(end)
+            assertNotEquals(start, end)
+            assertTrue(start is PsiComment && start.commentText == "comment1")
+            assertTrue(end is PsiComment && end.commentText == "comment2")
         }
     }
 

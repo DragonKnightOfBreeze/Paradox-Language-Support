@@ -40,6 +40,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.isFile
 import com.intellij.openapi.wm.IdeFrame
 import com.intellij.openapi.wm.ex.WindowManagerEx
+import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementResolveResult
@@ -470,6 +471,8 @@ inline fun PsiElement.processParent(withSelf: Boolean = false, processor: (PsiEl
 }
 
 inline val PsiElement.icon get() = getIcon(0)
+
+inline val PsiComment.commentText get() = text.trimStart('#').trim()
 
 /** PSI 元素的空指针。 */
 object EmptyPointer : SmartPsiElementPointer<PsiElement> {
