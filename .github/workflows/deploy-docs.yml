@@ -17,7 +17,7 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v6.0.10
         with:
-          version: 9.4.0
+          version: 11.25.0
           run_install: false # disabled so setup doesn't try a workspace install at repo root
 
       - name: Setup Node.js
