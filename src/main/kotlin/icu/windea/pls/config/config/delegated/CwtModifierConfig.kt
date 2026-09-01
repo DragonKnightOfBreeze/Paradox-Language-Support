@@ -112,7 +112,7 @@ private object CwtModifierConfigResolver : CwtConfigResolverScope {
         config.stringValue?.let { v -> categories.add(v) }
         config.values?.forEach { it.stringValue?.let { v -> categories.add(v) } }
         if (categories.isEmpty()) {
-            logger.warnWithPrefix(config, "Skipped invalid modifier config (name: $name): Empty categories")
+            logger.warnWithPrefix(config, "Skipped invalid modifier config (name: $name): Empty categories.")
             return null
         }
         logger.debugWithPrefix(config) { "Resolved modifier config (name: $name)." }
@@ -124,7 +124,7 @@ private object CwtModifierConfigResolver : CwtConfigResolverScope {
         config.stringValue?.let { v -> categories.add(v) }
         config.values?.forEach { it.stringValue?.let { v -> categories.add(v) } }
         if (categories.isEmpty()) {
-            logger.warnWithPrefix(config, "Skipped invalid modifier config from definition modifier (name: $name): Empty categories")
+            logger.warnWithPrefix(config, "Skipped invalid modifier config from definition modifier (name: $name): Empty categories.")
             return null
         }
         val modifierName = name.replace("$", "<$typeExpression>")

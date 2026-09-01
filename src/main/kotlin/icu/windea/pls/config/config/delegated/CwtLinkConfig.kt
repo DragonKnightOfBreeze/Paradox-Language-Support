@@ -190,11 +190,11 @@ private object CwtLinkConfigResolver : CwtConfigResolverScope {
 
         // when from data or from argument, data sources must not be empty
         if (fromData && dataSources.isEmpty()) {
-            logger.warnWithPrefix(config, "Skipped invalid link config (name: $name): No data_source properties while from_data = yes.")
+            logger.warnWithPrefix(config, "Skipped invalid link config (name: $name): No `data_source` properties while from_data = yes.")
             return null
         }
         if (fromArgument && dataSources.isEmpty()) {
-            logger.warnWithPrefix(config, "Skipped invalid link config (name: $name): No data_source properties while from_argument = yes.")
+            logger.warnWithPrefix(config, "Skipped invalid link config (name: $name): No `data_source` properties while from_argument = yes.")
             return null
         }
 

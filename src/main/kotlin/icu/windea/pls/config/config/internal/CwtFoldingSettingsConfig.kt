@@ -45,7 +45,7 @@ private object CwtFoldingSettingsConfigResolver : CwtConfigResolverScope {
                 val id = property.key
                 val propConfigs = property.properties
                 if (propConfigs.isNullOrEmpty()) {
-                    logger.warnWithPrefix(property, "Skipped invalid internal folding settings config (id: $id): Missing properties")
+                    logger.warnWithPrefix(property, "Skipped invalid internal folding settings config (id: $id): Missing properties.")
                     continue
                 }
                 val propGroup = propConfigs.groupBy { it.key }
@@ -53,7 +53,7 @@ private object CwtFoldingSettingsConfigResolver : CwtConfigResolverScope {
                 val keys = propGroup.getOne("keys")?.values?.mapNotNull { it.stringValue }
                 val placeholder = propGroup.getOne("placeholder")?.stringValue
                 if (placeholder == null) {
-                    logger.warnWithPrefix(property, "Skipped invalid internal folding settings config (id: $id): Missing placeholder property")
+                    logger.warnWithPrefix(property, "Skipped invalid internal folding settings config (id: $id): Missing `placeholder` property.")
                     continue
                 }
                 logger.debugWithPrefix(property) { "Resolved internal folding settings config (id: $id)." }

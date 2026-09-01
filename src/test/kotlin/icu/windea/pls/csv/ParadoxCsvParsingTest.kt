@@ -48,6 +48,7 @@ class ParadoxCsvParsingTest : ParsingTestCase("csv/syntax", "test.csv", ParadoxC
     fun quoted() = doTest(true)
     @Test
     fun quoted_with_newline() = doTest(true)
+
     @Test
-    fun unterminated_quote_no_eol() = doTest(true)
+    fun error_unclosed_quotes() = doTest(true)
 }

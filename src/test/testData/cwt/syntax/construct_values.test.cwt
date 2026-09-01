@@ -1,0 +1,19 @@
+yes
+no
+0
+1.0
+value
+"value"
+"hello world"
+" [prompt] "
+{dv}
+{k = v}
+{dv k = v}
+{ dv }
+{ k = v }
+{ dv k = v }
+
+""
+" "
+{}
+{ }

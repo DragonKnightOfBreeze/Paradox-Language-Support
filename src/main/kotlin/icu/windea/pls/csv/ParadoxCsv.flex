@@ -51,7 +51,7 @@ LiteralTokenQuoted = ([^\"\\\r\n]|\\.)+
 
 ColumnTokenQuoted = {LiteralTokenQuoted} // compatible with missing closing quote
 ColumnTokenUnquoted = {LiteralToken} // literal
-ColumnContent = ({Quote}{ColumnTokenQuoted}|{ColumnTokenUnquoted}){Quote}?
+ColumnContent = ({Quote}{ColumnTokenQuoted}?|{ColumnTokenUnquoted}){Quote}?
 
 %%
 

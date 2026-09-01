@@ -46,7 +46,7 @@ private object CwtPostfixTemplateSettingsConfigResolver : CwtConfigResolverScope
                 val id = property.key
                 val propConfigs = property.properties
                 if (propConfigs.isNullOrEmpty()) {
-                    logger.warnWithPrefix(property, "Skipped invalid internal postfix template settings config (id: $id): Missing properties")
+                    logger.warnWithPrefix(property, "Skipped invalid internal postfix template settings config (id: $id): Missing properties.")
                     continue
                 }
                 val propGroup = propConfigs.groupBy { it.key }
@@ -55,7 +55,7 @@ private object CwtPostfixTemplateSettingsConfigResolver : CwtConfigResolverScope
                 val variables = propGroup.getOne("variables")?.properties?.associateBy({ it.key }, { it.value }).orEmpty()
                 val expression = propGroup.getOne("expression")?.stringValue
                 if (key == null || expression == null) {
-                    logger.warnWithPrefix(property, "Skipped invalid internal postfix template settings config (id: $id): Missing key or expression property")
+                    logger.warnWithPrefix(property, "Skipped invalid internal postfix template settings config (id: $id): Missing `key` or `expression` property.")
                     continue
                 }
                 logger.debugWithPrefix(property) { "Resolved internal postfix template settings config (id: $id)." }

@@ -1,0 +1,68 @@
+key = yes
+key = no
+key = 0
+key = 1.0
+key = value
+key = "value"
+key = "hello world"
+key = " [prompt] "
+key = {dv}
+key = {k = v}
+key = {dv k = v}
+key = { dv }
+key = { k = v }
+key = { dv k = v }
+
+"key" = yes
+"key" = no
+"key" = 0
+"key" = 1.0
+"key" = value
+"key" = "value"
+"key" = "hello world"
+"key" = " [prompt] "
+"key" = {dv}
+"key" = {k = v}
+"key" = {dv k = v}
+"key" = { dv }
+"key" = { k = v }
+"key" = { dv k = v }
+
+"input argument" = yes
+"input argument" = no
+"input argument" = 0
+"input argument" = 1.0
+"input argument" = value
+"input argument" = "value"
+"input argument" = "hello world"
+"input argument" = " [prompt] "
+"input argument" = {dv}
+"input argument" = {k = v}
+"input argument" = {dv k = v}
+"input argument" = { dv }
+"input argument" = { k = v }
+"input argument" = { dv k = v }
+
+" [input] " = yes
+" [input] " = no
+" [input] " = 0
+" [input] " = 1.0
+" [input] " = value
+" [input] " = "value"
+" [input] " = "hello world"
+" [input] " = " [prompt] "
+" [input] " = {dv}
+" [input] " = {k = v}
+" [input] " = {dv k = v}
+" [input] " = { dv }
+" [input] " = { k = v }
+" [input] " = { dv k = v }
+
+"" = ""
+"" = " "
+"" = {}
+"" = { }
+" " = ""
+" " = " "
+" " = {}
+" " = { }

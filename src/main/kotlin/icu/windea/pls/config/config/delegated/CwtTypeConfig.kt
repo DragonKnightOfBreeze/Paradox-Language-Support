@@ -161,7 +161,7 @@ private object CwtTypeConfigResolver : CwtConfigResolverScope {
         val images = propGroup.getOne("images")?.let { CwtTypeImagesConfig.resolve(it) }
 
         if (baseType != null && baseType == name) {
-            logger.warnWithPrefix(config, "Incorrect base_type property: base type cannot be same to current type, fallback to null.")
+            logger.warnWithPrefix(config, "Incorrect `base_type` property: base type cannot be same to current type, fallback to null.")
             baseType = null
         }
 

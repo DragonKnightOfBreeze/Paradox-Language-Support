@@ -76,7 +76,7 @@ private object CwtExtendedDefinitionConfigResolver : CwtConfigResolverScope {
         val name = if (config is CwtPropertyConfig) config.key else config.value
         val type = config.optionMetadata.type
         if (type == null) {
-            logger.warnWithPrefix(config, "Skipped invalid extended definition config (name: $name): Missing type option.")
+            logger.warnWithPrefix(config, "Skipped invalid extended definition config (name: $name): Missing `type` option.")
             return null
         }
         val hint = config.optionMetadata.hint

@@ -401,13 +401,13 @@ PropertyKeyTokenQuoted = ([^\"\\\r\n$\[\]]|\\.)+ // without surrounding quotes &
 PropertyKeyTokenUnquoted = {LiteralToken} // literal
 PropertyKeyWildcardQuoted = ([^\"\\\r\n]|\\.)+ // without surrounding quotes
 PropertyKeyWildcardUnquoted = {LiteralWildcardToken} // literal wildcard
-PropertyKeyContent = ({Quote}{PropertyKeyWildcardQuoted}|{PropertyKeyWildcardUnquoted}){Quote}?
+PropertyKeyContent = ({Quote}{PropertyKeyWildcardQuoted}?|{PropertyKeyWildcardUnquoted}){Quote}?
 
 StringTokenQuoted = ([^\"\\$\[\]]|\\.)+ // without surrounding quotes & can be multiline & exclude `$[]`
 StringTokenUnquoted = {LiteralToken} // literal
 StringWildcardQuoted = ([^\"\\]|\\.)+ // without surrounding quotes & can be multiline
 StringWildcardUnquoted = {LiteralWildcardToken} // literal wildcard
-StringContent = ({Quote}{StringWildcardQuoted}|{StringWildcardUnquoted}){Quote}?
+StringContent = ({Quote}{StringWildcardQuoted}?|{StringWildcardUnquoted}){Quote}?
 
 ScriptedVariableToken = {IdentifierToken} // identifier
 ScriptedVariableContent = {IdentifierWildcardToken} // identifier wildcard

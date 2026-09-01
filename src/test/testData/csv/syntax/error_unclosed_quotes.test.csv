@@ -1,0 +1,7 @@
+# 3.0.2 recover at line break for missing closing quotes
+
+name;desc
+x;"y
+x;y"
+
+# comment

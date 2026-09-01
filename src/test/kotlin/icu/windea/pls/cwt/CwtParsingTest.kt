@@ -51,7 +51,11 @@ class CwtParsingTest : ParsingTestCase("cwt/syntax", "test.cwt", CwtParserDefini
     @Test
     fun construct_number_literals() = doTest(true)
     @Test
-    fun construct_expressions() = doTest(true)
+    fun construct_options() = doTest(true)
+    @Test
+    fun construct_properties() = doTest(true)
+    @Test
+    fun construct_values() = doTest(true)
 
     @Test
     fun error_missing_option_value() = doTest(true)

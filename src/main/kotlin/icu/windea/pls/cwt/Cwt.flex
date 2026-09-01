@@ -79,15 +79,15 @@ LiteralToken = {LiteralBoundChar}({LiteralChar}*{LiteralBoundChar})? // boundary
 
 PropertyKeyTokenQuoted = ([^\"\\\r\n]|\\.)+ // without surrounding quotes
 PropertyKeyTokenUnquoted = {LiteralToken} // literal
-PropertyKeyContent = ({Quote}{PropertyKeyTokenQuoted}|{PropertyKeyTokenUnquoted}){Quote}?
+PropertyKeyContent = ({Quote}{PropertyKeyTokenQuoted}?|{PropertyKeyTokenUnquoted}){Quote}?
 
 StringTokenQuoted = ([^\"\\\r\n]|\\.)+ // without surrounding quotes
 StringTokenUnquoted = {LiteralToken} // literal
-StringContent = ({Quote}{StringTokenQuoted}|{StringTokenUnquoted}){Quote}?
+StringContent = ({Quote}{StringTokenQuoted}?|{StringTokenUnquoted}){Quote}?
 
 OptionKeyTokenQuoted = ([^\"\\\r\n]|\\.)+ // without surrounding quotes
 OptionKeyTokenUnquoted = {LiteralToken} // literal
-OptionKeyContent = ({Quote}{OptionKeyTokenQuoted}|{OptionKeyTokenUnquoted}){Quote}?
+OptionKeyContent = ({Quote}{OptionKeyTokenQuoted}?|{OptionKeyTokenUnquoted}){Quote}?
 
 // top level option text (value in option comment, or option value of some option in option comment)
 // inner whitespaces are allowed and required

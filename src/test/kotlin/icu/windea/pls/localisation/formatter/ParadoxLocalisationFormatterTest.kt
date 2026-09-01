@@ -127,8 +127,9 @@ class ParadoxLocalisationFormatterTest : BasePlatformTestCase(), ChronicleTestSc
         val code = """
             |l_english:
             | # Comment
-            | text_empty:0 ""
             | text:0 "Value"
+            | text_empty:0 ""
+            | text_blank:0 " "
             | text_multiline:0 "Value\nNew line"
         """.trimMargin()
         val after = reformat(code)

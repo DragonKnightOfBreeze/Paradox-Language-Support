@@ -73,7 +73,7 @@ private object CwtExtendedOnActionConfigResolver : CwtConfigResolverScope {
         val name = if (config is CwtPropertyConfig) config.key else config.value
         val eventType = config.optionMetadata.eventType
         if (eventType == null) {
-            logger.warnWithPrefix(config, "Skipped invalid extended on action config (name: $name): Missing event_type option.")
+            logger.warnWithPrefix(config, "Skipped invalid extended on action config (name: $name): Missing `event_type` option.")
             return null
         }
         val hint = config.optionMetadata.hint

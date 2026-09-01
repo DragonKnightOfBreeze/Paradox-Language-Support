@@ -394,8 +394,9 @@ The following example is from the plugin's test data file, demonstrating various
 ```paradox_localisation
 l_english:
  # Comment
- text_empty:0 ""
  text:0 "Value"
+ text_empty:0 ""
+ text_blank:0 " "
  text_multiline:0 "Value\nNew line"
  text_with_colorful_text:0 "Colorful text: §RRed text§!"
  text_with_parameter:0 "Parameter: $KEY$ and $WITH_COLOR|Y$"

@@ -100,7 +100,7 @@ private object CwtExtendedParameterConfigResolver : CwtConfigResolverScope {
         val name = if (config is CwtPropertyConfig) config.key else config.value
         val contextKey = config.optionMetadata.contextKey
         if (contextKey == null) {
-            logger.warnWithPrefix(config, "Skipped invalid extended parameter config (name: $name): Missing context_key option.")
+            logger.warnWithPrefix(config, "Skipped invalid extended parameter config (name: $name): Missing `context_key` option.")
             return null
         }
         val contextConfigsType = config.optionMetadata.contextConfigsType.let { CwtContextConfigsType.resolve(it) }

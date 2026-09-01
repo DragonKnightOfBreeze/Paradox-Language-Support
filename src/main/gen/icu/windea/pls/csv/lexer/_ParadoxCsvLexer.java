@@ -5,6 +5,8 @@
 // All rights reserved.
 
 // Lexer for Paradox CSV.
+// Notes:
+// - Use trailing context for high-priority rules.
 
 package icu.windea.pls.csv.lexer;
 
@@ -104,11 +106,11 @@ public class _ParadoxCsvLexer implements FlexLexer {
   private static final int [] ZZ_ACTION = zzUnpackAction();
 
   private static final String ZZ_ACTION_PACKED_0 =
-    "\1\0\1\1\1\2\1\3\1\4\1\5\1\6\1\0"+
-    "\2\1\1\0";
+    "\1\0\1\1\1\2\1\3\1\1\1\4\1\5\1\0"+
+    "\1\1\1\0";
 
   private static int [] zzUnpackAction() {
-    int [] result = new int[11];
+    int [] result = new int[10];
     int offset = 0;
     offset = zzUnpackAction(ZZ_ACTION_PACKED_0, offset, result);
     return result;
@@ -134,10 +136,10 @@ public class _ParadoxCsvLexer implements FlexLexer {
 
   private static final String ZZ_ROWMAP_PACKED_0 =
     "\0\0\0\11\0\22\0\33\0\44\0\55\0\66\0\77"+
-    "\0\66\0\110\0\121";
+    "\0\66\0\110";
 
   private static int [] zzUnpackRowMap() {
-    int [] result = new int[11];
+    int [] result = new int[10];
     int offset = 0;
     offset = zzUnpackRowMap(ZZ_ROWMAP_PACKED_0, offset, result);
     return result;
@@ -162,13 +164,12 @@ public class _ParadoxCsvLexer implements FlexLexer {
   private static final String ZZ_TRANS_PACKED_0 =
     "\1\2\1\3\2\4\1\5\1\6\1\7\3\2\1\10"+
     "\1\0\1\10\1\11\2\0\2\2\1\0\1\3\2\4"+
-    "\6\0\3\4\5\0\2\12\1\0\1\12\1\0\2\12"+
-    "\1\13\1\12\2\6\1\0\6\6\11\0\1\2\1\10"+
-    "\1\0\1\10\3\0\2\2\2\12\1\0\1\12\1\11"+
-    "\2\12\1\13\3\12\2\0\4\12\1\0";
+    "\6\0\3\4\5\0\2\5\1\0\1\5\1\11\2\5"+
+    "\1\12\1\5\2\6\1\0\6\6\11\0\1\2\1\10"+
+    "\1\0\1\10\3\0\2\2\2\5\2\0\4\5\1\0";
 
   private static int [] zzUnpacktrans() {
-    int [] result = new int[90];
+    int [] result = new int[81];
     int offset = 0;
     offset = zzUnpacktrans(ZZ_TRANS_PACKED_0, offset, result);
     return result;
@@ -206,10 +207,10 @@ public class _ParadoxCsvLexer implements FlexLexer {
   private static final int [] ZZ_ATTRIBUTE = zzUnpackAttribute();
 
   private static final String ZZ_ATTRIBUTE_PACKED_0 =
-    "\1\0\5\1\1\11\1\0\1\11\1\1\1\0";
+    "\1\0\5\1\1\11\1\0\1\11\1\0";
 
   private static int [] zzUnpackAttribute() {
-    int [] result = new int[11];
+    int [] result = new int[10];
     int offset = 0;
     offset = zzUnpackAttribute(ZZ_ATTRIBUTE_PACKED_0, offset, result);
     return result;
@@ -527,32 +528,27 @@ public class _ParadoxCsvLexer implements FlexLexer {
             { return COLUMN_TOKEN;
             }
           // fall through
-          case 7: break;
+          case 6: break;
           case 2:
             { return WHITE_SPACE;
             }
           // fall through
-          case 8: break;
+          case 7: break;
           case 3:
             { return EOL;
             }
           // fall through
-          case 9: break;
+          case 8: break;
           case 4:
-            { return BAD_CHARACTER;
-            }
-          // fall through
-          case 10: break;
-          case 5:
             { return COMMENT;
             }
           // fall through
-          case 11: break;
-          case 6:
+          case 9: break;
+          case 5:
             { return SEPARATOR;
             }
           // fall through
-          case 12: break;
+          case 10: break;
           default:
             zzScanError(ZZ_NO_MATCH);
           }
