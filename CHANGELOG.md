@@ -8,10 +8,10 @@
 - [x] Missing error on invalid syntax which can cause cascading errors in-game ([#386](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/386))
 - [x] complex_enum的匹配问题 ([#389](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/389))
 - [x] Bug: Broken syntax highlighting on event targets ([#390](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/390))
-- [x] ColorField对于颜色类型大小写的匹配问题 ([#399](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/399))
 - [x] 将代码检查 `ConflictingResolvedExpressionInspection` 重命名为 `ConflictingExpressionInspection` 并默认禁用，避免误报和误导 / Rename code inspection `ConflictingResolvedExpressionInspection` to `ConflictingExpressionInspection` and disable it by default to avoid false positives and misleading results
-- [ ] 清理和完善各个 lexer 和 parser / Cleanup and improve lexers and parsers
-- [ ] 完善脚本文件的 lexer：更好的对可选空白和高级插值语法（如 `a_$p$_[[p]b]`）的支持） / Improve lexer for script files: better support for optional blank and advanced interpolation syntax (e.g., `a_$p$_[[p]b]`)
+- [x] 清理和完善各个 lexer 和 parser / Cleanup and improve lexers and parsers
+- [x] 完善脚本文件的 lexer：不区分颜色类型的大小写（如 `RGB { 0 255 255}`） / Improve lexer for script files: ignore case for color types (e.g., `RGB { 0 255 255}`) ([#399](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/399))
+- [x] 完善脚本文件的 lexer：完善对高级插值语法的支持（如 `a_$b$_[[c]d]_e`） / Improve lexer for script files: improve support for advanced interpolations (e.g., `a_$b$_[[c]d]_e`
 - [x] 完善作用域的匹配和合并逻辑，兼容并集作用域（如 Stellaris 4.4 中新增的 `carrier`） / Improve the match and merge logic for scopes, make compatible with union types (e.g., `carrier` newly added in Stellaris 4.4)
 - [x] 完善字面量的加引号/去括号逻辑，进行更严格的检查以避免意外行为 / Improve the quoting/unquoting logic for literals, apply stricter validations to avoid unexpected behaviors
 - [x] 完善测试用例（通用模块） / Improve test cases (for the common module).

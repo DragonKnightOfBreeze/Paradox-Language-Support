@@ -1,3 +1,8 @@
+// Copyright (c) 2021 DragonKnightOfBreeze Windea <dk_breeze@qq.com>
+// All rights reserved.
+
+// Lexer for CWT.
+
 package icu.windea.pls.cwt.lexer;
 
 import com.intellij.lexer.FlexLexer;
@@ -5,8 +10,6 @@ import com.intellij.psi.tree.IElementType;
 
 import static com.intellij.psi.TokenType.*;
 import static icu.windea.pls.cwt.psi.CwtElementTypes.*;
-
-// Lexer for CWT.
 
 %%
 
@@ -94,9 +97,12 @@ OptionTextToken = {OptionTextBoundChar}({OptionTextChar}*{OptionTextBoundChar})?
 
 %%
 
+// common rules
+
 <YYINITIAL, IN_PROPERTY_VALUE> {
     "{" { return LEFT_BRACE; }
     "}" { return RIGHT_BRACE; }
+
     {Blank} { return WHITE_SPACE; }
     {DocComment} { return DOC_COMMENT_TOKEN; }
     {OptionComment} { yypushback(yylength() - 2); yybegin(IN_OPTION); return OPTION_COMMENT_START; }
@@ -111,7 +117,6 @@ OptionTextToken = {OptionTextBoundChar}({OptionTextChar}*{OptionTextBoundChar})?
     {BooleanToken} { yybegin(YYINITIAL); return BOOLEAN_TOKEN; }
     {IntToken} { yybegin(YYINITIAL); return INT_TOKEN; }
     {FloatToken} { yybegin(YYINITIAL); return FLOAT_TOKEN; }
-    // use trailing context (higher priority)
     {PropertyKeyContent} / {Blank}?{Separator} { yybegin(YYINITIAL); return PROPERTY_KEY_TOKEN; }
     {StringContent} { yybegin(YYINITIAL); return STRING_TOKEN; }
 }
@@ -119,6 +124,7 @@ OptionTextToken = {OptionTextBoundChar}({OptionTextChar}*{OptionTextBoundChar})?
 <IN_OPTION, IN_OPTION_VALUE> {
     "{" { beginStateInOption(); return LEFT_BRACE; }
     "}" { return RIGHT_BRACE; }
+
     {Eol} { yybegin(YYINITIAL); return EOL; }
     {WhiteSpace} { return WHITE_SPACE; }
     {Comment} { yybegin(YYINITIAL);  return COMMENT; }
@@ -133,7 +139,6 @@ OptionTextToken = {OptionTextBoundChar}({OptionTextChar}*{OptionTextBoundChar})?
     {IntToken} { yybegin(IN_OPTION); return INT_TOKEN; }
     {FloatToken} { yybegin(IN_OPTION); return FLOAT_TOKEN; }
     {StringContent} { yybegin(IN_OPTION); return STRING_TOKEN; }
-    // use trailing context (higher priority)
     {OptionKeyContent} / {Blank}?{Separator} { yybegin(IN_OPTION); return OPTION_KEY_TOKEN; }
     {OptionTextToken} { yybegin(IN_OPTION); return STRING_TOKEN; }
 }
@@ -141,6 +146,7 @@ OptionTextToken = {OptionTextBoundChar}({OptionTextChar}*{OptionTextBoundChar})?
 <IN_OPTION_NESTED, IN_OPTION_VALUE_NESTED> {
     "{" { return LEFT_BRACE; }
     "}" { return RIGHT_BRACE; }
+
     {Eol} { yybegin(YYINITIAL); return EOL; }
     {WhiteSpace} { return WHITE_SPACE; }
     {Comment} { yybegin(YYINITIAL);  return COMMENT; }
@@ -154,9 +160,10 @@ OptionTextToken = {OptionTextBoundChar}({OptionTextChar}*{OptionTextBoundChar})?
     {BooleanToken} { yybegin(IN_OPTION_NESTED); return BOOLEAN_TOKEN; }
     {IntToken} { yybegin(IN_OPTION_NESTED); return INT_TOKEN; }
     {FloatToken} { yybegin(IN_OPTION_NESTED); return FLOAT_TOKEN; }
-    // use trailing context (higher priority)
     {OptionKeyContent} / {Blank}?{Separator} { yybegin(IN_OPTION_NESTED); return OPTION_KEY_TOKEN; }
     {StringContent} { yybegin(IN_OPTION_NESTED); return STRING_TOKEN; }
 }
+
+// fallback
 
 [^] { return BAD_CHARACTER; }

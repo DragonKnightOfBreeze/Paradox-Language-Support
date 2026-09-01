@@ -1,3 +1,10 @@
+// Copyright (c) 2021 DragonKnightOfBreeze Windea <dk_breeze@qq.com>
+// All rights reserved.
+
+// Lexer for Paradox Localisation.
+// Notes:
+// - Use trailing context for high-priority rules.
+
 package icu.windea.pls.localisation.lexer;
 
 import com.intellij.lexer.FlexLexer;
@@ -6,8 +13,6 @@ import icu.windea.pls.model.ParadoxGameType;
 
 import static com.intellij.psi.TokenType.*;
 import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
-
-// Lexer for Paradox Localisation.
 
 %%
 
@@ -119,6 +124,8 @@ PropertyValueToken = [^\"\r\n]+ // it's unnecessary to escape double quotes in l
 
 %%
 
+// common rules
+
 <YYINITIAL> {
     {Blank} { return WHITE_SPACE; }
     {Comment} { return COMMENT; }
@@ -160,5 +167,7 @@ PropertyValueToken = [^\"\r\n]+ // it's unnecessary to escape double quotes in l
     {Eol} { yybegin(YYINITIAL); return WHITE_SPACE; }
     {Comment} { yybegin(YYINITIAL); return COMMENT; }
 }
+
+// fallback
 
 [^] { return BAD_CHARACTER; }

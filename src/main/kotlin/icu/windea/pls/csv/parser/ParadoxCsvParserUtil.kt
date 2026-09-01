@@ -20,6 +20,7 @@ object ParadoxCsvParserUtil : GeneratedParserUtilBase() {
     @JvmStatic
     fun checkEol(b: PsiBuilder, l: Int): Boolean {
         // check around each separator (`SEPARATOR`)
+
         if (b.isFirstColumn && b.isEmptyColumn) return true
         val next = b.lookup(0, forward = true)
         if (next == null) return true
@@ -29,11 +30,14 @@ object ParadoxCsvParserUtil : GeneratedParserUtilBase() {
 
     @JvmStatic
     fun checkColumnToken(b: PsiBuilder, l: Int): Boolean {
-        val next = b.lookup(0, forward = true)
-        val prev = b.lookup(-1, forward = false)
-        // Valid when:
+        // check before each column (optional `column_content`)
+
+        // valid when:
         // - next is a real column token
         // - next is a separator, and we're either at line start (prev == EOL) or between two separators (prev == SEPARATOR) - this allows empty first/middle columns
+
+        val next = b.lookup(0, forward = true)
+        val prev = b.lookup(-1, forward = false)
         val isValid = next == COLUMN_TOKEN || (next == SEPARATOR && (prev == SEPARATOR || prev == EOL))
         if (!isValid) return false
         b.isFirstColumn = prev == EOL

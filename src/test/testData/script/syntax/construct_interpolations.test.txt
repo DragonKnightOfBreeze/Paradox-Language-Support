@@ -31,15 +31,34 @@ key = [[!PARAM]text]
 
 # quoted form should be also allowed
 
-"key" = "value"
 "key" = "$PARAM$"
-"$PARAM$ " = "value"
-"$PARAM$" = " $PARAM$"
+"$PARAM$" = "value"
+"$PARAM$" = "$PARAM$"
+"key" = "$PARAM$ "
+" $PARAM$" = "value"
+" $PARAM$ " = " $PARAM$ "
 
-key = "[[PARAM]]" // TODO
-key = "[[PARAM]text] "
+key = "[[PARAM]]"
+key = "[[PARAM]text]"
+key = "[[!PARAM]]"
+key = "[[!PARAM]text]"
+key = "[[PARAM]] "
+key = " [[PARAM]text]"
 key = "[[!PARAM]] "
-key = " [ [!PARAM]text]"
+key = " [[!PARAM]text]"
+key = " [[PARAM]] "
+key = " [[PARAM]text] "
+key = " [[!PARAM]] "
+key = " [[!PARAM]text] "
+
+key = "[[ PARAM ] ]"
+key = "[[PARAM] text ]"
+key = "[[ ! PARAM ] ]"
+key = "[[!PARAM] text ]"
+key = "[ [ PARAM ] ]"
+key = "[ [PARAM] text ]"
+key = "[ [ ! PARAM ] ]"
+key = "[ [ !PARAM ] text ]"
 
 # `[value]` should be normal string tokens
 
@@ -54,4 +73,5 @@ prefix_[value]_suffix = value
 [value] = [value]
 prefix_[value]_suffix = prefix_[value]_suffix
 "[value]" = "[value]"
+
 "prefix_[value]_suffix" = "prefix_[value]_suffix"

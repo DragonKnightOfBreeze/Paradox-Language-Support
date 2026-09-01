@@ -1,3 +1,13 @@
+// Copyright (c) 2021 DragonKnightOfBreeze Windea <dk_breeze@qq.com>
+// All rights reserved.
+
+
+// Lexer for localisation text of Paradox Localisation.
+// Notes:
+// - Use trailing context for high-priority rules.
+// - Use `stateStack` and `expectStack` to manage lexer-level states.
+// - Use `ParadoxSyntaxConstraint` to check whether specific syntax is supported in current game type.
+
 package icu.windea.pls.localisation.lexer;
 
 import com.intellij.lexer.FlexLexer;
@@ -8,11 +18,6 @@ import it.unimi.dsi.fastutil.ints.IntArrayList;
 
 import static com.intellij.psi.TokenType.*;
 import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
-
-// Lexer for localisation text of Paradox Localisation.
-// Notes:
-// - Use `stateStack` and `expectStack` to manage lexer-level states.
-// - Use `ParadoxSyntaxConstraint` to check whether specific syntax is supported in current game type.
 
 %%
 
@@ -59,35 +64,26 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
     }
 
     private void exitState(int expect) {
-        // exit state to previous only if it matches `expect`
-        if (stateStack == null || stateStack.isEmpty()) {
+        // exit state to previous only if expect is matched
+        if (stateStack == null || stateStack.isEmpty() || expectStack == null || expectStack.isEmpty()) {
             yybegin(YYINITIAL);
             return;
         }
-        if (expectStack == null || expectStack.isEmpty()) {
-            yybegin(YYINITIAL);
-            return;
-        }
-        int currentExpect = expectStack.topInt();
-        if (currentExpect != expect) return;
+        if (expectStack.topInt() != expect) return;
+        int nextState = stateStack.popInt();
         expectStack.popInt();
-        int currentState = stateStack.popInt();
-        yybegin(currentState);
+        yybegin(nextState);
     }
 
     private void exitStateForRecovery() {
         // used for recovery
-        if (stateStack == null || stateStack.isEmpty()) {
+        if (stateStack == null || stateStack.isEmpty() || expectStack == null || expectStack.isEmpty()) {
             yybegin(YYINITIAL);
             return;
         }
-        if (expectStack == null || expectStack.isEmpty()) {
-            yybegin(YYINITIAL);
-            return;
-        }
+        int nextState = stateStack.popInt();
         expectStack.popInt();
-        int currentState = stateStack.popInt();
-        yybegin(currentState);
+        yybegin(nextState);
     }
 
     private boolean exitStateForRecoveryIfNeeded() {
@@ -101,6 +97,11 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
     private boolean needExitStateForRecovery() {
         // heuristic: always recovery atm
         return true;
+    }
+
+    private boolean getFallbackToken() {
+        // fallback to `TEXT_TOKEN`, if necessary
+        return TEXT_TOKEN;
     }
 
     private boolean isExactWord(char c) {
@@ -207,55 +208,66 @@ TextToken = ([^§£\$\[\]#@]|\\[\s\S])+
 
 %%
 
+// common rules
+
 <YYINITIAL, IN_COLORFUL_TEXT, IN_CONCEPT_TEXT, IN_TEXT_FORMAT_TEXT> {
     "§" {
-            enterState(yystate(), EXPECT_COLORFUL_TEXT);
-            yypushback(yylength());
-            yybegin(IN_COLORFUL_TEXT_CHECK);
-        }
+        enterState(yystate(), EXPECT_COLORFUL_TEXT);
+        yypushback(yylength());
+        yybegin(IN_COLORFUL_TEXT_CHECK);
+    }
+    "§!" { // dangling form is allowed here at syntax level
+        exitState(EXPECT_COLORFUL_TEXT);
+        return COLORFUL_TEXT_END;
+    }
+
     "$" {
-            enterState(yystate(), EXPECT_PARAMETER);
-            yypushback(yylength());
-            yybegin(IN_PARAMETER_CHECK);
-        }
+        enterState(yystate(), EXPECT_PARAMETER);
+        yypushback(yylength());
+        yybegin(IN_PARAMETER_CHECK);
+    }
+
     "[" {
-            enterState(yystate(), EXPECT_COMMAND);
-            yypushback(yylength());
-            yybegin(IN_COMMAND_CHECK);
-        }
-    // use trailing context (higher priority)
+        enterState(yystate(), EXPECT_COMMAND);
+        yypushback(yylength());
+        yybegin(IN_COMMAND_CHECK);
+    }
+    "]" {
+        if (yystate() != IN_CONCEPT_TEXT) return getFallbackToken();
+        exitState(EXPECT_COMMAND);
+        return RIGHT_BRACKET;
+    }
+
     "£" / {IconWildcardLeadChar} {
         enterState(yystate(), EXPECT_ICON);
         yybegin(IN_ICON);
         return ICON_START;
     }
-    "£" { return TEXT_TOKEN; }
+    "£" {
+        return getFallbackToken();
+    }
+
     "@" / {TextIconWildcardLeadChar} {
-        if (!ParadoxSyntaxConstraint.LocalisationTextIcon.testTarget(this)) return TEXT_TOKEN;
+        if (!ParadoxSyntaxConstraint.LocalisationTextIcon.testTarget(this)) return getFallbackToken();
         enterState(yystate(), EXPECT_TEXT_ICON);
         yybegin(IN_TEXT_ICON);
         return TEXT_ICON_START;
     }
-    "@" { return TEXT_TOKEN; }
-    // use trailing context (higher priority)
+    "@" {
+        return getFallbackToken();
+    }
+
     "#" / {TextFormatWildcardLeadChar} {
-        if (!ParadoxSyntaxConstraint.LocalisationTextFormat.testTarget(this)) return TEXT_TOKEN;
+        if (!ParadoxSyntaxConstraint.LocalisationTextFormat.testTarget(this)) return getFallbackToken();
         enterState(yystate(), EXPECT_TEXT_FORMAT);
         yybegin(IN_TEXT_FORMAT);
         return TEXT_FORMAT_START;
     }
-    "#" { return TEXT_TOKEN; }
-    "§!" {
-        exitState(EXPECT_COLORFUL_TEXT);
-        return COLORFUL_TEXT_END;
+    "#" {
+        return getFallbackToken();
     }
-    "]" {
-        if (yystate() != IN_CONCEPT_TEXT) return TEXT_TOKEN;
-        exitState(EXPECT_COMMAND);
-        return RIGHT_BRACKET;
-    }
-    "#!" {
-        if (!ParadoxSyntaxConstraint.LocalisationTextFormat.testTarget(this)) return TEXT_TOKEN;
+    "#!" { // dangling form is allowed here at syntax level
+        if (!ParadoxSyntaxConstraint.LocalisationTextFormat.testTarget(this)) return getFallbackToken();
         exitState(EXPECT_TEXT_FORMAT);
         return TEXT_FORMAT_END;
     }
@@ -267,15 +279,16 @@ TextToken = ([^§£\$\[\]#@]|\\[\s\S])+
 
 <IN_ICON, IN_ICON_ARGUMENT, IN_TEXT_ICON, IN_TEXT_FORMAT> {
     "$" {
-            enterState(yystate(), EXPECT_PARAMETER);
-            yypushback(yylength());
-            yybegin(IN_PARAMETER_CHECK);
-        }
+        enterState(yystate(), EXPECT_PARAMETER);
+        yypushback(yylength());
+        yybegin(IN_PARAMETER_CHECK);
+    }
+
     "[" {
-            enterState(yystate(), EXPECT_COMMAND);
-            yypushback(yylength());
-            yybegin(IN_COMMAND_CHECK);
-        }
+        enterState(yystate(), EXPECT_COMMAND);
+        yypushback(yylength());
+        yybegin(IN_COMMAND_CHECK);
+    }
     "]" {
         exitState(EXPECT_COMMAND);
         return RIGHT_BRACKET;
@@ -283,10 +296,10 @@ TextToken = ([^§£\$\[\]#@]|\\[\s\S])+
 }
 <IN_PARAMETER> {
     "[" {
-            enterState(yystate(), EXPECT_COMMAND);
-            yypushback(yylength());
-            yybegin(IN_COMMAND_CHECK);
-        }
+        enterState(yystate(), EXPECT_COMMAND);
+        yypushback(yylength());
+        yybegin(IN_COMMAND_CHECK);
+    }
     "]" {
         exitState(EXPECT_COMMAND);
         return RIGHT_BRACKET;
@@ -294,10 +307,10 @@ TextToken = ([^§£\$\[\]#@]|\\[\s\S])+
 }
 <IN_COMMAND_TEXT, IN_COMMAND_ARGUMENT, IN_CONCEPT_NAME> {
     "$" {
-            enterState(yystate(), EXPECT_PARAMETER);
-            yypushback(yylength());
-            yybegin(IN_PARAMETER_CHECK);
-        }
+        enterState(yystate(), EXPECT_PARAMETER);
+        yypushback(yylength());
+        yybegin(IN_PARAMETER_CHECK);
+    }
 }
 
 // localisation colorful text rules
@@ -329,11 +342,10 @@ TextToken = ([^§£\$\[\]#@]|\\[\s\S])+
             yypushback(yylength() - 1);
             yybegin(IN_PARAMETER);
             return PARAMETER_START;
-        } else {
-            exitState(EXPECT_PARAMETER);
-            yypushback(yylength() - 1);
-            return TEXT_TOKEN;
         }
+        exitState(EXPECT_PARAMETER);
+        yypushback(yylength() - 1);
+        return getFallbackToken();
     }
 }
 <IN_PARAMETER, IN_PARAMETER_ARGUMENT, IN_SCRIPTED_VARIABLE_REFERENCE> {
@@ -366,10 +378,9 @@ TextToken = ([^§£\$\[\]#@]|\\[\s\S])+
             yypushback(yylength() - 1);
             yybegin(IN_COMMAND);
             return LEFT_BRACKET;
-        } else {
-            exitState(EXPECT_COMMAND);
-            return TEXT_TOKEN;
         }
+        exitState(EXPECT_COMMAND);
+        return getFallbackToken();
     }
 }
 <IN_COMMAND> {

@@ -1,3 +1,11 @@
+// Copyright (c) 2021 DragonKnightOfBreeze Windea <dk_breeze@qq.com>
+// All rights reserved.
+
+// Grammar for Paradox Localisation.
+// Notes:
+// - Locale VS property key is resolved by the lexer.
+// - Property values are lazy-parsed to support rich text features without over-tokenizing at top level.
+
 {
   parserClass="icu.windea.pls.localisation.parser.ParadoxLocalisationParser"
   extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
@@ -18,10 +26,7 @@
   ]
 }
 
-// Grammar for Paradox Localisation.
-// Notes:
-// - Locale VS property key is resolved by the lexer.
-// - Property values are lazy-parsed to support rich text features without over-tokenizing at top level.
+// common rules
 
 root ::= property_list*
 

@@ -1,3 +1,10 @@
+// Copyright (c) 2021 DragonKnightOfBreeze Windea <dk_breeze@qq.com>
+// All rights reserved.
+
+// Lexer for inline math of Paradox Script.
+// Notes:
+// - Use trailing context for high-priority rules.
+
 package icu.windea.pls.script.lexer;
 
 import com.intellij.lexer.FlexLexer;
@@ -9,8 +16,6 @@ import icu.windea.pls.model.constraints.ParadoxSyntaxConstraint;
 
 import static com.intellij.psi.TokenType.*;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
-
-// Lexer for inline math of Paradox Script.
 
 %%
 
@@ -52,6 +57,8 @@ ScriptedVariableToken = {IdentifierToken} // identifier
 
 %%
 
+// common rules
+
 <YYINITIAL> {
     "|" {
         if (absSignState) {
@@ -77,6 +84,8 @@ ScriptedVariableToken = {IdentifierToken} // identifier
     {Blank} { return WHITE_SPACE; }
 }
 
+// parameter rules
+
 <IN_PARAMETER, IN_PARAMETER_ARGUMENT> {
     "$" { yybegin(YYINITIAL); return PARAMETER_END; }
 }
@@ -89,5 +98,7 @@ ScriptedVariableToken = {IdentifierToken} // identifier
     {ArgumentToken} { return ARGUMENT_TOKEN; }
     {Blank} { yybegin(YYINITIAL); return WHITE_SPACE; }
 }
+
+// fallback
 
 [^] { return BAD_CHARACTER; }

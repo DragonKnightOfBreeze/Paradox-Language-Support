@@ -5,6 +5,7 @@ import com.intellij.lang.parser.GeneratedParserUtilBase
 import com.intellij.psi.TokenType
 import com.intellij.psi.tree.TokenSet
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
+import it.unimi.dsi.fastutil.ints.IntArrayList
 import icu.windea.pls.script.psi.ParadoxScriptTokenSets as TokenSets
 
 @Suppress("UNUSED_PARAMETER")
@@ -20,7 +21,10 @@ object ParadoxScriptParserUtil : GeneratedParserUtilBase() {
     fun processLhsContent(b: PsiBuilder, l: Int): Boolean {
         // check after first part (include `@`)
         // interpolations should be parsed to LHS (property key, scripted variable) parts when with a trailing separator
-        // compatible with compact formats (e.g., `k1 = "v1"k2 = v2`)
+
+        // compatible with compact formats
+        // e.g., `k1 = "v1"k2 = v2` (where there are no whitespaces before `k2`)
+
         var i = -1
         var end = false
         while (true) {
@@ -39,15 +43,16 @@ object ParadoxScriptParserUtil : GeneratedParserUtilBase() {
     @JvmStatic
     fun processPart(b: PsiBuilder, l: Int): Boolean {
         // check before every part, except first part
-        // interrupt parsing interpolation container parts when contains whitespaces or comments
+        // interrupt parsing interpolation container parts when contains whitespace tokens or comment tokens
         // compatible with continuous literals
+
         val t = b.rawLookup(-1)
         when {
-            t in BREAK_PARTS_TOKENS -> return false
             t in SNIPPET_TOKENS -> {
                 val nextTokenType = b.rawLookup(0)
                 if (nextTokenType != null && nextTokenType in SNIPPET_TOKENS) return false
             }
+            t in BREAK_PARTS_TOKENS -> return false
         }
         return true
     }
@@ -55,18 +60,33 @@ object ParadoxScriptParserUtil : GeneratedParserUtilBase() {
     @JvmStatic
     fun processInlineConditionalBlock(b: PsiBuilder, l: Int): Boolean {
         // check after conditional block start marker (`LEFT_BRACKET`)
-        // interrupt parsing inline conditional block when contains whitespaces or comments
+        // interrupt parsing inline conditional block when its body contains whitespace tokens or comment tokens
+
+        // compatible with optional whitespaces
+        // e.g., `"[ [ PARAM ] text ]"` (where ` text ` is a `STRING_TOKEN`, other whitespaces are still whitespace tokens)
+
         var i = -1
-        var n = 1
+        val expectState = IntArrayList() // 0 -> in conditional block, 1 -> in conditional body
+        expectState.push(0)
         while (true) {
             i++
             val t = b.rawLookup(i) ?: break
             when (t) {
-                in BREAK_PARTS_TOKENS -> return false
-                LEFT_BRACKET -> n++
-                RIGHT_BRACKET -> n--
+                LEFT_BRACKET -> {
+                    expectState.push(0)
+                }
+                NESTED_RIGHT_BRACKET -> {
+                    expectState.push(1)
+                }
+                RIGHT_BRACKET -> {
+                    expectState.popInt()
+                    expectState.popInt()
+                }
+                in BREAK_PARTS_TOKENS -> {
+                    if (expectState.topInt() == 1) return false
+                }
             }
-            if (n == 0) break
+            if (expectState.isEmpty) break
         }
         return true
     }

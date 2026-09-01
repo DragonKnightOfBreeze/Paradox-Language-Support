@@ -1,3 +1,10 @@
+// Copyright (c) 2021 DragonKnightOfBreeze Windea <dk_breeze@qq.com>
+// All rights reserved.
+
+// Lexer for Paradox CSV.
+// Notes:
+// - Use trailing context for high-priority rules.
+
 package icu.windea.pls.csv.lexer;
 
 import com.intellij.lexer.FlexLexer;
@@ -9,8 +16,6 @@ import icu.windea.pls.model.constraints.ParadoxSyntaxConstraint;
 
 import static com.intellij.psi.TokenType.*;
 import static icu.windea.pls.csv.psi.ParadoxCsvElementTypes.*;
-
-// Lexer for Paradox CSV.
 
 %%
 
@@ -29,7 +34,7 @@ import static icu.windea.pls.csv.psi.ParadoxCsvElementTypes.*;
 %unicode
 
 Eol = \s*\R\s*
-WHITE_SPACE = [\s&&[^\r\n]]+
+WhiteSpace = [\s&&[^\r\n]]+
 // Blank = \s+
 
 Comment = #[^\r\n]*
@@ -50,12 +55,16 @@ ColumnContent = ({Quote}{ColumnTokenQuoted}|{ColumnTokenUnquoted}){Quote}?
 
 %%
 
+// common rules
+
 <YYINITIAL> {
     {Eol} { return EOL; }
-    {WHITE_SPACE} { return WHITE_SPACE; }
+    {WhiteSpace} { return WHITE_SPACE; }
     {Comment} { return COMMENT; }
     {Separator} { return SEPARATOR; }
     {ColumnContent} { return COLUMN_TOKEN; }
 }
+
+// fallback
 
 [^] { return BAD_CHARACTER; }

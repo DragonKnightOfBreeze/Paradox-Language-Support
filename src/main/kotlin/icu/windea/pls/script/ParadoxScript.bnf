@@ -1,3 +1,10 @@
+// Copyright (c) 2021 DragonKnightOfBreeze Windea <dk_breeze@qq.com>
+// All rights reserved.
+
+// Grammar for Paradox Script.
+// Notes:
+// - Property separators can be comparison operators as well.
+
 {
   parserImports="static com.intellij.lang.WhitespacesBinders.*"
   parserClass="icu.windea.pls.script.parser.ParadoxScriptParser"
@@ -20,9 +27,7 @@
   ]
 }
 
-// Grammar for Paradox Script.
-// Notes:
-// - Property separators can be comparison operators as well.
+// common rules
 
 root ::= root_block?
 

@@ -1,3 +1,10 @@
+// Copyright (c) 2021 DragonKnightOfBreeze Windea <dk_breeze@qq.com>
+// All rights reserved.
+
+// Grammar for CWT.
+// Notes:
+// - Supports properties, blocks, and special option/doc comments with lazy parsing.
+
 {
   parserImports="static com.intellij.lang.WhitespacesBinders.*"
   parserClass="icu.windea.pls.cwt.parser.CwtParser"
@@ -17,9 +24,7 @@
   ]
 }
 
-// Grammar for CWT.
-// Notes:
-// - Supports properties, blocks, and special option/doc comments with lazy parsing.
+// common rules
 
 root ::= root_block?
 
