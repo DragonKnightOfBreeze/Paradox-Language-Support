@@ -44,12 +44,11 @@ fun String.transformAndKeepQuotes(quotePattern: QuotePattern = QuotePatterns.Def
     if (text.isEmpty()) return ""
     val leftQuoted = text.isLeftQuoted(quotePattern)
     val rightQuoted = text.isRightQuoted(quotePattern)
-    if(!leftQuoted && !rightQuoted) return this
     val startOffset = if (leftQuoted) 1 else 0
-    val rightOffset = if (rightQuoted) -1 else 0
+    val endOffset = if (rightQuoted) -1 else 0
     return buildString {
         if(leftQuoted) append(quotePattern.quoteChar)
-        append(transform(text.substring(startOffset, text.length + rightOffset)))
+        append(transform(text.substring(startOffset, text.length + endOffset)))
         if(rightQuoted) append(quotePattern.quoteChar)
     }
 }

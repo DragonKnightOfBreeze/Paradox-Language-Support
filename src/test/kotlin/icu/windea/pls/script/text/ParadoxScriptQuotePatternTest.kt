@@ -22,21 +22,48 @@ class ParadoxScriptQuotePatternTest {
         Assert.assertTrue(quotePattern.needQuote("\""))
     }
 
+    // NOTE 3.0.2 for `needQuote`, need to check boundary characters specially due to low-level parser implementation
+
     @Test
     fun needQuote_plain() {
         Assert.assertFalse(quotePattern.needQuote("abc"))
+        // middle
         Assert.assertFalse(quotePattern.needQuote("abc_def"))
         Assert.assertFalse(quotePattern.needQuote("abc.def"))
+        // leading
+        Assert.assertFalse(quotePattern.needQuote("_abc"))
+        Assert.assertFalse(quotePattern.needQuote(".abc"))
+        // tailing
+        Assert.assertFalse(quotePattern.needQuote("abc_"))
+        Assert.assertFalse(quotePattern.needQuote("abc."))
     }
 
     @Test
-    fun needQuote_whitespace() {
+    fun needQuote_whitespaces() {
+        // middle
         Assert.assertTrue(quotePattern.needQuote("a b"))
         Assert.assertTrue(quotePattern.needQuote("a\tb"))
+        // leading
+        Assert.assertTrue(quotePattern.needQuote(" a"))
+        Assert.assertTrue(quotePattern.needQuote("\ta"))
+        // tailing
+        Assert.assertTrue(quotePattern.needQuote("a "))
+        Assert.assertTrue(quotePattern.needQuote("a\t"))
     }
 
     @Test
-    fun needQuote_forcedChars() {
+    fun needQuote_quoteChar() {
+        // middle
+        Assert.assertTrue(quotePattern.needQuote("a\"b"))
+        // leading
+        Assert.assertTrue(quotePattern.needQuote("\"a"))
+        // tailing
+        Assert.assertTrue(quotePattern.needQuote("a\""))
+    }
+
+    @Test
+    fun needQuote_specialChars() {
+        Assert.assertFalse(quotePattern.needQuote("a_b"))
         Assert.assertTrue(quotePattern.needQuote("a@b"))
         Assert.assertTrue(quotePattern.needQuote("a#b"))
         Assert.assertTrue(quotePattern.needQuote("a=b"))
@@ -47,15 +74,9 @@ class ParadoxScriptQuotePatternTest {
         Assert.assertTrue(quotePattern.needQuote("a{b"))
         Assert.assertTrue(quotePattern.needQuote("a}b"))
         Assert.assertTrue(quotePattern.needQuote("a[b"))
-        Assert.assertTrue(quotePattern.needQuote("a\"b"))
-    }
-
-    @Test
-    fun needQuote_nonForcedChars() {
-        Assert.assertFalse(quotePattern.needQuote("a;b"))
         Assert.assertFalse(quotePattern.needQuote("a]b"))
+        Assert.assertFalse(quotePattern.needQuote("a;b"))
         Assert.assertFalse(quotePattern.needQuote("a:b"))
-        Assert.assertFalse(quotePattern.needQuote("a_b"))
     }
 
     @Test

@@ -10,7 +10,7 @@ import icu.windea.pls.core.text.QuotePatterns
 val QuotePatterns.ParadoxLiteralNode: QuotePattern.Base get() = ParadoxLiteralNodeQuotePattern
 
 private object ParadoxLiteralNodeQuotePattern : QuotePattern.Base('\'') { // use single quote here
-    override fun checkChar(text: String, index: Int, char: Char): Boolean {
+    override fun checkChar(text: String, start: Int, end: Int, index: Int, char: Char): Boolean {
         // whitespaces are not allowed + (lenient check) non-identifier chars are not allowed
         return char.isWhitespace() || !char.isIdentifierChar()
     }

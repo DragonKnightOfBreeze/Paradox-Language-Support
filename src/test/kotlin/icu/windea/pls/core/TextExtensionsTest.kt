@@ -37,6 +37,9 @@ class TextExtensionsTest {
 
     @Test
     fun string_transformAndKeepQuotes_smokeTest() {
+        Assert.assertEquals("", "".transformAndKeepQuotes { it.truncate(0) })
+        Assert.assertEquals("", "".transformAndKeepQuotes { it.truncate(3) })
+
         Assert.assertEquals("abcdef", "abcdef".transformAndKeepQuotes { it.truncate(0) })
         Assert.assertEquals("\"abcdef", "\"abcdef".transformAndKeepQuotes { it.truncate(0) })
         Assert.assertEquals("abcdef\"", "abcdef\"".transformAndKeepQuotes { it.truncate(0) })

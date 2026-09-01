@@ -50,17 +50,20 @@ interface QuotePattern {
         override val quoteChar: Char,
         override val lenient: Boolean = true,
     ) : QuotePattern {
-        abstract fun checkChar(text: String, index: Int, char: Char): Boolean
+        abstract fun checkChar(text: String, start: Int, end: Int, index: Int, char: Char): Boolean
 
         override fun needQuote(text: String): Boolean {
-            val s = text
-            if (s.isEmpty() || s == quoteChar.toString()) return true
-            var index = -1
-            val length = text.length
-            while (index < length - 1) {
+            if (text.isEmpty() || text == quoteChar.toString()) return true
+            val leftQuoted = isLeftQuoted(text)
+            val rightQuoted = isRightQuoted(text)
+            val startOffset = if (lenient && leftQuoted) 1 else 0
+            val endOffset = if (lenient && rightQuoted) -1 else 0
+            val start = startOffset
+            val end = text.length - 1 + endOffset
+            var index = start - 1
+            while (index < end) {
                 val c = text[++index]
-                if (lenient && (index == 0 || index == length - 1) && c == quoteChar) continue
-                if (checkChar(text, index, c)) return true
+                if (checkChar(text, start, end, index, c)) return true
             }
             return false
         }
@@ -94,41 +97,43 @@ interface QuotePattern {
 
         override fun quote(text: String): String {
             if (text.isEmpty()) return "$quoteChar$quoteChar"
-            val start = isLeftQuoted(text)
-            val end = isRightQuoted(text)
-            if (start && end) return text
-            return buildString {
-                append(quoteChar)
-                var index = -1
-                val length = text.length
-                while (index < length - 1) {
-                    val c = text[++index]
-                    if (lenient && start && index == 0) continue
-                    if (lenient && end && index == length - 1) continue
-                    if (c == quoteChar && !text.isEscapedCharAt(index)) append('\\')
-                    append(c)
-                }
-                append(quoteChar)
+            val leftQuoted = isLeftQuoted(text)
+            val rightQuoted = isRightQuoted(text)
+            if (leftQuoted && rightQuoted) return text
+            val startOffset = if (lenient && leftQuoted) 1 else 0
+            val endOffset = if (lenient && rightQuoted) -1 else 0
+            val start = startOffset
+            val end = text.length - 1 + endOffset
+            var index = start - 1
+            val builder = StringBuilder()
+            builder.append(quoteChar)
+            while (index < end) {
+                val c = text[++index]
+                if (c == quoteChar && !text.isEscapedCharAt(index)) builder.append('\\')
+                builder.append(c)
             }
+            builder.append(quoteChar)
+            return builder.toString()
         }
 
         override fun unquote(text: String): String {
             if (text.isEmpty()) return ""
-            val start = isLeftQuoted(text)
-            val end = isRightQuoted(text)
-            if (!start && !end) return text
-            var offset = if (start) 1 else 0
-            return buildString {
-                var index = -1
-                val length = text.length
-                while (index < length - 1) {
-                    val c = text[++index]
-                    if (start && index == 0) continue
-                    if (end && index == length - 1) continue
-                    if (c == quoteChar && text.isEscapedCharAt(index)) deleteCharAt(index - 1 - offset++)
-                    append(c)
-                }
+            val leftQuoted = isLeftQuoted(text)
+            val rightQuoted = isRightQuoted(text)
+            if (!leftQuoted && !rightQuoted) return text
+            val startOffset = if (leftQuoted) 1 else 0
+            val endOffset = if (rightQuoted) -1 else 0
+            val start = startOffset
+            val end = text.length - 1 + endOffset
+            var index = start - 1
+            val builder = StringBuilder()
+            var offset = if (leftQuoted) 1 else 0
+            while (index < end) {
+                val c = text[++index]
+                if (c == quoteChar && text.isEscapedCharAt(index)) builder.deleteCharAt(index - 1 - offset++)
+                builder.append(c)
             }
+            return builder.toString()
         }
     }
 }

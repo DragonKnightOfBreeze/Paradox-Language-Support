@@ -13,7 +13,7 @@ val QuotePatterns.Cwt: QuotePattern.Base get() = CwtQuotePattern
 private const val FORCE_QUOTED_CHARS = "#={}\""
 
 private object CwtQuotePattern : QuotePattern.Base('"') {
-    override fun checkChar(text: String, index: Int, char: Char): Boolean {
+    override fun checkChar(text: String, start: Int, end: Int, index: Int, char: Char): Boolean {
         // whitespaces are not allowed
         return char.isWhitespace() || char in FORCE_QUOTED_CHARS
     }

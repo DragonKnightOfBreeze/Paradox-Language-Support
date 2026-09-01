@@ -22,18 +22,43 @@ class ParadoxLocalisationQuotePatternTest {
         Assert.assertTrue(quotePattern.needQuote("\""))
     }
 
+    // NOTE 3.0.2 for `needQuote`, need to check boundary characters specially due to low-level parser implementation
+
     @Test
     fun needQuote_plain() {
         Assert.assertFalse(quotePattern.needQuote("abc"))
+        // middle
         Assert.assertFalse(quotePattern.needQuote("abc_def"))
         Assert.assertFalse(quotePattern.needQuote("abc.def"))
+        // leading
+        Assert.assertFalse(quotePattern.needQuote("_abc"))
+        Assert.assertFalse(quotePattern.needQuote(".abc"))
+        // tailing
+        Assert.assertFalse(quotePattern.needQuote("abc_"))
+        Assert.assertFalse(quotePattern.needQuote("abc."))
     }
 
     @Test
-    fun needQuote_noCheck() {
-        Assert.assertFalse(quotePattern.needQuote("text\ntext"))
-        Assert.assertFalse(quotePattern.needQuote("text text"))
-        Assert.assertFalse(quotePattern.needQuote("text\"text"))
+    fun needQuote_whitespaces_notChecked() {
+        // middle
+        Assert.assertFalse(quotePattern.needQuote("a b"))
+        Assert.assertFalse(quotePattern.needQuote("a\tb"))
+        // leading
+        Assert.assertFalse(quotePattern.needQuote(" a"))
+        Assert.assertFalse(quotePattern.needQuote("\ta"))
+        // tailing
+        Assert.assertFalse(quotePattern.needQuote("a "))
+        Assert.assertFalse(quotePattern.needQuote("a\t"))
+    }
+
+    @Test
+    fun needQuote_quoteChar_notChecked() {
+        // middle
+        Assert.assertFalse(quotePattern.needQuote("a\"b"))
+        // leading
+        Assert.assertFalse(quotePattern.needQuote("\"a"))
+        // tailing
+        Assert.assertFalse(quotePattern.needQuote("a\""))
     }
 
     @Test

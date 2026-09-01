@@ -13,7 +13,7 @@ val QuotePatterns.ParadoxCsv: QuotePattern.Base get() = ParadoxCsvQuotePattern
 private const val FORCE_QUOTED_CHARS = "#;\""
 
 private object ParadoxCsvQuotePattern : QuotePattern.Base('"') {
-    override fun checkChar(text: String, index: Int, char: Char): Boolean {
+    override fun checkChar(text: String, start: Int, end: Int, index: Int, char: Char): Boolean {
         // whitespaces are allowed
         return char in FORCE_QUOTED_CHARS
     }
