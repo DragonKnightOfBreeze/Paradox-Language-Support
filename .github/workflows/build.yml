@@ -18,14 +18,13 @@ on:
       - master
       - "dev/**" # in-developing branches
       - "releases/**" # compatibility branches (e.g., IDE versions)
-    paths-ignore:
-      - ".idea/**"
-      - "agents/**"
-      - "docs/**"
-      - "documents/**"
-      - "references/**"
-      - "scripts/**"
-      - "*.md"
+    paths:
+      - ".github/workflows/build.yml"
+      - "cwt/**"
+      - "gradle/**"
+      - "src/**"
+      - "build.gradle.kts"
+      - "gradle.properties"
   # Trigger the workflow on any pull request
   pull_request:
     paths-ignore:
