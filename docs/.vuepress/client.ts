@@ -7,6 +7,6 @@ export default defineClientConfig({
     app.component('GameTypeNote', GameTypeNote)
     app.component('DefinitionTypeNote', DefinitionTypeNote)
     // PrismJS custom languages are registered during SSR via VuePress plugins.
-    // Do NOT access window.Prism here.
+    // DO NOT access window.Prism here.
   },
 })

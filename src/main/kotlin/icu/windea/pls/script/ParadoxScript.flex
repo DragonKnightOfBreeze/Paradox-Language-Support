@@ -171,7 +171,7 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 
     private boolean beginStateInConditionalBlockForClosing() {
         // 3.0.2 close conditional block, if needed
-        // if current expect is matched (e.g., EXPECT_CONDITIONAL), close and (double) exit to outer state (e.g., YYINITIAL)
+        // if current expect is matched (e.g., EXPECT_CONDITIONAL), close and exit to outer state (e.g., YYINITIAL)
         // if not, just return false instead
 
         // Example:
