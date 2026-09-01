@@ -11,7 +11,7 @@ examples = {
     # bar
     number_value =    @var # var
     string_value = text
-    string_value   = "Foo\n bar "
+    string_value   = "text\nsome text"
     values = {
         foo = bar
     }

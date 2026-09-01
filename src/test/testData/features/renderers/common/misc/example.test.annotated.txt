@@ -9,7 +9,7 @@ examples = {
     ## @type string = string
     string_value = text
     ## @type string = string
-    "string_value" = "text\nsome text"
+    string_value = "text\nsome text"
     ## @type string = block
     values = {
         ## @type int
