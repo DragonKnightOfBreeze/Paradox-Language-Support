@@ -2,8 +2,6 @@
 
 ## Getting Started
 
-<!-- TODO: updating -->
-
 ### Installation
 
 - Using the IDE built-in plugin system: `Settings/Preferences` > `Plugins` > `Marketplace` > Search for "Paradox Chronicle" > `Install`
@@ -19,7 +17,7 @@
 - Confirm the configuration and wait for the IDE to finish project analysis.
 - Start your mod development journey.
 
-## Practical Tips
+### Practical Tips
 
 - **Global Search**:
   - Use `Ctrl + Shift + R` or `Ctrl + Shift + F` to search within the current project, directory, or a specified scope.
@@ -36,19 +34,25 @@
   - Select the `Paradox Files` view in the project panel to browse aggregated game and mod files.
   - Select the `CWT Config Files` view in the project panel to browse aggregated config files.
 - **Code Inspection**:
-  - View issues in the current file within the Problems panel.
-  - Use `Code > Inspect Code…` to perform a global code inspection and view the detailed report in the Problems panel upon completion.
-- **Modifying Settings**:
-  - Access the plugin's global settings page via:
-    - `Settings > Languages & Frameworks > Paradox Chronicle`
-  - Open the mod settings dialog via:
-    - Clicking the blue gear icon in the editor's top-right floating toolbar.
-    - Selecting `Paradox Chronicle > Open Mod Settings...` from the editor's right-click menu.
-    - Selecting `Tools > Paradox Chronicle > Open Mod Settings...` from the main menu.
-  - Modify preferred locale, default game type, default game directory and other functional details in the global settings.
-  - Adjust game directory, mod dependencies and other configurations in the mod settings.
+  - By clicking `Editor > Inspections` on the settings page, you can browse detailed descriptions of code inspections, configure their enabled status and options, and manage profiles.
+  - For file-level code inspection: after file analysis finished, view issues for the current file in the problems panel.
+  - For global code inspection: use `Code > Inspect Code…` to run a global inspection in a specified scope, and view the detailed report in the problems panel.
 
-## Troubleshooting
+### UI Related
+
+- Open the plugin's global settings page via:
+  - Selecting `Languages & Frameworks > Paradox Chronicle` on the settings page.
+- Open the plugin's tool menu via:
+  - Selecting `Paradox Chronicle` from the editor's right-click menu.
+  - Selecting `Tools > Paradox Chronicle` from the main menu.
+- Open the mod settings dialog via:
+  - Clicking the blue gear icon in the editor's top-right floating toolbar.
+  - Selecting `Paradox Chronicle > Open Mod Settings...` from the editor's right-click menu.
+  - Selecting `Tools > Paradox Chronicle > Open Mod Settings...` from the main menu.
+- Modify preferred locale, default game type, default game directory and other functional details in the global settings.
+- Adjust game directory, mod dependencies and other configurations in the mod settings.
+
+### Troubleshooting
 
 - Ensure both the IDE and the plugin are updated to the latest versions.
 - If the issue might be index-related, try to [invalidate caches and restart the IDE](https://www.jetbrains.com/help/idea/invalidate-caches.html).

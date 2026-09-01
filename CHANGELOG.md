@@ -14,7 +14,7 @@
 - [x] 完善脚本文件的 lexer：完善对高级插值语法的支持（如 `a_$b$_[[c]d]_e`） / Improve lexer for script files: improve support for advanced interpolations (e.g., `a_$b$_[[c]d]_e`
 - [x] 完善作用域的匹配和合并逻辑，兼容并集作用域（如 Stellaris 4.4 中新增的 `carrier`） / Improve the match and merge logic for scopes, make compatible with union types (e.g., `carrier` newly added in Stellaris 4.4)
 - [x] 完善字面量的加引号/去括号逻辑，进行更严格的检查以避免意外行为 / Improve the quoting/unquoting logic for literals, apply stricter validations to avoid unexpected behaviors
-- [x] 完善测试用例（通用模块） / Improve test cases (for the common module).
+- [x] 完善测试用例（通用模块） / Improve test cases (for the common module)
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 3.0.1 - 2026-08-05

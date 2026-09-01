@@ -2,8 +2,6 @@
 
 ## 入门
 
-<!-- TODO: updating -->
-
 ### 安装
 
 - 使用 IDE 内置的插件系统：`Settings/Preferences` > `Plugins` > `Marketplace` > 搜索 "Paradox Chronicle" > `Install`
@@ -36,17 +34,23 @@
   - 在项目面板中选择 `Paradox Files` 视图，浏览汇总后的游戏与模组文件。
   - 在项目面板中选择 `CWT Config Files` 视图，浏览汇总后的规则文件。
 - **代码检查**：
-  - 在问题面板中查看当前文件的问题。
-  - 使用 `Code > Inspect Code…` 执行全局代码检查，并在问题面板中查看详细报告。
-- **设置修改**：
-  - 可通过以下方式打开插件的全局设置页面：
-    - 点击设置页面中的 `Languages & Frameworks > Paradox Chronicle`。
-  - 可通过以下方式打开模组设置对话框：
-    - 点击编辑器右上角的悬浮工具栏中的蓝色齿轮图标。
-    - 点击编辑器右键菜单中的 `Paradox Chronicle > Open Mod Settings...`。
-    - 点击主菜单中的 `Tools > Paradox Chronicle > Open Mod Settings...`。
-  - 可在全局设置中修改偏好语言环境、默认游戏类型、默认游戏目录等配置，以及其他功能细节。
-  - 可在模组设置中调整游戏目录、模组依赖等配置。
+  - 通过点击设置页面中的 `Editor > Inspections`，浏览代码检查的详细说明，配置启用状态与详细选项，以及管理配置文件（profile）。
+  - 关于文件级别的代码检查：完成文件分析后，在问题面板中查看当前文件的问题。
+  - 关于全局代码检查：使用 `Code > Inspect Code…` 在指定作用域执行全局代码检查，并在问题面板中查看详细报告。
+
+### UI 相关
+
+- 可以通过以下方式打开插件的全局设置页面：
+  - 点击设置页面中的 `Languages & Frameworks > Paradox Chronicle`。
+- 可以通过以下方式打开插件的工具菜单：
+  - 点击编辑器右键菜单中的 `Paradox Chronicle`。
+  - 点击主菜单中的 `Tools > Paradox Chronicle.`。
+- 可以通过以下方式打开模组设置对话框：
+  - 点击编辑器右上角的悬浮工具栏中的蓝色齿轮图标。
+  - 点击编辑器右键菜单中的 `Paradox Chronicle > Open Mod Settings...`。
+  - 点击主菜单中的 `Tools > Paradox Chronicle > Open Mod Settings...`。
+- 可以在全局设置中修改偏好语言环境、默认游戏类型、默认游戏目录等配置，以及其他功能细节。
+- 可以在模组设置中调整游戏目录、模组依赖等配置。
 
 ### 问题排查
 

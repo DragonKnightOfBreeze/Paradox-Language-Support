@@ -9,14 +9,15 @@
 
 ## Overview
 
-Paradox Chronicle (formerly Paradox Language Support) is the IntelliJ IDEA plugin designed for mod developers of Paradox Interactive games, offering an intelligent, efficient and feature-rich development experience to help you easily achieve creativity.
+Paradox Chronicle (formerly Paradox Language Support) is the IntelliJ IDEA plugin designed for mod developers of Paradox Interactive games.
+As the guidebook to the paradox universe, the plugin strives to provide a powerful and comprehensive infrastructure, along with a smart, efficient, and feature-rich development experience.
 
 The plugin automatically detects game directories and mod directories, analyzes the files within to build caches and indexes.  
 After completing the necessary configuration (game type, game directory, mod dependencies, etc.) and project analysis (scanning files, building indexes), you can enable and experience the full range of language features.
 
 The plugin implements core language features based on its own [config system](config.md).  
 The CWT config files it uses follow a syntax and format largely consistent with [CWTools](https://github.com/cwtools/cwtools), with certain improvements and extensions.  
-The plugin comes with the latest version of built-in configs, ready to use out of the box, while also supporting [customization](config.md#write-config-files) and [importing](config.md#import-config-files) of config files to meet personalized development needs.
+It comes with the latest version of built-in configs, ready to use out of the box, while also supporting [customization](config.md#write-config-files) and [importing](config.md#import-config-files) of config files to meet personalized development needs.
 
 **Core Features**:
 

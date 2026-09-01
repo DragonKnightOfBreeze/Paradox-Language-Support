@@ -23,14 +23,15 @@
 
 ## Overview
 
-Paradox Chronicle (formerly Paradox Language Support) is the IntelliJ IDEA plugin designed for mod developers of Paradox Interactive games, offering an intelligent, efficient and feature-rich development experience to help you easily achieve creativity.
+Paradox Chronicle (formerly Paradox Language Support) is the IntelliJ IDEA plugin designed for mod developers of Paradox Interactive games.
+As the guidebook to the paradox universe, the plugin strives to provide a powerful and comprehensive infrastructure, along with a smart, efficient, and feature-rich development experience.
 
 The plugin automatically detects game directories and mod directories, analyzes the files within to build caches and indexes.
 After completing the necessary configuration (game type, game directory, mod dependencies, etc.) and project analysis (scanning files, building indexes), you can enable and experience the full range of language features.
 
 The plugin implements core language features based on its own [config system](https://windea.icu/Paradox-Language-Support/en/config.html).
 The CWT config files it uses follow a syntax and format largely consistent with [CWTools](https://github.com/cwtools/cwtools), with certain improvements and extensions.
-The plugin comes with the latest version of built-in configs, ready to use out of the box, while also supporting [customization](https://windea.icu/Paradox-Language-Support/en/config.html#write-config-files) and [importing](https://windea.icu/Paradox-Language-Support/en/config.html#import-config-files) of config files to meet personalized development needs.
+It comes with the latest version of built-in configs, ready to use out of the box, while also supporting [customization](https://windea.icu/Paradox-Language-Support/en/config.html#write-config-files) and [importing](https://windea.icu/Paradox-Language-Support/en/config.html#import-config-files) of config files to meet personalized development needs.
 
 **Core Features**:
 
@@ -49,8 +50,6 @@ The plugin comes with the latest version of built-in configs, ready to use out o
 ![](docs/assets/preview_1_zh.png)
 
 ## Getting Started
-
-<!-- TODO: updating -->
 
 ### Installation
 
@@ -84,17 +83,23 @@ The plugin comes with the latest version of built-in configs, ready to use out o
   - Select the `Paradox Files` view in the project panel to browse aggregated game and mod files.
   - Select the `CWT Config Files` view in the project panel to browse aggregated config files.
 - **Code Inspection**:
-  - View issues in the current file within the Problems panel.
-  - Use `Code > Inspect Code…` to perform a global code inspection and view the detailed report in the Problems panel upon completion.
-- **Modifying Settings**:
-  - Access the plugin's global settings page via:
-    - `Settings > Languages & Frameworks > Paradox Chronicle`
-  - Open the mod settings dialog via:
-    - Clicking the blue gear icon in the editor's top-right floating toolbar.
-    - Selecting `Paradox Chronicle > Open Mod Settings...` from the editor's right-click menu.
-    - Selecting `Tools > Paradox Chronicle > Open Mod Settings...` from the main menu.
-  - Modify preferred locale, default game type, default game directory and other functional details in the global settings.
-  - Adjust game directory, mod dependencies and other configurations in the mod settings.
+  - By clicking `Editor > Inspections` on the settings page, you can browse detailed descriptions of code inspections, configure their enabled status and options, and manage profiles.
+  - For file-level code inspection: after file analysis finished, view issues for the current file in the problems panel.
+  - For global code inspection: use `Code > Inspect Code…` to run a global inspection in a specified scope, and view the detailed report in the problems panel.
+
+### UI Related
+
+- Open the plugin's global settings page via:
+  - Selecting `Languages & Frameworks > Paradox Chronicle` on the settings page.
+- Open the plugin's tool menu via:
+  - Selecting `Paradox Chronicle` from the editor's right-click menu.
+  - Selecting `Tools > Paradox Chronicle` from the main menu.
+- Open the mod settings dialog via:
+  - Clicking the blue gear icon in the editor's top-right floating toolbar.
+  - Selecting `Paradox Chronicle > Open Mod Settings...` from the editor's right-click menu.
+  - Selecting `Tools > Paradox Chronicle > Open Mod Settings...` from the main menu.
+- Modify preferred locale, default game type, default game directory and other functional details in the global settings.
+- Adjust game directory, mod dependencies and other configurations in the mod settings.
 
 ### Troubleshooting
 
