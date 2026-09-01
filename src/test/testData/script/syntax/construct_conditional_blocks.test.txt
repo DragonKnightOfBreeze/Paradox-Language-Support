@@ -13,6 +13,19 @@
 [ [ !A ] a = 1 ]
 [ [A] a = 1 [[ ! B ] b = 2 ] ]
 
+# should be normal form when contains properties
+
+[[A] k = v ]
+[[A]k = v ]
+[[A] k = v]
+[[A]k = v]
+[[A] k=v ]
+[[A]k=v ]
+[[A] k=v]
+[[A]k=v]
+
+# should be valid when is multiline
+
 [[A]
     tag_a
     [[B]

@@ -16,6 +16,7 @@ import org.junit.runners.JUnit4
 
 /**
  * @see ParadoxLocalisationFormattingModelBuilder
+ * @see ParadoxLocalisationFormattingBlock
  * @see ParadoxLocalisationCodeStyleSettings
  */
 @RunWith(JUnit4::class)

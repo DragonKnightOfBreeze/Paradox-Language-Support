@@ -51,7 +51,6 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
     }
 
     private void enterState(int state, int expect) {
-        // enter state
         if (stateStack == null) {
             stateStack = new IntArrayList();
         }
@@ -64,7 +63,6 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
     }
 
     private void exitState(int expect) {
-        // exit state to previous only if expect is matched
         if (stateStack == null || stateStack.isEmpty() || expectStack == null || expectStack.isEmpty()) {
             yybegin(YYINITIAL);
             return;
@@ -99,7 +97,7 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
         return true;
     }
 
-    private boolean getFallbackToken() {
+    private IElementType getFallbackToken() {
         // fallback to `TEXT_TOKEN`, if necessary
         return TEXT_TOKEN;
     }

@@ -12,6 +12,8 @@ import icu.windea.pls.script.psi.ParadoxScriptNormalConditionalBlock
 import icu.windea.pls.script.psi.ParadoxScriptNormalParameter
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
+import icu.windea.pls.script.psi.ParadoxScriptTokenSets
+import icu.windea.pls.script.psi.ParadoxScriptTokenType
 import icu.windea.pls.script.psi.ParadoxScriptValue
 
 abstract class ParadoxScriptUnwrapper : AbstractUnwrapper<ParadoxScriptUnwrapper.Context>("") {
@@ -47,9 +49,7 @@ abstract class ParadoxScriptUnwrapper : AbstractUnwrapper<ParadoxScriptUnwrapper
 
         private fun isElementToExtract(element: PsiElement, child: PsiElement): Boolean {
             if (element is ParadoxScriptInlineConditionalBlock) {
-                return child.elementType == ParadoxScriptElementTypes.ARGUMENT_TOKEN
-                    || child is ParadoxScriptNormalParameter
-                    || child is ParadoxScriptInlineConditionalBlock
+                return true
             }
             return child is PsiComment
                 || child is ParadoxScriptProperty

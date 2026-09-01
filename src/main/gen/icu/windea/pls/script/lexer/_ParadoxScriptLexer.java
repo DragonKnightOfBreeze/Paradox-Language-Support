@@ -16,12 +16,11 @@ import com.intellij.psi.tree.IElementType;
 import icu.windea.pls.model.ParadoxGameType;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 
-import static com.intellij.psi.TokenType.*;
-import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
-
-
-
 import java.util.BitSet;
+
+import static com.intellij.psi.TokenType.BAD_CHARACTER;
+import static com.intellij.psi.TokenType.WHITE_SPACE;
+import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 
 public class _ParadoxScriptLexer implements FlexLexer {
   /** This character denotes the end of file */
@@ -55,7 +54,7 @@ public class _ParadoxScriptLexer implements FlexLexer {
    * l is of the form l = 2*k, k a non negative integer
    */
   private static final int ZZ_LEXSTATE[] = {
-     0,  0,  1,  1,  2,  2,  3,  3,  4,  4,  5,  5,  6,  6,  7,  7, 
+     0,  0,  1,  1,  2,  2,  3,  3,  4,  4,  5,  5,  6,  6,  7,  7,
      8,  8,  9,  9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14, 15, 15
   };
 
@@ -147,21 +146,20 @@ public class _ParadoxScriptLexer implements FlexLexer {
   private static final int [] ZZ_ACTION = zzUnpackAction();
 
   private static final String ZZ_ACTION_PACKED_0 =
-    "\24\0\1\1\1\2\1\1\1\3\1\4\2\1\1\5"+
-    "\1\6\1\7\1\10\1\1\1\11\2\1\1\12\2\1"+
-    "\1\13\1\14\1\15\1\16\1\15\1\17\1\20\1\21"+
-    "\1\15\1\22\1\23\1\15\1\24\1\12\2\20\1\21"+
-    "\1\15\1\25\1\26\1\25\1\15\1\27\1\30\1\31"+
-    "\1\15\1\30\1\32\2\33\1\34\1\35\1\36\1\37"+
-    "\1\40\1\41\1\42\1\43\1\44\1\45\7\0\1\1"+
-    "\3\46\1\0\1\47\2\1\1\0\1\50\1\51\1\52"+
-    "\1\0\1\53\1\54\1\0\2\1\1\55\1\1\3\0"+
-    "\1\56\4\0\1\57\7\0\1\1\1\46\1\1\1\0"+
-    "\1\60\3\1\3\46\1\1\1\0\1\1\1\0\1\1"+
-    "\1\61";
+    "\24\0\1\1\1\2\2\3\1\4\2\1\1\5\1\6"+
+    "\1\7\1\10\1\3\1\11\2\1\1\12\2\1\1\13"+
+    "\1\14\2\15\1\16\1\17\1\20\1\21\1\15\1\22"+
+    "\1\23\1\15\1\24\1\12\2\20\1\21\1\15\1\25"+
+    "\1\26\1\25\1\15\1\27\1\30\1\31\1\15\1\30"+
+    "\1\32\2\33\1\34\1\35\1\36\1\37\1\40\1\41"+
+    "\1\42\1\43\1\44\1\45\10\0\1\1\3\46\2\0"+
+    "\1\47\2\1\1\0\1\50\1\51\1\52\1\0\1\53"+
+    "\1\54\1\0\2\1\1\55\1\1\2\0\1\56\4\0"+
+    "\1\57\7\0\1\1\1\46\1\1\1\0\1\60\3\1"+
+    "\3\46\1\1\1\0\1\1\1\0\1\1\1\61";
 
   private static int [] zzUnpackAction() {
-    int [] result = new int[138];
+    int [] result = new int[139];
     int offset = 0;
     offset = zzUnpackAction(ZZ_ACTION_PACKED_0, offset, result);
     return result;
@@ -191,22 +189,22 @@ public class _ParadoxScriptLexer implements FlexLexer {
     "\0\u0270\0\u0297\0\u02be\0\u02e5\0\u030c\0\u0333\0\u035a\0\u0381"+
     "\0\u03a8\0\u03cf\0\u03f6\0\u03cf\0\u041d\0\u0444\0\u046b\0\u0492"+
     "\0\u04b9\0\u04e0\0\u0507\0\u030c\0\u052e\0\u0555\0\u0444\0\u0444"+
-    "\0\u0381\0\u057c\0\u0444\0\u04b9\0\u05a3\0\u05ca\0\u05f1\0\u0444"+
-    "\0\u0444\0\u0618\0\u063f\0\u0444\0\u0666\0\u068d\0\u06b4\0\u06db"+
-    "\0\u0702\0\u0444\0\u0729\0\u0750\0\u0444\0\u0777\0\u079e\0\u04b9"+
-    "\0\u07c5\0\u07ec\0\u0813\0\u083a\0\u0444\0\u0444\0\u0861\0\u0444"+
-    "\0\u0888\0\u0444\0\u0444\0\u0444\0\u08af\0\u0444\0\u08d6\0\u08fd"+
-    "\0\u0924\0\u094b\0\u0972\0\u0999\0\u09c0\0\u09c0\0\u09e7\0\u0444"+
-    "\0\u0a0e\0\u0a35\0\u0444\0\u0a5c\0\u0a83\0\u0aaa\0\u03f6\0\u0444"+
-    "\0\u0444\0\u0ad1\0\u0444\0\u0444\0\u0af8\0\u0b1f\0\u0b46\0\u030c"+
-    "\0\u0b6d\0\u05a3\0\u0b94\0\u063f\0\u0444\0\u06db\0\u0702\0\u0750"+
-    "\0\u0bbb\0\u0444\0\u0444\0\u0be2\0\u0c09\0\u0c30\0\u0c57\0\u0a0e"+
-    "\0\u0c7e\0\u0ca5\0\u0a5c\0\u0444\0\u0ccc\0\u0444\0\u0cf3\0\u0d1a"+
-    "\0\u0d41\0\u0d68\0\u0a83\0\u0d41\0\u0d8f\0\u0db6\0\u0ddd\0\u0e04"+
-    "\0\u0e2b\0\u0444";
+    "\0\u0444\0\u0381\0\u057c\0\u04b9\0\u05a3\0\u05ca\0\u035a\0\u0444"+
+    "\0\u0444\0\u0492\0\u05f1\0\u0444\0\u0618\0\u063f\0\u0666\0\u068d"+
+    "\0\u06b4\0\u0444\0\u06db\0\u0702\0\u0444\0\u0729\0\u0750\0\u04b9"+
+    "\0\u0777\0\u079e\0\u07c5\0\u07ec\0\u0444\0\u0444\0\u0813\0\u0444"+
+    "\0\u083a\0\u0444\0\u0444\0\u0444\0\u0861\0\u0444\0\u0888\0\u08af"+
+    "\0\u08d6\0\u08fd\0\u0924\0\u094b\0\u0972\0\u0999\0\u0972\0\u09c0"+
+    "\0\u0444\0\u09e7\0\u0a0e\0\u0a35\0\u0444\0\u0a5c\0\u0a83\0\u0aaa"+
+    "\0\u03f6\0\u0444\0\u0444\0\u0ad1\0\u0444\0\u0444\0\u0af8\0\u0b1f"+
+    "\0\u0b46\0\u030c\0\u0b6d\0\u05a3\0\u05f1\0\u0444\0\u068d\0\u06b4"+
+    "\0\u0702\0\u0b94\0\u0444\0\u0bbb\0\u0444\0\u0be2\0\u0c09\0\u0c30"+
+    "\0\u09e7\0\u0c57\0\u0c7e\0\u0a5c\0\u0444\0\u0ca5\0\u0444\0\u0ccc"+
+    "\0\u0cf3\0\u0d1a\0\u0d41\0\u0a83\0\u0d1a\0\u0d68\0\u0d8f\0\u0db6"+
+    "\0\u0ddd\0\u0e04\0\u0444";
 
   private static int [] zzUnpackRowMap() {
-    int [] result = new int[138];
+    int [] result = new int[139];
     int offset = 0;
     offset = zzUnpackRowMap(ZZ_ROWMAP_PACKED_0, offset, result);
     return result;
@@ -232,127 +230,123 @@ public class _ParadoxScriptLexer implements FlexLexer {
     "\1\25\3\26\1\27\1\30\1\31\1\25\1\32\1\33"+
     "\4\34\1\35\1\36\1\37\1\40\1\41\3\25\1\42"+
     "\1\43\4\25\1\44\1\25\1\45\2\25\1\46\1\47"+
-    "\1\25\1\50\3\25\3\26\1\25\1\51\1\52\1\25"+
-    "\1\32\1\33\4\34\3\53\1\25\1\54\3\25\1\42"+
-    "\1\43\6\25\1\45\2\25\1\46\1\53\1\25\1\53"+
-    "\2\25\1\55\3\56\1\57\1\60\1\52\1\61\6\55"+
-    "\1\35\1\36\1\37\1\62\1\53\7\55\1\63\1\55"+
-    "\1\64\5\55\1\53\1\55\1\53\2\55\1\65\1\66"+
-    "\1\56\1\67\1\65\1\60\1\65\1\61\22\65\1\63"+
-    "\1\70\1\64\12\65\1\71\3\56\1\53\1\72\1\52"+
-    "\1\61\6\71\5\53\7\71\1\63\1\71\1\64\5\71"+
-    "\1\53\1\71\1\53\2\71\5\73\1\72\1\73\1\61"+
-    "\22\73\1\63\1\74\1\64\12\73\4\75\1\76\2\75"+
-    "\1\76\11\75\1\76\1\75\10\76\1\75\6\76\1\75"+
-    "\1\76\3\75\1\53\3\56\1\57\1\53\1\52\1\61"+
-    "\6\53\1\35\1\36\1\37\1\62\1\53\7\77\1\63"+
-    "\1\53\1\64\5\77\5\53\1\25\3\26\1\25\1\51"+
-    "\1\52\1\25\1\32\1\33\4\34\3\53\1\25\1\100"+
-    "\3\25\1\42\1\43\6\25\1\45\2\25\1\46\1\53"+
-    "\1\25\1\53\2\25\4\75\1\101\2\75\1\101\11\75"+
-    "\1\101\1\75\10\101\1\75\6\101\1\75\1\101\3\75"+
-    "\1\53\3\56\2\53\1\52\1\61\13\53\7\102\1\63"+
-    "\1\53\1\64\5\102\5\53\1\103\1\104\1\26\1\104"+
-    "\2\103\1\53\23\103\1\53\1\103\1\105\5\103\1\53"+
-    "\1\103\1\53\2\103\7\53\1\106\13\53\7\107\3\53"+
-    "\5\107\1\53\1\110\3\53\1\111\4\53\1\111\1\53"+
-    "\1\106\6\111\4\53\10\111\3\53\5\111\1\53\1\111"+
-    "\1\53\2\111\1\53\3\26\26\53\1\112\1\53\1\113"+
-    "\13\53\3\26\1\114\16\53\7\115\2\53\1\116\5\115"+
-    "\5\53\1\117\3\0\1\117\1\120\1\0\7\117\3\0"+
-    "\1\117\1\0\17\117\1\0\1\117\1\0\2\117\16\0"+
-    "\1\121\1\122\1\123\32\0\1\124\2\0\1\124\11\0"+
-    "\1\124\1\0\10\124\1\0\6\124\1\0\1\124\22\0"+
-    "\1\121\27\0\1\25\3\125\1\25\1\126\1\0\7\25"+
-    "\1\127\1\130\1\131\1\25\1\132\17\25\1\0\1\25"+
-    "\1\0\2\25\1\0\3\26\43\0\1\25\3\125\1\25"+
-    "\1\126\1\0\7\25\1\127\1\133\1\131\1\25\1\132"+
-    "\17\25\1\0\1\25\1\0\2\25\2\134\1\135\2\134"+
-    "\1\0\25\134\1\136\13\134\2\31\1\0\44\31\1\25"+
-    "\3\125\1\25\1\126\1\0\2\25\1\33\4\34\1\127"+
-    "\1\130\1\131\1\25\1\132\17\25\1\0\1\25\1\0"+
-    "\3\25\3\125\1\25\1\126\1\0\3\25\4\137\1\127"+
-    "\1\130\1\131\1\25\1\132\17\25\1\0\1\25\1\0"+
-    "\2\25\17\0\1\140\1\133\114\0\1\141\27\0\1\25"+
-    "\3\142\1\25\1\126\1\0\7\25\1\127\1\143\1\131"+
-    "\1\25\1\132\17\25\1\0\1\25\1\0\2\25\32\0"+
-    "\1\144\1\145\13\0\1\25\3\125\1\25\1\126\1\0"+
-    "\7\25\1\127\1\130\1\131\1\25\1\132\5\25\1\146"+
-    "\7\25\1\146\1\25\1\0\1\25\1\0\3\25\3\125"+
-    "\1\25\1\126\1\0\7\25\1\127\1\130\1\131\1\25"+
-    "\1\132\2\25\1\147\14\25\1\0\1\25\1\0\3\25"+
-    "\3\125\1\25\1\126\1\0\7\25\1\127\1\130\1\131"+
-    "\1\25\1\132\14\25\1\150\2\25\1\0\1\25\1\0"+
-    "\3\25\3\125\1\25\1\126\1\0\7\25\1\127\1\130"+
-    "\1\131\1\25\1\132\12\25\1\151\4\25\1\0\1\25"+
-    "\1\0\2\25\2\52\1\0\44\52\1\55\3\0\1\152"+
-    "\3\0\6\55\3\0\2\152\7\55\1\0\1\55\1\0"+
-    "\5\55\1\0\1\55\1\0\2\55\1\0\3\56\62\0"+
-    "\1\133\30\0\3\153\13\0\1\143\30\0\3\154\26\0"+
-    "\1\155\14\0\2\65\1\0\2\65\1\0\1\65\1\0"+
-    "\22\65\1\0\1\156\1\0\13\65\1\66\1\56\1\67"+
-    "\1\65\1\0\1\65\1\0\22\65\1\0\1\156\1\0"+
-    "\13\65\1\67\1\56\1\67\1\65\1\0\1\65\1\0"+
-    "\22\65\1\0\1\156\1\0\14\65\2\0\42\65\1\0"+
-    "\1\71\3\0\1\157\3\0\6\71\3\0\2\157\7\71"+
-    "\1\0\1\71\1\0\5\71\1\0\1\71\1\0\2\71"+
-    "\5\73\1\0\1\73\1\0\22\73\1\0\1\160\1\0"+
-    "\14\73\2\0\42\73\2\0\3\161\1\76\2\0\1\76"+
-    "\2\0\4\76\1\0\1\162\1\0\1\76\1\0\10\76"+
-    "\1\0\6\76\1\0\1\76\15\0\4\77\5\0\7\77"+
-    "\3\0\5\77\11\0\1\101\2\0\1\101\2\0\4\101"+
-    "\3\0\1\101\1\0\10\101\1\0\6\101\1\0\1\101"+
-    "\15\0\4\102\5\0\7\102\3\0\5\102\5\0\2\103"+
-    "\1\0\3\103\1\0\23\103\1\0\1\103\1\0\5\103"+
-    "\1\0\1\103\1\0\3\103\1\104\1\26\1\104\2\103"+
-    "\1\0\23\103\1\0\1\103\1\0\5\103\1\0\1\103"+
-    "\1\0\2\103\12\0\4\107\5\0\7\107\3\0\5\107"+
-    "\5\0\1\111\4\0\1\111\2\0\6\111\4\0\10\111"+
-    "\3\0\5\111\1\0\1\111\1\0\2\111\12\0\4\115"+
-    "\5\0\7\115\3\0\5\115\5\0\1\117\3\0\1\117"+
-    "\1\163\1\0\7\117\3\0\1\117\1\164\17\117\1\0"+
-    "\1\117\1\0\2\117\2\165\1\0\2\165\1\0\25\165"+
-    "\1\166\13\165\1\0\3\121\44\0\3\167\1\121\11\0"+
-    "\1\121\1\0\2\121\26\0\3\121\12\0\1\121\34\0"+
-    "\1\124\2\0\1\124\2\0\4\124\3\0\1\124\1\0"+
-    "\10\124\1\0\6\124\1\0\1\124\4\0\3\125\1\170"+
-    "\11\0\1\127\1\130\1\131\1\171\44\0\2\130\45\0"+
-    "\1\130\27\0\1\25\3\0\1\25\2\0\7\25\3\0"+
-    "\1\25\1\132\17\25\1\0\1\25\1\0\2\25\2\134"+
-    "\1\172\2\134\1\126\10\134\3\173\12\134\1\136\13\134"+
-    "\5\135\1\174\25\135\1\175\13\135\2\134\2\0\42\134"+
-    "\2\0\3\142\1\170\11\0\1\127\1\176\1\131\1\171"+
-    "\57\0\1\144\14\0\1\25\3\125\1\25\1\126\1\0"+
-    "\7\25\1\127\1\130\1\131\1\25\1\132\6\25\1\177"+
-    "\10\25\1\0\1\25\1\0\3\25\3\125\1\25\1\126"+
-    "\1\0\7\25\1\127\1\130\1\131\1\25\1\132\1\25"+
-    "\1\200\15\25\1\0\1\25\1\0\3\25\3\125\1\25"+
-    "\1\126\1\0\7\25\1\127\1\130\1\131\1\25\1\132"+
-    "\15\25\1\150\1\25\1\0\1\25\1\0\2\25\1\0"+
-    "\3\153\13\0\1\176\30\0\3\161\13\0\1\162\27\0"+
-    "\1\117\3\0\1\117\2\0\7\117\3\0\1\117\1\164"+
-    "\17\117\1\0\1\117\1\0\2\117\2\165\1\0\2\165"+
-    "\1\163\25\165\1\166\15\165\2\0\42\165\2\0\3\167"+
-    "\15\0\1\121\26\0\3\171\13\0\1\130\27\0\1\135"+
-    "\3\172\1\201\1\174\10\135\1\202\1\203\1\204\1\205"+
-    "\11\135\1\175\15\135\2\0\42\135\1\0\1\25\3\206"+
-    "\1\25\1\126\1\0\5\25\1\207\1\25\1\127\1\130"+
-    "\1\131\1\25\1\132\17\25\1\210\1\25\1\0\3\25"+
-    "\3\206\1\25\1\126\1\0\7\25\1\127\1\130\1\131"+
-    "\1\25\1\132\17\25\1\210\1\25\1\0\2\25\5\135"+
-    "\1\174\11\135\1\203\13\135\1\175\20\135\1\174\11\135"+
-    "\2\203\12\135\1\175\14\135\3\205\1\135\1\174\11\135"+
-    "\1\203\13\135\1\175\13\135\1\0\3\206\1\170\11\0"+
-    "\1\127\1\130\1\131\1\171\20\0\1\210\4\0\1\25"+
-    "\3\125\1\25\1\126\1\0\6\25\1\211\1\127\1\130"+
-    "\1\131\1\25\1\132\17\25\1\0\1\25\1\0\2\25"+
-    "\1\0\1\210\1\0\1\210\5\0\5\210\26\0\1\212"+
-    "\1\210\1\0\1\25\3\125\1\25\1\126\1\0\3\25"+
-    "\1\200\3\25\1\127\1\130\1\131\1\25\1\132\17\25"+
-    "\1\0\1\25\1\0\2\25";
+    "\1\25\1\50\3\25\3\26\1\51\1\52\1\53\1\25"+
+    "\1\32\1\33\4\34\4\51\1\54\3\25\1\42\1\43"+
+    "\6\25\1\45\2\25\1\46\1\51\1\25\1\51\2\25"+
+    "\1\55\3\56\1\57\1\60\1\53\1\61\6\55\1\35"+
+    "\1\36\1\37\1\62\1\51\7\55\1\63\1\55\1\64"+
+    "\5\55\1\51\1\55\1\51\2\55\1\65\1\66\1\56"+
+    "\1\67\1\65\1\60\1\65\1\61\22\65\1\63\1\70"+
+    "\1\64\12\65\1\71\3\56\1\51\1\72\1\53\1\61"+
+    "\6\71\5\51\7\71\1\63\1\71\1\64\5\71\1\51"+
+    "\1\71\1\51\2\71\5\73\1\72\1\73\1\61\22\73"+
+    "\1\63\1\74\1\64\12\73\7\75\1\76\13\75\10\76"+
+    "\2\75\5\76\5\75\1\51\3\56\1\57\1\51\1\53"+
+    "\1\61\6\51\1\35\1\36\1\37\1\62\1\51\7\77"+
+    "\1\63\1\51\1\64\5\77\5\51\1\25\3\26\1\51"+
+    "\1\52\1\53\1\25\1\32\1\33\4\34\4\51\1\100"+
+    "\3\25\1\42\1\43\6\25\1\45\2\25\1\46\1\51"+
+    "\1\25\1\51\2\25\7\75\1\101\13\75\10\101\2\75"+
+    "\5\101\5\75\1\51\3\56\2\51\1\53\1\61\13\51"+
+    "\7\102\1\63\1\51\1\64\5\102\5\51\1\103\1\104"+
+    "\1\26\1\104\2\103\1\51\23\103\1\51\1\103\1\105"+
+    "\5\103\1\51\1\103\1\51\2\103\7\51\1\106\13\51"+
+    "\7\107\3\51\5\107\1\51\1\110\3\51\1\111\4\51"+
+    "\1\111\1\51\1\106\6\111\4\51\10\111\3\51\5\111"+
+    "\1\51\1\111\1\51\2\111\1\51\3\26\2\51\1\31"+
+    "\23\51\1\112\1\51\1\113\13\51\3\26\1\114\1\51"+
+    "\1\31\14\51\7\115\2\51\1\116\5\115\5\51\1\117"+
+    "\4\0\1\120\1\0\7\117\5\0\17\117\1\0\1\117"+
+    "\1\0\2\117\16\0\1\121\1\122\1\123\35\0\1\124"+
+    "\13\0\10\124\2\0\5\124\24\0\1\121\27\0\1\25"+
+    "\3\125\1\126\1\127\1\0\7\25\1\130\1\131\1\132"+
+    "\1\133\1\134\17\25\1\0\1\25\1\0\2\25\1\0"+
+    "\3\26\62\0\1\135\27\0\2\136\1\137\2\136\1\0"+
+    "\25\136\1\140\13\136\2\31\1\0\44\31\1\25\3\125"+
+    "\1\126\1\127\1\0\2\25\1\33\4\34\1\130\1\131"+
+    "\1\132\1\133\1\134\17\25\1\0\1\25\1\0\3\25"+
+    "\3\125\1\126\1\127\1\0\3\25\4\141\1\130\1\131"+
+    "\1\132\1\133\1\134\17\25\1\0\1\25\1\0\2\25"+
+    "\17\0\1\142\1\135\114\0\1\143\30\0\3\144\13\0"+
+    "\1\145\61\0\1\146\1\147\13\0\1\25\3\125\1\126"+
+    "\1\127\1\0\7\25\1\130\1\131\1\132\1\133\1\134"+
+    "\5\25\1\150\7\25\1\150\1\25\1\0\1\25\1\0"+
+    "\3\25\3\125\1\126\1\127\1\0\7\25\1\130\1\131"+
+    "\1\132\1\133\1\134\2\25\1\151\14\25\1\0\1\25"+
+    "\1\0\3\25\3\125\1\126\1\127\1\0\7\25\1\130"+
+    "\1\131\1\132\1\133\1\134\14\25\1\152\2\25\1\0"+
+    "\1\25\1\0\3\25\3\125\1\126\1\127\1\0\7\25"+
+    "\1\130\1\131\1\132\1\133\1\134\12\25\1\153\4\25"+
+    "\1\0\1\25\1\0\2\25\2\53\1\0\44\53\1\55"+
+    "\3\0\1\154\3\0\6\55\3\0\2\154\7\55\1\0"+
+    "\1\55\1\0\5\55\1\0\1\55\1\0\2\55\1\0"+
+    "\3\56\44\0\3\155\26\0\1\156\14\0\2\65\1\0"+
+    "\2\65\1\0\1\65\1\0\22\65\1\0\1\157\1\0"+
+    "\13\65\1\66\1\56\1\67\1\65\1\0\1\65\1\0"+
+    "\22\65\1\0\1\157\1\0\13\65\1\67\1\56\1\67"+
+    "\1\65\1\0\1\65\1\0\22\65\1\0\1\157\1\0"+
+    "\14\65\2\0\42\65\1\0\1\71\3\0\1\160\3\0"+
+    "\6\71\3\0\2\160\7\71\1\0\1\71\1\0\5\71"+
+    "\1\0\1\71\1\0\2\71\5\73\1\0\1\73\1\0"+
+    "\22\73\1\0\1\161\1\0\14\73\2\0\42\73\2\0"+
+    "\3\162\1\76\2\0\1\76\2\0\4\76\1\0\1\163"+
+    "\1\0\1\76\1\0\10\76\1\0\6\76\1\0\1\76"+
+    "\15\0\4\77\5\0\7\77\3\0\5\77\11\0\1\101"+
+    "\2\0\1\101\2\0\4\101\3\0\1\101\1\0\10\101"+
+    "\1\0\6\101\1\0\1\101\15\0\4\102\5\0\7\102"+
+    "\3\0\5\102\5\0\2\103\1\0\3\103\1\0\23\103"+
+    "\1\0\1\103\1\0\5\103\1\0\1\103\1\0\3\103"+
+    "\1\104\1\26\1\104\2\103\1\0\23\103\1\0\1\103"+
+    "\1\0\5\103\1\0\1\103\1\0\2\103\12\0\4\107"+
+    "\5\0\7\107\3\0\5\107\5\0\1\111\4\0\1\111"+
+    "\2\0\6\111\4\0\10\111\3\0\5\111\1\0\1\111"+
+    "\1\0\2\111\12\0\4\115\5\0\7\115\3\0\5\115"+
+    "\5\0\1\117\3\0\1\164\1\165\1\0\7\117\3\0"+
+    "\2\164\17\117\1\0\1\117\1\0\2\117\2\166\1\0"+
+    "\2\166\1\0\25\166\1\167\13\166\1\0\3\121\44\0"+
+    "\3\170\1\121\11\0\1\121\1\0\2\121\26\0\3\121"+
+    "\12\0\1\121\34\0\1\124\2\0\1\124\2\0\4\124"+
+    "\3\0\1\124\1\0\10\124\1\0\6\124\1\0\1\124"+
+    "\4\0\3\125\1\171\11\0\1\130\1\131\1\132\1\172"+
+    "\25\0\1\25\3\0\1\134\2\0\7\25\1\0\1\131"+
+    "\1\0\2\134\17\25\1\0\1\25\1\0\2\25\17\0"+
+    "\2\131\45\0\1\131\27\0\1\25\3\172\1\134\2\0"+
+    "\7\25\1\0\1\131\1\0\2\134\17\25\1\0\1\25"+
+    "\1\0\3\25\3\0\1\134\2\0\7\25\3\0\2\134"+
+    "\17\25\1\0\1\25\1\0\2\25\2\136\1\173\2\136"+
+    "\1\127\10\136\3\174\12\136\1\140\13\136\5\137\1\175"+
+    "\25\137\1\176\13\137\2\136\2\0\42\136\2\0\3\144"+
+    "\13\0\1\177\61\0\1\146\14\0\1\25\3\125\1\126"+
+    "\1\127\1\0\7\25\1\130\1\131\1\132\1\133\1\134"+
+    "\6\25\1\200\10\25\1\0\1\25\1\0\3\25\3\125"+
+    "\1\126\1\127\1\0\7\25\1\130\1\131\1\132\1\133"+
+    "\1\134\1\25\1\201\15\25\1\0\1\25\1\0\3\25"+
+    "\3\125\1\126\1\127\1\0\7\25\1\130\1\131\1\132"+
+    "\1\133\1\134\15\25\1\152\1\25\1\0\1\25\1\0"+
+    "\2\25\1\0\3\162\13\0\1\163\27\0\1\117\3\0"+
+    "\1\164\2\0\7\117\3\0\2\164\17\117\1\0\1\117"+
+    "\1\0\2\117\2\166\1\0\2\166\1\165\25\166\1\167"+
+    "\15\166\2\0\42\166\2\0\3\170\15\0\1\121\26\0"+
+    "\3\172\13\0\1\131\27\0\1\137\3\173\1\202\1\175"+
+    "\10\137\1\203\1\204\1\205\1\206\11\137\1\176\15\137"+
+    "\2\0\42\137\1\0\1\25\3\207\1\126\1\127\1\0"+
+    "\5\25\1\210\1\25\1\130\1\131\1\132\1\133\1\134"+
+    "\17\25\1\211\1\25\1\0\3\25\3\207\1\126\1\127"+
+    "\1\0\7\25\1\130\1\131\1\132\1\133\1\134\17\25"+
+    "\1\211\1\25\1\0\2\25\5\137\1\175\11\137\1\204"+
+    "\13\137\1\176\20\137\1\175\11\137\2\204\12\137\1\176"+
+    "\14\137\3\206\1\137\1\175\11\137\1\204\13\137\1\176"+
+    "\13\137\1\0\3\207\1\171\11\0\1\130\1\131\1\132"+
+    "\1\172\20\0\1\211\4\0\1\25\3\125\1\126\1\127"+
+    "\1\0\6\25\1\212\1\130\1\131\1\132\1\133\1\134"+
+    "\17\25\1\0\1\25\1\0\2\25\1\0\1\211\1\0"+
+    "\1\211\5\0\5\211\26\0\1\213\1\211\1\0\1\25"+
+    "\3\125\1\126\1\127\1\0\3\25\1\201\3\25\1\130"+
+    "\1\131\1\132\1\133\1\134\17\25\1\0\1\25\1\0"+
+    "\2\25";
 
   private static int [] zzUnpacktrans() {
-    int [] result = new int[3666];
+    int [] result = new int[3627];
     int offset = 0;
     offset = zzUnpacktrans(ZZ_TRANS_PACKED_0, offset, result);
     return result;
@@ -390,17 +384,17 @@ public class _ParadoxScriptLexer implements FlexLexer {
   private static final int [] ZZ_ATTRIBUTE = zzUnpackAttribute();
 
   private static final String ZZ_ATTRIBUTE_PACKED_0 =
-    "\24\0\11\1\1\11\10\1\2\11\2\1\1\11\4\1"+
-    "\2\11\2\1\1\11\5\1\1\11\2\1\1\11\7\1"+
-    "\2\11\1\1\1\11\1\1\3\11\1\1\1\11\1\1"+
-    "\1\0\4\1\1\0\2\1\1\11\1\1\1\0\1\11"+
-    "\2\1\1\0\1\1\2\11\1\0\2\11\1\0\4\1"+
-    "\3\0\1\11\4\0\2\11\1\0\1\1\1\0\1\1"+
-    "\2\0\2\1\1\11\1\0\1\11\7\1\1\0\1\1"+
-    "\1\0\1\1\1\11";
+    "\24\0\11\1\1\11\10\1\3\11\6\1\2\11\2\1"+
+    "\1\11\5\1\1\11\2\1\1\11\7\1\2\11\1\1"+
+    "\1\11\1\1\3\11\1\1\1\11\1\1\1\0\4\1"+
+    "\2\0\2\1\1\11\1\1\2\0\1\11\2\1\1\0"+
+    "\1\1\2\11\1\0\2\11\1\0\4\1\2\0\1\11"+
+    "\4\0\1\11\1\0\1\11\1\1\1\0\1\1\2\0"+
+    "\2\1\1\11\1\0\1\11\7\1\1\0\1\1\1\0"+
+    "\1\1\1\11";
 
   private static int [] zzUnpackAttribute() {
-    int [] result = new int[138];
+    int [] result = new int[139];
     int offset = 0;
     offset = zzUnpackAttribute(ZZ_ATTRIBUTE_PACKED_0, offset, result);
     return result;
@@ -489,8 +483,7 @@ public class _ParadoxScriptLexer implements FlexLexer {
     private static final int EXPECT_CONDITIONAL_BLOCK = 9;
     private static final int EXPECT_CONDITIONAL_BLOCK_EXPRESSION = 10;
     private static final int EXPECT_CONDITIONAL = 11;
-    private static final int EXPECT_CONDITIONAL_PROPERTY_KEY = 12;
-    private static final int EXPECT_CONDITIONAL_STRING = 13;
+    private static final int EXPECT_INLINE_CONDITIONAL = 12;
 
     public _ParadoxScriptLexer() {
         this((java.io.Reader)null);
@@ -507,33 +500,30 @@ public class _ParadoxScriptLexer implements FlexLexer {
     }
 
     private void enterState(int state, int expect) {
-        // enter state
         if (stateStack == null) {
             stateStack = new IntArrayList();
         }
         if (expectStack == null) {
             expectStack = new IntArrayList();
         }
+
         stateStack.push(state);
         expectStack.push(expect);
         yybegin(state);
     }
 
     private void exitState(int expect) {
-        // exit state to previous only if expect is matched
         if (stateStack == null || stateStack.isEmpty() || expectStack == null || expectStack.isEmpty()) {
             yybegin(YYINITIAL);
             return;
         }
-        int expectToCheck = expectStack.topInt();
-        if (expectToCheck != expect) return;
+        if (expectStack.topInt() != expect) return;
         int nextState = stateStack.popInt();
         expectStack.popInt();
         yybegin(nextState);
     }
 
     private void exitState() {
-        // used for recovery
         if (stateStack == null || stateStack.isEmpty() || expectStack == null || expectStack.isEmpty()) {
             yybegin(YYINITIAL);
             return;
@@ -549,7 +539,10 @@ public class _ParadoxScriptLexer implements FlexLexer {
             yybegin(YYINITIAL);
             return;
         }
-        if (beginStateInConditionalBlockBodyForRecovery()) return;
+
+        // compatible with conditional blocks
+        if (beginStateInConditionalBodyToNormalForm()) return;
+
         int nextState = stateStack.popInt();
         expectStack.popInt();
         yybegin(nextState);
@@ -572,7 +565,21 @@ public class _ParadoxScriptLexer implements FlexLexer {
         return false;
     }
 
-    private boolean beginStateInConditionalBlockBody() {
+    private void beginStateAfterSeparator() {
+        // compatible with conditional blocks
+        if (beginStateInConditionalBodyToNormalForm()) return;
+
+        int state = yystate();
+        if (state == IN_SCRIPTED_VARIABLE_NAME) {
+            exitState(EXPECT_SCRIPTED_VARIABLE_NAME); // exist state if necessary
+            yybegin(IN_SCRIPTED_VARIABLE_VALUE);
+        } else {
+            exitState(EXPECT_PROPERTY_KEY); // exist state if necessary
+            yybegin(IN_PROPERTY_VALUE);
+        }
+    }
+
+    private boolean beginStateInConditionalBody() {
         // 3.0.2 recovery and inherit context from context stack
         // peek state X (i = 0) and then enter state X and the corresponding expect
         // where X may be YYINITIAL, IN_PROPERTY_KEY_UNQUOTED, IN_PROPERTY_KEY_QUOTED, etc.
@@ -589,7 +596,7 @@ public class _ParadoxScriptLexer implements FlexLexer {
         // -> begin IN_CONDITIONAL_BLOCK_EXPRESSION
         // -> meet `]`
         // -> peek state X (i = 0)
-        // -> enter (IN_PROPERTY_KEY_UNQUOTED, EXPECT_CONDITIONAL_PROPERTY_KEY) -> begin IN_PROPERTY_KEY_UNQUOTED
+        // -> enter (IN_PROPERTY_KEY_UNQUOTED, EXPECT_INLINE_CONDITIONAL) -> begin IN_PROPERTY_KEY_UNQUOTED
 
         if (stateStack == null || stateStack.isEmpty() || expectStack == null || expectStack.isEmpty()) {
             yybegin(YYINITIAL);
@@ -597,8 +604,10 @@ public class _ParadoxScriptLexer implements FlexLexer {
         }
         int nextState = stateStack.peekInt(0);
         int nextExpect = switch (nextState) {
-            case IN_PROPERTY_KEY_UNQUOTED, IN_PROPERTY_KEY_QUOTED -> EXPECT_CONDITIONAL_PROPERTY_KEY;
-            case IN_STRING_UNQUOTED, IN_STRING_QUOTED -> EXPECT_CONDITIONAL_STRING;
+            case IN_PROPERTY_KEY_UNQUOTED, IN_PROPERTY_KEY_QUOTED -> EXPECT_INLINE_CONDITIONAL;
+            case IN_STRING_UNQUOTED, IN_STRING_QUOTED -> EXPECT_INLINE_CONDITIONAL;
+            case IN_SCRIPTED_VARIABLE_NAME -> EXPECT_INLINE_CONDITIONAL;
+            case IN_SCRIPTED_VARIABLE_REFERENCE -> EXPECT_INLINE_CONDITIONAL;
             default -> EXPECT_CONDITIONAL;
         };
         enterState(nextState, nextExpect);
@@ -606,54 +615,22 @@ public class _ParadoxScriptLexer implements FlexLexer {
         return true;
     }
 
-    private boolean beginStateInConditionalBlockBodyForRecovery() {
-        // 3.0.2 manipulate context stack to change conditional block from inline form to normal form
+    private boolean beginStateInConditionalBlockForClosing() {
+        // 3.0.2 close conditional block, if needed
+        // if current expect is matched (e.g., EXPECT_CONDITIONAL), close and (double) exit to outer state (e.g., YYINITIAL)
+        // if not, just return false instead
 
         // Example:
-        // key = [[PARAM] text]
-        //               ^ here
+        // key = [[PARAM]text]
+        //                   ^ here
         //
         // Example flow (simplified):
         // -> enter (YYINITIAL, EXPECT_PROPERTY_KEY)
         // -> enter (IN_PROPERTY_KEY_UNQUOTED, EXPECT_CONDITIONAL_BLOCK)
-        // -> enter (IN_PROPERTY_KEY_UNQUOTED, EXPECT_CONDITIONAL_PROPERTY_KEY)
-        // -> meet whitespace
-        // -> replace (YYINITIAL, EXPECT_PROPERTY_KEY), (IN_PROPERTY_KEY_UNQUOTED, EXPECT_CONDITIONAL_BLOCK), (IN_PROPERTY_KEY_UNQUOTED, EXPECT_CONDITIONAL_PROPERTY_KEY)
-        //    with (YYINITIAL, EXPECT_CONDITIONAL_BLOCK), (YYINITIAL, EXPECT_CONDITIONAL)
-        // -> begin YYINITIAL
-
-        if (stateStack == null || stateStack.isEmpty() || expectStack == null || expectStack.isEmpty()) {
-            yybegin(YYINITIAL);
-            return false;
-        }
-        int expectToCheck = expectStack.peekInt(0);
-        if (expectToCheck != EXPECT_CONDITIONAL_PROPERTY_KEY && expectToCheck != EXPECT_CONDITIONAL_STRING) {
-            return false;
-        }
-        int size = stateStack.size();
-        for (int i = size - 1; i >= 0; i--) {
-            if ((size - i) % 3 == 0) {
-                stateStack.removeInt(i);
-                expectStack.removeInt(i);
-                continue;
-            }
-            int s = stateStack.getInt(i);
-            int e = expectStack.getInt(i);
-            if (s == IN_PROPERTY_KEY_UNQUOTED || s == IN_STRING_UNQUOTED) {
-                stateStack.set(i, YYINITIAL);
-            }
-            if (e == EXPECT_CONDITIONAL_PROPERTY_KEY || e == EXPECT_CONDITIONAL_STRING) {
-                expectStack.set(i, EXPECT_CONDITIONAL);
-            }
-        }
-        yybegin(YYINITIAL);
-        return true;
-    }
-
-    private boolean beginStateInConditionalBlockForClosing() {
-        // 3.0.2 close conditional block
-        // if current expect is matched (e.g., EXPECT_CONDITIONAL), close and (double) exit to outer state (e.g., YYINITIAL)
-        // if not, just return false instead
+        // -> enter (IN_PROPERTY_KEY_UNQUOTED, EXPECT_INLINE_CONDITIONAL)
+        // -> meet `]`
+        // -> exit (IN_PROPERTY_KEY_UNQUOTED, EXPECT_INLINE_CONDITIONAL), (IN_PROPERTY_KEY_UNQUOTED, EXPECT_CONDITIONAL_BLOCK)
+        // -> begin IN_PROPERTY_KEY_UNQUOTED
 
         // Example:
         // key = [[PARAM] text ]
@@ -667,42 +644,88 @@ public class _ParadoxScriptLexer implements FlexLexer {
         // -> begin YYINITIAL (since state stack is empty)
 
         // Example:
-        // key = [[PARAM]text]
-        //                   ^ here
+        // key = [[PARAM] text]
+        //                    ^ here
+        //
+        // Example flow (simplified):
+        // -> enter (YYINITIAL, EXPECT_CONDITIONAL_BLOCK)
+        // -> enter (YYINITIAL, EXPECT_CONDITIONAL)
+        // -> enter (YYINITIAL, EXPECT_STRING)
+        // -> meet `]`
+        // -> exit (YYINITIAL, EXPECT_STRING), (YYINITIAL, EXPECT_CONDITIONAL), (YYINITIAL, EXPECT_CONDITIONAL_BLOCK)
+        // -> begin YYINITIAL (since state stack is empty)
+
+        if (stateStack == null || stateStack.isEmpty() || expectStack == null || expectStack.isEmpty()) {
+            yybegin(YYINITIAL);
+            return false;
+        }
+        int expect0 = (stateStack.size() >= 2 && expectStack.size() >= 2) ? expectStack.peekInt(0) : -1;
+        if (expect0 == EXPECT_INLINE_CONDITIONAL || expect0 == EXPECT_CONDITIONAL) {
+            stateStack.popInt();
+            expectStack.popInt();
+            int state = stateStack.popInt();
+            expectStack.popInt();
+            yybegin(state);
+            return true;
+        }
+        int expect1 = (stateStack.size() >= 3 && expectStack.size() >= 3) ? expectStack.peekInt(1) : -1;
+        if (expect1 == EXPECT_CONDITIONAL) {
+            stateStack.popInt();
+            expectStack.popInt();
+            stateStack.popInt();
+            expectStack.popInt();
+            int state = stateStack.popInt();
+            expectStack.popInt();
+            yybegin(state);
+            return true;
+        }
+        return false;
+    }
+
+    private boolean beginStateInConditionalBodyToNormalForm() {
+        // 3.0.2 manipulate context stack to change conditional block from inline form to normal form, if needed
+
+        // Example:
+        // key = [[PARAM] text]
+        //               ^ here
+        // [[PARAM]key=value]
+        //            ^ here
         //
         // Example flow (simplified):
         // -> enter (YYINITIAL, EXPECT_PROPERTY_KEY)
         // -> enter (IN_PROPERTY_KEY_UNQUOTED, EXPECT_CONDITIONAL_BLOCK)
-        // -> enter (IN_PROPERTY_KEY_UNQUOTED, EXPECT_CONDITIONAL_PROPERTY_KEY)
-        // -> meet `]`
-        // -> exit (IN_PROPERTY_KEY_UNQUOTED, EXPECT_CONDITIONAL_PROPERTY_KEY), (IN_PROPERTY_KEY_UNQUOTED, EXPECT_CONDITIONAL_BLOCK)
-        // -> begin IN_PROPERTY_KEY_UNQUOTED
+        // -> enter (IN_PROPERTY_KEY_UNQUOTED, EXPECT_INLINE_CONDITIONAL)
+        // -> meet whitespace
+        // -> replace (YYINITIAL, EXPECT_PROPERTY_KEY), (IN_PROPERTY_KEY_UNQUOTED, EXPECT_CONDITIONAL_BLOCK), (IN_PROPERTY_KEY_UNQUOTED, EXPECT_INLINE_CONDITIONAL)
+        //    with (YYINITIAL, EXPECT_CONDITIONAL_BLOCK), (YYINITIAL, EXPECT_CONDITIONAL)
+        // -> begin YYINITIAL
 
         if (stateStack == null || stateStack.isEmpty() || expectStack == null || expectStack.isEmpty()) {
             yybegin(YYINITIAL);
             return false;
         }
         int expectToCheck = expectStack.peekInt(0);
-        if (expectToCheck != EXPECT_CONDITIONAL && expectToCheck != EXPECT_CONDITIONAL_PROPERTY_KEY && expectToCheck != EXPECT_CONDITIONAL_STRING) {
+        if (expectToCheck != EXPECT_INLINE_CONDITIONAL) {
             return false;
         }
-        int state = stateStack.popInt();
-        expectStack.popInt();
-        if (!stateStack.isEmpty()) state = stateStack.popInt();
-        if (!expectStack.isEmpty()) expectStack.popInt();
-        yybegin(state);
-        return true;
-    }
-
-    private void beginStateAfterSeparator() {
-        int state = yystate();
-        if (state == IN_SCRIPTED_VARIABLE_NAME) {
-            exitState(EXPECT_SCRIPTED_VARIABLE_NAME); // exist state if necessary
-            yybegin(IN_SCRIPTED_VARIABLE_VALUE);
-        } else {
-            exitState(EXPECT_PROPERTY_KEY); // exist state if necessary
-            yybegin(IN_PROPERTY_VALUE);
+        int size = stateStack.size();
+        for (int i = size - 1; i >= 0; i--) {
+            if ((size - i) % 3 == 0) {
+                stateStack.removeInt(i);
+                expectStack.removeInt(i);
+                continue;
+            }
+            int s = stateStack.getInt(i);
+            int e = expectStack.getInt(i);
+            if (s == IN_PROPERTY_KEY_UNQUOTED || s == IN_STRING_UNQUOTED || s == IN_SCRIPTED_VARIABLE_NAME || s == IN_SCRIPTED_VARIABLE_REFERENCE) {
+                stateStack.set(i, YYINITIAL);
+            }
+            if (e == EXPECT_INLINE_CONDITIONAL) {
+                expectStack.set(i, EXPECT_CONDITIONAL);
+            }
         }
+        yybegin(YYINITIAL);
+        return true;
     }
 
     private IElementType getFallbackToken() {
@@ -1180,7 +1203,7 @@ public class _ParadoxScriptLexer implements FlexLexer {
           case 85: break;
           case 37:
             { // nested
-        beginStateInConditionalBlockBody();
+        beginStateInConditionalBody();
         return NESTED_RIGHT_BRACKET;
             }
           // fall through

@@ -132,13 +132,13 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
   private static final int [] ZZ_ACTION = zzUnpackAction();
 
   private static final String ZZ_ACTION_PACKED_0 =
-    "\21\0\2\1\1\2\1\1\1\3\1\1\1\4\1\1"+
-    "\1\5\1\6\1\7\1\10\1\11\1\12\1\13\1\14"+
+    "\21\0\1\1\1\2\1\3\1\2\1\4\1\1\1\5"+
+    "\1\2\1\6\1\7\1\10\1\11\1\12\1\13\1\14"+
     "\1\15\1\16\1\17\1\20\1\21\1\22\1\23\1\24"+
-    "\1\25\1\2\1\26\1\27\1\30\1\31\1\32\1\33"+
-    "\1\34\1\35\1\36\1\37\1\40\1\41\1\42\1\41"+
-    "\1\43\1\44\1\45\1\46\1\47\1\50\1\7\2\12"+
-    "\1\0\1\22\1\0\1\51";
+    "\1\25\1\26\1\3\1\27\1\30\1\31\1\32\1\33"+
+    "\1\34\1\35\1\36\1\37\1\40\1\41\1\42\1\43"+
+    "\1\42\1\44\1\45\1\46\1\47\1\50\1\51\1\10"+
+    "\2\13\1\0\1\23\1\0\1\52";
 
   private static int [] zzUnpackAction() {
     int [] result = new int[70];
@@ -379,7 +379,6 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
     }
 
     private void enterState(int state, int expect) {
-        // enter state
         if (stateStack == null) {
             stateStack = new IntArrayList();
         }
@@ -392,7 +391,6 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
     }
 
     private void exitState(int expect) {
-        // exit state to previous only if expect is matched
         if (stateStack == null || stateStack.isEmpty() || expectStack == null || expectStack.isEmpty()) {
             yybegin(YYINITIAL);
             return;
@@ -425,6 +423,11 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
     private boolean needExitStateForRecovery() {
         // heuristic: always recovery atm
         return true;
+    }
+
+    private IElementType getFallbackToken() {
+        // fallback to `TEXT_TOKEN`, if necessary
+        return TEXT_TOKEN;
     }
 
     private boolean isExactWord(char c) {
@@ -695,41 +698,46 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
             { return TEXT_TOKEN;
             }
           // fall through
-          case 42: break;
+          case 43: break;
           case 2:
+            { return getFallbackToken();
+            }
+          // fall through
+          case 44: break;
+          case 3:
             { enterState(yystate(), EXPECT_PARAMETER);
         yypushback(yylength());
         yybegin(IN_PARAMETER_CHECK);
             }
           // fall through
-          case 43: break;
-          case 3:
+          case 45: break;
+          case 4:
             { enterState(yystate(), EXPECT_COMMAND);
         yypushback(yylength());
         yybegin(IN_COMMAND_CHECK);
             }
           // fall through
-          case 44: break;
-          case 4:
-            { if (yystate() != IN_CONCEPT_TEXT) return TEXT_TOKEN;
+          case 46: break;
+          case 5:
+            { if (yystate() != IN_CONCEPT_TEXT) return getFallbackToken();
         exitState(EXPECT_COMMAND);
         return RIGHT_BRACKET;
             }
           // fall through
-          case 45: break;
-          case 5:
+          case 47: break;
+          case 6:
             { enterState(yystate(), EXPECT_COLORFUL_TEXT);
         yypushback(yylength());
         yybegin(IN_COLORFUL_TEXT_CHECK);
             }
           // fall through
-          case 46: break;
-          case 6:
+          case 48: break;
+          case 7:
             { return BAD_CHARACTER;
             }
           // fall through
-          case 47: break;
-          case 7:
+          case 49: break;
+          case 8:
             { if (isColorfulText()) {
             yypushback(yylength() - 1);
             yybegin(IN_COLOR_ID);
@@ -742,80 +750,78 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
         }
             }
           // fall through
-          case 48: break;
-          case 8:
+          case 50: break;
+          case 9:
             { if (!exitStateForRecoveryIfNeeded()) return BAD_CHARACTER;
             }
           // fall through
-          case 49: break;
-          case 9:
+          case 51: break;
+          case 10:
             { yybegin(IN_COLORFUL_TEXT); return COLOR_TOKEN;
             }
           // fall through
-          case 50: break;
-          case 10:
+          case 52: break;
+          case 11:
             { if (isParameter()) {
             yypushback(yylength() - 1);
             yybegin(IN_PARAMETER);
             return PARAMETER_START;
-        } else {
-            exitState(EXPECT_PARAMETER);
-            yypushback(yylength() - 1);
-            return TEXT_TOKEN;
         }
+        exitState(EXPECT_PARAMETER);
+        yypushback(yylength() - 1);
+        return getFallbackToken();
             }
           // fall through
-          case 51: break;
-          case 11:
+          case 53: break;
+          case 12:
             { exitState(EXPECT_PARAMETER);
         return PARAMETER_END;
             }
           // fall through
-          case 52: break;
-          case 12:
+          case 54: break;
+          case 13:
             { return PARAMETER_TOKEN;
             }
           // fall through
-          case 53: break;
-          case 13:
+          case 55: break;
+          case 14:
             { yybegin(IN_SCRIPTED_VARIABLE_REFERENCE); return AT;
             }
           // fall through
-          case 54: break;
-          case 14:
+          case 56: break;
+          case 15:
             { exitState(EXPECT_COMMAND);
         return RIGHT_BRACKET;
             }
           // fall through
-          case 55: break;
-          case 15:
+          case 57: break;
+          case 16:
             { yybegin(IN_PARAMETER_ARGUMENT); return PIPE;
             }
           // fall through
-          case 56: break;
-          case 16:
+          case 58: break;
+          case 17:
             { return ARGUMENT_TOKEN;
             }
           // fall through
-          case 57: break;
-          case 17:
+          case 59: break;
+          case 18:
             { return SCRIPTED_VARIABLE_REFERENCE_TOKEN;
             }
           // fall through
-          case 58: break;
-          case 18:
+          case 60: break;
+          case 19:
             { if (isCommand()) {
             yypushback(yylength() - 1);
             yybegin(IN_COMMAND);
             return LEFT_BRACKET;
-        } else {
-            exitState(EXPECT_COMMAND);
-            return TEXT_TOKEN;
         }
+        exitState(EXPECT_COMMAND);
+        return getFallbackToken();
             }
           // fall through
-          case 59: break;
-          case 19:
+          case 61: break;
+          case 20:
             { if (yycharat(0) == '\'' && ParadoxSyntaxConstraint.LocalisationConceptCommand.testTarget(this)) {
             yybegin(IN_CONCEPT_NAME);
             return LEFT_SINGLE_QUOTE;
@@ -824,120 +830,120 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
         yybegin(IN_COMMAND_TEXT);
             }
           // fall through
-          case 60: break;
-          case 20:
+          case 62: break;
+          case 21:
             { return WHITE_SPACE;
             }
           // fall through
-          case 61: break;
-          case 21:
+          case 63: break;
+          case 22:
             { return COMMAND_TEXT_TOKEN;
             }
           // fall through
-          case 62: break;
-          case 22:
+          case 64: break;
+          case 23:
             { yybegin(IN_COMMAND_ARGUMENT); return PIPE;
             }
           // fall through
-          case 63: break;
-          case 23:
+          case 65: break;
+          case 24:
             { return RIGHT_SINGLE_QUOTE;
             }
           // fall through
-          case 64: break;
-          case 24:
+          case 66: break;
+          case 25:
             { yybegin(IN_CONCEPT_AFTER_COMMA); return COMMA;
             }
           // fall through
-          case 65: break;
-          case 25:
+          case 67: break;
+          case 26:
             { return CONCEPT_NAME_TOKEN;
             }
           // fall through
-          case 66: break;
-          case 26:
+          case 68: break;
+          case 27:
             { yypushback(yylength()); yybegin(IN_CONCEPT_TEXT);
             }
           // fall through
-          case 67: break;
-          case 27:
+          case 69: break;
+          case 28:
             { yybegin(IN_CONCEPT_TEXT); return WHITE_SPACE;
             }
           // fall through
-          case 68: break;
-          case 28:
+          case 70: break;
+          case 29:
             { return ICON_TOKEN;
             }
           // fall through
-          case 69: break;
-          case 29:
+          case 71: break;
+          case 30:
             { yybegin(IN_ICON_ARGUMENT); return PIPE;
             }
           // fall through
-          case 70: break;
-          case 30:
+          case 72: break;
+          case 31:
             { exitState(EXPECT_ICON);
         return ICON_END;
             }
           // fall through
-          case 71: break;
-          case 31:
+          case 73: break;
+          case 32:
             { exitState(EXPECT_TEXT_ICON);
         return TEXT_ICON_END;
             }
           // fall through
-          case 72: break;
-          case 32:
+          case 74: break;
+          case 33:
             { return TEXT_ICON_TOKEN;
             }
           // fall through
-          case 73: break;
-          case 33:
+          case 75: break;
+          case 34:
             { yypushback(yylength()); yybegin(IN_TEXT_FORMAT_TEXT);
             }
           // fall through
-          case 74: break;
-          case 34:
+          case 76: break;
+          case 35:
             { yybegin(IN_TEXT_FORMAT_TEXT); return WHITE_SPACE;
             }
           // fall through
-          case 75: break;
-          case 35:
+          case 77: break;
+          case 36:
             { return TEXT_FORMAT_TOKEN;
             }
           // fall through
-          case 76: break;
-          case 36:
+          case 78: break;
+          case 37:
             { // dangling form is allowed here at syntax level
-        if (!ParadoxSyntaxConstraint.LocalisationTextFormat.testTarget(this)) return TEXT_TOKEN;
+        if (!ParadoxSyntaxConstraint.LocalisationTextFormat.testTarget(this)) return getFallbackToken();
         exitState(EXPECT_TEXT_FORMAT);
         return TEXT_FORMAT_END;
             }
           // fall through
-          case 77: break;
-          case 37:
+          case 79: break;
+          case 38:
             // lookahead expression with fixed base length
             zzMarkedPos = Character.offsetByCodePoints
                 (zzBufferL, zzStartRead, 1);
-            { if (!ParadoxSyntaxConstraint.LocalisationTextFormat.testTarget(this)) return TEXT_TOKEN;
+            { if (!ParadoxSyntaxConstraint.LocalisationTextFormat.testTarget(this)) return getFallbackToken();
         enterState(yystate(), EXPECT_TEXT_FORMAT);
         yybegin(IN_TEXT_FORMAT);
         return TEXT_FORMAT_START;
             }
           // fall through
-          case 78: break;
-          case 38:
+          case 80: break;
+          case 39:
             // lookahead expression with fixed base length
             zzMarkedPos = Character.offsetByCodePoints
                 (zzBufferL, zzStartRead, 1);
-            { if (!ParadoxSyntaxConstraint.LocalisationTextIcon.testTarget(this)) return TEXT_TOKEN;
+            { if (!ParadoxSyntaxConstraint.LocalisationTextIcon.testTarget(this)) return getFallbackToken();
         enterState(yystate(), EXPECT_TEXT_ICON);
         yybegin(IN_TEXT_ICON);
         return TEXT_ICON_START;
             }
           // fall through
-          case 79: break;
-          case 39:
+          case 81: break;
+          case 40:
             // lookahead expression with fixed base length
             zzMarkedPos = Character.offsetByCodePoints
                 (zzBufferL, zzStartRead, 1);
@@ -946,20 +952,20 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
         return ICON_START;
             }
           // fall through
-          case 80: break;
-          case 40:
+          case 82: break;
+          case 41:
             { // dangling form is allowed here at syntax level
         exitState(EXPECT_COLORFUL_TEXT);
         return COLORFUL_TEXT_END;
             }
           // fall through
-          case 81: break;
-          case 41:
+          case 83: break;
+          case 42:
             { exitState(EXPECT_TEXT_FORMAT);
         return TEXT_FORMAT_END;
             }
           // fall through
-          case 82: break;
+          case 84: break;
           default:
             zzScanError(ZZ_NO_MATCH);
           }

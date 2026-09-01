@@ -123,23 +123,6 @@ object ParadoxScriptPsiService {
         return PsiService.isBeforeLeftBoundEnd(block, offset)
     }
 
-    @Suppress("unused")
-    fun findStringExpressionElementFromStartOffset(file: PsiFile, offset: Int): ParadoxScriptStringExpressionElement? {
-        if (offset < 0) return null
-        if (file.language !== ParadoxScriptLanguage) return null
-        return file.findElementAt(offset)
-            ?.takeIf { it.elementType in ParadoxScriptTokenSets.STRING_EXPRESSION_TOKENS }
-            ?.parentOfType<ParadoxScriptStringExpressionElement>()
-    }
-
-    fun findPropertyFromStartOffset(file: PsiFile, offset: Int): ParadoxScriptProperty? {
-        if (offset < 0) return null
-        if (file.language !== ParadoxScriptLanguage) return null
-        return file.findElementAt(offset)
-            ?.takeIf { it.elementType == ParadoxScriptElementTypes.PROPERTY_KEY_TOKEN }
-            ?.parentOfType<ParadoxScriptProperty>()
-    }
-
     fun parseExpressionCharacters(chars: String, out: StringBuilder, sourceOffsets: IntArray?): Boolean {
         if (chars.none { c -> c == '\\' }) {
             if (sourceOffsets != null) Arrays.setAll(sourceOffsets, IntUnaryOperator.identity())
@@ -179,5 +162,22 @@ object ParadoxScriptPsiService {
             }
         }
         return true
+    }
+
+    @Suppress("unused")
+    fun findStringExpressionElementFromStartOffset(file: PsiFile, offset: Int): ParadoxScriptStringExpressionElement? {
+        if (offset < 0) return null
+        if (file.language !== ParadoxScriptLanguage) return null
+        return file.findElementAt(offset)
+            ?.takeIf { it.elementType in ParadoxScriptTokenSets.STRING_EXPRESSION_TOKENS }
+            ?.parentOfType<ParadoxScriptStringExpressionElement>()
+    }
+
+    fun findPropertyFromStartOffset(file: PsiFile, offset: Int): ParadoxScriptProperty? {
+        if (offset < 0) return null
+        if (file.language !== ParadoxScriptLanguage) return null
+        return file.findElementAt(offset)
+            ?.takeIf { it.elementType == ParadoxScriptElementTypes.PROPERTY_KEY_TOKEN }
+            ?.parentOfType<ParadoxScriptProperty>()
     }
 }

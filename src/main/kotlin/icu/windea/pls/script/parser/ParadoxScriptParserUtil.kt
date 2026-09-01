@@ -10,11 +10,11 @@ import icu.windea.pls.script.psi.ParadoxScriptTokenSets as TokenSets
 
 @Suppress("UNUSED_PARAMETER")
 object ParadoxScriptParserUtil : GeneratedParserUtilBase() {
+    private val SEPARATOR_TOKENS = TokenSets.PROPERTY_SEPARATOR_TOKENS
     private val SNIPPET_TOKENS = TokenSet.create(PROPERTY_KEY_TOKEN, STRING_TOKEN, SCRIPTED_VARIABLE_NAME_TOKEN, SCRIPTED_VARIABLE_REFERENCE_TOKEN)
     // private val LHS_SNIPPET_TOKENS = TokenSet.create(PROPERTY_KEY_TOKEN, SCRIPTED_VARIABLE_NAME_TOKEN)
     // private val RHS_SNIPPET_TOKENS = TokenSet.create(STRING_TOKEN, SCRIPTED_VARIABLE_REFERENCE_TOKEN)
-    private val BREAK_PARTS_TOKENS = TokenSet.create(TokenType.WHITE_SPACE, COMMENT)
-    private val ACCEPT_LHS_TOKENS = TokenSets.PROPERTY_SEPARATOR_TOKENS
+    private val ACCEPT_LHS_TOKENS = SEPARATOR_TOKENS
     private val REJECT_LHS_TOKENS = TokenSet.create(AT, STRING_TOKEN, SCRIPTED_VARIABLE_REFERENCE_TOKEN)
 
     @JvmStatic
@@ -32,8 +32,8 @@ object ParadoxScriptParserUtil : GeneratedParserUtilBase() {
             val t = b.rawLookup(i) // token after first LHS part (e.g., PROPERTY_KEY_TOKEN)
             if (t == null) return true // null -> should be EOF -> return true for better error report
             when (t) {
+                TokenType.WHITE_SPACE, COMMENT -> end = true
                 in ACCEPT_LHS_TOKENS -> return true
-                in BREAK_PARTS_TOKENS -> end = true
                 in REJECT_LHS_TOKENS -> return false
                 else -> if (end) return false
             }
@@ -47,12 +47,12 @@ object ParadoxScriptParserUtil : GeneratedParserUtilBase() {
         // compatible with continuous literals
 
         val t = b.rawLookup(-1)
-        when {
-            t in SNIPPET_TOKENS -> {
+        when (t) {
+            TokenType.WHITE_SPACE, COMMENT -> return false
+            in SNIPPET_TOKENS -> {
                 val nextTokenType = b.rawLookup(0)
                 if (nextTokenType != null && nextTokenType in SNIPPET_TOKENS) return false
             }
-            t in BREAK_PARTS_TOKENS -> return false
         }
         return true
     }
@@ -60,7 +60,7 @@ object ParadoxScriptParserUtil : GeneratedParserUtilBase() {
     @JvmStatic
     fun processInlineConditionalBlock(b: PsiBuilder, l: Int): Boolean {
         // check after conditional block start marker (`LEFT_BRACKET`)
-        // interrupt parsing inline conditional block when its body contains whitespace tokens or comment tokens
+        // interrupt parsing inline conditional block when its body contains whitespace tokens, comment tokens, or separator tokens
 
         // compatible with optional whitespaces
         // e.g., `"[ [ PARAM ] text ]"` (where ` text ` is a `STRING_TOKEN`, other whitespaces are still whitespace tokens)
@@ -82,8 +82,11 @@ object ParadoxScriptParserUtil : GeneratedParserUtilBase() {
                     expectState.popInt()
                     expectState.popInt()
                 }
-                in BREAK_PARTS_TOKENS -> {
+                TokenType.WHITE_SPACE, COMMENT -> {
                     if (expectState.topInt() == 1) return false
+                }
+                in SEPARATOR_TOKENS -> {
+                    return false
                 }
             }
             if (expectState.isEmpty) break

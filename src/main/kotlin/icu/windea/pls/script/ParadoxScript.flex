@@ -37,8 +37,7 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
     private static final int EXPECT_CONDITIONAL_BLOCK = 9;
     private static final int EXPECT_CONDITIONAL_BLOCK_EXPRESSION = 10;
     private static final int EXPECT_CONDITIONAL = 11;
-    private static final int EXPECT_CONDITIONAL_PROPERTY_KEY = 12;
-    private static final int EXPECT_CONDITIONAL_STRING = 13;
+    private static final int EXPECT_INLINE_CONDITIONAL = 12;
 
     public _ParadoxScriptLexer() {
         this((java.io.Reader)null);
@@ -55,33 +54,30 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
     }
 
     private void enterState(int state, int expect) {
-        // enter state
         if (stateStack == null) {
             stateStack = new IntArrayList();
         }
         if (expectStack == null) {
             expectStack = new IntArrayList();
         }
+
         stateStack.push(state);
         expectStack.push(expect);
         yybegin(state);
     }
 
     private void exitState(int expect) {
-        // exit state to previous only if expect is matched
         if (stateStack == null || stateStack.isEmpty() || expectStack == null || expectStack.isEmpty()) {
             yybegin(YYINITIAL);
             return;
         }
-        int expectToCheck = expectStack.topInt();
-        if (expectToCheck != expect) return;
+        if (expectStack.topInt() != expect) return;
         int nextState = stateStack.popInt();
         expectStack.popInt();
         yybegin(nextState);
     }
 
     private void exitState() {
-        // used for recovery
         if (stateStack == null || stateStack.isEmpty() || expectStack == null || expectStack.isEmpty()) {
             yybegin(YYINITIAL);
             return;
@@ -97,7 +93,10 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
             yybegin(YYINITIAL);
             return;
         }
-        if (beginStateInConditionalBodyForRecovery()) return;
+
+        // compatible with conditional blocks
+        if (beginStateInConditionalBodyToNormalForm()) return;
+
         int nextState = stateStack.popInt();
         expectStack.popInt();
         yybegin(nextState);
@@ -120,6 +119,20 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
         return false;
     }
 
+    private void beginStateAfterSeparator() {
+        // compatible with conditional blocks
+        if (beginStateInConditionalBodyToNormalForm()) return;
+
+        int state = yystate();
+        if (state == IN_SCRIPTED_VARIABLE_NAME) {
+            exitState(EXPECT_SCRIPTED_VARIABLE_NAME); // exist state if necessary
+            yybegin(IN_SCRIPTED_VARIABLE_VALUE);
+        } else {
+            exitState(EXPECT_PROPERTY_KEY); // exist state if necessary
+            yybegin(IN_PROPERTY_VALUE);
+        }
+    }
+
     private boolean beginStateInConditionalBody() {
         // 3.0.2 recovery and inherit context from context stack
         // peek state X (i = 0) and then enter state X and the corresponding expect
@@ -137,7 +150,7 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
         // -> begin IN_CONDITIONAL_BLOCK_EXPRESSION
         // -> meet `]`
         // -> peek state X (i = 0)
-        // -> enter (IN_PROPERTY_KEY_UNQUOTED, EXPECT_CONDITIONAL_PROPERTY_KEY) -> begin IN_PROPERTY_KEY_UNQUOTED
+        // -> enter (IN_PROPERTY_KEY_UNQUOTED, EXPECT_INLINE_CONDITIONAL) -> begin IN_PROPERTY_KEY_UNQUOTED
 
         if (stateStack == null || stateStack.isEmpty() || expectStack == null || expectStack.isEmpty()) {
             yybegin(YYINITIAL);
@@ -145,8 +158,10 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
         }
         int nextState = stateStack.peekInt(0);
         int nextExpect = switch (nextState) {
-            case IN_PROPERTY_KEY_UNQUOTED, IN_PROPERTY_KEY_QUOTED -> EXPECT_CONDITIONAL_PROPERTY_KEY;
-            case IN_STRING_UNQUOTED, IN_STRING_QUOTED -> EXPECT_CONDITIONAL_STRING;
+            case IN_PROPERTY_KEY_UNQUOTED, IN_PROPERTY_KEY_QUOTED -> EXPECT_INLINE_CONDITIONAL;
+            case IN_STRING_UNQUOTED, IN_STRING_QUOTED -> EXPECT_INLINE_CONDITIONAL;
+            case IN_SCRIPTED_VARIABLE_NAME -> EXPECT_INLINE_CONDITIONAL;
+            case IN_SCRIPTED_VARIABLE_REFERENCE -> EXPECT_INLINE_CONDITIONAL;
             default -> EXPECT_CONDITIONAL;
         };
         enterState(nextState, nextExpect);
@@ -154,54 +169,22 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
         return true;
     }
 
-    private boolean beginStateInConditionalBodyForRecovery() {
-        // 3.0.2 manipulate context stack to change conditional block from inline form to normal form
+    private boolean beginStateInConditionalBlockForClosing() {
+        // 3.0.2 close conditional block, if needed
+        // if current expect is matched (e.g., EXPECT_CONDITIONAL), close and (double) exit to outer state (e.g., YYINITIAL)
+        // if not, just return false instead
 
         // Example:
-        // key = [[PARAM] text]
-        //               ^ here
+        // key = [[PARAM]text]
+        //                   ^ here
         //
         // Example flow (simplified):
         // -> enter (YYINITIAL, EXPECT_PROPERTY_KEY)
         // -> enter (IN_PROPERTY_KEY_UNQUOTED, EXPECT_CONDITIONAL_BLOCK)
-        // -> enter (IN_PROPERTY_KEY_UNQUOTED, EXPECT_CONDITIONAL_PROPERTY_KEY)
-        // -> meet whitespace
-        // -> replace (YYINITIAL, EXPECT_PROPERTY_KEY), (IN_PROPERTY_KEY_UNQUOTED, EXPECT_CONDITIONAL_BLOCK), (IN_PROPERTY_KEY_UNQUOTED, EXPECT_CONDITIONAL_PROPERTY_KEY)
-        //    with (YYINITIAL, EXPECT_CONDITIONAL_BLOCK), (YYINITIAL, EXPECT_CONDITIONAL)
-        // -> begin YYINITIAL
-
-        if (stateStack == null || stateStack.isEmpty() || expectStack == null || expectStack.isEmpty()) {
-            yybegin(YYINITIAL);
-            return false;
-        }
-        int expectToCheck = expectStack.peekInt(0);
-        if (expectToCheck != EXPECT_CONDITIONAL_PROPERTY_KEY && expectToCheck != EXPECT_CONDITIONAL_STRING) {
-            return false;
-        }
-        int size = stateStack.size();
-        for (int i = size - 1; i >= 0; i--) {
-            if ((size - i) % 3 == 0) {
-                stateStack.removeInt(i);
-                expectStack.removeInt(i);
-                continue;
-            }
-            int s = stateStack.getInt(i);
-            int e = expectStack.getInt(i);
-            if (s == IN_PROPERTY_KEY_UNQUOTED || s == IN_STRING_UNQUOTED) {
-                stateStack.set(i, YYINITIAL);
-            }
-            if (e == EXPECT_CONDITIONAL_PROPERTY_KEY || e == EXPECT_CONDITIONAL_STRING) {
-                expectStack.set(i, EXPECT_CONDITIONAL);
-            }
-        }
-        yybegin(YYINITIAL);
-        return true;
-    }
-
-    private boolean beginStateInConditionalBlockForClosing() {
-        // 3.0.2 close conditional block
-        // if current expect is matched (e.g., EXPECT_CONDITIONAL), close and (double) exit to outer state (e.g., YYINITIAL)
-        // if not, just return false instead
+        // -> enter (IN_PROPERTY_KEY_UNQUOTED, EXPECT_INLINE_CONDITIONAL)
+        // -> meet `]`
+        // -> exit (IN_PROPERTY_KEY_UNQUOTED, EXPECT_INLINE_CONDITIONAL), (IN_PROPERTY_KEY_UNQUOTED, EXPECT_CONDITIONAL_BLOCK)
+        // -> begin IN_PROPERTY_KEY_UNQUOTED
 
         // Example:
         // key = [[PARAM] text ]
@@ -215,42 +198,88 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
         // -> begin YYINITIAL (since state stack is empty)
 
         // Example:
-        // key = [[PARAM]text]
-        //                   ^ here
+        // key = [[PARAM] text]
+        //                    ^ here
+        //
+        // Example flow (simplified):
+        // -> enter (YYINITIAL, EXPECT_CONDITIONAL_BLOCK)
+        // -> enter (YYINITIAL, EXPECT_CONDITIONAL)
+        // -> enter (YYINITIAL, EXPECT_STRING)
+        // -> meet `]`
+        // -> exit (YYINITIAL, EXPECT_STRING), (YYINITIAL, EXPECT_CONDITIONAL), (YYINITIAL, EXPECT_CONDITIONAL_BLOCK)
+        // -> begin YYINITIAL (since state stack is empty)
+
+        if (stateStack == null || stateStack.isEmpty() || expectStack == null || expectStack.isEmpty()) {
+            yybegin(YYINITIAL);
+            return false;
+        }
+        int expect0 = (stateStack.size() >= 2 && expectStack.size() >= 2) ? expectStack.peekInt(0) : -1;
+        if (expect0 == EXPECT_INLINE_CONDITIONAL || expect0 == EXPECT_CONDITIONAL) {
+            stateStack.popInt();
+            expectStack.popInt();
+            int state = stateStack.popInt();
+            expectStack.popInt();
+            yybegin(state);
+            return true;
+        }
+        int expect1 = (stateStack.size() >= 3 && expectStack.size() >= 3) ? expectStack.peekInt(1) : -1;
+        if (expect1 == EXPECT_CONDITIONAL) {
+            stateStack.popInt();
+            expectStack.popInt();
+            stateStack.popInt();
+            expectStack.popInt();
+            int state = stateStack.popInt();
+            expectStack.popInt();
+            yybegin(state);
+            return true;
+        }
+        return false;
+    }
+
+    private boolean beginStateInConditionalBodyToNormalForm() {
+        // 3.0.2 manipulate context stack to change conditional block from inline form to normal form, if needed
+
+        // Example:
+        // key = [[PARAM] text]
+        //               ^ here
+        // [[PARAM]key=value]
+        //            ^ here
         //
         // Example flow (simplified):
         // -> enter (YYINITIAL, EXPECT_PROPERTY_KEY)
         // -> enter (IN_PROPERTY_KEY_UNQUOTED, EXPECT_CONDITIONAL_BLOCK)
-        // -> enter (IN_PROPERTY_KEY_UNQUOTED, EXPECT_CONDITIONAL_PROPERTY_KEY)
-        // -> meet `]`
-        // -> exit (IN_PROPERTY_KEY_UNQUOTED, EXPECT_CONDITIONAL_PROPERTY_KEY), (IN_PROPERTY_KEY_UNQUOTED, EXPECT_CONDITIONAL_BLOCK)
-        // -> begin IN_PROPERTY_KEY_UNQUOTED
+        // -> enter (IN_PROPERTY_KEY_UNQUOTED, EXPECT_INLINE_CONDITIONAL)
+        // -> meet whitespace
+        // -> replace (YYINITIAL, EXPECT_PROPERTY_KEY), (IN_PROPERTY_KEY_UNQUOTED, EXPECT_CONDITIONAL_BLOCK), (IN_PROPERTY_KEY_UNQUOTED, EXPECT_INLINE_CONDITIONAL)
+        //    with (YYINITIAL, EXPECT_CONDITIONAL_BLOCK), (YYINITIAL, EXPECT_CONDITIONAL)
+        // -> begin YYINITIAL
 
         if (stateStack == null || stateStack.isEmpty() || expectStack == null || expectStack.isEmpty()) {
             yybegin(YYINITIAL);
             return false;
         }
         int expectToCheck = expectStack.peekInt(0);
-        if (expectToCheck != EXPECT_CONDITIONAL && expectToCheck != EXPECT_CONDITIONAL_PROPERTY_KEY && expectToCheck != EXPECT_CONDITIONAL_STRING) {
+        if (expectToCheck != EXPECT_INLINE_CONDITIONAL) {
             return false;
         }
-        int state = stateStack.popInt();
-        expectStack.popInt();
-        if (!stateStack.isEmpty()) state = stateStack.popInt();
-        if (!expectStack.isEmpty()) expectStack.popInt();
-        yybegin(state);
-        return true;
-    }
-
-    private void beginStateAfterSeparator() {
-        int state = yystate();
-        if (state == IN_SCRIPTED_VARIABLE_NAME) {
-            exitState(EXPECT_SCRIPTED_VARIABLE_NAME); // exist state if necessary
-            yybegin(IN_SCRIPTED_VARIABLE_VALUE);
-        } else {
-            exitState(EXPECT_PROPERTY_KEY); // exist state if necessary
-            yybegin(IN_PROPERTY_VALUE);
+        int size = stateStack.size();
+        for (int i = size - 1; i >= 0; i--) {
+            if ((size - i) % 3 == 0) {
+                stateStack.removeInt(i);
+                expectStack.removeInt(i);
+                continue;
+            }
+            int s = stateStack.getInt(i);
+            int e = expectStack.getInt(i);
+            if (s == IN_PROPERTY_KEY_UNQUOTED || s == IN_STRING_UNQUOTED || s == IN_SCRIPTED_VARIABLE_NAME || s == IN_SCRIPTED_VARIABLE_REFERENCE) {
+                stateStack.set(i, YYINITIAL);
+            }
+            if (e == EXPECT_INLINE_CONDITIONAL) {
+                expectStack.set(i, EXPECT_CONDITIONAL);
+            }
         }
+        yybegin(YYINITIAL);
+        return true;
     }
 
     private IElementType getFallbackToken() {
@@ -435,6 +464,7 @@ InlineMathToken = [^\r\n#{}\[\]]+ // lenient match
     {Comment} { return COMMENT; } // allowed
 }
 <YYINITIAL, IN_PROPERTY_KEY_UNQUOTED, IN_SCRIPTED_VARIABLE_NAME> {
+    // 3.0.2 all separators are allowed for properties and scripted variables at syntax level (but may not valid in actual)
     {OpEqual} { beginStateAfterSeparator(); return EQUAL_SIGN; }
     {OpNotEqual} { beginStateAfterSeparator(); return NOT_EQUAL_SIGN; }
     {OpLe} { beginStateAfterSeparator(); return LE_SIGN; }
