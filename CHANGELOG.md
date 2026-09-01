@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-## 3.0.2-dev
+## 3.0.2 - 2026-09-02
 
 - [x] Generated modifiers should not have case-sensitive parts ([#385](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/385))
 - [x] Missing error on invalid syntax which can cause cascading errors in-game ([#386](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/386))
