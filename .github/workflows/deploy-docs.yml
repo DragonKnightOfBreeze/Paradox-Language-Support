@@ -18,7 +18,7 @@ jobs:
         uses: pnpm/action-setup@v6.0.10
         with:
           version: 9.4.0
-          run_install: true
+          run_install: false # disabled so setup doesn't try a workspace install at repo root
 
       - name: Setup Node.js
         uses: actions/setup-node@v7
@@ -27,8 +27,13 @@ jobs:
           cache: pnpm
           cache-dependency-path: docs/pnpm-lock.yaml
 
+      - name: Install docs dependencies
+        working-directory: docs
+        run: pnpm install --frozen-lockfile
+
       - name: Build documentation site
-        run: cd docs; pnpm docs:build
+        working-directory: docs
+        run: pnpm docs:build
 
       - name: Deploy to GitHub Pages
         uses: crazy-max/ghaction-github-pages@v5
