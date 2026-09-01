@@ -86,17 +86,17 @@ export default hopeTheme({
       indexContent: true,
       queryHistoryCount: 20,
       resultHistoryCount: 20,
-    }
+    },
   },
 
   markdown: {
-    highlighter: getHighlighterOptions(),
     gfm: true,
     breaks: false,
     attrs: true,
     alert: true,
     footnote: true,
 
+    highlighter: getHighlighterOptions(),
     stylize: [
       // generate "New in {version}" badges
       {

@@ -12,7 +12,6 @@
     "@vuepress/bundler-vite": "2.0.0-rc.30",
     "@vuepress/plugin-prismjs": "2.0.0-rc.130",
     "@vuepress/plugin-redirect": "2.0.0-rc.130",
-    "@vuepress/plugin-search": "2.0.0-rc.130",
     "@vuepress/plugin-shiki": "2.0.0-rc.130",
     "@vuepress/plugin-slimsearch": "2.0.0-rc.130",
     "artplayer": "^5.4.0",
