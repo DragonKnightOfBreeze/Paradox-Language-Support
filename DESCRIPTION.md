@@ -1,5 +1,7 @@
 <!-- Weary seekers who tread the path, these words are spoken unto you. -->
 
+[By the dragon knight a coffee ☕](https://afdian.com/a/dk_breeze)
+
 Paradox Chronicle (formerly Paradox Language Support) is the IntelliJ IDEA plugin designed for mod developers of Paradox Interactive games.
 As the guidebook to the paradox universe, the plugin strives to provide a powerful and comprehensive infrastructure, along with a smart, efficient, and feature-rich development experience.
 
@@ -52,7 +54,6 @@ Paradox Chronicle（曾用名：Paradox Language Support）是为 Paradox Intera
 [Plugin Home](https://plugins.jetbrains.com/plugin/16825) |
 [Reference Documentation](https://windea.icu/Paradox-Language-Support) |
 [Discord](https://discord.gg/vBpbET2bXT) |
-[群聊](https://qm.qq.com/q/oRPgLwrTZm) |
-[By me a coffee ☕](https://afdian.com/a/dk_breeze)
+[群聊](https://qm.qq.com/q/oRPgLwrTZm)
 
 KEYWORDS: Paradox Chronicle, CWTools, Paradox, Stellaris, Crusader Kings, Europa Universalis, Hearts of Iron, Imperator: Rome, Victoria
