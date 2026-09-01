@@ -350,14 +350,15 @@ IdentifierLeadChar = [A-Za-z_] // leading number is not allowed
 IdentifierToken = {IdentifierLeadChar}{IdentifierChar}* // leading number is not allowed
 
 InterpolationMarkerChar = [$|\[\]!?]
+InterpolationBoundChar = [$\[\]]
 InterpolationLeadChar = [$\[]
 
 LiteralWildcardChar = {LiteralChar}|{InterpolationMarkerChar}
-LiteralWildcardBoundChar = {LiteralBoundChar}|{InterpolationMarkerChar}
+LiteralWildcardBoundChar = {LiteralBoundChar}|{InterpolationBoundChar}
 LiteralWildcardToken = {LiteralWildcardBoundChar}({LiteralWildcardChar}*{LiteralWildcardBoundChar})?
 
 IdentifierWildcardChar = {IdentifierChar}|{InterpolationMarkerChar}
-IdentifierWildcardLeadChar = {IdentifierLeadChar}|{InterpolationMarkerChar} // leading number is not allowed
+IdentifierWildcardLeadChar = {IdentifierLeadChar}|{InterpolationLeadChar} // leading number is not allowed
 IdentifierWildcardToken = {IdentifierWildcardLeadChar}{IdentifierWildcardChar}* // leading number is not allowed
 
 ParameterToken = {IdentifierToken} // identifier

@@ -72,6 +72,7 @@ class QuoteOrUnquoteLiteralIntentionsTest : BasePlatformTestCase(), ChronicleTes
 
     @Test
     fun testQuoteLiteral_onlyLeftQuoted() {
+        // `"k = v` will be parsed to a single string (with unclosed quote)
         val intentionName = ChronicleIntentionBundle.message("intention.quoteLiteral")
         myFixture.configureByText("test.txt", "<caret>\"k = v")
         val intention = myFixture.findSingleIntention(intentionName)
@@ -125,12 +126,12 @@ class QuoteOrUnquoteLiteralIntentionsTest : BasePlatformTestCase(), ChronicleTes
     }
 
     @Test
-    fun testUnquoteLiteral_onlyLeftQuoted() {
+    fun testUnquoteLiteral_onlyLeftQuoted_notAvailable() {
+        // `"k = v` will be parsed to a single string (with unclosed quote)
         val intentionName = ChronicleIntentionBundle.message("intention.unquoteLiteral")
         myFixture.configureByText("test.txt", "<caret>\"k = v")
-        val intention = myFixture.findSingleIntention(intentionName)
-        myFixture.launchAction(intention)
-        myFixture.checkResult("k = v")
+        val available = myFixture.availableIntentions
+        assertFalse(available.any { it.text == intentionName })
     }
 
     @Test

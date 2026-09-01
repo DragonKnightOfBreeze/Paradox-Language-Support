@@ -22,7 +22,7 @@ class ParadoxCsvQuotePatternTest {
         Assert.assertTrue(quotePattern.needQuote("\""))
     }
 
-    // NOTE 3.0.2 for `needQuote`, need to check boundary characters specially due to low-level parser implementation
+    // NOTE 3.0.2 for `needQuote`, need to check boundary characters specially due to low-level lexer implementation
 
     @Test
     fun needQuote_plain() {
@@ -44,11 +44,11 @@ class ParadoxCsvQuotePatternTest {
         Assert.assertFalse(quotePattern.needQuote("a b"))
         Assert.assertFalse(quotePattern.needQuote("a\tb"))
         // leading
-        Assert.assertFalse(quotePattern.needQuote("a b"))
-        Assert.assertFalse(quotePattern.needQuote("a\tb"))
+        Assert.assertTrue(quotePattern.needQuote(" a"))
+        Assert.assertTrue(quotePattern.needQuote("\ta"))
         // tailing
-        Assert.assertFalse(quotePattern.needQuote("a b"))
-        Assert.assertFalse(quotePattern.needQuote("a\tb"))
+        Assert.assertTrue(quotePattern.needQuote("a "))
+        Assert.assertTrue(quotePattern.needQuote("a\t"))
     }
 
     @Test
@@ -56,27 +56,58 @@ class ParadoxCsvQuotePatternTest {
         // middle
         Assert.assertTrue(quotePattern.needQuote("a\"b"))
         // leading
-        Assert.assertTrue(quotePattern.needQuote("\"a"))
+        Assert.assertFalse(quotePattern.needQuote("\"a"))
         // tailing
-        Assert.assertTrue(quotePattern.needQuote("a\""))
+        Assert.assertFalse(quotePattern.needQuote("a\""))
     }
 
     @Test
     fun needQuote_specialChars() {
+        // middle
         Assert.assertFalse(quotePattern.needQuote("a_b"))
-        Assert.assertTrue(quotePattern.needQuote("a@b"))
         Assert.assertTrue(quotePattern.needQuote("a#b"))
-        Assert.assertTrue(quotePattern.needQuote("a=b"))
-        Assert.assertTrue(quotePattern.needQuote("a<b"))
-        Assert.assertTrue(quotePattern.needQuote("a>b"))
-        Assert.assertTrue(quotePattern.needQuote("a!b"))
-        Assert.assertTrue(quotePattern.needQuote("a?b"))
-        Assert.assertTrue(quotePattern.needQuote("a{b"))
-        Assert.assertTrue(quotePattern.needQuote("a}b"))
-        Assert.assertTrue(quotePattern.needQuote("a[b"))
+        Assert.assertFalse(quotePattern.needQuote("a=b"))
+        Assert.assertFalse(quotePattern.needQuote("a{b"))
+        Assert.assertFalse(quotePattern.needQuote("a}b"))
+        Assert.assertFalse(quotePattern.needQuote("a[b"))
         Assert.assertFalse(quotePattern.needQuote("a]b"))
-        Assert.assertFalse(quotePattern.needQuote("a;b"))
+        Assert.assertFalse(quotePattern.needQuote("a<b"))
+        Assert.assertFalse(quotePattern.needQuote("a>b"))
+        Assert.assertFalse(quotePattern.needQuote("a!b"))
+        Assert.assertFalse(quotePattern.needQuote("a?b"))
+        Assert.assertFalse(quotePattern.needQuote("a@b"))
+        Assert.assertTrue(quotePattern.needQuote("a;b"))
         Assert.assertFalse(quotePattern.needQuote("a:b"))
+        // leading
+        Assert.assertFalse(quotePattern.needQuote("_a"))
+        Assert.assertTrue(quotePattern.needQuote("#a"))
+        Assert.assertFalse(quotePattern.needQuote("=a"))
+        Assert.assertFalse(quotePattern.needQuote("{a"))
+        Assert.assertFalse(quotePattern.needQuote("}a"))
+        Assert.assertFalse(quotePattern.needQuote("[a"))
+        Assert.assertFalse(quotePattern.needQuote("]a"))
+        Assert.assertFalse(quotePattern.needQuote("<a"))
+        Assert.assertFalse(quotePattern.needQuote(">a"))
+        Assert.assertFalse(quotePattern.needQuote("!a"))
+        Assert.assertFalse(quotePattern.needQuote("?a"))
+        Assert.assertFalse(quotePattern.needQuote("@a"))
+        Assert.assertTrue(quotePattern.needQuote(";a"))
+        Assert.assertFalse(quotePattern.needQuote(":a"))
+        // tailing
+        Assert.assertFalse(quotePattern.needQuote("a_"))
+        Assert.assertTrue(quotePattern.needQuote("a#"))
+        Assert.assertFalse(quotePattern.needQuote("a="))
+        Assert.assertFalse(quotePattern.needQuote("a{"))
+        Assert.assertFalse(quotePattern.needQuote("a}"))
+        Assert.assertFalse(quotePattern.needQuote("a["))
+        Assert.assertFalse(quotePattern.needQuote("a]"))
+        Assert.assertFalse(quotePattern.needQuote("a<"))
+        Assert.assertFalse(quotePattern.needQuote("a>"))
+        Assert.assertFalse(quotePattern.needQuote("a!"))
+        Assert.assertFalse(quotePattern.needQuote("a?"))
+        Assert.assertFalse(quotePattern.needQuote("a@"))
+        Assert.assertTrue(quotePattern.needQuote("a;"))
+        Assert.assertFalse(quotePattern.needQuote("a:"))
     }
 
     @Test

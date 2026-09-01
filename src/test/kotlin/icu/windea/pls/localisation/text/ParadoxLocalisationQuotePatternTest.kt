@@ -22,7 +22,7 @@ class ParadoxLocalisationQuotePatternTest {
         Assert.assertTrue(quotePattern.needQuote("\""))
     }
 
-    // NOTE 3.0.2 for `needQuote`, need to check boundary characters specially due to low-level parser implementation
+    // NOTE 3.0.2 for `needQuote`, need to check boundary characters specially due to low-level lexer implementation
 
     @Test
     fun needQuote_plain() {
