@@ -3,32 +3,39 @@
     <fileType language="PARADOX_LOCALISATION" name="Paradox Localisation" fieldName="INSTANCE" implementationClass="icu.windea.pls.localisation.ParadoxLocalisationFileType"/>
     <lang.parserDefinition language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.ParadoxLocalisationParserDefinition"/>
 
-    <spellchecker.support language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.editor.ParadoxLocalisationSpellcheckerStrategy"/>
-    <lang.syntaxHighlighterFactory language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.editor.ParadoxLocalisationSyntaxHighlighterFactory"/>
-    <colorSettingsPage implementation="icu.windea.pls.localisation.editor.ParadoxLocalisationColorSettingsPage"/>
-    <lang.commenter language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.editor.ParadoxLocalisationCommenter"/>
-    <extendWordSelectionHandler implementation="icu.windea.pls.localisation.editor.ParadoxLocalisationWordSelectionHandler"/>
-    <annotator language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.annotator.ParadoxLocalisationSyntaxAnnotator"/>
-    <lang.smartEnterProcessor language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.editor.editorActions.smartEnter.ParadoxLocalisationSmartEnterProcessor"/>
-    <lang.findUsagesProvider language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.lang.findUsages.ParadoxLocalisationFindUsagesProvider"/>
-    <elementDescriptionProvider implementation="icu.windea.pls.localisation.psi.ParadoxLocalisationElementDescriptionProvider"/>
     <lang.foldingBuilder language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.folding.ParadoxLocalisationFoldingBuilder"/>
+
+    <langCodeStyleSettingsProvider implementation="icu.windea.pls.localisation.formatter.ParadoxLocalisationCodeStyleSettingsProvider"/>
+    <lang.formatter language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.formatter.ParadoxLocalisationFormattingModelBuilder"/>
+
+    <lang.braceMatcher language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.codeInsight.highlighting.ParadoxLocalisationBraceMatcher"/>
+    <lang.unwrapDescriptor language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.codeInsight.unwrap.ParadoxLocalisationUnwrapDescriptor"/>
+    <annotator language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.codeInsight.ParadoxLocalisationSyntaxAnnotator"/>
     <declarationRangeHandler key="icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyList" implementationClass="icu.windea.pls.localisation.codeInsight.ParadoxLocalisationDeclarationRangeHandler"/>
     <lang.implementationTextSelectioner language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.codeInsight.ParadoxLocalisationImplementationTextSelectioner"/>
-    <lang.braceMatcher language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.codeInsight.highlighting.ParadoxLocalisationBraceMatcher"/>
-    <lang.quoteHandler language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.codeInsight.editorActions.ParadoxLocalisationQuoteHandler"/>
-    <statementUpDownMover implementation="icu.windea.pls.localisation.codeInsight.editorActions.ParadoxLocalisationMover"/>
-    <lang.unwrapDescriptor language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.codeInsight.unwrap.ParadoxLocalisationUnwrapDescriptor"/>
+
     <liveTemplateContext contextId="PARADOX_LOCALISATION"
                          implementation="icu.windea.pls.localisation.codeInsight.template.ParadoxLocalisationTemplateContextType$Base"/>
-    <liveTemplateContext contextId="PARADOX_LOCALISATION_LOCALISATION_TEXT" baseContextId="PARADOX_LOCALISATION"
-                         implementation="icu.windea.pls.localisation.codeInsight.template.ParadoxLocalisationTemplateContextType$LocalisationText"/>
+    <liveTemplateContext contextId="PARADOX_LOCALISATION_LOCALISATION_TEXT"
+                         baseContextId="PARADOX_LOCALISATION" implementation="icu.windea.pls.localisation.codeInsight.template.ParadoxLocalisationTemplateContextType$LocalisationText"/>
     <defaultLiveTemplates file="/liveTemplates/ParadoxLocalisation.xml"/>
-    <lang.formatter language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.formatter.ParadoxLocalisationFormattingModelBuilder"/>
-    <langCodeStyleSettingsProvider implementation="icu.windea.pls.localisation.formatter.ParadoxLocalisationCodeStyleSettingsProvider"/>
+
+    <lang.commenter language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.editor.ParadoxLocalisationCommenter"/>
+    <statementUpDownMover implementation="icu.windea.pls.localisation.editor.ParadoxLocalisationMover"/>
+    <lang.quoteHandler language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.editor.ParadoxLocalisationQuoteHandler"/>
+    <lang.smartEnterProcessor language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.editor.ParadoxLocalisationSmartEnterProcessor"/>
+    <extendWordSelectionHandler implementation="icu.windea.pls.localisation.editor.ParadoxLocalisationWordSelectionHandler"/>
+
+    <colorSettingsPage implementation="icu.windea.pls.localisation.highlighting.ParadoxLocalisationColorSettingsPage"/>
+    <lang.syntaxHighlighterFactory language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.highlighting.ParadoxLocalisationSyntaxHighlighterFactory"/>
+
     <lang.psiStructureViewFactory language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.structureView.ParadoxLocalisationStructureViewFactory"/>
     <navbar implementation="icu.windea.pls.localisation.navigationToolbar.ParadoxLocalisationNavBar"/>
     <breadcrumbsInfoProvider implementation="icu.windea.pls.localisation.breadcrumbs.ParadoxLocalisationBreadCrumbsProvider"/>
+
+    <spellchecker.support language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.spellchecker.ParadoxLocalisationSpellcheckerStrategy"/>
+
+    <elementDescriptionProvider implementation="icu.windea.pls.localisation.psi.ParadoxLocalisationElementDescriptionProvider"/>
 
     <lang.elementManipulator forClass="icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyKey"
                              implementationClass="icu.windea.pls.localisation.psi.ParadoxLocalisationElementManipulators$PropertyKeyManipulator"/>

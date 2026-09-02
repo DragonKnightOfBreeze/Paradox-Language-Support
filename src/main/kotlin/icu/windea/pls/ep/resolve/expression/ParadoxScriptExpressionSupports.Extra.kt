@@ -13,7 +13,7 @@ import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.util.ParadoxExpressionSupportFactory
 import icu.windea.pls.model.type.ParadoxExpressionRole
-import icu.windea.pls.script.editor.ParadoxScriptHighlighterColors
+import icu.windea.pls.script.highlighting.ParadoxScriptHighlighterColors
 
 // Extra
 

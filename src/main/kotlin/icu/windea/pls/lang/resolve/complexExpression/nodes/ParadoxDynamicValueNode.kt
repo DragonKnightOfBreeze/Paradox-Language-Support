@@ -11,7 +11,7 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.collections.allFast
 import icu.windea.pls.core.collections.anyFast
 import icu.windea.pls.core.unquote
-import icu.windea.pls.lang.editor.ParadoxSemanticHighlighterColors
+import icu.windea.pls.lang.highlighting.ParadoxSemanticHighlighterColors
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.ParadoxExpressionService

@@ -12,7 +12,7 @@ import icu.windea.pls.core.createResults
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.resolveFirst
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.editor.ParadoxSemanticHighlighterColors
+import icu.windea.pls.lang.highlighting.ParadoxSemanticHighlighterColors
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.psi.ParadoxExpressionElement

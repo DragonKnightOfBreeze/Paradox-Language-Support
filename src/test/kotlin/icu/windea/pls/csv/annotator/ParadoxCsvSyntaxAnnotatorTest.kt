@@ -12,7 +12,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 /**
- * @see ParadoxCsvSyntaxAnnotator
+ * @see icu.windea.pls.csv.codeInsight.ParadoxCsvSyntaxAnnotator
  */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")

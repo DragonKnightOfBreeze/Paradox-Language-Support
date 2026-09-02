@@ -19,7 +19,7 @@ import icu.windea.pls.lang.resolve.ParadoxExpressionService
 import icu.windea.pls.lang.resolve.util.ParadoxExpressionSupportFactory
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.type.ParadoxExpressionRole
-import icu.windea.pls.script.editor.ParadoxScriptHighlighterColors
+import icu.windea.pls.script.highlighting.ParadoxScriptHighlighterColors
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 // Game Type Specific

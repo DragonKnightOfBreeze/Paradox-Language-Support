@@ -3,7 +3,7 @@ package icu.windea.pls.test.issues
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.ep.resolve.expression.ParadoxScriptExpressionSupport
-import icu.windea.pls.lang.annotator.ParadoxScriptSemanticAnnotator
+import icu.windea.pls.lang.highlighting.ParadoxScriptSemanticHighlightingAnnotator
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.ChronicleTestScope
 import icu.windea.pls.test.dsl.configureByText
@@ -12,12 +12,12 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import icu.windea.pls.script.editor.ParadoxScriptHighlighterColors as Colors
+import icu.windea.pls.script.highlighting.ParadoxScriptHighlighterColors as Colors
 
 /**
  * See: [#390](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/390)
  *
- * @see ParadoxScriptSemanticAnnotator
+ * @see ParadoxScriptSemanticHighlightingAnnotator
  * @see ParadoxScriptExpressionSupport
  * @see ParadoxScriptExpressionSupport.annotate
  */

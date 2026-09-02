@@ -6,7 +6,7 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.model.type.ParadoxExpressionType
 import icu.windea.pls.model.type.ParadoxTypeResolver
-import icu.windea.pls.script.editor.ParadoxScriptHighlighterColors
+import icu.windea.pls.script.highlighting.ParadoxScriptHighlighterColors
 
 class ParadoxScriptValueArgumentValueNode(
     override val text: String,

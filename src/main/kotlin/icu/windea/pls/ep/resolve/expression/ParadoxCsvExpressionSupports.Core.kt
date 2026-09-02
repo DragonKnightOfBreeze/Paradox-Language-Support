@@ -13,7 +13,7 @@ import icu.windea.pls.core.runWithRecursionGuard
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.codeInsight.completion.ParadoxExpressionCompletionManager
-import icu.windea.pls.lang.editor.ParadoxSemanticHighlighterColors
+import icu.windea.pls.lang.highlighting.ParadoxSemanticHighlighterColors
 import icu.windea.pls.lang.match.ParadoxExpressionMatchService
 import icu.windea.pls.lang.resolve.ParadoxExpressionService
 import icu.windea.pls.lang.resolve.util.ParadoxExpressionSupportFactory

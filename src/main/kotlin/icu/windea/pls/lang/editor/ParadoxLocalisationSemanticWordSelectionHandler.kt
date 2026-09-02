@@ -13,8 +13,12 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionWordSelectionRecursiveVisitor
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
+import icu.windea.pls.localisation.editor.ParadoxLocalisationWordSelectionHandler
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 
+/**
+ * @see ParadoxLocalisationWordSelectionHandler
+ */
 class ParadoxLocalisationSemanticWordSelectionHandler : ExtendWordSelectionHandlerBase() {
     override fun canSelect(e: PsiElement): Boolean {
         if (e.language !== ParadoxLocalisationLanguage) return false

@@ -6,7 +6,7 @@ import com.intellij.openapi.fileTypes.SyntaxHighlighter
 import com.intellij.psi.util.parents
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.cwt.CwtLanguage
-import icu.windea.pls.cwt.editor.CwtSyntaxHighlighter
+import icu.windea.pls.cwt.highlighting.CwtSyntaxHighlighter
 import icu.windea.pls.cwt.psi.CwtMember
 
 abstract class CwtTemplateContextType(presentableName: String) : TemplateContextType(presentableName) {
@@ -18,13 +18,13 @@ abstract class CwtTemplateContextType(presentableName: String) : TemplateContext
 
     abstract fun doIsInContext(templateActionContext: TemplateActionContext): Boolean
 
+    override fun createHighlighter(): SyntaxHighlighter {
+        return CwtSyntaxHighlighter(null)
+    }
+
     class Base : CwtTemplateContextType(ChronicleBundle.message("cwt.templateContextType")) {
         override fun doIsInContext(templateActionContext: TemplateActionContext): Boolean {
             return true
-        }
-
-        override fun createHighlighter(): SyntaxHighlighter {
-            return CwtSyntaxHighlighter(null)
         }
     }
 
@@ -36,10 +36,6 @@ abstract class CwtTemplateContextType(presentableName: String) : TemplateContext
             val startElement = start.parents(withSelf = false)
                 .find { it is CwtMember }
             return startElement != null
-        }
-
-        override fun createHighlighter(): SyntaxHighlighter {
-            return CwtSyntaxHighlighter(null)
         }
     }
 }

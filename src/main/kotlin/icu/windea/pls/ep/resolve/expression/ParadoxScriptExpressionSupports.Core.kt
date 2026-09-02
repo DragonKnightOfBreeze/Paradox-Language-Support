@@ -38,7 +38,7 @@ import icu.windea.pls.lang.search.util.preferLocale
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.model.expressions.ParadoxExpression
 import icu.windea.pls.model.type.ParadoxExpressionRole
-import icu.windea.pls.script.editor.ParadoxScriptHighlighterColors
+import icu.windea.pls.script.highlighting.ParadoxScriptHighlighterColors
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 
 // Core

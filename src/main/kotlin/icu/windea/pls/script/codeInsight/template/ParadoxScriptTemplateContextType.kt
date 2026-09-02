@@ -9,7 +9,7 @@ import com.intellij.psi.util.parents
 import com.intellij.psi.util.startOffset
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.script.ParadoxScriptLanguage
-import icu.windea.pls.script.editor.ParadoxScriptSyntaxHighlighter
+import icu.windea.pls.script.highlighting.ParadoxScriptSyntaxHighlighter
 import icu.windea.pls.script.psi.ParadoxScriptConditionalExpression
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes
 import icu.windea.pls.script.psi.ParadoxScriptInlineMath
@@ -24,13 +24,13 @@ abstract class ParadoxScriptTemplateContextType(presentableName: String) : Templ
 
     abstract fun doIsInContext(templateActionContext: TemplateActionContext): Boolean
 
+    override fun createHighlighter(): SyntaxHighlighter {
+        return ParadoxScriptSyntaxHighlighter(null)
+    }
+
     class Base : ParadoxScriptTemplateContextType(ChronicleBundle.message("script.templateContextType")) {
         override fun doIsInContext(templateActionContext: TemplateActionContext): Boolean {
             return true
-        }
-
-        override fun createHighlighter(): SyntaxHighlighter {
-            return ParadoxScriptSyntaxHighlighter(null)
         }
     }
 
@@ -47,10 +47,6 @@ abstract class ParadoxScriptTemplateContextType(presentableName: String) : Templ
                 }
             return startElement != null
         }
-
-        override fun createHighlighter(): SyntaxHighlighter {
-            return ParadoxScriptSyntaxHighlighter(null)
-        }
     }
 
     class InlineMathExpressions : ParadoxScriptTemplateContextType(ChronicleBundle.message("script.templateContextType.inlineMathExpressions")) {
@@ -61,6 +57,10 @@ abstract class ParadoxScriptTemplateContextType(presentableName: String) : Templ
             if (start.elementType == ParadoxScriptElementTypes.INLINE_MATH_START) return false
             val startElement = start.parentOfType<ParadoxScriptInlineMath>()
             return startElement != null
+        }
+
+        override fun createHighlighter(): SyntaxHighlighter {
+            return ParadoxScriptSyntaxHighlighter(null)
         }
     }
 }

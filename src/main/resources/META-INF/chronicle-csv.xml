@@ -3,23 +3,27 @@
     <fileType language="PARADOX_CSV" name="Paradox Csv" fieldName="INSTANCE" implementationClass="icu.windea.pls.csv.ParadoxCsvFileType"/>
     <lang.parserDefinition language="PARADOX_CSV" implementationClass="icu.windea.pls.csv.ParadoxCsvParserDefinition"/>
 
-    <annotator language="PARADOX_CSV" implementationClass="icu.windea.pls.csv.annotator.ParadoxCsvSyntaxAnnotator"/>
-    <annotator language="PARADOX_CSV" implementationClass="icu.windea.pls.csv.annotator.ParadoxCsvHighlightingAnnotator"/>
+    <lang.foldingBuilder language="PARADOX_CSV" implementationClass="icu.windea.pls.csv.folding.ParadoxCsvFoldingBuilder"/>
 
-    <spellchecker.support language="PARADOX_CSV" implementationClass="icu.windea.pls.csv.editor.ParadoxCsvSpellcheckerStrategy"/>
-    <lang.syntaxHighlighterFactory language="PARADOX_CSV" implementationClass="icu.windea.pls.csv.editor.ParadoxCsvSyntaxHighlighterFactory"/>
-    <colorSettingsPage implementation="icu.windea.pls.csv.editor.ParadoxCsvColorSettingsPage"/>
+    <langCodeStyleSettingsProvider implementation="icu.windea.pls.csv.formatter.ParadoxCsvCodeStyleSettingsProvider"/>
+
+    <highlightUsagesHandlerFactory implementation="icu.windea.pls.csv.codeInsight.highlighting.ParadoxCsvHighlightUsagesHandlerFactory"/>
+    <annotator language="PARADOX_CSV" implementationClass="icu.windea.pls.csv.codeInsight.ParadoxCsvSyntaxAnnotator"/>
+    <declarationRangeHandler key="icu.windea.pls.csv.psi.ParadoxCsvRow" implementationClass="icu.windea.pls.csv.codeInsight.ParadoxCsvDeclarationRangeHandler"/>
+
     <lang.commenter language="PARADOX_CSV" implementationClass="icu.windea.pls.csv.editor.ParadoxCsvCommenter"/>
     <extendWordSelectionHandler implementation="icu.windea.pls.csv.editor.ParadoxCsvWordSelectionHandler"/>
-    <lang.findUsagesProvider language="PARADOX_CSV" implementationClass="icu.windea.pls.lang.findUsages.ParadoxCsvFindUsagesProvider"/>
-    <lang.foldingBuilder language="PARADOX_CSV" implementationClass="icu.windea.pls.csv.folding.ParadoxCsvFoldingBuilder"/>
-    <declarationRangeHandler key="icu.windea.pls.csv.psi.ParadoxCsvRow" implementationClass="icu.windea.pls.csv.codeInsight.ParadoxCsvDeclarationRangeHandler"/>
-    <highlightUsagesHandlerFactory implementation="icu.windea.pls.csv.codeInsight.highlighting.ParadoxCsvHighlightUsagesHandlerFactory"/>
-    <lang.quoteHandler language="PARADOX_CSV" implementationClass="icu.windea.pls.csv.codeInsight.editorActions.ParadoxCsvQuoteHandler"/>
-    <langCodeStyleSettingsProvider implementation="icu.windea.pls.csv.formatter.ParadoxCsvCodeStyleSettingsProvider"/>
+    <lang.quoteHandler language="PARADOX_CSV" implementationClass="icu.windea.pls.csv.editor.ParadoxCsvQuoteHandler"/>
+
+    <colorSettingsPage implementation="icu.windea.pls.csv.highlighting.ParadoxCsvColorSettingsPage"/>
+    <lang.syntaxHighlighterFactory language="PARADOX_CSV" implementationClass="icu.windea.pls.csv.highlighting.ParadoxCsvSyntaxHighlighterFactory"/>
+    <annotator language="PARADOX_CSV" implementationClass="icu.windea.pls.csv.highlighting.ParadoxCsvHighlightingAnnotator"/>
+
     <lang.psiStructureViewFactory language="PARADOX_CSV" implementationClass="icu.windea.pls.csv.structureView.ParadoxCsvStructureViewFactory"/>
     <navbar implementation="icu.windea.pls.csv.navigationToolbar.ParadoxCsvNavBar"/>
     <breadcrumbsInfoProvider implementation="icu.windea.pls.csv.breadcrumbs.ParadoxCsvBreadCrumbsProvider"/>
+
+    <spellchecker.support language="PARADOX_CSV" implementationClass="icu.windea.pls.csv.spellchecker.ParadoxCsvSpellcheckerStrategy"/>
 
     <lang.elementManipulator forClass="icu.windea.pls.csv.psi.ParadoxCsvColumn"
                              implementationClass="icu.windea.pls.csv.psi.ParadoxCsvElementManipulators$ColumnManipulator"/>

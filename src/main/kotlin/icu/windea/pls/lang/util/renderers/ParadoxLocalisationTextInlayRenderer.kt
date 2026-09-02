@@ -23,7 +23,7 @@ import icu.windea.pls.core.ui.UiService
 import icu.windea.pls.core.unescape
 import icu.windea.pls.images.ImageFrameInfo
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsContext
-import icu.windea.pls.lang.editor.ParadoxSemanticHighlighterColors
+import icu.windea.pls.lang.highlighting.ParadoxSemanticHighlighterColors
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.psi.resolveLocalisation
 import icu.windea.pls.lang.psi.resolveScriptedVariable
@@ -31,7 +31,7 @@ import icu.windea.pls.lang.util.ParadoxGameConceptManager
 import icu.windea.pls.lang.util.ParadoxImageManager
 import icu.windea.pls.lang.util.ParadoxLocalisationIconManager
 import icu.windea.pls.lang.util.ParadoxLocalisationManager
-import icu.windea.pls.localisation.editor.ParadoxLocalisationHighlighterColors
+import icu.windea.pls.localisation.highlighting.ParadoxLocalisationHighlighterColors
 import icu.windea.pls.localisation.psi.ParadoxLocalisationColorfulText
 import icu.windea.pls.localisation.psi.ParadoxLocalisationCommand
 import icu.windea.pls.localisation.psi.ParadoxLocalisationCommandText

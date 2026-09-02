@@ -7,8 +7,7 @@ import com.intellij.psi.util.elementType
 import com.intellij.psi.util.parentOfType
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
-import icu.windea.pls.localisation.editor.ParadoxLocalisationSyntaxHighlighter
-import icu.windea.pls.localisation.editor.ParadoxLocalisationTextSyntaxHighlighter
+import icu.windea.pls.localisation.highlighting.ParadoxLocalisationSyntaxHighlighter
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyValue
 
@@ -21,13 +20,13 @@ abstract class ParadoxLocalisationTemplateContextType(presentableName: String) :
 
     abstract fun doIsInContext(templateActionContext: TemplateActionContext): Boolean
 
+    override fun createHighlighter(): SyntaxHighlighter {
+        return ParadoxLocalisationSyntaxHighlighter(null, null)
+    }
+
     class Base : ParadoxLocalisationTemplateContextType(ChronicleBundle.message("localisation.templateContextType")) {
         override fun doIsInContext(templateActionContext: TemplateActionContext): Boolean {
             return true
-        }
-
-        override fun createHighlighter(): SyntaxHighlighter {
-            return ParadoxLocalisationSyntaxHighlighter(null, null)
         }
     }
 
@@ -39,10 +38,6 @@ abstract class ParadoxLocalisationTemplateContextType(presentableName: String) :
             if (start.elementType == LEFT_QUOTE) return false
             val startElement = start.parentOfType<ParadoxLocalisationPropertyValue>()
             return startElement != null
-        }
-
-        override fun createHighlighter(): SyntaxHighlighter {
-            return ParadoxLocalisationTextSyntaxHighlighter(null, null)
         }
     }
 }

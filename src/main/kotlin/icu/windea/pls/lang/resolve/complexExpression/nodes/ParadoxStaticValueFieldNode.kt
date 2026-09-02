@@ -8,7 +8,7 @@ import icu.windea.pls.config.config.isStatic
 import icu.windea.pls.config.config.resolveElementWithConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.cwt.psi.CwtProperty
-import icu.windea.pls.lang.editor.ParadoxSemanticHighlighterColors
+import icu.windea.pls.lang.highlighting.ParadoxSemanticHighlighterColors
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.references.CwtConfigBasedPsiReference

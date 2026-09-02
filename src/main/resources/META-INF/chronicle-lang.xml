@@ -67,9 +67,9 @@
     <createDirectoryCompletionContributor implementation="icu.windea.pls.lang.actions.ParadoxEntryCreateDirectoryCompletionContributor"/>
     <createDirectoryCompletionContributor implementation="icu.windea.pls.lang.actions.ParadoxCreateDirectoryCompletionContributor"/>
 
-    <annotator language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.annotator.ParadoxScriptSemanticAnnotator"/>
-    <annotator language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.lang.annotator.ParadoxLocalisationSemanticAnnotator"/>
-    <annotator language="PARADOX_CSV" implementationClass="icu.windea.pls.lang.annotator.ParadoxCsvSemanticAnnotator"/>
+    <annotator language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.highlighting.ParadoxScriptSemanticHighlightingAnnotator"/>
+    <annotator language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.lang.highlighting.ParadoxLocalisationSemanticHighlightingAnnotator"/>
+    <annotator language="PARADOX_CSV" implementationClass="icu.windea.pls.lang.highlighting.ParadoxCsvSemanticHighlightingAnnotator"/>
 
     <codeInsight.containerProvider implementation="icu.windea.pls.lang.codeInsight.ParadoxContainerProvider"/>
     <targetElementEvaluator language="PARADOX" implementationClass="icu.windea.pls.lang.codeInsight.ParadoxTargetElementEvaluator"/>
@@ -113,8 +113,6 @@
     <platform.backend.documentation.inlineDocumentationProvider implementation="icu.windea.pls.lang.codeInsight.documentation.CwtInlineDocumentationProvider"/>
     <platform.backend.documentation.linkHandler implementation="icu.windea.pls.lang.codeInsight.documentation.CwtDocumentationLinkHandler"/>
     <platform.backend.documentation.linkHandler implementation="icu.windea.pls.lang.codeInsight.documentation.ParadoxDocumentationLinkHandler"/>
-
-    <typedHandler implementation="icu.windea.pls.lang.codeInsight.editorActions.ParadoxTypedHandler"/>
 
     <heavyBracesHighlighter implementation="icu.windea.pls.lang.codeInsight.highlighting.ParadoxHeavyBraceHighlighter"/>
     <readWriteAccessDetector implementation="icu.windea.pls.lang.codeInsight.highlighting.CwtConfigReadWriteAccessDetector"/>
@@ -301,15 +299,16 @@
 
     <elementDescriptionProvider implementation="icu.windea.pls.lang.findUsages.CwtConfigElementDescriptionProvider" order="first"/> <!-- before any base EPs -->
     <elementDescriptionProvider implementation="icu.windea.pls.lang.findUsages.ParadoxElementDescriptionProvider" order="first"/> <!-- before any base EPs -->
+    <lang.findUsagesProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.findUsages.ParadoxScriptFindUsagesProvider"/>
+    <lang.findUsagesProvider language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.lang.findUsages.ParadoxLocalisationFindUsagesProvider"/>
+    <lang.findUsagesProvider language="PARADOX_CSV" implementationClass="icu.windea.pls.lang.findUsages.ParadoxCsvFindUsagesProvider"/>
+    <lang.findUsagesProvider language="CWT" implementationClass="icu.windea.pls.lang.findUsages.CwtFindUsagesProvider"/>
+    <findUsagesHandlerFactory implementation="icu.windea.pls.lang.findUsages.ParadoxFindUsagesHandlerFactory"/>
     <usageTypeProvider implementation="icu.windea.pls.lang.findUsages.CwtConfigUsageTypeProvider"/>
     <usageTypeProvider implementation="icu.windea.pls.lang.findUsages.ParadoxUsageTypeProvider"/>
-    <findUsagesHandlerFactory implementation="icu.windea.pls.lang.findUsages.ParadoxFindUsagesHandlerFactory"/>
 
     <errorQuickFixProvider implementation="icu.windea.pls.lang.fixes.error.ParadoxScriptErrorQuickFixProvider"/>
     <errorQuickFixProvider implementation="icu.windea.pls.lang.fixes.error.ParadoxLocalisationErrorQuickFixProvider"/>
-
-    <extendWordSelectionHandler implementation="icu.windea.pls.lang.editor.ParadoxScriptSemanticWordSelectionHandler"/>
-    <extendWordSelectionHandler implementation="icu.windea.pls.lang.editor.ParadoxLocalisationSemanticWordSelectionHandler"/>
 
     <editorNotificationProvider implementation="icu.windea.pls.lang.editor.CwtConfigGroupEditorNotificationProvider"/>
     <editorFloatingToolbarProvider implementation="icu.windea.pls.lang.editor.CwtConfigGroupRefreshFloatingProvider"/>
@@ -321,6 +320,11 @@
     <editorNotificationProvider implementation="icu.windea.pls.lang.editor.ParadoxDefinesEditorNotificationProvider"/>
     <editorNotificationProvider implementation="icu.windea.pls.lang.editor.ParadoxGlobalScriptedVariablesEditorNotificationProvider"/>
     <editorNotificationProvider implementation="icu.windea.pls.lang.editor.ParadoxInlineScriptEditorNotificationProvider"/>
+
+    <extendWordSelectionHandler implementation="icu.windea.pls.lang.editor.ParadoxScriptSemanticWordSelectionHandler"/>
+    <extendWordSelectionHandler implementation="icu.windea.pls.lang.editor.ParadoxLocalisationSemanticWordSelectionHandler"/>
+
+    <typedHandler implementation="icu.windea.pls.lang.editor.ParadoxSemanticTypedHandler"/>
 
     <lang.foldingBuilder language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.folding.ParadoxVariableOperationExpressionFoldingBuilder"/>
     <lang.foldingBuilder language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.folding.ParadoxScriptedVariableReferenceFoldingBuilder"/>

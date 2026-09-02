@@ -1,36 +1,41 @@
 <idea-plugin>
   <extensions defaultExtensionNs="com.intellij">
-    <fileType language="CWT" name="Cwt" fieldName="INSTANCE" implementationClass="icu.windea.pls.cwt.CwtFileType"
-              extensions="cwt"/>
+    <fileType language="CWT" name="Cwt" fieldName="INSTANCE" implementationClass="icu.windea.pls.cwt.CwtFileType" extensions="cwt"/>
     <lang.parserDefinition language="CWT" implementationClass="icu.windea.pls.cwt.CwtParserDefinition"/>
 
-    <annotator language="CWT" implementationClass="icu.windea.pls.cwt.annotator.CwtSyntaxAnnotator"/>
-
-    <spellchecker.support language="CWT" implementationClass="icu.windea.pls.cwt.editor.CwtSpellcheckerStrategy"/>
-    <lang.syntaxHighlighterFactory language="CWT" implementationClass="icu.windea.pls.cwt.editor.CwtSyntaxHighlighterFactory"/>
-    <colorSettingsPage implementation="icu.windea.pls.cwt.editor.CwtColorSettingsPage"/>
-    <extendWordSelectionHandler implementation="icu.windea.pls.cwt.editor.CwtWordSelectionHandler"/>
-    <lang.commenter language="CWT" implementationClass="icu.windea.pls.cwt.editor.CwtCommenter"/>
-    <lang.findUsagesProvider language="CWT" implementationClass="icu.windea.pls.lang.findUsages.CwtFindUsagesProvider"/>
-    <elementDescriptionProvider implementation="icu.windea.pls.cwt.psi.CwtElementDescriptionProvider"/>
     <lang.foldingBuilder language="CWT" implementationClass="icu.windea.pls.cwt.folding.CwtFoldingBuilder"/>
-    <lang.implementationTextSelectioner language="CWT" implementationClass="icu.windea.pls.cwt.codeInsight.CwtImplementationTextSelectioner"/>
+
+    <langCodeStyleSettingsProvider implementation="icu.windea.pls.cwt.formatter.CwtCodeStyleSettingsProvider"/>
+    <lang.formatter language="CWT" implementationClass="icu.windea.pls.cwt.formatter.CwtFormattingModelBuilder"/>
+
     <lang.braceMatcher language="CWT" implementationClass="icu.windea.pls.cwt.codeInsight.highlighting.CwtBraceMatcher"/>
-    <lang.quoteHandler language="CWT" implementationClass="icu.windea.pls.cwt.codeInsight.editorActions.CwtQuoteHandler"/>
-    <statementUpDownMover implementation="icu.windea.pls.cwt.codeInsight.editorActions.CwtMover"/>
-    <lang.smartEnterProcessor language="CWT" implementationClass="icu.windea.pls.cwt.codeInsight.editorActions.CwtSmartEnterProcessor"/>
-    <enterHandlerDelegate implementation="icu.windea.pls.cwt.codeInsight.editorActions.CwtEnterHandler"/>
     <lang.surroundDescriptor language="CWT" implementationClass="icu.windea.pls.cwt.codeInsight.surroundWith.CwtSurroundDescriptor"/>
     <lang.unwrapDescriptor language="CWT" implementationClass="icu.windea.pls.cwt.codeInsight.unwrap.CwtUnwrapDescriptor"/>
+    <annotator language="CWT" implementationClass="icu.windea.pls.cwt.codeInsight.CwtSyntaxAnnotator"/>
+    <lang.implementationTextSelectioner language="CWT" implementationClass="icu.windea.pls.cwt.codeInsight.CwtImplementationTextSelectioner"/>
+
     <liveTemplateContext contextId="CWT"
                          implementation="icu.windea.pls.cwt.codeInsight.template.CwtTemplateContextType$Base"/>
     <liveTemplateContext contextId="CWT_MEMBERS" baseContextId="CWT"
                          implementation="icu.windea.pls.cwt.codeInsight.template.CwtTemplateContextType$Members"/>
-    <lang.formatter language="CWT" implementationClass="icu.windea.pls.cwt.formatter.CwtFormattingModelBuilder"/>
-    <langCodeStyleSettingsProvider implementation="icu.windea.pls.cwt.formatter.CwtCodeStyleSettingsProvider"/>
+
+    <lang.commenter language="CWT" implementationClass="icu.windea.pls.cwt.editor.CwtCommenter"/>
+    <enterHandlerDelegate implementation="icu.windea.pls.cwt.editor.CwtEnterHandler"/>
+    <statementUpDownMover implementation="icu.windea.pls.cwt.editor.CwtMover"/>
+    <lang.quoteHandler language="CWT" implementationClass="icu.windea.pls.cwt.editor.CwtQuoteHandler"/>
+    <lang.smartEnterProcessor language="CWT" implementationClass="icu.windea.pls.cwt.editor.CwtSmartEnterProcessor"/>
+    <extendWordSelectionHandler implementation="icu.windea.pls.cwt.editor.CwtWordSelectionHandler"/>
+
+    <colorSettingsPage implementation="icu.windea.pls.cwt.highlighting.CwtColorSettingsPage"/>
+    <lang.syntaxHighlighterFactory language="CWT" implementationClass="icu.windea.pls.cwt.highlighting.CwtSyntaxHighlighterFactory"/>
+
     <lang.psiStructureViewFactory language="CWT" implementationClass="icu.windea.pls.cwt.structureView.CwtStructureViewFactory"/>
     <navbar implementation="icu.windea.pls.cwt.navigationToolbar.CwtNavBar"/>
     <breadcrumbsInfoProvider implementation="icu.windea.pls.cwt.breadcrumbs.CwtBreadCrumbsProvider"/>
+
+    <spellchecker.support language="CWT" implementationClass="icu.windea.pls.cwt.spellchecker.CwtSpellcheckerStrategy"/>
+
+    <elementDescriptionProvider implementation="icu.windea.pls.cwt.psi.CwtElementDescriptionProvider"/>
 
     <lang.elementManipulator forClass="icu.windea.pls.cwt.psi.CwtOptionKey"
                              implementationClass="icu.windea.pls.cwt.psi.CwtElementManipulators$OptionKeyManipulator"/>

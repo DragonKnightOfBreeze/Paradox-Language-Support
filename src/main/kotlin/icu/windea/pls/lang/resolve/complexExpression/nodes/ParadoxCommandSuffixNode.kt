@@ -4,7 +4,7 @@ import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.util.TextRange
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
-import icu.windea.pls.localisation.editor.ParadoxLocalisationHighlighterColors
+import icu.windea.pls.localisation.highlighting.ParadoxLocalisationHighlighterColors
 
 class ParadoxCommandSuffixNode(
     override val text: String,

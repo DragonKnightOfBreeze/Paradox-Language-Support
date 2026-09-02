@@ -1,0 +1,25 @@
+package icu.windea.pls.localisation.highlighting
+
+object ParadoxLocalisationHighlighterColorSets {
+    @JvmField val OPERATOR = arrayOf(ParadoxLocalisationHighlighterColors.OPERATOR)
+    @JvmField val MARKER = arrayOf(ParadoxLocalisationHighlighterColors.MARKER)
+    @JvmField val COMMENT = arrayOf(ParadoxLocalisationHighlighterColors.COMMENT)
+    @JvmField val KEYWORD = arrayOf(ParadoxLocalisationHighlighterColors.KEYWORD)
+    @JvmField val NUMBER = arrayOf(ParadoxLocalisationHighlighterColors.NUMBER)
+    @JvmField val LOCALE = arrayOf(ParadoxLocalisationHighlighterColors.LOCALE)
+    @JvmField val PROPERTY_KEY = arrayOf(ParadoxLocalisationHighlighterColors.PROPERTY_KEY)
+    @JvmField val AT_SIGN = arrayOf(ParadoxLocalisationHighlighterColors.AT_SIGN)
+    @JvmField val SCRIPTED_VARIABLE_REFERENCE = arrayOf(ParadoxLocalisationHighlighterColors.SCRIPTED_VARIABLE_REFERENCE)
+    @JvmField val PARAMETER = arrayOf(ParadoxLocalisationHighlighterColors.PARAMETER)
+    @JvmField val ARGUMENT = arrayOf(ParadoxLocalisationHighlighterColors.ARGUMENT)
+    @JvmField val TEXT = arrayOf(ParadoxLocalisationHighlighterColors.TEXT)
+    @JvmField val COLOR = arrayOf(ParadoxLocalisationHighlighterColors.COLOR)
+    @JvmField val ICON = arrayOf(ParadoxLocalisationHighlighterColors.ICON)
+    @JvmField val COMMAND = arrayOf(ParadoxLocalisationHighlighterColors.COMMAND)
+    @JvmField val CONCEPT = arrayOf(ParadoxLocalisationHighlighterColors.CONCEPT)
+    @JvmField val TEXT_ICON = arrayOf(ParadoxLocalisationHighlighterColors.TEXT_ICON)
+    @JvmField val TEXT_FORMAT = arrayOf(ParadoxLocalisationHighlighterColors.TEXT_FORMAT)
+    @JvmField val VALID_ESCAPE = arrayOf(ParadoxLocalisationHighlighterColors.VALID_ESCAPE)
+    @JvmField val INVALID_ESCAPE = arrayOf(ParadoxLocalisationHighlighterColors.INVALID_ESCAPE)
+    @JvmField val BAD_CHARACTER = arrayOf(ParadoxLocalisationHighlighterColors.BAD_CHARACTER)
+}

@@ -32,7 +32,7 @@ import icu.windea.pls.lang.search.ParadoxComplexEnumValueSearch
 import icu.windea.pls.lang.search.util.withSearchScopeType
 import icu.windea.pls.lang.util.ParadoxDynamicValueManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
-import icu.windea.pls.script.editor.ParadoxScriptHighlighterColors
+import icu.windea.pls.script.highlighting.ParadoxScriptHighlighterColors
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 object ParadoxExpressionSupportFactory {

@@ -197,7 +197,7 @@
     <csvExpressionMatcher id="constant" implementation="icu.windea.pls.ep.match.expression.ParadoxCsvConstantExpressionMatcher"/>
     <csvExpressionMatcher id="pattern" implementation="icu.windea.pls.ep.match.expression.ParadoxCsvPatternExpressionMatcher"/>
 
-    <scriptExpressionMatchOptimizer id="constant" implementation="icu.windea.pls.ep.match.expression.ParadoxScriptExpressionConstantMatchOptimizer" />
+    <scriptExpressionMatchOptimizer id="constant" implementation="icu.windea.pls.ep.match.expression.ParadoxScriptExpressionConstantMatchOptimizer"/>
     <scriptExpressionMatchOptimizer id="block" implementation="icu.windea.pls.ep.match.expression.ParadoxScriptExpressionBlockMatchOptimizer"/>
     <scriptExpressionMatchOptimizer id="parameterized" implementation="icu.windea.pls.ep.match.expression.ParadoxScriptExpressionParameterizedMatchOptimizer"/>
     <scriptExpressionMatchOptimizer id="overridden" implementation="icu.windea.pls.ep.match.expression.ParadoxScriptExpressionOverriddenMatchOptimizer" order="last"/>

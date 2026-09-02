@@ -1,0 +1,26 @@
+package icu.windea.pls.script.highlighting
+
+object ParadoxScriptHighlighterColorSets {
+    @JvmField val BRACES = arrayOf(ParadoxScriptHighlighterColors.BRACES)
+    @JvmField val OPERATOR = arrayOf(ParadoxScriptHighlighterColors.OPERATOR)
+    @JvmField val MARKER = arrayOf(ParadoxScriptHighlighterColors.MARKER)
+    @JvmField val CONDITIONAL_BLOCK_BRACKETS = arrayOf(ParadoxScriptHighlighterColors.CONDITIONAL_BLOCK_BRACKETS)
+    @JvmField val CONDITIONAL_EXPRESSION_BRACKETS = arrayOf(ParadoxScriptHighlighterColors.CONDITIONAL_EXPRESSION_BRACKETS)
+    @JvmField val INLINE_MATH_BRACKETS = arrayOf(ParadoxScriptHighlighterColors.INLINE_MATH_BRACKETS)
+    @JvmField val INLINE_MATH_OPERATOR = arrayOf(ParadoxScriptHighlighterColors.INLINE_MATH_OPERATOR)
+    @JvmField val COMMENT = arrayOf(ParadoxScriptHighlighterColors.COMMENT)
+    @JvmField val KEYWORD = arrayOf(ParadoxScriptHighlighterColors.KEYWORD)
+    @JvmField val AT_SIGN = arrayOf(ParadoxScriptHighlighterColors.AT_SIGN)
+    @JvmField val SCRIPTED_VARIABLE_NAME = arrayOf(ParadoxScriptHighlighterColors.SCRIPTED_VARIABLE_NAME)
+    @JvmField val SCRIPTED_VARIABLE_REFERENCE = arrayOf(ParadoxScriptHighlighterColors.SCRIPTED_VARIABLE_REFERENCE)
+    @JvmField val PARAMETER = arrayOf(ParadoxScriptHighlighterColors.PARAMETER)
+    @JvmField val CONDITION_PARAMETER = arrayOf(ParadoxScriptHighlighterColors.CONDITION_PARAMETER)
+    @JvmField val ARGUMENT = arrayOf(ParadoxScriptHighlighterColors.ARGUMENT)
+    @JvmField val PROPERTY_KEY = arrayOf(ParadoxScriptHighlighterColors.PROPERTY_KEY)
+    @JvmField val COLOR = arrayOf(ParadoxScriptHighlighterColors.COLOR)
+    @JvmField val NUMBER = arrayOf(ParadoxScriptHighlighterColors.NUMBER)
+    @JvmField val STRING = arrayOf(ParadoxScriptHighlighterColors.STRING)
+    @JvmField val VALID_ESCAPE = arrayOf(ParadoxScriptHighlighterColors.VALID_ESCAPE)
+    @JvmField val INVALID_ESCAPE = arrayOf(ParadoxScriptHighlighterColors.INVALID_ESCAPE)
+    @JvmField val BAD_CHARACTER = arrayOf(ParadoxScriptHighlighterColors.BAD_CHARACTER)
+}

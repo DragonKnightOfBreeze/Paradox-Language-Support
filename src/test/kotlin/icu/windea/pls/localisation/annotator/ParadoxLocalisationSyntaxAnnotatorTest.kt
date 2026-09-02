@@ -12,7 +12,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 /**
- * @see ParadoxLocalisationSyntaxAnnotator
+ * @see icu.windea.pls.localisation.codeInsight.ParadoxLocalisationSyntaxAnnotator
  */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
