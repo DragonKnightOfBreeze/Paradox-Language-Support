@@ -148,7 +148,7 @@ dependencies {
     implementation("com.twelvemonkeys.imageio:imageio-tga:3.14.0")
 
     // javassist - https://github.com/jboss-javassist/javassist
-    implementation("org.javassist:javassist:3.32.0-GA")
+    implementation("org.javassist:javassist:3.33.0-GA")
 
     // AI integration
 
