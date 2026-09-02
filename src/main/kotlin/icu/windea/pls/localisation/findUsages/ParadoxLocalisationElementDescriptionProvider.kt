@@ -12,6 +12,9 @@ import com.intellij.usageView.UsageViewTypeLocation
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 
+// org.jetbrains.kotlin.idea.base.searching.usages.KotlinElementDescriptionProviderBase
+// org.jetbrains.kotlin.idea.findUsages.KotlinElementDescriptionProvider
+
 class ParadoxLocalisationElementDescriptionProvider : ElementDescriptionProvider {
     override fun getElementDescription(element: PsiElement, location: ElementDescriptionLocation): String? {
         if (location is RefactoringDescriptionLocation) return null

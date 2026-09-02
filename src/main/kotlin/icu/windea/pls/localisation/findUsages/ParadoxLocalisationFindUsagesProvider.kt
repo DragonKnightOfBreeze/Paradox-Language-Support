@@ -11,7 +11,13 @@ import icu.windea.pls.localisation.ParadoxLocalisationLanguage
 import icu.windea.pls.localisation.editor.ParadoxLocalisationWordScanner
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 
+// com.intellij.lang.java.JavaFindUsagesProvider
+// org.jetbrains.kotlin.idea.findUsages.KotlinFindUsagesProvider
+// org.jetbrains.kotlin.idea.base.searching.usages.KotlinFindUsagesProviderBase
+
 class ParadoxLocalisationFindUsagesProvider : FindUsagesProvider {
+    override fun getWordsScanner() = ParadoxLocalisationWordScanner()
+
     override fun canFindUsagesFor(element: PsiElement): Boolean {
         return when (element) {
             is ParadoxLocalisationProperty -> true
@@ -19,8 +25,6 @@ class ParadoxLocalisationFindUsagesProvider : FindUsagesProvider {
             else -> false
         }
     }
-
-    override fun getWordsScanner() = ParadoxLocalisationWordScanner()
 
     override fun getHelpId(psiElement: PsiElement) = "reference.dialogs.findUsages.other"
 
