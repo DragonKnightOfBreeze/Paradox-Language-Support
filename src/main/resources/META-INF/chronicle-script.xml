@@ -12,8 +12,8 @@
     <lang.commenter language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.editor.ParadoxScriptCommenter"/>
     <colorProvider implementation="icu.windea.pls.lang.codeInsight.color.ParadoxElementColorProvider"/>
     <extendWordSelectionHandler implementation="icu.windea.pls.script.editor.ParadoxScriptWordSelectionHandler"/>
-    <lang.findUsagesProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.findUsages.ParadoxScriptFindUsagesProvider"/>
-    <elementDescriptionProvider implementation="icu.windea.pls.script.findUsages.ParadoxScriptElementDescriptionProvider"/>
+    <lang.findUsagesProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.findUsages.ParadoxScriptFindUsagesProvider"/>
+    <elementDescriptionProvider implementation="icu.windea.pls.script.psi.ParadoxScriptElementDescriptionProvider"/>
     <lang.foldingBuilder language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.folding.ParadoxScriptFoldingBuilder"/>
     <lang.implementationTextSelectioner language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.ParadoxScriptImplementationTextSelectioner"/>
     <lang.braceMatcher language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.highlighting.ParadoxScriptBraceMatcher"/>

@@ -1,4 +1,4 @@
-package icu.windea.pls.localisation.findUsages
+package icu.windea.pls.lang.findUsages
 
 import com.intellij.lang.findUsages.FindUsagesProvider
 import com.intellij.psi.ElementDescriptionUtil
@@ -8,7 +8,6 @@ import com.intellij.usageView.UsageViewNodeTextLocation
 import com.intellij.usageView.UsageViewTypeLocation
 import icu.windea.pls.core.psi.light.LightElementBase
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
-import icu.windea.pls.lang.findUsages.ParadoxLocalisationWordScanner
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 
 // com.intellij.lang.java.JavaFindUsagesProvider

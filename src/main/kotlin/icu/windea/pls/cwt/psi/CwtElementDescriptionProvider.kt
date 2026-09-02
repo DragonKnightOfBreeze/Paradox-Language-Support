@@ -1,4 +1,4 @@
-package icu.windea.pls.localisation.findUsages
+package icu.windea.pls.cwt.psi
 
 import com.intellij.codeInsight.highlighting.HighlightUsagesDescriptionLocation
 import com.intellij.psi.ElementDescriptionLocation
@@ -10,34 +10,33 @@ import com.intellij.usageView.UsageViewNodeTextLocation
 import com.intellij.usageView.UsageViewShortNameLocation
 import com.intellij.usageView.UsageViewTypeLocation
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 
-// org.jetbrains.kotlin.idea.base.searching.usages.KotlinElementDescriptionProviderBase
-// org.jetbrains.kotlin.idea.findUsages.KotlinElementDescriptionProvider
-
-class ParadoxLocalisationElementDescriptionProvider : ElementDescriptionProvider {
+class CwtElementDescriptionProvider : ElementDescriptionProvider {
     override fun getElementDescription(element: PsiElement, location: ElementDescriptionLocation): String? {
-        if (location is RefactoringDescriptionLocation) return null
         return when (location) {
             UsageViewShortNameLocation.INSTANCE -> getElementName(element)
             UsageViewLongNameLocation.INSTANCE -> getElementName(element)
             UsageViewTypeLocation.INSTANCE -> getElementType(element)
             UsageViewNodeTextLocation.INSTANCE -> getElementNodeText(element)
             HighlightUsagesDescriptionLocation.INSTANCE -> getElementHighlightUsagesDescription(element)
-            else -> getElementName(element)
+            else -> null
         }
     }
 
     private fun getElementName(element: PsiElement): String? {
         return when (element) {
-            is ParadoxLocalisationProperty -> element.name
+            is CwtOption -> element.name
+            is CwtProperty -> element.name
+            is CwtString -> element.name
             else -> null
         }
     }
 
     private fun getElementType(element: PsiElement): String? {
         return when (element) {
-            is ParadoxLocalisationProperty -> ChronicleBundle.message("cwt.type.property")
+            is CwtOption -> ChronicleBundle.message("cwt.type.option")
+            is CwtProperty -> ChronicleBundle.message("cwt.type.property")
+            is CwtString -> ChronicleBundle.message("cwt.type.value")
             else -> null
         }
     }
@@ -49,4 +48,8 @@ class ParadoxLocalisationElementDescriptionProvider : ElementDescriptionProvider
     private fun getElementHighlightUsagesDescription(element: PsiElement): String? {
         return getElementNodeText(element)
     }
+}
+
+object CwtPsiDescriptionService {
+
 }

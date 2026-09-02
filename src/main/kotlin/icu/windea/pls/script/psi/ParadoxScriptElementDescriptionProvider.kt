@@ -1,4 +1,4 @@
-package icu.windea.pls.cwt.findUsages
+package icu.windea.pls.script.psi
 
 import com.intellij.codeInsight.highlighting.HighlightUsagesDescriptionLocation
 import com.intellij.psi.ElementDescriptionLocation
@@ -10,11 +10,8 @@ import com.intellij.usageView.UsageViewNodeTextLocation
 import com.intellij.usageView.UsageViewShortNameLocation
 import com.intellij.usageView.UsageViewTypeLocation
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.cwt.psi.CwtOption
-import icu.windea.pls.cwt.psi.CwtProperty
-import icu.windea.pls.cwt.psi.CwtString
 
-class CwtElementDescriptionProvider : ElementDescriptionProvider {
+class ParadoxScriptElementDescriptionProvider : ElementDescriptionProvider {
     override fun getElementDescription(element: PsiElement, location: ElementDescriptionLocation): String? {
         if (location is RefactoringDescriptionLocation) return null
         return when (location) {
@@ -29,18 +26,16 @@ class CwtElementDescriptionProvider : ElementDescriptionProvider {
 
     private fun getElementName(element: PsiElement): String? {
         return when (element) {
-            is CwtOption -> element.name
-            is CwtProperty -> element.name
-            is CwtString -> element.name
+            is ParadoxScriptScriptedVariable -> element.name
+            is ParadoxScriptProperty -> element.name
             else -> null
         }
     }
 
     private fun getElementType(element: PsiElement): String? {
         return when (element) {
-            is CwtOption -> ChronicleBundle.message("cwt.type.option")
-            is CwtProperty -> ChronicleBundle.message("cwt.type.property")
-            is CwtString -> ChronicleBundle.message("cwt.type.value")
+            is ParadoxScriptScriptedVariable -> ChronicleBundle.message("script.description.scriptedVariable")
+            is ParadoxScriptProperty -> ChronicleBundle.message("script.description.property")
             else -> null
         }
     }

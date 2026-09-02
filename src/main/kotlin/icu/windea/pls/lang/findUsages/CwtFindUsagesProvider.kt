@@ -1,4 +1,4 @@
-package icu.windea.pls.cwt.findUsages
+package icu.windea.pls.lang.findUsages
 
 import com.intellij.lang.cacheBuilder.WordsScanner
 import com.intellij.lang.findUsages.FindUsagesProvider
@@ -9,7 +9,6 @@ import com.intellij.usageView.UsageViewNodeTextLocation
 import com.intellij.usageView.UsageViewTypeLocation
 import icu.windea.pls.core.psi.light.LightElementBase
 import icu.windea.pls.cwt.CwtLanguage
-import icu.windea.pls.lang.findUsages.CwtWordScanner
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.cwt.psi.CwtString
 

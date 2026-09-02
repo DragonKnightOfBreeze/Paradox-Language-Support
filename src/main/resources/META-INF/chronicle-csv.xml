@@ -11,7 +11,7 @@
     <colorSettingsPage implementation="icu.windea.pls.csv.editor.ParadoxCsvColorSettingsPage"/>
     <lang.commenter language="PARADOX_CSV" implementationClass="icu.windea.pls.csv.editor.ParadoxCsvCommenter"/>
     <extendWordSelectionHandler implementation="icu.windea.pls.csv.editor.ParadoxCsvWordSelectionHandler"/>
-    <lang.findUsagesProvider language="PARADOX_CSV" implementationClass="icu.windea.pls.csv.findUsages.ParadoxCsvFindUsagesProvider"/>
+    <lang.findUsagesProvider language="PARADOX_CSV" implementationClass="icu.windea.pls.lang.findUsages.ParadoxCsvFindUsagesProvider"/>
     <lang.foldingBuilder language="PARADOX_CSV" implementationClass="icu.windea.pls.csv.folding.ParadoxCsvFoldingBuilder"/>
     <declarationRangeHandler key="icu.windea.pls.csv.psi.ParadoxCsvRow" implementationClass="icu.windea.pls.csv.codeInsight.ParadoxCsvDeclarationRangeHandler"/>
     <highlightUsagesHandlerFactory implementation="icu.windea.pls.csv.codeInsight.highlighting.ParadoxCsvHighlightUsagesHandlerFactory"/>

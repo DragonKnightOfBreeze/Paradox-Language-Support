@@ -11,8 +11,8 @@
     <colorSettingsPage implementation="icu.windea.pls.cwt.editor.CwtColorSettingsPage"/>
     <extendWordSelectionHandler implementation="icu.windea.pls.cwt.editor.CwtWordSelectionHandler"/>
     <lang.commenter language="CWT" implementationClass="icu.windea.pls.cwt.editor.CwtCommenter"/>
-    <lang.findUsagesProvider language="CWT" implementationClass="icu.windea.pls.cwt.findUsages.CwtFindUsagesProvider"/>
-    <elementDescriptionProvider implementation="icu.windea.pls.cwt.findUsages.CwtElementDescriptionProvider"/>
+    <lang.findUsagesProvider language="CWT" implementationClass="icu.windea.pls.lang.findUsages.CwtFindUsagesProvider"/>
+    <elementDescriptionProvider implementation="icu.windea.pls.cwt.psi.CwtElementDescriptionProvider"/>
     <lang.foldingBuilder language="CWT" implementationClass="icu.windea.pls.cwt.folding.CwtFoldingBuilder"/>
     <lang.implementationTextSelectioner language="CWT" implementationClass="icu.windea.pls.cwt.codeInsight.CwtImplementationTextSelectioner"/>
     <lang.braceMatcher language="CWT" implementationClass="icu.windea.pls.cwt.codeInsight.highlighting.CwtBraceMatcher"/>
