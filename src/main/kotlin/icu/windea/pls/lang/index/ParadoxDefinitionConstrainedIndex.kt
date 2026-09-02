@@ -26,6 +26,8 @@ abstract class ParadoxDefinitionConstrainedIndex : ParadoxDefinitionIndex() {
 
     override fun getName() = constraint.indexId
 
+    override fun getVersion() = ChronicleIndexVersions.Definition
+
     override fun getFileLevelTypeConfigs(matchContext: CwtTypeConfigMatchContext): Collection<CwtTypeConfig> {
         val result = super.getFileLevelTypeConfigs(matchContext).filter { constraint.test(it.name, it.configGroup) }
         if (result.isEmpty()) return emptyList()
