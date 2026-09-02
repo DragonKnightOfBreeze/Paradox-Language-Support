@@ -54,19 +54,6 @@ interface ParadoxScriptPsiCodeInjectors {
     @FieldCache("getValue", cleanUp = "subtreeChanged")
     class String : CodeInjectorBase()
 
-    /** @see icu.windea.pls.script.psi.ParadoxScriptColor */
-    @InjectionTarget("icu.windea.pls.script.psi.impl.ParadoxScriptColorImpl", pluginId = "icu.windea.pls")
-    // @FieldCache("getText", cleanup = "subtreeChanged")
-    @FieldCache("getColorType", cleanUp = "subtreeChanged")
-    @FieldCache("getColorArgs", cleanUp = "subtreeChanged")
-    class Color : CodeInjectorBase()
-
-    /** @see icu.windea.pls.script.psi.ParadoxScriptInlineMath */
-    @InjectionTarget("icu.windea.pls.script.psi.impl.ParadoxScriptInlineMathImpl", pluginId = "icu.windea.pls")
-    // @FieldCache("getText", cleanup = "subtreeChanged")
-    @FieldCache("getExpression", cleanUp = "subtreeChanged")
-    class InlineMath : CodeInjectorBase()
-
     /** @see icu.windea.pls.script.psi.ParadoxScriptConditionalParameter */
     @InjectionTarget("icu.windea.pls.script.psi.impl.ParadoxScriptConditionalParameterImpl", pluginId = "icu.windea.pls")
     @FieldCache("getText", cleanUp = "subtreeChanged")
@@ -74,10 +61,10 @@ interface ParadoxScriptPsiCodeInjectors {
     class ConditionalParameter : CodeInjectorBase()
 
     /** @see icu.windea.pls.script.psi.ParadoxScriptNormalParameter */
-    @InjectionTarget("icu.windea.pls.script.psi.impl.ParadoxScriptParameterImpl", pluginId = "icu.windea.pls")
+    @InjectionTarget("icu.windea.pls.script.psi.impl.ParadoxScriptNormalParameterImpl", pluginId = "icu.windea.pls")
     @FieldCache("getText", cleanUp = "subtreeChanged")
     @FieldCache("getName", cleanUp = "subtreeChanged")
-    class Parameter : CodeInjectorBase()
+    class NormalParameter : CodeInjectorBase()
 
     /** @see icu.windea.pls.script.psi.ParadoxScriptInlineMathParameter */
     @InjectionTarget("icu.windea.pls.script.psi.impl.ParadoxScriptInlineMathParameterImpl", pluginId = "icu.windea.pls")
