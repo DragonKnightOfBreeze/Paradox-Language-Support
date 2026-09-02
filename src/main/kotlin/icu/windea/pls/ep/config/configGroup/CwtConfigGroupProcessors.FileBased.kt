@@ -71,10 +71,11 @@ class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor, CwtConfigResol
         val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
         val fileProvidersAndRootDirectories = mutableMapOf<CwtConfigGroupFileProvider, VirtualFile>()
         readAction {
-            fileProviders.forEach { fileProvider ->
+            fileProviders.process p@{ fileProvider ->
                 currentCoroutineContext.ensureActive()
-                val rootDirectory = fileProvider.getRootDirectory(configGroup.project) ?: return@forEach
+                val rootDirectory = fileProvider.getRootDirectory(configGroup.project) ?: return@p true
                 fileProvidersAndRootDirectories[fileProvider] = rootDirectory
+                true
             }
         }
 
@@ -84,7 +85,7 @@ class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor, CwtConfigResol
         readAction {
             fileProvidersAndRootDirectories.process { (fileProvider, rootDirectory) ->
                 currentCoroutineContext.ensureActive()
-                fileProvider.processFiles(configGroup, rootDirectory) p@{ filePath, file ->
+                fileProvider.processFiles(configGroup, rootDirectory) { filePath, file ->
                     val targetFileInfos = when {
                         CwtConfigManager.isInternalFile(filePath) -> internalFileInfos
                         else -> fileInfos
@@ -103,35 +104,42 @@ class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor, CwtConfigResol
         checkCanceled()
         val internalFileConfigMap = mutableMapOf<String, CwtFileConfig>()
         val fileConfigMap = mutableMapOf<String, CwtFileConfig>()
-        // 允许覆盖先加入的同路径的规则文件
-        for ((filePath, file, source) in internalFileInfos) {
-            checkCanceled()
-            if (source != CwtConfigGroupFileSource.BuiltIn) continue // 不允许覆盖内部规则文件，除非是内置的规则文件
-            val fileConfig = readAction { resolveInternalFileConfig(configGroup, file, filePath) } ?: continue
-            internalFileConfigMap[filePath] = fileConfig
-        }
-        for ((filePath, file) in fileInfos) {
-            checkCanceled()
-            val fileConfig = readAction { resolveFileConfig(configGroup, file, filePath) } ?: continue
-            fileConfigMap[filePath] = fileConfig
+        readAction {
+            // 允许覆盖先加入的同路径的规则文件
+            for ((filePath, file, source) in internalFileInfos) {
+                if (source != CwtConfigGroupFileSource.BuiltIn) continue // 不允许覆盖内部规则文件，除非是内置的规则文件
+                currentCoroutineContext.ensureActive()
+                val fileConfig = resolveInternalFileConfig(configGroup, file, filePath) ?: continue
+                internalFileConfigMap[filePath] = fileConfig
+            }
+            for ((filePath, file) in fileInfos) {
+                currentCoroutineContext.ensureActive()
+                val fileConfig = resolveFileConfig(configGroup, file, filePath) ?: continue
+                fileConfigMap[filePath] = fileConfig
+            }
         }
 
         val fileConfigs = configGroup.initializer.fileConfigs
         fileConfigs += internalFileConfigMap
         fileConfigs += fileConfigMap
 
+        checkCanceled()
         val configPostProcessActions = configGroup.initializer.configPostProcessActions
         for (it in configPostProcessActions) {
+            currentCoroutineContext.ensureActive()
             it.run()
         }
 
-        for (fileConfig in internalFileConfigMap.values) {
-            checkCanceled()
-            readAction { processInternalFile(fileConfig) }
-        }
-        for (fileConfig in fileConfigMap.values) {
-            checkCanceled()
-            readAction { processFile(fileConfig) }
+        checkCanceled()
+        readAction {
+            for (fileConfig in internalFileConfigMap.values) {
+                currentCoroutineContext.ensureActive()
+                processInternalFile(fileConfig)
+            }
+            for (fileConfig in fileConfigMap.values) {
+                currentCoroutineContext.ensureActive()
+                processFile(fileConfig)
+            }
         }
     }
 
