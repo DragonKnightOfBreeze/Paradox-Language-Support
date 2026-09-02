@@ -37,6 +37,8 @@ class MissingLocaleInspection : LocalInspectionTool(), DumbAware {
         val vFile = file.virtualFile
         if (VirtualFileService.isLightFile(vFile)) return false
         if (VirtualFileService.isInjectedFile(vFile)) return false
+        // 要求规则分组数据已加载完毕
+        if (!ParadoxPsiFileMatchService.checkConfigGroupInitialized(file)) return false
         // 要求是语义上有效的本地化文件
         return ParadoxPsiFileMatchService.isLocalisationFile(file)
     }
