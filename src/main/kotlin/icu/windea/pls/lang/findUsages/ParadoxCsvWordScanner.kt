@@ -1,4 +1,4 @@
-package icu.windea.pls.csv.editor
+package icu.windea.pls.lang.findUsages
 
 import com.intellij.lang.cacheBuilder.DefaultWordsScanner
 import icu.windea.pls.csv.lexer.ParadoxCsvLexerFactory
@@ -8,5 +8,5 @@ class ParadoxCsvWordScanner : DefaultWordsScanner(
     ParadoxCsvLexerFactory.createLexer(),
     ParadoxCsvTokenSets.IDENTIFIER_TOKENS,
     ParadoxCsvTokenSets.COMMENT_TOKENS,
-    ParadoxCsvTokenSets.LITERAL_TOKENS
+    ParadoxCsvTokenSets.LITERAL_TOKENS,
 )

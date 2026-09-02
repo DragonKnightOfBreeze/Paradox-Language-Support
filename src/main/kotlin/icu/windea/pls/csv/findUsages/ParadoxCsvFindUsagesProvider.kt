@@ -6,7 +6,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.usageView.UsageViewLongNameLocation
 import com.intellij.usageView.UsageViewNodeTextLocation
 import com.intellij.usageView.UsageViewTypeLocation
-import icu.windea.pls.csv.editor.ParadoxCsvWordScanner
+import icu.windea.pls.lang.findUsages.ParadoxCsvWordScanner
 
 class ParadoxCsvFindUsagesProvider : FindUsagesProvider {
     override fun getWordsScanner() = ParadoxCsvWordScanner()

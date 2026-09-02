@@ -8,7 +8,7 @@ import com.intellij.usageView.UsageViewNodeTextLocation
 import com.intellij.usageView.UsageViewTypeLocation
 import icu.windea.pls.core.psi.light.LightElementBase
 import icu.windea.pls.script.ParadoxScriptLanguage
-import icu.windea.pls.script.editor.ParadoxScriptWordScanner
+import icu.windea.pls.lang.findUsages.ParadoxScriptWordScanner
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 

@@ -44,7 +44,7 @@ class ParadoxTargetFromSubstringTextSearcher : ParadoxTargetByTextSearcher() {
         // 使用 PsiSearchHelper.processElementsWithWord 搜索出现了文本片段的节点 PSI
         // 查询上下文设置为 UsageSearchContext.IN_STRINGS
 
-        // see: icu.windea.pls.localisation.editor.ParadoxLocalisationWordScanner
+        // see: icu.windea.pls.lang.findUsages.ParadoxLocalisationWordScanner
 
         val processor = TextOccurenceProcessor { element, _ ->
             ProgressManager.checkCanceled()

@@ -1,12 +1,12 @@
-package icu.windea.pls.localisation.editor
+package icu.windea.pls.lang.findUsages
 
 import com.intellij.lang.cacheBuilder.DefaultWordsScanner
 import icu.windea.pls.localisation.lexer.ParadoxLocalisationLexerFactory
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTokenSets
 
 class ParadoxLocalisationWordScanner : DefaultWordsScanner(
-    ParadoxLocalisationLexerFactory.createLayeredLexer(),
+    ParadoxLocalisationLexerFactory.createLayeredLexer(), // 3.0.2 layered lexer should be used here
     ParadoxLocalisationTokenSets.IDENTIFIER_TOKENS,
     ParadoxLocalisationTokenSets.COMMENT_TOKENS,
-    ParadoxLocalisationTokenSets.LITERAL_TOKENS
+    ParadoxLocalisationTokenSets.LITERAL_TOKENS,
 )

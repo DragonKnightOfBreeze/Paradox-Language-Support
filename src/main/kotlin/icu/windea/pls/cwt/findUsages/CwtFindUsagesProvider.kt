@@ -9,7 +9,7 @@ import com.intellij.usageView.UsageViewNodeTextLocation
 import com.intellij.usageView.UsageViewTypeLocation
 import icu.windea.pls.core.psi.light.LightElementBase
 import icu.windea.pls.cwt.CwtLanguage
-import icu.windea.pls.cwt.editor.CwtWordScanner
+import icu.windea.pls.lang.findUsages.CwtWordScanner
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.cwt.psi.CwtString
 
