@@ -1,7 +1,5 @@
 <!-- Weary seekers who tread the path, these words are spoken unto you. -->
 
-[By the dragon knight a coffee ☕](https://afdian.com/a/dk_breeze)
-
 Paradox Chronicle (formerly Paradox Language Support) is the IntelliJ IDEA plugin designed for mod developers of Paradox Interactive games.
 As the guidebook to the paradox universe, the plugin strives to provide a powerful and comprehensive infrastructure, along with a smart, efficient, and feature-rich development experience.
 
@@ -49,6 +47,8 @@ Paradox Chronicle（曾用名：Paradox Language Support）是为 Paradox Intera
 - **AI 辅助**：初步集成 AI 技术，适用于本地化文本的翻译和润色。
 
 <br/>
+
+[By the dragon knight a coffee ☕](https://afdian.com/a/dk_breeze)
 
 [GitHub](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support) |
 [Plugin Home](https://plugins.jetbrains.com/plugin/16825) |
