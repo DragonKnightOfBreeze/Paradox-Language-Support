@@ -68,9 +68,7 @@ object ParadoxPsiFileService {
     fun findScriptedVariable(file: PsiFile, offset: Int, options: Int = 1): ParadoxScriptScriptedVariable? {
         if (offset < 0) return null
         if (BitUtil.isSet(options, ScriptedVariableOptions.BY_REFERENCE) && !DumbService.isDumb(file.project)) {
-            val reference = file.findReferenceAt(offset) {
-                ParadoxReferenceConstraint.ScriptedVariable.canResolve(it)
-            }
+            val reference = file.findReferenceAt(offset) { ParadoxReferenceConstraint.ScriptedVariable.canResolve(it) }
             val resolved = reference?.resolve()?.castOrNull<ParadoxScriptScriptedVariable>()
             if (resolved != null) return resolved
         }
@@ -100,13 +98,8 @@ object ParadoxPsiFileService {
         val expressionElement by lazy {
             file.findElementAt(offset) { it.parentOfType<ParadoxScriptExpressionElement>(false) }?.takeIf { it.isDataExpression() }
         }
-        val expressionReference by lazy {
-            file.findReferenceAt(offset) {
-                it.element is ParadoxScriptExpressionElement && ParadoxReferenceConstraint.Definition.canResolve(it)
-            }
-        }
         if (BitUtil.isSet(options, DefinitionOptions.BY_REFERENCE) && !DumbService.isDumb(file.project)) {
-            val reference = expressionReference
+            val reference = file.findReferenceAt(offset) { ParadoxReferenceConstraint.Definition.canResolve(it) }
             val resolved = reference?.resolve()?.castOrNull<ParadoxDefinitionElement>()?.takeIf { it.definitionInfo != null }
             if (resolved != null) return resolved
         }
@@ -167,9 +160,7 @@ object ParadoxPsiFileService {
     fun findLocalisation(file: PsiFile, offset: Int, options: Int = 1): ParadoxLocalisationProperty? {
         if (offset < 0) return null
         if (BitUtil.isSet(options, LocalisationOptions.BY_REFERENCE) && !DumbService.isDumb(file.project)) {
-            val reference = file.findReferenceAt(offset) {
-                ParadoxReferenceConstraint.Localisation.canResolve(it)
-            }
+            val reference = file.findReferenceAt(offset) { ParadoxReferenceConstraint.Localisation.canResolve(it) }
             val resolved = reference?.resolve()?.castOrNull<ParadoxLocalisationProperty>()
             if (resolved != null) return resolved
         }
