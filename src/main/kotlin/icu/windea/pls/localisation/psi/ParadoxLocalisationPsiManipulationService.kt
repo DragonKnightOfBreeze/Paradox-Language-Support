@@ -1,8 +1,12 @@
 package icu.windea.pls.localisation.psi
 
 import com.intellij.openapi.util.TextRange
+import com.intellij.psi.ElementDescriptionProvider
 import icu.windea.pls.core.cast
 
+/**
+ * @see ElementDescriptionProvider
+ */
 object ParadoxLocalisationPsiManipulationService {
     fun changeContent(element: ParadoxLocalisationPropertyKey, newContent: String, range: TextRange? = null): ParadoxLocalisationPropertyKey {
         val newText = range?.replace(element.text, newContent) ?: newContent

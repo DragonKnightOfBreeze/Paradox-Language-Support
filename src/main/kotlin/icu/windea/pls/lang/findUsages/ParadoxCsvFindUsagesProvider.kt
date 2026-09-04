@@ -1,28 +1,35 @@
 package icu.windea.pls.lang.findUsages
 
 import com.intellij.lang.findUsages.FindUsagesProvider
-import com.intellij.psi.ElementDescriptionUtil
 import com.intellij.psi.PsiElement
-import com.intellij.usageView.UsageViewLongNameLocation
-import com.intellij.usageView.UsageViewNodeTextLocation
-import com.intellij.usageView.UsageViewTypeLocation
+import icu.windea.pls.core.psi.light.LightElementBase
+import icu.windea.pls.csv.ParadoxCsvLanguage
+import icu.windea.pls.lang.psi.ParadoxPsiDescriptionService
 
 class ParadoxCsvFindUsagesProvider : FindUsagesProvider {
-    override fun getWordsScanner() = ParadoxCsvWordScanner()
+    override fun canFindUsagesFor(element: PsiElement): Boolean {
+        return when (element) {
+            is LightElementBase -> element.language === ParadoxCsvLanguage
+            else -> false
+        }
+    }
 
-    override fun canFindUsagesFor(element: PsiElement) = false
+    override fun getWordsScanner() = ParadoxCsvWordScanner()
 
     override fun getHelpId(psiElement: PsiElement) = "reference.dialogs.findUsages.other"
 
     override fun getType(element: PsiElement): String {
-        return ElementDescriptionUtil.getElementDescription(element, UsageViewTypeLocation.INSTANCE)
+        ParadoxPsiDescriptionService.getType(element)?.let { return it }
+        return ""
     }
 
     override fun getDescriptiveName(element: PsiElement): String {
-        return ElementDescriptionUtil.getElementDescription(element, UsageViewLongNameLocation.INSTANCE)
+        ParadoxPsiDescriptionService.getName(element)?.let { return it }
+        return ""
     }
 
     override fun getNodeText(element: PsiElement, useFullName: Boolean): String {
-        return ElementDescriptionUtil.getElementDescription(element, UsageViewNodeTextLocation.INSTANCE)
+        ParadoxPsiDescriptionService.getNodeText(element)?.let { return it }
+        return ""
     }
 }

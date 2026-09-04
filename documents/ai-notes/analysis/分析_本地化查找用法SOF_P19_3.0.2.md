@@ -42,7 +42,7 @@ ParadoxLocalisationFindUsagesProvider.getType (kt:28)
 ### 2.3 为什么"看起来不应该存在"
 
 - `ParadoxLocalisationFindUsagesProvider.canFindUsagesFor` 只对 `ParadoxLocalisationProperty` 和本地化语言的 `LightElementBase` 返回 true。
-- 这两类恰好都被 EP provider 覆盖：`ParadoxLocalisationElementDescriptionProvider` 无条件覆盖 property（`getElementType` 中 `is ParadoxLocalisationProperty -> ChronicleBundle.message("cwt.type.property")`）；`ParadoxElementDescriptionProvider` 覆盖 `ParadoxLocalisationParameterLightElement` 等各类 light element。
+- 这两类恰好都被 EP provider 覆盖：`ParadoxLocalisationElementDescriptionProvider` 无条件覆盖 property（`getType` 中 `is ParadoxLocalisationProperty -> ChronicleBundle.message("cwt.type.property")`）；`ParadoxElementDescriptionProvider` 覆盖 `ParadoxLocalisationParameterLightElement` 等各类 light element。
 - 按旧平台（`getFromProviders` 带 `canFindUsagesFor` 门槛）的逻辑，递归确实永远不会发生——设计上看似闭环。
 - 但 2025.2 移除了门槛。`ParadoxLocalisationPropertyKey`（生成接口仅 `extends NavigatablePsiElement`，**不是** `PsiNamedElement`）、`locale`、`parameter`、`command_text`、`concept_name`、`text`、`property_value` 等本地化元素全部未覆盖 → 一旦被查询类型就必然递归。
 
@@ -79,7 +79,7 @@ ParadoxLocalisationFindUsagesProvider.getType (kt:28)
 - 相关代码位置：
   - `icu.windea.pls.localisation.findUsages.ParadoxLocalisationFindUsagesProvider`（`getType`/`getDescriptiveName`/`getNodeText` 委托 `ElementDescriptionUtil`，ParadoxLocalisationFindUsagesProvider.kt:28/32/36）
   - `icu.windea.pls.localisation.findUsages.ParadoxLocalisationElementDescriptionProvider`（仅覆盖 property）
-  - `icu.windea.pls.lang.findUsages.ParadoxElementDescriptionProvider`（覆盖 property 与各 light element，`getElementType`）
+  - `icu.windea.pls.lang.findUsages.ParadoxElementDescriptionProvider`（覆盖 property 与各 light element，`getType`）
   - `icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyKey`（生成接口仅 `extends NavigatablePsiElement`，不是 `PsiNamedElement`）
   - 同款模式：`ParadoxScriptFindUsagesProvider`、`CwtFindUsagesProvider`、`ParadoxCsvFindUsagesProvider`
 - 平台源码（2025.2）：

@@ -1,11 +1,15 @@
 package icu.windea.pls.script.psi
 
 import com.intellij.openapi.util.TextRange
+import com.intellij.psi.ElementDescriptionProvider
 import icu.windea.pls.core.cast
 import icu.windea.pls.core.quoteIfNeeded
 import icu.windea.pls.core.text.QuotePatterns
 import icu.windea.pls.script.text.ParadoxScript
 
+/**
+ * @see ElementDescriptionProvider
+ */
 object ParadoxScriptPsiManipulationService {
     fun changeContent(element: ParadoxScriptPropertyKey, newContent: String, range: TextRange? = null): ParadoxScriptPropertyKey {
         val newValue = range?.replace(element.text, newContent) ?: newContent

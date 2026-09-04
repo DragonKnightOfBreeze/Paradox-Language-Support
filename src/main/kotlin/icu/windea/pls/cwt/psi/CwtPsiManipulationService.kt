@@ -5,7 +5,11 @@ import icu.windea.pls.core.cast
 import icu.windea.pls.core.quoteIfNeeded
 import icu.windea.pls.core.text.QuotePatterns
 import icu.windea.pls.cwt.text.Cwt
+import com.intellij.psi.ElementManipulator
 
+/**
+ * @see ElementManipulator
+ */
 object CwtPsiManipulationService {
     fun changeContent(element: CwtOptionKey, newContent: String, range: TextRange? = null): CwtOptionKey {
         val newValue = range?.replace(element.text, newContent) ?: newContent

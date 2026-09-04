@@ -297,8 +297,8 @@
 
     <codeInsight.template.postfixTemplateProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.template.postfix.ParadoxPostfixTemplateProvider"/>
 
-    <elementDescriptionProvider implementation="icu.windea.pls.lang.findUsages.CwtConfigElementDescriptionProvider" order="first"/> <!-- before any base EPs -->
-    <elementDescriptionProvider implementation="icu.windea.pls.lang.findUsages.ParadoxElementDescriptionProvider" order="first"/> <!-- before any base EPs -->
+    <elementDescriptionProvider implementation="icu.windea.pls.lang.psi.CwtConfigElementDescriptionProvider" order="first"/> <!-- before any base EPs -->
+    <elementDescriptionProvider implementation="icu.windea.pls.lang.psi.ParadoxElementDescriptionProvider" order="first"/> <!-- before any base EPs -->
     <lang.findUsagesProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.findUsages.ParadoxScriptFindUsagesProvider"/>
     <lang.findUsagesProvider language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.lang.findUsages.ParadoxLocalisationFindUsagesProvider"/>
     <lang.findUsagesProvider language="PARADOX_CSV" implementationClass="icu.windea.pls.lang.findUsages.ParadoxCsvFindUsagesProvider"/>

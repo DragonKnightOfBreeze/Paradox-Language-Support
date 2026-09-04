@@ -3,6 +3,7 @@ package icu.windea.pls.config
 import icu.windea.pls.config.config.CwtConfigService
 import icu.windea.pls.cwt.psi.CwtMember
 import icu.windea.pls.model.paths.CwtConfigPath
+import org.jetbrains.annotations.Nls
 import javax.swing.Icon
 
 /**
@@ -38,7 +39,7 @@ class CwtConfigType private constructor(
     val isReference: Boolean = false,
     val icon: Icon? = null,
     val prefix: String? = null,
-    val description: String? = null,
+    @Nls val description: String? = null,
 ) {
     // NOTE 2.1.1 为了与 `CwtDataType` 保持一致，这里直接使用引用相等
     // override fun equals(other: Any?) = super.equals(other)
