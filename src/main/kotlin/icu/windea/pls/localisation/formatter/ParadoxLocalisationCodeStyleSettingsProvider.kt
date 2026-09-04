@@ -27,7 +27,7 @@ class ParadoxLocalisationCodeStyleSettingsProvider : LanguageCodeStyleSettingsPr
         }
     }
 
-    override fun getConfigurableDisplayName() = ChronicleBundle.message("localisation.settings.name")
+    override fun getConfigurableDisplayName() = ChronicleBundle.message("localisation.codeStyle.settings.displayName")
 
     override fun getCodeSample(settingsType: SettingsType) = ParadoxLocalisationConstants.codeStyleSettingsText
 

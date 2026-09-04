@@ -7,9 +7,9 @@ import icu.windea.pls.lang.ParadoxFileType
 object ParadoxScriptFileType : ParadoxFileType(ParadoxScriptLanguage) {
     override fun getName() = "Paradox Script"
 
-    override fun getDisplayName() = ChronicleBundle.message("script.language.name")
+    override fun getDisplayName() = ChronicleBundle.message("script.fileType.displayName")
 
-    override fun getDescription() = ChronicleBundle.message("script.settings.name")
+    override fun getDescription() = ChronicleBundle.message("script.fileType.description")
 
     override fun getDefaultExtension() = "txt"
 

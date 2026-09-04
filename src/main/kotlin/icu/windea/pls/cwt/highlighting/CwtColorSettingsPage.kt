@@ -11,19 +11,19 @@ import icu.windea.pls.cwt.CwtLanguage
 
 class CwtColorSettingsPage : ColorSettingsPage {
     private val _attributesDescriptors = arrayOf(
-        AttributesDescriptor(ChronicleBundle.message("cwt.displayName.braces"), CwtHighlighterColors.BRACES),
-        AttributesDescriptor(ChronicleBundle.message("cwt.displayName.operator"), CwtHighlighterColors.OPERATOR),
-        AttributesDescriptor(ChronicleBundle.message("cwt.displayName.comment"), CwtHighlighterColors.COMMENT),
-        AttributesDescriptor(ChronicleBundle.message("cwt.displayName.optionComment"), CwtHighlighterColors.OPTION_COMMENT),
-        AttributesDescriptor(ChronicleBundle.message("cwt.displayName.documentationComment"), CwtHighlighterColors.DOC_COMMENT),
-        AttributesDescriptor(ChronicleBundle.message("cwt.displayName.keyword"), CwtHighlighterColors.KEYWORD),
-        AttributesDescriptor(ChronicleBundle.message("cwt.displayName.propertyKey"), CwtHighlighterColors.PROPERTY_KEY),
-        AttributesDescriptor(ChronicleBundle.message("cwt.displayName.optionKey"), CwtHighlighterColors.OPTION_KEY),
-        AttributesDescriptor(ChronicleBundle.message("cwt.displayName.number"), CwtHighlighterColors.NUMBER),
-        AttributesDescriptor(ChronicleBundle.message("cwt.displayName.string"), CwtHighlighterColors.STRING),
-        AttributesDescriptor(ChronicleBundle.message("cwt.displayName.validEscape"), CwtHighlighterColors.VALID_ESCAPE),
-        AttributesDescriptor(ChronicleBundle.message("cwt.displayName.invalidEscape"), CwtHighlighterColors.INVALID_ESCAPE),
-        AttributesDescriptor(ChronicleBundle.message("cwt.displayName.badCharacter"), CwtHighlighterColors.BAD_CHARACTER)
+        AttributesDescriptor(ChronicleBundle.message("cwt.color.option.braces"), CwtHighlighterColors.BRACES),
+        AttributesDescriptor(ChronicleBundle.message("cwt.color.option.operator"), CwtHighlighterColors.OPERATOR),
+        AttributesDescriptor(ChronicleBundle.message("cwt.color.option.comment"), CwtHighlighterColors.COMMENT),
+        AttributesDescriptor(ChronicleBundle.message("cwt.color.option.optionComment"), CwtHighlighterColors.OPTION_COMMENT),
+        AttributesDescriptor(ChronicleBundle.message("cwt.color.option.documentationComment"), CwtHighlighterColors.DOC_COMMENT),
+        AttributesDescriptor(ChronicleBundle.message("cwt.color.option.keyword"), CwtHighlighterColors.KEYWORD),
+        AttributesDescriptor(ChronicleBundle.message("cwt.color.option.propertyKey"), CwtHighlighterColors.PROPERTY_KEY),
+        AttributesDescriptor(ChronicleBundle.message("cwt.color.option.optionKey"), CwtHighlighterColors.OPTION_KEY),
+        AttributesDescriptor(ChronicleBundle.message("cwt.color.option.number"), CwtHighlighterColors.NUMBER),
+        AttributesDescriptor(ChronicleBundle.message("cwt.color.option.string"), CwtHighlighterColors.STRING),
+        AttributesDescriptor(ChronicleBundle.message("cwt.color.option.validEscape"), CwtHighlighterColors.VALID_ESCAPE),
+        AttributesDescriptor(ChronicleBundle.message("cwt.color.option.invalidEscape"), CwtHighlighterColors.INVALID_ESCAPE),
+        AttributesDescriptor(ChronicleBundle.message("cwt.color.option.badCharacter"), CwtHighlighterColors.BAD_CHARACTER)
     )
 
     override fun getHighlighter() = SyntaxHighlighterFactory.getSyntaxHighlighter(CwtLanguage, null, null)

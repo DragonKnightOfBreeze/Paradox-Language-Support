@@ -7,9 +7,9 @@ import icu.windea.pls.lang.ParadoxFileType
 object ParadoxCsvFileType : ParadoxFileType(ParadoxCsvLanguage) {
     override fun getName() = "Paradox Csv"
 
-    override fun getDisplayName() = ChronicleBundle.message("csv.language.name")
+    override fun getDisplayName() = ChronicleBundle.message("csv.fileType.displayName")
 
-    override fun getDescription() = ChronicleBundle.message("csv.settings.name")
+    override fun getDescription() = ChronicleBundle.message("csv.fileType.description")
 
     override fun getDefaultExtension() = "csv"
 

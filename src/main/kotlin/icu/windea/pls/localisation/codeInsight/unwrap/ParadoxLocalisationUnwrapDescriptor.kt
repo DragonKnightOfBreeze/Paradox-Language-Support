@@ -9,11 +9,11 @@ import com.intellij.codeInsight.unwrap.Unwrapper
 class ParadoxLocalisationUnwrapDescriptor : UnwrapDescriptorBase() {
     private val _unwrappers = arrayOf(
         ParadoxLocalisationPropertyRemover(),
-        ParadoxLocalisationIconRemover(),
+        ParadoxLocalisationColorfulTextRemover(),
+        ParadoxLocalisationParameterRemover(),
         ParadoxLocalisationCommandRemover(),
         ParadoxLocalisationConceptCommandRemover(),
-        ParadoxLocalisationParameterRemover(),
-        ParadoxLocalisationColorfulTextRemover(),
+        ParadoxLocalisationIconRemover(),
         ParadoxLocalisationTextIconRemover(),
         ParadoxLocalisationTextFormatRemover(),
         ParadoxLocalisationColorfulTextUnwrapper(),

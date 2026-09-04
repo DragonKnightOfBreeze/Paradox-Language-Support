@@ -26,7 +26,7 @@ class ParadoxCsvCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider() 
         }
     }
 
-    override fun getConfigurableDisplayName() = ChronicleBundle.message("csv.settings.name")
+    override fun getConfigurableDisplayName() = ChronicleBundle.message("csv.codeStyle.settings.displayName")
 
     override fun getCodeSample(settingsType: SettingsType) = ParadoxCsvConstants.codeStyleSettingsText
 

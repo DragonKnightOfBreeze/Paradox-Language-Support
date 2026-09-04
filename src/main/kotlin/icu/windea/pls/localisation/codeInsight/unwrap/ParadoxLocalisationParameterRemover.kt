@@ -14,7 +14,7 @@ class ParadoxLocalisationParameterRemover : ParadoxLocalisationUnwrapper() {
     override fun getDescription(element: PsiElement): String {
         if (element !is ParadoxLocalisationParameter) return "" // unexpected
         val name = element.name
-        return ChronicleBundle.message("localisation.remove.reference", name.or.unresolved())
+        return ChronicleBundle.message("localisation.remove.parameter", name.or.unresolved())
     }
 
     override fun doUnwrap(element: PsiElement, context: Context) {

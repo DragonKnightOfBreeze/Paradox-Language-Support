@@ -15,11 +15,11 @@ import icu.windea.pls.localisation.text.ParadoxLocalisationTextBuilder.parameter
  * @see ParadoxLocalisationUnwrapDescriptor
  * @see ParadoxLocalisationUnwrapper
  * @see ParadoxLocalisationPropertyRemover
- * @see ParadoxLocalisationIconRemover
+ * @see ParadoxLocalisationColorfulTextRemover
+ * @see ParadoxLocalisationParameterRemover
  * @see ParadoxLocalisationCommandRemover
  * @see ParadoxLocalisationConceptCommandRemover
- * @see ParadoxLocalisationParameterRemover
- * @see ParadoxLocalisationColorfulTextRemover
+ * @see ParadoxLocalisationIconRemover
  * @see ParadoxLocalisationTextIconRemover
  * @see ParadoxLocalisationTextFormatRemover
  * @see ParadoxLocalisationColorfulTextUnwrapper
@@ -71,56 +71,86 @@ class ParadoxLocalisationUnwrappersTest : UnwrapTestCase(), ChronicleTestScope {
 
     // endregion
 
-    // region ParadoxLocalisationIconRemover
+    // region ParadoxLocalisationColorfulTextRemover
 
     @Test
-    fun testIconRemover() {
+    fun testColorfulTextRemover() {
         val before = """
             l_english:
-             text_key:0 "Icon: <caret>£unity£ text"
+             text_key:0 "Text: <caret>§RRed text§! more"
             """.trimIndent()
         val after = """
             l_english:
-             text_key:0 "Icon:  text"
+             text_key:0 "Text:  more"
             """.trimIndent()
         assertUnwrapped(before, after)
     }
 
     @Test
-    fun testIconRemover_withParameter() {
+    fun testColorfulTextRemover_multiple() {
         val before = """
             l_english:
-             text_key:0 "Icon: <caret>£leader_skill|3£ text"
+             text_key:0 "Text: <caret>§RRed§! §GGreen§! more"
             """.trimIndent()
         val after = """
             l_english:
-             text_key:0 "Icon:  text"
+             text_key:0 "Text:  §GGreen§! more"
+            """.trimIndent()
+        assertUnwrapped(before, after)
+    }
+
+    // endregion
+
+    // region ParadoxLocalisationParameterRemover
+
+    @Test
+    fun testParameterRemover() {
+        val before = """
+            l_english:
+             text_key:0 "Parameter: <caret>${p("KEY")} text"
+            """.trimIndent()
+        val after = """
+            l_english:
+             text_key:0 "Parameter:  text"
             """.trimIndent()
         assertUnwrapped(before, after)
     }
 
     @Test
-    fun testIconRemover_multipleIcons() {
+    fun testParameterRemover_withFormat() {
         val before = """
             l_english:
-             text_key:0 "Icon: <caret>£unity£ £food£ text"
+             text_key:0 "Parameter: <caret>${p("KEY", "Y")} text"
             """.trimIndent()
         val after = """
             l_english:
-             text_key:0 "Icon:  £food£ text"
+             text_key:0 "Parameter:  text"
             """.trimIndent()
         assertUnwrapped(before, after)
     }
 
     @Test
-    fun testIconRemover_complexText() {
+    fun testParameterRemover_scriptedVariable() {
         val before = """
             l_english:
-             text_key:0 "Resource: <caret>£energy£ [Root.GetEnergy] ${p("AMOUNT")}"
+             text_key:0 "Variable: <caret>$@var$ text"
             """.trimIndent()
         val after = """
             l_english:
-             text_key:0 "Resource:  [Root.GetEnergy] ${p("AMOUNT")}"
+             text_key:0 "Variable:  text"
+            """.trimIndent()
+        assertUnwrapped(before, after)
+    }
+
+    @Test
+    fun testParameterRemover_multipleReferences() {
+        val before = """
+            l_english:
+             text_key:0 "Params: <caret>${p("KEY1")} ${p("KEY2")} text"
+            """.trimIndent()
+        val after = """
+            l_english:
+             text_key:0 "Params:  ${p("KEY2")} text"
             """.trimIndent()
         assertUnwrapped(before, after)
     }
@@ -226,56 +256,56 @@ class ParadoxLocalisationUnwrappersTest : UnwrapTestCase(), ChronicleTestScope {
 
     // endregion
 
-    // region ParadoxLocalisationParameterRemover
+    // region ParadoxLocalisationIconRemover
 
     @Test
-    fun testParameterRemover() {
+    fun testIconRemover() {
         val before = """
             l_english:
-             text_key:0 "Parameter: <caret>${p("KEY")} text"
+             text_key:0 "Icon: <caret>£unity£ text"
             """.trimIndent()
         val after = """
             l_english:
-             text_key:0 "Parameter:  text"
+             text_key:0 "Icon:  text"
             """.trimIndent()
         assertUnwrapped(before, after)
     }
 
     @Test
-    fun testParameterRemover_withFormat() {
+    fun testIconRemover_withParameter() {
         val before = """
             l_english:
-             text_key:0 "Parameter: <caret>${p("KEY", "Y")} text"
+             text_key:0 "Icon: <caret>£leader_skill|3£ text"
             """.trimIndent()
         val after = """
             l_english:
-             text_key:0 "Parameter:  text"
+             text_key:0 "Icon:  text"
             """.trimIndent()
         assertUnwrapped(before, after)
     }
 
     @Test
-    fun testParameterRemover_scriptedVariable() {
+    fun testIconRemover_multipleIcons() {
         val before = """
             l_english:
-             text_key:0 "Variable: <caret>$@var$ text"
+             text_key:0 "Icon: <caret>£unity£ £food£ text"
             """.trimIndent()
         val after = """
             l_english:
-             text_key:0 "Variable:  text"
+             text_key:0 "Icon:  £food£ text"
             """.trimIndent()
         assertUnwrapped(before, after)
     }
 
     @Test
-    fun testParameterRemover_multipleReferences() {
+    fun testIconRemover_complexText() {
         val before = """
             l_english:
-             text_key:0 "Params: <caret>${p("KEY1")} ${p("KEY2")} text"
+             text_key:0 "Resource: <caret>£energy£ [Root.GetEnergy] ${p("AMOUNT")}"
             """.trimIndent()
         val after = """
             l_english:
-             text_key:0 "Params:  ${p("KEY2")} text"
+             text_key:0 "Resource:  [Root.GetEnergy] ${p("AMOUNT")}"
             """.trimIndent()
         assertUnwrapped(before, after)
     }
@@ -336,36 +366,6 @@ class ParadoxLocalisationUnwrappersTest : UnwrapTestCase(), ChronicleTestScope {
         val after = """
             l_english:
              text_key:0 "Formats:  #italic italic#! more"
-            """.trimIndent()
-        assertUnwrapped(before, after)
-    }
-
-    // endregion
-
-    // region ParadoxLocalisationColorfulTextRemover
-
-    @Test
-    fun testColorfulTextRemover() {
-        val before = """
-            l_english:
-             text_key:0 "Text: <caret>§RRed text§! more"
-            """.trimIndent()
-        val after = """
-            l_english:
-             text_key:0 "Text:  more"
-            """.trimIndent()
-        assertUnwrapped(before, after)
-    }
-
-    @Test
-    fun testColorfulTextRemover_multiple() {
-        val before = """
-            l_english:
-             text_key:0 "Text: <caret>§RRed§! §GGreen§! more"
-            """.trimIndent()
-        val after = """
-            l_english:
-             text_key:0 "Text:  §GGreen§! more"
             """.trimIndent()
         assertUnwrapped(before, after)
     }

@@ -30,7 +30,7 @@ class ParadoxScriptCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider
         }
     }
 
-    override fun getConfigurableDisplayName() = ChronicleBundle.message("script.settings.name")
+    override fun getConfigurableDisplayName() = ChronicleBundle.message("script.codeStyle.settings.displayName")
 
     override fun getCodeSample(settingsType: SettingsType) = ParadoxScriptConstants.codeStyleSettingsText
 
@@ -69,16 +69,16 @@ class ParadoxScriptCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider
 
     private fun customizeSpacingSettings(consumer: CodeStyleSettingsCustomizable) {
         val spacesAroundOperatorsGroup = CodeStyleSettingsCustomizableOptions.getInstance().SPACES_AROUND_OPERATORS
-        consumer.showCustomOption(ParadoxScriptCodeStyleSettings::SPACE_AROUND_SCRIPTED_VARIABLE_SEPARATOR, ChronicleBundle.message("script.codeStyleSettings.spacing.around.scriptedVariableSeparator"), spacesAroundOperatorsGroup)
-        consumer.showCustomOption(ParadoxScriptCodeStyleSettings::SPACE_AROUND_PROPERTY_SEPARATOR, ChronicleBundle.message("script.codeStyleSettings.spacing.around.propertySeparator"), spacesAroundOperatorsGroup)
-        consumer.showCustomOption(ParadoxScriptCodeStyleSettings::SPACE_AROUND_INLINE_MATH_OPERATOR, ChronicleBundle.message("script.codeStyleSettings.spacing.around.inlineMathOperator"), spacesAroundOperatorsGroup)
+        consumer.showCustomOption(ParadoxScriptCodeStyleSettings::SPACE_AROUND_SCRIPTED_VARIABLE_SEPARATOR, ChronicleBundle.message("script.codeStyle.option.spacing.around.scriptedVariableSeparator"), spacesAroundOperatorsGroup)
+        consumer.showCustomOption(ParadoxScriptCodeStyleSettings::SPACE_AROUND_PROPERTY_SEPARATOR, ChronicleBundle.message("script.codeStyle.option.spacing.around.propertySeparator"), spacesAroundOperatorsGroup)
+        consumer.showCustomOption(ParadoxScriptCodeStyleSettings::SPACE_AROUND_INLINE_MATH_OPERATOR, ChronicleBundle.message("script.codeStyle.option.spacing.around.inlineMathOperator"), spacesAroundOperatorsGroup)
 
         val spacesWithinGroup = CodeStyleSettingsCustomizableOptions.getInstance().SPACES_WITHIN
-        consumer.showCustomOption(ParadoxScriptCodeStyleSettings::SPACE_WITHIN_BRACES, ChronicleBundle.message("script.codeStyleSettings.spacing.withIn.braces"), spacesWithinGroup)
-        consumer.showCustomOption(ParadoxScriptCodeStyleSettings::SPACE_WITHIN_EMPTY_BRACES, ChronicleBundle.message("script.codeStyleSettings.spacing.withIn.emptyBraces"), spacesWithinGroup)
-        consumer.showCustomOption(ParadoxScriptCodeStyleSettings::SPACE_WITHIN_CONDITIONAL_BLOCK_BRACKETS, ChronicleBundle.message("script.codeStyleSettings.spacing.withIn.conditionalBlockBrackets"), spacesWithinGroup)
-        consumer.showCustomOption(ParadoxScriptCodeStyleSettings::SPACE_WITHIN_CONDITIONAL_EXPRESSION_BRACKETS, ChronicleBundle.message("script.codeStyleSettings.spacing.withIn.conditionalExpressionBrackets"), spacesWithinGroup)
-        consumer.showCustomOption(ParadoxScriptCodeStyleSettings::SPACE_WITHIN_INLINE_MATH_BRACKETS, ChronicleBundle.message("script.codeStyleSettings.spacing.withIn.inlineMathBrackets"), spacesWithinGroup)
+        consumer.showCustomOption(ParadoxScriptCodeStyleSettings::SPACE_WITHIN_BRACES, ChronicleBundle.message("script.codeStyle.option.spacing.withIn.braces"), spacesWithinGroup)
+        consumer.showCustomOption(ParadoxScriptCodeStyleSettings::SPACE_WITHIN_EMPTY_BRACES, ChronicleBundle.message("script.codeStyle.option.spacing.withIn.emptyBraces"), spacesWithinGroup)
+        consumer.showCustomOption(ParadoxScriptCodeStyleSettings::SPACE_WITHIN_CONDITIONAL_BLOCK_BRACKETS, ChronicleBundle.message("script.codeStyle.option.spacing.withIn.conditionalBlockBrackets"), spacesWithinGroup)
+        consumer.showCustomOption(ParadoxScriptCodeStyleSettings::SPACE_WITHIN_CONDITIONAL_EXPRESSION_BRACKETS, ChronicleBundle.message("script.codeStyle.option.spacing.withIn.conditionalExpressionBrackets"), spacesWithinGroup)
+        consumer.showCustomOption(ParadoxScriptCodeStyleSettings::SPACE_WITHIN_INLINE_MATH_BRACKETS, ChronicleBundle.message("script.codeStyle.option.spacing.withIn.inlineMathBrackets"), spacesWithinGroup)
     }
 
     private fun customizeBlankLinesSettings(consumer: CodeStyleSettingsCustomizable) {
