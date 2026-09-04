@@ -6,6 +6,17 @@ import icu.windea.pls.ChronicleFacade
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicReference
 
+fun String.indexOfLineEnd(): Int {
+    // \n`, `\r`, `\r\n`
+    val lineBreakIndex = this.indexOfFirst { it == '\n' || it == '\r' }
+    if (lineBreakIndex == -1) return -1
+    val lineBreakChar = this[lineBreakIndex]
+    if (lineBreakChar == '\n' || lineBreakIndex == this.lastIndex) return lineBreakIndex + 1
+    val nextChar = this[lineBreakIndex + 1]
+    if (nextChar != '\n') return lineBreakIndex + 1
+    return lineBreakIndex + 2
+}
+
 fun loadText(path: String, locationClass: Class<*> = ChronicleFacade::class.java): String {
     // 让该死的 Windows 换行符见鬼去吧
     val url = path.toClasspathUrl(locationClass)

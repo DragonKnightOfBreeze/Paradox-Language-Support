@@ -7,6 +7,18 @@ import java.util.concurrent.atomic.AtomicReference
 
 class AddonExtensionsTest {
     @Test
+    fun indexOfLineEnd_test() {
+        Assert.assertEquals(-1, "text".indexOfLineEnd())
+        Assert.assertEquals(5, "text\n".indexOfLineEnd())
+        Assert.assertEquals(5, "text\r".indexOfLineEnd())
+        Assert.assertEquals(6, "text\r\n".indexOfLineEnd())
+        Assert.assertEquals(5, "text\n\n".indexOfLineEnd())
+        Assert.assertEquals(5, "text\r\r".indexOfLineEnd())
+        Assert.assertEquals(5, "text\n  ".indexOfLineEnd())
+        Assert.assertEquals(5, "text\r  ".indexOfLineEnd())
+    }
+
+    @Test
     fun runOnce_runsAndGuards_test() {
         val marker = AtomicBoolean(false)
         var count = 0
