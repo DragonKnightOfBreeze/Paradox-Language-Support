@@ -459,7 +459,7 @@ public class _ParadoxScriptLexer implements FlexLexer {
   private boolean zzEOFDone;
 
   /* user code: */
-    private ParadoxGameType gameType; // NOTE 3.0.2 unused (so not passed) atm
+    private ParadoxGameType gameType; // NOTE 3.0.2 unused (so the argument is not passed) atm
 
     // stack for context states (states that need to fallback when exit some constructs)
     private IntArrayList stateStack = null;
@@ -491,6 +491,17 @@ public class _ParadoxScriptLexer implements FlexLexer {
 
     public ParadoxGameType getGameType() {
         return this.gameType;
+    }
+
+    public void resetContext() {
+        // reset context (`stateStack` & `expectStack`) when reset the lexer
+        if (stateStack != null) stateStack.clear();
+        if (expectStack != null) expectStack.clear();
+    }
+
+    public boolean isRestartable() {
+        // require context (`stateStack` & `expectStack`) is empty (do not check `yystate()` here)
+        return (stateStack == null || stateStack.isEmpty()) && (expectStack == null || expectStack.isEmpty());
     }
 
     private void enterState(int state, int expect) {

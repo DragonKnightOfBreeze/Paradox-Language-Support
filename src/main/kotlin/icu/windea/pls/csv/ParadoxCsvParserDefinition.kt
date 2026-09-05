@@ -27,7 +27,7 @@ class ParadoxCsvParserDefinition : ParserDefinition {
 
     override fun createParser(project: Project?) = ParadoxCsvParser()
 
-    override fun createLexer(project: Project?) = ParadoxCsvLexerFactory.createLexer()
+    override fun createLexer(project: Project?) = ParadoxCsvLexerFactory.createLexer(project)
 
     override fun spaceExistenceTypeBetweenTokens(left: ASTNode?, right: ASTNode?): SpaceRequirements {
         val leftType = left?.elementType

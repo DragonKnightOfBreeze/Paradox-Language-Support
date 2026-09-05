@@ -55,6 +55,17 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
         return this.gameType;
     }
 
+    public void resetContext() {
+        // reset context (`stateStack` & `expectStack`) when reset the lexer
+        if (stateStack != null) stateStack.clear();
+        if (expectStack != null) expectStack.clear();
+    }
+
+    public boolean isRestartable() {
+        // require context (`stateStack` & `expectStack`) is empty (do not check `yystate()` here)
+        return (stateStack == null || stateStack.isEmpty()) && (expectStack == null || expectStack.isEmpty());
+    }
+
     private void enterState(int state, int expect) {
         if (stateStack == null) {
             stateStack = new IntArrayList();

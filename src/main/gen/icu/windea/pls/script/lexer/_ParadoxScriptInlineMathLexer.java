@@ -287,11 +287,23 @@ public class _ParadoxScriptInlineMathLexer implements FlexLexer {
   private boolean zzEOFDone;
 
   /* user code: */
+    private ParadoxGameType gameType; // NOTE 3.0.2 unused (so the argument is not passed) atm
+
     // state for abs operator signs (LABS_SIGN or RABS_SIGN)
     private boolean absSignState = true;
 
     public _ParadoxScriptInlineMathLexer() {
         this((java.io.Reader)null);
+        this.gameType = null;
+    }
+
+    public _ParadoxScriptInlineMathLexer(ParadoxGameType gameType) {
+        this((java.io.Reader)null);
+        this.gameType = gameType;
+    }
+
+    public ParadoxGameType getGameType() {
+        return this.gameType;
     }
 
 

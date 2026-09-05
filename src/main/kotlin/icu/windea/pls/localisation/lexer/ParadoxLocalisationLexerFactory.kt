@@ -1,7 +1,6 @@
 package icu.windea.pls.localisation.lexer
 
 import com.intellij.lexer.LayeredLexer
-import com.intellij.lexer.StringLiteralLexer
 import com.intellij.openapi.project.Project
 import com.intellij.psi.tree.IElementType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
@@ -9,9 +8,14 @@ import icu.windea.pls.model.ParadoxGameType
 
 @Suppress("UNUSED_PARAMETER")
 object ParadoxLocalisationLexerFactory {
+    private val propertyValueTokens = arrayOf(PROPERTY_VALUE_TOKEN)
+    private val textTokens = arrayOf(TEXT_TOKEN)
+    private val emptyTokens = IElementType.EMPTY_ARRAY
+
     @JvmStatic
-    fun createLexer(project: Project? = null): ParadoxLocalisationLexer {
-        return ParadoxLocalisationLexer()
+    fun createLexer(project: Project? = null, gameType: ParadoxGameType? = null): ParadoxLocalisationLexer {
+        // NOTE 3.0.2 `gameType` is unused (so the argument is not passed) atm
+        return ParadoxLocalisationLexer(gameType)
     }
 
     @JvmStatic
@@ -20,24 +24,25 @@ object ParadoxLocalisationLexerFactory {
     }
 
     @JvmStatic
-    fun createLayeredLexer(project: Project? = null, gameType: ParadoxGameType? = null): LayeredLexer {
-        val lexer = LayeredLexer(createLexer(project))
-        val textLexer = LayeredLexer(createTextLexer(project, gameType))
-        lexer.registerSelfStoppingLayer(textLexer, arrayOf(PROPERTY_VALUE_TOKEN), IElementType.EMPTY_ARRAY)
-        return lexer
+    fun createLayeredLexer(project: Project? = null, gameType: ParadoxGameType? = null): ParadoxLocalisationLayeredLexer {
+        return ParadoxLocalisationLayeredLexer(gameType)
     }
 
     @JvmStatic
-    fun createHighlightingLexer(project: Project? = null, gameType: ParadoxGameType? = null): LayeredLexer {
-        val lexer = LayeredLexer(createLexer(project))
-        val textLexer = LayeredLexer(createTextLexer(project, gameType))
-        lexer.registerSelfStoppingLayer(textLexer, arrayOf(PROPERTY_VALUE_TOKEN), IElementType.EMPTY_ARRAY)
-        textLexer.registerSelfStoppingLayer(createStringLiteralLexer(TEXT_TOKEN), arrayOf(TEXT_TOKEN), IElementType.EMPTY_ARRAY)
-        return lexer
+    fun createHighlightingLexer(project: Project? = null, gameType: ParadoxGameType? = null): ParadoxLocalisationHighlightingLexer {
+        return ParadoxLocalisationHighlightingLexer(gameType)
     }
 
     @JvmStatic
-    fun createStringLiteralLexer(elementType: IElementType): StringLiteralLexer {
-        return ParadoxLocalisationTextLiteralLexer(elementType)
+    fun registerTextLexer(lexer: LayeredLexer, gameType: ParadoxGameType?) {
+        val textLexer = ParadoxLocalisationTextLexer(gameType)
+        lexer.registerSelfStoppingLayer(textLexer, propertyValueTokens, emptyTokens)
+    }
+
+    @JvmStatic
+    fun registerTextLexerWithLiteralLexer(lexer: LayeredLexer, gameType: ParadoxGameType?) {
+        val textLexer = LayeredLexer(ParadoxLocalisationTextLexer(gameType))
+        lexer.registerSelfStoppingLayer(textLexer, propertyValueTokens, emptyTokens)
+        textLexer.registerSelfStoppingLayer(ParadoxLocalisationTextLiteralLexer(TEXT_TOKEN), textTokens, emptyTokens)
     }
 }
