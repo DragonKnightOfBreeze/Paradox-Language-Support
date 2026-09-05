@@ -30,7 +30,7 @@ object ParadoxScriptParserUtil : GeneratedParserUtilBase() {
         while (true) {
             i++
             val t = b.rawLookup(i) // token after first LHS part (e.g., PROPERTY_KEY_TOKEN)
-            if (t == null) return true // null -> should be EOF -> return true for better error report
+            if (t == null) return false // null -> should be EOF
             when (t) {
                 TokenType.WHITE_SPACE, COMMENT -> end = true
                 in ACCEPT_LHS_TOKENS -> return true
