@@ -39,6 +39,18 @@ public class ParadoxLocalisationCommandImpl extends ParadoxLocalisationRichTextI
   }
 
   @Override
+  @NotNull
+  public List<ParadoxLocalisationContextTagPart> getContextTagPartList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxLocalisationContextTagPart.class);
+  }
+
+  @Override
+  @Nullable
+  public ParadoxLocalisationTagSensitiveText getTagSensitiveText() {
+    return PsiTreeUtil.getChildOfType(this, ParadoxLocalisationTagSensitiveText.class);
+  }
+
+  @Override
   public @Nullable ParadoxLocalisationCommandArgument getArgumentElement() {
     return ParadoxLocalisationPsiImplUtil.getArgumentElement(this);
   }

@@ -61,10 +61,11 @@ locale ::= LOCALE_TOKEN COLON {
   stubClass="icu.windea.pls.localisation.psi.stubs.ParadoxLocalisationLocaleStub"
   implements=[
     "com.intellij.psi.NavigatablePsiElement"
+    "icu.windea.pls.core.psi.PsiPresentableElement"
   ]
   methods=[
     getIdElement
-    getIcon getName setName getIElementType getReference getReferences
+    getIcon getName setName getIElementType getPresentableText getReference getReferences
   ]
 }
 
@@ -75,10 +76,12 @@ property ::= property_key COLON property_number? property_value {
   stubClass="icu.windea.pls.localisation.psi.stubs.ParadoxLocalisationPropertyStub"
   implements=[
     "com.intellij.psi.NavigatablePsiElement"
+    "icu.windea.pls.core.psi.PsiPresentableElement"
     "icu.windea.pls.localisation.psi.ParadoxLocalisationNamedElement"
   ]
   methods=[
-    getIcon getName setName getNameIdentifier getTextOffset getType getValue setValue getIElementType isEquivalentTo
+    getIcon getName setName getNameIdentifier getTextOffset getType getValue setValue
+    getIElementType isEquivalentTo getPresentableText
   ]
 }
 
@@ -121,11 +124,11 @@ private property_value_unquoted ::= PROPERTY_VALUE_TOKEN RIGHT_QUOTE?
 
 // within localisation text rules (lazy-parsing, from PROPERTY_VALUE_TOKEN)
 
-text_root ::= text_items {
+text_root ::= string tag_part? string_variant_set? {
   extraRoot=true
 }
-private text_items ::= text_item+
-private text_item ::= rich_text | COLORFUL_TEXT_END | TEXT_FORMAT_END
+private string ::= string_item+
+private string_item ::= rich_text | COLORFUL_TEXT_END | TEXT_FORMAT_END
 
 rich_text ::= text | colorful_text | parameter | command | concept_command | icon | text_icon | text_format {
   implements=[
@@ -142,7 +145,7 @@ text ::= TEXT_TOKEN {
 
 // see: https://stellaris.paradoxwikis.com/Localisation_modding#Color_Codes
 // end marker is optional
-colorful_text ::= COLORFUL_TEXT_START color_name colorful_text_items? COLORFUL_TEXT_END? {
+colorful_text ::= COLORFUL_TEXT_START color_name colorful_text_string? COLORFUL_TEXT_END? {
   pin=1
   extends=rich_text
   implements=[
@@ -155,14 +158,14 @@ colorful_text ::= COLORFUL_TEXT_START color_name colorful_text_items? COLORFUL_T
   ]
 }
 private color_name ::= COLOR_TOKEN
-private colorful_text_items ::= colorful_text_item+
-private colorful_text_item ::= rich_text | TEXT_FORMAT_END
+private colorful_text_string ::= colorful_text_string_item+
+private colorful_text_string_item ::= rich_text | TEXT_FORMAT_END
 
 // localisation parameter rules
 
 // see: https://stellaris.paradoxwikis.com/Localisation_modding#.24_Codes
 // may be resolved to localisation, parameter, or system statistics in GUI elements
-parameter ::= PARAMETER_START parameter_name parameter_suffix? PARAMETER_END {
+parameter ::= PARAMETER_START parameter_name parameter_tail? parameter_suffix? PARAMETER_END {
   pin=1
   extends=rich_text
   implements=[
@@ -177,6 +180,7 @@ parameter ::= PARAMETER_START parameter_name parameter_suffix? PARAMETER_END {
 }
 // can be command or scripted variable reference
 private parameter_name ::= PARAMETER_TOKEN | command | scripted_variable_reference
+private parameter_tail ::= context_tag_part
 private parameter_suffix ::= PIPE parameter_argument?
 parameter_argument ::= ARGUMENT_TOKEN {
   implements=[
@@ -202,7 +206,7 @@ scripted_variable_reference ::= AT SCRIPTED_VARIABLE_REFERENCE_TOKEN {
 // localisation command rules
 
 // see: https://stellaris.paradoxwikis.com/Localisation_modding#Bracket_Commands
-command ::= <<isCommand>> LEFT_BRACKET command_text? command_suffix? RIGHT_BRACKET {
+command ::= <<isCommand>> LEFT_BRACKET command_text? context_tag_part? command_tail? command_suffix? RIGHT_BRACKET {
   pin=2
   extends=rich_text
   implements=[
@@ -226,6 +230,7 @@ command_text ::= command_text_content {
 }
 // can be parameterized (by using parameters)
 private command_text_content ::= ( COMMAND_TEXT_TOKEN | parameter )+
+private command_tail ::= context_tag_part | tag_sensitive_text
 private command_suffix ::= PIPE command_argument?
 command_argument ::= command_argument_name {
   implements=[
@@ -243,7 +248,7 @@ private command_argument_name ::= ( ARGUMENT_TOKEN | parameter )+
 
 // [stellaris] localisation concept command rules (as special command rules)
 
-concept_command ::= LEFT_BRACKET LEFT_SINGLE_QUOTE concept_name? RIGHT_SINGLE_QUOTE concept_command_body? RIGHT_BRACKET {
+concept_command ::= LEFT_BRACKET LEFT_SINGLE_QUOTE concept_name? RIGHT_SINGLE_QUOTE ( COMMA concept_text? )? RIGHT_BRACKET {
   pin=2
   extends=rich_text
   methods=[
@@ -262,14 +267,13 @@ concept_name ::= concept_name_content {
 }
 // can be parameterized (by using parameters)
 private concept_name_content ::= ( CONCEPT_NAME_TOKEN | parameter )+
-private concept_command_body ::= COMMA concept_text?
-concept_text ::= concept_text_items {
+concept_text ::= concept_string {
   implements=[
     "icu.windea.pls.localisation.psi.ParadoxLocalisationRichTextContainer"
   ]
 }
-private concept_text_items ::= concept_text_item+
-private concept_text_item ::= rich_text | COLORFUL_TEXT_END | TEXT_FORMAT_END
+private concept_string ::= concept_string_item+
+private concept_string_item ::= rich_text | COLORFUL_TEXT_END | TEXT_FORMAT_END
 
 // localisation icon rules
 
@@ -332,10 +336,86 @@ text_format ::= TEXT_FORMAT_START text_format_name text_format_text? TEXT_FORMAT
 }
 // can be parameterized (by using parameters and commands)
 private text_format_name ::= ( TEXT_FORMAT_TOKEN | parameter | command )+
-text_format_text ::= text_format_text_items {
+text_format_text ::= text_format_string {
   implements=[
     "icu.windea.pls.localisation.psi.ParadoxLocalisationRichTextContainer"
   ]
 }
-private text_format_text_items ::= text_format_text_item+
-private text_format_text_item ::= rich_text | COLORFUL_TEXT_END
+private text_format_string ::= text_format_string_item+
+private text_format_string_item ::= rich_text | COLORFUL_TEXT_END
+
+// grammatical syntax
+// see: localisation/99_README_GRAMMAR.txt
+// available for any (at least major) game types at this moment
+
+// tag rules
+
+tag ::= TAG_TOKEN {
+  implements=[
+    "com.intellij.psi.NavigatablePsiElement"
+    "icu.windea.pls.core.psi.PsiPresentableElement"
+  ]
+  methods=[
+    getIdElement
+    getName getPresentableText
+  ]
+}
+
+context_tag ::= CONTEXT_TAG_TOKEN {
+  implements=[
+    "com.intellij.psi.NavigatablePsiElement"
+    "icu.windea.pls.core.psi.PsiPresentableElement"
+  ]
+  methods=[
+    getIdElement
+    getName getPresentableText
+  ]
+}
+
+// string variant set rules
+// e.g., `|||B|||t1:C|||t2,t3:D` in `A|||B|||t1:C|||t2,t3:D`
+
+string_variant_set ::= string_variant+
+string_variant ::= STRING_VARIANT_PREFIX string_variant_tag_part? string_variant_string? tag_part? {
+  pin=1
+}
+string_variant_tag_part ::= tag ( COMMA tag )* COLON
+string_variant_string ::= string_variant_string_item+
+private string_variant_string_item ::= rich_text | COLORFUL_TEXT_END | TEXT_FORMAT_END
+
+// tag-sensitive text rules
+// e.g., `::a <1>`
+
+tag_sensitive_text ::= TAG_SENSITIVE_TEXT_PREFIX tag_sensitive_text_string? tag_part? string_variant_set? {
+  pin=1
+}
+tag_sensitive_text_string ::= tag_sensitive_text_item+
+private tag_sensitive_text_item ::= tagged_parameter | rich_text | COLORFUL_TEXT_END | TEXT_FORMAT_END
+
+tagged_parameter ::= TAGGED_PARAMETER_START tagged_parameter_name TAGGED_PARAMETER_END {
+  pin=1
+  implements=[
+    "com.intellij.psi.NavigatablePsiElement"
+    "icu.windea.pls.core.psi.PsiPresentableElement"
+  ]
+  methods=[
+    getIdElement
+    getName getPresentableText
+  ]
+}
+private tagged_parameter_name ::= PARAMETER_TOKEN // still use `PARAMETER_TOKEN` here , same as `parameter`
+
+// tag part rules
+// e.g., `&!t1,t2` in `text&!t1,t2`
+
+tag_part ::= TAG_PART_PREFIX tag ( COMMA tag )* {
+  pin=1
+}
+
+// context tag part rules
+// e.g., `&t` in `[From.GetName&t]`
+// e.g., `&t` in `$1&t$`
+
+context_tag_part ::= CONTEXT_TAG_PART_PREFIX context_tag {
+  pin=1
+}

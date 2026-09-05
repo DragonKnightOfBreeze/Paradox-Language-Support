@@ -81,6 +81,9 @@ class ParadoxLocalisationParsingTest : ParsingTestCase("localisation/syntax", "t
     fun edge_chars_of_scripted_variable_references() = doTest(true)
     @Test
     fun edge_chars_of_parameters() = doTest(true)
+    // TODO
+    // @Test
+    // fun edge_fallback_tokens() = doTest(true)
 
     @Test
     fun error_unclosed_quotes() = doTest(true)

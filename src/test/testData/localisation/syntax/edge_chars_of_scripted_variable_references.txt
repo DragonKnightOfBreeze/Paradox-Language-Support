@@ -50,7 +50,7 @@ ParadoxLocalisationFile: edge_chars_of_scripted_variable_references.test.yml(0,1
         PsiElement(PROPERTY_VALUE_TOKEN)(105,113)
           ParadoxLocalisationParameter: (105,106)
             PsiElement(PARAMETER_START)('$')(105,106)
-            PsiErrorElement:'@', LEFT_BRACKET, PARAMETER_END, PARAMETER_TOKEN or '|' expected, got '@'(106,106)
+            PsiErrorElement:'@', CONTEXT_TAG_PART_PREFIX, LEFT_BRACKET, PARAMETER_END, PARAMETER_TOKEN or '|' expected, got '@'(106,106)
               <empty list>
           PsiElement(@)('@')(106,107)
           PsiElement(TEXT_TOKEN)('0aA0_$')(107,113)

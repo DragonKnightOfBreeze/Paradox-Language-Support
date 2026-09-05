@@ -220,7 +220,7 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun getIdElement(element: ParadoxLocalisationParameter): PsiElement? {
-        return element.firstChild?.nextSibling?.takeIf { it.elementType === PARAMETER_TOKEN }
+        return element.firstChild?.nextSibling?.takeIf { it.elementType === PARAMETER_TOKEN }?.takeIf { ParadoxLocalisationPsiService.isIdElement(it) }
     }
 
     @JvmStatic
@@ -456,6 +456,51 @@ object ParadoxLocalisationPsiImplUtil {
         val newIdElement = ParadoxLocalisationElementFactory.createTextFormat(element.project, name).idElement ?: throw IncorrectOperationException()
         idElement.replace(newIdElement)
         return element
+    }
+
+    // endregion
+
+    // region ParadoxLocalisationTag
+
+    @JvmStatic
+    fun getIdElement(element: ParadoxLocalisationTag): PsiElement {
+        return element.firstChild?.takeIf { it.elementType == TAG_TOKEN }!!
+    }
+
+    @JvmStatic
+    fun getName(element: ParadoxLocalisationTag): String {
+        val idElement = element.idElement
+        return idElement.text
+    }
+
+    // endregion
+
+    // region ParadoxLocalisationContextTag
+
+    @JvmStatic
+    fun getIdElement(element: ParadoxLocalisationContextTag): PsiElement {
+        return element.firstChild?.takeIf { it.elementType == CONTEXT_TAG_TOKEN }!!
+    }
+
+    @JvmStatic
+    fun getName(element: ParadoxLocalisationContextTag): String {
+        val idElement = element.idElement
+        return idElement.text
+    }
+
+    // endregion
+
+    // region ParadoxLocalisationTaggedParameter
+
+    @JvmStatic
+    fun getIdElement(element: ParadoxLocalisationTaggedParameter): PsiElement? {
+        return element.firstChild?.nextSibling?.takeIf { it.elementType === PARAMETER_TOKEN }
+    }
+
+    @JvmStatic
+    fun getName(element: ParadoxLocalisationTaggedParameter): String? {
+        val idElement = element.idElement ?: return null
+        return idElement.text
     }
 
     // endregion

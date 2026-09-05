@@ -4,20 +4,19 @@ package icu.windea.pls.localisation.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.NavigatablePsiElement;
+import icu.windea.pls.core.psi.PsiPresentableElement;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 
-public interface ParadoxLocalisationTextRoot extends PsiElement {
+public interface ParadoxLocalisationTaggedParameter extends NavigatablePsiElement, PsiPresentableElement {
 
-  @NotNull
-  List<ParadoxLocalisationRichText> getRichTextList();
+  @Nullable PsiElement getIdElement();
 
-  @Nullable
-  ParadoxLocalisationStringVariantSet getStringVariantSet();
+  @Nullable String getName();
 
-  @Nullable
-  ParadoxLocalisationTagPart getTagPart();
+  @NotNull String getPresentableText();
 
   @NotNull GlobalSearchScope getResolveScope();
 

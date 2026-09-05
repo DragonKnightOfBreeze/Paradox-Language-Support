@@ -12,6 +12,9 @@ import com.intellij.psi.search.SearchScope;
 public interface ParadoxLocalisationParameter extends ParadoxLocalisationRichText, ParadoxLocalisationInterpolation, ParadoxLocalisationInterpolationContainer, ParadoxLocalisationArgumentAwareElement {
 
   @Nullable
+  ParadoxLocalisationContextTagPart getContextTagPart();
+
+  @Nullable
   ParadoxLocalisationScriptedVariableReference getScriptedVariableReference();
 
   @Nullable PsiElement getIdElement();

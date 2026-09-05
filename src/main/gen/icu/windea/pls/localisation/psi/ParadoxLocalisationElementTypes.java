@@ -15,6 +15,8 @@ public interface ParadoxLocalisationElementTypes {
   IElementType CONCEPT_COMMAND = ParadoxLocalisationElementTypeFactory.getElementType("CONCEPT_COMMAND");
   IElementType CONCEPT_NAME = ParadoxLocalisationElementTypeFactory.getElementType("CONCEPT_NAME");
   IElementType CONCEPT_TEXT = ParadoxLocalisationElementTypeFactory.getElementType("CONCEPT_TEXT");
+  IElementType CONTEXT_TAG = ParadoxLocalisationElementTypeFactory.getElementType("CONTEXT_TAG");
+  IElementType CONTEXT_TAG_PART = ParadoxLocalisationElementTypeFactory.getElementType("CONTEXT_TAG_PART");
   IElementType ICON = ParadoxLocalisationElementTypeFactory.getElementType("ICON");
   IElementType ICON_ARGUMENT = ParadoxLocalisationElementTypeFactory.getElementType("ICON_ARGUMENT");
   IElementType LOCALE = ParadoxLocalisationElementTypeFactory.getElementType("LOCALE");
@@ -26,6 +28,15 @@ public interface ParadoxLocalisationElementTypes {
   IElementType PROPERTY_VALUE = ParadoxLocalisationElementTypeFactory.getElementType("PROPERTY_VALUE");
   IElementType RICH_TEXT = ParadoxLocalisationElementTypeFactory.getElementType("RICH_TEXT");
   IElementType SCRIPTED_VARIABLE_REFERENCE = ParadoxLocalisationElementTypeFactory.getElementType("SCRIPTED_VARIABLE_REFERENCE");
+  IElementType STRING_VARIANT = ParadoxLocalisationElementTypeFactory.getElementType("STRING_VARIANT");
+  IElementType STRING_VARIANT_SET = ParadoxLocalisationElementTypeFactory.getElementType("STRING_VARIANT_SET");
+  IElementType STRING_VARIANT_STRING = ParadoxLocalisationElementTypeFactory.getElementType("STRING_VARIANT_STRING");
+  IElementType STRING_VARIANT_TAG_PART = ParadoxLocalisationElementTypeFactory.getElementType("STRING_VARIANT_TAG_PART");
+  IElementType TAG = ParadoxLocalisationElementTypeFactory.getElementType("TAG");
+  IElementType TAGGED_PARAMETER = ParadoxLocalisationElementTypeFactory.getElementType("TAGGED_PARAMETER");
+  IElementType TAG_PART = ParadoxLocalisationElementTypeFactory.getElementType("TAG_PART");
+  IElementType TAG_SENSITIVE_TEXT = ParadoxLocalisationElementTypeFactory.getElementType("TAG_SENSITIVE_TEXT");
+  IElementType TAG_SENSITIVE_TEXT_STRING = ParadoxLocalisationElementTypeFactory.getElementType("TAG_SENSITIVE_TEXT_STRING");
   IElementType TEXT = ParadoxLocalisationElementTypeFactory.getElementType("TEXT");
   IElementType TEXT_FORMAT = ParadoxLocalisationElementTypeFactory.getElementType("TEXT_FORMAT");
   IElementType TEXT_FORMAT_TEXT = ParadoxLocalisationElementTypeFactory.getElementType("TEXT_FORMAT_TEXT");
@@ -42,6 +53,8 @@ public interface ParadoxLocalisationElementTypes {
   IElementType COMMAND_TEXT_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("COMMAND_TEXT_TOKEN");
   IElementType COMMENT = ParadoxLocalisationElementTypeFactory.getTokenType("COMMENT");
   IElementType CONCEPT_NAME_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("CONCEPT_NAME_TOKEN");
+  IElementType CONTEXT_TAG_PART_PREFIX = ParadoxLocalisationElementTypeFactory.getTokenType("CONTEXT_TAG_PART_PREFIX");
+  IElementType CONTEXT_TAG_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("CONTEXT_TAG_TOKEN");
   IElementType EOL = ParadoxLocalisationElementTypeFactory.getTokenType("<eol>");
   IElementType ICON_END = ParadoxLocalisationElementTypeFactory.getTokenType("ICON_END");
   IElementType ICON_START = ParadoxLocalisationElementTypeFactory.getTokenType("ICON_START");
@@ -61,6 +74,12 @@ public interface ParadoxLocalisationElementTypes {
   IElementType RIGHT_QUOTE = ParadoxLocalisationElementTypeFactory.getTokenType("RIGHT_QUOTE");
   IElementType RIGHT_SINGLE_QUOTE = ParadoxLocalisationElementTypeFactory.getTokenType("RIGHT_SINGLE_QUOTE");
   IElementType SCRIPTED_VARIABLE_REFERENCE_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("SCRIPTED_VARIABLE_REFERENCE_TOKEN");
+  IElementType STRING_VARIANT_PREFIX = ParadoxLocalisationElementTypeFactory.getTokenType("STRING_VARIANT_PREFIX");
+  IElementType TAGGED_PARAMETER_END = ParadoxLocalisationElementTypeFactory.getTokenType("TAGGED_PARAMETER_END");
+  IElementType TAGGED_PARAMETER_START = ParadoxLocalisationElementTypeFactory.getTokenType("TAGGED_PARAMETER_START");
+  IElementType TAG_PART_PREFIX = ParadoxLocalisationElementTypeFactory.getTokenType("TAG_PART_PREFIX");
+  IElementType TAG_SENSITIVE_TEXT_PREFIX = ParadoxLocalisationElementTypeFactory.getTokenType("TAG_SENSITIVE_TEXT_PREFIX");
+  IElementType TAG_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("TAG_TOKEN");
   IElementType TEXT_FORMAT_END = ParadoxLocalisationElementTypeFactory.getTokenType("TEXT_FORMAT_END");
   IElementType TEXT_FORMAT_START = ParadoxLocalisationElementTypeFactory.getTokenType("TEXT_FORMAT_START");
   IElementType TEXT_FORMAT_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("TEXT_FORMAT_TOKEN");
@@ -93,6 +112,12 @@ public interface ParadoxLocalisationElementTypes {
       else if (type == CONCEPT_TEXT) {
         return new ParadoxLocalisationConceptTextImpl(node);
       }
+      else if (type == CONTEXT_TAG) {
+        return new ParadoxLocalisationContextTagImpl(node);
+      }
+      else if (type == CONTEXT_TAG_PART) {
+        return new ParadoxLocalisationContextTagPartImpl(node);
+      }
       else if (type == ICON) {
         return new ParadoxLocalisationIconImpl(node);
       }
@@ -122,6 +147,33 @@ public interface ParadoxLocalisationElementTypes {
       }
       else if (type == SCRIPTED_VARIABLE_REFERENCE) {
         return new ParadoxLocalisationScriptedVariableReferenceImpl(node);
+      }
+      else if (type == STRING_VARIANT) {
+        return new ParadoxLocalisationStringVariantImpl(node);
+      }
+      else if (type == STRING_VARIANT_SET) {
+        return new ParadoxLocalisationStringVariantSetImpl(node);
+      }
+      else if (type == STRING_VARIANT_STRING) {
+        return new ParadoxLocalisationStringVariantStringImpl(node);
+      }
+      else if (type == STRING_VARIANT_TAG_PART) {
+        return new ParadoxLocalisationStringVariantTagPartImpl(node);
+      }
+      else if (type == TAG) {
+        return new ParadoxLocalisationTagImpl(node);
+      }
+      else if (type == TAGGED_PARAMETER) {
+        return new ParadoxLocalisationTaggedParameterImpl(node);
+      }
+      else if (type == TAG_PART) {
+        return new ParadoxLocalisationTagPartImpl(node);
+      }
+      else if (type == TAG_SENSITIVE_TEXT) {
+        return new ParadoxLocalisationTagSensitiveTextImpl(node);
+      }
+      else if (type == TAG_SENSITIVE_TEXT_STRING) {
+        return new ParadoxLocalisationTagSensitiveTextStringImpl(node);
       }
       else if (type == TEXT) {
         return new ParadoxLocalisationTextImpl(node);

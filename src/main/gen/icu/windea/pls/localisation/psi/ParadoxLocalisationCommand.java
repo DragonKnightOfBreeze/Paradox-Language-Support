@@ -15,6 +15,12 @@ public interface ParadoxLocalisationCommand extends ParadoxLocalisationRichText,
   @Nullable
   ParadoxLocalisationCommandText getCommandText();
 
+  @NotNull
+  List<ParadoxLocalisationContextTagPart> getContextTagPartList();
+
+  @Nullable
+  ParadoxLocalisationTagSensitiveText getTagSensitiveText();
+
   @Nullable ParadoxLocalisationCommandArgument getArgumentElement();
 
   @NotNull Icon getIcon(@IconFlags int flags);

@@ -33,6 +33,12 @@ public class ParadoxLocalisationParameterImpl extends ParadoxLocalisationRichTex
 
   @Override
   @Nullable
+  public ParadoxLocalisationContextTagPart getContextTagPart() {
+    return PsiTreeUtil.getChildOfType(this, ParadoxLocalisationContextTagPart.class);
+  }
+
+  @Override
+  @Nullable
   public ParadoxLocalisationScriptedVariableReference getScriptedVariableReference() {
     return PsiTreeUtil.getChildOfType(this, ParadoxLocalisationScriptedVariableReference.class);
   }

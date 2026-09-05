@@ -14,14 +14,14 @@ import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 
-public class ParadoxLocalisationTextRootImpl extends ASTWrapperPsiElement implements ParadoxLocalisationTextRoot {
+public class ParadoxLocalisationStringVariantSetImpl extends ASTWrapperPsiElement implements ParadoxLocalisationStringVariantSet {
 
-  public ParadoxLocalisationTextRootImpl(@NotNull ASTNode node) {
+  public ParadoxLocalisationStringVariantSetImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull ParadoxLocalisationVisitor visitor) {
-    visitor.visitTextRoot(this);
+    visitor.visitStringVariantSet(this);
   }
 
   @Override
@@ -32,20 +32,8 @@ public class ParadoxLocalisationTextRootImpl extends ASTWrapperPsiElement implem
 
   @Override
   @NotNull
-  public List<ParadoxLocalisationRichText> getRichTextList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxLocalisationRichText.class);
-  }
-
-  @Override
-  @Nullable
-  public ParadoxLocalisationStringVariantSet getStringVariantSet() {
-    return PsiTreeUtil.getChildOfType(this, ParadoxLocalisationStringVariantSet.class);
-  }
-
-  @Override
-  @Nullable
-  public ParadoxLocalisationTagPart getTagPart() {
-    return PsiTreeUtil.getChildOfType(this, ParadoxLocalisationTagPart.class);
+  public List<ParadoxLocalisationStringVariant> getStringVariantList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxLocalisationStringVariant.class);
   }
 
   @Override

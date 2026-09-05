@@ -8,16 +8,13 @@ import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 
-public interface ParadoxLocalisationTextRoot extends PsiElement {
+public interface ParadoxLocalisationTagSensitiveTextString extends PsiElement {
 
   @NotNull
   List<ParadoxLocalisationRichText> getRichTextList();
 
-  @Nullable
-  ParadoxLocalisationStringVariantSet getStringVariantSet();
-
-  @Nullable
-  ParadoxLocalisationTagPart getTagPart();
+  @NotNull
+  List<ParadoxLocalisationTaggedParameter> getTaggedParameterList();
 
   @NotNull GlobalSearchScope getResolveScope();
 

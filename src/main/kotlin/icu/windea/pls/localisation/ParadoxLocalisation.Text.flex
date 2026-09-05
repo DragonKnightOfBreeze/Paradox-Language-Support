@@ -35,6 +35,12 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
     private static final int EXPECT_COMMAND = 4;
     private static final int EXPECT_TEXT_ICON = 5;
     private static final int EXPECT_TEXT_FORMAT = 6;
+    private static final int EXPECT_STRING_VARIANT = 7;
+    private static final int EXPECT_STRING_VARIANT_TAG_PART = 8;
+    private static final int EXPECT_TAG_SENSITIVE_TEXT = 9;
+    private static final int EXPECT_TAGGED_PARAMETER = 10;
+    private static final int EXPECT_TAG_PART = 11;
+    private static final int EXPECT_CONTEXT_TAG_PART = 12;
 
     public _ParadoxLocalisationTextLexer() {
         this((java.io.Reader)null);
@@ -111,18 +117,6 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
         char c = yycharat(1);
         return isExactWord(c); // exact word after prefix
     }
-
-    private boolean isParameter() {
-        if (yylength() <= 1) return false;
-        char c = yycharat(yylength() - 1);
-        return c == '$'; // parameter end marker at end
-    }
-
-    private boolean isCommand() {
-        if (yylength() <= 1) return false;
-        char c = yycharat(yylength() - 1);
-        return c != '['; // not left bracket after prefix (double left brackets -> escaped)
-    }
 %}
 
 %public
@@ -135,12 +129,10 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 %s IN_COLOR_ID
 %s IN_COLORFUL_TEXT
 
-%s IN_PARAMETER_CHECK
 %s IN_PARAMETER
 %s IN_PARAMETER_ARGUMENT
 %s IN_SCRIPTED_VARIABLE_REFERENCE
 
-%s IN_COMMAND_CHECK
 %s IN_COMMAND
 %s IN_COMMAND_TEXT
 %s IN_COMMAND_ARGUMENT
@@ -157,6 +149,15 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 %s IN_TEXT_FORMAT
 %s IN_TEXT_FORMAT_TEXT
 
+%s IN_STRING_VARIANT
+%s IN_STRING_VARIANT_TAG_PART
+
+%s IN_TAG_SENSITIVE_TEXT
+%s IN_TAGGED_PARAMETER
+
+%s IN_TAG_PART
+%s IN_CONTEXT_TAG_PART
+
 %unicode
 
 Blank = \s+
@@ -170,7 +171,6 @@ InterpolationLeadChar = [$\[]
 
 ScriptedVariableToken = {IdentifierToken} // identifier
 
-ParameterCheck = \$(\S*\$|.?) // no blank in $...$
 ParameterChar = {IdentifierChar}|[.\-'] // `.-'` is allowed additionally
 ParameterToken = {ParameterChar}+ // leading number is allowed & `.-'` is allowed additionally
 
@@ -180,12 +180,11 @@ ArgumentToken = {ArgumentChar}+
 ColorfulTextCheck = §.?
 ColorToken = {IdentifierChar} // identifier char
 
-CommandCheck = \[.?
 CommandTextChar = [^\[\]\|\r\n] // `[]` within single quotes are not allowed?
 CommandTextBoundChar = [^\[\]\|\s] // `[]` within single quotes are not allowed?
 CommandTextToken = {CommandTextBoundChar}({CommandTextChar}*{CommandTextBoundChar})? // inner whitespaces are allowed
 
-ConceptNameChar = [A-Za-z0-9_:] // `:` is allowed additionally
+ConceptNameChar = {IdentifierChar}|[:] // `:` is allowed additionally
 ConceptNameToken = {ConceptNameChar}+
 
 IconChar = {IdentifierChar}|[\-/\\] // `-/\` is allowed additionally
@@ -201,13 +200,20 @@ TextFormatChar = {IdentifierChar}|[:'] // `:'` is allowed additionally
 TextFormatToken = {TextFormatChar}+ // leading number is allowed
 TextFormatWildcardLeadChar = {TextFormatChar}|{InterpolationLeadChar}
 
-TextToken = ([^§£\$\[\]#@]|\\[\s\S])+
+TextToken = ([^\$\[\]§£#@|&]|\\[\s\S])+
+TagSensitiveTextToken = ([^<\$\[\]§£#@|&]|\\[\s\S])+ // exclude `<` additionally
+
+TagChar = {IdentifierChar} // identifier
+TagToken = {TextIconChar}+ // leading number is allowed
+
+ContextTagChar = {IdentifierChar} // identifier
+ContextTagToken = {TextIconChar}+ // leading number is allowed
 
 %%
 
 // common rules
 
-<YYINITIAL, IN_COLORFUL_TEXT, IN_CONCEPT_TEXT, IN_TEXT_FORMAT_TEXT> {
+<YYINITIAL, IN_COLORFUL_TEXT, IN_CONCEPT_TEXT, IN_TEXT_FORMAT_TEXT, IN_STRING_VARIANT, IN_TAG_SENSITIVE_TEXT> {
     "§" {
         enterState(yystate(), EXPECT_COLORFUL_TEXT);
         yypushback(yylength());
@@ -218,24 +224,37 @@ TextToken = ([^§£\$\[\]#@]|\\[\s\S])+
         return COLORFUL_TEXT_END;
     }
 
-    "$" {
+    "$" / \S*"$" { // heuristic: require no blank in `$...$`
         enterState(yystate(), EXPECT_PARAMETER);
-        yypushback(yylength());
-        yybegin(IN_PARAMETER_CHECK);
+        yybegin(IN_PARAMETER);
+        return PARAMETER_START;
+    }
+    "$" {
+        return getFallbackToken();
     }
 
-    "[" {
+    "[[" {
+        return getFallbackToken();
+    }
+    "[" { // heuristic: require `[` is not escaped (double left brackets)
         enterState(yystate(), EXPECT_COMMAND);
-        yypushback(yylength());
-        yybegin(IN_COMMAND_CHECK);
+        yybegin(IN_COMMAND);
+        return LEFT_BRACKET;
     }
     "]" {
-        if (yystate() != IN_CONCEPT_TEXT) return getFallbackToken();
-        exitState(EXPECT_COMMAND);
-        return RIGHT_BRACKET;
+        int state = yystate();
+        if (state == IN_CONCEPT_TEXT) {
+            exitState(EXPECT_COMMAND);
+            return RIGHT_BRACKET;
+        } else if (state == IN_TAG_SENSITIVE_TEXT) {
+            exitState(EXPECT_TAG_SENSITIVE_TEXT);
+            exitState(EXPECT_COMMAND);
+            return RIGHT_BRACKET;
+        }
+        return getFallbackToken();
     }
 
-    "£" / {IconWildcardLeadChar} {
+    "£" / {IconWildcardLeadChar} { // require next character be a valid identifier character
         enterState(yystate(), EXPECT_ICON);
         yybegin(IN_ICON);
         return ICON_START;
@@ -244,7 +263,7 @@ TextToken = ([^§£\$\[\]#@]|\\[\s\S])+
         return getFallbackToken();
     }
 
-    "@" / {TextIconWildcardLeadChar} {
+    "@" / {TextIconWildcardLeadChar} { // require next character be a valid identifier character
         if (!ParadoxSyntaxConstraint.LocalisationTextIcon.testTarget(this)) return getFallbackToken();
         enterState(yystate(), EXPECT_TEXT_ICON);
         yybegin(IN_TEXT_ICON);
@@ -254,7 +273,7 @@ TextToken = ([^§£\$\[\]#@]|\\[\s\S])+
         return getFallbackToken();
     }
 
-    "#" / {TextFormatWildcardLeadChar} {
+    "#" / {TextFormatWildcardLeadChar} { // require next character be a valid identifier character
         if (!ParadoxSyntaxConstraint.LocalisationTextFormat.testTarget(this)) return getFallbackToken();
         enterState(yystate(), EXPECT_TEXT_FORMAT);
         yybegin(IN_TEXT_FORMAT);
@@ -268,23 +287,37 @@ TextToken = ([^§£\$\[\]#@]|\\[\s\S])+
         exitState(EXPECT_TEXT_FORMAT);
         return TEXT_FORMAT_END;
     }
+}
+<YYINITIAL, IN_STRING_VARIANT, IN_TAG_SENSITIVE_TEXT> {
+    "|||" { yybegin(IN_STRING_VARIANT); return STRING_VARIANT_PREFIX; }
+    "|" { return TEXT_TOKEN; }
 
+    "&!" { yybegin(IN_TAG_PART); return TAG_PART_PREFIX; }
+    "&" { return TEXT_TOKEN; }
+}
+<YYINITIAL, IN_COLORFUL_TEXT, IN_CONCEPT_TEXT, IN_TEXT_FORMAT_TEXT> {
     {TextToken} { return TEXT_TOKEN; }
 }
 
 // localisation interpolation container rules
 
 <IN_ICON, IN_ICON_ARGUMENT, IN_TEXT_ICON, IN_TEXT_FORMAT> {
-    "$" {
+    "$" / \S*"$" { // heuristic: require no blank in `$...$`
         enterState(yystate(), EXPECT_PARAMETER);
-        yypushback(yylength());
-        yybegin(IN_PARAMETER_CHECK);
+        yybegin(IN_PARAMETER);
+        return PARAMETER_START;
+    }
+    "$" {
+        return getFallbackToken();
     }
 
-    "[" {
+    "[[" {
+        return getFallbackToken();
+    }
+    "[" { // heuristic: require `[` is not escaped (double left brackets)
         enterState(yystate(), EXPECT_COMMAND);
-        yypushback(yylength());
-        yybegin(IN_COMMAND_CHECK);
+        yybegin(IN_COMMAND);
+        return LEFT_BRACKET;
     }
     "]" {
         exitState(EXPECT_COMMAND);
@@ -292,10 +325,13 @@ TextToken = ([^§£\$\[\]#@]|\\[\s\S])+
     }
 }
 <IN_PARAMETER> {
-    "[" {
+    "[[" {
+        return getFallbackToken();
+    }
+    "[" { // heuristic: require `[` is not escaped (double left brackets)
         enterState(yystate(), EXPECT_COMMAND);
-        yypushback(yylength());
-        yybegin(IN_COMMAND_CHECK);
+        yybegin(IN_COMMAND);
+        return LEFT_BRACKET;
     }
     "]" {
         exitState(EXPECT_COMMAND);
@@ -303,10 +339,13 @@ TextToken = ([^§£\$\[\]#@]|\\[\s\S])+
     }
 }
 <IN_COMMAND_TEXT, IN_COMMAND_ARGUMENT, IN_CONCEPT_NAME> {
-    "$" {
+    "$" / \S*"$" { // heuristic: require no blank in `$...$`
         enterState(yystate(), EXPECT_PARAMETER);
-        yypushback(yylength());
-        yybegin(IN_PARAMETER_CHECK);
+        yybegin(IN_PARAMETER);
+        return PARAMETER_START;
+    }
+    "$" {
+        return getFallbackToken();
     }
 }
 
@@ -333,18 +372,6 @@ TextToken = ([^§£\$\[\]#@]|\\[\s\S])+
 
 // localisation parameter rules
 
-<IN_PARAMETER_CHECK> {
-    {ParameterCheck} {
-        if (isParameter()) {
-            yypushback(yylength() - 1);
-            yybegin(IN_PARAMETER);
-            return PARAMETER_START;
-        }
-        exitState(EXPECT_PARAMETER);
-        yypushback(yylength() - 1);
-        return getFallbackToken();
-    }
-}
 <IN_PARAMETER, IN_PARAMETER_ARGUMENT, IN_SCRIPTED_VARIABLE_REFERENCE> {
     "$" {
         exitState(EXPECT_PARAMETER);
@@ -352,6 +379,7 @@ TextToken = ([^§£\$\[\]#@]|\\[\s\S])+
     }
 }
 <IN_PARAMETER> {
+    "&" { yybegin(IN_CONTEXT_TAG_PART); return CONTEXT_TAG_PART_PREFIX; }
     "|" { yybegin(IN_PARAMETER_ARGUMENT); return PIPE; }
     "@" { yybegin(IN_SCRIPTED_VARIABLE_REFERENCE); return AT; }
     {ParameterToken} { return PARAMETER_TOKEN; }
@@ -369,17 +397,6 @@ TextToken = ([^§£\$\[\]#@]|\\[\s\S])+
 
 // localisation command rules
 
-<IN_COMMAND_CHECK> {
-    {CommandCheck} {
-        if (isCommand()) {
-            yypushback(yylength() - 1);
-            yybegin(IN_COMMAND);
-            return LEFT_BRACKET;
-        }
-        exitState(EXPECT_COMMAND);
-        return getFallbackToken();
-    }
-}
 <IN_COMMAND> {
     \S {
         if (yycharat(0) == '\'' && ParadoxSyntaxConstraint.LocalisationConceptCommand.testTarget(this)) {
@@ -398,6 +415,8 @@ TextToken = ([^§£\$\[\]#@]|\\[\s\S])+
     }
 }
 <IN_COMMAND_TEXT> {
+    "&" { yybegin(IN_CONTEXT_TAG_PART); return CONTEXT_TAG_PART_PREFIX; }
+    "::" { yybegin(IN_TAG_SENSITIVE_TEXT); return TAG_SENSITIVE_TEXT_PREFIX; }
     "|" { yybegin(IN_COMMAND_ARGUMENT); return PIPE; }
     {CommandTextToken} { return COMMAND_TEXT_TOKEN; }
     {Blank} { return WHITE_SPACE; } // compatible with blank
@@ -475,6 +494,66 @@ TextToken = ([^§£\$\[\]#@]|\\[\s\S])+
     {Blank} { yybegin(IN_TEXT_FORMAT_TEXT); return WHITE_SPACE; }
     // whitespace after TEXT_FORMAT_TOKEN may be absent, if so, treat as valid and still enter text section
     [^] { yypushback(yylength()); yybegin(IN_TEXT_FORMAT_TEXT); }
+}
+
+// string variant set rules
+// e.g., `|||B|||t1:C|||t2,t3:D` in `A|||B|||t1:C|||t2,t3:D`
+
+<IN_STRING_VARIANT> {
+    {TextToken} { return TEXT_TOKEN; }
+}
+<IN_STRING_VARIANT_TAG_PART> {
+    "," { return COMMA; }
+    ":" { exitState(EXPECT_STRING_VARIANT_TAG_PART); return COLON; } // exit state
+    {TagToken} { return TAG_TOKEN; }
+    {Blank} { return WHITE_SPACE; } // allowed (heuristic)
+    [^] { if (!exitStateForRecoveryIfNeeded()) return BAD_CHARACTER; } // recovery
+}
+
+// tag-sensitive text rules
+// e.g., `::a <1>`
+// TODO 3.0.4+ further scanning
+<IN_TAG_SENSITIVE_TEXT> {
+    "<" / \S*">" { // heuristic: require no blank in `<...>`
+        enterState(yystate(), EXPECT_TAGGED_PARAMETER);
+        yybegin(IN_TAGGED_PARAMETER);
+        return TAGGED_PARAMETER_START;
+    }
+    "<" {
+        return getFallbackToken();
+    }
+
+    {TagSensitiveTextToken} { return TEXT_TOKEN; }
+}
+<IN_TAGGED_PARAMETER> {
+    "$" {
+        exitState(EXPECT_TAGGED_PARAMETER);
+        return TAGGED_PARAMETER_END;
+    }
+
+    {ParameterToken} { return PARAMETER_TOKEN; }
+    [^] { if (!exitStateForRecoveryIfNeeded()) return BAD_CHARACTER; } // recovery
+}
+
+// tag part rules
+// e.g., `&!t1,t2` in `text&!t1,t2`
+
+<IN_TAG_PART> {
+    "," { return COMMA; }
+    {TagToken} { return TAG_TOKEN; }
+    {Blank} { return WHITE_SPACE; } // allowed (heuristic)
+    [^] { if (!exitStateForRecoveryIfNeeded()) return BAD_CHARACTER; } // recovery
+}
+
+// context tag part rules
+// e.g., `&t` in `[From.GetName&t]`
+// e.g., `&t` in `$1&t$`
+
+<IN_CONTEXT_TAG_PART> {
+    ":" { exitState(EXPECT_CONTEXT_TAG_PART); return COLON; } // exit state
+    {ContextTagToken} { return CONTEXT_TAG_TOKEN; }
+    {Blank} { return WHITE_SPACE; } // allowed (heuristic)
+    [^] { if (!exitStateForRecoveryIfNeeded()) return BAD_CHARACTER; } // recovery
 }
 
 // fallback

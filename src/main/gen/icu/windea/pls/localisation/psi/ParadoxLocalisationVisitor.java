@@ -7,8 +7,8 @@ import com.intellij.psi.PsiElement;
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference;
 import com.intellij.psi.NavigatablePsiElement;
 import icu.windea.pls.core.psi.PsiQuoteAwareElement;
-import com.intellij.psi.PsiListLikeElement;
 import icu.windea.pls.core.psi.PsiPresentableElement;
+import com.intellij.psi.PsiListLikeElement;
 
 public class ParadoxLocalisationVisitor extends PsiElementVisitor {
 
@@ -48,6 +48,15 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
     visitRichTextContainer(o);
   }
 
+  public void visitContextTag(@NotNull ParadoxLocalisationContextTag o) {
+    visitNavigatablePsiElement(o);
+    // visitPsiPresentableElement(o);
+  }
+
+  public void visitContextTagPart(@NotNull ParadoxLocalisationContextTagPart o) {
+    visitPsiElement(o);
+  }
+
   public void visitIcon(@NotNull ParadoxLocalisationIcon o) {
     visitRichText(o);
     // visitInterpolationContainer(o);
@@ -61,6 +70,7 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
 
   public void visitLocale(@NotNull ParadoxLocalisationLocale o) {
     visitNavigatablePsiElement(o);
+    // visitPsiPresentableElement(o);
   }
 
   public void visitParameter(@NotNull ParadoxLocalisationParameter o) {
@@ -77,6 +87,7 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
 
   public void visitProperty(@NotNull ParadoxLocalisationProperty o) {
     visitNavigatablePsiElement(o);
+    // visitPsiPresentableElement(o);
     // visitNamedElement(o);
   }
 
@@ -101,6 +112,44 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
 
   public void visitScriptedVariableReference(@NotNull ParadoxLocalisationScriptedVariableReference o) {
     visitParadoxScriptedVariableReference(o);
+  }
+
+  public void visitStringVariant(@NotNull ParadoxLocalisationStringVariant o) {
+    visitPsiElement(o);
+  }
+
+  public void visitStringVariantSet(@NotNull ParadoxLocalisationStringVariantSet o) {
+    visitPsiElement(o);
+  }
+
+  public void visitStringVariantString(@NotNull ParadoxLocalisationStringVariantString o) {
+    visitPsiElement(o);
+  }
+
+  public void visitStringVariantTagPart(@NotNull ParadoxLocalisationStringVariantTagPart o) {
+    visitPsiElement(o);
+  }
+
+  public void visitTag(@NotNull ParadoxLocalisationTag o) {
+    visitNavigatablePsiElement(o);
+    // visitPsiPresentableElement(o);
+  }
+
+  public void visitTagPart(@NotNull ParadoxLocalisationTagPart o) {
+    visitPsiElement(o);
+  }
+
+  public void visitTagSensitiveText(@NotNull ParadoxLocalisationTagSensitiveText o) {
+    visitPsiElement(o);
+  }
+
+  public void visitTagSensitiveTextString(@NotNull ParadoxLocalisationTagSensitiveTextString o) {
+    visitPsiElement(o);
+  }
+
+  public void visitTaggedParameter(@NotNull ParadoxLocalisationTaggedParameter o) {
+    visitNavigatablePsiElement(o);
+    // visitPsiPresentableElement(o);
   }
 
   public void visitText(@NotNull ParadoxLocalisationText o) {

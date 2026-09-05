@@ -106,6 +106,11 @@ public class ParadoxLocalisationPropertyImpl extends ParadoxLocalisationStubElem
   }
 
   @Override
+  public @NotNull String getPresentableText() {
+    return ParadoxLocalisationPsiImplUtil.getPresentableText(this);
+  }
+
+  @Override
   public @NotNull GlobalSearchScope getResolveScope() {
     return ParadoxLocalisationPsiImplUtil.getResolveScope(this);
   }
