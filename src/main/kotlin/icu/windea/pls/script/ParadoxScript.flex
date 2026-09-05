@@ -23,21 +23,21 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 
     // stack for context states (states that need to fallback when exit some constructs)
     private IntArrayList stateStack = null;
-    // stack for expected construct types (e.g., EXPECT_BLOCK)
+    // stack for expected construct types (e.g., EXPECT_PROPERTY_KEY)
     private IntArrayList expectStack = null;
 
-    private static final int EXPECT_BLOCK = 1;
-    private static final int EXPECT_PROPERTY_KEY = 2;
-    private static final int EXPECT_STRING = 3;
-    private static final int EXPECT_SCRIPTED_VARIABLE_CHECK = 4;
-    private static final int EXPECT_SCRIPTED_VARIABLE_NAME = 5;
-    private static final int EXPECT_SCRIPTED_VARIABLE_REFERENCE = 6;
-    private static final int EXPECT_INLINE_MATH = 7;
-    private static final int EXPECT_PARAMETER = 8;
-    private static final int EXPECT_CONDITIONAL_BLOCK = 9;
-    private static final int EXPECT_CONDITIONAL_BLOCK_EXPRESSION = 10;
-    private static final int EXPECT_CONDITIONAL = 11;
-    private static final int EXPECT_INLINE_CONDITIONAL = 12;
+    // private static final int EXPECT_BLOCK = 0; // should be unnecessary, so remove it
+    private static final int EXPECT_PROPERTY_KEY = 1;
+    private static final int EXPECT_STRING = 2;
+    private static final int EXPECT_SCRIPTED_VARIABLE_CHECK = 3;
+    private static final int EXPECT_SCRIPTED_VARIABLE_NAME = 4;
+    private static final int EXPECT_SCRIPTED_VARIABLE_REFERENCE = 5;
+    private static final int EXPECT_INLINE_MATH = 6;
+    private static final int EXPECT_PARAMETER = 7;
+    private static final int EXPECT_CONDITIONAL_BLOCK = 8;
+    private static final int EXPECT_CONDITIONAL_BLOCK_EXPRESSION = 9;
+    private static final int EXPECT_CONDITIONAL = 10;
+    private static final int EXPECT_INLINE_CONDITIONAL = 11;
 
     public _ParadoxScriptLexer() {
         this((java.io.Reader)null);
@@ -427,11 +427,9 @@ InlineMathToken = {InlineMathBoundChar}({InlineMathChar}*{InlineMathBoundChar})?
 
 <YYINITIAL, IN_PROPERTY_VALUE, IN_SCRIPTED_VARIABLE_VALUE> {
     "{" {
-        enterState(YYINITIAL, EXPECT_BLOCK); // enter YYINITIAL directly
         return LEFT_BRACE;
     }
     "}" {
-        exitState(EXPECT_BLOCK);
         return RIGHT_BRACE;
     }
 
