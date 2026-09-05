@@ -16,6 +16,7 @@ class ParadoxLocalisationBraceMatcher : PairedBraceMatcher {
         BracePair(ParadoxLocalisationElementTypes.LEFT_SINGLE_QUOTE, ParadoxLocalisationElementTypes.RIGHT_SINGLE_QUOTE, false),
         BracePair(ParadoxLocalisationElementTypes.TEXT_FORMAT_START, ParadoxLocalisationElementTypes.TEXT_FORMAT_END, true),
         BracePair(ParadoxLocalisationElementTypes.TEXT_ICON_START, ParadoxLocalisationElementTypes.TEXT_ICON_END, false),
+        BracePair(ParadoxLocalisationElementTypes.TAGGED_PARAMETER_START, ParadoxLocalisationElementTypes.TAGGED_PARAMETER_END, true),
     )
 
     override fun getPairs(): Array<BracePair> = pairs

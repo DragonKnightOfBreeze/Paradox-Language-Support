@@ -24,6 +24,8 @@ object ParadoxLocalisationHighlighterColors {
     @JvmField val CONCEPT = createTextAttributesKey("PARADOX_LOCALISATION.CONCEPT", DefaultLanguageHighlighterColors.IDENTIFIER) // #008080
     @JvmField val TEXT_ICON = createTextAttributesKey("PARADOX_LOCALISATION.TEXT_ICON", DefaultLanguageHighlighterColors.IDENTIFIER)
     @JvmField val TEXT_FORMAT = createTextAttributesKey("PARADOX_LOCALISATION.TEXT_FORMAT", DefaultLanguageHighlighterColors.IDENTIFIER)
+    @JvmField val TAG = createTextAttributesKey("PARADOX_LOCALISATION.TAG", DefaultLanguageHighlighterColors.LABEL)
+    @JvmField val CONTEXT_TAG = createTextAttributesKey("PARADOX_LOCALISATION.CONTEXT_TAG", DefaultLanguageHighlighterColors.LABEL)
     @JvmField val VALID_ESCAPE = createTextAttributesKey("PARADOX_LOCALISATION.VALID_ESCAPE", DefaultLanguageHighlighterColors.VALID_STRING_ESCAPE)
     @JvmField val INVALID_ESCAPE = createTextAttributesKey("PARADOX_LOCALISATION.INVALID_ESCAPE", DefaultLanguageHighlighterColors.INVALID_STRING_ESCAPE)
     @JvmField val BAD_CHARACTER = createTextAttributesKey("PARADOX_LOCALISATION.BAD_CHARACTER", HighlighterColors.BAD_CHARACTER)

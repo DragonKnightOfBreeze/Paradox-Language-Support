@@ -29,6 +29,8 @@ class ParadoxLocalisationColorSettingsPage : ColorSettingsPage {
         AttributesDescriptor(ChronicleBundle.message("localisation.color.option.concept"), ParadoxLocalisationHighlighterColors.CONCEPT), // #008080
         AttributesDescriptor(ChronicleBundle.message("localisation.color.option.textIcon"), ParadoxLocalisationHighlighterColors.TEXT_ICON),
         AttributesDescriptor(ChronicleBundle.message("localisation.color.option.textFormat"), ParadoxLocalisationHighlighterColors.TEXT_FORMAT),
+        AttributesDescriptor(ChronicleBundle.message("localisation.color.option.tag"), ParadoxLocalisationHighlighterColors.TAG),
+        AttributesDescriptor(ChronicleBundle.message("localisation.color.option.contextTag"), ParadoxLocalisationHighlighterColors.CONTEXT_TAG),
         AttributesDescriptor(ChronicleBundle.message("localisation.color.option.validEscape"), ParadoxLocalisationHighlighterColors.VALID_ESCAPE),
         AttributesDescriptor(ChronicleBundle.message("localisation.color.option.invalidEscape"), ParadoxLocalisationHighlighterColors.INVALID_ESCAPE),
         AttributesDescriptor(ChronicleBundle.message("localisation.color.option.badCharacter"), ParadoxLocalisationHighlighterColors.BAD_CHARACTER),

@@ -17,7 +17,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
  */
 class ParadoxLocalisationSyntaxHighlighter(
     private val project: Project?,
-    private val virtualFile: VirtualFile?
+    private val virtualFile: VirtualFile?,
 ) : SyntaxHighlighter {
     override fun getTokenHighlights(tokenType: IElementType?): Array<out TextAttributesKey> {
         return when (tokenType) {
@@ -43,6 +43,10 @@ class ParadoxLocalisationSyntaxHighlighter(
             CONCEPT_NAME_TOKEN -> ParadoxLocalisationHighlighterColorSets.CONCEPT
             TEXT_ICON_TOKEN -> ParadoxLocalisationHighlighterColorSets.TEXT_ICON
             TEXT_FORMAT_TOKEN -> ParadoxLocalisationHighlighterColorSets.TEXT_FORMAT
+            STRING_VARIANT_PREFIX, TAG_SENSITIVE_TEXT_PREFIX, TAG_PART_PREFIX, CONTEXT_TAG_PART_PREFIX -> ParadoxLocalisationHighlighterColorSets.MARKER
+            TAGGED_PARAMETER_START, TAGGED_PARAMETER_END -> ParadoxLocalisationHighlighterColorSets.MARKER
+            TAG_TOKEN -> ParadoxLocalisationHighlighterColorSets.TAG
+            CONTEXT_TAG_TOKEN -> ParadoxLocalisationHighlighterColorSets.CONTEXT_TAG
             TEXT_TOKEN -> ParadoxLocalisationHighlighterColorSets.TEXT
             LEFT_QUOTE, RIGHT_QUOTE, LEFT_SINGLE_QUOTE, RIGHT_SINGLE_QUOTE -> ParadoxLocalisationHighlighterColorSets.TEXT
             VALID_STRING_ESCAPE_TOKEN -> ParadoxLocalisationHighlighterColorSets.VALID_ESCAPE

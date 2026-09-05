@@ -19,6 +19,8 @@ object ParadoxLocalisationHighlighterColorSets {
     @JvmField val CONCEPT = arrayOf(ParadoxLocalisationHighlighterColors.CONCEPT)
     @JvmField val TEXT_ICON = arrayOf(ParadoxLocalisationHighlighterColors.TEXT_ICON)
     @JvmField val TEXT_FORMAT = arrayOf(ParadoxLocalisationHighlighterColors.TEXT_FORMAT)
+    @JvmField val TAG = arrayOf(ParadoxLocalisationHighlighterColors.TAG)
+    @JvmField val CONTEXT_TAG = arrayOf(ParadoxLocalisationHighlighterColors.CONTEXT_TAG)
     @JvmField val VALID_ESCAPE = arrayOf(ParadoxLocalisationHighlighterColors.VALID_ESCAPE)
     @JvmField val INVALID_ESCAPE = arrayOf(ParadoxLocalisationHighlighterColors.INVALID_ESCAPE)
     @JvmField val BAD_CHARACTER = arrayOf(ParadoxLocalisationHighlighterColors.BAD_CHARACTER)
