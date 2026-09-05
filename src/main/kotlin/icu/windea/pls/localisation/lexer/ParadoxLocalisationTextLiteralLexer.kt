@@ -6,7 +6,7 @@ import com.intellij.psi.tree.IElementType
 
 class ParadoxLocalisationTextLiteralLexer(
     originalLiteralToken: IElementType
-) : StringLiteralLexer(NO_QUOTE_CHAR, originalLiteralToken, false, "$£§[#@", false, false) {
+) : StringLiteralLexer(NO_QUOTE_CHAR, originalLiteralToken, false, "$[§£#@|&", false, false) {
     override fun getTokenType(): IElementType? {
         if (myStart >= myEnd) return null
 
