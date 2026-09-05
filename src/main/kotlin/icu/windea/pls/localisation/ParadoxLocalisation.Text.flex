@@ -399,7 +399,7 @@ TextToken = ([^§£\$\[\]#@]|\\[\s\S])+
 }
 <IN_COMMAND_TEXT> {
     "|" { yybegin(IN_COMMAND_ARGUMENT); return PIPE; }
-    {CommandTextToken} { return COMMAND_TEXT_TOKEN; } // trailing blank should be pushbacked
+    {CommandTextToken} { return COMMAND_TEXT_TOKEN; }
     {Blank} { return WHITE_SPACE; } // compatible with blank
     [^] { if (!exitStateForRecoveryIfNeeded()) return BAD_CHARACTER; } // recovery
 }
