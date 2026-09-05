@@ -200,6 +200,7 @@ TextFormatToken = {TextFormatChar}+ // leading number is allowed
 TextFormatWildcardLeadChar = {TextFormatChar}|{InterpolationLeadChar}
 
 TextToken = ([^\$\[\]§£#@|&]|\\.)+
+StringVariantTextToken = ([^:\$\[\]§£#@|&]|\\.)+ // exclude `:` additionally
 TagSensitiveTextToken = ([^<\$\[\]§£#@|&]|\\.)+ // exclude `<` additionally
 
 TagChar = {IdentifierChar} // identifier
@@ -499,10 +500,20 @@ ContextTagToken = {ContextTagChar}+ // leading number is allowed
 // e.g., `|||B|||t1:C|||t2,t3:D` in `A|||B|||t1:C|||t2,t3:D`
 
 <IN_STRING_VARIANT> {
-    {TextToken} { return TEXT_TOKEN; }
+    {Blank}?{TagToken} / ({TagToken}|{Blank}|,)*":" { // tag char is required before `:`
+        enterState(yystate(), EXPECT_STRING_VARIANT_TAG_PART);
+        yypushback(yylength());
+        yybegin(IN_STRING_VARIANT_TAG_PART);
+    }
+    ":" { return getFallbackToken(); }
+    // need to exclude `:` additionally (otherwise `t1,t2:` would be incorrectly recognized as TEXT_TOKEN)
+    {StringVariantTextToken} { return TEXT_TOKEN; }
 }
 <IN_STRING_VARIANT_TAG_PART> {
-    ":" { exitState(EXPECT_STRING_VARIANT_TAG_PART); return COLON; }
+    ":" {
+        exitState(EXPECT_STRING_VARIANT_TAG_PART);
+        return COLON;
+    }
     "," { return COMMA; }
     {TagToken} { return TAG_TOKEN; }
     {Blank} { return WHITE_SPACE; } // allowed (heuristic)
@@ -511,17 +522,14 @@ ContextTagToken = {ContextTagChar}+ // leading number is allowed
 
 // tag-sensitive text rules
 // e.g., `::a <1>`
-// TODO 3.0.4+ further scanning
 <IN_TAG_SENSITIVE_TEXT> {
     "<" / \S*">" { // heuristic: require no blank in `<...>`
         enterState(yystate(), EXPECT_TAGGED_PARAMETER);
         yybegin(IN_TAGGED_PARAMETER);
         return TAGGED_PARAMETER_START;
     }
-    "<" {
-        return getFallbackToken();
-    }
-
+    "<" { return getFallbackToken(); }
+    // need to exclude `<` additionally (otherwise `<PARAM>` would be incorrectly recognized as TEXT_TOKEN)
     {TagSensitiveTextToken} { return TEXT_TOKEN; }
 }
 <IN_TAGGED_PARAMETER> {
