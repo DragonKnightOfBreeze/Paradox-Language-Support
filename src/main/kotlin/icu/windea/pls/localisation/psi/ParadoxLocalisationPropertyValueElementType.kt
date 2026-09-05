@@ -27,7 +27,7 @@ class ParadoxLocalisationPropertyValueElementType(debugName: String) : IReparsea
         val chars = chameleon.chars
         // 不包含任何特殊标记时，跳过完整解析，直接构建纯文本 AST（TEXT > TEXT_TOKEN）
         // 这是一个保守的过近似，带转义标记的文本（如 `\$`）会走完整解析
-        if (!ParadoxLocalisationManager.isRichText(chars, checkEscape = false)) return buildPlainTextNode(chars)
+        if (!ParadoxLocalisationManager.isNormalLocalisationText(chars, checkEscape = false)) return buildPlainTextNode(chars)
         return parseContentsFully(chameleon)
     }
 

@@ -137,15 +137,15 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
   private static final int [] ZZ_ACTION = zzUnpackAction();
 
   private static final String ZZ_ACTION_PACKED_0 =
-    "\25\0\1\1\2\2\1\3\1\2\1\4\1\1\1\5"+
-    "\1\3\1\2\1\6\1\3\1\7\1\10\1\11\1\12"+
-    "\1\13\1\14\1\15\1\16\1\17\1\20\1\21\1\22"+
-    "\1\23\1\24\1\2\1\24\1\25\1\26\1\27\1\30"+
-    "\1\31\1\32\1\33\1\34\1\35\1\36\1\37\1\40"+
-    "\1\41\1\40\1\42\1\43\1\44\1\45\1\1\1\2"+
-    "\1\1\1\46\1\47\1\50\1\51\1\0\1\52\1\53"+
-    "\1\54\1\2\1\0\1\55\1\56\1\7\1\0\1\24"+
-    "\1\52\1\57\1\60\1\0\1\61\1\62";
+    "\25\0\1\1\4\2\1\3\1\1\1\4\2\2\1\5"+
+    "\1\6\1\7\1\10\1\11\1\12\1\13\1\14\1\15"+
+    "\1\16\1\17\1\20\1\21\1\22\1\23\1\24\1\2"+
+    "\1\24\1\25\1\26\1\27\1\30\1\31\1\32\1\33"+
+    "\1\34\1\35\1\36\1\37\1\40\1\41\1\40\1\42"+
+    "\1\43\1\44\1\45\1\1\1\2\1\1\1\46\1\47"+
+    "\1\50\1\51\1\0\1\52\1\53\1\54\1\2\1\0"+
+    "\1\55\1\56\1\7\1\0\1\24\1\52\1\57\1\60"+
+    "\1\0\1\61\1\62";
 
   private static int [] zzUnpackAction() {
     int [] result = new int[91];
@@ -386,12 +386,11 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
     private static final int EXPECT_COMMAND = 4;
     private static final int EXPECT_TEXT_ICON = 5;
     private static final int EXPECT_TEXT_FORMAT = 6;
-    private static final int EXPECT_STRING_VARIANT = 7;
-    private static final int EXPECT_STRING_VARIANT_TAG_PART = 8;
-    private static final int EXPECT_TAG_SENSITIVE_TEXT = 9;
-    private static final int EXPECT_TAGGED_PARAMETER = 10;
-    private static final int EXPECT_TAG_PART = 11;
-    private static final int EXPECT_CONTEXT_TAG_PART = 12;
+    private static final int EXPECT_STRING_VARIANT_TAG_PART = 7;
+    private static final int EXPECT_TAG_SENSITIVE_TEXT = 8;
+    private static final int EXPECT_TAGGED_PARAMETER = 9;
+    private static final int EXPECT_TAG_PART = 10;
+    private static final int EXPECT_CONTEXT_TAG_PART = 11;
 
     public _ParadoxLocalisationTextLexer() {
         this((java.io.Reader)null);
@@ -722,19 +721,14 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
           // fall through
           case 52: break;
           case 3:
-            { return BAD_CHARACTER;
-            }
-          // fall through
-          case 53: break;
-          case 4:
             { // heuristic: require `[` is not escaped (double left brackets)
         enterState(yystate(), EXPECT_COMMAND);
         yybegin(IN_COMMAND);
         return LEFT_BRACKET;
             }
           // fall through
-          case 54: break;
-          case 5:
+          case 53: break;
+          case 4:
             { int state = yystate();
         if (state == IN_CONCEPT_TEXT) {
             exitState(EXPECT_COMMAND);
@@ -746,11 +740,16 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
         return getFallbackToken();
             }
           // fall through
-          case 55: break;
-          case 6:
+          case 54: break;
+          case 5:
             { enterState(yystate(), EXPECT_COLORFUL_TEXT);
         yypushback(yylength());
         yybegin(IN_COLORFUL_TEXT_CHECK);
+            }
+          // fall through
+          case 55: break;
+          case 6:
+            { return BAD_CHARACTER;
             }
           // fall through
           case 56: break;
@@ -1033,9 +1032,7 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
           // fall through
           case 99: break;
           case 50:
-            { /*TODO*/
-        enterState(yystate(), EXPECT_STRING_VARIANT);
-        yybegin(IN_STRING_VARIANT);
+            { yybegin(IN_STRING_VARIANT);
         return STRING_VARIANT_PREFIX;
             }
           // fall through

@@ -160,7 +160,7 @@ object ParadoxScriptInjectionManager {
         // 要求用引号括起，且首尾引号都存在
         if (!text.isLeftQuoted() || !text.isRightQuoted()) return false
         // 要求看起来像是富文本
-        return ParadoxLocalisationManager.isRichText(text.unquote())
+        return ParadoxLocalisationManager.isNormalLocalisationText(text.unquote())
     }
 
     private fun shouldApplyLocalisationTextInjection(configs: List<CwtConfig<*>>): Boolean {

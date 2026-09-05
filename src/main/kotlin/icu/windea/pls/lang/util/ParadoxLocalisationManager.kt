@@ -46,24 +46,32 @@ object ParadoxLocalisationManager {
     }
 
     @Inferred
-    fun isSpecialLocalisation(element: ParadoxLocalisationProperty): Boolean {
-        // There are some special localizations that cannot be used directly to render localisation text
-        val file = element.containingFile ?: return false
-        val fileName = file.name
-        if (fileName.startsWith("name_system_")) return true // e.g., `name_system_l_english.yml`
-        return false
-    }
+    fun isNormalLocalisationText(text: CharSequence, checkEscape: Boolean = true): Boolean {
+        // If some localisation text do not contain special markers, it's unnecessary to process lazy-parsing
 
-    @Inferred
-    fun isRichText(text: CharSequence, checkEscape: Boolean = true): Boolean {
         for (i in 0 until text.length) {
             when (text[i]) {
                 // Accept left bracket & do not check escape (`[[` or `\[`)
                 '[' -> return true
-                // Accept other special markers && check escape if `checkEscape = true`
-                '$', '£', '§', '#', '@' -> if (!(checkEscape && text.isEscapedCharAt(i))) return true
+                // Accept special markers involve to rich text constructs & check escape if `checkEscape = true`
+                '$', '§', '£', '#', '@' -> if (!(checkEscape && text.isEscapedCharAt(i))) return true
+                // NOTE 3.0.2 Accept special markers involve to grammatical constructs & check escape if `checkEscape = true`
+                '|', '&' -> if (!(checkEscape && text.isEscapedCharAt(i))) return true
             }
         }
+        return false
+    }
+
+    @Inferred
+    fun isSpecialLocalisation(element: ParadoxLocalisationProperty): Boolean {
+        // There are some special localizations that cannot be used directly to render localisation text
+
+        val file = element.containingFile ?: return false
+        val fileName = file.name
+        if (fileName.startsWith("name_system_")) return true // e.g., `name_system_l_english.yml`
+
+        // TODO 3.0.4+ Handle localisations involve to grammatical constructs specially
+
         return false
     }
 }

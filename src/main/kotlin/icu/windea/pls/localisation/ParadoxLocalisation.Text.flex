@@ -35,12 +35,11 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
     private static final int EXPECT_COMMAND = 4;
     private static final int EXPECT_TEXT_ICON = 5;
     private static final int EXPECT_TEXT_FORMAT = 6;
-    private static final int EXPECT_STRING_VARIANT = 7;
-    private static final int EXPECT_STRING_VARIANT_TAG_PART = 8;
-    private static final int EXPECT_TAG_SENSITIVE_TEXT = 9;
-    private static final int EXPECT_TAGGED_PARAMETER = 10;
-    private static final int EXPECT_TAG_PART = 11;
-    private static final int EXPECT_CONTEXT_TAG_PART = 12;
+    private static final int EXPECT_STRING_VARIANT_TAG_PART = 7;
+    private static final int EXPECT_TAG_SENSITIVE_TEXT = 8;
+    private static final int EXPECT_TAGGED_PARAMETER = 9;
+    private static final int EXPECT_TAG_PART = 10;
+    private static final int EXPECT_CONTEXT_TAG_PART = 11;
 
     public _ParadoxLocalisationTextLexer() {
         this((java.io.Reader)null);
@@ -200,8 +199,8 @@ TextFormatChar = {IdentifierChar}|[:'] // `:'` is allowed additionally
 TextFormatToken = {TextFormatChar}+ // leading number is allowed
 TextFormatWildcardLeadChar = {TextFormatChar}|{InterpolationLeadChar}
 
-TextToken = ([^|&\$\[\]§£#@|&]|\\.)+
-TagSensitiveTextToken = ([^|&<\$\[\]§£#@|&]|\\.)+ // exclude `<` additionally
+TextToken = ([^\$\[\]§£#@|&]|\\.)+
+TagSensitiveTextToken = ([^<\$\[\]§£#@|&]|\\.)+ // exclude `<` additionally
 
 TagChar = {IdentifierChar} // identifier
 TagToken = {TagChar}+ // leading number is allowed
@@ -278,18 +277,17 @@ ContextTagToken = {ContextTagChar}+ // leading number is allowed
     }
 }
 <YYINITIAL, IN_STRING_VARIANT, IN_TAG_SENSITIVE_TEXT> {
-    "|||" { /*TODO*/
-        enterState(yystate(), EXPECT_STRING_VARIANT);
+    "|||" {
         yybegin(IN_STRING_VARIANT);
         return STRING_VARIANT_PREFIX;
     }
-//    "|" { return getFallbackToken(); /*TODO*/ }
+    "|" { return getFallbackToken(); }
     "&!" {
         enterState(yystate(), EXPECT_TAG_PART);
         yybegin(IN_TAG_PART);
         return TAG_PART_PREFIX;
     }
-//    "&" { return getFallbackToken(); }
+    "&" { return getFallbackToken(); }
 }
 <YYINITIAL, IN_COLORFUL_TEXT, IN_CONCEPT_TEXT, IN_TEXT_FORMAT_TEXT> {
     {TextToken} { return TEXT_TOKEN; }
