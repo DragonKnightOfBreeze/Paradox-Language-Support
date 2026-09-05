@@ -24,32 +24,32 @@ class ParadoxLocalisationErrorQuickFixProvider : ErrorQuickFixProvider {
         when {
             errorElement.nextSibling == null && errorElement.parent is ParadoxLocalisationParameter -> {
                 // PARAMETER_END
-                val fix = createFix(ChronicleStrings.parameterEndMarker, errorElement.startOffset)
+                val fix = createFix(ChronicleStrings.localisationParameterEndMarker, errorElement.startOffset)
                 builder.registerFix(fix, null, null, null, null)
             }
             errorElement.nextSibling == null && errorElement.parent is ParadoxLocalisationCommand -> {
                 // RIGHT_BRACKET
-                val fix = createFix(ChronicleStrings.commandEndMarker, errorElement.startOffset)
+                val fix = createFix(ChronicleStrings.localisationCommandEndMarker, errorElement.startOffset)
                 builder.registerFix(fix, null, null, null, null)
             }
             errorElement.nextSibling == null && errorElement.parent is ParadoxLocalisationConceptCommand -> {
                 // RIGHT_BRACKET
-                val fix = createFix(ChronicleStrings.commandEndMarker, errorElement.startOffset)
+                val fix = createFix(ChronicleStrings.localisationCommandEndMarker, errorElement.startOffset)
                 builder.registerFix(fix, null, null, null, null)
             }
             errorElement.nextSibling == null && errorElement.parent is ParadoxLocalisationIcon -> {
                 // ICON_END
-                val fix = createFix(ChronicleStrings.iconEndMarker, errorElement.startOffset)
+                val fix = createFix(ChronicleStrings.localisationIconEndMarker, errorElement.startOffset)
                 builder.registerFix(fix, null, null, null, null)
             }
             errorElement.nextSibling == null && errorElement.parent is ParadoxLocalisationTextIcon -> {
                 // TEXT_ICON_END
-                val fix = createFix(ChronicleStrings.textIconEndMarker, errorElement.startOffset)
+                val fix = createFix(ChronicleStrings.localisationTextIconEndMarker, errorElement.startOffset)
                 builder.registerFix(fix, null, null, null, null)
             }
             errorElement.nextSibling == null && errorElement.parent is ParadoxLocalisationTextFormat -> {
                 // TEXT_FORMAT_END
-                val fix = createFix(ChronicleStrings.textFormatEndMarker, errorElement.startOffset)
+                val fix = createFix(ChronicleStrings.localisationTextFormatEndMarker, errorElement.startOffset)
                 builder.registerFix(fix, null, null, null, null)
             }
         }

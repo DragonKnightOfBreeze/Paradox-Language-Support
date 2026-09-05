@@ -9,8 +9,8 @@ import icu.windea.pls.model.constants.ChronicleStrings
 import icu.windea.pls.model.constraints.ParadoxSyntaxConstraint
 
 class CreateTextIconAction : CreateRichTextAction() {
-    override val startMarker = ChronicleStrings.textIconStartMarker
-    override val endMarker = ChronicleStrings.textIconEndMarker
+    override val startMarker = ChronicleStrings.localisationTextIconStartMarker
+    override val endMarker = ChronicleStrings.localisationTextIconEndMarker
 
     override val wrapActionName get() = ChronicleBundle.message("action.Pls.Localisation.Styling.CreateTextIcon.text")
     override val wrapActionDescription get() = ChronicleBundle.message("action.Pls.Localisation.Styling.CreateTextIcon.description")

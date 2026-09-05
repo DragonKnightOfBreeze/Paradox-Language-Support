@@ -15,9 +15,9 @@ import icu.windea.pls.model.constants.ChronicleStrings
 // org.intellij.plugins.markdown.ui.actions.styling.BaseToggleStateAction
 // org.intellij.plugins.markdown.ui.actions.styling.MarkdownCreateLinkAction
 
-private const val marker = ChronicleStrings.colorMarker
-private const val startMarker = ChronicleStrings.colorStartMarker
-private const val endMarker = ChronicleStrings.colorEndMarker
+private const val marker = ChronicleStrings.localisationColorMarker
+private const val startMarker = ChronicleStrings.localisationColorStartMarker
+private const val endMarker = ChronicleStrings.localisationColorEndMarker
 
 class SetColorAction(
     val colorConfig: ParadoxTextColorInfo

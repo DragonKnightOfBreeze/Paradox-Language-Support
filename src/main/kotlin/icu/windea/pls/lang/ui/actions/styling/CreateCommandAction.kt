@@ -8,8 +8,8 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.model.constants.ChronicleStrings
 
 class CreateCommandAction : CreateRichTextAction() {
-    override val startMarker = ChronicleStrings.commandStartMarker
-    override val endMarker = ChronicleStrings.commandEndMarker
+    override val startMarker = ChronicleStrings.localisationCommandStartMarker
+    override val endMarker = ChronicleStrings.localisationCommandEndMarker
 
     override val wrapActionName get() = ChronicleBundle.message("action.Pls.Localisation.Styling.CreateCommand.text")
     override val wrapActionDescription get() = ChronicleBundle.message("action.Pls.Localisation.Styling.CreateCommand.description")

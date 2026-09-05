@@ -26,8 +26,8 @@ class ParadoxLocalisationFoldingBuilder : CustomFoldingBuilder(), DumbAware {
             PROPERTY_VALUE -> ChronicleStrings.quotedFolder
             PARAMETER -> ""
             ICON -> ""
-            COMMAND -> ChronicleStrings.commandFolder
-            CONCEPT_COMMAND -> ChronicleStrings.conceptCommandFolder
+            COMMAND -> ChronicleStrings.localisationCommandFolder
+            CONCEPT_COMMAND -> ChronicleStrings.localisationConceptCommandFolder
             CONCEPT_TEXT -> "..."
             else -> null
         }
@@ -87,12 +87,12 @@ class ParadoxLocalisationFoldingBuilder : CustomFoldingBuilder(), DumbAware {
             }
             COMMAND -> run {
                 if (!settings.localisationCommands) return@run
-                descriptors.add(FoldingDescriptor(element.node, element.textRange, null, ChronicleStrings.commandFolder))
+                descriptors.add(FoldingDescriptor(element.node, element.textRange, null, ChronicleStrings.localisationCommandFolder))
             }
             CONCEPT_COMMAND -> run {
                 if (!settings.localisationConceptCommands) return@run
                 val conceptTextNode = element.findChild { it.elementType == CONCEPT_TEXT }
-                val placeholder = if (conceptTextNode == null) ChronicleStrings.conceptCommandFolder else ChronicleStrings.conceptCommandWithTextFolder
+                val placeholder = if (conceptTextNode == null) ChronicleStrings.localisationConceptCommandFolder else ChronicleStrings.localisationConceptCommandWithTextFolder
                 descriptors.add(FoldingDescriptor(element.node, element.textRange, null, placeholder))
             }
             CONCEPT_TEXT -> run {

@@ -18,27 +18,35 @@ object ParadoxLocalisationPsiService {
 
     fun getPresentableText(element: PsiPresentableElement): String {
         return when (element) {
+            is ParadoxLocalisationLocale -> {
+                val name = element.name
+                name.or.unresolved()
+            }
+            is ParadoxLocalisationProperty -> {
+                val name = element.name
+                ChronicleStrings.localisationPropertyFolder(name.or.unresolved())
+            }
             is ParadoxLocalisationExpressionElement -> element.text.truncate(presentableTextLimit)
             is ParadoxLocalisationColorfulText -> {
                 val name = element.name
-                ChronicleStrings.colorfulTextFolder(name.or.unresolved())
+                ChronicleStrings.localisationColorfulTextFolder(name.or.unresolved())
             }
             is ParadoxLocalisationCommand -> {
                 val expression = element.commandText?.presentableText
-                ChronicleStrings.commandFolder(expression.orEmpty().truncate(presentableTextLimit))
+                ChronicleStrings.localisationCommandFolder(expression.orEmpty().truncate(presentableTextLimit))
             }
             is ParadoxLocalisationConceptCommand -> {
                 val expression = element.conceptName?.presentableText
                 val withText = element.conceptText != null
                 if (withText) {
-                    ChronicleStrings.conceptCommandFolder(expression.orEmpty().truncate(presentableTextLimit))
+                    ChronicleStrings.localisationConceptCommandFolder(expression.orEmpty().truncate(presentableTextLimit))
                 } else {
-                    ChronicleStrings.conceptCommandWithTextFolder(expression.orEmpty().truncate(presentableTextLimit))
+                    ChronicleStrings.localisationConceptCommandWithTextFolder(expression.orEmpty().truncate(presentableTextLimit))
                 }
             }
             is ParadoxLocalisationTextFormat -> {
                 val name = element.name
-                ChronicleStrings.textFormatFolder(name.or.unresolved())
+                ChronicleStrings.localisationTextFormatFolder(name.or.unresolved())
             }
             else -> element.text
         }

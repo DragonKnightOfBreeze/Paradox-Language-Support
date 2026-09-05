@@ -8,8 +8,8 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.model.constants.ChronicleStrings
 
 class CreateIconAction : CreateRichTextAction() {
-    override val startMarker = ChronicleStrings.iconStartMarker
-    override val endMarker = ChronicleStrings.iconEndMarker
+    override val startMarker = ChronicleStrings.localisationIconStartMarker
+    override val endMarker = ChronicleStrings.localisationIconEndMarker
 
     override val wrapActionName get() = ChronicleBundle.message("action.Pls.Localisation.Styling.CreateIcon.text")
     override val wrapActionDescription get() = ChronicleBundle.message("action.Pls.Localisation.Styling.CreateIcon.description")
