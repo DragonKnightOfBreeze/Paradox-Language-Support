@@ -1,5 +1,6 @@
 package icu.windea.pls.test.issues
 
+import com.intellij.psi.PsiFile
 import com.intellij.testFramework.IndexingTestUtil
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
@@ -10,6 +11,7 @@ import icu.windea.pls.lang.inspections.script.expression.MissingExpressionInspec
 import icu.windea.pls.lang.inspections.script.expression.TooManyExpressionInspection
 import icu.windea.pls.lang.inspections.script.expression.UnresolvedExpressionInspection
 import icu.windea.pls.lang.psi.light.ParadoxModifierLightElement
+import icu.windea.pls.lang.references.localisation.ParadoxLocalisationIconPsiReference
 import icu.windea.pls.lang.references.script.ParadoxScriptExpressionPsiReference
 import icu.windea.pls.lang.resolve.ParadoxModifierService
 import icu.windea.pls.lang.util.ParadoxModifierManager
@@ -143,11 +145,56 @@ class Issue385Test : BasePlatformTestCase(), ChronicleTestScope {
         }
     }
 
+    @Test
+    fun testReferenceResolution_ForModifierIcons_ShouldIgnoreCaseForLocIcon() {
+        enableAllNeededInspections()
+
+        configureWeaponsAndWeaponTypes()
+        configureModifierIcons()
+
+        markFileInfo(ParadoxGameType.Stellaris, "localisation/test_1.yml")
+        myFixture.configureByText("test_1.yml", """
+            l_english:
+             icon: "Icon: £<caret>mod_weapon_windea_long_sword_damage_mult£"
+        """.trimIndent())
+
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+        expectScope {
+            val reference = myFixture.findReferenceAtCaret().expectNotNull()
+            reference.expectIs<ParadoxLocalisationIconPsiReference>()
+            val resolved = reference.resolve().expectNotNull()
+            resolved.expectIs<PsiFile>()
+            resolved.name.expectEquals("mod_weapon_windea_long_sword_damage_mult.dds")
+        }
+
+        markFileInfo(ParadoxGameType.Stellaris, "localisation/test_2.yml")
+        myFixture.configureByText("test_2.yml", """
+            l_english:
+             icon: "Icon: £<caret>mod_weapon_ode_to_THE_DRAGON_KNIGHT_magic_power_mult£"
+        """.trimIndent())
+
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+        expectScope {
+            val reference = myFixture.findReferenceAtCaret().expectNotNull()
+            reference.expectIs<ParadoxLocalisationIconPsiReference>()
+            val resolved = reference.resolve().expectNotNull()
+            resolved.expectIs<PsiFile>()
+            resolved.name.expectEquals("mod_weapon_ode_to_the_dragon_knight_magic_power_mult.dds")
+        }
+    }
+
     private fun configureWeaponsAndWeaponTypes() {
         markFileInfo(ParadoxGameType.Stellaris, "common/weapons/00_weapons.txt")
         myFixture.configureByFile("issues/385/common/weapons/00_weapons.txt")
         markFileInfo(ParadoxGameType.Stellaris, "common/weapons/types/00_weapon_types.txt")
         myFixture.configureByFile("issues/385/common/weapons/types/00_weapon_types.txt")
+    }
+
+    private fun configureModifierIcons() {
+        markFileInfo(ParadoxGameType.Stellaris, "gfx/interface/icons/modifiers/mod_weapon_ode_to_the_dragon_knight_magic_power_mult.dds")
+        myFixture.copyFileToProject("issues/385/gfx/interface/icons/modifiers/mod_weapon_ode_to_the_dragon_knight_magic_power_mult.dds")
+        markFileInfo(ParadoxGameType.Stellaris, "gfx/interface/icons/modifiers/mod_weapon_windea_long_sword_damage_mult.dd")
+        myFixture.copyFileToProject("issues/385/gfx/interface/icons/modifiers/mod_weapon_windea_long_sword_damage_mult.dds")
     }
 
     private fun enableAllNeededInspections() {
