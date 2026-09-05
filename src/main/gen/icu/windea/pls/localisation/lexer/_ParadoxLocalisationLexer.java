@@ -307,7 +307,7 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
   private boolean zzEOFDone;
 
   /* user code: */
-    private ParadoxGameType gameType;
+    private ParadoxGameType gameType; // NOTE 3.0.2 unused (so not passed) atm
 
     public _ParadoxLocalisationLexer() {
         this((java.io.Reader)null);

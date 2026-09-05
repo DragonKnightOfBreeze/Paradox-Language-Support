@@ -67,4 +67,4 @@ ColumnContent = ({Quote}{ColumnTokenQuoted}?|{ColumnTokenUnquoted}){Quote}?
 
 // fallback
 
-[^] { return BAD_CHARACTER; }
+ [^] { return BAD_CHARACTER; }

@@ -390,7 +390,7 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
   private boolean zzEOFDone;
 
   /* user code: */
-    private ParadoxGameType gameType;
+    private ParadoxGameType gameType; // NOTE 3.0.2 used by constraint-based checks
 
     // stack for context states (states that need to fallback when exit some constructs)
     private IntArrayList stateStack = null;
