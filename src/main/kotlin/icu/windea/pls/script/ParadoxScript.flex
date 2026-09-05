@@ -77,16 +77,6 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
         yybegin(nextState);
     }
 
-    private void exitState() {
-        if (stateStack == null || stateStack.isEmpty() || expectStack == null || expectStack.isEmpty()) {
-            yybegin(YYINITIAL);
-            return;
-        }
-        int nextState = stateStack.popInt();
-        expectStack.popInt();
-        yybegin(nextState);
-    }
-
     private void exitStateForRecovery() {
         // used for recovery
         if (stateStack == null || stateStack.isEmpty() || expectStack == null || expectStack.isEmpty()) {
@@ -131,6 +121,10 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
             exitState(EXPECT_PROPERTY_KEY); // exist state if necessary
             yybegin(IN_PROPERTY_VALUE);
         }
+    }
+
+    private void beginStateAfterValue() {
+        yybegin(YYINITIAL);
     }
 
     private boolean beginStateInConditionalBody() {
@@ -429,7 +423,7 @@ InlineMathToken = [^\r\n#{}\[\]]+ // lenient match
 
 // common rules
 
-<YYINITIAL> {
+<YYINITIAL, IN_PROPERTY_VALUE, IN_SCRIPTED_VARIABLE_VALUE> {
     "{" {
         enterState(YYINITIAL, EXPECT_BLOCK); // enter YYINITIAL directly
         return LEFT_BRACE;
@@ -517,10 +511,10 @@ InlineMathToken = [^\r\n#{}\[\]]+ // lenient match
     }
 }
 <YYINITIAL, IN_PROPERTY_VALUE, IN_SCRIPTED_VARIABLE_VALUE> {
-    {BooleanToken} { yybegin(YYINITIAL); return BOOLEAN_TOKEN; }
-    {IntToken} { yybegin(YYINITIAL); return INT_TOKEN; }
-    {FloatToken} { yybegin(YYINITIAL); return FLOAT_TOKEN; }
-    {ColorToken} { yybegin(YYINITIAL); return COLOR_TOKEN; }
+    {BooleanToken} { beginStateAfterValue(); return BOOLEAN_TOKEN; }
+    {IntToken} { beginStateAfterValue(); return INT_TOKEN; }
+    {FloatToken} { beginStateAfterValue(); return FLOAT_TOKEN; }
+    {ColorToken} { beginStateAfterValue(); return COLOR_TOKEN; }
 }
 <YYINITIAL, IN_PROPERTY_VALUE, IN_SCRIPTED_VARIABLE_VALUE> {
     {PropertyKeyContent} / {Blank}?{PropertySeparator} {

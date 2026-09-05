@@ -1,3 +1,12 @@
+# case 1
+k1 = {
+	[[!PARAM]
+		k3 = {
+			k4 = v
+		}
+	]
+}
+# case 2
 k1 = {
 	k2 = {
 		TYPE = $TYPE$

@@ -56,9 +56,11 @@ class ParadoxScriptParsingTest : ParsingTestCase("script/syntax", "test.txt", Pa
     @Test
     fun construct_parameters() = doTest(true)
     @Test
-    fun construct_conditional_blocks() = doTest(true)
-    @Test
     fun construct_inline_conditional_blocks() = doTest(true)
+    @Test
+    fun construct_complex_conditional_block() = doTest(true)
+    @Test
+    fun construct_conditional_blocks() = doTest(true)
     @Test
     fun construct_interpolations() = doTest(true) // 3.0.2
     @Test
@@ -88,8 +90,6 @@ class ParadoxScriptParsingTest : ParsingTestCase("script/syntax", "test.txt", Pa
     fun edge_one_parameter() = doTest(true)
     @Test
     fun edge_one_conditional_block() = doTest(true)
-    @Test
-    fun edge_one_complex_conditional_block() = doTest(true)
     @Test
     fun edge_chars_of_scripted_variables() = doTest(true)
     @Test
