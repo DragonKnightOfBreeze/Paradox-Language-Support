@@ -1,0 +1,4 @@
+User-agent:*
+Disallow:
+
+Sitemap: https://windea.icu/Paradox-Language-Support/sitemap.xml
