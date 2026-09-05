@@ -45,17 +45,16 @@ public interface ParadoxLocalisationElementTypes {
 
   IElementType ARGUMENT_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("ARGUMENT_TOKEN");
   IElementType AT = ParadoxLocalisationElementTypeFactory.getTokenType("@");
-  IElementType COLON = ParadoxLocalisationElementTypeFactory.getTokenType("COLON");
+  IElementType COLON = ParadoxLocalisationElementTypeFactory.getTokenType(":");
   IElementType COLORFUL_TEXT_END = ParadoxLocalisationElementTypeFactory.getTokenType("COLORFUL_TEXT_END");
   IElementType COLORFUL_TEXT_START = ParadoxLocalisationElementTypeFactory.getTokenType("COLORFUL_TEXT_START");
   IElementType COLOR_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("COLOR_TOKEN");
-  IElementType COMMA = ParadoxLocalisationElementTypeFactory.getTokenType("COMMA");
+  IElementType COMMA = ParadoxLocalisationElementTypeFactory.getTokenType(",");
   IElementType COMMAND_TEXT_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("COMMAND_TEXT_TOKEN");
   IElementType COMMENT = ParadoxLocalisationElementTypeFactory.getTokenType("COMMENT");
   IElementType CONCEPT_NAME_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("CONCEPT_NAME_TOKEN");
   IElementType CONTEXT_TAG_PART_PREFIX = ParadoxLocalisationElementTypeFactory.getTokenType("CONTEXT_TAG_PART_PREFIX");
   IElementType CONTEXT_TAG_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("CONTEXT_TAG_TOKEN");
-  IElementType EOL = ParadoxLocalisationElementTypeFactory.getTokenType("<eol>");
   IElementType ICON_END = ParadoxLocalisationElementTypeFactory.getTokenType("ICON_END");
   IElementType ICON_START = ParadoxLocalisationElementTypeFactory.getTokenType("ICON_START");
   IElementType ICON_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("ICON_TOKEN");

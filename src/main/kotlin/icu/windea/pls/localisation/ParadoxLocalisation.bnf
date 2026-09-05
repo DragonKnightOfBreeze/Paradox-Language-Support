@@ -20,9 +20,11 @@
   parserUtilClass="icu.windea.pls.localisation.parser.ParadoxLocalisationParserUtil"
   methods(".*")=[getResolveScope getUseScope getPresentation toString]
   tokens=[
-    EOL="<eol>"
+    // EOL="<eol>" // unused atm
     AT="@"
     PIPE="|"
+    COLON=":"
+    COMMA=","
   ]
 }
 

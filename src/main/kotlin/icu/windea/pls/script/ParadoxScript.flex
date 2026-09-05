@@ -19,7 +19,7 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 %%
 
 %{
-    private ParadoxGameType gameType;
+    private ParadoxGameType gameType; // NOTE 3.0.2 unused (so not passed) atm
 
     // stack for context states (states that need to fallback when exit some constructs)
     private IntArrayList stateStack = null;
@@ -415,7 +415,9 @@ ColorTypeToken = {ColorTypeRgb}|{ColorTypeHsv}|{ColorTypeHsv360}
 ColorArgsToken = "{"[\d.\s&&[^\r\n]]*"}" // lenient match
 ColorToken = {ColorTypeToken}{Blank}?{ColorArgsToken}
 
-InlineMathToken = [^\r\n#{}\[\]]+ // lenient match
+InlineMathChar = [^#{}\[\]\r\n]
+InlineMathBoundChar = [^#{}\[\]\s]
+InlineMathToken = {InlineMathBoundChar}({InlineMathChar}*{InlineMathBoundChar})? // lenient match
 
 // lazy-scanning inline math expressions (see `ParadoxScript.InlineMath.flex`)
 

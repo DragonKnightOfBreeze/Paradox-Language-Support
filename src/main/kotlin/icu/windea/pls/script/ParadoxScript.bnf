@@ -21,7 +21,7 @@
   extends("inline_math_add_expr")=inline_math_binary_expression
   methods(".*")=[getResolveScope getUseScope getPresentation toString]
   tokens=[
-    EOL="<eol>"
+    // EOL="<eol>" // unused atm
     AT="@"
     PIPE="|"
   ]
