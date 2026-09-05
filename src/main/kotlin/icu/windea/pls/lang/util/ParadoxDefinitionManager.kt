@@ -144,11 +144,11 @@ object ParadoxDefinitionManager {
     }
 
     fun getPrimaryRelatedLocalisationInfos(definitionInfo: ParadoxDefinitionInfo): List<ParadoxDefinitionInfo.RelatedLocalisationInfo> {
-        return definitionInfo.localisations.filterFast { it.primary || it.primaryByInference }.optimized()
+        return definitionInfo.localisations.filterFast { it.isPrimaryKey() }.optimized()
     }
 
     fun getPrimaryRelatedImageInfos(definitionInfo: ParadoxDefinitionInfo): List<ParadoxDefinitionInfo.RelatedImageInfo> {
-        return definitionInfo.images.filterFast { it.primary || it.primaryByInference }.optimized()
+        return definitionInfo.images.filterFast { it.isPrimaryKey() }.optimized()
     }
 
     fun getPresentableName(element: ParadoxDefinitionElement): String? {

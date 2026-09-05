@@ -44,13 +44,19 @@ data class ParadoxDefinitionInfo(
 
     override val configGroup: CwtConfigGroup get() = typeConfig.configGroup
 
+    /** @see ParadoxDefinitionManager.getMemberPath */
     val memberPath: ParadoxMemberPath get() = ParadoxDefinitionManager.getMemberPath(this)
 
     // NOTE 2.1.3 以下属性目前保持为计算属性即可，不需要额外缓存
+    /** @see ParadoxDefinitionManager.getRelatedLocalisationInfos */
     val localisations: List<RelatedLocalisationInfo> get() = ParadoxDefinitionManager.getRelatedLocalisationInfos(this)
+    /** @see ParadoxDefinitionManager.getRelatedImageInfos */
     val images: List<RelatedImageInfo> get() = ParadoxDefinitionManager.getRelatedImageInfos(this)
+    /** @see ParadoxDefinitionManager.getModifierInfos */
     val modifiers: List<ModifierInfo> get() = ParadoxDefinitionManager.getModifierInfos(this)
+    /** @see ParadoxDefinitionManager.getPrimaryRelatedLocalisationInfos */
     val primaryLocalisations: List<RelatedLocalisationInfo> get() = ParadoxDefinitionManager.getPrimaryRelatedLocalisationInfos(this)
+    /** @see ParadoxDefinitionManager.getPrimaryRelatedImageInfos */
     val primaryImages: List<RelatedImageInfo> get() = ParadoxDefinitionManager.getPrimaryRelatedImageInfos(this)
 
     /** @see ParadoxDefinitionManager.getSubtypeConfigs */
@@ -67,24 +73,28 @@ data class ParadoxDefinitionInfo(
         val key: String,
         val locationExpression: CwtImageLocationExpression,
         val required: Boolean = false,
-        val primary: Boolean = false
+        val primary: Boolean = false,
     ) {
         @Inferred
-        val primaryByInference: Boolean = key.equalsFast("icon", true)
+        fun isPrimaryKey(): Boolean {
+            return primary || key.equalsFast("icon", true)
+        }
     }
 
     data class RelatedLocalisationInfo(
         val key: String,
         val locationExpression: CwtLocalisationLocationExpression,
         val required: Boolean = false,
-        val primary: Boolean = false
+        val primary: Boolean = false,
     ) {
         @Inferred
-        val primaryByInference: Boolean = key.equalsFast("name", true) || key.equalsFast("title", true)
+        fun isPrimaryKey(): Boolean {
+            return primary || key.equalsFast("name", true) || key.equalsFast("title", true)
+        }
     }
 
     data class ModifierInfo(
         val name: String,
-        val config: CwtModifierConfig
+        val config: CwtModifierConfig,
     )
 }

@@ -37,11 +37,16 @@ sealed interface ParadoxDefinitionCandidateInfo : UserDataHolder {
     val gameType: ParadoxGameType get() = configGroup.gameType
     val declarationConfig: CwtDeclarationConfig? get() = configGroup.declarations.get(type)
 
+    /** @see ParadoxConfigManager.getSubtypes */
     val subtypes: List<String> get() = ParadoxConfigManager.getSubtypes(subtypeConfigs)
+    /** @see ParadoxConfigManager.getTypes */
     val types: List<String> get() = ParadoxConfigManager.getTypes(type, subtypeConfigs)
+    /** @se ParadoxConfigManager.getTypeText */
     val typeText: String get() = ParadoxConfigManager.getTypeText(type, subtypeConfigs)
 
+    /** @see getSubtypeConfigs */
     val subtypeConfigs: List<CwtSubtypeConfig> get() = getSubtypeConfigs()
+    /** @see getDeclaration */
     val declaration: CwtPropertyConfig? get() = getDeclaration()
 
     fun getSubtypeConfigs(options: ParadoxMatchOptions? = null): List<CwtSubtypeConfig>

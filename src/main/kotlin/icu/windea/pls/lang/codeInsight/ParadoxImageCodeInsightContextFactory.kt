@@ -69,14 +69,14 @@ object ParadoxImageCodeInsightContextFactory {
             val resolveResult = ParadoxLocationExpressionService.resolve(expression, definition, definitionInfo)
             val type = when {
                 info.required -> ParadoxImageCodeInsightInfo.Type.Required
-                info.primary -> ParadoxImageCodeInsightInfo.Type.Primary
+                info.isPrimaryKey() -> ParadoxImageCodeInsightInfo.Type.Primary
                 else -> ParadoxImageCodeInsightInfo.Type.Optional
             }
             val name = resolveResult?.name
             val gfxName = CwtConfigExpressionManager.resolvePlaceholder(expression, definitionInfo.name)?.takeIf { it.startsWith("GFX_") }
             val check = when {
                 info.required -> true
-                (inspection == null || inspection.checkPrimaryForDefinitions) && (info.primary || info.primaryByInference) -> true
+                (inspection == null || inspection.checkPrimaryForDefinitions) && info.isPrimaryKey() -> true
                 (inspection == null || inspection.checkOptionalForDefinitions) && !info.required -> true
                 else -> false
             }

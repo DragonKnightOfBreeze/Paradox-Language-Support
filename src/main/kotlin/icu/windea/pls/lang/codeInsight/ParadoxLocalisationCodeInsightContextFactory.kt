@@ -143,13 +143,13 @@ object ParadoxLocalisationCodeInsightContextFactory {
                 val resolveResult = ParadoxLocationExpressionService.resolve(expression, element, definitionInfo) { locale(locale) }
                 val type = when {
                     info.required -> ParadoxLocalisationCodeInsightInfo.Type.Required
-                    info.primary -> ParadoxLocalisationCodeInsightInfo.Type.Primary
+                    info.isPrimaryKey() -> ParadoxLocalisationCodeInsightInfo.Type.Primary
                     else -> ParadoxLocalisationCodeInsightInfo.Type.Optional
                 }
                 val name = resolveResult?.name
                 val check = when {
                     info.required -> true
-                    checkPrimaryForDefinitions(inspection) && (info.primary || info.primaryByInference) -> true
+                    checkPrimaryForDefinitions(inspection) && info.isPrimaryKey() -> true
                     checkOptionalForDefinitions(inspection) && !info.required -> true
                     else -> false
                 }
