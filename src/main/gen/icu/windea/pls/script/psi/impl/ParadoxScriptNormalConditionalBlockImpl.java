@@ -52,6 +52,12 @@ public class ParadoxScriptNormalConditionalBlockImpl extends ASTWrapperPsiElemen
 
   @Override
   @NotNull
+  public List<ParadoxScriptScriptedVariable> getScriptedVariableList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptScriptedVariable.class);
+  }
+
+  @Override
+  @NotNull
   public List<ParadoxScriptValue> getValueList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptValue.class);
   }

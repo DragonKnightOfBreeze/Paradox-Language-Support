@@ -94,6 +94,10 @@
                      bundle="messages.ChronicleInspectionBundle"
                      key="script.incorrectSyntax" groupKey="group.script.common" groupPathKey="group.script"
                      implementationClass="icu.windea.pls.lang.inspections.script.common.IncorrectSyntaxInspection"/>
+    <localInspection language="PARADOX_SCRIPT" enabledByDefault="true" level="WARNING" shortName="ParadoxScriptUnsupportedScriptedVariable"
+                     bundle="messages.ChronicleInspectionBundle"
+                     key="script.unsupportedScriptedVariable" groupKey="group.script.common" groupPathKey="group.script"
+                     implementationClass="icu.windea.pls.lang.inspections.script.common.UnsupportedScriptedVariableInspection"/>
     <localInspection language="PARADOX_SCRIPT" enabledByDefault="true" level="WARNING" shortName="ParadoxScriptUnsupportedParameter"
                      bundle="messages.ChronicleInspectionBundle"
                      key="script.unsupportedParameter" groupKey="group.script.common" groupPathKey="group.script"

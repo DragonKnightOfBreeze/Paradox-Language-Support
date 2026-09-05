@@ -772,12 +772,13 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // comment/* | scripted_variable*/ | property | value | normal_conditional_block
+  // comment | scripted_variable | property | value | normal_conditional_block
   static boolean normal_conditional_block_item(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "normal_conditional_block_item")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_);
     r = comment(b, l + 1);
+    if (!r) r = scripted_variable(b, l + 1);
     if (!r) r = property(b, l + 1);
     if (!r) r = value(b, l + 1);
     if (!r) r = normal_conditional_block(b, l + 1);

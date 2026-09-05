@@ -332,7 +332,7 @@ normal_conditional_block ::= LEFT_BRACKET conditional_header normal_conditional_
   ]
 }
 private normal_conditional_block_items ::= normal_conditional_block_item+
-private normal_conditional_block_item ::= comment/* | scripted_variable*/ | property | value | normal_conditional_block {
+private normal_conditional_block_item ::= comment | scripted_variable | property | value | normal_conditional_block {
   // recoverWhile="#auto" // continue parsing
   recoverWhile=normal_conditional_block_item_recover // continue parsing
 }

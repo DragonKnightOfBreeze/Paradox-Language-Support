@@ -22,6 +22,9 @@ public interface ParadoxScriptNormalConditionalBlock extends ParadoxScriptCondit
   List<ParadoxScriptProperty> getPropertyList();
 
   @NotNull
+  List<ParadoxScriptScriptedVariable> getScriptedVariableList();
+
+  @NotNull
   List<ParadoxScriptValue> getValueList();
 
   @NotNull ParadoxScriptNormalConditionalBlock getMemberContainer();
