@@ -4,21 +4,16 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
-import icu.windea.pls.config.configExpression.CwtDataExpression
-import icu.windea.pls.config.configExpression.CwtDataExpressionRole
 import icu.windea.pls.config.configGroup.CwtTypeModel
 import icu.windea.pls.core.collections.forEachFast
-import icu.windea.pls.core.collections.mapNotNullFast
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.processAsync
-import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionFactory
 import icu.windea.pls.lang.codeInsight.completion.addToResult
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.index.constraints.ParadoxDefinitionIndexConstraint
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
-import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.search.util.withConstraint
 import icu.windea.pls.localisation.psi.ParadoxLocalisationIcon
@@ -55,10 +50,6 @@ abstract class ParadoxCompositeLocalisationIconSupport : ParadoxLocalisationIcon
      */
     protected fun fromDefinition(definitionType: String, definitionNameGetter: (name: String) -> String?, nameGetter: (definitionName: String) -> String?) {
         _supports += ParadoxDefinitionBasedLocalisationIconSupport(definitionType, definitionNameGetter, nameGetter)
-    }
-
-    protected fun fromImageFile(pathExpressionString: String) {
-        _supports += ParadoxImageFileBasedLocalisationIconSupport(pathExpressionString)
     }
 
     final override fun resolve(name: String, element: ParadoxLocalisationIcon, project: Project): PsiElement? {
@@ -128,34 +119,3 @@ class ParadoxDefinitionBasedLocalisationIconSupport(
     }
 }
 
-class ParadoxImageFileBasedLocalisationIconSupport(
-    pathExpressionString: String
-) : ParadoxLocalisationIconSupport {
-    val pathExpression = CwtDataExpression.resolve(pathExpressionString, CwtDataExpressionRole.Value)
-
-    override fun resolve(name: String, element: ParadoxLocalisationIcon, project: Project): PsiElement? {
-        val selector = ParadoxFilePathSearch.selector(project, element).contextSensitive()
-        val query = ParadoxFilePathSearch.searchImage(name, pathExpression, selector) // 3.0.1 optimize: limit file extensions
-        return query.find()?.toPsiFile(project)
-    }
-
-    override fun resolveAll(name: String, element: ParadoxLocalisationIcon, project: Project): Collection<PsiElement> {
-        val selector = ParadoxFilePathSearch.selector(project, element).contextSensitive()
-        val query = ParadoxFilePathSearch.searchImage(name, pathExpression, selector) // 3.0.1 optimize: limit file extensions
-        val files = query.findAll()
-        return files.mapNotNullFast { it.toPsiFile(project) }
-    }
-
-    override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
-        val hintText = " from image file"
-        val selector = ParadoxFilePathSearch.selector(context.project, context.file).contextSensitive().distinct()
-        val query = ParadoxFilePathSearch.searchImage(null, pathExpression, selector) // 3.0.1 optimize: limit file extensions
-        query.processAsync p@{ file ->
-            val name = file.nameWithoutExtension
-            if (name.isEmpty()) return@p true
-            val psiFile = file.toPsiFile(context.project) ?: return@p true
-            val lookupElement = ParadoxCompletionFactory.forLocalisationIcon(psiFile, name, psiFile, hintText)
-            lookupElement.addToResult(context, result)
-        }
-    }
-}

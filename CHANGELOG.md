@@ -8,6 +8,7 @@
 - [x] Missing error on invalid syntax which can cause cascading errors in-game ([#386](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/386))
 - [x] complex_enum的匹配问题 ([#389](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/389))
 - [x] Bug: Broken syntax highlighting on event targets ([#390](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/390))
+- [x] 修正的名字、名字和描述的本地化键名、图标对应的文件名全部改为忽略大小写 / Make names, loc keys of names and descriptions, file names of icons, for modifier, all case-insensitive
 - [x] 将代码检查 `ConflictingResolvedExpressionInspection` 重命名为 `ConflictingExpressionInspection` 并默认禁用，避免误报和误导 / Rename code inspection `ConflictingResolvedExpressionInspection` to `ConflictingExpressionInspection` and disable it by default to avoid false positives and misleading results
 - [x] 清理和完善各个 lexer 和 parser / Cleanup and improve lexers and parsers
 - [x] 完善脚本文件的 lexer：不区分颜色类型的大小写（如 `RGB { 0 255 255}`） / Improve lexer for script files: ignore case for color types (e.g., `RGB { 0 255 255}`) ([#399](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/399))
