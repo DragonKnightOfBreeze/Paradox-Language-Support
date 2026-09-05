@@ -12,11 +12,11 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 /**
- * @see UnsupportedInlineMathInspection
+ * @see UnsupportedConditionalBlockInspection
  */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
-class UnsupportedInlineMathInspectionTest : BasePlatformTestCase(), ChronicleTestScope {
+class UnsupportedConditionalBlockInspectionTest : BasePlatformTestCase(), ChronicleTestScope {
 
     override fun getTestDataPath() = "src/test/testData"
 
@@ -26,39 +26,39 @@ class UnsupportedInlineMathInspectionTest : BasePlatformTestCase(), ChronicleTes
         markRootDirectory("features/inspections")
         markConfigDirectory("features/inspections/.config")
         initInjectedConfigGroups(project, ParadoxGameType.Stellaris, ParadoxGameType.Eu5)
-        myFixture.enableInspections(UnsupportedInlineMathInspection::class.java)
+        myFixture.enableInspections(UnsupportedConditionalBlockInspection::class.java)
     }
 
     @After
     fun doTearDown() = clearIntegrationTest()
 
     @Test
-    fun txtFile_stellaris() {
-        markFileInfo(ParadoxGameType.Stellaris, "common/test/test.txt")
-        myFixture.configureByText("test.stellaris.txt", "key = @[ 1 + 1 ]")
+    fun normalScriptFile_stellaris() {
+        markFileInfo(ParadoxGameType.Stellaris, "common/test.txt")
+        myFixture.configureByText("test.txt", "[[PARAM] key = value ]")
         myFixture.checkHighlighting()
     }
 
     @Test
-    fun txtFile_eu5() {
-        markFileInfo(ParadoxGameType.Eu5, "common/test/test.txt")
-        myFixture.configureByText("test.eu5.txt", "key = @[ 1 + 1 ]")
+    fun normalScriptFile_eu5() {
+        markFileInfo(ParadoxGameType.Eu5, "common/test.txt")
+        myFixture.configureByText("test.txt", "[[PARAM] key = value ]")
         myFixture.checkHighlighting()
     }
 
     @Test
-    fun assetFile_stellaris() {
-        val tag = ChronicleInspectionBundle.message("script.unsupportedInlineMath.desc.1").toWarningTag()
+    fun inlineScriptFile_stellaris() {
+        val tag = ChronicleInspectionBundle.message("script.unsupportedConditionalBlock.desc.1").toWarningTag()
 
-        markFileInfo(ParadoxGameType.Stellaris, "common/test/test.asset")
-        myFixture.configureByText("test.stellaris.asset", "key = ${tag.start}@[ 1 + 1 ]${tag.end}")
+        markFileInfo(ParadoxGameType.Stellaris, "common/inline_scripts/test.txt")
+        myFixture.configureByText("test.txt", "${tag.start}[[PARAM] key = value ]${tag.end}")
         myFixture.checkHighlighting()
     }
 
     @Test
-    fun assetFile_eu5() {
-        markFileInfo(ParadoxGameType.Eu5, "common/test/test.asset")
-        myFixture.configureByText("test.eu5.asset", "key = @[ 1 + 1 ]")
+    fun inlineScriptFile_eu5() {
+        markFileInfo(ParadoxGameType.Eu5, "common/inline_scripts/test.txt")
+        myFixture.configureByText("test.txt", "[[PARAM] key = value ]")
         myFixture.checkHighlighting()
     }
 }

@@ -22,7 +22,6 @@ class DuplicateScriptedVariablesInspectionTest : BasePlatformTestCase(), Chronic
     @Before
     fun doSetUp() {
         markIntegrationTest()
-        // initInjectedConfigGroups(project, ParadoxGameType.Stellaris) // unnecessary
         myFixture.enableInspections(DuplicateScriptedVariablesInspection::class.java)
     }
 
