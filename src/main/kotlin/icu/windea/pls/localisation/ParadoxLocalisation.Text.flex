@@ -546,8 +546,8 @@ ContextTagToken = {TextIconChar}+ // leading number is allowed
 }
 
 // context tag part rules
-// e.g., `&t` in `[From.GetName&t]`
 // e.g., `&t` in `$1&t$`
+// e.g., `&t` in `[From.GetName&t]`
 
 <IN_CONTEXT_TAG_PART> {
     ":" { exitState(EXPECT_CONTEXT_TAG_PART); return COLON; } // exit state

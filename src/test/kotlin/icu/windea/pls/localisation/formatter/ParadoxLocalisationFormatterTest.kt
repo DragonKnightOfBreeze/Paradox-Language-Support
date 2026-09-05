@@ -127,10 +127,10 @@ class ParadoxLocalisationFormatterTest : BasePlatformTestCase(), ChronicleTestSc
         val code = """
             |l_english:
             | # Comment
-            | text:0 "Value"
+            | text:0 "Text"
             | text_empty:0 ""
             | text_blank:0 " "
-            | text_multiline:0 "Value\nNew line"
+            | text_multiline:0 "Line\nNew line"
         """.trimMargin()
         val after = reformat(code)
         assertEquals(code, after)
