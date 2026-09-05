@@ -27,19 +27,10 @@ class ParadoxLocalisationParsingTest : ParsingTestCase("localisation/syntax", "t
 
     @Test
     fun example() = doTest(true)
-
-    @Test
-    fun empty() = doTest(true)
     @Test
     fun escapes() = doTest(true)
     @Test
     fun with_or_without_number() = doTest(true)
-    @Test
-    fun only_comments() = doTest(true)
-    @Test
-    fun only_header() = doTest(true)
-    @Test
-    fun only_header_eof() = doTest(true)
     @Test
     fun combined() = doTest(true)
     @Test
@@ -69,6 +60,27 @@ class ParadoxLocalisationParsingTest : ParsingTestCase("localisation/syntax", "t
     fun construct_text_formats_vic3() = doTest(true)
     @Test
     fun construct_text_formats_stellaris() = doTest(true)
+
+    @Test
+    fun edge_empty() = doTest(true)
+    @Test
+    fun edge_only_comments() = doTest(true)
+    @Test
+    fun edge_only_header() = doTest(true)
+    @Test
+    fun edge_only_header_eof() = doTest(true)
+    @Test
+    fun edge_only_properties() = doTest(true)
+    @Test
+    fun edge_only_properties_eof() = doTest(true)
+    @Test
+    fun edge_one_comment() = doTest(true)
+    @Test
+    fun edge_chars_of_properties() = doTest(true)
+    @Test
+    fun edge_chars_of_scripted_variable_references() = doTest(true)
+    @Test
+    fun edge_chars_of_parameters() = doTest(true)
 
     @Test
     fun error_unclosed_quotes() = doTest(true)

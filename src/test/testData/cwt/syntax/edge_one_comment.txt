@@ -1,0 +1,2 @@
+CwtFile: edge_one_comment.test.cwt(0,9)
+  PsiComment(COMMENT)('# comment')(0,9)

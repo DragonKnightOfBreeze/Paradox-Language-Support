@@ -18,13 +18,8 @@ class CwtParsingTest : ParsingTestCase("cwt/syntax", "test.cwt", CwtParserDefini
 
     @Test
     fun example() = doTest(true)
-
-    @Test
-    fun empty() = doTest(true)
     @Test
     fun escapes() = doTest(true)
-    @Test
-    fun only_comments() = doTest(true)
     @Test
     fun property_separators() = doTest(true)
     @Test
@@ -56,6 +51,27 @@ class CwtParsingTest : ParsingTestCase("cwt/syntax", "test.cwt", CwtParserDefini
     fun construct_properties() = doTest(true)
     @Test
     fun construct_values() = doTest(true)
+
+    @Test
+    fun edge_empty() = doTest(true)
+    @Test
+    fun edge_only_comments() = doTest(true)
+    @Test
+    fun edge_one_comment() = doTest(true)
+    @Test
+    fun edge_one_option_comment() = doTest(true)
+    @Test
+    fun edge_one_doc_comment() = doTest(true)
+    @Test
+    fun edge_one_property() = doTest(true)
+    @Test
+    fun edge_one_value() = doTest(true)
+    @Test
+    fun edge_one_block() = doTest(true)
+    @Test
+    fun edge_one_empty_block() = doTest(true)
+    @Test
+    fun edge_one_comment_and_one_member() = doTest(true)
 
     @Test
     fun error_missing_option_value() = doTest(true)

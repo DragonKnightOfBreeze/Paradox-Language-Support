@@ -1,0 +1,7 @@
+# lenient identifier
+# leading number is allowed
+
+@[ $aaA0_$ ]
+@[ $AaA0_$ ]
+@[ $0aA0_$ ]
+@[ $_aA0_$ ]

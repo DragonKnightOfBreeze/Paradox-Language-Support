@@ -1,0 +1,14 @@
+# lenient identifier
+# leading number is allowed
+# `.-'` is allowed additionally
+
+l_english:
+ aaA0_: "text"
+ AaA0_: "text"
+ 0aA0_: "text"
+ _aA0_: "text"
+
+ aA0_.-': "text"
+ .aA0_.-': "text"
+ -aA0_.-': "text"
+ 'aA0_.-': "text"

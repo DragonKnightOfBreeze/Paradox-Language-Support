@@ -1,0 +1,2 @@
+ParadoxLocalisationFile: edge_one_comment.test.yml(0,9)
+  PsiComment(COMMENT)('# comment')(0,9)

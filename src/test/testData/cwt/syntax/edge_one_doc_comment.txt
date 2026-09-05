@@ -1,0 +1,4 @@
+CwtFile: edge_one_doc_comment.test.cwt(0,15)
+  CwtRootBlock(0,15)
+    CwtDocComment(0,15)
+      PsiElement(DOC_COMMENT_TOKEN)('### doc comment')(0,15)

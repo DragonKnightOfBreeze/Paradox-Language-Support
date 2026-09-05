@@ -1,0 +1,11 @@
+k1 = {
+	k2 = {
+		TYPE = $TYPE$
+		VALUE = 1
+	}
+	[[!PARAM]
+		k3 = {
+			k4 = v
+		}
+	]
+}

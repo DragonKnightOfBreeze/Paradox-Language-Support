@@ -27,15 +27,8 @@ class ParadoxCsvParsingTest : ParsingTestCase("csv/syntax", "test.csv", ParadoxC
 
     @Test
     fun example() = doTest(true)
-
-    @Test
-    fun empty() = doTest(true)
     @Test
     fun empty_columns() = doTest(true)
-    @Test
-    fun only_comments() = doTest(true)
-    @Test
-    fun error_unclosed_quote() = doTest(true)
     @Test
     fun header_and_rows() = doTest(true)
     @Test
@@ -48,6 +41,11 @@ class ParadoxCsvParsingTest : ParsingTestCase("csv/syntax", "test.csv", ParadoxC
     fun quoted() = doTest(true)
     @Test
     fun quoted_with_newline() = doTest(true)
+
+    @Test
+    fun edge_empty() = doTest(true)
+    @Test
+    fun edge_only_comments() = doTest(true)
 
     @Test
     fun error_unclosed_quotes() = doTest(true)

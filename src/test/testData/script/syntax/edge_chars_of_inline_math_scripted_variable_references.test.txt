@@ -1,0 +1,7 @@
+# strict identifier
+# leading number is not allowed
+
+@[ aaA0_ ]
+@[ AaA0_ ]
+@[ 0aA0_ ]
+@[ _aA0_ ]

@@ -1,0 +1,4 @@
+ParadoxScriptFile: edge_one_value.test.txt(0,12)
+  ParadoxScriptRootBlock(0,12)
+    ParadoxScriptString: [hint] ...(0,12)
+      PsiElement(STRING_TOKEN)('"[hint] ..."')(0,12)

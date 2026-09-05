@@ -1,0 +1,8 @@
+# strict identifier
+# leading number is not allowed
+
+l_english:
+ key: "$@aaA0_$"
+ key: "$@AaA0_$"
+ key: "$@0aA0_$"
+ key: "$@_aA0_$"

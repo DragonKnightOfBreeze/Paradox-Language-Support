@@ -1,0 +1,5 @@
+CwtFile: edge_one_empty_block.test.cwt(0,2)
+  CwtRootBlock(0,2)
+    CwtBlock: {...}(0,2)
+      PsiElement(LEFT_BRACE)('{')(0,1)
+      PsiElement(RIGHT_BRACE)('}')(1,2)

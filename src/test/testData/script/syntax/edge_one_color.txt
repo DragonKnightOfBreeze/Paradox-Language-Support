@@ -1,0 +1,4 @@
+ParadoxScriptFile: edge_one_color.test.txt(0,17)
+  ParadoxScriptRootBlock(0,17)
+    ParadoxScriptColor: rgb { 0 255 255 }(0,17)
+      PsiElement(COLOR_TOKEN)('rgb { 0 255 255 }')(0,17)

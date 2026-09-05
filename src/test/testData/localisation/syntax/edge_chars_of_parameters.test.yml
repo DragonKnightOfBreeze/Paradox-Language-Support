@@ -1,0 +1,14 @@
+# lenient identifier
+# leading number is allowed
+# `.-'` is allowed additionally
+
+l_english:
+ key: "$aaA0_$"
+ key: "$AaA0_$"
+ key: "$0aA0_$"
+ key: "$_aA0_$"
+
+ key: "$aA0_.-'$"
+ key: "$.aA0_.-'$"
+ key: "$-aA0_.-'$"
+ key: "$'aA0_.-'$"

@@ -1,0 +1,2 @@
+ParadoxScriptFile: edge_empty.test.txt(0,0)
+  <empty list>

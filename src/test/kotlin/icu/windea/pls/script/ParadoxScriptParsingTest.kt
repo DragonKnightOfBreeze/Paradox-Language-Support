@@ -3,6 +3,7 @@ package icu.windea.pls.script
 import com.intellij.testFramework.ParsingTestCase
 import com.intellij.testFramework.TestDataPath
 import icu.windea.pls.test.ChronicleTestScope
+import org.jetbrains.kotlin.nj2k.downToExpression
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -27,13 +28,8 @@ class ParadoxScriptParsingTest : ParsingTestCase("script/syntax", "test.txt", Pa
 
     @Test
     fun example() = doTest(true)
-
-    @Test
-    fun empty() = doTest(true)
     @Test
     fun escapes() = doTest(true)
-    @Test
-    fun only_comments() = doTest(true)
     @Test
     fun property_separators() = doTest(true)
     @Test
@@ -69,7 +65,44 @@ class ParadoxScriptParsingTest : ParsingTestCase("script/syntax", "test.txt", Pa
     fun construct_complex_interpolations() = doTest(true) // 3.0.2
 
     @Test
-    fun error_dangling_at() = doTest(true)
+    fun edge_empty() = doTest(true)
+    @Test
+    fun edge_only_comments() = doTest(true)
+    @Test
+    fun edge_one_comment() = doTest(true)
+    @Test
+    fun edge_one_property() = doTest(true)
+    @Test
+    fun edge_one_value() = doTest(true)
+    @Test
+    fun edge_one_block() = doTest(true)
+    @Test
+    fun edge_one_comment_and_one_member() = doTest(true)
+    @Test
+    fun edge_one_scripted_variable() = doTest(true)
+    @Test
+    fun edge_one_color() = doTest(true)
+    @Test
+    fun edge_one_inline_math() = doTest(true)
+    @Test
+    fun edge_one_parameter() = doTest(true)
+    @Test
+    fun edge_one_conditional_block() = doTest(true)
+    @Test
+    fun edge_one_complex_conditional_block() = doTest(true)
+    @Test
+    fun edge_chars_of_scripted_variables() = doTest(true)
+    @Test
+    fun edge_chars_of_scripted_variable_references() = doTest(true)
+    @Test
+    fun edge_chars_of_inline_math_scripted_variable_references() = doTest(true)
+    @Test
+    fun edge_chars_of_parameters() = doTest(true)
+    @Test
+    fun edge_chars_of_inline_math_parameters() = doTest(true)
+
+    @Test
+    fun error_dangling_at_sign() = doTest(true)
     @Test
     fun error_missing_property_value() = doTest(true)
     @Test

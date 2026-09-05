@@ -1,0 +1,7 @@
+# strict identifier
+# leading number is not allowed
+
+@aaA0_ = 1
+@AaA0_ = 1
+@0aA0_ = 1
+@_aA0_ = 1
