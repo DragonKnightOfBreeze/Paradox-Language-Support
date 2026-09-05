@@ -57,6 +57,9 @@ object ParadoxScriptParserUtil : GeneratedParserUtilBase() {
         return true
     }
 
+    private const val IN_CONDITIONAL_HEADER = 0
+    private const val IN_CONDITIONAL_BODY = 1
+
     @JvmStatic
     fun processInlineConditionalBlock(b: PsiBuilder, l: Int): Boolean {
         // check after conditional block start marker (`LEFT_BRACKET`)
@@ -66,24 +69,25 @@ object ParadoxScriptParserUtil : GeneratedParserUtilBase() {
         // e.g., `"[ [ PARAM ] text ]"` (where ` text ` is a `STRING_TOKEN`, other whitespaces are still whitespace tokens)
 
         var i = -1
-        val expectState = IntArrayList() // 0 -> in conditional block, 1 -> in conditional body
-        expectState.push(0)
+        val expectState = IntArrayList()
+        expectState.push(IN_CONDITIONAL_HEADER)
         while (true) {
             i++
             val t = b.rawLookup(i) ?: break
             when (t) {
                 LEFT_BRACKET -> {
-                    expectState.push(0)
+                    expectState.push(IN_CONDITIONAL_HEADER)
                 }
                 NESTED_RIGHT_BRACKET -> {
-                    expectState.push(1)
+                    expectState.push(IN_CONDITIONAL_BODY)
                 }
                 RIGHT_BRACKET -> {
+                    if (expectState.size < 2) return false // unexpected, but in case
                     expectState.popInt()
                     expectState.popInt()
                 }
                 TokenType.WHITE_SPACE, COMMENT -> {
-                    if (expectState.topInt() == 1) return false
+                    if (expectState.topInt() == IN_CONDITIONAL_BODY) return false
                 }
                 in SEPARATOR_TOKENS -> {
                     return false
