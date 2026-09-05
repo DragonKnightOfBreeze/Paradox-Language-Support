@@ -439,9 +439,7 @@ InlineMathToken = [^\r\n#{}\[\]]+ // lenient match
     //     yybegin(IN_INLINE_CONDITIONAL_BLOCK);
     //     return LEFT_BRACKET;
     // }
-    // "[" {
-    //     return getFallbackToken();
-    // }
+    // "[" { return getFallbackToken(); }
     "]" {
         if (!beginStateInConditionalBlockForClosing()) return getFallbackToken();
         return RIGHT_BRACKET;
@@ -479,9 +477,7 @@ InlineMathToken = [^\r\n#{}\[\]]+ // lenient match
         yybegin(IN_CONDITIONAL_BLOCK);
         return LEFT_BRACKET;
     }
-    "[" {
-        return getFallbackToken();
-    }
+    "[" { return getFallbackToken(); }
     "]" {
         if (!beginStateInConditionalBlockForClosing()) return getFallbackToken();
         return RIGHT_BRACKET;

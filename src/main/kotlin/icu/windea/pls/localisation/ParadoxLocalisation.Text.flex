@@ -180,8 +180,8 @@ ArgumentToken = {ArgumentChar}+
 ColorfulTextCheck = §.?
 ColorToken = {IdentifierChar} // identifier char
 
-CommandTextChar = [^\[\]\|\r\n] // `[]` within single quotes are not allowed?
-CommandTextBoundChar = [^\[\]\|\s] // `[]` within single quotes are not allowed?
+CommandTextChar = [^\[\]|&:\r\n] // `[]` within single quotes are not allowed?
+CommandTextBoundChar = [^\[\]|&:\s] // `[]` within single quotes are not allowed?
 CommandTextToken = {CommandTextBoundChar}({CommandTextChar}*{CommandTextBoundChar})? // inner whitespaces are allowed
 
 ConceptNameChar = {IdentifierChar}|[:] // `:` is allowed additionally
@@ -200,14 +200,14 @@ TextFormatChar = {IdentifierChar}|[:'] // `:'` is allowed additionally
 TextFormatToken = {TextFormatChar}+ // leading number is allowed
 TextFormatWildcardLeadChar = {TextFormatChar}|{InterpolationLeadChar}
 
-TextToken = ([^\$\[\]§£#@|&]|\\[\s\S])+
-TagSensitiveTextToken = ([^<\$\[\]§£#@|&]|\\[\s\S])+ // exclude `<` additionally
+TextToken = ([^|&\$\[\]§£#@|&]|\\.)+
+TagSensitiveTextToken = ([^|&<\$\[\]§£#@|&]|\\.)+ // exclude `<` additionally
 
 TagChar = {IdentifierChar} // identifier
-TagToken = {TextIconChar}+ // leading number is allowed
+TagToken = {TagChar}+ // leading number is allowed
 
 ContextTagChar = {IdentifierChar} // identifier
-ContextTagToken = {TextIconChar}+ // leading number is allowed
+ContextTagToken = {ContextTagChar}+ // leading number is allowed
 
 %%
 
@@ -229,13 +229,9 @@ ContextTagToken = {TextIconChar}+ // leading number is allowed
         yybegin(IN_PARAMETER);
         return PARAMETER_START;
     }
-    "$" {
-        return getFallbackToken();
-    }
+    "$" { return getFallbackToken(); }
 
-    "[[" {
-        return getFallbackToken();
-    }
+    "[[" { return getFallbackToken(); }
     "[" { // heuristic: require `[` is not escaped (double left brackets)
         enterState(yystate(), EXPECT_COMMAND);
         yybegin(IN_COMMAND);
@@ -247,7 +243,6 @@ ContextTagToken = {TextIconChar}+ // leading number is allowed
             exitState(EXPECT_COMMAND);
             return RIGHT_BRACKET;
         } else if (state == IN_TAG_SENSITIVE_TEXT) {
-            exitState(EXPECT_TAG_SENSITIVE_TEXT);
             exitState(EXPECT_COMMAND);
             return RIGHT_BRACKET;
         }
@@ -259,9 +254,7 @@ ContextTagToken = {TextIconChar}+ // leading number is allowed
         yybegin(IN_ICON);
         return ICON_START;
     }
-    "£" {
-        return getFallbackToken();
-    }
+    "£" { return getFallbackToken(); }
 
     "@" / {TextIconWildcardLeadChar} { // require next character be a valid identifier character
         if (!ParadoxSyntaxConstraint.LocalisationTextIcon.testTarget(this)) return getFallbackToken();
@@ -269,9 +262,7 @@ ContextTagToken = {TextIconChar}+ // leading number is allowed
         yybegin(IN_TEXT_ICON);
         return TEXT_ICON_START;
     }
-    "@" {
-        return getFallbackToken();
-    }
+    "@" { return getFallbackToken(); }
 
     "#" / {TextFormatWildcardLeadChar} { // require next character be a valid identifier character
         if (!ParadoxSyntaxConstraint.LocalisationTextFormat.testTarget(this)) return getFallbackToken();
@@ -279,9 +270,7 @@ ContextTagToken = {TextIconChar}+ // leading number is allowed
         yybegin(IN_TEXT_FORMAT);
         return TEXT_FORMAT_START;
     }
-    "#" {
-        return getFallbackToken();
-    }
+    "#" { return getFallbackToken(); }
     "#!" { // dangling form is allowed here at syntax level
         if (!ParadoxSyntaxConstraint.LocalisationTextFormat.testTarget(this)) return getFallbackToken();
         exitState(EXPECT_TEXT_FORMAT);
@@ -289,11 +278,18 @@ ContextTagToken = {TextIconChar}+ // leading number is allowed
     }
 }
 <YYINITIAL, IN_STRING_VARIANT, IN_TAG_SENSITIVE_TEXT> {
-    "|||" { yybegin(IN_STRING_VARIANT); return STRING_VARIANT_PREFIX; }
-    "|" { return TEXT_TOKEN; }
-
-    "&!" { yybegin(IN_TAG_PART); return TAG_PART_PREFIX; }
-    "&" { return TEXT_TOKEN; }
+    "|||" { /*TODO*/
+        enterState(yystate(), EXPECT_STRING_VARIANT);
+        yybegin(IN_STRING_VARIANT);
+        return STRING_VARIANT_PREFIX;
+    }
+//    "|" { return getFallbackToken(); /*TODO*/ }
+    "&!" {
+        enterState(yystate(), EXPECT_TAG_PART);
+        yybegin(IN_TAG_PART);
+        return TAG_PART_PREFIX;
+    }
+//    "&" { return getFallbackToken(); }
 }
 <YYINITIAL, IN_COLORFUL_TEXT, IN_CONCEPT_TEXT, IN_TEXT_FORMAT_TEXT> {
     {TextToken} { return TEXT_TOKEN; }
@@ -307,13 +303,9 @@ ContextTagToken = {TextIconChar}+ // leading number is allowed
         yybegin(IN_PARAMETER);
         return PARAMETER_START;
     }
-    "$" {
-        return getFallbackToken();
-    }
+    "$" { return getFallbackToken(); }
 
-    "[[" {
-        return getFallbackToken();
-    }
+    "[[" { return getFallbackToken(); }
     "[" { // heuristic: require `[` is not escaped (double left brackets)
         enterState(yystate(), EXPECT_COMMAND);
         yybegin(IN_COMMAND);
@@ -325,9 +317,7 @@ ContextTagToken = {TextIconChar}+ // leading number is allowed
     }
 }
 <IN_PARAMETER> {
-    "[[" {
-        return getFallbackToken();
-    }
+    "[[" { return getFallbackToken(); }
     "[" { // heuristic: require `[` is not escaped (double left brackets)
         enterState(yystate(), EXPECT_COMMAND);
         yybegin(IN_COMMAND);
@@ -344,9 +334,7 @@ ContextTagToken = {TextIconChar}+ // leading number is allowed
         yybegin(IN_PARAMETER);
         return PARAMETER_START;
     }
-    "$" {
-        return getFallbackToken();
-    }
+    "$" { return getFallbackToken(); }
 }
 
 // localisation colorful text rules
@@ -379,7 +367,11 @@ ContextTagToken = {TextIconChar}+ // leading number is allowed
     }
 }
 <IN_PARAMETER> {
-    "&" { yybegin(IN_CONTEXT_TAG_PART); return CONTEXT_TAG_PART_PREFIX; }
+    "&" {
+        enterState(yystate(), EXPECT_CONTEXT_TAG_PART);
+        yybegin(IN_CONTEXT_TAG_PART);
+        return CONTEXT_TAG_PART_PREFIX;
+    }
     "|" { yybegin(IN_PARAMETER_ARGUMENT); return PIPE; }
     "@" { yybegin(IN_SCRIPTED_VARIABLE_REFERENCE); return AT; }
     {ParameterToken} { return PARAMETER_TOKEN; }
@@ -415,9 +407,18 @@ ContextTagToken = {TextIconChar}+ // leading number is allowed
     }
 }
 <IN_COMMAND_TEXT> {
-    "&" { yybegin(IN_CONTEXT_TAG_PART); return CONTEXT_TAG_PART_PREFIX; }
-    "::" { yybegin(IN_TAG_SENSITIVE_TEXT); return TAG_SENSITIVE_TEXT_PREFIX; }
+    "&" {
+        enterState(yystate(), EXPECT_CONTEXT_TAG_PART);
+        yybegin(IN_CONTEXT_TAG_PART);
+        return CONTEXT_TAG_PART_PREFIX;
+    }
+    "::" {
+        enterState(yystate(), EXPECT_TAG_SENSITIVE_TEXT);
+        yybegin(IN_TAG_SENSITIVE_TEXT);
+        return TAG_SENSITIVE_TEXT_PREFIX;
+    }
     "|" { yybegin(IN_COMMAND_ARGUMENT); return PIPE; }
+    ":" { return COMMAND_TEXT_TOKEN; }
     {CommandTextToken} { return COMMAND_TEXT_TOKEN; }
     {Blank} { return WHITE_SPACE; } // compatible with blank
     [^] { if (!exitStateForRecoveryIfNeeded()) return BAD_CHARACTER; } // recovery
@@ -503,8 +504,8 @@ ContextTagToken = {TextIconChar}+ // leading number is allowed
     {TextToken} { return TEXT_TOKEN; }
 }
 <IN_STRING_VARIANT_TAG_PART> {
+    ":" { exitState(EXPECT_STRING_VARIANT_TAG_PART); return COLON; }
     "," { return COMMA; }
-    ":" { exitState(EXPECT_STRING_VARIANT_TAG_PART); return COLON; } // exit state
     {TagToken} { return TAG_TOKEN; }
     {Blank} { return WHITE_SPACE; } // allowed (heuristic)
     [^] { if (!exitStateForRecoveryIfNeeded()) return BAD_CHARACTER; } // recovery
@@ -550,9 +551,8 @@ ContextTagToken = {TextIconChar}+ // leading number is allowed
 // e.g., `&t` in `[From.GetName&t]`
 
 <IN_CONTEXT_TAG_PART> {
-    ":" { exitState(EXPECT_CONTEXT_TAG_PART); return COLON; } // exit state
     {ContextTagToken} { return CONTEXT_TAG_TOKEN; }
-    {Blank} { return WHITE_SPACE; } // allowed (heuristic)
+    // {Blank} { return WHITE_SPACE; } // not allowed (heuristic)
     [^] { if (!exitStateForRecoveryIfNeeded()) return BAD_CHARACTER; } // recovery
 }
 

@@ -43,7 +43,7 @@ export function registerCwt(Prism) {
     // property key (before separator ==, =, !=, <>)
     'property': [
       {
-        pattern: /"(?:[^"\\\r\n]|\\[\s\S])*"?(?=\s*(?:==|=|!=|<>))/,
+        pattern: /"(?:[^"\\\r\n]|\\.)*"?(?=\s*(?:==|=|!=|<>))/,
         greedy: true,
         inside: {
           'escape': escape
@@ -58,7 +58,7 @@ export function registerCwt(Prism) {
     ],
     'string': [
       {
-        pattern: /"(?:[^"\\\r\n]|\\[\s\S])*"?/,
+        pattern: /"(?:[^"\\\r\n]|\\.)*"?/,
         greedy: true,
         inside: {
           'escape': escape

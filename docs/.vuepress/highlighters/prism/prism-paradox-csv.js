@@ -30,7 +30,7 @@ export function registerParadoxCsv(Prism) {
     'number': /\b[+-]?\d+(?:\.\d+)?\b/,
     'string': [
       {
-        pattern: /"([^"\\\r\n]|\\[\s\S])*"?/,
+        pattern: /"([^"\\\r\n]|\\.)*"?/,
         greedy: true,
         inside: {
           'escape': escape

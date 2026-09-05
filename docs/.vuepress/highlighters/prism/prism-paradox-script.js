@@ -89,7 +89,7 @@ export function registerParadoxScript(Prism) {
     'string': [
       // can be multiline
       {
-        pattern: /"([^"\\]|\\[\s\S])*"??/,
+        pattern: /"([^"\\]|\\.)*"??/,
         greedy: true,
         inside: {
           'parameter': parameter,
