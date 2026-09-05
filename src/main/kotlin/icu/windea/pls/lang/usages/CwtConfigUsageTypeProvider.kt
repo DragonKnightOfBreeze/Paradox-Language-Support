@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.findUsages
+package icu.windea.pls.lang.usages
 
 import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector.*
 import com.intellij.openapi.progress.ProgressManager

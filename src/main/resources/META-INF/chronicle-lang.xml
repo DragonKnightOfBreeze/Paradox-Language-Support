@@ -299,13 +299,19 @@
 
     <elementDescriptionProvider implementation="icu.windea.pls.lang.psi.CwtConfigElementDescriptionProvider" order="first"/> <!-- before any base EPs -->
     <elementDescriptionProvider implementation="icu.windea.pls.lang.psi.ParadoxElementDescriptionProvider" order="first"/> <!-- before any base EPs -->
+
+    <usageTypeProvider implementation="icu.windea.pls.lang.usages.CwtConfigUsageTypeProvider"/>
+    <usageTypeProvider implementation="icu.windea.pls.lang.usages.ParadoxUsageTypeProvider"/>
+
+    <fileStructureGroupRuleProvider implementation="icu.windea.pls.lang.usages.ParadoxDefinitionFileStructureGroupRuleProvider"/>
+    <fileStructureGroupRuleProvider implementation="icu.windea.pls.lang.usages.ParadoxDefinitionInjectionFileStructureGroupRuleProvider"/>
+    <fileStructureGroupRuleProvider implementation="icu.windea.pls.lang.usages.ParadoxLocalisationLocaleFileStructureGroupRuleProvider"/>
+
     <lang.findUsagesProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.findUsages.ParadoxScriptFindUsagesProvider"/>
     <lang.findUsagesProvider language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.lang.findUsages.ParadoxLocalisationFindUsagesProvider"/>
     <lang.findUsagesProvider language="PARADOX_CSV" implementationClass="icu.windea.pls.lang.findUsages.ParadoxCsvFindUsagesProvider"/>
     <lang.findUsagesProvider language="CWT" implementationClass="icu.windea.pls.lang.findUsages.CwtFindUsagesProvider"/>
     <findUsagesHandlerFactory implementation="icu.windea.pls.lang.findUsages.ParadoxFindUsagesHandlerFactory"/>
-    <usageTypeProvider implementation="icu.windea.pls.lang.findUsages.CwtConfigUsageTypeProvider"/>
-    <usageTypeProvider implementation="icu.windea.pls.lang.findUsages.ParadoxUsageTypeProvider"/>
 
     <errorQuickFixProvider implementation="icu.windea.pls.lang.fixes.error.ParadoxScriptErrorQuickFixProvider"/>
     <errorQuickFixProvider implementation="icu.windea.pls.lang.fixes.error.ParadoxLocalisationErrorQuickFixProvider"/>
@@ -428,10 +434,6 @@
     <psi.referenceContributor language="PARADOX_CSV" implementation="icu.windea.pls.lang.references.csv.ParadoxCsvPsiReferenceContributor"/>
     <!-- icu.windea.pls.lang.references.csv.ParadoxCsvExpressionPsiReferenceProvider -->
     <pathReferenceProvider implementation="icu.windea.pls.lang.references.paths.ParadoxPathReferenceProvider" order="first"/>
-
-    <fileStructureGroupRuleProvider implementation="icu.windea.pls.lang.usages.ParadoxDefinitionFileStructureGroupRuleProvider"/>
-    <fileStructureGroupRuleProvider implementation="icu.windea.pls.lang.usages.ParadoxDefinitionInjectionFileStructureGroupRuleProvider"/>
-    <fileStructureGroupRuleProvider implementation="icu.windea.pls.lang.usages.ParadoxLocalisationLocaleFileStructureGroupRuleProvider"/>
 
     <multiHostInjector implementation="icu.windea.pls.lang.injection.ParadoxScriptLanguageInjector"/>
 

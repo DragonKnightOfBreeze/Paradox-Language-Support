@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.findUsages
+package icu.windea.pls.lang.usages
 
 import com.intellij.usages.impl.rules.UsageType
 import icu.windea.pls.ChronicleBundle

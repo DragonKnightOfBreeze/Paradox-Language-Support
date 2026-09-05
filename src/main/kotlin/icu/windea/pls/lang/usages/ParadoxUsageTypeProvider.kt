@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.findUsages
+package icu.windea.pls.lang.usages
 
 import com.intellij.psi.PsiElement
 import com.intellij.usages.PsiElementUsageTarget
