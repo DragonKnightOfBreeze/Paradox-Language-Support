@@ -390,9 +390,8 @@ IdentifierWildcardChar = {IdentifierChar}|{InterpolationMarkerChar}
 IdentifierWildcardLeadChar = {IdentifierLeadChar}|{InterpolationLeadChar} // leading number is not allowed
 IdentifierWildcardToken = {IdentifierWildcardLeadChar}{IdentifierWildcardChar}* // leading number is not allowed
 
-ParameterToken = {IdentifierToken} // identifier
-
-ConditionParameterToken = {IdentifierToken} // identifier
+ParameterChar = {IdentifierChar}
+ParameterToken = {ParameterChar}+ // leading number is allowed
 
 ArgumentChar = [^#=<>!?{}\\\s$\[\]] // exclude `$[]` & `@` is allowed
 ArgumentToken = {ArgumentChar}+ // exclude `$[]` & compatible with leading '@'
@@ -681,7 +680,7 @@ InlineMathToken = [^\r\n#{}\[\]]+ // lenient match
     }
 
     {OpNot} { return NOT_SIGN; }
-    {ConditionParameterToken} { return CONDITION_PARAMETER_TOKEN; }
+    {ParameterToken} { return CONDITION_PARAMETER_TOKEN; }
     {Blank} { return WHITE_SPACE; } // allowed
     {Comment} { return COMMENT; } // allowed (heuristic)
     [^] { if (!exitStateForRecoveryIfNeeded()) return BAD_CHARACTER; } // recovery

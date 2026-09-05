@@ -115,8 +115,16 @@ Comment = #[^\r\n]*
 Colon = ":"
 Quote = \"
 
-LocaleToken = [a-z_]+ // lowercase letters and underscore only
-PropertyKeyToken = [A-Za-z0-9_.\-']+ // `.-'` are allowed additionally
+IdentifierChar = [A-Za-z0-9_]
+// IdentifierLeadChar = [A-Za-z_] // leading number is not allowed
+// IdentifierToken = {IdentifierLeadChar}{IdentifierChar}* // leading number is not allowed
+
+LocaleChar = [a-z_]
+LocaleToken = {LocaleChar}+ // lowercase letters and underscore only
+
+PropertyKeyChar = {IdentifierChar}|[.\-'] // `.-'` is allowed additionally
+PropertyKeyToken = {PropertyKeyChar}+ // leading number is allowed & `.-'` is allowed additionally
+
 PropertyNumberToken = \d+ // integer characters only
 PropertyValueToken = [^\"\r\n]+ // it's unnecessary to escape double quotes in loc text in fact
 

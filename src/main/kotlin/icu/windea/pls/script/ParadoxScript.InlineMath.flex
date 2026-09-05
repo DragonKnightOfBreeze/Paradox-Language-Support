@@ -48,7 +48,8 @@ IdentifierChar = [A-Za-z0-9_]
 IdentifierLeadChar = [A-Za-z_] // leading number is not allowed
 IdentifierToken = {IdentifierLeadChar}{IdentifierChar}* // leading number is not allowed
 
-ParameterToken = {IdentifierToken} // identifier
+ParameterChar = {IdentifierChar}
+ParameterToken = {ParameterChar}+ // leading number is allowed
 
 ArgumentChar = [^#=<>!?{}\\\s$\[\]] // `@` is allowed
 ArgumentToken = {ArgumentChar}+ // compatible with leading '@'

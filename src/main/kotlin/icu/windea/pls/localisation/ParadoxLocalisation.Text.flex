@@ -168,15 +168,14 @@ IdentifierToken = {IdentifierLeadChar}{IdentifierChar}* // leading number is not
 InterpolationMarkerChar = [$|\[\]]
 InterpolationLeadChar = [$\[]
 
-ParameterCheck = \$(\S*\$|.?) // no blank in $...$
-ParameterChar = {IdentifierChar}|[.\-'] // `-'` is allowed additionally
-ParameterLeadChar = {IdentifierLeadChar}|[.\-'] // leading number is not allowed & `-'` is allowed additionally
-ParameterToken = {ParameterLeadChar}{ParameterChar}* // leading number is not allowed & `-'` is allowed additionally
-
-ArgumentChar = [^\"§£\$\[\]\\\s] // `|` is allowed?
-ArgumentToken = {ArgumentChar}+
-
 ScriptedVariableToken = {IdentifierToken} // identifier
+
+ParameterCheck = \$(\S*\$|.?) // no blank in $...$
+ParameterChar = {IdentifierChar}|[.\-'] // `.-'` is allowed additionally
+ParameterToken = {ParameterChar}+ // leading number is allowed & `.-'` is allowed additionally
+
+ArgumentChar = [^$§£\[\]\\\s] // `|` is allowed?
+ArgumentToken = {ArgumentChar}+
 
 ColorfulTextCheck = §.?
 ColorToken = {IdentifierChar} // identifier char
