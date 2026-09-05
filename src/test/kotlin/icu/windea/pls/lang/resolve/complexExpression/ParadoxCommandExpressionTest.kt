@@ -108,35 +108,7 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
         exp.check(dsl)
     }
 
-    @Test
-    fun withSuffix_amp_test() {
-        val s = "Root.GetName&L"
-        val exp = resolve(s, ParadoxGameType.Stellaris)!!
-        exp.renderAndPrintln()
-        val dsl = buildComplexExpression<ParadoxCommandExpression>(s, 0, s.length) {
-            node<ParadoxCommandScopeNode>("Root", 0, 4)
-            node<ParadoxOperatorNode>(".", 4, 5)
-            node<ParadoxCommandFieldNode>("GetName", 5, 12)
-            node<ParadoxMarkerNode>("&", 12, 13)
-            node<ParadoxCommandSuffixNode>("L", 13, 14)
-        }
-        exp.check(dsl)
-    }
-
-    @Test
-    fun withSuffix_doubleColon_test() {
-        val s = "Root.GetName::UPPER"
-        val exp = resolve(s, ParadoxGameType.Stellaris)!!
-        exp.renderAndPrintln()
-        val dsl = buildComplexExpression<ParadoxCommandExpression>(s, 0, s.length) {
-            node<ParadoxCommandScopeNode>("Root", 0, 4)
-            node<ParadoxOperatorNode>(".", 4, 5)
-            node<ParadoxCommandFieldNode>("GetName", 5, 12)
-            node<ParadoxMarkerNode>("::", 12, 14)
-            node<ParadoxCommandSuffixNode>("UPPER", 14, 19)
-        }
-        exp.check(dsl)
-    }
+    // NOTE 3.0.2 the part after `::` or `&` is no longer recognized as part of `COMMAND_TEXT`, therefore compatibility is no longer needed here
 
     @Test
     fun empty_test() {

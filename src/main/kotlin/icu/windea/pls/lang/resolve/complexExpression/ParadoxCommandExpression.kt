@@ -1,6 +1,5 @@
 package icu.windea.pls.lang.resolve.complexExpression
 
-import com.intellij.openapi.util.Ref
 import com.intellij.openapi.util.TextRange
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
@@ -51,7 +50,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationCommandText
  *
  * 语法：
  * ```bnf
- * command_expression ::= (command_scope_link ".")* command_field command_suffix?
+ * command_expression ::= (command_scope_link ".")* command_field
  * command_scope_link ::= system_command_scope | command_scope | dynamic_command_scope_link | parameterized_command_scope_link
  * dynamic_command_scope_link ::= command_scope_link_with_prefix | command_scope_link_with_args
  * private command_scope_link_with_prefix ::= command_scope_link_prefix? command_scope_link_value
@@ -64,7 +63,6 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationCommandText
  * private command_field_with_args ::= command_field_prefix "(" command_field_args ")"
  * private command_field_args ::= command_field_arg ("," command_field_arg)* // = command_field_value
  * private command_field_arg ::= command_field_value
- * command_suffix ::= "&" SUFFIX | "::" SUFFIX
  *
  * system_command_scope ::= IDENTIFIER
  * command_scope ::= IDENTIFIER
@@ -109,12 +107,8 @@ private object ParadoxCommandExpressionResolver {
         val range = range ?: TextRange.create(0, text.length)
         val expression = ParadoxCommandExpressionImpl(text, range, configGroup, nodes)
 
-        val suffixNodes = mutableListOf<ParadoxComplexExpressionNode>()
-        val suffixStartIndexRef = Ref(-1)
-        collectSuffixNodes(text, configGroup, suffixStartIndexRef, suffixNodes)
+        // NOTE 3.0.2 the part after `::` or `&` is no longer recognized as part of `COMMAND_TEXT`, therefore compatibility is no longer needed here
 
-        val suffixStartIndex = suffixStartIndexRef.get()
-        val text = if (suffixStartIndex == -1) text else text.substring(0, suffixStartIndex)
         val offset = range.startOffset
         var startIndex = 0
         var i = 0
@@ -154,44 +148,9 @@ private object ParadoxCommandExpressionResolver {
             if (!incomplete && nodes.isEmpty() && node is ParadoxErrorNode) return null
             nodes += node
         }
-        nodes += suffixNodes
         if (!incomplete && nodes.isEmpty()) return null
         expression.finishResolution()
         return expression
-    }
-
-    private fun collectSuffixNodes(text: String, configGroup: CwtConfigGroup, suffixStartIndexRef: Ref<Int>, suffixNodes: MutableList<ParadoxComplexExpressionNode>) {
-        var suffixStartIndex = suffixStartIndexRef.get()
-        run r1@{
-            run r2@{
-                suffixStartIndex = text.indexOf('&')
-                if (suffixStartIndex == -1) return@r2
-                run r3@{
-                    val node = ParadoxMarkerNode("&", TextRange.from(suffixStartIndex, 1), configGroup)
-                    suffixNodes += node
-                }
-                run r3@{
-                    val nodeText = text.substring(suffixStartIndex + 1)
-                    val node = ParadoxCommandSuffixNode.resolve(nodeText, TextRange.from(suffixStartIndex + 1, nodeText.length), configGroup)
-                    suffixNodes += node
-                }
-                return@r1
-            }
-            run r2@{
-                suffixStartIndex = text.indexOf("::")
-                if (suffixStartIndex == -1) return@r2
-                run r3@{
-                    val node = ParadoxMarkerNode("::", TextRange.from(suffixStartIndex, 2), configGroup)
-                    suffixNodes += node
-                }
-                run r3@{
-                    val nodeText = text.substring(suffixStartIndex + 2)
-                    val node = ParadoxCommandSuffixNode.resolve(nodeText, TextRange.from(suffixStartIndex + 2, nodeText.length), configGroup)
-                    suffixNodes += node
-                }
-            }
-        }
-        suffixStartIndexRef.set(suffixStartIndex)
     }
 }
 
