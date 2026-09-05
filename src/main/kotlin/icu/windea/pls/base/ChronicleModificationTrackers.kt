@@ -2,7 +2,8 @@ package icu.windea.pls.base
 
 import com.intellij.openapi.util.ModificationTracker
 import com.intellij.openapi.util.SimpleModificationTracker
-import icu.windea.pls.config.config.delegated.CwtTypeConfig
+import icu.windea.pls.config.config.CwtConfig
+import icu.windea.pls.config.config.CwtFilePathMatchableConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.filePathPatterns
 import icu.windea.pls.core.util.MergedModificationTracker
@@ -13,6 +14,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import java.util.concurrent.ConcurrentHashMap
 
+@Suppress("unused")
 object ChronicleModificationTrackers {
     // 3.0.2+ may be better to move to `icu.windea.pls.base.analysis`?
 
@@ -55,10 +57,7 @@ object ChronicleModificationTrackers {
     )
 
     fun scriptFileFromFilePathPatterns(vararg filePathPatterns: String): PatternsBasedModificationTracker {
-        if (filePathPatterns.isEmpty()) return PatternsBasedModificationTracker.NEVER_CHANGED
-        val patterns = filePathPatterns.toSortedSet()
-        val key = patterns.joinToString(";")
-        return ScriptFileMap.getOrPut(key) { PatternsBasedModificationTracker(patterns) }
+        return scriptFileFromFilePathPatterns(filePathPatterns.toList())
     }
 
     fun scriptFileFromFilePathPatterns(filePathPatterns: Collection<String>): PatternsBasedModificationTracker {
@@ -69,9 +68,7 @@ object ChronicleModificationTrackers {
     }
 
     fun scriptFileFromDefinitionTypes(configGroup: CwtConfigGroup, vararg definitionTypes: String): PatternsBasedModificationTracker {
-        if (definitionTypes.isEmpty()) return PatternsBasedModificationTracker.NEVER_CHANGED
-        val configs = definitionTypes.mapNotNull { configGroup.types[it] }
-        return scriptFileFromConfigs(configs)
+        return scriptFileFromDefinitionTypes(configGroup, definitionTypes.toList())
     }
 
     fun scriptFileFromDefinitionTypes(configGroup: CwtConfigGroup, definitionTypes: Collection<String>): PatternsBasedModificationTracker {
@@ -80,9 +77,16 @@ object ChronicleModificationTrackers {
         return scriptFileFromConfigs(configs)
     }
 
-    private fun scriptFileFromConfigs(configs: List<CwtTypeConfig>): PatternsBasedModificationTracker {
+    fun scriptFileFromConfigs(vararg configs: CwtConfig<*>): PatternsBasedModificationTracker {
+        return scriptFileFromConfigs(configs.toList())
+    }
+
+    fun scriptFileFromConfigs(configs: Collection<CwtConfig<*>>): PatternsBasedModificationTracker {
         if (configs.isEmpty()) return PatternsBasedModificationTracker.NEVER_CHANGED
-        val patterns = configs.flatMapTo(sortedSetOf()) { it.filePathPatterns }
+        val patterns = sortedSetOf<String>()
+        configs.forEach { config ->
+            if(config is CwtFilePathMatchableConfig) patterns += config.filePathPatterns
+        }
         return scriptFileFromFilePathPatterns(patterns)
     }
 

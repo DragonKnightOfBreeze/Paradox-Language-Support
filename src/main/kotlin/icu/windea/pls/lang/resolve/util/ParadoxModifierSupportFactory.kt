@@ -5,6 +5,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.util.Processor
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
+import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.delegated.CwtModifierConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
@@ -13,6 +14,7 @@ import icu.windea.pls.core.collections.noneFast
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.processAsync
 import icu.windea.pls.core.util.ProcessorFactory
+import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.index.constraints.ParadoxDefinitionIndexConstraint
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxTemplateExpression
@@ -264,6 +266,20 @@ object ParadoxModifierSupportFactory {
             }
             CwtDataTypes.Value -> true // anything
             else -> false // unexpected
+        }
+    }
+
+    /**
+     * 仅限特定数据类型（[CwtDataTypeSets.ModifierTemplateAware]）的片段。
+     */
+    fun getReferenceConfigsFromModifierTemplate(configGroup: CwtConfigGroup, templateExpression: CwtTemplateExpression): List<CwtConfig<*>> {
+        val referenceExpressions = templateExpression.referenceExpressions
+        return referenceExpressions.mapNotNull {
+            when(it.type) {
+                CwtDataTypes.Definition -> it.metadata.value?.let { type -> configGroup.types.get(type) }
+                CwtDataTypes.EnumValue -> it.metadata.value?.let { enumName -> configGroup.complexEnums.get(enumName) }
+                else -> null
+            }
         }
     }
 }

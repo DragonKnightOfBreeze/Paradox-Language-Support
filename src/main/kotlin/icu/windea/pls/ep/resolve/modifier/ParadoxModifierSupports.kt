@@ -5,6 +5,7 @@ import com.intellij.openapi.util.ModificationTracker
 import com.intellij.psi.PsiElement
 import com.intellij.util.Processor
 import com.intellij.util.SmartList
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.base.ChronicleModificationTrackers
 import icu.windea.pls.base.annotations.ForGameType
@@ -179,8 +180,15 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
     }
 
     override fun getModificationTracker(modifierInfo: ParadoxModifierInfo): ModificationTracker {
-        // TODO 可以进一步缩小范围
-        return ChronicleModificationTrackers.scriptFileFromFilePathPatterns("common/**/*.txt") // should be enough suitable, but can be better
+        // should be enough suitable, but can be better
+        // return ChronicleModificationTrackers.scriptFileFromFilePathPatterns("common/**/*.txt")
+
+        // 3.0.2 optimize: narrow down the scope
+        val templateExpression = modifierInfo.modifierConfig?.template
+        if (templateExpression == null) return ModificationTracker.NEVER_CHANGED
+        val configGroup = ChronicleFacade.getConfigGroup(modifierInfo.project, modifierInfo.gameType)
+        val configs = ParadoxModifierSupportFactory.getReferenceConfigsFromModifierTemplate(configGroup, templateExpression)
+        return ChronicleModificationTrackers.scriptFileFromConfigs(configs)
     }
 }
 
@@ -260,6 +268,8 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
     }
 
     override fun getModificationTracker(modifierInfo: ParadoxModifierInfo): ModificationTracker {
-        return ChronicleModificationTrackers.scriptFileFromFilePathPatterns("common/economic_categories/**/*.txt")
+        val configGroup = ChronicleFacade.getConfigGroup(modifierInfo.project, modifierInfo.gameType)
+        val definitionType = ParadoxDefinitionTypes.economicCategory
+        return ChronicleModificationTrackers.scriptFileFromDefinitionTypes(configGroup, definitionType)
     }
 }
