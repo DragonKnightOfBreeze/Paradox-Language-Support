@@ -903,8 +903,8 @@ Path Location:
 
 Field Explanation for scope configs:
 
-- `aliases`: The set of aliases for this scope, which can be empty. Used for scope matching.
-- `is_subscope_of`: The parent scope of this scope, which can be empty. Used for scope matching.
+- `aliases`: The set of aliases for this scope. Can be empty. Used for matching and merging scopes (compatible with alias forms during matching and merging).
+- `is_subscope_of`: The parent scope of this scope. Can be empty. Used for matching and merging scopes (when matching parent-child scopes, a union strategy is adopted; when merging parent-child scopes, child scopes are promoted to the parent scope).
 
 Examples:
 

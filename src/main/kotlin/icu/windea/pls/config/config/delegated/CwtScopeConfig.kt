@@ -36,8 +36,8 @@ import icu.windea.pls.model.scope.ParadoxScopeContext
  * > CWTools 兼容性：兼容。
  *
  * @property name 规则名称。
- * @property aliases 该作用域的别名集合。可以为空。用于作用域匹配。
- * @property isSubscopeOf 该作用域的父作用域。可以为空。用于作用域匹配。
+ * @property aliases 该作用域的别名集合。可以为空。用于作用域的匹配与合并（匹配与合并时兼容别名形式）。
+ * @property isSubscopeOf 该作用域的父作用域。可以为空。用于作用域的匹配与合并（匹配父子作用域时采用并集策略，合并父子作用域时会提升子作用域到父作用域）。
  *
  * @see ParadoxScope
  * @see ParadoxScopeContext
