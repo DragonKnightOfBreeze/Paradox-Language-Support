@@ -20,21 +20,21 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
  * 检查是否存在无法解析的路径引用。
  *
  * @property ignoredFileNames （配置项）需要忽略解析的文件名。一组模式，分号分隔，忽略大小写。
- * @property ignoredInInjectedFiles （配置项）是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
- * @property ignoredInInlineScriptFiles （配置项）是否在内联脚本文件中忽略此代码检查。
+ * @property ignoreInInjectedFiles （配置项）是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
+ * @property ignoreInInlineScriptFiles （配置项）是否在内联脚本文件中忽略此代码检查。
  */
 class UnresolvedPathReferenceInspection : LocalInspectionTool() {
-    @JvmField var ignoredInInjectedFiles = false
-    @JvmField var ignoredInInlineScriptFiles = false
-    @JvmField var ignoredByConfigs = false
+    @JvmField var ignoreInInjectedFiles = false
+    @JvmField var ignoreInInlineScriptFiles = false
+    @JvmField var ignoreByConfigs = false
     @JvmField var ignoredFileNames = "*.lua;*.tga"
     @JvmField var showExpect = true
 
     override fun getOptionsPane(): OptPane {
         return OptPane.pane(
-            OptPane.checkbox("ignoredInInjectedFiles", ChronicleInspectionBundle.message("option.ignoredInInjectedFiles")),
-            OptPane.checkbox("ignoredInInlineScriptFiles", ChronicleInspectionBundle.message("option.ignoredInInlineScriptFiles")),
-            OptPane.checkbox("ignoredByConfigs", ChronicleInspectionBundle.message("option.ignoredByConfigs")),
+            OptPane.checkbox("ignoreInInjectedFiles", ChronicleInspectionBundle.message("option.ignoreInInjectedFiles")),
+            OptPane.checkbox("ignoreInInlineScriptFiles", ChronicleInspectionBundle.message("option.ignoreInInlineScriptFiles")),
+            OptPane.checkbox("ignoreByConfigs", ChronicleInspectionBundle.message("option.ignoreByConfigs")),
             OptPane.expandableString("ignoredFileNames", ChronicleInspectionBundle.message("option.ignoredFileNames"), ";").forPatterns(),
             OptPane.checkbox("showExpect", ChronicleInspectionBundle.message("option.showExpect")),
         )
@@ -43,9 +43,9 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 按需忽略注入的文件
         val vFile = file.virtualFile
-        if (ignoredInInjectedFiles && VirtualFileService.isInjectedFile(vFile)) return false
+        if (ignoreInInjectedFiles && VirtualFileService.isInjectedFile(vFile)) return false
         // 按需忽略内联脚本文件
-        if (ignoredInInlineScriptFiles && ParadoxInlineScriptManager.isInlineScriptFile(file)) return false
+        if (ignoreInInlineScriptFiles && ParadoxInlineScriptManager.isInlineScriptFile(file)) return false
         // 要求规则分组数据已加载完毕
         if (!ParadoxPsiFileMatchService.checkConfigGroupInitialized(file)) return false
         // 要求是语义上有效的脚本文件
@@ -63,6 +63,6 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
     }
 
     private fun createContext(holder: ProblemsHolder): ParadoxExpressionInspectionContext {
-        return ParadoxExpressionInspectionContext(this, holder, ignoredByConfigs = ignoredByConfigs, ignoredFileNames = ignoredFileNames, showExpect = showExpect)
+        return ParadoxExpressionInspectionContext(this, holder, ignoreByConfigs = ignoreByConfigs, ignoredFileNames = ignoredFileNames, showExpect = showExpect)
     }
 }

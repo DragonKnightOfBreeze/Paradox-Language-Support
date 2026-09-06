@@ -18,16 +18,16 @@ import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 /**
  * 检查是否存在不正确的列名。
  *
- * @property ignoredInInjectedFiles （配置项）是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
+ * @property ignoreInInjectedFiles （配置项）是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
  */
 class IncorrectColumnNameInspection : LocalInspectionTool() {
-    @JvmField var ignoredInInjectedFiles = false
+    @JvmField var ignoreInInjectedFiles = false
     @JvmField var showExpect = true
     @JvmField var truncateExpect = -1
 
     override fun getOptionsPane(): OptPane {
         return OptPane.pane(
-            OptPane.checkbox("ignoredInInjectedFiles", ChronicleInspectionBundle.message("option.ignoredInInjectedFiles")),
+            OptPane.checkbox("ignoreInInjectedFiles", ChronicleInspectionBundle.message("option.ignoreInInjectedFiles")),
             OptPane.checkbox("showExpect", ChronicleInspectionBundle.message("option.showExpect")),
             OptPane.number("truncateExpect", ChronicleInspectionBundle.message("option.truncateExpect"), Int.MIN_VALUE, Int.MAX_VALUE),
         )
@@ -36,7 +36,7 @@ class IncorrectColumnNameInspection : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 按需忽略注入的文件
         val vFile = file.virtualFile
-        if (ignoredInInjectedFiles && VirtualFileService.isInjectedFile(vFile)) return false
+        if (ignoreInInjectedFiles && VirtualFileService.isInjectedFile(vFile)) return false
         // 要求规则分组数据已加载完毕
         if (!ParadoxPsiFileMatchService.checkConfigGroupInitialized(file)) return false
         // 要求是语义上有效的 CSV 文件

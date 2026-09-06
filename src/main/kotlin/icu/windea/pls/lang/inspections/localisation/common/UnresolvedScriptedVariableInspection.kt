@@ -23,21 +23,21 @@ import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
  * - 声明全局封装变量（在 `common/scripted_variables` 目录下的某一文件中）
  * - 导入游戏目录或模组目录
  *
- * @property ignoredInInjectedFiles （配置项）是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
+ * @property ignoreInInjectedFiles （配置项）是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
  */
 class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
-    @JvmField var ignoredInInjectedFiles = false
+    @JvmField var ignoreInInjectedFiles = false
 
     override fun getOptionsPane(): OptPane {
         return OptPane.pane(
-            OptPane.checkbox("ignoredInInjectedFiles", ChronicleInspectionBundle.message("option.ignoredInInjectedFiles")),
+            OptPane.checkbox("ignoreInInjectedFiles", ChronicleInspectionBundle.message("option.ignoreInInjectedFiles")),
         )
     }
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 按需忽略注入的文件
         val vFile = file.virtualFile
-        if (ignoredInInjectedFiles && VirtualFileService.isInjectedFile(vFile)) return false
+        if (ignoreInInjectedFiles && VirtualFileService.isInjectedFile(vFile)) return false
         // 要求是语义上有效的本地化文件
         return ParadoxPsiFileMatchService.isLocalisationFile(file)
     }

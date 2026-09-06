@@ -208,7 +208,7 @@ object ParadoxExpressionInspectionService {
         if (expectedConfigs.isEmpty()) return false
         val isPathReference = ProcessorScope.allFrom({ expectedConfigs.expandConfigExpression { process(it) } }) { it.type in CwtDataTypeSets.PathReference }
         if (isPathReference) return true // will be checked by `UnresolvedPathReferenceInspection` instead
-        if (context.ignoredByConfigs && ParadoxExtendedConfigManager.checkExtendedConfig(element, expectedConfigs)) return true
+        if (context.ignoreByConfigs && ParadoxExtendedConfigManager.checkExtendedConfig(element, expectedConfigs)) return true
         return false
     }
 
@@ -517,7 +517,7 @@ object ParadoxExpressionInspectionService {
     }
 
     private fun skipForUnresolvedPathReference(element: ParadoxScriptStringExpressionElement, value: String, memberConfig: CwtMemberConfig<*>, context: ParadoxExpressionInspectionContext): Boolean {
-        if (context.ignoredByConfigs && ParadoxExtendedConfigManager.checkExtendedConfig(value, element, memberConfig)) return true
+        if (context.ignoreByConfigs && ParadoxExtendedConfigManager.checkExtendedConfig(value, element, memberConfig)) return true
         return false
     }
 

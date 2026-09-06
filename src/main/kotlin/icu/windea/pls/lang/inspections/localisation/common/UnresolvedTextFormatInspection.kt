@@ -27,8 +27,8 @@ import icu.windea.pls.model.constraints.ParadoxSyntaxConstraint
  * 检查是否存在无法解析的文本格式引用。
  *
  * @property ignoredNames （配置项）需要忽略的名字。一组模式，分号分隔，忽略大小写。
- * @property ignoredInInjectedFiles （配置项）是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
- * @property ignoredByConfigs （配置项）如果对应的扩展的规则存在，是否需要忽略此代码检查。
+ * @property ignoreInInjectedFiles （配置项）是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
+ * @property ignoreByConfigs （配置项）如果对应的扩展的规则存在，是否需要忽略此代码检查。
  */
 @ForGameTypeConstraint(ParadoxGameTypeConstraint.JominiBased)
 class UnresolvedTextFormatInspection : LocalInspectionTool() {
@@ -39,21 +39,21 @@ class UnresolvedTextFormatInspection : LocalInspectionTool() {
     }
 
     @JvmField var ignoredNames = Constants.defaultIgnoredNames
-    @JvmField var ignoredInInjectedFiles = false
-    @JvmField var ignoredByConfigs = false
+    @JvmField var ignoreInInjectedFiles = false
+    @JvmField var ignoreByConfigs = false
 
     override fun getOptionsPane(): OptPane {
         return OptPane.pane(
             OptPane.expandableString("ignoredNames", ChronicleInspectionBundle.message("option.ignoredTextFormatNames"), ";").forPatterns(),
-            OptPane.checkbox("ignoredInInjectedFiles", ChronicleInspectionBundle.message("option.ignoredInInjectedFiles")),
-            OptPane.checkbox("ignoredByConfigs", ChronicleInspectionBundle.message("option.ignoredByConfigs")),
+            OptPane.checkbox("ignoreInInjectedFiles", ChronicleInspectionBundle.message("option.ignoreInInjectedFiles")),
+            OptPane.checkbox("ignoreByConfigs", ChronicleInspectionBundle.message("option.ignoreByConfigs")),
         )
     }
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 按需忽略注入的文件
         val vFile = file.virtualFile
-        if (ignoredInInjectedFiles && VirtualFileService.isInjectedFile(vFile)) return false
+        if (ignoreInInjectedFiles && VirtualFileService.isInjectedFile(vFile)) return false
         // 要求游戏类型支持文本格式
         if (!ParadoxSyntaxConstraint.LocalisationTextFormat.testTarget(file)) return false
         // 要求规则分组数据已加载完毕
@@ -84,7 +84,7 @@ class UnresolvedTextFormatInspection : LocalInspectionTool() {
 
     private fun skip(name: String, element: ParadoxLocalisationTextFormat, configGroup: CwtConfigGroup): Boolean {
         if (ignoredNames.isNotEmpty() && name.matchesPatterns(ignoredNames, ignoreCase = true)) return true
-        if (ignoredByConfigs && ParadoxExtendedConfigManager.checkExtendedConfig(name, Constants.definitionType, element, configGroup)) return true
+        if (ignoreByConfigs && ParadoxExtendedConfigManager.checkExtendedConfig(name, Constants.definitionType, element, configGroup)) return true
         return false
     }
 }

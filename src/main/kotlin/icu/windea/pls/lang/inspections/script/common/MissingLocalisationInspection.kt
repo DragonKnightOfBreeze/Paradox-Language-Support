@@ -39,7 +39,7 @@ import javax.swing.JComponent
 /**
  * 检查是否存在缺失的（特定语言区域的）本地化。
  *
- * @property ignoredInInjectedFiles （配置项）是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
+ * @property ignoreInInjectedFiles （配置项）是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
  */
 class MissingLocalisationInspection : LocalInspectionTool() {
     @JvmField var checkForPreferredLocale = true
@@ -54,7 +54,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
     @JvmField var checkForModifiers = false
     @JvmField var checkModifierNames = true
     @JvmField var checkModifierDescriptions = false
-    @JvmField var ignoredInInjectedFiles = false
+    @JvmField var ignoreInInjectedFiles = false
 
     @Suppress("ktPropBy")
     var localeSet: Set<String> by ::locales.fromDelimitedString()
@@ -162,10 +162,10 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                         .enabledIf(checkForModifiersCb.selected)
                 }
             }
-            // ignoredInInjectedFile
+            // ignoreInInjectedFile
             row {
-                checkBox(ChronicleInspectionBundle.message("option.ignoredInInjectedFiles"))
-                    .bindSelected(::ignoredInInjectedFiles.toAtomicProperty())
+                checkBox(ChronicleInspectionBundle.message("option.ignoreInInjectedFiles"))
+                    .bindSelected(::ignoreInInjectedFiles.toAtomicProperty())
             }
         }
     }
@@ -173,7 +173,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 按需忽略注入的文件
         val vFile = file.virtualFile
-        if (ignoredInInjectedFiles && VirtualFileService.isInjectedFile(vFile)) return false
+        if (ignoreInInjectedFiles && VirtualFileService.isInjectedFile(vFile)) return false
         // 要求规则分组数据已加载完毕
         if (!ParadoxPsiFileMatchService.checkConfigGroupInitialized(file)) return false
         // 要求是语义上有效的脚本文件

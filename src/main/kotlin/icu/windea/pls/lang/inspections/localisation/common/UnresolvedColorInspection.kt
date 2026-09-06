@@ -16,21 +16,21 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationVisitor
 /**
  * 检查是否存在无法解析的文本颜色引用。
  *
- * @property ignoredInInjectedFiles （配置项）是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
+ * @property ignoreInInjectedFiles （配置项）是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
  */
 class UnresolvedColorInspection : LocalInspectionTool() {
-    @JvmField var ignoredInInjectedFiles = false
+    @JvmField var ignoreInInjectedFiles = false
 
     override fun getOptionsPane(): OptPane {
         return OptPane.pane(
-            OptPane.checkbox("ignoredInInjectedFiles", ChronicleInspectionBundle.message("option.ignoredInInjectedFiles")),
+            OptPane.checkbox("ignoreInInjectedFiles", ChronicleInspectionBundle.message("option.ignoreInInjectedFiles")),
         )
     }
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 按需忽略注入的文件
         val vFile = file.virtualFile
-        if (ignoredInInjectedFiles && VirtualFileService.isInjectedFile(vFile)) return false
+        if (ignoreInInjectedFiles && VirtualFileService.isInjectedFile(vFile)) return false
         // 要求规则分组数据已加载完毕
         if (!ParadoxPsiFileMatchService.checkConfigGroupInitialized(file)) return false
         // 要求是语义上有效的本地化文件

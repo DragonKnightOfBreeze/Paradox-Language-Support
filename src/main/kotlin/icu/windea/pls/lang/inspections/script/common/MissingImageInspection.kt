@@ -28,7 +28,7 @@ import javax.swing.JComponent
 /**
  * 检查是否存在缺失的图片。
  *
- * @property ignoredInInjectedFiles （配置项）是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
+ * @property ignoreInInjectedFiles （配置项）是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
  */
 class MissingImageInspection : LocalInspectionTool() {
     @JvmField var checkForDefinitions = true
@@ -37,7 +37,7 @@ class MissingImageInspection : LocalInspectionTool() {
     @JvmField var checkGeneratedModifierIconsForDefinitions = false
     @JvmField var checkForModifiers = false
     @JvmField var checkModifierIcons = true
-    @JvmField var ignoredInInjectedFiles = false
+    @JvmField var ignoreInInjectedFiles = false
 
     override fun createOptionsPanel(): JComponent {
         lateinit var checkForDefinitionsCb: Cell<JBCheckBox>
@@ -89,10 +89,10 @@ class MissingImageInspection : LocalInspectionTool() {
                         .enabledIf(checkForModifiersCb.selected)
                 }
             }
-            // ignoredInInjectedFile
+            // ignoreInInjectedFile
             row {
-                checkBox(ChronicleInspectionBundle.message("option.ignoredInInjectedFiles"))
-                    .bindSelected(::ignoredInInjectedFiles.toAtomicProperty())
+                checkBox(ChronicleInspectionBundle.message("option.ignoreInInjectedFiles"))
+                    .bindSelected(::ignoreInInjectedFiles.toAtomicProperty())
             }
         }
     }
@@ -100,7 +100,7 @@ class MissingImageInspection : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 按需忽略注入的文件
         val vFile = file.virtualFile
-        if (ignoredInInjectedFiles && VirtualFileService.isInjectedFile(vFile)) return false
+        if (ignoreInInjectedFiles && VirtualFileService.isInjectedFile(vFile)) return false
         // 要求规则分组数据已加载完毕
         if (!ParadoxPsiFileMatchService.checkConfigGroupInitialized(file)) return false
         // 要求是语义上有效的脚本文件

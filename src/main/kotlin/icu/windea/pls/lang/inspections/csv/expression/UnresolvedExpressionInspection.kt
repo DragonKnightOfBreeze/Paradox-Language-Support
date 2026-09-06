@@ -23,18 +23,18 @@ import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
  * 当涉及部分特殊情况时，此代码检查会被直接跳过。
  * 例如：因为存在匹配的扩展规则而被忽略。
  *
- * @property ignoredInInjectedFiles （配置项）是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
- * @property ignoredByConfigs （配置项）如果对应的扩展的规则存在，是否需要忽略此代码检查。
+ * @property ignoreInInjectedFiles （配置项）是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
+ * @property ignoreByConfigs （配置项）如果对应的扩展的规则存在，是否需要忽略此代码检查。
  */
 class UnresolvedExpressionInspection : LocalInspectionTool() {
-    @JvmField var ignoredInInjectedFiles = false
-    @JvmField var ignoredByConfigs = false
+    @JvmField var ignoreInInjectedFiles = false
+    @JvmField var ignoreByConfigs = false
     @JvmField var showExpect = true
 
     override fun getOptionsPane(): OptPane {
         return OptPane.pane(
-            OptPane.checkbox("ignoredInInjectedFiles", ChronicleInspectionBundle.message("option.ignoredInInjectedFiles")),
-            OptPane.checkbox("ignoredByConfigs", ChronicleInspectionBundle.message("option.ignoredByConfigs")),
+            OptPane.checkbox("ignoreInInjectedFiles", ChronicleInspectionBundle.message("option.ignoreInInjectedFiles")),
+            OptPane.checkbox("ignoreByConfigs", ChronicleInspectionBundle.message("option.ignoreByConfigs")),
             OptPane.checkbox("showExpect", ChronicleInspectionBundle.message("option.showExpect")),
         )
     }
@@ -42,7 +42,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 按需忽略注入的文件
         val vFile = file.virtualFile
-        if (ignoredInInjectedFiles && VirtualFileService.isInjectedFile(vFile)) return false
+        if (ignoreInInjectedFiles && VirtualFileService.isInjectedFile(vFile)) return false
         // 要求规则分组数据已加载完毕
         if (!ParadoxPsiFileMatchService.checkConfigGroupInitialized(file)) return false
         // 要求是语义上有效的 CSV 文件
@@ -63,6 +63,6 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
     }
 
     private fun createContext(holder: ProblemsHolder): ParadoxExpressionInspectionContext {
-        return ParadoxExpressionInspectionContext(this, holder, ignoredByConfigs = ignoredByConfigs, showExpect = showExpect, )
+        return ParadoxExpressionInspectionContext(this, holder, ignoreByConfigs = ignoreByConfigs, showExpect = showExpect, )
     }
 }

@@ -10,7 +10,7 @@ import icu.windea.pls.lang.util.ParadoxConfigManager
 data class ParadoxExpressionInspectionContext(
     val tool: LocalInspectionTool,
     val holder: ProblemsHolder,
-    val ignoredByConfigs: Boolean = false,
+    val ignoreByConfigs: Boolean = false,
     val ignoredFileNames: String = "",
     val showExpect: Boolean = true,
     val truncateExpect: Int = -1,

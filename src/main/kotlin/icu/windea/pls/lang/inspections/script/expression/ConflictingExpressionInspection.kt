@@ -21,26 +21,26 @@ import icu.windea.pls.script.psi.ParadoxScriptVisitor
  * 如果脚本表达式的匹配多个值为块（`{...}`）的规则，且根据这些规则进行进一步的匹配后存在冲突，则认为其解析结果存在冲突。
  * 例如：`k = { x = 1 height = 1 }` VS `k = { x = int y = int } k = { width = int height = int }`。
  *
- * @property ignoredInInjectedFiles （配置项）是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
- * @property ignoredInInlineScriptFiles （配置项）是否在内联脚本文件中忽略此代码检查。
+ * @property ignoreInInjectedFiles （配置项）是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
+ * @property ignoreInInlineScriptFiles （配置项）是否在内联脚本文件中忽略此代码检查。
  */
 class ConflictingExpressionInspection : LocalInspectionTool() {
-    @JvmField var ignoredInInjectedFiles = false
-    @JvmField var ignoredInInlineScriptFiles = false
+    @JvmField var ignoreInInjectedFiles = false
+    @JvmField var ignoreInInlineScriptFiles = false
 
     override fun getOptionsPane(): OptPane {
         return OptPane.pane(
-            OptPane.checkbox("ignoredInInjectedFiles", ChronicleInspectionBundle.message("option.ignoredInInjectedFiles")),
-            OptPane.checkbox("ignoredInInlineScriptFiles", ChronicleInspectionBundle.message("option.ignoredInInlineScriptFiles")),
+            OptPane.checkbox("ignoreInInjectedFiles", ChronicleInspectionBundle.message("option.ignoreInInjectedFiles")),
+            OptPane.checkbox("ignoreInInlineScriptFiles", ChronicleInspectionBundle.message("option.ignoreInInlineScriptFiles")),
         )
     }
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 按需忽略注入的文件
         val vFile = file.virtualFile
-        if (ignoredInInjectedFiles && VirtualFileService.isInjectedFile(vFile)) return false
+        if (ignoreInInjectedFiles && VirtualFileService.isInjectedFile(vFile)) return false
         // 按需忽略内联脚本文件
-        if (ignoredInInlineScriptFiles && ParadoxInlineScriptManager.isInlineScriptFile(file)) return false
+        if (ignoreInInlineScriptFiles && ParadoxInlineScriptManager.isInlineScriptFile(file)) return false
         // 要求规则分组数据已加载完毕
         if (!ParadoxPsiFileMatchService.checkConfigGroupInitialized(file)) return false
         // 要求是语义上有效的脚本文件

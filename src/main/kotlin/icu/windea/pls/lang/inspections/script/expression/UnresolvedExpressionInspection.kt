@@ -27,22 +27,22 @@ import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
  * 如果当前节点未通过检查，而父节点也未通过检查，此代码检查会被跳过，避免冗余的报错。
  * 例如：如果属性键无法解析，不会继续检查属性值。如果块无法解析，不会继续检查其中的成员。
  *
- * @property ignoredInInjectedFiles （配置项）是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
- * @property ignoredInInlineScriptFiles （配置项）是否在内联脚本文件中忽略此代码检查。
- * @property ignoredByConfigs （配置项）如果对应的扩展的规则存在，是否需要忽略此代码检查。
+ * @property ignoreInInjectedFiles （配置项）是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
+ * @property ignoreInInlineScriptFiles （配置项）是否在内联脚本文件中忽略此代码检查。
+ * @property ignoreByConfigs （配置项）如果对应的扩展的规则存在，是否需要忽略此代码检查。
  */
 class UnresolvedExpressionInspection : LocalInspectionTool() {
-    @JvmField var ignoredInInjectedFiles = false
-    @JvmField var ignoredInInlineScriptFiles = false
-    @JvmField var ignoredByConfigs = false
+    @JvmField var ignoreInInjectedFiles = false
+    @JvmField var ignoreInInlineScriptFiles = false
+    @JvmField var ignoreByConfigs = false
     @JvmField var showExpect = true
     @JvmField var truncateExpect = -1
 
     override fun getOptionsPane(): OptPane {
         return OptPane.pane(
-            OptPane.checkbox("ignoredInInjectedFiles", ChronicleInspectionBundle.message("option.ignoredInInjectedFiles")),
-            OptPane.checkbox("ignoredInInlineScriptFiles", ChronicleInspectionBundle.message("option.ignoredInInlineScriptFiles")),
-            OptPane.checkbox("ignoredByConfigs", ChronicleInspectionBundle.message("option.ignoredByConfigs")),
+            OptPane.checkbox("ignoreInInjectedFiles", ChronicleInspectionBundle.message("option.ignoreInInjectedFiles")),
+            OptPane.checkbox("ignoreInInlineScriptFiles", ChronicleInspectionBundle.message("option.ignoreInInlineScriptFiles")),
+            OptPane.checkbox("ignoreByConfigs", ChronicleInspectionBundle.message("option.ignoreByConfigs")),
             OptPane.checkbox("showExpect", ChronicleInspectionBundle.message("option.showExpect")),
             OptPane.number("truncateExpect", ChronicleInspectionBundle.message("option.truncateExpect"), Int.MIN_VALUE, Int.MAX_VALUE),
         )
@@ -51,9 +51,9 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 按需忽略注入的文件
         val vFile = file.virtualFile
-        if (ignoredInInjectedFiles && VirtualFileService.isInjectedFile(vFile)) return false
+        if (ignoreInInjectedFiles && VirtualFileService.isInjectedFile(vFile)) return false
         // 按需忽略内联脚本文件
-        if (ignoredInInlineScriptFiles && ParadoxInlineScriptManager.isInlineScriptFile(file)) return false
+        if (ignoreInInlineScriptFiles && ParadoxInlineScriptManager.isInlineScriptFile(file)) return false
         // 要求规则分组数据已加载完毕
         if (!ParadoxPsiFileMatchService.checkConfigGroupInitialized(file)) return false
         // 要求是语义上有效的脚本文件
@@ -71,6 +71,6 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
     }
 
     private fun createContext(holder: ProblemsHolder): ParadoxExpressionInspectionContext {
-        return ParadoxExpressionInspectionContext(this, holder, ignoredByConfigs = ignoredByConfigs, showExpect = showExpect, truncateExpect = truncateExpect, )
+        return ParadoxExpressionInspectionContext(this, holder, ignoreByConfigs = ignoreByConfigs, showExpect = showExpect, truncateExpect = truncateExpect, )
     }
 }
