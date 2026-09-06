@@ -321,22 +321,22 @@
                      bundle="messages.ChronicleInspectionBundle"
                      key="localisation.unresolvedScriptedVariable" groupKey="group.localisation.common" groupPathKey="group.localisation"
                      implementationClass="icu.windea.pls.lang.inspections.localisation.common.UnresolvedScriptedVariableInspection"/>
-    <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationUnresolvedIcon" enabledByDefault="true" level="ERROR"
-                     bundle="messages.ChronicleInspectionBundle"
-                     key="localisation.unresolvedIcon" groupKey="group.localisation.common" groupPathKey="group.localisation"
-                     implementationClass="icu.windea.pls.lang.inspections.localisation.common.UnresolvedIconInspection"/>
     <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationUnresolvedConcept" enabledByDefault="true" level="ERROR"
                      bundle="messages.ChronicleInspectionBundle"
                      key="localisation.unresolvedConcept" groupKey="group.localisation.common" groupPathKey="group.localisation"
                      implementationClass="icu.windea.pls.lang.inspections.localisation.common.UnresolvedConceptInspection"/>
-    <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationUnresolvedTextFormat" enabledByDefault="true" level="ERROR"
+    <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationUnresolvedIcon" enabledByDefault="true" level="ERROR"
                      bundle="messages.ChronicleInspectionBundle"
-                     key="localisation.unresolvedTextFormat" groupKey="group.localisation.common" groupPathKey="group.localisation"
-                     implementationClass="icu.windea.pls.lang.inspections.localisation.common.UnresolvedTextFormatInspection"/>
+                     key="localisation.unresolvedIcon" groupKey="group.localisation.common" groupPathKey="group.localisation"
+                     implementationClass="icu.windea.pls.lang.inspections.localisation.common.UnresolvedIconInspection"/>
     <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationUnresolvedTextIcon" enabledByDefault="true" level="ERROR"
                      bundle="messages.ChronicleInspectionBundle"
                      key="localisation.unresolvedTextIcon" groupKey="group.localisation.common" groupPathKey="group.localisation"
                      implementationClass="icu.windea.pls.lang.inspections.localisation.common.UnresolvedTextIconInspection"/>
+    <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationUnresolvedTextFormat" enabledByDefault="true" level="ERROR"
+                     bundle="messages.ChronicleInspectionBundle"
+                     key="localisation.unresolvedTextFormat" groupKey="group.localisation.common" groupPathKey="group.localisation"
+                     implementationClass="icu.windea.pls.lang.inspections.localisation.common.UnresolvedTextFormatInspection"/>
     <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationIncorrectSyntax" enabledByDefault="true" level="WARNING"
                      bundle="messages.ChronicleInspectionBundle"
                      key="localisation.incorrectSyntax" groupKey="group.localisation.common" groupPathKey="group.localisation"

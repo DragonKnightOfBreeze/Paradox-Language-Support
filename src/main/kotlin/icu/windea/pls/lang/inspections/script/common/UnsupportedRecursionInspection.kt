@@ -27,7 +27,7 @@ import icu.windea.pls.script.psi.ParadoxScriptVisitor
  */
 class UnsupportedRecursionInspection : LocalInspectionTool(), DumbAware {
     // 目前仅做检查即可，不需要显示递归的装订线图标
-    // 在封装变量声明/定义声明级别进行此项检查
+    // 在封装变量声明/定义声明级别进行此代码检查
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 要求是语义上有效的脚本文件

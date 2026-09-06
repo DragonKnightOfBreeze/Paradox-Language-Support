@@ -7,7 +7,6 @@ import com.intellij.codeInspection.options.OptPane
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
-import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.matchesPatterns
@@ -39,7 +38,7 @@ class UnresolvedConceptInspection : LocalInspectionTool() {
 
     override fun getOptionsPane(): OptPane {
         return OptPane.pane(
-            OptPane.expandableString("ignoredNames", ChronicleInspectionBundle.message("localisation.unresolvedConcept.option.ignoredNames"), ";").forPatterns(),
+            OptPane.expandableString("ignoredNames", ChronicleInspectionBundle.message("option.ignoredConceptNames"), ";").forPatterns(),
             OptPane.checkbox("ignoredInInjectedFiles", ChronicleInspectionBundle.message("option.ignoredInInjectedFiles")),
             OptPane.checkbox("ignoredByConfigs", ChronicleInspectionBundle.message("option.ignoredByConfigs")),
         )

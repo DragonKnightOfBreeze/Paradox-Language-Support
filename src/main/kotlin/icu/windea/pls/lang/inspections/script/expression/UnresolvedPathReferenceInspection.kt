@@ -35,7 +35,7 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
             OptPane.checkbox("ignoredInInjectedFiles", ChronicleInspectionBundle.message("option.ignoredInInjectedFiles")),
             OptPane.checkbox("ignoredInInlineScriptFiles", ChronicleInspectionBundle.message("option.ignoredInInlineScriptFiles")),
             OptPane.checkbox("ignoredByConfigs", ChronicleInspectionBundle.message("option.ignoredByConfigs")),
-            OptPane.expandableString("ignoredFileNames", ChronicleInspectionBundle.message("option.ignoredFileNames"), ",").forPatterns(),
+            OptPane.expandableString("ignoredFileNames", ChronicleInspectionBundle.message("option.ignoredFileNames"), ";").forPatterns(),
             OptPane.checkbox("showExpect", ChronicleInspectionBundle.message("option.showExpect")),
         )
     }

@@ -42,7 +42,7 @@ class UnresolvedTextIconInspection : LocalInspectionTool() {
 
     override fun getOptionsPane(): OptPane {
         return OptPane.pane(
-            OptPane.expandableString("ignoredNames", ChronicleInspectionBundle.message("localisation.unresolvedTextIcon.option.ignoredNames"), "").forPatterns(),
+            OptPane.expandableString("ignoredNames", ChronicleInspectionBundle.message("option.ignoredTextIconNames"), ";").forPatterns(),
             OptPane.checkbox("ignoredInInjectedFiles", ChronicleInspectionBundle.message("option.ignoredInInjectedFiles")),
             OptPane.checkbox("ignoredByConfigs", ChronicleInspectionBundle.message("option.ignoredByConfigs")),
         )

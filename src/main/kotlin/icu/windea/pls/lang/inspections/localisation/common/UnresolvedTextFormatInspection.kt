@@ -44,7 +44,7 @@ class UnresolvedTextFormatInspection : LocalInspectionTool() {
 
     override fun getOptionsPane(): OptPane {
         return OptPane.pane(
-            OptPane.expandableString("ignoredNames", ChronicleInspectionBundle.message("localisation.unresolvedTextFormat.option.ignoredNames"), ";").forPatterns(),
+            OptPane.expandableString("ignoredNames", ChronicleInspectionBundle.message("option.ignoredTextFormatNames"), ";").forPatterns(),
             OptPane.checkbox("ignoredInInjectedFiles", ChronicleInspectionBundle.message("option.ignoredInInjectedFiles")),
             OptPane.checkbox("ignoredByConfigs", ChronicleInspectionBundle.message("option.ignoredByConfigs")),
         )
