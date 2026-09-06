@@ -106,7 +106,7 @@ For more detailed writing specifications for each CWT config, you can currently 
 
 - Built-in config files of the plugin. They are located under the `cwt/core` directory in the plugin repository and in the individual remote repositories.
 - [Appendix: Config Format Reference](ref-config-format.md)
-- CWTools [Guidance](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/references/documents/guidance.md))
+- [CWTools Guidance](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/references/documents/cwtools/guidance.md)
 
 ### Importing CWT Config Files {#import-config-files}
 
