@@ -252,7 +252,7 @@ private command_argument_name ::= ( ARGUMENT_TOKEN | parameter )+
 
 // [stellaris] localisation concept command rules (as special command rules)
 
-concept_command ::= LEFT_BRACKET LEFT_SINGLE_QUOTE concept_name? RIGHT_SINGLE_QUOTE ( COMMA concept_text? )? RIGHT_BRACKET {
+concept_command ::= LEFT_BRACKET LEFT_SINGLE_QUOTE concept_name? RIGHT_SINGLE_QUOTE ( COMMA concept_string? )? RIGHT_BRACKET {
   pin=2
   extends=rich_text
   methods=[
@@ -271,12 +271,11 @@ concept_name ::= concept_name_content {
 }
 // can be parameterized (by using parameters)
 private concept_name_content ::= ( CONCEPT_NAME_TOKEN | parameter )+
-concept_text ::= concept_string {
+concept_string ::= concept_string_item+ {
   implements=[
     "icu.windea.pls.localisation.psi.ParadoxLocalisationRichTextContainer"
   ]
 }
-private concept_string ::= concept_string_item+
 private concept_string_item ::= rich_text | COLORFUL_TEXT_END | TEXT_FORMAT_END
 
 // localisation icon rules
@@ -327,7 +326,7 @@ private text_icon_name ::= ( TEXT_ICON_TOKEN | parameter | command )+
 // [ck3, vic3, eu5] localisation text format rules
 
 // end marker is optional
-text_format ::= TEXT_FORMAT_START text_format_name text_format_text? TEXT_FORMAT_END? {
+text_format ::= TEXT_FORMAT_START text_format_name text_format_string? TEXT_FORMAT_END? {
   pin=1
   extends=rich_text
   implements=[
@@ -340,12 +339,11 @@ text_format ::= TEXT_FORMAT_START text_format_name text_format_text? TEXT_FORMAT
 }
 // can be parameterized (by using parameters and commands)
 private text_format_name ::= ( TEXT_FORMAT_TOKEN | parameter | command )+
-text_format_text ::= text_format_string {
+text_format_string ::= text_format_string_item+ {
   implements=[
     "icu.windea.pls.localisation.psi.ParadoxLocalisationRichTextContainer"
   ]
 }
-private text_format_string ::= text_format_string_item+
 private text_format_string_item ::= rich_text | COLORFUL_TEXT_END
 
 // grammatical syntax

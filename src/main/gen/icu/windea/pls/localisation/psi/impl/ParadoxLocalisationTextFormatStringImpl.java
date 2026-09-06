@@ -1,27 +1,28 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.localisation.psi.impl;
 
-import java.util.List;
-import org.jetbrains.annotations.*;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.util.PsiTreeUtil;
-import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
-import icu.windea.pls.localisation.psi.*;
+import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
+import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
+import com.intellij.psi.util.PsiTreeUtil;
+import icu.windea.pls.localisation.psi.ParadoxLocalisationRichText;
+import icu.windea.pls.localisation.psi.ParadoxLocalisationTextFormatString;
+import icu.windea.pls.localisation.psi.ParadoxLocalisationVisitor;
+import org.jetbrains.annotations.NotNull;
 
-public class ParadoxLocalisationConceptTextImpl extends ASTWrapperPsiElement implements ParadoxLocalisationConceptText {
+import java.util.List;
 
-  public ParadoxLocalisationConceptTextImpl(@NotNull ASTNode node) {
+public class ParadoxLocalisationTextFormatStringImpl extends ASTWrapperPsiElement implements ParadoxLocalisationTextFormatString {
+
+  public ParadoxLocalisationTextFormatStringImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull ParadoxLocalisationVisitor visitor) {
-    visitor.visitConceptText(this);
+    visitor.visitTextFormatString(this);
   }
 
   @Override

@@ -19,8 +19,8 @@ class ParadoxLocalisationTextFormatUnwrapper : ParadoxLocalisationUnwrapper() {
 
     override fun doUnwrap(element: PsiElement, context: Context) {
         if (element !is ParadoxLocalisationTextFormat) return // unexpected
-        val textFormatText = element.textFormatText
-        if (textFormatText != null) context.extract(element, textFormatText)
+        val textFormatString = element.textFormatString
+        if (textFormatString != null) context.extract(element, textFormatString)
         context.delete(element)
     }
 }

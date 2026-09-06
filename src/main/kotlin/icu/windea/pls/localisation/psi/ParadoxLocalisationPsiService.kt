@@ -37,7 +37,7 @@ object ParadoxLocalisationPsiService {
             }
             is ParadoxLocalisationConceptCommand -> {
                 val expression = element.conceptName?.presentableText
-                val withText = element.conceptText != null
+                val withText = element.conceptString != null
                 if (withText) {
                     ChronicleStrings.localisationConceptCommandFolder(expression.orEmpty().truncate(presentableTextLimit))
                 } else {

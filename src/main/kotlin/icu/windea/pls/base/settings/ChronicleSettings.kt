@@ -170,8 +170,8 @@ class ChronicleSettings : SimplePersistentStateComponent<ChronicleSettings.State
      * @property localisationCommandsByDefault 是否默认折叠本地化命令。
      * @property localisationConceptCommands 是否允许折叠本地化概念命令。
      * @property localisationConceptCommandsByDefault 是否默认折叠本地化概念命令。
-     * @property localisationConceptTexts 是否允许折叠本地化概念的自定义文本。
-     * @property localisationConceptTextsByDefault 是否默认折叠本地化概念的自定义文本。
+     * @property localisationConceptStrings 是否允许折叠本地化概念的嵌套字符串。
+     * @property localisationConceptStringsByDefault 是否默认折叠本地化概念的嵌套字符串。
      * @property scriptedVariableReferences 是否允许折叠封装变量引用。折叠为解析后的值。
      * @property scriptedVariableReferencesByDefault 是否默认折叠封装变量引用。折叠为解析后的值。
      * @property variableOperationExpressions 是否允许折叠变量操作表达式。折叠为简化形式。基于内置的规则文件。
@@ -197,8 +197,8 @@ class ChronicleSettings : SimplePersistentStateComponent<ChronicleSettings.State
         var localisationCommandsByDefault by property(false)
         var localisationConceptCommands by property(false)
         var localisationConceptCommandsByDefault by property(false)
-        var localisationConceptTexts by property(false)
-        var localisationConceptTextsByDefault by property(false)
+        var localisationConceptStrings by property(false)
+        var localisationConceptStringsByDefault by property(false)
         var scriptedVariableReferences by property(true)
         var scriptedVariableReferencesByDefault by property(true)
         var variableOperationExpressions by property(true)

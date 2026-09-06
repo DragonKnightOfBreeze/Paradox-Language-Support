@@ -19,12 +19,11 @@ import icu.windea.pls.model.ParadoxGameType;
 import icu.windea.pls.model.constraints.ParadoxSyntaxConstraint;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 
-import static com.intellij.psi.TokenType.*;
-import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
-
-
-
 import java.util.BitSet;
+
+import static com.intellij.psi.TokenType.BAD_CHARACTER;
+import static com.intellij.psi.TokenType.WHITE_SPACE;
+import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 
 public class _ParadoxLocalisationTextLexer implements FlexLexer {
   /** This character denotes the end of file */
@@ -47,12 +46,12 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
   public static final int IN_COMMAND_ARGUMENT = 20;
   public static final int IN_CONCEPT_NAME = 22;
   public static final int IN_CONCEPT_AFTER_COMMA = 24;
-  public static final int IN_CONCEPT_TEXT = 26;
+  public static final int IN_CONCEPT_STRING = 26;
   public static final int IN_ICON = 28;
   public static final int IN_ICON_ARGUMENT = 30;
   public static final int IN_TEXT_ICON = 32;
   public static final int IN_TEXT_FORMAT = 34;
-  public static final int IN_TEXT_FORMAT_TEXT = 36;
+  public static final int IN_TEXT_FORMAT_STRING = 36;
   public static final int IN_STRING_VARIANT = 38;
   public static final int IN_STRING_VARIANT_TAG_PART = 40;
   public static final int IN_STRING_VARIANT_AFTER_TAG_PART = 42;
@@ -68,9 +67,9 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
    * l is of the form l = 2*k, k a non negative integer
    */
   private static final int ZZ_LEXSTATE[] = {
-     0,  0,  0,  0,  1,  1,  2,  2,  3,  3,  4,  4,  5,  5,  6,  6, 
-     7,  7,  8,  8,  9,  9, 10, 10, 11, 11,  3,  3, 12, 12, 13, 13, 
-    14, 14, 15, 15,  3,  3, 16, 16, 17, 17,  0,  0, 18, 18, 19, 19, 
+     0,  0,  0,  0,  1,  1,  2,  2,  3,  3,  4,  4,  5,  5,  6,  6,
+     7,  7,  8,  8,  9,  9, 10, 10, 11, 11,  3,  3, 12, 12, 13, 13,
+    14, 14, 15, 15,  3,  3, 16, 16, 17, 17,  0,  0, 18, 18, 19, 19,
     20, 20, 21, 21
   };
 
@@ -770,7 +769,7 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
           case 54: break;
           case 4:
             { int state = yystate();
-        if (state == IN_CONCEPT_TEXT) {
+        if (state == IN_CONCEPT_STRING) {
             exitState(EXPECT_COMMAND);
             return RIGHT_BRACKET;
         } else if (state == IN_TAG_SENSITIVE_TEXT) {
@@ -902,12 +901,12 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
           // fall through
           case 75: break;
           case 25:
-            { yypushback(yylength()); yybegin(IN_CONCEPT_TEXT);
+            { yypushback(yylength()); yybegin(IN_CONCEPT_STRING);
             }
           // fall through
           case 76: break;
           case 26:
-            { yybegin(IN_CONCEPT_TEXT); return WHITE_SPACE;
+            { yybegin(IN_CONCEPT_STRING); return WHITE_SPACE;
             }
           // fall through
           case 77: break;
@@ -939,12 +938,12 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
           // fall through
           case 82: break;
           case 32:
-            { yypushback(yylength()); yybegin(IN_TEXT_FORMAT_TEXT);
+            { yypushback(yylength()); yybegin(IN_TEXT_FORMAT_STRING);
             }
           // fall through
           case 83: break;
           case 33:
-            { yybegin(IN_TEXT_FORMAT_TEXT); return WHITE_SPACE;
+            { yybegin(IN_TEXT_FORMAT_STRING); return WHITE_SPACE;
             }
           // fall through
           case 84: break;

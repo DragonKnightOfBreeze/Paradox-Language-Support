@@ -36,7 +36,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationColorfulText
 import icu.windea.pls.localisation.psi.ParadoxLocalisationCommand
 import icu.windea.pls.localisation.psi.ParadoxLocalisationCommandText
 import icu.windea.pls.localisation.psi.ParadoxLocalisationConceptCommand
-import icu.windea.pls.localisation.psi.ParadoxLocalisationConceptText
+import icu.windea.pls.localisation.psi.ParadoxLocalisationConceptString
 import icu.windea.pls.localisation.psi.ParadoxLocalisationIcon
 import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
@@ -259,9 +259,9 @@ class ParadoxLocalisationTextInlayRenderContext(
         if (truncated) return
         // 尝试渲染解析后的文本，如果处理失败，则使用原始文本
         val (referenceElement, resolved) = ParadoxGameConceptManager.getReferenceElementAndTextElement(element)
-        // 概念文本
+        // 概念的嵌套字符串
         run {
-            if (resolved !is ParadoxLocalisationConceptText) return@run
+            if (resolved !is ParadoxLocalisationConceptString) return@run
             val richTextList = resolved.richTextList
             if (richTextList.isEmpty()) return
             renderRichTextsForConceptCommand(richTextList, referenceElement)
@@ -323,7 +323,7 @@ class ParadoxLocalisationTextInlayRenderContext(
         // TODO 1.4.1+ 更完善的支持（适用文本格式）
 
         // 直接渲染其中的文本
-        val richTextList = element.textFormatText?.richTextList
+        val richTextList = element.textFormatString?.richTextList
         if (richTextList.isNullOrEmpty()) return
         renderRichTexts(richTextList)
     }

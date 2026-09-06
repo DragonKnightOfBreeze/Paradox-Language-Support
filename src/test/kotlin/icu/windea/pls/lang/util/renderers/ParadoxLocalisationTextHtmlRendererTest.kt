@@ -214,7 +214,7 @@ class ParadoxLocalisationTextHtmlRendererTest : BasePlatformTestCase(), Chronicl
 
         IndexingTestUtil.waitUntilIndexesAreReady(project)
 
-        // no explicit conceptText -> should use tooltip_override
+        // no explicit conceptString -> should use tooltip_override
         val r = render("Concept command: ['concept_foo']")
         // should still link to definition, but display override text
         Assert.assertTrue(r.contains("Tooltip Text"))

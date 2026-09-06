@@ -28,7 +28,7 @@ class ParadoxLocalisationFoldingBuilder : CustomFoldingBuilder(), DumbAware {
             ICON -> ""
             COMMAND -> ChronicleStrings.localisationCommandFolder
             CONCEPT_COMMAND -> ChronicleStrings.localisationConceptCommandFolder
-            CONCEPT_TEXT -> "..."
+            CONCEPT_STRING -> "..."
             else -> null
         }
     }
@@ -42,7 +42,7 @@ class ParadoxLocalisationFoldingBuilder : CustomFoldingBuilder(), DumbAware {
             ICON -> settings.localisationIconsFullyByDefault
             COMMAND -> settings.localisationCommandsByDefault
             CONCEPT_COMMAND -> settings.localisationConceptCommandsByDefault
-            CONCEPT_TEXT -> settings.localisationConceptTextsByDefault
+            CONCEPT_STRING -> settings.localisationConceptStringsByDefault
             else -> false
         }
     }
@@ -91,12 +91,12 @@ class ParadoxLocalisationFoldingBuilder : CustomFoldingBuilder(), DumbAware {
             }
             CONCEPT_COMMAND -> run {
                 if (!settings.localisationConceptCommands) return@run
-                val conceptTextNode = element.findChild { it.elementType == CONCEPT_TEXT }
-                val placeholder = if (conceptTextNode == null) ChronicleStrings.localisationConceptCommandFolder else ChronicleStrings.localisationConceptCommandWithTextFolder
+                val conceptStringNode = element.findChild { it.elementType == CONCEPT_STRING }
+                val placeholder = if (conceptStringNode == null) ChronicleStrings.localisationConceptCommandFolder else ChronicleStrings.localisationConceptCommandWithTextFolder
                 descriptors.add(FoldingDescriptor(element.node, element.textRange, null, placeholder))
             }
-            CONCEPT_TEXT -> run {
-                if (!settings.localisationConceptTexts) return@run
+            CONCEPT_STRING -> run {
+                if (!settings.localisationConceptStrings) return@run
                 descriptors.add(FoldingDescriptor(element.node, element.textRange))
             }
         }

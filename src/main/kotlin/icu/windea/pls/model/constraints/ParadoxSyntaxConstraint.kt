@@ -39,7 +39,7 @@ enum class ParadoxSyntaxConstraint {
     },
 
     // for stellaris
-    // `['{concept_name}']` or `['{concept_name}', {concept_text}]`
+    // `['{concept_name}']` or `['{concept_name}', {concept_string}]`
     LocalisationConceptCommand {
         override fun test(gameType: ParadoxGameType?): Boolean {
             return super.test(gameType) || gameType == ParadoxGameType.Stellaris

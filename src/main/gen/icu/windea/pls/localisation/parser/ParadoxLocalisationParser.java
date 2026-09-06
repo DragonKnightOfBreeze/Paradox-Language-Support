@@ -1,15 +1,16 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.localisation.parser;
 
+import com.intellij.lang.ASTNode;
+import com.intellij.lang.LightPsiParser;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiBuilder.Marker;
-import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
-import static icu.windea.pls.localisation.parser.ParadoxLocalisationParserUtil.*;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.tree.TokenSet;
 import com.intellij.lang.PsiParser;
-import com.intellij.lang.LightPsiParser;
+import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.tree.TokenSet;
+
+import static icu.windea.pls.localisation.parser.ParadoxLocalisationParserUtil.*;
+import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 
 @SuppressWarnings({"SimplifiableIfStatement", "UnusedAssignment"})
 public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
@@ -276,7 +277,7 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // LEFT_BRACKET LEFT_SINGLE_QUOTE concept_name? RIGHT_SINGLE_QUOTE ( COMMA concept_text? )? RIGHT_BRACKET
+  // LEFT_BRACKET LEFT_SINGLE_QUOTE concept_name? RIGHT_SINGLE_QUOTE ( COMMA concept_string? )? RIGHT_BRACKET
   public static boolean concept_command(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "concept_command")) return false;
     if (!nextTokenIs(b, LEFT_BRACKET)) return false;
@@ -299,14 +300,14 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // ( COMMA concept_text? )?
+  // ( COMMA concept_string? )?
   private static boolean concept_command_4(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "concept_command_4")) return false;
     concept_command_4_0(b, l + 1);
     return true;
   }
 
-  // COMMA concept_text?
+  // COMMA concept_string?
   private static boolean concept_command_4_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "concept_command_4_0")) return false;
     boolean r;
@@ -317,10 +318,10 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // concept_text?
+  // concept_string?
   private static boolean concept_command_4_0_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "concept_command_4_0_1")) return false;
-    concept_text(b, l + 1);
+    concept_string(b, l + 1);
     return true;
   }
 
@@ -364,17 +365,17 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
 
   /* ********************************************************** */
   // concept_string_item+
-  static boolean concept_string(PsiBuilder b, int l) {
+  public static boolean concept_string(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "concept_string")) return false;
     boolean r;
-    Marker m = enter_section_(b);
+    Marker m = enter_section_(b, l, _NONE_, CONCEPT_STRING, "<concept string>");
     r = concept_string_item(b, l + 1);
     while (r) {
       int c = current_position_(b);
       if (!concept_string_item(b, l + 1)) break;
       if (!empty_element_parsed_guard_(b, "concept_string", c)) break;
     }
-    exit_section_(b, m, null, r);
+    exit_section_(b, l, m, r, false, null);
     return r;
   }
 
@@ -386,17 +387,6 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
     r = rich_text(b, l + 1);
     if (!r) r = consumeToken(b, COLORFUL_TEXT_END);
     if (!r) r = consumeToken(b, TEXT_FORMAT_END);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // concept_string
-  public static boolean concept_text(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "concept_text")) return false;
-    boolean r;
-    Marker m = enter_section_(b, l, _NONE_, CONCEPT_TEXT, "<concept text>");
-    r = concept_string(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
     return r;
   }
 
@@ -1187,7 +1177,7 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // TEXT_FORMAT_START text_format_name text_format_text? TEXT_FORMAT_END?
+  // TEXT_FORMAT_START text_format_name text_format_string? TEXT_FORMAT_END?
   public static boolean text_format(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "text_format")) return false;
     if (!nextTokenIs(b, TEXT_FORMAT_START)) return false;
@@ -1202,10 +1192,10 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
     return r || p;
   }
 
-  // text_format_text?
+  // text_format_string?
   private static boolean text_format_2(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "text_format_2")) return false;
-    text_format_text(b, l + 1);
+    text_format_string(b, l + 1);
     return true;
   }
 
@@ -1244,17 +1234,17 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
 
   /* ********************************************************** */
   // text_format_string_item+
-  static boolean text_format_string(PsiBuilder b, int l) {
+  public static boolean text_format_string(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "text_format_string")) return false;
     boolean r;
-    Marker m = enter_section_(b);
+    Marker m = enter_section_(b, l, _NONE_, TEXT_FORMAT_STRING, "<text format string>");
     r = text_format_string_item(b, l + 1);
     while (r) {
       int c = current_position_(b);
       if (!text_format_string_item(b, l + 1)) break;
       if (!empty_element_parsed_guard_(b, "text_format_string", c)) break;
     }
-    exit_section_(b, m, null, r);
+    exit_section_(b, l, m, r, false, null);
     return r;
   }
 
@@ -1265,17 +1255,6 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
     boolean r;
     r = rich_text(b, l + 1);
     if (!r) r = consumeToken(b, COLORFUL_TEXT_END);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // text_format_string
-  public static boolean text_format_text(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "text_format_text")) return false;
-    boolean r;
-    Marker m = enter_section_(b, l, _NONE_, TEXT_FORMAT_TEXT, "<text format text>");
-    r = text_format_string(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
     return r;
   }
 

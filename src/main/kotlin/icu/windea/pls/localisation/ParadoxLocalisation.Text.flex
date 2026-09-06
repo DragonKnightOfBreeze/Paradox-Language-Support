@@ -160,7 +160,7 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 
 %s IN_CONCEPT_NAME
 %s IN_CONCEPT_AFTER_COMMA
-%s IN_CONCEPT_TEXT
+%s IN_CONCEPT_STRING
 
 %s IN_ICON
 %s IN_ICON_ARGUMENT
@@ -168,7 +168,7 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 %s IN_TEXT_ICON
 
 %s IN_TEXT_FORMAT
-%s IN_TEXT_FORMAT_TEXT
+%s IN_TEXT_FORMAT_STRING
 
 %s IN_STRING_VARIANT
 %s IN_STRING_VARIANT_TAG_PART
@@ -236,7 +236,7 @@ ContextTagToken = {ContextTagChar}+ // leading number is allowed
 
 // common rules
 
-<YYINITIAL, WITH_CONTEXT, IN_COLORFUL_TEXT, IN_CONCEPT_TEXT, IN_TEXT_FORMAT_TEXT, IN_STRING_VARIANT, IN_STRING_VARIANT_AFTER_TAG_PART, IN_TAG_SENSITIVE_TEXT> {
+<YYINITIAL, WITH_CONTEXT, IN_COLORFUL_TEXT, IN_CONCEPT_STRING, IN_TEXT_FORMAT_STRING, IN_STRING_VARIANT, IN_STRING_VARIANT_AFTER_TAG_PART, IN_TAG_SENSITIVE_TEXT> {
     "§" {
         enterState(yystate(), EXPECT_COLORFUL_TEXT);
         yypushback(yylength());
@@ -262,7 +262,7 @@ ContextTagToken = {ContextTagChar}+ // leading number is allowed
     }
     "]" {
         int state = yystate();
-        if (state == IN_CONCEPT_TEXT) {
+        if (state == IN_CONCEPT_STRING) {
             exitState(EXPECT_COMMAND);
             return RIGHT_BRACKET;
         } else if (state == IN_TAG_SENSITIVE_TEXT) {
@@ -313,7 +313,7 @@ ContextTagToken = {ContextTagChar}+ // leading number is allowed
     }
     "&" { return getFallbackToken(); }
 }
-<YYINITIAL, WITH_CONTEXT, IN_COLORFUL_TEXT, IN_CONCEPT_TEXT, IN_TEXT_FORMAT_TEXT> {
+<YYINITIAL, WITH_CONTEXT, IN_COLORFUL_TEXT, IN_CONCEPT_STRING, IN_TEXT_FORMAT_STRING> {
     {TextToken} { return TEXT_TOKEN; }
 }
 
@@ -469,9 +469,9 @@ ContextTagToken = {ContextTagChar}+ // leading number is allowed
 }
 <IN_CONCEPT_AFTER_COMMA> {
     // enter text section
-    {Blank} { yybegin(IN_CONCEPT_TEXT); return WHITE_SPACE; }
+    {Blank} { yybegin(IN_CONCEPT_STRING); return WHITE_SPACE; }
     // whitespace after COMMA may be absent, if so, treat as valid and still enter text section
-    [^] { yypushback(yylength()); yybegin(IN_CONCEPT_TEXT); }
+    [^] { yypushback(yylength()); yybegin(IN_CONCEPT_STRING); }
 }
 
 // localisation icon rules
@@ -516,9 +516,9 @@ ContextTagToken = {ContextTagChar}+ // leading number is allowed
 <IN_TEXT_FORMAT> {
     {TextFormatToken} { return TEXT_FORMAT_TOKEN; }
     // enter text section
-    {Blank} { yybegin(IN_TEXT_FORMAT_TEXT); return WHITE_SPACE; }
+    {Blank} { yybegin(IN_TEXT_FORMAT_STRING); return WHITE_SPACE; }
     // whitespace after TEXT_FORMAT_TOKEN may be absent, if so, treat as valid and still enter text section
-    [^] { yypushback(yylength()); yybegin(IN_TEXT_FORMAT_TEXT); }
+    [^] { yypushback(yylength()); yybegin(IN_TEXT_FORMAT_STRING); }
 }
 
 // grammatical syntax

@@ -7,8 +7,8 @@ import com.intellij.psi.NavigatablePsiElement
  *
  * @see ParadoxLocalisationPropertyValue
  * @see ParadoxLocalisationColorfulText
- * @see ParadoxLocalisationConceptText
- * @see ParadoxLocalisationTextFormatText
+ * @see ParadoxLocalisationConceptString
+ * @see ParadoxLocalisationTextFormatString
  */
 interface ParadoxLocalisationRichTextContainer : NavigatablePsiElement/*not:*//*, PsiListLikeElement*/ {
     val richTextList: List<ParadoxLocalisationRichText> get() = emptyList()

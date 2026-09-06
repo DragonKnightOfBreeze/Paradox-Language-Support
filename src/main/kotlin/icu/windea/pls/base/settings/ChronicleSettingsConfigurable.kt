@@ -396,14 +396,14 @@ class ChronicleSettingsConfigurable : BoundConfigurable(ChronicleBaseBundle.mess
                 .bindSelected(settings::localisationConceptCommandsByDefault)
                 .enabledIf(cb.selected)
         }
-        // localisationConceptTexts & localisationConceptTextsByDefault
+        // localisationConceptStrings & localisationConceptStringsByDefault
         row {
             lateinit var cb: JBCheckBox
-            checkBox(ChronicleBaseBundle.message("settings.folding.localisationConceptTexts"))
-                .bindSelected(settings::localisationConceptTexts)
+            checkBox(ChronicleBaseBundle.message("settings.folding.localisationConceptStrings"))
+                .bindSelected(settings::localisationConceptStrings)
                 .applyToComponent { cb = this }
             checkBox(ChronicleBaseBundle.message("settings.folding.byDefault"))
-                .bindSelected(settings::localisationConceptTextsByDefault)
+                .bindSelected(settings::localisationConceptStringsByDefault)
                 .enabledIf(cb.selected)
         }
         // scriptedVariableReferences & scriptedVariableReferencesByDefault

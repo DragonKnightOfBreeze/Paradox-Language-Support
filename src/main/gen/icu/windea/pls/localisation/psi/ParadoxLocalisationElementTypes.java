@@ -1,9 +1,9 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.localisation.psi;
 
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.PsiElement;
 import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.tree.IElementType;
 import icu.windea.pls.localisation.psi.impl.*;
 
 public interface ParadoxLocalisationElementTypes {
@@ -14,7 +14,7 @@ public interface ParadoxLocalisationElementTypes {
   IElementType COMMAND_TEXT = ParadoxLocalisationElementTypeFactory.getElementType("COMMAND_TEXT");
   IElementType CONCEPT_COMMAND = ParadoxLocalisationElementTypeFactory.getElementType("CONCEPT_COMMAND");
   IElementType CONCEPT_NAME = ParadoxLocalisationElementTypeFactory.getElementType("CONCEPT_NAME");
-  IElementType CONCEPT_TEXT = ParadoxLocalisationElementTypeFactory.getElementType("CONCEPT_TEXT");
+  IElementType CONCEPT_STRING = ParadoxLocalisationElementTypeFactory.getElementType("CONCEPT_STRING");
   IElementType CONTEXT_TAG = ParadoxLocalisationElementTypeFactory.getElementType("CONTEXT_TAG");
   IElementType CONTEXT_TAG_PART = ParadoxLocalisationElementTypeFactory.getElementType("CONTEXT_TAG_PART");
   IElementType ICON = ParadoxLocalisationElementTypeFactory.getElementType("ICON");
@@ -39,7 +39,7 @@ public interface ParadoxLocalisationElementTypes {
   IElementType TAG_SENSITIVE_TEXT_STRING = ParadoxLocalisationElementTypeFactory.getElementType("TAG_SENSITIVE_TEXT_STRING");
   IElementType TEXT = ParadoxLocalisationElementTypeFactory.getElementType("TEXT");
   IElementType TEXT_FORMAT = ParadoxLocalisationElementTypeFactory.getElementType("TEXT_FORMAT");
-  IElementType TEXT_FORMAT_TEXT = ParadoxLocalisationElementTypeFactory.getElementType("TEXT_FORMAT_TEXT");
+  IElementType TEXT_FORMAT_STRING = ParadoxLocalisationElementTypeFactory.getElementType("TEXT_FORMAT_STRING");
   IElementType TEXT_ICON = ParadoxLocalisationElementTypeFactory.getElementType("TEXT_ICON");
   IElementType TEXT_ROOT = ParadoxLocalisationElementTypeFactory.getElementType("TEXT_ROOT");
 
@@ -108,8 +108,8 @@ public interface ParadoxLocalisationElementTypes {
       else if (type == CONCEPT_NAME) {
         return new ParadoxLocalisationConceptNameImpl(node);
       }
-      else if (type == CONCEPT_TEXT) {
-        return new ParadoxLocalisationConceptTextImpl(node);
+      else if (type == CONCEPT_STRING) {
+        return new ParadoxLocalisationConceptStringImpl(node);
       }
       else if (type == CONTEXT_TAG) {
         return new ParadoxLocalisationContextTagImpl(node);
@@ -180,8 +180,8 @@ public interface ParadoxLocalisationElementTypes {
       else if (type == TEXT_FORMAT) {
         return new ParadoxLocalisationTextFormatImpl(node);
       }
-      else if (type == TEXT_FORMAT_TEXT) {
-        return new ParadoxLocalisationTextFormatTextImpl(node);
+      else if (type == TEXT_FORMAT_STRING) {
+        return new ParadoxLocalisationTextFormatStringImpl(node);
       }
       else if (type == TEXT_ICON) {
         return new ParadoxLocalisationTextIconImpl(node);

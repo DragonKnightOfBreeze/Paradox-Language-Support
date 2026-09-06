@@ -12,7 +12,7 @@ import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.localisation.psi.ParadoxLocalisationConceptCommand
-import icu.windea.pls.localisation.psi.ParadoxLocalisationConceptText
+import icu.windea.pls.localisation.psi.ParadoxLocalisationConceptString
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
@@ -41,14 +41,14 @@ object ParadoxGameConceptManager {
 
     /**
      * - locationElement: [ParadoxScriptProperty]
-     * - textElement: [ParadoxLocalisationConceptText] or [ParadoxLocalisationProperty]
+     * - textElement: [ParadoxLocalisationConceptString] or [ParadoxLocalisationProperty]
      */
     fun getReferenceElementAndTextElement(element: ParadoxLocalisationConceptCommand): Tuple2<PsiElement?, PsiElement?> {
-        val conceptText = element.conceptText
+        val conceptString = element.conceptString
         run r1@{
             val resolved = element.reference?.resolve() ?: return@r1
             if (resolved !is ParadoxScriptProperty) return@r1
-            if (conceptText != null) return resolved to conceptText
+            if (conceptString != null) return resolved to conceptString
             run r2@{
                 val overrideProperty = selectScope { resolved.properties(inline = true).ofKey("tooltip_override").one() }
                 val overrideValue = overrideProperty?.propertyValue<ParadoxScriptString>() ?: return@r2
@@ -63,7 +63,7 @@ object ParadoxGameConceptManager {
         run r1@{
             val resolved = element.conceptName?.references?.lastOrNull()?.resolve()
             if (resolved !is ParadoxScriptProperty) return@r1
-            if (conceptText != null) return resolved to conceptText
+            if (conceptString != null) return resolved to conceptString
             return resolved to ParadoxDefinitionManager.getPrimaryLocalisation(resolved)
         }
         return null to null
