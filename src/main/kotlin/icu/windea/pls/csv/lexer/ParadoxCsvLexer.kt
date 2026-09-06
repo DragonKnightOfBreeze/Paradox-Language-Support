@@ -2,6 +2,9 @@ package icu.windea.pls.csv.lexer
 
 import com.intellij.lexer.FlexAdapter
 import com.intellij.lexer.MergingLexerAdapter
+import icu.windea.pls.core.cast
 import icu.windea.pls.csv.psi.ParadoxCsvTokenSets
 
-class ParadoxCsvLexer : MergingLexerAdapter(FlexAdapter(_ParadoxCsvLexer()), ParadoxCsvTokenSets.MERGED_TOKENS)
+class ParadoxCsvLexer : MergingLexerAdapter(FlexAdapter(_ParadoxCsvLexer()), ParadoxCsvTokenSets.MERGED_TOKENS) {
+    @Suppress("unused") val flexLexer: _ParadoxCsvLexer get() = delegate.cast<FlexAdapter>().flex.cast()
+}

@@ -32,15 +32,15 @@ public class _ParadoxScriptLexer implements FlexLexer {
 
   /** lexical states */
   public static final int YYINITIAL = 0;
-  public static final int IN_PROPERTY_VALUE = 2;
-  public static final int IN_PROPERTY_KEY_UNQUOTED = 4;
-  public static final int IN_PROPERTY_KEY_QUOTED = 6;
-  public static final int IN_STRING_UNQUOTED = 8;
-  public static final int IN_STRING_QUOTED = 10;
-  public static final int IN_SCRIPTED_VARIABLE_CHECK = 12;
-  public static final int IN_SCRIPTED_VARIABLE_NAME = 14;
-  public static final int IN_SCRIPTED_VARIABLE_VALUE = 16;
-  public static final int IN_SCRIPTED_VARIABLE_REFERENCE_CHECK = 18;
+  public static final int WITH_CONTEXT = 2;
+  public static final int IN_PROPERTY_VALUE = 4;
+  public static final int IN_PROPERTY_KEY_UNQUOTED = 6;
+  public static final int IN_PROPERTY_KEY_QUOTED = 8;
+  public static final int IN_STRING_UNQUOTED = 10;
+  public static final int IN_STRING_QUOTED = 12;
+  public static final int IN_SCRIPTED_VARIABLE_CHECK = 14;
+  public static final int IN_SCRIPTED_VARIABLE_NAME = 16;
+  public static final int IN_SCRIPTED_VARIABLE_VALUE = 18;
   public static final int IN_SCRIPTED_VARIABLE_REFERENCE = 20;
   public static final int IN_INLINE_MATH = 22;
   public static final int IN_PARAMETER = 24;
@@ -55,8 +55,8 @@ public class _ParadoxScriptLexer implements FlexLexer {
    * l is of the form l = 2*k, k a non negative integer
    */
   private static final int ZZ_LEXSTATE[] = {
-     0,  0,  1,  1,  2,  2,  3,  3,  4,  4,  5,  5,  6,  6,  7,  7, 
-     1,  1,  8,  8,  9,  9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14
+     0,  0,  0,  0,  1,  1,  2,  2,  3,  3,  4,  4,  5,  5,  6,  6, 
+     7,  7,  8,  8,  9,  9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14
   };
 
   /**
@@ -151,7 +151,7 @@ public class _ParadoxScriptLexer implements FlexLexer {
     "\1\6\1\7\1\10\1\3\1\11\2\1\1\12\2\1"+
     "\1\13\1\14\1\15\1\16\1\17\1\15\1\20\1\21"+
     "\1\22\1\15\1\23\1\12\2\16\1\17\1\15\1\24"+
-    "\1\25\1\24\1\15\1\26\1\27\1\30\1\27\1\31"+
+    "\1\25\1\24\1\15\1\26\1\27\1\30\1\15\1\31"+
     "\1\32\1\33\1\34\1\35\1\36\1\37\1\40\1\41"+
     "\1\42\1\43\1\44\10\0\1\1\3\45\2\0\1\46"+
     "\1\1\1\45\1\0\1\47\1\50\1\51\1\0\1\52"+
@@ -192,16 +192,16 @@ public class _ParadoxScriptLexer implements FlexLexer {
     "\0\u04b9\0\u04e0\0\u02e5\0\u0507\0\u052e\0\u041d\0\u041d\0\u041d"+
     "\0\u0555\0\u057c\0\u0333\0\u041d\0\u05a3\0\u041d\0\u046b\0\u05ca"+
     "\0\u041d\0\u05f1\0\u0618\0\u063f\0\u0666\0\u068d\0\u041d\0\u06b4"+
-    "\0\u06db\0\u041d\0\u0702\0\u0729\0\u0750\0\u0777\0\u079e\0\u041d"+
-    "\0\u041d\0\u07c5\0\u041d\0\u07ec\0\u041d\0\u041d\0\u041d\0\u0813"+
-    "\0\u041d\0\u083a\0\u0861\0\u0888\0\u08af\0\u08d6\0\u08fd\0\u0924"+
-    "\0\u094b\0\u0924\0\u0972\0\u041d\0\u0999\0\u09c0\0\u09e7\0\u041d"+
-    "\0\u0a0e\0\u035a\0\u0a35\0\u03cf\0\u041d\0\u041d\0\u0a5c\0\u041d"+
-    "\0\u041d\0\u0a83\0\u0aaa\0\u0ad1\0\u02e5\0\u0af8\0\u0555\0\u05ca"+
-    "\0\u041d\0\u0666\0\u068d\0\u06db\0\u0b1f\0\u041d\0\u079e\0\u0b46"+
-    "\0\u041d\0\u0b6d\0\u0b94\0\u0999\0\u0bbb\0\u0be2\0\u0c09\0\u041d"+
-    "\0\u0c30\0\u0be2\0\u0c09\0\u0c57\0\u0c7e\0\u041d\0\u0ca5\0\u0ccc"+
-    "\0\u0cf3\0\u0d1a\0\u0d41\0\u0d68\0\u041d";
+    "\0\u06db\0\u041d\0\u0702\0\u0729\0\u0492\0\u0750\0\u0777\0\u041d"+
+    "\0\u041d\0\u079e\0\u041d\0\u07c5\0\u041d\0\u041d\0\u041d\0\u07ec"+
+    "\0\u041d\0\u0813\0\u083a\0\u0861\0\u0888\0\u08af\0\u08d6\0\u08fd"+
+    "\0\u0924\0\u08fd\0\u094b\0\u041d\0\u0972\0\u0999\0\u09c0\0\u041d"+
+    "\0\u09e7\0\u035a\0\u0a0e\0\u03cf\0\u041d\0\u041d\0\u0a35\0\u041d"+
+    "\0\u041d\0\u0a5c\0\u0a83\0\u0aaa\0\u02e5\0\u0ad1\0\u0555\0\u05ca"+
+    "\0\u041d\0\u0666\0\u068d\0\u06db\0\u0af8\0\u041d\0\u0777\0\u0b1f"+
+    "\0\u041d\0\u0b46\0\u0b6d\0\u0972\0\u0b94\0\u0bbb\0\u0be2\0\u041d"+
+    "\0\u0c09\0\u0bbb\0\u0be2\0\u0c30\0\u0c57\0\u041d\0\u0c7e\0\u0ca5"+
+    "\0\u0ccc\0\u0cf3\0\u0d1a\0\u0d41\0\u041d";
 
   private static int [] zzUnpackRowMap() {
     int [] result = new int[133];
@@ -243,104 +243,105 @@ public class _ParadoxScriptLexer implements FlexLexer {
     "\1\56\22\70\1\60\1\71\1\61\12\70\7\72\1\73"+
     "\13\72\10\73\2\72\5\73\5\72\1\50\3\52\1\53"+
     "\1\50\1\55\1\56\6\50\1\34\1\35\1\36\1\57"+
-    "\1\50\7\74\1\60\1\50\1\61\5\74\5\50\7\72"+
-    "\1\75\13\72\10\75\2\72\5\75\5\72\1\50\3\52"+
-    "\2\50\1\55\1\56\13\50\7\76\1\60\1\50\1\61"+
-    "\5\76\5\50\1\77\3\25\2\77\1\50\23\77\1\50"+
-    "\1\77\1\100\5\77\1\50\1\77\1\50\2\77\7\50"+
-    "\1\101\2\50\4\102\5\50\7\102\3\50\5\102\1\50"+
-    "\1\103\3\50\1\104\4\50\1\104\1\50\1\101\6\104"+
-    "\4\50\10\104\3\50\5\104\1\50\1\104\1\50\2\104"+
-    "\1\50\3\25\2\50\1\30\23\50\1\105\1\50\1\106"+
-    "\13\50\3\25\1\107\1\50\1\30\3\50\4\110\5\50"+
-    "\7\110\2\50\1\111\5\110\5\50\1\112\4\0\1\113"+
-    "\1\0\7\112\5\0\17\112\1\0\1\112\1\0\2\112"+
-    "\16\0\1\114\1\115\1\116\35\0\1\117\13\0\10\117"+
-    "\2\0\5\117\24\0\1\114\27\0\1\24\3\120\1\121"+
-    "\1\122\1\0\7\24\1\123\1\124\1\125\1\126\1\127"+
-    "\17\24\1\0\1\24\1\0\2\24\1\0\3\25\62\0"+
-    "\1\130\27\0\2\27\1\131\2\27\1\122\10\27\3\132"+
-    "\12\27\1\133\13\27\2\30\1\0\44\30\1\24\3\120"+
-    "\1\121\1\122\1\0\2\24\1\32\4\33\1\123\1\124"+
-    "\1\125\1\126\1\127\17\24\1\0\1\24\1\0\3\24"+
-    "\3\120\1\121\1\122\1\0\3\24\4\134\1\123\1\124"+
-    "\1\125\1\126\1\127\17\24\1\0\1\24\1\0\2\24"+
-    "\17\0\1\135\1\130\114\0\1\136\30\0\3\137\13\0"+
-    "\1\140\61\0\1\141\1\142\13\0\1\24\3\120\1\121"+
-    "\1\122\1\0\7\24\1\123\1\124\1\125\1\126\1\127"+
-    "\5\24\1\143\7\24\1\143\1\24\1\0\1\24\1\0"+
-    "\3\24\3\120\1\121\1\122\1\0\7\24\1\123\1\124"+
-    "\1\125\1\126\1\127\2\24\1\144\14\24\1\0\1\24"+
-    "\1\0\3\24\3\120\1\121\1\122\1\0\7\24\1\123"+
-    "\1\124\1\125\1\126\1\127\14\24\1\145\2\24\1\0"+
-    "\1\24\1\0\3\24\3\120\1\121\1\122\1\0\7\24"+
-    "\1\123\1\124\1\125\1\126\1\127\12\24\1\146\4\24"+
-    "\1\0\1\24\1\0\2\24\1\51\3\0\1\147\3\0"+
-    "\6\51\3\0\2\147\7\51\1\0\1\51\1\0\5\51"+
-    "\1\0\1\51\1\0\2\51\1\0\3\52\43\0\2\55"+
-    "\1\0\44\55\1\0\3\150\26\0\1\151\14\0\2\62"+
-    "\1\0\2\62\1\0\1\62\1\0\22\62\1\0\1\152"+
-    "\1\0\13\62\1\63\1\52\1\64\1\62\1\0\1\62"+
-    "\1\0\22\62\1\0\1\152\1\0\13\62\1\64\1\52"+
-    "\1\64\1\62\1\0\1\62\1\0\22\62\1\0\1\152"+
-    "\1\0\14\62\2\0\42\62\1\0\1\66\3\0\1\153"+
-    "\3\0\6\66\3\0\2\153\7\66\1\0\1\66\1\0"+
-    "\5\66\1\0\1\66\1\0\2\66\5\70\1\0\1\70"+
-    "\1\0\22\70\1\0\1\154\1\0\14\70\2\0\42\70"+
-    "\2\0\3\155\1\73\2\0\1\73\2\0\4\73\1\0"+
-    "\1\156\1\0\1\73\1\0\10\73\1\0\6\73\1\0"+
-    "\1\73\15\0\4\74\5\0\7\74\3\0\5\74\11\0"+
-    "\1\75\2\0\1\75\2\0\4\75\3\0\1\75\1\0"+
-    "\10\75\1\0\6\75\1\0\1\75\15\0\4\76\5\0"+
-    "\7\76\3\0\5\76\5\0\1\77\1\157\1\0\1\157"+
-    "\2\77\1\0\23\77\1\0\1\77\1\0\5\77\1\0"+
-    "\1\77\1\0\2\77\12\0\4\102\5\0\7\102\3\0"+
-    "\5\102\5\0\1\104\4\0\1\104\2\0\6\104\4\0"+
-    "\10\104\3\0\5\104\1\0\1\104\1\0\2\104\12\0"+
-    "\4\110\5\0\7\110\3\0\5\110\5\0\1\112\3\0"+
-    "\1\160\1\161\1\0\7\112\3\0\2\160\17\112\1\0"+
-    "\1\112\1\0\2\112\2\113\1\0\2\113\1\161\25\113"+
-    "\1\162\13\113\1\0\3\114\44\0\3\163\1\114\11\0"+
-    "\1\114\1\0\2\114\26\0\3\114\12\0\1\114\34\0"+
-    "\1\117\2\0\1\117\2\0\4\117\3\0\1\117\1\0"+
-    "\10\117\1\0\6\117\1\0\1\117\4\0\3\120\1\164"+
-    "\11\0\1\123\1\124\1\125\1\165\25\0\1\24\3\0"+
-    "\1\127\2\0\7\24\1\0\1\124\1\0\2\127\17\24"+
-    "\1\0\1\24\1\0\2\24\17\0\2\124\45\0\1\124"+
-    "\27\0\1\24\3\165\1\127\2\0\7\24\1\0\1\124"+
-    "\1\0\2\127\17\24\1\0\1\24\1\0\3\24\3\0"+
-    "\1\127\2\0\7\24\3\0\2\127\17\24\1\0\1\24"+
-    "\1\0\2\24\1\166\3\131\1\167\1\170\10\166\1\171"+
-    "\1\172\1\173\1\174\11\166\1\175\13\166\2\27\2\0"+
-    "\42\27\2\0\3\137\13\0\1\176\61\0\1\141\14\0"+
-    "\1\24\3\120\1\121\1\122\1\0\7\24\1\123\1\124"+
-    "\1\125\1\126\1\127\6\24\1\177\10\24\1\0\1\24"+
-    "\1\0\3\24\3\120\1\121\1\122\1\0\7\24\1\123"+
-    "\1\124\1\125\1\126\1\127\1\24\1\200\15\24\1\0"+
-    "\1\24\1\0\3\24\3\120\1\121\1\122\1\0\7\24"+
-    "\1\123\1\124\1\125\1\126\1\127\15\24\1\145\1\24"+
-    "\1\0\1\24\1\0\2\24\1\0\3\155\13\0\1\156"+
-    "\27\0\1\112\3\0\1\160\2\0\7\112\3\0\2\160"+
-    "\17\112\1\0\1\112\1\0\2\112\2\113\2\0\42\113"+
-    "\2\0\3\163\15\0\1\114\26\0\3\165\13\0\1\124"+
-    "\27\0\5\166\1\170\25\166\1\175\20\166\1\170\11\166"+
-    "\1\172\13\166\1\175\20\166\1\170\11\166\2\172\12\166"+
-    "\1\175\14\166\3\174\1\166\1\170\11\166\1\172\13\166"+
-    "\1\175\15\166\2\0\42\166\1\0\1\24\3\201\1\121"+
-    "\1\122\1\0\5\24\1\202\1\24\1\123\1\124\1\125"+
-    "\1\126\1\127\17\24\1\203\1\24\1\0\3\24\3\201"+
+    "\1\50\7\74\1\60\1\50\1\61\5\74\5\50\1\24"+
+    "\3\25\1\50\1\27\1\30\1\24\1\31\1\32\4\33"+
+    "\4\50\1\75\3\24\1\41\1\42\4\24\1\43\1\24"+
+    "\1\44\2\24\1\45\1\46\1\24\1\47\2\24\1\50"+
+    "\3\52\2\50\1\55\1\56\13\50\7\76\1\60\1\50"+
+    "\1\61\5\76\5\50\1\77\3\25\2\77\1\50\23\77"+
+    "\1\50\1\77\1\100\5\77\1\50\1\77\1\50\2\77"+
+    "\7\50\1\101\2\50\4\102\5\50\7\102\3\50\5\102"+
+    "\1\50\1\103\3\50\1\104\4\50\1\104\1\50\1\101"+
+    "\6\104\4\50\10\104\3\50\5\104\1\50\1\104\1\50"+
+    "\2\104\1\50\3\25\2\50\1\30\23\50\1\105\1\50"+
+    "\1\106\13\50\3\25\1\107\1\50\1\30\3\50\4\110"+
+    "\5\50\7\110\2\50\1\111\5\110\5\50\1\112\4\0"+
+    "\1\113\1\0\7\112\5\0\17\112\1\0\1\112\1\0"+
+    "\2\112\16\0\1\114\1\115\1\116\35\0\1\117\13\0"+
+    "\10\117\2\0\5\117\24\0\1\114\27\0\1\24\3\120"+
     "\1\121\1\122\1\0\7\24\1\123\1\124\1\125\1\126"+
-    "\1\127\17\24\1\203\1\24\1\0\2\24\1\0\3\201"+
-    "\1\164\11\0\1\123\1\124\1\125\1\165\20\0\1\203"+
-    "\4\0\1\24\3\120\1\121\1\122\1\0\6\24\1\204"+
-    "\1\123\1\124\1\125\1\126\1\127\17\24\1\0\1\24"+
-    "\1\0\2\24\1\0\1\203\1\0\1\203\5\0\5\203"+
-    "\26\0\1\205\1\203\1\0\1\24\3\120\1\121\1\122"+
-    "\1\0\3\24\1\200\3\24\1\123\1\124\1\125\1\126"+
-    "\1\127\17\24\1\0\1\24\1\0\2\24";
+    "\1\127\17\24\1\0\1\24\1\0\2\24\1\0\3\25"+
+    "\62\0\1\130\27\0\2\27\1\131\2\27\1\122\10\27"+
+    "\3\132\12\27\1\133\13\27\2\30\1\0\44\30\1\24"+
+    "\3\120\1\121\1\122\1\0\2\24\1\32\4\33\1\123"+
+    "\1\124\1\125\1\126\1\127\17\24\1\0\1\24\1\0"+
+    "\3\24\3\120\1\121\1\122\1\0\3\24\4\134\1\123"+
+    "\1\124\1\125\1\126\1\127\17\24\1\0\1\24\1\0"+
+    "\2\24\17\0\1\135\1\130\114\0\1\136\30\0\3\137"+
+    "\13\0\1\140\61\0\1\141\1\142\13\0\1\24\3\120"+
+    "\1\121\1\122\1\0\7\24\1\123\1\124\1\125\1\126"+
+    "\1\127\5\24\1\143\7\24\1\143\1\24\1\0\1\24"+
+    "\1\0\3\24\3\120\1\121\1\122\1\0\7\24\1\123"+
+    "\1\124\1\125\1\126\1\127\2\24\1\144\14\24\1\0"+
+    "\1\24\1\0\3\24\3\120\1\121\1\122\1\0\7\24"+
+    "\1\123\1\124\1\125\1\126\1\127\14\24\1\145\2\24"+
+    "\1\0\1\24\1\0\3\24\3\120\1\121\1\122\1\0"+
+    "\7\24\1\123\1\124\1\125\1\126\1\127\12\24\1\146"+
+    "\4\24\1\0\1\24\1\0\2\24\1\51\3\0\1\147"+
+    "\3\0\6\51\3\0\2\147\7\51\1\0\1\51\1\0"+
+    "\5\51\1\0\1\51\1\0\2\51\1\0\3\52\43\0"+
+    "\2\55\1\0\44\55\1\0\3\150\26\0\1\151\14\0"+
+    "\2\62\1\0\2\62\1\0\1\62\1\0\22\62\1\0"+
+    "\1\152\1\0\13\62\1\63\1\52\1\64\1\62\1\0"+
+    "\1\62\1\0\22\62\1\0\1\152\1\0\13\62\1\64"+
+    "\1\52\1\64\1\62\1\0\1\62\1\0\22\62\1\0"+
+    "\1\152\1\0\14\62\2\0\42\62\1\0\1\66\3\0"+
+    "\1\153\3\0\6\66\3\0\2\153\7\66\1\0\1\66"+
+    "\1\0\5\66\1\0\1\66\1\0\2\66\5\70\1\0"+
+    "\1\70\1\0\22\70\1\0\1\154\1\0\14\70\2\0"+
+    "\42\70\2\0\3\155\1\73\2\0\1\73\2\0\4\73"+
+    "\1\0\1\156\1\0\1\73\1\0\10\73\1\0\6\73"+
+    "\1\0\1\73\15\0\4\74\5\0\7\74\3\0\5\74"+
+    "\17\0\4\76\5\0\7\76\3\0\5\76\5\0\1\77"+
+    "\1\157\1\0\1\157\2\77\1\0\23\77\1\0\1\77"+
+    "\1\0\5\77\1\0\1\77\1\0\2\77\12\0\4\102"+
+    "\5\0\7\102\3\0\5\102\5\0\1\104\4\0\1\104"+
+    "\2\0\6\104\4\0\10\104\3\0\5\104\1\0\1\104"+
+    "\1\0\2\104\12\0\4\110\5\0\7\110\3\0\5\110"+
+    "\5\0\1\112\3\0\1\160\1\161\1\0\7\112\3\0"+
+    "\2\160\17\112\1\0\1\112\1\0\2\112\2\113\1\0"+
+    "\2\113\1\161\25\113\1\162\13\113\1\0\3\114\44\0"+
+    "\3\163\1\114\11\0\1\114\1\0\2\114\26\0\3\114"+
+    "\12\0\1\114\34\0\1\117\2\0\1\117\2\0\4\117"+
+    "\3\0\1\117\1\0\10\117\1\0\6\117\1\0\1\117"+
+    "\4\0\3\120\1\164\11\0\1\123\1\124\1\125\1\165"+
+    "\25\0\1\24\3\0\1\127\2\0\7\24\1\0\1\124"+
+    "\1\0\2\127\17\24\1\0\1\24\1\0\2\24\17\0"+
+    "\2\124\45\0\1\124\27\0\1\24\3\165\1\127\2\0"+
+    "\7\24\1\0\1\124\1\0\2\127\17\24\1\0\1\24"+
+    "\1\0\3\24\3\0\1\127\2\0\7\24\3\0\2\127"+
+    "\17\24\1\0\1\24\1\0\2\24\1\166\3\131\1\167"+
+    "\1\170\10\166\1\171\1\172\1\173\1\174\11\166\1\175"+
+    "\13\166\2\27\2\0\42\27\2\0\3\137\13\0\1\176"+
+    "\61\0\1\141\14\0\1\24\3\120\1\121\1\122\1\0"+
+    "\7\24\1\123\1\124\1\125\1\126\1\127\6\24\1\177"+
+    "\10\24\1\0\1\24\1\0\3\24\3\120\1\121\1\122"+
+    "\1\0\7\24\1\123\1\124\1\125\1\126\1\127\1\24"+
+    "\1\200\15\24\1\0\1\24\1\0\3\24\3\120\1\121"+
+    "\1\122\1\0\7\24\1\123\1\124\1\125\1\126\1\127"+
+    "\15\24\1\145\1\24\1\0\1\24\1\0\2\24\1\0"+
+    "\3\155\13\0\1\156\27\0\1\112\3\0\1\160\2\0"+
+    "\7\112\3\0\2\160\17\112\1\0\1\112\1\0\2\112"+
+    "\2\113\2\0\42\113\2\0\3\163\15\0\1\114\26\0"+
+    "\3\165\13\0\1\124\27\0\5\166\1\170\25\166\1\175"+
+    "\20\166\1\170\11\166\1\172\13\166\1\175\20\166\1\170"+
+    "\11\166\2\172\12\166\1\175\14\166\3\174\1\166\1\170"+
+    "\11\166\1\172\13\166\1\175\15\166\2\0\42\166\1\0"+
+    "\1\24\3\201\1\121\1\122\1\0\5\24\1\202\1\24"+
+    "\1\123\1\124\1\125\1\126\1\127\17\24\1\203\1\24"+
+    "\1\0\3\24\3\201\1\121\1\122\1\0\7\24\1\123"+
+    "\1\124\1\125\1\126\1\127\17\24\1\203\1\24\1\0"+
+    "\2\24\1\0\3\201\1\164\11\0\1\123\1\124\1\125"+
+    "\1\165\20\0\1\203\4\0\1\24\3\120\1\121\1\122"+
+    "\1\0\6\24\1\204\1\123\1\124\1\125\1\126\1\127"+
+    "\17\24\1\0\1\24\1\0\2\24\1\0\1\203\1\0"+
+    "\1\203\5\0\5\203\26\0\1\205\1\203\1\0\1\24"+
+    "\3\120\1\121\1\122\1\0\3\24\1\200\3\24\1\123"+
+    "\1\124\1\125\1\126\1\127\17\24\1\0\1\24\1\0"+
+    "\2\24";
 
   private static int [] zzUnpacktrans() {
-    int [] result = new int[3471];
+    int [] result = new int[3432];
     int offset = 0;
     offset = zzUnpacktrans(ZZ_TRANS_PACKED_0, offset, result);
     return result;
@@ -493,35 +494,47 @@ public class _ParadoxScriptLexer implements FlexLexer {
         return this.gameType;
     }
 
-    public void resetContext() {
-        // reset context (`stateStack` & `expectStack`) when reset the lexer
+    // context methods
+
+    public void clearContext() {
         if (stateStack != null) stateStack.clear();
         if (expectStack != null) expectStack.clear();
     }
 
-    public boolean isRestartable() {
-        // require context (`stateStack` & `expectStack`) is empty (do not check `yystate()` here)
-        return (stateStack == null || stateStack.isEmpty()) && (expectStack == null || expectStack.isEmpty());
+    private void ensureContext() {
+        if (stateStack == null) stateStack = new IntArrayList();
+        if (expectStack == null) expectStack = new IntArrayList();
+    }
+
+    private int ensureState(int state) {
+        // if the lexer context is (or will be) not empty, then should not use YYINITIAL as the lexical state directly.
+        // while YYINITIAL is the initial state, in this situation, the lexer still cannot start incrementally re-lex safely.
+        // see: com.intellij.lexer.Lexer.start(java.lang.CharSequence, int, int, int)
+        if (state == YYINITIAL) return WITH_CONTEXT;
+        // if the lexical state represents an after-separator position, then should change to a normal position.
+        if (state == IN_PROPERTY_VALUE || state == IN_SCRIPTED_VARIABLE_VALUE) return WITH_CONTEXT;
+        return state;
+    }
+
+    private boolean checkEmptyContext() {
+        // if the lexer context is empty, it's feasible to return to the initial state directly.
+        if (stateStack == null || stateStack.isEmpty() || expectStack == null || expectStack.isEmpty()) {
+            yybegin(YYINITIAL);
+            return true;
+        }
+        return false;
     }
 
     private void enterState(int state, int expect) {
-        if (stateStack == null) {
-            stateStack = new IntArrayList();
-        }
-        if (expectStack == null) {
-            expectStack = new IntArrayList();
-        }
-
+        ensureContext();
+        state = ensureState(state);
         stateStack.push(state);
         expectStack.push(expect);
         yybegin(state);
     }
 
     private void exitState(int expect) {
-        if (stateStack == null || stateStack.isEmpty() || expectStack == null || expectStack.isEmpty()) {
-            yybegin(YYINITIAL);
-            return;
-        }
+        if (checkEmptyContext()) return;
         if (expectStack.topInt() != expect) return;
         int nextState = stateStack.popInt();
         expectStack.popInt();
@@ -530,14 +543,8 @@ public class _ParadoxScriptLexer implements FlexLexer {
 
     private void exitStateForRecovery() {
         // used for recovery
-        if (stateStack == null || stateStack.isEmpty() || expectStack == null || expectStack.isEmpty()) {
-            yybegin(YYINITIAL);
-            return;
-        }
-
-        // compatible with conditional blocks
-        if (beginStateInConditionalBodyToNormalForm()) return;
-
+        if (checkEmptyContext()) return;
+        if (beginStateInConditionalBodyToNormalForm()) return; // compatible with conditional blocks
         int nextState = stateStack.popInt();
         expectStack.popInt();
         yybegin(nextState);
@@ -552,8 +559,8 @@ public class _ParadoxScriptLexer implements FlexLexer {
     }
 
     private boolean needExitStateForRecovery() {
-        // heuristic: recovery when the character is a boundary marker (`}]${[`)
-        // heuristic: recovery when the character is blank (and it's not a valid token in previous context)
+        // heuristic: recover when the character is a boundary marker (`}]${[`)
+        // heuristic: recover when the character is blank (and it's not a valid token in previous context)
         char c = yycharat(0);
         if (c == '}' || c == ']' || c == '$' || c == '{' || c == '[') return true;
         if (Character.isWhitespace(c)) return true;
@@ -597,10 +604,7 @@ public class _ParadoxScriptLexer implements FlexLexer {
         // -> peek state X (i = 0)
         // -> enter (IN_PROPERTY_KEY_UNQUOTED, EXPECT_INLINE_CONDITIONAL) -> begin IN_PROPERTY_KEY_UNQUOTED
 
-        if (stateStack == null || stateStack.isEmpty() || expectStack == null || expectStack.isEmpty()) {
-            yybegin(YYINITIAL);
-            return false;
-        }
+        if (checkEmptyContext()) return false;
         int nextState = stateStack.peekInt(0);
         int nextExpect = switch (nextState) {
             case IN_PROPERTY_KEY_UNQUOTED, IN_PROPERTY_KEY_QUOTED -> EXPECT_INLINE_CONDITIONAL;
@@ -654,10 +658,7 @@ public class _ParadoxScriptLexer implements FlexLexer {
         // -> exit (YYINITIAL, EXPECT_STRING), (YYINITIAL, EXPECT_CONDITIONAL), (YYINITIAL, EXPECT_CONDITIONAL_BLOCK)
         // -> begin YYINITIAL (since state stack is empty)
 
-        if (stateStack == null || stateStack.isEmpty() || expectStack == null || expectStack.isEmpty()) {
-            yybegin(YYINITIAL);
-            return false;
-        }
+        if (checkEmptyContext()) return false;
         int expect0 = (stateStack.size() >= 2 && expectStack.size() >= 2) ? expectStack.peekInt(0) : -1;
         if (expect0 == EXPECT_INLINE_CONDITIONAL || expect0 == EXPECT_CONDITIONAL) {
             stateStack.popInt();
@@ -699,10 +700,7 @@ public class _ParadoxScriptLexer implements FlexLexer {
         //    with (YYINITIAL, EXPECT_CONDITIONAL_BLOCK), (YYINITIAL, EXPECT_CONDITIONAL)
         // -> begin YYINITIAL
 
-        if (stateStack == null || stateStack.isEmpty() || expectStack == null || expectStack.isEmpty()) {
-            yybegin(YYINITIAL);
-            return false;
-        }
+        if (checkEmptyContext()) return false;
         int expectToCheck = expectStack.peekInt(0);
         if (expectToCheck != EXPECT_INLINE_CONDITIONAL) {
             return false;
@@ -996,7 +994,7 @@ public class _ParadoxScriptLexer implements FlexLexer {
       else {
         switch (zzAction < 0 ? zzAction : ZZ_ACTION[zzAction]) {
           case 1:
-            { enterState(YYINITIAL, EXPECT_STRING); // enter YYINITIAL directly
+            { enterState(yystate(), EXPECT_STRING);
         if (isLeftQuoted()) {
             yypushback(yylength() - 1);
             yybegin(IN_STRING_QUOTED);
@@ -1044,7 +1042,7 @@ public class _ParadoxScriptLexer implements FlexLexer {
           // fall through
           case 56: break;
           case 9:
-            { enterState(YYINITIAL, EXPECT_SCRIPTED_VARIABLE_CHECK); // enter YYINITIAL directly
+            { enterState(yystate(), EXPECT_SCRIPTED_VARIABLE_CHECK);
         yybegin(IN_SCRIPTED_VARIABLE_CHECK);
         return AT;
             }
@@ -1228,7 +1226,7 @@ public class _ParadoxScriptLexer implements FlexLexer {
               };
               zzMarkedPos = zzFPos;
             }
-            { enterState(YYINITIAL, EXPECT_PROPERTY_KEY); // enter YYINITIAL directly
+            { enterState(yystate(), EXPECT_PROPERTY_KEY);
         if (isLeftQuoted()) {
             yypushback(yylength() - 1);
             yybegin(IN_PROPERTY_KEY_QUOTED);
@@ -1267,7 +1265,7 @@ public class _ParadoxScriptLexer implements FlexLexer {
           case 90: break;
           case 43:
             { // `@[` or `@\[`
-        enterState(YYINITIAL, EXPECT_INLINE_MATH); // enter YYINITIAL directly
+        enterState(yystate(), EXPECT_INLINE_MATH);
         yybegin(IN_INLINE_MATH);
         return INLINE_MATH_START;
             }

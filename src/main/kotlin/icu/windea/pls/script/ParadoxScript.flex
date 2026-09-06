@@ -53,35 +53,47 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
         return this.gameType;
     }
 
-    public void resetContext() {
-        // reset context (`stateStack` & `expectStack`) when reset the lexer
+    // context methods
+
+    public void clearContext() {
         if (stateStack != null) stateStack.clear();
         if (expectStack != null) expectStack.clear();
     }
 
-    public boolean isRestartable() {
-        // require context (`stateStack` & `expectStack`) is empty (do not check `yystate()` here)
-        return (stateStack == null || stateStack.isEmpty()) && (expectStack == null || expectStack.isEmpty());
+    private void ensureContext() {
+        if (stateStack == null) stateStack = new IntArrayList();
+        if (expectStack == null) expectStack = new IntArrayList();
+    }
+
+    private int ensureState(int state) {
+        // if the lexer context is (or will be) not empty, then should not use YYINITIAL as the lexical state directly.
+        // while YYINITIAL is the initial state, in this situation, the lexer still cannot start incrementally re-lex safely.
+        // see: com.intellij.lexer.Lexer.start(java.lang.CharSequence, int, int, int)
+        if (state == YYINITIAL) return WITH_CONTEXT;
+        // if the lexical state represents an after-separator position, then should change to a normal position.
+        if (state == IN_PROPERTY_VALUE || state == IN_SCRIPTED_VARIABLE_VALUE) return WITH_CONTEXT;
+        return state;
+    }
+
+    private boolean checkEmptyContext() {
+        // if the lexer context is empty, it's feasible to return to the initial state directly.
+        if (stateStack == null || stateStack.isEmpty() || expectStack == null || expectStack.isEmpty()) {
+            yybegin(YYINITIAL);
+            return true;
+        }
+        return false;
     }
 
     private void enterState(int state, int expect) {
-        if (stateStack == null) {
-            stateStack = new IntArrayList();
-        }
-        if (expectStack == null) {
-            expectStack = new IntArrayList();
-        }
-
+        ensureContext();
+        state = ensureState(state);
         stateStack.push(state);
         expectStack.push(expect);
         yybegin(state);
     }
 
     private void exitState(int expect) {
-        if (stateStack == null || stateStack.isEmpty() || expectStack == null || expectStack.isEmpty()) {
-            yybegin(YYINITIAL);
-            return;
-        }
+        if (checkEmptyContext()) return;
         if (expectStack.topInt() != expect) return;
         int nextState = stateStack.popInt();
         expectStack.popInt();
@@ -90,14 +102,8 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 
     private void exitStateForRecovery() {
         // used for recovery
-        if (stateStack == null || stateStack.isEmpty() || expectStack == null || expectStack.isEmpty()) {
-            yybegin(YYINITIAL);
-            return;
-        }
-
-        // compatible with conditional blocks
-        if (beginStateInConditionalBodyToNormalForm()) return;
-
+        if (checkEmptyContext()) return;
+        if (beginStateInConditionalBodyToNormalForm()) return; // compatible with conditional blocks
         int nextState = stateStack.popInt();
         expectStack.popInt();
         yybegin(nextState);
@@ -112,8 +118,8 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
     }
 
     private boolean needExitStateForRecovery() {
-        // heuristic: recovery when the character is a boundary marker (`}]${[`)
-        // heuristic: recovery when the character is blank (and it's not a valid token in previous context)
+        // heuristic: recover when the character is a boundary marker (`}]${[`)
+        // heuristic: recover when the character is blank (and it's not a valid token in previous context)
         char c = yycharat(0);
         if (c == '}' || c == ']' || c == '$' || c == '{' || c == '[') return true;
         if (Character.isWhitespace(c)) return true;
@@ -157,10 +163,7 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
         // -> peek state X (i = 0)
         // -> enter (IN_PROPERTY_KEY_UNQUOTED, EXPECT_INLINE_CONDITIONAL) -> begin IN_PROPERTY_KEY_UNQUOTED
 
-        if (stateStack == null || stateStack.isEmpty() || expectStack == null || expectStack.isEmpty()) {
-            yybegin(YYINITIAL);
-            return false;
-        }
+        if (checkEmptyContext()) return false;
         int nextState = stateStack.peekInt(0);
         int nextExpect = switch (nextState) {
             case IN_PROPERTY_KEY_UNQUOTED, IN_PROPERTY_KEY_QUOTED -> EXPECT_INLINE_CONDITIONAL;
@@ -214,10 +217,7 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
         // -> exit (YYINITIAL, EXPECT_STRING), (YYINITIAL, EXPECT_CONDITIONAL), (YYINITIAL, EXPECT_CONDITIONAL_BLOCK)
         // -> begin YYINITIAL (since state stack is empty)
 
-        if (stateStack == null || stateStack.isEmpty() || expectStack == null || expectStack.isEmpty()) {
-            yybegin(YYINITIAL);
-            return false;
-        }
+        if (checkEmptyContext()) return false;
         int expect0 = (stateStack.size() >= 2 && expectStack.size() >= 2) ? expectStack.peekInt(0) : -1;
         if (expect0 == EXPECT_INLINE_CONDITIONAL || expect0 == EXPECT_CONDITIONAL) {
             stateStack.popInt();
@@ -259,10 +259,7 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
         //    with (YYINITIAL, EXPECT_CONDITIONAL_BLOCK), (YYINITIAL, EXPECT_CONDITIONAL)
         // -> begin YYINITIAL
 
-        if (stateStack == null || stateStack.isEmpty() || expectStack == null || expectStack.isEmpty()) {
-            yybegin(YYINITIAL);
-            return false;
-        }
+        if (checkEmptyContext()) return false;
         int expectToCheck = expectStack.peekInt(0);
         if (expectToCheck != EXPECT_INLINE_CONDITIONAL) {
             return false;
@@ -320,6 +317,8 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 %function advance
 %type IElementType
 
+%s WITH_CONTEXT
+
 %s IN_PROPERTY_VALUE
 %s IN_PROPERTY_KEY_UNQUOTED
 %s IN_PROPERTY_KEY_QUOTED
@@ -329,7 +328,6 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 %s IN_SCRIPTED_VARIABLE_CHECK
 %s IN_SCRIPTED_VARIABLE_NAME
 %s IN_SCRIPTED_VARIABLE_VALUE
-%s IN_SCRIPTED_VARIABLE_REFERENCE_CHECK
 %s IN_SCRIPTED_VARIABLE_REFERENCE
 
 %s IN_INLINE_MATH
@@ -436,7 +434,7 @@ InlineMathToken = {InlineMathBoundChar}({InlineMathChar}*{InlineMathBoundChar})?
 
 // common rules
 
-<YYINITIAL, IN_PROPERTY_VALUE, IN_SCRIPTED_VARIABLE_VALUE> {
+<YYINITIAL, WITH_CONTEXT, IN_PROPERTY_VALUE, IN_SCRIPTED_VARIABLE_VALUE> {
     "{" {
         return LEFT_BRACE;
     }
@@ -446,7 +444,7 @@ InlineMathToken = {InlineMathBoundChar}({InlineMathChar}*{InlineMathBoundChar})?
 
     // 3.0.2 comment out since the form should not be distinguished during scanning (but prefer the inline form)
     // "[" / {Blank}?"[" {
-    //     enterState(YYINITIAL, EXPECT_CONDITIONAL_BLOCK); // enter YYINITIAL directly
+    //     enterState(yystate(), EXPECT_CONDITIONAL_BLOCK);
     //     yybegin(IN_INLINE_CONDITIONAL_BLOCK);
     //     return LEFT_BRACKET;
     // }
@@ -456,16 +454,10 @@ InlineMathToken = {InlineMathBoundChar}({InlineMathChar}*{InlineMathBoundChar})?
         return RIGHT_BRACKET;
     }
 
-    "@" {
-        enterState(YYINITIAL, EXPECT_SCRIPTED_VARIABLE_CHECK); // enter YYINITIAL directly
-        yybegin(IN_SCRIPTED_VARIABLE_CHECK);
-        return AT;
-    }
-
     {Blank} { return WHITE_SPACE; } // allowed
     {Comment} { return COMMENT; } // allowed
 }
-<YYINITIAL, IN_PROPERTY_KEY_UNQUOTED, IN_SCRIPTED_VARIABLE_NAME> {
+<YYINITIAL, WITH_CONTEXT, IN_PROPERTY_KEY_UNQUOTED, IN_SCRIPTED_VARIABLE_NAME> {
     // 3.0.2 all separators are allowed for properties and scripted variables at syntax level (but may not valid in actual)
     {OpEqual} { beginStateAfterSeparator(); return EQUAL_SIGN; }
     {OpNotEqual} { beginStateAfterSeparator(); return NOT_EQUAL_SIGN; }
@@ -503,29 +495,27 @@ InlineMathToken = {InlineMathBoundChar}({InlineMathChar}*{InlineMathBoundChar})?
 
 // property and expression rules
 
-<YYINITIAL, IN_PROPERTY_VALUE, IN_SCRIPTED_VARIABLE_VALUE> {
+<YYINITIAL, WITH_CONTEXT, IN_PROPERTY_VALUE, IN_SCRIPTED_VARIABLE_VALUE> {
     "@["|"@\\[" { // `@[` or `@\[`
-        enterState(YYINITIAL, EXPECT_INLINE_MATH); // enter YYINITIAL directly
+        enterState(yystate(), EXPECT_INLINE_MATH);
         yybegin(IN_INLINE_MATH);
         return INLINE_MATH_START;
     }
 }
-<IN_PROPERTY_VALUE> {
+<YYINITIAL, WITH_CONTEXT, IN_PROPERTY_VALUE> {
     "@" {
-        enterState(YYINITIAL, EXPECT_SCRIPTED_VARIABLE_CHECK); // enter YYINITIAL directly
-        yybegin(IN_SCRIPTED_VARIABLE_REFERENCE_CHECK);
+        enterState(yystate(), EXPECT_SCRIPTED_VARIABLE_CHECK);
+        yybegin(IN_SCRIPTED_VARIABLE_CHECK);
         return AT;
     }
 }
-<YYINITIAL, IN_PROPERTY_VALUE, IN_SCRIPTED_VARIABLE_VALUE> {
+<YYINITIAL, WITH_CONTEXT, IN_PROPERTY_VALUE, IN_SCRIPTED_VARIABLE_VALUE> {
     {BooleanToken} { beginStateAfterValue(); return BOOLEAN_TOKEN; }
     {IntToken} { beginStateAfterValue(); return INT_TOKEN; }
     {FloatToken} { beginStateAfterValue(); return FLOAT_TOKEN; }
     {ColorToken} { beginStateAfterValue(); return COLOR_TOKEN; }
-}
-<YYINITIAL, IN_PROPERTY_VALUE, IN_SCRIPTED_VARIABLE_VALUE> {
     {PropertyKeyContent} / {Blank}?{PropertySeparator} {
-        enterState(YYINITIAL, EXPECT_PROPERTY_KEY); // enter YYINITIAL directly
+        enterState(yystate(), EXPECT_PROPERTY_KEY);
         if (isLeftQuoted()) {
             yypushback(yylength() - 1);
             yybegin(IN_PROPERTY_KEY_QUOTED);
@@ -536,7 +526,7 @@ InlineMathToken = {InlineMathBoundChar}({InlineMathChar}*{InlineMathBoundChar})?
         }
     }
     {StringContent} {
-        enterState(YYINITIAL, EXPECT_STRING); // enter YYINITIAL directly
+        enterState(yystate(), EXPECT_STRING);
         if (isLeftQuoted()) {
             yypushback(yylength() - 1);
             yybegin(IN_STRING_QUOTED);
@@ -608,16 +598,6 @@ InlineMathToken = {InlineMathBoundChar}({InlineMathChar}*{InlineMathBoundChar})?
     {Blank} { return WHITE_SPACE; } // allowed
     {Comment} { exitStateForRecovery(); return COMMENT; } // recovery
     [^] { if (!exitStateForRecoveryIfNeeded()) return BAD_CHARACTER; } // recovery
-}
-
-<IN_SCRIPTED_VARIABLE_REFERENCE_CHECK> {
-    {ScriptedVariableContent} {
-        exitState(EXPECT_SCRIPTED_VARIABLE_CHECK); // exit state if neccesary (or need double-exit later)
-        enterState(yystate(), EXPECT_SCRIPTED_VARIABLE_REFERENCE);
-        yypushback(yylength());
-        yybegin(IN_SCRIPTED_VARIABLE_REFERENCE);
-    }
-    [^] { exitStateForRecovery(); yypushback(yylength()); } // recovery (always, to be compatible with, e.g., `@@` form)
 }
 <IN_SCRIPTED_VARIABLE_REFERENCE> {
     {ScriptedVariableToken} { return SCRIPTED_VARIABLE_REFERENCE_TOKEN; }

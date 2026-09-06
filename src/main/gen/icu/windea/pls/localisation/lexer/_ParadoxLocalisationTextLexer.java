@@ -35,29 +35,30 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
 
   /** lexical states */
   public static final int YYINITIAL = 0;
-  public static final int IN_COLORFUL_TEXT_CHECK = 2;
-  public static final int IN_COLOR_ID = 4;
-  public static final int IN_COLORFUL_TEXT = 6;
-  public static final int IN_PARAMETER = 8;
-  public static final int IN_PARAMETER_ARGUMENT = 10;
-  public static final int IN_SCRIPTED_VARIABLE_REFERENCE = 12;
-  public static final int IN_COMMAND = 14;
-  public static final int IN_COMMAND_TEXT = 16;
-  public static final int IN_COMMAND_ARGUMENT = 18;
-  public static final int IN_CONCEPT_NAME = 20;
-  public static final int IN_CONCEPT_AFTER_COMMA = 22;
-  public static final int IN_CONCEPT_TEXT = 24;
-  public static final int IN_ICON = 26;
-  public static final int IN_ICON_ARGUMENT = 28;
-  public static final int IN_TEXT_ICON = 30;
-  public static final int IN_TEXT_FORMAT = 32;
-  public static final int IN_TEXT_FORMAT_TEXT = 34;
-  public static final int IN_STRING_VARIANT = 36;
-  public static final int IN_STRING_VARIANT_TAG_PART = 38;
-  public static final int IN_TAG_SENSITIVE_TEXT = 40;
-  public static final int IN_TAGGED_PARAMETER = 42;
-  public static final int IN_TAG_PART = 44;
-  public static final int IN_CONTEXT_TAG_PART = 46;
+  public static final int WITH_CONTEXT = 2;
+  public static final int IN_COLORFUL_TEXT_CHECK = 4;
+  public static final int IN_COLOR_ID = 6;
+  public static final int IN_COLORFUL_TEXT = 8;
+  public static final int IN_PARAMETER = 10;
+  public static final int IN_PARAMETER_ARGUMENT = 12;
+  public static final int IN_SCRIPTED_VARIABLE_REFERENCE = 14;
+  public static final int IN_COMMAND = 16;
+  public static final int IN_COMMAND_TEXT = 18;
+  public static final int IN_COMMAND_ARGUMENT = 20;
+  public static final int IN_CONCEPT_NAME = 22;
+  public static final int IN_CONCEPT_AFTER_COMMA = 24;
+  public static final int IN_CONCEPT_TEXT = 26;
+  public static final int IN_ICON = 28;
+  public static final int IN_ICON_ARGUMENT = 30;
+  public static final int IN_TEXT_ICON = 32;
+  public static final int IN_TEXT_FORMAT = 34;
+  public static final int IN_TEXT_FORMAT_TEXT = 36;
+  public static final int IN_STRING_VARIANT = 38;
+  public static final int IN_STRING_VARIANT_TAG_PART = 40;
+  public static final int IN_TAG_SENSITIVE_TEXT = 42;
+  public static final int IN_TAGGED_PARAMETER = 44;
+  public static final int IN_TAG_PART = 46;
+  public static final int IN_CONTEXT_TAG_PART = 48;
 
   /**
    * ZZ_LEXSTATE[l] is the state in the DFA for the lexical state l
@@ -66,9 +67,10 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
    * l is of the form l = 2*k, k a non negative integer
    */
   private static final int ZZ_LEXSTATE[] = {
-     0,  0,  1,  1,  2,  2,  3,  3,  4,  4,  5,  5,  6,  6,  7,  7, 
-     8,  8,  9,  9, 10, 10, 11, 11,  3,  3, 12, 12, 13, 13, 14, 14, 
-    15, 15,  3,  3, 16, 16, 17, 17, 18, 18, 19, 19, 20, 20, 21, 21
+     0,  0,  0,  0,  1,  1,  2,  2,  3,  3,  4,  4,  5,  5,  6,  6, 
+     7,  7,  8,  8,  9,  9, 10, 10, 11, 11,  3,  3, 12, 12, 13, 13, 
+    14, 14, 15, 15,  3,  3, 16, 16, 17, 17, 18, 18, 19, 19, 20, 20, 
+    21, 21
   };
 
   /**
@@ -423,34 +425,45 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
         return this.gameType;
     }
 
-    public void resetContext() {
-        // reset context (`stateStack` & `expectStack`) when reset the lexer
+    // context methods
+
+    public void clearContext() {
         if (stateStack != null) stateStack.clear();
         if (expectStack != null) expectStack.clear();
     }
 
-    public boolean isRestartable() {
-        // require context (`stateStack` & `expectStack`) is empty (do not check `yystate()` here)
-        return (stateStack == null || stateStack.isEmpty()) && (expectStack == null || expectStack.isEmpty());
+    private void ensureContext() {
+        if (stateStack == null) stateStack = new IntArrayList();
+        if (expectStack == null) expectStack = new IntArrayList();
+    }
+
+    private int ensureState(int state) {
+        // if the lexer context is (or will be) not empty, then should not use YYINITIAL as the lexical state directly.
+        // while YYINITIAL is the initial state, in this situation, the lexer still cannot start incrementally re-lex safely.
+        // see: com.intellij.lexer.Lexer.start(java.lang.CharSequence, int, int, int)
+        if (state == YYINITIAL) return WITH_CONTEXT;
+        return state;
+    }
+
+    private boolean checkEmptyContext() {
+        // if the lexer context is empty, it's feasible to return to the initial state directly.
+        if (stateStack == null || stateStack.isEmpty() || expectStack == null || expectStack.isEmpty()) {
+            yybegin(YYINITIAL);
+            return true;
+        }
+        return false;
     }
 
     private void enterState(int state, int expect) {
-        if (stateStack == null) {
-            stateStack = new IntArrayList();
-        }
-        if (expectStack == null) {
-            expectStack = new IntArrayList();
-        }
+        ensureContext();
+        state = ensureState(state);
         stateStack.push(state);
         expectStack.push(expect);
         yybegin(state);
     }
 
     private void exitState(int expect) {
-        if (stateStack == null || stateStack.isEmpty() || expectStack == null || expectStack.isEmpty()) {
-            yybegin(YYINITIAL);
-            return;
-        }
+        if (checkEmptyContext()) return;
         if (expectStack.topInt() != expect) return;
         int nextState = stateStack.popInt();
         expectStack.popInt();
@@ -459,10 +472,7 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
 
     private void exitStateForRecovery() {
         // used for recovery
-        if (stateStack == null || stateStack.isEmpty() || expectStack == null || expectStack.isEmpty()) {
-            yybegin(YYINITIAL);
-            return;
-        }
+        if (checkEmptyContext()) return;
         int nextState = stateStack.popInt();
         expectStack.popInt();
         yybegin(nextState);
@@ -470,8 +480,11 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
 
     private boolean exitStateForRecoveryIfNeeded() {
         // used for final recovery
+        if (checkEmptyContext()) return true;
         if (!needExitStateForRecovery()) return false;
-        exitStateForRecovery();
+        int nextState = stateStack.popInt();
+        expectStack.popInt();
+        yybegin(nextState);
         yypushback(yylength());
         return true;
     }
@@ -480,11 +493,12 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
         // heuristic: always recovery atm
         return true;
     }
-
     private IElementType getFallbackToken() {
         // fallback to `TEXT_TOKEN`, if necessary
         return TEXT_TOKEN;
     }
+
+    // check methods
 
     private boolean isExactWord(char c) {
         return c == '_' || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9');

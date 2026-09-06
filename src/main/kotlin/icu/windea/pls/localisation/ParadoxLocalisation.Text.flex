@@ -55,34 +55,45 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
         return this.gameType;
     }
 
-    public void resetContext() {
-        // reset context (`stateStack` & `expectStack`) when reset the lexer
+    // context methods
+
+    public void clearContext() {
         if (stateStack != null) stateStack.clear();
         if (expectStack != null) expectStack.clear();
     }
 
-    public boolean isRestartable() {
-        // require context (`stateStack` & `expectStack`) is empty (do not check `yystate()` here)
-        return (stateStack == null || stateStack.isEmpty()) && (expectStack == null || expectStack.isEmpty());
+    private void ensureContext() {
+        if (stateStack == null) stateStack = new IntArrayList();
+        if (expectStack == null) expectStack = new IntArrayList();
+    }
+
+    private int ensureState(int state) {
+        // if the lexer context is (or will be) not empty, then should not use YYINITIAL as the lexical state directly.
+        // while YYINITIAL is the initial state, in this situation, the lexer still cannot start incrementally re-lex safely.
+        // see: com.intellij.lexer.Lexer.start(java.lang.CharSequence, int, int, int)
+        if (state == YYINITIAL) return WITH_CONTEXT;
+        return state;
+    }
+
+    private boolean checkEmptyContext() {
+        // if the lexer context is empty, it's feasible to return to the initial state directly.
+        if (stateStack == null || stateStack.isEmpty() || expectStack == null || expectStack.isEmpty()) {
+            yybegin(YYINITIAL);
+            return true;
+        }
+        return false;
     }
 
     private void enterState(int state, int expect) {
-        if (stateStack == null) {
-            stateStack = new IntArrayList();
-        }
-        if (expectStack == null) {
-            expectStack = new IntArrayList();
-        }
+        ensureContext();
+        state = ensureState(state);
         stateStack.push(state);
         expectStack.push(expect);
         yybegin(state);
     }
 
     private void exitState(int expect) {
-        if (stateStack == null || stateStack.isEmpty() || expectStack == null || expectStack.isEmpty()) {
-            yybegin(YYINITIAL);
-            return;
-        }
+        if (checkEmptyContext()) return;
         if (expectStack.topInt() != expect) return;
         int nextState = stateStack.popInt();
         expectStack.popInt();
@@ -91,10 +102,7 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 
     private void exitStateForRecovery() {
         // used for recovery
-        if (stateStack == null || stateStack.isEmpty() || expectStack == null || expectStack.isEmpty()) {
-            yybegin(YYINITIAL);
-            return;
-        }
+        if (checkEmptyContext()) return;
         int nextState = stateStack.popInt();
         expectStack.popInt();
         yybegin(nextState);
@@ -109,14 +117,15 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
     }
 
     private boolean needExitStateForRecovery() {
-        // heuristic: always recovery atm
+        // heuristic: always recover atm
         return true;
     }
-
     private IElementType getFallbackToken() {
         // fallback to `TEXT_TOKEN`, if necessary
         return TEXT_TOKEN;
     }
+
+    // check methods
 
     private boolean isExactWord(char c) {
         return c == '_' || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9');
@@ -134,6 +143,8 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 %implements FlexLexer
 %function advance
 %type IElementType
+
+%s WITH_CONTEXT
 
 %s IN_COLORFUL_TEXT_CHECK
 %s IN_COLOR_ID
@@ -224,7 +235,7 @@ ContextTagToken = {ContextTagChar}+ // leading number is allowed
 
 // common rules
 
-<YYINITIAL, IN_COLORFUL_TEXT, IN_CONCEPT_TEXT, IN_TEXT_FORMAT_TEXT, IN_STRING_VARIANT, IN_TAG_SENSITIVE_TEXT> {
+<YYINITIAL, WITH_CONTEXT, IN_COLORFUL_TEXT, IN_CONCEPT_TEXT, IN_TEXT_FORMAT_TEXT, IN_STRING_VARIANT, IN_TAG_SENSITIVE_TEXT> {
     "§" {
         enterState(yystate(), EXPECT_COLORFUL_TEXT);
         yypushback(yylength());
@@ -288,7 +299,7 @@ ContextTagToken = {ContextTagChar}+ // leading number is allowed
         return TEXT_FORMAT_END;
     }
 }
-<YYINITIAL, IN_STRING_VARIANT, IN_TAG_SENSITIVE_TEXT> {
+<YYINITIAL, WITH_CONTEXT, IN_STRING_VARIANT, IN_TAG_SENSITIVE_TEXT> {
     "|||" {
         yybegin(IN_STRING_VARIANT);
         return STRING_VARIANT_PREFIX;
@@ -301,7 +312,7 @@ ContextTagToken = {ContextTagChar}+ // leading number is allowed
     }
     "&" { return getFallbackToken(); }
 }
-<YYINITIAL, IN_COLORFUL_TEXT, IN_CONCEPT_TEXT, IN_TEXT_FORMAT_TEXT> {
+<YYINITIAL, WITH_CONTEXT, IN_COLORFUL_TEXT, IN_CONCEPT_TEXT, IN_TEXT_FORMAT_TEXT> {
     {TextToken} { return TEXT_TOKEN; }
 }
 
