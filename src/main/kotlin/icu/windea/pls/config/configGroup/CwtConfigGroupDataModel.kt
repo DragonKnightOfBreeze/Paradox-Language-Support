@@ -38,11 +38,6 @@ import icu.windea.pls.config.config.internal.CwtPostfixTemplateSettingsConfig
 import icu.windea.pls.config.config.internal.CwtSchemaConfig
 import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.util.Tuple2
-import icu.windea.pls.ep.config.config.CwtConfigPostProcessor
-import icu.windea.pls.ep.resolve.localisation.ParadoxCompositeLocalisationIconSupport
-import icu.windea.pls.ep.resolve.localisation.ParadoxLocalisationIconSupport
-import icu.windea.pls.lang.index.constraints.ParadoxDefinitionIndexConstraint
-import icu.windea.pls.lang.references.localisation.ParadoxLocalisationIconPsiReference
 import icu.windea.pls.model.overrides.ParadoxOverrideStrategy
 
 /**
@@ -65,7 +60,7 @@ interface CwtConfigGroupDataModel {
     val fileConfigs: Map<String, CwtFileConfig> get() = emptyMap()
 
     /**
-     * @see CwtConfigPostProcessor
+     * @see icu.windea.pls.ep.config.config.CwtConfigPostProcessor
      */
     val configPostProcessActions: List<Runnable> get() = emptyList()
 
@@ -229,10 +224,10 @@ interface CwtTypeModel {
     /**
      * 可能作为本地化图标的解析目标的定义类型。
      *
-     * @see ParadoxLocalisationIconPsiReference
-     * @see ParadoxLocalisationIconSupport
-     * @see ParadoxCompositeLocalisationIconSupport.fromDefinition
-     * @see ParadoxDefinitionIndexConstraint.LocalisationIconResolvable
+     * @see icu.windea.pls.lang.references.localisation.ParadoxLocalisationIconPsiReference
+     * @see icu.windea.pls.ep.resolve.localisation.ParadoxLocalisationIconSupport
+     * @see icu.windea.pls.ep.resolve.localisation.ParadoxCompositeLocalisationIconSupport.fromDefinition
+     * @see icu.windea.pls.lang.index.constraints.ParadoxDefinitionIndexConstraint.LocalisationIconResolvable
      */
     val localisationIconResolvable: Set<String> get() = emptySet()
 
@@ -244,9 +239,9 @@ interface CwtScopeModel {
     /** 基础作用域到匹配其别名的作用域的集合（仅保存索引计数，不包括直接匹配的情况）。 */
     val base2Aliases: Map<Int, Set<Int>> get() = emptyMap()
     /** 基础作用域到父作用域的集合（仅保存索引计数，兼容别名形式，不包括直接匹配的情况）。 */
-    val base2Parents: Map<Int, Set<Int>> get() = emptyMap()
-    // /** 基础作用域到提升后的作用域的集合（仅保存索引计数，兼容别名形式，不包括直接匹配的情况）。 */
-    // val base2Promotions: Map<Int, Set<Int>> get() = emptyMap()
+    val base2ParentScopes: Map<Int, Set<Int>> get() = emptyMap()
+    /** 基础作用域到父作用域的集合（仅保存索引计数，兼容别名形式，不包括直接匹配的情况）。 */
+    val base2ChildScopes: Map<Int, Set<Int>> get() = emptyMap()
     /** 基础作用域到匹配的作用域的集合（仅保存索引计数，兼容别名形式，不包括直接匹配的情况）。 */
     val base2MatchedScopes: Map<Int, Set<Int>> get() = emptyMap()
 

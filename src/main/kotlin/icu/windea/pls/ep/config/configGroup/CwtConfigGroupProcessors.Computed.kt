@@ -261,6 +261,7 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
     private fun computeScopeModel(configGroup: CwtConfigGroup) {
         val initializer = configGroup.initializer
         with(initializer.scopeModel) {
+            // process scope configs
             initializer.scopes.values.forEach { c ->
                 val scopeId = ParadoxScope.getId(c.name)
                 val scopeIndex = ParadoxScope.resolve(scopeId).index
@@ -269,23 +270,34 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
                 computeScopeModelForAliases(c, aliasesResult)
                 computeScopeModelForParents(c, parentsResult)
                 if (aliasesResult.isNotEmpty()) {
-                    base2Aliases.getOrPut(scopeIndex) { IntArraySet() }.addAll(aliasesResult)
-                    aliasesResult.forEachFast { scopeIndex -> base2Aliases.getOrPut(scopeIndex) { IntArraySet() }.addAll(aliasesResult) }
+                    val target = base2Aliases
+                    target.getOrPut(scopeIndex) { IntArraySet() }.addAll(aliasesResult)
+                    aliasesResult.forEachFast { scopeIndex -> target.getOrPut(scopeIndex) { IntArraySet() }.addAll(aliasesResult) }
                 }
                 if (parentsResult.isNotEmpty()) {
-                    base2Parents.getOrPut(scopeIndex) { IntArraySet() }.addAll(parentsResult)
-                    aliasesResult.forEachFast { scopeIndex -> base2Parents.getOrPut(scopeIndex) { IntArraySet() }.addAll(parentsResult) }
+                    val target = base2ParentScopes
+                    target.getOrPut(scopeIndex) { IntArraySet() }.addAll(parentsResult)
+                    aliasesResult.forEachFast { scopeIndex -> target.getOrPut(scopeIndex) { IntArraySet() }.addAll(parentsResult) }
                 }
             }
-            for(value in base2Parents.values) {
+            // process parent scopes (add from aliases)
+            for (value in base2ParentScopes.values) {
                 val aliasesResult = IntArrayList()
                 value.forEach { scopeIndex -> base2Aliases[scopeIndex]?.let { aliasesResult.addAll(it) } }
                 value.addAll(aliasesResult)
             }
+            // process child scopes (add from parent scopes)
+            for ((key, value) in base2ParentScopes) {
+                value.forEach { scopeIndex -> base2ChildScopes.getOrPut(scopeIndex) { IntArraySet() }.add(key) }
+            }
+            // process matched scopes (add from aliases, parent scopes, child scopes)
             for ((key, value) in base2Aliases) {
                 base2MatchedScopes.getOrPut(key) { IntArraySet() }.addAll(value)
             }
-            for ((key, value) in base2Parents) {
+            for ((key, value) in base2ParentScopes) {
+                base2MatchedScopes.getOrPut(key) { IntArraySet() }.addAll(value)
+            }
+            for ((key, value) in base2ChildScopes) {
                 base2MatchedScopes.getOrPut(key) { IntArraySet() }.addAll(value)
             }
         }

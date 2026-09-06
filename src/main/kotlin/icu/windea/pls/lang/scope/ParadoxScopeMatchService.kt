@@ -11,7 +11,7 @@ import icu.windea.pls.model.scope.promotions
 @Suppress("unused")
 @Optimized
 object ParadoxScopeMatchService {
-    // NOTE 3.0.2 support to match union scopes (super scopes will not match sub scopes)
+    // NOTE 3.0.2 support to match union scopes
 
     // 作用域的匹配逻辑（scope -> scopeToMatch）：
     // - scope 是输入的数据（从上下文中获取或推断）。
@@ -21,11 +21,11 @@ object ParadoxScopeMatchService {
     // - 如果 scope 为 `any` 或 `?`，则直接匹配。
     // - 如果 scope 的 ID 完全匹配 scopeToMatch，则匹配（比较字符串，值相等，不忽略大小写）。
     // - 如果 scope 存在别名（来自 `scopeConfig.aliases`），则尝试用这些别名完全匹配 scopeToMatch。
-    // - 如果 scope 存在父作用域（来自 `scopeConfig.is_subscope_of`），则尝试用父作用域的 ID 和别名完全匹配 scopeToMatch。这需要递归进行。
+    // - 如果 scope 存在父作用域或子作用域（来自 `scopeConfig.is_subscope_of`），则尝试用这些作用域的 ID 和别名完全匹配 scopeToMatch。这需要递归进行。
     // - 如果 scope 存在提升（来自 `scopeContext.promotions`，而这来自 `localisationPromotionConfig.supportedScopes`），则尝试用这些提升的 ID 和别名完全匹配 scopeToMatch。
 
     /**
-     * 匹配作用域。兼容通配形式和别名形式。兼容继承关系（父作用域不会匹配子作用域）。
+     * 匹配作用域。兼容通配形式和别名形式。兼容继承关系。
      *
      * [scope] 是输入的作用域，[scopeToMatch] 应是来自可行数据源（规则文件或代码实现）的要匹配的作用域。
      * 两者都应是规范化后的作用域的 ID。
@@ -45,7 +45,9 @@ object ParadoxScopeMatchService {
     }
 
     /**
-     * 匹配作用域。兼容通配形式和别名形式。兼容继承关系（父作用域不会匹配子作用域）。
+     * 匹配作用域。兼容通配形式和别名形式。兼容继承关系。
+     *
+     * 基于继承关系的匹配采用并集策略（这意味着父作用域匹配子作用域，同时子作用域也匹配父作用域）。
      *
      * [scope] 是输入的作用域，[scopeToMatch] 应是来自可行数据源（规则文件或代码实现）的要匹配的作用域。
      * [scopeToMatch] 应是规范化后的作用域的 ID。
@@ -65,7 +67,10 @@ object ParadoxScopeMatchService {
     }
 
     /**
-     * 匹配作用域。兼容通配形式和别名形式。兼容继承关系（父作用域不会匹配子作用域）和提升关系。
+     * 匹配作用域。兼容通配形式和别名形式。兼容继承关系和提升关系。
+     *
+     * 基于继承关系的匹配采用并集策略（这意味着父作用域匹配子作用域，同时子作用域也匹配父作用域）。
+     * 基于提升关系的匹配仅处理输入的作用域（使用提升后的作用域继续尝试匹配）。
      *
      * [scopeContext] 是输入的作用域上下文，[scopeToMatch] 应是来自可行数据源（规则文件或代码实现）的要匹配的作用域。
      * [scopeToMatch] 应是规范化后的作用域的 ID。
@@ -86,7 +91,10 @@ object ParadoxScopeMatchService {
     }
 
     /**
-     * 匹配作用域。兼容通配形式和别名形式。兼容继承关系（父作用域不会匹配子作用域）和提升关系。
+     * 匹配作用域。兼容通配形式和别名形式。兼容继承关系和提升关系。
+     *
+     * 基于继承关系的匹配采用并集策略（这意味着父作用域匹配子作用域，同时子作用域也匹配父作用域）。
+     * 基于提升关系的匹配仅处理输入的作用域（使用提升后的作用域继续尝试匹配）。
      *
      * [scopeContext] 是输入的作用域上下文，[scopesToMatch] 应是来自可行数据源（规则文件或代码实现）的要匹配的作用域。
      * [scopesToMatch] 应是一组规范化后的作用域的 ID。
@@ -110,7 +118,7 @@ object ParadoxScopeMatchService {
         // optimize: access scope model and check scope indexes for better performance
         val scopeModel = configGroup.scopeModel
         val matched = scopeModel.base2MatchedScopes.get(scope.index).orEmpty()
-        if(matched.isNotEmpty()) {
+        if (matched.isNotEmpty()) {
             if (matched.contains(ParadoxScope.resolve(scopeToMatch).index)) return true
         }
         return false
@@ -149,7 +157,17 @@ object ParadoxScopeMatchService {
         }
         return false
     }
-
+    /**
+     * 匹配作用域分组。兼容通配形式和别名形式。兼容继承关系和提升关系。
+     *
+     * 基于继承关系的匹配采用并集策略（这意味着父作用域匹配子作用域，同时子作用域也匹配父作用域）。
+     * 基于提升关系的匹配仅处理输入的作用域（使用提升后的作用域继续尝试匹配）。
+     *
+     * [scopeContext] 是输入的作用域上下文，[scopeGroupToMatch] 应是来自可行数据源（规则文件或代码实现）的要匹配的作用域分组。
+     *
+     * @see ParadoxScope
+     * @see ParadoxScopeContext
+     */
     fun matchesScopeGroup(scopeContext: ParadoxScopeContext?, scopeGroupToMatch: String, configGroup: CwtConfigGroup): Boolean {
         if (scopeContext == null) return true
         val scope = scopeContext.scope

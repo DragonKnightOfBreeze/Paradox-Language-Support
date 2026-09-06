@@ -218,8 +218,8 @@ class ParadoxScopeMatchServiceTest : BasePlatformTestCase(), ChronicleTestScope 
         assertFalse(ParadoxScopeMatchService.matchesScopeId("carrier", "system", configGroup))
         assertFalse(ParadoxScopeMatchService.matchesScopeId("carrier", "galactic_object", configGroup))
         assertTrue(ParadoxScopeMatchService.matchesScopeId("carrier", "carrier", configGroup))
-        assertFalse(ParadoxScopeMatchService.matchesScopeId("carrier", "planet", configGroup)) // parent VS child -> not match
-        assertFalse(ParadoxScopeMatchService.matchesScopeId("carrier", "ship", configGroup)) // parent VS child -> not match
+        assertTrue(ParadoxScopeMatchService.matchesScopeId("carrier", "planet", configGroup)) // parent VS child -> match
+        assertTrue(ParadoxScopeMatchService.matchesScopeId("carrier", "ship", configGroup)) // parent VS child -> match
 
         assertTrue(ParadoxScopeMatchService.matchesScopeId("planet", "any", configGroup))
         assertFalse(ParadoxScopeMatchService.matchesScopeId("planet", "?", configGroup))
@@ -243,8 +243,8 @@ class ParadoxScopeMatchServiceTest : BasePlatformTestCase(), ChronicleTestScope 
         assertFalse(ParadoxScopeMatchService.matchesScopeId("carrier", "system", configGroup))
         assertFalse(ParadoxScopeMatchService.matchesScopeId("carrier", "galactic_object", configGroup))
         assertTrue(ParadoxScopeMatchService.matchesScopeId("carrier", "carrier", configGroup))
-        assertFalse(ParadoxScopeMatchService.matchesScopeId("carrier", "planet", configGroup)) // parent VS child -> not match
-        assertFalse(ParadoxScopeMatchService.matchesScopeId("carrier", "ship", configGroup)) // parent VS child -> not match
+        assertFalse(ParadoxScopeMatchService.matchesScopeId("carrier", "planet", configGroup)) // parent VS child -> mismatched game type
+        assertFalse(ParadoxScopeMatchService.matchesScopeId("carrier", "ship", configGroup)) // parent VS child -> mismatched game type
 
         assertTrue(ParadoxScopeMatchService.matchesScopeId("planet", "any", configGroup))
         assertFalse(ParadoxScopeMatchService.matchesScopeId("planet", "?", configGroup))
@@ -254,7 +254,7 @@ class ParadoxScopeMatchServiceTest : BasePlatformTestCase(), ChronicleTestScope 
         assertFalse(ParadoxScopeMatchService.matchesScopeId("planet", "galactic_object", configGroup))
         assertFalse(ParadoxScopeMatchService.matchesScopeId("planet", "carrier", configGroup)) // child VS parent ->  mismatched game type
         assertTrue(ParadoxScopeMatchService.matchesScopeId("planet", "planet", configGroup))
-        assertFalse(ParadoxScopeMatchService.matchesScopeId("planet", "ship", configGroup)) // child VS another child -> not match
+        assertFalse(ParadoxScopeMatchService.matchesScopeId("planet", "ship", configGroup)) // child VS another child -> mismatched game type
     }
 
     @Test
@@ -264,7 +264,7 @@ class ParadoxScopeMatchServiceTest : BasePlatformTestCase(), ChronicleTestScope 
         // null scope always matches
         assertTrue(ParadoxScopeMatchService.matchesScopeId(null, "all", configGroup))
 
-        // "all" is not normalized by the match service itself, and only matches literally or via wildcard scope
+        // `"all"` is not normalized by the match service itself, and only matches literally or via wildcard scope
         assertTrue(ParadoxScopeMatchService.matchesScopeId("any", "all", configGroup))
         assertTrue(ParadoxScopeMatchService.matchesScopeId("?", "all", configGroup))
         assertTrue(ParadoxScopeMatchService.matchesScopeId("all", "all", configGroup))
@@ -288,7 +288,7 @@ class ParadoxScopeMatchServiceTest : BasePlatformTestCase(), ChronicleTestScope 
         // null scope always matches
         assertTrue(ParadoxScopeMatchService.matchesScopeId(null, "all", configGroup))
 
-        // "all" is not normalized by the match service itself, and only matches literally or via wildcard scope
+        // `"all"` is not normalized by the match service itself, and only matches literally or via wildcard scope
         assertTrue(ParadoxScopeMatchService.matchesScopeId("any", "all", configGroup))
         assertTrue(ParadoxScopeMatchService.matchesScopeId("?", "all", configGroup))
         assertTrue(ParadoxScopeMatchService.matchesScopeId("all", "all", configGroup))
@@ -335,14 +335,14 @@ class ParadoxScopeMatchServiceTest : BasePlatformTestCase(), ChronicleTestScope 
     fun matchesScopeId_forStellaris_otherScopes() {
         val configGroup = ChronicleFacade.getConfigGroup(project, ParadoxGameType.Stellaris)
 
-        // colony has no is_subscope_of declared, so it never matches carrier
+        // colony has no `is_subscope_of` declared, so it never matches carrier
         assertTrue(ParadoxScopeMatchService.matchesScopeId("colony", "colony", configGroup))
         assertFalse(ParadoxScopeMatchService.matchesScopeId("colony", "carrier", configGroup))
         assertFalse(ParadoxScopeMatchService.matchesScopeId("colony", "planet", configGroup))
 
         // ship is a sub scope of carrier
         assertTrue(ParadoxScopeMatchService.matchesScopeId("ship", "carrier", configGroup))
-        assertFalse(ParadoxScopeMatchService.matchesScopeId("carrier", "ship", configGroup))
+        assertTrue(ParadoxScopeMatchService.matchesScopeId("carrier", "ship", configGroup))
 
         // unrelated scopes never match
         assertTrue(ParadoxScopeMatchService.matchesScopeId("fleet", "fleet", configGroup))
@@ -363,7 +363,7 @@ class ParadoxScopeMatchServiceTest : BasePlatformTestCase(), ChronicleTestScope 
     fun matchesScopeId_forVic3_otherScopes() {
         val configGroup = ChronicleFacade.getConfigGroup(project, ParadoxGameType.Vic3)
 
-        // colony has no is_subscope_of declared, so it never matches carrier
+        // colony has no `is_subscope_of` declared, so it never matches carrier
         assertTrue(ParadoxScopeMatchService.matchesScopeId("colony", "colony", configGroup))
         assertFalse(ParadoxScopeMatchService.matchesScopeId("colony", "carrier", configGroup))
         assertFalse(ParadoxScopeMatchService.matchesScopeId("colony", "planet", configGroup))
@@ -411,8 +411,8 @@ class ParadoxScopeMatchServiceTest : BasePlatformTestCase(), ChronicleTestScope 
         assertTrue(ParadoxScopeMatchService.matchesScopeId("army", "ship", configGroup))
         assertTrue(ParadoxScopeMatchService.matchesScopeId("army", "carrier", configGroup))
         assertFalse(ParadoxScopeMatchService.matchesScopeId("army", "planet", configGroup))
-        assertFalse(ParadoxScopeMatchService.matchesScopeId("carrier", "army", configGroup)) // parent VS child -> not match
-        assertFalse(ParadoxScopeMatchService.matchesScopeId("ship", "army", configGroup)) // parent VS child -> not match
+        assertTrue(ParadoxScopeMatchService.matchesScopeId("carrier", "army", configGroup)) // parent VS child -> match
+        assertTrue(ParadoxScopeMatchService.matchesScopeId("ship", "army", configGroup)) // parent VS child -> match
 
         // multi-level parent chain through an alias-declared parent
         assertTrue(ParadoxScopeMatchService.matchesScopeId("satellite", "moon", configGroup))
@@ -474,7 +474,7 @@ class ParadoxScopeMatchServiceTest : BasePlatformTestCase(), ChronicleTestScope 
 
         // wildcard scopes
         assertTrue(ParadoxScopeMatchService.matchesScope(ParadoxScope.resolve("any"), "country", configGroup))
-        assertTrue(ParadoxScopeMatchService.matchesScope(ParadoxScope.resolve("all"), "country", configGroup)) // "all" resolves to the any scope
+        assertTrue(ParadoxScopeMatchService.matchesScope(ParadoxScope.resolve("all"), "country", configGroup)) // `"all"` resolves to the `any` scope
         assertTrue(ParadoxScopeMatchService.matchesScope(ParadoxScope.resolve("?"), "country", configGroup))
         assertTrue(ParadoxScopeMatchService.matchesScope(ParadoxScope.resolve("?"), "?", configGroup))
 
@@ -488,11 +488,11 @@ class ParadoxScopeMatchServiceTest : BasePlatformTestCase(), ChronicleTestScope 
         assertTrue(ParadoxScopeMatchService.matchesScope(ParadoxScope.resolve("system"), "galactic_object", configGroup))
         assertTrue(ParadoxScopeMatchService.matchesScope(ParadoxScope.resolve("galactic_object"), "system", configGroup))
 
-        // by parent (parent scope will not match child scope)
+        // by parent (parent scope will also match child scope)
         assertTrue(ParadoxScopeMatchService.matchesScope(ParadoxScope.resolve("planet"), "carrier", configGroup))
         assertTrue(ParadoxScopeMatchService.matchesScope(ParadoxScope.resolve("ship"), "carrier", configGroup))
-        assertFalse(ParadoxScopeMatchService.matchesScope(ParadoxScope.resolve("carrier"), "planet", configGroup))
-        assertFalse(ParadoxScopeMatchService.matchesScope(ParadoxScope.resolve("carrier"), "ship", configGroup))
+        assertTrue(ParadoxScopeMatchService.matchesScope(ParadoxScope.resolve("carrier"), "planet", configGroup))
+        assertTrue(ParadoxScopeMatchService.matchesScope(ParadoxScope.resolve("carrier"), "ship", configGroup))
         assertFalse(ParadoxScopeMatchService.matchesScope(ParadoxScope.resolve("colony"), "carrier", configGroup))
 
         // case-sensitive
@@ -513,7 +513,7 @@ class ParadoxScopeMatchServiceTest : BasePlatformTestCase(), ChronicleTestScope 
 
         // wildcard scopes
         assertTrue(ParadoxScopeMatchService.matchesScope(ParadoxScope.resolve("any"), "country", configGroup))
-        assertTrue(ParadoxScopeMatchService.matchesScope(ParadoxScope.resolve("all"), "country", configGroup)) // "all" resolves to the any scope
+        assertTrue(ParadoxScopeMatchService.matchesScope(ParadoxScope.resolve("all"), "country", configGroup)) // `"all"` resolves to the `any` scope
         assertTrue(ParadoxScopeMatchService.matchesScope(ParadoxScope.resolve("?"), "country", configGroup))
         assertTrue(ParadoxScopeMatchService.matchesScope(ParadoxScope.resolve("?"), "?", configGroup))
 
@@ -562,7 +562,7 @@ class ParadoxScopeMatchServiceTest : BasePlatformTestCase(), ChronicleTestScope 
         // multi-level parents are collected recursively
         assertTrue(ParadoxScopeMatchService.matchesScope(ParadoxScope.resolve("army"), "ship", configGroup))
         assertTrue(ParadoxScopeMatchService.matchesScope(ParadoxScope.resolve("army"), "carrier", configGroup))
-        assertFalse(ParadoxScopeMatchService.matchesScope(ParadoxScope.resolve("carrier"), "army", configGroup))
+        assertTrue(ParadoxScopeMatchService.matchesScope(ParadoxScope.resolve("carrier"), "army", configGroup))
 
         // cyclic parents are guarded during scope model computation
         assertTrue(ParadoxScopeMatchService.matchesScope(ParadoxScope.resolve("alpha"), "beta", configGroup))
@@ -617,11 +617,11 @@ class ParadoxScopeMatchServiceTest : BasePlatformTestCase(), ChronicleTestScope 
         assertTrue(ParadoxScopeMatchService.matchesScope(ParadoxScopeContext.resolve("system"), "galactic_object", configGroup))
         assertTrue(ParadoxScopeMatchService.matchesScope(ParadoxScopeContext.resolve("galactic_object"), "system", configGroup))
 
-        // by parent (parent scope will not match child scope)
+        // by parent (parent scope will also match child scope)
         assertTrue(ParadoxScopeMatchService.matchesScope(ParadoxScopeContext.resolve("planet"), "carrier", configGroup))
         assertTrue(ParadoxScopeMatchService.matchesScope(ParadoxScopeContext.resolve("ship"), "carrier", configGroup))
-        assertFalse(ParadoxScopeMatchService.matchesScope(ParadoxScopeContext.resolve("carrier"), "planet", configGroup))
-        assertFalse(ParadoxScopeMatchService.matchesScope(ParadoxScopeContext.resolve("carrier"), "ship", configGroup))
+        assertTrue(ParadoxScopeMatchService.matchesScope(ParadoxScopeContext.resolve("carrier"), "planet", configGroup))
+        assertTrue(ParadoxScopeMatchService.matchesScope(ParadoxScopeContext.resolve("carrier"), "ship", configGroup))
         assertFalse(ParadoxScopeMatchService.matchesScope(ParadoxScopeContext.resolve("colony"), "carrier", configGroup))
 
         // case-sensitive
@@ -703,10 +703,10 @@ class ParadoxScopeMatchServiceTest : BasePlatformTestCase(), ChronicleTestScope 
         assertTrue(ParadoxScopeMatchService.matchesScope(ParadoxScopeContext.resolve("system"), setOf("galactic_object"), configGroup))
         assertTrue(ParadoxScopeMatchService.matchesScope(ParadoxScopeContext.resolve("galactic_object"), setOf("system", "country"), configGroup))
 
-        // by parent (parent scope will not match child scope)
+        // by parent (parent scope will also match child scope)
         assertTrue(ParadoxScopeMatchService.matchesScope(ParadoxScopeContext.resolve("planet"), setOf("carrier"), configGroup))
         assertTrue(ParadoxScopeMatchService.matchesScope(ParadoxScopeContext.resolve("ship"), setOf("carrier"), configGroup))
-        assertFalse(ParadoxScopeMatchService.matchesScope(ParadoxScopeContext.resolve("carrier"), setOf("planet", "ship"), configGroup))
+        assertTrue(ParadoxScopeMatchService.matchesScope(ParadoxScopeContext.resolve("carrier"), setOf("planet", "ship"), configGroup))
         assertFalse(ParadoxScopeMatchService.matchesScope(ParadoxScopeContext.resolve("colony"), setOf("carrier"), configGroup))
 
         // unresolved scopes only match themselves exactly
@@ -779,7 +779,7 @@ class ParadoxScopeMatchServiceTest : BasePlatformTestCase(), ChronicleTestScope 
         // multi-level parents are collected recursively
         assertTrue(ParadoxScopeMatchService.matchesScope(ParadoxScopeContext.resolve("army"), "ship", configGroup))
         assertTrue(ParadoxScopeMatchService.matchesScope(ParadoxScopeContext.resolve("army"), "carrier", configGroup))
-        assertFalse(ParadoxScopeMatchService.matchesScope(ParadoxScopeContext.resolve("carrier"), "army", configGroup))
+        assertTrue(ParadoxScopeMatchService.matchesScope(ParadoxScopeContext.resolve("carrier"), "army", configGroup))
 
         // cyclic parents are guarded during scope model computation
         assertTrue(ParadoxScopeMatchService.matchesScope(ParadoxScopeContext.resolve("alpha"), "beta", configGroup))
@@ -828,7 +828,7 @@ class ParadoxScopeMatchServiceTest : BasePlatformTestCase(), ChronicleTestScope 
         // multi-level parents are collected recursively
         assertTrue(ParadoxScopeMatchService.matchesScope(ParadoxScopeContext.resolve("army"), setOf("ship", "planet"), configGroup))
         assertTrue(ParadoxScopeMatchService.matchesScope(ParadoxScopeContext.resolve("army"), setOf("carrier"), configGroup))
-        assertFalse(ParadoxScopeMatchService.matchesScope(ParadoxScopeContext.resolve("carrier"), setOf("army"), configGroup))
+        assertTrue(ParadoxScopeMatchService.matchesScope(ParadoxScopeContext.resolve("carrier"), setOf("army"), configGroup))
         assertFalse(ParadoxScopeMatchService.matchesScope(ParadoxScopeContext.resolve("army"), setOf("planet"), configGroup))
 
         // cyclic parents are guarded during scope model computation
@@ -991,7 +991,7 @@ class ParadoxScopeMatchServiceTest : BasePlatformTestCase(), ChronicleTestScope 
         assertTrue(ParadoxScopeMatchService.matchesScopeGroup(ParadoxScopeContext.resolve("planet"), "planet_and_colony", configGroup))
         assertTrue(ParadoxScopeMatchService.matchesScopeGroup(ParadoxScopeContext.resolve("colony"), "planet_and_colony", configGroup))
         assertFalse(ParadoxScopeMatchService.matchesScopeGroup(ParadoxScopeContext.resolve("ship"), "planet_and_colony", configGroup))
-        assertFalse(ParadoxScopeMatchService.matchesScopeGroup(ParadoxScopeContext.resolve("carrier"), "planet_and_colony", configGroup))
+        assertTrue(ParadoxScopeMatchService.matchesScopeGroup(ParadoxScopeContext.resolve("carrier"), "planet_and_colony", configGroup))
 
         // an empty group matches no concrete scope
         assertFalse(ParadoxScopeMatchService.matchesScopeGroup(ParadoxScopeContext.resolve("country"), "empty", configGroup))
