@@ -123,7 +123,7 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
   }
 
   public void visitStringVariantString(@NotNull ParadoxLocalisationStringVariantString o) {
-    visitPsiElement(o);
+    visitRichTextContainer(o);
   }
 
   public void visitStringVariantTagPart(@NotNull ParadoxLocalisationStringVariantTagPart o) {
@@ -144,7 +144,7 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
   }
 
   public void visitTagSensitiveTextString(@NotNull ParadoxLocalisationTagSensitiveTextString o) {
-    visitPsiElement(o);
+    visitRichTextContainer(o);
   }
 
   public void visitTaggedParameter(@NotNull ParadoxLocalisationTaggedParameter o) {

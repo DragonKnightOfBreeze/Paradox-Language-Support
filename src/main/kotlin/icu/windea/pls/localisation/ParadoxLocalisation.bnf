@@ -126,7 +126,7 @@ private property_value_unquoted ::= PROPERTY_VALUE_TOKEN RIGHT_QUOTE?
 
 // within localisation text rules (lazy-parsing, from PROPERTY_VALUE_TOKEN)
 
-text_root ::= string tag_part? string_variant_set? {
+text_root ::= string? tag_part? string_variant_set? {
   extraRoot=true
 }
 private string ::= string_item+
@@ -384,7 +384,11 @@ string_variant ::= STRING_VARIANT_PREFIX string_variant_tag_part? string_variant
   pin=1
 }
 string_variant_tag_part ::= tag ( COMMA tag )* COLON
-string_variant_string ::= string_variant_string_item+
+string_variant_string ::= string_variant_string_item+ {
+  implements=[
+    "icu.windea.pls.localisation.psi.ParadoxLocalisationRichTextContainer"
+  ]
+}
 private string_variant_string_item ::= rich_text | COLORFUL_TEXT_END | TEXT_FORMAT_END
 
 // tag-sensitive text rules
@@ -393,7 +397,11 @@ private string_variant_string_item ::= rich_text | COLORFUL_TEXT_END | TEXT_FORM
 tag_sensitive_text ::= TAG_SENSITIVE_TEXT_PREFIX tag_sensitive_text_string? tag_part? string_variant_set? {
   pin=1
 }
-tag_sensitive_text_string ::= tag_sensitive_text_item+
+tag_sensitive_text_string ::= tag_sensitive_text_item+ {
+  implements=[
+    "icu.windea.pls.localisation.psi.ParadoxLocalisationRichTextContainer"
+  ]
+}
 private tag_sensitive_text_item ::= tagged_parameter | rich_text | COLORFUL_TEXT_END | TEXT_FORMAT_END
 
 tagged_parameter ::= TAGGED_PARAMETER_START tagged_parameter_name TAGGED_PARAMETER_END {

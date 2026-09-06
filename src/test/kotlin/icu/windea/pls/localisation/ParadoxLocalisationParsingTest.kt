@@ -60,6 +60,7 @@ class ParadoxLocalisationParsingTest : ParsingTestCase("localisation/syntax", "t
     fun construct_text_formats_vic3() = doTest(true)
     @Test
     fun construct_text_formats_stellaris() = doTest(true)
+    // TODO 3.0.4+ constructs involves to grammatical syntax
 
     @Test
     fun edge_empty() = doTest(true)
@@ -81,9 +82,10 @@ class ParadoxLocalisationParsingTest : ParsingTestCase("localisation/syntax", "t
     fun edge_chars_of_scripted_variable_references() = doTest(true)
     @Test
     fun edge_chars_of_parameters() = doTest(true)
-    // TODO
-    // @Test
-    // fun edge_fallback_tokens() = doTest(true)
+    @Test
+    fun edge_dangling_markers() = doTest(true)
+    @Test
+    fun edge_fallback_markers() = doTest(true)
 
     @Test
     fun error_unclosed_quotes() = doTest(true)

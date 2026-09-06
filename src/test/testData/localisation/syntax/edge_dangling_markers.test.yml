@@ -1,0 +1,34 @@
+# dangling markers should be allowed, if necessary (not always)
+
+l_english:
+ single: "§!" # dangling
+ single: "#!" # dangling
+ single: "]" # fallback
+
+ between_blank: " §! " # dangling
+ between_blank: " #! " # dangling
+ between_blank: " ] " # fallback
+
+ with_previous_text_color: "§R...§!§!" # dangling
+ with_previous_text_color: "§R...§!#!" # dangling
+ with_previous_text_color: "§R...§!]" # fallback
+
+ with_previous_concept_command: "['x', ...]§!" # dangling
+ with_previous_concept_command: "['x', ...]#!" # dangling
+ with_previous_concept_command: "['x', ...]]" # fallback
+
+ with_previous_text_format: "#x... #!§!" # dangling
+ with_previous_text_format: "#x... #!#!" # dangling
+ with_previous_text_format: "#x... #!]" # fallback
+
+ within_text_color: "§R...§!§!" # dangling
+ within_text_color: "§R...#!§!" # dangling
+ within_text_color: "§R...]§!" # fallback
+
+ within_concept_command: "['x', ...§!]" # dangling
+ within_concept_command: "['x', ...#!]" # dangling
+ within_concept_command: "['x', ...]]" # fallback
+
+ within_text_format: "#x... §!#!" # dangling
+ within_text_format: "#x... #!#!" # dangling
+ within_text_format: "#x... ]#!" # fallback

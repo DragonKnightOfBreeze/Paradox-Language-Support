@@ -8,7 +8,7 @@ import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 
-public interface ParadoxLocalisationStringVariantString extends PsiElement {
+public interface ParadoxLocalisationStringVariantString extends ParadoxLocalisationRichTextContainer {
 
   @NotNull
   List<ParadoxLocalisationRichText> getRichTextList();

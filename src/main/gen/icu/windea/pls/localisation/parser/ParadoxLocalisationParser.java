@@ -1321,16 +1321,23 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // string tag_part? string_variant_set?
+  // string? tag_part? string_variant_set?
   public static boolean text_root(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "text_root")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, TEXT_ROOT, "<text root>");
-    r = string(b, l + 1);
+    r = text_root_0(b, l + 1);
     r = r && text_root_1(b, l + 1);
     r = r && text_root_2(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
+  }
+
+  // string?
+  private static boolean text_root_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "text_root_0")) return false;
+    string(b, l + 1);
+    return true;
   }
 
   // tag_part?
