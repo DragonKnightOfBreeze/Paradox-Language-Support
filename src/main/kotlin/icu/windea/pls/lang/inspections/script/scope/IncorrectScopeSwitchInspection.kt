@@ -24,7 +24,7 @@ class IncorrectScopeSwitchInspection : ScopeInspectionBase() {
 
     override fun getOptionsPane(): OptPane {
         return OptPane.pane(
-            OptPane.checkbox("checkForSystemScopes", ChronicleInspectionBundle.message("script.incorrectScopeSwitch.option.checkForSystemScope"))
+            OptPane.checkbox("checkForSystemScopes", ChronicleInspectionBundle.message("script.incorrectScopeSwitch.option.checkForSystemScope")),
         )
     }
 

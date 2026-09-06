@@ -7,11 +7,13 @@ import com.intellij.codeInspection.options.OptPane
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.matchesPatterns
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
+import icu.windea.pls.lang.inspections.forPatterns
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxExtendedConfigManager
@@ -37,7 +39,7 @@ class UnresolvedConceptInspection : LocalInspectionTool() {
 
     override fun getOptionsPane(): OptPane {
         return OptPane.pane(
-            OptPane.checkbox("ignoredNames", ChronicleInspectionBundle.message("localisation.unresolvedConcept.option.ignoredNames")),
+            OptPane.expandableString("ignoredNames", ChronicleInspectionBundle.message("localisation.unresolvedConcept.option.ignoredNames"), ";").forPatterns(),
             OptPane.checkbox("ignoredInInjectedFiles", ChronicleInspectionBundle.message("option.ignoredInInjectedFiles")),
             OptPane.checkbox("ignoredByConfigs", ChronicleInspectionBundle.message("option.ignoredByConfigs")),
         )

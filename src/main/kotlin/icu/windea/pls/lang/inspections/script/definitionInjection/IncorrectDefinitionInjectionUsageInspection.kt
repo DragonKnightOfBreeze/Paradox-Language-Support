@@ -24,7 +24,7 @@ class IncorrectDefinitionInjectionUsageInspection : DefinitionInjectionInspectio
     override fun getOptionsPane(): OptPane {
         return OptPane.pane(
             OptPane.checkbox("checkForLenientModes", ChronicleInspectionBundle.message("script.incorrectDefinitionInjectionUsage.option.checkForLenientModes"))
-                .description(ChronicleInspectionBundle.message("script.incorrectDefinitionInjectionUsage.option.checkForLenientModes.tip"))
+                .description(ChronicleInspectionBundle.message("script.incorrectDefinitionInjectionUsage.option.checkForLenientModes.tip")),
         )
     }
 

@@ -6,11 +6,11 @@ import com.intellij.codeInspection.options.OptPane
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
-import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import icu.windea.pls.lang.inspections.ParadoxExpressionInspectionContext
 import icu.windea.pls.lang.inspections.ParadoxExpressionInspectionService
+import icu.windea.pls.lang.inspections.forPatterns
 import icu.windea.pls.lang.psi.ParadoxPsiElementVisitor
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
@@ -35,8 +35,7 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
             OptPane.checkbox("ignoredInInjectedFiles", ChronicleInspectionBundle.message("option.ignoredInInjectedFiles")),
             OptPane.checkbox("ignoredInInlineScriptFiles", ChronicleInspectionBundle.message("option.ignoredInInlineScriptFiles")),
             OptPane.checkbox("ignoredByConfigs", ChronicleInspectionBundle.message("option.ignoredByConfigs")),
-            OptPane.expandableString("ignoredFileNames", ChronicleInspectionBundle.message("option.ignoredFileNames"), ",")
-                .description(ChronicleBundle.message("comment.patterns")),
+            OptPane.expandableString("ignoredFileNames", ChronicleInspectionBundle.message("option.ignoredFileNames"), ",").forPatterns(),
             OptPane.checkbox("showExpect", ChronicleInspectionBundle.message("option.showExpect")),
         )
     }

@@ -50,6 +50,9 @@ object ParadoxFileInspectionService {
         if (virtualFile.length == 0L) return // 2.2.0 lenient check (skip for empty files)
         val fileInfo = virtualFile.fileInfo ?: return // 无法获取文件信息时跳过检查
 
+        // 排除忽略的文件
+        if (fileInfo.path.path.matchesAntPatterns(context.ignoredFilePaths, ignoreCase = true)) return // 忽略
+
         val expectedCharset = ParadoxFileEncodingService.useCharset()
         val charset = virtualFile.charset
         val isValidCharset = charset == expectedCharset

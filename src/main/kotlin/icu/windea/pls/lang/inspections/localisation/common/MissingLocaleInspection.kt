@@ -12,6 +12,7 @@ import icu.windea.pls.core.matchesPatterns
 import icu.windea.pls.core.psi.PsiFileOnlyVisitor
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
+import icu.windea.pls.lang.inspections.forPatterns
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 
@@ -25,8 +26,7 @@ class MissingLocaleInspection : LocalInspectionTool(), DumbAware {
 
     override fun getOptionsPane(): OptPane {
         return OptPane.pane(
-            OptPane.expandableString("ignoredFileNames", ChronicleInspectionBundle.message("option.ignoredFileNames"), ",")
-                .description(ChronicleBundle.message("comment.patterns"))
+            OptPane.expandableString("ignoredFileNames", ChronicleInspectionBundle.message("option.ignoredFileNames"), ";").forPatterns()
         )
     }
 

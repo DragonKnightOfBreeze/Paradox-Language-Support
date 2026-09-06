@@ -10,6 +10,7 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.core.matchesPatterns
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
+import icu.windea.pls.lang.inspections.forPatterns
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.localisation.psi.ParadoxLocalisationIcon
 import icu.windea.pls.localisation.psi.ParadoxLocalisationVisitor
@@ -26,7 +27,7 @@ class UnresolvedIconInspection : LocalInspectionTool() {
 
     override fun getOptionsPane(): OptPane {
         return OptPane.pane(
-            OptPane.checkbox("ignoredNames", ChronicleInspectionBundle.message("localisation.unresolvedIcon.option.ignoredNames")),
+            OptPane.expandableString("ignoredNames", ChronicleInspectionBundle.message("localisation.unresolvedIcon.option.ignoredNames"), ";").forPatterns(),
             OptPane.checkbox("ignoredInInjectedFiles", ChronicleInspectionBundle.message("option.ignoredInInjectedFiles")),
         )
     }

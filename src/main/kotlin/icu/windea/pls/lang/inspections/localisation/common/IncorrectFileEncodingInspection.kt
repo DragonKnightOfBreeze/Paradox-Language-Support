@@ -13,6 +13,7 @@ import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import icu.windea.pls.lang.inspections.ParadoxFileInspectionContext
 import icu.windea.pls.lang.inspections.ParadoxFileInspectionService
+import icu.windea.pls.lang.inspections.forAntPatterns
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 
 // com.intellij.openapi.editor.actions.AddBomAction
@@ -37,8 +38,7 @@ class IncorrectFileEncodingInspection : LocalInspectionTool(), DumbAware {
 
     override fun getOptionsPane(): OptPane {
         return OptPane.pane(
-            OptPane.expandableString("ignoredFilePaths", ChronicleInspectionBundle.message("option.ignoredFilePaths"), ",")
-                .description(ChronicleBundle.message("comment.antPatterns"))
+            OptPane.expandableString("ignoredFilePaths", ChronicleInspectionBundle.message("option.ignoredFilePaths"), ";").forAntPatterns(),
         )
     }
 

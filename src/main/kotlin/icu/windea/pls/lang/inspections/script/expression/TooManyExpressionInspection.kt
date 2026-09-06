@@ -25,19 +25,19 @@ import icu.windea.pls.script.psi.ParadoxScriptVisitor
  * @property ignoredInInlineScriptFiles （配置项）是否在内联脚本文件中忽略此代码检查。
  */
 class TooManyExpressionInspection : LocalInspectionTool() {
-    @JvmField var firstOnly = false
-    @JvmField var firstOnlyOnFile = true
     @JvmField var ignoredInInjectedFiles = false
     @JvmField var ignoredInInlineScriptFiles = false
     @JvmField var showExpect = true
+    @JvmField var firstOnly = false
+    @JvmField var firstOnlyOnFile = true
 
     override fun getOptionsPane(): OptPane {
         return OptPane.pane(
-            OptPane.checkbox("firstOnly", ChronicleInspectionBundle.message("lang.tooManyExpression.option.firstOnly")),
-            OptPane.checkbox("firstOnlyOnFile", ChronicleInspectionBundle.message("lang.tooManyExpression.option.firstOnlyOnFile")),
             OptPane.checkbox("ignoredInInjectedFiles", ChronicleInspectionBundle.message("option.ignoredInInjectedFiles")),
             OptPane.checkbox("ignoredInInlineScriptFiles", ChronicleInspectionBundle.message("option.ignoredInInlineScriptFiles")),
             OptPane.checkbox("showExpect", ChronicleInspectionBundle.message("option.showExpect")),
+            OptPane.checkbox("firstOnly", ChronicleInspectionBundle.message("lang.tooManyExpression.option.firstOnly")),
+            OptPane.checkbox("firstOnlyOnFile", ChronicleInspectionBundle.message("lang.tooManyExpression.option.firstOnlyOnFile")),
         )
     }
 
