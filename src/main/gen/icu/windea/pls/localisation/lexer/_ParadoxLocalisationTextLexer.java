@@ -55,10 +55,11 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
   public static final int IN_TEXT_FORMAT_TEXT = 36;
   public static final int IN_STRING_VARIANT = 38;
   public static final int IN_STRING_VARIANT_TAG_PART = 40;
-  public static final int IN_TAG_SENSITIVE_TEXT = 42;
-  public static final int IN_TAGGED_PARAMETER = 44;
-  public static final int IN_TAG_PART = 46;
-  public static final int IN_CONTEXT_TAG_PART = 48;
+  public static final int IN_STRING_VARIANT_AFTER_TAG_PART = 42;
+  public static final int IN_TAG_SENSITIVE_TEXT = 44;
+  public static final int IN_TAGGED_PARAMETER = 46;
+  public static final int IN_TAG_PART = 48;
+  public static final int IN_CONTEXT_TAG_PART = 50;
 
   /**
    * ZZ_LEXSTATE[l] is the state in the DFA for the lexical state l
@@ -69,8 +70,8 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
   private static final int ZZ_LEXSTATE[] = {
      0,  0,  0,  0,  1,  1,  2,  2,  3,  3,  4,  4,  5,  5,  6,  6, 
      7,  7,  8,  8,  9,  9, 10, 10, 11, 11,  3,  3, 12, 12, 13, 13, 
-    14, 14, 15, 15,  3,  3, 16, 16, 17, 17, 18, 18, 19, 19, 20, 20, 
-    21, 21
+    14, 14, 15, 15,  3,  3, 16, 16, 17, 17,  0,  0, 18, 18, 19, 19, 
+    20, 20, 21, 21
   };
 
   /**
@@ -147,13 +148,13 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
     "\1\16\1\17\1\20\1\21\1\22\1\23\1\24\1\2"+
     "\1\24\1\25\1\26\1\27\1\30\1\31\1\32\1\33"+
     "\1\34\1\35\1\36\1\37\1\40\1\41\1\40\1\42"+
-    "\3\1\1\2\1\1\1\43\1\44\1\45\1\1\1\2"+
-    "\1\1\1\46\1\47\2\0\1\50\1\51\1\0\1\52"+
-    "\1\53\1\54\1\0\1\55\1\56\1\7\1\0\1\24"+
-    "\1\52\1\57\1\60\1\61\1\0\1\62\1\63";
+    "\5\1\1\43\1\44\1\45\1\1\1\2\1\1\1\46"+
+    "\1\47\2\0\1\50\1\51\1\0\1\52\1\53\1\54"+
+    "\1\2\1\0\1\55\1\56\1\7\1\0\1\24\1\52"+
+    "\1\57\1\60\1\61\1\0\1\62\1\63";
 
   private static int [] zzUnpackAction() {
-    int [] result = new int[101];
+    int [] result = new int[102];
     int offset = 0;
     offset = zzUnpackAction(ZZ_ACTION_PACKED_0, offset, result);
     return result;
@@ -189,11 +190,11 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
     "\0\u04c6\0\u04e0\0\u04fa\0\u0514\0\u052e\0\u0548\0\u0326\0\u0562"+
     "\0\u0326\0\u057c\0\u0326\0\u0596\0\u05b0\0\u05ca\0\u0326\0\u05e4"+
     "\0\u05fe\0\u0618\0\u0326\0\u0326\0\u02a4\0\u02a4\0\u0326\0\u0326"+
-    "\0\u0632\0\u0326\0\u0326\0\u0326\0\u0410\0\u042a\0\u042a\0\u0326"+
-    "\0\u0326\0\u0326\0\u05b0\0\u05b0\0\u0326";
+    "\0\u0326\0\u0632\0\u0326\0\u0326\0\u0326\0\u0410\0\u042a\0\u042a"+
+    "\0\u0326\0\u0326\0\u0326\0\u05b0\0\u05b0\0\u0326";
 
   private static int [] zzUnpackRowMap() {
-    int [] result = new int[101];
+    int [] result = new int[102];
     int offset = 0;
     offset = zzUnpackRowMap(ZZ_ROWMAP_PACKED_0, offset, result);
     return result;
@@ -250,30 +251,30 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
     "\4\0\1\31\4\0\1\123\1\0\1\124\1\0\1\124"+
     "\4\0\2\124\3\0\2\124\6\0\1\125\3\0\2\125"+
     "\1\126\23\125\4\0\1\127\33\0\1\130\6\0\1\130"+
-    "\4\0\2\130\31\0\1\107\6\0\24\31\1\37\5\31"+
-    "\60\0\1\131\11\0\1\132\3\0\1\132\1\0\2\132"+
-    "\4\0\3\132\11\0\1\133\25\0\2\134\2\0\25\134"+
+    "\4\0\2\130\31\0\1\131\6\0\24\31\1\37\5\31"+
+    "\60\0\1\132\11\0\1\133\3\0\1\133\1\0\2\133"+
+    "\4\0\3\133\11\0\1\134\25\0\2\135\2\0\25\135"+
     "\11\0\1\52\1\0\2\52\1\0\1\52\4\0\1\52"+
     "\7\0\1\56\3\0\2\56\1\0\14\56\3\0\1\56"+
     "\2\0\1\56\15\0\1\57\4\0\1\57\10\0\3\61"+
-    "\26\0\1\62\1\135\1\0\1\135\3\62\1\0\6\62"+
-    "\1\0\4\62\1\0\1\62\2\0\3\62\1\136\1\135"+
-    "\1\0\1\135\2\136\1\137\1\125\6\136\1\125\4\136"+
-    "\1\125\1\136\2\125\3\136\16\0\1\140\30\0\2\70"+
+    "\26\0\1\62\1\136\1\0\1\136\3\62\1\0\6\62"+
+    "\1\0\4\62\1\0\1\62\2\0\3\62\1\137\1\136"+
+    "\1\0\1\136\2\137\1\140\1\125\6\137\1\125\4\137"+
+    "\1\125\1\137\2\125\3\137\16\0\1\141\30\0\2\70"+
     "\3\0\1\70\10\0\3\72\40\0\1\73\1\0\2\73"+
     "\4\0\1\73\1\0\1\73\22\0\1\77\4\0\1\77"+
-    "\10\0\3\101\32\0\1\141\35\0\1\103\4\0\2\103"+
+    "\10\0\3\101\32\0\1\142\35\0\1\103\4\0\2\103"+
     "\3\0\1\103\7\0\5\104\3\0\6\104\1\0\2\104"+
     "\1\0\1\104\1\0\1\110\4\0\2\104\3\105\1\104"+
     "\3\0\5\104\1\106\1\0\2\104\1\0\1\106\1\0"+
     "\1\110\4\0\2\104\3\106\1\104\3\0\1\104\1\106"+
-    "\3\104\1\106\1\142\2\104\1\0\1\106\1\0\1\110"+
+    "\3\104\1\106\1\143\2\104\1\0\1\106\1\0\1\110"+
     "\4\0\25\104\1\110\5\104\15\0\1\112\4\0\1\112"+
     "\7\0\5\114\3\0\7\114\1\0\1\114\1\0\1\114"+
-    "\1\0\1\116\4\0\1\114\1\143\3\0\14\143\1\144"+
-    "\11\143\24\114\1\116\5\114\15\0\1\120\4\0\1\120"+
+    "\1\0\1\116\4\0\1\114\1\144\3\0\14\144\1\145"+
+    "\11\144\24\114\1\116\5\114\15\0\1\120\4\0\1\120"+
     "\24\0\1\121\4\0\1\121\10\0\3\122\5\0\1\122"+
-    "\3\0\1\122\4\0\1\122\35\0\1\145\3\0";
+    "\3\0\1\122\4\0\1\122\35\0\1\146\3\0";
 
   private static int [] zzUnpacktrans() {
     int [] result = new int[1612];
@@ -317,11 +318,11 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
     "\30\0\7\1\1\11\3\1\1\11\1\1\4\11\1\1"+
     "\3\11\2\1\1\11\4\1\3\11\1\1\1\11\2\1"+
     "\3\11\1\1\1\11\6\1\1\11\1\1\1\11\1\1"+
-    "\1\11\3\1\1\11\3\1\2\11\1\0\1\1\2\11"+
+    "\1\11\3\1\1\11\3\1\2\11\1\0\1\1\3\11"+
     "\1\0\3\11\1\0\2\1\3\11\1\0\1\1\1\11";
 
   private static int [] zzUnpackAttribute() {
-    int [] result = new int[101];
+    int [] result = new int[102];
     int offset = 0;
     offset = zzUnpackAttribute(ZZ_ATTRIBUTE_PACKED_0, offset, result);
     return result;
@@ -480,17 +481,14 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
 
     private boolean exitStateForRecoveryIfNeeded() {
         // used for final recovery
-        if (checkEmptyContext()) return true;
         if (!needExitStateForRecovery()) return false;
-        int nextState = stateStack.popInt();
-        expectStack.popInt();
-        yybegin(nextState);
+        exitStateForRecovery();
         yypushback(yylength());
         return true;
     }
 
     private boolean needExitStateForRecovery() {
-        // heuristic: always recovery atm
+        // heuristic: always recover atm
         return true;
     }
     private IElementType getFallbackToken() {
@@ -1094,7 +1092,8 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
               zzMarkedPos = zzFPos;
             }
             { // tag char is required before `:`
-        enterState(yystate(), EXPECT_STRING_VARIANT_TAG_PART);
+        // tag part can be appeared only once, so use IN_STRING_VARIANT_AFTER_TAG_PART here specially
+        enterState(IN_STRING_VARIANT_AFTER_TAG_PART, EXPECT_STRING_VARIANT_TAG_PART);
         yypushback(yylength());
         yybegin(IN_STRING_VARIANT_TAG_PART);
             }

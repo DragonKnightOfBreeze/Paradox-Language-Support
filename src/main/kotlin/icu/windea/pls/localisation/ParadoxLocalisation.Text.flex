@@ -172,6 +172,7 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 
 %s IN_STRING_VARIANT
 %s IN_STRING_VARIANT_TAG_PART
+%s IN_STRING_VARIANT_AFTER_TAG_PART
 
 %s IN_TAG_SENSITIVE_TEXT
 %s IN_TAGGED_PARAMETER
@@ -235,7 +236,7 @@ ContextTagToken = {ContextTagChar}+ // leading number is allowed
 
 // common rules
 
-<YYINITIAL, WITH_CONTEXT, IN_COLORFUL_TEXT, IN_CONCEPT_TEXT, IN_TEXT_FORMAT_TEXT, IN_STRING_VARIANT, IN_TAG_SENSITIVE_TEXT> {
+<YYINITIAL, WITH_CONTEXT, IN_COLORFUL_TEXT, IN_CONCEPT_TEXT, IN_TEXT_FORMAT_TEXT, IN_STRING_VARIANT, IN_STRING_VARIANT_AFTER_TAG_PART, IN_TAG_SENSITIVE_TEXT> {
     "§" {
         enterState(yystate(), EXPECT_COLORFUL_TEXT);
         yypushback(yylength());
@@ -299,7 +300,7 @@ ContextTagToken = {ContextTagChar}+ // leading number is allowed
         return TEXT_FORMAT_END;
     }
 }
-<YYINITIAL, WITH_CONTEXT, IN_STRING_VARIANT, IN_TAG_SENSITIVE_TEXT> {
+<YYINITIAL, WITH_CONTEXT, IN_STRING_VARIANT, IN_STRING_VARIANT_AFTER_TAG_PART, IN_TAG_SENSITIVE_TEXT> {
     "|||" {
         yybegin(IN_STRING_VARIANT);
         return STRING_VARIANT_PREFIX;
@@ -357,6 +358,8 @@ ContextTagToken = {ContextTagChar}+ // leading number is allowed
     }
     "$" { return getFallbackToken(); }
 }
+
+// rich text rules
 
 // localisation colorful text rules
 
@@ -518,18 +521,26 @@ ContextTagToken = {ContextTagChar}+ // leading number is allowed
     [^] { yypushback(yylength()); yybegin(IN_TEXT_FORMAT_TEXT); }
 }
 
+// grammatical syntax
+// see: localisation/99_README_GRAMMAR.txt
+// available for any (at least major) game types at this moment
+
 // string variant set rules
 // e.g., `|||B|||t1:C|||t2,t3:D` in `A|||B|||t1:C|||t2,t3:D`
 
 <IN_STRING_VARIANT> {
     {Blank}?{TagToken} / ({TagToken}|{Blank}|,)*":" { // tag char is required before `:`
-        enterState(yystate(), EXPECT_STRING_VARIANT_TAG_PART);
+        // tag part can be appeared only once, so use IN_STRING_VARIANT_AFTER_TAG_PART here specially
+        enterState(IN_STRING_VARIANT_AFTER_TAG_PART, EXPECT_STRING_VARIANT_TAG_PART);
         yypushback(yylength());
         yybegin(IN_STRING_VARIANT_TAG_PART);
     }
-    ":" { return getFallbackToken(); }
-    // need to exclude `:` additionally (otherwise `t1,t2:` would be incorrectly recognized as TEXT_TOKEN)
-    {StringVariantTextToken} { return TEXT_TOKEN; }
+    // `tag:` here should be recognized as STRING_VARIANT_TAG_PART, so use `StringVariantTextToken` here specially
+    ":"|{StringVariantTextToken} { return TEXT_TOKEN; }
+}
+<IN_STRING_VARIANT_AFTER_TAG_PART> {
+    // `tag:` here should be recognized as TEXT_TOKEN normally
+    {TextToken} { return TEXT_TOKEN; }
 }
 <IN_STRING_VARIANT_TAG_PART> {
     ":" {

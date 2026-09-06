@@ -132,6 +132,8 @@ text_root ::= string tag_part? string_variant_set? {
 private string ::= string_item+
 private string_item ::= rich_text | COLORFUL_TEXT_END | TEXT_FORMAT_END
 
+// rich text rules
+
 rich_text ::= text | colorful_text | parameter | command | concept_command | icon | text_icon | text_format {
   implements=[
     "com.intellij.psi.NavigatablePsiElement"

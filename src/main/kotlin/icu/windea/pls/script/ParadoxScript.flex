@@ -571,6 +571,10 @@ InlineMathToken = {InlineMathBoundChar}({InlineMathChar}*{InlineMathBoundChar})?
     [^] { if (!exitStateForRecoveryIfNeeded()) return BAD_CHARACTER; } // recovery
 }
 
+// advanced script syntax
+// see: common/scripted_effects/99_advanced_documentation.txt
+// see wiki: https://stellaris.paradoxwikis.com/Dynamic_modding
+
 // scripted variable rules
 
 <IN_SCRIPTED_VARIABLE_CHECK> {
