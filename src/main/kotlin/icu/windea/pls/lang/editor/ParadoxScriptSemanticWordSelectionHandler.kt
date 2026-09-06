@@ -14,34 +14,28 @@ import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressi
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.script.ParadoxScriptLanguage
-import icu.windea.pls.script.editor.ParadoxScriptWordSelectionHandler
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.isDataExpression
 
-/**
- * @see ParadoxScriptWordSelectionHandler
- */
 class ParadoxScriptSemanticWordSelectionHandler : ExtendWordSelectionHandlerBase() {
     override fun canSelect(e: PsiElement): Boolean {
         if (e.language !== ParadoxScriptLanguage) return false
-        val element = findExpressionElement(e)
-        if (element != null) return true
-        return false
+        return findElement(e) != null
     }
 
     override fun select(e: PsiElement, editorText: CharSequence, cursorOffset: Int, editor: Editor): List<TextRange>? {
+        val element = findElement(e) ?: return null
         val result = mutableListOf<TextRange>()
-        selectExpressionElement(e, cursorOffset, result)
+        selectExpression(element, cursorOffset, result)
         if (result.isEmpty()) return null
         return result
     }
 
-    private fun findExpressionElement(element: PsiElement): ParadoxScriptStringExpressionElement? {
+    private fun findElement(element: PsiElement): ParadoxScriptStringExpressionElement? {
         return element.parent?.castOrNull()
     }
 
-    private fun selectExpressionElement(e: PsiElement, cursorOffset: Int, result: MutableList<TextRange>) {
-        val element = findExpressionElement(e) ?: return
+    private fun selectExpression(element: ParadoxScriptStringExpressionElement, cursorOffset: Int, result: MutableList<TextRange>) {
         val textRange = element.textRange
         if (textRange.isEmpty) return
         selectInComplexExpression(element, cursorOffset, textRange, result)

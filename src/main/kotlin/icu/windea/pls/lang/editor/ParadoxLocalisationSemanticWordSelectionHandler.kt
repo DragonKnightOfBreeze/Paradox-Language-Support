@@ -13,33 +13,27 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionWordSelectionRecursiveVisitor
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
-import icu.windea.pls.localisation.editor.ParadoxLocalisationWordSelectionHandler
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 
-/**
- * @see ParadoxLocalisationWordSelectionHandler
- */
 class ParadoxLocalisationSemanticWordSelectionHandler : ExtendWordSelectionHandlerBase() {
     override fun canSelect(e: PsiElement): Boolean {
         if (e.language !== ParadoxLocalisationLanguage) return false
-        val element = findExpressionElement(e)
-        if (element != null) return true
-        return false
+        return findElement(e) != null
     }
 
     override fun select(e: PsiElement, editorText: CharSequence, cursorOffset: Int, editor: Editor): List<TextRange>? {
+        val element = findElement(e) ?: return null
         val result = mutableListOf<TextRange>()
-        selectExpressionElement(e, cursorOffset, result)
+        selectExpression(element, cursorOffset, result)
         if (result.isEmpty()) return null
         return result
     }
 
-    private fun findExpressionElement(element: PsiElement): ParadoxLocalisationExpressionElement? {
+    private fun findElement(element: PsiElement): ParadoxLocalisationExpressionElement? {
         return element.parent?.castOrNull()
     }
 
-    private fun selectExpressionElement(e: PsiElement, cursorOffset: Int, result: MutableList<TextRange>) {
-        val element = findExpressionElement(e) ?: return
+    private fun selectExpression(element: ParadoxLocalisationExpressionElement, cursorOffset: Int, result: MutableList<TextRange>) {
         val textRange = element.textRange
         if (textRange.isEmpty) return
         selectInComplexExpression(element, cursorOffset, textRange, result)

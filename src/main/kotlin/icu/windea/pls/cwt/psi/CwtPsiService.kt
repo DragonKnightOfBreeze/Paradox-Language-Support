@@ -77,7 +77,7 @@ object CwtPsiService {
     }
 
     fun isPropertySeparator(element: PsiElement): Boolean {
-        return element.elementType in CwtTokenSets.PROPERTY_SEPARATOR_TOKENS
+        return element.elementType in CwtTokenSets.SEPARATORS
     }
 
     fun isBeforeValueLeftBoundEnd(element: CwtProperty, offset: Int): Boolean {
@@ -114,6 +114,12 @@ object CwtPsiService {
         return file.findElementAt(offset)
             ?.takeIf { it.elementType == CwtElementTypes.PROPERTY_KEY_TOKEN }
             ?.parentOfType<CwtProperty>()
+    }
+
+    fun findBlockFromSelfOrBraces(element: PsiElement): CwtBlock? {
+        if (element is CwtBlock) return element
+        if (element.elementType in CwtTokenSets.BLOCK_BRACES) return element.parent?.castOrNull()
+        return null
     }
 
     fun findStartElementToExtract(element: PsiElement): PsiElement? {

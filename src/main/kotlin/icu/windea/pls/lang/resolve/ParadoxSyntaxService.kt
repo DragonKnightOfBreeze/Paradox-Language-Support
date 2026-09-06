@@ -32,11 +32,11 @@ object ParadoxSyntaxService {
     // region Script
 
     fun isPropertySeparator(element: PsiElement): Boolean {
-        return element.elementType in ParadoxScriptTokenSets.PROPERTY_SEPARATOR_TOKENS
+        return element.elementType in ParadoxScriptTokenSets.PROPERTY_SEPARATORS
     }
 
     fun isAssignOperator(element: PsiElement): Boolean {
-        return element.elementType in ParadoxScriptTokenSets.ASSIGN_OPERATOR_TOKENS
+        return element.elementType in ParadoxScriptTokenSets.ASSIGN_OPERATORS
     }
 
     fun isNormalAssignOperator(element: PsiElement): Boolean {
@@ -44,11 +44,11 @@ object ParadoxSyntaxService {
     }
 
     fun isSafeAssignOperator(element: PsiElement): Boolean {
-        return element.elementType in ParadoxScriptTokenSets.SAFE_OPERATOR_TOKENS
+        return element.elementType in ParadoxScriptTokenSets.SAFE_OPERATORS
     }
 
     fun isComparisonOperator(element: PsiElement): Boolean {
-        return element.elementType in ParadoxScriptTokenSets.COMPARISON_OPERATOR_TOKENS
+        return element.elementType in ParadoxScriptTokenSets.COMPARISON_OPERATORS
     }
 
     @Suppress("unused")

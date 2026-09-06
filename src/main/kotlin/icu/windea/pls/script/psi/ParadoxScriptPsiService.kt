@@ -112,7 +112,7 @@ object ParadoxScriptPsiService {
     }
 
     fun isPropertySeparator(element: PsiElement): Boolean {
-        return element.elementType in ParadoxScriptTokenSets.PROPERTY_SEPARATOR_TOKENS
+        return element.elementType in ParadoxScriptTokenSets.PROPERTY_SEPARATORS
     }
 
     fun isBeforeValueLeftBoundEnd(element: ParadoxScriptProperty, offset: Int): Boolean {
@@ -181,6 +181,24 @@ object ParadoxScriptPsiService {
         return file.findElementAt(offset)
             ?.takeIf { it.elementType == ParadoxScriptElementTypes.PROPERTY_KEY_TOKEN }
             ?.parentOfType<ParadoxScriptProperty>()
+    }
+
+    fun findBlockFromSelfOrBraces(element: PsiElement): ParadoxScriptBlock? {
+        if (element is ParadoxScriptBlock) return element
+        if (element.elementType in ParadoxScriptTokenSets.BLOCK_BRACES) return element.parent?.castOrNull()
+        return null
+    }
+
+    fun findConditionalBlockFromSelfOrBrackets(element: PsiElement): ParadoxScriptConditionalBlock? {
+        if (element is ParadoxScriptConditionalBlock) return element
+        if (element.elementType in ParadoxScriptTokenSets.CONDITIONAL_BLOCK_BRACKETS) return element.parent?.castOrNull()
+        return null
+    }
+
+    fun findInlineMathFromSelfOrBrackets(element: PsiElement): ParadoxScriptInlineMath? {
+        if (element is ParadoxScriptInlineMath) return element
+        if (element.elementType in ParadoxScriptTokenSets.INLINE_MATH_BRACKETS) return element.parent?.castOrNull()
+        return null
     }
 
     fun findStartElementToExtract(element: PsiElement): PsiElement? {

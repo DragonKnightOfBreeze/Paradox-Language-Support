@@ -90,7 +90,7 @@ open class ParadoxScriptTextPlainRenderContext(
     }
 
     fun renderSeparator(element: ParadoxScriptProperty) {
-        val separator = element.findChild { it.elementType in ParadoxScriptTokenSets.PROPERTY_SEPARATOR_TOKENS }
+        val separator = element.findChild { it.elementType in ParadoxScriptTokenSets.PROPERTY_SEPARATORS }
         val separatorText = separator?.text ?: "="
         if (separator !== ParadoxScriptElementTypes.SAFE_CALL_ASSIGN_SIGN) builder.append(" ")
         builder.append(separatorText)

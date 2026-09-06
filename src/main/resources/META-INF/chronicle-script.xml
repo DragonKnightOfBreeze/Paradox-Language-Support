@@ -28,7 +28,11 @@
     <statementUpDownMover implementation="icu.windea.pls.script.editor.ParadoxScriptMover"/>
     <lang.quoteHandler language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.editor.ParadoxScriptQuoteHandler"/>
     <lang.smartEnterProcessor language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.editor.ParadoxScriptSmartEnterProcessor"/>
-    <extendWordSelectionHandler implementation="icu.windea.pls.script.editor.ParadoxScriptWordSelectionHandler"/>
+    <extendWordSelectionHandler implementation="icu.windea.pls.script.editor.wordSelection.ParadoxScriptQuoteAwareWordSelectionHandler"/>
+    <extendWordSelectionHandler implementation="icu.windea.pls.script.editor.wordSelection.ParadoxScriptBlockWordSelectionHandler"/>
+    <extendWordSelectionHandler implementation="icu.windea.pls.script.editor.wordSelection.ParadoxScriptConditionalBlockWordSelectionHandler"/>
+    <extendWordSelectionHandler implementation="icu.windea.pls.script.editor.wordSelection.ParadoxScriptInlineMathWordSelectionHandler"/>
+    <basicWordSelectionFilter implementation="icu.windea.pls.script.editor.wordSelection.ParadoxScriptWordSelectionFilter"/>
 
     <colorSettingsPage implementation="icu.windea.pls.script.highlighting.ParadoxScriptColorSettingsPage"/>
     <lang.syntaxHighlighterFactory language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.highlighting.ParadoxScriptSyntaxHighlighterFactory"/>

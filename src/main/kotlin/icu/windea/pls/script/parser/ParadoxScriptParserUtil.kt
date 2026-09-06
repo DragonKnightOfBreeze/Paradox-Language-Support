@@ -10,7 +10,7 @@ import icu.windea.pls.script.psi.ParadoxScriptTokenSets as TokenSets
 
 @Suppress("UNUSED_PARAMETER")
 object ParadoxScriptParserUtil : GeneratedParserUtilBase() {
-    private val SEPARATOR_TOKENS = TokenSets.PROPERTY_SEPARATOR_TOKENS
+    private val SEPARATOR_TOKENS = TokenSets.PROPERTY_SEPARATORS
     private val SNIPPET_TOKENS = TokenSet.create(PROPERTY_KEY_TOKEN, STRING_TOKEN, SCRIPTED_VARIABLE_NAME_TOKEN, SCRIPTED_VARIABLE_REFERENCE_TOKEN)
     // private val LHS_SNIPPET_TOKENS = TokenSet.create(PROPERTY_KEY_TOKEN, SCRIPTED_VARIABLE_NAME_TOKEN)
     // private val RHS_SNIPPET_TOKENS = TokenSet.create(STRING_TOKEN, SCRIPTED_VARIABLE_REFERENCE_TOKEN)

@@ -14,8 +14,8 @@
     <declarationRangeHandler key="icu.windea.pls.csv.psi.ParadoxCsvRow" implementationClass="icu.windea.pls.csv.codeInsight.ParadoxCsvDeclarationRangeHandler"/>
 
     <lang.commenter language="PARADOX_CSV" implementationClass="icu.windea.pls.csv.editor.ParadoxCsvCommenter"/>
-    <extendWordSelectionHandler implementation="icu.windea.pls.csv.editor.ParadoxCsvWordSelectionHandler"/>
     <lang.quoteHandler language="PARADOX_CSV" implementationClass="icu.windea.pls.csv.editor.ParadoxCsvQuoteHandler"/>
+    <extendWordSelectionHandler implementation="icu.windea.pls.csv.editor.wordSelection.ParadoxCsvQuoteAwareWordSelectionHandler"/>
 
     <colorSettingsPage implementation="icu.windea.pls.csv.highlighting.ParadoxCsvColorSettingsPage"/>
     <lang.syntaxHighlighterFactory language="PARADOX_CSV" implementationClass="icu.windea.pls.csv.highlighting.ParadoxCsvSyntaxHighlighterFactory"/>
