@@ -9,7 +9,7 @@ import icu.windea.pls.core.component1
 import icu.windea.pls.core.component2
 import icu.windea.pls.core.component3
 import icu.windea.pls.core.component4
-import icu.windea.pls.core.math.NumberConverter
+import icu.windea.pls.core.math.NumberService
 import icu.windea.pls.core.math.formatted
 import icu.windea.pls.core.removePrefixOrNull
 import java.awt.Color
@@ -55,16 +55,16 @@ object ColorService {
         if (!checkColorArgs(colorArgs)) return null
         val useFloat = colorArgs.allFast { it.toFloat() in 0f..1f } && colorArgs.anyFast { it.contains('.') }
         if (useFloat) {
-            val r = NumberConverter.convertFloatToInt(colorArgs.get(0), 255, 0..255) { it * 255 }
-            val g = NumberConverter.convertFloatToInt(colorArgs.get(1), 255, 0..255) { it * 255 }
-            val b = NumberConverter.convertFloatToInt(colorArgs.get(2), 255, 0..255) { it * 255 }
-            val a = NumberConverter.convertFloatToInt(colorArgs.getOrNull(3), 255) { it * 255 } // alpha can overflow
+            val r = NumberService.convertFloatToInt(colorArgs.get(0), 255, 0..255) { it * 255 }
+            val g = NumberService.convertFloatToInt(colorArgs.get(1), 255, 0..255) { it * 255 }
+            val b = NumberService.convertFloatToInt(colorArgs.get(2), 255, 0..255) { it * 255 }
+            val a = NumberService.convertFloatToInt(colorArgs.getOrNull(3), 255) { it * 255 } // alpha can overflow
             return Color(r, g, b, a)
         } else {
-            val r = NumberConverter.convertIntToInt(colorArgs.get(0), 255, 0..255)
-            val g = NumberConverter.convertIntToInt(colorArgs.get(1), 255, 0..255)
-            val b = NumberConverter.convertIntToInt(colorArgs.get(2), 255, 0..255)
-            val a = NumberConverter.convertIntToInt(colorArgs.getOrNull(3), 255) // alpha can overflow
+            val r = NumberService.convertIntToInt(colorArgs.get(0), 255, 0..255)
+            val g = NumberService.convertIntToInt(colorArgs.get(1), 255, 0..255)
+            val b = NumberService.convertIntToInt(colorArgs.get(2), 255, 0..255)
+            val a = NumberService.convertIntToInt(colorArgs.getOrNull(3), 255) // alpha can overflow
             return Color(r, g, b, a)
         }
     }
@@ -99,10 +99,10 @@ object ColorService {
      */
     fun getColorFromHsv(colorArgs: List<String>): Color? {
         if (!checkColorArgs(colorArgs)) return null
-        val h = NumberConverter.convertFloatToFloat(colorArgs.get(0), 1f, 0f..1f)
-        val s = NumberConverter.convertFloatToFloat(colorArgs.get(1), 1f, 0f..1f)
-        val v = NumberConverter.convertFloatToFloat(colorArgs.get(2), 1f, 0f..1f)
-        val a = NumberConverter.convertFloatToInt(colorArgs.getOrNull(3), 255) { it * 255 } // alpha can overflow
+        val h = NumberService.convertFloatToFloat(colorArgs.get(0), 1f, 0f..1f)
+        val s = NumberService.convertFloatToFloat(colorArgs.get(1), 1f, 0f..1f)
+        val v = NumberService.convertFloatToFloat(colorArgs.get(2), 1f, 0f..1f)
+        val a = NumberService.convertFloatToInt(colorArgs.getOrNull(3), 255) { it * 255 } // alpha can overflow
         val (r, g, b) = Color.getHSBColor(h, s, v)
         return Color(r, g, b, a)
     }
@@ -133,10 +133,10 @@ object ColorService {
      */
     fun getColorFromHsv360(colorArgs: List<String>): Color? {
         if (!checkColorArgs(colorArgs)) return null
-        val h = NumberConverter.convertIntToFloat(colorArgs.get(0), 1f, 0f..1f) { it / 360 }
-        val s = NumberConverter.convertIntToFloat(colorArgs.get(1), 1f, 0f..1f) { it / 100 }
-        val v = NumberConverter.convertIntToFloat(colorArgs.get(2), 1f, 0f..1f) { it / 100 }
-        val a = NumberConverter.convertIntToInt(colorArgs.getOrNull(3), 255) // alpha can overflow
+        val h = NumberService.convertIntToFloat(colorArgs.get(0), 1f, 0f..1f) { it / 360 }
+        val s = NumberService.convertIntToFloat(colorArgs.get(1), 1f, 0f..1f) { it / 100 }
+        val v = NumberService.convertIntToFloat(colorArgs.get(2), 1f, 0f..1f) { it / 100 }
+        val a = NumberService.convertIntToInt(colorArgs.getOrNull(3), 255) // alpha can overflow
         val (r, g, b) = Color.getHSBColor(h, s, v)
         return Color(r, g, b, a)
     }

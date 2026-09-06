@@ -1,6 +1,5 @@
 package icu.windea.pls.lang.inspections
 
-import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
@@ -13,15 +12,13 @@ import icu.windea.pls.config.config.CwtRowType
 import icu.windea.pls.config.config.containingDirectConfig
 import icu.windea.pls.config.config.expandConfigExpression
 import icu.windea.pls.config.configExpression.CwtDataExpression
-import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.anyFast
 import icu.windea.pls.core.collections.filterFast
 import icu.windea.pls.core.collections.forEachIndexedFast
 import icu.windea.pls.core.collections.mapFast
 import icu.windea.pls.core.inspections.InspectionService
-import icu.windea.pls.core.match.similarity.SimilarityMatchOptions
-import icu.windea.pls.core.match.similarity.SimilarityMatchService
+import icu.windea.pls.core.joinToStringFast
 import icu.windea.pls.core.matchesPatterns
 import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.psi.PsiBoundElement
@@ -34,12 +31,7 @@ import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.csv.psi.ParadoxCsvHeader
 import icu.windea.pls.csv.psi.ParadoxCsvPsiService
 import icu.windea.pls.ep.resolve.expression.ParadoxPathReferenceExpressionSupport
-import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContextFactory
-import icu.windea.pls.lang.fixes.GenerateLocalisationsFix
-import icu.windea.pls.lang.fixes.GenerateLocalisationsInFileFix
 import icu.windea.pls.lang.fixes.ReplaceWithExpressionFix
-import icu.windea.pls.lang.fixes.ReplaceWithSimilarExpressionFix
-import icu.windea.pls.lang.fixes.ReplaceWithSimilarExpressionInListFix
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOccurrence
 import icu.windea.pls.lang.match.ParadoxMatchOptions
@@ -90,49 +82,6 @@ object ParadoxExpressionInspectionService {
             is ParadoxScriptValue -> container.presentableText
             else -> null
         }
-    }
-
-    fun getSimilarityBasedFixes(element: ParadoxExpressionElement, configs: List<CwtMemberConfig<*>>): List<LocalQuickFix> {
-        val literals = CwtConfigManager.findLiterals(configs)
-        if (literals.isEmpty()) return emptyList()
-
-        val input = element.value
-        if (input.isEmpty()) return emptyList()
-        val ignoreCase = when (element) {
-            is ParadoxScriptStringExpressionElement -> true
-            is ParadoxCsvColumn -> true
-            else -> false
-        }
-        val options = if (ignoreCase) SimilarityMatchOptions.IGNORE_CASE else SimilarityMatchOptions.DEFAULT
-
-        // 查询输入项的最佳匹配，但排除完全匹配的相似项
-        val matches = SimilarityMatchService.findBestMatches(input, literals, options).filter { it.score < 1.0 }
-        if (matches.isEmpty()) return emptyList()
-
-        // 为最匹配的项提供单独的快速修复（直接替换）
-        // 如果匹配项不唯一，再为所有匹配项提供一个快速修复（弹出列表） - 如果分别提供快速修复，这些快速修复最终会按名字正序排序（这不符合预期）
-        val fixes = mutableListOf<LocalQuickFix>()
-        val first = matches.first()
-        fixes += ReplaceWithSimilarExpressionFix(element, first)
-        val remain = matches.drop(1)
-        if (remain.isNotEmpty()) {
-            fixes += ReplaceWithSimilarExpressionInListFix(element, matches)
-        }
-
-        return fixes
-    }
-
-    fun getLocalisationReferenceFixes(element: ParadoxExpressionElement, configs: List<CwtMemberConfig<*>>): List<LocalQuickFix> {
-        if (configs.isEmpty()) return emptyList()
-        if (element !is ParadoxScriptStringExpressionElement) return emptyList()
-        val context = configs.firstNotNullOfOrNull {
-            ParadoxLocalisationCodeInsightContextFactory.fromReference(element, it, fromInspection = true)
-        }
-        if (context == null) return emptyList()
-        return listOf(
-            GenerateLocalisationsFix(element, context),
-            GenerateLocalisationsInFileFix(element),
-        )
     }
 
     // endregion
@@ -227,8 +176,8 @@ object ParadoxExpressionInspectionService {
             expectedConfigs.isEmpty() -> ChronicleInspectionBundle.message("lang.unresolvedExpression.desc.1", expressionType, text)
             else -> {
                 val expectedConfigExpressions = expectedConfigs.mapFast { it.configExpression.expressionString }.toSet()
-                val expectText = expectedConfigExpressions.truncate(context.truncateExpect).joinToString()
-                ChronicleInspectionBundle.message("lang.unresolvedExpression.desc.2", expressionType, text, expectText)
+                val expected = expectedConfigExpressions.truncate(context.truncateExpect).joinToStringFast()
+                ChronicleInspectionBundle.message("lang.unresolvedExpression.desc.2", expressionType, text, expected)
             }
         }
         return description
@@ -566,9 +515,9 @@ object ParadoxExpressionInspectionService {
 
     private fun reportForIncorrectPathReference(location: PsiElement, value: String, expectFileExtensions: Set<String>, context: ParadoxExpressionInspectionContext) {
         val holder = context.holder
-        val expectText = expectFileExtensions.joinToString()
+        val expected = expectFileExtensions.joinToString()
         val description = when {
-            context.showExpect -> ChronicleInspectionBundle.message("lang.incorrectPathReference.desc.1", value, expectText)
+            context.showExpect -> ChronicleInspectionBundle.message("lang.incorrectPathReference.desc.1", value, expected)
             else -> ChronicleInspectionBundle.message("lang.incorrectPathReference.desc.0", value)
         }
         holder.registerProblem(location, description)
@@ -588,7 +537,7 @@ object ParadoxExpressionInspectionService {
                 if (allColumnNames.isEmpty()) return // skip (checked by `IncorrectColumnSizeInspection`)
                 val existingColumnNames = ParadoxCsvPsiService.getColumnNames(element)
                 val expectColumnNames = mutableSetOf<String>().apply { addAll(allColumnNames) }.apply { removeAll(existingColumnNames) }
-                val expectText = expectColumnNames.truncate(context.truncateExpect).joinToString()
+                val expected = expectColumnNames.truncate(context.truncateExpect).joinToStringFast()
                 element.columnList.forEachIndexedFast f@{ columnIndex, columnElement ->
                     if (rowConfig.skipLastColumn && columnIndex == rowConfig.columns.size) return@f // ignored
                     if (columnIndex >= rowConfig.columns.size) {
@@ -602,7 +551,7 @@ object ParadoxExpressionInspectionService {
                     if (columnElement.name in allColumnNames) return@f // continue (matched)
                     if (expectColumnNames.isNotEmpty()) {
                         val description = when {
-                            context.showExpect -> ChronicleInspectionBundle.message("lang.incorrectColumnName.desc.1", rowConfig.name, expectText)
+                            context.showExpect -> ChronicleInspectionBundle.message("lang.incorrectColumnName.desc.1", rowConfig.name, expected)
                             else -> ChronicleInspectionBundle.message("lang.incorrectColumnName.desc.0")
                         }
                         val expectColumnNamePreferred = rowConfig.columns[columnIndex].key
@@ -614,7 +563,7 @@ object ParadoxExpressionInspectionService {
                         }
                     } else {
                         val description = when {
-                            context.showExpect -> ChronicleInspectionBundle.message("lang.incorrectColumnName.desc.3", rowConfig.name, expectText)
+                            context.showExpect -> ChronicleInspectionBundle.message("lang.incorrectColumnName.desc.3", rowConfig.name, expected)
                             else -> ChronicleInspectionBundle.message("lang.incorrectColumnName.desc.0")
                         }
                         holder.registerProblem(columnElement, description)

@@ -36,22 +36,6 @@ object ProcessorScope {
     }
 
     @OptIn(ExperimentalTypeInference::class, ExperimentalContracts::class)
-    inline fun <T> collectFrom(@BuilderInference buildAction: CollectProcessor<T, MutableList<T>>.() -> Unit): MutableList<T> {
-        contract {
-            callsInPlace(buildAction, InvocationKind.EXACTLY_ONCE)
-        }
-        return ProcessorFactory.collect<T>().apply(buildAction).collection
-    }
-
-    @OptIn(ExperimentalTypeInference::class, ExperimentalContracts::class)
-    inline fun <T> collectFrom(@BuilderInference buildAction: CollectProcessor<T, MutableList<T>>.() -> Unit, crossinline predicate: (T) -> Boolean = { true }): MutableList<T> {
-        contract {
-            callsInPlace(buildAction, InvocationKind.EXACTLY_ONCE)
-        }
-        return ProcessorFactory.collect(predicate).apply(buildAction).collection
-    }
-
-    @OptIn(ExperimentalTypeInference::class, ExperimentalContracts::class)
     inline fun <T> duplicateFrom(@BuilderInference buildAction: DuplicateProcessor<T>.() -> Unit): Boolean {
         contract {
             callsInPlace(buildAction, InvocationKind.EXACTLY_ONCE)
@@ -65,6 +49,22 @@ object ProcessorScope {
             callsInPlace(buildAction, InvocationKind.EXACTLY_ONCE)
         }
         return ProcessorFactory.duplicate(predicate).apply(buildAction).duplicated
+    }
+
+    @OptIn(ExperimentalTypeInference::class, ExperimentalContracts::class)
+    inline fun <T> collectFrom(@BuilderInference buildAction: CollectProcessor<T, MutableList<T>>.() -> Unit): MutableList<T> {
+        contract {
+            callsInPlace(buildAction, InvocationKind.EXACTLY_ONCE)
+        }
+        return ProcessorFactory.collect<T>().apply(buildAction).collection
+    }
+
+    @OptIn(ExperimentalTypeInference::class, ExperimentalContracts::class)
+    inline fun <T> collectFrom(@BuilderInference buildAction: CollectProcessor<T, MutableList<T>>.() -> Unit, crossinline predicate: (T) -> Boolean = { true }): MutableList<T> {
+        contract {
+            callsInPlace(buildAction, InvocationKind.EXACTLY_ONCE)
+        }
+        return ProcessorFactory.collect(predicate).apply(buildAction).collection
     }
 
     @OptIn(ExperimentalTypeInference::class, ExperimentalContracts::class)

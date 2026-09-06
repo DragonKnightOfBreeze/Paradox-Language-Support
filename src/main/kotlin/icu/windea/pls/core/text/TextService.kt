@@ -1,10 +1,30 @@
-package icu.windea.pls.script.text
+package icu.windea.pls.core.text
 
-import java.util.Arrays
+import com.intellij.psi.LiteralTextEscaper
+import java.util.*
 import java.util.function.IntUnaryOperator
 
-object ParadoxScriptTextService {
-    fun parseExpressionCharacters(chars: String, out: StringBuilder, sourceOffsets: IntArray?): Boolean {
+object TextService {
+    fun convertToBooleanFromYesNo(text: String): Boolean? {
+        return when (text) {
+            "yes" -> true
+            "no" -> false
+            else -> null
+        }
+    }
+
+    fun convertToBooleanLenient(text: String): Boolean? {
+        return when {
+            text.equals("yes", true) || text.equals("true", true) || text.equals("on", true) -> true
+            text.equals("no", true) || text.equals("false", true) || text.equals("off", true) -> false
+            else -> null
+        }
+    }
+
+    /**
+     * @see LiteralTextEscaper
+     */
+    fun decodeLiteralText(chars: String, out: StringBuilder, sourceOffsets: IntArray?): Boolean {
         if (chars.none { c -> c == '\\' }) {
             if (sourceOffsets != null) Arrays.setAll(sourceOffsets, IntUnaryOperator.identity())
             out.append(chars)

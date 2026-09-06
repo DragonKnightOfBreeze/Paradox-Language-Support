@@ -32,27 +32,6 @@ class ProcessorScopeTest {
 
     // endregion
 
-    // region collectFrom
-
-    @Test
-    fun collectFrom_singleLambda_test() {
-        val result = ProcessorScope.collectFrom { listOf(1, 2, 3).forEach { process(it) } }
-        Assert.assertEquals(listOf(1, 2, 3), result)
-    }
-
-    @Test
-    fun collectFrom_twoLambdas_test() {
-        val result = ProcessorScope.collectFrom({ listOf(1, 2, 3, 4).forEach { process(it) } }) { it % 2 == 0 }
-        Assert.assertEquals(listOf(2, 4), result)
-    }
-
-    @Test
-    fun collectFrom_emptySource_returnsEmptyList_test() {
-        Assert.assertEquals(emptyList<Int>(), ProcessorScope.collectFrom<Int> { })
-    }
-
-    // endregion
-
     // region duplicateFrom
 
     @Test
@@ -70,6 +49,27 @@ class ProcessorScopeTest {
     @Test
     fun duplicateFrom_emptySource_returnsFalse_test() {
         Assert.assertFalse(ProcessorScope.duplicateFrom<Int> { })
+    }
+
+    // endregion
+
+    // region collectFrom
+
+    @Test
+    fun collectFrom_singleLambda_test() {
+        val result = ProcessorScope.collectFrom { listOf(1, 2, 3).forEach { process(it) } }
+        Assert.assertEquals(listOf(1, 2, 3), result)
+    }
+
+    @Test
+    fun collectFrom_twoLambdas_test() {
+        val result = ProcessorScope.collectFrom({ listOf(1, 2, 3, 4).forEach { process(it) } }) { it % 2 == 0 }
+        Assert.assertEquals(listOf(2, 4), result)
+    }
+
+    @Test
+    fun collectFrom_emptySource_returnsEmptyList_test() {
+        Assert.assertEquals(emptyList<Int>(), ProcessorScope.collectFrom<Int> { })
     }
 
     // endregion

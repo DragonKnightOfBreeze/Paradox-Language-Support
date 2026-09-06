@@ -2,6 +2,7 @@ package icu.windea.pls.lang.inspections.script.expression
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import icu.windea.pls.ep.ChronicleEpBundle
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.ChronicleTestScope
 import icu.windea.pls.test.dsl.configureByText
@@ -572,6 +573,52 @@ class UnresolvedExpressionInspectionTest : BasePlatformTestCase(), ChronicleTest
     }
 
     // endregion
+
+    // region wrongBoolean
+
+    @Test
+    fun wrongBoolean_available() {
+        markFileInfo(ParadoxGameType.Stellaris, "common/test_entities/test.txt")
+        myFixture.configureByText("test.txt") {
+            fun m(vararg params: Any) = ChronicleEpBundle.message("unresolvedExpression.wrongBoolean.desc.1", *params)
+            """
+            test = {
+                status = yes
+                status = no
+                status = ${error(m("yes", "\"yes\""))}"yes"${errorEnd()}
+                status = ${error(m("no", "\"no\""))}"no"${errorEnd()}
+                status = ${error(m("yes", "\"True\""))}"True"${errorEnd()}
+                status = ${error(m("no", "\"false\""))}"false"${errorEnd()}
+                status = ${error(m("yes","Yes"))}Yes${errorEnd()}
+                status = ${error(m("no", "NO"))}NO${errorEnd()}
+                status = ${error(m("yes", "TRUE"))}TRUE${errorEnd()}
+                status = ${error(m("no", "False"))}False${errorEnd()}
+                status = ${error(m("yes", "on"))}on${errorEnd()}
+                status = ${error(m("no", "OFF"))}OFF${errorEnd()}
+            }
+            """.trimIndent()
+        }
+        myFixture.checkHighlighting()
+    }
+
+    @Test
+    fun wrongBoolean_notAvailable() {
+        markFileInfo(ParadoxGameType.Stellaris, "common/test_entities/test.txt")
+        myFixture.configureByText("test.txt") {
+            fun m(text: String) = "Cannot resolve value expression `$text` (expect matching: bool)"
+            """
+            test = {
+                status = ${error(m("\"<yes?>\""))}"<yes?>"${errorEnd()}
+                status = ${error(m("\"<no...>\""))}"<no...>"${errorEnd()}
+            }
+            """.trimIndent()
+        }
+        myFixture.checkHighlighting()
+    }
+
+    // endregion
+
+    // TODO 3.0.4+ [test] subtypesMismatchedDefinition
 
     // TODO [test] more tests
 }

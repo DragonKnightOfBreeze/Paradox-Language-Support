@@ -1,6 +1,6 @@
 package icu.windea.pls.core.math
 
-object NumberConverter {
+object NumberService {
     inline fun convertIntToInt(input: String?, defaultValue: Int, range: ClosedRange<Int>? = null, transform: (Int) -> Int = { it }): Int {
         return convertIntToInt(input?.toIntOrNull(), defaultValue, range, transform)
     }

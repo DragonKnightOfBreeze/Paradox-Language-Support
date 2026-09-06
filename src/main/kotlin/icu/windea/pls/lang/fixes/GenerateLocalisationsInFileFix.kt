@@ -28,7 +28,7 @@ class GenerateLocalisationsInFileFix(
 
     override fun getFamilyName() = ChronicleInspectionBundle.message("fix.generateLocalisationsInFile.familyName")
 
-    override fun getPriority() = PriorityAction.Priority.HIGH
+    override fun getPriority() = PriorityAction.Priority.HIGH // 高优先级，如果可用
 
     override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
         if (editor == null) return

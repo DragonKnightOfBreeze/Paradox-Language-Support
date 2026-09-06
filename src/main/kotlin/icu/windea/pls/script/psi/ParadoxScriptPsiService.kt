@@ -20,8 +20,6 @@ import icu.windea.pls.core.util.values.or
 import icu.windea.pls.core.util.values.unresolved
 import icu.windea.pls.model.constants.ChronicleStrings
 import icu.windea.pls.script.ParadoxScriptLanguage
-import java.util.*
-import java.util.function.IntUnaryOperator
 
 @Suppress("unused")
 object ParadoxScriptPsiService {
@@ -123,47 +121,6 @@ object ParadoxScriptPsiService {
     fun isBeforeBlockLeftBoundEnd(element: ParadoxScriptProperty, offset: Int): Boolean {
         val block = element.propertyValue?.castOrNull<ParadoxScriptBlock>() ?: return true
         return PsiService.isBeforeLeftBoundEnd(block, offset)
-    }
-
-    fun parseExpressionCharacters(chars: String, out: StringBuilder, sourceOffsets: IntArray?): Boolean {
-        if (chars.none { c -> c == '\\' }) {
-            if (sourceOffsets != null) Arrays.setAll(sourceOffsets, IntUnaryOperator.identity())
-            out.append(chars)
-            return true
-        }
-
-        val outOffset = out.length
-        var index = 0
-        while (index < chars.length) {
-            val c = chars[index++]
-            if (sourceOffsets != null) {
-                sourceOffsets[out.length - outOffset] = index - 1
-                sourceOffsets[out.length + 1 - outOffset] = index
-            }
-            if (c != '\\') {
-                out.append(c)
-                continue
-            }
-            if (index == chars.length) return false
-            when (val c1 = chars[index++]) {
-                '"' -> {
-                    out.append('"')
-                    if (sourceOffsets != null) {
-                        sourceOffsets[out.length - outOffset] = index
-                    }
-                }
-                '\\' -> {
-                    out.append('\\')
-                    if (sourceOffsets != null) {
-                        sourceOffsets[out.length - outOffset] = index
-                    }
-                }
-                else -> {
-                    out.append('\\').append(c1)
-                }
-            }
-        }
-        return true
     }
 
     @Suppress("unused")

@@ -3,7 +3,7 @@ package icu.windea.pls.script.psi
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.LiteralTextEscaper
 import com.intellij.psi.PsiLanguageInjectionHost
-import icu.windea.pls.script.text.ParadoxScriptTextService
+import icu.windea.pls.core.text.TextService
 import kotlin.math.min
 
 class ParadoxScriptExpressionLiteralTextEscaper<T : PsiLanguageInjectionHost>(
@@ -14,7 +14,7 @@ class ParadoxScriptExpressionLiteralTextEscaper<T : PsiLanguageInjectionHost>(
     override fun decode(rangeInsideHost: TextRange, outChars: StringBuilder): Boolean {
         val subText = rangeInsideHost.substring(myHost.text)
         outSourceOffsets = IntArray(subText.length + 1)
-        return ParadoxScriptTextService.parseExpressionCharacters(subText, outChars, outSourceOffsets)
+        return TextService.decodeLiteralText(subText, outChars, outSourceOffsets)
     }
 
     override fun getOffsetInHost(offsetInDecoded: Int, rangeInsideHost: TextRange): Int {

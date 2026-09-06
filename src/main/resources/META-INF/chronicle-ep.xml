@@ -180,6 +180,7 @@
 
     <unresolvedExpressionChecker id="default" implementation="icu.windea.pls.ep.inspections.ParadoxDefaultUnresolvedExpressionChecker" order="last"/>
     <unresolvedExpressionChecker implementation="icu.windea.pls.ep.inspections.ParadoxWrongBooleanUnresolvedExpressionChecker"/>
+    <unresolvedExpressionChecker implementation="icu.windea.pls.ep.inspections.ParadoxSubtypesMismatchedDefinitionUnresolvedExpressionChecker"/>
 
     <patternMatcher id="default" implementation="icu.windea.pls.ep.match.ParadoxDefaultPatternMatcher"/>
     <patternMatcher id="template" implementation="icu.windea.pls.ep.match.ParadoxTemplatePatternMatcher"/>

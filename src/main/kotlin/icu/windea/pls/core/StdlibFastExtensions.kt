@@ -76,7 +76,7 @@ fun String.trimFast(c: Char): String {
 
 /** @see kotlin.text.split */
 @Fast
-fun String.splitFast(delimiter: Char, ignoreCase: Boolean = false, limit: Int = 0): List<String> {
+fun String.splitFast(delimiter: Char = ',', ignoreCase: Boolean = false, limit: Int = 0): List<String> {
     require(limit >= 0) { "Limit must be non-negative, but was $limit" }
 
     var currentOffset = 0
@@ -103,7 +103,7 @@ fun String.splitFast(delimiter: Char, ignoreCase: Boolean = false, limit: Int = 
 }
 
 @Fast
-fun <T> List<T>.joinToStringFast(separator: CharSequence, transform: ((T) -> CharSequence)? = null): String {
+fun <T> List<T>.joinToStringFast(separator: CharSequence = ", ", transform: ((T) -> CharSequence)? = null): String {
     val size = size
     if (size == 0) return ""
     if (size == 1) return this[0].withTransform(transform).toString()
