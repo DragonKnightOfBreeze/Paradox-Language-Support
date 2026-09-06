@@ -16,12 +16,20 @@ class ParadoxScriptInlineMathWordSelectionHandler : ExtendWordSelectionHandlerBa
         return findElement(e) != null
     }
 
-    // no additional text ranges here
-    override fun select(e: PsiElement, editorText: CharSequence, cursorOffset: Int, editor: Editor): List<TextRange?>? {
-        return super.select(e, editorText, cursorOffset, editor)
+    override fun select(e: PsiElement, editorText: CharSequence, cursorOffset: Int, editor: Editor): List<TextRange>? {
+        val element = findElement(e) ?: return null
+        val result = mutableListOf<TextRange>()
+        selectForInlineMath(element, cursorOffset, result)
+        return result
     }
 
     private fun findElement(element: PsiElement): ParadoxScriptInlineMath? {
         return ParadoxScriptPsiService.findInlineMathFromSelfOrBrackets(element)
+    }
+
+    @Suppress("UNUSED_PARAMETER")
+    private fun selectForInlineMath(element: ParadoxScriptInlineMath, cursorOffset: Int, result: MutableList<TextRange>) {
+        // add this
+        result.add(element.textRange)
     }
 }

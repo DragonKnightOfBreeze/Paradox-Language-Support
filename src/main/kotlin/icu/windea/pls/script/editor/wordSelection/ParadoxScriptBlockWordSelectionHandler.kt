@@ -16,12 +16,20 @@ class ParadoxScriptBlockWordSelectionHandler : ExtendWordSelectionHandlerBase() 
         return findElement(e) != null
     }
 
-    // no additional text ranges here
-    override fun select(e: PsiElement, editorText: CharSequence, cursorOffset: Int, editor: Editor): List<TextRange?>? {
-        return super.select(e, editorText, cursorOffset, editor)
+    override fun select(e: PsiElement, editorText: CharSequence, cursorOffset: Int, editor: Editor): List<TextRange>? {
+        val element = findElement(e) ?: return null
+        val result = mutableListOf<TextRange>()
+        selectForBlock(element, cursorOffset, result)
+        return result
     }
 
     private fun findElement(element: PsiElement): ParadoxScriptBlock? {
         return ParadoxScriptPsiService.findBlockFromSelfOrBraces(element)
+    }
+
+    @Suppress("UNUSED_PARAMETER")
+    private fun selectForBlock(element: ParadoxScriptBlock, cursorOffset: Int, result: MutableList<TextRange>) {
+        // add this
+        result.add(element.textRange)
     }
 }

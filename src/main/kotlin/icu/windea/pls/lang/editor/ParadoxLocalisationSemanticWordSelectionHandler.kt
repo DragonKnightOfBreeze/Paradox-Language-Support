@@ -36,10 +36,10 @@ class ParadoxLocalisationSemanticWordSelectionHandler : ExtendWordSelectionHandl
     private fun selectExpression(element: ParadoxLocalisationExpressionElement, cursorOffset: Int, result: MutableList<TextRange>) {
         val textRange = element.textRange
         if (textRange.isEmpty) return
-        selectInComplexExpression(element, cursorOffset, textRange, result)
+        selectInComplexExpression(element, textRange, cursorOffset, result)
     }
 
-    private fun selectInComplexExpression(element: ParadoxLocalisationExpressionElement, offset: Int, textRange: TextRange, result: MutableList<TextRange>) {
+    private fun selectInComplexExpression(element: ParadoxLocalisationExpressionElement, textRange: TextRange, cursorOffset: Int, result: MutableList<TextRange>) {
         // 2.1.10 如果当前光标位于一个复杂表达式中，按照复杂表达式的结构来展开光标
 
         ProgressManager.checkCanceled()
@@ -50,7 +50,7 @@ class ParadoxLocalisationSemanticWordSelectionHandler : ExtendWordSelectionHandl
         val complexExpression = ParadoxComplexExpression.resolve(element, configGroup) ?: return
 
         val expressionOffset = ParadoxExpressionService.getExpressionOffset(element)
-        val offsetInExpression = offset - textRange.startOffset - expressionOffset
+        val offsetInExpression = cursorOffset - textRange.startOffset - expressionOffset
         val selections = mutableSetOf<TextRange>()
         complexExpression.accept(object : ParadoxComplexExpressionWordSelectionRecursiveVisitor(offsetInExpression) {
             override fun visitWordSelection(node: ParadoxComplexExpressionNode, rangeInExpression: TextRange): Boolean {
