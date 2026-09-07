@@ -19,11 +19,12 @@ import icu.windea.pls.model.ParadoxGameType;
 import icu.windea.pls.model.constraints.ParadoxSyntaxConstraint;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 
-import java.util.BitSet;
-
-import static com.intellij.psi.TokenType.BAD_CHARACTER;
-import static com.intellij.psi.TokenType.WHITE_SPACE;
+import static com.intellij.psi.TokenType.*;
 import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
+
+
+
+import java.util.BitSet;
 
 public class _ParadoxLocalisationTextLexer implements FlexLexer {
   /** This character denotes the end of file */
@@ -67,9 +68,9 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
    * l is of the form l = 2*k, k a non negative integer
    */
   private static final int ZZ_LEXSTATE[] = {
-     0,  0,  0,  0,  1,  1,  2,  2,  3,  3,  4,  4,  5,  5,  6,  6,
-     7,  7,  8,  8,  9,  9, 10, 10, 11, 11,  3,  3, 12, 12, 13, 13,
-    14, 14, 15, 15,  3,  3, 16, 16, 17, 17,  0,  0, 18, 18, 19, 19,
+     0,  0,  0,  0,  1,  1,  2,  2,  3,  3,  4,  4,  5,  5,  6,  6, 
+     7,  7,  8,  8,  9,  9, 10, 10, 11, 11,  3,  3, 12, 12, 13, 13, 
+    14, 14, 15, 15,  3,  3, 16, 16, 17, 17,  0,  0, 18, 18, 19, 19, 
     20, 20, 21, 21
   };
 
@@ -242,8 +243,8 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
     "\3\61\5\46\1\111\3\46\1\112\1\113\3\46\1\112"+
     "\7\46\5\114\1\32\1\33\1\34\7\114\1\115\1\114"+
     "\1\35\1\114\1\36\1\116\1\40\1\41\1\42\1\43"+
-    "\1\114\6\46\1\117\1\46\1\52\1\46\2\52\1\46"+
-    "\1\52\4\46\1\52\10\46\3\61\5\46\1\111\3\46"+
+    "\1\114\10\46\1\52\1\46\2\52\1\46\1\52\2\46"+
+    "\1\117\1\46\1\52\10\46\3\61\5\46\1\111\3\46"+
     "\1\112\4\46\1\112\24\46\1\120\4\46\1\120\7\46"+
     "\1\0\3\27\11\0\1\121\4\0\1\121\25\0\1\122"+
     "\13\0\5\31\3\0\11\31\1\0\1\31\1\0\1\37"+
@@ -487,8 +488,12 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
     }
 
     private boolean needExitStateForRecovery() {
-        // heuristic: always recover atm
-        return true;
+        // heuristic: recover when the character is likely a boundary marker
+        // heuristic: recover when the character is blank (and it's not a valid token in the previous context)
+        char c = yycharat(0);
+        if (c == ']' || c == '$' || c == '§' || c == '£' || c == '[') return true;
+        if (Character.isWhitespace(c)) return true;
+        return false;
     }
     private IElementType getFallbackToken() {
         // fallback to `TEXT_TOKEN`, if necessary

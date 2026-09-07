@@ -117,8 +117,12 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
     }
 
     private boolean needExitStateForRecovery() {
-        // heuristic: always recover atm
-        return true;
+        // heuristic: recover when the character is likely a boundary marker
+        // heuristic: recover when the character is blank (and it's not a valid token in the previous context)
+        char c = yycharat(0);
+        if (c == ']' || c == '$' || c == '§' || c == '£' || c == '[') return true;
+        if (Character.isWhitespace(c)) return true;
+        return false;
     }
     private IElementType getFallbackToken() {
         // fallback to `TEXT_TOKEN`, if necessary
@@ -188,7 +192,7 @@ IdentifierChar = [A-Za-z0-9_]
 IdentifierLeadChar = [A-Za-z_] // leading number is not allowed
 IdentifierToken = {IdentifierLeadChar}{IdentifierChar}* // leading number is not allowed
 
-InterpolationMarkerChar = [$|\[\]]
+// InterpolationMarkerChar = [$|\[\]]
 InterpolationLeadChar = [$\[]
 
 ScriptedVariableToken = {IdentifierToken} // identifier
@@ -537,10 +541,12 @@ ContextTagToken = {ContextTagChar}+ // leading number is allowed
     }
     // `tag:` here should be recognized as STRING_VARIANT_TAG_PART, so use `StringVariantTextToken` here specially
     ":"|{StringVariantTextToken} { return TEXT_TOKEN; }
+    [^] { if (!exitStateForRecoveryIfNeeded()) return BAD_CHARACTER; } // recovery
 }
 <IN_STRING_VARIANT_AFTER_TAG_PART> {
     // `tag:` here should be recognized as TEXT_TOKEN normally
     {TextToken} { return TEXT_TOKEN; }
+    [^] { if (!exitStateForRecoveryIfNeeded()) return BAD_CHARACTER; } // recovery
 }
 <IN_STRING_VARIANT_TAG_PART> {
     ":" {
@@ -564,9 +570,10 @@ ContextTagToken = {ContextTagChar}+ // leading number is allowed
     "<" { return getFallbackToken(); }
     // need to exclude `<` additionally (otherwise `<PARAM>` would be incorrectly recognized as TEXT_TOKEN)
     {TagSensitiveTextToken} { return TEXT_TOKEN; }
+    [^] { if (!exitStateForRecoveryIfNeeded()) return BAD_CHARACTER; } // recovery
 }
 <IN_TAGGED_PARAMETER> {
-    "$" {
+    ">" {
         exitState(EXPECT_TAGGED_PARAMETER);
         return TAGGED_PARAMETER_END;
     }

@@ -118,8 +118,8 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
     }
 
     private boolean needExitStateForRecovery() {
-        // heuristic: recover when the character is a boundary marker (`}]${[`)
-        // heuristic: recover when the character is blank (and it's not a valid token in previous context)
+        // heuristic: recover when the character is likely a boundary marker
+        // heuristic: recover when the character is blank (and it's not a valid token in the previous context)
         char c = yycharat(0);
         if (c == '}' || c == ']' || c == '$' || c == '{' || c == '[') return true;
         if (Character.isWhitespace(c)) return true;

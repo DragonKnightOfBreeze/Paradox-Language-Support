@@ -324,8 +324,7 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
     }
 
     private IElementType handleLocaleToken() {
-        // Locale headers may be absent or appear multiple times (e.g. in `localisation/languages.yml`).
-        // This rule matched: ^ {LOCALE_TOKEN} ":" (no trailing part). So, we now check the remainder of the line.
+        // Locale headers may be absent or appear multiple times (e.g., in `localisation/languages.yml`).
         // Heuristic:
         // - If it's at line start, and there are no characters or only whitespaces until EOL/EOF, treat as a locale.
         // - Otherwise, treat as a property key.
@@ -360,15 +359,16 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
     private IElementType handleRightQuote() {
         // Double quotes inside localisation text do not need escaping.
         // Heuristic:
-        //  - If there is another `"` ahead on the same line, the current `"` is part of the text (not closing).
-        //  - Otherwise, treat the current `"` as the closing quote, even if a trailing comment (e.g. `# ...`) exists.
+        // - If there is another `"` ahead on the same line, the current `"` is part of the text (not closing).
+        // - Otherwise, treat the current `"` as the closing quote, even if a trailing comment exists (e.g., `# "..."`).
 
         try {
             int i = zzCurrentPos + yylength(); // position right after current match
             int length = zzBuffer.length();
             while (i < length) {
                 char c = zzBuffer.charAt(i);
-                if (c == '\n' || c == '\r') break; // reached EOL
+                if (c == '\n' || c == '\r') break; // reached EOL -> break
+                // if (c == '#') break; // reached comment start marker -> but do not break atm
                 if (c == '"') return PROPERTY_VALUE_TOKEN; // another quote exists -> current is not closing
                 i++;
             }
