@@ -7,15 +7,17 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.codeStyle.CodeStyleManager
 import com.intellij.psi.util.endOffset
 import com.intellij.psi.util.startOffset
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.cwt.psi.CwtElementFactory
 import icu.windea.pls.cwt.psi.CwtProperty
 
 class CwtPropertySurrounder : CwtSurrounder() {
-    @Suppress("DialogTitleCapitalization")
-    override fun getTemplateDescription() = "key = {...}"
-
     override fun isApplicable(elements: Array<out PsiElement>): Boolean {
         return elements.isNotEmpty()
+    }
+
+    override fun getTemplateDescription(): String {
+        return ChronicleBundle.message("cwt.surround.property")
     }
 
     override fun surroundElements(project: Project, editor: Editor, elements: Array<out PsiElement>): TextRange {

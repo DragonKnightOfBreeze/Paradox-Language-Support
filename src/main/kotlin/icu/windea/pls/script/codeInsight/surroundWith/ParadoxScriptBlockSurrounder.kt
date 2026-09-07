@@ -8,14 +8,17 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.codeStyle.CodeStyleManager
 import com.intellij.psi.util.endOffset
 import com.intellij.psi.util.startOffset
+import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
 
 class ParadoxScriptBlockSurrounder : Surrounder {
-    override fun getTemplateDescription() = "{...}"
-
     override fun isApplicable(elements: Array<out PsiElement>): Boolean {
         return elements.isNotEmpty()
+    }
+
+    override fun getTemplateDescription(): String {
+        return ChronicleBundle.message("script.surround.block")
     }
 
     override fun surroundElements(project: Project, editor: Editor, elements: Array<out PsiElement>): TextRange {
