@@ -274,7 +274,7 @@ object ParadoxModifierSupportFactory {
     fun getReferenceConfigsFromModifierTemplate(configGroup: CwtConfigGroup, templateExpression: CwtTemplateExpression): List<CwtConfig<*>> {
         val referenceExpressions = templateExpression.referenceExpressions
         return referenceExpressions.mapNotNull {
-            when(it.type) {
+            when (it.type) {
                 CwtDataTypes.Definition -> it.metadata.value?.let { type -> configGroup.types.get(type) }
                 CwtDataTypes.EnumValue -> it.metadata.value?.let { enumName -> configGroup.complexEnums.get(enumName) }
                 else -> null

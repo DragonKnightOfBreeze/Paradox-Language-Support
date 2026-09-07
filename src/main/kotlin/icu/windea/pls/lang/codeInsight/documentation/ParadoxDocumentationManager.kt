@@ -857,7 +857,7 @@ object ParadoxDocumentationManager {
     }
 
     private fun DocumentationBuilder.addTextForLocalisation(element: ParadoxLocalisationProperty) {
-        if(hint) return
+        if (hint) return
         if (!ChronicleSettings.getInstance().state.documentation.renderLocalisationForLocalisations) return
 
         // 加上渲染后的本地化文本
@@ -879,7 +879,7 @@ object ParadoxDocumentationManager {
     }
 
     private fun DocumentationBuilder.buildLocalisationArgumentInfo(element: ParadoxLocalisationArgument) {
-        if(hint) return
+        if (hint) return
         val sections = getSections(SECTIONS_INFO)
         ParadoxLocalisationArgumentManager.getInfo(element).let {
             sections.put(ChronicleBundle.message("doc.sectionTitle.formattingTags"), it)
@@ -887,7 +887,7 @@ object ParadoxDocumentationManager {
     }
 
     private fun DocumentationBuilder.addParameters(element: ParadoxDefinitionElement) {
-        if(hint) return
+        if (hint) return
         if (!ChronicleSettings.getInstance().state.documentation.showParameters) return
 
         val sections = getSections(SECTIONS_INFO)

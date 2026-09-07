@@ -6,7 +6,7 @@ import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
 
 object ParadoxScriptPsiDescriptionService {
-     fun getName(element: PsiElement): String? {
+    fun getName(element: PsiElement): String? {
         return when (element) {
             is ParadoxScriptScriptedVariable -> element.name
             is ParadoxScriptProperty -> element.name
@@ -14,8 +14,8 @@ object ParadoxScriptPsiDescriptionService {
         }
     }
 
-     fun getType(element: PsiElement): String? {
-         // should not be upper-cased
+    fun getType(element: PsiElement): String? {
+        // should not be upper-cased
         return when (element) {
             is ParadoxScriptScriptedVariable -> ChronicleBundle.message("script.description.type.scriptedVariable")
             is ParadoxScriptProperty -> ChronicleBundle.message("script.description.type.property")

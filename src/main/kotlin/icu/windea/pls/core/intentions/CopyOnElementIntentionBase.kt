@@ -6,7 +6,7 @@ import com.intellij.modcommand.ModCommandAction
 import com.intellij.modcommand.Presentation
 import com.intellij.openapi.project.DumbAware
 
-abstract class CopyOnElementIntentionBase: ModCommandAction, DumbAware {
+abstract class CopyOnElementIntentionBase : ModCommandAction, DumbAware {
     override fun getPresentation(context: ActionContext): Presentation? {
         getText(context) ?: return null
         return Presentation.of(familyName)

@@ -57,6 +57,6 @@ class IncorrectColumnNameInspection : LocalInspectionTool() {
     }
 
     private fun createContext(holder: ProblemsHolder): ParadoxExpressionInspectionContext {
-        return ParadoxExpressionInspectionContext(this, holder, showExpect = showExpect, truncateExpect = truncateExpect, )
+        return ParadoxExpressionInspectionContext(this, holder, showExpect = showExpect, truncateExpect = truncateExpect)
     }
 }

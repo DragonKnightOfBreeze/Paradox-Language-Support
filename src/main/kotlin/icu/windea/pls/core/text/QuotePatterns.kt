@@ -18,7 +18,7 @@ object QuotePatterns {
      *
      * TODO 目前仅出于兼容性的目的提供。实际上，应当总是优先考虑传入精确的命令参数，然后再执行命令。这涉及未来的进一步的重构。
      */
-    object CommandLine: QuotePattern.Base('\'') {
+    object CommandLine : QuotePattern.Base('\'') {
         override fun checkChar(text: String, start: Int, end: Int, index: Int, char: Char) = char.isWhitespace() || char == quoteChar
     }
 }

@@ -47,9 +47,9 @@ fun String.transformAndKeepQuotes(quotePattern: QuotePattern = QuotePatterns.Def
     val startOffset = if (leftQuoted) 1 else 0
     val endOffset = if (rightQuoted) -1 else 0
     return buildString {
-        if(leftQuoted) append(quotePattern.quoteChar)
+        if (leftQuoted) append(quotePattern.quoteChar)
         append(transform(text.substring(startOffset, text.length + endOffset)))
-        if(rightQuoted) append(quotePattern.quoteChar)
+        if (rightQuoted) append(quotePattern.quoteChar)
     }
 }
 
@@ -60,7 +60,7 @@ fun TextRange.unquote(text: String, quotePattern: QuotePattern = QuotePatterns.D
     if (text.isEmpty()) return TextRange.EMPTY_RANGE
     val leftQuoted = text.isLeftQuoted(quotePattern)
     val rightQuoted = text.isRightQuoted(quotePattern)
-    if(!leftQuoted && !rightQuoted) return this
+    if (!leftQuoted && !rightQuoted) return this
     val startOffset = if (leftQuoted) startOffset + 1 else startOffset
     val endOffset = if (rightQuoted) endOffset - 1 else endOffset
     return TextRange.create(startOffset, endOffset)

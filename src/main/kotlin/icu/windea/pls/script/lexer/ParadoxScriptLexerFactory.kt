@@ -33,18 +33,18 @@ object ParadoxScriptLexerFactory {
     }
 
     @JvmStatic
-    fun createHighlightingLexer(project: Project? = null,gameType: ParadoxGameType? = null): ParadoxScriptHighlightingLexer {
+    fun createHighlightingLexer(project: Project? = null, gameType: ParadoxGameType? = null): ParadoxScriptHighlightingLexer {
         // NOTE 3.0.2 `gameType` is unused (so the argument is not passed) atm
         return ParadoxScriptHighlightingLexer(gameType)
     }
 
     @JvmStatic
-     fun registerInlineMathLexer(lexer: LayeredLexer, gameType: ParadoxGameType? = null) {
+    fun registerInlineMathLexer(lexer: LayeredLexer, gameType: ParadoxGameType? = null) {
         lexer.registerSelfStoppingLayer(ParadoxScriptInlineMathLexer(gameType), inlineMathTokens, emptyTokens)
     }
 
     @JvmStatic
-     fun registerLiteralLexer(lexer: LayeredLexer) {
+    fun registerLiteralLexer(lexer: LayeredLexer) {
         lexer.registerSelfStoppingLayer(CwtStringLiteralLexer(PROPERTY_KEY_TOKEN), propertyKeyTokens, emptyTokens)
         lexer.registerSelfStoppingLayer(CwtStringLiteralLexer(STRING_TOKEN), stringTokens, emptyTokens)
     }

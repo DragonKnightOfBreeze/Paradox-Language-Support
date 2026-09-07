@@ -71,6 +71,6 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
     }
 
     private fun createContext(holder: ProblemsHolder): ParadoxExpressionInspectionContext {
-        return ParadoxExpressionInspectionContext(this, holder, ignoreByConfigs = ignoreByConfigs, showExpect = showExpect, truncateExpect = truncateExpect, )
+        return ParadoxExpressionInspectionContext(this, holder, ignoreByConfigs = ignoreByConfigs, showExpect = showExpect, truncateExpect = truncateExpect)
     }
 }

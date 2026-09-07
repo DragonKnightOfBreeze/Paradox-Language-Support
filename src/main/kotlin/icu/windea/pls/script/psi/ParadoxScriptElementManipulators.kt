@@ -10,7 +10,7 @@ interface ParadoxScriptElementManipulators {
         }
     }
 
-    class ValueManipulator: AbstractElementManipulator<ParadoxScriptValue>() {
+    class ValueManipulator : AbstractElementManipulator<ParadoxScriptValue>() {
         override fun handleContentChange(element: ParadoxScriptValue, range: TextRange, newContent: String): ParadoxScriptValue {
             return ParadoxScriptPsiManipulationService.changeContent(element, newContent, range)
         }

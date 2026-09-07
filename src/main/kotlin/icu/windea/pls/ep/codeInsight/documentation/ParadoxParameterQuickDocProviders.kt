@@ -20,7 +20,7 @@ import icu.windea.pls.model.inlineScriptExpression
 /**
  * @see ParadoxDefinitionParameterSupport
  */
-class ParadoxDefinitionParameterQuickDocProvider: ParadoxParameterQuickDocProvider {
+class ParadoxDefinitionParameterQuickDocProvider : ParadoxParameterQuickDocProvider {
     override fun buildDefinitionPart(element: ParadoxParameterLightElement, builder: DocumentationBuilder): Boolean = with(builder) {
         val definitionName = element.definitionName ?: return false
         val definitionType = element.definitionTypes ?: return false
@@ -61,7 +61,7 @@ class ParadoxDefinitionParameterQuickDocProvider: ParadoxParameterQuickDocProvid
 /**
  * @see ParadoxInlineScriptParameterSupport
  */
-class ParadoxInlineScriptParameterQuickDocProvider: ParadoxParameterQuickDocProvider {
+class ParadoxInlineScriptParameterQuickDocProvider : ParadoxParameterQuickDocProvider {
     override fun buildDefinitionPart(element: ParadoxParameterLightElement, builder: DocumentationBuilder): Boolean = with(builder) {
         val inlineScriptExpression = element.inlineScriptExpression ?: return false
         if (inlineScriptExpression.isEmpty()) return false

@@ -85,7 +85,7 @@ object ChronicleModificationTrackers {
         if (configs.isEmpty()) return PatternsBasedModificationTracker.NEVER_CHANGED
         val patterns = sortedSetOf<String>()
         configs.forEach { config ->
-            if(config is CwtFilePathMatchableConfig) patterns += config.filePathPatterns
+            if (config is CwtFilePathMatchableConfig) patterns += config.filePathPatterns
         }
         return scriptFileFromFilePathPatterns(patterns)
     }

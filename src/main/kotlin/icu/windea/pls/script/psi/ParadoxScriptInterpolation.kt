@@ -13,4 +13,4 @@ import icu.windea.pls.core.psi.PsiPresentableElement
  * @see ParadoxScriptParameter
  * @see ParadoxScriptInlineConditionalBlock
  */
-interface  ParadoxScriptInterpolation : NavigatablePsiElement, PsiPresentableElement
+interface ParadoxScriptInterpolation : NavigatablePsiElement, PsiPresentableElement

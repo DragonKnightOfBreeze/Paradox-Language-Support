@@ -30,17 +30,17 @@ class CopyLocalisationNameIntention : CopyOnElementIntentionBase() {
     override fun getText(context: ActionContext) = ParadoxCopyIntentionService.getLocalisationName(context)
 }
 
-class CopyLocalisationTextIntention :  CopyOnElementIntentionBase() {
+class CopyLocalisationTextIntention : CopyOnElementIntentionBase() {
     override fun getFamilyName() = ChronicleIntentionBundle.message("intention.copyLocalisationText")
     override fun getText(context: ActionContext) = ParadoxCopyIntentionService.getLocalisationText(context)
 }
 
-class CopyLocalisationTextAsPlainIntention :  CopyOnElementIntentionBase() {
+class CopyLocalisationTextAsPlainIntention : CopyOnElementIntentionBase() {
     override fun getFamilyName() = ChronicleIntentionBundle.message("intention.copyLocalisationTextAsPlain")
     override fun getText(context: ActionContext) = ParadoxCopyIntentionService.getLocalisationTextAsPlain(context)
 }
 
-class CopyLocalisationTextAsHtmlIntention :  CopyOnElementIntentionBase() {
+class CopyLocalisationTextAsHtmlIntention : CopyOnElementIntentionBase() {
     override fun getFamilyName() = ChronicleIntentionBundle.message("intention.copyLocalisationTextAsHtml")
     override fun getText(context: ActionContext) = ParadoxCopyIntentionService.getLocalisationTextAsHtml(context)
 }

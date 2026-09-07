@@ -79,7 +79,7 @@ object EscapePatterns {
      * 在转义时将换行符（`\n` 或 `\r`）替换为 `<br>` 并保留其后的换行符，将制表符（`\t`）替换为 `&emsp;`，
      * 在反转义时对应地将 `<br>`（及其后可能跟随的换行符）还原为换行符，将 `&emsp;` 还原为制表符。
      */
-    object HtmlLineBreak: EscapePattern.Base() {
+    object HtmlLineBreak : EscapePattern.Base() {
         @Optimized
         override fun escape(text: String): String {
             // optimize: build string only if necessary

@@ -14,4 +14,4 @@ import icu.windea.pls.core.psi.PsiPresentableElement
  * @see ParadoxLocalisationParameter
  * @see ParadoxLocalisationCommand
  */
-interface ParadoxLocalisationInterpolation: NavigatablePsiElement, PsiPresentableElement
+interface ParadoxLocalisationInterpolation : NavigatablePsiElement, PsiPresentableElement

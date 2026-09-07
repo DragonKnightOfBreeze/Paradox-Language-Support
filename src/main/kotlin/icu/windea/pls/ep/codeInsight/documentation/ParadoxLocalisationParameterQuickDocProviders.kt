@@ -11,7 +11,7 @@ import icu.windea.pls.lang.psi.light.ParadoxLocalisationParameterLightElement
 import icu.windea.pls.model.ReferenceLinkType
 import icu.windea.pls.model.constants.ChronicleStrings
 
-class ParadoxBaseLocalisationParameterQuickDocProvider: ParadoxLocalisationParameterQuickDocProvider {
+class ParadoxBaseLocalisationParameterQuickDocProvider : ParadoxLocalisationParameterQuickDocProvider {
     override fun buildDefinitionPart(element: ParadoxLocalisationParameterLightElement, builder: DocumentationBuilder): Boolean = with(builder) {
         // 不加上文件信息
 

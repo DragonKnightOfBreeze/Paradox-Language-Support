@@ -10,7 +10,7 @@ import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextHtmlRenderer
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextPlainRenderer
 
 object ParadoxCopyIntentionService {
-     fun getScriptedVariableName(context: ActionContext): String? {
+    fun getScriptedVariableName(context: ActionContext): String? {
         val element = ParadoxPsiFileService.findScriptedVariable(context.file, context.offset) { BY_NAME or BY_REFERENCE } ?: return null
         return element.name?.orNull()
     }
@@ -37,7 +37,7 @@ object ParadoxCopyIntentionService {
         return element.name.orNull()
     }
 
-     fun getLocalisationText(context: ActionContext): String? {
+    fun getLocalisationText(context: ActionContext): String? {
         val element = ParadoxPsiFileService.findLocalisation(context.file, context.offset) { DEFAULT or BY_REFERENCE } ?: return null
         return element.value
     }

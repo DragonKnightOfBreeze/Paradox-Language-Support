@@ -24,7 +24,7 @@ interface ParadoxColorProvider {
 
     fun setColor(element: PsiElement, color: Color): Boolean
 
-    object Keys: KeyRegistry() {
+    object Keys : KeyRegistry() {
         val cachedColor = createKey<CachedValue<Color>>("cached.color")
     }
 

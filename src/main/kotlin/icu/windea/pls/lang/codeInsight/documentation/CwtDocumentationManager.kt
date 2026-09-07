@@ -74,7 +74,7 @@ object CwtDocumentationManager {
     }
 
     private fun DocumentationBuilder.build(element: PsiElement, originalElement: PsiElement?) {
-        when(element) {
+        when (element) {
             is CwtConfigSymbolLightElement -> buildForConfigSymbol(element, originalElement)
             is CwtMemberConfigLightElement -> buildForMemberConfig(element, originalElement)
             is CwtOption -> buildForOption(element, originalElement)
@@ -135,7 +135,7 @@ object CwtDocumentationManager {
 
     private fun DocumentationBuilder.buildForValue(element: CwtValue, originalElement: PsiElement?) {
         // dispatch for option flags
-        if(element.isOptionValue()) return buildForOptionFlag(element, originalElement)
+        if (element.isOptionValue()) return buildForOptionFlag(element, originalElement)
 
         // only for property value or block value
         if (!element.isDataExpression()) return

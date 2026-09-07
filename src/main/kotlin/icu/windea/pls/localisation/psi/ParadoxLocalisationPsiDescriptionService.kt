@@ -6,15 +6,15 @@ import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
 
 object ParadoxLocalisationPsiDescriptionService {
-     fun getName(element: PsiElement): String? {
+    fun getName(element: PsiElement): String? {
         return when (element) {
             is ParadoxLocalisationProperty -> element.name
             else -> null
         }
     }
 
-     fun getType(element: PsiElement): String? {
-         // should not be upper-cased
+    fun getType(element: PsiElement): String? {
+        // should not be upper-cased
         return when (element) {
             is ParadoxLocalisationProperty -> ChronicleBundle.message("localisation.description.type.property")
             else -> null

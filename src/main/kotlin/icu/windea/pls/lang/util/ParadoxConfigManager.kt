@@ -131,7 +131,7 @@ object ParadoxConfigManager {
      * 得到 [element] 对应的 CSV 文件（[ParadoxCsvFile]）的行规则。
      */
     fun getRowConfig(element: PsiElement): CwtRowConfig? {
-        if(element.language !== ParadoxCsvLanguage) return null
+        if (element.language !== ParadoxCsvLanguage) return null
         val file = element.containingFile?.castOrNull<ParadoxCsvFile>() ?: return null
         // from cache
         return getRowConfigFromCache(file)

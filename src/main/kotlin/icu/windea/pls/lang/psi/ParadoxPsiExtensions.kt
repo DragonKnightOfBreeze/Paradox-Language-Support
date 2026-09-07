@@ -137,7 +137,7 @@ fun ParadoxScriptExpressionElement.formattedValue(resolve: Boolean = true, detai
     val element = if (resolve) resolved() else this
     if (element == null) return null
     return when (element) {
-        is ParadoxScriptInlineMath -> if(detail) element.text else element.value
+        is ParadoxScriptInlineMath -> if (detail) element.text else element.value
         is ParadoxScriptStringExpressionElement -> element.value.quoteIfNeeded(QuotePatterns.ParadoxScript)
         else -> element.value
     }

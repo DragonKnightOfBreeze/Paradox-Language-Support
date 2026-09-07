@@ -66,7 +66,7 @@ object ChronicleStrings {
     const val inlineMathFolder = "@[...]"
     fun parameterFolder(name: String) = "$${name}$"
     fun parameterWithArgFolder(name: String) = "$${name}|...$"
-    fun conditionalBlockFolder(expression: String) =  "[[${expression}]...]"
+    fun conditionalBlockFolder(expression: String) = "[[${expression}]...]"
     fun localisationPropertyFolder(name: String) = "${name}: \"...\""
     fun localisationColorfulTextFolder(name: String) = "§${name}...§!"
     fun localisationParameterFolder(name: String) = "$${name}$"

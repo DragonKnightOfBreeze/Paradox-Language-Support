@@ -21,7 +21,7 @@ import icu.windea.pls.core.findChildren
  * @see ParadoxLocalisationTextFormat
  */
 @Suppress("unused")
-interface ParadoxLocalisationInterpolationContainer: NavigatablePsiElement {
+interface ParadoxLocalisationInterpolationContainer : NavigatablePsiElement {
     val interpolations: List<ParadoxLocalisationInterpolation> get() = this.findChildren<_>()
     val parameters: List<ParadoxLocalisationParameter> get() = this.findChildren<_>()
     val commands: List<ParadoxLocalisationCommand> get() = this.findChildren<_>()

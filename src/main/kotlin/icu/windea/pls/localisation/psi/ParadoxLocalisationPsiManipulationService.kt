@@ -14,14 +14,14 @@ object ParadoxLocalisationPsiManipulationService {
         return element.replace(newElement).cast()
     }
 
-    fun changeContent(element: ParadoxLocalisationCommandText, newContent: String,range: TextRange? = null): ParadoxLocalisationCommandText {
+    fun changeContent(element: ParadoxLocalisationCommandText, newContent: String, range: TextRange? = null): ParadoxLocalisationCommandText {
         val newValue = range?.replace(element.text, newContent) ?: newContent
         val newText = newValue
         val newElement = ParadoxLocalisationElementFactory.createCommandText(element.project, newText)
         return element.replace(newElement).cast()
     }
 
-    fun changeContent(element: ParadoxLocalisationConceptName, newContent: String,range: TextRange? = null): ParadoxLocalisationConceptName {
+    fun changeContent(element: ParadoxLocalisationConceptName, newContent: String, range: TextRange? = null): ParadoxLocalisationConceptName {
         val newValue = range?.replace(element.text, newContent) ?: newContent
         val newText = newValue
         val newElement = ParadoxLocalisationElementFactory.createConceptName(element.project, newText)

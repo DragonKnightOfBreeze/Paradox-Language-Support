@@ -15,7 +15,7 @@ import icu.windea.pls.model.modifierConfig
  *
  * @see ParadoxPredefinedModifierSupport
  */
-class ParadoxPredefinedModifierCategoryProvider: ParadoxModifierCategoryProvider {
+class ParadoxPredefinedModifierCategoryProvider : ParadoxModifierCategoryProvider {
     override fun getModifierCategories(modifier: ParadoxModifierLightElement): Map<String, CwtModifierCategoryConfig>? {
         return modifier.modifierConfig?.categoryConfigMap
     }
@@ -30,7 +30,7 @@ class ParadoxPredefinedModifierCategoryProvider: ParadoxModifierCategoryProvider
  *
  * @see ParadoxTemplateModifierSupport
  */
-class ParadoxTemplateModifierCategoryProvider: ParadoxModifierCategoryProvider {
+class ParadoxTemplateModifierCategoryProvider : ParadoxModifierCategoryProvider {
     override fun getModifierCategories(modifier: ParadoxModifierLightElement): Map<String, CwtModifierCategoryConfig>? {
         return modifier.modifierConfig?.categoryConfigMap
     }
@@ -46,7 +46,7 @@ class ParadoxTemplateModifierCategoryProvider: ParadoxModifierCategoryProvider {
  * @see ParadoxEconomicCategoryModifierSupport
  */
 @ForGameType(ParadoxGameType.Stellaris)
-class ParadoxEconomicCategoryModifierCategoryProvider: ParadoxModifierCategoryProvider {
+class ParadoxEconomicCategoryModifierCategoryProvider : ParadoxModifierCategoryProvider {
     override fun getModifierCategories(modifier: ParadoxModifierLightElement): Map<String, CwtModifierCategoryConfig>? {
         val economicCategoryInfo = modifier.economicCategoryInfo ?: return null
         val modifierCategory = economicCategoryInfo.modifierCategory // may be null

@@ -60,6 +60,6 @@ class IncorrectExpressionInspection : LocalInspectionTool() {
     }
 
     private fun createContext(holder: ProblemsHolder): ParadoxExpressionInspectionContext {
-        return ParadoxExpressionInspectionContext(this, holder, showExpect = showExpect, )
+        return ParadoxExpressionInspectionContext(this, holder, showExpect = showExpect)
     }
 }

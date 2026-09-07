@@ -226,7 +226,7 @@ class CwtTypeModelBase : CwtTypeModel {
 
 @Optimized
 class CwtScopeModelBase : CwtScopeModel {
-    override val base2Aliases: Int2ObjectOpenHashMap<IntArraySet>  = Int2ObjectOpenHashMap()
+    override val base2Aliases: Int2ObjectOpenHashMap<IntArraySet> = Int2ObjectOpenHashMap()
     override val base2ParentScopes: Int2ObjectOpenHashMap<IntArraySet> = Int2ObjectOpenHashMap()
     override val base2ChildScopes: Int2ObjectOpenHashMap<IntArraySet> = Int2ObjectOpenHashMap()
     override val base2MatchedScopes: Int2ObjectOpenHashMap<IntArraySet> = Int2ObjectOpenHashMap()

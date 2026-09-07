@@ -5,7 +5,7 @@ import icu.windea.pls.model.ParadoxGameType
 
 class ParadoxLocalisationLayeredLexer(
     val gameType: ParadoxGameType? = null
-): LayeredLexer(ParadoxLocalisationLexer()) {
+) : LayeredLexer(ParadoxLocalisationLexer()) {
     init {
         ParadoxLocalisationLexerFactory.registerTextLexer(this, gameType)
     }
