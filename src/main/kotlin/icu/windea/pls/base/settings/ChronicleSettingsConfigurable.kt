@@ -366,16 +366,6 @@ class ChronicleSettingsConfigurable : BoundConfigurable(ChronicleBaseBundle.mess
                 .bindSelected(settings::localisationParametersFullyByDefault)
                 .enabledIf(cb.selected)
         }
-        // localisationIconsFully & localisationIconsFullyByDefault
-        row {
-            lateinit var cb: JBCheckBox
-            checkBox(ChronicleBaseBundle.message("settings.folding.localisationIconsFully"))
-                .bindSelected(settings::localisationIconsFully)
-                .applyToComponent { cb = this }
-            checkBox(ChronicleBaseBundle.message("settings.folding.byDefault"))
-                .bindSelected(settings::localisationIconsFullyByDefault)
-                .enabledIf(cb.selected)
-        }
         // localisationCommands & localisationCommandsByDefault
         row {
             lateinit var cb: JBCheckBox
@@ -404,6 +394,46 @@ class ChronicleSettingsConfigurable : BoundConfigurable(ChronicleBaseBundle.mess
                 .applyToComponent { cb = this }
             checkBox(ChronicleBaseBundle.message("settings.folding.byDefault"))
                 .bindSelected(settings::localisationConceptStringsByDefault)
+                .enabledIf(cb.selected)
+        }
+        // localisationIconsFully & localisationIconsFullyByDefault
+        row {
+            lateinit var cb: JBCheckBox
+            checkBox(ChronicleBaseBundle.message("settings.folding.localisationIconsFully"))
+                .bindSelected(settings::localisationIconsFully)
+                .applyToComponent { cb = this }
+            checkBox(ChronicleBaseBundle.message("settings.folding.byDefault"))
+                .bindSelected(settings::localisationIconsFullyByDefault)
+                .enabledIf(cb.selected)
+        }
+        // localisationTextIconsFully & localisationTextIconsFullyByDefault
+        row {
+            lateinit var cb: JBCheckBox
+            checkBox(ChronicleBaseBundle.message("settings.folding.localisationTextIconsFully"))
+                .bindSelected(settings::localisationTextIconsFully)
+                .applyToComponent { cb = this }
+            checkBox(ChronicleBaseBundle.message("settings.folding.byDefault"))
+                .bindSelected(settings::localisationTextIconsFullyByDefault)
+                .enabledIf(cb.selected)
+        }
+        // localisationTextFormats & localisationTextFormatsByDefault
+        row {
+            lateinit var cb: JBCheckBox
+            checkBox(ChronicleBaseBundle.message("settings.folding.localisationTextFormats"))
+                .bindSelected(settings::localisationTextFormats)
+                .applyToComponent { cb = this }
+            checkBox(ChronicleBaseBundle.message("settings.folding.byDefault"))
+                .bindSelected(settings::localisationTextFormatsByDefault)
+                .enabledIf(cb.selected)
+        }
+        // localisationTextFormatStrings & localisationConceptTextFormatStringsByDefault
+        row {
+            lateinit var cb: JBCheckBox
+            checkBox(ChronicleBaseBundle.message("settings.folding.localisationTextFormatStrings"))
+                .bindSelected(settings::localisationTextFormatStrings)
+                .applyToComponent { cb = this }
+            checkBox(ChronicleBaseBundle.message("settings.folding.byDefault"))
+                .bindSelected(settings::localisationTextFormatStringsByDefault)
                 .enabledIf(cb.selected)
         }
         // scriptedVariableReferences & scriptedVariableReferencesByDefault

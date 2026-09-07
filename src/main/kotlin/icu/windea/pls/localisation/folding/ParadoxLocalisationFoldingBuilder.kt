@@ -11,7 +11,8 @@ import com.intellij.psi.util.elementType
 import com.intellij.psi.util.endOffset
 import com.intellij.psi.util.startOffset
 import icu.windea.pls.base.settings.ChronicleSettings
-import icu.windea.pls.core.findChild
+import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.forEachChild
 import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
@@ -19,32 +20,31 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPsiService
 import icu.windea.pls.model.constants.ChronicleStrings
 
+@Optimized
 class ParadoxLocalisationFoldingBuilder : CustomFoldingBuilder(), DumbAware {
     override fun getLanguagePlaceholderText(node: ASTNode, range: TextRange): String? {
         return when (node.elementType) {
             COMMENT -> ChronicleStrings.commentFolder
             PROPERTY_VALUE -> ChronicleStrings.quotedFolder
             PARAMETER -> ""
-            ICON -> ""
             COMMAND -> ChronicleStrings.localisationCommandFolder
-            CONCEPT_COMMAND -> ChronicleStrings.localisationConceptCommandFolder
+            CONCEPT_COMMAND -> {
+                val conceptStringNode = node.findChildByType(CONCEPT_STRING)
+                if (conceptStringNode == null) ChronicleStrings.localisationConceptCommandFolder
+                else ChronicleStrings.localisationConceptCommandFolderWithText
+            }
             CONCEPT_STRING -> "..."
+            ICON -> ""
+            TEXT_ICON -> ""
+            TEXT_FORMAT -> ChronicleStrings.localisationTextFormatFolder
+            TEXT_FORMAT_STRING -> ""
             else -> null
         }
     }
 
     override fun isRegionCollapsedByDefault(node: ASTNode): Boolean {
         val settings = ChronicleSettings.getInstance().state.folding
-        return when (node.elementType) {
-            COMMENT -> settings.commentsByDefault
-            PROPERTY_VALUE -> settings.localisationTextsByDefault
-            PARAMETER -> settings.localisationParametersFullyByDefault
-            ICON -> settings.localisationIconsFullyByDefault
-            COMMAND -> settings.localisationCommandsByDefault
-            CONCEPT_COMMAND -> settings.localisationConceptCommandsByDefault
-            CONCEPT_STRING -> settings.localisationConceptStringsByDefault
-            else -> false
-        }
+        return isEnabledByDefault(node, settings)
     }
 
     override fun buildLanguageFoldRegions(descriptors: MutableList<FoldingDescriptor>, root: PsiElement, document: Document, quick: Boolean) {
@@ -53,54 +53,61 @@ class ParadoxLocalisationFoldingBuilder : CustomFoldingBuilder(), DumbAware {
     }
 
     private fun collectDescriptors(element: PsiElement, descriptors: MutableList<FoldingDescriptor>, settings: ChronicleSettings.FoldingState) {
-        collectCommentDescriptors(element, descriptors, settings)
-        val r = collectOtherDescriptors(element, descriptors, settings)
-        if (!r) return
+        if (!collectCommentDescriptors(element, descriptors, settings)) return
+        if (!collectOtherDescriptors(element, descriptors, settings)) return
         element.forEachChild { collectDescriptors(it, descriptors, settings) }
     }
 
-    private fun collectCommentDescriptors(element: PsiElement, descriptors: MutableList<FoldingDescriptor>, settings: ChronicleSettings.FoldingState) {
-        if (!settings.comments) return
+    private fun collectCommentDescriptors(element: PsiElement, descriptors: MutableList<FoldingDescriptor>, settings: ChronicleSettings.FoldingState): Boolean {
+        if (!settings.comments) return true
         val allSiblingLineComments = PsiService.findAllSiblingCommentsIn(element) { it.elementType == COMMENT }
-        if (allSiblingLineComments.isEmpty()) return
-        allSiblingLineComments.forEach {
-            val startOffset = it.first().startOffset
-            val endOffset = it.last().endOffset
-            val descriptor = FoldingDescriptor(it.first(), TextRange(startOffset, endOffset))
+        if (allSiblingLineComments.isEmpty()) return true
+        allSiblingLineComments.forEachFast {
+            val first = it.first()
+            val last = it.last()
+            val descriptor = FoldingDescriptor(first, TextRange(first.startOffset, last.endOffset))
             descriptors.add(descriptor)
         }
+        return true
     }
 
     private fun collectOtherDescriptors(element: PsiElement, descriptors: MutableList<FoldingDescriptor>, settings: ChronicleSettings.FoldingState): Boolean {
-        when (element.elementType) {
-            PROPERTY_VALUE -> run {
-                if (!settings.localisationTexts) return@run
-                descriptors.add(FoldingDescriptor(element.node, element.textRange))
-            }
-            PARAMETER -> run {
-                if (!settings.localisationParametersFully) return@run
-                descriptors.add(FoldingDescriptor(element.node, element.textRange))
-            }
-            ICON -> run {
-                if (!settings.localisationIconsFully) return@run
-                descriptors.add(FoldingDescriptor(element.node, element.textRange))
-            }
-            COMMAND -> run {
-                if (!settings.localisationCommands) return@run
-                descriptors.add(FoldingDescriptor(element.node, element.textRange, null, ChronicleStrings.localisationCommandFolder))
-            }
-            CONCEPT_COMMAND -> run {
-                if (!settings.localisationConceptCommands) return@run
-                val conceptStringNode = element.findChild { it.elementType == CONCEPT_STRING }
-                val placeholder = if (conceptStringNode == null) ChronicleStrings.localisationConceptCommandFolder else ChronicleStrings.localisationConceptCommandWithTextFolder
-                descriptors.add(FoldingDescriptor(element.node, element.textRange, null, placeholder))
-            }
-            CONCEPT_STRING -> run {
-                if (!settings.localisationConceptStrings) return@run
-                descriptors.add(FoldingDescriptor(element.node, element.textRange))
-            }
+        if (isEnabled(element.node, settings)) {
+            descriptors.add(FoldingDescriptor(element, element.textRange))
         }
         return ParadoxLocalisationPsiService.isStrictRichTextContext(element)
+    }
+
+    private fun isEnabled(node: ASTNode, settings: ChronicleSettings.FoldingState): Boolean {
+        return when (node.elementType) {
+            // COMMENT -> settings.comments // not here
+            PROPERTY_VALUE -> settings.localisationTexts
+            PARAMETER -> settings.localisationParametersFully
+            COMMAND -> settings.localisationCommands
+            CONCEPT_COMMAND -> settings.localisationConceptCommands
+            CONCEPT_STRING -> settings.localisationConceptStrings
+            ICON -> settings.localisationIconsFully
+            TEXT_ICON -> settings.localisationTextIconsFully
+            TEXT_FORMAT -> settings.localisationTextFormats
+            TEXT_FORMAT_STRING -> settings.localisationTextFormatStrings
+            else -> false
+        }
+    }
+
+    private fun isEnabledByDefault(node: ASTNode, settings: ChronicleSettings.FoldingState): Boolean {
+        return when (node.elementType) {
+            COMMENT -> settings.commentsByDefault
+            PROPERTY_VALUE -> settings.localisationTextsByDefault
+            PARAMETER -> settings.localisationParametersFullyByDefault
+            COMMAND -> settings.localisationCommandsByDefault
+            CONCEPT_COMMAND -> settings.localisationConceptCommandsByDefault
+            CONCEPT_STRING -> settings.localisationConceptStringsByDefault
+            ICON -> settings.localisationIconsFullyByDefault
+            TEXT_ICON -> settings.localisationTextIconsFullyByDefault
+            TEXT_FORMAT -> settings.localisationTextFormatsByDefault
+            TEXT_FORMAT_STRING -> settings.localisationTextFormatStringsByDefault
+            else -> false
+        }
     }
 
     override fun isCustomFoldingRoot(node: ASTNode): Boolean {

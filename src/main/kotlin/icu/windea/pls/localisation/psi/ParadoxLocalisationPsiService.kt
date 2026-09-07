@@ -41,7 +41,7 @@ object ParadoxLocalisationPsiService {
                 if (withText) {
                     ChronicleStrings.localisationConceptCommandFolder(expression.orEmpty().truncate(presentableTextLimit))
                 } else {
-                    ChronicleStrings.localisationConceptCommandWithTextFolder(expression.orEmpty().truncate(presentableTextLimit))
+                    ChronicleStrings.localisationConceptCommandFolderWithText(expression.orEmpty().truncate(presentableTextLimit))
                 }
             }
             is ParadoxLocalisationTextFormat -> {

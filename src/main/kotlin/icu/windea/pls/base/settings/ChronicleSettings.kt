@@ -162,16 +162,22 @@ class ChronicleSettings : SimplePersistentStateComponent<ChronicleSettings.State
      * @property inlineConditionalBlocksByDefault 是否默认折叠内联参数化块。
      * @property inlineMaths 是否允许折叠内联数学表达式块。
      * @property inlineMathsByDefault 是否默认折叠内联数学表达式块。
-     * @property localisationParametersFully 是否允许折叠本地化参数。完全折叠。
-     * @property localisationParametersFullyByDefault 是否默认折叠本地化参数。完全折叠。
-     * @property localisationIconsFully 是否允许折叠本地化图标。完全折叠。
-     * @property localisationIconsFullyByDefault 是否默认折叠本地化图标。完全折叠。
+     * @property localisationParametersFully 是否允许（完全）折叠本地化参数。
+     * @property localisationParametersFullyByDefault 是否默认（完全）折叠本地化参数。
      * @property localisationCommands 是否允许折叠本地化命令。
      * @property localisationCommandsByDefault 是否默认折叠本地化命令。
      * @property localisationConceptCommands 是否允许折叠本地化概念命令。
      * @property localisationConceptCommandsByDefault 是否默认折叠本地化概念命令。
      * @property localisationConceptStrings 是否允许折叠本地化概念的嵌套字符串。
      * @property localisationConceptStringsByDefault 是否默认折叠本地化概念的嵌套字符串。
+     * @property localisationIconsFully 是否允许（完全）折叠本地化图标。
+     * @property localisationIconsFullyByDefault 是否默认（完全）折叠本地化图标。
+     * @property localisationTextIconsFully 是否允许（完全）折叠本地化图标。
+     * @property localisationTextIconsFullyByDefault 是否默认（完全）折叠本地化图标。
+     * @property localisationTextFormats 是否允许折叠本地化概念命令。
+     * @property localisationTextFormatsByDefault 是否默认折叠本地化概念命令。
+     * @property localisationTextFormatStrings 是否允许折叠本地化概念的嵌套字符串。
+     * @property localisationTextFormatStringsByDefault 是否默认折叠本地化概念的嵌套字符串。
      * @property scriptedVariableReferences 是否允许折叠封装变量引用。折叠为解析后的值。
      * @property scriptedVariableReferencesByDefault 是否默认折叠封装变量引用。折叠为解析后的值。
      * @property variableOperationExpressions 是否允许折叠变量操作表达式。折叠为简化形式。基于内置的规则文件。
@@ -191,14 +197,20 @@ class ChronicleSettings : SimplePersistentStateComponent<ChronicleSettings.State
         var localisationTextsByDefault by property(false)
         var localisationParametersFully by property(false)
         var localisationParametersFullyByDefault by property(false)
-        var localisationIconsFully by property(false)
-        var localisationIconsFullyByDefault by property(false)
         var localisationCommands by property(false)
         var localisationCommandsByDefault by property(false)
         var localisationConceptCommands by property(false)
         var localisationConceptCommandsByDefault by property(false)
         var localisationConceptStrings by property(false)
         var localisationConceptStringsByDefault by property(false)
+        var localisationIconsFully by property(false)
+        var localisationIconsFullyByDefault by property(false)
+        var localisationTextIconsFully by property(false)
+        var localisationTextIconsFullyByDefault by property(false)
+        var localisationTextFormats by property(false)
+        var localisationTextFormatsByDefault by property(false)
+        var localisationTextFormatStrings by property(false)
+        var localisationTextFormatStringsByDefault by property(false)
         var scriptedVariableReferences by property(true)
         var scriptedVariableReferencesByDefault by property(true)
         var variableOperationExpressions by property(true)
