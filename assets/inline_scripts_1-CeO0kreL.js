@@ -1,0 +1,1 @@
+var e=`/Paradox-Language-Support/assets/parameters_1-CIbMC7kI.png`,t=`/Paradox-Language-Support/assets/inline_scripts_1-yKrsHaqt.png`;export{e as n,t};
