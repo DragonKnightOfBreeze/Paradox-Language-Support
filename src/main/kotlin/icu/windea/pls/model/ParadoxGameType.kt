@@ -10,8 +10,8 @@ import icu.windea.pls.model.constraints.ParadoxGameTypeConstraint
 /**
  * 游戏类型。
  *
- * @property id ID（代码、文档和显示文本中使用游戏类型 ID）。
- * @property title 标题（代码、文档和显示文本中使用的游戏名）。
+ * @property id ID（代码、文档、展示文本等处使用游戏类型 ID）。
+ * @property title 标题（代码、文档、展示文本等处使用的游戏名）。
  * @property gameId 游戏 ID（官方启动器使用的游戏 ID）。
  * @property steamId Steam ID（Steam 使用的游戏 ID）。
  * @property metadata 额外的元数据。

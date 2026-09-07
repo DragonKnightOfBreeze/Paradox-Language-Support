@@ -106,8 +106,8 @@ Keep changes minimal and localized. A small, well-scoped, well-tested PR that im
 Config files define the semantic information (definitions, modifiers, scopes, effects, triggers, etc.) that powers config-driven features.
 Keeping them current with each game version directly improves the experience for everyone playing that game.
 
-- Each game has a **Built-in** repository (used by the plugin, with plugin-specific additions and extensions) and a **Vanilla** repository (the upstream CWTools source). The full mapping and the current maintenance status per game live in [`CONTRIBUTORS.md`](CONTRIBUTORS.md) and [`cwt/README.md`](cwt/README.md).
-- Before editing configs, read the [config system documentation](docs/en/config.md), the [syntax reference](docs/en/ref-syntax.md), and the [config format reference](docs/en/ref-config-format.md). The plugin's CWT format is largely consistent with CWTools, with some improvements and extensions.
+- Each game has a **Built-in** repository (used by the plugin, with plugin-specific additions and extensions) and a **Vanilla** repository (the upstream [CWTools](https://github.com/cwtools/cwtools) source). The full mapping and the current maintenance status per game live in [`CONTRIBUTORS.md`](CONTRIBUTORS.md) and [`cwt/README.md`](cwt/README.md).
+- Before editing configs, read the [config system documentation](docs/en/config.md), the [syntax reference](docs/en/ref-syntax.md), and the [config format reference](docs/en/ref-config-format.md). The plugin's CWT format is largely consistent with [CWTools](https://github.com/cwtools/cwtools), with some improvements and extensions.
 - Config changes are best validated by running the plugin (`./gradlew runIde`) against a real mod/game setup and confirming that completion, inspections and documentation behave as intended.
 - As an alternative, you may also consider keeping in dev IDE, and using global-local or project-local config files to validate config changes.
 - For games actively maintained upstream, please consider whether a fix belongs in the Vanilla repository as well, so the two stay in sync.
