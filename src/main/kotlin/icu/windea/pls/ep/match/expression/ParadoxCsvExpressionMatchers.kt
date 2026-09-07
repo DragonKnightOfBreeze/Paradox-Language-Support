@@ -16,7 +16,6 @@ import icu.windea.pls.lang.match.ParadoxExpressionMatchService
 import icu.windea.pls.lang.match.ParadoxMatchResult
 import icu.windea.pls.lang.match.util.ParadoxMatchFactory
 import icu.windea.pls.lang.match.util.ParadoxMatchResultFactory
-import icu.windea.pls.model.type.ParadoxExpressionType
 
 class ParadoxCsvBasicExpressionMatcher : ParadoxCsvCompositeExpressionMatcher() {
     override fun registerMatchers() {
@@ -28,8 +27,10 @@ class ParadoxCsvBasicExpressionMatcher : ParadoxCsvCompositeExpressionMatcher() 
     }
 
     private fun matchBool(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult {
-        val r = context.expression.type == ParadoxExpressionType.Boolean
-        return ParadoxMatchResult.exactOrNot(r)
+        if (context.expression.type.isLenientBooleanLiteral()) {
+            return ParadoxMatchResult.ExactMatch
+        }
+        return ParadoxMatchResult.NotMatch
     }
 
     private fun matchInt(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult {
@@ -68,22 +69,25 @@ class ParadoxExtraBasicCsvExpressionMatcher : ParadoxCsvCompositeExpressionMatch
     }
 
     private fun matchPercentageField(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult {
-        if (!context.expression.type.isLenientString()) return ParadoxMatchResult.NotMatch
+        if (!context.expression.type.isLenientStringLiteral()) return ParadoxMatchResult.NotMatch
         val r = ParadoxMatchFactory.matchesFloatPercentageField(context.expression.value)
-        return ParadoxMatchResult.exactOrNot(r)
+        if (r) return ParadoxMatchResult.ExactMatch
+        return ParadoxMatchResult.NotMatch
     }
 
     private fun matchIntPercentageField(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult {
-        if (!context.expression.type.isLenientString()) return ParadoxMatchResult.NotMatch
+        if (!context.expression.type.isLenientStringLiteral()) return ParadoxMatchResult.NotMatch
         val r = ParadoxMatchFactory.matchesIntPercentageField(context.expression.value)
-        return ParadoxMatchResult.exactOrNot(r)
+        if (r) return ParadoxMatchResult.ExactMatch
+        return ParadoxMatchResult.NotMatch
     }
 
     private fun matchDataField(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult {
-        if (!context.expression.type.isLenientString()) return ParadoxMatchResult.NotMatch
+        if (!context.expression.type.isLenientStringLiteral()) return ParadoxMatchResult.NotMatch
         val datePattern = context.configExpression.metadata.value
         val r = ParadoxMatchFactory.matchesDateField(context.expression.value, datePattern)
-        return ParadoxMatchResult.exactOrNot(r)
+        if (r) return ParadoxMatchResult.ExactMatch
+        return ParadoxMatchResult.NotMatch
     }
 }
 
@@ -96,11 +100,10 @@ class ParadoxCsvCoreExpressionMatcher : ParadoxCsvCompositeExpressionMatcher() {
     }
 
     private fun matchDefinition(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult {
-        val expression = context.expression.value
         // can be an int or float here (e.g., for <technology_tier>)
-        if (!context.expression.type.isNumberOrLenientString()) return ParadoxMatchResult.NotMatch
-        // if (!expression.isIdentifier(".-")) return ParadoxMatchResult.NotMatch // #369 can also be any string literals
-        return ParadoxMatchResultFactory.forDefinition(context.element, context.project, expression, context.configExpression)
+        if (!context.expression.type.isLenientNumberOrStringLiteral()) return ParadoxMatchResult.NotMatch
+        // if (!context.expression.value.isParameterAwareIdentifier(".-")) return ParadoxMatchResult.NotMatch // #369 can also be any string literals
+        return ParadoxMatchResultFactory.forDefinition(context.element, context.project, context.expression.value, context.configExpression)
     }
 
     private fun matchEnumValue(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult {
@@ -166,11 +169,11 @@ class ParadoxCsvPatternExpressionMatcher : ParadoxCsvSimpleExpressionMatcher() {
     override fun match(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult? {
         val pattern = context.configExpression.metadata.value ?: return null
         val ignoreCase = context.configExpression.metadata.ignoreCase
-        val value = context.expression.value
+        val text = context.expression.value
         val r = when (context.dataType) {
-            CwtDataTypes.Glob -> value.matchesPattern(pattern, ignoreCase)
-            CwtDataTypes.Ant -> value.matchesAntPattern(pattern, ignoreCase)
-            CwtDataTypes.Regex -> value.matchesRegex(pattern, ignoreCase)
+            CwtDataTypes.Glob -> text.matchesPattern(pattern, ignoreCase)
+            CwtDataTypes.Ant -> text.matchesAntPattern(pattern, ignoreCase)
+            CwtDataTypes.Regex -> text.matchesRegex(pattern, ignoreCase)
             else -> return null
         }
         return ParadoxMatchResult.exactOrNot(r)

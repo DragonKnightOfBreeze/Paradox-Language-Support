@@ -160,12 +160,14 @@ private sealed class ParadoxExpressionBase : ParadoxExpression {
     }
 
     override fun matchesConstant(input: String): Boolean {
+        // 3.0.1 radical optimization
         // 如果表达式未用引号括起，不能用来匹配布尔关键字
         if (quoted && (ChronicleStrings.yesKeyword.equalsFast(input) || ChronicleStrings.noKeyword.equalsFast(input))) return false
-        // 兼容带参数的情况（此时先转化为正则表达式，再进行匹配）
+        // 兼容带参数的情况（如果不是整个作为参数，则先转化为正则表达式，再进行匹配）
+        if (isFullParameterized()) return true
         if (isParameterized()) return matchesRegex(input)
         // 忽略大小写
-        return value.equalsFast(input, true) // 3.0.1 radical optimization
+        return value.equalsFast(input, true)
     }
 
     override fun equals(other: Any?) = this === other || other is ParadoxExpression && text == other.text

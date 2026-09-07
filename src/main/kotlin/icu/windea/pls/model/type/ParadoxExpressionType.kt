@@ -23,17 +23,32 @@ enum class ParadoxExpressionType(val text: String) {
 
     // region Matchers
 
-    @Suppress("unused")
-    fun isBooleanLiteral(): Boolean {
-        return this == Boolean
-    }
-
     fun isNumberLiteral(): Boolean {
         return this == Int || this == Float
     }
 
     fun isStringLiteral(): Boolean {
         return this == String
+    }
+
+    fun isLenientBooleanLiteral(): Boolean {
+        return this == Boolean || this == Unknown
+    }
+
+    fun isLenientNumberLiteral(): Boolean {
+        return this == Int || this == Float || this == Unknown
+    }
+
+    fun isLenientStringLiteral(): Boolean {
+        return this == String || this == Unknown
+    }
+
+    fun isLenientNumberOrStringLiteral(): Boolean {
+        return this == Int || this == Float || this == String || this == Unknown
+    }
+
+    fun isLenientLiteral(): Boolean {
+        return this == Boolean || this == Int || this == Float || this == String || this == Unknown
     }
 
     fun isLenientInt(): Boolean {
@@ -44,14 +59,7 @@ enum class ParadoxExpressionType(val text: String) {
         return this == Int || this == Float || this == InlineMath || this == Unknown
     }
 
-    fun isLenientString(): Boolean {
-        return this == String || this == Unknown
-    }
-
-    fun isNumberOrLenientString(): Boolean {
-        return this == Int || this == Float || this == String || this == Unknown
-    }
-
+    @Suppress("unused")
     fun isBlockLike(): Boolean {
         return this == Block || this == Color || this == InlineMath
     }
