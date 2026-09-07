@@ -51,20 +51,25 @@ class ParadoxDefaultExpressionParameterInferredConfigProvider : ParadoxParameter
     private fun getConfig(parameterInfo: ParadoxParameterContextInfo.Parameter, configGroup: CwtConfigGroup): CwtMemberConfig<*>? {
         val element = parameterInfo.element ?: return null
         val parentElement = parameterInfo.parentElement ?: return null
-        return when (element) {
+        when (element) {
             is ParadoxScriptConditionParameter -> {
-                configGroup.mockConfigModel.wildcardScalar
+                // NOTE 3.0.2 skip (can be many things, even a set of statements, or just a script snippet, rather than just literals)
+                return null
             }
             is ParadoxScriptNormalParameter -> {
+                // NOTE 3.0.2 skip if it is full parameterized (can be many things, even a set of statements, or just a script snippet)
                 if (parentElement.text.isParameterized(full = true)) return null
-                configGroup.mockConfigModel.wildcardScalar
+                // wildcard form -> continue to infer and merge configs
+                return configGroup.mockConfigModel.wildcardScalar
             }
             is ParadoxScriptInlineMathParameter -> {
+                // 3.0.2 if it is full parameterized, should be a number
                 if (parentElement.text.isParameterized(full = true)) return configGroup.mockConfigModel.float
-                configGroup.mockConfigModel.wildcardScalar
+                // wildcard form -> continue to infer and merge configs
+                return configGroup.mockConfigModel.wildcardScalar
             }
-            else -> null
         }
+        return null
     }
 }
 

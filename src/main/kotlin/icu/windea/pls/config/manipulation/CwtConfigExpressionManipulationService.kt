@@ -42,8 +42,11 @@ object CwtConfigExpressionManipulationService {
         when (type) {
             CwtDataTypes.Any -> return otherExpressionString
             CwtDataTypes.Scalar -> when {
-                otherType == CwtDataTypes.Block -> return null
                 otherType == CwtDataTypes.ColorField -> return null
+                otherType == CwtDataTypes.Scalar -> {
+                    if (expression.metadata.wildcard && otherExpression.metadata.wildcard) return "wildcard_scalar"
+                    return "scalar"
+                }
                 else -> return otherExpressionString
             }
             CwtDataTypes.Int -> when {

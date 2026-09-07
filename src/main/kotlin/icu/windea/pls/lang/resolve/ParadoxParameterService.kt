@@ -232,7 +232,7 @@ object ParadoxParameterService {
         val v = result.get()
         if (v.isNullOrEmpty()) return false // empty -> not available
         val c = v.singleOrNull()?.configs?.singleOrNull()
-        if (c is CwtValueConfig && c.configExpression.metadata.wildcard) return false // wildcard (e.g., from condition parameter) -> not available
+        if (c is CwtValueConfig && c.configExpression.metadata.wildcard) return false // wildcard form -> not available
         return true
     }
 }

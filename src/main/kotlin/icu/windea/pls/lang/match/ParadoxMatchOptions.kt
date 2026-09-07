@@ -10,6 +10,8 @@ import kotlin.experimental.or
  * @property lenient 对于 [ParadoxMatchResult.LazyBlockAwareMatch]，匹配结果直接返回 `true`。
  * @property skipIndex 对于 [ParadoxMatchResult.LazyIndexAwareMatch]，匹配结果直接返回 `true`。
  * @property skipScope 对于 [ParadoxMatchResult.LazyScopeAwareMatch]，匹配结果直接返回 `true`。
+ *
+ * @see ParadoxMatchService
  */
 data class ParadoxMatchOptions(
     val fallback: Boolean = true,

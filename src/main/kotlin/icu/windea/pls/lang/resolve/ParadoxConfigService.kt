@@ -23,6 +23,7 @@ import icu.windea.pls.config.configGroup.mockConfigModel
 import icu.windea.pls.config.filterProperties
 import icu.windea.pls.config.filterValues
 import icu.windea.pls.config.manipulation.CwtConfigManipulationService
+import icu.windea.pls.config.match.CwtConfigExpressionMatchService
 import icu.windea.pls.config.sortedByPriority
 import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.annotations.Optimized
@@ -285,11 +286,12 @@ object ParadoxConfigService {
     private fun collectConfigsForConfigContext(expression: ParadoxExpression, parentConfigs: List<CwtMemberConfig<*>>, configGroup: CwtConfigGroup): List<CwtMemberConfig<*>> {
         val result = mutableListOf<CwtMemberConfig<*>>()
         if (expression.value == "-") {
-            // 如果父规则的值表达式的数据类型是 `Any`，则仅使用 `$any`
-
             parentConfigs.forEachFast f1@{ parentConfig ->
                 // NOTE #386 use `$any` only, if value expression of parent config is `$any`
-                if (parentConfig.valueExpression.type == CwtDataTypes.Any) return listOf(configGroup.mockConfigModel.anyValue)
+                // NOTE 3.0.2 compatible with `wildcard_scalar`, which is for complex parameters, in case
+                if (CwtConfigExpressionMatchService.matchesAnyDataType(parentConfig.valueExpression)) {
+                    return listOf(configGroup.mockConfigModel.anyValue)
+                }
 
                 val configs = parentConfig.values
                 if (configs.isNullOrEmpty()) return@f1
@@ -299,18 +301,19 @@ object ParadoxConfigService {
                 }
             }
         } else {
-            // 如果父规则的值表达式的数据类型是 `Any`，则仅使用 `$any = $any`
-
             parentConfigs.forEachFast f1@{ parentConfig ->
                 // NOTE #386 use `$any = $any` only, if value expression of parent config is `$any`
-                if (parentConfig.valueExpression.type == CwtDataTypes.Any) return listOf(configGroup.mockConfigModel.anyProperty)
+                // NOTE 3.0.2 compatible with `wildcard_scalar`, which is for complex parameters, in case
+                if (CwtConfigExpressionMatchService.matchesAnyDataType(parentConfig.valueExpression)) {
+                    return listOf(configGroup.mockConfigModel.anyProperty)
+                }
 
                 val configs = parentConfig.properties
                 if (configs.isNullOrEmpty()) return@f1
 
                 configs.forEachFast { config ->
-                    // 打平后需要首先进行必要的内联
-                    // 如果别名规则内联后涉及单别名规则，会继续内联
+                    // it is necessary to perform inlining first after flatten
+                    // ff the alias config, after inlining, involves a single alias config, it's necessary to continue inlining
                     val inlinedConfigs = CwtConfigManipulationService.inlineForConfigContext(config, expression.value)
                     if (inlinedConfigs != null) {
                         result.addAll(inlinedConfigs)
