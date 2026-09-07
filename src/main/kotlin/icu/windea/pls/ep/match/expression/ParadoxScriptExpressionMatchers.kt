@@ -68,7 +68,8 @@ class ParadoxScriptBasicExpressionMatcher : ParadoxScriptCompositeExpressionMatc
             context.expression.type.isLenientStringLiteral() -> true // unquoted/quoted string -> ok
             else -> false
         }
-        return ParadoxMatchResult.fallbackOrNot(r)
+        if (r) return ParadoxMatchResult.FallbackMatch
+        return ParadoxMatchResult.NotMatch
     }
 
     private fun matchColorField(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {

@@ -9,7 +9,7 @@ import icu.windea.pls.core.collections.forEachFast
 object ParadoxMatchCandidateService {
     inline fun <T : CwtMemberConfig<*>> collect(configs: List<T>, matchResultProvider: (T) -> ParadoxMatchResult): List<ParadoxMatchCandidate> {
         if (configs.isEmpty()) return emptyList()
-        val result = SmartList<ParadoxMatchCandidate>() // 3.0.1 optimize: use SmartList (0 or 1 elements in most situations)
+        val result = SmartList<ParadoxMatchCandidate>() // 3.0.1 optimize: use `SmartList` (0 or 1 elements in most situations)
         configs.forEachFast f@{ config ->
             val matchResult = matchResultProvider(config)
             if (matchResult === ParadoxMatchResult.NotMatch) return@f
@@ -21,7 +21,7 @@ object ParadoxMatchCandidateService {
 
     fun process(candidates: List<ParadoxMatchCandidate>, options: ParadoxMatchOptions?): List<ParadoxMatchCandidate> {
         if (candidates.isEmpty()) return emptyList()
-        val result = SmartList<ParadoxMatchCandidate>() // 3.0.1 optimize: use SmartList (0 or 1 elements in most situations)
+        val result = SmartList<ParadoxMatchCandidate>() // 3.0.1 optimize: use `SmartList` (0 or 1 elements in most situations)
         processInternal(candidates, result, options)
         return result
     }
@@ -31,8 +31,8 @@ object ParadoxMatchCandidateService {
         // - 处理精确匹配（`ExactMatch` `LenientExactMatch`），如果有结果，则仅使用这些结果，并直接返回
         // - 处理需要检测子句内容的匹配（`LazyBlockAwareMatch`），如果存在匹配项，则保留所有匹配项或者第一个候选项
         // - 处理需要检测作用域上下文的匹配（`LazyScopeAwareMatch`），如果存在匹配项，则保留所有匹配项或者第一个候选项
-        // - 处理其余的各种直接匹配，如果有结果，则仅使用这些结果
-        // - 处理通配符匹配（`WildcardMatch`，不验证其中某部分在解析引用后是否合法），如果有结果，则仅使用这些结果
+        // - 处理其余的各种直接匹配（`DirectMatch`），如果有结果，则仅使用这些结果
+        // - 处理通配符匹配（`WildcardMatch`，不验证表达式自身或其中某部分在解析引用后是否合法），如果有结果，则仅使用这些结果
         // - 处理更宽松的通配符匹配（`LenientWildcardMatch`，这意味着存在另一种更精确的格式），如果有结果，则仅使用这些结果
         // - 处理部分匹配（`PartialMatch`），如果有结果，则仅使用这些结果
         // - 处理回退匹配（`FallbackMatch`），如果有结果，则仅使用这些结果
@@ -46,8 +46,8 @@ object ParadoxMatchCandidateService {
     }
 
     private fun processMain(candidates: List<ParadoxMatchCandidate>, matched: MutableList<ParadoxMatchCandidate>, options: ParadoxMatchOptions?) {
-        processLazy(candidates, matched, options) { it.result is ParadoxMatchResult.LazyBlockAwareMatch }
-        processLazy(candidates, matched, options) { it.result is ParadoxMatchResult.LazyScopeAwareMatch }
+        processLenientChecked(candidates, matched, options) { it.result is ParadoxMatchResult.LazyBlockAwareMatch }
+        processLenientChecked(candidates, matched, options) { it.result is ParadoxMatchResult.LazyScopeAwareMatch }
 
         processChecked(candidates, matched, options) { it.result is ParadoxMatchResult.DirectMatch }
         if (matched.isNotEmpty()) return
@@ -81,8 +81,8 @@ object ParadoxMatchCandidateService {
         }
     }
 
-    private inline fun processLazy(candidates: List<ParadoxMatchCandidate>, matched: MutableList<ParadoxMatchCandidate>, options: ParadoxMatchOptions?, predicate: (ParadoxMatchCandidate) -> Boolean) {
-        val lazyMatched = SmartList<ParadoxMatchCandidate>() // 3.0.1 optimize: use SmartList (0 or 1 elements in most situations)
+    private inline fun processLenientChecked(candidates: List<ParadoxMatchCandidate>, matched: MutableList<ParadoxMatchCandidate>, options: ParadoxMatchOptions?, predicate: (ParadoxMatchCandidate) -> Boolean) {
+        val lazyMatched = SmartList<ParadoxMatchCandidate>() // 3.0.1 optimize: use `SmartList` (0 or 1 elements in most situations)
         processUnchecked(candidates, lazyMatched, predicate)
         val lazyMatchedSize = lazyMatched.size
         if (lazyMatchedSize == 1) {

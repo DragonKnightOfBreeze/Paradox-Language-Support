@@ -14,7 +14,7 @@ sealed interface ParadoxMatchResult {
     /** 直接匹配。 */
     sealed interface DirectMatch : ParadoxMatchResult
 
-    /** 延迟匹配。需要按照具体的类型，每次一组依次尝试应用。 */
+    /** 延迟匹配。需要按照具体的匹配结果类型，每次一组依次尝试应用。 */
     sealed interface DeferredMatch : ParadoxMatchResult
 
     /** 绝对不匹配。 */
@@ -27,12 +27,12 @@ sealed interface ParadoxMatchResult {
         override fun get(options: ParadoxMatchOptions?) = true
     }
 
-    /** 宽松的精确匹配。在语义解析阶段会认为不是正确的表达式，因而给出警告或错误。 */
+    /** 宽松的精确匹配。在规则匹配阶段视为仍然匹配（等效于普通的精确匹配），在语义解析阶段则会视为不是正确的表达式（因而会通过代码检查给出报错）。 */
     data object LenientExactMatch : ParadoxMatchResult, DirectMatch {
         override fun get(options: ParadoxMatchOptions?) = true
     }
 
-    /** 通配符匹配。不验证其中某部分在解析引用后是否合法。 */
+    /** 通配符匹配。不验证表达式自身或其中某部分在解析引用后是否合法。 */
     data object WildcardMatch : ParadoxMatchResult, DeferredMatch {
         override fun get(options: ParadoxMatchOptions?) = true
     }
@@ -42,7 +42,7 @@ sealed interface ParadoxMatchResult {
         override fun get(options: ParadoxMatchOptions?) = true
     }
 
-    /** 部分匹配。这意味着其中某部分存在格式上的错误。 */
+    /** 部分匹配。这意味着表达式自身或其中某部分存在格式上的错误。 */
     data object PartialMatch : ParadoxMatchResult, DeferredMatch {
         override fun get(options: ParadoxMatchOptions?) = true
     }
@@ -107,9 +107,6 @@ sealed interface ParadoxMatchResult {
 
         @Suppress("NOTHING_TO_INLINE")
         inline fun exactOrNot(value: Boolean) = if (value) ExactMatch else NotMatch
-
-        @Suppress("NOTHING_TO_INLINE")
-        inline fun fallbackOrNot(value: Boolean) = if (value) FallbackMatch else NotMatch
 
         @Suppress("NOTHING_TO_INLINE")
         inline fun exactOrFallback(value: Boolean) = if (value) ExactMatch else FallbackMatch

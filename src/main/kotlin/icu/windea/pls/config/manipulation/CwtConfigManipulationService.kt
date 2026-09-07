@@ -46,12 +46,12 @@ object CwtConfigManipulationService {
     // region Common Methods
 
     fun createListForDeepCopy(): MutableList<CwtMemberConfig<*>> {
-        return SmartList() // 3.0.1 optimize: use SmartList here (reduce temporary memory overhead, especially for the sizes of 0 and 1)
+        return SmartList() // 3.0.1 optimize: use `SmartList` here (reduce temporary memory overhead, especially for the sizes of 0 and 1)
     }
 
     fun createListForDeepCopy(expectedSize: Int): MutableList<CwtMemberConfig<*>> {
         require(expectedSize >= 0) { "expectedSize must be non-negative" }
-        if (expectedSize <= 1) return SmartList() // 3.0.1 optimize: use SmartList here (reduce temporary memory overhead, especially for the sizes of 0 and 1)
+        if (expectedSize <= 1) return SmartList() // 3.0.1 optimize: use `SmartList` here (reduce temporary memory overhead, especially for the sizes of 0 and 1)
         return ArrayList(expectedSize) // 3.0.1 optimize: use sized mutable list here
     }
 
