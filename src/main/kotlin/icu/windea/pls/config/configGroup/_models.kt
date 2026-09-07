@@ -5,7 +5,6 @@ import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.base.ChronicleModificationTrackers
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
-import icu.windea.pls.config.configGroup.CwtConfigGroupDataModel.Empty.typeModel
 import icu.windea.pls.ep.config.configGroup.CwtFileBasedConfigGroupProcessor
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 
@@ -54,6 +53,6 @@ class CwtConfigGroupMockConfigModel(configGroup: CwtConfigGroup) {
  */
 class CwtConfigGroupModificationTrackerModel(configGroup: CwtConfigGroup) {
     val scriptValue = ChronicleModificationTrackers.scriptFileFromDefinitionTypes(configGroup, ParadoxDefinitionTypes.scriptValue)
-    val definitionParameter = ChronicleModificationTrackers.scriptFileFromDefinitionTypes(configGroup, typeModel.supportParameters)
-    val definitionScopeContext = ChronicleModificationTrackers.scriptFileFromDefinitionTypes(configGroup, typeModel.supportScopeInference)
+    val definitionParameter = ChronicleModificationTrackers.scriptFileFromDefinitionTypes(configGroup, configGroup.typeModel.supportParameters)
+    val definitionScopeContext = ChronicleModificationTrackers.scriptFileFromDefinitionTypes(configGroup, configGroup.typeModel.supportScopeInference)
 }
