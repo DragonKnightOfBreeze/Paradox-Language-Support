@@ -224,7 +224,6 @@ object CwtConfigManipulationService {
     fun mergeValueConfig(config: CwtValueConfig, otherConfig: CwtValueConfig): CwtValueConfig? {
         if (config === otherConfig) return config // reference equality
         if (config isSamePointer otherConfig) return config // pointer equality
-        if (config.configExpression.type == CwtDataTypes.Block || otherConfig.configExpression.type == CwtDataTypes.Block) return null // cannot merge non-same clauses
         val expressionString = CwtConfigExpressionManipulationService.mergeDataExpression(config.configExpression, otherConfig.configExpression)
         if (expressionString == null) return null
         val merged = CwtValueConfig.create(

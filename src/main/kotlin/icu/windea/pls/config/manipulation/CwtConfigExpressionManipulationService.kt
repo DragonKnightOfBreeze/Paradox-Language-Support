@@ -15,28 +15,31 @@ object CwtConfigExpressionManipulationService {
         val otherType = otherExpression.type
         val expressionString = expression.expressionString
         val otherExpressionString = otherExpression.expressionString
-        when {
-            type == CwtDataTypes.Constant && otherType == CwtDataTypes.Constant -> when {
-                expressionString.equalsFast(otherExpressionString) -> return expressionString
-                expressionString.equalsFast(otherExpressionString, ignoreCase = true) -> return expressionString.lowercase()
-            }
-            type == CwtDataTypes.Constant || otherType == CwtDataTypes.Constant -> return null
+        // cannot merge block data expressions here (no further info)
+        if (type == CwtDataTypes.Block || otherType == CwtDataTypes.Block) return null
+        // check whether expression strings are same
+        if (expressionString.equalsFast(otherExpressionString)) return expressionString
+        // check whether expression strings are same (ignore case) for constant data expressions
+        if (type == CwtDataTypes.Constant && otherType == CwtDataTypes.Constant) {
+            if (expressionString.equalsFast(otherExpressionString, ignoreCase = true)) return expressionString.lowercase()
         }
-        return mergeDataExpressionBidirectional(expression, otherExpression)
+        if (type == CwtDataTypes.Constant || otherType == CwtDataTypes.Constant) return null
+        // apply detailed merge logic
+        return mergeDataExpressionRemain(expression, otherExpression)
     }
 
-    private fun mergeDataExpressionBidirectional(expression: CwtDataExpression, otherExpression: CwtDataExpression): String? {
+    private fun mergeDataExpressionRemain(expression: CwtDataExpression, otherExpression: CwtDataExpression): String? {
         return mergeDataExpressionDirectional(expression, otherExpression) ?: mergeDataExpressionDirectional(otherExpression, expression)
     }
 
     private fun mergeDataExpressionDirectional(expression: CwtDataExpression, otherExpression: CwtDataExpression): String? {
-        val dataType = expression.type
+        val type = expression.type
         val otherType = otherExpression.type
         val expressionString = expression.expressionString
         val otherExpressionString = otherExpression.expressionString
         val value = expression.metadata.value
         val otherValue = otherExpression.metadata.value
-        when (dataType) {
+        when (type) {
             CwtDataTypes.Any -> return otherExpressionString
             CwtDataTypes.Scalar -> when {
                 otherType == CwtDataTypes.Block -> return null
