@@ -6,6 +6,7 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
+import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtValueConfig
@@ -335,13 +336,12 @@ object ParadoxExpressionService {
 
     fun getResolvedConfigElement(element: ParadoxExpressionElement, config: CwtConfig<*>, configGroup: CwtConfigGroup): PsiElement? {
         val resolvedConfig = config.resolved()
-        if (resolvedConfig is CwtMemberConfig<*> && resolvedConfig.pointer.isEmpty()) {
+        if (resolvedConfig is CwtMemberConfig<*>) {
+            // 3.0.2 排除非常量数据类型的规则
+            if (resolvedConfig.configExpression.type != CwtDataTypes.Constant) return null
             // 特殊处理合成的规则
-            val gameType = configGroup.gameType
-            val project = configGroup.project
-            return CwtMemberConfigLightElement(element, resolvedConfig, gameType, project)
+            if (resolvedConfig.pointer.isEmpty()) return CwtMemberConfigLightElement(element, resolvedConfig, configGroup.gameType, configGroup.project)
         }
-
         return resolvedConfig.pointer.element
     }
 
