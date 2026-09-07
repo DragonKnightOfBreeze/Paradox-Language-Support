@@ -152,6 +152,20 @@ object CwtConfigManipulationService {
 
     // region Merge Methods
 
+    fun skipMergedConfigs(mergedConfigs: List<CwtMemberConfig<*>>): Boolean {
+        // 3.0.2 skip for empty merged result
+        if (mergedConfigs.isEmpty()) return true
+        if (mergedConfigs.size == 1) {
+            val c = mergedConfigs.single()
+            if (c.valueType == CwtExpressionType.Block) {
+                // 3.0.2 skip for empty container config specially
+                // otherwise, `UnresolvedExpressionInspection` will cause false positives in injected contexts, since the context configs are not empty (will be `{}` in such situation)
+                if (c.configs.isNullOrEmpty()) return true
+            }
+        }
+        return false
+    }
+
     fun mergeConfigs(configs: List<CwtMemberConfig<*>>, otherConfigs: List<CwtMemberConfig<*>>): List<CwtMemberConfig<*>> {
         if (configs.isEmpty() && otherConfigs.isEmpty()) return emptyList()
         if (configs.isEmpty()) return otherConfigs
@@ -239,9 +253,9 @@ object CwtConfigManipulationService {
         return false
     }
 
-    // endregion
+// endregion
 
-    // region Inline Methods
+// region Inline Methods
 
     fun inlineAlias(config: CwtPropertyConfig, key: String): List<CwtMemberConfig<*>>? {
         val valueExpression = config.valueExpression
@@ -391,9 +405,9 @@ object CwtConfigManipulationService {
         return inlined
     }
 
-    // endregion
+// endregion
 
-    // region Expand Methods
+// region Expand Methods
 
     /**
      * 展开枚举规则 [config] 的所有作为候选项的值规则。
@@ -498,5 +512,5 @@ object CwtConfigManipulationService {
         }
     }
 
-    // endregion
+// endregion
 }

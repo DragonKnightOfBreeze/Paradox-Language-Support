@@ -47,6 +47,7 @@ import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptBoolean
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
+import icu.windea.pls.script.psi.ParadoxScriptInterpolationContainer
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptMemberContainer
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -91,12 +92,12 @@ object ParadoxExpressionInspectionService {
     fun checkForUnresolvedExpression(element: ParadoxScriptExpressionElement, context: ParadoxExpressionInspectionContext) {
         // skip if is not a data expression
         if (!element.isDataExpression()) return
-        // NOTE 3.0.2 do not skip by default (try to match with parameters if possible)
-        //// skip if it is parameterized
-        // if (element is ParadoxParameterAwareElement && element.text.isParameterized()) return
+        // NOTE 3.0.2 skip if it is full parameterized (can be many things, even a set of statements, or just a script snippet)
+        // NOTE 3.0.2 DO NOT skip if it is partial parameterized (should try to match with parameters if possible)
+        if (element is ParadoxScriptInterpolationContainer && element.text.isParameterized(full = true)) return
 
         // NOTE 3.0.2 not very necessary, but in case
-        // skip if it is a special tag (Do not consider whether matched configs exist)
+        // skip if it is a special tag (do not consider whether matched configs exist)
         if (element is ParadoxScriptString && element.tagType != null) return
 
         // 如果不存在规则上下文，则直接跳过

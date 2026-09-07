@@ -29,9 +29,11 @@ import icu.windea.pls.lang.inspections.ParadoxExpressionInspectionService
 import icu.windea.pls.lang.match.util.ParadoxMatchFactory
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
+import icu.windea.pls.lang.psi.isResolvableLiteralExpression
 import icu.windea.pls.lang.psi.resolved
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.model.constants.ChronicleStrings
+import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptFloat
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
@@ -106,11 +108,12 @@ class ParadoxDefaultUnresolvedExpressionChecker : ParadoxUnresolvedExpressionChe
  */
 class ParadoxWrongBooleanUnresolvedExpressionChecker : ParadoxUnresolvedExpressionChecker {
     override fun check(element: ParadoxExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>, context: ParadoxExpressionInspectionContext): Boolean {
+        if (element !is ParadoxScriptString && element !is ParadoxCsvColumn) return true
+
         // for `CwtDataTypes.Bool` only (after expansion)
         val configExpression = ProcessorScope.findFrom({ expectedConfigs.expandConfigExpression { process(it) } }) { it.type == CwtDataTypes.Bool }
         if (configExpression == null) return true
 
-        if (element !is ParadoxScriptString && element !is ParadoxCsvColumn) return true
         // val text = element.text
         // if (text.isEmpty()) return true // should not be
         // if (text == ChronicleStrings.yesKeyword || text == ChronicleStrings.noKeyword) return true // should not be
@@ -137,11 +140,12 @@ class ParadoxWrongBooleanUnresolvedExpressionChecker : ParadoxUnresolvedExpressi
 @Optimized
 class ParadoxSubtypesMismatchedDefinitionUnresolvedExpressionChecker : ParadoxUnresolvedExpressionChecker {
     override fun check(element: ParadoxExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>, context: ParadoxExpressionInspectionContext): Boolean {
+        if (element is ParadoxScriptExpressionElement && !element.isResolvableLiteralExpression()) return true
+
         // for `CwtDataTypes.Definition` only (after expansion)
         val configExpressions = ProcessorScope.collectFrom({ expectedConfigs.expandConfigExpression { process(it) } }) { it.type == CwtDataTypes.Definition }
         if (configExpressions.isEmpty()) return true
 
-        if (element !is ParadoxScriptString && element !is ParadoxCsvColumn) return true
         val value = element.value
         if (value.isEmpty()) return true
         configExpressions.forEachFast f@{ configExpression ->

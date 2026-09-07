@@ -8,7 +8,12 @@ import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.mockConfigModel
 import icu.windea.pls.config.manipulation.CwtConfigManipulationService
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.collections.filterIsInstanceFast
+import icu.windea.pls.core.collections.findFast
+import icu.windea.pls.core.collections.mapFast
+import icu.windea.pls.core.collections.mapNotNullFast
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.util.values.singletonList
 import icu.windea.pls.core.util.values.to
@@ -66,6 +71,7 @@ class ParadoxDefaultExpressionParameterInferredConfigProvider : ParadoxParameter
 /**
  * 用于推断在脚本表达式中使用的参数的上下文规则，适用于部分简单的场合。
  */
+@Optimized
 class ParadoxBaseParameterInferredConfigProvider : ParadoxParameterInferredConfigProvider {
     override fun supports(parameterInfo: ParadoxParameterContextInfo.Parameter, parameterContextInfo: ParadoxParameterContextInfo): Boolean {
         val parentElement = parameterInfo.parentElement
@@ -83,10 +89,10 @@ class ParadoxBaseParameterInferredConfigProvider : ParadoxParameterInferredConfi
     }
 
     private fun getContextConfigsFromExpressionContextConfigs(expressionContextConfigs: List<CwtMemberConfig<*>>, parameterInfo: ParadoxParameterContextInfo.Parameter): List<CwtMemberConfig<*>>? {
-        val inlinedContextConfigs = expressionContextConfigs.map { config -> CwtConfigManipulationService.inlineForConfig(config) }
+        val inlinedContextConfigs = expressionContextConfigs.mapFast { config -> CwtConfigManipulationService.inlineForConfig(config) }
         val parentElement = parameterInfo.parentElement
         val configGroup = expressionContextConfigs.first().configGroup
-        val passingConfig = inlinedContextConfigs.find { it.configExpression.type == CwtDataTypes.ParameterValue }
+        val passingConfig = inlinedContextConfigs.findFast { it.configExpression.type == CwtDataTypes.ParameterValue }
         if (passingConfig != null) {
             // 处理参数传递的情况
             if (passingConfig !is CwtValueConfig) return null
@@ -96,9 +102,9 @@ class ParadoxBaseParameterInferredConfigProvider : ParadoxParameterInferredConfi
             val passingContextConfigs = ParadoxParameterManager.getInferredContextConfigs(passingParameterElement)
             return passingContextConfigs
         }
-        val finalConfigs = inlinedContextConfigs.map { config ->
+        val finalConfigs = inlinedContextConfigs.mapFast t@{ config ->
             if (config is CwtPropertyConfig && parentElement is ParadoxScriptPropertyKey) {
-                return@map CwtValueConfig.mock(configGroup, config.key)
+                return@t CwtValueConfig.mock(configGroup, config.key)
             }
             val delegatedConfig = config.delegated(CwtConfigManipulationService.deepCopyConfigs(config)).also { it.withParentConfig(config.parentConfig) }
             delegatedConfig.postOptimize() // 进行后续优化
@@ -113,6 +119,7 @@ class ParadoxBaseParameterInferredConfigProvider : ParadoxParameterInferredConfi
 /**
  * 用于推断在脚本表达式中使用的参数的上下文规则，适用于参数作为复杂表达式节点的场合。
  */
+@Optimized
 class ParadoxComplexExpressionNodeParameterInferredConfigProvider : ParadoxParameterInferredConfigProvider {
     // root.trigger:$PARAM$ -> alias_keys_field[trigger]
     // root.$PARAM$.owner -> scope_field
@@ -131,7 +138,7 @@ class ParadoxComplexExpressionNodeParameterInferredConfigProvider : ParadoxParam
         if (expressionConfigs.isEmpty()) return null
         val parentElement = parameterInfo.parentElement
         if (parentElement !is ParadoxScriptStringExpressionElement) return null
-        val contextConfigs = expressionConfigs.mapNotNull { getContextConfigFromExpressionConfig(parentElement, it, parameterInfo) }
+        val contextConfigs = expressionConfigs.mapNotNullFast { getContextConfigFromExpressionConfig(parentElement, it, parameterInfo) }
         return contextConfigs
     }
 
@@ -159,13 +166,13 @@ class ParadoxComplexExpressionNodeParameterInferredConfigProvider : ParadoxParam
         val configGroup = config.configGroup
         return when {
             node is ParadoxDataSourceNode -> {
-                node.linkConfigs.mapNotNull { it.configExpression?.let { e -> CwtValueConfig.mock(configGroup, e.expressionString) } }
+                node.linkConfigs.mapNotNullFast { it.configExpression?.let { e -> CwtValueConfig.mock(configGroup, e.expressionString) } }
             }
             node is ParadoxDynamicValueNode -> {
-                node.configs.mapNotNull { it.configExpression?.let { e -> CwtValueConfig.mock(configGroup, e.expressionString) } }
+                node.configs.mapNotNullFast { it.configExpression?.let { e -> CwtValueConfig.mock(configGroup, e.expressionString) } }
             }
             node is ParadoxScriptValueNode -> {
-                node.config.to.singletonList().mapNotNull { it.configExpression?.let { e -> CwtValueConfig.mock(configGroup, e.expressionString) } }
+                node.config.to.singletonList().mapNotNullFast { it.configExpression?.let { e -> CwtValueConfig.mock(configGroup, e.expressionString) } }
             }
             node is ParadoxScopeNode -> {
                 CwtValueConfig.mock(configGroup, "scope_field").to.singletonList()
@@ -178,7 +185,7 @@ class ParadoxComplexExpressionNodeParameterInferredConfigProvider : ParadoxParam
                 val rangeInExpression = argumentNode.rangeInExpression
                 val passingParameterElement = ParadoxParameterService.resolveArgument(element, rangeInExpression, config) ?: return emptyList()
                 val passingContextConfigs = ParadoxParameterManager.getInferredContextConfigs(passingParameterElement)
-                val passingConfigs = passingContextConfigs.singleOrNull()?.configs?.filterIsInstance<CwtValueConfig>().orEmpty()
+                val passingConfigs = passingContextConfigs.singleOrNull()?.configs?.filterIsInstanceFast<CwtValueConfig>().orEmpty()
                 passingConfigs
             }
             else -> emptyList()

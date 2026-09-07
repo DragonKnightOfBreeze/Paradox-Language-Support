@@ -151,7 +151,9 @@ object ParadoxInlineScriptService {
             }
             if (fast && isFastInferenceAvailable(result)) false else r
         }
-        return result.get().orEmpty()
+        val merged = result.get().orEmpty()
+        if (CwtConfigManipulationService.skipMergedConfigs(merged)) return emptyList()
+        return merged
     }
 
     private fun isFastInferenceAvailable(result: Ref<List<CwtMemberConfig<*>>>): Boolean {

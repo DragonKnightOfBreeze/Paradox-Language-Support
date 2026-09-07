@@ -12,12 +12,12 @@ import icu.windea.pls.config.manipulation.CwtConfigManipulationService
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cast
 import icu.windea.pls.core.collections.anyFast
+import icu.windea.pls.core.collections.filterFast
 import icu.windea.pls.core.collections.findFast
 import icu.windea.pls.core.collections.findLastFast
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.mapFast
 import icu.windea.pls.core.collections.orNull
-import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.collections.processFast
 import icu.windea.pls.core.constants.StatusStrings
 import icu.windea.pls.core.mergeValue
@@ -160,8 +160,7 @@ object ParadoxParameterService {
     }
 
     fun getInferredConfigsForLiteral(contextConfigs: List<CwtMemberConfig<*>>): List<CwtValueConfig> {
-        val configs = contextConfigs.singleOrNull()?.configs
-            ?.filterNot { it !is CwtValueConfig || it.valueType == CwtExpressionType.Block }
+        val configs = contextConfigs.singleOrNull()?.configs?.filterFast { it is CwtValueConfig && it.valueType != CwtExpressionType.Block }
         if (configs.isNullOrEmpty()) return emptyList()
         return configs.cast()
     }
@@ -208,21 +207,25 @@ object ParadoxParameterService {
             val r = result.mergeValue(contextConfigs) { v1, v2 -> CwtConfigManipulationService.mergeConfigs(v1, v2) }
             if (fast && isFastInferenceAvailable(result)) false else r
         }
-        return result.get().orEmpty()
+        val merged = result.get().orEmpty()
+        if (CwtConfigManipulationService.skipMergedConfigs(merged)) return emptyList()
+        return merged
     }
 
     private fun doGetInferredContextConfigsFromUsages(parameterName: String, parameterContextInfo: ParadoxParameterContextInfo, fast: Boolean): List<CwtMemberConfig<*>> {
         val parameterInfos = parameterContextInfo.parameters.get(parameterName)
         if (parameterInfos.isNullOrEmpty()) return emptyList()
         val result = Ref.create<List<CwtMemberConfig<*>>>()
-        parameterInfos.process p@{ parameterInfo ->
+        parameterInfos.processFast { parameterInfo ->
             ProgressManager.checkCanceled()
             val contextConfigs = getContextConfigs(parameterInfo, parameterContextInfo).orNull()
             // merge
             val r = result.mergeValue(contextConfigs) { v1, v2 -> CwtConfigManipulationService.mergeConfigs(v1, v2) }
             if (fast && isFastInferenceAvailable(result)) false else r
         }
-        return result.get().orEmpty()
+        val merged = result.get().orEmpty()
+        if (CwtConfigManipulationService.skipMergedConfigs(merged)) return emptyList()
+        return merged
     }
 
     private fun isFastInferenceAvailable(result: Ref<List<CwtMemberConfig<*>>>): Boolean {

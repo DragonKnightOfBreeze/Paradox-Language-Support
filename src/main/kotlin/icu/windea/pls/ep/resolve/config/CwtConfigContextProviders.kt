@@ -225,6 +225,11 @@ class CwtParameterValueConfigContextProvider : CwtConfigContextProvider {
         val rootConfigs = ParadoxParameterManager.getInferredContextConfigs(parameterElement)
         return ParadoxConfigService.getTopConfigsForConfigContext(context, rootConfigs)
     }
+    //
+    // override fun skipUnresolvedExpressionCheck(context: CwtConfigContext): Boolean {
+    //     // skip for declaration roots (since inferred configs may be empty)
+    //     return context.isDeclarationRoot()
+    // }
 
     override fun skipMissingExpressionCheck(context: CwtConfigContext): Boolean {
         // skip for declaration roots
@@ -335,6 +340,11 @@ class CwtInlineScriptFileConfigContextProvider : CwtConfigContextProvider {
         return ParadoxConfigService.getTopConfigsForConfigContext(context, rootConfigs)
     }
 
+    // override fun skipUnresolvedExpressionCheck(context: CwtConfigContext): Boolean {
+    //     // skip for declaration roots (since inferred configs may be empty)
+    //     return context.isDeclarationRoot()
+    // }
+
     override fun skipMissingExpressionCheck(context: CwtConfigContext): Boolean {
         // skip for declaration roots
         return context.isDeclarationRoot()
@@ -397,6 +407,11 @@ class CwtDefinitionInjectionConfigContextProvider : CwtConfigContextProvider {
         return ParadoxConfigService.getTopConfigsForConfigContext(context, rootConfigs)
     }
 
+    override fun skipUnresolvedExpressionCheck(context: CwtConfigContext): Boolean {
+        // skip for root key (definition injection expression)
+        return context.isDeclarationRoot() && context.memberRole == ParadoxMemberRole.Property
+    }
+
     override fun skipMissingExpressionCheck(context: CwtConfigContext): Boolean {
         // skip for declaration roots
         return context.isDeclarationRoot()
@@ -405,10 +420,5 @@ class CwtDefinitionInjectionConfigContextProvider : CwtConfigContextProvider {
     override fun skipTooManyExpressionCheck(context: CwtConfigContext): Boolean {
         // skip for declaration roots
         return context.isDeclarationRoot()
-    }
-
-    override fun skipUnresolvedExpressionCheck(context: CwtConfigContext): Boolean {
-        // skip for root key (definition injection expression)
-        return context.isDeclarationRoot() && context.memberRole == ParadoxMemberRole.Property
     }
 }
