@@ -49,7 +49,8 @@ class ParadoxScriptValueArgumentNameNode(
         }
 
         override fun resolve(): ParadoxParameterLightElement? {
-            val config = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(fallback = false)).firstOrNull() ?: return null
+            val matchOptions = ParadoxMatchOptions(lenient = false)
+            val config = ParadoxConfigManager.getConfigs(element, matchOptions).firstOrNull() ?: return null
             return ParadoxParameterService.resolveArgument(element, rangeInExpression, config)
         }
 

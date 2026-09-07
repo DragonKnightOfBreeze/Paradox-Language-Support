@@ -197,8 +197,9 @@ fun ParadoxScriptExpressionElement.isResolvableLiteralExpression(): Boolean {
 /**
  * 判断当前字符串表达式是否在顶层或者子句中或者作为属性的值，并且拥有唯一匹配的规则。
  */
-fun ParadoxScriptExpressionElement.isValidExpression(options: ParadoxMatchOptions? = null): Boolean {
-    return ParadoxConfigManager.getConfigs(this, options.normalized().copy(fallback = false)).size == 1
+fun ParadoxScriptExpressionElement.isValidExpression(matchOptions: ParadoxMatchOptions? = null): Boolean {
+    val options = matchOptions.normalized().copy(lenient = false)
+    return ParadoxConfigManager.getConfigs(this, options).size == 1
 }
 
 fun ParadoxScriptExpressionElement.isDefinitionTypeKeyOrName(): Boolean {

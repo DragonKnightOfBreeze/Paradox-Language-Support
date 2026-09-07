@@ -14,7 +14,7 @@ import icu.windea.pls.model.ParadoxGameType
  *
  * 说明：
  * - 适用于脚本文件和 CSV 文件中的各种表达式。
- * - 仅当存在完全匹配的规则时才可用。
+ * - 仅当存在完全匹配表达式的规则时才可用。
  * - 某些表达式在语义匹配阶段可能采用更宽松的匹配策略，在检查阶段才会报告更多问题。
  * - 例如，数值超出区间、作用域不匹配等。
  *
@@ -28,7 +28,7 @@ interface ParadoxIncorrectExpressionChecker {
      * 执行检查。
      *
      * @param element 要检查的 [ParadoxExpressionElement]。
-     * @param config 完全匹配的规则。
+     * @param config 完全匹配表达式的规则。
      * @param context 文件级别的上下文。
      * @return 是否继续执行下一个检查器。
      */

@@ -83,7 +83,7 @@ sealed interface ParadoxMatchResult {
 
         private fun skip(options: ParadoxMatchOptions?): Boolean {
             return when {
-                this is LazyBlockAwareMatch -> ParadoxMatchService.lenient(options)
+                this is LazyBlockAwareMatch -> ParadoxMatchService.skipBlock(options)
                 this is LazyIndexAwareMatch -> ParadoxMatchService.skipIndex(options)
                 this is LazyScopeAwareMatch -> ParadoxMatchService.skipScope(options)
                 else -> false

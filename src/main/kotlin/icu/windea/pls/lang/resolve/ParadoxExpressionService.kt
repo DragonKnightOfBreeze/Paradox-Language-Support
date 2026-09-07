@@ -51,7 +51,6 @@ import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptInlineConditionalBlock
 import icu.windea.pls.script.psi.ParadoxScriptInlineMath
 import icu.windea.pls.script.psi.ParadoxScriptParameter
-import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 @Optimized
@@ -361,10 +360,8 @@ object ParadoxExpressionService {
         }
 
         // 尝试基于规则进行解析
-        val isKey = element is ParadoxScriptPropertyKey
-        val isDumb = ParadoxMatchService.isDumb()
-        val options = if (isDumb) ParadoxMatchOptions.DUMB else ParadoxMatchOptions.DEFAULT
-        val configs = ParadoxConfigManager.getConfigs(element, options.copy(fallback = isKey))
+        val matchOptions = ParadoxMatchOptions.create().copy(lenient = false, forExpression = true)
+        val configs = ParadoxConfigManager.getConfigs(element, matchOptions)
         if (configs.isEmpty()) return PsiReference.EMPTY_ARRAY
         val role = ParadoxTypeResolver.resolveExpressionRole(element)
         val referenceRange = getExpressionRangeInElement(element)

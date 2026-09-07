@@ -10,6 +10,7 @@ import icu.windea.pls.core.util.values.LazyValue
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.csv.psi.ParadoxCsvFile
+import icu.windea.pls.ep.overrides.ParadoxFilePathMapBasedOverrideStrategyProvider
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.ParadoxMatchService
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
@@ -81,10 +82,8 @@ data class ParadoxMergedIndexScriptContextBase(
         // 3.0.l it's safe to call `ParadoxConfigService.getConfigs` directly during indexing (with dumb mode)
         val element = expressionElement ?: return emptyList()
         val memberElement = element.parentOfType<ParadoxScriptMember>(withSelf = true) ?: return emptyList()
-        val isKey = element is ParadoxScriptPropertyKey
-        val isDumb = ParadoxMatchService.isDumb()
-        val options = if (isDumb) ParadoxMatchOptions.DUMB else ParadoxMatchOptions.DEFAULT
-        val configs = ParadoxConfigService.getConfigs(memberElement, options.copy(fallback = isKey))
+        val matchOptions = ParadoxMatchOptions.create().copy(lenient = false, forExpression = true)
+        val configs = ParadoxConfigService.getConfigs(memberElement, matchOptions)
         return configs
     }
 

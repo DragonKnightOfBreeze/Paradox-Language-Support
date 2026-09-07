@@ -3,6 +3,7 @@ package icu.windea.pls.lang.match
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import icu.windea.pls.config.CwtDataTypes
+import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.expandUnionCandidates
 import icu.windea.pls.config.configExpression.CwtDataExpression
@@ -15,7 +16,9 @@ import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.runWithRecursionGuard
 import icu.windea.pls.core.util.ProcessorScope
 import icu.windea.pls.ep.match.expression.ParadoxCsvExpressionMatcher
+import icu.windea.pls.ep.match.expression.ParadoxScriptExpressionMatchOptimizer
 import icu.windea.pls.ep.match.expression.ParadoxScriptExpressionMatcher
+import icu.windea.pls.lang.ParadoxThreadContext
 import icu.windea.pls.model.expressions.ParadoxExpression
 import icu.windea.pls.model.type.ParadoxExpressionRole
 
@@ -43,6 +46,24 @@ object ParadoxExpressionMatchService {
             matcher.match(context)?.let { return it }
         }
         return ParadoxMatchResult.NotMatch
+    }
+
+    /**
+     * @see ParadoxScriptExpressionMatchOptimizer.optimize
+     */
+    fun <T : CwtMemberConfig<*>> optimizeScriptExpression(input: List<T>, context: ParadoxScriptExpressionMatchOptimizerContext): List<T> {
+        var result = input
+        var dynamic = false
+        val optimizers = ParadoxScriptExpressionMatchOptimizer.getAll()
+        optimizers.forEachFast f@{ optimizer ->
+            val optimized = optimizer.optimize(result, context)
+            if (optimized == null) return@f
+            if (optimizer.isDynamic(context)) dynamic = true
+            result = optimized
+        }
+        // NOTE 2.1.2 如果是动态的优化器，需要把正在解析的规则上下文标记为动态的
+        if (dynamic) ParadoxThreadContext.resolvingConfigContext?.markDynamic()
+        return result
     }
 
     fun matchesExpressionRole(expression: ParadoxExpression, configExpression: CwtDataExpression): Boolean {

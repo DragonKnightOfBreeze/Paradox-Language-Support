@@ -620,5 +620,7 @@ class UnresolvedExpressionInspectionTest : BasePlatformTestCase(), ChronicleTest
 
     // TODO 3.0.4+ [test] subtypesMismatchedDefinition
 
+    // TODO 3.0.4+ [test] from ADR, #unresolved-expression-inspection-fix
+
     // TODO [test] more tests
 }

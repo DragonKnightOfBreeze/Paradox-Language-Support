@@ -110,9 +110,9 @@ object ParadoxExpressionInspectionService {
         // skip if config context should be skipped (mainly based on member path and member role)
         if (configContext.skipUnresolvedExpressionCheck()) return
 
-        // skip if there are any matched configs (use fallback if is property key)
-        val fallback = element is ParadoxScriptPropertyKey
-        val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(fallback = fallback))
+        // skip if there are any matched configs (which are entirely matched by the expression)
+        val matchOptions = ParadoxMatchOptions(lenient = false, forExpression = true)
+        val configs = ParadoxConfigManager.getConfigs(element, matchOptions)
         if (configs.isNotEmpty()) return
 
         var parentConfigContext: CwtConfigContext? = null
@@ -121,7 +121,7 @@ object ParadoxExpressionInspectionService {
             if (parent == null) return@run
             parentConfigContext = ParadoxConfigManager.getConfigContext(parent) ?: return@run
             if (parentConfigContext.skipUnresolvedExpressionCheck()) return@run
-            val configs = ParadoxConfigManager.getConfigs(parent)
+            val configs = ParadoxConfigManager.getConfigs(parent, matchOptions)
             if (configs.isNotEmpty()) return@run
             return // skip if the parent node also fails the check
         }
@@ -129,7 +129,7 @@ object ParadoxExpressionInspectionService {
         val expectedConfigs = ParadoxConfigManager.getExpectedConfigs(element, configContext, parentConfigContext)
         if (skipForUnresolvedExpression(element, expectedConfigs, context)) return
 
-        // 开始检查
+        // start check (via applying checkers)
         ParadoxInspectionService.applyUnresolvedExpressionCheckers(element, expectedConfigs, context)
     }
 
@@ -150,7 +150,7 @@ object ParadoxExpressionInspectionService {
         val expectedConfigs = ParadoxConfigManager.getExpectedConfigs(columnConfig)
         if (skipForUnresolvedExpression(element, expectedConfigs, context)) return
 
-        // 开始检查
+        // start check (via applying checkers)
         ParadoxInspectionService.applyUnresolvedExpressionCheckers(element, expectedConfigs, context)
     }
 
@@ -195,10 +195,12 @@ object ParadoxExpressionInspectionService {
         // skip if is not a data expression
         if (!element.isDataExpression()) return
 
-        // 得到完全匹配的规则
-        val config = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(fallback = false)).firstOrNull() ?: return
+        // get matched configs (which are entirely matched by the expression)
+        val matchOptions = ParadoxMatchOptions(lenient = false, forExpression = true)
+        val configs = ParadoxConfigManager.getConfigs(element, matchOptions)
+        val config = configs.firstOrNull() ?: return
 
-        // 开始检查
+        // start check (via applying checkers)
         ParadoxInspectionService.applyIncorrectExpressionCheckers(element, config, context)
 
         // TODO 1.3.26+ 应当也适用于各种复杂表达式中的数据源
@@ -211,12 +213,12 @@ object ParadoxExpressionInspectionService {
         if (ParadoxCsvPsiService.isHeaderColumn(element)) return // skip header columns
         if (ParadoxCsvPsiService.isEmptyColumn(element)) return // skip empty columns
 
-        // 得到完全匹配的规则
+        // get matched configs (which are entirely matched by the expression)
         val columnConfig = ParadoxConfigManager.getColumnConfig(element, rowConfig) ?: return // skip (checked by `IncorrectColumnSizeInspection`)
         if (!ParadoxConfigManager.isMatchedColumnConfig(element, columnConfig)) return // skip (checked by `UnresolvedExpressionInspection`)
         val config = columnConfig.valueConfig ?: return
 
-        // 开始检查
+        // start check (via applying checkers)
         ParadoxInspectionService.applyIncorrectExpressionCheckers(element, config, context)
     }
 
@@ -227,7 +229,8 @@ object ParadoxExpressionInspectionService {
     fun checkForMissingExpression(file: ParadoxScriptFile, context: ParadoxExpressionInspectionContext) {
         val configContext = ParadoxConfigManager.getConfigContext(file) ?: return
         if (configContext.skipMissingExpressionCheck()) return
-        val configs = ParadoxConfigManager.getConfigs(file, ParadoxMatchOptions(forDeclarationRoot = true))
+        val matchOptions = ParadoxMatchOptions(forDeclarationRoot = true)
+        val configs = ParadoxConfigManager.getConfigs(file, matchOptions)
         checkForMissingExpression(file, configs, context)
     }
 
@@ -240,7 +243,8 @@ object ParadoxExpressionInspectionService {
 
         val configContext = ParadoxConfigManager.getConfigContext(element) ?: return
         if (configContext.skipMissingExpressionCheck()) return
-        val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(forDeclarationRoot = true))
+        val matchOptions = ParadoxMatchOptions(forDeclarationRoot = true)
+        val configs = ParadoxConfigManager.getConfigs(element, matchOptions)
         checkForMissingExpression(element, configs, context)
     }
 
@@ -305,7 +309,8 @@ object ParadoxExpressionInspectionService {
     fun checkForTooManyExpression(file: ParadoxScriptFile, context: ParadoxExpressionInspectionContext) {
         val configContext = ParadoxConfigManager.getConfigContext(file) ?: return
         if (configContext.skipTooManyExpressionCheck()) return
-        val configs = ParadoxConfigManager.getConfigs(file, ParadoxMatchOptions(forDeclarationRoot = true))
+        val matchOptions = ParadoxMatchOptions(forDeclarationRoot = true)
+        val configs = ParadoxConfigManager.getConfigs(file, matchOptions)
         checkForTooManyExpression(file, configs, context)
     }
 
@@ -318,7 +323,8 @@ object ParadoxExpressionInspectionService {
 
         val configContext = ParadoxConfigManager.getConfigContext(element) ?: return
         if (configContext.skipTooManyExpressionCheck()) return
-        val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(forDeclarationRoot = true))
+        val matchOptions = ParadoxMatchOptions(forDeclarationRoot = true)
+        val configs = ParadoxConfigManager.getConfigs(element, matchOptions)
         checkForTooManyExpression(element, configs, context)
     }
 
@@ -389,7 +395,8 @@ object ParadoxExpressionInspectionService {
         val propertyKey = element.propertyKey
         if (propertyKey != null && propertyKey.text.isParameterized()) return
 
-        val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(forDeclarationRoot = true))
+        val matchOptions = ParadoxMatchOptions(forDeclarationRoot = true)
+        val configs = ParadoxConfigManager.getConfigs(element, matchOptions)
         if (skipForConflictingExpression(element, configs)) return
         reportForConflictingExpression(element, context)
     }
@@ -500,8 +507,11 @@ object ParadoxExpressionInspectionService {
         // skip if is parameterized
         if (element.text.isParameterized()) return
 
-        // 得到完全匹配的规则
-        val config = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(fallback = false)).firstOrNull() ?: return
+        // get matched configs (which are entirely matched by the expression)
+        val matchOptions = ParadoxMatchOptions(lenient = false, forExpression = true)
+        val configs = ParadoxConfigManager.getConfigs(element, matchOptions)
+        val config = configs.firstOrNull() ?: return
+
         val configExpression = config.configExpression
         val dataType = configExpression.type
         if (dataType !in CwtDataTypeSets.PathReference) return
