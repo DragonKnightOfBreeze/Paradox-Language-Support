@@ -31,7 +31,7 @@ data class ParadoxMatchOptions(
         val DUMB = ParadoxMatchOptions(skipIndex = true, skipScope = true)
 
         fun create(): ParadoxMatchOptions {
-            return if (isDumb()) DUMB else DUMB
+            return if (isDumb()) DUMB else DEFAULT
         }
 
         fun isDumb(): Boolean {
