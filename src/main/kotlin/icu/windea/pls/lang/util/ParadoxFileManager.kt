@@ -3,7 +3,6 @@ package icu.windea.pls.lang.util
 import com.intellij.lang.Language
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.fileTypes.FileType
-import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
@@ -12,6 +11,7 @@ import com.intellij.testFramework.LightVirtualFile
 import com.intellij.util.io.createDirectories
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.ChronicleIcons
+import icu.windea.pls.core.checkCancellation
 import icu.windea.pls.core.formatted
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.toVirtualFile
@@ -25,7 +25,6 @@ import icu.windea.pls.model.ParadoxFileInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.analysis.ParadoxGameTypeMetadata
 import icu.windea.pls.script.ParadoxScriptFileType
-import kotlinx.coroutines.CancellationException
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.*
@@ -127,7 +126,7 @@ object ParadoxFileManager {
             ParadoxAnalysisInjectionManager.injectFileInfo(tempFile, file.fileInfo)
             return tempFile
         } catch (e: Exception) {
-            if (e is ProcessCanceledException || e is CancellationException) throw e
+            checkCancellation(e)
             logger.error(e.message, e)
             return null
         }
@@ -143,7 +142,7 @@ object ParadoxFileManager {
             ParadoxAnalysisInjectionManager.injectFileInfo(tempFile, fileInfo)
             return tempFile
         } catch (e: Exception) {
-            if (e is ProcessCanceledException || e is CancellationException) throw e
+            checkCancellation(e)
             logger.error(e.message, e)
             return null
         }

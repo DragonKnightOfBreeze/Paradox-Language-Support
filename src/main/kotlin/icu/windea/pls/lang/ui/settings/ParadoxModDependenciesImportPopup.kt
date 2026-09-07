@@ -4,7 +4,6 @@ import com.intellij.notification.NotificationType
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.fileChooser.FileChooser
 import com.intellij.openapi.observable.properties.AtomicProperty
-import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.popup.util.BaseListPopupStep
 import com.intellij.openapi.vfs.VirtualFile
@@ -13,12 +12,12 @@ import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.base.notification.ChronicleNotificationGroups
 import icu.windea.pls.base.settings.ParadoxGameOrModSettingsState
 import icu.windea.pls.base.settings.qualifiedName
+import icu.windea.pls.core.checkCancellation
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.ep.tools.importer.ParadoxModImporter
 import icu.windea.pls.lang.actions.ChronicleDataKeys
 import icu.windea.pls.model.tools.toModDependencies
 import icu.windea.pls.model.tools.toModSetInfo
-import kotlinx.coroutines.CancellationException
 
 /**
  * @ee ParadoxModImporter
@@ -66,7 +65,7 @@ class ParadoxModDependenciesImportPopup(
                 modImporter.execute(file.toNioPath(), modSetInfo)
             }
         } catch (e: Exception) {
-            if (e is ProcessCanceledException || e is CancellationException) throw e
+            checkCancellation(e)
             logger.warn(e)
             val content = ChronicleBundle.message("mod.dependencies.import.error").let { ChronicleBundle.errorDescription(it, e) }
             ChronicleNotificationGroups.settings().createNotification(qualifiedName, content, NotificationType.WARNING).notify(project)

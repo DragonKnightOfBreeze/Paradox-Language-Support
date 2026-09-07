@@ -1,7 +1,6 @@
 package icu.windea.pls.ep.util.presentation
 
 import com.intellij.openapi.diagnostic.thisLogger
-import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.Key
 import com.intellij.psi.util.CachedValue
@@ -12,11 +11,11 @@ import icu.windea.pls.base.annotations.ForDefinitionType
 import icu.windea.pls.base.annotations.ForGameType
 import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.cast
+import icu.windea.pls.core.checkCancellation
 import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
-import kotlinx.coroutines.CancellationException
 
 /**
  * 支持符合以下条件的定义的数据：
@@ -62,7 +61,7 @@ class ParadoxBaseDefinitionPresentationProvider : ParadoxDefinitionPresentationP
             val presentation = type.getConstructor(ParadoxDefinitionElement::class.java).newInstance(element)
             return presentation
         } catch (e: Exception) {
-            if (e is ProcessCanceledException || e is CancellationException) throw e
+            checkCancellation(e)
             thisLogger().warn("Cannot create definition presentation (type: $type)", e)
             return null
         }

@@ -1,16 +1,15 @@
 package icu.windea.pls.inject
 
 import com.intellij.openapi.diagnostic.thisLogger
-import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.util.application
 import icu.windea.pls.ChronicleFacade
+import icu.windea.pls.core.checkCancellation
 import icu.windea.pls.core.staticProperty
 import icu.windea.pls.core.util.createKey
 import icu.windea.pls.inject.model.InjectMethodInfo
 import javassist.ClassClassPath
 import javassist.ClassPool
 import javassist.CtClass
-import kotlinx.coroutines.CancellationException
 import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
 import java.lang.reflect.Parameter
@@ -73,7 +72,7 @@ internal object CodeInjectorContext {
                 codeInjector.inject()
                 logger.info("Applied code injector: $codeInjectorId")
             } catch (e: Exception) {
-                if (e is ProcessCanceledException || e is CancellationException) throw e
+                checkCancellation(e)
                 logger.warn("ERROR while applying code injector: $codeInjectorId")
                 logger.warn(e.message, e)
             }
@@ -103,7 +102,7 @@ internal object CodeInjectorContext {
         try {
             return action()
         } catch (e: Exception) {
-            if (e is ProcessCanceledException || e is CancellationException) throw e
+            checkCancellation(e)
             reportError(codeInjectorId, name, e)
             return null
         }

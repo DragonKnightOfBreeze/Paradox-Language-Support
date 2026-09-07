@@ -1,11 +1,10 @@
 package icu.windea.pls.images.supports
 
 import com.intellij.openapi.diagnostic.thisLogger
-import com.intellij.openapi.progress.ProcessCanceledException
+import icu.windea.pls.core.checkCancellation
 import icu.windea.pls.images.ImageSupport
 import icu.windea.pls.integrations.images.ImageToolProvider
 import icu.windea.pls.integrations.images.ImageToolService
-import kotlinx.coroutines.CancellationException
 import java.io.InputStream
 import java.io.OutputStream
 import java.nio.file.Path
@@ -20,7 +19,7 @@ class ToolBasedImageSupport : ImageSupport {
         try {
             return ImageToolService.getInstance().convertImageFormat(inputStream, outputStream, sourceFormat, targetFormat)
         } catch (e: Exception) {
-            if (e is ProcessCanceledException || e is CancellationException) throw e
+            checkCancellation(e)
             thisLogger().warn(e)
             throw UnsupportedOperationException(e)
         }
@@ -31,7 +30,7 @@ class ToolBasedImageSupport : ImageSupport {
         try {
             return ImageToolService.getInstance().convertImageFormat(path, targetPath, sourceFormat, targetFormat)
         } catch (e: Exception) {
-            if (e is ProcessCanceledException || e is CancellationException) throw e
+            checkCancellation(e)
             thisLogger().warn(e)
             throw UnsupportedOperationException(e)
         }

@@ -1,15 +1,14 @@
 package icu.windea.pls.extensions.diagram
 
 import com.intellij.diagram.DiagramVfsResolver
-import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiElement
+import icu.windea.pls.core.checkCancellation
 import icu.windea.pls.core.toPsiDirectory
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.model.ParadoxRootInfo
-import kotlinx.coroutines.CancellationException
 
 class ParadoxRootVfsResolver : DiagramVfsResolver<PsiElement> {
     // based on rootFile
@@ -27,7 +26,7 @@ class ParadoxRootVfsResolver : DiagramVfsResolver<PsiElement> {
         return try {
             rootPath.toVirtualFile()?.toPsiDirectory(project)
         } catch (e: Exception) {
-            if (e is ProcessCanceledException || e is CancellationException) throw e
+            checkCancellation(e)
             null
         }
     }

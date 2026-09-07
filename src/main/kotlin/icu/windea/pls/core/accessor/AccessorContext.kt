@@ -1,10 +1,8 @@
 package icu.windea.pls.core.accessor
 
 import com.intellij.openapi.diagnostic.thisLogger
-import com.intellij.openapi.progress.ProcessCanceledException
 import icu.windea.pls.core.cast
-import kotlinx.coroutines.CancellationException
-import java.lang.reflect.InvocationTargetException
+import icu.windea.pls.core.checkCancellation
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
 
@@ -39,7 +37,7 @@ internal object AccessorContext {
         try {
             return action()
         } catch (e: Exception) {
-            if (e is ProcessCanceledException || e is CancellationException) throw e
+            checkCancellation(e)
             if (e is UnsupportedAccessorException) throw e
             throw UnsupportedAccessorException(e)
         }
@@ -50,8 +48,7 @@ internal object AccessorContext {
         try {
             return action()
         } catch (e: Exception) {
-            if (e is InvocationTargetException) throw e.targetException ?: e // 3.0.1 fix: not `e.cause` here
-            if (e is ProcessCanceledException || e is CancellationException) throw e
+            checkCancellation(e)
             if (e is UnsupportedAccessorException) throw e
             throw UnsupportedAccessorException(e)
         }

@@ -6,10 +6,10 @@ import com.intellij.codeInsight.hints.declarative.InlayTreeSink
 import com.intellij.codeInsight.hints.declarative.SharedBypassCollector
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.editor.Editor
-import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.project.IndexNotReadyException
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
+import icu.windea.pls.core.checkCancellation
 import icu.windea.pls.lang.psi.ParadoxFile
 
 // org.jetbrains.kotlin.idea.k2.codeinsight.hints.AbstractKtInlayHintsProvider
@@ -27,11 +27,10 @@ abstract class ParadoxDeclarativeHintsProvider : InlayHintsProvider {
             override fun collectFromElement(element: PsiElement, sink: InlayTreeSink) {
                 try {
                     this@ParadoxDeclarativeHintsProvider.collectFromElement(element, sink)
-                } catch (e: ProcessCanceledException) {
-                    throw e
                 } catch (e: IndexNotReadyException) {
                     throw e
                 } catch (e: Exception) {
+                    checkCancellation(e)
                     logger.warn(e)
                 }
             }

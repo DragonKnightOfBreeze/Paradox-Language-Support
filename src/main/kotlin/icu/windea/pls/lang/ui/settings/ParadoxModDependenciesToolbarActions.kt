@@ -10,7 +10,6 @@ import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.fileChooser.FileChooser
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import com.intellij.openapi.observable.properties.AtomicProperty
-import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.ui.AnActionButton
@@ -19,9 +18,9 @@ import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.base.notification.ChronicleNotificationGroups
 import icu.windea.pls.base.settings.ParadoxModDependencySettingsState
 import icu.windea.pls.base.settings.qualifiedName
+import icu.windea.pls.core.checkCancellation
 import icu.windea.pls.lang.actions.ChronicleDataKeys
 import icu.windea.pls.lang.rootInfo
-import kotlinx.coroutines.CancellationException
 
 @Suppress("unused")
 interface ParadoxModDependenciesToolbarActions {
@@ -59,7 +58,7 @@ interface ParadoxModDependenciesToolbarActions {
                     val content = ChronicleBundle.message("mod.dependencies.add.info", count)
                     ChronicleNotificationGroups.settings().createNotification(qualifiedName, content, NotificationType.INFORMATION).notify(project)
                 } catch (e: Exception) {
-                    if (e is ProcessCanceledException || e is CancellationException) throw e
+                    checkCancellation(e)
                     thisLogger().warn(e)
                     val content = ChronicleBundle.message("mod.dependencies.add.error").let { ChronicleBundle.errorDescription(it, e) }
                     ChronicleNotificationGroups.settings().createNotification(qualifiedName, content, NotificationType.WARNING).notify(project)

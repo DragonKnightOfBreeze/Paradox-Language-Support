@@ -7,11 +7,11 @@ import com.intellij.codeInsight.hints.InlayHintsSink
 import com.intellij.lang.Language
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.editor.Editor
-import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.IndexNotReadyException
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
+import icu.windea.pls.core.checkCancellation
 import icu.windea.pls.ep.codeInsight.hints.ParadoxHintTextProvider
 import icu.windea.pls.lang.ParadoxLanguage
 import icu.windea.pls.lang.psi.ParadoxFile
@@ -55,11 +55,10 @@ abstract class ParadoxHintsProvider : InlayHintsProvider<ParadoxHintsSettings> {
                             collectFromElement(element, sink)
                         }
                     }
-                } catch (e: ProcessCanceledException) {
-                    throw e
                 } catch (e: IndexNotReadyException) {
                     throw e
                 } catch (e: Exception) {
+                    checkCancellation(e)
                     logger.warn(e)
                 }
                 return true

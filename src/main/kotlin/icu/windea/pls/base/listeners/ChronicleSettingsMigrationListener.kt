@@ -4,10 +4,9 @@ import com.intellij.ide.AppLifecycleListener
 import com.intellij.ide.util.PropertiesComponent
 import com.intellij.openapi.application.PathManager
 import com.intellij.openapi.diagnostic.thisLogger
-import com.intellij.openapi.progress.ProcessCanceledException
+import icu.windea.pls.core.checkCancellation
 import icu.windea.pls.model.constants.ChronicleConstants
 import java.nio.file.Paths
-import kotlin.coroutines.cancellation.CancellationException
 import kotlin.io.path.notExists
 import kotlin.io.path.readText
 import kotlin.io.path.writeText
@@ -61,7 +60,7 @@ class ChronicleSettingsMigrationListener : AppLifecycleListener {
             settingsFile.writeText(newText)
             logger.info("Migration for '$settingsFileName' finished. (migration version: $migrationVersion)")
         } catch (e: Exception) {
-            if (e is ProcessCanceledException || e is CancellationException) return
+            checkCancellation(e)
             logger.info("Migration for '$settingsFileName' failed. Skip. (migration version: $migrationVersion)")
         } finally {
             PropertiesComponent.getInstance().setValue(migrationPropertyName, migrationVersion, 0)

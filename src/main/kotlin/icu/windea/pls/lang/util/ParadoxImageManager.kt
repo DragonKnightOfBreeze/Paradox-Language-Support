@@ -3,7 +3,6 @@
 package icu.windea.pls.lang.util
 
 import com.intellij.openapi.diagnostic.logger
-import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
@@ -11,6 +10,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.util.io.fileSizeSafe
 import icu.windea.pls.base.io.ChronicleDataPathService
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.checkCancellation
 import icu.windea.pls.core.create
 import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.runSmartReadAction
@@ -33,7 +33,6 @@ import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.constants.ChronicleConstants
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
-import kotlinx.coroutines.CancellationException
 import org.intellij.images.fileTypes.impl.ImageFileType
 import java.nio.file.Path
 import javax.imageio.ImageIO
@@ -77,7 +76,7 @@ object ParadoxImageManager {
             if (url.isNullOrEmpty()) return null
             return url
         } catch (e: Exception) {
-            if (e is ProcessCanceledException || e is CancellationException) throw e
+            checkCancellation(e)
             logger.warn("Resolve url for dds image failed. (definition name: ${definitionInfo.name.or.anonymous()})", e)
             return null
         }
@@ -95,7 +94,7 @@ object ParadoxImageManager {
             if (url.isNullOrEmpty()) return null
             return url
         } catch (e: Exception) {
-            if (e is ProcessCanceledException || e is CancellationException) throw e
+            checkCancellation(e)
             logger.warn("Resolve url for dds image failed. (dds file path: ${file.path})", e)
             return null
         }
@@ -114,7 +113,7 @@ object ParadoxImageManager {
             if (url.isNullOrEmpty()) return null
             return url
         } catch (e: Exception) {
-            if (e is ProcessCanceledException || e is CancellationException) throw e
+            checkCancellation(e)
             logger.warn("Resolve url for dds image failed. (dds file path: ${filePath})", e)
             return null
         }

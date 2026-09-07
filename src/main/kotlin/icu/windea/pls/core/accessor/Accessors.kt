@@ -2,8 +2,7 @@
 
 package icu.windea.pls.core.accessor
 
-import com.intellij.openapi.progress.ProcessCanceledException
-import kotlinx.coroutines.CancellationException
+import icu.windea.pls.core.checkCancellation
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
 
@@ -142,7 +141,7 @@ class FunctionAccessor<T : Any>(
             @Suppress("UNCHECKED_CAST")
             return call(*args) as R
         } catch (e: Exception) {
-            if (e is ProcessCanceledException || e is CancellationException) throw e
+            checkCancellation(e)
             val name = "member function '${targetClass.qualifiedName}.$functionName'"
             AccessorContext.reportError(name, e)
             return null
@@ -189,7 +188,7 @@ class MemberFunctionAccessor<T : Any>(
             @Suppress("UNCHECKED_CAST")
             return call(target, *args) as R
         } catch (e: Exception) {
-            if (e is ProcessCanceledException || e is CancellationException) throw e
+            checkCancellation(e)
             val name = "member function '${targetClass.qualifiedName}.$functionName'"
             AccessorContext.reportError(name, e)
             return null
@@ -233,7 +232,7 @@ class StaticFunctionAccessor<T : Any>(
             @Suppress("UNCHECKED_CAST")
             return call(*args) as R
         } catch (e: Exception) {
-            if (e is ProcessCanceledException || e is CancellationException) throw e
+            checkCancellation(e)
             val name = "static function '${targetClass.qualifiedName}.$functionName'"
             AccessorContext.reportError(name, e)
             return null

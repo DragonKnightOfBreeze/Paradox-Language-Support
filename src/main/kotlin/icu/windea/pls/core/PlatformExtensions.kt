@@ -26,7 +26,6 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.extensions.ExtensionPointListener
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.openapi.extensions.PluginDescriptor
-import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
@@ -78,8 +77,10 @@ import icu.windea.pls.core.util.values.singletonSetOrEmpty
 import icu.windea.pls.core.util.values.to
 import org.jetbrains.concurrency.CancellablePromise
 import org.jetbrains.concurrency.resolvedCancellablePromise
+import java.lang.reflect.InvocationTargetException
 import java.nio.file.Path
 import java.util.concurrent.Callable
+import java.util.concurrent.CancellationException
 import java.util.concurrent.Executor
 import kotlin.reflect.KProperty
 
@@ -101,34 +102,31 @@ inline fun <T : Any> Ref<T?>.mergeValue(value: T?, mergeAction: (T, T) -> T?): B
 }
 
 /**
- * 执行 [block]，在捕获 [ProcessCanceledException] 时原样抛出，其余异常若根因是 PCE 也原样抛出。
- *
- * 用于将“可取消”的异常语义透传到调用方，而不被统一异常处理吞掉。
+ * 检查当前异常是否代表着一个取消异常。兼容 [InvocationTargetException]。
  */
+fun checkCancellation(e: Throwable?) {
+    if (e == null) return
+    // if (e is ProcessCanceledException) throw e // commented out since `ProcessCanceledException` inherits `CancellationException`
+    if (e is CancellationException) throw e
+    if (e is InvocationTargetException) checkCancellation(e.targetException)
+    checkCancellation(e.cause)
+}
+
 inline fun <T> cancelable(block: () -> T): T {
     try {
         return block()
-    } catch (e: ProcessCanceledException) {
-        throw e
     } catch (e: Exception) {
-        val cause = e.cause
-        if (cause is ProcessCanceledException) throw cause
+        checkCancellation(e)
         throw e
     }
 }
 
-/**
- * 类似 [runCatching]，但在捕获到 [ProcessCanceledException] 时直接抛出，不包装为失败结果。
- */
 inline fun <R> runCatchingCancelable(block: () -> R): Result<R> {
-    return runCatching(block).onFailure { if (it is ProcessCanceledException) throw it }
+    return runCatching(block).onFailure { e -> checkCancellation(e) }
 }
 
-/**
- * 类似扩展接收者版本的 [runCatching]，但对 [ProcessCanceledException] 直接抛出。
- */
 inline fun <T, R> T.runCatchingCancelable(block: T.() -> R): Result<R> {
-    return runCatching(block).onFailure { if (it is ProcessCanceledException) throw it }
+    return runCatching(block).onFailure { e -> checkCancellation(e) }
 }
 
 @Suppress("NOTHING_TO_INLINE")
@@ -724,7 +722,7 @@ fun executeWriteCommand(
     project: Project? = null,
     @NlsContexts.Command name: String? = null,
     groupId: String? = null,
-    action: ThrowableRunnable<Throwable>
+    action: ThrowableRunnable<Throwable>,
 ) {
     WriteCommandAction.writeCommandAction(project)
         .withName(name).withGroupId(groupId)

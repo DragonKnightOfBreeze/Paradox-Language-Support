@@ -1,15 +1,14 @@
 package icu.windea.pls.config.configGroup
 
 import com.intellij.openapi.diagnostic.logger
-import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.SimpleModificationTracker
 import com.intellij.openapi.util.UserDataHolderBase
+import icu.windea.pls.core.checkCancellation
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.ep.config.configGroup.CwtConfigGroupPostProcessor
 import icu.windea.pls.ep.config.configGroup.CwtConfigGroupProcessor
 import icu.windea.pls.model.ParadoxGameType
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import java.util.*
@@ -47,7 +46,7 @@ class CwtConfigGroupBase(
             val targetName = if (project.isDefault) "application" else "project '${project.name}'"
             logger.info("Initialized config group '${gameType.id}' for $targetName in ${end - start} ms.")
         } catch (e: Exception) {
-            if (e is ProcessCanceledException || e is CancellationException) throw e
+            checkCancellation(e)
             logger.error(e) // 不期望在这里出现常规异常
         }
     }

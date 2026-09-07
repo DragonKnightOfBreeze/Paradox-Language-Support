@@ -4,7 +4,6 @@ import com.intellij.extapi.psi.StubBasedPsiElementBase
 import com.intellij.injected.editor.VirtualFileWindow
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.fileEditor.FileEditorManager
-import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vcs.FilePath
@@ -19,6 +18,7 @@ import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.base.settings.ChronicleSettings
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.checkCancellation
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.toPathOrNull
@@ -42,7 +42,6 @@ import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.index.CwtConfigIndexInfo
 import icu.windea.pls.model.index.ParadoxIndexInfo
-import kotlinx.coroutines.CancellationException
 import java.nio.file.Path
 
 object ParadoxAnalysisManager : ParadoxAnalysisScope {
@@ -176,7 +175,7 @@ object ParadoxAnalysisManager : ParadoxAnalysisScope {
             }
             return null
         } catch (e: Exception) {
-            if (e is ProcessCanceledException || e is CancellationException) throw e
+            checkCancellation(e)
             logger.warn(e)
             return null
         }
@@ -192,7 +191,7 @@ object ParadoxAnalysisManager : ParadoxAnalysisScope {
             }
             return file
         } catch (e: Exception) {
-            if (e is ProcessCanceledException || e is CancellationException) throw e
+            checkCancellation(e)
             logger.warn(e)
             return null
         }

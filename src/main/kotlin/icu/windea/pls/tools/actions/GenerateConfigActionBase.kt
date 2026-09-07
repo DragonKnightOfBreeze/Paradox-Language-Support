@@ -21,7 +21,6 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.application.EDT
 import com.intellij.openapi.diagnostic.logger
-import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
@@ -30,6 +29,7 @@ import com.intellij.unscramble.AnalyzeStacktraceUtil
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.base.notification.ChronicleNotificationGroups
+import icu.windea.pls.core.checkCancellation
 import icu.windea.pls.core.execution.filters.ShowDiffWindowHyperlinkInfo
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.toPathOrNull
@@ -39,7 +39,6 @@ import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.tools.ChronicleToolsBundle
 import icu.windea.pls.tools.config.generators.CwtConfigGenerator
 import icu.windea.pls.tools.ui.GenerateConfigDialog
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -103,7 +102,7 @@ abstract class GenerateConfigActionBase : DumbAwareAction() {
                 generator.generate(gameType, inputPath, outputPath)
             }
         } catch (e: Exception) {
-            if (e is ProcessCanceledException || e is CancellationException) throw e
+            checkCancellation(e)
             logger.warn(e)
             val content = ChronicleToolsBundle.message("config.generation.notification.failed").let { ChronicleBundle.errorDescription(it, e) }
             ChronicleNotificationGroups.global().createNotification(generator.getName(), content, NotificationType.WARNING).notify(project)

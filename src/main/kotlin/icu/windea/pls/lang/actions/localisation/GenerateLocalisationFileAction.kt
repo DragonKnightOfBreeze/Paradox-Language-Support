@@ -6,7 +6,6 @@ import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.fileEditor.FileDocumentManager
-import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.progress.Task
@@ -20,6 +19,7 @@ import icu.windea.pls.base.notification.ChronicleNotificationGroups
 import icu.windea.pls.base.settings.ChronicleSettings
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.checkCancellation
 import icu.windea.pls.core.executeWriteCommand
 import icu.windea.pls.core.processChild
 import icu.windea.pls.core.toPath
@@ -38,7 +38,6 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.policies.ParadoxLocalisationGenerationStrategy
-import kotlinx.coroutines.CancellationException
 
 /**
  * 用于从指定的本地化文件生成其他语言环境的本地化文件。
@@ -145,7 +144,7 @@ class GenerateLocalisationFileAction : AnAction() {
                             documentManager.doPostponedOperationsAndUnblockDocument(newDocument)
                             generated++
                         } catch (e: Exception) {
-                            if (e is ProcessCanceledException || e is CancellationException) throw e
+                            checkCancellation(e)
                             thisLogger().warn(e)
                         }
                     }

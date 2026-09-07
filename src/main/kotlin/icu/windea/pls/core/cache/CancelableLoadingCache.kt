@@ -2,12 +2,14 @@ package icu.windea.pls.core.cache
 
 import com.github.benmanes.caffeine.cache.LoadingCache
 import icu.windea.pls.core.cancelable
+import icu.windea.pls.core.checkCancellation
 import java.util.function.Function
 
 /**
- * 可取消的载入缓存。使用 [icu.windea.pls.core.cancelable] 包装取值方法。
+ * 可取消的载入缓存。使用 [cancelable] 包装取值方法。
  *
- * @see com.intellij.openapi.progress.ProcessCanceledException
+ * @see cancelable
+ * @see checkCancellation
  */
 class CancelableLoadingCache<K : Any, V : Any>(
     private val delegate: LoadingCache<K, V>

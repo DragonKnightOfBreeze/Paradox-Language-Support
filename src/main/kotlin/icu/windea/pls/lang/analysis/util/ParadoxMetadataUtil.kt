@@ -1,15 +1,14 @@
 package icu.windea.pls.lang.analysis.util
 
 import com.intellij.openapi.diagnostic.thisLogger
-import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.checkCancellation
 import icu.windea.pls.core.data.JsonService
 import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.lang.rootInfo
 import icu.windea.pls.model.ParadoxRootInfo
-import kotlinx.coroutines.CancellationException
 import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.io.path.exists
@@ -63,7 +62,7 @@ object ParadoxMetadataUtil {
             val first = modsNode.firstOrNull() ?: return null
             first.get("position")?.isInt
         } catch (e: Exception) {
-            if (e is ProcessCanceledException || e is CancellationException) throw e
+            checkCancellation(e)
             thisLogger().warn(e)
             null
         }
