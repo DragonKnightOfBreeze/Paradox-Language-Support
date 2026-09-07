@@ -52,9 +52,8 @@ jobs:
           PLUGIN_VERSION="$(echo "$PROPERTIES" | grep "^pluginVersion:" | cut -f2- -d ' ')"
           PLUGIN_PRERELEASE_VERSION="$(echo "$PROPERTIES" | grep "^pluginPreReleaseVersion:" | cut -f2- -d ' ')"
           PLUGIN_BUILD_METADATA="$(echo "$PROPERTIES" | grep "^pluginBuildMetadata:" | cut -f2- -d ' ')"
-          CHANGELOG="$(cat << 'EOM' | sed -e 's/^[[:space:]]*$//g' -e '/./,$!d'
-          ${{ github.event.release.body }}
-          EOM
+          CHANGELOG="${{ github.event.release.body }}"
+          CHANGELOG="$(echo "$CHANGELOG" | sed -e 's/^[[:space:]]*$//g' -e '/./,$!d')"
           )"
 
           echo "pluginVersion: $PLUGIN_VERSION"
