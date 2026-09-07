@@ -43,7 +43,7 @@ class ParadoxComplexExpressionAttributesEvaluator {
         // root.event_target:target
         // root.var
         //
-        // Flow:
+        // Example flow:
         // node -> `ParadoxDynamicDataNode`
 
         return node is ParadoxDynamicDataNode
@@ -53,7 +53,7 @@ class ParadoxComplexExpressionAttributesEvaluator {
         // Example:
         // root.var
         //
-        // Flow:
+        // Example flow:
         // node -> `ParadoxDynamicDataNode`
         // -parent -> `ParadoxLinkValueNode` (single child node of its parent)
         // --parent -> `ParadoxLinkNode` (last one of its parent)
