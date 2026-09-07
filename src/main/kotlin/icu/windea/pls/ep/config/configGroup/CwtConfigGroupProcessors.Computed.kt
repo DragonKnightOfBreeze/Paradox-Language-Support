@@ -290,12 +290,14 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
             for ((key, value) in base2ParentScopes) {
                 value.forEach { scopeIndex -> base2ChildScopes.getOrPut(scopeIndex) { IntArraySet() }.add(key) }
             }
-            // process matched scopes (add from aliases, parent scopes, child scopes)
+            // process matched scopes and promoted scopes (add from aliases, parent scopes, child scopes)
             for ((key, value) in base2Aliases) {
                 base2MatchedScopes.getOrPut(key) { IntArraySet() }.addAll(value)
+                base2PromotedScopes.getOrPut(key) { IntArraySet() }.addAll(value)
             }
             for ((key, value) in base2ParentScopes) {
                 base2MatchedScopes.getOrPut(key) { IntArraySet() }.addAll(value)
+                base2PromotedScopes.getOrPut(key) { IntArraySet() }.addAll(value)
             }
             for ((key, value) in base2ChildScopes) {
                 base2MatchedScopes.getOrPut(key) { IntArraySet() }.addAll(value)

@@ -69,20 +69,20 @@ object ParadoxScopeMergeService {
         // optimize: access scope model and check scope indexes for better performance
         val scopeModel = configGroup.scopeModel
         // bidirectional
-        val matched = scopeModel.base2MatchedScopes.get(scope.index).orEmpty()
-        if (matched.isNotEmpty()) {
+        val promoted = scopeModel.base2PromotedScopes.get(scope.index).orEmpty()
+        if (promoted.isNotEmpty()) {
             // child A VS parent C -> parent C
-            if (matched.contains(scopeToMerge.index)) return scopeToMerge
+            if (promoted.contains(scopeToMerge.index)) return scopeToMerge
         }
-        val matchedToMerge = scopeModel.base2MatchedScopes.get(scopeToMerge.index).orEmpty()
-        if (matchedToMerge.isNotEmpty()) {
+        val mergedToMerge = scopeModel.base2PromotedScopes.get(scopeToMerge.index).orEmpty()
+        if (mergedToMerge.isNotEmpty()) {
             // parent C VS child B -> parent C
-            if (matchedToMerge.contains(scope.index)) return scope
+            if (mergedToMerge.contains(scope.index)) return scope
         }
-        if (matched.isNotEmpty() && matchedToMerge.isNotEmpty()) {
+        if (promoted.isNotEmpty() && mergedToMerge.isNotEmpty()) {
             // child A VS child B -> parent C
-            val indexSet = IntArraySet(matched)
-            indexSet.retainAll(matchedToMerge)
+            val indexSet = IntArraySet(promoted)
+            indexSet.retainAll(mergedToMerge)
             val index = indexSet.firstOrNull()
             if (index != null) return ParadoxScopeResolver.getScopeByIndex(index)
         }

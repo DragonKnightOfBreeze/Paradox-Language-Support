@@ -49,7 +49,7 @@ class IncorrectExpressionInspectionTest : BasePlatformTestCase(), ChronicleTestS
     fun rowTypeIsKey_failed() {
         markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/key/test.csv")
         myFixture.configureByText("test.csv") {
-            val m1 = "Number out of range (expect matching range: [0..10], actual: 9,999)"
+            val m1 = "Number out of range (expect matching range: [0..10], actual: 9999)"
             """
             id;number;status;flag
             k1;${warning(m1)}9999${warningEnd()};yes;red_flag
@@ -103,7 +103,7 @@ class IncorrectExpressionInspectionTest : BasePlatformTestCase(), ChronicleTestS
     fun rowTypeIsIndex_failed() {
         markFileInfo(ParadoxGameType.Stellaris, "common/test_rows/index/test.csv")
         myFixture.configureByText("test.csv") {
-            val m1 = "Number out of range (expect matching range: [0..10], actual: 9,999)"
+            val m1 = "Number out of range (expect matching range: [0..10], actual: 9999)"
             """
             id;number;status;flag;status
             k1;${warning(m1)}9999${warningEnd()};yes;red_flag;no

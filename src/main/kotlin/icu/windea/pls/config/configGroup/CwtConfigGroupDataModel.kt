@@ -236,14 +236,16 @@ interface CwtTypeModel {
 
 /** 作用域的数据模型。用于保存和获取作用域的关系信息（别名、继承等），以优化匹配和合并作用域时的性能。 */
 interface CwtScopeModel {
-    /** 基础作用域到匹配其别名的作用域的集合（仅保存索引计数，不包括直接匹配的情况）。 */
+    /** 基础作用域到其别名形式的集合（仅保存索引计数，不包括直接匹配的情况）。 */
     val base2Aliases: Map<Int, Set<Int>> get() = emptyMap()
-    /** 基础作用域到父作用域的集合（仅保存索引计数，兼容别名形式，不包括直接匹配的情况）。 */
+    /** 基础作用域到其父作用域的集合（仅保存索引计数，兼容别名形式，不包括直接匹配的情况）。 */
     val base2ParentScopes: Map<Int, Set<Int>> get() = emptyMap()
-    /** 基础作用域到父作用域的集合（仅保存索引计数，兼容别名形式，不包括直接匹配的情况）。 */
+    /** 基础作用域到其子作用域的集合（仅保存索引计数，兼容别名形式，不包括直接匹配的情况）。 */
     val base2ChildScopes: Map<Int, Set<Int>> get() = emptyMap()
     /** 基础作用域到匹配的作用域的集合（仅保存索引计数，兼容别名形式，不包括直接匹配的情况）。 */
     val base2MatchedScopes: Map<Int, Set<Int>> get() = emptyMap()
+    /** 基础作用域到提升后的作用域的集合（仅保存索引计数，兼容别名形式，不包括直接匹配的情况）。 */
+    val base2PromotedScopes: Map<Int, Set<Int>> get() = emptyMap()
 
     object Empty : CwtScopeModel
 }
