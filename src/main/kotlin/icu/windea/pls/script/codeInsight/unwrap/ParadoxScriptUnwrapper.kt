@@ -1,17 +1,9 @@
 package icu.windea.pls.script.codeInsight.unwrap
 
 import com.intellij.codeInsight.unwrap.AbstractUnwrapper
-import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiWhiteSpace
-import icu.windea.pls.core.children
-import icu.windea.pls.cwt.psi.CwtPsiService
-import icu.windea.pls.script.psi.ParadoxScriptInlineConditionalBlock
-import icu.windea.pls.script.psi.ParadoxScriptNormalConditionalBlock
-import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPsiService
-import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
-import icu.windea.pls.script.psi.ParadoxScriptValue
 
 abstract class ParadoxScriptUnwrapper : AbstractUnwrapper<ParadoxScriptUnwrapper.Context>("") {
     abstract override fun isApplicableTo(element: PsiElement): Boolean

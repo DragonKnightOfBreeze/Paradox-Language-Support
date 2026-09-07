@@ -5,9 +5,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.tree.IElementType
 import icu.windea.pls.cwt.lexer.CwtStringLiteralLexer
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.INLINE_MATH_TOKEN
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.PROPERTY_KEY_TOKEN
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.STRING_TOKEN
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 
 @Suppress("UNUSED_PARAMETER")
 object ParadoxScriptLexerFactory {

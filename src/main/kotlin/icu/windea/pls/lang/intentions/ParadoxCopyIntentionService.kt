@@ -8,7 +8,6 @@ import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.ParadoxScriptedVariableManager
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextHtmlRenderer
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextPlainRenderer
-import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 object ParadoxCopyIntentionService {
      fun getScriptedVariableName(context: ActionContext): String? {

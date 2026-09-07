@@ -10,9 +10,7 @@ import icu.windea.pls.core.util.values.LazyValue
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.csv.psi.ParadoxCsvFile
-import icu.windea.pls.ep.overrides.ParadoxFilePathMapBasedOverrideStrategyProvider
 import icu.windea.pls.lang.match.ParadoxMatchOptions
-import icu.windea.pls.lang.match.ParadoxMatchService
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.references.csv.ParadoxCsvExpressionPsiReference
 import icu.windea.pls.lang.references.localisation.ParadoxLocalisationExpressionPsiReference
@@ -28,7 +26,6 @@ import icu.windea.pls.model.index.ParadoxIndexInfo
 import icu.windea.pls.model.type.ParadoxTypeResolver
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptMember
-import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 sealed interface ParadoxMergedIndexContext {

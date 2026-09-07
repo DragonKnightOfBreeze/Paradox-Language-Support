@@ -264,6 +264,7 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
         if (expectToCheck != EXPECT_INLINE_CONDITIONAL) {
             return false;
         }
+        // 3.0.2 the stack manipulation logic below uses some black magic, consider to refactor in the future...
         int size = stateStack.size();
         for (int i = size - 1; i >= 0; i--) {
             if ((size - i) % 3 == 0) {
@@ -416,14 +417,16 @@ ScriptedVariableContent = {IdentifierWildcardToken} // identifier wildcard
 
 // #103 hsv360 (from vic3)
 // #399 color types are case-insensitive
+// 3.0.2 heuristic: color blocks can be multiline
 // TODO 3.0.2+ better syntax support: split into more specific tokens (distinct from normal keywords/identifiers and normal blocks)
 ColorTypeRgb = [rR][gG][bB]
 ColorTypeHsv = [hH][sS][vV]
 ColorTypeHsv360 = [hH][sS][vV]360
 ColorTypeToken = {ColorTypeRgb}|{ColorTypeHsv}|{ColorTypeHsv360}
-ColorArgsToken = "{"[\d.\s&&[^\r\n]]*"}" // lenient match
+ColorArgsToken = "{"[\d.\s]*"}" // lenient match
 ColorToken = {ColorTypeToken}{Blank}?{ColorArgsToken}
 
+// 3.0.2 heuristic: inline math blocks can be multiline
 InlineMathChar = [^#{}\[\]\r\n]
 InlineMathBoundChar = [^#{}\[\]\s]
 InlineMathToken = {InlineMathBoundChar}({InlineMathChar}*{InlineMathBoundChar})? // lenient match

@@ -68,6 +68,7 @@ class UiExtensionsTest {
     @Test
     fun toAtomicProperty_boolean_test() {
         class H(var flag: Boolean = false)
+
         val h = H()
         val p = h::flag.toAtomicProperty()
         Assert.assertFalse(p.get())
@@ -79,6 +80,7 @@ class UiExtensionsTest {
     @Test
     fun toAtomicProperty_generic_test() {
         class H(var name: String = "a")
+
         val h = H()
         val p = h::name.toAtomicProperty()
         Assert.assertEquals("a", p.get())
@@ -90,6 +92,7 @@ class UiExtensionsTest {
     @Test
     fun toAtomicProperty_nullableWithDefault_test() {
         class H(var name: String? = null)
+
         val h = H()
         val p = h::name.toAtomicProperty("default")
         Assert.assertEquals("default", p.get())

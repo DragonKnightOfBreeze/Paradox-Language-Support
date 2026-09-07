@@ -589,7 +589,7 @@ class UnresolvedExpressionInspectionTest : BasePlatformTestCase(), ChronicleTest
                 status = ${error(m("no", "\"no\""))}"no"${errorEnd()}
                 status = ${error(m("yes", "\"True\""))}"True"${errorEnd()}
                 status = ${error(m("no", "\"false\""))}"false"${errorEnd()}
-                status = ${error(m("yes","Yes"))}Yes${errorEnd()}
+                status = ${error(m("yes", "Yes"))}Yes${errorEnd()}
                 status = ${error(m("no", "NO"))}NO${errorEnd()}
                 status = ${error(m("yes", "TRUE"))}TRUE${errorEnd()}
                 status = ${error(m("no", "False"))}False${errorEnd()}

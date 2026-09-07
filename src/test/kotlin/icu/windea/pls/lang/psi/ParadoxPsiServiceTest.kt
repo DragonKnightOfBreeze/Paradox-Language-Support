@@ -6,7 +6,6 @@ import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.core.commentText
 import icu.windea.pls.core.psi.PsiService
-import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyValue
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.test.ChronicleTestScope
@@ -15,7 +14,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import kotlin.test.assertNotEquals
 
 /**
  * @see ParadoxPsiService

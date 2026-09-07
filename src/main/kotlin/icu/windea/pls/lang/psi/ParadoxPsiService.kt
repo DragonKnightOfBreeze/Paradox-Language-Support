@@ -7,10 +7,8 @@ import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFileSystemItem
 import com.intellij.psi.PsiWhiteSpace
-import com.intellij.psi.TokenType
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
-import com.intellij.psi.util.elementType
 import com.intellij.psi.util.siblings
 import com.intellij.util.IncorrectOperationException
 import icu.windea.pls.config.configExpression.CwtDataExpression
@@ -50,8 +48,6 @@ import icu.windea.pls.model.ParadoxDefinitionSource
 import icu.windea.pls.script.ParadoxScriptLanguage
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptBoolean
-import icu.windea.pls.script.psi.ParadoxScriptBoundMemberContainer
-import icu.windea.pls.script.psi.ParadoxScriptConditionalBlock
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptInlineMathScriptedVariableReference

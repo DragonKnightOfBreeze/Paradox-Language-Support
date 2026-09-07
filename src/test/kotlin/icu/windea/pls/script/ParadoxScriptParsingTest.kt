@@ -3,7 +3,6 @@ package icu.windea.pls.script
 import com.intellij.testFramework.ParsingTestCase
 import com.intellij.testFramework.TestDataPath
 import icu.windea.pls.test.ChronicleTestScope
-import org.jetbrains.kotlin.nj2k.downToExpression
 import org.junit.After
 import org.junit.Before
 import org.junit.Test

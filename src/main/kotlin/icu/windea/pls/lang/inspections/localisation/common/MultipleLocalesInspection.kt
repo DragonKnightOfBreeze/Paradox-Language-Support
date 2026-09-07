@@ -8,7 +8,6 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
-import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.matchesPatterns
 import icu.windea.pls.core.psi.PsiFileOnlyVisitor
 import icu.windea.pls.core.vfs.VirtualFileService

@@ -10,7 +10,7 @@ class ParadoxLocalisationTextBuilderTest {
     @Test
     fun colorfulText() {
         with(ParadoxLocalisationTextBuilder) {
-            Assert.assertEquals("§Rtext§!",colorfulText("R", "text"))
+            Assert.assertEquals("§Rtext§!", colorfulText("R", "text"))
         }
     }
 

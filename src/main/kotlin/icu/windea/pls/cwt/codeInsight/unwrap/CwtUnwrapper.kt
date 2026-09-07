@@ -1,12 +1,9 @@
 package icu.windea.pls.cwt.codeInsight.unwrap
 
 import com.intellij.codeInsight.unwrap.AbstractUnwrapper
-import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiWhiteSpace
-import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.cwt.psi.CwtPsiService
-import icu.windea.pls.cwt.psi.CwtValue
 
 abstract class CwtUnwrapper : AbstractUnwrapper<CwtUnwrapper.Context>("") {
     abstract override fun isApplicableTo(element: PsiElement): Boolean

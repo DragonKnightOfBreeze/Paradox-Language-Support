@@ -334,11 +334,10 @@ public class _ParadoxScriptLexer implements FlexLexer {
     "\2\24\1\0\3\201\1\164\11\0\1\123\1\124\1\125"+
     "\1\165\20\0\1\203\4\0\1\24\3\120\1\121\1\122"+
     "\1\0\6\24\1\204\1\123\1\124\1\125\1\126\1\127"+
-    "\17\24\1\0\1\24\1\0\2\24\1\0\1\203\1\0"+
-    "\1\203\5\0\5\203\26\0\1\205\1\203\1\0\1\24"+
-    "\3\120\1\121\1\122\1\0\3\24\1\200\3\24\1\123"+
-    "\1\124\1\125\1\126\1\127\17\24\1\0\1\24\1\0"+
-    "\2\24";
+    "\17\24\1\0\1\24\1\0\2\24\1\0\3\203\5\0"+
+    "\5\203\26\0\1\205\1\203\1\0\1\24\3\120\1\121"+
+    "\1\122\1\0\3\24\1\200\3\24\1\123\1\124\1\125"+
+    "\1\126\1\127\17\24\1\0\1\24\1\0\2\24";
 
   private static int [] zzUnpacktrans() {
     int [] result = new int[3432];
@@ -705,6 +704,7 @@ public class _ParadoxScriptLexer implements FlexLexer {
         if (expectToCheck != EXPECT_INLINE_CONDITIONAL) {
             return false;
         }
+        // 3.0.2 the stack manipulation logic below uses some black magic, consider to refactor in the future...
         int size = stateStack.size();
         for (int i = size - 1; i >= 0; i--) {
             if ((size - i) % 3 == 0) {

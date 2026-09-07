@@ -1,11 +1,11 @@
 package icu.windea.pls.cwt.psi
 
 import com.intellij.openapi.util.TextRange
+import com.intellij.psi.ElementManipulator
 import icu.windea.pls.core.cast
 import icu.windea.pls.core.quoteIfNeeded
 import icu.windea.pls.core.text.QuotePatterns
 import icu.windea.pls.cwt.text.Cwt
-import com.intellij.psi.ElementManipulator
 
 /**
  * @see ElementManipulator

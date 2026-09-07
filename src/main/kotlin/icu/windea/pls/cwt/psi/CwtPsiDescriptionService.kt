@@ -1,11 +1,11 @@
 package icu.windea.pls.cwt.psi
 
+import com.intellij.lang.findUsages.FindUsagesProvider
 import com.intellij.psi.ElementDescriptionProvider
 import com.intellij.psi.PsiElement
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
-import com.intellij.lang.findUsages.FindUsagesProvider
 
 /**
  * @see ElementDescriptionProvider

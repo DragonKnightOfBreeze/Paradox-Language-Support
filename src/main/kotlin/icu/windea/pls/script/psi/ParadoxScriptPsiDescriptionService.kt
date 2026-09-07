@@ -4,7 +4,6 @@ import com.intellij.psi.PsiElement
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
-import icu.windea.pls.cwt.psi.CwtPsiDescriptionService
 
 object ParadoxScriptPsiDescriptionService {
      fun getName(element: PsiElement): String? {

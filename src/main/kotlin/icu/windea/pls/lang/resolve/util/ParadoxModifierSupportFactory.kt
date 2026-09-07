@@ -14,7 +14,6 @@ import icu.windea.pls.core.collections.noneFast
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.processAsync
 import icu.windea.pls.core.util.ProcessorFactory
-import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.index.constraints.ParadoxDefinitionIndexConstraint
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxTemplateExpression

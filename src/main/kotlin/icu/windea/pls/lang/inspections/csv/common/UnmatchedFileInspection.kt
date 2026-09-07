@@ -5,7 +5,6 @@ import com.intellij.codeInspection.options.OptPane
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
-import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.config.config.CwtFilePathMatchableConfig
 import icu.windea.pls.config.config.delegated.CwtRowConfig
 import icu.windea.pls.core.psi.PsiFileOnlyVisitor
