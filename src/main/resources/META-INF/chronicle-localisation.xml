@@ -25,6 +25,7 @@
     <lang.quoteHandler language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.editor.ParadoxLocalisationQuoteHandler"/>
     <lang.smartEnterProcessor language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.editor.ParadoxLocalisationSmartEnterProcessor"/>
     <extendWordSelectionHandler implementation="icu.windea.pls.localisation.editor.wordSelection.ParadoxLocalisationQuoteAwareWordSelectionHandler"/>
+    <extendWordSelectionHandler implementation="icu.windea.pls.localisation.editor.wordSelection.ParadoxLocalisationPropertyWordSelectionHandler"/>
 
     <colorSettingsPage implementation="icu.windea.pls.localisation.highlighting.ParadoxLocalisationColorSettingsPage"/>
     <lang.syntaxHighlighterFactory language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.highlighting.ParadoxLocalisationSyntaxHighlighterFactory"/>

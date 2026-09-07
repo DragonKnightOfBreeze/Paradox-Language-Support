@@ -29,6 +29,8 @@
     <lang.quoteHandler language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.editor.ParadoxScriptQuoteHandler"/>
     <lang.smartEnterProcessor language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.editor.ParadoxScriptSmartEnterProcessor"/>
     <extendWordSelectionHandler implementation="icu.windea.pls.script.editor.wordSelection.ParadoxScriptQuoteAwareWordSelectionHandler"/>
+    <extendWordSelectionHandler implementation="icu.windea.pls.script.editor.wordSelection.ParadoxScriptPropertyWordSelectionHandler"/>
+    <extendWordSelectionHandler implementation="icu.windea.pls.script.editor.wordSelection.ParadoxScriptScriptedVariableWordSelectionHandler"/>
     <extendWordSelectionHandler implementation="icu.windea.pls.script.editor.wordSelection.ParadoxScriptBlockWordSelectionHandler"/>
     <extendWordSelectionHandler implementation="icu.windea.pls.script.editor.wordSelection.ParadoxScriptConditionalBlockWordSelectionHandler"/>
     <extendWordSelectionHandler implementation="icu.windea.pls.script.editor.wordSelection.ParadoxScriptInlineMathWordSelectionHandler"/>

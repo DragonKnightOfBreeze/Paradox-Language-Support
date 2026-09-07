@@ -25,6 +25,8 @@
     <lang.quoteHandler language="CWT" implementationClass="icu.windea.pls.cwt.editor.CwtQuoteHandler"/>
     <lang.smartEnterProcessor language="CWT" implementationClass="icu.windea.pls.cwt.editor.CwtSmartEnterProcessor"/>
     <extendWordSelectionHandler implementation="icu.windea.pls.cwt.editor.worldSelection.CwtQuoteAwareWordSelectionHandler"/>
+    <extendWordSelectionHandler implementation="icu.windea.pls.cwt.editor.worldSelection.CwtOptionWordSelectionHandler"/>
+    <extendWordSelectionHandler implementation="icu.windea.pls.cwt.editor.worldSelection.CwtPropertyWordSelectionHandler"/>
     <extendWordSelectionHandler implementation="icu.windea.pls.cwt.editor.worldSelection.CwtBlockWordSelectionHandler"/>
     <basicWordSelectionFilter implementation="icu.windea.pls.cwt.editor.worldSelection.CwtWordSelectionFilter"/>
 
