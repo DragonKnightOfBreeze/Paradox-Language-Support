@@ -8,8 +8,8 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
  *
  * 用于进行更准确的语义解析与匹配。
  *
- * @property dynamicDataInvolved 涉及动态数据。例如，涉及动态值（如 `event_target`）。
- * @property lenientDynamicDataInvolved 涉及动态数据，并且存在另一种更精确的格式。例如，存在另一种带前缀或带参数的格式。
+ * @property dynamicDataInvolved 涉及动态数据。例如，涉及动态值（如 `root.event_target:target` `root.var`）。
+ * @property lenientDynamicDataInvolved 涉及动态数据，并且存在另一种更精确的格式。例如，存在另一种带前缀或带参数的格式（如 `root.event_target:target`）。
  *
  * @see ParadoxComplexExpression
  * @see ParadoxComplexExpressionAttributesEvaluator

@@ -2,6 +2,7 @@ package icu.windea.pls.lang.resolve.complexExpression.attributes
 
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxLinkedExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionRecursiveVisitor
 
@@ -38,21 +39,31 @@ class ParadoxComplexExpressionAttributesEvaluator {
     }
 
     private fun isDynamicDataInvolved(node: ParadoxComplexExpressionNode): Boolean {
+        // Example:
+        // root.event_target:target
+        // root.var
+        //
+        // Flow:
         // node -> `ParadoxDynamicDataNode`
 
         return node is ParadoxDynamicDataNode
     }
 
     private fun isLenientDynamicDataInvolved(node: ParadoxComplexExpressionNode): Boolean {
+        // Example:
+        // root.var
+        //
+        // Flow:
         // node -> `ParadoxDynamicDataNode`
-        // -parent -> `ParadoxLinkValueNode` (single child node)
-        // --parent -> `ParadoxLinkNode` (last one)
+        // -parent -> `ParadoxLinkValueNode` (single child node of its parent)
+        // --parent -> `ParadoxLinkNode` (last one of its parent)
 
         if (node !is ParadoxDynamicDataNode) return false
         val parent1 = node.parent?.castOrNull<ParadoxLinkValueNode>() ?: return false
-        if (parent1.nodes.size != 1) return false
         val parent2 = parent1.parent?.castOrNull<ParadoxLinkNode>() ?: return false
-        if (parent2.nodes.last() != parent1) return false
+        val parent3 = parent2.parent?.castOrNull<ParadoxLinkedExpression>() ?: return false
+        if (parent2.nodes.size != 1) return false
+        if (parent3.nodes.last() != parent2) return false
         return true
     }
 
