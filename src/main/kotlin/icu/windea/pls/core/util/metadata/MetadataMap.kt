@@ -20,7 +20,7 @@ interface MetadataMap {
     /** 检查当前的元数据映射是否为空。 */
     fun isEmpty(): Boolean
 
-    /** 获取 [key] 对应的的元数据。如果不存在，则返回 `null`。 */
+    /** 获取 [key] 对应的元数据。如果不存在，则返回 `null`。 */
     operator fun <T> get(key: Key<T>): T?
 
     /** 获取 [key] 对应的元数据。如果不存在，则返回默认值。 */

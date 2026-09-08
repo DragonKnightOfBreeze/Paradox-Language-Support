@@ -210,7 +210,7 @@ interface ChronicleTestScope {
      * 为指定的一组游戏类型初始化规则分组。
      *
      * 说明：
-     * - 仅使用注入的的规则文件。
+     * - 仅使用注入的规则文件。
      * - 通用的规则分组总是会被初始化。
      */
     fun initInjectedConfigGroups(project: Project, vararg gameTypes: ParadoxGameType) {

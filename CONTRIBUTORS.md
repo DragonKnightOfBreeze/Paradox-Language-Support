@@ -44,7 +44,7 @@ The table below shows the current maintenance status for each supported game.
 | Victoria 3            | [@kaiser-chris](https://github.com/kaiser-chris)                                                                                         | ✅ Actively maintained     |
 | Europa Universalis V  | [@kaiser-chris](https://github.com/kaiser-chris)                                                                                         | ✅ Actively maintained     |
 | Hearts of Iron IV     | [@NS9927](https://github.com/NS9927)                                                                                                     | ✅ Ongoing                 |
-| Crusader Kings III    | -                                                                                                                                        | ⚠️ Not actively maintained |
+| Crusader Kings III    | -                                                                                                                                        | ⚠️Not actively maintained |
 | Europa Universalis IV | -                                                                                                                                        | 📦 Legacy                  |
 | Imperator Rome        | -                                                                                                                                        | 📦 Legacy                  |
 | Crusader Kings II     | -                                                                                                                                        | 📦 Legacy                  |
