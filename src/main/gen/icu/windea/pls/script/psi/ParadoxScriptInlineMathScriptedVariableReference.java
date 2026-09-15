@@ -5,26 +5,26 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference;
-import com.intellij.navigation.ItemPresentation;
+import icu.windea.pls.core.psi.PsiPresentableTextAwareElement;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import javax.swing.Icon;
 
-public interface ParadoxScriptInlineMathScriptedVariableReference extends ParadoxScriptInlineMathFactor, ParadoxScriptedVariableReference, ParadoxScriptInterpolationContainer {
+public interface ParadoxScriptInlineMathScriptedVariableReference extends ParadoxScriptInlineMathFactor, ParadoxScriptedVariableReference, ParadoxScriptInterpolationContainer, PsiPresentableTextAwareElement {
 
   @Nullable PsiElement getIdElement();
-
-  //WARNING: inline_conditional_block(...) is skipped
-  //matching inline_conditional_block(ParadoxScriptInlineMathScriptedVariableReference, ...)
-  //methods are not found in ParadoxScriptPsiImplUtil
 
   @NotNull Icon getIcon(@IconFlags int flags);
 
   @Nullable String getName();
 
   @NotNull ParadoxScriptInlineMathScriptedVariableReference setName(@NotNull String name);
+
+  @NotNull String getPresentableText();
+
+  @NotNull ParadoxScriptElementPresentation getPresentation();
 
   @Nullable PsiReference getReference();
 
@@ -33,7 +33,5 @@ public interface ParadoxScriptInlineMathScriptedVariableReference extends Parado
   @NotNull GlobalSearchScope getResolveScope();
 
   @NotNull SearchScope getUseScope();
-
-  @NotNull ItemPresentation getPresentation();
 
 }

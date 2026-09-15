@@ -4,27 +4,20 @@ package icu.windea.pls.script.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
-import com.intellij.navigation.ItemPresentation;
+import icu.windea.pls.core.psi.PsiPresentableTextAwareElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 
-public interface ParadoxScriptScriptedVariableName extends ParadoxScriptInterpolationContainer {
-
-  @NotNull
-  List<ParadoxScriptNormalParameter> getNormalParameterList();
+public interface ParadoxScriptScriptedVariableName extends ParadoxScriptInterpolationContainer, PsiPresentableTextAwareElement {
 
   @Nullable PsiElement getIdElement();
 
-  //WARNING: parameter(...) is skipped
-  //matching parameter(ParadoxScriptScriptedVariableName, ...)
-  //methods are not found in ParadoxScriptPsiImplUtil
-
   @NotNull String getName();
+
+  @NotNull String getPresentableText();
 
   @NotNull GlobalSearchScope getResolveScope();
 
   @NotNull SearchScope getUseScope();
-
-  @NotNull ItemPresentation getPresentation();
 
 }

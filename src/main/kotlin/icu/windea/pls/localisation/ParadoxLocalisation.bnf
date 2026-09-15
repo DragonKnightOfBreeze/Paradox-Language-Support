@@ -18,7 +18,7 @@
   elementTypeFactory="icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypeFactory.getElementType"
   psiImplUtilClass="icu.windea.pls.localisation.psi.impl.ParadoxLocalisationPsiImplUtil"
   parserUtilClass="icu.windea.pls.localisation.parser.ParadoxLocalisationParserUtil"
-  methods(".*")=[getResolveScope getUseScope getPresentation toString]
+  methods(".*")=[getResolveScope getUseScope toString]
   tokens=[
     // EOL="<eol>" // unused atm
     AT="@"
@@ -44,7 +44,8 @@ property_list ::= comment* ( property_item_list_with_locale | property_item_list
     "com.intellij.psi.PsiListLikeElement"
   ]
   methods=[
-    getIcon getIElementType getComponents
+    getComponents
+    getIcon getIElementType
   ]
 }
 private property_item_list_with_locale ::= locale property_items? { pin=1 }
@@ -63,11 +64,12 @@ locale ::= LOCALE_TOKEN COLON {
   stubClass="icu.windea.pls.localisation.psi.stubs.ParadoxLocalisationLocaleStub"
   implements=[
     "com.intellij.psi.NavigatablePsiElement"
-    "icu.windea.pls.core.psi.PsiPresentableElement"
+    "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
   ]
   methods=[
     getIdElement
-    getIcon getName setName getIElementType getPresentableText getReference getReferences
+    getIcon getName setName getIElementType getPresentableText
+    getPresentation getReference getReferences
   ]
 }
 
@@ -78,20 +80,18 @@ property ::= property_key COLON property_number? property_value {
   stubClass="icu.windea.pls.localisation.psi.stubs.ParadoxLocalisationPropertyStub"
   implements=[
     "com.intellij.psi.NavigatablePsiElement"
-    "icu.windea.pls.core.psi.PsiPresentableElement"
     "icu.windea.pls.localisation.psi.ParadoxLocalisationNamedElement"
+    "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
   ]
   methods=[
     getIcon getName setName getNameIdentifier getTextOffset getType getValue setValue
     getIElementType isEquivalentTo getPresentableText
+    getPresentation
   ]
 }
 
 property_key ::= PROPERTY_KEY_TOKEN {
   name="property key"
-  implements=[
-    "com.intellij.psi.NavigatablePsiElement"
-  ]
   methods=[
     getIdElement
     getIcon getName setName
@@ -109,12 +109,13 @@ private property_number ::= PROPERTY_NUMBER_TOKEN {
 property_value ::= property_value_content  {
   name="property value"
   implements=[
-    "com.intellij.psi.NavigatablePsiElement"
-    "icu.windea.pls.core.psi.PsiQuoteAwareElement"
     "icu.windea.pls.localisation.psi.ParadoxLocalisationRichTextContainer"
+    "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
+    "icu.windea.pls.core.psi.PsiQuoteAwareElement"
   ]
   methods=[
     getTokenElement getRichTextList
+    getPresentableText
     getQuotePattern
   ]
 }
@@ -137,7 +138,10 @@ private string_item ::= rich_text | COLORFUL_TEXT_END | TEXT_FORMAT_END
 rich_text ::= text | colorful_text | parameter | command | concept_command | icon | text_icon | text_format {
   implements=[
     "com.intellij.psi.NavigatablePsiElement"
-    "icu.windea.pls.core.psi.PsiPresentableElement"
+    "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
+  ]
+  methods=[
+    getPresentation
   ]
 }
 
@@ -155,10 +159,12 @@ colorful_text ::= COLORFUL_TEXT_START color_name colorful_text_string? COLORFUL_
   implements=[
     "icu.windea.pls.localisation.psi.ParadoxLocalisationTextColorAwareElement"
     "icu.windea.pls.localisation.psi.ParadoxLocalisationRichTextContainer"
+    "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
   ]
   methods=[
     getIdElement
-    getName setName getPresentableText getReference getReferences
+    getName setName getPresentableText
+    getPresentation getReference getReferences
   ]
 }
 private color_name ::= COLOR_TOKEN
@@ -176,10 +182,12 @@ parameter ::= PARAMETER_START parameter_name parameter_tail? parameter_suffix? P
     "icu.windea.pls.localisation.psi.ParadoxLocalisationInterpolation"
     "icu.windea.pls.localisation.psi.ParadoxLocalisationInterpolationContainer"
     "icu.windea.pls.localisation.psi.ParadoxLocalisationArgumentAwareElement"
+    "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
   ]
   methods=[
     getIdElement getArgumentElement parameter_argument="" command=""
-    getName setName getPresentableText getReference getReferences
+    getName setName getPresentableText
+    getPresentation getReference getReferences
   ]
 }
 // can be command or scripted variable reference
@@ -193,7 +201,7 @@ parameter_argument ::= ARGUMENT_TOKEN {
   ]
   methods=[
     getIdElement
-    getReference getReferences
+    getPresentation getReference getReferences
   ]
 }
 // scripted variable reference (in parameters)
@@ -203,7 +211,8 @@ scripted_variable_reference ::= AT SCRIPTED_VARIABLE_REFERENCE_TOKEN {
   ]
   methods=[
     getIdElement
-    getIcon getName setName getReference getReferences
+    getIcon getName setName
+    getPresentation getReference getReferences
   ]
 }
 
@@ -216,20 +225,24 @@ command ::= <<isCommand>> LEFT_BRACKET command_text? context_tag_part? command_t
   implements=[
     "icu.windea.pls.localisation.psi.ParadoxLocalisationInterpolation"
     "icu.windea.pls.localisation.psi.ParadoxLocalisationArgumentAwareElement"
+    "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
   ]
   methods=[
     getArgumentElement command_argument=""
     getIcon getPresentableText
+    getPresentation
   ]
 }
 command_text ::= command_text_content {
   implements=[
     "icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement"
     "icu.windea.pls.localisation.psi.ParadoxLocalisationInterpolationContainer"
+    "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
   ]
   methods=[
     getIdElement parameter=""
-    getName getValue setValue setContent getPresentableText getReference getReferences
+    getName getValue setValue setContent getPresentableText
+    getPresentation getReference getReferences
   ]
 }
 // can be parameterized (by using parameters)
@@ -244,7 +257,7 @@ command_argument ::= command_argument_name {
   ]
   methods=[
     getIdElement parameter=""
-    getReference getReferences
+    getPresentation getReference getReferences
   ]
 }
 // can be parameterized (by using parameters)
@@ -255,18 +268,24 @@ private command_argument_name ::= ( ARGUMENT_TOKEN | parameter )+
 concept_command ::= LEFT_BRACKET LEFT_SINGLE_QUOTE concept_name? RIGHT_SINGLE_QUOTE ( COMMA concept_string? )? RIGHT_BRACKET {
   pin=2
   extends=rich_text
+  implements=[
+    "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
+  ]
   methods=[
-    getIcon getName setName getPresentableText getReference getReferences
+    getIcon getName setName getPresentableText
+    getPresentation getReference getReferences
   ]
 }
 concept_name ::= concept_name_content {
   implements=[
     "icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement"
     "icu.windea.pls.localisation.psi.ParadoxLocalisationInterpolationContainer"
+    "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
   ]
   methods=[
     getIdElement parameter=""
-    getName getValue setValue setContent getPresentableText getReference getReferences
+    getName getValue setValue setContent getPresentableText
+    getPresentation getReference getReferences
   ]
 }
 // can be parameterized (by using parameters)
@@ -286,10 +305,12 @@ icon ::= ICON_START icon_name icon_suffix? ICON_END {
   implements=[
     "icu.windea.pls.localisation.psi.ParadoxLocalisationInterpolationContainer"
     "icu.windea.pls.localisation.psi.ParadoxLocalisationArgumentAwareElement"
+    "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
   ]
   methods=[
     getIdElement getArgumentElement icon_argument="" rich_text=""
-    getIcon getName setName getPresentableText getReference getReferences
+    getIcon getName setName getPresentableText
+    getPresentation getReference getReferences
   ]
 }
 // can be parameterized (by using parameters and commands)
@@ -302,6 +323,7 @@ icon_argument ::= icon_argument_name {
   ]
   methods=[
     getIdElement rich_text=""
+    getPresentation
   ]
 }
 // can be parameterized (by using parameters and commands)
@@ -314,10 +336,12 @@ text_icon ::= TEXT_ICON_START text_icon_name TEXT_ICON_END {
   extends=rich_text
   implements=[
     "icu.windea.pls.localisation.psi.ParadoxLocalisationInterpolationContainer"
+    "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
   ]
   methods=[
     getIdElement rich_text=""
-    getIcon getName setName getPresentableText getReference getReferences
+    getIcon getName setName getPresentableText
+    getPresentation getReference getReferences
   ]
 }
 // can be parameterized (by using parameters and commands)
@@ -331,10 +355,12 @@ text_format ::= TEXT_FORMAT_START text_format_name text_format_string? TEXT_FORM
   extends=rich_text
   implements=[
     "icu.windea.pls.localisation.psi.ParadoxLocalisationInterpolationContainer"
+    "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
   ]
   methods=[
     getIdElement rich_text=""
-    getIcon getName setName getPresentableText getReference getReferences
+    getIcon getName setName getPresentableText
+    getPresentation getReference getReferences
   ]
 }
 // can be parameterized (by using parameters and commands)
@@ -355,22 +381,22 @@ private text_format_string_item ::= rich_text | COLORFUL_TEXT_END
 tag ::= TAG_TOKEN {
   implements=[
     "com.intellij.psi.NavigatablePsiElement"
-    "icu.windea.pls.core.psi.PsiPresentableElement"
   ]
   methods=[
     getIdElement
-    getName getPresentableText
+    getName
+    getPresentation
   ]
 }
 
 context_tag ::= CONTEXT_TAG_TOKEN {
   implements=[
     "com.intellij.psi.NavigatablePsiElement"
-    "icu.windea.pls.core.psi.PsiPresentableElement"
   ]
   methods=[
     getIdElement
-    getName getPresentableText
+    getName
+    getPresentation
   ]
 }
 
@@ -406,11 +432,11 @@ tagged_parameter ::= TAGGED_PARAMETER_START tagged_parameter_name TAGGED_PARAMET
   pin=1
   implements=[
     "com.intellij.psi.NavigatablePsiElement"
-    "icu.windea.pls.core.psi.PsiPresentableElement"
   ]
   methods=[
     getIdElement
-    getName getPresentableText
+    getName
+    getPresentation
   ]
 }
 private tagged_parameter_name ::= PARAMETER_TOKEN // still use `PARAMETER_TOKEN` here , same as `parameter`

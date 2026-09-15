@@ -11,6 +11,7 @@ import icu.windea.pls.localisation.parser.ParadoxLocalisationParser
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTokenSets
+import icu.windea.pls.localisation.psi.impl.ParadoxLocalisationFileImpl
 
 open class ParadoxLocalisationParserDefinition : ParserDefinition {
     override fun getWhitespaceTokens() = ParadoxLocalisationTokenSets.WHITE_SPACES
@@ -21,7 +22,7 @@ open class ParadoxLocalisationParserDefinition : ParserDefinition {
 
     override fun getFileNodeType() = ParadoxLocalisationFile.ELEMENT_TYPE
 
-    override fun createFile(viewProvider: FileViewProvider) = ParadoxLocalisationFile(viewProvider)
+    override fun createFile(viewProvider: FileViewProvider) = ParadoxLocalisationFileImpl(viewProvider)
 
     override fun createElement(node: ASTNode) = Factory.createElement(node)
 

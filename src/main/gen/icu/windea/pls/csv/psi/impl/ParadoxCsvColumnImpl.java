@@ -10,7 +10,6 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.csv.psi.ParadoxCsvElementTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import icu.windea.pls.csv.psi.*;
-import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiReference;
@@ -71,6 +70,11 @@ public class ParadoxCsvColumnImpl extends ASTWrapperPsiElement implements Parado
   }
 
   @Override
+  public @NotNull ParadoxCsvElementPresentation getPresentation() {
+    return ParadoxCsvPsiImplUtil.getPresentation(this);
+  }
+
+  @Override
   public @NotNull QuotePattern getQuotePattern() {
     return ParadoxCsvPsiImplUtil.getQuotePattern(this);
   }
@@ -93,11 +97,6 @@ public class ParadoxCsvColumnImpl extends ASTWrapperPsiElement implements Parado
   @Override
   public @NotNull SearchScope getUseScope() {
     return ParadoxCsvPsiImplUtil.getUseScope(this);
-  }
-
-  @Override
-  public @NotNull ItemPresentation getPresentation() {
-    return ParadoxCsvPsiImplUtil.getPresentation(this);
   }
 
   @Override

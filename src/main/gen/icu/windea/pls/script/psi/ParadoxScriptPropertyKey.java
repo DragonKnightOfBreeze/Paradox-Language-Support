@@ -4,8 +4,8 @@ package icu.windea.pls.script.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
+import icu.windea.pls.core.psi.PsiPresentableTextAwareElement;
 import icu.windea.pls.core.psi.PsiQuoteAwareElement;
-import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiReference;
@@ -14,16 +14,9 @@ import com.intellij.psi.search.SearchScope;
 import icu.windea.pls.core.text.QuotePattern;
 import javax.swing.Icon;
 
-public interface ParadoxScriptPropertyKey extends PsiQuoteAwareElement, ParadoxScriptLiteralValue, ParadoxScriptStringExpressionElement, ParadoxScriptInterpolationContainer {
-
-  @NotNull
-  List<ParadoxScriptNormalParameter> getNormalParameterList();
+public interface ParadoxScriptPropertyKey extends ParadoxScriptStringExpressionElement, ParadoxScriptLiteralValue, ParadoxScriptInterpolationContainer, PsiPresentableTextAwareElement, PsiQuoteAwareElement {
 
   @Nullable PsiElement getIdElement();
-
-  //WARNING: parameter(...) is skipped
-  //matching parameter(ParadoxScriptPropertyKey, ...)
-  //methods are not found in ParadoxScriptPsiImplUtil
 
   @NotNull Icon getIcon(@IconFlags int flags);
 
@@ -37,6 +30,8 @@ public interface ParadoxScriptPropertyKey extends PsiQuoteAwareElement, ParadoxS
 
   @NotNull String getPresentableText();
 
+  @NotNull ParadoxScriptElementPresentation getPresentation();
+
   @NotNull QuotePattern getQuotePattern();
 
   @Nullable PsiReference getReference();
@@ -46,7 +41,5 @@ public interface ParadoxScriptPropertyKey extends PsiQuoteAwareElement, ParadoxS
   @NotNull GlobalSearchScope getResolveScope();
 
   @NotNull SearchScope getUseScope();
-
-  @NotNull ItemPresentation getPresentation();
 
 }

@@ -4,13 +4,13 @@ package icu.windea.pls.cwt.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
-import com.intellij.navigation.ItemPresentation;
+import com.intellij.psi.PsiListLikeElement;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import javax.swing.Icon;
 
-public interface CwtBlock extends CwtValue, CwtMemberContainer, CwtBoundMemberContainer {
+public interface CwtBlock extends CwtValue, PsiListLikeElement, CwtMemberContainer, CwtBoundMemberContainer {
 
   @NotNull
   List<CwtDocComment> getDocCommentList();
@@ -35,18 +35,16 @@ public interface CwtBlock extends CwtValue, CwtMemberContainer, CwtBoundMemberCo
 
   @Nullable PsiElement getRightBound();
 
+  @NotNull List<@NotNull PsiElement> getComponents();
+
   @NotNull Icon getIcon(@IconFlags int flags);
 
   @NotNull String getValue();
 
-  @NotNull List<@NotNull CwtStatement> getComponents();
-
-  @NotNull String getPresentableText();
+  @NotNull CwtElementPresentation getPresentation();
 
   @NotNull GlobalSearchScope getResolveScope();
 
   @NotNull SearchScope getUseScope();
-
-  @NotNull ItemPresentation getPresentation();
 
 }

@@ -16,7 +16,7 @@
   elementTypeFactory="icu.windea.pls.cwt.psi.CwtElementTypeFactory.getElementType"
   psiImplUtilClass="icu.windea.pls.cwt.psi.impl.CwtPsiImplUtil"
   parserUtilClass="icu.windea.pls.cwt.parser.CwtParserUtil"
-  methods(".*")=[getResolveScope getUseScope getPresentation toString]
+  methods(".*")=[getResolveScope getUseScope toString]
   tokens=[
     EOL="<eol>"
   ]
@@ -30,12 +30,16 @@ private general_comment ::= doc_comment | option_comment | comment
 doc_comment ::= DOC_COMMENT_TOKEN {
   name="doc comment"
   implements=["com.intellij.psi.PsiDocCommentBase"]
-  methods=[getTokenType getOwner]
+  methods=[
+    getTokenType getOwner
+  ]
 }
 option_comment ::= option_comment_root {
   name="option comment"
   implements=["com.intellij.psi.PsiComment"]
-  methods=[getTokenType optionList="option" optionValueList="value"]
+  methods=[
+    getTokenType optionList="option" optionValueList="value"
+  ]
 }
 private comment ::= COMMENT {
   name="comment"
@@ -44,12 +48,12 @@ private comment ::= COMMENT {
 root_block ::= root_block_items {
   hooks=[wsBinders="GREEDY_LEFT_BINDER, GREEDY_RIGHT_BINDER"] // surrounding whitespaces and comments are greedy
   implements=[
-    "icu.windea.pls.core.psi.PsiRootBlock"
+    "com.intellij.psi.PsiListLikeElement"
     "icu.windea.pls.cwt.psi.CwtMemberContainer"
+    "icu.windea.pls.core.psi.PsiRootBlock"
   ]
   methods=[
-    getMemberContainer getMembers
-    getValue getComponents
+    getMemberContainer getMembers getComponents
   ]
 }
 private root_block_items ::= root_block_item+
@@ -85,20 +89,23 @@ option ::= option_key option_separator option_value {
   implements=[
     "icu.windea.pls.cwt.psi.CwtNamedElement"
     "icu.windea.pls.cwt.psi.CwtOptionMember"
+    "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
   ]
   methods=[
     option_key="option_key" option_value="value"
     getIcon getName setName getNameIdentifier getValue getPresentableText
+    getPresentation
   ]
 }
 option_key ::= option_key_content {
   name="option key"
   implements=[
-    "com.intellij.psi.NavigatablePsiElement"
+    "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
     "icu.windea.pls.core.psi.PsiQuoteAwareElement"
   ]
   methods=[
-    getIcon getName getValue getQuotePattern
+    getIcon getName getValue getPresentableText
+    getQuotePattern
   ]
 }
 // NOTE 3.0.2 DO NOT split out quote tokens (reduced complexity, better performance)
@@ -116,22 +123,25 @@ property ::= property_key property_separator property_value {
   implements=[
     "icu.windea.pls.cwt.psi.CwtNamedElement"
     "icu.windea.pls.cwt.psi.CwtMember"
+    "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
   ]
   methods=[
     getMemberContainer getMembers propertyKey="property_key" propertyValue="value"
     getIcon getName setName getNameIdentifier getValue getPresentableText
+    getPresentation
   ]
 }
 property_key ::= property_key_content {
   name="property key"
   implements=[
-    "icu.windea.pls.core.psi.PsiQuoteAwareElement"
-    "icu.windea.pls.cwt.psi.CwtLiteralValue"
     "icu.windea.pls.cwt.psi.CwtStringExpressionElement"
+    "icu.windea.pls.cwt.psi.CwtLiteralValue"
+    "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
+    "icu.windea.pls.core.psi.PsiQuoteAwareElement"
   ]
   methods=[
-    getIcon getName getValue setValue setContent getPresentableText getQuotePattern
-    getReference getReferences
+    getIcon getName getValue setValue setContent getPresentableText
+    getPresentation getQuotePattern getReference getReferences
   ]
 }
 // NOTE 3.0.2 DO NOT split out quote tokens (reduced complexity, better performance)
@@ -149,9 +159,11 @@ value ::= boolean | int | float | string | block {
     "icu.windea.pls.cwt.psi.CwtExpressionElement"
     "icu.windea.pls.cwt.psi.CwtMember"
     "icu.windea.pls.cwt.psi.CwtOptionMember"
+    "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
   ]
   methods=[
     getIcon getName getValue setValue setContent getPresentableText
+    getPresentation
   ]
 }
 
@@ -166,16 +178,16 @@ int ::= INT_TOKEN {
   name="int"
   extends=value
   implements=[
-    "icu.windea.pls.cwt.psi.CwtLiteralValue"
     "icu.windea.pls.cwt.psi.CwtNumberExpressionElement"
+    "icu.windea.pls.cwt.psi.CwtLiteralValue"
   ]
 }
 float ::= FLOAT_TOKEN {
   name="float"
   extends=value
   implements=[
-    "icu.windea.pls.cwt.psi.CwtLiteralValue"
     "icu.windea.pls.cwt.psi.CwtNumberExpressionElement"
+    "icu.windea.pls.cwt.psi.CwtLiteralValue"
   ]
 }
 
@@ -183,14 +195,15 @@ string ::= string_content {
   name="string"
   extends=value
   implements=[
-    "icu.windea.pls.core.psi.PsiQuoteAwareElement"
     "icu.windea.pls.cwt.psi.CwtNamedElement"
-    "icu.windea.pls.cwt.psi.CwtLiteralValue"
     "icu.windea.pls.cwt.psi.CwtStringExpressionElement"
+    "icu.windea.pls.cwt.psi.CwtLiteralValue"
+    "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
+    "icu.windea.pls.core.psi.PsiQuoteAwareElement"
   ]
   methods=[
-    getIcon getName setName getNameIdentifier getValue setValue setContent getPresentableText getQuotePattern
-    getReference getReferences
+    getIcon getName setName getNameIdentifier getValue setValue setContent getPresentableText
+    getPresentation getQuotePattern getReference getReferences
   ]
 }
 // NOTE 3.0.2 DO NOT split out quote tokens (reduced complexity, better performance)
@@ -200,12 +213,14 @@ block ::= LEFT_BRACE block_items? RIGHT_BRACE {
   pin=1
   extends=value
   implements=[
+    "com.intellij.psi.PsiListLikeElement"
     "icu.windea.pls.cwt.psi.CwtMemberContainer"
     "icu.windea.pls.cwt.psi.CwtBoundMemberContainer"
   ]
   methods=[
-    getMemberContainer getMembers getLeftBound getRightBound
-    getIcon getValue getComponents getPresentableText
+    getMemberContainer getMembers getLeftBound getRightBound getComponents
+    getIcon getValue
+    getPresentation
   ]
 }
 private block_items ::= block_item+

@@ -19,7 +19,7 @@
   tokenTypeFactory="icu.windea.pls.csv.psi.ParadoxCsvElementTypeFactory.getTokenType"
   psiImplUtilClass="icu.windea.pls.csv.psi.impl.ParadoxCsvPsiImplUtil"
   parserUtilClass="icu.windea.pls.csv.parser.ParadoxCsvParserUtil"
-  methods(".*")=[getResolveScope getUseScope getPresentation toString]
+  methods(".*")=[getResolveScope getUseScope toString]
   tokens=[
     EOL="<eol>"
     SEPARATOR=";"
@@ -39,19 +39,27 @@ private comment ::= COMMENT {
 header ::= row_items {
   name="header"
   implements=[
+    "com.intellij.psi.PsiListLikeElement"
+    "com.intellij.psi.NavigatablePsiElement"
     "icu.windea.pls.csv.psi.ParadoxCsvColumnContainer"
   ]
   methods=[
-    getIcon getComponents
+    getComponents
+    getIcon
+    getPresentation
   ]
 }
 row ::= row_items {
   name="row"
   implements=[
+    "com.intellij.psi.PsiListLikeElement"
+    "com.intellij.psi.NavigatablePsiElement"
     "icu.windea.pls.csv.psi.ParadoxCsvColumnContainer"
   ]
   methods=[
-    getIcon getComponents
+    getComponents
+    getIcon
+    getPresentation
   ]
 }
 private row_items ::= column row_item* { pin=1 }
@@ -64,14 +72,17 @@ private row_item ::= <<checkEol>> SEPARATOR [ <<checkEol>> column ]
 column ::= <<checkColumnToken>> column_content? {
   name="column"
   implements=[
-    "icu.windea.pls.core.psi.PsiQuoteAwareElement"
-    "icu.windea.pls.csv.psi.ParadoxCsvLiteralValue"
     "icu.windea.pls.csv.psi.ParadoxCsvExpressionElement"
+    "icu.windea.pls.csv.psi.ParadoxCsvLiteralValue"
+    "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
+    "icu.windea.pls.core.psi.PsiQuoteAwareElement"
   ]
   methods=[
     getIdElement
-    getIcon getName getValue setValue setContent getPresentableText getQuotePattern getReference getReferences
+    getIcon getName getValue setValue setContent getPresentableText
+    getPresentation getQuotePattern getReference getReferences
   ]
 }
 // NOTE 3.0.2 DO NOT split out quote tokens (reduced complexity, better performance)
 private column_content ::= COLUMN_TOKEN
+

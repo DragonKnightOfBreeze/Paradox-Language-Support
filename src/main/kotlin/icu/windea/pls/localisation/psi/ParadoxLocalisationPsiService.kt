@@ -4,54 +4,10 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.TokenType
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.prevLeaf
-import icu.windea.pls.base.settings.ChronicleInternalSettings
 import icu.windea.pls.core.children
 import icu.windea.pls.core.isExactLineBreak
-import icu.windea.pls.core.psi.PsiPresentableElement
-import icu.windea.pls.core.truncate
-import icu.windea.pls.core.util.values.or
-import icu.windea.pls.core.util.values.unresolved
-import icu.windea.pls.model.constants.ChronicleStrings
 
 object ParadoxLocalisationPsiService {
-    private val presentableTextLimit get() = ChronicleInternalSettings.getInstance().presentableTextLimit
-
-    fun getPresentableText(element: PsiPresentableElement): String {
-        return when (element) {
-            is ParadoxLocalisationLocale -> {
-                val name = element.name
-                name.or.unresolved()
-            }
-            is ParadoxLocalisationProperty -> {
-                val name = element.name
-                ChronicleStrings.localisationPropertyFolder(name.or.unresolved())
-            }
-            is ParadoxLocalisationExpressionElement -> element.text.truncate(presentableTextLimit)
-            is ParadoxLocalisationColorfulText -> {
-                val name = element.name
-                ChronicleStrings.localisationColorfulTextFolder(name.or.unresolved())
-            }
-            is ParadoxLocalisationCommand -> {
-                val expression = element.commandText?.presentableText
-                ChronicleStrings.localisationCommandFolder(expression.orEmpty().truncate(presentableTextLimit))
-            }
-            is ParadoxLocalisationConceptCommand -> {
-                val expression = element.conceptName?.presentableText
-                val withText = element.conceptString != null
-                if (withText) {
-                    ChronicleStrings.localisationConceptCommandFolder(expression.orEmpty().truncate(presentableTextLimit))
-                } else {
-                    ChronicleStrings.localisationConceptCommandFolderWithText(expression.orEmpty().truncate(presentableTextLimit))
-                }
-            }
-            is ParadoxLocalisationTextFormat -> {
-                val name = element.name
-                ChronicleStrings.localisationTextFormatFolder(name.or.unresolved())
-            }
-            else -> element.text
-        }
-    }
-
     fun canAttachComment(element: PsiElement): Boolean {
         return element is ParadoxLocalisationProperty
     }

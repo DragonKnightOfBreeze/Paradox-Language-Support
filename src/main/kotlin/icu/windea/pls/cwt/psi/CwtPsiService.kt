@@ -12,7 +12,8 @@ import icu.windea.pls.core.children
 import icu.windea.pls.core.constants.DefaultStrings
 import icu.windea.pls.core.forEachChild
 import icu.windea.pls.core.psi.PsiBoundElement
-import icu.windea.pls.core.psi.PsiPresentableElement
+import icu.windea.pls.core.psi.PsiPresentableTextAwareElement
+import icu.windea.pls.core.psi.PsiQuoteAwareElement
 import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.core.transformAndKeepQuotes
 import icu.windea.pls.core.truncate
@@ -20,50 +21,6 @@ import icu.windea.pls.cwt.CwtLanguage
 
 @Suppress("unused")
 object CwtPsiService {
-    private val presentableTextLimit get() = ChronicleInternalSettings.getInstance().presentableTextLimit
-
-    fun getPresentableText(element: PsiPresentableElement): String {
-        return when (element) {
-            is CwtProperty -> {
-                var keyElement: CwtPropertyKey? = null
-                var separatorElement: PsiElement? = null
-                var valueElement: CwtValue? = null
-                element.forEachChild { e ->
-                    when {
-                        e is CwtPropertyKey -> keyElement = e
-                        isPropertySeparator(e) -> separatorElement = e
-                        e is CwtValue -> valueElement = e
-                    }
-                }
-                buildString {
-                    if (keyElement != null) append(keyElement.presentableText) else append(DefaultStrings.unresolved)
-                    append(" ")
-                    append(separatorElement?.text ?: "=")
-                    append(" ")
-                    if (valueElement != null) append(valueElement.presentableText) else append(DefaultStrings.unresolved)
-                }
-            }
-            is CwtOption -> {
-                var keyElement: CwtOptionKey? = null
-                var valueElement: CwtValue? = null
-                element.forEachChild { e ->
-                    when {
-                        e is CwtOptionKey -> keyElement = e
-                        e is CwtValue -> valueElement = e
-                    }
-                }
-                buildString {
-                    if (keyElement != null) append(keyElement.text) else append(DefaultStrings.unresolved)
-                    append(" = ")
-                    if (valueElement != null) append(valueElement.presentableText) else append(DefaultStrings.unresolved)
-                }
-            }
-            is CwtStringExpressionElement -> element.text.transformAndKeepQuotes { it.truncate(presentableTextLimit) }
-            is CwtExpressionElement -> element.value
-            else -> element.text
-        }
-    }
-
     fun canAttachComment(element: PsiElement): Boolean {
         return element is CwtProperty || (element is CwtString && element.isDirectValue())
     }

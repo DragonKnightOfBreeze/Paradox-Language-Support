@@ -1,10 +1,9 @@
 package icu.windea.pls.cwt.psi.impl
 
-import com.intellij.navigation.ItemPresentation
 import com.intellij.openapi.util.Iconable
 import com.intellij.openapi.util.TextRange
+import com.intellij.psi.NavigatablePsiElement
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiListLikeElement
 import com.intellij.psi.PsiReference
 import com.intellij.psi.impl.ResolveScopeManager
 import com.intellij.psi.impl.source.resolve.reference.ReferenceProvidersRegistry
@@ -14,15 +13,19 @@ import com.intellij.psi.tree.IElementType
 import com.intellij.psi.util.elementType
 import com.intellij.util.IncorrectOperationException
 import icu.windea.pls.ChronicleIcons
+import icu.windea.pls.base.settings.ChronicleInternalSettings
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.children
-import icu.windea.pls.core.psi.PsiPresentableElement
+import icu.windea.pls.core.constants.DefaultStrings
+import icu.windea.pls.core.forEachChild
 import icu.windea.pls.core.psi.PsiQuoteAwareElement
 import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.core.select.listBy
 import icu.windea.pls.core.select.oneBy
 import icu.windea.pls.core.text.QuotePattern
 import icu.windea.pls.core.text.QuotePatterns
+import icu.windea.pls.core.transformAndKeepQuotes
+import icu.windea.pls.core.truncate
 import icu.windea.pls.core.unquote
 import icu.windea.pls.cwt.psi.CwtBlock
 import icu.windea.pls.cwt.psi.CwtDocComment
@@ -70,11 +73,6 @@ object CwtPsiImplUtil {
     // region CwtRootBlock
 
     @JvmStatic
-    fun getValue(element: CwtRootBlock): String {
-        return ChronicleStrings.blockFolder
-    }
-
-    @JvmStatic
     fun getMemberContainer(element: CwtRootBlock): CwtRootBlock {
         return element
     }
@@ -83,6 +81,11 @@ object CwtPsiImplUtil {
     fun getMembers(element: CwtRootBlock): List<CwtMember> {
         val memberContainer = getMemberContainer(element)
         return memberContainer.children().listBy()
+    }
+
+    @JvmStatic
+    fun getComponents(element: CwtRootBlock): List<PsiElement> {
+        return element.children().listBy<CwtStatement>()
     }
 
     // endregion
@@ -138,6 +141,24 @@ object CwtPsiImplUtil {
     fun getValue(element: CwtOption): String? {
         return element.optionValue?.value
     }
+
+    @JvmStatic
+    fun getPresentableText(element: CwtOption): String {
+        var keyElement: CwtOptionKey? = null
+        var valueElement: CwtValue? = null
+        element.forEachChild { e ->
+            when {
+                e is CwtOptionKey -> keyElement = e
+                e is CwtValue -> valueElement = e
+            }
+        }
+        return buildString {
+            if (keyElement != null) append(keyElement.presentableText) else append(DefaultStrings.unresolved)
+            append(" = ")
+            if (valueElement != null) append(valueElement.presentableText) else append(DefaultStrings.unresolved)
+        }
+    }
+
     // endregion
 
     // region CwtOptionKey
@@ -157,9 +178,31 @@ object CwtPsiImplUtil {
         return element.text.unquote(QuotePatterns.Cwt)
     }
 
+    @JvmStatic
+    fun getPresentableText(element: CwtOptionKey): String {
+        val limit = ChronicleInternalSettings.getInstance().presentableTextLimit
+        return element.text.transformAndKeepQuotes { it.truncate(limit) }
+    }
+
+    @JvmStatic
+    fun getQuotePattern(element: CwtOptionKey): QuotePattern {
+        return QuotePatterns.Cwt
+    }
+
     // endregion
 
     // region CwtProperty
+
+    @JvmStatic
+    fun getMemberContainer(element: CwtProperty): CwtBlock? {
+        return element.propertyValue?.castOrNull<CwtBlock>()
+    }
+
+    @JvmStatic
+    fun getMembers(element: CwtProperty): List<CwtMember>? {
+        val memberContainer = getMemberContainer(element) ?: return null
+        return memberContainer.children().listBy()
+    }
 
     @JvmStatic
     fun getIcon(element: CwtProperty, @Iconable.IconFlags flags: Int): Icon {
@@ -187,14 +230,24 @@ object CwtPsiImplUtil {
     }
 
     @JvmStatic
-    fun getMemberContainer(element: CwtProperty): CwtBlock? {
-        return element.propertyValue?.castOrNull<CwtBlock>()
-    }
-
-    @JvmStatic
-    fun getMembers(element: CwtProperty): List<CwtMember>? {
-        val memberContainer = getMemberContainer(element) ?: return null
-        return memberContainer.children().listBy()
+    fun getPresentableText(element: CwtProperty): String {
+        var keyElement: CwtPropertyKey? = null
+        var separatorElement: PsiElement? = null
+        var valueElement: CwtValue? = null
+        element.forEachChild { e ->
+            when {
+                e is CwtPropertyKey -> keyElement = e
+                CwtPsiService.isPropertySeparator(e) -> separatorElement = e
+                e is CwtValue -> valueElement = e
+            }
+        }
+        return buildString {
+            if (keyElement != null) append(keyElement.presentableText) else append(DefaultStrings.unresolved)
+            append(" ")
+            append(separatorElement?.text ?: "=")
+            append(" ")
+            if (valueElement != null) append(valueElement.presentableText) else append(DefaultStrings.unresolved)
+        }
     }
 
     // endregion
@@ -219,6 +272,17 @@ object CwtPsiImplUtil {
     @JvmStatic
     fun setContent(element: CwtPropertyKey, content: String, range: TextRange): CwtPropertyKey {
         return CwtElementManipulationService.changeContent(element, content, range)
+    }
+
+    @JvmStatic
+    fun getPresentableText(element: CwtPropertyKey): String {
+        val limit = ChronicleInternalSettings.getInstance().presentableTextLimit
+        return element.text.transformAndKeepQuotes { it.truncate(limit) }
+    }
+
+    @JvmStatic
+    fun getQuotePattern(element: CwtPropertyKey): QuotePattern {
+        return QuotePatterns.Cwt
     }
 
     // endregion
@@ -274,6 +338,12 @@ object CwtPsiImplUtil {
         return CwtElementManipulationService.changeContent(element, content, range)
     }
 
+    @JvmStatic
+    fun getPresentableText(element: CwtString): String {
+        val limit = ChronicleInternalSettings.getInstance().presentableTextLimit
+        return element.text.transformAndKeepQuotes { it.truncate(limit) }
+    }
+
     // endregion
 
     // region CwtBlock
@@ -297,6 +367,11 @@ object CwtPsiImplUtil {
     @JvmStatic
     fun getRightBound(element: CwtBlock): PsiElement? {
         return element.lastChild?.takeIf { it.elementType == RIGHT_BRACE }
+    }
+
+    @JvmStatic
+    fun getComponents(element: CwtBlock): List<PsiElement> {
+        return element.children().listBy<CwtStatement>()
     }
 
     @JvmStatic
@@ -333,18 +408,33 @@ object CwtPsiImplUtil {
         throw IncorrectOperationException()
     }
 
+    @JvmStatic
+    fun getPresentableText(element: CwtExpressionElement): String {
+        return element.value
+    }
+
     // endregion
 
     // region Common Methods
 
     @JvmStatic
-    fun getComponents(element: PsiListLikeElement): List<CwtStatement> {
-        return element.children().listBy()
+    fun getResolveScope(element: PsiElement): GlobalSearchScope {
+        return ResolveScopeManager.getElementResolveScope(element)
     }
 
     @JvmStatic
-    fun getPresentableText(element: PsiPresentableElement): String {
-        return CwtPsiService.getPresentableText(element)
+    fun getUseScope(element: PsiElement): SearchScope {
+        return GlobalSearchScope.allScope(element.project)
+    }
+
+    @JvmStatic
+    fun toString(element: PsiElement): String {
+        return PsiService.toPresentableString(element)
+    }
+
+    @JvmStatic
+    fun getPresentation(element: NavigatablePsiElement): CwtElementPresentation {
+        return CwtElementPresentation(element)
     }
 
     @JvmStatic
@@ -360,26 +450,6 @@ object CwtPsiImplUtil {
     @JvmStatic
     fun getReferences(element: PsiElement): Array<out PsiReference> {
         return ReferenceProvidersRegistry.getReferencesFromProviders(element)
-    }
-
-    @JvmStatic
-    fun getResolveScope(element: PsiElement): GlobalSearchScope {
-        return ResolveScopeManager.getElementResolveScope(element)
-    }
-
-    @JvmStatic
-    fun getUseScope(element: PsiElement): SearchScope {
-        return GlobalSearchScope.allScope(element.project)
-    }
-
-    @JvmStatic
-    fun getPresentation(element: PsiElement): ItemPresentation {
-        return CwtElementPresentation(element)
-    }
-
-    @JvmStatic
-    fun toString(element: PsiElement): String {
-        return PsiService.toPresentableString(element)
     }
 
     // endregion

@@ -9,7 +9,6 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 import icu.windea.pls.script.psi.*;
-import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
@@ -34,12 +33,6 @@ public class ParadoxScriptScriptedVariableReferenceImpl extends ParadoxScriptVal
   }
 
   @Override
-  @NotNull
-  public List<ParadoxScriptNormalParameter> getNormalParameterList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptNormalParameter.class);
-  }
-
-  @Override
   public @Nullable PsiElement getIdElement() {
     return ParadoxScriptPsiImplUtil.getIdElement(this);
   }
@@ -60,13 +53,13 @@ public class ParadoxScriptScriptedVariableReferenceImpl extends ParadoxScriptVal
   }
 
   @Override
-  public @NotNull String getValue() {
-    return ParadoxScriptPsiImplUtil.getValue(this);
+  public @NotNull String getPresentableText() {
+    return ParadoxScriptPsiImplUtil.getPresentableText(this);
   }
 
   @Override
-  public @NotNull String getPresentableText() {
-    return ParadoxScriptPsiImplUtil.getPresentableText(this);
+  public @NotNull ParadoxScriptElementPresentation getPresentation() {
+    return ParadoxScriptPsiImplUtil.getPresentation(this);
   }
 
   @Override
@@ -87,11 +80,6 @@ public class ParadoxScriptScriptedVariableReferenceImpl extends ParadoxScriptVal
   @Override
   public @NotNull SearchScope getUseScope() {
     return ParadoxScriptPsiImplUtil.getUseScope(this);
-  }
-
-  @Override
-  public @NotNull ItemPresentation getPresentation() {
-    return ParadoxScriptPsiImplUtil.getPresentation(this);
   }
 
   @Override

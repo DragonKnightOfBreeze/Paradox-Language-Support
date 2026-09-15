@@ -9,6 +9,7 @@ import icu.windea.pls.cwt.lexer.CwtLexerFactory
 import icu.windea.pls.cwt.parser.CwtParser
 import icu.windea.pls.cwt.psi.CwtElementTypes.*
 import icu.windea.pls.cwt.psi.CwtFile
+import icu.windea.pls.cwt.psi.impl.CwtFileImpl
 import icu.windea.pls.cwt.psi.CwtTokenSets
 
 class CwtParserDefinition : ParserDefinition {
@@ -20,7 +21,7 @@ class CwtParserDefinition : ParserDefinition {
 
     override fun getFileNodeType() = CwtFile.ELEMENT_TYPE
 
-    override fun createFile(viewProvider: FileViewProvider) = CwtFile(viewProvider)
+    override fun createFile(viewProvider: FileViewProvider) = CwtFileImpl(viewProvider)
 
     override fun createElement(node: ASTNode?) = Factory.createElement(node)
 

@@ -3,7 +3,7 @@ package icu.windea.pls.script.navigationToolbar
 import com.intellij.ide.navigationToolbar.StructureAwareNavBarModelExtension
 import com.intellij.psi.PsiElement
 import icu.windea.pls.script.ParadoxScriptLanguage
-import icu.windea.pls.script.psi.ParadoxScriptPsiPresentationService
+import icu.windea.pls.script.psi.ParadoxScriptElementPresentationService
 import javax.swing.Icon
 
 class ParadoxScriptNavBar : StructureAwareNavBarModelExtension() {
@@ -11,11 +11,11 @@ class ParadoxScriptNavBar : StructureAwareNavBarModelExtension() {
 
     override fun getIcon(o: Any?): Icon? {
         if (o !is PsiElement) return null
-        return ParadoxScriptPsiPresentationService.getIcon(o)
+        return ParadoxScriptElementPresentationService.getIcon(o)
     }
 
     override fun getPresentableText(o: Any?): String? {
         if (o !is PsiElement) return null
-        return ParadoxScriptPsiPresentationService.getLongPresentableText(o)
+        return ParadoxScriptElementPresentationService.getLongPresentableText(o)
     }
 }

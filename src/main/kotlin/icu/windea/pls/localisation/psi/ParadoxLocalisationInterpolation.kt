@@ -1,7 +1,7 @@
 package icu.windea.pls.localisation.psi
 
 import com.intellij.psi.NavigatablePsiElement
-import icu.windea.pls.core.psi.PsiPresentableElement
+import icu.windea.pls.core.psi.PsiPresentableTextAwareElement
 
 /**
  * 可以作为插值在特定位置使用的 PSI 元素。
@@ -14,4 +14,4 @@ import icu.windea.pls.core.psi.PsiPresentableElement
  * @see ParadoxLocalisationParameter
  * @see ParadoxLocalisationCommand
  */
-interface ParadoxLocalisationInterpolation : NavigatablePsiElement, PsiPresentableElement
+interface ParadoxLocalisationInterpolation : NavigatablePsiElement, PsiPresentableTextAwareElement

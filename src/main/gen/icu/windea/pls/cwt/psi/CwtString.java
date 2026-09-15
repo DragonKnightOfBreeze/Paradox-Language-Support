@@ -5,7 +5,6 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import icu.windea.pls.core.psi.PsiQuoteAwareElement;
-import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiReference;
@@ -14,7 +13,7 @@ import com.intellij.psi.search.SearchScope;
 import icu.windea.pls.core.text.QuotePattern;
 import javax.swing.Icon;
 
-public interface CwtString extends CwtValue, PsiQuoteAwareElement, CwtNamedElement, CwtLiteralValue, CwtStringExpressionElement {
+public interface CwtString extends CwtValue, CwtNamedElement, CwtStringExpressionElement, CwtLiteralValue, PsiQuoteAwareElement {
 
   @NotNull Icon getIcon(@IconFlags int flags);
 
@@ -32,6 +31,8 @@ public interface CwtString extends CwtValue, PsiQuoteAwareElement, CwtNamedEleme
 
   @NotNull String getPresentableText();
 
+  @NotNull CwtElementPresentation getPresentation();
+
   @NotNull QuotePattern getQuotePattern();
 
   @Nullable PsiReference getReference();
@@ -41,7 +42,5 @@ public interface CwtString extends CwtValue, PsiQuoteAwareElement, CwtNamedEleme
   @NotNull GlobalSearchScope getResolveScope();
 
   @NotNull SearchScope getUseScope();
-
-  @NotNull ItemPresentation getPresentation();
 
 }

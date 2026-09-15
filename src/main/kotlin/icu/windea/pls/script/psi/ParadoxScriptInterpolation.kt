@@ -1,7 +1,7 @@
 package icu.windea.pls.script.psi
 
 import com.intellij.psi.NavigatablePsiElement
-import icu.windea.pls.core.psi.PsiPresentableElement
+import icu.windea.pls.core.psi.PsiPresentableTextAwareElement
 
 /**
  * 可以作为插值在特定位置使用的 PSI 元素。
@@ -13,4 +13,4 @@ import icu.windea.pls.core.psi.PsiPresentableElement
  * @see ParadoxScriptParameter
  * @see ParadoxScriptInlineConditionalBlock
  */
-interface ParadoxScriptInterpolation : NavigatablePsiElement, PsiPresentableElement
+interface ParadoxScriptInterpolation : NavigatablePsiElement, PsiPresentableTextAwareElement

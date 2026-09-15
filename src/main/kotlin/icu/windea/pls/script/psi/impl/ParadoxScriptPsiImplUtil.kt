@@ -1,10 +1,9 @@
 package icu.windea.pls.script.psi.impl
 
-import com.intellij.navigation.ItemPresentation
 import com.intellij.openapi.util.Iconable
 import com.intellij.openapi.util.TextRange
+import com.intellij.psi.NavigatablePsiElement
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiListLikeElement
 import com.intellij.psi.PsiReference
 import com.intellij.psi.impl.ResolveScopeManager
 import com.intellij.psi.impl.source.resolve.reference.ReferenceProvidersRegistry
@@ -14,12 +13,16 @@ import com.intellij.psi.tree.IElementType
 import com.intellij.psi.util.elementType
 import com.intellij.util.IncorrectOperationException
 import icu.windea.pls.ChronicleIcons
+import icu.windea.pls.base.settings.ChronicleInternalSettings
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.children
+import icu.windea.pls.core.constants.DefaultStrings
 import icu.windea.pls.core.containsLineBreak
+import icu.windea.pls.core.forEachChild
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
-import icu.windea.pls.core.psi.PsiPresentableElement
+import icu.windea.pls.core.processChild
+import icu.windea.pls.core.psi.PsiPresentableTextAwareElement
 import icu.windea.pls.core.psi.PsiQuoteAwareElement
 import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.core.select.listBy
@@ -28,7 +31,12 @@ import icu.windea.pls.core.splitByBlank
 import icu.windea.pls.core.substringIn
 import icu.windea.pls.core.text.QuotePattern
 import icu.windea.pls.core.text.QuotePatterns
+import icu.windea.pls.core.transformAndKeepQuotes
+import icu.windea.pls.core.truncate
 import icu.windea.pls.core.unquote
+import icu.windea.pls.core.util.values.or
+import icu.windea.pls.core.util.values.unresolved
+import icu.windea.pls.cwt.psi.CwtExpressionElement
 import icu.windea.pls.lang.codeInsight.color.ParadoxColorService
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.ParadoxPsiService
@@ -36,12 +44,16 @@ import icu.windea.pls.lang.search.scope.ParadoxSearchScope
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxFileManager
+import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
 import icu.windea.pls.model.constants.ChronicleStrings
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptColor
+import icu.windea.pls.script.psi.ParadoxScriptConditionalExpression
 import icu.windea.pls.script.psi.ParadoxScriptConditionalParameter
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
 import icu.windea.pls.script.psi.ParadoxScriptElementManipulationService
+import icu.windea.pls.script.psi.ParadoxScriptElementPresentation
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
@@ -57,7 +69,6 @@ import icu.windea.pls.script.psi.ParadoxScriptNormalParameter
 import icu.windea.pls.script.psi.ParadoxScriptParameterArgument
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
-import icu.windea.pls.script.psi.ParadoxScriptPsiPresentation
 import icu.windea.pls.script.psi.ParadoxScriptPsiService
 import icu.windea.pls.script.psi.ParadoxScriptRootBlock
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
@@ -101,11 +112,6 @@ object ParadoxScriptPsiImplUtil {
     // region ParadoxScriptRootBlock
 
     @JvmStatic
-    fun getValue(element: ParadoxScriptRootBlock): String {
-        return ChronicleStrings.blockFolder
-    }
-
-    @JvmStatic
     fun getMemberContainer(element: ParadoxScriptRootBlock): ParadoxScriptRootBlock {
         return element
     }
@@ -114,6 +120,11 @@ object ParadoxScriptPsiImplUtil {
     fun getMembers(element: ParadoxScriptRootBlock): List<ParadoxScriptMember> {
         val memberContainer = getMemberContainer(element)
         return memberContainer.children().listBy()
+    }
+
+    @JvmStatic
+    fun getComponents(element: ParadoxScriptRootBlock): List<PsiElement> {
+        return element.children().listBy<ParadoxScriptStatement>()
     }
 
     // endregion
@@ -179,6 +190,27 @@ object ParadoxScriptPsiImplUtil {
         return true
     }
 
+    @JvmStatic
+    fun getPresentableText(element: ParadoxScriptProperty): String {
+        var keyElement: ParadoxScriptPropertyKey? = null
+        var separatorElement: PsiElement? = null
+        var valueElement: ParadoxScriptValue? = null
+        element.forEachChild { e ->
+            when {
+                e is ParadoxScriptPropertyKey -> keyElement = e
+                ParadoxScriptPsiService.isPropertySeparator(e) -> separatorElement = e
+                e is ParadoxScriptValue -> valueElement = e
+            }
+        }
+        return buildString {
+            if (keyElement != null) append(keyElement.presentableText) else append(DefaultStrings.unresolved)
+            if (separatorElement?.elementType != SAFE_CALL_ASSIGN_SIGN) append(" ")
+            append(separatorElement?.text ?: "=")
+            append(" ")
+            if (valueElement != null) append(valueElement.presentableText) else append(DefaultStrings.unresolved)
+        }
+    }
+
     // endregion
 
     // region ParadoxScriptPropertyKey
@@ -206,6 +238,12 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun setContent(element: ParadoxScriptPropertyKey, content: String, range: TextRange): ParadoxScriptPropertyKey {
         return ParadoxScriptElementManipulationService.changeContent(element, content, range)
+    }
+
+    @JvmStatic
+    fun getPresentableText(element: ParadoxScriptPropertyKey): String {
+        val limit = ChronicleInternalSettings.getInstance().presentableTextLimit
+        return element.text.transformAndKeepQuotes { it.truncate(limit) }
     }
 
     // endregion
@@ -257,6 +295,12 @@ object ParadoxScriptPsiImplUtil {
         return ParadoxScriptElementManipulationService.changeContent(element, content, range)
     }
 
+    @JvmStatic
+    fun getPresentableText(element: ParadoxScriptString): String {
+        val limit = ChronicleInternalSettings.getInstance().presentableTextLimit
+        return element.text.transformAndKeepQuotes { it.truncate(limit) }
+    }
+
     // endregion
 
     // region ParadoxScriptBlock
@@ -280,6 +324,11 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun getRightBound(element: ParadoxScriptBlock): PsiElement? {
         return element.lastChild?.takeIf { it.elementType == RIGHT_BRACE }
+    }
+
+    @JvmStatic
+    fun getComponents(element: ParadoxScriptBlock): List<PsiElement> {
+        return element.children().listBy<ParadoxScriptStatement>()
     }
 
     @JvmStatic
@@ -346,6 +395,23 @@ object ParadoxScriptPsiImplUtil {
         return true
     }
 
+    @JvmStatic
+    fun getPresentableText(element: ParadoxScriptScriptedVariable): String {
+        var nameElementElement: ParadoxScriptScriptedVariableName? = null
+        var valueElement: ParadoxScriptValue? = null
+        element.forEachChild { e ->
+            when {
+                e is ParadoxScriptScriptedVariableName -> nameElementElement = e
+                e is ParadoxScriptValue -> valueElement = e
+            }
+        }
+        return buildString {
+            if (nameElementElement != null) append(nameElementElement.presentableText) else append(DefaultStrings.unresolved)
+            append(" = ")
+            if (valueElement != null) append(valueElement.presentableText) else append(DefaultStrings.unresolved)
+        }
+    }
+
     // endregion
 
     // region ParadoxScriptScriptedVariableName
@@ -359,6 +425,12 @@ object ParadoxScriptPsiImplUtil {
     fun getName(element: ParadoxScriptScriptedVariableName): String {
         // remove leading `@` & can be parameterized & optimized to optimize memory
         return element.text.removePrefix("@").optimized()
+    }
+
+    @JvmStatic
+    fun getPresentableText(element: ParadoxScriptScriptedVariableName): String {
+        val limit = ChronicleInternalSettings.getInstance().presentableTextLimit
+        return element.text.truncate(limit)
     }
 
     // endregion
@@ -377,7 +449,8 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getName(element: ParadoxScriptScriptedVariableReference): String {
-        return element.value
+        // remove leading `@` & can be parameterized & optimized to optimize memory
+        return element.text.removePrefix("@").optimized()
     }
 
     @JvmStatic
@@ -390,8 +463,13 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getValue(element: ParadoxScriptScriptedVariableReference): String {
-        // remove leading `@` & can be parameterized & optimized to optimize memory
-        return element.text.removePrefix("@").optimized()
+        return element.name
+    }
+
+    @JvmStatic
+    fun getPresentableText(element: ParadoxScriptScriptedVariableReference): String {
+        val limit = ChronicleInternalSettings.getInstance().presentableTextLimit
+        return element.text.truncate(limit)
     }
 
     // endregion
@@ -410,7 +488,8 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getName(element: ParadoxScriptInlineMathScriptedVariableReference): String? {
-        return element.idElement?.text
+        // remove leading `@` & can be parameterized & optimized to optimize memory
+        return element.text.removePrefix("@").optimized()
     }
 
     @JvmStatic
@@ -419,6 +498,12 @@ object ParadoxScriptPsiImplUtil {
         val newIdElement = ParadoxScriptElementFactory.createInlineMathScriptedVariableReference(element.project, name).idElement ?: throw IncorrectOperationException()
         idElement.replace(newIdElement)
         return element
+    }
+
+    @JvmStatic
+    fun getPresentableText(element: ParadoxScriptInlineMathScriptedVariableReference): String {
+        val limit = ChronicleInternalSettings.getInstance().presentableTextLimit
+        return element.text.truncate(limit)
     }
 
     // endregion
@@ -490,7 +575,7 @@ object ParadoxScriptPsiImplUtil {
 
     // endregion
 
-    // region ParadoxScriptParameter
+    // region ParadoxScriptNormalParameter
 
     @JvmStatic
     fun getIdElement(element: ParadoxScriptNormalParameter): PsiElement? {
@@ -529,6 +614,12 @@ object ParadoxScriptPsiImplUtil {
     fun getDefaultValue(element: ParadoxScriptNormalParameter): String? {
         // 兼容默认值为空字符串的情况
         return element.argumentElement?.idElement?.text
+    }
+
+    @JvmStatic
+    fun getPresentableText(element: ParadoxScriptNormalParameter): String {
+        val name = element.name
+        return ChronicleStrings.parameterFolder(name.or.unresolved())
     }
 
     // endregion
@@ -574,6 +665,12 @@ object ParadoxScriptPsiImplUtil {
         return element.argumentElement?.idElement?.text
     }
 
+    @JvmStatic
+    fun getPresentableText(element: ParadoxScriptInlineMathParameter): String {
+        val name = element.name
+        return ChronicleStrings.parameterFolder(name.or.unresolved())
+    }
+
     // endregion
 
     // region ParadoxScriptParameterArgument
@@ -610,8 +707,19 @@ object ParadoxScriptPsiImplUtil {
     }
 
     @JvmStatic
+    fun getComponents(element: ParadoxScriptNormalConditionalBlock): List<PsiElement> {
+        return element.children().listBy<ParadoxScriptStatement>()
+    }
+
+    @JvmStatic
     fun getIcon(element: ParadoxScriptNormalConditionalBlock, @Iconable.IconFlags flags: Int): Icon {
         return ChronicleIcons.Nodes.ConditionalBlock
+    }
+
+    @JvmStatic
+    fun getPresentableText(element: ParadoxScriptNormalConditionalBlock): String {
+        val expressionText = element.conditionalExpression?.presentableText
+        return ChronicleStrings.conditionalBlockFolder(expressionText.or.unresolved())
     }
 
     // endregion
@@ -632,6 +740,35 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun getIcon(element: ParadoxScriptInlineConditionalBlock, @Iconable.IconFlags flags: Int): Icon {
         return ChronicleIcons.Nodes.ConditionalBlock
+    }
+
+    @JvmStatic
+    fun getPresentableText(element: ParadoxScriptInlineConditionalBlock): String {
+        val expressionText = element.conditionalExpression?.presentableText
+        return ChronicleStrings.conditionalBlockFolder(expressionText.or.unresolved())
+    }
+
+    // endregion
+
+    // region ParadoxScriptConditionalExpression
+
+    @JvmStatic
+    fun getPresentableText(element: ParadoxScriptConditionalExpression): String {
+        return buildString {
+            element.processChild {
+                when {
+                    it is ParadoxScriptConditionalParameter -> {
+                        append(it.name)
+                        false
+                    }
+                    it.elementType == NOT_EQUAL_SIGN -> {
+                        append("!")
+                        true
+                    }
+                    else -> true
+                }
+            }
+        }
     }
 
     // endregion
@@ -666,14 +803,14 @@ object ParadoxScriptPsiImplUtil {
         return element.node.startOffset
     }
 
+    @JvmStatic
+    fun getPresentableText(element: ParadoxScriptConditionalParameter): String {
+        return element.text
+    }
+
     // endregion
 
-    // region Common Methods
-
-    @JvmStatic
-    fun getComponents(element: PsiListLikeElement): List<ParadoxScriptStatement> {
-        return element.children().listBy()
-    }
+    // region ParadoxScriptExpressionElement
 
     @JvmStatic
     fun getName(element: ParadoxScriptExpressionElement): String {
@@ -696,13 +833,37 @@ object ParadoxScriptPsiImplUtil {
     }
 
     @JvmStatic
-    fun getQuotePattern(element: PsiQuoteAwareElement): QuotePattern {
-        return QuotePatterns.ParadoxScript
+    fun getPresentableText(element: ParadoxScriptExpressionElement): String {
+        return element.value
+    }
+
+    // endregion
+
+    // region Common Methods
+
+    @JvmStatic
+    fun getResolveScope(element: PsiElement): GlobalSearchScope {
+        return ParadoxSearchScope.fromElement(element) ?: ResolveScopeManager.getElementResolveScope(element)
     }
 
     @JvmStatic
-    fun getPresentableText(element: PsiPresentableElement): String {
-        return ParadoxScriptPsiService.getPresentableText(element)
+    fun getUseScope(element: PsiElement): SearchScope {
+        return ParadoxSearchScope.fromElement(element) ?: ResolveScopeManager.getElementUseScope(element)
+    }
+
+    @JvmStatic
+    fun toString(element: PsiElement): String {
+        return PsiService.toPresentableString(element)
+    }
+
+    @JvmStatic
+    fun getPresentation(element: NavigatablePsiElement): ParadoxScriptElementPresentation {
+        return ParadoxScriptElementPresentation(element)
+    }
+
+    @JvmStatic
+    fun getQuotePattern(element: PsiQuoteAwareElement): QuotePattern {
+        return QuotePatterns.ParadoxScript
     }
 
     @JvmStatic
@@ -718,26 +879,6 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun getReferences(element: ParadoxScriptExpressionElement): Array<out PsiReference> {
         return ParadoxExpressionManager.getReferences(element)
-    }
-
-    @JvmStatic
-    fun getResolveScope(element: PsiElement): GlobalSearchScope {
-        return ParadoxSearchScope.fromElement(element) ?: ResolveScopeManager.getElementResolveScope(element)
-    }
-
-    @JvmStatic
-    fun getUseScope(element: PsiElement): SearchScope {
-        return ParadoxSearchScope.fromElement(element) ?: ResolveScopeManager.getElementUseScope(element)
-    }
-
-    @JvmStatic
-    fun getPresentation(element: PsiElement): ItemPresentation {
-        return ParadoxScriptPsiPresentation(element)
-    }
-
-    @JvmStatic
-    fun toString(element: PsiElement): String {
-        return PsiService.toPresentableString(element)
     }
 
     // endregion

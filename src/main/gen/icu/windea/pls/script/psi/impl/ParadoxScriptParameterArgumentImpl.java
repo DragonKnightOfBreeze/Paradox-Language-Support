@@ -10,7 +10,6 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import icu.windea.pls.script.psi.*;
-import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 
@@ -36,6 +35,11 @@ public class ParadoxScriptParameterArgumentImpl extends ASTWrapperPsiElement imp
   }
 
   @Override
+  public @NotNull ParadoxScriptElementPresentation getPresentation() {
+    return ParadoxScriptPsiImplUtil.getPresentation(this);
+  }
+
+  @Override
   public @NotNull GlobalSearchScope getResolveScope() {
     return ParadoxScriptPsiImplUtil.getResolveScope(this);
   }
@@ -43,11 +47,6 @@ public class ParadoxScriptParameterArgumentImpl extends ASTWrapperPsiElement imp
   @Override
   public @NotNull SearchScope getUseScope() {
     return ParadoxScriptPsiImplUtil.getUseScope(this);
-  }
-
-  @Override
-  public @NotNull ItemPresentation getPresentation() {
-    return ParadoxScriptPsiImplUtil.getPresentation(this);
   }
 
   @Override

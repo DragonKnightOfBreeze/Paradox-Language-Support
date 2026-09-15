@@ -17,7 +17,7 @@ import java.awt.Color
 @Suppress("UseJBColor")
 @Optimized
 object ColorService {
-    // TODO 3.0.3 add tests
+    // TODO 3.0.3+ add tests
 
     /**
      * 得到 hex 格式的颜色。

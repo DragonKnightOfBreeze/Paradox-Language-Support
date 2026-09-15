@@ -4,8 +4,8 @@ package icu.windea.pls.csv.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
+import icu.windea.pls.core.psi.PsiPresentableTextAwareElement;
 import icu.windea.pls.core.psi.PsiQuoteAwareElement;
-import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiReference;
@@ -14,7 +14,7 @@ import com.intellij.psi.search.SearchScope;
 import icu.windea.pls.core.text.QuotePattern;
 import javax.swing.Icon;
 
-public interface ParadoxCsvColumn extends PsiQuoteAwareElement, ParadoxCsvLiteralValue, ParadoxCsvExpressionElement {
+public interface ParadoxCsvColumn extends ParadoxCsvExpressionElement, ParadoxCsvLiteralValue, PsiPresentableTextAwareElement, PsiQuoteAwareElement {
 
   @Nullable PsiElement getIdElement();
 
@@ -30,6 +30,8 @@ public interface ParadoxCsvColumn extends PsiQuoteAwareElement, ParadoxCsvLitera
 
   @NotNull String getPresentableText();
 
+  @NotNull ParadoxCsvElementPresentation getPresentation();
+
   @NotNull QuotePattern getQuotePattern();
 
   @Nullable PsiReference getReference();
@@ -39,7 +41,5 @@ public interface ParadoxCsvColumn extends PsiQuoteAwareElement, ParadoxCsvLitera
   @NotNull GlobalSearchScope getResolveScope();
 
   @NotNull SearchScope getUseScope();
-
-  @NotNull ItemPresentation getPresentation();
 
 }

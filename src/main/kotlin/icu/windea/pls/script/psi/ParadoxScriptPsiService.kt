@@ -12,7 +12,7 @@ import icu.windea.pls.core.constants.DefaultStrings
 import icu.windea.pls.core.forEachChild
 import icu.windea.pls.core.processChild
 import icu.windea.pls.core.psi.PsiBoundElement
-import icu.windea.pls.core.psi.PsiPresentableElement
+import icu.windea.pls.core.psi.PsiPresentableTextAwareElement
 import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.core.transformAndKeepQuotes
 import icu.windea.pls.core.truncate
@@ -25,8 +25,8 @@ import icu.windea.pls.script.ParadoxScriptLanguage
 object ParadoxScriptPsiService {
     private val presentableTextLimit get() = ChronicleInternalSettings.getInstance().presentableTextLimit
 
-    fun getPresentableText(element: PsiPresentableElement): String {
-        return when (element) {
+    fun getPresentableText(element: PsiPresentableTextAwareElement): String {
+        when (element) {
             is ParadoxScriptProperty -> {
                 var keyElement: ParadoxScriptPropertyKey? = null
                 var separatorElement: PsiElement? = null
@@ -38,7 +38,7 @@ object ParadoxScriptPsiService {
                         e is ParadoxScriptValue -> valueElement = e
                     }
                 }
-                buildString {
+                return buildString {
                     if (keyElement != null) append(keyElement.presentableText) else append(DefaultStrings.unresolved)
                     if (separatorElement?.elementType != ParadoxScriptElementTypes.SAFE_CALL_ASSIGN_SIGN) append(" ")
                     append(separatorElement?.text ?: "=")
@@ -55,21 +55,18 @@ object ParadoxScriptPsiService {
                         e is ParadoxScriptValue -> valueElement = e
                     }
                 }
-                buildString {
+                return buildString {
                     if (nameElementElement != null) append(nameElementElement.text) else append(DefaultStrings.unresolved)
                     append(" = ")
                     if (valueElement != null) append(valueElement.presentableText) else append(DefaultStrings.unresolved)
                 }
             }
-            is ParadoxScriptParameter -> {
-                element.text // use original text
-            }
             is ParadoxScriptConditionalBlock -> {
                 val expressionText = element.conditionalExpression?.presentableText
-                ChronicleStrings.conditionalBlockFolder(expressionText.or.unresolved())
+                return ChronicleStrings.conditionalBlockFolder(expressionText.or.unresolved())
             }
             is ParadoxScriptConditionalExpression -> {
-                buildString {
+                return buildString {
                     element.processChild {
                         when {
                             it is ParadoxScriptConditionalParameter -> {
@@ -85,9 +82,9 @@ object ParadoxScriptPsiService {
                     }
                 }
             }
-            is ParadoxScriptStringExpressionElement -> element.text.transformAndKeepQuotes { it.truncate(presentableTextLimit) }
-            is ParadoxScriptExpressionElement -> element.value
-            else -> element.text
+            is ParadoxScriptStringExpressionElement -> return element.text.transformAndKeepQuotes { it.truncate(presentableTextLimit) }
+            is ParadoxScriptExpressionElement -> return element.value
+            else -> return element.text
         }
     }
 

@@ -4,13 +4,13 @@ package icu.windea.pls.script.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
-import com.intellij.navigation.ItemPresentation;
+import icu.windea.pls.core.psi.PsiPresentableTextAwareElement;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import javax.swing.Icon;
 
-public interface ParadoxScriptNormalConditionalBlock extends ParadoxScriptConditionalBlock, ParadoxScriptStatement, ParadoxScriptMemberContainer, ParadoxScriptBoundMemberContainer {
+public interface ParadoxScriptNormalConditionalBlock extends ParadoxScriptConditionalBlock, ParadoxScriptStatement, ParadoxScriptMemberContainer, ParadoxScriptBoundMemberContainer, PsiPresentableTextAwareElement {
 
   @Nullable
   ParadoxScriptConditionalExpression getConditionalExpression();
@@ -35,16 +35,16 @@ public interface ParadoxScriptNormalConditionalBlock extends ParadoxScriptCondit
 
   @Nullable PsiElement getRightBound();
 
+  @NotNull List<@NotNull PsiElement> getComponents();
+
   @NotNull Icon getIcon(@IconFlags int flags);
 
-  @NotNull List<@NotNull ParadoxScriptStatement> getComponents();
-
   @NotNull String getPresentableText();
+
+  @NotNull ParadoxScriptElementPresentation getPresentation();
 
   @NotNull GlobalSearchScope getResolveScope();
 
   @NotNull SearchScope getUseScope();
-
-  @NotNull ItemPresentation getPresentation();
 
 }

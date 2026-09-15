@@ -1,7 +1,7 @@
 package icu.windea.pls.cwt.psi
 
 import com.intellij.psi.NavigatablePsiElement
-import icu.windea.pls.core.psi.PsiPresentableElement
+import icu.windea.pls.core.psi.PsiPresentableTextAwareElement
 
 /**
  * 选项成员。包括选项和值。
@@ -9,4 +9,4 @@ import icu.windea.pls.core.psi.PsiPresentableElement
  * @see CwtOption
  * @see CwtValue
  */
-interface CwtOptionMember : NavigatablePsiElement, PsiPresentableElement
+interface CwtOptionMember : NavigatablePsiElement, PsiPresentableTextAwareElement

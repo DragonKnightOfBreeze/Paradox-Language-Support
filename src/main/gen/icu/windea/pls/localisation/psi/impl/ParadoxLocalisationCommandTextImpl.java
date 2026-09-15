@@ -10,7 +10,6 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import icu.windea.pls.localisation.psi.*;
-import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
@@ -63,6 +62,11 @@ public class ParadoxLocalisationCommandTextImpl extends ASTWrapperPsiElement imp
   }
 
   @Override
+  public @NotNull ParadoxLocalisationElementPresentation getPresentation() {
+    return ParadoxLocalisationPsiImplUtil.getPresentation(this);
+  }
+
+  @Override
   public @Nullable PsiReference getReference() {
     return ParadoxLocalisationPsiImplUtil.getReference(this);
   }
@@ -80,11 +84,6 @@ public class ParadoxLocalisationCommandTextImpl extends ASTWrapperPsiElement imp
   @Override
   public @NotNull SearchScope getUseScope() {
     return ParadoxLocalisationPsiImplUtil.getUseScope(this);
-  }
-
-  @Override
-  public @NotNull ItemPresentation getPresentation() {
-    return ParadoxLocalisationPsiImplUtil.getPresentation(this);
   }
 
   @Override

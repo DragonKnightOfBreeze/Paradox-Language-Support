@@ -23,19 +23,7 @@ import icu.windea.pls.model.ParadoxDefineNamespaceInfo
 import icu.windea.pls.model.ParadoxDefineVariableInfo
 import javax.swing.Icon
 
-object ParadoxScriptPsiPresentationService {
-    fun accept(element: PsiElement?, forFile: Boolean = true): Boolean {
-        return when (element) {
-            null -> false
-            is ParadoxScriptFile -> forFile
-            is ParadoxScriptProperty -> true
-            is ParadoxScriptValue -> element.isDirectValue()
-            is ParadoxScriptScriptedVariable -> true
-            is ParadoxScriptConditionalBlock -> true
-            else -> false
-        }
-    }
-
+object ParadoxScriptElementPresentationService {
     fun getIcon(element: PsiElement): Icon? {
         return getPatchedIcon(element) ?: element.icon
     }
@@ -187,7 +175,7 @@ object ParadoxScriptPsiPresentationService {
                 null
             }
             is ParadoxScriptScriptedVariable -> {
-                // 封装变量的值的战士文本，及其展示名字
+                // 封装变量的值的展示文本，及其展示名字
                 buildString {
                     element.scriptedVariableValue?.let { append(" = ").append(it.presentableText) }
                     ParadoxScriptedVariableManager.getPresentableName(element)?.let { append(" ").append(it) }

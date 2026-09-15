@@ -1,14 +1,13 @@
 package icu.windea.pls.script.psi
 
 import com.intellij.openapi.util.TextRange
-import icu.windea.pls.core.psi.PsiPresentableElement
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 
 /**
  * @see ParadoxScriptPropertyKey
  * @see ParadoxScriptValue
  */
-interface ParadoxScriptExpressionElement : ParadoxExpressionElement, PsiPresentableElement {
+interface ParadoxScriptExpressionElement : ParadoxExpressionElement {
     override fun getName(): String
 
     override val value: String get() = text

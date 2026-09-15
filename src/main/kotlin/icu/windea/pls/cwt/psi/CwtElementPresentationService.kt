@@ -2,29 +2,16 @@ package icu.windea.pls.cwt.psi
 
 import com.intellij.psi.NavigatablePsiElement
 import com.intellij.psi.PsiElement
-import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.icon
+import icu.windea.pls.core.psi.PsiPresentableTextAwareElement
+import icu.windea.pls.lang.psi.CwtConfigElementPresentationService
 import javax.swing.Icon
 
 object CwtElementPresentationService {
-    fun accept(element: PsiElement?, forFile: Boolean = true): Boolean {
-        return when (element) {
-            null -> false
-            is CwtFile -> forFile
-            is CwtProperty -> true
-            is CwtValue -> element.isDirectValue()
-            else -> false
-        }
-    }
-
     fun getIcon(element: PsiElement): Icon? {
-        return getPatchedIcon(element) ?: element.icon
-    }
-
-    fun getPatchedIcon(element: PsiElement): Icon? {
-        val configType = CwtConfigManager.getConfigType(element)
-        if (configType != null) return configType.icon
-        return null
+        // promote to semantic level if needed
+        CwtConfigElementPresentationService.getIcon(element)?.let { return it }
+        return element.icon
     }
 
     fun getPresentableText(element: PsiElement): String? {
@@ -34,27 +21,31 @@ object CwtElementPresentationService {
             // 名字
             is CwtProperty -> element.name
             // 展示文本
-            is CwtValue -> element.presentableText
+            is PsiPresentableTextAwareElement -> element.presentableText
             // 回退
             is NavigatablePsiElement -> element.name
             else -> null
         }
     }
 
-    fun getTreePresentableText(element: PsiElement): String? {
-        return getPresentableText(element)
-    }
-
-    fun getLongPresentableText(element: PsiElement): String? {
-        return getPresentableText(element)
-    }
-
     fun getLocationString(element: PsiElement): String? {
         return element.containingFile?.name
     }
 
-    @Suppress("unused")
-    fun getTreeLocationString(element: PsiElement): String? {
+    fun getPresentableTextInTree(element: PsiElement): String? {
+        return getPresentableText(element)
+    }
+
+    @Suppress("UNUSED_PARAMETER")
+    fun getLocationStringInTree(element: PsiElement): String? {
         return null
+    }
+
+    fun getPresentableTextInNavBar(element: PsiElement): String? {
+        return getPresentableText(element)
+    }
+
+    fun getElementInfoInBreadCrumbs(element: PsiElement): String {
+        return getPresentableText(element).orEmpty()
     }
 }

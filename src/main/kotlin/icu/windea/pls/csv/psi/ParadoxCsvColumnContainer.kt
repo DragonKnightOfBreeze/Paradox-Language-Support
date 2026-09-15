@@ -1,7 +1,6 @@
 package icu.windea.pls.csv.psi
 
-import com.intellij.psi.NavigatablePsiElement
-import com.intellij.psi.PsiListLikeElement
+import com.intellij.psi.PsiElement
 
 /**
  * 列容器。可以直接包含列（[ParadoxCsvColumn]）。
@@ -9,6 +8,6 @@ import com.intellij.psi.PsiListLikeElement
  * @see ParadoxCsvHeader
  * @see ParadoxCsvRow
  */
-interface ParadoxCsvColumnContainer : NavigatablePsiElement, PsiListLikeElement {
+interface ParadoxCsvColumnContainer : PsiElement {
     val columnList: List<ParadoxCsvColumn> get() = emptyList()
 }

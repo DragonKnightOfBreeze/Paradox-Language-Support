@@ -4,16 +4,15 @@ package icu.windea.pls.cwt.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.NavigatablePsiElement;
+import icu.windea.pls.core.psi.PsiPresentableTextAwareElement;
 import icu.windea.pls.core.psi.PsiQuoteAwareElement;
-import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import icu.windea.pls.core.text.QuotePattern;
 import javax.swing.Icon;
 
-public interface CwtOptionKey extends NavigatablePsiElement, PsiQuoteAwareElement {
+public interface CwtOptionKey extends PsiPresentableTextAwareElement, PsiQuoteAwareElement {
 
   @NotNull Icon getIcon(@IconFlags int flags);
 
@@ -21,12 +20,12 @@ public interface CwtOptionKey extends NavigatablePsiElement, PsiQuoteAwareElemen
 
   @NotNull String getValue();
 
+  @NotNull String getPresentableText();
+
   @NotNull QuotePattern getQuotePattern();
 
   @NotNull GlobalSearchScope getResolveScope();
 
   @NotNull SearchScope getUseScope();
-
-  @NotNull ItemPresentation getPresentation();
 
 }

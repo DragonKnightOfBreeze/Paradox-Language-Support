@@ -9,8 +9,12 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import icu.windea.pls.core.psi.PsiService
+import icu.windea.pls.script.psi.ParadoxScriptConditionalBlock
 import icu.windea.pls.script.psi.ParadoxScriptFile
-import icu.windea.pls.script.psi.ParadoxScriptPsiPresentationService
+import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
+import icu.windea.pls.script.psi.ParadoxScriptValue
+import icu.windea.pls.script.psi.isDirectValue
 import icu.windea.pls.script.structureView.ParadoxScriptStructureFilters.*
 
 class ParadoxScriptStructureViewModel(
@@ -23,15 +27,22 @@ class ParadoxScriptStructureViewModel(
         private val _filters = arrayOf(VariablesFilter, DefinitionsFilter, PropertiesFilter, ValuesFilter)
     }
 
-    override fun getRoot() = ParadoxScriptFileTreeElement(psiFile as ParadoxScriptFile)
-
     override fun findAcceptableElement(element: PsiElement?): Any? {
         return PsiService.findAcceptableElementInStructureView(element, canAttachComments = true) { isSuitable(it) }
     }
 
     override fun isSuitable(element: PsiElement?): Boolean {
-        return ParadoxScriptPsiPresentationService.accept(element)
+        return when (element) {
+            is ParadoxScriptFile -> true
+            is ParadoxScriptProperty -> true
+            is ParadoxScriptValue -> element.isDirectValue()
+            is ParadoxScriptScriptedVariable -> true
+            is ParadoxScriptConditionalBlock -> true
+            else -> false
+        }
     }
+
+    override fun getRoot() = ParadoxScriptFileTreeElement(psiFile as ParadoxScriptFile)
 
     override fun getGroupers() = _groupers
 

@@ -9,7 +9,7 @@ import com.intellij.psi.PsiListLikeElement
  * @see ParadoxScriptRootBlock
  * @see ParadoxScriptNormalConditionalBlock
  */
-interface ParadoxScriptMemberContainer : ParadoxScriptMemberContext, PsiListLikeElement {
+interface ParadoxScriptMemberContainer : ParadoxScriptMemberContext {
     override val memberContainer: ParadoxScriptMemberContainer get() = this
     override val members: List<ParadoxScriptMember> get() = emptyList()
 }

@@ -5,10 +5,9 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.NavigatablePsiElement;
-import icu.windea.pls.core.psi.PsiPresentableElement;
+import icu.windea.pls.core.psi.PsiPresentableTextAwareElement;
 import com.intellij.psi.StubBasedPsiElement;
 import icu.windea.pls.localisation.psi.stubs.ParadoxLocalisationPropertyStub;
-import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
@@ -16,7 +15,7 @@ import com.intellij.psi.tree.IElementType;
 import icu.windea.pls.model.ParadoxLocalisationType;
 import javax.swing.Icon;
 
-public interface ParadoxLocalisationProperty extends NavigatablePsiElement, PsiPresentableElement, ParadoxLocalisationNamedElement, StubBasedPsiElement<ParadoxLocalisationPropertyStub> {
+public interface ParadoxLocalisationProperty extends NavigatablePsiElement, ParadoxLocalisationNamedElement, PsiPresentableTextAwareElement, StubBasedPsiElement<ParadoxLocalisationPropertyStub> {
 
   @NotNull
   ParadoxLocalisationPropertyKey getPropertyKey();
@@ -46,10 +45,10 @@ public interface ParadoxLocalisationProperty extends NavigatablePsiElement, PsiP
 
   @NotNull String getPresentableText();
 
+  @NotNull ParadoxLocalisationElementPresentation getPresentation();
+
   @NotNull GlobalSearchScope getResolveScope();
 
   @NotNull SearchScope getUseScope();
-
-  @NotNull ItemPresentation getPresentation();
 
 }

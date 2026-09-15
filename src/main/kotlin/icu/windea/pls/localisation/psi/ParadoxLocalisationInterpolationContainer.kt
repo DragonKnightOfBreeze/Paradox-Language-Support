@@ -1,6 +1,7 @@
 package icu.windea.pls.localisation.psi
 
 import com.intellij.psi.NavigatablePsiElement
+import com.intellij.psi.PsiElement
 import icu.windea.pls.core.children
 import icu.windea.pls.core.select.listBy
 
@@ -22,7 +23,7 @@ import icu.windea.pls.core.select.listBy
  * @see ParadoxLocalisationTextFormat
  */
 @Suppress("unused")
-interface ParadoxLocalisationInterpolationContainer : NavigatablePsiElement {
+interface ParadoxLocalisationInterpolationContainer : PsiElement {
     val interpolations: List<ParadoxLocalisationInterpolation> get() = children().listBy()
     val parameters: List<ParadoxLocalisationParameter> get() = children().listBy()
     val commands: List<ParadoxLocalisationCommand> get() = children().listBy()

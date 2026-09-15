@@ -1,6 +1,6 @@
 package icu.windea.pls.cwt.psi
 
-import icu.windea.pls.core.psi.PsiPresentableElement
+import icu.windea.pls.core.psi.PsiPresentableTextAwareElement
 
 /**
  * 成员。包括属性和值。
@@ -8,4 +8,4 @@ import icu.windea.pls.core.psi.PsiPresentableElement
  * @see CwtProperty
  * @see CwtValue
  */
-interface CwtMember : CwtStatement, CwtMemberContext, PsiPresentableElement
+interface CwtMember : CwtStatement, CwtMemberContext, PsiPresentableTextAwareElement

@@ -5,7 +5,7 @@ import com.intellij.psi.PsiElement
 import icu.windea.pls.lang.tagType
 import icu.windea.pls.script.psi.ParadoxScriptNormalConditionalBlock
 import icu.windea.pls.script.psi.ParadoxScriptProperty
-import icu.windea.pls.script.psi.ParadoxScriptPsiPresentationService
+import icu.windea.pls.script.psi.ParadoxScriptElementPresentationService
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.ParadoxScriptValue
 import javax.swing.Icon
@@ -13,17 +13,17 @@ import javax.swing.Icon
 abstract class ParadoxScriptTreeElement<T : PsiElement>(element: T) : PsiTreeElementBase<T>(element) {
     override fun getIcon(open: Boolean): Icon? {
         val element = element ?: return null
-        return ParadoxScriptPsiPresentationService.getIcon(element)
+        return ParadoxScriptElementPresentationService.getIcon(element)
     }
 
     override fun getPresentableText(): String? {
         val element = element ?: return null
-        return ParadoxScriptPsiPresentationService.getTreePresentableText(element)
+        return ParadoxScriptElementPresentationService.getTreePresentableText(element)
     }
 
     override fun getLocationString(): String? {
         val element = element ?: return null
-        return ParadoxScriptPsiPresentationService.getTreeLocationString(element)
+        return ParadoxScriptElementPresentationService.getTreeLocationString(element)
     }
 
     override fun isSearchInLocationString(): Boolean {

@@ -25,7 +25,7 @@ class ParadoxScriptFile(
 
     override fun getFileType() = ParadoxScriptFileType
 
-    override fun getPresentation() = ParadoxScriptPsiPresentation(this)
+    override fun getPresentation() = ParadoxScriptElementPresentation(this)
 
     override fun isEquivalentTo(another: PsiElement?) = ParadoxScriptPsiImplUtil.isEquivalentTo(this, another)
 

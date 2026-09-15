@@ -18,8 +18,7 @@
   tokenTypeFactory="icu.windea.pls.script.psi.ParadoxScriptElementTypeFactory.getTokenType"
   psiImplUtilClass="icu.windea.pls.script.psi.impl.ParadoxScriptPsiImplUtil"
   parserUtilClass="icu.windea.pls.script.parser.ParadoxScriptParserUtil"
-  extends("inline_math_add_expr")=inline_math_binary_expression
-  methods(".*")=[getResolveScope getUseScope getPresentation toString]
+  methods(".*")=[getResolveScope getUseScope toString]
   tokens=[
     // EOL="<eol>" // unused atm
     AT="@"
@@ -42,8 +41,7 @@ root_block ::= root_block_items {
     "icu.windea.pls.script.psi.ParadoxScriptMemberContainer"
   ]
   methods=[
-    getMemberContainer getMembers
-    getValue getComponents
+    getMemberContainer getMembers getComponents
   ]
 }
 private root_block_items ::= root_block_item+
@@ -69,23 +67,27 @@ property ::= property_key property_separator property_value {
     "icu.windea.pls.script.psi.ParadoxScriptNamedElement"
     "icu.windea.pls.script.psi.ParadoxScriptMember"
     "icu.windea.pls.lang.psi.ParadoxDefinitionElement"
+    "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
   ]
   methods=[
     getMemberContainer getMembers getBlock property_key="property_key" property_value="value"
     getIcon getName setName getNameIdentifier getValue getIElementType isEquivalentTo getPresentableText
+    getPresentation
   ]
 }
 property_key ::= property_key_content {
   name="property key"
   implements=[
-    "icu.windea.pls.core.psi.PsiQuoteAwareElement"
-    "icu.windea.pls.script.psi.ParadoxScriptLiteralValue"
     "icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement"
+    "icu.windea.pls.script.psi.ParadoxScriptLiteralValue"
     "icu.windea.pls.script.psi.ParadoxScriptInterpolationContainer"
+    "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
+    "icu.windea.pls.core.psi.PsiQuoteAwareElement"
   ]
   methods=[
-    getIdElement parameter="" inline_conditional_block=""
-    getIcon getName getValue setValue setContent getPresentableText getQuotePattern getReference getReferences
+    getIdElement normal_parameter="" inline_conditional_block=""
+    getIcon getName getValue setValue setContent getPresentableText
+    getPresentation getQuotePattern getReference getReferences
   ]
 }
 // can be parameterized
@@ -104,9 +106,11 @@ value ::= scripted_variable_reference | boolean | int | float | string | block |
   implements=[
     "icu.windea.pls.script.psi.ParadoxScriptExpressionElement"
     "icu.windea.pls.script.psi.ParadoxScriptMember"
+    "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
   ]
   methods=[
     getIcon getName getValue setValue setContent getPresentableText
+    getPresentation
   ]
 }
 
@@ -143,14 +147,16 @@ string ::= string_content {
   name="string"
   extends=value
   implements=[
-    "icu.windea.pls.core.psi.PsiQuoteAwareElement"
     "icu.windea.pls.script.psi.ParadoxScriptLiteralValue"
     "icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement"
     "icu.windea.pls.script.psi.ParadoxScriptInterpolationContainer"
+    "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
+    "icu.windea.pls.core.psi.PsiQuoteAwareElement"
   ]
   methods=[
-    getIdElement parameter="" inline_conditional_block=""
-    getIcon getName getValue setValue setContent getPresentableText getQuotePattern getReference getReferences
+    getIdElement normal_parameter="" inline_conditional_block=""
+    getIcon getName getValue setValue setContent getPresentableText
+    getPresentation getQuotePattern getReference getReferences
   ]
 }
 // can be parameterized
@@ -166,8 +172,9 @@ block ::= LEFT_BRACE block_items? RIGHT_BRACE {
     "icu.windea.pls.script.psi.ParadoxScriptBoundMemberContainer"
   ]
   methods=[
-    getMemberContainer getMembers getLeftBound getRightBound
-    getIcon getValue getComponents getPresentableText getReference getReferences
+    getMemberContainer getMembers getLeftBound getRightBound getComponents
+    getIcon getValue
+    getPresentation getReference getReferences
   ]
 }
 private block_items ::= block_item+
@@ -197,10 +204,12 @@ scripted_variable ::= scripted_variable_name scripted_variable_separator scripte
   implements=[
     "icu.windea.pls.script.psi.ParadoxScriptNamedElement"
     "icu.windea.pls.script.psi.ParadoxScriptStatement"
+    "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
   ]
   methods=[
     scripted_variable_name="scripted_variable_name" scripted_variable_value="value"
     getIcon getName setName getNameIdentifier getTextOffset getValue getIElementType isEquivalentTo getPresentableText
+    getPresentation
   ]
 }
 scripted_variable_name ::= AT <<processLhsContent>> scripted_variable_name_content {
@@ -208,10 +217,11 @@ scripted_variable_name ::= AT <<processLhsContent>> scripted_variable_name_conte
   pin=2
   implements=[
     "icu.windea.pls.script.psi.ParadoxScriptInterpolationContainer"
+    "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
   ]
   methods=[
-    getIdElement parameter="" inline_conditional_block=""
-    getName
+    getIdElement normal_parameter="" inline_conditional_block=""
+    getName getPresentableText
   ]
 }
 // can be parameterized
@@ -230,10 +240,12 @@ scripted_variable_reference ::= AT scripted_variable_reference_content {
   implements=[
     "icu.windea.pls.lang.psi.ParadoxScriptedVariableReference"
     "icu.windea.pls.script.psi.ParadoxScriptInterpolationContainer"
+    "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
   ]
   methods=[
-    getIdElement parameter="" inline_conditional_block=""
-    getIcon getName setName getValue getPresentableText getReference getReferences
+    getIdElement normal_parameter="" inline_conditional_block=""
+    getIcon getName setName getPresentableText
+    getPresentation getReference getReferences
   ]
 }
 // can be parameterized
@@ -248,6 +260,7 @@ color ::= COLOR_TOKEN {
   extends=value
   methods=[
     getColorType getColorArgs getColor setColor
+    getPresentation
   ]
 }
 
@@ -270,7 +283,8 @@ inline_math ::= INLINE_MATH_START INLINE_MATH_TOKEN INLINE_MATH_END {
   ]
   methods=[
     getTokenElement getInlineMathExpression getLeftBound getRightBound
-    getValue getPresentableText
+    getValue
+    getPresentation
   ]
 }
 
@@ -295,10 +309,12 @@ normal_parameter ::= PARAMETER_START parameter_name parameter_argument_part? PAR
     "icu.windea.pls.script.psi.ParadoxScriptParameter"
     "icu.windea.pls.script.psi.ParadoxScriptInterpolation"
     "icu.windea.pls.script.psi.ParadoxScriptArgumentAwareElement"
+    "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
   ]
   methods=[
     getIdElement getArgumentElement parameter_argument=""
-    getIcon getName setName getTextOffset getDefaultValue getReference getReferences getPresentableText
+    getIcon getName setName getTextOffset getDefaultValue getPresentableText
+    getPresentation getReference getReferences
   ]
 }
 
@@ -311,6 +327,7 @@ parameter_argument ::= ARGUMENT_TOKEN {
   ]
   methods=[
     getIdElement
+    getPresentation
   ]
 }
 
@@ -325,10 +342,12 @@ normal_conditional_block ::= LEFT_BRACKET conditional_header normal_conditional_
     "icu.windea.pls.script.psi.ParadoxScriptStatement"
     "icu.windea.pls.script.psi.ParadoxScriptMemberContainer"
     "icu.windea.pls.script.psi.ParadoxScriptBoundMemberContainer"
+    "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
   ]
   methods=[
-    getMemberContainer getMembers getLeftBound getRightBound
-    getIcon getComponents getPresentableText
+    getMemberContainer getMembers getLeftBound getRightBound getComponents
+    getIcon getPresentableText
+    getPresentation
   ]
 }
 private normal_conditional_block_items ::= normal_conditional_block_item+
@@ -351,10 +370,12 @@ inline_conditional_block ::= LEFT_BRACKET <<processInlineConditionalBlock>> cond
     "icu.windea.pls.script.psi.ParadoxScriptConditionalBlock"
     "icu.windea.pls.script.psi.ParadoxScriptInterpolation"
     "icu.windea.pls.script.psi.ParadoxScriptInterpolationContainer"
+    "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
   ]
   methods=[
-    getLeftBound getRightBound parameter="" inline_conditional_block=""
+    getLeftBound getRightBound normal_parameter="" inline_conditional_block=""
     getIcon getPresentableText
+    getPresentation
   ]
 }
 private inline_conditional_block_item ::= inline_conditional_block_item_content {
@@ -375,17 +396,23 @@ private conditional_header ::= NESTED_LEFT_BRACKET conditional_expression NESTED
   pin=1
 }
 conditional_expression ::= NOT_SIGN? conditional_parameter {
-  implements="icu.windea.pls.core.psi.PsiPresentableElement"
+  implements=[
+    "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
+  ]
   methods=[
     getPresentableText
   ]
 }
 conditional_parameter ::= CONDITION_PARAMETER_TOKEN {
   name="conditional parameter"
-  implements="icu.windea.pls.script.psi.ParadoxScriptConditionParameter"
+  implements=[
+    "icu.windea.pls.script.psi.ParadoxScriptConditionParameter"
+    "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
+  ]
   methods=[
     getIdElement
-    getIcon getName setName getTextOffset getReference getReferences
+    getIcon getName setName getTextOffset getPresentableText
+    getPresentation getReference getReferences
   ]
 }
 
@@ -431,10 +458,10 @@ inline_math_grouping_expression ::= inline_math_par_expr | inline_math_abs_expr 
   extends=inline_math_expression
 }
 private inline_math_par_expr ::= LP_SIGN inline_math_expr RP_SIGN {
-pin=1
+  pin=1
 }
 private inline_math_abs_expr ::= LABS_SIGN inline_math_expr RABS_SIGN {
-pin=1
+  pin=1
 }
 
 // order: `1` -> `$PARAM$_part` -> `$PARAM$`
@@ -460,10 +487,12 @@ inline_math_scripted_variable_reference ::= AT? inline_math_scripted_variable_re
   implements=[
     "icu.windea.pls.lang.psi.ParadoxScriptedVariableReference"
     "icu.windea.pls.script.psi.ParadoxScriptInterpolationContainer"
+    "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
   ]
   methods=[
-    getIdElement inline_math_parameter="" inline_conditional_block=""
-    getIcon getName setName getReference getReferences
+    getIdElement inline_math_parameter=""
+    getIcon getName setName getPresentableText
+    getPresentation getReference getReferences
   ]
 }
 // can be parameterized
@@ -478,9 +507,11 @@ inline_math_parameter ::= PARAMETER_START parameter_name parameter_argument_part
     "icu.windea.pls.script.psi.ParadoxScriptParameter"
     "icu.windea.pls.script.psi.ParadoxScriptInterpolation"
     "icu.windea.pls.script.psi.ParadoxScriptArgumentAwareElement"
+    "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
   ]
   methods=[
     getIdElement getArgumentElement parameter_argument=""
-    getIcon getName setName getTextOffset getDefaultValue getReference getReferences getPresentableText
+    getIcon getName setName getTextOffset getDefaultValue getPresentableText
+    getPresentation getReference getReferences
   ]
 }

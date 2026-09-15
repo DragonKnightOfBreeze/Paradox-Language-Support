@@ -1,6 +1,6 @@
 package icu.windea.pls.script.psi
 
-import icu.windea.pls.core.psi.PsiPresentableElement
+import icu.windea.pls.core.psi.PsiPresentableTextAwareElement
 
 /**
  * 成员。包括属性和值。脚本文件目前也被视为成员。
@@ -9,4 +9,4 @@ import icu.windea.pls.core.psi.PsiPresentableElement
  * @see ParadoxScriptProperty
  * @see ParadoxScriptValue
  */
-interface ParadoxScriptMember : ParadoxScriptStatement, ParadoxScriptMemberContext, PsiPresentableElement
+interface ParadoxScriptMember : ParadoxScriptStatement, ParadoxScriptMemberContext, PsiPresentableTextAwareElement

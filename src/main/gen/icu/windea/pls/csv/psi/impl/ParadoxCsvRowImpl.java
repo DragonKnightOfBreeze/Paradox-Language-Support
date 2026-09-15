@@ -10,7 +10,6 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.csv.psi.ParadoxCsvElementTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import icu.windea.pls.csv.psi.*;
-import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
@@ -39,13 +38,18 @@ public class ParadoxCsvRowImpl extends ASTWrapperPsiElement implements ParadoxCs
   }
 
   @Override
+  public @NotNull List<@NotNull PsiElement> getComponents() {
+    return ParadoxCsvPsiImplUtil.getComponents(this);
+  }
+
+  @Override
   public @NotNull Icon getIcon(@IconFlags int flags) {
     return ParadoxCsvPsiImplUtil.getIcon(this, flags);
   }
 
   @Override
-  public @NotNull List<@NotNull ParadoxCsvColumn> getComponents() {
-    return ParadoxCsvPsiImplUtil.getComponents(this);
+  public @NotNull ParadoxCsvElementPresentation getPresentation() {
+    return ParadoxCsvPsiImplUtil.getPresentation(this);
   }
 
   @Override
@@ -56,11 +60,6 @@ public class ParadoxCsvRowImpl extends ASTWrapperPsiElement implements ParadoxCs
   @Override
   public @NotNull SearchScope getUseScope() {
     return ParadoxCsvPsiImplUtil.getUseScope(this);
-  }
-
-  @Override
-  public @NotNull ItemPresentation getPresentation() {
-    return ParadoxCsvPsiImplUtil.getPresentation(this);
   }
 
   @Override

@@ -1,13 +1,14 @@
 package icu.windea.pls.csv.psi
 
 import com.intellij.openapi.util.TextRange
-import icu.windea.pls.core.psi.PsiPresentableElement
+import com.intellij.psi.NavigatablePsiElement
+import icu.windea.pls.core.psi.PsiPresentableTextAwareElement
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 
 /**
  * @see ParadoxCsvColumn
  */
-interface ParadoxCsvExpressionElement : ParadoxExpressionElement, PsiPresentableElement {
+interface ParadoxCsvExpressionElement : ParadoxExpressionElement {
     override fun getName(): String
 
     override val value: String get() = text

@@ -1,6 +1,6 @@
 package icu.windea.pls.script.psi
 
-import com.intellij.psi.NavigatablePsiElement
+import com.intellij.psi.PsiElement
 import icu.windea.pls.core.children
 import icu.windea.pls.core.select.listBy
 
@@ -21,7 +21,7 @@ import icu.windea.pls.core.select.listBy
  * @see ParadoxScriptInlineConditionalBlock
  */
 @Suppress("unused")
-interface ParadoxScriptInterpolationContainer : NavigatablePsiElement {
+interface ParadoxScriptInterpolationContainer : PsiElement {
     val interpolations: List<ParadoxScriptInterpolation> get() = children().listBy()
     val parameters: List<ParadoxScriptParameter> get() = children().listBy()
     val inlineConditionalBlocks: List<ParadoxScriptInlineConditionalBlock> get() = children().listBy()

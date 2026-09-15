@@ -4,23 +4,23 @@ import com.intellij.ide.structureView.impl.common.PsiTreeElementBase
 import com.intellij.psi.PsiElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyList
-import icu.windea.pls.localisation.psi.ParadoxLocalisationPsiPresentationService
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementPresentationService
 import javax.swing.Icon
 
 abstract class ParadoxLocalisationTreeElement<T : PsiElement>(element: T) : PsiTreeElementBase<T>(element) {
     override fun getIcon(open: Boolean): Icon? {
         val element = element ?: return null
-        return ParadoxLocalisationPsiPresentationService.getIcon(element)
+        return ParadoxLocalisationElementPresentationService.getIcon(element)
     }
 
     override fun getPresentableText(): String? {
         val element = element ?: return null
-        return ParadoxLocalisationPsiPresentationService.getTreePresentableText(element)
+        return ParadoxLocalisationElementPresentationService.getPresentableTextInTree(element)
     }
 
     override fun getLocationString(): String? {
         val element = element ?: return null
-        return ParadoxLocalisationPsiPresentationService.getTreeLocationString(element)
+        return ParadoxLocalisationElementPresentationService.getLocationStringInTree(element)
     }
 
     override fun isSearchInLocationString(): Boolean {

@@ -16,6 +16,6 @@ class CwtNavBar : StructureAwareNavBarModelExtension() {
 
     override fun getPresentableText(o: Any?): String? {
         if (o !is PsiElement) return null
-        return CwtElementPresentationService.getLongPresentableText(o)
+        return CwtElementPresentationService.getPresentableTextInNavBar(o)
     }
 }

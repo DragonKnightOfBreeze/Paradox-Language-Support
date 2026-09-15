@@ -9,7 +9,6 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.cwt.psi.CwtElementTypes.*;
 import icu.windea.pls.cwt.psi.*;
-import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiReference;
@@ -76,6 +75,11 @@ public class CwtStringImpl extends CwtValueImpl implements CwtString {
   }
 
   @Override
+  public @NotNull CwtElementPresentation getPresentation() {
+    return CwtPsiImplUtil.getPresentation(this);
+  }
+
+  @Override
   public @NotNull QuotePattern getQuotePattern() {
     return CwtPsiImplUtil.getQuotePattern(this);
   }
@@ -98,11 +102,6 @@ public class CwtStringImpl extends CwtValueImpl implements CwtString {
   @Override
   public @NotNull SearchScope getUseScope() {
     return CwtPsiImplUtil.getUseScope(this);
-  }
-
-  @Override
-  public @NotNull ItemPresentation getPresentation() {
-    return CwtPsiImplUtil.getPresentation(this);
   }
 
   @Override

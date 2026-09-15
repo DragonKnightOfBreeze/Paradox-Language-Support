@@ -5,7 +5,6 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference;
-import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
@@ -14,14 +13,7 @@ import javax.swing.Icon;
 
 public interface ParadoxScriptScriptedVariableReference extends ParadoxScriptValue, ParadoxScriptedVariableReference, ParadoxScriptInterpolationContainer {
 
-  @NotNull
-  List<ParadoxScriptNormalParameter> getNormalParameterList();
-
   @Nullable PsiElement getIdElement();
-
-  //WARNING: parameter(...) is skipped
-  //matching parameter(ParadoxScriptScriptedVariableReference, ...)
-  //methods are not found in ParadoxScriptPsiImplUtil
 
   @NotNull Icon getIcon(@IconFlags int flags);
 
@@ -29,9 +21,9 @@ public interface ParadoxScriptScriptedVariableReference extends ParadoxScriptVal
 
   @NotNull ParadoxScriptScriptedVariableReference setName(@NotNull String name);
 
-  @NotNull String getValue();
-
   @NotNull String getPresentableText();
+
+  @NotNull ParadoxScriptElementPresentation getPresentation();
 
   @Nullable PsiReference getReference();
 
@@ -40,7 +32,5 @@ public interface ParadoxScriptScriptedVariableReference extends ParadoxScriptVal
   @NotNull GlobalSearchScope getResolveScope();
 
   @NotNull SearchScope getUseScope();
-
-  @NotNull ItemPresentation getPresentation();
 
 }

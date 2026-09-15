@@ -8,8 +8,9 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import icu.windea.pls.core.psi.PsiService
+import icu.windea.pls.csv.psi.ParadoxCsvColumn
+import icu.windea.pls.csv.psi.ParadoxCsvColumnContainer
 import icu.windea.pls.csv.psi.ParadoxCsvFile
-import icu.windea.pls.csv.psi.ParadoxCsvPsiPresentationService
 
 class ParadoxCsvStructureViewModel(
     editor: Editor?,
@@ -19,15 +20,20 @@ class ParadoxCsvStructureViewModel(
         private val _sorters = arrayOf(Sorter.ALPHA_SORTER)
     }
 
-    override fun getRoot() = ParadoxCsvFileTreeElement(psiFile as ParadoxCsvFile)
-
     override fun findAcceptableElement(element: PsiElement?): Any? {
         return PsiService.findAcceptableElementInStructureView(element, canAttachComments = true) { isSuitable(it) }
     }
 
     override fun isSuitable(element: PsiElement?): Boolean {
-        return ParadoxCsvPsiPresentationService.accept(element)
+        return when (element) {
+            is ParadoxCsvFile -> true
+            is ParadoxCsvColumnContainer -> true
+            is ParadoxCsvColumn -> true
+            else -> false
+        }
     }
+
+    override fun getRoot() = ParadoxCsvFileTreeElement(psiFile as ParadoxCsvFile)
 
     override fun getSorters() = _sorters
 

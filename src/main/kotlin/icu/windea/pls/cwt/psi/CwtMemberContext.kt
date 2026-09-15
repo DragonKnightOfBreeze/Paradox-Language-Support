@@ -1,6 +1,6 @@
 package icu.windea.pls.cwt.psi
 
-import com.intellij.psi.NavigatablePsiElement
+import com.intellij.psi.PsiElement
 
 /**
  * 成员上下文。可能直接或间接包含成员。
@@ -9,7 +9,7 @@ import com.intellij.psi.NavigatablePsiElement
  * @see CwtMember
  * @see CwtMemberContainer
  */
-interface CwtMemberContext : NavigatablePsiElement {
+interface CwtMemberContext : PsiElement {
     val memberContainer: CwtMemberContainer? get() = null
     val members: List<CwtMember>? get() = null
 }

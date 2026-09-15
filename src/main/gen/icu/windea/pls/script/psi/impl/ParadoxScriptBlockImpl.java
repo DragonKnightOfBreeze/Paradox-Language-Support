@@ -9,7 +9,6 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 import icu.windea.pls.script.psi.*;
-import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
@@ -78,6 +77,11 @@ public class ParadoxScriptBlockImpl extends ParadoxScriptValueImpl implements Pa
   }
 
   @Override
+  public @NotNull List<@NotNull PsiElement> getComponents() {
+    return ParadoxScriptPsiImplUtil.getComponents(this);
+  }
+
+  @Override
   public @NotNull Icon getIcon(@IconFlags int flags) {
     return ParadoxScriptPsiImplUtil.getIcon(this, flags);
   }
@@ -88,13 +92,8 @@ public class ParadoxScriptBlockImpl extends ParadoxScriptValueImpl implements Pa
   }
 
   @Override
-  public @NotNull List<@NotNull ParadoxScriptStatement> getComponents() {
-    return ParadoxScriptPsiImplUtil.getComponents(this);
-  }
-
-  @Override
-  public @NotNull String getPresentableText() {
-    return ParadoxScriptPsiImplUtil.getPresentableText(this);
+  public @NotNull ParadoxScriptElementPresentation getPresentation() {
+    return ParadoxScriptPsiImplUtil.getPresentation(this);
   }
 
   @Override
@@ -115,11 +114,6 @@ public class ParadoxScriptBlockImpl extends ParadoxScriptValueImpl implements Pa
   @Override
   public @NotNull SearchScope getUseScope() {
     return ParadoxScriptPsiImplUtil.getUseScope(this);
-  }
-
-  @Override
-  public @NotNull ItemPresentation getPresentation() {
-    return ParadoxScriptPsiImplUtil.getPresentation(this);
   }
 
   @Override

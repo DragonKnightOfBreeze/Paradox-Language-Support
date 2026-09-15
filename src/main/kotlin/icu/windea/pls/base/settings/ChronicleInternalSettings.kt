@@ -11,7 +11,7 @@ import icu.windea.pls.core.orNull
 @Service
 class ChronicleInternalSettings {
     /**
-     * 用于展示的文本的长度限制。适用于字符串字面量等。如果超出，则会被截断。
+     * 展示文本的长度限制。适用于字符串字面量等。如果超出，则会被截断。
      */
     val presentableTextLimit get() = Registry.intValue("chronicle.settings.presentableTextLimit", 30).coerceAtLeast(0)
 

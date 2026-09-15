@@ -25,6 +25,6 @@ class ParadoxScriptExpressionLiteralTextEscaper<T : PsiLanguageInjectionHost>(
     }
 
     override fun isOneLine(): Boolean {
-        return myHost is ParadoxScriptPropertyKey || myHost is ParadoxScriptParameter
+        return myHost !is ParadoxScriptString
     }
 }

@@ -4,7 +4,6 @@ package icu.windea.pls.localisation.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
-import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 
@@ -12,10 +11,10 @@ public interface ParadoxLocalisationIconArgument extends ParadoxLocalisationArgu
 
   @Nullable PsiElement getIdElement();
 
+  @NotNull ParadoxLocalisationElementPresentation getPresentation();
+
   @NotNull GlobalSearchScope getResolveScope();
 
   @NotNull SearchScope getUseScope();
-
-  @NotNull ItemPresentation getPresentation();
 
 }

@@ -4,21 +4,21 @@ import com.intellij.navigation.GotoRelatedItem
 import com.intellij.openapi.util.NlsContexts
 import com.intellij.psi.PsiElement
 import icu.windea.pls.csv.ParadoxCsvLanguage
-import icu.windea.pls.csv.psi.ParadoxCsvPsiPresentationService
+import icu.windea.pls.csv.psi.ParadoxCsvElementPresentationService
 import icu.windea.pls.lang.psi.ParadoxPsiPresentationService
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
-import icu.windea.pls.localisation.psi.ParadoxLocalisationPsiPresentationService
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementPresentationService
 import icu.windea.pls.script.ParadoxScriptLanguage
-import icu.windea.pls.script.psi.ParadoxScriptPsiPresentationService
+import icu.windea.pls.script.psi.ParadoxScriptElementPresentationService
 import javax.swing.Icon
 
 class ParadoxGotoRelatedItem(element: PsiElement, @NlsContexts.Separator group: String) : GotoRelatedItem(element, group) {
     override fun getCustomIcon(): Icon? {
         val element = element ?: return null
         return when (element.language) {
-            ParadoxScriptLanguage -> ParadoxScriptPsiPresentationService.getPatchedIcon(element)
-            ParadoxLocalisationLanguage -> ParadoxLocalisationPsiPresentationService.getPatchedIcon(element)
-            ParadoxCsvLanguage -> ParadoxCsvPsiPresentationService.getPatchedIcon(element)
+            ParadoxScriptLanguage -> ParadoxScriptElementPresentationService.getPatchedIcon(element)
+            ParadoxLocalisationLanguage -> ParadoxLocalisationElementPresentationService.getPatchedIcon(element)
+            ParadoxCsvLanguage -> ParadoxCsvElementPresentationService.getPatchedIcon(element)
             else -> null
         }
     }
@@ -26,9 +26,9 @@ class ParadoxGotoRelatedItem(element: PsiElement, @NlsContexts.Separator group: 
     override fun getCustomName(): String? {
         val element = element ?: return null
         return when (element.language) {
-            ParadoxScriptLanguage -> ParadoxScriptPsiPresentationService.getPresentableText(element)
-            ParadoxLocalisationLanguage -> ParadoxLocalisationPsiPresentationService.getPresentableText(element)
-            ParadoxCsvLanguage -> ParadoxCsvPsiPresentationService.getPresentableText(element)
+            ParadoxScriptLanguage -> ParadoxScriptElementPresentationService.getPresentableText(element)
+            ParadoxLocalisationLanguage -> ParadoxLocalisationElementPresentationService.getPresentableText(element)
+            ParadoxCsvLanguage -> ParadoxCsvElementPresentationService.getPresentableText(element)
             else -> null
         }
     }

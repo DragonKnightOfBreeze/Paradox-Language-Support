@@ -4,24 +4,24 @@ import com.intellij.ide.structureView.impl.common.PsiTreeElementBase
 import com.intellij.psi.PsiElement
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvHeader
-import icu.windea.pls.csv.psi.ParadoxCsvPsiPresentationService
+import icu.windea.pls.csv.psi.ParadoxCsvElementPresentationService
 import icu.windea.pls.csv.psi.ParadoxCsvRow
 import javax.swing.Icon
 
 abstract class ParadoxCsvTreeElement<T : PsiElement>(element: T) : PsiTreeElementBase<T>(element) {
     override fun getIcon(open: Boolean): Icon? {
         val element = element ?: return null
-        return ParadoxCsvPsiPresentationService.getIcon(element)
+        return ParadoxCsvElementPresentationService.getIcon(element)
     }
 
     override fun getPresentableText(): String? {
         val element = element ?: return null
-        return ParadoxCsvPsiPresentationService.getTreePresentableText(element)
+        return ParadoxCsvElementPresentationService.getPresentableTextInTree(element)
     }
 
     override fun getLocationString(): String? {
         val element = element ?: return null
-        return ParadoxCsvPsiPresentationService.getTreeLocationString(element)
+        return ParadoxCsvElementPresentationService.getLocationStringInTree(element)
     }
 
     override fun isSearchInLocationString(): Boolean {

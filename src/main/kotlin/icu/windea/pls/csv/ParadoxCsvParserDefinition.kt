@@ -10,6 +10,7 @@ import icu.windea.pls.csv.lexer.ParadoxCsvLexerFactory
 import icu.windea.pls.csv.parser.ParadoxCsvParser
 import icu.windea.pls.csv.psi.ParadoxCsvElementTypes.*
 import icu.windea.pls.csv.psi.ParadoxCsvFile
+import icu.windea.pls.csv.psi.impl.ParadoxCsvFileImpl
 import icu.windea.pls.csv.psi.ParadoxCsvTokenSets
 
 class ParadoxCsvParserDefinition : ParserDefinition {
@@ -21,7 +22,7 @@ class ParadoxCsvParserDefinition : ParserDefinition {
 
     override fun getFileNodeType() = ParadoxCsvFile.ELEMENT_TYPE
 
-    override fun createFile(viewProvider: FileViewProvider) = ParadoxCsvFile(viewProvider)
+    override fun createFile(viewProvider: FileViewProvider) = ParadoxCsvFileImpl(viewProvider)
 
     override fun createElement(node: ASTNode) = Factory.createElement(node)
 

@@ -1,21 +1,19 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.localisation.psi.impl;
 
+import java.util.List;
+import org.jetbrains.annotations.*;
 import com.intellij.lang.ASTNode;
-import com.intellij.navigation.ItemPresentation;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
+import com.intellij.psi.util.PsiTreeUtil;
+import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
+import icu.windea.pls.localisation.psi.*;
+import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
-import com.intellij.psi.util.PsiTreeUtil;
-import icu.windea.pls.localisation.psi.ParadoxLocalisationConceptCommand;
-import icu.windea.pls.localisation.psi.ParadoxLocalisationConceptName;
-import icu.windea.pls.localisation.psi.ParadoxLocalisationConceptString;
-import icu.windea.pls.localisation.psi.ParadoxLocalisationVisitor;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import javax.swing.*;
+import javax.swing.Icon;
 
 public class ParadoxLocalisationConceptCommandImpl extends ParadoxLocalisationRichTextImpl implements ParadoxLocalisationConceptCommand {
 
@@ -67,6 +65,11 @@ public class ParadoxLocalisationConceptCommandImpl extends ParadoxLocalisationRi
   }
 
   @Override
+  public @NotNull ParadoxLocalisationElementPresentation getPresentation() {
+    return ParadoxLocalisationPsiImplUtil.getPresentation(this);
+  }
+
+  @Override
   public @Nullable PsiReference getReference() {
     return ParadoxLocalisationPsiImplUtil.getReference(this);
   }
@@ -84,11 +87,6 @@ public class ParadoxLocalisationConceptCommandImpl extends ParadoxLocalisationRi
   @Override
   public @NotNull SearchScope getUseScope() {
     return ParadoxLocalisationPsiImplUtil.getUseScope(this);
-  }
-
-  @Override
-  public @NotNull ItemPresentation getPresentation() {
-    return ParadoxLocalisationPsiImplUtil.getPresentation(this);
   }
 
   @Override

@@ -4,29 +4,37 @@ package icu.windea.pls.csv.psi;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiElement;
+import icu.windea.pls.core.psi.PsiPresentableTextAwareElement;
 import icu.windea.pls.core.psi.PsiQuoteAwareElement;
+import com.intellij.psi.PsiListLikeElement;
+import com.intellij.psi.NavigatablePsiElement;
 
 public class ParadoxCsvVisitor extends PsiElementVisitor {
 
   public void visitColumn(@NotNull ParadoxCsvColumn o) {
-    visitPsiQuoteAwareElement(o);
+    visitExpressionElement(o);
     // visitLiteralValue(o);
-    // visitExpressionElement(o);
+    // visitPsiPresentableTextAwareElement(o);
+    // visitPsiQuoteAwareElement(o);
   }
 
   public void visitHeader(@NotNull ParadoxCsvHeader o) {
-    visitColumnContainer(o);
+    visitPsiListLikeElement(o);
+    // visitNavigatablePsiElement(o);
+    // visitColumnContainer(o);
   }
 
   public void visitRow(@NotNull ParadoxCsvRow o) {
-    visitColumnContainer(o);
+    visitPsiListLikeElement(o);
+    // visitNavigatablePsiElement(o);
+    // visitColumnContainer(o);
   }
 
-  public void visitPsiQuoteAwareElement(@NotNull PsiQuoteAwareElement o) {
+  public void visitPsiListLikeElement(@NotNull PsiListLikeElement o) {
     visitElement(o);
   }
 
-  public void visitColumnContainer(@NotNull ParadoxCsvColumnContainer o) {
+  public void visitExpressionElement(@NotNull ParadoxCsvExpressionElement o) {
     visitPsiElement(o);
   }
 

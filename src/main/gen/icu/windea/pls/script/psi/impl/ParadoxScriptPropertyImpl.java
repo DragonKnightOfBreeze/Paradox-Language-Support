@@ -10,7 +10,6 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 import icu.windea.pls.script.psi.stubs.ParadoxScriptPropertyStub;
 import icu.windea.pls.script.psi.*;
-import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
@@ -100,13 +99,18 @@ public class ParadoxScriptPropertyImpl extends ParadoxScriptStubElementImpl<Para
   }
 
   @Override
-  public boolean isEquivalentTo(@NotNull PsiElement another) {
+  public boolean isEquivalentTo(@Nullable PsiElement another) {
     return ParadoxScriptPsiImplUtil.isEquivalentTo(this, another);
   }
 
   @Override
   public @NotNull String getPresentableText() {
     return ParadoxScriptPsiImplUtil.getPresentableText(this);
+  }
+
+  @Override
+  public @NotNull ParadoxScriptElementPresentation getPresentation() {
+    return ParadoxScriptPsiImplUtil.getPresentation(this);
   }
 
   @Override
@@ -117,11 +121,6 @@ public class ParadoxScriptPropertyImpl extends ParadoxScriptStubElementImpl<Para
   @Override
   public @NotNull SearchScope getUseScope() {
     return ParadoxScriptPsiImplUtil.getUseScope(this);
-  }
-
-  @Override
-  public @NotNull ItemPresentation getPresentation() {
-    return ParadoxScriptPsiImplUtil.getPresentation(this);
   }
 
   @Override

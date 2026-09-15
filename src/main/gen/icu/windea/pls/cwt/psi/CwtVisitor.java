@@ -4,9 +4,10 @@ package icu.windea.pls.cwt.psi;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.NavigatablePsiElement;
+import icu.windea.pls.core.psi.PsiPresentableTextAwareElement;
 import icu.windea.pls.core.psi.PsiQuoteAwareElement;
 import com.intellij.psi.PsiDocCommentBase;
+import com.intellij.psi.PsiListLikeElement;
 import icu.windea.pls.core.psi.PsiRootBlock;
 import com.intellij.psi.PsiComment;
 
@@ -14,6 +15,7 @@ public class CwtVisitor extends PsiElementVisitor {
 
   public void visitBlock(@NotNull CwtBlock o) {
     visitValue(o);
+    // visitPsiListLikeElement(o);
     // visitMemberContainer(o);
     // visitBoundMemberContainer(o);
   }
@@ -29,19 +31,20 @@ public class CwtVisitor extends PsiElementVisitor {
 
   public void visitFloat(@NotNull CwtFloat o) {
     visitValue(o);
-    // visitLiteralValue(o);
     // visitNumberExpressionElement(o);
+    // visitLiteralValue(o);
   }
 
   public void visitInt(@NotNull CwtInt o) {
     visitValue(o);
-    // visitLiteralValue(o);
     // visitNumberExpressionElement(o);
+    // visitLiteralValue(o);
   }
 
   public void visitOption(@NotNull CwtOption o) {
     visitNamedElement(o);
     // visitOptionMember(o);
+    // visitPsiPresentableTextAwareElement(o);
   }
 
   public void visitOptionComment(@NotNull CwtOptionComment o) {
@@ -49,42 +52,42 @@ public class CwtVisitor extends PsiElementVisitor {
   }
 
   public void visitOptionKey(@NotNull CwtOptionKey o) {
-    visitNavigatablePsiElement(o);
+    visitPsiPresentableTextAwareElement(o);
     // visitPsiQuoteAwareElement(o);
   }
 
   public void visitProperty(@NotNull CwtProperty o) {
     visitNamedElement(o);
     // visitMember(o);
+    // visitPsiPresentableTextAwareElement(o);
   }
 
   public void visitPropertyKey(@NotNull CwtPropertyKey o) {
-    visitPsiQuoteAwareElement(o);
+    visitStringExpressionElement(o);
     // visitLiteralValue(o);
-    // visitStringExpressionElement(o);
+    // visitPsiPresentableTextAwareElement(o);
+    // visitPsiQuoteAwareElement(o);
   }
 
   public void visitRootBlock(@NotNull CwtRootBlock o) {
-    visitPsiRootBlock(o);
+    visitPsiListLikeElement(o);
     // visitMemberContainer(o);
+    // visitPsiRootBlock(o);
   }
 
   public void visitString(@NotNull CwtString o) {
     visitValue(o);
-    // visitPsiQuoteAwareElement(o);
     // visitNamedElement(o);
-    // visitLiteralValue(o);
     // visitStringExpressionElement(o);
+    // visitLiteralValue(o);
+    // visitPsiQuoteAwareElement(o);
   }
 
   public void visitValue(@NotNull CwtValue o) {
     visitExpressionElement(o);
     // visitMember(o);
     // visitOptionMember(o);
-  }
-
-  public void visitNavigatablePsiElement(@NotNull NavigatablePsiElement o) {
-    visitElement(o);
+    // visitPsiPresentableTextAwareElement(o);
   }
 
   public void visitPsiComment(@NotNull PsiComment o) {
@@ -95,11 +98,11 @@ public class CwtVisitor extends PsiElementVisitor {
     visitElement(o);
   }
 
-  public void visitPsiQuoteAwareElement(@NotNull PsiQuoteAwareElement o) {
+  public void visitPsiListLikeElement(@NotNull PsiListLikeElement o) {
     visitElement(o);
   }
 
-  public void visitPsiRootBlock(@NotNull PsiRootBlock o) {
+  public void visitPsiPresentableTextAwareElement(@NotNull PsiPresentableTextAwareElement o) {
     visitElement(o);
   }
 
@@ -108,6 +111,10 @@ public class CwtVisitor extends PsiElementVisitor {
   }
 
   public void visitNamedElement(@NotNull CwtNamedElement o) {
+    visitPsiElement(o);
+  }
+
+  public void visitStringExpressionElement(@NotNull CwtStringExpressionElement o) {
     visitPsiElement(o);
   }
 

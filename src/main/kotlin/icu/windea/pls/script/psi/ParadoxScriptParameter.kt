@@ -2,9 +2,8 @@ package icu.windea.pls.script.psi
 
 import com.intellij.psi.ElementManipulators
 import com.intellij.psi.LiteralTextEscaper
-import com.intellij.psi.NavigatablePsiElement
 import com.intellij.psi.PsiElement
-import icu.windea.pls.core.psi.PsiPresentableElement
+import icu.windea.pls.core.psi.PsiPresentableTextAwareElement
 import icu.windea.pls.lang.psi.ParadoxLanguageInjectionHost
 
 /**
@@ -13,7 +12,7 @@ import icu.windea.pls.lang.psi.ParadoxLanguageInjectionHost
  * @see ParadoxScriptNormalParameter
  * @see ParadoxScriptInlineMathParameter
  */
-interface ParadoxScriptParameter : NavigatablePsiElement, PsiPresentableElement, ParadoxScriptInterpolation, ParadoxLanguageInjectionHost {
+interface ParadoxScriptParameter : ParadoxScriptInterpolation, ParadoxLanguageInjectionHost, PsiPresentableTextAwareElement {
     val idElement: PsiElement?
 
     override fun getName(): String?

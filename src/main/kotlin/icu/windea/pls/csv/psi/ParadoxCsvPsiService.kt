@@ -5,31 +5,17 @@ import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.siblings
-import icu.windea.pls.base.settings.ChronicleInternalSettings
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.children
 import icu.windea.pls.core.optimized
-import icu.windea.pls.core.psi.PsiPresentableElement
 import icu.windea.pls.core.sequences.findIsInstance
-import icu.windea.pls.core.transformAndKeepQuotes
-import icu.windea.pls.core.truncate
 import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.withDependencyItems
 
 @Suppress("unused")
 object ParadoxCsvPsiService {
     private const val SEPARATOR = ';'
-
-    private val presentableTextLimit get() = ChronicleInternalSettings.getInstance().presentableTextLimit
     private val cachedColumnNamesKey = createKey<CachedValue<List<String>>>("cached.paradox.csv.columnNames")
-
-    fun getPresentableText(element: PsiPresentableElement): String {
-        return when (element) {
-            is ParadoxCsvColumn -> element.text.transformAndKeepQuotes { it.truncate(presentableTextLimit) }
-            is ParadoxCsvExpressionElement -> element.value
-            else -> element.text
-        }
-    }
 
     fun getSeparator(): Char {
         return SEPARATOR

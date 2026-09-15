@@ -9,7 +9,6 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 import icu.windea.pls.script.psi.*;
-import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 
@@ -56,8 +55,8 @@ public class ParadoxScriptInlineMathImpl extends ParadoxScriptValueImpl implemen
   }
 
   @Override
-  public @NotNull String getPresentableText() {
-    return ParadoxScriptPsiImplUtil.getPresentableText(this);
+  public @NotNull ParadoxScriptElementPresentation getPresentation() {
+    return ParadoxScriptPsiImplUtil.getPresentation(this);
   }
 
   @Override
@@ -68,11 +67,6 @@ public class ParadoxScriptInlineMathImpl extends ParadoxScriptValueImpl implemen
   @Override
   public @NotNull SearchScope getUseScope() {
     return ParadoxScriptPsiImplUtil.getUseScope(this);
-  }
-
-  @Override
-  public @NotNull ItemPresentation getPresentation() {
-    return ParadoxScriptPsiImplUtil.getPresentation(this);
   }
 
   @Override

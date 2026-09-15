@@ -10,7 +10,6 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import icu.windea.pls.script.psi.*;
-import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
@@ -39,12 +38,6 @@ public class ParadoxScriptInlineConditionalBlockImpl extends ASTWrapperPsiElemen
   }
 
   @Override
-  @NotNull
-  public List<ParadoxScriptNormalParameter> getNormalParameterList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptNormalParameter.class);
-  }
-
-  @Override
   public @Nullable PsiElement getLeftBound() {
     return ParadoxScriptPsiImplUtil.getLeftBound(this);
   }
@@ -65,6 +58,11 @@ public class ParadoxScriptInlineConditionalBlockImpl extends ASTWrapperPsiElemen
   }
 
   @Override
+  public @NotNull ParadoxScriptElementPresentation getPresentation() {
+    return ParadoxScriptPsiImplUtil.getPresentation(this);
+  }
+
+  @Override
   public @NotNull GlobalSearchScope getResolveScope() {
     return ParadoxScriptPsiImplUtil.getResolveScope(this);
   }
@@ -72,11 +70,6 @@ public class ParadoxScriptInlineConditionalBlockImpl extends ASTWrapperPsiElemen
   @Override
   public @NotNull SearchScope getUseScope() {
     return ParadoxScriptPsiImplUtil.getUseScope(this);
-  }
-
-  @Override
-  public @NotNull ItemPresentation getPresentation() {
-    return ParadoxScriptPsiImplUtil.getPresentation(this);
   }
 
   @Override

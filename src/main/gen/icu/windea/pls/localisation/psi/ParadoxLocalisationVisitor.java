@@ -1,12 +1,14 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.localisation.psi;
 
-import com.intellij.psi.NavigatablePsiElement;
-import com.intellij.psi.PsiElement;
+import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.PsiListLikeElement;
+import com.intellij.psi.PsiElement;
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference;
-import org.jetbrains.annotations.NotNull;
+import icu.windea.pls.core.psi.PsiPresentableTextAwareElement;
+import icu.windea.pls.core.psi.PsiQuoteAwareElement;
+import com.intellij.psi.NavigatablePsiElement;
+import com.intellij.psi.PsiListLikeElement;
 
 public class ParadoxLocalisationVisitor extends PsiElementVisitor {
 
@@ -31,6 +33,7 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
   public void visitCommandText(@NotNull ParadoxLocalisationCommandText o) {
     visitExpressionElement(o);
     // visitInterpolationContainer(o);
+    // visitPsiPresentableTextAwareElement(o);
   }
 
   public void visitConceptCommand(@NotNull ParadoxLocalisationConceptCommand o) {
@@ -40,6 +43,7 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
   public void visitConceptName(@NotNull ParadoxLocalisationConceptName o) {
     visitExpressionElement(o);
     // visitInterpolationContainer(o);
+    // visitPsiPresentableTextAwareElement(o);
   }
 
   public void visitConceptString(@NotNull ParadoxLocalisationConceptString o) {
@@ -48,7 +52,6 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
 
   public void visitContextTag(@NotNull ParadoxLocalisationContextTag o) {
     visitNavigatablePsiElement(o);
-    // visitPsiPresentableElement(o);
   }
 
   public void visitContextTagPart(@NotNull ParadoxLocalisationContextTagPart o) {
@@ -68,7 +71,7 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
 
   public void visitLocale(@NotNull ParadoxLocalisationLocale o) {
     visitNavigatablePsiElement(o);
-    // visitPsiPresentableElement(o);
+    // visitPsiPresentableTextAwareElement(o);
   }
 
   public void visitParameter(@NotNull ParadoxLocalisationParameter o) {
@@ -85,12 +88,12 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
 
   public void visitProperty(@NotNull ParadoxLocalisationProperty o) {
     visitNavigatablePsiElement(o);
-    // visitPsiPresentableElement(o);
     // visitNamedElement(o);
+    // visitPsiPresentableTextAwareElement(o);
   }
 
   public void visitPropertyKey(@NotNull ParadoxLocalisationPropertyKey o) {
-    visitNavigatablePsiElement(o);
+    visitPsiElement(o);
   }
 
   public void visitPropertyList(@NotNull ParadoxLocalisationPropertyList o) {
@@ -98,14 +101,14 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
   }
 
   public void visitPropertyValue(@NotNull ParadoxLocalisationPropertyValue o) {
-    visitNavigatablePsiElement(o);
+    visitRichTextContainer(o);
+    // visitPsiPresentableTextAwareElement(o);
     // visitPsiQuoteAwareElement(o);
-    // visitRichTextContainer(o);
   }
 
   public void visitRichText(@NotNull ParadoxLocalisationRichText o) {
     visitNavigatablePsiElement(o);
-    // visitPsiPresentableElement(o);
+    // visitPsiPresentableTextAwareElement(o);
   }
 
   public void visitScriptedVariableReference(@NotNull ParadoxLocalisationScriptedVariableReference o) {
@@ -130,7 +133,6 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
 
   public void visitTag(@NotNull ParadoxLocalisationTag o) {
     visitNavigatablePsiElement(o);
-    // visitPsiPresentableElement(o);
   }
 
   public void visitTagPart(@NotNull ParadoxLocalisationTagPart o) {
@@ -147,7 +149,6 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
 
   public void visitTaggedParameter(@NotNull ParadoxLocalisationTaggedParameter o) {
     visitNavigatablePsiElement(o);
-    // visitPsiPresentableElement(o);
   }
 
   public void visitText(@NotNull ParadoxLocalisationText o) {
