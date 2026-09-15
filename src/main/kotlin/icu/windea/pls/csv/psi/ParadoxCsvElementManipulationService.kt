@@ -10,7 +10,7 @@ import icu.windea.pls.csv.text.ParadoxCsv
 /**
  * @see ElementDescriptionProvider
  */
-object ParadoxCsvPsiManipulationService {
+object ParadoxCsvElementManipulationService {
     fun changeContent(element: ParadoxCsvColumn, newContent: String, range: TextRange? = null): ParadoxCsvColumn {
         val newValue = range?.replace(element.text, newContent) ?: newContent
         val newText = newValue.quoteIfNeeded(QuotePatterns.ParadoxCsv)

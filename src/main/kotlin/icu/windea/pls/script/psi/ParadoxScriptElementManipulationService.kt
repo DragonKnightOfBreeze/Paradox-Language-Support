@@ -10,7 +10,7 @@ import icu.windea.pls.script.text.ParadoxScript
 /**
  * @see ElementDescriptionProvider
  */
-object ParadoxScriptPsiManipulationService {
+object ParadoxScriptElementManipulationService {
     fun changeContent(element: ParadoxScriptPropertyKey, newContent: String, range: TextRange? = null): ParadoxScriptPropertyKey {
         val newValue = range?.replace(element.text, newContent) ?: newContent
         val newText = newValue.quoteIfNeeded(QuotePatterns.ParadoxScript)

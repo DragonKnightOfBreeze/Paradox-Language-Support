@@ -23,11 +23,11 @@ import icu.windea.pls.core.text.QuotePatterns
 import icu.windea.pls.core.unquote
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvColumnContainer
+import icu.windea.pls.csv.psi.ParadoxCsvElementManipulationService
 import icu.windea.pls.csv.psi.ParadoxCsvElementTypes.*
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.csv.psi.ParadoxCsvHeader
-import icu.windea.pls.csv.psi.ParadoxCsvPsiManipulationService
 import icu.windea.pls.csv.psi.ParadoxCsvPsiPresentation
 import icu.windea.pls.csv.psi.ParadoxCsvPsiService
 import icu.windea.pls.csv.psi.ParadoxCsvRow
@@ -88,12 +88,12 @@ object ParadoxCsvPsiImplUtil {
 
     @JvmStatic
     fun setValue(element: ParadoxCsvColumn, value: String): ParadoxCsvColumn {
-        return ParadoxCsvPsiManipulationService.changeContent(element, value)
+        return ParadoxCsvElementManipulationService.changeContent(element, value)
     }
 
     @JvmStatic
     fun setContent(element: ParadoxCsvColumn, content: String, range: TextRange): ParadoxCsvColumn {
-        return ParadoxCsvPsiManipulationService.changeContent(element, content, range)
+        return ParadoxCsvElementManipulationService.changeContent(element, content, range)
     }
 
     // endregion

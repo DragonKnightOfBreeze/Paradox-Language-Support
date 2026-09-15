@@ -7,7 +7,7 @@ import icu.windea.pls.core.cast
 /**
  * @see ElementDescriptionProvider
  */
-object ParadoxLocalisationPsiManipulationService {
+object ParadoxLocalisationElementManipulationService {
     fun changeContent(element: ParadoxLocalisationPropertyKey, newContent: String, range: TextRange? = null): ParadoxLocalisationPropertyKey {
         val newText = range?.replace(element.text, newContent) ?: newContent
         val newElement = ParadoxLocalisationElementFactory.createPropertyKey(element.project, newText)

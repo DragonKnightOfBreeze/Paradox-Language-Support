@@ -15,11 +15,11 @@ import com.intellij.usageView.UsageViewTypeLocation
 class ParadoxElementDescriptionProvider : ElementDescriptionProvider {
     override fun getElementDescription(element: PsiElement, location: ElementDescriptionLocation): String? {
         return when (location) {
-            UsageViewShortNameLocation.INSTANCE -> ParadoxPsiDescriptionService.getName(element)
-            UsageViewLongNameLocation.INSTANCE -> ParadoxPsiDescriptionService.getName(element)
-            UsageViewTypeLocation.INSTANCE -> ParadoxPsiDescriptionService.getType(element)
-            UsageViewNodeTextLocation.INSTANCE -> ParadoxPsiDescriptionService.getNodeText(element)
-            HighlightUsagesDescriptionLocation.INSTANCE -> ParadoxPsiDescriptionService.getHighlightUsagesDescription(element)
+            UsageViewShortNameLocation.INSTANCE -> ParadoxElementDescriptionService.getName(element)
+            UsageViewLongNameLocation.INSTANCE -> ParadoxElementDescriptionService.getName(element)
+            UsageViewTypeLocation.INSTANCE -> ParadoxElementDescriptionService.getType(element)
+            UsageViewNodeTextLocation.INSTANCE -> ParadoxElementDescriptionService.getNodeText(element)
+            HighlightUsagesDescriptionLocation.INSTANCE -> ParadoxElementDescriptionService.getHighlightUsagesDescription(element)
             else -> null
         }
     }

@@ -19,7 +19,7 @@ import icu.windea.pls.model.ParadoxDefineVariableInfo
 import icu.windea.pls.model.ParadoxLocalisationType
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
-object ParadoxPsiDescriptionService {
+object ParadoxElementDescriptionService {
     fun getName(element: PsiElement): String? {
         return when (element) {
             is ParadoxScriptProperty -> {

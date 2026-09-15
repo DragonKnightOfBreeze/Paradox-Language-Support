@@ -5,7 +5,7 @@ import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
 
-object ParadoxLocalisationPsiDescriptionService {
+object ParadoxLocalisationElementDescriptionService {
     fun getName(element: PsiElement): String? {
         return when (element) {
             is ParadoxLocalisationProperty -> element.name

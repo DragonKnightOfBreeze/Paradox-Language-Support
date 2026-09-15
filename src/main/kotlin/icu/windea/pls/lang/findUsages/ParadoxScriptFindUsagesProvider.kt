@@ -3,10 +3,10 @@ package icu.windea.pls.lang.findUsages
 import com.intellij.lang.findUsages.FindUsagesProvider
 import com.intellij.psi.PsiElement
 import icu.windea.pls.core.psi.light.LightElementBase
-import icu.windea.pls.lang.psi.ParadoxPsiDescriptionService
+import icu.windea.pls.lang.psi.ParadoxElementDescriptionService
 import icu.windea.pls.script.ParadoxScriptLanguage
+import icu.windea.pls.script.psi.ParadoxScriptElementDescriptionService
 import icu.windea.pls.script.psi.ParadoxScriptProperty
-import icu.windea.pls.script.psi.ParadoxScriptPsiDescriptionService
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 class ParadoxScriptFindUsagesProvider : FindUsagesProvider {
@@ -24,20 +24,20 @@ class ParadoxScriptFindUsagesProvider : FindUsagesProvider {
     override fun getHelpId(psiElement: PsiElement) = "reference.dialogs.findUsages.other"
 
     override fun getType(element: PsiElement): String {
-        ParadoxPsiDescriptionService.getType(element)?.let { return it }
-        ParadoxScriptPsiDescriptionService.getType(element)?.let { return it }
+        ParadoxElementDescriptionService.getType(element)?.let { return it }
+        ParadoxScriptElementDescriptionService.getType(element)?.let { return it }
         return ""
     }
 
     override fun getDescriptiveName(element: PsiElement): String {
-        ParadoxPsiDescriptionService.getName(element)?.let { return it }
-        ParadoxScriptPsiDescriptionService.getName(element)?.let { return it }
+        ParadoxElementDescriptionService.getName(element)?.let { return it }
+        ParadoxScriptElementDescriptionService.getName(element)?.let { return it }
         return ""
     }
 
     override fun getNodeText(element: PsiElement, useFullName: Boolean): String {
-        ParadoxPsiDescriptionService.getNodeText(element)?.let { return it }
-        ParadoxScriptPsiDescriptionService.getNodeText(element)?.let { return it }
+        ParadoxElementDescriptionService.getNodeText(element)?.let { return it }
+        ParadoxScriptElementDescriptionService.getNodeText(element)?.let { return it }
         return ""
     }
 }

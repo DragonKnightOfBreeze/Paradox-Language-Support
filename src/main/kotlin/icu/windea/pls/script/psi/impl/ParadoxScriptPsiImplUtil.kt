@@ -41,6 +41,7 @@ import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptColor
 import icu.windea.pls.script.psi.ParadoxScriptConditionalParameter
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
+import icu.windea.pls.script.psi.ParadoxScriptElementManipulationService
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
@@ -56,7 +57,6 @@ import icu.windea.pls.script.psi.ParadoxScriptNormalParameter
 import icu.windea.pls.script.psi.ParadoxScriptParameterArgument
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
-import icu.windea.pls.script.psi.ParadoxScriptPsiManipulationService
 import icu.windea.pls.script.psi.ParadoxScriptPsiPresentation
 import icu.windea.pls.script.psi.ParadoxScriptPsiService
 import icu.windea.pls.script.psi.ParadoxScriptRootBlock
@@ -200,12 +200,12 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun setValue(element: ParadoxScriptPropertyKey, value: String): ParadoxScriptPropertyKey {
-        return ParadoxScriptPsiManipulationService.changeContent(element, value)
+        return ParadoxScriptElementManipulationService.changeContent(element, value)
     }
 
     @JvmStatic
     fun setContent(element: ParadoxScriptPropertyKey, content: String, range: TextRange): ParadoxScriptPropertyKey {
-        return ParadoxScriptPsiManipulationService.changeContent(element, content, range)
+        return ParadoxScriptElementManipulationService.changeContent(element, content, range)
     }
 
     // endregion
@@ -219,12 +219,12 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun setValue(element: ParadoxScriptValue, value: String): ParadoxScriptValue {
-        return ParadoxScriptPsiManipulationService.changeContent(element, value)
+        return ParadoxScriptElementManipulationService.changeContent(element, value)
     }
 
     @JvmStatic
     fun setContent(element: ParadoxScriptValue, content: String, range: TextRange): ParadoxScriptValue {
-        return ParadoxScriptPsiManipulationService.changeContent(element, content, range)
+        return ParadoxScriptElementManipulationService.changeContent(element, content, range)
     }
 
     // endregion
@@ -249,12 +249,12 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun setValue(element: ParadoxScriptString, value: String): ParadoxScriptValue {
-        return ParadoxScriptPsiManipulationService.changeContent(element, value)
+        return ParadoxScriptElementManipulationService.changeContent(element, value)
     }
 
     @JvmStatic
     fun setContent(element: ParadoxScriptString, content: String, range: TextRange): ParadoxScriptValue {
-        return ParadoxScriptPsiManipulationService.changeContent(element, content, range)
+        return ParadoxScriptElementManipulationService.changeContent(element, content, range)
     }
 
     // endregion

@@ -35,6 +35,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationConceptCommand
 import icu.windea.pls.localisation.psi.ParadoxLocalisationConceptName
 import icu.windea.pls.localisation.psi.ParadoxLocalisationContextTag
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementFactory
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementManipulationService
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
@@ -47,7 +48,6 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyKey
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyList
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyValue
-import icu.windea.pls.localisation.psi.ParadoxLocalisationPsiManipulationService
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPsiPresentation
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPsiService
 import icu.windea.pls.localisation.psi.ParadoxLocalisationRichText
@@ -357,12 +357,12 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun setValue(element: ParadoxLocalisationCommandText, value: String): ParadoxLocalisationCommandText {
-        return ParadoxLocalisationPsiManipulationService.changeContent(element, value)
+        return ParadoxLocalisationElementManipulationService.changeContent(element, value)
     }
 
     @JvmStatic
     fun setContent(element: ParadoxLocalisationCommandText, content: String, range: TextRange): ParadoxLocalisationCommandText {
-        return ParadoxLocalisationPsiManipulationService.changeContent(element, content, range)
+        return ParadoxLocalisationElementManipulationService.changeContent(element, content, range)
     }
 
     // endregion
@@ -407,12 +407,12 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun setValue(element: ParadoxLocalisationConceptName, value: String): ParadoxLocalisationConceptName {
-        return ParadoxLocalisationPsiManipulationService.changeContent(element, value)
+        return ParadoxLocalisationElementManipulationService.changeContent(element, value)
     }
 
     @JvmStatic
     fun setContent(element: ParadoxLocalisationConceptName, content: String, range: TextRange): ParadoxLocalisationConceptName {
-        return ParadoxLocalisationPsiManipulationService.changeContent(element, content, range)
+        return ParadoxLocalisationElementManipulationService.changeContent(element, content, range)
     }
 
     // endregion
