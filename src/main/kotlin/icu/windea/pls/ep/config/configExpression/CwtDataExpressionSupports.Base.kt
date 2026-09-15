@@ -19,6 +19,7 @@ import icu.windea.pls.core.text.TextPatternResult
 @Optimized
 abstract class CwtTextPatternBasedDataExpressionSupport : CwtDataExpressionSupport {
     private data class Context(val dataType: CwtDataType, val metadataBuilder: CwtDataExpressionMetadataBuilder? = null)
+
     // NOTE 3.0.1 nested supports are not supported atm
     private val providers = mutableListOf<TextPatternBasedProvider<Context, out TextPatternResult>>()
     private val builder = TextPatternBasedBuilder(providers)

@@ -8,7 +8,7 @@ import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.util.values.LazyValue
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
-import icu.windea.pls.lang.match.ParadoxCsvExpressionMatchContext
+import icu.windea.pls.lang.match.ParadoxExpressionMatchContext
 import icu.windea.pls.lang.match.ParadoxExpressionMatchService
 import icu.windea.pls.lang.match.ParadoxMatchResult
 import icu.windea.pls.lang.match.ParadoxMatchService
@@ -29,7 +29,7 @@ interface ParadoxCsvExpressionMatcher {
     /**
      * 匹配 CSV 表达式和规则表达式。
      */
-    fun match(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult?
+    fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression): ParadoxMatchResult?
 
     companion object INSTANCE {
         @JvmField val EP_NAME = ExtensionPointName<ParadoxCsvExpressionMatcher>("icu.windea.pls.csvExpressionMatcher")

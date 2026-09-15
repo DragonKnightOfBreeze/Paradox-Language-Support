@@ -1,9 +1,10 @@
 package icu.windea.pls.ep.match.expression
 
 import icu.windea.pls.config.CwtDataType
+import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.forEachFast
-import icu.windea.pls.lang.match.ParadoxCsvExpressionMatchContext
+import icu.windea.pls.lang.match.ParadoxExpressionMatchContext
 import icu.windea.pls.lang.match.ParadoxMatchResult
 
 @Optimized
@@ -33,21 +34,16 @@ abstract class ParadoxCsvCompositeExpressionMatcher : ParadoxCsvExpressionMatche
         _matcherMap.computeIfAbsent(matcher) { mutableSetOf() } += dataType
     }
 
-    protected fun register(vararg dataTypes: CwtDataType, matcher: ParadoxCsvLightExpressionMatcher) {
-        _matchers += matcher
-        _matcherMap.computeIfAbsent(matcher) { mutableSetOf() } += dataTypes
-    }
-
     @JvmName("registerAll")
     protected fun register(dataTypes: Array<CwtDataType>, matcher: ParadoxCsvLightExpressionMatcher) {
         _matchers += matcher
         _matcherMap.computeIfAbsent(matcher) { mutableSetOf() } += dataTypes
     }
 
-    final override fun match(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult? {
+    final override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression): ParadoxMatchResult? {
         _matchers.forEachFast f@{ matcher ->
             if (matcher is ParadoxScriptCompositeExpressionMatcher) return@f // skip
-            matcher.match(context)?.let { return it }
+            matcher.match(context, configExpression)?.let { return it }
         }
         return null
     }

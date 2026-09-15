@@ -66,8 +66,8 @@ object ParadoxMatchService {
     fun <T : CwtMemberConfig<*>> optimize(configs: List<T>, element: PsiElement, expression: ParadoxExpression, options: ParadoxMatchOptions? = null): List<T> {
         if (configs.isEmpty()) return emptyList()
         val configGroup = configs.first().configGroup
-        val context = ParadoxScriptExpressionMatchOptimizerContext(element, expression, configGroup, options)
-        return ParadoxExpressionMatchService.optimizeScriptExpression(configs, context)
+        val context = ParadoxExpressionMatchContext(element, expression, configGroup, options)
+        return ParadoxExpressionMatchService.optimizeScriptExpression(context, configs)
     }
 
     // endregion

@@ -9,11 +9,12 @@ import icu.windea.pls.lang.match.ParadoxPatternMatchContext
 import icu.windea.pls.lang.match.util.ParadoxMatchResultFactory
 
 class ParadoxDefaultPatternMatcher : ParadoxPatternMatcher {
-    override fun matches(text: String, ignoreCase: Boolean, context: ParadoxPatternMatchContext): Boolean {
-        if (context.dataType !in CwtDataTypeSets.Pattern) return false
+    override fun matches(context: ParadoxPatternMatchContext, text: String, ignoreCase: Boolean): Boolean {
+        val dataType = context.configExpression.type
+        if (dataType !in CwtDataTypeSets.Pattern) return false
         val pattern = context.configExpression.metadata.value ?: return false
         val ignoreCase = ignoreCase || context.configExpression.metadata.ignoreCase
-        val r = when (context.dataType) {
+        val r = when (dataType) {
             CwtDataTypes.Glob -> text.matchesPattern(pattern, ignoreCase)
             CwtDataTypes.Ant -> text.matchesAntPattern(pattern, ignoreCase)
             CwtDataTypes.Regex -> text.matchesRegex(pattern, ignoreCase)
@@ -24,8 +25,9 @@ class ParadoxDefaultPatternMatcher : ParadoxPatternMatcher {
 }
 
 class ParadoxTemplatePatternMatcher : ParadoxPatternMatcher {
-    override fun matches(text: String, ignoreCase: Boolean, context: ParadoxPatternMatchContext): Boolean {
-        if (context.dataType != CwtDataTypes.Template) return false
+    override fun matches(context: ParadoxPatternMatchContext, text: String, ignoreCase: Boolean): Boolean {
+        val dataType = context.configExpression.type
+        if (dataType != CwtDataTypes.Template) return false
         val r = ParadoxMatchResultFactory.forTemplate(context.element, context.configGroup, text, context.configExpression, context.options)
         return r.get(context.options)
     }

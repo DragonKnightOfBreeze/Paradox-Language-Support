@@ -1,10 +1,12 @@
 package icu.windea.pls.ep.match.expression
 
 import icu.windea.pls.config.CwtDataType
+import icu.windea.pls.config.config.CwtConfig
+import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.forEachFast
+import icu.windea.pls.lang.match.ParadoxExpressionMatchContext
 import icu.windea.pls.lang.match.ParadoxMatchResult
-import icu.windea.pls.lang.match.ParadoxScriptExpressionMatchContext
 
 @Optimized
 abstract class ParadoxScriptCompositeExpressionMatcher : ParadoxScriptExpressionMatcher {
@@ -44,10 +46,10 @@ abstract class ParadoxScriptCompositeExpressionMatcher : ParadoxScriptExpression
         _matcherMap.computeIfAbsent(matcher) { mutableSetOf() } += dataTypes
     }
 
-    final override fun match(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult? {
+    final override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult? {
         _matchers.forEachFast f@{ matcher ->
             if (matcher is ParadoxScriptCompositeExpressionMatcher) return@f // skip
-            matcher.match(context)?.let { return it }
+            matcher.match(context, configExpression, config)?.let { return it }
         }
         return null
     }

@@ -3,6 +3,7 @@ package icu.windea.pls.lang.match
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import icu.windea.pls.config.CwtDataTypes
+import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.expandUnionCandidates
@@ -27,11 +28,11 @@ object ParadoxExpressionMatchService {
     /**
      * @see ParadoxScriptExpressionMatcher.match
      */
-    fun matchScriptExpression(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
+    fun matchScriptExpression(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
         // ProgressManager.checkCanceled() // 3.0.1 optimize: not here (before cache access or lazy match instead)
-        val matchers = ParadoxScriptExpressionMatcher.getAll(context.dataType) // 3.0.1 optimize: use global cache (by data type)
+        val matchers = ParadoxScriptExpressionMatcher.getAll(configExpression.type) // 3.0.1 optimize: use global cache (by data type)
         matchers.forEachFast { matcher ->
-            matcher.match(context)?.let { return it }
+            matcher.match(context, configExpression, config)?.let { return it }
         }
         return ParadoxMatchResult.NotMatch
     }
@@ -39,11 +40,11 @@ object ParadoxExpressionMatchService {
     /**
      * @see ParadoxCsvExpressionMatcher.match
      */
-    fun matchCsvExpression(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult {
+    fun matchCsvExpression(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression): ParadoxMatchResult {
         // ProgressManager.checkCanceled() // 3.0.1 optimize: not here (before cache access or lazy match instead)
-        val matchers = ParadoxCsvExpressionMatcher.getAll(context.dataType) // 3.0.1 optimize: use global cache (by data type)
+        val matchers = ParadoxCsvExpressionMatcher.getAll(configExpression.type) // 3.0.1 optimize: use global cache (by data type)
         matchers.forEachFast { matcher ->
-            matcher.match(context)?.let { return it }
+            matcher.match(context, configExpression)?.let { return it }
         }
         return ParadoxMatchResult.NotMatch
     }
@@ -51,12 +52,12 @@ object ParadoxExpressionMatchService {
     /**
      * @see ParadoxScriptExpressionMatchOptimizer.optimize
      */
-    fun <T : CwtMemberConfig<*>> optimizeScriptExpression(input: List<T>, context: ParadoxScriptExpressionMatchOptimizerContext): List<T> {
+    fun <T : CwtMemberConfig<*>> optimizeScriptExpression(context: ParadoxExpressionMatchContext, input: List<T>): List<T> {
         var result = input
         var dynamic = false
         val optimizers = ParadoxScriptExpressionMatchOptimizer.getAll()
         optimizers.forEachFast f@{ optimizer ->
-            val optimized = optimizer.optimize(result, context)
+            val optimized = optimizer.optimize(context, result)
             if (optimized == null) return@f
             if (optimizer.isDynamic(context)) dynamic = true
             result = optimized
@@ -120,8 +121,8 @@ object ParadoxExpressionMatchService {
             val matchGroup = matchResult.groups.get(i++) ?: return false
             val matchValue = matchGroup.value
             if (matchValue.isEmpty() && snippetExpression.type == CwtDataTypes.Definition) return false // skip anonymous definitions
-            val matchContext = ParadoxScriptExpressionMatchContext(element, ParadoxExpression.resolve(matchValue), snippetExpression, null, configGroup, options)
-            val matched = matchScriptExpression(matchContext).get(options)
+            val matchContext = ParadoxExpressionMatchContext(element, ParadoxExpression.resolve(matchValue), configGroup, options)
+            val matched = matchScriptExpression(matchContext, snippetExpression, null).get(options)
             if (!matched) return false
         }
         return true
@@ -133,10 +134,9 @@ object ParadoxExpressionMatchService {
         return ProcessorScope.findFrom {
             unionConfig.expandUnionCandidates { valueConfig ->
                 ProgressManager.checkCanceled()
-                val configExpression = valueConfig.configExpression
-                val matchContext = ParadoxScriptExpressionMatchContext(element, expression, configExpression, valueConfig, configGroup, options)
-                if (matchScriptExpression(matchContext).get(options)) process(valueConfig)
-                else true
+                val matchContext = ParadoxExpressionMatchContext(element, expression, configGroup, options)
+                val matched = matchScriptExpression(matchContext, valueConfig.configExpression, valueConfig).get(options)
+                if (matched) process(valueConfig) else true
             }
         }
     }
@@ -147,9 +147,8 @@ object ParadoxExpressionMatchService {
         return ProcessorScope.findFrom {
             unionConfig.expandUnionCandidates { valueConfig ->
                 ProgressManager.checkCanceled()
-                val configExpression = valueConfig.configExpression
-                val matchContext = ParadoxCsvExpressionMatchContext(element, expression, configExpression, configGroup)
-                if (matchCsvExpression(matchContext).get()) process(valueConfig)
+                val matchContext = ParadoxExpressionMatchContext(element, expression, configGroup)
+                if (matchCsvExpression(matchContext, valueConfig.configExpression).get()) process(valueConfig)
                 else true
             }
         }
@@ -161,9 +160,8 @@ object ParadoxExpressionMatchService {
         val keys = configGroup.aliasKeysGroupNoConst[aliasName] ?: return null
         return keys.find { key ->
             ProgressManager.checkCanceled() // check cancellation
-            val configExpression = CwtDataExpression.resolve(key)
-            val matchContext = ParadoxScriptExpressionMatchContext(element, expression, configExpression, null, configGroup, options)
-            matchScriptExpression(matchContext).get(options)
+            val matchContext = ParadoxExpressionMatchContext(element, expression, configGroup, options)
+            matchScriptExpression(matchContext, CwtDataExpression.resolve(key), null).get(options)
         }
     }
 }

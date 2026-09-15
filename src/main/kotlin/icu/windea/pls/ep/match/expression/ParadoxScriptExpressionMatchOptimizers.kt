@@ -10,9 +10,8 @@ import icu.windea.pls.core.collections.filterFast
 import icu.windea.pls.core.collections.filterIsInstanceFast
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.select.oneBy
+import icu.windea.pls.lang.match.ParadoxExpressionMatchContext
 import icu.windea.pls.lang.match.ParadoxExpressionMatchService
-import icu.windea.pls.lang.match.ParadoxScriptExpressionMatchContext
-import icu.windea.pls.lang.match.ParadoxScriptExpressionMatchOptimizerContext
 import icu.windea.pls.lang.resolve.ParadoxConfigService
 import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.model.expressions.ParadoxExpression
@@ -28,7 +27,7 @@ import icu.windea.pls.script.psi.ParadoxScriptValue
  */
 @Optimized
 class ParadoxScriptExpressionConstantMatchOptimizer : ParadoxScriptExpressionMatchOptimizer {
-    override fun <T : CwtMemberConfig<*>> optimize(input: List<T>, context: ParadoxScriptExpressionMatchOptimizerContext): List<T>? {
+    override fun <T : CwtMemberConfig<*>> optimize(context: ParadoxExpressionMatchContext, input: List<T>): List<T>? {
         if (input.size <= 1) return null
         if (context.expression.type != ParadoxExpressionType.String) return null
         val filtered = input.filterFast { ParadoxExpressionMatchService.matchesConstant(context.expression, it.configExpression, context.configGroup) }
@@ -42,7 +41,7 @@ class ParadoxScriptExpressionConstantMatchOptimizer : ParadoxScriptExpressionMat
  */
 @Optimized
 class ParadoxScriptExpressionParameterizedMatchOptimizer : ParadoxScriptExpressionMatchOptimizer {
-    override fun <T : CwtMemberConfig<*>> optimize(input: List<T>, context: ParadoxScriptExpressionMatchOptimizerContext): List<T>? {
+    override fun <T : CwtMemberConfig<*>> optimize(context: ParadoxExpressionMatchContext, input: List<T>): List<T>? {
         if (!context.expression.isFullParameterized()) return null
         val element = context.element
         val expressionElement = when (element) {
@@ -74,9 +73,9 @@ class ParadoxScriptExpressionParameterizedMatchOptimizer : ParadoxScriptExpressi
  */
 @Optimized
 class ParadoxScriptExpressionBlockMatchOptimizer : ParadoxScriptExpressionMatchOptimizer {
-    override fun isDynamic(context: ParadoxScriptExpressionMatchOptimizerContext) = true
+    override fun isDynamic(context: ParadoxExpressionMatchContext) = true
 
-    override fun <T : CwtMemberConfig<*>> optimize(input: List<T>, context: ParadoxScriptExpressionMatchOptimizerContext): List<T>? {
+    override fun <T : CwtMemberConfig<*>> optimize(context: ParadoxExpressionMatchContext, input: List<T>): List<T>? {
         if (input.size <= 1) return null
         val filtered = input.filterIsInstanceFast<CwtPropertyConfig> { it.valueType == CwtExpressionType.Block }
         if (filtered.isEmpty()) return null
@@ -88,11 +87,11 @@ class ParadoxScriptExpressionBlockMatchOptimizer : ParadoxScriptExpressionMatchO
         filteredGroup.values.forEach f1@{ filteredConfigs ->
             if (filteredConfigs.size <= 1) return@f1
             if (block == null) block = context.element.castOrNull<ParadoxScriptProperty>()?.block ?: return null
+            val nextContext = ParadoxExpressionMatchContext(block, blockExpression, context.configGroup, context.options)
             filteredConfigs.forEachFast f2@{ filteredConfig ->
                 val valueConfig = filteredConfig.valueConfig ?: return@f2
-                val matchContext = ParadoxScriptExpressionMatchContext(block, blockExpression, valueConfig.configExpression, valueConfig, context.configGroup, context.options)
-                val matchResult = ParadoxExpressionMatchService.matchScriptExpression(matchContext)
-                if (!matchResult.get(matchContext.options)) {
+                val matchResult = ParadoxExpressionMatchService.matchScriptExpression(nextContext, valueConfig.configExpression, valueConfig)
+                if (!matchResult.get(nextContext.options)) {
                     val configsToRemove = configsToRemove ?: mutableSetOf<CwtPropertyConfig>().also { configsToRemove = it }
                     configsToRemove += filteredConfig
                 }
@@ -109,9 +108,9 @@ class ParadoxScriptExpressionBlockMatchOptimizer : ParadoxScriptExpressionMatchO
  */
 @Optimized
 class ParadoxScriptExpressionOverriddenMatchOptimizer : ParadoxScriptExpressionMatchOptimizer {
-    override fun isDynamic(context: ParadoxScriptExpressionMatchOptimizerContext) = true
+    override fun isDynamic(context: ParadoxExpressionMatchContext) = true
 
-    override fun <T : CwtMemberConfig<*>> optimize(input: List<T>, context: ParadoxScriptExpressionMatchOptimizerContext): List<T>? {
+    override fun <T : CwtMemberConfig<*>> optimize(context: ParadoxExpressionMatchContext, input: List<T>): List<T>? {
         if (input.isEmpty()) return null
         var result: MutableList<T>? = null
         input.forEachFast f1@{ config ->
@@ -122,9 +121,8 @@ class ParadoxScriptExpressionOverriddenMatchOptimizer : ParadoxScriptExpressionM
                 return@f1
             }
             overriddenConfigs.forEachFast f2@{ overriddenConfig ->
-                val matchContext = ParadoxScriptExpressionMatchContext(context.element, context.expression, overriddenConfig.configExpression, overriddenConfig, context.configGroup, context.options)
-                val matchResult = ParadoxExpressionMatchService.matchScriptExpression(matchContext)
-                if (matchResult.get(matchContext.options)) {
+                val matchResult = ParadoxExpressionMatchService.matchScriptExpression(context, overriddenConfig.configExpression, overriddenConfig)
+                if (matchResult.get(context.options)) {
                     val result = result ?: mutableListOf<T>().also { result = it }
                     result += overriddenConfig
                 }

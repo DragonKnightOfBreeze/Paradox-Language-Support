@@ -16,10 +16,10 @@ object ParadoxPatternMatchService {
     /**
      * @see ParadoxPatternMatcher.matches
      */
-    fun matches(text: String, ignoreCase: Boolean, context: ParadoxPatternMatchContext): Boolean {
+    fun matches(context: ParadoxPatternMatchContext, text: String, ignoreCase: Boolean = false): Boolean {
         val matchers = ParadoxPatternMatcher.getAll()
         matchers.forEachFast f@{ matcher ->
-            matcher.matches(text, ignoreCase, context).let { if (it) return true }
+            matcher.matches(context, text, ignoreCase).let { if (it) return true }
         }
         return false
     }
@@ -57,7 +57,7 @@ object ParadoxPatternMatchService {
         if (configExpression.expressionString.isEmpty()) return false
         ProgressManager.checkCanceled()
         val context = ParadoxPatternMatchContext(element, configExpression, configGroup, options)
-        return matches(text, ignoreCase, context)
+        return matches(context, text, ignoreCase)
     }
 
     /**

@@ -47,6 +47,16 @@ object CwtDataTypeSets {
         CwtDataTypes.VariableField,
     )
 
+    /** 作为常量的数据类型。 */
+    val Constant = arrayOf(
+        CwtDataTypes.Constant,
+    )
+    /** 作为模式的数据类型。 */
+    val Pattern = arrayOf(
+        CwtDataTypes.Glob,
+        CwtDataTypes.Ant,
+        CwtDataTypes.Regex,
+    )
     /** 本地化引用的数据类型。 */
     val LocalisationReference = arrayOf(
         CwtDataTypes.Localisation,
@@ -59,12 +69,6 @@ object CwtDataTypeSets {
         CwtDataTypes.FilePath,
         CwtDataTypes.Icon,
         CwtDataTypes.AbsoluteFilePath,
-    )
-    /** 可作为模式来源的数据类型。 */
-    val Pattern = arrayOf(
-        CwtDataTypes.Glob,
-        CwtDataTypes.Ant,
-        CwtDataTypes.Regex,
     )
 
     /** 可包含常量文本的数据类型。 */

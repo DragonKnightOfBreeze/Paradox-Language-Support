@@ -81,12 +81,11 @@ object ParadoxMatchOccurrenceService {
                 occurrences.clear()
                 return@f
             }
+            val context = ParadoxExpressionMatchContext(data, expression, configGroup)
             val matched = childConfigs.findFast f@{ childConfig ->
                 if (childConfig.memberType == CwtMemberType.PROPERTY && data !is ParadoxScriptProperty) return@f false
                 if (childConfig.memberType == CwtMemberType.VALUE && data !is ParadoxScriptValue) return@f false
-                val configExpression = childConfig.configExpression
-                val context = ParadoxScriptExpressionMatchContext(data, expression, configExpression, childConfig, configGroup)
-                ParadoxExpressionMatchService.matchScriptExpression(context).get()
+                ParadoxExpressionMatchService.matchScriptExpression(context, childConfig.configExpression, childConfig).get()
             }
             if (matched == null) return@f
             val occurrence = occurrences[matched.configExpression]

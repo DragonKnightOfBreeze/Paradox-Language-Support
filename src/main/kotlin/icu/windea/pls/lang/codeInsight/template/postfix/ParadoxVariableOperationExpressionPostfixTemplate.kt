@@ -11,9 +11,10 @@ import icu.windea.pls.config.config.internal.CwtPostfixTemplateSettingsConfig
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.util.values.singletonList
 import icu.windea.pls.core.util.values.to
+import icu.windea.pls.lang.codeInsight.completion.script.ParadoxVariableNameCompletionProvider
+import icu.windea.pls.lang.match.ParadoxExpressionMatchContext
 import icu.windea.pls.lang.match.ParadoxExpressionMatchService
 import icu.windea.pls.lang.match.ParadoxMatchOptions
-import icu.windea.pls.lang.match.ParadoxScriptExpressionMatchContext
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.model.expressions.ParadoxExpression
 import icu.windea.pls.model.type.ParadoxExpressionRole
@@ -23,7 +24,7 @@ import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.psi.isDirectValue
 
 /**
- * @see icu.windea.pls.lang.codeInsight.completion.script.ParadoxVariableNameCompletionProvider
+ * @see ParadoxVariableNameCompletionProvider
  */
 class ParadoxVariableOperationExpressionPostfixTemplate(
     setting: CwtPostfixTemplateSettingsConfig,
@@ -46,11 +47,10 @@ class ParadoxVariableOperationExpressionPostfixTemplate(
         val configGroup = configs.first().configGroup
         val expression = ParadoxExpression.resolve(setting.id, quoted = false, role = ParadoxExpressionRole.Key)
         val configsToMatch = configs.flatMapTo(mutableListOf()) { it.configs.orEmpty() }
+        val matchContext = ParadoxExpressionMatchContext(context, expression, configGroup)
         val matched = configsToMatch.find p@{ config ->
             if (config !is CwtPropertyConfig) return@p false
-            val configExpression = config.keyExpression
-            val matchContext = ParadoxScriptExpressionMatchContext(context, expression, configExpression, config, configGroup)
-            ParadoxExpressionMatchService.matchScriptExpression(matchContext).get()
+            ParadoxExpressionMatchService.matchScriptExpression(matchContext, config.keyExpression, config).get()
         }
         if (matched == null) return emptyList()
         return element.to.singletonList()

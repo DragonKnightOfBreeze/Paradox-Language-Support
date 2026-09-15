@@ -25,7 +25,7 @@ interface ParadoxPatternMatcher {
     /**
      * 匹配文本与可作为模式来源的规则表达式。
      */
-    fun matches(text: String, ignoreCase: Boolean, context: ParadoxPatternMatchContext): Boolean
+    fun matches(context: ParadoxPatternMatchContext, text: String, ignoreCase: Boolean = false): Boolean
 
     companion object INSTANCE {
         @JvmField val EP_NAME = ExtensionPointName<ParadoxPatternMatcher>("icu.windea.pls.patternMatcher")

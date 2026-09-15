@@ -59,11 +59,10 @@ import icu.windea.pls.lang.ParadoxThreadContext
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.match.CwtRowConfigMatchContext
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
-import icu.windea.pls.lang.match.ParadoxCsvExpressionMatchContext
+import icu.windea.pls.lang.match.ParadoxExpressionMatchContext
 import icu.windea.pls.lang.match.ParadoxExpressionMatchService
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.ParadoxMatchService
-import icu.windea.pls.lang.match.ParadoxScriptExpressionMatchContext
 import icu.windea.pls.lang.match.toHashString
 import icu.windea.pls.lang.select.*
 import icu.windea.pls.lang.selectGameType
@@ -328,9 +327,9 @@ object ParadoxConfigService {
 
     private fun matchConfigsForConfigContext(element: ParadoxScriptMember, expression: ParadoxExpression, configs: List<CwtMemberConfig<*>>, configGroup: CwtConfigGroup, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>> {
         ProgressManager.checkCanceled()
+        val matchContext = ParadoxExpressionMatchContext(element, expression, configGroup, options)
         val candidates = ParadoxMatchService.collectCandidates(configs) { config ->
-            val context = ParadoxScriptExpressionMatchContext(element, expression, config.configExpression, config, configGroup, options)
-            ParadoxExpressionMatchService.matchScriptExpression(context)
+            ParadoxExpressionMatchService.matchScriptExpression(matchContext, config.configExpression, config)
         }
         val processedCandidates = ParadoxMatchService.processCandidates(candidates, options)
         val processed = processedCandidates.mapFast { it.value }
@@ -368,9 +367,9 @@ object ParadoxConfigService {
 
                 ProgressManager.checkCanceled()
                 val keyExpression = element.propertyKey.let { ParadoxExpression.resolve(it, options) }
+                val matchContextForKey = ParadoxExpressionMatchContext(element, keyExpression, configGroup, options)
                 val candidatesForKey = ParadoxMatchService.collectCandidates(configs) { config ->
-                    val context = ParadoxScriptExpressionMatchContext(element, keyExpression, config.keyExpression, config, configGroup, options)
-                    ParadoxExpressionMatchService.matchScriptExpression(context)
+                    ParadoxExpressionMatchService.matchScriptExpression(matchContextForKey, config.keyExpression, config)
                 }
                 if (candidatesForKey.isEmpty()) {
                     // 如果无结果，则直接返回空列表
@@ -397,9 +396,9 @@ object ParadoxConfigService {
                     // 如果无法得到值表达式，则直接回退（返回上一步已匹配得到的规则）
                     return resultForKey
                 }
+                val matchContext = ParadoxExpressionMatchContext(element, valueExpression, configGroup, options)
                 val candidates = ParadoxMatchService.collectCandidates(resultForKey) { config ->
-                    val context = ParadoxScriptExpressionMatchContext(element, valueExpression, config.valueExpression, config, configGroup, options)
-                    ParadoxExpressionMatchService.matchScriptExpression(context)
+                    ParadoxExpressionMatchService.matchScriptExpression(matchContext, config.valueExpression, config)
                 }
                 if (candidates.isEmpty()) {
                     // 如果无结果，则需要考虑回退（返回上一步已匹配得到的规则）
@@ -432,9 +431,9 @@ object ParadoxConfigService {
                     // 如果无法得到值表达式，则直接回退（返回上一步已匹配得到的规则）
                     return configs
                 }
+                val matchContext = ParadoxExpressionMatchContext(element, valueExpression, configGroup, options)
                 val candidates = ParadoxMatchService.collectCandidates(configs) { config ->
-                    val context = ParadoxScriptExpressionMatchContext(element, valueExpression, config.valueExpression, config, configGroup, options)
-                    ParadoxExpressionMatchService.matchScriptExpression(context)
+                    ParadoxExpressionMatchService.matchScriptExpression(matchContext, config.valueExpression, config)
                 }
                 if (candidates.isEmpty()) {
                     // 如果无结果，则需要考虑回退（返回上一步已匹配得到的规则）
@@ -484,11 +483,11 @@ object ParadoxConfigService {
     fun isMatchedColumnConfig(column: ParadoxCsvColumn, columnConfig: CwtPropertyConfig): Boolean {
         if (ParadoxCsvPsiService.isHeaderColumn(column)) return true // header column -> always true
 
-        val configExpression = columnConfig.valueConfig?.configExpression ?: return false
+        val valueConfig = columnConfig.valueConfig ?: return false
         val configGroup = columnConfig.configGroup
         val expression = ParadoxExpression.resolve(column)
-        val context = ParadoxCsvExpressionMatchContext(column, expression, configExpression, configGroup)
-        return ParadoxExpressionMatchService.matchCsvExpression(context).get()
+        val matchContext = ParadoxExpressionMatchContext(column, expression, configGroup)
+        return ParadoxExpressionMatchService.matchCsvExpression(matchContext, valueConfig.valueExpression).get()
     }
 
     fun getInBlockKeys(config: CwtMemberConfig<*>): Set<String> {
