@@ -59,7 +59,7 @@ class Issue383Test : BasePlatformTestCase(), ChronicleTestScope {
     fun testInspection_ScopeMatched() {
         enableAllNeededInspections()
 
-        // from: stellaris@common/script_values/0_script_values.txt
+        // from: stellaris, common/script_values/0_script_values.txt
         markFileInfo(ParadoxGameType.Stellaris, "common/script_values/test.txt")
         myFixture.configureByText("test.txt", """
             created_enclave_number = {
@@ -82,7 +82,7 @@ class Issue383Test : BasePlatformTestCase(), ChronicleTestScope {
     fun testInspection_WithParameter() {
         enableAllNeededInspections()
 
-        // from: stellaris@common/script_values/0_script_values.txt
+        // from: stellaris, common/script_values/0_script_values.txt
         markFileInfo(ParadoxGameType.Stellaris, "common/script_values/test.txt")
         myFixture.configureByText("test.txt", """
             num_starbase_modules_of_type = {
@@ -102,7 +102,7 @@ class Issue383Test : BasePlatformTestCase(), ChronicleTestScope {
 
     @Test
     fun testReferenceResolution_ScopeMatched() {
-        // from: stellaris@common/script_values/0_script_values.txt
+        // from: stellaris, common/script_values/0_script_values.txt
         markFileInfo(ParadoxGameType.Stellaris, "common/script_values/test.txt")
         myFixture.configureByText("test.txt", """
             created_enclave_number = {
@@ -136,7 +136,7 @@ class Issue383Test : BasePlatformTestCase(), ChronicleTestScope {
 
     @Test
     fun testReferenceResolution_WithParameter() {
-        // from: stellaris@common/script_values/0_script_values.txt
+        // from: stellaris, common/script_values/0_script_values.txt
         markFileInfo(ParadoxGameType.Stellaris, "common/script_values/test.txt")
         myFixture.configureByText("test.txt", """
             num_starbase_modules_of_type = {
