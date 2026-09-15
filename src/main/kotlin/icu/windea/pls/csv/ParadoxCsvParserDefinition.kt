@@ -10,8 +10,8 @@ import icu.windea.pls.csv.lexer.ParadoxCsvLexerFactory
 import icu.windea.pls.csv.parser.ParadoxCsvParser
 import icu.windea.pls.csv.psi.ParadoxCsvElementTypes.*
 import icu.windea.pls.csv.psi.ParadoxCsvFile
-import icu.windea.pls.csv.psi.impl.ParadoxCsvFileImpl
 import icu.windea.pls.csv.psi.ParadoxCsvTokenSets
+import icu.windea.pls.csv.psi.impl.ParadoxCsvFileImpl
 
 class ParadoxCsvParserDefinition : ParserDefinition {
     override fun getWhitespaceTokens() = ParadoxCsvTokenSets.WHITE_SPACES

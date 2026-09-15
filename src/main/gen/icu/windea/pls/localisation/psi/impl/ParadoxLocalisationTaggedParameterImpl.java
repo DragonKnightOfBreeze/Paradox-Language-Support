@@ -1,17 +1,17 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.localisation.psi.impl;
 
-import java.util.List;
-import org.jetbrains.annotations.*;
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.util.PsiTreeUtil;
-import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
-import icu.windea.pls.localisation.psi.*;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementPresentation;
+import icu.windea.pls.localisation.psi.ParadoxLocalisationTaggedParameter;
+import icu.windea.pls.localisation.psi.ParadoxLocalisationVisitor;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ParadoxLocalisationTaggedParameterImpl extends ASTWrapperPsiElement implements ParadoxLocalisationTaggedParameter {
 

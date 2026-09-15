@@ -1,7 +1,5 @@
 package icu.windea.pls.script.psi
 
-import com.intellij.psi.PsiListLikeElement
-
 /**
  * 成员容器。可以直接包含成员（也可能直接包含特定的语句）。
  *

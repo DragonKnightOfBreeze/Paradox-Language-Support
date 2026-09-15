@@ -1,15 +1,12 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.cwt.psi;
 
-import org.jetbrains.annotations.*;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.PsiElement;
-import icu.windea.pls.core.psi.PsiPresentableTextAwareElement;
-import icu.windea.pls.core.psi.PsiQuoteAwareElement;
-import com.intellij.psi.PsiDocCommentBase;
-import icu.windea.pls.core.psi.PsiRootBlock;
-import com.intellij.psi.PsiListLikeElement;
 import com.intellij.psi.PsiComment;
+import com.intellij.psi.PsiDocCommentBase;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiElementVisitor;
+import icu.windea.pls.core.psi.PsiPresentableTextAwareElement;
+import org.jetbrains.annotations.NotNull;
 
 public class CwtVisitor extends PsiElementVisitor {
 

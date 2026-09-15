@@ -3,9 +3,9 @@ package icu.windea.pls.script.structureView
 import com.intellij.ide.structureView.impl.common.PsiTreeElementBase
 import com.intellij.psi.PsiElement
 import icu.windea.pls.lang.tagType
+import icu.windea.pls.script.psi.ParadoxScriptElementPresentationService
 import icu.windea.pls.script.psi.ParadoxScriptNormalConditionalBlock
 import icu.windea.pls.script.psi.ParadoxScriptProperty
-import icu.windea.pls.script.psi.ParadoxScriptElementPresentationService
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.ParadoxScriptValue
 import javax.swing.Icon

@@ -4,8 +4,8 @@ import com.intellij.psi.PsiElement
 import com.intellij.ui.breadcrumbs.BreadcrumbsProvider
 import icu.windea.pls.script.ParadoxScriptLanguage
 import icu.windea.pls.script.psi.ParadoxScriptConditionalBlock
-import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptElementPresentationService
+import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.psi.isDirectValue

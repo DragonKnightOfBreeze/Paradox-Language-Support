@@ -32,7 +32,6 @@ import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.csv.psi.ParadoxCsvHeader
 import icu.windea.pls.csv.psi.ParadoxCsvRow
 import icu.windea.pls.csv.text.ParadoxCsv
-import icu.windea.pls.cwt.psi.CwtExpressionElement
 import icu.windea.pls.lang.search.scope.ParadoxSearchScope
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxFileManager

@@ -22,7 +22,6 @@ import icu.windea.pls.core.forEachChild
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.processChild
-import icu.windea.pls.core.psi.PsiPresentableTextAwareElement
 import icu.windea.pls.core.psi.PsiQuoteAwareElement
 import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.core.select.listBy
@@ -36,7 +35,6 @@ import icu.windea.pls.core.truncate
 import icu.windea.pls.core.unquote
 import icu.windea.pls.core.util.values.or
 import icu.windea.pls.core.util.values.unresolved
-import icu.windea.pls.cwt.psi.CwtExpressionElement
 import icu.windea.pls.lang.codeInsight.color.ParadoxColorService
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.ParadoxPsiService
@@ -44,7 +42,6 @@ import icu.windea.pls.lang.search.scope.ParadoxSearchScope
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxFileManager
-import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
 import icu.windea.pls.model.constants.ChronicleStrings
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptColor
@@ -53,7 +50,6 @@ import icu.windea.pls.script.psi.ParadoxScriptConditionalParameter
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
 import icu.windea.pls.script.psi.ParadoxScriptElementManipulationService
 import icu.windea.pls.script.psi.ParadoxScriptElementPresentation
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
@@ -487,7 +483,7 @@ object ParadoxScriptPsiImplUtil {
     }
 
     @JvmStatic
-    fun getName(element: ParadoxScriptInlineMathScriptedVariableReference): String? {
+    fun getName(element: ParadoxScriptInlineMathScriptedVariableReference): String {
         // remove leading `@` & can be parameterized & optimized to optimize memory
         return element.text.removePrefix("@").optimized()
     }

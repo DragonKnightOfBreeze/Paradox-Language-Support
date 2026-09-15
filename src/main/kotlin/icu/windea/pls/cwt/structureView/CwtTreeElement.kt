@@ -2,8 +2,8 @@ package icu.windea.pls.cwt.structureView
 
 import com.intellij.ide.structureView.impl.common.PsiTreeElementBase
 import com.intellij.psi.PsiElement
-import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.cwt.psi.CwtElementPresentationService
+import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.cwt.psi.CwtValue
 import javax.swing.Icon
 

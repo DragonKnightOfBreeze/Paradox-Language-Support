@@ -3,8 +3,8 @@ package icu.windea.pls.csv.structureView
 import com.intellij.ide.structureView.impl.common.PsiTreeElementBase
 import com.intellij.psi.PsiElement
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
-import icu.windea.pls.csv.psi.ParadoxCsvHeader
 import icu.windea.pls.csv.psi.ParadoxCsvElementPresentationService
+import icu.windea.pls.csv.psi.ParadoxCsvHeader
 import icu.windea.pls.csv.psi.ParadoxCsvRow
 import javax.swing.Icon
 

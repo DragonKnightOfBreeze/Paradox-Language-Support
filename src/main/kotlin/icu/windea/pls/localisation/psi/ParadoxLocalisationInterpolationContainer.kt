@@ -1,6 +1,5 @@
 package icu.windea.pls.localisation.psi
 
-import com.intellij.psi.NavigatablePsiElement
 import com.intellij.psi.PsiElement
 import icu.windea.pls.core.children
 import icu.windea.pls.core.select.listBy

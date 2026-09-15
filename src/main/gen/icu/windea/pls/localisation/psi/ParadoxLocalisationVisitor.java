@@ -1,14 +1,13 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.localisation.psi;
 
-import org.jetbrains.annotations.*;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.PsiElement;
-import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference;
-import icu.windea.pls.core.psi.PsiPresentableTextAwareElement;
-import icu.windea.pls.core.psi.PsiQuoteAwareElement;
 import com.intellij.psi.NavigatablePsiElement;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiListLikeElement;
+import icu.windea.pls.core.psi.PsiPresentableTextAwareElement;
+import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference;
+import org.jetbrains.annotations.NotNull;
 
 public class ParadoxLocalisationVisitor extends PsiElementVisitor {
 

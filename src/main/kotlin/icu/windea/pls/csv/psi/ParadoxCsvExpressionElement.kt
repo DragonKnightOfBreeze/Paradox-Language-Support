@@ -1,8 +1,6 @@
 package icu.windea.pls.csv.psi
 
 import com.intellij.openapi.util.TextRange
-import com.intellij.psi.NavigatablePsiElement
-import icu.windea.pls.core.psi.PsiPresentableTextAwareElement
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 
 /**

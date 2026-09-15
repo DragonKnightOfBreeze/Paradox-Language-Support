@@ -29,7 +29,7 @@ object ParadoxComplexEnumValueManager {
     }
 
     fun getInfo(element: ParadoxExpressionElement): ParadoxComplexEnumValueInfo? {
-        when(element) {
+        when (element) {
             is ParadoxScriptExpressionElement -> {
                 // fast return
                 if (!element.isResolvableLiteralExpression()) return null

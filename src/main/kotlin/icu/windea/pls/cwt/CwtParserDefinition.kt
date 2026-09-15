@@ -9,8 +9,8 @@ import icu.windea.pls.cwt.lexer.CwtLexerFactory
 import icu.windea.pls.cwt.parser.CwtParser
 import icu.windea.pls.cwt.psi.CwtElementTypes.*
 import icu.windea.pls.cwt.psi.CwtFile
-import icu.windea.pls.cwt.psi.impl.CwtFileImpl
 import icu.windea.pls.cwt.psi.CwtTokenSets
+import icu.windea.pls.cwt.psi.impl.CwtFileImpl
 
 class CwtParserDefinition : ParserDefinition {
     override fun getWhitespaceTokens() = CwtTokenSets.WHITE_SPACES

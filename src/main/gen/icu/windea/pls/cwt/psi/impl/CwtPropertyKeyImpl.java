@@ -1,22 +1,21 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.cwt.psi.impl;
 
-import java.util.List;
-import org.jetbrains.annotations.*;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.util.PsiTreeUtil;
-import static icu.windea.pls.cwt.psi.CwtElementTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
-import icu.windea.pls.cwt.psi.*;
-import com.intellij.openapi.util.Iconable.IconFlags;
+import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.TextRange;
+import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import icu.windea.pls.core.text.QuotePattern;
-import javax.swing.Icon;
+import icu.windea.pls.cwt.psi.CwtElementPresentation;
+import icu.windea.pls.cwt.psi.CwtPropertyKey;
+import icu.windea.pls.cwt.psi.CwtVisitor;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import javax.swing.*;
 
 public class CwtPropertyKeyImpl extends ASTWrapperPsiElement implements CwtPropertyKey {
 

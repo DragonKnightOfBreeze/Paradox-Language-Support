@@ -1,17 +1,18 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.script.psi.impl;
 
-import java.util.List;
-import org.jetbrains.annotations.*;
 import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.util.PsiTreeUtil;
-import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
-import icu.windea.pls.script.psi.*;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
-import java.awt.Color;
+import icu.windea.pls.script.psi.ParadoxScriptColor;
+import icu.windea.pls.script.psi.ParadoxScriptElementPresentation;
+import icu.windea.pls.script.psi.ParadoxScriptVisitor;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.awt.*;
+import java.util.List;
 
 public class ParadoxScriptColorImpl extends ParadoxScriptValueImpl implements ParadoxScriptColor {
 

@@ -1,6 +1,5 @@
 package icu.windea.pls.localisation.psi.impl
 
-import com.intellij.navigation.ItemPresentation
 import com.intellij.openapi.util.Iconable
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.NavigatablePsiElement
@@ -28,7 +27,6 @@ import icu.windea.pls.core.truncate
 import icu.windea.pls.core.unquote
 import icu.windea.pls.core.util.values.or
 import icu.windea.pls.core.util.values.unresolved
-import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.lang.search.scope.ParadoxSearchScope
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxExpressionManager

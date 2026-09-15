@@ -2,9 +2,9 @@ package icu.windea.pls.localisation.structureView
 
 import com.intellij.ide.structureView.impl.common.PsiTreeElementBase
 import com.intellij.psi.PsiElement
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementPresentationService
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyList
-import icu.windea.pls.localisation.psi.ParadoxLocalisationElementPresentationService
 import javax.swing.Icon
 
 abstract class ParadoxLocalisationTreeElement<T : PsiElement>(element: T) : PsiTreeElementBase<T>(element) {

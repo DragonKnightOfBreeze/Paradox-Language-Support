@@ -1,15 +1,15 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.csv.psi;
 
-import java.util.List;
-import org.jetbrains.annotations.*;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.NavigatablePsiElement;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiListLikeElement;
-import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
-import javax.swing.Icon;
+import org.jetbrains.annotations.NotNull;
+
+import javax.swing.*;
+import java.util.List;
 
 public interface ParadoxCsvRow extends ParadoxCsvColumnContainer, NavigatablePsiElement, PsiListLikeElement {
 

@@ -1,7 +1,6 @@
 package icu.windea.pls.localisation.psi
 
 import com.intellij.openapi.util.TextRange
-import icu.windea.pls.core.psi.PsiPresentableTextAwareElement
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 
 /**

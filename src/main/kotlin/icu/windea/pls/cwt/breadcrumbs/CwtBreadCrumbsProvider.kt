@@ -3,8 +3,8 @@ package icu.windea.pls.cwt.breadcrumbs
 import com.intellij.psi.PsiElement
 import com.intellij.ui.breadcrumbs.BreadcrumbsProvider
 import icu.windea.pls.cwt.CwtLanguage
-import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.cwt.psi.CwtElementPresentationService
+import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.cwt.psi.CwtValue
 import icu.windea.pls.cwt.psi.isDirectValue
 

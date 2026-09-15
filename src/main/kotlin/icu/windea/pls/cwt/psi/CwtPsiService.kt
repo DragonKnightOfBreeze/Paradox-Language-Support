@@ -6,17 +6,10 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.TokenType
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.parentOfType
-import icu.windea.pls.base.settings.ChronicleInternalSettings
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.children
-import icu.windea.pls.core.constants.DefaultStrings
-import icu.windea.pls.core.forEachChild
 import icu.windea.pls.core.psi.PsiBoundElement
-import icu.windea.pls.core.psi.PsiPresentableTextAwareElement
-import icu.windea.pls.core.psi.PsiQuoteAwareElement
 import icu.windea.pls.core.psi.PsiService
-import icu.windea.pls.core.transformAndKeepQuotes
-import icu.windea.pls.core.truncate
 import icu.windea.pls.cwt.CwtLanguage
 
 @Suppress("unused")

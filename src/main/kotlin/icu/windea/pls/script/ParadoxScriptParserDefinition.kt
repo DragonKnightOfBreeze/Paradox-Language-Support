@@ -6,7 +6,6 @@ import com.intellij.lang.ParserDefinition.*
 import com.intellij.lang.ParserDefinition.SpaceRequirements.*
 import com.intellij.openapi.project.Project
 import com.intellij.psi.FileViewProvider
-import com.intellij.psi.PsiElement
 import icu.windea.pls.script.lexer.ParadoxScriptLexer
 import icu.windea.pls.script.parser.ParadoxScriptParser
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*

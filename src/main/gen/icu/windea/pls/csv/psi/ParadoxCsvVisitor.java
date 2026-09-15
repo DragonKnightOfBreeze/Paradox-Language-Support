@@ -1,13 +1,9 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.csv.psi;
 
-import org.jetbrains.annotations.*;
-import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiElement;
-import icu.windea.pls.core.psi.PsiPresentableTextAwareElement;
-import icu.windea.pls.core.psi.PsiQuoteAwareElement;
-import com.intellij.psi.NavigatablePsiElement;
-import com.intellij.psi.PsiListLikeElement;
+import com.intellij.psi.PsiElementVisitor;
+import org.jetbrains.annotations.NotNull;
 
 public class ParadoxCsvVisitor extends PsiElementVisitor {
 
