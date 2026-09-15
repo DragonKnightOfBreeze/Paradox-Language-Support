@@ -4,10 +4,10 @@ import com.intellij.codeInsight.editorActions.ExtendWordSelectionHandlerBase
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
-import com.intellij.psi.util.elementType
 import com.intellij.psi.util.endOffset
 import com.intellij.psi.util.startOffset
-import icu.windea.pls.core.findChild
+import icu.windea.pls.core.children
+import icu.windea.pls.core.select.oneBy
 import icu.windea.pls.script.ParadoxScriptLanguage
 import icu.windea.pls.script.psi.ParadoxScriptConditionalBlock
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
@@ -34,8 +34,8 @@ class ParadoxScriptConditionalBlockWordSelectionHandler : ExtendWordSelectionHan
 
     private fun selectForConditionalBlock(element: ParadoxScriptConditionalBlock, cursorOffset: Int, result: MutableList<TextRange>) {
         // add nested
-        val nestedStartOffset = element.findChild { it.elementType == NESTED_LEFT_BRACKET }?.startOffset
-        val nestedEndOffset = element.findChild { it.elementType == NESTED_RIGHT_BRACKET }?.endOffset
+        val nestedStartOffset = element.children().oneBy(NESTED_LEFT_BRACKET)?.startOffset
+        val nestedEndOffset = element.children().oneBy(NESTED_RIGHT_BRACKET)?.endOffset
         if (nestedStartOffset != null && nestedEndOffset != null && cursorOffset in nestedStartOffset..nestedEndOffset) {
             result.add(TextRange.create(nestedStartOffset, nestedEndOffset))
         }

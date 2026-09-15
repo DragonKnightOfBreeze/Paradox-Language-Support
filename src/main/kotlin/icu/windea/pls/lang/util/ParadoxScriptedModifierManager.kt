@@ -1,6 +1,7 @@
 package icu.windea.pls.lang.util
 
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
+import icu.windea.pls.core.select.one
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.psi.stringValue

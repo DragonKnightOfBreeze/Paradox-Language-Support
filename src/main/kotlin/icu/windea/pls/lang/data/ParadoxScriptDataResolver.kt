@@ -2,7 +2,8 @@ package icu.windea.pls.lang.data
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import icu.windea.pls.core.findChild
+import icu.windea.pls.core.children
+import icu.windea.pls.core.select.oneBy
 import icu.windea.pls.lang.psi.members
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptFile
@@ -28,7 +29,7 @@ class ParadoxScriptDataResolver(
 
     fun resolveFile(file: PsiFile): ParadoxScriptData? {
         if (file !is ParadoxScriptFile) return null
-        val rootBlock = file.findChild<ParadoxScriptRootBlock>() ?: return null
+        val rootBlock = file.children().oneBy<ParadoxScriptRootBlock>() ?: return null
         return resolveBlock(rootBlock)
     }
 

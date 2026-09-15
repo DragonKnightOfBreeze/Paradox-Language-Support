@@ -8,6 +8,7 @@ import icu.windea.pls.config.configExpression.CwtTemplateExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.option.CwtOptionMetadata
 import icu.windea.pls.core.match.TextMatcher
+import icu.windea.pls.core.select.one
 import icu.windea.pls.lang.match.ParadoxExpressionMatchService
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.psi.members

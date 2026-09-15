@@ -15,21 +15,58 @@ import com.intellij.psi.util.elementType
 import com.intellij.util.IncorrectOperationException
 import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.findChildren
+import icu.windea.pls.core.children
 import icu.windea.pls.core.psi.PsiPresentableElement
 import icu.windea.pls.core.psi.PsiQuoteAwareElement
 import icu.windea.pls.core.psi.PsiService
+import icu.windea.pls.core.select.listBy
+import icu.windea.pls.core.select.oneBy
 import icu.windea.pls.core.text.QuotePattern
 import icu.windea.pls.core.text.QuotePatterns
 import icu.windea.pls.core.unquote
-import icu.windea.pls.cwt.psi.*
+import icu.windea.pls.cwt.psi.CwtBlock
+import icu.windea.pls.cwt.psi.CwtDocComment
+import icu.windea.pls.cwt.psi.CwtElementManipulationService
+import icu.windea.pls.cwt.psi.CwtElementPresentation
 import icu.windea.pls.cwt.psi.CwtElementTypes.*
+import icu.windea.pls.cwt.psi.CwtExpressionElement
+import icu.windea.pls.cwt.psi.CwtFile
+import icu.windea.pls.cwt.psi.CwtMember
+import icu.windea.pls.cwt.psi.CwtOption
+import icu.windea.pls.cwt.psi.CwtOptionComment
+import icu.windea.pls.cwt.psi.CwtOptionKey
+import icu.windea.pls.cwt.psi.CwtProperty
+import icu.windea.pls.cwt.psi.CwtPropertyKey
+import icu.windea.pls.cwt.psi.CwtPsiService
+import icu.windea.pls.cwt.psi.CwtRootBlock
+import icu.windea.pls.cwt.psi.CwtStatement
+import icu.windea.pls.cwt.psi.CwtString
+import icu.windea.pls.cwt.psi.CwtValue
 import icu.windea.pls.cwt.text.Cwt
 import icu.windea.pls.model.constants.ChronicleStrings
 import javax.swing.Icon
 
 @Suppress("UNUSED_PARAMETER")
 object CwtPsiImplUtil {
+    // region CwtFile
+
+    fun getBlock(element: CwtFile): CwtRootBlock? {
+        return element.children().oneBy()
+    }
+
+    @JvmStatic
+    fun getMemberContainer(element: CwtFile): CwtRootBlock? {
+        return getBlock(element)
+    }
+
+    @JvmStatic
+    fun getMembers(element: CwtFile): List<CwtMember> {
+        val memberContainer = getMemberContainer(element)
+        return memberContainer.children().listBy()
+    }
+
+    // endregion
+
     // region CwtRootBlock
 
     @JvmStatic
@@ -44,7 +81,8 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun getMembers(element: CwtRootBlock): List<CwtMember> {
-        return getMemberContainer(element).findChildren<_>()
+        val memberContainer = getMemberContainer(element)
+        return memberContainer.children().listBy()
     }
 
     // endregion
@@ -155,7 +193,8 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun getMembers(element: CwtProperty): List<CwtMember>? {
-        return getMemberContainer(element)?.findChildren<_>()
+        val memberContainer = getMemberContainer(element) ?: return null
+        return memberContainer.children().listBy()
     }
 
     // endregion
@@ -246,7 +285,8 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun getMembers(element: CwtBlock): List<CwtMember> {
-        return getMemberContainer(element).findChildren<_>()
+        val memberContainer = getMemberContainer(element)
+        return memberContainer.children().listBy()
     }
 
     @JvmStatic
@@ -299,7 +339,7 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun getComponents(element: PsiListLikeElement): List<CwtStatement> {
-        return element.findChildren<_>()
+        return element.children().listBy()
     }
 
     @JvmStatic

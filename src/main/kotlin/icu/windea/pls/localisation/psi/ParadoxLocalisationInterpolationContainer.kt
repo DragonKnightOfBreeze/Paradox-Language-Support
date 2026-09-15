@@ -1,7 +1,8 @@
 package icu.windea.pls.localisation.psi
 
 import com.intellij.psi.NavigatablePsiElement
-import icu.windea.pls.core.findChildren
+import icu.windea.pls.core.children
+import icu.windea.pls.core.select.listBy
 
 /**
  * 插值容器，可以直接包含各类插值（[ParadoxLocalisationInterpolation]）。这意味着其标识符/字面量可能是参数化的。
@@ -22,7 +23,7 @@ import icu.windea.pls.core.findChildren
  */
 @Suppress("unused")
 interface ParadoxLocalisationInterpolationContainer : NavigatablePsiElement {
-    val interpolations: List<ParadoxLocalisationInterpolation> get() = this.findChildren<_>()
-    val parameters: List<ParadoxLocalisationParameter> get() = this.findChildren<_>()
-    val commands: List<ParadoxLocalisationCommand> get() = this.findChildren<_>()
+    val interpolations: List<ParadoxLocalisationInterpolation> get() = children().listBy()
+    val parameters: List<ParadoxLocalisationParameter> get() = children().listBy()
+    val commands: List<ParadoxLocalisationCommand> get() = children().listBy()
 }

@@ -4,6 +4,8 @@ import com.intellij.testFramework.TestDataFile
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.config.util.CwtConfigKeyManager
+import icu.windea.pls.core.select.list
+import icu.windea.pls.core.select.one
 import icu.windea.pls.lang.analysis.ParadoxAnalysisInjectionManager
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.select.selectScope
@@ -69,7 +71,7 @@ class ParadoxDefinitionManagerTest : BasePlatformTestCase(), ChronicleTestScope 
     fun testGetInfo_BasicProperty_MultipleDefinitions() {
         val file = configureScriptFile("common/mechs/00_mechs.txt", "features/resolve/common/mechs/00_mechs.txt")
 
-        val definitions = selectScope { file.properties().asProperty().all() }
+        val definitions = selectScope { file.properties().asProperty().list() }
         Assert.assertEquals(3, definitions.size)
 
         val names = definitions.mapNotNull { prop -> ParadoxDefinitionManager.getInfo(prop)?.name }.toSet()
@@ -80,7 +82,7 @@ class ParadoxDefinitionManagerTest : BasePlatformTestCase(), ChronicleTestScope 
     fun testGetInfo_WithRootKeys() {
         val file = configureScriptFile("common/modules/00_jump_modules.txt", "features/resolve/common/modules/00_jump_modules.txt")
 
-        val definitions = selectScope { file.queryBy("modules/*").asProperty().all() }
+        val definitions = selectScope { file.queryBy("modules/*").asProperty().list() }
         Assert.assertEquals(2, definitions.size)
 
         val infos = definitions.mapNotNull { prop -> ParadoxDefinitionManager.getInfo(prop) }
@@ -97,7 +99,7 @@ class ParadoxDefinitionManagerTest : BasePlatformTestCase(), ChronicleTestScope 
         val file = configureScriptFile("common/modules/01_jump_modules_flattened.txt", "features/resolve/common/modules/01_jump_modules_flattened.txt")
         ParadoxAnalysisInjectionManager.injectRootKeys(file.virtualFile, listOf("modules"))
 
-        val definitions = selectScope { file.properties().asProperty().all() }
+        val definitions = selectScope { file.properties().asProperty().list() }
         Assert.assertEquals(2, definitions.size)
 
         val infos = definitions.mapNotNull { prop -> ParadoxDefinitionManager.getInfo(prop) }

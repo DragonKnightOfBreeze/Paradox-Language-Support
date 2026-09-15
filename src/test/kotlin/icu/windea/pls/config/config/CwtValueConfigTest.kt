@@ -5,8 +5,9 @@ import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.config.configExpression.CwtDataExpressionRole
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.children
 import icu.windea.pls.core.createPointer
-import icu.windea.pls.core.findChild
+import icu.windea.pls.core.select.oneBy
 import icu.windea.pls.core.util.createKey
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.cwt.psi.CwtProperty
@@ -41,29 +42,29 @@ class CwtValueConfigTest : BasePlatformTestCase() {
         val root = file.block!!
 
         // yes with preceding option
-        val yes = root.findChild<CwtValue> { it.value == "yes" }!!
+        val yes = root.children().oneBy<CwtValue> { it.value == "yes" }!!
         val yesC = CwtValueConfig.resolve(yes, file, group)
         assertEquals("yes", yesC.value)
         assertEquals(CwtExpressionType.Boolean, yesC.valueType)
         assertTrue(yesC.optionMetadata.tag)
 
         // 42 int
-        val i = root.findChild<CwtValue> { it.value == "42" }!!
+        val i = root.children().oneBy<CwtValue> { it.value == "42" }!!
         val iC = CwtValueConfig.resolve(i, file, group)
         assertEquals(CwtExpressionType.Int, iC.valueType)
 
         // 3.14 float
-        val f = root.findChild<CwtValue> { it.value == "3.14" }!!
+        val f = root.children().oneBy<CwtValue> { it.value == "3.14" }!!
         val fC = CwtValueConfig.resolve(f, file, group)
         assertEquals(CwtExpressionType.Float, fC.valueType)
 
         // quoted string -> unquoted value
-        val s = root.findChild<CwtValue> { it.value == "sv" }!!
+        val s = root.children().oneBy<CwtValue> { it.value == "sv" }!!
         val sC = CwtValueConfig.resolve(s, file, group)
         assertEquals(CwtExpressionType.String, sC.valueType)
 
         // identifier string
-        val ident = root.findChild<CwtValue> { it.value == "ident" }!!
+        val ident = root.children().oneBy<CwtValue> { it.value == "ident" }!!
         val identC = CwtValueConfig.resolve(ident, file, group)
         assertEquals(CwtExpressionType.String, identC.valueType)
     }
@@ -72,7 +73,7 @@ class CwtValueConfigTest : BasePlatformTestCase() {
     fun testDirectValue_nestedMembers() {
         val (file, group) = prepare().let { it.first to it.second }
         val root = file.block!!
-        val block = root.findChild<CwtValue> { it.value == "{...}" }!!
+        val block = root.children().oneBy<CwtValue> { it.value == "{...}" }!!
         val c = CwtValueConfig.resolve(block, file, group)
         assertEquals(CwtExpressionType.Block, c.valueType)
         assertNotNull(c.configs)
@@ -89,34 +90,34 @@ class CwtValueConfigTest : BasePlatformTestCase() {
 
         // number forms
         run {
-            val v = root.findChild<CwtValue> { it.value == "-7" }!!
+            val v = root.children().oneBy<CwtValue> { it.value == "-7" }!!
             val c = CwtValueConfig.resolve(v, file, group)
             assertEquals(CwtExpressionType.Int, c.valueType)
         }
         run {
-            val v = root.findChild<CwtValue> { it.value == "-.25" }!!
+            val v = root.children().oneBy<CwtValue> { it.value == "-.25" }!!
             val c = CwtValueConfig.resolve(v, file, group)
             assertEquals(CwtExpressionType.Float, c.valueType)
         }
         run {
-            val v = root.findChild<CwtValue> { it.value == ".5" }!!
+            val v = root.children().oneBy<CwtValue> { it.value == ".5" }!!
             val c = CwtValueConfig.resolve(v, file, group)
             assertEquals(CwtExpressionType.Float, c.valueType)
         }
         run {
-            val v = root.findChild<CwtValue> { it.value == "007" }!!
+            val v = root.children().oneBy<CwtValue> { it.value == "007" }!!
             val c = CwtValueConfig.resolve(v, file, group)
             assertEquals(CwtExpressionType.Int, c.valueType)
         }
         run {
-            val v = root.findChild<CwtValue> { it.value == " spaced " }!!
+            val v = root.children().oneBy<CwtValue> { it.value == " spaced " }!!
             val c = CwtValueConfig.resolve(v, file, group)
             assertEquals(CwtExpressionType.String, c.valueType)
         }
 
         // empty block value
         run {
-            val v1 = root.findChild<CwtValue> { it.value == "{...}" }!!
+            val v1 = root.children().oneBy<CwtValue> { it.value == "{...}" }!!
             val c = CwtValueConfig.resolve(v1, file, group)
             assertEquals(CwtExpressionType.Block, c.valueType)
             assertNotNull(c.configs)
@@ -136,7 +137,7 @@ class CwtValueConfigTest : BasePlatformTestCase() {
         val root = file.block!!
 
         // base value (block)
-        val base = root.findChild<CwtValue> { it.value == "{...}" }!!
+        val base = root.children().oneBy<CwtValue> { it.value == "{...}" }!!
         val baseCfg = CwtValueConfig.resolve(base, file, group)
         baseCfg.putUserData(extraKey, "vv1")
 
@@ -201,7 +202,7 @@ class CwtValueConfigTest : BasePlatformTestCase() {
         val group = CwtConfigGroup.create(project, ParadoxGameType.Stellaris)
         val root = file.block!!
 
-        val prop = root.findChild<CwtProperty> { it.name == "block_prop" }!!
+        val prop = root.children().oneBy<CwtProperty> { it.name == "block_prop" }!!
         val pCfg = CwtPropertyConfig.resolve(prop, file, group)!!
         pCfg.putUserData(extraKey, "pv1")
 
@@ -226,7 +227,7 @@ class CwtValueConfigTest : BasePlatformTestCase() {
         val (file, group) = prepare().let { it.first to it.second }
         val root = file.block!!
         // pick non-block value: 42
-        val v = root.findChild<CwtValue> { it.value == "42" }!!
+        val v = root.children().oneBy<CwtValue> { it.value == "42" }!!
         val c = CwtValueConfig.resolve(v, file, group)
         assertEquals(CwtExpressionType.Int, c.valueType)
         val d = c.delegatedWith(value = "100")

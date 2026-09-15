@@ -1,9 +1,9 @@
 package icu.windea.pls.lang.util.renderers
 
 import com.intellij.openapi.progress.ProgressManager
-import com.intellij.psi.util.elementType
+import icu.windea.pls.core.children
 import icu.windea.pls.core.constants.DefaultStrings
-import icu.windea.pls.core.findChild
+import icu.windea.pls.core.select.oneBy
 import icu.windea.pls.core.util.OnceMarker
 import icu.windea.pls.lang.psi.formattedValue
 import icu.windea.pls.lang.psi.members
@@ -90,7 +90,7 @@ open class ParadoxScriptTextPlainRenderContext(
     }
 
     fun renderSeparator(element: ParadoxScriptProperty) {
-        val separator = element.findChild { it.elementType in ParadoxScriptTokenSets.PROPERTY_SEPARATORS }
+        val separator = element.children().oneBy(ParadoxScriptTokenSets.PROPERTY_SEPARATORS)
         val separatorText = separator?.text ?: "="
         if (separator !== ParadoxScriptElementTypes.SAFE_CALL_ASSIGN_SIGN) builder.append(" ")
         builder.append(separatorText)

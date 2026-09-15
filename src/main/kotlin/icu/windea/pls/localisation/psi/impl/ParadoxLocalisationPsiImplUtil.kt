@@ -13,26 +13,81 @@ import com.intellij.psi.tree.IElementType
 import com.intellij.psi.util.elementType
 import com.intellij.util.IncorrectOperationException
 import icu.windea.pls.ChronicleIcons
-import icu.windea.pls.core.findChild
-import icu.windea.pls.core.findChildren
+import icu.windea.pls.core.children
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.psi.PsiPresentableElement
 import icu.windea.pls.core.psi.PsiQuoteAwareElement
 import icu.windea.pls.core.psi.PsiService
+import icu.windea.pls.core.select.listBy
+import icu.windea.pls.core.select.oneBy
 import icu.windea.pls.core.text.QuotePattern
 import icu.windea.pls.core.text.QuotePatterns
 import icu.windea.pls.core.unquote
 import icu.windea.pls.lang.search.scope.ParadoxSearchScope
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxExpressionManager
-import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.lang.util.ParadoxFileManager
+import icu.windea.pls.localisation.psi.ParadoxLocalisationColorfulText
+import icu.windea.pls.localisation.psi.ParadoxLocalisationCommand
+import icu.windea.pls.localisation.psi.ParadoxLocalisationCommandArgument
+import icu.windea.pls.localisation.psi.ParadoxLocalisationCommandText
+import icu.windea.pls.localisation.psi.ParadoxLocalisationConceptCommand
+import icu.windea.pls.localisation.psi.ParadoxLocalisationConceptName
+import icu.windea.pls.localisation.psi.ParadoxLocalisationContextTag
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementFactory
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
+import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
+import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
+import icu.windea.pls.localisation.psi.ParadoxLocalisationIcon
+import icu.windea.pls.localisation.psi.ParadoxLocalisationIconArgument
+import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
+import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
+import icu.windea.pls.localisation.psi.ParadoxLocalisationParameterArgument
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyKey
+import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyList
+import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyValue
+import icu.windea.pls.localisation.psi.ParadoxLocalisationPsiManipulationService
+import icu.windea.pls.localisation.psi.ParadoxLocalisationPsiPresentation
+import icu.windea.pls.localisation.psi.ParadoxLocalisationPsiService
+import icu.windea.pls.localisation.psi.ParadoxLocalisationRichText
+import icu.windea.pls.localisation.psi.ParadoxLocalisationScriptedVariableReference
+import icu.windea.pls.localisation.psi.ParadoxLocalisationTag
+import icu.windea.pls.localisation.psi.ParadoxLocalisationTaggedParameter
+import icu.windea.pls.localisation.psi.ParadoxLocalisationTextFormat
+import icu.windea.pls.localisation.psi.ParadoxLocalisationTextIcon
 import icu.windea.pls.localisation.text.ParadoxLocalisation
 import icu.windea.pls.model.ParadoxLocalisationType
 import javax.swing.Icon
 
 @Suppress("UNUSED_PARAMETER")
 object ParadoxLocalisationPsiImplUtil {
+    // region ParadoxLocalisationFile
+
+    @JvmStatic
+    fun getPropertyLists(element: ParadoxLocalisationFile): List<ParadoxLocalisationPropertyList> {
+        return element.children().listBy()
+    }
+
+    @JvmStatic
+    fun getPropertyList(element: ParadoxLocalisationFile): ParadoxLocalisationPropertyList? {
+        return getPropertyLists(element).singleOrNull() // single, not first
+    }
+
+    @JvmStatic
+    fun getProperties(element: ParadoxLocalisationFile): List<ParadoxLocalisationProperty> {
+        return getPropertyList(element)?.propertyList.orEmpty()
+    }
+
+    @JvmStatic
+    fun isEquivalentTo(element: ParadoxLocalisationFile, another: PsiElement?): Boolean {
+        if (element === another) return true
+        if (another !is ParadoxLocalisationFile) return false
+        return ParadoxFileManager.isEquivalentFile(element, another)
+    }
+
+    // endregion
+
     // region ParadoxLocalisationPropertyList
 
     @JvmStatic
@@ -184,12 +239,12 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun getTokenElement(element: ParadoxLocalisationPropertyValue): PsiElement? {
-        return element.findChild { it.elementType == PROPERTY_VALUE_TOKEN }
+        return element.children().oneBy(PROPERTY_VALUE_TOKEN)
     }
 
     @JvmStatic
     fun getRichTextList(element: ParadoxLocalisationPropertyValue): List<ParadoxLocalisationRichText> {
-        return element.tokenElement?.findChildren<_>() ?: emptyList()
+        return element.tokenElement.children().listBy()
     }
 
     // endregion
@@ -225,7 +280,7 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun getArgumentElement(element: ParadoxLocalisationParameter): ParadoxLocalisationParameterArgument? {
-        return element.findChild<_>(forward = false)
+        return element.children(forward = false).oneBy()
     }
 
     @JvmStatic
@@ -283,7 +338,7 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun getArgumentElement(element: ParadoxLocalisationCommand): ParadoxLocalisationCommandArgument? {
-        return element.findChild<_>(forward = false)
+        return element.children(forward = false).oneBy()
     }
 
     @JvmStatic
@@ -297,7 +352,7 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun getIdElement(element: ParadoxLocalisationCommandText): PsiElement? {
-        return element.findChild { it.elementType == COMMAND_TEXT_TOKEN }?.takeIf { ParadoxLocalisationPsiService.isIdElement(it) }
+        return element.children().oneBy(COMMAND_TEXT_TOKEN)?.takeIf { ParadoxLocalisationPsiService.isIdElement(it) }
     }
 
     @JvmStatic
@@ -371,7 +426,7 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun getArgumentElement(element: ParadoxLocalisationIcon): ParadoxLocalisationIconArgument? {
-        return element.findChild<_>(forward = false)
+        return element.children(forward = false).oneBy()
     }
 
     @JvmStatic

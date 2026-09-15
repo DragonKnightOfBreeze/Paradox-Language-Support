@@ -7,11 +7,11 @@ import com.intellij.psi.PsiFileFactory
 import com.intellij.psi.PsiParserFacade
 import com.intellij.util.IncorrectOperationException
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.findChild
+import icu.windea.pls.core.children
 import icu.windea.pls.core.quoteIfNeeded
+import icu.windea.pls.core.select.oneBy
 import icu.windea.pls.core.text.QuotePatterns
 import icu.windea.pls.cwt.CwtLanguage
-import icu.windea.pls.cwt.psi.CwtElementTypes.*
 import icu.windea.pls.cwt.text.Cwt
 
 @Suppress("unused")
@@ -20,8 +20,8 @@ object CwtElementFactory {
 
     @JvmStatic
     fun createFileFromText(project: Project, text: String): CwtFile {
-        return PsiFileFactory.getInstance(project).createFileFromText(CwtLanguage, text)
-            .castOrNull<CwtFile>() ?: throw IncorrectOperationException()
+        return PsiFileFactory.getInstance(project).createFileFromText(CwtLanguage, text).castOrNull()
+            ?: throw IncorrectOperationException()
     }
 
     @JvmStatic
@@ -32,50 +32,56 @@ object CwtElementFactory {
     @JvmStatic
     fun createRootBlockFromText(project: Project, text: String): CwtRootBlock {
         return createFileFromText(project, text)
-            .findChild<CwtRootBlock>() ?: throw IncorrectOperationException()
+            .children().oneBy<CwtRootBlock>()
+            ?: throw IncorrectOperationException()
     }
 
     @JvmStatic
     fun createOptionFromText(project: Project, text: String): CwtOption {
         return createRootBlockFromText(project, "## $text")
-            .findChild<CwtOptionComment>()
-            ?.findChild<_>() ?: throw IncorrectOperationException()
+            .children().oneBy<CwtOptionComment>()
+            .children().oneBy<CwtOption>()
+            ?: throw IncorrectOperationException()
     }
 
     @JvmStatic
     fun createOptionKeyFromText(project: Project, text: String): CwtOptionKey {
         return createOptionFromText(project, "$text = v")
-            .findChild<CwtOptionKey>() ?: throw IncorrectOperationException()
+            .children().oneBy<CwtOptionKey>()
+            ?: throw IncorrectOperationException()
     }
 
     @JvmStatic
     fun createPropertyFromText(project: Project, text: String): CwtProperty {
         return createRootBlockFromText(project, text)
-            .findChild<CwtProperty>() ?: throw IncorrectOperationException()
+            .children().oneBy<CwtProperty>()
+            ?: throw IncorrectOperationException()
     }
 
     @JvmStatic
     fun createPropertyKeyFromText(project: Project, text: String): CwtPropertyKey {
         return createPropertyFromText(project, "$text = v")
-            .findChild<CwtPropertyKey>() ?: throw IncorrectOperationException()
+            .children().oneBy<CwtPropertyKey>()
+            ?: throw IncorrectOperationException()
     }
 
     @JvmStatic
     fun createValueFromText(project: Project, text: String): CwtValue {
         return createRootBlockFromText(project, text)
-            .findChild<CwtValue>() ?: throw IncorrectOperationException()
+            .children().oneBy<CwtValue>()
+            ?: throw IncorrectOperationException()
     }
 
     @JvmStatic
     fun createStringFromText(project: Project, text: String): CwtString {
-        return createValueFromText(project, text)
-            .castOrNull<CwtString>() ?: throw IncorrectOperationException()
+        return createValueFromText(project, text).castOrNull()
+            ?: throw IncorrectOperationException()
     }
 
     @JvmStatic
     fun createBlockFromText(project: Project, text: String): CwtBlock {
-        return createValueFromText(project, text)
-            .castOrNull<CwtBlock>() ?: throw IncorrectOperationException()
+        return createValueFromText(project, text).castOrNull()
+            ?: throw IncorrectOperationException()
     }
 
     // create smartly

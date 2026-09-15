@@ -12,6 +12,8 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.util.parentOfType
 import icu.windea.pls.core.collections.toArray
 import icu.windea.pls.core.psi.PsiFileOnlyVisitor
+import icu.windea.pls.core.select.list
+import icu.windea.pls.core.select.one
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import icu.windea.pls.lang.psi.properties
@@ -65,7 +67,7 @@ class NonTriggeredEventInspection : EventInspectionBase() {
             val nameField = definitionInfo.typeConfig.nameField
 
             val textToInsert = "is_triggered_only = yes"
-            val propertiesToDelete = selectScope { block.properties().ofKey("is_triggered_only").all() }
+            val propertiesToDelete = selectScope { block.properties().ofKey("is_triggered_only").list() }
             val insertAfterElement = when {
                 propertiesToDelete.isNotEmpty() -> propertiesToDelete.first()
                 nameField == null -> null

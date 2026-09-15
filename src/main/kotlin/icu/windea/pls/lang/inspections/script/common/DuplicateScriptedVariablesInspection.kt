@@ -5,8 +5,9 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiElementVisitor
+import icu.windea.pls.core.children
 import icu.windea.pls.core.collections.forEachFast
-import icu.windea.pls.core.findChildren
+import icu.windea.pls.core.select.listBy
 import icu.windea.pls.lang.fixes.navigation.NavigateToDuplicatesFix
 import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import icu.windea.pls.script.psi.ParadoxScriptBlock
@@ -43,7 +44,7 @@ class DuplicateScriptedVariablesInspection : LocalInspectionTool(), DumbAware {
     }
 
     private fun check(containerElement: ParadoxScriptMemberContainer, holder: ProblemsHolder) {
-        val elementGroup = containerElement.findChildren<ParadoxScriptScriptedVariable>().groupBy { it.name.orEmpty() }
+        val elementGroup = containerElement.children().listBy<ParadoxScriptScriptedVariable>().groupBy { it.name.orEmpty() }
         if (elementGroup.isEmpty()) return
         for ((name, elements) in elementGroup) {
             ProgressManager.checkCanceled()

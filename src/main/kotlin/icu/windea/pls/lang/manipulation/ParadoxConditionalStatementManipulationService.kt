@@ -1,7 +1,8 @@
 package icu.windea.pls.lang.manipulation
 
 import com.intellij.openapi.project.Project
-import icu.windea.pls.core.findChild
+import icu.windea.pls.core.children
+import icu.windea.pls.core.select.oneBy
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
 import icu.windea.pls.script.psi.ParadoxScriptNormalConditionalBlock
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -84,8 +85,8 @@ object ParadoxConditionalStatementManipulationService {
         val parameterName = matchResult.groupValues.get(1)
         val newText = propertyTemplate.invoke(parameterName)
         val newElement = ParadoxScriptElementFactory.createFileFromText(project, newText)
-            .findChild<ParadoxScriptRootBlock>()
-            ?.findChild<ParadoxScriptProperty>()
+            .children().oneBy<ParadoxScriptRootBlock>()
+            .children().oneBy<ParadoxScriptProperty>()
             ?: return
         element.replace(newElement)
     }
@@ -109,8 +110,8 @@ object ParadoxConditionalStatementManipulationService {
         val parameterName = matchResult.groupValues.get(1)
         val newText = blockTemplate.invoke(parameterName)
         val newElement = ParadoxScriptElementFactory.createFileFromText(project, newText)
-            .findChild<ParadoxScriptRootBlock>()
-            ?.findChild<ParadoxScriptNormalConditionalBlock>()
+            .children().oneBy<ParadoxScriptRootBlock>()
+            .children().oneBy<ParadoxScriptNormalConditionalBlock>()
             ?: return
         element.replace(newElement)
     }

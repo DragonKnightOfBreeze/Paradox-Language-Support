@@ -12,6 +12,8 @@ import icu.windea.pls.config.config.isSamePointer
 import icu.windea.pls.core.collections.synced
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.processAsync
+import icu.windea.pls.core.select.list
+import icu.windea.pls.core.select.one
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
@@ -70,7 +72,7 @@ object ParadoxLocalisationParameterManager {
 
         val configToUse = config.parentConfig?.configs?.firstNotNullOfOrNull { c -> c.configs?.find { isParameterConfig(element, it) } } ?: return emptyList()
         val containerElement = selectScope { element.queryParentBy("*/*").asProperty() } ?: return emptyList()
-        return selectScope { containerElement.queryBy("*/*").asProperty().filter { isMatchedProperty(it, configToUse) }.all() }
+        return selectScope { containerElement.queryBy("*/*").asProperty().filter { isMatchedProperty(it, configToUse) }.list() }
     }
 
     private fun findLocalisationPropertyFromParameterProperty(element: ParadoxScriptExpressionElement, config: CwtPropertyConfig): ParadoxScriptProperty? {

@@ -6,6 +6,8 @@ import com.intellij.testFramework.TestDataFile
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.intellij.util.containers.TreeTraversal
+import icu.windea.pls.core.select.list
+import icu.windea.pls.core.select.one
 import icu.windea.pls.lang.psi.members
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.psi.values
@@ -44,7 +46,7 @@ class ParadoxSelectDslTest : BasePlatformTestCase(), ChronicleTestScope {
         val file = configureScriptFile("features/select/select_test_1.test.txt")
         val k4 = selectScope { file.queryBy("k1/k2/k3/k4").one() }
         Assert.assertNotNull(k4)
-        val k4List = selectScope { file.queryBy("k1/k2/k3/k4").asProperty().all() }
+        val k4List = selectScope { file.queryBy("k1/k2/k3/k4").asProperty().list() }
         Assert.assertEquals(3, k4List.size)
     }
 
@@ -67,14 +69,14 @@ class ParadoxSelectDslTest : BasePlatformTestCase(), ChronicleTestScope {
         val file = configureScriptFile("features/select/select_test_1.test.txt")
         val k1 = selectScope { file.queryBy("k1").asProperty().one() }!!
 
-        val members = selectScope { k1.members().all() }
+        val members = selectScope { k1.members().list() }
         Assert.assertEquals(3, members.size)
 
-        val values = selectScope { k1.values().asValue().all() }
+        val values = selectScope { k1.values().asValue().list() }
         Assert.assertEquals(2, values.size)
         Assert.assertEquals(listOf("v1", "v1"), values.map { it.value })
 
-        val properties = selectScope { k1.properties().all() }
+        val properties = selectScope { k1.properties().list() }
         Assert.assertEquals(1, properties.size)
         Assert.assertEquals("k2", properties.single().name)
     }
@@ -103,17 +105,17 @@ class ParadoxSelectDslTest : BasePlatformTestCase(), ChronicleTestScope {
         val k2 = selectScope { file.queryBy("k1/k2").asProperty().one() }!!
 
         val k3IgnoreCase = selectScope {
-            k2.properties().ofKey("K3", ignoreCase = true, usePattern = false).all()
+            k2.properties().ofKey("K3", ignoreCase = true, usePattern = false).list()
         }
         Assert.assertEquals(3, k3IgnoreCase.size)
 
         val k3CaseSensitive = selectScope {
-            k2.properties().ofKey("K3", ignoreCase = false, usePattern = false).all()
+            k2.properties().ofKey("K3", ignoreCase = false, usePattern = false).list()
         }
         Assert.assertEquals(0, k3CaseSensitive.size)
 
         val k3ByPattern = selectScope {
-            k2.properties().ofKey("k*", ignoreCase = false, usePattern = true).all()
+            k2.properties().ofKey("k*", ignoreCase = false, usePattern = true).list()
         }
         Assert.assertEquals(3, k3ByPattern.size)
     }
@@ -124,7 +126,7 @@ class ParadoxSelectDslTest : BasePlatformTestCase(), ChronicleTestScope {
         val k2 = selectScope { file.queryBy("k1/k2").asProperty().one() }!!
 
         val k3List = selectScope {
-            k2.properties().ofKeys(listOf("k3", "not_exists"), ignoreCase = true, usePattern = false).all()
+            k2.properties().ofKeys(listOf("k3", "not_exists"), ignoreCase = true, usePattern = false).list()
         }
         Assert.assertEquals(3, k3List.size)
     }
@@ -134,17 +136,17 @@ class ParadoxSelectDslTest : BasePlatformTestCase(), ChronicleTestScope {
         val file = configureScriptFile("features/select/select_test_1.test.txt")
 
         val k4ListByPattern = selectScope {
-            file.queryBy("k1/*/k3/k4", ignoreCase = false, usePattern = true).asProperty().all()
+            file.queryBy("k1/*/k3/k4", ignoreCase = false, usePattern = true).asProperty().list()
         }
         Assert.assertEquals(3, k4ListByPattern.size)
         Assert.assertTrue(k4ListByPattern.all { it.name == "k4" })
 
         val k4ListByLiteral = selectScope {
-            file.queryBy("k1/*/k3/k4", ignoreCase = false, usePattern = false).all()
+            file.queryBy("k1/*/k3/k4", ignoreCase = false, usePattern = false).list()
         }
         Assert.assertEquals(0, k4ListByLiteral.size)
 
-        val empty = selectScope { file.queryBy("").all() }
+        val empty = selectScope { file.queryBy("").list() }
         Assert.assertTrue(empty.isEmpty())
     }
 
@@ -152,7 +154,7 @@ class ParadoxSelectDslTest : BasePlatformTestCase(), ChronicleTestScope {
     fun queryBy_basic() {
         val file = configureScriptFile("features/select/select_test_1.test.txt")
         val list = selectScope {
-            file.queryBy(listOf("k1/k2/k3/k4", "k1/k2/k3")).asProperty().all()
+            file.queryBy(listOf("k1/k2/k3/k4", "k1/k2/k3")).asProperty().list()
         }
         val k4Count = list.count { it.name == "k4" }
         val k3Count = list.count { it.name == "k3" }
@@ -163,7 +165,7 @@ class ParadoxSelectDslTest : BasePlatformTestCase(), ChronicleTestScope {
     @Test
     fun queryBy_duplicateKeyOrderIsStable() {
         val file = configureScriptFile("features/select/select_test_1.test.txt")
-        val k4List = selectScope { file.queryBy("k1/k2/k3/k4").asProperty().all() }
+        val k4List = selectScope { file.queryBy("k1/k2/k3/k4").asProperty().list() }
         Assert.assertEquals(3, k4List.size)
 
         val k3Paths = selectScope {
@@ -176,7 +178,7 @@ class ParadoxSelectDslTest : BasePlatformTestCase(), ChronicleTestScope {
     fun queryBy_usePattern_notMatchedShouldBeEmpty() {
         val file = configureScriptFile("features/select/select_test_1.test.txt")
         val result = selectScope {
-            file.queryBy("k1/*/kx/k4", ignoreCase = false, usePattern = true).all()
+            file.queryBy("k1/*/kx/k4", ignoreCase = false, usePattern = true).list()
         }
         Assert.assertTrue(result.isEmpty())
     }
@@ -187,7 +189,7 @@ class ParadoxSelectDslTest : BasePlatformTestCase(), ChronicleTestScope {
         val list = selectScope {
             file.queryBy(listOf("", "not_exists", "k1/k2/k3/k4"), ignoreCase = false, usePattern = false)
                 .asProperty()
-                .all()
+                .list()
         }
         Assert.assertEquals(3, list.size)
         Assert.assertTrue(list.all { it.name == "k4" })
@@ -200,12 +202,12 @@ class ParadoxSelectDslTest : BasePlatformTestCase(), ChronicleTestScope {
         val k2 = selectScope { file.queryBy("k1/k2").asProperty().one() }!!
 
         val k4FromContainers = selectScope {
-            sequenceOf(k1, k2).queryBy("k3/k4").asProperty().all()
+            sequenceOf(k1, k2).queryBy("k3/k4").asProperty().list()
         }
         Assert.assertEquals(3, k4FromContainers.size)
 
         val listFromContainers = selectScope {
-            sequenceOf(k1, k2).queryBy(listOf("k3", "k3/k4")).asProperty().all()
+            sequenceOf(k1, k2).queryBy(listOf("k3", "k3/k4")).asProperty().list()
         }
         Assert.assertEquals(6, listFromContainers.size)
     }
@@ -240,10 +242,10 @@ class ParadoxSelectDslTest : BasePlatformTestCase(), ChronicleTestScope {
         val vTextSensitive = selectScope { file.properties().ofValue("text", ignoreCase = false).one() }
         Assert.assertNull(vTextSensitive)
 
-        val list1 = selectScope { file.properties().ofValues(listOf("Text", "1.0", "yes"), ignoreCase = true).all() }
+        val list1 = selectScope { file.properties().ofValues(listOf("Text", "1.0", "yes"), ignoreCase = true).list() }
         Assert.assertEquals(3, list1.size) // include properties with literal values
 
-        val list2 = selectScope { file.properties().ofValues(listOf("Text", "1.0", "yes", "{...}"), ignoreCase = true).all() }
+        val list2 = selectScope { file.properties().ofValues(listOf("Text", "1.0", "yes", "{...}"), ignoreCase = true).list() }
         Assert.assertEquals(3, list2.size) // exclude properties with block-like values
     }
 
@@ -252,11 +254,11 @@ class ParadoxSelectDslTest : BasePlatformTestCase(), ChronicleTestScope {
         val file = configureScriptFile("features/select/select_conditional.test.txt")
         val settings = selectScope { file.queryBy("settings").asProperty().one() }!!
 
-        val membersConditionalFalse = selectScope { settings.members(conditional = false).all() }
+        val membersConditionalFalse = selectScope { settings.members(conditional = false).list() }
         Assert.assertEquals(2, membersConditionalFalse.size)
         Assert.assertTrue(membersConditionalFalse.none { it is ParadoxScriptProperty && it.name == "conditional_block" })
 
-        val membersConditionalTrue = selectScope { settings.members(conditional = true).all() }
+        val membersConditionalTrue = selectScope { settings.members(conditional = true).list() }
         Assert.assertEquals(3, membersConditionalTrue.size)
         Assert.assertTrue(membersConditionalTrue.any { it is ParadoxScriptProperty && it.name == "conditional_block" })
     }

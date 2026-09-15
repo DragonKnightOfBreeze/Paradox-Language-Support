@@ -4,6 +4,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import icu.windea.pls.base.annotations.ForGameType
 import icu.windea.pls.core.collections.findFast
+import icu.windea.pls.core.select.one
 import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.ep.util.data.StellarisGameConceptData
 import icu.windea.pls.lang.getDefinitionData

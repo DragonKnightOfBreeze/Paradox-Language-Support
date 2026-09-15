@@ -16,10 +16,6 @@ import icu.windea.pls.script.psi.ParadoxScriptValue
 interface ParadoxSelectScope {
     // region Common
 
-    fun <T : PsiElement> Sequence<T>.one(): T?
-
-    fun <T : PsiElement> Sequence<T>.all(): List<T>
-
     fun ParadoxScriptMember.walkUp(): Sequence<ParadoxScriptMember>
 
     fun ParadoxScriptMemberContext.walkDown(traversal: TreeTraversal = TreeTraversal.PRE_ORDER_DFS, conditional: Boolean? = null, inline: Boolean? = null): Sequence<ParadoxScriptMember>

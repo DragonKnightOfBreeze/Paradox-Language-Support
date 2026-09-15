@@ -8,9 +8,9 @@ import com.intellij.psi.util.siblings
 import icu.windea.pls.base.settings.ChronicleInternalSettings
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.children
-import icu.windea.pls.core.findChild
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.psi.PsiPresentableElement
+import icu.windea.pls.core.sequences.findIsInstance
 import icu.windea.pls.core.transformAndKeepQuotes
 import icu.windea.pls.core.truncate
 import icu.windea.pls.core.util.createKey
@@ -75,7 +75,8 @@ object ParadoxCsvPsiService {
     }
 
     fun getHeaderColumn(column: ParadoxCsvColumn): ParadoxCsvColumn? {
-        val header = column.parent?.castOrNull<ParadoxCsvRow>()?.parent?.findChild<ParadoxCsvHeader>() ?: return null
+        val row = column.parent?.castOrNull<ParadoxCsvRow>() ?: return null
+        val header = row.parent?.children()?.findIsInstance<ParadoxCsvHeader>() ?: return null
         val index = getColumnIndex(column)
         return getColumn(header, index)
     }

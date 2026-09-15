@@ -6,7 +6,8 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.core.findChild
+import icu.windea.pls.core.children
+import icu.windea.pls.core.select.oneBy
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.cwt.psi.CwtValue
@@ -47,7 +48,7 @@ class CwtMemberConfigRecursiveVisitorTest : BasePlatformTestCase() {
     @Test
     fun testTraversalOrder_onPropertyBlock() {
         val (file, group) = preparePropertyCases()
-        val p = file.block!!.findChild<CwtProperty> { it.name == "block_prop" }!!
+        val p = file.block!!.children().oneBy<CwtProperty> { it.name == "block_prop" }!!
         val c = CwtPropertyConfig.resolve(p, file, group)!!
 
         val started = mutableListOf<String>()
@@ -78,7 +79,7 @@ class CwtMemberConfigRecursiveVisitorTest : BasePlatformTestCase() {
     @Test
     fun testTraversalOrder_onValueBlock() {
         val (file, group) = prepareValueCases()
-        val v = file.block!!.findChild<CwtValue> { it.value == "{...}" }!!
+        val v = file.block!!.children().oneBy<CwtValue> { it.value == "{...}" }!!
         val c = CwtValueConfig.resolve(v, file, group)
 
         val started = mutableListOf<String>()
@@ -109,7 +110,7 @@ class CwtMemberConfigRecursiveVisitorTest : BasePlatformTestCase() {
     @Test
     fun testStopTraversal_preventsSiblingsAndParentFinished() {
         val (file, group) = preparePropertyCases()
-        val p = file.block!!.findChild<CwtProperty> { it.name == "block_prop" }!!
+        val p = file.block!!.children().oneBy<CwtProperty> { it.name == "block_prop" }!!
         val c = CwtPropertyConfig.resolve(p, file, group)!!
 
         val started = mutableListOf<String>()

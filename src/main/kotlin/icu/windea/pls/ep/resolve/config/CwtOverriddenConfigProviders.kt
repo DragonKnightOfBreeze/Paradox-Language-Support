@@ -24,6 +24,7 @@ import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.equalsAnyFast
 import icu.windea.pls.core.equalsFast
 import icu.windea.pls.core.optimizedIfEmpty
+import icu.windea.pls.core.select.one
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.psi.stringValue
 import icu.windea.pls.lang.select.selectScope

@@ -10,13 +10,14 @@ import com.intellij.psi.util.siblings
 import com.intellij.psi.util.startOffset
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.children
 import icu.windea.pls.core.collections.filterFast
 import icu.windea.pls.core.collections.findLastFast
 import icu.windea.pls.core.collections.forEachFast
-import icu.windea.pls.core.findChild
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.core.quote
+import icu.windea.pls.core.select.oneBy
 import icu.windea.pls.lang.analysis.ParadoxAnalysisManager
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.resolve.ParadoxExpressionService
@@ -68,7 +69,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 @Optimized
 object ParadoxScopeCallStatementManipulationService {
     fun getHighlightingRange(element: ParadoxScriptProperty): TextRange {
-        val separator = element.findChild { ParadoxSyntaxService.isPropertySeparator(it) }
+        val separator = element.children().oneBy { ParadoxSyntaxService.isPropertySeparator(it) }
         val endOffset = separator?.textRangeInParent?.endOffset ?: element.propertyKey.textRangeInParent.endOffset
         return TextRange.create(0, endOffset)
     }

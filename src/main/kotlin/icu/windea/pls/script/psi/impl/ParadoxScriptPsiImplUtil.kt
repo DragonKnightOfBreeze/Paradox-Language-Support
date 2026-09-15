@@ -15,14 +15,15 @@ import com.intellij.psi.util.elementType
 import com.intellij.util.IncorrectOperationException
 import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.children
 import icu.windea.pls.core.containsLineBreak
-import icu.windea.pls.core.findChild
-import icu.windea.pls.core.findChildren
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.psi.PsiPresentableElement
 import icu.windea.pls.core.psi.PsiQuoteAwareElement
 import icu.windea.pls.core.psi.PsiService
+import icu.windea.pls.core.select.listBy
+import icu.windea.pls.core.select.oneBy
 import icu.windea.pls.core.splitByBlank
 import icu.windea.pls.core.substringIn
 import icu.windea.pls.core.text.QuotePattern
@@ -34,15 +35,69 @@ import icu.windea.pls.lang.psi.ParadoxPsiService
 import icu.windea.pls.lang.search.scope.ParadoxSearchScope
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.lang.util.ParadoxFileManager
 import icu.windea.pls.model.constants.ChronicleStrings
-import icu.windea.pls.script.psi.*
+import icu.windea.pls.script.psi.ParadoxScriptBlock
+import icu.windea.pls.script.psi.ParadoxScriptColor
+import icu.windea.pls.script.psi.ParadoxScriptConditionalParameter
+import icu.windea.pls.script.psi.ParadoxScriptElementFactory
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
+import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
+import icu.windea.pls.script.psi.ParadoxScriptFile
+import icu.windea.pls.script.psi.ParadoxScriptInlineConditionalBlock
+import icu.windea.pls.script.psi.ParadoxScriptInlineMath
+import icu.windea.pls.script.psi.ParadoxScriptInlineMathExpression
+import icu.windea.pls.script.psi.ParadoxScriptInlineMathNumber
+import icu.windea.pls.script.psi.ParadoxScriptInlineMathParameter
+import icu.windea.pls.script.psi.ParadoxScriptInlineMathScriptedVariableReference
+import icu.windea.pls.script.psi.ParadoxScriptMember
+import icu.windea.pls.script.psi.ParadoxScriptNormalConditionalBlock
+import icu.windea.pls.script.psi.ParadoxScriptNormalParameter
+import icu.windea.pls.script.psi.ParadoxScriptParameterArgument
+import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
+import icu.windea.pls.script.psi.ParadoxScriptPsiManipulationService
+import icu.windea.pls.script.psi.ParadoxScriptPsiPresentation
+import icu.windea.pls.script.psi.ParadoxScriptPsiService
+import icu.windea.pls.script.psi.ParadoxScriptRootBlock
+import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
+import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableName
+import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableReference
+import icu.windea.pls.script.psi.ParadoxScriptStatement
+import icu.windea.pls.script.psi.ParadoxScriptString
+import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.text.ParadoxScript
 import java.awt.Color
 import javax.swing.Icon
 
 @Suppress("UNUSED_PARAMETER")
 object ParadoxScriptPsiImplUtil {
+    // region ParadoxScriptFile
+
+    fun getBlock(element: ParadoxScriptFile): ParadoxScriptRootBlock? {
+        return element.children().oneBy()
+    }
+
+    @JvmStatic
+    fun getMemberContainer(element: ParadoxScriptFile): ParadoxScriptRootBlock? {
+        return getBlock(element)
+    }
+
+    @JvmStatic
+    fun getMembers(element: ParadoxScriptFile): List<ParadoxScriptMember> {
+        val memberContainer = getMemberContainer(element)
+        return memberContainer.children().listBy()
+    }
+
+    @JvmStatic
+    fun isEquivalentTo(element: ParadoxScriptFile, another: PsiElement?): Boolean {
+        if (element === another) return true
+        if (another !is ParadoxScriptFile) return false
+        return ParadoxFileManager.isEquivalentFile(element, another)
+    }
+
+    // endregion
+
     // region ParadoxScriptRootBlock
 
     @JvmStatic
@@ -57,7 +112,8 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getMembers(element: ParadoxScriptRootBlock): List<ParadoxScriptMember> {
-        return getMemberContainer(element).findChildren<_>()
+        val memberContainer = getMemberContainer(element)
+        return memberContainer.children().listBy()
     }
 
     // endregion
@@ -71,12 +127,13 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getMembers(element: ParadoxScriptProperty): List<ParadoxScriptMember>? {
-        return getMemberContainer(element)?.findChildren<_>()
+        val memberContainer = getMemberContainer(element) ?: return null
+        return memberContainer.children().listBy()
     }
 
     @JvmStatic
     fun getBlock(element: ParadoxScriptProperty): ParadoxScriptBlock? {
-        return element.findChild<ParadoxScriptBlock>(forward = false)
+        return element.children(forward = false).oneBy()
     }
 
     @JvmStatic
@@ -112,10 +169,11 @@ object ParadoxScriptPsiImplUtil {
     }
 
     @JvmStatic
-    fun isEquivalentTo(element: ParadoxScriptProperty, another: PsiElement): Boolean {
-        // for definition: definitionInfo
-        // for others: never
+    fun isEquivalentTo(element: ParadoxScriptProperty, another: PsiElement?): Boolean {
+        if (element === another) return true
         if (another !is ParadoxScriptProperty) return false
+        // for definitions: by definitionInfo
+        // for others: never
         if (element.definitionInfo.let { it == null || it != another.definitionInfo }) return false
         // if (selectGameType(element) != selectGameType(another)) return false // unnecessary
         return true
@@ -210,7 +268,8 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getMembers(element: ParadoxScriptBlock): List<ParadoxScriptMember> {
-        return getMemberContainer(element).findChildren<_>()
+        val memberContainer = getMemberContainer(element)
+        return memberContainer.children().listBy()
     }
 
     @JvmStatic
@@ -279,8 +338,9 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun isEquivalentTo(element: ParadoxScriptScriptedVariable, another: PsiElement): Boolean {
-        // name & gameType
+        if (element === another) return true
         if (another !is ParadoxScriptScriptedVariable) return false
+        // by name and gameType
         if (element.name.let { it.isNullOrEmpty() || it != another.name }) return false
         if (selectGameType(element) != selectGameType(another)) return false
         return true
@@ -391,12 +451,12 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getTokenElement(element: ParadoxScriptInlineMath): PsiElement? {
-        return element.findChild { it.elementType == INLINE_MATH_TOKEN }
+        return element.children().oneBy(INLINE_MATH_TOKEN)
     }
 
     @JvmStatic
     fun getInlineMathExpression(element: ParadoxScriptInlineMath): ParadoxScriptInlineMathExpression? {
-        return element.findChild { it.elementType == INLINE_MATH_TOKEN }?.findChild<_>()
+        return element.children().oneBy(INLINE_MATH_TOKEN).children().oneBy()
     }
 
     @JvmStatic
@@ -439,7 +499,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getArgumentElement(element: ParadoxScriptNormalParameter): ParadoxScriptParameterArgument? {
-        return element.findChild<_>(forward = false)
+        return element.children(forward = false).oneBy()
     }
 
     @JvmStatic
@@ -482,7 +542,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getArgumentElement(element: ParadoxScriptInlineMathParameter): ParadoxScriptParameterArgument? {
-        return element.findChild<_>(forward = false)
+        return element.children(forward = false).oneBy()
     }
 
     @JvmStatic
@@ -534,13 +594,14 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getMembers(element: ParadoxScriptNormalConditionalBlock): List<ParadoxScriptMember> {
-        return getMemberContainer(element).findChildren<_>()
+        val memberContainer = getMemberContainer(element)
+        return memberContainer.children().listBy()
     }
 
     @JvmStatic
     fun getLeftBound(element: ParadoxScriptNormalConditionalBlock): PsiElement? {
         // use simple implementation is enough here
-        return element.findChild<PsiElement> { it.elementType == NESTED_RIGHT_BRACKET }
+        return element.children().oneBy { it.elementType == NESTED_RIGHT_BRACKET }
     }
 
     @JvmStatic
@@ -560,7 +621,7 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun getLeftBound(element: ParadoxScriptInlineConditionalBlock): PsiElement? {
         // use simple implementation is enough here
-        return element.findChild<PsiElement> { it.elementType == NESTED_RIGHT_BRACKET }
+        return element.children().oneBy(NESTED_RIGHT_BRACKET)
     }
 
     @JvmStatic
@@ -579,7 +640,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getIdElement(element: ParadoxScriptConditionalParameter): PsiElement {
-        return element.findChild { it.elementType == CONDITION_PARAMETER_TOKEN }!!
+        return element.children().oneBy(CONDITION_PARAMETER_TOKEN)!!
     }
 
     @JvmStatic
@@ -611,7 +672,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getComponents(element: PsiListLikeElement): List<ParadoxScriptStatement> {
-        return element.findChildren<_>()
+        return element.children().listBy()
     }
 
     @JvmStatic

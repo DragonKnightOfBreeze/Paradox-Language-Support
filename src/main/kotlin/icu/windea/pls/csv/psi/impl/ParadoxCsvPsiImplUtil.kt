@@ -12,22 +12,54 @@ import com.intellij.psi.search.SearchScope
 import com.intellij.psi.util.elementType
 import com.intellij.util.IncorrectOperationException
 import icu.windea.pls.ChronicleIcons
-import icu.windea.pls.core.findChildren
+import icu.windea.pls.core.children
 import icu.windea.pls.core.psi.PsiPresentableElement
 import icu.windea.pls.core.psi.PsiQuoteAwareElement
 import icu.windea.pls.core.psi.PsiService
+import icu.windea.pls.core.select.listBy
+import icu.windea.pls.core.select.oneBy
 import icu.windea.pls.core.text.QuotePattern
 import icu.windea.pls.core.text.QuotePatterns
 import icu.windea.pls.core.unquote
-import icu.windea.pls.csv.psi.*
+import icu.windea.pls.csv.psi.ParadoxCsvColumn
+import icu.windea.pls.csv.psi.ParadoxCsvColumnContainer
 import icu.windea.pls.csv.psi.ParadoxCsvElementTypes.*
+import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
+import icu.windea.pls.csv.psi.ParadoxCsvFile
+import icu.windea.pls.csv.psi.ParadoxCsvHeader
+import icu.windea.pls.csv.psi.ParadoxCsvPsiManipulationService
+import icu.windea.pls.csv.psi.ParadoxCsvPsiPresentation
+import icu.windea.pls.csv.psi.ParadoxCsvPsiService
+import icu.windea.pls.csv.psi.ParadoxCsvRow
 import icu.windea.pls.csv.text.ParadoxCsv
 import icu.windea.pls.lang.search.scope.ParadoxSearchScope
 import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.lang.util.ParadoxFileManager
 import javax.swing.Icon
 
 @Suppress("UNUSED_PARAMETER")
 object ParadoxCsvPsiImplUtil {
+    // region ParadoxCsvFile
+
+    @JvmStatic
+    fun getHeader(element: ParadoxCsvFile): ParadoxCsvHeader? {
+        return element.children().oneBy()
+    }
+
+    @JvmStatic
+    fun getRows(element: ParadoxCsvFile): List<ParadoxCsvRow> {
+        return element.children().listBy()
+    }
+
+    @JvmStatic
+    fun isEquivalentTo(element: ParadoxCsvFile, another: PsiElement?): Boolean {
+        if (element === another) return true
+        if (another !is ParadoxCsvFile) return false
+        return ParadoxFileManager.isEquivalentFile(element, another)
+    }
+
+    // endregion
+
     // region ParadoxCsvColumnContainer
 
     @JvmStatic
@@ -94,7 +126,7 @@ object ParadoxCsvPsiImplUtil {
 
     @JvmStatic
     fun getComponents(element: ParadoxCsvColumnContainer): List<ParadoxCsvColumn> {
-        return element.findChildren<_>()
+        return element.children().listBy()
     }
 
     @JvmStatic

@@ -8,6 +8,7 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.match.KeywordMatcher
 import icu.windea.pls.core.match.PathMatcher
 import icu.windea.pls.core.processParent
+import icu.windea.pls.core.select.one
 import icu.windea.pls.core.sequences.generateSequenceFromSeeds
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
@@ -35,10 +36,6 @@ import icu.windea.pls.script.psi.isDirectValue
 
 class ParadoxSelectScopeImpl : ParadoxSelectScope {
     // region Common
-
-    override fun <T : PsiElement> Sequence<T>.one(): T? = firstOrNull()
-
-    override fun <T : PsiElement> Sequence<T>.all(): List<T> = toList()
 
     override fun ParadoxScriptMember.walkUp(): Sequence<ParadoxScriptMember> {
         return generateSequence<PsiElement>(this) { if (it is PsiFile) null else it.parent }.filterIsInstance<ParadoxScriptMember>()

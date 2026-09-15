@@ -4,11 +4,11 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFileFactory
 import com.intellij.psi.PsiParserFacade
-import com.intellij.psi.util.elementType
 import com.intellij.util.IncorrectOperationException
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.findChild
+import icu.windea.pls.core.children
 import icu.windea.pls.core.quoteIfNeeded
+import icu.windea.pls.core.select.oneBy
 import icu.windea.pls.core.text.QuotePatterns
 import icu.windea.pls.csv.ParadoxCsvLanguage
 import icu.windea.pls.csv.psi.ParadoxCsvElementTypes.*
@@ -20,8 +20,8 @@ object ParadoxCsvElementFactory {
 
     @JvmStatic
     fun createFileFromText(project: Project, text: String): ParadoxCsvFile {
-        return PsiFileFactory.getInstance(project).createFileFromText(ParadoxCsvLanguage, text)
-            .castOrNull<ParadoxCsvFile>() ?: throw IncorrectOperationException()
+        return PsiFileFactory.getInstance(project).createFileFromText(ParadoxCsvLanguage, text).castOrNull()
+            ?: throw IncorrectOperationException()
     }
 
     @JvmStatic
@@ -33,8 +33,9 @@ object ParadoxCsvElementFactory {
     fun createColumnFromText(project: Project, text: String): ParadoxCsvColumn {
         val fileText = text
         return createFileFromText(project, fileText)
-            .findChild<ParadoxCsvColumnContainer>()
-            ?.findChild<ParadoxCsvColumn>() ?: throw IncorrectOperationException()
+            .children().oneBy<ParadoxCsvColumnContainer>()
+            .children().oneBy<ParadoxCsvColumn>()
+            ?: throw IncorrectOperationException()
     }
 
     // create smartly
@@ -43,22 +44,25 @@ object ParadoxCsvElementFactory {
     fun createEmptyHeader(project: Project, length: Int): ParadoxCsvHeader {
         val fileText = "\n" + ParadoxCsvPsiService.getSeparator().toString().repeat(length) + "\n"
         return createFileFromText(project, fileText)
-            .findChild<ParadoxCsvHeader>() ?: throw IncorrectOperationException()
+            .children().oneBy<ParadoxCsvHeader>()
+            ?: throw IncorrectOperationException()
     }
 
     @JvmStatic
     fun createEmptyRow(project: Project, length: Int): ParadoxCsvRow {
         val fileText = "a\n" + ParadoxCsvPsiService.getSeparator().toString().repeat(length) + "\n"
         return createFileFromText(project, fileText)
-            .findChild<ParadoxCsvRow>() ?: throw IncorrectOperationException()
+            .children().oneBy<ParadoxCsvRow>()
+            ?: throw IncorrectOperationException()
     }
 
     @JvmStatic
     fun createSeparator(project: Project): PsiElement {
         val fileText = ParadoxCsvPsiService.getSeparator().toString()
         return createFileFromText(project, fileText)
-            .findChild<ParadoxCsvColumnContainer>()
-            ?.findChild { it.elementType == SEPARATOR } ?: throw IncorrectOperationException()
+            .children().oneBy<ParadoxCsvColumnContainer>()
+            .children().oneBy(SEPARATOR)
+            ?: throw IncorrectOperationException()
     }
 
     @JvmStatic

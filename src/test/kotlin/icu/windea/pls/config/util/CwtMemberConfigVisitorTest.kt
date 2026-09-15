@@ -5,7 +5,8 @@ import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.core.findChild
+import icu.windea.pls.core.children
+import icu.windea.pls.core.select.oneBy
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.cwt.psi.CwtValue
@@ -39,7 +40,7 @@ class CwtMemberConfigVisitorTest : BasePlatformTestCase() {
     @Test
     fun testDispatch_visitProperty_and_visitValue() {
         val (file1, group1) = preparePropertyCases()
-        val p = file1.block!!.findChild<CwtProperty> { it.name == "str_prop" }!!
+        val p = file1.block!!.children().oneBy<CwtProperty> { it.name == "str_prop" }!!
         val pConfig = CwtPropertyConfig.resolve(p, file1, group1)!!
 
         val calls1 = mutableListOf<String>()
@@ -63,7 +64,7 @@ class CwtMemberConfigVisitorTest : BasePlatformTestCase() {
         assertEquals(listOf("property", "member"), calls1)
 
         val (file2, group2) = prepareValueCases()
-        val v = file2.block!!.findChild<CwtValue> { it.value == "yes" }!!
+        val v = file2.block!!.children().oneBy<CwtValue> { it.value == "yes" }!!
         val vConfig = CwtValueConfig.resolve(v, file2, group2)
 
         val calls2 = mutableListOf<String>()
@@ -90,7 +91,7 @@ class CwtMemberConfigVisitorTest : BasePlatformTestCase() {
     @Test
     fun testAcceptChildren_traversesDirectChildrenOnly() {
         val (file, group) = preparePropertyCases()
-        val p = file.block!!.findChild<CwtProperty> { it.name == "block_prop" }!!
+        val p = file.block!!.children().oneBy<CwtProperty> { it.name == "block_prop" }!!
         val c = CwtPropertyConfig.resolve(p, file, group)!!
 
         val visited = mutableListOf<String>()
@@ -109,7 +110,7 @@ class CwtMemberConfigVisitorTest : BasePlatformTestCase() {
         assertTrue(c.acceptChildren(visitor))
         assertEquals(listOf("P:a", "V:val1"), visited)
 
-        val p2 = file.block!!.findChild<CwtProperty> { it.name == "str_prop" }!!
+        val p2 = file.block!!.children().oneBy<CwtProperty> { it.name == "str_prop" }!!
         val c2 = CwtPropertyConfig.resolve(p2, file, group)!!
         val visited2 = mutableListOf<String>()
         val visitor2 = object : CwtMemberConfigVisitor() {
@@ -130,7 +131,7 @@ class CwtMemberConfigVisitorTest : BasePlatformTestCase() {
     @Test
     fun testAcceptChildren_shortCircuitsOnFalse() {
         val (file, group) = preparePropertyCases()
-        val p = file.block!!.findChild<CwtProperty> { it.name == "block_prop" }!!
+        val p = file.block!!.children().oneBy<CwtProperty> { it.name == "block_prop" }!!
         val c = CwtPropertyConfig.resolve(p, file, group)!!
 
         val visited = mutableListOf<String>()

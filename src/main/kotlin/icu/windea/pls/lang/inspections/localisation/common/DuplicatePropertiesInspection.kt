@@ -5,8 +5,9 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiElementVisitor
+import icu.windea.pls.core.children
 import icu.windea.pls.core.collections.forEachFast
-import icu.windea.pls.core.findChildren
+import icu.windea.pls.core.select.listBy
 import icu.windea.pls.lang.fixes.navigation.NavigateToDuplicatesFix
 import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
@@ -30,7 +31,7 @@ class DuplicatePropertiesInspection : LocalInspectionTool(), DumbAware {
     }
 
     private fun check(containerElement: ParadoxLocalisationPropertyList, holder: ProblemsHolder) {
-        val elementGroup = containerElement.findChildren<ParadoxLocalisationProperty>().groupBy { it.name }
+        val elementGroup = containerElement.children().listBy<ParadoxLocalisationProperty>().groupBy { it.name }
         if (elementGroup.isEmpty()) return
         for ((name, elements) in elementGroup) {
             ProgressManager.checkCanceled()

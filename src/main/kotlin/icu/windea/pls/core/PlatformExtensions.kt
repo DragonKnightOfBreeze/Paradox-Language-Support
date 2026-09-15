@@ -302,7 +302,8 @@ inline fun ASTNode.processChild(forward: Boolean = true, processor: (ASTNode) ->
 }
 
 /** 获取当前节点的子节点序列。 */
-fun ASTNode.children(forward: Boolean = true): Sequence<ASTNode> {
+fun ASTNode?.children(forward: Boolean = true): Sequence<ASTNode> {
+    if (this == null) return emptySequence()
     val child = if (forward) this.firstChildNode else this.lastChildNode
     if (child == null) return emptySequence()
     return child.siblings(forward, withSelf = true)
@@ -447,25 +448,30 @@ inline fun PsiElement.processChild(forward: Boolean = true, processor: (PsiEleme
 }
 
 /** 获取当前 PSI 的子元素序列。 */
-fun PsiElement.children(forward: Boolean = true): Sequence<PsiElement> {
+fun PsiElement?.children(forward: Boolean = true): Sequence<PsiElement> {
+    if (this == null) return emptySequence()
     val child = if (forward) this.firstChild else this.lastChild
     if (child == null) return emptySequence()
     return child.siblings(forward, withSelf = true)
 }
 
+@Deprecated("Use select-form instead", ReplaceWith("children(forward).oneBy(predicate)", "icu.windea.pls.core.select.one"))
 inline fun PsiElement.findChild(forward: Boolean = true, predicate: (PsiElement) -> Boolean = { true }): PsiElement? {
     return children(forward).findIsInstance(predicate)
 }
 
+@Deprecated("Use select-form instead", ReplaceWith("children(forward).oneBy<T>(predicate)", "icu.windea.pls.core.select.one"))
 @JvmName("findChildByType")
 inline fun <reified T : PsiElement> PsiElement.findChild(forward: Boolean = true, predicate: (T) -> Boolean = { true }): T? {
     return children(forward).findIsInstance<T>(predicate)
 }
 
+@Deprecated("Use select-form instead", ReplaceWith("children(forward).listBy(predicate)", "icu.windea.pls.core.select.list"))
 fun PsiElement.findChildren(forward: Boolean = true, predicate: (PsiElement) -> Boolean = { true }): List<PsiElement> {
     return children(forward).filter(predicate).toList()
 }
 
+@Deprecated("Use select-form instead", ReplaceWith("children(forward).listBy<T>(predicate)", "icu.windea.pls.core.select.list"))
 @JvmName("findChildrenByType")
 inline fun <reified T : PsiElement> PsiElement.findChildren(forward: Boolean = true, crossinline predicate: (T) -> Boolean = { true }): List<T> {
     return children(forward).filterIsInstance<T>(predicate).toList()

@@ -11,7 +11,8 @@ import icu.windea.pls.config.config.expandBySubtypeExpression
 import icu.windea.pls.config.config.expandConfigExpression
 import icu.windea.pls.config.config.expandKeyExpression
 import icu.windea.pls.config.config.expandValueExpression
-import icu.windea.pls.core.findChild
+import icu.windea.pls.core.children
+import icu.windea.pls.core.select.oneBy
 import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.cwt.psi.CwtFile
@@ -53,7 +54,7 @@ class CwtConfigManipulationServiceTest : BasePlatformTestCase(), ChronicleTestSc
         val file = myFixture.file as CwtFile
         val root = file.block!!
 
-        val p = root.findChild<CwtProperty> { it.name == "block_prop" }!!
+        val p = root.children().oneBy<CwtProperty> { it.name == "block_prop" }!!
         val container = CwtPropertyConfig.resolve(p, file, configGroup)!!
         val copied = CwtConfigManipulationService.deepCopyConfigs(container, containerConfig = container)
         assertNotNull(copied)
@@ -75,7 +76,7 @@ class CwtConfigManipulationServiceTest : BasePlatformTestCase(), ChronicleTestSc
         val file = myFixture.file as CwtFile
         val root = file.block!!
 
-        val p = root.findChild<CwtProperty> { it.name == "decl" }!!
+        val p = root.children().oneBy<CwtProperty> { it.name == "decl" }!!
         val container = CwtPropertyConfig.resolve(p, file, configGroup)!!
 
         // only subtype[foo] should be flattened; subtype[bar] should be skipped
@@ -104,7 +105,7 @@ class CwtConfigManipulationServiceTest : BasePlatformTestCase(), ChronicleTestSc
         val file = myFixture.file as CwtFile
         val root = file.block!!
 
-        val topProp = root.findChild<CwtProperty> { it.name == "top" }!!
+        val topProp = root.children().oneBy<CwtProperty> { it.name == "top" }!!
         val topCfg = CwtPropertyConfig.resolve(topProp, file, configGroup)!!
         val copiedTopChildren = CwtConfigManipulationService.deepCopyConfigs(topCfg, containerConfig = topCfg)!!
         // only one child: mid
@@ -126,7 +127,7 @@ class CwtConfigManipulationServiceTest : BasePlatformTestCase(), ChronicleTestSc
         val file = myFixture.file as CwtFile
         val root = file.block!!
 
-        val containerProp = root.findChild<CwtProperty> { it.name == "container" }!!
+        val containerProp = root.children().oneBy<CwtProperty> { it.name == "container" }!!
         val containerCfg = CwtPropertyConfig.resolve(containerProp, file, configGroup)!!
         val p2Original = containerCfg.configs!!.filterIsInstance<CwtPropertyConfig>().single { it.key == "p2" }
         // mark original with userData
@@ -154,7 +155,7 @@ class CwtConfigManipulationServiceTest : BasePlatformTestCase(), ChronicleTestSc
         val file = myFixture.file as CwtFile
         val root = file.block!!
 
-        val strProp = root.findChild<CwtProperty> { it.name == "str_prop" }!! // non-block -> configs == null
+        val strProp = root.children().oneBy<CwtProperty> { it.name == "str_prop" }!! // non-block -> configs == null
         val container = CwtPropertyConfig.resolve(strProp, file, configGroup)!!
         val parentBefore = container.parentConfig
         val copied = CwtConfigManipulationService.deepCopyConfigs(container, containerConfig = container)
@@ -170,7 +171,7 @@ class CwtConfigManipulationServiceTest : BasePlatformTestCase(), ChronicleTestSc
         val file = myFixture.file as CwtFile
         val root = file.block!!
 
-        val emptyProp = root.findChild<CwtProperty> { it.name == "empty_prop" }!! // block {} -> configs.isEmpty()
+        val emptyProp = root.children().oneBy<CwtProperty> { it.name == "empty_prop" }!! // block {} -> configs.isEmpty()
         val container = CwtPropertyConfig.resolve(emptyProp, file, configGroup)!!
         val parentBefore = container.parentConfig
         val copied = CwtConfigManipulationService.deepCopyConfigs(container, containerConfig = container)
@@ -187,7 +188,7 @@ class CwtConfigManipulationServiceTest : BasePlatformTestCase(), ChronicleTestSc
         val file = myFixture.file as CwtFile
         val root = file.block!!
 
-        val strProp = root.findChild<CwtProperty> { it.name == "str_prop" }!! // non-block -> configs == null
+        val strProp = root.children().oneBy<CwtProperty> { it.name == "str_prop" }!! // non-block -> configs == null
         val container = CwtPropertyConfig.resolve(strProp, file, configGroup)!!
         val parentBefore = container.parentConfig
 
@@ -204,7 +205,7 @@ class CwtConfigManipulationServiceTest : BasePlatformTestCase(), ChronicleTestSc
         val file = myFixture.file as CwtFile
         val root = file.block!!
 
-        val emptyProp = root.findChild<CwtProperty> { it.name == "empty_prop" }!! // block {} -> configs.isEmpty()
+        val emptyProp = root.children().oneBy<CwtProperty> { it.name == "empty_prop" }!! // block {} -> configs.isEmpty()
         val container = CwtPropertyConfig.resolve(emptyProp, file, configGroup)!!
         val parentBefore = container.parentConfig
 
@@ -222,11 +223,11 @@ class CwtConfigManipulationServiceTest : BasePlatformTestCase(), ChronicleTestSc
         val file = myFixture.file as CwtFile
         val root = file.block!!
 
-        val strProp = root.findChild<CwtProperty> { it.name == "str_prop" }!! // non-block -> configs == null
+        val strProp = root.children().oneBy<CwtProperty> { it.name == "str_prop" }!! // non-block -> configs == null
         val container = CwtPropertyConfig.resolve(strProp, file, configGroup)!!
         val parentBefore = container.parentConfig
         // choose a different parent config: block_prop
-        val blockProp = root.findChild<CwtProperty> { it.name == "block_prop" }!!
+        val blockProp = root.children().oneBy<CwtProperty> { it.name == "block_prop" }!!
         val otherParent = CwtPropertyConfig.resolve(blockProp, file, configGroup)!!
 
         val copied = CwtConfigManipulationService.deepCopyConfigs(container, containerConfig = otherParent)
@@ -245,10 +246,10 @@ class CwtConfigManipulationServiceTest : BasePlatformTestCase(), ChronicleTestSc
         val file = myFixture.file as CwtFile
         val root = file.block!!
 
-        val strProp = root.findChild<CwtProperty> { it.name == "str_prop" }!! // non-block -> configs == null
+        val strProp = root.children().oneBy<CwtProperty> { it.name == "str_prop" }!! // non-block -> configs == null
         val container = CwtPropertyConfig.resolve(strProp, file, configGroup)!!
         val parentBefore = container.parentConfig
-        val blockProp = root.findChild<CwtProperty> { it.name == "block_prop" }!!
+        val blockProp = root.children().oneBy<CwtProperty> { it.name == "block_prop" }!!
         val otherParent = CwtPropertyConfig.resolve(blockProp, file, configGroup)!!
 
         val copied = CwtConfigManipulationService.deepCopyConfigsBySubtypeExpression(container, otherParent, null)
@@ -266,7 +267,7 @@ class CwtConfigManipulationServiceTest : BasePlatformTestCase(), ChronicleTestSc
         val file = myFixture.file as CwtFile
         val root = file.block!!
 
-        val containerProp = root.findChild<CwtProperty> { it.name == "k1" }!!
+        val containerProp = root.children().oneBy<CwtProperty> { it.name == "k1" }!!
         val containerConfig = CwtPropertyConfig.resolve(containerProp, file, configGroup)!!
 
         val result = buildList {

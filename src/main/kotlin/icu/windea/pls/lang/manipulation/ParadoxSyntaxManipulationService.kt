@@ -4,7 +4,8 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.util.elementType
-import icu.windea.pls.core.findChild
+import icu.windea.pls.core.children
+import icu.windea.pls.core.select.oneBy
 import icu.windea.pls.lang.resolve.ParadoxSyntaxService
 import icu.windea.pls.script.formatter.ParadoxScriptCodeStyleSettings
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
@@ -28,7 +29,7 @@ object ParadoxSyntaxManipulationService {
 
     fun replacePropertySeparator(separator: PsiElement, project: Project, newSeparatorText: String) {
         val newProperty = ParadoxScriptElementFactory.createPropertyFromText(project, "k${newSeparatorText}v")
-        val newSeparator = newProperty.findChild { ParadoxSyntaxService.isPropertySeparator(it) } ?: return
+        val newSeparator = newProperty.children().oneBy { ParadoxSyntaxService.isPropertySeparator(it) } ?: return
         separator.replace(newSeparator)
     }
 }

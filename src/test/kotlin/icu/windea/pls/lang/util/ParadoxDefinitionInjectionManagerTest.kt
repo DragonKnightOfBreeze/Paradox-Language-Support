@@ -4,6 +4,7 @@ import com.intellij.testFramework.TestDataFile
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.config.util.CwtConfigKeyManager
+import icu.windea.pls.core.select.one
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.model.ParadoxGameType

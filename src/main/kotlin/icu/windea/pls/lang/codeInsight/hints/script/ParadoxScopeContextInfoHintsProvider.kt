@@ -5,14 +5,14 @@ import com.intellij.codeInsight.hints.SettingsKey
 import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiWhiteSpace
-import com.intellij.psi.util.elementType
 import com.intellij.psi.util.endOffset
 import com.intellij.psi.util.siblings
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleFacade
-import icu.windea.pls.core.findChild
+import icu.windea.pls.core.children
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.psi.PsiService
+import icu.windea.pls.core.select.oneBy
 import icu.windea.pls.core.util.OnceMarker
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsContext
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsProvider
@@ -46,7 +46,7 @@ class ParadoxScopeContextInfoHintsProvider : ParadoxHintsProvider() {
 
         // 属性的值需要是一个块（block），且块的左花括号需要位于行尾（忽略空白和注释）
         val block = element.propertyValue as? ParadoxScriptBlock ?: return
-        val leftCurlyBrace = block.findChild { it.elementType == ParadoxScriptElementTypes.LEFT_BRACE } ?: return
+        val leftCurlyBrace = block.children().oneBy(ParadoxScriptElementTypes.LEFT_BRACE) ?: return
         val atLineEnd = leftCurlyBrace.siblings(withSelf = false)
             .dropWhile { (it is PsiWhiteSpace && !PsiService.containsLineBreak(it)) || it is PsiComment }
             .firstOrNull()
@@ -82,7 +82,7 @@ class ParadoxScopeContextInfoHintsProvider : ParadoxHintsProvider() {
     override fun collectForPreview(element: PsiElement, sink: InlayHintsSink) {
         if (element !is ParadoxScriptProperty) return
         val block = element.propertyValue as? ParadoxScriptBlock ?: return
-        val leftCurlyBrace = block.findChild { it.elementType == ParadoxScriptElementTypes.LEFT_BRACE } ?: return
+        val leftCurlyBrace = block.children().oneBy(ParadoxScriptElementTypes.LEFT_BRACE) ?: return
         ParadoxHintsService.fillPreviewData(leftCurlyBrace, sink)
     }
 }

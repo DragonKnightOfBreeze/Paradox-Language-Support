@@ -2,6 +2,8 @@ package icu.windea.pls.lang.select
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import icu.windea.pls.core.select.list
+import icu.windea.pls.core.select.one
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptFile
@@ -143,7 +145,7 @@ class ParadoxSelectDslSemanticTest : BasePlatformTestCase(), ChronicleTestScope 
         myFixture.configureByText("test_inline_recursive.txt", "inline_script = test/inline_script_recursive")
 
         val file = myFixture.file as ParadoxScriptFile
-        val k0List = selectScope { file.queryBy("k0", inline = true).asProperty().all() }
+        val k0List = selectScope { file.queryBy("k0", inline = true).asProperty().list() }
         assertEquals(1, k0List.size)
         assertEquals("v0", k0List.single().value)
     }
@@ -279,8 +281,8 @@ class ParadoxSelectDslSemanticTest : BasePlatformTestCase(), ChronicleTestScope 
         myFixture.configureByText("test_inline_mutual_rec.txt", "inline_script = test/inline_script_a_rec")
 
         val file = myFixture.file as ParadoxScriptFile
-        val ka = selectScope { file.queryBy("ka", inline = true).asProperty().all() }
-        val kb = selectScope { file.queryBy("kb", inline = true).asProperty().all() }
+        val ka = selectScope { file.queryBy("ka", inline = true).asProperty().list() }
+        val kb = selectScope { file.queryBy("kb", inline = true).asProperty().list() }
         assertEquals(1, ka.size)
         assertEquals(1, kb.size)
     }

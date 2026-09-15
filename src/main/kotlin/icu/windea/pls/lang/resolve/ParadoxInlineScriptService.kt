@@ -11,6 +11,7 @@ import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.mergeValue
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.processAsync
+import icu.windea.pls.core.select.one
 import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.findByPattern

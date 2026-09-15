@@ -15,12 +15,12 @@ import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.core.cast
 import icu.windea.pls.core.children
 import icu.windea.pls.core.containsLineBreak
-import icu.windea.pls.core.findChild
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.pass
 import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.core.removeSurroundingOrNull
+import icu.windea.pls.core.sequences.findIsInstance
 import icu.windea.pls.core.unquote
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.Tuple2
@@ -292,14 +292,12 @@ object ParadoxPsiService {
 
     private fun ParadoxDefinitionElement.findParentAndAnchorToIntroduceLocalScriptedVariable(): Pair<PsiElement, PsiElement?> {
         if (this is ParadoxScriptFile) {
-            val anchor = this.findChild<ParadoxScriptScriptedVariable>(forward = false)
+            val anchor = this.children(forward = false).findIsInstance<ParadoxScriptScriptedVariable>()
             if (anchor == null) return this to this.lastChild
             return this to anchor
         } else {
             val parent = parent
-            val anchor: PsiElement? = this.siblings(forward = false, withSelf = false).find {
-                it !is PsiWhiteSpace && it !is PsiComment
-            }
+            val anchor: PsiElement? = this.siblings(forward = false, withSelf = false).find { it !is PsiWhiteSpace && it !is PsiComment }
             if (anchor == null && parent is ParadoxScriptRootBlock) {
                 return parent.parent to null // (file, null)
             }
@@ -320,7 +318,7 @@ object ParadoxPsiService {
     }
 
     private fun ParadoxScriptFile.findParentAndAnchorToIntroduceGlobalScriptedVariable(): Pair<PsiElement, PsiElement> {
-        val anchor = this.findChild<ParadoxScriptScriptedVariable>(forward = false)
+        val anchor = children(forward = false).findIsInstance<ParadoxScriptScriptedVariable>()
         if (anchor == null) return this to this.lastChild
         return this to anchor
     }

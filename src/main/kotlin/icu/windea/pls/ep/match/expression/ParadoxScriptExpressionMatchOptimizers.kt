@@ -5,10 +5,11 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.manipulation.CwtConfigManipulationService
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.children
 import icu.windea.pls.core.collections.filterFast
 import icu.windea.pls.core.collections.filterIsInstanceFast
 import icu.windea.pls.core.collections.forEachFast
-import icu.windea.pls.core.findChild
+import icu.windea.pls.core.select.oneBy
 import icu.windea.pls.lang.match.ParadoxExpressionMatchService
 import icu.windea.pls.lang.match.ParadoxScriptExpressionMatchContext
 import icu.windea.pls.lang.match.ParadoxScriptExpressionMatchOptimizerContext
@@ -49,7 +50,7 @@ class ParadoxScriptExpressionParameterizedMatchOptimizer : ParadoxScriptExpressi
             is ParadoxScriptValue -> element
             else -> return null
         }
-        val parameterElement = expressionElement.findChild<ParadoxScriptParameter>() ?: return null
+        val parameterElement = expressionElement.children().oneBy<ParadoxScriptParameter>() ?: return null
         val inferredConfigs = ParadoxParameterManager.getInferredConfigsForLiteral(parameterElement)
         if (inferredConfigs.isEmpty()) return null
         var result: MutableList<T>? = null

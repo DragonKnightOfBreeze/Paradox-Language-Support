@@ -9,7 +9,6 @@ import com.intellij.psi.PsiRecursiveElementWalkingVisitor
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
-import com.intellij.psi.util.elementType
 import com.intellij.psi.util.startOffset
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.base.settings.ChronicleSettings
@@ -24,13 +23,14 @@ import icu.windea.pls.core.cache.cancelable
 import icu.windea.pls.core.cache.createNestedCache
 import icu.windea.pls.core.cache.trackedBy
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.children
 import icu.windea.pls.core.collections.allFast
 import icu.windea.pls.core.collections.anyFast
 import icu.windea.pls.core.collections.filterIsInstanceFast
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.forEachReversedFast
-import icu.windea.pls.core.findChild
 import icu.windea.pls.core.isSamePosition
+import icu.windea.pls.core.select.oneBy
 import icu.windea.pls.core.unquote
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.ReadWriteAccess
@@ -374,7 +374,7 @@ object ParadoxParameterManager {
                         val name = parameter.name
                         val v = argMap[name] ?: return@run
                         val revert = v.equals("no", true)
-                        val operator = conditionalExpression.findChild { it.elementType == ParadoxScriptElementTypes.NOT_SIGN } == null
+                        val operator = conditionalExpression.children().oneBy(ParadoxScriptElementTypes.NOT_SIGN) == null
                         if ((!revert && operator) || (revert && !operator)) {
                             val start = ParadoxScriptPsiService.findStartElementToExtract(element)
                             val end = ParadoxScriptPsiService.findEndElementToExtract(element)

@@ -6,7 +6,8 @@ import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
-import icu.windea.pls.core.findChild
+import icu.windea.pls.core.children
+import icu.windea.pls.core.select.oneBy
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.model.ParadoxGameType
@@ -48,7 +49,7 @@ class CwtMemberConfigExpandedRecursiveVisitorTest : BasePlatformTestCase(), Chro
         val file = myFixture.configureByFile("features/config/expandable_visitor_cases.test.cwt") as CwtFile
         val group = ChronicleFacade.getConfigGroup(project, ParadoxGameType.Stellaris)
 
-        val p = file.block!!.findChild<CwtProperty> { it.name == "prop_with_sa" }!!
+        val p = file.block!!.children().oneBy<CwtProperty> { it.name == "prop_with_sa" }!!
         val config = CwtPropertyConfig.resolve(p, file, group)!!
 
         val visited = mutableListOf<String>()
@@ -75,7 +76,7 @@ class CwtMemberConfigExpandedRecursiveVisitorTest : BasePlatformTestCase(), Chro
         val file = myFixture.configureByFile("features/config/expandable_visitor_cases.test.cwt") as CwtFile
         val group = ChronicleFacade.getConfigGroup(project, ParadoxGameType.Stellaris)
 
-        val p = file.block!!.findChild<CwtProperty> { it.name == "prop_with_nested_sa" }!!
+        val p = file.block!!.children().oneBy<CwtProperty> { it.name == "prop_with_nested_sa" }!!
         val config = CwtPropertyConfig.resolve(p, file, group)!!
 
         val visited = mutableListOf<String>()
@@ -98,7 +99,7 @@ class CwtMemberConfigExpandedRecursiveVisitorTest : BasePlatformTestCase(), Chro
         val file = myFixture.configureByFile("features/config/expandable_visitor_cases.test.cwt") as CwtFile
         val group = ChronicleFacade.getConfigGroup(project, ParadoxGameType.Stellaris)
 
-        val p = file.block!!.findChild<CwtProperty> { it.name.startsWith("alias_name") }!!
+        val p = file.block!!.children().oneBy<CwtProperty> { it.name.startsWith("alias_name") }!!
         val config = CwtPropertyConfig.resolve(p, file, group)!!
 
         val visited = mutableListOf<String>()
@@ -121,7 +122,7 @@ class CwtMemberConfigExpandedRecursiveVisitorTest : BasePlatformTestCase(), Chro
         val file = myFixture.configureByFile("features/config/expandable_visitor_cases.test.cwt") as CwtFile
         val group = ChronicleFacade.getConfigGroup(project, ParadoxGameType.Stellaris)
 
-        val p = file.block!!.findChild<CwtProperty> { it.name == "prop_with_sa" }!!
+        val p = file.block!!.children().oneBy<CwtProperty> { it.name == "prop_with_sa" }!!
         val config = CwtPropertyConfig.resolve(p, file, group)!!
 
         // forSingleAlias = false 时，不应展开 single_alias
@@ -156,7 +157,7 @@ class CwtMemberConfigExpandedRecursiveVisitorTest : BasePlatformTestCase(), Chro
         val file = myFixture.configureByFile("features/config/expandable_visitor_cases.test.cwt") as CwtFile
         val group = ChronicleFacade.getConfigGroup(project, ParadoxGameType.Stellaris)
 
-        val p = file.block!!.findChild<CwtProperty> { it.name.startsWith("alias_name") }!!
+        val p = file.block!!.children().oneBy<CwtProperty> { it.name.startsWith("alias_name") }!!
         val config = CwtPropertyConfig.resolve(p, file, group)!!
 
         // forAlias = false 时，不应展开 alias
@@ -191,7 +192,7 @@ class CwtMemberConfigExpandedRecursiveVisitorTest : BasePlatformTestCase(), Chro
         val file = myFixture.configureByFile("features/config/expandable_visitor_cases.test.cwt") as CwtFile
         val group = ChronicleFacade.getConfigGroup(project, ParadoxGameType.Stellaris)
 
-        val p = file.block!!.findChild<CwtProperty> { it.name == "mixed_block" }!!
+        val p = file.block!!.children().oneBy<CwtProperty> { it.name == "mixed_block" }!!
         val config = CwtPropertyConfig.resolve(p, file, group)!!
 
         val visited = mutableListOf<String>()
@@ -221,7 +222,7 @@ class CwtMemberConfigExpandedRecursiveVisitorTest : BasePlatformTestCase(), Chro
         val file = myFixture.configureByFile("features/config/expandable_visitor_cases.test.cwt") as CwtFile
         val group = ChronicleFacade.getConfigGroup(project, ParadoxGameType.Stellaris)
 
-        val p = file.block!!.findChild<CwtProperty> { it.name == "mixed_block" }!!
+        val p = file.block!!.children().oneBy<CwtProperty> { it.name == "mixed_block" }!!
         val config = CwtPropertyConfig.resolve(p, file, group)!!
 
         val visited = mutableListOf<String>()
@@ -252,7 +253,7 @@ class CwtMemberConfigExpandedRecursiveVisitorTest : BasePlatformTestCase(), Chro
         val file = myFixture.configureByFile("features/config/expandable_visitor_cases.test.cwt") as CwtFile
         val group = ChronicleFacade.getConfigGroup(project, ParadoxGameType.Stellaris)
 
-        val p = file.block!!.findChild<CwtProperty> { it.name == "prop_with_sa" }!!
+        val p = file.block!!.children().oneBy<CwtProperty> { it.name == "prop_with_sa" }!!
         val config = CwtPropertyConfig.resolve(p, file, group)!!
 
         val started = mutableListOf<String>()
@@ -287,7 +288,7 @@ class CwtMemberConfigExpandedRecursiveVisitorTest : BasePlatformTestCase(), Chro
         val file = myFixture.configureByFile("features/config/expandable_visitor_cases.test.cwt") as CwtFile
         val group = ChronicleFacade.getConfigGroup(project, ParadoxGameType.Stellaris)
 
-        val p = file.block!!.findChild<CwtProperty> { it.name == "prop_multi_level_sa" }!!
+        val p = file.block!!.children().oneBy<CwtProperty> { it.name == "prop_multi_level_sa" }!!
         val config = CwtPropertyConfig.resolve(p, file, group)!!
 
         val visited = mutableListOf<String>()
@@ -311,7 +312,7 @@ class CwtMemberConfigExpandedRecursiveVisitorTest : BasePlatformTestCase(), Chro
         val file = myFixture.configureByFile("features/config/expandable_visitor_cases.test.cwt") as CwtFile
         val group = ChronicleFacade.getConfigGroup(project, ParadoxGameType.Stellaris)
 
-        val p = file.block!!.findChild<CwtProperty> { it.name == "prop_multi_ref" }!!
+        val p = file.block!!.children().oneBy<CwtProperty> { it.name == "prop_multi_ref" }!!
         val config = CwtPropertyConfig.resolve(p, file, group)!!
 
         val visited = mutableListOf<String>()
@@ -339,7 +340,7 @@ class CwtMemberConfigExpandedRecursiveVisitorTest : BasePlatformTestCase(), Chro
         val file = myFixture.configureByFile("features/config/expandable_visitor_cases.test.cwt") as CwtFile
         val group = ChronicleFacade.getConfigGroup(project, ParadoxGameType.Stellaris)
 
-        val p = file.block!!.findChild<CwtProperty> { it.name.startsWith("alias_name[nested_alias]") }!!
+        val p = file.block!!.children().oneBy<CwtProperty> { it.name.startsWith("alias_name[nested_alias]") }!!
         val config = CwtPropertyConfig.resolve(p, file, group)!!
 
         val visited = mutableListOf<String>()
@@ -364,7 +365,7 @@ class CwtMemberConfigExpandedRecursiveVisitorTest : BasePlatformTestCase(), Chro
         val file = myFixture.configureByFile("features/config/expandable_visitor_cases.test.cwt") as CwtFile
         val group = ChronicleFacade.getConfigGroup(project, ParadoxGameType.Stellaris)
 
-        val p = file.block!!.findChild<CwtProperty> { it.name == "prop_sa_with_alias" }!!
+        val p = file.block!!.children().oneBy<CwtProperty> { it.name == "prop_sa_with_alias" }!!
         val config = CwtPropertyConfig.resolve(p, file, group)!!
 
         val visited = mutableListOf<String>()
@@ -388,7 +389,7 @@ class CwtMemberConfigExpandedRecursiveVisitorTest : BasePlatformTestCase(), Chro
         val file = myFixture.configureByFile("features/config/expandable_visitor_cases.test.cwt") as CwtFile
         val group = ChronicleFacade.getConfigGroup(project, ParadoxGameType.Stellaris)
 
-        val p = file.block!!.findChild<CwtProperty> { it.name == "prop_recursive_sa" }!!
+        val p = file.block!!.children().oneBy<CwtProperty> { it.name == "prop_recursive_sa" }!!
         val config = CwtPropertyConfig.resolve(p, file, group)!!
 
         val visited = mutableListOf<String>()
@@ -419,7 +420,7 @@ class CwtMemberConfigExpandedRecursiveVisitorTest : BasePlatformTestCase(), Chro
         val file = myFixture.configureByFile("features/config/expandable_visitor_cases.test.cwt") as CwtFile
         val group = ChronicleFacade.getConfigGroup(project, ParadoxGameType.Stellaris)
 
-        val p = file.block!!.findChild<CwtProperty> { it.name == "prop_self_recursive" }!!
+        val p = file.block!!.children().oneBy<CwtProperty> { it.name == "prop_self_recursive" }!!
         val config = CwtPropertyConfig.resolve(p, file, group)!!
 
         val visited = mutableListOf<String>()
@@ -445,7 +446,7 @@ class CwtMemberConfigExpandedRecursiveVisitorTest : BasePlatformTestCase(), Chro
         val file = myFixture.configureByFile("features/config/expandable_visitor_cases.test.cwt") as CwtFile
         val group = ChronicleFacade.getConfigGroup(project, ParadoxGameType.Stellaris)
 
-        val p = file.block!!.findChild<CwtProperty> { it.name.startsWith("alias_name[complex]") }!!
+        val p = file.block!!.children().oneBy<CwtProperty> { it.name.startsWith("alias_name[complex]") }!!
         val config = CwtPropertyConfig.resolve(p, file, group)!!
 
         val visited = mutableListOf<String>()
@@ -473,7 +474,7 @@ class CwtMemberConfigExpandedRecursiveVisitorTest : BasePlatformTestCase(), Chro
         val file = myFixture.configureByFile("features/config/expandable_visitor_cases.test.cwt") as CwtFile
         val group = ChronicleFacade.getConfigGroup(project, ParadoxGameType.Stellaris)
 
-        val p = file.block!!.findChild<CwtProperty> { it.name.startsWith("alias_name[meta_alias]") }!!
+        val p = file.block!!.children().oneBy<CwtProperty> { it.name.startsWith("alias_name[meta_alias]") }!!
         val config = CwtPropertyConfig.resolve(p, file, group)!!
 
         val visited = mutableListOf<String>()
@@ -498,7 +499,7 @@ class CwtMemberConfigExpandedRecursiveVisitorTest : BasePlatformTestCase(), Chro
         val file = myFixture.configureByFile("features/config/expandable_visitor_cases.test.cwt") as CwtFile
         val group = ChronicleFacade.getConfigGroup(project, ParadoxGameType.Stellaris)
 
-        val p = file.block!!.findChild<CwtProperty> { it.name == "prop_multi_level_sa" }!!
+        val p = file.block!!.children().oneBy<CwtProperty> { it.name == "prop_multi_level_sa" }!!
         val config = CwtPropertyConfig.resolve(p, file, group)!!
 
         val visited = mutableListOf<String>()
@@ -525,7 +526,7 @@ class CwtMemberConfigExpandedRecursiveVisitorTest : BasePlatformTestCase(), Chro
         val file = myFixture.configureByFile("features/config/expandable_visitor_cases.test.cwt") as CwtFile
         val group = ChronicleFacade.getConfigGroup(project, ParadoxGameType.Stellaris)
 
-        val p = file.block!!.findChild<CwtProperty> { it.name == "mixed_block" }!!
+        val p = file.block!!.children().oneBy<CwtProperty> { it.name == "mixed_block" }!!
         val config = CwtPropertyConfig.resolve(p, file, group)!!
 
         val visited = mutableListOf<String>()
@@ -552,7 +553,7 @@ class CwtMemberConfigExpandedRecursiveVisitorTest : BasePlatformTestCase(), Chro
         val file = myFixture.configureByFile("features/config/expandable_visitor_cases.test.cwt") as CwtFile
         val group = ChronicleFacade.getConfigGroup(project, ParadoxGameType.Stellaris)
 
-        val p = file.block!!.findChild<CwtProperty> { it.name == "prop_multi_level_sa" }!!
+        val p = file.block!!.children().oneBy<CwtProperty> { it.name == "prop_multi_level_sa" }!!
         val config = CwtPropertyConfig.resolve(p, file, group)!!
 
         val started = mutableListOf<String>()

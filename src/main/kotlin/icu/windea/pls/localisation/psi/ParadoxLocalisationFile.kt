@@ -4,12 +4,10 @@ import com.intellij.extapi.psi.PsiFileBase
 import com.intellij.psi.FileViewProvider
 import com.intellij.psi.PsiElement
 import com.intellij.psi.tree.IFileElementType
-import icu.windea.pls.core.findChild
-import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.lang.psi.ParadoxFile
-import icu.windea.pls.lang.util.ParadoxFileManager
 import icu.windea.pls.localisation.ParadoxLocalisationFileType
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
+import icu.windea.pls.localisation.psi.impl.ParadoxLocalisationPsiImplUtil
 import icu.windea.pls.model.ParadoxGameType
 
 class ParadoxLocalisationFile(
@@ -20,22 +18,21 @@ class ParadoxLocalisationFile(
         @JvmField val ELEMENT_TYPE: IFileElementType = IFileElementType("PARADOX_LOCALISATION_FILE", ParadoxLocalisationLanguage)
     }
 
-    val propertyLists: List<ParadoxLocalisationPropertyList>
-        get() = findChildrenByClass(ParadoxLocalisationPropertyList::class.java).toList()
+    val propertyLists: List<ParadoxLocalisationPropertyList> get() = ParadoxLocalisationPsiImplUtil.getPropertyLists(this)
 
-    val propertyList: ParadoxLocalisationPropertyList?
-        get() = findChild<ParadoxLocalisationPropertyList>()?.takeIf { it.nextSibling !is ParadoxLocalisationPropertyList }
+    val propertyList: ParadoxLocalisationPropertyList? get() = ParadoxLocalisationPsiImplUtil.getPropertyList(this)
 
-    val properties: List<ParadoxLocalisationProperty>
-        get() = propertyList?.propertyList ?: emptyList()
+    val properties: List<ParadoxLocalisationProperty> get() = ParadoxLocalisationPsiImplUtil.getProperties(this)
 
     override fun getFileType() = ParadoxLocalisationFileType
 
     override fun getPresentation() = ParadoxLocalisationPsiPresentation(this)
 
-    override fun toString() = PsiService.toPresentableString(this)
+    override fun isEquivalentTo(another: PsiElement?) = ParadoxLocalisationPsiImplUtil.isEquivalentTo(this, another)
 
-    override fun isEquivalentTo(another: PsiElement?): Boolean {
-        return super.isEquivalentTo(another) || another is ParadoxLocalisationFile && ParadoxFileManager.isEquivalentFile(this, another)
-    }
+    override fun getResolveScope() = ParadoxLocalisationPsiImplUtil.getResolveScope(this)
+
+    override fun getUseScope() = ParadoxLocalisationPsiImplUtil.getUseScope(this)
+
+    override fun toString() = ParadoxLocalisationPsiImplUtil.toString(this)
 }

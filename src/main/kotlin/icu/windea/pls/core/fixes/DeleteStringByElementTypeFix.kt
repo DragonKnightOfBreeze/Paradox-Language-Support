@@ -8,8 +8,8 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.tree.IElementType
-import com.intellij.psi.util.elementType
-import icu.windea.pls.core.findChild
+import icu.windea.pls.core.children
+import icu.windea.pls.core.select.oneBy
 
 class DeleteStringByElementTypeFix(
     element: PsiElement,
@@ -26,8 +26,8 @@ class DeleteStringByElementTypeFix(
         if (startElementType == null && endElementType == null) {
             element.delete()
         } else {
-            val e1 = element.findChild { it.elementType == startElementType } ?: return
-            val e2 = element.findChild(forward = false) { it.elementType == endElementType } ?: return
+            val e1 = element.children(forward = true).oneBy(startElementType) ?: return
+            val e2 = element.children(forward = false).oneBy(endElementType) ?: return
             element.deleteChildRange(e1, e2)
         }
     }
