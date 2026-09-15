@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+## 3.0.3
+
+- [ ] 修复与内联脚本参数的参数值的规则推断逻辑相关的一个回归BUG / Fix a regression bug related to the config inference logic for parameter values of inline script parameters ([#412](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/412))
+- [ ] 优化图片处理逻辑和命令行执行逻辑，适用取消检查，以避免可能的 IDE 冻结 / Optimize the image processing logic and command-line execution logic, apply cancellation checks, to avoid possible IDE freeze ([#396](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/396))
+- [ ] 优化合并索引的构建逻辑，减少耗时 / Optimize the building logic of the merged index to reduce time consumption
+- [ ] 分析与优化构建索引时的性能和内存占用 / Analyze and optimize performance and memory during indexing
+- [ ] 完善测试用例 / Improve test cases
+- [ ] 其他优化与BUG修复 / Other optimizations and bug fixes
+
 ## 3.0.2 - 2026-09-08
 
 - [x] Generated modifiers should not have case-sensitive parts ([#385](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/385))
@@ -25,8 +34,8 @@
 - [x] 对于上下文规则和期望的规则，在检查前展开规则，包括并集（`union[x]`）和别名（`alias_keys_field[x]`） / For context configs and expected configs, expand before checking, including unions (`union[x]`) and aliases (`alias_keys_field[x]`)
 - [x] 完善 `ParadoxExecutableFileBasedGameMetadataProvider`，修复回归 BUG / Improve `ParadoxExecutableFileBasedGameMetadataProvider`, fix regression ([#339](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/339))
 - [x] 修复对于 `alias[x] = union[y]`，匹配逻辑不符合预期的问题 / Fix a bug where for `alias[x] = union[y]`, the match logic does not work as expected ([#374](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/374))
-- [x] 分析与优化构建索引时的性能和内存占用 / Analyze and optimize performance and memory during indexing 
-- [x] 分析与优化完成项目分析后的性能和内存占用 / Analyze and optimize performance and memory after finishing project analysis 
+- [x] 分析与优化构建索引时的性能和内存占用 / Analyze and optimize performance and memory during indexing
+- [x] 分析与优化完成项目分析后的性能和内存占用 / Analyze and optimize performance and memory after finishing project analysis
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 3.0.0 - 2026-07-13
