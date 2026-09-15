@@ -8,7 +8,7 @@ class ParadoxLocalisationFileTreeElement(
 ) : ParadoxLocalisationTreeElement<ParadoxLocalisationFile>(element) {
     override fun getChildrenBase(): Collection<StructureViewTreeElement> {
         val element = element ?: return emptyList()
-        val propertyLists = element.propertyLists
-        return propertyLists.mapNotNull { it.toTreeElement() }
+        val children = element.children
+        return children.mapNotNull { it.toTreeElement() }
     }
 }

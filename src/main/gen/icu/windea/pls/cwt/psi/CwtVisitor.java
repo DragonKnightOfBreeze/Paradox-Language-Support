@@ -7,17 +7,17 @@ import com.intellij.psi.PsiElement;
 import icu.windea.pls.core.psi.PsiPresentableTextAwareElement;
 import icu.windea.pls.core.psi.PsiQuoteAwareElement;
 import com.intellij.psi.PsiDocCommentBase;
-import com.intellij.psi.PsiListLikeElement;
 import icu.windea.pls.core.psi.PsiRootBlock;
+import com.intellij.psi.PsiListLikeElement;
 import com.intellij.psi.PsiComment;
 
 public class CwtVisitor extends PsiElementVisitor {
 
   public void visitBlock(@NotNull CwtBlock o) {
     visitValue(o);
-    // visitPsiListLikeElement(o);
     // visitMemberContainer(o);
     // visitBoundMemberContainer(o);
+    // visitPsiListLikeElement(o);
   }
 
   public void visitBoolean(@NotNull CwtBoolean o) {
@@ -70,9 +70,9 @@ public class CwtVisitor extends PsiElementVisitor {
   }
 
   public void visitRootBlock(@NotNull CwtRootBlock o) {
-    visitPsiListLikeElement(o);
-    // visitMemberContainer(o);
+    visitMemberContainer(o);
     // visitPsiRootBlock(o);
+    // visitPsiListLikeElement(o);
   }
 
   public void visitString(@NotNull CwtString o) {
@@ -98,15 +98,15 @@ public class CwtVisitor extends PsiElementVisitor {
     visitElement(o);
   }
 
-  public void visitPsiListLikeElement(@NotNull PsiListLikeElement o) {
-    visitElement(o);
-  }
-
   public void visitPsiPresentableTextAwareElement(@NotNull PsiPresentableTextAwareElement o) {
     visitElement(o);
   }
 
   public void visitExpressionElement(@NotNull CwtExpressionElement o) {
+    visitPsiElement(o);
+  }
+
+  public void visitMemberContainer(@NotNull CwtMemberContainer o) {
     visitPsiElement(o);
   }
 

@@ -5,6 +5,7 @@ import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiElement;
 import icu.windea.pls.core.psi.PsiPresentableTextAwareElement;
+import com.intellij.psi.PsiListLikeElement;
 import icu.windea.pls.core.psi.PsiQuoteAwareElement;
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference;
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement;
@@ -17,6 +18,7 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
     visitValue(o);
     // visitMemberContainer(o);
     // visitBoundMemberContainer(o);
+    // visitPsiListLikeElement(o);
   }
 
   public void visitBoolean(@NotNull ParadoxScriptBoolean o) {
@@ -111,6 +113,7 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
     // visitMemberContainer(o);
     // visitBoundMemberContainer(o);
     // visitPsiPresentableTextAwareElement(o);
+    // visitPsiListLikeElement(o);
   }
 
   public void visitNormalParameter(@NotNull ParadoxScriptNormalParameter o) {
@@ -140,8 +143,9 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
   }
 
   public void visitRootBlock(@NotNull ParadoxScriptRootBlock o) {
-    visitPsiRootBlock(o);
-    // visitMemberContainer(o);
+    visitMemberContainer(o);
+    // visitPsiRootBlock(o);
+    // visitPsiListLikeElement(o);
   }
 
   public void visitScriptedVariable(@NotNull ParadoxScriptScriptedVariable o) {
@@ -179,10 +183,6 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
     visitElement(o);
   }
 
-  public void visitPsiRootBlock(@NotNull PsiRootBlock o) {
-    visitElement(o);
-  }
-
   public void visitArgument(@NotNull ParadoxScriptArgument o) {
     visitPsiElement(o);
   }
@@ -200,6 +200,10 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
   }
 
   public void visitInterpolationContainer(@NotNull ParadoxScriptInterpolationContainer o) {
+    visitPsiElement(o);
+  }
+
+  public void visitMemberContainer(@NotNull ParadoxScriptMemberContainer o) {
     visitPsiElement(o);
   }
 

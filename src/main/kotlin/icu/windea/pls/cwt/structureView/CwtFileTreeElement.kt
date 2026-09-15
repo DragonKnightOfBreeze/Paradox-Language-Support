@@ -8,7 +8,7 @@ class CwtFileTreeElement(
 ) : CwtTreeElement<CwtFile>(element) {
     override fun getChildrenBase(): Collection<StructureViewTreeElement> {
         val element = element ?: return emptyList()
-        val members = element.members
-        return members.mapNotNull { it.toTreeElement() }
+        val children = element.children
+        return children.mapNotNull { it.toTreeElement() }
     }
 }

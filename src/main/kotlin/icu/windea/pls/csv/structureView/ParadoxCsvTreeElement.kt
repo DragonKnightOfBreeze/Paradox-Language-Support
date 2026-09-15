@@ -16,12 +16,12 @@ abstract class ParadoxCsvTreeElement<T : PsiElement>(element: T) : PsiTreeElemen
 
     override fun getPresentableText(): String? {
         val element = element ?: return null
-        return ParadoxCsvElementPresentationService.getPresentableTextInTree(element)
+        return ParadoxCsvElementPresentationService.getPresentableText(element)
     }
 
     override fun getLocationString(): String? {
         val element = element ?: return null
-        return ParadoxCsvElementPresentationService.getLocationStringInTree(element)
+        return ParadoxCsvElementPresentationService.getTreeLocationString(element)
     }
 
     override fun isSearchInLocationString(): Boolean {

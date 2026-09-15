@@ -63,8 +63,8 @@ locale ::= LOCALE_TOKEN COLON {
   extends="icu.windea.pls.localisation.psi.impl.ParadoxLocalisationStubElementImpl<?>"
   stubClass="icu.windea.pls.localisation.psi.stubs.ParadoxLocalisationLocaleStub"
   implements=[
-    "com.intellij.psi.NavigatablePsiElement"
     "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
+    "com.intellij.psi.NavigatablePsiElement"
   ]
   methods=[
     getIdElement
@@ -79,9 +79,9 @@ property ::= property_key COLON property_number? property_value {
   extends="icu.windea.pls.localisation.psi.impl.ParadoxLocalisationStubElementImpl<?>"
   stubClass="icu.windea.pls.localisation.psi.stubs.ParadoxLocalisationPropertyStub"
   implements=[
-    "com.intellij.psi.NavigatablePsiElement"
     "icu.windea.pls.localisation.psi.ParadoxLocalisationNamedElement"
     "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
+    "com.intellij.psi.NavigatablePsiElement"
   ]
   methods=[
     getIcon getName setName getNameIdentifier getTextOffset getType getValue setValue
@@ -137,8 +137,8 @@ private string_item ::= rich_text | COLORFUL_TEXT_END | TEXT_FORMAT_END
 
 rich_text ::= text | colorful_text | parameter | command | concept_command | icon | text_icon | text_format {
   implements=[
-    "com.intellij.psi.NavigatablePsiElement"
     "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
+    "com.intellij.psi.NavigatablePsiElement"
   ]
   methods=[
     getPresentation

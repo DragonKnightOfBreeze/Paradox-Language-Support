@@ -4,12 +4,12 @@ package icu.windea.pls.cwt.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiListLikeElement;
 import icu.windea.pls.core.psi.PsiRootBlock;
+import com.intellij.psi.PsiListLikeElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 
-public interface CwtRootBlock extends PsiListLikeElement, CwtMemberContainer, PsiRootBlock {
+public interface CwtRootBlock extends CwtMemberContainer, PsiRootBlock, PsiListLikeElement {
 
   @NotNull
   List<CwtDocComment> getDocCommentList();

@@ -5,7 +5,7 @@ import com.intellij.openapi.util.NlsContexts
 import com.intellij.psi.PsiElement
 import icu.windea.pls.csv.ParadoxCsvLanguage
 import icu.windea.pls.csv.psi.ParadoxCsvElementPresentationService
-import icu.windea.pls.lang.psi.ParadoxPsiPresentationService
+import icu.windea.pls.lang.psi.ParadoxElementPresentationService
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementPresentationService
 import icu.windea.pls.script.ParadoxScriptLanguage
@@ -16,9 +16,9 @@ class ParadoxGotoRelatedItem(element: PsiElement, @NlsContexts.Separator group: 
     override fun getCustomIcon(): Icon? {
         val element = element ?: return null
         return when (element.language) {
-            ParadoxScriptLanguage -> ParadoxScriptElementPresentationService.getPatchedIcon(element)
-            ParadoxLocalisationLanguage -> ParadoxLocalisationElementPresentationService.getPatchedIcon(element)
-            ParadoxCsvLanguage -> ParadoxCsvElementPresentationService.getPatchedIcon(element)
+            ParadoxScriptLanguage -> ParadoxScriptElementPresentationService.getIcon(element)
+            ParadoxLocalisationLanguage -> ParadoxLocalisationElementPresentationService.getIcon(element)
+            ParadoxCsvLanguage -> ParadoxCsvElementPresentationService.getIcon(element)
             else -> null
         }
     }
@@ -36,7 +36,7 @@ class ParadoxGotoRelatedItem(element: PsiElement, @NlsContexts.Separator group: 
     override fun getCustomContainerName(): String? {
         // 使用相对于入口目录的路径，并且带上游戏信息/模组信息，或者使用虚拟文件的绝对路径
         val element = element ?: return null
-        ParadoxPsiPresentationService.getLongFileInfoText(element)?.let { return it }
+        ParadoxElementPresentationService.getLongFileInfoText(element)?.let { return it }
         return element.containingFile?.virtualFile?.path
     }
 }

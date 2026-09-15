@@ -15,12 +15,12 @@ abstract class CwtTreeElement<T : PsiElement>(element: T) : PsiTreeElementBase<T
 
     override fun getPresentableText(): String? {
         val element = element ?: return null
-        return CwtElementPresentationService.getPresentableTextInTree(element)
+        return CwtElementPresentationService.getPresentableText(element)
     }
 
     override fun getLocationString(): String? {
         val element = element ?: return null
-        return CwtElementPresentationService.getLocationStringInTree(element)
+        return CwtElementPresentationService.getTreeLocationString(element)
     }
 
     override fun isSearchInLocationString(): Boolean {

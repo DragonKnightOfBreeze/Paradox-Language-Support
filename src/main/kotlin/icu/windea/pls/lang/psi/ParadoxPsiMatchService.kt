@@ -104,6 +104,16 @@ object ParadoxPsiMatchService {
     // region Semantic Level
 
     @OptIn(ExperimentalContracts::class)
+    fun isModDescriptorFile(element: PsiElement?): Boolean {
+        contract {
+            returns(true) implies (element is ParadoxScriptFile)
+        }
+        if (element !is ParadoxScriptFile) return false
+        if (!element.name.endsWith(".mod", true)) return false
+        return true
+    }
+
+    @OptIn(ExperimentalContracts::class)
     fun isLocalScriptedVariable(element: PsiElement?): Boolean {
         contract {
             returns(true) implies (element is ParadoxScriptScriptedVariable)

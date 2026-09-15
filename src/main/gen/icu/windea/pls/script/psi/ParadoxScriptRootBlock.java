@@ -5,10 +5,11 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import icu.windea.pls.core.psi.PsiRootBlock;
+import com.intellij.psi.PsiListLikeElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 
-public interface ParadoxScriptRootBlock extends PsiRootBlock, ParadoxScriptMemberContainer {
+public interface ParadoxScriptRootBlock extends ParadoxScriptMemberContainer, PsiRootBlock, PsiListLikeElement {
 
   @NotNull
   List<ParadoxScriptNormalConditionalBlock> getNormalConditionalBlockList();

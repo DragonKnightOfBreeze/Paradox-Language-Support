@@ -10,15 +10,10 @@ import javax.swing.Icon
 
 object ParadoxCsvElementPresentationService {
     fun getIcon(element: PsiElement): Icon? {
-        // promote to semantic level if needed
+        // 3.0.3 promote to semantic level if needed
         ParadoxElementPresentationService.getIcon(element)?.let { return it }
-        return element.icon
-    }
 
-    // TODO 3.0.3 remove
-    @Suppress("unused")
-    fun getPatchedIcon(element: PsiElement): Icon? {
-        return null
+        return element.icon
     }
 
     fun getPresentableText(element: PsiElement): String? {
@@ -33,15 +28,13 @@ object ParadoxCsvElementPresentationService {
     }
 
     fun getLocationString(element: PsiElement): String? {
-        ParadoxElementPresentationService.getFileInfoText(element)?.let { return it }
+        // 3.0.3 promote to semantic level if needed
+        ParadoxElementPresentationService.getLocationString(element)?.let { return it }
+
         return element.containingFile?.name
     }
 
-    fun getPresentableTextInTree(element: PsiElement): String? {
-        return getPresentableText(element)
-    }
-
-    fun getLocationStringInTree(element: PsiElement): String? {
+    fun getTreeLocationString(element: PsiElement): String? {
         return when (element) {
             is ParadoxCsvColumn -> ParadoxCsvPsiService.getHeaderColumn(element)?.presentableText
             else -> null
@@ -50,13 +43,13 @@ object ParadoxCsvElementPresentationService {
 
     fun getPresentableTextInNavBar(element: PsiElement): String? {
         val p = getPresentableText(element) ?: return null
-        val l = getLocationStringInTree(element) ?: return p
+        val l = getTreeLocationString(element) ?: return p
         return "$p ($l)"
     }
 
     fun getElementInfoInBreadCrumbs(element: PsiElement): String {
         val p = getPresentableText(element) ?: return ""
-        val l = getLocationStringInTree(element) ?: return p
+        val l = getTreeLocationString(element) ?: return p
         return "$p ($l)"
     }
 }

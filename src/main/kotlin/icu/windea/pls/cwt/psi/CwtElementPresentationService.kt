@@ -9,20 +9,18 @@ import javax.swing.Icon
 
 object CwtElementPresentationService {
     fun getIcon(element: PsiElement): Icon? {
-        // promote to semantic level if needed
+        // 3.0.3 promote to semantic level if needed
         CwtConfigElementPresentationService.getIcon(element)?.let { return it }
+
         return element.icon
     }
 
     fun getPresentableText(element: PsiElement): String? {
         return when (element) {
-            // 名字
             is CwtFile -> element.name
-            // 名字
+            is CwtOption -> element.name
             is CwtProperty -> element.name
-            // 展示文本
             is PsiPresentableTextAwareElement -> element.presentableText
-            // 回退
             is NavigatablePsiElement -> element.name
             else -> null
         }
@@ -32,12 +30,8 @@ object CwtElementPresentationService {
         return element.containingFile?.name
     }
 
-    fun getPresentableTextInTree(element: PsiElement): String? {
-        return getPresentableText(element)
-    }
-
     @Suppress("UNUSED_PARAMETER")
-    fun getLocationStringInTree(element: PsiElement): String? {
+    fun getTreeLocationString(element: PsiElement): String? {
         return null
     }
 

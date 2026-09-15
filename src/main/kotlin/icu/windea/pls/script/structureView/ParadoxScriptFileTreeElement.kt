@@ -8,7 +8,7 @@ class ParadoxScriptFileTreeElement(
 ) : ParadoxScriptTreeElement<ParadoxScriptFile>(element) {
     override fun getChildrenBase(): Collection<StructureViewTreeElement> {
         val element = element ?: return emptyList()
-        val children = element.block?.children ?: return emptyList()
+        val children = element.children
         return children.mapNotNull { it.toTreeElement() }
     }
 }

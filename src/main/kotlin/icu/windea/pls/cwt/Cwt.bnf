@@ -48,9 +48,9 @@ private comment ::= COMMENT {
 root_block ::= root_block_items {
   hooks=[wsBinders="GREEDY_LEFT_BINDER, GREEDY_RIGHT_BINDER"] // surrounding whitespaces and comments are greedy
   implements=[
-    "com.intellij.psi.PsiListLikeElement"
     "icu.windea.pls.cwt.psi.CwtMemberContainer"
     "icu.windea.pls.core.psi.PsiRootBlock"
+    "com.intellij.psi.PsiListLikeElement"
   ]
   methods=[
     getMemberContainer getMembers getComponents
@@ -213,9 +213,9 @@ block ::= LEFT_BRACE block_items? RIGHT_BRACE {
   pin=1
   extends=value
   implements=[
-    "com.intellij.psi.PsiListLikeElement"
     "icu.windea.pls.cwt.psi.CwtMemberContainer"
     "icu.windea.pls.cwt.psi.CwtBoundMemberContainer"
+    "com.intellij.psi.PsiListLikeElement"
   ]
   methods=[
     getMemberContainer getMembers getLeftBound getRightBound getComponents

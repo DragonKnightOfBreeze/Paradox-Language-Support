@@ -7,8 +7,9 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import icu.windea.pls.core.vfs.VirtualFileService
-import icu.windea.pls.csv.psi.ParadoxCsvColumnContainer
 import icu.windea.pls.csv.psi.ParadoxCsvFile
+import icu.windea.pls.csv.psi.ParadoxCsvHeader
+import icu.windea.pls.csv.psi.ParadoxCsvRow
 import icu.windea.pls.csv.psi.ParadoxCsvVisitor
 import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import icu.windea.pls.lang.inspections.ParadoxExpressionInspectionContext
@@ -47,7 +48,12 @@ class IncorrectColumnSizeInspection : LocalInspectionTool() {
         val context = createContext(holder)
         if (context.rowConfig == null) return PsiElementVisitor.EMPTY_VISITOR
         return object : ParadoxCsvVisitor() {
-            override fun visitColumnContainer(element: ParadoxCsvColumnContainer) {
+            override fun visitHeader(element: ParadoxCsvHeader) {
+                ProgressManager.checkCanceled()
+                ParadoxExpressionInspectionService.checkForIncorrectColumnSize(element, context)
+            }
+
+            override fun visitRow(element: ParadoxCsvRow) {
                 ProgressManager.checkCanceled()
                 ParadoxExpressionInspectionService.checkForIncorrectColumnSize(element, context)
             }

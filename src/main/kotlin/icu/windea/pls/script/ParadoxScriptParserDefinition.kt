@@ -12,6 +12,7 @@ import icu.windea.pls.script.parser.ParadoxScriptParser
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptTokenSets
+import icu.windea.pls.script.psi.impl.ParadoxScriptFileImpl
 
 class ParadoxScriptParserDefinition : ParserDefinition {
     override fun getWhitespaceTokens() = ParadoxScriptTokenSets.WHITE_SPACES
@@ -22,21 +23,13 @@ class ParadoxScriptParserDefinition : ParserDefinition {
 
     override fun getFileNodeType() = ParadoxScriptFile.ELEMENT_TYPE
 
-    override fun createFile(viewProvider: FileViewProvider): ParadoxScriptFile {
-        return ParadoxScriptFile(viewProvider)
-    }
+    override fun createFile(viewProvider: FileViewProvider) = ParadoxScriptFileImpl(viewProvider)
 
-    override fun createElement(node: ASTNode): PsiElement {
-        return Factory.createElement(node)
-    }
+    override fun createElement(node: ASTNode) = Factory.createElement(node)
 
-    override fun createParser(project: Project?): ParadoxScriptParser {
-        return ParadoxScriptParser()
-    }
+    override fun createParser(project: Project?) = ParadoxScriptParser()
 
-    override fun createLexer(project: Project?): ParadoxScriptLexer {
-        return ParadoxScriptLexer()
-    }
+    override fun createLexer(project: Project?) = ParadoxScriptLexer()
 
     override fun spaceExistenceTypeBetweenTokens(left: ASTNode?, right: ASTNode?): SpaceRequirements {
         val leftType = left?.elementType

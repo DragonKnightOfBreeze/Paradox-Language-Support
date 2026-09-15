@@ -6,8 +6,8 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiElement;
 import icu.windea.pls.core.psi.PsiPresentableTextAwareElement;
 import icu.windea.pls.core.psi.PsiQuoteAwareElement;
-import com.intellij.psi.PsiListLikeElement;
 import com.intellij.psi.NavigatablePsiElement;
+import com.intellij.psi.PsiListLikeElement;
 
 public class ParadoxCsvVisitor extends PsiElementVisitor {
 
@@ -19,19 +19,19 @@ public class ParadoxCsvVisitor extends PsiElementVisitor {
   }
 
   public void visitHeader(@NotNull ParadoxCsvHeader o) {
-    visitPsiListLikeElement(o);
+    visitColumnContainer(o);
     // visitNavigatablePsiElement(o);
-    // visitColumnContainer(o);
+    // visitPsiListLikeElement(o);
   }
 
   public void visitRow(@NotNull ParadoxCsvRow o) {
-    visitPsiListLikeElement(o);
+    visitColumnContainer(o);
     // visitNavigatablePsiElement(o);
-    // visitColumnContainer(o);
+    // visitPsiListLikeElement(o);
   }
 
-  public void visitPsiListLikeElement(@NotNull PsiListLikeElement o) {
-    visitElement(o);
+  public void visitColumnContainer(@NotNull ParadoxCsvColumnContainer o) {
+    visitPsiElement(o);
   }
 
   public void visitExpressionElement(@NotNull ParadoxCsvExpressionElement o) {

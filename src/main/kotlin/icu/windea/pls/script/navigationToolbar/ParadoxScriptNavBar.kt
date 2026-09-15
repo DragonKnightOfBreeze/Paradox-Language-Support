@@ -16,6 +16,6 @@ class ParadoxScriptNavBar : StructureAwareNavBarModelExtension() {
 
     override fun getPresentableText(o: Any?): String? {
         if (o !is PsiElement) return null
-        return ParadoxScriptElementPresentationService.getLongPresentableText(o)
+        return ParadoxScriptElementPresentationService.getPresentableTextInNavBar(o)
     }
 }

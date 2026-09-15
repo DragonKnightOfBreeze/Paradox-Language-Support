@@ -5,11 +5,9 @@ import com.intellij.psi.FileViewProvider
 import com.intellij.psi.PsiElement
 import icu.windea.pls.csv.ParadoxCsvLanguage
 import icu.windea.pls.csv.psi.ParadoxCsvFile
-import icu.windea.pls.model.ParadoxGameType
 
 class ParadoxCsvFileImpl(
     viewProvider: FileViewProvider,
-    override val gameType: ParadoxGameType? = null,
 ) : PsiFileBase(viewProvider, ParadoxCsvLanguage), ParadoxCsvFile {
     override val header get() = ParadoxCsvPsiImplUtil.getHeader(this)
 

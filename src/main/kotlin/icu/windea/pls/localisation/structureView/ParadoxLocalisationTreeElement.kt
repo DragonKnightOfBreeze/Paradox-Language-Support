@@ -15,12 +15,12 @@ abstract class ParadoxLocalisationTreeElement<T : PsiElement>(element: T) : PsiT
 
     override fun getPresentableText(): String? {
         val element = element ?: return null
-        return ParadoxLocalisationElementPresentationService.getPresentableTextInTree(element)
+        return ParadoxLocalisationElementPresentationService.getPresentableText(element)
     }
 
     override fun getLocationString(): String? {
         val element = element ?: return null
-        return ParadoxLocalisationElementPresentationService.getLocationStringInTree(element)
+        return ParadoxLocalisationElementPresentationService.getTreeLocationString(element)
     }
 
     override fun isSearchInLocationString(): Boolean {

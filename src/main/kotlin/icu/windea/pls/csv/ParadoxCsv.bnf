@@ -39,9 +39,9 @@ private comment ::= COMMENT {
 header ::= row_items {
   name="header"
   implements=[
-    "com.intellij.psi.PsiListLikeElement"
-    "com.intellij.psi.NavigatablePsiElement"
     "icu.windea.pls.csv.psi.ParadoxCsvColumnContainer"
+    "com.intellij.psi.NavigatablePsiElement"
+    "com.intellij.psi.PsiListLikeElement"
   ]
   methods=[
     getComponents
@@ -52,9 +52,9 @@ header ::= row_items {
 row ::= row_items {
   name="row"
   implements=[
-    "com.intellij.psi.PsiListLikeElement"
-    "com.intellij.psi.NavigatablePsiElement"
     "icu.windea.pls.csv.psi.ParadoxCsvColumnContainer"
+    "com.intellij.psi.NavigatablePsiElement"
+    "com.intellij.psi.PsiListLikeElement"
   ]
   methods=[
     getComponents

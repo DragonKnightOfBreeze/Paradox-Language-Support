@@ -2,7 +2,6 @@ package icu.windea.pls.localisation.psi
 
 import com.intellij.psi.NavigatablePsiElement
 import com.intellij.psi.PsiElement
-import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.psi.PsiPresentableTextAwareElement
 import icu.windea.pls.core.util.values.anonymous
@@ -13,22 +12,16 @@ import javax.swing.Icon
 
 object ParadoxLocalisationElementPresentationService {
     fun getIcon(element: PsiElement): Icon? {
-        return getPatchedIcon(element) ?: element.icon
-    }
+        // 3.0.3 promote to semantic level if needed
+        ParadoxElementPresentationService.getIcon(element)?.let { return it }
 
-    fun getPatchedIcon(element: PsiElement): Icon? {
-        when (element) {
-            is ParadoxLocalisationProperty -> {
-                run {
-                    if (element.type == null) return@run
-                    return ChronicleIcons.Nodes.Localisation
-                }
-            }
-        }
-        return null
+        return element.icon
     }
 
     fun getPresentableText(element: PsiElement): String? {
+        // 3.0.3 promote to semantic level if needed
+        ParadoxElementPresentationService.getPresentableText(element)?.let { return it }
+
         return when (element) {
             is ParadoxLocalisationFile -> element.name
             is ParadoxLocalisationLocale -> element.name
@@ -41,22 +34,27 @@ object ParadoxLocalisationElementPresentationService {
     }
 
     fun getLocationString(element: PsiElement): String? {
-        ParadoxElementPresentationService.getFileInfoText(element)?.let { return it }
+        // 3.0.3 promote to semantic level if needed
+        ParadoxElementPresentationService.getLocationString(element)?.let { return it }
+
         return element.containingFile?.name
     }
 
-    fun getPresentableTextInTree(element: PsiElement): String? {
-        return getPresentableText(element)
-    }
+    fun getTreeLocationString(element: PsiElement): String? {
+        // 3.0.3 promote to semantic level if needed
+        ParadoxElementPresentationService.getTreeLocationString(element)?.let { return it }
 
-    fun getLocationStringInTree(element: PsiElement): String? {
         return when (element) {
             is ParadoxLocalisationPropertyList -> selectLocale(element)?.text
             else -> null
         }
     }
 
-    fun getLongPresentableText(element: PsiElement): String? {
+    fun getPresentableTextInNavBar(element: PsiElement): String? {
         return getPresentableText(element)
+    }
+
+    fun getElementInfoInBreadCrumbs(element: PsiElement): String {
+        return getPresentableText(element).orEmpty()
     }
 }

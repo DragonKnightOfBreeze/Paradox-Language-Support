@@ -5,11 +5,9 @@ import com.intellij.psi.FileViewProvider
 import com.intellij.psi.PsiElement
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
-import icu.windea.pls.model.ParadoxGameType
 
 class ParadoxLocalisationFileImpl(
-    viewProvider: FileViewProvider,
-    override val gameType: ParadoxGameType? = null,
+    viewProvider: FileViewProvider
 ) : PsiFileBase(viewProvider, ParadoxLocalisationLanguage), ParadoxLocalisationFile {
     override val propertyLists get() = ParadoxLocalisationPsiImplUtil.getPropertyLists(this)
 

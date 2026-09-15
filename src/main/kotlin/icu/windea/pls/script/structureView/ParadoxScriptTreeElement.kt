@@ -18,7 +18,7 @@ abstract class ParadoxScriptTreeElement<T : PsiElement>(element: T) : PsiTreeEle
 
     override fun getPresentableText(): String? {
         val element = element ?: return null
-        return ParadoxScriptElementPresentationService.getTreePresentableText(element)
+        return ParadoxScriptElementPresentationService.getPresentableText(element)
     }
 
     override fun getLocationString(): String? {

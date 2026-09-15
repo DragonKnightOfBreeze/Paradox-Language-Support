@@ -37,8 +37,9 @@ private comment ::= COMMENT {
 root_block ::= root_block_items {
   hooks=[wsBinders="GREEDY_LEFT_BINDER, GREEDY_RIGHT_BINDER"] // surrounding whitespaces and comments are greedy
   implements=[
-    "icu.windea.pls.core.psi.PsiRootBlock"
     "icu.windea.pls.script.psi.ParadoxScriptMemberContainer"
+    "icu.windea.pls.core.psi.PsiRootBlock"
+    "com.intellij.psi.PsiListLikeElement"
   ]
   methods=[
     getMemberContainer getMembers getComponents
@@ -170,6 +171,7 @@ block ::= LEFT_BRACE block_items? RIGHT_BRACE {
   implements=[
     "icu.windea.pls.script.psi.ParadoxScriptMemberContainer"
     "icu.windea.pls.script.psi.ParadoxScriptBoundMemberContainer"
+    "com.intellij.psi.PsiListLikeElement"
   ]
   methods=[
     getMemberContainer getMembers getLeftBound getRightBound getComponents
@@ -343,6 +345,7 @@ normal_conditional_block ::= LEFT_BRACKET conditional_header normal_conditional_
     "icu.windea.pls.script.psi.ParadoxScriptMemberContainer"
     "icu.windea.pls.script.psi.ParadoxScriptBoundMemberContainer"
     "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
+    "com.intellij.psi.PsiListLikeElement"
   ]
   methods=[
     getMemberContainer getMembers getLeftBound getRightBound getComponents
