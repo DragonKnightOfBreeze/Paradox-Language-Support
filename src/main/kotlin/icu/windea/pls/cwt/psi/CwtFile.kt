@@ -22,7 +22,7 @@ class CwtFile(
 
     override fun getFileType() = CwtFileType
 
-    override fun getPresentation() = CwtPsiPresentation(this)
+    override fun getPresentation() = CwtElementPresentation(this)
 
     override fun toString() = PsiService.toPresentableString(this)
 }

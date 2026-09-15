@@ -6,7 +6,7 @@ import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.icon
 import javax.swing.Icon
 
-object CwtPsiPresentationService {
+object CwtElementPresentationService {
     fun accept(element: PsiElement?, forFile: Boolean = true): Boolean {
         return when (element) {
             null -> false

@@ -174,12 +174,12 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun setValue(element: CwtPropertyKey, value: String): CwtPropertyKey {
-        return CwtPsiManipulationService.changeContent(element, value)
+        return CwtElementManipulationService.changeContent(element, value)
     }
 
     @JvmStatic
     fun setContent(element: CwtPropertyKey, content: String, range: TextRange): CwtPropertyKey {
-        return CwtPsiManipulationService.changeContent(element, content, range)
+        return CwtElementManipulationService.changeContent(element, content, range)
     }
 
     // endregion
@@ -193,12 +193,12 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun setValue(element: CwtValue, value: String): CwtValue {
-        return CwtPsiManipulationService.changeContent(element, value)
+        return CwtElementManipulationService.changeContent(element, value)
     }
 
     @JvmStatic
     fun setContent(element: CwtValue, content: String, range: TextRange): CwtValue {
-        return CwtPsiManipulationService.changeContent(element, content, range)
+        return CwtElementManipulationService.changeContent(element, content, range)
     }
 
     // endregion
@@ -227,12 +227,12 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun setValue(element: CwtString, value: String): CwtString {
-        return CwtPsiManipulationService.changeContent(element, value)
+        return CwtElementManipulationService.changeContent(element, value)
     }
 
     @JvmStatic
     fun setContent(element: CwtString, content: String, range: TextRange): CwtString {
-        return CwtPsiManipulationService.changeContent(element, content, range)
+        return CwtElementManipulationService.changeContent(element, content, range)
     }
 
     // endregion
@@ -334,7 +334,7 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun getPresentation(element: PsiElement): ItemPresentation {
-        return CwtPsiPresentation(element)
+        return CwtElementPresentation(element)
     }
 
     @JvmStatic

@@ -6,11 +6,10 @@ import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
 import icu.windea.pls.cwt.psi.CwtMember
 import icu.windea.pls.cwt.psi.CwtProperty
-import icu.windea.pls.cwt.psi.CwtPsiDescriptionService
 import icu.windea.pls.cwt.psi.CwtString
 import icu.windea.pls.lang.psi.light.CwtConfigSymbolLightElement
 
-object CwtConfigPsiDescriptionService {
+object CwtConfigElementDescriptionService {
     fun getName(element: PsiElement): String? {
         return when (element) {
             is CwtProperty -> getNameFromConfigType(element)
@@ -43,7 +42,7 @@ object CwtConfigPsiDescriptionService {
 
     fun getNodeText(element: PsiElement): String? {
         // {type} {nameOrAnonymous}
-        val type = CwtPsiDescriptionService.getType(element) ?: return null
+        val type = getType(element) ?: return null
         val name = getName(element)
         return type + " " + name.or.anonymous()
     }

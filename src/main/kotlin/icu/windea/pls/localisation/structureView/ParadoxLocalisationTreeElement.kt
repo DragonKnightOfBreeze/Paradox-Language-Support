@@ -23,6 +23,10 @@ abstract class ParadoxLocalisationTreeElement<T : PsiElement>(element: T) : PsiT
         return ParadoxLocalisationPsiPresentationService.getTreeLocationString(element)
     }
 
+    override fun isSearchInLocationString(): Boolean {
+        return true
+    }
+
     protected fun PsiElement.toTreeElement(): ParadoxLocalisationTreeElement<out PsiElement>? {
         return when (this) {
             is ParadoxLocalisationPropertyList -> ParadoxLocalisationPropertyListTreeElement(this)

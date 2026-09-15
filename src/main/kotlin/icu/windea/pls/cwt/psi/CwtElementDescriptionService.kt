@@ -11,7 +11,7 @@ import icu.windea.pls.core.util.values.or
  * @see ElementDescriptionProvider
  * @see FindUsagesProvider
  */
-object CwtPsiDescriptionService {
+object CwtElementDescriptionService {
     fun getName(element: PsiElement): String? {
         return when (element) {
             is CwtOption -> element.name

@@ -10,7 +10,7 @@ import icu.windea.pls.cwt.text.Cwt
 /**
  * @see ElementManipulator
  */
-object CwtPsiManipulationService {
+object CwtElementManipulationService {
     fun changeContent(element: CwtOptionKey, newContent: String, range: TextRange? = null): CwtOptionKey {
         val newValue = range?.replace(element.text, newContent) ?: newContent
         val newText = newValue.quoteIfNeeded(QuotePatterns.Cwt)

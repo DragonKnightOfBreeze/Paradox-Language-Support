@@ -15,11 +15,11 @@ import com.intellij.usageView.UsageViewTypeLocation
 class CwtConfigElementDescriptionProvider : ElementDescriptionProvider {
     override fun getElementDescription(element: PsiElement, location: ElementDescriptionLocation): String? {
         return when (location) {
-            UsageViewShortNameLocation.INSTANCE -> CwtConfigPsiDescriptionService.getName(element)
-            UsageViewLongNameLocation.INSTANCE -> CwtConfigPsiDescriptionService.getName(element)
-            UsageViewTypeLocation.INSTANCE -> CwtConfigPsiDescriptionService.getType(element)
-            UsageViewNodeTextLocation.INSTANCE -> CwtConfigPsiDescriptionService.getNodeText(element)
-            HighlightUsagesDescriptionLocation.INSTANCE -> CwtConfigPsiDescriptionService.getHighlightUsagesDescription(element)
+            UsageViewShortNameLocation.INSTANCE -> CwtConfigElementDescriptionService.getName(element)
+            UsageViewLongNameLocation.INSTANCE -> CwtConfigElementDescriptionService.getName(element)
+            UsageViewTypeLocation.INSTANCE -> CwtConfigElementDescriptionService.getType(element)
+            UsageViewNodeTextLocation.INSTANCE -> CwtConfigElementDescriptionService.getNodeText(element)
+            HighlightUsagesDescriptionLocation.INSTANCE -> CwtConfigElementDescriptionService.getHighlightUsagesDescription(element)
             else -> null
         }
     }

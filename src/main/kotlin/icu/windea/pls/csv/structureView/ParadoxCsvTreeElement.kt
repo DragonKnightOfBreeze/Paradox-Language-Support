@@ -9,6 +9,11 @@ import icu.windea.pls.csv.psi.ParadoxCsvRow
 import javax.swing.Icon
 
 abstract class ParadoxCsvTreeElement<T : PsiElement>(element: T) : PsiTreeElementBase<T>(element) {
+    override fun getIcon(open: Boolean): Icon? {
+        val element = element ?: return null
+        return ParadoxCsvPsiPresentationService.getIcon(element)
+    }
+
     override fun getPresentableText(): String? {
         val element = element ?: return null
         return ParadoxCsvPsiPresentationService.getTreePresentableText(element)
@@ -19,9 +24,8 @@ abstract class ParadoxCsvTreeElement<T : PsiElement>(element: T) : PsiTreeElemen
         return ParadoxCsvPsiPresentationService.getTreeLocationString(element)
     }
 
-    override fun getIcon(open: Boolean): Icon? {
-        val element = element ?: return null
-        return ParadoxCsvPsiPresentationService.getIcon(element)
+    override fun isSearchInLocationString(): Boolean {
+        return true
     }
 
     protected fun PsiElement.toTreeElement(): ParadoxCsvTreeElement<out PsiElement>? {

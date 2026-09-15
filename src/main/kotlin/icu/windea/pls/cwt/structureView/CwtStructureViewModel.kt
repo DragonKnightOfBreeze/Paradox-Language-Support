@@ -9,7 +9,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.cwt.psi.CwtFile
-import icu.windea.pls.cwt.psi.CwtPsiPresentationService
+import icu.windea.pls.cwt.psi.CwtElementPresentationService
 
 class CwtStructureViewModel(
     editor: Editor?,
@@ -19,14 +19,16 @@ class CwtStructureViewModel(
         private val _sorters = arrayOf(Sorter.ALPHA_SORTER)
     }
 
-    override fun getRoot() = CwtFileTreeElement(psiFile as CwtFile)
+    override fun getRoot(): CwtFileTreeElement {
+        return CwtFileTreeElement(psiFile as CwtFile)
+    }
 
     override fun findAcceptableElement(element: PsiElement?): Any? {
         return PsiService.findAcceptableElementInStructureView(element, canAttachComments = true) { isSuitable(it) }
     }
 
     override fun isSuitable(element: PsiElement?): Boolean {
-        return CwtPsiPresentationService.accept(element)
+        return CwtElementPresentationService.accept(element)
     }
 
     override fun getSorters() = _sorters

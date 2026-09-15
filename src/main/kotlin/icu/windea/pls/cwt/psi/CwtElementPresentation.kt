@@ -5,7 +5,7 @@ import com.intellij.navigation.ItemPresentation
 import com.intellij.psi.PsiElement
 import javax.swing.Icon
 
-class CwtPsiPresentation(
+class CwtElementPresentation(
     element: PsiElement
 ) : ItemPresentation {
     private val anchor = TreeAnchorizer.getService().createAnchor(element)
@@ -13,16 +13,16 @@ class CwtPsiPresentation(
 
     override fun getIcon(unused: Boolean): Icon? {
         val element = element ?: return null
-        return CwtPsiPresentationService.getIcon(element)
+        return CwtElementPresentationService.getIcon(element)
     }
 
     override fun getPresentableText(): String? {
         val element = element ?: return null
-        return CwtPsiPresentationService.getPresentableText(element)
+        return CwtElementPresentationService.getPresentableText(element)
     }
 
     override fun getLocationString(): String? {
         val element = element ?: return null
-        return CwtPsiPresentationService.getLocationString(element)
+        return CwtElementPresentationService.getLocationString(element)
     }
 }
