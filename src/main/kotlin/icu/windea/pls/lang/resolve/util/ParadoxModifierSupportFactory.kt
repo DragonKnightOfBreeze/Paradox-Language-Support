@@ -10,6 +10,7 @@ import icu.windea.pls.config.config.delegated.CwtModifierConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.noneFast
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.processAsync
@@ -28,6 +29,7 @@ import icu.windea.pls.lang.util.ParadoxEconomicCategoryManager
 import icu.windea.pls.model.ParadoxEconomicCategoryInfo
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 
+@Optimized
 object ParadoxModifierSupportFactory {
     fun processPredefinedModifierConfig(configGroup: CwtConfigGroup, processor: Processor<CwtModifierConfig>): Boolean {
         val modifiers = configGroup.predefinedModifiers

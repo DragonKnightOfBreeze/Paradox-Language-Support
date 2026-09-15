@@ -86,6 +86,7 @@ class CwtDefinitionConfigContextProvider : CwtConfigContextProvider {
         val context = CwtConfigContext.createFromMember(configGroup, memberRole, memberPathFromFile, memberPath, this)
         context.element = element // necessary
         context.rootFile = selectRootFile(file) // necessary
+        context.declaration = true
         context.definitionInfo = definitionInfo
         return context
     }
@@ -139,6 +140,7 @@ class CwtDefineVariableConfigContextProvider : CwtConfigContextProvider {
         val context = CwtConfigContext.createFromMember(configGroup, memberRole, memberPathFromFile, memberPath, this)
         context.element = element // necessary
         context.rootFile = selectRootFile(file) // necessary
+        context.declaration = true
         context.defineVariableInfo = defineVariableInfo
         return context
     }
@@ -183,8 +185,6 @@ class CwtDefineVariableConfigContextProvider : CwtConfigContextProvider {
  * - 对于顶级成员，禁用以下代码检查：`MissingExpressionInspection`、`TooManyExpressionInspection`。
  * - 不会将参数值内容内联到对应的调用处，然后再进行相关代码检查。
  * - 不会将参数值内容内联到对应的调用处，然后检查语法是否合法。
- *
- * @see icu.windea.pls.lang.injection.ParadoxScriptLanguageInjector
  */
 class CwtParameterValueConfigContextProvider : CwtConfigContextProvider {
     // 兼容适用语言注入功能的 `VirtualFileWindow`
@@ -377,6 +377,7 @@ class CwtDefinitionInjectionConfigContextProvider : CwtConfigContextProvider {
         val context = CwtConfigContext.createFromMember(configGroup, memberRole, memberPathFromFile, memberPath, this)
         context.element = element // necessary
         context.rootFile = selectRootFile(file) // necessary
+        context.declaration = true
         context.definitionInjectionInfo = definitionInjectionInfo
         return context
     }

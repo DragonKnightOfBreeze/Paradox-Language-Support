@@ -16,8 +16,12 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtMacroConfig
 import icu.windea.pls.config.config.inlineConfig
 import icu.windea.pls.config.select.selectConfigScope
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.collections.anyFast
+import icu.windea.pls.core.collections.findFast
 import icu.windea.pls.core.collections.findIsInstance
+import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.createPointer
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.util.ReadWriteAccess
@@ -57,6 +61,7 @@ import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import java.util.*
 
+@Optimized
 object ParadoxParameterSupportFactory {
     fun getReadWriteAccess(element: PsiElement): ReadWriteAccess {
         return when {
@@ -158,7 +163,7 @@ object ParadoxParameterSupportFactory {
         val definitionName = scriptValueNode.text
         if (definitionName.isParameterized()) return null // skip if context name is parameterized
         val definitionTypes = listOf(ParadoxDefinitionTypes.scriptValue)
-        val argumentNode = scriptValueReferenceExpression.nodes.find f@{
+        val argumentNode = scriptValueReferenceExpression.nodes.findFast f@{
             if (it !is ParadoxScriptValueArgumentNameNode) return@f false
             if (it.rangeInExpression != rangeInExpression) return@f false
             true
@@ -254,7 +259,7 @@ object ParadoxParameterSupportFactory {
                     // infer context config
                     val propConfig = ParadoxConfigManager.getConfigs(prop).firstOrNull() as? CwtPropertyConfig ?: continue
                     if (propConfig.configExpression.type != CwtDataTypes.Definition) continue
-                    if (propConfig.configs?.any { it is CwtPropertyConfig && it.configExpression.type == CwtDataTypes.Parameter } != true) continue
+                    if (propConfig.configs?.anyFast { it is CwtPropertyConfig && it.configExpression.type == CwtDataTypes.Parameter } != true) continue
                     contextConfig = propConfig
                     contextReferenceElement = prop
                     break
@@ -337,7 +342,7 @@ object ParadoxParameterSupportFactory {
                     // infer context config
                     val propConfig = ParadoxConfigManager.getConfigs(prop).findIsInstance<CwtPropertyConfig>() ?: continue
                     val propInlineConfig = propConfig.inlineConfig?.takeIf { ParadoxInlineScriptManager.isMatched(it.name) } ?: continue
-                    if (propInlineConfig.config.configs?.any { it is CwtPropertyConfig && it.configExpression.type == CwtDataTypes.Parameter } != true) continue
+                    if (propInlineConfig.config.configs?.anyFast { it is CwtPropertyConfig && it.configExpression.type == CwtDataTypes.Parameter } != true) continue
                     inlineConfig = propInlineConfig
                     contextReferenceElement = prop
                     break
@@ -447,7 +452,7 @@ object ParadoxParameterSupportFactory {
         val arguments = mutableListOf<ParadoxParameterContextReferenceInfo.Argument>()
         val pointer = expressionElement.createPointer(project)
         val expressionStartOffset = expressionElement.startOffset + offset
-        scriptValueReferenceExpression.argumentNodes.forEach f@{ (nameNode, valueNode) ->
+        scriptValueReferenceExpression.argumentNodes.forEachFast f@{ (nameNode, valueNode) ->
             if (completionOffset != -1 && completionOffset in nameNode.rangeInExpression.shiftRight(expressionStartOffset)) return@f
             val argument = ParadoxParameterContextReferenceInfo.Argument(
                 argumentName = nameNode.text,

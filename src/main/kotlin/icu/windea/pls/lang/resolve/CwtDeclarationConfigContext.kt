@@ -43,7 +43,7 @@ interface CwtDeclarationConfigContext : UserDataHolder {
             definitionType: String,
             definitionSubtypes: List<String>?,
             provider: CwtDeclarationConfigContextProvider,
-        ): CwtDeclarationConfigContext {
+        ): CwtDeclarationConfigContextBase {
             return CwtBaseDeclarationConfigContext(configGroup, definitionType, definitionSubtypes, provider)
         }
 
@@ -54,7 +54,7 @@ interface CwtDeclarationConfigContext : UserDataHolder {
             definitionType: String,
             definitionSubtypes: List<String>?,
             provider: CwtDeclarationConfigContextProvider,
-        ): CwtDeclarationConfigContext {
+        ): CwtDeclarationConfigContextBase {
             return CwtNamedDeclarationConfigContext(configGroup, definitionName, definitionType, definitionSubtypes, provider)
         }
     }
@@ -63,7 +63,7 @@ interface CwtDeclarationConfigContext : UserDataHolder {
 // region Implementations
 
 // 12 + 5 * 4 = 32 -> 32
-private sealed class CwtDeclarationConfigContextBase(
+sealed class CwtDeclarationConfigContextBase(
     override val configGroup: CwtConfigGroup,
     override val definitionType: String,
     override val definitionSubtypes: List<String>?,

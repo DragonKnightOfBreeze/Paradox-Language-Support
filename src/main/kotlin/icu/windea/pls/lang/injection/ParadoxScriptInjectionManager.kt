@@ -66,12 +66,12 @@ object ParadoxScriptInjectionManager {
 
         val argumentName = host.propertyKey?.name?.orNull() ?: return  // 排除参数名不存在或为空的情况
         if (!ParadoxNameValidators.checkParameterName(argumentName)) return  // 参数名必须合法
-        val argumentValue = host.text.orNull() ?: return  // 参数参数值为空的情况
+        val argumentValue = host.text.orNull() ?: return  // 排除参数值为空的情况
         if (shouldApplyParameterValueInjection(argumentValue)) return
 
         // 这里先向上得到 `contextReferenceInfo`，接着获取传入值对应的 `textRange`，然后选用在 `host` 的 `textRange` 之内的那些
         val from = ParadoxParameterContextReferenceInfo.From.InContextReference
-        val contextReferenceInfo = ParadoxParameterManager.getContextReferenceInfo(host, from = from) ?: return
+        val contextReferenceInfo = ParadoxParameterManager.getContextReferenceInfo(host, from) ?: return
         if (contextReferenceInfo.arguments.isEmpty()) return
         val hostRange = host.textRange
         contextReferenceInfo.arguments.forEachFast f@{ referenceInfo ->

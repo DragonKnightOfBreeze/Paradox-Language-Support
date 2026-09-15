@@ -107,7 +107,7 @@ object ParadoxParameterManager {
      * 得到 [element] 对应的参数上下文引用信息。这里的参数使用写访问（write access）。
      */
     fun getContextReferenceInfo(element: PsiElement, from: ParadoxParameterContextReferenceInfo.From, vararg extraArgs: Any?): ParadoxParameterContextReferenceInfo? {
-        return ParadoxParameterService.getContextReferenceInfo(element, from, extraArgs)
+        return ParadoxParameterService.getContextReferenceInfo(element, from, *extraArgs)
     }
 
     /**
@@ -232,7 +232,7 @@ object ParadoxParameterManager {
         val from = ParadoxParameterContextReferenceInfo.From.Argument
         val config = context.config ?: return
         val completionOffset = context.offset
-        val contextReferenceInfo = ParadoxParameterService.getContextReferenceInfo(element, from, config, completionOffset) ?: return
+        val contextReferenceInfo = getContextReferenceInfo(element, from, config, completionOffset) ?: return
         val argumentNames = mutableSetOf<String>()
         contextReferenceInfo.arguments.forEachFast { argument ->
             argumentNames.add(argument.argumentName)

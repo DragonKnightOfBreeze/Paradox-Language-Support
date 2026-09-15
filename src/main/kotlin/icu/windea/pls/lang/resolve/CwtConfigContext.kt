@@ -40,6 +40,7 @@ interface CwtConfigContext : UserDataHolder {
 
     val element: ParadoxScriptMember?
     val rootFile: VirtualFile?
+    val declaration: Boolean
     val dynamic: Boolean
 
     val project: Project get() = configGroup.project
@@ -48,15 +49,17 @@ interface CwtConfigContext : UserDataHolder {
     /** 将当前的上下文对象标记动态的。这意味着获取上下文规则时，会改为从上下文对象上的缓存中获取，而非从规则分组上的缓存中获取。 */
     fun markDynamic()
 
+    /** 是否是某种根上下文。不检查 [memberRole]。 */
+    fun isRoot(): Boolean
+
     /** 是否是某种根上下文，或其任意深度的子上下文。不检查 [memberRole]。 */
     fun inRoot(): Boolean
 
-    /** 是否是某种特定声明（如定义、定义注入、定值变量）的根上下文，或其任意深度的子上下文。不检查 [memberRole]。 */
-    @Suppress("unused")
-    fun inDeclarationRoot(): Boolean
-
     /** 是否是某种特定声明（如定义、定义注入、定值变量）的根上下文。不检查 [memberRole]。 */
     fun isDeclarationRoot(): Boolean
+
+    /** 是否是某种特定声明（如定义、定义注入、定值变量）的根上下文，或其任意深度的子上下文。不检查 [memberRole]。 */
+    fun inDeclarationRoot(): Boolean
 
     /** 得到一组作为上下文的成员规则。 */
     fun getConfigs(options: ParadoxMatchOptions? = null): List<CwtMemberConfig<*>>
@@ -121,18 +124,24 @@ interface CwtConfigContext : UserDataHolder {
 
 // region Implementations
 
-// 12 + 6 * 4 + 1 = 37 -> 40
+// 12 + 6 * 4 + 2 = 38 -> 40
 sealed class CwtConfigContextBase(
     override val configGroup: CwtConfigGroup,
     override val memberRole: ParadoxMemberRole, // 3.0.1 use `memberRole` directly here, no optimization (compress to byte) since it's cached on PSI level
     override val provider: CwtConfigContextProvider,
 ) : UserDataHolderBase(), CwtConfigContext {
-    @Volatile override var rootFile: VirtualFile? = null // 3.0.1 used to get cache from config group faster
     @Volatile override var element: ParadoxScriptMember? = null // 3.0.1 use `element` directly here, no smart pointer since it's cached on PSI level
+    @Volatile override var rootFile: VirtualFile? = null // 3.0.1 used to get cache from config group faster
+    @Volatile override var declaration: Boolean = false // 3.0.3 #417 declared as field since it's sensitive on both context layer and provider layer
     @Volatile override var dynamic: Boolean = false // 3.0.1 optimize: declared as field to optimize access performance
 
     override fun markDynamic() {
         dynamic = true
+    }
+
+    override fun isRoot(): Boolean {
+        val memberPath = memberPath
+        return memberPath != null && memberPath.isEmpty()
     }
 
     override fun inRoot(): Boolean {
@@ -140,16 +149,12 @@ sealed class CwtConfigContextBase(
         return memberPath != null
     }
 
-    override fun inDeclarationRoot(): Boolean {
-        if (this is CwtBaseConfigContext) return false
-        val memberPath = memberPath
-        return memberPath != null
+    override fun isDeclarationRoot(): Boolean {
+        return declaration && isRoot()
     }
 
-    override fun isDeclarationRoot(): Boolean {
-        if (this is CwtBaseConfigContext) return false
-        val memberPath = memberPath
-        return memberPath != null && memberPath.isEmpty()
+    override fun inDeclarationRoot(): Boolean {
+        return declaration && inRoot()
     }
 
     override fun getConfigs(options: ParadoxMatchOptions?): List<CwtMemberConfig<*>> {
@@ -173,13 +178,14 @@ sealed class CwtConfigContextBase(
             ", memberRole=$memberRole" +
             ", memberPathFromFile=$memberPathFromFile" +
             ", memberPath=$memberPath" +
+            ", declaration=$declaration" +
             ", dynamic=$dynamic" +
             ", provider=$provider" +
             ")"
     }
 }
 
-// 12 + 7 * 4 + 1 = 41 -> 48
+// 12 + 7 * 4 + 2 = 42 -> 48
 private class CwtBaseConfigContext(
     configGroup: CwtConfigGroup,
     memberRole: ParadoxMemberRole,
@@ -190,7 +196,7 @@ private class CwtBaseConfigContext(
     override val memberPath: ParadoxMemberPath? get() = null
 }
 
-// 12 + 7 * 4 + 1 = 41 -> 48
+// 12 + 7 * 4 + 2 = 42 -> 48
 private class CwtFromFileConfigContext(
     configGroup: CwtConfigGroup,
     memberRole: ParadoxMemberRole,
@@ -201,7 +207,7 @@ private class CwtFromFileConfigContext(
     override val memberPath: ParadoxMemberPath? get() = memberPathFromFile
 }
 
-// 12 + 8 * 4 + 1 = 45 -> 48
+// 12 + 8 * 4 + 2 = 46 -> 48
 private class CwtFromMemberConfigContext(
     configGroup: CwtConfigGroup,
     memberRole: ParadoxMemberRole,

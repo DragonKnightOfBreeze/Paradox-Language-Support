@@ -4,7 +4,7 @@
 
 ## 3.0.3
 
-- [ ] 修复与内联脚本参数的参数值的规则推断逻辑相关的一个回归BUG / Fix a regression bug related to the config inference logic for parameter values of inline script parameters ([#412](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/412))
+- [x] 修复与内联脚本参数的参数值的规则推断逻辑相关的一个回归BUG / Fix a regression bug related to the config inference logic for parameter values of inline script parameters ([#412](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/412))
 - [ ] 优化图片处理逻辑和命令行执行逻辑，适用取消检查，以避免可能的 IDE 冻结 / Optimize the image processing logic and command-line execution logic, apply cancellation checks, to avoid possible IDE freeze ([#396](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/396))
 - [ ] 优化合并索引的构建逻辑，减少耗时 / Optimize the building logic of the merged index to reduce time consumption
 - [ ] 分析与优化构建索引时的性能和内存占用 / Analyze and optimize performance and memory during indexing
