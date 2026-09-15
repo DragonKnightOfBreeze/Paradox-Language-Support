@@ -190,7 +190,7 @@ dependencies {
 
     compileOnly("com.google.errorprone:error_prone_annotations:2.50.0")
     compileOnly("org.jspecify:jspecify:1.0.1")
-    compileOnly("org.slf4j:slf4j-api:2.0.18")
+    compileOnly("org.slf4j:slf4j-api:2.0.19")
     compileOnly("org.jetbrains:annotations:26.1.0") // https://github.com/JetBrains/java-annotations
 
     // Currently for reference only
