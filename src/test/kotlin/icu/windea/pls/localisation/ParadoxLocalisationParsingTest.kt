@@ -60,7 +60,7 @@ class ParadoxLocalisationParsingTest : ParsingTestCase("localisation/syntax", "t
     fun construct_text_formats_vic3() = doTest(true)
     @Test
     fun construct_text_formats_stellaris() = doTest(true)
-    // TODO 3.0.4+ constructs involves to grammatical syntax
+    // TODO 3.0.4+ constructs involves grammatical syntax
 
     @Test
     fun edge_empty() = doTest(true)

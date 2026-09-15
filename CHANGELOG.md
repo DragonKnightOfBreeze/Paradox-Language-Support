@@ -192,7 +192,7 @@
 - [x] 更新 IDEA 版本到 2025.2 / Update IDEA version to 2025.2
 - [x] 同步规则文件 / Synchronize config files
 - [x] Exception in version 2.0.7 ([#241](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/241))
-- [x] Possible IDE freeze involves to `ParadoxAnalyzeManager.getFileInfo` ([#242](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/242))
+- [x] Possible IDE freeze involves `ParadoxAnalyzeManager.getFileInfo` ([#242](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/242))
 - [x] 生成本地化时，某些缺失的本地化未被包含 ([#243](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/243))
 - [x] 优化：可配置 - 如果远程仓库地址已配置，覆盖相关的内置规则分组 / OP: Configurable - Override related builtin config group if remote repository urls are configured
 - [x] 优化：为内联脚本表达式提供特殊的快速文档 / OP: Provide special quick doc for inline script expressions
