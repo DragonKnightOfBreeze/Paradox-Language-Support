@@ -1,6 +1,6 @@
 @file:Suppress("unused")
 
-package icu.windea.pls.core.collections
+package icu.windea.pls.core.sequences
 
 /** 将类型为 [R] 且满足 [predicate] 的元素过滤为序列。 */
 inline fun <reified R> Sequence<*>.filterIsInstance(crossinline predicate: (R) -> Boolean): Sequence<R> {
@@ -20,7 +20,7 @@ inline fun <reified R> Sequence<*>.findIsInstance(predicate: (R) -> Boolean = { 
 }
 
 /** 逐个处理元素，若处理函数 [processor] 返回 `false` 则提前终止并返回 `false`。 */
-fun <T> Sequence<T>.process(processor: (T) -> Boolean): Boolean {
+inline fun <T> Sequence<T>.process(processor: (T) -> Boolean): Boolean {
     for (e in this) {
         val result = processor(e)
         if (!result) return false

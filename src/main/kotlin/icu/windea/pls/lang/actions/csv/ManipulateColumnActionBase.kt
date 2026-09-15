@@ -4,9 +4,9 @@ import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.psi.PsiFile
-import icu.windea.pls.core.collections.WalkingSequence
 import icu.windea.pls.core.editor
 import icu.windea.pls.core.psiFile
+import icu.windea.pls.core.sequences.WalkingSequence
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.lang.manipulation.ParadoxCsvFileManipulationService

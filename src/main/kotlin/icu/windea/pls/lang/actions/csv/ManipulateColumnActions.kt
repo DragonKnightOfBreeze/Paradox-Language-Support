@@ -10,10 +10,10 @@ import com.intellij.psi.TokenType.*
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.siblings
 import icu.windea.pls.ChronicleFacade
-import icu.windea.pls.core.collections.WalkingSequence
-import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.editor
 import icu.windea.pls.core.editor.EditorService
+import icu.windea.pls.core.sequences.WalkingSequence
+import icu.windea.pls.core.sequences.findIsInstance
 import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvElementFactory

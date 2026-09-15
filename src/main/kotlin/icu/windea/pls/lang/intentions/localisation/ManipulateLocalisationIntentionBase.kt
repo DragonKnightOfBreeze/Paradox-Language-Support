@@ -9,7 +9,7 @@ import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
-import icu.windea.pls.core.collections.WalkingSequence
+import icu.windea.pls.core.sequences.WalkingSequence
 import icu.windea.pls.lang.intentions.ChronicleIntentionBundle
 import icu.windea.pls.lang.manipulation.ParadoxLocalisationFileManipulationService
 import icu.windea.pls.lang.selectGameType

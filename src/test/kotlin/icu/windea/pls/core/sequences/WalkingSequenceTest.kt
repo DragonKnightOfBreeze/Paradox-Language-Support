@@ -1,4 +1,4 @@
-package icu.windea.pls.core.collections
+package icu.windea.pls.core.sequences
 
 import org.junit.Assert
 import org.junit.Test

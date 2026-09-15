@@ -8,11 +8,11 @@ import com.intellij.psi.util.parentOfType
 import com.intellij.psi.util.siblings
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.children
-import icu.windea.pls.core.collections.WalkingContext
-import icu.windea.pls.core.collections.WalkingSequence
 import icu.windea.pls.core.collections.forEachFast
-import icu.windea.pls.core.collections.forward
 import icu.windea.pls.core.findElementAt
+import icu.windea.pls.core.sequences.WalkingContext
+import icu.windea.pls.core.sequences.WalkingSequence
+import icu.windea.pls.core.sequences.forward
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvColumnContainer
 import icu.windea.pls.csv.psi.ParadoxCsvFile

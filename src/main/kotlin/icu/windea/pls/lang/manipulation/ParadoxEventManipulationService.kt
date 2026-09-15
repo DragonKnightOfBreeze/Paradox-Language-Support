@@ -7,9 +7,9 @@ import com.intellij.psi.util.siblings
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.collections.filterIsInstance
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.orNull
+import icu.windea.pls.core.sequences.filterIsInstance
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.psi.properties

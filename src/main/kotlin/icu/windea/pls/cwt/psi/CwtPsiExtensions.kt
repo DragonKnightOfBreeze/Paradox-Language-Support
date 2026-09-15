@@ -5,7 +5,7 @@ package icu.windea.pls.cwt.psi
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.siblings
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.collections.findIsInstance
+import icu.windea.pls.core.sequences.findIsInstance
 import icu.windea.pls.core.toBooleanYesNo
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract

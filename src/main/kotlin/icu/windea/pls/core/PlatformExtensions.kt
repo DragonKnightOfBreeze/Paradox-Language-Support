@@ -65,12 +65,12 @@ import com.intellij.util.Processor
 import com.intellij.util.Query
 import com.intellij.util.ThrowableRunnable
 import com.intellij.util.application
-import icu.windea.pls.core.collections.filterIsInstance
-import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.toArray
 import icu.windea.pls.core.psi.PsiCompositeReference
 import icu.windea.pls.core.psi.PsiFileService
+import icu.windea.pls.core.sequences.filterIsInstance
+import icu.windea.pls.core.sequences.findIsInstance
 import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.core.util.values.singletonSetOrEmpty
@@ -381,6 +381,10 @@ fun PsiFile.findReferenceAt(offset: Int, forward: Boolean? = null, predicate: (r
     return PsiFileService.findReferenceAt(this, offset, forward, predicate)
 }
 
+inline val PsiElement.icon get() = getIcon(0)
+
+inline val PsiComment.commentText get() = text.trimStart('#').trim()
+
 /**
  * 判断两个 [PsiElement] 是否在同一 [VirtualFile] 的同一位置。
  */
@@ -388,54 +392,6 @@ infix fun PsiElement?.isSamePosition(other: PsiElement?): Boolean {
     if (this == other) return true
     if (this == null || other == null) return false
     return startOffset == other.startOffset && containingFile.originalFile.virtualFile == other.containingFile.originalFile.virtualFile
-}
-
-/** 获取当前 PSI 的子元素序列。 */
-fun PsiElement.children(forward: Boolean = true): Sequence<PsiElement> {
-    val child = if (forward) this.firstChild else this.lastChild
-    if (child == null) return emptySequence()
-    return child.siblings(forward, withSelf = true)
-}
-
-@JvmName("findChildByType")
-inline fun <reified T : PsiElement> PsiElement.findChild(forward: Boolean = true, predicate: (T) -> Boolean = { true }): T? {
-    return children(forward).findIsInstance<T>(predicate)
-}
-
-inline fun PsiElement.findChild(forward: Boolean = true, predicate: (PsiElement) -> Boolean = { true }): PsiElement? {
-    return children(forward).findIsInstance(predicate)
-}
-
-@JvmName("findChildrenByType")
-inline fun <reified T : PsiElement> PsiElement.findChildren(forward: Boolean = true, crossinline predicate: (T) -> Boolean = { true }): List<T> {
-    return children(forward).filterIsInstance<T>(predicate).toList()
-}
-
-@Suppress("NOTHING_TO_INLINE")
-inline fun PsiElement.findChildren(forward: Boolean = true, noinline predicate: (PsiElement) -> Boolean = { true }): List<PsiElement> {
-    return children(forward).filter(predicate).toList()
-}
-
-/** 遍历当前 PSI 的直接子元素。 */
-inline fun PsiElement.forEachChild(forward: Boolean = true, action: (PsiElement) -> Unit) {
-    // 不会忽略某些特定类型的子元素
-    var child: PsiElement? = if (forward) firstChild else lastChild
-    while (child != null) {
-        action(child)
-        child = if (forward) child.nextSibling else child.prevSibling
-    }
-}
-
-/** 处理当前 PSI 的直接子元素。处理器返回 `false` 时提前终止。 */
-inline fun PsiElement.processChild(forward: Boolean = true, processor: (PsiElement) -> Boolean): Boolean {
-    // 不会忽略某些特定类型的子元素
-    var child: PsiElement? = if (forward) firstChild else lastChild
-    while (child != null) {
-        val result = processor(child)
-        if (!result) return false
-        child = if (forward) child.nextSibling else child.prevSibling
-    }
-    return true
 }
 
 /** 遍历当前 PSI 的所有父元素，直到 PSI 文件为止。 */
@@ -468,9 +424,52 @@ inline fun PsiElement.processParent(withSelf: Boolean = false, processor: (PsiEl
     return true
 }
 
-inline val PsiElement.icon get() = getIcon(0)
+/** 遍历当前 PSI 的直接子元素。 */
+inline fun PsiElement.forEachChild(forward: Boolean = true, action: (PsiElement) -> Unit) {
+    // 不会忽略某些特定类型的子元素
+    var child: PsiElement? = if (forward) firstChild else lastChild
+    while (child != null) {
+        action(child)
+        child = if (forward) child.nextSibling else child.prevSibling
+    }
+}
 
-inline val PsiComment.commentText get() = text.trimStart('#').trim()
+/** 处理当前 PSI 的直接子元素。处理器返回 `false` 时提前终止。 */
+inline fun PsiElement.processChild(forward: Boolean = true, processor: (PsiElement) -> Boolean): Boolean {
+    // 不会忽略某些特定类型的子元素
+    var child: PsiElement? = if (forward) firstChild else lastChild
+    while (child != null) {
+        val result = processor(child)
+        if (!result) return false
+        child = if (forward) child.nextSibling else child.prevSibling
+    }
+    return true
+}
+
+/** 获取当前 PSI 的子元素序列。 */
+fun PsiElement.children(forward: Boolean = true): Sequence<PsiElement> {
+    val child = if (forward) this.firstChild else this.lastChild
+    if (child == null) return emptySequence()
+    return child.siblings(forward, withSelf = true)
+}
+
+inline fun PsiElement.findChild(forward: Boolean = true, predicate: (PsiElement) -> Boolean = { true }): PsiElement? {
+    return children(forward).findIsInstance(predicate)
+}
+
+@JvmName("findChildByType")
+inline fun <reified T : PsiElement> PsiElement.findChild(forward: Boolean = true, predicate: (T) -> Boolean = { true }): T? {
+    return children(forward).findIsInstance<T>(predicate)
+}
+
+fun PsiElement.findChildren(forward: Boolean = true, predicate: (PsiElement) -> Boolean = { true }): List<PsiElement> {
+    return children(forward).filter(predicate).toList()
+}
+
+@JvmName("findChildrenByType")
+inline fun <reified T : PsiElement> PsiElement.findChildren(forward: Boolean = true, crossinline predicate: (T) -> Boolean = { true }): List<T> {
+    return children(forward).filterIsInstance<T>(predicate).toList()
+}
 
 /** PSI 元素的空指针。 */
 object EmptyPointer : SmartPsiElementPointer<PsiElement> {

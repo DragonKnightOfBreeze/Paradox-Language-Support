@@ -10,9 +10,9 @@ import icu.windea.pls.config.config.members
 import icu.windea.pls.config.config.properties
 import icu.windea.pls.config.config.values
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.collections.generateSequenceFromSeeds
 import icu.windea.pls.core.match.KeywordMatcher
 import icu.windea.pls.core.match.PathMatcher
+import icu.windea.pls.core.sequences.generateSequenceFromSeeds
 import icu.windea.pls.model.paths.CwtConfigPath
 
 class CwtConfigSelectScopeImpl : CwtConfigSelectScope {

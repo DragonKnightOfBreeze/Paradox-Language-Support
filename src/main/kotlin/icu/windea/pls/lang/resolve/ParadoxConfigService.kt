@@ -32,13 +32,13 @@ import icu.windea.pls.core.cache.cancelable
 import icu.windea.pls.core.cache.createNestedCache
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.CaseInsensitiveStringSet
-import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.mapFast
 import icu.windea.pls.core.collections.mapNotNullFast
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.createCachedValue
 import icu.windea.pls.core.optimized
+import icu.windea.pls.core.sequences.findIsInstance
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.core.util.getValue

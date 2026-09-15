@@ -13,8 +13,8 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
-import icu.windea.pls.core.collections.WalkingSequence
 import icu.windea.pls.core.editor
+import icu.windea.pls.core.sequences.WalkingSequence
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.fileInfo

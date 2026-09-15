@@ -1,4 +1,4 @@
-package icu.windea.pls.core.collections
+package icu.windea.pls.core.sequences
 
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.core.util.KeyRegistry

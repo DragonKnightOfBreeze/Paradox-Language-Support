@@ -10,8 +10,8 @@ import com.intellij.psi.PsiRecursiveElementWalkingVisitor
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.base.annotations.FromInternalConfig
 import icu.windea.pls.config.config.internal.CwtFoldingSettingsConfig
-import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.collections.toArray
+import icu.windea.pls.core.sequences.process
 import icu.windea.pls.core.util.values.singletonList
 import icu.windea.pls.core.util.values.singletonListOrEmpty
 import icu.windea.pls.core.util.values.to

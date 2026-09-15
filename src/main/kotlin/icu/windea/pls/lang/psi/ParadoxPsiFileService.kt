@@ -7,9 +7,9 @@ import com.intellij.psi.util.parentOfType
 import com.intellij.psi.util.parents
 import com.intellij.util.BitUtil
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.findElementAt
 import icu.windea.pls.core.findReferenceAt
+import icu.windea.pls.core.sequences.findIsInstance
 import icu.windea.pls.csv.ParadoxCsvLanguage
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.csv.psi.ParadoxCsvTokenSets

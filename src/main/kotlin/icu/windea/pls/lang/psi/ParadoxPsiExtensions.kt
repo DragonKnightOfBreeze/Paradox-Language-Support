@@ -3,13 +3,13 @@
 package icu.windea.pls.lang.psi
 
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.collections.WalkingContext
-import icu.windea.pls.core.collections.WalkingSequence
-import icu.windea.pls.core.collections.context
-import icu.windea.pls.core.collections.transform
 import icu.windea.pls.core.math.MathResult
 import icu.windea.pls.core.quote
 import icu.windea.pls.core.quoteIfNeeded
+import icu.windea.pls.core.sequences.WalkingContext
+import icu.windea.pls.core.sequences.WalkingSequence
+import icu.windea.pls.core.sequences.context
+import icu.windea.pls.core.sequences.transform
 import icu.windea.pls.core.text.QuotePatterns
 import icu.windea.pls.core.toBooleanYesNo
 import icu.windea.pls.core.util.getValue

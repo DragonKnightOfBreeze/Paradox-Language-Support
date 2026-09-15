@@ -8,7 +8,7 @@ class CwtPropertyTreeElement(
 ) : CwtTreeElement<CwtProperty>(element) {
     override fun getChildrenBase(): Collection<StructureViewTreeElement> {
         val element = element ?: return emptyList()
-        val members = element.members
+        val members = element.members ?: return emptyList()
         return members.mapNotNull { it.toTreeElement() }
     }
 }

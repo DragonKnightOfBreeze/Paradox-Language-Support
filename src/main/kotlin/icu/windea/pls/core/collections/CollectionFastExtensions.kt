@@ -152,7 +152,7 @@ fun <T : Any> List<T?>.filterNotNullFast(): List<T> {
     return result ?: first?.let { ImmutableList.of(it) } ?: ImmutableList.of()
 }
 
-/** @see filterIsInstance */
+/** @see icu.windea.pls.core.sequences.filterIsInstance */
 @Fast
 inline fun <reified R : Any> List<*>.filterIsInstanceFast(predicate: (R) -> Boolean = { true }): List<R> {
     // note: assume input is `RandomAccess` and is not `CopyOnWriteArrayList`
@@ -199,7 +199,7 @@ inline fun <T> List<T>.findLastFast(predicate: (T) -> Boolean): T? {
     return null
 }
 
-/** @see findIsInstance */
+/** @see icu.windea.pls.core.sequences.findIsInstance */
 inline fun <reified R> List<*>.findIsInstanceFast(predicate: (R) -> Boolean = { true }): R? {
     // note: assume input is `RandomAccess` and is not `CopyOnWriteArrayList`
     val size = size // optimize: cache input size first
@@ -256,7 +256,7 @@ inline fun <T> List<T>.noneFast(predicate: (T) -> Boolean): Boolean {
     return true
 }
 
-/** @see process */
+/** @see icu.windea.pls.core.sequences.process */
 @Fast
 inline fun <T> List<T>.processFast(processor: (T) -> Boolean): Boolean {
     // note: assume input is `RandomAccess` and is not `CopyOnWriteArrayList`

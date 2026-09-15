@@ -2,8 +2,8 @@ package icu.windea.pls.lang.manipulation
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.core.collections.context
-import icu.windea.pls.core.collections.forward
+import icu.windea.pls.core.sequences.context
+import icu.windea.pls.core.sequences.forward
 import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.test.ChronicleTestScope
 import org.junit.After

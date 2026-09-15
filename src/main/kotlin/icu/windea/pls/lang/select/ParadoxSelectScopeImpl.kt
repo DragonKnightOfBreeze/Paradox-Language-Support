@@ -5,10 +5,10 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.util.containers.TreeTraversal
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.collections.generateSequenceFromSeeds
 import icu.windea.pls.core.match.KeywordMatcher
 import icu.windea.pls.core.match.PathMatcher
 import icu.windea.pls.core.processParent
+import icu.windea.pls.core.sequences.generateSequenceFromSeeds
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.psi.ParadoxPsiMatchService

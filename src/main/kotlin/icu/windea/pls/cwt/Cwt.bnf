@@ -2,8 +2,6 @@
 // All rights reserved.
 
 // Grammar for CWT.
-// Notes:
-// - Supports properties, blocks, and special option/doc comments with lazy parsing.
 
 {
   parserImports="static com.intellij.lang.WhitespacesBinders.*"
@@ -219,4 +217,3 @@ private block_item_recover ::= !( COMMENT | OPTION_COMMENT_START | DOC_COMMENT_T
   | BOOLEAN_TOKEN | INT_TOKEN | FLOAT_TOKEN | STRING_TOKEN | PROPERTY_KEY_TOKEN | OPTION_KEY_TOKEN
   | LEFT_BRACE | RIGHT_BRACE
   )
-

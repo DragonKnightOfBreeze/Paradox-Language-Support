@@ -29,11 +29,11 @@ import icu.windea.pls.core.collections.anyFast
 import icu.windea.pls.core.collections.filterFast
 import icu.windea.pls.core.collections.findFast
 import icu.windea.pls.core.collections.forEachFast
-import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.isIncomplete
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.match.PathMatcher
 import icu.windea.pls.core.optimized
+import icu.windea.pls.core.sequences.process
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKeyWithThis

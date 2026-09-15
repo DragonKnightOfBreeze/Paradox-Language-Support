@@ -2,9 +2,9 @@ package icu.windea.pls.lang.manipulation
 
 import com.intellij.openapi.progress.ProgressManager
 import icu.windea.pls.core.children
-import icu.windea.pls.core.collections.WalkingContext
-import icu.windea.pls.core.collections.WalkingSequence
-import icu.windea.pls.core.collections.forward
+import icu.windea.pls.core.sequences.WalkingContext
+import icu.windea.pls.core.sequences.WalkingSequence
+import icu.windea.pls.core.sequences.forward
 import icu.windea.pls.core.withContextRecursionGuard
 import icu.windea.pls.lang.psi.conditional
 import icu.windea.pls.lang.psi.inline

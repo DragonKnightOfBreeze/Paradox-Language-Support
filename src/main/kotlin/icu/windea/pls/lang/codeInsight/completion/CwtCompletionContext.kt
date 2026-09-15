@@ -14,7 +14,7 @@ import icu.windea.pls.config.util.CwtConfigSchemaManager
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.codeInsight.completion.GlobalBasedCompletionContext
 import icu.windea.pls.core.codeInsight.completion.GlobalCompletionContext
-import icu.windea.pls.core.collections.findIsInstance
+import icu.windea.pls.core.sequences.findIsInstance
 import icu.windea.pls.core.unquote
 import icu.windea.pls.cwt.psi.CwtElementTypes
 import icu.windea.pls.cwt.psi.CwtExpressionElement

@@ -7,14 +7,16 @@ import icu.windea.pls.config.configExpression.CwtDataExpressionMetadataBuilder
 import icu.windea.pls.config.configExpression.CwtDataExpressionMetadataBuilderWithInput
 import icu.windea.pls.config.configExpression.CwtDataExpressionRole
 import icu.windea.pls.config.configExpression.acceptInput
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.forEachFast
-import icu.windea.pls.core.collections.process
+import icu.windea.pls.core.collections.processFast
 import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.core.text.TextPattern
 import icu.windea.pls.core.text.TextPatternBasedBuilder
 import icu.windea.pls.core.text.TextPatternBasedProvider
 import icu.windea.pls.core.text.TextPatternResult
 
+@Optimized
 abstract class CwtTextPatternBasedDataExpressionSupport : CwtDataExpressionSupport {
     private data class Context(val dataType: CwtDataType, val metadataBuilder: CwtDataExpressionMetadataBuilder? = null)
     // NOTE 3.0.1 nested supports are not supported atm
@@ -53,10 +55,11 @@ abstract class CwtTextPatternBasedDataExpressionSupport : CwtDataExpressionSuppo
     }
 
     fun processTextPatterns(consumer: Processor<TextPattern<*>>): Boolean {
-        return providers.process { provider -> consumer.process(provider.pattern) }
+        return providers.processFast { provider -> consumer.process(provider.pattern) }
     }
 }
 
+@Optimized
 abstract class CwtPrefixBasedDataExpressionSupport : CwtDataExpressionSupport {
     private data class Provider(val dataType: CwtDataType, val prefix: String, val ignoreCase: Boolean)
 

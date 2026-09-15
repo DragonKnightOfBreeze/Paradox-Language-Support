@@ -267,18 +267,6 @@ class CollectionExtensionsTest {
     }
 
     @Test
-    fun withDefault_delegate_inserts_default_and_updates_test() {
-        val h = Holder()
-        // default inserted at delegate binding time
-        assertEquals(1, h.backing["count"])
-        // read via delegate
-        assertEquals(1, h.count)
-        // write via delegate
-        h.count = 7
-        assertEquals(7, h.backing["count"])
-    }
-
-    @Test
     fun associateByNotNull_test() {
         val list = listOf("a", "bb", "c")
         val m = list.associateByNotNull { if (it.length > 1) it.uppercase() else null }
@@ -328,18 +316,6 @@ class CollectionExtensionsTest {
         // key 为 null：逐个处理值，短路
         assertFalse(map.processValue(null) { it < 2 })
     }
-
-    @Test
-    fun getOne_getAll_test() {
-        val map = mapOf("a" to listOf(1, 2, 3), "b" to emptyList())
-        assertEquals(3, map.getOne("a"))
-        assertNull(map.getOne("b"))
-        assertNull(map.getOne("c"))
-        assertEquals(listOf(1, 2, 3), map.getAll("a"))
-        assertEquals(emptyList<Int>(), map.getAll("b"))
-        assertEquals(emptyList<Int>(), map.getAll("c"))
-    }
-
     @Test
     fun synced_list_set_test() {
         val l = mutableListOf(1, 2)
@@ -350,16 +326,7 @@ class CollectionExtensionsTest {
         assertEquals(setOf(1, 2, 3), s)
     }
 
-    // region helpers
-
     private fun <T> iterableOf(vararg elements: T): Iterable<T> = object : Iterable<T> {
         override fun iterator(): Iterator<T> = elements.asList().iterator()
     }
-
-    private class Holder {
-        val backing = mutableMapOf<String, Int>()
-        var count by (backing withDefault 1)
-    }
-
-    // endregion
 }

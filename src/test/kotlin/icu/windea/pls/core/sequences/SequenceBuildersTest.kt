@@ -1,4 +1,4 @@
-package icu.windea.pls.core.collections
+package icu.windea.pls.core.sequences
 
 import com.intellij.util.containers.TreeTraversal
 import org.junit.Assert.*
