@@ -11,5 +11,5 @@ interface ParadoxCsvPsiCodeInjectors {
     @InjectionTarget("icu.windea.pls.csv.psi.impl.ParadoxCsvColumnImpl", pluginId = "icu.windea.pls")
     @FieldCache("getText", cleanUp = "subtreeChanged")
     @FieldCache("getValue", cleanUp = "subtreeChanged")
-    class Column : CodeInjectorBase()
+    class ForColumn : CodeInjectorBase()
 }

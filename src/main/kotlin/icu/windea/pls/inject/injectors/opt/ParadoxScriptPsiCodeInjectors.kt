@@ -12,63 +12,63 @@ interface ParadoxScriptPsiCodeInjectors {
     // @FieldCache("getText", cleanup = "subtreeChanged")
     @FieldCache("getName", cleanUp = "subtreeChanged")
     @FieldCache("getValue", cleanUp = "subtreeChanged")
-    class ScriptedVariable : CodeInjectorBase()
+    class ForScriptedVariable : CodeInjectorBase()
 
     /** @see icu.windea.pls.script.psi.ParadoxScriptScriptedVariableName */
     @InjectionTarget("icu.windea.pls.script.psi.impl.ParadoxScriptScriptedVariableNameImpl", pluginId = "icu.windea.pls")
     @FieldCache("getText", cleanUp = "subtreeChanged")
     @FieldCache("getName", cleanUp = "subtreeChanged")
-    class ScriptedVariableName : CodeInjectorBase()
+    class ForScriptedVariableName : CodeInjectorBase()
 
     /** @see icu.windea.pls.script.psi.ParadoxScriptProperty */
     @InjectionTarget("icu.windea.pls.script.psi.impl.ParadoxScriptPropertyImpl", pluginId = "icu.windea.pls")
     // @FieldCache("getText", cleanup = "subtreeChanged")
     @FieldCache("getName", cleanUp = "subtreeChanged")
     @FieldCache("getValue", cleanUp = "subtreeChanged")
-    class Property : CodeInjectorBase()
+    class ForProperty : CodeInjectorBase()
 
     /** @see icu.windea.pls.script.psi.ParadoxScriptPropertyKey */
     @InjectionTarget("icu.windea.pls.script.psi.impl.ParadoxScriptPropertyKeyImpl", pluginId = "icu.windea.pls")
     @FieldCache("getText", cleanUp = "subtreeChanged")
     @FieldCache("getValue", cleanUp = "subtreeChanged")
-    class PropertyKey : CodeInjectorBase()
+    class ForPropertyKey : CodeInjectorBase()
 
     /** @see icu.windea.pls.script.psi.ParadoxScriptBoolean */
     @InjectionTarget("icu.windea.pls.script.psi.impl.ParadoxScriptBooleanImpl", pluginId = "icu.windea.pls")
     @FieldCache("getText", cleanUp = "subtreeChanged")
-    class Boolean : CodeInjectorBase()
+    class ForBoolean : CodeInjectorBase()
 
     /** @see icu.windea.pls.script.psi.ParadoxScriptInt */
     @InjectionTarget("icu.windea.pls.script.psi.impl.ParadoxScriptIntImpl", pluginId = "icu.windea.pls")
     @FieldCache("getText", cleanUp = "subtreeChanged")
-    class Int : CodeInjectorBase()
+    class ForInt : CodeInjectorBase()
 
     /** @see icu.windea.pls.script.psi.ParadoxScriptFloat */
     @InjectionTarget("icu.windea.pls.script.psi.impl.ParadoxScriptFloatImpl", pluginId = "icu.windea.pls")
     @FieldCache("getText", cleanUp = "subtreeChanged")
-    class Float : CodeInjectorBase()
+    class ForFloat : CodeInjectorBase()
 
     /** @see icu.windea.pls.script.psi.ParadoxScriptString */
     @InjectionTarget("icu.windea.pls.script.psi.impl.ParadoxScriptStringImpl", pluginId = "icu.windea.pls")
     @FieldCache("getText", cleanUp = "subtreeChanged")
     @FieldCache("getValue", cleanUp = "subtreeChanged")
-    class String : CodeInjectorBase()
+    class ForString : CodeInjectorBase()
 
     /** @see icu.windea.pls.script.psi.ParadoxScriptConditionalParameter */
     @InjectionTarget("icu.windea.pls.script.psi.impl.ParadoxScriptConditionalParameterImpl", pluginId = "icu.windea.pls")
     @FieldCache("getText", cleanUp = "subtreeChanged")
     @FieldCache("getName", cleanUp = "subtreeChanged")
-    class ConditionalParameter : CodeInjectorBase()
+    class ForConditionalParameter : CodeInjectorBase()
 
     /** @see icu.windea.pls.script.psi.ParadoxScriptNormalParameter */
     @InjectionTarget("icu.windea.pls.script.psi.impl.ParadoxScriptNormalParameterImpl", pluginId = "icu.windea.pls")
     @FieldCache("getText", cleanUp = "subtreeChanged")
     @FieldCache("getName", cleanUp = "subtreeChanged")
-    class NormalParameter : CodeInjectorBase()
+    class ForNormalParameter : CodeInjectorBase()
 
     /** @see icu.windea.pls.script.psi.ParadoxScriptInlineMathParameter */
     @InjectionTarget("icu.windea.pls.script.psi.impl.ParadoxScriptInlineMathParameterImpl", pluginId = "icu.windea.pls")
     @FieldCache("getText", cleanUp = "subtreeChanged")
     @FieldCache("getName", cleanUp = "subtreeChanged")
-    class InlineMathParameter : CodeInjectorBase()
+    class ForInlineMathParameter : CodeInjectorBase()
 }
