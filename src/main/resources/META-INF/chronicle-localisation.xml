@@ -39,11 +39,11 @@
     <elementDescriptionProvider implementation="icu.windea.pls.localisation.psi.ParadoxLocalisationElementDescriptionProvider"/>
 
     <lang.elementManipulator forClass="icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyKey"
-                             implementationClass="icu.windea.pls.localisation.psi.ParadoxLocalisationElementManipulators$PropertyKeyManipulator"/>
+                             implementationClass="icu.windea.pls.localisation.psi.ParadoxLocalisationElementManipulators$ForPropertyKey"/>
     <lang.elementManipulator forClass="icu.windea.pls.localisation.psi.ParadoxLocalisationCommandText"
-                             implementationClass="icu.windea.pls.localisation.psi.ParadoxLocalisationElementManipulators$CommandTextManipulator"/>
+                             implementationClass="icu.windea.pls.localisation.psi.ParadoxLocalisationElementManipulators$ForCommandText"/>
     <lang.elementManipulator forClass="icu.windea.pls.localisation.psi.ParadoxLocalisationConceptName"
-                             implementationClass="icu.windea.pls.localisation.psi.ParadoxLocalisationElementManipulators$ConceptNameManipulator"/>
+                             implementationClass="icu.windea.pls.localisation.psi.ParadoxLocalisationElementManipulators$ForConceptName"/>
 
     <additionalTextAttributes scheme="Default" file="colorSchemes/ParadoxLocalisationDefault.xml"/>
     <additionalTextAttributes scheme="Darcula" file="colorSchemes/ParadoxLocalisationDarcula.xml"/>

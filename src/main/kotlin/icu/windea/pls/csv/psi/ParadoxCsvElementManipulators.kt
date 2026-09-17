@@ -4,7 +4,7 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.AbstractElementManipulator
 
 interface ParadoxCsvElementManipulators {
-    class ColumnManipulator : AbstractElementManipulator<ParadoxCsvColumn>() {
+    class ForColumn : AbstractElementManipulator<ParadoxCsvColumn>() {
         override fun handleContentChange(element: ParadoxCsvColumn, range: TextRange, newContent: String): ParadoxCsvColumn {
             return ParadoxCsvElementManipulationService.changeContent(element, newContent, range)
         }

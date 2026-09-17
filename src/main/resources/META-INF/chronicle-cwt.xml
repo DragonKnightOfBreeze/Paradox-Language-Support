@@ -42,12 +42,12 @@
     <elementDescriptionProvider implementation="icu.windea.pls.cwt.psi.CwtElementDescriptionProvider"/>
 
     <lang.elementManipulator forClass="icu.windea.pls.cwt.psi.CwtOptionKey"
-                             implementationClass="icu.windea.pls.cwt.psi.CwtElementManipulators$OptionKeyManipulator"/>
+                             implementationClass="icu.windea.pls.cwt.psi.CwtElementManipulators$ForOptionKey"/>
     <lang.elementManipulator forClass="icu.windea.pls.cwt.psi.CwtPropertyKey"
-                             implementationClass="icu.windea.pls.cwt.psi.CwtElementManipulators$PropertyKeyManipulator"/>
+                             implementationClass="icu.windea.pls.cwt.psi.CwtElementManipulators$ForPropertyKey"/>
     <lang.elementManipulator forClass="icu.windea.pls.cwt.psi.CwtString"
-                             implementationClass="icu.windea.pls.cwt.psi.CwtElementManipulators$StringManipulator"/>
+                             implementationClass="icu.windea.pls.cwt.psi.CwtElementManipulators$ForString"/>
     <lang.elementManipulator forClass="icu.windea.pls.cwt.psi.CwtValue"
-                             implementationClass="icu.windea.pls.cwt.psi.CwtElementManipulators$ValueManipulator"/>
+                             implementationClass="icu.windea.pls.cwt.psi.CwtElementManipulators$ForValue"/>
   </extensions>
 </idea-plugin>

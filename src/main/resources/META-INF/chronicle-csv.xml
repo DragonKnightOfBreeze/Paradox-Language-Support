@@ -28,6 +28,6 @@
     <spellchecker.support language="PARADOX_CSV" implementationClass="icu.windea.pls.csv.spellchecker.ParadoxCsvSpellcheckerStrategy"/>
 
     <lang.elementManipulator forClass="icu.windea.pls.csv.psi.ParadoxCsvColumn"
-                             implementationClass="icu.windea.pls.csv.psi.ParadoxCsvElementManipulators$ColumnManipulator"/>
+                             implementationClass="icu.windea.pls.csv.psi.ParadoxCsvElementManipulators$ForColumn"/>
   </extensions>
 </idea-plugin>
