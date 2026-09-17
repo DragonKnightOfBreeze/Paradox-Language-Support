@@ -5,12 +5,13 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
+import icu.windea.pls.lang.psi.ParadoxLanguageInjectionHost;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-public interface ParadoxScriptNormalParameter extends ParadoxScriptParameter, ParadoxScriptArgumentAwareElement {
+public interface ParadoxScriptNormalParameter extends ParadoxScriptParameter, ParadoxScriptArgumentAwareElement, ParadoxLanguageInjectionHost {
 
   @Nullable PsiElement getIdElement();
 

@@ -112,11 +112,11 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
   public void visitNormalParameter(@NotNull ParadoxScriptNormalParameter o) {
     visitParameter(o);
     // visitArgumentAwareElement(o);
+    // visitParadoxLanguageInjectionHost(o);
   }
 
   public void visitNormalParameterArgument(@NotNull ParadoxScriptNormalParameterArgument o) {
     visitArgument(o);
-    // visitParadoxLanguageInjectionHost(o);
   }
 
   public void visitProperty(@NotNull ParadoxScriptProperty o) {
