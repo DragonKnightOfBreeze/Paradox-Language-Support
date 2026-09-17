@@ -30,6 +30,7 @@ class ParadoxScriptExpressionConstantMatchOptimizer : ParadoxScriptExpressionMat
     override fun <T : CwtMemberConfig<*>> optimize(context: ParadoxExpressionMatchContext, input: List<T>): List<T>? {
         if (input.size <= 1) return null
         if (context.expression.type != ParadoxExpressionType.String) return null
+        if (context.expression.isParameterized()) return null // skip if the expression is parameterized
         val filtered = input.filterFast { ParadoxExpressionMatchService.matchesConstant(context.expression, it.configExpression, context.configGroup) }
         if (filtered.isEmpty()) return null
         return filtered
@@ -42,7 +43,8 @@ class ParadoxScriptExpressionConstantMatchOptimizer : ParadoxScriptExpressionMat
 @Optimized
 class ParadoxScriptExpressionParameterizedMatchOptimizer : ParadoxScriptExpressionMatchOptimizer {
     override fun <T : CwtMemberConfig<*>> optimize(context: ParadoxExpressionMatchContext, input: List<T>): List<T>? {
-        if (!context.expression.isFullParameterized()) return null
+        if (context.expression.type != ParadoxExpressionType.String) return null
+        if (!context.expression.isFullParameterized()) return null // skip if the expression is not full parameterized (not for partial form atm)
         val element = context.element
         val expressionElement = when (element) {
             is ParadoxScriptProperty -> element.propertyKey

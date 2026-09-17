@@ -5,7 +5,8 @@
 ## 3.0.3
 
 - [x] 修复与内联脚本参数的参数值的规则推断逻辑相关的一个回归BUG / Fix a regression bug related to the config inference logic for parameter values of inline script parameters ([#412](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/412))
-- [ ] 修复要匹配的表达式带参数时，无法正确地匹配键为常量的别名规则的问题（例如 `remove_$SCOPE_TYPE$_flag` VS `alias[effect:remove_ship_flag] = value[ship_flag]`） / Fix the issue where parameterized expressions cannot correctly match alias rules whose keys are constants (e.g., `remove_$SCOPE_TYPE$_flag` VS `alias[effect:remove_ship_flag] = value[ship_flag]`)
+- [x] 修复要匹配的表达式带参数时，可能无法正确地匹配常量字符串的问题（例如 `triggered_$PARAM$_modifier` VS `triggered_ship_modifier`） / Fix the issue where parameterized expressions may not correctly match constant strings (e.g., `triggered_$PARAM$_modifier` VS `triggered_ship_modifier`).
+- [x] 修复要匹配的表达式带参数时，无法正确地匹配键为常量的别名规则的问题（例如 `remove_$SCOPE_TYPE$_flag` VS `alias[effect:remove_ship_flag] = value[ship_flag]`） / Fix the issue where parameterized expressions cannot correctly match alias configs whose keys are constants (e.g., `remove_$SCOPE_TYPE$_flag` VS `alias[effect:remove_ship_flag] = value[ship_flag]`)
 - [ ] 优化图片处理逻辑和命令行执行逻辑，适用取消检查，以避免可能的 IDE 冻结 / Optimize the image processing logic and command-line execution logic, apply cancellation checks, to avoid possible IDE freeze ([#396](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/396))
 - [ ] 优化合并索引的构建逻辑，减少耗时 / Optimize the building logic of the merged index to reduce time consumption
 - [ ] 分析与优化构建索引时的性能和内存占用 / Analyze and optimize performance and memory during indexing

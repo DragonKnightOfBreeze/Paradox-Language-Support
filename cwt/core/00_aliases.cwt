@@ -1,3 +1,5 @@
+# arrays
+
 single_alias[int_array] = {
     ## cardinality = 0..inf
     int
@@ -12,6 +14,8 @@ single_alias[scalar_array] = {
     ## cardinality = 0..inf
     scalar
 }
+
+# colors
 
 ## color_type = rgb
 single_alias[color_type_rgb] = {
@@ -46,6 +50,8 @@ single_alias[color_type_hsva] = {
     float
 }
 
+# coordinates
+
 single_alias[coordinate_2d] = {
     ## cardinality = 2..2
     float
@@ -54,4 +60,14 @@ single_alias[coordinate_2d] = {
 single_alias[coordinate_3d] = {
     ## cardinality = 3..3
     float
+}
+
+# clauses
+
+single_alias[trigger_clause] = {
+    alias_name[trigger] = alias_match_left[trigger]
+}
+
+single_alias[effect_clause] = {
+    alias_name[effect] = alias_match_left[effect]
 }

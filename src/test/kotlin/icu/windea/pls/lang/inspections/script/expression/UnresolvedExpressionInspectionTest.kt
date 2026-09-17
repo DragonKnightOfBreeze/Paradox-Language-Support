@@ -428,9 +428,7 @@ class UnresolvedExpressionInspectionTest : BasePlatformTestCase(), ChronicleTest
             """
             <caret>test_effect = {
                 ${scopeParam} = {
-                    if = {
-                        always = yes
-                    }
+                    pass = yes
                 }
             }
             """.trimIndent()
