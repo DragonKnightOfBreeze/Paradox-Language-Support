@@ -4,10 +4,11 @@ package icu.windea.pls.script.psi;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
+import icu.windea.pls.lang.psi.ParadoxLanguageInjectionHost;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public interface ParadoxScriptParameterArgument extends ParadoxScriptArgument {
+public interface ParadoxScriptNormalParameterArgument extends ParadoxScriptArgument, ParadoxLanguageInjectionHost {
 
   @Nullable PsiElement getIdElement();
 

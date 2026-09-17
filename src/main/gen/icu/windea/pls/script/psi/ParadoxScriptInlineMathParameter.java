@@ -5,17 +5,16 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
-import icu.windea.pls.core.psi.PsiPresentableTextAwareElement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-public interface ParadoxScriptInlineMathParameter extends ParadoxScriptInlineMathFactor, ParadoxScriptParameter, ParadoxScriptInterpolation, ParadoxScriptArgumentAwareElement, PsiPresentableTextAwareElement {
+public interface ParadoxScriptInlineMathParameter extends ParadoxScriptInlineMathFactor, ParadoxScriptParameter, ParadoxScriptArgumentAwareElement {
 
   @Nullable PsiElement getIdElement();
 
-  @Nullable ParadoxScriptParameterArgument getArgumentElement();
+  @Nullable ParadoxScriptInlineMathParameterArgument getArgumentElement();
 
   @NotNull Icon getIcon(@IconFlags int flags);
 

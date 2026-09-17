@@ -1,6 +1,7 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.cwt.psi;
 
+import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import icu.windea.pls.core.psi.PsiPresentableTextAwareElement;
@@ -10,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 
-public interface CwtOptionKey extends PsiPresentableTextAwareElement, PsiQuoteAwareElement {
+public interface CwtOptionKey extends PsiQuoteAwareElement, PsiPresentableTextAwareElement, NavigatablePsiElement {
 
   @NotNull Icon getIcon(@IconFlags int flags);
 

@@ -74,8 +74,9 @@ column ::= <<checkColumnToken>> column_content? {
   implements=[
     "icu.windea.pls.csv.psi.ParadoxCsvExpressionElement"
     "icu.windea.pls.csv.psi.ParadoxCsvLiteralValue"
-    "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
     "icu.windea.pls.core.psi.PsiQuoteAwareElement"
+    "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
+    "com.intellij.psi.NavigatablePsiElement"
   ]
   methods=[
     getIdElement

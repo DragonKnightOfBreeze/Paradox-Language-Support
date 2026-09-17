@@ -1,6 +1,7 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.cwt.psi;
 
+import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
@@ -11,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
 import java.util.List;
 
-public interface CwtProperty extends CwtNamedElement, CwtMember, PsiPresentableTextAwareElement {
+public interface CwtProperty extends CwtNamedElement, CwtMember, PsiPresentableTextAwareElement, NavigatablePsiElement {
 
   @Nullable CwtBlock getMemberContainer();
 

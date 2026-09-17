@@ -5,7 +5,7 @@ import icu.windea.pls.lang.util.ParadoxTextColorManager
 import icu.windea.pls.model.ParadoxTextColorInfo
 
 /**
- * 名字中可以带有文本颜色信息的 PSI 元素。
+ * 名字中可以带有文本颜色信息的 [PsiElement]。
  *
  * @see ParadoxLocalisationColorfulText
  * @see ParadoxLocalisationParameterArgument

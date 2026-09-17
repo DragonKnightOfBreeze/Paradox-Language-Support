@@ -4,7 +4,6 @@ package icu.windea.pls.lang.psi
 
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.math.MathResult
-import icu.windea.pls.core.quote
 import icu.windea.pls.core.quoteIfNeeded
 import icu.windea.pls.core.sequences.WalkingContext
 import icu.windea.pls.core.sequences.WalkingSequence
@@ -18,7 +17,6 @@ import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.setValue
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
-import icu.windea.pls.csv.psi.ParadoxCsvPsiService
 import icu.windea.pls.csv.text.ParadoxCsv
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.manipulation.ParadoxScriptFileManipulationService
@@ -61,17 +59,6 @@ fun ParadoxScriptExpressionElement.value(resolve: Boolean = true): String? {
     val element = if (resolve) resolved() else this
     if (element == null) return null
     return element.value
-}
-
-fun ParadoxScriptExpressionElement.stringValue(resolve: Boolean = true, strict: Boolean = false): String? {
-    val element = if (resolve) resolved() else this
-    if (element == null) return null
-    if (strict && element !is ParadoxScriptStringExpressionElement) return null
-    return when (element) {
-        is ParadoxScriptStringExpressionElement -> element.value
-        is ParadoxScriptLiteralValue -> element.value
-        else -> null
-    }
 }
 
 fun ParadoxScriptExpressionElement.numberValue(resolve: Boolean = true, strict: Boolean = false): BigDecimal? {
@@ -119,6 +106,17 @@ fun ParadoxScriptExpressionElement.floatValue(resolve: Boolean = true, strict: B
     }
 }
 
+fun ParadoxScriptExpressionElement.stringValue(resolve: Boolean = true, strict: Boolean = false): String? {
+    val element = if (resolve) resolved() else this
+    if (element == null) return null
+    if (strict && element !is ParadoxScriptStringExpressionElement) return null
+    return when (element) {
+        is ParadoxScriptStringExpressionElement -> element.value
+        is ParadoxScriptLiteralValue -> element.value
+        else -> null
+    }
+}
+
 fun ParadoxScriptExpressionElement.colorValue(resolve: Boolean = true): Color? {
     val element = if (resolve) resolved() else this
     if (element == null) return null
@@ -144,12 +142,11 @@ fun ParadoxScriptExpressionElement.formattedValue(resolve: Boolean = true, detai
 }
 
 fun ParadoxCsvExpressionElement.formattedValue(): String {
-    if (this !is ParadoxCsvColumn) return text
-    if (ParadoxCsvPsiService.isEmptyColumn(this)) return ""
-    val value = value
-    val needQuoteBecauseBoundaryBlank = value.isNotEmpty() && (value.first().isWhitespace() || value.last().isWhitespace())
-    if (needQuoteBecauseBoundaryBlank) return value.quote(QuotePatterns.ParadoxCsv)
-    return value.quoteIfNeeded(QuotePatterns.ParadoxCsv)
+    val element = this
+    return when(element) {
+        is ParadoxCsvColumn -> element.value.quoteIfNeeded(QuotePatterns.ParadoxCsv)
+        else -> element.value
+    }
 }
 
 // endregion

@@ -9,7 +9,7 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import icu.windea.pls.script.psi.ParadoxScriptElementPresentation;
 import icu.windea.pls.script.psi.ParadoxScriptInlineMathParameter;
-import icu.windea.pls.script.psi.ParadoxScriptParameterArgument;
+import icu.windea.pls.script.psi.ParadoxScriptInlineMathParameterArgument;
 import icu.windea.pls.script.psi.ParadoxScriptVisitor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -39,7 +39,7 @@ public class ParadoxScriptInlineMathParameterImpl extends ParadoxScriptInlineMat
   }
 
   @Override
-  public @Nullable ParadoxScriptParameterArgument getArgumentElement() {
+  public @Nullable ParadoxScriptInlineMathParameterArgument getArgumentElement() {
     return ParadoxScriptPsiImplUtil.getArgumentElement(this);
   }
 

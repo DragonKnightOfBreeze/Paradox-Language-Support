@@ -10,8 +10,9 @@ public class ParadoxCsvVisitor extends PsiElementVisitor {
   public void visitColumn(@NotNull ParadoxCsvColumn o) {
     visitExpressionElement(o);
     // visitLiteralValue(o);
-    // visitPsiPresentableTextAwareElement(o);
     // visitPsiQuoteAwareElement(o);
+    // visitPsiPresentableTextAwareElement(o);
+    // visitNavigatablePsiElement(o);
   }
 
   public void visitHeader(@NotNull ParadoxCsvHeader o) {

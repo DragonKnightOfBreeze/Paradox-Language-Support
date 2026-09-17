@@ -69,6 +69,7 @@ property ::= property_key property_separator property_value {
     "icu.windea.pls.script.psi.ParadoxScriptMember"
     "icu.windea.pls.lang.psi.ParadoxDefinitionElement"
     "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
+    "com.intellij.psi.NavigatablePsiElement"
   ]
   methods=[
     getMemberContainer getMembers getBlock property_key="property_key" property_value="value"
@@ -82,8 +83,10 @@ property_key ::= property_key_content {
     "icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement"
     "icu.windea.pls.script.psi.ParadoxScriptLiteralValue"
     "icu.windea.pls.script.psi.ParadoxScriptInterpolationContainer"
-    "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
+    "icu.windea.pls.lang.psi.ParadoxLanguageInjectionHost" // injectable
     "icu.windea.pls.core.psi.PsiQuoteAwareElement"
+    "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
+    "com.intellij.psi.NavigatablePsiElement"
   ]
   methods=[
     getIdElement normal_parameter="" inline_conditional_block=""
@@ -108,6 +111,7 @@ value ::= scripted_variable_reference | boolean | int | float | string | block |
     "icu.windea.pls.script.psi.ParadoxScriptExpressionElement"
     "icu.windea.pls.script.psi.ParadoxScriptMember"
     "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
+    "com.intellij.psi.NavigatablePsiElement"
   ]
   methods=[
     getIcon getName getValue setValue setContent getPresentableText
@@ -151,7 +155,7 @@ string ::= string_content {
     "icu.windea.pls.script.psi.ParadoxScriptLiteralValue"
     "icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement"
     "icu.windea.pls.script.psi.ParadoxScriptInterpolationContainer"
-    "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
+    "icu.windea.pls.lang.psi.ParadoxLanguageInjectionHost" // injectable
     "icu.windea.pls.core.psi.PsiQuoteAwareElement"
   ]
   methods=[
@@ -207,6 +211,7 @@ scripted_variable ::= scripted_variable_name scripted_variable_separator scripte
     "icu.windea.pls.script.psi.ParadoxScriptNamedElement"
     "icu.windea.pls.script.psi.ParadoxScriptStatement"
     "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
+    "com.intellij.psi.NavigatablePsiElement"
   ]
   methods=[
     scripted_variable_name="scripted_variable_name" scripted_variable_value="value"
@@ -220,6 +225,7 @@ scripted_variable_name ::= AT <<processLhsContent>> scripted_variable_name_conte
   implements=[
     "icu.windea.pls.script.psi.ParadoxScriptInterpolationContainer"
     "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
+    "com.intellij.psi.NavigatablePsiElement"
   ]
   methods=[
     getIdElement normal_parameter="" inline_conditional_block=""
@@ -241,8 +247,8 @@ scripted_variable_reference ::= AT scripted_variable_reference_content {
   extends=value
   implements=[
     "icu.windea.pls.lang.psi.ParadoxScriptedVariableReference"
+    "icu.windea.pls.script.psi.ParadoxScriptMacro"
     "icu.windea.pls.script.psi.ParadoxScriptInterpolationContainer"
-    "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
   ]
   methods=[
     getIdElement normal_parameter="" inline_conditional_block=""
@@ -281,6 +287,7 @@ inline_math ::= INLINE_MATH_START INLINE_MATH_TOKEN INLINE_MATH_END {
   pin=1
   extends=value
   implements=[
+    "icu.windea.pls.script.psi.ParadoxScriptMacro"
     "icu.windea.pls.core.psi.PsiBoundElement"
   ]
   methods=[
@@ -304,25 +311,23 @@ inline_math ::= INLINE_MATH_START INLINE_MATH_TOKEN INLINE_MATH_END {
 // - scripted variable reference names
 // - inline math expressions
 
-normal_parameter ::= PARAMETER_START parameter_name parameter_argument_part? PARAMETER_END {
+normal_parameter ::= PARAMETER_START normal_parameter_name normal_parameter_argument_part? PARAMETER_END {
   name="parameter"
   pin=1
   implements=[
     "icu.windea.pls.script.psi.ParadoxScriptParameter"
-    "icu.windea.pls.script.psi.ParadoxScriptInterpolation"
     "icu.windea.pls.script.psi.ParadoxScriptArgumentAwareElement"
-    "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
+    "icu.windea.pls.lang.psi.ParadoxLanguageInjectionHost" // injectable
   ]
   methods=[
-    getIdElement getArgumentElement parameter_argument=""
+    getIdElement getArgumentElement normal_parameter_argument=""
     getIcon getName setName getTextOffset getDefaultValue getPresentableText
     getPresentation getReference getReferences
   ]
 }
-
-private parameter_name ::= PARAMETER_TOKEN
-private parameter_argument_part ::= PIPE parameter_argument?
-parameter_argument ::= ARGUMENT_TOKEN {
+private normal_parameter_name ::= PARAMETER_TOKEN
+private normal_parameter_argument_part ::= PIPE normal_parameter_argument?
+normal_parameter_argument ::= ARGUMENT_TOKEN {
   name="parameter argument"
   implements=[
     "icu.windea.pls.script.psi.ParadoxScriptArgument"
@@ -344,7 +349,6 @@ normal_conditional_block ::= LEFT_BRACKET conditional_header normal_conditional_
     "icu.windea.pls.script.psi.ParadoxScriptStatement"
     "icu.windea.pls.script.psi.ParadoxScriptMemberContainer"
     "icu.windea.pls.script.psi.ParadoxScriptBoundMemberContainer"
-    "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
     "com.intellij.psi.PsiListLikeElement"
   ]
   methods=[
@@ -373,7 +377,6 @@ inline_conditional_block ::= LEFT_BRACKET <<processInlineConditionalBlock>> cond
     "icu.windea.pls.script.psi.ParadoxScriptConditionalBlock"
     "icu.windea.pls.script.psi.ParadoxScriptInterpolation"
     "icu.windea.pls.script.psi.ParadoxScriptInterpolationContainer"
-    "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
   ]
   methods=[
     getLeftBound getRightBound normal_parameter="" inline_conditional_block=""
@@ -400,17 +403,17 @@ private conditional_header ::= NESTED_LEFT_BRACKET conditional_expression NESTED
 }
 conditional_expression ::= NOT_SIGN? conditional_parameter {
   implements=[
-    "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
+    "icu.windea.pls.script.psi.ParadoxScriptConditionExpression"
   ]
   methods=[
     getPresentableText
+    getPresentation
   ]
 }
 conditional_parameter ::= CONDITION_PARAMETER_TOKEN {
   name="conditional parameter"
   implements=[
     "icu.windea.pls.script.psi.ParadoxScriptConditionParameter"
-    "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
   ]
   methods=[
     getIdElement
@@ -489,8 +492,8 @@ inline_math_scripted_variable_reference ::= AT? inline_math_scripted_variable_re
   extends=inline_math_factor
   implements=[
     "icu.windea.pls.lang.psi.ParadoxScriptedVariableReference"
+    "icu.windea.pls.script.psi.ParadoxScriptMacro"
     "icu.windea.pls.script.psi.ParadoxScriptInterpolationContainer"
-    "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
   ]
   methods=[
     getIdElement inline_math_parameter=""
@@ -502,19 +505,29 @@ inline_math_scripted_variable_reference ::= AT? inline_math_scripted_variable_re
 private inline_math_scripted_variable_reference_content ::= inline_math_scripted_variable_reference_part ( <<processPart>> inline_math_scripted_variable_reference_part )*
 private inline_math_scripted_variable_reference_part ::= SCRIPTED_VARIABLE_REFERENCE_TOKEN | inline_math_parameter
 
-inline_math_parameter ::= PARAMETER_START parameter_name parameter_argument_part? PARAMETER_END {
+inline_math_parameter ::= PARAMETER_START inline_math_parameter_name inline_math_parameter_argument_part? PARAMETER_END {
   name="inline math parameter"
   extends=inline_math_factor
   pin=1
   implements=[
     "icu.windea.pls.script.psi.ParadoxScriptParameter"
-    "icu.windea.pls.script.psi.ParadoxScriptInterpolation"
     "icu.windea.pls.script.psi.ParadoxScriptArgumentAwareElement"
-    "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
   ]
   methods=[
-    getIdElement getArgumentElement parameter_argument=""
+    getIdElement getArgumentElement inline_math_parameter_argument=""
     getIcon getName setName getTextOffset getDefaultValue getPresentableText
     getPresentation getReference getReferences
+  ]
+}
+private inline_math_parameter_name ::= PARAMETER_TOKEN
+private inline_math_parameter_argument_part ::= PIPE inline_math_parameter_argument?
+inline_math_parameter_argument ::= ARGUMENT_TOKEN {
+  name="inline math parameter argument"
+  implements=[
+    "icu.windea.pls.script.psi.ParadoxScriptArgument"
+  ]
+  methods=[
+    getIdElement
+    getPresentation
   ]
 }

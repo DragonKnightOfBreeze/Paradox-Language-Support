@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-public interface ParadoxLocalisationScriptedVariableReference extends ParadoxScriptedVariableReference {
+public interface ParadoxLocalisationScriptedVariableReference extends ParadoxScriptedVariableReference, ParadoxLocalisationMacro {
 
   @Nullable PsiElement getIdElement();
 

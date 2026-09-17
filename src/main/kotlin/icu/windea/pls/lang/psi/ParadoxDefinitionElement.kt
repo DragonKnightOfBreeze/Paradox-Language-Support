@@ -12,7 +12,7 @@ import icu.windea.pls.script.psi.ParadoxScriptMemberContext
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 /**
- * 可能是定义的 PSI 元素。
+ * 可能是定义的 [PsiElement]。
  *
  * 注意：如果更改了继承关系，需要对应地更改 [ParadoxPsiElementVisitor]。
  *
@@ -23,7 +23,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
  */
 interface ParadoxDefinitionElement : PsiNamedElement, PsiNameIdentifierOwner, NavigatablePsiElement, ParadoxScriptMemberContext {
     /**
-     * 得到 PSI 元素的名字。注意这不一定是定义的名字。
+     * 得到 [PsiElement] 的名字。注意这不一定是定义的名字。
      *
      * 可能是：
      * - 定义的名字（[ParadoxDefinitionInfo.name]）。

@@ -5,7 +5,7 @@ import com.intellij.psi.PsiComment;
 import com.intellij.psi.PsiDocCommentBase;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
-import icu.windea.pls.core.psi.PsiPresentableTextAwareElement;
+import icu.windea.pls.core.psi.PsiQuoteAwareElement;
 import org.jetbrains.annotations.NotNull;
 
 public class CwtVisitor extends PsiElementVisitor {
@@ -42,6 +42,7 @@ public class CwtVisitor extends PsiElementVisitor {
     visitNamedElement(o);
     // visitOptionMember(o);
     // visitPsiPresentableTextAwareElement(o);
+    // visitNavigatablePsiElement(o);
   }
 
   public void visitOptionComment(@NotNull CwtOptionComment o) {
@@ -49,21 +50,24 @@ public class CwtVisitor extends PsiElementVisitor {
   }
 
   public void visitOptionKey(@NotNull CwtOptionKey o) {
-    visitPsiPresentableTextAwareElement(o);
-    // visitPsiQuoteAwareElement(o);
+    visitPsiQuoteAwareElement(o);
+    // visitPsiPresentableTextAwareElement(o);
+    // visitNavigatablePsiElement(o);
   }
 
   public void visitProperty(@NotNull CwtProperty o) {
     visitNamedElement(o);
     // visitMember(o);
     // visitPsiPresentableTextAwareElement(o);
+    // visitNavigatablePsiElement(o);
   }
 
   public void visitPropertyKey(@NotNull CwtPropertyKey o) {
     visitStringExpressionElement(o);
     // visitLiteralValue(o);
-    // visitPsiPresentableTextAwareElement(o);
     // visitPsiQuoteAwareElement(o);
+    // visitPsiPresentableTextAwareElement(o);
+    // visitNavigatablePsiElement(o);
   }
 
   public void visitRootBlock(@NotNull CwtRootBlock o) {
@@ -85,6 +89,7 @@ public class CwtVisitor extends PsiElementVisitor {
     // visitMember(o);
     // visitOptionMember(o);
     // visitPsiPresentableTextAwareElement(o);
+    // visitNavigatablePsiElement(o);
   }
 
   public void visitPsiComment(@NotNull PsiComment o) {
@@ -95,7 +100,7 @@ public class CwtVisitor extends PsiElementVisitor {
     visitElement(o);
   }
 
-  public void visitPsiPresentableTextAwareElement(@NotNull PsiPresentableTextAwareElement o) {
+  public void visitPsiQuoteAwareElement(@NotNull PsiQuoteAwareElement o) {
     visitElement(o);
   }
 

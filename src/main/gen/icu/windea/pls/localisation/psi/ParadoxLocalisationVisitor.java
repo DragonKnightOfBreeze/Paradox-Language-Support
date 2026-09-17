@@ -32,7 +32,6 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
   public void visitCommandText(@NotNull ParadoxLocalisationCommandText o) {
     visitExpressionElement(o);
     // visitInterpolationContainer(o);
-    // visitPsiPresentableTextAwareElement(o);
   }
 
   public void visitConceptCommand(@NotNull ParadoxLocalisationConceptCommand o) {
@@ -42,7 +41,6 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
   public void visitConceptName(@NotNull ParadoxLocalisationConceptName o) {
     visitExpressionElement(o);
     // visitInterpolationContainer(o);
-    // visitPsiPresentableTextAwareElement(o);
   }
 
   public void visitConceptString(@NotNull ParadoxLocalisationConceptString o) {
@@ -69,8 +67,7 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
   }
 
   public void visitLocale(@NotNull ParadoxLocalisationLocale o) {
-    visitPsiPresentableTextAwareElement(o);
-    // visitNavigatablePsiElement(o);
+    visitNavigatablePsiElement(o);
   }
 
   public void visitParameter(@NotNull ParadoxLocalisationParameter o) {
@@ -101,7 +98,6 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
 
   public void visitPropertyValue(@NotNull ParadoxLocalisationPropertyValue o) {
     visitRichTextContainer(o);
-    // visitPsiPresentableTextAwareElement(o);
     // visitPsiQuoteAwareElement(o);
   }
 
@@ -112,6 +108,7 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
 
   public void visitScriptedVariableReference(@NotNull ParadoxLocalisationScriptedVariableReference o) {
     visitParadoxScriptedVariableReference(o);
+    // visitMacro(o);
   }
 
   public void visitStringVariant(@NotNull ParadoxLocalisationStringVariant o) {
@@ -147,7 +144,7 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
   }
 
   public void visitTaggedParameter(@NotNull ParadoxLocalisationTaggedParameter o) {
-    visitNavigatablePsiElement(o);
+    visitMacro(o);
   }
 
   public void visitText(@NotNull ParadoxLocalisationText o) {
@@ -193,6 +190,10 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
   }
 
   public void visitExpressionElement(@NotNull ParadoxLocalisationExpressionElement o) {
+    visitPsiElement(o);
+  }
+
+  public void visitMacro(@NotNull ParadoxLocalisationMacro o) {
     visitPsiElement(o);
   }
 

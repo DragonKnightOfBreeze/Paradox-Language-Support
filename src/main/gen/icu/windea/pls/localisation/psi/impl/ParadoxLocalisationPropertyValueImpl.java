@@ -43,11 +43,6 @@ public class ParadoxLocalisationPropertyValueImpl extends ASTWrapperPsiElement i
   }
 
   @Override
-  public @NotNull String getPresentableText() {
-    return ParadoxLocalisationPsiImplUtil.getPresentableText(this);
-  }
-
-  @Override
   public @NotNull QuotePattern getQuotePattern() {
     return ParadoxLocalisationPsiImplUtil.getQuotePattern(this);
   }

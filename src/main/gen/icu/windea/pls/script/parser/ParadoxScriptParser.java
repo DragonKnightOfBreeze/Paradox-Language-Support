@@ -1,16 +1,18 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.script.parser;
 
+import com.intellij.lang.ASTNode;
+import com.intellij.lang.LightPsiParser;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiBuilder.Marker;
-import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
-import static icu.windea.pls.script.parser.ParadoxScriptParserUtil.*;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.tree.TokenSet;
 import com.intellij.lang.PsiParser;
-import com.intellij.lang.LightPsiParser;
-import static com.intellij.lang.WhitespacesBinders.*;
+import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.tree.TokenSet;
+
+import static com.intellij.lang.WhitespacesBinders.GREEDY_LEFT_BINDER;
+import static com.intellij.lang.WhitespacesBinders.GREEDY_RIGHT_BINDER;
+import static icu.windea.pls.script.parser.ParadoxScriptParserUtil.*;
+import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 
 @SuppressWarnings({"SimplifiableIfStatement", "UnusedAssignment"})
 public class ParadoxScriptParser implements PsiParser, LightPsiParser {
@@ -562,7 +564,7 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // PARAMETER_START parameter_name parameter_argument_part? PARAMETER_END
+  // PARAMETER_START inline_math_parameter_name inline_math_parameter_argument_part? PARAMETER_END
   public static boolean inline_math_parameter(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "inline_math_parameter")) return false;
     if (!nextTokenIs(b, "<inline math parameter>", PARAMETER_START)) return false;
@@ -570,18 +572,56 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b, l, _NONE_, INLINE_MATH_PARAMETER, "<inline math parameter>");
     r = consumeToken(b, PARAMETER_START);
     p = r; // pin = 1
-    r = r && report_error_(b, parameter_name(b, l + 1));
+    r = r && report_error_(b, inline_math_parameter_name(b, l + 1));
     r = p && report_error_(b, inline_math_parameter_2(b, l + 1)) && r;
     r = p && consumeToken(b, PARAMETER_END) && r;
     exit_section_(b, l, m, r, p, null);
     return r || p;
   }
 
-  // parameter_argument_part?
+  // inline_math_parameter_argument_part?
   private static boolean inline_math_parameter_2(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "inline_math_parameter_2")) return false;
-    parameter_argument_part(b, l + 1);
+    inline_math_parameter_argument_part(b, l + 1);
     return true;
+  }
+
+  /* ********************************************************** */
+  // ARGUMENT_TOKEN
+  public static boolean inline_math_parameter_argument(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "inline_math_parameter_argument")) return false;
+    if (!nextTokenIs(b, "<inline math parameter argument>", ARGUMENT_TOKEN)) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, INLINE_MATH_PARAMETER_ARGUMENT, "<inline math parameter argument>");
+    r = consumeToken(b, ARGUMENT_TOKEN);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // PIPE inline_math_parameter_argument?
+  static boolean inline_math_parameter_argument_part(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "inline_math_parameter_argument_part")) return false;
+    if (!nextTokenIs(b, PIPE)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, PIPE);
+    r = r && inline_math_parameter_argument_part_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // inline_math_parameter_argument?
+  private static boolean inline_math_parameter_argument_part_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "inline_math_parameter_argument_part_1")) return false;
+    inline_math_parameter_argument(b, l + 1);
+    return true;
+  }
+
+  /* ********************************************************** */
+  // PARAMETER_TOKEN
+  static boolean inline_math_parameter_name(PsiBuilder b, int l) {
+    return consumeToken(b, PARAMETER_TOKEN);
   }
 
   /* ********************************************************** */
@@ -844,7 +884,7 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // PARAMETER_START parameter_name parameter_argument_part? PARAMETER_END
+  // PARAMETER_START normal_parameter_name normal_parameter_argument_part? PARAMETER_END
   public static boolean normal_parameter(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "normal_parameter")) return false;
     if (!nextTokenIs(b, "<parameter>", PARAMETER_START)) return false;
@@ -852,55 +892,55 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b, l, _NONE_, NORMAL_PARAMETER, "<parameter>");
     r = consumeToken(b, PARAMETER_START);
     p = r; // pin = 1
-    r = r && report_error_(b, parameter_name(b, l + 1));
+    r = r && report_error_(b, normal_parameter_name(b, l + 1));
     r = p && report_error_(b, normal_parameter_2(b, l + 1)) && r;
     r = p && consumeToken(b, PARAMETER_END) && r;
     exit_section_(b, l, m, r, p, null);
     return r || p;
   }
 
-  // parameter_argument_part?
+  // normal_parameter_argument_part?
   private static boolean normal_parameter_2(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "normal_parameter_2")) return false;
-    parameter_argument_part(b, l + 1);
+    normal_parameter_argument_part(b, l + 1);
     return true;
   }
 
   /* ********************************************************** */
   // ARGUMENT_TOKEN
-  public static boolean parameter_argument(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "parameter_argument")) return false;
+  public static boolean normal_parameter_argument(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "normal_parameter_argument")) return false;
     if (!nextTokenIs(b, "<parameter argument>", ARGUMENT_TOKEN)) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, PARAMETER_ARGUMENT, "<parameter argument>");
+    Marker m = enter_section_(b, l, _NONE_, NORMAL_PARAMETER_ARGUMENT, "<parameter argument>");
     r = consumeToken(b, ARGUMENT_TOKEN);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
 
   /* ********************************************************** */
-  // PIPE parameter_argument?
-  static boolean parameter_argument_part(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "parameter_argument_part")) return false;
+  // PIPE normal_parameter_argument?
+  static boolean normal_parameter_argument_part(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "normal_parameter_argument_part")) return false;
     if (!nextTokenIs(b, PIPE)) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, PIPE);
-    r = r && parameter_argument_part_1(b, l + 1);
+    r = r && normal_parameter_argument_part_1(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
 
-  // parameter_argument?
-  private static boolean parameter_argument_part_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "parameter_argument_part_1")) return false;
-    parameter_argument(b, l + 1);
+  // normal_parameter_argument?
+  private static boolean normal_parameter_argument_part_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "normal_parameter_argument_part_1")) return false;
+    normal_parameter_argument(b, l + 1);
     return true;
   }
 
   /* ********************************************************** */
   // PARAMETER_TOKEN
-  static boolean parameter_name(PsiBuilder b, int l) {
+  static boolean normal_parameter_name(PsiBuilder b, int l) {
     return consumeToken(b, PARAMETER_TOKEN);
   }
 

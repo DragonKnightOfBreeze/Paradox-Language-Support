@@ -2,6 +2,7 @@
 package icu.windea.pls.csv.psi;
 
 import com.intellij.openapi.util.TextRange;
+import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
@@ -14,7 +15,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-public interface ParadoxCsvColumn extends ParadoxCsvExpressionElement, ParadoxCsvLiteralValue, PsiPresentableTextAwareElement, PsiQuoteAwareElement {
+public interface ParadoxCsvColumn extends ParadoxCsvExpressionElement, ParadoxCsvLiteralValue, PsiQuoteAwareElement, PsiPresentableTextAwareElement, NavigatablePsiElement {
 
   @Nullable PsiElement getIdElement();
 

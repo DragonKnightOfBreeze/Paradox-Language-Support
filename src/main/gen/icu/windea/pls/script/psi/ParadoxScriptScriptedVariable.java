@@ -1,6 +1,7 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.script.psi;
 
+import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.StubBasedPsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
@@ -13,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-public interface ParadoxScriptScriptedVariable extends ParadoxScriptNamedElement, ParadoxScriptStatement, PsiPresentableTextAwareElement, StubBasedPsiElement<ParadoxScriptScriptedVariableStub> {
+public interface ParadoxScriptScriptedVariable extends ParadoxScriptNamedElement, ParadoxScriptStatement, PsiPresentableTextAwareElement, NavigatablePsiElement, StubBasedPsiElement<ParadoxScriptScriptedVariableStub> {
 
   @NotNull
   ParadoxScriptScriptedVariableName getScriptedVariableName();

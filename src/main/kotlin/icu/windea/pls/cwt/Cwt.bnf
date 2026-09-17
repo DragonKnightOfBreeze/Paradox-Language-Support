@@ -90,6 +90,7 @@ option ::= option_key option_separator option_value {
     "icu.windea.pls.cwt.psi.CwtNamedElement"
     "icu.windea.pls.cwt.psi.CwtOptionMember"
     "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
+    "com.intellij.psi.NavigatablePsiElement"
   ]
   methods=[
     option_key="option_key" option_value="value"
@@ -100,8 +101,9 @@ option ::= option_key option_separator option_value {
 option_key ::= option_key_content {
   name="option key"
   implements=[
-    "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
     "icu.windea.pls.core.psi.PsiQuoteAwareElement"
+    "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
+    "com.intellij.psi.NavigatablePsiElement"
   ]
   methods=[
     getIcon getName getValue getPresentableText
@@ -124,6 +126,7 @@ property ::= property_key property_separator property_value {
     "icu.windea.pls.cwt.psi.CwtNamedElement"
     "icu.windea.pls.cwt.psi.CwtMember"
     "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
+    "com.intellij.psi.NavigatablePsiElement"
   ]
   methods=[
     getMemberContainer getMembers propertyKey="property_key" propertyValue="value"
@@ -136,8 +139,9 @@ property_key ::= property_key_content {
   implements=[
     "icu.windea.pls.cwt.psi.CwtStringExpressionElement"
     "icu.windea.pls.cwt.psi.CwtLiteralValue"
-    "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
     "icu.windea.pls.core.psi.PsiQuoteAwareElement"
+    "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
+    "com.intellij.psi.NavigatablePsiElement"
   ]
   methods=[
     getIcon getName getValue setValue setContent getPresentableText
@@ -160,6 +164,7 @@ value ::= boolean | int | float | string | block {
     "icu.windea.pls.cwt.psi.CwtMember"
     "icu.windea.pls.cwt.psi.CwtOptionMember"
     "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
+    "com.intellij.psi.NavigatablePsiElement"
   ]
   methods=[
     getIcon getName getValue setValue setContent getPresentableText
@@ -198,7 +203,6 @@ string ::= string_content {
     "icu.windea.pls.cwt.psi.CwtNamedElement"
     "icu.windea.pls.cwt.psi.CwtStringExpressionElement"
     "icu.windea.pls.cwt.psi.CwtLiteralValue"
-    "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
     "icu.windea.pls.core.psi.PsiQuoteAwareElement"
   ]
   methods=[

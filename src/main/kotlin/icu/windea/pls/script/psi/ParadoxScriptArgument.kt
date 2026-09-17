@@ -5,6 +5,6 @@ import com.intellij.psi.NavigatablePsiElement
 /**
  * 传入参数。
  *
- * @see ParadoxScriptParameterArgument
+ * @see ParadoxScriptNormalParameterArgument
  */
 interface ParadoxScriptArgument : NavigatablePsiElement

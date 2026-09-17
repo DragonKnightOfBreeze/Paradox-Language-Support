@@ -10,7 +10,7 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import icu.windea.pls.script.psi.ParadoxScriptElementPresentation;
 import icu.windea.pls.script.psi.ParadoxScriptNormalParameter;
-import icu.windea.pls.script.psi.ParadoxScriptParameterArgument;
+import icu.windea.pls.script.psi.ParadoxScriptNormalParameterArgument;
 import icu.windea.pls.script.psi.ParadoxScriptVisitor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -39,7 +39,7 @@ public class ParadoxScriptNormalParameterImpl extends ASTWrapperPsiElement imple
   }
 
   @Override
-  public @Nullable ParadoxScriptParameterArgument getArgumentElement() {
+  public @Nullable ParadoxScriptNormalParameterArgument getArgumentElement() {
     return ParadoxScriptPsiImplUtil.getArgumentElement(this);
   }
 

@@ -3,7 +3,6 @@ package icu.windea.pls.script.psi;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
-import icu.windea.pls.core.psi.PsiPresentableTextAwareElement;
 import org.jetbrains.annotations.NotNull;
 
 public class ParadoxScriptVisitor extends PsiElementVisitor {
@@ -25,12 +24,11 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
   }
 
   public void visitConditionalExpression(@NotNull ParadoxScriptConditionalExpression o) {
-    visitPsiPresentableTextAwareElement(o);
+    visitConditionExpression(o);
   }
 
   public void visitConditionalParameter(@NotNull ParadoxScriptConditionalParameter o) {
     visitConditionParameter(o);
-    // visitPsiPresentableTextAwareElement(o);
   }
 
   public void visitFloat(@NotNull ParadoxScriptFloat o) {
@@ -43,11 +41,11 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
     visitConditionalBlock(o);
     // visitInterpolation(o);
     // visitInterpolationContainer(o);
-    // visitPsiPresentableTextAwareElement(o);
   }
 
   public void visitInlineMath(@NotNull ParadoxScriptInlineMath o) {
     visitValue(o);
+    // visitMacro(o);
     // visitPsiBoundElement(o);
   }
 
@@ -75,9 +73,11 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
   public void visitInlineMathParameter(@NotNull ParadoxScriptInlineMathParameter o) {
     visitInlineMathFactor(o);
     // visitParameter(o);
-    // visitInterpolation(o);
     // visitArgumentAwareElement(o);
-    // visitPsiPresentableTextAwareElement(o);
+  }
+
+  public void visitInlineMathParameterArgument(@NotNull ParadoxScriptInlineMathParameterArgument o) {
+    visitArgument(o);
   }
 
   public void visitInlineMathRoot(@NotNull ParadoxScriptInlineMathRoot o) {
@@ -87,8 +87,8 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
   public void visitInlineMathScriptedVariableReference(@NotNull ParadoxScriptInlineMathScriptedVariableReference o) {
     visitInlineMathFactor(o);
     // visitedVariableReference(o);
+    // visitMacro(o);
     // visitInterpolationContainer(o);
-    // visitPsiPresentableTextAwareElement(o);
   }
 
   public void visitInlineMathUnaryExpression(@NotNull ParadoxScriptInlineMathUnaryExpression o) {
@@ -106,19 +106,17 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
     // visitStatement(o);
     // visitMemberContainer(o);
     // visitBoundMemberContainer(o);
-    // visitPsiPresentableTextAwareElement(o);
     // visitPsiListLikeElement(o);
   }
 
   public void visitNormalParameter(@NotNull ParadoxScriptNormalParameter o) {
     visitParameter(o);
-    // visitInterpolation(o);
     // visitArgumentAwareElement(o);
-    // visitPsiPresentableTextAwareElement(o);
   }
 
-  public void visitParameterArgument(@NotNull ParadoxScriptParameterArgument o) {
+  public void visitNormalParameterArgument(@NotNull ParadoxScriptNormalParameterArgument o) {
     visitArgument(o);
+    // visitParadoxLanguageInjectionHost(o);
   }
 
   public void visitProperty(@NotNull ParadoxScriptProperty o) {
@@ -126,14 +124,17 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
     // visitMember(o);
     // visitParadoxDefinitionElement(o);
     // visitPsiPresentableTextAwareElement(o);
+    // visitNavigatablePsiElement(o);
   }
 
   public void visitPropertyKey(@NotNull ParadoxScriptPropertyKey o) {
     visitStringExpressionElement(o);
     // visitLiteralValue(o);
     // visitInterpolationContainer(o);
-    // visitPsiPresentableTextAwareElement(o);
+    // visitParadoxLanguageInjectionHost(o);
     // visitPsiQuoteAwareElement(o);
+    // visitPsiPresentableTextAwareElement(o);
+    // visitNavigatablePsiElement(o);
   }
 
   public void visitRootBlock(@NotNull ParadoxScriptRootBlock o) {
@@ -146,16 +147,19 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
     visitNamedElement(o);
     // visitStatement(o);
     // visitPsiPresentableTextAwareElement(o);
+    // visitNavigatablePsiElement(o);
   }
 
   public void visitScriptedVariableName(@NotNull ParadoxScriptScriptedVariableName o) {
     visitInterpolationContainer(o);
     // visitPsiPresentableTextAwareElement(o);
+    // visitNavigatablePsiElement(o);
   }
 
   public void visitScriptedVariableReference(@NotNull ParadoxScriptScriptedVariableReference o) {
     visitValue(o);
     // visitedVariableReference(o);
+    // visitMacro(o);
     // visitInterpolationContainer(o);
   }
 
@@ -164,6 +168,7 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
     // visitLiteralValue(o);
     // visitStringExpressionElement(o);
     // visitInterpolationContainer(o);
+    // visitParadoxLanguageInjectionHost(o);
     // visitPsiQuoteAwareElement(o);
   }
 
@@ -171,13 +176,14 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
     visitExpressionElement(o);
     // visitMember(o);
     // visitPsiPresentableTextAwareElement(o);
-  }
-
-  public void visitPsiPresentableTextAwareElement(@NotNull PsiPresentableTextAwareElement o) {
-    visitElement(o);
+    // visitNavigatablePsiElement(o);
   }
 
   public void visitArgument(@NotNull ParadoxScriptArgument o) {
+    visitPsiElement(o);
+  }
+
+  public void visitConditionExpression(@NotNull ParadoxScriptConditionExpression o) {
     visitPsiElement(o);
   }
 

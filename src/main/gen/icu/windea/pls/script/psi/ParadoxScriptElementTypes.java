@@ -1,9 +1,9 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.script.psi;
 
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.PsiElement;
 import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.tree.IElementType;
 import icu.windea.pls.script.psi.impl.*;
 
 public interface ParadoxScriptElementTypes {
@@ -22,13 +22,14 @@ public interface ParadoxScriptElementTypes {
   IElementType INLINE_MATH_GROUPING_EXPRESSION = ParadoxScriptElementTypeFactory.getElementType("INLINE_MATH_GROUPING_EXPRESSION");
   IElementType INLINE_MATH_NUMBER = ParadoxScriptElementTypeFactory.getElementType("INLINE_MATH_NUMBER");
   IElementType INLINE_MATH_PARAMETER = ParadoxScriptElementTypeFactory.getElementType("INLINE_MATH_PARAMETER");
+  IElementType INLINE_MATH_PARAMETER_ARGUMENT = ParadoxScriptElementTypeFactory.getElementType("INLINE_MATH_PARAMETER_ARGUMENT");
   IElementType INLINE_MATH_ROOT = ParadoxScriptElementTypeFactory.getElementType("INLINE_MATH_ROOT");
   IElementType INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE = ParadoxScriptElementTypeFactory.getElementType("INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE");
   IElementType INLINE_MATH_UNARY_EXPRESSION = ParadoxScriptElementTypeFactory.getElementType("INLINE_MATH_UNARY_EXPRESSION");
   IElementType INT = ParadoxScriptElementTypeFactory.getElementType("INT");
   IElementType NORMAL_CONDITIONAL_BLOCK = ParadoxScriptElementTypeFactory.getElementType("NORMAL_CONDITIONAL_BLOCK");
   IElementType NORMAL_PARAMETER = ParadoxScriptElementTypeFactory.getElementType("NORMAL_PARAMETER");
-  IElementType PARAMETER_ARGUMENT = ParadoxScriptElementTypeFactory.getElementType("PARAMETER_ARGUMENT");
+  IElementType NORMAL_PARAMETER_ARGUMENT = ParadoxScriptElementTypeFactory.getElementType("NORMAL_PARAMETER_ARGUMENT");
   IElementType PROPERTY = ParadoxScriptElementTypeFactory.getElementType("PROPERTY");
   IElementType PROPERTY_KEY = ParadoxScriptElementTypeFactory.getElementType("PROPERTY_KEY");
   IElementType ROOT_BLOCK = ParadoxScriptElementTypeFactory.getElementType("ROOT_BLOCK");
@@ -123,6 +124,9 @@ public interface ParadoxScriptElementTypes {
       else if (type == INLINE_MATH_PARAMETER) {
         return new ParadoxScriptInlineMathParameterImpl(node);
       }
+      else if (type == INLINE_MATH_PARAMETER_ARGUMENT) {
+        return new ParadoxScriptInlineMathParameterArgumentImpl(node);
+      }
       else if (type == INLINE_MATH_ROOT) {
         return new ParadoxScriptInlineMathRootImpl(node);
       }
@@ -141,8 +145,8 @@ public interface ParadoxScriptElementTypes {
       else if (type == NORMAL_PARAMETER) {
         return new ParadoxScriptNormalParameterImpl(node);
       }
-      else if (type == PARAMETER_ARGUMENT) {
-        return new ParadoxScriptParameterArgumentImpl(node);
+      else if (type == NORMAL_PARAMETER_ARGUMENT) {
+        return new ParadoxScriptNormalParameterArgumentImpl(node);
       }
       else if (type == PROPERTY) {
         return new ParadoxScriptPropertyImpl(node);

@@ -2,6 +2,7 @@ package icu.windea.pls.lang.psi
 
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.NavigatablePsiElement
+import com.intellij.psi.PsiElement
 import com.intellij.util.IncorrectOperationException
 import icu.windea.pls.core.psi.PsiPresentableTextAwareElement
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
@@ -10,7 +11,7 @@ import icu.windea.pls.model.expressions.ParadoxExpression
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 
 /**
- * 作为表达式的 PSI 元素。
+ * 可以作为表达式的 [PsiElement]。
  *
  * 注意：如果更改了继承关系，需要对应地更改 [ParadoxPsiElementVisitor]。
  *

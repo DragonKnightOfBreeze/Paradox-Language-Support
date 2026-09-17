@@ -2,6 +2,7 @@
 package icu.windea.pls.script.psi;
 
 import com.intellij.openapi.util.TextRange;
+import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import icu.windea.pls.core.psi.PsiPresentableTextAwareElement;
@@ -9,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 
-public interface ParadoxScriptValue extends ParadoxScriptExpressionElement, ParadoxScriptMember, PsiPresentableTextAwareElement {
+public interface ParadoxScriptValue extends ParadoxScriptExpressionElement, ParadoxScriptMember, PsiPresentableTextAwareElement, NavigatablePsiElement {
 
   @NotNull Icon getIcon(@IconFlags int flags);
 

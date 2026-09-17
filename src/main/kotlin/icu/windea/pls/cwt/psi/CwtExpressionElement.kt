@@ -2,10 +2,13 @@ package icu.windea.pls.cwt.psi
 
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.NavigatablePsiElement
+import com.intellij.psi.PsiElement
 import com.intellij.util.IncorrectOperationException
 import icu.windea.pls.core.psi.PsiPresentableTextAwareElement
 
 /**
+ * 可以作为表达式的 [PsiElement]。
+ *
  * @see CwtPropertyKey
  * @see CwtValue
  */

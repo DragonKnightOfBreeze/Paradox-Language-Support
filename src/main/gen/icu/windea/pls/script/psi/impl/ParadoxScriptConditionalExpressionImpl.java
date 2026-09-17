@@ -9,6 +9,7 @@ import com.intellij.psi.search.SearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import icu.windea.pls.script.psi.ParadoxScriptConditionalExpression;
 import icu.windea.pls.script.psi.ParadoxScriptConditionalParameter;
+import icu.windea.pls.script.psi.ParadoxScriptElementPresentation;
 import icu.windea.pls.script.psi.ParadoxScriptVisitor;
 import org.jetbrains.annotations.NotNull;
 
@@ -37,6 +38,11 @@ public class ParadoxScriptConditionalExpressionImpl extends ASTWrapperPsiElement
   @Override
   public @NotNull String getPresentableText() {
     return ParadoxScriptPsiImplUtil.getPresentableText(this);
+  }
+
+  @Override
+  public @NotNull ParadoxScriptElementPresentation getPresentation() {
+    return ParadoxScriptPsiImplUtil.getPresentation(this);
   }
 
   @Override

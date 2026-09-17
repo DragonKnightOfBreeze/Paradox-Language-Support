@@ -68,11 +68,6 @@ public class ParadoxLocalisationLocaleImpl extends ParadoxLocalisationStubElemen
   }
 
   @Override
-  public @NotNull String getPresentableText() {
-    return ParadoxLocalisationPsiImplUtil.getPresentableText(this);
-  }
-
-  @Override
   public @NotNull ParadoxLocalisationElementPresentation getPresentation() {
     return ParadoxLocalisationPsiImplUtil.getPresentation(this);
   }

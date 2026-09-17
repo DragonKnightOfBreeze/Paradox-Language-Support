@@ -10,6 +10,6 @@ import com.intellij.psi.PsiElement
  * @see ParadoxLocalisationConceptString
  * @see ParadoxLocalisationTextFormatString
  */
-interface ParadoxLocalisationRichTextContainer : PsiElement/*not:*//*, PsiListLikeElement*/ {
+interface ParadoxLocalisationRichTextContainer : PsiElement {
     val richTextList: List<ParadoxLocalisationRichText> get() = emptyList()
 }

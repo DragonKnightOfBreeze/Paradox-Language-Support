@@ -8,12 +8,13 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import icu.windea.pls.core.psi.PsiQuoteAwareElement;
 import icu.windea.pls.core.text.QuotePattern;
+import icu.windea.pls.lang.psi.ParadoxLanguageInjectionHost;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-public interface ParadoxScriptString extends ParadoxScriptValue, ParadoxScriptLiteralValue, ParadoxScriptStringExpressionElement, ParadoxScriptInterpolationContainer, PsiQuoteAwareElement {
+public interface ParadoxScriptString extends ParadoxScriptValue, ParadoxScriptLiteralValue, ParadoxScriptStringExpressionElement, ParadoxScriptInterpolationContainer, ParadoxLanguageInjectionHost, PsiQuoteAwareElement {
 
   @Nullable PsiElement getIdElement();
 

@@ -1,6 +1,7 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.script.psi;
 
+import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.StubBasedPsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
@@ -15,7 +16,7 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
 import java.util.List;
 
-public interface ParadoxScriptProperty extends ParadoxScriptNamedElement, ParadoxScriptMember, ParadoxDefinitionElement, PsiPresentableTextAwareElement, StubBasedPsiElement<ParadoxScriptPropertyStub> {
+public interface ParadoxScriptProperty extends ParadoxScriptNamedElement, ParadoxScriptMember, ParadoxDefinitionElement, PsiPresentableTextAwareElement, NavigatablePsiElement, StubBasedPsiElement<ParadoxScriptPropertyStub> {
 
   @Nullable ParadoxScriptBlock getMemberContainer();
 

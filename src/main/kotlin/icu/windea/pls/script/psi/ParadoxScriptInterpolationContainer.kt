@@ -4,9 +4,8 @@ import com.intellij.psi.PsiElement
 import icu.windea.pls.core.children
 import icu.windea.pls.core.select.listBy
 
-
 /**
- * 插值容器，可以直接包含各类插值（[ParadoxScriptInterpolation]）。这意味着其标识符/字面量可能是参数化的。
+ * 插值容器。可以直接包含各类插值（[ParadoxScriptInterpolation]）。这意味着其标识符/字面量可能是参数化的。
  *
  * 说明：
  * - 基本上，这些高级插值语法，以及对应的标识符/字面量的词元，可以任意组合使用。

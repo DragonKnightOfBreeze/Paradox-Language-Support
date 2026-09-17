@@ -2,6 +2,7 @@
 package icu.windea.pls.cwt.psi;
 
 import com.intellij.openapi.util.TextRange;
+import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import icu.windea.pls.core.psi.PsiPresentableTextAwareElement;
@@ -9,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 
-public interface CwtValue extends CwtExpressionElement, CwtMember, CwtOptionMember, PsiPresentableTextAwareElement {
+public interface CwtValue extends CwtExpressionElement, CwtMember, CwtOptionMember, PsiPresentableTextAwareElement, NavigatablePsiElement {
 
   @NotNull Icon getIcon(@IconFlags int flags);
 

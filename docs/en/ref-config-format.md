@@ -975,13 +975,16 @@ database_object_types = {
 <!-- @see cwt/cwtools-vic3-config/config/definition_injections.cwt -->
 <!-- @see cwt/cwtools-eu5-config/config/definition_injections.cwt -->
 
-Macro configs are used to describe special language constructs (expressions, statements, etc.) in script files that differ from general abstractions, and to provide additional metadata for hints and validation.
+Macro configs are used to describe special language constructs in script files that differ from general abstractions, and to provide additional metadata for hints and validation.
 These language constructs alter the behaviour of the game's script parser at runtime, thereby modifying, extending, or reusing existing script fragments.
 Different macros can have different config structures.
 
+The macros here specifically refer to **semantic macros**, as distinct from ordinary **syntax macros**.
+This means they must be confirmed through semantic resolution, so cannot be confirmed directly through syntax analysis, and during the syntax analysis stage, they can only be recognized as one (or several) statements or expressions.
+
 Currently, the macros covered include:
-- **Inline Script (inline_script)**: (Stellaris) Replaced by the content of the target file during parsing, with support for parameters.
-- **Definition Injection (definition_injection)**: (VIC3 / EU5) Injects or replaces the declaration of a target definition during parsing, with modes to specify the exact behaviour.
+- **Inline Script**: (Stellaris) Replaced by the content of the target file during parsing, with support for parameters.
+- **Definition Injection**: (VIC3 / EU5) Injects or replaces the declaration of a target definition during parsing, with modes to specify the exact behaviour.
 
 Path location:
 - `macro[{name}]` – where `{name}` matches the config name.

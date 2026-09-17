@@ -82,4 +82,5 @@ object ChronicleStrings {
     fun localisationIconFolder(name: String) = "£${name}£"
     fun localisationTextIconFolder(name: String) = "@${name}!"
     fun localisationTextFormatFolder(name: String) = "#${name} ...#!"
+    fun localisationTaggedParameterFolder(name: String) = "<${name}>"
 }

@@ -40,6 +40,16 @@ public class ParadoxLocalisationTaggedParameterImpl extends ASTWrapperPsiElement
   }
 
   @Override
+  public @NotNull ParadoxLocalisationTaggedParameter setName(@NotNull String name) {
+    return ParadoxLocalisationPsiImplUtil.setName(this, name);
+  }
+
+  @Override
+  public @NotNull String getPresentableText() {
+    return ParadoxLocalisationPsiImplUtil.getPresentableText(this);
+  }
+
+  @Override
   public @NotNull ParadoxLocalisationElementPresentation getPresentation() {
     return ParadoxLocalisationPsiImplUtil.getPresentation(this);
   }

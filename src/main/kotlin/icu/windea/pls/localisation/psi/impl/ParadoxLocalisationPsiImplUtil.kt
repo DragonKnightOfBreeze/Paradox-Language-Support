@@ -7,6 +7,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import com.intellij.psi.impl.ResolveScopeManager
 import com.intellij.psi.impl.source.resolve.reference.ReferenceProvidersRegistry
+import com.intellij.psi.impl.source.tree.LeafElement
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.SearchScope
 import com.intellij.psi.tree.IElementType
@@ -22,7 +23,6 @@ import icu.windea.pls.core.select.listBy
 import icu.windea.pls.core.select.oneBy
 import icu.windea.pls.core.text.QuotePattern
 import icu.windea.pls.core.text.QuotePatterns
-import icu.windea.pls.core.transformAndKeepQuotes
 import icu.windea.pls.core.truncate
 import icu.windea.pls.core.unquote
 import icu.windea.pls.core.util.values.or
@@ -143,12 +143,6 @@ object ParadoxLocalisationPsiImplUtil {
         return LOCALE
     }
 
-    @JvmStatic
-    fun getPresentableText(element: ParadoxLocalisationLocale): String {
-        val name = element.name
-        return name.or.unresolved()
-    }
-
     // endregion
 
     // region ParadoxLocalisationProperty
@@ -267,12 +261,6 @@ object ParadoxLocalisationPsiImplUtil {
     @JvmStatic
     fun getRichTextList(element: ParadoxLocalisationPropertyValue): List<ParadoxLocalisationRichText> {
         return element.tokenElement.children().listBy()
-    }
-
-    @JvmStatic
-    fun getPresentableText(element: ParadoxLocalisationPropertyValue): String {
-        val limit = ChronicleInternalSettings.getInstance().presentableTextLimit
-        return element.text.transformAndKeepQuotes { it.truncate(limit) }
     }
 
     // endregion
@@ -645,6 +633,20 @@ object ParadoxLocalisationPsiImplUtil {
     fun getName(element: ParadoxLocalisationTaggedParameter): String? {
         val idElement = element.idElement ?: return null
         return idElement.text
+    }
+
+    @JvmStatic
+    fun setName(element: ParadoxLocalisationTaggedParameter, name: String): ParadoxLocalisationTaggedParameter {
+        val idElement = element.idElement ?: throw IncorrectOperationException() // 不支持重命名
+        if (idElement !is LeafElement) throw IncorrectOperationException()
+        idElement.replaceWithText(name)
+        return element
+    }
+
+    @JvmStatic
+    fun getPresentableText(element: ParadoxLocalisationTaggedParameter): String {
+        val name = element.name
+        return ChronicleStrings.localisationTaggedParameterFolder(name.or.unresolved())
     }
 
     // endregion

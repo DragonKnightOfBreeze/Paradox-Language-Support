@@ -4,13 +4,12 @@ package icu.windea.pls.script.psi;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
-import icu.windea.pls.core.psi.PsiPresentableTextAwareElement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-public interface ParadoxScriptInlineConditionalBlock extends ParadoxScriptConditionalBlock, ParadoxScriptInterpolation, ParadoxScriptInterpolationContainer, PsiPresentableTextAwareElement {
+public interface ParadoxScriptInlineConditionalBlock extends ParadoxScriptConditionalBlock, ParadoxScriptInterpolation, ParadoxScriptInterpolationContainer {
 
   @Nullable
   ParadoxScriptConditionalExpression getConditionalExpression();

@@ -8,14 +8,13 @@ import com.intellij.psi.StubBasedPsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import com.intellij.psi.tree.IElementType;
-import icu.windea.pls.core.psi.PsiPresentableTextAwareElement;
 import icu.windea.pls.localisation.psi.stubs.ParadoxLocalisationLocaleStub;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-public interface ParadoxLocalisationLocale extends PsiPresentableTextAwareElement, NavigatablePsiElement, StubBasedPsiElement<ParadoxLocalisationLocaleStub> {
+public interface ParadoxLocalisationLocale extends NavigatablePsiElement, StubBasedPsiElement<ParadoxLocalisationLocaleStub> {
 
   @NotNull PsiElement getIdElement();
 
@@ -26,8 +25,6 @@ public interface ParadoxLocalisationLocale extends PsiPresentableTextAwareElemen
   @NotNull ParadoxLocalisationLocale setName(@NotNull String name);
 
   @NotNull IElementType getIElementType();
-
-  @NotNull String getPresentableText();
 
   @NotNull ParadoxLocalisationElementPresentation getPresentation();
 

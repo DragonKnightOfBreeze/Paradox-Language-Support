@@ -63,12 +63,11 @@ locale ::= LOCALE_TOKEN COLON {
   extends="icu.windea.pls.localisation.psi.impl.ParadoxLocalisationStubElementImpl<?>"
   stubClass="icu.windea.pls.localisation.psi.stubs.ParadoxLocalisationLocaleStub"
   implements=[
-    "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
     "com.intellij.psi.NavigatablePsiElement"
   ]
   methods=[
     getIdElement
-    getIcon getName setName getIElementType getPresentableText
+    getIcon getName setName getIElementType
     getPresentation getReference getReferences
   ]
 }
@@ -110,12 +109,10 @@ property_value ::= property_value_content  {
   name="property value"
   implements=[
     "icu.windea.pls.localisation.psi.ParadoxLocalisationRichTextContainer"
-    "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
     "icu.windea.pls.core.psi.PsiQuoteAwareElement"
   ]
   methods=[
     getTokenElement getRichTextList
-    getPresentableText
     getQuotePattern
   ]
 }
@@ -159,7 +156,6 @@ colorful_text ::= COLORFUL_TEXT_START color_name colorful_text_string? COLORFUL_
   implements=[
     "icu.windea.pls.localisation.psi.ParadoxLocalisationTextColorAwareElement"
     "icu.windea.pls.localisation.psi.ParadoxLocalisationRichTextContainer"
-    "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
   ]
   methods=[
     getIdElement
@@ -182,7 +178,6 @@ parameter ::= PARAMETER_START parameter_name parameter_tail? parameter_suffix? P
     "icu.windea.pls.localisation.psi.ParadoxLocalisationInterpolation"
     "icu.windea.pls.localisation.psi.ParadoxLocalisationInterpolationContainer"
     "icu.windea.pls.localisation.psi.ParadoxLocalisationArgumentAwareElement"
-    "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
   ]
   methods=[
     getIdElement getArgumentElement parameter_argument="" command=""
@@ -208,6 +203,7 @@ parameter_argument ::= ARGUMENT_TOKEN {
 scripted_variable_reference ::= AT SCRIPTED_VARIABLE_REFERENCE_TOKEN {
   implements=[
     "icu.windea.pls.lang.psi.ParadoxScriptedVariableReference"
+    "icu.windea.pls.localisation.psi.ParadoxLocalisationMacro"
   ]
   methods=[
     getIdElement
@@ -225,7 +221,6 @@ command ::= <<isCommand>> LEFT_BRACKET command_text? context_tag_part? command_t
   implements=[
     "icu.windea.pls.localisation.psi.ParadoxLocalisationInterpolation"
     "icu.windea.pls.localisation.psi.ParadoxLocalisationArgumentAwareElement"
-    "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
   ]
   methods=[
     getArgumentElement command_argument=""
@@ -237,7 +232,6 @@ command_text ::= command_text_content {
   implements=[
     "icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement"
     "icu.windea.pls.localisation.psi.ParadoxLocalisationInterpolationContainer"
-    "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
   ]
   methods=[
     getIdElement parameter=""
@@ -268,9 +262,6 @@ private command_argument_name ::= ( ARGUMENT_TOKEN | parameter )+
 concept_command ::= LEFT_BRACKET LEFT_SINGLE_QUOTE concept_name? RIGHT_SINGLE_QUOTE ( COMMA concept_string? )? RIGHT_BRACKET {
   pin=2
   extends=rich_text
-  implements=[
-    "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
-  ]
   methods=[
     getIcon getName setName getPresentableText
     getPresentation getReference getReferences
@@ -280,7 +271,6 @@ concept_name ::= concept_name_content {
   implements=[
     "icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement"
     "icu.windea.pls.localisation.psi.ParadoxLocalisationInterpolationContainer"
-    "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
   ]
   methods=[
     getIdElement parameter=""
@@ -305,7 +295,6 @@ icon ::= ICON_START icon_name icon_suffix? ICON_END {
   implements=[
     "icu.windea.pls.localisation.psi.ParadoxLocalisationInterpolationContainer"
     "icu.windea.pls.localisation.psi.ParadoxLocalisationArgumentAwareElement"
-    "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
   ]
   methods=[
     getIdElement getArgumentElement icon_argument="" rich_text=""
@@ -336,7 +325,6 @@ text_icon ::= TEXT_ICON_START text_icon_name TEXT_ICON_END {
   extends=rich_text
   implements=[
     "icu.windea.pls.localisation.psi.ParadoxLocalisationInterpolationContainer"
-    "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
   ]
   methods=[
     getIdElement rich_text=""
@@ -355,7 +343,6 @@ text_format ::= TEXT_FORMAT_START text_format_name text_format_string? TEXT_FORM
   extends=rich_text
   implements=[
     "icu.windea.pls.localisation.psi.ParadoxLocalisationInterpolationContainer"
-    "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
   ]
   methods=[
     getIdElement rich_text=""
@@ -431,11 +418,11 @@ private tag_sensitive_text_item ::= tagged_parameter | rich_text | COLORFUL_TEXT
 tagged_parameter ::= TAGGED_PARAMETER_START tagged_parameter_name TAGGED_PARAMETER_END {
   pin=1
   implements=[
-    "com.intellij.psi.NavigatablePsiElement"
+    "icu.windea.pls.localisation.psi.ParadoxLocalisationMacro"
   ]
   methods=[
     getIdElement
-    getName
+    getName setName getPresentableText
     getPresentation
   ]
 }

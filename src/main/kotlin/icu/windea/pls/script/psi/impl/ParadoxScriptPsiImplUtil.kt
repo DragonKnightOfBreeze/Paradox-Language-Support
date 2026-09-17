@@ -58,11 +58,12 @@ import icu.windea.pls.script.psi.ParadoxScriptInlineMath
 import icu.windea.pls.script.psi.ParadoxScriptInlineMathExpression
 import icu.windea.pls.script.psi.ParadoxScriptInlineMathNumber
 import icu.windea.pls.script.psi.ParadoxScriptInlineMathParameter
+import icu.windea.pls.script.psi.ParadoxScriptInlineMathParameterArgument
 import icu.windea.pls.script.psi.ParadoxScriptInlineMathScriptedVariableReference
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptNormalConditionalBlock
 import icu.windea.pls.script.psi.ParadoxScriptNormalParameter
-import icu.windea.pls.script.psi.ParadoxScriptParameterArgument
+import icu.windea.pls.script.psi.ParadoxScriptNormalParameterArgument
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptPsiService
@@ -579,7 +580,7 @@ object ParadoxScriptPsiImplUtil {
     }
 
     @JvmStatic
-    fun getArgumentElement(element: ParadoxScriptNormalParameter): ParadoxScriptParameterArgument? {
+    fun getArgumentElement(element: ParadoxScriptNormalParameter): ParadoxScriptNormalParameterArgument? {
         return element.children(forward = false).oneBy()
     }
 
@@ -620,6 +621,15 @@ object ParadoxScriptPsiImplUtil {
 
     // endregion
 
+    // region ParadoxScriptNormalParameterArgument
+
+    @JvmStatic
+    fun getIdElement(element: ParadoxScriptNormalParameterArgument): PsiElement? {
+        return element.firstChild?.takeIf { it.elementType == ARGUMENT_TOKEN }
+    }
+
+    // endregion
+
     // region ParadoxScriptInlineMathParameter
 
     @JvmStatic
@@ -628,7 +638,7 @@ object ParadoxScriptPsiImplUtil {
     }
 
     @JvmStatic
-    fun getArgumentElement(element: ParadoxScriptInlineMathParameter): ParadoxScriptParameterArgument? {
+    fun getArgumentElement(element: ParadoxScriptInlineMathParameter): ParadoxScriptInlineMathParameterArgument? {
         return element.children(forward = false).oneBy()
     }
 
@@ -669,10 +679,10 @@ object ParadoxScriptPsiImplUtil {
 
     // endregion
 
-    // region ParadoxScriptParameterArgument
+    // region ParadoxScriptInlineMathParameterArgument
 
     @JvmStatic
-    fun getIdElement(element: ParadoxScriptParameterArgument): PsiElement? {
+    fun getIdElement(element: ParadoxScriptInlineMathParameterArgument): PsiElement? {
         return element.firstChild?.takeIf { it.elementType == ARGUMENT_TOKEN }
     }
 

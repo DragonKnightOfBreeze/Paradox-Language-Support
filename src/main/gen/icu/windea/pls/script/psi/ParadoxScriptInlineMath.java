@@ -8,7 +8,7 @@ import icu.windea.pls.core.psi.PsiBoundElement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public interface ParadoxScriptInlineMath extends ParadoxScriptValue, PsiBoundElement {
+public interface ParadoxScriptInlineMath extends ParadoxScriptValue, ParadoxScriptMacro, PsiBoundElement {
 
   @Nullable PsiElement getTokenElement();
 
