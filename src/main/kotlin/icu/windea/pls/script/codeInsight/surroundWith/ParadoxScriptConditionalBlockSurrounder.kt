@@ -28,7 +28,7 @@ class ParadoxScriptConditionalBlockSurrounder : ParadoxScriptSurrounder() {
         if (firstElement != lastElement) {
             firstElement.parent.deleteChildRange(firstElement.nextSibling, lastElement)
         }
-        var newElement = ParadoxScriptElementFactory.createConditionalBlockFromText(project, "[[P]\n$replacedText\n]")
+        var newElement = ParadoxScriptElementFactory.createNormalConditionalBlockFromText(project, "[[P]\n$replacedText\n]")
         newElement = firstElement.replace(newElement) as ParadoxScriptNormalConditionalBlock
         newElement = CodeStyleManager.getInstance(project).reformat(newElement, true) as ParadoxScriptNormalConditionalBlock
         return newElement.conditionalExpression!!.textRange

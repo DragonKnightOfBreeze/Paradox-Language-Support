@@ -196,6 +196,7 @@ parameter_argument ::= ARGUMENT_TOKEN {
   ]
   methods=[
     getIdElement
+    getValue getPresentableText
     getPresentation getReference getReferences
   ]
 }
@@ -251,6 +252,7 @@ command_argument ::= command_argument_name {
   ]
   methods=[
     getIdElement parameter=""
+    getValue getPresentableText
     getPresentation getReference getReferences
   ]
 }
@@ -312,6 +314,7 @@ icon_argument ::= icon_argument_name {
   ]
   methods=[
     getIdElement rich_text=""
+    getValue getPresentableText
     getPresentation
   ]
 }

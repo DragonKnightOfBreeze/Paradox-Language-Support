@@ -63,6 +63,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationTextIcon
 import icu.windea.pls.localisation.text.ParadoxLocalisation
 import icu.windea.pls.model.ParadoxLocalisationType
 import icu.windea.pls.model.constants.ChronicleStrings
+import icu.windea.pls.script.psi.ParadoxScriptNormalParameterArgument
 import javax.swing.Icon
 
 @Suppress("UNUSED_PARAMETER")
@@ -333,6 +334,17 @@ object ParadoxLocalisationPsiImplUtil {
         return element.firstChild?.takeIf { it.elementType === ARGUMENT_TOKEN }
     }
 
+    @JvmStatic
+    fun getValue(element: ParadoxLocalisationParameterArgument): String {
+        return element.text
+    }
+
+    @JvmStatic
+    fun getPresentableText(element: ParadoxLocalisationParameterArgument): String {
+        val limit = ChronicleInternalSettings.getInstance().presentableTextLimit
+        return element.text.truncate(limit)
+    }
+
     // endregion
 
     // region ParadoxLocalisationScriptedVariableReference
@@ -413,6 +425,17 @@ object ParadoxLocalisationPsiImplUtil {
     @JvmStatic
     fun getIdElement(element: ParadoxLocalisationCommandArgument): PsiElement? {
         return element.firstChild?.takeIf { it.elementType == ARGUMENT_TOKEN }?.takeIf { ParadoxLocalisationPsiService.isIdElement(it) }
+    }
+
+    @JvmStatic
+    fun getValue(element: ParadoxLocalisationCommandArgument): String {
+        return element.text
+    }
+
+    @JvmStatic
+    fun getPresentableText(element: ParadoxLocalisationCommandArgument): String {
+        val limit = ChronicleInternalSettings.getInstance().presentableTextLimit
+        return element.text.truncate(limit)
     }
 
     // endregion
@@ -520,6 +543,17 @@ object ParadoxLocalisationPsiImplUtil {
     @JvmStatic
     fun getIdElement(element: ParadoxLocalisationIconArgument): PsiElement? {
         return element.firstChild?.takeIf { it.elementType == ARGUMENT_TOKEN }?.takeIf { ParadoxLocalisationPsiService.isIdElement(it) }
+    }
+
+    @JvmStatic
+    fun getValue(element: ParadoxLocalisationIconArgument): String {
+        return element.text
+    }
+
+    @JvmStatic
+    fun getPresentableText(element: ParadoxLocalisationIconArgument): String {
+        val limit = ChronicleInternalSettings.getInstance().presentableTextLimit
+        return element.text.truncate(limit)
     }
 
     // endregion

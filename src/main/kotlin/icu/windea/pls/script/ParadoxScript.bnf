@@ -332,7 +332,8 @@ normal_parameter_argument ::= ARGUMENT_TOKEN {
     "icu.windea.pls.lang.psi.ParadoxLanguageInjectionHost" // injectable
   ]
   methods=[
-    getIdElement getValue
+    getIdElement
+    getValue setValue setContent getPresentableText
     getPresentation
   ]
 }
@@ -526,7 +527,8 @@ inline_math_parameter_argument ::= ARGUMENT_TOKEN {
     "icu.windea.pls.script.psi.ParadoxScriptArgument"
   ]
   methods=[
-    getIdElement getValue
+    getIdElement
+    getValue setValue setContent getPresentableText
     getPresentation
   ]
 }

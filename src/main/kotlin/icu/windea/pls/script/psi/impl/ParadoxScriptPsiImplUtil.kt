@@ -597,7 +597,7 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun setName(element: ParadoxScriptNormalParameter, name: String): ParadoxScriptNormalParameter {
         val idElement = element.idElement ?: throw IncorrectOperationException() // 不支持重命名
-        val newIdElement = ParadoxScriptElementFactory.createParameter(element.project, name).idElement ?: throw IncorrectOperationException()
+        val newIdElement = ParadoxScriptElementFactory.createNormalParameter(element.project, name).idElement ?: throw IncorrectOperationException()
         idElement.replace(newIdElement)
         return element
     }
@@ -629,8 +629,24 @@ object ParadoxScriptPsiImplUtil {
     }
 
     @JvmStatic
-    fun getValue(element: ParadoxScriptNormalParameterArgument): String? {
-        return element.idElement?.text
+    fun getValue(element: ParadoxScriptNormalParameterArgument): String {
+        return element.text
+    }
+
+    @JvmStatic
+    fun setValue(element: ParadoxScriptNormalParameterArgument, value: String): ParadoxScriptNormalParameterArgument {
+        return ParadoxScriptElementManipulationService.changeContent(element, value)
+    }
+
+    @JvmStatic
+    fun setContent(element: ParadoxScriptNormalParameterArgument, content: String, range: TextRange): ParadoxScriptNormalParameterArgument {
+        return ParadoxScriptElementManipulationService.changeContent(element, content, range)
+    }
+
+    @JvmStatic
+    fun getPresentableText(element: ParadoxScriptNormalParameterArgument): String {
+        val limit = ChronicleInternalSettings.getInstance().presentableTextLimit
+        return element.text.truncate(limit)
     }
 
     // endregion
@@ -692,8 +708,24 @@ object ParadoxScriptPsiImplUtil {
     }
 
     @JvmStatic
-    fun getValue(element: ParadoxScriptInlineMathParameterArgument): String? {
-        return element.idElement?.text
+    fun getValue(element: ParadoxScriptInlineMathParameterArgument): String {
+        return element.text
+    }
+
+    @JvmStatic
+    fun setValue(element: ParadoxScriptInlineMathParameterArgument, value: String): ParadoxScriptInlineMathParameterArgument {
+        return ParadoxScriptElementManipulationService.changeContent(element, value)
+    }
+
+    @JvmStatic
+    fun setContent(element: ParadoxScriptInlineMathParameterArgument, content: String, range: TextRange): ParadoxScriptInlineMathParameterArgument {
+        return ParadoxScriptElementManipulationService.changeContent(element, content, range)
+    }
+
+    @JvmStatic
+    fun getPresentableText(element: ParadoxScriptInlineMathParameterArgument): String {
+        val limit = ChronicleInternalSettings.getInstance().presentableTextLimit
+        return element.text.truncate(limit)
     }
 
     // endregion

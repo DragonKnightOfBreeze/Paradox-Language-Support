@@ -98,7 +98,7 @@ object ParadoxScriptElementFactory {
     }
 
     @JvmStatic
-    fun createParameterFromText(project: Project, text: String): ParadoxScriptNormalParameter {
+    fun createNormalParameterFromText(project: Project, text: String): ParadoxScriptNormalParameter {
         return createValueFromText(project, text)
             .children().oneBy<ParadoxScriptNormalParameter>()
             ?: throw IncorrectOperationException()
@@ -112,7 +112,7 @@ object ParadoxScriptElementFactory {
     }
 
     @JvmStatic
-    fun createConditionalBlockFromText(project: Project, text: String): ParadoxScriptNormalConditionalBlock {
+    fun createNormalConditionalBlockFromText(project: Project, text: String): ParadoxScriptNormalConditionalBlock {
         return createRootBlockFromText(project, "a = { $text }")
             .children().oneBy<ParadoxScriptProperty>()
             .children().oneBy<ParadoxScriptBlock>()
@@ -122,7 +122,7 @@ object ParadoxScriptElementFactory {
 
     @JvmStatic
     fun createConditionalParameterFromText(project: Project, text: String): ParadoxScriptConditionalParameter {
-        return createConditionalBlock(project, text, "a")
+        return createNormalConditionalBlock(project, text, "a")
             .children().oneBy<ParadoxScriptConditionalExpression>()
             .children().oneBy<ParadoxScriptConditionalParameter>()
             ?: throw IncorrectOperationException()
@@ -173,8 +173,8 @@ object ParadoxScriptElementFactory {
     }
 
     @JvmStatic
-    fun createConditionalBlock(project: Project, expression: String, itemsText: String): ParadoxScriptNormalConditionalBlock {
-        return createConditionalBlockFromText(project, "[[$expression] $itemsText ]")
+    fun createNormalConditionalBlock(project: Project, expression: String, itemsText: String): ParadoxScriptNormalConditionalBlock {
+        return createNormalConditionalBlockFromText(project, "[[$expression] $itemsText ]")
     }
 
     @JvmStatic
@@ -183,9 +183,9 @@ object ParadoxScriptElementFactory {
     }
 
     @JvmStatic
-    fun createParameter(project: Project, name: String, defaultValue: String? = null): ParadoxScriptNormalParameter {
+    fun createNormalParameter(project: Project, name: String, defaultValue: String? = null): ParadoxScriptNormalParameter {
         val text = if (defaultValue == null) "$$name$" else "$$name|$defaultValue$"
-        return createParameterFromText(project, text)
+        return createNormalParameterFromText(project, text)
     }
 
     @JvmStatic

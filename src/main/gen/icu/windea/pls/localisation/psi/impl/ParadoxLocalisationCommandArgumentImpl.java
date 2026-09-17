@@ -36,6 +36,16 @@ public class ParadoxLocalisationCommandArgumentImpl extends ASTWrapperPsiElement
   }
 
   @Override
+  public @NotNull String getValue() {
+    return ParadoxLocalisationPsiImplUtil.getValue(this);
+  }
+
+  @Override
+  public @NotNull String getPresentableText() {
+    return ParadoxLocalisationPsiImplUtil.getPresentableText(this);
+  }
+
+  @Override
   public @NotNull ParadoxLocalisationElementPresentation getPresentation() {
     return ParadoxLocalisationPsiImplUtil.getPresentation(this);
   }

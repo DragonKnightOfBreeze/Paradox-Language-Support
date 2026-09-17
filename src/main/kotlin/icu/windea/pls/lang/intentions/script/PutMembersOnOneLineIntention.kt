@@ -42,7 +42,7 @@ class PutMembersOnOneLineIntention : PutMembersIntentionBase() {
             is ParadoxScriptNormalConditionalBlock -> {
                 val expressionText = element.conditionalExpression?.presentableText ?: return
                 val newText = "[[${expressionText}] ${membersText} ]"
-                ParadoxScriptElementFactory.createConditionalBlockFromText(context.project, newText)
+                ParadoxScriptElementFactory.createNormalConditionalBlockFromText(context.project, newText)
             }
             else -> {
                 val newText = "{ ${membersText} }"

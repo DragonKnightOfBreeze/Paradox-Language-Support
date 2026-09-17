@@ -1,6 +1,7 @@
 package icu.windea.pls.localisation.psi
 
 import com.intellij.psi.NavigatablePsiElement
+import icu.windea.pls.core.psi.PsiPresentableTextAwareElement
 
 /**
  * 本地化传入参数。
@@ -9,4 +10,6 @@ import com.intellij.psi.NavigatablePsiElement
  * @see ParadoxLocalisationCommandArgument
  * @see ParadoxLocalisationIconArgument
  */
-interface ParadoxLocalisationArgument : NavigatablePsiElement
+interface ParadoxLocalisationArgument : NavigatablePsiElement, PsiPresentableTextAwareElement {
+    val value: String
+}

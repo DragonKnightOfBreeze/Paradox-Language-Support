@@ -48,11 +48,15 @@
     <elementDescriptionProvider implementation="icu.windea.pls.script.psi.ParadoxScriptElementDescriptionProvider"/>
 
     <lang.elementManipulator forClass="icu.windea.pls.script.psi.ParadoxScriptPropertyKey"
-                             implementationClass="icu.windea.pls.script.psi.ParadoxScriptElementManipulators$PropertyKeyManipulator"/>
+                             implementationClass="icu.windea.pls.script.psi.ParadoxScriptElementManipulators$ForPropertyKey"/>
     <lang.elementManipulator forClass="icu.windea.pls.script.psi.ParadoxScriptValue"
-                             implementationClass="icu.windea.pls.script.psi.ParadoxScriptElementManipulators$ValueManipulator"/>
+                             implementationClass="icu.windea.pls.script.psi.ParadoxScriptElementManipulators$ForValue"/>
     <lang.elementManipulator forClass="icu.windea.pls.script.psi.ParadoxScriptString"
-                             implementationClass="icu.windea.pls.script.psi.ParadoxScriptElementManipulators$StringManipulator"/>
+                             implementationClass="icu.windea.pls.script.psi.ParadoxScriptElementManipulators$ForString"/>
+    <lang.elementManipulator forClass="icu.windea.pls.script.psi.ParadoxScriptNormalParameterArgument"
+                             implementationClass="icu.windea.pls.script.psi.ParadoxScriptElementManipulators$ForNormalParameterArgument"/>
+    <lang.elementManipulator forClass="icu.windea.pls.script.psi.ParadoxScriptInlineMathParameterArgument"
+                             implementationClass="icu.windea.pls.script.psi.ParadoxScriptElementManipulators$ForInlineMathParameterArgument"/>
 
     <additionalTextAttributes scheme="Default" file="colorSchemes/ParadoxScriptDefault.xml"/>
     <additionalTextAttributes scheme="Darcula" file="colorSchemes/ParadoxScriptDarcula.xml"/>

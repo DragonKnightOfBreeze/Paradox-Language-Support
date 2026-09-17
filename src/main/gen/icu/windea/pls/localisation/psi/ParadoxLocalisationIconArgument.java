@@ -11,6 +11,10 @@ public interface ParadoxLocalisationIconArgument extends ParadoxLocalisationArgu
 
   @Nullable PsiElement getIdElement();
 
+  @NotNull String getValue();
+
+  @NotNull String getPresentableText();
+
   @NotNull ParadoxLocalisationElementPresentation getPresentation();
 
   @NotNull GlobalSearchScope getResolveScope();
