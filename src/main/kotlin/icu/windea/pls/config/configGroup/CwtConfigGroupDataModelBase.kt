@@ -96,12 +96,12 @@ open class CwtConfigGroupDataModelBase : CwtConfigGroupDataModel {
     final override val generatedModifiers: Object2ObjectLinkedOpenCustomHashMap<@CaseInsensitive String, CwtModifierConfig> = CaseInsensitiveStringKeyMap()
     final override val aliasKeysGroupConst: Object2ObjectLinkedOpenCustomHashMap<@CaseInsensitive String, Object2ObjectLinkedOpenCustomHashMap<@CaseInsensitive String, String>> = CaseInsensitiveStringKeyMap()
     final override val aliasKeysGroupNoConst: Object2ObjectLinkedOpenHashMap<String, ObjectLinkedOpenHashSet<String>> = Object2ObjectLinkedOpenHashMap()
-    final override val aliasNamesSupportScope: ObjectLinkedOpenHashSet<String> = ObjectLinkedOpenHashSet()
     final override val relatedLocalisationPatterns: ObjectLinkedOpenHashSet<Tuple2<String, String>> = ObjectLinkedOpenHashSet()
     final override val typeModel: CwtTypeModelBase = CwtTypeModelBase()
     final override val scopeModel: CwtScopeModelBase = CwtScopeModelBase()
     final override val linkModel: CwtLinkModelBase = CwtLinkModelBase()
     final override val localisationLinkModel: CwtLinkModelBase = CwtLinkModelBase()
+    final override val aliasModel: CwtAliasModelBase = CwtAliasModelBase()
     final override val macroModel: CwtMacroModelBase = CwtMacroModelBase()
     final override val attribute: CwtConfigGroupAttributesBase = CwtConfigGroupAttributesBase()
 
@@ -188,12 +188,12 @@ open class CwtConfigGroupDataModelBase : CwtConfigGroupDataModel {
         aliasKeysGroupConst.trim()
         aliasKeysGroupConst.values.forEach { it.trim() }
         aliasKeysGroupNoConst.trim()
-        aliasNamesSupportScope.trim()
         relatedLocalisationPatterns.trim()
         typeModel.trim()
         scopeModel.trim()
         linkModel.trim()
         localisationLinkModel.trim()
+        aliasModel.trim()
         macroModel.trim()
         attribute.trim()
     }
@@ -248,12 +248,12 @@ class CwtLinkModelBase : CwtLinkModel {
     override val forScopeNoPrefixSorted: ObjectArrayList<CwtLinkConfig> = ObjectArrayList()
     override val forScopeFromDataSorted: ObjectArrayList<CwtLinkConfig> = ObjectArrayList()
     override val forScopeFromArgumentSorted: ObjectArrayList<CwtLinkConfig> = ObjectArrayList()
-    override val forScopeFromArgumentSortedByPrefix: Object2ObjectLinkedOpenCustomHashMap<String, ObjectArrayList<CwtLinkConfig>> = CaseInsensitiveStringKeyMap()
+    override val forScopeFromArgumentSortedByPrefix: Object2ObjectLinkedOpenCustomHashMap<@CaseInsensitive String, ObjectArrayList<CwtLinkConfig>> = CaseInsensitiveStringKeyMap()
     override val forValueStatic: ObjectArrayList<CwtLinkConfig> = ObjectArrayList()
     override val forValueNoPrefixSorted: ObjectArrayList<CwtLinkConfig> = ObjectArrayList()
     override val forValueFromDataSorted: ObjectArrayList<CwtLinkConfig> = ObjectArrayList()
     override val forValueFromArgumentSorted: ObjectArrayList<CwtLinkConfig> = ObjectArrayList()
-    override val forValueFromArgumentSortedByPrefix: Object2ObjectLinkedOpenCustomHashMap<String, ObjectArrayList<CwtLinkConfig>> = CaseInsensitiveStringKeyMap()
+    override val forValueFromArgumentSortedByPrefix: Object2ObjectLinkedOpenCustomHashMap<@CaseInsensitive String, ObjectArrayList<CwtLinkConfig>> = CaseInsensitiveStringKeyMap()
 
     fun trim() {
         variable.trim()
@@ -269,6 +269,21 @@ class CwtLinkModelBase : CwtLinkModel {
         forValueFromArgumentSorted.trim()
         forValueFromArgumentSortedByPrefix.trim()
         forValueFromArgumentSortedByPrefix.values.forEach { it.trim() }
+    }
+}
+
+@Optimized
+class CwtAliasModelBase : CwtAliasModel {
+    override val name2ConstKeys: Object2ObjectLinkedOpenHashMap<String, Object2ObjectLinkedOpenCustomHashMap<@CaseInsensitive String, String>> = Object2ObjectLinkedOpenHashMap()
+    override val name2NonConstKeys: Object2ObjectLinkedOpenHashMap<String, ObjectLinkedOpenHashSet<String>> = Object2ObjectLinkedOpenHashMap()
+    override val supportScope: ObjectLinkedOpenHashSet<String> = ObjectLinkedOpenHashSet()
+
+    fun trim() {
+        name2ConstKeys.trim()
+        name2ConstKeys.values.forEach { it.trim() }
+        name2NonConstKeys.trim()
+        name2NonConstKeys.values.forEach { it.trim() }
+        supportScope.trim()
     }
 }
 

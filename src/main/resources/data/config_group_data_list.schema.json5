@@ -12,9 +12,6 @@
         "gameType": {
           "$ref": "#/definitions/gameTypeId"
         },
-        "aliasNamesSupportScope": {
-          "$ref": "#/definitions/stringSet"
-        },
         "typesSupportScope": {
           "$ref": "#/definitions/stringSet"
         },
@@ -30,6 +27,9 @@
         "typesSupportScopeInference": {
           "$ref": "#/definitions/stringSet"
         },
+        "aliasNamesSupportScope": {
+          "$ref": "#/definitions/stringSet"
+        }
       },
       "required": ["gameType"],
       "additionalProperties": false

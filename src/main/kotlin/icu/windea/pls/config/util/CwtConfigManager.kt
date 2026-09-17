@@ -175,13 +175,6 @@ object CwtConfigManager {
         }
     }
 
-    fun getAliasKeys(configGroup: CwtConfigGroup, aliasName: String, key: String): Set<String> {
-        val constKey = configGroup.aliasKeysGroupConst[aliasName]?.get(key) // 不区分大小写
-        if (constKey != null) return setOf(constKey)
-        val keys = configGroup.aliasKeysGroupNoConst[aliasName] ?: return emptySet()
-        return keys
-    }
-
     fun getEntryName(config: CwtConfig<*>): String? {
         return when {
             config is CwtPropertyConfig -> config.key

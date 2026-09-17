@@ -19,14 +19,15 @@ class CwtPredefinedConfigGroupProcessor : CwtConfigGroupProcessor {
         val jsonData = ChronicleJsonService.configGroupDataList
         val jsonList = jsonData.filter { it.gameType == ParadoxGameType.Core || it.gameType == configGroup.gameType }
         for (json in jsonList) {
-            initializer.aliasNamesSupportScope += json.aliasNamesSupportScope
-
             val typesModel = initializer.typeModel
             typesModel.supportScope += json.typesSupportScope
             typesModel.supportIndirectScope += json.typesSupportIndirectScope
             typesModel.supportScopeInference += json.typesSupportScopeInference
             typesModel.skipCheckSystemScope += json.typesSkipCheckSystemScope
             typesModel.supportParameters += json.typesSupportParameters
+
+            val aliasModel = initializer.aliasModel
+            aliasModel.supportScope += json.aliasNamesSupportScope
         }
     }
 }

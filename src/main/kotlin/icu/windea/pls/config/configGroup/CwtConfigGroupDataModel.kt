@@ -160,8 +160,6 @@ interface CwtConfigGroupDataModel {
     val aliasKeysGroupConst: Map<@CaseInsensitive String, Map<@CaseInsensitive String, String>> get() = emptyMap()
     /** 非常量字符串的别名的组名的映射。 */
     val aliasKeysGroupNoConst: Map<String, Set<String>> get() = emptyMap()
-    /** 必定支持作用域的别名规则。 */
-    val aliasNamesSupportScope: Set<String> get() = emptySet()
 
     /** 相关本地化的模式，用于从本地化导航到相关定义。 */
     val relatedLocalisationPatterns: Set<Tuple2<String, String>> get() = emptySet()
@@ -178,6 +176,8 @@ interface CwtConfigGroupDataModel {
     val linkModel: CwtLinkModel get() = CwtLinkModel.Empty
     /** 获取符合特定条件的本地化的链接规则。 */
     val localisationLinkModel: CwtLinkModel get() = CwtLinkModel.Empty
+    /** 获取符合特定条件的链接的名字和键。 */
+    val aliasModel: CwtAliasModel get() = CwtAliasModel.Empty
     /** 获取符合特定条件的宏规则。 */
     val macroModel: CwtMacroModel get() = CwtMacroModel.Empty
 
@@ -236,15 +236,15 @@ interface CwtTypeModel {
 
 /** 作用域的数据模型。用于保存和获取作用域的关系信息（别名、继承等），以优化匹配和合并作用域时的性能。 */
 interface CwtScopeModel {
-    /** 基础作用域到其别名形式的集合（仅保存索引计数，不包括直接匹配的情况）。 */
+    /** 基础作用域到其别名形式的映射（仅保存索引计数，不包括直接匹配的情况）。 */
     val base2Aliases: Map<Int, Set<Int>> get() = emptyMap()
-    /** 基础作用域到其父作用域的集合（仅保存索引计数，兼容别名形式，不包括直接匹配的情况）。 */
+    /** 基础作用域到其父作用域的映射（仅保存索引计数，兼容别名形式，不包括直接匹配的情况）。 */
     val base2ParentScopes: Map<Int, Set<Int>> get() = emptyMap()
-    /** 基础作用域到其子作用域的集合（仅保存索引计数，兼容别名形式，不包括直接匹配的情况）。 */
+    /** 基础作用域到其子作用域的映射（仅保存索引计数，兼容别名形式，不包括直接匹配的情况）。 */
     val base2ChildScopes: Map<Int, Set<Int>> get() = emptyMap()
-    /** 基础作用域到匹配的作用域的集合（仅保存索引计数，兼容别名形式，不包括直接匹配的情况）。 */
+    /** 基础作用域到匹配的作用域的映射（仅保存索引计数，兼容别名形式，不包括直接匹配的情况）。 */
     val base2MatchedScopes: Map<Int, Set<Int>> get() = emptyMap()
-    /** 基础作用域到提升后的作用域的集合（仅保存索引计数，兼容别名形式，不包括直接匹配的情况）。 */
+    /** 基础作用域到提升后的作用域的映射（仅保存索引计数，兼容别名形式，不包括直接匹配的情况）。 */
     val base2PromotedScopes: Map<Int, Set<Int>> get() = emptyMap()
 
     object Empty : CwtScopeModel
@@ -266,6 +266,18 @@ interface CwtLinkModel {
     val forValueFromArgumentSortedByPrefix: Map<@CaseInsensitive String, List<CwtLinkConfig>> get() = emptyMap()
 
     object Empty : CwtLinkModel
+}
+
+/** 别名规则的数据模型。用于保存和获取符合特定条件的链接的名字和键。 */
+interface CwtAliasModel {
+    /** 名字到作为常量的键的映射。 */
+    val name2ConstKeys: Map<String, Map<@CaseInsensitive String, String>> get() = emptyMap()
+    /** 名字到作为常量以外的一组键的映射。 */
+    val name2NonConstKeys: Map<String, Set<String>> get() = emptyMap()
+    /** （必定）支持作用域的别名规则的名字。 */
+    val supportScope: Set<String> get() = emptySet()
+
+    object Empty : CwtAliasModel
 }
 
 /** 宏规则的数据模型。用于保存和获取符合特定条件的宏规则。 */

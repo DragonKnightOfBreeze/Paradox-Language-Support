@@ -412,7 +412,7 @@ object CwtDocumentationManager {
                 val aliasConfig = aliasConfigs.singleOrNull()
                     ?: aliasConfigs.find { element.isSamePosition(it.pointer.element) }
                     ?: return
-                if (aliasConfig.name !in configGroup.aliasNamesSupportScope) return
+                if (aliasConfig.name !in configGroup.aliasModel.supportScope) return
                 val supportedScopes = aliasConfig.supportedScopes
                 sections[ChronicleBundle.message("doc.sectionTitle.supportedScopes")] = getScopesText(supportedScopes, gameType, contextElement)
                 val outputScope = aliasConfig.outputScope

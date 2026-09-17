@@ -22,7 +22,6 @@ import icu.windea.pls.config.configExpression.CwtDataExpressionRole
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.option.CwtOptionMetadata
 import icu.windea.pls.config.util.CwtConfigKeyManager
-import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.allFast
@@ -254,22 +253,19 @@ object CwtConfigManipulationService {
 
 // endregion
 
-// region Inline Methods
+    // region Inline Methods
 
-    fun inlineAlias(config: CwtPropertyConfig, key: String): List<CwtMemberConfig<*>>? {
+    fun inlineAlias(config: CwtPropertyConfig): List<CwtMemberConfig<*>>? {
         val valueExpression = config.valueExpression
         if (valueExpression.type != CwtDataTypes.AliasMatchLeft) return null
         val aliasName = valueExpression.metadata.value ?: return null
         val configGroup = config.configGroup
         val aliasConfigGroup = configGroup.aliasGroups[aliasName] ?: return null
-        val aliasKeys = CwtConfigManager.getAliasKeys(configGroup, aliasName, key)
-        if (aliasKeys.isEmpty()) return emptyList()
         val result = createListForDeepCopy()
-        aliasKeys.forEach f1@{ aliasKey ->
-            val aliasConfigs = aliasConfigGroup[aliasKey]
-            if (aliasConfigs.isNullOrEmpty()) return@f1
-            aliasConfigs.forEachFast f2@{ aliasConfig ->
-                result += inlineAlias(config, aliasConfig) ?: return@f2
+        aliasConfigGroup.values.forEach { aliasConfigs ->
+            aliasConfigs.forEachFast { aliasConfig ->
+                val inlined = inlineAlias(config, aliasConfig)
+                if (inlined != null) result += inlined
             }
         }
         val parentConfig = config.parentConfig
@@ -372,15 +368,6 @@ object CwtConfigManipulationService {
         return inlined
     }
 
-    fun inlineForConfigContext(config: CwtPropertyConfig, key: String): List<CwtMemberConfig<*>>? {
-        val valueExpression = config.valueExpression
-        return when (valueExpression.type) {
-            CwtDataTypes.AliasMatchLeft -> inlineAlias(config, key)
-            CwtDataTypes.SingleAliasRight -> inlineSingleAlias(config)?.let { listOf(it) }
-            else -> null
-        }
-    }
-
     fun inlineForConfig(config: CwtPropertyConfig): CwtPropertyConfig {
         // #76
         return inlineSingleAlias(config) ?: config
@@ -404,9 +391,9 @@ object CwtConfigManipulationService {
         return inlined
     }
 
-// endregion
+    // endregion
 
-// region Expand Methods
+    // region Expand Methods
 
     /**
      * 展开枚举规则 [config] 的所有作为候选项的值规则。
@@ -511,5 +498,5 @@ object CwtConfigManipulationService {
         }
     }
 
-// endregion
+    // endregion
 }

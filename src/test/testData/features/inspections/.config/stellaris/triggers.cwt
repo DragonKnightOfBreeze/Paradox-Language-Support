@@ -1,0 +1,3 @@
+### Checks if the scoped Cosmic Storm's type is equal to <type>
+## scopes = { cosmic_storm }
+alias[trigger:is_storm_type] = <storm_types>

@@ -159,7 +159,7 @@ class ParadoxCsvConstantExpressionMatcher : ParadoxCsvSimpleExpressionMatcher() 
     override val dataTypes = CwtDataTypeSets.Constant
 
     override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression): ParadoxMatchResult {
-        // 兼容空字符串，兼容带参数的情况
+        // 兼容空字符串
         val r = context.expression.matchesConstant(configExpression.expressionString)
         return ParadoxMatchResult.exactOrNot(r)
     }

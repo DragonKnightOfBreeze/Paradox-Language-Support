@@ -261,7 +261,7 @@ object ParadoxScopeService {
                 property.keyExpression.type == CwtDataTypes.AliasName -> property.keyExpression.metadata.value
                 else -> return@f
             }
-            if (aliasName in configGroup.aliasNamesSupportScope) return true
+            if (aliasName in configGroup.aliasModel.supportScope) return true
         }
         return false
     }
@@ -274,7 +274,7 @@ object ParadoxScopeService {
                 val aliasConfig = currentConfig.aliasConfig
                 if (aliasConfig != null) {
                     val aliasName = aliasConfig.name
-                    if (aliasName in configGroup.aliasNamesSupportScope) return true
+                    if (aliasName in configGroup.aliasModel.supportScope) return true
                 }
             } else if (currentConfig is CwtValueConfig) {
                 currentConfig = currentConfig.propertyConfig ?: currentConfig

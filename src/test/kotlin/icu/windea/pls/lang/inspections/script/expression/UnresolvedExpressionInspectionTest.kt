@@ -1,11 +1,15 @@
 package icu.windea.pls.lang.inspections.script.expression
 
+import com.intellij.psi.util.parentOfType
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.ep.ChronicleEpBundle
+import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.test.ChronicleTestScope
 import icu.windea.pls.test.dsl.configureByText
+import icu.windea.pls.test.dsl.expectScope
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -413,6 +417,75 @@ class UnresolvedExpressionInspectionTest : BasePlatformTestCase(), ChronicleTest
             """.trimIndent()
         }
         myFixture.checkHighlighting()
+    }
+
+    @Test
+    fun parameterizedScope_success() {
+        val scopeParam = "\$SCOPE$"
+
+        markFileInfo(ParadoxGameType.Stellaris, "common/scripted_effects/test.txt")
+        myFixture.configureByText("test.txt") {
+            """
+            <caret>test_effect = {
+                ${scopeParam} = {
+                    if = {
+                        always = yes
+                    }
+                }
+            }
+            """.trimIndent()
+        }
+        myFixture.checkHighlighting()
+        expectScope {
+            val prop = myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptProperty>().expectNotNull()
+            val definitionInfo = prop.definitionInfo.expectNotNull()
+            definitionInfo.type.expectEquals("scripted_effect")
+        }
+    }
+
+    @Test
+    fun parameterizedEffect_removeFlag_success() {
+        val scopeTypeParam = "\$SCOPE_TYPE$"
+
+        markFileInfo(ParadoxGameType.Stellaris, "common/scripted_effects/test.txt")
+        myFixture.configureByText("test.txt") {
+            """
+            <caret>test_effect = {
+                remove_${scopeTypeParam}_flag = flag_a
+                remove_${scopeTypeParam}_flag = flag_b
+            }
+            """.trimIndent()
+        }
+        myFixture.checkHighlighting()
+        expectScope {
+            val prop = myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptProperty>().expectNotNull()
+            val definitionInfo = prop.definitionInfo.expectNotNull()
+            definitionInfo.type.expectEquals("scripted_effect")
+        }
+    }
+
+    @Test
+    fun parameterizedEffectAndScope_removeFlag_success() {
+        val scopeParam = "\$SCOPE$"
+        val scopeTypeParam = "\$SCOPE_TYPE$"
+
+        markFileInfo(ParadoxGameType.Stellaris, "common/scripted_effects/test.txt")
+        myFixture.configureByText("test.txt") {
+            """
+            <caret>test_effect = {
+                ${scopeParam} = {
+                    remove_${scopeTypeParam}_flag = flag_a
+                    remove_${scopeTypeParam}_flag = flag_b
+                }
+            }
+            """.trimIndent()
+        }
+        myFixture.checkHighlighting()
+        expectScope {
+            val prop = myFixture.findElementAtCaret()?.parentOfType<ParadoxScriptProperty>().expectNotNull()
+            val definitionInfo = prop.definitionInfo.expectNotNull()
+            definitionInfo.type.expectEquals("scripted_effect")
+        }
     }
 
     // endregion

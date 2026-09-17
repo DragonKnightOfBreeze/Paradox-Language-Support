@@ -282,6 +282,19 @@ object ParadoxConfigService {
         return result
     }
 
+    private fun matchConfigsForConfigContext(element: ParadoxScriptMember, expression: ParadoxExpression, configs: List<CwtMemberConfig<*>>, configGroup: CwtConfigGroup, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>> {
+        ProgressManager.checkCanceled()
+        val matchContext = ParadoxExpressionMatchContext(element, expression, configGroup, options)
+        val candidates = ParadoxMatchService.collectCandidates(configs) { config ->
+            ParadoxExpressionMatchService.matchScriptExpression(matchContext, config.configExpression, config)
+        }
+        val processedCandidates = ParadoxMatchService.processCandidates(candidates, options)
+        val processed = processedCandidates.mapFast { it.value }
+        val optimized = ParadoxMatchService.optimize(processed, element, expression, options)
+        val result = optimized
+        return result
+    }
+
     private fun collectConfigsForConfigContext(expression: ParadoxExpression, parentConfigs: List<CwtMemberConfig<*>>, configGroup: CwtConfigGroup): List<CwtMemberConfig<*>> {
         val result = mutableListOf<CwtMemberConfig<*>>()
         if (expression.value == "-") {
@@ -310,32 +323,34 @@ object ParadoxConfigService {
                 val configs = parentConfig.properties
                 if (configs.isNullOrEmpty()) return@f1
 
-                configs.forEachFast { config ->
+                configs.forEachFast f2@{ config ->
                     // it is necessary to perform inlining first after flatten
-                    // ff the alias config, after inlining, involves a single alias config, it's necessary to continue inlining
-                    val inlinedConfigs = CwtConfigManipulationService.inlineForConfigContext(config, expression.value)
-                    if (inlinedConfigs != null) {
-                        result.addAll(inlinedConfigs)
-                    } else {
-                        result.add(config)
-                    }
+                    // if the alias config, after inlining, involves a single alias config, it's necessary to continue inlining
+                    if (inlineConfigsForConfigContext(config, result)) return@f2
+
+                    result.add(config)
                 }
             }
         }
         return result
     }
 
-    private fun matchConfigsForConfigContext(element: ParadoxScriptMember, expression: ParadoxExpression, configs: List<CwtMemberConfig<*>>, configGroup: CwtConfigGroup, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>> {
-        ProgressManager.checkCanceled()
-        val matchContext = ParadoxExpressionMatchContext(element, expression, configGroup, options)
-        val candidates = ParadoxMatchService.collectCandidates(configs) { config ->
-            ParadoxExpressionMatchService.matchScriptExpression(matchContext, config.configExpression, config)
+    private fun inlineConfigsForConfigContext(config: CwtPropertyConfig, result: MutableList<CwtMemberConfig<*>>): Boolean {
+        val valueExpression = config.valueExpression
+        return when (valueExpression.type) {
+            CwtDataTypes.AliasMatchLeft -> {
+                // NOTE 3.0.3 since it's context configs, not matched configs, we should not match alias key here (although there may be many configs after inlining)
+                val inlinedConfigs = CwtConfigManipulationService.inlineAlias(config)
+                if (inlinedConfigs != null) result.addAll(inlinedConfigs)
+                true
+            }
+            CwtDataTypes.SingleAliasRight -> {
+                val inlinedConfig = CwtConfigManipulationService.inlineSingleAlias(config)
+                if (inlinedConfig != null) result.add(inlinedConfig)
+                true
+            }
+            else -> false
         }
-        val processedCandidates = ParadoxMatchService.processCandidates(candidates, options)
-        val processed = processedCandidates.mapFast { it.value }
-        val optimized = ParadoxMatchService.optimize(processed, element, expression, options)
-        val result = optimized
-        return result
     }
 
     fun getConfigs(element: ParadoxScriptMember, options: ParadoxMatchOptions? = null): List<CwtMemberConfig<*>> {

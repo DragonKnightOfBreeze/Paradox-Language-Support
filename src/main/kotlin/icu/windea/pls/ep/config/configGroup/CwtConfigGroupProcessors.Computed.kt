@@ -60,9 +60,6 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
         bindCategoryConfigMapForModifierConfigs(configGroup)
 
         checkCanceled()
-        computeAliasKeysGroups(configGroup)
-
-        checkCanceled()
         computeRelatedLocalisationPatterns(configGroup)
 
         checkCanceled()
@@ -76,6 +73,9 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
 
         checkCanceled()
         computeLinkModel(configGroup, configGroup.initializer.localisationLinkModel, configGroup.initializer.localisationLinks.values)
+
+        checkCanceled()
+        computeAliasModel(configGroup)
 
         checkCanceled()
         computeMacroModel(configGroup)
@@ -176,30 +176,6 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
             for (category in modifier.categories) {
                 val categoryConfig = initializer.modifierCategories[category] ?: continue
                 modifier.bindCategoryConfig(categoryConfig.name, categoryConfig)
-            }
-        }
-    }
-
-    private fun computeAliasKeysGroups(configGroup: CwtConfigGroup) {
-        val initializer = configGroup.initializer
-        for ((k, v) in initializer.aliasGroups) {
-            val keysConst = CaseInsensitiveStringKeyMap<String>()
-            val keysNoConst = ObjectLinkedOpenHashSet<String>()
-            for (key in v.keys) {
-                if (CwtDataExpression.resolve(key, CwtDataExpressionRole.Key).type == CwtDataTypes.Constant) {
-                    keysConst[key] = key
-                } else {
-                    keysNoConst += key
-                }
-            }
-            if (keysConst.isNotEmpty()) {
-                initializer.aliasKeysGroupConst[k] = keysConst
-            }
-            if (keysNoConst.isNotEmpty()) {
-                val sorted = keysNoConst.sortedByPriority({ CwtDataExpression.resolve(it, CwtDataExpressionRole.Key) }, { configGroup })
-                val fastSet = ObjectLinkedOpenHashSet<String>()
-                fastSet.addAll(sorted)
-                initializer.aliasKeysGroupNoConst[k] = fastSet
             }
         }
     }
@@ -367,6 +343,30 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
                             forValueFromArgumentSortedByPrefix.getOrPut(c.prefixFromArgument) { ObjectArrayList() } += c
                         }
                     }
+                }
+            }
+        }
+    }
+
+    private fun computeAliasModel(configGroup: CwtConfigGroup) {
+        val initializer = configGroup.initializer
+        with(initializer.aliasModel) {
+            for ((aliasName, aliases) in initializer.aliasGroups) {
+                val constKeys = CaseInsensitiveStringKeyMap<String>()
+                val nonConstKeys = ObjectLinkedOpenHashSet<String>()
+                for (key in aliases.keys) {
+                    val configExpression = CwtDataExpression.resolve(key, CwtDataExpressionRole.Key)
+                    if (configExpression.type == CwtDataTypes.Constant) {
+                        constKeys[key] = key
+                    } else {
+                        nonConstKeys += key
+                    }
+                }
+                if (constKeys.isNotEmpty()) {
+                    name2ConstKeys[aliasName] = constKeys
+                }
+                if(nonConstKeys.isNotEmpty()) {
+                    name2NonConstKeys[aliasName] = nonConstKeys
                 }
             }
         }

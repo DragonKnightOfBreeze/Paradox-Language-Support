@@ -392,6 +392,13 @@ class ParadoxScriptConstantExpressionMatcher : ParadoxScriptSimpleExpressionMatc
 
     override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
         // 兼容空字符串，兼容带参数的情况
+        if (context.expression.isFullParameterized()) {
+            return ParadoxMatchResult.ParameterizedMatch
+        }
+        if (context.expression.isParameterized()) {
+            if (context.expression.matchesRegex(configExpression.expressionString)) return ParadoxMatchResult.ParameterizedMatch
+            return ParadoxMatchResult.NotMatch
+        }
         val r = context.expression.matchesConstant(configExpression.expressionString)
         return ParadoxMatchResult.exactOrNot(r)
     }

@@ -1,0 +1,17 @@
+### Sets an arbitrarily-named flag on the scoped fleet
+## scopes = { fleet }
+alias[effect:set_fleet_flag] = value_set[fleet_flag]
+
+### Sets an arbitrarily-named flag on the scoped ship
+## scopes = { ship }
+alias[effect:set_ship_flag] = value_set[ship_flag]
+
+### Removes a flag from the scoped fleet
+## scopes = { fleet }
+## severity = warning
+alias[effect:remove_fleet_flag] = value[fleet_flag]
+
+### Removes a flag from the scoped ship
+## scopes = { ship }
+## severity = warning
+alias[effect:remove_ship_flag] = value[ship_flag]

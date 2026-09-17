@@ -2,11 +2,6 @@
   // core
   {
     "gameType": "core",
-    "aliasNamesSupportScope": [
-      "modifier", // but cannot switch scopes
-      "trigger",
-      "effect",
-    ],
     "typesSupportScope": [
       "scripted_trigger",
       "scripted_effect",
@@ -33,5 +28,10 @@
       "script_value",
       // "inline_script", // but inline scripts are not definitions
     ],
+    "aliasNamesSupportScope": [
+      "modifier", // but cannot switch scopes
+      "trigger",
+      "effect",
+    ]
   }
 ]

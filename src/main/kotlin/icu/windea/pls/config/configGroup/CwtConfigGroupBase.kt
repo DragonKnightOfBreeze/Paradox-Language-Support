@@ -127,12 +127,12 @@ class CwtConfigGroupBase(
     override val generatedModifiers get() = dataModel.generatedModifiers
     override val aliasKeysGroupConst get() = dataModel.aliasKeysGroupConst
     override val aliasKeysGroupNoConst get() = dataModel.aliasKeysGroupNoConst
-    override val aliasNamesSupportScope get() = dataModel.aliasNamesSupportScope
     override val relatedLocalisationPatterns get() = dataModel.relatedLocalisationPatterns
     override val typeModel get() = dataModel.typeModel
     override val scopeModel get() = dataModel.scopeModel
     override val linkModel get() = dataModel.linkModel
     override val localisationLinkModel get() = dataModel.localisationLinkModel
+    override val aliasModel get() = dataModel.aliasModel
     override val macroModel get() = dataModel.macroModel
     override val attribute get() = dataModel.attribute
     override fun getUnionAttribute(name: String) = dataModel.getUnionAttribute(name)
