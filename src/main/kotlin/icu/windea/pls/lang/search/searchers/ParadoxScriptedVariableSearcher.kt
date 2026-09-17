@@ -19,7 +19,7 @@ import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.index.ChronicleIndexKeys
 import icu.windea.pls.lang.index.ChronicleIndexService
 import icu.windea.pls.lang.index.ParadoxMergedIndexThreadContext
-import icu.windea.pls.lang.injection.ParadoxScriptInjectionManager
+import icu.windea.pls.lang.injection.ParadoxLanguageInjectionManager
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.search.ParadoxInlineScriptUsageSearch
 import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
@@ -93,7 +93,7 @@ class ParadoxScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScriptedV
         if (VirtualFileService.isInjectedFile(file)) {
             run {
                 // input file is an injected file (from argument value)
-                val injectionInfo = ParadoxScriptInjectionManager.getParameterValueInjectionInfoFromInjectedFile(psiFile) ?: return@run
+                val injectionInfo = ParadoxLanguageInjectionManager.getParameterValueInjectionInfoFromInjectedFile(psiFile) ?: return@run
                 val parameterElement = injectionInfo.parameterElement ?: return@run
                 if (parameterElement.parent !is ParadoxScriptStringExpressionElement) return@run // must be an argument value, rather than a parameter default value
                 val inlineScriptExpression = parameterElement.contextKey.removePrefixOrNull("inline_script@")?.orNull() ?: return@run

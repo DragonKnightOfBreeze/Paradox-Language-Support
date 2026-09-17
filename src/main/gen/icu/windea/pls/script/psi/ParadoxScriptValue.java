@@ -1,14 +1,16 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.script.psi;
 
-import com.intellij.openapi.util.TextRange;
+import java.util.List;
+import org.jetbrains.annotations.*;
+import com.intellij.psi.PsiElement;
+import icu.windea.pls.core.psi.PsiPresentableTextAwareElement;
 import com.intellij.psi.NavigatablePsiElement;
+import com.intellij.openapi.util.Iconable.IconFlags;
+import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
-import icu.windea.pls.core.psi.PsiPresentableTextAwareElement;
-import org.jetbrains.annotations.NotNull;
-
-import javax.swing.*;
+import javax.swing.Icon;
 
 public interface ParadoxScriptValue extends ParadoxScriptExpressionElement, ParadoxScriptMember, PsiPresentableTextAwareElement, NavigatablePsiElement {
 

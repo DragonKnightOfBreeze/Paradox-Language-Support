@@ -11,7 +11,7 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.processAsync
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.injection.ChronicleInjectionManager
+import icu.windea.pls.lang.injection.ParadoxLanguageInjectionManager
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
@@ -43,7 +43,7 @@ class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
 
     override fun findContext(element: PsiElement): ParadoxDefinitionElement? {
         // NOTE 这里需要兼容通过语言注入注入到脚本文件中的脚本片段中的参数（此时需要先获取最外面的 `injectionHost`）
-        val finalElement = ChronicleInjectionManager.findTopHostElementOrThis(element, element.project)
+        val finalElement = ParadoxLanguageInjectionManager.findTopHostElementOrThis(element, element.project)
         val context = selectScope { finalElement.parentDefinition() }
         return context?.takeIf { isContext(it) }
     }
@@ -112,7 +112,7 @@ class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
 
     override fun findContext(element: PsiElement): ParadoxDefinitionElement? {
         // NOTE 这里需要兼容通过语言注入注入到脚本文件中的脚本片段中的参数（此时需要先获取最外面的 injectionHost）
-        val finalElement = ChronicleInjectionManager.findTopHostElementOrThis(element, element.project)
+        val finalElement = ParadoxLanguageInjectionManager.findTopHostElementOrThis(element, element.project)
         val context = finalElement.containingFile?.castOrNull<ParadoxScriptFile>()
         return context?.takeIf { isContext(it) }
     }

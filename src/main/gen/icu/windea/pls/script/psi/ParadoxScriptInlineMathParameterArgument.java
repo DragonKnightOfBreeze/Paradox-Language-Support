@@ -11,6 +11,8 @@ public interface ParadoxScriptInlineMathParameterArgument extends ParadoxScriptA
 
   @Nullable PsiElement getIdElement();
 
+  @Nullable String getValue();
+
   @NotNull ParadoxScriptElementPresentation getPresentation();
 
   @NotNull GlobalSearchScope getResolveScope();

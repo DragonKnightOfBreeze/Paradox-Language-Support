@@ -610,7 +610,7 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun getDefaultValue(element: ParadoxScriptNormalParameter): String? {
         // 兼容默认值为空字符串的情况
-        return element.argumentElement?.idElement?.text
+        return element.argumentElement?.value
     }
 
     @JvmStatic
@@ -626,6 +626,11 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun getIdElement(element: ParadoxScriptNormalParameterArgument): PsiElement? {
         return element.firstChild?.takeIf { it.elementType == ARGUMENT_TOKEN }
+    }
+
+    @JvmStatic
+    fun getValue(element: ParadoxScriptNormalParameterArgument): String? {
+        return element.idElement?.text
     }
 
     // endregion
@@ -668,7 +673,7 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun getDefaultValue(element: ParadoxScriptInlineMathParameter): String? {
         // 兼容默认值为空字符串的情况
-        return element.argumentElement?.idElement?.text
+        return element.argumentElement?.value
     }
 
     @JvmStatic
@@ -684,6 +689,11 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun getIdElement(element: ParadoxScriptInlineMathParameterArgument): PsiElement? {
         return element.firstChild?.takeIf { it.elementType == ARGUMENT_TOKEN }
+    }
+
+    @JvmStatic
+    fun getValue(element: ParadoxScriptInlineMathParameterArgument): String? {
+        return element.idElement?.text
     }
 
     // endregion

@@ -7,4 +7,6 @@ import com.intellij.psi.NavigatablePsiElement
  *
  * @see ParadoxScriptNormalParameterArgument
  */
-interface ParadoxScriptArgument : NavigatablePsiElement
+interface ParadoxScriptArgument : NavigatablePsiElement {
+    val value: String?
+}

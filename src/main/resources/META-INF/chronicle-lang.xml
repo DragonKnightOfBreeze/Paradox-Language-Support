@@ -435,7 +435,7 @@
     <!-- icu.windea.pls.lang.references.csv.ParadoxCsvExpressionPsiReferenceProvider -->
     <pathReferenceProvider implementation="icu.windea.pls.lang.references.paths.ParadoxPathReferenceProvider" order="first"/>
 
-    <multiHostInjector implementation="icu.windea.pls.lang.injection.ParadoxScriptLanguageInjector"/>
+    <multiHostInjector implementation="icu.windea.pls.lang.injection.ParadoxLanguageInjector"/>
 
     <psi.treeChangePreprocessor implementation="icu.windea.pls.lang.psi.ParadoxPsiTreeChangePreprocessor"/>
   </extensions>

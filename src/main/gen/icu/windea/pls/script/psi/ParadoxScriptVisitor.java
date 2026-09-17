@@ -1,9 +1,18 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.script.psi;
 
-import com.intellij.psi.PsiElement;
+import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElementVisitor;
-import org.jetbrains.annotations.NotNull;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiListLikeElement;
+import icu.windea.pls.lang.psi.ParadoxLanguageInjectionHost;
+import icu.windea.pls.core.psi.PsiQuoteAwareElement;
+import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference;
+import icu.windea.pls.core.psi.PsiPresentableTextAwareElement;
+import com.intellij.psi.NavigatablePsiElement;
+import icu.windea.pls.lang.psi.ParadoxDefinitionElement;
+import icu.windea.pls.core.psi.PsiBoundElement;
+import icu.windea.pls.core.psi.PsiRootBlock;
 
 public class ParadoxScriptVisitor extends PsiElementVisitor {
 
@@ -112,11 +121,11 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
   public void visitNormalParameter(@NotNull ParadoxScriptNormalParameter o) {
     visitParameter(o);
     // visitArgumentAwareElement(o);
-    // visitParadoxLanguageInjectionHost(o);
   }
 
   public void visitNormalParameterArgument(@NotNull ParadoxScriptNormalParameterArgument o) {
     visitArgument(o);
+    // visitParadoxLanguageInjectionHost(o);
   }
 
   public void visitProperty(@NotNull ParadoxScriptProperty o) {
@@ -131,7 +140,6 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
     visitStringExpressionElement(o);
     // visitLiteralValue(o);
     // visitInterpolationContainer(o);
-    // visitParadoxLanguageInjectionHost(o);
     // visitPsiQuoteAwareElement(o);
     // visitPsiPresentableTextAwareElement(o);
     // visitNavigatablePsiElement(o);

@@ -16,7 +16,7 @@ import icu.windea.pls.lang.defineVariableInfo
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.definitionInjectionInfo
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.injection.ParadoxScriptInjectionManager
+import icu.windea.pls.lang.injection.ParadoxLanguageInjectionManager
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.toHashString
 import icu.windea.pls.lang.resolve.CwtConfigContext
@@ -191,7 +191,7 @@ class CwtParameterValueConfigContextProvider : CwtConfigContextProvider {
     // 兼容通过编辑代码碎片的意图操作打开的 `LightVirtualFile`
 
     override fun getContext(configGroup: CwtConfigGroup, element: ParadoxScriptMember, file: PsiFile, memberRole: ParadoxMemberRole, memberPathFromFile: ParadoxMemberPath): CwtConfigContext? {
-        val injectionInfo = ParadoxScriptInjectionManager.getParameterValueInjectionInfoFromInjectedFile(file) ?: return null
+        val injectionInfo = ParadoxLanguageInjectionManager.getParameterValueInjectionInfoFromInjectedFile(file) ?: return null
         val parameterElement = injectionInfo.parameterElement ?: return null
         val context = CwtConfigContext.createFromFile(configGroup, memberRole, memberPathFromFile, this)
         context.element = element // necessary

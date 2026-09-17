@@ -83,7 +83,6 @@ property_key ::= property_key_content {
     "icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement"
     "icu.windea.pls.script.psi.ParadoxScriptLiteralValue"
     "icu.windea.pls.script.psi.ParadoxScriptInterpolationContainer"
-    "icu.windea.pls.lang.psi.ParadoxLanguageInjectionHost" // injectable
     "icu.windea.pls.core.psi.PsiQuoteAwareElement"
     "icu.windea.pls.core.psi.PsiPresentableTextAwareElement"
     "com.intellij.psi.NavigatablePsiElement"
@@ -317,7 +316,6 @@ normal_parameter ::= PARAMETER_START normal_parameter_name normal_parameter_argu
   implements=[
     "icu.windea.pls.script.psi.ParadoxScriptParameter"
     "icu.windea.pls.script.psi.ParadoxScriptArgumentAwareElement"
-    "icu.windea.pls.lang.psi.ParadoxLanguageInjectionHost" // injectable
   ]
   methods=[
     getIdElement getArgumentElement normal_parameter_argument=""
@@ -331,9 +329,10 @@ normal_parameter_argument ::= ARGUMENT_TOKEN {
   name="parameter argument"
   implements=[
     "icu.windea.pls.script.psi.ParadoxScriptArgument"
+    "icu.windea.pls.lang.psi.ParadoxLanguageInjectionHost" // injectable
   ]
   methods=[
-    getIdElement
+    getIdElement getValue
     getPresentation
   ]
 }
@@ -527,7 +526,7 @@ inline_math_parameter_argument ::= ARGUMENT_TOKEN {
     "icu.windea.pls.script.psi.ParadoxScriptArgument"
   ]
   methods=[
-    getIdElement
+    getIdElement getValue
     getPresentation
   ]
 }

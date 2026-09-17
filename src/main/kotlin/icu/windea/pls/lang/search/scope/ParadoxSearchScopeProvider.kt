@@ -9,7 +9,7 @@ import com.intellij.psi.search.SearchScopeProvider
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.base.settings.ChronicleProfilesSettings
 import icu.windea.pls.core.toVirtualFile
-import icu.windea.pls.lang.injection.ChronicleInjectionManager
+import icu.windea.pls.lang.injection.ParadoxLanguageInjectionManager
 import icu.windea.pls.lang.rootInfo
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.model.ParadoxRootInfo
@@ -24,7 +24,7 @@ class ParadoxSearchScopeProvider : SearchScopeProvider {
 
     override fun getSearchScopes(project: Project, dataContext: DataContext): List<SearchScope> {
         val file = dataContext.getData(CommonDataKeys.VIRTUAL_FILE) ?: return emptyList()
-        val contextFile = ChronicleInjectionManager.findTopHostFileOrThis(file)
+        val contextFile = ParadoxLanguageInjectionManager.findTopHostFileOrThis(file)
         val rootFile = selectRootFile(contextFile) ?: return emptyList()
         val rootInfo = rootFile.rootInfo ?: return emptyList()
         val isInProject = ProjectFileIndex.getInstance(project).isInContent(contextFile)

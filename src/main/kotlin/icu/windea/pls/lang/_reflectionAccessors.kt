@@ -21,10 +21,11 @@ val SearchRequestCollector.wordRequests: MutableList<PsiSearchRequest> by member
 // val SearchRequestCollector.queryRequests: MutableList<QuerySearchRequest> by memberProperty<SearchRequestCollector, _>("myQueryRequests")
 
 // com.intellij.psi.impl.source.tree.injected.DocumentWindowImpl.getShreds
-fun DocumentWindow.getShreds(): Place? {
-    val function = memberFunction("getShreds", "com.intellij.psi.impl.source.tree.injected.DocumentWindowImpl")
-    return function.execute(this)
-}
+// com.intellij.lang.injection.InjectedLanguageManager.intersectWithAllEditableFragments
+// fun DocumentWindow.getShreds(): Place? {
+//     val function = memberFunction("getShreds", "com.intellij.psi.impl.source.tree.injected.DocumentWindowImpl")
+//     return function.execute(this)
+// }
 
 // com.intellij.codeInsight.documentation.DocumentationFontSize.getDocumentationFontSize
 fun getDocumentationFontSize(): FontSize {

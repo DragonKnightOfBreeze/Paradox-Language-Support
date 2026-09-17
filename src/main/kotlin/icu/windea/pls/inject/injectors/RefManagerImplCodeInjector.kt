@@ -9,7 +9,7 @@ import icu.windea.pls.inject.CodeInjectorBase
 import icu.windea.pls.inject.annotations.InjectMethod
 import icu.windea.pls.inject.annotations.InjectionTarget
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.injection.ChronicleInjectionManager
+import icu.windea.pls.lang.injection.ParadoxLanguageInjectionManager
 import icu.windea.pls.lang.selectFile
 
 /**
@@ -27,7 +27,7 @@ class RefManagerImplCodeInjector : CodeInjectorBase() {
             if (entity !is RefFile) return@action
             val element = entity.psiElement ?: return@action
             val file = selectFile(element) ?: return@action
-            val contextFile = ChronicleInjectionManager.findTopHostFileOrThis(file)
+            val contextFile = ParadoxLanguageInjectionManager.findTopHostFileOrThis(file)
             val fileInfo = contextFile.fileInfo ?: return@action
             return fileInfo.path.parent.orNull()
         }

@@ -1,22 +1,21 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.script.psi;
 
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.NavigatablePsiElement;
+import java.util.List;
+import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
+import icu.windea.pls.core.psi.PsiQuoteAwareElement;
+import icu.windea.pls.core.psi.PsiPresentableTextAwareElement;
+import com.intellij.psi.NavigatablePsiElement;
+import com.intellij.openapi.util.Iconable.IconFlags;
+import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
-import icu.windea.pls.core.psi.PsiPresentableTextAwareElement;
-import icu.windea.pls.core.psi.PsiQuoteAwareElement;
 import icu.windea.pls.core.text.QuotePattern;
-import icu.windea.pls.lang.psi.ParadoxLanguageInjectionHost;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.swing.Icon;
 
-import javax.swing.*;
-
-public interface ParadoxScriptPropertyKey extends ParadoxScriptStringExpressionElement, ParadoxScriptLiteralValue, ParadoxScriptInterpolationContainer, ParadoxLanguageInjectionHost, PsiQuoteAwareElement, PsiPresentableTextAwareElement, NavigatablePsiElement {
+public interface ParadoxScriptPropertyKey extends ParadoxScriptStringExpressionElement, ParadoxScriptLiteralValue, ParadoxScriptInterpolationContainer, PsiQuoteAwareElement, PsiPresentableTextAwareElement, NavigatablePsiElement {
 
   @Nullable PsiElement getIdElement();
 
