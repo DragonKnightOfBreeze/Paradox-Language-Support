@@ -1,0 +1,2 @@
+alias[trigger:scope_field] = { alias_name[trigger] = alias_match_left[trigger] }
+alias[effect:scope_field] = { alias_name[effect] = alias_match_left[effect] }

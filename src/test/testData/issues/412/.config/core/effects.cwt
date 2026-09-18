@@ -43,19 +43,8 @@ alias[effect:save_global_event_target_as] = value_set[global_event_target]
 
 # extra
 
-## scopes = { fleet }
-alias[effect:set_fleet_flag] = value_set[fleet_flag]
-
-## scopes = { ship }
-alias[effect:set_ship_flag] = value_set[ship_flag]
-
-## scopes = { fleet }
-## severity = warning
-alias[effect:remove_fleet_flag] = value[fleet_flag]
-
-## scopes = { ship }
-## severity = warning
-alias[effect:remove_ship_flag] = value[ship_flag]
+## scopes = any
+alias[effect:has_flag] = value[flag]
 
 ## scopes = any
-alias[effect:pass] = bool
+alias[effect:set_flag] = value_set[flag]

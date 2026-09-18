@@ -41,10 +41,11 @@ inline fun CodeInsightTestFixture.createFile(fileName: String, block: Highlighti
  */
 @HighlightingDsl
 object HighlightingScope {
-    const val errorMarker = CodeInsightTestFixture.ERROR_MARKER
-    const val warningMarker = CodeInsightTestFixture.WARNING_MARKER
-    const val weakWarningMarker = CodeInsightTestFixture.WEAK_WARNING_MARKER
-    const val infoMarker = CodeInsightTestFixture.INFO_MARKER
+    const val errorMarker = "error"
+    const val warningMarker = "warning"
+    const val weakWarningMarker = "weak_warning"
+    const val infoMarker = "info"
+    const val injectMarker = "inject"
 
     fun error(descr: String) = """<$errorMarker descr="${descr.escapeDescr()}">"""
 
@@ -58,6 +59,8 @@ object HighlightingScope {
 
     fun info(textAttributesKey: TextAttributesKey) = """<$infoMarker descr="null" textAttributesKey="${textAttributesKey.externalName}">"""
 
+    fun inject() = """<$injectMarker>"""
+
     fun errorEnd() = "</$errorMarker>"
 
     fun warningEnd() = "</$warningMarker>"
@@ -65,6 +68,8 @@ object HighlightingScope {
     fun weakWarningEnd() = "</$weakWarningMarker>"
 
     fun infoEnd() = "</$infoMarker>"
+
+    fun injectEnd() = "</$injectMarker>"
 }
 
 fun main() {
