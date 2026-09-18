@@ -156,11 +156,6 @@ interface CwtConfigGroupDataModel {
     /** 生成的修正规则的映射。 */
     val generatedModifiers: Map<@CaseInsensitive String, CwtModifierConfig> get() = emptyMap() // 3.0.1 clarify: ignore case (for modifier names)
 
-    /** 常量字符串的别名的组名的映射。 */
-    val aliasKeysGroupConst: Map<@CaseInsensitive String, Map<@CaseInsensitive String, String>> get() = emptyMap()
-    /** 非常量字符串的别名的组名的映射。 */
-    val aliasKeysGroupNoConst: Map<String, Set<String>> get() = emptyMap()
-
     /** 相关本地化的模式，用于从本地化导航到相关定义。 */
     val relatedLocalisationPatterns: Set<Tuple2<String, String>> get() = emptySet()
 

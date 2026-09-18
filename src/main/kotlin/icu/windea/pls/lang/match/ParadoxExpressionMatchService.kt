@@ -163,7 +163,7 @@ object ParadoxExpressionMatchService {
 
         val keys = when {
             expression.isParameterized() -> configGroup.aliasGroups[aliasName]?.keys
-            else -> configGroup.aliasKeysGroupNoConst[aliasName]
+            else -> configGroup.aliasModel.name2NonConstKeys[aliasName]
         }
         if (keys.isNullOrEmpty()) return null
 
@@ -183,7 +183,7 @@ object ParadoxExpressionMatchService {
 
         val keys = when {
             expression.isParameterized() -> configGroup.aliasGroups[aliasName]?.keys
-            else -> configGroup.aliasKeysGroupNoConst[aliasName]
+            else -> configGroup.aliasModel.name2NonConstKeys[aliasName]
         }
         if (keys.isNullOrEmpty()) return emptyList()
 

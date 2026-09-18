@@ -125,8 +125,6 @@ class CwtConfigGroupBase(
     override val supportedLocales get() = dataModel.supportedLocales
     override val predefinedModifiers get() = dataModel.predefinedModifiers
     override val generatedModifiers get() = dataModel.generatedModifiers
-    override val aliasKeysGroupConst get() = dataModel.aliasKeysGroupConst
-    override val aliasKeysGroupNoConst get() = dataModel.aliasKeysGroupNoConst
     override val relatedLocalisationPatterns get() = dataModel.relatedLocalisationPatterns
     override val typeModel get() = dataModel.typeModel
     override val scopeModel get() = dataModel.scopeModel

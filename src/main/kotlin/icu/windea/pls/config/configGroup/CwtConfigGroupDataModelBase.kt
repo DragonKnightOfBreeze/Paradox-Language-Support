@@ -94,8 +94,6 @@ open class CwtConfigGroupDataModelBase : CwtConfigGroupDataModel {
     final override val supportedLocales: ObjectArrayList<CwtLocaleConfig> = ObjectArrayList()
     final override val predefinedModifiers: Object2ObjectLinkedOpenCustomHashMap<@CaseInsensitive String, CwtModifierConfig> = CaseInsensitiveStringKeyMap()
     final override val generatedModifiers: Object2ObjectLinkedOpenCustomHashMap<@CaseInsensitive String, CwtModifierConfig> = CaseInsensitiveStringKeyMap()
-    final override val aliasKeysGroupConst: Object2ObjectLinkedOpenCustomHashMap<@CaseInsensitive String, Object2ObjectLinkedOpenCustomHashMap<@CaseInsensitive String, String>> = CaseInsensitiveStringKeyMap()
-    final override val aliasKeysGroupNoConst: Object2ObjectLinkedOpenHashMap<String, ObjectLinkedOpenHashSet<String>> = Object2ObjectLinkedOpenHashMap()
     final override val relatedLocalisationPatterns: ObjectLinkedOpenHashSet<Tuple2<String, String>> = ObjectLinkedOpenHashSet()
     final override val typeModel: CwtTypeModelBase = CwtTypeModelBase()
     final override val scopeModel: CwtScopeModelBase = CwtScopeModelBase()
@@ -185,9 +183,6 @@ open class CwtConfigGroupDataModelBase : CwtConfigGroupDataModel {
         supportedLocales.trim()
         predefinedModifiers.trim()
         generatedModifiers.trim()
-        aliasKeysGroupConst.trim()
-        aliasKeysGroupConst.values.forEach { it.trim() }
-        aliasKeysGroupNoConst.trim()
         relatedLocalisationPatterns.trim()
         typeModel.trim()
         scopeModel.trim()

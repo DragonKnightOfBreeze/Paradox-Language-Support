@@ -80,7 +80,7 @@ object ParadoxConfigManager {
      * 得到 [element] 对应的脚本成员（[ParadoxScriptMember]）的一组作为上下文的成员规则。
      *
      * 说明：
-     * - 仅在需要进一步匹配时，才会内联别名规则（[CwtAliasConfig]）。
+     * - 仅在需要进一步匹配时，才会内联（并匹配）别名规则（[CwtAliasConfig]）。
      * - 总是会内联单别名规则（[CwtSingleAliasConfig]）。
      * - 如果当前位置不存在规则上下文，则返回空列表。
      */
@@ -95,7 +95,7 @@ object ParadoxConfigManager {
      * 得到 [element] 对应的脚本成员（[ParadoxScriptMember]）的一组匹配的成员规则。
      *
      * 说明：
-     * - 仅在需要进一步匹配时，才会内联别名规则（[CwtAliasConfig]）。
+     * - 仅在需要进一步匹配时，才会内联（并匹配）别名规则（[CwtAliasConfig]）。
      * - 总是会内联单别名规则（[CwtSingleAliasConfig]）。
      */
     fun getConfigs(element: PsiElement, options: ParadoxMatchOptions? = null): List<CwtMemberConfig<*>> {
