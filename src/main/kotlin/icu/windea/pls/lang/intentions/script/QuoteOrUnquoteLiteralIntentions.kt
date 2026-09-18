@@ -6,14 +6,18 @@ import com.intellij.modcommand.ActionContext
 import com.intellij.modcommand.ModPsiUpdater
 import com.intellij.modcommand.PsiUpdateModCommandAction
 import com.intellij.openapi.project.DumbAware
+import com.intellij.openapi.vfs.originalFileOrSelf
 import com.intellij.psi.ElementManipulators
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
 import icu.windea.pls.core.canQuote
 import icu.windea.pls.core.canUnquote
 import icu.windea.pls.core.psi.PsiQuoteAwareElement
 import icu.windea.pls.core.quote
 import icu.windea.pls.core.text.QuotePatterns
+import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.unquote
+import icu.windea.pls.lang.injection.ParadoxLanguageInjectionManager
 import icu.windea.pls.lang.intentions.ChronicleIntentionBundle
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptNumberExpressionElement
@@ -39,6 +43,13 @@ class QuoteLiteralIntention : PsiUpdateModCommandAction<ParadoxScriptExpressionE
     override fun stopSearchAt(element: PsiElement, context: ActionContext): Boolean {
         return element is ParadoxScriptExpressionElement
     }
+
+    override fun isFileAllowed(file: PsiFile): Boolean {
+        // 3.0.3 not allowed for injected context (compatible with `LightVirtualFileBase`)
+        val fileToCheck = file.virtualFile.originalFileOrSelf().toPsiFile(file.project) ?: file
+        if (ParadoxLanguageInjectionManager.isInjectedFileFromScriptFile(fileToCheck)) return false
+        return true
+    }
 }
 
 class UnquoteLiteralIntention : PsiUpdateModCommandAction<ParadoxScriptExpressionElement>(ParadoxScriptExpressionElement::class.java), DumbAware {
@@ -58,5 +69,12 @@ class UnquoteLiteralIntention : PsiUpdateModCommandAction<ParadoxScriptExpressio
 
     override fun stopSearchAt(element: PsiElement, context: ActionContext): Boolean {
         return element is ParadoxScriptExpressionElement
+    }
+
+    override fun isFileAllowed(file: PsiFile): Boolean {
+        // 3.0.3 not allowed for injected context (compatible with `LightVirtualFileBase`)
+        val fileToCheck = file.virtualFile.originalFileOrSelf().toPsiFile(file.project) ?: file
+        if (ParadoxLanguageInjectionManager.isInjectedFileFromScriptFile(fileToCheck)) return false
+        return true
     }
 }

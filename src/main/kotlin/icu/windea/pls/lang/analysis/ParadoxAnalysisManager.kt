@@ -244,7 +244,7 @@ object ParadoxAnalysisManager : ParadoxAnalysisScope {
         if (from == null) return null
         return when {
             from is VirtualFileWindow -> selectRootFile(from.delegate) // for injected PSI
-            from is LightVirtualFileBase && from.originalFile != null -> selectRootFile(from.originalFile)
+            from is LightVirtualFileBase -> selectRootFile(from.originalFile)
             from is VirtualFile -> getFileInfo(from)?.rootInfo?.rootFile
             else -> selectRootFile(selectFile(from))
         }
@@ -255,7 +255,7 @@ object ParadoxAnalysisManager : ParadoxAnalysisScope {
         // vfs -> psi -> indexInfo
         return when {
             from is VirtualFileWindow -> from.castOrNull() // for injected PSI (result is from, not from.delegate)
-            from is LightVirtualFileBase && from.originalFile != null -> selectFile(from.originalFile)
+            from is LightVirtualFileBase -> selectFile(from.originalFile)
             from is VirtualFile -> from
             from is PsiDirectory -> selectFile(from.virtualFile)
             from is PsiFile -> selectFile(from.originalFile.virtualFile)
@@ -272,7 +272,7 @@ object ParadoxAnalysisManager : ParadoxAnalysisScope {
         // vfs -> psi -> indexInfo -> stub
         return when {
             from is VirtualFileWindow -> selectGameType(from.delegate) // for injected PSI
-            from is LightVirtualFileBase && from.originalFile != null -> selectGameType(from.originalFile)
+            from is LightVirtualFileBase -> selectGameType(from.originalFile)
             from is VirtualFile -> getFileInfo(from)?.rootInfo?.gameType
             from is PsiDirectory -> selectGameType(selectFile(from))
             from is PsiFile -> selectGameType(selectFile(from))

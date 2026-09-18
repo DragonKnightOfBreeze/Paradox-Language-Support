@@ -1,11 +1,10 @@
 package icu.windea.pls.lang.psi
 
-import com.intellij.lang.injection.InjectedLanguageManager
 import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleFacade
-import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.injection.ParadoxLanguageInjectionManager
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
@@ -34,8 +33,7 @@ object ParadoxPsiFileMatchService {
      * 是否是来自脚本文件的注入的文件（如：内联脚本的参数值对应的注入的文件）。
      */
     fun isInjectedFileFromScriptFile(file: PsiFile): Boolean {
-        return VirtualFileService.isInjectedFile(file.virtualFile)
-            && InjectedLanguageManager.getInstance(file.project).getInjectionHost(file) is ParadoxLanguageInjectionHost
+        return ParadoxLanguageInjectionManager.isInjectedFileFromScriptFile(file)
     }
 
     // NOTE 2.2.0 检测逻辑：

@@ -101,7 +101,7 @@ object ParadoxLanguageInjectionService {
         val parameter = host.parent?.castOrNull<ParadoxScriptParameter>() ?: return
         val parameterName = parameter.name?.orNull() ?: return  // 排除参数名不存在或为空的情况
         if (!ParadoxNameValidators.checkParameterName(parameterName)) return  // 参数名必须合法
-        val defaultValue = host.value?.orNull() ?: return  // 排除默认值不存在或为空的情况
+        val defaultValue = host.value.orNull() ?: return  // 排除默认值不存在或为空的情况
         if (!acceptParameterValueInjection(defaultValue)) return
 
         val rangeInsideHost = TextRange.create(0, defaultValue.length)
