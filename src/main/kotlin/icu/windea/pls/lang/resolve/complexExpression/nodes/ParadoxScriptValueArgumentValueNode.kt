@@ -1,12 +1,7 @@
 package icu.windea.pls.lang.resolve.complexExpression.nodes
 
-import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.util.TextRange
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.lang.psi.ParadoxExpressionElement
-import icu.windea.pls.model.type.ParadoxExpressionType
-import icu.windea.pls.model.type.ParadoxTypeResolver
-import icu.windea.pls.script.highlighting.ParadoxScriptHighlighterColors
 
 class ParadoxScriptValueArgumentValueNode(
     override val text: String,
@@ -15,21 +10,22 @@ class ParadoxScriptValueArgumentValueNode(
     val valueNode: ParadoxScriptValueNode?,
     val argumentNode: ParadoxScriptValueArgumentNameNode?
 ) : ParadoxComplexExpressionNodeBase() {
-    override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
-        // 为参数值提供基础代码高亮
-        val type = ParadoxTypeResolver.resolveExpressionType(text)
-        return when {
-            type == ParadoxExpressionType.Boolean -> ParadoxScriptHighlighterColors.KEYWORD
-            type.isLenientFloat() -> ParadoxScriptHighlighterColors.NUMBER
-            text.startsWith('@') -> ParadoxScriptHighlighterColors.SCRIPTED_VARIABLE_REFERENCE
-            else -> ParadoxScriptHighlighterColors.STRING
-        }
-    }
+    // 改为使用语言注入实现相关的高级语言功能
+    // see: icu.windea.pls.lang.injection.ParadoxLanguageInjector
 
-    // 相关高级语言功能（代码高亮、引用解析等）改为使用语言注入实现
-    // see: icu.windea.pls.lang.injection.ParadoxScriptLanguageInjector
+    // region commented out
 
-    // region
+    // override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
+    //     // 为参数值提供基础代码高亮
+    //     val type = ParadoxTypeResolver.resolveExpressionType(text)
+    //     return when {
+    //         type == ParadoxExpressionType.Boolean -> ParadoxScriptHighlighterColors.KEYWORD
+    //         type.isLenientFloat() -> ParadoxScriptHighlighterColors.NUMBER
+    //         text.startsWith('@') -> ParadoxScriptHighlighterColors.SCRIPTED_VARIABLE_REFERENCE
+    //         else -> ParadoxScriptHighlighterColors.STRING
+    //     }
+    // }
+    //
     // override fun getAttributesKeyConfig(element: ParadoxScriptStringExpressionElement): CwtConfig<*>? {
     //    if (!getSettings().inference.parameterConfig) return null
     //    val parameterElement = argumentNode?.getReference(element)?.resolve() ?: return null
@@ -59,6 +55,7 @@ class ParadoxScriptValueArgumentValueNode(
     //        return null
     //    }
     // }
+
     // endregion
 
     companion object {
