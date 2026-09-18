@@ -121,8 +121,8 @@ class CwtDefinitionConfigContextProvider : CwtConfigContextProvider {
     }
 
     override fun skipUnresolvedExpressionCheck(context: CwtConfigContext): Boolean {
-        // skip for root key
-        return context.isDeclarationRoot() && context.memberRole == ParadoxMemberRole.Property
+        // skip for roots (type key)
+        return context.isRoot() && context.memberRole == ParadoxMemberRole.Property
     }
 }
 
@@ -172,8 +172,8 @@ class CwtDefineVariableConfigContextProvider : CwtConfigContextProvider {
     }
 
     override fun skipUnresolvedExpressionCheck(context: CwtConfigContext): Boolean {
-        // skip for root key (define variable name)
-        return context.isDeclarationRoot() && context.memberRole == ParadoxMemberRole.Property
+        // skip for roots (define variable name)
+        return context.isRoot() && context.memberRole == ParadoxMemberRole.Property
     }
 }
 
@@ -225,20 +225,15 @@ class CwtParameterValueConfigContextProvider : CwtConfigContextProvider {
         val rootConfigs = ParadoxParameterManager.getInferredContextConfigs(parameterElement)
         return ParadoxConfigService.getTopConfigsForConfigContext(context, rootConfigs)
     }
-    //
-    // override fun skipUnresolvedExpressionCheck(context: CwtConfigContext): Boolean {
-    //     // skip for declaration roots (since inferred configs may be empty)
-    //     return context.isDeclarationRoot()
-    // }
 
     override fun skipMissingExpressionCheck(context: CwtConfigContext): Boolean {
-        // skip for declaration roots
-        return context.isDeclarationRoot()
+        // skip for roots
+        return context.isRoot()
     }
 
     override fun skipTooManyExpressionCheck(context: CwtConfigContext): Boolean {
-        // skip for declaration roots
-        return context.isDeclarationRoot()
+        // skip for roots
+        return context.isRoot()
     }
 }
 
@@ -285,8 +280,8 @@ class CwtInlineScriptUsageConfigContextProvider : CwtConfigContextProvider {
     }
 
     override fun skipUnresolvedExpressionCheck(context: CwtConfigContext): Boolean {
-        // skip for root key
-        return context.isDeclarationRoot() && context.memberRole == ParadoxMemberRole.Property
+        // skip for roots (`inline_script`)
+        return context.isRoot() && context.memberRole == ParadoxMemberRole.Property
     }
 }
 
@@ -340,19 +335,14 @@ class CwtInlineScriptFileConfigContextProvider : CwtConfigContextProvider {
         return ParadoxConfigService.getTopConfigsForConfigContext(context, rootConfigs)
     }
 
-    // override fun skipUnresolvedExpressionCheck(context: CwtConfigContext): Boolean {
-    //     // skip for declaration roots (since inferred configs may be empty)
-    //     return context.isDeclarationRoot()
-    // }
-
     override fun skipMissingExpressionCheck(context: CwtConfigContext): Boolean {
-        // skip for declaration roots
-        return context.isDeclarationRoot()
+        // skip for roots
+        return context.isRoot()
     }
 
     override fun skipTooManyExpressionCheck(context: CwtConfigContext): Boolean {
-        // skip for declaration roots
-        return context.isDeclarationRoot()
+        // skip for roots
+        return context.isRoot()
     }
 }
 
@@ -409,17 +399,17 @@ class CwtDefinitionInjectionConfigContextProvider : CwtConfigContextProvider {
     }
 
     override fun skipUnresolvedExpressionCheck(context: CwtConfigContext): Boolean {
-        // skip for root key (definition injection expression)
-        return context.isDeclarationRoot() && context.memberRole == ParadoxMemberRole.Property
+        // skip for roots (definition injection expression)
+        return context.isRoot() && context.memberRole == ParadoxMemberRole.Property
     }
 
     override fun skipMissingExpressionCheck(context: CwtConfigContext): Boolean {
-        // skip for declaration roots
-        return context.isDeclarationRoot()
+        // skip for roots
+        return context.isRoot()
     }
 
     override fun skipTooManyExpressionCheck(context: CwtConfigContext): Boolean {
-        // skip for declaration roots
-        return context.isDeclarationRoot()
+        // skip for roots
+        return context.isRoot()
     }
 }
