@@ -17,6 +17,7 @@ import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.setValue
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
+import icu.windea.pls.csv.psi.ParadoxCsvPsiService
 import icu.windea.pls.csv.text.ParadoxCsv
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.manipulation.ParadoxScriptFileManipulationService
@@ -136,15 +137,20 @@ fun ParadoxScriptExpressionElement.formattedValue(resolve: Boolean = true, detai
     if (element == null) return null
     return when (element) {
         is ParadoxScriptInlineMath -> if (detail) element.text else element.value
-        is ParadoxScriptStringExpressionElement -> element.value.quoteIfNeeded(QuotePatterns.ParadoxScript)
+        is ParadoxScriptStringExpressionElement -> {
+            element.value.quoteIfNeeded(QuotePatterns.ParadoxScript)
+        }
         else -> element.value
     }
 }
 
 fun ParadoxCsvExpressionElement.formattedValue(): String {
     val element = this
-    return when(element) {
-        is ParadoxCsvColumn -> element.value.quoteIfNeeded(QuotePatterns.ParadoxCsv)
+    return when (element) {
+        is ParadoxCsvColumn -> {
+            if (ParadoxCsvPsiService.isEmptyColumn(element)) return "" // special handle empty columns
+            element.value.quoteIfNeeded(QuotePatterns.ParadoxCsv)
+        }
         else -> element.value
     }
 }
