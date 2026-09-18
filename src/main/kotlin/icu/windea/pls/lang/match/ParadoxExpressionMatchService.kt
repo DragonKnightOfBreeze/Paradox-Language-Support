@@ -156,10 +156,11 @@ object ParadoxExpressionMatchService {
 
     fun getMatchedAliasKey(element: PsiElement, expression: ParadoxExpression, aliasName: String, configGroup: CwtConfigGroup, options: ParadoxMatchOptions? = null): String? {
         // NOTE 3.0.3 fast return if the alias key can be matched constantly (case-insensitive), otherwise, try further match
+        // NOTE 3.0.3 should also include non-const keys if the expression is parameterized
+
         val constKey = configGroup.aliasModel.name2ConstKeys[aliasName]?.get(expression.value)
         if (constKey != null) return constKey
 
-        // NOTE 3.0.3 should also include non-const keys if the expression is parameterized
         val keys = when {
             expression.isParameterized() -> configGroup.aliasGroups[aliasName]?.keys
             else -> configGroup.aliasKeysGroupNoConst[aliasName]
@@ -169,6 +170,26 @@ object ParadoxExpressionMatchService {
         ProgressManager.checkCanceled() // check cancellation
         val matchContext = ParadoxExpressionMatchContext(element, expression, configGroup, options)
         return keys.find { key ->
+            matchScriptExpression(matchContext, CwtDataExpression.resolve(key), null).get(options)
+        }
+    }
+
+    fun getMatchedAliasKeys(element: PsiElement, expression: ParadoxExpression, aliasName: String, configGroup: CwtConfigGroup, options: ParadoxMatchOptions? = null): List<String> {
+        // NOTE 3.0.3 fast return if the alias key can be matched constantly (case-insensitive), otherwise, try further match
+        // NOTE 3.0.3 should also include non-const keys if the expression is parameterized
+
+        val constKey = configGroup.aliasModel.name2ConstKeys[aliasName]?.get(expression.value)
+        if (constKey != null) return listOf(constKey)
+
+        val keys = when {
+            expression.isParameterized() -> configGroup.aliasGroups[aliasName]?.keys
+            else -> configGroup.aliasKeysGroupNoConst[aliasName]
+        }
+        if (keys.isNullOrEmpty()) return emptyList()
+
+        ProgressManager.checkCanceled() // check cancellation
+        val matchContext = ParadoxExpressionMatchContext(element, expression, configGroup, options)
+        return keys.filter { key ->
             matchScriptExpression(matchContext, CwtDataExpression.resolve(key), null).get(options)
         }
     }

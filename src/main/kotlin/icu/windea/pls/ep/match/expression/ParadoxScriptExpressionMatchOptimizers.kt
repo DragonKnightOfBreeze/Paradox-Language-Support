@@ -56,7 +56,7 @@ class ParadoxScriptExpressionParameterizedMatchOptimizer : ParadoxScriptExpressi
         if (inferredConfigs.isEmpty()) return null
         var result: MutableList<T>? = null
         input.forEachFast { config ->
-            if (CwtConfigManipulationService.mergeAndMatchValueConfigs(inferredConfigs, config.configExpression)) {
+            if (CwtConfigManipulationService.mergeAndMatchValueConfigs(inferredConfigs, config.configExpression, context.configGroup)) {
                 val result = result ?: mutableListOf<T>().also { result = it }
                 result += config
             }

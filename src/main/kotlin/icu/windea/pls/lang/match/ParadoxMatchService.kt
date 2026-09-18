@@ -1,9 +1,7 @@
 package icu.windea.pls.lang.match
 
-import com.intellij.psi.PsiElement
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.core.annotations.Optimized
-import icu.windea.pls.model.expressions.ParadoxExpression
 
 @Optimized
 object ParadoxMatchService {
@@ -46,27 +44,27 @@ object ParadoxMatchService {
 
     // endregion
 
+    // region Pipeline Methods
+
     /**
-     * 根据来自 [matchResultProvider] 的匹配结果，从输入的一组成员规则 [configs] 收集匹配候选项。
+     * 根据匹配结果，从输入的一组成员规则 [configs] 收集匹配候选项。
      */
-    inline fun <T : CwtMemberConfig<*>> collectCandidates(configs: List<T>, matchResultProvider: (T) -> ParadoxMatchResult): List<ParadoxMatchCandidate> {
-        return ParadoxMatchCandidateService.collect(configs, matchResultProvider)
+    fun collectCandidates(context: ParadoxExpressionMatchContext, configs: List<CwtMemberConfig<*>>, forValue: Boolean = false): List<ParadoxMatchCandidate> {
+        return ParadoxMatchCandidateService.collect(context, configs, forValue)
     }
 
     /**
      * 处理输入的一组匹配候选项 [candidates]，进行进一步的匹配。
      */
-    fun processCandidates(candidates: List<ParadoxMatchCandidate>, options: ParadoxMatchOptions? = null): List<ParadoxMatchCandidate> {
-        return ParadoxMatchCandidateService.process(candidates, options)
+    fun processCandidates(context: ParadoxExpressionMatchContext, candidates: List<ParadoxMatchCandidate>): List<ParadoxMatchCandidate> {
+        return ParadoxMatchCandidateService.process(context, candidates)
     }
 
     /**
      * 处理输入的一组待进一步匹配的规则 [configs]，进行后续优化。
      */
-    fun <T : CwtMemberConfig<*>> optimize(configs: List<T>, element: PsiElement, expression: ParadoxExpression, options: ParadoxMatchOptions? = null): List<T> {
+    fun <T : CwtMemberConfig<*>> optimize(context: ParadoxExpressionMatchContext, configs: List<T>): List<T> {
         if (configs.isEmpty()) return emptyList()
-        val configGroup = configs.first().configGroup
-        val context = ParadoxExpressionMatchContext(element, expression, configGroup, options)
         return ParadoxExpressionMatchService.optimizeScriptExpression(context, configs)
     }
 

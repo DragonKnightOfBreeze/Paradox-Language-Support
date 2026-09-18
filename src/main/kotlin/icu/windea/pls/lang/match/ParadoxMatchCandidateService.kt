@@ -2,31 +2,59 @@ package icu.windea.pls.lang.match
 
 import com.intellij.util.SmartList
 import icu.windea.pls.config.config.CwtMemberConfig
+import icu.windea.pls.config.config.CwtPropertyConfig
+import icu.windea.pls.config.manipulation.CwtConfigManipulationService
+import icu.windea.pls.config.match.CwtConfigMatchService
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.forEachFast
+import icu.windea.pls.core.orNull
 
 @Optimized
 object ParadoxMatchCandidateService {
-    inline fun <T : CwtMemberConfig<*>> collect(configs: List<T>, matchResultProvider: (T) -> ParadoxMatchResult): List<ParadoxMatchCandidate> {
+    fun collect(context: ParadoxExpressionMatchContext, configs: List<CwtMemberConfig<*>>, forValue: Boolean): List<ParadoxMatchCandidate> {
         if (configs.isEmpty()) return emptyList()
         val result = SmartList<ParadoxMatchCandidate>() // 3.0.1 optimize: use `SmartList` (0 or 1 elements in most situations)
-        configs.forEachFast f@{ config ->
-            val matchResult = matchResultProvider(config)
-            if (matchResult === ParadoxMatchResult.NotMatch) return@f
-            val matchCandidate = ParadoxMatchCandidate(config, matchResult)
-            result += matchCandidate
+        configs.forEachFast { config ->
+            collectInternal(context, forValue, result, config)
         }
         return result
     }
 
-    fun process(candidates: List<ParadoxMatchCandidate>, options: ParadoxMatchOptions?): List<ParadoxMatchCandidate> {
+    private fun collectInternal(context: ParadoxExpressionMatchContext, forValue: Boolean, collected: MutableList<ParadoxMatchCandidate>, config: CwtMemberConfig<*>) {
+        if (CwtConfigMatchService.isAliasEntry(config)) {
+            // NOTE 3.0.3 inline alias entry before further match
+            collectFromAliasEntry(context, forValue, collected, config)
+            return
+        }
+        collectMatched(context, forValue, collected, config)
+    }
+
+    private fun collectFromAliasEntry(context: ParadoxExpressionMatchContext, forValue: Boolean, collected: MutableList<ParadoxMatchCandidate>, config: CwtMemberConfig<*>) {
+        if (config !is CwtPropertyConfig) return
+        val configGroup = context.configGroup
+        val aliasName = config.configExpression.metadata.value?.orNull() ?: return
+        val aliasKeys = ParadoxExpressionMatchService.getMatchedAliasKeys(context.element, context.expression, aliasName, configGroup, context.options)
+        if (aliasKeys.isEmpty()) return
+        val inlined = CwtConfigManipulationService.inlineAlias(config, aliasKeys) ?: return
+        inlined.forEachFast { collectMatched(context, forValue, collected, it) }
+    }
+
+    private fun collectMatched(context: ParadoxExpressionMatchContext, forValue: Boolean, collected: MutableList<ParadoxMatchCandidate>, config: CwtMemberConfig<*>) {
+        val configExpression = if (forValue) config.valueExpression else config.configExpression
+        val matchResult = ParadoxExpressionMatchService.matchScriptExpression(context, configExpression, config)
+        if (matchResult === ParadoxMatchResult.NotMatch) return
+        val candidate = ParadoxMatchCandidate(config, matchResult)
+        collected += candidate
+    }
+
+    fun process(context: ParadoxExpressionMatchContext, candidates: List<ParadoxMatchCandidate>): List<ParadoxMatchCandidate> {
         if (candidates.isEmpty()) return emptyList()
         val result = SmartList<ParadoxMatchCandidate>() // 3.0.1 optimize: use `SmartList` (0 or 1 elements in most situations)
-        processInternal(candidates, result, options)
+        processInternal(context, candidates, result)
         return result
     }
 
-    private fun processInternal(candidates: List<ParadoxMatchCandidate>, matched: MutableList<ParadoxMatchCandidate>, options: ParadoxMatchOptions?) {
+    private fun processInternal(context: ParadoxExpressionMatchContext, candidates: List<ParadoxMatchCandidate>, matched: MutableList<ParadoxMatchCandidate>) {
         // 步骤：
         // - 处理精确匹配（`ExactMatch` `LenientExactMatch`），如果有结果，则仅使用这些结果，并直接返回
         // - 处理需要检测子句内容的匹配（`LazyBlockAwareMatch`），如果存在匹配项，则保留所有匹配项或者第一个候选项
@@ -41,33 +69,33 @@ object ParadoxMatchCandidateService {
         processUnchecked(candidates, matched) { it.result is ParadoxMatchResult.ExactMatch || it.result is ParadoxMatchResult.LenientExactMatch }
         if (matched.isNotEmpty()) return
 
-        processMain(candidates, matched, options)
+        processMain(context, candidates, matched)
         processUnchecked(candidates, matched) { it.result is ParadoxMatchResult.ParameterizedMatch }
     }
 
-    private fun processMain(candidates: List<ParadoxMatchCandidate>, matched: MutableList<ParadoxMatchCandidate>, options: ParadoxMatchOptions?) {
-        processLenientChecked(candidates, matched, options) { it.result is ParadoxMatchResult.LazyBlockAwareMatch }
-        processLenientChecked(candidates, matched, options) { it.result is ParadoxMatchResult.LazyScopeAwareMatch }
+    private fun processMain(context: ParadoxExpressionMatchContext, candidates: List<ParadoxMatchCandidate>, matched: MutableList<ParadoxMatchCandidate>) {
+        processLenientChecked(context, candidates, matched) { it.result is ParadoxMatchResult.LazyBlockAwareMatch }
+        processLenientChecked(context, candidates, matched) { it.result is ParadoxMatchResult.LazyScopeAwareMatch }
 
-        processChecked(candidates, matched, options) { it.result is ParadoxMatchResult.DirectMatch }
-        if (matched.isNotEmpty()) return
-
-        processChecked(candidates, matched, options) { it.result === ParadoxMatchResult.WildcardMatch }
-        if (matched.isNotEmpty()) return
-        processChecked(candidates, matched, options) { it.result === ParadoxMatchResult.LenientWildcardMatch }
-        if (matched.isNotEmpty()) return
-        processChecked(candidates, matched, options) { it.result === ParadoxMatchResult.PartialMatch }
+        processChecked(context, candidates, matched) { it.result is ParadoxMatchResult.DirectMatch }
         if (matched.isNotEmpty()) return
 
-        processChecked(candidates, matched, options) { it.result === ParadoxMatchResult.FallbackMatch }
+        processChecked(context, candidates, matched) { it.result === ParadoxMatchResult.WildcardMatch }
+        if (matched.isNotEmpty()) return
+        processChecked(context, candidates, matched) { it.result === ParadoxMatchResult.LenientWildcardMatch }
+        if (matched.isNotEmpty()) return
+        processChecked(context, candidates, matched) { it.result === ParadoxMatchResult.PartialMatch }
+        if (matched.isNotEmpty()) return
+
+        processChecked(context, candidates, matched) { it.result === ParadoxMatchResult.FallbackMatch }
     }
 
-    private inline fun processChecked(candidates: List<ParadoxMatchCandidate>, matched: MutableList<ParadoxMatchCandidate>, options: ParadoxMatchOptions?, predicate: (ParadoxMatchCandidate) -> Boolean) {
+    private inline fun processChecked(context: ParadoxExpressionMatchContext, candidates: List<ParadoxMatchCandidate>, matched: MutableList<ParadoxMatchCandidate>, predicate: (ParadoxMatchCandidate) -> Boolean) {
         candidates.forEachFast f@{
             if (it.processed) return@f
             if (!predicate(it)) return@f
             it.processed = true
-            if (!it.result.get(options)) return@f
+            if (!it.result.get(context.options)) return@f
             matched += it
         }
     }
@@ -81,7 +109,7 @@ object ParadoxMatchCandidateService {
         }
     }
 
-    private inline fun processLenientChecked(candidates: List<ParadoxMatchCandidate>, matched: MutableList<ParadoxMatchCandidate>, options: ParadoxMatchOptions?, predicate: (ParadoxMatchCandidate) -> Boolean) {
+    private inline fun processLenientChecked(context: ParadoxExpressionMatchContext, candidates: List<ParadoxMatchCandidate>, matched: MutableList<ParadoxMatchCandidate>, predicate: (ParadoxMatchCandidate) -> Boolean) {
         val lazyMatched = SmartList<ParadoxMatchCandidate>() // 3.0.1 optimize: use `SmartList` (0 or 1 elements in most situations)
         processUnchecked(candidates, lazyMatched, predicate)
         val lazyMatchedSize = lazyMatched.size
@@ -90,7 +118,7 @@ object ParadoxMatchCandidateService {
         } else if (lazyMatchedSize > 1) {
             val oldMatchedSize = matched.size
             lazyMatched.forEachFast f@{
-                if (!it.result.get(options)) return@f
+                if (!it.result.get(context.options)) return@f
                 matched += it
             }
             if (oldMatchedSize == matched.size) matched += lazyMatched.first()

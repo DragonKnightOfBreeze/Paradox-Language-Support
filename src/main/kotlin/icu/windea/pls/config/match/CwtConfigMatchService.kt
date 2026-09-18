@@ -6,6 +6,7 @@ import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtFilePathMatchableConfig
 import icu.windea.pls.config.config.CwtIdMatchableConfig
+import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.delegated.CwtComplexEnumConfig
@@ -49,11 +50,12 @@ import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.model.paths.ParadoxPath
 
 object CwtConfigMatchService {
-    fun isAliasEntry(config: CwtPropertyConfig): Boolean {
+    fun isAliasEntry(config: CwtMemberConfig<*>): Boolean {
+        if (config !is CwtPropertyConfig) return false
         return config.keyExpression.type == CwtDataTypes.AliasName && config.valueExpression.type == CwtDataTypes.AliasMatchLeft
     }
 
-    fun isSingleAliasEntry(config: CwtPropertyConfig): Boolean {
+    fun isSingleAliasEntry(config: CwtMemberConfig<*>): Boolean {
         return config.valueExpression.type == CwtDataTypes.SingleAliasRight
     }
 

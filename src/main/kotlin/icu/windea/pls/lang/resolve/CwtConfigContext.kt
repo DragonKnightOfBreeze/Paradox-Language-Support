@@ -13,6 +13,8 @@ import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.paths.ParadoxMemberPath
 import icu.windea.pls.model.type.ParadoxMemberRole
 import icu.windea.pls.script.psi.ParadoxScriptMember
+import icu.windea.pls.config.config.delegated.CwtAliasConfig
+import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 
 /**
  * 规则上下文。
@@ -20,8 +22,9 @@ import icu.windea.pls.script.psi.ParadoxScriptMember
  * 用于后续获取对应的上下文规则以及匹配的规则，从而提供各种高级语言功能。
  *
  * 备注：
- * - 上下文规则可视为当前位置适用的所有规则，基本上等同于进行代码补全时可用的所有规则（但存在一些细节上的区别）。
- * - 得到的上下文规则是经过处理后的规则，例如展开别名（不会展开别名键引用和并集值引用）。
+ * - 对于上下文规则，可以视为当前位置适用的所有规则，基本上等同于进行代码补全时可用的所有规则（但存在一些细节上的区别）。
+ * - 对于上下文规则，仅在需要进一步匹配时，才会内联别名规则（[CwtAliasConfig]）。
+ * - 对于上下文规则，总是会内联单别名规则（[CwtSingleAliasConfig]）。
  * - 规则上下文不一定存在对应的上下文规则。
  * - 如果一个规则上下文开始存在对应的上下文规则，并且需要在子上下文中展开，则视作根上下文。
  *

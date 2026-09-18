@@ -47,25 +47,25 @@ object CwtConfigExpressionService {
         return true
     }
 
-    fun collectLiterals(configExpression: CwtDataExpression, configGroup: CwtConfigGroup, result: MutableSet<String>) {
-        val dataType = configExpression.type
+    fun collectLiterals(dataExpression: CwtDataExpression, configGroup: CwtConfigGroup, result: MutableSet<String>) {
+        val dataType = dataExpression.type
         when (dataType) {
             CwtDataTypes.Bool -> {
                 result += "yes"
                 result += "no"
             }
             CwtDataTypes.Constant -> {
-                val v = configExpression.expressionString
+                val v = dataExpression.expressionString
                 result += v
             }
             CwtDataTypes.EnumValue -> {
-                val name = configExpression.metadata.value ?: return
+                val name = dataExpression.metadata.value ?: return
                 val nextConfig = configGroup.enums[name] ?: return
                 val values = nextConfig.values
                 result += values
             }
             CwtDataTypes.UnionValue -> {
-                val name = configExpression.metadata.value ?: return
+                val name = dataExpression.metadata.value ?: return
                 val unionConfig = configGroup.unions[name] ?: return
                 // NOTE 3.0.1 recursion guard is required here
                 withRecursionGuard("CwtConfigExpressionService.collectLiterals") {
@@ -79,7 +79,7 @@ object CwtConfigExpressionService {
                 }
             }
             CwtDataTypes.AliasKeysField, CwtDataTypes.AliasName -> {
-                val name = configExpression.metadata.value ?: return
+                val name = dataExpression.metadata.value ?: return
                 val aliasConfigGroup = configGroup.aliasGroups[name] ?: return
                 // NOTE 3.0.1 recursion guard is required here
                 withRecursionGuard("CwtConfigExpressionService.collectLiterals") {
@@ -94,7 +94,7 @@ object CwtConfigExpressionService {
                 }
             }
             CwtDataTypes.SingleAliasRight -> {
-                val name = configExpression.metadata.value ?: return
+                val name = dataExpression.metadata.value ?: return
                 val singleAliasConfig = configGroup.singleAliases[name] ?: return
                 // NOTE 3.0.1 recursion guard is required here
                 withRecursionGuard("CwtConfigExpressionService.collectLiterals") {

@@ -11,7 +11,9 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtMemberType
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
+import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.delegated.CwtRowConfig
+import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.select.selectConfigScope
@@ -75,7 +77,12 @@ object ParadoxConfigManager {
     }
 
     /**
-     * 得到 [element] 对应的脚本成员（[ParadoxScriptMember]）的一组作为上下文的成员规则。如果当前位置不存在规则上下文，则返回空列表。
+     * 得到 [element] 对应的脚本成员（[ParadoxScriptMember]）的一组作为上下文的成员规则。
+     *
+     * 说明：
+     * - 仅在需要进一步匹配时，才会内联别名规则（[CwtAliasConfig]）。
+     * - 总是会内联单别名规则（[CwtSingleAliasConfig]）。
+     * - 如果当前位置不存在规则上下文，则返回空列表。
      */
     fun getContextConfigs(element: PsiElement, options: ParadoxMatchOptions? = null): List<CwtMemberConfig<*>> {
         if (element.language !== ParadoxScriptLanguage) return emptyList()
@@ -86,6 +93,10 @@ object ParadoxConfigManager {
 
     /**
      * 得到 [element] 对应的脚本成员（[ParadoxScriptMember]）的一组匹配的成员规则。
+     *
+     * 说明：
+     * - 仅在需要进一步匹配时，才会内联别名规则（[CwtAliasConfig]）。
+     * - 总是会内联单别名规则（[CwtSingleAliasConfig]）。
      */
     fun getConfigs(element: PsiElement, options: ParadoxMatchOptions? = null): List<CwtMemberConfig<*>> {
         if (element.language !== ParadoxScriptLanguage) return emptyList()

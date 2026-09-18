@@ -223,7 +223,7 @@ object CwtConfigManipulationService {
     fun mergeValueConfig(config: CwtValueConfig, otherConfig: CwtValueConfig): CwtValueConfig? {
         if (config === otherConfig) return config // reference equality
         if (config isSamePointer otherConfig) return config // pointer equality
-        val expressionString = CwtConfigExpressionManipulationService.mergeDataExpression(config.configExpression, otherConfig.configExpression)
+        val expressionString = CwtConfigExpressionManipulationService.mergeDataExpression(config.configExpression, otherConfig.configExpression, config.configGroup)
         if (expressionString == null) return null
         val merged = CwtValueConfig.create(
             pointer = emptyPointer(),
@@ -241,29 +241,32 @@ object CwtConfigManipulationService {
         }
     }
 
-    fun mergeAndMatchValueConfigs(configs: List<CwtValueConfig>, configExpression: CwtDataExpression): Boolean {
+    fun mergeAndMatchValueConfigs(configs: List<CwtValueConfig>, configExpression: CwtDataExpression, configGroup: CwtConfigGroup): Boolean {
         configs.forEachFast f@{ config ->
             val e1 = configExpression // expect
             val e2 = config.configExpression // actual (e.g., from parameterized key)
-            val e3 = CwtConfigExpressionManipulationService.mergeDataExpression(e1, e2) ?: return@f // merged
+            val e3 = CwtConfigExpressionManipulationService.mergeDataExpression(e1, e2, configGroup) ?: return@f // merged
             if (e3 == e2.expressionString) return true
         }
         return false
     }
 
-// endregion
+    // endregion
 
     // region Inline Methods
 
-    fun inlineAlias(config: CwtPropertyConfig): List<CwtMemberConfig<*>>? {
+    fun inlineAlias(config: CwtPropertyConfig, keys: Collection<String>? = null): List<CwtMemberConfig<*>>? {
         val valueExpression = config.valueExpression
         if (valueExpression.type != CwtDataTypes.AliasMatchLeft) return null
         val aliasName = valueExpression.metadata.value ?: return null
         val configGroup = config.configGroup
         val aliasConfigGroup = configGroup.aliasGroups[aliasName] ?: return null
+        val keys = keys ?: aliasConfigGroup.keys
+        if (keys.isEmpty()) return emptyList()
         val result = createListForDeepCopy()
-        aliasConfigGroup.values.forEach { aliasConfigs ->
-            aliasConfigs.forEachFast { aliasConfig ->
+        keys.forEach { key ->
+            val aliasConfigs = aliasConfigGroup[key]
+            aliasConfigs?.forEachFast { aliasConfig ->
                 val inlined = inlineAlias(config, aliasConfig)
                 if (inlined != null) result += inlined
             }
@@ -452,10 +455,7 @@ object CwtConfigManipulationService {
 
     fun expandConfigExpression(configs: Collection<CwtConfig<*>>, processor: (CwtDataExpression) -> Boolean): Boolean {
         if (configs.isEmpty()) return true
-        return when (configs) {
-            is List -> configs.processFast { config -> doExpandConfigExpression(config.configExpression, config.configGroup, processor) }
-            else -> configs.process { config -> doExpandConfigExpression(config.configExpression, config.configGroup, processor) }
-        }
+        return configs.process { config -> doExpandConfigExpression(config.configExpression, config.configGroup, processor) }
     }
 
     fun expandKeyExpression(config: CwtPropertyConfig, processor: (CwtDataExpression) -> Boolean): Boolean {
@@ -464,10 +464,7 @@ object CwtConfigManipulationService {
 
     fun expandKeyExpression(configs: Collection<CwtPropertyConfig>, processor: (CwtDataExpression) -> Boolean): Boolean {
         if (configs.isEmpty()) return true
-        return when (configs) {
-            is List -> configs.processFast { config -> doExpandConfigExpression(config.keyExpression, config.configGroup, processor) }
-            else -> configs.process { config -> doExpandConfigExpression(config.keyExpression, config.configGroup, processor) }
-        }
+        return configs.process { config -> doExpandConfigExpression(config.keyExpression, config.configGroup, processor) }
     }
 
     fun expandValueExpression(config: CwtMemberConfig<*>, processor: (CwtDataExpression) -> Boolean): Boolean {
@@ -476,10 +473,7 @@ object CwtConfigManipulationService {
 
     fun expandValueExpression(configs: Collection<CwtMemberConfig<*>>, processor: (CwtDataExpression) -> Boolean): Boolean {
         if (configs.isEmpty()) return true
-        return when (configs) {
-            is List -> configs.processFast { config -> doExpandConfigExpression(config.valueExpression, config.configGroup, processor) }
-            else -> configs.process { config -> doExpandConfigExpression(config.valueExpression, config.configGroup, processor) }
-        }
+        return configs.process { config -> doExpandConfigExpression(config.valueExpression, config.configGroup, processor) }
     }
 
     private fun doExpandConfigExpression(configExpression: CwtDataExpression?, configGroup: CwtConfigGroup, processor: (CwtDataExpression) -> Boolean): Boolean {

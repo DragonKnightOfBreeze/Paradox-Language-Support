@@ -284,13 +284,11 @@ object ParadoxConfigService {
 
     private fun matchConfigsForConfigContext(element: ParadoxScriptMember, expression: ParadoxExpression, configs: List<CwtMemberConfig<*>>, configGroup: CwtConfigGroup, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>> {
         ProgressManager.checkCanceled()
-        val matchContext = ParadoxExpressionMatchContext(element, expression, configGroup, options)
-        val candidates = ParadoxMatchService.collectCandidates(configs) { config ->
-            ParadoxExpressionMatchService.matchScriptExpression(matchContext, config.configExpression, config)
-        }
-        val processedCandidates = ParadoxMatchService.processCandidates(candidates, options)
+        val context = ParadoxExpressionMatchContext(element, expression, configGroup, options)
+        val candidates = ParadoxMatchService.collectCandidates(context, configs)
+        val processedCandidates = ParadoxMatchService.processCandidates(context, candidates)
         val processed = processedCandidates.mapFast { it.value }
-        val optimized = ParadoxMatchService.optimize(processed, element, expression, options)
+        val optimized = ParadoxMatchService.optimize(context, processed)
         val result = optimized
         return result
     }
@@ -309,7 +307,8 @@ object ParadoxConfigService {
                 if (configs.isNullOrEmpty()) return@f1
 
                 configs.forEachFast { config ->
-                    result.add(config)
+                    val inlined = CwtConfigManipulationService.inlineForConfig(config)
+                    result.add(inlined)
                 }
             }
         } else {
@@ -324,33 +323,12 @@ object ParadoxConfigService {
                 if (configs.isNullOrEmpty()) return@f1
 
                 configs.forEachFast f2@{ config ->
-                    // it is necessary to perform inlining first after flatten
-                    // if the alias config, after inlining, involves a single alias config, it's necessary to continue inlining
-                    if (inlineConfigsForConfigContext(config, result)) return@f2
-
-                    result.add(config)
+                    val inlined = CwtConfigManipulationService.inlineForConfig(config)
+                    result.add(inlined)
                 }
             }
         }
         return result
-    }
-
-    private fun inlineConfigsForConfigContext(config: CwtPropertyConfig, result: MutableList<CwtMemberConfig<*>>): Boolean {
-        val valueExpression = config.valueExpression
-        return when (valueExpression.type) {
-            CwtDataTypes.AliasMatchLeft -> {
-                // NOTE 3.0.3 since it's context configs, not matched configs, we should not match alias key here (although there may be many configs after inlining)
-                val inlinedConfigs = CwtConfigManipulationService.inlineAlias(config)
-                if (inlinedConfigs != null) result.addAll(inlinedConfigs)
-                true
-            }
-            CwtDataTypes.SingleAliasRight -> {
-                val inlinedConfig = CwtConfigManipulationService.inlineSingleAlias(config)
-                if (inlinedConfig != null) result.add(inlinedConfig)
-                true
-            }
-            else -> false
-        }
     }
 
     fun getConfigs(element: ParadoxScriptMember, options: ParadoxMatchOptions? = null): List<CwtMemberConfig<*>> {
@@ -382,54 +360,50 @@ object ParadoxConfigService {
 
                 ProgressManager.checkCanceled()
                 val keyExpression = element.propertyKey.let { ParadoxExpression.resolve(it, options) }
-                val matchContextForKey = ParadoxExpressionMatchContext(element, keyExpression, configGroup, options)
-                val candidatesForKey = ParadoxMatchService.collectCandidates(configs) { config ->
-                    ParadoxExpressionMatchService.matchScriptExpression(matchContextForKey, config.keyExpression, config)
-                }
-                if (candidatesForKey.isEmpty()) {
+                val context = ParadoxExpressionMatchContext(element, keyExpression, configGroup, options)
+                val candidates = ParadoxMatchService.collectCandidates(context, configs)
+                if (candidates.isEmpty()) {
                     // 如果无结果，则直接返回空列表
                     return emptyList()
                 }
-                val processedCandidatesForKey = ParadoxMatchService.processCandidates(candidatesForKey, options)
-                if (processedCandidatesForKey.isEmpty()) {
+                val processedCandidates = ParadoxMatchService.processCandidates(context, candidates)
+                if (processedCandidates.isEmpty()) {
                     // 如果无结果，则需要考虑回退（返回上一步已匹配得到的规则）
-                    if (ParadoxMatchService.lenient(options)) return candidatesForKey.mapFast { it.value }
+                    if (ParadoxMatchService.lenient(options)) return candidates.mapFast { it.value }
                     return emptyList()
                 }
-                val processedForKey = processedCandidatesForKey.mapFast { it.value }
-                val optimizedForKey = ParadoxMatchService.optimize(processedForKey, element, keyExpression, options)
-                if (optimizedForKey.isEmpty()) {
+                val processed = processedCandidates.mapFast { it.value }
+                val optimized = ParadoxMatchService.optimize(context, processed)
+                if (optimized.isEmpty()) {
                     // 如果无结果，则需要考虑回退（返回上一步已匹配得到的规则）
-                    if (ParadoxMatchService.lenient(options) || ParadoxMatchService.forExpression(options)) return processedForKey
+                    if (ParadoxMatchService.lenient(options) || ParadoxMatchService.forExpression(options)) return processed
                     return emptyList()
                 }
-                val resultForKey = optimizedForKey // 这里需要进行后续优化
+                val result = optimized // 这里需要进行后续优化
 
                 ProgressManager.checkCanceled()
                 val valueExpression = element.propertyValue?.let { ParadoxExpression.resolve(it, options) }
                 if (valueExpression == null) {
                     // 如果无法得到值表达式，则直接回退（返回上一步已匹配得到的规则）
-                    return resultForKey
+                    return result
                 }
-                val matchContext = ParadoxExpressionMatchContext(element, valueExpression, configGroup, options)
-                val candidates = ParadoxMatchService.collectCandidates(resultForKey) { config ->
-                    ParadoxExpressionMatchService.matchScriptExpression(matchContext, config.valueExpression, config)
-                }
-                if (candidates.isEmpty()) {
+                val contextForValue = ParadoxExpressionMatchContext(element, valueExpression, configGroup, options)
+                val candidatesForValue = ParadoxMatchService.collectCandidates(contextForValue, result, forValue = true)
+                if (candidatesForValue.isEmpty()) {
                     // 如果无结果，则需要考虑回退（返回上一步已匹配得到的规则）
-                    if (ParadoxMatchService.lenient(options) || ParadoxMatchService.forExpression(options)) return resultForKey
+                    if (ParadoxMatchService.lenient(options) || ParadoxMatchService.forExpression(options)) return result
                     return emptyList()
                 }
-                val processedCandidates = ParadoxMatchService.processCandidates(candidates, options)
-                if (processedCandidates.isEmpty()) {
+                val processedCandidatesForValue = ParadoxMatchService.processCandidates(contextForValue, candidatesForValue)
+                if (processedCandidatesForValue.isEmpty()) {
                     // 如果无结果，则需要考虑回退（返回上一步已匹配得到的规则）
-                    if (ParadoxMatchService.lenient(options) || ParadoxMatchService.forExpression(options)) return candidates.mapFast { it.value }
+                    if (ParadoxMatchService.lenient(options) || ParadoxMatchService.forExpression(options)) return candidatesForValue.mapFast { it.value }
                     return emptyList()
                 }
-                val processed = processedCandidates.mapFast { it.value }
-                val result = processed // 这里不需要也不应进行后续优化
+                val processedForValue = processedCandidatesForValue.mapFast { it.value }
+                val resultForValue = processedForValue // 这里不需要也不应进行后续优化
 
-                return result // 返回最终匹配的规则
+                return resultForValue // 返回最终匹配的规则
             }
             // 匹配值（或者文件）
             else -> {
@@ -446,23 +420,21 @@ object ParadoxConfigService {
                     // 如果无法得到值表达式，则直接回退（返回上一步已匹配得到的规则）
                     return configs
                 }
-                val matchContext = ParadoxExpressionMatchContext(element, valueExpression, configGroup, options)
-                val candidates = ParadoxMatchService.collectCandidates(configs) { config ->
-                    ParadoxExpressionMatchService.matchScriptExpression(matchContext, config.valueExpression, config)
-                }
+                val context = ParadoxExpressionMatchContext(element, valueExpression, configGroup, options)
+                val candidates = ParadoxMatchService.collectCandidates(context, configs)
                 if (candidates.isEmpty()) {
                     // 如果无结果，则需要考虑回退（返回上一步已匹配得到的规则）
                     if (ParadoxMatchService.lenient(options)) return configs
                     return emptyList()
                 }
-                val processedCandidates = ParadoxMatchService.processCandidates(candidates, options)
+                val processedCandidates = ParadoxMatchService.processCandidates(context, candidates)
                 if (processedCandidates.isEmpty()) {
                     // 如果无结果，则需要考虑回退（返回上一步已匹配得到的规则）
                     if (ParadoxMatchService.lenient(options)) return candidates.mapFast { it.value }
                     return emptyList()
                 }
                 val processed = processedCandidates.mapFast { it.value }
-                val optimized = ParadoxMatchService.optimize(processed, element, valueExpression, options)
+                val optimized = ParadoxMatchService.optimize(context, processed)
                 if (optimized.isEmpty()) {
                     // 如果无结果，则需要考虑回退（返回上一步已匹配得到的规则）
                     if (ParadoxMatchService.lenient(options)) return processed
