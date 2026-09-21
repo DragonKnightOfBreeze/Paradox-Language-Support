@@ -32,6 +32,7 @@ import icu.windea.pls.model.type.ParadoxTypeResolver
 import icu.windea.pls.script.psi.ParadoxScriptConditionParameter
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptInlineMathNumber
+import icu.windea.pls.script.psi.ParadoxScriptInterpolation
 import icu.windea.pls.script.psi.ParadoxScriptParameter
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
@@ -58,7 +59,8 @@ object ParadoxTypeService {
     fun findTypedElements(element: PsiElement): List<PsiElement> {
         if (element.language !is ParadoxLanguage) return emptyList()
         val typedElement = element.parents(withSelf = true).find { isTypedElement(it) }
-        return typedElement.to.singletonListOrEmpty()
+        val containerTypedElement = if(typedElement is ParadoxScriptInterpolation) typedElement.parent?.takeIf { isTypedElement(it) } else null
+        return listOfNotNull(typedElement, containerTypedElement)
     }
 
     /**

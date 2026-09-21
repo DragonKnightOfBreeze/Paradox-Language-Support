@@ -24,8 +24,8 @@ object CwtTypeService {
 
     fun findTypedElements(element: PsiElement): List<PsiElement> {
         if (element.language !== CwtLanguage) return emptyList()
-        val typedElement = element.parents(withSelf = true).find { isTypedElement(it) }
-        return typedElement.to.singletonListOrEmpty()
+        val typedElement = element.parents(withSelf = true).find { ParadoxTypeService.isTypedElement(it) }
+        return listOfNotNull(typedElement)
     }
 
     fun findTypeDeclarations(element: PsiElement): List<PsiElement> {
