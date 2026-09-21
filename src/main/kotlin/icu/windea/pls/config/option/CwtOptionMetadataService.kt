@@ -27,6 +27,11 @@ import icu.windea.pls.model.type.CwtSeparatorType
 object CwtOptionMetadataService : CwtConfigResolverScope {
     fun process(optionMetadata: CwtOptionMetadata, optionConfigs: List<CwtOptionMemberConfig<*>>, configGroup: CwtConfigGroup) {
         if (optionMetadata !is CwtOptionMetadataBase) return
+        processMain(optionMetadata, optionConfigs, configGroup)
+        processFinal(optionMetadata)
+    }
+
+    private fun processMain(optionMetadata: CwtOptionMetadataBase, optionConfigs: List<CwtOptionMemberConfig<*>>, configGroup: CwtConfigGroup) {
         if (optionConfigs.isEmpty()) return
         val skipProcessing = CwtConfigThreadContext.skipProcessingOptionMetadata.hasState()
         val keepOptionConfigs = skipProcessing || ChronicleCapacities.keepOptionConfigs()
@@ -39,7 +44,7 @@ object CwtOptionMetadataService : CwtConfigResolverScope {
         optionConfigs.forEachFast { config ->
             when (config) {
                 is CwtOptionConfig -> processOptionConfig(optionMetadata, config, configGroup)
-                is CwtOptionValueConfig -> processOptionValueConfig(optionMetadata, config, configGroup)
+                is CwtOptionValueConfig -> processOptionValueConfig(optionMetadata, config)
             }
         }
     }
@@ -149,40 +154,6 @@ object CwtOptionMetadataService : CwtConfigResolverScope {
                 optionMetadata.inject = v
             }
         }
-
-        // 保存缺省的基数表达式
-        run {
-            if (optionMetadata.cardinality != null || optionMetadata !is CwtMemberConfig<*>) return@run
-            val dataType = optionMetadata.configExpression.type
-            // 如果没有注明且类型是常量或枚举值，则推断为 `1..~1`
-            if (dataType == CwtDataTypes.Constant || dataType == CwtDataTypes.EnumValue) {
-                optionMetadata.cardinality = CwtCardinalityExpression.resolve("1..~1")
-            }
-        }
-
-        // 保存初始的作用域上下文
-        run {
-            val replaceScopes = optionMetadata.replaceScopes
-            val pushScope = optionMetadata.pushScope
-            val scopeContext = replaceScopes?.let { ParadoxScopeContext.resolve(it) }?.resolveNext(pushScope)
-                ?: pushScope?.let { ParadoxScopeContext.resolve(it, it) }
-            if (scopeContext == null) return@run
-            optionMetadata.scopeContext = scopeContext
-        }
-    }
-
-    @Suppress("unused")
-    private fun processOptionValueConfig(optionMetadata: CwtOptionMetadataBase, config: CwtOptionValueConfig, configGroup: CwtConfigGroup) {
-        // NOTE 2.1.1 移除 `optional` 标志：CWTools 指引文档中并未提及，同时也是不必要的（默认即为可选）
-        val flag = config.getOptionValue() ?: return
-        when (flag) {
-            "required" -> optionMetadata.required = true
-            "primary" -> optionMetadata.primary = true
-            "inherit" -> optionMetadata.primary = true
-            "tag" -> optionMetadata.tag = true
-            "case_insensitive" -> optionMetadata.caseInsensitive = true
-            "per_definition" -> optionMetadata.perDefinition = true
-        }
     }
 
     private fun resolvePredicate(config: CwtOptionConfig): Map<String, ReversibleValue<String>>? {
@@ -229,5 +200,43 @@ object CwtOptionMetadataService : CwtConfigResolverScope {
         val operator = config.separatorType == CwtSeparatorType.Equal
         val r = ReversibleValue(value.optimized(), operator)
         return r
+    }
+
+    private fun processOptionValueConfig(optionMetadata: CwtOptionMetadataBase, config: CwtOptionValueConfig) {
+        // NOTE 2.1.1 移除 `optional` 标志：CWTools 指引文档中并未提及，同时也是不必要的（默认即为可选）
+        val flag = config.getOptionValue() ?: return
+        when (flag) {
+            "required" -> optionMetadata.required = true
+            "primary" -> optionMetadata.primary = true
+            "inherit" -> optionMetadata.primary = true
+            "tag" -> optionMetadata.tag = true
+            "case_insensitive" -> optionMetadata.caseInsensitive = true
+            "per_definition" -> optionMetadata.perDefinition = true
+        }
+    }
+
+    private fun processFinal(optionMetadata: CwtOptionMetadataBase) {
+        // 保存缺省的基数表达式
+        processFinalForCardinality(optionMetadata)
+        // 保存初始的作用域上下文
+        processFinalForScopeContext(optionMetadata)
+    }
+
+    private fun processFinalForCardinality(optionMetadata: CwtOptionMetadataBase) {
+        if (optionMetadata.cardinality != null || optionMetadata !is CwtMemberConfig<*>) return
+        val dataType = optionMetadata.configExpression.type
+        // 如果没有注明且类型是常量或枚举值，则推断为 `1..~1`
+        if (dataType == CwtDataTypes.Constant || dataType == CwtDataTypes.EnumValue) {
+            optionMetadata.cardinality = CwtCardinalityExpression.resolve("1..~1")
+        }
+    }
+
+    private fun processFinalForScopeContext(optionMetadata: CwtOptionMetadataBase) {
+        val replaceScopes = optionMetadata.replaceScopes
+        val pushScope = optionMetadata.pushScope
+        val scopeContext = replaceScopes?.let { ParadoxScopeContext.resolve(it) }?.resolveNext(pushScope)
+            ?: pushScope?.let { ParadoxScopeContext.resolve(it, it) }
+        if (scopeContext == null) return
+        optionMetadata.scopeContext = scopeContext
     }
 }

@@ -102,9 +102,9 @@ class TooManyExpressionInspectionTest : BasePlatformTestCase(), ChronicleTestSco
         myFixture.configureByText("test.txt") {
             val m1 = "Too many key expression `y` (expect at most 1, actual 2)"
             """
-             = {
+            test = {
                 from = size
-                ${weakWarning(m1)}settest${weakWarningEnd()} = { x = 1 y = 1 y = 1 }
+                ${weakWarning(m1)}set${weakWarningEnd()} = { x = 1 y = 1 y = 1 }
             }
             """.trimIndent()
         }

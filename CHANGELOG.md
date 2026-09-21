@@ -15,6 +15,7 @@
 - [x] 仅在需要进一步匹配时，才会内联（并匹配）别名规则，从而优化性能 / Alias configs are inlined (and matched) only when further matching is required, thereby optimizing performance
 - [x] 修复来自语言注入的代码高亮可能错误地被直接的代码高亮覆盖的问题 / Fix the issue where code highlighting from language injection may be incorrectly overridden by direct code highlighting
 - [x] 修复某些来自 `MissingExpressionInspection` 的误报 / Fix some false positives from `MissingExpressionInspection`
+- [x] 修复某些来自 `TooManyExpressionInspection` 的误报 / Fix some false positives from `TooManyExpressionInspection`
 - [x] 从脚本成员评估作用域上下文时，跳过表达式（通常是属性键）带参数的情况 / When evaluating the scope context from script members, skip cases where expressions (usually property keys) are parameterized.
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
