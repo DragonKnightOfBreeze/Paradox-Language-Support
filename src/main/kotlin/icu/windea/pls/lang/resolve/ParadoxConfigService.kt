@@ -301,7 +301,7 @@ object ParadoxConfigService {
         val result = mutableListOf<CwtMemberConfig<*>>()
         if (expression.value == "-") {
             parentConfigs.forEachFast f1@{ parentConfig ->
-                // NOTE #386 use `$any` only, if value expression of parent config is `$any`
+                // NOTE #386 if value expression of parent config is `$any`, then use `$any` only
                 // NOTE 3.0.2 compatible with `wildcard_scalar`, which is for complex parameters, in case
                 if (CwtConfigExpressionMatchService.matchesAnyDataType(parentConfig.valueExpression)) {
                     return listOf(configGroup.mockConfigModel.anyValue)
@@ -309,7 +309,6 @@ object ParadoxConfigService {
 
                 val configs = parentConfig.values
                 if (configs.isNullOrEmpty()) return@f1
-
                 configs.forEachFast { config ->
                     val inlined = CwtConfigManipulationService.inlineForConfig(config)
                     result.add(inlined)
@@ -317,7 +316,7 @@ object ParadoxConfigService {
             }
         } else {
             parentConfigs.forEachFast f1@{ parentConfig ->
-                // NOTE #386 use `$any = $any` only, if value expression of parent config is `$any`
+                // NOTE #386 if value expression of parent config is `$any`, then use `$any = $any` only
                 // NOTE 3.0.2 compatible with `wildcard_scalar`, which is for complex parameters, in case
                 if (CwtConfigExpressionMatchService.matchesAnyDataType(parentConfig.valueExpression)) {
                     return listOf(configGroup.mockConfigModel.anyProperty)
@@ -325,7 +324,6 @@ object ParadoxConfigService {
 
                 val configs = parentConfig.properties
                 if (configs.isNullOrEmpty()) return@f1
-
                 configs.forEachFast f2@{ config ->
                     val inlined = CwtConfigManipulationService.inlineForConfig(config)
                     result.add(inlined)
