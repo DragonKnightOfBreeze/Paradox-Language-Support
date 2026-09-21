@@ -5,12 +5,12 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.core.isIdentifier
 import icu.windea.pls.core.matchesAntPattern
 import icu.windea.pls.core.matchesPattern
 import icu.windea.pls.core.matchesRegex
 import icu.windea.pls.core.runWithRecursionGuard
 import icu.windea.pls.core.util.ProcessorFactory
-import icu.windea.pls.lang.isParameterAwareIdentifier
 import icu.windea.pls.lang.manipulation.ParadoxConfigManipulationService
 import icu.windea.pls.lang.match.ParadoxExpressionMatchContext
 import icu.windea.pls.lang.match.ParadoxMatchResult
@@ -168,21 +168,22 @@ class ParadoxScriptCoreExpressionMatcher : ParadoxScriptCompositeExpressionMatch
     private fun matchDefinition(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
         // can be an int or float here (e.g., for <technology_tier>)
         if (!context.expression.type.isLenientNumberOrStringLiteral()) return ParadoxMatchResult.NotMatch
-        // if (!context.expression.value.isParameterAwareIdentifier(".-")) return ParadoxMatchResult.NotMatch // #369 can also be any string literals
         if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
+        // if (!context.expression.value.isIdentifier(".-")) return ParadoxMatchResult.NotMatch // #369 can also be any string literals
         return ParadoxMatchResultFactory.forDefinition(context.element, context.project, context.expression.value, configExpression)
     }
 
     private fun matchLocalisation(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
         if (!context.expression.type.isLenientStringLiteral()) return ParadoxMatchResult.NotMatch
-        if (!context.expression.value.isParameterAwareIdentifier(".-'")) return ParadoxMatchResult.NotMatch
         if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
+        if (!context.expression.value.isIdentifier(".-'")) return ParadoxMatchResult.NotMatch
         return ParadoxMatchResultFactory.forLocalisation(context.element, context.project, context.expression.value, configExpression)
     }
 
     private fun matchSyncedLocalisation(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
         if (!context.expression.type.isLenientStringLiteral()) return ParadoxMatchResult.NotMatch
-        if (!context.expression.value.isParameterAwareIdentifier(".-'")) return ParadoxMatchResult.NotMatch
+        if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
+        if (!context.expression.value.isIdentifier(".-'")) return ParadoxMatchResult.NotMatch
         if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
         return ParadoxMatchResultFactory.forSyncedLocalisation(context.element, context.project, context.expression.value, configExpression)
     }
@@ -190,7 +191,7 @@ class ParadoxScriptCoreExpressionMatcher : ParadoxScriptCompositeExpressionMatch
     private fun matchInlineLocalisation(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
         if (!context.expression.type.isLenientStringLiteral()) return ParadoxMatchResult.NotMatch
         if (context.expression.quoted) return ParadoxMatchResult.FallbackMatch // "quoted_string" -> any string
-        if (!context.expression.value.isParameterAwareIdentifier(".-'")) return ParadoxMatchResult.NotMatch
+        if (!context.expression.value.isIdentifier(".-'")) return ParadoxMatchResult.NotMatch
         if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
         return ParadoxMatchResultFactory.forLocalisation(context.element, context.project, context.expression.value, configExpression)
     }
@@ -224,7 +225,7 @@ class ParadoxScriptCoreExpressionMatcher : ParadoxScriptCompositeExpressionMatch
         if (!context.expression.type.isLenientLiteral()) return ParadoxMatchResult.NotMatch
         if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
         val name = context.expression.value.substringBefore('@')
-        if (!name.isParameterAwareIdentifier(".")) return ParadoxMatchResult.NotMatch
+        if (!name.isIdentifier(".")) return ParadoxMatchResult.NotMatch
         val dynamicValueType = configExpression.metadata.value
         if (dynamicValueType == null) return ParadoxMatchResult.NotMatch
         return ParadoxMatchResult.FallbackMatch
@@ -268,8 +269,8 @@ class ParadoxScriptCoreExpressionMatcher : ParadoxScriptCompositeExpressionMatch
 
     private fun matchModifier(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
         if (!context.expression.type.isLenientStringLiteral()) return ParadoxMatchResult.NotMatch
-        if (!context.expression.value.isParameterAwareIdentifier()) return ParadoxMatchResult.NotMatch
         if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
+        if (!context.expression.value.isIdentifier()) return ParadoxMatchResult.NotMatch
         return ParadoxMatchResultFactory.forModifier(context.element, context.configGroup, context.expression.value)
     }
 
@@ -302,8 +303,10 @@ class ParadoxScriptCoreExpressionMatcher : ParadoxScriptCompositeExpressionMatch
 
     private fun matchParameter(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
         // 匹配参数名（即使对应的定义声明中不存在对应名字的参数，也可以匹配）
+        // 3.0.3 必须形如标识符（不允许带参数）
         if (!context.expression.type.isLenientNumberOrStringLiteral()) return ParadoxMatchResult.NotMatch
-        if (!context.expression.value.isParameterAwareIdentifier()) return ParadoxMatchResult.NotMatch
+        if (context.expression.isParameterized()) return ParadoxMatchResult.NotMatch
+        if (!context.expression.value.isIdentifier()) return ParadoxMatchResult.NotMatch
         return ParadoxMatchResult.ExactMatch
     }
 
@@ -315,8 +318,10 @@ class ParadoxScriptCoreExpressionMatcher : ParadoxScriptCompositeExpressionMatch
 
     private fun matchLocalisationParameter(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
         // 匹配本地化参数名（即使对应的定义声明中不存在对应名字的参数，也可以匹配）
+        // 3.0.3 必须形如标识符（可以带参数）
         if (!context.expression.type.isLenientNumberOrStringLiteral()) return ParadoxMatchResult.NotMatch
-        if (!context.expression.value.isParameterAwareIdentifier(".-'")) return ParadoxMatchResult.NotMatch
+        if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
+        if (!context.expression.value.isIdentifier(".-'")) return ParadoxMatchResult.NotMatch
         return ParadoxMatchResult.ExactMatch
     }
 
