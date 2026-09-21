@@ -57,7 +57,7 @@ object CwtConfigExpressionManager {
         return regexCache.get(templateExpression)
     }
 
-    private val regexCache = CacheBuilder().build<CwtTemplateExpression, Regex> { doToRegex(it) }.cancelable()
+    private val regexCache = CacheBuilder("expireAfterAccess=30m").build<CwtTemplateExpression, Regex> { doToRegex(it) }
 
     private fun doToRegex(templateExpression: CwtTemplateExpression): Regex {
         return buildString { templateExpression.snippetExpressions.forEachFast { appendRegexSnippet(it) } }.toRegex(RegexOption.IGNORE_CASE)

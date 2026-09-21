@@ -29,9 +29,10 @@ object ParadoxMatchResultContext {
     fun registerKeyForCache(vararg dependencies: Any): ParadoxMatchResultNestedCacheKeyProvider {
         return registerKeyWithThis(Keys) {
             // rootFile -> cacheKey -> configMatchResult
+            // 3.0.3 use expireAfterAccess to optimize memory
             createCachedValue(project) {
                 createNestedCache<VirtualFile, _, _> {
-                    CacheBuilder().build<String, ParadoxMatchResult>().cancelable()
+                    CacheBuilder("expireAfterAccess=1h").build<String, ParadoxMatchResult>().cancelable()
                 }.withDependencyItems(*dependencies)
             }
         }

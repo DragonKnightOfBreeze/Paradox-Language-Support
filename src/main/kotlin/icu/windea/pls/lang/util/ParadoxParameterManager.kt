@@ -74,8 +74,9 @@ object ParadoxParameterManager {
 
     private val CwtConfigGroup.parameterInfoCache by registerKey(CwtConfigGroup.Keys) {
         // rootFile -> cacheKey -> parameterInfo
+        // 3.0.3 use expireAfterAccess + softValues to optimize memory
         createNestedCache<VirtualFile, _, _> {
-            CacheBuilder().build<String, ParadoxParameterInfo>().cancelable().trackedBy { it.modificationTracker }
+            CacheBuilder("expireAfterAccess=1h,softValues").build<String, ParadoxParameterInfo>().cancelable().trackedBy { it.modificationTracker }
         }
     }
 

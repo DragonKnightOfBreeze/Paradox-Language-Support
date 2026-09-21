@@ -17,15 +17,18 @@ import java.awt.Color
 object ParadoxSemanticHighlighterColors {
     // NOTE 3.0.0 [compatibility] `TextAttributesKey.createTextAttributesKey(String, TextAttributesKey)` is deprecated
     //  - But necessary and intended here (use `createTempTextAttributesKey` will lead to undesirable behavior)
+
+    // 3.0.3 use expireAfterAccess to optimize memory
     @Suppress("DEPRECATION")
-    private val colorKeyCache = CacheBuilder().build { color: Color ->
+    private val colorKeyCache = CacheBuilder("expireAfterAccess=1h").build { color: Color ->
         val hex = ColorUtil.toHex(color).uppercase()
         val externalName = "PARADOX_LOCALISATION.COLOR_$hex"
         val defaultAttributes = DefaultLanguageHighlighterColors.IDENTIFIER.defaultAttributes.clone().apply { foregroundColor = color }
         createTextAttributesKey(externalName, defaultAttributes)
     }
+    // 3.0.3 use expireAfterAccess to optimize memory
     @Suppress("DEPRECATION")
-    private val colorOnlyKeyCache = CacheBuilder().build { color: Color ->
+    private val colorOnlyKeyCache = CacheBuilder("expireAfterAccess=1h").build { color: Color ->
         val hex = ColorUtil.toHex(color).uppercase()
         val externalName = "PARADOX_LOCALISATION.COLOR_ONLY_$hex"
         val defaultAttributes = TextAttributes().apply { foregroundColor = color }

@@ -73,17 +73,20 @@ import icu.windea.pls.script.psi.stringValue
 @Optimized
 object ParadoxConfigMatchService {
     private val CwtConfigGroup.typeConfigCandidatesCache by registerKeyWithThis(CwtConfigGroup.Keys) {
-        CacheBuilder().build<ParadoxPath, List<CwtTypeConfig>> { path ->
+        // 3.0.3 use expireAfterAccess to optimize memory
+        CacheBuilder("expireAfterAccess=1h").build<ParadoxPath, List<CwtTypeConfig>> { path ->
             types.values.filter { CwtConfigMatchService.matchesFilePath(it, path) }.optimized()
         }.cancelable()
     }
     private val CwtConfigGroup.complexEnumConfigCandidatesCache by registerKeyWithThis(CwtConfigGroup.Keys) {
-        CacheBuilder().build<ParadoxPath, List<CwtComplexEnumConfig>> { path ->
+        // 3.0.3 use expireAfterAccess to optimize memory
+        CacheBuilder("expireAfterAccess=1h").build<ParadoxPath, List<CwtComplexEnumConfig>> { path ->
             complexEnums.values.filter { CwtConfigMatchService.matchesFilePath(it, path) }.optimized()
         }.cancelable()
     }
     private val CwtConfigGroup.rowConfigCandidatesCache by registerKeyWithThis(CwtConfigGroup.Keys) {
-        CacheBuilder().build<ParadoxPath, List<CwtRowConfig>> { path ->
+        // 3.0.3 use expireAfterAccess to optimize memory
+        CacheBuilder("expireAfterAccess=1h").build<ParadoxPath, List<CwtRowConfig>> { path ->
             rows.values.filter { CwtConfigMatchService.matchesFilePath(it, path) }.optimized()
         }.cancelable()
     }

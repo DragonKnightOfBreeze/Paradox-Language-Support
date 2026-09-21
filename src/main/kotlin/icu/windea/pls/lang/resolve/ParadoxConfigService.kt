@@ -1,5 +1,6 @@
 package icu.windea.pls.lang.resolve
 
+import com.github.benmanes.caffeine.cache.Cache
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.ModificationTracker
 import com.intellij.openapi.vfs.VirtualFile
@@ -84,27 +85,30 @@ import kotlin.concurrent.getOrSet
 
 @Optimized
 object ParadoxConfigService {
+    object Keys : KeyRegistry() {
+        val inBlockKeys by registerKey<Set<String>>(this)
+    }
+
     private val CwtConfigGroup.configsCache by registerKeyWithThis(CwtConfigGroup.Keys) {
+        // rootFile -> cacheKey -> configs
+        // 3.0.3 use expireAfterAccess + softValues to optimize memory
         createCachedValue(project) {
-            // rootFile -> cacheKey -> configs
-            // use soft values to optimize memory
             createNestedCache<VirtualFile, _, _> {
-                CacheBuilder().softValues().build<String, List<CwtMemberConfig<*>>>().cancelable()
+                CacheBuilder("expireAfterAccess=1h,softValues").build<String, List<CwtMemberConfig<*>>>().cancelable()
             }.withDependencyItems(ChronicleModificationTrackers.ConfigResolution)
         }
     }
-
-    private val CwtConfigGroup.declarationConfigCache by registerKeyWithThis(CwtConfigGroup.Keys) {
+    private val CwtConfigContext.configsDynamicCache: Cache<String, List<CwtMemberConfig<*>>> by registerKey(Keys) {
+        // 3.0.3 use expireAfterAccess + softValues to optimize memory
+        CacheBuilder("expireAfterAccess=1h,softValues").build()
+    }
+    private val CwtConfigGroup.declarationConfigCache by registerKeyWithThis(Keys) {
+        // cacheKey -> declarationConfig
+        // 3.0.3 use expireAfterAccess + softValues to optimize memory
         createCachedValue(project) {
-            // cacheKey -> declarationConfig
-            // use soft values to optimize memory
-            CacheBuilder().softValues().build<String, CwtPropertyConfig>().cancelable()
+            CacheBuilder("expireAfterAccess=1h,softValues").build<String, CwtPropertyConfig>().cancelable()
                 .withDependencyItems(ModificationTracker.NEVER_CHANGED)
         }
-    }
-
-    object Keys : KeyRegistry() {
-        val inBlockKeys by registerKey<Set<String>>(this)
     }
 
     /**
@@ -177,7 +181,7 @@ object ParadoxConfigService {
         if (context.dynamic) {
             // NOTE 2.1.1 prefix in-config-context cache if marked as dynamic
             val dynamicCacheKey = options.toHashString(forMatched = false).optimized() // optimized to optimize memory
-            val cached = context.dynamicCache.getIfPresent(dynamicCacheKey)
+            val cached = context.configsDynamicCache.getIfPresent(dynamicCacheKey)
             if (cached != null) return cached
         }
         val rootFile = context.rootFile ?: return emptyList() // 3.0.1 optimize: get root file from context object directly
@@ -207,7 +211,7 @@ object ParadoxConfigService {
         if (context.dynamic) {
             // NOTE 2.1.1 store dynamic result into in-config-context cache
             val dynamicCacheKey = options.toHashString(forMatched = false).optimized() // optimized to optimize memory
-            context.dynamicCache.put(dynamicCacheKey, cached)
+            context.configsDynamicCache.put(dynamicCacheKey, cached)
         }
         return cached
     }

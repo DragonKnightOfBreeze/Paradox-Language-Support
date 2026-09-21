@@ -34,8 +34,6 @@ var CwtMemberConfig<*>.declarationConfigCacheKey: String? by registerKey(CwtMemb
 
 // region CwtConfigContext Accessors
 
-val CwtConfigContext.dynamicCache: Cache<String, List<CwtMemberConfig<*>>> by registerKey(CwtConfigContext.Keys) { CacheBuilder().build() }
-
 var CwtConfigContext.definitionInfo: ParadoxDefinitionInfo? by registerKey(CwtConfigContext.Keys)
 var CwtConfigContext.defineVariableInfo: ParadoxDefineVariableInfo? by registerKey(CwtConfigContext.Keys)
 var CwtConfigContext.parameterElement: ParadoxParameterLightElement? by registerKey(CwtConfigContext.Keys)
