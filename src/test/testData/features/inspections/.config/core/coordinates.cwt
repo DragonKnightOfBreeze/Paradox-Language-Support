@@ -1,0 +1,18 @@
+types = {
+    type[coordinate] = {
+        path = common/coordinates
+        path_extension = .txt
+    }
+}
+
+coordinate = {
+    ## cardinality = 1..1
+    from = size
+    ## cardinality = 1..1
+    from = location
+
+    ## cardinality = 1..1
+    set = { x = int y = int }
+    ## cardinality = 1..1
+    set = { width = int height = int }
+}

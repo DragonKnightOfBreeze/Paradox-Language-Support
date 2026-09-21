@@ -1,5 +1,6 @@
 package icu.windea.pls.lang.inspections.script.expression
 
+import com.intellij.testFramework.IndexingTestUtil
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.model.ParadoxGameType
@@ -35,13 +36,12 @@ class MissingExpressionInspectionTest : BasePlatformTestCase(), ChronicleTestSco
 
     @Test
     fun smoke_success() {
-        markFileInfo(ParadoxGameType.Stellaris, "common/messages/test.txt")
+        markFileInfo(ParadoxGameType.Stellaris, "common/coordinates/test.txt")
         myFixture.configureByText("test.txt") {
             """
-            start_message = {
-                index = 0
-                tags = { start }
-                message_part = { say = hello_world }
+            test = {
+                from = size
+                set = { x = 1 y = 1 }
             }
             """.trimIndent()
         }
@@ -50,14 +50,147 @@ class MissingExpressionInspectionTest : BasePlatformTestCase(), ChronicleTestSco
 
     @Test
     fun smoke_failed() {
-        markFileInfo(ParadoxGameType.Stellaris, "common/messages/test.txt")
+        markFileInfo(ParadoxGameType.Stellaris, "common/coordinates/test.txt")
         myFixture.configureByText("test.txt") {
-            val m1 = "Missing key expression `index` (expect at least 1, actual 0)"
+            val m1 = "Missing key expression `set` (expect at least 1, actual 0)"
             """
-            ${error(m1)}start_message${errorEnd()} = {
-                tags = { start }
-                message_part = { say = hello_world }
+            ${error(m1)}test${errorEnd()} = {
+                from = size
             }
+            """.trimIndent()
+        }
+        myFixture.checkHighlighting()
+    }
+
+    @Test
+    fun smoke_nested_failed() {
+        markFileInfo(ParadoxGameType.Stellaris, "common/coordinates/test.txt")
+        myFixture.configureByText("test.txt") {
+            val m1 = "Missing key expression `y` (expect at least 1, actual 0)"
+            """
+            test = {
+                from = size
+                ${error(m1)}set${errorEnd()} = { x = 1 }
+            }
+            """.trimIndent()
+        }
+        myFixture.checkHighlighting()
+    }
+
+    // endregion
+
+    // region inlined
+
+    @Test
+    fun inlined_checkUsages_success() {
+        markFileInfo(ParadoxGameType.Stellaris, "common/inline_scripts/test_inline.txt")
+        myFixture.configureByText("test_inline.txt") {
+            """
+                from = size
+                set = { x = 1 y = 1 }
+            """.trimIndent()
+        }
+
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+
+        markFileInfo(ParadoxGameType.Stellaris, "common/coordinates/test.txt")
+        myFixture.configureByText("test.txt") {
+            """
+            test = {
+                inline_script = test_inline
+            }
+            """.trimIndent()
+        }
+        myFixture.checkHighlighting()
+    }
+
+    @Test
+    fun inlined_checkUsages_failed() {
+        markFileInfo(ParadoxGameType.Stellaris, "common/inline_scripts/test_inline.txt")
+        myFixture.configureByText("test_inline.txt") {
+            """
+                from = size
+            """.trimIndent()
+        }
+
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+
+        markFileInfo(ParadoxGameType.Stellaris, "common/coordinates/test.txt")
+        myFixture.configureByText("test.txt") {
+            val m1 = "Missing key expression `set` (expect at least 1, actual 0)"
+            """
+            ${error(m1)}test${errorEnd()} = {
+                inline_script = test_inline
+            }
+            """.trimIndent()
+        }
+        myFixture.checkHighlighting()
+    }
+
+    @Test
+    fun inlined_checkDeclarations_success() {
+        markFileInfo(ParadoxGameType.Stellaris, "common/coordinates/test.txt")
+        myFixture.configureByText("test.txt") {
+            """
+            test = {
+                inline_script = test_inline
+            }
+            """.trimIndent()
+        }
+
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+
+        markFileInfo(ParadoxGameType.Stellaris, "common/inline_scripts/test_inline.txt")
+        myFixture.configureByText("test_inline.txt") {
+            """
+                from = size
+                set = { x = 1 y = 1 }
+            """.trimIndent()
+        }
+        myFixture.checkHighlighting()
+    }
+
+    @Test
+    fun inlined_checkDeclarations_skipForDeclarationRoots_success() {
+        markFileInfo(ParadoxGameType.Stellaris, "common/coordinates/test.txt")
+        myFixture.configureByText("test.txt") {
+            """
+            test = {
+                inline_script = test_inline
+            }
+            """.trimIndent()
+        }
+
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+
+        markFileInfo(ParadoxGameType.Stellaris, "common/inline_scripts/test_inline.txt")
+        myFixture.configureByText("test_inline.txt") {
+            """
+                from = size
+            """.trimIndent()
+        }
+        myFixture.checkHighlighting()
+    }
+
+    @Test
+    fun inlined_checkDeclarations_nested_failed() {
+        markFileInfo(ParadoxGameType.Stellaris, "common/coordinates/test.txt")
+        myFixture.configureByText("test.txt") {
+            """
+            test = {
+                inline_script = test_inline
+            }
+            """.trimIndent()
+        }
+
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+
+        markFileInfo(ParadoxGameType.Stellaris, "common/inline_scripts/test_inline.txt")
+        myFixture.configureByText("test_inline.txt") {
+            val m1 = "Missing key expression `y` (expect at least 1, actual 0)"
+            """
+                from = size
+                ${error(m1)}set${errorEnd()} = { x = 1 }
             """.trimIndent()
         }
         myFixture.checkHighlighting()
@@ -78,7 +211,7 @@ class MissingExpressionInspectionTest : BasePlatformTestCase(), ChronicleTestSco
 
     @Test
     fun outOfDefinitionDeclaration_ignored() {
-        markFileInfo(ParadoxGameType.Stellaris, "common/messages/test.txt")
+        markFileInfo(ParadoxGameType.Stellaris, "common/coordinates/test.txt")
         myFixture.configureByText("test.txt", """
             hint = hello_world
         """.trimIndent())
