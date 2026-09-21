@@ -107,7 +107,7 @@ object ParadoxConfigManipulationService {
         }
         run {
             if (!expression.isParameterized()) return@run
-            val constKeys = configGroup.aliasModel.name2ConstKeys.keys.orNull()
+            val constKeys = configGroup.aliasModel.name2ConstKeys[aliasName]?.values.orNull()
             if (constKeys == null) return@run
             ProgressManager.checkCanceled() // check cancellation
             val matchResult = ParadoxMatchResult.ParameterizedMatch

@@ -4,6 +4,7 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.util.SmartList
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
+import icu.windea.pls.config.configGroup.mockConfigModel
 import icu.windea.pls.config.manipulation.CwtConfigManipulationService
 import icu.windea.pls.config.match.CwtConfigMatchService
 import icu.windea.pls.core.annotations.Optimized
@@ -47,22 +48,29 @@ object ParadoxMatchCandidateService {
         }
         if (map.isEmpty()) return
         ProgressManager.checkCanceled()
-        val result = SmartList<CwtMemberConfig<*>>() // 3.0.1 optimize: use `SmartList` (0 or 1 elements in most situations)
-        map.forEach { (key, matchResult) ->
+        val result = SmartList<ParadoxMatchCandidate>() // 3.0.3 optimize: use `SmartList` (0 or 1 elements in most situations)
+        map.forEach f1@{ (key, matchResult) ->
             val aliasConfigs = aliasGroup[key]
-            aliasConfigs?.forEachFast { aliasConfig ->
-                val inlined = CwtConfigManipulationService.inlineAlias(config, aliasConfig)
-                if (inlined != null) {
-                    result += inlined
-                    val candidate = ParadoxMatchCandidate(inlined, matchResult)
-                    collected += candidate
+            aliasConfigs?.forEachFast f2@{ aliasConfig ->
+                val inlined = CwtConfigManipulationService.inlineAlias(config, aliasConfig) ?: return@f2
+                if (result.size >= 16) {
+                    result.clear()
+                    return@f1 // too many candidates, break
                 }
+                val candidate = ParadoxMatchCandidate(inlined, matchResult)
+                result += candidate
             }
         }
+        if (result.isEmpty()) { // too many candidates, use fallback config (`$any = $any`)
+            collected.clear()
+            val fallbackConfig = context.configGroup.mockConfigModel.anyProperty
+            val fallbackCandidate = ParadoxMatchCandidate(fallbackConfig, ParadoxMatchResult.FallbackMatch)
+            collected.add(fallbackCandidate)
+            return
+        }
+        collected.addAll(result)
 
         // NOTE 3.0.3 cannot apply injection for alias keys (e.g. `y` in `alias[x:y]`) - unsupported from now on
-        // val parentConfig = config.parentConfig
-        // if (parentConfig != null) CwtConfigService.injectConfigs(parentConfig, parentConfig, result)
     }
 
     private fun collectMatched(context: ParadoxExpressionMatchContext, forValue: Boolean, collected: MutableList<ParadoxMatchCandidate>, config: CwtMemberConfig<*>) {
