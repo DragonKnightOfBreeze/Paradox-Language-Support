@@ -14,7 +14,9 @@
 - [x] 修复要匹配的表达式带参数时，无法正确地匹配键为常量的别名规则的问题（例如 `remove_$SCOPE_TYPE$_flag` VS `alias[effect:remove_ship_flag] = value[ship_flag]`） / Fix the issue where parameterized expressions cannot correctly match alias configs whose keys are constants (e.g., `remove_$SCOPE_TYPE$_flag` VS `alias[effect:remove_ship_flag] = value[ship_flag]`)
 - [x] 仅在需要进一步匹配时，才会内联（并匹配）别名规则，从而优化性能 / Alias configs are inlined (and matched) only when further matching is required, thereby optimizing performance
 - [x] 修复来自语言注入的代码高亮可能错误地被直接的代码高亮覆盖的问题 / Fix the issue where code highlighting from language injection may be incorrectly overridden by direct code highlighting
-- [ ] 其他优化与BUG修复 / Other optimizations and bug fixes
+- [x] 修复某些来自 `MissingExpressionInspection` 的误报 / Fix some false positives from `MissingExpressionInspection`
+- [x] 从脚本成员评估作用域上下文时，跳过表达式（通常是属性键）带参数的情况 / When evaluating the scope context from script members, skip cases where expressions (usually property keys) are parameterized.
+- [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 3.0.2 - 2026-09-08
 

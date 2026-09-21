@@ -58,7 +58,6 @@ import icu.windea.pls.model.scope.promotions
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptParameter
 import icu.windea.pls.script.psi.ParadoxScriptProperty
-import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptValue
 
 @Optimized
@@ -217,16 +216,16 @@ object ParadoxScopeService {
 
     fun isScopeContextSupportedForMember(element: ParadoxScriptMember, indirect: Boolean = false): Boolean {
         // some definitions, such as `on_action`, do support scope context on definition level
-        if (isScopeContextSupportedForDefinition(element, indirect)) return true
+        if (isScopeContextSupportedFromDefinition(element, indirect)) return true
         // if matched configs are scope-aware, so do supported
-        if (isScopeContextSupportedForDefinitionMember(element)) return true
+        if (isScopeContextSupportedFromMember(element)) return true
         // if there is an overridden scope context, so do supported
         val scopeContext = ParadoxScopeManager.getScopeContext(element)
         if (scopeContext?.overriddenProvider != null) return true
         return false
     }
 
-    private fun isScopeContextSupportedForDefinition(element: ParadoxScriptMember, indirect: Boolean = false): Boolean {
+    private fun isScopeContextSupportedFromDefinition(element: ParadoxScriptMember, indirect: Boolean = false): Boolean {
         // should be a definition
         if (element !is ParadoxDefinitionElement) return false
         val definitionInfo = element.definitionInfo ?: return false
@@ -238,7 +237,7 @@ object ParadoxScopeService {
         return false
     }
 
-    private fun isScopeContextSupportedForDefinitionMember(element: ParadoxScriptMember): Boolean {
+    private fun isScopeContextSupportedFromMember(element: ParadoxScriptMember): Boolean {
         val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(forDeclarationRoot = true))
         if (configs.isEmpty()) return false
         return configs.anyFast { isScopeContextSupportedFromConfig(it) }
@@ -285,12 +284,12 @@ object ParadoxScopeService {
     }
 
     fun evaluateScopeContextForMember(element: ParadoxScriptMember): ParadoxScopeContext? {
-        evaluateScopeContextForDefinition(element)?.let { return it }
-        evaluateScopeContextForDefinitionMember(element)?.let { return it }
+        evaluateScopeContextFromDefinition(element)?.let { return it }
+        evaluateScopeContextFromMember(element)?.let { return it }
         return null
     }
 
-    private fun evaluateScopeContextForDefinition(element: ParadoxScriptMember): ParadoxScopeContext? {
+    private fun evaluateScopeContextFromDefinition(element: ParadoxScriptMember): ParadoxScopeContext? {
         // should be a definition
         if (element !is ParadoxDefinitionElement) return null
         val definitionInfo = element.definitionInfo ?: return null
@@ -310,21 +309,32 @@ object ParadoxScopeService {
         return scopeContext ?: ParadoxScopeContext.resolveAny()
     }
 
-    private fun evaluateScopeContextForDefinitionMember(element: ParadoxScriptMember): ParadoxScopeContext? {
-        // element could be a definition member only if after inlined
-        val parentMember = findParentMember(element, withSelf = false)
-        val parentScopeContext = if (parentMember != null) ParadoxScopeManager.getScopeContext(parentMember) else null
+    private fun evaluateScopeContextFromMember(element: ParadoxScriptMember): ParadoxScopeContext? {
+        val expressionElement = when (element) {
+            is ParadoxScriptProperty -> element.propertyKey
+            is ParadoxScriptValue -> element
+            else -> null
+        }
+        if (expressionElement == null) return null
+        val expressionString = expressionElement.value
+
+        // 3.0.3 skip if target expression is parameterized (matched configs may still exist atm, with used match options)
+        if (expressionString.isParameterized()) return null
+
+        // 3.0.3 get matched configs (compatible with declaration roots)
         val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(forDeclarationRoot = true))
         val config = configs.firstOrNull() ?: return null
+
+        val parentMember = findParentMember(element, withSelf = false)
+        val parentScopeContext = if (parentMember != null) ParadoxScopeManager.getScopeContext(parentMember) else null
 
         val overriddenScopeContext = getOverriddenScopeContext(element, config, parentScopeContext)
         if (overriddenScopeContext != null) return overriddenScopeContext
 
         if (config.memberType == CwtMemberType.PROPERTY && config.configExpression.type == CwtDataTypes.ScopeField) {
             if (parentScopeContext == null) return null
-            val expressionElement = element.castOrNull<ParadoxScriptProperty>()?.propertyKey ?: return null
-            val expressionString = expressionElement.value
             val configGroup = config.configGroup
+            val expressionString = expressionElement.value
             val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(expressionString, null, configGroup) ?: return null
             val result = ParadoxScopeManager.getScopeContext(expressionElement, scopeFieldExpression, parentScopeContext)
             return result
@@ -355,17 +365,17 @@ object ParadoxScopeService {
     }
 
     fun evaluateScopeContextForExpression(element: ParadoxScriptMember, expression: ParadoxScopeFieldExpression, configExpression: CwtDataExpression): ParadoxScopeContext? {
+        val expressionElement = when (element) {
+            is ParadoxScriptProperty -> if (configExpression.role.isKey()) element.propertyKey else element.propertyValue
+            is ParadoxScriptValue -> element
+            else -> null
+        }
+        if (expressionElement == null) return null
         val parentElement = findParentMember(element, withSelf = false)
         val parentScopeContext = when {
             parentElement != null -> ParadoxScopeManager.getScopeContext(parentElement) ?: ParadoxScopeContext.resolveAny()
             else -> ParadoxScopeContext.resolveAny()
         }
-        val expressionElement = when {
-            element is ParadoxScriptProperty -> if (configExpression.role.isKey()) element.propertyKey else element.propertyValue
-            element is ParadoxScriptValue -> element
-            else -> null
-        }
-        if (expressionElement == null) return null
         return ParadoxScopeManager.getScopeContext(expressionElement, expression, parentScopeContext)
     }
 
@@ -390,19 +400,19 @@ object ParadoxScopeService {
                 when (node) {
                     // parameterized -> any (or inferred from extended configs)
                     is ParadoxParameterizedScopeNode -> {
-                        return evaluateScopeContextForNode(element, node, inputScopeContext)
+                        return evaluateScopeContextFromNode(element, node, inputScopeContext)
                     }
                     // system -> context sensitive
                     is ParadoxSystemScopeNode -> {
-                        return evaluateScopeContextForNode(element, node, inputScopeContext)
+                        return evaluateScopeContextFromNode(element, node, inputScopeContext)
                     }
                     // predefined -> static
                     is ParadoxStaticScopeNode -> {
-                        return evaluateScopeContextForNode(element, node, inputScopeContext)
+                        return evaluateScopeContextFromNode(element, node, inputScopeContext)
                     }
                     // dynamic -> any (or inferred from extended configs)
                     is ParadoxDynamicScopeNode -> {
-                        return evaluateScopeContextForNode(element, node, inputScopeContext)
+                        return evaluateScopeContextFromNode(element, node, inputScopeContext)
                     }
                     // error -> unknown
                     is ParadoxErrorScopeNode -> {
@@ -411,17 +421,17 @@ object ParadoxScopeService {
                 }
             }
             is ParadoxScopePrefixNode -> {
-                return evaluateScopeContextForNode(element, node, inputScopeContext)
+                return evaluateScopeContextFromNode(element, node, inputScopeContext)
             }
             is ParadoxCommandScopeNode -> {
                 when (node) {
                     // parameterized -> any (or inferred from extended configs)
                     is ParadoxParameterizedCommandScopeNode -> {
-                        return evaluateScopeContextForNode(element, node, inputScopeContext)
+                        return evaluateScopeContextFromNode(element, node, inputScopeContext)
                     }
                     // system -> context sensitive
                     is ParadoxSystemCommandScopeNode -> {
-                        return evaluateScopeContextForNode(element, node, inputScopeContext)
+                        return evaluateScopeContextFromNode(element, node, inputScopeContext)
                     }
                     // predefined -> static (with promotions)
                     is ParadoxStaticCommandScopeNode -> {
@@ -448,7 +458,7 @@ object ParadoxScopeService {
         return ParadoxScopeContext.resolveUnknown(inputScopeContext)
     }
 
-    private fun evaluateScopeContextForNode(element: ParadoxExpressionElement, node: ParadoxParameterizedNode, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext {
+    private fun evaluateScopeContextFromNode(element: ParadoxExpressionElement, node: ParadoxParameterizedNode, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext {
         run r1@{
             // only support full parameterized node
             if (!node.text.isParameterized(full = true)) return@r1
@@ -482,7 +492,7 @@ object ParadoxScopeService {
     }
 
     @Suppress("UNUSED_PARAMETER")
-    private fun evaluateScopeContextForNode(element: ParadoxExpressionElement, node: ParadoxSystemScopeAwareLinkNode, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext {
+    private fun evaluateScopeContextFromNode(element: ParadoxExpressionElement, node: ParadoxSystemScopeAwareLinkNode, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext {
         val systemScopeConfig = node.config
         val id = systemScopeConfig.name
         val baseId = systemScopeConfig.base
@@ -505,18 +515,18 @@ object ParadoxScopeService {
     }
 
     @Suppress("UNUSED_PARAMETER")
-    private fun evaluateScopeContextForNode(element: ParadoxExpressionElement, node: ParadoxLinkPrefixNode, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext {
+    private fun evaluateScopeContextFromNode(element: ParadoxExpressionElement, node: ParadoxLinkPrefixNode, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext {
         val linkConfig = node.linkConfigs.firstOrNull() ?: return ParadoxScopeContext.resolveUnknown(inputScopeContext)
         return inputScopeContext.resolveNext(linkConfig.outputScope)
     }
 
     @Suppress("UNUSED_PARAMETER")
-    private fun evaluateScopeContextForNode(element: ParadoxExpressionElement, node: ParadoxStaticScopeNode, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext {
+    private fun evaluateScopeContextFromNode(element: ParadoxExpressionElement, node: ParadoxStaticScopeNode, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext {
         val outputScope = node.config.outputScope
         return inputScopeContext.resolveNext(outputScope)
     }
 
-    private fun evaluateScopeContextForNode(element: ParadoxExpressionElement, node: ParadoxDynamicScopeNode, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext {
+    private fun evaluateScopeContextFromNode(element: ParadoxExpressionElement, node: ParadoxDynamicScopeNode, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext {
         val linkConfig = node.linkConfigs.firstOrNull() ?: return ParadoxScopeContext.resolveUnknown(inputScopeContext)
         if (linkConfig.outputScope != null) return inputScopeContext.resolveNext(linkConfig.outputScope)
 
@@ -537,9 +547,10 @@ object ParadoxScopeService {
                 val configGroup = dynamicValueExpression.configGroup
                 val dynamicValueNode = dynamicValueExpression.dynamicValueNode
                 val name = dynamicValueNode.text
-                val expressionElement = when {
-                    element is ParadoxScriptProperty -> element.propertyKey
-                    else -> element.castOrNull<ParadoxScriptStringExpressionElement>()
+                val expressionElement = when (element) {
+                    is ParadoxScriptProperty -> element.propertyKey
+                    is ParadoxScriptValue -> element
+                    else -> null
                 }
                 if (expressionElement == null) return ParadoxScopeContext.resolveAny()
                 val configExpressions = dynamicValueNode.configs.mapNotNullFast { it.configExpression } // delay distinct
