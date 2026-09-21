@@ -28,10 +28,11 @@ class ParadoxScriptParameterExpressionSupport : ParadoxScriptExpressionSupport {
         return dataType == CwtDataTypes.Parameter
     }
 
-    override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder) {
-        if (element !is ParadoxScriptStringExpressionElement) return // only for string expressions in script files
+    override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder): Boolean {
+        if (element !is ParadoxScriptStringExpressionElement) return false // only for string expressions in script files
         val attributesKey = ParadoxSemanticHighlighterColors.argument()
         ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
+        return true
     }
 
     override fun resolve(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
@@ -53,10 +54,11 @@ class ParadoxScriptLocalisationParameterExpressionSupport : ParadoxScriptExpress
         return dataType == CwtDataTypes.LocalisationParameter
     }
 
-    override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder) {
-        if (element !is ParadoxScriptStringExpressionElement) return // only for string expressions in script files
+    override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder): Boolean {
+        if (element !is ParadoxScriptStringExpressionElement) return false // only for string expressions in script files
         val attributesKey = ParadoxSemanticHighlighterColors.argument()
         ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
+        return true
     }
 
     override fun resolve(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {

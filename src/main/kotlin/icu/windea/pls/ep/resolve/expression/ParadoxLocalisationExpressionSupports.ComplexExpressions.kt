@@ -25,11 +25,12 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 abstract class ParadoxLocalisationComplexExpressionSupportBase : ParadoxLocalisationExpressionSupport {
     // NOTE 2.0.6 - unnecessary to support for `ParadoxScriptExpressionElement` yet
 
-    override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, holder: AnnotationHolder) {
-        if (element !is ParadoxLocalisationExpressionElement) return
+    override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, holder: AnnotationHolder): Boolean {
+        if (element !is ParadoxLocalisationExpressionElement) return false
         val configGroup = ChronicleFacade.getConfigGroup(element.project, selectGameType(element))
-        val complexExpression = ParadoxComplexExpression.resolve(element, rangeInExpression, configGroup) ?: return
+        val complexExpression = ParadoxComplexExpression.resolve(element, rangeInExpression, configGroup) ?: return false
         ParadoxExpressionSupportFactory.annotateComplexExpression(element, complexExpression, holder)
+        return true
     }
 
     override fun getReferences(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange): List<PsiReference> {

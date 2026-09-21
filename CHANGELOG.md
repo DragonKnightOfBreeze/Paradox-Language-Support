@@ -10,13 +10,14 @@
 ## 3.0.3
 
 - [x] 修复与内联脚本参数的参数值的规则推断逻辑相关的一个回归BUG / Fix a regression bug related to the config inference logic for parameter values of inline script parameters ([#412](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/412))
-- [x] 修复要匹配的表达式带参数时，可能无法正确地匹配常量字符串的问题（例如 `triggered_$PARAM$_modifier` VS `triggered_ship_modifier`） / Fix the issue where parameterized expressions may not correctly match constant strings (e.g., `triggered_$PARAM$_modifier` VS `triggered_ship_modifier`).
+- [x] 修复要匹配的表达式带参数时，可能无法正确地匹配常量字符串的问题（例如 `triggered_$PARAM$_modifier` VS `triggered_ship_modifier`） / Fix the issue where parameterized expressions may not correctly match constant strings (e.g., `triggered_$PARAM$_modifier` VS `triggered_ship_modifier`)
 - [x] 修复要匹配的表达式带参数时，无法正确地匹配键为常量的别名规则的问题（例如 `remove_$SCOPE_TYPE$_flag` VS `alias[effect:remove_ship_flag] = value[ship_flag]`） / Fix the issue where parameterized expressions cannot correctly match alias configs whose keys are constants (e.g., `remove_$SCOPE_TYPE$_flag` VS `alias[effect:remove_ship_flag] = value[ship_flag]`)
 - [x] 仅在需要进一步匹配时，才会内联（并匹配）别名规则，从而优化性能 / Alias configs are inlined (and matched) only when further matching is required, thereby optimizing performance
 - [x] 修复来自语言注入的代码高亮可能错误地被直接的代码高亮覆盖的问题 / Fix the issue where code highlighting from language injection may be incorrectly overridden by direct code highlighting
 - [x] 修复某些来自 `MissingExpressionInspection` 的误报 / Fix some false positives from `MissingExpressionInspection`
 - [x] 修复某些来自 `TooManyExpressionInspection` 的误报 / Fix some false positives from `TooManyExpressionInspection`
-- [x] 从脚本成员评估作用域上下文时，跳过表达式（通常是属性键）带参数的情况 / When evaluating the scope context from script members, skip cases where expressions (usually property keys) are parameterized.
+- [x] 从脚本成员评估作用域上下文时，跳过表达式（通常是属性键）带参数的情况 / When evaluating the scope context from script members, skip cases where expressions (usually property keys) are parameterized
+- [x] 优化表达式带参数时，并集规则（unionConfig）和别名规则（aliasConfig）的匹配与展开的逻辑，从而避免意外的 OOM / Optimize the matching and expansion logic for union configs and alias configs when expressions are parameterized, avoiding unexpected OOM
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 3.0.2 - 2026-09-08

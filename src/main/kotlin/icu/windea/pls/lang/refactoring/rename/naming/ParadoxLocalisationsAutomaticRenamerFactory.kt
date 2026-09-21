@@ -20,7 +20,7 @@ class ParadoxLocalisationsAutomaticRenamerFactory : AutomaticRenamerFactory {
         val selector = ParadoxLocalisationSearch.selector(element.project, element)
         val processor = ProcessorFactory.duplicate<ParadoxLocalisationProperty>()
         ParadoxLocalisationSearch.search(name, type, selector).process(processor)
-        return processor.duplicated
+        return processor.result
     }
 
     override fun getOptionName(): String {

@@ -32,27 +32,6 @@ class ProcessorScopeTest {
 
     // endregion
 
-    // region duplicateFrom
-
-    @Test
-    fun duplicateFrom_singleLambda_test() {
-        Assert.assertTrue(ProcessorScope.duplicateFrom { listOf(1, 2).forEach { process(it) } })
-        Assert.assertFalse(ProcessorScope.duplicateFrom { listOf(1).forEach { process(it) } })
-    }
-
-    @Test
-    fun duplicateFrom_twoLambdas_test() {
-        Assert.assertTrue(ProcessorScope.duplicateFrom({ listOf(1, 2, 3, 4).forEach { process(it) } }) { it % 2 == 0 })
-        Assert.assertFalse(ProcessorScope.duplicateFrom({ listOf(1, 3, 5).forEach { process(it) } }) { it % 2 == 0 })
-    }
-
-    @Test
-    fun duplicateFrom_emptySource_returnsFalse_test() {
-        Assert.assertFalse(ProcessorScope.duplicateFrom<Int> { })
-    }
-
-    // endregion
-
     // region collectFrom
 
     @Test
@@ -70,6 +49,27 @@ class ProcessorScopeTest {
     @Test
     fun collectFrom_emptySource_returnsEmptyList_test() {
         Assert.assertEquals(emptyList<Int>(), ProcessorScope.collectFrom<Int> { })
+    }
+
+    // endregion
+
+    // region duplicateFrom
+
+    @Test
+    fun duplicateFrom_singleLambda_test() {
+        Assert.assertTrue(ProcessorScope.duplicateFrom { listOf(1, 2).forEach { process(it) } })
+        Assert.assertFalse(ProcessorScope.duplicateFrom { listOf(1).forEach { process(it) } })
+    }
+
+    @Test
+    fun duplicateFrom_twoLambdas_test() {
+        Assert.assertTrue(ProcessorScope.duplicateFrom({ listOf(1, 2, 3, 4).forEach { process(it) } }) { it % 2 == 0 })
+        Assert.assertFalse(ProcessorScope.duplicateFrom({ listOf(1, 3, 5).forEach { process(it) } }) { it % 2 == 0 })
+    }
+
+    @Test
+    fun duplicateFrom_emptySource_returnsFalse_test() {
+        Assert.assertFalse(ProcessorScope.duplicateFrom<Int> { })
     }
 
     // endregion

@@ -101,14 +101,14 @@ object CwtConfigManipulationService {
                 if (config.configs.isNullOrEmpty()) return@f // skip
                 val matched = ParadoxDefinitionSubtypeExpression.resolve(subtypeExpression).matches(subtypes)
                 if (!matched) return@f // skip
-                result += deepCopyConfigsBySubtypeExpression(config, containerConfig, subtypes).orEmpty()
+                result += doDeepCopyConfigsInDeclaration(config, containerConfig, subtypes).orEmpty()
                 return@f
             }
 
             val childConfigs = config.configs
             val childResult = if (childConfigs != null) createListForDeepCopy(/* expectedSize = childConfigs.size */) else null
             val delegatedConfig = config.delegated(childResult).also { it.withParentConfig(containerConfig) }
-            if (childResult != null) childResult += deepCopyConfigsBySubtypeExpression(config, delegatedConfig, subtypes).orEmpty()
+            if (childResult != null) childResult += doDeepCopyConfigsInDeclaration(config, delegatedConfig, subtypes).orEmpty()
             delegatedConfig.postOptimize() // 进行后续优化
             result += delegatedConfig
         }
@@ -255,27 +255,6 @@ object CwtConfigManipulationService {
 
     // region Inline Methods
 
-    fun inlineAlias(config: CwtPropertyConfig, keys: Collection<String>? = null): List<CwtMemberConfig<*>>? {
-        val valueExpression = config.valueExpression
-        if (valueExpression.type != CwtDataTypes.AliasMatchLeft) return null
-        val aliasName = valueExpression.metadata.value ?: return null
-        val configGroup = config.configGroup
-        val aliasConfigGroup = configGroup.aliasGroups[aliasName] ?: return null
-        val keys = keys ?: aliasConfigGroup.keys
-        if (keys.isEmpty()) return emptyList()
-        val result = createListForDeepCopy()
-        keys.forEach { key ->
-            val aliasConfigs = aliasConfigGroup[key]
-            aliasConfigs?.forEachFast { aliasConfig ->
-                val inlined = inlineAlias(config, aliasConfig)
-                if (inlined != null) result += inlined
-            }
-        }
-        val parentConfig = config.parentConfig
-        if (parentConfig != null) CwtConfigService.injectConfigs(parentConfig, parentConfig, result)
-        return result
-    }
-
     fun inlineAlias(config: CwtPropertyConfig, aliasConfig: CwtAliasConfig): CwtPropertyConfig? {
         val other = aliasConfig.config
         val inlined = CwtPropertyConfig.copy(
@@ -399,34 +378,11 @@ object CwtConfigManipulationService {
     // region Expand Methods
 
     /**
-     * 展开枚举规则 [config] 的所有作为候选项的值规则。
-     */
-    fun expandEnumCandidates(config: CwtEnumConfig, processor: (CwtValueConfig) -> Boolean): Boolean {
-        if (config.valueConfigMap.isEmpty()) return true
-        config.valueConfigMap.values.forEach { valueConfig ->
-            val r = processor(valueConfig)
-            if (!r) return false
-        }
-        return true
-    }
-
-    /**
-     * 展开并集规则 [config] 的所有作为候选项的值规则。
-     */
-    fun expandUnionCandidates(config: CwtUnionConfig, processor: (CwtValueConfig) -> Boolean): Boolean {
-        if (config.valueConfigs.isEmpty()) return true
-        // NOTE 3.0.1 recursion guard should not be directly used here, since the context may be different
-        config.valueConfigs.forEachFast { valueConfig ->
-            val r = processor(valueConfig)
-            if (!r) return false
-        }
-        return true
-    }
-
-    /**
      * 递归展开 [config] 的子规则中的所有形如 `subtype[{expression}] = {...}` 的属性规则中的子规则，保留其他形式的子规则。
      *
      * 结果序列中的元组的第一个元素是展开后的子规则，第二个元素是合并后的当前子类型表达式。
+     *
+     * @see ParadoxDefinitionSubtypeExpression
      */
     fun expandBySubtypeExpression(config: CwtMemberConfig<*>, processor: (CwtMemberConfig<*>, String) -> Boolean): Boolean {
         if (config.configs.isNullOrEmpty()) return true
@@ -445,6 +401,35 @@ object CwtConfigManipulationService {
             } else {
                 processor(childConfig, currentExpression).let { if (!it) return false }
             }
+        }
+        return true
+    }
+
+    /**
+     * 展开枚举规则 [config] 的所有作为候选项的值规则。
+     *
+     * @see CwtEnumConfig
+     */
+    fun expandEnumValues(config: CwtEnumConfig, processor: (CwtValueConfig) -> Boolean): Boolean {
+        if (config.valueConfigMap.isEmpty()) return true
+        config.valueConfigMap.values.forEach { valueConfig ->
+            val r = processor(valueConfig)
+            if (!r) return false
+        }
+        return true
+    }
+
+    /**
+     * 展开并集规则 [config] 的所有作为候选项的值规则。
+     *
+     * @see CwtUnionConfig
+     */
+    fun expandUnionValues(config: CwtUnionConfig, processor: (CwtValueConfig) -> Boolean): Boolean {
+        if (config.valueConfigs.isEmpty()) return true
+        // NOTE 3.0.1 recursion guard should not be directly used here, since the context may be different
+        config.valueConfigs.forEachFast { valueConfig ->
+            val r = processor(valueConfig)
+            if (!r) return false
         }
         return true
     }

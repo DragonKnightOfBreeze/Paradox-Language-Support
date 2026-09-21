@@ -15,6 +15,7 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collectReferences
+import icu.windea.pls.core.collections.anyFast
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.isEmpty
@@ -139,15 +140,15 @@ object ParadoxExpressionService {
     /**
      * @see ParadoxScriptExpressionSupport.annotate
      */
-    fun annotateScriptExpression(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder) {
-        if (text.isEmpty()) return // skip if expression text is empty
-        if (rangeInExpression.isEmpty) return
-        val configExpression = config.configExpression ?: return
+    fun annotateScriptExpression(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder): Boolean {
+        if (text.isEmpty()) return false // skip if expression text is empty
+        if (rangeInExpression.isEmpty) return false
+        val configExpression = config.configExpression ?: return false
         val dataType = configExpression.type
         val gameType = config.configGroup.gameType
         val supports = ParadoxScriptExpressionSupport.get(dataType) // 3.0.1 optimize: use global cache (by data type)
-        supports.forEachFast f@{ support ->
-            if (gameType.orSpecific() != null && !support.supports(gameType)) return@f // check game type first
+        return supports.anyFast f@{ support ->
+            if (gameType.orSpecific() != null && !support.supports(gameType)) return@f false // check game type first
             ProgressManager.checkCanceled() // 3.0.1 optimize: check canceled immediately before applying logic
             support.annotate(element, text, rangeInExpression, config, holder)
         }
@@ -156,13 +157,13 @@ object ParadoxExpressionService {
     /**
      * @see ParadoxLocalisationExpressionSupport.annotate
      */
-    fun annotateLocalisationExpression(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, holder: AnnotationHolder) {
-        if (text.isEmpty()) return // skip if expression text is empty
-        if (rangeInExpression.isEmpty) return
+    fun annotateLocalisationExpression(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, holder: AnnotationHolder): Boolean {
+        if (text.isEmpty()) return false // skip if expression text is empty
+        if (rangeInExpression.isEmpty) return false
         val gameType = selectGameType(element)
         val supports = ParadoxLocalisationExpressionSupport.getAll() // 3.0.1 use global cache (all supports)
-        supports.forEachFast f@{ support ->
-            if (gameType.orSpecific() != null && !support.supports(gameType)) return@f // check game type first
+        return supports.anyFast f@{ support ->
+            if (gameType.orSpecific() != null && !support.supports(gameType)) return@f false // check game type first
             ProgressManager.checkCanceled() // 3.0.1 optimize: check canceled immediately before applying logic
             support.annotate(element, text, rangeInExpression, holder)
         }
@@ -171,15 +172,15 @@ object ParadoxExpressionService {
     /**
      * @see ParadoxCsvExpressionSupport.annotate
      */
-    fun annotateCsvExpression(element: ParadoxCsvExpressionElement, text: String, rangeInExpression: TextRange, config: CwtValueConfig, holder: AnnotationHolder) {
-        if (text.isEmpty()) return // skip if expression text is empty
-        if (rangeInExpression.isEmpty) return
+    fun annotateCsvExpression(element: ParadoxCsvExpressionElement, text: String, rangeInExpression: TextRange, config: CwtValueConfig, holder: AnnotationHolder): Boolean {
+        if (text.isEmpty()) return false // skip if expression text is empty
+        if (rangeInExpression.isEmpty) return false
         val configExpression = config.configExpression
         val dataType = configExpression.type
         val gameType = config.configGroup.gameType
         val supports = ParadoxCsvExpressionSupport.getAll(dataType) // 3.0.1 optimize: use global cache (by data type)
-        supports.forEachFast f@{ support ->
-            if (gameType.orSpecific() != null && !support.supports(gameType)) return@f // check game type first
+        return supports.anyFast f@{ support ->
+            if (gameType.orSpecific() != null && !support.supports(gameType)) return@f false // check game type first
             ProgressManager.checkCanceled() // 3.0.1 optimize: check canceled immediately before applying logic
             support.annotate(element, text, rangeInExpression, config, holder)
         }

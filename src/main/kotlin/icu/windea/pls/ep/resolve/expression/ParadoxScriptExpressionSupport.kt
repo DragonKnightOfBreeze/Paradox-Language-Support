@@ -34,8 +34,12 @@ interface ParadoxScriptExpressionSupport {
 
     fun supports(dataType: CwtDataType): Boolean
 
-    fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder) {
-        // by default nothing
+    /**
+     * 语义级别的代码高亮的语言功能入口。
+     * 如果返回 `true`，则表示此 EP 适用，因而终止遍历 EP。
+     */
+    fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder): Boolean {
+        return false
     }
 
     fun resolve(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
@@ -50,9 +54,7 @@ interface ParadoxScriptExpressionSupport {
         return emptyList()
     }
 
-    fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
-        // by default nothing
-    }
+    fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {}
 
     companion object INSTANCE {
         @JvmField val EP_NAME = ExtensionPointName<ParadoxScriptExpressionSupport>("icu.windea.pls.scriptExpressionSupport")

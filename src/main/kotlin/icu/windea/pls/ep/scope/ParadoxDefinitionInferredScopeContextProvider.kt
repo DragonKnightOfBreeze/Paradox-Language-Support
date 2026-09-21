@@ -11,7 +11,7 @@ import icu.windea.pls.model.scope.ParadoxScopeContextInferenceInfo
  * 用于为定义提供（基于用法的）推断的作用域上下文。
  */
 interface ParadoxDefinitionInferredScopeContextProvider {
-    fun supports(gameType: ParadoxGameType) = true
+    fun supports(gameType: ParadoxGameType): Boolean = true
 
     fun supports(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Boolean
 

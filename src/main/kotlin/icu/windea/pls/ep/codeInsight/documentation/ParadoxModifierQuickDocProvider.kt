@@ -11,7 +11,7 @@ import icu.windea.pls.model.ParadoxGameType
  * 指定与修正有关的快速文档的构建逻辑。
  */
 interface ParadoxModifierQuickDocProvider {
-    fun supports(gameType: ParadoxGameType) = true
+    fun supports(gameType: ParadoxGameType) : Boolean = true
 
     /**
      * 构建修正的快速文档中的定义部分。

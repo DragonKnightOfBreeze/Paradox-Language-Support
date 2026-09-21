@@ -14,7 +14,7 @@ import icu.windea.pls.model.ParadoxParameterContextInfo
  * @see CwtParameterValueConfigContextProvider
  */
 interface ParadoxParameterInferredConfigProvider {
-    fun supports(gameType: ParadoxGameType) = true
+    fun supports(gameType: ParadoxGameType): Boolean = true
 
     fun supports(parameterInfo: ParadoxParameterContextInfo.Parameter, parameterContextInfo: ParadoxParameterContextInfo): Boolean
 

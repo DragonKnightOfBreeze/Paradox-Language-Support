@@ -86,6 +86,8 @@
       <option name="BLOCK_COMMENT_AT_FIRST_COLUMN" value="false" />
       <option name="LINE_COMMENT_ADD_SPACE" value="true" />
       <option name="LINE_COMMENT_ADD_SPACE_ON_REFORMAT" value="true" />
+      <option name="CALL_PARAMETERS_WRAP" value="1" />
+      <option name="METHOD_PARAMETERS_WRAP" value="1" />
       <option name="WRAP_ON_TYPING" value="0" />
       <indentOptions>
         <option name="CONTINUATION_INDENT_SIZE" value="4" />
@@ -137,10 +139,10 @@
       <option name="LINE_COMMENT_ADD_SPACE" value="true" />
       <option name="BLOCK_COMMENT_ADD_SPACE" value="true" />
       <option name="LINE_COMMENT_ADD_SPACE_ON_REFORMAT" value="true" />
+      <option name="ALIGN_MULTILINE_PARAMETERS_IN_CALLS" value="true" />
       <option name="CALL_PARAMETERS_WRAP" value="1" />
-      <option name="CALL_PARAMETERS_LPAREN_ON_NEXT_LINE" value="false" />
       <option name="CALL_PARAMETERS_RPAREN_ON_NEXT_LINE" value="false" />
-      <option name="METHOD_PARAMETERS_LPAREN_ON_NEXT_LINE" value="false" />
+      <option name="METHOD_PARAMETERS_WRAP" value="1" />
       <option name="FIELD_ANNOTATION_WRAP" value="1" />
       <option name="WRAP_ON_TYPING" value="0" />
       <indentOptions>

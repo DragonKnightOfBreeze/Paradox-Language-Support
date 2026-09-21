@@ -12,13 +12,13 @@ import icu.windea.pls.model.ParadoxGameType
  * 提供对本地化图标的支持。
  */
 interface ParadoxLocalisationIconSupport {
-    fun supports(gameType: ParadoxGameType) = true
+    fun supports(gameType: ParadoxGameType): Boolean = true
 
     fun resolve(name: String, element: ParadoxLocalisationIcon, project: Project): PsiElement?
 
     fun resolveAll(name: String, element: ParadoxLocalisationIcon, project: Project): Collection<PsiElement>
 
-    fun complete(context: ParadoxCompletionContext, result: CompletionResultSet)
+    fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {}
 
     companion object INSTANCE {
         @JvmField val EP_NAME = ExtensionPointName<ParadoxLocalisationIconSupport>("icu.windea.pls.localisationIconSupport")

@@ -57,19 +57,19 @@ infix fun CwtConfig<*>?.isSamePointer(other: CwtConfig<*>?): Boolean {
 
 // region Process Extensions
 
-/** @see CwtConfigManipulationService.expandEnumCandidates */
-fun CwtEnumConfig.expandEnumCandidates(processor: (CwtValueConfig) -> Boolean): Boolean {
-    return CwtConfigManipulationService.expandEnumCandidates(this, processor)
-}
-
-/** @see CwtConfigManipulationService.expandUnionCandidates */
-fun CwtUnionConfig.expandUnionCandidates(processor: (CwtValueConfig) -> Boolean): Boolean {
-    return CwtConfigManipulationService.expandUnionCandidates(this, processor)
-}
-
 /** @see CwtConfigManipulationService.expandBySubtypeExpression */
 fun CwtMemberConfig<*>.expandBySubtypeExpression(processor: (CwtMemberConfig<*>, String) -> Boolean): Boolean {
     return CwtConfigManipulationService.expandBySubtypeExpression(this, processor)
+}
+
+/** @see CwtConfigManipulationService.expandEnumValues */
+fun CwtEnumConfig.expandEnumValues(processor: (CwtValueConfig) -> Boolean): Boolean {
+    return CwtConfigManipulationService.expandEnumValues(this, processor)
+}
+
+/** @see CwtConfigManipulationService.expandUnionValues */
+fun CwtUnionConfig.expandUnionValues(processor: (CwtValueConfig) -> Boolean): Boolean {
+    return CwtConfigManipulationService.expandUnionValues(this, processor)
 }
 
 /** @see CwtConfigManipulationService.expandConfigExpression */

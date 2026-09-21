@@ -22,7 +22,7 @@ class ParadoxDefinitionsAutomaticRenamerFactory : AutomaticRenamerFactory {
         val selector = ParadoxDefinitionSearch.selector(element.project, element)
         val processor = ProcessorFactory.duplicate<ParadoxScriptProperty>()
         ParadoxDefinitionSearch.searchProperty(name, type, selector).process(processor)
-        return processor.duplicated
+        return processor.result
     }
 
     override fun getOptionName(): String {

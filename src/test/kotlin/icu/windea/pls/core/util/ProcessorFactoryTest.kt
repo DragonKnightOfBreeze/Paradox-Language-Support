@@ -36,38 +36,6 @@ class ProcessorFactoryTest {
 
     // endregion
 
-    // region DuplicateProcessor
-
-    @Test
-    fun duplicate_noPredicate_test() {
-        val p = ProcessorFactory.duplicate<Int>()
-        Assert.assertFalse(p.duplicated)
-        Assert.assertTrue(p.process(1)) // 第一个元素
-        Assert.assertFalse(p.duplicated)
-        Assert.assertFalse(p.process(2)) // 第二个元素 -> duplicated 并终止
-        Assert.assertTrue(p.duplicated)
-    }
-
-    @Test
-    fun duplicate_withPredicate_test() {
-        val p = ProcessorFactory.duplicate<Int> { it > 1 }
-        Assert.assertTrue(p.process(1)) // 不匹配，忽略
-        Assert.assertFalse(p.duplicated)
-        Assert.assertTrue(p.process(2)) // 第一个匹配
-        Assert.assertFalse(p.duplicated)
-        Assert.assertFalse(p.process(3)) // 第二个匹配 -> duplicated 并终止
-        Assert.assertTrue(p.duplicated)
-    }
-
-    @Test
-    fun duplicate_singleMatch_notDuplicated_test() {
-        val p = ProcessorFactory.duplicate<Int> { it > 1 }
-        Assert.assertTrue(p.process(2)) // 仅一个匹配
-        Assert.assertFalse(p.duplicated)
-    }
-
-    // endregion
-
     // region CollectProcessor
 
     @Test
@@ -106,6 +74,38 @@ class ProcessorFactoryTest {
         Assert.assertTrue(p.process(2))
         Assert.assertTrue(p.process(3))
         Assert.assertEquals(listOf(2), p.collection)
+    }
+
+    // endregion
+
+    // region DuplicateProcessor
+
+    @Test
+    fun duplicate_noPredicate_test() {
+        val p = ProcessorFactory.duplicate<Int>()
+        Assert.assertFalse(p.result)
+        Assert.assertTrue(p.process(1)) // 第一个元素
+        Assert.assertFalse(p.result)
+        Assert.assertFalse(p.process(2)) // 第二个元素 -> duplicated 并终止
+        Assert.assertTrue(p.result)
+    }
+
+    @Test
+    fun duplicate_withPredicate_test() {
+        val p = ProcessorFactory.duplicate<Int> { it > 1 }
+        Assert.assertTrue(p.process(1)) // 不匹配，忽略
+        Assert.assertFalse(p.result)
+        Assert.assertTrue(p.process(2)) // 第一个匹配
+        Assert.assertFalse(p.result)
+        Assert.assertFalse(p.process(3)) // 第二个匹配 -> duplicated 并终止
+        Assert.assertTrue(p.result)
+    }
+
+    @Test
+    fun duplicate_singleMatch_notDuplicated_test() {
+        val p = ProcessorFactory.duplicate<Int> { it > 1 }
+        Assert.assertTrue(p.process(2)) // 仅一个匹配
+        Assert.assertFalse(p.result)
     }
 
     // endregion

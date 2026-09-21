@@ -19,10 +19,10 @@ class ParadoxScriptedVariablesAutomaticRenamerFactory : AutomaticRenamerFactory 
         val selector = ParadoxScriptedVariableSearch.selector(element.project, element)
         val processor = ProcessorFactory.duplicate<ParadoxScriptScriptedVariable>()
         ParadoxScriptedVariableSearch.searchLocal(name, selector).process(processor)
-        if (!processor.duplicated) {
+        if (!processor.result) {
             ParadoxScriptedVariableSearch.searchGlobal(name, selector).process(processor)
         }
-        return processor.duplicated
+        return processor.result
     }
 
     override fun getOptionName(): String {

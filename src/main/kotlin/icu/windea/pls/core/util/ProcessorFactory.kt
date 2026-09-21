@@ -15,18 +15,6 @@ object ProcessorFactory {
         }
     }
 
-    /** 创建一个不带过滤条件的 [DuplicateProcessor]。 */
-    fun <T> duplicate(): DuplicateProcessor<T> {
-        return DuplicateProcessor()
-    }
-
-    /** 创建一个带过滤条件 [filter] 的 [DuplicateProcessor]。 */
-    inline fun <T> duplicate(crossinline filter: (T) -> Boolean): DuplicateProcessor<T> {
-        return object : DuplicateProcessor<T>() {
-            override fun accept(e: T) = filter(e)
-        }
-    }
-
     /** 创建一个不带过滤条件的 [CollectProcessor]，将元素加入 [collection]。 */
     @Suppress("NOTHING_TO_INLINE")
     inline fun <T, C : MutableCollection<T>> collect(collection: C): CollectProcessor<T, C> {
@@ -49,6 +37,18 @@ object ProcessorFactory {
     /** 创建一个带过滤条件 [predicate] 的 [CollectProcessor]，将元素加入可变列表。 */
     inline fun <T> collect(crossinline predicate: (T) -> Boolean): CollectProcessor<T, MutableList<T>> {
         return collect(mutableListOf(), predicate)
+    }
+
+    /** 创建一个不带过滤条件的 [DuplicateProcessor]。 */
+    fun <T> duplicate(): DuplicateProcessor<T> {
+        return DuplicateProcessor()
+    }
+
+    /** 创建一个带过滤条件 [filter] 的 [DuplicateProcessor]。 */
+    inline fun <T> duplicate(crossinline filter: (T) -> Boolean): DuplicateProcessor<T> {
+        return object : DuplicateProcessor<T>() {
+            override fun accept(e: T) = filter(e)
+        }
     }
 
     @Suppress("NOTHING_TO_INLINE")

@@ -15,18 +15,20 @@ import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.resolved
 import icu.windea.pls.config.configExpression.CwtDataExpressionRole
 import icu.windea.pls.config.util.CwtConfigManager
+import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.runWithRecursionGuard
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.toVirtualFile
+import icu.windea.pls.core.util.ProcessorFactory
 import icu.windea.pls.core.util.values.singletonListOrEmpty
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.codeInsight.completion.ParadoxExpressionCompletionManager
 import icu.windea.pls.lang.isParameterized
-import icu.windea.pls.lang.match.ParadoxExpressionMatchService
+import icu.windea.pls.lang.manipulation.ParadoxConfigManipulationService
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.ParadoxExpressionService
 import icu.windea.pls.lang.resolve.util.ParadoxExpressionSupportFactory
@@ -52,13 +54,15 @@ class ParadoxScriptDefinitionExpressionSupport : ParadoxScriptExpressionSupport 
         return dataType == CwtDataTypes.Definition || dataType == CwtDataTypes.SuffixAwareDefinition
     }
 
-    override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder) {
+    override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder): Boolean {
         val attributesKey = ParadoxScriptHighlighterColors.DEFINITION_REFERENCE
         if (config.configExpression?.type?.isSuffixAware == true) {
             // 使用特殊的高亮（HIGHLIGHTED_REFERENCE）
-            return ParadoxExpressionSupportFactory.annotateExpressionAsHighlightedReference(element, rangeInExpression, holder)
+            ParadoxExpressionSupportFactory.annotateExpressionAsHighlightedReference(element, rangeInExpression, holder)
+        } else {
+            ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
         }
-        ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
+        return true
     }
 
     override fun resolve(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
@@ -100,13 +104,15 @@ class ParadoxScriptLocalisationExpressionSupport : ParadoxScriptExpressionSuppor
         return dataType == CwtDataTypes.Localisation || dataType == CwtDataTypes.SuffixAwareLocalisation
     }
 
-    override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder) {
+    override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder): Boolean {
         val attributesKey = ParadoxScriptHighlighterColors.LOCALISATION_REFERENCE
         if (config.configExpression?.type?.isSuffixAware == true) {
             // 使用特殊的高亮（HIGHLIGHTED_REFERENCE）
-            return ParadoxExpressionSupportFactory.annotateExpressionAsHighlightedReference(element, rangeInExpression, holder)
+            ParadoxExpressionSupportFactory.annotateExpressionAsHighlightedReference(element, rangeInExpression, holder)
+        } else {
+            ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
         }
-        ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
+        return true
     }
 
     override fun resolve(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
@@ -144,13 +150,15 @@ class ParadoxScriptSyncedLocalisationExpressionSupport : ParadoxScriptExpression
         return dataType == CwtDataTypes.SyncedLocalisation || dataType == CwtDataTypes.SuffixAwareSyncedLocalisation
     }
 
-    override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder) {
+    override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder): Boolean {
         val attributesKey = ParadoxScriptHighlighterColors.LOCALISATION_REFERENCE
         if (config.configExpression?.type?.isSuffixAware == true) {
             // 使用特殊的高亮（HIGHLIGHTED_REFERENCE）
-            return ParadoxExpressionSupportFactory.annotateExpressionAsHighlightedReference(element, rangeInExpression, holder)
+            ParadoxExpressionSupportFactory.annotateExpressionAsHighlightedReference(element, rangeInExpression, holder)
+        } else {
+            ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
         }
-        ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
+        return true
     }
 
     override fun resolve(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
@@ -187,10 +195,11 @@ class ParadoxScriptInlineLocalisationExpressionSupport : ParadoxScriptExpression
         return dataType == CwtDataTypes.InlineLocalisation
     }
 
-    override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder) {
-        if (text.isLeftQuoted()) return
+    override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder): Boolean {
+        if (text.isLeftQuoted()) return false
         val attributesKey = ParadoxScriptHighlighterColors.LOCALISATION_REFERENCE
         ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
+        return true
     }
 
     override fun resolve(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
@@ -224,9 +233,10 @@ class ParadoxScriptModifierExpressionSupport : ParadoxScriptExpressionSupport {
         return dataType == CwtDataTypes.Modifier
     }
 
-    override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder) {
+    override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder): Boolean {
         val attributesKey = ParadoxScriptHighlighterColors.MODIFIER
         ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
+        return true
     }
 
     override fun resolve(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
@@ -248,15 +258,16 @@ class ParadoxScriptEnumValueExpressionSupport : ParadoxScriptExpressionSupport {
         return dataType == CwtDataTypes.EnumValue
     }
 
-    override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder) {
+    override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder): Boolean {
         val configGroup = config.configGroup
-        val enumName = config.configExpression?.metadata?.value ?: return
+        val enumName = config.configExpression?.metadata?.value ?: return false
         val attributesKey = when {
             configGroup.enums[enumName] != null -> ParadoxScriptHighlighterColors.ENUM_VALUE
             configGroup.complexEnums[enumName] != null -> ParadoxScriptHighlighterColors.COMPLEX_ENUM_VALUE
             else -> ParadoxScriptHighlighterColors.ENUM_VALUE
         }
         ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
+        return true
     }
 
     override fun resolve(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
@@ -279,56 +290,73 @@ class ParadoxScriptUnionValueExpressionSupport : ParadoxScriptExpressionSupport 
 
     // NOTE 3.0.1 recursion guard is required here for various operations
 
-    override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder) {
+    override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder): Boolean {
         val configGroup = config.configGroup
-        val unionName = config.configExpression?.metadata?.value ?: return
+        val configExpression = config.configExpression ?: return false
+        val unionName = configExpression.metadata.value ?: return false
         // NOTE 3.0.1 recursion guard is required here
+        val processor = ProcessorFactory.any<Unit>()
         runWithRecursionGuard("scriptExpression.annotate.union", unionName) {
-            val quoted = element.text.isLeftQuoted()
-            val expression = ParadoxExpression.resolve(text, quoted)
-            val valueConfig = ParadoxExpressionMatchService.getMatchedScriptUnionCandidate(element, expression, unionName, configGroup) ?: return
-            ParadoxExpressionService.annotateScriptExpression(element, text, rangeInExpression, valueConfig, holder)
+            val expression = ParadoxExpression.resolve(element)
+            ParadoxConfigManipulationService.expandMatchedUnionValues(element, expression, unionName, configGroup) p@{ unionValueConfig ->
+                val r = ParadoxExpressionService.annotateScriptExpression(element, text, rangeInExpression, unionValueConfig, holder)
+                if (!r) return@p true
+                processor.process(Unit)
+            }
         }
+        return processor.result
     }
 
     override fun resolve(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
         val configGroup = config.configGroup
-        val unionName = config.configExpression?.metadata?.value ?: return null
+        val configExpression = config.configExpression ?: return null
+        val unionName = configExpression.metadata.value ?: return null
         // NOTE 3.0.1 recursion guard is required here
+        val processor = ProcessorFactory.find<PsiElement>()
         runWithRecursionGuard("scriptExpression.resolve.union", unionName) {
-            val quoted = element.text.isLeftQuoted()
-            val expression = ParadoxExpression.resolve(text, quoted)
-            val valueConfig = ParadoxExpressionMatchService.getMatchedScriptUnionCandidate(element, expression, unionName, configGroup) ?: return null
-            return ParadoxExpressionService.resolveScriptExpression(element, text, rangeInExpression, valueConfig, role)
+            val expression = ParadoxExpression.resolve(element)
+            ParadoxConfigManipulationService.expandMatchedUnionValues(element, expression, unionName, configGroup) p@{ unionValueConfig ->
+                val r = ParadoxExpressionService.resolveScriptExpression(element, text, rangeInExpression, unionValueConfig, role)
+                if (r == null) return@p true
+                processor.process(r)
+            }
         }
-        return null
+        return processor.result
     }
 
     override fun resolveAll(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiElement> {
         val configGroup = config.configGroup
-        val unionName = config.configExpression?.metadata?.value ?: return emptyList()
+        val configExpression = config.configExpression ?: return emptyList()
+        val unionName = configExpression.metadata.value ?: return emptyList()
         // NOTE 3.0.1 recursion guard is required here
+        val processor = ProcessorFactory.find<List<PsiElement>>()
         runWithRecursionGuard("scriptExpression.resolveAll.union", unionName) {
-            val quoted = element.text.isLeftQuoted()
-            val expression = ParadoxExpression.resolve(text, quoted)
-            val valueConfig = ParadoxExpressionMatchService.getMatchedScriptUnionCandidate(element, expression, unionName, configGroup) ?: return emptyList()
-            return ParadoxExpressionService.resolveAllScriptExpression(element, text, rangeInExpression, valueConfig, role)
+            val expression = ParadoxExpression.resolve(element)
+            ParadoxConfigManipulationService.expandMatchedUnionValues(element, expression, unionName, configGroup) p@{ unionValueConfig ->
+                val r = ParadoxExpressionService.resolveAllScriptExpression(element, text, rangeInExpression, unionValueConfig, role).orNull()
+                if (r == null) return@p true
+                processor.process(r)
+            }
         }
-        return emptyList()
+        return processor.result.orEmpty()
     }
 
     override fun getReferences(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiReference> {
         // #374 `union[x]` 同样需要兼容这里，目前来说，这是和 `alias_keys_field[x]` 不同的地方（例如，对于 `union[test_union] = { value[test_flag] }`，其中的 `value[test_flag]` 可以匹配多个节点）
         val configGroup = config.configGroup
-        val unionName = config.configExpression?.metadata?.value ?: return emptyList()
+        val configExpression = config.configExpression ?: return emptyList()
+        val unionName = configExpression.metadata.value ?: return emptyList()
         // NOTE 3.0.1 recursion guard is required here
+        val processor = ProcessorFactory.find<List<PsiReference>>()
         runWithRecursionGuard("scriptExpression.getReferences.union", unionName) {
-            val quoted = element.text.isLeftQuoted()
-            val expression = ParadoxExpression.resolve(text, quoted)
-            val valueConfig = ParadoxExpressionMatchService.getMatchedScriptUnionCandidate(element, expression, unionName, configGroup) ?: return emptyList()
-            return ParadoxExpressionService.getScriptExpressionReferences(element, text, rangeInExpression, valueConfig, role)
+            val expression = ParadoxExpression.resolve(element)
+            ParadoxConfigManipulationService.expandMatchedUnionValues(element, expression, unionName, configGroup) p@{ unionValueConfig ->
+                val r = ParadoxExpressionService.getScriptExpressionReferences(element, text, rangeInExpression, unionValueConfig, role).orNull()
+                if (r == null) return@p true
+                processor.process(r)
+            }
         }
-        return emptyList()
+        return processor.result.orEmpty()
     }
 
     override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
@@ -348,49 +376,61 @@ class ParadoxScriptAliasNameExpressionSupport : ParadoxScriptExpressionSupport {
 
     // NOTE 3.0.1 recursion guard is required here for various operations
 
-    override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder) {
+    override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder): Boolean {
         val configGroup = config.configGroup
-        val configExpression = config.configExpression
-        val aliasName = configExpression?.metadata?.value ?: return
-        val aliasGroup = configGroup.aliasGroups.get(aliasName) ?: return
+        val configExpression = config.configExpression ?: return false
+        val aliasName = configExpression.metadata.value ?: return false
+        val aliasGroup = configGroup.aliasGroups.get(aliasName) ?: return false
         // NOTE 3.0.1 recursion guard is required here
+        val processor = ProcessorFactory.any<Unit>()
         runWithRecursionGuard("scriptExpression.annotate.alias", aliasName) {
-            val quoted = element.text.isLeftQuoted()
-            val aliasExpression = ParadoxExpression.resolve(text, quoted)
-            val aliasSubName = ParadoxExpressionMatchService.getMatchedAliasKey(element, aliasExpression, aliasName, configGroup) ?: return
-            val aliasConfig = aliasGroup[aliasSubName]?.first() ?: return
-            ParadoxExpressionService.annotateScriptExpression(element, text, rangeInExpression, aliasConfig, holder)
+            val expression = ParadoxExpression.resolve(element)
+            ParadoxConfigManipulationService.expandMatchedAliasKeys(element, expression, aliasName, configGroup) p@{ key ->
+                val aliasConfig = aliasGroup[key]?.firstOrNull() ?: return@p true
+                val r = ParadoxExpressionService.annotateScriptExpression(element, text, rangeInExpression, aliasConfig, holder)
+                if (!r) return@p true
+                processor.process(Unit)
+            }
         }
+        return processor.result
     }
 
     override fun resolve(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
         val configGroup = config.configGroup
-        val aliasName = config.configExpression?.metadata?.value ?: return null
+        val configExpression = config.configExpression ?: return null
+        val aliasName = configExpression.metadata.value ?: return null
         val aliasGroup = configGroup.aliasGroups[aliasName] ?: return null
         // NOTE 3.0.1 recursion guard is required here
+        val processor = ProcessorFactory.find<PsiElement>()
         runWithRecursionGuard("scriptExpression.resolve.alias", aliasName) {
-            val quoted = element.text.isLeftQuoted()
-            val aliasExpression = ParadoxExpression.resolve(text, quoted, role)
-            val aliasSubName = ParadoxExpressionMatchService.getMatchedAliasKey(element, aliasExpression, aliasName, configGroup) ?: return null
-            val aliasConfig = aliasGroup[aliasSubName]?.firstOrNull() ?: return null
-            return ParadoxExpressionService.resolveScriptExpression(element, text, rangeInExpression, aliasConfig, role)
+            val expression = ParadoxExpression.resolve(element)
+            ParadoxConfigManipulationService.expandMatchedAliasKeys(element, expression, aliasName, configGroup) p@{ key ->
+                val aliasConfig = aliasGroup[key]?.firstOrNull() ?: return@p true
+                val r = ParadoxExpressionService.resolveScriptExpression(element, text, rangeInExpression, aliasConfig, role)
+                if (r == null) return@p true
+                processor.process(r)
+            }
         }
-        return null
+        return processor.result
     }
 
     override fun resolveAll(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiElement> {
         val configGroup = config.configGroup
-        val aliasName = config.configExpression?.metadata?.value ?: return emptyList()
+        val configExpression = config.configExpression ?: return emptyList()
+        val aliasName = configExpression.metadata.value ?: return emptyList()
         val aliasGroup = configGroup.aliasGroups[aliasName] ?: return emptyList()
         // NOTE 3.0.1 recursion guard is required here
+        val processor = ProcessorFactory.find<List<PsiElement>>()
         runWithRecursionGuard("scriptExpression.resolveAll.alias", aliasName) {
-            val quoted = element.text.isLeftQuoted()
-            val aliasExpression = ParadoxExpression.resolve(text, quoted, role)
-            val aliasSubName = ParadoxExpressionMatchService.getMatchedAliasKey(element, aliasExpression, aliasName, configGroup) ?: return emptyList()
-            val aliasConfig = aliasGroup[aliasSubName]?.firstOrNull() ?: return emptyList()
-            return ParadoxExpressionService.resolveAllScriptExpression(element, text, rangeInExpression, aliasConfig, role)
+            val expression = ParadoxExpression.resolve(element)
+            ParadoxConfigManipulationService.expandMatchedAliasKeys(element, expression, aliasName, configGroup) p@{ key ->
+                val aliasConfig = aliasGroup[key]?.firstOrNull() ?: return@p true
+                val r = ParadoxExpressionService.resolveAllScriptExpression(element, text, rangeInExpression, aliasConfig, role).orNull()
+                if (r == null) return@p true
+                processor.process(r)
+            }
         }
-        return emptyList()
+        return processor.result.orEmpty()
     }
 
     override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
@@ -407,9 +447,10 @@ class ParadoxScriptPathReferenceExpressionSupport : ParadoxScriptExpressionSuppo
         return dataType in CwtDataTypeSets.PathReference
     }
 
-    override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder) {
+    override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder): Boolean {
         val attributesKey = ParadoxScriptHighlighterColors.PATH_REFERENCE
         ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
+        return true
     }
 
     override fun resolve(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
@@ -457,18 +498,27 @@ class ParadoxScriptConstantExpressionSupport : ParadoxScriptExpressionSupport {
         return dataType == CwtDataTypes.Constant
     }
 
-    override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder) {
+    override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder): Boolean {
         val annotated = annotateByAliasName(element, rangeInExpression, holder, config)
-        if (annotated) return
-        val configExpression = config.configExpression ?: return
+        if (annotated) return false
+        val configExpression = config.configExpression ?: return false
         val role = configExpression.role
-        when {
-            role == CwtDataExpressionRole.Other -> return // unnecessary
-            role == CwtDataExpressionRole.Value -> return // skip
-            role == CwtDataExpressionRole.Key -> {
-                if (element is ParadoxScriptPropertyKey && rangeInExpression.startOffset == 0 && rangeInExpression.endOffset == text.length) return // unnecessary
+        when (role) {
+            CwtDataExpressionRole.Other -> {
+                // unnecessary
+                return false
+            }
+            CwtDataExpressionRole.Value -> {
+                // skip
+                return false
+            }
+            CwtDataExpressionRole.Key -> {
+                // unnecessary
+                if (element is ParadoxScriptPropertyKey && rangeInExpression.startOffset == 0 && rangeInExpression.endOffset == text.length) return false
+
                 val attributesKey = ParadoxScriptHighlighterColors.PROPERTY_KEY
                 ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
+                return true
             }
         }
     }

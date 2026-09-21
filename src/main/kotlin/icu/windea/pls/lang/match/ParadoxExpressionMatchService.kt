@@ -5,8 +5,7 @@ import com.intellij.psi.PsiElement
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtMemberConfig
-import icu.windea.pls.config.config.CwtValueConfig
-import icu.windea.pls.config.config.expandUnionCandidates
+import icu.windea.pls.config.config.expandUnionValues
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.CwtDataExpressionRole
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
@@ -22,6 +21,7 @@ import icu.windea.pls.ep.match.expression.ParadoxScriptExpressionMatcher
 import icu.windea.pls.lang.ParadoxThreadContext
 import icu.windea.pls.model.expressions.ParadoxExpression
 import icu.windea.pls.model.type.ParadoxExpressionRole
+import icu.windea.pls.script.ParadoxScriptLanguage
 
 @Optimized
 object ParadoxExpressionMatchService {
@@ -67,6 +67,26 @@ object ParadoxExpressionMatchService {
         return result
     }
 
+    fun getMatchedAliasKeys(element: PsiElement, expression: ParadoxExpression, aliasName: String, configGroup: CwtConfigGroup, options: ParadoxMatchOptions? = null): List<String> {
+        // NOTE 3.0.3 fast return if the alias key can be matched constantly (case-insensitive), otherwise, try further match
+        // NOTE 3.0.3 should also include non-const keys if the expression is parameterized
+
+        val constKey = configGroup.aliasModel.name2ConstKeys[aliasName]?.get(expression.value)
+        if (constKey != null) return listOf(constKey)
+
+        val keys = when {
+            expression.isParameterized() -> configGroup.aliasGroups[aliasName]?.keys
+            else -> configGroup.aliasModel.name2NonConstKeys[aliasName]
+        }
+        if (keys.isNullOrEmpty()) return emptyList()
+
+        ProgressManager.checkCanceled() // check cancellation
+        val matchContext = ParadoxExpressionMatchContext(element, expression, configGroup, options)
+        return keys.filter { key ->
+            matchScriptExpression(matchContext, CwtDataExpression.resolve(key), null).get(options)
+        }
+    }
+
     fun matchesExpressionRole(expression: ParadoxExpression, configExpression: CwtDataExpression): Boolean {
         return when (expression.role) {
             ParadoxExpressionRole.Key -> configExpression.role == CwtDataExpressionRole.Key
@@ -92,7 +112,7 @@ object ParadoxExpressionMatchService {
                 // NOTE 3.0.1 recursion guard is required here
                 ProcessorScope.anyFrom {
                     runWithRecursionGuard("exprssion.matchesConstant", unionName) {
-                        unionConfig.expandUnionCandidates { valueConfig ->
+                        unionConfig.expandUnionValues { valueConfig ->
                             if (matchesConstant(expression, valueConfig.configExpression, configGroup)) process(valueConfig)
                             else true
                         }
@@ -109,6 +129,8 @@ object ParadoxExpressionMatchService {
     }
 
     fun matchesTemplate(element: PsiElement, expression: ParadoxExpression, templateExpression: CwtTemplateExpression, configGroup: CwtConfigGroup, options: ParadoxMatchOptions? = null): Boolean {
+        val language = element.language
+        if (language != ParadoxScriptLanguage) return false
         val snippetExpressions = templateExpression.snippetExpressions
         if (snippetExpressions.isEmpty()) return false
         val regex = CwtConfigExpressionManager.toRegex(templateExpression)
@@ -126,71 +148,5 @@ object ParadoxExpressionMatchService {
             if (!matched) return false
         }
         return true
-    }
-
-    fun getMatchedScriptUnionCandidate(element: PsiElement, expression: ParadoxExpression, unionName: String, configGroup: CwtConfigGroup, options: ParadoxMatchOptions? = null): CwtValueConfig? {
-        val unionConfig = configGroup.unions[unionName] ?: return null
-        // NOTE 3.0.1 recursion guard is not directly required here
-        return ProcessorScope.findFrom {
-            unionConfig.expandUnionCandidates { valueConfig ->
-                ProgressManager.checkCanceled()
-                val matchContext = ParadoxExpressionMatchContext(element, expression, configGroup, options)
-                val matched = matchScriptExpression(matchContext, valueConfig.configExpression, valueConfig).get(options)
-                if (matched) process(valueConfig) else true
-            }
-        }
-    }
-
-    fun getMatchedCsvUnionCandidate(element: PsiElement, expression: ParadoxExpression, unionName: String, configGroup: CwtConfigGroup): CwtValueConfig? {
-        val unionConfig = configGroup.unions[unionName] ?: return null
-        // NOTE 3.0.1 recursion guard is not directly required here
-        return ProcessorScope.findFrom {
-            unionConfig.expandUnionCandidates { valueConfig ->
-                ProgressManager.checkCanceled()
-                val matchContext = ParadoxExpressionMatchContext(element, expression, configGroup)
-                if (matchCsvExpression(matchContext, valueConfig.configExpression).get()) process(valueConfig)
-                else true
-            }
-        }
-    }
-
-    fun getMatchedAliasKey(element: PsiElement, expression: ParadoxExpression, aliasName: String, configGroup: CwtConfigGroup, options: ParadoxMatchOptions? = null): String? {
-        // NOTE 3.0.3 fast return if the alias key can be matched constantly (case-insensitive), otherwise, try further match
-        // NOTE 3.0.3 should also include non-const keys if the expression is parameterized
-
-        val constKey = configGroup.aliasModel.name2ConstKeys[aliasName]?.get(expression.value)
-        if (constKey != null) return constKey
-
-        val keys = when {
-            expression.isParameterized() -> configGroup.aliasGroups[aliasName]?.keys
-            else -> configGroup.aliasModel.name2NonConstKeys[aliasName]
-        }
-        if (keys.isNullOrEmpty()) return null
-
-        ProgressManager.checkCanceled() // check cancellation
-        val matchContext = ParadoxExpressionMatchContext(element, expression, configGroup, options)
-        return keys.find { key ->
-            matchScriptExpression(matchContext, CwtDataExpression.resolve(key), null).get(options)
-        }
-    }
-
-    fun getMatchedAliasKeys(element: PsiElement, expression: ParadoxExpression, aliasName: String, configGroup: CwtConfigGroup, options: ParadoxMatchOptions? = null): List<String> {
-        // NOTE 3.0.3 fast return if the alias key can be matched constantly (case-insensitive), otherwise, try further match
-        // NOTE 3.0.3 should also include non-const keys if the expression is parameterized
-
-        val constKey = configGroup.aliasModel.name2ConstKeys[aliasName]?.get(expression.value)
-        if (constKey != null) return listOf(constKey)
-
-        val keys = when {
-            expression.isParameterized() -> configGroup.aliasGroups[aliasName]?.keys
-            else -> configGroup.aliasModel.name2NonConstKeys[aliasName]
-        }
-        if (keys.isNullOrEmpty()) return emptyList()
-
-        ProgressManager.checkCanceled() // check cancellation
-        val matchContext = ParadoxExpressionMatchContext(element, expression, configGroup, options)
-        return keys.filter { key ->
-            matchScriptExpression(matchContext, CwtDataExpression.resolve(key), null).get(options)
-        }
     }
 }

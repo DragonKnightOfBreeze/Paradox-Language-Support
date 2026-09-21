@@ -22,7 +22,7 @@ import icu.windea.pls.model.ParadoxModifierInfo
  * @see ParadoxModifierLightElement
  */
 interface ParadoxModifierSupport {
-    fun supports(gameType: ParadoxGameType) = true
+    fun supports(gameType: ParadoxGameType): Boolean = true
 
     // NOTE 3.0.1 clarify: ignore case (for modifier names) (#385)
     fun matchesModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): Boolean

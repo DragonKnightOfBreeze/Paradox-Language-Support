@@ -1,20 +1,18 @@
 package icu.windea.pls.ep.match.expression
 
-import com.intellij.openapi.progress.ProgressManager
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtMemberConfig
-import icu.windea.pls.config.config.expandUnionCandidates
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.core.matchesAntPattern
 import icu.windea.pls.core.matchesPattern
 import icu.windea.pls.core.matchesRegex
 import icu.windea.pls.core.runWithRecursionGuard
-import icu.windea.pls.core.util.ProcessorScope
+import icu.windea.pls.core.util.ProcessorFactory
 import icu.windea.pls.lang.isParameterAwareIdentifier
+import icu.windea.pls.lang.manipulation.ParadoxConfigManipulationService
 import icu.windea.pls.lang.match.ParadoxExpressionMatchContext
-import icu.windea.pls.lang.match.ParadoxExpressionMatchService
 import icu.windea.pls.lang.match.ParadoxMatchResult
 import icu.windea.pls.lang.match.util.ParadoxMatchFactory
 import icu.windea.pls.lang.match.util.ParadoxMatchResultFactory
@@ -222,23 +220,6 @@ class ParadoxScriptCoreExpressionMatcher : ParadoxScriptCompositeExpressionMatch
         return ParadoxMatchResult.NotMatch
     }
 
-    private fun matchUnionValue(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
-        if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch // 3.0.2 fast return
-        val unionName = configExpression.metadata.value ?: return ParadoxMatchResult.NotMatch // null -> invalid config
-        val unionConfig = context.configGroup.unions[unionName] ?: return ParadoxMatchResult.NotMatch // null -> not match
-        // NOTE 3.0.1 recursion guard is required here
-        return ProcessorScope.findFrom {
-            runWithRecursionGuard("scriptExpression.match.union", unionName) {
-                unionConfig.expandUnionCandidates { valueConfig ->
-                    ProgressManager.checkCanceled() // check cancellation
-                    val r = ParadoxExpressionMatchService.matchScriptExpression(context, valueConfig.configExpression, valueConfig)
-                    if (r.get(context.options)) process(r)
-                    else true
-                }
-            }
-        } ?: ParadoxMatchResult.NotMatch
-    }
-
     private fun matchDynamicValue(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
         if (!context.expression.type.isLenientLiteral()) return ParadoxMatchResult.NotMatch
         if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
@@ -292,13 +273,31 @@ class ParadoxScriptCoreExpressionMatcher : ParadoxScriptCompositeExpressionMatch
         return ParadoxMatchResultFactory.forModifier(context.element, context.configGroup, context.expression.value)
     }
 
+    private fun matchUnionValue(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
+        if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch // 3.0.2 fast return
+        val unionName = configExpression.metadata.value ?: return ParadoxMatchResult.NotMatch // null -> invalid config
+        // NOTE 3.0.1 recursion guard is required here
+        val processor = ProcessorFactory.find<ParadoxMatchResult>()
+        runWithRecursionGuard("scriptExpression.match.union", unionName) {
+            ParadoxConfigManipulationService.expandAndMatchUnionValues(context.element, context.expression, unionName, context.configGroup, context.options) { _, matchResult ->
+                processor.process(matchResult)
+            }
+        }
+        return processor.result ?: ParadoxMatchResult.NotMatch
+    }
+
     private fun matchAliasName(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
         if (!context.expression.type.isLenientNumberOrStringLiteral()) return ParadoxMatchResult.NotMatch
         if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
         val aliasName = configExpression.metadata.value ?: return ParadoxMatchResult.NotMatch
-        val aliasSubName = ParadoxExpressionMatchService.getMatchedAliasKey(context.element, context.expression, aliasName, context.configGroup, context.options)
-        if (aliasSubName == null) return ParadoxMatchResult.NotMatch
-        return ParadoxExpressionMatchService.matchScriptExpression(context, CwtDataExpression.resolve(aliasSubName), null)
+        // NOTE 3.0.1 recursion guard is required here
+        val processor = ProcessorFactory.find<ParadoxMatchResult>()
+        runWithRecursionGuard("scriptExpression.match.alias", aliasName) {
+            ParadoxConfigManipulationService.expandAndMatchAliasKeys(context.element, context.expression, aliasName, context.configGroup, context.options) { _, r ->
+                processor.process(r)
+            }
+        }
+        return processor.result ?: ParadoxMatchResult.NotMatch
     }
 
     private fun matchParameter(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {

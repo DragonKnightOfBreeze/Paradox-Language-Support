@@ -2,7 +2,7 @@ package icu.windea.pls.config.manipulation
 
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
-import icu.windea.pls.config.config.expandUnionCandidates
+import icu.windea.pls.config.config.expandUnionValues
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.annotations.Optimized
@@ -100,7 +100,7 @@ object CwtConfigExpressionManipulationService {
                 val unionConfig = configGroup.unions[name] ?: return null
                 // NOTE 3.0.1 recursion guard is required here
                 withRecursionGuard("CwtConfigExpressionManipulationService.mergeDataExpression") {
-                    unionConfig.expandUnionCandidates { valueConfig ->
+                    unionConfig.expandUnionValues { valueConfig ->
                         val e = valueConfig.configExpression
                         withRecursionCheck(e) {
                             mergeDataExpressionDirectional(e, otherDataExpression, configGroup)

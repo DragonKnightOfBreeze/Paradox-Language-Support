@@ -11,7 +11,7 @@ import icu.windea.pls.model.ParadoxModifierInfo
  * 注意：修正的图标对应的文件名是**忽略大小写**的。 (#385)
  */
 interface ParadoxModifierIconProvider {
-    fun supports(gameType: ParadoxGameType) = true
+    fun supports(gameType: ParadoxGameType): Boolean = true
 
     // TODO 3.0.1 clarify: ignore case (for file names only) (#385)
     /** 根据传入的 [modifierInfo] 和 [element]，加入作为候选的修正图标的文件路径（不包括形如 `.dds` 的文件扩展名）到 [registry]。 */

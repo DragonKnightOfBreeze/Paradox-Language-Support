@@ -2,7 +2,7 @@ package icu.windea.pls.config.configExpression
 
 import com.intellij.util.Processor
 import icu.windea.pls.config.CwtDataTypes
-import icu.windea.pls.config.config.expandUnionCandidates
+import icu.windea.pls.config.config.expandUnionValues
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.forEachFast
@@ -69,7 +69,7 @@ object CwtConfigExpressionService {
                 val unionConfig = configGroup.unions[name] ?: return
                 // NOTE 3.0.1 recursion guard is required here
                 withRecursionGuard("CwtConfigExpressionService.collectLiterals") {
-                    unionConfig.expandUnionCandidates { valueConfig ->
+                    unionConfig.expandUnionValues { valueConfig ->
                         val e = valueConfig.configExpression
                         withRecursionCheck(e) {
                             collectLiterals(e, configGroup, result)

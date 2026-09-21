@@ -3,7 +3,7 @@ package icu.windea.pls.ep.match.expression
 import com.intellij.openapi.progress.ProgressManager
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
-import icu.windea.pls.config.config.expandUnionCandidates
+import icu.windea.pls.config.config.expandUnionValues
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.core.isIdentifier
 import icu.windea.pls.core.matchesAntPattern
@@ -136,7 +136,7 @@ class ParadoxCsvCoreExpressionMatcher : ParadoxCsvCompositeExpressionMatcher() {
         // NOTE 3.0.1 recursion guard is required here
         return ProcessorScope.findFrom {
             runWithRecursionGuard("csvExpression.match.union", unionName) {
-                unionConfig.expandUnionCandidates { valueConfig ->
+                unionConfig.expandUnionValues { valueConfig ->
                     ProgressManager.checkCanceled() // check cancellation
                     val r = ParadoxExpressionMatchService.matchCsvExpression(context, valueConfig.configExpression)
                     if (r.get()) process(r)

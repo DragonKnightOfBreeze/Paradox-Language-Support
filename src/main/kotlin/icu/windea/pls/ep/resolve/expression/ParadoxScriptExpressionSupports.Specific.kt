@@ -37,10 +37,10 @@ class ParadoxScriptTechnologyWithLevelExpressionSupport : ParadoxScriptExpressio
 
     override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.TechnologyWithLevel
 
-    override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder) {
-        if (element !is ParadoxScriptStringExpressionElement) return
+    override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder): Boolean {
+        if (element !is ParadoxScriptStringExpressionElement) return false // only for string expressions in script files
         val separatorIndex = text.indexOf('@')
-        if (separatorIndex == -1) return
+        if (separatorIndex == -1) return false
         run {
             val offset = separatorIndex
             if (offset <= 0) return@run
@@ -63,6 +63,7 @@ class ParadoxScriptTechnologyWithLevelExpressionSupport : ParadoxScriptExpressio
             val rangeInExpression = TextRange.create(rangeInExpression.endOffset - offset, rangeInExpression.endOffset)
             ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
         }
+        return true
     }
 
     override fun getReferences(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiReference> {

@@ -33,11 +33,12 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
  * @see ParadoxComplexExpression
  */
 abstract class ParadoxScriptComplexExpressionSupportBase : ParadoxScriptExpressionSupport {
-    override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder) {
-        if (element !is ParadoxScriptStringExpressionElement) return
+    override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder): Boolean {
+        if (element !is ParadoxScriptStringExpressionElement) return false
         val configGroup = config.configGroup
-        val complexExpression = ParadoxComplexExpression.resolveByConfig(text, rangeInExpression, configGroup, config) ?: return
+        val complexExpression = ParadoxComplexExpression.resolveByConfig(text, rangeInExpression, configGroup, config) ?: return false
         ParadoxExpressionSupportFactory.annotateComplexExpression(element, complexExpression, holder, config)
+        return true
     }
 
     override fun getReferences(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiReference> {

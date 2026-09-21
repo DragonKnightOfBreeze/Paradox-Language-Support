@@ -35,8 +35,12 @@ interface ParadoxCsvExpressionSupport {
 
     fun supports(dataType: CwtDataType): Boolean
 
-    fun annotate(element: ParadoxCsvExpressionElement, text: String, rangeInExpression: TextRange, config: CwtValueConfig, holder: AnnotationHolder) {
-        // by default nothing
+    /**
+     * 语义级别的代码高亮的语言功能入口。
+     * 如果返回 `true`，则表示此 EP 适用，因而终止遍历 EP。
+     */
+    fun annotate(element: ParadoxCsvExpressionElement, text: String, rangeInExpression: TextRange, config: CwtValueConfig, holder: AnnotationHolder): Boolean {
+        return false
     }
 
     fun resolve(element: ParadoxCsvExpressionElement, text: String, rangeInExpression: TextRange, config: CwtValueConfig): PsiElement? {
