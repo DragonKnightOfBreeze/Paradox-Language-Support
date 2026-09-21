@@ -40,7 +40,8 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableReference
 import icu.windea.pls.script.psi.ParadoxScriptValue
 
 object ParadoxTypeService {
-    fun isTypedElement(element: PsiElement): Boolean {
+    fun isTypedElement(element: PsiElement, elementAt: PsiElement? = null): Boolean {
+        // 3.0.3 optimize: check `elementAt` for interpolations
         if (element.language !is ParadoxLanguage) return false
         return when (element) {
             is ParadoxExpressionElement -> true
@@ -48,16 +49,16 @@ object ParadoxTypeService {
             is ParadoxScriptedVariableReference -> true
             is ParadoxScriptInlineMathNumber -> true
             is ParadoxLocalisationProperty -> true
-            is ParadoxScriptParameter -> true
-            is ParadoxScriptConditionParameter -> true
-            is ParadoxLocalisationParameter -> true
+            is ParadoxScriptParameter -> elementAt == null || elementAt == element.idElement
+            is ParadoxScriptConditionParameter -> elementAt == null || elementAt == element.idElement
+            is ParadoxLocalisationParameter -> elementAt == null || elementAt == element.idElement
             else -> false
         }
     }
 
-    fun findTypedElements(element: PsiElement): List<PsiElement> {
-        if (element.language !is ParadoxLanguage) return emptyList()
-        val typedElement = element.parents(withSelf = true).find { isTypedElement(it) }
+    fun findTypedElements(elementAt: PsiElement): List<PsiElement> {
+        if (elementAt.language !is ParadoxLanguage) return emptyList()
+        val typedElement = elementAt.parents(withSelf = true).find { isTypedElement(it, elementAt) }
         return typedElement.to.singletonListOrEmpty()
     }
 

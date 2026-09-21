@@ -14,7 +14,8 @@ import icu.windea.pls.model.type.CwtType
 import icu.windea.pls.model.type.CwtTypeResolver
 
 object CwtTypeService {
-    fun isTypedElement(element: PsiElement): Boolean {
+    @Suppress("UNUSED_PARAMETER")
+    fun isTypedElement(element: PsiElement, elementAt: PsiElement? = null): Boolean {
         if (element.language !== CwtLanguage) return false
         return when {
             element is CwtExpressionElement -> true
@@ -22,9 +23,9 @@ object CwtTypeService {
         }
     }
 
-    fun findTypedElements(element: PsiElement): List<PsiElement> {
-        if (element.language !== CwtLanguage) return emptyList()
-        val typedElement = element.parents(withSelf = true).find { isTypedElement(it) }
+    fun findTypedElements(elementAt: PsiElement): List<PsiElement> {
+        if (elementAt.language !== CwtLanguage) return emptyList()
+        val typedElement = elementAt.parents(withSelf = true).find { isTypedElement(it, elementAt) }
         return typedElement.to.singletonListOrEmpty()
     }
 
@@ -53,7 +54,6 @@ object CwtTypeService {
      * 规则类型 - 如果 [element] 表示一个规则则可用。
      */
     fun getConfigType(element: PsiElement): CwtConfigType? {
-        if (!isTypedElement(element)) return null
         return CwtConfigManager.getConfigType(element)
     }
 
