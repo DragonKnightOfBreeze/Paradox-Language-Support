@@ -4,6 +4,7 @@
 package icu.windea.pls.core.collections
 
 import com.google.common.collect.ImmutableList
+import com.intellij.util.Processor
 import icu.windea.pls.core.annotations.Fast
 
 /** @see kotlin.collections.forEach */
@@ -256,7 +257,7 @@ inline fun <T> List<T>.noneFast(predicate: (T) -> Boolean): Boolean {
     return true
 }
 
-/** @see icu.windea.pls.core.sequences.process */
+/** @see icu.windea.pls.core.process */
 @Fast
 inline fun <T> List<T>.processFast(processor: (T) -> Boolean): Boolean {
     // note: assume input is `RandomAccess` and is not `CopyOnWriteArrayList`
@@ -267,6 +268,12 @@ inline fun <T> List<T>.processFast(processor: (T) -> Boolean): Boolean {
     }
     return true
 }
+
+// /** @see icu.windea.pls.core.process */
+// @Fast
+// fun <T> List<T>.processFast(processor: Processor<T>): Boolean {
+//     return processFast { processor.process(it) }
+// }
 
 /** @see kotlin.collections.drop */
 @Fast

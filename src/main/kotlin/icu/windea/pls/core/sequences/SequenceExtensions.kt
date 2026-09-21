@@ -2,6 +2,8 @@
 
 package icu.windea.pls.core.sequences
 
+import com.intellij.util.Processor
+
 /** 将类型为 [R] 且满足 [predicate] 的元素过滤为序列。 */
 inline fun <reified R> Sequence<*>.filterIsInstance(crossinline predicate: (R) -> Boolean): Sequence<R> {
     @Suppress("UNCHECKED_CAST")
@@ -27,3 +29,8 @@ inline fun <T> Sequence<T>.process(processor: (T) -> Boolean): Boolean {
     }
     return true
 }
+
+// /** 逐个处理元素，若处理函数 [processor] 返回 `false` 则提前终止并返回 `false`。 */
+// fun <T> Sequence<T>.process(processor: Processor<T>): Boolean {
+//     return process { processor.process(it) }
+// }

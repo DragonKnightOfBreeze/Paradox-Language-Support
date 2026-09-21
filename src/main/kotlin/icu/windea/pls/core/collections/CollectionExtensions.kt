@@ -2,6 +2,7 @@
 
 package icu.windea.pls.core.collections
 
+import com.intellij.util.Processor
 import java.util.*
 
 /** 如果当前集合为 `null` 或为空，则返回 `null`。否则返回自身。 */
@@ -116,6 +117,21 @@ inline fun <K, V> Map<K, V>.processValue(key: K?, processor: (V) -> Boolean): Bo
     }
     return true
 }
+
+// /** 逐个处理元素。如果处理函数 [processor] 返回 `false` 则提前终止并返回 `false`。 */
+// fun <T> Iterable<T>.process(processor: Processor<T>) : Boolean {
+//     return process { processor.process(it) }
+// }
+//
+// /** 逐个处理元素。如果处理函数 [processor] 返回 `false` 则提前终止并返回 `false`。 */
+// fun <K, V> Map<K, V>.process(processor: Processor<Map.Entry<K, V>>): Boolean {
+//     return process { processor.process(it) }
+// }
+//
+// /** 如果 [key] 为 `null`，则仅处理 [key] 对应的值，否则逐个处理值。如果处理函数 [processor] 返回 `false` 则提前终止并返回 `false`。 */
+// fun <K, V> Map<K, V>.processValue(key: K?, processor: Processor<V>): Boolean {
+//     return processValue(key) { processor.process(it) }
+// }
 
 /**
  * 将满足指定条件（[predicate]）的元素置顶（保持相对顺序），返回处理后的新列表。
