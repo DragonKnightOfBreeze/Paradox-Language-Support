@@ -37,7 +37,7 @@ abstract class ParadoxExpandableScriptExpressionSupport : ParadoxScriptExpressio
             val configExpression = config.configExpression ?: return false
             val unionName = configExpression.metadata.value ?: return false
             // NOTE 3.0.1 recursion guard is required here
-            // NOTE 3.0.3 use first matched config directly atm, event if the result from this config is null or empty
+            // NOTE 3.0.3 use first actually matched config atm, event if the result from this config is null or empty
             val processor = ProcessorFactory.find<CwtValueConfig>()
             runWithRecursionGuard("scriptExpression.annotate.union", unionName) {
                 val expression = ParadoxExpression.resolve(element)
@@ -54,7 +54,7 @@ abstract class ParadoxExpandableScriptExpressionSupport : ParadoxScriptExpressio
             val configExpression = config.configExpression ?: return null
             val unionName = configExpression.metadata.value ?: return null
             // NOTE 3.0.1 recursion guard is required here
-            // NOTE 3.0.3 use first matched config directly atm, event if the result from this config is null or empty
+            // NOTE 3.0.3 use first actually matched config atm, event if the result from this config is null or empty
             val processor = ProcessorFactory.find<CwtValueConfig>()
             runWithRecursionGuard("scriptExpression.resolve.union", unionName) {
                 val expression = ParadoxExpression.resolve(element)
@@ -71,7 +71,7 @@ abstract class ParadoxExpandableScriptExpressionSupport : ParadoxScriptExpressio
             val configExpression = config.configExpression ?: return emptyList()
             val unionName = configExpression.metadata.value ?: return emptyList()
             // NOTE 3.0.1 recursion guard is required here
-            // NOTE 3.0.3 use first matched config directly atm, event if the result from this config is null or empty
+            // NOTE 3.0.3 use first actually matched config atm, event if the result from this config is null or empty
             val processor = ProcessorFactory.find<CwtValueConfig>()
             runWithRecursionGuard("scriptExpression.resolveAll.union", unionName) {
                 val expression = ParadoxExpression.resolve(element)
@@ -89,7 +89,7 @@ abstract class ParadoxExpandableScriptExpressionSupport : ParadoxScriptExpressio
             val configExpression = config.configExpression ?: return emptyList()
             val unionName = configExpression.metadata.value ?: return emptyList()
             // NOTE 3.0.1 recursion guard is required here
-            // NOTE 3.0.3 use first matched config directly atm, event if the result from this config is null or empty
+            // NOTE 3.0.3 use first actually matched config atm, event if the result from this config is null or empty
             val processor = ProcessorFactory.find<CwtValueConfig>()
             runWithRecursionGuard("scriptExpression.getReferences.union", unionName) {
                 val expression = ParadoxExpression.resolve(element)

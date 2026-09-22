@@ -34,7 +34,7 @@ object ParadoxConfigExpansionService {
         name: String,
         configGroup: CwtConfigGroup,
         options: ParadoxMatchOptions? = null,
-        processor: (CwtValueConfig, ParadoxMatchResult) -> Boolean,
+        processor: (r: CwtValueConfig, mr: ParadoxMatchResult) -> Boolean,
     ): Boolean {
         // for script files and csv files
         val language = element.language
@@ -92,7 +92,7 @@ object ParadoxConfigExpansionService {
         unionName: String,
         configGroup: CwtConfigGroup,
         options: ParadoxMatchOptions? = null,
-        processor: (CwtValueConfig) -> Boolean,
+        processor: (r: CwtValueConfig) -> Boolean,
     ) {
         expandAndMatchUnion(element, expression, unionName, configGroup, options) { unionValueConfig, matchResult ->
             if (matchResult.get(options)) processor(unionValueConfig) else true
@@ -115,7 +115,7 @@ object ParadoxConfigExpansionService {
         name: String,
         configGroup: CwtConfigGroup,
         options: ParadoxMatchOptions? = null,
-        processor: (String, ParadoxMatchResult) -> Boolean,
+        processor: (r: String, mr: ParadoxMatchResult) -> Boolean,
     ): Boolean {
         // only for script files
         val language = element.language
@@ -173,7 +173,7 @@ object ParadoxConfigExpansionService {
         name: String,
         configGroup: CwtConfigGroup,
         options: ParadoxMatchOptions? = null,
-        processor: (String) -> Boolean,
+        processor: (r: String) -> Boolean,
     ): Boolean {
         return expandAndMatchAliasKeys(element, expression, name, configGroup, options) { key, matchResult ->
             if (matchResult.get(options)) processor(key) else true

@@ -90,24 +90,6 @@ abstract class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatch
         }
     }
 
-    /** @see CwtDataTypes.UnionValue */
-    class ForUnionValue : ParadoxCoreScriptExpressionMatcher() {
-        override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.UnionValue
-
-        override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
-            if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch // 3.0.2 fast return
-            val unionName = configExpression.metadata.value ?: return ParadoxMatchResult.NotMatch // null -> invalid config
-            // NOTE 3.0.1 recursion guard is required here
-            val processor = ProcessorFactory.find<ParadoxMatchResult>()
-            runWithRecursionGuard("scriptExpression.match.union", unionName) {
-                ParadoxConfigExpansionService.expandAndMatchUnion(context.element, context.expression, unionName, context.configGroup, context.options) { _, matchResult ->
-                    processor.process(matchResult)
-                }
-            }
-            return processor.result ?: ParadoxMatchResult.NotMatch
-        }
-    }
-
     /** @see CwtDataTypes.DynamicValue */
     class ForDynamicValue : ParadoxCoreScriptExpressionMatcher() {
         override fun supports(dataType: CwtDataType) = dataType in CwtDataTypeSets.DynamicValue

@@ -208,7 +208,6 @@
     <scriptExpressionMatcher implementation="icu.windea.pls.ep.match.expression.ParadoxCoreScriptExpressionMatcher$ForSyncedLocalisation"/>
     <scriptExpressionMatcher implementation="icu.windea.pls.ep.match.expression.ParadoxCoreScriptExpressionMatcher$ForInlineLocalisation"/>
     <scriptExpressionMatcher implementation="icu.windea.pls.ep.match.expression.ParadoxCoreScriptExpressionMatcher$ForEnumValue"/>
-    <scriptExpressionMatcher implementation="icu.windea.pls.ep.match.expression.ParadoxCoreScriptExpressionMatcher$ForUnionValue"/>
     <scriptExpressionMatcher implementation="icu.windea.pls.ep.match.expression.ParadoxCoreScriptExpressionMatcher$ForDynamicValue"/>
     <scriptExpressionMatcher implementation="icu.windea.pls.ep.match.expression.ParadoxCoreScriptExpressionMatcher$ForScopeField"/>
     <scriptExpressionMatcher implementation="icu.windea.pls.ep.match.expression.ParadoxCoreScriptExpressionMatcher$ForValueField"/>
@@ -232,9 +231,10 @@
     <scriptExpressionMatcher implementation="icu.windea.pls.ep.match.expression.ParadoxExternalReferenceScriptExpressionMatcher$ForShaderEffect"/>
     <scriptExpressionMatcher implementation="icu.windea.pls.ep.match.expression.ParadoxExternalReferenceScriptExpressionMatcher$ForMeshLocator"/>
     <!-- Script / Expandable -->
-    <scriptExpressionMatcher implementation="icu.windea.pls.ep.match.expression.ParadoxAliasScriptExpressionMatcher$ForAliasName"/>
-    <scriptExpressionMatcher implementation="icu.windea.pls.ep.match.expression.ParadoxAliasScriptExpressionMatcher$ForAliasMatchLeft"/>
-    <scriptExpressionMatcher implementation="icu.windea.pls.ep.match.expression.ParadoxAliasScriptExpressionMatcher$ForSingleAliasRight"/>
+    <scriptExpressionMatcher implementation="icu.windea.pls.ep.match.expression.ParadoxExpandableScriptExpressionMatcher$ForUnionValue"/>
+    <scriptExpressionMatcher implementation="icu.windea.pls.ep.match.expression.ParadoxExpandableScriptExpressionMatcher$ForAliasName"/>
+    <scriptExpressionMatcher implementation="icu.windea.pls.ep.match.expression.ParadoxExpandableScriptExpressionMatcher$ForAliasMatchLeft"/>
+    <scriptExpressionMatcher implementation="icu.windea.pls.ep.match.expression.ParadoxExpandableScriptExpressionMatcher$ForSingleAliasRight"/>
     <!-- Script / Others -->
     <scriptExpressionMatcher id="constant" implementation="icu.windea.pls.ep.match.expression.ParadoxConstantScriptExpressionMatcher"/>
     <scriptExpressionMatcher id="pattern" implementation="icu.windea.pls.ep.match.expression.ParadoxPatternScriptExpressionMatcher"/>

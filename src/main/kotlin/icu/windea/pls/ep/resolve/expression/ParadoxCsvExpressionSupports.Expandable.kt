@@ -34,7 +34,7 @@ abstract class ParadoxExpandableCsvExpressionSupport : ParadoxCsvExpressionSuppo
             val configGroup = config.configGroup
             val unionName = config.configExpression.metadata.value ?: return false
             // NOTE 3.0.1 recursion guard is required here
-            // NOTE 3.0.3 use first matched config directly atm, event if the result from this config is null or empty
+            // NOTE 3.0.3 use first actually matched config atm, event if the result from this config is null or empty
             val processor = ProcessorFactory.find<CwtValueConfig>()
             runWithRecursionGuard("csvExpression.annotate.union", unionName) {
                 val expression = ParadoxExpression.resolve(element)
@@ -50,7 +50,7 @@ abstract class ParadoxExpandableCsvExpressionSupport : ParadoxCsvExpressionSuppo
             val configGroup = config.configGroup
             val unionName = config.configExpression.metadata.value ?: return null
             // NOTE 3.0.1 recursion guard is required here
-            // NOTE 3.0.3 use first matched config directly atm, event if the result from this config is null or empty
+            // NOTE 3.0.3 use first actually matched config atm, event if the result from this config is null or empty
             val processor = ProcessorFactory.find<PsiElement>()
             runWithRecursionGuard("csvExpression.resolve.union", unionName) {
                 val expression = ParadoxExpression.resolve(element)
