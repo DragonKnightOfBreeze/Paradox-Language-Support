@@ -17,14 +17,17 @@ object ChronicleCapacities {
     /** 是否在打开项目后，刷新内置规则文件（仅限一次）。 */
     fun refreshBuiltInConfigDirectories(): Boolean = model.refreshBuiltInConfigDirectories
 
-    /** 处理规则数据时，是否保留文件规则列表到其用户数据中（默认不保留）。 */
+    /** 处理规则数据时，是否保留文件规则列表到其用户数据中。默认不保留。 */
     fun keepFileConfigs(): Boolean = model.keepFileConfigs
 
-    /** 处理成员规则的选项元数据时，是否保留选项规则列表到其用户数据中（默认仅为内部规则保留）。 */
+    /** 处理成员规则的选项元数据时，是否保留选项规则列表到其用户数据中。默认仅为内部规则保留。 */
     fun keepOptionConfigs(): Boolean = model.keepOptionConfigs
 
     /** 收集得到的匹配候选项的最大数量，如果超出则会改为使用回退匹配。默认为 64。用于优化性能。 */
     fun maxMatchCandidateSize(): Int = model.maxMatchCandidateSize
+
+    /** 收集得到的处理后的匹配候选项的最大数量，如果超出则会改为使用回退匹配。默认为 16。用于优化性能。 */
+    fun maxProcessedMatchCandidateSize(): Int = model.maxProcessedMatchCandidateSize
 
     /** 定义相对于脚本文件的最大深度，如果超出则会被忽略。从 0 开始，默认为 4。用于优化性能。 */
     fun maxDefinitionDepth(): Int = model.maxDefinitionDepth
@@ -40,6 +43,7 @@ object ChronicleCapacities {
         val keepFileConfigs = System.getProperty("chronicle.capacities.keepFileConfigs").toBoolean()
         val keepOptionConfigs = System.getProperty("chronicle.capacities.keepOptionConfigs").toBoolean()
         val maxMatchCandidateSize = System.getProperty("chronicle.capacities.maxMatchCandidateSize")?.toIntOrNull() ?: 64
+        val maxProcessedMatchCandidateSize = System.getProperty("chronicle.capacities.maxProcessedMatchCandidateSize")?.toIntOrNull() ?: 16
         val maxDefinitionDepth = System.getProperty("chronicle.capacities.maxDefinitionDepth")?.toIntOrNull() ?: 4
     }
 
