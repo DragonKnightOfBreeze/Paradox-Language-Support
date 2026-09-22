@@ -26,6 +26,9 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
  */
 class ParadoxComparisonOperatorChecker : ParadoxIncorrectSyntaxChecker {
     override fun check(element: PsiElement, context: ParadoxSyntaxInspectionContext): Boolean {
+        // may be based on indexes and configs
+        if (DumbService.isDumb(context.holder.project)) return true
+
         if (context.rootFile == null) return true
         if (!ParadoxSyntaxService.isComparisonOperator(element)) return true
         val propertyElement = element.parent?.castOrNull<ParadoxScriptProperty>() ?: return true
@@ -42,7 +45,6 @@ class ParadoxComparisonOperatorChecker : ParadoxIncorrectSyntaxChecker {
         // check on semantic level
 
         if (context.gameType == null || context.gameType == ParadoxGameType.Core) return true
-        if (DumbService.isDumb(context.holder.project)) return true
 
         val valid = ParadoxSyntaxService.isComparisonOperatorValid(propertyElement)
         if (valid == false) {
