@@ -6,7 +6,6 @@ import icu.windea.pls.config.CwtConfigType
 import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.config.annotations.FromName
 import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.config.manipulation.CwtConfigManipulationService
 import icu.windea.pls.config.manipulation.CwtConfigInlineService
 import icu.windea.pls.config.util.CwtConfigResolverScope
 

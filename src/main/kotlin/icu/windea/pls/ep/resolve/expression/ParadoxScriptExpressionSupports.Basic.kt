@@ -18,9 +18,7 @@ abstract class ParadoxBasicScriptExpressionSupport : ParadoxScriptExpressionSupp
      * @see CwtDataTypes.Bool
      */
     class ForBool : ParadoxBasicScriptExpressionSupport() {
-        override fun supports(dataType: CwtDataType): Boolean {
-            return dataType == CwtDataTypes.Bool
-        }
+        override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.Bool
 
         override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
             ParadoxCompletionFactory.forBool().addToResult(context, result)
@@ -31,9 +29,7 @@ abstract class ParadoxBasicScriptExpressionSupport : ParadoxScriptExpressionSupp
      * @see CwtDataTypes.Block
      */
     class ForBlock : ParadoxBasicScriptExpressionSupport() {
-        override fun supports(dataType: CwtDataType): Boolean {
-            return dataType == CwtDataTypes.Block
-        }
+        override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.Block
 
         override fun resolve(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
             return config.pointer.element

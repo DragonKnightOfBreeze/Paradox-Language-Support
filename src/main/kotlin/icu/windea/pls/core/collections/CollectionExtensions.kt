@@ -2,7 +2,6 @@
 
 package icu.windea.pls.core.collections
 
-import com.intellij.util.Processor
 import java.util.*
 
 /** 如果当前集合为 `null` 或为空，则返回 `null`。否则返回自身。 */

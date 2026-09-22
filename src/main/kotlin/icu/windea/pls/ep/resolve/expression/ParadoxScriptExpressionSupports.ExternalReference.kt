@@ -20,9 +20,7 @@ abstract class ParadoxExternalReferenceScriptExpressionSupport : ParadoxScriptEx
      * @see CwtDataTypes.ShaderEffect
      */
     class ForShaderEffect : ParadoxExternalReferenceScriptExpressionSupport() {
-        override fun supports(dataType: CwtDataType): Boolean {
-            return dataType == CwtDataTypes.ShaderEffect
-        }
+        override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.ShaderEffect
 
         override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder): Boolean {
             val attributesKey = ParadoxScriptHighlighterColors.SHADER_EFFECT_REFERENCE
@@ -45,9 +43,7 @@ abstract class ParadoxExternalReferenceScriptExpressionSupport : ParadoxScriptEx
      * @see CwtDataTypes.MeshLocator
      */
     class ForMeshLocator : ParadoxExternalReferenceScriptExpressionSupport() {
-        override fun supports(dataType: CwtDataType): Boolean {
-            return dataType == CwtDataTypes.MeshLocator
-        }
+        override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.MeshLocator
 
         override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder): Boolean {
             val attributesKey = ParadoxScriptHighlighterColors.MESH_LOCATOR_REFERENCE

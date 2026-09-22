@@ -4,36 +4,16 @@ import com.intellij.openapi.application.readAction
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.progress.checkCanceled
 import icu.windea.pls.config.CwtDataTypes
-import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
-import icu.windea.pls.config.config.delegated.CwtMacroConfig
 import icu.windea.pls.config.config.delegated.CwtModifierConfig
-import icu.windea.pls.config.config.delegated.CwtScopeConfig
-import icu.windea.pls.config.config.isStatic
-import icu.windea.pls.config.config.prefixFromArgument
-import icu.windea.pls.config.configExpression.CwtDataExpression
-import icu.windea.pls.config.configExpression.CwtDataExpressionRole
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.model.CwtLinkModelBase
-import icu.windea.pls.config.filePathPatterns
 import icu.windea.pls.config.select.selectConfigScope
-import icu.windea.pls.config.sortedByPriority
-import icu.windea.pls.core.collections.CaseInsensitiveStringKeyMap
-import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.orNull
-import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.util.tupleOf
-import icu.windea.pls.lang.resolve.ParadoxLocalisationIconService
 import icu.windea.pls.model.paths.CwtConfigPath
-import icu.windea.pls.model.scope.ParadoxScope
-import it.unimi.dsi.fastutil.ints.IntArrayList
-import it.unimi.dsi.fastutil.ints.IntArraySet
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap
-import it.unimi.dsi.fastutil.objects.ObjectArrayList
-import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet
 
 /**
  * 用于初始化规则分组中需要经过计算的那些数据。

@@ -21,9 +21,7 @@ abstract class ParadoxCoreCsvExpressionSupport : ParadoxCsvExpressionSupport {
      * @see CwtDataTypes.Definition
      */
     class ForDefinition : ParadoxCoreCsvExpressionSupport() {
-        override fun supports(dataType: CwtDataType): Boolean {
-            return dataType == CwtDataTypes.Definition
-        }
+        override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.Definition
 
         override fun annotate(element: ParadoxCsvExpressionElement, text: String, rangeInExpression: TextRange, config: CwtValueConfig, holder: AnnotationHolder): Boolean {
             val attributesKey = ParadoxSemanticHighlighterColors.definitionReference(element.language)

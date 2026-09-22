@@ -13,7 +13,6 @@ import icu.windea.pls.config.config.containingDirectConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.CwtDataExpressionRole
 import icu.windea.pls.config.manipulation.CwtConfigInlineMode
-import icu.windea.pls.config.manipulation.CwtConfigManipulationService
 import icu.windea.pls.config.manipulation.CwtConfigInlineService
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cast

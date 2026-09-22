@@ -2,7 +2,6 @@ package icu.windea.pls.ep.match
 
 import com.intellij.openapi.extensions.ExtensionPointName
 import icu.windea.pls.config.CwtDataTypeSets
-import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.core.addExtensionPointListener
 import icu.windea.pls.core.optimized

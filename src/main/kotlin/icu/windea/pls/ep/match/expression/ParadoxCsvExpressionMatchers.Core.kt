@@ -12,9 +12,7 @@ import icu.windea.pls.lang.match.util.ParadoxMatchResultFactory
 abstract class ParadoxCoreCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
     /** @see CwtDataTypes.Definition */
     class ForDefinition : ParadoxCoreCsvExpressionMatcher() {
-        override fun supports(dataType: CwtDataType): Boolean {
-            return dataType == CwtDataTypes.Definition
-        }
+        override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.Definition
 
         override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression): ParadoxMatchResult {
             // can be an int or float here (e.g., for <technology_tier>)

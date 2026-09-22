@@ -63,7 +63,6 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationTextIcon
 import icu.windea.pls.localisation.text.ParadoxLocalisation
 import icu.windea.pls.model.ParadoxLocalisationType
 import icu.windea.pls.model.constants.ChronicleStrings
-import icu.windea.pls.script.psi.ParadoxScriptNormalParameterArgument
 import javax.swing.Icon
 
 @Suppress("UNUSED_PARAMETER")

@@ -125,9 +125,7 @@ abstract class ParadoxComplexScriptExpressionSupport : ParadoxScriptExpressionSu
      * @see ParadoxScriptValueReferenceExpression
      */
     class ForScriptValueReference : ParadoxComplexScriptExpressionSupport() {
-        override fun supports(dataType: CwtDataType): Boolean {
-            return dataType == CwtDataTypes.ScriptValueReference
-        }
+        override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.ScriptValueReference
 
         override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
             ParadoxComplexExpressionCompletionManager.completeScriptValueReferenceExpression(context, result)
@@ -139,9 +137,7 @@ abstract class ParadoxComplexScriptExpressionSupport : ParadoxScriptExpressionSu
      * @see ParadoxDefineReferenceExpression
      */
     class ForDefineReference : ParadoxComplexScriptExpressionSupport() {
-        override fun supports(dataType: CwtDataType): Boolean {
-            return dataType == CwtDataTypes.DefineReference
-        }
+        override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.DefineReference
 
         override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
             ParadoxComplexExpressionCompletionManager.completeDefineReferenceExpression(context, result)
@@ -153,9 +149,7 @@ abstract class ParadoxComplexScriptExpressionSupport : ParadoxScriptExpressionSu
      * @see ParadoxArrayDefineReferenceExpression
      */
     class ForArrayDefineReference : ParadoxComplexScriptExpressionSupport() {
-        override fun supports(dataType: CwtDataType): Boolean {
-            return dataType == CwtDataTypes.ArrayDefineReference
-        }
+        override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.ArrayDefineReference
 
         override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
             ParadoxComplexExpressionCompletionManager.completeArrayDefineReferenceExpression(context, result)
@@ -167,9 +161,7 @@ abstract class ParadoxComplexScriptExpressionSupport : ParadoxScriptExpressionSu
      * @see ParadoxTagsExpression
      */
     class ForTags : ParadoxComplexScriptExpressionSupport() {
-        override fun supports(dataType: CwtDataType): Boolean {
-            return dataType == CwtDataTypes.Tags
-        }
+        override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.Tags
 
         override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
             ParadoxComplexExpressionCompletionManager.completeTagsExpression(context, result)
@@ -181,9 +173,7 @@ abstract class ParadoxComplexScriptExpressionSupport : ParadoxScriptExpressionSu
      * @see ParadoxDatabaseObjectExpression
      */
     class ForDatabaseObject : ParadoxComplexScriptExpressionSupport() {
-        override fun supports(dataType: CwtDataType): Boolean {
-            return dataType == CwtDataTypes.DatabaseObject
-        }
+        override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.DatabaseObject
 
         override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
             ParadoxComplexExpressionCompletionManager.completeDatabaseObjectExpression(context, result)
@@ -195,9 +185,7 @@ abstract class ParadoxComplexScriptExpressionSupport : ParadoxScriptExpressionSu
      * @see ParadoxNameFormatExpression
      */
     class ForNameFormat : ParadoxComplexScriptExpressionSupport() {
-        override fun supports(dataType: CwtDataType): Boolean {
-            return dataType == CwtDataTypes.NameFormat
-        }
+        override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.NameFormat
 
         override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
             ParadoxComplexExpressionCompletionManager.completeNameFormatExpression(context, result)
@@ -209,9 +197,7 @@ abstract class ParadoxComplexScriptExpressionSupport : ParadoxScriptExpressionSu
      * @see ParadoxTemplateExpression
      */
     class ForTemplate : ParadoxComplexScriptExpressionSupport() {
-        override fun supports(dataType: CwtDataType): Boolean {
-            return dataType == CwtDataTypes.Template
-        }
+        override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.Template
 
         override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
             ParadoxComplexExpressionCompletionManager.completeTemplateExpression(context, result)

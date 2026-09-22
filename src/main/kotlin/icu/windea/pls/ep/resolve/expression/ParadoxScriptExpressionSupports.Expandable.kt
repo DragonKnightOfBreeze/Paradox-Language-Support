@@ -27,9 +27,7 @@ abstract class ParadoxExpandableScriptExpressionSupport : ParadoxScriptExpressio
      * @see CwtDataTypes.UnionValue
      */
     class ForUnionValue : ParadoxExpandableScriptExpressionSupport() {
-        override fun supports(dataType: CwtDataType): Boolean {
-            return dataType == CwtDataTypes.UnionValue
-        }
+        override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.UnionValue
 
         // NOTE 3.0.1 recursion guard is required here for various operations
         override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder): Boolean {

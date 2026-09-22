@@ -12,9 +12,7 @@ abstract class ParadoxBasicCsvExpressionSupport : ParadoxCsvExpressionSupport {
      * @see CwtDataTypes.Bool
      */
     class ForBool : ParadoxBasicCsvExpressionSupport() {
-        override fun supports(dataType: CwtDataType): Boolean {
-            return dataType == CwtDataTypes.Bool
-        }
+        override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.Bool
 
         override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
             ParadoxCompletionFactory.forBool().addToResult(context, result)

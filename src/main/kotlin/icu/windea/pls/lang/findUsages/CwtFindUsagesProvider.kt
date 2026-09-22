@@ -5,9 +5,9 @@ import com.intellij.lang.findUsages.FindUsagesProvider
 import com.intellij.psi.PsiElement
 import icu.windea.pls.core.psi.light.LightElementBase
 import icu.windea.pls.cwt.CwtLanguage
+import icu.windea.pls.cwt.psi.CwtElementDescriptionService
 import icu.windea.pls.cwt.psi.CwtOption
 import icu.windea.pls.cwt.psi.CwtProperty
-import icu.windea.pls.cwt.psi.CwtElementDescriptionService
 import icu.windea.pls.cwt.psi.CwtString
 import icu.windea.pls.lang.psi.CwtConfigElementDescriptionService
 

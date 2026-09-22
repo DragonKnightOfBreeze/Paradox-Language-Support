@@ -1,10 +1,8 @@
 package icu.windea.pls.lang.resolve
 
-import com.github.benmanes.caffeine.cache.Cache
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.extended.CwtExtendedGameRuleConfig
 import icu.windea.pls.config.config.extended.CwtExtendedOnActionConfig
-import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey

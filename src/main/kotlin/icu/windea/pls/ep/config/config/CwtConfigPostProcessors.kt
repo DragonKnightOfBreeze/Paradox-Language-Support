@@ -5,7 +5,6 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.tagType
 import icu.windea.pls.config.manipulation.CwtConfigManipulationService
-import icu.windea.pls.config.manipulation.CwtConfigInlineService
 import icu.windea.pls.config.util.CwtConfigResolverManager
 import icu.windea.pls.core.collections.anyFast
 import icu.windea.pls.core.collections.forEachFast

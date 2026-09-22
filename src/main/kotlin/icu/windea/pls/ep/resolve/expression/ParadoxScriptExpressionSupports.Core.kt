@@ -183,9 +183,7 @@ abstract class ParadoxCoreScriptExpressionSupport : ParadoxScriptExpressionSuppo
      * @see CwtDataTypes.InlineLocalisation
      */
     class ForInlineLocalisation : ParadoxCoreScriptExpressionSupport() {
-        override fun supports(dataType: CwtDataType): Boolean {
-            return dataType == CwtDataTypes.InlineLocalisation
-        }
+        override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.InlineLocalisation
 
         override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder): Boolean {
             if (text.isLeftQuoted()) return false
@@ -221,9 +219,7 @@ abstract class ParadoxCoreScriptExpressionSupport : ParadoxScriptExpressionSuppo
      * @see CwtDataTypes.Modifier
      */
     class ForModifier : ParadoxCoreScriptExpressionSupport() {
-        override fun supports(dataType: CwtDataType): Boolean {
-            return dataType == CwtDataTypes.Modifier
-        }
+        override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.Modifier
 
         override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder): Boolean {
             val attributesKey = ParadoxScriptHighlighterColors.MODIFIER
@@ -246,9 +242,7 @@ abstract class ParadoxCoreScriptExpressionSupport : ParadoxScriptExpressionSuppo
      * @see CwtDataTypes.EnumValue
      */
     class ForEnumValue : ParadoxCoreScriptExpressionSupport() {
-        override fun supports(dataType: CwtDataType): Boolean {
-            return dataType == CwtDataTypes.EnumValue
-        }
+        override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.EnumValue
 
         override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder): Boolean {
             val configGroup = config.configGroup
@@ -343,9 +337,7 @@ abstract class ParadoxCoreScriptExpressionSupport : ParadoxScriptExpressionSuppo
      * @see CwtDataTypes.Parameter
      */
     class ForParameter : ParadoxCoreScriptExpressionSupport() {
-        override fun supports(dataType: CwtDataType): Boolean {
-            return dataType == CwtDataTypes.Parameter
-        }
+        override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.Parameter
 
         override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder): Boolean {
             if (element !is ParadoxScriptStringExpressionElement) return false // only for string expressions in script files
@@ -369,9 +361,7 @@ abstract class ParadoxCoreScriptExpressionSupport : ParadoxScriptExpressionSuppo
      * @see CwtDataTypes.LocalisationParameter
      */
     class ForLocalisationParameter : ParadoxCoreScriptExpressionSupport() {
-        override fun supports(dataType: CwtDataType): Boolean {
-            return dataType == CwtDataTypes.LocalisationParameter
-        }
+        override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.LocalisationParameter
 
         override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder): Boolean {
             if (element !is ParadoxScriptStringExpressionElement) return false // only for string expressions in script files

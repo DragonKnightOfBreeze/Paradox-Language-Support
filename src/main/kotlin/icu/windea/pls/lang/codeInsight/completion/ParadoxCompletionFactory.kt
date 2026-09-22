@@ -28,7 +28,6 @@ import icu.windea.pls.config.config.delegated.CwtSystemScopeConfig
 import icu.windea.pls.config.config.prefixFromArgument
 import icu.windea.pls.config.config.resolved
 import icu.windea.pls.config.config.tagType
-import icu.windea.pls.config.manipulation.CwtConfigManipulationService
 import icu.windea.pls.config.manipulation.CwtConfigInlineService
 import icu.windea.pls.core.codeInsight.completion.AddCharInsertHandler
 import icu.windea.pls.core.codeInsight.completion.AddParenthesesInsertHandler

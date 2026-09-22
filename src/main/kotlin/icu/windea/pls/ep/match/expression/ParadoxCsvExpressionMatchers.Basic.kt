@@ -10,9 +10,7 @@ import icu.windea.pls.lang.match.util.ParadoxMatchResultFactory
 abstract class ParadoxBasicCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
     /** @see CwtDataTypes.Any */
     class ForAny : ParadoxBasicCsvExpressionMatcher() {
-        override fun supports(dataType: CwtDataType): Boolean {
-            return dataType == CwtDataTypes.Any
-        }
+        override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.Any
 
         override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression): ParadoxMatchResult {
             return ParadoxMatchResult.FallbackMatch
@@ -49,9 +47,7 @@ abstract class ParadoxBasicCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
 
     /** @see CwtDataTypes.Float */
     class ForFloat : ParadoxBasicCsvExpressionMatcher() {
-        override fun supports(dataType: CwtDataType): Boolean {
-            return dataType == CwtDataTypes.Float
-        }
+        override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.Float
 
         override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression): ParadoxMatchResult {
             // empty value is allowed
@@ -67,9 +63,7 @@ abstract class ParadoxBasicCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
 
     /** @see CwtDataTypes.Scalar */
     class ForScalar : ParadoxBasicCsvExpressionMatcher() {
-        override fun supports(dataType: CwtDataType): Boolean {
-            return dataType == CwtDataTypes.Scalar
-        }
+        override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.Scalar
 
         override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression): ParadoxMatchResult {
             // always match (fallback)

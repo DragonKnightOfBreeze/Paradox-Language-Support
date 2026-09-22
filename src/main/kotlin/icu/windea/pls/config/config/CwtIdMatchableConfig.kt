@@ -2,8 +2,8 @@ package icu.windea.pls.config.config
 
 import com.intellij.psi.PsiElement
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
-import icu.windea.pls.config.model.CwtConfigGroupDataModel
 import icu.windea.pls.config.match.CwtConfigMatchService
+import icu.windea.pls.config.model.CwtConfigGroupDataModel
 
 /**
  * 可匹配 ID 的规则的统一抽象。

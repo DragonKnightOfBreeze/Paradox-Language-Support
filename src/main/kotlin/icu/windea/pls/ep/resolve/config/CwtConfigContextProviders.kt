@@ -3,7 +3,6 @@ package icu.windea.pls.ep.resolve.config
 import com.intellij.psi.PsiFile
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.manipulation.CwtConfigManipulationService
 import icu.windea.pls.config.manipulation.CwtConfigInlineService
 import icu.windea.pls.core.collections.dropFast
 import icu.windea.pls.core.collections.forEachFast

@@ -32,28 +32,30 @@ class CwtConfigServiceTest : BasePlatformTestCase() {
 
     @Test
     fun testResolveConfigType_type() {
-        assertResolveConfigType("""
+        val text = """
             types = {
                 <caret>type[army] = {}
             }
-        """.trimIndent(), CwtConfigTypes.Type)
+        """.trimIndent()
+        assertResolveConfigType(text, CwtConfigTypes.Type)
     }
 
     @Test
     fun testResolveConfigType_subtype() {
-        assertResolveConfigType("""
+        val text = """
             types = {
                 type[army] = {
                     <caret>subtype[has_species] = {}
                 }
             }
-        """.trimIndent(), CwtConfigTypes.Subtype)
+        """.trimIndent()
+        assertResolveConfigType(text, CwtConfigTypes.Subtype)
     }
 
     @Test
     fun testResolveConfigType_modifier_inType() {
         // types/type[*]/modifiers/mod_name (length 4, no subtype) → Modifier
-        assertResolveConfigType("""
+        val text = """
             types = {
                 type[army] = {
                     modifiers = {
@@ -61,13 +63,14 @@ class CwtConfigServiceTest : BasePlatformTestCase() {
                     }
                 }
             }
-        """.trimIndent(), CwtConfigTypes.Modifier)
+        """.trimIndent()
+        assertResolveConfigType(text, CwtConfigTypes.Modifier)
     }
 
     @Test
     fun testResolveConfigType_modifier_inType_withSubtype() {
         // types/type[*]/modifiers/subtype[*]/mod_name (length 5, with subtype) → Modifier
-        assertResolveConfigType("""
+        val text = """
             types = {
                 type[army] = {
                     modifiers = {
@@ -77,13 +80,14 @@ class CwtConfigServiceTest : BasePlatformTestCase() {
                     }
                 }
             }
-        """.trimIndent(), CwtConfigTypes.Modifier)
+        """.trimIndent()
+        assertResolveConfigType(text, CwtConfigTypes.Modifier)
     }
 
     @Test
     fun testResolveConfigType_modifier_inType_wrongDepth() {
         // types/type[*]/modifiers/mod_name/nested (length 5, no subtype at index 3) → null
-        assertResolveConfigType("""
+        val text = """
             types = {
                 type[army] = {
                     modifiers = {
@@ -93,13 +97,14 @@ class CwtConfigServiceTest : BasePlatformTestCase() {
                     }
                 }
             }
-        """.trimIndent(), null)
+        """.trimIndent()
+        assertResolveConfigType(text, null)
     }
 
     @Test
     fun testResolveConfigType_modifier_inType_subtypeContainerOnly() {
         // types/type[*]/modifiers/subtype[*] (length 4, subtype at index 3 but length != 5) → null
-        assertResolveConfigType("""
+        val text = """
             types = {
                 type[army] = {
                     modifiers = {
@@ -107,333 +112,370 @@ class CwtConfigServiceTest : BasePlatformTestCase() {
                     }
                 }
             }
-        """.trimIndent(), null)
+        """.trimIndent()
+        assertResolveConfigType(text, null)
     }
 
     @Test
     fun testResolveConfigType_row() {
-        assertResolveConfigType("""
+        val text = """
             rows = {
                 <caret>row[my_row] = {}
             }
-        """.trimIndent(), CwtConfigTypes.Row)
+        """.trimIndent()
+        assertResolveConfigType(text, CwtConfigTypes.Row)
     }
 
     @Test
     fun testResolveConfigType_defineNamespace() {
-        assertResolveConfigType("""
+        val text = """
             defines = {
                 <caret>Namespace = {
                     Variable = 0
                 }
             }
-        """.trimIndent(), CwtConfigTypes.DefineNamespace)
+        """.trimIndent()
+        assertResolveConfigType(text, CwtConfigTypes.DefineNamespace)
     }
 
     @Test
     fun testResolveConfigType_defineVariable() {
-        assertResolveConfigType("""
+        val text = """
             defines = {
                 Namespace = {
                     <caret>Variable = 0
                 }
             }
-        """.trimIndent(), CwtConfigTypes.DefineVariable)
+        """.trimIndent()
+        assertResolveConfigType(text, CwtConfigTypes.DefineVariable)
     }
 
     @Test
     fun testResolveConfigType_enum() {
-        assertResolveConfigType("""
+        val text = """
             enums = {
                 <caret>enum[my_enum] = {}
             }
-        """.trimIndent(), CwtConfigTypes.Enum)
+        """.trimIndent()
+        assertResolveConfigType(text, CwtConfigTypes.Enum)
     }
 
     @Test
     fun testResolveConfigType_enumValue() {
         // 值元素，位于 enum 块中
-        assertResolveConfigType("""
+        val text = """
             enums = {
                 enum[my_enum] = {
                     <caret>value1
                 }
             }
-        """.trimIndent(), CwtConfigTypes.EnumValue)
+        """.trimIndent()
+        assertResolveConfigType(text, CwtConfigTypes.EnumValue)
     }
 
     @Test
     fun testResolveConfigType_complexEnum() {
-        assertResolveConfigType("""
+        val text = """
             enums = {
                 <caret>complex_enum[my_ce] = {}
             }
-        """.trimIndent(), CwtConfigTypes.ComplexEnum)
+        """.trimIndent()
+        assertResolveConfigType(text, CwtConfigTypes.ComplexEnum)
     }
 
     @Test
     fun testResolveConfigType_union() {
-        assertResolveConfigType("""
+        val text = """
             unions = {
                 <caret>union[loc_or_text] = { localisation scalar }
             }
-        """.trimIndent(), CwtConfigTypes.Union)
+        """.trimIndent()
+        assertResolveConfigType(text, CwtConfigTypes.Union)
     }
 
     @Test
     fun testResolveConfigType_dynamicValueType() {
-        assertResolveConfigType("""
+        val text = """
             values = {
                 <caret>value[my_value] = {}
             }
-        """.trimIndent(), CwtConfigTypes.DynamicValueType)
+        """.trimIndent()
+        assertResolveConfigType(text, CwtConfigTypes.DynamicValueType)
     }
 
     @Test
     fun testResolveConfigType_dynamicValue() {
         // 值元素，位于 value 块中
-        assertResolveConfigType("""
+        val text = """
             values = {
                 value[my_value] = {
                     <caret>some_val
                 }
             }
-        """.trimIndent(), CwtConfigTypes.DynamicValue)
+        """.trimIndent()
+        assertResolveConfigType(text, CwtConfigTypes.DynamicValue)
     }
 
     @Test
     fun testResolveConfigType_singleAlias() {
-        assertResolveConfigType("""
+        val text = """
             <caret>single_alias[my_sa] = something
-        """.trimIndent(), CwtConfigTypes.SingleAlias)
+        """.trimIndent()
+        assertResolveConfigType(text, CwtConfigTypes.SingleAlias)
     }
 
     @Test
     fun testResolveConfigType_alias() {
-        assertResolveConfigType("""
+        val text = """
             <caret>alias[other:my_alias] = something
-        """.trimIndent(), CwtConfigTypes.Alias)
+        """.trimIndent()
+        assertResolveConfigType(text, CwtConfigTypes.Alias)
     }
 
     @Test
     fun testResolveConfigType_alias_modifier() {
-        assertResolveConfigType("""
+        val text = """
             <caret>alias[modifier:my_modifier] = something
-        """.trimIndent(), CwtConfigTypes.Modifier)
+        """.trimIndent()
+        assertResolveConfigType(text, CwtConfigTypes.Modifier)
     }
 
     @Test
     fun testResolveConfigType_alias_trigger() {
-        assertResolveConfigType("""
+        val text = """
             <caret>alias[trigger:my_trigger] = something
-        """.trimIndent(), CwtConfigTypes.Trigger)
+        """.trimIndent()
+        assertResolveConfigType(text, CwtConfigTypes.Trigger)
     }
 
     @Test
     fun testResolveConfigType_alias_effect() {
-        assertResolveConfigType("""
+        val text = """
             <caret>alias[effect:my_effect] = something
-        """.trimIndent(), CwtConfigTypes.Effect)
+        """.trimIndent()
+        assertResolveConfigType(text, CwtConfigTypes.Effect)
     }
 
     @Test
     fun testResolveConfigType_macro() {
-        assertResolveConfigType("""
+        val text = """
             <caret>macro[my_dir] = something
-        """.trimIndent(), CwtConfigTypes.Macro)
+        """.trimIndent()
+        assertResolveConfigType(text, CwtConfigTypes.Macro)
     }
 
     @Test
     fun testResolveConfigType_link() {
-        assertResolveConfigType("""
+        val text = """
             links = {
                 <caret>my_link = something
             }
-        """.trimIndent(), CwtConfigTypes.Link)
+        """.trimIndent()
+        assertResolveConfigType(text, CwtConfigTypes.Link)
     }
 
     @Test
     fun testResolveConfigType_localisationLink() {
-        assertResolveConfigType("""
+        val text = """
             localisation_links = {
                 <caret>my_link = something
             }
-        """.trimIndent(), CwtConfigTypes.LocalisationLink)
+        """.trimIndent()
+        assertResolveConfigType(text, CwtConfigTypes.LocalisationLink)
     }
 
     @Test
     fun testResolveConfigType_localisationPromotion() {
-        assertResolveConfigType("""
+        val text = """
             localisation_promotions = {
                 <caret>my_promo = something
             }
-        """.trimIndent(), CwtConfigTypes.LocalisationPromotion)
+        """.trimIndent()
+        assertResolveConfigType(text, CwtConfigTypes.LocalisationPromotion)
     }
 
     @Test
     fun testResolveConfigType_localisationCommand() {
-        assertResolveConfigType("""
+        val text = """
             localisation_commands = {
                 <caret>my_cmd = something
             }
-        """.trimIndent(), CwtConfigTypes.LocalisationCommand)
+        """.trimIndent()
+        assertResolveConfigType(text, CwtConfigTypes.LocalisationCommand)
     }
 
     @Test
     fun testResolveConfigType_modifierCategory() {
-        assertResolveConfigType("""
+        val text = """
             modifier_categories = {
                 <caret>my_cat = something
             }
-        """.trimIndent(), CwtConfigTypes.ModifierCategory)
+        """.trimIndent()
+        assertResolveConfigType(text, CwtConfigTypes.ModifierCategory)
     }
 
     @Test
     fun testResolveConfigType_modifier_standalone() {
-        assertResolveConfigType("""
+        val text = """
             modifiers = {
                 <caret>my_modifier = something
             }
-        """.trimIndent(), CwtConfigTypes.Modifier)
+        """.trimIndent()
+        assertResolveConfigType(text, CwtConfigTypes.Modifier)
     }
 
     @Test
     fun testResolveConfigType_scope() {
-        assertResolveConfigType("""
+        val text = """
             scopes = {
                 <caret>my_scope = something
             }
-        """.trimIndent(), CwtConfigTypes.Scope)
+        """.trimIndent()
+        assertResolveConfigType(text, CwtConfigTypes.Scope)
     }
 
     @Test
     fun testResolveConfigType_scopeGroup() {
-        assertResolveConfigType("""
+        val text = """
             scope_groups = {
                 <caret>my_group = something
             }
-        """.trimIndent(), CwtConfigTypes.ScopeGroup)
+        """.trimIndent()
+        assertResolveConfigType(text, CwtConfigTypes.ScopeGroup)
     }
 
     @Test
     fun testResolveConfigType_databaseObjectType() {
-        assertResolveConfigType("""
+        val text = """
             database_object_types = {
                 <caret>my_type = something
             }
-        """.trimIndent(), CwtConfigTypes.DatabaseObjectType)
+        """.trimIndent()
+        assertResolveConfigType(text, CwtConfigTypes.DatabaseObjectType)
     }
 
     @Test
     fun testResolveConfigType_systemScope() {
-        assertResolveConfigType("""
+        val text = """
             system_scopes = {
                 <caret>my_scope = something
             }
-        """.trimIndent(), CwtConfigTypes.SystemScope)
+        """.trimIndent()
+        assertResolveConfigType(text, CwtConfigTypes.SystemScope)
     }
 
     @Test
     fun testResolveConfigType_locale() {
-        assertResolveConfigType("""
+        val text = """
             locales = {
                 <caret>my_locale = something
             }
-        """.trimIndent(), CwtConfigTypes.Locale)
+        """.trimIndent()
+        assertResolveConfigType(text, CwtConfigTypes.Locale)
     }
 
     @Test
     fun testResolveConfigType_extendedScriptedVariable() {
-        assertResolveConfigType("""
+        val text = """
             scripted_variables = {
                 <caret>my_var = something
             }
-        """.trimIndent(), CwtConfigTypes.ExtendedScriptedVariable)
+        """.trimIndent()
+        assertResolveConfigType(text, CwtConfigTypes.ExtendedScriptedVariable)
     }
 
     @Test
     fun testResolveConfigType_extendedDefinition() {
-        assertResolveConfigType("""
+        val text = """
             definitions = {
                 <caret>my_def = something
             }
-        """.trimIndent(), CwtConfigTypes.ExtendedDefinition)
+        """.trimIndent()
+        assertResolveConfigType(text, CwtConfigTypes.ExtendedDefinition)
     }
 
     @Test
     fun testResolveConfigType_extendedGameRule() {
-        assertResolveConfigType("""
+        val text = """
             game_rules = {
                 <caret>my_rule = something
             }
-        """.trimIndent(), CwtConfigTypes.ExtendedGameRule)
+        """.trimIndent()
+        assertResolveConfigType(text, CwtConfigTypes.ExtendedGameRule)
     }
 
     @Test
     fun testResolveConfigType_extendedOnAction() {
-        assertResolveConfigType("""
+        val text = """
             on_actions = {
                 <caret>my_action = something
             }
-        """.trimIndent(), CwtConfigTypes.ExtendedOnAction)
+        """.trimIndent()
+        assertResolveConfigType(text, CwtConfigTypes.ExtendedOnAction)
     }
 
     @Test
     fun testResolveConfigType_extendedParameter() {
-        assertResolveConfigType("""
+        val text = """
             parameters = {
                 <caret>my_param = something
             }
-        """.trimIndent(), CwtConfigTypes.ExtendedParameter)
+        """.trimIndent()
+        assertResolveConfigType(text, CwtConfigTypes.ExtendedParameter)
     }
 
     @Test
     fun testResolveConfigType_extendedComplexEnumValue() {
-        assertResolveConfigType("""
+        val text = """
             complex_enum_values = {
                 my_type = {
                     <caret>my_value = something
                 }
             }
-        """.trimIndent(), CwtConfigTypes.ExtendedComplexEnumValue)
+        """.trimIndent()
+        assertResolveConfigType(text, CwtConfigTypes.ExtendedComplexEnumValue)
     }
 
     @Test
     fun testResolveConfigType_extendedDynamicValue() {
-        assertResolveConfigType("""
+        val text = """
             dynamic_values = {
                 my_type = {
                     <caret>my_value = something
                 }
             }
-        """.trimIndent(), CwtConfigTypes.ExtendedDynamicValue)
+        """.trimIndent()
+        assertResolveConfigType(text, CwtConfigTypes.ExtendedDynamicValue)
     }
 
     @Test
     fun testResolveConfigType_extendedInlineScript() {
-        assertResolveConfigType("""
+        val text = """
             inline_scripts = {
                 <caret>my_script = something
             }
-        """.trimIndent(), CwtConfigTypes.ExtendedInlineScript)
+        """.trimIndent()
+        assertResolveConfigType(text, CwtConfigTypes.ExtendedInlineScript)
     }
 
     @Test
     fun testResolveConfigType_noMatch() {
         // 不匹配任何已知模式
-        assertResolveConfigType("""
+        val text = """
             unknown = {
                 <caret>something = value
             }
-        """.trimIndent(), null)
+        """.trimIndent()
+        assertResolveConfigType(text, null)
     }
 
     @Test
     fun testResolveConfigType_topLevelProperty_noMatch() {
         // 顶层属性，不匹配任何已知容器模式（depth 1）
-        assertResolveConfigType("""
+        val text = """
             <caret>unknown = value
-        """.trimIndent(), null)
+        """.trimIndent()
+        assertResolveConfigType(text, null)
     }
 
     // endregion

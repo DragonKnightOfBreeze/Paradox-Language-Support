@@ -8,7 +8,6 @@ import icu.windea.pls.config.configExpression.CwtTemplateExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cache.CacheBuilder
-import icu.windea.pls.core.cache.cancelable
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.util.Tuple2
 

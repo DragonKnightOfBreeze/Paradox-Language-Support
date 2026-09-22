@@ -5,6 +5,8 @@ import com.intellij.openapi.util.UserDataHolder
 import com.intellij.openapi.util.UserDataHolderBase
 import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.config.config.CwtMemberConfig
+import icu.windea.pls.config.config.delegated.CwtAliasConfig
+import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.ep.resolve.config.CwtConfigContextProvider
@@ -13,8 +15,6 @@ import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.paths.ParadoxMemberPath
 import icu.windea.pls.model.type.ParadoxMemberRole
 import icu.windea.pls.script.psi.ParadoxScriptMember
-import icu.windea.pls.config.config.delegated.CwtAliasConfig
-import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 
 /**
  * 规则上下文。

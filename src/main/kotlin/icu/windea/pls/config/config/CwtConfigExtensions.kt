@@ -3,7 +3,6 @@
 package icu.windea.pls.config.config
 
 import com.intellij.psi.PsiElement
-import icu.windea.pls.config.config.delegated.CwtUnionConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.manipulation.CwtConfigExpansionService
 import icu.windea.pls.config.util.CwtConfigManager

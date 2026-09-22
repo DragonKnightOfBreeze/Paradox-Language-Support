@@ -16,7 +16,6 @@ import icu.windea.pls.config.config.resolved
 import icu.windea.pls.core.codeInsight.LimitedCompletionProcessor
 import icu.windea.pls.core.processAsync
 import icu.windea.pls.core.runSmartReadAction
-import icu.windea.pls.core.runWithRecursionGuard
 import icu.windea.pls.core.util.values.singletonListOrEmpty
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.ep.resolve.expression.ParadoxPathReferenceExpressionSupport
