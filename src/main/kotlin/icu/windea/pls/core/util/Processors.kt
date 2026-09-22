@@ -73,7 +73,7 @@ open class DuplicateProcessor<T> : Processor<T> {
 }
 
 open class AllProcessor<T> : Processor<T> {
-    private var _result = false
+    private var _result = true
 
     val result: Boolean get() = _result
 
@@ -109,7 +109,7 @@ open class AnyProcessor<T> : Processor<T> {
 }
 
 open class NoneProcessor<T> : Processor<T> {
-    private var _result = false
+    private var _result = true
 
     val result: Boolean get() = _result
 

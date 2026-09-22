@@ -100,14 +100,14 @@ object ParadoxConfigManipulationService {
         // NOTE 3.0.3 use processor pattern to optimize performance
 
         run {
-            val constKey = configGroup.aliasModel.name2ConstKeys[aliasName]?.get(expression.value)
+            val constKey = configGroup.aliasModel.forConst[aliasName]?.get(expression.value)
             if (constKey == null) return@run
             val matchResult = ParadoxMatchResult.ExactMatch
             return processor(constKey, matchResult) // fast return
         }
         run {
             if (!expression.isParameterized()) return@run
-            val constKeys = configGroup.aliasModel.name2ConstKeys[aliasName]?.values.orNull()
+            val constKeys = configGroup.aliasModel.forConst[aliasName]?.values.orNull()
             if (constKeys == null) return@run
             ProgressManager.checkCanceled() // check cancellation
             val matchResult = ParadoxMatchResult.ParameterizedMatch
@@ -123,7 +123,7 @@ object ParadoxConfigManipulationService {
             }
         }
         run {
-            val nonConstKeys = configGroup.aliasModel.name2NonConstKeys[aliasName].orNull()
+            val nonConstKeys = configGroup.aliasModel.forNonConstSorted[aliasName].orNull()
             if (nonConstKeys == null) return@run
             ProgressManager.checkCanceled() // check cancellation
             val matchContext = ParadoxExpressionMatchContext(element, expression, configGroup, options)

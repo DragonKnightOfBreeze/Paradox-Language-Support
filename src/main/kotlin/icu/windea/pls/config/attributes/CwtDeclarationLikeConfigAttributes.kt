@@ -1,7 +1,7 @@
 package icu.windea.pls.config.attributes
 
 import icu.windea.pls.config.CwtDataTypeSets
-import icu.windea.pls.config.configGroup.CwtTypeModel
+import icu.windea.pls.config.model.CwtTypeModel
 
 /**
  * @property involveDynamicValue 规则树中是否涉及可能匹配动态值的数据表达式。参见 [CwtDataTypeSets.DynamicValueInvolved]。

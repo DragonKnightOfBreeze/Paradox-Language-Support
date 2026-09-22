@@ -20,7 +20,7 @@ data class CwtConfigGroupFileInfo(
 )
 
 /**
- * 规则文件当地来源。
+ * 规则文件的来源。
  *
  * @see CwtFileBasedConfigGroupProcessor
  */
@@ -32,9 +32,11 @@ enum class CwtConfigGroupFileSource {
 }
 
 /**
- * 提供一组预定义的绑定到指定规则分组的模拟规则。这些规则是合成的，规则文件中不存在声明处。
+ * 提供一组预定义的绑定到指定规则分组的模拟规则。
+ *
+ * 这些规则是合成的，规则文件中不存在声明处。
  */
-class CwtConfigGroupMockConfigModel(configGroup: CwtConfigGroup) {
+class CwtConfigGroupMockConfigs(configGroup: CwtConfigGroup) {
     val anyProperty = CwtPropertyConfig.mock(configGroup, "\$any", "\$any")
     val anyValue = CwtValueConfig.mock(configGroup, "\$any")
 
@@ -51,7 +53,7 @@ class CwtConfigGroupMockConfigModel(configGroup: CwtConfigGroup) {
 /**
  * 提供一组预定义的绑定到指定规则分组的 [ModificationTracker]。
  */
-class CwtConfigGroupModificationTrackerModel(configGroup: CwtConfigGroup) {
+class CwtConfigGroupModificationTrackers(configGroup: CwtConfigGroup) {
     val scriptValue = ChronicleModificationTrackers.scriptFileFromDefinitionTypes(configGroup, ParadoxDefinitionTypes.scriptValue)
     val definitionParameter = ChronicleModificationTrackers.scriptFileFromDefinitionTypes(configGroup, configGroup.typeModel.supportParameters)
     val definitionScopeContext = ChronicleModificationTrackers.scriptFileFromDefinitionTypes(configGroup, configGroup.typeModel.supportScopeInference)

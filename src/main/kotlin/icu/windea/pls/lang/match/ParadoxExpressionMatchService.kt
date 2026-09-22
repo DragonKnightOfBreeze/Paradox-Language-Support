@@ -71,12 +71,12 @@ object ParadoxExpressionMatchService {
         // NOTE 3.0.3 fast return if the alias key can be matched constantly (case-insensitive), otherwise, try further match
         // NOTE 3.0.3 should also include non-const keys if the expression is parameterized
 
-        val constKey = configGroup.aliasModel.name2ConstKeys[aliasName]?.get(expression.value)
+        val constKey = configGroup.aliasModel.forConst[aliasName]?.get(expression.value)
         if (constKey != null) return listOf(constKey)
 
         val keys = when {
             expression.isParameterized() -> configGroup.aliasGroups[aliasName]?.keys
-            else -> configGroup.aliasModel.name2NonConstKeys[aliasName]
+            else -> configGroup.aliasModel.forNonConstSorted[aliasName]
         }
         if (keys.isNullOrEmpty()) return emptyList()
 

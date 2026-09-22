@@ -118,22 +118,23 @@ class ParadoxCsvUnionValueExpressionSupport : ParadoxCsvExpressionSupport {
         val configGroup = config.configGroup
         val unionName = config.configExpression.metadata.value ?: return false
         // NOTE 3.0.1 recursion guard is required here
-        val processor = ProcessorFactory.any<Unit>()
+        // NOTE 3.0.3 use first matched config directly atm, event if the result from this config is null or empty
+        val processor = ProcessorFactory.find<CwtValueConfig>()
         runWithRecursionGuard("csvExpression.annotate.union", unionName) {
             val expression = ParadoxExpression.resolve(element)
-            ParadoxConfigManipulationService.expandMatchedUnionValues(element, expression, unionName, configGroup) p@{ unionValueConfig ->
-                val r = ParadoxExpressionService.annotateCsvExpression(element, text, rangeInExpression, unionValueConfig, holder)
-                if (!r) return@p true
-                processor.process(Unit)
+            ParadoxConfigManipulationService.expandMatchedUnionValues(element, expression, unionName, configGroup) {
+                processor.process(it)
             }
         }
-        return processor.result
+        val unionValueConfig = processor.result ?: return false
+        return ParadoxExpressionService.annotateCsvExpression(element, text, rangeInExpression, unionValueConfig, holder)
     }
 
     override fun resolve(element: ParadoxCsvExpressionElement, text: String, rangeInExpression: TextRange, config: CwtValueConfig): PsiElement? {
         val configGroup = config.configGroup
         val unionName = config.configExpression.metadata.value ?: return null
         // NOTE 3.0.1 recursion guard is required here
+        // NOTE 3.0.3 use first matched config directly atm, event if the result from this config is null or empty
         val processor = ProcessorFactory.find<PsiElement>()
         runWithRecursionGuard("csvExpression.resolve.union", unionName) {
             val expression = ParadoxExpression.resolve(element)

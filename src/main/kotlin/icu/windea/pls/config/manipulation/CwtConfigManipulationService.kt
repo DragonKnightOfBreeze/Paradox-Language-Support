@@ -10,7 +10,6 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.aliasConfig
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
-import icu.windea.pls.config.config.delegated.CwtEnumConfig
 import icu.windea.pls.config.config.delegated.CwtMacroConfig
 import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.config.delegated.CwtUnionConfig
@@ -384,8 +383,8 @@ object CwtConfigManipulationService {
      *
      * @see ParadoxDefinitionSubtypeExpression
      */
-    fun expandBySubtypeExpression(config: CwtMemberConfig<*>, processor: (CwtMemberConfig<*>, String) -> Boolean): Boolean {
-        if (config.configs.isNullOrEmpty()) return true
+    fun expandBySubtypeExpression(config: CwtMemberConfig<*>?, processor: (CwtMemberConfig<*>, String) -> Boolean): Boolean {
+        if (config == null) return true
         return doExpandBySubtypeExpression(config, "", processor)
     }
 
@@ -406,20 +405,6 @@ object CwtConfigManipulationService {
     }
 
     /**
-     * 展开枚举规则 [config] 的所有作为候选项的值规则。
-     *
-     * @see CwtEnumConfig
-     */
-    fun expandEnumValues(config: CwtEnumConfig, processor: (CwtValueConfig) -> Boolean): Boolean {
-        if (config.valueConfigMap.isEmpty()) return true
-        config.valueConfigMap.values.forEach { valueConfig ->
-            val r = processor(valueConfig)
-            if (!r) return false
-        }
-        return true
-    }
-
-    /**
      * 展开并集规则 [config] 的所有作为候选项的值规则。
      *
      * @see CwtUnionConfig
@@ -433,6 +418,15 @@ object CwtConfigManipulationService {
         }
         return true
     }
+
+    fun expandConfigExpression(config: CwtConfig<*>, processor: (CwtDataExpression) -> Boolean): Boolean {
+        return doExpandConfigExpression(config.configExpression, config.configGroup, processor)
+    }
+
+    fun expandConfigExpression(configs: Collection<CwtConfig<*>>, processor: (CwtDataExpression) -> Boolean): Boolean {
+        if (configs.isEmpty()) return true
+        return configs.process { config -> doExpandConfigExpression(config.configExpression, config.configGroup, processor) }
+    }CwtAl
 
     fun expandConfigExpression(config: CwtConfig<*>, processor: (CwtDataExpression) -> Boolean): Boolean {
         return doExpandConfigExpression(config.configExpression, config.configGroup, processor)

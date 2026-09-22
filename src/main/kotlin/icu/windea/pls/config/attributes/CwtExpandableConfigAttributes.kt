@@ -22,4 +22,3 @@ data class CwtExpandableConfigAttributes(
         @JvmField val EMPTY = CwtExpandableConfigAttributes()
     }
 }
-

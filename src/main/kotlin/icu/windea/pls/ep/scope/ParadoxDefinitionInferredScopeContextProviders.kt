@@ -7,7 +7,7 @@ import com.intellij.psi.util.CachedValuesManager
 import icu.windea.pls.base.ChronicleModificationTrackers
 import icu.windea.pls.base.settings.ChronicleSettings
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.configGroup.modificationTrackerModel
+import icu.windea.pls.config.configGroup.modificationTrackers
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.orNull
@@ -84,7 +84,7 @@ class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInfer
 
     private fun getDependencies(definition: ParadoxDefinitionElement): List<Any> {
         val configGroup = definition.definitionInfo?.configGroup
-        val scriptTracker = configGroup?.modificationTrackerModel?.definitionScopeContext ?: ChronicleModificationTrackers.ScriptFile
+        val scriptTracker = configGroup?.modificationTrackers?.definitionScopeContext ?: ChronicleModificationTrackers.ScriptFile
         return listOf(ChronicleModificationTrackers.DefinitionScopeContextInference, scriptTracker)
     }
 

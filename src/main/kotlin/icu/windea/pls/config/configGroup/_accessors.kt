@@ -4,9 +4,8 @@ import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKeyWithThis
 
-val CwtConfigGroup.mockConfigModel: CwtConfigGroupMockConfigModel
-    by registerKeyWithThis(CwtConfigGroup.Keys) { CwtConfigGroupMockConfigModel(this) }
+val CwtConfigGroup.mockConfigs: CwtConfigGroupMockConfigs
+    by registerKeyWithThis(CwtConfigGroup.Keys) { CwtConfigGroupMockConfigs(this) }
 
-val CwtConfigGroup.modificationTrackerModel: CwtConfigGroupModificationTrackerModel
-    by registerKeyWithThis(CwtConfigGroup.Keys) { CwtConfigGroupModificationTrackerModel(this) }
-
+val CwtConfigGroup.modificationTrackers: CwtConfigGroupModificationTrackers
+    by registerKeyWithThis(CwtConfigGroup.Keys) { CwtConfigGroupModificationTrackers(this) }

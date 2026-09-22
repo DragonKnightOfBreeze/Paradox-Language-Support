@@ -15,7 +15,7 @@ import icu.windea.pls.config.config.prefixFromArgument
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.CwtDataExpressionRole
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.configGroup.CwtLinkModelBase
+import icu.windea.pls.config.model.CwtLinkModelBase
 import icu.windea.pls.config.filePathPatterns
 import icu.windea.pls.config.select.selectConfigScope
 import icu.windea.pls.config.sortedByPriority
@@ -312,7 +312,8 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
                     forValueStatic += c
                 }
             }
-            val dynamicLinksSorted = links.filter { !it.isStatic }.sortedByPriority({ it.configExpression }, { configGroup })
+            val dynamicLinks = links.filter { !it.isStatic }
+            val dynamicLinksSorted = dynamicLinks.sortedByPriority({ it.configExpression }, { configGroup }) // 按优先级排序
             dynamicLinksSorted.forEach { c ->
                 if (c.type.forScope()) {
                     if (c.prefix == null) {
@@ -363,10 +364,11 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
                     }
                 }
                 if (constKeys.isNotEmpty()) {
-                    name2ConstKeys[aliasName] = constKeys
+                    forConst[aliasName] = constKeys
                 }
-                if(nonConstKeys.isNotEmpty()) {
-                    name2NonConstKeys[aliasName] = nonConstKeys
+                if (nonConstKeys.isNotEmpty()) {
+                    val nonConstKeysSorted = nonConstKeys.sortedByPriority({ CwtDataExpression.resolve(it, CwtDataExpressionRole.Key) }, { configGroup })
+                    forNonConstSorted[aliasName] = ObjectLinkedOpenHashSet<String>(nonConstKeysSorted)
                 }
             }
         }

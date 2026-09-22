@@ -6,7 +6,7 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.configGroup.mockConfigModel
+import icu.windea.pls.config.configGroup.mockConfigs
 import icu.windea.pls.config.manipulation.CwtConfigManipulationService
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.castOrNull
@@ -60,13 +60,13 @@ class ParadoxDefaultExpressionParameterInferredConfigProvider : ParadoxParameter
                 // NOTE 3.0.2 skip if it is full parameterized (can be many things, even a set of statements, or just a script snippet)
                 if (parentElement.text.isParameterized(full = true)) return null
                 // wildcard form -> continue to infer and merge configs
-                return configGroup.mockConfigModel.wildcardScalar
+                return configGroup.mockConfigs.wildcardScalar
             }
             is ParadoxScriptInlineMathParameter -> {
                 // 3.0.2 if it is full parameterized, should be a number
-                if (parentElement.text.isParameterized(full = true)) return configGroup.mockConfigModel.float
+                if (parentElement.text.isParameterized(full = true)) return configGroup.mockConfigs.float
                 // wildcard form -> continue to infer and merge configs
-                return configGroup.mockConfigModel.wildcardScalar
+                return configGroup.mockConfigs.wildcardScalar
             }
         }
         return null

@@ -4,7 +4,7 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.util.SmartList
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.config.configGroup.mockConfigModel
+import icu.windea.pls.config.configGroup.mockConfigs
 import icu.windea.pls.config.manipulation.CwtConfigManipulationService
 import icu.windea.pls.config.match.CwtConfigMatchService
 import icu.windea.pls.core.annotations.Optimized
@@ -63,7 +63,7 @@ object ParadoxMatchCandidateService {
         }
         if (result.isEmpty()) { // too many candidates, use fallback config (`$any = $any`)
             collected.clear()
-            val fallbackConfig = context.configGroup.mockConfigModel.anyProperty
+            val fallbackConfig = context.configGroup.mockConfigs.anyProperty
             val fallbackCandidate = ParadoxMatchCandidate(fallbackConfig, ParadoxMatchResult.FallbackMatch)
             collected.add(fallbackCandidate)
             return

@@ -2,7 +2,7 @@ package icu.windea.pls.config.config
 
 import com.intellij.psi.PsiElement
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
-import icu.windea.pls.config.configGroup.CwtConfigGroupDataModel
+import icu.windea.pls.config.model.CwtConfigGroupDataModel
 import icu.windea.pls.config.match.CwtConfigMatchService
 
 /**

@@ -15,7 +15,7 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
 import icu.windea.pls.config.config.delegated.CwtRowConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.configGroup.mockConfigModel
+import icu.windea.pls.config.configGroup.mockConfigs
 import icu.windea.pls.config.filterProperties
 import icu.windea.pls.config.filterValues
 import icu.windea.pls.config.manipulation.CwtConfigManipulationService
@@ -295,7 +295,7 @@ object ParadoxConfigService {
                 // NOTE #386 if value expression of parent config is `$any`, then use `$any` only
                 // NOTE 3.0.2 compatible with `wildcard_scalar`, which is for complex parameters, in case
                 if (CwtConfigExpressionMatchService.matchesAnyDataType(parentConfig.valueExpression)) {
-                    return listOf(configGroup.mockConfigModel.anyValue)
+                    return listOf(configGroup.mockConfigs.anyValue)
                 }
 
                 val configs = parentConfig.values
@@ -310,7 +310,7 @@ object ParadoxConfigService {
                 // NOTE #386 if value expression of parent config is `$any`, then use `$any = $any` only
                 // NOTE 3.0.2 compatible with `wildcard_scalar`, which is for complex parameters, in case
                 if (CwtConfigExpressionMatchService.matchesAnyDataType(parentConfig.valueExpression)) {
-                    return listOf(configGroup.mockConfigModel.anyProperty)
+                    return listOf(configGroup.mockConfigs.anyProperty)
                 }
 
                 val configs = parentConfig.properties

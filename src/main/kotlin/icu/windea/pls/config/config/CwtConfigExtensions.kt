@@ -62,11 +62,6 @@ fun CwtMemberConfig<*>.expandBySubtypeExpression(processor: (CwtMemberConfig<*>,
     return CwtConfigManipulationService.expandBySubtypeExpression(this, processor)
 }
 
-/** @see CwtConfigManipulationService.expandEnumValues */
-fun CwtEnumConfig.expandEnumValues(processor: (CwtValueConfig) -> Boolean): Boolean {
-    return CwtConfigManipulationService.expandEnumValues(this, processor)
-}
-
 /** @see CwtConfigManipulationService.expandUnionValues */
 fun CwtUnionConfig.expandUnionValues(processor: (CwtValueConfig) -> Boolean): Boolean {
     return CwtConfigManipulationService.expandUnionValues(this, processor)

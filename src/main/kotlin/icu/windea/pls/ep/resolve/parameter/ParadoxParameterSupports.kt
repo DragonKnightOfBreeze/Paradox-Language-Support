@@ -6,7 +6,7 @@ import com.intellij.psi.PsiElement
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.base.ChronicleModificationTrackers
 import icu.windea.pls.config.config.CwtConfig
-import icu.windea.pls.config.configGroup.modificationTrackerModel
+import icu.windea.pls.config.configGroup.modificationTrackers
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.processAsync
@@ -100,7 +100,7 @@ class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
 
     override fun getModificationTracker(parameterInfo: ParadoxParameterInfo): ModificationTracker {
         val configGroup = ChronicleFacade.getConfigGroup(parameterInfo.project, parameterInfo.gameType)
-        return configGroup.modificationTrackerModel.definitionParameter
+        return configGroup.modificationTrackers.definitionParameter
     }
 }
 
@@ -197,6 +197,6 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
 
     override fun getModificationTracker(parameterInfo: ParadoxParameterInfo): ModificationTracker {
         val configGroup = ChronicleFacade.getConfigGroup(parameterInfo.project, parameterInfo.gameType)
-        return configGroup.modificationTrackerModel.scriptValue
+        return configGroup.modificationTrackers.scriptValue
     }
 }

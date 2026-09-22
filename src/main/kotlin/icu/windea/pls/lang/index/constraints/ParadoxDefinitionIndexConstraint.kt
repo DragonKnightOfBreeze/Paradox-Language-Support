@@ -2,7 +2,7 @@ package icu.windea.pls.lang.index.constraints
 
 import com.intellij.util.indexing.ID
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.configGroup.CwtTypeModel
+import icu.windea.pls.config.model.CwtTypeModel
 import icu.windea.pls.ep.resolve.localisation.ParadoxCompositeLocalisationIconSupport
 import icu.windea.pls.ep.resolve.localisation.ParadoxLocalisationIconSupport
 import icu.windea.pls.ep.resolve.modifier.ParadoxEconomicCategoryModifierSupport

@@ -10,6 +10,7 @@ import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
+import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.aliasConfig
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.resolved
@@ -289,22 +290,21 @@ class ParadoxScriptUnionValueExpressionSupport : ParadoxScriptExpressionSupport 
     }
 
     // NOTE 3.0.1 recursion guard is required here for various operations
-
     override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder): Boolean {
         val configGroup = config.configGroup
         val configExpression = config.configExpression ?: return false
         val unionName = configExpression.metadata.value ?: return false
         // NOTE 3.0.1 recursion guard is required here
-        val processor = ProcessorFactory.any<Unit>()
+        // NOTE 3.0.3 use first matched config directly atm, event if the result from this config is null or empty
+        val processor = ProcessorFactory.find<CwtValueConfig>()
         runWithRecursionGuard("scriptExpression.annotate.union", unionName) {
             val expression = ParadoxExpression.resolve(element)
-            ParadoxConfigManipulationService.expandMatchedUnionValues(element, expression, unionName, configGroup) p@{ unionValueConfig ->
-                val r = ParadoxExpressionService.annotateScriptExpression(element, text, rangeInExpression, unionValueConfig, holder)
-                if (!r) return@p true
-                processor.process(Unit)
+            ParadoxConfigManipulationService.expandMatchedUnionValues(element, expression, unionName, configGroup) {
+                processor.process(it)
             }
         }
-        return processor.result
+        val unionValueConfig = processor.result ?: return false
+        return ParadoxExpressionService.annotateScriptExpression(element, text, rangeInExpression, unionValueConfig, holder)
     }
 
     override fun resolve(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
@@ -312,16 +312,16 @@ class ParadoxScriptUnionValueExpressionSupport : ParadoxScriptExpressionSupport 
         val configExpression = config.configExpression ?: return null
         val unionName = configExpression.metadata.value ?: return null
         // NOTE 3.0.1 recursion guard is required here
-        val processor = ProcessorFactory.find<PsiElement>()
+        // NOTE 3.0.3 use first matched config directly atm, event if the result from this config is null or empty
+        val processor = ProcessorFactory.find<CwtValueConfig>()
         runWithRecursionGuard("scriptExpression.resolve.union", unionName) {
             val expression = ParadoxExpression.resolve(element)
-            ParadoxConfigManipulationService.expandMatchedUnionValues(element, expression, unionName, configGroup) p@{ unionValueConfig ->
-                val r = ParadoxExpressionService.resolveScriptExpression(element, text, rangeInExpression, unionValueConfig, role)
-                if (r == null) return@p true
-                processor.process(r)
+            ParadoxConfigManipulationService.expandMatchedUnionValues(element, expression, unionName, configGroup) {
+                processor.process(it)
             }
         }
-        return processor.result
+        val unionValueConfig = processor.result ?: return null
+        return ParadoxExpressionService.resolveScriptExpression(element, text, rangeInExpression, unionValueConfig, role)
     }
 
     override fun resolveAll(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiElement> {
@@ -329,16 +329,16 @@ class ParadoxScriptUnionValueExpressionSupport : ParadoxScriptExpressionSupport 
         val configExpression = config.configExpression ?: return emptyList()
         val unionName = configExpression.metadata.value ?: return emptyList()
         // NOTE 3.0.1 recursion guard is required here
-        val processor = ProcessorFactory.find<List<PsiElement>>()
+        // NOTE 3.0.3 use first matched config directly atm, event if the result from this config is null or empty
+        val processor = ProcessorFactory.find<CwtValueConfig>()
         runWithRecursionGuard("scriptExpression.resolveAll.union", unionName) {
             val expression = ParadoxExpression.resolve(element)
-            ParadoxConfigManipulationService.expandMatchedUnionValues(element, expression, unionName, configGroup) p@{ unionValueConfig ->
-                val r = ParadoxExpressionService.resolveAllScriptExpression(element, text, rangeInExpression, unionValueConfig, role).orNull()
-                if (r == null) return@p true
-                processor.process(r)
+            ParadoxConfigManipulationService.expandMatchedUnionValues(element, expression, unionName, configGroup) {
+                processor.process(it)
             }
         }
-        return processor.result.orEmpty()
+        val unionValueConfig = processor.result ?: return emptyList()
+        return ParadoxExpressionService.resolveAllScriptExpression(element, text, rangeInExpression, unionValueConfig, role)
     }
 
     override fun getReferences(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiReference> {
@@ -347,16 +347,33 @@ class ParadoxScriptUnionValueExpressionSupport : ParadoxScriptExpressionSupport 
         val configExpression = config.configExpression ?: return emptyList()
         val unionName = configExpression.metadata.value ?: return emptyList()
         // NOTE 3.0.1 recursion guard is required here
-        val processor = ProcessorFactory.find<List<PsiReference>>()
+        // NOTE 3.0.3 use first matched config directly atm, event if the result from this config is null or empty
+        val processor = ProcessorFactory.find<CwtValueConfig>()
         runWithRecursionGuard("scriptExpression.getReferences.union", unionName) {
             val expression = ParadoxExpression.resolve(element)
-            ParadoxConfigManipulationService.expandMatchedUnionValues(element, expression, unionName, configGroup) p@{ unionValueConfig ->
-                val r = ParadoxExpressionService.getScriptExpressionReferences(element, text, rangeInExpression, unionValueConfig, role).orNull()
-                if (r == null) return@p true
-                processor.process(r)
+            ParadoxConfigManipulationService.expandMatchedUnionValues(element, expression, unionName, configGroup) {
+                processor.process(it)
             }
         }
-        return processor.result.orEmpty()
+        val unionValueConfig = processor.result ?: return emptyList()
+        return ParadoxExpressionService.getScriptExpressionReferences(element, text, rangeInExpression, unionValueConfig, role)
+    }
+
+    private inline fun <T> expand(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole, action: (CwtValueConfig) -> T?): T? {
+        val configGroup = config.configGroup
+        val configExpression = config.configExpression ?: return null
+        val unionName = configExpression.metadata.value ?: return null
+        // NOTE 3.0.1 recursion guard is required here
+        // NOTE 3.0.3 use first matched config directly atm, event if the result from this config is null or empty
+        val processor = ProcessorFactory.find<CwtValueConfig>()
+        runWithRecursionGuard("scriptExpression.getReferences.union", unionName) {
+            val expression = ParadoxExpression.resolve(element)
+            ParadoxConfigManipulationService.expandMatchedUnionValues(element, expression, unionName, configGroup) {
+                processor.process(it)
+            }
+        }
+        val expanded = processor.result ?: return null
+        return action(expanded)
     }
 
     override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {

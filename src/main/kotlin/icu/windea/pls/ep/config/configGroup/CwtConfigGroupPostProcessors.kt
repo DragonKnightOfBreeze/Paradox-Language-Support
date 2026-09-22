@@ -3,7 +3,7 @@ package icu.windea.pls.ep.config.configGroup
 import com.intellij.openapi.progress.checkCanceled
 import icu.windea.pls.config.attributes.CwtExpandableConfigAttributesEvaluator
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.configGroup.CwtConfigGroupDataModelBase
+import icu.windea.pls.config.model.CwtConfigGroupDataModelBase
 
 class CwtBaseConfigGroupPostProcessor : CwtConfigGroupPostProcessor {
     override suspend fun postProcess(configGroup: CwtConfigGroup) {

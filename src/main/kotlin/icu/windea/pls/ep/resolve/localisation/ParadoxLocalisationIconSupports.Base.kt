@@ -4,7 +4,7 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
-import icu.windea.pls.config.configGroup.CwtTypeModel
+import icu.windea.pls.config.model.CwtTypeModel
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.processAsync
