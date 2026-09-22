@@ -53,7 +53,7 @@
 
 #### 规则字段的表示约定 {#configs-fields}
 
-每条规则由若干**字段**（field）组成。字段在规则文件中有多种来源，本文档采用以下格式统一描述：
+每条规则由如果干**字段**（field）组成。字段在规则文件中有多种来源，本文档采用以下格式统一描述：
 
 - **属性字段**：以 `key = value` 形式出现在规则体中的普通属性。文档中直接使用字段名，如 `path`、`name_field`。
 - **选项字段**：以选项注释 `## key = value` 形式出现的字段。文档中以 `## ` 为前缀，如 `## cardinality`、`## push_scope`。
@@ -218,7 +218,7 @@ locales = {
 类型规则的字段说明：
 
 - `path`：参与扫描的文件目录路径（解析时会自动移除 `game/` 前缀）。可声明多个。
-- `path_file`：限定文件名（不含扩展名）。若指定，则 `path_extension` 不再单独生效。
+- `path_file`：限定文件名（不含扩展名）。如果指定，则 `path_extension` 不再单独生效。
 - `path_extension`：限定文件扩展名（解析时会自动规范化，如补齐 `.`）。仅在未指定 `path_file` 时单独生效。
 - `path_pattern`：使用 ANT 路径模式匹配文件路径。可声明多个，与 `path` 独立——任一 `path_pattern` 匹配即可通过路径检查。
 - `path_strict`：设为 `yes` 时强制精确匹配目录，不匹配子目录。
@@ -228,7 +228,7 @@ locales = {
 - `type_per_file`：设为 `yes` 时表示一个文件对应一个类型实例（即对应的定义直接声明于文件级别）。
 - `unique`：设为 `yes` 时启用重名冲突检查。
 - `severity`：重名冲突的报告级别（如 `warning`、`error`）。
-- `skip_root_key`：允许跳过若干顶级键后继续匹配类型键。值为花括号集合，支持多组（忽略大小写，支持通配符 `any`/`*`/`?`）。若 `skip_root_key` 非空但文件中无根键则不匹配；若为空但文件中有根键同样不匹配。
+- `skip_root_key`：允许跳过如果干顶级键后继续匹配类型键。值为花括号集合，支持多组（忽略大小写，支持通配符 `any`/`*`/`?`）。如果 `skip_root_key` 非空但文件中无根键则不匹配；如果为空但文件中有根键同样不匹配。
 - `type_key_prefix`：类型键的必需前缀（忽略大小写）。
 - `## type_key_filter`（选项）：类型键的过滤条件（选项注释，忽略大小写）。支持包含集合 `{ a b }` 和排除集合 `<> { x y }`。
 - `## type_key_regex`（选项）：类型键的正则过滤（选项注释，忽略大小写）。
@@ -243,8 +243,8 @@ locales = {
 对于一个脚本文件中的属性（或整个文件），类型匹配按以下步骤依次进行：
 
 1. **元素类型检查**：`type_per_file` 为 `yes` 时，定义必须对应整个脚本文件；否则必须对应一个属性。
-2. **路径匹配**：先检查 `path_pattern`（ANT 模式），若有任一匹配即通过；否则检查 `path_file` 或 `path_extension`，再检查 `path`（含 `path_strict`）。`path` 和 `path_extension`/`path_file` 均不为空时必须同时满足。
-3. **类型键检查**（顺序进行）：`## starts_with` → `## type_key_regex` → `## type_key_filter` → `name_field` 约束（若 `name_field` 存在，则类型键仅可为 `## type_key_filter` 显式列出的值之一，或无限制）。
+2. **路径匹配**：先检查 `path_pattern`（ANT 模式），如果有任一匹配即通过；否则检查 `path_file` 或 `path_extension`，再检查 `path`（含 `path_strict`）。`path` 和 `path_extension`/`path_file` 均不为空时必须同时满足。
+3. **类型键检查**（顺序进行）：`## starts_with` → `## type_key_regex` → `## type_key_filter` → `name_field` 约束（如果 `name_field` 存在，则类型键仅可为 `## type_key_filter` 显式列出的值之一，或无限制）。
 4. **根键检查**：根据 `skip_root_key` 判断是否需要跳过根键。
 5. **类型键前缀检查**：根据 `type_key_prefix` 判断是否匹配（忽略大小写）。
 6. **声明结构检查**：检查定义的属性值是否与[声明规则](#config-declaration)的预期结构一致（如声明规则期望块则属性值必须为块）。
@@ -263,9 +263,9 @@ locales = {
 
 子类型规则的匹配流程：
 
-1. **互斥检查**：若 `only_if_not` 中指定的任一子类型已匹配，则跳过。
+1. **互斥检查**：如果 `only_if_not` 中指定的任一子类型已匹配，则跳过。
 2. **类型键检查**：依次检查 `## starts_with`（不忽略大小写）→ `## type_key_regex` → `## type_key_filter`（忽略大小写）。
-3. **内容匹配**：若子类型声明体（`subtype[...] = { ... }`）中包含属性或值规则，则递归检查定义体中是否存在匹配的属性和值。匹配方式包括布尔值精确匹配、字符串/数据表达式匹配、以及嵌套块的递归匹配。若声明体为空（`{}`），则仅需类型键检查通过即可匹配。
+3. **内容匹配**：如果子类型声明体（`subtype[...] = { ... }`）中包含属性或值规则，则递归检查定义体中是否存在匹配的属性和值。匹配方式包括布尔值精确匹配、字符串/数据表达式匹配、以及嵌套块的递归匹配。如果声明体为空（`{}`），则仅需类型键检查通过即可匹配。
 
 类型规则与[声明规则](#config-declaration)协作，为具体定义的声明提供上下文与结构约束。
 
@@ -333,7 +333,7 @@ types = {
 注意事项：
 
 - `path` 为必需字段；缺失将导致类型被跳过。
-- `skip_root_key` 为多组设置：若存在任意一组与文件顶级键序列匹配，则允许跳过后继续匹配类型键。
+- `skip_root_key` 为多组设置：如果存在任意一组与文件顶级键序列匹配，则允许跳过后继续匹配类型键。
 - 子类型匹配"顺序敏感"，请将更具体的规则放在更前面。
 - 同一 `## group` 内的子类型互斥（如 `event_type` 分组中的 `country`、`planet`、`ship` 等）。
 
@@ -512,7 +512,7 @@ some_definition = {
 字段说明：
 
 - `path`：参与扫描的文件目录路径（解析时会自动移除 `game/` 前缀）。可声明多个。
-- `path_file`：限定文件名（不含扩展名）。若指定，则 `path_extension` 不再单独生效。
+- `path_file`：限定文件名（不含扩展名）。如果指定，则 `path_extension` 不再单独生效。
 - `path_extension`：限定文件扩展名（解析时会自动规范化，如补齐 `.`）。仅在未指定 `path_file` 时单独生效。
 - `path_pattern`：使用 ANT 路径模式匹配文件路径。可声明多个，与 `path` 独立——任一 `path_pattern` 匹配即可通过路径检查。
 - `path_strict`：设为 `yes` 时强制精确匹配目录，不匹配子目录。
@@ -625,7 +625,7 @@ CWTools 兼容性：部分兼容。拥有不同的解析和处理逻辑。
 字段说明：
 
 - `path`：参与扫描的文件目录路径（解析时会自动移除 `game/` 前缀）。可声明多个。
-- `path_file`：限定文件名（不含扩展名）。若指定，则 `path_extension` 不再单独生效。
+- `path_file`：限定文件名（不含扩展名）。如果指定，则 `path_extension` 不再单独生效。
 - `path_extension`：限定文件扩展名（解析时会自动规范化，如补齐 `.`）。仅在未指定 `path_file` 时单独生效。
 - `path_pattern`：使用 ANT 路径模式匹配文件路径。可声明多个，与 `path` 独立——任一 `path_pattern` 匹配即可通过路径检查。
 - `path_strict`：设为 `yes` 时强制精确匹配目录，不匹配子目录。
@@ -640,7 +640,7 @@ CWTools 兼容性：部分兼容。拥有不同的解析和处理逻辑。
 
 对于匹配文件中的每个字符串表达式，插件会检查它是否可以作为某个复杂枚举值的锚点。
 具体步骤为：首先在 `name` 小节中查找包含 `enum_name` 的规则条目；然后根据 `enum_name` 出现的位置（作为属性键、属性值或块成员值），确定当前表达式的角色。
-若为属性键侧的 `enum_name`，则当前属性键即为枚举值锚点；若为属性值侧的 `enum_name`，则当前属性的值即为枚举值锚点；若为块成员值的 `enum_name`，则该值本身即为枚举值锚点。
+如果为属性键侧的 `enum_name`，则当前属性键即为枚举值锚点；如果为属性值侧的 `enum_name`，则当前属性的值即为枚举值锚点；如果为块成员值的 `enum_name`，则该值本身即为枚举值锚点。
 最后，从锚点向上逐层匹配父级结构，直至到达 `name` 小节的根（`start_from_root` 为 `yes` 时必须到达文件根级，否则到达顶级属性的下一级即可）。
 
 示例：
@@ -787,7 +787,7 @@ links = {
 
 - `prefix` 不应带引号或括号；`input_scopes` 使用花括号集合语法（如 `{ country }`）。
 - 可混合多个 `data_source`。
-- 若动态链接参数为单引号字面量，则按字面量处理，通常不提供补全。
+- 如果动态链接参数为单引号字面量，则按字面量处理，通常不提供补全。
 
 > CWTools 兼容性：部分兼容。插件进行了额外的扩展和改进。
 
@@ -942,9 +942,9 @@ scope_groups = {
 
 字段说明：
 
-- `type`：若存在，将 `prefix:object` 的 `object` 作为该类型的定义引用。
-- `swap_type`：若存在，将 `prefix:object:swap` 的 `swap` 作为切换类型的定义引用。
-- `localisation`：若存在，将 `prefix:object` 的 `object` 作为本地化键解析。
+- `type`：如果存在，将 `prefix:object` 的 `object` 作为该类型的定义引用。
+- `swap_type`：如果存在，将 `prefix:object:swap` 的 `swap` 作为切换类型的定义引用。
+- `localisation`：如果存在，将 `prefix:object` 的 `object` 作为本地化键解析。
 
 示例：
 
@@ -1006,13 +1006,13 @@ macro[definition_injection] = {
 
 ### 扩展规则 {#configs-extended}
 
-> 这些规则用于增强插件的功能，例如指定规则上下文、提供额外的快速文档与内嵌提示文本等。
+> 这些规则用于增强插件的功能，例如指定规则上下文、提供额外的快速文档文本与内嵌提示文本等。
 >
 > 扩展规则中有一些常见的共通特征：
-> - 大部分扩展规则支持多种**名称匹配**方式：常量、[模板表达式](#config-expression-template)、[ANT 路径模式](#faq-ant)和[正则表达式](#faq-regex)。
+> - 大部分扩展规则的名字除了直接的常量匹配之外，也支持基于 ANT 表达式、正则等的模式匹配。参见 [模式数据类型](#data-types-pattern-aware)。
 > - 大部分扩展规则支持通过文档注释提供快速文档文本。
 > - 大部分扩展规则支持通过选项注释提供内嵌提示文本（`## hint`）。
-> - 部分扩展规则支持通过选项注释指定**作用域上下文**（`## replace_scopes` / `## push_scope`）。
+> - 部分扩展规则支持通过选项注释指定作用域上下文（`## replace_scopes` `## push_scope`）。
 
 #### 封装变量的扩展规则 {#config-extended-scripted-variable}
 
@@ -1028,18 +1028,17 @@ macro[definition_injection] = {
 ```cwt
 scripted_variables = {
     # 'x' or 'x = xxx'
-    # 'x' can also be a pattern expression (template expression, ant expression or regex)
+    # 'x' can also be a pattern expression (glob pattern, ant expression, regex, etc.)
 
     ### Some documentation
-    ## hint = §RSome inlay hint text§!
+    ## hint = "§RSome hint text§!"
     x
 }
 ```
 
 注意事项：
 
-- 名称可使用模板 / ANT / 正则匹配，但请避免过宽导致误匹配。
-- 本条目仅提供"提示增强"，不负责声明或校验封装变量的取值与类型。
+- 此规则的名字也支持基于正则表达式等的模式匹配（参见 [模式数据类型](#data-types-pattern-aware)）。
 
 > CWTools 兼容性：不兼容。插件作为扩展提供。
 
@@ -1064,10 +1063,10 @@ scripted_variables = {
 ```cwt
 definitions = {
     # 'x' or 'x = xxx'
-    # 'x' can also be a pattern expression (template expression, ant expression or regex)
+    # 'x' can also be a pattern expression (glob pattern, ant expression, regex, etc.)
 
     ### Some documentation
-    ## hint = §RSome hint text§!
+    ## hint = "§RSome hint text§!"
     ## type = civic_or_origin.civic
     x
 
@@ -1080,8 +1079,8 @@ definitions = {
 
 注意事项：
 
+- 此规则的名字也支持基于正则表达式等的模式匹配（参见 [模式数据类型](#data-types-pattern-aware)）。
 - `## type` 为必填；缺失将导致该条目被跳过。
-- 此扩展用于"提示与上下文增强"，并不直接改变[声明规则](#config-declaration)的结构。
 
 > CWTools 兼容性：不兼容。插件作为扩展提供。
 
@@ -1090,8 +1089,6 @@ definitions = {
 <!-- @see icu.windea.pls.config.config.extended.CwtExtendedGameRuleConfig -->
 
 为游戏规则（即类型为 `game_rule` 的定义）提供文档 / 提示增强，并支持"重载[声明规则](#config-declaration)"。
-
-规则名称可以是常量、模板表达式、ANT 表达式或正则表达式（参见[模式感知的数据类型](#data-types-pattern-aware)）。
 
 路径定位：
 - `game_rules/{name}`。其中 `{name}` 匹配规则名称。
@@ -1107,7 +1104,7 @@ definitions = {
 ```cwt
 game_rules = {
     ### Some documentation
-    ## hint = §RSome hint text§!
+    ## hint = "§RSome hint text§!"
     x # provide hint only
 
     ### Some documentation
@@ -1132,8 +1129,8 @@ game_rules = {
 
 注意事项：
 
-- 若值为 `single_alias_right[...]`，会先被内联展开，再作为重载规则生效。
-- 该扩展仅影响"[声明规则](#config-declaration)的来源 / 结构"与"提示信息"，不改变整体优先级与覆盖策略。
+- 此规则的名字也支持基于正则表达式等的模式匹配（参见 [模式数据类型](#data-types-pattern-aware)）。
+- 如果值为 `single_alias_right[...]`，会先被内联展开，再作为重载规则生效。
 
 > CWTools 兼容性：不兼容。拥有不同的格式和行为。
 
@@ -1142,8 +1139,6 @@ game_rules = {
 <!-- @see icu.windea.pls.config.config.extended.CwtExtendedOnActionConfig -->
 
 为动作触发（即类型为 `on_action` 的定义）提供文档 / 提示增强，并指定"事件类型"以影响声明上下文中与事件有关的引用。
-
-规则名称可以是常量、模板表达式、ANT 表达式或正则表达式（参见[模式感知的数据类型](#data-types-pattern-aware)）。
 
 路径定位：
 - `on_actions/{name}`。其中 `{name}` 匹配规则名称。
@@ -1160,7 +1155,7 @@ game_rules = {
 ```cwt
 on_actions = {
     ### Some documentation
-    ## hint = §RSome hint text§!
+    ## hint = "§RSome hint text§!"
     ## replace_scopes = { this = country root = country }
     ## event_type = country
     x
@@ -1186,6 +1181,7 @@ on_actions = {
 
 注意事项：
 
+- 此规则的名字也支持基于正则表达式等的模式匹配（参见 [模式数据类型](#data-types-pattern-aware)）。
 - `## event_type` 为必填；缺失将导致该条目被跳过。
 - 如需作用域替换，可结合 `## replace_scopes` 使用。
 
@@ -1215,7 +1211,7 @@ on_actions = {
 ```cwt
 parameters = {
     # 'x' is a parameter name, e.g., for '$JOB$', 'x' should be 'JOB'
-    # 'x' can also be a pattern expression (template expression, ant expression or regex)
+    # 'x' can also be a pattern expression (glob pattern, ant expression, regex, etc.)
 
     ### Some documentation
     ## context_key = scripted_trigger@some_trigger
@@ -1247,6 +1243,7 @@ parameters = {
 
 注意事项：
 
+- 此规则的名字也支持基于正则表达式等的模式匹配（参见 [模式数据类型](#data-types-pattern-aware)）。
 - `## context_key` 为必填；缺失将导致该条目被跳过。
 - 标记 `## inherit` 时，上下文取自"使用处"，可能为空或因位置不同而变化。
 - 根级 `single_alias_right[...]` 会被内联展开后再作为上下文规则使用。
@@ -1258,8 +1255,6 @@ parameters = {
 <!-- @see icu.windea.pls.config.config.extended.CwtExtendedComplexEnumValueConfig -->
 
 为复杂枚举的具体条目提供文档 / 提示增强（快速文档、内嵌提示等）。
-
-规则名称可以是常量、模板表达式、ANT 表达式或正则表达式（参见[模式感知的数据类型](#data-types-pattern-aware)）。
 
 路径定位：
 - `complex_enum_values/{type}/{name}`。其中 `{type}` 匹配枚举名，`{name}` 匹配规则名称。
@@ -1274,7 +1269,7 @@ parameters = {
 complex_enum_values = {
     component_tag = {
         ### Some documentation
-        ## hint = §RSome inlay hint text§!
+        ## hint = "§RSome hint text§!"
         x
     }
 }
@@ -1282,8 +1277,7 @@ complex_enum_values = {
 
 注意事项：
 
-- 本扩展不改变复杂枚举"值来源"的收集逻辑，仅提供提示信息。
-- 名称可使用模板 / ANT / 正则匹配，但请避免过宽导致误匹配。
+- 此规则的名字也支持基于正则表达式等的模式匹配（参见 [模式数据类型](#data-types-pattern-aware)）。
 
 > CWTools 兼容性：不兼容。插件作为扩展提供。
 
@@ -1292,8 +1286,6 @@ complex_enum_values = {
 <!-- @see icu.windea.pls.config.config.extended.CwtExtendedDynamicValueConfig -->
 
 为某种动态值类型下的具体动态值条目提供文档 / 提示增强。
-
-规则名称可以是常量、模板表达式、ANT 表达式或正则表达式（参见[模式感知的数据类型](#data-types-pattern-aware)）。
 
 路径定位：
 - `dynamic_values/{type}/{name}`。其中 `{type}` 匹配动态值类型，`{name}` 匹配规则名称。
@@ -1308,7 +1300,7 @@ complex_enum_values = {
 dynamic_values = {
     event_target = {
         ### Some documentation
-        ## hint = §RSome inlay hint text§!
+        ## hint = "§RSome hint text§!"
         x
 
         # scope context options: only receive push scope (this scope)
@@ -1320,7 +1312,7 @@ dynamic_values = {
 
 注意事项：
 
-- 本扩展不改变动态值类型与基础"值集合"的定义，仅提供提示信息。
+- 此规则的名字也支持基于正则表达式等的模式匹配（参见 [模式数据类型](#data-types-pattern-aware)）。
 - 名称可使用模板 / ANT / 正则匹配，但请避免过宽导致误匹配。
 
 > CWTools 兼容性：不兼容。插件作为扩展提供。
@@ -1330,8 +1322,6 @@ dynamic_values = {
 <!-- @see icu.windea.pls.config.config.extended.CwtExtendedInlineScriptConfig -->
 
 为具体的内联脚本（inline script）声明"上下文规则"和"作用域上下文"，用于在被调用处提供正确的补全与检查。
-
-规则名称可以是常量、模板表达式、ANT 表达式或正则表达式（参见[模式感知的数据类型](#data-types-pattern-aware)）。
 
 路径定位：
 - `inline_scripts/{name}`。其中 `{name}` 匹配规则名称。
@@ -1348,7 +1338,7 @@ dynamic_values = {
 inline_scripts = {
     # 'x' is an inline script expression
     # e.g., for 'inline_script = jobs/researchers_add', 'x' should be 'jobs/researchers_add'
-    # 'x' can also be a pattern expression (template expression, ant expression or regex)
+    # 'x' can also be a pattern expression (glob pattern, ant expression, regex, etc.)
     # use 'x = xxx' to declare context config(s)
 
     x
@@ -1375,7 +1365,8 @@ inline_scripts = {
 
 注意事项：
 
-- 若仅需单条上下文规则，保持默认 `single` 即可；需要声明多条时使用 `multiple`。
+- 此规则的名字也支持基于正则表达式等的模式匹配（参见 [模式数据类型](#data-types-pattern-aware)）。
+- 如果仅需单条上下文规则，保持默认 `single` 即可；需要声明多条时使用 `multiple`。
 - 根级 `single_alias_right[...]` 会被内联展开后再作为上下文规则使用。
 
 > CWTools 兼容性：不兼容。插件作为扩展提供。
@@ -1579,7 +1570,7 @@ title
 
 <!-- @see icu.windea.pls.config.configExpression.CwtImageLocationExpression -->
 
-图片位置表达式用于定位定义的相关图片。位置部分可以是文件路径（如 `gfx/.../mod_$.dds`）、sprite 名（如 `GFX_$`）或属性键名（如 `icon`）。若为属性键名，则会继续解析该属性值所指向的图片。
+图片位置表达式用于定位定义的相关图片。位置部分可以是文件路径（如 `gfx/.../mod_$.dds`）、sprite 名（如 `GFX_$`）或属性键名（如 `icon`）。如果为属性键名，则会继续解析该属性值所指向的图片。
 
 参数约定：
 
@@ -1650,7 +1641,7 @@ icon|p1,p2
 
 ### 基本数据类型 {#data-types-basic}
 
-以下数据类型表示基本的取值形态。
+以下数据类型表示基本的取值形态。它们可以在语法级别进行预先匹配。
 
 #### Any {#data-type-any}
 
@@ -1744,6 +1735,8 @@ icon|p1,p2
 
 ### 额外基本数据类型 {#data-types-extra-basic}
 
+以下数据类型表示额外的基本取值形态。它们无法在语法级别进行预先匹配。
+
 #### PercentageField {#data-type-percentage-field}
 
 百分比字段类型。
@@ -1780,7 +1773,9 @@ icon|p1,p2
 
 ### 引用数据类型 {#data-types-reference}
 
-以下数据类型通过引用其他规则或索引中的内容来进行匹配，其中一些数据类型会匹配某种复杂表达式。
+以下数据类型通过引用其他规则或索引中的内容来进行匹配。
+
+其中一些数据类型会匹配某种复杂表达式，这意味着对应的表达式可以由多个节点组成，而这些节点拥有各自的语义。
 
 #### Definition {#data-type-definition}
 
@@ -2130,34 +2125,6 @@ icon|p1,p2
 
 > CWTools 兼容性：不兼容。插件作为扩展提供。
 
-#### ShaderEffect {#data-type-shader-effect}
-
-着色器效果类型。
-
-匹配对着色器效果（shader effect）的引用。
-插件目前将这些引用视为动态引用，尽管其声明实际上位于 `.shader` 文件中。
-
-“动态引用”意味着不存在实际上的声明处，仅区分读写访问，如同动态值一样。而这里总是视为读访问。
-
-对应的数据表达式的格式：
-- `$shader_effect`
-
-> CWTools 兼容性：不兼容。插件作为扩展提供。
-
-#### MeshLocator {#data-type-mesh-locator}
-
-网格定位器类型。
-
-匹配对网格定位器（mesh locator）的引用。
-插件目前将这些引用视为动态引用，尽管其声明实际上位于 `.mesh` 文件中。
-
-“动态引用”意味着不存在实际上的声明处，仅区分读写访问，如同动态值一样。而这里总是视为读访问。
-
-对应的数据表达式的格式：
-- `$mesh_locator`
-
-> CWTools 兼容性：不兼容。插件作为扩展提供。
-
 #### TechnologyWithLevel {#data-type-technology-with-level}
 
 带等级的科技类型。
@@ -2203,57 +2170,9 @@ icon|p1,p2
 
 > CWTools 兼容性：不兼容。插件作为扩展提供。
 
-### 别名数据类型 {#data-types-alias}
-
-以下数据类型与别名解析机制相关，通常不直接参与脚本匹配，而是由别名系统内部处理。
-
-#### AliasKeysField {#data-type-alias-keys-field}
-
-别名键字段类型。
-
-匹配时解析别名子键并递归匹配。
-
-对应的数据表达式的格式：
-- `alias_keys_field[{name}]` - 其中 `{name}` 匹配别名的名字。
-
-> CWTools 兼容性：兼容。
-
-#### AliasName {#data-type-alias-name}
-
-别名名称类型。
-
-匹配时解析别名子键并递归匹配。只能用来匹配属性键，且需要与 [AliasMatchLeft](#data-type-alias-match-left) 组合使用。
-
-对应的数据表达式的格式：
-- `alias_name[{name}]` - 其中 `{name}` 匹配别名的名字。
-
-> CWTools 兼容性：兼容。
-
-#### AliasMatchLeft {#data-type-alias-match-left}
-
-别名匹配左侧类型。
-
-不直接参与脚本匹配，由别名解析机制处理。只能用来匹配属性值，且需要与 [AliasName](#data-type-alias-name) 组合使用。
-
-对应的数据表达式的格式：
-- `alias_match_left[{name}]` - 其中 `{name}` 匹配别名的名字。
-
-> CWTools 兼容性：兼容。
-
-#### SingleAliasRight {#data-type-single-alias-right}
-
-单别名右侧类型。
-
-不直接参与脚本匹配，由别名解析机制处理。只能用来匹配属性值。
-
-对应的数据表达式的格式：
-- `single_alias_right[{name}]` - 其中 `{name}` 匹配单别名的名字。
-
-> CWTools 兼容性：兼容。
-
 ### 路径引用数据类型 {#data-types-path-reference}
 
-以下数据类型用于匹配文件路径引用，匹配时验证路径引用的文件是否存在。
+以下数据类型用于匹配文件路径引用。匹配时会验证路径引用的文件是否存在。
 
 #### Icon {#data-type-icon}
 
@@ -2333,9 +2252,92 @@ icon|p1,p2
 
 > CWTools 兼容性：不兼容。插件作为扩展提供。
 
+### 外部引用数据类型 {#external-reference}
+
+以下数据类型用于匹配特殊的外部引用。
+
+#### ShaderEffect {#data-type-shader-effect}
+
+着色器效果类型。
+
+匹配对着色器效果（shader effect）的引用。
+插件目前将这些引用视为动态引用，尽管其声明实际上位于 `.shader` 文件中。
+
+“动态引用”意味着不存在实际上的声明处，仅区分读写访问，如同动态值一样。而这里总是视为读访问。
+
+对应的数据表达式的格式：
+- `$shader_effect`
+
+> CWTools 兼容性：不兼容。插件作为扩展提供。
+
+#### MeshLocator {#data-type-mesh-locator}
+
+网格定位器类型。
+
+匹配对网格定位器（mesh locator）的引用。
+插件目前将这些引用视为动态引用，尽管其声明实际上位于 `.mesh` 文件中。
+
+“动态引用”意味着不存在实际上的声明处，仅区分读写访问，如同动态值一样。而这里总是视为读访问。
+
+对应的数据表达式的格式：
+- `$mesh_locator`
+
+> CWTools 兼容性：不兼容。插件作为扩展提供。
+
+### 别名数据类型 {#data-types-alias}
+
+以下数据类型与别名解析机制相关，通常不直接参与脚本匹配，而是由别名系统内部处理。
+
+#### AliasKeysField {#data-type-alias-keys-field}
+
+别名键字段类型。
+
+匹配时解析别名子键并递归匹配。
+
+对应的数据表达式的格式：
+- `alias_keys_field[{name}]` - 其中 `{name}` 匹配别名的名字。
+
+> CWTools 兼容性：兼容。
+
+#### AliasName {#data-type-alias-name}
+
+别名名称类型。
+
+匹配时解析别名子键并递归匹配。只能用来匹配属性键，且需要与 [AliasMatchLeft](#data-type-alias-match-left) 组合使用。
+
+对应的数据表达式的格式：
+- `alias_name[{name}]` - 其中 `{name}` 匹配别名的名字。
+
+> CWTools 兼容性：兼容。
+
+#### AliasMatchLeft {#data-type-alias-match-left}
+
+别名匹配左侧类型。
+
+不直接参与脚本匹配，由别名解析机制处理。只能用来匹配属性值，且需要与 [AliasName](#data-type-alias-name) 组合使用。
+
+对应的数据表达式的格式：
+- `alias_match_left[{name}]` - 其中 `{name}` 匹配别名的名字。
+
+> CWTools 兼容性：兼容。
+
+#### SingleAliasRight {#data-type-single-alias-right}
+
+单别名右侧类型。
+
+不直接参与脚本匹配，由别名解析机制处理。只能用来匹配属性值。
+
+对应的数据表达式的格式：
+- `single_alias_right[{name}]` - 其中 `{name}` 匹配单别名的名字。
+
+> CWTools 兼容性：兼容。
+
 ### 模式感知的数据类型 {#data-types-pattern-aware}
 
-以下数据类型采用特殊的模式匹配策略。常量数据类型 [Constant](#data-type-constant) 也属于这类数据类型。
+以下数据类型采用特殊的模式匹配策略，可用于模式匹配。
+
+> [!warning]
+> 常量数据类型 [Constant](#data-type-constant) 和模板数据类型（[Template](#data-type-template)）目前也属于这类数据类型，计划在后续版本中调整分类。
 
 #### Constant {#data-type-constant}
 
@@ -2427,6 +2429,9 @@ ANT 路径模式类型。模式感知的数据类型之一。
 
 ### 后缀感知的数据类型 {#data-types-suffix-aware}
 
+> [!warning]
+> 属于此类的数据类型会在后续版本中移除，计划迁移到新增的片段数据类型（snippet data types）。
+
 #### SuffixAwareDefinition {#data-type-suffix-aware-definition}
 
 后缀感知的定义引用类型。
@@ -2474,10 +2479,10 @@ ANT 路径模式类型。模式感知的数据类型之一。
 
 #### 关于模板表达式 {#faq-template}
 
-<!-- @see icu.windea.pls.config.CwtDataTypes.Template -->
 <!-- @see icu.windea.pls.config.configExpression.CwtTemplateExpression -->
+<!-- @see icu.windea.pls.config.CwtDataTypes.Template -->
 
-模板表达式由多个[数据表达式](#config-expression-data)片段（如定义引用、枚举引用、动态值引用等）与常量片段组合而成，用来进行更加灵活的匹配。详见[模板表达式](#config-expression-template)章节。
+模板表达式由多个[数据表达式](#config-expression-data)片段（如定义引用、枚举引用、动态值引用等）与常量片段组合而成，用来进行更加灵活的匹配。
 
 以下示例展示了从简单字面量到复杂模板的演进：
 
@@ -2494,6 +2499,10 @@ a_<job>_b
 a_enum[weight_or_base]_b
 a_value[anything]_b
 ```
+
+另见：
+- 规则表达式：[模板表达式](#config-expression-template)。
+- 数据类型：[Template](#data-type-template)。
 
 #### 如何在规则文件中使用 ANT 路径模式 {#faq-ant}
 
@@ -2514,6 +2523,9 @@ ant:/foo/bar?/*
 ant.i:/foo/bar?/*
 ```
 
+另见：
+- 数据类型：[Ant](#data-type-ant)。
+
 #### 如何在规则文件中使用正则表达式 {#faq-regex}
 
 <!-- @see icu.windea.pls.config.CwtDataTypes.Regex -->
@@ -2528,6 +2540,9 @@ ant.i:/foo/bar?/*
 re:foo.*
 re.i:foo.*
 ```
+
+另见：
+- 数据类型：[Regex](#data-type-regex)。
 
 #### 如何在规则文件中指定定义成员的出现次数 {#faq-cardinality}
 

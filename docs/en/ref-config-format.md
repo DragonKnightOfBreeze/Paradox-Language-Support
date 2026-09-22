@@ -1006,13 +1006,13 @@ macro[definition_injection] = {
 
 ### Extended Configs {#configs-extended}
 
-> These configs are used to enhance the plugin's functionality, such as specifying config contexts, providing additional quick documentation and inlay hint text, etc.
+> These configs are used to enhance the plugin's functionality, such as specifying config contexts, providing additional quick doc text and inlay hint text, etc.
 >
 > Extended configs share several common characteristics:
-> - Most extended configs support multiple **name matching** methods: constants, [template expressions](#config-expression-template), [ANT path patterns](#faq-ant), and [regular expressions](#faq-regex).
+> - Most extension config names, in addition to direct constant matching, also support pattern matching based on ant expressions, regular expressions, etc. See [Pattern Data Types](#data-types-pattern-aware).
 > - Most extended configs support providing quick documentation text via documentation comments.
 > - Most extended configs support providing inlay hint text via option comments (`## hint`).
-> - Some extended configs support specifying **scope context** via option comments (`## replace_scopes` / `## push_scope`).
+> - Some extended configs support specifying **scope context** via option comments (`## replace_scopes` `## push_scope`).
 
 #### Extended Config for Scripted Variables {#config-extended-scripted-variable}
 
@@ -1028,18 +1028,18 @@ Format Explanation:
 ```cwt
 scripted_variables = {
     # 'x' or 'x = xxx'
-    # 'x' can also be a pattern expression (template expression, ant expression or regex)
+    # 'x' can also be a pattern expression (glob pattern, ant expression, regex, etc.)
 
     ### Some documentation
-    ## hint = §RSome inlay hint text§!
+    ## hint = "§RSome hint text§!"
     x
 }
 ```
 
 Notes:
 
-- The name can use template / ANT / regex matching, but avoid being too broad to prevent false matches.
-- This entry only provides "hint enhancement" and is not responsible for declaring or validating the value and type of scripted variables.
+- The name of this config also support pattern matching based on ant expressions, regular expressions, etc. See [Pattern Data Types](#data-types-pattern-aware).
+- This config is only used for *hint enhancement*, and is not responsible for declaring or validating the values and types of scripted variables.
 
 > CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
 
@@ -1064,10 +1064,10 @@ Format Explanation:
 ```cwt
 definitions = {
     # 'x' or 'x = xxx'
-    # 'x' can also be a pattern expression (template expression, ant expression or regex)
+    # 'x' can also be a pattern expression (glob pattern, ant expression, regex, etc.)
 
     ### Some documentation
-    ## hint = §RSome hint text§!
+    ## hint = "§RSome hint text§!"
     ## type = civic_or_origin.civic
     x
 
@@ -1080,8 +1080,8 @@ definitions = {
 
 Notes:
 
+- The name of this config also support pattern matching based on ant expressions, regular expressions, etc. See [Pattern Data Types](#data-types-pattern-aware).
 - `## type` is required; if missing, the entry will be skipped.
-- This extension is for "hint and context enhancement" and does not directly change the structure of [declaration configs](#config-declaration).
 
 > CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
 
@@ -1107,7 +1107,7 @@ Format Explanation:
 ```cwt
 game_rules = {
     ### Some documentation
-    ## hint = §RSome hint text§!
+    ## hint = "§RSome hint text§!"
     x # provide hint only
 
     ### Some documentation
@@ -1132,8 +1132,8 @@ game_rules = {
 
 Notes:
 
+- The name of this config also support pattern matching based on ant expressions, regular expressions, etc. See [Pattern Data Types](#data-types-pattern-aware).
 - If the value is `single_alias_right[...]`, it is first inlined and expanded, then takes effect as the override config.
-- This extension only affects the "source / structure of the [declaration config](#config-declaration)" and "hint information"; it does not change the overall priority and override strategy.
 
 > CWTools Compatibility: Not compatible. Have different formats and behaviors.
 
@@ -1160,7 +1160,7 @@ Format Explanation:
 ```cwt
 on_actions = {
     ### Some documentation
-    ## hint = §RSome hint text§!
+    ## hint = "§RSome hint text§!"
     ## replace_scopes = { this = country root = country }
     ## event_type = country
     x
@@ -1186,6 +1186,7 @@ on_actions = {
 
 Notes:
 
+- The name of this config also support pattern matching based on ant expressions, regular expressions, etc. See [Pattern Data Types](#data-types-pattern-aware).
 - `## event_type` is required; if missing, the entry will be skipped.
 - If scope replacement is needed, use `## replace_scopes` in combination.
 
@@ -1215,7 +1216,7 @@ Format Explanation:
 ```cwt
 parameters = {
     # 'x' is a parameter name, e.g., for '$JOB$', 'x' should be 'JOB'
-    # 'x' can also be a pattern expression (template expression, ant expression or regex)
+    # 'x' can also be a pattern expression (glob pattern, ant expression, regex, etc.)
 
     ### Some documentation
     ## context_key = scripted_trigger@some_trigger
@@ -1247,6 +1248,7 @@ parameters = {
 
 Notes:
 
+- The name of this config also support pattern matching based on ant expressions, regular expressions, etc. See [Pattern Data Types](#data-types-pattern-aware).
 - `## context_key` is required; if missing, the entry will be skipped.
 - When `## inherit` is marked, the context is taken from the "usage site" and may be empty or vary by location.
 - Root-level `single_alias_right[...]` is inlined and expanded before being used as a context config.
@@ -1274,7 +1276,7 @@ Format Explanation:
 complex_enum_values = {
     component_tag = {
         ### Some documentation
-        ## hint = §RSome inlay hint text§!
+        ## hint = "§RSome hint text§!"
         x
     }
 }
@@ -1282,8 +1284,7 @@ complex_enum_values = {
 
 Notes:
 
-- This extension does not change the collection logic for complex enum "value sources"; it only provides hint information.
-- The name can use template / ANT / regex matching, but avoid being too broad to prevent false matches.
+- The name of this config also support pattern matching based on ant expressions, regular expressions, etc. See [Pattern Data Types](#data-types-pattern-aware).
 
 > CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
 
@@ -1308,7 +1309,7 @@ Field Explanation:
 dynamic_values = {
     event_target = {
         ### Some documentation
-        ## hint = §RSome inlay hint text§!
+        ## hint = "§RSome hint text§!"
         x
 
         # scope context options: only receive push scope (this scope)
@@ -1320,8 +1321,7 @@ dynamic_values = {
 
 Notes:
 
-- This extension does not change the dynamic value type or the base "value set" definition; it only provides hint information.
-- The name can use template / ANT / regex matching, but avoid being too broad to prevent false matches.
+- The name of this config also support pattern matching based on ant expressions, regular expressions, etc. See [Pattern Data Types](#data-types-pattern-aware).
 
 > CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
 
@@ -1348,7 +1348,7 @@ Format Explanation:
 inline_scripts = {
     # 'x' is an inline script expression
     # e.g., for 'inline_script = jobs/researchers_add', 'x' should be 'jobs/researchers_add'
-    # 'x' can also be a pattern expression (template expression, ant expression or regex)
+    # 'x' can also be a pattern expression (glob pattern, ant expression, regex, etc.)
     # use 'x = xxx' to declare context config(s)
 
     x
@@ -1375,6 +1375,7 @@ inline_scripts = {
 
 Notes:
 
+- The name of this config also support pattern matching based on ant expressions, regular expressions, etc. See [Pattern Data Types](#data-types-pattern-aware).
 - If only a single context config is needed, keep the default `single`; use `multiple` when declaring multiple.
 - Root-level `single_alias_right[...]` is inlined and expanded before being used as a context config.
 
@@ -1650,7 +1651,7 @@ Related extension points:
 
 ### Basic Data Types {#data-types-basic}
 
-The following data types represent basic value forms.
+The following data types represent the basic forms of values. They can be pre-matched at the syntax level.
 
 #### Any {#data-type-any}
 
@@ -1744,6 +1745,8 @@ Used only for internal representation and does not correspond to a config expres
 
 ### Extra Basic Data Types {#data-types-extra-basic}
 
+The following data types represent extra basic forms of values. They cannot be pre-matched at the syntax level.
+
 #### PercentageField {#data-type-percentage-field}
 
 Percentage field type.
@@ -1780,7 +1783,9 @@ Format of corresponding data expressions:
 
 ### Reference Data Types {#data-types-reference}
 
-The following data types match by referencing content from other configs or indexes. Some of them match specific complex expressions.
+The following data types match by referencing content from other configs or indexes.
+
+Some of these data types will match a certain complex expression, which means that the corresponding expression can be composed of multiple nodes, and these nodes have their own semantics.
 
 #### Definition {#data-type-definition}
 
@@ -2130,34 +2135,6 @@ Format of corresponding data expressions:
 
 > CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
 
-#### ShaderEffect {#data-type-shader-effect}
-
-Shader effect type.
-
-Matches a reference to a shader effect.  
-The plugin currently treats these references as dynamic references, even though their declarations actually reside in `.shader` files.
-
-"Dynamic reference" means that there is no actual declaration site, and only read/write access is distinguished — just like dynamic values. Here, only read access is always assumed.
-
-Format of corresponding data expressions:
-- `$shader_effect`
-
-> CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
-
-#### MeshLocator {#data-type-mesh-locator}
-
-Mesh locator type.
-
-Matches a reference to a mesh locator.  
-The plugin currently treats these references as dynamic references, even though their declarations actually reside in `.mesh` files.
-
-"Dynamic reference" means that there is no actual declaration site, and only read/write access is distinguished — just like dynamic values. Here, only read access is always assumed.
-
-Format of corresponding data expressions:
-- `$mesh_locator`
-
-> CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
-
 #### TechnologyWithLevel {#data-type-technology-with-level}
 
 Technology with level type.
@@ -2203,57 +2180,9 @@ Format of corresponding data expressions:
 
 > CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
 
-### Alias Data Types {#data-types-alias}
-
-The following data types are related to the alias resolution mechanism. They generally do not directly participate in script matching, but are handled internally by the alias system.
-
-#### AliasKeysField {#data-type-alias-keys-field}
-
-Alias keys field type.
-
-When matching, resolves alias sub-keys and matches recursively.
-
-Format of corresponding data expressions:
-- `alias_keys_field[{name}]` – where `{name}` matches an alias name.
-
-> CWTools Compatibility: Compatible.
-
-#### AliasName {#data-type-alias-name}
-
-Alias name type.
-
-When matching, resolves alias sub-keys and matches recursively. Can only be used to match property keys, and must be combined with [AliasMatchLeft](#data-type-alias-match-left).
-
-Format of corresponding data expressions:
-- `alias_name[{name}]` – where `{name}` matches an alias name.
-
-> CWTools Compatibility: Compatible.
-
-#### AliasMatchLeft {#data-type-alias-match-left}
-
-Alias match left type.
-
-Does not directly participate in script matching; handled by the alias resolution mechanism. Can only be used to match property values, and must be combined with [AliasName](#data-type-alias-name).
-
-Format of corresponding data expressions:
-- `alias_match_left[{name}]` – where `{name}` matches an alias name.
-
-> CWTools Compatibility: Compatible.
-
-#### SingleAliasRight {#data-type-single-alias-right}
-
-Single alias right type.
-
-Does not directly participate in script matching; handled by the alias resolution mechanism. Can only be used to match property values.
-
-Format of corresponding data expressions:
-- `single_alias_right[{name}]` – where `{name}` matches a single alias name.
-
-> CWTools Compatibility: Compatible.
-
 ### Path Reference Data Types {#data-types-path-reference}
 
-The following data types are used to match file path references, and validate whether the referenced file exists when matching.
+The following data types are used to match file path references. When matching, it will verify whether the file referenced by the path exists.
 
 #### Icon {#data-type-icon}
 
@@ -2333,9 +2262,92 @@ Format of corresponding data expressions:
 
 > CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
 
+### External Reference Data Types {#external-reference}
+
+The following data types are used to match special external references.
+
+#### ShaderEffect {#data-type-shader-effect}
+
+Shader effect type.
+
+Matches a reference to a shader effect.  
+The plugin currently treats these references as dynamic references, even though their declarations actually reside in `.shader` files.
+
+"Dynamic reference" means that there is no actual declaration site, and only read/write access is distinguished — just like dynamic values. Here, only read access is always assumed.
+
+Format of corresponding data expressions:
+- `$shader_effect`
+
+> CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
+
+#### MeshLocator {#data-type-mesh-locator}
+
+Mesh locator type.
+
+Matches a reference to a mesh locator.  
+The plugin currently treats these references as dynamic references, even though their declarations actually reside in `.mesh` files.
+
+"Dynamic reference" means that there is no actual declaration site, and only read/write access is distinguished — just like dynamic values. Here, only read access is always assumed.
+
+Format of corresponding data expressions:
+- `$mesh_locator`
+
+> CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
+
+### Alias Data Types {#data-types-alias}
+
+The following data types are related to the alias resolution mechanism. They generally do not directly participate in script matching, but are handled internally by the alias system.
+
+#### AliasKeysField {#data-type-alias-keys-field}
+
+Alias keys field type.
+
+When matching, resolves alias sub-keys and matches recursively.
+
+Format of corresponding data expressions:
+- `alias_keys_field[{name}]` – where `{name}` matches an alias name.
+
+> CWTools Compatibility: Compatible.
+
+#### AliasName {#data-type-alias-name}
+
+Alias name type.
+
+When matching, resolves alias sub-keys and matches recursively. Can only be used to match property keys, and must be combined with [AliasMatchLeft](#data-type-alias-match-left).
+
+Format of corresponding data expressions:
+- `alias_name[{name}]` – where `{name}` matches an alias name.
+
+> CWTools Compatibility: Compatible.
+
+#### AliasMatchLeft {#data-type-alias-match-left}
+
+Alias match left type.
+
+Does not directly participate in script matching; handled by the alias resolution mechanism. Can only be used to match property values, and must be combined with [AliasName](#data-type-alias-name).
+
+Format of corresponding data expressions:
+- `alias_match_left[{name}]` – where `{name}` matches an alias name.
+
+> CWTools Compatibility: Compatible.
+
+#### SingleAliasRight {#data-type-single-alias-right}
+
+Single alias right type.
+
+Does not directly participate in script matching; handled by the alias resolution mechanism. Can only be used to match property values.
+
+Format of corresponding data expressions:
+- `single_alias_right[{name}]` – where `{name}` matches a single alias name.
+
+> CWTools Compatibility: Compatible.
+
 ### Pattern-Aware Data Types {#data-types-pattern-aware}
 
-The following data types adopt special pattern-matching strategies. The constant data type [Constant](#data-type-constant) also belongs to this category.
+The following data types use special pattern matching strategies, and can be used for pattern matching.
+
+> [!warning]
+> The constant data type [Constant](#data-type-constant) and the template data type [Template](#data-type-template) currently also belong to this category of data types, and their classification is planned to be adjusted in a future version.
 
 #### Constant {#data-type-constant}
 
@@ -2427,6 +2439,9 @@ Examples of Corresponding data expressions:
 
 ### Suffix-Aware Data Types {#data-types-suffix-aware}
 
+> [!warning]
+> Data types belonging to this category will be removed in a future version, and is planned to migrate to the newly added snippet data types.
+
 #### SuffixAwareDefinition {#data-type-suffix-aware-definition}
 
 Suffix-aware definition reference type.
@@ -2495,6 +2510,10 @@ a_enum[weight_or_base]_b
 a_value[anything]_b
 ```
 
+See also:
+- Config expression: [Template expressions](#config-expression-template).
+- Data type: [Template](#data-type-template).
+
 #### How to Use ANT Path Patterns in Config Files {#faq-ant}
 
 <!-- @see icu.windea.pls.config.CwtDataTypes.Ant -->
@@ -2514,6 +2533,9 @@ ant:/foo/bar?/*
 ant.i:/foo/bar?/*
 ```
 
+See also:
+- Data type: [Ant](#data-type-ant).
+
 #### How to Use Regular Expressions in Config Files {#faq-regex}
 
 <!-- @see icu.windea.pls.config.CwtDataTypes.Regex -->
@@ -2528,6 +2550,9 @@ Examples:
 re:foo.*
 re.i:foo.*
 ```
+
+See also:
+- Data type: [Regex](#data-type-regex).
 
 #### How to Specify the Occurrence Count of a Definition Member in Config Files {#faq-cardinality}
 
