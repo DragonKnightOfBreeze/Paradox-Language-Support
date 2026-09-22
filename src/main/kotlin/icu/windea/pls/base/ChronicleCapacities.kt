@@ -9,40 +9,44 @@ object ChronicleCapacities {
     fun includeSqlite(): Boolean = "org.sqlite.JDBC".isClassPresent()
 
     /** 是否记录缓存的统计数据。 */
-    fun recordCacheStats(): Boolean = System.getProperty("chronicle.capacities.recordCacheStats").toBoolean()
+    fun recordCacheStats(): Boolean = model.recordCacheStats
 
     /** 是否记录索引的统计数据。 */
-    fun recordIndexStats(): Boolean = System.getProperty("chronicle.capacities.recordIndexStats").toBoolean()
+    fun recordIndexStats(): Boolean = model.recordIndexStats
 
     /** 是否在打开项目后，刷新内置规则文件（仅限一次）。 */
-    fun refreshBuiltInConfigDirectories(): Boolean = System.getProperty("chronicle.capacities.refreshBuiltInConfigDirectories").toBoolean()
+    fun refreshBuiltInConfigDirectories(): Boolean = model.refreshBuiltInConfigDirectories
 
     /** 处理规则数据时，是否保留文件规则列表到其用户数据中（默认不保留）。 */
-    fun keepFileConfigs(): Boolean = _keepFileConfigs
+    fun keepFileConfigs(): Boolean = model.keepFileConfigs
 
     /** 处理成员规则的选项元数据时，是否保留选项规则列表到其用户数据中（默认仅为内部规则保留）。 */
-    fun keepOptionConfigs(): Boolean = _keepOptionConfigs
+    fun keepOptionConfigs(): Boolean = model.keepOptionConfigs
 
-    /** 定义相对于脚本文件的最大深度，从0开始（默认为4）。用于优化性能。 */
-    fun maxDefinitionDepth(): Int = _maxDefinitionDepth
+    /** 收集得到的匹配候选项的最大数量，如果超出则会改为使用回退匹配。默认为 16。用于优化性能。 */
+    fun maxMatchCandidateSize(): Int = model.maxMatchCandidateSize
+
+    /** 定义相对于脚本文件的最大深度，如果超出则会被忽略。从 0 开始，默认为 4。用于优化性能。 */
+    fun maxDefinitionDepth(): Int = model.maxDefinitionDepth
 
     // region Implementations
 
-    // 3.0.1 cache to optimize (very few) performance
-    @Volatile private var _keepFileConfigs: Boolean = computeKeepFileConfigs()
-    @Volatile private var _keepOptionConfigs: Boolean = computeKeepOptionConfigs()
-    @Volatile private var _maxDefinitionDepth: Int = computeMaxDefinitionDepth()
+    @Volatile private var model = Model()
 
-    private fun computeKeepFileConfigs() = System.getProperty("chronicle.capacities.keepFileConfigs").toBoolean()
-    private fun computeKeepOptionConfigs() = System.getProperty("chronicle.capacities.keepFileConfigs").toBoolean()
-    private fun computeMaxDefinitionDepth() = System.getProperty("chronicle.capacities.keepFileConfigs")?.toIntOrNull() ?: 4
+    private class Model {
+        val recordCacheStats = System.getProperty("chronicle.capacities.recordCacheStats").toBoolean()
+        val recordIndexStats = System.getProperty("chronicle.capacities.recordIndexStats").toBoolean()
+        val refreshBuiltInConfigDirectories = System.getProperty("chronicle.capacities.refreshBuiltInConfigDirectories").toBoolean()
+        val keepFileConfigs = System.getProperty("chronicle.capacities.keepFileConfigs").toBoolean()
+        val keepOptionConfigs = System.getProperty("chronicle.capacities.keepOptionConfigs").toBoolean()
+        val maxMatchCandidateSize = System.getProperty("chronicle.capacities.maxMatchCandidateSize")?.toIntOrNull() ?: 16
+        val maxDefinitionDepth = System.getProperty("chronicle.capacities.maxDefinitionDepth")?.toIntOrNull() ?: 4
+    }
 
-    class Listener : ProjectActivity {
+    internal class Listener : ProjectActivity {
         override suspend fun execute(project: Project) {
-            // reinitialize language capacities
-            _keepFileConfigs = computeKeepFileConfigs()
-            _keepOptionConfigs = computeKeepOptionConfigs()
-            _maxDefinitionDepth = computeMaxDefinitionDepth()
+            // reinitialize on project start
+            model = Model()
         }
     }
 

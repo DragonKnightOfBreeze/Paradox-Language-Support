@@ -2,13 +2,16 @@ package icu.windea.pls.lang.match
 
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.util.SmartList
+import icu.windea.pls.base.ChronicleCapacities
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
+import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.configGroup.mockConfigs
 import icu.windea.pls.config.manipulation.CwtConfigInlineService
 import icu.windea.pls.config.match.CwtConfigMatchService
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.forEachFast
+import icu.windea.pls.core.collections.processFast
 import icu.windea.pls.core.runWithRecursionGuard
 import icu.windea.pls.lang.manipulation.ParadoxConfigExpansionService
 
@@ -17,27 +20,26 @@ object ParadoxMatchCandidateService {
     fun collect(context: ParadoxExpressionMatchContext, configs: List<CwtMemberConfig<*>>, forValue: Boolean): List<ParadoxMatchCandidate> {
         if (configs.isEmpty()) return emptyList()
         val result = SmartList<ParadoxMatchCandidate>() // 3.0.1 optimize: use `SmartList` (0 or 1 elements in most situations)
-        configs.forEachFast { config ->
+        configs.processFast { config ->
             collectInternal(context, forValue, result, config)
         }
         return result
     }
 
-    private fun collectInternal(context: ParadoxExpressionMatchContext, forValue: Boolean, collected: MutableList<ParadoxMatchCandidate>, config: CwtMemberConfig<*>) {
+    private fun collectInternal(context: ParadoxExpressionMatchContext, forValue: Boolean, collected: MutableList<ParadoxMatchCandidate>, config: CwtMemberConfig<*>): Boolean {
         if (CwtConfigMatchService.isAliasEntry(config)) {
             // NOTE 3.0.3 inline alias entry before further match
-            collectFromAliasEntry(context, forValue, collected, config)
-            return
+            return collectFromAliasEntry(context, forValue, collected, config)
         }
-        collectMatched(context, forValue, collected, config)
+        return collectMatched(context, forValue, collected, config)
     }
 
-    private fun collectFromAliasEntry(context: ParadoxExpressionMatchContext, forValue: Boolean, collected: MutableList<ParadoxMatchCandidate>, config: CwtMemberConfig<*>) {
-        if (forValue) return
-        if (config !is CwtPropertyConfig) return
+    private fun collectFromAliasEntry(context: ParadoxExpressionMatchContext, forValue: Boolean, collected: MutableList<ParadoxMatchCandidate>, config: CwtMemberConfig<*>): Boolean {
+        if (forValue) return true
+        if (config !is CwtPropertyConfig) return true
         val configGroup = context.configGroup
-        val aliasName = config.configExpression.metadata.value ?: return
-        val aliasGroup = configGroup.aliasGroups[aliasName] ?: return
+        val aliasName = config.configExpression.metadata.value ?: return true
+        val aliasGroup = configGroup.aliasGroups[aliasName] ?: return true
         // NOTE 3.0.3 recursion guard is required here
         val map = mutableMapOf<String, ParadoxMatchResult>()
         runWithRecursionGuard("matchCandidate.collectFromAliasEntry", aliasName) {
@@ -46,39 +48,42 @@ object ParadoxMatchCandidateService {
                 true
             }
         }
-        if (map.isEmpty()) return
+        if (map.isEmpty()) return true
         ProgressManager.checkCanceled()
-        val result = SmartList<ParadoxMatchCandidate>() // 3.0.3 optimize: use `SmartList` (0 or 1 elements in most situations)
         map.forEach f1@{ (key, matchResult) ->
             val aliasConfigs = aliasGroup[key]
             aliasConfigs?.forEachFast f2@{ aliasConfig ->
                 val inlined = CwtConfigInlineService.inlineAlias(config, aliasConfig) ?: return@f2
-                if (result.size >= 16) {
-                    result.clear()
-                    return@f1 // too many candidates, break
-                }
-                val candidate = ParadoxMatchCandidate(inlined, matchResult)
-                result += candidate
+                collectCandidate(inlined, matchResult, collected).let { if (!it) return false }
             }
         }
-        if (result.isEmpty()) { // too many candidates, use fallback config (`$any = $any`)
-            collected.clear()
-            val fallbackConfig = context.configGroup.mockConfigs.anyProperty
-            val fallbackCandidate = ParadoxMatchCandidate(fallbackConfig, ParadoxMatchResult.FallbackMatch)
-            collected.add(fallbackCandidate)
-            return
-        }
-        collected.addAll(result)
-
         // NOTE 3.0.3 cannot apply injection for alias keys (e.g. `y` in `alias[x:y]`) - unsupported from now on
+        return true
     }
 
-    private fun collectMatched(context: ParadoxExpressionMatchContext, forValue: Boolean, collected: MutableList<ParadoxMatchCandidate>, config: CwtMemberConfig<*>) {
+    private fun collectMatched(context: ParadoxExpressionMatchContext, forValue: Boolean, collected: MutableList<ParadoxMatchCandidate>, config: CwtMemberConfig<*>): Boolean {
         val configExpression = if (forValue) config.valueExpression else config.configExpression
         val matchResult = ParadoxExpressionMatchService.matchScriptExpression(context, configExpression, config)
-        if (matchResult === ParadoxMatchResult.NotMatch) return
+        if (matchResult === ParadoxMatchResult.NotMatch) return true
+        return collectCandidate(config, matchResult, collected)
+    }
+
+    private fun collectCandidate(config: CwtMemberConfig<*>, matchResult: ParadoxMatchResult, collected: MutableList<ParadoxMatchCandidate>): Boolean {
+        if (collected.size >= ChronicleCapacities.maxMatchCandidateSize()) {
+            // NOTE 3.0.3 too many candidates, use fallback match with any data type (clear all collected candidates first)
+            val mockConfigs = config.configGroup.mockConfigs
+            val fallbackConfig = when (config) {
+                is CwtPropertyConfig -> mockConfigs.anyProperty
+                is CwtValueConfig -> mockConfigs.anyValue
+            }
+            collected.clear()
+            val fallbackCandidate = ParadoxMatchCandidate(fallbackConfig, ParadoxMatchResult.FallbackMatch)
+            collected += fallbackCandidate
+            return false
+        }
         val candidate = ParadoxMatchCandidate(config, matchResult)
         collected += candidate
+        return true
     }
 
     fun process(context: ParadoxExpressionMatchContext, candidates: List<ParadoxMatchCandidate>): List<ParadoxMatchCandidate> {
