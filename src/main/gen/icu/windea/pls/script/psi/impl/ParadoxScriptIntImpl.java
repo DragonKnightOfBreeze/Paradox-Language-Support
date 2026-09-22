@@ -9,11 +9,10 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 import icu.windea.pls.script.psi.*;
-import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 
-public class ParadoxScriptIntImpl extends ParadoxScriptValueImpl implements ParadoxScriptInt {
+public class ParadoxScriptIntImpl extends ParadoxScriptNumberImpl implements ParadoxScriptInt {
 
   public ParadoxScriptIntImpl(@NotNull ASTNode node) {
     super(node);
@@ -28,16 +27,6 @@ public class ParadoxScriptIntImpl extends ParadoxScriptValueImpl implements Para
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof ParadoxScriptVisitor) accept((ParadoxScriptVisitor)visitor);
     else super.accept(visitor);
-  }
-
-  @Override
-  public @Nullable PsiReference getReference() {
-    return ParadoxScriptPsiImplUtil.getReference(this);
-  }
-
-  @Override
-  public @NotNull PsiReference @NotNull [] getReferences() {
-    return ParadoxScriptPsiImplUtil.getReferences(this);
   }
 
   @Override

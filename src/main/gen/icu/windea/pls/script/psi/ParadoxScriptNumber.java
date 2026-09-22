@@ -4,10 +4,15 @@ package icu.windea.pls.script.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 
-public interface ParadoxScriptInt extends ParadoxScriptNumber {
+public interface ParadoxScriptNumber extends ParadoxScriptValue, ParadoxScriptLiteralValue {
+
+  @Nullable PsiReference getReference();
+
+  @NotNull PsiReference @NotNull [] getReferences();
 
   @NotNull GlobalSearchScope getResolveScope();
 

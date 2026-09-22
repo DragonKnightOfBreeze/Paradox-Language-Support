@@ -47,8 +47,8 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
     create_token_set_(INLINE_MATH_BINARY_EXPRESSION, INLINE_MATH_EXPRESSION, INLINE_MATH_FACTOR, INLINE_MATH_GROUPING_EXPRESSION,
       INLINE_MATH_NUMBER, INLINE_MATH_PARAMETER, INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE, INLINE_MATH_UNARY_EXPRESSION),
     create_token_set_(BLOCK, BOOLEAN, COLOR, FLOAT,
-      INLINE_MATH, INT, SCRIPTED_VARIABLE_REFERENCE, STRING,
-      VALUE),
+      INLINE_MATH, INT, NUMBER, SCRIPTED_VARIABLE_REFERENCE,
+      STRING, VALUE),
   };
 
   /* ********************************************************** */
@@ -943,6 +943,19 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // int | float
+  public static boolean number(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "number")) return false;
+    if (!nextTokenIs(b, "<number>", FLOAT_TOKEN, INT_TOKEN)) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _COLLAPSE_, NUMBER, "<number>");
+    r = int_$(b, l + 1);
+    if (!r) r = float_$(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  /* ********************************************************** */
   // property_key property_separator property_value
   public static boolean property(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "property")) return false;
@@ -1273,14 +1286,13 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // boolean | int | float | string | inline_math
+  // boolean | number | string | inline_math
   static boolean scripted_variable_value(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "scripted_variable_value")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, null, "<scripted variable value>");
     r = boolean_$(b, l + 1);
-    if (!r) r = int_$(b, l + 1);
-    if (!r) r = float_$(b, l + 1);
+    if (!r) r = number(b, l + 1);
     if (!r) r = string(b, l + 1);
     if (!r) r = inline_math(b, l + 1);
     exit_section_(b, l, m, r, false, null);
@@ -1344,15 +1356,14 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // scripted_variable_reference | boolean | int | float | string | block | color | inline_math
+  // scripted_variable_reference | boolean | number | string | block | color | inline_math
   public static boolean value(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "value")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _COLLAPSE_, VALUE, "<value>");
     r = scripted_variable_reference(b, l + 1);
     if (!r) r = boolean_$(b, l + 1);
-    if (!r) r = int_$(b, l + 1);
-    if (!r) r = float_$(b, l + 1);
+    if (!r) r = number(b, l + 1);
     if (!r) r = string(b, l + 1);
     if (!r) r = block(b, l + 1);
     if (!r) r = color(b, l + 1);

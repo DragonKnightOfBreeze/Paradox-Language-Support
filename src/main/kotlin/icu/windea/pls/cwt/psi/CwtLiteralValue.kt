@@ -6,7 +6,7 @@ import com.intellij.psi.PsiLiteralValue
  * 字面量值。包括布尔值、数字和字符串。
  *
  * @see CwtBoolean
- * @see CwtNumberExpressionElement
+ * @see CwtNumber
  * @see CwtStringExpressionElement
  */
 interface CwtLiteralValue : PsiLiteralValue

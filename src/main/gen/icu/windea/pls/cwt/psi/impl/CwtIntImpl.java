@@ -12,7 +12,7 @@ import icu.windea.pls.cwt.psi.*;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 
-public class CwtIntImpl extends CwtValueImpl implements CwtInt {
+public class CwtIntImpl extends CwtNumberImpl implements CwtInt {
 
   public CwtIntImpl(@NotNull ASTNode node) {
     super(node);

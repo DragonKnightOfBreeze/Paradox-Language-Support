@@ -12,7 +12,7 @@ import icu.windea.pls.lang.psi.resolved
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptColor
-import icu.windea.pls.script.psi.ParadoxScriptNumberExpressionElement
+import icu.windea.pls.script.psi.ParadoxScriptNumber
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.psi.containingDirectMember
@@ -65,7 +65,7 @@ object ParadoxColorFactory {
         return element.valueList.orNull()
             ?.takeIf { it.size == 3 || it.size == 4 && it.allFast { v -> v.isValidExpression() } }
             ?.mapFast { it.resolved() ?: return null }
-            ?.takeIf { it.allFast { v -> v is ParadoxScriptNumberExpressionElement } }
+            ?.takeIf { it.allFast { v -> v is ParadoxScriptNumber } }
             ?.mapFast { it.value }
     }
 

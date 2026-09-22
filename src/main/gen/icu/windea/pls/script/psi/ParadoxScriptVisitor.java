@@ -41,9 +41,7 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
   }
 
   public void visitFloat(@NotNull ParadoxScriptFloat o) {
-    visitValue(o);
-    // visitLiteralValue(o);
-    // visitNumberExpressionElement(o);
+    visitNumber(o);
   }
 
   public void visitInlineConditionalBlock(@NotNull ParadoxScriptInlineConditionalBlock o) {
@@ -105,9 +103,7 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
   }
 
   public void visitInt(@NotNull ParadoxScriptInt o) {
-    visitValue(o);
-    // visitLiteralValue(o);
-    // visitNumberExpressionElement(o);
+    visitNumber(o);
   }
 
   public void visitNormalConditionalBlock(@NotNull ParadoxScriptNormalConditionalBlock o) {
@@ -126,6 +122,11 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
   public void visitNormalParameterArgument(@NotNull ParadoxScriptNormalParameterArgument o) {
     visitArgument(o);
     // visitParadoxLanguageInjectionHost(o);
+  }
+
+  public void visitNumber(@NotNull ParadoxScriptNumber o) {
+    visitValue(o);
+    // visitLiteralValue(o);
   }
 
   public void visitProperty(@NotNull ParadoxScriptProperty o) {

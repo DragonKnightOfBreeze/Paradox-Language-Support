@@ -41,7 +41,7 @@ import icu.windea.pls.script.psi.ParadoxScriptInt
 import icu.windea.pls.script.psi.ParadoxScriptLiteralValue
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptMemberContext
-import icu.windea.pls.script.psi.ParadoxScriptNumberExpressionElement
+import icu.windea.pls.script.psi.ParadoxScriptNumber
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
@@ -62,17 +62,6 @@ fun ParadoxScriptExpressionElement.value(resolve: Boolean = true): String? {
     return element.value
 }
 
-fun ParadoxScriptExpressionElement.numberValue(resolve: Boolean = true, strict: Boolean = false): BigDecimal? {
-    val element = if (resolve) resolved() else this
-    if (element == null) return null
-    if (strict && element !is ParadoxScriptNumberExpressionElement) return null
-    return when (element) {
-        is ParadoxScriptNumberExpressionElement -> element.value.toBigDecimalOrNull()
-        is ParadoxScriptStringExpressionElement -> element.value.toBigDecimalOrNull()
-        else -> null
-    }
-}
-
 fun ParadoxScriptExpressionElement.booleanValue(resolve: Boolean = true, strict: Boolean = false): Boolean? {
     val element = if (resolve) resolved() else this
     if (element == null) return null
@@ -80,6 +69,17 @@ fun ParadoxScriptExpressionElement.booleanValue(resolve: Boolean = true, strict:
     return when (element) {
         is ParadoxScriptBoolean -> element.value.toBooleanYesNo()
         else -> true
+    }
+}
+
+fun ParadoxScriptExpressionElement.numberValue(resolve: Boolean = true, strict: Boolean = false): BigDecimal? {
+    val element = if (resolve) resolved() else this
+    if (element == null) return null
+    if (strict && element !is ParadoxScriptNumber) return null
+    return when (element) {
+        is ParadoxScriptNumber -> element.value.toBigDecimalOrNull()
+        is ParadoxScriptStringExpressionElement -> element.value.toBigDecimalOrNull()
+        else -> null
     }
 }
 
@@ -194,7 +194,7 @@ fun <T : ParadoxScriptExpressionElement> T.resolved(): ParadoxScriptExpressionEl
 // region PSI Predicates
 
 fun ParadoxScriptExpressionElement.isResolvableLiteralExpression(): Boolean {
-    return this is ParadoxScriptStringExpressionElement || this is ParadoxScriptNumberExpressionElement
+    return this is ParadoxScriptStringExpressionElement || this is ParadoxScriptNumber
 }
 
 /**

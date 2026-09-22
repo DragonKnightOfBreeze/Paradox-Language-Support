@@ -6,7 +6,7 @@ import com.intellij.psi.PsiLiteralValue
  * 字面量值。包括布尔值、数字、字符串。
  *
  * @see ParadoxScriptBoolean
- * @see ParadoxScriptNumberExpressionElement
+ * @see ParadoxScriptNumber
  * @see ParadoxScriptStringExpressionElement
  * @see ParadoxScriptInlineMathNumber
  */

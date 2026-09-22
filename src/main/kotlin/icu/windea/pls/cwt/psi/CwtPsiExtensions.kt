@@ -7,6 +7,7 @@ import com.intellij.psi.util.siblings
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.sequences.findIsInstance
 import icu.windea.pls.core.toBooleanYesNo
+import java.math.BigDecimal
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 
@@ -14,11 +15,13 @@ import kotlin.contracts.contract
 
 val CwtBoolean.booleanValue: Boolean get() = this.value.toBooleanYesNo()
 
+val CwtNumber.numberValue: BigDecimal? get() = this.value.toBigDecimalOrNull()
+
 val CwtInt.intValue: Int get() = this.value.toIntOrNull() ?: 0
 
 val CwtFloat.floatValue: Float get() = this.value.toFloatOrNull() ?: 0f
 
-val CwtString.stringValue: String get() = this.value
+val CwtStringExpressionElement.stringValue: String get() = this.value
 
 // endregion
 

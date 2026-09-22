@@ -7,7 +7,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 
-public interface CwtInt extends CwtValue, CwtNumberExpressionElement, CwtLiteralValue {
+public interface CwtInt extends CwtNumber {
 
   @NotNull GlobalSearchScope getResolveScope();
 

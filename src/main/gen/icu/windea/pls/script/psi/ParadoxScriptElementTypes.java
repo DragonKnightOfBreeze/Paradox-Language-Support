@@ -30,6 +30,7 @@ public interface ParadoxScriptElementTypes {
   IElementType NORMAL_CONDITIONAL_BLOCK = ParadoxScriptElementTypeFactory.getElementType("NORMAL_CONDITIONAL_BLOCK");
   IElementType NORMAL_PARAMETER = ParadoxScriptElementTypeFactory.getElementType("NORMAL_PARAMETER");
   IElementType NORMAL_PARAMETER_ARGUMENT = ParadoxScriptElementTypeFactory.getElementType("NORMAL_PARAMETER_ARGUMENT");
+  IElementType NUMBER = ParadoxScriptElementTypeFactory.getElementType("NUMBER");
   IElementType PROPERTY = ParadoxScriptElementTypeFactory.getElementType("PROPERTY");
   IElementType PROPERTY_KEY = ParadoxScriptElementTypeFactory.getElementType("PROPERTY_KEY");
   IElementType ROOT_BLOCK = ParadoxScriptElementTypeFactory.getElementType("ROOT_BLOCK");

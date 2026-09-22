@@ -1,5 +1,5 @@
 // This is a generated file. Not intended for manual editing.
-package icu.windea.pls.script.psi;
+package icu.windea.pls.cwt.psi;
 
 import java.util.List;
 import org.jetbrains.annotations.*;
@@ -7,7 +7,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 
-public interface ParadoxScriptInt extends ParadoxScriptNumber {
+public interface CwtNumber extends CwtValue, CwtLiteralValue {
 
   @NotNull GlobalSearchScope getResolveScope();
 

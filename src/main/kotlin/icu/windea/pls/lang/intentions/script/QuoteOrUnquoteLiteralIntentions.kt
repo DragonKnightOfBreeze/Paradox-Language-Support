@@ -20,7 +20,7 @@ import icu.windea.pls.core.unquote
 import icu.windea.pls.lang.injection.ParadoxLanguageInjectionManager
 import icu.windea.pls.lang.intentions.ChronicleIntentionBundle
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
-import icu.windea.pls.script.psi.ParadoxScriptNumberExpressionElement
+import icu.windea.pls.script.psi.ParadoxScriptNumber
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 class QuoteLiteralIntention : PsiUpdateModCommandAction<ParadoxScriptExpressionElement>(ParadoxScriptExpressionElement::class.java), DumbAware {
@@ -36,7 +36,7 @@ class QuoteLiteralIntention : PsiUpdateModCommandAction<ParadoxScriptExpressionE
 
     override fun isElementApplicable(element: ParadoxScriptExpressionElement, context: ActionContext): Boolean {
         // can also be applied to number literals
-        if (element is ParadoxScriptNumberExpressionElement) return true
+        if (element is ParadoxScriptNumber) return true
         return element is ParadoxScriptStringExpressionElement && element.text.canQuote(element.quotePattern)
     }
 

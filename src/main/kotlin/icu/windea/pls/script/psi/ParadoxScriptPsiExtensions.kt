@@ -18,15 +18,15 @@ import kotlin.contracts.contract
 
 // region PSI Value Accessors
 
-val ParadoxScriptStringExpressionElement.stringValue: String get() = this.value
-
-val ParadoxScriptNumberExpressionElement.numberValue: BigDecimal? get() = this.value.toBigDecimalOrNull()
-
 val ParadoxScriptBoolean.booleanValue: Boolean get() = this.value.toBooleanYesNo()
+
+val ParadoxScriptNumber.numberValue: BigDecimal? get() = this.value.toBigDecimalOrNull()
 
 val ParadoxScriptInt.intValue: Int? get() = this.value.toIntOrNull()
 
 val ParadoxScriptFloat.floatValue: Float? get() = this.value.toFloatOrNull()
+
+val ParadoxScriptStringExpressionElement.stringValue: String get() = this.value
 
 val ParadoxScriptColor.colorValue: Color? get() = this.color
 

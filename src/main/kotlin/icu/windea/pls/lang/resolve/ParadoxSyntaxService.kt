@@ -22,7 +22,7 @@ import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptInlineMath
-import icu.windea.pls.script.psi.ParadoxScriptNumberExpressionElement
+import icu.windea.pls.script.psi.ParadoxScriptNumber
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptTokenSets
@@ -54,7 +54,7 @@ object ParadoxSyntaxService {
     @Suppress("unused")
     fun isNumberLiteral(element: ParadoxScriptExpressionElement): Boolean {
         return when (element) {
-            is ParadoxScriptNumberExpressionElement -> true
+            is ParadoxScriptNumber -> true
             is ParadoxScriptStringExpressionElement -> ParadoxTypeResolver.resolveExpressionType(element).isNumberLiteral()
             else -> false
         }
@@ -71,7 +71,7 @@ object ParadoxSyntaxService {
         // number literal, string literal, or possible number after revolution/evaluation
         val resolved = element.resolved()
         return when (resolved) {
-            is ParadoxScriptNumberExpressionElement -> true
+            is ParadoxScriptNumber -> true
             is ParadoxScriptStringExpressionElement -> true
             is ParadoxScriptInlineMath -> true
             is ParadoxScriptBlock -> true // #291 [VIC3/EU5] we can do comparisons between numbers and formula blocks

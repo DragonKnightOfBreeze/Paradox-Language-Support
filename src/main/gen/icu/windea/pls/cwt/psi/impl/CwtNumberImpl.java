@@ -1,5 +1,5 @@
 // This is a generated file. Not intended for manual editing.
-package icu.windea.pls.script.psi.impl;
+package icu.windea.pls.cwt.psi.impl;
 
 import java.util.List;
 import org.jetbrains.annotations.*;
@@ -7,41 +7,41 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
-import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
-import icu.windea.pls.script.psi.*;
+import static icu.windea.pls.cwt.psi.CwtElementTypes.*;
+import icu.windea.pls.cwt.psi.*;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 
-public class ParadoxScriptFloatImpl extends ParadoxScriptNumberImpl implements ParadoxScriptFloat {
+public abstract class CwtNumberImpl extends CwtValueImpl implements CwtNumber {
 
-  public ParadoxScriptFloatImpl(@NotNull ASTNode node) {
+  public CwtNumberImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   @Override
-  public void accept(@NotNull ParadoxScriptVisitor visitor) {
-    visitor.visitFloat(this);
+  public void accept(@NotNull CwtVisitor visitor) {
+    visitor.visitNumber(this);
   }
 
   @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof ParadoxScriptVisitor) accept((ParadoxScriptVisitor)visitor);
+    if (visitor instanceof CwtVisitor) accept((CwtVisitor)visitor);
     else super.accept(visitor);
   }
 
   @Override
   public @NotNull GlobalSearchScope getResolveScope() {
-    return ParadoxScriptPsiImplUtil.getResolveScope(this);
+    return CwtPsiImplUtil.getResolveScope(this);
   }
 
   @Override
   public @NotNull SearchScope getUseScope() {
-    return ParadoxScriptPsiImplUtil.getUseScope(this);
+    return CwtPsiImplUtil.getUseScope(this);
   }
 
   @Override
   public @NotNull String toString() {
-    return ParadoxScriptPsiImplUtil.toString(this);
+    return CwtPsiImplUtil.toString(this);
   }
 
 }

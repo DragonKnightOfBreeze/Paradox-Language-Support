@@ -10,7 +10,7 @@ import icu.windea.pls.lang.util.evaluators.ParadoxEvaluationService
 import icu.windea.pls.lang.util.evaluators.ParadoxInlineMathExpressionEvaluator
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
 import icu.windea.pls.script.psi.ParadoxScriptInlineMath
-import icu.windea.pls.script.psi.ParadoxScriptNumberExpressionElement
+import icu.windea.pls.script.psi.ParadoxScriptNumber
 
 /**
  * 将内联数学块替换为评估结果（如果无需提供额外的传参信息）。
@@ -24,7 +24,7 @@ class ReplaceInlineMathWithEvaluationResultIntention : PsiUpdateModCommandAction
     override fun invoke(context: ActionContext, element: ParadoxScriptInlineMath, updater: ModPsiUpdater) {
         val result = getResult(element) ?: return
         val newElement = ParadoxScriptElementFactory.createValueFromText(context.project, result.formatted())
-        if (newElement !is ParadoxScriptNumberExpressionElement) return // post check
+        if (newElement !is ParadoxScriptNumber) return // post check
         element.replace(newElement)
     }
 

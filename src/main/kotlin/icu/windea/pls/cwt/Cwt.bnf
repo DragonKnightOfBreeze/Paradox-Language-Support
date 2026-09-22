@@ -157,7 +157,7 @@ private property_value ::= value {
 
 // value rules
 
-value ::= boolean | int | float | string | block {
+value ::= boolean | number | string | block {
   name="value"
   implements=[
     "icu.windea.pls.cwt.psi.CwtExpressionElement"
@@ -179,23 +179,21 @@ boolean ::= BOOLEAN_TOKEN {
     "icu.windea.pls.cwt.psi.CwtLiteralValue"
   ]
 }
-int ::= INT_TOKEN {
-  name="int"
+number ::= int | float {
+  name="number"
   extends=value
   implements=[
-    "icu.windea.pls.cwt.psi.CwtNumberExpressionElement"
     "icu.windea.pls.cwt.psi.CwtLiteralValue"
   ]
+}
+int ::= INT_TOKEN {
+  name="int"
+  extends=number
 }
 float ::= FLOAT_TOKEN {
   name="float"
-  extends=value
-  implements=[
-    "icu.windea.pls.cwt.psi.CwtNumberExpressionElement"
-    "icu.windea.pls.cwt.psi.CwtLiteralValue"
-  ]
+  extends=number
 }
-
 string ::= string_content {
   name="string"
   extends=value

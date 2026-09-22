@@ -13,6 +13,7 @@ public interface CwtElementTypes {
   IElementType DOC_COMMENT = CwtElementTypeFactory.getElementType("DOC_COMMENT");
   IElementType FLOAT = CwtElementTypeFactory.getElementType("FLOAT");
   IElementType INT = CwtElementTypeFactory.getElementType("INT");
+  IElementType NUMBER = CwtElementTypeFactory.getElementType("NUMBER");
   IElementType OPTION = CwtElementTypeFactory.getElementType("OPTION");
   IElementType OPTION_COMMENT = CwtElementTypeFactory.getElementType("OPTION_COMMENT");
   IElementType OPTION_KEY = CwtElementTypeFactory.getElementType("OPTION_KEY");

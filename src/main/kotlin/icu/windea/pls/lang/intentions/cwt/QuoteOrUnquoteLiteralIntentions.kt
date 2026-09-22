@@ -15,7 +15,7 @@ import icu.windea.pls.core.quote
 import icu.windea.pls.core.text.QuotePatterns
 import icu.windea.pls.core.unquote
 import icu.windea.pls.cwt.psi.CwtExpressionElement
-import icu.windea.pls.cwt.psi.CwtNumberExpressionElement
+import icu.windea.pls.cwt.psi.CwtNumber
 import icu.windea.pls.cwt.psi.CwtStringExpressionElement
 import icu.windea.pls.lang.intentions.ChronicleIntentionBundle
 
@@ -30,7 +30,7 @@ class QuoteLiteralIntention : PsiUpdateModCommandAction<CwtExpressionElement>(Cw
 
     override fun isElementApplicable(element: CwtExpressionElement, context: ActionContext): Boolean {
         // can also be applied to number literals
-        if (element is CwtNumberExpressionElement) return true
+        if (element is CwtNumber) return true
         return element is CwtStringExpressionElement && element.text.canQuote(element.quotePattern)
     }
 

@@ -7,7 +7,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
 import icu.windea.pls.script.psi.ParadoxScriptConditionParameter
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
-import icu.windea.pls.script.psi.ParadoxScriptNumberExpressionElement
+import icu.windea.pls.script.psi.ParadoxScriptNumber
 import icu.windea.pls.script.psi.ParadoxScriptParameter
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
@@ -24,7 +24,7 @@ abstract class ParadoxPsiElementVisitor : PsiElementVisitor() {
                 is ParadoxScriptExpressionElement -> {
                     visitExpressionElement(element)
                     when (element) {
-                        is ParadoxScriptNumberExpressionElement -> visitNumberExpressionElement(element)
+                        is ParadoxScriptNumber -> visitNumberExpressionElement(element)
                         is ParadoxScriptStringExpressionElement -> visitStringExpressionElement(element)
                     }
                 }
@@ -54,7 +54,7 @@ abstract class ParadoxPsiElementVisitor : PsiElementVisitor() {
 
     }
 
-    open fun visitNumberExpressionElement(element: ParadoxScriptNumberExpressionElement) {
+    open fun visitNumberExpressionElement(element: ParadoxScriptNumber) {
 
     }
 

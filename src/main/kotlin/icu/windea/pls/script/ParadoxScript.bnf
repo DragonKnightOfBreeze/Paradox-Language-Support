@@ -104,7 +104,7 @@ private property_value ::= value {
 
 // value rules
 
-value ::= scripted_variable_reference | boolean | int | float | string | block | color | inline_math {
+value ::= scripted_variable_reference | boolean | number | string | block | color | inline_math {
   name="value"
   implements=[
     "icu.windea.pls.script.psi.ParadoxScriptExpressionElement"
@@ -125,27 +125,23 @@ boolean ::= BOOLEAN_TOKEN {
     "icu.windea.pls.script.psi.ParadoxScriptLiteralValue"
   ]
 }
-int ::= INT_TOKEN {
-  name="int"
+number ::= int | float {
+  name="number"
   extends=value
   implements=[
     "icu.windea.pls.script.psi.ParadoxScriptLiteralValue"
-    "icu.windea.pls.script.psi.ParadoxScriptNumberExpressionElement"
   ]
   methods=[
     getReference getReferences
   ]
 }
+int ::= INT_TOKEN {
+  name="int"
+  extends=number
+}
 float ::= FLOAT_TOKEN {
   name="float"
-  extends=value
-  implements=[
-    "icu.windea.pls.script.psi.ParadoxScriptLiteralValue"
-    "icu.windea.pls.script.psi.ParadoxScriptNumberExpressionElement"
-  ]
-  methods=[
-    getReference getReferences
-  ]
+  extends=number
 }
 string ::= string_content {
   name="string"
@@ -235,7 +231,7 @@ scripted_variable_name ::= AT <<processLhsContent>> scripted_variable_name_conte
 private scripted_variable_name_content ::= scripted_variable_name_part ( <<processPart>> scripted_variable_name_part )*
 private scripted_variable_name_part ::= SCRIPTED_VARIABLE_NAME_TOKEN | normal_parameter | inline_conditional_block
 private scripted_variable_separator ::= EQUAL_SIGN
-private scripted_variable_value ::= boolean | int | float | string | inline_math { // limited
+private scripted_variable_value ::= boolean | number | string | inline_math { // limited
   name="scripted variable value"
 }
 
