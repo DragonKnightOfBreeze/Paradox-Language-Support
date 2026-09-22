@@ -20,7 +20,7 @@ import icu.windea.pls.cwt.psi.CwtMember
  * 用于为对应的动态值提供额外的提示信息（文档注释和内嵌提示）。
  *
  * 说明：
- * - 规则名称可以是常量、模板表达式、ANT 表达式或正则表达式（参见 [CwtDataTypeSets.PatternAware]）。
+ * - 规则的名字除了直接的常量匹配之外，也支持基于 ANT 表达式、正则等的模式匹配。参见 [CwtDataTypeSets.Pattern]。
  *
  * 路径定位：
  * - `dynamic_values/{type}/{name}`。其中 `{type}` 匹配动态值类型，`{name}` 匹配规则名称。
@@ -31,7 +31,7 @@ import icu.windea.pls.cwt.psi.CwtMember
  * dynamic_values = {
  *     event_target = {
  *         ### Some documentation
- *         ## hint = §RSome hint text§!
+ *         hint = "§RSome hint text§!"
  *         x # or `x = xxx`
  *     }
  * }

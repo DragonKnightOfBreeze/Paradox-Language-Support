@@ -40,9 +40,9 @@ import icu.windea.pls.model.type.ParadoxExpressionType
  * - 所有实例通过 [Builder] 构建并注册到 [entries] 中。
  *
  * @property id 唯一标识符。
- * @property isReference 是否表示一个可导航的引用。
- * @property isPatternAware 是否为模式感知类型（表达式包含模式字符串）。
- * @property isSuffixAware 是否为后缀感知类型（表达式包含后缀列表）。
+ * @property isReference 是否为引用类型。
+ * @property isPatternAware 是否可以感知模式（表达式包含某种模式字符串，例如正则表达式）。
+ * @property isSuffixAware 是否可以感知后缀（表达式包含后缀列表）。
  * @property priority 静态优先级。脚本表达式会优先匹配优先级更高的数据表达式。优先级默认为 0.0。
  * @property priorityProvider 动态优先级提供者。根据具体的数据表达式和规则组动态计算优先级。优先级默认为 0.0。
  *

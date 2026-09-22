@@ -90,14 +90,6 @@ object CwtDataTypeSets {
     val SyncedLocalisationAware = arrayOf(
         CwtDataTypes.SyncedLocalisation,
     )
-    /** 所有模式感知的数据类型。 */
-    val PatternAware = arrayOf(
-        CwtDataTypes.Constant,
-        CwtDataTypes.Template,
-        CwtDataTypes.Glob,
-        CwtDataTypes.Ant,
-        CwtDataTypes.Regex,
-    )
     /** 所有后缀感知的数据类型。 */
     val SuffixAware = arrayOf(
         CwtDataTypes.SuffixAwareDefinition,

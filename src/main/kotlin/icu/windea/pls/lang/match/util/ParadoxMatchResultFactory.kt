@@ -11,9 +11,9 @@ import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.normalizePath
 import icu.windea.pls.lang.match.ParadoxMatchOptions
+import icu.windea.pls.lang.match.ParadoxMatchOptionsService
 import icu.windea.pls.lang.match.ParadoxMatchResult
 import icu.windea.pls.lang.match.ParadoxMatchResultService
-import icu.windea.pls.lang.match.ParadoxMatchOptionsService
 import icu.windea.pls.lang.match.toHashString
 import icu.windea.pls.lang.psi.members
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxArrayDefineReferenceExpression
@@ -25,6 +25,7 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxNameFormatExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScriptValueReferenceExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxTagsExpression
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxTemplateExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxValueFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxVariableFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.attributes.ParadoxComplexExpressionAttributesEvaluator
@@ -188,11 +189,15 @@ object ParadoxMatchResultFactory {
         }
     }
 
-    fun forTemplate(element: PsiElement, configGroup: CwtConfigGroup, text: String, configExpression: CwtDataExpression, options: ParadoxMatchOptions? = null): ParadoxMatchResult {
-        // NOTE 2.1.5 indexing -> should not visit indices -> still need to match constant snippets
-        // if (ParadoxMatchService.skipIndex()) return ParadoxMatchResult.ExactMatch
+    fun forTemplate(element: PsiElement, configGroup: CwtConfigGroup, text: String, config: CwtConfig<*>, options: ParadoxMatchOptions? = null): ParadoxMatchResult {
+        // 3.0.3 fallback match -> continue to check reference snippets
+        val fastResult = forTemplateExpression(configGroup, text, config)
+        if (fastResult !== ParadoxMatchResult.FallbackMatch) return fastResult
 
-        val template = configExpression.expressionString
+        // 3.0.3 indexing -> should not visit indices -> still need to match constant snippets -> already matched and checked by fast result
+        if (ParadoxMatchOptionsService.skipIndex()) return ParadoxMatchResult.WildcardMatch
+
+        val template = config.configExpression?.expressionString ?: return ParadoxMatchResult.NotMatch
         val key = ParadoxMatchResultService.Keys.cacheForTemplates
         val cacheKey = "${template}#${text}\u0000${options.toHashString(forMatched = false)}"
         return ParadoxMatchResultService.getFromCache(element, configGroup.project, key, cacheKey) {
@@ -280,7 +285,13 @@ object ParadoxMatchResultFactory {
         return forComplexExpressionFromAttributes(complexExpression)
     }
 
-    private fun forComplexExpressionFromAttributes(complexExpression: ParadoxComplexExpression): ParadoxMatchResult {
+    fun forTemplateExpression(configGroup: CwtConfigGroup, text: String, config: CwtConfig<*>): ParadoxMatchResult {
+        val complexExpression = ParadoxTemplateExpression.resolve(text, null, configGroup, config) ?: return ParadoxMatchResult.NotMatch
+        if (complexExpression.getAllErrors().isNotEmpty()) return ParadoxMatchResult.PartialMatch
+        return ParadoxMatchResult.FallbackMatch
+    }
+
+    fun forComplexExpressionFromAttributes(complexExpression: ParadoxComplexExpression): ParadoxMatchResult {
         // 对于链式表达式，只检查最后一个链接节点的属性即可确定匹配结果
         val nodeToCheck = if (complexExpression is ParadoxLinkedExpression) {
             complexExpression.linkNodes.lastOrNull() ?: complexExpression

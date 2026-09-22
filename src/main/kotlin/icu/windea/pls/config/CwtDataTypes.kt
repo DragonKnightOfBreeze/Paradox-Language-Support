@@ -651,6 +651,23 @@ object CwtDataTypes {
         withPriority(10.0)
     }
 
+    /**
+     * 模板表达式类型。
+     *
+     * 由常量文本片段和引用片段交替组成的模式。
+     * 匹配时将脚本表达式按模板结构拆分，逐个验证各引用片段。
+     *
+     * 备注：
+     * - 对于此类型的数据表达式，需要通过 `expressionString` 而非 `metadata.value` 获取模板字符串（等同于原始的表达式字符串）。
+     *
+     * > CWTools 兼容性：部分兼容。拥有不同的解析和处理逻辑。
+     *
+     * @see ParadoxTemplateExpression
+     */
+    val Template = CwtDataType.builder("Template").build {
+        withPriority(65.0)
+    }
+
     // endregion
 
     // region Path Reference Data Types
@@ -751,7 +768,6 @@ object CwtDataTypes {
     val ShaderEffect = CwtDataType.builder("ShaderEffect").reference().build {
         withPriority(30.0)
     }
-
     /**
      * 网格定位器类型。
      *
@@ -786,7 +802,6 @@ object CwtDataTypes {
      * > CWTools 兼容性：不兼容。插件作为扩展提供。
      */
     val UnionValue = CwtDataType.builder("UnionValue").reference().build()
-
     /**
      * 别名键字段类型。
      *
@@ -834,10 +849,10 @@ object CwtDataTypes {
 
     // endregion
 
-    // region Pattern Aware Data Types
+    // region Pattern Data Types
 
     /**
-     * 常量类型。模式感知的数据类型之一。
+     * 常量类型。可以感知模式（表达式包含某种模式字符串）的数据类型之一。
      *
      * 匹配与常量值完全相同的表达式。
      * 作为值时，布尔常量（`yes` / `no`）不会匹配用引号括起的字符串字面量。
@@ -851,27 +866,11 @@ object CwtDataTypes {
      *
      * > CWTools 兼容性：兼容。
      */
-    val Constant = CwtDataType.builder("Constant").patternAware().build {
+    val Constant = CwtDataType.builder("Constant").build {
         withPriority(100.0) // highest
     }
     /**
-     * 模板表达式类型。模式感知的数据类型之一。
-     *
-     * 由常量文本片段和引用片段交替组成的模式。
-     * 匹配时将脚本表达式按模板结构拆分，逐个验证各引用片段。
-     *
-     * 备注：
-     * - 对于此类型的数据表达式，需要通过 `expressionString` 而非 `metadata.value` 获取模板字符串（等同于原始的表达式字符串）。
-     *
-     * > CWTools 兼容性：部分兼容。拥有不同的解析和处理逻辑。
-     *
-     * @see ParadoxTemplateExpression
-     */
-    val Template = CwtDataType.builder("Template").patternAware().build {
-        withPriority(65.0)
-    }
-    /**
-     * GLOB 模式类型。模式感知的数据类型之一。
+     * GLOB 模式类型。可以感知模式（表达式包含某种模式字符串）的数据类型之一。
      *
      * 匹配符合 GLOB 模式的表达式。支持通配符 `?`（单个字符） 和 `*`（任意个字符）。
      *
@@ -886,7 +885,7 @@ object CwtDataTypes {
      */
     val Glob = CwtDataType.builder("Glob").patternAware().build()
     /**
-     * ANT 路径模式类型。模式感知的数据类型之一。
+     * ANT 路径模式类型。可以感知模式（表达式包含某种模式字符串）的数据类型之一。
      *
      * 匹配符合 ANT 路径模式的表达式。支持通配符 `?`（单个字符）、`*`（子路径中的任意个字符）和 `**`（任意个子路径）。
      *
@@ -901,7 +900,7 @@ object CwtDataTypes {
      */
     val Ant = CwtDataType.builder("Ant").patternAware().build()
     /**
-     * 正则表达式模式类型。模式感知的数据类型之一。
+     * 正则表达式模式类型。可以感知模式（表达式包含某种模式字符串）的数据类型之一。
      *
      * 匹配符合正则表达式的表达式。
      *

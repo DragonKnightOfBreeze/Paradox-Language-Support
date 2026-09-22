@@ -188,7 +188,6 @@
     <unresolvedExpressionChecker implementation="icu.windea.pls.ep.inspections.ParadoxSubtypesMismatchedDefinitionUnresolvedExpressionChecker"/>
 
     <patternMatcher id="default" implementation="icu.windea.pls.ep.match.ParadoxDefaultPatternMatcher"/>
-    <patternMatcher id="template" implementation="icu.windea.pls.ep.match.ParadoxTemplatePatternMatcher"/>
 
     <!-- Script / Basic -->
     <scriptExpressionMatcher implementation="icu.windea.pls.ep.match.expression.ParadoxBasicScriptExpressionMatcher$ForAny"/>
@@ -214,17 +213,17 @@
     <scriptExpressionMatcher implementation="icu.windea.pls.ep.match.expression.ParadoxCoreScriptExpressionMatcher$ForVariableField"/>
     <scriptExpressionMatcher implementation="icu.windea.pls.ep.match.expression.ParadoxCoreScriptExpressionMatcher$ForModifier"/>
     <scriptExpressionMatcher implementation="icu.windea.pls.ep.match.expression.ParadoxCoreScriptExpressionMatcher$ForCommand"/>
-    <scriptExpressionMatcher implementation="icu.windea.pls.ep.match.expression.ParadoxCoreScriptExpressionMatcher$ForTemplate"/>
     <scriptExpressionMatcher implementation="icu.windea.pls.ep.match.expression.ParadoxCoreScriptExpressionMatcher$ForScriptValueReference"/>
     <scriptExpressionMatcher implementation="icu.windea.pls.ep.match.expression.ParadoxCoreScriptExpressionMatcher$ForDefineReference"/>
     <scriptExpressionMatcher implementation="icu.windea.pls.ep.match.expression.ParadoxCoreScriptExpressionMatcher$ForArrayDefineReference"/>
     <scriptExpressionMatcher implementation="icu.windea.pls.ep.match.expression.ParadoxCoreScriptExpressionMatcher$ForTags"/>
     <scriptExpressionMatcher implementation="icu.windea.pls.ep.match.expression.ParadoxCoreScriptExpressionMatcher$ForDatabaseObject"/>
     <scriptExpressionMatcher implementation="icu.windea.pls.ep.match.expression.ParadoxCoreScriptExpressionMatcher$ForNameFormat"/>
+    <scriptExpressionMatcher implementation="icu.windea.pls.ep.match.expression.ParadoxCoreScriptExpressionMatcher$ForTechnologyWithLevel"/>
     <scriptExpressionMatcher implementation="icu.windea.pls.ep.match.expression.ParadoxCoreScriptExpressionMatcher$ForParameter"/>
     <scriptExpressionMatcher implementation="icu.windea.pls.ep.match.expression.ParadoxCoreScriptExpressionMatcher$ForParameterValue"/>
     <scriptExpressionMatcher implementation="icu.windea.pls.ep.match.expression.ParadoxCoreScriptExpressionMatcher$ForLocalisationParameter"/>
-    <scriptExpressionMatcher implementation="icu.windea.pls.ep.match.expression.ParadoxCoreScriptExpressionMatcher$ForTechnologyWithLevel"/>
+    <scriptExpressionMatcher implementation="icu.windea.pls.ep.match.expression.ParadoxCoreScriptExpressionMatcher$ForTemplate"/>
     <!-- Script / Path Reference -->
     <scriptExpressionMatcher implementation="icu.windea.pls.ep.match.expression.ParadoxPathReferenceScriptExpressionMatcher"/>
     <!-- Script / External Reference -->
@@ -308,7 +307,6 @@
     <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxCoreScriptExpressionSupport$ForParameter"/>
     <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxCoreScriptExpressionSupport$ForLocalisationParameter"/>
     <!-- Script / Complex Expression -->
-    <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxComplexScriptExpressionSupport$ForTemplate"/>
     <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxComplexScriptExpressionSupport$ForDynamicValue"/>
     <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxComplexScriptExpressionSupport$ForScopeField"/>
     <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxComplexScriptExpressionSupport$ForValueField"/>
@@ -319,6 +317,7 @@
     <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxComplexScriptExpressionSupport$ForTags"/>
     <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxComplexScriptExpressionSupport$ForDatabaseObject"/>
     <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxComplexScriptExpressionSupport$ForNameFormat"/>
+    <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxComplexScriptExpressionSupport$ForTemplate"/>
     <!-- Script / Path Reference -->
     <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxPathReferenceScriptExpressionSupport"/>
     <!-- Script / External Reference -->

@@ -43,16 +43,6 @@ import icu.windea.pls.model.scope.ParadoxScopeContext
 object ParadoxComplexExpressionCompletionManager {
     // region Entry Completion Methods
 
-    fun completeTemplateExpression(context: ParadoxCompletionContext, result: CompletionResultSet) {
-        ProgressManager.checkCanceled()
-        if (context.offsetInExpression < 0) return // unexpected
-        val finalConfig = context.configs.firstOrNull() ?: context.config
-        if (finalConfig == null) return
-        val textRange = TextRange.from(context.keywordOffset, context.keyword.length)
-        val expression = markIncomplete { ParadoxTemplateExpression.resolve(context.keyword, textRange, context.configGroup, finalConfig) } ?: return
-        completeForTemplateExpression(context, result, expression)
-    }
-
     fun completeScopeFieldExpression(context: ParadoxCompletionContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
         if (context.offsetInExpression < 0) return // unexpected
@@ -146,6 +136,16 @@ object ParadoxComplexExpressionCompletionManager {
         completeForNameFormatExpression(context, result, expression)
     }
 
+    fun completeTemplateExpression(context: ParadoxCompletionContext, result: CompletionResultSet) {
+        ProgressManager.checkCanceled()
+        if (context.offsetInExpression < 0) return // unexpected
+        val finalConfig = context.configs.firstOrNull() ?: context.config
+        if (finalConfig == null) return
+        val textRange = TextRange.from(context.keywordOffset, context.keyword.length)
+        val expression = markIncomplete { ParadoxTemplateExpression.resolve(context.keyword, textRange, context.configGroup, finalConfig) } ?: return
+        completeForTemplateExpression(context, result, expression)
+    }
+
     private inline fun <T> markIncomplete(action: () -> T): T {
         return ParadoxThreadContext.incompleteComplexExpression.withState(action)
     }
@@ -153,34 +153,6 @@ object ParadoxComplexExpressionCompletionManager {
     // endregion
 
     // region Dispatch Completion Methods
-
-    private fun completeForTemplateExpression(context: ParadoxCompletionContext, result: CompletionResultSet, expression: ParadoxTemplateExpression) {
-        val context = context.copy(isKey = null, scopeContext = null)
-        for (node in expression.nodes) {
-            if (context.offsetInExpression < node.rangeInExpression.startOffset) break // abort process
-            if (context.offsetInExpression > node.rangeInExpression.endOffset) continue // continue process root nodes
-            ProgressManager.checkCanceled()
-            when (node) {
-                is ParadoxTemplateSnippetNode -> completeForTemplateSnippetNode(context, result, node)
-                is ParadoxTemplateSnippetConstantNode -> completeForTemplateSnippetConstantNode(context, result, node)
-            }
-        }
-    }
-
-    private fun completeForTemplateSnippetNode(context: ParadoxCompletionContext, result: CompletionResultSet, node: ParadoxTemplateSnippetNode) {
-        val config = node.getMockConfig()
-        val context = context.copyFromNode(node).copy(config = config, configs = emptyList())
-        val result = result.withPrefixMatcher(context.keyword)
-        ParadoxExpressionCompletionManager.completeScriptExpression(context, result)
-    }
-
-    private fun completeForTemplateSnippetConstantNode(context: ParadoxCompletionContext, result: CompletionResultSet, node: ParadoxTemplateSnippetConstantNode) {
-        // 一般来说，仅适用于是第一个节点的情况（否则，仍然会匹配范围内的通配符）
-        val config = node.getMockConfig()
-        val context = context.copyFromNode(node).copy(config = config, configs = emptyList())
-        val result = result.withPrefixMatcher(context.keyword)
-        ParadoxExpressionCompletionManager.completeConstant(context, result)
-    }
 
     private fun completeForScopeFieldExpression(context: ParadoxCompletionContext, result: CompletionResultSet, expression: ParadoxScopeFieldExpression) {
         val element = context.contextElement.castOrNull<ParadoxExpressionElement>() ?: return
@@ -633,6 +605,34 @@ object ParadoxComplexExpressionCompletionManager {
 
     private fun ParadoxScopeContext.switchFromNode(node: ParadoxComplexExpressionNode, element: ParadoxExpressionElement): ParadoxScopeContext {
         return ParadoxScopeManager.getScopeContext(element, node, this)
+    }
+
+    private fun completeForTemplateExpression(context: ParadoxCompletionContext, result: CompletionResultSet, expression: ParadoxTemplateExpression) {
+        val context = context.copy(isKey = null, scopeContext = null)
+        for (node in expression.nodes) {
+            if (context.offsetInExpression < node.rangeInExpression.startOffset) break // abort process
+            if (context.offsetInExpression > node.rangeInExpression.endOffset) continue // continue process root nodes
+            ProgressManager.checkCanceled()
+            when (node) {
+                is ParadoxTemplateSnippetNode -> completeForTemplateSnippetNode(context, result, node)
+                is ParadoxTemplateSnippetConstantNode -> completeForTemplateSnippetConstantNode(context, result, node)
+            }
+        }
+    }
+
+    private fun completeForTemplateSnippetNode(context: ParadoxCompletionContext, result: CompletionResultSet, node: ParadoxTemplateSnippetNode) {
+        val config = node.getMockConfig()
+        val context = context.copyFromNode(node).copy(config = config, configs = emptyList())
+        val result = result.withPrefixMatcher(context.keyword)
+        ParadoxExpressionCompletionManager.completeScriptExpression(context, result)
+    }
+
+    private fun completeForTemplateSnippetConstantNode(context: ParadoxCompletionContext, result: CompletionResultSet, node: ParadoxTemplateSnippetConstantNode) {
+        // 一般来说，仅适用于是第一个节点的情况（否则，仍然会匹配范围内的通配符）
+        val config = node.getMockConfig()
+        val context = context.copyFromNode(node).copy(config = config, configs = emptyList())
+        val result = result.withPrefixMatcher(context.keyword)
+        ParadoxExpressionCompletionManager.completeConstant(context, result)
     }
 
     // endregion

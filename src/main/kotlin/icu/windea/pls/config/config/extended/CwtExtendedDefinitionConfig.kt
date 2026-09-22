@@ -21,7 +21,7 @@ import icu.windea.pls.cwt.psi.CwtMember
  * 用于为对应的定义提供额外的提示信息（文档注释和内嵌提示），以及指定作用域上下文（如果支持）。
  *
  * 说明：
- * - 规则名称可以是常量、模板表达式、ANT 表达式或正则表达式（参见 [CwtDataTypeSets.PatternAware]）。
+ * - 规则的名字除了直接的常量匹配之外，也支持基于 ANT 表达式、正则等的模式匹配。参见 [CwtDataTypeSets.Pattern]。
  * - 作用域上下文同样是通过 `## replace_scope` 与 `## push_scope` 选项指定的。
  *
  * 路径定位：
@@ -32,7 +32,7 @@ import icu.windea.pls.cwt.psi.CwtMember
  * ```cwt
  * definitions = {
  *     ### Some documentation
- *     ## hint = §RSome hint text§!
+ *     hint = "§RSome hint text§!"
  *     ## replace_scopes = { this = country root = country }
  *     ## type = scripted_trigger
  *     x # or `x = xxx`

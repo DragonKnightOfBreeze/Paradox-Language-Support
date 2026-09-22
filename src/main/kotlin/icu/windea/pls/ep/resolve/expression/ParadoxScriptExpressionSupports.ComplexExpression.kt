@@ -49,20 +49,6 @@ abstract class ParadoxComplexScriptExpressionSupport : ParadoxScriptExpressionSu
     }
 
     /**
-     * @see CwtDataTypes.Template
-     * @see ParadoxTemplateExpression
-     */
-    class ForTemplate : ParadoxComplexScriptExpressionSupport() {
-        override fun supports(dataType: CwtDataType): Boolean {
-            return dataType == CwtDataTypes.Template
-        }
-
-        override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
-            ParadoxComplexExpressionCompletionManager.completeTemplateExpression(context, result)
-        }
-    }
-
-    /**
      * @see CwtDataTypeSets.DynamicValue
      * @see ParadoxDynamicValueExpression
      */
@@ -215,6 +201,20 @@ abstract class ParadoxComplexScriptExpressionSupport : ParadoxScriptExpressionSu
 
         override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
             ParadoxComplexExpressionCompletionManager.completeNameFormatExpression(context, result)
+        }
+    }
+
+    /**
+     * @see CwtDataTypes.Template
+     * @see ParadoxTemplateExpression
+     */
+    class ForTemplate : ParadoxComplexScriptExpressionSupport() {
+        override fun supports(dataType: CwtDataType): Boolean {
+            return dataType == CwtDataTypes.Template
+        }
+
+        override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
+            ParadoxComplexExpressionCompletionManager.completeTemplateExpression(context, result)
         }
     }
 }

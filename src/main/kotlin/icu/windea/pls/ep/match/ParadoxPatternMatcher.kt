@@ -14,8 +14,8 @@ import icu.windea.pls.lang.match.ParadoxPatternMatchService
  * 用于匹配文本与可作为模式来源的规则表达式。
  *
  * 说明：
- * - 适用于部分模式感知的数据类型（如 [CwtDataTypeSets.Pattern]]）。
- * - 不适用于常量数据类型（[CwtDataTypes.Constant]）。
+ * - 适用于作为模式的数据类型（[CwtDataTypeSets.Pattern]）。
+ * - 不适用于作为常量的数据类型（[CwtDataTypeSets.Constant]）。
  * - 规则表达式可能表明匹配逻辑是忽略大小写的，然而，也可以显式指定匹配时是否忽略大小写。
  *
  * @see CwtDataExpression

@@ -2156,6 +2156,22 @@ icon|p1,p2
 
 > CWTools 兼容性：不兼容。插件作为扩展提供。
 
+#### Template {#data-type-template}
+
+模板表达式类型。
+
+由常量文本片段和引用片段交替组成的模式。
+匹配时将脚本表达式按模板结构拆分，逐个验证各引用片段。
+
+对应的数据表达式的格式：
+- 直接使用模板自身作为数据表达式字符串（参见[模板表达式](#config-expression-template)））。
+
+对应的数据表达式的示例：
+- `a_<b>_enum[c]_value[d]`
+- `job_<job>_add`
+
+> CWTools 兼容性：部分兼容。拥有不同的解析和处理逻辑。
+
 ### 路径引用数据类型 {#data-types-path-reference}
 
 以下数据类型用于匹配文件路径引用。匹配时会验证路径引用的文件是否存在。
@@ -2338,8 +2354,7 @@ icon|p1,p2
 
 以下数据类型采用特殊的模式匹配策略，可用于模式匹配。
 
-> [!warning]
-> 常量数据类型 [Constant](#data-type-constant) 和模板数据类型（[Template](#data-type-template)）目前也属于这类数据类型，计划在后续版本中调整分类。
+常量数据类型 [Constant](#data-type-constant) 目前也属于这类数据类型。
 
 #### Constant {#data-type-constant}
 
@@ -2359,27 +2374,11 @@ icon|p1,p2
 
 > CWTools 兼容性：兼容。
 
-#### Template {#data-type-template}
-
-模板表达式类型。
-
-由常量文本片段和引用片段交替组成的模式。
-匹配时将脚本表达式按模板结构拆分，逐个验证各引用片段。
-
-对应的数据表达式的格式：
-- 直接使用模板自身作为数据表达式字符串（参见[模板表达式](#config-expression-template)））。
-
-对应的数据表达式的示例：
-- `a_<b>_enum[c]_value[d]`
-- `job_<job>_add`
-
-> CWTools 兼容性：部分兼容。拥有不同的解析和处理逻辑。
-
 #### Glob {#data-type-glob}
 
 <!-- @see icu.windea.pls.core.match.GlobMatcher -->
 
-GLOB 模式类型。模式感知的数据类型之一。
+GLOB 模式类型。可以感知模式（表达式包含某种模式字符串）的数据类型之一。
 
 匹配符合 GLOB 模式的表达式。支持通配符 `?`（单个字符） 和 `*`（任意个字符）。
 
@@ -2397,7 +2396,7 @@ GLOB 模式类型。模式感知的数据类型之一。
 
 <!-- @see icu.windea.pls.core.match.AntMatcher -->
 
-ANT 路径模式类型。模式感知的数据类型之一。
+ANT 路径模式类型。可以感知模式（表达式包含某种模式字符串）的数据类型之一。
 
 匹配符合 ANT 路径模式的表达式。支持通配符 `?`（单个字符）、`*`（子路径中的任意个字符）和 `**`（任意个子路径）。
 
@@ -2415,7 +2414,7 @@ ANT 路径模式类型。模式感知的数据类型之一。
 
 <!-- @see icu.windea.pls.core.match.RegexMatcher -->
 
-正则表达式模式类型。模式感知的数据类型之一。
+正则表达式模式类型。可以感知模式（表达式包含某种模式字符串）的数据类型之一。
 
 匹配符合正则表达式的表达式。
 

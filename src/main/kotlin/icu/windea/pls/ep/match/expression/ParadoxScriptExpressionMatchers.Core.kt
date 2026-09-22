@@ -6,9 +6,6 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.core.isIdentifier
-import icu.windea.pls.core.runWithRecursionGuard
-import icu.windea.pls.core.util.ProcessorFactory
-import icu.windea.pls.lang.manipulation.ParadoxConfigExpansionService
 import icu.windea.pls.lang.match.ParadoxExpressionMatchContext
 import icu.windea.pls.lang.match.ParadoxMatchResult
 import icu.windea.pls.lang.match.util.ParadoxMatchResultFactory
@@ -179,17 +176,6 @@ abstract class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatch
         }
     }
 
-    /** @see CwtDataTypes.Template */
-    class ForTemplate : ParadoxCoreScriptExpressionMatcher() {
-        override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.Template
-
-        override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
-            if (!context.expression.type.isLenientStringLiteral()) return ParadoxMatchResult.NotMatch
-            if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
-            return ParadoxMatchResultFactory.forTemplate(context.element, context.configGroup, context.expression.value, configExpression, context.options)
-        }
-    }
-
     /** @see CwtDataTypes.ScriptValueReference */
     class ForScriptValueReference : ParadoxCoreScriptExpressionMatcher() {
         override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.ScriptValueReference
@@ -307,6 +293,18 @@ abstract class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatch
             if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
             if (!context.expression.value.isIdentifier(".-'")) return ParadoxMatchResult.NotMatch
             return ParadoxMatchResult.ExactMatch
+        }
+    }
+
+    /** @see CwtDataTypes.Template */
+    class ForTemplate : ParadoxCoreScriptExpressionMatcher() {
+        override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.Template
+
+        override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
+            if (config == null) return ParadoxMatchResult.NotMatch
+            if (!context.expression.type.isLenientStringLiteral()) return ParadoxMatchResult.NotMatch
+            if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
+            return ParadoxMatchResultFactory.forTemplate(context.element, context.configGroup, context.expression.value, config, context.options)
         }
     }
 }

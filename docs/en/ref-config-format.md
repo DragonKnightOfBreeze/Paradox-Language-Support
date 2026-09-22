@@ -2166,6 +2166,22 @@ Format of corresponding data expressions:
 
 > CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
 
+#### Template {#data-type-template}
+
+Template expression type.
+
+A pattern consisting of alternating constant text fragments and reference fragments.
+When matching, the script expression is split according to the template structure, and each reference fragment is validated individually.
+
+Examples of Corresponding data expressions:
+- Use the template itself directly as the data expression string (see [Template Expression](#config-expression-template)).
+
+Examples of Corresponding data expressions:
+- `a_<b>_enum[c]_value[d]`
+- `job_<job>_add`
+
+> CWTools Compatibility: Partially compatible. Have different resolving and processing logic.
+
 ### Path Reference Data Types {#data-types-path-reference}
 
 The following data types are used to match file path references. When matching, it will verify whether the file referenced by the path exists.
@@ -2348,8 +2364,7 @@ Format of corresponding data expressions:
 
 The following data types use special pattern matching strategies, and can be used for pattern matching.
 
-> [!warning]
-> The constant data type [Constant](#data-type-constant) and the template data type [Template](#data-type-template) currently also belong to this category of data types, and their classification is planned to be adjusted in a future version.
+At this moment, the constant data type [Constant](#data-type-constant) also belong to this category of data types.
 
 #### Constant {#data-type-constant}
 
@@ -2369,27 +2384,11 @@ Examples of Corresponding data expressions:
 
 > CWTools Compatibility: Compatible.
 
-#### Template {#data-type-template}
-
-Template expression type.
-
-A pattern consisting of alternating constant text fragments and reference fragments.
-When matching, the script expression is split according to the template structure, and each reference fragment is validated individually.
-
-Examples of Corresponding data expressions:
-- Use the template itself directly as the data expression string (see [Template Expression](#config-expression-template)).
-
-Examples of Corresponding data expressions:
-- `a_<b>_enum[c]_value[d]`
-- `job_<job>_add`
-
-> CWTools Compatibility: Partially compatible. Have different resolving and processing logic.
-
 #### Glob {#data-type-glob}
 
 <!-- @see icu.windea.pls.core.match.GlobMatcher -->
 
-Glob pattern type. One of the pattern-aware data types.
+Glob pattern type. One of the pattern-aware data types (the expression contains some kind of pattern string).
 
 Matches expressions that conform to a glob pattern. Supports the wildcards `?` (single character) and `*` (any number of characters).
 
@@ -2407,7 +2406,7 @@ Examples of Corresponding data expressions:
 
 <!-- @see icu.windea.pls.core.match.AntMatcher -->
 
-ANT path pattern type. One of the pattern-aware data types.
+ANT path pattern type. One of the pattern-aware data types (the expression contains some kind of pattern string).
 
 Matches expressions that conform to an ANT path pattern. Supports the wildcards `?` (single character), `*` (any number of characters within a path segment), and `**` (any number of path segments).
 
@@ -2425,7 +2424,7 @@ Examples of Corresponding data expressions:
 
 <!-- @see icu.windea.pls.core.match.RegexMatcher -->
 
-Regular expression pattern type. One of the pattern-aware data types.
+Regular expression pattern type. One of the pattern-aware data types (the expression contains some kind of pattern string).
 
 Matches expressions that conform to a regular expression.
 
