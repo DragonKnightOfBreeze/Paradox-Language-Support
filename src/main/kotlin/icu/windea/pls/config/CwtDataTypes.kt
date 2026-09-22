@@ -608,44 +608,6 @@ object CwtDataTypes {
     }
 
     /**
-     * 着色器效果类型。
-     *
-     * 匹配对着色器效果（shader effect）的引用。
-     * 插件目前将这些引用视为动态引用，尽管其声明实际上位于 `.shader` 文件中。
-     *
-     * “动态引用”意味着不存在实际上的声明处，仅区分读写访问，如同动态值一样。而这里总是视为读访问。
-     *
-     * 对应的数据表达式的格式：
-     * - `$shader_effect`
-     *
-     * > CWTools 兼容性：不兼容。插件作为扩展提供。
-     *
-     * @since 2.1.9
-     */
-    val ShaderEffect = CwtDataType.builder("ShaderEffect").reference().build {
-        withPriority(30.0)
-    }
-
-    /**
-     * 网格定位器类型。
-     *
-     * 匹配对网格定位器（mesh locator）的引用。
-     * 插件目前将这些引用视为动态引用，尽管其声明实际上位于 `.mesh` 文件中。
-     *
-     * “动态引用”意味着不存在实际上的声明处，仅区分读写访问，如同动态值一样。而这里总是视为读访问。
-     *
-     * 对应的数据表达式的格式：
-     * - `$mesh_locator`
-     *
-     * > CWTools 兼容性：不兼容。插件作为扩展提供。
-     *
-     * @since 2.1.9
-     */
-    val MeshLocator = CwtDataType.builder("MeshLocator").reference().build {
-        withPriority(30.0)
-    }
-
-    /**
      * 带等级的科技类型。
      *
      * 匹配带等级科技引用（如 `some_repeatable_tech@1`），通过 `@` 分隔科技名和等级。
@@ -700,55 +662,6 @@ object CwtDataTypes {
     val LocalisationParameter = CwtDataType.builder("LocalisationParameter").reference().build {
         withPriority(10.0)
     }
-
-    // endregion
-
-    // region Alias Data Types
-
-    /**
-     * 别名键字段类型。
-     *
-     * 匹配时解析别名子键并递归匹配。
-     *
-     * 对应的数据表达式的格式：
-     * - `alias_keys_field[{name}]` - 其中 `{name}` 匹配别名的名字。
-     *
-     * > CWTools 兼容性：兼容。
-     */
-    val AliasKeysField = CwtDataType.builder("AliasKeysField").reference().build()
-    /**
-     * 别名名称类型。
-     *
-     * 匹配时解析别名子键并递归匹配。只能用来匹配属性键，且需要与 [AliasMatchLeft] 组合使用。
-     *
-     * 对应的数据表达式的格式：
-     * - `alias_name[{name}]` - 其中 `{name}` 匹配别名的名字。
-     *
-     * > CWTools 兼容性：兼容。
-     */
-    val AliasName = CwtDataType.builder("AliasName").reference().build()
-    /**
-     * 别名匹配左侧类型。
-     *
-     * 不直接参与脚本匹配，由别名解析机制处理。只能用来匹配属性值，且需要与 [AliasName] 组合使用。
-     *
-     * 对应的数据表达式的格式：
-     * - `alias_match_left[{name}]` - 其中 `{name}` 匹配别名的名字。
-     *
-     * > CWTools 兼容性：兼容。
-     */
-    val AliasMatchLeft = CwtDataType.builder("AliasMatchLeft").reference().build()
-    /**
-     * 单别名右侧类型。
-     *
-     * 不直接参与脚本匹配，由别名解析机制处理。只能用来匹配属性值。
-     *
-     * 对应的数据表达式的格式：
-     * - `single_alias_right[{name}]` - 其中 `{name}` 匹配单别名的名字。
-     *
-     * > CWTools 兼容性：兼容。
-     */
-    val SingleAliasRight = CwtDataType.builder("SingleAliasRight").reference().build()
 
     // endregion
 
@@ -827,6 +740,97 @@ object CwtDataTypes {
     val AbsoluteFilePath = CwtDataType.builder("AbsoluteFilePath").reference().build {
         withPriority(70.0)
     }
+
+    // endregion
+
+    // region External Reference Data Types
+
+    /**
+     * 着色器效果类型。
+     *
+     * 匹配对着色器效果（shader effect）的引用。
+     * 插件目前将这些引用视为动态引用，尽管其声明实际上位于 `.shader` 文件中。
+     *
+     * “动态引用”意味着不存在实际上的声明处，仅区分读写访问，如同动态值一样。而这里总是视为读访问。
+     *
+     * 对应的数据表达式的格式：
+     * - `$shader_effect`
+     *
+     * > CWTools 兼容性：不兼容。插件作为扩展提供。
+     *
+     * @since 2.1.9
+     */
+    val ShaderEffect = CwtDataType.builder("ShaderEffect").reference().build {
+        withPriority(30.0)
+    }
+
+    /**
+     * 网格定位器类型。
+     *
+     * 匹配对网格定位器（mesh locator）的引用。
+     * 插件目前将这些引用视为动态引用，尽管其声明实际上位于 `.mesh` 文件中。
+     *
+     * “动态引用”意味着不存在实际上的声明处，仅区分读写访问，如同动态值一样。而这里总是视为读访问。
+     *
+     * 对应的数据表达式的格式：
+     * - `$mesh_locator`
+     *
+     * > CWTools 兼容性：不兼容。插件作为扩展提供。
+     *
+     * @since 2.1.9
+     */
+    val MeshLocator = CwtDataType.builder("MeshLocator").reference().build {
+        withPriority(30.0)
+    }
+
+    // endregion
+
+    // region Alias Data Types
+
+    /**
+     * 别名键字段类型。
+     *
+     * 匹配时解析别名子键并递归匹配。
+     *
+     * 对应的数据表达式的格式：
+     * - `alias_keys_field[{name}]` - 其中 `{name}` 匹配别名的名字。
+     *
+     * > CWTools 兼容性：兼容。
+     */
+    val AliasKeysField = CwtDataType.builder("AliasKeysField").reference().build()
+    /**
+     * 别名名称类型。
+     *
+     * 匹配时解析别名子键并递归匹配。只能用来匹配属性键，且需要与 [AliasMatchLeft] 组合使用。
+     *
+     * 对应的数据表达式的格式：
+     * - `alias_name[{name}]` - 其中 `{name}` 匹配别名的名字。
+     *
+     * > CWTools 兼容性：兼容。
+     */
+    val AliasName = CwtDataType.builder("AliasName").reference().build()
+    /**
+     * 别名匹配左侧类型。
+     *
+     * 不直接参与脚本匹配，由别名解析机制处理。只能用来匹配属性值，且需要与 [AliasName] 组合使用。
+     *
+     * 对应的数据表达式的格式：
+     * - `alias_match_left[{name}]` - 其中 `{name}` 匹配别名的名字。
+     *
+     * > CWTools 兼容性：兼容。
+     */
+    val AliasMatchLeft = CwtDataType.builder("AliasMatchLeft").reference().build()
+    /**
+     * 单别名右侧类型。
+     *
+     * 不直接参与脚本匹配，由别名解析机制处理。只能用来匹配属性值。
+     *
+     * 对应的数据表达式的格式：
+     * - `single_alias_right[{name}]` - 其中 `{name}` 匹配单别名的名字。
+     *
+     * > CWTools 兼容性：兼容。
+     */
+    val SingleAliasRight = CwtDataType.builder("SingleAliasRight").reference().build()
 
     // endregion
 

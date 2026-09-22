@@ -75,7 +75,7 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testResolveBaseConfigs_int_float_scalar_color_bool() {
+    fun testResolveBaseConfigs() {
         if (!hasEp()) return
         // int and int range
         run {
@@ -153,7 +153,7 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testResolveCoreConfigs_common() {
+    fun testResolveConfigs() {
         if (!hasEp()) return
         // percentage field
         run {
