@@ -8,6 +8,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.startOffset
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
+import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.util.values.anonymous
@@ -78,15 +79,16 @@ class ParadoxScriptSemanticHighlightingAnnotator : Annotator {
         // 高亮复杂枚举值声明
         if (annotateComplexEnumValue(element, holder)) return
 
-        val config = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(lenient = false, forExpression = true)).firstOrNull()
-        if (config != null) {
-            // 如果不是字符串，除非是定义引用，否则不作高亮
-            if (element !is ParadoxScriptStringExpressionElement && config.configExpression.type != CwtDataTypes.Definition) return
+        // 3.0.3 get matched configs (which are entirely matched by the expression)
+        val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(lenient = false, forExpression = true))
+        // 3.0.3 use first prioritized config
+        val config = CwtConfigManager.selectFirstPrioritizedConfig(configs) ?: return
 
-            // 高亮脚本表达式
-            annotateExpression(element, holder, config)
-            return
-        }
+        // 如果不是字符串表达式，除非是定义引用，否则不作高亮
+        if (element !is ParadoxScriptStringExpressionElement && config.configExpression.type != CwtDataTypes.Definition) return
+
+        // 高亮脚本表达式
+        annotateExpression(element, holder, config)
     }
 
     private fun annotateDefinition(element: ParadoxDefinitionElement, holder: AnnotationHolder): Boolean {

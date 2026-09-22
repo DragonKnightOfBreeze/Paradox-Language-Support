@@ -12,6 +12,7 @@ import icu.windea.pls.config.config.CwtRowType
 import icu.windea.pls.config.config.containingDirectConfig
 import icu.windea.pls.config.config.expandConfigExpression
 import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.anyFast
 import icu.windea.pls.core.collections.filterFast
@@ -111,8 +112,7 @@ object ParadoxExpressionInspectionService {
         if (configContext.skipUnresolvedExpressionCheck()) return
 
         // skip if there are any matched configs (which are entirely matched by the expression)
-        val matchOptions = ParadoxMatchOptions(lenient = false, forExpression = true)
-        val configs = ParadoxConfigManager.getConfigs(element, matchOptions)
+        val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(lenient = false, forExpression = true))
         if (configs.isNotEmpty()) return
 
         var parentConfigContext: CwtConfigContext? = null
@@ -121,7 +121,7 @@ object ParadoxExpressionInspectionService {
             if (parent == null) return@run
             parentConfigContext = ParadoxConfigManager.getConfigContext(parent) ?: return@run
             if (parentConfigContext.skipUnresolvedExpressionCheck()) return@run
-            val configs = ParadoxConfigManager.getConfigs(parent, matchOptions)
+            val configs = ParadoxConfigManager.getConfigs(parent, ParadoxMatchOptions(lenient = false, forExpression = true))
             if (configs.isNotEmpty()) return@run
             return // skip if the parent node also fails the check
         }
@@ -196,9 +196,9 @@ object ParadoxExpressionInspectionService {
         if (!element.isDataExpression()) return
 
         // get matched configs (which are entirely matched by the expression)
-        val matchOptions = ParadoxMatchOptions(lenient = false, forExpression = true)
-        val configs = ParadoxConfigManager.getConfigs(element, matchOptions)
-        val config = configs.firstOrNull() ?: return
+        val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(lenient = false, forExpression = true))
+        // 3.0.3 use first prioritized config
+        val config = CwtConfigManager.selectFirstPrioritizedConfig(configs) ?: return
 
         // start check (via applying checkers)
         ParadoxInspectionService.applyIncorrectExpressionCheckers(element, config, context)
@@ -229,8 +229,7 @@ object ParadoxExpressionInspectionService {
     fun checkForMissingExpression(file: ParadoxScriptFile, context: ParadoxExpressionInspectionContext) {
         val configContext = ParadoxConfigManager.getConfigContext(file) ?: return
         if (configContext.skipMissingExpressionCheck()) return
-        val matchOptions = ParadoxMatchOptions(forDeclarationRoot = true)
-        val configs = ParadoxConfigManager.getConfigs(file, matchOptions)
+        val configs = ParadoxConfigManager.getConfigs(file, ParadoxMatchOptions(forDeclarationRoot = true))
         checkForMissingExpression(file, configs, context)
     }
 
@@ -243,8 +242,7 @@ object ParadoxExpressionInspectionService {
 
         val configContext = ParadoxConfigManager.getConfigContext(element) ?: return
         if (configContext.skipMissingExpressionCheck()) return
-        val matchOptions = ParadoxMatchOptions(forDeclarationRoot = true)
-        val configs = ParadoxConfigManager.getConfigs(element, matchOptions)
+        val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(forDeclarationRoot = true))
         checkForMissingExpression(element, configs, context)
     }
 
@@ -309,8 +307,7 @@ object ParadoxExpressionInspectionService {
     fun checkForTooManyExpression(file: ParadoxScriptFile, context: ParadoxExpressionInspectionContext) {
         val configContext = ParadoxConfigManager.getConfigContext(file) ?: return
         if (configContext.skipTooManyExpressionCheck()) return
-        val matchOptions = ParadoxMatchOptions(forDeclarationRoot = true)
-        val configs = ParadoxConfigManager.getConfigs(file, matchOptions)
+        val configs = ParadoxConfigManager.getConfigs(file, ParadoxMatchOptions(forDeclarationRoot = true))
         checkForTooManyExpression(file, configs, context)
     }
 
@@ -323,8 +320,7 @@ object ParadoxExpressionInspectionService {
 
         val configContext = ParadoxConfigManager.getConfigContext(element) ?: return
         if (configContext.skipTooManyExpressionCheck()) return
-        val matchOptions = ParadoxMatchOptions(forDeclarationRoot = true)
-        val configs = ParadoxConfigManager.getConfigs(element, matchOptions)
+        val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(forDeclarationRoot = true))
         checkForTooManyExpression(element, configs, context)
     }
 
@@ -395,8 +391,7 @@ object ParadoxExpressionInspectionService {
         val propertyKey = element.propertyKey
         if (propertyKey != null && propertyKey.text.isParameterized()) return
 
-        val matchOptions = ParadoxMatchOptions(forDeclarationRoot = true)
-        val configs = ParadoxConfigManager.getConfigs(element, matchOptions)
+        val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(forDeclarationRoot = true))
         if (skipForConflictingExpression(element, configs)) return
         reportForConflictingExpression(element, context)
     }
@@ -448,11 +443,14 @@ object ParadoxExpressionInspectionService {
         // skip if is parameterized
         if (element.text.isParameterized()) return
 
-        // 得到匹配的第一个规则
-        val valueConfig = ParadoxConfigManager.getConfigs(element).firstOrNull() ?: return
+        // get matched configs (which are entirely matched by the expression)
+        val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(lenient = false, forExpression = true))
+        // 3.0.3 use first prioritized config
+        val config = CwtConfigManager.selectFirstPrioritizedConfig(configs) ?: return
+
         val value = element.value
-        if (skipForUnresolvedPathReference(element, value, valueConfig, context)) return
-        val configExpression = valueConfig.configExpression
+        if (skipForUnresolvedPathReference(element, value, config, context)) return
+        val configExpression = config.configExpression
         if (configExpression.type == CwtDataTypes.AbsoluteFilePath) {
             val virtualFile = value.toVirtualFile()
             if (virtualFile != null) return
@@ -508,9 +506,9 @@ object ParadoxExpressionInspectionService {
         if (element.text.isParameterized()) return
 
         // get matched configs (which are entirely matched by the expression)
-        val matchOptions = ParadoxMatchOptions(lenient = false, forExpression = true)
-        val configs = ParadoxConfigManager.getConfigs(element, matchOptions)
-        val config = configs.firstOrNull() ?: return
+        val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(lenient = false, forExpression = true))
+        // 3.0.3 use first prioritized config
+        val config = CwtConfigManager.selectFirstPrioritizedConfig(configs) ?: return
 
         val configExpression = config.configExpression
         val dataType = configExpression.type

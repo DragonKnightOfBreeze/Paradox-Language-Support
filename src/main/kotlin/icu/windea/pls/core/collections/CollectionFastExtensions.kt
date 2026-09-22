@@ -4,7 +4,6 @@
 package icu.windea.pls.core.collections
 
 import com.google.common.collect.ImmutableList
-import com.intellij.util.Processor
 import icu.windea.pls.core.annotations.Fast
 
 /** @see kotlin.collections.forEach */

@@ -12,6 +12,7 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.resolved
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collectReferences
@@ -359,14 +360,13 @@ object ParadoxExpressionService {
             return arrayOf(reference)
         }
 
-        // 尝试基于规则进行解析
         val matchOptions = ParadoxMatchOptions.create().copy(lenient = false, forExpression = true)
         val configs = ParadoxConfigManager.getConfigs(element, matchOptions)
-        if (configs.isEmpty()) return PsiReference.EMPTY_ARRAY
+        val config = CwtConfigManager.selectSinglePrioritizedConfig(configs) ?: return PsiReference.EMPTY_ARRAY
         val role = ParadoxTypeResolver.resolveExpressionRole(element)
         val referenceRange = getExpressionRangeInElement(element)
         if (referenceRange.isEmpty) return PsiReference.EMPTY_ARRAY
-        val reference = ParadoxScriptExpressionPsiReference(element, referenceRange, configs, role)
+        val reference = ParadoxScriptExpressionPsiReference(element, referenceRange, config, role)
         return reference.collectReferences()
     }
 

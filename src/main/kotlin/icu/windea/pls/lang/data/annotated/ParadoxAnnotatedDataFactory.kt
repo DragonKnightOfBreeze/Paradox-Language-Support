@@ -1,8 +1,9 @@
 package icu.windea.pls.lang.data.annotated
 
-import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.config.filterProperties
+import icu.windea.pls.config.filterValues
+import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.mapFast
 import icu.windea.pls.core.collections.orNull
@@ -80,8 +81,8 @@ object ParadoxAnnotatedDataFactory {
      * 创建来自脚本属性的规则表达式的注解数据。
      */
     fun createConfigExpression(element: ParadoxScriptProperty): ParadoxConfigExpressionAnnotatedData.FromProperty? {
-        val config = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(forDeclarationRoot = true)).firstOrNull() ?: return null
-        if (config !is CwtPropertyConfig) return null
+        val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(forDeclarationRoot = true))
+        val config = CwtConfigManager.selectFirstPrioritizedConfig(configs.filterProperties()) ?: return null
         val configGroup = config.configGroup
         return ParadoxConfigExpressionAnnotatedData.FromProperty(config.keyExpression, config.valueExpression, configGroup)
     }
@@ -90,8 +91,8 @@ object ParadoxAnnotatedDataFactory {
      * 创建来自脚本值的规则表达式的注解数据。
      */
     fun createConfigExpression(element: ParadoxScriptValue): ParadoxConfigExpressionAnnotatedData.FromValue? {
-        val config = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(forDeclarationRoot = true)).firstOrNull() ?: return null
-        if (config !is CwtValueConfig) return null
+        val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(forDeclarationRoot = true))
+        val config = CwtConfigManager.selectFirstPrioritizedConfig(configs.filterValues()) ?: return null
         val configGroup = config.configGroup
         return ParadoxConfigExpressionAnnotatedData.FromValue(config.valueExpression, configGroup)
     }

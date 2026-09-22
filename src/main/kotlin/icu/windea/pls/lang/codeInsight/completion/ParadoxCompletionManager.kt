@@ -15,7 +15,6 @@ import icu.windea.pls.config.config.delegated.CwtMacroConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
-import icu.windea.pls.config.manipulation.CwtConfigManipulationService
 import icu.windea.pls.config.manipulation.CwtConfigInlineService
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.codeInsight.LimitedCompletionProcessor
@@ -434,14 +433,14 @@ object ParadoxCompletionManager {
     fun completeLocalisationConcept(context: ParadoxCompletionContext, result: CompletionResultSet) {
         val hintText = " from concepts"
         val conceptSelector = ParadoxDefinitionSearch.selector(context.project, context.file).contextSensitive().distinct()
-        val keysToDistinct = mutableSetOf<String>()
+        val toDistinct = HashSet<String>()
         ParadoxDefinitionSearch.searchProperty(null, ParadoxDefinitionTypes.gameConcept, conceptSelector).processAsync { concept ->
             val name = concept.name
-            if (keysToDistinct.add(name)) {
+            if (toDistinct.add(name)) {
                 ParadoxCompletionFactory.forLocalisationConcept(concept, concept.name, hintText).addToResult(context, result)
             }
             concept.getDefinitionData<StellarisGameConceptData>()?.alias?.forEach { alias ->
-                if (keysToDistinct.add(alias)) {
+                if (toDistinct.add(alias)) {
                     ParadoxCompletionFactory.forLocalisationConcept(concept, alias, hintText).addToResult(context, result)
                 }
             }

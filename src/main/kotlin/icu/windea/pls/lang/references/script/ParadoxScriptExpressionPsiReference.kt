@@ -10,8 +10,6 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.expandConfigExpression
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.collections.flatMapFast
-import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.createResults
 import icu.windea.pls.core.psi.PsiCompositeReference
 import icu.windea.pls.core.util.ProcessorScope
@@ -32,18 +30,16 @@ import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 class ParadoxScriptExpressionPsiReference(
     element: ParadoxScriptExpressionElement,
     rangeInElement: TextRange,
-    val configs: List<CwtMemberConfig<*>>,
+    val config: CwtMemberConfig<*>,
     val role: ParadoxExpressionRole,
 ) : PsiPolyVariantReferenceBase<ParadoxScriptExpressionElement>(element, rangeInElement), PsiCompositeReference, ParadoxScriptTagAwarePsiReference, ParadoxConstrainedPsiReference {
-    val config: CwtMemberConfig<*> get() = configs.first()
-
-    private val configGroup get() = configs.first().configGroup
+    private val configGroup get() = config.configGroup
     private val project get() = configGroup.project
 
     override val tagConfig: CwtValueConfig? get() = config.castOrNull()
 
     init {
-        ParadoxTagManager.processConfigs(configs)
+        ParadoxTagManager.processConfig(config)
     }
 
     override fun isReferenceTo(element: PsiElement): Boolean {
@@ -82,24 +78,19 @@ class ParadoxScriptExpressionPsiReference(
         // 根据对应的 expression 进行解析
         val element = element
         val rangeInElement = rangeInElement
-        configs.forEachFast { config ->
-            ParadoxExpressionManager.resolveScriptExpression(element, rangeInElement, config, role)?.let { return it }
-        }
-        return null
+        return ParadoxExpressionManager.resolveScriptExpression(element, rangeInElement, config, role)
     }
 
     private fun doMultiResolve(): Array<out ResolveResult> {
         // 根据对应的 expression 进行解析
         val element = element
         val rangeInElement = rangeInElement
-        val resolved = configs.flatMapFast { config ->
-            ParadoxExpressionManager.resolveAllScriptExpression(element, rangeInElement, config, role)
-        }
+        val resolved = ParadoxExpressionManager.resolveAllScriptExpression(element, rangeInElement, config, role)
         return resolved.createResults()
     }
 
     override fun canResolveFor(constraint: ParadoxReferenceConstraint): Boolean {
         // NOTE 3.0.1 expand config expression first since it's necessary for unions and aliases
-        return ProcessorScope.anyFrom({ configs.expandConfigExpression { process(it) } }) { constraint.test(it.type) }
+        return ProcessorScope.anyFrom({ config.expandConfigExpression { process(it) } }) { constraint.test(it.type) }
     }
 }

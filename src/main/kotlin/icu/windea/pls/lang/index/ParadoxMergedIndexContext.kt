@@ -5,6 +5,7 @@ import com.intellij.psi.PsiReference
 import com.intellij.psi.util.parentOfType
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
+import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.collectReferences
 import icu.windea.pls.core.util.values.LazyValue
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
@@ -67,11 +68,11 @@ data class ParadoxMergedIndexScriptContextBase(
     private fun computeExpressionReferences(): Array<out PsiReference> {
         val element = expressionElement ?: return PsiReference.EMPTY_ARRAY
         val configs = configs
-        if (configs.isEmpty()) return PsiReference.EMPTY_ARRAY
+        val config = CwtConfigManager.selectSinglePrioritizedConfig(configs) ?: return PsiReference.EMPTY_ARRAY
         val role = ParadoxTypeResolver.resolveExpressionRole(element)
         val referenceRange = ParadoxExpressionService.getExpressionRangeInElement(element)
         if (referenceRange.isEmpty) return PsiReference.EMPTY_ARRAY
-        val reference = ParadoxScriptExpressionPsiReference(element, referenceRange, configs, role)
+        val reference = ParadoxScriptExpressionPsiReference(element, referenceRange, config, role)
         return reference.collectReferences()
     }
 

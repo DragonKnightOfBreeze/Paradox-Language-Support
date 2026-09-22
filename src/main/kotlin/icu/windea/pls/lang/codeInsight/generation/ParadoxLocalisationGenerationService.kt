@@ -28,10 +28,10 @@ object ParadoxLocalisationGenerationService {
         val newContext = ParadoxLocalisationGenerationContext(file.project, file, locale, tooltip, emptyList(), newChildren)
         if (elements.isEmpty()) return newContext
 
-        val namesToDistinct = mutableSetOf<String>() // 去重
+        val toDistinct = HashSet<String>(elements.size) // 去重
         val group = mutableMapOf<String, MutableList<ParadoxLocalisationGenerationInfo>>()
         for (element in elements) {
-            if (!namesToDistinct.add(element.name)) continue
+            if (!toDistinct.add(element.name)) continue
             val info = ParadoxLocalisationGenerationInfo(element.name)
             val groupKey = getGroupKey(element)
             group.getOrPut(groupKey) { mutableListOf() } += info

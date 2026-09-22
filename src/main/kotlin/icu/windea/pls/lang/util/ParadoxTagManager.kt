@@ -24,9 +24,13 @@ object ParadoxTagManager {
 
     fun processConfigs(configs: List<CwtMemberConfig<*>>) {
         configs.forEachFast { config ->
-            if (config is CwtValueConfig && config.tagType != null) {
-                config.resolveElementWithConfig()
-            }
+            processConfig(config)
+        }
+    }
+
+    fun processConfig(config: CwtMemberConfig<*>) {
+        if (config is CwtValueConfig && config.tagType != null) {
+            config.resolveElementWithConfig()
         }
     }
 }

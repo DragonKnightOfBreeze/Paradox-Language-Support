@@ -10,7 +10,6 @@ import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.parentOfType
 import icu.windea.pls.config.CwtConfigType
-import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtConfigService
 import icu.windea.pls.config.config.CwtFilePathMatchableConfig
@@ -24,13 +23,10 @@ import icu.windea.pls.config.config.delegated.CwtMacroConfig
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.config.inlineConfig
-import icu.windea.pls.config.config.isSamePointer
 import icu.windea.pls.config.config.singleAliasConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.annotations.Optimized
-import icu.windea.pls.core.collections.CaseInsensitiveStringSet
 import icu.windea.pls.core.collections.filterFast
 import icu.windea.pls.core.collections.filterIsInstanceFast
 import icu.windea.pls.core.collections.forEachFast
@@ -51,7 +47,6 @@ import icu.windea.pls.cwt.CwtLanguage
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.cwt.psi.CwtMember
 import icu.windea.pls.cwt.psi.CwtRootBlock
-import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.model.paths.CwtConfigPath
 import kotlin.io.path.name
 
@@ -183,15 +178,6 @@ object CwtConfigManager {
         }
     }
 
-    fun findLiterals(configs: List<CwtMemberConfig<*>>): Set<String> {
-        val configGroup = configs.firstOrNull()?.configGroup ?: return emptySet()
-        val result = mutableSetOf<String>()
-        configs.forEachFast { config ->
-            CwtConfigService.collectLiterals(config, configGroup, result)
-        }
-        return result
-    }
-
     fun getEntryName(config: CwtConfig<*>): String? {
         return when {
             config is CwtPropertyConfig -> config.key
@@ -239,48 +225,9 @@ object CwtConfigManager {
     }
 
     fun getWithinBlockKeys(config: CwtMemberConfig<*>): Set<String> {
-        return config.getOrPutUserData(Keys.withinBlockKeys) { doGetInBlockKeys(config).optimized() }
-    }
-
-    private fun doGetInBlockKeys(config: CwtMemberConfig<*>): Set<@CaseInsensitive String> {
-        val childConfigs = config.configs
-        if (childConfigs.isNullOrEmpty()) return emptySet()
-        val keys = CaseInsensitiveStringSet()
-        childConfigs.forEachFast { if (it is CwtPropertyConfig && isInBlockKey(it)) keys.add(it.key) }
-        if (keys.isEmpty()) return emptySet()
-        when (config) {
-            is CwtPropertyConfig -> {
-                val propertyConfig = config
-                val configs1 = propertyConfig.parentConfig?.configs
-                if (configs1.isNullOrEmpty()) return keys
-                configs1.forEachFast f@{ c ->
-                    val childConfigs1 = c.configs
-                    if (childConfigs1.isNullOrEmpty()) return@f
-                    if (c.isSamePointer(propertyConfig) || c !is CwtPropertyConfig || !c.key.equals(propertyConfig.key, true)) return@f
-                    childConfigs1.forEachFast { if (it is CwtPropertyConfig && isInBlockKey(it)) keys.remove(it.key) }
-                }
-            }
-            is CwtValueConfig -> {
-                val propertyConfig = config.propertyConfig
-                val configs1 = propertyConfig?.parentConfig?.configs
-                if (configs1.isNullOrEmpty()) return keys
-                configs1.forEachFast f@{ c ->
-                    val childConfigs1 = c.configs
-                    if (childConfigs1.isNullOrEmpty()) return@f
-                    if (c.isSamePointer(propertyConfig) || c !is CwtPropertyConfig || !c.key.equals(propertyConfig.key, true)) return@f
-                    childConfigs1.forEachFast { if (it is CwtPropertyConfig && isInBlockKey(it)) keys.remove(it.key) }
-                }
-            }
+        return config.getOrPutUserData(Keys.withinBlockKeys) {
+            CwtConfigService.getWithinBlockKeys(config).optimized()
         }
-        return keys
-    }
-
-    private fun isInBlockKey(config: CwtPropertyConfig): Boolean {
-        val gameType = config.configGroup.gameType
-        if (config.keyExpression.type != CwtDataTypes.Constant) return false
-        if (config.optionMetadata.cardinality?.isRequired() == false) return false
-        if (ParadoxInlineScriptManager.isMatched(config.key, gameType)) return false // 排除是内联脚本用法的情况
-        return true
     }
 
     fun getModifierCategories(value: String?, configGroup: CwtConfigGroup): Map<String, CwtModifierCategoryConfig> {
@@ -304,5 +251,64 @@ object CwtConfigManager {
     private fun doGetModifierCategoriesOptionMetadata(value: String, enumConfig: CwtEnumConfig): Set<String>? {
         val valueConfig = enumConfig.valueConfigMap[value] ?: return null
         return valueConfig.optionMetadata.modifierCategories
+    }
+
+    /**
+     * 从输入的一组规则中，选择其中的字面量。输入的一组规则应属于同一规则分组。
+     */
+    fun selectLiterals(configs: List<CwtMemberConfig<*>>): Set<String> {
+        if (configs.isEmpty()) return emptySet()
+        val configGroup = configs.first().configGroup
+        val result = mutableSetOf<String>()
+        configs.forEachFast { config ->
+            CwtConfigService.collectLiterals(config, configGroup, result)
+        }
+        return result
+    }
+
+    /**
+     * 从输入的一组规则中，选择数据类型优先级最高的第一个规则。输入的一组规则应属于同一规则分组。
+     */
+    fun <T : CwtMemberConfig<*>> selectFirstPrioritizedConfig(configs: List<T>): T? {
+        if (configs.isEmpty()) return null
+        if (configs.size == 1) return configs.first()
+        val configGroup = configs.first().configGroup
+        var selected: T? = null
+        var maxPriority = Double.NEGATIVE_INFINITY
+        configs.forEachFast f@{ c ->
+            val p = CwtConfigExpressionManager.getPriority(c.configExpression, configGroup)
+            if (p.isNaN()) return@f // unexpected
+            if (selected == null || p > maxPriority) {
+                selected = c
+                maxPriority = p
+            }
+        }
+        return selected
+    }
+
+    /**
+     * 从输入的一组规则中，去重数据表达式后，选择数据类型优先级最高的唯一规则。输入的一组规则应属于同一规则分组。
+     */
+    fun <T : CwtMemberConfig<*>> selectSinglePrioritizedConfig(configs: List<T>): T? {
+        if (configs.isEmpty()) return null
+        if (configs.size == 1) return configs.first()
+        val configGroup = configs.first().configGroup
+        var selected: T? = null
+        var maxPriority = Double.NEGATIVE_INFINITY
+        var maxCount = 0
+        val toDistinct = HashSet<CwtDataExpression>(configs.size)
+        configs.forEachFast f@{ c ->
+            if (!toDistinct.add(c.configExpression)) return@f
+            val p = CwtConfigExpressionManager.getPriority(c.configExpression, configGroup)
+            if (p.isNaN()) return@f // unexpected
+            if (selected == null || p > maxPriority) {
+                selected = c
+                maxPriority = p
+                maxCount = 1
+            } else if (p == maxPriority) {
+                maxCount++
+            }
+        }
+        return if (maxCount == 1) selected else null
     }
 }

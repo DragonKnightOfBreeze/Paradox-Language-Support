@@ -380,11 +380,6 @@ object CwtConfigService {
         return result
     }
 
-    fun collectLiterals(config: CwtMemberConfig<*>, configGroup: CwtConfigGroup, result: MutableSet<String>) {
-        val configExpression = config.configExpression
-        CwtConfigExpressionService.collectLiterals(configExpression, configGroup, result)
-    }
-
     fun getWithinBlockKeys(config: CwtMemberConfig<*>): Set<@CaseInsensitive String> {
         val childConfigs = config.configs
         if (childConfigs.isNullOrEmpty()) return emptySet()
@@ -424,5 +419,10 @@ object CwtConfigService {
         if (config.optionMetadata.cardinality?.isRequired() == false) return false
         if (ParadoxInlineScriptManager.isMatched(config.key, gameType)) return false // 排除是内联脚本用法的情况
         return true
+    }
+
+    fun collectLiterals(config: CwtMemberConfig<*>, configGroup: CwtConfigGroup, result: MutableSet<String>) {
+        val configExpression = config.configExpression
+        CwtConfigExpressionService.collectLiterals(configExpression, configGroup, result)
     }
 }

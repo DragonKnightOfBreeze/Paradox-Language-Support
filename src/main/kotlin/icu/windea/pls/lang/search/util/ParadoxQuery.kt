@@ -64,10 +64,10 @@ private class ParadoxQueryImpl<T : Any, P : ParadoxSearchParameters<T>>(
         val result = mutableListOf<T>()
         val selector = searchParameters.selector
         val keySelector = selector.keySelector()
-        val keysToDistinct = if (keySelector == null) null else mutableSetOf<Any?>()
+        val toDistinct = if (keySelector == null) null else HashSet<Any?>()
         delegateProcessResults(original) {
             ProgressManager.checkCanceled()
-            if (selector.select(it) && (keysToDistinct == null || keysToDistinct.add(keySelector?.apply(it)))) {
+            if (selector.select(it) && (toDistinct == null || toDistinct.add(keySelector?.apply(it)))) {
                 result += it
             }
             true
@@ -122,10 +122,10 @@ private class ParadoxQueryImpl<T : Any, P : ParadoxSearchParameters<T>>(
 
         val selector = searchParameters.selector
         val keySelector = selector.keySelector()
-        val keysToDistinct = if (keySelector == null) null else mutableSetOf<Any?>().synced()
+        val toDistinct = if (keySelector == null) null else HashSet<Any?>().synced()
         return delegateProcessResults(original) {
             ProgressManager.checkCanceled()
-            if (selector.select(it) && (keysToDistinct == null || keysToDistinct.add(keySelector?.apply(it)))) {
+            if (selector.select(it) && (toDistinct == null || toDistinct.add(keySelector?.apply(it)))) {
                 consumer.process(it)
             } else {
                 true

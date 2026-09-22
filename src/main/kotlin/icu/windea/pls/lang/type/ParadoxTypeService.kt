@@ -2,8 +2,8 @@ package icu.windea.pls.lang.type
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.parents
-import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.config.config.CwtValueConfig
+import icu.windea.pls.config.filterProperties
+import icu.windea.pls.config.filterValues
 import icu.windea.pls.core.util.values.singletonListOrEmpty
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
@@ -14,6 +14,7 @@ import icu.windea.pls.lang.complexEnumValueInfo
 import icu.windea.pls.lang.defineInfo
 import icu.windea.pls.lang.definitionCandidateInfo
 import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.overrides.ParadoxOverrideService
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
@@ -190,22 +191,22 @@ object ParadoxTypeService {
     fun getConfigExpression(element: PsiElement): String? {
         return when (element) {
             is ParadoxScriptExpressionElement -> {
-                val config = ParadoxConfigManager.getConfigs(element).firstOrNull() ?: return null
+                val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(forDeclarationRoot = true))
+                if (configs.isEmpty()) return null
                 when (element) {
                     is ParadoxScriptPropertyKey -> {
-                        if (config !is CwtPropertyConfig) return null
-                        config.key
+                        configs.filterProperties().joinToString(" | ") { it.key }
                     }
                     is ParadoxScriptValue -> {
-                        if (config !is CwtValueConfig) return null
-                        config.value
+                        configs.filterValues().joinToString(" | ") { it.value }
                     }
                     else -> null
                 }
             }
             is ParadoxCsvExpressionElement -> {
                 if (element !is ParadoxCsvColumn) return null
-                val columnConfig = ParadoxConfigManager.getColumnConfig(element) ?: return null
+                val columnConfig = ParadoxConfigManager.getColumnConfig(element)
+                if (columnConfig == null) return null
                 when {
                     ParadoxCsvPsiService.isHeaderColumn(element) -> columnConfig.key
                     else -> {

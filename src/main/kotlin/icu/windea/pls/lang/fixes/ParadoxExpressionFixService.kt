@@ -23,7 +23,7 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 @Optimized
 object ParadoxExpressionFixService {
     fun collectSimilarityBasedFixes(element: ParadoxExpressionElement, configs: List<CwtMemberConfig<*>>, result: MutableList<LocalQuickFix>) {
-        val literals = CwtConfigManager.findLiterals(configs)
+        val literals = CwtConfigManager.selectLiterals(configs)
         if (literals.isEmpty()) return
 
         val input = element.value

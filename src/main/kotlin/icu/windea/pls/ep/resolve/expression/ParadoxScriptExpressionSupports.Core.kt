@@ -315,9 +315,9 @@ abstract class ParadoxCoreScriptExpressionSupport : ParadoxScriptExpressionSuppo
             if (separatorIndex == 0) return emptyList() // no tech node -> ignore
             val offset = ParadoxExpressionService.getExpressionOffset(element)
             val referenceRange = TextRange.from(rangeInExpression.startOffset + offset, separatorIndex)
-            val referenceConfigs = listOf(CwtValueConfig.mock(config.configGroup, typeExpression))
+            val referenceConfig = CwtValueConfig.mock(config.configGroup, typeExpression)
             val referenceRole = ParadoxExpressionRole.Other
-            val reference = ParadoxScriptExpressionPsiReference(element, referenceRange, referenceConfigs, referenceRole)
+            val reference = ParadoxScriptExpressionPsiReference(element, referenceRange, referenceConfig, referenceRole)
             return reference.to.singletonList()
         }
 

@@ -14,6 +14,7 @@ import icu.windea.pls.config.config.aliasConfig
 import icu.windea.pls.config.config.resolved
 import icu.windea.pls.config.config.resolvedOrNull
 import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.anyFast
@@ -323,7 +324,8 @@ object ParadoxScopeService {
 
         // 3.0.3 get matched configs (compatible with declaration roots)
         val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(forDeclarationRoot = true))
-        val config = configs.firstOrNull() ?: return null
+        // 3.0.3 use first prioritized config
+        val config = CwtConfigManager.selectFirstPrioritizedConfig(configs) ?: return null
 
         val parentMember = findParentMember(element, withSelf = false)
         val parentScopeContext = if (parentMember != null) ParadoxScopeManager.getScopeContext(parentMember) else null
