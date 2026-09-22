@@ -18,7 +18,7 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.mockConfigs
 import icu.windea.pls.config.filterProperties
 import icu.windea.pls.config.filterValues
-import icu.windea.pls.config.manipulation.CwtConfigManipulationService
+import icu.windea.pls.config.manipulation.CwtConfigInlineService
 import icu.windea.pls.config.match.CwtConfigExpressionMatchService
 import icu.windea.pls.config.sortedByPriority
 import icu.windea.pls.core.annotations.Optimized
@@ -301,7 +301,7 @@ object ParadoxConfigService {
                 val configs = parentConfig.values
                 if (configs.isNullOrEmpty()) return@f1
                 configs.forEachFast { config ->
-                    val inlined = CwtConfigManipulationService.inlineForConfig(config)
+                    val inlined = CwtConfigInlineService.inlineForConfig(config)
                     result.add(inlined)
                 }
             }
@@ -316,7 +316,7 @@ object ParadoxConfigService {
                 val configs = parentConfig.properties
                 if (configs.isNullOrEmpty()) return@f1
                 configs.forEachFast f2@{ config ->
-                    val inlined = CwtConfigManipulationService.inlineForConfig(config)
+                    val inlined = CwtConfigInlineService.inlineForConfig(config)
                     result.add(inlined)
                 }
             }

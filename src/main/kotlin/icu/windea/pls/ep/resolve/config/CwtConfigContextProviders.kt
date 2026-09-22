@@ -4,6 +4,7 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.manipulation.CwtConfigManipulationService
+import icu.windea.pls.config.manipulation.CwtConfigInlineService
 import icu.windea.pls.core.collections.dropFast
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.mapFast
@@ -275,7 +276,7 @@ class CwtInlineScriptUsageConfigContextProvider : CwtConfigContextProvider {
         val memberPath = context.memberPath ?: return emptyList()
         if (memberPath.isNotEmpty()) return ParadoxConfigService.getFlattenedConfigsForConfigContext(context, options)
         val inlineConfigs = context.configGroup.macroModel.forInlineScripts.orNull() ?: return emptyList()
-        val rootConfigs = inlineConfigs.mapFast { CwtConfigManipulationService.inlineMacro(it) }
+        val rootConfigs = inlineConfigs.mapFast { CwtConfigInlineService.inlineMacro(it) }
         return ParadoxConfigService.getTopConfigsForConfigContext(context, rootConfigs)
     }
 

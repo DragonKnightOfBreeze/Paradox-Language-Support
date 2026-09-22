@@ -7,6 +7,7 @@ import icu.windea.pls.config.config.extended.CwtExtendedGameRuleConfig
 import icu.windea.pls.config.config.extended.CwtExtendedOnActionConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.manipulation.CwtConfigManipulationService
+import icu.windea.pls.config.manipulation.CwtConfigInlineService
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.lang.match.findByPattern

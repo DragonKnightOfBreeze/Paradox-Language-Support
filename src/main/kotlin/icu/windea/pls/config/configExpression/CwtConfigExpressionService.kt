@@ -1,13 +1,13 @@
 package icu.windea.pls.config.configExpression
 
 import com.intellij.util.Processor
+import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
-import icu.windea.pls.config.config.expandUnionValues
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.manipulation.CwtConfigExpansionService
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.text.TextPattern
-import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.ep.config.configExpression.CwtDataExpressionSupport
 import icu.windea.pls.ep.config.configExpression.CwtTextPatternBasedDataExpressionSupport
 
@@ -64,44 +64,11 @@ object CwtConfigExpressionService {
                 val values = nextConfig.values
                 result += values
             }
-            CwtDataTypes.UnionValue -> {
-                val name = dataExpression.metadata.value ?: return
-                val unionConfig = configGroup.unions[name] ?: return
-                // NOTE 3.0.1 recursion guard is required here
-                withRecursionGuard("CwtConfigExpressionService.collectLiterals") {
-                    unionConfig.expandUnionValues { valueConfig ->
-                        val e = valueConfig.configExpression
-                        withRecursionCheck(e) {
-                            collectLiterals(e, configGroup, result)
-                        }
-                        true
-                    }
-                }
-            }
-            CwtDataTypes.AliasKeysField, CwtDataTypes.AliasName -> {
-                val name = dataExpression.metadata.value ?: return
-                val aliasConfigGroup = configGroup.aliasGroups[name] ?: return
-                // NOTE 3.0.1 recursion guard is required here
-                withRecursionGuard("CwtConfigExpressionService.collectLiterals") {
-                    withRecursionCheck(name) {
-                        for (aliasConfigs in aliasConfigGroup.values) {
-                            val e = aliasConfigs.firstOrNull()?.configExpression ?: continue
-                            withRecursionCheck(e) {
-                                collectLiterals(e, configGroup, result)
-                            }
-                        }
-                    }
-                }
-            }
-            CwtDataTypes.SingleAliasRight -> {
-                val name = dataExpression.metadata.value ?: return
-                val singleAliasConfig = configGroup.singleAliases[name] ?: return
-                // NOTE 3.0.1 recursion guard is required here
-                withRecursionGuard("CwtConfigExpressionService.collectLiterals") {
-                    val e = singleAliasConfig.config.valueExpression
-                    withRecursionCheck(e) {
-                        collectLiterals(e, configGroup, result)
-                    }
+            in CwtDataTypeSets.Expandable -> {
+                // NOTE 3.0.3 recursion guard is required here
+                CwtConfigExpansionService.expandExpandable(dataExpression, configGroup, "configExpression.collectLiterals") { e ->
+                    collectLiterals(e, configGroup, result)
+                    true
                 }
             }
         }

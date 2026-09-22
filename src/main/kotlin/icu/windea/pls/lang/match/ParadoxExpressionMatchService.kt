@@ -5,16 +5,15 @@ import com.intellij.psi.PsiElement
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtMemberConfig
-import icu.windea.pls.config.config.expandUnionValues
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.CwtDataExpressionRole
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.manipulation.CwtConfigExpansionService
 import icu.windea.pls.config.util.CwtConfigExpressionManager
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.forEachFast
-import icu.windea.pls.core.runWithRecursionGuard
-import icu.windea.pls.core.util.ProcessorScope
+import icu.windea.pls.core.util.ProcessorFactory
 import icu.windea.pls.ep.match.expression.ParadoxCsvExpressionMatcher
 import icu.windea.pls.ep.match.expression.ParadoxScriptExpressionMatchOptimizer
 import icu.windea.pls.ep.match.expression.ParadoxScriptExpressionMatcher
@@ -67,26 +66,6 @@ object ParadoxExpressionMatchService {
         return result
     }
 
-    fun getMatchedAliasKeys(element: PsiElement, expression: ParadoxExpression, aliasName: String, configGroup: CwtConfigGroup, options: ParadoxMatchOptions? = null): List<String> {
-        // NOTE 3.0.3 fast return if the alias key can be matched constantly (case-insensitive), otherwise, try further match
-        // NOTE 3.0.3 should also include non-const keys if the expression is parameterized
-
-        val constKey = configGroup.aliasModel.forConst[aliasName]?.get(expression.value)
-        if (constKey != null) return listOf(constKey)
-
-        val keys = when {
-            expression.isParameterized() -> configGroup.aliasGroups[aliasName]?.keys
-            else -> configGroup.aliasModel.forNonConstSorted[aliasName]
-        }
-        if (keys.isNullOrEmpty()) return emptyList()
-
-        ProgressManager.checkCanceled() // check cancellation
-        val matchContext = ParadoxExpressionMatchContext(element, expression, configGroup, options)
-        return keys.filter { key ->
-            matchScriptExpression(matchContext, CwtDataExpression.resolve(key), null).get(options)
-        }
-    }
-
     fun matchesExpressionRole(expression: ParadoxExpression, configExpression: CwtDataExpression): Boolean {
         return when (expression.role) {
             ParadoxExpressionRole.Key -> configExpression.role == CwtDataExpressionRole.Key
@@ -106,23 +85,18 @@ object ParadoxExpressionMatchService {
                 val enumConfig = configGroup.enums[enumName] ?: return false
                 enumConfig.values.contains(expression.value)
             }
-            CwtDataTypes.UnionValue -> {
-                val unionName = configExpression.metadata.value ?: return false
-                val unionConfig = configGroup.unions[unionName] ?: return false
-                // NOTE 3.0.1 recursion guard is required here
-                ProcessorScope.anyFrom {
-                    runWithRecursionGuard("exprssion.matchesConstant", unionName) {
-                        unionConfig.expandUnionValues { valueConfig ->
-                            if (matchesConstant(expression, valueConfig.configExpression, configGroup)) process(valueConfig)
-                            else true
-                        }
-                    }
-                }
-            }
             CwtDataTypes.Value, CwtDataTypes.DynamicValue -> {
                 val type = configExpression.metadata.value ?: return false
                 val dynamicValueConfig = configGroup.dynamicValueTypes[type] ?: return false
                 dynamicValueConfig.values.contains(expression.value)
+            }
+            // NOTE 3.0.3 for expandable data types, only include union values here
+            CwtDataTypes.UnionValue -> {
+                // NOTE 3.0.3 recursion guard is required here
+                val processor = ProcessorFactory.any<Unit>()
+                CwtConfigExpansionService.expandUnion(configExpression, configGroup, "exprssion.matchesConstant") { e, _ ->
+                    if (matchesConstant(expression, e, configGroup)) processor.process(Unit) else true
+                }
             }
             else -> false
         }

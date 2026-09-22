@@ -2,23 +2,17 @@ package icu.windea.pls.config.manipulation
 
 import com.intellij.psi.PsiElement
 import com.intellij.util.SmartList
+import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
-import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtConfigService
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
-import icu.windea.pls.config.config.aliasConfig
-import icu.windea.pls.config.config.delegated.CwtAliasConfig
-import icu.windea.pls.config.config.delegated.CwtMacroConfig
-import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
-import icu.windea.pls.config.config.delegated.CwtUnionConfig
-import icu.windea.pls.config.config.inlineConfig
 import icu.windea.pls.config.config.isSamePointer
-import icu.windea.pls.config.config.singleAliasConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.CwtDataExpressionRole
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.manipulation.CwtConfigInlineService.inlineForContextConfig
 import icu.windea.pls.config.option.CwtOptionMetadata
 import icu.windea.pls.config.util.CwtConfigKeyManager
 import icu.windea.pls.core.annotations.Optimized
@@ -26,10 +20,8 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.allFast
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.mapNotNullFast
-import icu.windea.pls.core.collections.orNull
-import icu.windea.pls.core.collections.process
-import icu.windea.pls.core.collections.processFast
 import icu.windea.pls.core.emptyPointer
+import icu.windea.pls.core.equalsFast
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.removeSurroundingOrNull
@@ -146,10 +138,6 @@ object CwtConfigManipulationService {
         }
     }
 
-    // endregion
-
-    // region Merge Methods
-
     fun skipMergedConfigs(mergedConfigs: List<CwtMemberConfig<*>>): Boolean {
         // 3.0.2 skip for empty merged result
         if (mergedConfigs.isEmpty()) return true
@@ -222,7 +210,7 @@ object CwtConfigManipulationService {
     fun mergeValueConfig(config: CwtValueConfig, otherConfig: CwtValueConfig): CwtValueConfig? {
         if (config === otherConfig) return config // reference equality
         if (config isSamePointer otherConfig) return config // pointer equality
-        val expressionString = CwtConfigExpressionManipulationService.mergeDataExpression(config.configExpression, otherConfig.configExpression, config.configGroup)
+        val expressionString = mergeDataExpression(config.configExpression, otherConfig.configExpression, config.configGroup)
         if (expressionString == null) return null
         val merged = CwtValueConfig.create(
             pointer = emptyPointer(),
@@ -244,232 +232,102 @@ object CwtConfigManipulationService {
         configs.forEachFast f@{ config ->
             val e1 = configExpression // expect
             val e2 = config.configExpression // actual (e.g., from parameterized key)
-            val e3 = CwtConfigExpressionManipulationService.mergeDataExpression(e1, e2, configGroup) ?: return@f // merged
+            val e3 = mergeDataExpression(e1, e2, configGroup) ?: return@f // merged
             if (e3 == e2.expressionString) return true
         }
         return false
     }
 
-    // endregion
-
-    // region Inline Methods
-
-    fun inlineAlias(config: CwtPropertyConfig, aliasConfig: CwtAliasConfig): CwtPropertyConfig? {
-        val other = aliasConfig.config
-        val inlined = CwtPropertyConfig.copy(
-            sourceConfig = config,
-            keyExpression = aliasConfig.subNameExpression,
-            valueExpression = other.valueExpression,
-            valueType = other.valueType,
-            configs = deepCopyConfigs(other),
-        )
-        inlined.postOptimize() // do post optimization
-        mergeOptionMetadata(inlined.optionMetadata, config.optionMetadata, other.optionMetadata) // merge option metadata
-        inlined.withParentConfig(config.parentConfig)
-        inlined.singleAliasConfig = config.singleAliasConfig
-        inlined.aliasConfig = aliasConfig
-        inlined.inlineConfig = config.inlineConfig
-        val finalInlined = when (inlined.valueExpression.type) {
-            CwtDataTypes.SingleAliasRight -> inlineSingleAlias(inlined) ?: return null
-            else -> inlined
+    fun mergeDataExpression(dataExpression: CwtDataExpression, otherDataExpression: CwtDataExpression, configGroup: CwtConfigGroup): String? {
+        val dataType = dataExpression.type
+        val otherDataType = otherDataExpression.type
+        val expressionString = dataExpression.expressionString
+        val otherExpressionString = otherDataExpression.expressionString
+        // cannot merge block data expressions here (no further info)
+        if (dataType == CwtDataTypes.Block || otherDataType == CwtDataTypes.Block) return null
+        // check whether expression strings are same
+        if (expressionString.equalsFast(otherExpressionString)) return expressionString
+        // check whether expression strings are same (ignore case) for constant data expressions
+        if (dataType == CwtDataTypes.Constant && otherDataType == CwtDataTypes.Constant) {
+            if (expressionString.equalsFast(otherExpressionString, ignoreCase = true)) return expressionString.lowercase()
         }
-        return finalInlined
+        if (dataType == CwtDataTypes.Constant || otherDataType == CwtDataTypes.Constant) return null
+        // apply detailed merge logic
+        return mergeDataExpressionRemain(dataExpression, otherDataExpression, configGroup)
     }
 
-    fun inlineSingleAlias(config: CwtPropertyConfig): CwtPropertyConfig? {
-        val valueExpression = config.valueExpression
-        if (valueExpression.type != CwtDataTypes.SingleAliasRight) return null
-        val singleAliasName = valueExpression.metadata.value ?: return null
-        val configGroup = config.configGroup
-        val singleAliasConfig = configGroup.singleAliases[singleAliasName] ?: return null
-        return inlineSingleAlias(config, singleAliasConfig)
+    private fun mergeDataExpressionRemain(dataExpression: CwtDataExpression, otherExpression: CwtDataExpression, configGroup: CwtConfigGroup): String? {
+        mergeDataExpressionDirectional(dataExpression, otherExpression, configGroup)?.let { return it }
+        mergeDataExpressionDirectional(otherExpression, dataExpression, configGroup)?.let { return it }
+        return null
     }
 
-    fun inlineSingleAlias(config: CwtPropertyConfig, singleAliasConfig: CwtSingleAliasConfig): CwtPropertyConfig {
-        // inline all value and configs
-        val other = singleAliasConfig.config
-        val inlined = CwtPropertyConfig.copy(
-            sourceConfig = config,
-            valueExpression = other.valueExpression,
-            valueType = other.valueType,
-            configs = deepCopyConfigs(other),
-        )
-        inlined.postOptimize() // do post optimization
-        mergeOptionMetadata(inlined.optionMetadata, config.optionMetadata, other.optionMetadata) // merge option metadata
-        inlined.withParentConfig(config.parentConfig)
-        inlined.singleAliasConfig = singleAliasConfig
-        inlined.aliasConfig = config.aliasConfig
-        inlined.inlineConfig = config.inlineConfig
-        return inlined
-    }
-
-    fun inlineMacro(macroConfig: CwtMacroConfig.InlineScript): CwtPropertyConfig {
-        val other = macroConfig.contextContainerConfig
-        val inlined = CwtPropertyConfig.copy(
-            sourceConfig = other,
-            keyExpression = CwtDataExpression.resolve(macroConfig.name, CwtDataExpressionRole.Key),
-            configs = deepCopyConfigs(other),
-        )
-        inlined.postOptimize() // do post optimization
-        mergeOptionMetadata(inlined.optionMetadata, other.optionMetadata) // merge option metadata
-        inlined.inlineConfig = macroConfig
-        return inlined
-    }
-
-    fun inlineWithConfig(config: CwtPropertyConfig, otherConfig: CwtMemberConfig<*>, inlineMode: CwtConfigInlineMode): CwtPropertyConfig? {
-        val inlined = CwtPropertyConfig.copy(
-            sourceConfig = config,
-            keyExpression = when (inlineMode) {
-                CwtConfigInlineMode.KEY_TO_KEY -> if (otherConfig is CwtPropertyConfig) otherConfig.keyExpression else return null
-                CwtConfigInlineMode.VALUE_TO_KEY -> CwtDataExpression.resolve(otherConfig.value, CwtDataExpressionRole.Key)
-                else -> config.keyExpression
-            },
-            valueExpression = when (inlineMode) {
-                CwtConfigInlineMode.KEY_TO_VALUE -> if (otherConfig is CwtPropertyConfig) CwtDataExpression.resolve(otherConfig.key, CwtDataExpressionRole.Value) else return null
-                CwtConfigInlineMode.VALUE_TO_VALUE -> otherConfig.valueExpression
-                else -> config.valueExpression
-            },
-            valueType = when (inlineMode) {
-                CwtConfigInlineMode.VALUE_TO_VALUE -> otherConfig.valueType
-                CwtConfigInlineMode.KEY_TO_VALUE -> CwtExpressionType.String
-                else -> config.valueType
-            },
-            configs = when (inlineMode) {
-                CwtConfigInlineMode.KEY_TO_VALUE -> null
-                CwtConfigInlineMode.VALUE_TO_VALUE -> deepCopyConfigs(otherConfig)
-                else -> deepCopyConfigs(config)
-            },
-        )
-        inlined.postOptimize() // do post optimization
-        mergeOptionMetadata(inlined.optionMetadata, config.optionMetadata) // merge option metadata
-        inlined.withParentConfig(config.parentConfig)
-        inlined.singleAliasConfig = config.singleAliasConfig
-        inlined.aliasConfig = config.aliasConfig
-        inlined.inlineConfig = config.inlineConfig
-        return inlined
-    }
-
-    fun inlineForConfig(config: CwtPropertyConfig): CwtPropertyConfig {
-        // #76
-        return inlineSingleAlias(config) ?: config
-    }
-
-    fun inlineForConfig(config: CwtMemberConfig<*>): CwtMemberConfig<*> {
-        // #76
-        if (config is CwtPropertyConfig) return inlineSingleAlias(config) ?: config
-        return config
-    }
-
-    fun inlineForContextConfig(config: CwtMemberConfig<*>?, configs: List<CwtMemberConfig<*>>?, configGroup: CwtConfigGroup): CwtValueConfig {
-        val inlined = CwtValueConfig.create(
-            pointer = emptyPointer(),
-            configGroup = configGroup,
-            valueExpression = CwtDataExpression.resolveBlock(),
-            valueType = CwtExpressionType.Block,
-            configs = configs,
-        )
-        mergeOptionMetadata(inlined.optionMetadata, config?.optionMetadata) // merge option metadata
-        return inlined
-    }
-
-    // endregion
-
-    // region Expand Methods
-
-    /**
-     * 递归展开 [config] 的子规则中的所有形如 `subtype[{expression}] = {...}` 的属性规则中的子规则，保留其他形式的子规则。
-     *
-     * 结果序列中的元组的第一个元素是展开后的子规则，第二个元素是合并后的当前子类型表达式。
-     *
-     * @see ParadoxDefinitionSubtypeExpression
-     */
-    fun expandBySubtypeExpression(config: CwtMemberConfig<*>?, processor: (CwtMemberConfig<*>, String) -> Boolean): Boolean {
-        if (config == null) return true
-        return doExpandBySubtypeExpression(config, "", processor)
-    }
-
-    private fun doExpandBySubtypeExpression(config: CwtMemberConfig<*>, currentExpression: String, processor: (CwtMemberConfig<*>, String) -> Boolean): Boolean {
-        // NOTE 3.0.1 use processor pattern (instead of direct sequence builder) to optimize performance
-        config.configs?.orNull()?.forEachFast { childConfig ->
-            val nextExpression = extractSubtypeExpression(childConfig)
-            if (nextExpression != null) {
-                if (childConfig.configs?.orNull() != null) {
-                    val mergedExpression = mergeSubtypeExpression(currentExpression, nextExpression)
-                    doExpandBySubtypeExpression(childConfig, mergedExpression, processor).let { if (!it) return false }
+    private fun mergeDataExpressionDirectional(dataExpression: CwtDataExpression, otherDataExpression: CwtDataExpression, configGroup: CwtConfigGroup): String? {
+        val dataType = dataExpression.type
+        val otherDataType = otherDataExpression.type
+        val expressionString = dataExpression.expressionString
+        val otherExpressionString = otherDataExpression.expressionString
+        when (dataType) {
+            CwtDataTypes.Any -> return otherExpressionString
+            CwtDataTypes.Scalar -> when (otherDataType) {
+                CwtDataTypes.ColorField -> return null
+                CwtDataTypes.Scalar -> {
+                    if (dataExpression.metadata.wildcard && otherDataExpression.metadata.wildcard) return "wildcard_scalar"
+                    return "scalar"
                 }
-            } else {
-                processor(childConfig, currentExpression).let { if (!it) return false }
+                else -> return otherExpressionString
+            }
+            CwtDataTypes.Int -> when (otherDataType) {
+                CwtDataTypes.Float -> return "int"
+                CwtDataTypes.ValueField, CwtDataTypes.VariableField -> return "int"
+                CwtDataTypes.IntValueField, CwtDataTypes.IntVariableField -> return "int"
+            }
+            CwtDataTypes.Float -> when (otherDataType) {
+                CwtDataTypes.ValueField -> return "float"
+                CwtDataTypes.VariableField -> return "float"
+            }
+            CwtDataTypes.IntPercentageField -> when (otherDataType) {
+                CwtDataTypes.PercentageField -> return "int_percentage_field"
+            }
+            in CwtDataTypeSets.DynamicValue -> when (otherDataType) {
+                in CwtDataTypeSets.DynamicValue -> {
+                    val name = dataExpression.metadata.value
+                    val otherName = otherDataExpression.metadata.value
+                    if (name != null && name.equalsFast(otherName)) return "dynamic_value[$name]"
+                }
+                in CwtDataTypeSets.ValueField -> {
+                    val name = dataExpression.metadata.value
+                    if (name != null) return "dynamic_value[$name]"
+                }
+                in CwtDataTypeSets.VariableField -> {
+                    val name = dataExpression.metadata.value
+                    if (name.equalsFast("variable")) return "dynamic_value[$name]"
+                }
+            }
+            in CwtDataTypeSets.ScopeField -> when (otherDataType) {
+                CwtDataTypes.ScopeField -> return expressionString
+                CwtDataTypes.Scope -> {
+                    val otherName = otherDataExpression.metadata.value
+                    if (otherName == null) return expressionString
+                }
+            }
+            CwtDataTypes.VariableField -> when (otherDataType) {
+                in CwtDataTypeSets.ValueField -> return "variable_field"
+            }
+            CwtDataTypes.IntVariableField -> when (otherDataType) {
+                in CwtDataTypeSets.ValueField -> return "int_variable_field"
+            }
+            CwtDataTypes.IntValueField -> when (otherDataType) {
+                CwtDataTypes.ValueField -> return "int_value_field"
+            }
+            in CwtDataTypeSets.Expandable -> {
+                // NOTE 3.0.3 recursion guard is required here
+                CwtConfigExpansionService.expandExpandable(dataExpression, configGroup, "configExpression.mergeDataExpression") { e ->
+                    mergeDataExpressionDirectional(e, otherDataExpression, configGroup)
+                    true
+                }
             }
         }
-        return true
+        return null
     }
-
-    /**
-     * 展开并集规则 [config] 的所有作为候选项的值规则。
-     *
-     * @see CwtUnionConfig
-     */
-    fun expandUnionValues(config: CwtUnionConfig, processor: (CwtValueConfig) -> Boolean): Boolean {
-        if (config.valueConfigs.isEmpty()) return true
-        // NOTE 3.0.1 recursion guard should not be directly used here, since the context may be different
-        config.valueConfigs.forEachFast { valueConfig ->
-            val r = processor(valueConfig)
-            if (!r) return false
-        }
-        return true
-    }
-
-    fun expandConfigExpression(config: CwtConfig<*>, processor: (CwtDataExpression) -> Boolean): Boolean {
-        return doExpandConfigExpression(config.configExpression, config.configGroup, processor)
-    }
-
-    fun expandConfigExpression(configs: Collection<CwtConfig<*>>, processor: (CwtDataExpression) -> Boolean): Boolean {
-        if (configs.isEmpty()) return true
-        return configs.process { config -> doExpandConfigExpression(config.configExpression, config.configGroup, processor) }
-    }CwtAl
-
-    fun expandConfigExpression(config: CwtConfig<*>, processor: (CwtDataExpression) -> Boolean): Boolean {
-        return doExpandConfigExpression(config.configExpression, config.configGroup, processor)
-    }
-
-    fun expandConfigExpression(configs: Collection<CwtConfig<*>>, processor: (CwtDataExpression) -> Boolean): Boolean {
-        if (configs.isEmpty()) return true
-        return configs.process { config -> doExpandConfigExpression(config.configExpression, config.configGroup, processor) }
-    }
-
-    fun expandKeyExpression(config: CwtPropertyConfig, processor: (CwtDataExpression) -> Boolean): Boolean {
-        return doExpandConfigExpression(config.keyExpression, config.configGroup, processor)
-    }
-
-    fun expandKeyExpression(configs: Collection<CwtPropertyConfig>, processor: (CwtDataExpression) -> Boolean): Boolean {
-        if (configs.isEmpty()) return true
-        return configs.process { config -> doExpandConfigExpression(config.keyExpression, config.configGroup, processor) }
-    }
-
-    fun expandValueExpression(config: CwtMemberConfig<*>, processor: (CwtDataExpression) -> Boolean): Boolean {
-        return doExpandConfigExpression(config.valueExpression, config.configGroup, processor)
-    }
-
-    fun expandValueExpression(configs: Collection<CwtMemberConfig<*>>, processor: (CwtDataExpression) -> Boolean): Boolean {
-        if (configs.isEmpty()) return true
-        return configs.process { config -> doExpandConfigExpression(config.valueExpression, config.configGroup, processor) }
-    }
-
-    private fun doExpandConfigExpression(configExpression: CwtDataExpression?, configGroup: CwtConfigGroup, processor: (CwtDataExpression) -> Boolean): Boolean {
-        // NOTE 3.0.1 use processor pattern (instead of direct sequence builder) to optimize performance
-        if (configExpression == null) return true
-        return when (configExpression.type) {
-            CwtDataTypes.UnionValue -> {
-                val name = configExpression.metadata.value ?: return true
-                configGroup.unions[name]?.valueConfigs?.orNull()?.processFast { e -> processor(e.valueExpression) } ?: true
-            }
-            CwtDataTypes.AliasKeysField -> {
-                val name = configExpression.metadata.value ?: return true
-                configGroup.aliasGroups[name]?.values?.orNull()?.process { e -> processor(e.first().subNameExpression) } ?: true
-            }
-            else -> processor(configExpression)
-        }
-    }
-
-    // endregion
 }

@@ -9,7 +9,7 @@ unions = {
     union[test_union] = {
         int
         enum[test_enum]
-        value[test_flag] # should be put at the very last, as some fallback
+        value[test_flag]
     }
 }
 

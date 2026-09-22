@@ -5,12 +5,12 @@ import com.intellij.util.SmartList
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.configGroup.mockConfigs
-import icu.windea.pls.config.manipulation.CwtConfigManipulationService
+import icu.windea.pls.config.manipulation.CwtConfigInlineService
 import icu.windea.pls.config.match.CwtConfigMatchService
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.runWithRecursionGuard
-import icu.windea.pls.lang.manipulation.ParadoxConfigManipulationService
+import icu.windea.pls.lang.manipulation.ParadoxConfigExpansionService
 
 @Optimized
 object ParadoxMatchCandidateService {
@@ -41,7 +41,7 @@ object ParadoxMatchCandidateService {
         // NOTE 3.0.3 recursion guard is required here
         val map = mutableMapOf<String, ParadoxMatchResult>()
         runWithRecursionGuard("matchCandidate.collectFromAliasEntry", aliasName) {
-            ParadoxConfigManipulationService.expandAndMatchAliasKeys(context.element, context.expression, aliasName, configGroup, context.options) p@{ key, matchResult ->
+            ParadoxConfigExpansionService.expandAndMatchAliasKeys(context.element, context.expression, aliasName, configGroup, context.options) p@{ key, matchResult ->
                 map.put(key, matchResult)
                 true
             }
@@ -52,7 +52,7 @@ object ParadoxMatchCandidateService {
         map.forEach f1@{ (key, matchResult) ->
             val aliasConfigs = aliasGroup[key]
             aliasConfigs?.forEachFast f2@{ aliasConfig ->
-                val inlined = CwtConfigManipulationService.inlineAlias(config, aliasConfig) ?: return@f2
+                val inlined = CwtConfigInlineService.inlineAlias(config, aliasConfig) ?: return@f2
                 if (result.size >= 16) {
                     result.clear()
                     return@f1 // too many candidates, break

@@ -1,18 +1,16 @@
 package icu.windea.pls.ep.match.expression
 
-import com.intellij.openapi.progress.ProgressManager
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
-import icu.windea.pls.config.config.expandUnionValues
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.core.isIdentifier
 import icu.windea.pls.core.matchesAntPattern
 import icu.windea.pls.core.matchesPattern
 import icu.windea.pls.core.matchesRegex
 import icu.windea.pls.core.runWithRecursionGuard
-import icu.windea.pls.core.util.ProcessorScope
+import icu.windea.pls.core.util.ProcessorFactory
+import icu.windea.pls.lang.manipulation.ParadoxConfigExpansionService
 import icu.windea.pls.lang.match.ParadoxExpressionMatchContext
-import icu.windea.pls.lang.match.ParadoxExpressionMatchService
 import icu.windea.pls.lang.match.ParadoxMatchResult
 import icu.windea.pls.lang.match.util.ParadoxMatchFactory
 import icu.windea.pls.lang.match.util.ParadoxMatchResultFactory
@@ -132,18 +130,14 @@ class ParadoxCsvCoreExpressionMatcher : ParadoxCsvCompositeExpressionMatcher() {
 
     private fun matchUnionValue(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression): ParadoxMatchResult {
         val unionName = configExpression.metadata.value ?: return ParadoxMatchResult.NotMatch // null -> invalid config
-        val unionConfig = context.configGroup.unions[unionName] ?: return ParadoxMatchResult.NotMatch // null -> not match
         // NOTE 3.0.1 recursion guard is required here
-        return ProcessorScope.findFrom {
-            runWithRecursionGuard("csvExpression.match.union", unionName) {
-                unionConfig.expandUnionValues { valueConfig ->
-                    ProgressManager.checkCanceled() // check cancellation
-                    val r = ParadoxExpressionMatchService.matchCsvExpression(context, valueConfig.configExpression)
-                    if (r.get()) process(r)
-                    else true
-                }
+        val processor = ProcessorFactory.find<ParadoxMatchResult>()
+        runWithRecursionGuard("csvExpression.match.union", unionName) {
+            ParadoxConfigExpansionService.expandAndMatchUnion(context.element, context.expression, unionName, context.configGroup, context.options) { _, matchResult ->
+                processor.process(matchResult)
             }
-        } ?: ParadoxMatchResult.NotMatch
+        }
+        return processor.result ?: ParadoxMatchResult.NotMatch
     }
 
     private fun matchDynamicValue(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression): ParadoxMatchResult {

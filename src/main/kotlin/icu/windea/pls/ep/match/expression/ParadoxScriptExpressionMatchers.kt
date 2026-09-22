@@ -11,7 +11,7 @@ import icu.windea.pls.core.matchesPattern
 import icu.windea.pls.core.matchesRegex
 import icu.windea.pls.core.runWithRecursionGuard
 import icu.windea.pls.core.util.ProcessorFactory
-import icu.windea.pls.lang.manipulation.ParadoxConfigManipulationService
+import icu.windea.pls.lang.manipulation.ParadoxConfigExpansionService
 import icu.windea.pls.lang.match.ParadoxExpressionMatchContext
 import icu.windea.pls.lang.match.ParadoxMatchResult
 import icu.windea.pls.lang.match.util.ParadoxMatchFactory
@@ -280,7 +280,7 @@ class ParadoxScriptCoreExpressionMatcher : ParadoxScriptCompositeExpressionMatch
         // NOTE 3.0.1 recursion guard is required here
         val processor = ProcessorFactory.find<ParadoxMatchResult>()
         runWithRecursionGuard("scriptExpression.match.union", unionName) {
-            ParadoxConfigManipulationService.expandAndMatchUnionValues(context.element, context.expression, unionName, context.configGroup, context.options) { _, matchResult ->
+            ParadoxConfigExpansionService.expandAndMatchUnion(context.element, context.expression, unionName, context.configGroup, context.options) { _, matchResult ->
                 processor.process(matchResult)
             }
         }
@@ -294,7 +294,7 @@ class ParadoxScriptCoreExpressionMatcher : ParadoxScriptCompositeExpressionMatch
         // NOTE 3.0.1 recursion guard is required here
         val processor = ProcessorFactory.find<ParadoxMatchResult>()
         runWithRecursionGuard("scriptExpression.match.alias", aliasName) {
-            ParadoxConfigManipulationService.expandAndMatchAliasKeys(context.element, context.expression, aliasName, context.configGroup, context.options) { _, r ->
+            ParadoxConfigExpansionService.expandAndMatchAliasKeys(context.element, context.expression, aliasName, context.configGroup, context.options) { _, r ->
                 processor.process(r)
             }
         }

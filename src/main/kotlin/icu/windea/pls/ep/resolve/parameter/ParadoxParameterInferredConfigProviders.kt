@@ -8,6 +8,7 @@ import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.mockConfigs
 import icu.windea.pls.config.manipulation.CwtConfigManipulationService
+import icu.windea.pls.config.manipulation.CwtConfigInlineService
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.filterIsInstanceFast
@@ -44,7 +45,7 @@ class ParadoxDefaultExpressionParameterInferredConfigProvider : ParadoxParameter
     override fun getContextConfigs(parameterInfo: ParadoxParameterContextInfo.Parameter, parameterContextInfo: ParadoxParameterContextInfo): List<CwtMemberConfig<*>>? {
         val configGroup = ChronicleFacade.getConfigGroup(parameterContextInfo.project, parameterContextInfo.gameType)
         val finalConfigs = getConfig(parameterInfo, configGroup)?.to?.singletonList() ?: return null
-        val contextConfig = CwtConfigManipulationService.inlineForContextConfig(null, finalConfigs, configGroup)
+        val contextConfig = CwtConfigInlineService.inlineForContextConfig(null, finalConfigs, configGroup)
         return listOf(contextConfig)
     }
 
@@ -94,7 +95,7 @@ class ParadoxBaseParameterInferredConfigProvider : ParadoxParameterInferredConfi
     }
 
     private fun getContextConfigsFromExpressionContextConfigs(expressionContextConfigs: List<CwtMemberConfig<*>>, parameterInfo: ParadoxParameterContextInfo.Parameter): List<CwtMemberConfig<*>>? {
-        val inlinedContextConfigs = expressionContextConfigs.mapFast { config -> CwtConfigManipulationService.inlineForConfig(config) }
+        val inlinedContextConfigs = expressionContextConfigs.mapFast { config -> CwtConfigInlineService.inlineForConfig(config) }
         val parentElement = parameterInfo.parentElement
         val configGroup = expressionContextConfigs.first().configGroup
         val passingConfig = inlinedContextConfigs.findFast { it.configExpression.type == CwtDataTypes.ParameterValue }
@@ -116,7 +117,7 @@ class ParadoxBaseParameterInferredConfigProvider : ParadoxParameterInferredConfi
             delegatedConfig
         }
         if (finalConfigs.isEmpty()) return emptyList()
-        val contextConfig = CwtConfigManipulationService.inlineForContextConfig(null, finalConfigs, configGroup)
+        val contextConfig = CwtConfigInlineService.inlineForContextConfig(null, finalConfigs, configGroup)
         return listOf(contextConfig)
     }
 }
@@ -164,7 +165,7 @@ class ParadoxComplexExpressionNodeParameterInferredConfigProvider : ParadoxParam
             }
         })
         if (result.isNullOrEmpty()) return null
-        return CwtConfigManipulationService.inlineForContextConfig(null, result, configGroup)
+        return CwtConfigInlineService.inlineForContextConfig(null, result, configGroup)
     }
 
     private fun getConfigsFromNode(element: ParadoxScriptStringExpressionElement, config: CwtMemberConfig<*>, node: ParadoxComplexExpressionNode): List<CwtValueConfig> {

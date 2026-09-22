@@ -7,6 +7,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.parentOfType
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.manipulation.CwtConfigManipulationService
+import icu.windea.pls.config.manipulation.CwtConfigInlineService
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.mergeValue
 import icu.windea.pls.core.orNull

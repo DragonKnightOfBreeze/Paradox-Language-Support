@@ -2,6 +2,7 @@ package icu.windea.pls.ep.resolve.definition
 
 import com.intellij.openapi.extensions.ExtensionPointName
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
+import icu.windea.pls.core.annotations.RecursionSensitive
 import icu.windea.pls.lang.codeInsight.documentation.ParadoxDocumentationTarget
 import icu.windea.pls.lang.codeInsight.navigation.GotoSuperDefinitionActionHandler
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
@@ -23,8 +24,9 @@ interface ParadoxDefinitionInheritSupport {
     /**
      * 从指定的定义信息得到父定义。
      *
-     * **注意**：需要避免递归。
+     * **注意**：实现中需要避免递归。
      */
+    @RecursionSensitive
     fun getSuperDefinition(definitionInfo: ParadoxDefinitionInfo): ParadoxDefinitionElement?
 
     /**
@@ -33,6 +35,7 @@ interface ParadoxDefinitionInheritSupport {
      *
      * **注意**：解析时需要避免递归。并且，不能直接访问 `definitionInfo.subtypeConfigs`，需要改为访问 [subtypeConfigs]。
      */
+    @RecursionSensitive
     fun processSubtypeConfigs(definitionInfo: ParadoxDefinitionInfo, subtypeConfigs: MutableList<CwtSubtypeConfig>): Boolean = true
 
     companion object INSTANCE {

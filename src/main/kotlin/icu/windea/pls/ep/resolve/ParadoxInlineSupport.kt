@@ -1,6 +1,7 @@
 package icu.windea.pls.ep.resolve
 
 import com.intellij.openapi.extensions.ExtensionPointName
+import icu.windea.pls.core.annotations.RecursionSensitive
 import icu.windea.pls.lang.hierarchy.call.ParadoxCalleeHierarchyTreeStructure
 import icu.windea.pls.script.psi.ParadoxScriptMember
 
@@ -18,8 +19,9 @@ interface ParadoxInlineSupport {
     /**
      * 从指定的定义成员得到需要被内联的 PSI。
      *
-     * **注意**：需要避免递归。
+     * **注意**：实现中需要避免递归。
      */
+    @RecursionSensitive
     fun getInlinedElement(element: ParadoxScriptMember): ParadoxScriptMember?
 
     companion object INSTANCE {

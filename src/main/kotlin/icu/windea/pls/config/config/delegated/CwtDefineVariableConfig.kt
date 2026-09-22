@@ -7,6 +7,7 @@ import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.config.annotations.FromName
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.manipulation.CwtConfigManipulationService
+import icu.windea.pls.config.manipulation.CwtConfigInlineService
 import icu.windea.pls.config.util.CwtConfigResolverScope
 
 /**
@@ -82,7 +83,7 @@ private class CwtDefineVariableConfigImpl(
     override val rootConfig: CwtPropertyConfig by lazy { computeRootConfig() }
 
     private fun computeRootConfig(): CwtPropertyConfig {
-        return CwtConfigManipulationService.inlineForConfig(config)
+        return CwtConfigInlineService.inlineForConfig(config)
     }
 
     override fun toString() = "CwtDefineVariableConfigImpl(namespace=$namespace, variable=$variable)"

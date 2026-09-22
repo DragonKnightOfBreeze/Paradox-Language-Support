@@ -9,8 +9,6 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.expandBySubtypeExpression
 import icu.windea.pls.config.config.expandConfigExpression
-import icu.windea.pls.config.config.expandKeyExpression
-import icu.windea.pls.config.config.expandValueExpression
 import icu.windea.pls.core.children
 import icu.windea.pls.core.select.oneBy
 import icu.windea.pls.core.util.createKey
@@ -299,13 +297,11 @@ class CwtConfigManipulationServiceTest : BasePlatformTestCase(), ChronicleTestSc
 
         assertTrue(props.expandConfigExpression { it.type == CwtDataTypes.Constant }) // keys -> all constant
 
-        assertTrue(props.expandKeyExpression { it.type == CwtDataTypes.Constant }) // keys -> all constant
-
-        assertFalse(propMap.getValue("k1").expandValueExpression { it.type != CwtDataTypes.Int })
-        assertFalse(propMap.getValue("k2").expandValueExpression { it.type != CwtDataTypes.Int }) // expanded
-        assertFalse(propMap.getValue("k3").expandValueExpression { it.type != CwtDataTypes.Int }) // expanded
-        assertTrue(propMap.getValue("k4").expandValueExpression { it.type != CwtDataTypes.Int }) // ignored
-        assertTrue(propMap.getValue("k5").expandValueExpression { it.type != CwtDataTypes.Int }) // ignored
-        assertTrue(propMap.getValue("k0").expandValueExpression { it.type != CwtDataTypes.Int })
+        assertFalse(propMap.getValue("k1").expandConfigExpression(forValue = true) { it.type != CwtDataTypes.Int })
+        assertFalse(propMap.getValue("k2").expandConfigExpression(forValue = true) { it.type != CwtDataTypes.Int }) // expanded
+        assertFalse(propMap.getValue("k3").expandConfigExpression(forValue = true) { it.type != CwtDataTypes.Int }) // expanded
+        assertTrue(propMap.getValue("k4").expandConfigExpression(forValue = true) { it.type != CwtDataTypes.Int }) // ignored
+        assertTrue(propMap.getValue("k5").expandConfigExpression(forValue = true) { it.type != CwtDataTypes.Int }) // ignored
+        assertTrue(propMap.getValue("k0").expandConfigExpression(forValue = true) { it.type != CwtDataTypes.Int })
     }
 }

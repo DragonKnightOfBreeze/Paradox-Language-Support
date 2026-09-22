@@ -10,6 +10,7 @@ import icu.windea.pls.config.config.CwtExpandableConfig
 import icu.windea.pls.config.config.CwtIdMatchableConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
+import icu.windea.pls.config.manipulation.CwtConfigExpansionService
 import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
@@ -40,6 +41,8 @@ import icu.windea.pls.cwt.psi.CwtProperty
  *
  * @property name 规则名称。
  * @property valueConfigs 对应的值规则的列表。
+ *
+ * @see CwtConfigExpansionService.expandUnion
  */
 interface CwtUnionConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, CwtIdMatchableConfig<CwtProperty>, CwtExpandableConfig<CwtProperty> {
     @FromName("union[$]")

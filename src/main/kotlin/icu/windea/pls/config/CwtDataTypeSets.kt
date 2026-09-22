@@ -129,6 +129,8 @@ object CwtDataTypeSets {
     val Expandable = arrayOf(
         CwtDataTypes.UnionValue,
         CwtDataTypes.AliasKeysField,
+        CwtDataTypes.AliasKeysField,
+        CwtDataTypes.SingleAliasRight,
     )
 
     /** 所有可评估脚本值引用的数据类型。 */

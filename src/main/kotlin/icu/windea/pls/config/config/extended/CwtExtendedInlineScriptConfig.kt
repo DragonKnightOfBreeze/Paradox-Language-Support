@@ -13,6 +13,7 @@ import icu.windea.pls.config.config.CwtIdMatchableConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.manipulation.CwtConfigManipulationService
+import icu.windea.pls.config.manipulation.CwtConfigInlineService
 import icu.windea.pls.config.option.CwtOptionMetadata
 import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.core.util.values.singletonListOrEmpty
@@ -115,7 +116,7 @@ private class CwtExtendedInlineScriptConfigImpl(
 
     private fun computeContextContainerConfig(): CwtMemberConfig<*> {
         if (config !is CwtPropertyConfig) return config
-        return CwtConfigManipulationService.inlineForConfig(config)
+        return CwtConfigInlineService.inlineForConfig(config)
     }
 
     private fun computeContextConfigs(): List<CwtMemberConfig<*>> {
@@ -126,7 +127,7 @@ private class CwtExtendedInlineScriptConfigImpl(
             CwtContextConfigsType.Multiple -> contextContainerConfig.configs.orEmpty()
         }
         if (sourceConfigs.isEmpty()) return emptyList()
-        val contextConfig = CwtConfigManipulationService.inlineForContextConfig(config, sourceConfigs, config.configGroup)
+        val contextConfig = CwtConfigInlineService.inlineForContextConfig(config, sourceConfigs, config.configGroup)
         return listOf(contextConfig)
     }
 

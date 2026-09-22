@@ -3,10 +3,9 @@
 package icu.windea.pls.config.config
 
 import com.intellij.psi.PsiElement
-import icu.windea.pls.config.config.delegated.CwtEnumConfig
 import icu.windea.pls.config.config.delegated.CwtUnionConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
-import icu.windea.pls.config.manipulation.CwtConfigManipulationService
+import icu.windea.pls.config.manipulation.CwtConfigExpansionService
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.emptyPointer
@@ -57,44 +56,19 @@ infix fun CwtConfig<*>?.isSamePointer(other: CwtConfig<*>?): Boolean {
 
 // region Process Extensions
 
-/** @see CwtConfigManipulationService.expandBySubtypeExpression */
-fun CwtMemberConfig<*>.expandBySubtypeExpression(processor: (CwtMemberConfig<*>, String) -> Boolean): Boolean {
-    return CwtConfigManipulationService.expandBySubtypeExpression(this, processor)
+/** @see CwtConfigExpansionService.expandBySubtypeExpression */
+fun CwtMemberConfig<*>?.expandBySubtypeExpression(processor: (r: CwtMemberConfig<*>, e: String) -> Boolean): Boolean {
+    return CwtConfigExpansionService.expandBySubtypeExpression(this, processor)
 }
 
-/** @see CwtConfigManipulationService.expandUnionValues */
-fun CwtUnionConfig.expandUnionValues(processor: (CwtValueConfig) -> Boolean): Boolean {
-    return CwtConfigManipulationService.expandUnionValues(this, processor)
+/** @see CwtConfigExpansionService.expandConfigExpression */
+fun CwtConfig<*>?.expandConfigExpression(forValue: Boolean = false, processor: (e: CwtDataExpression) -> Boolean): Boolean {
+    return CwtConfigExpansionService.expandConfigExpression(this, forValue, processor)
 }
 
-/** @see CwtConfigManipulationService.expandConfigExpression */
-fun CwtConfig<*>.expandConfigExpression(processor: (CwtDataExpression) -> Boolean): Boolean {
-    return CwtConfigManipulationService.expandConfigExpression(this, processor)
-}
-
-/** @see CwtConfigManipulationService.expandConfigExpression */
-fun Collection<CwtConfig<*>>.expandConfigExpression(processor: (CwtDataExpression) -> Boolean): Boolean {
-    return CwtConfigManipulationService.expandConfigExpression(this, processor)
-}
-
-/** @see CwtConfigManipulationService.expandKeyExpression */
-fun CwtPropertyConfig.expandKeyExpression(processor: (CwtDataExpression) -> Boolean): Boolean {
-    return CwtConfigManipulationService.expandKeyExpression(this, processor)
-}
-
-/** @see CwtConfigManipulationService.expandKeyExpression */
-fun Collection<CwtPropertyConfig>.expandKeyExpression(processor: (CwtDataExpression) -> Boolean): Boolean {
-    return CwtConfigManipulationService.expandKeyExpression(this, processor)
-}
-
-/** @see CwtConfigManipulationService.expandValueExpression */
-fun CwtMemberConfig<*>.expandValueExpression(processor: (CwtDataExpression) -> Boolean): Boolean {
-    return CwtConfigManipulationService.expandValueExpression(this, processor)
-}
-
-/** @see CwtConfigManipulationService.expandValueExpression */
-fun Collection<CwtMemberConfig<*>>.expandValueExpression(processor: (CwtDataExpression) -> Boolean): Boolean {
-    return CwtConfigManipulationService.expandValueExpression(this, processor)
+/** @see CwtConfigExpansionService.expandConfigExpression */
+fun Collection<CwtConfig<*>>?.expandConfigExpression(forValue: Boolean = false, processor: (e: CwtDataExpression) -> Boolean): Boolean {
+    return CwtConfigExpansionService.expandConfigExpression(this, forValue, processor)
 }
 
 // endregion

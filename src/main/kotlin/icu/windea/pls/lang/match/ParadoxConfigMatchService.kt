@@ -42,7 +42,7 @@ import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKeyWithThis
 import icu.windea.pls.csv.psi.ParadoxCsvFile
-import icu.windea.pls.lang.manipulation.ParadoxConfigManipulationService
+import icu.windea.pls.lang.manipulation.ParadoxConfigExpansionService
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.psi.values
@@ -434,7 +434,7 @@ object ParadoxConfigMatchService {
         val processor = ProcessorFactory.any<Unit>()
         runWithRecursionGuard("subtypeConfig.match.alias", aliasName) {
             val aliasExpression = ParadoxExpression.resolve(propertyKey, options)
-            ParadoxConfigManipulationService.expandMatchedAliasKeys(property, aliasExpression, aliasName, configGroup, options) p@{ key ->
+            ParadoxConfigExpansionService.expandMatchedAliasKeys(property, aliasExpression, aliasName, configGroup, options) p@{ key ->
                 val aliasConfig = aliasGroup[key]?.firstOrNull() ?: return@p true
                 val r = matchesPropertyForSubtype(context, definition, property, aliasConfig.config)
                 if (!r) return@p true

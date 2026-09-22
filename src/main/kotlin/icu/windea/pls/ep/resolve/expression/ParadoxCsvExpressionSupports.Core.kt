@@ -2,12 +2,14 @@ package icu.windea.pls.ep.resolve.expression
 
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.lang.annotation.AnnotationHolder
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import icu.windea.pls.config.CwtDataType
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtValueConfig
+import icu.windea.pls.config.manipulation.CwtConfigExpansionService
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.runWithRecursionGuard
 import icu.windea.pls.core.util.ProcessorFactory
@@ -15,7 +17,7 @@ import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.codeInsight.completion.ParadoxExpressionCompletionManager
 import icu.windea.pls.lang.highlighting.ParadoxSemanticHighlighterColors
-import icu.windea.pls.lang.manipulation.ParadoxConfigManipulationService
+import icu.windea.pls.lang.manipulation.ParadoxConfigExpansionService
 import icu.windea.pls.lang.resolve.ParadoxExpressionService
 import icu.windea.pls.lang.resolve.util.ParadoxExpressionSupportFactory
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
@@ -122,7 +124,7 @@ class ParadoxCsvUnionValueExpressionSupport : ParadoxCsvExpressionSupport {
         val processor = ProcessorFactory.find<CwtValueConfig>()
         runWithRecursionGuard("csvExpression.annotate.union", unionName) {
             val expression = ParadoxExpression.resolve(element)
-            ParadoxConfigManipulationService.expandMatchedUnionValues(element, expression, unionName, configGroup) {
+            ParadoxConfigExpansionService.expandMatchedUnion(element, expression, unionName, configGroup) {
                 processor.process(it)
             }
         }
@@ -138,7 +140,7 @@ class ParadoxCsvUnionValueExpressionSupport : ParadoxCsvExpressionSupport {
         val processor = ProcessorFactory.find<PsiElement>()
         runWithRecursionGuard("csvExpression.resolve.union", unionName) {
             val expression = ParadoxExpression.resolve(element)
-            ParadoxConfigManipulationService.expandMatchedUnionValues(element, expression, unionName, configGroup) p@{ unionValueConfig ->
+            ParadoxConfigExpansionService.expandMatchedUnion(element, expression, unionName, configGroup) p@{ unionValueConfig ->
                 val r = ParadoxExpressionService.resolveCsvExpression(element, text, rangeInExpression, unionValueConfig)
                 if (r == null) return@p true
                 processor.process(r)
@@ -154,7 +156,7 @@ class ParadoxCsvUnionValueExpressionSupport : ParadoxCsvExpressionSupport {
         val processor = ProcessorFactory.find<List<PsiElement>>()
         runWithRecursionGuard("csvExpression.resolveAll.union", unionName) {
             val expression = ParadoxExpression.resolve(element)
-            ParadoxConfigManipulationService.expandMatchedUnionValues(element, expression, unionName, configGroup) p@{ unionValueConfig ->
+            ParadoxConfigExpansionService.expandMatchedUnion(element, expression, unionName, configGroup) p@{ unionValueConfig ->
                 val r = ParadoxExpressionService.resolveAllCsvExpression(element, text, rangeInExpression, unionValueConfig).orNull()
                 if (r == null) return@p true
                 processor.process(r)
@@ -164,7 +166,14 @@ class ParadoxCsvUnionValueExpressionSupport : ParadoxCsvExpressionSupport {
     }
 
     override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
-        // if (context.keyword.isParameterized()) return // 2.2.0 兼容可能带参数的情况
-        ParadoxExpressionCompletionManager.completeCsvUnionValue(context, result)
+        val configGroup = context.configGroup
+        val configExpression = context.config?.configExpression ?: return
+        ProgressManager.checkCanceled()
+        // NOTE 3.0.3 recursion guard is required here
+        CwtConfigExpansionService.expandUnion(configExpression, configGroup, "csvExpression.complete") { _, unionValueConfig ->
+            val context = context.copy(config = unionValueConfig, configs = setOf(unionValueConfig))
+            ParadoxExpressionCompletionManager.completeCsvExpression(context, result)
+            true
+        }
     }
 }

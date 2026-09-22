@@ -29,6 +29,7 @@ import icu.windea.pls.config.config.prefixFromArgument
 import icu.windea.pls.config.config.resolved
 import icu.windea.pls.config.config.tagType
 import icu.windea.pls.config.manipulation.CwtConfigManipulationService
+import icu.windea.pls.config.manipulation.CwtConfigInlineService
 import icu.windea.pls.core.codeInsight.completion.AddCharInsertHandler
 import icu.windea.pls.core.codeInsight.completion.AddParenthesesInsertHandler
 import icu.windea.pls.core.icon
@@ -690,7 +691,7 @@ object ParadoxCompletionFactory {
             config is CwtSingleAliasConfig -> config.config
             config is CwtMacroConfig -> config.config
             else -> null
-        }?.let { c -> CwtConfigManipulationService.inlineForConfig(c) } // 这里需要进行必要的内联
+        }?.let { c -> CwtConfigInlineService.inlineForConfig(c) } // 这里需要进行必要的内联
 
         val contextElement = context.contextElement
         val isKeyElement = contextElement is ParadoxScriptPropertyKey

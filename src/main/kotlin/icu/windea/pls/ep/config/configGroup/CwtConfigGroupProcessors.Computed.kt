@@ -5,6 +5,7 @@ import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.progress.checkCanceled
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtPropertyConfig
+import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.config.delegated.CwtMacroConfig
@@ -73,6 +74,9 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
 
         checkCanceled()
         computeLinkModel(configGroup, configGroup.initializer.localisationLinkModel, configGroup.initializer.localisationLinks.values)
+
+        checkCanceled()
+        computeUnionModel(configGroup)
 
         checkCanceled()
         computeAliasModel(configGroup)
@@ -349,26 +353,52 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
         }
     }
 
+    private fun computeUnionModel(configGroup: CwtConfigGroup) {
+        val initializer = configGroup.initializer
+        with(initializer.unionModel) {
+            for ((unionName, union) in initializer.unions) {
+                val const = CaseInsensitiveStringKeyMap<CwtValueConfig>()
+                val nonConst = ObjectArrayList<CwtValueConfig>()
+
+                for (valueConfig in union.valueConfigs) {
+                    val configExpression = valueConfig.configExpression
+                    if (configExpression.type == CwtDataTypes.Constant) {
+                        const[configExpression.expressionString] = valueConfig
+                    } else {
+                        nonConst += valueConfig
+                    }
+                }
+                if (const.isNotEmpty()) {
+                    forConst[unionName] = const
+                }
+                if (nonConst.isNotEmpty()) {
+                    val nonConstKeysSorted = nonConst.sortedByPriority({ it.configExpression }, { configGroup })
+                    forNonConstSorted[unionName] = ObjectArrayList(nonConstKeysSorted)
+                }
+            }
+        }
+    }
+
     private fun computeAliasModel(configGroup: CwtConfigGroup) {
         val initializer = configGroup.initializer
         with(initializer.aliasModel) {
             for ((aliasName, aliases) in initializer.aliasGroups) {
-                val constKeys = CaseInsensitiveStringKeyMap<String>()
-                val nonConstKeys = ObjectLinkedOpenHashSet<String>()
+                val const = CaseInsensitiveStringKeyMap<String>()
+                val nonConst = ObjectLinkedOpenHashSet<String>()
                 for (key in aliases.keys) {
                     val configExpression = CwtDataExpression.resolve(key, CwtDataExpressionRole.Key)
                     if (configExpression.type == CwtDataTypes.Constant) {
-                        constKeys[key] = key
+                        const[key] = key
                     } else {
-                        nonConstKeys += key
+                        nonConst += key
                     }
                 }
-                if (constKeys.isNotEmpty()) {
-                    forConst[aliasName] = constKeys
+                if (const.isNotEmpty()) {
+                    forConst[aliasName] = const
                 }
-                if (nonConstKeys.isNotEmpty()) {
-                    val nonConstKeysSorted = nonConstKeys.sortedByPriority({ CwtDataExpression.resolve(it, CwtDataExpressionRole.Key) }, { configGroup })
-                    forNonConstSorted[aliasName] = ObjectLinkedOpenHashSet<String>(nonConstKeysSorted)
+                if (nonConst.isNotEmpty()) {
+                    val nonConstSorted = nonConst.sortedByPriority({ CwtDataExpression.resolve(it, CwtDataExpressionRole.Key) }, { configGroup })
+                    forNonConstSorted[aliasName] = ObjectLinkedOpenHashSet(nonConstSorted)
                 }
             }
         }
