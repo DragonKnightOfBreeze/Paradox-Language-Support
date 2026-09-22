@@ -444,7 +444,7 @@ object ParadoxExpressionInspectionService {
         if (element.text.isParameterized()) return
 
         // get matched configs (which are entirely matched by the expression)
-        val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(lenient = false, forExpression = true))
+        val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(forExpression = true))
         // 3.0.3 use first prioritized config
         val config = CwtConfigManager.selectFirstPrioritizedConfig(configs) ?: return
 
