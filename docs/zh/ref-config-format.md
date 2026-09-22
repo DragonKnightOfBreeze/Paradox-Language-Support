@@ -1771,11 +1771,11 @@ icon|p1,p2
 
 > CWTools 兼容性：部分兼容。插件进行了额外的扩展和改进。
 
-### 引用数据类型 {#data-types-reference}
+### 核心数据类型 {#data-types-core}
 
-以下数据类型通过引用其他规则或索引中的内容来进行匹配。
+以下数据类型通常通过引用其他规则或索引中的内容来进行匹配。
 
-其中一些数据类型会匹配某种复杂表达式，这意味着对应的表达式可以由多个节点组成，而这些节点拥有各自的语义。
+其中一些数据类型的数据表达式会匹配某种复杂表达式，这意味着对应的表达式可以由多个节点组成，而这些节点拥有各自的语义。
 
 #### Definition {#data-type-definition}
 
@@ -1860,20 +1860,6 @@ icon|p1,p2
 - `enum[ship_class]`
 
 > CWTools 兼容性：部分兼容。拥有不同的解析和处理逻辑。
-
-#### UnionValue {#data-type-union-value}
-
-并集值类型。
-
-匹配对应的并集规则中的其中一个候选项。
-
-对应的数据表达式的格式：
-- `union[{name}]` – 其中 `{name}` 匹配并集的名字。
-
-对应的数据表达式的示例：
-- `union[loc_or_text]`
-
-> CWTools 兼容性：不兼容。插件作为扩展提供。
 
 #### Value {#data-type-value}
 
@@ -2284,9 +2270,25 @@ icon|p1,p2
 
 > CWTools 兼容性：不兼容。插件作为扩展提供。
 
-### 别名数据类型 {#data-types-alias}
+### 可展开的数据类型 {#data-types-expandable}
 
-以下数据类型与别名解析机制相关，通常不直接参与脚本匹配，而是由别名系统内部处理。
+以下数据类型通过展开对应的候选项来进行匹配。
+
+这些数据类型的数据表达式在语义匹配与解析的过程中需要进行必要的展开和内联。
+
+#### UnionValue {#data-type-union-value}
+
+并集值类型。
+
+匹配对应的并集规则中的其中一个候选项。
+
+对应的数据表达式的格式：
+- `union[{name}]` – 其中 `{name}` 匹配并集的名字。
+
+对应的数据表达式的示例：
+- `union[loc_or_text]`
+
+> CWTools 兼容性：不兼容。插件作为扩展提供。
 
 #### AliasKeysField {#data-type-alias-keys-field}
 

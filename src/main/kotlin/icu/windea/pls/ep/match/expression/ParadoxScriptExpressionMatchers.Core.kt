@@ -14,10 +14,9 @@ import icu.windea.pls.lang.match.ParadoxMatchResult
 import icu.windea.pls.lang.match.util.ParadoxMatchResultFactory
 import icu.windea.pls.model.type.ParadoxExpressionType
 
-// Core
-
-interface ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
-    class ForDefinition : ParadoxCoreScriptExpressionMatcher {
+abstract class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
+    /** @see CwtDataTypes.Definition */
+    class ForDefinition : ParadoxCoreScriptExpressionMatcher() {
         override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.Definition || dataType == CwtDataTypes.SuffixAwareDefinition
 
         override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
@@ -29,7 +28,8 @@ interface ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
         }
     }
 
-    class ForLocalisation : ParadoxCoreScriptExpressionMatcher {
+    /** @see CwtDataTypes.Localisation */
+    class ForLocalisation : ParadoxCoreScriptExpressionMatcher() {
         override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.Localisation || dataType == CwtDataTypes.SuffixAwareLocalisation
 
         override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
@@ -40,7 +40,8 @@ interface ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
         }
     }
 
-    class ForSyncedLocalisation : ParadoxCoreScriptExpressionMatcher {
+    /** @see CwtDataTypes.SyncedLocalisation */
+    class ForSyncedLocalisation : ParadoxCoreScriptExpressionMatcher() {
         override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.SyncedLocalisation || dataType == CwtDataTypes.SuffixAwareSyncedLocalisation
 
         override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
@@ -52,7 +53,8 @@ interface ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
         }
     }
 
-    class ForInlineLocalisation : ParadoxCoreScriptExpressionMatcher {
+    /** @see CwtDataTypes.InlineLocalisation */
+    class ForInlineLocalisation : ParadoxCoreScriptExpressionMatcher() {
         override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.InlineLocalisation
 
         override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
@@ -64,17 +66,8 @@ interface ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
         }
     }
 
-    class ForPathReference : ParadoxCoreScriptExpressionMatcher {
-        override fun supports(dataType: CwtDataType) = dataType in CwtDataTypeSets.PathReference
-
-        override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
-            if (!context.expression.type.isLenientStringLiteral()) return ParadoxMatchResult.NotMatch
-            if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
-            return ParadoxMatchResultFactory.forPathReference(context.element, context.project, context.expression.value, configExpression)
-        }
-    }
-
-    class ForEnumValue : ParadoxCoreScriptExpressionMatcher {
+    /** @see CwtDataTypes.EnumValue */
+    class ForEnumValue : ParadoxCoreScriptExpressionMatcher() {
         override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.EnumValue
 
         override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
@@ -97,7 +90,8 @@ interface ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
         }
     }
 
-    class ForUnionValue : ParadoxCoreScriptExpressionMatcher {
+    /** @see CwtDataTypes.UnionValue */
+    class ForUnionValue : ParadoxCoreScriptExpressionMatcher() {
         override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.UnionValue
 
         override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
@@ -114,7 +108,8 @@ interface ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
         }
     }
 
-    class ForDynamicValue : ParadoxCoreScriptExpressionMatcher {
+    /** @see CwtDataTypes.DynamicValue */
+    class ForDynamicValue : ParadoxCoreScriptExpressionMatcher() {
         override fun supports(dataType: CwtDataType) = dataType in CwtDataTypeSets.DynamicValue
 
         override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
@@ -128,7 +123,8 @@ interface ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
         }
     }
 
-    class ForScopeField : ParadoxCoreScriptExpressionMatcher {
+    /** @see CwtDataTypes.ScopeField */
+    class ForScopeField : ParadoxCoreScriptExpressionMatcher() {
         override fun supports(dataType: CwtDataType) = dataType in CwtDataTypeSets.ScopeField
 
         override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
@@ -138,7 +134,8 @@ interface ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
         }
     }
 
-    class ForValueField : ParadoxCoreScriptExpressionMatcher {
+    /** @see CwtDataTypes.ValueField */
+    class ForValueField : ParadoxCoreScriptExpressionMatcher() {
         override fun supports(dataType: CwtDataType) = dataType in CwtDataTypeSets.ValueField
 
         override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
@@ -157,7 +154,8 @@ interface ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
         }
     }
 
-    class ForVariableField : ParadoxCoreScriptExpressionMatcher {
+    /** @see CwtDataTypes.VariableField */
+    class ForVariableField : ParadoxCoreScriptExpressionMatcher() {
         override fun supports(dataType: CwtDataType) = dataType in CwtDataTypeSets.VariableField
 
         override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
@@ -176,7 +174,8 @@ interface ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
         }
     }
 
-    class ForModifier : ParadoxCoreScriptExpressionMatcher {
+    /** @see CwtDataTypes.Modifier */
+    class ForModifier : ParadoxCoreScriptExpressionMatcher() {
         override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.Modifier
 
         override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
@@ -187,41 +186,8 @@ interface ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
         }
     }
 
-    class ForAliasName : ParadoxCoreScriptExpressionMatcher {
-        override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.AliasKeysField || dataType == CwtDataTypes.AliasName
-
-        override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
-            if (!context.expression.type.isLenientNumberOrStringLiteral()) return ParadoxMatchResult.NotMatch
-            if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
-            val aliasName = configExpression.metadata.value ?: return ParadoxMatchResult.NotMatch
-            // NOTE 3.0.1 recursion guard is required here
-            val processor = ProcessorFactory.find<ParadoxMatchResult>()
-            runWithRecursionGuard("scriptExpression.match.alias", aliasName) {
-                ParadoxConfigExpansionService.expandAndMatchAliasKeys(context.element, context.expression, aliasName, context.configGroup, context.options) { _, r ->
-                    processor.process(r)
-                }
-            }
-            return processor.result ?: ParadoxMatchResult.NotMatch
-        }
-    }
-
-    class ForAliasMatchLeft : ParadoxCoreScriptExpressionMatcher {
-        override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.AliasMatchLeft
-
-        override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
-            return ParadoxMatchResult.NotMatch // 不在这里处理
-        }
-    }
-
-    class ForSingleAliasRight : ParadoxCoreScriptExpressionMatcher {
-        override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.SingleAliasRight
-
-        override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
-            return ParadoxMatchResult.NotMatch // 不在这里处理
-        }
-    }
-
-    class ForCommand : ParadoxCoreScriptExpressionMatcher {
+    /** @see CwtDataTypes.Command */
+    class ForCommand : ParadoxCoreScriptExpressionMatcher() {
         override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.Command
 
         override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
@@ -229,7 +195,8 @@ interface ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
         }
     }
 
-    class ForTemplate : ParadoxCoreScriptExpressionMatcher {
+    /** @see CwtDataTypes.Template */
+    class ForTemplate : ParadoxCoreScriptExpressionMatcher() {
         override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.Template
 
         override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
@@ -239,7 +206,8 @@ interface ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
         }
     }
 
-    class ForScriptValueReference : ParadoxCoreScriptExpressionMatcher {
+    /** @see CwtDataTypes.ScriptValueReference */
+    class ForScriptValueReference : ParadoxCoreScriptExpressionMatcher() {
         override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.ScriptValueReference
 
         override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
@@ -249,7 +217,8 @@ interface ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
         }
     }
 
-    class ForDefineReference : ParadoxCoreScriptExpressionMatcher {
+    /** @see CwtDataTypes.DefineReference */
+    class ForDefineReference : ParadoxCoreScriptExpressionMatcher() {
         override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.DefineReference
 
         override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
@@ -259,7 +228,8 @@ interface ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
         }
     }
 
-    class ForArrayDefineReference : ParadoxCoreScriptExpressionMatcher {
+    /** @see CwtDataTypes.ArrayDefineReference */
+    class ForArrayDefineReference : ParadoxCoreScriptExpressionMatcher() {
         override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.ArrayDefineReference
 
         override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
@@ -269,7 +239,8 @@ interface ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
         }
     }
 
-    class ForTags : ParadoxCoreScriptExpressionMatcher {
+    /** @see CwtDataTypes.Tags */
+    class ForTags : ParadoxCoreScriptExpressionMatcher() {
         override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.Tags
 
         override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
@@ -281,7 +252,8 @@ interface ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
         }
     }
 
-    class ForDatabaseObject : ParadoxCoreScriptExpressionMatcher {
+    /** @see CwtDataTypes.DatabaseObject */
+    class ForDatabaseObject : ParadoxCoreScriptExpressionMatcher() {
         override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.DatabaseObject
 
         override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
@@ -291,7 +263,8 @@ interface ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
         }
     }
 
-    class ForNameFormat : ParadoxCoreScriptExpressionMatcher {
+    /** @see CwtDataTypes.NameFormat */
+    class ForNameFormat : ParadoxCoreScriptExpressionMatcher() {
         override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.NameFormat
 
         override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
@@ -302,7 +275,20 @@ interface ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
         }
     }
 
-    class ForParameter : ParadoxCoreScriptExpressionMatcher {
+    /** @see CwtDataTypes.TechnologyWithLevel */
+    class ForTechnologyWithLevel : ParadoxCoreScriptExpressionMatcher() {
+        override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.TechnologyWithLevel
+
+        override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
+            if (!context.expression.type.isLenientStringLiteral()) return ParadoxMatchResult.NotMatch
+            if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
+            if (context.expression.value.length > 1 && context.expression.value.indexOf('@') >= 1) return ParadoxMatchResult.WildcardMatch
+            return ParadoxMatchResult.NotMatch
+        }
+    }
+
+    /** @see CwtDataTypes.Parameter */
+    class ForParameter : ParadoxCoreScriptExpressionMatcher() {
         override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.Parameter
 
         override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
@@ -315,7 +301,8 @@ interface ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
         }
     }
 
-    class ForParameterValue : ParadoxCoreScriptExpressionMatcher {
+    /** @see CwtDataTypes.ParameterValue */
+    class ForParameterValue : ParadoxCoreScriptExpressionMatcher() {
         override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.ParameterValue
 
         override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
@@ -325,7 +312,8 @@ interface ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
         }
     }
 
-    class ForLocalisationParameter : ParadoxCoreScriptExpressionMatcher {
+    /** @see CwtDataTypes.LocalisationParameter */
+    class ForLocalisationParameter : ParadoxCoreScriptExpressionMatcher() {
         override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.LocalisationParameter
 
         override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
@@ -335,38 +323,6 @@ interface ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
             if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
             if (!context.expression.value.isIdentifier(".-'")) return ParadoxMatchResult.NotMatch
             return ParadoxMatchResult.ExactMatch
-        }
-    }
-
-    class ForShaderEffect : ParadoxCoreScriptExpressionMatcher {
-        override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.ShaderEffect
-
-        override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
-            if (!context.expression.type.isLenientStringLiteral()) return ParadoxMatchResult.NotMatch
-            if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
-            return ParadoxMatchResult.FallbackMatch
-        }
-    }
-
-    class ForMeshLocator : ParadoxCoreScriptExpressionMatcher {
-        override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.MeshLocator
-
-        override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
-            if (context.expression.value.isEmpty()) return ParadoxMatchResult.FallbackMatch // NOTE 2.1.9 empty string is specially allowed
-            if (!context.expression.type.isLenientStringLiteral()) return ParadoxMatchResult.NotMatch
-            if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
-            return ParadoxMatchResult.FallbackMatch
-        }
-    }
-
-    class ForTechnologyWithLevel : ParadoxCoreScriptExpressionMatcher {
-        override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.TechnologyWithLevel
-
-        override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
-            if (!context.expression.type.isLenientStringLiteral()) return ParadoxMatchResult.NotMatch
-            if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
-            if (context.expression.value.length > 1 && context.expression.value.indexOf('@') >= 1) return ParadoxMatchResult.WildcardMatch
-            return ParadoxMatchResult.NotMatch
         }
     }
 }

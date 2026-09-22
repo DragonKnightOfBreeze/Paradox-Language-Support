@@ -11,10 +11,9 @@ import icu.windea.pls.lang.match.util.ParadoxMatchResultFactory
 import icu.windea.pls.model.type.ParadoxExpressionRole
 import icu.windea.pls.model.type.ParadoxExpressionType
 
-// Basic
-
-interface ParadoxBasicScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
-    class ForAny : ParadoxBasicScriptExpressionMatcher {
+abstract class ParadoxBasicScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
+    /** @see CwtDataTypes.Any */
+    class ForAny : ParadoxBasicScriptExpressionMatcher() {
         override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.Any
 
         override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
@@ -22,7 +21,8 @@ interface ParadoxBasicScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
         }
     }
 
-    class ForBool : ParadoxBasicScriptExpressionMatcher {
+    /** @see CwtDataTypes.Bool */
+    class ForBool : ParadoxBasicScriptExpressionMatcher() {
         override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.Bool
 
         override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
@@ -34,7 +34,8 @@ interface ParadoxBasicScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
         }
     }
 
-    class ForInt : ParadoxBasicScriptExpressionMatcher {
+    /** @see CwtDataTypes.Int */
+    class ForInt : ParadoxBasicScriptExpressionMatcher() {
         override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.Int
 
         override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
@@ -48,7 +49,8 @@ interface ParadoxBasicScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
         }
     }
 
-    class ForFloat : ParadoxBasicScriptExpressionMatcher {
+    /** @see CwtDataTypes.Float */
+    class ForFloat : ParadoxBasicScriptExpressionMatcher() {
         override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.Float
 
         override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
@@ -62,7 +64,8 @@ interface ParadoxBasicScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
         }
     }
 
-    class ForScalar : ParadoxBasicScriptExpressionMatcher {
+    /** @see CwtDataTypes.Scalar */
+    class ForScalar : ParadoxBasicScriptExpressionMatcher() {
         override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.Scalar
 
         override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
@@ -78,7 +81,8 @@ interface ParadoxBasicScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
         }
     }
 
-    class ForColorField : ParadoxBasicScriptExpressionMatcher {
+    /** @see CwtDataTypes.ColorField */
+    class ForColorField : ParadoxBasicScriptExpressionMatcher() {
         override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.ColorField
 
         override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
@@ -88,7 +92,8 @@ interface ParadoxBasicScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
         }
     }
 
-    class ForBlock : ParadoxBasicScriptExpressionMatcher {
+    /** @see CwtDataTypes.Block */
+    class ForBlock : ParadoxBasicScriptExpressionMatcher() {
         override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.Block
 
         override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {

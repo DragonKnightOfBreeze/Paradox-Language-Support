@@ -27,12 +27,10 @@ import icu.windea.pls.lang.resolve.util.ParadoxExpressionSupportFactory
 import icu.windea.pls.model.type.ParadoxExpressionRole
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
-// Complex Expressions
-
 /**
  * @see ParadoxComplexExpression
  */
-abstract class ParadoxComplexScriptExpressionSupportBase : ParadoxComplexScriptExpressionSupport {
+abstract class ParadoxComplexScriptExpressionSupport : ParadoxScriptExpressionSupport {
     override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder): Boolean {
         if (element !is ParadoxScriptStringExpressionElement) return false
         val configGroup = config.configGroup
@@ -49,14 +47,12 @@ abstract class ParadoxComplexScriptExpressionSupportBase : ParadoxComplexScriptE
         if (references.isEmpty()) return emptyList()
         return references
     }
-}
 
-interface ParadoxComplexScriptExpressionSupport : ParadoxScriptExpressionSupport {
     /**
      * @see CwtDataTypes.Template
      * @see ParadoxTemplateExpression
      */
-    class ForTemplate : ParadoxComplexScriptExpressionSupportBase() {
+    class ForTemplate : ParadoxComplexScriptExpressionSupport() {
         override fun supports(dataType: CwtDataType): Boolean {
             return dataType == CwtDataTypes.Template
         }
@@ -70,7 +66,7 @@ interface ParadoxComplexScriptExpressionSupport : ParadoxScriptExpressionSupport
      * @see CwtDataTypeSets.DynamicValue
      * @see ParadoxDynamicValueExpression
      */
-    class ForDynamicValue : ParadoxComplexScriptExpressionSupportBase() {
+    class ForDynamicValue : ParadoxComplexScriptExpressionSupport() {
         override fun supports(dataType: CwtDataType): Boolean {
             return dataType in CwtDataTypeSets.DynamicValue
         }
@@ -84,7 +80,7 @@ interface ParadoxComplexScriptExpressionSupport : ParadoxScriptExpressionSupport
      * @see CwtDataTypeSets.ScopeField
      * @see ParadoxScopeFieldExpression
      */
-    class ForScopeField : ParadoxComplexScriptExpressionSupportBase() {
+    class ForScopeField : ParadoxComplexScriptExpressionSupport() {
         override fun supports(dataType: CwtDataType): Boolean {
             return dataType in CwtDataTypeSets.ScopeField
         }
@@ -104,7 +100,7 @@ interface ParadoxComplexScriptExpressionSupport : ParadoxScriptExpressionSupport
      * @see CwtDataTypeSets.ValueField
      * @see ParadoxValueFieldExpression
      */
-    class ForValueField : ParadoxComplexScriptExpressionSupportBase() {
+    class ForValueField : ParadoxComplexScriptExpressionSupport() {
         override fun supports(dataType: CwtDataType): Boolean {
             return dataType in CwtDataTypeSets.ValueField
         }
@@ -123,7 +119,7 @@ interface ParadoxComplexScriptExpressionSupport : ParadoxScriptExpressionSupport
      * @see CwtDataTypeSets.VariableField
      * @see ParadoxVariableFieldExpression
      */
-    class ForVariableField : ParadoxComplexScriptExpressionSupportBase() {
+    class ForVariableField : ParadoxComplexScriptExpressionSupport() {
         override fun supports(dataType: CwtDataType): Boolean {
             return dataType in CwtDataTypeSets.VariableField
         }
@@ -142,7 +138,7 @@ interface ParadoxComplexScriptExpressionSupport : ParadoxScriptExpressionSupport
      * @see CwtDataTypes.ScriptValueReference
      * @see ParadoxScriptValueReferenceExpression
      */
-    class ForScriptValueReference : ParadoxComplexScriptExpressionSupportBase() {
+    class ForScriptValueReference : ParadoxComplexScriptExpressionSupport() {
         override fun supports(dataType: CwtDataType): Boolean {
             return dataType == CwtDataTypes.ScriptValueReference
         }
@@ -156,7 +152,7 @@ interface ParadoxComplexScriptExpressionSupport : ParadoxScriptExpressionSupport
      * @see CwtDataTypes.DefineReference
      * @see ParadoxDefineReferenceExpression
      */
-    class ForDefineReference : ParadoxComplexScriptExpressionSupportBase() {
+    class ForDefineReference : ParadoxComplexScriptExpressionSupport() {
         override fun supports(dataType: CwtDataType): Boolean {
             return dataType == CwtDataTypes.DefineReference
         }
@@ -170,7 +166,7 @@ interface ParadoxComplexScriptExpressionSupport : ParadoxScriptExpressionSupport
      * @see CwtDataTypes.ArrayDefineReference
      * @see ParadoxArrayDefineReferenceExpression
      */
-    class ForArrayDefineReference : ParadoxComplexScriptExpressionSupportBase() {
+    class ForArrayDefineReference : ParadoxComplexScriptExpressionSupport() {
         override fun supports(dataType: CwtDataType): Boolean {
             return dataType == CwtDataTypes.ArrayDefineReference
         }
@@ -184,7 +180,7 @@ interface ParadoxComplexScriptExpressionSupport : ParadoxScriptExpressionSupport
      * @see CwtDataTypes.Tags
      * @see ParadoxTagsExpression
      */
-    class ForTags : ParadoxComplexScriptExpressionSupportBase() {
+    class ForTags : ParadoxComplexScriptExpressionSupport() {
         override fun supports(dataType: CwtDataType): Boolean {
             return dataType == CwtDataTypes.Tags
         }
@@ -198,7 +194,7 @@ interface ParadoxComplexScriptExpressionSupport : ParadoxScriptExpressionSupport
      * @see CwtDataTypes.DatabaseObject
      * @see ParadoxDatabaseObjectExpression
      */
-    class ForDatabaseObject : ParadoxComplexScriptExpressionSupportBase() {
+    class ForDatabaseObject : ParadoxComplexScriptExpressionSupport() {
         override fun supports(dataType: CwtDataType): Boolean {
             return dataType == CwtDataTypes.DatabaseObject
         }
@@ -212,7 +208,7 @@ interface ParadoxComplexScriptExpressionSupport : ParadoxScriptExpressionSupport
      * @see CwtDataTypes.NameFormat
      * @see ParadoxNameFormatExpression
      */
-    class ForNameFormat : ParadoxComplexScriptExpressionSupportBase() {
+    class ForNameFormat : ParadoxComplexScriptExpressionSupport() {
         override fun supports(dataType: CwtDataType): Boolean {
             return dataType == CwtDataTypes.NameFormat
         }

@@ -15,13 +15,11 @@ import icu.windea.pls.lang.resolve.util.ParadoxExpressionSupportFactory
 import icu.windea.pls.model.type.ParadoxExpressionRole
 import icu.windea.pls.script.highlighting.ParadoxScriptHighlighterColors
 
-// Extra
-
-interface ParadoxExtraScriptExpressionSupport : ParadoxScriptExpressionSupport {
+abstract class ParadoxExternalReferenceScriptExpressionSupport : ParadoxScriptExpressionSupport {
     /**
      * @see CwtDataTypes.ShaderEffect
      */
-    class ForShaderEffect : ParadoxExtraScriptExpressionSupport {
+    class ForShaderEffect : ParadoxExternalReferenceScriptExpressionSupport() {
         override fun supports(dataType: CwtDataType): Boolean {
             return dataType == CwtDataTypes.ShaderEffect
         }
@@ -46,7 +44,7 @@ interface ParadoxExtraScriptExpressionSupport : ParadoxScriptExpressionSupport {
     /**
      * @see CwtDataTypes.MeshLocator
      */
-    class ForMeshLocator : ParadoxExtraScriptExpressionSupport {
+    class ForMeshLocator : ParadoxExternalReferenceScriptExpressionSupport() {
         override fun supports(dataType: CwtDataType): Boolean {
             return dataType == CwtDataTypes.MeshLocator
         }

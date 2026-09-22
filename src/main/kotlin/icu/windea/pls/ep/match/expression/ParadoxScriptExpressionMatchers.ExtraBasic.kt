@@ -8,10 +8,8 @@ import icu.windea.pls.lang.match.ParadoxExpressionMatchContext
 import icu.windea.pls.lang.match.ParadoxMatchResult
 import icu.windea.pls.lang.match.util.ParadoxMatchFactory
 
-// ExtraBasic
-
-interface ParadoxExtraBasicScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
-    class ForPercentageField : ParadoxExtraBasicScriptExpressionMatcher {
+abstract class ParadoxExtraBasicScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
+    class ForPercentageField : ParadoxExtraBasicScriptExpressionMatcher() {
         override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.PercentageField
 
         override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
@@ -24,7 +22,7 @@ interface ParadoxExtraBasicScriptExpressionMatcher : ParadoxScriptExpressionMatc
         }
     }
 
-    class ForIntPercentageField : ParadoxExtraBasicScriptExpressionMatcher {
+    class ForIntPercentageField : ParadoxExtraBasicScriptExpressionMatcher() {
         override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.IntPercentageField
 
         override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
@@ -37,7 +35,7 @@ interface ParadoxExtraBasicScriptExpressionMatcher : ParadoxScriptExpressionMatc
         }
     }
 
-    class ForDateField : ParadoxExtraBasicScriptExpressionMatcher {
+    class ForDateField : ParadoxExtraBasicScriptExpressionMatcher() {
         override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.DateField
 
         override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {

@@ -50,14 +50,6 @@ class CwtCoreDataExpressionSupport : CwtTextPatternBasedDataExpressionSupport(),
         register(CwtDataTypes.SyncedLocalisation, "localisation_synced")
         register(CwtDataTypes.InlineLocalisation, "localisation_inline")
 
-        register(CwtDataTypes.FileName, "filename")
-        register(CwtDataTypes.FileName, "filename[", "]") { value = it.orNull() }
-        register(CwtDataTypes.FilePath, "filepath")
-        register(CwtDataTypes.FilePath, "filepath[./]") { value = "./" } // fixed (should keep `"./"`)
-        register(CwtDataTypes.FilePath, "filepath[", "]") { value = it.optimizedPath().orNull() }
-        register(CwtDataTypes.Icon, "icon[", "]") { value = it.optimizedPath().orNull() }
-        register(CwtDataTypes.AbsoluteFilePath, "abs_filepath")
-
         register(CwtDataTypes.Modifier, "<modifier>")
         register(CwtDataTypes.Definition, "<", ">") { value = it.orNull() }
 
@@ -66,8 +58,6 @@ class CwtCoreDataExpressionSupport : CwtTextPatternBasedDataExpressionSupport(),
         register(CwtDataTypes.DynamicValue, "dynamic_value[", "]") { value = it.orNull() }
 
         register(CwtDataTypes.EnumValue, "enum[", "]") { value = it.orNull() }
-
-        register(CwtDataTypes.UnionValue, "union[", "]") { value = it.orNull() }
 
         register(CwtDataTypes.ScopeField, "scope_field")
         register(CwtDataTypes.Scope, "scope[", "]") { value = it.orNull().takeIf { v -> v != "any" } }
@@ -87,11 +77,6 @@ class CwtCoreDataExpressionSupport : CwtTextPatternBasedDataExpressionSupport(),
         register(CwtDataTypes.IntVariableField, "int_variable_field_32")
         registerRanged(CwtDataTypes.IntVariableField, "int_variable_field_32") { intRange = IntRangeInfo.from(it) }
 
-        register(CwtDataTypes.AliasKeysField, "alias_keys_field[", "]") { value = it.orNull() }
-        register(CwtDataTypes.AliasName, "alias_name[", "]") { value = it.orNull() }
-        register(CwtDataTypes.AliasMatchLeft, "alias_match_left[", "]") { value = it.orNull() }
-        register(CwtDataTypes.SingleAliasRight, "single_alias_right[", "]") { value = it.orNull() }
-
         register(CwtDataTypes.Command, "\$command")
         register(CwtDataTypes.ScriptValueReference, "\$script_value_reference")
         register(CwtDataTypes.DefineReference, "\$define_reference")
@@ -101,13 +86,42 @@ class CwtCoreDataExpressionSupport : CwtTextPatternBasedDataExpressionSupport(),
         register(CwtDataTypes.DatabaseObject, "\$database_object")
         register(CwtDataTypes.NameFormat, "name_format[", "]") { value = it.orNull() }
 
-        register(CwtDataTypes.ShaderEffect, "\$shader_effect")
-        register(CwtDataTypes.MeshLocator, "\$mesh_locator")
         register(CwtDataTypes.TechnologyWithLevel, "\$technology_with_level")
 
         register(CwtDataTypes.Parameter, "\$parameter")
         register(CwtDataTypes.ParameterValue, "\$parameter_value")
         register(CwtDataTypes.LocalisationParameter, "\$localisation_parameter")
+    }
+}
+
+class CwtPathReferenceDataExpressionSupport : CwtTextPatternBasedDataExpressionSupport(), CwtConfigResolverScope {
+    override fun registerProviders() {
+        register(CwtDataTypes.FileName, "filename")
+        register(CwtDataTypes.FileName, "filename[", "]") { value = it.orNull() }
+        register(CwtDataTypes.FilePath, "filepath")
+        register(CwtDataTypes.FilePath, "filepath[./]") { value = "./" } // fixed (should keep `"./"`)
+        register(CwtDataTypes.FilePath, "filepath[", "]") { value = it.optimizedPath().orNull() }
+        register(CwtDataTypes.Icon, "icon[", "]") { value = it.optimizedPath().orNull() }
+        register(CwtDataTypes.AbsoluteFilePath, "abs_filepath")
+    }
+}
+
+class CwtExternalReferenceDataExpressionSupport : CwtTextPatternBasedDataExpressionSupport(), CwtConfigResolverScope {
+    override fun registerProviders() {
+        register(CwtDataTypes.ShaderEffect, "\$shader_effect")
+        register(CwtDataTypes.MeshLocator, "\$mesh_locator")
+    }
+}
+
+class CwtExpandableDataExpressionSupport : CwtTextPatternBasedDataExpressionSupport() {
+    override fun registerProviders() {
+        register(CwtDataTypes.UnionValue, "union[", "]") { value = it.orNull() }
+
+        register(CwtDataTypes.AliasKeysField, "alias_keys_field[", "]") { value = it.orNull() }
+        register(CwtDataTypes.AliasName, "alias_name[", "]") { value = it.orNull() }
+        register(CwtDataTypes.AliasMatchLeft, "alias_match_left[", "]") { value = it.orNull() }
+
+        register(CwtDataTypes.SingleAliasRight, "single_alias_right[", "]") { value = it.orNull() }
     }
 }
 

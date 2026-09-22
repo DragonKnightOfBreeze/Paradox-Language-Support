@@ -192,7 +192,7 @@ object CwtDataTypes {
 
     // endregion
 
-    // region Complex Data Types
+    // region Core Data Types
 
     /**
      * 定义引用类型。
@@ -292,18 +292,6 @@ object CwtDataTypes {
             0.0 // unexpected
         }
     }
-
-    /**
-     * 并集值类型。
-     *
-     * 匹配对应的并集规则中的其中一个候选项。
-     *
-     * 对应的数据表达式的格式：
-     * - `unions/union[{name}]` - 其中 `{name}` 匹配并集规则的名字。
-     *
-     * > CWTools 兼容性：不兼容。插件作为扩展提供。
-     */
-    val UnionValue = CwtDataType.builder("UnionValue").reference().build()
 
     /**
      * 动态值读取类型。
@@ -785,7 +773,19 @@ object CwtDataTypes {
 
     // endregion
 
-    // region Alias Data Types
+    // region Expandable Data Types
+
+    /**
+     * 并集值类型。
+     *
+     * 匹配对应的并集规则中的其中一个候选项。
+     *
+     * 对应的数据表达式的格式：
+     * - `unions/union[{name}]` - 其中 `{name}` 匹配并集规则的名字。
+     *
+     * > CWTools 兼容性：不兼容。插件作为扩展提供。
+     */
+    val UnionValue = CwtDataType.builder("UnionValue").reference().build()
 
     /**
      * 别名键字段类型。

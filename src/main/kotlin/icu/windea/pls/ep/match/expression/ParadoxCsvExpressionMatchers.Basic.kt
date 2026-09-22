@@ -7,8 +7,9 @@ import icu.windea.pls.lang.match.ParadoxExpressionMatchContext
 import icu.windea.pls.lang.match.ParadoxMatchResult
 import icu.windea.pls.lang.match.util.ParadoxMatchResultFactory
 
-interface ParadoxBasicCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
-    class ForAny : ParadoxBasicCsvExpressionMatcher {
+abstract class ParadoxBasicCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
+    /** @see CwtDataTypes.Any */
+    class ForAny : ParadoxBasicCsvExpressionMatcher() {
         override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.Any
 
         override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression): ParadoxMatchResult {
@@ -16,7 +17,8 @@ interface ParadoxBasicCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
         }
     }
 
-    class ForBool : ParadoxBasicCsvExpressionMatcher {
+    /** @see CwtDataTypes.Bool */
+    class ForBool : ParadoxBasicCsvExpressionMatcher() {
         override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.Bool
 
         override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression): ParadoxMatchResult {
@@ -27,7 +29,8 @@ interface ParadoxBasicCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
         }
     }
 
-    class ForInt : ParadoxBasicCsvExpressionMatcher {
+    /** @see CwtDataTypes.Int */
+    class ForInt : ParadoxBasicCsvExpressionMatcher() {
         override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.Int
 
         override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression): ParadoxMatchResult {
@@ -42,7 +45,8 @@ interface ParadoxBasicCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
         }
     }
 
-    class ForFloat : ParadoxBasicCsvExpressionMatcher {
+    /** @see CwtDataTypes.Float */
+    class ForFloat : ParadoxBasicCsvExpressionMatcher() {
         override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.Float
 
         override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression): ParadoxMatchResult {
@@ -57,7 +61,8 @@ interface ParadoxBasicCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
         }
     }
 
-    class ForScalar : ParadoxBasicCsvExpressionMatcher {
+    /** @see CwtDataTypes.Scalar */
+    class ForScalar : ParadoxBasicCsvExpressionMatcher() {
         override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.Scalar
 
         override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression): ParadoxMatchResult {

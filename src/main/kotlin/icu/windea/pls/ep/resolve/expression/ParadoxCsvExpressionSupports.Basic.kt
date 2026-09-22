@@ -7,13 +7,11 @@ import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionFactory
 import icu.windea.pls.lang.codeInsight.completion.addToResult
 
-// Basic
-
-interface ParadoxBasicCsvExpressionSupport : ParadoxCsvExpressionSupport {
+abstract class ParadoxBasicCsvExpressionSupport : ParadoxCsvExpressionSupport {
     /**
      * @see CwtDataTypes.Bool
      */
-    class ForBool : ParadoxBasicCsvExpressionSupport {
+    class ForBool : ParadoxBasicCsvExpressionSupport() {
         override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.Bool
 
         override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {

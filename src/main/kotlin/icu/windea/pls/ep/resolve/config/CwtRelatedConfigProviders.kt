@@ -123,13 +123,6 @@ class CwtBaseRelatedConfigProvider : CwtRelatedConfigProvider {
                             complexEnumConfig?.also { result += it }
                         }
                     }
-                    configExpression.type == CwtDataTypes.UnionValue -> {
-                        val unionName = configExpression.metadata.value
-                        if (unionName != null) {
-                            val unionConfig = configGroup.unions[unionName]
-                            unionConfig?.also { result += it }
-                        }
-                    }
                     configExpression.type in CwtDataTypeSets.DynamicValue -> {
                         val type = configExpression.metadata.value
                         if (type != null) {
@@ -141,6 +134,13 @@ class CwtBaseRelatedConfigProvider : CwtRelatedConfigProvider {
                     configExpression.type == CwtDataTypes.Modifier -> {
                         val modifierElement = ParadoxModifierManager.resolveModifier(name, element, configGroup)
                         modifierElement?.modifierConfig?.also { result += it }
+                    }
+                    configExpression.type == CwtDataTypes.UnionValue -> {
+                        val unionName = configExpression.metadata.value
+                        if (unionName != null) {
+                            val unionConfig = configGroup.unions[unionName]
+                            unionConfig?.also { result += it }
+                        }
                     }
                 }
             }

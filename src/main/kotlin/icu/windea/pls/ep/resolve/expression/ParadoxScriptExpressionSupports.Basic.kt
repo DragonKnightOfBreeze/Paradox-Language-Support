@@ -13,13 +13,11 @@ import icu.windea.pls.lang.codeInsight.completion.addToResult
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.model.type.ParadoxExpressionRole
 
-// Basic
-
-interface ParadoxBasicScriptExpressionSupport : ParadoxScriptExpressionSupport {
+abstract class ParadoxBasicScriptExpressionSupport : ParadoxScriptExpressionSupport {
     /**
      * @see CwtDataTypes.Bool
      */
-    class ForBool : ParadoxBasicScriptExpressionSupport {
+    class ForBool : ParadoxBasicScriptExpressionSupport() {
         override fun supports(dataType: CwtDataType): Boolean {
             return dataType == CwtDataTypes.Bool
         }
@@ -32,7 +30,7 @@ interface ParadoxBasicScriptExpressionSupport : ParadoxScriptExpressionSupport {
     /**
      * @see CwtDataTypes.Block
      */
-    class ForBlock : ParadoxBasicScriptExpressionSupport {
+    class ForBlock : ParadoxBasicScriptExpressionSupport() {
         override fun supports(dataType: CwtDataType): Boolean {
             return dataType == CwtDataTypes.Block
         }

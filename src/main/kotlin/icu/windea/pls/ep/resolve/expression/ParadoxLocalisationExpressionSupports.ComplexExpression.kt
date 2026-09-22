@@ -17,12 +17,10 @@ import icu.windea.pls.lang.resolve.util.ParadoxExpressionSupportFactory
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 
-// Complex Expressions
-
 /**
  * @see ParadoxComplexExpression
  */
-abstract class ParadoxLocalisationComplexExpressionSupportBase : ParadoxLocalisationExpressionSupport {
+abstract class ParadoxComplexLocalisationExpressionSupport : ParadoxLocalisationExpressionSupport {
     // NOTE 2.0.6 - unnecessary to support for `ParadoxScriptExpressionElement` yet
 
     override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, holder: AnnotationHolder): Boolean {
@@ -41,30 +39,30 @@ abstract class ParadoxLocalisationComplexExpressionSupportBase : ParadoxLocalisa
         if (references.isEmpty()) return emptyList()
         return references
     }
-}
 
-/**
- * @see ParadoxCommandExpression
- */
-class ParadoxLocalisationCommandExpressionSupport : ParadoxLocalisationComplexExpressionSupportBase() {
-    override fun supports(element: ParadoxExpressionElement): Boolean {
-        return element is ParadoxLocalisationExpressionElement && element.isCommandExpression()
+    /**
+     * @see ParadoxCommandExpression
+     */
+    class ForCommand : ParadoxComplexLocalisationExpressionSupport() {
+        override fun supports(element: ParadoxExpressionElement): Boolean {
+            return element is ParadoxLocalisationExpressionElement && element.isCommandExpression()
+        }
+
+        override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
+            ParadoxComplexExpressionCompletionManager.completeCommandExpression(context, result)
+        }
     }
 
-    override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
-        ParadoxComplexExpressionCompletionManager.completeCommandExpression(context, result)
-    }
-}
+    /**
+     * @see ParadoxDatabaseObjectExpression
+     */
+    class ForDatabaseObject : ParadoxComplexLocalisationExpressionSupport() {
+        override fun supports(element: ParadoxExpressionElement): Boolean {
+            return element is ParadoxLocalisationExpressionElement && element.isDatabaseObjectExpression()
+        }
 
-/**
- * @see ParadoxDatabaseObjectExpression
- */
-class ParadoxLocalisationDatabaseObjectExpressionSupport : ParadoxLocalisationComplexExpressionSupportBase() {
-    override fun supports(element: ParadoxExpressionElement): Boolean {
-        return element is ParadoxLocalisationExpressionElement && element.isDatabaseObjectExpression()
-    }
-
-    override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
-        ParadoxComplexExpressionCompletionManager.completeDatabaseObjectExpression(context, result)
+        override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
+            ParadoxComplexExpressionCompletionManager.completeDatabaseObjectExpression(context, result)
+        }
     }
 }

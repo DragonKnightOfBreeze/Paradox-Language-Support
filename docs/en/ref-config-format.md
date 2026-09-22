@@ -1781,11 +1781,11 @@ Format of corresponding data expressions:
 
 > CWTools Compatibility: Partially compatible. The plugin comes with additional extensions and improvements.
 
-### Reference Data Types {#data-types-reference}
+### Core Data Types {#data-types-core}
 
-The following data types match by referencing content from other configs or indexes.
+The following data types usually match by referencing content from other configs or indexes.
 
-Some of these data types will match a certain complex expression, which means that the corresponding expression can be composed of multiple nodes, and these nodes have their own semantics.
+Data expressions of some data types will match a complex expression, which means the corresponding expression can be composed of multiple nodes, each with its own semantics.
 
 #### Definition {#data-type-definition}
 
@@ -1870,20 +1870,6 @@ Examples of Corresponding data expressions:
 - `enum[ship_class]`
 
 > CWTools Compatibility: Partially compatible. Have different resolving and processing logic.
-
-#### UnionValue {#data-type-union-value}
-
-Union value type.
-
-Matches one of the candidates in the corresponding union config.
-
-Format of corresponding data expressions:
-- `union[{name}]` – where `{name}` matches a union name.
-
-Examples of Corresponding data expressions:
-- `union[loc_or_text]`
-
-> CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
 
 #### Value {#data-type-value}
 
@@ -2294,9 +2280,25 @@ Format of corresponding data expressions:
 
 > CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
 
-### Alias Data Types {#data-types-alias}
+### Expandable Data Types {#data-types-expandable}
 
-The following data types are related to the alias resolution mechanism. They generally do not directly participate in script matching, but are handled internally by the alias system.
+The following data types are matched by expanding the corresponding candidates.
+
+Data expressions of these data types need to apply necessary expansion and inlining during semantic matching and resolution.
+
+#### UnionValue {#data-type-union-value}
+
+Union value type.
+
+Matches one of the candidates in the corresponding union config.
+
+Format of corresponding data expressions:
+- `union[{name}]` – where `{name}` matches a union name.
+
+Examples of Corresponding data expressions:
+- `union[loc_or_text]`
+
+> CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
 
 #### AliasKeysField {#data-type-alias-keys-field}
 
