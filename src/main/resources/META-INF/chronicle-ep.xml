@@ -192,8 +192,17 @@
     <scriptExpressionMatcher id="pattern" implementation="icu.windea.pls.ep.match.expression.ParadoxScriptPatternExpressionMatcher"/>
     <scriptExpressionMatcher id="predicateBased" implementation="icu.windea.pls.ep.match.expression.ParadoxScriptPredicateBasedExpressionMatcher" order="first"/>
 
-    <csvExpressionMatcher id="basic" implementation="icu.windea.pls.ep.match.expression.ParadoxCsvBasicExpressionMatcher"/>
-    <csvExpressionMatcher id="extraBasic" implementation="icu.windea.pls.ep.match.expression.ParadoxExtraBasicCsvExpressionMatcher"/>
+    <!-- Basic -->
+    <csvExpressionMatcher implementation="icu.windea.pls.ep.match.expression.ParadoxCsvBasicExpressionMatcher$ForAny"/>
+    <csvExpressionMatcher implementation="icu.windea.pls.ep.match.expression.ParadoxCsvBasicExpressionMatcher$ForBool"/>
+    <csvExpressionMatcher implementation="icu.windea.pls.ep.match.expression.ParadoxCsvBasicExpressionMatcher$ForInt"/>
+    <csvExpressionMatcher implementation="icu.windea.pls.ep.match.expression.ParadoxCsvBasicExpressionMatcher$ForFloat"/>
+    <csvExpressionMatcher implementation="icu.windea.pls.ep.match.expression.ParadoxCsvBasicExpressionMatcher$ForScalar"/>
+    <!-- ExtraBasic -->
+    <csvExpressionMatcher implementation="icu.windea.pls.ep.match.expression.ParadoxExtraBasicCsvExpressionMatcher$ForPercentageField"/>
+    <csvExpressionMatcher implementation="icu.windea.pls.ep.match.expression.ParadoxExtraBasicCsvExpressionMatcher$ForIntPercentageField"/>
+    <csvExpressionMatcher implementation="icu.windea.pls.ep.match.expression.ParadoxExtraBasicCsvExpressionMatcher$ForDateField"/>
+
     <csvExpressionMatcher id="core" implementation="icu.windea.pls.ep.match.expression.ParadoxCsvCoreExpressionMatcher"/>
     <csvExpressionMatcher id="constant" implementation="icu.windea.pls.ep.match.expression.ParadoxCsvConstantExpressionMatcher"/>
     <csvExpressionMatcher id="pattern" implementation="icu.windea.pls.ep.match.expression.ParadoxCsvPatternExpressionMatcher"/>

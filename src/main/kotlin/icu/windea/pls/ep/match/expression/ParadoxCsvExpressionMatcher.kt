@@ -26,6 +26,8 @@ import icu.windea.pls.model.expressions.ParadoxExpression
  * @see ParadoxExpressionMatchService
  */
 interface ParadoxCsvExpressionMatcher {
+    fun supports(dataType: CwtDataType): Boolean
+
     /**
      * 匹配 CSV 表达式和规则表达式。
      */
