@@ -8,7 +8,7 @@
 - [ ] 分析与优化完成项目分析后的性能和内存占用 / Analyze and optimize performance and memory after finishing project analysis
 - [ ] 完善测试用例 / Improve test cases
 
-## 3.0.3
+## 3.0.3 - 2026-09-23
 
 - [x] 修复与内联脚本参数的参数值的规则推断逻辑相关的一个回归BUG / Fix a regression bug related to the config inference logic for parameter values of inline script parameters ([#412](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/412))
 - [x] 修复要匹配的表达式带参数时，可能无法正确地匹配常量字符串的问题（例如 `triggered_$PARAM$_modifier` VS `triggered_ship_modifier`） / Fix the issue where parameterized expressions may not correctly match constant strings (e.g., `triggered_$PARAM$_modifier` VS `triggered_ship_modifier`)
