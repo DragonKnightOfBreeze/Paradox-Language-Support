@@ -5,6 +5,7 @@
 - [ ] 优化图片处理逻辑和命令行执行逻辑，适用取消检查，以避免可能的 IDE 冻结 / Optimize the image processing logic and command-line execution logic, apply cancellation checks, to avoid possible IDE freeze ([#396](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/396))
 - [ ] 优化合并索引的构建逻辑，减少耗时 / Optimize the building logic of the merged index to reduce time consumption
 - [ ] 分析与优化构建索引时的性能和内存占用 / Analyze and optimize performance and memory during indexing
+- [ ] 分析与优化完成项目分析后的性能和内存占用 / Analyze and optimize performance and memory after finishing project analysis
 - [ ] 完善测试用例 / Improve test cases
 
 ## 3.0.3
