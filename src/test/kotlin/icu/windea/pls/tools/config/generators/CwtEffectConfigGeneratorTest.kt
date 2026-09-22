@@ -8,7 +8,7 @@ import org.junit.Test
  */
 class CwtEffectConfigGeneratorTest : CwtConfigGeneratorTest() {
     @Test
-    fun generate_forStellaris() {
+    fun generateForStellaris() {
         val version = latestStellarisVersion
         val generator = CwtEffectConfigGenerator(project)
         val gameType = ParadoxGameType.Stellaris
@@ -18,16 +18,7 @@ class CwtEffectConfigGeneratorTest : CwtConfigGeneratorTest() {
     }
 
     @Test
-    fun generate_forCk3() {
-        val generator = CwtEffectConfigGenerator(project)
-        val gameType = ParadoxGameType.Ck3
-        val inputPath = "cwt/cwtools-ck3-config/script-docs/effects.log"
-        val outputPath = "cwt/cwtools-ck3-config/config/effects.cwt"
-        generate(generator, gameType, inputPath, outputPath)
-    }
-
-    @Test
-    fun generate_forIr() {
+    fun generateForIr() {
         val generator = CwtEffectConfigGenerator(project)
         val gameType = ParadoxGameType.Ir
         val inputPath = "cwt/cwtools-ir-config/effects.log"
@@ -36,11 +27,29 @@ class CwtEffectConfigGeneratorTest : CwtConfigGeneratorTest() {
     }
 
     @Test
-    fun generate_forVic3() {
+    fun generateForCk3() {
+        val generator = CwtEffectConfigGenerator(project)
+        val gameType = ParadoxGameType.Ck3
+        val inputPath = "cwt/cwtools-ck3-config/script-docs/effects.log"
+        val outputPath = "cwt/cwtools-ck3-config/config/effects.cwt"
+        generate(generator, gameType, inputPath, outputPath)
+    }
+
+    @Test
+    fun generateForVic3() {
         val generator = CwtEffectConfigGenerator(project)
         val gameType = ParadoxGameType.Vic3
         val inputPath = "cwt/cwtools-vic3-config/script-docs/effects.log"
         val outputPath = "cwt/cwtools-vic3-config/config/effects.cwt"
+        generate(generator, gameType, inputPath, outputPath)
+    }
+
+    @Test
+    fun generateForEu5() {
+        val generator = CwtEffectConfigGenerator(project)
+        val gameType = ParadoxGameType.Vic3
+        val inputPath = "cwt/cwtools-eu5-config/script-docs/effects.log"
+        val outputPath = "cwt/cwtools-eu5-config/config/effects.cwt"
         generate(generator, gameType, inputPath, outputPath)
     }
 }

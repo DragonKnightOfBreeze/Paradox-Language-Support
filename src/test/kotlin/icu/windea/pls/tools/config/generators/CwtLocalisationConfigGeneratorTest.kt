@@ -8,7 +8,7 @@ import org.junit.Test
  */
 class CwtLocalisationConfigGeneratorTest : CwtConfigGeneratorTest() {
     @Test
-    fun generate_forStellaris() {
+    fun generateForStellaris() {
         val version = latestStellarisVersion
         val generator = CwtLocalisationConfigGenerator(project)
         val gameType = ParadoxGameType.Stellaris

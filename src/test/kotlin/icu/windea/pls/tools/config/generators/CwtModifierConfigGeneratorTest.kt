@@ -8,7 +8,7 @@ import org.junit.Test
  */
 class CwtModifierConfigGeneratorTest : CwtConfigGeneratorTest() {
     @Test
-    fun generate_forStellaris() {
+    fun generateForStellaris() {
         val version = latestStellarisVersion
         val generator = CwtModifierConfigGenerator(project)
         val gameType = ParadoxGameType.Stellaris
@@ -18,7 +18,7 @@ class CwtModifierConfigGeneratorTest : CwtConfigGeneratorTest() {
     }
 
     @Test
-    fun generate_forCk3() {
+    fun generateForCk3() {
         val generator = CwtModifierConfigGenerator(project)
         val gameType = ParadoxGameType.Ck3
         val inputPath = "cwt/cwtools-ck3-config/script-docs/modifiers.log"
@@ -27,7 +27,7 @@ class CwtModifierConfigGeneratorTest : CwtConfigGeneratorTest() {
     }
 
     @Test
-    fun generate_forVic3() {
+    fun generateForVic3() {
         val generator = CwtModifierConfigGenerator(project)
         val gameType = ParadoxGameType.Vic3
         val inputPath = "cwt/cwtools-vic3-config/script-docs/modifiers.log"

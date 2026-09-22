@@ -8,7 +8,7 @@ import org.junit.Test
  */
 class CwtOnActionConfigGeneratorTest : CwtConfigGeneratorTest() {
     @Test
-    fun generate_forStellaris() {
+    fun generateForStellaris() {
         val version = latestStellarisVersion
         val generator = CwtOnActionConfigGenerator(project)
         val gameType = ParadoxGameType.Stellaris

@@ -8,7 +8,7 @@ import org.junit.Test
  */
 class CwtTriggerConfigGeneratorTest : CwtConfigGeneratorTest() {
     @Test
-    fun generate_forStellaris() {
+    fun generateForStellaris() {
         val version = latestStellarisVersion
         val generator = CwtTriggerConfigGenerator(project)
         val gameType = ParadoxGameType.Stellaris
@@ -18,7 +18,7 @@ class CwtTriggerConfigGeneratorTest : CwtConfigGeneratorTest() {
     }
 
     @Test
-    fun generate_forCk3() {
+    fun generateForCk3() {
         val generator = CwtTriggerConfigGenerator(project)
         val gameType = ParadoxGameType.Ck3
         val inputPath = "cwt/cwtools-ck3-config/script-docs/triggers.log"
@@ -27,7 +27,7 @@ class CwtTriggerConfigGeneratorTest : CwtConfigGeneratorTest() {
     }
 
     @Test
-    fun generate_forIr() {
+    fun generateForIr() {
         val generator = CwtTriggerConfigGenerator(project)
         val gameType = ParadoxGameType.Ir
         val inputPath = "cwt/cwtools-ir-config/triggers.log"
@@ -36,7 +36,7 @@ class CwtTriggerConfigGeneratorTest : CwtConfigGeneratorTest() {
     }
 
     @Test
-    fun generate_forVic3() {
+    fun generateForVic3() {
         val generator = CwtTriggerConfigGenerator(project)
         val gameType = ParadoxGameType.Vic3
         val inputPath = "cwt/cwtools-vic3-config/script-docs/triggers.log"
