@@ -60,14 +60,14 @@ class ParadoxDefaultExpressionParameterInferredConfigProvider : ParadoxParameter
             is ParadoxScriptNormalParameter -> {
                 // NOTE 3.0.2 skip if it is full parameterized (can be many things, even a set of statements, or just a script snippet)
                 if (parentElement.text.isParameterized(full = true)) return null
-                // wildcard form -> continue to infer and merge configs
-                return configGroup.mockConfigs.wildcardScalar
+                // partial parameterized -> continue to infer and merge configs
+                return configGroup.mockConfigs.literal
             }
             is ParadoxScriptInlineMathParameter -> {
                 // 3.0.2 if it is full parameterized, should be a number
                 if (parentElement.text.isParameterized(full = true)) return configGroup.mockConfigs.float
-                // wildcard form -> continue to infer and merge configs
-                return configGroup.mockConfigs.wildcardScalar
+                // partial parameterized -> continue to infer and merge configs
+                return configGroup.mockConfigs.literal
             }
         }
         return null

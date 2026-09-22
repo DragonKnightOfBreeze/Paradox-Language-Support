@@ -14,9 +14,6 @@ open class CwtDataExpressionMetadataBase : MetadataMapBase(), CwtDataExpressionM
     final override var value: String? // region by Keys.value
         get() = this[Keys.value]
         set(value) = run { this[Keys.value] = value } // endregion
-    final override var wildcard: Boolean // region by Keys.wildcard
-        get() = this[Keys.wildcard]
-        set(value) = run { this[Keys.wildcard] = value } // endregion
     final override var condition: Boolean // region by Keys.condition
         get() = this[Keys.condition]
         set(value) = run { this[Keys.condition] = value } // endregion

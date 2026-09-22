@@ -1657,12 +1657,36 @@ The following data types represent the basic forms of values. They can be pre-ma
 
 Any type.
 
-Matches any script expression, acting as the lowest-priority fallback.
+Matches any expressions, acting as the lowest-priority fallback.
 
 Format of corresponding data expressions:
 - `$any`
 
 > CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
+
+#### Literal {#data-type-literal}
+
+Literal type.
+
+Matches any literal expressions, acting as a lower-priority broad match.
+Always matches when used as a key.
+
+Format of corresponding data expressions:
+- `$literal`
+
+> CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
+
+#### Scalar {#data-type-scalar}
+
+Scalar type.
+
+Matches any non-block expressions (strings, numbers, booleans, etc.), acting as a low-priority broad match.
+Always matches when used as a key.
+
+Format of corresponding data expressions:
+- `scalar`
+
+> CWTools Compatibility: Partially compatible. The plugin comes with additional extensions and improvements.
 
 #### Bool {#data-type-bool}
 
@@ -1704,19 +1728,6 @@ The range parameter can be any combination of open and closed intervals; by conv
 Format of corresponding data expressions:
 - `float`
 - `float{range}` – where `{range}` matches a range parameter (e.g., `[0.0..1.0]` `[-100.0..100.0)` `[0.0..inf)`).
-
-> CWTools Compatibility: Partially compatible. The plugin comes with additional extensions and improvements.
-
-#### Scalar {#data-type-scalar}
-
-Scalar type.
-
-Matches most non-clause expressions (strings, numbers, booleans, etc.), acting as a low-priority broad match.
-Always matches when used as a key. The `wildcard_scalar` variant sets a wildcard flag.
-
-Format of corresponding data expressions:
-- `scalar`
-- `wildcard_scalar` – wildcard variant.
 
 > CWTools Compatibility: Partially compatible. The plugin comes with additional extensions and improvements.
 

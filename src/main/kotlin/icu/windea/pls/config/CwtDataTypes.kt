@@ -38,15 +38,43 @@ object CwtDataTypes {
     /**
      * 任意类型。
      *
-     * 匹配任意脚本表达式，作为最低优先级的后备匹配。
+     * 匹配任意表达式，作为最低优先级的回退匹配。
      *
      * 对应的数据表达式的格式：
      * - `$any`
      *
-     * > CWTools 兼容性：兼容。
+     * > CWTools 兼容性：不兼容。插件作为扩展提供。
      */
     val Any = CwtDataType.builder("Any").build {
         withPriority(1.0) // very low
+    }
+    /**
+     * 字面量类型。
+     *
+     * 匹配任意作为字面量的表达式，作为更低优先级的回退匹配。
+     * 作为键时总是匹配。
+     *
+     * 对应的数据表达式的格式：
+     * - `$literal`
+     *
+     * > CWTools 兼容性：不兼容。插件作为扩展提供。
+     */
+    val Literal = CwtDataType.builder("Literal").build {
+        withPriority(2.0) // very low
+    }
+    /**
+     * 标量类型。
+     *
+     * 匹配任意非块的表达式（字符串、数字、布尔值等），作为低优先级的回退匹配。
+     * 作为键时总是匹配。
+     *
+     * 对应的数据表达式的格式：
+     * - `scalar`
+     *
+     * > CWTools 兼容性：部分兼容。插件进行了额外的扩展和改进。
+     */
+    val Scalar = CwtDataType.builder("Scalar").build {
+        withPriority(3.0) // very low
     }
     /**
      * 布尔类型。
@@ -102,21 +130,6 @@ object CwtDataTypes {
         withPriority(90.0) // very high
     }
     /**
-     * 标量类型。
-     *
-     * 匹配大多数非块表达式（字符串、数字、布尔值等），作为低优先级的宽泛匹配。
-     * 作为键时总是匹配。`wildcard_scalar` 变体会设置通配符标记。
-     *
-     * 对应的数据表达式的格式：
-     * - `scalar`
-     * - `wildcard_scalar` - 通配符变体。
-     *
-     * > CWTools 兼容性：部分兼容。插件进行了额外的扩展和改进。
-     */
-    val Scalar = CwtDataType.builder("Scalar").build {
-        withPriority(2.0) // very low
-    }
-    /**
      * 颜色字段类型。
      *
      * 匹配脚本颜色字段（如 `rgb { 255 255 255 }`）。
@@ -131,7 +144,6 @@ object CwtDataTypes {
     val ColorField = CwtDataType.builder("ColorField").build {
         withPriority(90.0) // very high
     }
-
     /**
      * 块类型。
      *

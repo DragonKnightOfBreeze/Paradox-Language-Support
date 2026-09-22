@@ -20,7 +20,6 @@ import icu.windea.pls.core.util.metadata.MetadataMap
  */
 interface CwtDataExpressionMetadata : MetadataMap {
     val value: String? get() = null
-    val wildcard: Boolean get() = false
     val condition: Boolean get() = false
     val ignoreCase: Boolean get() = false
     val intRange: IntRangeInfo? get() = null

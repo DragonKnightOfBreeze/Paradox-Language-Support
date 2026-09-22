@@ -5,11 +5,11 @@ import com.intellij.openapi.util.Ref
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import icu.windea.pls.ChronicleFacade
+import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.manipulation.CwtConfigManipulationService
-import icu.windea.pls.config.manipulation.CwtConfigInlineService
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cast
 import icu.windea.pls.core.collections.anyFast
@@ -233,7 +233,11 @@ object ParadoxParameterService {
         val v = result.get()
         if (v.isNullOrEmpty()) return false // empty -> not available
         val c = v.singleOrNull()?.configs?.singleOrNull()
-        if (c is CwtValueConfig && c.configExpression.metadata.wildcard) return false // wildcard form -> not available
+        if (c is CwtValueConfig) {
+            val type = c.configExpression.type
+            if (type == CwtDataTypes.Any) return false // fallback form -> not available
+            if (type == CwtDataTypes.Literal) return false // wildcard form -> not available
+        }
         return true
     }
 }

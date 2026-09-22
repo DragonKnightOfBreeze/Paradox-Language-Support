@@ -9,6 +9,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.util.parents
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.base.ChronicleModificationTrackers
+import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
@@ -19,7 +20,6 @@ import icu.windea.pls.config.configGroup.mockConfigs
 import icu.windea.pls.config.filterProperties
 import icu.windea.pls.config.filterValues
 import icu.windea.pls.config.manipulation.CwtConfigInlineService
-import icu.windea.pls.config.match.CwtConfigExpressionMatchService
 import icu.windea.pls.config.sortedByPriority
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cache.CacheBuilder
@@ -293,8 +293,7 @@ object ParadoxConfigService {
         if (expression.value == "-") {
             parentConfigs.forEachFast f1@{ parentConfig ->
                 // NOTE #386 if value expression of parent config is `$any`, then use `$any` only
-                // NOTE 3.0.2 compatible with `wildcard_scalar`, which is for complex parameters, in case
-                if (CwtConfigExpressionMatchService.matchesAnyDataType(parentConfig.valueExpression)) {
+                if (parentConfig.valueExpression.type == CwtDataTypes.Any) {
                     return listOf(configGroup.mockConfigs.anyValue)
                 }
 
@@ -308,8 +307,7 @@ object ParadoxConfigService {
         } else {
             parentConfigs.forEachFast f1@{ parentConfig ->
                 // NOTE #386 if value expression of parent config is `$any`, then use `$any = $any` only
-                // NOTE 3.0.2 compatible with `wildcard_scalar`, which is for complex parameters, in case
-                if (CwtConfigExpressionMatchService.matchesAnyDataType(parentConfig.valueExpression)) {
+                if (parentConfig.valueExpression.type == CwtDataTypes.Any) {
                     return listOf(configGroup.mockConfigs.anyProperty)
                 }
 

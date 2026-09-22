@@ -191,10 +191,11 @@
 
     <!-- Script / Basic -->
     <scriptExpressionMatcher implementation="icu.windea.pls.ep.match.expression.ParadoxBasicScriptExpressionMatcher$ForAny"/>
+    <scriptExpressionMatcher implementation="icu.windea.pls.ep.match.expression.ParadoxBasicScriptExpressionMatcher$ForLiteral"/>
+    <scriptExpressionMatcher implementation="icu.windea.pls.ep.match.expression.ParadoxBasicScriptExpressionMatcher$ForScalar"/>
     <scriptExpressionMatcher implementation="icu.windea.pls.ep.match.expression.ParadoxBasicScriptExpressionMatcher$ForBool"/>
     <scriptExpressionMatcher implementation="icu.windea.pls.ep.match.expression.ParadoxBasicScriptExpressionMatcher$ForInt"/>
     <scriptExpressionMatcher implementation="icu.windea.pls.ep.match.expression.ParadoxBasicScriptExpressionMatcher$ForFloat"/>
-    <scriptExpressionMatcher implementation="icu.windea.pls.ep.match.expression.ParadoxBasicScriptExpressionMatcher$ForScalar"/>
     <scriptExpressionMatcher implementation="icu.windea.pls.ep.match.expression.ParadoxBasicScriptExpressionMatcher$ForColorField"/>
     <scriptExpressionMatcher implementation="icu.windea.pls.ep.match.expression.ParadoxBasicScriptExpressionMatcher$ForBlock"/>
     <!-- Script / ExtraBasic -->
@@ -241,10 +242,11 @@
 
     <!-- Csv / Basic -->
     <csvExpressionMatcher implementation="icu.windea.pls.ep.match.expression.ParadoxBasicCsvExpressionMatcher$ForAny"/>
+    <csvExpressionMatcher implementation="icu.windea.pls.ep.match.expression.ParadoxBasicCsvExpressionMatcher$ForLiteral"/>
+    <csvExpressionMatcher implementation="icu.windea.pls.ep.match.expression.ParadoxBasicCsvExpressionMatcher$ForScalar"/>
     <csvExpressionMatcher implementation="icu.windea.pls.ep.match.expression.ParadoxBasicCsvExpressionMatcher$ForBool"/>
     <csvExpressionMatcher implementation="icu.windea.pls.ep.match.expression.ParadoxBasicCsvExpressionMatcher$ForInt"/>
     <csvExpressionMatcher implementation="icu.windea.pls.ep.match.expression.ParadoxBasicCsvExpressionMatcher$ForFloat"/>
-    <csvExpressionMatcher implementation="icu.windea.pls.ep.match.expression.ParadoxBasicCsvExpressionMatcher$ForScalar"/>
     <!-- Csv / ExtraBasic -->
     <csvExpressionMatcher implementation="icu.windea.pls.ep.match.expression.ParadoxExtraBasicCsvExpressionMatcher$ForPercentageField"/>
     <csvExpressionMatcher implementation="icu.windea.pls.ep.match.expression.ParadoxExtraBasicCsvExpressionMatcher$ForIntPercentageField"/>

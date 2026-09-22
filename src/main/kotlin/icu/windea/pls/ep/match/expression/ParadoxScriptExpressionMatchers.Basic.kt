@@ -17,6 +17,29 @@ abstract class ParadoxBasicScriptExpressionMatcher : ParadoxScriptExpressionMatc
         override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.Any
 
         override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
+            // low-priority fallback
+            return ParadoxMatchResult.FallbackMatch
+        }
+    }
+
+    /** @see CwtDataTypes.Literal */
+    class ForLiteral : ParadoxBasicScriptExpressionMatcher() {
+        override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.Literal
+
+        override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
+            // low-priority fallback
+            if (!context.expression.isScalar()) return ParadoxMatchResult.NotMatch
+            return ParadoxMatchResult.FallbackMatch
+        }
+    }
+
+    /** @see CwtDataTypes.Scalar */
+    class ForScalar : ParadoxBasicScriptExpressionMatcher() {
+        override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.Scalar
+
+        override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
+            // low-priority fallback
+            if (!context.expression.isScalar()) return ParadoxMatchResult.NotMatch
             return ParadoxMatchResult.FallbackMatch
         }
     }
@@ -26,7 +49,7 @@ abstract class ParadoxBasicScriptExpressionMatcher : ParadoxScriptExpressionMatc
         override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.Bool
 
         override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
-            if (context.expression.type.isLenientBooleanLiteral()) {
+            if (context.expression.matchesBoolean()) {
                 return ParadoxMatchResult.ExactMatch
             }
             if (context.expression.isFullParameterized()) return ParadoxMatchResult.ParameterizedMatch
@@ -60,23 +83,6 @@ abstract class ParadoxBasicScriptExpressionMatcher : ParadoxScriptExpressionMatc
                 return ParadoxMatchResult.ExactMatch
             }
             if (context.expression.isFullParameterized()) return ParadoxMatchResult.ParameterizedMatch
-            return ParadoxMatchResult.NotMatch
-        }
-    }
-
-    /** @see CwtDataTypes.Scalar */
-    class ForScalar : ParadoxBasicScriptExpressionMatcher() {
-        override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.Scalar
-
-        override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
-            val r = when {
-                context.expression.role == ParadoxExpressionRole.Key -> true // key -> ok
-                context.expression.type.isLenientBooleanLiteral() -> true // boolean -> sadly, also ok for compatibility
-                context.expression.type.isLenientNumberLiteral() -> true // number -> ok according to vanilla game files
-                context.expression.type.isLenientStringLiteral() -> true // unquoted/quoted string -> ok
-                else -> false
-            }
-            if (r) return ParadoxMatchResult.FallbackMatch
             return ParadoxMatchResult.NotMatch
         }
     }

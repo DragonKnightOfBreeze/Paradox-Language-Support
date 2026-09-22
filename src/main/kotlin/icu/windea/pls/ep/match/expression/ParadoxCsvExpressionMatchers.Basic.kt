@@ -13,6 +13,27 @@ abstract class ParadoxBasicCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
         override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.Any
 
         override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression): ParadoxMatchResult {
+            // low-priority fallback
+            return ParadoxMatchResult.FallbackMatch
+        }
+    }
+
+    /** @see CwtDataTypes.Literal */
+    class ForLiteral : ParadoxBasicCsvExpressionMatcher() {
+        override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.Literal
+
+        override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression): ParadoxMatchResult {
+            // low-priority fallback
+            return ParadoxMatchResult.FallbackMatch
+        }
+    }
+
+    /** @see CwtDataTypes.Scalar */
+    class ForScalar : ParadoxBasicCsvExpressionMatcher() {
+        override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.Scalar
+
+        override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression): ParadoxMatchResult {
+            // low-priority fallback
             return ParadoxMatchResult.FallbackMatch
         }
     }
@@ -22,7 +43,7 @@ abstract class ParadoxBasicCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
         override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.Bool
 
         override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression): ParadoxMatchResult {
-            if (context.expression.type.isLenientBooleanLiteral()) {
+            if (context.expression.matchesBoolean()) {
                 return ParadoxMatchResult.ExactMatch
             }
             return ParadoxMatchResult.NotMatch
@@ -58,16 +79,6 @@ abstract class ParadoxBasicCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
                 return ParadoxMatchResult.ExactMatch
             }
             return ParadoxMatchResult.NotMatch
-        }
-    }
-
-    /** @see CwtDataTypes.Scalar */
-    class ForScalar : ParadoxBasicCsvExpressionMatcher() {
-        override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.Scalar
-
-        override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression): ParadoxMatchResult {
-            // always match (fallback)
-            return ParadoxMatchResult.FallbackMatch
         }
     }
 }

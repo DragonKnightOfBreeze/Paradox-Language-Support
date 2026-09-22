@@ -75,8 +75,33 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testResolveBaseConfigs() {
+    fun testResolveBase() {
         if (!hasEp()) return
+
+        // any
+        run {
+            val e = CwtDataExpression.resolve("\$any", CwtDataExpressionRole.Value)
+            assertEquals(CwtDataTypes.Any, e.type)
+        }
+
+        // literal
+        run {
+            val e = CwtDataExpression.resolve("\$literal", CwtDataExpressionRole.Value)
+            assertEquals(CwtDataTypes.Literal, e.type)
+        }
+
+        // scalar
+        run {
+            val e = CwtDataExpression.resolve("scalar", CwtDataExpressionRole.Value)
+            assertEquals(CwtDataTypes.Scalar, e.type)
+        }
+
+        // bool
+        run {
+            val e = CwtDataExpression.resolve("bool", CwtDataExpressionRole.Value)
+            assertEquals(CwtDataTypes.Bool, e.type)
+        }
+
         // int and int range
         run {
             val e = CwtDataExpression.resolve("int", CwtDataExpressionRole.Value)
@@ -113,18 +138,6 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
             assertFalse(r.openEnd)
         }
 
-        // scalar
-        run {
-            val e = CwtDataExpression.resolve("scalar", CwtDataExpressionRole.Value)
-            assertEquals(CwtDataTypes.Scalar, e.type)
-            assertFalse(e.metadata.wildcard)
-        }
-        run {
-            val e = CwtDataExpression.resolve("wildcard_scalar", CwtDataExpressionRole.Value)
-            assertEquals(CwtDataTypes.Scalar, e.type)
-            assertTrue(e.metadata.wildcard)
-        }
-
         // color field variants
         run {
             val e = CwtDataExpression.resolve("colour_field", CwtDataExpressionRole.Value)
@@ -144,27 +157,24 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
             assertEquals(CwtDataTypes.ColorField, e.type)
             assertEquals("0,255,0", e.metadata.value)
         }
-
-        // bool
-        run {
-            val e = CwtDataExpression.resolve("bool", CwtDataExpressionRole.Value)
-            assertEquals(CwtDataTypes.Bool, e.type)
-        }
     }
 
     @Test
-    fun testResolveConfigs() {
+    fun testResolveExtraBasic() {
         if (!hasEp()) return
+
         // percentage field
         run {
             val e = CwtDataExpression.resolve("percentage_field", CwtDataExpressionRole.Value)
             assertEquals(CwtDataTypes.PercentageField, e.type)
         }
+
         // int percentage field
         run {
             val e = CwtDataExpression.resolve("int_percentage_field", CwtDataExpressionRole.Value)
             assertEquals(CwtDataTypes.IntPercentageField, e.type)
         }
+
         // date field
         run {
             val e = CwtDataExpression.resolve("date_field", CwtDataExpressionRole.Value)
@@ -175,6 +185,12 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
             assertEquals(CwtDataTypes.DateField, e.type)
             assertEquals("2020.1.1", e.metadata.value)
         }
+    }
+
+    @Test
+    fun testResolve() {
+        if (!hasEp()) return
+
         // localisation types
         run {
             assertEquals(CwtDataTypes.Localisation, CwtDataExpression.resolve("localisation", CwtDataExpressionRole.Value).type)
@@ -310,11 +326,6 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
         }
         run {
             assertEquals("keys", CwtDataExpression.resolve("alias_keys_field[keys]", CwtDataExpressionRole.Value).metadata.value)
-        }
-
-        // any, parameter-like, stellaris name format
-        run {
-            assertEquals(CwtDataTypes.Any, CwtDataExpression.resolve("\$any", CwtDataExpressionRole.Value).type)
         }
 
         run {

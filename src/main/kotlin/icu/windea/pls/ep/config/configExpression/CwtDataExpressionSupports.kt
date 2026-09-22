@@ -15,6 +15,8 @@ import icu.windea.pls.core.util.IntRangeInfo
 class CwtBasicDataExpressionSupport : CwtTextPatternBasedDataExpressionSupport() {
     override fun registerProviders() {
         register(CwtDataTypes.Any, "\$any")
+        register(CwtDataTypes.Literal, "\$literal")
+        register(CwtDataTypes.Scalar, "scalar")
 
         register(CwtDataTypes.Bool, "bool")
 
@@ -24,8 +26,6 @@ class CwtBasicDataExpressionSupport : CwtTextPatternBasedDataExpressionSupport()
         register(CwtDataTypes.Float, "float")
         registerRanged(CwtDataTypes.Float, "float") { floatRange = FloatRangeInfo.from(it) }
 
-        register(CwtDataTypes.Scalar, "scalar")
-        register(CwtDataTypes.Scalar, "wildcard_scalar") { wildcard = true }
 
         register(CwtDataTypes.ColorField, "colour_field")
         register(CwtDataTypes.ColorField, "colour[", "]") { value = it.orNull() }

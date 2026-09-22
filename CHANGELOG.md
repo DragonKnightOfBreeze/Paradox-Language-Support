@@ -21,6 +21,7 @@
 - [x] 优化表达式带参数时，并集规则（unionConfig）和别名规则（aliasConfig）的匹配与展开的逻辑，从而避免意外的 OOM / Optimize the matching and expansion logic for union configs and alias configs when expressions are parameterized, avoiding unexpected OOM
 - [x] 匹配数据类型 `Parameter`（`$parameter`）时，要求必须形如标识符，并且不允许带参数 / When matching the data type `Parameter` (`$parameter`), it is required to be in the form of an identifier and is not allowed to be parameterized
 - [x] 将数据类型 `CwtDataTypes.Template` 移出模式感知的数据类型，不再适用于模式匹配（例如，匹配扩展规则的名字时） / Move the data type `CwtDataTypes.Template` out of pattern-aware data types; it is no longer applicable to pattern matching (for example, when matching the names of extension configs).
+- [x] 将数据表达式 `wildcard_scalar` 改为 `$literal`（匹配任意作为字面量的表达式） / Change data expression `wildcard_scalar` to `$literal` (matches any literal expressions)
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 3.0.2 - 2026-09-08

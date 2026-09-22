@@ -54,6 +54,8 @@ interface ParadoxExpression {
     fun isParameterized(): Boolean
     fun isFullParameterized(): Boolean
 
+    fun isScalar(): Boolean
+    fun matchesBoolean(): Boolean
     fun matchesInt(): Boolean
     fun matchesFloat(): Boolean
     fun matchesRegex(input: String): Boolean
@@ -147,9 +149,21 @@ private sealed class ParadoxExpressionBase : ParadoxExpression {
     private fun doMatchFloat() = type.isLenientFloat() || TextMatcher.matchesFloat(value)
     private fun computeRegex() = ParadoxExpressionManager.toRegex(value)
 
+    override fun isScalar(): Boolean {
+        return when {
+            role == ParadoxExpressionRole.Key -> true // key -> ok
+            type.isLenientBooleanLiteral() -> true // boolean -> sadly, also ok for compatibility
+            type.isLenientNumberLiteral() -> true // number -> ok according to vanilla game files
+            type.isLenientStringLiteral() -> true // unquoted/quoted string -> ok
+            else -> false
+        }
+    }
+
     override fun isParameterized(): Boolean = parameterized
 
     override fun isFullParameterized(): Boolean = fullParameterized
+
+    override fun matchesBoolean(): Boolean = type.isLenientBooleanLiteral()
 
     override fun matchesInt(): Boolean = int
 

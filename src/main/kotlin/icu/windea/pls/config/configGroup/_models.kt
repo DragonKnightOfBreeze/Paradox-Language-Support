@@ -40,11 +40,12 @@ class CwtConfigGroupMockConfigs(configGroup: CwtConfigGroup) {
     val anyProperty = CwtPropertyConfig.mock(configGroup, "\$any", "\$any")
     val anyValue = CwtValueConfig.mock(configGroup, "\$any")
 
+    val any = CwtValueConfig.mock(configGroup, "\$any")
+    val literal = CwtValueConfig.mock(configGroup, "\$literal")
+    val scalar = CwtValueConfig.mock(configGroup, "scalar")
     val bool = CwtValueConfig.mock(configGroup, "bool")
     val int = CwtValueConfig.mock(configGroup, "int")
     val float = CwtValueConfig.mock(configGroup, "float")
-    val scalar = CwtValueConfig.mock(configGroup, "scalar")
-    val wildcardScalar = CwtValueConfig.mock(configGroup, "wildcard_scalar")
 
     val scriptValue = CwtValueConfig.mock(configGroup, "<script_value>")
     val variable = CwtValueConfig.mock(configGroup, "value[variable]")

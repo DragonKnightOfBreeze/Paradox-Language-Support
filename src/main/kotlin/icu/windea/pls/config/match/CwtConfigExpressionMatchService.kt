@@ -48,9 +48,4 @@ object CwtConfigExpressionMatchService {
     fun matchesMeshLocator(dataExpression: CwtDataExpression): Boolean {
         return dataExpression.type == CwtDataTypes.MeshLocator
     }
-
-    fun matchesAnyDataType(dataExpression: CwtDataExpression): Boolean {
-        return dataExpression.type == CwtDataTypes.Any
-            || (dataExpression.type == CwtDataTypes.Scalar && dataExpression.metadata.wildcard)
-    }
 }

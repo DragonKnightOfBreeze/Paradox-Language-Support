@@ -269,12 +269,12 @@ object CwtConfigManipulationService {
         val otherExpressionString = otherDataExpression.expressionString
         when (dataType) {
             CwtDataTypes.Any -> return otherExpressionString
+            CwtDataTypes.Literal ->  when (otherDataType) {
+                CwtDataTypes.ColorField -> return null
+                else -> return otherExpressionString
+            }
             CwtDataTypes.Scalar -> when (otherDataType) {
                 CwtDataTypes.ColorField -> return null
-                CwtDataTypes.Scalar -> {
-                    if (dataExpression.metadata.wildcard && otherDataExpression.metadata.wildcard) return "wildcard_scalar"
-                    return "scalar"
-                }
                 else -> return otherExpressionString
             }
             CwtDataTypes.Int -> when (otherDataType) {
