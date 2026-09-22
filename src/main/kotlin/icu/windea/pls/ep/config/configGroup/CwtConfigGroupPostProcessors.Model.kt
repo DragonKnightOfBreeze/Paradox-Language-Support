@@ -31,9 +31,8 @@ import it.unimi.dsi.fastutil.ints.IntArrayList
 import it.unimi.dsi.fastutil.ints.IntArraySet
 import it.unimi.dsi.fastutil.objects.ObjectArrayList
 import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet
-import kotlin.collections.iterator
 
-class CwtModelConfigGroupPostProcessor: CwtConfigGroupPostProcessor {
+class CwtModelConfigGroupPostProcessor : CwtConfigGroupPostProcessor {
     // NOTE 3.0.3 models should be also pre-computed by `CwtConfigGroupPostProcessor`, instead of `CwtConfigGroupProcessor`
     // otherwise, for example, `sortedByPriority` will not work correctly for data types that use dynamic priority (e.g., `CwtDataTypes.EnumValue`)
 
@@ -215,21 +214,27 @@ class CwtModelConfigGroupPostProcessor: CwtConfigGroupPostProcessor {
             for ((unionName, union) in configGroup.unions) {
                 val const = CaseInsensitiveStringKeyMap<CwtValueConfig>()
                 val nonConst = ObjectArrayList<CwtValueConfig>()
+                var constConfigCount = 0
+                var nonConstConfigCount = 0
 
                 for (valueConfig in union.valueConfigs) {
                     val configExpression = valueConfig.configExpression
                     if (configExpression.type == CwtDataTypes.Constant) {
                         const[configExpression.expressionString] = valueConfig
+                        constConfigCount += 1
                     } else {
                         nonConst += valueConfig
+                        nonConstConfigCount += 1
                     }
                 }
                 if (const.isNotEmpty()) {
                     forConst[unionName] = const
+                    configCountForConst.put(unionName, constConfigCount)
                 }
                 if (nonConst.isNotEmpty()) {
-                    val nonConstKeysSorted = nonConst.sortedByPriority({ it.configExpression }, { configGroup })
-                    forNonConstSorted[unionName] = ObjectArrayList(nonConstKeysSorted)
+                    val nonConstSorted = nonConst.sortedByPriority({ it.configExpression }, { configGroup })
+                    forNonConstSorted[unionName] = ObjectArrayList(nonConstSorted)
+                    configCountForNonConst.put(unionName, nonConstConfigCount)
                 }
             }
         }
@@ -240,20 +245,26 @@ class CwtModelConfigGroupPostProcessor: CwtConfigGroupPostProcessor {
             for ((aliasName, aliases) in configGroup.aliasGroups) {
                 val const = CaseInsensitiveStringKeyMap<String>()
                 val nonConst = ObjectLinkedOpenHashSet<String>()
-                for (key in aliases.keys) {
+                var constConfigCount = 0
+                var nonConstConfigCount = 0
+                for ((key, aliasConfigs) in aliases) {
                     val configExpression = CwtDataExpression.resolve(key, CwtDataExpressionRole.Key)
                     if (configExpression.type == CwtDataTypes.Constant) {
                         const[key] = key
+                        constConfigCount += 1
                     } else {
                         nonConst += key
+                        nonConstConfigCount += aliasConfigs.size
                     }
                 }
                 if (const.isNotEmpty()) {
                     forConst[aliasName] = const
+                    configCountForConst.put(aliasName, constConfigCount)
                 }
                 if (nonConst.isNotEmpty()) {
                     val nonConstSorted = nonConst.sortedByPriority({ CwtDataExpression.resolve(it, CwtDataExpressionRole.Key) }, { configGroup })
                     forNonConstSorted[aliasName] = ObjectLinkedOpenHashSet(nonConstSorted)
+                    configCountForNonConst.put(aliasName, nonConstConfigCount)
                 }
             }
         }
