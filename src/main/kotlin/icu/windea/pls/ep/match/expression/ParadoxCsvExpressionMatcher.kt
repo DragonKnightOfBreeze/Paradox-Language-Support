@@ -11,7 +11,7 @@ import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.lang.match.ParadoxExpressionMatchContext
 import icu.windea.pls.lang.match.ParadoxExpressionMatchService
 import icu.windea.pls.lang.match.ParadoxMatchResult
-import icu.windea.pls.lang.match.ParadoxMatchService
+import icu.windea.pls.lang.match.ParadoxMatchOptionsService
 import icu.windea.pls.model.expressions.ParadoxExpression
 
 /**
@@ -22,7 +22,7 @@ import icu.windea.pls.model.expressions.ParadoxExpression
  * @see ParadoxExpression
  * @see CwtDataExpression
  * @see ParadoxCsvExpressionElement
- * @see ParadoxMatchService
+ * @see ParadoxMatchOptionsService
  * @see ParadoxExpressionMatchService
  */
 interface ParadoxCsvExpressionMatcher {

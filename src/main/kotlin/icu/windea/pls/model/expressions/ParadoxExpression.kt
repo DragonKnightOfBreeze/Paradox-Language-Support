@@ -16,7 +16,7 @@ import icu.windea.pls.ep.resolve.expression.ParadoxLocalisationExpressionSupport
 import icu.windea.pls.ep.resolve.expression.ParadoxScriptExpressionSupport
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOptions
-import icu.windea.pls.lang.match.ParadoxMatchService
+import icu.windea.pls.lang.match.ParadoxMatchOptionsService
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
 import icu.windea.pls.lang.psi.resolved
@@ -224,7 +224,7 @@ private class ParadoxScriptedVariableReferenceBasedExpression(
     @Volatile private var _resolvedExpression: ParadoxExpression? = null // endregion
 
     private fun computeResolvedExpression(): ParadoxExpression {
-        if (ParadoxMatchService.isDumb(options)) return ParadoxExpression.resolveUnknown()
+        if (ParadoxMatchOptionsService.isDumb(options)) return ParadoxExpression.resolveUnknown()
         val resolved = element.resolved() ?: return ParadoxExpression.resolveUnknown()
         return ParadoxPsiBasedExpression(resolved)
     }

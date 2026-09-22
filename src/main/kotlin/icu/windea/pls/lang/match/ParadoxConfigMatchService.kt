@@ -36,6 +36,7 @@ import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.runWithRecursionGuard
 import icu.windea.pls.core.sequences.process
+import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.ProcessorFactory
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
@@ -75,34 +76,49 @@ import icu.windea.pls.script.psi.stringValue
 
 @Optimized
 object ParadoxConfigMatchService {
-    private val CwtConfigGroup.typeConfigCandidatesCache by registerKeyWithThis(CwtConfigGroup.Keys) {
+    object Keys : KeyRegistry()
+
+    private val CwtConfigGroup.typeConfigCandidatesCache by registerKeyWithThis(Keys) {
         // 3.0.3 use expireAfterAccess to optimize memory
         CacheBuilder("expireAfterAccess=1h").build<ParadoxPath, List<CwtTypeConfig>> { path ->
             types.values.filter { CwtConfigMatchService.matchesFilePath(it, path) }.optimized()
         }.cancelable()
     }
-    private val CwtConfigGroup.complexEnumConfigCandidatesCache by registerKeyWithThis(CwtConfigGroup.Keys) {
+    private val CwtConfigGroup.complexEnumConfigCandidatesCache by registerKeyWithThis(Keys) {
         // 3.0.3 use expireAfterAccess to optimize memory
         CacheBuilder("expireAfterAccess=1h").build<ParadoxPath, List<CwtComplexEnumConfig>> { path ->
             complexEnums.values.filter { CwtConfigMatchService.matchesFilePath(it, path) }.optimized()
         }.cancelable()
     }
-    private val CwtConfigGroup.rowConfigCandidatesCache by registerKeyWithThis(CwtConfigGroup.Keys) {
+    private val CwtConfigGroup.rowConfigCandidatesCache by registerKeyWithThis(Keys) {
         // 3.0.3 use expireAfterAccess to optimize memory
         CacheBuilder("expireAfterAccess=1h").build<ParadoxPath, List<CwtRowConfig>> { path ->
             rows.values.filter { CwtConfigMatchService.matchesFilePath(it, path) }.optimized()
         }.cancelable()
     }
 
-    // region File Level
+    // region Members and Expressions
 
-    fun isMatchedOnFileLevel(file: PsiFile, configGroup: CwtConfigGroup, path: ParadoxPath): Boolean {
-        return when {
-            file is ParadoxScriptFile -> configGroup.types.values.any { CwtConfigMatchService.matchesFilePath(it, path) }
-                || configGroup.complexEnums.values.any { CwtConfigMatchService.matchesFilePath(it, path) }
-            file is ParadoxCsvFile -> configGroup.rows.values.any { CwtConfigMatchService.matchesFilePath(it, path) }
-            else -> true // meaningless, return true here
-        }
+    /**
+     * 根据匹配结果，从输入的一组成员规则 [configs] 收集匹配候选项。
+     */
+    fun collectCandidates(context: ParadoxExpressionMatchContext, configs: List<CwtMemberConfig<*>>, forValue: Boolean = false): List<ParadoxMatchCandidate> {
+        return ParadoxMatchCandidateService.collect(context, configs, forValue)
+    }
+
+    /**
+     * 处理输入的一组匹配候选项 [candidates]，进行进一步的匹配。
+     */
+    fun processCandidates(context: ParadoxExpressionMatchContext, candidates: List<ParadoxMatchCandidate>): List<ParadoxMatchCandidate> {
+        return ParadoxMatchCandidateService.process(context, candidates)
+    }
+
+    /**
+     * 处理输入的一组待进一步匹配的规则 [configs]，进行后续优化。
+     */
+    fun <T : CwtMemberConfig<*>> optimize(context: ParadoxExpressionMatchContext, configs: List<T>): List<T> {
+        if (configs.isEmpty()) return emptyList()
+        return ParadoxExpressionMatchService.optimizeScriptExpression(context, configs)
     }
 
     // endregion
@@ -638,6 +654,19 @@ object ParadoxConfigMatchService {
             CwtRowType.Index -> {
                 rowConfig.columns.getOrNull(columnIndex)
             }
+        }
+    }
+
+    // endregion
+
+    // region File Level
+
+    fun isMatchedOnFileLevel(file: PsiFile, configGroup: CwtConfigGroup, path: ParadoxPath): Boolean {
+        return when {
+            file is ParadoxScriptFile -> configGroup.types.values.any { CwtConfigMatchService.matchesFilePath(it, path) }
+                || configGroup.complexEnums.values.any { CwtConfigMatchService.matchesFilePath(it, path) }
+            file is ParadoxCsvFile -> configGroup.rows.values.any { CwtConfigMatchService.matchesFilePath(it, path) }
+            else -> true // meaningless, return true here
         }
     }
 

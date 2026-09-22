@@ -1,6 +1,8 @@
 package icu.windea.pls.lang.resolve
 
+import icu.windea.pls.config.config.delegated.CwtEnumConfig
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
+import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.ep.resolve.modifier.ParadoxDefinitionModifierCategoryProvider
 import icu.windea.pls.ep.resolve.modifier.ParadoxModifierCategoryProvider
@@ -64,5 +66,28 @@ object ParadoxModifierCategoryService {
             ep.getModifierCategories(definitionInfo)?.let { return it }
         }
         return null
+    }
+
+    fun getModifierCategoriesFromConfig(value: String?, configGroup: CwtConfigGroup): Map<String, CwtModifierCategoryConfig> {
+        if (value.isNullOrEmpty()) return emptyMap()
+        val enumConfig = configGroup.enums["scripted_modifier_category"] ?: return emptyMap()
+        return getModifierCategoriesFromOptionData(value, enumConfig)
+    }
+
+    private fun getModifierCategoriesFromOptionData(value: String, enumConfig: CwtEnumConfig): Map<String, CwtModifierCategoryConfig> {
+        val keys = getModifierCategoriesOptionMetadata(value, enumConfig)
+        if (keys.isNullOrEmpty()) return emptyMap()
+        val modifierCategories = enumConfig.configGroup.modifierCategories
+        val result = mutableMapOf<String, CwtModifierCategoryConfig>()
+        for (key in keys) {
+            val config = modifierCategories[key] ?: continue
+            result[key] = config
+        }
+        return result
+    }
+
+    private fun getModifierCategoriesOptionMetadata(value: String, enumConfig: CwtEnumConfig): Set<String>? {
+        val valueConfig = enumConfig.valueConfigMap[value] ?: return null
+        return valueConfig.optionMetadata.modifierCategories
     }
 }

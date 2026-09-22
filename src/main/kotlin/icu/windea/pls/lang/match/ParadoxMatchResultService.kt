@@ -15,7 +15,7 @@ import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.selectRootFile
 
-object ParadoxMatchResultContext {
+object ParadoxMatchResultService {
     object Keys : KeyRegistry() {
         val cacheForDefinitions by registerKeyForCache(ChronicleModificationTrackers.ScriptFile)
         val cacheForLocalisations by registerKeyForCache(ChronicleModificationTrackers.LocalisationFile, ChronicleModificationTrackers.PreferredLocale)

@@ -28,7 +28,7 @@ import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.csv.psi.ParadoxCsvPsiService
-import icu.windea.pls.lang.match.ParadoxMatchService
+import icu.windea.pls.lang.match.ParadoxMatchOptionsService
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.isComplexExpression
 import icu.windea.pls.lang.psi.isDefinitionTypeKey
@@ -325,7 +325,7 @@ object ParadoxExpressionManager {
     }
 
     private fun getReferencesFromCache(element: ParadoxExpressionElement): Array<out PsiReference> {
-        val isDumb = ParadoxMatchService.isDumb()
+        val isDumb = ParadoxMatchOptionsService.isDumb()
         val cacheKey = if (isDumb) Keys.cachedReferencesDumb else Keys.cachedReferences
         return CachedValuesManager.getCachedValue(element, cacheKey) {
             ProgressManager.checkCanceled()
@@ -367,7 +367,7 @@ object ParadoxExpressionManager {
     }
 
     private fun getExpressionReferencesFromCache(element: ParadoxExpressionElement): Array<out PsiReference> {
-        val isDumb = ParadoxMatchService.isDumb()
+        val isDumb = ParadoxMatchOptionsService.isDumb()
         val cacheKey = if (isDumb) Keys.cachedExpressionReferencesDumb else Keys.cachedExpressionReferences
         return CachedValuesManager.getCachedValue(element, cacheKey) {
             ProgressManager.checkCanceled()

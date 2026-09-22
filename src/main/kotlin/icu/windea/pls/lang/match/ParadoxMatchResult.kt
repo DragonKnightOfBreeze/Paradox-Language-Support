@@ -6,7 +6,7 @@ import icu.windea.pls.core.runCatchingCancelable
 /**
  * 匹配结果。
  *
- * @see ParadoxMatchService
+ * @see ParadoxMatchResultService
  */
 sealed interface ParadoxMatchResult {
     fun get(options: ParadoxMatchOptions? = null): Boolean
@@ -83,9 +83,9 @@ sealed interface ParadoxMatchResult {
 
         private fun skip(options: ParadoxMatchOptions?): Boolean {
             return when {
-                this is LazyBlockAwareMatch -> ParadoxMatchService.skipBlock(options)
-                this is LazyIndexAwareMatch -> ParadoxMatchService.skipIndex(options)
-                this is LazyScopeAwareMatch -> ParadoxMatchService.skipScope(options)
+                this is LazyBlockAwareMatch -> ParadoxMatchOptionsService.skipBlock(options)
+                this is LazyIndexAwareMatch -> ParadoxMatchOptionsService.skipIndex(options)
+                this is LazyScopeAwareMatch -> ParadoxMatchOptionsService.skipScope(options)
                 else -> false
             }
         }

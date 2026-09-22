@@ -9,16 +9,11 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.util.parents
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.base.ChronicleModificationTrackers
-import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
-import icu.windea.pls.config.config.delegated.CwtEnumConfig
-import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.config.config.delegated.CwtRowConfig
-import icu.windea.pls.config.config.isSamePointer
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.mockConfigModel
 import icu.windea.pls.config.filterProperties
@@ -26,13 +21,11 @@ import icu.windea.pls.config.filterValues
 import icu.windea.pls.config.manipulation.CwtConfigManipulationService
 import icu.windea.pls.config.match.CwtConfigExpressionMatchService
 import icu.windea.pls.config.sortedByPriority
-import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.cache.cancelable
 import icu.windea.pls.core.cache.createNestedCache
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.collections.CaseInsensitiveStringSet
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.mapFast
 import icu.windea.pls.core.collections.mapNotNullFast
@@ -41,7 +34,6 @@ import icu.windea.pls.core.createCachedValue
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.sequences.findIsInstance
 import icu.windea.pls.core.util.KeyRegistry
-import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
@@ -63,12 +55,11 @@ import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.match.ParadoxExpressionMatchContext
 import icu.windea.pls.lang.match.ParadoxExpressionMatchService
 import icu.windea.pls.lang.match.ParadoxMatchOptions
-import icu.windea.pls.lang.match.ParadoxMatchService
+import icu.windea.pls.lang.match.ParadoxMatchOptionsService
 import icu.windea.pls.lang.match.toHashString
 import icu.windea.pls.lang.select.*
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxConfigManager
-import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.model.expressions.ParadoxExpression
 import icu.windea.pls.model.orSpecific
 import icu.windea.pls.model.type.ParadoxExpressionRole
@@ -85,9 +76,7 @@ import kotlin.concurrent.getOrSet
 
 @Optimized
 object ParadoxConfigService {
-    object Keys : KeyRegistry() {
-        val inBlockKeys by registerKey<Set<String>>(this)
-    }
+    object Keys : KeyRegistry()
 
     private val CwtConfigGroup.configsCache by registerKeyWithThis(CwtConfigGroup.Keys) {
         // rootFile -> cacheKey -> configs
@@ -110,6 +99,8 @@ object ParadoxConfigService {
                 .withDependencyItems(ModificationTracker.NEVER_CHANGED)
         }
     }
+
+    // region Members and Expressions
 
     /**
      * @see CwtRelatedConfigProvider.getRelatedConfigs
@@ -289,10 +280,10 @@ object ParadoxConfigService {
     private fun matchConfigsForConfigContext(element: ParadoxScriptMember, expression: ParadoxExpression, configs: List<CwtMemberConfig<*>>, configGroup: CwtConfigGroup, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>> {
         ProgressManager.checkCanceled()
         val context = ParadoxExpressionMatchContext(element, expression, configGroup, options)
-        val candidates = ParadoxMatchService.collectCandidates(context, configs)
-        val processedCandidates = ParadoxMatchService.processCandidates(context, candidates)
+        val candidates = ParadoxConfigMatchService.collectCandidates(context, configs)
+        val processedCandidates = ParadoxConfigMatchService.processCandidates(context, candidates)
         val processed = processedCandidates.mapFast { it.value }
-        val optimized = ParadoxMatchService.optimize(context, processed)
+        val optimized = ParadoxConfigMatchService.optimize(context, processed)
         val result = optimized
         return result
     }
@@ -349,7 +340,7 @@ object ParadoxConfigService {
 
         if (element is ParadoxScriptProperty && configContext.isDeclarationRoot()) {
             // 如果允许匹配声明的根对应的语法树节点，则这里直接返回所有作为上下文的规则，否则直接返回空列表
-            if (ParadoxMatchService.forDeclarationRoot(options)) return contextConfigs
+            if (ParadoxMatchOptionsService.forDeclarationRoot(options)) return contextConfigs
             return emptyList()
         }
 
@@ -363,22 +354,22 @@ object ParadoxConfigService {
                 ProgressManager.checkCanceled()
                 val keyExpression = element.propertyKey.let { ParadoxExpression.resolve(it, options) }
                 val context = ParadoxExpressionMatchContext(element, keyExpression, configGroup, options)
-                val candidates = ParadoxMatchService.collectCandidates(context, configs)
+                val candidates = ParadoxConfigMatchService.collectCandidates(context, configs)
                 if (candidates.isEmpty()) {
                     // 如果无结果，则直接返回空列表
                     return emptyList()
                 }
-                val processedCandidates = ParadoxMatchService.processCandidates(context, candidates)
+                val processedCandidates = ParadoxConfigMatchService.processCandidates(context, candidates)
                 if (processedCandidates.isEmpty()) {
                     // 如果无结果，则需要考虑回退（返回上一步已匹配得到的规则）
-                    if (ParadoxMatchService.lenient(options)) return candidates.mapFast { it.value }
+                    if (ParadoxMatchOptionsService.lenient(options)) return candidates.mapFast { it.value }
                     return emptyList()
                 }
                 val processed = processedCandidates.mapFast { it.value }
-                val optimized = ParadoxMatchService.optimize(context, processed)
+                val optimized = ParadoxConfigMatchService.optimize(context, processed)
                 if (optimized.isEmpty()) {
                     // 如果无结果，则需要考虑回退（返回上一步已匹配得到的规则）
-                    if (ParadoxMatchService.lenient(options) || ParadoxMatchService.forExpression(options)) return processed
+                    if (ParadoxMatchOptionsService.lenient(options) || ParadoxMatchOptionsService.forExpression(options)) return processed
                     return emptyList()
                 }
                 val result = optimized // 这里需要进行后续优化
@@ -390,16 +381,16 @@ object ParadoxConfigService {
                     return result
                 }
                 val contextForValue = ParadoxExpressionMatchContext(element, valueExpression, configGroup, options)
-                val candidatesForValue = ParadoxMatchService.collectCandidates(contextForValue, result, forValue = true)
+                val candidatesForValue = ParadoxConfigMatchService.collectCandidates(contextForValue, result, forValue = true)
                 if (candidatesForValue.isEmpty()) {
                     // 如果无结果，则需要考虑回退（返回上一步已匹配得到的规则）
-                    if (ParadoxMatchService.lenient(options) || ParadoxMatchService.forExpression(options)) return result
+                    if (ParadoxMatchOptionsService.lenient(options) || ParadoxMatchOptionsService.forExpression(options)) return result
                     return emptyList()
                 }
-                val processedCandidatesForValue = ParadoxMatchService.processCandidates(contextForValue, candidatesForValue)
+                val processedCandidatesForValue = ParadoxConfigMatchService.processCandidates(contextForValue, candidatesForValue)
                 if (processedCandidatesForValue.isEmpty()) {
                     // 如果无结果，则需要考虑回退（返回上一步已匹配得到的规则）
-                    if (ParadoxMatchService.lenient(options) || ParadoxMatchService.forExpression(options)) return candidatesForValue.mapFast { it.value }
+                    if (ParadoxMatchOptionsService.lenient(options) || ParadoxMatchOptionsService.forExpression(options)) return candidatesForValue.mapFast { it.value }
                     return emptyList()
                 }
                 val processedForValue = processedCandidatesForValue.mapFast { it.value }
@@ -423,23 +414,23 @@ object ParadoxConfigService {
                     return configs
                 }
                 val context = ParadoxExpressionMatchContext(element, valueExpression, configGroup, options)
-                val candidates = ParadoxMatchService.collectCandidates(context, configs)
+                val candidates = ParadoxConfigMatchService.collectCandidates(context, configs)
                 if (candidates.isEmpty()) {
                     // 如果无结果，则需要考虑回退（返回上一步已匹配得到的规则）
-                    if (ParadoxMatchService.lenient(options)) return configs
+                    if (ParadoxMatchOptionsService.lenient(options)) return configs
                     return emptyList()
                 }
-                val processedCandidates = ParadoxMatchService.processCandidates(context, candidates)
+                val processedCandidates = ParadoxConfigMatchService.processCandidates(context, candidates)
                 if (processedCandidates.isEmpty()) {
                     // 如果无结果，则需要考虑回退（返回上一步已匹配得到的规则）
-                    if (ParadoxMatchService.lenient(options)) return candidates.mapFast { it.value }
+                    if (ParadoxMatchOptionsService.lenient(options)) return candidates.mapFast { it.value }
                     return emptyList()
                 }
                 val processed = processedCandidates.mapFast { it.value }
-                val optimized = ParadoxMatchService.optimize(context, processed)
+                val optimized = ParadoxConfigMatchService.optimize(context, processed)
                 if (optimized.isEmpty()) {
                     // 如果无结果，则需要考虑回退（返回上一步已匹配得到的规则）
-                    if (ParadoxMatchService.lenient(options)) return processed
+                    if (ParadoxMatchOptionsService.lenient(options)) return processed
                     return emptyList()
                 }
                 val result = optimized // 这里需要进行后续优化
@@ -448,6 +439,10 @@ object ParadoxConfigService {
             }
         }
     }
+
+    // endregion
+
+    // region Row Config
 
     fun resolveRowConfig(file: ParadoxCsvFile): CwtRowConfig? {
         val project = file.project
@@ -479,71 +474,5 @@ object ParadoxConfigService {
         return ParadoxExpressionMatchService.matchCsvExpression(matchContext, valueConfig.valueExpression).get()
     }
 
-    fun getInBlockKeys(config: CwtMemberConfig<*>): Set<String> {
-        return config.getOrPutUserData(Keys.inBlockKeys) { doGetInBlockKeys(config).optimized() }
-    }
-
-    private fun doGetInBlockKeys(config: CwtMemberConfig<*>): Set<@CaseInsensitive String> {
-        val childConfigs = config.configs
-        if (childConfigs.isNullOrEmpty()) return emptySet()
-        val keys = CaseInsensitiveStringSet()
-        childConfigs.forEachFast { if (it is CwtPropertyConfig && isInBlockKey(it)) keys.add(it.key) }
-        if (keys.isEmpty()) return emptySet()
-        when (config) {
-            is CwtPropertyConfig -> {
-                val propertyConfig = config
-                val configs1 = propertyConfig.parentConfig?.configs
-                if (configs1.isNullOrEmpty()) return keys
-                configs1.forEachFast f@{ c ->
-                    val childConfigs1 = c.configs
-                    if (childConfigs1.isNullOrEmpty()) return@f
-                    if (c.isSamePointer(propertyConfig) || c !is CwtPropertyConfig || !c.key.equals(propertyConfig.key, true)) return@f
-                    childConfigs1.forEachFast { if (it is CwtPropertyConfig && isInBlockKey(it)) keys.remove(it.key) }
-                }
-            }
-            is CwtValueConfig -> {
-                val propertyConfig = config.propertyConfig
-                val configs1 = propertyConfig?.parentConfig?.configs
-                if (configs1.isNullOrEmpty()) return keys
-                configs1.forEachFast f@{ c ->
-                    val childConfigs1 = c.configs
-                    if (childConfigs1.isNullOrEmpty()) return@f
-                    if (c.isSamePointer(propertyConfig) || c !is CwtPropertyConfig || !c.key.equals(propertyConfig.key, true)) return@f
-                    childConfigs1.forEachFast { if (it is CwtPropertyConfig && isInBlockKey(it)) keys.remove(it.key) }
-                }
-            }
-        }
-        return keys
-    }
-
-    private fun isInBlockKey(config: CwtPropertyConfig): Boolean {
-        val gameType = config.configGroup.gameType
-        if (config.keyExpression.type != CwtDataTypes.Constant) return false
-        if (config.optionMetadata.cardinality?.isRequired() == false) return false
-        if (ParadoxInlineScriptManager.isMatched(config.key, gameType)) return false // 排除是内联脚本用法的情况
-        return true
-    }
-
-    fun getModifierCategories(value: String?, configGroup: CwtConfigGroup): Map<String, CwtModifierCategoryConfig> {
-        if (value.isNullOrEmpty()) return emptyMap()
-        val enumConfig = configGroup.enums["scripted_modifier_category"] ?: return emptyMap()
-        return doGetModifierCategories(value, enumConfig)
-    }
-
-    private fun doGetModifierCategories(value: String, enumConfig: CwtEnumConfig): Map<String, CwtModifierCategoryConfig> {
-        val keys = doGetModifierCategoriesOptionMetadata(value, enumConfig)
-        if (keys.isNullOrEmpty()) return emptyMap()
-        val modifierCategories = enumConfig.configGroup.modifierCategories
-        val result = mutableMapOf<String, CwtModifierCategoryConfig>()
-        for (key in keys) {
-            val config = modifierCategories[key] ?: continue
-            result[key] = config
-        }
-        return result
-    }
-
-    private fun doGetModifierCategoriesOptionMetadata(value: String, enumConfig: CwtEnumConfig): Set<String>? {
-        val valueConfig = enumConfig.valueConfigMap[value] ?: return null
-        return valueConfig.optionMetadata.modifierCategories
-    }
+    // endregion
 }

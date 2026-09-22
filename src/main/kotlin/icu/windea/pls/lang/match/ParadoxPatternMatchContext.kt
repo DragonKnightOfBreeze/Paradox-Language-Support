@@ -16,6 +16,7 @@ import icu.windea.pls.model.ParadoxGameType
  * @property configExpression 可作为模式来源的规则表达式。
  * @property configGroup 规则分组。
  *
+ * @see ParadoxPatternMatchService
  * @see ParadoxPatternMatcher
  */
 data class ParadoxPatternMatchContext(

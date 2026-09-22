@@ -26,7 +26,7 @@ import icu.windea.pls.lang.match.CwtSubtypeConfigMatchContext
 import icu.windea.pls.lang.match.CwtTypeConfigMatchContext
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.match.ParadoxMatchOptions
-import icu.windea.pls.lang.match.ParadoxMatchService
+import icu.windea.pls.lang.match.ParadoxMatchOptionsService
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.psi.stringValue
 import icu.windea.pls.lang.search.util.preferLocale
@@ -152,7 +152,7 @@ object ParadoxDefinitionService {
         }
 
         // NOTE 2.1.8 avoid relying on non-indexed file data (e.g., super definition) when indexing (through this may loss some information)
-        if (ParadoxMatchService.isDumb(options)) return result
+        if (ParadoxMatchOptionsService.isDumb(options)) return result
 
         // NOTE 2.1.8 may inherit certain subtypes from super definitions
         processSubtypeConfigsFromInherit(definitionInfo, result)

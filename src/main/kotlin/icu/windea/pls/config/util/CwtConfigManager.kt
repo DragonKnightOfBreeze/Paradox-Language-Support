@@ -10,6 +10,7 @@ import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.parentOfType
 import icu.windea.pls.config.CwtConfigType
+import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtConfigService
 import icu.windea.pls.config.config.CwtFilePathMatchableConfig
@@ -18,13 +19,18 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.aliasConfig
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
+import icu.windea.pls.config.config.delegated.CwtEnumConfig
 import icu.windea.pls.config.config.delegated.CwtMacroConfig
+import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.config.inlineConfig
+import icu.windea.pls.config.config.isSamePointer
 import icu.windea.pls.config.config.singleAliasConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.collections.CaseInsensitiveStringSet
 import icu.windea.pls.core.collections.filterFast
 import icu.windea.pls.core.collections.filterIsInstanceFast
 import icu.windea.pls.core.collections.forEachFast
@@ -45,6 +51,7 @@ import icu.windea.pls.cwt.CwtLanguage
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.cwt.psi.CwtMember
 import icu.windea.pls.cwt.psi.CwtRootBlock
+import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.model.paths.CwtConfigPath
 import kotlin.io.path.name
 
@@ -57,6 +64,7 @@ object CwtConfigManager {
         val cachedDocumentation by registerKey<CachedValue<String>>(Keys)
         val filePathPatterns by registerKey<Set<String>>(Keys)
         val filePathPatternsForPriority by registerKey<Set<String>>(Keys)
+        val withinBlockKeys by registerKey<Set<String>>(this)
 
         /** 用于在解析引用时，将规则临时写入到对应的PSI的用户数据中。 */
         val config by registerKey<CwtConfig<*>>(this)
@@ -175,6 +183,15 @@ object CwtConfigManager {
         }
     }
 
+    fun findLiterals(configs: List<CwtMemberConfig<*>>): Set<String> {
+        val configGroup = configs.firstOrNull()?.configGroup ?: return emptySet()
+        val result = mutableSetOf<String>()
+        configs.forEachFast { config ->
+            CwtConfigService.collectLiterals(config, configGroup, result)
+        }
+        return result
+    }
+
     fun getEntryName(config: CwtConfig<*>): String? {
         return when {
             config is CwtPropertyConfig -> config.key
@@ -221,12 +238,71 @@ object CwtConfigManager {
         return suffixes.map { name + it }
     }
 
-    fun findLiterals(configs: List<CwtMemberConfig<*>>): Set<String> {
-        val configGroup = configs.firstOrNull()?.configGroup ?: return emptySet()
-        val result = mutableSetOf<String>()
-        configs.forEachFast { config ->
-            CwtConfigService.collectLiterals(config, configGroup, result)
+    fun getWithinBlockKeys(config: CwtMemberConfig<*>): Set<String> {
+        return config.getOrPutUserData(Keys.withinBlockKeys) { doGetInBlockKeys(config).optimized() }
+    }
+
+    private fun doGetInBlockKeys(config: CwtMemberConfig<*>): Set<@CaseInsensitive String> {
+        val childConfigs = config.configs
+        if (childConfigs.isNullOrEmpty()) return emptySet()
+        val keys = CaseInsensitiveStringSet()
+        childConfigs.forEachFast { if (it is CwtPropertyConfig && isInBlockKey(it)) keys.add(it.key) }
+        if (keys.isEmpty()) return emptySet()
+        when (config) {
+            is CwtPropertyConfig -> {
+                val propertyConfig = config
+                val configs1 = propertyConfig.parentConfig?.configs
+                if (configs1.isNullOrEmpty()) return keys
+                configs1.forEachFast f@{ c ->
+                    val childConfigs1 = c.configs
+                    if (childConfigs1.isNullOrEmpty()) return@f
+                    if (c.isSamePointer(propertyConfig) || c !is CwtPropertyConfig || !c.key.equals(propertyConfig.key, true)) return@f
+                    childConfigs1.forEachFast { if (it is CwtPropertyConfig && isInBlockKey(it)) keys.remove(it.key) }
+                }
+            }
+            is CwtValueConfig -> {
+                val propertyConfig = config.propertyConfig
+                val configs1 = propertyConfig?.parentConfig?.configs
+                if (configs1.isNullOrEmpty()) return keys
+                configs1.forEachFast f@{ c ->
+                    val childConfigs1 = c.configs
+                    if (childConfigs1.isNullOrEmpty()) return@f
+                    if (c.isSamePointer(propertyConfig) || c !is CwtPropertyConfig || !c.key.equals(propertyConfig.key, true)) return@f
+                    childConfigs1.forEachFast { if (it is CwtPropertyConfig && isInBlockKey(it)) keys.remove(it.key) }
+                }
+            }
+        }
+        return keys
+    }
+
+    private fun isInBlockKey(config: CwtPropertyConfig): Boolean {
+        val gameType = config.configGroup.gameType
+        if (config.keyExpression.type != CwtDataTypes.Constant) return false
+        if (config.optionMetadata.cardinality?.isRequired() == false) return false
+        if (ParadoxInlineScriptManager.isMatched(config.key, gameType)) return false // 排除是内联脚本用法的情况
+        return true
+    }
+
+    fun getModifierCategories(value: String?, configGroup: CwtConfigGroup): Map<String, CwtModifierCategoryConfig> {
+        if (value.isNullOrEmpty()) return emptyMap()
+        val enumConfig = configGroup.enums["scripted_modifier_category"] ?: return emptyMap()
+        return doGetModifierCategories(value, enumConfig)
+    }
+
+    private fun doGetModifierCategories(value: String, enumConfig: CwtEnumConfig): Map<String, CwtModifierCategoryConfig> {
+        val keys = doGetModifierCategoriesOptionMetadata(value, enumConfig)
+        if (keys.isNullOrEmpty()) return emptyMap()
+        val modifierCategories = enumConfig.configGroup.modifierCategories
+        val result = mutableMapOf<String, CwtModifierCategoryConfig>()
+        for (key in keys) {
+            val config = modifierCategories[key] ?: continue
+            result[key] = config
         }
         return result
+    }
+
+    private fun doGetModifierCategoriesOptionMetadata(value: String, enumConfig: CwtEnumConfig): Set<String>? {
+        val valueConfig = enumConfig.valueConfigMap[value] ?: return null
+        return valueConfig.optionMetadata.modifierCategories
     }
 }

@@ -11,7 +11,7 @@ import icu.windea.pls.core.util.values.LazyValue
 import icu.windea.pls.lang.match.ParadoxExpressionMatchContext
 import icu.windea.pls.lang.match.ParadoxExpressionMatchService
 import icu.windea.pls.lang.match.ParadoxMatchResult
-import icu.windea.pls.lang.match.ParadoxMatchService
+import icu.windea.pls.lang.match.ParadoxMatchOptionsService
 import icu.windea.pls.model.expressions.ParadoxExpression
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 
@@ -21,7 +21,7 @@ import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
  * @see ParadoxExpression
  * @see CwtDataExpression
  * @see ParadoxScriptExpressionElement
- * @see ParadoxMatchService
+ * @see ParadoxMatchOptionsService
  * @see ParadoxExpressionMatchService
  */
 interface ParadoxScriptExpressionMatcher {

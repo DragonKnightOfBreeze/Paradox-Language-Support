@@ -16,7 +16,7 @@ import kotlin.experimental.or
  * @property skipIndex 对于 [ParadoxMatchResult.LazyIndexAwareMatch]，直接认为匹配。
  * @property skipScope 对于 [ParadoxMatchResult.LazyScopeAwareMatch]，直接认为匹配。
  *
- * @see ParadoxMatchService
+ * @see ParadoxMatchOptionsService
  */
 data class ParadoxMatchOptions(
     val lenient: Boolean = true,

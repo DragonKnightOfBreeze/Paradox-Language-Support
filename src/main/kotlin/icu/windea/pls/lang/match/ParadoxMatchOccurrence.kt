@@ -1,5 +1,8 @@
 package icu.windea.pls.lang.match
 
+/**
+ * @see ParadoxMatchOccurrenceService
+ */
 data class ParadoxMatchOccurrence(
     var actual: Int,
     var min: Int?,

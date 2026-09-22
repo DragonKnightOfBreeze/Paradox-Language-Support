@@ -18,6 +18,7 @@ import icu.windea.pls.model.expressions.ParadoxExpression
  * @property expression 脚本表达式。
  * @property configGroup 规则分组。
  *
+ * @see ParadoxExpressionMatchService
  * @see ParadoxScriptExpressionMatcher
  * @see ParadoxCsvExpressionMatcher
  * @see ParadoxScriptExpressionMatchOptimizer

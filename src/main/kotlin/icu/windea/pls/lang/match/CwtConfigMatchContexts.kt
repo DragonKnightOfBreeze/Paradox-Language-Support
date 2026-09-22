@@ -28,7 +28,7 @@ data class CwtSubtypeConfigMatchContext(
     val gameType: ParadoxGameType get() = configGroup.gameType
 
     // NOTE 2.1.8 构建索引时不能内联展开子成员（可能需要研究是否可以绕过，或者是否存在可行替代方案）
-    val inline = !ParadoxMatchService.isDumb(options)
+    val inline = !ParadoxMatchOptionsService.isDumb(options)
 }
 
 data class CwtComplexEnumConfigMatchContext(

@@ -20,7 +20,7 @@ import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.lang.definitionInjectionInfo
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.match.ParadoxMatchOptions
-import icu.windea.pls.lang.match.ParadoxMatchService
+import icu.windea.pls.lang.match.ParadoxMatchOptionsService
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.lang.resolve.ParadoxDefinitionInjectionService
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
@@ -147,7 +147,7 @@ object ParadoxDefinitionInjectionManager {
 
     private fun getSubtypeConfigsFromCache(definitionInjectionInfo: ParadoxDefinitionInjectionInfo, options: ParadoxMatchOptions?): List<CwtSubtypeConfig> {
         val element = definitionInjectionInfo.element ?: return emptyList()
-        val isDumb = ParadoxMatchService.isDumb(options)
+        val isDumb = ParadoxMatchOptionsService.isDumb(options)
         val finalOptions = if (isDumb) ParadoxMatchOptions.DUMB else ParadoxMatchOptions.DEFAULT
         val cacheKey = if (isDumb) Keys.cachedSubtypeConfigsDumb else Keys.cachedSubtypeConfigs
         return CachedValuesManager.getCachedValue(element, cacheKey) {
@@ -167,7 +167,7 @@ object ParadoxDefinitionInjectionManager {
 
     private fun getDeclarationFromCache(definitionInjectionInfo: ParadoxDefinitionInjectionInfo, options: ParadoxMatchOptions?): CwtPropertyConfig? {
         val element = definitionInjectionInfo.element ?: return null
-        val isDumb = ParadoxMatchService.isDumb(options)
+        val isDumb = ParadoxMatchOptionsService.isDumb(options)
         val finalOptions = if (isDumb) ParadoxMatchOptions.DUMB else ParadoxMatchOptions.DEFAULT
         val cacheKey = if (isDumb) Keys.cachedDeclarationDumb else Keys.cachedDeclaration
         return CachedValuesManager.getCachedValue(element, cacheKey) {

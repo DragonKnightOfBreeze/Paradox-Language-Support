@@ -7,6 +7,7 @@ import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.option.CwtOptionMetadata
+import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.match.TextMatcher
 import icu.windea.pls.core.select.one
 import icu.windea.pls.lang.match.ParadoxExpressionMatchService
@@ -14,7 +15,6 @@ import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.psi.members
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.psi.stringValue
-import icu.windea.pls.lang.resolve.ParadoxConfigService
 import icu.windea.pls.lang.resolve.ParadoxModifierService
 import icu.windea.pls.lang.search.ParadoxComplexEnumValueSearch
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
@@ -28,7 +28,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 object ParadoxMatchFactory {
     fun matchesBlock(element: ParadoxScriptBlock, config: CwtMemberConfig<*>): Boolean {
-        val keys = ParadoxConfigService.getInBlockKeys(config)
+        val keys = CwtConfigManager.getWithinBlockKeys(config)
         if (keys.isEmpty()) return true
 
         // 根据其中存在的属性键进行过滤（注意这里需要考虑内联和可选的情况）

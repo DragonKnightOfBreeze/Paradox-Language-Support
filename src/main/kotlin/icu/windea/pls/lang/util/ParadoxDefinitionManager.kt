@@ -21,7 +21,7 @@ import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.images.ImageFrameInfo
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.match.ParadoxMatchOptions
-import icu.windea.pls.lang.match.ParadoxMatchService
+import icu.windea.pls.lang.match.ParadoxMatchOptionsService
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.resolve.ParadoxDefinitionService
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
@@ -85,7 +85,7 @@ object ParadoxDefinitionManager {
 
     private fun getSubtypeConfigsFromCache(definitionInfo: ParadoxDefinitionInfo, options: ParadoxMatchOptions?): List<CwtSubtypeConfig> {
         val element = definitionInfo.element ?: return emptyList()
-        val isDumb = ParadoxMatchService.isDumb(options)
+        val isDumb = ParadoxMatchOptionsService.isDumb(options)
         val finalOptions = if (isDumb) ParadoxMatchOptions.DUMB else ParadoxMatchOptions.DEFAULT
         val cacheKey = if (isDumb) Keys.cachedSubtypeConfigsDumb else Keys.cachedSubtypeConfigs
         return CachedValuesManager.getCachedValue(element, cacheKey) {
@@ -105,7 +105,7 @@ object ParadoxDefinitionManager {
 
     private fun getDeclarationFromCache(definitionInfo: ParadoxDefinitionInfo, options: ParadoxMatchOptions?): CwtPropertyConfig? {
         val element = definitionInfo.element ?: return null
-        val isDumb = ParadoxMatchService.isDumb(options)
+        val isDumb = ParadoxMatchOptionsService.isDumb(options)
         val finalOptions = if (isDumb) ParadoxMatchOptions.DUMB else ParadoxMatchOptions.DEFAULT
         val cacheKey = if (isDumb) Keys.cachedDeclarationDumb else Keys.cachedDeclaration
         return CachedValuesManager.getCachedValue(element, cacheKey) {

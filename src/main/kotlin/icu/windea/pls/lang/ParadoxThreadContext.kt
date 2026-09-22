@@ -1,6 +1,6 @@
 package icu.windea.pls.lang
 
-import icu.windea.pls.lang.match.ParadoxMatchService
+import icu.windea.pls.lang.match.ParadoxMatchOptionsService
 import icu.windea.pls.lang.resolve.CwtConfigContext
 import icu.windea.pls.lang.resolve.ParadoxConfigService
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
@@ -17,7 +17,7 @@ object ParadoxThreadContext {
     /**
      * 得到正在解析的规则上下文。
      *
-     * @see ParadoxMatchService.optimize
+     * @see ParadoxMatchOptionsService.optimize
      */
     val resolvingConfigContext get() = resolvingConfigContextStack.get()?.peekLast()
 
