@@ -884,7 +884,7 @@ object CwtDataTypes {
      * @see GlobMatcher
      * @since 2.2.0
      */
-    val Glob = CwtDataType.builder("Ant").patternAware().build()
+    val Glob = CwtDataType.builder("Glob").patternAware().build()
     /**
      * ANT 路径模式类型。模式感知的数据类型之一。
      *
@@ -965,7 +965,7 @@ object CwtDataTypes {
      *
      * @since 2.0.5
      */
-    val SuffixAwareSyncedLocalisation = CwtDataType.builder("SuffixAwareLocalisationSynced").suffixAware().build() // #162, #193
+    val SuffixAwareSyncedLocalisation = CwtDataType.builder("SuffixAwareSyncedLocalisation").suffixAware().build() // #162, #193
 
     // endregion
 }

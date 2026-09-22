@@ -21,7 +21,7 @@ import icu.windea.pls.core.util.values.to
 import icu.windea.pls.cwt.psi.CwtMember
 
 /**
- * 参数的扩展规则。
+ * 参数（parameter）的扩展规则。
  *
  * 用于为对应的参数（parameter）提供额外的提示信息（文档注释），以及指定规则上下文与作用域上下文。
  *
@@ -84,7 +84,7 @@ interface CwtExtendedParameterConfig : CwtDelegatedConfig<CwtMember, CwtMemberCo
     fun getContextConfigs(): List<CwtMemberConfig<*>>
 
     companion object {
-        /** 由成员规则解析为参数的扩展规则。 */
+        /** 由成员规则解析为参数（parameter）的扩展规则。 */
         @JvmStatic
         fun resolve(config: CwtMemberConfig<*>): CwtExtendedParameterConfig? {
             return CwtExtendedParameterConfigResolver.resolve(config)

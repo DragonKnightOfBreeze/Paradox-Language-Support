@@ -468,7 +468,7 @@ object CwtConfigTypes {
         prefix("(on action config)")
     }
     /**
-     * 参数的扩展规则。
+     * 参数（parameter）的扩展规则。
      *
      * 路径定位：
      * - `parameters/{name}`。其中 `{name}` 匹配规则名称。
@@ -480,7 +480,7 @@ object CwtConfigTypes {
         prefix("(parameter config)")
     }
     /**
-     * 复杂枚举值的扩展规则。
+     * 复杂枚举值（complex enum value）的扩展规则。
      *
      * 路径定位：
      * - `complex_enum_values/{type}/{name}`。其中 `{type}` 匹配枚举名，`{name}` 匹配规则名称。
@@ -492,7 +492,7 @@ object CwtConfigTypes {
         prefix("(complex enum value config)")
     }
     /**
-     * 动态值的扩展规则。
+     * 动态值（dynamic value）的扩展规则。
      *
      * 路径定位：
      * - `dynamic_values/{type}/{name}`。其中 `{type}` 匹配动态值类型，`{name}` 匹配规则名称。

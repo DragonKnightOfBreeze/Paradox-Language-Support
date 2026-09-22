@@ -15,7 +15,7 @@ import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.cwt.psi.CwtMember
 
 /**
- * 复杂枚举值的扩展规则。
+ * 复杂枚举值（complex enum value）的扩展规则。
  *
  * 用于为对应的复杂枚举值提供额外的提示信息（文档注释和内嵌提示）。
  *
@@ -53,7 +53,7 @@ interface CwtExtendedComplexEnumValueConfig : CwtDelegatedConfig<CwtMember, CwtM
     override val configType: CwtConfigType get() = CwtConfigTypes.ExtendedComplexEnumValue
 
     companion object {
-        /** 由成员规则解析为复杂枚举值的扩展规则。 */
+        /** 由成员规则解析为复杂枚举值（complex enum value）的扩展规则。 */
         @JvmStatic
         fun resolve(config: CwtMemberConfig<*>, type: String): CwtExtendedComplexEnumValueConfig {
             return CwtExtendedComplexEnumValueConfigResolver.resolve(config, type)

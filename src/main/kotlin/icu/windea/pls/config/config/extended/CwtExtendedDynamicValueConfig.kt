@@ -15,7 +15,7 @@ import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.cwt.psi.CwtMember
 
 /**
- * 动态值的扩展规则。
+ * 动态值（dynamic value）的扩展规则。
  *
  * 用于为对应的动态值提供额外的提示信息（文档注释和内嵌提示）。
  *
@@ -53,7 +53,7 @@ interface CwtExtendedDynamicValueConfig : CwtDelegatedConfig<CwtMember, CwtMembe
     override val configType: CwtConfigType get() = CwtConfigTypes.ExtendedDynamicValue
 
     companion object {
-        /** 由成员规则解析为动态值的扩展规则。 */
+        /** 由成员规则解析为动态值（dynamic value）的扩展规则。 */
         @JvmStatic
         fun resolve(config: CwtMemberConfig<*>, type: String): CwtExtendedDynamicValueConfig {
             return CwtExtendedDynamicValueConfigResolver.resolve(config, type)
