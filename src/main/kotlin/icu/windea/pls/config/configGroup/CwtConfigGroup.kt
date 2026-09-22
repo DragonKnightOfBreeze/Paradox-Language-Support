@@ -181,7 +181,7 @@ private class CwtConfigGroupImpl(
     override val aliasModel get() = dataModel.aliasModel
     override val unionModel get() = dataModel.unionModel
     override val macroModel get() = dataModel.macroModel
-    override val attribute get() = dataModel.attribute
+    override val attributes get() = dataModel.attributes
     override fun getUnionAttribute(name: String) = dataModel.getUnionAttribute(name)
     override fun getAliasAttribute(name: String) = dataModel.getAliasAttribute(name)
     override fun getSingleAliasAttribute(name: String) = dataModel.getSingleAliasAttribute(name)

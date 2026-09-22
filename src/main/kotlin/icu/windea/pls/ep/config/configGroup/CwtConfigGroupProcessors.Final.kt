@@ -4,16 +4,12 @@ import icu.windea.pls.base.ChronicleCapacities
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 
 /**
- * 用于在初始化规则分组时，进行最终的清理和优化工作。
+ * 用于在初始化规则分组时，进行最终的清理工作。
  */
 class CwtFinalConfigGroupProcessor : CwtConfigGroupProcessor {
-    override suspend fun process(configGroup: CwtConfigGroup) {
-        clearData(configGroup)
-        trimData(configGroup)
-    }
+    // NOTE 2.1.5 为了优化内存，文件规则最终默认不会保留在规则分组数据中
 
-    private fun clearData(configGroup: CwtConfigGroup) {
-        // NOTE 2.1.5 为了优化内存，文件规则最终默认不会保留在规则分组数据中
+    override suspend fun process(configGroup: CwtConfigGroup) {
         val keepFileConfigs = ChronicleCapacities.keepFileConfigs()
         if (!keepFileConfigs) {
             val fileConfigs = configGroup.initializer.fileConfigs
@@ -22,11 +18,5 @@ class CwtFinalConfigGroupProcessor : CwtConfigGroupProcessor {
 
         val configPostProcessActions = configGroup.initializer.configPostProcessActions
         configPostProcessActions.clear()
-    }
-
-    private fun trimData(configGroup: CwtConfigGroup) {
-        // NOTE 2.1.7 为了优化内存，最终需要整理规则分组数据占用的内存空间
-        val initializer = configGroup.initializer
-        initializer.trim()
     }
 }

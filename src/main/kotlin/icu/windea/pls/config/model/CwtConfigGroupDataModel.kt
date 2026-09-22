@@ -190,7 +190,7 @@ interface CwtConfigGroupDataModel {
     // region Attributes
 
     /** 规则分组自身的综合属性。 */
-    val attribute: CwtConfigGroupAttributes
+    val attributes: CwtConfigGroupAttributes
     /** 得到指定名字的并集规则（[CwtUnionConfig]）的综合属性。 */
     fun getUnionAttribute(name: String): CwtExpandableConfigAttributes
     /** 得到指定名字的别名规则（[CwtAliasConfig]）的综合属性。 */
@@ -264,8 +264,7 @@ class CwtConfigGroupDataModelBase : CwtConfigGroupDataModel {
     override val aliasModel = CwtAliasModel.create()
     override val unionModel = CwtUnionModel.create()
     override val macroModel = CwtMacroModel.create()
-    override val attribute = CwtConfigGroupAttributesBase()
-
+    override val attributes = CwtConfigGroupAttributesBase()
     val unionAttributes = Object2ObjectLinkedOpenHashMap<String, CwtExpandableConfigAttributes>()
     val aliasAttributes = Object2ObjectLinkedOpenHashMap<String, CwtExpandableConfigAttributes>()
     val singleAliasAttributes = Object2ObjectLinkedOpenHashMap<String, CwtExpandableConfigAttributes>()
@@ -347,13 +346,19 @@ class CwtConfigGroupDataModelBase : CwtConfigGroupDataModel {
         predefinedModifiers.trim()
         generatedModifiers.trim()
         relatedLocalisationPatterns.trim()
+
         typeModel.trim()
         scopeModel.trim()
         linkModel.trim()
         localisationLinkModel.trim()
         aliasModel.trim()
+        unionModel.trim()
         macroModel.trim()
-        attribute.trim()
+
+        attributes.trim()
+        unionAttributes.trim()
+        aliasAttributes.trim()
+        singleAliasAttributes.trim()
     }
 }
 
@@ -411,7 +416,7 @@ private object EmptyCwtConfigGroupDataModel : CwtConfigGroupDataModel {
     override val unionModel: CwtUnionModel get() = CwtUnionModel.createEmpty()
     override val macroModel: CwtMacroModel get() = CwtMacroModel.createEmpty()
 
-    override val attribute: CwtConfigGroupAttributes get() = CwtConfigGroupAttributes.EMPTY
+    override val attributes: CwtConfigGroupAttributes get() = CwtConfigGroupAttributes.EMPTY
     override fun getUnionAttribute(name: String): CwtExpandableConfigAttributes = CwtExpandableConfigAttributes.EMPTY
     override fun getAliasAttribute(name: String): CwtExpandableConfigAttributes = CwtExpandableConfigAttributes.EMPTY
     override fun getSingleAliasAttribute(name: String): CwtExpandableConfigAttributes = CwtExpandableConfigAttributes.EMPTY

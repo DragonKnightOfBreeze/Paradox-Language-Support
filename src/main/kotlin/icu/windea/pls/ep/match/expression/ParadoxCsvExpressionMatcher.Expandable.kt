@@ -12,7 +12,9 @@ import icu.windea.pls.lang.match.ParadoxMatchResult
 abstract class ParadoxExpandableCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
     /** @see icu.windea.pls.config.CwtDataTypes.UnionValue */
     class ForUnionValue : ParadoxCoreCsvExpressionMatcher() {
-        override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.UnionValue
+        override fun supports(dataType: CwtDataType): Boolean {
+            return dataType == CwtDataTypes.UnionValue
+        }
 
         override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression): ParadoxMatchResult {
             val unionName = configExpression.metadata.value ?: return ParadoxMatchResult.NotMatch // null -> invalid config

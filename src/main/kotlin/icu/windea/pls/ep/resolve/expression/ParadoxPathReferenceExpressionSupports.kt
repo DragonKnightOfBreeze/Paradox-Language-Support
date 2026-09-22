@@ -61,7 +61,9 @@ class ParadoxIconReferenceExpressionSupport : ParadoxPathReferenceExpressionSupp
  * @see CwtDataTypes.FilePath
  */
 class ParadoxFilePathReferenceExpressionSupport : ParadoxPathReferenceExpressionSupport {
-    override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.FilePath
+    override fun supports(dataType: CwtDataType): Boolean {
+        return dataType == CwtDataTypes.FilePath
+    }
 
     // `filepath` - 匹配任意路径
     // `filepath[./]` - 匹配相对于脚本文件所在目录的路径
@@ -152,7 +154,9 @@ class ParadoxFilePathReferenceExpressionSupport : ParadoxPathReferenceExpression
  * @see CwtDataTypes.FileName
  */
 class ParadoxFileNameReferenceExpressionSupport : ParadoxPathReferenceExpressionSupport {
-    override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.FileName
+    override fun supports(dataType: CwtDataType): Boolean {
+        return dataType == CwtDataTypes.FileName
+    }
 
     // `filename` - `filePath` 需要是文件名
     // `filename[foo/bar]` - `filePath` 需要是文件名，且该文件需要位于目录 `foo/bar` 中

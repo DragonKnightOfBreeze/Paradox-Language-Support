@@ -133,17 +133,17 @@ object CwtConfigResolverManager {
         when (configExpression.type) {
             CwtDataTypes.FilePath -> {
                 if (configExpression.metadata.value != null) {
-                    initializer.attribute.filePathExpressions += configExpression
+                    initializer.attributes.filePathExpressions += configExpression
                 }
             }
             CwtDataTypes.Icon -> {
                 if (configExpression.metadata.value != null) {
-                    initializer.attribute.filePathExpressions += configExpression
+                    initializer.attributes.filePathExpressions += configExpression
                 }
             }
             CwtDataTypes.Parameter -> {
                 if (config is CwtPropertyConfig) {
-                    initializer.attribute.parameterConfigs += config
+                    initializer.attributes.parameterConfigs += config
                 }
             }
             else -> pass()

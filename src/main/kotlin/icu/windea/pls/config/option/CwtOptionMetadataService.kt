@@ -70,7 +70,7 @@ object CwtOptionMetadataService : CwtConfigResolverScope {
             }
             "predicate" -> {
                 val v = resolvePredicate(config) ?: return
-                configGroup.initializer.attribute.usePredicateBasedMatch = true // set attribute
+                configGroup.initializer.attributes.usePredicateBasedMatch = true // set attribute
                 optionMetadata.predicate = v
             }
             "push_scope" -> {

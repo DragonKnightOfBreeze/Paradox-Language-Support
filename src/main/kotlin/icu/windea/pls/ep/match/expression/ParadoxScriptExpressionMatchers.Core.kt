@@ -136,7 +136,9 @@ abstract class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatch
 
     /** @see CwtDataTypes.ValueField */
     class ForValueField : ParadoxCoreScriptExpressionMatcher() {
-        override fun supports(dataType: CwtDataType) = dataType in CwtDataTypeSets.ValueField
+        override fun supports(dataType: CwtDataType): Boolean {
+            return dataType in CwtDataTypeSets.ValueField
+        }
 
         override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
             // 兼容数字字面量（包括用引号括起的数字字面量）

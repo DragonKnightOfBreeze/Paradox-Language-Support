@@ -33,5 +33,5 @@ data class ParadoxExpressionMatchContext(
     val gameType: ParadoxGameType get() = configGroup.gameType
 
     // 3.0.1 optimize: use attribute to apply fast return
-    val usePredicateBasedMatch: Boolean = configGroup.attribute.usePredicateBasedMatch
+    val usePredicateBasedMatch: Boolean = configGroup.attributes.usePredicateBasedMatch
 }

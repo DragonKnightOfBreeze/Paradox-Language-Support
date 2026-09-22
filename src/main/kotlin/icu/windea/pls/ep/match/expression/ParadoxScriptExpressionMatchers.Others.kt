@@ -14,7 +14,9 @@ import icu.windea.pls.lang.match.ParadoxMatchResult
 import icu.windea.pls.lang.match.util.ParadoxMatchFactory
 
 class ParadoxConstantScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
-    override fun supports(dataType: CwtDataType) = dataType in CwtDataTypeSets.Constant
+    override fun supports(dataType: CwtDataType): Boolean {
+        return dataType in CwtDataTypeSets.Constant
+    }
 
     override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
         // 兼容空字符串，兼容带参数的情况
@@ -49,7 +51,9 @@ class ParadoxPatternScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
 
 // NOTE 3.0.1 目前从未被实际使用
 class ParadoxPredicateBasedScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
-    override fun supports(dataType: CwtDataType) = true
+    override fun supports(dataType: CwtDataType): Boolean {
+        return true
+    }
 
     override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult? {
         // 3.0.1 optimize: use attribute to apply fast return

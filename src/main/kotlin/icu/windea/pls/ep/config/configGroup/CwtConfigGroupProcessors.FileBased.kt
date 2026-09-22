@@ -420,6 +420,16 @@ class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor, CwtConfigResol
                     run {
                         val macroConfig = CwtMacroConfig.resolve(property) ?: return@run
                         if (CwtConfigService.filter(macroConfig)) return@run
+                        val attributes = initializer.attributes
+                        when (macroConfig) {
+                            is CwtMacroConfig.InlineScript -> {
+                                attributes.supportInlineScript = true // set attribute
+                            }
+                            is CwtMacroConfig.DefinitionInjection -> {
+                                attributes.supportDefinitionInjection = true // set attribute
+                                attributes.definitionInjectionModes += macroConfig.modeConfigs.keys // set attribute
+                            }
+                        }
                         initializer.macros += macroConfig
                     }
                     run {

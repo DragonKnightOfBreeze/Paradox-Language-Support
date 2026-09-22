@@ -10,7 +10,9 @@ import icu.windea.pls.lang.match.util.ParadoxMatchResultFactory
 
 /** @see CwtDataTypeSets.PathReference */
 class ParadoxPathReferenceScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
-    override fun supports(dataType: CwtDataType) = dataType in CwtDataTypeSets.PathReference
+    override fun supports(dataType: CwtDataType): Boolean {
+        return dataType in CwtDataTypeSets.PathReference
+    }
 
     override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
         if (!context.expression.type.isLenientStringLiteral()) return ParadoxMatchResult.NotMatch

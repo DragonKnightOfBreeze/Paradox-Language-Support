@@ -51,7 +51,7 @@ object ParadoxDefinitionInjectionManager {
         if (context == null) return false
         val gameType = selectGameType(context) ?: return false
         val configGroup = ChronicleFacade.getConfigGroup(gameType)
-        return configGroup.attribute.supportDefinitionInjection // use attribute
+        return configGroup.attributes.supportDefinitionInjection // use attribute
     }
 
     /**
@@ -64,7 +64,7 @@ object ParadoxDefinitionInjectionManager {
         if (mode.isEmpty()) return false
         val gameType = selectGameType(context) ?: return false
         val configGroup = ChronicleFacade.getConfigGroup(gameType)
-        return configGroup.attribute.definitionInjectionModes.contains(mode) // use attribute
+        return configGroup.attributes.definitionInjectionModes.contains(mode) // use attribute
     }
 
     /**

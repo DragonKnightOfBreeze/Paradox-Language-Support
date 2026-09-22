@@ -5,12 +5,10 @@ import icu.windea.pls.config.attributes.CwtExpandableConfigAttributesEvaluator
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.model.CwtConfigGroupDataModelBase
 
-class CwtBaseConfigGroupPostProcessor : CwtConfigGroupPostProcessor {
-    override suspend fun postProcess(configGroup: CwtConfigGroup) {
-        evaluateAttributes(configGroup)
-    }
+class CwtAttributesConfigGroupPostProcessor : CwtConfigGroupPostProcessor {
+    // NOTE 3.0.3 attributes should be pre-evaluated by `CwtConfigGroupPostProcessor`, instead of `CwtConfigGroupProcessor`
 
-    private suspend fun evaluateAttributes(configGroup: CwtConfigGroup) {
+    override suspend fun postProcess(configGroup: CwtConfigGroup) {
         val dataModel = configGroup.dataModel
         if (dataModel !is CwtConfigGroupDataModelBase) return
 
@@ -18,19 +16,16 @@ class CwtBaseConfigGroupPostProcessor : CwtConfigGroupPostProcessor {
         dataModel.unions.forEach { (k, v) ->
             dataModel.unionAttributes[k] = CwtExpandableConfigAttributesEvaluator().evaluate(k, v, configGroup)
         }
-        dataModel.unions.trim()
 
         checkCanceled()
         dataModel.singleAliases.forEach { (k, v) ->
             dataModel.singleAliasAttributes[k] = CwtExpandableConfigAttributesEvaluator().evaluate(k, v, configGroup)
         }
-        dataModel.singleAliasAttributes.trim()
 
         checkCanceled()
         dataModel.aliasGroups.forEach { (k, v) ->
             dataModel.aliasAttributes[k] = CwtExpandableConfigAttributesEvaluator().evaluate(k, v.values, configGroup)
         }
-        dataModel.aliasAttributes.trim()
 
         checkCanceled()
         dataModel.types.values.forEach { it.attributes }
