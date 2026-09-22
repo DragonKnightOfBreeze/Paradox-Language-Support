@@ -73,7 +73,7 @@ class CwtTypeModelBase : CwtTypeModel {
     }
 }
 
-private object EmptyCwtTypeModel: CwtTypeModel {
+private object EmptyCwtTypeModel : CwtTypeModel {
     override val base2Swapped: Map<String, String> get() = emptyMap()
     override val swapped2Base: Map<String, String> get() = emptyMap()
     override val supportScope: Set<String> get() = emptySet()

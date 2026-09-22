@@ -15,4 +15,4 @@ import icu.windea.pls.core.psi.PsiPresentableTextAwareElement
  * @see ParadoxScriptScriptedVariableReference
  * @see ParadoxScriptInlineMath
  */
-interface ParadoxScriptMacro: NavigatablePsiElement, PsiPresentableTextAwareElement
+interface ParadoxScriptMacro : NavigatablePsiElement, PsiPresentableTextAwareElement

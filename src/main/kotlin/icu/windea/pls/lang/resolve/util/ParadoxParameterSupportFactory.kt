@@ -282,7 +282,8 @@ object ParadoxParameterSupportFactory {
             if (completionOffset != -1 && completionOffset in it.textRange) return@f
             val k = it.propertyKey
             val v = it.propertyValue
-            val argument = ParadoxParameterContextReferenceInfo.Argument(k.value,
+            val argument = ParadoxParameterContextReferenceInfo.Argument(
+                k.value,
                 argumentValue = v?.value,
                 argumentNameElementPointer = k.createPointer(project),
                 argumentNameRange = k.textRange,

@@ -269,7 +269,7 @@ object CwtConfigManipulationService {
         val otherExpressionString = otherDataExpression.expressionString
         when (dataType) {
             CwtDataTypes.Any -> return otherExpressionString
-            CwtDataTypes.Literal ->  when (otherDataType) {
+            CwtDataTypes.Literal -> when (otherDataType) {
                 CwtDataTypes.ColorField -> return null
                 else -> return otherExpressionString
             }

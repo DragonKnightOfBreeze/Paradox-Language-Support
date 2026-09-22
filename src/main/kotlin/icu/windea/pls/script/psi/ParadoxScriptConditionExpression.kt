@@ -8,4 +8,4 @@ import icu.windea.pls.core.psi.PsiPresentableTextAwareElement
  *
  * @see ParadoxScriptConditionalExpression
  */
-interface ParadoxScriptConditionExpression: NavigatablePsiElement, PsiPresentableTextAwareElement
+interface ParadoxScriptConditionExpression : NavigatablePsiElement, PsiPresentableTextAwareElement

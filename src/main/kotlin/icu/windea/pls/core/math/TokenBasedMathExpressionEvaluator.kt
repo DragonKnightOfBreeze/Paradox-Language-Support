@@ -146,9 +146,10 @@ class TokenBasedMathExpressionEvaluator(
         }
 
         if (values.size != 1) {
-            throw IllegalStateException("Cannot evaluate: invalid expression. " +
-                "tokens=[${tokens.joinToString(" ") { it.render() }}], " +
-                "values=${values.size}, operators=${expressions.size}"
+            throw IllegalStateException(
+                "Cannot evaluate: invalid expression. " +
+                    "tokens=[${tokens.joinToString(" ") { it.render() }}], " +
+                    "values=${values.size}, operators=${expressions.size}"
             )
         }
 

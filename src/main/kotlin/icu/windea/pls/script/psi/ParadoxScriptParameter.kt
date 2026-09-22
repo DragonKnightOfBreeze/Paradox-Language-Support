@@ -15,7 +15,7 @@ import icu.windea.pls.core.psi.PsiPresentableTextAwareElement
  * @see ParadoxScriptNormalParameter
  * @see ParadoxScriptInlineMathParameter
  */
-interface ParadoxScriptParameter : ParadoxScriptInterpolation, NavigatablePsiElement, PsiPresentableTextAwareElement  {
+interface ParadoxScriptParameter : ParadoxScriptInterpolation, NavigatablePsiElement, PsiPresentableTextAwareElement {
     val idElement: PsiElement?
 
     override fun getName(): String?

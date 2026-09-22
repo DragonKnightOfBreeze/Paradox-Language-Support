@@ -99,7 +99,7 @@ class ParadoxInlineMathExpressionEvaluator(
                     }
                     is ParadoxScriptInlineMathScriptedVariableReference -> {
                         val expression = element.text?.trim()?.orNull() ?: return
-                        val id = element.name.trim()?.orNull() ?: return // = expression
+                        val id = element.name.trim().orNull() ?: return // = expression
                         val resolved = when {
                             DumbService.isDumb(element.project) -> null
                             else -> element.resolved()
