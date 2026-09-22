@@ -41,6 +41,7 @@ import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.values.singletonList
 import icu.windea.pls.core.util.values.singletonListOrEmpty
 import icu.windea.pls.core.util.values.to
+import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.cwt.CwtFileType
 import icu.windea.pls.cwt.CwtLanguage
@@ -86,6 +87,7 @@ object CwtConfigManager {
     }
 
     fun isInternalFile(file: VirtualFile, project: Project): Boolean {
+        if (VirtualFileService.isLightFile(file)) return false
         val filePath = getFilePath(file, project)
         if (filePath == null) {
             // 兼容插件或者规则仓库中的 CWT 文件（此时将其视为规则文件）
