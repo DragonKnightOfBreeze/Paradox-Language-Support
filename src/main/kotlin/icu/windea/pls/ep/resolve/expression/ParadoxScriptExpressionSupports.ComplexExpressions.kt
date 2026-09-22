@@ -32,7 +32,7 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 /**
  * @see ParadoxComplexExpression
  */
-abstract class ParadoxScriptComplexExpressionSupportBase : ParadoxScriptExpressionSupport {
+abstract class ParadoxComplexScriptExpressionSupportBase : ParadoxComplexScriptExpressionSupport {
     override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder): Boolean {
         if (element !is ParadoxScriptStringExpressionElement) return false
         val configGroup = config.configGroup
@@ -51,172 +51,174 @@ abstract class ParadoxScriptComplexExpressionSupportBase : ParadoxScriptExpressi
     }
 }
 
-/**
- * @see CwtDataTypes.Template
- * @see ParadoxTemplateExpression
- */
-class ParadoxScriptTemplateExpressionSupport : ParadoxScriptComplexExpressionSupportBase() {
-    override fun supports(dataType: CwtDataType): Boolean {
-        return dataType == CwtDataTypes.Template
-    }
-
-    override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
-        ParadoxComplexExpressionCompletionManager.completeTemplateExpression(context, result)
-    }
-}
-
-/**
- * @see CwtDataTypeSets.DynamicValue
- * @see ParadoxDynamicValueExpression
- */
-class ParadoxScriptDynamicValueExpressionSupport : ParadoxScriptComplexExpressionSupportBase() {
-    override fun supports(dataType: CwtDataType): Boolean {
-        return dataType in CwtDataTypeSets.DynamicValue
-    }
-
-    override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
-        ParadoxComplexExpressionCompletionManager.completeDynamicValueExpression(context, result)
-    }
-}
-
-/**
- * @see CwtDataTypeSets.ScopeField
- * @see ParadoxScopeFieldExpression
- */
-class ParadoxScriptScopeFieldExpressionSupport : ParadoxScriptComplexExpressionSupportBase() {
-    override fun supports(dataType: CwtDataType): Boolean {
-        return dataType in CwtDataTypeSets.ScopeField
-    }
-
-    override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
-        val configExpression = context.config?.configExpression ?: return
-        val context = when (configExpression.type) {
-            CwtDataTypes.Scope -> context.copy(scopeName = configExpression.metadata.value)
-            CwtDataTypes.ScopeGroup -> context.copy(scopeGroupName = configExpression.metadata.value)
-            else -> context
+interface ParadoxComplexScriptExpressionSupport : ParadoxScriptExpressionSupport {
+    /**
+     * @see CwtDataTypes.Template
+     * @see ParadoxTemplateExpression
+     */
+    class ForTemplate : ParadoxComplexScriptExpressionSupportBase() {
+        override fun supports(dataType: CwtDataType): Boolean {
+            return dataType == CwtDataTypes.Template
         }
-        ParadoxComplexExpressionCompletionManager.completeScopeFieldExpression(context, result)
-    }
-}
 
-/**
- * @see CwtDataTypeSets.ValueField
- * @see ParadoxValueFieldExpression
- */
-class ParadoxScriptValueFieldExpressionSupport : ParadoxScriptComplexExpressionSupportBase() {
-    override fun supports(dataType: CwtDataType): Boolean {
-        return dataType in CwtDataTypeSets.ValueField
-    }
-
-    override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
-        val configExpression = context.config?.configExpression ?: return
-        val context = when (configExpression.type) {
-            CwtDataTypes.IntValueField -> context.copy(isInt = true)
-            else -> context
+        override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
+            ParadoxComplexExpressionCompletionManager.completeTemplateExpression(context, result)
         }
-        ParadoxComplexExpressionCompletionManager.completeValueFieldExpression(context, result)
-    }
-}
-
-/**
- * @see CwtDataTypeSets.VariableField
- * @see ParadoxVariableFieldExpression
- */
-class ParadoxScriptVariableFieldExpressionSupport : ParadoxScriptComplexExpressionSupportBase() {
-    override fun supports(dataType: CwtDataType): Boolean {
-        return dataType in CwtDataTypeSets.VariableField
     }
 
-    override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
-        val configExpression = context.config?.configExpression ?: return
-        val context = when (configExpression.type) {
-            CwtDataTypes.IntVariableField -> context.copy(isInt = true)
-            else -> context
+    /**
+     * @see CwtDataTypeSets.DynamicValue
+     * @see ParadoxDynamicValueExpression
+     */
+    class ForDynamicValue : ParadoxComplexScriptExpressionSupportBase() {
+        override fun supports(dataType: CwtDataType): Boolean {
+            return dataType in CwtDataTypeSets.DynamicValue
         }
-        ParadoxComplexExpressionCompletionManager.completeVariableFieldExpression(context, result)
-    }
-}
 
-/**
- * @see CwtDataTypes.ScriptValueReference
- * @see ParadoxScriptValueReferenceExpression
- */
-class ParadoxScriptScriptValueReferenceExpressionSupport : ParadoxScriptComplexExpressionSupportBase() {
-    override fun supports(dataType: CwtDataType): Boolean {
-        return dataType == CwtDataTypes.ScriptValueReference
+        override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
+            ParadoxComplexExpressionCompletionManager.completeDynamicValueExpression(context, result)
+        }
     }
 
-    override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
-        ParadoxComplexExpressionCompletionManager.completeScriptValueReferenceExpression(context, result)
-    }
-}
+    /**
+     * @see CwtDataTypeSets.ScopeField
+     * @see ParadoxScopeFieldExpression
+     */
+    class ForScopeField : ParadoxComplexScriptExpressionSupportBase() {
+        override fun supports(dataType: CwtDataType): Boolean {
+            return dataType in CwtDataTypeSets.ScopeField
+        }
 
-/**
- * @see CwtDataTypes.DefineReference
- * @see ParadoxDefineReferenceExpression
- */
-class ParadoxScriptDefineReferenceExpressionSupport : ParadoxScriptComplexExpressionSupportBase() {
-    override fun supports(dataType: CwtDataType): Boolean {
-        return dataType == CwtDataTypes.DefineReference
-    }
-
-    override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
-        ParadoxComplexExpressionCompletionManager.completeDefineReferenceExpression(context, result)
-    }
-}
-
-/**
- * @see CwtDataTypes.ArrayDefineReference
- * @see ParadoxArrayDefineReferenceExpression
- */
-class ParadoxScriptArrayDefineReferenceExpressionSupport : ParadoxScriptComplexExpressionSupportBase() {
-    override fun supports(dataType: CwtDataType): Boolean {
-        return dataType == CwtDataTypes.ArrayDefineReference
+        override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
+            val configExpression = context.config?.configExpression ?: return
+            val context = when (configExpression.type) {
+                CwtDataTypes.Scope -> context.copy(scopeName = configExpression.metadata.value)
+                CwtDataTypes.ScopeGroup -> context.copy(scopeGroupName = configExpression.metadata.value)
+                else -> context
+            }
+            ParadoxComplexExpressionCompletionManager.completeScopeFieldExpression(context, result)
+        }
     }
 
-    override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
-        ParadoxComplexExpressionCompletionManager.completeArrayDefineReferenceExpression(context, result)
-    }
-}
+    /**
+     * @see CwtDataTypeSets.ValueField
+     * @see ParadoxValueFieldExpression
+     */
+    class ForValueField : ParadoxComplexScriptExpressionSupportBase() {
+        override fun supports(dataType: CwtDataType): Boolean {
+            return dataType in CwtDataTypeSets.ValueField
+        }
 
-/**
- * @see CwtDataTypes.Tags
- * @see ParadoxTagsExpression
- */
-class ParadoxScriptTagsExpressionSupport : ParadoxScriptComplexExpressionSupportBase() {
-    override fun supports(dataType: CwtDataType): Boolean {
-        return dataType == CwtDataTypes.Tags
-    }
-
-    override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
-        ParadoxComplexExpressionCompletionManager.completeTagsExpression(context, result)
-    }
-}
-
-/**
- * @see CwtDataTypes.DatabaseObject
- * @see ParadoxDatabaseObjectExpression
- */
-class ParadoxScriptDatabaseObjectExpressionSupport : ParadoxScriptComplexExpressionSupportBase() {
-    override fun supports(dataType: CwtDataType): Boolean {
-        return dataType == CwtDataTypes.DatabaseObject
+        override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
+            val configExpression = context.config?.configExpression ?: return
+            val context = when (configExpression.type) {
+                CwtDataTypes.IntValueField -> context.copy(isInt = true)
+                else -> context
+            }
+            ParadoxComplexExpressionCompletionManager.completeValueFieldExpression(context, result)
+        }
     }
 
-    override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
-        ParadoxComplexExpressionCompletionManager.completeDatabaseObjectExpression(context, result)
-    }
-}
+    /**
+     * @see CwtDataTypeSets.VariableField
+     * @see ParadoxVariableFieldExpression
+     */
+    class ForVariableField : ParadoxComplexScriptExpressionSupportBase() {
+        override fun supports(dataType: CwtDataType): Boolean {
+            return dataType in CwtDataTypeSets.VariableField
+        }
 
-/**
- * @see CwtDataTypes.NameFormat
- * @see ParadoxNameFormatExpression
- */
-class ParadoxScriptNameFormatExpressionSupport : ParadoxScriptComplexExpressionSupportBase() {
-    override fun supports(dataType: CwtDataType): Boolean {
-        return dataType == CwtDataTypes.NameFormat
+        override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
+            val configExpression = context.config?.configExpression ?: return
+            val context = when (configExpression.type) {
+                CwtDataTypes.IntVariableField -> context.copy(isInt = true)
+                else -> context
+            }
+            ParadoxComplexExpressionCompletionManager.completeVariableFieldExpression(context, result)
+        }
     }
 
-    override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
-        ParadoxComplexExpressionCompletionManager.completeNameFormatExpression(context, result)
+    /**
+     * @see CwtDataTypes.ScriptValueReference
+     * @see ParadoxScriptValueReferenceExpression
+     */
+    class ForScriptValueReference : ParadoxComplexScriptExpressionSupportBase() {
+        override fun supports(dataType: CwtDataType): Boolean {
+            return dataType == CwtDataTypes.ScriptValueReference
+        }
+
+        override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
+            ParadoxComplexExpressionCompletionManager.completeScriptValueReferenceExpression(context, result)
+        }
+    }
+
+    /**
+     * @see CwtDataTypes.DefineReference
+     * @see ParadoxDefineReferenceExpression
+     */
+    class ForDefineReference : ParadoxComplexScriptExpressionSupportBase() {
+        override fun supports(dataType: CwtDataType): Boolean {
+            return dataType == CwtDataTypes.DefineReference
+        }
+
+        override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
+            ParadoxComplexExpressionCompletionManager.completeDefineReferenceExpression(context, result)
+        }
+    }
+
+    /**
+     * @see CwtDataTypes.ArrayDefineReference
+     * @see ParadoxArrayDefineReferenceExpression
+     */
+    class ForArrayDefineReference : ParadoxComplexScriptExpressionSupportBase() {
+        override fun supports(dataType: CwtDataType): Boolean {
+            return dataType == CwtDataTypes.ArrayDefineReference
+        }
+
+        override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
+            ParadoxComplexExpressionCompletionManager.completeArrayDefineReferenceExpression(context, result)
+        }
+    }
+
+    /**
+     * @see CwtDataTypes.Tags
+     * @see ParadoxTagsExpression
+     */
+    class ForTags : ParadoxComplexScriptExpressionSupportBase() {
+        override fun supports(dataType: CwtDataType): Boolean {
+            return dataType == CwtDataTypes.Tags
+        }
+
+        override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
+            ParadoxComplexExpressionCompletionManager.completeTagsExpression(context, result)
+        }
+    }
+
+    /**
+     * @see CwtDataTypes.DatabaseObject
+     * @see ParadoxDatabaseObjectExpression
+     */
+    class ForDatabaseObject : ParadoxComplexScriptExpressionSupportBase() {
+        override fun supports(dataType: CwtDataType): Boolean {
+            return dataType == CwtDataTypes.DatabaseObject
+        }
+
+        override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
+            ParadoxComplexExpressionCompletionManager.completeDatabaseObjectExpression(context, result)
+        }
+    }
+
+    /**
+     * @see CwtDataTypes.NameFormat
+     * @see ParadoxNameFormatExpression
+     */
+    class ForNameFormat : ParadoxComplexScriptExpressionSupportBase() {
+        override fun supports(dataType: CwtDataType): Boolean {
+            return dataType == CwtDataTypes.NameFormat
+        }
+
+        override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
+            ParadoxComplexExpressionCompletionManager.completeNameFormatExpression(context, result)
+        }
     }
 }

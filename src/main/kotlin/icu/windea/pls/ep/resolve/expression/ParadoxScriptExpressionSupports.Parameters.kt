@@ -20,53 +20,55 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 // Parameters
 
-/**
- * @see CwtDataTypes.Parameter
- */
-class ParadoxScriptParameterExpressionSupport : ParadoxScriptExpressionSupport {
-    override fun supports(dataType: CwtDataType): Boolean {
-        return dataType == CwtDataTypes.Parameter
+interface ParadoxParametersScriptExpressionSupport : ParadoxScriptExpressionSupport {
+    /**
+     * @see CwtDataTypes.Parameter
+     */
+    class ForParameter : ParadoxParametersScriptExpressionSupport {
+        override fun supports(dataType: CwtDataType): Boolean {
+            return dataType == CwtDataTypes.Parameter
+        }
+
+        override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder): Boolean {
+            if (element !is ParadoxScriptStringExpressionElement) return false // only for string expressions in script files
+            val attributesKey = ParadoxSemanticHighlighterColors.argument()
+            ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
+            return true
+        }
+
+        override fun resolve(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
+            if (element !is ParadoxScriptStringExpressionElement) return null // only for string expressions in script files
+            return ParadoxParameterService.resolveArgument(element, rangeInExpression, config)
+        }
+
+        override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
+            if (context.keyword.isParameterized()) return // 排除可能带参数的情况
+            ParadoxExpressionCompletionManager.completeArgument(context, result)
+        }
     }
 
-    override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder): Boolean {
-        if (element !is ParadoxScriptStringExpressionElement) return false // only for string expressions in script files
-        val attributesKey = ParadoxSemanticHighlighterColors.argument()
-        ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
-        return true
-    }
+    /**
+     * @see CwtDataTypes.LocalisationParameter
+     */
+    class ForLocalisationParameter : ParadoxParametersScriptExpressionSupport {
+        override fun supports(dataType: CwtDataType): Boolean {
+            return dataType == CwtDataTypes.LocalisationParameter
+        }
 
-    override fun resolve(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
-        if (element !is ParadoxScriptStringExpressionElement) return null // only for string expressions in script files
-        return ParadoxParameterService.resolveArgument(element, rangeInExpression, config)
-    }
+        override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder): Boolean {
+            if (element !is ParadoxScriptStringExpressionElement) return false // only for string expressions in script files
+            val attributesKey = ParadoxSemanticHighlighterColors.argument()
+            ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
+            return true
+        }
 
-    override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
-        if (context.keyword.isParameterized()) return // 排除可能带参数的情况
-        ParadoxExpressionCompletionManager.completeArgument(context, result)
-    }
-}
+        override fun resolve(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
+            if (element !is ParadoxScriptStringExpressionElement) return null // only for string expressions in script files
+            return ParadoxLocalisationParameterService.resolveArgument(element, rangeInExpression, config)
+        }
 
-/**
- * @see CwtDataTypes.LocalisationParameter
- */
-class ParadoxScriptLocalisationParameterExpressionSupport : ParadoxScriptExpressionSupport {
-    override fun supports(dataType: CwtDataType): Boolean {
-        return dataType == CwtDataTypes.LocalisationParameter
-    }
-
-    override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder): Boolean {
-        if (element !is ParadoxScriptStringExpressionElement) return false // only for string expressions in script files
-        val attributesKey = ParadoxSemanticHighlighterColors.argument()
-        ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
-        return true
-    }
-
-    override fun resolve(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
-        if (element !is ParadoxScriptStringExpressionElement) return null // only for string expressions in script files
-        return ParadoxLocalisationParameterService.resolveArgument(element, rangeInExpression, config)
-    }
-
-    override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
-        // NOTE 不兼容本地化参数（CwtDataTypes.LocalisationParameter），因为那个引用实际上也可能对应一个缺失的本地化的名字
+        override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
+            // NOTE 不兼容本地化参数（CwtDataTypes.LocalisationParameter），因为那个引用实际上也可能对应一个缺失的本地化的名字
+        }
     }
 }

@@ -26,154 +26,156 @@ import icu.windea.pls.model.expressions.ParadoxExpression
 
 // Core (limited support)
 
-/**
- * @see CwtDataTypes.Definition
- */
-class ParadoxCsvDefinitionExpressionSupport : ParadoxCsvExpressionSupport {
-    override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.Definition
+interface ParadoxCoreCsvExpressionSupport : ParadoxCsvExpressionSupport {
+    /**
+     * @see CwtDataTypes.Definition
+     */
+    class ForDefinition : ParadoxCoreCsvExpressionSupport {
+        override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.Definition
 
-    override fun annotate(element: ParadoxCsvExpressionElement, text: String, rangeInExpression: TextRange, config: CwtValueConfig, holder: AnnotationHolder): Boolean {
-        val attributesKey = ParadoxSemanticHighlighterColors.definitionReference(element.language)
-        ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
-        return true
-    }
-
-    override fun resolve(element: ParadoxCsvExpressionElement, text: String, rangeInExpression: TextRange, config: CwtValueConfig): PsiElement? {
-        val configGroup = config.configGroup
-        val project = configGroup.project
-        val typeExpression = config.configExpression.metadata.value ?: return null
-        val type = typeExpression.substringBefore('.') // 匹配和解析定义时忽略子类型
-        val selector = ParadoxDefinitionSearch.selector(project, element).contextSensitive()
-        return ParadoxDefinitionSearch.searchElement(text, type, selector).find()
-    }
-
-    override fun resolveAll(element: ParadoxCsvExpressionElement, text: String, rangeInExpression: TextRange, config: CwtValueConfig): List<PsiElement> {
-        val configGroup = config.configGroup
-        val project = configGroup.project
-        val typeExpression = config.configExpression.metadata.value ?: return emptyList()
-        val type = typeExpression.substringBefore('.') // 匹配和解析定义时忽略子类型
-        val selector = ParadoxDefinitionSearch.selector(project, element).contextSensitive()
-        return ParadoxDefinitionSearch.searchElement(text, type, selector).findAll()
-    }
-
-    override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
-        ParadoxExpressionCompletionManager.completeDefinition(context, result)
-    }
-}
-
-/**
- * @see CwtDataTypes.EnumValue
- */
-class ParadoxCsvEnumValueExpressionSupport : ParadoxCsvExpressionSupport {
-    override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.EnumValue
-
-    override fun annotate(element: ParadoxCsvExpressionElement, text: String, rangeInExpression: TextRange, config: CwtValueConfig, holder: AnnotationHolder): Boolean {
-        val configGroup = config.configGroup
-        val enumName = config.configExpression.metadata.value ?: return false
-        val attributesKey = when {
-            configGroup.complexEnums[enumName] != null -> ParadoxSemanticHighlighterColors.complexEnumValue(element.language)
-            else -> ParadoxSemanticHighlighterColors.enumValue(element.language)
+        override fun annotate(element: ParadoxCsvExpressionElement, text: String, rangeInExpression: TextRange, config: CwtValueConfig, holder: AnnotationHolder): Boolean {
+            val attributesKey = ParadoxSemanticHighlighterColors.definitionReference(element.language)
+            ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
+            return true
         }
-        ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
-        return true
+
+        override fun resolve(element: ParadoxCsvExpressionElement, text: String, rangeInExpression: TextRange, config: CwtValueConfig): PsiElement? {
+            val configGroup = config.configGroup
+            val project = configGroup.project
+            val typeExpression = config.configExpression.metadata.value ?: return null
+            val type = typeExpression.substringBefore('.') // 匹配和解析定义时忽略子类型
+            val selector = ParadoxDefinitionSearch.selector(project, element).contextSensitive()
+            return ParadoxDefinitionSearch.searchElement(text, type, selector).find()
+        }
+
+        override fun resolveAll(element: ParadoxCsvExpressionElement, text: String, rangeInExpression: TextRange, config: CwtValueConfig): List<PsiElement> {
+            val configGroup = config.configGroup
+            val project = configGroup.project
+            val typeExpression = config.configExpression.metadata.value ?: return emptyList()
+            val type = typeExpression.substringBefore('.') // 匹配和解析定义时忽略子类型
+            val selector = ParadoxDefinitionSearch.selector(project, element).contextSensitive()
+            return ParadoxDefinitionSearch.searchElement(text, type, selector).findAll()
+        }
+
+        override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
+            ParadoxExpressionCompletionManager.completeDefinition(context, result)
+        }
     }
 
-    override fun resolve(element: ParadoxCsvExpressionElement, text: String, rangeInExpression: TextRange, config: CwtValueConfig): PsiElement? {
-        return ParadoxExpressionSupportFactory.resolveEnumValue(element, text, config)
-    }
+    /**
+     * @see CwtDataTypes.EnumValue
+     */
+    class ForEnumValue : ParadoxCoreCsvExpressionSupport {
+        override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.EnumValue
 
-    override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
-        ParadoxExpressionCompletionManager.completeEnumValue(context, result)
-    }
-}
-
-/**
- * @see CwtDataTypeSets.DynamicValue
- */
-class ParadoxCsvDynamicValueExpressionSupport : ParadoxCsvExpressionSupport {
-    override fun supports(dataType: CwtDataType) = dataType in CwtDataTypeSets.DynamicValue
-
-    override fun annotate(element: ParadoxCsvExpressionElement, text: String, rangeInExpression: TextRange, config: CwtValueConfig, holder: AnnotationHolder): Boolean {
-        val attributesKey = ParadoxSemanticHighlighterColors.dynamicValue(element.language)
-        ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
-        return true
-    }
-
-    override fun resolve(element: ParadoxCsvExpressionElement, text: String, rangeInExpression: TextRange, config: CwtValueConfig): PsiElement? {
-        return ParadoxExpressionSupportFactory.resolveDynamicValue(element, text, config)
-    }
-
-    override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
-        ParadoxExpressionCompletionManager.completeDynamicValue(context, result)
-    }
-}
-
-/**
- * @see CwtDataTypes.UnionValue
- */
-class ParadoxCsvUnionValueExpressionSupport : ParadoxCsvExpressionSupport {
-    override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.UnionValue
-
-    // NOTE 3.0.1 recursion guard is required here for various operations
-
-    override fun annotate(element: ParadoxCsvExpressionElement, text: String, rangeInExpression: TextRange, config: CwtValueConfig, holder: AnnotationHolder): Boolean {
-        val configGroup = config.configGroup
-        val unionName = config.configExpression.metadata.value ?: return false
-        // NOTE 3.0.1 recursion guard is required here
-        // NOTE 3.0.3 use first matched config directly atm, event if the result from this config is null or empty
-        val processor = ProcessorFactory.find<CwtValueConfig>()
-        runWithRecursionGuard("csvExpression.annotate.union", unionName) {
-            val expression = ParadoxExpression.resolve(element)
-            ParadoxConfigExpansionService.expandMatchedUnion(element, expression, unionName, configGroup) {
-                processor.process(it)
+        override fun annotate(element: ParadoxCsvExpressionElement, text: String, rangeInExpression: TextRange, config: CwtValueConfig, holder: AnnotationHolder): Boolean {
+            val configGroup = config.configGroup
+            val enumName = config.configExpression.metadata.value ?: return false
+            val attributesKey = when {
+                configGroup.complexEnums[enumName] != null -> ParadoxSemanticHighlighterColors.complexEnumValue(element.language)
+                else -> ParadoxSemanticHighlighterColors.enumValue(element.language)
             }
+            ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
+            return true
         }
-        val unionValueConfig = processor.result ?: return false
-        return ParadoxExpressionService.annotateCsvExpression(element, text, rangeInExpression, unionValueConfig, holder)
+
+        override fun resolve(element: ParadoxCsvExpressionElement, text: String, rangeInExpression: TextRange, config: CwtValueConfig): PsiElement? {
+            return ParadoxExpressionSupportFactory.resolveEnumValue(element, text, config)
+        }
+
+        override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
+            ParadoxExpressionCompletionManager.completeEnumValue(context, result)
+        }
     }
 
-    override fun resolve(element: ParadoxCsvExpressionElement, text: String, rangeInExpression: TextRange, config: CwtValueConfig): PsiElement? {
-        val configGroup = config.configGroup
-        val unionName = config.configExpression.metadata.value ?: return null
-        // NOTE 3.0.1 recursion guard is required here
-        // NOTE 3.0.3 use first matched config directly atm, event if the result from this config is null or empty
-        val processor = ProcessorFactory.find<PsiElement>()
-        runWithRecursionGuard("csvExpression.resolve.union", unionName) {
-            val expression = ParadoxExpression.resolve(element)
-            ParadoxConfigExpansionService.expandMatchedUnion(element, expression, unionName, configGroup) p@{ unionValueConfig ->
-                val r = ParadoxExpressionService.resolveCsvExpression(element, text, rangeInExpression, unionValueConfig)
-                if (r == null) return@p true
-                processor.process(r)
+    /**
+     * @see CwtDataTypeSets.DynamicValue
+     */
+    class ForDynamicValue : ParadoxCoreCsvExpressionSupport {
+        override fun supports(dataType: CwtDataType) = dataType in CwtDataTypeSets.DynamicValue
+
+        override fun annotate(element: ParadoxCsvExpressionElement, text: String, rangeInExpression: TextRange, config: CwtValueConfig, holder: AnnotationHolder): Boolean {
+            val attributesKey = ParadoxSemanticHighlighterColors.dynamicValue(element.language)
+            ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
+            return true
+        }
+
+        override fun resolve(element: ParadoxCsvExpressionElement, text: String, rangeInExpression: TextRange, config: CwtValueConfig): PsiElement? {
+            return ParadoxExpressionSupportFactory.resolveDynamicValue(element, text, config)
+        }
+
+        override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
+            ParadoxExpressionCompletionManager.completeDynamicValue(context, result)
+        }
+    }
+
+    /**
+     * @see CwtDataTypes.UnionValue
+     */
+    class ForUnionValue : ParadoxCoreCsvExpressionSupport {
+        override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.UnionValue
+
+        // NOTE 3.0.1 recursion guard is required here for various operations
+
+        override fun annotate(element: ParadoxCsvExpressionElement, text: String, rangeInExpression: TextRange, config: CwtValueConfig, holder: AnnotationHolder): Boolean {
+            val configGroup = config.configGroup
+            val unionName = config.configExpression.metadata.value ?: return false
+            // NOTE 3.0.1 recursion guard is required here
+            // NOTE 3.0.3 use first matched config directly atm, event if the result from this config is null or empty
+            val processor = ProcessorFactory.find<CwtValueConfig>()
+            runWithRecursionGuard("csvExpression.annotate.union", unionName) {
+                val expression = ParadoxExpression.resolve(element)
+                ParadoxConfigExpansionService.expandMatchedUnion(element, expression, unionName, configGroup) {
+                    processor.process(it)
+                }
             }
+            val unionValueConfig = processor.result ?: return false
+            return ParadoxExpressionService.annotateCsvExpression(element, text, rangeInExpression, unionValueConfig, holder)
         }
-        return processor.result
-    }
 
-    override fun resolveAll(element: ParadoxCsvExpressionElement, text: String, rangeInExpression: TextRange, config: CwtValueConfig): List<PsiElement> {
-        val configGroup = config.configGroup
-        val unionName = config.configExpression.metadata.value ?: return emptyList()
-        // NOTE 3.0.1 recursion guard is required here
-        val processor = ProcessorFactory.find<List<PsiElement>>()
-        runWithRecursionGuard("csvExpression.resolveAll.union", unionName) {
-            val expression = ParadoxExpression.resolve(element)
-            ParadoxConfigExpansionService.expandMatchedUnion(element, expression, unionName, configGroup) p@{ unionValueConfig ->
-                val r = ParadoxExpressionService.resolveAllCsvExpression(element, text, rangeInExpression, unionValueConfig).orNull()
-                if (r == null) return@p true
-                processor.process(r)
+        override fun resolve(element: ParadoxCsvExpressionElement, text: String, rangeInExpression: TextRange, config: CwtValueConfig): PsiElement? {
+            val configGroup = config.configGroup
+            val unionName = config.configExpression.metadata.value ?: return null
+            // NOTE 3.0.1 recursion guard is required here
+            // NOTE 3.0.3 use first matched config directly atm, event if the result from this config is null or empty
+            val processor = ProcessorFactory.find<PsiElement>()
+            runWithRecursionGuard("csvExpression.resolve.union", unionName) {
+                val expression = ParadoxExpression.resolve(element)
+                ParadoxConfigExpansionService.expandMatchedUnion(element, expression, unionName, configGroup) p@{ unionValueConfig ->
+                    val r = ParadoxExpressionService.resolveCsvExpression(element, text, rangeInExpression, unionValueConfig)
+                    if (r == null) return@p true
+                    processor.process(r)
+                }
             }
+            return processor.result
         }
-        return processor.result.orEmpty()
-    }
 
-    override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
-        val configGroup = context.configGroup
-        val configExpression = context.config?.configExpression ?: return
-        ProgressManager.checkCanceled()
-        // NOTE 3.0.3 recursion guard is required here
-        CwtConfigExpansionService.expandUnion(configExpression, configGroup, "csvExpression.complete") { _, unionValueConfig ->
-            val context = context.copy(config = unionValueConfig, configs = setOf(unionValueConfig))
-            ParadoxExpressionCompletionManager.completeCsvExpression(context, result)
-            true
+        override fun resolveAll(element: ParadoxCsvExpressionElement, text: String, rangeInExpression: TextRange, config: CwtValueConfig): List<PsiElement> {
+            val configGroup = config.configGroup
+            val unionName = config.configExpression.metadata.value ?: return emptyList()
+            // NOTE 3.0.1 recursion guard is required here
+            val processor = ProcessorFactory.find<List<PsiElement>>()
+            runWithRecursionGuard("csvExpression.resolveAll.union", unionName) {
+                val expression = ParadoxExpression.resolve(element)
+                ParadoxConfigExpansionService.expandMatchedUnion(element, expression, unionName, configGroup) p@{ unionValueConfig ->
+                    val r = ParadoxExpressionService.resolveAllCsvExpression(element, text, rangeInExpression, unionValueConfig).orNull()
+                    if (r == null) return@p true
+                    processor.process(r)
+                }
+            }
+            return processor.result.orEmpty()
+        }
+
+        override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
+            val configGroup = context.configGroup
+            val configExpression = context.config?.configExpression ?: return
+            ProgressManager.checkCanceled()
+            // NOTE 3.0.3 recursion guard is required here
+            CwtConfigExpansionService.expandUnion(configExpression, configGroup, "csvExpression.complete") { _, unionValueConfig ->
+                val context = context.copy(config = unionValueConfig, configs = setOf(unionValueConfig))
+                ParadoxExpressionCompletionManager.completeCsvExpression(context, result)
+                true
+            }
         }
     }
 }

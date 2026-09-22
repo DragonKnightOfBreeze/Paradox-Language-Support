@@ -5,7 +5,8 @@ import icu.windea.pls.config.CwtDataType
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.core.addExtensionPointListener
-import icu.windea.pls.core.collections.forEachFast
+import icu.windea.pls.core.collections.filterFast
+import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.util.values.LazyValue
 import icu.windea.pls.lang.match.ParadoxExpressionMatchContext
@@ -25,6 +26,8 @@ import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
  * @see ParadoxExpressionMatchService
  */
 interface ParadoxScriptExpressionMatcher {
+    fun supports(dataType: CwtDataType): Boolean
+
     /**
      * 匹配脚本表达式和规则表达式。
      */
@@ -45,32 +48,10 @@ interface ParadoxScriptExpressionMatcher {
         }
 
         private fun computeCache(): Map<CwtDataType, List<ParadoxScriptExpressionMatcher>> {
-            val result = mutableMapOf<CwtDataType, MutableList<ParadoxScriptExpressionMatcher>>()
+            val result = mutableMapOf<CwtDataType, List<ParadoxScriptExpressionMatcher>>()
             val eps = EP_NAME.extensionList
-            eps.forEachFast { ep ->
-                when (ep) {
-                    is ParadoxScriptCompositeExpressionMatcher -> {
-                        val matchers = ep.matcherMap
-                        matchers.forEach { (matcher, dataTypes) ->
-                            dataTypes.forEach { dataType ->
-                                result.computeIfAbsent(dataType) { mutableListOf() } += matcher
-                            }
-                        }
-                    }
-                    is ParadoxScriptSimpleExpressionMatcher -> {
-                        ep.dataTypes.forEach { dataType ->
-                            result.computeIfAbsent(dataType) { mutableListOf() } += ep
-                        }
-                    }
-                    else -> {
-                        // fallback
-                        CwtDataType.entries.values.forEach { dataType ->
-                            result.computeIfAbsent(dataType) { mutableListOf() } += ep
-                        }
-                    }
-                }
-            }
-            return result.mapValues { (_, v) -> v.optimized() }.optimized()
+            CwtDataType.entries.values.forEach { dataType -> eps.filterFast { ep -> ep.supports(dataType) }.orNull()?.let { result[dataType] = it.optimized() } }
+            return result.optimized()
         }
 
         // endregion

@@ -9,13 +9,15 @@ import icu.windea.pls.lang.codeInsight.completion.addToResult
 
 // Basic
 
-/**
- * @see CwtDataTypes.Bool
- */
-class ParadoxCsvBoolExpressionSupport : ParadoxCsvExpressionSupport {
-    override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.Bool
+interface ParadoxBasicCsvExpressionSupport : ParadoxCsvExpressionSupport {
+    /**
+     * @see CwtDataTypes.Bool
+     */
+    class ForBool : ParadoxBasicCsvExpressionSupport {
+        override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.Bool
 
-    override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
-        ParadoxCompletionFactory.forBool().addToResult(context, result)
+        override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
+            ParadoxCompletionFactory.forBool().addToResult(context, result)
+        }
     }
 }

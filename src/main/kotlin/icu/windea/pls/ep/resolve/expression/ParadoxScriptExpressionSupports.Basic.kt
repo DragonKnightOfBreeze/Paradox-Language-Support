@@ -15,37 +15,39 @@ import icu.windea.pls.model.type.ParadoxExpressionRole
 
 // Basic
 
-/**
- * @see CwtDataTypes.Bool
- */
-class ParadoxScriptBoolExpressionSupport : ParadoxScriptExpressionSupport {
-    override fun supports(dataType: CwtDataType): Boolean {
-        return dataType == CwtDataTypes.Bool
+interface ParadoxBasicScriptExpressionSupport : ParadoxScriptExpressionSupport {
+    /**
+     * @see CwtDataTypes.Bool
+     */
+    class ForBool : ParadoxBasicScriptExpressionSupport {
+        override fun supports(dataType: CwtDataType): Boolean {
+            return dataType == CwtDataTypes.Bool
+        }
+
+        override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
+            ParadoxCompletionFactory.forBool().addToResult(context, result)
+        }
     }
 
-    override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
-        ParadoxCompletionFactory.forBool().addToResult(context, result)
-    }
-}
+    /**
+     * @see CwtDataTypes.Block
+     */
+    class ForBlock : ParadoxBasicScriptExpressionSupport {
+        override fun supports(dataType: CwtDataType): Boolean {
+            return dataType == CwtDataTypes.Block
+        }
 
-/**
- * @see CwtDataTypes.Block
- */
-class ParadoxScriptBlockExpressionSupport : ParadoxScriptExpressionSupport {
-    override fun supports(dataType: CwtDataType): Boolean {
-        return dataType == CwtDataTypes.Block
-    }
+        override fun resolve(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
+            return config.pointer.element
+        }
 
-    override fun resolve(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
-        return config.pointer.element
-    }
+        override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
+            ParadoxCompletionFactory.forBlockKeyword().addToResult(context, result)
 
-    override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
-        ParadoxCompletionFactory.forBlockKeyword().addToResult(context, result)
-
-        // 进行提示并在提示后插入子句内联模板（仅当子句中允许键为常量字符串的属性时才会提示）
-        val config = context.config!!
-        val extraLookupElement = ParadoxClauseTemplateCompletionManager.buildBlockLookupElement(context, config)
-        extraLookupElement.addToResult(context, result)
+            // 进行提示并在提示后插入子句内联模板（仅当子句中允许键为常量字符串的属性时才会提示）
+            val config = context.config!!
+            val extraLookupElement = ParadoxClauseTemplateCompletionManager.buildBlockLookupElement(context, config)
+            extraLookupElement.addToResult(context, result)
+        }
     }
 }

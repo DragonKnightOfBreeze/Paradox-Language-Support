@@ -24,69 +24,71 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 // Game Type Specific
 
-/**
- * @see CwtDataTypes.TechnologyWithLevel
- */
-@ForGameType(ParadoxGameType.Stellaris)
-class ParadoxScriptTechnologyWithLevelExpressionSupport : ParadoxScriptExpressionSupport {
-    // https://github.com/cwtools/cwtools-vscode/issues/58
+interface ParadoxSpecificScriptExpressionSupport : ParadoxScriptExpressionSupport {
+    /**
+     * @see CwtDataTypes.TechnologyWithLevel
+     */
+    @ForGameType(ParadoxGameType.Stellaris)
+    class ForTechnologyWithLevel : ParadoxSpecificScriptExpressionSupport {
+        // https://github.com/cwtools/cwtools-vscode/issues/58
 
-    private val typeExpression = "<technology.repeatable>"
+        private val typeExpression = "<technology.repeatable>"
 
-    override fun supports(gameType: ParadoxGameType) = gameType == ParadoxGameType.Stellaris
+        override fun supports(gameType: ParadoxGameType) = gameType == ParadoxGameType.Stellaris
 
-    override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.TechnologyWithLevel
+        override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.TechnologyWithLevel
 
-    override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder): Boolean {
-        if (element !is ParadoxScriptStringExpressionElement) return false // only for string expressions in script files
-        val separatorIndex = text.indexOf('@')
-        if (separatorIndex == -1) return false
-        run {
-            val offset = separatorIndex
-            if (offset <= 0) return@run
-            val attributesKey = ParadoxScriptHighlighterColors.DEFINITION_REFERENCE
-            val rangeInExpression = TextRange.create(rangeInExpression.startOffset, rangeInExpression.startOffset + offset)
-            ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
+        override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder): Boolean {
+            if (element !is ParadoxScriptStringExpressionElement) return false // only for string expressions in script files
+            val separatorIndex = text.indexOf('@')
+            if (separatorIndex == -1) return false
+            run {
+                val offset = separatorIndex
+                if (offset <= 0) return@run
+                val attributesKey = ParadoxScriptHighlighterColors.DEFINITION_REFERENCE
+                val rangeInExpression = TextRange.create(rangeInExpression.startOffset, rangeInExpression.startOffset + offset)
+                ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
+            }
+            run {
+                val offset = separatorIndex
+                val attributesKey = ParadoxScriptHighlighterColors.SEMANTIC_MARKER
+                val rangeInExpression = TextRange.create(rangeInExpression.startOffset + offset, rangeInExpression.startOffset + offset + 1)
+                ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
+            }
+            run {
+                val offset = text.length - separatorIndex - 1
+                if (offset <= 0) return@run
+                // annotate only if snippet after '@' is number like
+                if (!text.substring(separatorIndex + 1).all { it.isExactDigit() }) return@run
+                val attributesKey = ParadoxScriptHighlighterColors.NUMBER
+                val rangeInExpression = TextRange.create(rangeInExpression.endOffset - offset, rangeInExpression.endOffset)
+                ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
+            }
+            return true
         }
-        run {
-            val offset = separatorIndex
-            val attributesKey = ParadoxScriptHighlighterColors.SEMANTIC_MARKER
-            val rangeInExpression = TextRange.create(rangeInExpression.startOffset + offset, rangeInExpression.startOffset + offset + 1)
-            ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
+
+        override fun getReferences(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiReference> {
+            if (element !is ParadoxScriptStringExpressionElement) return emptyList()
+            val separatorIndex = text.indexOf('@')
+            if (separatorIndex == -1) return emptyList() // no `@` -> ignore
+            if (separatorIndex == 0) return emptyList() // no tech node -> ignore
+            val offset = ParadoxExpressionService.getExpressionOffset(element)
+            val referenceRange = TextRange.from(rangeInExpression.startOffset + offset, separatorIndex)
+            val referenceConfigs = listOf(CwtValueConfig.mock(config.configGroup, typeExpression))
+            val referenceRole = ParadoxExpressionRole.Other
+            val reference = ParadoxScriptExpressionPsiReference(element, referenceRange, referenceConfigs, referenceRole)
+            return reference.to.singletonList()
         }
-        run {
-            val offset = text.length - separatorIndex - 1
-            if (offset <= 0) return@run
-            // annotate only if snippet after '@' is number like
-            if (!text.substring(separatorIndex + 1).all { it.isExactDigit() }) return@run
-            val attributesKey = ParadoxScriptHighlighterColors.NUMBER
-            val rangeInExpression = TextRange.create(rangeInExpression.endOffset - offset, rangeInExpression.endOffset)
-            ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
+
+        override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
+            val definitionScriptExpressionSupport = ParadoxScriptExpressionSupport.EP_NAME.findExtension(ParadoxCoreScriptExpressionSupport.ForDefinition::class.java) ?: return
+
+            val separatorIndex = context.keyword.indexOf('@')
+            if (separatorIndex != -1 && context.keywordOffset - separatorIndex > 0) return
+
+            val config = CwtValueConfig.mock(context.configGroup, typeExpression)
+            val context = context.copy(isKey = null, config = config, configs = emptySet())
+            definitionScriptExpressionSupport.complete(context, result)
         }
-        return true
-    }
-
-    override fun getReferences(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiReference> {
-        if (element !is ParadoxScriptStringExpressionElement) return emptyList()
-        val separatorIndex = text.indexOf('@')
-        if (separatorIndex == -1) return emptyList() // no `@` -> ignore
-        if (separatorIndex == 0) return emptyList() // no tech node -> ignore
-        val offset = ParadoxExpressionService.getExpressionOffset(element)
-        val referenceRange = TextRange.from(rangeInExpression.startOffset + offset, separatorIndex)
-        val referenceConfigs = listOf(CwtValueConfig.mock(config.configGroup, typeExpression))
-        val referenceRole = ParadoxExpressionRole.Other
-        val reference = ParadoxScriptExpressionPsiReference(element, referenceRange, referenceConfigs, referenceRole)
-        return reference.to.singletonList()
-    }
-
-    override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
-        val definitionScriptExpressionSupport = ParadoxScriptExpressionSupport.EP_NAME.findExtension(ParadoxScriptDefinitionExpressionSupport::class.java) ?: return
-
-        val separatorIndex = context.keyword.indexOf('@')
-        if (separatorIndex != -1 && context.keywordOffset - separatorIndex > 0) return
-
-        val config = CwtValueConfig.mock(context.configGroup, typeExpression)
-        val context = context.copy(isKey = null, config = config, configs = emptySet())
-        definitionScriptExpressionSupport.complete(context, result)
     }
 }
