@@ -35,7 +35,7 @@ abstract class ParadoxExpandableCsvExpressionSupport : ParadoxCsvExpressionSuppo
             // NOTE 3.0.3 use first actually matched config atm, event if the result from this config is null or empty
             val processor = ProcessorFactory.find<CwtValueConfig>()
             runWithRecursionGuard("csvExpression.annotate.union", unionName) {
-                val expression = ParadoxExpression.resolve(element)
+                val expression = ParadoxExpression.resolve(text, false) // 3.0.3 should be resolved from `text`, rather than `element`
                 ParadoxConfigExpansionService.expandMatchedUnion(element, expression, unionName, configGroup) {
                     processor.process(it)
                 }
@@ -51,7 +51,7 @@ abstract class ParadoxExpandableCsvExpressionSupport : ParadoxCsvExpressionSuppo
             // NOTE 3.0.3 use first actually matched config atm, event if the result from this config is null or empty
             val processor = ProcessorFactory.find<PsiElement>()
             runWithRecursionGuard("csvExpression.resolve.union", unionName) {
-                val expression = ParadoxExpression.resolve(element)
+                val expression = ParadoxExpression.resolve(text, false) // 3.0.3 should be resolved from `text`, rather than `element`
                 ParadoxConfigExpansionService.expandMatchedUnion(element, expression, unionName, configGroup) p@{ unionValueConfig ->
                     val r = ParadoxExpressionService.resolveCsvExpression(element, text, rangeInExpression, unionValueConfig)
                     if (r == null) return@p true
@@ -67,7 +67,7 @@ abstract class ParadoxExpandableCsvExpressionSupport : ParadoxCsvExpressionSuppo
             // NOTE 3.0.1 recursion guard is required here
             val processor = ProcessorFactory.find<List<PsiElement>>()
             runWithRecursionGuard("csvExpression.resolveAll.union", unionName) {
-                val expression = ParadoxExpression.resolve(element)
+                val expression = ParadoxExpression.resolve(text, false) // 3.0.3 should be resolved from `text`, rather than `element`
                 ParadoxConfigExpansionService.expandMatchedUnion(element, expression, unionName, configGroup) p@{ unionValueConfig ->
                     val r = ParadoxExpressionService.resolveAllCsvExpression(element, text, rangeInExpression, unionValueConfig).orNull()
                     if (r == null) return@p true

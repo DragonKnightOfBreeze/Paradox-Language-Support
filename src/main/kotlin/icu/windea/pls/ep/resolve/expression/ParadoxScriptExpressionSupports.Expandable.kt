@@ -38,7 +38,7 @@ abstract class ParadoxExpandableScriptExpressionSupport : ParadoxScriptExpressio
             // NOTE 3.0.3 use first actually matched config atm, event if the result from this config is null or empty
             val processor = ProcessorFactory.find<CwtValueConfig>()
             runWithRecursionGuard("scriptExpression.annotate.union", unionName) {
-                val expression = ParadoxExpression.resolve(element)
+                val expression = ParadoxExpression.resolve(text, false) // 3.0.3 should be resolved from `text`, rather than `element`
                 ParadoxConfigExpansionService.expandMatchedUnion(element, expression, unionName, configGroup) {
                     processor.process(it)
                 }
@@ -55,7 +55,7 @@ abstract class ParadoxExpandableScriptExpressionSupport : ParadoxScriptExpressio
             // NOTE 3.0.3 use first actually matched config atm, event if the result from this config is null or empty
             val processor = ProcessorFactory.find<CwtValueConfig>()
             runWithRecursionGuard("scriptExpression.resolve.union", unionName) {
-                val expression = ParadoxExpression.resolve(element)
+                val expression = ParadoxExpression.resolve(text, false) // 3.0.3 should be resolved from `text`, rather than `element`
                 ParadoxConfigExpansionService.expandMatchedUnion(element, expression, unionName, configGroup) {
                     processor.process(it)
                 }
@@ -72,7 +72,7 @@ abstract class ParadoxExpandableScriptExpressionSupport : ParadoxScriptExpressio
             // NOTE 3.0.3 use first actually matched config atm, event if the result from this config is null or empty
             val processor = ProcessorFactory.find<CwtValueConfig>()
             runWithRecursionGuard("scriptExpression.resolveAll.union", unionName) {
-                val expression = ParadoxExpression.resolve(element)
+                val expression = ParadoxExpression.resolve(text, false) // 3.0.3 should be resolved from `text`, rather than `element`
                 ParadoxConfigExpansionService.expandMatchedUnion(element, expression, unionName, configGroup) {
                     processor.process(it)
                 }
@@ -90,7 +90,7 @@ abstract class ParadoxExpandableScriptExpressionSupport : ParadoxScriptExpressio
             // NOTE 3.0.3 use first actually matched config atm, event if the result from this config is null or empty
             val processor = ProcessorFactory.find<CwtValueConfig>()
             runWithRecursionGuard("scriptExpression.getReferences.union", unionName) {
-                val expression = ParadoxExpression.resolve(element)
+                val expression = ParadoxExpression.resolve(text, false) // 3.0.3 should be resolved from `text`, rather than `element`
                 ParadoxConfigExpansionService.expandMatchedUnion(element, expression, unionName, configGroup) {
                     processor.process(it)
                 }
@@ -131,7 +131,7 @@ abstract class ParadoxExpandableScriptExpressionSupport : ParadoxScriptExpressio
             // NOTE 3.0.1 recursion guard is required here
             val processor = ProcessorFactory.any<Unit>()
             runWithRecursionGuard("scriptExpression.annotate.alias", aliasName) {
-                val expression = ParadoxExpression.resolve(element)
+                val expression = ParadoxExpression.resolve(text, false) // 3.0.3 should be resolved from `text`, rather than `element`
                 ParadoxConfigExpansionService.expandMatchedAliasKeys(element, expression, aliasName, configGroup) p@{ key ->
                     val aliasConfig = aliasGroup[key]?.firstOrNull() ?: return@p true
                     val r = ParadoxExpressionService.annotateScriptExpression(element, text, rangeInExpression, aliasConfig, holder)
@@ -150,7 +150,7 @@ abstract class ParadoxExpandableScriptExpressionSupport : ParadoxScriptExpressio
             // NOTE 3.0.1 recursion guard is required here
             val processor = ProcessorFactory.find<PsiElement>()
             runWithRecursionGuard("scriptExpression.resolve.alias", aliasName) {
-                val expression = ParadoxExpression.resolve(element)
+                val expression = ParadoxExpression.resolve(text, false) // 3.0.3 should be resolved from `text`, rather than `element`
                 ParadoxConfigExpansionService.expandMatchedAliasKeys(element, expression, aliasName, configGroup) p@{ key ->
                     val aliasConfig = aliasGroup[key]?.firstOrNull() ?: return@p true
                     val r = ParadoxExpressionService.resolveScriptExpression(element, text, rangeInExpression, aliasConfig, role)
@@ -169,7 +169,7 @@ abstract class ParadoxExpandableScriptExpressionSupport : ParadoxScriptExpressio
             // NOTE 3.0.1 recursion guard is required here
             val processor = ProcessorFactory.find<List<PsiElement>>()
             runWithRecursionGuard("scriptExpression.resolveAll.alias", aliasName) {
-                val expression = ParadoxExpression.resolve(element)
+                val expression = ParadoxExpression.resolve(text, false) // 3.0.3 should be resolved from `text`, rather than `element`
                 ParadoxConfigExpansionService.expandMatchedAliasKeys(element, expression, aliasName, configGroup) p@{ key ->
                     val aliasConfig = aliasGroup[key]?.firstOrNull() ?: return@p true
                     val r = ParadoxExpressionService.resolveAllScriptExpression(element, text, rangeInExpression, aliasConfig, role).orNull()

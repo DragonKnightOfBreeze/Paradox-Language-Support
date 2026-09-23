@@ -16,7 +16,6 @@ import icu.windea.pls.core.collections.findFast
 import icu.windea.pls.core.collections.flatMapFast
 import icu.windea.pls.core.collections.mapNotNullFast
 import icu.windea.pls.core.createResults
-import icu.windea.pls.core.resolveFirst
 import icu.windea.pls.core.util.ProcessorScope
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
@@ -72,7 +71,7 @@ class ParadoxDataSourceNode(
         if (configExpressions.anyFast { !it.type.isReference || it.type in CwtDataTypeSets.DynamicValue }) return null
         // 排除可解析的情况
         val reference = getReference(element)
-        if (reference == null || reference.resolveFirst() != null) return null
+        if (reference == null || reference.resolve() != null) return null
         return ParadoxComplexExpressionErrors.unresolvedDataSource(rangeInExpression, text, configExpressions.toSet().joinToString())
     }
 

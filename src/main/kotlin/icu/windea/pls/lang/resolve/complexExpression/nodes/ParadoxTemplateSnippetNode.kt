@@ -53,7 +53,7 @@ class ParadoxTemplateSnippetNode(
         if (!configExpression.type.isReference) return null
         // 排除可解析的情况
         val reference = getReference(element)
-        if (reference == null || reference.resolveFirst() != null) return null
+        if (reference == null || reference.resolve() != null) return null
         return ParadoxComplexExpressionErrors.unresolvedTemplateSnippet(rangeInExpression, text, configExpression.expressionString)
     }
 
