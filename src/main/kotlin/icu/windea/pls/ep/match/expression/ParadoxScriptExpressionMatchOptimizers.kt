@@ -1,14 +1,15 @@
 package icu.windea.pls.ep.match.expression
 
 import icu.windea.pls.config.config.CwtMemberConfig
+import icu.windea.pls.config.config.CwtMemberType
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.manipulation.CwtConfigManipulationService
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.children
 import icu.windea.pls.core.collections.filterFast
-import icu.windea.pls.core.collections.filterIsInstanceFast
 import icu.windea.pls.core.collections.forEachFast
+import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.select.oneBy
 import icu.windea.pls.lang.match.ParadoxExpressionMatchContext
 import icu.windea.pls.lang.match.ParadoxExpressionMatchService
@@ -23,22 +24,67 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptValue
 
 /**
- * 如果要匹配的是字符串，且匹配结果中存在作为常量匹配的规则，则仅保留这些规则。
+ * 如果匹配结果中存在作为常量匹配的规则，且要匹配的表达式是字符串，则仅保留这些规则。
+ *
+ * 如果优化结果为空，则不进行优化（改为返回 `null`，而非空列表）。
  */
 @Optimized
 class ParadoxScriptExpressionConstantMatchOptimizer : ParadoxScriptExpressionMatchOptimizer {
     override fun <T : CwtMemberConfig<*>> optimize(context: ParadoxExpressionMatchContext, input: List<T>): List<T>? {
         if (input.size <= 1) return null
-        if (context.expression.type != ParadoxExpressionType.String) return null
+        if (context.expression.type != ParadoxExpressionType.String) return null // skip if the expression type is not string
         if (context.expression.isParameterized()) return null // skip if the expression is parameterized
-        val filtered = input.filterFast { ParadoxExpressionMatchService.matchesConstant(context.expression, it.configExpression, context.configGroup) }
-        if (filtered.isEmpty()) return null
-        return filtered
+        val result = input.filterFast { ParadoxExpressionMatchService.matchesConstant(context.expression, it.configExpression, context.configGroup) }
+        return result.orNull()
     }
 }
 
 /**
- * 如果参与匹配的表达式带参数，且是整个作为参数，且可以（基于扩展规则，而非用法）推断得到参数的上下文规则，则尝试根据这些规则进行进一步的匹配。
+ * 如果匹配结果中存在值为块的属性规则，且要匹配的值表达式是块，则仅保留这些规则。
+ *
+ * 如果匹配结果中的规则在分组后，同一分组后存在多个值为块的属性规则，则尝试根据块中的内容进行进一步的匹配。
+ * 如果是属性规则则按照属性键分组，如果是值规则则单独分组。
+ *
+ * 如果匹配时发现存在冲突，应直接移除所有参与匹配的规则。
+ * 例如，块中使用到了属性键分别为 X 和 Y 的属性，而这两个属性键分别匹配两个不同的属性规则。
+ * 另外，对应的代码检查中应提供特殊的报错信息。
+ */
+@Optimized
+class ParadoxScriptExpressionBlockMatchOptimizer : ParadoxScriptExpressionMatchOptimizer {
+    override fun isDynamic(context: ParadoxExpressionMatchContext) = true
+
+    @Suppress("UNCHECKED_CAST")
+    override fun <T : CwtMemberConfig<*>> optimize(context: ParadoxExpressionMatchContext, input: List<T>): List<T>? {
+        if (input.size <= 1) return null
+        val filtered = input.filterFast { it.memberType == CwtMemberType.PROPERTY && it.valueType == CwtExpressionType.Block } as List<CwtPropertyConfig>
+        if (filtered.isEmpty()) return null // skip if there is no filtered candidates
+        val filteredGroup = mutableMapOf<String, MutableList<CwtPropertyConfig>>()
+        filtered.forEachFast { c -> filteredGroup.getOrPut(c.key) { mutableListOf() } += c }
+        val blockExpression = ParadoxExpression.resolveBlock()
+        var block: ParadoxScriptBlock? = null
+        var configsToRemove: MutableSet<CwtMemberConfig<*>>? = null
+        filteredGroup.values.forEach f1@{ filteredConfigs ->
+            if (filteredConfigs.size <= 1) return@f1
+            if (block == null) block = context.element.castOrNull<ParadoxScriptProperty>()?.block ?: return null
+            val nextContext = ParadoxExpressionMatchContext(block, blockExpression, context.configGroup, context.options)
+            filteredConfigs.forEachFast f2@{ filteredConfig ->
+                val valueConfig = filteredConfig.valueConfig ?: return@f2
+                val matchResult = ParadoxExpressionMatchService.matchScriptExpression(nextContext, valueConfig.configExpression, valueConfig)
+                if (!matchResult.get(nextContext.options)) {
+                    val configsToRemove = configsToRemove ?: HashSet<CwtMemberConfig<*>>().also { configsToRemove = it }
+                    configsToRemove += filteredConfig
+                }
+            }
+        }
+        if (block == null) return null // skip if the value expression is not a block
+        var result = filtered as List<T>
+        if (configsToRemove != null) result = result.filterFast { it !in configsToRemove }
+        return result
+    }
+}
+
+/**
+ * 如果要匹配的表达式带参数，且是整个作为参数，且可以（基于扩展规则，而非用法）推断得到参数的上下文规则，则尝试根据这些规则进行进一步的匹配。
  */
 @Optimized
 class ParadoxScriptExpressionParameterizedMatchOptimizer : ParadoxScriptExpressionMatchOptimizer {
@@ -61,46 +107,6 @@ class ParadoxScriptExpressionParameterizedMatchOptimizer : ParadoxScriptExpressi
                 result += config
             }
         }
-        return result
-    }
-}
-
-/**
- * 如果匹配结果中的规则在分组后，同一分组后存在多个值为块（`{...}`）的规则，则尝试根据块中的内容进行进一步的匹配。
- * 如果是属性规则则按照属性键分组，如果是指规则则单独分组。
- *
- * TODO 如果匹配时发现存在冲突，应直接移除所有参与匹配的规则。
- *  例如，块中使用到了属性键分别为 X 和 Y 的属性，而这两个属性键分别匹配两个不同的属性规则。
- *  另外，对应的代码检查中应提供特殊的报错信息。
- */
-@Optimized
-class ParadoxScriptExpressionBlockMatchOptimizer : ParadoxScriptExpressionMatchOptimizer {
-    override fun isDynamic(context: ParadoxExpressionMatchContext) = true
-
-    override fun <T : CwtMemberConfig<*>> optimize(context: ParadoxExpressionMatchContext, input: List<T>): List<T>? {
-        if (input.size <= 1) return null
-        val filtered = input.filterIsInstanceFast<CwtPropertyConfig> { it.valueType == CwtExpressionType.Block }
-        if (filtered.isEmpty()) return null
-        val filteredGroup = mutableMapOf<String, MutableList<CwtPropertyConfig>>()
-        filtered.forEachFast { c -> filteredGroup.getOrPut(c.key) { mutableListOf() } += c }
-        val blockExpression = ParadoxExpression.resolveBlock()
-        var block: ParadoxScriptBlock? = null
-        var configsToRemove: MutableSet<CwtPropertyConfig>? = null
-        filteredGroup.values.forEach f1@{ filteredConfigs ->
-            if (filteredConfigs.size <= 1) return@f1
-            if (block == null) block = context.element.castOrNull<ParadoxScriptProperty>()?.block ?: return null
-            val nextContext = ParadoxExpressionMatchContext(block, blockExpression, context.configGroup, context.options)
-            filteredConfigs.forEachFast f2@{ filteredConfig ->
-                val valueConfig = filteredConfig.valueConfig ?: return@f2
-                val matchResult = ParadoxExpressionMatchService.matchScriptExpression(nextContext, valueConfig.configExpression, valueConfig)
-                if (!matchResult.get(nextContext.options)) {
-                    val configsToRemove = configsToRemove ?: mutableSetOf<CwtPropertyConfig>().also { configsToRemove = it }
-                    configsToRemove += filteredConfig
-                }
-            }
-        }
-        if (configsToRemove == null) return null
-        val result = input.filterFast { it is CwtPropertyConfig && it !in configsToRemove }
         return result
     }
 }
