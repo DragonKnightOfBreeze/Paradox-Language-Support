@@ -27,20 +27,20 @@ class CwtTriggerConfigGeneratorTest : CwtConfigGeneratorTest() {
     }
 
     @Test
-    fun generateForIr() {
-        val generator = CwtTriggerConfigGenerator(project)
-        val gameType = ParadoxGameType.Ir
-        val inputPath = "cwt/cwtools-ir-config/triggers.log"
-        val outputPath = "cwt/cwtools-ir-config/triggers.cwt"
-        generate(generator, gameType, inputPath, outputPath)
-    }
-
-    @Test
     fun generateForVic3() {
         val generator = CwtTriggerConfigGenerator(project)
         val gameType = ParadoxGameType.Vic3
         val inputPath = "cwt/cwtools-vic3-config/script-docs/triggers.log"
         val outputPath = "cwt/cwtools-vic3-config/config/triggers.cwt"
+        generate(generator, gameType, inputPath, outputPath)
+    }
+
+    @Test
+    fun generateForEu5() {
+        val generator = CwtTriggerConfigGenerator(project)
+        val gameType = ParadoxGameType.Vic3
+        val inputPath = "cwt/cwtools-eu5-config/game-docs/triggers.log"
+        val outputPath = "cwt/cwtools-eu5-config/config/triggers.cwt"
         generate(generator, gameType, inputPath, outputPath)
     }
 }

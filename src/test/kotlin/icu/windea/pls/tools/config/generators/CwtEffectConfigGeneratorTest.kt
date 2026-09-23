@@ -18,15 +18,6 @@ class CwtEffectConfigGeneratorTest : CwtConfigGeneratorTest() {
     }
 
     @Test
-    fun generateForIr() {
-        val generator = CwtEffectConfigGenerator(project)
-        val gameType = ParadoxGameType.Ir
-        val inputPath = "cwt/cwtools-ir-config/effects.log"
-        val outputPath = "cwt/cwtools-ir-config/effects.cwt"
-        generate(generator, gameType, inputPath, outputPath)
-    }
-
-    @Test
     fun generateForCk3() {
         val generator = CwtEffectConfigGenerator(project)
         val gameType = ParadoxGameType.Ck3
@@ -48,7 +39,7 @@ class CwtEffectConfigGeneratorTest : CwtConfigGeneratorTest() {
     fun generateForEu5() {
         val generator = CwtEffectConfigGenerator(project)
         val gameType = ParadoxGameType.Vic3
-        val inputPath = "cwt/cwtools-eu5-config/script-docs/effects.log"
+        val inputPath = "cwt/cwtools-eu5-config/game-docs/effects.log"
         val outputPath = "cwt/cwtools-eu5-config/config/effects.cwt"
         generate(generator, gameType, inputPath, outputPath)
     }

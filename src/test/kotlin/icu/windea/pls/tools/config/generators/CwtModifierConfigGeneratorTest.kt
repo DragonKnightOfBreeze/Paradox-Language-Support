@@ -34,4 +34,13 @@ class CwtModifierConfigGeneratorTest : CwtConfigGeneratorTest() {
         val outputPath = "cwt/cwtools-vic3-config/config/modifiers.gen.cwt"
         generate(generator, gameType, inputPath, outputPath)
     }
+
+    @Test
+    fun generateForEu5() {
+        val generator = CwtModifierConfigGenerator(project)
+        val gameType = ParadoxGameType.Vic3
+        val inputPath = "cwt/cwtools-eu5-config/game-docs/modifiers.log"
+        val outputPath = "cwt/cwtools-eu5-config/config/modifiers.gen.cwt"
+        generate(generator, gameType, inputPath, outputPath)
+    }
 }

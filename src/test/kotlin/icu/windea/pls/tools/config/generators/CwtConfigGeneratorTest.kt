@@ -19,7 +19,7 @@ abstract class CwtConfigGeneratorTest : BasePlatformTestCase() {
     @Before
     fun doSetUp() = ChronicleAssume.includeConfigGenerator()
 
-    val latestStellarisVersion = "v4.1.5"
+    val latestStellarisVersion = "v4.5.0"
 
     protected fun generate(
         generator: CwtConfigGenerator,
