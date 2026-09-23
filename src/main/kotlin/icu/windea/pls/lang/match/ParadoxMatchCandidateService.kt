@@ -170,7 +170,12 @@ object ParadoxMatchCandidateService {
                 collectProcessedCandidate(c, result).let { if (!it) return false }
             }
             if (oldMatchedSize == result.size) {
+                // NOTE 3.0.3 may collect first or all - decide to collect first atm
+                // NOTE 3.0.3 need to check here when refactoring `ParadoxMatchResultProvider.forBlock` or `ParadoxScriptExpressionBlockMatchOptimizer`
                 collectProcessedCandidate(lazyMatched.first(), result).let { if (!it) return false }
+                // lazyMatched.forEachFast f@{ c ->
+                //     collectProcessedCandidate(c, result).let { if (!it) return false }
+                // }
             }
         }
         return true

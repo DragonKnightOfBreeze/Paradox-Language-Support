@@ -65,7 +65,8 @@ class ParadoxScriptExpressionBlockMatchOptimizer : ParadoxScriptExpressionMatchO
         var configsToRemove: MutableSet<CwtMemberConfig<*>>? = null
         filteredGroup.values.forEach f1@{ filteredConfigs ->
             if (filteredConfigs.size <= 1) return@f1
-            if (block == null) block = context.element.castOrNull<ParadoxScriptProperty>()?.block ?: return null
+            if (block == null) block = context.element.castOrNull<ParadoxScriptProperty>()?.block
+            if (block == null) return null // skip if the value expression is not a block
             val nextContext = ParadoxExpressionMatchContext(block, blockExpression, context.configGroup, context.options)
             filteredConfigs.forEachFast f2@{ filteredConfig ->
                 val valueConfig = filteredConfig.valueConfig ?: return@f2
@@ -77,9 +78,10 @@ class ParadoxScriptExpressionBlockMatchOptimizer : ParadoxScriptExpressionMatchO
             }
         }
         if (block == null) return null // skip if the value expression is not a block
-        var result = filtered as List<T>
-        if (configsToRemove != null) result = result.filterFast { it !in configsToRemove }
-        return result
+        var result = filtered // by default use all candidates
+        if (configsToRemove != null) result = result.filterFast { it !in configsToRemove } // try filter candidates
+        if (result.isEmpty()) result = filtered // apply fallback if all candidates are filtered out
+        return result as List<T>
     }
 }
 

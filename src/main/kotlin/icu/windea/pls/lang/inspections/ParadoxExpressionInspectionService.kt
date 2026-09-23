@@ -244,11 +244,11 @@ object ParadoxExpressionInspectionService {
         val configContext = ParadoxConfigManager.getConfigContext(element) ?: return
         if (configContext.skipMissingExpressionCheck()) return
         val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(forDeclarationRoot = true))
+        if (skipForMissingExpression(element, configs)) return
         checkForMissingExpression(element, configs, context)
     }
 
     private fun checkForMissingExpression(element: ParadoxScriptMember, configs: List<CwtMemberConfig<*>>, context: ParadoxExpressionInspectionContext) {
-        if (skipForMissingExpression(element, configs)) return
         val occurrences = ParadoxConfigManager.getChildOccurrences(element, configs)
         if (occurrences.isEmpty()) return
         val overriddenProvider = ParadoxConfigManager.getOverriddenProvider(configs)
@@ -322,11 +322,11 @@ object ParadoxExpressionInspectionService {
         val configContext = ParadoxConfigManager.getConfigContext(element) ?: return
         if (configContext.skipTooManyExpressionCheck()) return
         val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(forDeclarationRoot = true))
+        if (skipForTooManyExpression(element, configs)) return
         checkForTooManyExpression(element, configs, context)
     }
 
     private fun checkForTooManyExpression(element: ParadoxScriptMember, configs: List<CwtMemberConfig<*>>, context: ParadoxExpressionInspectionContext) {
-        if (skipForTooManyExpression(element, configs)) return
         val occurrences = ParadoxConfigManager.getChildOccurrences(element, configs)
         if (occurrences.isEmpty()) return
         val overriddenProvider = ParadoxConfigManager.getOverriddenProvider(configs)
