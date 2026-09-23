@@ -46,15 +46,16 @@ jobs:
       # Set environment variables
       - name: Export Properties
         id: properties
+        env:
+          RELEASE_BODY: ${{ github.event.release.body }}
         shell: bash
         run: |
           PROPERTIES="$(./gradlew properties --console=plain -q)"
           PLUGIN_VERSION="$(echo "$PROPERTIES" | grep "^pluginVersion:" | cut -f2- -d ' ')"
           PLUGIN_PRERELEASE_VERSION="$(echo "$PROPERTIES" | grep "^pluginPreReleaseVersion:" | cut -f2- -d ' ')"
           PLUGIN_BUILD_METADATA="$(echo "$PROPERTIES" | grep "^pluginBuildMetadata:" | cut -f2- -d ' ')"
-          CHANGELOG="${{ github.event.release.body }}"
-          CHANGELOG="$(echo "$CHANGELOG" | sed -e 's/^[[:space:]]*$//g' -e '/./,$!d')"
-          )"
+
+          CHANGELOG="$(printf '%s' "$RELEASE_BODY" | sed -e 's/^[[:space:]]*$//g' -e '/./,$!d')"
 
           echo "pluginVersion: $PLUGIN_VERSION"
           echo "pluginPrereleaseVersion: $PLUGIN_PRERELEASE_VERSION"
@@ -62,13 +63,14 @@ jobs:
           echo "changelog:"
           echo "$CHANGELOG"
 
-          echo "pluginVersion=$PLUGIN_VERSION" >> $GITHUB_OUTPUT
-          echo "pluginPrereleaseVersion=$PLUGIN_PRERELEASE_VERSION" >> $GITHUB_OUTPUT
-          echo "pluginBuildMetadata=$PLUGIN_BUILD_METADATA" >> $GITHUB_OUTPUT
-
-          echo 'changelog<<EOF' >> $GITHUB_OUTPUT
-          echo "$CHANGELOG" >> $GITHUB_OUTPUT
-          echo 'EOF' >> $GITHUB_OUTPUT
+          {
+            echo "pluginVersion=$PLUGIN_VERSION"
+            echo "pluginPrereleaseVersion=$PLUGIN_PRERELEASE_VERSION"
+            echo "pluginBuildMetadata=$PLUGIN_BUILD_METADATA"
+            echo 'changelog<<EOF'
+            echo "$CHANGELOG"
+            echo 'EOF'
+          } >> "$GITHUB_OUTPUT"
 
       # Publish to JetBrains Marketplace
       - name: Publish Plugin
