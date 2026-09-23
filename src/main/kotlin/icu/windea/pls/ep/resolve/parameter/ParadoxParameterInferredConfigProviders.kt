@@ -18,7 +18,7 @@ import icu.windea.pls.core.collections.mapNotNullFast
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.util.values.singletonList
 import icu.windea.pls.core.util.values.to
-import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.isFullParameterized
 import icu.windea.pls.lang.resolve.ParadoxExpressionService
 import icu.windea.pls.lang.resolve.ParadoxParameterService
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
@@ -59,13 +59,13 @@ class ParadoxDefaultExpressionParameterInferredConfigProvider : ParadoxParameter
             }
             is ParadoxScriptNormalParameter -> {
                 // NOTE 3.0.2 skip if it is full parameterized (can be many things, even a set of statements, or just a script snippet)
-                if (parentElement.text.isParameterized(full = true)) return null
+                if (parentElement.text.isFullParameterized()) return null
                 // partial parameterized -> continue to infer and merge configs
                 return configGroup.mockConfigs.literal
             }
             is ParadoxScriptInlineMathParameter -> {
                 // 3.0.2 if it is full parameterized, should be a number
-                if (parentElement.text.isParameterized(full = true)) return configGroup.mockConfigs.float
+                if (parentElement.text.isFullParameterized()) return configGroup.mockConfigs.float
                 // partial parameterized -> continue to infer and merge configs
                 return configGroup.mockConfigs.literal
             }
@@ -82,7 +82,7 @@ class ParadoxBaseParameterInferredConfigProvider : ParadoxParameterInferredConfi
     override fun supports(parameterInfo: ParadoxParameterContextInfo.Parameter, parameterContextInfo: ParadoxParameterContextInfo): Boolean {
         val parentElement = parameterInfo.parentElement
         if (parentElement !is ParadoxScriptStringExpressionElement) return false
-        if (!parentElement.value.isParameterized(full = true)) return false
+        if (!parentElement.value.isFullParameterized()) return false
         return true
     }
 
@@ -135,7 +135,7 @@ class ParadoxComplexExpressionNodeParameterInferredConfigProvider : ParadoxParam
     override fun supports(parameterInfo: ParadoxParameterContextInfo.Parameter, parameterContextInfo: ParadoxParameterContextInfo): Boolean {
         val parentElement = parameterInfo.parentElement
         if (parentElement !is ParadoxScriptStringExpressionElement) return false
-        if (parentElement.value.isParameterized(full = true)) return false
+        if (parentElement.value.isFullParameterized()) return false
         return true
     }
 

@@ -32,6 +32,7 @@ import icu.windea.pls.ep.scope.ParadoxDynamicValueInferredScopeContextProvider
 import icu.windea.pls.ep.scope.ParadoxDynamicValueScopeContextProvider
 import icu.windea.pls.ep.scope.ParadoxOverriddenScopeContextProvider
 import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.isFullParameterized
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.findByPattern
@@ -463,7 +464,7 @@ object ParadoxScopeService {
     private fun evaluateScopeContextFromNode(element: ParadoxExpressionElement, node: ParadoxParameterizedNode, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext {
         run r1@{
             // only support full parameterized node
-            if (!node.text.isParameterized(full = true)) return@r1
+            if (!node.text.isFullParameterized()) return@r1
 
             val startOffset = ParadoxExpressionService.getExpressionOffset(element) + node.rangeInExpression.startOffset
             val parameter = element.findElementAt(startOffset)?.parentOfType<ParadoxScriptParameter>() ?: return@r1

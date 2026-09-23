@@ -12,13 +12,13 @@ import icu.windea.pls.core.isIdentifier
 import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.lang.ParadoxThreadContext
-import icu.windea.pls.lang.getParameterRanges
 import icu.windea.pls.lang.isParameterAwareIdentifier
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionErrors
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionValidatorScope
+import icu.windea.pls.lang.util.ParadoxExpressionManager
 
 /**
  * 脚本值引用表达式。
@@ -79,12 +79,11 @@ private object ParadoxScriptValueReferenceExpressionResolver {
         val incomplete = ParadoxThreadContext.incompleteComplexExpression.hasState()
         if (!incomplete && text.isEmpty()) return null
 
-        val parameterRanges = text.getParameterRanges()
-
         val config = configGroup.mockConfigs.scriptValue
         val nodes = mutableListOf<ParadoxComplexExpressionNode>()
         val range = range ?: TextRange.create(0, text.length)
         val expression = ParadoxScriptValueReferenceExpressionImpl(text, range, configGroup, config, nodes)
+        val parameterRanges = ParadoxExpressionManager.getParameterRanges(text)
 
         val offset = range.startOffset
         var n = 0

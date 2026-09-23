@@ -14,6 +14,7 @@ import icu.windea.pls.ep.match.expression.ParadoxScriptExpressionMatcher
 import icu.windea.pls.ep.resolve.expression.ParadoxCsvExpressionSupport
 import icu.windea.pls.ep.resolve.expression.ParadoxLocalisationExpressionSupport
 import icu.windea.pls.ep.resolve.expression.ParadoxScriptExpressionSupport
+import icu.windea.pls.lang.isFullParameterized
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.ParadoxMatchOptionsService
@@ -51,13 +52,14 @@ interface ParadoxExpression {
     val type: ParadoxExpressionType
     val role: ParadoxExpressionRole
 
+    fun isScalar(): Boolean
+    fun isBoolean(): Boolean
+    fun isInt(): Boolean
+    fun isFloat(): Boolean
     fun isParameterized(): Boolean
     fun isFullParameterized(): Boolean
+    fun isFullParameterizedWithLeadingUnary(): Boolean
 
-    fun isScalar(): Boolean
-    fun matchesBoolean(): Boolean
-    fun matchesInt(): Boolean
-    fun matchesFloat(): Boolean
     fun matchesRegex(input: String): Boolean
     fun matchesConstant(input: String): Boolean
 
@@ -127,29 +129,26 @@ private sealed class ParadoxExpressionBase : ParadoxExpression {
     // 3.0.1 optimize: cache status
     // 3.0.1 optimize: use more memory-friendly lazy property
 
-    private inline val parameterized: Boolean // region by lazy { doIsParameterized() }
-        get() = LazyValue.ofBoolean({ _parameterized }, { _parameterized = it }) { doIsParameterized() }
-    @Volatile private var _parameterized = LazyValue.UNINITIALIZED_BOOLEAN // endregion
-    private inline val fullParameterized: Boolean // region by lazy { doIsFullParameterized() }
-        get() = LazyValue.ofBoolean({ _fullParameterized }, { _fullParameterized = it }) { doIsFullParameterized() }
-    @Volatile private var _fullParameterized = LazyValue.UNINITIALIZED_BOOLEAN // endregion
-    private inline val int: Boolean // region by lazy { doMatchInt() }
-        get() = LazyValue.ofBoolean({ _int }, { _int = it }) { doMatchInt() }
+    private inline val int: Boolean // region by lazy { computeInt() }
+        get() = LazyValue.ofBoolean({ _int }, { _int = it }) { computeInt() }
     @Volatile private var _int = LazyValue.UNINITIALIZED_BOOLEAN // endregion
-    private inline val float: Boolean // region by lazy { doMatchFloat() }
-        get() = LazyValue.ofBoolean({ _float }, { _float = it }) { doMatchFloat() }
+    private inline val float: Boolean // region by lazy { computeFloat() }
+        get() = LazyValue.ofBoolean({ _float }, { _float = it }) { computeFloat() }
     @Volatile private var _float = LazyValue.UNINITIALIZED_BOOLEAN // endregion
+    private inline val parameterized: Boolean // region by lazy { computeParameterized() }
+        get() = LazyValue.ofBoolean({ _parameterized }, { _parameterized = it }) { computeParameterized() }
+    @Volatile private var _parameterized = LazyValue.UNINITIALIZED_BOOLEAN // endregion
+    private inline val fullParameterized: Boolean // region by lazy { computeFullParameterized() }
+        get() = LazyValue.ofBoolean({ _fullParameterized }, { _fullParameterized = it }) { computeFullParameterized() }
+    @Volatile private var _fullParameterized = LazyValue.UNINITIALIZED_BOOLEAN // endregion
+    private inline val fullParameterizedWithLeadingUnary: Boolean // region by lazy { computeFullParameterizedWithLeadingUnary() }
+        get() = LazyValue.ofBoolean({ _fullParameterizedWithLeadingUnary }, { _fullParameterizedWithLeadingUnary = it }) { computeFullParameterizedWithLeadingUnary() }
+    @Volatile private var _fullParameterizedWithLeadingUnary = LazyValue.UNINITIALIZED_BOOLEAN // endregion
     private inline val regex: Regex // region by lazy { computeRegex() }
         get() = LazyValue.of({ _regex }, { _regex = it }) { computeRegex() }
     @Volatile private var _regex: Regex? = null // endregion
 
-    private fun doIsParameterized() = type == ParadoxExpressionType.String && value.isParameterized()
-    private fun doIsFullParameterized() = type == ParadoxExpressionType.String && value.isParameterized(full = true)
-    private fun doMatchInt() = type.isLenientInt() || TextMatcher.matchesInt(value)
-    private fun doMatchFloat() = type.isLenientFloat() || TextMatcher.matchesFloat(value)
-    private fun computeRegex() = ParadoxExpressionManager.toRegex(value)
-
-    override fun isScalar(): Boolean {
+    private fun computeScalar(): Boolean {
         return when {
             role == ParadoxExpressionRole.Key -> true // key -> ok
             type.isLenientBooleanLiteral() -> true // boolean -> sadly, also ok for compatibility
@@ -159,15 +158,41 @@ private sealed class ParadoxExpressionBase : ParadoxExpression {
         }
     }
 
+    private fun computeBoolean(): Boolean {
+        return type.isLenientBooleanLiteral()
+    }
+
+    private fun computeInt(): Boolean {
+        return type.isLenientInt() || TextMatcher.matchesInt(value)
+    }
+
+    private fun computeFloat(): Boolean {
+        return type.isLenientFloat() || TextMatcher.matchesFloat(value)
+    }
+
+    private fun computeParameterized(): Boolean {
+        return type.isStringLiteral() && value.isParameterized()
+    }
+
+    private fun computeFullParameterized(): Boolean {
+        return type.isStringLiteral() && value.isFullParameterized()
+    }
+
+    private fun computeFullParameterizedWithLeadingUnary(): Boolean {
+        return type.isStringLiteral() && TextMatcher.isNumberUnaryChar(value.first()) && value.isFullParameterized(1)
+    }
+
+    private fun computeRegex(): Regex {
+        return ParadoxExpressionManager.toRegex(value)
+    }
+
+    override fun isScalar(): Boolean = computeScalar()
+    override fun isBoolean(): Boolean = computeBoolean()
+    override fun isInt(): Boolean = int
+    override fun isFloat(): Boolean = float
     override fun isParameterized(): Boolean = parameterized
-
     override fun isFullParameterized(): Boolean = fullParameterized
-
-    override fun matchesBoolean(): Boolean = type.isLenientBooleanLiteral()
-
-    override fun matchesInt(): Boolean = int
-
-    override fun matchesFloat(): Boolean = float
+    override fun isFullParameterizedWithLeadingUnary(): Boolean = fullParameterizedWithLeadingUnary
 
     override fun matchesRegex(input: String): Boolean = regex.matches(input)
 

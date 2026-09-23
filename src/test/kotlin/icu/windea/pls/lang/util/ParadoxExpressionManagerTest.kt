@@ -71,25 +71,6 @@ class ParadoxExpressionManagerTest {
     }
 
     @Test
-    fun isParameterized_full() {
-        // full = true: 整个字符串必须是 $...$ 形式
-        Assert.assertTrue(ParadoxExpressionManager.isParameterized("\$abc$", full = true))
-        Assert.assertTrue(ParadoxExpressionManager.isParameterized("$$", full = true))
-        Assert.assertTrue(ParadoxExpressionManager.isParameterized("\$a$", full = true))
-        // 前后有多余字符 → false
-        Assert.assertFalse(ParadoxExpressionManager.isParameterized("", full = true))
-        Assert.assertFalse(ParadoxExpressionManager.isParameterized("abc", full = true))
-        Assert.assertFalse(ParadoxExpressionManager.isParameterized("aaa\$abc\$bbb", full = true))
-        Assert.assertFalse(ParadoxExpressionManager.isParameterized("x\$y\$z\$w$", full = true))
-        // 转义导致不匹配
-        Assert.assertFalse(ParadoxExpressionManager.isParameterized("\$abc\\$", full = true))
-        Assert.assertFalse(ParadoxExpressionManager.isParameterized("\\\$abc$", full = true))
-        Assert.assertFalse(ParadoxExpressionManager.isParameterized("\$abc\$def\$gh$", full = true))
-        // 多个 $ 对 → false（第二个 $ 不是 lastIndex）
-        Assert.assertFalse(ParadoxExpressionManager.isParameterized("$$$$", full = true))
-    }
-
-    @Test
     fun isParameterized_edgeCases() {
         // 转义后的 \\ 不影响检测
         Assert.assertTrue(ParadoxExpressionManager.isParameterized("\\\\\$abc$"))
@@ -100,6 +81,62 @@ class ParadoxExpressionManagerTest {
         Assert.assertTrue(ParadoxExpressionManager.isParameterized("a\$b\$c[[d]e]"))
         // 未闭合参数（仅第一个 $ 检测足以返回 true）
         Assert.assertTrue(ParadoxExpressionManager.isParameterized("\$abc"))
+    }
+
+    // endregion
+
+    // region isFullParameterized
+
+    @Test
+    fun isFullParameterized_basic() {
+        // 整个字符串必须是 $...$ 形式
+        Assert.assertTrue(ParadoxExpressionManager.isFullParameterized("\$abc$"))
+        Assert.assertTrue(ParadoxExpressionManager.isFullParameterized("$$"))
+        Assert.assertTrue(ParadoxExpressionManager.isFullParameterized("\$a$"))
+        // 前后有多余字符 → false
+        Assert.assertFalse(ParadoxExpressionManager.isFullParameterized(""))
+        Assert.assertFalse(ParadoxExpressionManager.isFullParameterized("abc"))
+        Assert.assertFalse(ParadoxExpressionManager.isFullParameterized("aaa\$abc\$bbb"))
+        Assert.assertFalse(ParadoxExpressionManager.isFullParameterized("x\$y\$z\$w$"))
+        // 转义导致不匹配
+        Assert.assertFalse(ParadoxExpressionManager.isFullParameterized("\$abc\\$"))
+        Assert.assertFalse(ParadoxExpressionManager.isFullParameterized("\\\$abc$"))
+        Assert.assertFalse(ParadoxExpressionManager.isFullParameterized("\$abc\$def\$gh$"))
+        // 多个 $ 对 → false（第二个 $ 不是 lastIndex）
+        Assert.assertFalse(ParadoxExpressionManager.isFullParameterized("$$$$"))
+        // 起始的一元运算符
+        Assert.assertFalse(ParadoxExpressionManager.isFullParameterized("1"))
+        Assert.assertFalse(ParadoxExpressionManager.isFullParameterized("-1"))
+        Assert.assertFalse(ParadoxExpressionManager.isFullParameterized("-"))
+        Assert.assertFalse(ParadoxExpressionManager.isFullParameterized("-$"))
+        Assert.assertFalse(ParadoxExpressionManager.isFullParameterized("-\$v"))
+        Assert.assertFalse(ParadoxExpressionManager.isFullParameterized("-\$v$"))
+    }
+
+    @Test
+    fun isFullParameterized_withOffset() {
+        // 整个字符串必须是 $...$ 形式
+        Assert.assertFalse(ParadoxExpressionManager.isFullParameterized("\$abc$", 1))
+        Assert.assertFalse(ParadoxExpressionManager.isFullParameterized("$$", 1))
+        Assert.assertFalse(ParadoxExpressionManager.isFullParameterized("\$a$", 1))
+        // 前后有多余字符 → false
+        Assert.assertFalse(ParadoxExpressionManager.isFullParameterized("", 1))
+        Assert.assertFalse(ParadoxExpressionManager.isFullParameterized("abc", 1))
+        Assert.assertFalse(ParadoxExpressionManager.isFullParameterized("aaa\$abc\$bbb", 1))
+        Assert.assertFalse(ParadoxExpressionManager.isFullParameterized("x\$y\$z\$w$", 1))
+        // 转义导致不匹配
+        Assert.assertFalse(ParadoxExpressionManager.isFullParameterized("\$abc\\$", 1))
+        Assert.assertTrue(ParadoxExpressionManager.isFullParameterized("\\\$abc$", 1))
+        Assert.assertFalse(ParadoxExpressionManager.isFullParameterized("\$abc\$def\$gh$", 1))
+        // 多个 $ 对 → false（第二个 $ 不是 lastIndex）
+        Assert.assertFalse(ParadoxExpressionManager.isFullParameterized("$$$$", 1))
+        // 起始的一元运算符
+        Assert.assertFalse(ParadoxExpressionManager.isFullParameterized("1", 1))
+        Assert.assertFalse(ParadoxExpressionManager.isFullParameterized("-1", 1))
+        Assert.assertFalse(ParadoxExpressionManager.isFullParameterized("-", 1))
+        Assert.assertFalse(ParadoxExpressionManager.isFullParameterized("-$", 1))
+        Assert.assertFalse(ParadoxExpressionManager.isFullParameterized("-\$v", 1))
+        Assert.assertTrue(ParadoxExpressionManager.isFullParameterized("-\$v$", 1))
     }
 
     // endregion

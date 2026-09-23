@@ -8,6 +8,10 @@ import java.util.concurrent.ConcurrentHashMap
 object TextMatcher {
     private val dateFieldFormatters = ConcurrentHashMap<String, DateTimeFormatter>()
 
+    fun isNumberUnaryChar(c: Char): Boolean {
+        return c == '+' || c == '-'
+    }
+
     /**
      * 检查 [text] 是否匹配一个整数。
      *
@@ -88,7 +92,7 @@ object TextMatcher {
         if (start == end) return false
         if (leadingUnary) {
             val c = text[start]
-            if (c == '+' || c == '-') return matchesIntInternal(text, start + 1, end, false)
+            if (isNumberUnaryChar(c)) return matchesIntInternal(text, start + 1, end, false)
         }
         var current = start
         while (current < end) {
@@ -103,7 +107,7 @@ object TextMatcher {
         if (start == end) return false
         if (leadingUnary) {
             val c = text[start]
-            if (c == '+' || c == '-') return matchesFloatInternal(text, start + 1, end, false, lenientDot)
+            if (isNumberUnaryChar(c)) return matchesFloatInternal(text, start + 1, end, false, lenientDot)
         }
         var current = start
         var expectDot = true
@@ -127,7 +131,7 @@ object TextMatcher {
         if (text.isEmpty()) return false
         if (leadingUnary) {
             val c = text[0]
-            if (c == '+' || c == '-') return matchesDataFieldInternal(text.drop(1), pattern, false)
+            if (isNumberUnaryChar(c)) return matchesDataFieldInternal(text.drop(1), pattern, false)
         }
         return try {
             val formatter = dateFieldFormatters.getOrPut(pattern) { DateTimeFormatter.ofPattern(pattern) }

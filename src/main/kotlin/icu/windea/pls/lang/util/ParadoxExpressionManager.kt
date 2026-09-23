@@ -63,7 +63,7 @@ object ParadoxExpressionManager {
      * 说明：
      * - “携带参数”意味着使用到了其中一种或多种高级插值语法：参数（形如 `a_$PARAM$_b`）和条件块（形如 `a_[[PARAM]b]_c`）。
      * - 快速判断，不检查携带参数后的语法是否合法。
-     * - 仅接受长度大于2的字符串。
+     * - 仅接受长度大于 2 的字符串。
      */
     fun isParameterized(text: String, conditionBlock: Boolean = true, full: Boolean = false): Boolean {
         // 快速判断，不检测带参数后的语法是否合法
@@ -87,12 +87,51 @@ object ParadoxExpressionManager {
     }
 
     /**
+     * 检查 [text] 是否整个作为参数。
+     *
+     * 说明：
+     * - “携带参数”意味着使用到了其中一种或多种高级插值语法：参数（形如 `a_$PARAM$_b`）和条件块（形如 `a_[[PARAM]b]_c`）。
+     * - 快速判断，不检查携带参数后的语法是否合法。
+     * - 通过 [offset] 指定要开始检查的偏移。
+     * - 仅接受长度大于 2 的字符串。
+     */
+    fun isFullParameterized(text: String, offset: Int = 0): Boolean {
+        // 快速判断，不检测带参数后的语法是否合法
+        val length = text.length
+        if (length < offset + 2) return false
+        // `$PARAM$` - 仅限：高级插值语法 A
+        return text[offset] == '$' && text.indexOf('$', offset + 1).let { c -> c == length - 1 && !text.isEscapedCharAt(c) }
+    }
+
+    /**
+     * 检查 [text] 是否为允许携带参数的有效的标识符字符串。
+     *
+     * 说明：
+     * - “携带参数”意味着使用到了其中一种或多种高级插值语法：参数（形如 `a_$PARAM$_b`）和条件块（形如 `a_[[PARAM]b]_c`）。
+     * - 快速判断，不检查携带参数后的语法是否合法。
+     * - 通过 [extraChars] 指定额外接受的字符。不接受空字符串。
+     * - 不接受空字符串。
+     */
+    fun isParameterAwareIdentifier(text: String, extraChars: String = ""): Boolean {
+        // 优化：仅在必要时创建列表
+        if (text.isEmpty()) return false
+        var parameterRanges: List<TextRange>? = null
+        for ((i, c) in text.withIndex()) {
+            if (c.isIdentifierChar(extraChars)) continue
+            if (parameterRanges == null) parameterRanges = getParameterRanges(text)
+            if (parameterRanges.findFast { it.contains(i) } != null) continue
+            return false
+        }
+        return true
+    }
+
+    /**
      * 得到 [text] 中携带的参数的一组文本范围。
      *
      * 说明：
      * - “携带参数”意味着使用到了其中一种或多种高级插值语法：参数（形如 `a_$PARAM$_b`）和条件块（形如 `a_[[PARAM]b]_c`）。
      * - 快速判断，不检查携带参数后的语法是否合法。
-     * - 仅接受长度大于2的字符串，否则直接返回空列表。
+     * - 仅接受长度大于 2 的字符串，否则直接返回空列表。
      */
     fun getParameterRanges(text: String, conditionBlock: Boolean = true): List<TextRange> {
         // 优化：仅在必要时创建列表
@@ -142,33 +181,6 @@ object ParadoxExpressionManager {
             parameterRanges += TextRange.create(startIndex, text.length)
         }
         return parameterRanges ?: emptyList()
-    }
-
-    /**
-     * 检查 [text] 是否为允许携带参数的有效的标识符（字符串）。
-     *
-     * 说明：
-     * - “携带参数”意味着使用到了其中一种或多种高级插值语法：参数（形如 `a_$PARAM$_b`）和条件块（形如 `a_[[PARAM]b]_c`）。
-     * - 快速判断，不检查携带参数后的语法是否合法。
-     * - 通过 [extraChars] 指定额外接受的字符。不接受空字符串。
-     * - 不接受空字符串。
-     */
-    fun isParameterAwareIdentifier(text: String, extraChars: String = ""): Boolean {
-        // 优化：仅在必要时创建列表
-        if (text.isEmpty()) return false
-        var parameterRanges: List<TextRange>? = null
-        for ((i, c) in text.withIndex()) {
-            if (c.isIdentifierChar(extraChars)) continue
-            if (parameterRanges == null) parameterRanges = getParameterRanges(text)
-            if (parameterRanges.findFast { it.contains(i) } != null) continue
-            return false
-        }
-        return true
-    }
-
-    fun isParameterAwareNumber(text: String, parameterRanges: List<TextRange>): Boolean {
-        return text.firstOrNull()?.let { it == '+' || it == '-' } == true
-            && parameterRanges.singleOrNull()?.let { it.startOffset == 1 && it.endOffset == text.length } == true
     }
 
     fun toRegex(text: String, conditionBlock: Boolean = true): Regex {

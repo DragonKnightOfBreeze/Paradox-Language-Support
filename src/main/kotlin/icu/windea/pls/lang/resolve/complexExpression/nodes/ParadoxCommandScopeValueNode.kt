@@ -15,9 +15,9 @@ import icu.windea.pls.core.isQuoted
 import icu.windea.pls.core.text.QuotePatterns
 import icu.windea.pls.expression.text.ParadoxLiteralNode
 import icu.windea.pls.lang.ParadoxThreadContext
-import icu.windea.pls.lang.getParameterRanges
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxCommandExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDynamicValueExpression
+import icu.windea.pls.lang.util.ParadoxExpressionManager
 
 class ParadoxCommandScopeValueNode(
     override val text: String,
@@ -30,7 +30,7 @@ class ParadoxCommandScopeValueNode(
         @JvmStatic
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, linkConfigs: List<CwtLinkConfig>): ParadoxCommandScopeValueNode {
             val incomplete = ParadoxThreadContext.incompleteComplexExpression.hasState()
-            val parameterRanges = text.getParameterRanges()
+            val parameterRanges = ParadoxExpressionManager.getParameterRanges(text)
             val separatorChar = if (linkConfigs.anyFast { it.argumentSeparator.usePipe() }) '|' else ','
 
             val nodes = mutableListOf<ParadoxComplexExpressionNode>()

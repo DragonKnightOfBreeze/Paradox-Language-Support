@@ -9,7 +9,7 @@ import icu.windea.pls.core.collections.filterIsInstanceFast
 import icu.windea.pls.core.hasState
 import icu.windea.pls.core.match.TextMatcher
 import icu.windea.pls.lang.ParadoxThreadContext
-import icu.windea.pls.lang.getParameterRanges
+import icu.windea.pls.lang.isFullParameterized
 import icu.windea.pls.lang.isParameterAwareIdentifier
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
@@ -82,17 +82,14 @@ private object ParadoxVariableFieldExpressionResolver {
         val incomplete = ParadoxThreadContext.incompleteComplexExpression.hasState()
         if (!incomplete && text.isEmpty()) return null
 
-        // skip if text is a number
+        // skip if text is a number, or a parameter with leading unary operator
         if (TextMatcher.matchesFloat(text)) return null
-
-        val parameterRanges = text.getParameterRanges()
-
-        // skip if text is a parameter with unary operator prefix
-        if (ParadoxExpressionManager.isParameterAwareNumber(text, parameterRanges)) return null
+        if (TextMatcher.isNumberUnaryChar(text.first()) && text.isFullParameterized(1)) return null
 
         val nodes = mutableListOf<ParadoxComplexExpressionNode>()
         val range = range ?: TextRange.create(0, text.length)
         val expression = ParadoxVariableFieldExpressionImpl(text, range, configGroup, nodes)
+        val parameterRanges = ParadoxExpressionManager.getParameterRanges(text)
 
         val offset = range.startOffset
         var startIndex = 0

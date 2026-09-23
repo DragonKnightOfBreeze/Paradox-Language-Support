@@ -9,13 +9,13 @@ import icu.windea.pls.core.collections.anyFast
 import icu.windea.pls.core.collections.filterIsInstanceFast
 import icu.windea.pls.core.hasState
 import icu.windea.pls.lang.ParadoxThreadContext
-import icu.windea.pls.lang.getParameterRanges
 import icu.windea.pls.lang.isParameterAwareIdentifier
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionErrors
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionValidatorScope
+import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationCommandText
 
 /**
@@ -101,11 +101,10 @@ private object ParadoxCommandExpressionResolver {
         val incomplete = ParadoxThreadContext.incompleteComplexExpression.hasState()
         if (!incomplete && text.isEmpty()) return null
 
-        val parameterRanges = text.getParameterRanges()
-
         val nodes = mutableListOf<ParadoxComplexExpressionNode>()
         val range = range ?: TextRange.create(0, text.length)
         val expression = ParadoxCommandExpressionImpl(text, range, configGroup, nodes)
+        val parameterRanges = ParadoxExpressionManager.getParameterRanges(text)
 
         // NOTE 3.0.2 the part after `::` or `&` is no longer recognized as part of `COMMAND_TEXT`, therefore compatibility is no longer needed here
 

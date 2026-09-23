@@ -44,7 +44,7 @@ import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionFactory
 import icu.windea.pls.lang.codeInsight.completion.ParadoxExtendedCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.addToResult
-import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.isFullParameterized
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.lang.resolve.ParadoxParameterService
@@ -116,7 +116,7 @@ object ParadoxParameterManager {
      */
     fun getExpressionContextConfigs(parameterInfo: ParadoxParameterContextInfo.Parameter): List<CwtMemberConfig<*>> {
         val expressionElement = parameterInfo.parentElement?.castOrNull<ParadoxScriptStringExpressionElement>() ?: return emptyList()
-        if (!expressionElement.value.isParameterized(full = true)) return emptyList()
+        if (!expressionElement.value.isFullParameterized()) return emptyList()
         return ParadoxConfigManager.getContextConfigs(expressionElement)
     }
 

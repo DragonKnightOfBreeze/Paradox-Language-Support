@@ -2,7 +2,6 @@
 
 package icu.windea.pls.lang
 
-import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
@@ -88,14 +87,14 @@ fun String.isParameterized(conditionBlock: Boolean = true, full: Boolean = false
     return ParadoxExpressionManager.isParameterized(this, conditionBlock, full)
 }
 
+/** @see ParadoxExpressionManager.isFullParameterized */
+fun String.isFullParameterized(offset: Int = 0): Boolean {
+    return ParadoxExpressionManager.isFullParameterized(this, offset)
+}
+
 /** @see ParadoxExpressionManager.isParameterAwareIdentifier */
 fun String.isParameterAwareIdentifier(extraChars: String = ""): Boolean {
     return ParadoxExpressionManager.isParameterAwareIdentifier(this, extraChars)
-}
-
-/** @see ParadoxExpressionManager.getParameterRanges */
-fun String.getParameterRanges(conditionBlock: Boolean = true): List<TextRange> {
-    return ParadoxExpressionManager.getParameterRanges(this, conditionBlock)
 }
 
 // endregion

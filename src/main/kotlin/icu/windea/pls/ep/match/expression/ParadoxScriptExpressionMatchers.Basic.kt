@@ -49,7 +49,7 @@ abstract class ParadoxBasicScriptExpressionMatcher : ParadoxScriptExpressionMatc
         override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.Bool
 
         override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
-            if (context.expression.matchesBoolean()) {
+            if (context.expression.isBoolean()) {
                 return ParadoxMatchResult.ExactMatch
             }
             if (context.expression.isFullParameterized()) return ParadoxMatchResult.ParameterizedMatch
@@ -63,11 +63,11 @@ abstract class ParadoxBasicScriptExpressionMatcher : ParadoxScriptExpressionMatc
 
         override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
             // quoted number (e.g., `"1"`) -> ok according to vanilla game files
-            if (context.expression.matchesInt()) {
+            if (context.expression.isInt()) {
                 ParadoxMatchResultFactory.forRangedInt(context.expression, configExpression)?.let { return it }
                 return ParadoxMatchResult.ExactMatch
             }
-            if (context.expression.isFullParameterized()) return ParadoxMatchResult.ParameterizedMatch
+            if (context.expression.isFullParameterizedWithLeadingUnary()) return ParadoxMatchResult.ParameterizedMatch
             return ParadoxMatchResult.NotMatch
         }
     }
@@ -78,11 +78,11 @@ abstract class ParadoxBasicScriptExpressionMatcher : ParadoxScriptExpressionMatc
 
         override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
             // quoted number (e.g., `"1.0"`) -> ok according to vanilla game files
-            if (context.expression.matchesFloat()) {
+            if (context.expression.isFloat()) {
                 ParadoxMatchResultFactory.forRangedFloat(context.expression, configExpression)?.let { return it }
                 return ParadoxMatchResult.ExactMatch
             }
-            if (context.expression.isFullParameterized()) return ParadoxMatchResult.ParameterizedMatch
+            if (context.expression.isFullParameterizedWithLeadingUnary()) return ParadoxMatchResult.ParameterizedMatch
             return ParadoxMatchResult.NotMatch
         }
     }

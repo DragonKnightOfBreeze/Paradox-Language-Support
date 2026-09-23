@@ -121,12 +121,16 @@ abstract class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatch
 
         override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
             // 兼容数字字面量（包括用引号括起的数字字面量）
-            val dataType = configExpression.type
-            if (dataType == CwtDataTypes.ValueField) {
-                if (context.expression.matchesFloat()) return ParadoxMatchResult.ExactMatch
-            } else if (dataType == CwtDataTypes.IntValueField) {
-                if (context.expression.matchesInt()) return ParadoxMatchResult.ExactMatch
+            if (context.expression.isInt()) {
+                ParadoxMatchResultFactory.forRangedInt(context.expression, configExpression)?.let { return it }
+                return ParadoxMatchResult.ExactMatch
             }
+            if (context.expression.isFloat()) {
+                if (configExpression.type == CwtDataTypes.IntValueField) return ParadoxMatchResult.NotMatch
+                ParadoxMatchResultFactory.forRangedFloat(context.expression, configExpression)?.let { return it }
+                return ParadoxMatchResult.ExactMatch
+            }
+            // 尝试解析为复杂表达式
             val text = context.expression.value
             val type = context.expression.type
             if (!type.isLenientStringLiteral()) return ParadoxMatchResult.NotMatch
@@ -141,12 +145,16 @@ abstract class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatch
 
         override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
             // 兼容数字字面量（包括用引号括起的数字字面量）
-            val dataType = configExpression.type
-            if (dataType == CwtDataTypes.VariableField) {
-                if (context.expression.matchesFloat()) return ParadoxMatchResult.ExactMatch
-            } else if (dataType == CwtDataTypes.IntVariableField) {
-                if (context.expression.matchesInt()) return ParadoxMatchResult.ExactMatch
+            if (context.expression.isInt()) {
+                ParadoxMatchResultFactory.forRangedInt(context.expression, configExpression)?.let { return it }
+                return ParadoxMatchResult.ExactMatch
             }
+            if (context.expression.isFloat()) {
+                if (configExpression.type == CwtDataTypes.IntVariableField) return ParadoxMatchResult.NotMatch
+                ParadoxMatchResultFactory.forRangedFloat(context.expression, configExpression)?.let { return it }
+                return ParadoxMatchResult.ExactMatch
+            }
+            // 尝试解析为复杂表达式
             val text = context.expression.value
             val type = context.expression.type
             if (!type.isLenientStringLiteral()) return ParadoxMatchResult.NotMatch

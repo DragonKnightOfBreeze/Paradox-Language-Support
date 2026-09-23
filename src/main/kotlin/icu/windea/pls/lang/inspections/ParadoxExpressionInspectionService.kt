@@ -33,6 +33,7 @@ import icu.windea.pls.csv.psi.ParadoxCsvHeader
 import icu.windea.pls.csv.psi.ParadoxCsvPsiService
 import icu.windea.pls.ep.resolve.expression.ParadoxPathReferenceExpressionSupport
 import icu.windea.pls.lang.fixes.ReplaceWithExpressionFix
+import icu.windea.pls.lang.isFullParameterized
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOccurrence
 import icu.windea.pls.lang.match.ParadoxMatchOptions
@@ -95,7 +96,7 @@ object ParadoxExpressionInspectionService {
         if (!element.isDataExpression()) return
         // NOTE 3.0.2 skip if it is full parameterized (can be many things, even a set of statements, or just a script snippet)
         // NOTE 3.0.2 DO NOT skip if it is partial parameterized (should try to match with parameters if possible)
-        if (element is ParadoxScriptInterpolationContainer && element.text.isParameterized(full = true)) return
+        if (element is ParadoxScriptInterpolationContainer && element.text.isFullParameterized()) return
 
         // NOTE 3.0.2 not very necessary, but in case
         // skip if it is a special tag (do not consider whether matched configs exist)

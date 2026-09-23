@@ -16,13 +16,13 @@ import icu.windea.pls.core.isQuoted
 import icu.windea.pls.core.text.QuotePatterns
 import icu.windea.pls.expression.text.ParadoxLiteralNode
 import icu.windea.pls.lang.ParadoxThreadContext
-import icu.windea.pls.lang.getParameterRanges
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxArrayDefineReferenceExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDefineReferenceExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDynamicValueExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScriptValueReferenceExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxValueFieldExpression
+import icu.windea.pls.lang.util.ParadoxExpressionManager
 
 class ParadoxValueFieldValueNode(
     override val text: String,
@@ -35,7 +35,7 @@ class ParadoxValueFieldValueNode(
         @JvmStatic
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, linkConfigs: List<CwtLinkConfig>): ParadoxValueFieldValueNode {
             val incomplete = ParadoxThreadContext.incompleteComplexExpression.hasState()
-            val parameterRanges = text.getParameterRanges()
+            val parameterRanges = ParadoxExpressionManager.getParameterRanges(text)
             val separatorChar = if (linkConfigs.anyFast { it.argumentSeparator.usePipe() }) '|' else ','
 
             val nodes = mutableListOf<ParadoxComplexExpressionNode>()

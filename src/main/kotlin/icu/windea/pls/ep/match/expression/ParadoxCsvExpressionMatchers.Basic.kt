@@ -43,7 +43,7 @@ abstract class ParadoxBasicCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
         override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.Bool
 
         override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression): ParadoxMatchResult {
-            if (context.expression.matchesBoolean()) {
+            if (context.expression.isBoolean()) {
                 return ParadoxMatchResult.ExactMatch
             }
             return ParadoxMatchResult.NotMatch
@@ -58,7 +58,7 @@ abstract class ParadoxBasicCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
             // empty value is allowed
             if (context.expression.value.isEmpty()) return ParadoxMatchResult.ExactMatch
             // quoted number (e.g., `"1"`) -> ok according to vanilla game files
-            if (context.expression.matchesInt()) {
+            if (context.expression.isInt()) {
                 ParadoxMatchResultFactory.forRangedInt(context.expression, configExpression)?.let { return it }
                 return ParadoxMatchResult.ExactMatch
             }
@@ -74,7 +74,7 @@ abstract class ParadoxBasicCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
             // empty value is allowed
             if (context.expression.value.isEmpty()) return ParadoxMatchResult.ExactMatch
             // quoted number (e.g., `"1.0"`) -> ok according to vanilla game files
-            if (context.expression.matchesFloat()) {
+            if (context.expression.isFloat()) {
                 ParadoxMatchResultFactory.forRangedFloat(context.expression, configExpression)?.let { return it }
                 return ParadoxMatchResult.ExactMatch
             }
