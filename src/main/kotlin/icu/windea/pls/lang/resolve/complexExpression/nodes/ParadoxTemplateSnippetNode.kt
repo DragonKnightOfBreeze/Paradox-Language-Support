@@ -12,7 +12,6 @@ import icu.windea.pls.config.config.expandConfigExpression
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.createResults
-import icu.windea.pls.core.resolveFirst
 import icu.windea.pls.core.util.ProcessorScope
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxExpressionElement

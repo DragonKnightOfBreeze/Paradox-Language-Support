@@ -84,7 +84,7 @@ private object ParadoxVariableFieldExpressionResolver {
 
         // skip if text is a number, or a parameter with leading unary operator
         if (TextMatcher.matchesFloat(text)) return null
-        if (TextMatcher.isNumberUnaryChar(text.first()) && text.isFullParameterized(1)) return null
+        if (text.isFullParameterized(1) && TextMatcher.isNumberUnaryChar(text.first())) return null
 
         val nodes = mutableListOf<ParadoxComplexExpressionNode>()
         val range = range ?: TextRange.create(0, text.length)

@@ -179,7 +179,7 @@ private sealed class ParadoxExpressionBase : ParadoxExpression {
     }
 
     private fun computeFullParameterizedWithLeadingUnary(): Boolean {
-        return type.isStringLiteral() && TextMatcher.isNumberUnaryChar(value.first()) && value.isFullParameterized(1)
+        return type.isStringLiteral() && value.isFullParameterized(1) && TextMatcher.isNumberUnaryChar(value.first())
     }
 
     private fun computeRegex(): Regex {
