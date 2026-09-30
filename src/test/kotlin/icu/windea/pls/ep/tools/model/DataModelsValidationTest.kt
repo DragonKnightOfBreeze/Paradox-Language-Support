@@ -2,7 +2,10 @@ package icu.windea.pls.ep.tools.model
 
 import icu.windea.pls.base.io.ChronicleSqliteService
 import icu.windea.pls.core.data.JsonService
+import icu.windea.pls.core.data.readJsonText
 import icu.windea.pls.lang.analysis.util.ParadoxMetadataUtil
+import icu.windea.pls.model.analysis.ParadoxLauncherSettingsJsonInfo
+import icu.windea.pls.model.analysis.ParadoxMetadataJsonInfo
 import org.junit.Test
 import org.ktorm.database.Database
 import org.ktorm.dsl.eq
@@ -21,7 +24,7 @@ class DataModelsValidationTest {
     @Test
     fun parsePlaylistV2_fromResources() {
         val ins = getResource("/tools/playlist_v2.json")
-        val model = JsonService.jsonMapper.readValue(ins, LauncherJsonV2::class.java)
+        val model = JsonService.json.decodeFromString<LauncherJsonV2>(ins.readJsonText())
         assert(model.game == "stellaris")
         assert(model.mods.size == 3)
         assert(model.mods.all { it.enabled })
@@ -35,12 +38,34 @@ class DataModelsValidationTest {
     @Test
     fun parsePlaylistV3_fromResources() {
         val ins = getResource("/tools/playlist_v3.json")
-        val model = JsonService.jsonMapper.readValue(ins, LauncherJsonV3::class.java)
+        val model = JsonService.json.decodeFromString<LauncherJsonV3>(ins.readJsonText())
         assert(model.game == "stellaris")
         assert(model.mods.size == 3)
         assert(model.mods.all { it.enabled })
         // V3: position 为非负整数
         assert(model.mods.all { it.position >= 0 })
+    }
+
+    @Test
+    fun parseMetadataJson_fromResources() {
+        val text = getResource("/analysis/metadata.test.json").readJsonText()
+        val model = JsonService.json.decodeFromString<ParadoxMetadataJsonInfo>(text)
+        assert(model.name == "Chapters of the Chronicle")
+        assert(model.id == "chronicle.chapters")
+        assert(model.gameId == "victoria3")
+        assert(model.supportedGameVersion == "*")
+        assert(model.tags.isEmpty())
+        assert(model.relationships.isEmpty())
+        assert(model.gameCustomData["multiplayer_synchronized"] != null)
+    }
+
+    @Test
+    fun parseLauncherSettingsJson_fromResources() {
+        val text = getResource("/analysis/launcher-settings.test.json").readJsonText()
+        val model = JsonService.json.decodeFromString<ParadoxLauncherSettingsJsonInfo>(text)
+        assert(model.gameId == "stellaris")
+        assert(model.distPlatform == "steam")
+        assert(model.exePath == "./stellaris.exe")
     }
 
     @Test

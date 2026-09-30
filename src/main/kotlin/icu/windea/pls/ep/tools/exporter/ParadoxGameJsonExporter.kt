@@ -12,6 +12,7 @@ import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constraints.ParadoxGameTypeConstraint
 import icu.windea.pls.model.constraints.matchesBy
 import icu.windea.pls.model.tools.ParadoxModSetInfo
+import kotlinx.serialization.builtins.serializer
 import java.nio.file.Path
 import kotlin.io.path.exists
 import kotlin.io.path.notExists
@@ -54,7 +55,7 @@ class ParadoxGameJsonExporter : ParadoxJsonBasedModExporter() {
                 disabledDlcs = emptyList(),
                 enabledMods = enabledModPaths,
             )
-            writeData(filePath, data)
+            writeData(filePath, data, DlcLoadJson.serializer())
             ParadoxModExporter.Result(total = enabledMods.size, actualTotal = enabledModPaths.size)
         } else {
             // content_load.json: enabledMods 是对象列表，字段为 path
@@ -68,7 +69,7 @@ class ParadoxGameJsonExporter : ParadoxJsonBasedModExporter() {
                 enabledMods = enabledModEntries,
                 enabledUgc = emptyList(),
             )
-            writeData(filePath, data)
+            writeData(filePath, data, ContentLoadJson.serializer())
             ParadoxModExporter.Result(total = enabledMods.size, actualTotal = enabledModEntries.size)
         }
     }

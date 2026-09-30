@@ -12,6 +12,7 @@ import icu.windea.pls.lang.tools.SpecialPathService
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.tools.ParadoxModInfo
 import icu.windea.pls.model.tools.ParadoxModSetInfo
+import kotlinx.serialization.builtins.serializer
 import java.nio.file.Path
 import kotlin.io.path.exists
 import kotlin.io.path.notExists
@@ -48,7 +49,7 @@ class ParadoxLauncherJsonImporter : ParadoxJsonBasedModImporter() {
 
         if (isV3 == true) {
             // 按 V3 解析：position 为 Int，排序按数值
-            val data = readData(filePath, LauncherJsonV3::class.java)
+            val data = readData(filePath, LauncherJsonV3.serializer())
             if (data.game != gameType.gameId) {
                 throw IllegalStateException(ChronicleEpBundle.message("mod.importer.error.gameType"))
             }
@@ -62,7 +63,7 @@ class ParadoxLauncherJsonImporter : ParadoxJsonBasedModImporter() {
             return ParadoxModImporter.Result(total = data.mods.size, actualTotal = newModInfos.size, newModSetInfo = newModSetInfo)
         } else if (isV3 == false) {
             // 按 V2 解析：position 为 String，排序时转为数值（去前导 0，失败时置于末尾）
-            val data = readData(filePath, LauncherJsonV2::class.java)
+            val data = readData(filePath, LauncherJsonV2.serializer())
             if (data.game != gameType.gameId) {
                 throw IllegalStateException(ChronicleEpBundle.message("mod.importer.error.gameType"))
             }
@@ -77,7 +78,7 @@ class ParadoxLauncherJsonImporter : ParadoxJsonBasedModImporter() {
         } else {
             // 无法探测时，保持兼容：先尝试 V2，失败再尝试 V3
             run {
-                val data = runCatching { readData(filePath, LauncherJsonV2::class.java) }.getOrNull() ?: return@run
+                val data = runCatching { readData(filePath, LauncherJsonV2.serializer()) }.getOrNull() ?: return@run
                 if (data.game != gameType.gameId) {
                     throw IllegalStateException(ChronicleEpBundle.message("mod.importer.error.gameType"))
                 }
@@ -90,7 +91,7 @@ class ParadoxLauncherJsonImporter : ParadoxJsonBasedModImporter() {
                 val newModSetInfo = ParadoxModSetInfo(gameType, data.name, newModInfos)
                 return ParadoxModImporter.Result(total = data.mods.size, actualTotal = newModInfos.size, newModSetInfo = newModSetInfo)
             }
-            val data = readData(filePath, LauncherJsonV3::class.java)
+            val data = readData(filePath, LauncherJsonV3.serializer())
             if (data.game != gameType.gameId) {
                 throw IllegalStateException(ChronicleEpBundle.message("mod.importer.error.gameType"))
             }

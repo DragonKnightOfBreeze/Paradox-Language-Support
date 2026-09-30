@@ -1,17 +1,19 @@
 package icu.windea.pls.ep.tools.model
 
-import com.fasterxml.jackson.annotation.JsonInclude
-import com.fasterxml.jackson.annotation.JsonProperty
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonElement
 
 /**
  * `dlc_load.json` 的模型类。
  *
  * 参见：[DLCLoad.cs](https://github.com/bcssov/IronyModManager/blob/master/src/IronyModManager.IO/Mods/Models/Paradox/Common/DLCLoad.cs)
  */
+@Serializable
 data class DlcLoadJson(
-    @JsonProperty("disabled_dlcs")
+    @SerialName("disabled_dlcs")
     val disabledDlcs: List<String> = emptyList(),
-    @JsonProperty("enabled_mods")
+    @SerialName("enabled_mods")
     val enabledMods: List<String> = emptyList(),
 )
 
@@ -20,21 +22,24 @@ data class DlcLoadJson(
  *
  * 参见：[ContentLoad.cs](https://github.com/bcssov/IronyModManager/blob/master/src/IronyModManager.IO/Mods/Models/Paradox/Common/ContentLoad.cs)
  */
+@Serializable
 data class ContentLoadJson(
-    @JsonProperty("disabledDLC")
+    @SerialName("disabledDLC")
     val disabledDlcs: List<DisabledDlc> = emptyList(),
-    @JsonProperty("enabledMods")
+    @SerialName("enabledMods")
     val enabledMods: List<EnabledMod> = emptyList(),
-    @JsonProperty("enabledUGC")
-    val enabledUgc: List<Any> = emptyList(), // 如果存在此属性，则为 V2
+    @SerialName("enabledUGC")
+    val enabledUgc: List<JsonElement> = emptyList(), // 如果存在此属性，则为 V2
 ) {
+    @Serializable
     data class DisabledDlc(
-        @JsonProperty("paradoxAppId")
+        @SerialName("paradoxAppId")
         val paradoxAppId: String
     )
 
+    @Serializable
     data class EnabledMod(
-        @JsonProperty("path")
+        @SerialName("path")
         val path: String
     )
 }
@@ -44,25 +49,26 @@ data class ContentLoadJson(
  *
  * 参见：[ModInfo.cs](https://github.com/bcssov/IronyModManager/blob/master/src/IronyModManager.IO/Mods/Models/Paradox/Json/v2/ModInfo.cs)
  */
+@Serializable
 data class LauncherJsonV2(
-    @JsonProperty("game")
+    @SerialName("game")
     val game: String,
-    @JsonProperty("name")
+    @SerialName("name")
     val name: String,
-    @JsonProperty("mods")
+    @SerialName("mods")
     val mods: List<Mod> = emptyList(),
 ) {
-    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @Serializable
     data class Mod(
-        @JsonProperty("displayName")
+        @SerialName("displayName")
         val displayName: String,
-        @JsonProperty("enabled")
+        @SerialName("enabled")
         val enabled: Boolean,
-        @JsonProperty("pdxId")
+        @SerialName("pdxId")
         val pdxId: String? = null,
-        @JsonProperty("position")
+        @SerialName("position")
         val position: String, // (i + 1 + 4096).toString(16).padStart(10, '0')
-        @JsonProperty("steamId")
+        @SerialName("steamId")
         val steamId: String? = null,
     )
 }
@@ -72,25 +78,26 @@ data class LauncherJsonV2(
  *
  * 参见：[ModInfo.cs](https://github.com/bcssov/IronyModManager/blob/master/src/IronyModManager.IO/Mods/Models/Paradox/Json/v3/ModInfo.cs)
  */
+@Serializable
 data class LauncherJsonV3(
-    @JsonProperty("game")
+    @SerialName("game")
     val game: String,
-    @JsonProperty("name")
+    @SerialName("name")
     val name: String,
-    @JsonProperty("mods")
+    @SerialName("mods")
     val mods: List<Mod> = emptyList(),
 ) {
-    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @Serializable
     data class Mod(
-        @JsonProperty("displayName")
+        @SerialName("displayName")
         val displayName: String,
-        @JsonProperty("enabled")
+        @SerialName("enabled")
         val enabled: Boolean,
-        @JsonProperty("pdxId")
+        @SerialName("pdxId")
         val pdxId: String? = null,
-        @JsonProperty("position")
+        @SerialName("position")
         val position: Int, // i
-        @JsonProperty("steamId")
+        @SerialName("steamId")
         val steamId: String? = null,
     )
 }

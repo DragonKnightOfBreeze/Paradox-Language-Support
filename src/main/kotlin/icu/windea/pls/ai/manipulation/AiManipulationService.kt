@@ -1,6 +1,5 @@
 package icu.windea.pls.ai.manipulation
 
-import com.fasterxml.jackson.module.kotlin.readValue
 import dev.langchain4j.exception.LangChain4jException
 import icu.windea.pls.ai.model.errors.AnthropicErrorInfo
 import icu.windea.pls.ai.model.errors.OpenAiErrorInfo
@@ -21,11 +20,11 @@ object AiManipulationService {
             is LangChain4jException -> {
                 if (message.isNotNullOrEmpty()) {
                     runCatchingCancelable {
-                        val errorInfo = JsonService.jsonMapper.readValue<OpenAiErrorInfo>(message)
+                        val errorInfo = JsonService.json.decodeFromString<OpenAiErrorInfo>(message)
                         return "[${errorInfo.error.code}] ${errorInfo.error.message}"
                     }
                     runCatchingCancelable {
-                        val errorInfo = JsonService.jsonMapper.readValue<AnthropicErrorInfo>(message)
+                        val errorInfo = JsonService.json.decodeFromString<AnthropicErrorInfo>(message)
                         return "[${errorInfo.error.type}] ${errorInfo.error.message}"
                     }
                 }

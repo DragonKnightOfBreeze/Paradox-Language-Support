@@ -4,6 +4,7 @@ import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.base.io.ChronicleSqliteService
 import icu.windea.pls.core.data.JsonService
+import icu.windea.pls.core.data.readJsonText
 import icu.windea.pls.ep.tools.model.LauncherJsonV2
 import icu.windea.pls.ep.tools.model.LauncherJsonV3
 import icu.windea.pls.ep.tools.model.Playsets
@@ -76,7 +77,7 @@ class ParadoxModExporterTest : BasePlatformTestCase(), ChronicleTestScope {
         assertActualTotal(result.actualTotal)
 
         // 验证 JSON 内容
-        val json = JsonService.jsonMapper.readValue(Files.newInputStream(outFile), LauncherJsonV2::class.java)
+        val json = JsonService.json.decodeFromString<LauncherJsonV2>(Files.newInputStream(outFile).readJsonText())
         assertEquals(modSet.gameType.gameId, json.game)
         assertTrue(json.mods.size == result.actualTotal)
         assertTrue(json.mods.all { it.enabled })
@@ -95,7 +96,7 @@ class ParadoxModExporterTest : BasePlatformTestCase(), ChronicleTestScope {
         assertActualTotal(result.actualTotal)
 
         // 验证 JSON 内容
-        val json = JsonService.jsonMapper.readValue(Files.newInputStream(outFile), LauncherJsonV3::class.java)
+        val json = JsonService.json.decodeFromString<LauncherJsonV3>(Files.newInputStream(outFile).readJsonText())
         assertEquals(modSet.gameType.gameId, json.game)
         assertTrue(json.mods.size == result.actualTotal)
         assertTrue(json.mods.all { it.enabled })

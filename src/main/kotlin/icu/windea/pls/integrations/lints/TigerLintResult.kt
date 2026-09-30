@@ -1,11 +1,10 @@
 package icu.windea.pls.integrations.lints
 
-import com.fasterxml.jackson.annotation.JsonCreator
-import com.fasterxml.jackson.annotation.JsonProperty
-import com.fasterxml.jackson.annotation.JsonValue
-import com.fasterxml.jackson.module.kotlin.readValue
 import icu.windea.pls.core.data.JsonService
+import icu.windea.pls.core.data.readJsonText
 import icu.windea.pls.core.normalizePath
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import java.io.File
 
 /**
@@ -28,6 +27,7 @@ data class TigerLintResult(
         return TigerLintResult(name, items)
     }
 
+    @Serializable
     data class Item(
         /**
          * Severity is the potential impact of a problem.
@@ -39,7 +39,6 @@ data class TigerLintResult(
          * - "error" for bugs that are likely to affect gameplay.
          * - "fatal" for things that can cause crashes.
          */
-        @JsonProperty("severity")
         val severity: Severity,
         /**
          * Confidence is how sure the validator is of this problem.
@@ -59,18 +58,19 @@ data class TigerLintResult(
         /**
          * The main error message accompanying this report.
          */
-        val message: String?,
+        val message: String? = null,
         /**
          * Additional information to explain the message. Is often null.
          */
-        val info: String?,
+        val info: String? = null,
         /**
          * An array of location dictionaries, each describing one code location relevant to the error.
          * There will always be at least one location.
          */
-        val locations: List<Location>,
+        val locations: List<Location> = emptyList(),
     )
 
+    @Serializable
     data class Location(
         /**
          * The path to the file, relative to its root location (usually the game directory or the mod directory).
@@ -85,62 +85,60 @@ data class TigerLintResult(
         /**
          * The full path to the file, suitable for opening it.
          */
-        @JsonProperty("fullpath")
+        @SerialName("fullpath")
         val fullPath: String,
         /**
          * The line number within the file, starting at 1.
          * Will be `null` if the report is for the whole file.
          */
-        @JsonProperty("linenr")
-        val lineNumber: Int?,
+        @SerialName("linenr")
+        val lineNumber: Int? = null,
         /**
          * The column position within the line, starting at 1, and counting UTF-8 code points.
          * Will be `null` if the report is for the whole file.
          */
-        val column: Int?,
+        val column: Int? = null,
         /**
          * The length of the item being pointed at, in UTF-8 code points.
          * Can be used for highlighting the whole item. Can be `null` if the length is not known.
          */
-        val length: Int?,
+        val length: Int? = null,
         /**
          * A short description of the role of this location in the error report.
          * Can be `null`, and is often `null` for the first location in a report.
          */
-        val tag: String?,
+        val tag: String? = null,
         /**
          * The contents of the line from the file. Can be `null` if the report is for the whole file,
          * or if there was some error in fetching the line from the file.
          */
-        val line: String?,
+        val line: String? = null,
     )
 
+    @Serializable
     enum class Severity {
-        TIPS, UNTIDY, WARNING, ERROR, FATAL,
+        @SerialName("tips")
+        TIPS,
+        @SerialName("untidy")
+        UNTIDY,
+        @SerialName("warning")
+        WARNING,
+        @SerialName("error")
+        ERROR,
+        @SerialName("fatal")
+        FATAL,
         ;
-
-        @JsonValue
-        fun toJson() = name.lowercase()
-
-        companion object {
-            @JsonCreator
-            @JvmStatic
-            fun fromJson(value: String) = entries.find { it.name.equals(value, ignoreCase = true) }
-        }
     }
 
+    @Serializable
     enum class Confidence {
-        WEAK, REASONABLE, STRONG,
+        @SerialName("weak")
+        WEAK,
+        @SerialName("reasonable")
+        REASONABLE,
+        @SerialName("strong")
+        STRONG,
         ;
-
-        @JsonValue
-        fun toJson() = name.lowercase()
-
-        companion object {
-            @JsonCreator
-            @JvmStatic
-            fun fromJson(value: String) = entries.find { it.name.equals(value, ignoreCase = true) }
-        }
     }
 
     companion object {
@@ -148,7 +146,7 @@ data class TigerLintResult(
 
         @JvmStatic
         fun parse(name: String, outputFile: File): TigerLintResult {
-            val items = JsonService.jsonMapper.readValue<List<Item>>(outputFile)
+            val items = JsonService.json.decodeFromString<List<Item>>(outputFile.readJsonText())
             if (items.isEmpty()) return EMPTY
             val itemGroup = mutableMapOf<String, MutableSet<Item>>()
             for (item in items) {

@@ -13,11 +13,11 @@ import org.junit.runners.JUnit4
 import kotlin.io.path.toPath
 
 /**
- * @see icu.windea.pls.lang.analysis.util.ParadoxRootMetadataUtil
+ * @see ParadoxRootMetadataUtil
  */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
-class ParadoxRootMetadataMapUtilTest : BasePlatformTestCase() {
+class ParadoxRootMetadataUtilTest : BasePlatformTestCase() {
     @Test
     fun getLauncherSettingsJsonInfo() {
         val url = "/analysis/launcher-settings.test.json".toClasspathUrl()

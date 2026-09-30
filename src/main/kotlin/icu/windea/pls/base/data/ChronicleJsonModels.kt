@@ -1,7 +1,9 @@
 package icu.windea.pls.base.data
 
 import icu.windea.pls.model.ParadoxGameType
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class ParadoxGameTypeMetadataJson(
     val gameType: ParadoxGameType,
     val gameMainEntries: Set<String> = singleEmptyStringSet,
@@ -11,6 +13,7 @@ data class ParadoxGameTypeMetadataJson(
     val executableBaseNames: Set<String> = emptySet(),
 )
 
+@Serializable
 data class CwtConfigGroupDataJson(
     val gameType: ParadoxGameType,
     val typesSupportScope: Set<String> = emptySet(),

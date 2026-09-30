@@ -68,7 +68,9 @@ class ParadoxGameTypeNotDeclaredInMetadataJsonEditorNotificationProvider : Edito
     private fun updateGameType(metadata: ParadoxMetadataJsonBasedModMetadata, gameType: ParadoxGameType) {
         val infoFile = metadata.infoPath.toVirtualFile(refreshIfNeed = true) ?: return
         val newInfo = metadata.info.copy(gameId = gameType.gameId)
-        JsonService.jsonMapper.writeValue(infoFile.getOutputStream(this), newInfo)
+        infoFile.getOutputStream(this).use { stream ->
+            stream.write(JsonService.json.encodeToString(newInfo).toByteArray(Charsets.UTF_8))
+        }
 
         // 之后，`ParadoxFileListener` 将会监听到 `.metadata/metadata.json` 的更改，从而进行必要的刷新
     }

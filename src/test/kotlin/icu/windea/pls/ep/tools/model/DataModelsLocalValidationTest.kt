@@ -1,8 +1,13 @@
 package icu.windea.pls.ep.tools.model
 
 import icu.windea.pls.core.data.JsonService
+import icu.windea.pls.core.data.readJsonText
 import icu.windea.pls.lang.tools.SpecialPathService
 import icu.windea.pls.model.ParadoxGameType
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.intOrNull
+import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.jsonObject
 import org.junit.Assume
 import org.junit.Test
 import org.ktorm.database.Database
@@ -30,9 +35,8 @@ class DataModelsLocalValidationTest {
         val file = gameDataDir.resolve(Constants.dlcLoadPath)
         Assume.assumeTrue("Skip: ${file} not found", file.exists() && file.isRegularFile())
 
-        val model = JsonService.jsonMapper.readValue(file.toFile(), DlcLoadJson::class.java)
+        val model = JsonService.json.decodeFromString<DlcLoadJson>(file.readJsonText())
         // 基本断言 + 更严格校验
-        assert(model != null)
         assert(model.disabledDlcs.all { it.isNotBlank() })
         assert(model.enabledMods.all { it.isNotBlank() })
         println("dlc_load.json -> disabledDlcs=${model.disabledDlcs.size}, enabledMods=${model.enabledMods.size}")
@@ -46,9 +50,8 @@ class DataModelsLocalValidationTest {
         val file = gameDataDir.resolve(Constants.contentLoadPath)
         Assume.assumeTrue("Skip: ${file} not found", file.exists() && file.isRegularFile())
 
-        val model = JsonService.jsonMapper.readValue(file.toFile(), ContentLoadJson::class.java)
+        val model = JsonService.json.decodeFromString<ContentLoadJson>(file.readJsonText())
         // 基本断言 + 更严格校验：路径应当为 .mod 描述符
-        assert(model != null)
         val modPaths = model.enabledMods.map { it.path }
         assert(modPaths.all { it.isNotBlank() })
         // 绝大多数情况下为 .mod，个别变体允许不是 .mod，因此放宽为“若以 .mod 结尾，则长度应>4”
@@ -64,24 +67,24 @@ class DataModelsLocalValidationTest {
         val file = gameDataDir.resolve("playlists/playlist.json")
         Assume.assumeTrue("Skip: ${file} not found", file.exists() && file.isRegularFile())
 
-        // 先用 readTree 探测 position 类型（V2: string, V3: int）。
-        val root = JsonService.jsonMapper.readTree(file.toFile())
-        val modsNode = root.get("mods")
-        val first = modsNode?.firstOrNull()
-        val isV3 = first?.get("position")?.isInt == true
+        // 先用 JsonElement 探测 position 类型（V2: string, V3: int）。
+        val root = JsonService.json.parseToJsonElement(file.readJsonText())
+        val modsNode = root.jsonObject["mods"]?.jsonArray
+        val first = modsNode?.firstOrNull()?.jsonObject
+        val isV3 = (first?.get("position") as? JsonPrimitive)?.intOrNull != null
 
         // 校验 game 字段
-        val game = root.get("game")?.asText()
+        val game = (root.jsonObject["game"] as? JsonPrimitive)?.content
         assert(game == ParadoxGameType.Stellaris.gameId)
 
         if (isV3) {
-            val model = JsonService.jsonMapper.readValue(file.toFile(), LauncherJsonV3::class.java)
+            val model = JsonService.json.decodeFromString<LauncherJsonV3>(file.readJsonText())
             assert(model.mods.all { it.position >= 0 })
             // 每个 mod 应该至少有 steamId 或 pdxId
             assert(model.mods.all { !it.steamId.isNullOrEmpty() || !it.pdxId.isNullOrEmpty() })
             println("playlist.json -> V3, mods=${model.mods.size}")
         } else {
-            val model = JsonService.jsonMapper.readValue(file.toFile(), LauncherJsonV2::class.java)
+            val model = JsonService.json.decodeFromString<LauncherJsonV2>(file.readJsonText())
             assert(model.mods.all { it.position.isNotEmpty() })
             assert(model.mods.all { !it.steamId.isNullOrEmpty() || !it.pdxId.isNullOrEmpty() })
             println("playlist.json -> V2, mods=${model.mods.size}")

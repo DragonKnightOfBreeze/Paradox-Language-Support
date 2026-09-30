@@ -5,10 +5,15 @@ import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.checkCancellation
 import icu.windea.pls.core.data.JsonService
+import icu.windea.pls.core.data.readJsonText
 import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.lang.rootInfo
 import icu.windea.pls.model.ParadoxRootInfo
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.intOrNull
+import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.jsonObject
 import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.io.path.exists
@@ -57,10 +62,11 @@ object ParadoxMetadataUtil {
      */
     fun detectLauncherPlaylistPositionIsInt(file: VirtualFile): Boolean? {
         return try {
-            val root = file.inputStream.use { JsonService.jsonMapper.readTree(it) }
-            val modsNode = root.get("mods") ?: return null
-            val first = modsNode.firstOrNull() ?: return null
-            first.get("position")?.isInt
+            val root = file.inputStream.use { JsonService.json.parseToJsonElement(it.readJsonText()) }
+            val modsNode = root.jsonObject["mods"]?.jsonArray ?: return null
+            val first = modsNode.firstOrNull()?.jsonObject ?: return null
+            val position = first["position"] as? JsonPrimitive ?: return null
+            position.intOrNull != null
         } catch (e: Exception) {
             checkCancellation(e)
             thisLogger().warn(e)

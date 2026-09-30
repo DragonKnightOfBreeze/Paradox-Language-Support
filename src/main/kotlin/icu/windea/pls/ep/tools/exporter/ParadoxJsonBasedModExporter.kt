@@ -6,6 +6,7 @@ import icu.windea.pls.ep.ChronicleEpBundle
 import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.KSerializer
 import java.nio.file.Path
 
 /**
@@ -16,16 +17,16 @@ abstract class ParadoxJsonBasedModExporter : ParadoxModExporter {
 
     override fun isAvailable(gameType: ParadoxGameType) = true
 
-    protected suspend fun writeData(filePath: Path, data: Any) {
+    protected suspend fun <T> writeData(filePath: Path, data: T, serializer: KSerializer<T>) {
         withContext(Dispatchers.IO) {
             // 这里不需要使用 edtWriteAction
-            doWriteData(filePath, data)
+            doWriteData(filePath, data, serializer)
         }
     }
 
-    private fun doWriteData(filePath: Path, data: Any) {
+    private fun <T> doWriteData(filePath: Path, data: T, serializer: KSerializer<T>) {
         try {
-            JsonService.jsonMapper.writeValue(filePath.toFile(), data)
+            filePath.toFile().writeText(JsonService.json.encodeToString(serializer, data))
         } catch (e: Exception) {
             throw IllegalStateException(ChronicleEpBundle.message("mod.exporter.error.data", filePath), e)
         }

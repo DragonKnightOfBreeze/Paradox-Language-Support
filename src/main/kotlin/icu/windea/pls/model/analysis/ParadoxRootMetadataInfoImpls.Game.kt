@@ -1,11 +1,11 @@
 package icu.windea.pls.model.analysis
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import kotlinx.serialization.Serializable
 
 /**
  * 启动器设置信息（`launcher-settings.json`）。
  */
-@JsonIgnoreProperties(ignoreUnknown = true)
+@Serializable
 data class ParadoxLauncherSettingsJsonInfo(
     val gameId: String,
     val version: String? = null,

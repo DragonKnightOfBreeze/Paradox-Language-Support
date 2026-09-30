@@ -14,6 +14,7 @@ import icu.windea.pls.model.constraints.ParadoxGameTypeConstraint
 import icu.windea.pls.model.constraints.matchesBy
 import icu.windea.pls.model.tools.ParadoxModInfo
 import icu.windea.pls.model.tools.ParadoxModSetInfo
+import kotlinx.serialization.builtins.serializer
 import java.nio.file.Path
 import kotlin.io.path.exists
 import kotlin.io.path.notExists
@@ -45,7 +46,7 @@ class ParadoxGameJsonImporter : ParadoxJsonBasedModImporter() {
 
         when {
             gameType matchesBy ParadoxGameTypeConstraint.DescriptorModUsed -> {
-                val data = readData(filePath, DlcLoadJson::class.java)
+                val data = readData(filePath, DlcLoadJson.serializer())
                 for (item in data.enabledMods) {
                     val modDirectory = ParadoxMetadataUtil.getModDirectoryFromModDescriptorPathInGameData(item, gameDataDirPath) ?: continue
                     if (!existingModDirectories.add(modDirectory)) continue // 忽略已有的
@@ -55,7 +56,7 @@ class ParadoxGameJsonImporter : ParadoxJsonBasedModImporter() {
                 return ParadoxModImporter.Result(total = data.enabledMods.size, actualTotal = newModInfos.size, newModSetInfo = newModSetInfo)
             }
             else -> {
-                val data = readData(filePath, ContentLoadJson::class.java)
+                val data = readData(filePath, ContentLoadJson.serializer())
                 for (item in data.enabledMods) {
                     val modDirectory = ParadoxMetadataUtil.getModDirectoryFromModDescriptorPathInGameData(item.path, gameDataDirPath) ?: continue
                     if (!existingModDirectories.add(modDirectory)) continue // 忽略已有的

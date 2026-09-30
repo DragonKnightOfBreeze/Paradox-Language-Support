@@ -1,8 +1,8 @@
 package icu.windea.pls.lang.analysis.util
 
-import com.fasterxml.jackson.module.kotlin.readValue
 import com.intellij.openapi.diagnostic.thisLogger
 import icu.windea.pls.core.data.JsonService
+import icu.windea.pls.core.data.readJsonText
 import icu.windea.pls.core.getDefaultProject
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
@@ -40,7 +40,7 @@ object ParadoxRootMetadataUtil {
 
     fun getLauncherSettingsJsonInfo(path: Path): ParadoxLauncherSettingsJsonInfo? {
         try {
-            return JsonService.jsonMapper.readValue(path.toFile())
+            return JsonService.json.decodeFromString<ParadoxLauncherSettingsJsonInfo>(path.readJsonText())
         } catch (e: Exception) {
             logger.warn("Cannot resolve root metadata info from path: ${path}", e)
             return null
@@ -65,7 +65,7 @@ object ParadoxRootMetadataUtil {
 
     fun getMetadataJsonInfo(path: Path): ParadoxMetadataJsonInfo? {
         try {
-            return JsonService.jsonMapper.readValue(path.toFile())
+            return JsonService.json.decodeFromString<ParadoxMetadataJsonInfo>(path.readJsonText())
         } catch (e: Exception) {
             logger.warn("Cannot resolve root metadata info from path: ${path}", e)
             return null

@@ -2,10 +2,12 @@ package icu.windea.pls.ep.tools.importer
 
 import com.intellij.icons.AllIcons
 import icu.windea.pls.core.data.JsonService
+import icu.windea.pls.core.data.readJsonText
 import icu.windea.pls.ep.ChronicleEpBundle
 import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.KSerializer
 import java.nio.file.Path
 
 /**
@@ -16,16 +18,16 @@ abstract class ParadoxJsonBasedModImporter : ParadoxModImporter {
 
     override fun isAvailable(gameType: ParadoxGameType) = true
 
-    protected suspend fun <T> readData(filePath: Path, type: Class<T>): T {
+    protected suspend fun <T> readData(filePath: Path, serializer: KSerializer<T>): T {
         return withContext(Dispatchers.IO) {
             // 这里不需要使用 readAction
-            doReadData(filePath, type)
+            doReadData(filePath, serializer)
         }
     }
 
-    private fun <T> doReadData(filePath: Path, type: Class<T>): T {
+    private fun <T> doReadData(filePath: Path, serializer: KSerializer<T>): T {
         return try {
-            JsonService.jsonMapper.readValue(filePath.toFile(), type)
+            JsonService.json.decodeFromString(serializer, filePath.readJsonText())
         } catch (e: Exception) {
             throw IllegalStateException(ChronicleEpBundle.message("mod.importer.error.data", filePath), e)
         }
