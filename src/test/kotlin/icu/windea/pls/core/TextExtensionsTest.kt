@@ -63,7 +63,6 @@ class TextExtensionsTest {
 
     // endregion
 
-
     // region TextRange.unquote
 
     @Test
