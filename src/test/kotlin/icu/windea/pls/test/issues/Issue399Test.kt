@@ -2,7 +2,7 @@ package icu.windea.pls.test.issues
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.core.ui.ColorService
+import icu.windea.pls.core.text.ColorPatterns
 import icu.windea.pls.lang.codeInsight.color.ParadoxColorService
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.model.ParadoxGameType
@@ -20,7 +20,7 @@ import org.junit.runners.JUnit4
  * See: [#399](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/399)
  *
  * @see ParadoxScriptColor
- * @see ColorService
+ * @see ColorPatterns
  * @see ParadoxColorService
  */
 @RunWith(JUnit4::class)

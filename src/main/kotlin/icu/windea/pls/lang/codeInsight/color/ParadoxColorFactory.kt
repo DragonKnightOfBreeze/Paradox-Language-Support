@@ -5,7 +5,8 @@ import icu.windea.pls.core.collections.allFast
 import icu.windea.pls.core.collections.mapFast
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.orNull
-import icu.windea.pls.core.ui.ColorService
+import icu.windea.pls.core.text.ColorPattern
+import icu.windea.pls.core.text.ColorPatterns
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.psi.isValidExpression
 import icu.windea.pls.lang.psi.resolved
@@ -20,6 +21,10 @@ import java.awt.Color
 
 @Optimized
 object ParadoxColorFactory {
+    /** 以颜色参数列表为参数的颜色模式（按名称索引）。 */
+    private val argListColorPatterns: Map<String, ColorPattern<List<String>>> =
+        listOf(ColorPatterns.Rgb, ColorPatterns.Hsv, ColorPatterns.Hsv360).associateBy { it.name }
+
     /**
      * 得到当前 [element] 对应的颜色类型。
      *
@@ -70,29 +75,20 @@ object ParadoxColorFactory {
     }
 
     fun getColor(colorArg: String): Color? {
-        return ColorService.getColorFromHex(colorArg)
+        return ColorPatterns.Hex.getColor(colorArg)
     }
 
     fun getColor(colorType: String, colorArgs: List<String>): Color? {
-        return when (colorType) {
-            "rgb" -> ColorService.getColorFromRgb(colorArgs)
-            "hsv" -> ColorService.getColorFromHsv(colorArgs)
-            "hsv360" -> ColorService.getColorFromHsv360(colorArgs)
-            else -> null
-        }
+        val colorPattern = argListColorPatterns[colorType] ?: return null
+        return colorPattern.getColor(colorArgs)
     }
 
     fun getNewColorArg(colorArg: String, newColor: Color): String? {
-        return ColorService.getNewColorArgFromHex(colorArg, newColor)
+        return ColorPatterns.Hex.getColorArgs(newColor, colorArg)
     }
 
-    fun getNewColorArgs(colorType: String, colorArgs: List<String>, newColor: Color, precision: Int = -3): List<String>? {
-        // 默认保留3位小数
-        return when (colorType) {
-            "rgb" -> ColorService.getNewColorArgsFromRgb(colorArgs, newColor, precision)
-            "hsv" -> ColorService.getNewColorArgsFromHsv(colorArgs, newColor, precision)
-            "hsv360" -> ColorService.getNewColorArgsFromHsv360(colorArgs, newColor)
-            else -> null
-        }
+    fun getNewColorArgs(colorType: String, colorArgs: List<String>, newColor: Color): List<String>? {
+        val colorPattern = argListColorPatterns[colorType] ?: return null
+        return colorPattern.getColorArgs(newColor, colorArgs)
     }
 }

@@ -10,6 +10,7 @@ import com.intellij.psi.util.elementType
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.runCatchingCancelable
+import icu.windea.pls.core.text.ColorPatterns
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.lang.codeInsight.color.ParadoxColorFactory
 import icu.windea.pls.script.psi.ParadoxScriptBlock
@@ -56,7 +57,7 @@ class ParadoxScriptStringColorProvider : ParadoxColorProvider {
     private fun doGetColor(element: ParadoxScriptString): Color? {
         val colorArg = ParadoxColorFactory.getColorArg(element) ?: return null
         val colorType = ParadoxColorFactory.getColorType(element) ?: return null
-        if (colorType != "hex") return null
+        if (colorType != ColorPatterns.Hex.name) return null
         return ParadoxColorFactory.getColor(colorArg)
     }
 
