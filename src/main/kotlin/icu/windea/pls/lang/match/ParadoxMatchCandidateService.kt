@@ -14,6 +14,7 @@ import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.processFast
 import icu.windea.pls.core.runWithRecursionGuard
 import icu.windea.pls.lang.manipulation.ParadoxConfigExpansionService
+import icu.windea.pls.config.CwtDataTypes
 
 @Optimized
 object ParadoxMatchCandidateService {
@@ -72,23 +73,6 @@ object ParadoxMatchCandidateService {
         if (matchResult === ParadoxMatchResult.NotMatch) return true
         val candidate = ParadoxMatchCandidate(config, matchResult)
         return collectCandidate(candidate, result)
-    }
-
-    private fun collectCandidate(candidate: ParadoxMatchCandidate, result: MutableList<ParadoxMatchCandidate>): Boolean {
-        if (result.size >= ChronicleCapacities.maxMatchCandidateSize()) {
-            // NOTE 3.0.3 too many candidates, use fallback match with any data type (clear all collected candidates first)
-            val mockConfigs = candidate.value.configGroup.mockConfigs
-            val fallbackConfig = when (candidate.value) {
-                is CwtPropertyConfig -> mockConfigs.anyProperty
-                is CwtValueConfig -> mockConfigs.anyValue
-            }
-            result.clear()
-            val fallbackCandidate = ParadoxMatchCandidate(fallbackConfig, ParadoxMatchResult.FallbackMatch)
-            result += fallbackCandidate
-            return false
-        }
-        result += candidate
-        return true
     }
 
     fun process(context: ParadoxExpressionMatchContext, candidates: List<ParadoxMatchCandidate>): List<ParadoxMatchCandidate> {
@@ -181,16 +165,53 @@ object ParadoxMatchCandidateService {
         return true
     }
 
-    private fun collectProcessedCandidate(candidate: ParadoxMatchCandidate, result: MutableList<ParadoxMatchCandidate>): Boolean {
-        if (result.size >= ChronicleCapacities.maxProcessedMatchCandidateSize()) {
-            // NOTE 3.0.3 too many candidates, use fallback match with any data type (clear all collected candidates first)
+    /**
+     * 收集匹配候选项，并在必要时进行回退。
+     *
+     * 如果数量超出阈值（[ChronicleCapacities.maxMatchCandidateSize]），需要改为使用回退匹配（拥有特殊的数据类型和匹配候选项）。
+     * 否则，可能会导致意外的性能问题，以及不期望的语言功能的行为。
+     *
+     * @see ChronicleCapacities.maxMatchCandidateSize
+     * @see CwtDataTypes.Any
+     * @see ParadoxMatchResult.FallbackMatch
+     */
+    fun collectCandidate(candidate: ParadoxMatchCandidate, result: MutableList<ParadoxMatchCandidate>): Boolean {
+        if (result.size >= ChronicleCapacities.maxMatchCandidateSize()) {
+            // NOTE 3.0.3 too many candidates, use fallback candidate only (clear all collected candidates first)
             val mockConfigs = candidate.value.configGroup.mockConfigs
             val fallbackConfig = when (candidate.value) {
                 is CwtPropertyConfig -> mockConfigs.anyProperty
                 is CwtValueConfig -> mockConfigs.anyValue
             }
-            result.clear()
             val fallbackCandidate = ParadoxMatchCandidate(fallbackConfig, ParadoxMatchResult.FallbackMatch)
+            result.clear()
+            result += fallbackCandidate
+            return false
+        }
+        result += candidate
+        return true
+    }
+
+    /**
+     * 收集处理后的匹配候选项，并在必要时进行回退。
+     *
+     * 如果数量超出阈值（[ChronicleCapacities.maxProcessedMatchCandidateSize]），需要改为使用回退匹配（拥有特殊的数据类型和匹配候选项）。
+     * 否则，可能会导致意外的性能问题，以及不期望的语言功能的行为。
+     *
+     * @see ChronicleCapacities.maxProcessedMatchCandidateSize
+     * @see CwtDataTypes.Any
+     * @see ParadoxMatchResult.FallbackMatch
+     */
+    fun collectProcessedCandidate(candidate: ParadoxMatchCandidate, result: MutableList<ParadoxMatchCandidate>): Boolean {
+        if (result.size >= ChronicleCapacities.maxProcessedMatchCandidateSize()) {
+            // NOTE 3.0.3 too many candidates, use fallback candidate only (clear all collected candidates first)
+            val mockConfigs = candidate.value.configGroup.mockConfigs
+            val fallbackConfig = when (candidate.value) {
+                is CwtPropertyConfig -> mockConfigs.anyProperty
+                is CwtValueConfig -> mockConfigs.anyValue
+            }
+            val fallbackCandidate = ParadoxMatchCandidate(fallbackConfig, ParadoxMatchResult.FallbackMatch)
+            result.clear()
             result += fallbackCandidate
             return false
         }
