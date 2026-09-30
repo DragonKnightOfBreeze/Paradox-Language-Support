@@ -3,6 +3,7 @@ package icu.windea.pls.base
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.ProjectActivity
 import icu.windea.pls.core.isClassPresent
+import icu.windea.pls.core.math.convertToInt
 
 object ChronicleCapacities {
     /** 是否包含 SQLite 驱动包，从而启用与 SQLite 相关的各种功能。 */
@@ -42,9 +43,9 @@ object ChronicleCapacities {
         val refreshBuiltInConfigDirectories = System.getProperty("chronicle.capacities.refreshBuiltInConfigDirectories").toBoolean()
         val keepFileConfigs = System.getProperty("chronicle.capacities.keepFileConfigs").toBoolean()
         val keepOptionConfigs = System.getProperty("chronicle.capacities.keepOptionConfigs").toBoolean()
-        val maxMatchCandidateSize = System.getProperty("chronicle.capacities.maxMatchCandidateSize")?.toIntOrNull() ?: 64
-        val maxProcessedMatchCandidateSize = System.getProperty("chronicle.capacities.maxProcessedMatchCandidateSize")?.toIntOrNull() ?: 16
-        val maxDefinitionDepth = System.getProperty("chronicle.capacities.maxDefinitionDepth")?.toIntOrNull() ?: 4
+        val maxMatchCandidateSize = System.getProperty("chronicle.capacities.maxMatchCandidateSize")?.toIntOrNull().convertToInt(64, 0..640)
+        val maxProcessedMatchCandidateSize = System.getProperty("chronicle.capacities.maxProcessedMatchCandidateSize")?.toIntOrNull().convertToInt(16, 0..160)
+        val maxDefinitionDepth = System.getProperty("chronicle.capacities.maxDefinitionDepth")?.toIntOrNull().convertToInt(4, 0..40)
     }
 
     internal class Listener : ProjectActivity {
