@@ -75,9 +75,9 @@ object ParadoxColorFactory {
 
     fun getColor(colorType: String, colorArgs: List<String>): Color? {
         return when (colorType) {
-            "rgb" -> ColorService.getColorFromRgb(colorArgs)
-            "hsv" -> ColorService.getColorFromHsv(colorArgs)
-            "hsv360" -> ColorService.getColorFromHsv360(colorArgs)
+            "rgb" -> ColorService.getColorFromRgb(colorArgs, alphaCanOverflow = true)
+            "hsv" -> ColorService.getColorFromHsv(colorArgs, alphaCanOverflow = true)
+            "hsv360" -> ColorService.getColorFromHsv360(colorArgs, alphaCanOverflow = true)
             else -> null
         }
     }
