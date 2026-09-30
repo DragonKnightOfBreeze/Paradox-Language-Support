@@ -12,7 +12,7 @@ import com.intellij.psi.stubs.StubOutputStream
 import com.intellij.psi.stubs.StubRegistry
 import com.intellij.psi.stubs.StubRegistryExtension
 import com.intellij.psi.stubs.StubSerializer
-import icu.windea.pls.core.writeByte
+import icu.windea.pls.core.io.writeByte
 import icu.windea.pls.lang.index.ChronicleIndexKeys
 import icu.windea.pls.model.ParadoxDefineVariableKey
 import icu.windea.pls.model.ParadoxGameType

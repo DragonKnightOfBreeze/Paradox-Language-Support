@@ -11,7 +11,7 @@ import com.intellij.psi.stubs.StubOutputStream
 import com.intellij.psi.stubs.StubRegistry
 import com.intellij.psi.stubs.StubRegistryExtension
 import com.intellij.psi.stubs.StubSerializer
-import icu.windea.pls.core.writeByte
+import icu.windea.pls.core.io.writeByte
 import icu.windea.pls.lang.index.ChronicleIndexKeys
 import icu.windea.pls.lang.index.constraints.ParadoxLocalisationIndexConstraint
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*

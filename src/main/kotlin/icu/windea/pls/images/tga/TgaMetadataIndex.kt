@@ -8,8 +8,8 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.util.gist.GistManager
 import com.intellij.util.gist.VirtualFileGist
 import com.intellij.util.io.DataExternalizer
-import icu.windea.pls.core.readIntFast
-import icu.windea.pls.core.writeIntFast
+import icu.windea.pls.core.io.readIntFast
+import icu.windea.pls.core.io.writeIntFast
 import java.io.DataInput
 import java.io.DataOutput
 

@@ -15,11 +15,11 @@ import com.intellij.util.indexing.hints.FileTypeInputFilterPredicate
 import com.intellij.util.io.DataExternalizer
 import com.intellij.util.io.EnumeratorStringDescriptor
 import icu.windea.pls.core.annotations.Optimized
-import icu.windea.pls.core.readIntFast
-import icu.windea.pls.core.readUTFFast
+import icu.windea.pls.core.io.readIntFast
+import icu.windea.pls.core.io.readUTFFast
+import icu.windea.pls.core.io.writeIntFast
+import icu.windea.pls.core.io.writeUTFFast
 import icu.windea.pls.core.toPsiFile
-import icu.windea.pls.core.writeIntFast
-import icu.windea.pls.core.writeUTFFast
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.index.IndexInfo
 import java.io.DataInput

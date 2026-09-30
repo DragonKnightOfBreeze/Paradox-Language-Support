@@ -1,6 +1,6 @@
 @file:Suppress("unused")
 
-package icu.windea.pls.core
+package icu.windea.pls.core.io
 
 import com.intellij.util.io.DataInputOutputUtil
 import com.intellij.util.io.IOUtil
@@ -12,34 +12,6 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet
 import java.io.DataInput
 import java.io.DataOutput
-
-// /** 查找注册的 StubIndex 扩展。 */
-// fun <T : StubIndexExtension<*, *>> findStubIndex(type: Class<T>): T {
-//     return StubIndexExtension.EP_NAME.findExtensionOrFail(type)
-// }
-//
-// /** 查找注册的 FileBasedIndex 扩展。 */
-// fun <T : FileBasedIndexExtension<*, *>> findFileBasedIndex(type: Class<T>): T {
-//     return FileBasedIndexExtension.EXTENSION_POINT_NAME.findExtensionOrFail(type)
-// }
-
-// fun IndexInputFilter(predicate: (VirtualFile) -> Boolean): FileBasedIndex.InputFilter {
-//     return FileBasedIndex.InputFilter(predicate)
-// }
-//
-// fun IndexInputFilter(vararg fileTypes: FileType): FileBasedIndex.InputFilter {
-//     if (fileTypes.isEmpty()) return FileBasedIndex.InputFilter { true }
-//     return DefaultFileTypeSpecificInputFilter(*fileTypes)
-// }
-//
-// fun IndexInputFilter(vararg fileTypes: FileType, predicate: (VirtualFile) -> Boolean): FileBasedIndex.InputFilter {
-//     if (fileTypes.isEmpty()) return FileBasedIndex.InputFilter(predicate)
-//     return object : DefaultFileTypeSpecificInputFilter(*fileTypes) {
-//         override fun acceptInput(file: VirtualFile): Boolean {
-//             return predicate(file)
-//         }
-//     }
-// }
 
 @Suppress("NOTHING_TO_INLINE")
 inline fun DataOutput.writeByte(v: Byte) = writeByte(v.toInt())

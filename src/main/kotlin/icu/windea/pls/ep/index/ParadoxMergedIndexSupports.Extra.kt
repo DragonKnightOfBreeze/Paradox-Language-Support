@@ -1,10 +1,10 @@
 package icu.windea.pls.ep.index
 
 import com.intellij.psi.PsiElement
-import icu.windea.pls.core.readOrReadFrom
-import icu.windea.pls.core.readUTFFast
-import icu.windea.pls.core.writeOrWriteFrom
-import icu.windea.pls.core.writeUTFFast
+import icu.windea.pls.core.io.readOrReadFrom
+import icu.windea.pls.core.io.readUTFFast
+import icu.windea.pls.core.io.writeOrWriteFrom
+import icu.windea.pls.core.io.writeUTFFast
 import icu.windea.pls.lang.index.ParadoxMergedIndexContext
 import icu.windea.pls.lang.index.ParadoxMergedIndexTypes
 import icu.windea.pls.lang.psi.light.ParadoxShaderEffectLightElement

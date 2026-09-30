@@ -1,4 +1,4 @@
-package icu.windea.pls.core
+package icu.windea.pls.core.io
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap
 import org.junit.Assert
@@ -10,7 +10,7 @@ import java.io.DataInputStream
 import java.io.DataOutput
 import java.io.DataOutputStream
 
-class IndexExtensionsTest {
+class DataIoExtensionsTest {
     private fun roundTrip(write: (DataOutput) -> Unit, read: (DataInput) -> Unit) {
         val bytes = ByteArrayOutputStream()
         DataOutputStream(bytes).use { out -> write(out) }
