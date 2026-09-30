@@ -71,13 +71,18 @@ interface CwtConfigGroupDataModel {
      */
     val configPostProcessActions: List<Runnable>
 
+    // region Internal
+
     val schemas: List<CwtSchemaConfig>
     val foldingSettings: Map<String, Map<@CaseInsensitive String, CwtFoldingSettingsConfig>>
     val postfixTemplateSettings: Map<String, Map<@CaseInsensitive String, CwtPostfixTemplateSettingsConfig>>
 
+    // endregion
+
     // region Core
 
     val priorities: Map<String, ParadoxOverrideStrategy>
+
     val systemScopes: Map<@CaseInsensitive String, CwtSystemScopeConfig>
     val locales: Map<String, CwtLocaleConfig>
 

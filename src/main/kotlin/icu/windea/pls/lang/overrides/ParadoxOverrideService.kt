@@ -74,7 +74,7 @@ object ParadoxOverrideService {
 
     /**
      * 检查是否存在对文件的重载。
-     * 如果返回 `null`，则表示使用的覆盖策略为 `ORDERED`，或者不存在重载。
+     * 如果返回 `null`，则表示使用的覆盖策略为 [ORDERED][ParadoxOverrideStrategy.ORDERED]，或者不存在重载。
      */
     fun getOverrideResultForFile(file: PsiFile): ParadoxOverrideResult<PsiFile>? {
         val overrideStrategy = getOverrideStrategy(file) ?: return null
@@ -91,7 +91,7 @@ object ParadoxOverrideService {
 
     /**
      * 检查是否存在对（全局）封装变量的重载。
-     * 如果返回 `null`，则表示使用的覆盖策略为 `ORDERED`，或者不存在重载。
+     * 如果返回 `null`，则表示使用的覆盖策略为 [ORDERED][ParadoxOverrideStrategy.ORDERED]，或者不存在重载。
      */
     fun getOverrideResultForGlobalScriptedVariable(element: ParadoxScriptScriptedVariable, file: PsiFile): ParadoxOverrideResult<ParadoxScriptScriptedVariable>? {
         val name = element.name
@@ -108,7 +108,7 @@ object ParadoxOverrideService {
 
     /**
      * 检查是否存在对定义的重载。
-     * 如果返回 `null`，则表示使用的覆盖策略为 `ORDERED`，或者不存在重载。
+     * 如果返回 `null`，则表示使用的覆盖策略为 [ORDERED][ParadoxOverrideStrategy.ORDERED]，或者不存在重载。
      */
     fun getOverrideResultForDefinition(element: ParadoxScriptProperty, file: PsiFile): ParadoxOverrideResult<ParadoxScriptProperty>? {
         val definitionInfo = element.definitionInfo ?: return null
@@ -127,7 +127,7 @@ object ParadoxOverrideService {
 
     /**
      * 检查是否存在对定值变量的重载。
-     * 如果返回 `null`，则表示使用的覆盖策略为 `ORDERED`，或者不存在重载。
+     * 如果返回 `null`，则表示使用的覆盖策略为 [ORDERED][ParadoxOverrideStrategy.ORDERED]，或者不存在重载。
      */
     fun getOverrideResultForDefineVariable(element: ParadoxScriptProperty, file: PsiFile): ParadoxOverrideResult<ParadoxScriptProperty>? {
         val defineVariableInfo = element.defineVariableInfo ?: return null
@@ -144,9 +144,9 @@ object ParadoxOverrideService {
 
     /**
      * 检查对目标的重载是否正确。
-     * - `FIOS` `LIOS` - 目标必须与第一个重载项拥有相同的文件路径和根目录。
-     * - `DUPL` - 目标必须与第一个来自游戏文件的重载项拥有相同的文件路径。
-     * - `ORDERED` - 总是正确。
+     * - [FIOS][ParadoxOverrideStrategy.FIOS] [LIOS][ParadoxOverrideStrategy.LIOS] - 目标必须与第一个重载项拥有相同的文件路径和根目录。
+     * - [DUPL][ParadoxOverrideStrategy.DUPL] - 目标必须与第一个来自游戏文件的重载项拥有相同的文件路径。
+     * - [ORDERED][ParadoxOverrideStrategy.ORDERED] - 总是正确。
      */
     fun <T : PsiElement> isOverrideCorrect(overrideResult: ParadoxOverrideResult<T>): Boolean {
         val target = overrideResult.target
