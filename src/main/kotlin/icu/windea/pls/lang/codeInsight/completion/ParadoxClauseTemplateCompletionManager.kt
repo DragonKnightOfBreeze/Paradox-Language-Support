@@ -21,9 +21,9 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.util.CwtConfigManager
-import icu.windea.pls.core.buildInlineTemplate
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.codeInsight.TemplateEditingFinishedListener
+import icu.windea.pls.core.codeInsight.template.TemplateEditingFinishedListener
+import icu.windea.pls.core.codeInsight.template.buildInlineTemplate
 import icu.windea.pls.core.executeWriteCommand
 import icu.windea.pls.core.processChild
 import icu.windea.pls.core.quoteIfNeeded
