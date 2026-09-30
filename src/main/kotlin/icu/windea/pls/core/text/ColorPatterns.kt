@@ -3,6 +3,7 @@
 package icu.windea.pls.core.text
 
 import com.intellij.ui.ColorUtil
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.allFast
 import icu.windea.pls.core.collections.anyFast
 import icu.windea.pls.core.collections.mapFast
@@ -22,18 +23,18 @@ import java.awt.Color
  */
 @Suppress("UseJBColor")
 object ColorPatterns {
-    /** 所有颜色模式。 */
+    /** 所有默认的颜色模式。 */
     val patterns: List<ColorPattern<*>> = listOf(Hex, Rgb, Hsv, Hsv360)
 
     /** 根据名称得到颜色模式。 */
-    fun byName(name: String): ColorPattern<*>? = patterns.firstOrNull { it.name == name }
+    fun byName(name: String): ColorPattern<*>? = patterns.find { it.name == name }
 
     /**
      * hex 颜色模式。
      *
      * 颜色参数的格式：以 `0x` 开始的十六进制字符串，忽略大小写，支持 3/4/6/8 位。
      */
-    object Hex : ColorPattern.Base<String>("hex") {
+    object Hex : ColorPattern.Inline("hex") {
         override fun isAvailable(args: String): Boolean {
             val hex = args.removePrefixOrNull("0x", ignoreCase = true) ?: return false
             val length = hex.length
@@ -68,10 +69,11 @@ object ColorPatterns {
      * - `$r $g $b` - 分别匹配区间 `[0..255]` 或 `[0.0..1.0]`。
      * - `$r $g $b $a` - 分别匹配区间 `[0..255]` 或 `[0.0..1.0]`。
      */
-    object Rgb : ColorPattern.Base<List<String>>("rgb") {
-        override fun isAvailable(args: List<String>): Boolean = isAvailableColorArgs(args)
-
+    object Rgb : ColorPattern.Block("rgb") {
+        @Optimized
         override fun isValid(args: List<String>): Boolean {
+            // 如果任一参数包含小数点，则视为浮点表示，所有参数需匹配区间 `[0.0..1.0]`
+            // 否则视为整数表示，所有参数需匹配区间 `[0..255]`
             if (!isAvailable(args)) return false
             return if (args.anyFast { it.contains('.') }) {
                 // 浮点表示
@@ -82,6 +84,7 @@ object ColorPatterns {
             }
         }
 
+        @Optimized
         override fun getColor(args: List<String>): Color? {
             if (!isAvailable(args)) return null
             val useFloat = args.anyFast { it.contains('.') } // check dot only is enough here (since color args are checked before)
@@ -100,6 +103,7 @@ object ColorPatterns {
             }
         }
 
+        @Optimized
         override fun getColorArgs(color: Color, referenceArgs: List<String>): List<String>? {
             if (!isAvailable(referenceArgs)) return null
             val useFloat = referenceArgs.anyFast { it.contains('.') }
@@ -117,10 +121,10 @@ object ColorPatterns {
      * - `$h $s $v` - 分别匹配区间 `[0.0..1.0]`。
      * - `$h $s $v $a` - 分别匹配区间 `[0.0..1.0]`。
      */
-    object Hsv : ColorPattern.Base<List<String>>("hsv") {
-        override fun isAvailable(args: List<String>): Boolean = isAvailableColorArgs(args)
-
+    object Hsv : ColorPattern.Block("hsv") {
+        @Optimized
         override fun isValid(args: List<String>): Boolean {
+            // 所有参数需匹配区间 `[0.0..1.0]`
             if (!isAvailable(args)) return false
             return args.allFast { it.toFloatOrNull()?.let { v -> v in 0f..1f } == true }
         }
@@ -135,6 +139,7 @@ object ColorPatterns {
             return Color(r, g, b, a)
         }
 
+        @Optimized
         override fun getColorArgs(color: Color, referenceArgs: List<String>): List<String>? {
             if (!isAvailable(referenceArgs)) return null
             val withAlpha = referenceArgs.size == 4
@@ -153,10 +158,10 @@ object ColorPatterns {
      * - `$h $s $v` - `$h` 匹配区间 `[0..360]`，`$s` `$v` 匹配区间 `[0..100]`。
      * - `$h $s $v $a` - `$h` 匹配区间 `[0..360]`，`$s` `$v` 匹配区间 `[0..100]`，`$a` 匹配区间 `[0..255]`。
      */
-    object Hsv360 : ColorPattern.Base<List<String>>("hsv360") {
-        override fun isAvailable(args: List<String>): Boolean = isAvailableColorArgs(args)
-
+    object Hsv360 : ColorPattern.Block("hsv360") {
         override fun isValid(args: List<String>): Boolean {
+            // 所有参数需为整数
+            // `$h` 匹配区间 `[0..360]`，`$s` `$v` 匹配区间 `[0..100]`，`$a` 匹配区间 `[0..255]`
             if (!isAvailable(args)) return false
             val h = args.get(0).toIntOrNull()?.let { it in 0..360 } == true
             val s = args.get(1).toIntOrNull()?.let { it in 0..100 } == true
@@ -175,6 +180,7 @@ object ColorPatterns {
             return Color(r, g, b, a)
         }
 
+        @Optimized
         override fun getColorArgs(color: Color, referenceArgs: List<String>): List<String>? {
             if (!isAvailable(referenceArgs)) return null
             val withAlpha = referenceArgs.size == 4
@@ -188,12 +194,4 @@ object ColorPatterns {
             return list.mapFast { it.toString() }
         }
     }
-}
-
-/** 检查颜色参数列表是否可用：要求参数个数为 3 或 4，并且均为数字。 */
-private fun isAvailableColorArgs(args: List<String>): Boolean {
-    val size = args.size
-    if (size != 3 && size != 4) return false
-    if (args.anyFast { !TextMatcher.matchesFloat(it) }) return false
-    return true
 }

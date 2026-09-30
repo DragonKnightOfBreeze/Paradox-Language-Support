@@ -1,5 +1,3 @@
-# see: icu.windea.pls.core.ui.ColorService
-
 color = rgb { 255 0 0 }
 color = Rgb { 255 0 0 }
 color = RGB { 255 0 0 }
