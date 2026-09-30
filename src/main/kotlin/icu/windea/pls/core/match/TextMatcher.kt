@@ -1,6 +1,5 @@
 package icu.windea.pls.core.match
 
-import icu.windea.pls.core.isExactDigit
 import icu.windea.pls.core.orNull
 import java.time.format.DateTimeFormatter
 import java.util.concurrent.ConcurrentHashMap
@@ -10,6 +9,14 @@ object TextMatcher {
 
     fun isNumberUnaryChar(c: Char): Boolean {
         return c == '+' || c == '-'
+    }
+
+    fun isDigitChar(c: Char): Boolean {
+        return c in '0'..'9'
+    }
+
+    fun isHexDigitChar(c: Char): Boolean {
+        return c in '0'..'9' || c in 'a'..'f' || c in 'A'..'F'
     }
 
     /**
@@ -97,7 +104,7 @@ object TextMatcher {
         var current = start
         while (current < end) {
             val c = text[current++]
-            if (c.isExactDigit()) continue
+            if (isDigitChar(c)) continue
             return false
         }
         return true
@@ -121,7 +128,7 @@ object TextMatcher {
                 expectDot = false
                 continue
             }
-            if (c.isExactDigit()) continue
+            if (isDigitChar(c)) continue
             return false
         }
         return true
