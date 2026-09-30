@@ -7,7 +7,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.ui.dsl.builder.*
 import com.intellij.util.ui.JBUI
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.core.smaller
+import icu.windea.pls.core.ui.smaller
 import icu.windea.pls.lang.codeInsight.hints.ParadoxDeclarativeHintsSettings
 import icu.windea.pls.lang.codeInsight.hints.csv.ParadoxDefinitionReferenceInfoSettingsProvider.*
 import javax.swing.JComponent

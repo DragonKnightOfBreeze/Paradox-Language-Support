@@ -14,7 +14,7 @@ import icu.windea.pls.core.text.EscapePatterns
 import icu.windea.pls.core.text.HtmlBuilder
 import icu.windea.pls.core.text.buildHtml
 import icu.windea.pls.core.toFileUrl
-import icu.windea.pls.core.toIconOrNull
+import icu.windea.pls.core.ui.toIconOrNull
 import icu.windea.pls.core.unescape
 import icu.windea.pls.images.ImageFrameInfo
 import icu.windea.pls.lang.getDocumentationFontSize

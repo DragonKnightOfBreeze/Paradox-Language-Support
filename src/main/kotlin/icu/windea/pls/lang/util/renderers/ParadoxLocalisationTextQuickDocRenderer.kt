@@ -16,7 +16,7 @@ import icu.windea.pls.core.psi.light.LightElementBase
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.text.EscapePatterns
 import icu.windea.pls.core.toFileUrl
-import icu.windea.pls.core.toIconOrNull
+import icu.windea.pls.core.ui.toIconOrNull
 import icu.windea.pls.core.unescape
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or

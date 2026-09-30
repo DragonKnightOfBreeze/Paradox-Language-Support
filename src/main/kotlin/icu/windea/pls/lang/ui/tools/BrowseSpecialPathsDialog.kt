@@ -22,7 +22,7 @@ import com.intellij.util.ui.ColumnInfo
 import com.intellij.util.ui.JBUI
 import com.intellij.util.ui.ListTableModel
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.core.registerDoubleClickListener
+import icu.windea.pls.core.ui.registerDoubleClickListener
 import icu.windea.pls.ep.tools.SpecialPathProvider
 import icu.windea.pls.lang.analysis.ParadoxAnalysisManager
 import icu.windea.pls.lang.tools.SpecialPathService
