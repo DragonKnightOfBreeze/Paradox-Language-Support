@@ -4,7 +4,7 @@ import com.intellij.codeInsight.hints.ChangeListener
 import com.intellij.codeInsight.hints.ImmediateConfigurable
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.core.toAtomicProperty
+import icu.windea.pls.core.ui.toAtomicProperty
 import javax.swing.JComponent
 
 @Suppress("UnstableApiUsage")

@@ -14,9 +14,9 @@ import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.matchesPatterns
-import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.core.toDelimitedMutableList
 import icu.windea.pls.core.toDelimitedString
+import icu.windea.pls.core.ui.toAtomicProperty
 import icu.windea.pls.core.util.properties.fromDelimitedString
 import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContext
 import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContextFactory

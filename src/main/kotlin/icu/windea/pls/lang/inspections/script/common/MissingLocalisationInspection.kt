@@ -14,7 +14,7 @@ import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.collections.forEachFast
-import icu.windea.pls.core.toAtomicProperty
+import icu.windea.pls.core.ui.toAtomicProperty
 import icu.windea.pls.core.util.properties.fromDelimitedString
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContext

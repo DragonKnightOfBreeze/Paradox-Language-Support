@@ -19,8 +19,8 @@ import icu.windea.pls.ai.providers.ChatModelProviderType
 import icu.windea.pls.ai.services.PolishLocalisationAiService
 import icu.windea.pls.ai.services.TranslateLocalisationAiService
 import icu.windea.pls.base.settings.ChronicleAiSettings
-import icu.windea.pls.core.smaller
-import icu.windea.pls.core.smallerFont
+import icu.windea.pls.core.ui.smaller
+import icu.windea.pls.core.ui.smallerFont
 import icu.windea.pls.lang.manipulation.ParadoxLocalisationManipulationContext
 import kotlinx.coroutines.flow.Flow
 import java.awt.Dimension

@@ -7,15 +7,15 @@ import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.allFast
 import icu.windea.pls.core.collections.anyFast
 import icu.windea.pls.core.collections.mapFast
-import icu.windea.pls.core.component1
-import icu.windea.pls.core.component2
-import icu.windea.pls.core.component3
-import icu.windea.pls.core.component4
 import icu.windea.pls.core.match.TextMatcher
 import icu.windea.pls.core.math.convertToFloat
 import icu.windea.pls.core.math.convertToInt
 import icu.windea.pls.core.math.formatted
 import icu.windea.pls.core.removePrefixOrNull
+import icu.windea.pls.core.ui.component1
+import icu.windea.pls.core.ui.component2
+import icu.windea.pls.core.ui.component3
+import icu.windea.pls.core.ui.component4
 import java.awt.Color
 
 /**

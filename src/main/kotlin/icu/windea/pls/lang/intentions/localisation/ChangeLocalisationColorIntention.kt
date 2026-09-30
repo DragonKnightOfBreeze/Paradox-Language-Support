@@ -9,8 +9,8 @@ import com.intellij.modcommand.ModCommandAction
 import com.intellij.modcommand.ModPsiUpdater
 import com.intellij.modcommand.Presentation
 import com.intellij.modcommand.PsiUpdateModCommandAction
-import icu.windea.pls.core.DelegatedIcon
 import icu.windea.pls.core.collections.orNull
+import icu.windea.pls.core.ui.DelegatedIcon
 import icu.windea.pls.lang.intentions.ChronicleIntentionBundle
 import icu.windea.pls.lang.psi.ParadoxPsiFileService
 import icu.windea.pls.lang.util.ParadoxTextColorManager

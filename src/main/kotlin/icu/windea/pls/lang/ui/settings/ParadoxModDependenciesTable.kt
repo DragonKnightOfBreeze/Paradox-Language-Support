@@ -18,7 +18,7 @@ import icu.windea.pls.base.settings.ParadoxGameOrModSettingsState
 import icu.windea.pls.base.settings.ParadoxModDependencySettingsState
 import icu.windea.pls.base.settings.ParadoxModSettingsState
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.registerDoubleClickListener
+import icu.windea.pls.core.ui.registerDoubleClickListener
 import icu.windea.pls.lang.actions.ChronicleActionPlaces
 import javax.swing.JPanel
 

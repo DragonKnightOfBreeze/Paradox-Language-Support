@@ -10,7 +10,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.core.collections.forEachFast
-import icu.windea.pls.core.toAtomicProperty
+import icu.windea.pls.core.ui.toAtomicProperty
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.codeInsight.ParadoxImageCodeInsightContext
 import icu.windea.pls.lang.codeInsight.ParadoxImageCodeInsightContextFactory

@@ -9,7 +9,7 @@ import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.createPointer
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toFileUrl
-import icu.windea.pls.core.toIconOrNull
+import icu.windea.pls.core.ui.toIconOrNull
 import icu.windea.pls.images.ImageFrameInfo
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsContext
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsProvider

@@ -7,7 +7,7 @@ import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.intellij.ui.ColorUtil
 import com.jetbrains.rd.util.AtomicInteger
 import icu.windea.pls.base.settings.ChronicleSettings
-import icu.windea.pls.core.toAtomicProperty
+import icu.windea.pls.core.ui.toAtomicProperty
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.ChronicleTestScope
