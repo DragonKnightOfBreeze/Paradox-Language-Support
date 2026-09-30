@@ -18,8 +18,6 @@ import java.awt.Color
 @Suppress("UseJBColor")
 @Optimized
 object ColorService {
-    // TODO 3.0.3+ add tests
-
     /**
      * 得到 hex 格式的颜色。
      *
@@ -35,7 +33,7 @@ object ColorService {
     /**
      * 根据作为参考的 [colorArg] 以及输入的 [newColor]，得到期望的 hex 格式的颜色参数。
      *
-     * 示例：：
+     * 示例：
      * - 以 `0x` 开始的十六进制字符串，忽略大小写。
      */
     fun getNewColorArgFromHex(colorArg: String, newColor: Color): String? {
@@ -47,25 +45,27 @@ object ColorService {
 
     /**
      * 根据输入的 [colorArgs]，得到 rgb 格式的颜色。
+     * 如果 [alphaCanOverflow] 为 `true`，则最终得到的 alpha 值可以超出上限。
      *
      * 颜色参数的格式：
      * - `$r $g $b` - 分别匹配区间 `[0..255]` 或 `[0.0..1.0]`。
      * - `$r $g $b $a` - 分别匹配区间 `[0..255]` 或 `[0.0..1.0]`。
      */
-    fun getColorFromRgb(colorArgs: List<String>): Color? {
+    fun getColorFromRgb(colorArgs: List<String>, alphaCanOverflow: Boolean = false): Color? {
         if (!checkColorArgs(colorArgs)) return null
+        val alphaRange = if (alphaCanOverflow) 0..Int.MAX_VALUE else 0..255 // alpha may overflow
         val useFloat = colorArgs.allFast { it.toFloat() in 0f..1f } && colorArgs.anyFast { it.contains('.') }
         if (useFloat) {
             val r = colorArgs.get(0).toFloatOrNull().convertToInt(255, 0..255) { it * 255 }
             val g = colorArgs.get(1).toFloatOrNull().convertToInt(255, 0..255) { it * 255 }
             val b = colorArgs.get(2).toFloatOrNull().convertToInt(255, 0..255) { it * 255 }
-            val a = colorArgs.getOrNull(3)?.toFloatOrNull().convertToInt(255) { it * 255 } // alpha can overflow
+            val a = colorArgs.getOrNull(3)?.toFloatOrNull().convertToInt(255, alphaRange) { it * 255 }
             return Color(r, g, b, a)
         } else {
             val r = colorArgs.get(0).toIntOrNull().convertToInt(255, 0..255)
             val g = colorArgs.get(1).toIntOrNull().convertToInt(255, 0..255)
             val b = colorArgs.get(2).toIntOrNull().convertToInt(255, 0..255)
-            val a = colorArgs.getOrNull(3)?.toIntOrNull().convertToInt(255) // alpha can overflow
+            val a = colorArgs.getOrNull(3)?.toIntOrNull().convertToInt(255, alphaRange)
             return Color(r, g, b, a)
         }
     }
@@ -77,6 +77,9 @@ object ColorService {
      * 颜色参数的格式：
      * - `$r $g $b` - 分别匹配区间 `[0..255]` 或 `[0.0..1.0]`。
      * - `$r $g $b $a` - 分别匹配区间 `[0..255]` 或 `[0.0..1.0]`。
+     *
+     * 备注：
+     * - `$a` 允许超出上限。
      */
     fun getNewColorArgsFromRgb(colorArgs: List<String>, newColor: Color, precision: Int = -3): List<String>? {
         if (!checkColorArgs(colorArgs)) return null
@@ -93,17 +96,22 @@ object ColorService {
 
     /**
      * 根据输入的 [colorArgs]，得到 hsv 格式的颜色。
+     * 如果 [alphaCanOverflow] 为 `true`，则最终得到的 alpha 值可以超出上限。
      *
      * 颜色参数的格式：
      * - `$h $s $v` - 分别匹配区间 `[0.0..1.0]`。
      * - `$h $s $v $a` - 分别匹配区间 `[0.0..1.0]`。
+     *
+     * 备注：
+     * - `$a` 允许超出上限。
      */
-    fun getColorFromHsv(colorArgs: List<String>): Color? {
+    fun getColorFromHsv(colorArgs: List<String>, alphaCanOverflow: Boolean = false): Color? {
         if (!checkColorArgs(colorArgs)) return null
+        val alphaRange = if (alphaCanOverflow) 0..Int.MAX_VALUE else 0..255 // alpha may overflow
         val h = colorArgs.get(0).toFloatOrNull().convertToFloat(1f, 0f..1f)
         val s = colorArgs.get(1).toFloatOrNull().convertToFloat(1f, 0f..1f)
         val v = colorArgs.get(2).toFloatOrNull().convertToFloat(1f, 0f..1f)
-        val a = colorArgs.getOrNull(3)?.toFloatOrNull().convertToInt(255) { it * 255 } // alpha can overflow
+        val a = colorArgs.getOrNull(3)?.toFloatOrNull().convertToInt(255, alphaRange) { it * 255 }
         val (r, g, b) = Color.getHSBColor(h, s, v)
         return Color(r, g, b, a)
     }
@@ -127,17 +135,22 @@ object ColorService {
 
     /**
      * 根据输入的 [colorArgs]，得到 hsv360 格式的颜色。
+     * 如果 [alphaCanOverflow] 为 `true`，则最终得到的 alpha 值可以超出上限。
      *
      * 颜色参数的格式：
      * - `$h $s $v` - `$h` 匹配区间 `[0..360]`，`$s` `$v` 匹配区间 `[0..100]`。
      * - `$h $s $v $a` - `$h` 匹配区间 `[0..360]`，`$s` `$v` 匹配区间 `[0..100]`，`$a` 匹配区间 `[0..255]`。
+     *
+     * 备注：
+     * - `$a` 允许超出上限。
      */
-    fun getColorFromHsv360(colorArgs: List<String>): Color? {
+    fun getColorFromHsv360(colorArgs: List<String>, alphaCanOverflow: Boolean = false): Color? {
         if (!checkColorArgs(colorArgs)) return null
+        val alphaRange = if (alphaCanOverflow) 0..Int.MAX_VALUE else 0..255 // alpha may overflow
         val h = colorArgs.get(0).toIntOrNull().convertToFloat(1f, 0f..1f) { it / 360 }
         val s = colorArgs.get(1).toIntOrNull().convertToFloat(1f, 0f..1f) { it / 100 }
         val v = colorArgs.get(2).toIntOrNull().convertToFloat(1f, 0f..1f) { it / 100 }
-        val a = colorArgs.getOrNull(3)?.toIntOrNull().convertToInt(255) // alpha can overflow
+        val a = colorArgs.getOrNull(3)?.toIntOrNull().convertToInt(255, alphaRange)
         val (r, g, b) = Color.getHSBColor(h, s, v)
         return Color(r, g, b, a)
     }
@@ -148,6 +161,9 @@ object ColorService {
      * 颜色参数的格式：
      * - `$h $s $v` - `$h` 匹配区间 `[0..360]`，`$s` `$v` 匹配区间 `[0..100]`。
      * - `$h $s $v $a` - `$h` 匹配区间 `[0..360]`，`$s` `$v` 匹配区间 `[0..100]`，`$a` 匹配区间 `[0..255]`。
+     *
+     * 备注：
+     * - `$a` 允许超出上限。
      */
     fun getNewColorArgsFromHsv360(colorArgs: List<String>, newColor: Color): List<String>? {
         if (!checkColorArgs(colorArgs)) return null
