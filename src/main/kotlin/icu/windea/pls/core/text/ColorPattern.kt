@@ -1,5 +1,8 @@
 package icu.windea.pls.core.text
 
+import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.collections.anyFast
+import icu.windea.pls.core.match.TextMatcher
 import java.awt.Color
 
 /**
@@ -7,9 +10,9 @@ import java.awt.Color
  *
  * 用于按照特定的方式处理颜色参数，以及颜色参数与颜色对象之间的转换。
  *
- * 作为对颜色处理逻辑的策略。
+ * 包含相关的元数据，同时也作为对颜色处理逻辑的策略。
  *
- * @param T 颜色参数的类型（`String` 或 `List<String>`）。
+ * @param T 颜色参数的类型。
  * @see ColorPatterns
  */
 interface ColorPattern<T> {
@@ -29,8 +32,21 @@ interface ColorPattern<T> {
     /** 根据 [args] 得到对应的颜色。 */
     fun getColor(args: T): Color?
 
-    /** 根据颜色 [color] 以及作为参考的颜色参数 [referenceArgs]，得到颜色参数。 */
+    /** 根据颜色 [color] 以及作为参考的颜色参数 [referenceArgs]，得到对应的颜色参数。 */
     fun getColorArgs(color: Color, referenceArgs: T): T?
 
     abstract class Base<T>(override val name: String) : ColorPattern<T>
+
+    abstract class Inline(name: String) : Base<String>(name)
+
+    abstract class Block(name: String) : Base<List<String>>(name) {
+        @Optimized
+        override fun isAvailable(args: List<String>): Boolean {
+            // 要求参数个数为 3 或 4，并且均为数字
+            val size = args.size
+            if (size != 3 && size != 4) return false
+            if (args.anyFast { !TextMatcher.matchesFloat(it) }) return false
+            return true
+        }
+    }
 }
