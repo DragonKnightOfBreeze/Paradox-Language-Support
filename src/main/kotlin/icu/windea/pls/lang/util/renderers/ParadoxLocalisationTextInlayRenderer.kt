@@ -329,20 +329,23 @@ class ParadoxLocalisationTextInlayRenderContext(
     }
 
     private fun truncatedSmallText(text: String): InlayPresentation {
+        var textTruncated = text
+        // 3.0.4 # 418 trim leading blank of whole localisation text if necessary (specially for rendering inlay hints)
+        if (builder.isEmpty()) textTruncated = text.trimStart()
         // truncated by configured limit if necessary
         val limit = hintsContext.settings.localisationTextLengthLimit
-        val truncatedText = if (limit > 0) text.take(truncateRemain.get()) else text
+        if (limit > 0) textTruncated = textTruncated.take(truncateRemain.get())
         // truncated to first line if necessary
-        val lineBreakIndex = truncatedText.indexOfFirst { it == '\n' || it == '\r' }
-        val truncatedTextSingleLine = if (lineBreakIndex != -1) truncatedText.take(lineBreakIndex) else text
+        val lineBreakIndex = textTruncated.indexOfFirst { it == '\n' || it == '\r' }
+        if (lineBreakIndex != -1) textTruncated = textTruncated.take(lineBreakIndex)
         // then final text
-        val finalText = truncatedTextSingleLine
+        val finalText = textTruncated
         val result = factory.smallText(finalText)
-        if (truncatedTextSingleLine.length != truncatedText.length) {
+        if (lineBreakIndex != -1) {
             lineEnd = true
         }
         if (limit > 0) {
-            truncateRemain.getAndAdd(-truncatedText.length)
+            truncateRemain.getAndAdd(-finalText.length)
         }
         updateTruncationState()
         return result

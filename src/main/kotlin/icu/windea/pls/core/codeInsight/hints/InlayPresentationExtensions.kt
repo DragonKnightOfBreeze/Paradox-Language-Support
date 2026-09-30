@@ -4,8 +4,10 @@ package icu.windea.pls.core.codeInsight.hints
 
 import com.intellij.codeInsight.hints.presentation.InlayPresentation
 import com.intellij.codeInsight.hints.presentation.SequencePresentation
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.optimized
 
+@Optimized
 fun List<InlayPresentation>.mergePresentations(): InlayPresentation? {
     return when {
         isEmpty() -> null
