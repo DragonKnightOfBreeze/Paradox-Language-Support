@@ -37,3 +37,31 @@ fun Number.formatted(precision: Int = -3, isFloatingPoint: Boolean = true): Stri
         }
     }
 }
+
+/**
+ * 将当前数字转化为 [Int]。可以指定默认值、上下限的范围以及转换操作。
+ */
+inline fun <T : Number> T?.convertToInt(defaultValue: Int, range: ClosedRange<Int>? = null, transform: (T) -> Number = { it }): Int {
+    return this?.let { transform(it).toInt() }?.let { if (range != null) it.coerceIn(range) else it } ?: defaultValue
+}
+
+/**
+ * 将当前数字转化为 [Long]。可以指定默认值、上下限的范围以及转换操作。
+ */
+inline fun <T : Number> T?.convertToLong(defaultValue: Long, range: ClosedRange<Long>? = null, transform: (T) -> Number = { it }): Long {
+    return this?.let { transform(it).toLong() }?.let { if (range != null) it.coerceIn(range) else it } ?: defaultValue
+}
+
+/**
+ * 将当前数字转化为 [Float]。可以指定默认值、上下限的范围以及转换操作。
+ */
+inline fun <T : Number> T?.convertToFloat(defaultValue: Float, range: ClosedRange<Float>? = null, transform: (T) -> Number = { it }): Float {
+    return this?.let { transform(it).toFloat() }?.let { if (range != null) it.coerceIn(range) else it } ?: defaultValue
+}
+
+/**
+ * 将当前数字转化为 [Double]。可以指定默认值、上下限的范围以及转换操作。
+ */
+inline fun <T : Number> T?.convertToDouble(defaultValue: Double, range: ClosedRange<Double>? = null, transform: (T) -> Number = { it }): Double {
+    return this?.let { transform(it).toDouble() }?.let { if (range != null) it.coerceIn(range) else it } ?: defaultValue
+}
