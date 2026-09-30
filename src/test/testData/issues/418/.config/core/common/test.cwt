@@ -1,0 +1,12 @@
+types = {
+    type[test] = {
+        path = common/test
+    }
+}
+
+test = {
+    ## cardinality = 0..inf
+    log = scalar
+    ## cardinality = 0..inf
+    log = localisation
+}

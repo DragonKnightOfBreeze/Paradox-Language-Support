@@ -46,16 +46,20 @@ object ParadoxLocalisationManager {
     }
 
     @Inferred
-    fun isNormalLocalisationText(text: CharSequence, checkEscape: Boolean = true): Boolean {
-        // If some localisation text do not contain special markers, it's unnecessary to process lazy-parsing
+    fun isRichLocalisationText(text: CharSequence, checkEscape: Boolean = true): Boolean {
+        // For each localisation property value, if it does not contain special markers,
+        // it's unnecessary to process lazy-parsing.
+
+        // For each script string, if it can match data expression `scalar` or `localisation`, and contain special markers,
+        // it's worth to apply language injection.
 
         for (i in 0 until text.length) {
             when (text[i]) {
-                // Accept left bracket & do not check escape (`[[` or `\[`)
+                // accept left bracket & do not check escape (`[[` or `\[`)
                 '[' -> return true
-                // Accept special markers involve to rich text constructs & check escape if `checkEscape = true`
+                // accept special markers involve rich text constructs & check escape if `checkEscape = true`
                 '$', '§', '£', '#', '@' -> if (!(checkEscape && text.isEscapedCharAt(i))) return true
-                // NOTE 3.0.2 Accept special markers involve to grammatical constructs & check escape if `checkEscape = true`
+                // 3.0.2 accept special markers involve grammatical constructs & check escape if `checkEscape = true`
                 '|', '&' -> if (!(checkEscape && text.isEscapedCharAt(i))) return true
             }
         }
@@ -66,12 +70,13 @@ object ParadoxLocalisationManager {
     fun isSpecialLocalisation(element: ParadoxLocalisationProperty): Boolean {
         // There are some special localizations that cannot be used directly to render localisation text
 
+        // NOTE 3.0.4 For localisations which text contain grammatical constructs, such as tags or context tags,
+        //  although they are special in some meanings, since it's expected to still contain the normal string part (i.e., before `|||`),
+        //  we can still (and just at this moment) render such part.
+
         val file = element.containingFile ?: return false
         val fileName = file.name
         if (fileName.startsWith("name_system_")) return true // e.g., `name_system_l_english.yml`
-
-        // TODO 3.0.4+ Handle localisations involve to grammatical constructs specially
-
         return false
     }
 }

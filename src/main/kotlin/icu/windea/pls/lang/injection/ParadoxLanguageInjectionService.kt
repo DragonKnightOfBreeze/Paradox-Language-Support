@@ -152,7 +152,7 @@ object ParadoxLanguageInjectionService {
         if (!text.isLeftQuoted() || !text.isRightQuoted()) return false
         val normalized = text.unquote()
         // 要求看起来像是富文本
-        if (ParadoxLocalisationManager.isNormalLocalisationText(normalized)) return false
+        if (!ParadoxLocalisationManager.isRichLocalisationText(normalized)) return false
         return true
     }
 

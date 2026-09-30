@@ -43,12 +43,12 @@ class Issue412Test : BasePlatformTestCase(), ChronicleTestScope {
         markFileInfo(ParadoxGameType.Stellaris, "common/scripted_effects/00_scripted_effects.txt")
         myFixture.configureByText("00_scripted_effects.txt") {
             """
-                base_effect_1 = {
+            base_effect_1 = {
 
-                }
-                base_effect_2 = {
-                    set_flag = ${param}
-                }
+            }
+            base_effect_2 = {
+                set_flag = ${param}
+            }
             """.trimIndent()
         }
 
@@ -76,7 +76,7 @@ class Issue412Test : BasePlatformTestCase(), ChronicleTestScope {
         markFileInfo(ParadoxGameType.Stellaris, "common/inline_scripts/set_flag.txt")
         myFixture.configureByText("set_flag.txt") {
             """
-                set_flag = ${param}
+            set_flag = ${param}
             """.trimIndent()
         }
 
@@ -112,7 +112,7 @@ class Issue412Test : BasePlatformTestCase(), ChronicleTestScope {
         markFileInfo(ParadoxGameType.Stellaris, "common/inline_scripts/set_flag.txt")
         myFixture.configureByText("set_flag.txt") {
             """
-                ${info(Colors.EFFECT)}set_flag${infoEnd()} = ${info(Colors.DYNAMIC_VALUE)}some_flag${infoEnd()}
+            ${info(Colors.EFFECT)}set_flag${infoEnd()} = ${info(Colors.DYNAMIC_VALUE)}some_flag${infoEnd()}
             """.trimIndent()
         }
 
