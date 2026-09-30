@@ -8,6 +8,13 @@
 - [ ] 分析与优化完成项目分析后的性能和内存占用 / Analyze and optimize performance and memory after finishing project analysis
 - [ ] 完善测试用例 / Improve test cases
 
+## 3.0.4
+
+- [ ] 初步支持片段匹配，新增数据类型 `DefinitionSnippet` 和 `LocalisationSnippet`，以匹配作为完整的定义引用或本地化引用的一部分的字符串（数据表达式示例：`<sprite>|GFX_$` `localisation|$_desc`） / Initial support for snippet matching, with new data types `DefinitionSnippet` and `LocalisationSnippet`, used to match strings that are part of a complete definition reference or localisation reference (data expression examples: `<sprite>|GFX_$` `localisation|$_desc`)
+- [ ] 完善规则匹配逻辑，新增数据类型 `WildcardAny` 和 `WildcardScalar`，作为特殊变体，当匹配候选项过多，或者无法进一步确定时使用（数据表达式：`$$any` `$$literal`） / Refine the config matching logic by adding the new data types `WildcardAny` and `WildcardScalar` as special variants, to be used when there are too many matching candidates or when no further determination can be made (data expressions: `$$any` `$$literal`)
+- [ ] 整理和完善与规则匹配和数据类型相关的注释和文档 / Organize and improve the comments and documentation related to config matching and data types.
+- [ ] 修复回归BUG / Fix regression bugs ([#418](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/418))
+
 ## 3.0.3 - 2026-09-23
 
 - [x] 修复与内联脚本参数的参数值的规则推断逻辑相关的一个回归BUG / Fix a regression bug related to the config inference logic for parameter values of inline script parameters ([#412](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/412))
