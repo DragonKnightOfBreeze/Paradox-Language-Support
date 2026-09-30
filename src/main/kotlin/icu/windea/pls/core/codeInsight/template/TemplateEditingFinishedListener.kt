@@ -1,4 +1,4 @@
-package icu.windea.pls.core.codeInsight
+package icu.windea.pls.core.codeInsight.template
 
 import com.intellij.codeInsight.template.Template
 import com.intellij.codeInsight.template.TemplateEditingListener

@@ -23,8 +23,8 @@ import icu.windea.pls.config.config.CwtOptionConfig
 import icu.windea.pls.config.config.CwtOptionMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.configExpression.CwtSchemaExpression
-import icu.windea.pls.core.buildInlineTemplate
-import icu.windea.pls.core.codeInsight.TemplateEditingFinishedListener
+import icu.windea.pls.core.codeInsight.template.TemplateEditingFinishedListener
+import icu.windea.pls.core.codeInsight.template.buildInlineTemplate
 import icu.windea.pls.core.executeWriteCommand
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.isEscapedCharAt

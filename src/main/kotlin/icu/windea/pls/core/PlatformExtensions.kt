@@ -2,8 +2,6 @@
 
 package icu.windea.pls.core
 
-import com.intellij.codeInsight.template.TemplateBuilder
-import com.intellij.codeInsight.template.TemplateBuilderImpl
 import com.intellij.credentialStore.CredentialAttributes
 import com.intellij.ide.passwordSafe.PasswordSafe
 import com.intellij.lang.ASTNode
@@ -644,14 +642,6 @@ fun PsiBuilder.lookup(steps: Int, skipWhitespaces: Boolean = true, forward: Bool
 //         }
 //     }
 // }
-
-// endregion
-
-// region Code Insight Extensions
-
-fun TemplateBuilder.buildTemplate() = cast<TemplateBuilderImpl>().buildTemplate()
-
-fun TemplateBuilder.buildInlineTemplate() = cast<TemplateBuilderImpl>().buildInlineTemplate()
 
 // endregion
 
