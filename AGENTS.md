@@ -92,6 +92,13 @@ The plugin bundles CWT configs into the plugin JAR under `config/<gameTypeId>`. 
   - Integration tests for syntax/semantic/PSI/index/config-driven logic.
 - A full `./gradlew test` run can take tens of minutes; don't run it casually during iterative development.
 
+### Gradle execution environment
+
+- For builds, tests, and other Gradle tasks that may take more than a few seconds, prefer IntelliJ IDEA Terminal or an IDEA Gradle Run Configuration over an agent-provided shell.
+- On Windows, an agent shell can expose redirected standard input/output rather than a terminal. Its process/output collection may remain blocked after a Gradle task or one of its children has finished; a shell timeout is therefore not, by itself, evidence that the Gradle task failed.
+- Use the agent shell only for short Gradle queries such as `./gradlew help` or `./gradlew --status`, always with a bounded timeout. Validate a suspected timeout through an IDEA execution path before diagnosing project code, caches, or Gradle daemon state.
+- When diagnosing a hang, first check existing Gradle/Java processes, compare `--no-daemon` with the default daemon mode, and clean up only daemons created during the diagnosis. Do not run long-lived child processes with inherited agent-shell stdout/stderr; redirect their output and verify cleanup instead.
+
 ### IntelliJ platform test patterns
 
 - **Parsing tests** (syntax/PSI snapshots): use `ParsingTestCase`, comparing the parsed tree output against a stored snapshot (e.g. `icu.windea.pls.script.ParadoxScriptParsingTest`).
@@ -343,7 +350,6 @@ For the documents and examples, see:
 ### General operations
 
 - Prefer using built-in tools for common operations (e.g., read, write, edit, patch, grep search, glob search).
-- Prefer using built-in tools to execute commands for build tool operations (e.g., building, running tests), and operations that are more suitable to be done by commands.
 - Prefer using suitable mcp when structured search or semantic search is available.
 - Prefer running IDE inspections provided by intellij mcp or intellij-index mcp before compilation, building, or running tests, if necessary.
 
