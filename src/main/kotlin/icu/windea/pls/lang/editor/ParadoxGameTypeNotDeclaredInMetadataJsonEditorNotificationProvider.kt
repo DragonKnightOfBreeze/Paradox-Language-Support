@@ -3,6 +3,7 @@ package icu.windea.pls.lang.editor
 import com.intellij.openapi.command.writeCommandAction
 import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.fileEditor.TextEditor
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ProjectFileIndex
 import com.intellij.openapi.vfs.VirtualFile
@@ -49,6 +50,7 @@ class ParadoxGameTypeNotDeclaredInMetadataJsonEditorNotificationProvider : Edito
             val panel = EditorNotificationPanel(fileEditor, EditorNotificationPanel.Status.Warning).text(message)
             val gameTypes = ParadoxGameTypeConstraint.MetadataJsonUsed.list()
             for (gameType in gameTypes) {
+                ProgressManager.checkCanceled()
                 panel.createActionLabel(ChronicleBundle.message("editor.notification.gameTypeNotDeclaredInMetadataJson.action", gameType.gameId, gameType.title)) action@{
                     declareGameType(project, gameType, metadata)
                 }
