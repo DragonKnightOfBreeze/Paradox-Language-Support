@@ -4,7 +4,6 @@ import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.base.io.ChronicleSqliteService
 import icu.windea.pls.core.data.JsonService
-import icu.windea.pls.core.data.readJsonText
 import icu.windea.pls.ep.tools.model.LauncherJsonV2
 import icu.windea.pls.ep.tools.model.LauncherJsonV3
 import icu.windea.pls.ep.tools.model.Playsets
@@ -18,6 +17,7 @@ import icu.windea.pls.model.tools.ParadoxModSetInfo
 import icu.windea.pls.test.ChronicleAssume
 import icu.windea.pls.test.ChronicleTestScope
 import kotlinx.coroutines.runBlocking
+import kotlinx.serialization.json.decodeFromStream
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -29,11 +29,11 @@ import org.ktorm.entity.firstOrNull
 import org.ktorm.entity.sequenceOf
 import org.ktorm.entity.toList
 import java.io.InputStream
-import java.nio.file.Files
 import java.nio.file.Path
 import java.util.*
 import kotlin.io.path.createDirectories
 import kotlin.io.path.exists
+import kotlin.io.path.inputStream
 
 /**
  * @see ParadoxModExporter
@@ -77,7 +77,7 @@ class ParadoxModExporterTest : BasePlatformTestCase(), ChronicleTestScope {
         assertActualTotal(result.actualTotal)
 
         // 验证 JSON 内容
-        val json = JsonService.json.decodeFromString<LauncherJsonV2>(Files.newInputStream(outFile).readJsonText())
+        val json = outFile.inputStream().use { JsonService.json.decodeFromStream<LauncherJsonV2>(it) }
         assertEquals(modSet.gameType.gameId, json.game)
         assertTrue(json.mods.size == result.actualTotal)
         assertTrue(json.mods.all { it.enabled })
@@ -96,7 +96,7 @@ class ParadoxModExporterTest : BasePlatformTestCase(), ChronicleTestScope {
         assertActualTotal(result.actualTotal)
 
         // 验证 JSON 内容
-        val json = JsonService.json.decodeFromString<LauncherJsonV3>(Files.newInputStream(outFile).readJsonText())
+        val json = outFile.inputStream().use { JsonService.json.decodeFromStream<LauncherJsonV3>(it) }
         assertEquals(modSet.gameType.gameId, json.game)
         assertTrue(json.mods.size == result.actualTotal)
         assertTrue(json.mods.all { it.enabled })

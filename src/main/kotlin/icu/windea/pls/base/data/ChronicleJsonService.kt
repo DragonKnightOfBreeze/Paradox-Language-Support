@@ -1,15 +1,14 @@
 package icu.windea.pls.base.data
 
 import icu.windea.pls.core.data.JsonService
-import icu.windea.pls.core.data.readJsonText
-import icu.windea.pls.core.data.stripJson5Comments
 import icu.windea.pls.core.toClasspathUrl
+import kotlinx.serialization.json.decodeFromStream
 
 object ChronicleJsonService {
     private inline fun <reified T> getJsonDataFromClasspath(classpath: String): T {
         val url = classpath.toClasspathUrl()
-        val text = url.openStream().use { it.readJsonText() }
-        return JsonService.json5.decodeFromString(text.stripJson5Comments())
+        val inputStream = url.openStream()
+        return inputStream.use { JsonService.json5.decodeFromStream(it) }
     }
 
     val gameTypeMetadataList: List<ParadoxGameTypeMetadataJson> by lazy { getJsonDataFromClasspath("/data/game_type_metadata_list.json5") }

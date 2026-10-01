@@ -1,10 +1,10 @@
 package icu.windea.pls.integrations.lints
 
 import icu.windea.pls.core.data.JsonService
-import icu.windea.pls.core.data.readJsonText
 import icu.windea.pls.core.normalizePath
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.decodeFromStream
 import java.io.File
 
 /**
@@ -146,7 +146,7 @@ data class TigerLintResult(
 
         @JvmStatic
         fun parse(name: String, outputFile: File): TigerLintResult {
-            val items = JsonService.json.decodeFromString<List<Item>>(outputFile.readJsonText())
+            val items = outputFile.inputStream().use { JsonService.json.decodeFromStream<List<Item>>(it) }
             if (items.isEmpty()) return EMPTY
             val itemGroup = mutableMapOf<String, MutableSet<Item>>()
             for (item in items) {

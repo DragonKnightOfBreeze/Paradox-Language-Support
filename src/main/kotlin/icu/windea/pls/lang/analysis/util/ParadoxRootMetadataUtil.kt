@@ -2,7 +2,6 @@ package icu.windea.pls.lang.analysis.util
 
 import com.intellij.openapi.diagnostic.thisLogger
 import icu.windea.pls.core.data.JsonService
-import icu.windea.pls.core.data.readJsonText
 import icu.windea.pls.core.getDefaultProject
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
@@ -13,7 +12,9 @@ import icu.windea.pls.model.analysis.ParadoxDescriptorModInfo
 import icu.windea.pls.model.analysis.ParadoxLauncherSettingsJsonInfo
 import icu.windea.pls.model.analysis.ParadoxMetadataJsonInfo
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
+import kotlinx.serialization.json.decodeFromStream
 import java.nio.file.Path
+import kotlin.io.path.inputStream
 import kotlin.io.path.isRegularFile
 import kotlin.io.path.name
 import kotlin.io.path.readText
@@ -40,7 +41,7 @@ object ParadoxRootMetadataUtil {
 
     fun getLauncherSettingsJsonInfo(path: Path): ParadoxLauncherSettingsJsonInfo? {
         try {
-            return JsonService.json.decodeFromString<ParadoxLauncherSettingsJsonInfo>(path.readJsonText())
+            return JsonService.json.decodeFromStream<ParadoxLauncherSettingsJsonInfo>(path.inputStream())
         } catch (e: Exception) {
             logger.warn("Cannot resolve root metadata info from path: ${path}", e)
             return null
@@ -65,7 +66,7 @@ object ParadoxRootMetadataUtil {
 
     fun getMetadataJsonInfo(path: Path): ParadoxMetadataJsonInfo? {
         try {
-            return JsonService.json.decodeFromString<ParadoxMetadataJsonInfo>(path.readJsonText())
+            return JsonService.json.decodeFromStream<ParadoxMetadataJsonInfo>(path.inputStream())
         } catch (e: Exception) {
             logger.warn("Cannot resolve root metadata info from path: ${path}", e)
             return null

@@ -2,10 +2,10 @@ package icu.windea.pls.ep.tools.model
 
 import icu.windea.pls.base.io.ChronicleSqliteService
 import icu.windea.pls.core.data.JsonService
-import icu.windea.pls.core.data.readJsonText
 import icu.windea.pls.lang.analysis.util.ParadoxMetadataUtil
 import icu.windea.pls.model.analysis.ParadoxLauncherSettingsJsonInfo
 import icu.windea.pls.model.analysis.ParadoxMetadataJsonInfo
+import kotlinx.serialization.json.decodeFromStream
 import org.junit.Test
 import org.ktorm.database.Database
 import org.ktorm.dsl.eq
@@ -24,7 +24,7 @@ class DataModelsValidationTest {
     @Test
     fun parsePlaylistV2_fromResources() {
         val ins = getResource("/tools/playlist_v2.json")
-        val model = JsonService.json.decodeFromString<LauncherJsonV2>(ins.readJsonText())
+        val model = ins.use { JsonService.json.decodeFromStream<LauncherJsonV2>(ins) }
         assert(model.game == "stellaris")
         assert(model.mods.size == 3)
         assert(model.mods.all { it.enabled })
@@ -38,7 +38,7 @@ class DataModelsValidationTest {
     @Test
     fun parsePlaylistV3_fromResources() {
         val ins = getResource("/tools/playlist_v3.json")
-        val model = JsonService.json.decodeFromString<LauncherJsonV3>(ins.readJsonText())
+        val model = ins.use { JsonService.json.decodeFromStream<LauncherJsonV3>(ins) }
         assert(model.game == "stellaris")
         assert(model.mods.size == 3)
         assert(model.mods.all { it.enabled })
@@ -48,8 +48,8 @@ class DataModelsValidationTest {
 
     @Test
     fun parseMetadataJson_fromResources() {
-        val text = getResource("/analysis/metadata.test.json").readJsonText()
-        val model = JsonService.json.decodeFromString<ParadoxMetadataJsonInfo>(text)
+        val ins = getResource("/analysis/metadata.test.json")
+        val model = ins.use { JsonService.json.decodeFromStream<ParadoxMetadataJsonInfo>(ins) }
         assert(model.name == "Chapters of the Chronicle")
         assert(model.id == "chronicle.chapters")
         assert(model.gameId == "victoria3")
@@ -61,8 +61,8 @@ class DataModelsValidationTest {
 
     @Test
     fun parseLauncherSettingsJson_fromResources() {
-        val text = getResource("/analysis/launcher-settings.test.json").readJsonText()
-        val model = JsonService.json.decodeFromString<ParadoxLauncherSettingsJsonInfo>(text)
+        val ins = getResource("/analysis/launcher-settings.test.json")
+        val model = ins.use { JsonService.json.decodeFromStream<ParadoxLauncherSettingsJsonInfo>(ins) }
         assert(model.gameId == "stellaris")
         assert(model.distPlatform == "steam")
         assert(model.exePath == "./stellaris.exe")

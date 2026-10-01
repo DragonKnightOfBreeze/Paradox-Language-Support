@@ -2,13 +2,14 @@ package icu.windea.pls.ep.tools.importer
 
 import com.intellij.icons.AllIcons
 import icu.windea.pls.core.data.JsonService
-import icu.windea.pls.core.data.readJsonText
 import icu.windea.pls.ep.ChronicleEpBundle
 import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.KSerializer
+import kotlinx.serialization.json.decodeFromStream
 import java.nio.file.Path
+import kotlin.io.path.inputStream
 
 /**
  * 使用 JSON 文件作为数据文件的模组导入器。
@@ -27,7 +28,7 @@ abstract class ParadoxJsonBasedModImporter : ParadoxModImporter {
 
     private fun <T> doReadData(filePath: Path, serializer: KSerializer<T>): T {
         return try {
-            JsonService.json.decodeFromString(serializer, filePath.readJsonText())
+            filePath.inputStream().use { JsonService.json.decodeFromStream(serializer, it) }
         } catch (e: Exception) {
             throw IllegalStateException(ChronicleEpBundle.message("mod.importer.error.data", filePath), e)
         }

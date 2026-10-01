@@ -40,7 +40,7 @@ class JsonServiceTest {
             }
         """.trimIndent()
 
-        val result = JsonService.json5.decodeFromString<Weapon>(text.stripJson5Comments())
+        val result = JsonService.json5.decodeFromString<Weapon>(text)
         assertEquals(Weapon("Saber", "Sword", 180), result)
     }
 

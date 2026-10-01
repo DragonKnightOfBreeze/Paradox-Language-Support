@@ -7,7 +7,9 @@ import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.KSerializer
+import kotlinx.serialization.json.encodeToStream
 import java.nio.file.Path
+import kotlin.io.path.outputStream
 
 /**
  * 使用 JSON 文件作为数据文件的模组导出器。
@@ -26,7 +28,7 @@ abstract class ParadoxJsonBasedModExporter : ParadoxModExporter {
 
     private fun <T> doWriteData(filePath: Path, data: T, serializer: KSerializer<T>) {
         try {
-            filePath.toFile().writeText(JsonService.json.encodeToString(serializer, data))
+            filePath.outputStream().use { JsonService.json.encodeToStream(serializer, data, it) }
         } catch (e: Exception) {
             throw IllegalStateException(ChronicleEpBundle.message("mod.exporter.error.data", filePath), e)
         }

@@ -11,16 +11,20 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 buildscript {
     dependencies {
         // Provides the IntelliJ Markdown parser for build-time markdown-to-HTML conversion
-        classpath("org.jetbrains:markdown-jvm:0.7.14")
+        classpath("org.jetbrains:markdown-jvm:0.7.16") // https://github.com/JetBrains/markdown
     }
 }
 
 plugins {
-    id("org.jetbrains.kotlin.jvm") version "2.1.20" // https://kotlinlang.org/docs/gradle.html
-    id("org.jetbrains.kotlin.plugin.serialization") version "2.1.20" // https://kotlinlang.org/docs/serialization.html
-    id("org.jetbrains.intellij.platform") version "2.19.0" // https://github.com/JetBrains/intellij-platform-gradle-plugin
-    id("org.jetbrains.intellij.platform.grammarkit") version "2.19.0" // https://github.com/JetBrains/intellij-platform-gradle-plugin
-    id("org.jetbrains.kotlinx.kover") version "0.9.9" // https://github.com/Kotlin/kotlinx-kover
+    val kotlinVersion = providers.gradleProperty("kotlinVersion")
+    val intellijVersion = providers.gradleProperty("intellijVersion")
+    val koverVersion = providers.gradleProperty("koverVersion")
+
+    id("org.jetbrains.kotlin.jvm") version kotlinVersion // https://kotlinlang.org/docs/gradle.html
+    id("org.jetbrains.kotlin.plugin.serialization") version kotlinVersion // https://kotlinlang.org/docs/serialization.html
+    id("org.jetbrains.intellij.platform") version intellijVersion // https://github.com/JetBrains/intellij-platform-gradle-plugin
+    id("org.jetbrains.intellij.platform.grammarkit") version intellijVersion // https://github.com/JetBrains/intellij-platform-gradle-plugin
+    id("org.jetbrains.kotlinx.kover") version koverVersion // https://github.com/Kotlin/kotlinx-kover
     // id("org.jetbrains.changelog") version "2.5.0" // https://github.com/JetBrains/gradle-changelog-plugin
 
     // Used to download CWT config ZIPs (HTTPS) on demand when local repositories are missing, to support CI environments
@@ -97,13 +101,15 @@ repositories {
 dependencies {
     // IntelliJ Platform Gradle Plugin Dependencies Extension - read more: https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin-dependencies-extension.html
     intellijPlatform {
-        pluginVerifier()
+        val platformType = providers.gradleProperty("platformType")
+        val platformVersion = providers.gradleProperty("platformVersion")
+        val platformUseInstaller = providers.gradleProperty("platformUseInstaller").getOrElse("true").toBoolean()
 
-        val type = providers.gradleProperty("platformType")
-        val version = providers.gradleProperty("platformVersion")
         // IDE 安装器不提供 EAP 版本，针对 EAP 需要切换到多平台归档（useInstaller = false）
-        val useInstallerValue = providers.gradleProperty("platformUseInstaller").getOrElse("true").toBoolean()
-        create(type, version) { useInstaller = useInstallerValue } // https://github.com/JetBrains/intellij-platform-plugin
+        // https://github.com/JetBrains/intellij-platform-plugin
+        create(platformType, platformVersion) { useInstaller = platformUseInstaller }
+
+        pluginVerifier()
 
         testFramework(TestFrameworkType.Platform)
 
@@ -120,10 +126,6 @@ dependencies {
 
         // TranslationPlugin - https://github.com/YiiGuxing/TranslationPlugin
         plugin("cn.yiiguxing.plugin.translate:3.8.0")
-
-        // plugin("Docker:253.29346.125")
-        // bundledPlugins("com.intellij.microservices.jvm")
-        // plugin("intellij.ktor:253.28294.251")
     }
 
     // kotlin test junit - https://kotlinlang.org
@@ -156,19 +158,19 @@ dependencies {
     // AI integration
 
     // LangChain4J - https://github.com/langchain4j/langchain4j
-    implementation("dev.langchain4j:langchain4j:1.20.0") {
+    implementation("dev.langchain4j:langchain4j:1.20.2") {
         exclude(group = "org.jspecify", module = "jspecify")
         exclude(group = "org.slf4j", module = "slf4j-api")
     }
-    implementation("dev.langchain4j:langchain4j-open-ai:1.20.0") {
+    implementation("dev.langchain4j:langchain4j-open-ai:1.20.2") {
         exclude(group = "org.jspecify", module = "jspecify")
         exclude(group = "org.slf4j", module = "slf4j-api")
     }
-    implementation("dev.langchain4j:langchain4j-anthropic:1.20.0") {
+    implementation("dev.langchain4j:langchain4j-anthropic:1.20.2") {
         exclude(group = "org.jspecify", module = "jspecify")
         exclude(group = "org.slf4j", module = "slf4j-api")
     }
-    implementation("dev.langchain4j:langchain4j-ollama:1.20.0") {
+    implementation("dev.langchain4j:langchain4j-ollama:1.20.2") {
         exclude(group = "org.jspecify", module = "jspecify")
         exclude(group = "org.slf4j", module = "slf4j-api")
     }
@@ -232,15 +234,18 @@ sourceSets {
 }
 
 kotlin {
-    jvmToolchain(21)
+    val jdkVersion = providers.gradleProperty("jdkVersion")
+
+    jvmToolchain(jdkVersion.get().toInt())
     // https://kotlinlang.org/docs/gradle-compiler-options.html#all-compiler-options
     // https://kotlinlang.org/docs/compiler-reference.html
     compilerOptions {
         javaParameters = true
-        jvmTarget = JvmTarget.JVM_21
+        jvmTarget = JvmTarget.fromTarget(jdkVersion.get())
         optIn.addAll(
             "kotlin.RequiresOptIn",
             "kotlin.ExperimentalStdlibApi",
+            "kotlinx.serialization.ExperimentalSerializationApi",
         )
         freeCompilerArgs.addAll(
             "-java-parameters",
@@ -486,13 +491,14 @@ tasks {
         // systemProperty("chronicle.capacities.recordCacheStats", "true")
         // systemProperty("chronicle.capacities.recordIndexStats", "true")
         // systemProperty("chronicle.capacities.refreshBuiltInConfigDirectories", "true")
+        // systemProperty("chronicle.capacities.keepFileConfigs", "true")
         // systemProperty("chronicle.capacities.keepOptionConfigs", "true")
     }
     withType<Test> {
         useJUnit()
 
+        systemProperty("idea.is.internal", "true")
         systemProperty("ide.slow.operations.assertion", "false")
-        systemProperty("idea.log.debug.categories", "icu.windea.pls")
         // systemProperty("idea.log.debug.categories", "icu.windea.pls")
 
         // Forward all command-line -D properties that start with "chronicle.test."

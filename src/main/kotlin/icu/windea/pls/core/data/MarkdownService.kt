@@ -4,13 +4,16 @@ import org.intellij.markdown.flavours.gfm.GFMFlavourDescriptor
 import org.intellij.markdown.html.HtmlGenerator
 import org.intellij.markdown.parser.MarkdownParser
 
+/**
+ * Markdown 服务。
+ *
+ * 基于 [intellij-markdown](https://github.com/JetBrains/markdown)。
+ *
+ * 默认使用 GFM 风格。
+ */
 object MarkdownService {
-    val gfmFlavour by lazy {
-        GFMFlavourDescriptor()
-    }
-    val gfmParser by lazy {
-        MarkdownParser(gfmFlavour)
-    }
+    val gfmFlavour = GFMFlavourDescriptor()
+    val gfmParser = MarkdownParser(gfmFlavour)
 
     fun toHtml(markdownText: String): String {
         val flavour = gfmFlavour
