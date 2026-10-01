@@ -9,9 +9,6 @@ import org.jetbrains.intellij.platform.gradle.tasks.VerifyPluginTask
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 buildscript {
-    repositories {
-        mavenCentral()
-    }
     dependencies {
         // Provides the IntelliJ Markdown parser for build-time markdown-to-HTML conversion
         classpath("org.jetbrains:markdown-jvm:0.7.14")
