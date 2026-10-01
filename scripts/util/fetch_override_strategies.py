@@ -108,7 +108,7 @@ def parse_fios_paths(provider_source: str) -> set[str]:
     IMM matches these with ``ParentDirectory.EndsWith(path)``; entries may be multi-segment
     (for example ``governments\\authorities``). Returned as normalised ``/``-separated paths.
     """
-    block_match = re.search(r"FIOSPaths\s*=>\s*\[(.*?)\]", provider_source, re.DOTALL)
+    block_match = re.search(r"FIOSPaths\s*=>\s*\[(.*?)]", provider_source, re.DOTALL)
     if not block_match:
         raise ValueError("Could not locate FIOSPaths in the IMM provider source.")
     paths = re.findall(r'"([^"]+)"', block_match.group(1))
