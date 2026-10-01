@@ -1,48 +1,50 @@
-# 覆盖规则（通用）
+# Override Config (Core)
 #
-# 用于指定目标目录（相对于入口目录）的覆盖策略，驱动目标的生效顺序与查询结果排序（流式查询除外）。
-# 各游戏可在其规则分组的 `config/overrides.cwt` 中补充或覆盖（键相同者以更具体的分组为准）。
+# Configures the override strategy per entry-relative directory. The strategy drives the order in
+# which targets take effect and the sorting of non-streaming query results, and is used by the
+# override-related inspections. Game-specific configs (`config/overrides.cwt`) may add or override
+# entries; entries with the same key follow the more specific config group.
 #
-# 格式：
+# Format:
 #   overrides = {
 #       "path/to/dir" = strategy
 #   }
-# - 键：相对于入口目录的目录路径（通常是游戏目录或模组目录，或游戏目录下的 `game` 子目录）。
-#       支持 ANT 路径模式，例如 `common/species_rights/*`。
-# - 值：覆盖策略，忽略大小写；未命中任何映射时默认使用 `lios`。
+# - Key: directory path relative to the entry directory (usually the game or mod directory, or the
+#   `game` subdirectory of the game directory). Must be a concrete path.
+# - Value: override strategy, case-insensitive; defaults to `lios` when unmatched.
 #
-# 覆盖策略：
-# - fios    ：只读一次（First In, Only Served）。先加载者生效，后加载者被直接忽略。
-# - lios    ：后读覆盖（Last In, Only Served）。后加载者覆盖先加载者。（默认）
-# - dupl    ：整文件覆盖（Duplicates）。必须用同路径文件进行整体替换。
-# - ordered ：顺序读取（Ordered）。后加载者按序新增或合并，不覆盖既有条目。
+# Strategies:
+# - fios:    First In, Only Served. The first loaded wins; later ones are ignored.
+# - lios:    Last In, Only Served. The last loaded overrides earlier ones. (default)
+# - dupl:    Duplicates. The whole file must be replaced by a file at the same path.
+# - ordered: Ordered. Later items are added or merged in order without overriding.
 #
-# 可信度标注（多来源综合判断）：
-# - [高]：多个独立来源一致，或引擎行为有明确证据。
-# - [中]：单一可信来源，或各来源大体一致但存在细节差异。
-# - [低]：推测或惯例，尚未验证；保留待后续确认。
+# Confidence labels (based on multiple sources):
+# - [high]:   Consistent across independent sources, or clearly evidenced.
+# - [medium]: Single trusted source, or sources mostly agree with minor differences.
+# - [low]:    Inferred or conventional, not yet verified.
 #
-# 主要来源：
-# - Stellaris 英文百科「文件覆盖列表」及其中文翻译（Stellaris Mod Group / pdxdoc）：
+# Sources:
+# - Stellaris Wiki "file overwrite list" (translated by pdxdoc / Stellaris Mod Group):
 #   https://main--pdxdoc-next.netlify.app/guides/other/overwrite/
-# - IronyModManager (IMM) 的解析器映射与 FIOS 路径列表：
-#   https://github.com/bcssov/IronyModManager
-# - 各游戏官方 wiki（如 https://stellaris.paradoxwikis.com/Stellaris_Wiki）
+# - IronyModManager (IMM): https://github.com/bcssov/IronyModManager
+# - Official wikis (e.g. https://stellaris.paradoxwikis.com/Stellaris_Wiki)
 #
-# 亦可参见：
-# - 规则格式参考手册：docs/zh/ref-config-format.md#config-override
-# - 领域笔记：documents/ai-notes/domain/领域_规则系统_覆盖规则.md
-#
-# 版本：3.0.4-dev
-# 日期：2026-10-02
+# See: docs/en/ref-config-format.md#config-override
+# Domain note: the override-strategy note under documents/ai-notes/domain/
+# Version: 3.0.4-dev
+# Date: 2026-10-02
 
 overrides = {
-    # [中] 事件链只读一次；通用约定，主要依据 Stellaris 验证，其他游戏待确认。
+    # [medium] Event chains are read once; general convention verified mainly for Stellaris.
     "common/event_chains" = fios
-    # [高] 动作触发（on action）自动整合，不覆盖既有条目，按加载顺序合并。
+
+    # [high] On actions are automatically merged in load order, without overriding.
     "common/on_actions" = ordered
-    # [高] 全局封装变量只读一次；后加载的同名变量被忽略。
+
+    # [high] Global scripted variables are read once; later duplicates are ignored.
     "common/scripted_variables" = fios
-    # [中] 事件只读一次；通用约定，主要依据 Stellaris 验证，其他游戏待确认。
+
+    # [medium] Events are read once; general convention verified mainly for Stellaris.
     "events" = fios
 }
