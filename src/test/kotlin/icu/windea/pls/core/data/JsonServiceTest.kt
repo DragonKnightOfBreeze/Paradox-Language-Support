@@ -21,22 +21,23 @@ class JsonServiceTest {
     fun outputFormatTest() {
         val text = JsonService.json.encodeToString(Sample("k"))
 
-        // explicitNulls = false：不输出 null 字段
-        assert(!text.contains("nullable"))
+        // explicitNulls = true：输出 null 字段
+        assert(text.contains("\"nullable\": null"))
         // encodeDefaults = true：输出带默认值的字段
         assert(text.contains("items"))
         // prettyPrint = true，且缩进为 2 个空格
         assert(text.contains("  \"key\": \"k\""))
     }
 
+    @Suppress("JsonStandardCompliance")
     @Test
     fun json5Test() {
         val text = """
             {
               // line comment
-              "name": "Saber", /* block comment */
-              "category": "Sword",
-              "attack": 180, // trailing comma below
+              name: "Saber", /* block comment */
+              category: "Sword",
+              attack: 180, // trailing comma below
             }
         """.trimIndent()
 

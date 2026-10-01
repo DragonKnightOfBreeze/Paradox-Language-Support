@@ -47,6 +47,19 @@ class DataModelsValidationTest {
     }
 
     @Test
+    fun serializePlaylist_withoutNullIdentifiers() {
+        val data = LauncherJsonV3(
+            game = "stellaris",
+            name = "Test",
+            mods = listOf(LauncherJsonV3.Mod("Test Mod", true, position = 0)),
+        )
+
+        val text = JsonService.json.encodeToString(data)
+        assert(!text.contains("pdxId"))
+        assert(!text.contains("steamId"))
+    }
+
+    @Test
     fun parseMetadataJson_fromResources() {
         val ins = getResource("/analysis/metadata.test.json")
         val model = ins.use { JsonService.json.decodeFromStream<ParadoxMetadataJsonInfo>(ins) }

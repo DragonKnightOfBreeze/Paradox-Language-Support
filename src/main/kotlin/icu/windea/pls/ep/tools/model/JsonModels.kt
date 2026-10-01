@@ -1,5 +1,6 @@
 package icu.windea.pls.ep.tools.model
 
+import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonElement
@@ -65,10 +66,12 @@ data class LauncherJsonV2(
         @SerialName("enabled")
         val enabled: Boolean,
         @SerialName("pdxId")
+        @EncodeDefault(EncodeDefault.Mode.NEVER) // encode if not null
         val pdxId: String? = null,
         @SerialName("position")
         val position: String, // (i + 1 + 4096).toString(16).padStart(10, '0')
         @SerialName("steamId")
+        @EncodeDefault(EncodeDefault.Mode.NEVER) // encode if not null
         val steamId: String? = null,
     )
 }
@@ -94,10 +97,12 @@ data class LauncherJsonV3(
         @SerialName("enabled")
         val enabled: Boolean,
         @SerialName("pdxId")
+        @EncodeDefault(EncodeDefault.Mode.NEVER)
         val pdxId: String? = null,
         @SerialName("position")
         val position: Int, // i
         @SerialName("steamId")
+        @EncodeDefault(EncodeDefault.Mode.NEVER)
         val steamId: String? = null,
     )
 }

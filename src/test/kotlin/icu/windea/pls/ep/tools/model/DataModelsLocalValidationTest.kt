@@ -76,7 +76,9 @@ class DataModelsLocalValidationTest {
         val root = JsonService.json.decodeFromString<JsonElement>(fileText)
         val modsNode = root.jsonObject["mods"]?.jsonArray
         val first = modsNode?.firstOrNull()?.jsonObject
-        val isV3 = (first?.get("position") as? JsonPrimitive)?.intOrNull != null
+        // 注意：intOrNull 不会区分带引号的数字字符串，需额外排除字符串字面量。
+        val firstPosition = first?.get("position") as? JsonPrimitive
+        val isV3 = firstPosition != null && !firstPosition.isString && firstPosition.intOrNull != null
 
         // 校验 game 字段
         val game = (root.jsonObject["game"] as? JsonPrimitive)?.content

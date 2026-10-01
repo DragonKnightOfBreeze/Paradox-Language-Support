@@ -2,6 +2,7 @@ package icu.windea.pls.lang.analysis.util
 
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.vfs.VirtualFile
+import icu.windea.pls.base.settings.ParadoxModDescriptorSettingsState
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.checkCancellation
 import icu.windea.pls.core.data.JsonService
@@ -47,7 +48,7 @@ object ParadoxMetadataUtil {
     /**
      * 从模组目录获取模组信息，从而统一获取各种需要进一步获取的信息。
      *
-     * 注意：需要调用这个方法以确保模组信息被解析，相关的配置项（[icu.windea.pls.base.settings.ParadoxModDescriptorSettingsState]）被创建。
+     * 注意：需要调用这个方法以确保模组信息被解析，相关的配置项（[ParadoxModDescriptorSettingsState]）被创建。
      */
     fun getModInfoFromModDirectory(modDirectory: String?): ParadoxRootInfo.Mod? {
         if (modDirectory.isNullOrEmpty()) return null
@@ -67,7 +68,9 @@ object ParadoxMetadataUtil {
             val modsNode = root.jsonObject["mods"]?.jsonArray ?: return null
             val first = modsNode.firstOrNull()?.jsonObject ?: return null
             val position = first["position"] as? JsonPrimitive ?: return null
-            position.intOrNull != null
+            // 注意：intOrNull 不会区分带引号的数字字符串（如 V2 的 "0000001001"），
+            // 因此必须额外排除字符串字面量，否则会把 V2 误判为 V3。
+            !position.isString && position.intOrNull != null
         } catch (e: Exception) {
             checkCancellation(e)
             thisLogger().warn(e)

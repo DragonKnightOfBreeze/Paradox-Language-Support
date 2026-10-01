@@ -11,7 +11,8 @@ object ChronicleJsonService {
         return inputStream.use { JsonService.json5.decodeFromStream(it) }
     }
 
-    val gameTypeMetadataList: List<ParadoxGameTypeMetadataJson> by lazy { getJsonDataFromClasspath("/data/game_type_metadata_list.json5") }
-
-    val configGroupDataList: List<CwtConfigGroupDataJson> by lazy { getJsonDataFromClasspath("/data/config_group_data_list.json5") }
+    val gameTypeMetadataList: List<ParadoxGameTypeMetadataJson>
+        by lazy { getJsonDataFromClasspath("/data/game_type_metadata_list.json5") }
+    val configGroupDataList: List<CwtConfigGroupDataJson>
+        by lazy { getJsonDataFromClasspath("/data/config_group_data_list.json5") }
 }
