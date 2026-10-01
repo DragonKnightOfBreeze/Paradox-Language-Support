@@ -1,5 +1,11 @@
 package icu.windea.pls.config.config.detached
 
+import com.intellij.openapi.diagnostic.thisLogger
+import icu.windea.pls.config.config.CwtDetachedConfig
+import icu.windea.pls.config.config.CwtPropertyConfig
+import icu.windea.pls.config.config.stringValue
+import icu.windea.pls.config.util.CwtConfigResolverScope
+import icu.windea.pls.core.orNull
 import icu.windea.pls.model.overrides.ParadoxOverrideStrategy
 
 /**
@@ -16,4 +22,27 @@ import icu.windea.pls.model.overrides.ParadoxOverrideStrategy
 data class CwtOverrideConfig(
     val filePath: String,
     val strategy: ParadoxOverrideStrategy,
-)
+) : CwtDetachedConfig {
+    companion object {
+        @JvmStatic
+        fun resolve(config: CwtPropertyConfig): CwtOverrideConfig? {
+            return CwtOverrideConfigResolver.resolve(config)
+        }
+    }
+}
+
+// region Implementations
+
+private object CwtOverrideConfigResolver : CwtConfigResolverScope {
+    private val logger = thisLogger()
+
+    fun resolve(config: CwtPropertyConfig): CwtOverrideConfig? {
+        val filePath = config.key.optimizedPath().orNull() ?: return null
+        val strategyString = config.stringValue?.orNull() ?: return null
+        val strategy = ParadoxOverrideStrategy.get(strategyString.uppercase()) ?: return null
+        logger.debugWithPrefix(config) { "Resolved override config (filePath: $filePath, strategy: $strategy)" }
+        return CwtOverrideConfig(filePath, strategy)
+    }
+}
+
+// endregion

@@ -74,7 +74,7 @@ private object CwtDefineNamespaceConfigResolver : CwtConfigResolverScope {
             logger.warnWithPrefix(config, "Skipped invalid define namespace config (namespace: $namespace): Null properties")
             return null
         }
-        val variables = propConfigs.mapNotNull { CwtDefineVariableConfig.resolve(it, namespace) }.associateBy { it.name }.optimized()
+        val variables = propConfigs.map { CwtDefineVariableConfig.resolve(it, namespace) }.associateBy { it.name }.optimized()
         logger.debugWithPrefix(config) { "Resolved define namespace config (namespace: $namespace)" }
         return CwtDefineNamespaceConfigImpl(config, namespace, variables)
     }
