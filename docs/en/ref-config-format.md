@@ -86,13 +86,13 @@ Configs are categorized by level as follows:
 
 > These configs drive a wide variety of language features, including but not limited to code completion, code inspection, quick documentation, inlay hints, etc.
 
-#### Priority Config {#config-priority}
+#### Override Config {#config-override}
 
-<!-- @see icu.windea.pls.lang.overrides.ParadoxOverrideStrategy -->
+<!-- @see icu.windea.pls.model.overrides.ParadoxOverrideStrategy -->
 <!-- @see icu.windea.pls.lang.overrides.ParadoxOverrideService -->
 <!-- @see cwt/core/00_overrides.cwt -->
 
-Priority configs configure the override strategy for targets (files, global scripted variables, definitions, localisations, etc.). They affect the order in which targets take effect and the sorting of query results (except for streaming queries). When no directory mapping is matched, the default is `LIOS` (Last In, Only Served).
+Override configs configure the override strategy for targets (files, global scripted variables, definitions, localisations, etc.). They affect the order in which targets take effect and the sorting of query results (except for streaming queries). When no directory mapping is matched, the default is `LIOS` (Last In, Only Served).
 
 Override strategies:
 
@@ -101,12 +101,12 @@ Override strategies:
 - **`DUPL`** (Duplicates): Whole-file override; must be replaced entirely with a file at the same path.
 - **`ORDERED`** (Ordered): Read in order; later loaded items are added or merged in sequence without overriding existing entries.
 
-Query (non-streaming) result sorting is driven by priority; within the same path, the load order (game / dependency chain) determines precedence. Within the same file, later items override earlier ones.
+Query (non-streaming) result sorting is driven by override strategy; within the same path, the load order (game / dependency chain) determines precedence. Within the same file, later items override earlier ones.
 
 Format Explanation:
 
 ```cwt
-priorities = {
+overrides = {
     # LHS - file path of containing directory, relative to entry directory
     # RHS - used override strategy
     # entry directory - normally game or mod directory, or `game` subdirectory of game directory
@@ -120,7 +120,7 @@ priorities = {
 Examples:
 
 ```cwt
-priorities = {
+overrides = {
     "common/event_chains" = fios
     "common/on_actions" = ordered
     "common/scripted_variables" = fios

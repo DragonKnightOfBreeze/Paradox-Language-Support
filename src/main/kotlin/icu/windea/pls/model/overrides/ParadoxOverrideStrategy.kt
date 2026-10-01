@@ -14,7 +14,7 @@ import icu.windea.pls.lang.overrides.ParadoxOverrideService
  * - 定值变量的覆盖策略为 `LIOS`。
  * - 本地化的覆盖策略为 `LIOS`。`replace` 目录下的拥有更高的优先级（尚不兼容这种情况）。
  *
- * 参见：[优先级规则](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-priority)
+ * 参见：[覆盖规则](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-override)
  *
  * @see ParadoxOverrideService
  */

@@ -359,7 +359,7 @@ object CwtConfigService {
         return result
     }
 
-    fun getFilePathPatternsForPriority(config: CwtFilePathMatchableConfig<*>): Set<String> {
+    fun getFilePathPatternsForOverride(config: CwtFilePathMatchableConfig<*>): Set<String> {
         val paths = config.paths
         val pathFile = config.pathFile
         val pathStrict = config.pathStrict

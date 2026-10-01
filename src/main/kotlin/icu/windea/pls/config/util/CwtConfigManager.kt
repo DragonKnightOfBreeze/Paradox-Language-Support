@@ -59,7 +59,7 @@ object CwtConfigManager {
         val cachedConfigType by registerKey<CachedValue<CwtConfigType>>(Keys)
         val cachedDocumentation by registerKey<CachedValue<String>>(Keys)
         val filePathPatterns by registerKey<Set<String>>(Keys)
-        val filePathPatternsForPriority by registerKey<Set<String>>(Keys)
+        val filePathPatternsForOverride by registerKey<Set<String>>(Keys)
         val withinBlockKeys by registerKey<Set<String>>(this)
 
         /** 用于在解析引用时，将规则临时写入到对应的PSI的用户数据中。 */
@@ -165,9 +165,9 @@ object CwtConfigManager {
         }
     }
 
-    fun getFilePathPatternsForPriority(config: CwtFilePathMatchableConfig<*>): Set<String> {
-        return config.getOrPutUserData(Keys.filePathPatternsForPriority) {
-            CwtConfigService.getFilePathPatternsForPriority(config).optimized() // optimized to optimize memory
+    fun getFilePathPatternsForOverride(config: CwtFilePathMatchableConfig<*>): Set<String> {
+        return config.getOrPutUserData(Keys.filePathPatternsForOverride) {
+            CwtConfigService.getFilePathPatternsForOverride(config).optimized() // optimized to optimize memory
         }
     }
 

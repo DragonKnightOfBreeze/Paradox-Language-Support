@@ -19,6 +19,7 @@ class ParadoxForcedDefinitionInjectionOverrideStrategyProvider : ParadoxOverride
     }
 
     private fun getOverrideStrategy(): ParadoxOverrideStrategy {
+        // always use LIOS for definition injections
         return ParadoxOverrideStrategy.LIOS
     }
 }

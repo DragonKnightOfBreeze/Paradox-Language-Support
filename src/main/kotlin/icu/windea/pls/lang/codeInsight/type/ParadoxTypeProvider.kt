@@ -70,8 +70,8 @@ class ParadoxTypeProvider : ExpressionTypeProvider<PsiElement>() {
             val configExpression = ParadoxTypeService.getConfigExpression(element)
             configExpression?.let { this[ChronicleBundle.message("title.configExpression")] = it }
 
-            val priority = ParadoxTypeService.getOverrideStrategy(element)
-            priority?.let { this[ChronicleBundle.message("title.overrideStrategy")] = it.toString() }
+            val overrideStrategy = ParadoxTypeService.getOverrideStrategy(element)
+            overrideStrategy?.let { this[ChronicleBundle.message("title.overrideStrategy")] = it.toString() }
 
             val scopeContext = ParadoxTypeService.getScopeContext(element)
             val scopeContextString = scopeContext?.toScopeMap()?.entries?.joinToString("\n") { (key, value) -> "$key = $value" }

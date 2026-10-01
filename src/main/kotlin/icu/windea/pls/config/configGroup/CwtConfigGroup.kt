@@ -134,7 +134,7 @@ private class CwtConfigGroupImpl(
     override val schemas get() = dataModel.schemas
     override val foldingSettings get() = dataModel.foldingSettings
     override val postfixTemplateSettings get() = dataModel.postfixTemplateSettings
-    override val priorities get() = dataModel.priorities
+    override val overrides get() = dataModel.overrides
     override val systemScopes get() = dataModel.systemScopes
     override val locales get() = dataModel.locales
     override val types get() = dataModel.types

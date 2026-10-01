@@ -44,6 +44,7 @@ import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.CwtConfigGroupFileInfo
 import icu.windea.pls.config.configGroup.CwtConfigGroupFileSource
+import icu.windea.pls.config.model.CwtOverrideConfig
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.core.collections.process
@@ -166,12 +167,12 @@ class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor, CwtConfigResol
         for (property in fileConfig.properties) {
             val key = property.key
             when {
-                key == "priorities" -> {
+                key == "overrides" -> {
                     val configs = property.properties ?: continue
                     for (config in configs) {
-                        val k = config.key.optimizedPath().orNull() ?: continue
-                        val v = config.stringValue?.orNull()?.let { ParadoxOverrideStrategy.get(it.uppercase()) } ?: continue
-                        initializer.priorities[k] = v
+                        val filePath = config.key.optimizedPath().orNull() ?: continue
+                        val strategy = config.stringValue?.orNull()?.let { ParadoxOverrideStrategy.get(it.uppercase()) } ?: continue
+                        initializer.overrides[filePath] = CwtOverrideConfig(filePath, strategy)
                     }
                 }
                 key == "system_scopes" -> {

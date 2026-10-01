@@ -41,7 +41,6 @@ import icu.windea.pls.config.config.internal.CwtSchemaConfig
 import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.collections.CaseInsensitiveStringKeyMap
 import icu.windea.pls.core.util.Tuple2
-import icu.windea.pls.model.overrides.ParadoxOverrideStrategy
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenCustomHashMap
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap
 import it.unimi.dsi.fastutil.objects.ObjectArrayList
@@ -81,7 +80,8 @@ interface CwtConfigGroupDataModel {
 
     // region Core
 
-    val priorities: Map<String, ParadoxOverrideStrategy>
+    /** 覆盖规则（文件路径到覆盖策略的映射）。参见 [CwtOverrideConfig]。 */
+    val overrides: Map<String, CwtOverrideConfig>
 
     val systemScopes: Map<@CaseInsensitive String, CwtSystemScopeConfig>
     val locales: Map<String, CwtLocaleConfig>
@@ -222,7 +222,7 @@ class CwtConfigGroupDataModelBase : CwtConfigGroupDataModel {
     override val schemas = ObjectArrayList<CwtSchemaConfig>()
     override val foldingSettings = Object2ObjectLinkedOpenHashMap<String, Object2ObjectLinkedOpenCustomHashMap<@CaseInsensitive String, CwtFoldingSettingsConfig>>()
     override val postfixTemplateSettings = Object2ObjectLinkedOpenHashMap<String, Object2ObjectLinkedOpenCustomHashMap<@CaseInsensitive String, CwtPostfixTemplateSettingsConfig>>()
-    override val priorities = Object2ObjectLinkedOpenHashMap<String, ParadoxOverrideStrategy>()
+    override val overrides = Object2ObjectLinkedOpenHashMap<String, CwtOverrideConfig>()
     override val systemScopes = CaseInsensitiveStringKeyMap<CwtSystemScopeConfig>()
     override val locales = Object2ObjectLinkedOpenHashMap<String, CwtLocaleConfig>()
     override val types = Object2ObjectLinkedOpenHashMap<String, CwtTypeConfig>()
@@ -305,7 +305,7 @@ class CwtConfigGroupDataModelBase : CwtConfigGroupDataModel {
         foldingSettings.values.forEach { it.trim() }
         postfixTemplateSettings.trim()
         postfixTemplateSettings.values.forEach { it.trim() }
-        priorities.trim()
+        overrides.trim()
         systemScopes.trim()
         locales.trim()
         types.trim()
@@ -373,7 +373,7 @@ private object EmptyCwtConfigGroupDataModel : CwtConfigGroupDataModel {
     override val schemas: List<CwtSchemaConfig> get() = emptyList()
     override val foldingSettings: Map<String, Map<@CaseInsensitive String, CwtFoldingSettingsConfig>> get() = emptyMap()
     override val postfixTemplateSettings: Map<String, Map<@CaseInsensitive String, CwtPostfixTemplateSettingsConfig>> get() = emptyMap()
-    override val priorities: Map<String, ParadoxOverrideStrategy> get() = emptyMap()
+    override val overrides: Map<String, CwtOverrideConfig> get() = emptyMap()
     override val systemScopes: Map<@CaseInsensitive String, CwtSystemScopeConfig> get() = emptyMap()
     override val locales: Map<String, CwtLocaleConfig> get() = emptyMap()
     override val types: Map<String, CwtTypeConfig> get() = emptyMap()

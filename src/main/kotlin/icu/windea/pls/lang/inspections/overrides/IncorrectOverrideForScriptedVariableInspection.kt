@@ -21,7 +21,7 @@ import icu.windea.pls.script.psi.ParadoxScriptVisitor
  * - 仅适用于非参数化的全局封装变量。
  * - 基于其使用的覆盖策略进行检查。
  *
- * 参见：[优先级规则](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-priority)
+ * 参见：[覆盖规则](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-override)
  *
  * @see ParadoxOverrideStrategy
  * @see ParadoxOverrideService

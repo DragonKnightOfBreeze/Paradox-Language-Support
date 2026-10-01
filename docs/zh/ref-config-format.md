@@ -86,13 +86,13 @@
 
 > 这些规则驱动了各种各样的语言功能，包括但不限于代码补全、代码检查、快速文档、内嵌提示等。
 
-#### 优先级规则 {#config-priority}
+#### 覆盖规则 {#config-override}
 
-<!-- @see icu.windea.pls.lang.overrides.ParadoxOverrideStrategy -->
+<!-- @see icu.windea.pls.model.overrides.ParadoxOverrideStrategy -->
 <!-- @see icu.windea.pls.lang.overrides.ParadoxOverrideService -->
 <!-- @see cwt/core/00_overrides.cwt -->
 
-优先级规则用于配置目标（文件、全局封装变量、定义、本地化等）的覆盖策略。它影响目标的生效顺序与查询结果排序（流式查询除外）。未命中任何目录映射时，默认使用 `LIOS`（后读覆盖）。
+覆盖规则用于配置目标（文件、全局封装变量、定义、本地化等）的覆盖策略。它影响目标的生效顺序与查询结果排序（流式查询除外）。未命中任何目录映射时，默认使用 `LIOS`（后读覆盖）。
 
 覆盖策略：
 
@@ -101,12 +101,12 @@
 - **`DUPL`**（Duplicates）：整文件覆盖，必须用同路径文件进行整体替换。
 - **`ORDERED`**（Ordered）：顺序读取，后加载者按序新增或合并，不覆盖既有条目。
 
-查询（非流式）结果的排序由优先级驱动；同一路径下按加载顺序（游戏 / 依赖链）决定先后。同一文件内，后出现的项覆盖前面出现的项。
+查询（非流式）结果的排序由覆盖策略驱动；同一路径下按加载顺序（游戏 / 依赖链）决定先后。同一文件内，后出现的项覆盖前面出现的项。
 
 格式说明：
 
 ```cwt
-priorities = {
+overrides = {
     # LHS - file path of containing directory, relative to entry directory
     # RHS - used override strategy
     # entry directory - normally game or mod directory, or `game` subdirectory of game directory
@@ -120,7 +120,7 @@ priorities = {
 示例：
 
 ```cwt
-priorities = {
+overrides = {
     "common/event_chains" = fios
     "common/on_actions" = ordered
     "common/scripted_variables" = fios

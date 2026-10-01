@@ -19,7 +19,7 @@ inline val CwtMemberConfig<*>.documentation: String? get() = CwtConfigManager.ge
 
 inline val CwtFilePathMatchableConfig<*>.filePathPatterns: Set<String> get() = CwtConfigManager.getFilePathPatterns(this)
 
-inline val CwtFilePathMatchableConfig<*>.filePathPatternsForPriority: Set<String> get() = CwtConfigManager.getFilePathPatternsForPriority(this)
+inline val CwtFilePathMatchableConfig<*>.filePathPatternsForOverride: Set<String> get() = CwtConfigManager.getFilePathPatternsForOverride(this)
 
 inline fun <T> Collection<T>.sortedByPriority(crossinline expressionProvider: (T) -> CwtDataExpression?, crossinline configGroupProvider: (T) -> CwtConfigGroup): List<T> {
     return CwtConfigManager.sortedByPriority(this, expressionProvider, configGroupProvider)

@@ -18,7 +18,7 @@ class ParadoxForcedFileOverrideStrategyProvider : ParadoxOverrideStrategyProvide
     }
 
     private fun getOverrideStrategy(): ParadoxOverrideStrategy {
-        // use FIOS for files and directories
+        // always use FIOS for files and directories
         return ParadoxOverrideStrategy.FIOS
     }
 }

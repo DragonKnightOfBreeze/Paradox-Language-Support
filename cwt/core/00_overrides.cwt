@@ -1,4 +1,4 @@
-priorities = {
+overrides = {
     "common/event_chains" = fios
     "common/on_actions" = ordered
     "common/scripted_variables" = fios

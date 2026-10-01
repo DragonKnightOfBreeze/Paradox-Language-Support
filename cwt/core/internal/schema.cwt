@@ -7,9 +7,9 @@
 
 # region Common Configs
 
-#### Container property to introduce [Priority Configs](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-priority).
-priorities = {
-    #### Introduce a [Priority Config](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-priority),
+#### Container property to introduce [Override Configs](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-override).
+overrides = {
+    #### Introduce an [Override Config](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-override),
     #### to configure override strategies per path.
     $path = $enum:override_strategy$
 }

@@ -1,7 +1,8 @@
 package icu.windea.pls.ep.overrides
 
 import icu.windea.pls.ChronicleFacade
-import icu.windea.pls.config.filePathPatternsForPriority
+import icu.windea.pls.config.filePathPatternsForOverride
+import icu.windea.pls.config.model.CwtOverrideConfig
 import icu.windea.pls.core.matchesAntPattern
 import icu.windea.pls.core.matchesPath
 import icu.windea.pls.lang.defineVariableInfo
@@ -23,7 +24,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 abstract class ParadoxFilePathMapBasedOverrideStrategyProvider : ParadoxOverrideStrategyProvider {
-    abstract fun getFilePathMap(gameType: ParadoxGameType): Map<String, ParadoxOverrideStrategy>
+    abstract fun getFilePathMap(gameType: ParadoxGameType): Map<String, CwtOverrideConfig>
 
     override fun get(target: Any): ParadoxOverrideStrategy? {
         val filePathPatterns = getFilePathPatterns(target)
@@ -62,7 +63,7 @@ abstract class ParadoxFilePathMapBasedOverrideStrategyProvider : ParadoxOverride
                 val definitionType = definitionInfo.type
                 val configGroup = definitionInfo.configGroup
                 val config = configGroup.types[definitionType] ?: return emptySet()
-                config.filePathPatternsForPriority
+                config.filePathPatternsForOverride
             }
             target is ParadoxLocalisationProperty -> {
                 val localisationType = target.type ?: return null
@@ -96,7 +97,7 @@ abstract class ParadoxFilePathMapBasedOverrideStrategyProvider : ParadoxOverride
                 val gameType = searchParameters.selector.gameType ?: return null
                 val configGroup = ChronicleFacade.getConfigGroup(searchParameters.project, gameType)
                 val config = configGroup.types.get(definitionType) ?: return emptySet()
-                config.filePathPatternsForPriority
+                config.filePathPatternsForOverride
             }
             searchParameters is ParadoxLocalisationSearch.Parameters -> {
                 val p = when (searchParameters.type) {
@@ -109,16 +110,16 @@ abstract class ParadoxFilePathMapBasedOverrideStrategyProvider : ParadoxOverride
         }
     }
 
-    private fun getOverrideStrategy(filePathPatterns: Set<String>, filePathMap: Map<String, ParadoxOverrideStrategy>): ParadoxOverrideStrategy {
+    private fun getOverrideStrategy(filePathPatterns: Set<String>, filePathMap: Map<String, CwtOverrideConfig>): ParadoxOverrideStrategy {
         // TODO 1.3.35+ check performance
 
         if (filePathPatterns.isEmpty()) return ParadoxOverrideStrategy.LIOS // 如果适用覆盖策略，默认使用 `LIOS`
-        val fastResult = filePathPatterns.firstNotNullOfOrNull { filePathMap[it] }
+        val fastResult = filePathPatterns.firstNotNullOfOrNull { filePathMap[it]?.strategy }
         if (fastResult != null) return fastResult
         val result = filePathPatterns.firstNotNullOfOrNull { p ->
             if (p.none { c -> c == '*' || c == '?' }) null
             else filePathMap.firstNotNullOfOrNull { (k, v) ->
-                if (k.matchesAntPattern(p)) v else null
+                if (k.matchesAntPattern(p)) v.strategy else null
             }
         }
         if (result == null) return ParadoxOverrideStrategy.LIOS // 如果适用覆盖策略，默认使用 `LIOS`
