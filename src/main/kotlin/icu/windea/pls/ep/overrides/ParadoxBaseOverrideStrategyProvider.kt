@@ -1,7 +1,7 @@
 package icu.windea.pls.ep.overrides
 
 import icu.windea.pls.ChronicleFacade
-import icu.windea.pls.config.model.CwtOverrideConfig
+import icu.windea.pls.config.config.detached.CwtOverrideConfig
 import icu.windea.pls.model.ParadoxGameType
 
 class ParadoxBaseOverrideStrategyProvider : ParadoxFilePathMapBasedOverrideStrategyProvider() {

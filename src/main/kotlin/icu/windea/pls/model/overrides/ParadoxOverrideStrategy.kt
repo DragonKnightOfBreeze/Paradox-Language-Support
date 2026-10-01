@@ -2,6 +2,7 @@ package icu.windea.pls.model.overrides
 
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.optimized
+import icu.windea.pls.ep.overrides.ParadoxOverrideStrategyProvider
 import icu.windea.pls.lang.overrides.ParadoxOverrideService
 
 /**
@@ -17,6 +18,7 @@ import icu.windea.pls.lang.overrides.ParadoxOverrideService
  * 参见：[覆盖规则](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-override)
  *
  * @see ParadoxOverrideService
+ * @see ParadoxOverrideStrategyProvider
  */
 enum class ParadoxOverrideStrategy(val id: String, val text: String) {
     /** 只读一次（First In, Only Served）。先加载者生效，后加载者会被直接忽略。 */

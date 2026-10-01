@@ -88,9 +88,11 @@
 
 #### 覆盖规则 {#config-override}
 
+<!-- @see icu.windea.pls.config.config.detached.CwtOverrideConfig -->
+<!-- @see cwt/core/00_overrides.cwt -->
 <!-- @see icu.windea.pls.model.overrides.ParadoxOverrideStrategy -->
 <!-- @see icu.windea.pls.lang.overrides.ParadoxOverrideService -->
-<!-- @see cwt/core/00_overrides.cwt -->
+<!-- @see icu.windea.pls.ep.overrides.ParadoxOverrideStrategyProvider -->
 
 覆盖规则用于配置目标（文件、全局封装变量、定义、本地化等）的覆盖策略。它影响目标的生效顺序与查询结果排序（流式查询除外）。未命中任何目录映射时，默认使用 `LIOS`（后读覆盖）。
 

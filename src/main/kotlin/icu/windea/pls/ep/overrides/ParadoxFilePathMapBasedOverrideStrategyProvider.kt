@@ -1,8 +1,8 @@
 package icu.windea.pls.ep.overrides
 
 import icu.windea.pls.ChronicleFacade
+import icu.windea.pls.config.config.detached.CwtOverrideConfig
 import icu.windea.pls.config.filePathPatternsForOverride
-import icu.windea.pls.config.model.CwtOverrideConfig
 import icu.windea.pls.core.matchesAntPattern
 import icu.windea.pls.core.matchesPath
 import icu.windea.pls.lang.defineVariableInfo

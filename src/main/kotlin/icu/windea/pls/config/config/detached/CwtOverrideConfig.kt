@@ -1,4 +1,4 @@
-package icu.windea.pls.config.model
+package icu.windea.pls.config.config.detached
 
 import icu.windea.pls.model.overrides.ParadoxOverrideStrategy
 
@@ -12,7 +12,6 @@ import icu.windea.pls.model.overrides.ParadoxOverrideStrategy
  * @property strategy 使用的覆盖策略。
  *
  * @see ParadoxOverrideStrategy
- * @see CwtConfigGroupDataModel.overrides
  */
 data class CwtOverrideConfig(
     val filePath: String,

@@ -27,6 +27,7 @@ import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.config.delegated.CwtSystemScopeConfig
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.config.config.delegated.CwtUnionConfig
+import icu.windea.pls.config.config.detached.CwtOverrideConfig
 import icu.windea.pls.config.config.extended.CwtExtendedComplexEnumValueConfig
 import icu.windea.pls.config.config.extended.CwtExtendedDefinitionConfig
 import icu.windea.pls.config.config.extended.CwtExtendedDynamicValueConfig
@@ -80,7 +81,7 @@ interface CwtConfigGroupDataModel {
 
     // region Core
 
-    /** 覆盖规则（文件路径到覆盖策略的映射）。参见 [CwtOverrideConfig]。 */
+    /** 文件路径到覆盖规则的映射。参见 [CwtOverrideConfig]。 */
     val overrides: Map<String, CwtOverrideConfig>
 
     val systemScopes: Map<@CaseInsensitive String, CwtSystemScopeConfig>
