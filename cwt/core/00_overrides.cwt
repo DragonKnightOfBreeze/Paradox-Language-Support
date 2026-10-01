@@ -25,26 +25,23 @@
 # - [low]:    Inferred or conventional, not yet verified.
 #
 # Sources:
-# - Stellaris Wiki "file overwrite list" (translated by pdxdoc / Stellaris Mod Group):
-#   https://main--pdxdoc-next.netlify.app/guides/other/overwrite/
+# - Official Paradox wikis (per game), e.g. https://stellaris.paradoxwikis.com/Stellaris_Wiki
 # - IronyModManager (IMM): https://github.com/bcssov/IronyModManager
-# - Official wikis (e.g. https://stellaris.paradoxwikis.com/Stellaris_Wiki)
 #
 # See: docs/en/ref-config-format.md#config-override
-# Domain note: the override-strategy note under documents/ai-notes/domain/
 # Version: 3.0.4-dev
 # Date: 2026-10-02
 
 overrides = {
-    # [medium] Event chains are read once; general convention verified mainly for Stellaris.
+    # [high] Event chains are read once (first in, only served).
     "common/event_chains" = fios
 
-    # [high] On actions are automatically merged in load order, without overriding.
+    # [high] On actions are merged in load order without overriding (Stellaris / VIC3 / EU5).
     "common/on_actions" = ordered
 
-    # [high] Global scripted variables are read once; later duplicates are ignored.
+    # [high] Global scripted variables are read once (first in, only served).
     "common/scripted_variables" = fios
 
-    # [medium] Events are read once; general convention verified mainly for Stellaris.
+    # [high] Events are read once (first in, only served).
     "events" = fios
 }
