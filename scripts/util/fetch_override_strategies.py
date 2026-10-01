@@ -11,9 +11,9 @@ not publicly specified, so we approximate it from trusted/reference sources:
   parser map (``StellarisParserMap.json``) and its list of "first in, only served" directories
   (``StellarisDefinitionInfoProvider.FIOSPaths``) encode most of the same knowledge that was
   previously curated by hand.
-- **Stellaris Mod Group / English wiki overwrite list** — a human-maintained, per-directory list
-  (see ``https://main--pdxdoc-next.netlify.app/guides/other/overwrite/``), used to validate and
-  to resolve the cases where IMM applies whole-text handling only as an implementation shortcut
+- **Official Stellaris Wiki** — the per-directory overwrite list under "Modding" > "Overwriting
+  specific elements" (``https://stellaris.paradoxwikis.com/Modding``), used to validate and to
+  resolve the cases where IMM applies whole-text handling only as an implementation shortcut
   (for example ``common/on_actions``).
 
 The script fetches the IMM sources at a pinned commit (resolved from a branch/tag) for
@@ -79,7 +79,7 @@ FIOS_PATHS_FALLBACK = {
 # Engine behaviours we do not want to take from IMM verbatim.
 SPECIAL_CASES = {
     # The engine merges on-actions by key, but IMM only knows how to replace the whole file.
-    "common/on_actions": ("ordered", "Stellaris wiki / pdxdoc overwrite guide (auto-merge); IMM uses whole-text as a shortcut"),
+    "common/on_actions": ("ordered", "Official Stellaris Wiki (auto-merge); IMM uses whole-text as a shortcut"),
 }
 
 
