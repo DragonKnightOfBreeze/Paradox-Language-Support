@@ -1,9 +1,7 @@
 package icu.windea.pls.core.data
 
-import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
 import org.junit.Test
-import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 /**
  * @see MarkdownService
@@ -30,13 +28,6 @@ class MarkdownServiceTest {
         """.trimIndent()
 
         val result = MarkdownService.toHtml(markdownText)
-        assertEquivalentHtml(htmlText, result)
-    }
-
-    private fun assertEquivalentHtml(html1: String, html2: String) {
-        val outputSettings = Document.OutputSettings().prettyPrint(false)
-        val r1 = Jsoup.parse(html1).outputSettings(outputSettings).outerHtml()
-        val r2 = Jsoup.parse(html2).outputSettings(outputSettings).outerHtml()
-        assertEquals(r1, r2)
+        assertTrue(HtmlService.areEquivalent(htmlText, result))
     }
 }

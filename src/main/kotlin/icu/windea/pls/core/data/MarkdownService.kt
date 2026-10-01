@@ -5,7 +5,7 @@ import org.intellij.markdown.html.HtmlGenerator
 import org.intellij.markdown.parser.MarkdownParser
 
 /**
- * Markdown 服务。
+ * 用于数据处理的 Markdown 服务。
  *
  * 基于 [intellij-markdown](https://github.com/JetBrains/markdown)。
  *

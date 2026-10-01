@@ -3,7 +3,7 @@ package icu.windea.pls.core.data
 import kotlinx.serialization.json.Json
 
 /**
- * JSON 序列化服务。
+ * 用于数据处理（例如序列化和反序列化）的 JSON 服务。
  *
  * 基于 [kotlinx-serialization](https://github.com/Kotlin/kotlinx.serialization)。
  *
