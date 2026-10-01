@@ -21,7 +21,7 @@ buildscript {
 plugins {
     id("org.jetbrains.kotlin.jvm") version "2.1.20" // https://kotlinlang.org/docs/gradle.html
     id("org.jetbrains.intellij.platform") version "2.19.0" // https://github.com/JetBrains/intellij-platform-gradle-plugin
-    id("org.jetbrains.intellij.platform.grammarkit") version "2.18.1" // https://github.com/JetBrains/intellij-platform-gradle-plugin
+    id("org.jetbrains.intellij.platform.grammarkit") version "2.19.0" // https://github.com/JetBrains/intellij-platform-gradle-plugin
     id("org.jetbrains.kotlinx.kover") version "0.9.9" // https://github.com/Kotlin/kotlinx-kover
     // id("org.jetbrains.changelog") version "2.5.0" // https://github.com/JetBrains/gradle-changelog-plugin
 
@@ -190,7 +190,7 @@ dependencies {
 
     compileOnly("com.google.errorprone:error_prone_annotations:2.50.0")
     compileOnly("org.jspecify:jspecify:1.0.1")
-    compileOnly("org.slf4j:slf4j-api:2.0.19")
+    compileOnly("org.slf4j:slf4j-api:2.0.20")
     compileOnly("org.jetbrains:annotations:26.1.0") // https://github.com/JetBrains/java-annotations
 
     // Currently for reference only
