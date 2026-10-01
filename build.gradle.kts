@@ -101,7 +101,9 @@ dependencies {
 
         val type = providers.gradleProperty("platformType")
         val version = providers.gradleProperty("platformVersion")
-        create(type, version) // https://github.com/JetBrains/intellij-platform-plugin
+        // IDE 安装器不提供 EAP 版本，针对 EAP 需要切换到多平台归档（useInstaller = false）
+        val useInstallerValue = providers.gradleProperty("platformUseInstaller").getOrElse("true").toBoolean()
+        create(type, version) { useInstaller = useInstallerValue } // https://github.com/JetBrains/intellij-platform-plugin
 
         testFramework(TestFrameworkType.Platform)
 
