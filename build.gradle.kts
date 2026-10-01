@@ -21,7 +21,7 @@ buildscript {
 plugins {
     id("org.jetbrains.kotlin.jvm") version "2.1.20" // https://kotlinlang.org/docs/gradle.html
     id("org.jetbrains.kotlin.plugin.serialization") version "2.1.20" // https://kotlinlang.org/docs/serialization.html
-    id("org.jetbrains.intellij.platform") version "2.18.1" // https://github.com/JetBrains/intellij-platform-gradle-plugin
+    id("org.jetbrains.intellij.platform") version "2.19.0" // https://github.com/JetBrains/intellij-platform-gradle-plugin
     id("org.jetbrains.intellij.platform.grammarkit") version "2.19.0" // https://github.com/JetBrains/intellij-platform-gradle-plugin
     id("org.jetbrains.kotlinx.kover") version "0.9.9" // https://github.com/Kotlin/kotlinx-kover
     // id("org.jetbrains.changelog") version "2.5.0" // https://github.com/JetBrains/gradle-changelog-plugin
@@ -160,18 +160,22 @@ dependencies {
     implementation("dev.langchain4j:langchain4j:1.20.0") {
         exclude(group = "org.jspecify", module = "jspecify")
         exclude(group = "org.slf4j", module = "slf4j-api")
+        exclude(group = "com.fasterxml.jackson.core")
     }
     implementation("dev.langchain4j:langchain4j-open-ai:1.20.0") {
         exclude(group = "org.jspecify", module = "jspecify")
         exclude(group = "org.slf4j", module = "slf4j-api")
+        exclude(group = "com.fasterxml.jackson.core")
     }
     implementation("dev.langchain4j:langchain4j-anthropic:1.20.0") {
         exclude(group = "org.jspecify", module = "jspecify")
         exclude(group = "org.slf4j", module = "slf4j-api")
+        exclude(group = "com.fasterxml.jackson.core")
     }
     implementation("dev.langchain4j:langchain4j-ollama:1.20.0") {
         exclude(group = "org.jspecify", module = "jspecify")
         exclude(group = "org.slf4j", module = "slf4j-api")
+        exclude(group = "com.fasterxml.jackson.core")
     }
 
     // Persistence
