@@ -94,7 +94,15 @@ Configs are categorized by level as follows:
 <!-- @see icu.windea.pls.lang.overrides.ParadoxOverrideService -->
 <!-- @see icu.windea.pls.ep.overrides.ParadoxOverrideStrategyProvider -->
 
-Override configs configure the override strategy for targets (files, global scripted variables, definitions, localisations, etc.). They affect the order in which targets take effect and the sorting of query results (except for streaming queries). When no directory mapping is matched, the default is `LIOS` (Last In, Only Served).
+Override configs specify the override strategy per target directory for targets (global scripted variables, definitions, define variables, localisations, etc.). They affect the order in which targets take effect and the sorting of query results (except for streaming queries).
+
+There are two sources of override strategies:
+
+1. **Forced strategies**: specified by the plugin itself, independent of config files, and take precedence:
+   - Files or directories: always `FIOS`.
+   - Definition injections: always `LIOS`.
+   - Certain definition types: always `ORDERED`, including event namespaces, on actions, swapped types, and anonymous definitions.
+2. **Config strategies**: specified by the `overrides` block in this config, per directory; they apply only when no forced strategy matches. When no directory mapping is matched, the default is `LIOS` (Last In, Only Served).
 
 Override strategies:
 
@@ -102,6 +110,8 @@ Override strategies:
 - **`LIOS`** (Last In, Only Served): Later loaded overrides earlier loaded.
 - **`DUPL`** (Duplicates): Whole-file override; must be replaced entirely with a file at the same path.
 - **`ORDERED`** (Ordered): Read in order; later loaded items are added or merged in sequence without overriding existing entries.
+
+> Note: `ORDERED` means no overriding occurs, so it is usually treated as "no override exists".
 
 Query (non-streaming) result sorting is driven by override strategy; within the same path, the load order (game / dependency chain) determines precedence. Within the same file, later items override earlier ones.
 
