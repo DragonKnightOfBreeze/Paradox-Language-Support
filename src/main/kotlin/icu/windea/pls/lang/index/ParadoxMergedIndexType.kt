@@ -6,7 +6,7 @@ import icu.windea.pls.model.index.ParadoxIndexInfo
  * 合并索引类型。
  *
  * @property id 用作展示的 ID。需要是唯一的。
- * @property key 构建合并索引时，不需要是唯一的。
+ * @property key 构建合并索引时使用的键，不需要是唯一的。
  * @property type 对应的索引信息的类型。不需要是唯一的。
  *
  * @see ParadoxMergedIndexTypes

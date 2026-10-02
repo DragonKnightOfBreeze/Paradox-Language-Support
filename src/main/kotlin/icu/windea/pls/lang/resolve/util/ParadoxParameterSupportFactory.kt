@@ -72,8 +72,9 @@ object ParadoxParameterSupportFactory {
     }
 
     fun resolveParameterForDefinition(element: PsiElement, name: String, context: ParadoxDefinitionElement): ParadoxParameterLightElement? {
+        // 3.0.4 #429 definition here may be an injection (e.g., `REPLACE_OR_CREATE:x = {...}`), so, should not use `context.name` directly here, as the definition name
         val definitionInfo = context.definitionInfo ?: return null
-        val definitionName = context.name
+        val definitionName = definitionInfo.name
         val definitionTypes = definitionInfo.types
         val contextName = definitionName
         val contextIcon = ChronicleIcons.Nodes.Definition(definitionInfo.type)

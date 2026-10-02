@@ -20,8 +20,8 @@ object ParadoxMergedIndexTypes {
     val Parameter = ParadoxMergedIndexType.builder<ParadoxParameterIndexInfo>("Parameter", "parameter").build()
     val LocalisationParameter = ParadoxMergedIndexType.builder<ParadoxLocalisationParameterIndexInfo>("LocalisationParameter", "localisationParameter").build()
 
-    // NOTE: must use same key with `Parameter`
-    val ParameterWithReadAccess = ParadoxMergedIndexType.builder<ParadoxParameterIndexInfo>("ParameterWithReadAccess", "parameter").build()
+    // NOTE must use same key with `Parameter`
+    val ParameterWithReadAccess = ParadoxMergedIndexType.builder<ParadoxParameterIndexInfo>("ParameterWithReadAccess", Parameter.key).build()
 
     val ShaderEffect = ParadoxMergedIndexType.builder<ParadoxShaderEffectIndexInfo>("ShaderEffect", "shaderEffect").build()
     val MeshLocator = ParadoxMergedIndexType.builder<ParadoxMeshLocatorIndexInfo>("MeshLocator", "meshLocator").build()

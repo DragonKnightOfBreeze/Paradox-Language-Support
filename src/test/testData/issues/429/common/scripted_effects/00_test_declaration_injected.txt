@@ -1,0 +1,15 @@
+// Based on Community Mod Framework's declaration:
+// https://github.com/Victoria-3-Modding-Co-op/Community-Mod-Framework/blob/main/common/scripted_effects/com_general_effects.txt
+// Based on the Issue #429 screenshot's source file:
+// https://github.com/Alexedishi/Gates-of-the-Bosphorus/blob/main/common/scripted_effects/7-01_eqfm_senusiyya_effects.txt
+
+REPLACE_OR_CREATE:com_change_and_clamp_variable = {
+    set_variable = {
+        name = $name$
+        value = {
+            add = $value$
+            max = $max$
+            min = $min$
+        }
+    }
+}

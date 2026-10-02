@@ -1,0 +1,17 @@
+// Based on Community Mod Framework's declaration:
+// https://github.com/Victoria-3-Modding-Co-op/Community-Mod-Framework/blob/main/common/scripted_effects/com_general_effects.txt
+// Based on the Issue #429 screenshot's source file:
+// https://github.com/Alexedishi/Gates-of-the-Bosphorus/blob/main/common/scripted_effects/7-01_eqfm_senusiyya_effects.txt
+
+INJECT:test_effect_caller = {
+    custom_description = {
+        state_region = {
+            com_change_and_clamp_variable = {
+                name = test_variable
+                value = 1
+                max = 100
+                min = 0
+            }
+        }
+    }
+}
