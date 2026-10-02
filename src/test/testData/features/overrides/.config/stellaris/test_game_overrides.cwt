@@ -1,0 +1,8 @@
+# Stellaris-specific (injected) override config for override-related tests.
+#
+# NOTE: keep the file name distinct from the common config file (see the common config for details).
+
+overrides = {
+    # resolved from the game-specific config group
+    "common/test_entities_game" = dupl
+}

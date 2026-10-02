@@ -1,0 +1,69 @@
+# Common (injected) override config for override-related tests.
+#
+# NOTE: keep the file name distinct from the game-specific config file, because config files are
+# keyed by their path relative to the game type directory; identically named files would collide
+# within the same game config group (the later one wins).
+
+types = {
+    type[test_entity_core] = {
+        path = "game/common/test_entities_core"
+        path_extension = .txt
+    }
+    type[test_entity_game] = {
+        path = "game/common/test_entities_game"
+        path_extension = .txt
+    }
+    type[test_entity_default] = {
+        path = "game/common/test_entities_default"
+        path_extension = .txt
+    }
+    type[test_entity_ordered] = {
+        path = "game/common/test_entities_ordered"
+        path_extension = .txt
+    }
+    type[on_action] = {
+        path = "game/common/on_actions"
+        path_extension = .txt
+    }
+}
+
+test_entity_core = {
+    ## cardinality = 0..inf
+    a = int
+}
+
+test_entity_game = {
+    ## cardinality = 0..inf
+    a = int
+}
+
+test_entity_default = {
+    ## cardinality = 0..inf
+    a = int
+}
+
+test_entity_ordered = {
+    ## cardinality = 0..inf
+    a = int
+}
+
+on_action = {
+    ## cardinality = 0..inf
+    events = { $any }
+}
+
+defines = {
+    Namespace = {
+        Variable = int
+    }
+}
+
+overrides = {
+    # resolved from the common config group
+    "common/scripted_variables" = fios
+    # resolved from the common config group
+    "common/test_entities_core" = fios
+    # resolved from the common config group
+    "common/test_entities_ordered" = ordered
+    # `common/test_entities_default` has no entry -> falls back to `lios`
+}

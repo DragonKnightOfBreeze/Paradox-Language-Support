@@ -85,4 +85,36 @@ class IncorrectOverrideForScriptedVariableInspectionTest : BasePlatformTestCase(
         myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
         myFixture.checkHighlighting()
     }
+
+    // region Boundary Cases
+
+    @Test
+    fun single_noOverride_noWarning() {
+        markFileInfo(gameType, "common/scripted_variables/01_scripted_variables.txt")
+        myFixture.configureByText("01_scripted_variables.txt", """
+            @var = 1
+        """.trimIndent())
+
+        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
+        myFixture.checkHighlighting()
+    }
+
+    @Test
+    fun nonGlobalPath_noWarning() {
+        // a scripted variable outside `common/scripted_variables` is not treated as a global one
+        markFileInfo(gameType, "common/test/01_test.txt")
+        myFixture.configureByText("01_test.txt", """
+            @var = 1
+        """.trimIndent())
+
+        markFileInfo(gameType, "common/test/99_test.txt")
+        myFixture.configureByText("99_test.txt", """
+            @var = 1
+        """.trimIndent())
+
+        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
+        myFixture.checkHighlighting()
+    }
+
+    // endregion
 }

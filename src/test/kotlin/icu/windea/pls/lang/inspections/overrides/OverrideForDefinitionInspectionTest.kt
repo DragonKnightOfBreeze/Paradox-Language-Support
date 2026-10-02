@@ -188,4 +188,42 @@ class OverrideForDefinitionInspectionTest : BasePlatformTestCase(), ChronicleTes
         myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
         myFixture.checkHighlighting()
     }
+
+    // region Boundary Cases
+
+    @Test
+    fun ordered_onActions_noWarning() {
+        // an on action uses the forced ORDERED strategy, so it is not treated as an override
+        markFileInfo(gameType, "common/on_actions/01_on_actions.txt")
+        myFixture.configureByText("01_on_actions.txt", """
+            my_action = {
+                events = { }
+            }
+        """.trimIndent())
+
+        markFileInfo(gameType, "common/on_actions/99_on_actions.txt")
+        myFixture.configureByText("99_on_actions.txt", """
+            my_action = {
+                events = { }
+            }
+        """.trimIndent())
+
+        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
+        myFixture.checkHighlighting()
+    }
+
+    @Test
+    fun single_noOverride_noWarning() {
+        markFileInfo(gameType, "common/armies/01_defense_armies.txt")
+        myFixture.configureByText("01_defense_armies.txt", """
+            defense_army = {
+                defensive = yes
+            }
+        """.trimIndent())
+
+        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
+        myFixture.checkHighlighting()
+    }
+
+    // endregion
 }

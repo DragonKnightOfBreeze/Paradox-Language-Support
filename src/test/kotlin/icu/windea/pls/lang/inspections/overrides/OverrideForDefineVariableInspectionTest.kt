@@ -101,4 +101,21 @@ class OverrideForDefineVariableInspectionTest : BasePlatformTestCase(), Chronicl
         myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
         myFixture.checkHighlighting()
     }
+
+    // region Boundary Cases
+
+    @Test
+    fun single_noOverride_noWarning() {
+        markFileInfo(gameType, "common/defines/01_defines.txt")
+        myFixture.configureByText("01_defines.txt", """
+            Namespace = {
+                Variable = 1
+            }
+        """.trimIndent())
+
+        myFixture.configureFromExistingVirtualFile(myFixture.file.virtualFile)
+        myFixture.checkHighlighting()
+    }
+
+    // endregion
 }
