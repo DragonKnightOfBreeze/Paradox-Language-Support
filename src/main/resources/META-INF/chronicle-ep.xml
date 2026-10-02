@@ -403,8 +403,8 @@
     <overriddenScopeContextProvider implementation="icu.windea.pls.ep.scope.ParadoxTriggerWithParametersAwareOverriddenScopeContextProvider"/>
 
     <overrideStrategyProvider id="forcedFile" implementation="icu.windea.pls.ep.overrides.ParadoxForcedFileOverrideStrategyProvider"/>
-    <overrideStrategyProvider id="forcedDefinitionInjection" implementation="icu.windea.pls.ep.overrides.ParadoxForcedDefinitionInjectionOverrideStrategyProvider"/>
     <overrideStrategyProvider id="forcedDefinition" implementation="icu.windea.pls.ep.overrides.ParadoxForcedDefinitionOverrideStrategyProvider"/>
+    <overrideStrategyProvider id="forcedDefinitionInjection" implementation="icu.windea.pls.ep.overrides.ParadoxForcedDefinitionInjectionOverrideStrategyProvider" order="before forcedDefinition"/>
     <overrideStrategyProvider id="base" implementation="icu.windea.pls.ep.overrides.ParadoxBaseOverrideStrategyProvider"/>
 
     <specialPathProvider implementation="icu.windea.pls.ep.tools.SpecialPathProviders$Steam"/>
