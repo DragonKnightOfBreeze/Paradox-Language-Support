@@ -10,14 +10,16 @@
 
 ## 3.0.4
 
+- [x] 内嵌提示中的本地化文本渲染 以及 <effect>log的本地化渲染问题 ([#418](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/418))
+- [x] [Vic3] Plugin not correctly detecting used Parameters ([#429](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/429))
+- [ ] [Vic3] Geographic region short keys and their iterators are broken ([#430](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/430))
 - [ ] 初步支持片段匹配，新增数据类型 `DefinitionSnippet` 和 `LocalisationSnippet`，以匹配作为完整的定义引用或本地化引用的一部分的字符串（数据表达式示例：`<sprite>|GFX_$` `localisation|$_desc`） / Initial support for snippet matching, with new data types `DefinitionSnippet` and `LocalisationSnippet`, used to match strings that are part of a complete definition reference or localisation reference (data expression examples: `<sprite>|GFX_$` `localisation|$_desc`)
 - [ ] 完善规则匹配逻辑，新增数据类型 `WildcardAny` 和 `WildcardScalar`，作为特殊变体，当匹配候选项过多，或者无法进一步确定时使用（数据表达式：`$$any` `$$literal`） / Refine the config matching logic by adding the new data types `WildcardAny` and `WildcardScalar` as special variants, to be used when there are too many matching candidates or when no further determination can be made (data expressions: `$$any` `$$literal`)
 - [ ] 整理和完善与规则匹配和数据类型相关的注释和文档 / Organize and improve the comments and documentation related to config matching and data types
 - [x] 将 JSON 序列化框架从 jackson 改为 kotlinx-serialization / Change the JSON serialization framework from jackson to kotlinx-serialization
 - [x] 不再显式排除 jackson 依赖，以解决插件在 IDEA 2026.3 eap 中存在的兼容性问题 / No longer explicitly exclude the jackson dependency, to resolve the compatibility issue in IDEA 2026.3 EAP
 - [x] 将 *优先级规则* 重命名为 *覆盖规则*，同步更改相关的代码、文档和规则文件 / Rename *priority config* to *override config*, update related code, documentation, and config files accordingly
-- [ ] 确认各个游戏的覆盖策略，完善相关的规则文件（`00_overrides.cwt` 和 `overrides.cwt`） / Confirm override strategies for each game, improve related config files (`00_overrides.cwt` and `overrides.cwt`)
-- [x] 修复回归BUG / Fix regression bugs ([#418](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/418), [#429](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/429), [#430](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/430))
+- [x] 确认各个游戏的覆盖策略，完善相关的规则文件（`00_overrides.cwt` 和 `overrides.cwt`） / Confirm override strategies for each game, improve related config files (`00_overrides.cwt` and `overrides.cwt`)
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 3.0.3 - 2026-09-23
