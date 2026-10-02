@@ -8,6 +8,7 @@ import com.intellij.ui.JBColor
 import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.base.ChronicleCapacities
 import icu.windea.pls.config.CwtDataTypes
+import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtRowType
 import icu.windea.pls.config.config.CwtValueConfig
@@ -79,23 +80,17 @@ object ParadoxCompletionManager {
             return
         }
 
-        // 这里不要使用合并后的子规则，需要先尝试精确匹配或者合并所有非精确匹配的规则，最后得到子规则列表
         val parentConfigs = ParadoxConfigManager.getConfigs(memberElement, ParadoxMatchOptions(forDeclarationRoot = true, skipBlock = true))
-        val configs = mutableListOf<CwtPropertyConfig>()
-        parentConfigs.forEach { c1 ->
-            val inlinedParentConfig = CwtConfigInlineService.inlineForConfig(c1)
-            inlinedParentConfig.configs?.forEach { c2 ->
-                if (c2 is CwtPropertyConfig) {
-                    configs += CwtConfigInlineService.inlineForConfig(c2) // 这里需要进行必要的内联
-                }
-            }
-        }
-        if (configs.isEmpty()) return
-        val occurrences = ParadoxConfigManager.getChildOccurrences(memberElement, parentConfigs)
+        if (parentConfigs.isEmpty()) return
 
+        val configsForCompletion = mutableListOf<CwtPropertyConfig>()
+        collectConfigsForKey(parentConfigs, configsForCompletion)
+        if (configsForCompletion.isEmpty()) return
+
+        val occurrences = ParadoxConfigManager.getChildOccurrences(memberElement, parentConfigs)
         val scopeContext = ParadoxScopeManager.getScopeContext(memberElement)
         val context = context.copy(isKey = true, scopeContext = scopeContext)
-        configs.groupBy { it.key }.forEach { (_, configsWithSameKey) ->
+        configsForCompletion.groupBy { it.key }.forEach { (_, configsWithSameKey) ->
             for (config in configsWithSameKey) {
                 ProgressManager.checkCanceled()
                 if (shouldComplete(config, occurrences)) {
@@ -120,22 +115,17 @@ object ParadoxCompletionManager {
 
         if (!configContext.inRoot()) return
 
-        // 这里不要使用合并后的子规则，需要先尝试精确匹配或者合并所有非精确匹配的规则，最后得到子规则列表
         val parentConfigs = ParadoxConfigManager.getConfigs(memberElement, ParadoxMatchOptions(forDeclarationRoot = true, skipBlock = true))
-        val configs = mutableListOf<CwtValueConfig>()
-        parentConfigs.forEach { c1 ->
-            c1.configs?.forEach { c2 ->
-                if (c2 is CwtValueConfig) {
-                    configs += c2
-                }
-            }
-        }
-        if (configs.isEmpty()) return
-        val occurrences = ParadoxConfigManager.getChildOccurrences(memberElement, parentConfigs)
+        if (parentConfigs.isEmpty()) return
 
+        val configsForCompletion = mutableListOf<CwtValueConfig>()
+        collectConfigsForValue(parentConfigs, configsForCompletion)
+        if (configsForCompletion.isEmpty()) return
+
+        val occurrences = ParadoxConfigManager.getChildOccurrences(memberElement, parentConfigs)
         val scopeContext = ParadoxScopeManager.getScopeContext(memberElement)
         val context = context.copy(isKey = false, scopeContext = scopeContext)
-        for (config in configs) {
+        for (config in configsForCompletion) {
             ProgressManager.checkCanceled()
             if (shouldComplete(config, occurrences)) {
                 val overriddenConfigs = ParadoxConfigService.getOverriddenConfigs(context.contextElement, config)
@@ -161,17 +151,53 @@ object ParadoxCompletionManager {
         val configs = configContext.getConfigs()
         if (configs.isEmpty()) return
 
+        val configsForCompletion = mutableListOf<CwtValueConfig>()
+        collectConfigsForPropertyValue(configs, configsForCompletion)
+        if (configsForCompletion.isEmpty()) return
+
         val scopeContext = ParadoxScopeManager.getScopeContext(propertyElement)
         val context = context.copy(isKey = false, scopeContext = scopeContext)
-        for (config in configs) {
-            if (config is CwtValueConfig) {
-                val context = context.copy(config = config)
-                ParadoxExpressionCompletionManager.completeScriptExpression(context, result)
+        for (config in configsForCompletion) {
+            val context = context.copy(config = config)
+            ParadoxExpressionCompletionManager.completeScriptExpression(context, result)
+        }
+    }
+
+    private fun collectConfigsForKey(parentConfigs: List<CwtMemberConfig<*>>, result: MutableList<CwtPropertyConfig>) {
+        // 这里不要使用合并后的子规则，需要先尝试精确匹配或者合并所有非精确匹配的规则，最后得到子规则列表
+        parentConfigs.forEach f1@{ parentConfig ->
+            val inlinedParentConfig = CwtConfigInlineService.inlineForConfig(parentConfig)
+            inlinedParentConfig.configs?.forEach f2@{ config ->
+                if (config !is CwtPropertyConfig) return@f2
+                val inlinedConfig = CwtConfigInlineService.inlineForConfig(config)
+                result += inlinedConfig
             }
         }
     }
 
-    fun shouldComplete(config: CwtPropertyConfig, occurrences: Map<CwtDataExpression, ParadoxMatchOccurrence>): Boolean {
+    private fun collectConfigsForValue(parentConfigs: List<CwtMemberConfig<*>>, result: MutableList<CwtValueConfig>) {
+        // 这里不要使用合并后的子规则，需要先尝试精确匹配或者合并所有非精确匹配的规则，最后得到子规则列表
+        // 3.0.4 #430 ensure to inline config first during collecting
+        parentConfigs.forEach f1@{ parentConfig ->
+            val inlinedParentConfig = CwtConfigInlineService.inlineForConfig(parentConfig)
+            inlinedParentConfig.configs?.forEach f2@{ config ->
+                if (config !is CwtValueConfig) return@f2
+                val inlinedConfig = CwtConfigInlineService.inlineForConfig(config)
+                result += inlinedConfig
+            }
+        }
+    }
+
+    private fun collectConfigsForPropertyValue(configs: List<CwtMemberConfig<*>>, result: MutableList<CwtValueConfig>) {
+        // 3.0.4 #430 ensure to inline config first during collecting
+        configs.forEach f1@{ config ->
+            if (config !is CwtValueConfig) return@f1
+            val inlinedConfig = CwtConfigInlineService.inlineForConfig(config)
+            result += inlinedConfig
+        }
+    }
+
+    private fun shouldComplete(config: CwtPropertyConfig, occurrences: Map<CwtDataExpression, ParadoxMatchOccurrence>): Boolean {
         val expression = config.keyExpression
         // 如果类型是 `aliasName`，则无论 `cardinality` 如何定义，都应该提供补全（某些规则文件未正确编写）
         if (expression.type == CwtDataTypes.AliasName) return true
@@ -187,7 +213,7 @@ object ParadoxCompletionManager {
         return maxCount == null || actualCount < maxCount
     }
 
-    fun shouldComplete(config: CwtValueConfig, occurrences: Map<CwtDataExpression, ParadoxMatchOccurrence>): Boolean {
+    private fun shouldComplete(config: CwtValueConfig, occurrences: Map<CwtDataExpression, ParadoxMatchOccurrence>): Boolean {
         val expression = config.valueExpression
         val actualCount = occurrences[expression]?.actual ?: 0
         // 如果写明了 `cardinality`，则为 `cardinality.max`，否则如果类型为常量，则为1，否则为 `null`，`null` 表示没有限制

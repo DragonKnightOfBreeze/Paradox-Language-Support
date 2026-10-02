@@ -84,6 +84,7 @@ private object ParadoxTemplateExpressionResolver {
             val offset = range.startOffset
             var startIndex = 0
             for ((i, matchGroup) in matchGroups.withIndex()) {
+                val snippetExpression = templateExpression.referenceExpressions[i]
                 if (matchGroup == null) return null
                 val matchRange = matchGroup.range
                 if (matchRange.first != startIndex) {
@@ -93,8 +94,8 @@ private object ParadoxTemplateExpressionResolver {
                     nodes += node
                 }
                 val matchValue = matchGroup.value
-                val snippetExpression = templateExpression.referenceExpressions[i]
-                if (!incomplete && matchValue.isEmpty() && snippetExpression.type == CwtDataTypes.Definition) return null // skip anonymous definitions
+                // NOTE 3.0.4 #430 post optimization: still match in incomplete-mode if `matchValue` is empty (where `snippetExpression.type` is `CwtDataTypes.Definition`, or not)
+                if (!incomplete && matchValue.isEmpty()) return null
                 val nodeText = matchValue
                 val nodeTextRange = TextRange.from(offset + matchRange.first, nodeText.length)
                 val node = ParadoxTemplateSnippetNode(nodeText, nodeTextRange, configGroup, snippetExpression)

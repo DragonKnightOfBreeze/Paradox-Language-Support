@@ -116,7 +116,8 @@ object ParadoxExpressionMatchService {
             if (snippetExpression.type == CwtDataTypes.Constant) return@f
             val matchGroup = matchResult.groups.get(i++) ?: return false
             val matchValue = matchGroup.value
-            if (matchValue.isEmpty() && snippetExpression.type == CwtDataTypes.Definition) return false // skip anonymous definitions
+            // NOTE 3.0.4 #430 post optimization: still match even if `matchValue` is empty (where `snippetExpression.type` is `CwtDataTypes.Definition`, or not)
+            // if (matchValue.isEmpty()) return false
             val matchContext = ParadoxExpressionMatchContext(element, ParadoxExpression.resolve(matchValue), configGroup, options)
             val matched = matchScriptExpression(matchContext, snippetExpression, null).get(options)
             if (!matched) return false

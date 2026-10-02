@@ -112,14 +112,20 @@ object CwtConfigInlineService {
         return inlined
     }
 
+    fun inlineForConfig(config: CwtMemberConfig<*>): CwtMemberConfig<*> {
+        return when (config) {
+            is CwtPropertyConfig -> inlineForConfig(config)
+            is CwtValueConfig -> inlineForConfig(config)
+        }
+    }
+
     fun inlineForConfig(config: CwtPropertyConfig): CwtPropertyConfig {
         // #76
         return inlineSingleAlias(config) ?: config
     }
 
-    fun inlineForConfig(config: CwtMemberConfig<*>): CwtMemberConfig<*> {
-        // #76
-        if (config is CwtPropertyConfig) return inlineSingleAlias(config) ?: config
+    fun inlineForConfig(config: CwtValueConfig): CwtValueConfig {
+        // no special logic at this moment
         return config
     }
 
