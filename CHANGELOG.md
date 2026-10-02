@@ -10,7 +10,7 @@
 
 ## 3.0.4
 
-- [x] 内嵌提示中的本地化文本渲染 以及 <effect>log的本地化渲染问题 ([#418](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/418))
+- [x] Leading blank is not trimmed when rendering loc text in inlay hints & Log text is not recognized as loc text when containing commands ([#418](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/418))
 - [x] [Vic3] Plugin not correctly detecting used Parameters ([#429](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/429))
 - [ ] [Vic3] Geographic region short keys and their iterators are broken ([#430](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/430))
 - [ ] 初步支持片段匹配，新增数据类型 `DefinitionSnippet` 和 `LocalisationSnippet`，以匹配作为完整的定义引用或本地化引用的一部分的字符串（数据表达式示例：`<sprite>|GFX_$` `localisation|$_desc`） / Initial support for snippet matching, with new data types `DefinitionSnippet` and `LocalisationSnippet`, used to match strings that are part of a complete definition reference or localisation reference (data expression examples: `<sprite>|GFX_$` `localisation|$_desc`)
