@@ -47,7 +47,9 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
             // 显示可以取消的模态进度条
             val title = ChronicleBundle.message("configGroup.refresh.builtin.progress.title")
             runWithModalProgressBlocking(project, title) {
-                files.forEach { VfsUtil.markDirtyAndRefresh(false, true, true, it) }
+                files.forEach { file ->
+                    VfsUtil.markDirtyAndRefresh(false, true, true, file)
+                }
             }
         }
     }

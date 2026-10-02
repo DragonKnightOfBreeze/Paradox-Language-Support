@@ -62,24 +62,30 @@ object ChronicleTestManager {
         files.removeAll(refreshedConfigDirectories)
         if (files.isEmpty()) return
         logger.info("Prepare to refresh builtin config directories...")
-        files.forEach {
-            VfsUtil.markDirtyAndRefresh(false, true, true, it)
-            logger.info("Refreshed builtin config directory: ${it.presentableUrl}")
+        files.forEach { file ->
+            // `recursive = true` already refreshes the whole subtree
+            VfsUtil.markDirtyAndRefresh(false, true, true, file)
+            logger.info("Refreshed builtin config directory: ${file.presentableUrl}")
         }
         refreshedConfigDirectories.addAll(files)
     }
 
     private fun refreshInjectedFiles(project: Project) {
+        // 3.0.4 refresh injected config files even if they are already refreshed
+
+        // Injected config directories are test-local and may change between tests, so refresh them unconditionally.
+        // Relying on `refreshedConfigDirectories` would skip them and leave a stale VFS cache behind.
+        // Considering that the number of injected config files is usually not too large, this will not have much impact on performance.
+
         val files = CwtConfigGroupFileProvider.EP_NAME.extensionList
             .filter { it.source == CwtConfigGroupFileSource.Injected }
             .mapNotNullTo(mutableSetOf()) { it.getRootDirectory(project) }
         if (files.isEmpty()) return
-        files.removeAll(refreshedConfigDirectories)
-        if (files.isEmpty()) return
         logger.info("Prepare to refresh injected config directories...")
-        files.forEach {
-            VfsUtil.markDirtyAndRefresh(false, true, true, it)
-            logger.info("Refreshed builtin injected directory: ${it.presentableUrl}")
+        files.forEach { directory ->
+            // `recursive = true` already refreshes the whole subtree
+            VfsUtil.markDirtyAndRefresh(false, true, true, directory)
+            logger.info("Refreshed injected config directory: ${directory.presentableUrl}")
         }
         refreshedConfigDirectories.addAll(files)
     }

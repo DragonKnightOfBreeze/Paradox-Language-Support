@@ -1,14 +1,11 @@
 package icu.windea.pls.lang.overrides
 
-import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.psi.util.parentOfType
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.base.settings.ParadoxGameSettingsState
 import icu.windea.pls.base.settings.ParadoxModDependencySettingsState
 import icu.windea.pls.base.settings.ParadoxModSettingsState
-import icu.windea.pls.core.toPathOrNull
-import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.lang.search.ParadoxDefineVariableSearch
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
@@ -41,14 +38,6 @@ class ParadoxOverrideServiceTest : BasePlatformTestCase(), ChronicleTestScope {
     fun doSetUp() {
         markIntegrationTest()
         markRootDirectory("features/overrides")
-        // force-refresh the injected config directory, so that test workers with a stale VFS
-        // (e.g. reused across runs) always see the current test data
-        val injectConfigPath = "src/test/testData".toPathOrNull()?.resolve("features/overrides/.config")
-        val injectConfigDir = injectConfigPath?.toVirtualFile(refreshIfNeed = true)
-        if (injectConfigDir != null) {
-            VfsUtil.markDirtyAndRefresh(false, true, true, injectConfigDir)
-            injectConfigDir.children.forEach { VfsUtil.markDirtyAndRefresh(false, true, true, it) }
-        }
         markConfigDirectory("features/overrides/.config")
         initInjectedConfigGroups(project, gameType)
     }
