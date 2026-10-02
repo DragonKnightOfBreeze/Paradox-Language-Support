@@ -1,0 +1,9 @@
+test_journal_entry = {
+    is_shown_when_inactive = {
+        any_country_in_greek_heartlands = {
+            NOT = {
+                country_has_primary_culture = cu:bedouin
+            }
+        }
+    }
+}

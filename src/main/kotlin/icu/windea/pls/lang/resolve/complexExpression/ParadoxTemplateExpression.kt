@@ -94,7 +94,7 @@ private object ParadoxTemplateExpressionResolver {
                 }
                 val matchValue = matchGroup.value
                 val snippetExpression = templateExpression.referenceExpressions[i]
-                if (matchValue.isEmpty() && snippetExpression.type == CwtDataTypes.Definition) return null // skip anonymous definitions
+                if (!incomplete && matchValue.isEmpty() && snippetExpression.type == CwtDataTypes.Definition) return null // skip anonymous definitions
                 val nodeText = matchValue
                 val nodeTextRange = TextRange.from(offset + matchRange.first, nodeText.length)
                 val node = ParadoxTemplateSnippetNode(nodeText, nodeTextRange, configGroup, snippetExpression)

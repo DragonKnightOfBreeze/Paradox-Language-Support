@@ -83,7 +83,8 @@ object ParadoxCompletionManager {
         val parentConfigs = ParadoxConfigManager.getConfigs(memberElement, ParadoxMatchOptions(forDeclarationRoot = true, skipBlock = true))
         val configs = mutableListOf<CwtPropertyConfig>()
         parentConfigs.forEach { c1 ->
-            c1.configs?.forEach { c2 ->
+            val inlinedParentConfig = CwtConfigInlineService.inlineForConfig(c1)
+            inlinedParentConfig.configs?.forEach { c2 ->
                 if (c2 is CwtPropertyConfig) {
                     configs += CwtConfigInlineService.inlineForConfig(c2) // 这里需要进行必要的内联
                 }

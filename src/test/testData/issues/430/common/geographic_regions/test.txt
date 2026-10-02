@@ -1,0 +1,7 @@
+geographic_region_greek_heartlands = {
+    short_key = "greek_heartlands"
+}
+
+geographic_region_anatolia = {
+    short_key = "anatolia"
+}
