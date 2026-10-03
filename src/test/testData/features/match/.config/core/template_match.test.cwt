@@ -1,0 +1,16 @@
+# 用于测试模板表达式的语义级别匹配（`ParadoxTemplateMatchService`）的规则文件。
+#
+# 其中：
+# - `job` 类型用于验证 `<job>` 这类定义引用片段，要求存在实际的 job 定义。
+# - `value[x]` 这类动态值片段不要求存在实际的定义，仅要求形如标识符。
+
+types = {
+    type[job] = {
+        path = "common/test_jobs"
+        path_extension = .txt
+    }
+}
+
+job = {
+    name = scalar
+}

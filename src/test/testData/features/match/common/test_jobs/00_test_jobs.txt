@@ -1,0 +1,7 @@
+solder = {
+    name = "Solder"
+}
+
+officer = {
+    name = "Officer"
+}
