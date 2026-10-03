@@ -33,8 +33,6 @@ import icu.windea.pls.model.type.CwtExpressionType
 
 @Optimized
 object CwtConfigManipulationService {
-    // region Common Methods
-
     fun createListForDeepCopy(): MutableList<CwtMemberConfig<*>> {
         return SmartList() // 3.0.1 optimize: use `SmartList` here (reduce temporary memory overhead, especially for the sizes of 0 and 1)
     }

@@ -9,7 +9,6 @@
     <inspection_tool class="BashEvaluateExpression" enabled="true" level="INFORMATION" enabled_by_default="true" />
     <inspection_tool class="BashReplaceWithDoubleBrackets" enabled="true" level="INFORMATION" enabled_by_default="true" />
     <inspection_tool class="BooleanLiteralArgument" enabled="true" level="TEXT ATTRIBUTES" enabled_by_default="true" editorAttributes="CONSIDERATION_ATTRIBUTES" />
-    <inspection_tool class="CallingMethodShouldBeRequiresBlockingContext" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
     <inspection_tool class="CanBePrimaryConstructorProperty" enabled="true" level="TEXT ATTRIBUTES" enabled_by_default="true" editorAttributes="CONSIDERATION_ATTRIBUTES" />
     <inspection_tool class="CancellationCheckInLoops" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="ConstPropertyName" enabled="false" level="TEXT ATTRIBUTES" enabled_by_default="false" editorAttributes="CONSIDERATION_ATTRIBUTES" />
@@ -69,7 +68,6 @@
       <option name="ADDITIONAL_TAGS" value="date" />
     </inspection_tool>
     <inspection_tool class="Jscs" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
-    <inspection_tool class="KotlinPrintToLogpoint" enabled="false" level="DEBUGGER_SUGGESTION" enabled_by_default="false" />
     <inspection_tool class="LiftReturnOrAssignment" enabled="true" level="TEXT ATTRIBUTES" enabled_by_default="true" editorAttributes="CONSIDERATION_ATTRIBUTES" />
     <inspection_tool class="LinkTextDoesNotMatchHeading" enabled="true" level="INFORMATION" enabled_by_default="true" />
     <inspection_tool class="MalformedSetUpTearDown" enabled="true" level="WARNING" enabled_by_default="true" />
@@ -78,6 +76,7 @@
     <inspection_tool class="MarkdownUnresolvedHeaderReference" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="MdUnresolvedReference" enabled="true" level="ERROR" enabled_by_default="true" />
     <inspection_tool class="MisorderedAssertEqualsParameters" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="MissingAccessibleContext" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="MissingJavadoc" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="PACKAGE_SETTINGS">
         <Options>
@@ -127,7 +126,6 @@
     <inspection_tool class="ReplacePutWithAssignment" enabled="true" level="TEXT ATTRIBUTES" enabled_by_default="true" editorAttributes="CONSIDERATION_ATTRIBUTES" />
     <inspection_tool class="ReplaceSubstringWithTake" enabled="true" level="TEXT ATTRIBUTES" enabled_by_default="true" editorAttributes="CONSIDERATION_ATTRIBUTES" />
     <inspection_tool class="SameReturnValue" enabled="true" level="TEXT ATTRIBUTES" enabled_by_default="true" editorAttributes="CONSIDERATION_ATTRIBUTES" />
-    <inspection_tool class="SerializableCtor" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="TestCaseInProductCode" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="TestCaseWithNoTestMethods" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="TestInProductSource" enabled="true" level="WARNING" enabled_by_default="true" />

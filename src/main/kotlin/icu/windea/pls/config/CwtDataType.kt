@@ -74,8 +74,8 @@ class CwtDataType private constructor(
         private var isReference: Boolean = false
         private var isPatternAware: Boolean = false
         private var isSuffixAware: Boolean = false
-        var priority: Double? = null
-        var priorityProvider: ((CwtDataExpression, CwtConfigGroup) -> Double)? = null
+        private var priority: Double? = null
+        private var priorityProvider: ((CwtDataExpression, CwtConfigGroup) -> Double)? = null
 
         fun reference() = apply { isReference = true }
         fun patternAware() = apply { isPatternAware = true }

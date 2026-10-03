@@ -5,7 +5,9 @@ package icu.windea.pls.config.configExpression
 import icu.windea.pls.config.config.delegated.CwtTypeLocalisationConfig
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cache.CacheBuilder
+import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.optimized
+import icu.windea.pls.core.splitFast
 import icu.windea.pls.core.toDelimitedSet
 
 /**
@@ -63,13 +65,13 @@ private object CwtLocalisationLocationExpressionResolver {
 
     private fun doResolve(expressionString: String): CwtLocalisationLocationExpression {
         // 以 '|' 切分：首段为 location，其余为参数
-        val tokens = expressionString.split('|')
+        val tokens = expressionString.splitFast('|')
         if (tokens.size == 1) return CwtLocalisationLocationExpressionImpl(expressionString, expressionString)
         val location = tokens.first()
         val args = tokens.drop(1)
         var namePaths: Set<String> = emptySet()
         var forceUpperCase = false
-        args.forEach { arg ->
+        args.forEachFast { arg ->
             // 以 '$' 开头：表示 namePaths；参数 'u' 表示强制大写
             if (arg.startsWith('$')) {
                 namePaths = arg.drop(1).toDelimitedSet()

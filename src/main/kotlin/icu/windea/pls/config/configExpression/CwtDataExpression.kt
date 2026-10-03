@@ -133,11 +133,13 @@ private object CwtDataExpressionResolver {
     }
 
     private fun doResolve(expressionString: String, role: CwtDataExpressionRole): CwtDataExpression {
-        return CwtConfigExpressionService.resolve(expressionString, role) ?: CwtDataExpressionImplWithoutMetadata(expressionString, CwtDataTypes.Constant, role)
+        return CwtConfigExpressionService.resolve(expressionString, role)
+            ?: CwtDataExpressionImplWithoutMetadata(expressionString, CwtDataTypes.Constant, role)
     }
 
     private fun doResolveTemplate(expressionString: String): CwtDataExpression {
-        return CwtConfigExpressionService.resolveTemplate(expressionString) ?: CwtDataExpressionImplWithoutMetadata(expressionString, CwtDataTypes.Constant, CwtDataExpressionRole.Other)
+        return CwtConfigExpressionService.resolveTemplate(expressionString)
+            ?: CwtDataExpressionImplWithoutMetadata(expressionString, CwtDataTypes.Constant, CwtDataExpressionRole.Other)
     }
 }
 

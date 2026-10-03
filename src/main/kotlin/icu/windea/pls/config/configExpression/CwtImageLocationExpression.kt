@@ -5,7 +5,9 @@ package icu.windea.pls.config.configExpression
 import icu.windea.pls.config.config.delegated.CwtTypeImagesConfig
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cache.CacheBuilder
+import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.optimized
+import icu.windea.pls.core.splitFast
 import icu.windea.pls.core.toDelimitedSet
 
 /**
@@ -64,14 +66,14 @@ private object CwtImageLocationExpressionResolver {
 
     private fun doResolve(expressionString: String): CwtImageLocationExpression {
         // 以 '|' 切分：首段为 location，其余为参数
-        val tokens = expressionString.split('|')
+        val tokens = expressionString.splitFast('|')
         // 仅包含 location，无额外参数
         if (tokens.size == 1) return CwtImageLocationExpressionImpl(expressionString, expressionString)
         val location = tokens.first()
         val args = tokens.drop(1)
         var namePaths: Set<String> = emptySet()
         var framePaths: Set<String> = emptySet()
-        args.forEach { arg ->
+        args.forEachFast { arg ->
             // 以 '$' 开头：表示 namePaths；否则为 framePaths
             // 若出现多次，同类参数以后者覆盖（按实现顺序）
             if (arg.startsWith('$')) {

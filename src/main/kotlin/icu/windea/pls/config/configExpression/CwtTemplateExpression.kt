@@ -5,6 +5,7 @@ package icu.windea.pls.config.configExpression
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cache.CacheBuilder
+import icu.windea.pls.core.collections.filterFast
 import icu.windea.pls.core.containsBlank
 import icu.windea.pls.core.isIdentifierChar
 import icu.windea.pls.core.optimized
@@ -21,7 +22,8 @@ import icu.windea.pls.ep.config.configExpression.CwtDataExpressionSupport
  * 说明：
  * - 不允许包含空白字符；包含空白将直接返回空表达式。
  * - 采用“最左最早匹配”的方式，基于所有动态规则（具有前后缀的规则）扫描字符串，拆分出常量/动态片段。
- * - 仅存在一个片段（纯常量或纯动态）时视为不构成模板，返回空表达式。
+ * - 仅存在一个片段（纯常量或纯动态）时，不视为模板，返回空表达式。
+ * - 所有片段都是常量时，不视为模板，返回空表达式。
  *
  * 适用对象：
  * - 定义成员对应的规则的键或值。
@@ -69,7 +71,8 @@ private object CwtTemplateExpressionResolver {
     // - 含空白字符的输入直接视为非法模板，返回空表达式（避免对不规范规则进行模板拆分）
     // - 仅对拥有“前后缀”的动态规则进行扫描（例如 `value[` 与 `]`、`<` 与 `>`）
     // - 采用“最左最早匹配”的策略：在剩余字符串中选择最靠左的动态片段进行切分，然后继续向后扫描
-    // - 当最终片段数不超过 1（纯常量或纯动态）时，不视为模板，返回空表达式
+    // - 仅存在一个片段（纯常量或纯动态）时，不视为模板，返回空表达式
+    // - 所有片段都是常量时，不视为模板，返回空表达式
 
     private val cache = CacheBuilder("expireAfterAccess=30m").build<String, CwtTemplateExpression> { doResolve(it) }
     private val emptyExpression = CwtTemplateExpressionImpl("", emptyList())
@@ -151,7 +154,7 @@ private class CwtTemplateExpressionImpl(
     snippetExpressions: List<CwtDataExpression>
 ) : CwtTemplateExpression {
     override val snippetExpressions: List<CwtDataExpression> = snippetExpressions.optimized()
-    override val referenceExpressions: List<CwtDataExpression> = snippetExpressions.filter { it.type != CwtDataTypes.Constant }.optimized()
+    override val referenceExpressions: List<CwtDataExpression> = snippetExpressions.filterFast { it.type != CwtDataTypes.Constant }.optimized()
 
     override fun equals(other: Any?) = this === other || other is CwtTemplateExpression && expressionString == other.expressionString
     override fun hashCode() = expressionString.hashCode()
