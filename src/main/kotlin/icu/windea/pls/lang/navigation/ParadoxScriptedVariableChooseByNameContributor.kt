@@ -28,10 +28,11 @@ class ParadoxScriptedVariableChooseByNameContributor : ChooseByNameContributorEx
 
     override fun processElementsWithName(name: String, processor: Processor<in NavigationItem>, parameters: FindSymbolParameters) {
         if (!isEnabled()) return
+        val nameToSearch = name
         val project = parameters.project
         val scope = parameters.searchScope
         val idFilter = parameters.idFilter
         val requiredClass = ParadoxScriptScriptedVariable::class.java
-        StubIndex.getInstance().processElements(indexKey, name, project, scope, idFilter, requiredClass, processor)
+        StubIndex.getInstance().processElements(indexKey, nameToSearch, project, scope, idFilter, requiredClass, processor)
     }
 }

@@ -46,10 +46,11 @@ class CwtConfigSymbolChooseByNameContributor : ChooseByNameContributorEx {
     override fun processElementsWithName(name: String, processor: Processor<in NavigationItem>, parameters: FindSymbolParameters) {
         val types = getTypes()
         if (types.isEmpty()) return
+        val nameToSearch = ChronicleChooseByNameUtil.getNameToSearch(name, parameters) // adjust name if necessary
         val project = parameters.project
         val scope = parameters.searchScope
         val gameType = ParadoxAnalysisManager.getSelectedGameType(project)
-        CwtConfigSymbolSearch.search(null, types, gameType, project, scope).process p@{
+        CwtConfigSymbolSearch.search(nameToSearch, types, gameType, project, scope).process p@{
             if (it.readWriteAccess != ReadWriteAccess.Write) return@p true // declarations only
             val name = it.name
             val configType = CwtConfigType.entries.get(it.type) ?: return@p true

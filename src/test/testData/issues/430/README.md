@@ -3,5 +3,3 @@ See: [#430](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/iss
 See:
 - `icu.windea.pls.lang.inspections.script.expression.UnresolvedExpressionInspection`
 - `icu.windea.pls.lang.resolve.complexExpression.ParadoxTemplateExpression`
-
-Vic3 geographic region short keys and iterators should resolve through the matching rules.

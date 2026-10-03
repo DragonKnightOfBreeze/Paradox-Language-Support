@@ -63,6 +63,7 @@ import com.intellij.util.Processor
 import com.intellij.util.Query
 import com.intellij.util.ThrowableRunnable
 import com.intellij.util.application
+import com.intellij.util.concurrency.annotations.RequiresBlockingContext
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.toArray
 import icu.windea.pls.core.psi.PsiCompositeReference
@@ -663,6 +664,7 @@ inline operator fun CredentialAttributes.setValue(thisRef: Any?, property: KProp
 
 // region RWA Extensions
 
+@RequiresBlockingContext
 fun <T> runSmartReadAction(
     parentDisposable: Disposable? = null,
     task: Callable<T>,
@@ -679,6 +681,7 @@ fun <T> runSmartReadAction(
     return action.executeSynchronously()
 }
 
+@RequiresBlockingContext
 fun <T> runSmartReadAction(
     project: Project,
     parentDisposable: Disposable? = null,
@@ -700,6 +703,7 @@ fun <T> runSmartReadAction(
     return action.executeSynchronously()
 }
 
+@RequiresBlockingContext
 fun <T> runSmartReadActionAsync(
     executor: Executor,
     parentDisposable: Disposable? = null,
@@ -783,7 +787,8 @@ fun executeWriteCommand(
 // endregion
 
 // region EP Extensions
-
+// NOTE 3.0.0 [compatibility] `addExtensionPointListener(listener: ExtensionPointListener<T>)` is deprecated since IDEA-262
+//  - Pass CoroutineScope to addExtensionPointListener.
 inline fun <T : Any> ExtensionPointName<T>.addExtensionPointListener(crossinline action: (extension: T) -> Unit) {
     addExtensionPointListener(object : ExtensionPointListener<T> {
         override fun extensionAdded(extension: T, pluginDescriptor: PluginDescriptor) {

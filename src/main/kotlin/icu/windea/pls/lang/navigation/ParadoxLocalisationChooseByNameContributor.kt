@@ -28,11 +28,11 @@ class ParadoxLocalisationChooseByNameContributor : ChooseByNameContributorEx {
 
     override fun processElementsWithName(name: String, processor: Processor<in NavigationItem>, parameters: FindSymbolParameters) {
         if (!isEnabled()) return
-        val name = ChronicleChooseByNameUtil.getAdjustedName(name, parameters) // adjust name if necessary
+        val nameToSearch = ChronicleChooseByNameUtil.getNameToSearch(name, parameters) // adjust name if necessary
         val project = parameters.project
         val scope = parameters.searchScope
         val idFilter = parameters.idFilter
         val requiredClass = ParadoxLocalisationProperty::class.java
-        StubIndex.getInstance().processElements(indexKey, name, project, scope, idFilter, requiredClass, processor)
+        StubIndex.getInstance().processElements(indexKey, nameToSearch, project, scope, idFilter, requiredClass, processor)
     }
 }

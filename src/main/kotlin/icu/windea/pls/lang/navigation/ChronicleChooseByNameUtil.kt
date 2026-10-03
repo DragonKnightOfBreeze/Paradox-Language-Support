@@ -3,7 +3,7 @@ package icu.windea.pls.lang.navigation
 import com.intellij.util.indexing.FindSymbolParameters
 
 object ChronicleChooseByNameUtil {
-    fun getAdjustedName(name: String, parameters: FindSymbolParameters): String {
+    fun getNameToSearch(name: String, parameters: FindSymbolParameters): String {
         // NOTE 2.1.4 tricky but necessary in some situations (e.g., for event ids, like `namespace.1`)
         val pattern = parameters.localPatternName
         val nameWithLeadingDot = ".$name"

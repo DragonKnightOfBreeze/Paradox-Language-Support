@@ -37,12 +37,12 @@ class ParadoxDefinitionChooseByNameContributor : ChooseByNameContributorEx {
 
     override fun processElementsWithName(name: String, processor: Processor<in NavigationItem>, parameters: FindSymbolParameters) {
         if (!isEnabled()) return
-        val name = ChronicleChooseByNameUtil.getAdjustedName(name, parameters) // adjust name if necessary
+        val nameToSearch = ChronicleChooseByNameUtil.getNameToSearch(name, parameters) // adjust name if necessary
         val project = parameters.project
         val scope = GlobalSearchScopeUtil.toGlobalSearchScope(parameters.searchScope, project)
         val gameType = ParadoxAnalysisManager.getSelectedGameType(project)
         val selector = ParadoxDefinitionSearch.selector(project).withSearchScope(scope).withGameType(gameType)
-        ParadoxDefinitionSearch.search(name, null, selector).process p@{
+        ParadoxDefinitionSearch.search(nameToSearch, null, selector).process p@{
             val element = it.element ?: return@p true
             val definitionInfo = element.definitionInfo ?: return@p true
             val navigationElement = ParadoxDefinitionNavigationElement(element, definitionInfo) // show correct name and icon in navigation view
