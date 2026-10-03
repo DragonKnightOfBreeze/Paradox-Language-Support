@@ -14,9 +14,11 @@ import icu.windea.pls.core.util.IntRangeInfo
 
 class CwtBasicDataExpressionSupport : CwtTextPatternBasedDataExpressionSupport() {
     override fun registerProviders() {
-        register(CwtDataTypes.Any, "\$any")
-        register(CwtDataTypes.Literal, "\$literal")
-        register(CwtDataTypes.Scalar, "scalar")
+        register(CwtDataTypes.Any, $$"$any")
+        register(CwtDataTypes.Literal, $$"$literal")
+
+        register(CwtDataTypes.WildcardAny, $$$"$$any")
+        register(CwtDataTypes.WildcardLiteral, $$$"$$literal")
 
         register(CwtDataTypes.Bool, "bool")
 
@@ -26,6 +28,7 @@ class CwtBasicDataExpressionSupport : CwtTextPatternBasedDataExpressionSupport()
         register(CwtDataTypes.Float, "float")
         registerRanged(CwtDataTypes.Float, "float") { floatRange = FloatRangeInfo.from(it) }
 
+        register(CwtDataTypes.Scalar, "scalar")
 
         register(CwtDataTypes.ColorField, "colour_field")
         register(CwtDataTypes.ColorField, "colour[", "]") { value = it.orNull() }
@@ -77,20 +80,21 @@ class CwtCoreDataExpressionSupport : CwtTextPatternBasedDataExpressionSupport(),
         register(CwtDataTypes.IntVariableField, "int_variable_field_32")
         registerRanged(CwtDataTypes.IntVariableField, "int_variable_field_32") { intRange = IntRangeInfo.from(it) }
 
-        register(CwtDataTypes.Command, "\$command")
-        register(CwtDataTypes.ScriptValueReference, "\$script_value_reference")
-        register(CwtDataTypes.DefineReference, "\$define_reference")
-        register(CwtDataTypes.ArrayDefineReference, "\$array_define_reference")
-        register(CwtDataTypes.Tags, "\$tags[", "]") { value = it.orNull() }
-        register(CwtDataTypes.Tags, "\$tags_condition[", "]") { value = it.orNull(); condition = true }
-        register(CwtDataTypes.DatabaseObject, "\$database_object")
+        register(CwtDataTypes.Command, $$"$command")
+        register(CwtDataTypes.ScriptValueReference, $$"$script_value_reference")
+        register(CwtDataTypes.DefineReference, $$"$define_reference")
+        register(CwtDataTypes.ArrayDefineReference, $$"$array_define_reference")
+        register(CwtDataTypes.Tags, $$"$tags[", "]") { value = it.orNull() }
+        register(CwtDataTypes.Tags, $$"$tags_condition[", "]") { value = it.orNull(); condition = true }
+        register(CwtDataTypes.DatabaseObject, $$"$database_object")
         register(CwtDataTypes.NameFormat, "name_format[", "]") { value = it.orNull() }
+        register(CwtDataTypes.NameFormat, $$"$name_format[", "]") { value = it.orNull() } // for alignment
 
-        register(CwtDataTypes.TechnologyWithLevel, "\$technology_with_level")
+        register(CwtDataTypes.TechnologyWithLevel, $$"$technology_with_level")
 
-        register(CwtDataTypes.Parameter, "\$parameter")
-        register(CwtDataTypes.ParameterValue, "\$parameter_value")
-        register(CwtDataTypes.LocalisationParameter, "\$localisation_parameter")
+        register(CwtDataTypes.Parameter, $$"$parameter")
+        register(CwtDataTypes.ParameterValue, $$"$parameter_value")
+        register(CwtDataTypes.LocalisationParameter, $$"$localisation_parameter")
     }
 }
 
@@ -108,8 +112,8 @@ class CwtPathReferenceDataExpressionSupport : CwtTextPatternBasedDataExpressionS
 
 class CwtExternalReferenceDataExpressionSupport : CwtTextPatternBasedDataExpressionSupport(), CwtConfigResolverScope {
     override fun registerProviders() {
-        register(CwtDataTypes.ShaderEffect, "\$shader_effect")
-        register(CwtDataTypes.MeshLocator, "\$mesh_locator")
+        register(CwtDataTypes.ShaderEffect, $$"$shader_effect")
+        register(CwtDataTypes.MeshLocator, $$"$mesh_locator")
     }
 }
 

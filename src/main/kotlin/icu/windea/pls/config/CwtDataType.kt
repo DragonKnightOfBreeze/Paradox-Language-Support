@@ -28,20 +28,13 @@ import icu.windea.pls.model.type.ParadoxExpressionType
  * 根据规则表达式的数据类型分派到对应的匹配分支。
  * 匹配结果为 [ParadoxMatchResult]，存在多个候选规则时优先选择 [priority] 更高的数据表达式。
  *
- * ### 数据类型分类
- *
- * - **引用类型**（[isReference]）：表达式指向可导航的目标（如定义、本地化、文件路径等）。
- * - **模式感知**（[isPatternAware]）：表达式自身包含模式字符串，匹配时进行模式比较（如常量精确匹配、Ant模式、正则匹配）。
- * - **后缀感知**（[isSuffixAware]）：表达式由基础引用和后缀列表组成，匹配时需同时验证引用和后缀。
- *
  * ### 备注
  *
  * - 为了优化性能，此类使用引用相等（identity equality）而非结构相等。
  * - 所有实例通过 [Builder] 构建并注册到 [entries] 中。
  *
  * @property id 唯一标识符。
- * @property isReference 是否为引用类型。
- * @property isPatternAware 是否可以感知模式（表达式包含某种模式字符串，例如正则表达式）。
+ * @property isReference 是否为引用类型（表达式引用了特定目标，如定义、本地化、文件路径等）。
  * @property isSuffixAware 是否可以感知后缀（表达式包含后缀列表）。
  * @property priority 静态优先级。脚本表达式会优先匹配优先级更高的数据表达式。优先级默认为 0.0。
  * @property priorityProvider 动态优先级提供者。根据具体的数据表达式和规则组动态计算优先级。优先级默认为 0.0。
@@ -56,7 +49,6 @@ import icu.windea.pls.model.type.ParadoxExpressionType
 class CwtDataType private constructor(
     val id: String,
     val isReference: Boolean = false,
-    val isPatternAware: Boolean = false,
     val isSuffixAware: Boolean = false,
     val priority: Double? = null,
     val priorityProvider: ((CwtDataExpression, CwtConfigGroup) -> Double)? = null,
@@ -72,18 +64,16 @@ class CwtDataType private constructor(
         private val id: String
     ) {
         private var isReference: Boolean = false
-        private var isPatternAware: Boolean = false
         private var isSuffixAware: Boolean = false
         private var priority: Double? = null
         private var priorityProvider: ((CwtDataExpression, CwtConfigGroup) -> Double)? = null
 
         fun reference() = apply { isReference = true }
-        fun patternAware() = apply { isPatternAware = true }
         fun suffixAware() = apply { isSuffixAware = true }
         fun withPriority(value: Double) = apply { priority = value }
         fun withPriority(value: (CwtDataExpression, CwtConfigGroup) -> Double) = apply { priorityProvider = value }
 
-        fun build(): CwtDataType = CwtDataType(id, isReference, isPatternAware, isSuffixAware, priority, priorityProvider).also { _entries[id] = it }
+        fun build(): CwtDataType = CwtDataType(id, isReference, isSuffixAware, priority, priorityProvider).also { _entries[id] = it }
         inline fun build(block: Builder.() -> Unit): CwtDataType = also { block() }.build()
     }
 

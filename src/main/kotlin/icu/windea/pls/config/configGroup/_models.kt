@@ -36,16 +36,19 @@ enum class CwtConfigGroupFileSource {
  *
  * 这些规则是合成的，规则文件中不存在声明处。
  */
+@Suppress("unused")
 class CwtConfigGroupMockConfigs(configGroup: CwtConfigGroup) {
-    val anyProperty = CwtPropertyConfig.mock(configGroup, "\$any", "\$any")
-    val anyValue = CwtValueConfig.mock(configGroup, "\$any")
+    val anyProperty = CwtPropertyConfig.mock(configGroup, $$"$any", $$"$any")
+    val any = CwtValueConfig.mock(configGroup, $$"$any")
+    val literal = CwtValueConfig.mock(configGroup, $$"$literal")
+    val wildcardAnyProperty = CwtPropertyConfig.mock(configGroup, $$$"$$any", $$$"$$any")
+    val wildcardAny = CwtValueConfig.mock(configGroup, $$$"$$any")
+    val wildcardLiteral = CwtValueConfig.mock(configGroup, $$$"$$literal")
 
-    val any = CwtValueConfig.mock(configGroup, "\$any")
-    val literal = CwtValueConfig.mock(configGroup, "\$literal")
-    val scalar = CwtValueConfig.mock(configGroup, "scalar")
     val bool = CwtValueConfig.mock(configGroup, "bool")
     val int = CwtValueConfig.mock(configGroup, "int")
     val float = CwtValueConfig.mock(configGroup, "float")
+    val scalar = CwtValueConfig.mock(configGroup, "scalar")
 
     val scriptValue = CwtValueConfig.mock(configGroup, "<script_value>")
     val variable = CwtValueConfig.mock(configGroup, "value[variable]")

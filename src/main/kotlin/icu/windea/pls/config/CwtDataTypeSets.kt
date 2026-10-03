@@ -12,6 +12,17 @@ package icu.windea.pls.config
  */
 @Suppress("unused")
 object CwtDataTypeSets {
+    /** 各种形式的任意类型。 */
+    val Any = arrayOf(
+        CwtDataTypes.Any,
+        CwtDataTypes.WildcardAny,
+    )
+    /** 各种形式的字面量类型。 */
+    val Literal = arrayOf(
+        CwtDataTypes.Literal,
+        CwtDataTypes.WildcardLiteral,
+    )
+
     /** 整数字段相关的数据类型。 */
     val IntField = arrayOf(
         CwtDataTypes.Int,

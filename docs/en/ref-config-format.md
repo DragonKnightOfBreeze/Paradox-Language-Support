@@ -1669,7 +1669,7 @@ The following data types represent the basic forms of values. They can be pre-ma
 
 Any type.
 
-Matches any expressions, acting as the lowest-priority fallback.
+Matches any expression. As the lowest-priority wildcard matching strategy.
 
 Format of corresponding data expressions:
 - `$any`
@@ -1680,7 +1680,7 @@ Format of corresponding data expressions:
 
 Literal type.
 
-Matches any literal expressions, acting as a lower-priority broad match.
+Matches any literal (including booleans, numbers, and strings). As a low-priority wildcard matching strategy.
 Always matches when used as a key.
 
 Format of corresponding data expressions:
@@ -1688,23 +1688,40 @@ Format of corresponding data expressions:
 
 > CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
 
-#### Scalar {#data-type-scalar}
+#### WildcardAny {#data-type-wildcard-any}
 
-Scalar type.
+Wildcard form of the any type. As a special variant of [Any](#data-type-any).
 
-Matches any non-block expressions (strings, numbers, booleans, etc.), acting as a low-priority broad match.
-Always matches when used as a key.
+Suitable for special scenarios such as when there are too many matching candidates, or when the data expression cannot be further inferred.
+
+Used internally by the plugin and should not be used directly in config files.
 
 Format of corresponding data expressions:
-- `scalar`
+- `$$any`
 
-> CWTools Compatibility: Partially compatible. The plugin comes with additional extensions and improvements.
+> CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
+
+#### WildcardLiteral {#data-type-wildcard-literal}
+
+Wildcard form of the literal type. As a special variant of [Literal](#data-type-literal).
+
+Suitable for special scenarios such as when there are too many matching candidates, or when the data expression cannot be further inferred.
+
+Used internally by the plugin and should not be used directly in config files.
+
+Format of corresponding data expressions:
+- `$$literal`
+
+> CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
 
 #### Bool {#data-type-bool}
 
-Boolean type.
+Matches any boolean literal (`yes` / `no`).
 
-Matches boolean values (`yes` / `no`).
+Compatible with syntax macros that need to be resolved or evaluated in advance, such as parameters and scripted variable references.
+For parameters, the expression should be full parameterized.
+
+Not compatible with quoted forms.
 
 Format of corresponding data expressions:
 - `bool`
@@ -1715,15 +1732,18 @@ Format of corresponding data expressions:
 
 Integer type.
 
-Matches integer values.
-When a range parameter is present, it also constrains the numeric range (for inspection only; still considered a match).
-Quoted numbers are also considered a match (compatible with vanilla game files).
+Matches any integer literal.
+Compatible with syntax macros that need to be resolved or evaluated in advance, such as parameters, scripted variable references, and inline math blocks.
+For parameters, the expression should be full parameterized (compatible with leading unary operators).
 
-The range parameter can be any combination of open and closed intervals; by convention, `inf` denotes infinity.
+When range arguments are provided, it also restricts the numeric range (only for checking, still considered a match).
+Range arguments can be any combination of open and closed intervals; by convention, `inf` is used to represent infinity.
+
+Compatible with quoted forms (to be compatible with the vanilla game files).
 
 Format of corresponding data expressions:
 - `int`
-- `int{range}` – where `{range}` matches a range parameter (e.g., `[0..1]` `[-100..100)` `[0..inf)`).
+- `int{range}` – where `{range}` matches a range argument (e.g., `[0..1]` `[-100..100)` `[0..inf)`).
 
 > CWTools Compatibility: Partially compatible. The plugin comes with additional extensions and improvements.
 
@@ -1731,15 +1751,33 @@ Format of corresponding data expressions:
 
 Float type.
 
-Matches floating-point values.
-When a range parameter is present, it also constrains the numeric range (for inspection only; still considered a match).
-Quoted numbers are also considered a match (compatible with vanilla game files).
+Matches any floating-point numeric literal (including integer literals).
 
-The range parameter can be any combination of open and closed intervals; by convention, `inf` denotes infinity.
+Compatible with syntax macros that need to be resolved or evaluated in advance, such as parameters, scripted variable references, and inline math blocks.
+For parameters, the entire expression needs to be treated as a parameter (compatible with leading unary operators).
+
+When a range argument is provided, the numeric range is also constrained (for checking only; it is still considered a match).
+Range arguments can be any combination of open and closed intervals; by convention, `inf` is used to represent infinity.
+
+Compatible with quoted forms (to be compatible with vanilla game files).
 
 Format of corresponding data expressions:
 - `float`
-- `float{range}` – where `{range}` matches a range parameter (e.g., `[0.0..1.0]` `[-100.0..100.0)` `[0.0..inf)`).
+- `float{range}` – where `{range}` matches a range argument (e.g., `[0.0..1.0]` `[-100.0..100.0)` `[0.0..inf)`).
+
+> CWTools Compatibility: Partially compatible. The plugin comes with additional extensions and improvements.
+
+#### Scalar {#data-type-scalar}
+
+Scalar type.
+
+Matches any literal (including booleans, numeric values, and strings).
+Always matches when used as a key.
+
+Compatible with syntax macros that need to be resolved or evaluated in advance, such as parameters, scripted variable references, and inline math blocks.
+
+Format of corresponding data expressions:
+- `scalar`
 
 > CWTools Compatibility: Partially compatible. The plugin comes with additional extensions and improvements.
 
@@ -1747,8 +1785,8 @@ Format of corresponding data expressions:
 
 Color field type.
 
-Matches script color fields (e.g., `rgb { 255 255 255 }`).
-When a parameter is present, it also validates the color type prefix.
+Matches any script color field (e.g., `rgb { 255 255 255 }`).
+When a color type argument is provided, its color type will also be validated.
 
 Format of corresponding data expressions:
 - `colour_field` `color_field`
@@ -1760,9 +1798,10 @@ Format of corresponding data expressions:
 
 Block type.
 
-Matches script blocks (`{ ... }`). Applies only to script expressions used as values, and recursively matches the block contents.
+Matches any script block (e.g., `{ k = v }`).
+Applies only to script expressions that serve as values, and recursively matches the block contents.
 
-Used only for internal representation and does not correspond to a config expression string.
+Used internally by the plugin and cannot be used directly in config files.
 
 > CWTools Compatibility: Compatible.
 
@@ -1985,13 +2024,13 @@ Examples of Corresponding data expressions:
 Value field type.
 
 Matches a float or a value field expression (consisting of zero or more scope nodes and a final value field node, separated by dots forming a chain, e.g., `var`, `root.var`, `root.value:sv`).  
-When a range parameter is present, it also constrains the numeric range (for annotation only; still considered a match).
+When a range argument is present, it also constrains the numeric range (for annotation only; still considered a match).
 
-The range parameter can be any combination of open and closed intervals; by convention, `inf` denotes infinity.
+The range argument can be any combination of open and closed intervals; by convention, `inf` denotes infinity.
 
 Format of corresponding data expressions:
 - `value_field`
-- `value_field{range}` – where `{range}` matches a range parameter (e.g., `[0.0..1.0]`, `[-100.0..100.0)`, `[0.0..inf)`).
+- `value_field{range}` – where `{range}` matches a range argument (e.g., `[0.0..1.0]`, `[-100.0..100.0)`, `[0.0..inf)`).
 
 Examples of Corresponding data expressions:
 - `value_field`
@@ -2004,13 +2043,13 @@ Examples of Corresponding data expressions:
 Integer value field type.
 
 Matches an integer or an integer value field expression (consisting of zero or more scope nodes and a final value field node, separated by dots forming a chain, e.g., `var`, `root.var`, `root.value:sv`).  
-When a range parameter is present, it also constrains the numeric range (for annotation only; still considered a match).
+When a range argument is present, it also constrains the numeric range (for annotation only; still considered a match).
 
-The range parameter can be any combination of open and closed intervals; by convention, `inf` denotes infinity.
+The range argument can be any combination of open and closed intervals; by convention, `inf` denotes infinity.
 
 Format of corresponding data expressions:
 - `int_value_field`
-- `int_value_field{range}` – where `{range}` matches a range parameter (e.g., `[0..1]`, `[-100..100)`, `[0..inf)`).
+- `int_value_field{range}` – where `{range}` matches a range argument (e.g., `[0..1]`, `[-100..100)`, `[0..inf)`).
 
 Examples of Corresponding data expressions:
 - `int_value_field`
@@ -2024,15 +2063,15 @@ Variable field type.
 
 Matches a float or a variable field expression (consisting of zero or more scope nodes and a final variable node, separated by dots forming a chain, e.g., `var`, `root.var`).  
 Can be considered a special subset of [ValueField](#data-type-value-field).  
-When a range parameter is present, it also constrains the numeric range (for annotation only; still considered a match).
+When a range argument is present, it also constrains the numeric range (for annotation only; still considered a match).
 
-The range parameter can be any combination of open and closed intervals; by convention, `inf` denotes infinity.
+The range argument can be any combination of open and closed intervals; by convention, `inf` denotes infinity.
 
 Format of corresponding data expressions:
 - `variable_field`
-- `variable_field{range}` – where `{range}` matches a range parameter (e.g., `[0.0..1.0]`, `[-100.0..100.0)`, `[0.0..inf)`).
+- `variable_field{range}` – where `{range}` matches a range argument (e.g., `[0.0..1.0]`, `[-100.0..100.0)`, `[0.0..inf)`).
 - `variable_field_32` – 32-bit variant.
-- `variable_field_32{range}` – 32-bit variant, where `{range}` matches a range parameter (e.g., `[0.0..1.0]`, `[-100.0..100.0)`, `[0.0..inf)`).
+- `variable_field_32{range}` – 32-bit variant, where `{range}` matches a range argument (e.g., `[0.0..1.0]`, `[-100.0..100.0)`, `[0.0..inf)`).
 
 Examples of Corresponding data expressions:
 - `variable_field`
@@ -2047,15 +2086,15 @@ Integer variable field type.
 
 Matches an integer or an integer variable field expression (consisting of zero or more scope nodes and a final variable node, separated by dots forming a chain, e.g., `var`, `root.var`).  
 Can be considered a special subset of [IntValueField](#data-type-int-value-field).  
-When a range parameter is present, it also constrains the numeric range (for annotation only; still considered a match).
+When a range argument is present, it also constrains the numeric range (for annotation only; still considered a match).
 
-The range parameter can be any combination of open and closed intervals; by convention, `inf` denotes infinity.
+The range argument can be any combination of open and closed intervals; by convention, `inf` denotes infinity.
 
 Format of corresponding data expressions:
 - `int_variable_field`
-- `int_variable_field{range}` – where `{range}` matches a range parameter (e.g., `[0..1]`, `[-100..100)`, `[0..inf)`).
+- `int_variable_field{range}` – where `{range}` matches a range argument (e.g., `[0..1]`, `[-100..100)`, `[0..inf)`).
 - `int_variable_field_32` – 32-bit variant.
-- `int_variable_field_32{range}` – 32-bit variant, where `{range}` matches a range parameter (e.g., `[0..1]`, `[-100..100)`, `[0..inf)`).
+- `int_variable_field_32{range}` – 32-bit variant, where `{range}` matches a range argument (e.g., `[0..1]`, `[-100..100)`, `[0..inf)`).
 
 Examples of Corresponding data expressions:
 - `int_variable_field`
@@ -2141,6 +2180,7 @@ Matches a name format expression (e.g., `{alpha}`, `{<adj> {<noun>}}`).
 
 Format of corresponding data expressions:
 - `name_format[{type}]` - where `{name}` matches the format name (the corresponding definition type is `{name}_name_format`).
+- `$name_format[{type}]` - provided for alignment.
 
 > CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
 

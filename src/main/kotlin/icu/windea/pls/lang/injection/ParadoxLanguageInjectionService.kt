@@ -167,6 +167,7 @@ object ParadoxLanguageInjectionService {
 
     private fun acceptLocalisationTextInjection(expression: CwtDataExpression): Boolean {
         // 要求匹配的规则表达式兼容字面量或普通本地化
-        return expression.type == CwtDataTypes.Scalar || expression.type in CwtDataTypeSets.LocalisationAware
+        val dataType = expression.type
+        return dataType == CwtDataTypes.Literal || dataType == CwtDataTypes.Scalar || dataType in CwtDataTypeSets.LocalisationAware
     }
 }

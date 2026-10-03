@@ -292,10 +292,10 @@ object ParadoxConfigService {
         val result = mutableListOf<CwtMemberConfig<*>>()
         if (expression.value == "-") {
             parentConfigs.forEachFast f1@{ parentConfig ->
-                // NOTE #386 if value expression of parent config is `$any`, then use `$any` only
-                if (parentConfig.valueExpression.type == CwtDataTypes.Any) {
-                    return listOf(configGroup.mockConfigs.anyValue)
-                }
+                // NOTE #386 if value expression of parent config is any-type, then use corresponding fallback config only
+                // 3.0.4 compatible with wildcard form
+                if (parentConfig.valueExpression.type == CwtDataTypes.Any) return listOf(configGroup.mockConfigs.any)
+                if (parentConfig.valueExpression.type == CwtDataTypes.WildcardAny) return listOf(configGroup.mockConfigs.wildcardAny)
 
                 val configs = parentConfig.values
                 if (configs.isNullOrEmpty()) return@f1
@@ -306,10 +306,10 @@ object ParadoxConfigService {
             }
         } else {
             parentConfigs.forEachFast f1@{ parentConfig ->
-                // NOTE #386 if value expression of parent config is `$any`, then use `$any = $any` only
-                if (parentConfig.valueExpression.type == CwtDataTypes.Any) {
-                    return listOf(configGroup.mockConfigs.anyProperty)
-                }
+                // NOTE #386 if value expression of parent config is any-type, then use corresponding fallback config only
+                // 3.0.4 compatible with wildcard form
+                if (parentConfig.valueExpression.type == CwtDataTypes.Any) return listOf(configGroup.mockConfigs.anyProperty)
+                if (parentConfig.valueExpression.type == CwtDataTypes.WildcardAny) return listOf(configGroup.mockConfigs.wildcardAnyProperty)
 
                 val configs = parentConfig.properties
                 if (configs.isNullOrEmpty()) return@f1

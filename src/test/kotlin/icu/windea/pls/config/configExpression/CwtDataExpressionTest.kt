@@ -100,17 +100,22 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
 
     @Test
     fun testAny() {
-        expectDataExpression("\$any", CwtDataTypes.Any) { expectNoMetadata(it) }
+        expectDataExpression($$"$any", CwtDataTypes.Any) { expectNoMetadata(it) }
     }
 
     @Test
     fun testLiteral() {
-        expectDataExpression("\$literal", CwtDataTypes.Literal) { expectNoMetadata(it) }
+        expectDataExpression($$"$literal", CwtDataTypes.Literal) { expectNoMetadata(it) }
     }
 
     @Test
-    fun testScalar() {
-        expectDataExpression("scalar", CwtDataTypes.Scalar) { expectNoMetadata(it) }
+    fun testWildcardAny() {
+        expectDataExpression($$$"$$any", CwtDataTypes.WildcardAny) { expectNoMetadata(it) }
+    }
+
+    @Test
+    fun testWildcardLiteral() {
+        expectDataExpression($$$"$$literal", CwtDataTypes.WildcardLiteral) { expectNoMetadata(it) }
     }
 
     @Test
@@ -149,6 +154,11 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
         expectDataExpression("float[-100.0..100.0)", CwtDataTypes.Float) { expectFloatRange(it, -100.0f, 100.0f, openEnd = true) }
         // integer bounds are also accepted for a float range
         expectDataExpression("float[1..2]", CwtDataTypes.Float) { expectFloatRange(it, 1.0f, 2.0f) }
+    }
+
+    @Test
+    fun testScalar() {
+        expectDataExpression("scalar", CwtDataTypes.Scalar) { expectNoMetadata(it) }
     }
 
     @Test
@@ -310,37 +320,37 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
 
     @Test
     fun testCommand() {
-        expectDataExpression("\$command", CwtDataTypes.Command) { expectNoMetadata(it) }
+        expectDataExpression($$"$command", CwtDataTypes.Command) { expectNoMetadata(it) }
     }
 
     @Test
     fun testScriptValueReference() {
-        expectDataExpression("\$script_value_reference", CwtDataTypes.ScriptValueReference) { expectNoMetadata(it) }
+        expectDataExpression($$"$script_value_reference", CwtDataTypes.ScriptValueReference) { expectNoMetadata(it) }
     }
 
     @Test
     fun testDefineReference() {
-        expectDataExpression("\$define_reference", CwtDataTypes.DefineReference) { expectNoMetadata(it) }
+        expectDataExpression($$"$define_reference", CwtDataTypes.DefineReference) { expectNoMetadata(it) }
     }
 
     @Test
     fun testArrayDefineReference() {
-        expectDataExpression("\$array_define_reference", CwtDataTypes.ArrayDefineReference) { expectNoMetadata(it) }
+        expectDataExpression($$"$array_define_reference", CwtDataTypes.ArrayDefineReference) { expectNoMetadata(it) }
     }
 
     @Test
     fun testTags() {
-        expectDataExpression("\$tags[some_tag]", CwtDataTypes.Tags) {
+        expectDataExpression($$"$tags[some_tag]", CwtDataTypes.Tags) {
             it.metadata.value.expectEquals("some_tag")
             it.metadata.condition.expectFalse()
         }
         // condition variant
-        expectDataExpression("\$tags_condition[some_tag]", CwtDataTypes.Tags) {
+        expectDataExpression($$"$tags_condition[some_tag]", CwtDataTypes.Tags) {
             it.metadata.value.expectEquals("some_tag")
             it.metadata.condition.expectTrue()
         }
         // empty name
-        expectDataExpression("\$tags[]", CwtDataTypes.Tags) {
+        expectDataExpression($$"$tags[]", CwtDataTypes.Tags) {
             it.metadata.value.expectNull()
             it.metadata.condition.expectFalse()
         }
@@ -348,33 +358,35 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
 
     @Test
     fun testDatabaseObject() {
-        expectDataExpression("\$database_object", CwtDataTypes.DatabaseObject) { expectNoMetadata(it) }
+        expectDataExpression($$"$database_object", CwtDataTypes.DatabaseObject) { expectNoMetadata(it) }
     }
 
     @Test
     fun testNameFormat() {
         expectDataExpression("name_format[format_x]", CwtDataTypes.NameFormat) { it.metadata.value.expectEquals("format_x") }
         expectDataExpression("name_format[]", CwtDataTypes.NameFormat) { it.metadata.value.expectNull() }
+        expectDataExpression($$"$name_format[format_x]", CwtDataTypes.NameFormat) { it.metadata.value.expectEquals("format_x") }
+        expectDataExpression($$"$name_format[]", CwtDataTypes.NameFormat) { it.metadata.value.expectNull() }
     }
 
     @Test
     fun testTechnologyWithLevel() {
-        expectDataExpression("\$technology_with_level", CwtDataTypes.TechnologyWithLevel) { expectNoMetadata(it) }
+        expectDataExpression($$"$technology_with_level", CwtDataTypes.TechnologyWithLevel) { expectNoMetadata(it) }
     }
 
     @Test
     fun testParameter() {
-        expectDataExpression("\$parameter", CwtDataTypes.Parameter) { expectNoMetadata(it) }
+        expectDataExpression($$"$parameter", CwtDataTypes.Parameter) { expectNoMetadata(it) }
     }
 
     @Test
     fun testParameterValue() {
-        expectDataExpression("\$parameter_value", CwtDataTypes.ParameterValue) { expectNoMetadata(it) }
+        expectDataExpression($$"$parameter_value", CwtDataTypes.ParameterValue) { expectNoMetadata(it) }
     }
 
     @Test
     fun testLocalisationParameter() {
-        expectDataExpression("\$localisation_parameter", CwtDataTypes.LocalisationParameter) { expectNoMetadata(it) }
+        expectDataExpression($$"$localisation_parameter", CwtDataTypes.LocalisationParameter) { expectNoMetadata(it) }
     }
 
     @Test
@@ -430,12 +442,12 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
 
     @Test
     fun testShaderEffect() {
-        expectDataExpression("\$shader_effect", CwtDataTypes.ShaderEffect) { expectNoMetadata(it) }
+        expectDataExpression($$"$shader_effect", CwtDataTypes.ShaderEffect) { expectNoMetadata(it) }
     }
 
     @Test
     fun testMeshLocator() {
-        expectDataExpression("\$mesh_locator", CwtDataTypes.MeshLocator) { expectNoMetadata(it) }
+        expectDataExpression($$"$mesh_locator", CwtDataTypes.MeshLocator) { expectNoMetadata(it) }
     }
 
     // endregion

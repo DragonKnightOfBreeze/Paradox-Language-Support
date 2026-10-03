@@ -38,7 +38,7 @@ object CwtDataTypes {
     /**
      * 任意类型。
      *
-     * 匹配任意表达式，作为最低优先级的回退匹配。
+     * 匹配任意表达式。作为最低优先级的通配匹配策略。
      *
      * 对应的数据表达式的格式：
      * - `$any`
@@ -51,7 +51,7 @@ object CwtDataTypes {
     /**
      * 字面量类型。
      *
-     * 匹配任意作为字面量的表达式，作为更低优先级的回退匹配。
+     * 匹配任意字面量（包括布尔值、数值和字符串）。作为低优先级的通配匹配策略。
      * 作为键时总是匹配。
      *
      * 对应的数据表达式的格式：
@@ -63,23 +63,44 @@ object CwtDataTypes {
         withPriority(2.0) // very low
     }
     /**
-     * 标量类型。
+     * 通配形式的任意类型。作为 [Any] 的一种特殊变体。
      *
-     * 匹配任意非块的表达式（字符串、数字、布尔值等），作为低优先级的回退匹配。
-     * 作为键时总是匹配。
+     * 适用于匹配候选项过多，或者无法进一步推断数据表达式等特殊场景。
+     *
+     * 由插件内部使用，不应直接在规则文件中使用。
      *
      * 对应的数据表达式的格式：
-     * - `scalar`
+     * - `$$any`
      *
-     * > CWTools 兼容性：部分兼容。插件进行了额外的扩展和改进。
+     * > CWTools 兼容性：不兼容。插件作为扩展提供。
      */
-    val Scalar = CwtDataType.builder("Scalar").build {
-        withPriority(3.0) // very low
+    val WildcardAny = CwtDataType.builder("WildcardAny").build {
+        withPriority(1.0) // very low
+    }
+    /**
+     * 通配形式的字面量类型。作为 [Literal] 的一种特殊变体。
+     *
+     * 适用于匹配候选项过多，或者无法进一步推断数据表达式等特殊场景。
+     *
+     * 由插件内部使用，不应直接在规则文件中使用。
+     *
+     * 对应的数据表达式的格式：
+     * - `$$literal`
+     *
+     * > CWTools 兼容性：不兼容。插件作为扩展提供。
+     */
+    val WildcardLiteral = CwtDataType.builder("WildcardLiteral").build {
+        withPriority(2.0) // very low
     }
     /**
      * 布尔类型。
      *
-     * 匹配布尔值（`yes` / `no`）。
+     * 匹配任意布尔字面量（`yes` / `no`）。
+     *
+     * 兼容需要预先解析或评估的语法宏，例如参数、封装变量引用。
+     * 对于参数，需要表达式整个作为参数。
+     *
+     * 不兼容用引号括起的形式。
      *
      * 对应的数据表达式的格式：
      * - `bool`
@@ -87,16 +108,20 @@ object CwtDataTypes {
      * > CWTools 兼容性：兼容。
      */
     val Bool = CwtDataType.builder("Bool").build {
-        withPriority(100.0) // highest
+        withPriority(100.0) // very high (higher than 90)
     }
     /**
      * 整数类型。
      *
-     * 匹配整数值。
-     * 带范围参数时，还会限制数值范围（仅作检查，仍然视为匹配）。
-     * 用引号括起的数字也视为匹配（兼容原版游戏文件）。
+     * 匹配任意整数字面量。
      *
+     * 兼容需要预先解析或评估的语法宏，例如参数、封装变量引用、内联数学块。
+     * 对于参数，需要表达式整个作为参数（兼容起始的一元运算符）。
+     *
+     * 带范围参数时，还会限制数值范围（仅作检查，仍然视为匹配）。
      * 范围参数可以是开区间与闭区间的任意组合，习惯上使用 `inf` 表示无限大。
+     *
+     * 兼容用引号括起的形式（以兼容原版游戏文件）。
      *
      * 对应的数据表达式的格式：
      * - `int`
@@ -112,11 +137,15 @@ object CwtDataTypes {
     /**
      * 浮点数类型。
      *
-     * 匹配浮点数值。
-     * 带范围参数时，还会限制数值范围（仅作检查，仍然视为匹配）。
-     * 用引号括起的数字也视为匹配（兼容原版游戏文件）。
+     * 匹配任意浮点数字面量（也包括整数字面量）。
      *
+     * 兼容需要预先解析或评估的语法宏，例如参数、封装变量引用、内联数学块。
+     * 对于参数，需要表达式整个作为参数（兼容起始的一元运算符）。
+     *
+     * 带范围参数时，还会限制数值范围（仅作检查，仍然视为匹配）。
      * 范围参数可以是开区间与闭区间的任意组合，习惯上使用 `inf` 表示无限大。
+     *
+     * 兼容用引号括起的形式（以兼容原版游戏文件）。
      *
      * 对应的数据表达式的格式：
      * - `float`
@@ -130,10 +159,26 @@ object CwtDataTypes {
         withPriority(90.0) // very high
     }
     /**
+     * 标量类型。
+     *
+     * 匹配任意字面量（包括布尔值、数值和字符串）。
+     * 作为键时总是匹配。
+     *
+     * 兼容需要预先解析或评估的语法宏，例如参数、封装变量引用、内联数学块。
+     *
+     * 对应的数据表达式的格式：
+     * - `scalar`
+     *
+     * > CWTools 兼容性：部分兼容。插件进行了额外的扩展和改进。
+     */
+    val Scalar = CwtDataType.builder("Scalar").build {
+        withPriority(9.0) // very low (lower than 10)
+    }
+    /**
      * 颜色字段类型。
      *
-     * 匹配脚本颜色字段（如 `rgb { 255 255 255 }`）。
-     * 带参数时，还会验证颜色类型前缀。
+     * 匹配任意脚本颜色字段（如 `rgb { 255 255 255 }`）。
+     * 带颜色类型参数时，还会验证其颜色类型。
      *
      * 对应的数据表达式的格式：
      * - `colour_field` `color_field`
@@ -147,14 +192,15 @@ object CwtDataTypes {
     /**
      * 块类型。
      *
-     * 匹配脚本块（`{ ... }`）。仅适用于作为值的脚本表达式，并递归匹配块内容。
+     * 匹配任意脚本块（如 `{ k = v }`）。
+     * 仅适用于作为值的脚本表达式，并递归匹配块内容。
      *
-     * 仅用于内部表示，不对应规则表达式字符串。
+     * 由插件内部使用，不能直接在规则文件中使用。
      *
      * > CWTools 兼容性：兼容。
      */
     val Block = CwtDataType.builder("Block").build {
-        withPriority(100.0) // highest
+        withPriority(1000.0) // highest
     }
 
     // endregion
@@ -598,6 +644,7 @@ object CwtDataTypes {
      *
      * 对应的数据表达式的格式：
      * - `name_format[{type}]` - 其中 `{name}` 匹配格式的名字（对应的定义类型为 `{name}_name_format`）。
+     * - `$name_format[{type}]` - 出于对齐的目的而提供。
      *
      * > CWTools 兼容性：不兼容。插件作为扩展提供。
      *
@@ -676,7 +723,7 @@ object CwtDataTypes {
      *
      * @see ParadoxTemplateExpression
      */
-    val Template = CwtDataType.builder("Template").build {
+    val Template = CwtDataType.builder("Template").reference().build {
         withPriority(65.0)
     }
 
@@ -879,7 +926,7 @@ object CwtDataTypes {
      * > CWTools 兼容性：兼容。
      */
     val Constant = CwtDataType.builder("Constant").build {
-        withPriority(100.0) // highest
+        withPriority(1000.0) // highest
     }
     /**
      * GLOB 模式类型。可以感知模式（表达式包含某种模式字符串）的数据类型之一。
@@ -895,7 +942,7 @@ object CwtDataTypes {
      * @see GlobMatcher
      * @since 2.2.0
      */
-    val Glob = CwtDataType.builder("Glob").patternAware().build()
+    val Glob = CwtDataType.builder("Glob").build()
     /**
      * ANT 路径模式类型。可以感知模式（表达式包含某种模式字符串）的数据类型之一。
      *
@@ -910,7 +957,7 @@ object CwtDataTypes {
      * @see AntMatcher
      * @since 1.3.6
      */
-    val Ant = CwtDataType.builder("Ant").patternAware().build()
+    val Ant = CwtDataType.builder("Ant").build()
     /**
      * 正则表达式模式类型。可以感知模式（表达式包含某种模式字符串）的数据类型之一。
      *
@@ -925,7 +972,7 @@ object CwtDataTypes {
      * @see RegexMatcher
      * @since 1.3.6
      */
-    val Regex = CwtDataType.builder("Regex").patternAware().build()
+    val Regex = CwtDataType.builder("Regex").build()
 
     // endregion
 

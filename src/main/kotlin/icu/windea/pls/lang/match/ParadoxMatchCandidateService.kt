@@ -3,6 +3,7 @@ package icu.windea.pls.lang.match
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.util.SmartList
 import icu.windea.pls.base.ChronicleCapacities
+import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
@@ -14,7 +15,6 @@ import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.processFast
 import icu.windea.pls.core.runWithRecursionGuard
 import icu.windea.pls.lang.manipulation.ParadoxConfigExpansionService
-import icu.windea.pls.config.CwtDataTypes
 
 @Optimized
 object ParadoxMatchCandidateService {
@@ -178,10 +178,11 @@ object ParadoxMatchCandidateService {
     fun collectCandidate(candidate: ParadoxMatchCandidate, result: MutableList<ParadoxMatchCandidate>): Boolean {
         if (result.size >= ChronicleCapacities.maxMatchCandidateSize()) {
             // NOTE 3.0.3 too many candidates, use fallback candidate only (clear all collected candidates first)
+            // 3.0.4 use wildcard form
             val mockConfigs = candidate.value.configGroup.mockConfigs
             val fallbackConfig = when (candidate.value) {
-                is CwtPropertyConfig -> mockConfigs.anyProperty
-                is CwtValueConfig -> mockConfigs.anyValue
+                is CwtPropertyConfig -> mockConfigs.wildcardAnyProperty
+                is CwtValueConfig -> mockConfigs.wildcardAny
             }
             val fallbackCandidate = ParadoxMatchCandidate(fallbackConfig, ParadoxMatchResult.FallbackMatch)
             result.clear()
@@ -205,10 +206,11 @@ object ParadoxMatchCandidateService {
     fun collectProcessedCandidate(candidate: ParadoxMatchCandidate, result: MutableList<ParadoxMatchCandidate>): Boolean {
         if (result.size >= ChronicleCapacities.maxProcessedMatchCandidateSize()) {
             // NOTE 3.0.3 too many candidates, use fallback candidate only (clear all collected candidates first)
+            // 3.0.4 use wildcard form
             val mockConfigs = candidate.value.configGroup.mockConfigs
             val fallbackConfig = when (candidate.value) {
-                is CwtPropertyConfig -> mockConfigs.anyProperty
-                is CwtValueConfig -> mockConfigs.anyValue
+                is CwtPropertyConfig -> mockConfigs.wildcardAnyProperty
+                is CwtValueConfig -> mockConfigs.wildcardAny
             }
             val fallbackCandidate = ParadoxMatchCandidate(fallbackConfig, ParadoxMatchResult.FallbackMatch)
             result.clear()

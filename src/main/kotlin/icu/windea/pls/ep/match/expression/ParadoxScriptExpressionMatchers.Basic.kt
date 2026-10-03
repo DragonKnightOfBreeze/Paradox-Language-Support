@@ -1,6 +1,7 @@
 package icu.windea.pls.ep.match.expression
 
 import icu.windea.pls.config.CwtDataType
+import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtMemberConfig
@@ -12,9 +13,9 @@ import icu.windea.pls.model.type.ParadoxExpressionRole
 import icu.windea.pls.model.type.ParadoxExpressionType
 
 abstract class ParadoxBasicScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
-    /** @see CwtDataTypes.Any */
+    /** @see CwtDataTypeSets.Any */
     class ForAny : ParadoxBasicScriptExpressionMatcher() {
-        override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.Any
+        override fun supports(dataType: CwtDataType) = dataType in CwtDataTypeSets.Any
 
         override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
             // low-priority fallback
@@ -22,20 +23,9 @@ abstract class ParadoxBasicScriptExpressionMatcher : ParadoxScriptExpressionMatc
         }
     }
 
-    /** @see CwtDataTypes.Literal */
+    /** @see CwtDataTypeSets.Literal */
     class ForLiteral : ParadoxBasicScriptExpressionMatcher() {
-        override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.Literal
-
-        override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
-            // low-priority fallback
-            if (!context.expression.isScalar()) return ParadoxMatchResult.NotMatch
-            return ParadoxMatchResult.FallbackMatch
-        }
-    }
-
-    /** @see CwtDataTypes.Scalar */
-    class ForScalar : ParadoxBasicScriptExpressionMatcher() {
-        override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.Scalar
+        override fun supports(dataType: CwtDataType) = dataType in CwtDataTypeSets.Literal
 
         override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
             // low-priority fallback
@@ -84,6 +74,17 @@ abstract class ParadoxBasicScriptExpressionMatcher : ParadoxScriptExpressionMatc
             }
             if (context.expression.isFullParameterizedWithLeadingUnary()) return ParadoxMatchResult.ParameterizedMatch
             return ParadoxMatchResult.NotMatch
+        }
+    }
+
+    /** @see CwtDataTypes.Scalar */
+    class ForScalar : ParadoxBasicScriptExpressionMatcher() {
+        override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.Scalar
+
+        override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
+            // low-priority fallback
+            if (!context.expression.isScalar()) return ParadoxMatchResult.NotMatch
+            return ParadoxMatchResult.FallbackMatch
         }
     }
 

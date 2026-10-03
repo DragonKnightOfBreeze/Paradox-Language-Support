@@ -1,6 +1,7 @@
 package icu.windea.pls.ep.match.expression
 
 import icu.windea.pls.config.CwtDataType
+import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.lang.match.ParadoxExpressionMatchContext
@@ -8,9 +9,9 @@ import icu.windea.pls.lang.match.ParadoxMatchResult
 import icu.windea.pls.lang.match.util.ParadoxMatchResultFactory
 
 abstract class ParadoxBasicCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
-    /** @see CwtDataTypes.Any */
+    /** @see CwtDataTypeSets.Any */
     class ForAny : ParadoxBasicCsvExpressionMatcher() {
-        override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.Any
+        override fun supports(dataType: CwtDataType) = dataType in CwtDataTypeSets.Any
 
         override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression): ParadoxMatchResult {
             // low-priority fallback
@@ -18,19 +19,9 @@ abstract class ParadoxBasicCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
         }
     }
 
-    /** @see CwtDataTypes.Literal */
+    /** @see CwtDataTypeSets.Literal */
     class ForLiteral : ParadoxBasicCsvExpressionMatcher() {
-        override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.Literal
-
-        override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression): ParadoxMatchResult {
-            // low-priority fallback
-            return ParadoxMatchResult.FallbackMatch
-        }
-    }
-
-    /** @see CwtDataTypes.Scalar */
-    class ForScalar : ParadoxBasicCsvExpressionMatcher() {
-        override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.Scalar
+        override fun supports(dataType: CwtDataType) = dataType in CwtDataTypeSets.Literal
 
         override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression): ParadoxMatchResult {
             // low-priority fallback
@@ -79,6 +70,16 @@ abstract class ParadoxBasicCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
                 return ParadoxMatchResult.ExactMatch
             }
             return ParadoxMatchResult.NotMatch
+        }
+    }
+
+    /** @see CwtDataTypes.Scalar */
+    class ForScalar : ParadoxBasicCsvExpressionMatcher() {
+        override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.Scalar
+
+        override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression): ParadoxMatchResult {
+            // low-priority fallback
+            return ParadoxMatchResult.FallbackMatch
         }
     }
 }

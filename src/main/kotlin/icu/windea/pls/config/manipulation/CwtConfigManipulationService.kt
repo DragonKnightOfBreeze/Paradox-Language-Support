@@ -25,6 +25,7 @@ import icu.windea.pls.core.equalsFast
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.removeSurroundingOrNull
+import icu.windea.pls.core.util.ProcessorFactory
 import icu.windea.pls.core.util.values.singletonList
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.core.withRecursionGuard
@@ -266,13 +267,9 @@ object CwtConfigManipulationService {
         val expressionString = dataExpression.expressionString
         val otherExpressionString = otherDataExpression.expressionString
         when (dataType) {
-            CwtDataTypes.Any -> return otherExpressionString
-            CwtDataTypes.Literal -> when (otherDataType) {
-                CwtDataTypes.ColorField -> return null
-                else -> return otherExpressionString
-            }
-            CwtDataTypes.Scalar -> when (otherDataType) {
-                CwtDataTypes.ColorField -> return null
+            in CwtDataTypeSets.Any -> return otherExpressionString
+            in CwtDataTypeSets.Literal -> when (otherDataType) {
+                CwtDataTypes.ColorField -> return null // explicitly null
                 else -> return otherExpressionString
             }
             CwtDataTypes.Int -> when (otherDataType) {
@@ -281,11 +278,23 @@ object CwtConfigManipulationService {
                 CwtDataTypes.IntValueField, CwtDataTypes.IntVariableField -> return "int"
             }
             CwtDataTypes.Float -> when (otherDataType) {
-                CwtDataTypes.ValueField -> return "float"
-                CwtDataTypes.VariableField -> return "float"
+                CwtDataTypes.ValueField, CwtDataTypes.VariableField -> return "float"
+            }
+            CwtDataTypes.Scalar -> when (otherDataType) {
+                CwtDataTypes.ColorField -> return null // explicitly null
+                else -> return otherExpressionString
+            }
+            CwtDataTypes.ColorField -> when (otherDataType) {
+                CwtDataTypes.ColorField -> {
+                    val colorType = dataExpression.metadata.value
+                    val otherColorType = otherDataExpression.metadata.value
+                    if (colorType == null && otherColorType == null) return expressionString
+                    if (colorType != null && colorType.equalsFast(otherColorType)) return expressionString
+                }
+                else -> return null // explicitly null
             }
             CwtDataTypes.IntPercentageField -> when (otherDataType) {
-                CwtDataTypes.PercentageField -> return "int_percentage_field"
+                CwtDataTypes.PercentageField -> return expressionString
             }
             in CwtDataTypeSets.DynamicValue -> when (otherDataType) {
                 in CwtDataTypeSets.DynamicValue -> {
@@ -309,21 +318,23 @@ object CwtConfigManipulationService {
                     if (otherName == null) return expressionString
                 }
             }
+            CwtDataTypes.IntValueField -> when (otherDataType) {
+                CwtDataTypes.ValueField -> return "int_value_field"
+            }
             CwtDataTypes.VariableField -> when (otherDataType) {
                 in CwtDataTypeSets.ValueField -> return "variable_field"
             }
             CwtDataTypes.IntVariableField -> when (otherDataType) {
                 in CwtDataTypeSets.ValueField -> return "int_variable_field"
             }
-            CwtDataTypes.IntValueField -> when (otherDataType) {
-                CwtDataTypes.ValueField -> return "int_value_field"
-            }
             in CwtDataTypeSets.Expandable -> {
                 // NOTE 3.0.3 recursion guard is required here
+                val processor = ProcessorFactory.find<String>()
                 CwtConfigExpansionService.expandExpandable(dataExpression, configGroup, "configExpression.mergeDataExpression") { e ->
-                    mergeDataExpressionDirectional(e, otherDataExpression, configGroup)
-                    true
+                    val r = mergeDataExpressionDirectional(e, otherDataExpression, configGroup)
+                    if (r != null) processor.process(r) else true
                 }
+                return processor.result
             }
         }
         return null
