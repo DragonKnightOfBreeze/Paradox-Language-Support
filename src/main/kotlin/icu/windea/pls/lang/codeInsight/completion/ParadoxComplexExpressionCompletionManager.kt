@@ -628,7 +628,10 @@ object ParadoxComplexExpressionCompletionManager {
     }
 
     private fun completeForTemplateSnippetConstantNode(context: ParadoxCompletionContext, result: CompletionResultSet, node: ParadoxTemplateSnippetConstantNode) {
-        // 一般来说，仅适用于是第一个节点的情况（否则，仍然会匹配范围内的通配符）
+        // NOTE 3.0.4 一般来说，仅适用于是第一个节点的情况（否则，仍然会匹配范围内的通配符）
+        // NOTE 3.0.4 仅在常量片段尚未完整匹配时才提供补全，避免重复提示已经输入完毕的常量
+
+        if (node.text.length >= node.constant.length) return
         val config = node.getMockConfig()
         val context = context.copyFromNode(node).copy(config = config, configs = emptyList())
         val result = result.withPrefixMatcher(context.keyword)

@@ -4,14 +4,11 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
-import icu.windea.pls.config.configExpression.CwtTemplateExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.option.CwtOptionMetadata
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.match.TextMatcher
 import icu.windea.pls.core.select.one
-import icu.windea.pls.lang.match.ParadoxExpressionMatchService
-import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.psi.members
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.psi.stringValue
@@ -22,7 +19,6 @@ import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.util.withSearchScopeType
 import icu.windea.pls.lang.select.selectScope
-import icu.windea.pls.model.expressions.ParadoxExpression
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
@@ -77,12 +73,6 @@ object ParadoxMatchFactory {
 
     fun matchesModifier(element: PsiElement, configGroup: CwtConfigGroup, name: String): Boolean {
         return ParadoxModifierService.matchesModifier(name, element, configGroup)
-    }
-
-    fun matchesTemplate(element: PsiElement, configGroup: CwtConfigGroup, expression: String, templateExpression: String, options: ParadoxMatchOptions? = null): Boolean {
-        val expression = ParadoxExpression.resolve(expression, false)
-        val templateExpression = CwtTemplateExpression.resolve(templateExpression)
-        return ParadoxExpressionMatchService.matchesTemplate(element, expression, templateExpression, configGroup, options)
     }
 
     /**

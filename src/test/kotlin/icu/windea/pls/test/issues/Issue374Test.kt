@@ -133,7 +133,7 @@ class Issue374Test : BasePlatformTestCase(), ChronicleTestScope {
     @Test
     fun testCompletion_DynamicValue() {
         // NOTE 3.0.1 如果这里不另外加上一行 `value = some_other_flag`，以至于只有唯一一个候选项，
-        //  调用 `myFixture.complete` 后会直接插入这个候选项，并且修改 PSI。
+        //  调用 `myFixture.complete` 后默认会直接插入这个候选项，并且修改 PSI。
         //  这会导致意外报错：PSI and index do not match.
 
         markFileInfo(ParadoxGameType.Stellaris, "common/test_entities/test_entities.txt")

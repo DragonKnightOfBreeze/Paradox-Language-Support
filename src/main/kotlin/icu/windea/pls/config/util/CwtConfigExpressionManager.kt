@@ -7,9 +7,7 @@ import icu.windea.pls.config.configExpression.CwtLocationExpression
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.annotations.Optimized
-import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.collections.forEachFast
-import icu.windea.pls.core.util.Tuple2
 
 @Suppress("unused")
 @Optimized
@@ -49,43 +47,6 @@ object CwtConfigExpressionManager {
                     else -> append(referenceNames.getValue(snippetExpression))
                 }
             }
-        }
-    }
-
-    fun toRegex(templateExpression: CwtTemplateExpression): Regex {
-        return regexCache.get(templateExpression)
-    }
-
-    private val regexCache = CacheBuilder("expireAfterAccess=30m").build<CwtTemplateExpression, Regex> { doToRegex(it) }
-
-    private fun doToRegex(templateExpression: CwtTemplateExpression): Regex {
-        return buildString { templateExpression.snippetExpressions.forEachFast { appendRegexSnippet(it) } }.toRegex(RegexOption.IGNORE_CASE)
-    }
-
-    fun toMatchedRegex(templateExpression: CwtTemplateExpression, text: String, incomplete: Boolean = false): Tuple2<Regex, MatchResult>? {
-        return doToMatchedRegex(templateExpression, text, incomplete)
-    }
-
-    private fun doToMatchedRegex(templateExpression: CwtTemplateExpression, text: String, incomplete: Boolean): Pair<Regex, MatchResult>? {
-        val regex = toRegex(templateExpression)
-        val matchResult = regex.matchEntire(text)
-        if (matchResult != null) return regex to matchResult
-        if (incomplete) {
-            var truncated = templateExpression.snippetExpressions.size - 1
-            while (truncated > 0) {
-                val regex1 = buildString { templateExpression.snippetExpressions.take(truncated).forEachFast { appendRegexSnippet(it) } }.toRegex(RegexOption.IGNORE_CASE)
-                val matchResult1 = regex1.matchEntire(text)
-                if (matchResult1 != null) return regex to matchResult1
-                truncated--
-            }
-        }
-        return null
-    }
-
-    private fun StringBuilder.appendRegexSnippet(snippetExpression: CwtDataExpression) {
-        when (snippetExpression.type) {
-            CwtDataTypes.Constant -> append("\\Q").append(snippetExpression.expressionString).append("\\E")
-            else -> append("(.*?)")
         }
     }
 }

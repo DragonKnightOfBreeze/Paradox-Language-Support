@@ -11,17 +11,18 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxTemplateExpression
 class ParadoxTemplateSnippetConstantNode(
     override val text: String,
     override val rangeInExpression: TextRange,
-    override val configGroup: CwtConfigGroup
+    override val configGroup: CwtConfigGroup,
+    val constant: String,
 ) : ParadoxComplexExpressionNodeBase() {
     fun getMockConfig(): CwtValueConfig {
-        return CwtValueConfig.mock(configGroup, text)
+        return CwtValueConfig.mock(configGroup, constant)
     }
 
     companion object {
         @JvmStatic
-        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxTemplateSnippetConstantNode {
+        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, constant: String): ParadoxTemplateSnippetConstantNode {
             // text may contain parameters
-            return ParadoxTemplateSnippetConstantNode(text, textRange, configGroup)
+            return ParadoxTemplateSnippetConstantNode(text, textRange, configGroup, constant)
         }
     }
 }

@@ -3,6 +3,7 @@
 package icu.windea.pls.config.configExpression
 
 import icu.windea.pls.config.CwtDataTypes
+import icu.windea.pls.config.match.CwtTemplateMatchService
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.collections.filterFast
@@ -45,6 +46,7 @@ import icu.windea.pls.ep.config.configExpression.CwtDataExpressionSupport
  *
  * @see CwtDataExpression
  * @see CwtDataExpressionSupport
+ * @see CwtTemplateMatchService
  */
 interface CwtTemplateExpression : CwtConfigExpression {
     val snippetExpressions: List<CwtDataExpression>

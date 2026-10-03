@@ -260,9 +260,11 @@ object ParadoxCompletionFactory {
             .wrapForExpression(context)
     }
 
-    fun fromConstant(context: ParadoxCompletionContext, lookupString: String, element: PsiElement, typeFile: PsiFile?, icon: Icon?): LookupElementBuilder? {
+    fun fromConstant(context: ParadoxCompletionContext, lookupString: String, element: PsiElement?, typeFile: PsiFile?, icon: Icon?): LookupElementBuilder? {
+        // NOTE 3.0.4 输入的 `element` 也允许为 `null`（例如，模板表达式中的常量片段）
         val scopeMatched = context.scopeMatched
-        return LookupElementBuilder.create(element, lookupString)
+        val builder = if (element != null) LookupElementBuilder.create(element, lookupString) else LookupElementBuilder.create(lookupString)
+        return builder
             .withTypeText(typeFile?.name, typeFile?.icon, true)
             .withCaseSensitivity(false) // ignore case
             .withPriority(ParadoxCompletionPriorities.constant)

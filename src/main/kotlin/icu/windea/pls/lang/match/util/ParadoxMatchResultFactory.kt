@@ -8,12 +8,14 @@ import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.delegated.CwtComplexEnumConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.config.configExpression.CwtTemplateExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.normalizePath
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.ParadoxMatchOptionsService
 import icu.windea.pls.lang.match.ParadoxMatchResult
 import icu.windea.pls.lang.match.ParadoxMatchResultService
+import icu.windea.pls.lang.match.ParadoxTemplateMatchService
 import icu.windea.pls.lang.match.toHashString
 import icu.windea.pls.lang.psi.members
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxArrayDefineReferenceExpression
@@ -203,7 +205,8 @@ object ParadoxMatchResultFactory {
         return ParadoxMatchResultService.getFromCache(element, configGroup.project, key, cacheKey) {
             ProgressManager.checkCanceled() // check cancellation before lazy match
             ParadoxMatchResult.LazyTemplateAwareMatch {
-                ParadoxMatchFactory.matchesTemplate(element, configGroup, text, template, options)
+                val templateExpression = CwtTemplateExpression.resolve(template)
+                ParadoxTemplateMatchService.matches(text, templateExpression, element, configGroup, options)
             }
         }
     }

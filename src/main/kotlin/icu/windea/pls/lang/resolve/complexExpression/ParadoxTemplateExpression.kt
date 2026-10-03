@@ -6,9 +6,11 @@ import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.delegated.CwtModifierConfig
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.util.CwtConfigExpressionManager
+import icu.windea.pls.config.match.CwtTemplateMatchService
+import icu.windea.pls.core.collections.anyFast
 import icu.windea.pls.core.hasState
 import icu.windea.pls.lang.ParadoxThreadContext
+import icu.windea.pls.lang.match.ParadoxTemplateMatchService
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 
 /**
@@ -41,6 +43,7 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.*
  * - 解析占位片段时，忽略匿名的定义。
  *
  * @see CwtTemplateExpression
+ * @see ParadoxTemplateMatchService
  */
 interface ParadoxTemplateExpression : ParadoxComplexExpression {
     companion object {
@@ -58,56 +61,42 @@ private object ParadoxTemplateExpressionResolver {
         val templateExpression = when {
             config is CwtModifierConfig -> config.template
             else -> {
-                if (config.configExpression?.type != CwtDataTypes.Template) return null
-                val templateString = config.configExpression?.expressionString ?: return null
+                val configExpression = config.configExpression ?: return null
+                if (configExpression.type != CwtDataTypes.Template) return null
+                val templateString = configExpression.expressionString
                 CwtTemplateExpression.resolve(templateString)
             }
         }
-        if (templateExpression.expressionString.isEmpty()) return null
+        if (templateExpression.expressionString.isEmpty()) return null // null -> invalid `templateExpression` -> unexpected -> fast return
 
         val incomplete = ParadoxThreadContext.incompleteComplexExpression.hasState()
         if (!incomplete && text.isEmpty()) return null
 
-        // 这里需要允许部分匹配
-        val (_, matchResult) = CwtConfigExpressionManager.toMatchedRegex(templateExpression, text, incomplete) ?: return null
-
-        val matchGroups = matchResult.groups.drop(1)
-        if (matchGroups.isEmpty()) return null
-        if (matchGroups.size > templateExpression.referenceExpressions.size) return null
-        if (!incomplete && matchGroups.size < templateExpression.referenceExpressions.size) return null
+        // 3.0.4 partial match should be allowed for incomplete-mode
+        val matchResult = CwtTemplateMatchService.match(text, templateExpression, incomplete) ?: return null
+        val matchGroups = matchResult.groups
+        if (!incomplete && matchGroups.size < templateExpression.snippetExpressions.size) return null // unexpected
+        // NOTE 3.0.4 #430 post optimization: still match in incomplete-mode if the matched value is empty (where snippet data type is `CwtDataTypes.Definition`, or not)
+        if (!incomplete && matchGroups.anyFast { it.expression.type != CwtDataTypes.Constant && it.value.isEmpty() }) return null
 
         val nodes = mutableListOf<ParadoxComplexExpressionNode>()
         val range = range ?: TextRange.create(0, text.length)
         val expression = ParadoxTemplateExpressionImpl(text, range, configGroup, nodes)
 
-        run r1@{
-            val offset = range.startOffset
-            var startIndex = 0
-            for ((i, matchGroup) in matchGroups.withIndex()) {
-                val snippetExpression = templateExpression.referenceExpressions[i]
-                if (matchGroup == null) return null
-                val matchRange = matchGroup.range
-                if (matchRange.first != startIndex) {
-                    val nodeText = text.substring(startIndex, matchRange.first)
-                    val nodeTextRange = TextRange.from(offset, nodeText.length)
-                    val node = ParadoxTemplateSnippetConstantNode(nodeText, nodeTextRange, configGroup)
-                    nodes += node
+        val offset = range.startOffset
+        for (matchGroup in matchGroups) {
+            val snippetExpression = matchGroup.expression
+            val nodeText = matchGroup.value
+            val nodeTextRange = TextRange.from(offset + matchGroup.offset, nodeText.length)
+            val node = when {
+                snippetExpression.type == CwtDataTypes.Constant -> {
+                    ParadoxTemplateSnippetConstantNode.resolve(nodeText, nodeTextRange, configGroup, snippetExpression.expressionString)
                 }
-                val matchValue = matchGroup.value
-                // NOTE 3.0.4 #430 post optimization: still match in incomplete-mode if `matchValue` is empty (where `snippetExpression.type` is `CwtDataTypes.Definition`, or not)
-                if (!incomplete && matchValue.isEmpty()) return null
-                val nodeText = matchValue
-                val nodeTextRange = TextRange.from(offset + matchRange.first, nodeText.length)
-                val node = ParadoxTemplateSnippetNode(nodeText, nodeTextRange, configGroup, snippetExpression)
-                nodes += node
-                startIndex = matchRange.last + 1
+                else -> {
+                    ParadoxTemplateSnippetNode(nodeText, nodeTextRange, configGroup, snippetExpression)
+                }
             }
-            if (startIndex < text.length) {
-                val nodeText = text.substring(startIndex)
-                val nodeTextRange = TextRange.from(offset, nodeText.length)
-                val node = ParadoxTemplateSnippetConstantNode(nodeText, nodeTextRange, configGroup)
-                nodes += node
-            }
+            nodes += node
         }
         if (!incomplete && nodes.isEmpty()) return null
         expression.finishResolution()

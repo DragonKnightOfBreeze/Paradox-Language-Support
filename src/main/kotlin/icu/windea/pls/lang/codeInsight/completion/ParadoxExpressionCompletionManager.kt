@@ -298,8 +298,10 @@ object ParadoxExpressionCompletionManager {
                 return
             }
         }
-        val element = config.resolved().pointer.element ?: return
-        val typeFile = config.resolved().pointer.containingFile
+        // NOTE 3.0.4 当前规则可能是未绑定 PSI 元素的模拟规则（例如模板表达式中的常量片段），此时仍然基于其数据表达式提供补全项
+        val resolvedPointer = config.resolved().pointer
+        val element = resolvedPointer.element
+        val typeFile = resolvedPointer.containingFile
         ParadoxCompletionFactory.fromConstant(context, name, element, typeFile, icon).addToResult(context, result)
     }
 

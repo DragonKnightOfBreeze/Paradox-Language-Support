@@ -1,5 +1,6 @@
 package icu.windea.pls.test.issues
 
+import com.intellij.codeInsight.CodeInsightSettings
 import com.intellij.codeInsight.completion.CompletionType
 import com.intellij.testFramework.IndexingTestUtil
 import com.intellij.testFramework.TestDataPath
@@ -28,9 +29,13 @@ import org.junit.runners.JUnit4
  *   fragment should not abort parsing in `incomplete` mode.
  * - When collecting the configs applicable to code completion, the parent config was not inlined before
  *   reading its child configs, so the inlined child configs were missing.
+ * - For code completion in template expressions, in addition to providing it for reference snippets (e.g., definition references),
+ *   it is also necessary to provide it for constant snippets which was not done previously.
+ *   This requires improving the matching and resolution logic in incomplete-mode.
  *
  * @see icu.windea.pls.lang.inspections.script.expression.UnresolvedExpressionInspection
  * @see icu.windea.pls.lang.resolve.complexExpression.ParadoxTemplateExpression
+ * @see icu.windea.pls.lang.match.ParadoxTemplateMatchService.matches
  * @see icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
  * @see icu.windea.pls.config.manipulation.CwtConfigInlineService.inlineForConfig
  */
@@ -176,7 +181,7 @@ class Issue430Test : BasePlatformTestCase(), ChronicleTestScope {
     }
 
     @Test
-    fun testCompletion_TemplateWithLongerPrefix() {
+    fun testCompletion_ForTemplateWithLongerPrefix() {
         markFileInfo(ParadoxGameType.Vic3, "common/geographic_regions/test.txt")
         myFixture.configureByFile("issues/430/common/geographic_regions/test_extended.txt")
 
@@ -195,8 +200,18 @@ class Issue430Test : BasePlatformTestCase(), ChronicleTestScope {
         )
 
         IndexingTestUtil.waitUntilIndexesAreReady(project)
-        myFixture.complete(CompletionType.BASIC)
-        assertContainsElements(myFixture.lookupElementStrings!!, "any_country_in_")
+        // NOTE 该输入只有唯一一个候选项（`any_country_in_`），若不禁用自动补全，
+        //  `myFixture.complete` 会直接插入候选项并修改 PSI，导致意外报错：PSI and index do not match.
+        //  参见 `Issue374Test.testCompletion_DynamicValue`。
+        val settings = CodeInsightSettings.getInstance()
+        val autoComplete = settings.AUTOCOMPLETE_ON_CODE_COMPLETION
+        settings.AUTOCOMPLETE_ON_CODE_COMPLETION = false
+        try {
+            myFixture.complete(CompletionType.BASIC)
+            assertContainsElements(myFixture.lookupElementStrings!!, "any_country_in_")
+        } finally {
+            settings.AUTOCOMPLETE_ON_CODE_COMPLETION = autoComplete
+        }
     }
 
     @Test
