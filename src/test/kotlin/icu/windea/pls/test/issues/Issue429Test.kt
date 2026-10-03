@@ -17,7 +17,7 @@ import org.junit.runners.JUnit4
  *
  * In parameterized scripted effects, the unused-parameter inspection reported "Parameter is set but not
  * used" for all passed parameters, even though the definition does read them. The expected parameters were
- * still detected correctly (missing required parameters were still reported).
+ * still detected correctly (failed required parameters were still reported).
  *
  * Cause: in the parameter support factory, the definition name was obtained via `context.name`, which is
  * wrong when the definition is an injection (e.g., `REPLACE_OR_CREATE:x = {...}`), since the context name
@@ -103,6 +103,62 @@ class Issue429Test : BasePlatformTestCase(), ChronicleTestScope {
         myFixture.checkHighlighting()
     }
 
+    @Test
+    fun testInspection_UsedParametersInScriptedEffect_Failed() {
+        markFileInfo(ParadoxGameType.Vic3, "common/scripted_effects/00_test_declaration.txt")
+        myFixture.configureByFile("issues/429/common/scripted_effects/00_test_declaration.txt")
+
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+
+        markFileInfo(ParadoxGameType.Vic3, "common/scripted_effects/01_test_caller.txt")
+        myFixture.configureByFile("issues/429/common/scripted_effects/01_test_caller.failed.txt")
+
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+        myFixture.checkHighlighting()
+    }
+
+    @Test
+    fun testInspection_UsedParametersInScriptedEffect_Injected_Failed() {
+        markFileInfo(ParadoxGameType.Vic3, "common/scripted_effects/00_test_declaration.txt")
+        myFixture.configureByFile("issues/429/common/scripted_effects/00_test_declaration.txt")
+
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+
+        markFileInfo(ParadoxGameType.Vic3, "common/scripted_effects/01_test_caller_injected.txt")
+        myFixture.configureByFile("issues/429/common/scripted_effects/01_test_caller_injected.failed.txt")
+
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+        myFixture.checkHighlighting()
+    }
+
+    @Test
+    fun testInspection_UsedParametersInScriptedEffect_Nested_Failed() {
+        markFileInfo(ParadoxGameType.Vic3, "common/scripted_effects/00_test_declaration.txt")
+        myFixture.configureByFile("issues/429/common/scripted_effects/00_test_declaration.txt")
+
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+
+        markFileInfo(ParadoxGameType.Vic3, "common/scripted_effects/01_test_caller_nested.txt")
+        myFixture.configureByFile("issues/429/common/scripted_effects/01_test_caller_nested.failed.txt")
+
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+        myFixture.checkHighlighting()
+    }
+
+    @Test
+    fun testInspection_UsedParametersInScriptedEffect_NestedAndInjected_Failed() {
+        markFileInfo(ParadoxGameType.Vic3, "common/scripted_effects/00_test_declaration.txt")
+        myFixture.configureByFile("issues/429/common/scripted_effects/00_test_declaration.txt")
+
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+
+        markFileInfo(ParadoxGameType.Vic3, "common/scripted_effects/01_test_caller_nested_and_injected.txt")
+        myFixture.configureByFile("issues/429/common/scripted_effects/01_test_caller_nested_and_injected.failed.txt")
+
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+        myFixture.checkHighlighting()
+    }
+
     // endregion
 
     // region declared by definition injection
@@ -110,7 +166,7 @@ class Issue429Test : BasePlatformTestCase(), ChronicleTestScope {
     // e.g., `REPLACE_OR_CREATE:com_change_and_clamp_variable = {...}`
 
     @Test
-    fun testInspection_UsedParametersInScriptedEffect_FromInjection() {
+    fun testInspection_UsedParametersInScriptedEffectFromInjection() {
         markFileInfo(ParadoxGameType.Vic3, "common/scripted_effects/00_test_declaration_injected.txt")
         myFixture.configureByFile("issues/429/common/scripted_effects/00_test_declaration_injected.txt")
 
@@ -124,7 +180,7 @@ class Issue429Test : BasePlatformTestCase(), ChronicleTestScope {
     }
 
     @Test
-    fun testInspection_UsedParametersInScriptedEffect_FromInjection_Injected() {
+    fun testInspection_UsedParametersInScriptedEffectFromInjection_Injected() {
         markFileInfo(ParadoxGameType.Vic3, "common/scripted_effects/00_test_declaration_injected.txt")
         myFixture.configureByFile("issues/429/common/scripted_effects/00_test_declaration_injected.txt")
 
@@ -138,7 +194,7 @@ class Issue429Test : BasePlatformTestCase(), ChronicleTestScope {
     }
 
     @Test
-    fun testInspection_UsedParametersInScriptedEffect_FromInjection_Nested() {
+    fun testInspection_UsedParametersInScriptedEffectFromInjection_Nested() {
         markFileInfo(ParadoxGameType.Vic3, "common/scripted_effects/00_test_declaration_injected.txt")
         myFixture.configureByFile("issues/429/common/scripted_effects/00_test_declaration_injected.txt")
 
@@ -152,7 +208,7 @@ class Issue429Test : BasePlatformTestCase(), ChronicleTestScope {
     }
 
     @Test
-    fun testInspection_UsedParametersInScriptedEffect_FromInjection_NestedAndInjected() {
+    fun testInspection_UsedParametersInScriptedEffectFromInjection_NestedAndInjected() {
         markFileInfo(ParadoxGameType.Vic3, "common/scripted_effects/00_test_declaration_injected.txt")
         myFixture.configureByFile("issues/429/common/scripted_effects/00_test_declaration_injected.txt")
 
@@ -160,6 +216,62 @@ class Issue429Test : BasePlatformTestCase(), ChronicleTestScope {
 
         markFileInfo(ParadoxGameType.Vic3, "common/scripted_effects/01_test_caller_nested_and_injected.txt")
         myFixture.configureByFile("issues/429/common/scripted_effects/01_test_caller_nested_and_injected.txt")
+
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+        myFixture.checkHighlighting()
+    }
+
+    @Test
+    fun testInspection_UsedParametersInScriptedEffectFromInjection_Failed() {
+        markFileInfo(ParadoxGameType.Vic3, "common/scripted_effects/00_test_declaration_injected.txt")
+        myFixture.configureByFile("issues/429/common/scripted_effects/00_test_declaration_injected.txt")
+
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+
+        markFileInfo(ParadoxGameType.Vic3, "common/scripted_effects/01_test_caller.txt")
+        myFixture.configureByFile("issues/429/common/scripted_effects/01_test_caller.failed.txt")
+
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+        myFixture.checkHighlighting()
+    }
+
+    @Test
+    fun testInspection_UsedParametersInScriptedEffectFromInjection_Injected_Failed() {
+        markFileInfo(ParadoxGameType.Vic3, "common/scripted_effects/00_test_declaration_injected.txt")
+        myFixture.configureByFile("issues/429/common/scripted_effects/00_test_declaration_injected.txt")
+
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+
+        markFileInfo(ParadoxGameType.Vic3, "common/scripted_effects/01_test_caller_injected.txt")
+        myFixture.configureByFile("issues/429/common/scripted_effects/01_test_caller_injected.failed.txt")
+
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+        myFixture.checkHighlighting()
+    }
+
+    @Test
+    fun testInspection_UsedParametersInScriptedEffectFromInjection_Nested_Failed() {
+        markFileInfo(ParadoxGameType.Vic3, "common/scripted_effects/00_test_declaration_injected.txt")
+        myFixture.configureByFile("issues/429/common/scripted_effects/00_test_declaration_injected.txt")
+
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+
+        markFileInfo(ParadoxGameType.Vic3, "common/scripted_effects/01_test_caller_nested.txt")
+        myFixture.configureByFile("issues/429/common/scripted_effects/01_test_caller_nested.failed.txt")
+
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+        myFixture.checkHighlighting()
+    }
+
+    @Test
+    fun testInspection_UsedParametersInScriptedEffectFromInjection_NestedAndInjected_Failed() {
+        markFileInfo(ParadoxGameType.Vic3, "common/scripted_effects/00_test_declaration_injected.txt")
+        myFixture.configureByFile("issues/429/common/scripted_effects/00_test_declaration_injected.txt")
+
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+
+        markFileInfo(ParadoxGameType.Vic3, "common/scripted_effects/01_test_caller_nested_and_injected.txt")
+        myFixture.configureByFile("issues/429/common/scripted_effects/01_test_caller_nested_and_injected.failed.txt")
 
         IndexingTestUtil.waitUntilIndexesAreReady(project)
         myFixture.checkHighlighting()

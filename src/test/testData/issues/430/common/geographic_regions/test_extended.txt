@@ -1,0 +1,11 @@
+geographic_region_city_silence = {
+    short_key = "city_silence"
+}
+
+geographic_region_city_silent = {
+    short_key = "city_silent"
+}
+
+geographic_region_city_serenity = {
+    short_key = "city_serenity"
+}
