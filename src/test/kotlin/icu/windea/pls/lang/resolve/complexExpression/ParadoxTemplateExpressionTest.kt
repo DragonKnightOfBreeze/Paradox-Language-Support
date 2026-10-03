@@ -2,8 +2,11 @@ package icu.windea.pls.lang.resolve.complexExpression
 
 import com.intellij.testFramework.TestDataPath
 import icu.windea.pls.ChronicleFacade
+import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.delegated.CwtModifierConfig
 import icu.windea.pls.config.util.CwtConfigExpressionManager
+import icu.windea.pls.lang.resolve.complexExpression.dsl.*
+import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.model.ParadoxGameType
 import org.junit.After
 import org.junit.Assert
@@ -29,6 +32,12 @@ class ParadoxTemplateExpressionTest : ParadoxComplexExpressionTest() {
 
     @After
     fun doTearDown() = clearIntegrationTest()
+
+    private fun resolve(text: String, template: String, gameType: ParadoxGameType, incomplete: Boolean = false): ParadoxTemplateExpression? {
+        val configGroup = ChronicleFacade.getConfigGroup(project, gameType)
+        val config = CwtValueConfig.mock(configGroup, template)
+        return markIncomplete(incomplete) { ParadoxTemplateExpression.resolve(text, null, configGroup, config) }
+    }
 
     private fun pickModifierWithTemplate(gameType: ParadoxGameType, predicate: (CwtModifierConfig) -> Boolean): CwtModifierConfig? {
         val configGroup = ChronicleFacade.getConfigGroup(project, gameType)
@@ -69,5 +78,32 @@ class ParadoxTemplateExpressionTest : ParadoxComplexExpressionTest() {
         val out = exp.render()
         println(out)
         Assert.assertTrue(out.isNotBlank())
+    }
+
+    @Test
+    fun basic_test_1() {
+        val s = "job_solder_add"
+        val template = "job_<job>_add"
+        val exp = resolve(s, template, ParadoxGameType.Stellaris)!!
+        exp.renderAndPrintln()
+        val dsl = buildComplexExpression<ParadoxTemplateExpression>("job_solder_add", 0, 14) {
+            node<ParadoxTemplateSnippetConstantNode>("job_", 0, 4)
+            node<ParadoxTemplateSnippetNode>("solder", 4, 10)
+            node<ParadoxTemplateSnippetConstantNode>("_add", 10, 14)
+        }
+        exp.check(dsl)
+    }
+
+    @Test
+    fun basic_test_2() {
+        val s = "add_flag_checked"
+        val template = "add_flag_<flag>"
+        val exp = resolve(s, template, ParadoxGameType.Stellaris)!!
+        exp.renderAndPrintln()
+        val dsl = buildComplexExpression<ParadoxTemplateExpression>("add_flag_checked", 0, 16) {
+            node<ParadoxTemplateSnippetConstantNode>("add_flag_", 0, 9)
+            node<ParadoxTemplateSnippetNode>("checked", 9, 16)
+        }
+        exp.check(dsl)
     }
 }

@@ -42,7 +42,7 @@ import icu.windea.pls.ep.config.configExpression.CwtDataExpressionSupport
  * > CWTools 兼容性：部分兼容。拥有不同的解析和处理逻辑。
  *
  * @property snippetExpressions 解析得到的所有片段，顺序与原始字符串一致。
- * @property referenceExpressions 过滤后的引用片段（即非 [CwtDataTypes.Constant] 片段），用于后续的引用解析、导航与高亮。
+ * @property referenceExpressions 过滤后的引用片段（动态片段）。即数据类型非 [CwtDataTypes.Constant] 片段，用于后续的引用解析、导航与高亮。
  *
  * @see CwtDataExpression
  * @see CwtDataExpressionSupport

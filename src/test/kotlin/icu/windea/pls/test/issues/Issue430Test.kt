@@ -35,6 +35,7 @@ import org.junit.runners.JUnit4
  *
  * @see icu.windea.pls.lang.inspections.script.expression.UnresolvedExpressionInspection
  * @see icu.windea.pls.lang.resolve.complexExpression.ParadoxTemplateExpression
+ * @see icu.windea.pls.config.match.CwtTemplateMatchService.match
  * @see icu.windea.pls.lang.match.ParadoxTemplateMatchService.matches
  * @see icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
  * @see icu.windea.pls.config.manipulation.CwtConfigInlineService.inlineForConfig
@@ -215,7 +216,7 @@ class Issue430Test : BasePlatformTestCase(), ChronicleTestScope {
     }
 
     @Test
-    fun testCompletion_ForSnippetEmpty() {
+    fun testCompletion_ForReferenceSnippetEmpty() {
         markFileInfo(ParadoxGameType.Vic3, "common/geographic_regions/test.txt")
         myFixture.configureByFile("issues/430/common/geographic_regions/test_extended.txt")
 
@@ -241,7 +242,7 @@ class Issue430Test : BasePlatformTestCase(), ChronicleTestScope {
     }
 
     @Test
-    fun testCompletion_ForSnippetWithPrefix() {
+    fun testCompletion_ForReferenceSnippetWithPrefix() {
         markFileInfo(ParadoxGameType.Vic3, "common/geographic_regions/test.txt")
         myFixture.configureByFile("issues/430/common/geographic_regions/test_extended.txt")
 
@@ -267,7 +268,7 @@ class Issue430Test : BasePlatformTestCase(), ChronicleTestScope {
     }
 
     @Test
-    fun testCompletion_ForSnippetWithLongerPrefix() {
+    fun testCompletion_ForReferenceSnippetWithLongerPrefix() {
         markFileInfo(ParadoxGameType.Vic3, "common/geographic_regions/test.txt")
         myFixture.configureByFile("issues/430/common/geographic_regions/test_extended.txt")
 

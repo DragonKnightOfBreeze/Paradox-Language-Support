@@ -19,6 +19,12 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.*
  * 说明：
  * - 对应的规则数据类型为 [CwtDataTypes.Template]。
  * - 模板格式取决于对应的规则表达式（[CwtTemplateExpression]）。
+ * - 表达式文本与模板按组匹配，顺序交替产生：常量片段与占位片段。
+ * - 允许部分匹配（不完整代码场景）。
+ *
+ * 节点组成：
+ * - [ParadoxTemplateSnippetConstantNode] - 常量片段，与模板的常量部分对应。
+ * - [ParadoxTemplateSnippetNode] - 引用片段（动态片段），与模板的引用部分对应。
  *
  * 语法：
  * ```bnf
@@ -27,20 +33,6 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.*
  * template_snippet_constant ::= STRING_LITERAL
  * template_snippet ::= STRING_LITERAL
  * ```
- *
- * ### 语法与结构
- *
- * #### 整体形态
- * - 表达式文本与模板按组匹配，顺序交替产生：常量片段与占位片段。
- * - 允许部分匹配（不完整代码场景）。
- *
- * #### 节点组成
- * - 常量片段：[ParadoxTemplateSnippetConstantNode]（与模板的常量部分对应）。
- * - 引用片段：[ParadoxTemplateSnippetNode]（与模板的引用部分对应）。
- *
- * #### 解析要点
- * - 将模板转为正则，对文本进行组匹配，再依组创建片段节点。
- * - 解析占位片段时，忽略匿名的定义。
  *
  * @see CwtTemplateExpression
  * @see ParadoxTemplateMatchService

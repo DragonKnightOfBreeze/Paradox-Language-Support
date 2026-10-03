@@ -141,13 +141,13 @@ class CwtModifierConfigGenerator(override val project: Project) : CwtConfigGener
             .filterValues { info -> !isForceIgnoredModifier(info, gameType) }
         val missingNames = filteredInfos.keys
             .filter { name -> name !in configInfo.names }
-            .filter { name -> configInfo.templates.none { CwtTemplateMatchService.toRegex(it).matches(name) } }
+            .filter { name -> configInfo.templates.none { CwtTemplateMatchService.match(name, it) != null } }
             .toSet()
         val unknownNames = configInfo.names
             .filter { name -> name !in filteredInfos.keys }
             .toSet()
         val unmatchedTemplates = configInfo.templates
-            .filter { filteredInfos.keys.none { name -> CwtTemplateMatchService.toRegex(it).matches(name) } }
+            .filter { filteredInfos.keys.none { name -> CwtTemplateMatchService.match(name, it) != null } }
             .toSet()
 
         // 删除未知项并生成文本（不删除通过模板匹配的项）

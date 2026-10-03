@@ -27,7 +27,7 @@ object CwtTemplateMatchService {
      * @see CwtTemplateMatchResult
      * @see CwtTemplateMatchGroup
      */
-    fun match(input: String, templateExpression: CwtTemplateExpression, incomplete: Boolean): CwtTemplateMatchResult? {
+    fun match(input: String, templateExpression: CwtTemplateExpression, incomplete: Boolean = false): CwtTemplateMatchResult? {
         if (templateExpression.expressionString.isEmpty()) return null // invalid template expression -> fast return
 
         val groups = doMatch(input, templateExpression.snippetExpressions, incomplete) ?: return null
