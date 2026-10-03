@@ -104,20 +104,21 @@ object ParadoxMatchCandidateService {
     }
 
     private fun processMain(context: ParadoxExpressionMatchContext, candidates: List<ParadoxMatchCandidate>, result: MutableList<ParadoxMatchCandidate>): Boolean {
-        processLenientChecked(context, candidates, result) { c -> c.result is ParadoxMatchResult.LazyBlockAwareMatch }.let { if (!it) return false }
-        processLenientChecked(context, candidates, result) { it.result is ParadoxMatchResult.LazyScopeAwareMatch }.let { if (!it) return false }
+        processLenient(context, candidates, result) { c -> c.result is ParadoxMatchResult.LazyBlockAwareMatch }.let { if (!it) return false }
+        processLenient(context, candidates, result) { it.result is ParadoxMatchResult.LazyScopeAwareMatch }.let { if (!it) return false }
 
         processChecked(context, candidates, result) { c -> c.result is ParadoxMatchResult.DirectMatch }.let { if (!it) return false }
         if (result.isNotEmpty()) return true
 
-        processChecked(context, candidates, result) { c -> c.result === ParadoxMatchResult.WildcardMatch }.let { if (!it) return false }
+        processUnchecked(candidates, result) { c -> c.result === ParadoxMatchResult.WildcardMatch }.let { if (!it) return false }
         if (result.isNotEmpty()) return true
-        processChecked(context, candidates, result) { c -> c.result === ParadoxMatchResult.LenientWildcardMatch }.let { if (!it) return false }
+        processUnchecked(candidates, result) { c -> c.result === ParadoxMatchResult.LenientWildcardMatch }.let { if (!it) return false }
         if (result.isNotEmpty()) return true
-        processChecked(context, candidates, result) { c -> c.result === ParadoxMatchResult.PartialMatch }.let { if (!it) return false }
+        processUnchecked(candidates, result) { c -> c.result === ParadoxMatchResult.PartialMatch }.let { if (!it) return false }
         if (result.isNotEmpty()) return true
 
-        processChecked(context, candidates, result) { c -> c.result === ParadoxMatchResult.FallbackMatch }.let { if (!it) return false }
+        processUnchecked(candidates, result) { c -> c.result === ParadoxMatchResult.FallbackMatch }.let { if (!it) return false }
+        collectOnlyPrioritizedCandidate(result)
 
         return true
     }
@@ -141,7 +142,7 @@ object ParadoxMatchCandidateService {
         }
     }
 
-    private inline fun processLenientChecked(context: ParadoxExpressionMatchContext, candidates: List<ParadoxMatchCandidate>, result: MutableList<ParadoxMatchCandidate>, predicate: (ParadoxMatchCandidate) -> Boolean): Boolean {
+    private inline fun processLenient(context: ParadoxExpressionMatchContext, candidates: List<ParadoxMatchCandidate>, result: MutableList<ParadoxMatchCandidate>, predicate: (ParadoxMatchCandidate) -> Boolean): Boolean {
         val lazyMatched = SmartList<ParadoxMatchCandidate>() // 3.0.1 optimize: use `SmartList` (0 or 1 elements in most situations)
         processUnchecked(candidates, lazyMatched, predicate)
         val lazyMatchedSize = lazyMatched.size
@@ -219,5 +220,14 @@ object ParadoxMatchCandidateService {
         }
         result += candidate
         return true
+    }
+
+    fun collectOnlyPrioritizedCandidate(result: MutableList<ParadoxMatchCandidate>) {
+        // NOTE 3.0.4 use only the prioritized candidate, if necessary (e.g., for fallback match)
+        if (result.size <= 1) return
+        val selected = result.maxByOrNull { it.value.configExpression.type.priority ?: Double.NEGATIVE_INFINITY }
+        if (selected == null) return
+        result.clear()
+        result += selected
     }
 }

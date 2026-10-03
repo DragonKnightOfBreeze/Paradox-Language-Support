@@ -60,7 +60,7 @@ object CwtDataTypes {
      * > CWTools 兼容性：不兼容。插件作为扩展提供。
      */
     val Literal = CwtDataType.builder("Literal").build {
-        withPriority(2.0) // very low
+        withPriority(6.0) // very low
     }
     /**
      * 通配形式的任意类型。作为 [Any] 的一种特殊变体。
@@ -75,7 +75,7 @@ object CwtDataTypes {
      * > CWTools 兼容性：不兼容。插件作为扩展提供。
      */
     val WildcardAny = CwtDataType.builder("WildcardAny").build {
-        withPriority(1.0) // very low
+        withPriority(2.0) // very low (higher than normal form)
     }
     /**
      * 通配形式的字面量类型。作为 [Literal] 的一种特殊变体。
@@ -90,7 +90,7 @@ object CwtDataTypes {
      * > CWTools 兼容性：不兼容。插件作为扩展提供。
      */
     val WildcardLiteral = CwtDataType.builder("WildcardLiteral").build {
-        withPriority(2.0) // very low
+        withPriority(7.0) // very low (higher than normal form)
     }
     /**
      * 布尔类型。

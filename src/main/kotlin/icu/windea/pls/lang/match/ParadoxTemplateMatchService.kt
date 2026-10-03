@@ -8,7 +8,6 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.match.CwtTemplateMatchService
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.forEachFast
-import icu.windea.pls.lang.match.ParadoxExpressionMatchService.matchScriptExpression
 import icu.windea.pls.model.expressions.ParadoxExpression
 import icu.windea.pls.script.ParadoxScriptLanguage
 
@@ -40,7 +39,7 @@ object ParadoxTemplateMatchService {
             // NOTE 3.0.4 #430 post optimization: still match even if `matchValue` is empty (where snippet data type is `CwtDataTypes.Definition`, or not)
             // if (group.value.isEmpty()) return false
             val matchContext = ParadoxExpressionMatchContext(element, ParadoxExpression.resolve(group.value), configGroup, options)
-            val matched = matchScriptExpression(matchContext, group.expression, null).get(options)
+            val matched = ParadoxExpressionMatchService.matchScriptExpression(matchContext, group.expression, null).get(options)
             if (!matched) return false
         }
         return true
