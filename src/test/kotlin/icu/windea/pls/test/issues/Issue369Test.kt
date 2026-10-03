@@ -18,6 +18,18 @@ import org.junit.runners.JUnit4
 
 /**
  * See: [#369](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/369)
+ *
+ * Definitions whose names contain spaces (e.g., `name = "spaced out"`) were neither resolved nor completed
+ * correctly: completion offered the raw name without quotes, and the quoted form did not resolve either
+ * because the quotes were stripped from the definition name. Definitions whose root key acts as the name
+ * (e.g., `"spaced out" = {...}`) were also matched as an arbitrary property.
+ *
+ * Cause: definition names were assumed to be valid identifiers, but they should be allowed to be any string
+ * literal. In addition, the completion lookup string was not quoted when the value is blank or contains a
+ * blank, so a name containing spaces could not be inserted/resolved correctly.
+ *
+ * @see icu.windea.pls.lang.inspections.script.expression.UnresolvedExpressionInspection
+ * @see icu.windea.pls.lang.resolve.ParadoxMemberService.getTypeKey
  */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")

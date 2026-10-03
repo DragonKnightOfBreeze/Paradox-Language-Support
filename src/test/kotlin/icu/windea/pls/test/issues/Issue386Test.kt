@@ -22,7 +22,17 @@ import org.junit.runners.JUnit4
 /**
  * See: [#386](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/386)
  *
- * @see UnresolvedExpressionInspection
+ * For any block config type, invalid syntax (e.g., a bare key `bar` inside a block) did not raise an error
+ * unless at least one `## tag` was defined in the config. The game parser discards an invalid token and
+ * tries again, which can cause cascading errors, so the plugin should detect this as an error.
+ *
+ * Cause: the plugin could not distinguish between "no contextual configs exist, and it is not necessarily
+ * expected to exist" and "no contextual configs exist, and it is expected to exist", so the unresolved
+ * expression check skipped cases that should have been reported. The expected configs are now collected
+ * with the overridden configs taken into account.
+ *
+ * @see icu.windea.pls.lang.inspections.script.expression.UnresolvedExpressionInspection
+ * @see icu.windea.pls.lang.inspections.ParadoxExpressionInspectionService.checkForUnresolvedExpression
  */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")

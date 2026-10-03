@@ -5,7 +5,6 @@ import com.intellij.testFramework.IndexingTestUtil
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.lang.inspections.script.expression.UnresolvedExpressionInspection
-import icu.windea.pls.lang.resolve.complexExpression.ParadoxTemplateExpression
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.ChronicleTestScope
 import org.junit.After
@@ -17,8 +16,21 @@ import org.junit.runners.JUnit4
 /**
  * See: [#430](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/430)
  *
- * @see UnresolvedExpressionInspection
- * @see ParadoxTemplateExpression
+ * Geographic region short keys (e.g., `greek_heartlands`) and their `any_*_in_<geographic_region>`
+ * iterators were broken: the short keys were no longer resolved, and the iterators were neither
+ * recognized nor completed.
+ *
+ * Cause:
+ * - When resolving `ParadoxTemplateExpression` in `incomplete` mode, parsing was aborted directly when
+ *   the matched reference fragment text was empty (the definition name is not typed yet). An empty
+ *   fragment should not abort parsing in `incomplete` mode.
+ * - When collecting the configs applicable to code completion, the parent config was not inlined before
+ *   reading its child configs, so the inlined child configs were missing.
+ *
+ * @see icu.windea.pls.lang.inspections.script.expression.UnresolvedExpressionInspection
+ * @see icu.windea.pls.lang.resolve.complexExpression.ParadoxTemplateExpression
+ * @see icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
+ * @see icu.windea.pls.config.manipulation.CwtConfigInlineService.inlineForConfig
  */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")

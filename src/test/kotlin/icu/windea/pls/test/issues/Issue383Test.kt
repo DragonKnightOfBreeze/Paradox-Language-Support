@@ -5,7 +5,6 @@ import com.intellij.psi.util.parentOfType
 import com.intellij.testFramework.IndexingTestUtil
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.ep.resolve.config.CwtTriggerWithParametersAwareOverriddenConfigProvider
 import icu.windea.pls.lang.inspections.script.common.MissingParameterInspection
 import icu.windea.pls.lang.inspections.script.common.UnsupportedParameterInspection
 import icu.windea.pls.lang.inspections.script.common.UnusedParameterInspection
@@ -37,7 +36,17 @@ import org.junit.runners.JUnit4
 /**
  * See: [#383](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/383)
  *
- * @see CwtTriggerWithParametersAwareOverriddenConfigProvider
+ * For a `complex_trigger_modifier` block, the required type of the trigger parameters spilled into all
+ * properties of the block: every property (including `trigger`) was reported as expecting a block with the
+ * trigger parameters. The bug is not present in 3.0.0.
+ *
+ * Cause: the config context is dynamic when with overridden configs.
+ * However, `context.dynamic` in `ParadoxConfigService.getConfigsForConfigContext` is changed during `provider.getConfigs(context, options)`,
+ * so should not introduce it as a local variable previously.
+ *
+ * @see icu.windea.pls.ep.resolve.config.CwtTriggerWithParametersAwareOverriddenConfigProvider
+ * @see icu.windea.pls.lang.resolve.ParadoxConfigService.getConfigsForConfigContext
+ * @see icu.windea.pls.ep.resolve.config.CwtSwitchOverriddenConfigProvider
  */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")

@@ -15,7 +15,20 @@ import icu.windea.pls.localisation.highlighting.ParadoxLocalisationHighlighterCo
 /**
  * See: [#418](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/418)
  *
- * @see icu.windea.pls.lang.util.ParadoxLocalisationManager.isSpecialLocalisation
+ * Two regressions:
+ * - Localisation text starting with a leading blank (e.g., a leading `\n`) was not rendered in inlay hints.
+ * - `<effect>log` text containing commands (e.g., `[This.GetName]`) was not recognized as localisation text,
+ *   so it was not injected/rendered like localisation.
+ *
+ * Cause:
+ * - In the localisation language injection service, the call to the rich-localisation-text check was not
+ *   negated, so the injection was accepted only for plain (non-rich) text instead of rich text.
+ * - In the localisation text inlay render context, the leading blank of the whole localisation text was not
+ *   trimmed before rendering the inlay hint, so the text starting with a blank was skipped.
+ *
+ * @see icu.windea.pls.lang.injection.ParadoxLanguageInjectionService.acceptLocalisationTextInjection
+ * @see icu.windea.pls.lang.util.ParadoxLocalisationManager.isRichLocalisationText
+ * @see icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextInlayRenderContext.truncatedSmallText
  */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")

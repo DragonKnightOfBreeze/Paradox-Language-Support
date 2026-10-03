@@ -1,1 +1,3 @@
-See: [#2888](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/2888)
+See: [#288](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/288)
+
+See: `icu.windea.pls.test.issues.Issue288Test`

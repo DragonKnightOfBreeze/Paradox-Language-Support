@@ -14,6 +14,20 @@ import org.junit.runners.JUnit4
 
 /**
  * See: [#288](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/288)
+ *
+ * When injecting into an existing data object (e.g., `INJECT:city = { build_time = 365 }` in EU5), the
+ * plugin still required the required fields of the target definition to be present, producing a
+ * false-positive unresolved expression error (`Cannot resolve value expression {...}`). The injection
+ * works without errors in-game.
+ *
+ * Cause: the block match logic did not correctly retain lazily-matched block candidates, so a partially
+ * matched injection block was treated as unmatched. The candidate processing was extracted into a dedicated
+ * service and adjusted so that lazily-matched candidates are retained instead of being re-checked against
+ * the block content.
+ *
+ * @see icu.windea.pls.lang.inspections.script.expression.UnresolvedExpressionInspection
+ * @see icu.windea.pls.lang.match.ParadoxMatchCandidateService.process
+ * @see icu.windea.pls.lang.match.ParadoxMatchOccurrenceService.getChildOccurrences
  */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")

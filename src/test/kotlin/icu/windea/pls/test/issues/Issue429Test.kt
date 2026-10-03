@@ -4,7 +4,6 @@ import com.intellij.testFramework.IndexingTestUtil
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.lang.inspections.script.common.UnusedParameterInspection
-import icu.windea.pls.lang.resolve.util.ParadoxParameterSupportFactory
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.ChronicleTestScope
 import org.junit.After
@@ -16,8 +15,17 @@ import org.junit.runners.JUnit4
 /**
  * See: [#429](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/429)
  *
- * @see UnusedParameterInspection
- * @see ParadoxParameterSupportFactory.resolveParameterForDefinition
+ * In parameterized scripted effects, the unused-parameter inspection reported "Parameter is set but not
+ * used" for all passed parameters, even though the definition does read them. The expected parameters were
+ * still detected correctly (missing required parameters were still reported).
+ *
+ * Cause: in the parameter support factory, the definition name was obtained via `context.name`, which is
+ * wrong when the definition is an injection (e.g., `REPLACE_OR_CREATE:x = {...}`), since the context name
+ * is the injection key rather than the definition name. The definition name should be obtained via
+ * `definitionInfo.name`. This is a defect related to definition injections, rather than a regression.
+ *
+ * @see icu.windea.pls.lang.inspections.script.common.UnusedParameterInspection
+ * @see icu.windea.pls.lang.resolve.util.ParadoxParameterSupportFactory.resolveParameterForDefinition
  */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")

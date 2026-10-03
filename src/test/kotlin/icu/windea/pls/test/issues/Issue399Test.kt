@@ -2,8 +2,6 @@ package icu.windea.pls.test.issues
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.core.text.ColorPatterns
-import icu.windea.pls.lang.codeInsight.color.ParadoxColorService
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.psi.ParadoxScriptColor
@@ -19,9 +17,13 @@ import org.junit.runners.JUnit4
 /**
  * See: [#399](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/399)
  *
- * @see ParadoxScriptColor
- * @see ColorPatterns
- * @see ParadoxColorService
+ * Color types were matched case-sensitively: `rgb { ... }` was recognized as a `color_field`, but
+ * `RGB { ... }` (and other capitalizations) was not. The same applied to `hsv` and `hsv360`.
+ *
+ * Cause: the lexer/parser matched the color type keywords case-sensitively, but they should be
+ * case-insensitive (the patterns are defined in the color patterns).
+ * 
+ * @see icu.windea.pls.script.psi.ParadoxScriptColor
  */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")

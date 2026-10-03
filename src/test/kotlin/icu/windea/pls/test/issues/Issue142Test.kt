@@ -13,11 +13,18 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 /**
- * Issue #142: `var:xxx` 在 trigger 上下文中目前会产生冲突的解析结果。
- *
  * See: [#142](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/142)
  *
- * @see ConflictingExpressionInspection
+ * In VIC3, the `var` link is declared with `type = both`, so `var:xxx` can match both `scope_field` and
+ * `value_field`. In trigger context both `alias[trigger:scope_field]` and `alias[trigger:value_field]`
+ * are applicable, so a `var:xxx` block value whose content is ambiguous matches multiple conflicting
+ * configs and is reported by the conflicting expression inspection.
+ *
+ * Cause: the ambiguity is inherent to the `var` link, and the inspection is designed to report it, so
+ * there is currently no resolution-time fix. In effect context only `scope_field` applies, so no conflict
+ * is reported there.
+ *
+ * @see icu.windea.pls.lang.inspections.script.expression.ConflictingExpressionInspection
  */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")

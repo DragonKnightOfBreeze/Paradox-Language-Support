@@ -4,7 +4,6 @@ import com.intellij.psi.PsiFile
 import com.intellij.testFramework.IndexingTestUtil
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.ep.resolve.modifier.ParadoxModifierSupport
 import icu.windea.pls.lang.inspections.script.expression.ConflictingExpressionInspection
 import icu.windea.pls.lang.inspections.script.expression.IncorrectExpressionInspection
 import icu.windea.pls.lang.inspections.script.expression.MissingExpressionInspection
@@ -13,7 +12,6 @@ import icu.windea.pls.lang.inspections.script.expression.UnresolvedExpressionIns
 import icu.windea.pls.lang.psi.light.ParadoxModifierLightElement
 import icu.windea.pls.lang.references.localisation.ParadoxLocalisationIconPsiReference
 import icu.windea.pls.lang.references.script.ParadoxScriptExpressionPsiReference
-import icu.windea.pls.lang.resolve.ParadoxModifierService
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.modifierConfig
@@ -28,9 +26,19 @@ import org.junit.runners.JUnit4
 /**
  * See: [#385](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/385)
  *
- * @see ParadoxModifierSupport
- * @see ParadoxModifierService
- * @see ParadoxModifierManager
+ * Interpolated parts of generated modifiers (e.g., `<species_archetype.use_modifiers>_logistic_growth_mult`)
+ * were treated case-sensitively in match/resolve/completion, although in-game they are case-insensitive.
+ * Localisation key matching and icon file matching should ignore case accordingly, while the localisation
+ * key is still formed with the lowercase static parts and the interpolated parts kept as is.
+ *
+ * Cause: the generated modifier support and related services compared the generated modifier name and its
+ * interpolated parts case-sensitively.
+ *
+ * @see icu.windea.pls.ep.resolve.modifier.ParadoxModifierSupport
+ * @see icu.windea.pls.ep.resolve.modifier.ParadoxModifierNameDescProvider
+ * @see icu.windea.pls.ep.resolve.modifier.ParadoxModifierIconProvider
+ * @see icu.windea.pls.lang.resolve.ParadoxModifierService
+ * @see icu.windea.pls.lang.util.ParadoxModifierManager
  */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")

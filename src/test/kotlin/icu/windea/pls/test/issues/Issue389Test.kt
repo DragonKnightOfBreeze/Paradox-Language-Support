@@ -18,6 +18,15 @@ import org.junit.runners.JUnit4
 
 /**
  * See: [#389](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/389)
+ *
+ * The `enum_name` of a `complex_enum` did not match pure-number values: only string literals were
+ * considered, so numeric literals (e.g., `123`) were not matched (nor were boolean literals).
+ *
+ * Cause: the complex enum match logic checked for `ParadoxScriptString`, which excluded the other literal
+ * values; it should accept any literal value (`ParadoxScriptLiteralValue`).
+ *
+ * @see icu.windea.pls.lang.match.ParadoxConfigMatchService.matchesEnumNameForComplexEnum
+ * @see icu.windea.pls.lang.references.ParadoxComplexEnumValuePsiReference
  */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")

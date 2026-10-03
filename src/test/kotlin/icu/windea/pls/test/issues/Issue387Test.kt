@@ -6,7 +6,6 @@ import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
-import icu.windea.pls.lang.resolve.complexExpression.ParadoxCommandExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -21,9 +20,17 @@ import org.junit.runners.JUnit4
 /**
  * See: [#387](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/387)
  *
- * @see ParadoxCommandExpression
- * @see ParadoxCommandFieldValueNode
- * @see ParadoxCommandFieldValueNode.resolveDsNode
+ * Several `localisation_links` elements that share the same `prefix` and `type`, where at least one of them
+ * has `data_source = value[something]`, conflicted: values were always resolved as the `value[x]` type, and
+ * the other types (e.g., scripted loc) could not be resolved.
+ *
+ * Cause: `value[x]` matches anything, and the dynamic value data source was resolved before the other data
+ * sources regardless of the order of the link definitions. The dynamic value data source should only be
+ * used as a fallback (here, when the text contains `@`).
+ *
+ * @see icu.windea.pls.lang.resolve.complexExpression.ParadoxCommandExpression
+ * @see icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandFieldValueNode.resolveDsNode
+ * @see icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicValueNode
  */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")

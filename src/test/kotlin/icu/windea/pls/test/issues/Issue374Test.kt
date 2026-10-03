@@ -18,6 +18,17 @@ import org.junit.runners.JUnit4
 
 /**
  * See: [#374](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/374)
+ *
+ * For a config expression like `alias[x] = union[y]`, the match logic did not work as expected: aliases
+ * contained in a `union` were not recognized/resolved correctly (e.g., `value[variable]` swallowed values
+ * that should match a more specific link).
+ *
+ * Cause: when processing the candidate configs of a union, the recursion guard was applied across
+ * different contexts, so candidates reachable in a different context were skipped. The recursion guard
+ * should not be applied directly there, since the context may differ.
+ *
+ * @see icu.windea.pls.lang.inspections.script.expression.UnresolvedExpressionInspection
+ * @see icu.windea.pls.config.manipulation.CwtConfigExpansionService.expandUnion
  */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")

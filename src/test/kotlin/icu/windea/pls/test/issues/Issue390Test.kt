@@ -2,8 +2,6 @@ package icu.windea.pls.test.issues
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.ep.resolve.expression.ParadoxScriptExpressionSupport
-import icu.windea.pls.lang.highlighting.ParadoxScriptSemanticHighlightingAnnotator
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.ChronicleTestScope
 import icu.windea.pls.test.dsl.configureByText
@@ -17,9 +15,15 @@ import icu.windea.pls.script.highlighting.ParadoxScriptHighlighterColors as Colo
 /**
  * See: [#390](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/390)
  *
- * @see ParadoxScriptSemanticHighlightingAnnotator
- * @see ParadoxScriptExpressionSupport
- * @see ParadoxScriptExpressionSupport.annotate
+ * Syntax highlighting for event targets was broken: the highlighting range was negatively offset by the
+ * length of the prefix string `event_target:`, so the prefix and its name were colored incorrectly. Both
+ * `event_target:` and its name were still of the correct length.
+ *
+ * Cause: the highlight range used `rangeInFile` (or `rangeInElement`) where `rangeInExpression` was
+ * expected, so the offset was wrong. The distinct ranges must be converted correctly.
+ *
+ * @see icu.windea.pls.lang.highlighting.ParadoxScriptSemanticHighlightingAnnotator
+ * @see icu.windea.pls.ep.resolve.expression.ParadoxScriptExpressionSupport.annotate
  */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")

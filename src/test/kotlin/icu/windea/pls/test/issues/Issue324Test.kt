@@ -15,6 +15,18 @@ import org.junit.runners.JUnit4
 
 /**
  * See: [#324](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/324)
+ *
+ * Nested subtypes were not supported in type localisation (and presentation) configs: a `subtype[x] = {...}`
+ * nested inside another `subtype[x] = {...}` was not resolved, so the related localisation of the nested
+ * subtype was missing.
+ *
+ * Cause: the resolver only handled a single level of `subtype[x] = {...}` and matched the plain location
+ * rules directly, without flattening the nested subtype expressions first. The subtype expressions are now
+ * flattened before grouping the location configs by subtype expression recursively.
+ *
+ * @see icu.windea.pls.config.config.delegated.CwtTypeLocalisationConfig
+ * @see icu.windea.pls.config.manipulation.CwtConfigExpansionService.expandBySubtypeExpression
+ * @see icu.windea.pls.lang.resolve.ParadoxDefinitionService.resolveRelatedLocalisationInfos
  */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")

@@ -13,11 +13,18 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 /**
- * Issue #284: scope link 在 trigger 上下文中不应产生冲突的解析结果。
- *
  * See: [#284](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/284)
  *
- * @see ConflictingExpressionInspection
+ * A scope link that is defined only once (e.g., `owner`) was reported as a conflicting resolved expression
+ * in both trigger and effect context. The regression was introduced together with the script value
+ * implementation.
+ *
+ * Cause: the match logic conflated the scope link with an unrelated value link, so a single link matched
+ * multiple configs and produced conflicting resolved configs. The regression test ensures that a scope link
+ * no longer produces a conflict; no special-casing by context is needed.
+ *
+ * @see icu.windea.pls.lang.inspections.script.expression.ConflictingExpressionInspection
+ * @see icu.windea.pls.lang.match.ParadoxConfigMatchService
  */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")

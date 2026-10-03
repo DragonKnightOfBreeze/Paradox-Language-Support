@@ -3,7 +3,6 @@ package icu.windea.pls.test.issues
 import com.intellij.testFramework.IndexingTestUtil
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.lang.resolve.CwtConfigContext
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.ChronicleTestScope
 import icu.windea.pls.test.dsl.configureByText
@@ -17,7 +16,17 @@ import icu.windea.pls.script.highlighting.ParadoxScriptHighlighterColors as Colo
 /**
  * See: [#412](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/412)
  *
- * @see CwtConfigContext
+ * Regression in 3.0.2: aliases declared via inline-script parameters (e.g., the argument of
+ * `inline_script = { script = set_flag ... }`) were no longer resolved, with no highlighting and no
+ * navigation to the declaration. In 3.0.1 the declaration was resolved correctly.
+ *
+ * Cause: the config context did not distinguish whether it is a declaration context (it was inferred only
+ * from the context layer), so the parameter-related contexts inferred the wrong configs. A `declaration`
+ * flag was introduced on the config context and the parameter support factory was updated accordingly.
+ *
+ * @see icu.windea.pls.lang.resolve.CwtConfigContext
+ * @see icu.windea.pls.lang.resolve.util.ParadoxParameterSupportFactory
+ * @see icu.windea.pls.lang.util.ParadoxParameterManager
  */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
