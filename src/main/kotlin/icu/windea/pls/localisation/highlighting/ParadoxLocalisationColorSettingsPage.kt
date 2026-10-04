@@ -41,7 +41,9 @@ class ParadoxLocalisationColorSettingsPage : ColorSettingsPage {
         AttributesDescriptor(ChronicleBundle.message("semantic.color.option.string"), ParadoxLocalisationHighlighterColors.SEMANTIC_STRING),
 
         AttributesDescriptor(ChronicleBundle.message("semantic.color.option.definitionReference"), ParadoxLocalisationHighlighterColors.DEFINITION_REFERENCE),
+        AttributesDescriptor(ChronicleBundle.message("semantic.color.option.definitionReferenceSnippet"), ParadoxLocalisationHighlighterColors.DEFINITION_REFERENCE_SNIPPET),
         AttributesDescriptor(ChronicleBundle.message("semantic.color.option.localisationReference"), ParadoxLocalisationHighlighterColors.LOCALISATION_REFERENCE),
+        AttributesDescriptor(ChronicleBundle.message("semantic.color.option.localisationReferenceSnippet"), ParadoxLocalisationHighlighterColors.LOCALISATION_REFERENCE_SNIPPET),
         AttributesDescriptor(ChronicleBundle.message("semantic.color.option.dynamicValue"), ParadoxLocalisationHighlighterColors.DYNAMIC_VALUE),
         AttributesDescriptor(ChronicleBundle.message("semantic.color.option.variable"), ParadoxLocalisationHighlighterColors.VARIABLE),
         AttributesDescriptor(ChronicleBundle.message("semantic.color.option.systemCommandScope"), ParadoxLocalisationHighlighterColors.SYSTEM_COMMAND_SCOPE),
@@ -60,7 +62,9 @@ class ParadoxLocalisationColorSettingsPage : ColorSettingsPage {
         "STRING" to ParadoxLocalisationHighlighterColors.SEMANTIC_STRING,
 
         "DEFINITION_REFERENCE" to ParadoxLocalisationHighlighterColors.DEFINITION_REFERENCE,
+        "DEFINITION_REFERENCE_SNIPPET" to ParadoxLocalisationHighlighterColors.DEFINITION_REFERENCE_SNIPPET,
         "LOCALISATION_REFERENCE" to ParadoxLocalisationHighlighterColors.LOCALISATION_REFERENCE,
+        "LOCALISATION_REFERENCE_SNIPPET" to ParadoxLocalisationHighlighterColors.LOCALISATION_REFERENCE_SNIPPET,
         "DYNAMIC_VALUE" to ParadoxLocalisationHighlighterColors.DYNAMIC_VALUE,
         "VARIABLE" to ParadoxLocalisationHighlighterColors.VARIABLE,
         "SYSTEM_COMMAND_SCOPE" to ParadoxLocalisationHighlighterColors.SYSTEM_COMMAND_SCOPE,

@@ -149,7 +149,7 @@ class ParadoxSubtypesMismatchedDefinitionUnresolvedExpressionChecker : ParadoxUn
         val value = element.value
         if (value.isEmpty()) return true
         configExpressions.forEachFast f@{ configExpression ->
-            val typeExpression = configExpression.metadata.value?.orNull() ?: return@f
+            val typeExpression = configExpression.metadata.value ?: return@f
             val type = typeExpression.substringBefore('.', "").orNull() ?: return@f // skip if subtype information exists
             val selector = ParadoxDefinitionSearch.selector(context.project, context.holder.file) // `context.holder.file` is ok here
             val definitionLenientMatched = ParadoxDefinitionSearch.searchElement(value, type, selector).findFirst()

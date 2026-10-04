@@ -33,10 +33,10 @@ object ParadoxElementDescriptionService {
                 element.type?.let { return element.name }
                 null
             }
-            is ParadoxComplexEnumValueLightElement -> element.name
-            is ParadoxDynamicValueLightElement -> element.name
             is ParadoxDefinitionSnippetLightElement -> element.name
             is ParadoxLocalisationSnippetLightElement -> element.name
+            is ParadoxComplexEnumValueLightElement -> element.name
+            is ParadoxDynamicValueLightElement -> element.name
             is ParadoxParameterLightElement -> element.name
             is ParadoxLocalisationParameterLightElement -> element.name
             is ParadoxModifierLightElement -> element.name
@@ -70,6 +70,8 @@ object ParadoxElementDescriptionService {
                 }
                 null
             }
+            is ParadoxDefinitionSnippetLightElement -> ChronicleBundle.message("description.type.definitionSnippet")
+            is ParadoxLocalisationSnippetLightElement -> ChronicleBundle.message("description.type.localisationSnippet")
             is ParadoxDynamicValueLightElement -> {
                 val dynamicValueType = element.types.firstOrNull()
                 when (dynamicValueType) {
@@ -78,8 +80,6 @@ object ParadoxElementDescriptionService {
                 }
             }
             is ParadoxComplexEnumValueLightElement -> ChronicleBundle.message("description.type.complexEnumValue")
-            is ParadoxDefinitionSnippetLightElement -> ChronicleBundle.message("description.type.definitionSnippet")
-            is ParadoxLocalisationSnippetLightElement -> ChronicleBundle.message("description.type.localisationSnippet")
             is ParadoxParameterLightElement -> ChronicleBundle.message("description.type.parameter")
             is ParadoxLocalisationParameterLightElement -> ChronicleBundle.message("description.type.localisationParameter")
             is ParadoxModifierLightElement -> ChronicleBundle.message("description.type.modifier")

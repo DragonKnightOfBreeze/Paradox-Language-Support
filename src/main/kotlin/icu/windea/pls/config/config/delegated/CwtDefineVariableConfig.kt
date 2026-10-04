@@ -7,7 +7,7 @@ import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.config.annotations.FromName
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.manipulation.CwtConfigInlineService
-import icu.windea.pls.config.util.CwtConfigResolverScope
+import icu.windea.pls.config.scopes.CwtConfigResolutionScope
 
 /**
  * 定值变量规则。
@@ -64,7 +64,7 @@ interface CwtDefineVariableConfig : CwtDefineConfig {
     }
 }
 
-private object CwtDefineVariableConfigResolver : CwtConfigResolverScope {
+private object CwtDefineVariableConfigResolver : CwtConfigResolutionScope {
     private val logger = thisLogger()
 
     fun resolve(config: CwtPropertyConfig, namespace: String): CwtDefineVariableConfig {

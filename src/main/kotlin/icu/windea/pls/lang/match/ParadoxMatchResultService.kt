@@ -18,12 +18,14 @@ import icu.windea.pls.lang.selectRootFile
 object ParadoxMatchResultService {
     object Keys : KeyRegistry() {
         val cacheForDefinitions by registerKeyForCache(ChronicleModificationTrackers.ScriptFile)
-        val cacheForLocalisations by registerKeyForCache(ChronicleModificationTrackers.LocalisationFile, ChronicleModificationTrackers.PreferredLocale)
-        val cacheForSyncedLocalisations by registerKeyForCache(ChronicleModificationTrackers.LocalisationFile, ChronicleModificationTrackers.PreferredLocale)
+        val cacheForLocalisations by registerKeyForCache(ChronicleModificationTrackers.LocalisationFile) // 3.0.4 locale-insensitive
+        val cacheForSyncedLocalisations by registerKeyForCache(ChronicleModificationTrackers.LocalisationFile) // 3.0.4 locale-insensitive
         val cacheForPathReferences by registerKeyForCache(ChronicleModificationTrackers.FilePath)
         val cacheForComplexEnumValues by registerKeyForCache(ChronicleModificationTrackers.ScriptFile)
         val cacheForModifiers by registerKeyForCache(ChronicleModificationTrackers.ScriptFile)
-        val cacheForTemplates by registerKeyForCache(ChronicleModificationTrackers.ScriptFile, ChronicleModificationTrackers.LocalisationFile, ChronicleModificationTrackers.PreferredLocale)
+        val cacheForTemplates by registerKeyForCache(ChronicleModificationTrackers.ScriptFile, ChronicleModificationTrackers.LocalisationFile)
+        val cacheForDefinitionSnippets by registerKeyForCache(ChronicleModificationTrackers.ScriptFile)
+        val cacheForLocalisationSnippets by registerKeyForCache(ChronicleModificationTrackers.LocalisationFile) // 3.0.4 locale-insensitive
     }
 
     fun registerKeyForCache(vararg dependencies: Any): ParadoxMatchResultNestedCacheKeyProvider {

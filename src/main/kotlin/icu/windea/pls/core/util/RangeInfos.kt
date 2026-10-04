@@ -1,9 +1,11 @@
 package icu.windea.pls.core.util
 
-import icu.windea.pls.core.cache.CacheBuilder
+import com.github.benmanes.caffeine.cache.Interner
 
 /**
  * 区间信息。
+ *
+ * @property expression 表达式字符串。
  */
 interface RangeInfo<T : Comparable<T>> {
     val start: T?
@@ -47,11 +49,18 @@ data class IntRangeInfo(
 
     override fun toString() = expression
 
+    /**
+     * 进行规范化处理（去重）。
+     */
+    fun normalize(): IntRangeInfo {
+        return interner.intern(this)
+    }
+
     companion object {
-        private val cache = CacheBuilder("maximumSize=1000").build<String, IntRangeInfo>()
+        private val interner = Interner.newWeakInterner<IntRangeInfo>()
 
         /**
-         * 从表达式字符串直接解析并创建实例。不对结果进行缓存。
+         * 从表达式字符串直接解析并创建实例。
          */
         @JvmStatic
         fun create(expression: String): IntRangeInfo? {
@@ -72,15 +81,10 @@ data class IntRangeInfo(
             return IntRangeInfo(start, end, openStart, openEnd)
         }
 
-        /**
-         * 从表达式字符串解析实例，并对成功解析的结果进行缓存和去重。
-         */
+        // TODO 3.0.4 [snippet-match] remove
         @JvmStatic
         fun from(expression: String): IntRangeInfo? {
-            cache.getIfPresent(expression)?.let { return it }
-            val result = create(expression) ?: return null
-            cache.put(expression, result)
-            return result
+            return create(expression)?.normalize()
         }
     }
 }
@@ -116,11 +120,18 @@ data class FloatRangeInfo(
 
     override fun toString() = expression
 
+    /**
+     * 进行规范化处理（去重）。
+     */
+    fun normalize(): FloatRangeInfo {
+        return interner.intern(this)
+    }
+
     companion object {
-        private val cache = CacheBuilder("maximumSize=1000").build<String, FloatRangeInfo>()
+        private val interner = Interner.newWeakInterner<FloatRangeInfo>()
 
         /**
-         * 从表达式字符串直接解析并创建实例。不对结果进行缓存。
+         * 从表达式字符串直接解析并创建实例。
          */
         @JvmStatic
         fun create(expression: String): FloatRangeInfo? {
@@ -141,15 +152,10 @@ data class FloatRangeInfo(
             return FloatRangeInfo(start, end, openStart, openEnd)
         }
 
-        /**
-         * 从表达式字符串解析实例，并对成功解析的结果进行缓存和去重。
-         */
+        // TODO 3.0.4 [snippet-match] remove
         @JvmStatic
         fun from(expression: String): FloatRangeInfo? {
-            cache.getIfPresent(expression)?.let { return it }
-            val result = create(expression) ?: return null
-            cache.put(expression, result)
-            return result
+            return create(expression)?.normalize()
         }
     }
 }

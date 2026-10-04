@@ -5,8 +5,7 @@ package icu.windea.pls.config.config
 import com.intellij.openapi.diagnostic.thisLogger
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.option.CwtOptionMetadata
-import icu.windea.pls.config.util.CwtConfigResolverManager
-import icu.windea.pls.config.util.CwtConfigResolverScope
+import icu.windea.pls.config.scopes.CwtConfigResolutionScope
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.forEachChild
@@ -60,7 +59,7 @@ interface CwtOptionConfig : CwtOptionMemberConfig<CwtOption> {
 
 // region Implementations
 
-private object CwtOptionConfigResolver : CwtConfigResolverScope {
+private object CwtOptionConfigResolver : CwtConfigResolutionScope {
     private val logger = thisLogger()
     private val cache = CacheBuilder().build<String, CwtOptionConfig>()
 
@@ -95,7 +94,7 @@ private object CwtOptionConfigResolver : CwtConfigResolverScope {
         val key = keyElement.value
         val value = valueElement.value
         val valueType = CwtTypeResolver.resolveExpressionType(valueElement)
-        val optionConfigs = CwtConfigResolverManager.getOptionConfigsInOption(valueElement, configGroup)
+        val optionConfigs = CwtConfigResolverService.getOptionConfigsInOption(valueElement, configGroup)
         return CwtOptionConfig.create(key, value, valueType, separatorType, optionConfigs)
     }
 

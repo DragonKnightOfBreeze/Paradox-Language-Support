@@ -1,19 +1,9 @@
-package icu.windea.pls.config.util
+package icu.windea.pls.config.config
 
 import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiWhiteSpace
 import icu.windea.pls.config.CwtDataTypes
-import icu.windea.pls.config.config.CwtConfig
-import icu.windea.pls.config.config.CwtFileConfig
-import icu.windea.pls.config.config.CwtMemberConfig
-import icu.windea.pls.config.config.CwtMemberType
-import icu.windea.pls.config.config.CwtMembersType
-import icu.windea.pls.config.config.CwtOptionConfig
-import icu.windea.pls.config.config.CwtOptionMemberConfig
-import icu.windea.pls.config.config.CwtOptionValueConfig
-import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.filterProperties
@@ -37,7 +27,7 @@ import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.cwt.psi.CwtValue
 
 @Optimized
-object CwtConfigResolverManager {
+object CwtConfigResolverService {
     fun getConfigs(element: PsiElement?, file: CwtFile, configGroup: CwtConfigGroup): List<CwtMemberConfig<*>>? {
         if (element !is CwtMemberContainer) return null
         val configs: MutableList<CwtMemberConfig<*>> = mutableListOf()

@@ -10,7 +10,7 @@ import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtIdMatchableConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
-import icu.windea.pls.config.util.CwtConfigResolverScope
+import icu.windea.pls.config.scopes.CwtConfigResolutionScope
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
@@ -63,7 +63,7 @@ interface CwtDynamicValueTypeConfig : CwtDelegatedConfig<CwtProperty, CwtPropert
 
 // region Implementations
 
-private object CwtDynamicValueTypeConfigResolver : CwtConfigResolverScope {
+private object CwtDynamicValueTypeConfigResolver : CwtConfigResolutionScope {
     private val logger = thisLogger()
 
     fun resolve(config: CwtPropertyConfig): CwtDynamicValueTypeConfig? {

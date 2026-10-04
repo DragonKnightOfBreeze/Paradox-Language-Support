@@ -15,7 +15,7 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtRowType
 import icu.windea.pls.config.config.booleanValue
 import icu.windea.pls.config.config.stringValue
-import icu.windea.pls.config.util.CwtConfigResolverScope
+import icu.windea.pls.config.scopes.CwtConfigResolutionScope
 import icu.windea.pls.core.collections.getAll
 import icu.windea.pls.core.collections.getOne
 import icu.windea.pls.core.optimized
@@ -86,7 +86,7 @@ interface CwtRowConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, Cwt
 
 // region Implementations
 
-private object CwtRowConfigResolver : CwtConfigResolverScope {
+private object CwtRowConfigResolver : CwtConfigResolutionScope {
     private val logger = thisLogger()
 
     fun resolve(config: CwtPropertyConfig): CwtRowConfig? {
@@ -98,11 +98,11 @@ private object CwtRowConfigResolver : CwtConfigResolverScope {
         }
 
         val propGroup = propConfigs.groupBy { it.key }
-        val paths = propGroup.getAll("path").mapNotNullTo(sortedSetOf()) { it.stringValue?.optimizedPath() }.optimized()
+        val paths = propGroup.getAll("path").mapNotNullTo(sortedSetOf()) { it.stringValue?.resolvePath() }.optimized()
         val pathFile = propGroup.getOne("path_file")?.stringValue
-        val pathExtension = propGroup.getOne("path_extension")?.stringValue?.optimizedPathExtension()
+        val pathExtension = propGroup.getOne("path_extension")?.stringValue?.resolvePathExtension()
         val pathStrict = propGroup.getOne("path_strict")?.booleanValue ?: false
-        val pathPatterns = propGroup.getAll("path_pattern").mapNotNullTo(sortedSetOf()) { it.stringValue?.optimizedPath() }.optimized()
+        val pathPatterns = propGroup.getAll("path_pattern").mapNotNullTo(sortedSetOf()) { it.stringValue?.resolvePath() }.optimized()
         val type = propGroup.getOne("type")?.stringValue.let { CwtRowType.resolve(it) }
         val skipLastRow = propGroup.getOne("skip_last_row")?.booleanValue ?: false
         val skipLastColumn = propGroup.getOne("skip_last_column")?.booleanValue ?: false

@@ -4,8 +4,7 @@ package icu.windea.pls.config.config
 
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.option.CwtOptionMetadata
-import icu.windea.pls.config.util.CwtConfigResolverManager
-import icu.windea.pls.config.util.CwtConfigResolverScope
+import icu.windea.pls.config.scopes.CwtConfigResolutionScope
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.optimized
@@ -44,13 +43,13 @@ interface CwtOptionValueConfig : CwtOptionMemberConfig<CwtValue> {
 
 // region Implementations
 
-private object CwtOptionValueConfigResolver : CwtConfigResolverScope {
+private object CwtOptionValueConfigResolver : CwtConfigResolutionScope {
     private val cache = CacheBuilder().build<String, CwtOptionValueConfig>()
 
     fun resolve(element: CwtValue, configGroup: CwtConfigGroup): CwtOptionValueConfig {
         val value = element.value
         val valueType = CwtTypeResolver.resolveExpressionType(element)
-        val optionConfigs = CwtConfigResolverManager.getOptionConfigsInOption(element, configGroup)
+        val optionConfigs = CwtConfigResolverService.getOptionConfigsInOption(element, configGroup)
         return create(value, valueType, optionConfigs)
     }
 

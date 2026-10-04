@@ -22,6 +22,7 @@ class ParadoxCsvColorSettingsPage : ColorSettingsPage {
         AttributesDescriptor(ChronicleBundle.message("csv.color.option.badCharacter"), ParadoxCsvHighlighterColors.BAD_CHARACTER),
 
         AttributesDescriptor(ChronicleBundle.message("semantic.color.option.definitionReference"), ParadoxCsvHighlighterColors.DEFINITION_REFERENCE),
+        AttributesDescriptor(ChronicleBundle.message("semantic.color.option.definitionReferenceSnippet"), ParadoxCsvHighlighterColors.DEFINITION_REFERENCE_SNIPPET),
         AttributesDescriptor(ChronicleBundle.message("semantic.color.option.enumValue"), ParadoxCsvHighlighterColors.ENUM_VALUE),
         AttributesDescriptor(ChronicleBundle.message("semantic.color.option.complexEnumValue"), ParadoxCsvHighlighterColors.COMPLEX_ENUM_VALUE),
         AttributesDescriptor(ChronicleBundle.message("semantic.color.option.dynamicValue"), ParadoxCsvHighlighterColors.DYNAMIC_VALUE),
@@ -34,6 +35,7 @@ class ParadoxCsvColorSettingsPage : ColorSettingsPage {
         "NUMBER" to ParadoxCsvHighlighterColors.NUMBER,
 
         "DEFINITION_REFERENCE" to ParadoxCsvHighlighterColors.DEFINITION_REFERENCE,
+        "DEFINITION_REFERENCE_SNIPPET" to ParadoxCsvHighlighterColors.DEFINITION_REFERENCE_SNIPPET,
         "ENUM_VALUE" to ParadoxCsvHighlighterColors.ENUM_VALUE,
         "COMPLEX_ENUM_VALUE" to ParadoxCsvHighlighterColors.COMPLEX_ENUM_VALUE,
         "DYNAMIC_VALUE" to ParadoxCsvHighlighterColors.DYNAMIC_VALUE,

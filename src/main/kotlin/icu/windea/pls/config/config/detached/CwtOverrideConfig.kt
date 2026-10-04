@@ -4,7 +4,7 @@ import com.intellij.openapi.diagnostic.thisLogger
 import icu.windea.pls.config.config.CwtDetachedConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.stringValue
-import icu.windea.pls.config.util.CwtConfigResolverScope
+import icu.windea.pls.config.scopes.CwtConfigResolutionScope
 import icu.windea.pls.core.orNull
 import icu.windea.pls.model.overrides.ParadoxOverrideStrategy
 
@@ -40,11 +40,11 @@ data class CwtOverrideConfig(
 
 // region Implementations
 
-private object CwtOverrideConfigResolver : CwtConfigResolverScope {
+private object CwtOverrideConfigResolver : CwtConfigResolutionScope {
     private val logger = thisLogger()
 
     fun resolve(config: CwtPropertyConfig): CwtOverrideConfig? {
-        val filePath = config.key.optimizedPath().orNull() ?: return null
+        val filePath = config.key.resolvePath().orNull() ?: return null
         val strategyString = config.stringValue?.orNull() ?: return null
         val strategy = ParadoxOverrideStrategy.get(strategyString.uppercase()) ?: return null
         logger.debugWithPrefix(config) { "Resolved override config (filePath: $filePath, strategy: $strategy)" }

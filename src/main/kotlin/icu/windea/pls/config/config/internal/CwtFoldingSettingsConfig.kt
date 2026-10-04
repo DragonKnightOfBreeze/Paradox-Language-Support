@@ -4,7 +4,7 @@ import com.intellij.openapi.diagnostic.thisLogger
 import icu.windea.pls.config.config.CwtDetachedConfig
 import icu.windea.pls.config.config.CwtFileConfig
 import icu.windea.pls.config.config.stringValue
-import icu.windea.pls.config.util.CwtConfigResolverScope
+import icu.windea.pls.config.scopes.CwtConfigResolutionScope
 import icu.windea.pls.core.collections.CaseInsensitiveStringKeyMap
 import icu.windea.pls.core.collections.getOne
 import icu.windea.pls.lang.folding.ParadoxExpressionFoldingBuilder
@@ -32,7 +32,7 @@ data class CwtFoldingSettingsConfig(
 
 // region Implementations
 
-private object CwtFoldingSettingsConfigResolver : CwtConfigResolverScope {
+private object CwtFoldingSettingsConfigResolver : CwtConfigResolutionScope {
     private val logger = thisLogger()
 
     fun resolveInFile(fileConfig: CwtFileConfig) {

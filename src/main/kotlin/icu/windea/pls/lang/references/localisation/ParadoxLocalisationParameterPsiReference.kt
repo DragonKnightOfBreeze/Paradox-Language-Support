@@ -64,7 +64,7 @@ class ParadoxLocalisationParameterPsiReference(
 
         // 尝试解析成 localisation 或 synced_localisation
         val selector = ParadoxLocalisationSearch.selector(project, file).contextSensitive().preferLocale(locale)
-        val resolved = ParadoxLocalisationSearch.search(name, type, selector).find()
+        val resolved = ParadoxLocalisationSearch.search(name, selector, type).find()
         if (resolved != null) return resolved
 
         // 尝试解析成 localisation_parameter
@@ -84,7 +84,7 @@ class ParadoxLocalisationParameterPsiReference(
         // 尝试解析成 localisation 或 synced_localisation
         val selector = ParadoxLocalisationSearch.selector(project, file).contextSensitive().preferLocale(locale)
         // 查找所有语言环境的
-        val resolved = ParadoxLocalisationSearch.search(name, type, selector).findAll()
+        val resolved = ParadoxLocalisationSearch.search(name, selector, type).findAll()
         if (resolved.isNotEmpty()) return resolved.createResults()
 
         // 尝试解析成 localisation_parameter

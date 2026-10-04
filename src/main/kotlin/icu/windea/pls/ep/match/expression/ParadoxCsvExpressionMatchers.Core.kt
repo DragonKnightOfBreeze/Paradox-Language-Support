@@ -17,8 +17,20 @@ abstract class ParadoxCoreCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
         override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression): ParadoxMatchResult {
             // can be an int or float here (e.g., for <technology_tier>)
             if (!context.expression.type.isLenientNumberOrStringLiteral()) return ParadoxMatchResult.NotMatch
-            // if (!context.expression.value.isParameterAwareIdentifier(".-")) return ParadoxMatchResult.NotMatch // #369 can also be any string literals
-            return ParadoxMatchResultFactory.forDefinition(context.element, context.project, context.expression.value, configExpression)
+            val value = context.expression.value
+            // if (!value.isParameterAwareIdentifier(".-")) return ParadoxMatchResult.NotMatch // #369 can also be any string literals
+            return ParadoxMatchResultFactory.forDefinition(context.element, context.project, value, configExpression)
+        }
+    }
+
+    /** @see CwtDataTypes.DefinitionSnippet */
+    class ForDefinitionSnippet : ParadoxCoreCsvExpressionMatcher() {
+        override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.DefinitionSnippet
+
+        override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression): ParadoxMatchResult {
+            val value = context.expression.value
+            if (!value.isIdentifier(".-")) return ParadoxMatchResult.NotMatch
+            return ParadoxMatchResultFactory.forDefinitionSnippet(context.element, context.project, value, configExpression)
         }
     }
 
@@ -54,16 +66,6 @@ abstract class ParadoxCoreCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
             val dynamicValueType = configExpression.metadata.value
             if (dynamicValueType == null) return ParadoxMatchResult.NotMatch
             return ParadoxMatchResult.FallbackMatch
-        }
-    }
-
-    /** @see CwtDataTypes.DefinitionSnippet */
-    class ForDefinitionSnippet : ParadoxCoreCsvExpressionMatcher() {
-        override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.DefinitionSnippet
-
-        override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression): ParadoxMatchResult {
-            if (!context.expression.value.isIdentifier(".-")) return ParadoxMatchResult.NotMatch
-            return ParadoxMatchResultFactory.forDefinitionSnippet(context.element, context.project, context.expression.value, configExpression)
         }
     }
 }

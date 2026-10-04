@@ -8,7 +8,7 @@ import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.configExpression.CwtLocationExpression
-import icu.windea.pls.config.util.CwtConfigResolverScope
+import icu.windea.pls.config.scopes.CwtConfigResolutionScope
 import icu.windea.pls.cwt.psi.CwtProperty
 
 /**
@@ -66,7 +66,7 @@ interface CwtLocationConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>
 
 // region Implementations
 
-private object CwtLocationConfigResolver : CwtConfigResolverScope {
+private object CwtLocationConfigResolver : CwtConfigResolutionScope {
     // no logger here (unnecessary)
 
     fun resolve(config: CwtPropertyConfig): CwtLocationConfig? {

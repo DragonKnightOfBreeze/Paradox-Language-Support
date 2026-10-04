@@ -8,7 +8,7 @@ import icu.windea.pls.config.annotations.FromName
 import icu.windea.pls.config.annotations.FromOptionMember
 import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.config.util.CwtConfigResolverScope
+import icu.windea.pls.config.scopes.CwtConfigResolutionScope
 import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
@@ -78,7 +78,7 @@ interface CwtSubtypeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> 
 
 // region Implementations
 
-private object CwtSubtypeConfigResolver : CwtConfigResolverScope {
+private object CwtSubtypeConfigResolver : CwtConfigResolutionScope {
     private val logger = thisLogger()
 
     fun resolve(config: CwtPropertyConfig): CwtSubtypeConfig? {

@@ -32,8 +32,8 @@ import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.search.util.preferLocale
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.ParadoxLocalisationType
 import icu.windea.pls.model.type.ParadoxExpressionRole
-import icu.windea.pls.script.highlighting.ParadoxScriptHighlighterColors
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 abstract class ParadoxCoreScriptExpressionSupport : ParadoxScriptExpressionSupport {
@@ -47,7 +47,7 @@ abstract class ParadoxCoreScriptExpressionSupport : ParadoxScriptExpressionSuppo
         }
 
         override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder): Boolean {
-            val attributesKey = ParadoxScriptHighlighterColors.DEFINITION_REFERENCE
+            val attributesKey = ParadoxSemanticHighlighterColors.definitionReference(element.language)
             if (config.configExpression?.type?.isSuffixAware == true) {
                 // 使用特殊的高亮（HIGHLIGHTED_REFERENCE）
                 ParadoxExpressionSupportFactory.annotateExpressionAsHighlightedReference(element, rangeInExpression, holder)
@@ -97,7 +97,7 @@ abstract class ParadoxCoreScriptExpressionSupport : ParadoxScriptExpressionSuppo
         }
 
         override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder): Boolean {
-            val attributesKey = ParadoxScriptHighlighterColors.LOCALISATION_REFERENCE
+            val attributesKey = ParadoxSemanticHighlighterColors.localisationReference(element.language)
             if (config.configExpression?.type?.isSuffixAware == true) {
                 // 使用特殊的高亮（HIGHLIGHTED_REFERENCE）
                 ParadoxExpressionSupportFactory.annotateExpressionAsHighlightedReference(element, rangeInExpression, holder)
@@ -143,7 +143,7 @@ abstract class ParadoxCoreScriptExpressionSupport : ParadoxScriptExpressionSuppo
         }
 
         override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder): Boolean {
-            val attributesKey = ParadoxScriptHighlighterColors.LOCALISATION_REFERENCE
+            val attributesKey = ParadoxSemanticHighlighterColors.localisationReference(element.language)
             if (config.configExpression?.type?.isSuffixAware == true) {
                 // 使用特殊的高亮（HIGHLIGHTED_REFERENCE）
                 ParadoxExpressionSupportFactory.annotateExpressionAsHighlightedReference(element, rangeInExpression, holder)
@@ -159,7 +159,7 @@ abstract class ParadoxCoreScriptExpressionSupport : ParadoxScriptExpressionSuppo
             val configGroup = config.configGroup
             val project = configGroup.project
             val selector = ParadoxLocalisationSearch.selector(project, element).contextSensitive().preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
-            return ParadoxLocalisationSearch.searchSynced(name, selector).find()
+            return ParadoxLocalisationSearch.search(name, selector, ParadoxLocalisationType.Synced).find()
         }
 
         override fun resolveAll(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiElement> {
@@ -168,14 +168,14 @@ abstract class ParadoxCoreScriptExpressionSupport : ParadoxScriptExpressionSuppo
             val project = configGroup.project
             return fullNames.flatMap { fullName ->
                 val selector = ParadoxLocalisationSearch.selector(project, element).contextSensitive().preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
-                return ParadoxLocalisationSearch.searchSynced(fullName, selector).findAll()
+                return ParadoxLocalisationSearch.search(fullName, selector, ParadoxLocalisationType.Synced).findAll()
             }
         }
 
         override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
             if (context.config?.configExpression?.metadata?.suffixes.isNotNullOrEmpty()) return // TODO SUFFIX_AWARE 排除需要带上后缀的情况，目前不支持
             if (context.keyword.isParameterized()) return // 排除可能带参数的情况
-            ParadoxExpressionCompletionManager.completeSyncedLocalisation(context, result)
+            ParadoxExpressionCompletionManager.completeLocalisation(context, result, ParadoxLocalisationType.Synced)
         }
     }
 
@@ -187,7 +187,7 @@ abstract class ParadoxCoreScriptExpressionSupport : ParadoxScriptExpressionSuppo
 
         override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder): Boolean {
             if (text.isLeftQuoted()) return false
-            val attributesKey = ParadoxScriptHighlighterColors.LOCALISATION_REFERENCE
+            val attributesKey = ParadoxSemanticHighlighterColors.localisationReference(element.language)
             ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
             return true
         }
@@ -222,7 +222,7 @@ abstract class ParadoxCoreScriptExpressionSupport : ParadoxScriptExpressionSuppo
         override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.Modifier
 
         override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder): Boolean {
-            val attributesKey = ParadoxScriptHighlighterColors.MODIFIER
+            val attributesKey = ParadoxSemanticHighlighterColors.modifier()
             ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
             return true
         }
@@ -246,11 +246,11 @@ abstract class ParadoxCoreScriptExpressionSupport : ParadoxScriptExpressionSuppo
 
         override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder): Boolean {
             val configGroup = config.configGroup
-            val enumName = config.configExpression?.metadata?.value ?: return false
+            val configExpression = config.configExpression ?: return false
+            val enumName = configExpression.metadata.value ?: return false
             val attributesKey = when {
-                configGroup.enums[enumName] != null -> ParadoxScriptHighlighterColors.ENUM_VALUE
-                configGroup.complexEnums[enumName] != null -> ParadoxScriptHighlighterColors.COMPLEX_ENUM_VALUE
-                else -> ParadoxScriptHighlighterColors.ENUM_VALUE
+                configGroup.complexEnums[enumName] != null -> ParadoxSemanticHighlighterColors.complexEnumValue(element.language)
+                else -> ParadoxSemanticHighlighterColors.enumValue(element.language)
             }
             ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
             return true
@@ -286,13 +286,13 @@ abstract class ParadoxCoreScriptExpressionSupport : ParadoxScriptExpressionSuppo
             run {
                 val offset = separatorIndex
                 if (offset <= 0) return@run
-                val attributesKey = ParadoxScriptHighlighterColors.DEFINITION_REFERENCE
+                val attributesKey = ParadoxSemanticHighlighterColors.definitionReference(element.language)
                 val rangeInExpression = TextRange.create(rangeInExpression.startOffset, rangeInExpression.startOffset + offset)
                 ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
             }
             run {
                 val offset = separatorIndex
-                val attributesKey = ParadoxScriptHighlighterColors.SEMANTIC_MARKER
+                val attributesKey = ParadoxSemanticHighlighterColors.marker(element.language)
                 val rangeInExpression = TextRange.create(rangeInExpression.startOffset + offset, rangeInExpression.startOffset + offset + 1)
                 ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
             }
@@ -301,7 +301,7 @@ abstract class ParadoxCoreScriptExpressionSupport : ParadoxScriptExpressionSuppo
                 if (offset <= 0) return@run
                 // annotate only if snippet after '@' is number like
                 if (!text.substring(separatorIndex + 1).all { it.isExactDigit() }) return@run
-                val attributesKey = ParadoxScriptHighlighterColors.NUMBER
+                val attributesKey = ParadoxSemanticHighlighterColors.number(element.language)
                 val rangeInExpression = TextRange.create(rangeInExpression.endOffset - offset, rangeInExpression.endOffset)
                 ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
             }

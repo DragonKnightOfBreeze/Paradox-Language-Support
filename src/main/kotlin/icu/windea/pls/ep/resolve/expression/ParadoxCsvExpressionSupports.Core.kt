@@ -60,7 +60,8 @@ abstract class ParadoxCoreCsvExpressionSupport : ParadoxCsvExpressionSupport {
 
         override fun annotate(element: ParadoxCsvExpressionElement, text: String, rangeInExpression: TextRange, config: CwtValueConfig, holder: AnnotationHolder): Boolean {
             val configGroup = config.configGroup
-            val enumName = config.configExpression.metadata.value ?: return false
+            val configExpression = config.configExpression
+            val enumName = configExpression.metadata.value ?: return false
             val attributesKey = when {
                 configGroup.complexEnums[enumName] != null -> ParadoxSemanticHighlighterColors.complexEnumValue(element.language)
                 else -> ParadoxSemanticHighlighterColors.enumValue(element.language)

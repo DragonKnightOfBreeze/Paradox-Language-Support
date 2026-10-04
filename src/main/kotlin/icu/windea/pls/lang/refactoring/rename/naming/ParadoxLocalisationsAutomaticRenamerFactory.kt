@@ -19,7 +19,7 @@ class ParadoxLocalisationsAutomaticRenamerFactory : AutomaticRenamerFactory {
         val type = element.type ?: return false
         val selector = ParadoxLocalisationSearch.selector(element.project, element)
         val processor = ProcessorFactory.duplicate<ParadoxLocalisationProperty>()
-        ParadoxLocalisationSearch.search(name, type, selector).process(processor)
+        ParadoxLocalisationSearch.search(name, selector, type).process(processor)
         return processor.result
     }
 

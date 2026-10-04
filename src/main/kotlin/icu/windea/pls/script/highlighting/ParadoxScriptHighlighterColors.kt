@@ -39,8 +39,10 @@ object ParadoxScriptHighlighterColors {
 
     @JvmField val DEFINITION = createTextAttributesKey("PARADOX_SCRIPT.DEFINITION", PROPERTY_KEY) // underscored
     @JvmField val DEFINITION_NAME = createTextAttributesKey("PARADOX_SCRIPT.DEFINITION_NAME") // background #223C23
-    @JvmField val DEFINITION_REFERENCE = createTextAttributesKey("PARADOX_SCRIPT.DEFINITION_REFERENCE", DefaultLanguageHighlighterColors.INSTANCE_FIELD)  // dotted line #707D95
-    @JvmField val LOCALISATION_REFERENCE = createTextAttributesKey("PARADOX_SCRIPT.LOCALISATION_REFERENCE", DefaultLanguageHighlighterColors.KEYWORD)
+    @JvmField val DEFINITION_REFERENCE = createTextAttributesKey("PARADOX_SCRIPT.DEFINITION_REFERENCE", DefaultLanguageHighlighterColors.INSTANCE_FIELD) // dotted line #707D95
+    @JvmField val DEFINITION_REFERENCE_SNIPPET = createTextAttributesKey("PARADOX_SCRIPT.DEFINITION_REFERENCE_SNIPPET", DEFINITION_REFERENCE) // underwaved #707D95
+    @JvmField val LOCALISATION_REFERENCE = createTextAttributesKey("PARADOX_SCRIPT.LOCALISATION_REFERENCE", DefaultLanguageHighlighterColors.KEYWORD) // dotted line #707D95
+    @JvmField val LOCALISATION_REFERENCE_SNIPPET = createTextAttributesKey("PARADOX_SCRIPT.LOCALISATION_REFERENCE_SNIPPET", LOCALISATION_REFERENCE) // underwaved #707D95
     @JvmField val DEFINE_NAMESPACE = createTextAttributesKey("PARADOX_SCRIPT.DEFINE_NAMESPACE", DefaultLanguageHighlighterColors.STATIC_METHOD)
     @JvmField val DEFINE_VARIABLE = createTextAttributesKey("PARADOX_SCRIPT.DEFINE_VARIABLE", DefaultLanguageHighlighterColors.STATIC_FIELD)
     @JvmField val ENUM_VALUE = createTextAttributesKey("PARADOX_SCRIPT.ENUM_VALUE", DefaultLanguageHighlighterColors.STATIC_FIELD)

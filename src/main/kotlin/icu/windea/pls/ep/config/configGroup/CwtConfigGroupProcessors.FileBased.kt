@@ -45,7 +45,6 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.CwtConfigGroupFileInfo
 import icu.windea.pls.config.configGroup.CwtConfigGroupFileSource
 import icu.windea.pls.config.util.CwtConfigManager
-import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.withState
 import icu.windea.pls.model.ParadoxGameType
@@ -57,7 +56,7 @@ import kotlinx.coroutines.ensureActive
 /**
  * 用于初始化规则分组中基于文件内容的那些数据。
  */
-class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor, CwtConfigResolverScope {
+class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor {
     override suspend fun process(configGroup: CwtConfigGroup) {
         val currentCoroutineContext = currentCoroutineContext()
 

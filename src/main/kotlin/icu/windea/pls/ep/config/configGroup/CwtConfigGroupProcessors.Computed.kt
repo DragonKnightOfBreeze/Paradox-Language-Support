@@ -11,6 +11,7 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.select.selectConfigScope
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
+import icu.windea.pls.core.select.one
 import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.model.paths.CwtConfigPath
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap

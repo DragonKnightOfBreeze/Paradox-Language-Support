@@ -7,8 +7,7 @@ import com.intellij.openapi.util.UserDataHolderBase
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.SmartPsiElementPointer
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.util.CwtConfigResolverManager
-import icu.windea.pls.config.util.CwtConfigResolverScope
+import icu.windea.pls.config.scopes.CwtConfigResolutionScope
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.filterIsInstanceFast
 import icu.windea.pls.core.createPointer
@@ -61,7 +60,7 @@ interface CwtFileConfig : CwtMemberContainerConfig<CwtFile> {
 
 // region Implementations
 
-private object CwtFileConfigResolver : CwtConfigResolverScope {
+private object CwtFileConfigResolver : CwtConfigResolutionScope {
     private val logger = thisLogger()
 
     fun create(
@@ -84,7 +83,7 @@ private object CwtFileConfigResolver : CwtConfigResolverScope {
         val pointer = file.createPointer()
         val fileName = file.name
         val rootBlock = file.block
-        val configs = CwtConfigResolverManager.getConfigs(rootBlock, file, configGroup).orEmpty()
+        val configs = CwtConfigResolverService.getConfigs(rootBlock, file, configGroup).orEmpty()
         val config = create(pointer, configGroup, fileName, filePath, configs)
         when {
             configs.isEmpty() -> logger.debugWithPrefix(file, configGroup) { "Resolved file config (path: ${config.path}, empty member configs)." }
@@ -138,13 +137,13 @@ private class CwtFileConfigImplWithConfigs(
 
     override val properties: List<CwtPropertyConfig>
         get() {
-            if (memberType == CwtMembersType.UNSET) memberType = CwtConfigResolverManager.getMembersType(configs)
-            return CwtConfigResolverManager.getProperties(configs, memberType)
+            if (memberType == CwtMembersType.UNSET) memberType = CwtConfigResolverService.getMembersType(configs)
+            return CwtConfigResolverService.getProperties(configs, memberType)
         }
     override val values: List<CwtValueConfig>
         get() {
-            if (memberType == CwtMembersType.UNSET) memberType = CwtConfigResolverManager.getMembersType(configs)
-            return CwtConfigResolverManager.getValues(configs, memberType)
+            if (memberType == CwtMembersType.UNSET) memberType = CwtConfigResolverService.getMembersType(configs)
+            return CwtConfigResolverService.getValues(configs, memberType)
         }
 
     override fun withConfigs(configs: List<CwtMemberConfig<*>>): Boolean {

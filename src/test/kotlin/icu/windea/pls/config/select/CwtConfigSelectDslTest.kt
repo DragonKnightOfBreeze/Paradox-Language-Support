@@ -8,6 +8,8 @@ import icu.windea.pls.config.config.members
 import icu.windea.pls.config.config.properties
 import icu.windea.pls.config.config.values
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.select.list
+import icu.windea.pls.core.select.one
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.ChronicleTestScope
@@ -37,7 +39,7 @@ class CwtConfigSelectDslTest : BasePlatformTestCase(), ChronicleTestScope {
         val fileConfig = resolveFileConfig("features/select/select_test_1.test.cwt")
         val k4 = selectConfigScope { fileConfig.queryBy("k1/k2/k3/k4").one() }
         Assert.assertNotNull(k4)
-        val k4List = selectConfigScope { fileConfig.queryBy("k1/k2/k3/k4").all() }
+        val k4List = selectConfigScope { fileConfig.queryBy("k1/k2/k3/k4").list() }
         Assert.assertEquals(3, k4List.size)
     }
 
@@ -73,14 +75,14 @@ class CwtConfigSelectDslTest : BasePlatformTestCase(), ChronicleTestScope {
         val fileConfig = resolveFileConfig("features/select/select_test_1.test.cwt")
         val k1 = selectConfigScope { fileConfig.queryBy("k1").asProperty().one() }!!
 
-        val members = selectConfigScope { k1.members().all() }
+        val members = selectConfigScope { k1.members().list() }
         Assert.assertEquals(3, members.size)
 
-        val values = selectConfigScope { k1.values().asValue().all() }
+        val values = selectConfigScope { k1.values().asValue().list() }
         Assert.assertEquals(2, values.size)
         Assert.assertEquals(listOf("v1", "v1"), values.map { it.value })
 
-        val properties = selectConfigScope { k1.properties().all() }
+        val properties = selectConfigScope { k1.properties().list() }
         Assert.assertEquals(1, properties.size)
         Assert.assertEquals("k2", properties.single().key)
     }
@@ -109,17 +111,17 @@ class CwtConfigSelectDslTest : BasePlatformTestCase(), ChronicleTestScope {
         val k2 = selectConfigScope { fileConfig.queryBy("k1/k2").asProperty().one() }!!
 
         val k3IgnoreCase = selectConfigScope {
-            k2.properties().ofKey("K3", ignoreCase = true, usePattern = false).all()
+            k2.properties().ofKey("K3", ignoreCase = true, usePattern = false).list()
         }
         Assert.assertEquals(3, k3IgnoreCase.size)
 
         val k3CaseSensitive = selectConfigScope {
-            k2.properties().ofKey("K3", ignoreCase = false, usePattern = false).all()
+            k2.properties().ofKey("K3", ignoreCase = false, usePattern = false).list()
         }
         Assert.assertEquals(0, k3CaseSensitive.size)
 
         val k3ByPattern = selectConfigScope {
-            k2.properties().ofKey("k*", ignoreCase = false, usePattern = true).all()
+            k2.properties().ofKey("k*", ignoreCase = false, usePattern = true).list()
         }
         Assert.assertEquals(3, k3ByPattern.size)
     }
@@ -130,7 +132,7 @@ class CwtConfigSelectDslTest : BasePlatformTestCase(), ChronicleTestScope {
         val k2 = selectConfigScope { fileConfig.queryBy("k1/k2").asProperty().one() }!!
 
         val k3List = selectConfigScope {
-            k2.properties().ofKeys(listOf("k3", "not_exists"), ignoreCase = true, usePattern = false).all()
+            k2.properties().ofKeys(listOf("k3", "not_exists"), ignoreCase = true, usePattern = false).list()
         }
         Assert.assertEquals(3, k3List.size)
     }
@@ -140,17 +142,17 @@ class CwtConfigSelectDslTest : BasePlatformTestCase(), ChronicleTestScope {
         val fileConfig = resolveFileConfig("features/select/select_test_1.test.cwt")
 
         val k4ListByPattern = selectConfigScope {
-            fileConfig.queryBy("k1/*/k3/k4", ignoreCase = false, usePattern = true).asProperty().all()
+            fileConfig.queryBy("k1/*/k3/k4", ignoreCase = false, usePattern = true).asProperty().list()
         }
         Assert.assertEquals(3, k4ListByPattern.size)
         Assert.assertTrue(k4ListByPattern.all { it.key == "k4" })
 
         val k4ListByLiteral = selectConfigScope {
-            fileConfig.queryBy("k1/*/k3/k4", ignoreCase = false, usePattern = false).all()
+            fileConfig.queryBy("k1/*/k3/k4", ignoreCase = false, usePattern = false).list()
         }
         Assert.assertEquals(0, k4ListByLiteral.size)
 
-        val empty = selectConfigScope { fileConfig.queryBy("").all() }
+        val empty = selectConfigScope { fileConfig.queryBy("").list() }
         Assert.assertTrue(empty.isEmpty())
     }
 
@@ -158,7 +160,7 @@ class CwtConfigSelectDslTest : BasePlatformTestCase(), ChronicleTestScope {
     fun queryBy_basic() {
         val fileConfig = resolveFileConfig("features/select/select_test_1.test.cwt")
         val list = selectConfigScope {
-            fileConfig.queryBy(listOf("k1/k2/k3/k4", "k1/k2/k3")).asProperty().all()
+            fileConfig.queryBy(listOf("k1/k2/k3/k4", "k1/k2/k3")).asProperty().list()
         }
         val k4Count = list.count { it.key == "k4" }
         val k3Count = list.count { it.key == "k3" }
@@ -169,7 +171,7 @@ class CwtConfigSelectDslTest : BasePlatformTestCase(), ChronicleTestScope {
     @Test
     fun queryBy_duplicateKeyOrderIsStable() {
         val fileConfig = resolveFileConfig("features/select/select_test_1.test.cwt")
-        val k4List = selectConfigScope { fileConfig.queryBy("k1/k2/k3/k4").asProperty().all() }
+        val k4List = selectConfigScope { fileConfig.queryBy("k1/k2/k3/k4").asProperty().list() }
         Assert.assertEquals(3, k4List.size)
 
         val k3Paths = selectConfigScope {
@@ -182,7 +184,7 @@ class CwtConfigSelectDslTest : BasePlatformTestCase(), ChronicleTestScope {
     fun queryBy_usePattern_notMatchedShouldBeEmpty() {
         val fileConfig = resolveFileConfig("features/select/select_test_1.test.cwt")
         val result = selectConfigScope {
-            fileConfig.queryBy("k1/*/kx/k4", ignoreCase = false, usePattern = true).all()
+            fileConfig.queryBy("k1/*/kx/k4", ignoreCase = false, usePattern = true).list()
         }
         Assert.assertTrue(result.isEmpty())
     }
@@ -193,7 +195,7 @@ class CwtConfigSelectDslTest : BasePlatformTestCase(), ChronicleTestScope {
         val list = selectConfigScope {
             fileConfig.queryBy(listOf("", "not_exists", "k1/k2/k3/k4"), ignoreCase = false, usePattern = false)
                 .asProperty()
-                .all()
+                .list()
         }
         Assert.assertEquals(3, list.size)
         Assert.assertTrue(list.all { it.key == "k4" })
@@ -206,12 +208,12 @@ class CwtConfigSelectDslTest : BasePlatformTestCase(), ChronicleTestScope {
         val k2 = selectConfigScope { fileConfig.queryBy("k1/k2").asProperty().one() }!!
 
         val k4FromContainers = selectConfigScope {
-            sequenceOf(k1, k2).queryBy("k3/k4").asProperty().all()
+            sequenceOf(k1, k2).queryBy("k3/k4").asProperty().list()
         }
         Assert.assertEquals(3, k4FromContainers.size)
 
         val listFromContainers = selectConfigScope {
-            sequenceOf(k1, k2).queryBy(listOf("k3", "k3/k4")).asProperty().all()
+            sequenceOf(k1, k2).queryBy(listOf("k3", "k3/k4")).asProperty().list()
         }
         Assert.assertEquals(6, listFromContainers.size)
     }
@@ -246,10 +248,10 @@ class CwtConfigSelectDslTest : BasePlatformTestCase(), ChronicleTestScope {
         val vTextSensitive = selectConfigScope { fileConfig.properties().ofValue("text", ignoreCase = false).one() }
         Assert.assertNull(vTextSensitive)
 
-        val list1 = selectConfigScope { fileConfig.properties().ofValues(listOf("Text", "1.0", "yes"), ignoreCase = true).all() }
+        val list1 = selectConfigScope { fileConfig.properties().ofValues(listOf("Text", "1.0", "yes"), ignoreCase = true).list() }
         Assert.assertEquals(3, list1.size) // include properties with literal values
 
-        val list2 = selectConfigScope { fileConfig.properties().ofValues(listOf("Text", "1.0", "yes", "{...}"), ignoreCase = true).all() }
+        val list2 = selectConfigScope { fileConfig.properties().ofValues(listOf("Text", "1.0", "yes", "{...}"), ignoreCase = true).list() }
         Assert.assertEquals(3, list2.size) // exclude properties with block-like values
     }
 

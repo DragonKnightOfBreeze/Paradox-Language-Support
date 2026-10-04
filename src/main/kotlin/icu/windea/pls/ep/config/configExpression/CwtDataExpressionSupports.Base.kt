@@ -79,7 +79,10 @@ abstract class CwtPrefixBasedDataExpressionSupport : CwtDataExpressionSupport {
     final override fun resolve(expressionString: String, role: CwtDataExpressionRole): CwtDataExpression? {
         providers.forEachFast f@{ provider ->
             val v = expressionString.removePrefixOrNull(provider.prefix) ?: return@f
-            return CwtDataExpression.create(expressionString, provider.dataType, role) { value = v; ignoreCase = provider.ignoreCase }
+            return CwtDataExpression.create(expressionString, provider.dataType, role) {
+                value = v // 3.0.4 no optimization here
+                ignoreCase = provider.ignoreCase
+            }
         }
         return null
     }

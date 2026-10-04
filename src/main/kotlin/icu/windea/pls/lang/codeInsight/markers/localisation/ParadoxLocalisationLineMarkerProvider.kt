@@ -43,7 +43,7 @@ class ParadoxLocalisationLineMarkerProvider : ParadoxRelatedItemLineMarkerProvid
         val targets by lazy {
             val project = element.project
             val selector = ParadoxLocalisationSearch.selector(project, element).contextSensitive().preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
-            ParadoxLocalisationSearch.search(name, type, selector).findAll().optimized()
+            ParadoxLocalisationSearch.search(name, selector, type).findAll().optimized()
         }
         val locationElement = element.propertyKey.idElement
         val lineMarkerInfo = NavigationGutterIconBuilderC.createForPsi(icon) { createGotoRelatedItem(targets) }

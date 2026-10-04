@@ -1,13 +1,13 @@
 package icu.windea.pls.core.util
 
-import icu.windea.pls.core.cache.CacheBuilder
+import com.github.benmanes.caffeine.cache.Interner
 
 /**
  * 模板信息。
  *
- * 用于描述一个带占位符的模板：给定占位符对应的实参，可以解析出完整文本；反之，也可以从完整文本中提取出对应的实参。
+ * 表示一个带占位符的模板。给定占位符对应的实参，可以解析出完整文本。反之，也可以从完整文本中提取出对应的实参。
  *
- * @property expression 模板表达式（包含占位符）。
+ * @property expression 表达式字符串。
  */
 interface TemplateInfo<T> {
     val expression: String
@@ -24,21 +24,20 @@ interface TemplateInfo<T> {
 }
 
 /**
- * 一元模板信息。即只包含单个占位符的模板，例如 `$_desc`、`GFX_$`。
+ * 一元模板信息。
  *
- * 说明：
- * - [prefix] 为占位符之前的常量前缀，[suffix] 为占位符之后的常量后缀。
- * - [extract] 要求 [String.startsWith] [prefix] 且 [String.endsWith] [suffix]，否则返回 `null`。
+ * 表示一个仅包含单个占位符的模板。例如 `$_suffix` `prefix_$` `prefix_$_suffix`。
  *
- * @property placeholder 占位符（默认为 `$`）。
+ * @property expression 表达式字符串。要求仅包含单个占位符。
+ * @property placeholder 占位符。默认为 `$`。
+ * @property prefix 占位符之前的常量前缀。
+ * @property suffix 占位符之后的常量后缀。
  */
 data class UnaryTemplateInfo(
     override val expression: String,
     val placeholder: String = "$",
 ) : TemplateInfo<String> {
-    /** 占位符之前的常量前缀。 */
     val prefix: String = expression.substringBefore(placeholder)
-    /** 占位符之后的常量后缀。 */
     val suffix: String = expression.substringAfter(placeholder)
 
     override fun extract(text: String): String? {
@@ -48,36 +47,41 @@ data class UnaryTemplateInfo(
         return text.substring(prefix.length, text.length - suffix.length)
     }
 
-    override fun resolve(args: String): String = prefix + args + suffix
+    override fun resolve(args: String): String {
+        return prefix + args + suffix
+    }
 
     override fun toString(): String = expression
 
+    /**
+     * 进行规范化处理（去重）。
+     */
+    fun normalize(): UnaryTemplateInfo {
+        return interner.intern(this)
+    }
+
     companion object {
-        private val cache = CacheBuilder("maximumSize=1000").build<String, UnaryTemplateInfo>()
+        private val interner = Interner.newWeakInterner<UnaryTemplateInfo>()
 
         /**
-         * 从表达式字符串直接解析并创建实例。不对结果进行缓存。
+         * 从表达式字符串直接解析并创建实例。
          *
-         * 若表达式为空或不包含唯一的占位符，则返回 `null`。
+         * 如果表达式为空或不包含唯一的占位符，则返回 `null`。
          */
         @JvmStatic
-        fun create(expression: String): UnaryTemplateInfo? {
+        fun create(expression: String, placeholder: String = "$"): UnaryTemplateInfo? {
             if (expression.isEmpty()) return null
-            val index = expression.indexOf('$')
-            if (index == -1) return null
-            if (expression.indexOf('$', index + 1) != -1) return null // require exactly one placeholder
+            val index = expression.indexOf(placeholder)
+            if (index == -1) return null // require placeholder
+            val nextIndex = expression.indexOf(placeholder, index + 1)
+            if (nextIndex != -1) return null // require exactly one placeholder
             return UnaryTemplateInfo(expression)
         }
 
-        /**
-         * 从表达式字符串解析实例，并对成功解析的结果进行缓存和去重。
-         */
+        // TODO 3.0.4 [snippet-match] remove
         @JvmStatic
-        fun from(expression: String): UnaryTemplateInfo? {
-            cache.getIfPresent(expression)?.let { return it }
-            val result = create(expression) ?: return null
-            cache.put(expression, result)
-            return result
+        fun from(expression: String, placeholder: String = "$"): UnaryTemplateInfo? {
+            return create(expression, placeholder)?.normalize()
         }
     }
 }

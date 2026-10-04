@@ -585,6 +585,12 @@ class UnresolvedExpressionInspectionTest : BasePlatformTestCase(), ChronicleTest
 
     // endregion
 
+    // region snippetMatch
+
+    // TODO 3.0.4 [test/snippet-match]
+
+    // endregion
+
     // region ignored
 
     @Test

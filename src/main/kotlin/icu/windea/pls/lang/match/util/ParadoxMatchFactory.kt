@@ -19,6 +19,7 @@ import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.util.withSearchScopeType
 import icu.windea.pls.lang.select.selectScope
+import icu.windea.pls.model.ParadoxLocalisationType
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
@@ -51,14 +52,9 @@ object ParadoxMatchFactory {
         return ParadoxDefinitionSearch.search(name, typeExpression, selector).findFirst() != null
     }
 
-    fun matchesLocalisation(element: PsiElement, project: Project, name: String): Boolean {
+    fun matchesLocalisation(element: PsiElement, project: Project, name: String, type: ParadoxLocalisationType = ParadoxLocalisationType.Normal): Boolean {
         val selector = ParadoxLocalisationSearch.selector(project, element)
-        return ParadoxLocalisationSearch.searchNormal(name, selector).findFirst() != null
-    }
-
-    fun matchesSyncedLocalisation(element: PsiElement, project: Project, name: String): Boolean {
-        val selector = ParadoxLocalisationSearch.selector(project, element)
-        return ParadoxLocalisationSearch.searchSynced(name, selector).findFirst() != null
+        return ParadoxLocalisationSearch.search(name, selector, type).findFirst() != null
     }
 
     fun matchesPathReference(element: PsiElement, project: Project, expression: String, configExpression: CwtDataExpression): Boolean {

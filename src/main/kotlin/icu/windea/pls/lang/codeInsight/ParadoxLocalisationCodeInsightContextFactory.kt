@@ -333,7 +333,7 @@ object ParadoxLocalisationCodeInsightContextFactory {
     private fun isMissing(name: String, project: Project, element: PsiElement, locale: CwtLocaleConfig, localisationType: ParadoxLocalisationType, constraint: ParadoxLocalisationIndexConstraint? = null): Boolean {
         val selector = ParadoxLocalisationSearch.selector(project, element).locale(locale)
             .withConstraint(constraint)
-        val missing = ParadoxLocalisationSearch.search(name, localisationType, selector).findFirst() == null
+        val missing = ParadoxLocalisationSearch.search(name, selector, localisationType).findFirst() == null
         return missing
     }
 

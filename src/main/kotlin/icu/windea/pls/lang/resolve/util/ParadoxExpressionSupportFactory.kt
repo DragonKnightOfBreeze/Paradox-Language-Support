@@ -59,6 +59,7 @@ object ParadoxExpressionSupportFactory {
         holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(range).textAttributes(attributesKey).create()
     }
 
+    // TODO 3.0.4 revision
     fun annotateExpressionAsHighlightedReference(element: ParadoxExpressionElement, rangeInExpression: TextRange, holder: AnnotationHolder) {
         if (rangeInExpression.isEmpty) return
         val offset = element.startOffset + ParadoxExpressionService.getExpressionOffset(element)

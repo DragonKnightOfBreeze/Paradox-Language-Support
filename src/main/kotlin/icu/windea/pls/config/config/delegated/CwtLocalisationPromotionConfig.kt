@@ -11,7 +11,7 @@ import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtIdMatchableConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.stringValue
-import icu.windea.pls.config.util.CwtConfigResolverScope
+import icu.windea.pls.config.scopes.CwtConfigResolutionScope
 import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.optimized
 import icu.windea.pls.cwt.psi.CwtProperty
@@ -79,7 +79,7 @@ interface CwtLocalisationPromotionConfig : CwtDelegatedConfig<CwtProperty, CwtPr
 
 // region Implementations
 
-private object CwtLocalisationPromotionConfigResolver : CwtConfigResolverScope {
+private object CwtLocalisationPromotionConfigResolver : CwtConfigResolutionScope {
     private val logger = thisLogger()
 
     fun resolve(config: CwtPropertyConfig): CwtLocalisationPromotionConfig {

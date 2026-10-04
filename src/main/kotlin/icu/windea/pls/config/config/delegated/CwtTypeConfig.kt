@@ -18,7 +18,7 @@ import icu.windea.pls.config.config.booleanValue
 import icu.windea.pls.config.config.resolveElementWithConfig
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.config.tagType
-import icu.windea.pls.config.util.CwtConfigResolverScope
+import icu.windea.pls.config.scopes.CwtConfigResolutionScope
 import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.collections.getAll
 import icu.windea.pls.core.collections.getOne
@@ -124,7 +124,7 @@ interface CwtTypeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, Cw
 
 // region Implementations
 
-private object CwtTypeConfigResolver : CwtConfigResolverScope {
+private object CwtTypeConfigResolver : CwtConfigResolutionScope {
     private val logger = thisLogger()
 
     fun resolve(config: CwtPropertyConfig): CwtTypeConfig? {
@@ -136,11 +136,11 @@ private object CwtTypeConfigResolver : CwtConfigResolverScope {
         }
 
         val propGroup = propConfigs.groupBy { it.key }
-        val paths = propGroup.getAll("path").mapNotNullTo(sortedSetOf()) { it.stringValue?.optimizedPath() }.optimized()
+        val paths = propGroup.getAll("path").mapNotNullTo(sortedSetOf()) { it.stringValue?.resolvePath() }.optimized()
         val pathFile = propGroup.getOne("path_file")?.stringValue
-        val pathExtension = propGroup.getOne("path_extension")?.stringValue?.optimizedPathExtension()
+        val pathExtension = propGroup.getOne("path_extension")?.stringValue?.resolvePathExtension()
         val pathStrict = propGroup.getOne("path_strict")?.booleanValue ?: false
-        val pathPatterns = propGroup.getAll("path_pattern").mapNotNullTo(sortedSetOf()) { it.stringValue?.optimizedPath() }.optimized()
+        val pathPatterns = propGroup.getAll("path_pattern").mapNotNullTo(sortedSetOf()) { it.stringValue?.resolvePath() }.optimized()
         var baseType = propGroup.getOne("base_type")?.stringValue?.orNull()
         val nameField = propGroup.getOne("name_field")?.stringValue
         val nameFromFile = propGroup.getOne("name_from_file")?.booleanValue ?: false

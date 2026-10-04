@@ -31,7 +31,7 @@ object ParadoxLocalisationService {
         val selector = ParadoxScriptedVariableSearch.selector(project, element).contextSensitive()
         ProgressManager.checkCanceled()
         // search for all scripted variable with same name
-        val result = ParadoxScriptedVariableSearch.search(name, null, selector).findAll()
+        val result = ParadoxScriptedVariableSearch.search(name, selector, null).findAll()
         return result
     }
 

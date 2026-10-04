@@ -7,7 +7,7 @@ import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.config.annotations.FromMember
 import icu.windea.pls.config.annotations.FromName
 import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.config.util.CwtConfigResolverScope
+import icu.windea.pls.config.scopes.CwtConfigResolutionScope
 import icu.windea.pls.core.optimized
 
 /**
@@ -63,7 +63,7 @@ interface CwtDefineNamespaceConfig : CwtDefineConfig {
     }
 }
 
-private object CwtDefineNamespaceConfigResolver : CwtConfigResolverScope {
+private object CwtDefineNamespaceConfigResolver : CwtConfigResolutionScope {
     private val logger = thisLogger()
 
     fun resolve(config: CwtPropertyConfig): CwtDefineNamespaceConfig? {

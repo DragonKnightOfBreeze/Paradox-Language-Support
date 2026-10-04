@@ -4,7 +4,9 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.aliasConfig
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.collections.noneFast
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.ep.ChronicleEpBundle
 import icu.windea.pls.lang.inspections.ParadoxExpressionInspectionContext
@@ -23,6 +25,7 @@ import icu.windea.pls.script.psi.ParadoxScriptString
  * - `switch = {...}`
  * - `inverted_switch = {...}`
  */
+@Optimized
 class ParadoxTriggerInSwitchStatementsChecker : ParadoxIncorrectExpressionChecker {
     object Constants {
         val triggerKeys = arrayOf("trigger", "on_trigger")
@@ -44,7 +47,7 @@ class ParadoxTriggerInSwitchStatementsChecker : ParadoxIncorrectExpressionChecke
         val configGroup = config.configGroup
         val resultTriggerConfigs = configGroup.aliasGroups.get("trigger")?.get(triggerName)?.orNull() ?: return true
 
-        if (resultTriggerConfigs.none { it.config.valueType != CwtExpressionType.Block }) {
+        if (resultTriggerConfigs.noneFast { it.config.valueType != CwtExpressionType.Block }) {
             context.holder.registerProblem(element, ChronicleEpBundle.message("incorrectExpression.simpleTrigger.desc.0"))
         }
         return true
@@ -58,6 +61,7 @@ class ParadoxTriggerInSwitchStatementsChecker : ParadoxIncorrectExpressionChecke
  * - `complex_trigger_modifier = {...}`
  * - `export_trigger_value_to_variable = {...}`
  */
+@Optimized
 class ParadoxTriggerInWithParametersStatementsChecker : ParadoxIncorrectExpressionChecker {
     object Constants {
         const val triggerKey = "trigger"
@@ -85,7 +89,7 @@ class ParadoxTriggerInWithParametersStatementsChecker : ParadoxIncorrectExpressi
 
         val hasParameters = selectScope { element.queryParentBy("*/*").asProperty().queryBy("parameters").asProperty().any() }
         if (hasParameters) {
-            if (resultTriggerConfigs.none { it.config.valueType == CwtExpressionType.Block }) {
+            if (resultTriggerConfigs.noneFast { it.config.valueType == CwtExpressionType.Block }) {
                 context.holder.registerProblem(element, ChronicleEpBundle.message("incorrectExpression.complexTrigger.desc.0"))
             }
         } else {

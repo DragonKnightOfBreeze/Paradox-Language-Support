@@ -3,6 +3,7 @@ package icu.windea.pls.lang.match.util
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
+import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtMemberConfig
@@ -10,6 +11,8 @@ import icu.windea.pls.config.config.delegated.CwtComplexEnumConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.collections.anyFast
 import icu.windea.pls.core.normalizePath
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.ParadoxMatchOptionsService
@@ -33,12 +36,17 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxVariableFieldExpress
 import icu.windea.pls.lang.resolve.complexExpression.attributes.ParadoxComplexExpressionAttributesEvaluator
 import icu.windea.pls.lang.scope.ParadoxScopeMatchService
 import icu.windea.pls.lang.util.ParadoxScopeManager
+import icu.windea.pls.model.ParadoxLocalisationType
 import icu.windea.pls.model.expressions.ParadoxExpression
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.propertyValue
 
+@Optimized
 object ParadoxMatchResultFactory {
+    /**
+     * @see CwtDataTypes.Int
+     */
     fun forRangedInt(expression: ParadoxExpression, configExpression: CwtDataExpression): ParadoxMatchResult? {
         val intRange = configExpression.metadata.intRange ?: return null
         val intValue = expression.value.toIntOrNull() ?: return null
@@ -46,6 +54,9 @@ object ParadoxMatchResultFactory {
         return ParadoxMatchResult.exactOrLenientExact(r) // 即使数值不在范围之内，也不会直接认为不匹配
     }
 
+    /**
+     * @see CwtDataTypes.Float
+     */
     fun forRangedFloat(expression: ParadoxExpression, configExpression: CwtDataExpression): ParadoxMatchResult? {
         val floatRange = configExpression.metadata.floatRange ?: return null
         val floatValue = expression.value.toFloatOrNull() ?: return null
@@ -53,6 +64,9 @@ object ParadoxMatchResultFactory {
         return ParadoxMatchResult.exactOrLenientExact(r) // 即使数值不在范围之内，也不会直接认为不匹配
     }
 
+    /**
+     * @see CwtDataTypes.Block
+     */
     fun forBlock(element: PsiElement, config: CwtMemberConfig<*>): ParadoxMatchResult {
         val blockElement = when (element) {
             is ParadoxScriptProperty -> element.propertyValue()
@@ -69,10 +83,14 @@ object ParadoxMatchResultFactory {
         return ParadoxMatchResult.LazyBlockAwareMatch { ParadoxMatchFactory.matchesBlock(blockElement, config) }
     }
 
+    /**
+     * @see CwtDataTypes.Definition
+     */
     fun forDefinition(element: PsiElement, project: Project, expression: String, configExpression: CwtDataExpression): ParadoxMatchResult {
         // indexing -> should not visit indices -> treat as wildcard match
         if (ParadoxMatchOptionsService.skipIndex()) return ParadoxMatchResult.WildcardMatch
 
+        // TODO 3.0.4 refactor
         val typeExpression = configExpression.metadata.value ?: return ParadoxMatchResult.NotMatch // invalid cwt config
         val suffixes = configExpression.metadata.suffixes.orEmpty()
         val key = ParadoxMatchResultService.Keys.cacheForDefinitions
@@ -94,7 +112,9 @@ object ParadoxMatchResultFactory {
     /**
      * 定义引用片段的匹配。
      *
-     * 采用宽松策略：只要解析得到的完整引用中，存在至少一个能够匹配对指定类型定义的引用，即认为匹配。
+     * 说明：
+     * - 采用宽松策略，仅要求至少一个模板参数能够解析为对应类型的定义。
+     * - 匹配定义时不忽略子类型。
      *
      * @see CwtDataTypes.DefinitionSnippet
      */
@@ -105,21 +125,28 @@ object ParadoxMatchResultFactory {
         val typeExpression = configExpression.metadata.value ?: return ParadoxMatchResult.NotMatch // invalid cwt config
         val templates = configExpression.metadata.snippetTemplates ?: return ParadoxMatchResult.NotMatch // invalid cwt config
         if (templates.isEmpty()) return ParadoxMatchResult.NotMatch
-        val key = ParadoxMatchResultService.Keys.cacheForDefinitions
-        val cacheKey = "snippet#${configExpression.expressionString}#${expression}"
+        val key = ParadoxMatchResultService.Keys.cacheForDefinitionSnippets
+        val cacheKey = "${configExpression.expressionString}#${expression}"
         return ParadoxMatchResultService.getFromCache(element, project, key, cacheKey) {
             ProgressManager.checkCanceled() // check cancellation before lazy match
             ParadoxMatchResult.LazyIndexAwareMatch {
-                val type = typeExpression.substringBefore('.') // 匹配定义时忽略子类型
-                templates.any { ParadoxMatchFactory.matchesDefinition(element, project, it.resolve(expression), type) }
+                templates.anyFast {
+                    val fullName = it.resolve(expression)
+                    ParadoxMatchFactory.matchesDefinition(element, project, fullName, typeExpression)
+                }
             }
         }
     }
 
-    fun forLocalisation(element: PsiElement, project: Project, expression: String, configExpression: CwtDataExpression): ParadoxMatchResult {
+    /**
+     * @see CwtDataTypes.Localisation
+     * @see CwtDataTypes.SyncedLocalisation
+     */
+    fun forLocalisation(element: PsiElement, project: Project, expression: String, configExpression: CwtDataExpression, type: ParadoxLocalisationType = ParadoxLocalisationType.Normal): ParadoxMatchResult {
         // indexing -> should not visit indices -> treat as wildcard match
         if (ParadoxMatchOptionsService.skipIndex()) return ParadoxMatchResult.WildcardMatch
 
+        // TODO 3.0.4 refactor
         val suffixes = configExpression.metadata.suffixes.orEmpty()
         val key = ParadoxMatchResultService.Keys.cacheForLocalisations
         val cacheKey = when {
@@ -130,8 +157,8 @@ object ParadoxMatchResultFactory {
             ProgressManager.checkCanceled() // check cancellation before lazy match
             ParadoxMatchResult.LazyIndexAwareMatch {
                 when {
-                    suffixes.isEmpty() -> ParadoxMatchFactory.matchesLocalisation(element, project, expression)
-                    else -> suffixes.any { ParadoxMatchFactory.matchesLocalisation(element, project, expression + it) }
+                    suffixes.isEmpty() -> ParadoxMatchFactory.matchesLocalisation(element, project, expression, type)
+                    else -> suffixes.any { ParadoxMatchFactory.matchesLocalisation(element, project, expression + it, type) }
                 }
             }
         }
@@ -140,7 +167,8 @@ object ParadoxMatchResultFactory {
     /**
      * 本地化引用片段的匹配。
      *
-     * 采用宽松策略：只要解析得到的完整引用中，存在至少一个能够匹配对本地化的引用，即认为匹配。
+     * 说明：
+     * - 采用宽松策略，仅要求至少一个模板参数能够解析为本地化。
      *
      * @see CwtDataTypes.LocalisationSnippet
      */
@@ -150,38 +178,22 @@ object ParadoxMatchResultFactory {
 
         val templates = configExpression.metadata.snippetTemplates ?: return ParadoxMatchResult.NotMatch // invalid cwt config
         if (templates.isEmpty()) return ParadoxMatchResult.NotMatch
-        val key = ParadoxMatchResultService.Keys.cacheForLocalisations
-        val cacheKey = "snippet#${configExpression.expressionString}#${expression}"
+        val key = ParadoxMatchResultService.Keys.cacheForLocalisationSnippets
+        val cacheKey = "${configExpression.expressionString}#${expression}"
         return ParadoxMatchResultService.getFromCache(element, project, key, cacheKey) {
             ProgressManager.checkCanceled() // check cancellation before lazy match
             ParadoxMatchResult.LazyIndexAwareMatch {
-                templates.any { ParadoxMatchFactory.matchesLocalisation(element, project, it.resolve(expression)) }
-            }
-        }
-    }
-
-
-    fun forSyncedLocalisation(element: PsiElement, project: Project, expression: String, configExpression: CwtDataExpression): ParadoxMatchResult {
-        // indexing -> should not visit indices -> treat as wildcard match
-        if (ParadoxMatchOptionsService.skipIndex()) return ParadoxMatchResult.WildcardMatch
-
-        val suffixes = configExpression.metadata.suffixes.orEmpty()
-        val key = ParadoxMatchResultService.Keys.cacheForSyncedLocalisations
-        val cacheKey = when {
-            suffixes.isEmpty() -> expression
-            else -> "${suffixes.joinToString(",")}#${expression}"
-        }
-        return ParadoxMatchResultService.getFromCache(element, project, key, cacheKey) {
-            ProgressManager.checkCanceled() // check cancellation before lazy match
-            ParadoxMatchResult.LazyIndexAwareMatch {
-                when {
-                    suffixes.isEmpty() -> ParadoxMatchFactory.matchesSyncedLocalisation(element, project, expression)
-                    else -> suffixes.any { ParadoxMatchFactory.matchesSyncedLocalisation(element, project, expression + it) }
+                templates.anyFast {
+                    val fullName = it.resolve(expression)
+                    ParadoxMatchFactory.matchesLocalisation(element, project, fullName)
                 }
             }
         }
     }
 
+    /**
+     * @see CwtDataTypeSets.PathReference
+     */
     fun forPathReference(element: PsiElement, project: Project, expression: String, configExpression: CwtDataExpression): ParadoxMatchResult {
         if (expression.isEmpty()) return ParadoxMatchResult.NotMatch
 
@@ -203,6 +215,9 @@ object ParadoxMatchResultFactory {
         }
     }
 
+    /**
+     * @see CwtDataTypes.EnumValue
+     */
     fun forComplexEnumValue(element: PsiElement, project: Project, name: String, enumName: String, complexEnumConfig: CwtComplexEnumConfig): ParadoxMatchResult {
         // indexing -> should not visit indices -> treat as wildcard match
         if (ParadoxMatchOptionsService.skipIndex()) return ParadoxMatchResult.WildcardMatch
@@ -226,6 +241,9 @@ object ParadoxMatchResultFactory {
         }
     }
 
+    /**
+     * @see CwtDataTypes.Modifier
+     */
     fun forModifier(element: PsiElement, configGroup: CwtConfigGroup, name: String): ParadoxMatchResult {
         // indexing -> should not visit indices -> treat as wildcard match
         if (ParadoxMatchOptionsService.skipIndex()) return ParadoxMatchResult.WildcardMatch
@@ -240,6 +258,9 @@ object ParadoxMatchResultFactory {
         }
     }
 
+    /**
+     * @see CwtDataTypes.Template
+     */
     fun forTemplate(element: PsiElement, configGroup: CwtConfigGroup, text: String, config: CwtConfig<*>, options: ParadoxMatchOptions? = null): ParadoxMatchResult {
         // 3.0.3 fallback match -> continue to check reference snippets
         val fastResult = forTemplateExpression(configGroup, text, config)
@@ -260,6 +281,9 @@ object ParadoxMatchResultFactory {
         }
     }
 
+    /**
+     * @see CwtDataTypeSets.ScopeField
+     */
     fun forScopeField(element: PsiElement, configGroup: CwtConfigGroup, scopeFieldExpression: ParadoxScopeFieldExpression, configExpression: CwtDataExpression): ParadoxMatchResult {
         return when (configExpression.type) {
             CwtDataTypes.ScopeField -> forComplexExpressionFromAttributes(scopeFieldExpression)

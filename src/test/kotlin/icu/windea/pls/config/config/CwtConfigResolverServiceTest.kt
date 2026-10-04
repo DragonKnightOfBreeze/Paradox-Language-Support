@@ -1,10 +1,7 @@
-package icu.windea.pls.config.util
+package icu.windea.pls.config.config
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.config.config.CwtFileConfig
-import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.model.ParadoxGameType
@@ -13,11 +10,11 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 /**
- * @see CwtConfigResolverManager
+ * @see CwtConfigResolverService
  */
 @RunWith(JUnit4::class)
-@TestDataPath("\$CONTENT_ROOT/testData")
-class CwtConfigResolverManagerTest : BasePlatformTestCase() {
+@TestDataPath("/testData")
+class CwtConfigResolverServiceTest : BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
 
     @Test
@@ -32,7 +29,7 @@ class CwtConfigResolverManagerTest : BasePlatformTestCase() {
         fileConfigs[filePath] = fileConfig
 
         run {
-            val result = CwtConfigResolverManager.findConfigsByPathExpression(configGroup, "$filePath@match_a")
+            val result = CwtConfigResolverService.findConfigsByPathExpression(configGroup, "$filePath@match_a")
             assertNotNull(result)
             assertEquals(1, result!!.size)
             val p = result.single() as CwtPropertyConfig
@@ -44,7 +41,7 @@ class CwtConfigResolverManagerTest : BasePlatformTestCase() {
         }
 
         run {
-            val result = CwtConfigResolverManager.findConfigsByPathExpression(configGroup, "$filePath@match_*")
+            val result = CwtConfigResolverService.findConfigsByPathExpression(configGroup, "$filePath@match_*")
             assertNotNull(result)
             val keys = result!!.filterIsInstance<CwtPropertyConfig>().map { it.key }.sorted()
             assertEquals(listOf("match_a", "match_b"), keys)
@@ -56,7 +53,7 @@ class CwtConfigResolverManagerTest : BasePlatformTestCase() {
         }
 
         run {
-            val result = CwtConfigResolverManager.findConfigsByPathExpression(configGroup, "$filePath@container/child/grand")
+            val result = CwtConfigResolverService.findConfigsByPathExpression(configGroup, "$filePath@container/child/grand")
             assertNotNull(result)
             assertEquals(1, result!!.size)
             val p = result.single() as CwtPropertyConfig
@@ -84,7 +81,7 @@ class CwtConfigResolverManagerTest : BasePlatformTestCase() {
         fileConfigs[filePath] = fileConfig
 
         run {
-            val result = CwtConfigResolverManager.findConfigsByPathExpression(configGroup, "$filePath@-")
+            val result = CwtConfigResolverService.findConfigsByPathExpression(configGroup, "$filePath@-")
             assertNotNull(result)
             val values = result!!.filterIsInstance<CwtValueConfig>().map { it.value }.sorted()
             assertEquals(listOf("top_value1", "top_value2"), values)
@@ -96,7 +93,7 @@ class CwtConfigResolverManagerTest : BasePlatformTestCase() {
         }
 
         run {
-            val result = CwtConfigResolverManager.findConfigsByPathExpression(configGroup, "$filePath@container/values_holder/-")
+            val result = CwtConfigResolverService.findConfigsByPathExpression(configGroup, "$filePath@container/values_holder/-")
             assertNotNull(result)
             val values = result!!.filterIsInstance<CwtValueConfig>().map { it.value }.sorted()
             assertEquals(listOf("inner_value1", "inner_value2"), values)
@@ -124,7 +121,7 @@ class CwtConfigResolverManagerTest : BasePlatformTestCase() {
 
         // ignore case
         run {
-            val result = CwtConfigResolverManager.findConfigsByPathExpression(configGroup, "$filePath@mixedcase")
+            val result = CwtConfigResolverService.findConfigsByPathExpression(configGroup, "$filePath@mixedcase")
             assertNotNull(result)
             assertEquals(1, result!!.size)
             val p = result.single() as CwtPropertyConfig
@@ -134,7 +131,7 @@ class CwtConfigResolverManagerTest : BasePlatformTestCase() {
 
         // use '-' then go deeper into value block
         run {
-            val result = CwtConfigResolverManager.findConfigsByPathExpression(
+            val result = CwtConfigResolverService.findConfigsByPathExpression(
                 configGroup,
                 "$filePath@container2/values_block/-/block_value/x"
             )
@@ -163,14 +160,14 @@ class CwtConfigResolverManagerTest : BasePlatformTestCase() {
 
         // short-circuit to empty
         run {
-            val result = CwtConfigResolverManager.findConfigsByPathExpression(configGroup, "$filePath@container/not_exists")
+            val result = CwtConfigResolverService.findConfigsByPathExpression(configGroup, "$filePath@container/not_exists")
             assertNotNull(result)
             assertTrue(result!!.isEmpty())
         }
 
         // empty rule path should return empty list
         run {
-            val result = CwtConfigResolverManager.findConfigsByPathExpression(configGroup, "$filePath@")
+            val result = CwtConfigResolverService.findConfigsByPathExpression(configGroup, "$filePath@")
             assertNotNull(result)
             assertTrue(result!!.isEmpty())
         }
@@ -181,18 +178,18 @@ class CwtConfigResolverManagerTest : BasePlatformTestCase() {
         val configGroup = CwtConfigGroup.create(project, ParadoxGameType.Stellaris)
 
         run {
-            val result = CwtConfigResolverManager.findConfigsByPathExpression(configGroup, "invalid")
+            val result = CwtConfigResolverService.findConfigsByPathExpression(configGroup, "invalid")
             assertNull(result)
         }
 
         run {
-            val result = CwtConfigResolverManager.findConfigsByPathExpression(configGroup, "common/test/not_exists.cwt@match_a")
+            val result = CwtConfigResolverService.findConfigsByPathExpression(configGroup, "common/test/not_exists.cwt@match_a")
             assertNull(result)
         }
 
         // file path is exact match
         run {
-            val result = CwtConfigResolverManager.findConfigsByPathExpression(configGroup, "COMMON/TEST/NOT_EXISTS.CWT@match_a")
+            val result = CwtConfigResolverService.findConfigsByPathExpression(configGroup, "COMMON/TEST/NOT_EXISTS.CWT@match_a")
             assertNull(result)
         }
     }

@@ -7,7 +7,7 @@ import icu.windea.pls.model.ParadoxRootInfo
 import java.nio.file.Path
 
 interface ParadoxAnalysisScope {
-    companion object : ParadoxAnalysisScope
+    companion object INSTANCE : ParadoxAnalysisScope
 }
 
 // 3.0.1 optimize: make all analysis data accessors scoped and inline only

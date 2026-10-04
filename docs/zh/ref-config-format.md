@@ -1680,7 +1680,8 @@ icon|p1,p2
 
 #### WildcardAny {#data-type-wildcard-any}
 
-通配形式的任意类型。作为 [Any](#data-type-any) 的一种特殊变体。
+通配形式的任意类型。
+作为 [Any](#data-type-any) 的一种特殊变体。
 
 适用于匹配候选项过多，或者无法进一步推断数据表达式等特殊场景。
 
@@ -1693,7 +1694,8 @@ icon|p1,p2
 
 #### WildcardLiteral {#data-type-wildcard-literal}
 
-通配形式的字面量类型。作为 [Literal](#data-type-literal) 的一种特殊变体。
+通配形式的字面量类型。
+作为 [Literal](#data-type-literal) 的一种特殊变体。
 
 适用于匹配候选项过多，或者无法进一步推断数据表达式等特殊场景。
 
@@ -2237,7 +2239,8 @@ icon|p1,p2
 
 #### DefinitionSnippet {#data-type-definition-snippet}
 
-定义引用片段类型。作为的 [Definition](#data-type-definition) 的片段形式。
+定义引用片段类型。
+作为 [Definition](#data-type-definition) 的片段形式，额外附带一组模板参数。
 
 对应的表达式是完整的引用文本的一部分。
 通过解析模板参数，将其中的占位符替换为对应的表达式，可以得到完整的引用文本。
@@ -2245,7 +2248,8 @@ icon|p1,p2
 匹配时，要求模板参数在解析后，能够匹配对指定类型定义的引用。
 例如，如果表达式为 `test`，数据表达式为 `<sprite>|GFX_$`，则要求存在类型为 `sprite` 的定义 `GFX_test`。
 
-模板表达式可以存在多个，但在语义解析阶段，并不要求全部匹配。
+在语义匹配阶段，采用宽松策略，只要其中一个模板参数在解析后可以匹配，即认为匹配。
+在代码检查阶段才会报告无法完全匹配的问题。
 
 对应的数据表达式的格式：
 - `<{type}>|{templates}` - 其中 `{templates}` 为一组逗号分隔的以 `$` 为占位符的模板参数。
@@ -2258,7 +2262,7 @@ icon|p1,p2
 
 #### LocalisationSnippet {#data-type-localisation-snippet}
 
-本地化引用片段类型。作为 [Localisation] 的片段形式。
+本地化引用片段类型。作为 [Localisation](#data-type-localisation) 的片段形式，额外附带一组模板参数。
 
 对应的表达式是完整的引用文本的一部分。
 通过解析模板参数，将其中的占位符替换为对应的表达式，可以得到完整的引用文本。
@@ -2266,7 +2270,8 @@ icon|p1,p2
 匹配时，要求模板参数在解析后，能够匹配对本地化的引用。
 例如，如果表达式为 `test`，数据表达式为 `localisation|$_desc`，则要求存在本地化 `test_desc`。
 
-模板表达式可以存在多个，但在语义解析阶段，并不要求全部匹配。
+在语义匹配阶段，采用宽松策略，只要其中一个模板参数在解析后可以匹配，即认为匹配。
+在代码检查阶段才会报告无法完全匹配的问题。
 
 对应的数据表达式的格式：
 - `localisation|{templates}` - 其中 `{templates}` 为一组逗号分隔的以 `$` 为占位符的模板参数。

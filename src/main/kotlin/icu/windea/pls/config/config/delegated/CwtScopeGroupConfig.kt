@@ -9,7 +9,7 @@ import icu.windea.pls.config.config.CwtIdMatchableConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.stringValue
-import icu.windea.pls.config.util.CwtConfigResolverScope
+import icu.windea.pls.config.scopes.CwtConfigResolutionScope
 import icu.windea.pls.core.optimized
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.model.scope.ParadoxScope
@@ -61,7 +61,7 @@ interface CwtScopeGroupConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfi
 
 // region Implementations
 
-private object CwtScopeGroupConfigResolver : CwtConfigResolverScope {
+private object CwtScopeGroupConfigResolver : CwtConfigResolutionScope {
     private val logger = thisLogger()
 
     fun resolve(config: CwtPropertyConfig): CwtScopeGroupConfig? {

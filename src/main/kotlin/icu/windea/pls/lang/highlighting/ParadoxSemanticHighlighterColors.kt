@@ -88,10 +88,25 @@ object ParadoxSemanticHighlighterColors {
         }
     }
 
+    fun definitionReferenceSnippet(language: Language? = null): TextAttributesKey {
+        return when (language) {
+            ParadoxLocalisationLanguage -> ParadoxLocalisationHighlighterColors.DEFINITION_REFERENCE_SNIPPET
+            ParadoxCsvLanguage -> ParadoxCsvHighlighterColors.DEFINITION_REFERENCE_SNIPPET
+            else -> ParadoxScriptHighlighterColors.DEFINITION_REFERENCE_SNIPPET
+        }
+    }
+
     fun localisationReference(language: Language? = null): TextAttributesKey {
         return when (language) {
             ParadoxLocalisationLanguage -> ParadoxLocalisationHighlighterColors.LOCALISATION_REFERENCE
             else -> ParadoxScriptHighlighterColors.LOCALISATION_REFERENCE
+        }
+    }
+
+    fun localisationReferenceSnippet(language: Language? = null): TextAttributesKey {
+        return when (language) {
+            ParadoxLocalisationLanguage -> ParadoxLocalisationHighlighterColors.LOCALISATION_REFERENCE_SNIPPET
+            else -> ParadoxScriptHighlighterColors.LOCALISATION_REFERENCE_SNIPPET
         }
     }
 
@@ -129,6 +144,10 @@ object ParadoxSemanticHighlighterColors {
             ParadoxLocalisationLanguage -> ParadoxLocalisationHighlighterColors.VARIABLE
             else -> ParadoxScriptHighlighterColors.VARIABLE
         }
+    }
+
+    fun modifier(): TextAttributesKey {
+        return ParadoxScriptHighlighterColors.MODIFIER
     }
 
     fun systemScope(): TextAttributesKey {

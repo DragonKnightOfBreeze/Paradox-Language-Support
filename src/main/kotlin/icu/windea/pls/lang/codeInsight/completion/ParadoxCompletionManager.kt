@@ -437,7 +437,7 @@ object ParadoxCompletionManager {
         }
         // 保证索引在此 readAction 中可用
         runSmartReadAction(context.project, inSmartMode = true) {
-            ParadoxLocalisationSearch.processVariants(type, result.prefixMatcher, selector, processor)
+            ParadoxLocalisationSearch.processVariants(result.prefixMatcher, selector, type, processor)
         }
     }
 

@@ -8,18 +8,9 @@ import icu.windea.pls.config.config.singleAliasConfig
 import icu.windea.pls.config.manipulation.CwtConfigInlineService
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.mapFast
-import icu.windea.pls.core.util.KeyRegistry
-import icu.windea.pls.core.util.getValue
-import icu.windea.pls.core.util.provideDelegate
-import icu.windea.pls.core.util.registerKey
 
-@Suppress("unused")
 @Optimized
 object CwtConfigKeyManager {
-    object Keys : KeyRegistry() {
-        val inBlockKeys by registerKey<Set<String>>(this)
-    }
-
     fun getIdentifierKey(config: CwtMemberConfig<*>, delimiter: String, maxDepth: Int = -1): String {
         return doGetIdentifierKey(config, delimiter, maxDepth, 0)
     }
@@ -53,10 +44,12 @@ object CwtConfigKeyManager {
         }
     }
 
+    @Suppress("unused")
     fun getIdentifierKey(optionConfig: CwtOptionMemberConfig<*>, delimiter: String): String {
         return doGetIdentifierKey(optionConfig, delimiter)
     }
 
+    @Suppress("unused")
     fun getIdentifierKey(optionConfigs: List<CwtOptionMemberConfig<*>>, delimiter: String): String {
         return doGetIdentifierKey(optionConfigs, delimiter)
     }

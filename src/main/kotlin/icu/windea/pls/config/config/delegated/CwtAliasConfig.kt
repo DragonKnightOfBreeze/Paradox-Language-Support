@@ -6,6 +6,7 @@ import icu.windea.pls.config.CwtConfigType
 import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.config.annotations.FromName
 import icu.windea.pls.config.annotations.FromOptionMember
+import icu.windea.pls.config.config.CwtConfigResolverService
 import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtExpandableConfig
 import icu.windea.pls.config.config.CwtIdMatchableConfig
@@ -14,8 +15,7 @@ import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.CwtDataExpressionRole
 import icu.windea.pls.config.manipulation.CwtConfigExpansionService
 import icu.windea.pls.config.manipulation.CwtConfigInlineService
-import icu.windea.pls.config.util.CwtConfigResolverManager
-import icu.windea.pls.config.util.CwtConfigResolverScope
+import icu.windea.pls.config.scopes.CwtConfigResolutionScope
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
@@ -87,7 +87,7 @@ interface CwtAliasConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, C
 
 // region Implementations
 
-private object CwtAliasConfigResolver : CwtConfigResolverScope {
+private object CwtAliasConfigResolver : CwtConfigResolutionScope {
     private val logger = thisLogger()
 
     fun resolve(config: CwtPropertyConfig): CwtAliasConfig? {
@@ -103,7 +103,7 @@ private object CwtAliasConfigResolver : CwtConfigResolverScope {
 
     fun postProcess(config: CwtAliasConfig) {
         // collect information
-        CwtConfigResolverManager.collectFromConfigExpression(config, config.configExpression)
+        CwtConfigResolverService.collectFromConfigExpression(config, config.configExpression)
     }
 }
 

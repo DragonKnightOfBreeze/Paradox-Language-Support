@@ -5,22 +5,18 @@ import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import icu.windea.pls.config.CwtDataType
+import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.codeInsight.completion.ParadoxExpressionCompletionManager
+import icu.windea.pls.lang.highlighting.ParadoxSemanticHighlighterColors
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.util.ParadoxExpressionSupportFactory
 import icu.windea.pls.model.type.ParadoxExpressionRole
 
 /**
- * 提供对脚本表达式中的片段（[CwtDataTypes.DefinitionSnippet] [CwtDataTypes.LocalisationSnippet]）的支持。
- *
- * 说明：
- * - 这并非完整匹配，因此引用解析得到的是一个 lightElement（相关项），而非直接解析为对应的定义或本地化。
- * - 采用宽松策略，在语义匹配阶段不要求存在所有对应的引用，完整性问题由代码检查负责报告。
- *
- * @see ParadoxSnippetCsvExpressionSupport
+ * @see CwtDataTypeSets.Snippet
  */
 abstract class ParadoxSnippetScriptExpressionSupport : ParadoxScriptExpressionSupport {
     /**
@@ -32,7 +28,8 @@ abstract class ParadoxSnippetScriptExpressionSupport : ParadoxScriptExpressionSu
         }
 
         override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder): Boolean {
-            ParadoxExpressionSupportFactory.annotateExpressionAsHighlightedReference(element, rangeInExpression, holder)
+            val attributesKey = ParadoxSemanticHighlighterColors.definitionReferenceSnippet(element.language)
+            ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
             return true
         }
 
@@ -54,7 +51,8 @@ abstract class ParadoxSnippetScriptExpressionSupport : ParadoxScriptExpressionSu
         }
 
         override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder): Boolean {
-            ParadoxExpressionSupportFactory.annotateExpressionAsHighlightedReference(element, rangeInExpression, holder)
+            val attributesKey = ParadoxSemanticHighlighterColors.localisationReferenceSnippet(element.language)
+            ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
             return true
         }
 

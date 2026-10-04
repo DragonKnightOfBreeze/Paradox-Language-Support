@@ -46,8 +46,10 @@ import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueLightElement
+import icu.windea.pls.lang.psi.light.ParadoxDefinitionSnippetLightElement
 import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
 import icu.windea.pls.lang.psi.light.ParadoxLocalisationParameterLightElement
+import icu.windea.pls.lang.psi.light.ParadoxLocalisationSnippetLightElement
 import icu.windea.pls.lang.psi.light.ParadoxModifierLightElement
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.localisation.ParadoxLocalisationFileType
@@ -119,6 +121,15 @@ object ParadoxCompletionFactory {
             .wrapForExpression(context)
     }
 
+    fun fromDefinitionSnippet(context: ParadoxCompletionContext, element: ParadoxDefinitionSnippetLightElement, typeFile: PsiFile?, hintText: String? = null): LookupElementBuilder? {
+        val name = element.name.orNull() ?: return null
+        return LookupElementBuilder.create(element, name)
+            .withTypeText(typeFile?.name, typeFile?.icon, true)
+            .withPatchableIcon(element.icon) // 3.0.4 use distinct icon from full reference
+            .withPatchableTailText(hintText ?: context.patchableTailText)
+            .wrapForExpression(context)
+    }
+
     fun fromLocalisation(context: ParadoxCompletionContext, element: ParadoxLocalisationProperty, hintText: String? = null): LookupElementBuilder? {
         val name = element.name.orNull() ?: return null
         val typeFile = element.containingFile
@@ -129,30 +140,11 @@ object ParadoxCompletionFactory {
             .wrapForExpression(context)
     }
 
-    /**
-     * 根据 [element] 创建用于定义引用片段（[icu.windea.pls.config.CwtDataTypes.DefinitionSnippet]）的补全项。
-     * 其中 [name] 为从定义名中提取的片段文本。
-     */
-    fun fromDefinitionSnippet(context: ParadoxCompletionContext, element: ParadoxDefinitionElement, name: String, hintText: String? = null): LookupElementBuilder? {
-        val definitionInfo = element.definitionInfo ?: return null
-        val typeFile = element.containingFile
+    fun fromLocalisationSnippet(context: ParadoxCompletionContext, element: ParadoxLocalisationSnippetLightElement, typeFile: PsiFile?, hintText: String? = null): LookupElementBuilder? {
+        val name = element.name.orNull() ?: return null
         return LookupElementBuilder.create(element, name)
             .withTypeText(typeFile?.name, typeFile?.icon, true)
-            .withPatchableIcon(ChronicleIcons.Nodes.Definition(definitionInfo.type))
-            .withPatchableTailText(hintText ?: context.patchableTailText)
-            .withDefinitionPresentableNames(element)
-            .wrapForExpression(context)
-    }
-
-    /**
-     * 根据 [element] 创建用于本地化引用片段（[icu.windea.pls.config.CwtDataTypes.LocalisationSnippet]）的补全项。
-     * 其中 [name] 为从本地化名中提取的片段文本。
-     */
-    fun fromLocalisationSnippet(context: ParadoxCompletionContext, element: ParadoxLocalisationProperty, name: String, hintText: String? = null): LookupElementBuilder? {
-        val typeFile = element.containingFile
-        return LookupElementBuilder.create(element, name)
-            .withTypeText(typeFile?.name, typeFile?.icon, true)
-            .withPatchableIcon(ChronicleIcons.Nodes.Localisation)
+            .withPatchableIcon(element.icon) // 3.0.4 use distinct icon from full reference
             .withPatchableTailText(hintText)
             .wrapForExpression(context)
     }

@@ -51,39 +51,29 @@ class ParadoxLocalisationSearch : ExtensibleQueryFactory<ParadoxLocalisationProp
 
         /** @see Parameters */
         @JvmStatic
-        fun search(name: String?, type: ParadoxLocalisationType, selector: Selector): ParadoxUnaryQuery<ParadoxLocalisationProperty> {
+        fun search(name: String?, selector: Selector, type: ParadoxLocalisationType): ParadoxUnaryQuery<ParadoxLocalisationProperty> {
             return INSTANCE.createParadoxQuery(Parameters(name, type, selector))
         }
 
         /** @see Parameters */
         @JvmStatic
         fun searchNormal(name: String?, selector: Selector): ParadoxUnaryQuery<ParadoxLocalisationProperty> {
-            return search(name, ParadoxLocalisationType.Normal, selector)
+            return search(name, selector, ParadoxLocalisationType.Normal)
         }
 
         /** @see Parameters */
         @JvmStatic
         fun searchSynced(name: String?, selector: Selector): ParadoxUnaryQuery<ParadoxLocalisationProperty> {
-            return search(name, ParadoxLocalisationType.Synced, selector)
+            return search(name, selector, ParadoxLocalisationType.Synced)
         }
 
         @JvmStatic
-        fun processVariants(type: ParadoxLocalisationType, prefixMatcher: PrefixMatcher, selector: Selector, processor: Processor<ParadoxLocalisationProperty>): Boolean {
+        fun processVariants(prefixMatcher: PrefixMatcher, selector: Selector, type: ParadoxLocalisationType, processor: Processor<ParadoxLocalisationProperty>): Boolean {
             val indexKey = when (type) {
                 ParadoxLocalisationType.Normal -> ChronicleIndexKeys.LocalisationName
                 ParadoxLocalisationType.Synced -> ChronicleIndexKeys.SyncedLocalisationName
             }
             return ChronicleIndexService.processVariants(indexKey, prefixMatcher, selector, processor)
-        }
-
-        @JvmStatic
-        fun processVariantsNormal(prefixMatcher: PrefixMatcher, selector: Selector, processor: Processor<ParadoxLocalisationProperty>): Boolean {
-            return processVariants(ParadoxLocalisationType.Normal, prefixMatcher, selector, processor)
-        }
-
-        @JvmStatic
-        fun processVariantsSynced(prefixMatcher: PrefixMatcher, selector: Selector, processor: Processor<ParadoxLocalisationProperty>): Boolean {
-            return processVariants(ParadoxLocalisationType.Synced, prefixMatcher, selector, processor)
         }
     }
 }

@@ -1,11 +1,11 @@
 package icu.windea.pls.ep.config.config
 
 import com.intellij.openapi.diagnostic.thisLogger
+import icu.windea.pls.config.config.CwtConfigResolverService
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.tagType
 import icu.windea.pls.config.manipulation.CwtConfigManipulationService
-import icu.windea.pls.config.util.CwtConfigResolverManager
 import icu.windea.pls.core.collections.anyFast
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.model.ParadoxTagType
@@ -43,7 +43,7 @@ class CwtInjectConfigPostProcessor : CwtConfigPostProcessor {
     override fun postProcess(config: CwtMemberConfig<*>) {
         val pathExpression = config.optionMetadata.inject ?: return
 
-        val configsToInject = CwtConfigResolverManager.findConfigsByPathExpression(config.configGroup, pathExpression)
+        val configsToInject = CwtConfigResolverService.findConfigsByPathExpression(config.configGroup, pathExpression)
         if (configsToInject == null) {
             invalidPathExpression(pathExpression, config)
             return

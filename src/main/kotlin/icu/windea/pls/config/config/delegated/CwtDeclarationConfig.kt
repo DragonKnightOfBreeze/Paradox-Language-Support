@@ -10,7 +10,7 @@ import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtIdMatchableConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.manipulation.CwtConfigInlineService
-import icu.windea.pls.config.util.CwtConfigResolverScope
+import icu.windea.pls.config.scopes.CwtConfigResolutionScope
 import icu.windea.pls.core.isIdentifier
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.model.expressions.ParadoxDefinitionSubtypeExpression
@@ -76,7 +76,7 @@ interface CwtDeclarationConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConf
 
 // region Implementations
 
-private object CwtDeclarationConfigResolver : CwtConfigResolverScope {
+private object CwtDeclarationConfigResolver : CwtConfigResolutionScope {
     private val logger = thisLogger()
 
     fun resolve(config: CwtPropertyConfig, inputName: String?): CwtDeclarationConfig? {

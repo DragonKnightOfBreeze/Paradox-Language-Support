@@ -20,9 +20,6 @@ object ChronicleConstants {
     const val launcherSettingsJsonFileName = "launcher-settings.json"
     val metadataFileNames = arrayOf(descriptorModFileName, metadataJsonFileName, launcherSettingsJsonFileName)
 
-    // in order to be compatible with eu5 config files
-    val configFilePathPrefixes = arrayOf("game/", "game/in_game/", "game/main_menu/", "game/loading_screen/")
-
     const val dummyIdentifier = "windea"
     const val suppressInspectionsTagName = "noinspection"
 

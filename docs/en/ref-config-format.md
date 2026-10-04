@@ -995,8 +995,8 @@ The macros here specifically refer to **semantic macros**, as distinct from ordi
 This means they must be confirmed through semantic resolution, so cannot be confirmed directly through syntax analysis, and during the syntax analysis stage, they can only be recognized as one (or several) statements or expressions.
 
 Currently, the macros covered include:
-- **Inline Script**: (Stellaris) Replaced by the content of the target file during parsing, with support for parameters.
-- **Definition Injection**: (VIC3 / EU5) Injects or replaces the declaration of a target definition during parsing, with modes to specify the exact behaviour.
+- **Inline Script**: (Stellaris) Replaced by the content of the target file during resolving, with support for parameters.
+- **Definition Injection**: (VIC3 / EU5) Injects or replaces the declaration of a target definition during resolving, with modes to specify the exact behaviour.
 
 Path location:
 - `macro[{name}]` – where `{name}` matches the config name.
@@ -1690,7 +1690,8 @@ Format of corresponding data expressions:
 
 #### WildcardAny {#data-type-wildcard-any}
 
-Wildcard form of the any type. As a special variant of [Any](#data-type-any).
+Wildcard form of the any type.
+As a special variant of [Any](#data-type-any).
 
 Suitable for special scenarios such as when there are too many matching candidates, or when the data expression cannot be further inferred.
 
@@ -1703,7 +1704,8 @@ Format of corresponding data expressions:
 
 #### WildcardLiteral {#data-type-wildcard-literal}
 
-Wildcard form of the literal type. As a special variant of [Literal](#data-type-literal).
+Wildcard form of the literal type.
+As a special variant of [Literal](#data-type-literal).
 
 Suitable for special scenarios such as when there are too many matching candidates, or when the data expression cannot be further inferred.
 
@@ -2244,6 +2246,51 @@ Examples of Corresponding data expressions:
 - `job_<job>_add`
 
 > CWTools Compatibility: Partially compatible. Have different resolving and processing logic.
+
+#### DefinitionSnippet {#data-type-definition-snippet}
+
+Definition reference snippet type.
+As the snippet form of [Definition](#data-type-definition), it additionally carries a set of template arguments.
+
+The corresponding expression is part of the complete reference text.
+By resolving the template arguments and replacing the placeholders in them with the corresponding expressions, the complete reference text can be obtained.
+
+When matching, the template arguments are required, after resolution, to be able to match a reference to a definition of specified type.
+For example, if the expression is `test`, and the data expression is `<sprite>|GFX_$`, then a definition named `GFX_test` of type `sprite` is required to exist.
+
+During the semantic matching phase, a lenient strategy is adopted: as long as one of the template arguments can be matched after resolution, it is considered matched.
+Only during the code inspection phase will issues of incomplete matching be reported.
+
+The corresponding data expression formats:
+- `<{type}>|{templates}` - where `{templates}` is a set of comma-separated template arguments using `$` as placeholders.
+- `<{type}.{subtypes}>|{templates}` - where `{templates}` is a set of comma-separated template arguments using `$` as placeholders.
+
+Examples of the corresponding data expressions:
+- `<entity>|$_a,b_$,c_$_d`
+
+> CWTools compatibility: incompatible. The plugin is provided as an extension.
+
+#### LocalisationSnippet {#data-type-localisation-snippet}
+
+Localisation reference snippet type.
+As the snippet form of [Localisation](#data-type-localisation), it additionally carries a set of template arguments.
+
+The corresponding expression is part of the complete reference text.
+By resolving the template arguments and replacing the placeholders in them with the corresponding expressions, the complete reference text can be obtained.
+
+When matching, the template arguments are required, after resolution, to be able to match a reference to a localisation.
+For example, if the expression is `test`, and the data expression is `localisation|$_desc`, then a localisation named `test_desc` is required to exist.
+
+During the semantic matching phase, a lenient strategy is adopted: as long as one of the template arguments can be matched after resolution, it is considered matched.
+Only during the code inspection phase will issues of incomplete matching be reported.
+
+The corresponding data expression format:
+- `localisation|{templates}` - where `{templates}` is a set of comma-separated template arguments using `$` as placeholders.
+
+Examples of the corresponding data expressions:
+- `localisation|$_desc,$_effect`
+
+> CWTools compatibility: incompatible. The plugin is provided as an extension.
 
 ### Path Reference Data Types {#data-types-path-reference}
 

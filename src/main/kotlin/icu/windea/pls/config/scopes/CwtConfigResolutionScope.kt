@@ -1,4 +1,4 @@
-package icu.windea.pls.config.util
+package icu.windea.pls.config.scopes
 
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.diagnostic.debug
@@ -8,68 +8,47 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.util.startOffset
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.core.normalizePath
-import icu.windea.pls.core.optimized
-import icu.windea.pls.core.removePrefixOrNull
-import icu.windea.pls.model.constants.ChronicleConstants
 
-interface CwtConfigResolverScope {
-    fun String.optimizedPath(): String {
-        val r = ChronicleConstants.configFilePathPrefixes.firstNotNullOfOrNull { removePrefixOrNull(it) } ?: this
-        return r.normalizePath().optimized()
-    }
-
-    fun String.optimizedPathExtension(): String {
-        val r = removePrefix(".")
-        return r.optimized()
-    }
-
-    @Suppress("unused")
+@Suppress("unused")
+interface CwtConfigResolutionScope : CwtFilePathResolutionScope {
     fun Logger.traceWithPrefix(element: PsiElement?, configGroup: CwtConfigGroup, lazyMessage: () -> String) {
         if (configGroup.project.isDefault) return /// skip for application config groups
         trace { "${getLogPrefix(element, configGroup)} ${lazyMessage()}" }
     }
 
-    @Suppress("unused")
     fun Logger.traceWithPrefix(config: CwtConfig<*>, lazyMessage: () -> String) {
         val configGroup = config.configGroup
         if (configGroup.project.isDefault) return /// skip for application config groups
         trace { "${getLogPrefix(config)} ${lazyMessage()}" }
     }
 
-    @Suppress("unused")
     fun Logger.debugWithPrefix(element: PsiElement?, configGroup: CwtConfigGroup, lazyMessage: () -> String) {
         if (configGroup.project.isDefault) return /// skip for application config groups
         debug { "${getLogPrefix(element, configGroup)} ${lazyMessage()}" }
     }
 
-    @Suppress("unused")
     fun Logger.debugWithPrefix(config: CwtConfig<*>, lazyMessage: () -> String) {
         val configGroup = config.configGroup
         if (configGroup.project.isDefault) return /// skip for application config groups
         debug { "${getLogPrefix(config)} ${lazyMessage()}" }
     }
 
-    @Suppress("unused")
     fun Logger.infoWithPrefix(element: PsiElement?, configGroup: CwtConfigGroup, message: String) {
         if (configGroup.project.isDefault) return /// skip for application config groups
         info("${getLogPrefix(element, configGroup)} $message")
     }
 
-    @Suppress("unused")
     fun Logger.infoWithPrefix(config: CwtConfig<*>, message: String) {
         val configGroup = config.configGroup
         if (configGroup.project.isDefault) return /// skip for application config groups
         info("${getLogPrefix(config)} $message")
     }
 
-    @Suppress("unused")
     fun Logger.warnWithPrefix(element: PsiElement?, configGroup: CwtConfigGroup, message: String) {
         if (configGroup.project.isDefault) return /// skip for application config groups
         warn("${getLogPrefix(element, configGroup)} $message")
     }
 
-    @Suppress("unused")
     fun Logger.warnWithPrefix(config: CwtConfig<*>, message: String) {
         val configGroup = config.configGroup
         if (configGroup.project.isDefault) return /// skip for application config groups
@@ -101,4 +80,6 @@ interface CwtConfigResolverScope {
             }
         }
     }
+
+    companion object INSTANCE : CwtConfigResolutionScope
 }

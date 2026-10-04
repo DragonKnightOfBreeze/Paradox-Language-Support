@@ -62,7 +62,7 @@ object ParadoxLocalisationManipulationService {
         val newText = readAction {
             val type = context.element?.type ?: return@readAction null
             val selector = ParadoxLocalisationSearch.selector(project, context.element).contextSensitive().locale(locale)
-            val e = ParadoxLocalisationSearch.search(context.key, type, selector).find()
+            val e = ParadoxLocalisationSearch.search(context.key, selector, type).find()
             e?.value
         }
         if (newText == null) return

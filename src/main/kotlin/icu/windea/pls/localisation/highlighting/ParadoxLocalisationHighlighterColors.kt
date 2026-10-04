@@ -36,7 +36,9 @@ object ParadoxLocalisationHighlighterColors {
     @JvmField val SEMANTIC_STRING = createTextAttributesKey("PARADOX_LOCALISATION.SEMANTIC_STRING", ParadoxScriptHighlighterColors.SEMANTIC_STRING)
 
     @JvmField val DEFINITION_REFERENCE = createTextAttributesKey("PARADOX_LOCALISATION.DEFINITION_REFERENCE", ParadoxScriptHighlighterColors.DEFINITION_REFERENCE)
+    @JvmField val DEFINITION_REFERENCE_SNIPPET = createTextAttributesKey("PARADOX_LOCALISATION.DEFINITION_REFERENCE_SNIPPET", ParadoxScriptHighlighterColors.DEFINITION_REFERENCE_SNIPPET)
     @JvmField val LOCALISATION_REFERENCE = createTextAttributesKey("PARADOX_LOCALISATION.LOCALISATION_REFERENCE", ParadoxScriptHighlighterColors.LOCALISATION_REFERENCE)
+    @JvmField val LOCALISATION_REFERENCE_SNIPPET = createTextAttributesKey("PARADOX_LOCALISATION.LOCALISATION_REFERENCE_SNIPPET", ParadoxScriptHighlighterColors.LOCALISATION_REFERENCE_SNIPPET)
     @JvmField val DYNAMIC_VALUE = createTextAttributesKey("PARADOX_LOCALISATION.DYNAMIC_VALUE", ParadoxScriptHighlighterColors.DYNAMIC_VALUE)
     @JvmField val VARIABLE = createTextAttributesKey("PARADOX_LOCALISATION.VARIABLE", ParadoxScriptHighlighterColors.VARIABLE)
     @JvmField val SYSTEM_COMMAND_SCOPE = createTextAttributesKey("PARADOX_LOCALISATION.SYSTEM_COMMAND_SCOPE", ParadoxScriptHighlighterColors.SYSTEM_COMMAND_SCOPE)

@@ -11,10 +11,6 @@ import icu.windea.pls.model.paths.CwtConfigPath
 interface CwtConfigSelectScope {
     // region Common
 
-    fun <T : CwtMemberConfig<*>> Sequence<T>.one(): T?
-
-    fun <T : CwtMemberConfig<*>> Sequence<T>.all(): List<T>
-
     fun CwtMemberConfig<*>.walkUp(): Sequence<CwtMemberConfig<*>>
 
     fun CwtMemberContainerConfig<*>.walkDown(traversal: TreeTraversal = TreeTraversal.PRE_ORDER_DFS): Sequence<CwtMemberConfig<*>>

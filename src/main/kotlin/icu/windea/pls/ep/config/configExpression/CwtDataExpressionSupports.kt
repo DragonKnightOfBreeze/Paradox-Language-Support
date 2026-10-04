@@ -4,16 +4,13 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.CwtDataExpressionRole
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
-import icu.windea.pls.config.util.CwtConfigResolverScope
+import icu.windea.pls.config.scopes.CwtDataExpressionMetadataResolutionScope
+import icu.windea.pls.config.scopes.CwtDataExpressionMetadataResolutionScope.INSTANCE.resolveValue
 import icu.windea.pls.core.optimized
-import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.toDelimitedSet
-import icu.windea.pls.core.util.FloatRangeInfo
-import icu.windea.pls.core.util.IntRangeInfo
-import icu.windea.pls.core.util.UnaryTemplateInfo
 
-class CwtBasicDataExpressionSupport : CwtTextPatternBasedDataExpressionSupport() {
+class CwtBasicDataExpressionSupport : CwtTextPatternBasedDataExpressionSupport(), CwtDataExpressionMetadataResolutionScope {
     override fun registerProviders() {
         register(CwtDataTypes.Any, $$"$any")
         register(CwtDataTypes.Literal, $$"$literal")
@@ -24,72 +21,72 @@ class CwtBasicDataExpressionSupport : CwtTextPatternBasedDataExpressionSupport()
         register(CwtDataTypes.Bool, "bool")
 
         register(CwtDataTypes.Int, "int")
-        registerRanged(CwtDataTypes.Int, "int") { intRange = IntRangeInfo.from(it) }
+        registerRanged(CwtDataTypes.Int, "int") { intRange = it.resolveIntRange() }
 
         register(CwtDataTypes.Float, "float")
-        registerRanged(CwtDataTypes.Float, "float") { floatRange = FloatRangeInfo.from(it) }
+        registerRanged(CwtDataTypes.Float, "float") { floatRange = it.resolveFloatRange() }
 
         register(CwtDataTypes.Scalar, "scalar")
 
         register(CwtDataTypes.ColorField, "colour_field")
-        register(CwtDataTypes.ColorField, "colour[", "]") { value = it.orNull() }
+        register(CwtDataTypes.ColorField, "colour[", "]") { value = it.resolveValue() }
         register(CwtDataTypes.ColorField, "color_field")
-        register(CwtDataTypes.ColorField, "color[", "]") { value = it.orNull() }
+        register(CwtDataTypes.ColorField, "color[", "]") { value = it.resolveValue() }
     }
 }
 
-class CwtExtraBasicDataExpressionSupport : CwtTextPatternBasedDataExpressionSupport() {
+class CwtExtraBasicDataExpressionSupport : CwtTextPatternBasedDataExpressionSupport(), CwtDataExpressionMetadataResolutionScope {
     override fun registerProviders() {
         register(CwtDataTypes.PercentageField, "percentage_field")
         register(CwtDataTypes.IntPercentageField, "int_percentage_field")
 
         register(CwtDataTypes.DateField, "date_field")
-        register(CwtDataTypes.DateField, "date_field[", "]") { value = it.orNull() }
+        register(CwtDataTypes.DateField, "date_field[", "]") { value = it.resolveValue() }
     }
 }
 
-class CwtCoreDataExpressionSupport : CwtTextPatternBasedDataExpressionSupport(), CwtConfigResolverScope {
+class CwtCoreDataExpressionSupport : CwtTextPatternBasedDataExpressionSupport(), CwtDataExpressionMetadataResolutionScope {
     override fun registerProviders() {
         register(CwtDataTypes.Localisation, "localisation")
         register(CwtDataTypes.SyncedLocalisation, "localisation_synced")
         register(CwtDataTypes.InlineLocalisation, "localisation_inline")
 
         register(CwtDataTypes.Modifier, "<modifier>")
-        register(CwtDataTypes.Definition, "<", ">") { value = it.orNull() }
+        register(CwtDataTypes.Definition, "<", ">") { value = it.resolveValue() }
 
-        register(CwtDataTypes.Value, "value[", "]") { value = it.orNull() }
-        register(CwtDataTypes.ValueSet, "value_set[", "]") { value = it.orNull() }
-        register(CwtDataTypes.DynamicValue, "dynamic_value[", "]") { value = it.orNull() }
+        register(CwtDataTypes.Value, "value[", "]") { value = it.resolveValue() }
+        register(CwtDataTypes.ValueSet, "value_set[", "]") { value = it.resolveValue() }
+        register(CwtDataTypes.DynamicValue, "dynamic_value[", "]") { value = it.resolveValue() }
 
-        register(CwtDataTypes.EnumValue, "enum[", "]") { value = it.orNull() }
+        register(CwtDataTypes.EnumValue, "enum[", "]") { value = it.resolveValue() }
 
         register(CwtDataTypes.ScopeField, "scope_field")
-        register(CwtDataTypes.Scope, "scope[", "]") { value = it.orNull().takeIf { v -> v != "any" } }
-        register(CwtDataTypes.ScopeGroup, "scope_group[", "]") { value = it.orNull() }
+        register(CwtDataTypes.Scope, "scope[", "]") { value = it.resolveValue().takeIf { v -> v != "any" } }
+        register(CwtDataTypes.ScopeGroup, "scope_group[", "]") { value = it.resolveValue() }
 
         register(CwtDataTypes.ValueField, "value_field")
-        registerRanged(CwtDataTypes.ValueField, "value_field") { floatRange = FloatRangeInfo.from(it) }
+        registerRanged(CwtDataTypes.ValueField, "value_field") { floatRange = it.resolveFloatRange() }
         register(CwtDataTypes.IntValueField, "int_value_field")
-        registerRanged(CwtDataTypes.IntValueField, "int_value_field") { intRange = IntRangeInfo.from(it) }
+        registerRanged(CwtDataTypes.IntValueField, "int_value_field") { intRange = it.resolveIntRange() }
 
         register(CwtDataTypes.VariableField, "variable_field")
-        registerRanged(CwtDataTypes.VariableField, "variable_field") { floatRange = FloatRangeInfo.from(it) }
+        registerRanged(CwtDataTypes.VariableField, "variable_field") { floatRange = it.resolveFloatRange() }
         register(CwtDataTypes.VariableField, "variable_field_32")
-        registerRanged(CwtDataTypes.VariableField, "variable_field_32") { floatRange = FloatRangeInfo.from(it) }
+        registerRanged(CwtDataTypes.VariableField, "variable_field_32") { floatRange = it.resolveFloatRange() }
         register(CwtDataTypes.IntVariableField, "int_variable_field")
-        registerRanged(CwtDataTypes.IntVariableField, "int_variable_field") { intRange = IntRangeInfo.from(it) }
+        registerRanged(CwtDataTypes.IntVariableField, "int_variable_field") { intRange = it.resolveIntRange() }
         register(CwtDataTypes.IntVariableField, "int_variable_field_32")
-        registerRanged(CwtDataTypes.IntVariableField, "int_variable_field_32") { intRange = IntRangeInfo.from(it) }
+        registerRanged(CwtDataTypes.IntVariableField, "int_variable_field_32") { intRange = it.resolveIntRange() }
 
         register(CwtDataTypes.Command, $$"$command")
         register(CwtDataTypes.ScriptValueReference, $$"$script_value_reference")
         register(CwtDataTypes.DefineReference, $$"$define_reference")
         register(CwtDataTypes.ArrayDefineReference, $$"$array_define_reference")
-        register(CwtDataTypes.Tags, $$"$tags[", "]") { value = it.orNull() }
-        register(CwtDataTypes.Tags, $$"$tags_condition[", "]") { value = it.orNull(); condition = true }
+        register(CwtDataTypes.Tags, $$"$tags[", "]") { value = it.resolveValue() }
+        register(CwtDataTypes.Tags, $$"$tags_condition[", "]") { value = it.resolveValue(); condition = true }
         register(CwtDataTypes.DatabaseObject, $$"$database_object")
-        register(CwtDataTypes.NameFormat, "name_format[", "]") { value = it.orNull() }
-        register(CwtDataTypes.NameFormat, $$"$name_format[", "]") { value = it.orNull() } // for alignment
+        register(CwtDataTypes.NameFormat, "name_format[", "]") { value = it.resolveValue() }
+        register(CwtDataTypes.NameFormat, $$"$name_format[", "]") { value = it.resolveValue() } // for alignment
 
         register(CwtDataTypes.TechnologyWithLevel, $$"$technology_with_level")
 
@@ -99,19 +96,19 @@ class CwtCoreDataExpressionSupport : CwtTextPatternBasedDataExpressionSupport(),
     }
 }
 
-class CwtPathReferenceDataExpressionSupport : CwtTextPatternBasedDataExpressionSupport(), CwtConfigResolverScope {
+class CwtPathReferenceDataExpressionSupport : CwtTextPatternBasedDataExpressionSupport(), CwtDataExpressionMetadataResolutionScope {
     override fun registerProviders() {
         register(CwtDataTypes.FileName, "filename")
-        register(CwtDataTypes.FileName, "filename[", "]") { value = it.orNull() }
+        register(CwtDataTypes.FileName, "filename[", "]") { value = it.resolveValue() }
         register(CwtDataTypes.FilePath, "filepath")
         register(CwtDataTypes.FilePath, "filepath[./]") { value = "./" } // fixed (should keep `"./"`)
-        register(CwtDataTypes.FilePath, "filepath[", "]") { value = it.optimizedPath().orNull() }
-        register(CwtDataTypes.Icon, "icon[", "]") { value = it.optimizedPath().orNull() }
+        register(CwtDataTypes.FilePath, "filepath[", "]") { value = it.resolvePath() }
+        register(CwtDataTypes.Icon, "icon[", "]") { value = it.resolvePath() }
         register(CwtDataTypes.AbsoluteFilePath, "abs_filepath")
     }
 }
 
-class CwtExternalReferenceDataExpressionSupport : CwtTextPatternBasedDataExpressionSupport(), CwtConfigResolverScope {
+class CwtExternalReferenceDataExpressionSupport : CwtTextPatternBasedDataExpressionSupport(), CwtDataExpressionMetadataResolutionScope {
     override fun registerProviders() {
         register(CwtDataTypes.ShaderEffect, $$"$shader_effect")
         register(CwtDataTypes.MeshLocator, $$"$mesh_locator")
@@ -120,13 +117,13 @@ class CwtExternalReferenceDataExpressionSupport : CwtTextPatternBasedDataExpress
 
 class CwtExpandableDataExpressionSupport : CwtTextPatternBasedDataExpressionSupport() {
     override fun registerProviders() {
-        register(CwtDataTypes.UnionValue, "union[", "]") { value = it.orNull() }
+        register(CwtDataTypes.UnionValue, "union[", "]") { value = it.resolveValue() }
 
-        register(CwtDataTypes.AliasKeysField, "alias_keys_field[", "]") { value = it.orNull() }
-        register(CwtDataTypes.AliasName, "alias_name[", "]") { value = it.orNull() }
-        register(CwtDataTypes.AliasMatchLeft, "alias_match_left[", "]") { value = it.orNull() }
+        register(CwtDataTypes.AliasKeysField, "alias_keys_field[", "]") { value = it.resolveValue() }
+        register(CwtDataTypes.AliasName, "alias_name[", "]") { value = it.resolveValue() }
+        register(CwtDataTypes.AliasMatchLeft, "alias_match_left[", "]") { value = it.resolveValue() }
 
-        register(CwtDataTypes.SingleAliasRight, "single_alias_right[", "]") { value = it.orNull() }
+        register(CwtDataTypes.SingleAliasRight, "single_alias_right[", "]") { value = it.resolveValue() }
     }
 }
 
@@ -141,22 +138,24 @@ class CwtTemplateDataExpressionSupport : CwtDataExpressionSupport {
     }
 }
 
-class CwtSnippetDataExpressionSupport : CwtDataExpressionSupport {
+class CwtSnippetDataExpressionSupport : CwtDataExpressionSupport,CwtDataExpressionMetadataResolutionScope {
     override fun resolve(expressionString: String, role: CwtDataExpressionRole): CwtDataExpression? {
         val separatorIndex = expressionString.indexOf('|')
         if (separatorIndex == -1) return null
         val text = expressionString.substring(0, separatorIndex)
         val templatesText = expressionString.substring(separatorIndex + 1)
-        val templates = parseTemplates(templatesText) ?: return null
-        if (templates.isEmpty()) return null
         run {
-            val t = text.removeSurroundingOrNull("<", ">") ?: return@run
-            if (t.isEmpty()) return null
-            return CwtDataExpression.create(expressionString, CwtDataTypes.DefinitionSnippet, role) { value = t; snippetTemplates = templates }
+            val input = text.removeSurroundingOrNull("<", ">") ?: return@run
+            return CwtDataExpression.create(expressionString, CwtDataTypes.DefinitionSnippet, role) {
+                value = input.resolveValue()
+                snippetTemplates = templatesText.resolveSnippetTemplates()
+            }
         }
         run {
             if (text != "localisation") return@run
-            return CwtDataExpression.create(expressionString, CwtDataTypes.LocalisationSnippet, role) { snippetTemplates = templates }
+            return CwtDataExpression.create(expressionString, CwtDataTypes.LocalisationSnippet, role) {
+                snippetTemplates = templatesText.resolveSnippetTemplates()
+            }
         }
         return null
     }
@@ -164,23 +163,9 @@ class CwtSnippetDataExpressionSupport : CwtDataExpressionSupport {
     override fun resolveTemplate(expressionString: String): CwtDataExpression? {
         return null // explicitly unsupported
     }
-
-    /**
-     * 解析逗号分隔的一组模板参数。每个模板参数必须为包含唯一占位符的一元模板，否则视为非法。
-     */
-    private fun parseTemplates(text: String): List<UnaryTemplateInfo>? {
-        if (text.isEmpty()) return null
-        val items = text.split(',').map { it.trim() }
-        if (items.any { it.isEmpty() }) return null
-        val result = ArrayList<UnaryTemplateInfo>(items.size)
-        for (item in items) {
-            val template = UnaryTemplateInfo.from(item) ?: return null
-            result += template
-        }
-        return result
-    }
 }
 
+// TODO 3.0.4 remove
 class CwtSuffixAwareDataExpressionSupport : CwtDataExpressionSupport {
     override fun resolve(expressionString: String, role: CwtDataExpressionRole): CwtDataExpression? {
         val separatorIndex = expressionString.indexOf('|')
@@ -189,8 +174,8 @@ class CwtSuffixAwareDataExpressionSupport : CwtDataExpressionSupport {
         val expectedSuffixes = expressionString.substring(separatorIndex + 1).toDelimitedSet()
         run {
             val t = text.removeSurroundingOrNull("<", ">") ?: return@run
-            if (expectedSuffixes.isEmpty()) return CwtDataExpression.create(expressionString, CwtDataTypes.Definition, role) { value = t.orNull() }
-            return CwtDataExpression.create(expressionString, CwtDataTypes.SuffixAwareDefinition, role) { value = t.orNull(); suffixes = expectedSuffixes.optimized() }
+            if (expectedSuffixes.isEmpty()) return CwtDataExpression.create(expressionString, CwtDataTypes.Definition, role) { value = t }
+            return CwtDataExpression.create(expressionString, CwtDataTypes.SuffixAwareDefinition, role) { value = t; suffixes = expectedSuffixes.optimized() }
         }
         run {
             if (text != "localisation") return@run

@@ -6,7 +6,7 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.expandBySubtypeExpression
 import icu.windea.pls.config.configExpression.CwtLocalisationLocationExpression
 import icu.windea.pls.config.configExpression.CwtLocationExpression
-import icu.windea.pls.config.util.CwtConfigResolverScope
+import icu.windea.pls.config.scopes.CwtConfigResolutionScope
 import icu.windea.pls.core.optimized
 import icu.windea.pls.model.expressions.ParadoxDefinitionSubtypeExpression
 
@@ -59,7 +59,7 @@ interface CwtTypeLocalisationConfig : CwtTypePresentationConfig {
 
 // region Implementations
 
-private object CwtTypeLocalisationConfigResolver : CwtConfigResolverScope {
+private object CwtTypeLocalisationConfigResolver : CwtConfigResolutionScope {
     private val logger = thisLogger()
 
     fun resolve(config: CwtPropertyConfig): CwtTypeLocalisationConfig? {

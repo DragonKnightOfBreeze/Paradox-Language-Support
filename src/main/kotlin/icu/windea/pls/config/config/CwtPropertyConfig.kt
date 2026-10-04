@@ -11,8 +11,7 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.option.CwtOptionMetadata
 import icu.windea.pls.config.option.CwtOptionMetadataBase
 import icu.windea.pls.config.option.CwtOptionMetadataService
-import icu.windea.pls.config.util.CwtConfigResolverManager
-import icu.windea.pls.config.util.CwtConfigResolverScope
+import icu.windea.pls.config.scopes.CwtConfigResolutionScope
 import icu.windea.pls.config.util.CwtMemberConfigVisitor
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.filterIsInstanceFast
@@ -110,7 +109,7 @@ interface CwtPropertyConfig : CwtMemberConfig<CwtProperty> {
 
 // region Implementations
 
-private object CwtPropertyConfigResolver : CwtConfigResolverScope {
+private object CwtPropertyConfigResolver : CwtConfigResolutionScope {
     private val logger = thisLogger()
 
     fun resolve(element: CwtProperty, file: CwtFile, configGroup: CwtConfigGroup): CwtPropertyConfig? {
@@ -144,12 +143,12 @@ private object CwtPropertyConfigResolver : CwtConfigResolverScope {
         }
 
         val pointer = if (configGroup.project.isDefault) emptyPointer() else CwtPropertyPointer(file, element, valueElement)
-        val configs = CwtConfigResolverManager.getConfigs(valueElement, file, configGroup)
+        val configs = CwtConfigResolverService.getConfigs(valueElement, file, configGroup)
         val keyExpression = CwtDataExpression.resolve(keyElement.value, CwtDataExpressionRole.Key)
         val valueExpression = if (configs == null) CwtDataExpression.resolve(valueElement.value, CwtDataExpressionRole.Value) else CwtDataExpression.resolveBlock()
         val valueType = CwtTypeResolver.resolveExpressionType(valueElement)
         val config = create(pointer, configGroup, keyExpression, valueExpression, valueType, separatorType, configs, injectable = true)
-        val optionConfigs = CwtConfigResolverManager.getOptionConfigs(element, configGroup)
+        val optionConfigs = CwtConfigResolverService.getOptionConfigs(element, configGroup)
         CwtOptionMetadataService.process(config.optionMetadata, optionConfigs, configGroup) // initialize option metadata
         when {
             configs == null -> logger.traceWithPrefix(element, configGroup) { "Resolved property config (key: ${config.key}, value: ${config.value})." }
@@ -236,8 +235,8 @@ private sealed class CwtPropertyConfigBase : CwtOptionMetadataBase(), CwtPropert
         // run post processors
         CwtConfigService.postProcess(this)
         // collect information
-        CwtConfigResolverManager.collectFromConfigExpression(this, keyExpression)
-        CwtConfigResolverManager.collectFromConfigExpression(this, valueExpression)
+        CwtConfigResolverService.collectFromConfigExpression(this, keyExpression)
+        CwtConfigResolverService.collectFromConfigExpression(this, valueExpression)
     }
 
     override fun postOptimize() {
@@ -306,13 +305,13 @@ private open class CwtPropertyConfigImplWithConfigs(
 
     override val properties: List<CwtPropertyConfig>
         get() {
-            if (membersType == CwtMembersType.UNSET) membersType = CwtConfigResolverManager.getMembersType(configs)
-            return CwtConfigResolverManager.getProperties(configs, membersType)
+            if (membersType == CwtMembersType.UNSET) membersType = CwtConfigResolverService.getMembersType(configs)
+            return CwtConfigResolverService.getProperties(configs, membersType)
         }
     override val values: List<CwtValueConfig>
         get() {
-            if (membersType == CwtMembersType.UNSET) membersType = CwtConfigResolverManager.getMembersType(configs)
-            return CwtConfigResolverManager.getValues(configs, membersType)
+            if (membersType == CwtMembersType.UNSET) membersType = CwtConfigResolverService.getMembersType(configs)
+            return CwtConfigResolverService.getValues(configs, membersType)
         }
 
     override val valueExpression: CwtDataExpression get() = CwtDataExpression.resolveBlock()
@@ -370,13 +369,13 @@ private class CwtPropertyConfigDelegateWithConfigs(
 
     override val properties: List<CwtPropertyConfig>
         get() {
-            if (membersType == CwtMembersType.UNSET) membersType = CwtConfigResolverManager.getMembersType(configs)
-            return CwtConfigResolverManager.getProperties(configs, membersType)
+            if (membersType == CwtMembersType.UNSET) membersType = CwtConfigResolverService.getMembersType(configs)
+            return CwtConfigResolverService.getProperties(configs, membersType)
         }
     override val values: List<CwtValueConfig>
         get() {
-            if (membersType == CwtMembersType.UNSET) membersType = CwtConfigResolverManager.getMembersType(configs)
-            return CwtConfigResolverManager.getValues(configs, membersType)
+            if (membersType == CwtMembersType.UNSET) membersType = CwtConfigResolverService.getMembersType(configs)
+            return CwtConfigResolverService.getValues(configs, membersType)
         }
 
     override fun withConfigs(configs: List<CwtMemberConfig<*>>): Boolean {

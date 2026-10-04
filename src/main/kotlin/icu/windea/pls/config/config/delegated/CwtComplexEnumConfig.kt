@@ -15,7 +15,7 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.booleanValue
 import icu.windea.pls.config.config.stringValue
-import icu.windea.pls.config.util.CwtConfigResolverScope
+import icu.windea.pls.config.scopes.CwtConfigResolutionScope
 import icu.windea.pls.config.util.CwtMemberConfigRecursiveVisitor
 import icu.windea.pls.core.collections.getAll
 import icu.windea.pls.core.collections.getOne
@@ -93,7 +93,7 @@ interface CwtComplexEnumConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConf
 
 // region Implementations
 
-private object CwtComplexEnumConfigResolver : CwtConfigResolverScope {
+private object CwtComplexEnumConfigResolver : CwtConfigResolutionScope {
     private val logger = thisLogger()
 
     fun resolve(config: CwtPropertyConfig): CwtComplexEnumConfig? {
@@ -105,11 +105,11 @@ private object CwtComplexEnumConfigResolver : CwtConfigResolverScope {
         }
 
         val propGroup = propConfigs.groupBy { it.key }
-        val paths = propGroup.getAll("path").mapNotNullTo(sortedSetOf()) { it.stringValue?.optimizedPath() }.optimized()
+        val paths = propGroup.getAll("path").mapNotNullTo(sortedSetOf()) { it.stringValue?.resolvePath() }.optimized()
         val pathFile = propGroup.getOne("path_file")?.stringValue
-        val pathExtension = propGroup.getOne("path_extension")?.stringValue?.optimizedPathExtension()
+        val pathExtension = propGroup.getOne("path_extension")?.stringValue?.resolvePathExtension()
         val pathStrict = propGroup.getOne("path_strict")?.booleanValue ?: false
-        val pathPatterns = propGroup.getAll("path_pattern").mapNotNullTo(sortedSetOf()) { it.stringValue?.optimizedPath() }.optimized()
+        val pathPatterns = propGroup.getAll("path_pattern").mapNotNullTo(sortedSetOf()) { it.stringValue?.resolvePath() }.optimized()
         val startFromRoot = propGroup.getOne("start_from_root")?.booleanValue ?: false
         val caseInsensitive = config.optionMetadata.caseInsensitive
         val perDefinition = config.optionMetadata.perDefinition

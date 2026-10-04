@@ -22,7 +22,9 @@ import icu.windea.pls.core.util.values.to
 import icu.windea.pls.ep.resolve.expression.ParadoxPathReferenceExpressionSupport
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueLightElement
+import icu.windea.pls.lang.psi.light.ParadoxDefinitionSnippetLightElement
 import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
+import icu.windea.pls.lang.psi.light.ParadoxLocalisationSnippetLightElement
 import icu.windea.pls.lang.psi.light.ParadoxMeshLocatorLightElement
 import icu.windea.pls.lang.psi.light.ParadoxShaderEffectLightElement
 import icu.windea.pls.lang.resolve.ParadoxExpressionService
@@ -45,6 +47,7 @@ import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.lang.util.ParadoxNameValidators
 import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.model.ParadoxLocalisationType
 
 object ParadoxExpressionCompletionManager {
     // region Entry Completion Methods
@@ -95,16 +98,12 @@ object ParadoxExpressionCompletionManager {
         val typeExpression = config.configExpression?.metadata?.value ?: return
         val configGroup = config.configGroup
         val hintText = ParadoxCompletionFactory.getConfigBasedHintText(context, config)
-        val selector = ParadoxDefinitionSearch.selector(context.project, context.contextElement).contextSensitive().distinct()
+        val selector = ParadoxDefinitionSearch.selector(context.project, context.contextElement).contextSensitive()
         ParadoxDefinitionSearch.searchElement(null, typeExpression, selector).processAsync p@{ definition ->
             ProgressManager.checkCanceled()
             val definitionInfo = definition.definitionInfo ?: return@p true
             if (definitionInfo.name.isEmpty()) return@p true // skip anonymous definitions
-
-            // apply extraFilter since it's necessary
-            if (context.extraFilter?.invoke(definition) == false) return@p true
-
-            // 排除不匹配可能存在的 `supported_scopes` 的情况
+            if (context.extraFilter?.invoke(definition) == false) return@p true  // apply extraFilter since it's necessary
             val supportedScopes = ParadoxScopeService.getSupportedScopes(definition, definitionInfo)
             val scopeMatched = ParadoxScopeMatchService.matchesScope(scopeContext, supportedScopes, configGroup)
             if (!scopeMatched && ChronicleSettings.getInstance().state.completion.completeOnlyScopeIsMatched) return@p true
@@ -112,52 +111,6 @@ object ParadoxExpressionCompletionManager {
         }
 
         ParadoxExtendedCompletionManager.completeExtendedDefinition(context, result)
-    }
-
-    fun completeLocalisation(context: ParadoxCompletionContext, result: CompletionResultSet) {
-        val config = context.config ?: return
-
-        // 优化：如果已经输入的关键词不是合法的本地化的名字，不要尝试进行本地化的代码补全
-        if (context.keyword.isNotEmpty() && !ParadoxNameValidators.checkLocalisationName(context.keyword)) return
-
-        // 本地化的提示结果可能有上千条，因此这里改为先按照输入的关键字过滤结果，关键字变更时重新提示
-        result.restartCompletionOnPrefixChange(StandardPatterns.string().shorterThan(context.keyword.length))
-
-        val hintText = ParadoxCompletionFactory.getConfigBasedHintText(context, config)
-        val selector = ParadoxLocalisationSearch.selector(context.project, context.contextElement)
-            .contextSensitive()
-            .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
-        val processor = LimitedCompletionProcessor<ParadoxLocalisationProperty> p@{ localisation ->
-            if (context.extraFilter?.invoke(localisation) == false) return@p true // apply extraFilter since it's necessary
-            ParadoxCompletionFactory.fromLocalisation(context, localisation, hintText).addToResult(context, result)
-        }
-        // 保证索引在此 readAction 中可用
-        runSmartReadAction(context.project, inSmartMode = true) {
-            ParadoxLocalisationSearch.processVariantsNormal(result.prefixMatcher, selector, processor)
-        }
-    }
-
-    fun completeSyncedLocalisation(context: ParadoxCompletionContext, result: CompletionResultSet) {
-        val config = context.config ?: return
-
-        // 优化：如果已经输入的关键词不是合法的本地化的名字，不要尝试进行本地化的代码补全
-        if (context.keyword.isNotEmpty() && !ParadoxNameValidators.checkLocalisationName(context.keyword)) return
-
-        // 本地化的提示结果可能有上千条，因此这里改为先按照输入的关键字过滤结果，关键字变更时重新提示
-        result.restartCompletionOnPrefixChange(StandardPatterns.string().shorterThan(context.keyword.length))
-
-        val hintText = ParadoxCompletionFactory.getConfigBasedHintText(context, config)
-        val selector = ParadoxLocalisationSearch.selector(context.project, context.contextElement)
-            .contextSensitive()
-            .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
-        val processor = LimitedCompletionProcessor<ParadoxLocalisationProperty> p@{ localisation ->
-            if (context.extraFilter?.invoke(localisation) == false) return@p true // apply extraFilter since it's necessary
-            ParadoxCompletionFactory.fromLocalisation(context, localisation, hintText).addToResult(context, result)
-        }
-        // 保证索引在此 readAction 中可用
-        runSmartReadAction(context.project, inSmartMode = true) {
-            ParadoxLocalisationSearch.processVariantsSynced(result.prefixMatcher, selector, processor)
-        }
     }
 
     /**
@@ -180,18 +133,42 @@ object ParadoxExpressionCompletionManager {
             val definitionInfo = definition.definitionInfo ?: return@p true
             if (definitionInfo.name.isEmpty()) return@p true // skip anonymous definitions
             if (context.extraFilter?.invoke(definition) == false) return@p true
-            // 排除不匹配可能存在的 `supported_scopes` 的情况
             val supportedScopes = ParadoxScopeService.getSupportedScopes(definition, definitionInfo)
             val scopeMatched = ParadoxScopeMatchService.matchesScope(scopeContext, supportedScopes, configGroup)
             if (!scopeMatched && ChronicleSettings.getInstance().state.completion.completeOnlyScopeIsMatched) return@p true
+            val typeFile = definition.containingFile
             for (template in templates) {
                 val name = template.extract(definitionInfo.name) ?: continue
                 if (name.isEmpty()) continue
-                ParadoxCompletionFactory.fromDefinitionSnippet(context, definition, name, hintText).addToResult(context, result)
+                val element = ParadoxDefinitionSnippetLightElement(context.contextElement, name, definitionInfo.type, templates, context.gameType, context.project)
+                ParadoxCompletionFactory.fromDefinitionSnippet(context, element, typeFile, hintText).addToResult(context, result)
             }
             true
         }
-        ParadoxExtendedCompletionManager.completeExtendedDefinition(context, result)
+        // TODO 3.0.4+ [snippet-match] unsupported atm, may not necessary
+        // ParadoxExtendedCompletionManager.completeExtendedDefinitionSnippet(context, result)
+    }
+
+    fun completeLocalisation(context: ParadoxCompletionContext, result: CompletionResultSet, type: ParadoxLocalisationType = ParadoxLocalisationType.Normal) {
+        val config = context.config ?: return
+
+        // 优化：如果已经输入的关键词不是合法的本地化的名字，不要尝试进行本地化的代码补全
+        if (context.keyword.isNotEmpty() && !ParadoxNameValidators.checkLocalisationName(context.keyword)) return
+
+        // 本地化的提示结果可能有上千条，因此这里改为先按照输入的关键字过滤结果，关键字变更时重新提示
+        result.restartCompletionOnPrefixChange(StandardPatterns.string().shorterThan(context.keyword.length))
+
+        val hintText = ParadoxCompletionFactory.getConfigBasedHintText(context, config)
+        val selector = ParadoxLocalisationSearch.selector(context.project, context.contextElement).contextSensitive()
+            .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
+        val processor = LimitedCompletionProcessor<ParadoxLocalisationProperty> p@{ localisation ->
+            if (context.extraFilter?.invoke(localisation) == false) return@p true // apply extraFilter since it's necessary
+            ParadoxCompletionFactory.fromLocalisation(context, localisation, hintText).addToResult(context, result)
+        }
+        // 保证索引在此 readAction 中可用
+        runSmartReadAction(context.project, inSmartMode = true) {
+            ParadoxLocalisationSearch.processVariants(result.prefixMatcher, selector, type, processor)
+        }
     }
 
     /**
@@ -209,22 +186,23 @@ object ParadoxExpressionCompletionManager {
         result.restartCompletionOnPrefixChange(StandardPatterns.string().shorterThan(context.keyword.length))
 
         val hintText = ParadoxCompletionFactory.getConfigBasedHintText(context, config)
-        val selector = ParadoxLocalisationSearch.selector(context.project, context.contextElement)
-            .contextSensitive()
+        val selector = ParadoxLocalisationSearch.selector(context.project, context.contextElement).contextSensitive()
             .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
         val processor = LimitedCompletionProcessor<ParadoxLocalisationProperty> p@{ localisation ->
             if (context.extraFilter?.invoke(localisation) == false) return@p true
             val localisationName = localisation.name.orNull() ?: return@p true
+            val typeFile = localisation.containingFile
             for (template in templates) {
                 val name = template.extract(localisationName) ?: continue
                 if (name.isEmpty()) continue
-                ParadoxCompletionFactory.fromLocalisationSnippet(context, localisation, name, hintText).addToResult(context, result)
+                val element = ParadoxLocalisationSnippetLightElement(context.contextElement, name, templates, context.gameType, context.project)
+                ParadoxCompletionFactory.fromLocalisationSnippet(context, element, typeFile, hintText).addToResult(context, result)
             }
             true
         }
         // 保证索引在此 readAction 中可用
         runSmartReadAction(context.project, inSmartMode = true) {
-            ParadoxLocalisationSearch.processVariantsNormal(result.prefixMatcher, selector, processor)
+            ParadoxLocalisationSearch.processVariants(result.prefixMatcher, selector, ParadoxLocalisationType.Normal, processor)
         }
     }
 
@@ -392,7 +370,7 @@ object ParadoxExpressionCompletionManager {
         val configGroup = context.configGroup
         val configExpression = config.configExpression ?: return
         val hintText = " by $configExpression"
-        val selector = ParadoxShaderEffectSearch.selector(configGroup.project, context.contextElement).distinct()
+        val selector = ParadoxShaderEffectSearch.selector(configGroup.project, context.contextElement).contextSensitive().distinct()
         ParadoxShaderEffectSearch.search(null, selector).processAsync p@{ info ->
             ProgressManager.checkCanceled()
             val name = info.name
@@ -412,7 +390,7 @@ object ParadoxExpressionCompletionManager {
         val configGroup = context.configGroup
         val configExpression = config.configExpression ?: return
         val hintText = " by $configExpression"
-        val selector = ParadoxMeshLocatorSearch.selector(configGroup.project, context.contextElement).distinct()
+        val selector = ParadoxMeshLocatorSearch.selector(configGroup.project, context.contextElement).contextSensitive().distinct()
         ParadoxMeshLocatorSearch.search(null, selector).processAsync p@{ info ->
             ProgressManager.checkCanceled()
             val name = info.name

@@ -4,7 +4,7 @@ import com.intellij.openapi.diagnostic.thisLogger
 import icu.windea.pls.config.config.CwtDetachedConfig
 import icu.windea.pls.config.config.CwtFileConfig
 import icu.windea.pls.config.config.stringValue
-import icu.windea.pls.config.util.CwtConfigResolverScope
+import icu.windea.pls.config.scopes.CwtConfigResolutionScope
 import icu.windea.pls.core.collections.CaseInsensitiveStringKeyMap
 import icu.windea.pls.core.collections.getOne
 import icu.windea.pls.lang.codeInsight.template.postfix.ParadoxExpressionEditablePostfixTemplate
@@ -33,7 +33,7 @@ data class CwtPostfixTemplateSettingsConfig(
 
 // region Implementations
 
-private object CwtPostfixTemplateSettingsConfigResolver : CwtConfigResolverScope {
+private object CwtPostfixTemplateSettingsConfigResolver : CwtConfigResolutionScope {
     private val logger = thisLogger()
 
     fun resolveInFile(fileConfig: CwtFileConfig) {

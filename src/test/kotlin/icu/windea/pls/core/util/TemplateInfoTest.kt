@@ -25,7 +25,7 @@ class TemplateInfoTest {
         assertEquals("", t1.prefix)
         assertEquals("_desc", t1.suffix)
 
-        val t2 = UnaryTemplateInfo.create($$"GFX_$")!!
+        val t2 = UnaryTemplateInfo.create("GFX_$")!!
         assertEquals("GFX_", t2.prefix)
         assertEquals("", t2.suffix)
 
@@ -62,7 +62,7 @@ class TemplateInfoTest {
     @Test
     fun testResolve() {
         assertEquals("test_desc", UnaryTemplateInfo($$"$_desc").resolve("test"))
-        assertEquals("GFX_test", UnaryTemplateInfo($$"GFX_$").resolve("test"))
+        assertEquals("GFX_test", UnaryTemplateInfo("GFX_$").resolve("test"))
         assertEquals("c_test_d", UnaryTemplateInfo($$"c_$_d").resolve("test"))
         assertEquals("test", UnaryTemplateInfo("$").resolve("test"))
     }
@@ -72,7 +72,7 @@ class TemplateInfoTest {
     @Test
     fun testExtract() {
         assertEquals("test", UnaryTemplateInfo($$"$_desc").extract("test_desc"))
-        assertEquals("test", UnaryTemplateInfo($$"GFX_$").extract("GFX_test"))
+        assertEquals("test", UnaryTemplateInfo("GFX_$").extract("GFX_test"))
         assertEquals("test", UnaryTemplateInfo($$"c_$_d").extract("c_test_d"))
         // extra content between prefix and suffix is preserved as the extracted value
         assertEquals("te_st", UnaryTemplateInfo($$"$_desc").extract("te_st_desc"))
@@ -84,7 +84,7 @@ class TemplateInfoTest {
     fun testExtract_notMatched_returnNull() {
         assertNull(UnaryTemplateInfo($$"$_desc").extract("test")) // missing suffix
         assertNull(UnaryTemplateInfo($$"$_desc").extract("test_desc_extra")) // trailing content
-        assertNull(UnaryTemplateInfo($$"GFX_$").extract("test")) // missing prefix
+        assertNull(UnaryTemplateInfo("GFX_$").extract("test")) // missing prefix
         assertNull(UnaryTemplateInfo($$"c_$_d").extract("c__")) // too short
         assertNull(UnaryTemplateInfo($$"c_$_d").extract("c_xe")) // missing suffix
     }
@@ -93,6 +93,6 @@ class TemplateInfoTest {
     fun testExtract_emptyResultIsAllowed() {
         // prefix and suffix match exactly, so the extracted value is empty
         assertEquals("", UnaryTemplateInfo($$"$_desc").extract("_desc"))
-        assertEquals("", UnaryTemplateInfo($$"GFX_$").extract("GFX_"))
+        assertEquals("", UnaryTemplateInfo("GFX_$").extract("GFX_"))
     }
 }

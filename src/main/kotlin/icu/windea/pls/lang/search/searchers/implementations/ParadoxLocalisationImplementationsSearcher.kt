@@ -31,7 +31,7 @@ class ParadoxLocalisationImplementationsSearcher : QueryExecutor<PsiElement, Def
             val selector = ParadoxLocalisationSearch.selector(project, sourceElement)
                 .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig()) // 限定语言环境
                 .withSearchScope(GlobalSearchScope.allScope(project)) // 使用全部作用域
-            ParadoxLocalisationSearch.search(name, type, selector).forEach(consumer)
+            ParadoxLocalisationSearch.search(name, selector, type).forEach(consumer)
         }
         return true
     }

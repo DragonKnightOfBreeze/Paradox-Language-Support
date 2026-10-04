@@ -90,10 +90,10 @@ object ParadoxDocumentationManager {
 
     private fun DocumentationBuilder.build(element: PsiElement, originalElement: PsiElement?) {
         when (element) {
-            is ParadoxComplexEnumValueLightElement -> buildForComplexEnumValue(element, originalElement)
-            is ParadoxDynamicValueLightElement -> buildForDynamicValue(element, originalElement)
             is ParadoxDefinitionSnippetLightElement -> buildForDefinitionSnippet(element, originalElement)
             is ParadoxLocalisationSnippetLightElement -> buildForLocalisationSnippet(element, originalElement)
+            is ParadoxComplexEnumValueLightElement -> buildForComplexEnumValue(element, originalElement)
+            is ParadoxDynamicValueLightElement -> buildForDynamicValue(element, originalElement)
             is ParadoxParameterLightElement -> buildForParameter(element, originalElement)
             is ParadoxLocalisationParameterLightElement -> buildForLocalisationParameter(element, originalElement)
             is ParadoxModifierLightElement -> buildForModifier(element, originalElement)
@@ -113,6 +113,18 @@ object ParadoxDocumentationManager {
 
     // region Dispatch Documentation Methods
 
+    private fun DocumentationBuilder.buildForDefinitionSnippet(element: ParadoxDefinitionSnippetLightElement, originalElement: PsiElement?) {
+        buildDefinitionPartForDefinitionSnippet(element)
+        if (hint) return
+        buildSections()
+    }
+
+    private fun DocumentationBuilder.buildForLocalisationSnippet(element: ParadoxLocalisationSnippetLightElement, originalElement: PsiElement?) {
+        buildDefinitionPartForLocalisationSnippet(element)
+        if (hint) return
+        buildSections()
+    }
+
     private fun DocumentationBuilder.buildForComplexEnumValue(element: ParadoxComplexEnumValueLightElement, originalElement: PsiElement?) {
         buildDefinitionPartForComplexEnumValue(element)
         if (hint) return
@@ -124,18 +136,6 @@ object ParadoxDocumentationManager {
         buildDefinitionPartForDynamicValue(element)
         if (hint) return
         buildDocumentationContent(element)
-        buildSections()
-    }
-
-    private fun DocumentationBuilder.buildForDefinitionSnippet(element: ParadoxDefinitionSnippetLightElement, originalElement: PsiElement?) {
-        buildDefinitionPartForDefinitionSnippet(element)
-        if (hint) return
-        buildSections()
-    }
-
-    private fun DocumentationBuilder.buildForLocalisationSnippet(element: ParadoxLocalisationSnippetLightElement, originalElement: PsiElement?) {
-        buildDefinitionPartForLocalisationSnippet(element)
-        if (hint) return
         buildSections()
     }
 
@@ -263,6 +263,38 @@ object ParadoxDocumentationManager {
 
     // region Implementation Documentation Methods
 
+    private fun DocumentationBuilder.buildDefinitionPartForDefinitionSnippet(element: ParadoxDefinitionSnippetLightElement) {
+        // 显示片段文本，以及与各模板参数对应的完整定义引用
+        val name = element.name
+        val gameType = element.gameType
+        definition {
+            append(ChronicleStrings.definitionSnippetPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
+            for (template in element.snippetTemplates) {
+                val fullName = template.resolve(name)
+                br()
+                append(ChronicleStrings.relatedDefinitionPrefix).append(" ")
+                val link = ReferenceLinkType.Definition.createLink(fullName, element.definitionType, gameType)
+                psiLinkOrUnresolved(link.escapeXml(), fullName.escapeXml(), context = element)
+            }
+        }
+    }
+
+    private fun DocumentationBuilder.buildDefinitionPartForLocalisationSnippet(element: ParadoxLocalisationSnippetLightElement) {
+        // 显示片段文本，以及与各模板参数对应的完整本地化引用
+        val name = element.name
+        val gameType = element.gameType
+        definition {
+            append(ChronicleStrings.localisationSnippetPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
+            for (template in element.snippetTemplates) {
+                val fullName = template.resolve(name)
+                br()
+                append(ChronicleStrings.relatedLocalisationPrefix).append(" ")
+                val link = ReferenceLinkType.Localisation.createLink(fullName, gameType)
+                psiLinkOrUnresolved(link.escapeXml(), fullName.escapeXml(), context = element)
+            }
+        }
+    }
+
     private fun DocumentationBuilder.buildDefinitionPartForComplexEnumValue(element: ParadoxComplexEnumValueLightElement) {
         definition {
             val name = element.name
@@ -355,42 +387,6 @@ object ParadoxDocumentationManager {
         run {
             if (nameLocalisation == null) return@run
             sections["name"] = ParadoxLocalisationTextQuickDocRenderer().render(nameLocalisation)
-        }
-    }
-
-    /**
-     * 定义引用片段的定义信息部分：显示片段文本，以及与各模板参数对应的完整定义引用。
-     */
-    private fun DocumentationBuilder.buildDefinitionPartForDefinitionSnippet(element: ParadoxDefinitionSnippetLightElement) {
-        val name = element.name
-        val gameType = element.gameType
-        definition {
-            append(ChronicleStrings.definitionPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
-            for (template in element.snippetTemplates) {
-                val fullName = template.resolve(name)
-                br()
-                append(ChronicleStrings.relatedDefinitionPrefix).append(" ")
-                val link = ReferenceLinkType.Definition.createLink(fullName, element.definitionType, gameType)
-                psiLinkOrUnresolved(link.escapeXml(), fullName.escapeXml(), context = element)
-            }
-        }
-    }
-
-    /**
-     * 本地化引用片段的定义信息部分：显示片段文本，以及与各模板参数对应的完整本地化引用。
-     */
-    private fun DocumentationBuilder.buildDefinitionPartForLocalisationSnippet(element: ParadoxLocalisationSnippetLightElement) {
-        val name = element.name
-        val gameType = element.gameType
-        definition {
-            append(ChronicleStrings.localisationPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
-            for (template in element.snippetTemplates) {
-                val fullName = template.resolve(name)
-                br()
-                append(ChronicleStrings.relatedLocalisationPrefix).append(" ")
-                val link = ReferenceLinkType.Localisation.createLink(fullName, gameType)
-                psiLinkOrUnresolved(link.escapeXml(), fullName.escapeXml(), context = element)
-            }
         }
     }
 
@@ -921,7 +917,7 @@ object ParadoxDocumentationManager {
             else -> {
                 val selector = ParadoxLocalisationSearch.selector(element.project, element).contextSensitive().preferLocale(usedLocale)
                 val type = element.type
-                val found = type?.let { type -> ParadoxLocalisationSearch.search(element.name, type, selector).find() }
+                val found = type?.let { type -> ParadoxLocalisationSearch.search(element.name, selector, type).find() }
                 found ?: element
             }
         }

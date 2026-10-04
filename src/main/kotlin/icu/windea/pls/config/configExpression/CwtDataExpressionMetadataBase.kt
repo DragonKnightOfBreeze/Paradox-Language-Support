@@ -3,7 +3,7 @@ package icu.windea.pls.config.configExpression
 import icu.windea.pls.core.util.FloatRangeInfo
 import icu.windea.pls.core.util.IntRangeInfo
 import icu.windea.pls.core.util.KeyRegistry
-import icu.windea.pls.core.util.TemplateInfo
+import icu.windea.pls.core.util.UnaryTemplateInfo
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.metadata.MetadataMapBase
 import icu.windea.pls.core.util.provideDelegate
@@ -23,14 +23,14 @@ open class CwtDataExpressionMetadataBase : MetadataMapBase(), CwtDataExpressionM
         set(value) = run { this[Keys.ignoreCase] = value } // endregion
     final override var intRange: IntRangeInfo? // region by Keys.intRange
         get() = this[Keys.intRange]
-        set(value) = run { this[Keys.intRange] = value } // endregion
+        set(value) = run { this[Keys.intRange] = value?.normalize() } // endregion
     final override var floatRange: FloatRangeInfo? // region by Keys.floatRange
         get() = this[Keys.floatRange]
-        set(value) = run { this[Keys.floatRange] = value } // endregion
+        set(value) = run { this[Keys.floatRange] = value?.normalize() } // endregion
     final override var suffixes: Set<String>? // region by Keys.suffixes
         get() = this[Keys.suffixes]
         set(value) = run { this[Keys.suffixes] = value } // endregion
-    final override var snippetTemplates: List<TemplateInfo<String>>? // region by Keys.snippetTemplates
+    final override var snippetTemplates: List<UnaryTemplateInfo>? // region by Keys.snippetTemplates
         get() = this[Keys.snippetTemplates]
         set(value) = run { this[Keys.snippetTemplates] = value } // endregion
 }
@@ -43,7 +43,7 @@ object CwtDataExpressionMetadataKeys : KeyRegistry() {
     val intRange by registerKey<IntRangeInfo>(this)
     val floatRange by registerKey<FloatRangeInfo>(this)
     val suffixes by registerKey<Set<String>>(this)
-    val snippetTemplates by registerKey<List<TemplateInfo<String>>>(this)
+    val snippetTemplates by registerKey<List<UnaryTemplateInfo>>(this)
 }
 
 private typealias Keys = CwtDataExpressionMetadataKeys

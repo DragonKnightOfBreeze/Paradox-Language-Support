@@ -18,7 +18,9 @@ examples = {
 <DEFINITION>some_definition</DEFINITION> = {
     key = <DEFINITION_NAME>some_definition_name</DEFINITION_NAME>
     key = <DEFINITION_REFERENCE>some_definition_reference</DEFINITION_REFERENCE>
+    key = <DEFINITION_REFERENCE_SNIPPET>some_definition_reference_snippet</DEFINITION_REFERENCE_SNIPPET>
     key = <LOCALISATION_REFERENCE>some_localisation_reference</LOCALISATION_REFERENCE>
+    key = <LOCALISATION_REFERENCE_SNIPPET>some_localisation_reference_snippet</LOCALISATION_REFERENCE_SNIPPET>
     key = <ENUM_VALUE>some_enum_value</ENUM_VALUE>
     key = <COMPLEX_ENUM_VALUE>some_complex_enum_value</COMPLEX_ENUM_VALUE>
 

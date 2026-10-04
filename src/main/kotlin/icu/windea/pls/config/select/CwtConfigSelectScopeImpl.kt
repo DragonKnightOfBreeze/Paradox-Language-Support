@@ -18,10 +18,6 @@ import icu.windea.pls.model.paths.CwtConfigPath
 class CwtConfigSelectScopeImpl : CwtConfigSelectScope {
     // region Common
 
-    override fun <T : CwtMemberConfig<*>> Sequence<T>.one(): T? = firstOrNull()
-
-    override fun <T : CwtMemberConfig<*>> Sequence<T>.all(): List<T> = toList()
-
     override fun CwtMemberConfig<*>.walkUp(): Sequence<CwtMemberConfig<*>> {
         return generateSequence(this) { it.parentConfig }
     }

@@ -12,7 +12,7 @@ import icu.windea.pls.config.config.CwtIdMatchableConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.manipulation.CwtConfigInlineService
-import icu.windea.pls.config.util.CwtConfigResolverScope
+import icu.windea.pls.config.scopes.CwtConfigResolutionScope
 import icu.windea.pls.cwt.psi.CwtMember
 
 /**
@@ -64,7 +64,7 @@ interface CwtExtendedGameRuleConfig : CwtDelegatedConfig<CwtMember, CwtMemberCon
 
 // region Implementations
 
-private object CwtExtendedGameRuleConfigResolver : CwtConfigResolverScope {
+private object CwtExtendedGameRuleConfigResolver : CwtConfigResolutionScope {
     private val logger = thisLogger()
 
     fun resolve(config: CwtMemberConfig<*>): CwtExtendedGameRuleConfig {

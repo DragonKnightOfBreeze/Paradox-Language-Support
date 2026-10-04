@@ -50,20 +50,20 @@ class ParadoxScriptedVariableSearch : ExtensibleQueryFactory<ParadoxScriptScript
 
         /** @see Parameters */
         @JvmStatic
-        fun search(name: String?, type: ParadoxScriptedVariableType?, selector: Selector): ParadoxUnaryQuery<ParadoxScriptScriptedVariable> {
+        fun search(name: String?, selector: Selector, type: ParadoxScriptedVariableType?): ParadoxUnaryQuery<ParadoxScriptScriptedVariable> {
             return INSTANCE.createParadoxQuery(Parameters(name, type, selector))
         }
 
         /** @see Parameters */
         @JvmStatic
         fun searchLocal(name: String?, selector: Selector): ParadoxUnaryQuery<ParadoxScriptScriptedVariable> {
-            return search(name, ParadoxScriptedVariableType.Local, selector)
+            return search(name, selector, ParadoxScriptedVariableType.Local)
         }
 
         /** @see Parameters */
         @JvmStatic
         fun searchGlobal(name: String?, selector: Selector): ParadoxUnaryQuery<ParadoxScriptScriptedVariable> {
-            return search(name, ParadoxScriptedVariableType.Global, selector)
+            return search(name, selector, ParadoxScriptedVariableType.Global)
         }
     }
 }

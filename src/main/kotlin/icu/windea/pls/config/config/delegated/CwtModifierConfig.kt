@@ -13,7 +13,7 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
 import icu.windea.pls.config.option.CwtOptionMetadata
-import icu.windea.pls.config.util.CwtConfigResolverScope
+import icu.windea.pls.config.scopes.CwtConfigResolutionScope
 import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.collections.CaseInsensitiveStringKeyMap
 import icu.windea.pls.core.collections.CaseInsensitiveStringSet
@@ -104,7 +104,7 @@ interface CwtModifierConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>
 
 // region Implementations
 
-private object CwtModifierConfigResolver : CwtConfigResolverScope {
+private object CwtModifierConfigResolver : CwtConfigResolutionScope {
     private val logger = thisLogger()
 
     fun resolve(config: CwtPropertyConfig, name: String): CwtModifierConfig? {

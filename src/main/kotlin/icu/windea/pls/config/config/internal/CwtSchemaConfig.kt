@@ -4,7 +4,7 @@ import icu.windea.pls.config.config.CwtDetachedConfig
 import icu.windea.pls.config.config.CwtFileConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.configExpression.CwtSchemaExpression
-import icu.windea.pls.config.util.CwtConfigResolverScope
+import icu.windea.pls.config.scopes.CwtConfigResolutionScope
 import icu.windea.pls.config.util.CwtConfigSchemaManager
 
 /**
@@ -33,7 +33,7 @@ data class CwtSchemaConfig(
 
 // region Implementations
 
-private object CwtSchemaConfigResolver : CwtConfigResolverScope {
+private object CwtSchemaConfigResolver : CwtConfigResolutionScope {
     // private val logger = thisLogger()
 
     fun resolveInFile(fileConfig: CwtFileConfig) {

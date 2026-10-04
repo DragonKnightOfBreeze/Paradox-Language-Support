@@ -16,9 +16,10 @@ object ParadoxCsvHighlighterColors {
     @JvmField val INVALID_ESCAPE = createTextAttributesKey("PARADOX_CSV.INVALID_ESCAPE", DefaultLanguageHighlighterColors.INVALID_STRING_ESCAPE)
     @JvmField val BAD_CHARACTER = createTextAttributesKey("PARADOX_CSV.BAD_CHARACTER", HighlighterColors.BAD_CHARACTER)
 
-    @JvmField val DEFINITION_REFERENCE = createTextAttributesKey("PARADOX_CSV.DEFINITION_REFERENCE_KEY", ParadoxScriptHighlighterColors.DEFINITION_REFERENCE)
-    @JvmField val ENUM_VALUE = createTextAttributesKey("PARADOX_CSV.ENUM_VALUE_KEY", ParadoxScriptHighlighterColors.ENUM_VALUE)
-    @JvmField val COMPLEX_ENUM_VALUE = createTextAttributesKey("PARADOX_CSV.COMPLEX_ENUM_KEY", ParadoxScriptHighlighterColors.COMPLEX_ENUM_VALUE)
+    @JvmField val DEFINITION_REFERENCE = createTextAttributesKey("PARADOX_CSV.DEFINITION_REFERENCE", ParadoxScriptHighlighterColors.DEFINITION_REFERENCE)
+    @JvmField val DEFINITION_REFERENCE_SNIPPET = createTextAttributesKey("PARADOX_CSV.DEFINITION_REFERENCE_SNIPPET", ParadoxScriptHighlighterColors.DEFINITION_REFERENCE_SNIPPET)
+    @JvmField val ENUM_VALUE = createTextAttributesKey("PARADOX_CSV.ENUM_VALUE", ParadoxScriptHighlighterColors.ENUM_VALUE)
+    @JvmField val COMPLEX_ENUM_VALUE = createTextAttributesKey("PARADOX_CSV.COMPLEX_ENUM", ParadoxScriptHighlighterColors.COMPLEX_ENUM_VALUE)
     @JvmField val DYNAMIC_VALUE = createTextAttributesKey("PARADOX_CSV.DYNAMIC_VALUE", ParadoxScriptHighlighterColors.DYNAMIC_VALUE)
     @JvmField val VARIABLE = createTextAttributesKey("PARADOX_CSV.VARIABLE", ParadoxScriptHighlighterColors.VARIABLE)
 }

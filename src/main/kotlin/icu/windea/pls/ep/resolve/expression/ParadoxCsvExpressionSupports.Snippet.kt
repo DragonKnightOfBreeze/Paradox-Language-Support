@@ -5,17 +5,17 @@ import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import icu.windea.pls.config.CwtDataType
+import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.codeInsight.completion.ParadoxExpressionCompletionManager
+import icu.windea.pls.lang.highlighting.ParadoxSemanticHighlighterColors
 import icu.windea.pls.lang.resolve.util.ParadoxExpressionSupportFactory
 
 /**
- * 提供对 CSV 表达式中的片段（[CwtDataTypes.DefinitionSnippet] 等）的支持。
- *
- * @see ParadoxSnippetScriptExpressionSupport
+ * @see CwtDataTypeSets.Snippet
  */
 abstract class ParadoxSnippetCsvExpressionSupport : ParadoxCsvExpressionSupport {
     /**
@@ -25,7 +25,8 @@ abstract class ParadoxSnippetCsvExpressionSupport : ParadoxCsvExpressionSupport 
         override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.DefinitionSnippet
 
         override fun annotate(element: ParadoxCsvExpressionElement, text: String, rangeInExpression: TextRange, config: CwtValueConfig, holder: AnnotationHolder): Boolean {
-            ParadoxExpressionSupportFactory.annotateExpressionAsHighlightedReference(element, rangeInExpression, holder)
+            val attributesKey = ParadoxSemanticHighlighterColors.definitionReferenceSnippet(element.language)
+            ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
             return true
         }
 

@@ -10,7 +10,7 @@ import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtIdMatchableConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
-import icu.windea.pls.config.util.CwtConfigResolverScope
+import icu.windea.pls.config.scopes.CwtConfigResolutionScope
 import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.collections.CaseInsensitiveStringKeyMap
 import icu.windea.pls.core.collections.CaseInsensitiveStringSet
@@ -66,7 +66,7 @@ interface CwtEnumConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, Cw
 
 // region Implementations
 
-private object CwtEnumConfigResolver : CwtConfigResolverScope {
+private object CwtEnumConfigResolver : CwtConfigResolutionScope {
     private val logger = thisLogger()
 
     fun resolve(config: CwtPropertyConfig): CwtEnumConfig? {
