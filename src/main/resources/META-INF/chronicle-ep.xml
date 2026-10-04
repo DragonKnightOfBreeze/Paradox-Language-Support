@@ -183,6 +183,8 @@
 
     <incorrectExpressionChecker implementation="icu.windea.pls.ep.inspections.ParadoxTriggerInSwitchStatementsChecker"/>
     <incorrectExpressionChecker implementation="icu.windea.pls.ep.inspections.ParadoxTriggerInWithParametersStatementsChecker"/>
+    <incorrectExpressionChecker implementation="icu.windea.pls.ep.inspections.ParadoxDefinitionSnippetChecker"/>
+    <incorrectExpressionChecker implementation="icu.windea.pls.ep.inspections.ParadoxLocalisationSnippetChecker"/>
 
     <unresolvedExpressionChecker id="default" implementation="icu.windea.pls.ep.inspections.ParadoxDefaultUnresolvedExpressionChecker" order="last"/>
     <unresolvedExpressionChecker implementation="icu.windea.pls.ep.inspections.ParadoxWrongBooleanUnresolvedExpressionChecker"/>

@@ -4,10 +4,14 @@ import com.intellij.codeInsight.completion.CompletionType
 import com.intellij.testFramework.IndexingTestUtil
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import icu.windea.pls.ep.ChronicleEpBundle
+import icu.windea.pls.lang.inspections.script.expression.IncorrectExpressionInspection
+import icu.windea.pls.lang.inspections.script.expression.UnresolvedExpressionInspection
 import icu.windea.pls.lang.psi.light.ParadoxDefinitionSnippetLightElement
 import icu.windea.pls.lang.psi.light.ParadoxLocalisationSnippetLightElement
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.ChronicleTestScope
+import icu.windea.pls.test.dsl.configureByText
 import icu.windea.pls.test.dsl.expectScope
 import org.junit.After
 import org.junit.Before
@@ -112,6 +116,41 @@ class SnippetMatchTest : BasePlatformTestCase(), ChronicleTestScope {
         }
     }
 
+    @Test
+    fun definitionSnippet_unresolvedExpressionInspection() {
+        myFixture.enableInspections(UnresolvedExpressionInspection::class.java)
+        markFileInfo(gameType, "common/test_types/00_test_types.txt")
+        myFixture.configureByText("00_test_types.txt") {
+            val expected = """<test_type>|${'$'}_a,b_${'$'}"""
+            val m = "Cannot resolve value expression `unknown` (expect matching: $expected)"
+            """
+            first_type = {
+                snippet_def = ${error(m)}unknown${errorEnd()}
+            }
+            """.trimIndent()
+        }
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+        myFixture.checkHighlighting()
+    }
+
+    @Test
+    fun definitionSnippet_incorrectExpressionInspection() {
+        myFixture.enableInspections(IncorrectExpressionInspection::class.java)
+        markFileInfo(gameType, "common/test_types/00_test_types.txt")
+        myFixture.configureByText("00_test_types.txt") {
+            val m = ChronicleEpBundle.message("incorrectExpression.definitionSnippet.desc.1", "b_test")
+            """
+            test_a = {}
+            b_foo = {}
+            first_type = {
+                snippet_def = ${warning(m)}test${warningEnd()}
+            }
+            """.trimIndent()
+        }
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+        myFixture.checkHighlighting()
+    }
+
     // endregion
 
     // region localisation snippet
@@ -149,6 +188,23 @@ class SnippetMatchTest : BasePlatformTestCase(), ChronicleTestScope {
         expectScope {
             lookupElementStrings.contains("test").expectTrue()
         }
+    }
+
+    @Test
+    fun localisationSnippet_incorrectExpressionInspection() {
+        configureLocalisationFile()
+        myFixture.enableInspections(IncorrectExpressionInspection::class.java)
+        markFileInfo(gameType, "common/test_types/00_test_types.txt")
+        myFixture.configureByText("00_test_types.txt") {
+            val m = ChronicleEpBundle.message("incorrectExpression.localisationSnippet.desc.1", "partial_effect")
+            """
+            first_type = {
+                snippet_loc = ${warning(m)}partial${warningEnd()}
+            }
+            """.trimIndent()
+        }
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+        myFixture.checkHighlighting()
     }
 
     // endregion

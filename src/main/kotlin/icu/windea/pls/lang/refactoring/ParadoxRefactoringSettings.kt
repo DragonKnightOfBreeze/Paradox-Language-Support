@@ -20,6 +20,8 @@ class ParadoxRefactoringSettings : PersistentStateComponent<ParadoxRefactoringSe
     @JvmField var renameLocalisations = true
     @JvmField var renameRelatedLocalisationsForComplexEnumValues = true
     @JvmField var renameRelatedLocalisationsForDynamicValues = true
+    @JvmField var renameRelatedDefinitionsForDefinitionSnippets = true
+    @JvmField var renameRelatedLocalisationsForLocalisationSnippets = true
 
     @JvmField var inlineScriptedVariableThis = false
     @JvmField var inlineScriptedVariableKeep = false

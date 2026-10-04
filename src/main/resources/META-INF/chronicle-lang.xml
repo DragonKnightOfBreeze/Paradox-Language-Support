@@ -356,11 +356,13 @@
     <automaticRenamerFactory implementation="icu.windea.pls.lang.refactoring.rename.naming.ParadoxScriptedVariableRelatedLocalisationsAutomaticRenamerFactory"/>
     <automaticRenamerFactory implementation="icu.windea.pls.lang.refactoring.rename.naming.ParadoxDefinitionsAutomaticRenamerFactory"/>
     <automaticRenamerFactory implementation="icu.windea.pls.lang.refactoring.rename.naming.ParadoxDefinitionRelatedLocalisationsAutomaticRenamerFactory"/>
+    <automaticRenamerFactory implementation="icu.windea.pls.lang.refactoring.rename.naming.ParadoxDefinitionSnippetAutomaticRenamerFactory"/>
     <automaticRenamerFactory implementation="icu.windea.pls.lang.refactoring.rename.naming.ParadoxDefinitionRelatedImagesAutomaticRenamerFactory"/>
     <automaticRenamerFactory implementation="icu.windea.pls.lang.refactoring.rename.naming.ParadoxDefinitionGeneratedModifiersAutomaticRenamerFactory"/>
     <automaticRenamerFactory implementation="icu.windea.pls.lang.refactoring.rename.naming.ParadoxDefinitionGeneratedModifiersNameDescAutomaticRenamerFactory"/>
     <automaticRenamerFactory implementation="icu.windea.pls.lang.refactoring.rename.naming.ParadoxDefinitionGeneratedModifiersIconAutomaticRenamerFactory"/>
     <automaticRenamerFactory implementation="icu.windea.pls.lang.refactoring.rename.naming.ParadoxLocalisationsAutomaticRenamerFactory"/>
+    <automaticRenamerFactory implementation="icu.windea.pls.lang.refactoring.rename.naming.ParadoxLocalisationSnippetAutomaticRenamerFactory"/>
     <automaticRenamerFactory implementation="icu.windea.pls.lang.refactoring.rename.naming.ParadoxComplexEnumValueRelatedLocalisationsAutomaticRenamerFactory"/>
     <automaticRenamerFactory implementation="icu.windea.pls.lang.refactoring.rename.naming.ParadoxDynamicValueRelatedLocalisationsAutomaticRenamerFactory"/>
     <inlineActionHandler implementation="icu.windea.pls.lang.refactoring.inline.ParadoxScriptedVariableInlineActionHandler"/>
