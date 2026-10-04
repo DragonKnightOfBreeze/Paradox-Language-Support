@@ -24,8 +24,10 @@ import icu.windea.pls.lang.overrides.ParadoxOverrideService
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.psi.ParadoxPsiService
 import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueLightElement
+import icu.windea.pls.lang.psi.light.ParadoxDefinitionSnippetLightElement
 import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
 import icu.windea.pls.lang.psi.light.ParadoxLocalisationParameterLightElement
+import icu.windea.pls.lang.psi.light.ParadoxLocalisationSnippetLightElement
 import icu.windea.pls.lang.psi.light.ParadoxMeshLocatorLightElement
 import icu.windea.pls.lang.psi.light.ParadoxModifierLightElement
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
@@ -90,6 +92,8 @@ object ParadoxDocumentationManager {
         when (element) {
             is ParadoxComplexEnumValueLightElement -> buildForComplexEnumValue(element, originalElement)
             is ParadoxDynamicValueLightElement -> buildForDynamicValue(element, originalElement)
+            is ParadoxDefinitionSnippetLightElement -> buildForDefinitionSnippet(element, originalElement)
+            is ParadoxLocalisationSnippetLightElement -> buildForLocalisationSnippet(element, originalElement)
             is ParadoxParameterLightElement -> buildForParameter(element, originalElement)
             is ParadoxLocalisationParameterLightElement -> buildForLocalisationParameter(element, originalElement)
             is ParadoxModifierLightElement -> buildForModifier(element, originalElement)
@@ -120,6 +124,18 @@ object ParadoxDocumentationManager {
         buildDefinitionPartForDynamicValue(element)
         if (hint) return
         buildDocumentationContent(element)
+        buildSections()
+    }
+
+    private fun DocumentationBuilder.buildForDefinitionSnippet(element: ParadoxDefinitionSnippetLightElement, originalElement: PsiElement?) {
+        buildDefinitionPartForDefinitionSnippet(element)
+        if (hint) return
+        buildSections()
+    }
+
+    private fun DocumentationBuilder.buildForLocalisationSnippet(element: ParadoxLocalisationSnippetLightElement, originalElement: PsiElement?) {
+        buildDefinitionPartForLocalisationSnippet(element)
+        if (hint) return
         buildSections()
     }
 
@@ -339,6 +355,42 @@ object ParadoxDocumentationManager {
         run {
             if (nameLocalisation == null) return@run
             sections["name"] = ParadoxLocalisationTextQuickDocRenderer().render(nameLocalisation)
+        }
+    }
+
+    /**
+     * 定义引用片段的定义信息部分：显示片段文本，以及与各模板参数对应的完整定义引用。
+     */
+    private fun DocumentationBuilder.buildDefinitionPartForDefinitionSnippet(element: ParadoxDefinitionSnippetLightElement) {
+        val name = element.name
+        val gameType = element.gameType
+        definition {
+            append(ChronicleStrings.definitionPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
+            for (template in element.snippetTemplates) {
+                val fullName = template.resolve(name)
+                br()
+                append(ChronicleStrings.relatedDefinitionPrefix).append(" ")
+                val link = ReferenceLinkType.Definition.createLink(fullName, element.definitionType, gameType)
+                psiLinkOrUnresolved(link.escapeXml(), fullName.escapeXml(), context = element)
+            }
+        }
+    }
+
+    /**
+     * 本地化引用片段的定义信息部分：显示片段文本，以及与各模板参数对应的完整本地化引用。
+     */
+    private fun DocumentationBuilder.buildDefinitionPartForLocalisationSnippet(element: ParadoxLocalisationSnippetLightElement) {
+        val name = element.name
+        val gameType = element.gameType
+        definition {
+            append(ChronicleStrings.localisationPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
+            for (template in element.snippetTemplates) {
+                val fullName = template.resolve(name)
+                br()
+                append(ChronicleStrings.relatedLocalisationPrefix).append(" ")
+                val link = ReferenceLinkType.Localisation.createLink(fullName, gameType)
+                psiLinkOrUnresolved(link.escapeXml(), fullName.escapeXml(), context = element)
+            }
         }
     }
 

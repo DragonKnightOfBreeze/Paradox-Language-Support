@@ -14,6 +14,7 @@ import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.config.resolved
 import icu.windea.pls.core.codeInsight.LimitedCompletionProcessor
+import icu.windea.pls.core.orNull
 import icu.windea.pls.core.processAsync
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.util.values.singletonListOrEmpty
@@ -156,6 +157,74 @@ object ParadoxExpressionCompletionManager {
         // 保证索引在此 readAction 中可用
         runSmartReadAction(context.project, inSmartMode = true) {
             ParadoxLocalisationSearch.processVariantsSynced(result.prefixMatcher, selector, processor)
+        }
+    }
+
+    /**
+     * 定义引用片段（[CwtDataTypes.DefinitionSnippet]）的代码补全。
+     *
+     * 对每个定义名，尝试通过片段模板提取出片段文本，并将之作为补全项的查找文本。
+     */
+    fun completeDefinitionSnippet(context: ParadoxCompletionContext, result: CompletionResultSet) {
+        val config = context.config ?: return
+        val configExpression = config.configExpression ?: return
+        val typeExpression = configExpression.metadata.value ?: return
+        val templates = configExpression.metadata.snippetTemplates ?: return
+        if (templates.isEmpty()) return
+        val hintText = ParadoxCompletionFactory.getConfigBasedHintText(context, config)
+        val scopeContext = context.scopeContext
+        val configGroup = config.configGroup
+        val selector = ParadoxDefinitionSearch.selector(context.project, context.contextElement).contextSensitive().distinct()
+        ParadoxDefinitionSearch.searchElement(null, typeExpression, selector).processAsync p@{ definition ->
+            ProgressManager.checkCanceled()
+            val definitionInfo = definition.definitionInfo ?: return@p true
+            if (definitionInfo.name.isEmpty()) return@p true // skip anonymous definitions
+            if (context.extraFilter?.invoke(definition) == false) return@p true
+            // 排除不匹配可能存在的 `supported_scopes` 的情况
+            val supportedScopes = ParadoxScopeService.getSupportedScopes(definition, definitionInfo)
+            val scopeMatched = ParadoxScopeMatchService.matchesScope(scopeContext, supportedScopes, configGroup)
+            if (!scopeMatched && ChronicleSettings.getInstance().state.completion.completeOnlyScopeIsMatched) return@p true
+            for (template in templates) {
+                val name = template.extract(definitionInfo.name) ?: continue
+                if (name.isEmpty()) continue
+                ParadoxCompletionFactory.fromDefinitionSnippet(context, definition, name, hintText).addToResult(context, result)
+            }
+            true
+        }
+        ParadoxExtendedCompletionManager.completeExtendedDefinition(context, result)
+    }
+
+    /**
+     * 本地化引用片段（[CwtDataTypes.LocalisationSnippet]）的代码补全。
+     *
+     * 对每个本地化名，尝试通过片段模板提取出片段文本，并将之作为补全项的查找文本。
+     */
+    fun completeLocalisationSnippet(context: ParadoxCompletionContext, result: CompletionResultSet) {
+        val config = context.config ?: return
+        val configExpression = config.configExpression ?: return
+        val templates = configExpression.metadata.snippetTemplates ?: return
+        if (templates.isEmpty()) return
+
+        // 本地化的提示结果可能有上千条，因此这里改为先按照输入的关键字过滤结果，关键字变更时重新提示
+        result.restartCompletionOnPrefixChange(StandardPatterns.string().shorterThan(context.keyword.length))
+
+        val hintText = ParadoxCompletionFactory.getConfigBasedHintText(context, config)
+        val selector = ParadoxLocalisationSearch.selector(context.project, context.contextElement)
+            .contextSensitive()
+            .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
+        val processor = LimitedCompletionProcessor<ParadoxLocalisationProperty> p@{ localisation ->
+            if (context.extraFilter?.invoke(localisation) == false) return@p true
+            val localisationName = localisation.name.orNull() ?: return@p true
+            for (template in templates) {
+                val name = template.extract(localisationName) ?: continue
+                if (name.isEmpty()) continue
+                ParadoxCompletionFactory.fromLocalisationSnippet(context, localisation, name, hintText).addToResult(context, result)
+            }
+            true
+        }
+        // 保证索引在此 readAction 中可用
+        runSmartReadAction(context.project, inSmartMode = true) {
+            ParadoxLocalisationSearch.processVariantsNormal(result.prefixMatcher, selector, processor)
         }
     }
 

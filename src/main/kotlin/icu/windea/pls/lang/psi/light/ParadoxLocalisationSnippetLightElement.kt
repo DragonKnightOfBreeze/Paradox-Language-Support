@@ -5,16 +5,24 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.config.CwtDataTypes
+import icu.windea.pls.core.util.TemplateInfo
 import icu.windea.pls.lang.psi.ParadoxSnippetElement
 import icu.windea.pls.model.ParadoxGameType
 import java.util.*
 
 /**
+ * 本地化引用片段对应的 lightElement。
+ *
+ * 说明：
+ * - 这并非完整匹配，因此并不直接解析为对应的本地化，而是解析为这种特殊的相关项。
+ * - [name] 为片段文本，[snippetTemplates] 为用于解析完整引用文本的模板参数。
+ *
  * @see CwtDataTypes.LocalisationSnippet
  */
 class ParadoxLocalisationSnippetLightElement(
     parent: PsiElement,
-    private val name: String, // TODO 3.0.4
+    private val name: String,
+    override val snippetTemplates: List<TemplateInfo<String>>,
     override val gameType: ParadoxGameType,
     private val project: Project,
 ) : ParadoxLightElementBase(parent), PsiNameIdentifierOwner, ParadoxSnippetElement {

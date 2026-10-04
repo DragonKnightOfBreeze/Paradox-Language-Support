@@ -91,6 +91,31 @@ object ParadoxMatchResultFactory {
         }
     }
 
+    /**
+     * 定义引用片段的匹配。
+     *
+     * 采用宽松策略：只要解析得到的完整引用中，存在至少一个能够匹配对指定类型定义的引用，即认为匹配。
+     *
+     * @see CwtDataTypes.DefinitionSnippet
+     */
+    fun forDefinitionSnippet(element: PsiElement, project: Project, expression: String, configExpression: CwtDataExpression): ParadoxMatchResult {
+        // indexing -> should not visit indices -> treat as wildcard match
+        if (ParadoxMatchOptionsService.skipIndex()) return ParadoxMatchResult.WildcardMatch
+
+        val typeExpression = configExpression.metadata.value ?: return ParadoxMatchResult.NotMatch // invalid cwt config
+        val templates = configExpression.metadata.snippetTemplates ?: return ParadoxMatchResult.NotMatch // invalid cwt config
+        if (templates.isEmpty()) return ParadoxMatchResult.NotMatch
+        val key = ParadoxMatchResultService.Keys.cacheForDefinitions
+        val cacheKey = "snippet#${configExpression.expressionString}#${expression}"
+        return ParadoxMatchResultService.getFromCache(element, project, key, cacheKey) {
+            ProgressManager.checkCanceled() // check cancellation before lazy match
+            ParadoxMatchResult.LazyIndexAwareMatch {
+                val type = typeExpression.substringBefore('.') // 匹配定义时忽略子类型
+                templates.any { ParadoxMatchFactory.matchesDefinition(element, project, it.resolve(expression), type) }
+            }
+        }
+    }
+
     fun forLocalisation(element: PsiElement, project: Project, expression: String, configExpression: CwtDataExpression): ParadoxMatchResult {
         // indexing -> should not visit indices -> treat as wildcard match
         if (ParadoxMatchOptionsService.skipIndex()) return ParadoxMatchResult.WildcardMatch
@@ -111,6 +136,30 @@ object ParadoxMatchResultFactory {
             }
         }
     }
+
+    /**
+     * 本地化引用片段的匹配。
+     *
+     * 采用宽松策略：只要解析得到的完整引用中，存在至少一个能够匹配对本地化的引用，即认为匹配。
+     *
+     * @see CwtDataTypes.LocalisationSnippet
+     */
+    fun forLocalisationSnippet(element: PsiElement, project: Project, expression: String, configExpression: CwtDataExpression): ParadoxMatchResult {
+        // indexing -> should not visit indices -> treat as wildcard match
+        if (ParadoxMatchOptionsService.skipIndex()) return ParadoxMatchResult.WildcardMatch
+
+        val templates = configExpression.metadata.snippetTemplates ?: return ParadoxMatchResult.NotMatch // invalid cwt config
+        if (templates.isEmpty()) return ParadoxMatchResult.NotMatch
+        val key = ParadoxMatchResultService.Keys.cacheForLocalisations
+        val cacheKey = "snippet#${configExpression.expressionString}#${expression}"
+        return ParadoxMatchResultService.getFromCache(element, project, key, cacheKey) {
+            ProgressManager.checkCanceled() // check cancellation before lazy match
+            ParadoxMatchResult.LazyIndexAwareMatch {
+                templates.any { ParadoxMatchFactory.matchesLocalisation(element, project, it.resolve(expression)) }
+            }
+        }
+    }
+
 
     fun forSyncedLocalisation(element: PsiElement, project: Project, expression: String, configExpression: CwtDataExpression): ParadoxMatchResult {
         // indexing -> should not visit indices -> treat as wildcard match

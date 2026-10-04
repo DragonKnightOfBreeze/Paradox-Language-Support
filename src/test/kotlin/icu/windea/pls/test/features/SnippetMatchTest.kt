@@ -1,0 +1,155 @@
+package icu.windea.pls.test.features
+
+import com.intellij.codeInsight.completion.CompletionType
+import com.intellij.testFramework.IndexingTestUtil
+import com.intellij.testFramework.TestDataPath
+import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import icu.windea.pls.lang.psi.light.ParadoxDefinitionSnippetLightElement
+import icu.windea.pls.lang.psi.light.ParadoxLocalisationSnippetLightElement
+import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.test.ChronicleTestScope
+import icu.windea.pls.test.dsl.expectScope
+import org.junit.After
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
+
+/**
+ * 片段匹配（`DefinitionSnippet` / `LocalisationSnippet`）的回归测试。
+ *
+ * 使用自行编写的规则文件和脚本文件（均位于 `features/snippet`）：
+ * - `test_type` 类型用于验证定义引用片段，要求存在实际的 `test_type` 定义（`test_a`、`b_foo`）。
+ * - `localisation` 引用片段用于验证本地化引用片段，要求存在实际的本地化（`test_desc`、`test_effect`）。
+ *
+ * 覆盖语义匹配、引用解析（[findReferenceAtCaret]）、代码补全。
+ *
+ * @see icu.windea.pls.config.CwtDataTypes.DefinitionSnippet
+ * @see icu.windea.pls.config.CwtDataTypes.LocalisationSnippet
+ */
+@RunWith(JUnit4::class)
+@TestDataPath("\$CONTENT_ROOT/testData")
+class SnippetMatchTest : BasePlatformTestCase(), ChronicleTestScope {
+    private val gameType = ParadoxGameType.Stellaris
+
+    override fun getTestDataPath() = "src/test/testData"
+
+    @Before
+    fun doSetUp() {
+        markIntegrationTest()
+        markRootDirectory("features/snippet")
+        markConfigDirectory("features/snippet/.config")
+        initInjectedConfigGroups(project, gameType)
+    }
+
+    @After
+    fun doTearDown() = clearIntegrationTest()
+
+    private fun configureLocalisationFile() {
+        markFileInfo(gameType, "localisation/00_test_locs.yml")
+        myFixture.configureByFile("features/snippet/localisation/00_test_locs.yml")
+    }
+
+    private fun configureDefinitionSnippetScript(text: String) {
+        markFileInfo(gameType, "common/test_types/00_test_types.txt")
+        myFixture.configureByText("00_test_types.txt", text.trimIndent())
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+    }
+
+    // region definition snippet
+
+    @Test
+    fun definitionSnippet_resolve() {
+        configureDefinitionSnippetScript(
+            """
+            test_a = {}
+            b_foo = {}
+            first_type = {
+                snippet_def = te<caret>st
+            }
+            """
+        )
+
+        expectScope {
+            val resolved = myFixture.findReferenceAtCaret().expectNotNull().resolve()
+            resolved.expectIs<ParadoxDefinitionSnippetLightElement>().name.expectEquals("test")
+        }
+    }
+
+    @Test
+    fun definitionSnippet_completion() {
+        configureDefinitionSnippetScript(
+            """
+            test_a = {}
+            b_foo = {}
+            first_type = {
+                snippet_def = <caret>
+            }
+            """
+        )
+
+        myFixture.complete(CompletionType.BASIC)
+        val lookupElementStrings = myFixture.lookupElementStrings.orEmpty()
+        expectScope {
+            lookupElementStrings.contains("test").expectTrue()
+            lookupElementStrings.contains("foo").expectTrue()
+        }
+    }
+
+    @Test
+    fun definitionSnippet_notMatched_noReference() {
+        configureDefinitionSnippetScript(
+            """
+            first_type = {
+                snippet_def = un<caret>known
+            }
+            """
+        )
+
+        expectScope {
+            // 不存在匹配的定义片段，因而不产生引用
+            myFixture.findReferenceAtCaret().expectNull()
+        }
+    }
+
+    // endregion
+
+    // region localisation snippet
+
+    @Test
+    fun localisationSnippet_resolve() {
+        configureLocalisationFile()
+        configureDefinitionSnippetScript(
+            """
+            first_type = {
+                snippet_loc = te<caret>st
+            }
+            """
+        )
+
+        expectScope {
+            val resolved = myFixture.findReferenceAtCaret().expectNotNull().resolve()
+            resolved.expectIs<ParadoxLocalisationSnippetLightElement>().name.expectEquals("test")
+        }
+    }
+
+    @Test
+    fun localisationSnippet_completion() {
+        configureLocalisationFile()
+        configureDefinitionSnippetScript(
+            """
+            first_type = {
+                snippet_loc = <caret>
+            }
+            """
+        )
+
+        myFixture.complete(CompletionType.BASIC)
+        val lookupElementStrings = myFixture.lookupElementStrings.orEmpty()
+        expectScope {
+            lookupElementStrings.contains("test").expectTrue()
+        }
+    }
+
+    // endregion
+}

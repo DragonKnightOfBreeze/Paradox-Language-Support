@@ -257,4 +257,33 @@ class RangeInfoTest {
             assertFalse(v in r)
         }
     }
+
+    // --------------- create / from caching ---------------
+
+    @Test
+    fun testInt_createAndFromCaching() {
+        // `create` always produces a new instance (not cached)
+        val c = IntRangeInfo.create("[1..10]")!!
+        assertNotSame(c, IntRangeInfo.create("[1..10]"))
+        assertEquals(c, IntRangeInfo.create("[1..10]"))
+        // `from` is cached by expression string
+        val f = IntRangeInfo.from("[1..10]")!!
+        assertSame(f, IntRangeInfo.from("[1..10]"))
+        assertEquals(c, f)
+        // invalid expressions return null for both
+        assertNull(IntRangeInfo.create("abc"))
+        assertNull(IntRangeInfo.from("abc"))
+    }
+
+    @Test
+    fun testFloat_createAndFromCaching() {
+        val c = FloatRangeInfo.create("[1.5..2.5]")!!
+        assertNotSame(c, FloatRangeInfo.create("[1.5..2.5]"))
+        assertEquals(c, FloatRangeInfo.create("[1.5..2.5]"))
+        val f = FloatRangeInfo.from("[1.5..2.5]")!!
+        assertSame(f, FloatRangeInfo.from("[1.5..2.5]"))
+        assertEquals(c, f)
+        assertNull(FloatRangeInfo.create("abc"))
+        assertNull(FloatRangeInfo.from("abc"))
+    }
 }

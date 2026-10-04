@@ -1,5 +1,7 @@
 package icu.windea.pls.core.util
 
+import icu.windea.pls.core.cache.CacheBuilder
+
 /**
  * 区间信息。
  */
@@ -46,8 +48,13 @@ data class IntRangeInfo(
     override fun toString() = expression
 
     companion object {
+        private val cache = CacheBuilder("maximumSize=1000").build<String, IntRangeInfo>()
+
+        /**
+         * 从表达式字符串直接解析并创建实例。不对结果进行缓存。
+         */
         @JvmStatic
-        fun from(expression: String): IntRangeInfo? {
+        fun create(expression: String): IntRangeInfo? {
             if (expression.length <= 2) return null
             val openStart = when (expression.first()) {
                 '(' -> true
@@ -63,6 +70,17 @@ data class IntRangeInfo(
             val start = values.getOrNull(0)?.trim()?.toIntOrNull()
             val end = values.getOrNull(1)?.trim()?.toIntOrNull()
             return IntRangeInfo(start, end, openStart, openEnd)
+        }
+
+        /**
+         * 从表达式字符串解析实例，并对成功解析的结果进行缓存和去重。
+         */
+        @JvmStatic
+        fun from(expression: String): IntRangeInfo? {
+            cache.getIfPresent(expression)?.let { return it }
+            val result = create(expression) ?: return null
+            cache.put(expression, result)
+            return result
         }
     }
 }
@@ -99,8 +117,13 @@ data class FloatRangeInfo(
     override fun toString() = expression
 
     companion object {
+        private val cache = CacheBuilder("maximumSize=1000").build<String, FloatRangeInfo>()
+
+        /**
+         * 从表达式字符串直接解析并创建实例。不对结果进行缓存。
+         */
         @JvmStatic
-        fun from(expression: String): FloatRangeInfo? {
+        fun create(expression: String): FloatRangeInfo? {
             if (expression.length <= 2) return null
             val openStart = when (expression.first()) {
                 '(' -> true
@@ -116,6 +139,17 @@ data class FloatRangeInfo(
             val start = values.getOrNull(0)?.trim()?.toFloatOrNull()
             val end = values.getOrNull(1)?.trim()?.toFloatOrNull()
             return FloatRangeInfo(start, end, openStart, openEnd)
+        }
+
+        /**
+         * 从表达式字符串解析实例，并对成功解析的结果进行缓存和去重。
+         */
+        @JvmStatic
+        fun from(expression: String): FloatRangeInfo? {
+            cache.getIfPresent(expression)?.let { return it }
+            val result = create(expression) ?: return null
+            cache.put(expression, result)
+            return result
         }
     }
 }

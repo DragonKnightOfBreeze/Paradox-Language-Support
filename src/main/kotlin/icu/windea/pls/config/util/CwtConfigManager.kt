@@ -226,6 +226,15 @@ object CwtConfigManager {
         return suffixes.map { name + it }
     }
 
+    /**
+     * 根据片段数据类型的数据表达式携带的模板参数，将片段文本解析为一组完整的引用文本。
+     */
+    fun getFullNamesFromSnippet(config: CwtConfig<*>, name: String): List<String> {
+        val templates = config.configExpression?.metadata?.snippetTemplates
+        if (templates.isNullOrEmpty()) return listOf(name)
+        return templates.map { it.resolve(name) }
+    }
+
     fun getWithinBlockKeys(config: CwtMemberConfig<*>): Set<String> {
         return config.getOrPutUserData(Keys.withinBlockKeys) {
             CwtConfigService.getWithinBlockKeys(config).optimized()

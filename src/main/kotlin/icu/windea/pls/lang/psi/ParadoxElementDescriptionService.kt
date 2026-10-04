@@ -7,8 +7,10 @@ import icu.windea.pls.core.util.values.or
 import icu.windea.pls.lang.defineInfo
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueLightElement
+import icu.windea.pls.lang.psi.light.ParadoxDefinitionSnippetLightElement
 import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
 import icu.windea.pls.lang.psi.light.ParadoxLocalisationParameterLightElement
+import icu.windea.pls.lang.psi.light.ParadoxLocalisationSnippetLightElement
 import icu.windea.pls.lang.psi.light.ParadoxMeshLocatorLightElement
 import icu.windea.pls.lang.psi.light.ParadoxModifierLightElement
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
@@ -33,6 +35,8 @@ object ParadoxElementDescriptionService {
             }
             is ParadoxComplexEnumValueLightElement -> element.name
             is ParadoxDynamicValueLightElement -> element.name
+            is ParadoxDefinitionSnippetLightElement -> element.name
+            is ParadoxLocalisationSnippetLightElement -> element.name
             is ParadoxParameterLightElement -> element.name
             is ParadoxLocalisationParameterLightElement -> element.name
             is ParadoxModifierLightElement -> element.name
@@ -74,6 +78,8 @@ object ParadoxElementDescriptionService {
                 }
             }
             is ParadoxComplexEnumValueLightElement -> ChronicleBundle.message("description.type.complexEnumValue")
+            is ParadoxDefinitionSnippetLightElement -> ChronicleBundle.message("description.type.definitionSnippet")
+            is ParadoxLocalisationSnippetLightElement -> ChronicleBundle.message("description.type.localisationSnippet")
             is ParadoxParameterLightElement -> ChronicleBundle.message("description.type.parameter")
             is ParadoxLocalisationParameterLightElement -> ChronicleBundle.message("description.type.localisationParameter")
             is ParadoxModifierLightElement -> ChronicleBundle.message("description.type.modifier")

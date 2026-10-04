@@ -56,4 +56,14 @@ abstract class ParadoxCoreCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
             return ParadoxMatchResult.FallbackMatch
         }
     }
+
+    /** @see CwtDataTypes.DefinitionSnippet */
+    class ForDefinitionSnippet : ParadoxCoreCsvExpressionMatcher() {
+        override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.DefinitionSnippet
+
+        override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression): ParadoxMatchResult {
+            if (!context.expression.value.isIdentifier(".-")) return ParadoxMatchResult.NotMatch
+            return ParadoxMatchResultFactory.forDefinitionSnippet(context.element, context.project, context.expression.value, configExpression)
+        }
+    }
 }

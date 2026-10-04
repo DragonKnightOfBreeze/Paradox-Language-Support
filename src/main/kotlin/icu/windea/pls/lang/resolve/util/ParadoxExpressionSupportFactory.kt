@@ -23,6 +23,8 @@ import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.util.ReadWriteAccess
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueLightElement
+import icu.windea.pls.lang.psi.light.ParadoxDefinitionSnippetLightElement
+import icu.windea.pls.lang.psi.light.ParadoxLocalisationSnippetLightElement
 import icu.windea.pls.lang.psi.light.ParadoxMeshLocatorLightElement
 import icu.windea.pls.lang.psi.light.ParadoxShaderEffectLightElement
 import icu.windea.pls.lang.resolve.ParadoxExpressionService
@@ -162,6 +164,27 @@ object ParadoxExpressionSupportFactory {
         val name = expression
         val configGroup = config.configGroup
         return ParadoxDynamicValueManager.resolveDynamicValue(element, name, dataExpression, configGroup)
+    }
+
+    /**
+     * 解析定义引用片段（[CwtDataTypes.DefinitionSnippet]）为对应的 lightElement（相关项）。
+     */
+    fun resolveDefinitionSnippet(element: ParadoxExpressionElement, expression: String, config: CwtConfig<*>): PsiElement? {
+        val configExpression = config.configExpression ?: return null
+        val typeExpression = configExpression.metadata.value ?: return null
+        val templates = configExpression.metadata.snippetTemplates ?: return null
+        val configGroup = config.configGroup
+        return ParadoxDefinitionSnippetLightElement(element, expression, typeExpression.substringBefore('.'), templates, configGroup.gameType, configGroup.project)
+    }
+
+    /**
+     * 解析本地化引用片段（[CwtDataTypes.LocalisationSnippet]）为对应的 lightElement（相关项）。
+     */
+    fun resolveLocalisationSnippet(element: ParadoxExpressionElement, expression: String, config: CwtConfig<*>): PsiElement? {
+        val configExpression = config.configExpression ?: return null
+        val templates = configExpression.metadata.snippetTemplates ?: return null
+        val configGroup = config.configGroup
+        return ParadoxLocalisationSnippetLightElement(element, expression, templates, configGroup.gameType, configGroup.project)
     }
 
     fun resolveShaderEffect(element: ParadoxExpressionElement, expression: String, configGroup: CwtConfigGroup): PsiElement {

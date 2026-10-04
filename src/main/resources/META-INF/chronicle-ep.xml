@@ -226,6 +226,8 @@
     <scriptExpressionMatcher implementation="icu.windea.pls.ep.match.expression.ParadoxCoreScriptExpressionMatcher$ForParameterValue"/>
     <scriptExpressionMatcher implementation="icu.windea.pls.ep.match.expression.ParadoxCoreScriptExpressionMatcher$ForLocalisationParameter"/>
     <scriptExpressionMatcher implementation="icu.windea.pls.ep.match.expression.ParadoxCoreScriptExpressionMatcher$ForTemplate"/>
+    <scriptExpressionMatcher implementation="icu.windea.pls.ep.match.expression.ParadoxCoreScriptExpressionMatcher$ForDefinitionSnippet"/>
+    <scriptExpressionMatcher implementation="icu.windea.pls.ep.match.expression.ParadoxCoreScriptExpressionMatcher$ForLocalisationSnippet"/>
     <!-- Script / Path Reference -->
     <scriptExpressionMatcher implementation="icu.windea.pls.ep.match.expression.ParadoxPathReferenceScriptExpressionMatcher"/>
     <!-- Script / External Reference -->
@@ -256,6 +258,7 @@
     <csvExpressionMatcher implementation="icu.windea.pls.ep.match.expression.ParadoxCoreCsvExpressionMatcher$ForDefinition"/>
     <csvExpressionMatcher implementation="icu.windea.pls.ep.match.expression.ParadoxCoreCsvExpressionMatcher$ForEnumValue"/>
     <csvExpressionMatcher implementation="icu.windea.pls.ep.match.expression.ParadoxCoreCsvExpressionMatcher$ForDynamicValue"/>
+    <csvExpressionMatcher implementation="icu.windea.pls.ep.match.expression.ParadoxCoreCsvExpressionMatcher$ForDefinitionSnippet"/>
     <!-- Csv / Expandable -->
     <csvExpressionMatcher implementation="icu.windea.pls.ep.match.expression.ParadoxExpandableCsvExpressionMatcher$ForUnionValue"/>
     <!-- Csv / Others -->

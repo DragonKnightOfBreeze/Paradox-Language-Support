@@ -129,6 +129,34 @@ object ParadoxCompletionFactory {
             .wrapForExpression(context)
     }
 
+    /**
+     * 根据 [element] 创建用于定义引用片段（[icu.windea.pls.config.CwtDataTypes.DefinitionSnippet]）的补全项。
+     * 其中 [name] 为从定义名中提取的片段文本。
+     */
+    fun fromDefinitionSnippet(context: ParadoxCompletionContext, element: ParadoxDefinitionElement, name: String, hintText: String? = null): LookupElementBuilder? {
+        val definitionInfo = element.definitionInfo ?: return null
+        val typeFile = element.containingFile
+        return LookupElementBuilder.create(element, name)
+            .withTypeText(typeFile?.name, typeFile?.icon, true)
+            .withPatchableIcon(ChronicleIcons.Nodes.Definition(definitionInfo.type))
+            .withPatchableTailText(hintText ?: context.patchableTailText)
+            .withDefinitionPresentableNames(element)
+            .wrapForExpression(context)
+    }
+
+    /**
+     * 根据 [element] 创建用于本地化引用片段（[icu.windea.pls.config.CwtDataTypes.LocalisationSnippet]）的补全项。
+     * 其中 [name] 为从本地化名中提取的片段文本。
+     */
+    fun fromLocalisationSnippet(context: ParadoxCompletionContext, element: ParadoxLocalisationProperty, name: String, hintText: String? = null): LookupElementBuilder? {
+        val typeFile = element.containingFile
+        return LookupElementBuilder.create(element, name)
+            .withTypeText(typeFile?.name, typeFile?.icon, true)
+            .withPatchableIcon(ChronicleIcons.Nodes.Localisation)
+            .withPatchableTailText(hintText)
+            .wrapForExpression(context)
+    }
+
     fun fromDefineNamespace(context: ParadoxCompletionContext, element: ParadoxScriptProperty, hintText: String? = null): LookupElementBuilder? {
         // 不自动插入后面的等号
         val defineNamespaceInfo = element.defineNamespaceInfo ?: return null

@@ -3,6 +3,7 @@ package icu.windea.pls.config.configExpression
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.core.util.FloatRangeInfo
 import icu.windea.pls.core.util.IntRangeInfo
+import icu.windea.pls.core.util.TemplateInfo
 import icu.windea.pls.core.util.metadata.MetadataMap
 
 /**
@@ -25,6 +26,7 @@ interface CwtDataExpressionMetadata : MetadataMap {
     val intRange: IntRangeInfo? get() = null
     val floatRange: FloatRangeInfo? get() = null
     val suffixes: Set<String>? get() = null
+    val snippetTemplates: List<TemplateInfo<String>>? get() = null
 
     companion object {
         @JvmField val EMPTY: CwtDataExpressionMetadata = CwtDataExpressionMetadataBase()

@@ -315,4 +315,28 @@ abstract class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatch
             return ParadoxMatchResultFactory.forTemplate(context.element, context.configGroup, context.expression.value, config, context.options)
         }
     }
+
+    /** @see CwtDataTypes.DefinitionSnippet */
+    class ForDefinitionSnippet : ParadoxCoreScriptExpressionMatcher() {
+        override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.DefinitionSnippet
+
+        override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
+            if (!context.expression.type.isLenientStringLiteral()) return ParadoxMatchResult.NotMatch
+            if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
+            if (!context.expression.value.isIdentifier(".-")) return ParadoxMatchResult.NotMatch
+            return ParadoxMatchResultFactory.forDefinitionSnippet(context.element, context.project, context.expression.value, configExpression)
+        }
+    }
+
+    /** @see CwtDataTypes.LocalisationSnippet */
+    class ForLocalisationSnippet : ParadoxCoreScriptExpressionMatcher() {
+        override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.LocalisationSnippet
+
+        override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
+            if (!context.expression.type.isLenientStringLiteral()) return ParadoxMatchResult.NotMatch
+            if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
+            if (!context.expression.value.isIdentifier(".-'")) return ParadoxMatchResult.NotMatch
+            return ParadoxMatchResultFactory.forLocalisationSnippet(context.element, context.project, context.expression.value, configExpression)
+        }
+    }
 }

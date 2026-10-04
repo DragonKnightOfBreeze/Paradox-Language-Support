@@ -11,6 +11,7 @@ import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.toDelimitedSet
 import icu.windea.pls.core.util.FloatRangeInfo
 import icu.windea.pls.core.util.IntRangeInfo
+import icu.windea.pls.core.util.UnaryTemplateInfo
 
 class CwtBasicDataExpressionSupport : CwtTextPatternBasedDataExpressionSupport() {
     override fun registerProviders() {
@@ -142,14 +143,41 @@ class CwtTemplateDataExpressionSupport : CwtDataExpressionSupport {
 
 class CwtSnippetDataExpressionSupport : CwtDataExpressionSupport {
     override fun resolve(expressionString: String, role: CwtDataExpressionRole): CwtDataExpression? {
-        val pileIndex = expressionString.indexOf('|')
-        if (pileIndex == -1) return null
-        // TODO 3.0.4
-        TODO()
+        val separatorIndex = expressionString.indexOf('|')
+        if (separatorIndex == -1) return null
+        val text = expressionString.substring(0, separatorIndex)
+        val templatesText = expressionString.substring(separatorIndex + 1)
+        val templates = parseTemplates(templatesText) ?: return null
+        if (templates.isEmpty()) return null
+        run {
+            val t = text.removeSurroundingOrNull("<", ">") ?: return@run
+            if (t.isEmpty()) return null
+            return CwtDataExpression.create(expressionString, CwtDataTypes.DefinitionSnippet, role) { value = t; snippetTemplates = templates }
+        }
+        run {
+            if (text != "localisation") return@run
+            return CwtDataExpression.create(expressionString, CwtDataTypes.LocalisationSnippet, role) { snippetTemplates = templates }
+        }
+        return null
     }
 
     override fun resolveTemplate(expressionString: String): CwtDataExpression? {
         return null // explicitly unsupported
+    }
+
+    /**
+     * 解析逗号分隔的一组模板参数。每个模板参数必须为包含唯一占位符的一元模板，否则视为非法。
+     */
+    private fun parseTemplates(text: String): List<UnaryTemplateInfo>? {
+        if (text.isEmpty()) return null
+        val items = text.split(',').map { it.trim() }
+        if (items.any { it.isEmpty() }) return null
+        val result = ArrayList<UnaryTemplateInfo>(items.size)
+        for (item in items) {
+            val template = UnaryTemplateInfo.from(item) ?: return null
+            result += template
+        }
+        return result
     }
 }
 

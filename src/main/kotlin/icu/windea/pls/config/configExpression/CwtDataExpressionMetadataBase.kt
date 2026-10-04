@@ -3,6 +3,7 @@ package icu.windea.pls.config.configExpression
 import icu.windea.pls.core.util.FloatRangeInfo
 import icu.windea.pls.core.util.IntRangeInfo
 import icu.windea.pls.core.util.KeyRegistry
+import icu.windea.pls.core.util.TemplateInfo
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.metadata.MetadataMapBase
 import icu.windea.pls.core.util.provideDelegate
@@ -29,6 +30,9 @@ open class CwtDataExpressionMetadataBase : MetadataMapBase(), CwtDataExpressionM
     final override var suffixes: Set<String>? // region by Keys.suffixes
         get() = this[Keys.suffixes]
         set(value) = run { this[Keys.suffixes] = value } // endregion
+    final override var snippetTemplates: List<TemplateInfo<String>>? // region by Keys.snippetTemplates
+        get() = this[Keys.snippetTemplates]
+        set(value) = run { this[Keys.snippetTemplates] = value } // endregion
 }
 
 object CwtDataExpressionMetadataKeys : KeyRegistry() {
@@ -39,6 +43,7 @@ object CwtDataExpressionMetadataKeys : KeyRegistry() {
     val intRange by registerKey<IntRangeInfo>(this)
     val floatRange by registerKey<FloatRangeInfo>(this)
     val suffixes by registerKey<Set<String>>(this)
+    val snippetTemplates by registerKey<List<TemplateInfo<String>>>(this)
 }
 
 private typealias Keys = CwtDataExpressionMetadataKeys
