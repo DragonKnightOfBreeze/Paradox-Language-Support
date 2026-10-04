@@ -58,6 +58,15 @@ object CwtDataTypeSets {
         CwtDataTypes.VariableField,
     )
 
+    /** 作为模板的数据类型。 */
+    val Template = arrayOf(
+        CwtDataTypes.Template,
+    )
+    /** 作为片段的数据类型。 */
+    val Snippet = arrayOf(
+        CwtDataTypes.DefinitionSnippet,
+        CwtDataTypes.LocalisationSnippet,
+    )
     /** 作为常量的数据类型。 */
     val Constant = arrayOf(
         CwtDataTypes.Constant,
@@ -68,6 +77,7 @@ object CwtDataTypeSets {
         CwtDataTypes.Ant,
         CwtDataTypes.Regex,
     )
+
     /** 本地化引用的数据类型。 */
     val LocalisationReference = arrayOf(
         CwtDataTypes.Localisation,

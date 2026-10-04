@@ -6,16 +6,14 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.NavigatablePsiElement
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.impl.light.LightElement
-import com.intellij.util.IncorrectOperationException
 
 /**
- * 可以直接查找用法（或者导航到声明）的 [LightElement]。
+ * 这类特殊的 [LightElement] 被设计为可以直接查找用法，或者导航到声明。
  */
 abstract class LightElementBase(
     parent: PsiElement
-) : LightElement(parent.manager, parent.language), PsiNameIdentifierOwner, NavigatablePsiElement {
+) : LightElement(parent.manager, parent.language), NavigatablePsiElement {
     private val myParent: PsiElement = parent
 
     override fun getParent(): PsiElement {
@@ -46,24 +44,14 @@ abstract class LightElementBase(
         return false
     }
 
-    // default -> cannot rename
-    override fun setName(name: String): PsiElement? {
-        throw IncorrectOperationException()
-    }
-
-    // default -> use self as name identifier
-    override fun getNameIdentifier(): PsiElement? {
-        return this
+    // default -> not provided
+    override fun getTextRange(): TextRange? {
+        return null
     }
 
     // default -> not provided
     override fun getTextOffset(): Int {
         return -1
-    }
-
-    // default -> not provided
-    override fun getTextRange(): TextRange? {
-        return null
     }
 
     // navigationElement = this -> ctrl + click to show usages

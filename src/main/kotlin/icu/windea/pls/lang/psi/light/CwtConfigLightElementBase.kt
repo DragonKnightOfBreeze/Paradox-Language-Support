@@ -11,6 +11,9 @@ import icu.windea.pls.core.psi.light.LightElementBase
 import icu.windea.pls.model.ParadoxGameType
 import javax.swing.Icon
 
+/**
+ * 来自规则文件的 [LightElementBase]。
+ */
 abstract class CwtConfigLightElementBase(parent: PsiElement) : LightElementBase(parent), ItemPresentation {
     abstract val gameType: ParadoxGameType
 
@@ -26,6 +29,10 @@ abstract class CwtConfigLightElementBase(parent: PsiElement) : LightElementBase(
         return this
     }
 
+    override fun toString(): String {
+        return PsiService.toPresentableString(this)
+    }
+
     final override fun getIcon(unused: Boolean): Icon? {
         return getIcon(0)
     }
@@ -35,11 +42,7 @@ abstract class CwtConfigLightElementBase(parent: PsiElement) : LightElementBase(
     }
 
     final override fun getLocationString(): @NlsSafe String? {
-        val parent = parent
-        return parent.containingFile?.name
-    }
-
-    override fun toString(): String {
-        return PsiService.toPresentableString(this)
+        val element = parent
+        return element.containingFile?.name
     }
 }

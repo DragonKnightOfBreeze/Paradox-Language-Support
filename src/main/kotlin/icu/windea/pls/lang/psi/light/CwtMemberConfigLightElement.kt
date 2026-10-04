@@ -2,6 +2,8 @@ package icu.windea.pls.lang.psi.light
 
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiNameIdentifierOwner
+import com.intellij.util.IncorrectOperationException
 import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
@@ -18,15 +20,13 @@ class CwtMemberConfigLightElement(
     val config: CwtMemberConfig<*>,
     override val gameType: ParadoxGameType,
     private val project: Project
-) : CwtConfigLightElementBase(parent) {
+) : CwtConfigLightElementBase(parent), PsiNameIdentifierOwner {
     override fun getIcon(flags: Int): Icon {
         return when (config) {
             is CwtPropertyConfig -> ChronicleIcons.Nodes.Property
             is CwtValueConfig -> ChronicleIcons.Nodes.Value
         }
     }
-
-    override fun getName() = config.configExpression.expressionString
 
     override fun getText() = config.toString()
 
@@ -41,5 +41,17 @@ class CwtMemberConfigLightElement(
 
     override fun hashCode(): Int {
         return Objects.hash(config, gameType, project)
+    }
+
+    override fun getName(): String {
+        return config.configExpression.expressionString
+    }
+
+    override fun setName(name: String): PsiElement? {
+        throw IncorrectOperationException() // cannot rename
+    }
+
+    override fun getNameIdentifier(): PsiElement {
+        return this // use self
     }
 }

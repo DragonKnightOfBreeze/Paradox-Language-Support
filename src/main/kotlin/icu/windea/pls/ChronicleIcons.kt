@@ -92,6 +92,7 @@ object ChronicleIcons {
         @JvmField val Event = getIcon("/icons/nodes/semantic/event.svg")
 
         @JvmField val PathReference = AllIcons.FileTypes.Any_type
+        @JvmField val Snippet = AllIcons.Nodes.Template
         @JvmField val ShaderEffect = getIcon("icons/nodes/semantic/shaderEffect.svg")
         @JvmField val MeshLocator = getIcon("icons/nodes/semantic/meshLocator.svg")
 

@@ -13,6 +13,9 @@ import icu.windea.pls.lang.search.scope.ParadoxSearchScope
 import icu.windea.pls.model.ParadoxGameType
 import javax.swing.Icon
 
+/**
+ * 来自脚本文件、本地化文件或 CSV 文件的 [LightElementBase]。
+ */
 abstract class ParadoxLightElementBase(parent: PsiElement) : LightElementBase(parent), ItemPresentation {
     abstract val gameType: ParadoxGameType
 
@@ -28,6 +31,10 @@ abstract class ParadoxLightElementBase(parent: PsiElement) : LightElementBase(pa
         return this
     }
 
+    override fun toString(): String {
+        return PsiService.toPresentableString(this)
+    }
+
     final override fun getIcon(unused: Boolean): Icon? {
         return getIcon(0)
     }
@@ -40,9 +47,5 @@ abstract class ParadoxLightElementBase(parent: PsiElement) : LightElementBase(pa
         val element = parent
         ParadoxElementPresentationService.getFileInfoText(element)?.let { return it }
         return element.containingFile?.name
-    }
-
-    override fun toString(): String {
-        return PsiService.toPresentableString(this)
     }
 }

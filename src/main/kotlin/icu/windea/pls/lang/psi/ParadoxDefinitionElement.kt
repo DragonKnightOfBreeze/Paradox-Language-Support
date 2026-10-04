@@ -3,7 +3,6 @@ package icu.windea.pls.lang.psi
 import com.intellij.psi.NavigatablePsiElement
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
-import com.intellij.psi.PsiNamedElement
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxDefinitionInjectionInfo
 import icu.windea.pls.script.psi.ParadoxScriptFile
@@ -21,7 +20,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
  * @see ParadoxScriptFile
  * @see ParadoxScriptProperty
  */
-interface ParadoxDefinitionElement : PsiNamedElement, PsiNameIdentifierOwner, NavigatablePsiElement, ParadoxScriptMemberContext {
+interface ParadoxDefinitionElement : NavigatablePsiElement, PsiNameIdentifierOwner, ParadoxScriptMemberContext {
     /**
      * 得到 [PsiElement] 的名字。注意这不一定是定义的名字。
      *

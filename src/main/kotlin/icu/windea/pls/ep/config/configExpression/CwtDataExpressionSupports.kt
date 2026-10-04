@@ -129,16 +129,6 @@ class CwtExpandableDataExpressionSupport : CwtTextPatternBasedDataExpressionSupp
     }
 }
 
-class CwtConstantDataExpressionSupport : CwtDataExpressionSupport {
-    private val forceRegex = """\w*\[[\w:]*]""".toRegex() // `type[x]`, `alias[x:y]`, etc.
-    private val excludeCharacters = ":.@[]<>".toCharArray() // `x_<y>_enum[z]`, etc.
-
-    override fun resolve(expressionString: String, role: CwtDataExpressionRole): CwtDataExpression? {
-        if (expressionString.any { c -> c in excludeCharacters } && !forceRegex.matches(expressionString)) return null
-        return CwtDataExpression.create(expressionString, CwtDataTypes.Constant, role)
-    }
-}
-
 class CwtTemplateDataExpressionSupport : CwtDataExpressionSupport {
     override fun resolve(expressionString: String, role: CwtDataExpressionRole): CwtDataExpression? {
         if (CwtTemplateExpression.resolve(expressionString).expressionString.isEmpty()) return null
@@ -150,16 +140,12 @@ class CwtTemplateDataExpressionSupport : CwtDataExpressionSupport {
     }
 }
 
-class CwtPatternDataExpressionSupport : CwtPrefixBasedDataExpressionSupport() {
-    override fun registerProviders() {
-        register(CwtDataTypes.Glob, "glob:", false)
-        register(CwtDataTypes.Glob, "glob.i:", true)
-        register(CwtDataTypes.Ant, "ant:", false)
-        register(CwtDataTypes.Ant, "ant.i:", true)
-        register(CwtDataTypes.Regex, "re:", false)
-        register(CwtDataTypes.Regex, "re.i:", true)
-        register(CwtDataTypes.Regex, "regex:", false) // for compatibility
-        register(CwtDataTypes.Regex, "regex.i:", true) // for compatibility
+class CwtSnippetDataExpressionSupport : CwtDataExpressionSupport {
+    override fun resolve(expressionString: String, role: CwtDataExpressionRole): CwtDataExpression? {
+        val pileIndex = expressionString.indexOf('|')
+        if (pileIndex == -1) return null
+        // TODO 3.0.4
+        TODO()
     }
 
     override fun resolveTemplate(expressionString: String): CwtDataExpression? {
@@ -191,3 +177,31 @@ class CwtSuffixAwareDataExpressionSupport : CwtDataExpressionSupport {
         return null
     }
 }
+
+class CwtConstantDataExpressionSupport : CwtDataExpressionSupport {
+    private val forceRegex = """\w*\[[\w:]*]""".toRegex() // `type[x]`, `alias[x:y]`, etc.
+    private val excludeCharacters = ":.@[]<>".toCharArray() // `x_<y>_enum[z]`, etc.
+
+    override fun resolve(expressionString: String, role: CwtDataExpressionRole): CwtDataExpression? {
+        if (expressionString.any { c -> c in excludeCharacters } && !forceRegex.matches(expressionString)) return null
+        return CwtDataExpression.create(expressionString, CwtDataTypes.Constant, role)
+    }
+}
+
+class CwtPatternDataExpressionSupport : CwtPrefixBasedDataExpressionSupport() {
+    override fun registerProviders() {
+        register(CwtDataTypes.Glob, "glob:", false)
+        register(CwtDataTypes.Glob, "glob.i:", true)
+        register(CwtDataTypes.Ant, "ant:", false)
+        register(CwtDataTypes.Ant, "ant.i:", true)
+        register(CwtDataTypes.Regex, "re:", false)
+        register(CwtDataTypes.Regex, "re.i:", true)
+        register(CwtDataTypes.Regex, "regex:", false) // for compatibility
+        register(CwtDataTypes.Regex, "regex.i:", true) // for compatibility
+    }
+
+    override fun resolveTemplate(expressionString: String): CwtDataExpression? {
+        return null // explicitly unsupported
+    }
+}
+

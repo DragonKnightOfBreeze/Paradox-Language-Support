@@ -2,41 +2,37 @@ package icu.windea.pls.lang.psi.light
 
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiNameIdentifierOwner
 import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.config.CwtDataTypes
-import icu.windea.pls.core.psi.PsiReadWriteAccessAwareElement
-import icu.windea.pls.core.util.ReadWriteAccess
-import icu.windea.pls.lang.psi.ParadoxExternalReferenceElement
+import icu.windea.pls.lang.psi.ParadoxSnippetElement
 import icu.windea.pls.model.ParadoxGameType
 import java.util.*
-import javax.swing.Icon
 
 /**
- * @see CwtDataTypes.MeshLocator
+ * @see CwtDataTypes.DefinitionSnippet
  */
-class ParadoxMeshLocatorLightElement(
+class ParadoxDefinitionSnippetLightElement(
     parent: PsiElement,
-    private val name: String,
+    private val name: String, // TODO 3.0.4
     override val gameType: ParadoxGameType,
     private val project: Project,
-) : ParadoxLightElementBase(parent), ParadoxExternalReferenceElement, PsiReadWriteAccessAwareElement {
-    override val readWriteAccess: ReadWriteAccess get() = ReadWriteAccess.Read
-
-    override fun getIcon(flags: Int): Icon = ChronicleIcons.Nodes.MeshLocator
+) : ParadoxLightElementBase(parent), PsiNameIdentifierOwner, ParadoxSnippetElement {
+    override fun getIcon(flags: Int) = ChronicleIcons.Nodes.Snippet
 
     override fun getText() = name
 
     override fun getProject() = project
 
     override fun equals(other: Any?): Boolean {
-        return other is ParadoxMeshLocatorLightElement
+        return other is ParadoxDefinitionSnippetLightElement
             && name == other.name
             && gameType == other.gameType
             && project == other.project
     }
 
     override fun hashCode(): Int {
-        return Objects.hash(name, project, gameType)
+        return Objects.hash(name, gameType, project)
     }
 
     override fun getName(): String {
@@ -44,7 +40,7 @@ class ParadoxMeshLocatorLightElement(
     }
 
     override fun setName(name: String): PsiElement {
-        return this // do nothing (actual external references will not be updated)
+        return this // do nothing
     }
 
     override fun getNameIdentifier(): PsiElement {

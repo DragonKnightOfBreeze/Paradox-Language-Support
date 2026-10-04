@@ -20,20 +20,13 @@ class ParadoxModifierLightElement(
     override val gameType: ParadoxGameType,
     private val project: Project,
 ) : ParadoxLightElementBase(parent), PsiNameIdentifierOwner {
-    var canRename = false
+    var canRename: Boolean = false
 
     override fun getIcon(flags: Int) = ChronicleIcons.Nodes.Modifier
-
-    override fun getName() = name
 
     override fun getText() = name
 
     override fun getProject() = project
-
-    override fun setName(name: String): PsiElement {
-        if (!canRename) throw IncorrectOperationException() // cannot rename
-        return this
-    }
 
     override fun equals(other: Any?): Boolean {
         return other is ParadoxModifierLightElement
@@ -44,5 +37,18 @@ class ParadoxModifierLightElement(
 
     override fun hashCode(): Int {
         return Objects.hash(name, gameType, project)
+    }
+
+    override fun getName(): String {
+        return name
+    }
+
+    override fun setName(name: String): PsiElement {
+        if (!canRename) throw IncorrectOperationException() // cannot rename
+        return this // do nothing
+    }
+
+    override fun getNameIdentifier(): PsiElement {
+        return this // use self
     }
 }

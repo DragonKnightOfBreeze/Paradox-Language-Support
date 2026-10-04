@@ -724,7 +724,54 @@ object CwtDataTypes {
      * @see ParadoxTemplateExpression
      */
     val Template = CwtDataType.builder("Template").reference().build {
-        withPriority(65.0)
+        withPriority(65.0) // for templates and snippets
+    }
+
+    /**
+     * 定义引用片段类型。作为的 [Definition] 的片段形式。
+     *
+     * 对应的表达式是完整的引用文本的一部分。
+     * 通过解析模板参数，将其中的占位符替换为对应的表达式，可以得到完整的引用文本。
+     *
+     * 匹配时，要求模板参数在解析后，能够匹配对指定类型定义的引用。
+     * 例如，如果表达式为 `test`，数据表达式为 `<sprite>|GFX_$`，则要求存在类型为 `sprite` 的定义 `GFX_test`。
+     *
+     * 模板表达式可以存在多个，但在语义解析阶段，并不要求全部匹配。
+     *
+     * 对应的数据表达式的格式：
+     * - `<{type}>|{templates}` - 其中 `{templates}` 为一组逗号分隔的以 `$` 为占位符的模板参数。
+     * - `<{type}.{subtypes}>|{templates}` - 其中 `{templates}` 为一组逗号分隔的以 `$` 为占位符的模板参数。
+     *
+     * 对应的数据表达式的示例：
+     * - `<entity>|$_a,b_$,c_$_d`
+     *
+     * > CWTools 兼容性：不兼容。插件作为扩展提供。
+     */
+    val DefinitionSnippet = CwtDataType.builder("DefinitionSnippet").reference().build {
+        withPriority(65.0) // for templates and snippets
+    }
+
+    /**
+     * 本地化引用片段类型。作为 [Localisation] 的片段形式。
+     *
+     * 对应的表达式是完整的引用文本的一部分。
+     * 通过解析模板参数，将其中的占位符替换为对应的表达式，可以得到完整的引用文本。
+     *
+     * 匹配时，要求模板参数在解析后，能够匹配对本地化的引用。
+     * 例如，如果表达式为 `test`，数据表达式为 `localisation|$_desc`，则要求存在本地化 `test_desc`。
+     *
+     * 模板表达式可以存在多个，但在语义解析阶段，并不要求全部匹配。
+     *
+     * 对应的数据表达式的格式：
+     * - `localisation|{templates}` - 其中 `{templates}` 为一组逗号分隔的以 `$` 为占位符的模板参数。
+     *
+     * 对应的数据表达式的示例：
+     * - `localisation|$_desc,$_effect`
+     *
+     * > CWTools 兼容性：不兼容。插件作为扩展提供。
+     */
+    val LocalisationSnippet = CwtDataType.builder("LocalisationSnippet").reference().build {
+        withPriority(65.0) // for templates and snippets
     }
 
     // endregion
