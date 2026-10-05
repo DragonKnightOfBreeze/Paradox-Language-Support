@@ -339,7 +339,7 @@ add additional resolution strategies (e.g., job, swapped_job, resource definitio
 @see icu.windea.pls.ep.resolve.localisation.ParadoxBaseLocalisationIconSupport.Stellaris
 -->
 
-Paradox Localisation is used to provide internationalizable rich text content for games. The file extension is `.yml`, but it is not valid YAML - it merely borrows YAML's visual style. Localisation files must use **UTF-8 WITH BOM** encoding (the plugin can detect encoding issues and automatically correct them).
+Paradox Localisation is used to provide i18n-able rich text content for games. The file extension is `.yml`, but it is not valid YAML - it merely borrows YAML's visual style. Localisation files must use **UTF-8 WITH BOM** encoding (the plugin can detect encoding issues and automatically correct them).
 
 ### File Structure {#loc-structure}
 
