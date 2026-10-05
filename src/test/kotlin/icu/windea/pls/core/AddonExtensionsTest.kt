@@ -1,11 +1,36 @@
 package icu.windea.pls.core
 
+import icu.windea.pls.core.util.DefaultStrings
 import org.junit.Assert
 import org.junit.Test
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicReference
 
 class AddonExtensionsTest {
+    @Test
+    fun orAnonymous_test() {
+        Assert.assertEquals(DefaultStrings.anonymous, null.orAnonymous())
+        Assert.assertEquals(DefaultStrings.anonymous, "".orAnonymous())
+        Assert.assertEquals(" ", " ".orAnonymous())
+        Assert.assertEquals("x", "x".orAnonymous())
+    }
+
+    @Test
+    fun orUnknown_test() {
+        Assert.assertEquals(DefaultStrings.unknown, null.orUnknown())
+        Assert.assertEquals(DefaultStrings.unknown, "".orUnknown())
+        Assert.assertEquals(" ", " ".orUnknown())
+        Assert.assertEquals("x", "x".orUnknown())
+    }
+
+    @Test
+    fun orUnresolved_test() {
+        Assert.assertEquals(DefaultStrings.unresolved, null.orUnresolved())
+        Assert.assertEquals(DefaultStrings.unresolved, "".orUnresolved())
+        Assert.assertEquals(" ", " ".orUnresolved())
+        Assert.assertEquals("x", "x".orUnresolved())
+    }
+
     @Test
     fun indexOfLineEnd_test() {
         Assert.assertEquals(-1, "text".indexOfLineEnd())

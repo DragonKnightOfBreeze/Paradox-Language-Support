@@ -28,9 +28,9 @@ object ParadoxLocalisationService {
         val project = element.project
         val gameType = selectGameType(element)
         if (gameType == null) return emptyList()
-        val selector = ParadoxScriptedVariableSearch.selector(project, element).contextSensitive()
         ProgressManager.checkCanceled()
         // search for all scripted variable with same name
+        val selector = ParadoxScriptedVariableSearch.selector(project, element).contextSensitive()
         val result = ParadoxScriptedVariableSearch.search(name, selector, null).findAll()
         return result
     }
@@ -46,11 +46,11 @@ object ParadoxLocalisationService {
             name.removeSurroundingOrNull(prefix, suffix)?.let { namesToSearch += it }
         }
         if (namesToSearch.isEmpty()) return emptyList()
-        val selector = ParadoxDefinitionSearch.selector(project, element).contextSensitive()
         val result = mutableListOf<ParadoxDefinitionElement>()
         namesToSearch.forEach f1@{ nameToSearch ->
             ProgressManager.checkCanceled()
             // NOTE 2.1.3 skip file definitions
+            val selector = ParadoxDefinitionSearch.selector(project, element).contextSensitive()
             ParadoxDefinitionSearch.searchProperty(nameToSearch, null, selector).findAll().forEachFast f2@{ definition ->
                 ProgressManager.checkCanceled()
                 val definitionInfo = definition.definitionInfo ?: return@f2

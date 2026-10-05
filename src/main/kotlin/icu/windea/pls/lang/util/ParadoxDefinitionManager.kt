@@ -151,17 +151,6 @@ object ParadoxDefinitionManager {
         return definitionInfo.images.filterFast { it.isPrimaryKey() }.optimized()
     }
 
-    fun getPresentableName(element: ParadoxDefinitionElement): String? {
-        val primaryLocalisation = getPrimaryLocalisation(element)
-        return primaryLocalisation?.let { ParadoxLocalisationManager.getPresentableText(it) }
-    }
-
-    fun getPresentableNames(element: ParadoxDefinitionElement): Set<String> {
-        val primaryLocalisations = getPrimaryLocalisations(element)
-        if (primaryLocalisations.isEmpty()) return emptySet()
-        return primaryLocalisations.mapNotNull { ParadoxLocalisationManager.getPresentableText(it) }.toSet()
-    }
-
     fun getPrimaryLocalisationKey(element: ParadoxDefinitionElement): String? {
         // from cache
         return CachedValuesManager.getCachedValue(element, Keys.cachedPrimaryLocalisationKey) {
@@ -221,5 +210,16 @@ object ParadoxDefinitionManager {
                 value.withDependencyItems(dependencies)
             }
         }
+    }
+
+    fun getPresentableName(element: ParadoxDefinitionElement): String? {
+        val primaryLocalisation = getPrimaryLocalisation(element)
+        return primaryLocalisation?.let { ParadoxLocalisationManager.getPresentableText(it) }
+    }
+
+    fun getPresentableNames(element: ParadoxDefinitionElement): Set<String> {
+        val primaryLocalisations = getPrimaryLocalisations(element)
+        if (primaryLocalisations.isEmpty()) return emptySet()
+        return primaryLocalisations.mapNotNull { ParadoxLocalisationManager.getPresentableText(it) }.toSet()
     }
 }

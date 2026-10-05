@@ -144,11 +144,11 @@ class Issue385Test : BasePlatformTestCase(), ChronicleTestScope {
         val contextElement = myFixture.file
         val project = myFixture.project
         expectScope {
-            val r = ParadoxModifierManager.getModifierPresentableName("weapon_windea_long_sword_damage_mult", contextElement, project)
+            val r = ParadoxModifierManager.getPresentableName("weapon_windea_long_sword_damage_mult", contextElement, project)
             r.expectNotNull()
         }
         expectScope {
-            val r = ParadoxModifierManager.getModifierPresentableName("weapon_ode_to_THE_DRAGON_KNIGHT_magic_power_mult", contextElement, project)
+            val r = ParadoxModifierManager.getPresentableName("weapon_ode_to_THE_DRAGON_KNIGHT_magic_power_mult", contextElement, project)
             r.expectNotNull()
         }
     }
