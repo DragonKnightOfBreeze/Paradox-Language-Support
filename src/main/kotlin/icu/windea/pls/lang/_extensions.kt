@@ -8,8 +8,8 @@ import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.ep.util.data.ParadoxDefinitionData
 import icu.windea.pls.ep.util.presentation.ParadoxDefinitionPresentation
 import icu.windea.pls.lang.analysis.ParadoxAnalysisManager
-import icu.windea.pls.lang.data.ParadoxDataService
-import icu.windea.pls.lang.presentation.ParadoxPresentationService
+import icu.windea.pls.lang.data.ParadoxDefinitionDataService
+import icu.windea.pls.lang.presentation.ParadoxDefinitionPresentationService
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.util.ParadoxComplexEnumValueManager
@@ -75,8 +75,8 @@ inline val ParadoxExpressionElement.complexEnumValueInfo: ParadoxComplexEnumValu
 /** @see ParadoxTagManager.getTagType */
 inline val ParadoxScriptValue.tagType: ParadoxTagType? get() = ParadoxTagManager.getTagType(this)
 
-inline fun <reified T : ParadoxDefinitionData> ParadoxDefinitionElement.getDefinitionData(lenient: Boolean = false): T? = ParadoxDataService.getDefinitionData(this, lenient)
-inline fun <reified T : ParadoxDefinitionPresentation> ParadoxDefinitionElement.getDefinitionPresentation(): T? = ParadoxPresentationService.getDefinitionPresentation(this)
+inline fun <reified T : ParadoxDefinitionData> ParadoxDefinitionElement.getDefinitionData(lenient: Boolean = false): T? = ParadoxDefinitionDataService.get(this, lenient)
+inline fun <reified T : ParadoxDefinitionPresentation> ParadoxDefinitionElement.getDefinitionPresentation(): T? = ParadoxDefinitionPresentationService.get(this)
 
 // endregion
 

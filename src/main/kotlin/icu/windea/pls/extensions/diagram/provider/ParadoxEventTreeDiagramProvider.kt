@@ -29,7 +29,7 @@ import icu.windea.pls.extensions.diagram.ChronicleDiagramBundle
 import icu.windea.pls.extensions.diagram.OrderedDiagramNodeContentManager
 import icu.windea.pls.extensions.diagram.settings.ParadoxEventTreeDiagramSettings
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.presentation.ParadoxPresentationUtil
+import icu.windea.pls.lang.presentation.ParadoxDefinitionPresentationUtil
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.util.ParadoxEventManager
 import icu.windea.pls.model.ParadoxGameType
@@ -119,7 +119,7 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
                     val result = mutableListOf<Any>()
                     nodeElement.getUserData(Keys.typeText)?.let { result += Items.Type(it) }
                     runSmartReadAction {
-                        val properties = ParadoxPresentationUtil.getProperties(nodeElement, provider.getItemPropertyKeys())
+                        val properties = ParadoxDefinitionPresentationUtil.getProperties(nodeElement, provider.getItemPropertyKeys())
                         properties.forEach { result += Items.Property(it, it.name in provider.getItemPropertyKeysInDetail()) }
                     }
                     nodeElement.getUserData(Keys.nameText)?.let { result += Items.PresentableName(it) }
@@ -133,7 +133,7 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
             ProgressManager.checkCanceled()
             return when (nodeItem) {
                 is Items.PresentableName -> {
-                    ParadoxPresentationUtil.getLabel(nodeItem.text.orAnonymous())
+                    ParadoxDefinitionPresentationUtil.getLabel(nodeItem.text.orAnonymous())
                 }
                 else -> null
             }
@@ -146,7 +146,7 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
                     SimpleColoredText(nodeItem.text, DEFAULT_TEXT_ATTR)
                 }
                 is Items.Property -> runSmartReadAction {
-                    val propertyText = ParadoxPresentationUtil.getPropertyText(nodeItem.property, nodeItem.detail)
+                    val propertyText = ParadoxDefinitionPresentationUtil.getPropertyText(nodeItem.property, nodeItem.detail)
                     propertyText
                 }
                 else -> null
@@ -260,7 +260,7 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
                 event.putUserData(Keys.typeText, result)
             }
             run {
-                val result = ParadoxPresentationUtil.getNameText(event)
+                val result = ParadoxDefinitionPresentationUtil.getNameText(event)
                 event.putUserData(Keys.nameText, result)
             }
         }

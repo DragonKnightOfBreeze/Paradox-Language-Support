@@ -28,7 +28,9 @@ import java.util.*
 import javax.swing.Icon
 import javax.swing.JLabel
 
-object ParadoxPresentationUtil {
+// TODO 3.0.x refactor
+
+object ParadoxDefinitionPresentationUtil {
     fun getNameLocalisation(definition: ParadoxDefinitionElement): ParadoxLocalisationProperty? {
         return ParadoxDefinitionManager.getPrimaryLocalisation(definition)
     }

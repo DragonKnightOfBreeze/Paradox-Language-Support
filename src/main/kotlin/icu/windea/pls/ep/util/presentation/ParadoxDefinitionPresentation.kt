@@ -1,13 +1,13 @@
 package icu.windea.pls.ep.util.presentation
 
-import icu.windea.pls.lang.presentation.ParadoxPresentationService
+import icu.windea.pls.lang.presentation.ParadoxDefinitionPresentationService
 import javax.swing.JComponent
 
 /**
  * 定义的图形展示。
  *
  * @see ParadoxDefinitionPresentationProvider
- * @see ParadoxPresentationService
+ * @see ParadoxDefinitionPresentationService
  */
 interface ParadoxDefinitionPresentation {
     @Suppress("unused")

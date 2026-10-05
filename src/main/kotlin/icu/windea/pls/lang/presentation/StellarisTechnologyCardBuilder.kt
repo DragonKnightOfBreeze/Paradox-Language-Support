@@ -91,24 +91,24 @@ class StellarisTechnologyCardBuilder(
     }
 
     private fun getNameLabel(): JLabel {
-        val nameText = ParadoxPresentationUtil.getNameTextOrKey(element)
-        return ParadoxPresentationUtil.getLabel(nameText.orAnonymous(), Constants.whiteColor)
+        val nameText = ParadoxDefinitionPresentationUtil.getNameTextOrKey(element)
+        return ParadoxDefinitionPresentationUtil.getLabel(nameText.orAnonymous(), Constants.whiteColor)
     }
 
     private fun getCostLabel(): JLabel {
         val color = ParadoxTextColorManager.getInfo("G", definitionInfo.project, element)?.color // Green
         val cost = element.getDefinitionData<StellarisTechnologyData>()?.cost ?: 0
-        return ParadoxPresentationUtil.getLabel(cost.toString(), color)
+        return ParadoxDefinitionPresentationUtil.getLabel(cost.toString(), color)
     }
 
     private fun getIcon(): Icon? {
-        return ParadoxPresentationUtil.getIcon(element) ?: getUnknownIcon()
+        return ParadoxDefinitionPresentationUtil.getIcon(element) ?: getUnknownIcon()
     }
 
     private fun getUnknownIcon(): Icon? {
         val selector = ParadoxDefinitionSearch.selector(definitionInfo.project, element).contextSensitive()
         val sprite = ParadoxDefinitionSearch.searchProperty("GFX_technology_unknown", ParadoxDefinitionTypes.sprite, selector).find() ?: return null
-        return ParadoxPresentationUtil.getIcon(sprite)
+        return ParadoxDefinitionPresentationUtil.getIcon(sprite)
     }
 
     private fun getBackgroundIcon(): Icon? {
@@ -122,7 +122,7 @@ class StellarisTechnologyCardBuilder(
         }
         val selector = ParadoxDefinitionSearch.selector(definitionInfo.project, element).contextSensitive()
         val sprite = ParadoxDefinitionSearch.searchProperty(spriteName, ParadoxDefinitionTypes.sprite, selector).find() ?: return null
-        return ParadoxPresentationUtil.getIcon(sprite)
+        return ParadoxDefinitionPresentationUtil.getIcon(sprite)
     }
 
     private fun getBottomLineIcon(): Icon? {
@@ -130,14 +130,14 @@ class StellarisTechnologyCardBuilder(
         val spriteName = "GFX_bottom_line_${area}"
         val selector = ParadoxDefinitionSearch.selector(definitionInfo.project, element).contextSensitive()
         val sprite = ParadoxDefinitionSearch.searchProperty(spriteName, ParadoxDefinitionTypes.sprite, selector).find() ?: return null
-        return ParadoxPresentationUtil.getIcon(sprite)
+        return ParadoxDefinitionPresentationUtil.getIcon(sprite)
     }
 
     private fun getCategoryIcon(): Icon? {
         val category = definitionData.category?.firstOrNull() ?: return null
         val selector = ParadoxDefinitionSearch.selector(definitionInfo.project, element).contextSensitive()
         val categoryDef = ParadoxDefinitionSearch.searchProperty(category, ParadoxDefinitionTypes.technologyCategory, selector).find() ?: return null
-        return ParadoxPresentationUtil.getIcon(categoryDef)
+        return ParadoxDefinitionPresentationUtil.getIcon(categoryDef)
     }
 
     @Suppress("unused")
@@ -145,6 +145,6 @@ class StellarisTechnologyCardBuilder(
         val spriteName = "GFX_tech_gateway"
         val selector = ParadoxDefinitionSearch.selector(definitionInfo.project, element).contextSensitive()
         val sprite = ParadoxDefinitionSearch.searchProperty(spriteName, ParadoxDefinitionTypes.sprite, selector).find() ?: return null
-        return ParadoxPresentationUtil.getIcon(sprite)
+        return ParadoxDefinitionPresentationUtil.getIcon(sprite)
     }
 }

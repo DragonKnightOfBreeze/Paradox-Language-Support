@@ -10,7 +10,7 @@ import icu.windea.pls.ChronicleDocBundle
 import icu.windea.pls.base.annotations.ForGameType
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.extensions.diagram.ChronicleDiagramBundle
-import icu.windea.pls.lang.presentation.ParadoxPresentationUtil
+import icu.windea.pls.lang.presentation.ParadoxDefinitionPresentationUtil
 import icu.windea.pls.lang.util.ParadoxEventManager
 import icu.windea.pls.lang.util.ParadoxTechnologyManager
 import icu.windea.pls.model.ParadoxGameType
@@ -99,9 +99,9 @@ class StellarisTechTreeDiagramSettings(
         settings.updateSettings()
 
         val areaNameProviders = mutableMapOf<String, () -> String?>()
-        areas.forEach { areaNameProviders.put(it) { ParadoxPresentationUtil.getText(it.uppercase(), project) } }
+        areas.forEach { areaNameProviders.put(it) { ParadoxDefinitionPresentationUtil.getText(it.uppercase(), project) } }
         val categoryNameProviders = mutableMapOf<String, () -> String?>()
-        categories.forEach { categoryNameProviders.put(it.name) { ParadoxPresentationUtil.getNameTextOrKey(it) } }
+        categories.forEach { categoryNameProviders.put(it.name) { ParadoxDefinitionPresentationUtil.getNameTextOrKey(it) } }
 
         row {
             label(ChronicleDiagramBundle.message("settings.diagram.tooltip.selectNodes"))

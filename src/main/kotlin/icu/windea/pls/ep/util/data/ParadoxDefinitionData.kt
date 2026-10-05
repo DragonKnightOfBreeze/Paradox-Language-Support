@@ -1,6 +1,6 @@
 package icu.windea.pls.ep.util.data
 
-import icu.windea.pls.lang.data.ParadoxDataService
+import icu.windea.pls.lang.data.ParadoxDefinitionDataService
 
 /**
  * 定义的数据。
@@ -10,6 +10,6 @@ import icu.windea.pls.lang.data.ParadoxDataService
  * - 尝试兼容需要内联的情况。
  *
  * @see ParadoxDefinitionDataProvider
- * @see ParadoxDataService
+ * @see ParadoxDefinitionDataService
  */
 interface ParadoxDefinitionData
