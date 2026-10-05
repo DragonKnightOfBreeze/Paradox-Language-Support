@@ -4,8 +4,10 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNamedElement
 import com.intellij.refactoring.rename.naming.AutomaticRenamer
+import com.intellij.usageView.UsageInfo
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.lang.psi.light.ParadoxLocalisationSnippetLightElement
+import icu.windea.pls.lang.refactoring.ParadoxRefactoringSettings
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.search.util.preferLocale
@@ -16,7 +18,27 @@ import icu.windea.pls.lang.util.ParadoxLocaleManager
  *
  * @see ParadoxLocalisationSnippetLightElement
  */
-class ParadoxLocalisationSnippetAutomaticRenamer(element: PsiElement, newName: String) : AutomaticRenamer() {
+class ParadoxLocalisationSnippetAutomaticRenamer(element: PsiElement, newName: String) : ParadoxAutomaticRenamer() {
+    class Factory : ParadoxAutomaticRenamer.Factory() {
+        override fun isApplicable(element: PsiElement): Boolean {
+            return element is ParadoxLocalisationSnippetLightElement
+        }
+
+        override fun getOptionName() = ChronicleBundle.message("rename.localisationSnippet.relatedLocalisations")
+
+        override fun isEnabled(): Boolean {
+            return ParadoxRefactoringSettings.getInstance().renameRelatedLocalisationsForLocalisationSnippets
+        }
+
+        override fun setEnabled(enabled: Boolean) {
+            ParadoxRefactoringSettings.getInstance().renameRelatedLocalisationsForLocalisationSnippets = enabled
+        }
+
+        override fun createRenamer(element: PsiElement, newName: String, usages: MutableCollection<UsageInfo>?): AutomaticRenamer {
+            return ParadoxLocalisationSnippetAutomaticRenamer(element, newName)
+        }
+    }
+
     init {
         val allRenames = mutableMapOf<PsiNamedElement, String>()
         prepareRenaming(element, newName, allRenames)

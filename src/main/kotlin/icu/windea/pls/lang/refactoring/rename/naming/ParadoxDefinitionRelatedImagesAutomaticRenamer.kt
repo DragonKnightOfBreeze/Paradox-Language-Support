@@ -4,17 +4,41 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNamedElement
 import com.intellij.refactoring.rename.naming.AutomaticRenamer
+import com.intellij.usageView.UsageInfo
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.config.util.CwtConfigExpressionManager
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
+import icu.windea.pls.lang.refactoring.ParadoxRefactoringSettings
 import icu.windea.pls.lang.resolve.ParadoxLocationExpressionService
 
 /**
  * 用于在重命名定义时，自动重命名相关图片（重命名文件名，如果存在且需要）。
  */
-class ParadoxDefinitionRelatedImagesAutomaticRenamer(element: PsiElement, newName: String) : AutomaticRenamer() {
+class ParadoxDefinitionRelatedImagesAutomaticRenamer(element: PsiElement, newName: String) : ParadoxDefinitionAutomaticRenamer() {
+    class Factory : ParadoxDefinitionAutomaticRenamer.Factory() {
+        override fun isApplicable(element: PsiElement): Boolean {
+            if (element !is ParadoxDefinitionElement) return false
+            val definitionInfo = element.definitionInfo ?: return false
+            return definitionInfo.images.isNotEmpty()
+        }
+
+        override fun getOptionName() = ChronicleBundle.message("rename.definition.relatedImages")
+
+        override fun isEnabled(): Boolean {
+            return ParadoxRefactoringSettings.getInstance().renameRelatedImagesForDefinitions
+        }
+
+        override fun setEnabled(enabled: Boolean) {
+            ParadoxRefactoringSettings.getInstance().renameRelatedImagesForDefinitions = enabled
+        }
+
+        override fun createRenamer(element: PsiElement, newName: String, usages: MutableCollection<UsageInfo>?): AutomaticRenamer {
+            return ParadoxDefinitionRelatedImagesAutomaticRenamer(element, newName)
+        }
+    }
+
     init {
         val allRenames = mutableMapOf<PsiNamedElement, String>()
         prepareRenaming(element, newName, allRenames)

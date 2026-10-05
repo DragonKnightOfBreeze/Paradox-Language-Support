@@ -10,7 +10,7 @@ import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressi
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 
 /**
- * 检查是否存在不正确的（本地化）命令表达式（[ParadoxCommandExpression]）。不适用于嵌套的此类复杂表达式。。
+ * 检查是否存在不正确的（本地化）命令表达式（[ParadoxCommandExpression]）。不适用于嵌套的此类复杂表达式。
  */
 class IncorrectCommandExpressionInspection : IncorrectComplexExpressionInspectionBase() {
     override fun isAvailable(element: ParadoxLocalisationExpressionElement): Boolean {

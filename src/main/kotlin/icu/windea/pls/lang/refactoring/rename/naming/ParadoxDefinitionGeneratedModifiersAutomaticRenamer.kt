@@ -4,17 +4,41 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNamedElement
 import com.intellij.refactoring.rename.naming.AutomaticRenamer
+import com.intellij.usageView.UsageInfo
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.config.util.CwtConfigExpressionManager
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.psi.light.ParadoxModifierLightElement
+import icu.windea.pls.lang.refactoring.ParadoxRefactoringSettings
 
 /**
  * 用于在重命名定义时，自动重命名由其生成的修正（如果存在）。
  */
-class ParadoxDefinitionGeneratedModifiersAutomaticRenamer(element: PsiElement, newName: String) : AutomaticRenamer() {
+class ParadoxDefinitionGeneratedModifiersAutomaticRenamer(element: PsiElement, newName: String) : ParadoxDefinitionAutomaticRenamer() {
+    class Factory : ParadoxDefinitionAutomaticRenamer.Factory() {
+        override fun isApplicable(element: PsiElement): Boolean {
+            if (element !is ParadoxDefinitionElement) return false
+            val definitionInfo = element.definitionInfo ?: return false
+            return definitionInfo.modifiers.isNotEmpty()
+        }
+
+        override fun getOptionName() = ChronicleBundle.message("rename.definition.generatedModifiers")
+
+        override fun isEnabled(): Boolean {
+            return ParadoxRefactoringSettings.getInstance().renameGeneratedModifierForDefinitions
+        }
+
+        override fun setEnabled(enabled: Boolean) {
+            ParadoxRefactoringSettings.getInstance().renameGeneratedModifierForDefinitions = enabled
+        }
+
+        override fun createRenamer(element: PsiElement, newName: String, usages: MutableCollection<UsageInfo>?): AutomaticRenamer {
+            return ParadoxDefinitionGeneratedModifiersAutomaticRenamer(element, newName)
+        }
+    }
+
     init {
         val allRenames = mutableMapOf<PsiNamedElement, String>()
         prepareRenaming(element, newName, allRenames)

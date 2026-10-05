@@ -7,6 +7,8 @@ import com.intellij.testFramework.TestDataFile
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.core.convertPath
+import icu.windea.pls.lang.psi.light.ParadoxDefinitionSnippetLightElement
+import icu.windea.pls.lang.refactoring.rename.naming.ParadoxDefinitionAutomaticRenamer
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.ChronicleTestScope
 import org.junit.After
@@ -22,7 +24,8 @@ import org.junit.runners.JUnit4
  * - 重命名目标是脚本中的定义引用片段（引用解析得到的 lightElement）。
  * - 期望在重命名时，自动重命名关联的定义。
  *
- * @see icu.windea.pls.lang.psi.light.ParadoxDefinitionSnippetLightElement
+ * @see ParadoxDefinitionAutomaticRenamer
+ * @see ParadoxDefinitionSnippetLightElement
  */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")

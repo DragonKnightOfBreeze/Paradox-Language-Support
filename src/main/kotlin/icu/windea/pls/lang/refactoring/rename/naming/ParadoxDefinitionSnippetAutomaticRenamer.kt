@@ -4,8 +4,10 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNamedElement
 import com.intellij.refactoring.rename.naming.AutomaticRenamer
+import com.intellij.usageView.UsageInfo
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.lang.psi.light.ParadoxDefinitionSnippetLightElement
+import icu.windea.pls.lang.refactoring.ParadoxRefactoringSettings
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 
@@ -14,7 +16,27 @@ import icu.windea.pls.lang.search.util.contextSensitive
  *
  * @see ParadoxDefinitionSnippetLightElement
  */
-class ParadoxDefinitionSnippetAutomaticRenamer(element: PsiElement, newName: String) : AutomaticRenamer() {
+class ParadoxDefinitionSnippetAutomaticRenamer(element: PsiElement, newName: String) : ParadoxAutomaticRenamer() {
+    class Factory : ParadoxAutomaticRenamer.Factory() {
+        override fun isApplicable(element: PsiElement): Boolean {
+            return element is ParadoxDefinitionSnippetLightElement
+        }
+
+        override fun getOptionName() = ChronicleBundle.message("rename.definitionSnippet.relatedDefinitions")
+
+        override fun isEnabled(): Boolean {
+            return ParadoxRefactoringSettings.getInstance().renameRelatedDefinitionsForDefinitionSnippets
+        }
+
+        override fun setEnabled(enabled: Boolean) {
+            ParadoxRefactoringSettings.getInstance().renameRelatedDefinitionsForDefinitionSnippets = enabled
+        }
+
+        override fun createRenamer(element: PsiElement, newName: String, usages: MutableCollection<UsageInfo>?): AutomaticRenamer {
+            return ParadoxDefinitionSnippetAutomaticRenamer(element, newName)
+        }
+    }
+
     init {
         val allRenames = mutableMapOf<PsiNamedElement, String>()
         prepareRenaming(element, newName, allRenames)
