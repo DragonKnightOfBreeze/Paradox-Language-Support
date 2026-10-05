@@ -1021,7 +1021,7 @@ macro[definition_injection] = {
 > These configs are used to enhance the plugin's functionality, such as specifying config contexts, providing additional quick doc text and inlay hint text, etc.
 >
 > Extended configs share several common characteristics:
-> - Most extension config names, in addition to direct constant matching, also support pattern matching based on ant expressions, regular expressions, etc. See [Pattern Data Types](#data-types-pattern-aware).
+> - Most extension config names, in addition to direct constant matching, also support pattern matching based on ant expressions, regular expressions, etc. See [Pattern Aware Data Types](#data-types-pattern-aware).
 > - Most extended configs support providing quick documentation text via documentation comments.
 > - Most extended configs support providing inlay hint text via option comments (`## hint`).
 > - Some extended configs support specifying **scope context** via option comments (`## replace_scopes` `## push_scope`).
@@ -1033,7 +1033,7 @@ macro[definition_injection] = {
 Provides additional hints (quick documentation, inlay hints, etc.) for scripted variables in scripts.
 
 Path Location:
-- `scripted_variables/{name}`, where `{name}` is the config name. The name supports constants, template expressions, ANT path patterns, and regular expressions.
+- `scripted_variables/{name}`, where `{name}` is the config name.
 
 Format Explanation:
 
@@ -1050,8 +1050,7 @@ scripted_variables = {
 
 Notes:
 
-- The name of this config also support pattern matching based on ant expressions, regular expressions, etc. See [Pattern Data Types](#data-types-pattern-aware).
-- This config is only used for *hint enhancement*, and is not responsible for declaring or validating the values and types of scripted variables.
+- The name of this config also support pattern matching based on ant expressions, regular expressions, etc. See [Pattern Aware Data Types](#data-types-pattern-aware).
 
 > CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
 
@@ -1062,7 +1061,7 @@ Notes:
 Provides additional context and hint information for specific "definitions", including documentation / hints (`## hint`), and optionally specified scope context (`## replace_scopes` / `## push_scope`).
 
 Path Location:
-- `definitions/{name}`, where `{name}` is the config name. The name supports constants, template expressions, ANT path patterns, and regular expressions.
+- `definitions/{name}`, where `{name}` is the config name.
 
 Field Explanation:
 
@@ -1092,7 +1091,7 @@ definitions = {
 
 Notes:
 
-- The name of this config also support pattern matching based on ant expressions, regular expressions, etc. See [Pattern Data Types](#data-types-pattern-aware).
+- The name of this config also support pattern matching based on ant expressions, regular expressions, etc. See [Pattern Aware Data Types](#data-types-pattern-aware).
 - `## type` is required; if missing, the entry will be skipped.
 
 > CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
@@ -1102,8 +1101,6 @@ Notes:
 <!-- @see icu.windea.pls.config.config.extended.CwtExtendedGameRuleConfig -->
 
 Provides documentation / hint enhancement for game rules (i.e. definitions of type `game_rule`), and supports "overriding [declaration configs](#config-declaration)".
-
-Config names can be constants, template expressions, ANT expressions, or regular expressions (see [Pattern-Aware Data Types](#data-types-pattern-aware)).
 
 Path Location:
 - `game_rules/{name}`, where `{name}` is the config name.
@@ -1144,7 +1141,7 @@ game_rules = {
 
 Notes:
 
-- The name of this config also support pattern matching based on ant expressions, regular expressions, etc. See [Pattern Data Types](#data-types-pattern-aware).
+- The name of this config also support pattern matching based on ant expressions, regular expressions, etc. See [Pattern Aware Data Types](#data-types-pattern-aware).
 - If the value is `single_alias_right[...]`, it is first inlined and expanded, then takes effect as the override config.
 
 > CWTools Compatibility: Not compatible. Have different formats and behaviors.
@@ -1154,8 +1151,6 @@ Notes:
 <!-- @see icu.windea.pls.config.config.extended.CwtExtendedOnActionConfig -->
 
 Provides documentation / hint enhancement for on actions (i.e. definitions of type `on_action`), and specifies the "event type" to influence event-related references in the declaration context.
-
-Config names can be constants, template expressions, ANT expressions, or regular expressions (see [Pattern-Aware Data Types](#data-types-pattern-aware)).
 
 Path Location:
 - `on_actions/{name}`, where `{name}` is the config name.
@@ -1198,7 +1193,7 @@ on_actions = {
 
 Notes:
 
-- The name of this config also support pattern matching based on ant expressions, regular expressions, etc. See [Pattern Data Types](#data-types-pattern-aware).
+- The name of this config also support pattern matching based on ant expressions, regular expressions, etc. See [Pattern Aware Data Types](#data-types-pattern-aware).
 - `## event_type` is required; if missing, the entry will be skipped.
 - If scope replacement is needed, use `## replace_scopes` in combination.
 
@@ -1209,8 +1204,6 @@ Notes:
 <!-- @see icu.windea.pls.config.config.extended.CwtExtendedParameterConfig -->
 
 Provides documentation and context enhancement for parameters (`$PARAM$` or `$PARAM|DEFAULT$`) in triggers / effects / inline scripts: binding context keys, declaring context configs and scope context, and supporting context inheritance from usage sites.
-
-Config names can be constants, template expressions, ANT expressions, or regular expressions (see [Pattern-Aware Data Types](#data-types-pattern-aware)).
 
 Path Location:
 - `parameters/{name}`, where `{name}` is the config name.
@@ -1260,7 +1253,7 @@ parameters = {
 
 Notes:
 
-- The name of this config also support pattern matching based on ant expressions, regular expressions, etc. See [Pattern Data Types](#data-types-pattern-aware).
+- The name of this config also support pattern matching based on ant expressions, regular expressions, etc. See [Pattern Aware Data Types](#data-types-pattern-aware).
 - `## context_key` is required; if missing, the entry will be skipped.
 - When `## inherit` is marked, the context is taken from the "usage site" and may be empty or vary by location.
 - Root-level `single_alias_right[...]` is inlined and expanded before being used as a context config.
@@ -1272,8 +1265,6 @@ Notes:
 <!-- @see icu.windea.pls.config.config.extended.CwtExtendedComplexEnumValueConfig -->
 
 Provides documentation / hint enhancement (quick documentation, inlay hints, etc.) for specific entries of complex enums.
-
-Config names can be constants, template expressions, ANT expressions, or regular expressions (see [Pattern-Aware Data Types](#data-types-pattern-aware)).
 
 Path Location:
 - `complex_enum_values/{type}/{name}`, where `{type}` is the complex enum name, and `{name}` is the config name.
@@ -1296,7 +1287,7 @@ complex_enum_values = {
 
 Notes:
 
-- The name of this config also support pattern matching based on ant expressions, regular expressions, etc. See [Pattern Data Types](#data-types-pattern-aware).
+- The name of this config also support pattern matching based on ant expressions, regular expressions, etc. See [Pattern Aware Data Types](#data-types-pattern-aware).
 
 > CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
 
@@ -1305,8 +1296,6 @@ Notes:
 <!-- @see icu.windea.pls.config.config.extended.CwtExtendedDynamicValueConfig -->
 
 Provides documentation / hint enhancement for specific "dynamic value" entries under a dynamic value type.
-
-Config names can be constants, template expressions, ANT expressions, or regular expressions (see [Pattern-Aware Data Types](#data-types-pattern-aware)).
 
 Path Location:
 - `dynamic_values/{type}/{name}`, where `{type}` is the dynamic value type and `{name}` is the config name.
@@ -1333,7 +1322,7 @@ dynamic_values = {
 
 Notes:
 
-- The name of this config also support pattern matching based on ant expressions, regular expressions, etc. See [Pattern Data Types](#data-types-pattern-aware).
+- The name of this config also support pattern matching based on ant expressions, regular expressions, etc. See [Pattern Aware Data Types](#data-types-pattern-aware).
 
 > CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
 
@@ -1342,8 +1331,6 @@ Notes:
 <!-- @see icu.windea.pls.config.config.extended.CwtExtendedInlineScriptConfig -->
 
 Declares "context configs" and "scope context" for specific inline scripts, used to provide correct completion and inspection at call sites.
-
-Config names can be constants, template expressions, ANT expressions, or regular expressions (see [Pattern-Aware Data Types](#data-types-pattern-aware)).
 
 Path Location:
 - `inline_scripts/{name}`, where `{name}` is the config name.
@@ -1387,7 +1374,7 @@ inline_scripts = {
 
 Notes:
 
-- The name of this config also support pattern matching based on ant expressions, regular expressions, etc. See [Pattern Data Types](#data-types-pattern-aware).
+- The name of this config also support pattern matching based on ant expressions, regular expressions, etc. See [Pattern Aware Data Types](#data-types-pattern-aware).
 - If only a single context config is needed, keep the default `single`; use `multiple` when declaring multiple.
 - Root-level `single_alias_right[...]` is inlined and expanded before being used as a context config.
 
@@ -2249,6 +2236,9 @@ Examples of Corresponding data expressions:
 
 #### DefinitionSnippet {#data-type-definition-snippet}
 
+> [!tip]
+> Introduced plugin version: 3.0.4
+
 Definition reference snippet type.
 As the snippet form of [Definition](#data-type-definition), it additionally carries a set of template arguments.
 
@@ -2271,6 +2261,9 @@ Examples of the corresponding data expressions:
 > CWTools compatibility: incompatible. The plugin is provided as an extension.
 
 #### LocalisationSnippet {#data-type-localisation-snippet}
+
+> [!tip]
+> Introduced plugin version: 3.0.4
 
 Localisation reference snippet type.
 As the snippet form of [Localisation](#data-type-localisation), it additionally carries a set of template arguments.
@@ -2414,6 +2407,9 @@ Data expressions of these data types need to apply necessary expansion and inlin
 
 #### UnionValue {#data-type-union-value}
 
+> [!tip]
+> Introduced plugin version: 2.2.0
+
 Union value type.
 
 Matches one of the candidates in the corresponding union config.
@@ -2498,6 +2494,9 @@ Examples of Corresponding data expressions:
 
 <!-- @see icu.windea.pls.core.match.GlobMatcher -->
 
+> [!tip]
+> Introduced plugin version: 2.2.0
+
 Glob pattern type. One of the pattern-aware data types (the expression contains some kind of pattern string).
 
 Matches expressions that conform to a glob pattern. Supports the wildcards `?` (single character) and `*` (any number of characters).
@@ -2515,6 +2514,9 @@ Examples of Corresponding data expressions:
 #### Ant {#data-type-ant}
 
 <!-- @see icu.windea.pls.core.match.AntMatcher -->
+
+> [!tip]
+> Introduced plugin version: 1.3.6
 
 ANT path pattern type. One of the pattern-aware data types (the expression contains some kind of pattern string).
 
@@ -2534,6 +2536,9 @@ Examples of Corresponding data expressions:
 
 <!-- @see icu.windea.pls.core.match.RegexMatcher -->
 
+> [!tip]
+> Introduced plugin version: 1.3.6
+
 Regular expression pattern type. One of the pattern-aware data types (the expression contains some kind of pattern string).
 
 Matches expressions that conform to a regular expression.
@@ -2545,54 +2550,6 @@ Format of corresponding data expressions:
 Examples of Corresponding data expressions:
 - `re:^country_.*`
 - `re.i:event_.*`
-
-> CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
-
-### Suffix-Aware Data Types {#data-types-suffix-aware}
-
-> [!warning]
-> Data types belonging to this category will be removed in a future version, and is planned to migrate to the newly added snippet data types.
-
-#### SuffixAwareDefinition {#data-type-suffix-aware-definition}
-
-Suffix-aware definition reference type.
-
-Consists of a base definition reference and a comma-separated list of suffixes. When matching, both the definition reference and the suffixes are validated.
-If the suffix list is empty, it degrades to a plain [Definition](#data-type-definition).
-
-Format of corresponding data expressions:
-- `<{type}>|{suffixes}` – where `{type}` matches a type name, and `{suffixes}` matches a comma-separated set of suffixes.
-- `<{type}.{subtypes}>|{suffixes}` – where `{type}` matches a type name, `{subtypes}` matches a dot-separated set of subtype names, and `{suffixes}` matches a comma-separated set of suffixes.
-
-Example of a corresponding data expression:
-- `<event>|country,crisis`
-
-> CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
-
-#### SuffixAwareLocalisation {#data-type-suffix-aware-localisation}
-
-Suffix-aware localisation reference type.
-
-Consists of a base localisation reference and a comma-separated list of suffixes. When matching, both the localisation reference and the suffixes are validated.
-If the suffix list is empty, it degrades to a plain [Localisation](#data-type-localisation).
-
-Format of corresponding data expressions:
-- `localisation|{suffixes}` – where `{suffixes}` matches a comma-separated set of suffixes.
-
-Example of a corresponding data expression:
-- `localisation|name,desc`
-
-> CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
-
-#### SuffixAwareSyncedLocalisation {#data-type-suffix-aware-synced-localisation}
-
-Suffix-aware synced localisation reference type.
-
-Consists of a base synced localisation reference and a comma-separated list of suffixes. When matching, both the synced localisation reference and the suffixes are validated.
-If the suffix list is empty, it degrades to a plain [SyncedLocalisation](#data-type-synced-localisation).
-
-Format of corresponding data expressions:
-- `localisation_synced|{suffixes}` – where `{suffixes}` matches a comma-separated set of suffixes.
 
 > CWTools Compatibility: Not compatible. Provided as an extension by the plugin.
 
@@ -2629,7 +2586,10 @@ See also:
 
 <!-- @see icu.windea.pls.config.CwtDataTypes.Ant -->
 
-Starting from plugin version 1.3.6, ANT path patterns can be used in data expressions for more flexible matching.
+> [!tip]
+> Introduced plugin version: 1.3.6
+
+In addition to normal matching strategies, ANT path patterns can be used in data expressions for more flexible matching.
 ANT expressions are identified by prefix: `ant:` for case-sensitive, `ant.i:` for case-insensitive.
 
 ANT path patterns used here support the following wildcards:
@@ -2651,7 +2611,10 @@ See also:
 
 <!-- @see icu.windea.pls.config.CwtDataTypes.Regex -->
 
-Starting from plugin version 1.3.6, regular expressions can be used in data expressions for more flexible matching.
+> [!tip]
+> Introduced plugin version: 1.3.6
+
+In addition to normal matching strategies, regular expressions can be used in data expressions for more flexible matching.
 Regular expressions are identified by prefix: `re:` for case-sensitive, `re.i:` for case-insensitive.
 The part after the prefix is a standard regular expression.
 
@@ -2810,7 +2773,10 @@ file = filepath[./]
 <!-- @see icu.windea.pls.config.option.CwtOptionMetadata.inject -->
 <!-- @see icu.windea.pls.ep.config.config.CwtInjectConfigPostProcessor -->
 
-Starting from plugin version 2.1.0, injecting configs is supported by using the option `## inject`, during the config resolving phase.
+> [!tip]
+> Introduced plugin version: 2.0.1
+
+Injecting configs is supported by using the option `## inject`, during the config resolving phase.
 
 If there is an existing config fragment
 

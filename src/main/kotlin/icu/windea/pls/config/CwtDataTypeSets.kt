@@ -63,6 +63,7 @@ object CwtDataTypeSets {
         CwtDataTypes.Template,
     )
     /** 作为片段的数据类型。 */
+    // #162 #193 #340 #413
     val Snippet = arrayOf(
         CwtDataTypes.DefinitionSnippet,
         CwtDataTypes.LocalisationSnippet,
@@ -110,12 +111,6 @@ object CwtDataTypeSets {
     /** 可解析为同步本地化的数据类型。 */
     val SyncedLocalisationAware = arrayOf(
         CwtDataTypes.SyncedLocalisation,
-    )
-    /** 所有后缀感知的数据类型。 */
-    val SuffixAware = arrayOf(
-        CwtDataTypes.SuffixAwareDefinition,
-        CwtDataTypes.SuffixAwareLocalisation,
-        CwtDataTypes.SuffixAwareSyncedLocalisation,
     )
 
     /** 可定位图像资源的数据类型。 */

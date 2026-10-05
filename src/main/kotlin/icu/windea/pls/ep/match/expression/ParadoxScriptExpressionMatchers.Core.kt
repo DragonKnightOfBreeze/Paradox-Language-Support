@@ -15,7 +15,7 @@ import icu.windea.pls.model.type.ParadoxExpressionType
 abstract class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
     /** @see CwtDataTypes.Definition */
     class ForDefinition : ParadoxCoreScriptExpressionMatcher() {
-        override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.Definition || dataType == CwtDataTypes.SuffixAwareDefinition
+        override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.Definition
 
         override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
             // can be an int or float here (e.g., for <technology_tier>)
@@ -42,14 +42,14 @@ abstract class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatch
 
     /** @see CwtDataTypes.Localisation */
     class ForLocalisation : ParadoxCoreScriptExpressionMatcher() {
-        override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.Localisation || dataType == CwtDataTypes.SuffixAwareLocalisation
+        override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.Localisation
 
         override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
             if (!context.expression.type.isLenientStringLiteral()) return ParadoxMatchResult.NotMatch
             if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
             val value = context.expression.value
             if (!value.isIdentifier(".-'")) return ParadoxMatchResult.NotMatch
-            return ParadoxMatchResultFactory.forLocalisation(context.element, context.project, value, configExpression)
+            return ParadoxMatchResultFactory.forLocalisation(context.element, context.project, value)
         }
     }
 
@@ -68,14 +68,14 @@ abstract class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatch
 
     /** @see CwtDataTypes.SyncedLocalisation */
     class ForSyncedLocalisation : ParadoxCoreScriptExpressionMatcher() {
-        override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.SyncedLocalisation || dataType == CwtDataTypes.SuffixAwareSyncedLocalisation
+        override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.SyncedLocalisation
 
         override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
             if (!context.expression.type.isLenientStringLiteral()) return ParadoxMatchResult.NotMatch
             if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
             val value = context.expression.value
             if (!value.isIdentifier(".-'")) return ParadoxMatchResult.NotMatch
-            return ParadoxMatchResultFactory.forLocalisation(context.element, context.project, value, configExpression, ParadoxLocalisationType.Synced)
+            return ParadoxMatchResultFactory.forLocalisation(context.element, context.project, value, ParadoxLocalisationType.Synced)
         }
     }
 
@@ -89,7 +89,7 @@ abstract class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatch
             if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
             val value = context.expression.value
             if (!value.isIdentifier(".-'")) return ParadoxMatchResult.NotMatch
-            return ParadoxMatchResultFactory.forLocalisation(context.element, context.project, value, configExpression)
+            return ParadoxMatchResultFactory.forLocalisation(context.element, context.project, value)
         }
     }
 

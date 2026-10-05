@@ -751,6 +751,7 @@ object CwtDataTypes {
      *
      * > CWTools 兼容性：不兼容。插件作为扩展提供。
      */
+    // #162 #193 #340 #413
     val DefinitionSnippet = CwtDataType.builder("DefinitionSnippet").reference().build {
         withPriority(65.0) // for templates and snippets
     }
@@ -776,6 +777,7 @@ object CwtDataTypes {
      *
      * > CWTools 兼容性：不兼容。插件作为扩展提供。
      */
+    // #162 #193 #340 #413
     val LocalisationSnippet = CwtDataType.builder("LocalisationSnippet").reference().build {
         withPriority(65.0) // for templates and snippets
     }
@@ -961,7 +963,7 @@ object CwtDataTypes {
 
     // endregion
 
-    // region Pattern Data Types
+    // region Pattern Aware Data Types
 
     /**
      * 常量类型。可以感知模式（表达式包含某种模式字符串）的数据类型之一。
@@ -1026,57 +1028,6 @@ object CwtDataTypes {
      * @since 1.3.6
      */
     val Regex = CwtDataType.builder("Regex").build()
-
-    // endregion
-
-    // region Suffix Aware Data Types
-
-    // TODO [config-system] SUFFIX_AWARE 目前不兼容/不支持：代码补全、用法查询
-
-    /**
-     * 后缀感知的定义引用类型。
-     *
-     * 由基础定义引用和逗号分隔的后缀列表组成，匹配时同时验证定义引用和后缀。
-     * 如果后缀列表为空，则退化为普通的 [Definition]。
-     *
-     * 对应的数据表达式的格式：
-     * - `<{type}>|{suffixes}` - 其中 `{type}` 匹配类型名，`{suffixes}` 匹配逗号分隔的一组后缀。
-     * - `<{type}.{subtypes}>|{suffixes}` - 其中 `{type}` 匹配类型名， `{subtypes}` 匹配点号分隔的一组子类型名，`{suffixes}` 匹配逗号分隔的一组后缀。
-     *
-     * > CWTools 兼容性：不兼容。插件作为扩展提供。
-     *
-     * @since 2.0.5
-     */
-    val SuffixAwareDefinition = CwtDataType.builder("SuffixAwareDefinition").suffixAware().build() // #162, #193
-    /**
-     * 后缀感知的本地化引用类型。
-     *
-     * 由基础本地化引用和逗号分隔的后缀列表组成，匹配时同时验证本地化引用和后缀。
-     * 如果后缀列表为空，则退化为普通的 [Localisation]。
-     *
-     * 对应的数据表达式的格式：
-     * - `localisation|{suffixes}` - 其中 `{suffixes}` 匹配逗号分隔的一组后缀。
-     *
-     * > CWTools 兼容性：不兼容。插件作为扩展提供。
-     *
-     * @since 2.0.5
-     * @see
-     */
-    val SuffixAwareLocalisation = CwtDataType.builder("SuffixAwareLocalisation").suffixAware().build() // #162, #193
-    /**
-     * 后缀感知的同步本地化引用类型。
-     *
-     * 由基础同步本地化引用和逗号分隔的后缀列表组成，匹配时同时验证同步本地化引用和后缀。
-     * 如果后缀列表为空，则退化为普通的 [SyncedLocalisation]。
-     *
-     * 对应的数据表达式的格式：
-     * - `localisation_synced|{suffixes}` - 其中 `{suffixes}` 匹配逗号分隔的一组后缀。
-     *
-     * > CWTools 兼容性：不兼容。插件作为扩展提供。
-     *
-     * @since 2.0.5
-     */
-    val SuffixAwareSyncedLocalisation = CwtDataType.builder("SuffixAwareSyncedLocalisation").suffixAware().build() // #162, #193
 
     // endregion
 }

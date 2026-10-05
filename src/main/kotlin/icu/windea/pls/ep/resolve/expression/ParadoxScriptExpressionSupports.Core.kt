@@ -10,10 +10,8 @@ import icu.windea.pls.config.CwtDataType
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtValueConfig
-import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.isExactDigit
 import icu.windea.pls.core.isLeftQuoted
-import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.util.values.singletonList
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
@@ -26,11 +24,6 @@ import icu.windea.pls.lang.resolve.ParadoxExpressionService
 import icu.windea.pls.lang.resolve.ParadoxLocalisationParameterService
 import icu.windea.pls.lang.resolve.ParadoxParameterService
 import icu.windea.pls.lang.resolve.util.ParadoxExpressionSupportFactory
-import icu.windea.pls.lang.search.ParadoxDefinitionSearch
-import icu.windea.pls.lang.search.ParadoxLocalisationSearch
-import icu.windea.pls.lang.search.util.contextSensitive
-import icu.windea.pls.lang.search.util.preferLocale
-import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxLocalisationType
 import icu.windea.pls.model.type.ParadoxExpressionRole
@@ -39,49 +32,27 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 abstract class ParadoxCoreScriptExpressionSupport : ParadoxScriptExpressionSupport {
     /**
      * @see CwtDataTypes.Definition
-     * @see CwtDataTypes.SuffixAwareDefinition
      */
     class ForDefinition : ParadoxCoreScriptExpressionSupport() {
         override fun supports(dataType: CwtDataType): Boolean {
-            return dataType == CwtDataTypes.Definition || dataType == CwtDataTypes.SuffixAwareDefinition
+            return dataType == CwtDataTypes.Definition
         }
 
         override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder): Boolean {
             val attributesKey = ParadoxSemanticHighlighterColors.definitionReference(element.language)
-            if (config.configExpression?.type?.isSuffixAware == true) {
-                // 使用特殊的高亮（HIGHLIGHTED_REFERENCE）
-                ParadoxExpressionSupportFactory.annotateExpressionAsHighlightedReference(element, rangeInExpression, holder)
-            } else {
-                ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
-            }
+            ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
             return true
         }
 
         override fun resolve(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
-            val fullNames = CwtConfigManager.getFullNamesFromSuffixAware(config, text)
-            val name = fullNames.singleOrNull() ?: return null
-            val configGroup = config.configGroup
-            val project = configGroup.project
-            val typeExpression = config.configExpression?.metadata?.value ?: return null
-            val type = typeExpression.substringBefore('.') // 匹配和解析定义时忽略子类型
-            val selector = ParadoxDefinitionSearch.selector(project, element).contextSensitive()
-            return ParadoxDefinitionSearch.searchElement(name, type, selector).find()
+            return ParadoxExpressionSupportFactory.resolveDefinition(element, text, config)
         }
 
         override fun resolveAll(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiElement> {
-            val fullNames = CwtConfigManager.getFullNamesFromSuffixAware(config, text)
-            val configGroup = config.configGroup
-            val project = configGroup.project
-            val typeExpression = config.configExpression?.metadata?.value ?: return emptyList()
-            val type = typeExpression.substringBefore('.') // 匹配和解析定义时忽略子类型
-            return fullNames.flatMap { fullName ->
-                val selector = ParadoxDefinitionSearch.selector(project, element).contextSensitive()
-                ParadoxDefinitionSearch.searchElement(fullName, type, selector).findAll()
-            }
+            return ParadoxExpressionSupportFactory.resolveAllDefinition(element, text, config)
         }
 
         override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
-            if (context.config?.configExpression?.metadata?.suffixes.isNotNullOrEmpty()) return // TODO SUFFIX_AWARE 排除需要带上后缀的情况，目前不支持
             if (context.keyword.isParameterized()) return // 排除可能带参数的情况
             ParadoxExpressionCompletionManager.completeDefinition(context, result)
         }
@@ -89,45 +60,27 @@ abstract class ParadoxCoreScriptExpressionSupport : ParadoxScriptExpressionSuppo
 
     /**
      * @see CwtDataTypes.Localisation
-     * @see CwtDataTypes.SuffixAwareLocalisation
      */
     class ForLocalisation : ParadoxCoreScriptExpressionSupport() {
         override fun supports(dataType: CwtDataType): Boolean {
-            return dataType == CwtDataTypes.Localisation || dataType == CwtDataTypes.SuffixAwareLocalisation
+            return dataType == CwtDataTypes.Localisation
         }
 
         override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder): Boolean {
             val attributesKey = ParadoxSemanticHighlighterColors.localisationReference(element.language)
-            if (config.configExpression?.type?.isSuffixAware == true) {
-                // 使用特殊的高亮（HIGHLIGHTED_REFERENCE）
-                ParadoxExpressionSupportFactory.annotateExpressionAsHighlightedReference(element, rangeInExpression, holder)
-            } else {
-                ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
-            }
+            ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
             return true
         }
 
         override fun resolve(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
-            val fullNames = CwtConfigManager.getFullNamesFromSuffixAware(config, text)
-            val name = fullNames.singleOrNull() ?: return null
-            val configGroup = config.configGroup
-            val project = configGroup.project
-            val selector = ParadoxLocalisationSearch.selector(project, element).contextSensitive().preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
-            return ParadoxLocalisationSearch.searchNormal(name, selector).find()
+            return ParadoxExpressionSupportFactory.resolveLocalisation(element, text, config)
         }
 
         override fun resolveAll(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiElement> {
-            val fullNames = CwtConfigManager.getFullNamesFromSuffixAware(config, text)
-            val configGroup = config.configGroup
-            val project = configGroup.project
-            return fullNames.flatMap { fullName ->
-                val selector = ParadoxLocalisationSearch.selector(project, element).contextSensitive().preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
-                ParadoxLocalisationSearch.searchNormal(fullName, selector).findAll()
-            }
+            return ParadoxExpressionSupportFactory.resolveAllLocalisation(element, text, config)
         }
 
         override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
-            if (context.config?.configExpression?.metadata?.suffixes.isNotNullOrEmpty()) return // TODO SUFFIX_AWARE 排除需要带上后缀的情况，目前不支持
             if (context.keyword.isParameterized()) return // 排除可能带参数的情况
             ParadoxExpressionCompletionManager.completeLocalisation(context, result)
         }
@@ -135,45 +88,27 @@ abstract class ParadoxCoreScriptExpressionSupport : ParadoxScriptExpressionSuppo
 
     /**
      * @see CwtDataTypes.SyncedLocalisation
-     * @see CwtDataTypes.SuffixAwareSyncedLocalisation
      */
     class ForSyncedLocalisation : ParadoxCoreScriptExpressionSupport() {
         override fun supports(dataType: CwtDataType): Boolean {
-            return dataType == CwtDataTypes.SyncedLocalisation || dataType == CwtDataTypes.SuffixAwareSyncedLocalisation
+            return dataType == CwtDataTypes.SyncedLocalisation
         }
 
         override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder): Boolean {
             val attributesKey = ParadoxSemanticHighlighterColors.localisationReference(element.language)
-            if (config.configExpression?.type?.isSuffixAware == true) {
-                // 使用特殊的高亮（HIGHLIGHTED_REFERENCE）
-                ParadoxExpressionSupportFactory.annotateExpressionAsHighlightedReference(element, rangeInExpression, holder)
-            } else {
-                ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
-            }
+            ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
             return true
         }
 
         override fun resolve(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
-            val fullNames = CwtConfigManager.getFullNamesFromSuffixAware(config, text)
-            val name = fullNames.singleOrNull() ?: return null
-            val configGroup = config.configGroup
-            val project = configGroup.project
-            val selector = ParadoxLocalisationSearch.selector(project, element).contextSensitive().preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
-            return ParadoxLocalisationSearch.search(name, selector, ParadoxLocalisationType.Synced).find()
+            return ParadoxExpressionSupportFactory.resolveLocalisation(element, text, config, ParadoxLocalisationType.Synced)
         }
 
         override fun resolveAll(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiElement> {
-            val fullNames = CwtConfigManager.getFullNamesFromSuffixAware(config, text)
-            val configGroup = config.configGroup
-            val project = configGroup.project
-            return fullNames.flatMap { fullName ->
-                val selector = ParadoxLocalisationSearch.selector(project, element).contextSensitive().preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
-                return ParadoxLocalisationSearch.search(fullName, selector, ParadoxLocalisationType.Synced).findAll()
-            }
+            return ParadoxExpressionSupportFactory.resolveAllLocalisation(element, text, config, ParadoxLocalisationType.Synced)
         }
 
         override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
-            if (context.config?.configExpression?.metadata?.suffixes.isNotNullOrEmpty()) return // TODO SUFFIX_AWARE 排除需要带上后缀的情况，目前不支持
             if (context.keyword.isParameterized()) return // 排除可能带参数的情况
             ParadoxExpressionCompletionManager.completeLocalisation(context, result, ParadoxLocalisationType.Synced)
         }
@@ -194,18 +129,12 @@ abstract class ParadoxCoreScriptExpressionSupport : ParadoxScriptExpressionSuppo
 
         override fun resolve(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
             if (element.text.isLeftQuoted()) return null // inline string
-            val configGroup = config.configGroup
-            val project = configGroup.project
-            val selector = ParadoxLocalisationSearch.selector(project, element).contextSensitive().preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
-            return ParadoxLocalisationSearch.searchNormal(text, selector).find()
+            return ParadoxExpressionSupportFactory.resolveLocalisation(element, text, config)
         }
 
         override fun resolveAll(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiElement> {
-            if (element.text.isLeftQuoted()) return emptyList() // specific expression
-            val configGroup = config.configGroup
-            val project = configGroup.project
-            val selector = ParadoxLocalisationSearch.selector(project, element).contextSensitive().preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
-            return ParadoxLocalisationSearch.searchNormal(text, selector).findAll()
+            if (element.text.isLeftQuoted()) return emptyList() // inline string
+            return ParadoxExpressionSupportFactory.resolveAllLocalisation(element, text, config)
         }
 
         override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
@@ -376,7 +305,7 @@ abstract class ParadoxCoreScriptExpressionSupport : ParadoxScriptExpressionSuppo
         }
 
         override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
-            // NOTE 不兼容本地化参数（CwtDataTypes.LocalisationParameter），因为那个引用实际上也可能对应一个缺失的本地化的名字
+            // NOTE 不兼容本地化参数（`CwtDataTypes.LocalisationParameter`），因为那个引用实际上也可能对应一个缺失的本地化的名字
         }
     }
 }

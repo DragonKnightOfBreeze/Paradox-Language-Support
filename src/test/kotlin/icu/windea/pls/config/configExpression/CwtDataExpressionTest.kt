@@ -51,7 +51,6 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
         metadata.ignoreCase.expectFalse()
         metadata.intRange.expectNull()
         metadata.floatRange.expectNull()
-        metadata.suffixes.expectNull()
         metadata.snippetTemplates.expectNull()
     }
 
@@ -89,10 +88,6 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
         range.end.expectEquals(end)
         range.openStart.expectEquals(openStart)
         range.openEnd.expectEquals(openEnd)
-    }
-
-    private fun ExpectScope.expectSuffixes(expression: CwtDataExpression, vararg suffixes: String) {
-        expression.metadata.suffixes.expectEquals(suffixes.toSet())
     }
 
     private fun ExpectScope.expectSnippetTemplates(expression: CwtDataExpression, vararg templates: String) {
@@ -406,6 +401,47 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
         expectDataExpression("abc", CwtDataTypes.Constant) { expectNoMetadata(it) }
     }
 
+    @Test
+    fun testDefinitionSnippet() {
+        expectDataExpression($$"<entity>|$_a,b_$,c_$_d", CwtDataTypes.DefinitionSnippet) {
+            it.metadata.value.expectEquals("entity")
+            expectSnippetTemplates(it, $$"$_a", $$"b_$", $$"c_$_d")
+        }
+        expectDataExpression($$"<entity.country>|$_a", CwtDataTypes.DefinitionSnippet) {
+            it.metadata.value.expectEquals("entity.country")
+            expectSnippetTemplates(it, $$"$_a")
+        }
+        // templates are trimmed
+        expectDataExpression($$"<entity>| $_a , b_$ ", CwtDataTypes.DefinitionSnippet) {
+            it.metadata.value.expectEquals("entity")
+            expectSnippetTemplates(it, $$"$_a", $$"b_$")
+        }
+        // TODO 3.0.4 [snippet-match] adjust
+        // templates without a placeholder fall back to the suffix-aware definition
+        // expectDataExpression("<entity>|country,planet", CwtDataTypes.SuffixAwareDefinition) { expectSuffixes(it, "country", "planet") }
+        // an unsupported base falls back to constant
+        expectDataExpression($$"foo|$_a", CwtDataTypes.Constant) { expectNoMetadata(it) }
+        // a template containing multiple placeholders is invalid, and falls back to the suffix-aware definition
+        // expectDataExpression($$"<entity>|a_$b_$", CwtDataTypes.SuffixAwareDefinition) { expectSuffixes(it, $$"a_$b_$") }
+    }
+
+    @Test
+    fun testLocalisationSnippet() {
+        expectDataExpression($$"localisation|$_desc,$_effect", CwtDataTypes.LocalisationSnippet) {
+            it.metadata.value.expectNull()
+            expectSnippetTemplates(it, $$"$_desc", $$"$_effect")
+        }
+        expectDataExpression($$"localisation|$_desc", CwtDataTypes.LocalisationSnippet) {
+            it.metadata.value.expectNull()
+            expectSnippetTemplates(it, $$"$_desc")
+        }
+        // TODO 3.0.4 [snippet-match] adjust
+        // templates without a placeholder fall back to the suffix-aware localisation
+        // expectDataExpression("localisation|key,desc", CwtDataTypes.SuffixAwareLocalisation) { expectSuffixes(it, "key", "desc") }
+        // an empty template list falls back to the plain localisation
+        expectDataExpression("localisation|", CwtDataTypes.Localisation) { expectNoMetadata(it) }
+    }
+
     // endregion
 
     // region Path Reference Data Types
@@ -560,98 +596,6 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
             it.metadata.ignoreCase.expectTrue()
         }
         expectDataExpression("re:", CwtDataTypes.Regex) { it.metadata.value.expectEquals("") }
-    }
-
-    // endregion
-
-    // region Suffix Aware Data Types
-
-    @Test
-    fun testSuffixAwareDefinition() {
-        expectDataExpression("<event>|country,planet", CwtDataTypes.SuffixAwareDefinition) {
-            it.metadata.value.expectEquals("event")
-            expectSuffixes(it, "country", "planet")
-        }
-        expectDataExpression("<event>|country", CwtDataTypes.SuffixAwareDefinition) {
-            it.metadata.value.expectEquals("event")
-            expectSuffixes(it, "country")
-        }
-        // suffixes are trimmed and empty items are ignored
-        expectDataExpression("<event>| country , planet ", CwtDataTypes.SuffixAwareDefinition) {
-            it.metadata.value.expectEquals("event")
-            expectSuffixes(it, "country", "planet")
-        }
-        // an empty suffix list degrades to a plain definition
-        expectDataExpression("<event>|", CwtDataTypes.Definition) { it.metadata.value.expectEquals("event") }
-        // an unsupported base falls back to constant
-        expectDataExpression("foo|bar", CwtDataTypes.Constant) { expectNoMetadata(it) }
-    }
-
-    @Test
-    fun testSuffixAwareLocalisation() {
-        expectDataExpression("localisation|key,desc", CwtDataTypes.SuffixAwareLocalisation) {
-            it.metadata.value.expectNull()
-            expectSuffixes(it, "key", "desc")
-        }
-        expectDataExpression("localisation|key", CwtDataTypes.SuffixAwareLocalisation) {
-            it.metadata.value.expectNull()
-            expectSuffixes(it, "key")
-        }
-        // an empty suffix list degrades to a plain localisation
-        expectDataExpression("localisation|", CwtDataTypes.Localisation) { it.metadata.value.expectNull() }
-    }
-
-    @Test
-    fun testSuffixAwareSyncedLocalisation() {
-        expectDataExpression("localisation_synced|key", CwtDataTypes.SuffixAwareSyncedLocalisation) {
-            it.metadata.value.expectNull()
-            expectSuffixes(it, "key")
-        }
-        // an empty suffix list degrades to a plain synced localisation
-        expectDataExpression("localisation_synced|", CwtDataTypes.SyncedLocalisation) { it.metadata.value.expectNull() }
-    }
-
-    // endregion
-
-    // region Snippet Data Types
-
-    @Test
-    fun testDefinitionSnippet() {
-        expectDataExpression($$"<entity>|$_a,b_$,c_$_d", CwtDataTypes.DefinitionSnippet) {
-            it.metadata.value.expectEquals("entity")
-            expectSnippetTemplates(it, $$"$_a", $$"b_$", $$"c_$_d")
-        }
-        expectDataExpression($$"<entity.country>|$_a", CwtDataTypes.DefinitionSnippet) {
-            it.metadata.value.expectEquals("entity.country")
-            expectSnippetTemplates(it, $$"$_a")
-        }
-        // templates are trimmed
-        expectDataExpression($$"<entity>| $_a , b_$ ", CwtDataTypes.DefinitionSnippet) {
-            it.metadata.value.expectEquals("entity")
-            expectSnippetTemplates(it, $$"$_a", $$"b_$")
-        }
-        // templates without a placeholder fall back to the suffix-aware definition
-        expectDataExpression("<entity>|country,planet", CwtDataTypes.SuffixAwareDefinition) { expectSuffixes(it, "country", "planet") }
-        // an unsupported base falls back to constant
-        expectDataExpression($$"foo|$_a", CwtDataTypes.Constant) { expectNoMetadata(it) }
-        // a template containing multiple placeholders is invalid, and falls back to the suffix-aware definition
-        expectDataExpression($$"<entity>|a_$b_$", CwtDataTypes.SuffixAwareDefinition) { expectSuffixes(it, $$"a_$b_$") }
-    }
-
-    @Test
-    fun testLocalisationSnippet() {
-        expectDataExpression($$"localisation|$_desc,$_effect", CwtDataTypes.LocalisationSnippet) {
-            it.metadata.value.expectNull()
-            expectSnippetTemplates(it, $$"$_desc", $$"$_effect")
-        }
-        expectDataExpression($$"localisation|$_desc", CwtDataTypes.LocalisationSnippet) {
-            it.metadata.value.expectNull()
-            expectSnippetTemplates(it, $$"$_desc")
-        }
-        // templates without a placeholder fall back to the suffix-aware localisation
-        expectDataExpression("localisation|key,desc", CwtDataTypes.SuffixAwareLocalisation) { expectSuffixes(it, "key", "desc") }
-        // an empty template list falls back to the plain localisation
-        expectDataExpression("localisation|", CwtDataTypes.Localisation) { expectNoMetadata(it) }
     }
 
     // endregion

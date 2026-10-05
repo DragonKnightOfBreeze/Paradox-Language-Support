@@ -1021,7 +1021,7 @@ macro[definition_injection] = {
 > 这些规则用于增强插件的功能，例如指定规则上下文、提供额外的快速文档文本与内嵌提示文本等。
 >
 > 扩展规则中有一些常见的共通特征：
-> - 大部分扩展规则的名字除了直接的常量匹配之外，也支持基于 ANT 表达式、正则等的模式匹配。参见 [模式数据类型](#data-types-pattern-aware)。
+> - 大部分扩展规则的名字除了直接的常量匹配之外，也支持基于 ANT 表达式、正则等的模式匹配。参见 [模式感知的数据类型](#data-types-pattern-aware)。
 > - 大部分扩展规则支持通过文档注释提供快速文档文本。
 > - 大部分扩展规则支持通过选项注释提供内嵌提示文本（`## hint`）。
 > - 部分扩展规则支持通过选项注释指定作用域上下文（`## replace_scopes` `## push_scope`）。
@@ -1050,7 +1050,7 @@ scripted_variables = {
 
 注意事项：
 
-- 此规则的名字也支持基于正则表达式等的模式匹配（参见 [模式数据类型](#data-types-pattern-aware)）。
+- 此规则的名字也支持基于 ANT 表达式、正则等的模式匹配（参见 [模式感知的数据类型](#data-types-pattern-aware)）。
 
 > CWTools 兼容性：不兼容。插件作为扩展提供。
 
@@ -1091,7 +1091,7 @@ definitions = {
 
 注意事项：
 
-- 此规则的名字也支持基于正则表达式等的模式匹配（参见 [模式数据类型](#data-types-pattern-aware)）。
+- 此规则的名字也支持基于 ANT 表达式、正则等的模式匹配（参见 [模式感知的数据类型](#data-types-pattern-aware)）。
 - `## type` 为必填；缺失将导致该条目被跳过。
 
 > CWTools 兼容性：不兼容。插件作为扩展提供。
@@ -1141,7 +1141,7 @@ game_rules = {
 
 注意事项：
 
-- 此规则的名字也支持基于正则表达式等的模式匹配（参见 [模式数据类型](#data-types-pattern-aware)）。
+- 此规则的名字也支持基于 ANT 表达式、正则等的模式匹配（参见 [模式感知的数据类型](#data-types-pattern-aware)）。
 - 如果值为 `single_alias_right[...]`，会先被内联展开，再作为重载规则生效。
 
 > CWTools 兼容性：不兼容。拥有不同的格式和行为。
@@ -1193,7 +1193,7 @@ on_actions = {
 
 注意事项：
 
-- 此规则的名字也支持基于正则表达式等的模式匹配（参见 [模式数据类型](#data-types-pattern-aware)）。
+- 此规则的名字也支持基于 ANT 表达式、正则等的模式匹配（参见 [模式感知的数据类型](#data-types-pattern-aware)）。
 - `## event_type` 为必填；缺失将导致该条目被跳过。
 - 如需作用域替换，可结合 `## replace_scopes` 使用。
 
@@ -1204,8 +1204,6 @@ on_actions = {
 <!-- @see icu.windea.pls.config.config.extended.CwtExtendedParameterConfig -->
 
 为触发器 / 效果 / 内联脚本中的参数（`$PARAM$` 或 `$PARAM|DEFAULT$`）提供文档与上下文增强：绑定上下文键、声明上下文规则与作用域上下文，以及支持从使用处继承上下文。
-
-规则名称可以是常量、模板表达式、ANT 表达式或正则表达式（参见[模式感知的数据类型](#data-types-pattern-aware)）。
 
 路径定位：
 - `parameters/{name}`。其中 `{name}` 匹配规则名称。
@@ -1255,7 +1253,7 @@ parameters = {
 
 注意事项：
 
-- 此规则的名字也支持基于正则表达式等的模式匹配（参见 [模式数据类型](#data-types-pattern-aware)）。
+- 此规则的名字也支持基于 ANT 表达式、正则等的模式匹配（参见 [模式感知的数据类型](#data-types-pattern-aware)）。
 - `## context_key` 为必填；缺失将导致该条目被跳过。
 - 标记 `## inherit` 时，上下文取自"使用处"，可能为空或因位置不同而变化。
 - 根级 `single_alias_right[...]` 会被内联展开后再作为上下文规则使用。
@@ -1289,7 +1287,7 @@ complex_enum_values = {
 
 注意事项：
 
-- 此规则的名字也支持基于正则表达式等的模式匹配（参见 [模式数据类型](#data-types-pattern-aware)）。
+- 此规则的名字也支持基于 ANT 表达式、正则等的模式匹配（参见 [模式感知的数据类型](#data-types-pattern-aware)）。
 
 > CWTools 兼容性：不兼容。插件作为扩展提供。
 
@@ -1324,8 +1322,7 @@ dynamic_values = {
 
 注意事项：
 
-- 此规则的名字也支持基于正则表达式等的模式匹配（参见 [模式数据类型](#data-types-pattern-aware)）。
-- 名称可使用模板 / ANT / 正则匹配，但请避免过宽导致误匹配。
+- 此规则的名字也支持基于 ANT 表达式、正则等的模式匹配（参见 [模式感知的数据类型](#data-types-pattern-aware)）。
 
 > CWTools 兼容性：不兼容。插件作为扩展提供。
 
@@ -1377,7 +1374,7 @@ inline_scripts = {
 
 注意事项：
 
-- 此规则的名字也支持基于正则表达式等的模式匹配（参见 [模式数据类型](#data-types-pattern-aware)）。
+- 此规则的名字也支持基于 ANT 表达式、正则等的模式匹配（参见 [模式感知的数据类型](#data-types-pattern-aware)）。
 - 如果仅需单条上下文规则，保持默认 `single` 即可；需要声明多条时使用 `multiple`。
 - 根级 `single_alias_right[...]` 会被内联展开后再作为上下文规则使用。
 
@@ -2239,6 +2236,9 @@ icon|p1,p2
 
 #### DefinitionSnippet {#data-type-definition-snippet}
 
+> [!tip]
+> 引入的插件版本：3.0.4
+
 定义引用片段类型。
 作为 [Definition](#data-type-definition) 的片段形式，额外附带一组模板参数。
 
@@ -2262,7 +2262,11 @@ icon|p1,p2
 
 #### LocalisationSnippet {#data-type-localisation-snippet}
 
-本地化引用片段类型。作为 [Localisation](#data-type-localisation) 的片段形式，额外附带一组模板参数。
+> [!tip]
+> 引入的插件版本：3.0.4
+
+本地化引用片段类型。
+作为 [Localisation](#data-type-localisation) 的片段形式，额外附带一组模板参数。
 
 对应的表达式是完整的引用文本的一部分。
 通过解析模板参数，将其中的占位符替换为对应的表达式，可以得到完整的引用文本。
@@ -2403,6 +2407,9 @@ icon|p1,p2
 
 #### UnionValue {#data-type-union-value}
 
+> [!tip]
+> 引入的插件版本：2.2.0
+
 并集值类型。
 
 匹配对应的并集规则中的其中一个候选项。
@@ -2487,6 +2494,9 @@ icon|p1,p2
 
 <!-- @see icu.windea.pls.core.match.GlobMatcher -->
 
+> [!tip]
+> 引入的插件版本：2.2.0
+
 GLOB 模式类型。可以感知模式（表达式包含某种模式字符串）的数据类型之一。
 
 匹配符合 GLOB 模式的表达式。支持通配符 `?`（单个字符） 和 `*`（任意个字符）。
@@ -2504,6 +2514,9 @@ GLOB 模式类型。可以感知模式（表达式包含某种模式字符串）
 #### Ant {#data-type-ant}
 
 <!-- @see icu.windea.pls.core.match.AntMatcher -->
+
+> [!tip]
+> 引入的插件版本：1.3.6
 
 ANT 路径模式类型。可以感知模式（表达式包含某种模式字符串）的数据类型之一。
 
@@ -2523,6 +2536,9 @@ ANT 路径模式类型。可以感知模式（表达式包含某种模式字符�
 
 <!-- @see icu.windea.pls.core.match.RegexMatcher -->
 
+> [!tip]
+> 引入的插件版本：1.3.6
+
 正则表达式模式类型。可以感知模式（表达式包含某种模式字符串）的数据类型之一。
 
 匹配符合正则表达式的表达式。
@@ -2537,60 +2553,12 @@ ANT 路径模式类型。可以感知模式（表达式包含某种模式字符�
 
 > CWTools 兼容性：不兼容。插件作为扩展提供。
 
-### 后缀感知的数据类型 {#data-types-suffix-aware}
-
-> [!warning]
-> 属于此类的数据类型会在后续版本中移除，计划迁移到新增的片段数据类型（snippet data types）。
-
-#### SuffixAwareDefinition {#data-type-suffix-aware-definition}
-
-后缀感知的定义引用类型。
-
-由基础定义引用和逗号分隔的后缀列表组成，匹配时同时验证定义引用和后缀。
-如果后缀列表为空，则退化为普通的 [Definition](#data-type-definition)。
-
-对应的数据表达式的格式：
-- `<{type}>|{suffixes}` - 其中 `{type}` 匹配类型名，`{suffixes}` 匹配逗号分隔的一组后缀。
-- `<{type}.{subtypes}>|{suffixes}` - 其中 `{type}` 匹配类型名， `{subtypes}` 匹配点号分隔的一组子类型名，`{suffixes}` 匹配逗号分隔的一组后缀。
-
-对应的数据表达式的示例：
-- `<event>|country,crisis`
-
-> CWTools 兼容性：不兼容。插件作为扩展提供。
-
-#### SuffixAwareLocalisation {#data-type-suffix-aware-localisation}
-
-后缀感知的本地化引用类型。
-
-由基础本地化引用和逗号分隔的后缀列表组成，匹配时同时验证本地化引用和后缀。
-如果后缀列表为空，则退化为普通的 [Localisation](#data-type-localisation)。
-
-对应的数据表达式的格式：
-- `localisation|{suffixes}` - 其中 `{suffixes}` 匹配逗号分隔的一组后缀。
-
-对应的数据表达式的示例：
-- `localisation|name,desc`
-
-> CWTools 兼容性：不兼容。插件作为扩展提供。
-
-#### SuffixAwareSyncedLocalisation {#data-type-suffix-aware-synced-localisation}
-
-后缀感知的同步本地化引用类型。
-
-由基础同步本地化引用和逗号分隔的后缀列表组成，匹配时同时验证同步本地化引用和后缀。
-如果后缀列表为空，则退化为普通的 [SyncedLocalisation](#data-type-synced-localisation)。
-
-对应的数据表达式的格式：
-- `localisation_synced|{suffixes}` - 其中 `{suffixes}` 匹配逗号分隔的一组后缀。
-
-> CWTools 兼容性：不兼容。插件作为扩展提供。
-
 ## FAQ {#faq}
 
 #### 关于模板表达式 {#faq-template}
 
-<!-- @see icu.windea.pls.config.configExpression.CwtTemplateExpression -->
 <!-- @see icu.windea.pls.config.CwtDataTypes.Template -->
+<!-- @see icu.windea.pls.config.configExpression.CwtTemplateExpression -->
 
 模板表达式由多个[数据表达式](#config-expression-data)片段（如定义引用、枚举引用、动态值引用等）与常量片段组合而成，用来进行更加灵活的匹配。
 
@@ -2618,7 +2586,10 @@ a_value[anything]_b
 
 <!-- @see icu.windea.pls.config.CwtDataTypes.Ant -->
 
-从插件版本 1.3.6 开始，可以在数据表达式中使用 ANT 路径模式进行更灵活的匹配。
+> [!tip]
+> 引入的插件版本：1.3.6
+
+除了常规匹配策略外，也可以在数据表达式中使用 ANT 路径模式进行更灵活的匹配。
 ANT 表达式通过前缀标识：`ant:` 表示区分大小写，`ant.i:` 表示忽略大小写。
 
 这里使用的 ANT 路径模式支持以下通配符：
@@ -2640,7 +2611,10 @@ ant.i:/foo/bar?/*
 
 <!-- @see icu.windea.pls.config.CwtDataTypes.Regex -->
 
-从插件版本 1.3.6 开始，可以在数据表达式中使用正则表达式进行更灵活的匹配。
+> [!tip]
+> 引入的插件版本：1.3.6
+
+除了常规匹配策略外，也可以在数据表达式中使用正则表达式进行更灵活的匹配。
 正则表达式通过前缀标识：`re:` 表示区分大小写，`re.i:` 表示忽略大小写。
 前缀之后的部分即为标准的正则表达式。
 
@@ -2799,7 +2773,10 @@ file = filepath[./]
 <!-- @see icu.windea.pls.config.option.CwtOptionMetadata.inject -->
 <!-- @see icu.windea.pls.ep.config.config.CwtInjectConfigPostProcessor -->
 
-从插件版本 2.1.0 开始，可以通过使用选项 `## inject` 在规则的解析阶段注入规则。
+> [!tip]
+> 引入的插件版本：2.0.1
+
+可以通过使用选项 `## inject` 在规则的解析阶段注入规则。
 
 如果已存在规则片段
 

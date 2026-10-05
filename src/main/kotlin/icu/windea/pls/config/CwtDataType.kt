@@ -35,7 +35,6 @@ import icu.windea.pls.model.type.ParadoxExpressionType
  *
  * @property id 唯一标识符。
  * @property isReference 是否为引用类型（表达式引用了特定目标，如定义、本地化、文件路径等）。
- * @property isSuffixAware 是否可以感知后缀（表达式包含后缀列表）。
  * @property priority 静态优先级。脚本表达式会优先匹配优先级更高的数据表达式。优先级默认为 0.0。
  * @property priorityProvider 动态优先级提供者。根据具体的数据表达式和规则组动态计算优先级。优先级默认为 0.0。
  *
@@ -49,7 +48,6 @@ import icu.windea.pls.model.type.ParadoxExpressionType
 class CwtDataType private constructor(
     val id: String,
     val isReference: Boolean = false,
-    val isSuffixAware: Boolean = false,
     val priority: Double? = null,
     val priorityProvider: ((CwtDataExpression, CwtConfigGroup) -> Double)? = null,
 ) {
@@ -64,16 +62,14 @@ class CwtDataType private constructor(
         private val id: String
     ) {
         private var isReference: Boolean = false
-        private var isSuffixAware: Boolean = false
         private var priority: Double? = null
         private var priorityProvider: ((CwtDataExpression, CwtConfigGroup) -> Double)? = null
 
         fun reference() = apply { isReference = true }
-        fun suffixAware() = apply { isSuffixAware = true }
         fun withPriority(value: Double) = apply { priority = value }
         fun withPriority(value: (CwtDataExpression, CwtConfigGroup) -> Double) = apply { priorityProvider = value }
 
-        fun build(): CwtDataType = CwtDataType(id, isReference, isSuffixAware, priority, priorityProvider).also { _entries[id] = it }
+        fun build(): CwtDataType = CwtDataType(id, isReference, priority, priorityProvider).also { _entries[id] = it }
         inline fun build(block: Builder.() -> Unit): CwtDataType = also { block() }.build()
     }
 

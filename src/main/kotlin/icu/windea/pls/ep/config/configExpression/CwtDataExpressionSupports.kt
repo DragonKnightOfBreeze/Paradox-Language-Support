@@ -6,9 +6,7 @@ import icu.windea.pls.config.configExpression.CwtDataExpressionRole
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
 import icu.windea.pls.config.scopes.CwtDataExpressionMetadataResolutionScope
 import icu.windea.pls.config.scopes.CwtDataExpressionMetadataResolutionScope.INSTANCE.resolveValue
-import icu.windea.pls.core.optimized
 import icu.windea.pls.core.removeSurroundingOrNull
-import icu.windea.pls.core.toDelimitedSet
 
 class CwtBasicDataExpressionSupport : CwtTextPatternBasedDataExpressionSupport(), CwtDataExpressionMetadataResolutionScope {
     override fun registerProviders() {
@@ -162,32 +160,6 @@ class CwtSnippetDataExpressionSupport : CwtDataExpressionSupport,CwtDataExpressi
 
     override fun resolveTemplate(expressionString: String): CwtDataExpression? {
         return null // explicitly unsupported
-    }
-}
-
-// TODO 3.0.4 remove
-class CwtSuffixAwareDataExpressionSupport : CwtDataExpressionSupport {
-    override fun resolve(expressionString: String, role: CwtDataExpressionRole): CwtDataExpression? {
-        val separatorIndex = expressionString.indexOf('|')
-        if (separatorIndex == -1) return null
-        val text = expressionString.substring(0, separatorIndex)
-        val expectedSuffixes = expressionString.substring(separatorIndex + 1).toDelimitedSet()
-        run {
-            val t = text.removeSurroundingOrNull("<", ">") ?: return@run
-            if (expectedSuffixes.isEmpty()) return CwtDataExpression.create(expressionString, CwtDataTypes.Definition, role) { value = t }
-            return CwtDataExpression.create(expressionString, CwtDataTypes.SuffixAwareDefinition, role) { value = t; suffixes = expectedSuffixes.optimized() }
-        }
-        run {
-            if (text != "localisation") return@run
-            if (expectedSuffixes.isEmpty()) return CwtDataExpression.create(expressionString, CwtDataTypes.Localisation, role)
-            return CwtDataExpression.create(expressionString, CwtDataTypes.SuffixAwareLocalisation, role) { suffixes = expectedSuffixes.optimized() }
-        }
-        run {
-            if (text != "localisation_synced") return@run
-            if (expectedSuffixes.isEmpty()) return CwtDataExpression.create(expressionString, CwtDataTypes.SyncedLocalisation, role)
-            return CwtDataExpression.create(expressionString, CwtDataTypes.SuffixAwareSyncedLocalisation, role) { suffixes = expectedSuffixes.optimized() }
-        }
-        return null
     }
 }
 

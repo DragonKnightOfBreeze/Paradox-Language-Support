@@ -145,7 +145,6 @@
     <dataExpressionSupport id="snippet" implementation="icu.windea.pls.ep.config.configExpression.CwtSnippetDataExpressionSupport"/>
     <dataExpressionSupport id="constant" implementation="icu.windea.pls.ep.config.configExpression.CwtConstantDataExpressionSupport" order="last"/>
     <dataExpressionSupport id="pattern" implementation="icu.windea.pls.ep.config.configExpression.CwtPatternDataExpressionSupport"/>
-    <dataExpressionSupport id="suffixAware" implementation="icu.windea.pls.ep.config.configExpression.CwtSuffixAwareDataExpressionSupport"/>
 
     <mergedIndexSupport implementation="icu.windea.pls.ep.index.ParadoxDynamicValueMergedIndexSupport"/>
     <mergedIndexSupport implementation="icu.windea.pls.ep.index.ParadoxParameterMergedIndexSupport"/>

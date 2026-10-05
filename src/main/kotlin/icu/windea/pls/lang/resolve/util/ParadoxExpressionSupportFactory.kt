@@ -20,6 +20,7 @@ import icu.windea.pls.config.config.isStatic
 import icu.windea.pls.config.config.resolveElementWithConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.collections.forEachFast
+import icu.windea.pls.core.orNull
 import icu.windea.pls.core.util.ReadWriteAccess
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueLightElement
@@ -31,9 +32,15 @@ import icu.windea.pls.lang.resolve.ParadoxExpressionService
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 import icu.windea.pls.lang.search.ParadoxComplexEnumValueSearch
+import icu.windea.pls.lang.search.ParadoxDefinitionSearch
+import icu.windea.pls.lang.search.ParadoxLocalisationSearch
+import icu.windea.pls.lang.search.util.contextSensitive
+import icu.windea.pls.lang.search.util.preferLocale
 import icu.windea.pls.lang.search.util.withSearchScopeType
 import icu.windea.pls.lang.util.ParadoxDynamicValueManager
+import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
+import icu.windea.pls.model.ParadoxLocalisationType
 import icu.windea.pls.script.highlighting.ParadoxScriptHighlighterColors
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
@@ -59,7 +66,8 @@ object ParadoxExpressionSupportFactory {
         holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(range).textAttributes(attributesKey).create()
     }
 
-    // TODO 3.0.4 revision
+    // NOTE 3.0.4 unused so far, keep atm
+    @Suppress("unused")
     fun annotateExpressionAsHighlightedReference(element: ParadoxExpressionElement, rangeInExpression: TextRange, holder: AnnotationHolder) {
         if (rangeInExpression.isEmpty) return
         val offset = element.startOffset + ParadoxExpressionService.getExpressionOffset(element)
@@ -121,17 +129,94 @@ object ParadoxExpressionSupportFactory {
 
     // region Resolve Methods
 
-    fun resolveModifier(element: ParadoxExpressionElement, name: String, configGroup: CwtConfigGroup): PsiElement? {
+    /**
+     * @see CwtDataTypes.Definition
+     */
+    fun resolveDefinition(element: ParadoxExpressionElement, expression: String, config: CwtConfig<*>): PsiElement? {
+        val configGroup = config.configGroup
+        val typeExpression = config.configExpression?.metadata?.value ?: return null
+        val name = expression.orNull() ?: return null
+        val selector = ParadoxDefinitionSearch.selector(configGroup.project, element).contextSensitive()
+        return ParadoxDefinitionSearch.searchElement(name, typeExpression, selector).find()
+    }
+
+    /**
+     * @see CwtDataTypes.Definition
+     */
+    fun resolveAllDefinition(element: ParadoxExpressionElement, expression: String, config: CwtConfig<*>): List<PsiElement> {
+        val configGroup = config.configGroup
+        val typeExpression = config.configExpression?.metadata?.value ?: return emptyList()
+        val name = expression.orNull() ?: return emptyList()
+        val selector = ParadoxDefinitionSearch.selector(configGroup.project, element).contextSensitive()
+        return ParadoxDefinitionSearch.searchElement(name, typeExpression, selector).findAll()
+    }
+
+    /**
+     * @see CwtDataTypes.DefinitionSnippet
+     */
+    fun resolveDefinitionSnippet(element: ParadoxExpressionElement, expression: String, config: CwtConfig<*>): PsiElement? {
+        val configExpression = config.configExpression ?: return null
+        val typeExpression = configExpression.metadata.value ?: return null
+        val templates = configExpression.metadata.snippetTemplates ?: return null
+        val name = expression.orNull() ?: return null
+        val configGroup = config.configGroup
+        return ParadoxDefinitionSnippetLightElement(element, name, typeExpression, templates, configGroup.gameType, configGroup.project)
+    }
+
+    /**
+     * @see CwtDataTypes.Localisation
+     */
+    fun resolveLocalisation(element: ParadoxExpressionElement, expression: String, config: CwtConfig<*>, type: ParadoxLocalisationType = ParadoxLocalisationType.Normal): PsiElement? {
+        val configGroup = config.configGroup
+        val name = expression.orNull() ?: return null
+        val selector = ParadoxLocalisationSearch.selector(configGroup.project, element).contextSensitive()
+            .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
+        return ParadoxLocalisationSearch.search(name, selector, type).find()
+    }
+
+    /**
+     * @see CwtDataTypes.Localisation
+     */
+    fun resolveAllLocalisation(element: ParadoxExpressionElement, expression: String, config: CwtConfig<*>, type: ParadoxLocalisationType = ParadoxLocalisationType.Normal): List<PsiElement> {
+        val configGroup = config.configGroup
+        val name = expression.orNull() ?: return emptyList()
+        val selector = ParadoxLocalisationSearch.selector(configGroup.project, element).contextSensitive()
+            .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
+        return ParadoxLocalisationSearch.search(name, selector, type).findAll()
+    }
+
+    /**
+     * @see CwtDataTypes.LocalisationSnippet
+     */
+    fun resolveLocalisationSnippet(element: ParadoxExpressionElement, expression: String, config: CwtConfig<*>): PsiElement? {
+        val configExpression = config.configExpression ?: return null
+        val templates = configExpression.metadata.snippetTemplates ?: return null
+        val name = expression.orNull() ?: return null
+        val configGroup = config.configGroup
+        return ParadoxLocalisationSnippetLightElement(element, name, templates, configGroup.gameType, configGroup.project)
+    }
+
+    /**
+     * @see CwtDataTypes.Modifier
+     */
+    fun resolveModifier(element: ParadoxExpressionElement, expression: String, configGroup: CwtConfigGroup): PsiElement? {
         if (element !is ParadoxScriptStringExpressionElement) return null // NOTE 1.4.0 - unnecessary to support yet
+        val name = expression.orNull() ?: return null
         return ParadoxModifierManager.resolveModifier(name, element, configGroup)
     }
 
+    /**
+     * @see CwtDataTypes.EnumValue
+     */
     fun resolveEnumValue(element: ParadoxExpressionElement, expression: String, config: CwtConfig<*>): PsiElement? {
         resolveStaticEnumValue(expression, config)?.let { return it }
         resolveComplexEnumValue(element, expression, config)?.let { return it }
         return null
     }
 
+    /**
+     * @see CwtDataTypes.EnumValue
+     */
     fun resolveStaticEnumValue(expression: String, config: CwtConfig<*>): PsiElement? {
         val dataExpression = config.configExpression ?: return null
         if (dataExpression.type != CwtDataTypes.EnumValue) return null
@@ -144,6 +229,9 @@ object ParadoxExpressionSupportFactory {
         return resolved
     }
 
+    /**
+     * @see CwtDataTypes.EnumValue
+     */
     fun resolveComplexEnumValue(element: ParadoxExpressionElement, expression: String, config: CwtConfig<*>): PsiElement? {
         val dataExpression = config.configExpression ?: return null
         if (dataExpression.type != CwtDataTypes.EnumValue) return null
@@ -159,6 +247,9 @@ object ParadoxExpressionSupportFactory {
         return ParadoxComplexEnumValueLightElement(element, info.name, info.enumName, readWriteAccess, info.gameType, project)
     }
 
+    /**
+     * @see CwtDataTypeSets.DynamicValue
+     */
     fun resolveDynamicValue(element: ParadoxExpressionElement, expression: String, config: CwtConfig<*>): PsiElement? {
         val dataExpression = config.configExpression ?: return null
         if (dataExpression.type !in CwtDataTypeSets.DynamicValue) return null
@@ -168,31 +259,16 @@ object ParadoxExpressionSupportFactory {
     }
 
     /**
-     * 解析定义引用片段（[CwtDataTypes.DefinitionSnippet]）为对应的 lightElement（相关项）。
+     * @see CwtDataTypes.ShaderEffect
      */
-    fun resolveDefinitionSnippet(element: ParadoxExpressionElement, expression: String, config: CwtConfig<*>): PsiElement? {
-        val configExpression = config.configExpression ?: return null
-        val typeExpression = configExpression.metadata.value ?: return null
-        val templates = configExpression.metadata.snippetTemplates ?: return null
-        val configGroup = config.configGroup
-        return ParadoxDefinitionSnippetLightElement(element, expression, typeExpression.substringBefore('.'), templates, configGroup.gameType, configGroup.project)
-    }
-
-    /**
-     * 解析本地化引用片段（[CwtDataTypes.LocalisationSnippet]）为对应的 lightElement（相关项）。
-     */
-    fun resolveLocalisationSnippet(element: ParadoxExpressionElement, expression: String, config: CwtConfig<*>): PsiElement? {
-        val configExpression = config.configExpression ?: return null
-        val templates = configExpression.metadata.snippetTemplates ?: return null
-        val configGroup = config.configGroup
-        return ParadoxLocalisationSnippetLightElement(element, expression, templates, configGroup.gameType, configGroup.project)
-    }
-
     fun resolveShaderEffect(element: ParadoxExpressionElement, expression: String, configGroup: CwtConfigGroup): PsiElement {
         val name = expression
         return ParadoxShaderEffectLightElement(element, name, configGroup.gameType, configGroup.project)
     }
 
+    /**
+     * @see CwtDataTypes.MeshLocator
+     */
     fun resolveMeshLocator(element: ParadoxExpressionElement, expression: String, configGroup: CwtConfigGroup): PsiElement {
         val name = expression
         return ParadoxMeshLocatorLightElement(element, name, configGroup.gameType, configGroup.project)

@@ -84,27 +84,24 @@ object ParadoxMatchResultFactory {
     }
 
     /**
+     * 定义引用的匹配。
+     *
+     * 说明：
+     * - 匹配定义时不忽略子类型。
+     *
      * @see CwtDataTypes.Definition
      */
     fun forDefinition(element: PsiElement, project: Project, expression: String, configExpression: CwtDataExpression): ParadoxMatchResult {
         // indexing -> should not visit indices -> treat as wildcard match
         if (ParadoxMatchOptionsService.skipIndex()) return ParadoxMatchResult.WildcardMatch
 
-        // TODO 3.0.4 refactor
         val typeExpression = configExpression.metadata.value ?: return ParadoxMatchResult.NotMatch // invalid cwt config
-        val suffixes = configExpression.metadata.suffixes.orEmpty()
         val key = ParadoxMatchResultService.Keys.cacheForDefinitions
-        val cacheKey = when {
-            suffixes.isEmpty() -> "${typeExpression}#${expression}"
-            else -> "${suffixes.joinToString(",")}#${typeExpression}#${expression}"
-        }
+        val cacheKey = "${typeExpression}#${expression}"
         return ParadoxMatchResultService.getFromCache(element, project, key, cacheKey) {
             ProgressManager.checkCanceled() // check cancellation before lazy match
             ParadoxMatchResult.LazyIndexAwareMatch {
-                when {
-                    suffixes.isEmpty() -> ParadoxMatchFactory.matchesDefinition(element, project, expression, typeExpression)
-                    else -> suffixes.any { ParadoxMatchFactory.matchesDefinition(element, project, expression + it, typeExpression) }
-                }
+                ParadoxMatchFactory.matchesDefinition(element, project, expression, typeExpression)
             }
         }
     }
@@ -139,27 +136,24 @@ object ParadoxMatchResultFactory {
     }
 
     /**
+     * 本地化引用的匹配。
+     *
+     * 说明：
+     * - 可以指定本地化类型 [type]，默认为普通本地化 [ParadoxLocalisationType.Normal]。
+     *
      * @see CwtDataTypes.Localisation
      * @see CwtDataTypes.SyncedLocalisation
      */
-    fun forLocalisation(element: PsiElement, project: Project, expression: String, configExpression: CwtDataExpression, type: ParadoxLocalisationType = ParadoxLocalisationType.Normal): ParadoxMatchResult {
+    fun forLocalisation(element: PsiElement, project: Project, expression: String, type: ParadoxLocalisationType = ParadoxLocalisationType.Normal): ParadoxMatchResult {
         // indexing -> should not visit indices -> treat as wildcard match
         if (ParadoxMatchOptionsService.skipIndex()) return ParadoxMatchResult.WildcardMatch
 
-        // TODO 3.0.4 refactor
-        val suffixes = configExpression.metadata.suffixes.orEmpty()
         val key = ParadoxMatchResultService.Keys.cacheForLocalisations
-        val cacheKey = when {
-            suffixes.isEmpty() -> expression
-            else -> "${suffixes.joinToString(",")}#${expression}"
-        }
+        val cacheKey = expression
         return ParadoxMatchResultService.getFromCache(element, project, key, cacheKey) {
             ProgressManager.checkCanceled() // check cancellation before lazy match
             ParadoxMatchResult.LazyIndexAwareMatch {
-                when {
-                    suffixes.isEmpty() -> ParadoxMatchFactory.matchesLocalisation(element, project, expression, type)
-                    else -> suffixes.any { ParadoxMatchFactory.matchesLocalisation(element, project, expression + it, type) }
-                }
+                ParadoxMatchFactory.matchesLocalisation(element, project, expression, type)
             }
         }
     }

@@ -32,8 +32,6 @@ import kotlin.experimental.or
 @Optimized
 class ParadoxDefinitionUsagesSearcher : QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters>(true) {
     override fun processQuery(queryParameters: ReferencesSearch.SearchParameters, consumer: Processor<in PsiReference>) {
-        // TODO SUFFIX_AWARE 不兼容需要带上后缀的情况，目前不支持
-
         val target = queryParameters.elementToSearch
         if (target !is ParadoxDefinitionElement) return
 
