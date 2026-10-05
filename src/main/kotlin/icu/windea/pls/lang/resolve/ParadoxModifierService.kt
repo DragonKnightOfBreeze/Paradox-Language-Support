@@ -1,6 +1,8 @@
 package icu.windea.pls.lang.resolve
 
 import com.intellij.codeInsight.completion.CompletionResultSet
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.util.Processor
 import icu.windea.pls.config.configGroup.CwtConfigGroup
@@ -14,7 +16,14 @@ import icu.windea.pls.ep.resolve.modifier.ParadoxModifierIconProvider
 import icu.windea.pls.ep.resolve.modifier.ParadoxModifierNameDescProvider
 import icu.windea.pls.ep.resolve.modifier.ParadoxModifierSupport
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
+import icu.windea.pls.lang.index.constraints.ParadoxLocalisationIndexConstraint
 import icu.windea.pls.lang.psi.light.ParadoxModifierLightElement
+import icu.windea.pls.lang.search.ParadoxLocalisationSearch
+import icu.windea.pls.lang.search.util.contextSensitive
+import icu.windea.pls.lang.search.util.preferLocale
+import icu.windea.pls.lang.search.util.withConstraint
+import icu.windea.pls.lang.util.ParadoxLocaleManager
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxModifierInfo
 import icu.windea.pls.model.orSpecific
 import icu.windea.pls.model.support
@@ -111,5 +120,53 @@ object ParadoxModifierService {
             ep.addModifierDescKey(modifierInfo, element, result)
         }
         return result.optimizedIfEmpty()
+    }
+
+    /**
+     * 解析修正关联的（第一个）名字本地化。
+     *
+     * @param nameKeys 修正的名字对应的本地化键。
+     */
+    /**
+     * 解析修正关联的名字本地化。仅使用第一个能够解析到本地化的名字键。
+     *
+     * @param nameKeys 修正的名字对应的本地化键。
+     */
+    fun resolveRelatedNameLocalisations(nameKeys: Set<String>, contextElement: PsiElement, project: Project): List<ParadoxLocalisationProperty> {
+        if (nameKeys.isEmpty()) return emptyList()
+        ProgressManager.checkCanceled()
+        val selector = ParadoxLocalisationSearch.selector(project, contextElement).contextSensitive()
+            .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
+            .withConstraint(ParadoxLocalisationIndexConstraint.Modifier) // so ignore case
+        for (key in nameKeys) {
+            val localisations = ParadoxLocalisationSearch.searchNormal(key, selector).findAll()
+            if (localisations.isNotEmpty()) return localisations
+        }
+        return emptyList()
+    }
+
+    /**
+     * 解析修正关联的（第一个）名字本地化。
+     *
+     * @param nameKeys 修正的名字对应的本地化键。
+     */
+    fun resolveRelatedLocalisation(nameKeys: Set<String>, contextElement: PsiElement, project: Project): ParadoxLocalisationProperty? {
+        return resolveRelatedNameLocalisations(nameKeys, contextElement, project).firstOrNull()
+    }
+
+    /**
+     * 解析修正关联的所有本地化（包括名字和描述）。
+     *
+     * 备注：名字和描述各自仅使用第一个能够解析到本地化的键。
+     *
+     * @param nameKeys 修正的名字对应的本地化键。
+     * @param descKeys 修正的描述对应的本地化键。
+     */
+    fun resolveRelatedLocalisations(nameKeys: Set<String>, descKeys: Set<String>, contextElement: PsiElement, project: Project): List<ParadoxLocalisationProperty> {
+        if (nameKeys.isEmpty() && descKeys.isEmpty()) return emptyList()
+        val result = mutableListOf<ParadoxLocalisationProperty>()
+        result.addAll(resolveRelatedNameLocalisations(nameKeys, contextElement, project))
+        result.addAll(resolveRelatedNameLocalisations(descKeys, contextElement, project))
+        return result
     }
 }

@@ -1,7 +1,6 @@
 package icu.windea.pls.lang.util
 
 import com.intellij.codeInsight.completion.CompletionResultSet
-import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
@@ -14,7 +13,6 @@ import icu.windea.pls.core.cache.cancelable
 import icu.windea.pls.core.cache.createNestedCache
 import icu.windea.pls.core.cache.trackedBy
 import icu.windea.pls.core.collections.mapNotNullFast
-import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getOrPutUserData
@@ -24,14 +22,11 @@ import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.registerKeyWithThis
 import icu.windea.pls.ep.resolve.modifier.ParadoxModifierSupport
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
-import icu.windea.pls.lang.index.constraints.ParadoxLocalisationIndexConstraint
 import icu.windea.pls.lang.psi.light.ParadoxModifierLightElement
 import icu.windea.pls.lang.resolve.ParadoxModifierService
-import icu.windea.pls.lang.search.ParadoxLocalisationSearch
-import icu.windea.pls.lang.search.util.preferLocale
-import icu.windea.pls.lang.search.util.withConstraint
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.selectRootFile
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxModifierInfo
 import icu.windea.pls.model.support
 import icu.windea.pls.model.toInfo
@@ -147,27 +142,43 @@ object ParadoxModifierManager {
         }
     }
 
+    /**
+     * 得到修正关联的（第一个）名字本地化。
+     *
+     * @see ParadoxModifierService.resolveRelatedLocalisation
+     */
+    fun getRelatedLocalisation(name: String, element: PsiElement, project: Project): ParadoxLocalisationProperty? {
+        val nameKeys = getModifierNameKeys(name, element)
+        return ParadoxModifierService.resolveRelatedLocalisation(nameKeys, element, project)
+    }
+
+    /**
+     * 得到修正关联的所有本地化（包括名字和描述）。
+     *
+     * @see ParadoxModifierService.resolveRelatedLocalisations
+     */
+    fun getRelatedLocalisations(name: String, element: PsiElement, project: Project): List<ParadoxLocalisationProperty> {
+        val nameKeys = getModifierNameKeys(name, element)
+        val descKeys = getModifierDescKeys(name, element)
+        return ParadoxModifierService.resolveRelatedLocalisations(nameKeys, descKeys, element, project)
+    }
+
+    /**
+     * 得到修正关联的所有本地化（包括名字和描述）。
+     */
+    fun getRelatedLocalisations(element: ParadoxModifierLightElement): List<ParadoxLocalisationProperty> {
+        return getRelatedLocalisations(element.name, element, element.project)
+    }
+
     fun getPresentableName(name: String, element: PsiElement, project: Project): String? {
-        ProgressManager.checkCanceled()
-        val keys = getModifierNameKeys(name, element)
-        return keys.firstNotNullOfOrNull { key ->
-            val selector = ParadoxLocalisationSearch.selector(project, element)
-                .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
-                .withConstraint(ParadoxLocalisationIndexConstraint.Modifier) // so ignore case
-            val nameLocalisation = ParadoxLocalisationSearch.searchNormal(key, selector).find()
-            nameLocalisation?.let { ParadoxLocalisationManager.getPresentableText(it) }
-        }
+        val localisation = getRelatedLocalisation(name, element, project)
+        return localisation?.let { ParadoxLocalisationManager.getPresentableText(it) }
     }
 
     fun getPresentableNames(name: String, element: PsiElement, project: Project): Set<String> {
-        ProgressManager.checkCanceled()
-        val keys = getModifierNameKeys(name, element)
-        return keys.firstNotNullOfOrNull { key ->
-            val selector = ParadoxLocalisationSearch.selector(project, element)
-                .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
-                .withConstraint(ParadoxLocalisationIndexConstraint.Modifier) // so ignore case
-            val nameLocalisations = ParadoxLocalisationSearch.searchNormal(key, selector).findAll()
-            nameLocalisations.mapNotNullFast { ParadoxLocalisationManager.getPresentableText(it) }.toSet().orNull()
-        }.orEmpty()
+        val nameKeys = getModifierNameKeys(name, element)
+        val localisations = ParadoxModifierService.resolveRelatedNameLocalisations(nameKeys, element, project)
+        if (localisations.isEmpty()) return emptySet()
+        return localisations.mapNotNullFast { ParadoxLocalisationManager.getPresentableText(it) }.toSet()
     }
 }

@@ -1,5 +1,6 @@
 package icu.windea.pls.lang.resolve
 
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleFacade
@@ -252,6 +253,25 @@ object ParadoxDefinitionService {
             val resolveResult = ParadoxLocationExpressionService.resolve(primaryLocalisation.locationExpression, element, definitionInfo) { preferLocale(preferredLocale) }
             if (resolveResult !is CwtLocalisationLocationResolveResult.Static) return@f
             result.addAll(resolveResult.elements)
+        }
+        return result
+    }
+
+    /**
+     * 解析定义关联的所有本地化。
+     */
+    fun resolveRelatedLocalisations(definitionInfo: ParadoxDefinitionInfo): List<ParadoxLocalisationProperty> {
+        val element = definitionInfo.element ?: return emptyList()
+        val localisationInfos = definitionInfo.localisations
+        if (localisationInfos.isEmpty()) return emptyList() // 没有或者规则不完善
+        val result = mutableListOf<ParadoxLocalisationProperty>()
+        val preferredLocale = ParadoxLocaleManager.getPreferredLocaleConfig()
+        for ((_, locationExpression) in localisationInfos) {
+            ProgressManager.checkCanceled()
+            val resolveResult = ParadoxLocationExpressionService.resolve(locationExpression, element, definitionInfo) { preferLocale(preferredLocale) }
+            if (resolveResult != null && resolveResult.elements.isNotEmpty()) {
+                result.addAll(resolveResult.elements)
+            }
         }
         return result
     }

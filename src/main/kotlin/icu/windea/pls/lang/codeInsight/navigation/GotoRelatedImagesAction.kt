@@ -12,16 +12,14 @@ import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.lang.psi.ParadoxPsiFileService
 import icu.windea.pls.lang.psi.ParadoxPsiMatchService
 import icu.windea.pls.lang.psi.isDefinitionTypeKeyOrName
-import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.script.psi.ParadoxScriptFile
-import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 /**
  * 导航到当前目标的相关图片。
  *
  * 支持的目标：
  * - 定义（来自类型键或名字）
- * - 修正（来自对应的脚本表达式）
+ * - 修正（来自引用解析）
  */
 class GotoRelatedImagesAction : BaseCodeInsightAction() {
     private val handler = GotoRelatedImagesHandler()
@@ -61,7 +59,11 @@ class GotoRelatedImagesAction : BaseCodeInsightAction() {
             if (file !is ParadoxScriptFile) return@run
             val element = ParadoxPsiFileService.findScriptExpression(file, offset) ?: return@run
             if (element.isDefinitionTypeKeyOrName()) return true
-            if (element is ParadoxScriptStringExpressionElement && ParadoxModifierManager.resolveModifier(element) != null) return true
+        }
+        run {
+            if (file !is ParadoxScriptFile) return@run
+            val resolved = file.findReferenceAt(offset)?.resolve() ?: return@run
+            if (ParadoxPsiMatchService.isModifierElement(resolved)) return true
         }
         return false
     }

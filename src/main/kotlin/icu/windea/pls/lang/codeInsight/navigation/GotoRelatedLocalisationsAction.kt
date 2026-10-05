@@ -12,9 +12,7 @@ import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.lang.psi.ParadoxPsiFileService
 import icu.windea.pls.lang.psi.ParadoxPsiMatchService
 import icu.windea.pls.lang.psi.isDefinitionTypeKeyOrName
-import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.script.psi.ParadoxScriptFile
-import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 /**
  * 导航到当前目标的相关本地化。
@@ -22,8 +20,8 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
  * 支持的目标：
  * - 封装变量（来自名字）
  * - 定义（来自类型键或名字）
- * - 修正（来自对应的脚本表达式）
- * - 本地化引用片段（来自对应的脚本表达式）
+ * - 修正（来自引用解析）
+ * - 本地化引用片段（来自引用解析）
  */
 class GotoRelatedLocalisationsAction : BaseCodeInsightAction() {
     private val handler = GotoRelatedLocalisationsHandler()
@@ -63,12 +61,12 @@ class GotoRelatedLocalisationsAction : BaseCodeInsightAction() {
             if (file !is ParadoxScriptFile) return@run
             val element = ParadoxPsiFileService.findScriptExpression(file, offset) ?: return@run
             if (element.isDefinitionTypeKeyOrName()) return true
-            if (element is ParadoxScriptStringExpressionElement && ParadoxModifierManager.resolveModifier(element) != null) return true
         }
         run {
             if (file !is ParadoxScriptFile) return@run
             val resolved = file.findReferenceAt(offset)?.resolve() ?: return@run
             if (ParadoxPsiMatchService.isLocalisationSnippetElement(resolved)) return true
+            if (ParadoxPsiMatchService.isModifierElement(resolved)) return true
         }
         return false
     }

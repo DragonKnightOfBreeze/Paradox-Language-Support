@@ -3,34 +3,27 @@ package icu.windea.pls.lang.codeInsight.navigation
 import com.intellij.codeInsight.navigation.GotoTargetHandler
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.editor.Editor
-import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.platform.ide.progress.runWithModalProgressBlocking
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.collections.toArray
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.orAnonymous
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.index.constraints.ParadoxLocalisationIndexConstraint
 import icu.windea.pls.lang.psi.ParadoxPsiFileService
 import icu.windea.pls.lang.psi.ParadoxPsiMatchService
 import icu.windea.pls.lang.psi.ParadoxPsiPresentationService
 import icu.windea.pls.lang.psi.isDefinitionTypeKeyOrName
 import icu.windea.pls.lang.psi.light.ParadoxLocalisationSnippetLightElement
-import icu.windea.pls.lang.resolve.ParadoxLocationExpressionService
-import icu.windea.pls.lang.search.ParadoxLocalisationSearch
-import icu.windea.pls.lang.search.util.contextSensitive
-import icu.windea.pls.lang.search.util.preferLocale
-import icu.windea.pls.lang.search.util.withConstraint
+import icu.windea.pls.lang.psi.light.ParadoxModifierLightElement
 import icu.windea.pls.lang.select.selectScope
+import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.lang.util.ParadoxScriptedVariableManager
 import icu.windea.pls.lang.util.ParadoxSnippetManager
-import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 // com.intellij.testIntegration.GotoTestOrCodeHandler
 
@@ -83,48 +76,24 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
             if (definitionInfo.name.isEmpty()) return@run // 排除匿名定义
             sourceElement = definition
             val name = ParadoxPsiPresentationService.getNameForDefinition(definition) ?: return@run
-            val localisationInfos = definitionInfo.localisations
             runWithModalProgressBlocking(project, ChronicleBundle.message("script.goto.relatedLocalisations.search.d", name.orAnonymous().escapeXml())) {
                 // need read actions here if necessary
-                for ((_, locationExpression) in localisationInfos) {
-                    ProgressManager.checkCanceled()
-                    readAction {
-                        val resolveResult = ParadoxLocationExpressionService.resolve(locationExpression, definition, definitionInfo) { preferLocale(preferredLocale) }
-                        if (resolveResult != null && resolveResult.elements.isNotEmpty()) {
-                            targets.addAll(resolveResult.elements)
-                        }
-                    }
+                readAction {
+                    targets.addAll(ParadoxDefinitionManager.getRelatedLocalisations(definition))
                 }
             }
         }
         run {
             // 修正（相关本地化）
             if (sourceElement != null) return@run
-            val element = ParadoxPsiFileService.findScriptExpression(file, offset) as? ParadoxScriptStringExpressionElement ?: return@run
-            val modifierElement = ParadoxModifierManager.resolveModifier(element) ?: return@run
+            val element = file.findReferenceAt(offset)?.resolve() ?: return@run
+            if (element !is ParadoxModifierLightElement) return@run
             sourceElement = element
-            val name = ParadoxPsiPresentationService.getNameForModifier(modifierElement) ?: return@run
+            val name = ParadoxPsiPresentationService.getNameForModifier(element) ?: return@run
             runWithModalProgressBlocking(project, ChronicleBundle.message("script.goto.relatedLocalisations.search.m", name.orAnonymous().escapeXml())) {
                 // need read actions here if necessary
                 readAction {
-                    val keys = ParadoxModifierManager.getModifierNameKeys(name, modifierElement)
-                    val result = keys.firstNotNullOfOrNull { key ->
-                        val selector = ParadoxLocalisationSearch.selector(project, element).contextSensitive()
-                            .preferLocale(preferredLocale)
-                            .withConstraint(ParadoxLocalisationIndexConstraint.Modifier) // so ignore case
-                        ParadoxLocalisationSearch.searchNormal(key, selector).findAll().orNull()
-                    }
-                    if (result != null) targets.addAll(result)
-                }
-                readAction {
-                    val keys = ParadoxModifierManager.getModifierDescKeys(name, modifierElement)
-                    val result = keys.firstNotNullOfOrNull { key ->
-                        val selector = ParadoxLocalisationSearch.selector(project, element).contextSensitive()
-                            .preferLocale(preferredLocale)
-                            .withConstraint(ParadoxLocalisationIndexConstraint.Modifier) // so ignore case
-                        ParadoxLocalisationSearch.searchNormal(key, selector).findAll().orNull()
-                    }
-                    if (result != null) targets.addAll(result)
+                    targets.addAll(ParadoxModifierManager.getRelatedLocalisations(element))
                 }
             }
         }
@@ -151,9 +120,7 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
             return ChronicleBundle.message("script.goto.relatedLocalisations.chooseTitle.d", name.orAnonymous().escapeXml())
         }
         run {
-            val element = sourceElement as? ParadoxScriptStringExpressionElement ?: return@run
-            val modifierElement = ParadoxModifierManager.resolveModifier(element) ?: return@run
-            val name = ParadoxPsiPresentationService.getNameForModifier(modifierElement) ?: return@run
+            val name = ParadoxPsiPresentationService.getNameForModifier(sourceElement) ?: return@run
             return ChronicleBundle.message("script.goto.relatedLocalisations.chooseTitle.m", name.orAnonymous().escapeXml())
         }
         return ChronicleBundle.message("script.goto.relatedLocalisations.chooseTitle", name.orAnonymous().escapeXml())
@@ -173,9 +140,7 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
             return ChronicleBundle.message("script.goto.relatedLocalisations.findUsagesTitle.d", name.orAnonymous().escapeXml())
         }
         run {
-            val element = sourceElement as? ParadoxScriptStringExpressionElement ?: return@run
-            val modifierElement = ParadoxModifierManager.resolveModifier(element) ?: return@run
-            val name = ParadoxPsiPresentationService.getNameForModifier(modifierElement) ?: return@run
+            val name = ParadoxPsiPresentationService.getNameForModifier(sourceElement) ?: return@run
             return ChronicleBundle.message("script.goto.relatedLocalisations.findUsagesTitle.m", name.orAnonymous().escapeXml())
         }
         return ChronicleBundle.message("script.goto.relatedLocalisations.findUsagesTitle", name.orAnonymous().escapeXml())

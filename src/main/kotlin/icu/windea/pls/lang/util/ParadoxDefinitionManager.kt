@@ -151,6 +151,14 @@ object ParadoxDefinitionManager {
         return definitionInfo.images.filterFast { it.isPrimaryKey() }.optimized()
     }
 
+    /**
+     * 得到定义关联的所有本地化。
+     */
+    fun getRelatedLocalisations(element: ParadoxDefinitionElement): List<ParadoxLocalisationProperty> {
+        val definitionInfo = getInfo(element) ?: return emptyList()
+        return ParadoxDefinitionService.resolveRelatedLocalisations(definitionInfo)
+    }
+
     fun getPrimaryLocalisationKey(element: ParadoxDefinitionElement): String? {
         // from cache
         return CachedValuesManager.getCachedValue(element, Keys.cachedPrimaryLocalisationKey) {
@@ -212,9 +220,16 @@ object ParadoxDefinitionManager {
         }
     }
 
+    /**
+     * 得到定义关联的（主要）名字本地化。作为 [getRelatedLocalisations] 的单项形式。
+     */
+    fun getRelatedLocalisation(element: ParadoxDefinitionElement): ParadoxLocalisationProperty? {
+        return getPrimaryLocalisation(element)
+    }
+
     fun getPresentableName(element: ParadoxDefinitionElement): String? {
-        val primaryLocalisation = getPrimaryLocalisation(element)
-        return primaryLocalisation?.let { ParadoxLocalisationManager.getPresentableText(it) }
+        val localisation = getRelatedLocalisation(element)
+        return localisation?.let { ParadoxLocalisationManager.getPresentableText(it) }
     }
 
     fun getPresentableNames(element: ParadoxDefinitionElement): Set<String> {

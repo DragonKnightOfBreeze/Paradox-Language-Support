@@ -19,12 +19,12 @@ import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.ParadoxPsiFileService
 import icu.windea.pls.lang.psi.ParadoxPsiPresentationService
 import icu.windea.pls.lang.psi.isDefinitionTypeKeyOrName
+import icu.windea.pls.lang.psi.light.ParadoxModifierLightElement
 import icu.windea.pls.lang.resolve.ParadoxLocationExpressionService
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.util.ParadoxModifierManager
-import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 // com.intellij.testIntegration.GotoTestOrCodeHandler
 
@@ -65,14 +65,14 @@ class GotoRelatedImagesHandler : GotoTargetHandler() {
         run {
             // 修正（相关图片）
             if (sourceElement != null) return@run
-            val element = ParadoxPsiFileService.findScriptExpression(file, offset) as? ParadoxScriptStringExpressionElement ?: return@run
-            val modifierElement = ParadoxModifierManager.resolveModifier(element) ?: return@run
+            val element = file.findReferenceAt(offset)?.resolve() ?: return@run
+            if (element !is ParadoxModifierLightElement) return@run
             sourceElement = element
-            val name = ParadoxPsiPresentationService.getNameForModifier(modifierElement) ?: return@run
+            val name = ParadoxPsiPresentationService.getNameForModifier(element) ?: return@run
             runWithModalProgressBlocking(project, ChronicleBundle.message("script.goto.relatedImages.search.modifier", name.orAnonymous().escapeXml())) {
                 // need read actions here if necessary
                 readAction {
-                    val paths = ParadoxModifierManager.getModifierIconPaths(name, modifierElement)
+                    val paths = ParadoxModifierManager.getModifierIconPaths(name, element)
                     val iconFiles = paths.firstNotNullOfOrNull { path ->
                         val iconSelector = ParadoxFilePathSearch.selector(project, element).contextSensitive()
                         ParadoxFilePathSearch.searchModifierIcon(path, iconSelector).findAll().orNull()
@@ -96,9 +96,7 @@ class GotoRelatedImagesHandler : GotoTargetHandler() {
             return ChronicleBundle.message("script.goto.relatedImages.chooseTitle.d", name.orAnonymous().escapeXml())
         }
         run {
-            val element = sourceElement as? ParadoxScriptStringExpressionElement ?: return@run
-            val modifierElement = ParadoxModifierManager.resolveModifier(element) ?: return@run
-            val name = ParadoxPsiPresentationService.getNameForModifier(modifierElement) ?: return@run
+            val name = ParadoxPsiPresentationService.getNameForModifier(sourceElement) ?: return@run
             return ChronicleBundle.message("script.goto.relatedImages.chooseTitle.m", name.orAnonymous().escapeXml())
         }
         return ChronicleBundle.message("script.goto.relatedImages.chooseTitle", name.orAnonymous().escapeXml())
@@ -110,9 +108,7 @@ class GotoRelatedImagesHandler : GotoTargetHandler() {
             return ChronicleBundle.message("script.goto.relatedImages.findUsagesTitle.d", name.orAnonymous().escapeXml())
         }
         run {
-            val element = sourceElement as? ParadoxScriptStringExpressionElement ?: return@run
-            val modifierElement = ParadoxModifierManager.resolveModifier(element) ?: return@run
-            val name = ParadoxPsiPresentationService.getNameForModifier(modifierElement) ?: return@run
+            val name = ParadoxPsiPresentationService.getNameForModifier(sourceElement) ?: return@run
             return ChronicleBundle.message("script.goto.relatedImages.findUsagesTitle.m", name.orAnonymous().escapeXml())
         }
         return ChronicleBundle.message("script.goto.relatedImages.findUsagesTitle", name.orAnonymous().escapeXml())
