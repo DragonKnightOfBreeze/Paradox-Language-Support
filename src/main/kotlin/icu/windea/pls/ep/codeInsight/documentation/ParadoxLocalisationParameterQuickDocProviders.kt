@@ -3,9 +3,8 @@ package icu.windea.pls.ep.codeInsight.documentation
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.codeInsight.documentation.DocumentationBuilder
 import icu.windea.pls.core.escapeXml
-import icu.windea.pls.core.util.values.anonymous
-import icu.windea.pls.core.util.values.or
-import icu.windea.pls.core.util.values.unknown
+import icu.windea.pls.core.orAnonymous
+import icu.windea.pls.core.orUnknown
 import icu.windea.pls.lang.codeInsight.documentation.psiLinkOrUnresolved
 import icu.windea.pls.lang.psi.light.ParadoxLocalisationParameterLightElement
 import icu.windea.pls.model.ReferenceLinkType
@@ -17,13 +16,13 @@ class ParadoxBaseLocalisationParameterQuickDocProvider : ParadoxLocalisationPara
 
         // 加上名字
         val name = element.name
-        append(ChronicleStrings.parameterPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
+        append(ChronicleStrings.parameterPrefix).append(" <b>").append(name.orAnonymous().escapeXml()).append("</b>")
 
         // 加上所属本地化信息
         val gameType = element.gameType
         br().indent()
         append(ChronicleBundle.message("doc.text.ofLocalisation")).append(" ")
-        val nameOrUnknown = element.localisationName.or.unknown()
+        val nameOrUnknown = element.localisationName.orUnknown()
         val link = ReferenceLinkType.Localisation.createLink(nameOrUnknown, gameType)
         psiLinkOrUnresolved(link.escapeXml(), nameOrUnknown.escapeXml(), context = element)
 

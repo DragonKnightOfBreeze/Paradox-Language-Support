@@ -10,8 +10,8 @@ import com.intellij.util.xmlb.annotations.MapAnnotation
 import com.intellij.util.xmlb.annotations.Property
 import com.intellij.util.xmlb.annotations.Tag
 import com.intellij.util.xmlb.annotations.XCollection
-import icu.windea.pls.core.constants.DefaultStrings
 import icu.windea.pls.core.orNull
+import icu.windea.pls.core.util.DefaultStrings
 import icu.windea.pls.lang.analysis.ParadoxGameTypeManager
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxModSource

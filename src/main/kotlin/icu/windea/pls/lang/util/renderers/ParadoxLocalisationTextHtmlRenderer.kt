@@ -5,7 +5,6 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.ui.ColorUtil
 import icu.windea.pls.base.settings.ChronicleInternalSettings
-import icu.windea.pls.core.constants.DefaultStrings
 import icu.windea.pls.core.escape
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.forEachChild
@@ -16,6 +15,7 @@ import icu.windea.pls.core.text.buildHtml
 import icu.windea.pls.core.toFileUrl
 import icu.windea.pls.core.ui.toIconOrNull
 import icu.windea.pls.core.unescape
+import icu.windea.pls.core.util.DefaultStrings
 import icu.windea.pls.images.ImageFrameInfo
 import icu.windea.pls.lang.getDocumentationFontSize
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement

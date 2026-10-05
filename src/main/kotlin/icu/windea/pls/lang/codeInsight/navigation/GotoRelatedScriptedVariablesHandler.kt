@@ -11,8 +11,7 @@ import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.toArray
 import icu.windea.pls.core.escapeXml
-import icu.windea.pls.core.util.values.anonymous
-import icu.windea.pls.core.util.values.or
+import icu.windea.pls.core.orAnonymous
 import icu.windea.pls.lang.psi.ParadoxPsiFileService
 import icu.windea.pls.lang.psi.ParadoxPsiMatchService
 import icu.windea.pls.lang.psi.ParadoxPsiPresentationService
@@ -54,10 +53,9 @@ class GotoRelatedScriptedVariablesHandler : GotoTargetHandler() {
     override fun getFindUsagesTitle(sourceElement: PsiElement, name: String?, length: Int): String {
         run {
             val name = ParadoxPsiPresentationService.getNameForLocalisation(sourceElement) ?: return@run
-            return ChronicleBundle.message("script.goto.relatedScriptedVariables.findUsagesTitle.l", name.escapeXml().or.anonymous())
+            return ChronicleBundle.message("script.goto.relatedScriptedVariables.findUsagesTitle.l", name.orAnonymous().escapeXml())
         }
-        if (name == null) return ""
-        return ChronicleBundle.message("script.goto.relatedScriptedVariables.findUsagesTitle.l", name.escapeXml())
+        return ChronicleBundle.message("script.goto.relatedScriptedVariables.findUsagesTitle.l", name.orAnonymous().escapeXml())
     }
 
     override fun getNotFoundMessage(project: Project, editor: Editor, file: PsiFile): String {

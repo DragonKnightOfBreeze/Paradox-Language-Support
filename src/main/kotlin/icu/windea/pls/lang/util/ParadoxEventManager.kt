@@ -11,13 +11,12 @@ import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.core.isExactDigit
 import icu.windea.pls.core.isIdentifier
 import icu.windea.pls.core.optimized
+import icu.windea.pls.core.orAnonymous
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
-import icu.windea.pls.core.util.values.anonymous
-import icu.windea.pls.core.util.values.or
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.resolve.ParadoxEventService
@@ -68,7 +67,7 @@ object ParadoxEventManager {
 
     fun getName(element: ParadoxDefinitionElement): String {
         val result = element.definitionInfo?.name
-        return result.or.anonymous()
+        return result.orAnonymous()
     }
 
     fun getAllTypes(gameType: ParadoxGameType): Set<String> {

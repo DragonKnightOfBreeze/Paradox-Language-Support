@@ -3,7 +3,7 @@ package icu.windea.pls.lang.util.renderers
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.jetbrains.rd.util.AtomicInteger
-import icu.windea.pls.core.constants.DefaultStrings
+import icu.windea.pls.core.util.DefaultStrings
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.ChronicleStrings
 import icu.windea.pls.script.psi.ParadoxScriptFile

@@ -19,13 +19,12 @@ import com.intellij.ui.SimpleColoredText
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.base.ChronicleModificationTrackers
+import icu.windea.pls.core.orAnonymous
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
-import icu.windea.pls.core.util.values.anonymous
-import icu.windea.pls.core.util.values.or
 import icu.windea.pls.ep.util.data.StellarisTechnologyData
 import icu.windea.pls.ep.util.presentation.StellarisTechnologyCardPresentation
 import icu.windea.pls.extensions.diagram.ChronicleDiagramBundle
@@ -152,7 +151,7 @@ abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : Parad
             ProgressManager.checkCanceled()
             return when (nodeItem) {
                 is Items.PresentableName -> {
-                    ParadoxPresentationUtil.getLabel(nodeItem.text.or.anonymous())
+                    ParadoxPresentationUtil.getLabel(nodeItem.text.orAnonymous())
                 }
                 is Items.Presentation -> runSmartReadAction {
                     val presentationData = nodeItem.definition.getDefinitionPresentation<StellarisTechnologyCardPresentation>()
@@ -260,7 +259,7 @@ abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : Parad
             val data = technology.getDefinitionData<StellarisTechnologyData>()
             node.putUserData(Keys.nodeData, data)
             nodeMap.put(technology, node)
-            val name = technology.definitionInfo?.name.or.anonymous()
+            val name = technology.definitionInfo?.name.orAnonymous()
             techMap.put(name, technology)
             nodes.add(node)
         }

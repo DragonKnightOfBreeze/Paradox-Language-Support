@@ -1,8 +1,8 @@
 package icu.windea.pls.lang.util.renderers
 
-import icu.windea.pls.core.constants.DefaultStrings
 import icu.windea.pls.core.text.EscapePatterns
 import icu.windea.pls.core.unescape
+import icu.windea.pls.core.util.DefaultStrings
 import icu.windea.pls.lang.psi.resolveLocalisation
 import icu.windea.pls.lang.psi.resolveScriptedVariable
 import icu.windea.pls.lang.util.ParadoxGameConceptManager

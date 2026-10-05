@@ -13,8 +13,7 @@ import com.intellij.usages.rules.SingleParentUsageGroupingRule
 import com.intellij.usages.rules.UsageGroupingRule
 import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.util.values.anonymous
-import icu.windea.pls.core.util.values.or
+import icu.windea.pls.core.orAnonymous
 import icu.windea.pls.lang.definitionInjectionInfo
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.script.ParadoxScriptLanguage
@@ -60,7 +59,7 @@ private class ParadoxDefinitionInjectionUsageGroup(
     element: ParadoxScriptProperty,
     private val name: String?,
     private val type: String?,
-) : PsiElementUsageGroupBase<ParadoxScriptProperty>(element, ChronicleIcons.Nodes.Macro, name.or.anonymous()) {
+) : PsiElementUsageGroupBase<ParadoxScriptProperty>(element, ChronicleIcons.Nodes.Macro, name.orAnonymous()) {
     override fun equals(other: Any?): Boolean {
         return this === other || other is ParadoxDefinitionInjectionUsageGroup && name == other.name && type == other.type && isSame(other)
     }

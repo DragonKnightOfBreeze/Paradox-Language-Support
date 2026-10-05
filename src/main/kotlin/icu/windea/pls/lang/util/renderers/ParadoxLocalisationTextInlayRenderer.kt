@@ -11,7 +11,6 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import icu.windea.pls.core.codeInsight.hints.mergePresentations
 import icu.windea.pls.core.collections.forEachFast
-import icu.windea.pls.core.constants.DefaultStrings
 import icu.windea.pls.core.forEachChild
 import icu.windea.pls.core.letIf
 import icu.windea.pls.core.psi.light.LightElementBase
@@ -21,6 +20,7 @@ import icu.windea.pls.core.toFileUrl
 import icu.windea.pls.core.ui.UiService
 import icu.windea.pls.core.ui.toIconOrNull
 import icu.windea.pls.core.unescape
+import icu.windea.pls.core.util.DefaultStrings
 import icu.windea.pls.images.ImageFrameInfo
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsContext
 import icu.windea.pls.lang.highlighting.ParadoxSemanticHighlighterColors

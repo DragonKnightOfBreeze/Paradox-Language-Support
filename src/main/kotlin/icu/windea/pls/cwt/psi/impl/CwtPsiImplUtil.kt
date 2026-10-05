@@ -16,7 +16,6 @@ import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.base.settings.ChronicleInternalSettings
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.children
-import icu.windea.pls.core.constants.DefaultStrings
 import icu.windea.pls.core.forEachChild
 import icu.windea.pls.core.psi.PsiQuoteAwareElement
 import icu.windea.pls.core.psi.PsiService
@@ -27,6 +26,7 @@ import icu.windea.pls.core.text.QuotePatterns
 import icu.windea.pls.core.transformAndKeepQuotes
 import icu.windea.pls.core.truncate
 import icu.windea.pls.core.unquote
+import icu.windea.pls.core.util.DefaultStrings
 import icu.windea.pls.cwt.psi.CwtBlock
 import icu.windea.pls.cwt.psi.CwtDocComment
 import icu.windea.pls.cwt.psi.CwtElementManipulationService

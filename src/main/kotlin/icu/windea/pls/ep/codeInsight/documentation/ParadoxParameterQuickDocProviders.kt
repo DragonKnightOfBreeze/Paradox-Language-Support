@@ -3,8 +3,7 @@ package icu.windea.pls.ep.codeInsight.documentation
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.codeInsight.documentation.DocumentationBuilder
 import icu.windea.pls.core.escapeXml
-import icu.windea.pls.core.util.values.anonymous
-import icu.windea.pls.core.util.values.or
+import icu.windea.pls.core.orAnonymous
 import icu.windea.pls.ep.resolve.parameter.ParadoxDefinitionParameterSupport
 import icu.windea.pls.ep.resolve.parameter.ParadoxInlineScriptParameterSupport
 import icu.windea.pls.lang.codeInsight.documentation.psiLinkOrUnresolved
@@ -30,7 +29,7 @@ class ParadoxDefinitionParameterQuickDocProvider : ParadoxParameterQuickDocProvi
 
         // 加上名字
         val name = element.name
-        append(ChronicleStrings.parameterPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
+        append(ChronicleStrings.parameterPrefix).append(" <b>").append(name.orAnonymous().escapeXml()).append("</b>")
         // 加上推断得到的类型信息
         val inferredType = ParadoxParameterManager.getInferredType(element)
         if (inferredType != null) {
@@ -71,7 +70,7 @@ class ParadoxInlineScriptParameterQuickDocProvider : ParadoxParameterQuickDocPro
 
         // 加上名字
         val name = element.name
-        append(ChronicleStrings.parameterPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
+        append(ChronicleStrings.parameterPrefix).append(" <b>").append(name.orAnonymous().escapeXml()).append("</b>")
         // 加上推断得到的类型信息
         val inferredType = ParadoxParameterManager.getInferredType(element)
         if (inferredType != null) {

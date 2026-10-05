@@ -3,8 +3,18 @@
 package icu.windea.pls.core
 
 import icu.windea.pls.ChronicleFacade
+import icu.windea.pls.core.util.DefaultStrings
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicReference
+
+@Suppress("NOTHING_TO_INLINE")
+inline fun String?.orAnonymous() = if (isNullOrEmpty()) DefaultStrings.anonymous else this
+
+@Suppress("NOTHING_TO_INLINE")
+inline fun String?.orUnknown() = if (isNullOrEmpty()) DefaultStrings.unknown else this
+
+@Suppress("NOTHING_TO_INLINE")
+inline fun String?.orUnresolved() = if (isNullOrEmpty()) DefaultStrings.unresolved else this
 
 fun String.indexOfLineEnd(): Int {
     // \n`, `\r`, `\r\n`

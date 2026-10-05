@@ -1,8 +1,8 @@
 @file:Suppress("unused", "NOTHING_TO_INLINE")
 
-package icu.windea.pls.core.util.values
+package icu.windea.pls.core
 
-import icu.windea.pls.core.constants.DefaultStrings
+import icu.windea.pls.core.util.DefaultStrings
 
 /**
  * 可以回退的值（包装类）。

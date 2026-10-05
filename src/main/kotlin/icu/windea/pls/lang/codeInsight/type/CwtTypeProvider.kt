@@ -7,7 +7,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.ui.ColorUtil.*
 import com.intellij.ui.Gray
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.core.constants.DefaultStrings
+import icu.windea.pls.core.util.DefaultStrings
 import icu.windea.pls.lang.type.CwtTypeService
 
 /**

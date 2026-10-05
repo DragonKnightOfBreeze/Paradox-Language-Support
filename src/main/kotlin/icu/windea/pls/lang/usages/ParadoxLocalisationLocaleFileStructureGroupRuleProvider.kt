@@ -14,8 +14,7 @@ import com.intellij.usages.rules.SingleParentUsageGroupingRule
 import com.intellij.usages.rules.UsageGroupingRule
 import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.util.values.anonymous
-import icu.windea.pls.core.util.values.or
+import icu.windea.pls.core.orAnonymous
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
@@ -59,7 +58,7 @@ private class ParadoxLocalisationLocaleGroupingRule : SingleParentUsageGroupingR
 private class ParadoxLocalisationLocaleGroup(
     element: ParadoxLocalisationLocale,
     private val name: String,
-) : PsiElementUsageGroupBase<ParadoxLocalisationLocale>(element, ChronicleIcons.Nodes.LocalisationLocale, name.or.anonymous()) {
+) : PsiElementUsageGroupBase<ParadoxLocalisationLocale>(element, ChronicleIcons.Nodes.LocalisationLocale, name.orAnonymous()) {
     override fun equals(other: Any?): Boolean {
         return this === other || other is ParadoxLocalisationLocaleGroup && name == other.name && isSame(other)
     }

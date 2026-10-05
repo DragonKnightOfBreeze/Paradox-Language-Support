@@ -17,6 +17,7 @@ import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.base.settings.ChronicleInternalSettings
 import icu.windea.pls.core.children
 import icu.windea.pls.core.orNull
+import icu.windea.pls.core.orUnresolved
 import icu.windea.pls.core.psi.PsiQuoteAwareElement
 import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.core.select.listBy
@@ -25,8 +26,6 @@ import icu.windea.pls.core.text.QuotePattern
 import icu.windea.pls.core.text.QuotePatterns
 import icu.windea.pls.core.truncate
 import icu.windea.pls.core.unquote
-import icu.windea.pls.core.util.values.or
-import icu.windea.pls.core.util.values.unresolved
 import icu.windea.pls.lang.search.scope.ParadoxSearchScope
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxExpressionManager
@@ -219,7 +218,7 @@ object ParadoxLocalisationPsiImplUtil {
     @JvmStatic
     fun getPresentableText(element: ParadoxLocalisationProperty): String {
         val name = element.name
-        return ChronicleStrings.localisationPropertyFolder(name.or.unresolved())
+        return ChronicleStrings.localisationPropertyFolder(name.orUnresolved())
     }
 
     // endregion
@@ -288,7 +287,7 @@ object ParadoxLocalisationPsiImplUtil {
     @JvmStatic
     fun getPresentableText(element: ParadoxLocalisationColorfulText): String {
         val name = element.name
-        return ChronicleStrings.localisationColorfulTextFolder(name.or.unresolved())
+        return ChronicleStrings.localisationColorfulTextFolder(name.orUnresolved())
     }
 
     // endregion
@@ -321,7 +320,7 @@ object ParadoxLocalisationPsiImplUtil {
     @JvmStatic
     fun getPresentableText(element: ParadoxLocalisationParameter): String {
         val name = element.name
-        return ChronicleStrings.localisationParameterFolder(name.or.unresolved())
+        return ChronicleStrings.localisationParameterFolder(name.orUnresolved())
     }
 
     // endregion
@@ -532,7 +531,7 @@ object ParadoxLocalisationPsiImplUtil {
     @JvmStatic
     fun getPresentableText(element: ParadoxLocalisationIcon): String {
         val name = element.name
-        return ChronicleStrings.localisationIconFolder(name.or.unresolved())
+        return ChronicleStrings.localisationIconFolder(name.orUnresolved())
     }
 
     // endregion
@@ -586,7 +585,7 @@ object ParadoxLocalisationPsiImplUtil {
     @JvmStatic
     fun getPresentableText(element: ParadoxLocalisationTextIcon): String {
         val name = element.name
-        return ChronicleStrings.localisationTextIconFolder(name.or.unresolved())
+        return ChronicleStrings.localisationTextIconFolder(name.orUnresolved())
     }
 
     // endregion
@@ -620,7 +619,7 @@ object ParadoxLocalisationPsiImplUtil {
     @JvmStatic
     fun getPresentableText(element: ParadoxLocalisationTextFormat): String {
         val name = element.name
-        return ChronicleStrings.localisationTextFormatFolder(name.or.unresolved())
+        return ChronicleStrings.localisationTextFormatFolder(name.orUnresolved())
     }
 
     // endregion
@@ -679,7 +678,7 @@ object ParadoxLocalisationPsiImplUtil {
     @JvmStatic
     fun getPresentableText(element: ParadoxLocalisationTaggedParameter): String {
         val name = element.name
-        return ChronicleStrings.localisationTaggedParameterFolder(name.or.unresolved())
+        return ChronicleStrings.localisationTaggedParameterFolder(name.orUnresolved())
     }
 
     // endregion

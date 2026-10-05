@@ -8,16 +8,15 @@ import com.intellij.psi.util.parentOfType
 import icu.windea.pls.base.settings.ChronicleInternalSettings
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.children
-import icu.windea.pls.core.constants.DefaultStrings
 import icu.windea.pls.core.forEachChild
+import icu.windea.pls.core.orUnresolved
 import icu.windea.pls.core.processChild
 import icu.windea.pls.core.psi.PsiBoundElement
 import icu.windea.pls.core.psi.PsiPresentableTextAwareElement
 import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.core.transformAndKeepQuotes
 import icu.windea.pls.core.truncate
-import icu.windea.pls.core.util.values.or
-import icu.windea.pls.core.util.values.unresolved
+import icu.windea.pls.core.util.DefaultStrings
 import icu.windea.pls.model.constants.ChronicleStrings
 import icu.windea.pls.script.ParadoxScriptLanguage
 
@@ -63,7 +62,7 @@ object ParadoxScriptPsiService {
             }
             is ParadoxScriptConditionalBlock -> {
                 val expressionText = element.conditionalExpression?.presentableText
-                return ChronicleStrings.conditionalBlockFolder(expressionText.or.unresolved())
+                return ChronicleStrings.conditionalBlockFolder(expressionText.orUnresolved())
             }
             is ParadoxScriptConditionalExpression -> {
                 return buildString {

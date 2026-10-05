@@ -8,9 +8,9 @@ import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.configExpression.CwtImageLocationExpression
 import icu.windea.pls.config.configExpression.CwtLocalisationLocationExpression
 import icu.windea.pls.config.util.CwtConfigExpressionManager
-import icu.windea.pls.core.constants.DefaultStrings
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.toPsiFile
+import icu.windea.pls.core.util.DefaultStrings
 import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.images.ImageFrameInfo
 import icu.windea.pls.lang.definitionInfo

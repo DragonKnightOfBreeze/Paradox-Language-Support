@@ -1,12 +1,11 @@
 package icu.windea.pls.lang.presentation
 
 import com.intellij.ui.Gray
+import icu.windea.pls.core.orAnonymous
 import icu.windea.pls.core.ui.resize
 import icu.windea.pls.core.ui.toImage
 import icu.windea.pls.core.ui.toLabel
 import icu.windea.pls.core.ui.withLocation
-import icu.windea.pls.core.util.values.anonymous
-import icu.windea.pls.core.util.values.or
 import icu.windea.pls.ep.util.data.StellarisTechnologyData
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.getDefinitionData
@@ -93,7 +92,7 @@ class StellarisTechnologyCardBuilder(
 
     private fun getNameLabel(): JLabel {
         val nameText = ParadoxPresentationUtil.getNameTextOrKey(element)
-        return ParadoxPresentationUtil.getLabel(nameText.or.anonymous(), Constants.whiteColor)
+        return ParadoxPresentationUtil.getLabel(nameText.orAnonymous(), Constants.whiteColor)
     }
 
     private fun getCostLabel(): JLabel {

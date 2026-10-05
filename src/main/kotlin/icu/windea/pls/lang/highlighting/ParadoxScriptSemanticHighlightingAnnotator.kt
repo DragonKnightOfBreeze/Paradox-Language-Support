@@ -11,8 +11,7 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.isNotNullOrEmpty
-import icu.windea.pls.core.util.values.anonymous
-import icu.windea.pls.core.util.values.or
+import icu.windea.pls.core.orAnonymous
 import icu.windea.pls.lang.complexEnumValueInfo
 import icu.windea.pls.lang.defineInfo
 import icu.windea.pls.lang.definitionInfo
@@ -102,7 +101,7 @@ class ParadoxScriptSemanticHighlightingAnnotator : Annotator {
             // 如果存在，高亮定义名对应的字符串（可能还有其他高亮）
             val nameElement = selectScope { element.nameFieldElement(nameField) }
             if (nameElement != null) {
-                val nameString = definitionInfo.name.escapeXml().or.anonymous()
+                val nameString = definitionInfo.name.orAnonymous().escapeXml()
                 val typesString = definitionInfo.typeText
                 // 这里不能使用PSI链接
                 val tooltip = "<pre>(definition name) <b>$nameString</b>: $typesString</pre>"

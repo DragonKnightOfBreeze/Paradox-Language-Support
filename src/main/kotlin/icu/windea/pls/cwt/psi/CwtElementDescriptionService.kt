@@ -4,8 +4,7 @@ import com.intellij.lang.findUsages.FindUsagesProvider
 import com.intellij.psi.ElementDescriptionProvider
 import com.intellij.psi.PsiElement
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.core.util.values.anonymous
-import icu.windea.pls.core.util.values.or
+import icu.windea.pls.core.orAnonymous
 
 /**
  * @see ElementDescriptionProvider
@@ -35,7 +34,7 @@ object CwtElementDescriptionService {
         // {type} {nameOrAnonymous}
         val type = getType(element) ?: return null
         val name = getName(element)
-        return type + " " + name.or.anonymous()
+        return type + " " + name.orAnonymous()
     }
 
     fun getHighlightUsagesDescription(element: PsiElement): String? {

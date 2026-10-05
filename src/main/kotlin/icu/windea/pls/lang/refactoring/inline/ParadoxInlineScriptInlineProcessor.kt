@@ -19,9 +19,8 @@ import com.intellij.util.IncorrectOperationException
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.toArray
+import icu.windea.pls.core.orAnonymous
 import icu.windea.pls.core.process
-import icu.windea.pls.core.util.values.anonymous
-import icu.windea.pls.core.util.values.or
 import icu.windea.pls.core.util.values.singletonList
 import icu.windea.pls.core.util.values.singletonListOrEmpty
 import icu.windea.pls.core.util.values.to
@@ -40,7 +39,7 @@ class ParadoxInlineScriptInlineProcessor(
     private val keepTheDeclaration: Boolean,
 ) : BaseRefactoringProcessor(project, scope, null) {
     // do not use DescriptiveNameUtil.getDescriptiveName(element) here
-    private val descriptiveName = ParadoxInlineScriptManager.getInlineScriptExpression(element).or.anonymous()
+    private val descriptiveName = ParadoxInlineScriptManager.getInlineScriptExpression(element).orAnonymous()
 
     override fun getCommandName() = ChronicleBundle.message("inline.inlineScript.command", descriptiveName)
 

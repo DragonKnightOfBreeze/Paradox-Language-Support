@@ -15,9 +15,8 @@ import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.forEachChild
+import icu.windea.pls.core.orUnresolved
 import icu.windea.pls.core.psi.PsiService
-import icu.windea.pls.core.util.values.or
-import icu.windea.pls.core.util.values.unresolved
 import icu.windea.pls.model.constants.ChronicleStrings
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import icu.windea.pls.script.psi.ParadoxScriptFile
@@ -34,12 +33,12 @@ class ParadoxScriptFoldingBuilder : CustomFoldingBuilder(), DumbAware {
             NORMAL_CONDITIONAL_BLOCK -> {
                 val psi = node.psi.castOrNull<ParadoxScriptNormalConditionalBlock>()
                 val expressionText = psi?.conditionalExpression?.presentableText
-                ChronicleStrings.conditionalBlockFolder(expressionText.or.unresolved())
+                ChronicleStrings.conditionalBlockFolder(expressionText.orUnresolved())
             }
             INLINE_CONDITIONAL_BLOCK -> {
                 val psi = node.psi.castOrNull<ParadoxScriptInlineConditionalBlock>()
                 val expressionText = psi?.conditionalExpression?.presentableText
-                ChronicleStrings.conditionalBlockFolder(expressionText.or.unresolved())
+                ChronicleStrings.conditionalBlockFolder(expressionText.orUnresolved())
             }
             INLINE_MATH -> ChronicleStrings.inlineMathFolder
             else -> null

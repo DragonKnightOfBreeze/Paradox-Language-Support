@@ -3,9 +3,8 @@ package icu.windea.pls.script.psi
 import com.intellij.psi.NavigatablePsiElement
 import com.intellij.psi.PsiElement
 import icu.windea.pls.core.icon
+import icu.windea.pls.core.orUnresolved
 import icu.windea.pls.core.psi.PsiPresentableTextAwareElement
-import icu.windea.pls.core.util.values.or
-import icu.windea.pls.core.util.values.unresolved
 import icu.windea.pls.lang.psi.ParadoxElementPresentationService
 import javax.swing.Icon
 
@@ -24,7 +23,7 @@ object ParadoxScriptElementPresentationService {
         return when (element) {
             is ParadoxScriptFile -> element.name
             is ParadoxScriptProperty -> element.name
-            is ParadoxScriptScriptedVariable -> "@" + element.name.or.unresolved()
+            is ParadoxScriptScriptedVariable -> "@" + element.name.orUnresolved()
             is PsiPresentableTextAwareElement -> element.presentableText
             is NavigatablePsiElement -> element.name
             else -> null

@@ -21,13 +21,12 @@ import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.isSamePosition
+import icu.windea.pls.core.orAnonymous
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.pass
 import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.substringIn
-import icu.windea.pls.core.util.values.anonymous
-import icu.windea.pls.core.util.values.or
 import icu.windea.pls.cwt.CwtLanguage
 import icu.windea.pls.cwt.psi.CwtOption
 import icu.windea.pls.cwt.psi.CwtOptionKey
@@ -191,7 +190,7 @@ object CwtDocumentationManager {
             // 加上基本信息
             val prefix = configType.prefix
             if (prefix != null) append(prefix).append(" ")
-            append("<b>").append(name.escapeXml().or.anonymous()).append("</b>")
+            append("<b>").append(name.orAnonymous().escapeXml()).append("</b>")
         }
     }
 
@@ -223,7 +222,7 @@ object CwtDocumentationManager {
 
             // name
             val finalName = configType?.let { CwtConfigManager.getNameByConfigType(name, it) } ?: name
-            append("<b>").append(finalName.escapeXml().or.anonymous()).append("</b>")
+            append("<b>").append(finalName.orAnonymous().escapeXml()).append("</b>")
 
             // type
             if (configType?.category != null) {

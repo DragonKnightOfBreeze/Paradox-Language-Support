@@ -2,8 +2,7 @@ package icu.windea.pls.lang.psi
 
 import com.intellij.psi.PsiElement
 import icu.windea.pls.config.util.CwtConfigManager
-import icu.windea.pls.core.util.values.anonymous
-import icu.windea.pls.core.util.values.or
+import icu.windea.pls.core.orAnonymous
 import icu.windea.pls.cwt.psi.CwtMember
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.cwt.psi.CwtString
@@ -44,7 +43,7 @@ object CwtConfigElementDescriptionService {
         // {type} {nameOrAnonymous}
         val type = getType(element) ?: return null
         val name = getName(element)
-        return type + " " + name.or.anonymous()
+        return type + " " + name.orAnonymous()
     }
 
     fun getHighlightUsagesDescription(element: PsiElement): String? {

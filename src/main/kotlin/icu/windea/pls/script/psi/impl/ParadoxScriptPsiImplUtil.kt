@@ -16,11 +16,11 @@ import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.base.settings.ChronicleInternalSettings
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.children
-import icu.windea.pls.core.constants.DefaultStrings
 import icu.windea.pls.core.containsLineBreak
 import icu.windea.pls.core.forEachChild
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
+import icu.windea.pls.core.orUnresolved
 import icu.windea.pls.core.processChild
 import icu.windea.pls.core.psi.PsiQuoteAwareElement
 import icu.windea.pls.core.psi.PsiService
@@ -33,8 +33,7 @@ import icu.windea.pls.core.text.QuotePatterns
 import icu.windea.pls.core.transformAndKeepQuotes
 import icu.windea.pls.core.truncate
 import icu.windea.pls.core.unquote
-import icu.windea.pls.core.util.values.or
-import icu.windea.pls.core.util.values.unresolved
+import icu.windea.pls.core.util.DefaultStrings
 import icu.windea.pls.lang.codeInsight.color.ParadoxColorService
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.ParadoxPsiService
@@ -623,7 +622,7 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun getPresentableText(element: ParadoxScriptNormalParameter): String {
         val name = element.name
-        return ChronicleStrings.parameterFolder(name.or.unresolved())
+        return ChronicleStrings.parameterFolder(name.orUnresolved())
     }
 
     // endregion
@@ -702,7 +701,7 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun getPresentableText(element: ParadoxScriptInlineMathParameter): String {
         val name = element.name
-        return ChronicleStrings.parameterFolder(name.or.unresolved())
+        return ChronicleStrings.parameterFolder(name.orUnresolved())
     }
 
     // endregion
@@ -774,7 +773,7 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun getPresentableText(element: ParadoxScriptNormalConditionalBlock): String {
         val expressionText = element.conditionalExpression?.presentableText
-        return ChronicleStrings.conditionalBlockFolder(expressionText.or.unresolved())
+        return ChronicleStrings.conditionalBlockFolder(expressionText.orUnresolved())
     }
 
     // endregion
@@ -800,7 +799,7 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun getPresentableText(element: ParadoxScriptInlineConditionalBlock): String {
         val expressionText = element.conditionalExpression?.presentableText
-        return ChronicleStrings.conditionalBlockFolder(expressionText.or.unresolved())
+        return ChronicleStrings.conditionalBlockFolder(expressionText.orUnresolved())
     }
 
     // endregion

@@ -12,9 +12,8 @@ import icu.windea.pls.ChronicleDocBundle
 import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.base.settings.ChronicleSettings
 import icu.windea.pls.config.util.CwtConfigManager
+import icu.windea.pls.core.orAnonymous
 import icu.windea.pls.core.orNull
-import icu.windea.pls.core.util.values.anonymous
-import icu.windea.pls.core.util.values.or
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
@@ -51,7 +50,7 @@ class ParadoxDefinitionHierarchyNodeDescriptor(
         myHighlightedText = CompositeAppearance()
         val file = element.containingFile
         val hierarchySettings = ChronicleSettings.getInstance().state.hierarchy
-        val name = name.or.anonymous()
+        val name = name.orAnonymous()
         myHighlightedText.ending.addText(name, getNameAttributes(myColor))
         run {
             if (nodeType.grouped) {

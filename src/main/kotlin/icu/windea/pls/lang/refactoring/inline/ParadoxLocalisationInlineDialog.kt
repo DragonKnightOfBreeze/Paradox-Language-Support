@@ -6,8 +6,7 @@ import com.intellij.psi.PsiReference
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.refactoring.inline.InlineOptionsDialog
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.core.util.values.anonymous
-import icu.windea.pls.core.util.values.or
+import icu.windea.pls.core.orAnonymous
 import icu.windea.pls.lang.refactoring.ParadoxRefactoringSettings
 import icu.windea.pls.lang.search.scope.ParadoxSearchScope
 import icu.windea.pls.lang.search.scope.withFileTypes
@@ -33,7 +32,7 @@ class ParadoxLocalisationInlineDialog(
     }
 
     override fun getNameLabelText(): String {
-        val name = element.name.or.anonymous()
+        val name = element.name.orAnonymous()
         return ChronicleBundle.message("inline.localisation.label", name)
     }
 

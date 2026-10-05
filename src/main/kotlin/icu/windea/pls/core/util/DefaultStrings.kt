@@ -1,4 +1,4 @@
-package icu.windea.pls.core.constants
+package icu.windea.pls.core.util
 
 object DefaultStrings {
     const val anonymous = "(anonymous)"

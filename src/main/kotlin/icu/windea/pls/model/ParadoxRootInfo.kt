@@ -1,7 +1,7 @@
 package icu.windea.pls.model
 
 import com.intellij.openapi.vfs.VirtualFile
-import icu.windea.pls.core.constants.DefaultStrings
+import icu.windea.pls.core.util.DefaultStrings
 import icu.windea.pls.lang.analysis.ParadoxGameTypeManager
 import icu.windea.pls.model.analysis.ParadoxRootMetadata
 

@@ -20,8 +20,8 @@ import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.mapFast
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.collections.processFast
-import icu.windea.pls.core.constants.DefaultStrings
 import icu.windea.pls.core.mergeValue
+import icu.windea.pls.core.util.DefaultStrings
 import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.ep.resolve.parameter.ParadoxParameterInferredConfigProvider
 import icu.windea.pls.ep.resolve.parameter.ParadoxParameterSupport

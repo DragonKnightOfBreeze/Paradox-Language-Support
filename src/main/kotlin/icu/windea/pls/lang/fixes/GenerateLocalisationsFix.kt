@@ -10,8 +10,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleFacade
-import icu.windea.pls.core.util.values.anonymous
-import icu.windea.pls.core.util.values.or
+import icu.windea.pls.core.orAnonymous
 import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContext
 import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContext.*
 import icu.windea.pls.lang.codeInsight.generation.GenerateLocalisationsHandler
@@ -25,7 +24,7 @@ class GenerateLocalisationsFix(
     private val context: ParadoxLocalisationCodeInsightContext,
 ) : LocalQuickFixAndIntentionActionOnPsiElement(element), PriorityAction {
     override fun getText(): String {
-        val contextName = context.name.or.anonymous()
+        val contextName = context.name.orAnonymous()
         return when (context.type) {
             Type.Definition -> ChronicleInspectionBundle.message("fix.generateLocalisations.name.1", contextName)
             Type.Modifier -> ChronicleInspectionBundle.message("fix.generateLocalisations.name.2", contextName)

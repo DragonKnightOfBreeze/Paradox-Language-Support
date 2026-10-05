@@ -13,11 +13,10 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.checkCancellation
 import icu.windea.pls.core.create
 import icu.windea.pls.core.normalizePath
+import icu.windea.pls.core.orAnonymous
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.core.toUUID
-import icu.windea.pls.core.util.values.anonymous
-import icu.windea.pls.core.util.values.or
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.images.ImageFrameInfo
 import icu.windea.pls.images.ImageService
@@ -77,7 +76,7 @@ object ParadoxImageManager {
             return url
         } catch (e: Exception) {
             checkCancellation(e)
-            logger.warn("Resolve url for dds image failed. (definition name: ${definitionInfo.name.or.anonymous()})", e)
+            logger.warn("Resolve url for dds image failed. (definition name: ${definitionInfo.name.orAnonymous()})", e)
             return null
         }
     }

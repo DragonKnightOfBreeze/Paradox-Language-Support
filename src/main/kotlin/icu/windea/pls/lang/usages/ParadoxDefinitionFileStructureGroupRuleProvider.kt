@@ -13,8 +13,7 @@ import com.intellij.usages.rules.SingleParentUsageGroupingRule
 import com.intellij.usages.rules.UsageGroupingRule
 import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.util.values.anonymous
-import icu.windea.pls.core.util.values.or
+import icu.windea.pls.core.orAnonymous
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.select.selectScope
@@ -60,7 +59,7 @@ private class ParadoxDefinitionUsageGroup(
     element: ParadoxDefinitionElement,
     private val name: String,
     private val type: String,
-) : PsiElementUsageGroupBase<ParadoxDefinitionElement>(element, ChronicleIcons.Nodes.Definition, name.or.anonymous()) {
+) : PsiElementUsageGroupBase<ParadoxDefinitionElement>(element, ChronicleIcons.Nodes.Definition, name.orAnonymous()) {
     override fun equals(other: Any?): Boolean {
         return this === other || other is ParadoxDefinitionUsageGroup && name == other.name && type == other.type && isSame(other)
     }

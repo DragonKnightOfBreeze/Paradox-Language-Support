@@ -8,18 +8,17 @@ import com.intellij.ui.ColorUtil
 import icu.windea.pls.base.settings.ChronicleInternalSettings
 import icu.windea.pls.core.codeInsight.documentation.DocumentationBuilder
 import icu.windea.pls.core.codeInsight.documentation.buildDocumentation
-import icu.windea.pls.core.constants.DefaultStrings
 import icu.windea.pls.core.escape
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.forEachChild
+import icu.windea.pls.core.orAnonymous
 import icu.windea.pls.core.psi.light.LightElementBase
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.text.EscapePatterns
 import icu.windea.pls.core.toFileUrl
 import icu.windea.pls.core.ui.toIconOrNull
 import icu.windea.pls.core.unescape
-import icu.windea.pls.core.util.values.anonymous
-import icu.windea.pls.core.util.values.or
+import icu.windea.pls.core.util.DefaultStrings
 import icu.windea.pls.images.ImageFrameInfo
 import icu.windea.pls.lang.codeInsight.documentation.psiLinkOrUnresolved
 import icu.windea.pls.lang.definitionInfo
@@ -269,7 +268,7 @@ class ParadoxLocalisationTextQuickDocRenderContext(
         val conceptString = newBuilder.toString()
         if (referenceElement !is ParadoxDefinitionElement) return
         val definitionInfo = referenceElement.definitionInfo ?: return
-        val definitionName = definitionInfo.name.or.anonymous()
+        val definitionName = definitionInfo.name.orAnonymous()
         val definitionType = definitionInfo.type
         withColorSpan(conceptColor) {
             val link = ReferenceLinkType.Definition.createLink(definitionName, definitionType, definitionInfo.gameType)

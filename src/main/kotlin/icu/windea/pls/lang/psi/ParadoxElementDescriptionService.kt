@@ -2,8 +2,7 @@ package icu.windea.pls.lang.psi
 
 import com.intellij.psi.PsiElement
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.core.util.values.anonymous
-import icu.windea.pls.core.util.values.or
+import icu.windea.pls.core.orAnonymous
 import icu.windea.pls.lang.defineInfo
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueLightElement
@@ -25,8 +24,8 @@ object ParadoxElementDescriptionService {
     fun getName(element: PsiElement): String? {
         return when (element) {
             is ParadoxScriptProperty -> {
-                element.definitionInfo?.let { return it.name.or.anonymous() }
-                element.defineInfo?.let { return it.expression.or.anonymous() }
+                element.definitionInfo?.let { return it.name.orAnonymous() }
+                element.defineInfo?.let { return it.expression.orAnonymous() }
                 null
             }
             is ParadoxLocalisationProperty -> {
@@ -93,7 +92,7 @@ object ParadoxElementDescriptionService {
         // {type} {nameOrAnonymous}
         val type = getType(element) ?: return null
         val name = getName(element)
-        return type + " " + name.or.anonymous()
+        return type + " " + name.orAnonymous()
     }
 
     fun getHighlightUsagesDescription(element: PsiElement): String? {

@@ -17,8 +17,7 @@ import com.intellij.psi.util.PsiEditorUtil
 import com.intellij.ui.SimpleTextAttributes
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.base.settings.ChronicleSettings
-import icu.windea.pls.core.util.values.anonymous
-import icu.windea.pls.core.util.values.or
+import icu.windea.pls.core.orAnonymous
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
@@ -55,18 +54,18 @@ class ParadoxCallHierarchyNodeDescriptor(
         val hierarchySettings = ChronicleSettings.getInstance().state.hierarchy
         when (element) {
             is ParadoxScriptScriptedVariable -> {
-                val name = element.name.or.anonymous()
+                val name = element.name.orAnonymous()
                 myHighlightedText.ending.addText(name, getNameAttributes(myColor))
             }
             is ParadoxDefinitionElement -> {
                 val definitionInfo = element.definitionInfo ?: return invalidElement()
-                val name = definitionInfo.name.or.anonymous()
+                val name = definitionInfo.name.orAnonymous()
                 myHighlightedText.ending.addText(name, getNameAttributes(myColor))
                 val type = definitionInfo.type
                 myHighlightedText.ending.addText(": $type", getTypeAttributes())
             }
             is ParadoxLocalisationProperty -> {
-                val name = element.name.or.anonymous()
+                val name = element.name.orAnonymous()
                 myHighlightedText.ending.addText(name, getNameAttributes(myColor))
             }
         }

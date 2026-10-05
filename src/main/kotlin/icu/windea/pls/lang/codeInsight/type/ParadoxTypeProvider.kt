@@ -6,10 +6,9 @@ import com.intellij.psi.PsiElement
 import com.intellij.ui.ColorUtil.*
 import com.intellij.ui.Gray
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.core.constants.DefaultStrings
 import icu.windea.pls.core.escapeXml
-import icu.windea.pls.core.util.values.anonymous
-import icu.windea.pls.core.util.values.or
+import icu.windea.pls.core.orAnonymous
+import icu.windea.pls.core.util.DefaultStrings
 import icu.windea.pls.lang.type.ParadoxTypeService
 
 /**
@@ -56,7 +55,7 @@ class ParadoxTypeProvider : ExpressionTypeProvider<PsiElement>() {
             type?.let { this[ChronicleBundle.message("title.type")] = it.text }
 
             val name = ParadoxTypeService.getName(element)
-            name?.let { this[ChronicleBundle.message("title.name")] = it.or.anonymous() }
+            name?.let { this[ChronicleBundle.message("title.name")] = it.orAnonymous() }
 
             val definitionType = ParadoxTypeService.getDefinitionType(element)
             definitionType?.let { this[ChronicleBundle.message("title.definitionType")] = it }

@@ -13,8 +13,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.ui.PopupHandler
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.util.values.anonymous
-import icu.windea.pls.core.util.values.or
+import icu.windea.pls.core.orAnonymous
 import icu.windea.pls.lang.actions.ChronicleActions
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.element
@@ -51,8 +50,8 @@ class ParadoxCallHierarchyBrowser(project: Project, target: PsiElement) : CallHi
     override fun getContentDisplayName(typeName: String, element: PsiElement): String? {
         val name = when {
             element is ParadoxScriptScriptedVariable -> element.name
-            element is ParadoxDefinitionElement -> element.definitionInfo?.name.or.anonymous()
-            element is ParadoxLocalisationProperty -> element.name.or.anonymous()
+            element is ParadoxDefinitionElement -> element.definitionInfo?.name.orAnonymous()
+            element is ParadoxLocalisationProperty -> element.name.orAnonymous()
             else -> return null
         }
         return MessageFormat.format(typeName, name)

@@ -5,8 +5,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.endOffset
 import icu.windea.pls.core.letIf
 import icu.windea.pls.core.optimized
-import icu.windea.pls.core.util.values.or
-import icu.windea.pls.core.util.values.unresolved
+import icu.windea.pls.core.orUnresolved
 import icu.windea.pls.lang.codeInsight.hints.ParadoxDeclarativeHintsProvider
 import icu.windea.pls.lang.codeInsight.hints.ParadoxDeclarativeHintsSettings
 import icu.windea.pls.lang.codeInsight.hints.addInlinePresentation
@@ -17,7 +16,6 @@ import icu.windea.pls.lang.util.evaluators.ParadoxEvaluationService
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptValue
-
 
 /**
  * 通过内嵌提示显示定值引用的评估结果。
@@ -50,6 +48,6 @@ class ParadoxDefineReferenceResultHintsProvider : ParadoxDeclarativeHintsProvide
         val limit = settings.truncateArrayValueForDefines
         val values = element.values().letIf(limit >= 0) { it.take(limit) }.toList()
         if (values.isEmpty()) return "{}"
-        return values.joinToString(" ", "{ ", " }") { it.formattedValue(detail = false).or.unresolved() }
+        return values.joinToString(" ", "{ ", " }") { it.formattedValue(detail = false).orUnresolved() }
     }
 }

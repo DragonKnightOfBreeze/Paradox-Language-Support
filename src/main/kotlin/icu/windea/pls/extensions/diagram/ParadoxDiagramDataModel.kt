@@ -10,9 +10,8 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFileSystemItem
 import icu.windea.pls.base.ChronicleModificationTrackers
+import icu.windea.pls.core.orAnonymous
 import icu.windea.pls.core.runSmartReadAction
-import icu.windea.pls.core.util.values.anonymous
-import icu.windea.pls.core.util.values.or
 import icu.windea.pls.extensions.diagram.provider.ParadoxDiagramProvider
 
 // com.intellij.uml.java.JavaUmlDataModel
@@ -35,7 +34,7 @@ abstract class ParadoxDiagramDataModel(
 
     override fun getEdges() = _edges
 
-    override fun getNodeName(node: DiagramNode<PsiElement>) = node.tooltip.or.anonymous()
+    override fun getNodeName(node: DiagramNode<PsiElement>) = node.tooltip.orAnonymous()
 
     override fun addElement(element: PsiElement?) = null
 

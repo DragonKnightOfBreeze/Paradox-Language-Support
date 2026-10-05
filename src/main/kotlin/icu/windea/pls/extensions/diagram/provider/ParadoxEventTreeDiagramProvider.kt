@@ -19,13 +19,12 @@ import com.intellij.ui.SimpleColoredText
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.base.ChronicleModificationTrackers
+import icu.windea.pls.core.orAnonymous
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
-import icu.windea.pls.core.util.values.anonymous
-import icu.windea.pls.core.util.values.or
 import icu.windea.pls.extensions.diagram.ChronicleDiagramBundle
 import icu.windea.pls.extensions.diagram.OrderedDiagramNodeContentManager
 import icu.windea.pls.extensions.diagram.settings.ParadoxEventTreeDiagramSettings
@@ -134,7 +133,7 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
             ProgressManager.checkCanceled()
             return when (nodeItem) {
                 is Items.PresentableName -> {
-                    ParadoxPresentationUtil.getLabel(nodeItem.text.or.anonymous())
+                    ParadoxPresentationUtil.getLabel(nodeItem.text.orAnonymous())
                 }
                 else -> null
             }
@@ -236,7 +235,7 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
             ProgressManager.checkCanceled()
             val node = Node(event, provider)
             nodeMap.put(event, node)
-            val name = event.definitionInfo?.name.or.anonymous()
+            val name = event.definitionInfo?.name.orAnonymous()
             eventMap.put(name, event)
             return nodes.add(node)
         }

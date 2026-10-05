@@ -2,10 +2,9 @@ package icu.windea.pls.lang.psi
 
 import com.intellij.psi.PsiElement
 import icu.windea.pls.ChronicleIcons
+import icu.windea.pls.core.orAnonymous
 import icu.windea.pls.core.orNull
-import icu.windea.pls.core.util.values.anonymous
-import icu.windea.pls.core.util.values.or
-import icu.windea.pls.core.util.values.unresolved
+import icu.windea.pls.core.orUnresolved
 import icu.windea.pls.lang.complexEnumValueInfo
 import icu.windea.pls.lang.defineNamespaceInfo
 import icu.windea.pls.lang.defineVariableInfo
@@ -79,7 +78,7 @@ object ParadoxElementPresentationService {
             if (ParadoxPsiMatchService.isModDescriptorFile(element)) return@run
             val definitionInfo = element.definitionInfo
             if (definitionInfo == null) return null
-            return definitionInfo.name.or.anonymous()
+            return definitionInfo.name.orAnonymous()
         }
         run {
             // localisation
@@ -120,7 +119,7 @@ object ParadoxElementPresentationService {
             // inline script usage - inline script expression
             if (!ParadoxPsiMatchService.isInlineScriptUsage(element)) return@run
             val expression = ParadoxInlineScriptService.getInlineScriptExpressionFromUsageElement(element, resolve = true)
-            return expression.or.unresolved()
+            return expression.orUnresolved()
         }
         run {
             // definition (exclude mod descriptor file) - type info + (optional) presentable name

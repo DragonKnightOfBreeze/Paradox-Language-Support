@@ -31,10 +31,9 @@ import icu.windea.pls.core.editor
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.isSamePosition
+import icu.windea.pls.core.orAnonymous
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.toPsiFile
-import icu.windea.pls.core.util.values.anonymous
-import icu.windea.pls.core.util.values.or
 import icu.windea.pls.lang.analysis.ParadoxAnalysisInjectionManager
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.diff.FileDocumentFragmentContent
@@ -198,7 +197,7 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
         val path = fileInfo.path
         val qualifiedName = rootInfo.qualifiedName
         // NOTE 2.1.2 目前的方案：仅显示定义的名字、类型（不包括子类型）、路径信息、游戏或模组的名字和版本信息
-        val name = definitionInfo.name.or.anonymous()
+        val name = definitionInfo.name.orAnonymous()
         val type = definitionInfo.type
         return ChronicleBundle.message("diff.compare.definitions.dialog.title", name, type, path, qualifiedName)
     }
@@ -211,7 +210,7 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
         val path = fileInfo.path
         val qualifiedName = rootInfo.qualifiedName
         // NOTE 2.1.2 目前的方案：仅显示定义的名字、类型（不包括子类型）、路径信息、游戏或模组的名字和版本信息
-        val name = definitionInfo.name.or.anonymous()
+        val name = definitionInfo.name.orAnonymous()
         val type = definitionInfo.type
         return when {
             original -> ChronicleBundle.message("diff.compare.definitions.originalContent.title", name, type, path, qualifiedName)
@@ -246,7 +245,7 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
             val path = fileInfo.path
             val qualifiedName = rootInfo.qualifiedName
             // NOTE 2.1.2 目前的方案：仅显示定义的名字、类型（不包括子类型）、路径信息、游戏或模组的名字和版本信息
-            val name = otherDefinitionInfo.name.or.anonymous()
+            val name = otherDefinitionInfo.name.orAnonymous()
             val type = otherDefinitionInfo.type
             return ChronicleBundle.message("diff.compare.definitions.popup.name", name, type, path, qualifiedName)
         }

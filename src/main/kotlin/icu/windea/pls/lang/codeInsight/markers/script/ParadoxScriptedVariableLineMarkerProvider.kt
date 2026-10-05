@@ -11,9 +11,8 @@ import icu.windea.pls.core.codeInsight.navigation.NavigationGutterIconBuilderC
 import icu.windea.pls.core.codeInsight.navigation.setTargets
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.optimized
+import icu.windea.pls.core.orAnonymous
 import icu.windea.pls.core.orNull
-import icu.windea.pls.core.util.values.anonymous
-import icu.windea.pls.core.util.values.or
 import icu.windea.pls.lang.actions.ChronicleActions
 import icu.windea.pls.lang.codeInsight.markers.ParadoxRelatedItemLineMarkerProvider
 import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
@@ -51,7 +50,7 @@ class ParadoxScriptedVariableLineMarkerProvider : ParadoxRelatedItemLineMarkerPr
         ProgressManager.checkCanceled()
         val icon = ChronicleIcons.Gutter.ScriptedVariable
         val prefix = ChronicleStrings.scriptedVariablePrefix
-        val tooltip = "$prefix <b>@${name.escapeXml().or.anonymous()}</b>"
+        val tooltip = "$prefix <b>@${name.orAnonymous().escapeXml()}</b>"
         val lineMarkerInfo = NavigationGutterIconBuilderC.createForPsi(icon) { createGotoRelatedItem(targets) }
             .setTooltipText(tooltip)
             .setPopupTitle(ChronicleBundle.message("script.gutterIcon.scriptedVariable.title"))

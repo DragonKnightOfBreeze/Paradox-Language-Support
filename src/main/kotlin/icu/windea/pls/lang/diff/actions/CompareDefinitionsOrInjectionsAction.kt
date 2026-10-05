@@ -30,11 +30,10 @@ import icu.windea.pls.base.settings.ChronicleSettings
 import icu.windea.pls.core.editor
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.isSamePosition
+import icu.windea.pls.core.orAnonymous
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.toPsiFile
-import icu.windea.pls.core.util.values.anonymous
-import icu.windea.pls.core.util.values.or
 import icu.windea.pls.lang.definitionCandidateInfo
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.definitionInjectionInfo
@@ -224,7 +223,7 @@ class CompareDefinitionsOrInjectionsAction : ParadoxShowDiffAction() {
         when (definitionCandidateInfo) {
             is ParadoxDefinitionInfo -> {
                 // NOTE 2.1.2 目前的方案：仅显示定义的名字、类型（不包括子类型）、路径信息、游戏或模组的名字和版本信息
-                val name = definitionCandidateInfo.name.or.anonymous()
+                val name = definitionCandidateInfo.name.orAnonymous()
                 val type = definitionCandidateInfo.type
                 return ChronicleBundle.message("diff.compare.definitionsOrInjections.dialog.title", name, type, path, qualifiedName)
             }
@@ -246,7 +245,7 @@ class CompareDefinitionsOrInjectionsAction : ParadoxShowDiffAction() {
         val qualifiedName = rootInfo.qualifiedName
         when (definitionCandidateInfo) {
             is ParadoxDefinitionInfo -> {
-                val name = definitionCandidateInfo.name.or.anonymous()
+                val name = definitionCandidateInfo.name.orAnonymous()
                 val type = definitionCandidateInfo.type
                 // NOTE 2.1.2 目前的方案：仅显示定义的名字、类型（不包括子类型）、路径信息、游戏或模组的名字和版本信息
                 return when {
@@ -295,7 +294,7 @@ class CompareDefinitionsOrInjectionsAction : ParadoxShowDiffAction() {
             when (otherDefinitionCandidateInfo) {
                 is ParadoxDefinitionInfo -> {
                     // NOTE 2.1.2 目前的方案：仅显示定义的名字、类型（不包括子类型）、路径信息、游戏或模组的名字和版本信息
-                    val name = otherDefinitionCandidateInfo.name.or.anonymous()
+                    val name = otherDefinitionCandidateInfo.name.orAnonymous()
                     val type = otherDefinitionCandidateInfo.type
                     return ChronicleBundle.message("diff.compare.definitionsOrInjections.popup.name", name, type, path, qualifiedName)
                 }

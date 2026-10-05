@@ -6,8 +6,7 @@ import com.intellij.psi.PsiReference
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.refactoring.inline.InlineOptionsDialog
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.core.util.values.anonymous
-import icu.windea.pls.core.util.values.or
+import icu.windea.pls.core.orAnonymous
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.refactoring.ParadoxRefactoringSettings
 import icu.windea.pls.lang.search.scope.ParadoxSearchScope
@@ -34,7 +33,7 @@ class ParadoxScriptedTriggerInlineDialog(
     }
 
     override fun getNameLabelText(): String {
-        val name = element.definitionInfo?.name.or.anonymous()
+        val name = element.definitionInfo?.name.orAnonymous()
         return ChronicleBundle.message("inline.scriptedTrigger.label", name)
     }
 

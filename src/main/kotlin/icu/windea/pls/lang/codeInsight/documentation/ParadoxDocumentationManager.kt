@@ -12,9 +12,8 @@ import icu.windea.pls.core.codeInsight.documentation.DocumentationBuilder
 import icu.windea.pls.core.codeInsight.documentation.buildDocumentation
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.isNotNullOrEmpty
+import icu.windea.pls.core.orAnonymous
 import icu.windea.pls.core.util.OnceMarker
-import icu.windea.pls.core.util.values.anonymous
-import icu.windea.pls.core.util.values.or
 import icu.windea.pls.lang.defineInfo
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
@@ -268,7 +267,7 @@ object ParadoxDocumentationManager {
         val name = element.name
         val gameType = element.gameType
         definition {
-            append(ChronicleStrings.definitionSnippetPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
+            append(ChronicleStrings.definitionSnippetPrefix).append(" <b>").append(name.orAnonymous().escapeXml()).append("</b>")
             for (template in element.snippetTemplates) {
                 val fullName = template.resolve(name)
                 br()
@@ -284,7 +283,7 @@ object ParadoxDocumentationManager {
         val name = element.name
         val gameType = element.gameType
         definition {
-            append(ChronicleStrings.localisationSnippetPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
+            append(ChronicleStrings.localisationSnippetPrefix).append(" <b>").append(name.orAnonymous().escapeXml()).append("</b>")
             for (template in element.snippetTemplates) {
                 val fullName = template.resolve(name)
                 br()
@@ -301,7 +300,7 @@ object ParadoxDocumentationManager {
             val enumName = element.enumName
             val gameType = element.gameType
             val configGroup = ChronicleFacade.getConfigGroup(element.project, gameType)
-            append(ChronicleStrings.complexEnumValuePrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
+            append(ChronicleStrings.complexEnumValuePrefix).append(" <b>").append(name.orAnonymous().escapeXml()).append("</b>")
             val complexEnumConfig = configGroup.complexEnums[enumName]
             if (complexEnumConfig != null) {
                 val category = ReferenceLinkType.CwtConfig.Categories.complexEnums
@@ -346,7 +345,7 @@ object ParadoxDocumentationManager {
         val gameType = element.gameType
         val configGroup = ChronicleFacade.getConfigGroup(element.project, gameType)
         definition {
-            append(ChronicleStrings.dynamicValuePrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
+            append(ChronicleStrings.dynamicValuePrefix).append(" <b>").append(name.orAnonymous().escapeXml()).append("</b>")
             append(": ")
             val m = OnceMarker()
             for (dynamicValueType in dynamicValueTypes) {
@@ -398,7 +397,7 @@ object ParadoxDocumentationManager {
                 val r = ParadoxDocumentationService.buildDefinitionPart(element, this)
                 if (r) return@run
                 // 显示默认的快速文档
-                append(ChronicleStrings.parameterPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
+                append(ChronicleStrings.parameterPrefix).append(" <b>").append(name.orAnonymous().escapeXml()).append("</b>")
             }
         }
     }
@@ -411,7 +410,7 @@ object ParadoxDocumentationManager {
                 val r = ParadoxDocumentationService.buildDefinitionPart(element, this)
                 if (r) return@run
                 // 显示默认的快速文档
-                append(ChronicleStrings.parameterPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
+                append(ChronicleStrings.parameterPrefix).append(" <b>").append(name.orAnonymous().escapeXml()).append("</b>")
             }
         }
     }
@@ -424,7 +423,7 @@ object ParadoxDocumentationManager {
                 val r = ParadoxDocumentationService.buildDefinitionPart(element, this)
                 if (r) return@run
                 // 显示默认的快速文档
-                append(ChronicleStrings.modifierPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
+                append(ChronicleStrings.modifierPrefix).append(" <b>").append(name.orAnonymous().escapeXml()).append("</b>")
             }
 
             val configGroup = ChronicleFacade.getConfigGroup(element.project, element.gameType)
@@ -535,13 +534,13 @@ object ParadoxDocumentationManager {
 
     private fun DocumentationBuilder.buildDefinitionPartForShaderEffect(element: ParadoxShaderEffectLightElement) {
         definition {
-            append(ChronicleStrings.shaderEffectPrefix).append(" <b>").append(element.name.escapeXml().or.anonymous()).append("</b>")
+            append(ChronicleStrings.shaderEffectPrefix).append(" <b>").append(element.name.orAnonymous().escapeXml()).append("</b>")
         }
     }
 
     private fun DocumentationBuilder.buildDefinitionPartForMeshLocator(element: ParadoxMeshLocatorLightElement) {
         definition {
-            append(ChronicleStrings.meshLocatorPrefix).append(" <b>").append(element.name.escapeXml().or.anonymous()).append("</b>")
+            append(ChronicleStrings.meshLocatorPrefix).append(" <b>").append(element.name.orAnonymous().escapeXml()).append("</b>")
         }
     }
 
@@ -550,7 +549,7 @@ object ParadoxDocumentationManager {
             // 加上文件信息
             fileInfoHeader(element)
             // 加上基本信息
-            append(ChronicleStrings.scriptedVariablePrefix).append(" <b>@").append(name.escapeXml().or.anonymous()).append("</b>")
+            append(ChronicleStrings.scriptedVariablePrefix).append(" <b>@").append(name.orAnonymous().escapeXml()).append("</b>")
             val valueElement = element.scriptedVariableValue
             if (valueElement != null) append(" = ").append(valueElement.presentableText.escapeXml())
 
@@ -585,7 +584,7 @@ object ParadoxDocumentationManager {
             // 加上文件信息
             fileInfoHeader(element)
             // 加上基本信息
-            append(ChronicleStrings.propertyPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
+            append(ChronicleStrings.propertyPrefix).append(" <b>").append(name.orAnonymous().escapeXml()).append("</b>")
             val valueElement = element.propertyValue
             if (valueElement != null) append(" = ").append(valueElement.presentableText.escapeXml())
         }
@@ -634,10 +633,10 @@ object ParadoxDocumentationManager {
         append(prefix).append(" ")
         val name = definitionInfo.name
         if (usePrefix == null) {
-            append("<b>").append(name.escapeXml().or.anonymous()).append("</b>")
+            append("<b>").append(name.orAnonymous().escapeXml()).append("</b>")
         } else {
             val link = ReferenceLinkType.Definition.createLink(name, definitionInfo.type, gameType)
-            psiLinkOrUnresolved(link.escapeXml(), name.escapeXml().or.anonymous(), context = definition)
+            psiLinkOrUnresolved(link.escapeXml(), name.orAnonymous().escapeXml(), context = definition)
         }
         append(": ")
         val typeConfig = definitionInfo.typeConfig
@@ -658,7 +657,7 @@ object ParadoxDocumentationManager {
         indent().append(ChronicleBundle.message("doc.text.inherits")).append(" ")
         val name = definitionInfo.name
         val link = ReferenceLinkType.Definition.createLink(name, definitionInfo.type, gameType)
-        psiLinkOrUnresolved(link.escapeXml(), name.escapeXml().or.anonymous(), context = definition)
+        psiLinkOrUnresolved(link.escapeXml(), name.orAnonymous().escapeXml(), context = definition)
         append(": ")
         val typeConfig = definitionInfo.typeConfig
         val typeLink = ReferenceLinkType.CwtConfig.createLink(categories.types, typeConfig.name, gameType)

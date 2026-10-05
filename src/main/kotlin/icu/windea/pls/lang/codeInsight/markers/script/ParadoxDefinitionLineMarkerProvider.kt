@@ -11,8 +11,7 @@ import icu.windea.pls.core.codeInsight.navigation.NavigationGutterIconBuilderC
 import icu.windea.pls.core.codeInsight.navigation.setTargets
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.optimized
-import icu.windea.pls.core.util.values.anonymous
-import icu.windea.pls.core.util.values.or
+import icu.windea.pls.core.orAnonymous
 import icu.windea.pls.lang.actions.ChronicleActions
 import icu.windea.pls.lang.codeInsight.markers.ParadoxRelatedItemLineMarkerProvider
 import icu.windea.pls.lang.definitionInfo
@@ -44,7 +43,7 @@ class ParadoxDefinitionLineMarkerProvider : ParadoxRelatedItemLineMarkerProvider
         ProgressManager.checkCanceled()
         val icon = ChronicleIcons.Gutter.Definition
         val prefix = ChronicleStrings.definitionPrefix
-        val tooltip = "$prefix <b>${definitionInfo.name.escapeXml().or.anonymous()}</b>: ${definitionInfo.typeText}"
+        val tooltip = "$prefix <b>${definitionInfo.name.orAnonymous().escapeXml()}</b>: ${definitionInfo.typeText}"
         val targets by lazy {
             val project = element.project
             val selector = ParadoxDefinitionSearch.selector(project, element).contextSensitive()

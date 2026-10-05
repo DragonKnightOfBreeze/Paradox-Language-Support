@@ -2,8 +2,8 @@ package icu.windea.pls.lang.util.renderers
 
 import com.intellij.openapi.progress.ProgressManager
 import icu.windea.pls.core.children
-import icu.windea.pls.core.constants.DefaultStrings
 import icu.windea.pls.core.select.oneBy
+import icu.windea.pls.core.util.DefaultStrings
 import icu.windea.pls.core.util.OnceMarker
 import icu.windea.pls.lang.psi.formattedValue
 import icu.windea.pls.lang.psi.members

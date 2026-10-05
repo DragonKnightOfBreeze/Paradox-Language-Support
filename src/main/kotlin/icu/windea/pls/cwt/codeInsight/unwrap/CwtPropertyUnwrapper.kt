@@ -2,8 +2,7 @@ package icu.windea.pls.cwt.codeInsight.unwrap
 
 import com.intellij.psi.PsiElement
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.core.util.values.or
-import icu.windea.pls.core.util.values.unresolved
+import icu.windea.pls.core.orUnresolved
 import icu.windea.pls.cwt.psi.CwtBlock
 import icu.windea.pls.cwt.psi.CwtProperty
 
@@ -15,7 +14,7 @@ class CwtPropertyUnwrapper : CwtUnwrapper() {
     override fun getDescription(element: PsiElement): String {
         if (element !is CwtProperty) return "" // unexpected
         val name = element.name
-        return ChronicleBundle.message("cwt.unwrap.property", name.or.unresolved())
+        return ChronicleBundle.message("cwt.unwrap.property", name.orUnresolved())
     }
 
     override fun doUnwrap(element: PsiElement, context: Context) {

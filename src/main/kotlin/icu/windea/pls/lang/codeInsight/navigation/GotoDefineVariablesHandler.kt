@@ -10,8 +10,7 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.collections.toArray
 import icu.windea.pls.core.escapeXml
-import icu.windea.pls.core.util.values.anonymous
-import icu.windea.pls.core.util.values.or
+import icu.windea.pls.core.orAnonymous
 import icu.windea.pls.lang.defineVariableInfo
 import icu.windea.pls.lang.psi.ParadoxPsiFileService
 import icu.windea.pls.lang.psi.ParadoxPsiPresentationService
@@ -30,7 +29,7 @@ class GotoDefineVariablesHandler : GotoTargetHandler() {
         val expression = ParadoxPsiPresentationService.getExpressionForDefineVariable(element) ?: return null
         val defineVariableInfo = element.defineVariableInfo ?: return null
         val targets = mutableListOf<PsiElement>()
-        runWithModalProgressBlocking(project, ChronicleBundle.message("script.goto.defineVariables.search", expression.escapeXml().or.anonymous())) {
+        runWithModalProgressBlocking(project, ChronicleBundle.message("script.goto.defineVariables.search", expression.orAnonymous().escapeXml())) {
             // need read actions here if necessary
             readAction {
                 val selector = ParadoxDefineVariableSearch.selector(project, element).contextSensitive()
@@ -47,13 +46,13 @@ class GotoDefineVariablesHandler : GotoTargetHandler() {
     }
 
     override fun getChooserTitle(sourceElement: PsiElement, name: String?, length: Int, finished: Boolean): String {
-        val expression = ParadoxPsiPresentationService.getExpressionForDefineVariable(sourceElement) ?: name.orEmpty()
-        return ChronicleBundle.message("script.goto.defineVariables.chooseTitle", expression.escapeXml().or.anonymous())
+        val expression = ParadoxPsiPresentationService.getExpressionForDefineVariable(sourceElement) ?: name
+        return ChronicleBundle.message("script.goto.defineVariables.chooseTitle", expression.orAnonymous().escapeXml())
     }
 
     override fun getFindUsagesTitle(sourceElement: PsiElement, name: String?, length: Int): String {
-        val expression = ParadoxPsiPresentationService.getExpressionForDefineVariable(sourceElement) ?: name.orEmpty()
-        return ChronicleBundle.message("script.goto.defineVariables.findUsagesTitle", expression.escapeXml().or.anonymous())
+        val expression = ParadoxPsiPresentationService.getExpressionForDefineVariable(sourceElement) ?: name
+        return ChronicleBundle.message("script.goto.defineVariables.findUsagesTitle", expression.orAnonymous().escapeXml())
     }
 
     override fun getNotFoundMessage(project: Project, editor: Editor, file: PsiFile): String {

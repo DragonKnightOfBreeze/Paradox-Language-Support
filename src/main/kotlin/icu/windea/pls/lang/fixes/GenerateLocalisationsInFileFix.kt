@@ -10,8 +10,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleFacade
-import icu.windea.pls.core.util.values.anonymous
-import icu.windea.pls.core.util.values.or
+import icu.windea.pls.core.orAnonymous
 import icu.windea.pls.lang.codeInsight.generation.GenerateLocalisationsInFileHandler
 import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import kotlinx.coroutines.Dispatchers
@@ -22,7 +21,7 @@ class GenerateLocalisationsInFileFix(
     element: PsiElement,
 ) : LocalQuickFixAndIntentionActionOnPsiElement(element), PriorityAction {
     override fun getText(): String {
-        val fileName = startElement.containingFile?.name.or.anonymous()
+        val fileName = startElement.containingFile?.name.orAnonymous()
         return ChronicleInspectionBundle.message("fix.generateLocalisationsInFile.name", fileName)
     }
 
