@@ -25,7 +25,7 @@ class GotoDefineVariablesHandler : GotoTargetHandler() {
     override fun getSourceAndTargetElements(editor: Editor, file: PsiFile): GotoData? {
         val project = file.project
         val offset = editor.caretModel.offset
-        val element = findElement(file, offset) ?: return null
+        val element = ParadoxPsiFileService.findScriptProperty(file, offset) ?: return null
         val defineVariableInfo = element.defineVariableInfo ?: return null
         val targets = mutableListOf<PsiElement>()
         runWithModalProgressBlocking(project, ChronicleBundle.message("script.goto.defineVariables.search", defineVariableInfo.expression)) {
@@ -38,10 +38,6 @@ class GotoDefineVariablesHandler : GotoTargetHandler() {
         }
         if (targets.isNotEmpty()) targets.removeIf { it == element } // remove current from targets
         return GotoData(element, targets.distinct().toArray(PsiElement.EMPTY_ARRAY), emptyList())
-    }
-
-    private fun findElement(file: PsiFile, offset: Int): ParadoxScriptProperty? {
-        return ParadoxPsiFileService.findScriptProperty(file, offset)
     }
 
     override fun shouldSortTargets(): Boolean {

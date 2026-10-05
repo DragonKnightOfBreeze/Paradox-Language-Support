@@ -16,7 +16,6 @@ import icu.windea.pls.lang.psi.ParadoxPsiMatchService
 import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.model.ParadoxTargetInfo
-import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 class GotoScriptedVariablesHandler : GotoTargetHandler() {
     override fun getFeatureUsedKey(): String {
@@ -26,7 +25,7 @@ class GotoScriptedVariablesHandler : GotoTargetHandler() {
     override fun getSourceAndTargetElements(editor: Editor, file: PsiFile): GotoData? {
         val project = file.project
         val offset = editor.caretModel.offset
-        val element = findElement(file, offset) ?: return null
+        val element = ParadoxPsiFileService.findScriptedVariable(file, offset) { BY_NAME } ?: return null
         if (!ParadoxPsiMatchService.isScriptedVariable(element)) return null
         val name = element.name?.orNull() ?: return null
         val targets = mutableListOf<PsiElement>()
@@ -43,10 +42,6 @@ class GotoScriptedVariablesHandler : GotoTargetHandler() {
         }
         if (targets.isNotEmpty()) targets.removeIf { it == element } // remove current from targets
         return GotoData(element, targets.distinct().toArray(PsiElement.EMPTY_ARRAY), emptyList())
-    }
-
-    private fun findElement(file: PsiFile, offset: Int): ParadoxScriptScriptedVariable? {
-        return ParadoxPsiFileService.findScriptedVariable(file, offset) { BY_NAME }
     }
 
     override fun shouldSortTargets(): Boolean {

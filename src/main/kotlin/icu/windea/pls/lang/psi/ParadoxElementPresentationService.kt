@@ -7,6 +7,8 @@ import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
 import icu.windea.pls.core.util.values.unresolved
 import icu.windea.pls.lang.complexEnumValueInfo
+import icu.windea.pls.lang.defineNamespaceInfo
+import icu.windea.pls.lang.defineVariableInfo
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.resolve.ParadoxInlineScriptService
@@ -15,6 +17,7 @@ import icu.windea.pls.lang.util.ParadoxComplexEnumValueManager
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.ParadoxScriptedVariableManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import javax.swing.Icon
 
@@ -53,6 +56,18 @@ object ParadoxElementPresentationService {
             val complexEnumValueInfo = element.complexEnumValueInfo ?: return@run
             return ChronicleIcons.Nodes.ComplexEnumValue(complexEnumValueInfo.enumName)
         }
+        run {
+            // define namespace
+            if (element !is ParadoxScriptProperty) return@run
+            if (element.defineNamespaceInfo == null) return@run
+            return ChronicleIcons.Nodes.DefineNamespace
+        }
+        run {
+            // define variable
+            if (element !is ParadoxScriptProperty) return@run
+            if (element.defineVariableInfo == null) return@run
+            return ChronicleIcons.Nodes.DefineVariable
+        }
 
         return null
     }
@@ -76,6 +91,18 @@ object ParadoxElementPresentationService {
             if (element !is ParadoxExpressionElement) return@run
             val complexEnumValueInfo = element.complexEnumValueInfo ?: return@run
             return complexEnumValueInfo.name
+        }
+        run {
+            // define namespace
+            if (element !is ParadoxScriptProperty) return@run
+            val defineNamespaceInfo = element.defineNamespaceInfo ?: return@run
+            return defineNamespaceInfo.namespace
+        }
+        run {
+            // define variable
+            if (element !is ParadoxScriptProperty) return@run
+            val defineNamespaceInfo = element.defineVariableInfo ?: return@run
+            return defineNamespaceInfo.variable
         }
 
         return null

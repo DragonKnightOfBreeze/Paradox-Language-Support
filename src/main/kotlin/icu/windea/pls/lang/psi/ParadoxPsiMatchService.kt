@@ -12,8 +12,10 @@ import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.definitionInjectionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueLightElement
+import icu.windea.pls.lang.psi.light.ParadoxDefinitionSnippetLightElement
 import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
 import icu.windea.pls.lang.psi.light.ParadoxLocalisationParameterLightElement
+import icu.windea.pls.lang.psi.light.ParadoxLocalisationSnippetLightElement
 import icu.windea.pls.lang.psi.light.ParadoxModifierLightElement
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.lang.selectFile
@@ -35,7 +37,7 @@ import kotlin.contracts.contract
  */
 @Suppress("unused")
 object ParadoxPsiMatchService {
-    // region Grammar Level
+    // region Grammar Level (PSI)
 
     /**
      * 是否是非匿名的封装变量。
@@ -57,6 +59,26 @@ object ParadoxPsiMatchService {
             returns(true) implies (element is ParadoxLocalisationProperty)
         }
         return element is ParadoxLocalisationProperty && element.type != null && element.name.orNull() != null
+    }
+
+    // endregion
+
+    // region Grammar Level (Light PSI)
+
+    @OptIn(ExperimentalContracts::class)
+    fun isDefinitionSnippetElement(element: PsiElement?): Boolean {
+        contract {
+            returns(true) implies (element is ParadoxDefinitionSnippetLightElement)
+        }
+        return element is ParadoxDefinitionSnippetLightElement && element.name.orNull() != null
+    }
+
+    @OptIn(ExperimentalContracts::class)
+    fun isLocalisationSnippetElement(element: PsiElement?): Boolean {
+        contract {
+            returns(true) implies (element is ParadoxLocalisationSnippetLightElement)
+        }
+        return element is ParadoxLocalisationSnippetLightElement && element.name.orNull() != null
     }
 
     @OptIn(ExperimentalContracts::class)

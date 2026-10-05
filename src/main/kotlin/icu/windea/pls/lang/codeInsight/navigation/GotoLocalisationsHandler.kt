@@ -11,11 +11,11 @@ import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.collections.toArray
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.lang.psi.ParadoxPsiFileService
+import icu.windea.pls.lang.psi.ParadoxPsiMatchService
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.search.util.preferLocale
 import icu.windea.pls.lang.util.ParadoxLocaleManager
-import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxTargetInfo
 
 class GotoLocalisationsHandler : GotoTargetHandler() {
@@ -26,8 +26,8 @@ class GotoLocalisationsHandler : GotoTargetHandler() {
     override fun getSourceAndTargetElements(editor: Editor, file: PsiFile): GotoData? {
         val project = file.project
         val offset = editor.caretModel.offset
-        val element = findElement(file, offset) ?: return null
-        // if (!ParadoxPsiMatchService.isLocalisation(element)) return null // 不需要
+        val element = ParadoxPsiFileService.findLocalisation(file, offset) { BY_NAME } ?: return null
+        if (!ParadoxPsiMatchService.isLocalisation(element)) return null
         val type = element.type ?: return null
         val targets = mutableListOf<PsiElement>()
         runWithModalProgressBlocking(project, ChronicleBundle.message("script.goto.localisations.search", element.name)) {
@@ -41,10 +41,6 @@ class GotoLocalisationsHandler : GotoTargetHandler() {
         }
         if (targets.isNotEmpty()) targets.removeIf { it == element } // remove current from targets
         return GotoData(element, targets.distinct().toArray(PsiElement.EMPTY_ARRAY), emptyList())
-    }
-
-    private fun findElement(file: PsiFile, offset: Int): ParadoxLocalisationProperty? {
-        return ParadoxPsiFileService.findLocalisation(file, offset) { BY_NAME }
     }
 
     override fun shouldSortTargets(): Boolean {

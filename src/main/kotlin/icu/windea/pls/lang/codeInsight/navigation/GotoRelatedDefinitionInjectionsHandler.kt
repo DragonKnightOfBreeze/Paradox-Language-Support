@@ -21,7 +21,6 @@ import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
-import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 
 class GotoRelatedDefinitionInjectionsHandler : GotoTargetHandler() {
     override fun getFeatureUsedKey(): String {
@@ -32,7 +31,7 @@ class GotoRelatedDefinitionInjectionsHandler : GotoTargetHandler() {
         if (!ParadoxDefinitionInjectionManager.isSupported(selectGameType(file))) return null // 忽略游戏类型不支持的情况
         val project = file.project
         val offset = editor.caretModel.offset
-        val element = findElement(file, offset) ?: return null
+        val element = ParadoxPsiFileService.findScriptExpression(file, offset) ?: return null
         if (!element.isDefinitionTypeKeyOrName()) return null
         val definition = selectScope { element.parentDefinition() } ?: return null
         val definitionInfo = definition.definitionInfo ?: return null
@@ -47,10 +46,6 @@ class GotoRelatedDefinitionInjectionsHandler : GotoTargetHandler() {
             }
         }
         return GotoData(definition, targets.distinct().toArray(PsiElement.EMPTY_ARRAY), emptyList())
-    }
-
-    private fun findElement(file: PsiFile, offset: Int): ParadoxScriptExpressionElement? {
-        return ParadoxPsiFileService.findScriptExpression(file, offset).castOrNull()
     }
 
     override fun shouldSortTargets(): Boolean {

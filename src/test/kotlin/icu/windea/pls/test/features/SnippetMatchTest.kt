@@ -5,10 +5,12 @@ import com.intellij.testFramework.IndexingTestUtil
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.ep.ChronicleEpBundle
+import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.inspections.script.expression.IncorrectExpressionInspection
 import icu.windea.pls.lang.inspections.script.expression.UnresolvedExpressionInspection
 import icu.windea.pls.lang.psi.light.ParadoxDefinitionSnippetLightElement
 import icu.windea.pls.lang.psi.light.ParadoxLocalisationSnippetLightElement
+import icu.windea.pls.lang.util.ParadoxSnippetManager
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.ChronicleTestScope
 import icu.windea.pls.test.dsl.configureByText
@@ -151,6 +153,25 @@ class SnippetMatchTest : BasePlatformTestCase(), ChronicleTestScope {
         myFixture.checkHighlighting()
     }
 
+    @Test
+    fun definitionSnippet_relatedDefinitions() {
+        configureDefinitionSnippetScript(
+            """
+            test_a = {}
+            first_type = {
+                snippet_def = te<caret>st
+            }
+            """
+        )
+
+        expectScope {
+            val resolved = myFixture.findReferenceAtCaret().expectNotNull().resolve()
+            val snippet = resolved.expectIs<ParadoxDefinitionSnippetLightElement>()
+            val relatedNames = ParadoxSnippetManager.getRelatedDefinitions(snippet).map { it.definitionInfo?.name }
+            relatedNames.expectUnorderedEquals("test_a")
+        }
+    }
+
     // endregion
 
     // region localisation snippet
@@ -205,6 +226,25 @@ class SnippetMatchTest : BasePlatformTestCase(), ChronicleTestScope {
         }
         IndexingTestUtil.waitUntilIndexesAreReady(project)
         myFixture.checkHighlighting()
+    }
+
+    @Test
+    fun localisationSnippet_relatedLocalisations() {
+        configureLocalisationFile()
+        configureDefinitionSnippetScript(
+            """
+            first_type = {
+                snippet_loc = te<caret>st
+            }
+            """
+        )
+
+        expectScope {
+            val resolved = myFixture.findReferenceAtCaret().expectNotNull().resolve()
+            val snippet = resolved.expectIs<ParadoxLocalisationSnippetLightElement>()
+            val relatedNames = ParadoxSnippetManager.getRelatedLocalisations(snippet).map { it.name }
+            relatedNames.expectUnorderedEquals("test_desc", "test_effect")
+        }
     }
 
     // endregion

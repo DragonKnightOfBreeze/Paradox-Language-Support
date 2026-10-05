@@ -20,7 +20,6 @@ import icu.windea.pls.lang.psi.isDefinitionTypeKeyOrName
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.select.selectScope
-import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 
 class GotoDefinitionsHandler : GotoTargetHandler() {
     override fun getFeatureUsedKey(): String {
@@ -30,7 +29,7 @@ class GotoDefinitionsHandler : GotoTargetHandler() {
     override fun getSourceAndTargetElements(editor: Editor, file: PsiFile): GotoData? {
         val project = file.project
         val offset = editor.caretModel.offset
-        val element = findElement(file, offset) ?: return null
+        val element = ParadoxPsiFileService.findScriptExpression(file, offset) ?: return null
         if (!element.isDefinitionTypeKeyOrName()) return null
         val definition = selectScope { element.parentDefinition() } ?: return null
         val definitionInfo = definition.definitionInfo ?: return null
@@ -46,10 +45,6 @@ class GotoDefinitionsHandler : GotoTargetHandler() {
         }
         if (targets.isNotEmpty()) targets.removeIf { it == element } // remove current from targets
         return GotoData(definition, targets.distinct().toArray(PsiElement.EMPTY_ARRAY), emptyList())
-    }
-
-    private fun findElement(file: PsiFile, offset: Int): ParadoxScriptExpressionElement? {
-        return ParadoxPsiFileService.findScriptExpression(file, offset).castOrNull()
     }
 
     override fun shouldSortTargets(): Boolean {

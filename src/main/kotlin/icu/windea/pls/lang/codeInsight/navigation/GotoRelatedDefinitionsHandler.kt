@@ -11,9 +11,12 @@ import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.toArray
 import icu.windea.pls.core.escapeXml
+import icu.windea.pls.core.unquote
 import icu.windea.pls.lang.psi.ParadoxPsiFileService
 import icu.windea.pls.lang.psi.ParadoxPsiMatchService
+import icu.windea.pls.lang.psi.light.ParadoxDefinitionSnippetLightElement
 import icu.windea.pls.lang.util.ParadoxLocalisationManager
+import icu.windea.pls.lang.util.ParadoxSnippetManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 
 class GotoRelatedDefinitionsHandler : GotoTargetHandler() {
@@ -24,6 +27,20 @@ class GotoRelatedDefinitionsHandler : GotoTargetHandler() {
     override fun getSourceAndTargetElements(editor: Editor, file: PsiFile): GotoData? {
         val project = file.project
         val offset = editor.caretModel.offset
+        // 定义引用片段（相关定义）
+        run {
+            val resolved = file.findReferenceAt(offset)?.resolve() ?: return@run
+            if (resolved !is ParadoxDefinitionSnippetLightElement) return@run
+            val targets = mutableListOf<PsiElement>()
+            runWithModalProgressBlocking(project, ChronicleBundle.message("script.goto.relatedDefinitions.search", resolved.name.escapeXml())) {
+                // need read actions here if necessary
+                readAction {
+                    targets.addAll(ParadoxSnippetManager.getRelatedDefinitions(resolved))
+                }
+            }
+            return GotoData(resolved.parent, targets.distinct().toArray(PsiElement.EMPTY_ARRAY), emptyList())
+        }
+        // 正常本地化（相关定义）
         val element = findElement(file, offset) ?: return null
         if (!ParadoxPsiMatchService.isNormalLocalisation(element)) return null
         val targets = mutableListOf<PsiElement>()
@@ -47,17 +64,16 @@ class GotoRelatedDefinitionsHandler : GotoTargetHandler() {
     }
 
     override fun getChooserTitle(sourceElement: PsiElement, name: String?, length: Int, finished: Boolean): String {
-        val localisationName = sourceElement.castOrNull<ParadoxLocalisationProperty>()?.name ?: return ""
-        return ChronicleBundle.message("script.goto.relatedDefinitions.chooseTitle", localisationName.escapeXml())
+        val sourceName = sourceElement.castOrNull<ParadoxLocalisationProperty>()?.name ?: sourceElement.text.unquote()
+        return ChronicleBundle.message("script.goto.relatedDefinitions.chooseTitle", sourceName.escapeXml())
     }
 
     override fun getFindUsagesTitle(sourceElement: PsiElement, name: String?, length: Int): String {
-        val localisationName = sourceElement.castOrNull<ParadoxLocalisationProperty>()?.name ?: return ""
-        return ChronicleBundle.message("script.goto.relatedDefinitions.findUsagesTitle", localisationName.escapeXml())
+        val sourceName = sourceElement.castOrNull<ParadoxLocalisationProperty>()?.name ?: sourceElement.text.unquote()
+        return ChronicleBundle.message("script.goto.relatedDefinitions.findUsagesTitle", sourceName.escapeXml())
     }
 
     override fun getNotFoundMessage(project: Project, editor: Editor, file: PsiFile): String {
         return ChronicleBundle.message("script.goto.relatedDefinitions.notFoundMessage")
     }
 }
-

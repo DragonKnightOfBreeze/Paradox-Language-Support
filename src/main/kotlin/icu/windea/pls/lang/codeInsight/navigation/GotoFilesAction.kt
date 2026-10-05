@@ -2,6 +2,7 @@ package icu.windea.pls.lang.codeInsight.navigation
 
 import com.intellij.codeInsight.actions.BaseCodeInsightAction
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiUtilBase
 import icu.windea.pls.core.editor
 import icu.windea.pls.lang.fileInfo
@@ -21,8 +22,16 @@ class GotoFilesAction : BaseCodeInsightAction() {
         val project = e.project ?: return
         val editor = e.editor ?: return
         val file = PsiUtilBase.getPsiFileInEditor(editor, project) ?: return
-        if (file.fileInfo == null) return // 忽略不存在文件信息的文件（如注入的文件）
-        if (ParadoxPsiFileMatchService.isTopFromRootFile(file)) return // 忽略直接位于游戏或模组的根目录下的文件
-        e.presentation.isEnabledAndVisible = true
+        val visible = isVisible(file)
+        e.presentation.isVisible = visible
+        e.presentation.isEnabled = visible
+    }
+
+    private fun isVisible(file: PsiFile): Boolean {
+        // 忽略不存在文件信息的文件（如注入的文件）
+        if (file.fileInfo == null) return false
+        // 忽略直接位于游戏或模组的根目录下的文件
+        if (ParadoxPsiFileMatchService.isTopFromRootFile(file)) return false
+        return true
     }
 }

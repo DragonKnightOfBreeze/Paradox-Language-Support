@@ -100,7 +100,7 @@ object ParadoxPsiFileMatchService {
     }
 
     /**
-     * 检查游戏类型是否支持内联脚本。
+     * 检查游戏类型是否支持定义注入。
      */
     fun isDefinitionInjectionSupported(file: PsiFile): Boolean {
         return ParadoxDefinitionInjectionManager.isSupported(file)

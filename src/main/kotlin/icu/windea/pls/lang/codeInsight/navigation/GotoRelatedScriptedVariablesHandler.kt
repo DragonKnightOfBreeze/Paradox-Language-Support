@@ -24,7 +24,7 @@ class GotoRelatedScriptedVariablesHandler : GotoTargetHandler() {
     override fun getSourceAndTargetElements(editor: Editor, file: PsiFile): GotoData? {
         val project = file.project
         val offset = editor.caretModel.offset
-        val element = findElement(file, offset) ?: return null
+        val element = ParadoxPsiFileService.findLocalisation(file, offset) ?: return null
         if (!ParadoxPsiMatchService.isNormalLocalisation(element)) return null
         val targets = mutableListOf<PsiElement>()
         runWithModalProgressBlocking(project, ChronicleBundle.message("script.goto.relatedScriptedVariables.search", element.name)) {
@@ -36,10 +36,6 @@ class GotoRelatedScriptedVariablesHandler : GotoTargetHandler() {
         }
         if (targets.isNotEmpty()) targets.removeIf { it == element }
         return GotoData(element, targets.distinct().toArray(PsiElement.EMPTY_ARRAY), emptyList())
-    }
-
-    private fun findElement(file: PsiFile, offset: Int): ParadoxLocalisationProperty? {
-        return ParadoxPsiFileService.findLocalisation(file, offset)
     }
 
     override fun shouldSortTargets(): Boolean {

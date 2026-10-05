@@ -27,7 +27,8 @@ class GotoInlineScriptsHandler : GotoTargetHandler() {
         val gameType = selectGameType(file) ?: return null
         val project = file.project
         val offset = editor.caretModel.offset
-        val element = findElement(file, offset) ?: return null // 只要向上能找到符合条件的属性就行
+        // 只要向上能找到符合条件的属性就行
+        val element = ParadoxPsiFileService.findScriptProperty(file, offset) ?: return null
         if (!ParadoxPsiMatchService.isInlineScriptUsage(element, gameType)) return null
         val expression = ParadoxInlineScriptService.getInlineScriptExpressionFromUsageElement(element, resolve = true) ?: return null
         val targets = mutableListOf<PsiElement>()
@@ -38,10 +39,6 @@ class GotoInlineScriptsHandler : GotoTargetHandler() {
             }
         }
         return GotoData(element, targets.distinct().toArray(PsiElement.EMPTY_ARRAY), emptyList())
-    }
-
-    private fun findElement(file: PsiFile, offset: Int): ParadoxScriptProperty? {
-        return ParadoxPsiFileService.findScriptProperty(file, offset)
     }
 
     override fun shouldSortTargets(): Boolean {

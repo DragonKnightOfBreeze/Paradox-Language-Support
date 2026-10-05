@@ -29,7 +29,8 @@ class GotoDefinitionInjectionTargetsHandler : GotoTargetHandler() {
         if (!ParadoxDefinitionInjectionManager.isSupported(selectGameType(file))) return null // 忽略游戏类型不支持的情况
         val project = file.project
         val offset = editor.caretModel.offset
-        val element = findElement(file, offset) ?: return null // 只要向上能找到符合条件的属性就行
+        // 只要向上能找到符合条件的属性就行
+        val element = ParadoxPsiFileService.findScriptProperty(file, offset) ?: return null
         val info = element.definitionInjectionInfo ?: return null
         if (!info.isTargetValid()) return null // 排除目标或目标类型为空的情况
         val targets = mutableListOf<PsiElement>()
@@ -42,10 +43,6 @@ class GotoDefinitionInjectionTargetsHandler : GotoTargetHandler() {
             }
         }
         return GotoData(element, targets.distinct().toArray(PsiElement.EMPTY_ARRAY), emptyList())
-    }
-
-    private fun findElement(file: PsiFile, offset: Int): ParadoxScriptProperty? {
-        return ParadoxPsiFileService.findScriptProperty(file, offset)
     }
 
     override fun shouldSortTargets(): Boolean {

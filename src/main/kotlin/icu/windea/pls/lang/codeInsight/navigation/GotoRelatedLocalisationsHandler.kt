@@ -23,6 +23,7 @@ import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.psi.ParadoxPsiFileService
 import icu.windea.pls.lang.psi.ParadoxPsiMatchService
 import icu.windea.pls.lang.psi.isDefinitionTypeKeyOrName
+import icu.windea.pls.lang.psi.light.ParadoxLocalisationSnippetLightElement
 import icu.windea.pls.lang.resolve.ParadoxLocationExpressionService
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.util.contextSensitive
@@ -32,6 +33,7 @@ import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.lang.util.ParadoxScriptedVariableManager
+import icu.windea.pls.lang.util.ParadoxSnippetManager
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 // com.intellij.testIntegration.GotoTestOrCodeHandler
@@ -44,6 +46,19 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
     override fun getSourceAndTargetElements(editor: Editor, file: PsiFile): GotoData? {
         val project = file.project
         val offset = editor.caretModel.offset
+        // 本地化引用片段（相关本地化）
+        run {
+            val resolved = file.findReferenceAt(offset)?.resolve() ?: return@run
+            if (resolved !is ParadoxLocalisationSnippetLightElement) return@run
+            val targets = mutableListOf<PsiElement>()
+            runWithModalProgressBlocking(project, ChronicleBundle.message("script.goto.relatedLocalisations.search.s", resolved.name.escapeXml())) {
+                // need read actions here if necessary
+                readAction {
+                    targets.addAll(ParadoxSnippetManager.getRelatedLocalisations(resolved))
+                }
+            }
+            return GotoData(resolved.parent, targets.distinct().toArray(PsiElement.EMPTY_ARRAY), emptyList())
+        }
         val element = findElement(file, offset) ?: return null
         val preferredLocale = ParadoxLocaleManager.getPreferredLocaleConfig()
         when {
@@ -51,7 +66,7 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
                 val scriptedVariable = element
                 val name = scriptedVariable.name?.orNull() ?: return null
                 val targets = mutableListOf<PsiElement>()
-                runWithModalProgressBlocking<Unit>(project, ChronicleBundle.message("script.goto.relatedLocalisations.search.3", name)) {
+                runWithModalProgressBlocking<Unit>(project, ChronicleBundle.message("script.goto.relatedLocalisations.search.sv", name)) {
                     // need read actions here if necessary
                     readAction {
                         val result = ParadoxScriptedVariableManager.getNameLocalisations(name, element, preferredLocale)
@@ -68,7 +83,7 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
                 val localisationInfos = definitionInfo.localisations
                 if (localisationInfos.isEmpty()) return GotoData(definition, PsiElement.EMPTY_ARRAY, emptyList())
                 val targets = mutableListOf<PsiElement>()
-                runWithModalProgressBlocking(project, ChronicleBundle.message("script.goto.relatedLocalisations.search.1", definitionInfo.name)) {
+                runWithModalProgressBlocking(project, ChronicleBundle.message("script.goto.relatedLocalisations.search.d", definitionInfo.name)) {
                     // need read actions here if necessary
                     for ((_, locationExpression) in localisationInfos) {
                         ProgressManager.checkCanceled()
@@ -85,7 +100,7 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
             else -> {
                 val modifierElement = ParadoxModifierManager.resolveModifier(element) ?: return null
                 val targets = mutableListOf<PsiElement>()
-                runWithModalProgressBlocking(project, ChronicleBundle.message("script.goto.relatedLocalisations.search.2", modifierElement.name)) {
+                runWithModalProgressBlocking(project, ChronicleBundle.message("script.goto.relatedLocalisations.search.m", modifierElement.name)) {
                     // need read actions here if necessary
                     readAction {
                         val keys = ParadoxModifierManager.getModifierNameKeys(modifierElement.name, modifierElement)
@@ -127,24 +142,24 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
             when {
                 ParadoxPsiMatchService.isScriptedVariable(sourceElement) -> {
                     val name = sourceElement.name?.orNull() ?: return@run
-                    return ChronicleBundle.message("script.goto.relatedLocalisations.chooseTitle.3", name.escapeXml())
+                    return ChronicleBundle.message("script.goto.relatedLocalisations.chooseTitle.sv", name.escapeXml())
                 }
                 sourceElement !is ParadoxScriptStringExpressionElement -> {}
                 sourceElement.isDefinitionTypeKeyOrName() -> {
                     val definitionInfo = sourceElement.castOrNull<ParadoxDefinitionElement>()?.definitionInfo ?: return@run
                     val definitionName = definitionInfo.name.or.anonymous()
-                    return ChronicleBundle.message("script.goto.relatedLocalisations.chooseTitle.1", definitionName.escapeXml())
+                    return ChronicleBundle.message("script.goto.relatedLocalisations.chooseTitle.d", definitionName.escapeXml())
                 }
                 else -> {
                     val modifierElement = sourceElement.castOrNull<ParadoxScriptStringExpressionElement>()
                         ?.let { ParadoxModifierManager.resolveModifier(it) } ?: return@run
                     val modifierName = modifierElement.name
-                    return ChronicleBundle.message("script.goto.relatedLocalisations.chooseTitle.2", modifierName.escapeXml())
+                    return ChronicleBundle.message("script.goto.relatedLocalisations.chooseTitle.m", modifierName.escapeXml())
                 }
             }
         }
         val sourceName = sourceElement.text.unquote()
-        return ChronicleBundle.message("script.goto.relatedLocalisations.chooseTitle.0", sourceName.escapeXml())
+        return ChronicleBundle.message("script.goto.relatedLocalisations.chooseTitle", sourceName.escapeXml())
     }
 
     override fun getFindUsagesTitle(sourceElement: PsiElement, name: String?, length: Int): String {
@@ -152,24 +167,24 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
             when {
                 ParadoxPsiMatchService.isScriptedVariable(sourceElement) -> {
                     val name = sourceElement.name?.orNull() ?: return@run
-                    return ChronicleBundle.message("script.goto.relatedLocalisations.findUsagesTitle.3", name.escapeXml())
+                    return ChronicleBundle.message("script.goto.relatedLocalisations.findUsagesTitle.sv", name.escapeXml())
                 }
                 sourceElement !is ParadoxScriptStringExpressionElement -> {}
                 sourceElement.isDefinitionTypeKeyOrName() -> {
                     val definitionInfo = sourceElement.castOrNull<ParadoxDefinitionElement>()?.definitionInfo ?: return@run
                     val definitionName = definitionInfo.name.or.anonymous()
-                    return ChronicleBundle.message("script.goto.relatedLocalisations.findUsagesTitle.1", definitionName.escapeXml())
+                    return ChronicleBundle.message("script.goto.relatedLocalisations.findUsagesTitle.d", definitionName.escapeXml())
                 }
                 else -> {
                     val modifierElement = sourceElement.castOrNull<ParadoxScriptStringExpressionElement>()
                         ?.let { ParadoxModifierManager.resolveModifier(it) } ?: return@run
                     val modifierName = modifierElement.name
-                    return ChronicleBundle.message("script.goto.relatedLocalisations.findUsagesTitle.2", modifierName.escapeXml())
+                    return ChronicleBundle.message("script.goto.relatedLocalisations.findUsagesTitle.m", modifierName.escapeXml())
                 }
             }
         }
         val sourceName = sourceElement.text.unquote()
-        return ChronicleBundle.message("script.goto.relatedLocalisations.findUsagesTitle.0", sourceName.escapeXml())
+        return ChronicleBundle.message("script.goto.relatedLocalisations.findUsagesTitle", sourceName.escapeXml())
     }
 
     override fun getNotFoundMessage(project: Project, editor: Editor, file: PsiFile): String {

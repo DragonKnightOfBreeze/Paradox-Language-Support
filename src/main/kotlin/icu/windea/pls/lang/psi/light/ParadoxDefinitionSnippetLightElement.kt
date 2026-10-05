@@ -24,7 +24,7 @@ import java.util.*
 class ParadoxDefinitionSnippetLightElement(
     parent: PsiElement,
     private val name: String,
-    val definitionType: String,
+    val definitionType: String, // TODO 3.0.4 [snippet-match] consider change to `typeExpression`?
     override val snippetTemplates: List<UnaryTemplateInfo>,
     override val gameType: ParadoxGameType,
     private val project: Project,
