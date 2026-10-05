@@ -123,7 +123,7 @@ class SnippetMatchTest : BasePlatformTestCase(), ChronicleTestScope {
         myFixture.enableInspections(UnresolvedExpressionInspection::class.java)
         markFileInfo(gameType, "common/test_types/00_test_types.txt")
         myFixture.configureByText("00_test_types.txt") {
-            val expected = """<test_type>|${'$'}_a,b_${'$'}"""
+            val expected = $$"""<test_type>|$_a,b_$"""
             val m = "Cannot resolve value expression `unknown` (expect matching: $expected)"
             """
             first_type = {

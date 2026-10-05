@@ -64,8 +64,6 @@ class ParadoxLocalisationSnippetChecker : ParadoxIncorrectExpressionChecker {
         val configExpression = ProcessorScope.findFrom({ config.expandConfigExpression { process(it) } }) { it.type == CwtDataTypes.LocalisationSnippet }
         if (configExpression == null) return true
 
-        val typeExpression = configExpression.metadata.value
-        if (typeExpression == null) return true
         val templates = configExpression.metadata.snippetTemplates
         if (templates.isNullOrEmpty()) return true
         val value = element.value

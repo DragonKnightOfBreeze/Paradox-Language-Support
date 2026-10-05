@@ -62,10 +62,10 @@ object ChronicleIcons {
         @JvmField val Type = getIcon("/icons/nodes/semantic/type.svg")
         @JvmField val DefinitionGroup = getIcon("icons/nodes/semantic/definitionGroup.svg")
         @JvmField val Definition = getIcon("/icons/nodes/semantic/definition.svg")
-        @JvmField val DefinitionSnippet = getIcon("/icons/nodes/semantic/definition.svg") // TODO 3.0.4
+        @JvmField val DefinitionSnippet = getIcon("/icons/nodes/semantic/definitionSnippet.svg")
         @JvmField val LocalisationGroup = getIcon("/icons/nodes/semantic/localisationGroup.svg")
         @JvmField val Localisation = getIcon("/icons/nodes/semantic/localisation.svg")
-        @JvmField val LocalisationSnippet = getIcon("/icons/nodes/semantic/localisation.svg") // TODO 3.0.4
+        @JvmField val LocalisationSnippet = getIcon("/icons/nodes/semantic/localisationSnippet.svg")
         @JvmField val DefineNamespace = getIcon("/icons/nodes/semantic/defineNamespace.svg")
         @JvmField val DefineVariable = getIcon("/icons/nodes/semantic/defineVariable.svg")
         @JvmField val EnumValue = getIcon("/icons/nodes/semantic/enumValue.svg")

@@ -4,6 +4,7 @@ import icu.windea.pls.config.CwtConfigConstants
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.optimized
+import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removePrefixOrNull
 
 @Suppress("unused")
@@ -14,10 +15,11 @@ interface CwtFilePathResolutionScope {
      *
      * 例如，`game/common/on_actions` 将会被规范化为 `common/on_actions`。
      */
-    fun String.resolvePath(): String {
+    fun String.resolvePath(): String? {
+        if (this.isEmpty()) return null
         val prefixes = CwtConfigConstants.pathPrefixes
         val result = prefixes.firstNotNullOfOrNull { removePrefixOrNull(it) } ?: this
-        return result.normalizePath().optimized()
+        return result.normalizePath().orNull()?.optimized()
     }
 
     /**
@@ -25,9 +27,10 @@ interface CwtFilePathResolutionScope {
      *
      * 例如，`.txt` 将会被规范化为 `txt`。
      */
-    fun String.resolvePathExtension(): String {
+    fun String.resolvePathExtension(): String? {
+        if (this.isEmpty()) return null
         val result = removePrefix(".")
-        return result.optimized()
+        return result.orNull()?.optimized()
     }
 
     companion object INSTANCE : CwtFilePathResolutionScope

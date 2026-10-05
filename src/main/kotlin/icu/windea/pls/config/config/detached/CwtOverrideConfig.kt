@@ -44,7 +44,7 @@ private object CwtOverrideConfigResolver : CwtConfigResolutionScope {
     private val logger = thisLogger()
 
     fun resolve(config: CwtPropertyConfig): CwtOverrideConfig? {
-        val filePath = config.key.resolvePath().orNull() ?: return null
+        val filePath = config.key.resolvePath() ?: return null
         val strategyString = config.stringValue?.orNull() ?: return null
         val strategy = ParadoxOverrideStrategy.get(strategyString.uppercase()) ?: return null
         logger.debugWithPrefix(config) { "Resolved override config (filePath: $filePath, strategy: $strategy)" }

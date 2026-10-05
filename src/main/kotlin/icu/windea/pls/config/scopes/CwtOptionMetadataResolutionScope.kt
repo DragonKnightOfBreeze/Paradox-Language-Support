@@ -90,7 +90,7 @@ interface CwtOptionMetadataResolutionScope : CwtFilePathResolutionScope {
 
     fun CwtOptionConfig.resolveFileExtensions(): Set<String>? {
         val values = resolveValueOrValues()?.orNull() ?: return null
-        val r = values.mapTo(mutableSetOf()) { it.resolvePathExtension() }
+        val r = values.mapNotNullTo(mutableSetOf()) { it.resolvePathExtension() }
         return r.optimized() // ensure optimized
     }
 
