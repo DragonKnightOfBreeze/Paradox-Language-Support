@@ -6,6 +6,7 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.mapNotNullFast
+import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.fileInfo
@@ -45,23 +46,23 @@ object ParadoxScriptedVariableManager {
         return VirtualFileService.findDirectory(path)
     }
 
-    fun getPresentableName(element: ParadoxScriptScriptedVariable, locale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig()): String? {
-        val name = element.name?.orNull() ?: return null
-        val nameLocalisation = getNameLocalisation(name, element, locale)
-        return nameLocalisation?.let { ParadoxLocalisationManager.getPresentableText(it) }
-    }
-
-    fun getPresentableNames(element: ParadoxScriptScriptedVariable, locale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig()): Set<String> {
-        val name = element.name?.orNull() ?: return emptySet()
-        val nameLocalisation = getNameLocalisations(name, element, locale)
-        return nameLocalisation.mapNotNullFast { ParadoxLocalisationManager.getPresentableText(it) }.toSet()
-    }
-
     fun getNameLocalisation(name: String, contextElement: PsiElement, locale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig()): ParadoxLocalisationProperty? {
         return ParadoxScriptedVariableService.resolveNameLocalisation(name, contextElement, locale)
     }
 
     fun getNameLocalisations(name: String, contextElement: PsiElement, locale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig()): List<ParadoxLocalisationProperty> {
         return ParadoxScriptedVariableService.resolveNameLocalisations(name, contextElement, locale)
+    }
+
+    fun getPresentableName(element: ParadoxScriptScriptedVariable, locale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig()): String? {
+        val name = element.name?.orNull() ?: return null
+        val nameLocalisation = getNameLocalisation(name, element, locale) ?: return null
+        return nameLocalisation.let { ParadoxLocalisationManager.getPresentableText(it) }
+    }
+
+    fun getPresentableNames(element: ParadoxScriptScriptedVariable, locale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig()): Set<String> {
+        val name = element.name?.orNull() ?: return emptySet()
+        val nameLocalisations = getNameLocalisations(name, element, locale).orNull() ?: return emptySet()
+        return nameLocalisations.mapNotNullFast { ParadoxLocalisationManager.getPresentableText(it) }.toSet()
     }
 }

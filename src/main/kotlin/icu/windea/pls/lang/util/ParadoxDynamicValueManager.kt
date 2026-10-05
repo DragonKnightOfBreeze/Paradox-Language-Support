@@ -54,6 +54,15 @@ object ParadoxDynamicValueManager {
         return ParadoxDynamicValueLightElement(element, name, dynamicValueTypes, readWriteAccess, configGroup.gameType, configGroup.project)
     }
 
+    fun getNameLocalisation(name: String, contextElement: PsiElement, locale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig()): ParadoxLocalisationProperty? {
+        return ParadoxDynamicValueService.resolveNameLocalisation(name, contextElement, locale)
+    }
+
+    fun getNameLocalisations(name: String, contextElement: PsiElement, locale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig()): List<ParadoxLocalisationProperty> {
+        return ParadoxDynamicValueService.resolveNameLocalisations(name, contextElement, locale)
+    }
+
+    @Suppress("unused")
     fun getPresentableName(name: String, contextElement: PsiElement, locale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig()): String? {
         val nameLocalisation = getNameLocalisation(name, contextElement, locale)
         return nameLocalisation?.let { ParadoxLocalisationManager.getPresentableText(it) }
@@ -63,13 +72,5 @@ object ParadoxDynamicValueManager {
     fun getPresentableNames(name: String, contextElement: PsiElement, locale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig()): Set<String> {
         val nameLocalisation = getNameLocalisations(name, contextElement, locale)
         return nameLocalisation.mapNotNullFast { ParadoxLocalisationManager.getPresentableText(it) }.toSet()
-    }
-
-    fun getNameLocalisation(name: String, contextElement: PsiElement, locale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig()): ParadoxLocalisationProperty? {
-        return ParadoxDynamicValueService.resolveNameLocalisation(name, contextElement, locale)
-    }
-
-    fun getNameLocalisations(name: String, contextElement: PsiElement, locale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig()): List<ParadoxLocalisationProperty> {
-        return ParadoxDynamicValueService.resolveNameLocalisations(name, contextElement, locale)
     }
 }

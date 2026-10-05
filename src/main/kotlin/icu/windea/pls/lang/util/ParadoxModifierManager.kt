@@ -143,16 +143,6 @@ object ParadoxModifierManager {
     }
 
     /**
-     * 得到修正关联的（第一个）名字本地化。
-     *
-     * @see ParadoxModifierService.resolveRelatedLocalisation
-     */
-    fun getRelatedLocalisation(name: String, element: PsiElement, project: Project): ParadoxLocalisationProperty? {
-        val nameKeys = getModifierNameKeys(name, element)
-        return ParadoxModifierService.resolveRelatedLocalisation(nameKeys, element, project)
-    }
-
-    /**
      * 得到修正关联的所有本地化（包括名字和描述）。
      *
      * @see ParadoxModifierService.resolveRelatedLocalisations
@@ -171,7 +161,8 @@ object ParadoxModifierManager {
     }
 
     fun getPresentableName(name: String, element: PsiElement, project: Project): String? {
-        val localisation = getRelatedLocalisation(name, element, project)
+        val nameKeys = getModifierNameKeys(name, element)
+        val localisation = ParadoxModifierService.resolveRelatedLocalisation(nameKeys, element, project)
         return localisation?.let { ParadoxLocalisationManager.getPresentableText(it) }
     }
 

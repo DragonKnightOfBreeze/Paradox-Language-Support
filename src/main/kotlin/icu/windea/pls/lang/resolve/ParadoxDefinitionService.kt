@@ -257,25 +257,6 @@ object ParadoxDefinitionService {
         return result
     }
 
-    /**
-     * 解析定义关联的所有本地化。
-     */
-    fun resolveRelatedLocalisations(definitionInfo: ParadoxDefinitionInfo): List<ParadoxLocalisationProperty> {
-        val element = definitionInfo.element ?: return emptyList()
-        val localisationInfos = definitionInfo.localisations
-        if (localisationInfos.isEmpty()) return emptyList() // 没有或者规则不完善
-        val result = mutableListOf<ParadoxLocalisationProperty>()
-        val preferredLocale = ParadoxLocaleManager.getPreferredLocaleConfig()
-        for ((_, locationExpression) in localisationInfos) {
-            ProgressManager.checkCanceled()
-            val resolveResult = ParadoxLocationExpressionService.resolve(locationExpression, element, definitionInfo) { preferLocale(preferredLocale) }
-            if (resolveResult != null && resolveResult.elements.isNotEmpty()) {
-                result.addAll(resolveResult.elements)
-            }
-        }
-        return result
-    }
-
     fun resolvePrimaryImage(definitionInfo: ParadoxDefinitionInfo): PsiFile? {
         val element = definitionInfo.element ?: return null
         val primaryImages = definitionInfo.primaryImages
@@ -301,6 +282,22 @@ object ParadoxDefinitionService {
             val files = resolveResult.elements.filterIsInstance<PsiFile>()
             element.putUserData(Keys.imageFrameInfo, resolveResult.frameInfo)
             result.addAll(files)
+        }
+        return result
+    }
+
+    fun resolveRelatedLocalisations(definitionInfo: ParadoxDefinitionInfo): List<ParadoxLocalisationProperty> {
+        val element = definitionInfo.element ?: return emptyList()
+        val localisationInfos = definitionInfo.localisations
+        if (localisationInfos.isEmpty()) return emptyList() // 没有或者规则不完善
+        val result = mutableListOf<ParadoxLocalisationProperty>()
+        val preferredLocale = ParadoxLocaleManager.getPreferredLocaleConfig()
+        for ((_, locationExpression) in localisationInfos) {
+            ProgressManager.checkCanceled()
+            val resolveResult = ParadoxLocationExpressionService.resolve(locationExpression, element, definitionInfo) { preferLocale(preferredLocale) }
+            if (resolveResult != null && resolveResult.elements.isNotEmpty()) {
+                result.addAll(resolveResult.elements)
+            }
         }
         return result
     }

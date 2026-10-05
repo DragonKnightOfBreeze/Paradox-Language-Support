@@ -144,19 +144,11 @@ object ParadoxDefinitionManager {
     }
 
     fun getPrimaryRelatedLocalisationInfos(definitionInfo: ParadoxDefinitionInfo): List<ParadoxDefinitionInfo.RelatedLocalisationInfo> {
-        return definitionInfo.localisations.filterFast { it.isPrimaryKey() }.optimized()
+        return ParadoxDefinitionService.resolveRelatedLocalisationInfos(definitionInfo).filterFast { it.isPrimaryKey() }.optimized()
     }
 
     fun getPrimaryRelatedImageInfos(definitionInfo: ParadoxDefinitionInfo): List<ParadoxDefinitionInfo.RelatedImageInfo> {
-        return definitionInfo.images.filterFast { it.isPrimaryKey() }.optimized()
-    }
-
-    /**
-     * 得到定义关联的所有本地化。
-     */
-    fun getRelatedLocalisations(element: ParadoxDefinitionElement): List<ParadoxLocalisationProperty> {
-        val definitionInfo = getInfo(element) ?: return emptyList()
-        return ParadoxDefinitionService.resolveRelatedLocalisations(definitionInfo)
+        return ParadoxDefinitionService.resolveRelatedImageInfos(definitionInfo).filterFast { it.isPrimaryKey() }.optimized()
     }
 
     fun getPrimaryLocalisationKey(element: ParadoxDefinitionElement): String? {
@@ -221,17 +213,24 @@ object ParadoxDefinitionManager {
     }
 
     /**
-     * 得到定义关联的（主要）名字本地化。作为 [getRelatedLocalisations] 的单项形式。
+     * 得到 [element] 对应的定义的所有相关本地化。
      */
-    fun getRelatedLocalisation(element: ParadoxDefinitionElement): ParadoxLocalisationProperty? {
-        return getPrimaryLocalisation(element)
+    fun getRelatedLocalisations(element: ParadoxDefinitionElement): List<ParadoxLocalisationProperty> {
+        val definitionInfo = getInfo(element) ?: return emptyList()
+        return ParadoxDefinitionService.resolveRelatedLocalisations(definitionInfo)
     }
 
+    /**
+     * 得到 [element] 对应的定义的展示名字。
+     */
     fun getPresentableName(element: ParadoxDefinitionElement): String? {
-        val localisation = getRelatedLocalisation(element)
+        val localisation = getPrimaryLocalisation(element)
         return localisation?.let { ParadoxLocalisationManager.getPresentableText(it) }
     }
 
+    /**
+     * 得到 [element] 对应的定义的所有展示名字。
+     */
     fun getPresentableNames(element: ParadoxDefinitionElement): Set<String> {
         val primaryLocalisations = getPrimaryLocalisations(element)
         if (primaryLocalisations.isEmpty()) return emptySet()
