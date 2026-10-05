@@ -51,16 +51,22 @@ This project uses **Gradle** and the **IntelliJ Platform Gradle Plugin**.
 
 ### Requirements
 
-- **JDK 21** (the build uses `kotlin.jvmToolchain(21)`)
-- Gradle wrapper (use `./gradlew` / `./gradlew` on Windows)
+- JDK 21
+- Gradle wrapper
 
 ### Common commands
 
-> On Windows PowerShell, prefer running Gradle via the wrapper:`./gradlew <task>`
+- Build the plugin ZIP: `./gradlew buildPlugin --no-daemon --console=plain`
+- Run tests: `./gradlew test --no-daemon --console=plain`
 
-- Run IDE for debugging: `./gradlew runIde`
-- Build the plugin ZIP: `./gradlew buildPlugin`
-- Run tests: `./gradlew test`
+### Gradle execution environment
+
+- **Best practice**: run Gradle tasks (tests, builds, etc.) directly through the **agent's built-in shell**, appending `--no-daemon --console=plain`. This returns promptly and streams readable, complete output.
+- **Always pass `--no-daemon`.** In the default daemon mode, the long-lived Gradle daemon inherits the agent shell's stdout/stderr, so output collection can stay blocked after the task itself has finished - the shell appears to hang (observed: no output for more than 10 minutes) even though the build already completed. `--console=plain` additionally keeps progress-control escape codes out of the captured output.
+- Always set a bounded timeout on shell Gradle calls. A timeout (or prolonged silence) is still **not**, by itself, evidence that the task failed - confirm through `build/test-results/**/*.xml` and `build/reports/**` before drawing conclusions.
+- Short Gradle queries such as `./gradlew help` or `./gradlew --status` follow the same rule: append `--no-daemon` where applicable and set a bounded timeout.
+- **Special scenarios** may call for IDEA Terminal or an IDEA Gradle Run Configuration instead, but mind their trade-offs: the MCP-captured output of IDEA Terminal can be truncated in the middle/end (read the result from the reports or the returned exit code), and a Gradle Run Configuration returns only an exit code with an empty `output` (read the result from the reports).
+- When diagnosing a suspected hang, first check existing Gradle/Java processes, then clean up only daemons created during the diagnosis. Never terminate other working processes. Do not leave long-lived child processes holding the agent-shell stdout/stderr.
 
 ### CWT config repositories
 
@@ -85,19 +91,12 @@ The plugin bundles CWT configs into the plugin JAR under `config/<gameTypeId>`. 
 ### Best practices
 
 - Prefer **targeted** test runs during development:
-  - `./gradlew test --tests "<fully.qualified.TestClass>"`
-  - `./gradlew test --tests "*SomeKeyword*"`
+  - `./gradlew test --tests "<fully.qualified.TestClass>" --no-daemon --console=plain`
+  - `./gradlew test --tests "*SomeKeyword*" --no-daemon --console=plain`
 - Prefer adding or updating tests when behavior changes:
   - Unit tests for pure logic.
   - Integration tests for syntax/semantic/PSI/index/config-driven logic.
 - A full `./gradlew test` run can take tens of minutes; don't run it casually during iterative development.
-
-### Gradle execution environment
-
-- For builds, tests, and other Gradle tasks that may take more than a few seconds, prefer IntelliJ IDEA Terminal or an IDEA Gradle Run Configuration over an agent-provided shell.
-- On Windows, an agent shell can expose redirected standard input/output rather than a terminal. Its process/output collection may remain blocked after a Gradle task or one of its children has finished; a shell timeout is therefore not, by itself, evidence that the Gradle task failed.
-- Use the agent shell only for short Gradle queries such as `./gradlew help` or `./gradlew --status`, always with a bounded timeout. Validate a suspected timeout through an IDEA execution path before diagnosing project code, caches, or Gradle daemon state.
-- When diagnosing a hang, first check existing Gradle/Java processes, compare `--no-daemon` with the default daemon mode, and clean up only daemons created during the diagnosis. Do not run long-lived child processes with inherited agent-shell stdout/stderr; redirect their output and verify cleanup instead.
 
 ### IntelliJ platform test patterns
 
@@ -174,7 +173,7 @@ Some tests are intentionally **disabled by default** and only run when explicitl
 | `includeLocalEnv()`        | `chronicle.test.include.local.env`        | Tests requiring a real local game/mod environment (e.g. `ParadoxModImporterTest`) |
 | `includeConfigGenerator()` | `chronicle.test.include.config.generator` | Config generator tests                                                            |
 
-`chronicle.test.include.all` (checked via `includeAll()`) unconditionally enables every category above. Example: `./gradlew test -Dchronicle.test.include.local.env=true`.
+`chronicle.test.include.all` (checked via `includeAll()`) unconditionally enables every category above. Example: `./gradlew test -Dchronicle.test.include.local.env=true --no-daemon --console=plain`.
 
 ## Code architecture
 
@@ -343,13 +342,15 @@ For the documents and examples, see:
 - Prefer extending via existing EPs and config-driven mechanisms instead of hard-coding game-specific behavior.
 - If adding new EP implementations, follow the naming conventions above.
 - Add/update tests when feasible; distinguish unit vs integration tests.
-- Run `./gradlew test` (or a targeted test task) before finishing.
+- Run `./gradlew test --no-daemon --console=plain` (or a targeted test task) before finishing.
 
 ## Tooling preferences
 
 ### General operations
 
 - Prefer using built-in tools for common operations (e.g., read, write, edit, patch, grep search, glob search).
+- Prefer using built-in tools to execute commands for build tool operations (e.g., building, running tests), and operations that are more suitable to be done by commands.
+- Run Gradle tasks through the built-in shell with `--no-daemon --console=plain`; see [Gradle execution environment](#gradle-execution-environment).
 - Prefer using suitable mcp when structured search or semantic search is available.
 - Prefer running IDE inspections provided by intellij mcp or intellij-index mcp before compilation, building, or running tests, if necessary.
 

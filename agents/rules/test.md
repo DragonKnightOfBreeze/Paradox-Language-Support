@@ -17,11 +17,12 @@ globs:
 
 ## Gradle 执行环境
 
-- 执行构建、测试等可能耗时数秒以上的 Gradle 任务时，优先使用 IDEA Terminal 或 IDEA 的 Gradle Run Configuration，而不是代理内置 shell。
-- Windows 上代理 shell 的标准输入/输出可能被重定向，且其进程或输出收集器可能在 Gradle 任务或其子进程结束后仍然等待。因此，代理 shell 超时本身不表示测试失败，也不应立刻归因于项目代码、Gradle 缓存或 daemon。
-- 代理内置 shell 仅适用于 `./gradlew help`、`./gradlew --status` 等短查询，并且必须设置合理的硬超时。遇到超时时，使用 IDEA Terminal 或 Run Configuration 运行同一条目标命令进行对照。
-- 排查时先检查已有 Gradle/Java 进程，再分别比较默认 daemon 模式与 `--no-daemon`。只清理由本次诊断创建的 daemon；不要擅自终止其他工作进程。
-- 代理 shell 中不要直接启动会派生长期后台子进程的命令。若确有需要，避免子进程继承 stdout/stderr，显式重定向输出，并在结束时检查和清理进程。
+- 首选：直接通过代理**内置 shell** 工具执行 Gradle 任务（测试、构建等），并附带 `--no-daemon --console=plain`，例如：`./gradlew test --tests "<全限定类名>" --no-daemon --console=plain`。这样可以及时返回，并流式输出完整可读的结果。
+- **必须带上 `--no-daemon`。** 默认 daemon 模式下，长期存活的 Gradle daemon 会继承代理 shell 的 stdout/stderr，导致任务本身早已结束后、输出收集仍然阻塞——shell 看似卡住（实测超过 10 分钟无输出）。`--console=plain` 则可避免进度控制转义字符混入捕获的输出。
+- 每次通过 shell 执行 Gradle 都应设置合理的硬超时。但超时（或长时间无输出）本身**不**表示任务失败，结论前应先核对 `build/test-results/**/*.xml` 与 `build/reports/**`。
+- `./gradlew help`、`./gradlew --status` 等短查询遵循同样规则：视情况追加 `--no-daemon`，并设置硬超时。
+- **特殊场景**下也可考虑 IDEA Terminal 或 IDEA 的 Gradle Run Configuration，但需注意其取舍：IDEA Terminal 的 MCP 捕获输出可能在中部/末尾被截断（应从报告或返回的 exit code 获取结果）；Gradle Run Configuration 仅返回 exit code，`output` 为空（结果同样从报告获取）。
+- 排查疑似卡住时，先检查已有 Gradle/Java 进程，只清理由本次诊断创建的 daemon；不要终止其他正在工作的进程。也不要让长期后台子进程继续占用代理 shell 的 stdout/stderr。
 
 ## 技术信息
 
