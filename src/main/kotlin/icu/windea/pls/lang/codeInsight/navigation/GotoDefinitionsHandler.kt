@@ -31,7 +31,7 @@ class GotoDefinitionsHandler : GotoTargetHandler() {
         val definition = selectScope { element.parentDefinition() } ?: return null
         val definitionInfo = definition.definitionInfo ?: return null
         if (definitionInfo.name.isEmpty()) return null // 排除匿名定义
-        val name = ParadoxPsiPresentationService.getDefinitionName(definition) ?: return null
+        val name = ParadoxPsiPresentationService.getNameForDefinition(definition) ?: return null
         val targets = mutableListOf<PsiElement>()
         runWithModalProgressBlocking(project, ChronicleBundle.message("script.goto.definitions.search", name)) {
             // need read actions here if necessary
@@ -50,12 +50,12 @@ class GotoDefinitionsHandler : GotoTargetHandler() {
     }
 
     override fun getChooserTitle(sourceElement: PsiElement, name: String?, length: Int, finished: Boolean): String {
-        val name = ParadoxPsiPresentationService.getDefinitionName(sourceElement) ?: return ""
+        val name = ParadoxPsiPresentationService.getNameForDefinition(sourceElement) ?: return ""
         return ChronicleBundle.message("script.goto.definitions.chooseTitle", name.escapeXml())
     }
 
     override fun getFindUsagesTitle(sourceElement: PsiElement, name: String?, length: Int): String {
-        val name = ParadoxPsiPresentationService.getDefinitionName(sourceElement) ?: return ""
+        val name = ParadoxPsiPresentationService.getNameForDefinition(sourceElement) ?: return ""
         return ChronicleBundle.message("script.goto.definitions.findUsagesTitle", name.escapeXml())
     }
 

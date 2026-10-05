@@ -13,15 +13,12 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.collections.toArray
 import icu.windea.pls.core.escapeXml
-import icu.windea.pls.core.orNull
 import icu.windea.pls.core.unquote
-import icu.windea.pls.core.util.values.anonymous
-import icu.windea.pls.core.util.values.or
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.index.constraints.ParadoxLocalisationIndexConstraint
-import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.psi.ParadoxPsiFileService
 import icu.windea.pls.lang.psi.ParadoxPsiMatchService
+import icu.windea.pls.lang.psi.ParadoxPsiPresentationService
 import icu.windea.pls.lang.psi.isDefinitionTypeKeyOrName
 import icu.windea.pls.lang.psi.light.ParadoxLocalisationSnippetLightElement
 import icu.windea.pls.lang.resolve.ParadoxLocationExpressionService
@@ -64,7 +61,7 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
         when {
             ParadoxPsiMatchService.isScriptedVariable(element) -> {
                 val scriptedVariable = element
-                val name = scriptedVariable.name?.orNull() ?: return null
+                val name = ParadoxPsiPresentationService.getNameForScriptedVariable(scriptedVariable) ?: return null
                 val targets = mutableListOf<PsiElement>()
                 runWithModalProgressBlocking<Unit>(project, ChronicleBundle.message("script.goto.relatedLocalisations.search.sv", name)) {
                     // need read actions here if necessary
@@ -80,10 +77,11 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
                 val definition = selectScope { element.parentDefinition() } ?: return null
                 val definitionInfo = definition.definitionInfo ?: return null
                 if (definitionInfo.name.isEmpty()) return null // 排除匿名定义
+                val name = ParadoxPsiPresentationService.getNameForDefinition(definition) ?: return null
                 val localisationInfos = definitionInfo.localisations
                 if (localisationInfos.isEmpty()) return GotoData(definition, PsiElement.EMPTY_ARRAY, emptyList())
                 val targets = mutableListOf<PsiElement>()
-                runWithModalProgressBlocking(project, ChronicleBundle.message("script.goto.relatedLocalisations.search.d", definitionInfo.name)) {
+                runWithModalProgressBlocking(project, ChronicleBundle.message("script.goto.relatedLocalisations.search.d", name)) {
                     // need read actions here if necessary
                     for ((_, locationExpression) in localisationInfos) {
                         ProgressManager.checkCanceled()
@@ -141,13 +139,12 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
         run {
             when {
                 ParadoxPsiMatchService.isScriptedVariable(sourceElement) -> {
-                    val name = sourceElement.name?.orNull() ?: return@run
+                    val name = ParadoxPsiPresentationService.getNameForScriptedVariable(sourceElement) ?: return@run
                     return ChronicleBundle.message("script.goto.relatedLocalisations.chooseTitle.sv", name.escapeXml())
                 }
                 sourceElement !is ParadoxScriptStringExpressionElement -> {}
                 sourceElement.isDefinitionTypeKeyOrName() -> {
-                    val definitionInfo = sourceElement.castOrNull<ParadoxDefinitionElement>()?.definitionInfo ?: return@run
-                    val definitionName = definitionInfo.name.or.anonymous()
+                    val definitionName = ParadoxPsiPresentationService.getNameForDefinition(sourceElement) ?: return@run
                     return ChronicleBundle.message("script.goto.relatedLocalisations.chooseTitle.d", definitionName.escapeXml())
                 }
                 else -> {
@@ -166,13 +163,12 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
         run {
             when {
                 ParadoxPsiMatchService.isScriptedVariable(sourceElement) -> {
-                    val name = sourceElement.name?.orNull() ?: return@run
+                    val name = ParadoxPsiPresentationService.getNameForScriptedVariable(sourceElement) ?: return@run
                     return ChronicleBundle.message("script.goto.relatedLocalisations.findUsagesTitle.sv", name.escapeXml())
                 }
                 sourceElement !is ParadoxScriptStringExpressionElement -> {}
                 sourceElement.isDefinitionTypeKeyOrName() -> {
-                    val definitionInfo = sourceElement.castOrNull<ParadoxDefinitionElement>()?.definitionInfo ?: return@run
-                    val definitionName = definitionInfo.name.or.anonymous()
+                    val definitionName = ParadoxPsiPresentationService.getNameForDefinition(sourceElement) ?: return@run
                     return ChronicleBundle.message("script.goto.relatedLocalisations.findUsagesTitle.d", definitionName.escapeXml())
                 }
                 else -> {

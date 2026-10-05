@@ -10,6 +10,7 @@ import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.lang.psi.ParadoxPsiFileService
 import icu.windea.pls.lang.psi.ParadoxPsiMatchService
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
+import icu.windea.pls.model.ParadoxLocalisationType
 import icu.windea.pls.script.psi.ParadoxScriptFile
 
 /**
@@ -52,7 +53,7 @@ class GotoRelatedDefinitionsAction : BaseCodeInsightAction() {
         run {
             if (file !is ParadoxLocalisationFile) return@run
             val element = ParadoxPsiFileService.findLocalisation(file, offset) ?: return@run
-            return ParadoxPsiMatchService.isNormalLocalisation(element)
+            return ParadoxPsiMatchService.isLocalisation(element, ParadoxLocalisationType.Normal)
         }
         return false
     }

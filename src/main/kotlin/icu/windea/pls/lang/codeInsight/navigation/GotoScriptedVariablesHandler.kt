@@ -10,12 +10,11 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.collections.toArray
 import icu.windea.pls.core.escapeXml
-import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.psi.ParadoxPsiFileService
 import icu.windea.pls.lang.psi.ParadoxPsiMatchService
+import icu.windea.pls.lang.psi.ParadoxPsiPresentationService
 import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
 import icu.windea.pls.lang.search.util.contextSensitive
-import icu.windea.pls.model.ParadoxTargetInfo
 
 class GotoScriptedVariablesHandler : GotoTargetHandler() {
     override fun getFeatureUsedKey(): String {
@@ -27,7 +26,7 @@ class GotoScriptedVariablesHandler : GotoTargetHandler() {
         val offset = editor.caretModel.offset
         val element = ParadoxPsiFileService.findScriptedVariable(file, offset) { BY_NAME } ?: return null
         if (!ParadoxPsiMatchService.isScriptedVariable(element)) return null
-        val name = element.name?.orNull() ?: return null
+        val name = ParadoxPsiPresentationService.getNameForScriptedVariable(element) ?: return null
         val targets = mutableListOf<PsiElement>()
         runWithModalProgressBlocking(project, ChronicleBundle.message("script.goto.scriptedVariables.search", name)) {
             // need read actions here if necessary
@@ -49,12 +48,12 @@ class GotoScriptedVariablesHandler : GotoTargetHandler() {
     }
 
     override fun getChooserTitle(sourceElement: PsiElement, name: String?, length: Int, finished: Boolean): String {
-        val name = ParadoxTargetInfo.from(sourceElement)?.name ?: return ""
+        val name = ParadoxPsiPresentationService.getNameForScriptedVariable(sourceElement) ?: return ""
         return ChronicleBundle.message("script.goto.scriptedVariables.chooseTitle", name.escapeXml())
     }
 
     override fun getFindUsagesTitle(sourceElement: PsiElement, name: String?, length: Int): String {
-        val name = ParadoxTargetInfo.from(sourceElement)?.name ?: return ""
+        val name = ParadoxPsiPresentationService.getNameForScriptedVariable(sourceElement) ?: return ""
         return ChronicleBundle.message("script.goto.scriptedVariables.findUsagesTitle", name.escapeXml())
     }
 

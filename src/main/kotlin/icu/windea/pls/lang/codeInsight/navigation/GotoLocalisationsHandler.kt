@@ -12,11 +12,11 @@ import icu.windea.pls.core.collections.toArray
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.lang.psi.ParadoxPsiFileService
 import icu.windea.pls.lang.psi.ParadoxPsiMatchService
+import icu.windea.pls.lang.psi.ParadoxPsiPresentationService
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.search.util.preferLocale
 import icu.windea.pls.lang.util.ParadoxLocaleManager
-import icu.windea.pls.model.ParadoxTargetInfo
 
 class GotoLocalisationsHandler : GotoTargetHandler() {
     override fun getFeatureUsedKey(): String {
@@ -29,13 +29,13 @@ class GotoLocalisationsHandler : GotoTargetHandler() {
         val element = ParadoxPsiFileService.findLocalisation(file, offset) { BY_NAME } ?: return null
         if (!ParadoxPsiMatchService.isLocalisation(element)) return null
         val type = element.type ?: return null
+        val name = ParadoxPsiPresentationService.getNameForLocalisation(element) ?: return null
         val targets = mutableListOf<PsiElement>()
-        runWithModalProgressBlocking(project, ChronicleBundle.message("script.goto.localisations.search", element.name)) {
+        runWithModalProgressBlocking(project, ChronicleBundle.message("script.goto.localisations.search", name)) {
             // need read actions here if necessary
             readAction {
                 val selector = ParadoxLocalisationSearch.selector(project, element).contextSensitive().preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
-                ParadoxLocalisationSearch.search(element.name, selector, type).findAll()
-                val resolved = ParadoxLocalisationSearch.search(element.name, selector, type).findAll()
+                val resolved = ParadoxLocalisationSearch.search(name, selector, type).findAll()
                 targets.addAll(resolved)
             }
         }
@@ -48,12 +48,12 @@ class GotoLocalisationsHandler : GotoTargetHandler() {
     }
 
     override fun getChooserTitle(sourceElement: PsiElement, name: String?, length: Int, finished: Boolean): String {
-        val name = ParadoxTargetInfo.from(sourceElement)?.name ?: return ""
+        val name = ParadoxPsiPresentationService.getNameForLocalisation(sourceElement) ?: return ""
         return ChronicleBundle.message("script.goto.localisations.chooseTitle", name.escapeXml())
     }
 
     override fun getFindUsagesTitle(sourceElement: PsiElement, name: String?, length: Int): String {
-        val name = ParadoxTargetInfo.from(sourceElement)?.name ?: return ""
+        val name = ParadoxPsiPresentationService.getNameForLocalisation(sourceElement) ?: return ""
         return ChronicleBundle.message("script.goto.localisations.findUsagesTitle", name.escapeXml())
     }
 

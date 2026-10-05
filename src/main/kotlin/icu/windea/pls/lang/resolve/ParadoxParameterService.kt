@@ -20,7 +20,7 @@ import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.mapFast
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.collections.processFast
-import icu.windea.pls.core.constants.StatusStrings
+import icu.windea.pls.core.constants.DefaultStrings
 import icu.windea.pls.core.mergeValue
 import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.ep.resolve.parameter.ParadoxParameterInferredConfigProvider
@@ -169,7 +169,7 @@ object ParadoxParameterService {
     fun getInferredType(contextConfigs: List<CwtMemberConfig<*>>): String? {
         val configs = contextConfigs.singleOrNull()?.configs
         if (configs.isNullOrEmpty()) return null
-        if (configs.anyFast { it !is CwtValueConfig || it.valueType == CwtExpressionType.Block }) return StatusStrings.complex
+        if (configs.anyFast { it !is CwtValueConfig || it.valueType == CwtExpressionType.Block }) return DefaultStrings.complex
         return configs.mapFast { it.configExpression.expressionString }.toSet().joinToString(" | ")
     }
 

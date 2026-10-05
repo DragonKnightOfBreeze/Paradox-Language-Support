@@ -13,6 +13,7 @@ import icu.windea.pls.lang.refactoring.ParadoxRefactoringSettings
 import icu.windea.pls.lang.search.scope.ParadoxSearchScope
 import icu.windea.pls.lang.search.scope.withFileTypes
 import icu.windea.pls.localisation.ParadoxLocalisationFileType
+import icu.windea.pls.model.ParadoxScriptedVariableType
 import icu.windea.pls.script.ParadoxScriptFileType
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
@@ -23,11 +24,15 @@ class ParadoxScriptedVariableInlineDialog(
     private val editor: Editor?
 ) : InlineOptionsDialog(project, true, element) {
     private val optimizedScope = when {
-        ParadoxPsiMatchService.isGlobalScriptedVariable(element) -> ParadoxSearchScope.fromElement(element)
-            ?.withFileTypes(ParadoxScriptFileType, ParadoxLocalisationFileType)
-            ?.intersectWith(GlobalSearchScope.projectScope(project))
-            ?: GlobalSearchScope.projectScope(project)
-        else -> GlobalSearchScope.fileScope(element.containingFile)
+        ParadoxPsiMatchService.isScriptedVariable(element, ParadoxScriptedVariableType.Global) -> {
+            ParadoxSearchScope.fromElement(element)
+                ?.withFileTypes(ParadoxScriptFileType, ParadoxLocalisationFileType)
+                ?.intersectWith(GlobalSearchScope.projectScope(project))
+                ?: GlobalSearchScope.projectScope(project)
+        }
+        else -> {
+            GlobalSearchScope.fileScope(element.containingFile)
+        }
     }
 
     init {

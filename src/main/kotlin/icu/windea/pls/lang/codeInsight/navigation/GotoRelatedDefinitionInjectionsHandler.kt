@@ -8,13 +8,11 @@ import com.intellij.platform.ide.progress.runWithModalProgressBlocking
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.toArray
 import icu.windea.pls.core.escapeXml
-import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.psi.ParadoxPsiFileService
+import icu.windea.pls.lang.psi.ParadoxPsiPresentationService
 import icu.windea.pls.lang.psi.isDefinitionTypeKeyOrName
 import icu.windea.pls.lang.search.ParadoxDefinitionInjectionSearch
 import icu.windea.pls.lang.search.util.contextSensitive
@@ -36,8 +34,9 @@ class GotoRelatedDefinitionInjectionsHandler : GotoTargetHandler() {
         val definition = selectScope { element.parentDefinition() } ?: return null
         val definitionInfo = definition.definitionInfo ?: return null
         if (!ParadoxDefinitionInjectionManager.canApply(definitionInfo)) return null // 排除不期望匹配的定义
+        val name = ParadoxPsiPresentationService.getNameForDefinition(definition) ?: return null
         val targets = mutableListOf<PsiElement>()
-        runWithModalProgressBlocking(project, ChronicleBundle.message("script.goto.relatedDefinitionInjections.search", definitionInfo.name)) {
+        runWithModalProgressBlocking(project, ChronicleBundle.message("script.goto.relatedDefinitionInjections.search", name)) {
             // need read actions here if necessary
             readAction {
                 val selector = ParadoxDefinitionInjectionSearch.selector(project, definition).contextSensitive()
@@ -53,14 +52,12 @@ class GotoRelatedDefinitionInjectionsHandler : GotoTargetHandler() {
     }
 
     override fun getChooserTitle(sourceElement: PsiElement, name: String?, length: Int, finished: Boolean): String {
-        val definitionInfo = sourceElement.castOrNull<ParadoxDefinitionElement>()?.definitionInfo ?: return ""
-        val definitionName = definitionInfo.name.orNull() ?: return ""
+        val definitionName = ParadoxPsiPresentationService.getNameForDefinition(sourceElement) ?: return ""
         return ChronicleBundle.message("script.goto.relatedDefinitionInjections.chooseTitle", definitionName.escapeXml())
     }
 
     override fun getFindUsagesTitle(sourceElement: PsiElement, name: String?, length: Int): String {
-        val definitionInfo = sourceElement.castOrNull<ParadoxDefinitionElement>()?.definitionInfo ?: return ""
-        val definitionName = definitionInfo.name.orNull() ?: return ""
+        val definitionName = ParadoxPsiPresentationService.getNameForDefinition(sourceElement) ?: return ""
         return ChronicleBundle.message("script.goto.relatedDefinitionInjections.findUsagesTitle", definitionName.escapeXml())
     }
 

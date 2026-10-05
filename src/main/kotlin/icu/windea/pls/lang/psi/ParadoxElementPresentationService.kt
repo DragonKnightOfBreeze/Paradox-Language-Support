@@ -16,9 +16,6 @@ import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxComplexEnumValueManager
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.ParadoxScriptedVariableManager
-import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
-import icu.windea.pls.script.psi.ParadoxScriptProperty
-import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import javax.swing.Icon
 
 object ParadoxElementPresentationService {
@@ -40,32 +37,35 @@ object ParadoxElementPresentationService {
         }
         run {
             // definition
-            if (element !is ParadoxDefinitionElement) return@run
-            val definitionInfo = element.definitionInfo ?: return@run
-            return ChronicleIcons.Nodes.Definition(definitionInfo.type)
+            if (!ParadoxPsiMatchService.isDefinition(element)) return@run
+            val definitionInfo = element.definitionInfo
+            if (definitionInfo == null) return@run
+            val type = definitionInfo.type
+            return ChronicleIcons.Nodes.Definition(type)
         }
         run {
             // localisation
-            if (element !is ParadoxLocalisationProperty) return@run
-            if (element.type == null) return@run
+            if (!ParadoxPsiMatchService.isLocalisation(element)) return@run
+            val type = element.type
+            if (type == null) return@run
             return ChronicleIcons.Nodes.Localisation
         }
         run {
             // complex enum value
-            if (element !is ParadoxExpressionElement) return@run
-            val complexEnumValueInfo = element.complexEnumValueInfo ?: return@run
-            return ChronicleIcons.Nodes.ComplexEnumValue(complexEnumValueInfo.enumName)
+            if (!ParadoxPsiMatchService.isComplexEnumValue(element)) return@run
+            val complexEnumValueInfo = element.complexEnumValueInfo
+            if (complexEnumValueInfo == null) return@run
+            val enumName = complexEnumValueInfo.enumName
+            return ChronicleIcons.Nodes.ComplexEnumValue(enumName)
         }
         run {
             // define namespace
-            if (element !is ParadoxScriptProperty) return@run
-            if (element.defineNamespaceInfo == null) return@run
+            if (!ParadoxPsiMatchService.isDefineNamespace(element)) return@run
             return ChronicleIcons.Nodes.DefineNamespace
         }
         run {
             // define variable
-            if (element !is ParadoxScriptProperty) return@run
-            if (element.defineVariableInfo == null) return@run
+            if (!ParadoxPsiMatchService.isDefineVariable(element)) return@run
             return ChronicleIcons.Nodes.DefineVariable
         }
 
@@ -75,32 +75,35 @@ object ParadoxElementPresentationService {
     fun getPresentableText(element: PsiElement): String? {
         run {
             // definition (exclude mod descriptor file)
-            if (element !is ParadoxDefinitionElement) return@run
+            if (!ParadoxPsiMatchService.isDefinition(element)) return@run
             if (ParadoxPsiMatchService.isModDescriptorFile(element)) return@run
-            val definitionInfo = element.definitionInfo ?: return@run
+            val definitionInfo = element.definitionInfo
+            if (definitionInfo == null) return null
             return definitionInfo.name.or.anonymous()
         }
         run {
             // localisation
-            if (element !is ParadoxLocalisationProperty) return@run
-            if (element.type == null) return@run
+            if (!ParadoxPsiMatchService.isLocalisation(element)) return@run
+            val type = element.type
+            if (type == null) return@run
             return element.name
         }
         run {
             // complex enum value
-            if (element !is ParadoxExpressionElement) return@run
-            val complexEnumValueInfo = element.complexEnumValueInfo ?: return@run
+            if (!ParadoxPsiMatchService.isComplexEnumValue(element)) return@run
+            val complexEnumValueInfo = element.complexEnumValueInfo
+            if (complexEnumValueInfo == null) return@run
             return complexEnumValueInfo.name
         }
         run {
             // define namespace
-            if (element !is ParadoxScriptProperty) return@run
+            if (!ParadoxPsiMatchService.isDefineNamespace(element)) return@run
             val defineNamespaceInfo = element.defineNamespaceInfo ?: return@run
             return defineNamespaceInfo.namespace
         }
         run {
             // define variable
-            if (element !is ParadoxScriptProperty) return@run
+            if (!ParadoxPsiMatchService.isDefineVariable(element)) return@run
             val defineNamespaceInfo = element.defineVariableInfo ?: return@run
             return defineNamespaceInfo.variable
         }
@@ -115,15 +118,16 @@ object ParadoxElementPresentationService {
     fun getTreeLocationString(element: PsiElement): String? {
         run {
             // inline script usage - inline script expression
-            if (!ParadoxPsiMatchService.isInlineScriptUsage(element, selectGameType(element))) return@run
+            if (!ParadoxPsiMatchService.isInlineScriptUsage(element)) return@run
             val expression = ParadoxInlineScriptService.getInlineScriptExpressionFromUsageElement(element, resolve = true)
             return expression.or.unresolved()
         }
         run {
             // definition (exclude mod descriptor file) - type info + (optional) presentable name
-            if (element !is ParadoxDefinitionElement) return@run
+            if (!ParadoxPsiMatchService.isDefinition(element)) return@run
             if (ParadoxPsiMatchService.isModDescriptorFile(element)) return@run
-            val definitionInfo = element.definitionInfo ?: return@run
+            val definitionInfo = element.definitionInfo
+            if (definitionInfo == null) return null
             val typeInfo = definitionInfo.typeText
             val presentableName = ParadoxDefinitionManager.getPresentableName(element)
             return buildString {
@@ -133,8 +137,9 @@ object ParadoxElementPresentationService {
         }
         run {
             // complex enum value - type info + (optional) presentable name
-            if (element !is ParadoxExpressionElement) return@run
-            val complexEnumValueInfo = element.complexEnumValueInfo ?: return@run
+            if (!ParadoxPsiMatchService.isComplexEnumValue(element)) return@run
+            val complexEnumValueInfo = element.complexEnumValueInfo
+            if (complexEnumValueInfo == null) return@run
             val typeInfo = complexEnumValueInfo.enumName
             val presentableName = ParadoxComplexEnumValueManager.getPresentableName(complexEnumValueInfo.name, element)
             return buildString {
@@ -144,7 +149,7 @@ object ParadoxElementPresentationService {
         }
         run {
             // scripted variable - (optional) value info + (optional) presentable name
-            if (element !is ParadoxScriptScriptedVariable) return@run
+            if (!ParadoxPsiMatchService.isScriptedVariable(element)) return@run
             val valueInfo = element.scriptedVariableValue?.presentableText
             val presentableName = ParadoxScriptedVariableManager.getPresentableName(element)
             return buildString {

@@ -6,6 +6,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ui.util.CompositeAppearance
 import com.intellij.openapi.util.Comparing
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
 import com.intellij.ui.SimpleTextAttributes
 import icu.windea.pls.ChronicleDocBundle
 import icu.windea.pls.ChronicleIcons
@@ -17,8 +18,8 @@ import icu.windea.pls.core.util.values.or
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
+import icu.windea.pls.lang.psi.ParadoxPsiPresentationService
 import icu.windea.pls.lang.selectGameType
-import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.ParadoxEventManager
 import icu.windea.pls.lang.util.ParadoxTechnologyManager
 import icu.windea.pls.model.ParadoxGameType
@@ -54,16 +55,9 @@ class ParadoxDefinitionHierarchyNodeDescriptor(
         myHighlightedText.ending.addText(name, getNameAttributes(myColor))
         run {
             if (nodeType.grouped) {
-                val gameType = selectGameType(file)
-                val presentableName = when (nodeType) {
-                    NodeType.EventType -> ChronicleDocBundle.eventType(name, gameType)
-                    NodeType.TechTier -> ChronicleDocBundle.technologyTier(name, gameType)
-                    NodeType.TechArea -> ChronicleDocBundle.technologyArea(name, gameType, project, file)
-                    NodeType.TechCategory -> ChronicleDocBundle.technologyCategory(name, gameType, project, file)
-                    else -> return@run // unexpected
-                }
-                if (presentableName.isEmpty()) return@run
-                myHighlightedText.ending.addText(" $presentableName", getPresentableNameAttributes())
+                val groupName = getGroupName(file, name)
+                if (groupName.isNullOrEmpty()) return@run
+                myHighlightedText.ending.addText(" $groupName", getPresentableNameAttributes())
                 return@run
             }
 
@@ -77,59 +71,17 @@ class ParadoxDefinitionHierarchyNodeDescriptor(
             if (type != Type.EventTreeInvoker && type != Type.EventTreeInvoked) return@run
             if (nodeType != NodeType.Definition || element !is ParadoxDefinitionElement) return@run
             if (!hierarchySettings.showEventInfo) return@run
-            val definitionInfo = element.definitionInfo ?: return@run
-            val gameType = definitionInfo.gameType
-            val infos = buildList {
-                run r@{
-                    if (!hierarchySettings.showEventInfoByType) return@r
-                    val s = ParadoxEventManager.getType(definitionInfo)
-                        ?.orNull()?.let { ChronicleDocBundle.eventType(it, gameType) }
-                    this += s ?: "-"
-                }
-                run r@{
-                    if (!hierarchySettings.showEventInfoByAttributes) return@r
-                    val s = ParadoxEventManager.getAttributes(definitionInfo)
-                        .joinToString(", ") { ChronicleDocBundle.eventAttribute(it, gameType) }.orNull()
-                    this += s
-                }
-            }.filterNotNull()
-            myHighlightedText.ending.addText(joinInfos(infos), getRelatedInfoAttributes())
+            val eventInfo = getEventInfo(element, hierarchySettings)
+            if(eventInfo.isNullOrEmpty()) return@run
+            myHighlightedText.ending.addText(eventInfo, getRelatedInfoAttributes())
         }
         run {
             if (type != Type.TechTreePre && type != Type.TechTreePost) return@run
             if (nodeType != NodeType.Definition || element !is ParadoxDefinitionElement) return@run
             if (!hierarchySettings.showTechInfo) return@run
-            val definitionInfo = element.definitionInfo ?: return@run
-            if (definitionInfo.gameType != ParadoxGameType.Stellaris) return@run
-            val gameType = definitionInfo.gameType
-            val infos = buildList {
-                run r@{
-                    if (!hierarchySettings.showTechInfoByTier) return@r
-                    val s = ParadoxTechnologyManager.Stellaris.getTier(element)
-                        ?.orNull()?.let { ChronicleDocBundle.technologyTier(it, gameType) }
-                    this += s ?: "-"
-
-                }
-                run r@{
-                    if (!hierarchySettings.showTechInfoByArea) return@r
-                    val s = ParadoxTechnologyManager.Stellaris.getArea(element)
-                        ?.orNull()?.let { ChronicleDocBundle.technologyArea(it, gameType, project, file) }
-                    this += s ?: "-"
-                }
-                run r@{
-                    if (!hierarchySettings.showTechInfoByCategories) return@r
-                    val s = ParadoxTechnologyManager.Stellaris.getCategories(element)
-                        .joinToString(", ") { ChronicleDocBundle.technologyCategory(it, gameType, project, file) }.orNull()
-                    this += s ?: "-"
-                }
-                run r@{
-                    if (!hierarchySettings.showTechInfoByAttributes) return@r
-                    val s = ParadoxTechnologyManager.Stellaris.getAttributes(definitionInfo)
-                        .joinToString(", ") { ChronicleDocBundle.technologyAttribute(it, gameType) }.orNull()
-                    this += s
-                }
-            }.filterNotNull()
-            myHighlightedText.ending.addText(joinInfos(infos), getRelatedInfoAttributes())
+            val techInfo = getTechInfo(element, hierarchySettings)
+            if(techInfo.isNullOrEmpty()) return@run
+            myHighlightedText.ending.addText(techInfo, getRelatedInfoAttributes())
         }
         run {
             if (nodeType == NodeType.Type || nodeType == NodeType.Subtype) {
@@ -141,17 +93,9 @@ class ParadoxDefinitionHierarchyNodeDescriptor(
 
             if (nodeType != NodeType.Definition || element !is ParadoxDefinitionElement) return@run
             if (!hierarchySettings.showLocationInfo) return@run
-            val fileInfo = file.fileInfo ?: return@run
-            val text = buildString {
-                if (hierarchySettings.showLocationInfoByPath) {
-                    append(" in ").append(fileInfo.path.path)
-                }
-                if (hierarchySettings.showLocationInfoByRootInfo) {
-                    append(" of ").append(fileInfo.rootInfo.qualifiedName)
-                }
-            }
-            if (text.isEmpty()) return@run
-            myHighlightedText.ending.addText(text, getLocationAttributes())
+            val locationInfo = getLocationInfo(file, hierarchySettings)
+            if (locationInfo.isNullOrEmpty()) return@run
+            myHighlightedText.ending.addText(locationInfo, getLocationAttributes())
         }
         myName = myHighlightedText.text
 
@@ -161,11 +105,86 @@ class ParadoxDefinitionHierarchyNodeDescriptor(
         return changes
     }
 
-    private fun getPresentableName(element: PsiElement): String? {
-        // ParadoxHintTextProvider.getHintText(element)?.let { return it }
-        return when (element) {
-            is ParadoxDefinitionElement -> ParadoxDefinitionManager.getPresentableName(element)
+    private fun getGroupName(file: PsiFile?, name: String): String? {
+        val gameType = selectGameType(file)
+        val presentableName = when (nodeType) {
+            NodeType.EventType -> ChronicleDocBundle.eventType(name, gameType)
+            NodeType.TechTier -> ChronicleDocBundle.technologyTier(name, gameType)
+            NodeType.TechArea -> ChronicleDocBundle.technologyArea(name, gameType, project, file)
+            NodeType.TechCategory -> ChronicleDocBundle.technologyCategory(name, gameType, project, file)
             else -> null
+        }
+        return presentableName
+    }
+
+    private fun getPresentableName(element: PsiElement): String? {
+        ParadoxPsiPresentationService.getPresentableNameForDefinition(element)?.let { return it }
+        return null
+    }
+
+    private fun getEventInfo(element: PsiElement, hierarchySettings: ChronicleSettings.HierarchyState): String? {
+        if(element !is ParadoxDefinitionElement) return null
+        val definitionInfo = element.definitionInfo ?: return null
+        val gameType = definitionInfo.gameType
+        return buildList {
+            run r@{
+                if (!hierarchySettings.showEventInfoByType) return@r
+                val s = ParadoxEventManager.getType(definitionInfo)
+                    ?.orNull()?.let { ChronicleDocBundle.eventType(it, gameType) }
+                this += s ?: "-"
+            }
+            run r@{
+                if (!hierarchySettings.showEventInfoByAttributes) return@r
+                val s = ParadoxEventManager.getAttributes(definitionInfo)
+                    .joinToString(", ") { ChronicleDocBundle.eventAttribute(it, gameType) }.orNull()
+                this += s
+            }
+        }.filterNotNull().joinToString(" / ", " [", "]")
+    }
+
+    private fun getTechInfo(element: PsiElement, hierarchySettings: ChronicleSettings.HierarchyState): String? {
+        if(element !is ParadoxDefinitionElement) return null
+        val definitionInfo = element.definitionInfo ?: return null
+        val gameType = definitionInfo.gameType
+        if(gameType != ParadoxGameType.Stellaris) return null // TODO 3.0.x refactor
+        val file = element.containingFile
+        return buildList {
+            run r@{
+                if (!hierarchySettings.showTechInfoByTier) return@r
+                val s = ParadoxTechnologyManager.Stellaris.getTier(element)
+                    ?.orNull()?.let { ChronicleDocBundle.technologyTier(it, gameType) }
+                this += s ?: "-"
+            }
+            run r@{
+                if (!hierarchySettings.showTechInfoByArea) return@r
+                val s = ParadoxTechnologyManager.Stellaris.getArea(element)
+                    ?.orNull()?.let { ChronicleDocBundle.technologyArea(it, gameType, project, file) }
+                this += s ?: "-"
+            }
+            run r@{
+                if (!hierarchySettings.showTechInfoByCategories) return@r
+                val s = ParadoxTechnologyManager.Stellaris.getCategories(element)
+                    .joinToString(", ") { ChronicleDocBundle.technologyCategory(it, gameType, project, file) }.orNull()
+                this += s ?: "-"
+            }
+            run r@{
+                if (!hierarchySettings.showTechInfoByAttributes) return@r
+                val s = ParadoxTechnologyManager.Stellaris.getAttributes(definitionInfo)
+                    .joinToString(", ") { ChronicleDocBundle.technologyAttribute(it, gameType) }.orNull()
+                this += s
+            }
+        }.filterNotNull().joinToString(" / ", " [", "]")
+    }
+
+    private fun getLocationInfo(file: PsiFile?, hierarchySettings: ChronicleSettings.HierarchyState): String? {
+        val fileInfo = file?.fileInfo ?: return null
+        return buildString {
+            if (hierarchySettings.showLocationInfoByPath) {
+                append(" in ").append(fileInfo.path.path)
+            }
+            if (hierarchySettings.showLocationInfoByRootInfo) {
+                append(" of ").append(fileInfo.rootInfo.qualifiedName)
+            }
         }
     }
 
@@ -188,8 +207,5 @@ class ParadoxDefinitionHierarchyNodeDescriptor(
 
         @JvmStatic
         private fun getLocationAttributes() = grayedAttributes
-
-        @JvmStatic
-        private fun joinInfos(infos: Collection<String>) = infos.joinToString(" / ", " [", "]")
     }
 }

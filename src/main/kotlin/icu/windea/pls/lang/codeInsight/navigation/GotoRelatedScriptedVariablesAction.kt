@@ -10,6 +10,7 @@ import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.lang.psi.ParadoxPsiFileService
 import icu.windea.pls.lang.psi.ParadoxPsiMatchService
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
+import icu.windea.pls.model.ParadoxLocalisationType
 
 /**
  * 导航到当前本地化的相关封装变量。
@@ -42,7 +43,7 @@ class GotoRelatedScriptedVariablesAction : BaseCodeInsightAction() {
         run {
             if (file !is ParadoxLocalisationFile) return@run
             val element = ParadoxPsiFileService.findLocalisation(file, offset) ?: return false
-            return ParadoxPsiMatchService.isNormalLocalisation(element)
+            return ParadoxPsiMatchService.isLocalisation(element, ParadoxLocalisationType.Normal)
         }
         return false
     }

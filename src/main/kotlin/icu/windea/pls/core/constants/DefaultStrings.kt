@@ -6,4 +6,9 @@ object DefaultStrings {
     const val unresolved = "(unresolved)"
     const val unnamed = "(unnamed)"
     const val injected = "(injected)"
+    const val complex = "(complex)"
+    const val inlined = "(inlined)"
+    const val parameterized = "(parameterized)"
+    const val dynamic = "(dynamic)"
+    const val noParameters = "(no parameters)"
 }

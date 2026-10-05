@@ -4,7 +4,6 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiFile
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.localisation.ParadoxLocalisationFileType
-import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.constraints.ParadoxPathConstraint
 import icu.windea.pls.model.constraints.matchesBy
@@ -26,12 +25,8 @@ enum class ParadoxLocalisationType(val id: String) {
 
     companion object {
         @JvmStatic
-        fun resolve(id: Byte): ParadoxLocalisationType {
-            return entries[id.toInt()]
-        }
-
-        @JvmStatic
-        fun resolve(path: ParadoxPath): ParadoxLocalisationType? {
+        fun resolve(path: ParadoxPath?): ParadoxLocalisationType? {
+            if (path == null) return null
             return when {
                 path matchesBy ParadoxPathConstraint.InNormalLocalisationPath -> Normal
                 path matchesBy ParadoxPathConstraint.InSyncedLocalisationPath -> Synced
@@ -40,23 +35,20 @@ enum class ParadoxLocalisationType(val id: String) {
         }
 
         @JvmStatic
-        fun resolve(file: VirtualFile): ParadoxLocalisationType? {
-            if (file.fileType !== ParadoxLocalisationFileType) return null
-            val root = file.fileInfo?.path ?: return null
-            return resolve(root)
+        fun resolve(file: VirtualFile?): ParadoxLocalisationType? {
+            if (file?.fileType !== ParadoxLocalisationFileType) return null
+            return resolve(file.fileInfo?.path)
         }
 
         @JvmStatic
-        fun resolve(file: PsiFile): ParadoxLocalisationType? {
-            if (file !is ParadoxLocalisationFile) return null
-            val root = file.fileInfo?.path ?: return null
-            return resolve(root)
+        fun resolve(file: PsiFile?): ParadoxLocalisationType? {
+            if (file?.fileType !== ParadoxLocalisationFileType) return null
+            return resolve(file.fileInfo?.path)
         }
 
         @JvmStatic
         fun resolve(element: ParadoxLocalisationProperty): ParadoxLocalisationType? {
-            val root = element.fileInfo?.path ?: return null
-            return resolve(root)
+            return resolve(element.fileInfo?.path)
         }
 
         // region Inline Methods

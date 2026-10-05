@@ -15,11 +15,9 @@ import icu.windea.pls.core.collections.synced
 import icu.windea.pls.core.collections.toArray
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.unquote
-import icu.windea.pls.core.util.values.anonymous
-import icu.windea.pls.core.util.values.or
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.psi.ParadoxPsiFileService
+import icu.windea.pls.lang.psi.ParadoxPsiPresentationService
 import icu.windea.pls.lang.psi.isDefinitionTypeKeyOrName
 import icu.windea.pls.lang.resolve.ParadoxLocationExpressionService
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
@@ -46,10 +44,11 @@ class GotoRelatedImagesHandler : GotoTargetHandler() {
                 val definition = selectScope { element.parentDefinition() } ?: return null
                 val definitionInfo = definition.definitionInfo ?: return null
                 if (definitionInfo.name.isEmpty()) return null // 排除匿名定义
+                val name = ParadoxPsiPresentationService.getNameForDefinition(definition) ?: return null
                 val imageInfos = definitionInfo.images
                 if (imageInfos.isEmpty()) return GotoData(definition, PsiElement.EMPTY_ARRAY, emptyList())
                 val targets = mutableListOf<PsiElement>().synced()
-                runWithModalProgressBlocking(project, ChronicleBundle.message("script.goto.relatedImages.search.definition", definitionInfo.name)) {
+                runWithModalProgressBlocking(project, ChronicleBundle.message("script.goto.relatedImages.search.definition", name)) {
                     // need read actions here if necessary
                     for ((_, locationExpression) in imageInfos) {
                         ProgressManager.checkCanceled()
@@ -95,8 +94,7 @@ class GotoRelatedImagesHandler : GotoTargetHandler() {
             when {
                 sourceElement !is ParadoxScriptStringExpressionElement -> {}
                 sourceElement.isDefinitionTypeKeyOrName() -> {
-                    val definitionInfo = sourceElement.castOrNull<ParadoxDefinitionElement>()?.definitionInfo ?: return@run
-                    val definitionName = definitionInfo.name.or.anonymous()
+                    val definitionName = ParadoxPsiPresentationService.getNameForDefinition(sourceElement) ?: return@run
                     return ChronicleBundle.message("script.goto.relatedImages.chooseTitle.d", definitionName.escapeXml())
                 }
                 else -> {
@@ -116,8 +114,7 @@ class GotoRelatedImagesHandler : GotoTargetHandler() {
             when {
                 sourceElement !is ParadoxScriptStringExpressionElement -> {}
                 sourceElement.isDefinitionTypeKeyOrName() -> {
-                    val definitionInfo = sourceElement.castOrNull<ParadoxDefinitionElement>()?.definitionInfo ?: return@run
-                    val definitionName = definitionInfo.name.or.anonymous()
+                    val definitionName = ParadoxPsiPresentationService.getNameForDefinition(sourceElement) ?: return@run
                     return ChronicleBundle.message("script.goto.relatedImages.findUsagesTitle.d", definitionName.escapeXml())
                 }
                 else -> {

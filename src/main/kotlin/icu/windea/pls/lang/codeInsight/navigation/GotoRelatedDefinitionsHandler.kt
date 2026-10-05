@@ -18,6 +18,7 @@ import icu.windea.pls.lang.psi.light.ParadoxDefinitionSnippetLightElement
 import icu.windea.pls.lang.util.ParadoxLocalisationManager
 import icu.windea.pls.lang.util.ParadoxSnippetManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.model.ParadoxLocalisationType
 
 class GotoRelatedDefinitionsHandler : GotoTargetHandler() {
     override fun getFeatureUsedKey(): String {
@@ -42,7 +43,7 @@ class GotoRelatedDefinitionsHandler : GotoTargetHandler() {
         }
         // 正常本地化（相关定义）
         val element = findElement(file, offset) ?: return null
-        if (!ParadoxPsiMatchService.isNormalLocalisation(element)) return null
+        if (!ParadoxPsiMatchService.isLocalisation(element, ParadoxLocalisationType.Normal)) return null
         val targets = mutableListOf<PsiElement>()
         runWithModalProgressBlocking(project, ChronicleBundle.message("script.goto.relatedDefinitions.search", element.name)) {
             // need read actions here if necessary

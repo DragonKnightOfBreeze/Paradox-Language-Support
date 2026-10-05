@@ -63,7 +63,7 @@ class CwtBaseRelatedConfigProvider : CwtRelatedConfigProvider {
 
         val result = mutableSetOf<CwtConfig<*>>()
 
-        // 尝试解析为定值
+        // 尝试解析为定值变量或定值命名空间
         run {
             if (element !is ParadoxScriptPropertyKey) return@run
             val property = element.parentProperty ?: return@run

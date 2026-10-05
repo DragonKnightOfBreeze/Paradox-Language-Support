@@ -42,6 +42,7 @@ import icu.windea.pls.lang.search.scope.ParadoxSearchScope
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxFileManager
+import icu.windea.pls.model.ParadoxScriptedVariableType
 import icu.windea.pls.model.constants.ChronicleStrings
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptColor
@@ -370,6 +371,12 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun getTextOffset(element: ParadoxScriptScriptedVariable): Int {
         return element.node.startOffset + 1
+    }
+
+    @JvmStatic
+    fun getType(element: ParadoxScriptScriptedVariable): ParadoxScriptedVariableType? {
+        // element.stub?.type?.let { return it } // 3.0.4 unavailable atm
+        return ParadoxScriptedVariableType.resolve(element)
     }
 
     @JvmStatic
