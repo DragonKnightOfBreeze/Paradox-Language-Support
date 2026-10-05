@@ -10,6 +10,7 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.collections.toArray
 import icu.windea.pls.core.escapeXml
+import icu.windea.pls.core.orAnonymous
 import icu.windea.pls.lang.psi.ParadoxPsiFileService
 import icu.windea.pls.lang.psi.ParadoxPsiMatchService
 import icu.windea.pls.lang.psi.ParadoxPsiPresentationService
@@ -24,11 +25,13 @@ class GotoScriptedVariablesHandler : GotoTargetHandler() {
     override fun getSourceAndTargetElements(editor: Editor, file: PsiFile): GotoData? {
         val project = file.project
         val offset = editor.caretModel.offset
+        val targets = mutableListOf<PsiElement>()
+        var sourceElement: PsiElement?
         val element = ParadoxPsiFileService.findScriptedVariable(file, offset) { BY_NAME } ?: return null
         if (!ParadoxPsiMatchService.isScriptedVariable(element)) return null
+        sourceElement = element
         val name = ParadoxPsiPresentationService.getNameForScriptedVariable(element) ?: return null
-        val targets = mutableListOf<PsiElement>()
-        runWithModalProgressBlocking(project, ChronicleBundle.message("script.goto.scriptedVariables.search", name)) {
+        runWithModalProgressBlocking(project, ChronicleBundle.message("script.goto.scriptedVariables.search", name.orAnonymous().escapeXml())) {
             // need read actions here if necessary
             readAction {
                 val selector = ParadoxScriptedVariableSearch.selector(project, element).contextSensitive()
@@ -39,8 +42,9 @@ class GotoScriptedVariablesHandler : GotoTargetHandler() {
                 ParadoxScriptedVariableSearch.searchGlobal(name, selector).findAll().let { targets.addAll(it) }
             }
         }
-        if (targets.isNotEmpty()) targets.removeIf { it == element } // remove current from targets
-        return GotoData(element, targets.distinct().toArray(PsiElement.EMPTY_ARRAY), emptyList())
+        if (targets.isEmpty()) return null // unavailable
+        targets.removeIf { it == sourceElement } // remove current target from targets
+        return GotoData(sourceElement, targets.distinct().toArray(PsiElement.EMPTY_ARRAY), emptyList())
     }
 
     override fun shouldSortTargets(): Boolean {
@@ -48,13 +52,13 @@ class GotoScriptedVariablesHandler : GotoTargetHandler() {
     }
 
     override fun getChooserTitle(sourceElement: PsiElement, name: String?, length: Int, finished: Boolean): String {
-        val name = ParadoxPsiPresentationService.getNameForScriptedVariable(sourceElement) ?: return ""
-        return ChronicleBundle.message("script.goto.scriptedVariables.chooseTitle", name.escapeXml())
+        val name = ParadoxPsiPresentationService.getNameForScriptedVariable(sourceElement) ?: name
+        return ChronicleBundle.message("script.goto.scriptedVariables.chooseTitle", name.orAnonymous().escapeXml())
     }
 
     override fun getFindUsagesTitle(sourceElement: PsiElement, name: String?, length: Int): String {
-        val name = ParadoxPsiPresentationService.getNameForScriptedVariable(sourceElement) ?: return ""
-        return ChronicleBundle.message("script.goto.scriptedVariables.findUsagesTitle", name.escapeXml())
+        val name = ParadoxPsiPresentationService.getNameForScriptedVariable(sourceElement) ?: name
+        return ChronicleBundle.message("script.goto.scriptedVariables.findUsagesTitle", name.orAnonymous().escapeXml())
     }
 
     override fun getNotFoundMessage(project: Project, editor: Editor, file: PsiFile): String {

@@ -5,6 +5,9 @@ import icu.windea.pls.lang.defineNamespaceInfo
 import icu.windea.pls.lang.defineVariableInfo
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.definitionInjectionInfo
+import icu.windea.pls.lang.psi.light.ParadoxDefinitionSnippetLightElement
+import icu.windea.pls.lang.psi.light.ParadoxLocalisationSnippetLightElement
+import icu.windea.pls.lang.psi.light.ParadoxModifierLightElement
 import icu.windea.pls.lang.resolve.ParadoxInlineScriptService
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.ParadoxScriptedVariableManager
@@ -77,6 +80,42 @@ object ParadoxPsiPresentationService {
             returnsNotNull() implies (element is ParadoxLocalisationProperty)
         }
         if (element !is ParadoxLocalisationProperty) return null
+        return element.name.orEmpty()
+    }
+
+    /**
+     * 得到定义引用片段的名字。如果匹配语义而无法获取，则返回空字符串。
+     */
+    @OptIn(ExperimentalContracts::class)
+    fun getNameForDefinitionSnippet(element: PsiElement?): String? {
+        contract {
+            returnsNotNull() implies (element is ParadoxDefinitionSnippetLightElement)
+        }
+        if (element !is ParadoxDefinitionSnippetLightElement) return null
+        return element.name.orEmpty()
+    }
+
+    /**
+     * 得到本地化引用片段的名字。如果匹配语义而无法获取，则返回空字符串。
+     */
+    @OptIn(ExperimentalContracts::class)
+    fun getNameForLocalisationSnippet(element: PsiElement?): String? {
+        contract {
+            returnsNotNull() implies (element is ParadoxLocalisationSnippetLightElement)
+        }
+        if (element !is ParadoxLocalisationSnippetLightElement) return null
+        return element.name.orEmpty()
+    }
+
+    /**
+     * 得到修正的名字。如果匹配语义而无法获取，则返回空字符串。
+     */
+    @OptIn(ExperimentalContracts::class)
+    fun getNameForModifier(element: PsiElement?): String? {
+        contract {
+            returnsNotNull() implies (element is ParadoxModifierLightElement)
+        }
+        if (element !is ParadoxModifierLightElement) return null
         return element.name.orEmpty()
     }
 

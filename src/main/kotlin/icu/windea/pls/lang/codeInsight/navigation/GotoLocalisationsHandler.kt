@@ -10,6 +10,7 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.collections.toArray
 import icu.windea.pls.core.escapeXml
+import icu.windea.pls.core.orAnonymous
 import icu.windea.pls.lang.psi.ParadoxPsiFileService
 import icu.windea.pls.lang.psi.ParadoxPsiMatchService
 import icu.windea.pls.lang.psi.ParadoxPsiPresentationService
@@ -26,12 +27,14 @@ class GotoLocalisationsHandler : GotoTargetHandler() {
     override fun getSourceAndTargetElements(editor: Editor, file: PsiFile): GotoData? {
         val project = file.project
         val offset = editor.caretModel.offset
+        val targets = mutableListOf<PsiElement>()
+        var sourceElement: PsiElement?
         val element = ParadoxPsiFileService.findLocalisation(file, offset) { BY_NAME } ?: return null
         if (!ParadoxPsiMatchService.isLocalisation(element)) return null
         val type = element.type ?: return null
+        sourceElement = element
         val name = ParadoxPsiPresentationService.getNameForLocalisation(element) ?: return null
-        val targets = mutableListOf<PsiElement>()
-        runWithModalProgressBlocking(project, ChronicleBundle.message("script.goto.localisations.search", name)) {
+        runWithModalProgressBlocking(project, ChronicleBundle.message("script.goto.localisations.search", name.orAnonymous().escapeXml())) {
             // need read actions here if necessary
             readAction {
                 val selector = ParadoxLocalisationSearch.selector(project, element).contextSensitive().preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
@@ -39,8 +42,9 @@ class GotoLocalisationsHandler : GotoTargetHandler() {
                 targets.addAll(resolved)
             }
         }
-        if (targets.isNotEmpty()) targets.removeIf { it == element } // remove current from targets
-        return GotoData(element, targets.distinct().toArray(PsiElement.EMPTY_ARRAY), emptyList())
+        if (targets.isEmpty()) return null // unavailable
+        targets.removeIf { it == sourceElement } // remove current target from targets
+        return GotoData(sourceElement, targets.distinct().toArray(PsiElement.EMPTY_ARRAY), emptyList())
     }
 
     override fun shouldSortTargets(): Boolean {
@@ -48,13 +52,13 @@ class GotoLocalisationsHandler : GotoTargetHandler() {
     }
 
     override fun getChooserTitle(sourceElement: PsiElement, name: String?, length: Int, finished: Boolean): String {
-        val name = ParadoxPsiPresentationService.getNameForLocalisation(sourceElement) ?: return ""
-        return ChronicleBundle.message("script.goto.localisations.chooseTitle", name.escapeXml())
+        val name = ParadoxPsiPresentationService.getNameForLocalisation(sourceElement) ?: name
+        return ChronicleBundle.message("script.goto.localisations.chooseTitle", name.orAnonymous().escapeXml())
     }
 
     override fun getFindUsagesTitle(sourceElement: PsiElement, name: String?, length: Int): String {
-        val name = ParadoxPsiPresentationService.getNameForLocalisation(sourceElement) ?: return ""
-        return ChronicleBundle.message("script.goto.localisations.findUsagesTitle", name.escapeXml())
+        val name = ParadoxPsiPresentationService.getNameForLocalisation(sourceElement) ?: name
+        return ChronicleBundle.message("script.goto.localisations.findUsagesTitle", name.orAnonymous().escapeXml())
     }
 
     override fun getNotFoundMessage(project: Project, editor: Editor, file: PsiFile): String {

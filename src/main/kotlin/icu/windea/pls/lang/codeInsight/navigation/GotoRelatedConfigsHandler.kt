@@ -28,6 +28,7 @@ class GotoRelatedConfigsHandler : GotoTargetHandler() {
         } ?: return null
         val relatedConfigs = ParadoxConfigService.getRelatedConfigs(file, offset)
         val targets = relatedConfigs.mapNotNull { it.pointer.element }
+        if (targets.isEmpty()) return null // unavailable
         return GotoData(element, targets.distinct().toArray(PsiElement.EMPTY_ARRAY), emptyList())
     }
 

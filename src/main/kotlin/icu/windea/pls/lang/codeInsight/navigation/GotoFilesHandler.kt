@@ -34,7 +34,8 @@ class GotoFilesHandler : GotoTargetHandler() {
                 targets.addAll(resolved.mapNotNull { it.toPsiFile(project) })
             }
         }
-        if (targets.isNotEmpty()) targets.removeIf { it == file } // remove current file from targets
+        if (targets.isEmpty()) return null // unavailable
+        targets.removeIf { it == file } // remove current file from targets
         return GotoData(file, targets.distinct().toArray(PsiElement.EMPTY_ARRAY), emptyList())
     }
 

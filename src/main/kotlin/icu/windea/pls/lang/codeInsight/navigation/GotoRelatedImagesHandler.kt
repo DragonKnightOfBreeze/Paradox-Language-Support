@@ -9,12 +9,12 @@ import com.intellij.platform.ide.progress.runWithModalProgressBlocking
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.collections.synced
 import icu.windea.pls.core.collections.toArray
 import icu.windea.pls.core.escapeXml
-import icu.windea.pls.core.unquote
+import icu.windea.pls.core.orAnonymous
+import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.ParadoxPsiFileService
 import icu.windea.pls.lang.psi.ParadoxPsiPresentationService
@@ -24,7 +24,6 @@ import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.util.ParadoxModifierManager
-import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 // com.intellij.testIntegration.GotoTestOrCodeHandler
@@ -37,52 +36,54 @@ class GotoRelatedImagesHandler : GotoTargetHandler() {
     override fun getSourceAndTargetElements(editor: Editor, file: PsiFile): GotoData? {
         val project = file.project
         val offset = editor.caretModel.offset
-        val element = findElement(file, offset) ?: return null
-        when {
-            element !is ParadoxScriptStringExpressionElement -> return null
-            element.isDefinitionTypeKeyOrName() -> {
-                val definition = selectScope { element.parentDefinition() } ?: return null
-                val definitionInfo = definition.definitionInfo ?: return null
-                if (definitionInfo.name.isEmpty()) return null // 排除匿名定义
-                val name = ParadoxPsiPresentationService.getNameForDefinition(definition) ?: return null
-                val imageInfos = definitionInfo.images
-                if (imageInfos.isEmpty()) return GotoData(definition, PsiElement.EMPTY_ARRAY, emptyList())
-                val targets = mutableListOf<PsiElement>().synced()
-                runWithModalProgressBlocking(project, ChronicleBundle.message("script.goto.relatedImages.search.definition", name)) {
-                    // need read actions here if necessary
-                    for ((_, locationExpression) in imageInfos) {
-                        ProgressManager.checkCanceled()
-                        readAction {
-                            val resolveResult = ParadoxLocationExpressionService.resolve(locationExpression, definition, definitionInfo)
-                            if (resolveResult != null && resolveResult.elements.isNotEmpty()) {
-                                targets.addAll(resolveResult.elements)
-                            }
-                        }
-                    }
-                }
-                return GotoData(definition, targets.distinct().toArray(PsiElement.EMPTY_ARRAY), emptyList())
-            }
-            else -> {
-                val modifierElement = ParadoxModifierManager.resolveModifier(element) ?: return null
-                val targets = mutableListOf<PsiElement>().synced()
-                runWithModalProgressBlocking(project, ChronicleBundle.message("script.goto.relatedImages.search.modifier", modifierElement.name)) {
-                    // need read actions here if necessary
+        val targets = mutableListOf<PsiElement>().synced()
+        var sourceElement: PsiElement? = null
+        run {
+            // 定义（相关图片）
+            if (sourceElement != null) return@run
+            val element = ParadoxPsiFileService.findScriptExpression(file, offset) ?: return@run
+            if (!element.isDefinitionTypeKeyOrName()) return@run
+            val definition = selectScope { element.parentDefinition() } ?: return@run
+            val definitionInfo = definition.definitionInfo ?: return@run
+            if (definitionInfo.name.isEmpty()) return@run // 排除匿名定义
+            sourceElement = definition
+            val name = ParadoxPsiPresentationService.getNameForDefinition(definition) ?: return@run
+            val imageInfos = definitionInfo.images
+            runWithModalProgressBlocking(project, ChronicleBundle.message("script.goto.relatedImages.search.definition", name.orAnonymous().escapeXml())) {
+                // need read actions here if necessary
+                for ((_, locationExpression) in imageInfos) {
+                    ProgressManager.checkCanceled()
                     readAction {
-                        val paths = ParadoxModifierManager.getModifierIconPaths(modifierElement.name, modifierElement)
-                        val iconFiles = paths.firstNotNullOfOrNull { path ->
-                            val iconSelector = ParadoxFilePathSearch.selector(project, element).contextSensitive()
-                            ParadoxFilePathSearch.searchModifierIcon(path, iconSelector).findAll().orNull()
+                        val resolveResult = ParadoxLocationExpressionService.resolve(locationExpression, definition, definitionInfo)
+                        if (resolveResult != null && resolveResult.elements.isNotEmpty()) {
+                            targets.addAll(resolveResult.elements)
                         }
-                        if (iconFiles != null) targets.addAll(targets)
                     }
                 }
-                return GotoData(element, targets.distinct().toArray(PsiElement.EMPTY_ARRAY), emptyList())
             }
         }
-    }
-
-    private fun findElement(file: PsiFile, offset: Int): ParadoxScriptExpressionElement? {
-        return ParadoxPsiFileService.findScriptExpression(file, offset)
+        run {
+            // 修正（相关图片）
+            if (sourceElement != null) return@run
+            val element = ParadoxPsiFileService.findScriptExpression(file, offset) as? ParadoxScriptStringExpressionElement ?: return@run
+            val modifierElement = ParadoxModifierManager.resolveModifier(element) ?: return@run
+            sourceElement = element
+            val name = ParadoxPsiPresentationService.getNameForModifier(modifierElement) ?: return@run
+            runWithModalProgressBlocking(project, ChronicleBundle.message("script.goto.relatedImages.search.modifier", name.orAnonymous().escapeXml())) {
+                // need read actions here if necessary
+                readAction {
+                    val paths = ParadoxModifierManager.getModifierIconPaths(name, modifierElement)
+                    val iconFiles = paths.firstNotNullOfOrNull { path ->
+                        val iconSelector = ParadoxFilePathSearch.selector(project, element).contextSensitive()
+                        ParadoxFilePathSearch.searchModifierIcon(path, iconSelector).findAll().orNull()
+                    }
+                    if (iconFiles != null) targets.addAll(iconFiles.mapNotNull { it.toPsiFile(project) })
+                }
+            }
+        }
+        if (targets.isEmpty() || sourceElement == null) return null // unavailable
+        targets.removeIf { it == sourceElement } // remove current target from targets
+        return GotoData(sourceElement, targets.distinct().toArray(PsiElement.EMPTY_ARRAY), emptyList())
     }
 
     override fun shouldSortTargets(): Boolean {
@@ -91,42 +92,30 @@ class GotoRelatedImagesHandler : GotoTargetHandler() {
 
     override fun getChooserTitle(sourceElement: PsiElement, name: String?, length: Int, finished: Boolean): String {
         run {
-            when {
-                sourceElement !is ParadoxScriptStringExpressionElement -> {}
-                sourceElement.isDefinitionTypeKeyOrName() -> {
-                    val definitionName = ParadoxPsiPresentationService.getNameForDefinition(sourceElement) ?: return@run
-                    return ChronicleBundle.message("script.goto.relatedImages.chooseTitle.d", definitionName.escapeXml())
-                }
-                else -> {
-                    val modifierElement = sourceElement.castOrNull<ParadoxScriptStringExpressionElement>()
-                        ?.let { ParadoxModifierManager.resolveModifier(it) } ?: return@run
-                    val modifierName = modifierElement.name
-                    return ChronicleBundle.message("script.goto.relatedImages.chooseTitle.m", modifierName.escapeXml())
-                }
-            }
+            val name = ParadoxPsiPresentationService.getNameForDefinition(sourceElement) ?: return@run
+            return ChronicleBundle.message("script.goto.relatedImages.chooseTitle.d", name.orAnonymous().escapeXml())
         }
-        val sourceName = sourceElement.text.unquote()
-        return ChronicleBundle.message("script.goto.relatedImages.chooseTitle", sourceName.escapeXml())
+        run {
+            val element = sourceElement as? ParadoxScriptStringExpressionElement ?: return@run
+            val modifierElement = ParadoxModifierManager.resolveModifier(element) ?: return@run
+            val name = ParadoxPsiPresentationService.getNameForModifier(modifierElement) ?: return@run
+            return ChronicleBundle.message("script.goto.relatedImages.chooseTitle.m", name.orAnonymous().escapeXml())
+        }
+        return ChronicleBundle.message("script.goto.relatedImages.chooseTitle", name.orAnonymous().escapeXml())
     }
 
     override fun getFindUsagesTitle(sourceElement: PsiElement, name: String?, length: Int): String {
         run {
-            when {
-                sourceElement !is ParadoxScriptStringExpressionElement -> {}
-                sourceElement.isDefinitionTypeKeyOrName() -> {
-                    val definitionName = ParadoxPsiPresentationService.getNameForDefinition(sourceElement) ?: return@run
-                    return ChronicleBundle.message("script.goto.relatedImages.findUsagesTitle.d", definitionName.escapeXml())
-                }
-                else -> {
-                    val modifierElement = sourceElement.castOrNull<ParadoxScriptStringExpressionElement>()
-                        ?.let { ParadoxModifierManager.resolveModifier(it) } ?: return@run
-                    val modifierName = modifierElement.name
-                    return ChronicleBundle.message("script.goto.relatedImages.findUsagesTitle.m", modifierName.escapeXml())
-                }
-            }
+            val name = ParadoxPsiPresentationService.getNameForDefinition(sourceElement) ?: return@run
+            return ChronicleBundle.message("script.goto.relatedImages.findUsagesTitle.d", name.orAnonymous().escapeXml())
         }
-        val sourceName = sourceElement.text.unquote()
-        return ChronicleBundle.message("script.goto.relatedImages.findUsagesTitle", sourceName.escapeXml())
+        run {
+            val element = sourceElement as? ParadoxScriptStringExpressionElement ?: return@run
+            val modifierElement = ParadoxModifierManager.resolveModifier(element) ?: return@run
+            val name = ParadoxPsiPresentationService.getNameForModifier(modifierElement) ?: return@run
+            return ChronicleBundle.message("script.goto.relatedImages.findUsagesTitle.m", name.orAnonymous().escapeXml())
+        }
+        return ChronicleBundle.message("script.goto.relatedImages.findUsagesTitle", name.orAnonymous().escapeXml())
     }
 
     override fun getNotFoundMessage(project: Project, editor: Editor, file: PsiFile): String {

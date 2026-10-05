@@ -10,6 +10,7 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.collections.toArray
 import icu.windea.pls.core.escapeXml
+import icu.windea.pls.core.orAnonymous
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.ParadoxPsiFileService
 import icu.windea.pls.lang.psi.ParadoxPsiPresentationService
@@ -26,14 +27,16 @@ class GotoDefinitionsHandler : GotoTargetHandler() {
     override fun getSourceAndTargetElements(editor: Editor, file: PsiFile): GotoData? {
         val project = file.project
         val offset = editor.caretModel.offset
+        val targets = mutableListOf<PsiElement>()
+        var sourceElement: PsiElement?
         val element = ParadoxPsiFileService.findScriptExpression(file, offset) ?: return null
         if (!element.isDefinitionTypeKeyOrName()) return null
         val definition = selectScope { element.parentDefinition() } ?: return null
         val definitionInfo = definition.definitionInfo ?: return null
         if (definitionInfo.name.isEmpty()) return null // 排除匿名定义
+        sourceElement = definition
         val name = ParadoxPsiPresentationService.getNameForDefinition(definition) ?: return null
-        val targets = mutableListOf<PsiElement>()
-        runWithModalProgressBlocking(project, ChronicleBundle.message("script.goto.definitions.search", name)) {
+        runWithModalProgressBlocking(project, ChronicleBundle.message("script.goto.definitions.search", name.orAnonymous().escapeXml())) {
             // need read actions here if necessary
             readAction {
                 val selector = ParadoxDefinitionSearch.selector(project, definition).contextSensitive()
@@ -41,8 +44,9 @@ class GotoDefinitionsHandler : GotoTargetHandler() {
                 targets.addAll(resolved)
             }
         }
-        if (targets.isNotEmpty()) targets.removeIf { it == element } // remove current from targets
-        return GotoData(definition, targets.distinct().toArray(PsiElement.EMPTY_ARRAY), emptyList())
+        if (targets.isEmpty()) return null // unavailable
+        targets.removeIf { it == sourceElement } // remove current target from targets
+        return GotoData(sourceElement, targets.distinct().toArray(PsiElement.EMPTY_ARRAY), emptyList())
     }
 
     override fun shouldSortTargets(): Boolean {
@@ -50,13 +54,13 @@ class GotoDefinitionsHandler : GotoTargetHandler() {
     }
 
     override fun getChooserTitle(sourceElement: PsiElement, name: String?, length: Int, finished: Boolean): String {
-        val name = ParadoxPsiPresentationService.getNameForDefinition(sourceElement) ?: return ""
-        return ChronicleBundle.message("script.goto.definitions.chooseTitle", name.escapeXml())
+        val name = ParadoxPsiPresentationService.getNameForDefinition(sourceElement) ?: name
+        return ChronicleBundle.message("script.goto.definitions.chooseTitle", name.orAnonymous().escapeXml())
     }
 
     override fun getFindUsagesTitle(sourceElement: PsiElement, name: String?, length: Int): String {
-        val name = ParadoxPsiPresentationService.getNameForDefinition(sourceElement) ?: return ""
-        return ChronicleBundle.message("script.goto.definitions.findUsagesTitle", name.escapeXml())
+        val name = ParadoxPsiPresentationService.getNameForDefinition(sourceElement) ?: name
+        return ChronicleBundle.message("script.goto.definitions.findUsagesTitle", name.orAnonymous().escapeXml())
     }
 
     override fun getNotFoundMessage(project: Project, editor: Editor, file: PsiFile): String {

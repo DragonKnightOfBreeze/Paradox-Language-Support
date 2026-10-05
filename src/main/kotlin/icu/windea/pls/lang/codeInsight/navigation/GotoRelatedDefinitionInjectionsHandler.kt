@@ -10,6 +10,7 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.collections.toArray
 import icu.windea.pls.core.escapeXml
+import icu.windea.pls.core.orAnonymous
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.ParadoxPsiFileService
 import icu.windea.pls.lang.psi.ParadoxPsiPresentationService
@@ -29,14 +30,16 @@ class GotoRelatedDefinitionInjectionsHandler : GotoTargetHandler() {
         if (!ParadoxDefinitionInjectionManager.isSupported(selectGameType(file))) return null // 忽略游戏类型不支持的情况
         val project = file.project
         val offset = editor.caretModel.offset
+        val targets = mutableListOf<PsiElement>()
+        var sourceElement: PsiElement?
         val element = ParadoxPsiFileService.findScriptExpression(file, offset) ?: return null
         if (!element.isDefinitionTypeKeyOrName()) return null
         val definition = selectScope { element.parentDefinition() } ?: return null
         val definitionInfo = definition.definitionInfo ?: return null
         if (!ParadoxDefinitionInjectionManager.canApply(definitionInfo)) return null // 排除不期望匹配的定义
+        sourceElement = definition
         val name = ParadoxPsiPresentationService.getNameForDefinition(definition) ?: return null
-        val targets = mutableListOf<PsiElement>()
-        runWithModalProgressBlocking(project, ChronicleBundle.message("script.goto.relatedDefinitionInjections.search", name)) {
+        runWithModalProgressBlocking(project, ChronicleBundle.message("script.goto.relatedDefinitionInjections.search", name.orAnonymous().escapeXml())) {
             // need read actions here if necessary
             readAction {
                 val selector = ParadoxDefinitionInjectionSearch.selector(project, definition).contextSensitive()
@@ -44,7 +47,9 @@ class GotoRelatedDefinitionInjectionsHandler : GotoTargetHandler() {
                 targets.addAll(resolved)
             }
         }
-        return GotoData(definition, targets.distinct().toArray(PsiElement.EMPTY_ARRAY), emptyList())
+        if (targets.isEmpty()) return null // unavailable
+        targets.removeIf { it == sourceElement } // remove current target from targets
+        return GotoData(sourceElement, targets.distinct().toArray(PsiElement.EMPTY_ARRAY), emptyList())
     }
 
     override fun shouldSortTargets(): Boolean {
@@ -52,13 +57,13 @@ class GotoRelatedDefinitionInjectionsHandler : GotoTargetHandler() {
     }
 
     override fun getChooserTitle(sourceElement: PsiElement, name: String?, length: Int, finished: Boolean): String {
-        val definitionName = ParadoxPsiPresentationService.getNameForDefinition(sourceElement) ?: return ""
-        return ChronicleBundle.message("script.goto.relatedDefinitionInjections.chooseTitle", definitionName.escapeXml())
+        val name = ParadoxPsiPresentationService.getNameForDefinition(sourceElement) ?: name
+        return ChronicleBundle.message("script.goto.relatedDefinitionInjections.chooseTitle", name.orAnonymous().escapeXml())
     }
 
     override fun getFindUsagesTitle(sourceElement: PsiElement, name: String?, length: Int): String {
-        val definitionName = ParadoxPsiPresentationService.getNameForDefinition(sourceElement) ?: return ""
-        return ChronicleBundle.message("script.goto.relatedDefinitionInjections.findUsagesTitle", definitionName.escapeXml())
+        val name = ParadoxPsiPresentationService.getNameForDefinition(sourceElement) ?: name
+        return ChronicleBundle.message("script.goto.relatedDefinitionInjections.findUsagesTitle", name.orAnonymous().escapeXml())
     }
 
     override fun getNotFoundMessage(project: Project, editor: Editor, file: PsiFile): String {
