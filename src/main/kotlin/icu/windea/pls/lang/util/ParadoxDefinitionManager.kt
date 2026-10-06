@@ -5,6 +5,8 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
+import com.intellij.psi.util.PsiModificationTracker
+import icu.windea.pls.base.ChronicleModificationTrackers
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.core.EMPTY_OBJECT
@@ -12,7 +14,6 @@ import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.buildImmutableList
 import icu.windea.pls.core.collections.filterFast
-import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.util.KeyRegistry
@@ -70,7 +71,7 @@ object ParadoxDefinitionManager {
             runSmartReadAction {
                 val file = element.containingFile
                 val value = ParadoxDefinitionService.resolveInfo(element, file)
-                val dependencies = ParadoxDefinitionService.getInfoDependencies(element, file, value)
+                val dependencies = getInfoDependencies(element, file, value)
                 CachedValueProvider.Result.create(value, dependencies)
             }
         }
@@ -91,8 +92,7 @@ object ParadoxDefinitionManager {
             ProgressManager.checkCanceled()
             runSmartReadAction {
                 val value = ParadoxDefinitionService.resolveSubtypeConfigs(definitionInfo, finalOptions).optimized()
-                val dependencies = ParadoxDefinitionService.getSubtypeAwareDependencies(element, definitionInfo)
-                CachedValueProvider.Result.create(value, dependencies)
+                CachedValueProvider.Result.create(value, getSubtypeAwareDependencies(element, definitionInfo))
             }
         }
     }
@@ -110,8 +110,7 @@ object ParadoxDefinitionManager {
             ProgressManager.checkCanceled()
             runSmartReadAction {
                 val value = ParadoxDefinitionService.resolveDeclaration(definitionInfo, finalOptions) ?: EMPTY_OBJECT
-                val dependencies = ParadoxDefinitionService.getSubtypeAwareDependencies(element, definitionInfo)
-                CachedValueProvider.Result.create(value, dependencies)
+                CachedValueProvider.Result.create(value, getSubtypeAwareDependencies(element, definitionInfo))
             }
         }.castOrNull()
     }
@@ -149,13 +148,14 @@ object ParadoxDefinitionManager {
         return ParadoxDefinitionService.resolveRelatedImageInfos(definitionInfo).filterFast { it.isPrimaryKey() }.optimized()
     }
 
+    // region Related Items
+
     fun getPrimaryLocalisationKey(element: ParadoxDefinitionElement): String? {
         return CachedValuesManager.getCachedValue(element, Keys.cachedPrimaryLocalisationKey) {
             ProgressManager.checkCanceled()
             runSmartReadAction {
                 val value = element.definitionInfo?.let { ParadoxDefinitionService.resolvePrimaryLocalisationKey(it) }
-                val dependencies = ParadoxDefinitionService.getRelatedLocalisationKeyAwareDependencies(element)
-                CachedValueProvider.Result.create(value, dependencies)
+                CachedValueProvider.Result.create(value, element, ChronicleModificationTrackers.LocalisationFile)
             }
         }
     }
@@ -164,9 +164,9 @@ object ParadoxDefinitionManager {
         return CachedValuesManager.getCachedValue(element, Keys.cachedPrimaryLocalisation) {
             ProgressManager.checkCanceled()
             runSmartReadAction {
+                // NOTE 3.0.4 since PSI is directly cached here, invalidated on any PSI change atm
                 val value = element.definitionInfo?.let { ParadoxDefinitionService.resolvePrimaryLocalisation(it) }
-                val dependencies = ParadoxDefinitionService.getRelatedLocalisationAwareDependencies(element)
-                CachedValueProvider.Result.create(value, dependencies)
+                CachedValueProvider.Result.create(value, element, PsiModificationTracker.MODIFICATION_COUNT, ChronicleModificationTrackers.PreferredLocale)
             }
         }
     }
@@ -175,9 +175,9 @@ object ParadoxDefinitionManager {
         return CachedValuesManager.getCachedValue(element, Keys.cachedPrimaryLocalisations) {
             ProgressManager.checkCanceled()
             runSmartReadAction {
+                // NOTE 3.0.4 since PSI is directly cached here, invalidated on any PSI change atm
                 val value = element.definitionInfo?.let { ParadoxDefinitionService.resolvePrimaryLocalisations(it) }.orEmpty()
-                val dependencies = ParadoxDefinitionService.getRelatedLocalisationAwareDependencies(element)
-                CachedValueProvider.Result.create(value, dependencies)
+                CachedValueProvider.Result.create(value, element, PsiModificationTracker.MODIFICATION_COUNT, ChronicleModificationTrackers.PreferredLocale)
             }
         }
     }
@@ -186,9 +186,9 @@ object ParadoxDefinitionManager {
         return CachedValuesManager.getCachedValue(element, Keys.cachedPrimaryImage) {
             ProgressManager.checkCanceled()
             runSmartReadAction {
+                // NOTE 3.0.4 since PSI is directly cached here, invalidated on any PSI change atm
                 val value = element.definitionInfo?.let { ParadoxDefinitionService.resolvePrimaryImage(it) }
-                val dependencies = ParadoxDefinitionService.getRelatedImageAwareDependencies(element)
-                CachedValueProvider.Result.create(value, dependencies)
+                CachedValueProvider.Result.create(value, element, PsiModificationTracker.MODIFICATION_COUNT)
             }
         }
     }
@@ -198,9 +198,9 @@ object ParadoxDefinitionManager {
         return CachedValuesManager.getCachedValue(element, Keys.cachedPrimaryImages) {
             ProgressManager.checkCanceled()
             runSmartReadAction {
+                // NOTE 3.0.4 since PSI is directly cached here, invalidated on any PSI change atm
                 val value = element.definitionInfo?.let { ParadoxDefinitionService.resolvePrimaryImages(it) }
-                val dependencies = ParadoxDefinitionService.getRelatedImageAwareDependencies(element)
-                CachedValueProvider.Result.create(value, dependencies)
+                CachedValueProvider.Result.create(value, element, PsiModificationTracker.MODIFICATION_COUNT)
             }
         }
     }
@@ -213,6 +213,8 @@ object ParadoxDefinitionManager {
         return ParadoxDefinitionService.resolveRelatedLocalisations(definitionInfo)
     }
 
+    // endregion
+
     // region Presentable Items
 
     /**
@@ -221,7 +223,7 @@ object ParadoxDefinitionManager {
      * @see ParadoxLocalisationManager.getPresentableText
      */
     fun getPresentableName(element: ParadoxDefinitionElement): String? {
-        val localisation = getPrimaryLocalisation(element) ?: return null
+        val localisation = getPrimaryLocalisation(element)
         return ParadoxLocalisationManager.getPresentableText(localisation)
     }
 
@@ -230,10 +232,44 @@ object ParadoxDefinitionManager {
      *
      * @see ParadoxLocalisationManager.getPresentableText
      */
-    fun getPresentableNames(element: ParadoxDefinitionElement): Set<String> {
-        val localisations = getPrimaryLocalisations(element).orNull() ?: return emptySet()
+    fun getPresentableNames(element: ParadoxDefinitionElement): List<String> {
+        val localisations = getPrimaryLocalisations(element)
         return ParadoxLocalisationManager.getPresentableText(localisations)
     }
 
     // endregion
+
+    // region Dependencies
+
+    @Suppress("UNUSED_PARAMETER")
+    fun getInfoDependencies(element: ParadoxDefinitionElement, file: PsiFile, value: ParadoxDefinitionInfo?): List<Any> {
+        // 3.0.1 使用更精确的依赖
+        if (value == null) return listOf(file)
+        val typeConfig = value.typeConfig
+
+        // 如果存在 rootKey，则需要直接依赖文件
+        if (typeConfig.skipRootKey.isNotEmpty()) return listOf(file)
+
+        // 如果可能存在 typeKeyPrefix，则需要依赖父节点
+        if (typeConfig.typeKeyPrefixConfig != null || typeConfig.name in typeConfig.configGroup.typeModel.typeKeyPrefixAware) return listOf(element.parent)
+
+        // 其余情况，直接依赖 element
+        return listOf(element)
+    }
+
+    fun getSubtypeAwareDependencies(element: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): List<Any> {
+        val subtypes = definitionInfo.typeConfig.subtypes
+
+        // 如果无子类型候选项，则直接依赖 element
+        if (subtypes.isEmpty()) return listOf(element)
+
+        // 如果所有子类型候选项都不依赖声明结构，则直接依赖 element（快速匹配）
+        val allFastMatch = subtypes.values.all { it.config.configs.isNullOrEmpty() }
+        if (allFastMatch) return listOf(element)
+
+        // 如果需要依赖声明结构，则需要依赖任何脚本文件
+        return listOf(element.containingFile, ChronicleModificationTrackers.ScriptFile)
+    }
+
+    //endregion
 }

@@ -2,9 +2,9 @@ package icu.windea.pls.lang.resolve
 
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.openapi.progress.ProgressManager
-import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.util.Processor
+import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.CaseInsensitiveStringSet
@@ -122,37 +122,7 @@ object ParadoxModifierService {
         return result.optimizedIfEmpty()
     }
 
-    /**
-     * 解析修正关联的（第一个）名字本地化。
-     *
-     * @param nameKeys 修正的名字对应的本地化键。
-     */
-    /**
-     * 解析修正关联的名字本地化。仅使用第一个能够解析到本地化的名字键。
-     *
-     * @param nameKeys 修正的名字对应的本地化键。
-     */
-    fun resolveRelatedNameLocalisations(nameKeys: Set<String>, contextElement: PsiElement, project: Project): List<ParadoxLocalisationProperty> {
-        if (nameKeys.isEmpty()) return emptyList()
-        ProgressManager.checkCanceled()
-        val selector = ParadoxLocalisationSearch.selector(project, contextElement).contextSensitive()
-            .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
-            .withConstraint(ParadoxLocalisationIndexConstraint.Modifier) // so ignore case
-        for (key in nameKeys) {
-            val localisations = ParadoxLocalisationSearch.searchNormal(key, selector).findAll()
-            if (localisations.isNotEmpty()) return localisations
-        }
-        return emptyList()
-    }
-
-    /**
-     * 解析修正关联的（第一个）名字本地化。
-     *
-     * @param nameKeys 修正的名字对应的本地化键。
-     */
-    fun resolveRelatedLocalisation(nameKeys: Set<String>, contextElement: PsiElement, project: Project): ParadoxLocalisationProperty? {
-        return resolveRelatedNameLocalisations(nameKeys, contextElement, project).firstOrNull()
-    }
+    // region Related Items
 
     /**
      * 解析修正关联的所有本地化（包括名字和描述）。
@@ -162,11 +132,47 @@ object ParadoxModifierService {
      * @param nameKeys 修正的名字对应的本地化键。
      * @param descKeys 修正的描述对应的本地化键。
      */
-    fun resolveRelatedLocalisations(nameKeys: Set<String>, descKeys: Set<String>, contextElement: PsiElement, project: Project): List<ParadoxLocalisationProperty> {
+    fun resolveRelatedLocalisations(
+        nameKeys: Set<String>,
+        descKeys: Set<String>,
+        contextElement: PsiElement,
+        preferredLocale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig(),
+        preferred: Boolean = false,
+    ): List<ParadoxLocalisationProperty> {
         if (nameKeys.isEmpty() && descKeys.isEmpty()) return emptyList()
         val result = mutableListOf<ParadoxLocalisationProperty>()
-        result.addAll(resolveRelatedNameLocalisations(nameKeys, contextElement, project))
-        result.addAll(resolveRelatedNameLocalisations(descKeys, contextElement, project))
+        result.addAll(resolveRelatedLocalisationsFrom(nameKeys, contextElement, preferredLocale, preferred))
+        result.addAll(resolveRelatedLocalisationsFrom(descKeys, contextElement, preferredLocale, preferred))
         return result
     }
+
+    /**
+     * 解析 [keys] 对应的所有相关本地化。
+     *
+     * 说明：
+     * - 仅使用第一个能够解析到本地化的键。
+     * - 使用特殊的索引约束（[ParadoxLocalisationIndexConstraint.Modifier]）。
+     */
+    fun resolveRelatedLocalisationsFrom(
+        keys: Set<String>,
+        contextElement: PsiElement,
+        preferredLocale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig(),
+        preferred: Boolean = false,
+    ): List<ParadoxLocalisationProperty> {
+        if (keys.isEmpty()) return emptyList()
+        val project = contextElement.project
+        val result = mutableListOf<ParadoxLocalisationProperty>()
+        for (key in keys) {
+            if (key.isEmpty()) continue
+            ProgressManager.checkCanceled()
+            val selector = ParadoxLocalisationSearch.selector(project, contextElement).contextSensitive().preferLocale(preferredLocale)
+                .withConstraint(ParadoxLocalisationIndexConstraint.Modifier) // so ignore case
+            val query = ParadoxLocalisationSearch.searchNormal(key, selector)
+            if (preferred) query.find()?.let { result += it } else query.findAll().let { result += it }
+            if (result.isNotEmpty()) return result
+        }
+        return emptyList()
+    }
+
+    // endregion
 }

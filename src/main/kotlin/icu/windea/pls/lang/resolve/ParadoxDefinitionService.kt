@@ -5,7 +5,6 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleCapabilities
 import icu.windea.pls.ChronicleFacade
-import icu.windea.pls.base.ChronicleModificationTrackers
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
@@ -301,47 +300,5 @@ object ParadoxDefinitionService {
             }
         }
         return result
-    }
-
-    @Suppress("UNUSED_PARAMETER")
-    fun getInfoDependencies(element: ParadoxDefinitionElement, file: PsiFile, value: ParadoxDefinitionInfo?): List<Any> {
-        // 3.0.1 使用更精确的依赖
-        if (value == null) return listOf(file)
-        val typeConfig = value.typeConfig
-
-        // 如果存在 rootKey，则需要直接依赖文件
-        if (typeConfig.skipRootKey.isNotEmpty()) return listOf(file)
-
-        // 如果可能存在 typeKeyPrefix，则需要依赖父节点
-        if (typeConfig.typeKeyPrefixConfig != null || typeConfig.name in typeConfig.configGroup.typeModel.typeKeyPrefixAware) return listOf(element.parent)
-
-        // 其余情况，直接依赖 element
-        return listOf(element)
-    }
-
-    fun getSubtypeAwareDependencies(element: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): List<Any> {
-        val subtypes = definitionInfo.typeConfig.subtypes
-
-        // 如果无子类型候选项，则直接依赖 element
-        if (subtypes.isEmpty()) return listOf(element)
-
-        // 如果所有子类型候选项都不依赖声明结构，则直接依赖 element（快速匹配）
-        val allFastMatch = subtypes.values.all { it.config.configs.isNullOrEmpty() }
-        if (allFastMatch) return listOf(element)
-
-        // 如果需要依赖声明结构，则需要依赖任何脚本文件
-        return listOf(element.containingFile, ChronicleModificationTrackers.ScriptFile)
-    }
-
-    fun getRelatedLocalisationKeyAwareDependencies(element: ParadoxDefinitionElement): List<Any> {
-        return listOf(element.containingFile, ChronicleModificationTrackers.LocalisationFile)
-    }
-
-    fun getRelatedLocalisationAwareDependencies(element: ParadoxDefinitionElement): List<Any> {
-        return listOf(element.containingFile, ChronicleModificationTrackers.LocalisationFile, ChronicleModificationTrackers.PreferredLocale)
-    }
-
-    fun getRelatedImageAwareDependencies(element: ParadoxDefinitionElement): List<Any> {
-        return listOf(element.containingFile, ChronicleModificationTrackers.ScriptFile)
     }
 }

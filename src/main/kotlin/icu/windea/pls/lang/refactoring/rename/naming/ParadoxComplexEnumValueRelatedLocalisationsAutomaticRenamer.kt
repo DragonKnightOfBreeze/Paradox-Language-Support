@@ -23,9 +23,9 @@ class ParadoxComplexEnumValueRelatedLocalisationsAutomaticRenamer(element: PsiEl
     class Factory : ParadoxComplexEnumValueAutomaticRenamer.Factory() {
         override fun isApplicable(element: PsiElement): Boolean {
             if (element !is ParadoxComplexEnumValueLightElement) return false
-            val name = element.name.orNull() ?: return false
             val locale = ParadoxLocaleManager.getPreferredLocaleConfig()
-            return ParadoxComplexEnumValueManager.getNameLocalisations(name, element, locale).isNotEmpty()
+            val relatedLocalisations = ParadoxComplexEnumValueManager.getRelatedLocalisations(element, locale)
+            return relatedLocalisations.isNotEmpty()
         }
 
         override fun getOptionName() = ChronicleBundle.message("rename.complexEnumValue.relatedLocalisations")

@@ -35,7 +35,7 @@ class ParadoxScriptedVariableRelatedLocalisationsLineMarkerProvider : ParadoxRel
         val name = element.name?.orNull() ?: return
         // 目标：同名本地化
         val locale = ParadoxLocaleManager.getPreferredLocaleConfig()
-        val targets = ParadoxScriptedVariableManager.getNameLocalisations(name, element, locale).optimized()
+        val targets = ParadoxScriptedVariableManager.getRelatedLocalisations(element, locale)
         if (targets.isEmpty()) return
 
         ProgressManager.checkCanceled()
@@ -45,7 +45,7 @@ class ParadoxScriptedVariableRelatedLocalisationsLineMarkerProvider : ParadoxRel
         val lineMarkerInfo = NavigationGutterIconBuilderC.createForPsi(icon) { createGotoRelatedItem(targets) }
             .setTooltipText(tooltip)
             .setPopupTitle(ChronicleBundle.message("script.gutterIcon.scriptedVariableRelatedLocalisations.title"))
-            .setTargets { targets }
+            .setTargets { targets.optimized() }
             .setAlignment(GutterIconRenderer.Alignment.LEFT)
             .setNamer { ChronicleBundle.message("script.gutterIcon.scriptedVariableRelatedLocalisations") }
             .createLineMarkerInfo(locationElement)

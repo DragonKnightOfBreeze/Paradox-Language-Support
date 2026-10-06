@@ -62,7 +62,7 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
             runWithModalProgressBlocking(project, ChronicleBundle.message("script.goto.relatedLocalisations.search.sv", name.orAnonymous().escapeXml())) {
                 // need read actions here if necessary
                 readAction {
-                    targets.addAll(ParadoxScriptedVariableManager.getNameLocalisations(name, element, preferredLocale))
+                    targets.addAll(ParadoxScriptedVariableManager.getRelatedLocalisations(element, preferredLocale))
                 }
             }
         }

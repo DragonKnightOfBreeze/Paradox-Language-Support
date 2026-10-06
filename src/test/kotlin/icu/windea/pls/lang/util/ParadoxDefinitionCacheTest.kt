@@ -165,7 +165,7 @@ class ParadoxDefinitionCacheTest : BasePlatformTestCase(), ChronicleTestScope {
         val distress = selectScope { file.queryBy("distress_beacon").asProperty().one() }!!
         val info = ParadoxDefinitionManager.getInfo(distress)!!
 
-        val deps = ParadoxDefinitionService.getSubtypeAwareDependencies(distress, info)
+        val deps = ParadoxDefinitionManager.getSubtypeAwareDependencies(distress, info)
 
         // 无子类型候选项时，只依赖定义
         Assert.assertEquals(1, deps.size)
@@ -183,7 +183,7 @@ class ParadoxDefinitionCacheTest : BasePlatformTestCase(), ChronicleTestScope {
         val plasma = selectScope { file.queryBy("plasma_cannon").asProperty().one() }!!
         val info = ParadoxDefinitionManager.getInfo(plasma)!!
 
-        val deps = ParadoxDefinitionService.getSubtypeAwareDependencies(plasma, info)
+        val deps = ParadoxDefinitionManager.getSubtypeAwareDependencies(plasma, info)
 
         // 有子类型且依赖声明结构时，应包含 ScriptFile tracker
         Assert.assertTrue(deps.isNotEmpty())

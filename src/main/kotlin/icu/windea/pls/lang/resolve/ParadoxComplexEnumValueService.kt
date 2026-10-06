@@ -1,9 +1,7 @@
 package icu.windea.pls.lang.resolve
 
-import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleFacade
-import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.orNull
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
@@ -11,13 +9,8 @@ import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.CwtComplexEnumConfigMatchContext
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
-import icu.windea.pls.lang.search.ParadoxLocalisationSearch
-import icu.windea.pls.lang.search.util.contextSensitive
-import icu.windea.pls.lang.search.util.preferLocale
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
-import icu.windea.pls.lang.util.ParadoxLocaleManager
-import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxComplexEnumValueInfo
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 
@@ -45,15 +38,5 @@ object ParadoxComplexEnumValueService {
         val enumName = columnConfig.optionMetadata.declareComplexEnum?.orNull() ?: return null
         val config = columnConfig.configGroup.complexEnumsFromColumns[enumName] ?: return null // 这里使用来自列规则的复杂枚举规则
         return ParadoxComplexEnumValueInfo(name, enumName, config)
-    }
-
-    fun resolveNameLocalisation(name: String, contextElement: PsiElement, locale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig()): ParadoxLocalisationProperty? {
-        val selector = ParadoxLocalisationSearch.selector(contextElement.project, contextElement).contextSensitive().preferLocale(locale)
-        return ParadoxLocalisationSearch.searchNormal(name, selector).find()
-    }
-
-    fun resolveNameLocalisations(name: String, contextElement: PsiElement, locale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig()): List<ParadoxLocalisationProperty> {
-        val selector = ParadoxLocalisationSearch.selector(contextElement.project, contextElement).contextSensitive().preferLocale(locale)
-        return ParadoxLocalisationSearch.searchNormal(name, selector).findAll()
     }
 }

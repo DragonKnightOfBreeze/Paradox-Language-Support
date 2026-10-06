@@ -1,7 +1,9 @@
 package icu.windea.pls.lang.resolve
 
 import com.intellij.openapi.progress.ProgressManager
+import com.intellij.psi.PsiElement
 import icu.windea.pls.ChronicleFacade
+import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.config.util.CwtConfigExpressionManager
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.forEachFast
@@ -10,9 +12,12 @@ import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
+import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
 import icu.windea.pls.lang.search.util.contextSensitive
+import icu.windea.pls.lang.search.util.preferLocale
 import icu.windea.pls.lang.selectGameType
+import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextPlainRenderer
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
@@ -64,9 +69,24 @@ object ParadoxLocalisationService {
         return result
     }
 
+    fun resolveRelatedLocalisationsFrom(
+        name: String?,
+        contextElement: PsiElement,
+        preferredLocale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig(),
+        preferred: Boolean = false,
+    ): List<ParadoxLocalisationProperty> {
+        if (name.isNullOrEmpty()) return emptyList()
+        val project = contextElement.project
+        val result = mutableListOf<ParadoxLocalisationProperty>()
+        val selector = ParadoxLocalisationSearch.selector(project, contextElement).contextSensitive().preferLocale(preferredLocale)
+        val query = ParadoxLocalisationSearch.searchNormal(name, selector)
+        if (preferred) query.find()?.let { result += it } else query.findAll().let { result += it }
+        return result
+    }
+
     // endregion
 
-    // region Presentable Text
+    // region Presentable Items
 
     fun resolvePresentableText(element: ParadoxLocalisationProperty): String? {
         return ParadoxLocalisationTextPlainRenderer().render(element).orNull()

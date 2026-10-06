@@ -142,14 +142,21 @@ class Issue385Test : BasePlatformTestCase(), ChronicleTestScope {
 
         IndexingTestUtil.waitUntilIndexesAreReady(project)
         val contextElement = myFixture.file
-        val project = myFixture.project
         expectScope {
-            val r = ParadoxModifierManager.getPresentableName("weapon_windea_long_sword_damage_mult", contextElement, project)
-            r.expectNotNull()
+            val r = ParadoxModifierManager.getPresentableNames("weapon_windea_long_sword_damage_mult", contextElement)
+            r.isNotEmpty().expectTrue()
         }
         expectScope {
-            val r = ParadoxModifierManager.getPresentableName("weapon_ode_to_THE_DRAGON_KNIGHT_magic_power_mult", contextElement, project)
-            r.expectNotNull()
+            val r = ParadoxModifierManager.getPresentableNames("weapon_windea_long_sword_damage_mult", contextElement, preferred = true)
+            r.isNotEmpty().expectTrue()
+        }
+        expectScope {
+            val r = ParadoxModifierManager.getPresentableNames("weapon_ode_to_THE_DRAGON_KNIGHT_magic_power_mult", contextElement)
+            r.isNotEmpty().expectTrue()
+        }
+        expectScope {
+            val r = ParadoxModifierManager.getPresentableNames("weapon_ode_to_THE_DRAGON_KNIGHT_magic_power_mult", contextElement, preferred = true)
+            r.isNotEmpty().expectTrue()
         }
     }
 

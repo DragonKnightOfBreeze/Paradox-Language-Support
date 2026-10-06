@@ -140,7 +140,7 @@ object ParadoxElementPresentationService {
             val complexEnumValueInfo = element.complexEnumValueInfo
             if (complexEnumValueInfo == null) return@run
             val typeInfo = complexEnumValueInfo.enumName
-            val presentableName = ParadoxComplexEnumValueManager.getPresentableName(complexEnumValueInfo.name, element)
+            val presentableName = ParadoxComplexEnumValueManager.getPresentableNames(complexEnumValueInfo.name, element, preferred = true).firstOrNull()
             return buildString {
                 append(": ").append(typeInfo)
                 if (presentableName != null) append(" ").append(presentableName)
@@ -150,7 +150,7 @@ object ParadoxElementPresentationService {
             // scripted variable - (optional) value info + (optional) presentable name
             if (!ParadoxPsiMatchService.isScriptedVariable(element)) return@run
             val valueInfo = element.scriptedVariableValue?.presentableText
-            val presentableName = ParadoxScriptedVariableManager.getPresentableName(element)
+            val presentableName = ParadoxScriptedVariableManager.getPresentableNames(element, preferred = true).firstOrNull()
             return buildString {
                 if (valueInfo != null) append(" = ").append(valueInfo)
                 if (presentableName != null) append(" ").append(presentableName)

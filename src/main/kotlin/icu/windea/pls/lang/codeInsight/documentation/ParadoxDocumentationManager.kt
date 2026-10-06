@@ -321,21 +321,21 @@ object ParadoxDocumentationManager {
     private fun DocumentationBuilder.addRelatedLocalisationsForComplexEnumValue(element: ParadoxComplexEnumValueLightElement) {
         val gameType = element.gameType
         val usedLocale = ParadoxLocaleManager.getResolvedLocaleConfigInDocumentation(element)
-        val nameLocalisation = ParadoxComplexEnumValueManager.getNameLocalisation(element.name, element, usedLocale)
+        val relatedLocalisation = ParadoxComplexEnumValueManager.getRelatedLocalisations(element, usedLocale, preferred = true).firstOrNull()
         // 如果没找到的话，不要在文档中显示相关信息
         run {
-            if (nameLocalisation == null) return@run
+            if (relatedLocalisation == null) return@run
             br()
             append(ChronicleStrings.relatedLocalisationPrefix).append(" ")
-            val link = ReferenceLinkType.Localisation.createLink(nameLocalisation.name, gameType)
-            append("name = ").psiLinkOrUnresolved(link.escapeXml(), nameLocalisation.name.escapeXml(), context = element)
+            val link = ReferenceLinkType.Localisation.createLink(relatedLocalisation.name, gameType)
+            append("name = ").psiLinkOrUnresolved(link.escapeXml(), relatedLocalisation.name.escapeXml(), context = element)
         }
         if (hint) return
         if (!ChronicleSettings.getInstance().state.documentation.renderRelatedLocalisationsForComplexEnumValues) return
         val sections = getSections(SECTIONS_LOC)
         run {
-            if (nameLocalisation == null) return@run
-            sections["name"] = ParadoxLocalisationTextQuickDocRenderer().render(nameLocalisation)
+            if (relatedLocalisation == null) return@run
+            sections["name"] = ParadoxLocalisationTextQuickDocRenderer().render(relatedLocalisation)
         }
     }
 
@@ -371,21 +371,21 @@ object ParadoxDocumentationManager {
     private fun DocumentationBuilder.addRelatedLocalisationsForDynamicValue(element: ParadoxDynamicValueLightElement) {
         val gameType = element.gameType
         val usedLocale = ParadoxLocaleManager.getResolvedLocaleConfigInDocumentation(element)
-        val nameLocalisation = ParadoxDynamicValueManager.getNameLocalisation(element.name, element, usedLocale)
+        val relatedLocalisation = ParadoxDynamicValueManager.getRelatedLocalisations(element, usedLocale, preferred = true).firstOrNull()
         // 如果没找到的话，不要在文档中显示相关信息
         run {
-            if (nameLocalisation == null) return@run
+            if (relatedLocalisation == null) return@run
             br()
             append(ChronicleStrings.relatedLocalisationPrefix).append(" ")
-            val link = ReferenceLinkType.Localisation.createLink(nameLocalisation.name, gameType)
-            append("name = ").psiLinkOrUnresolved(link.escapeXml(), nameLocalisation.name.escapeXml(), context = element)
+            val link = ReferenceLinkType.Localisation.createLink(relatedLocalisation.name, gameType)
+            append("name = ").psiLinkOrUnresolved(link.escapeXml(), relatedLocalisation.name.escapeXml(), context = element)
         }
         if (hint) return
         if (!ChronicleSettings.getInstance().state.documentation.renderRelatedLocalisationsForDynamicValues) return
         val sections = getSections(SECTIONS_LOC)
         run {
-            if (nameLocalisation == null) return@run
-            sections["name"] = ParadoxLocalisationTextQuickDocRenderer().render(nameLocalisation)
+            if (relatedLocalisation == null) return@run
+            sections["name"] = ParadoxLocalisationTextQuickDocRenderer().render(relatedLocalisation)
         }
     }
 
@@ -561,21 +561,21 @@ object ParadoxDocumentationManager {
     private fun DocumentationBuilder.addRelatedLocalisationsForScriptedVariable(element: ParadoxScriptScriptedVariable, name: String) {
         val gameType = selectGameType(element) ?: return
         val usedLocale = ParadoxLocaleManager.getResolvedLocaleConfigInDocumentation(element)
-        val nameLocalisation = ParadoxScriptedVariableManager.getNameLocalisation(name, element, usedLocale)
+        val relatedLocalisation = ParadoxScriptedVariableManager.getRelatedLocalisations(element, usedLocale, preferred = true).firstOrNull()
         // 如果没找到的话，不要在文档中显示相关信息
         run {
-            if (nameLocalisation == null) return@run
+            if (relatedLocalisation == null) return@run
             br()
             append(ChronicleStrings.relatedLocalisationPrefix).append(" ")
-            val link = ReferenceLinkType.Localisation.createLink(nameLocalisation.name, gameType)
-            append("name = ").psiLinkOrUnresolved(link.escapeXml(), nameLocalisation.name.escapeXml(), context = element)
+            val link = ReferenceLinkType.Localisation.createLink(relatedLocalisation.name, gameType)
+            append("name = ").psiLinkOrUnresolved(link.escapeXml(), relatedLocalisation.name.escapeXml(), context = element)
         }
         if (hint) return
         if (!ChronicleSettings.getInstance().state.documentation.renderRelatedLocalisationsForScriptedVariables) return
         val sections = getSections(SECTIONS_LOC)
         run {
-            if (nameLocalisation == null) return@run
-            sections["name"] = ParadoxLocalisationTextQuickDocRenderer().render(nameLocalisation)
+            if (relatedLocalisation == null) return@run
+            sections["name"] = ParadoxLocalisationTextQuickDocRenderer().render(relatedLocalisation)
         }
     }
 

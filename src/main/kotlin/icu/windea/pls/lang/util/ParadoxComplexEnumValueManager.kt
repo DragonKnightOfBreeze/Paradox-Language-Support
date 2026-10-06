@@ -7,7 +7,6 @@ import com.intellij.psi.util.CachedValueProvider
 import icu.windea.pls.ChronicleCapabilities
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.annotations.Optimized
-import icu.windea.pls.core.collections.mapNotNullFast
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getCachedValueOnDemand
@@ -18,6 +17,7 @@ import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.isResolvableLiteralExpression
+import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueLightElement
 import icu.windea.pls.lang.resolve.ParadoxComplexEnumValueService
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxComplexEnumValueInfo
@@ -73,23 +73,49 @@ object ParadoxComplexEnumValueManager {
         return listOf(element.containingFile)
     }
 
-    fun getPresentableName(name: String, contextElement: PsiElement, locale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig()): String? {
-        val nameLocalisation = getNameLocalisation(name, contextElement, locale)
-        return nameLocalisation?.let { ParadoxLocalisationManager.getPresentableText(it) }
+    // region Related Items
+
+    fun getRelatedLocalisations(
+        element: ParadoxComplexEnumValueLightElement,
+        preferredLocale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig(),
+        preferred: Boolean = false,
+    ): List<ParadoxLocalisationProperty> {
+        return getRelatedLocalisations(element.name, element, preferredLocale, preferred)
+    }
+
+    fun getRelatedLocalisations(
+        name: String?,
+        contextElement: PsiElement,
+        preferredLocale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig(),
+        preferred: Boolean = false,
+    ): List<ParadoxLocalisationProperty> {
+        return ParadoxLocalisationManager.getRelatedLocalisationsFrom(name, contextElement, preferredLocale, preferred)
+    }
+
+    // endregion
+
+    // region Presentable Items
+
+    @Suppress("unused")
+    fun getPresentableNames(
+        element: ParadoxComplexEnumValueLightElement,
+        preferredLocale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig(),
+        preferred: Boolean = false,
+    ): List<String> {
+        val localisations = getRelatedLocalisations(element, preferredLocale, preferred)
+        return ParadoxLocalisationManager.getPresentableText(localisations)
     }
 
     @Suppress("unused")
-    fun getPresentableNames(name: String, contextElement: PsiElement, locale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig()): Set<String> {
-        val nameLocalisation = getNameLocalisations(name, contextElement, locale)
-        if (nameLocalisation.isEmpty()) return emptySet()
-        return nameLocalisation.mapNotNullFast { ParadoxLocalisationManager.getPresentableText(it) }.toSet()
+    fun getPresentableNames(
+        name: String,
+        contextElement: PsiElement,
+        preferredLocale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig(),
+        preferred: Boolean = false,
+    ): List<String> {
+        val localisation = getRelatedLocalisations(name, contextElement, preferredLocale, preferred)
+        return ParadoxLocalisationManager.getPresentableText(localisation)
     }
 
-    fun getNameLocalisation(name: String, contextElement: PsiElement, locale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig()): ParadoxLocalisationProperty? {
-        return ParadoxComplexEnumValueService.resolveNameLocalisation(name, contextElement, locale)
-    }
-
-    fun getNameLocalisations(name: String, contextElement: PsiElement, locale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig()): List<ParadoxLocalisationProperty> {
-        return ParadoxComplexEnumValueService.resolveNameLocalisations(name, contextElement, locale)
-    }
+    // endregion
 }

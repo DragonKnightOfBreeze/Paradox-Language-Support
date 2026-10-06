@@ -10,7 +10,6 @@ import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.refactoring.ParadoxRefactoringSettings
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.util.contextSensitive
-import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.ParadoxScriptedVariableManager
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
@@ -21,9 +20,8 @@ class ParadoxScriptedVariableRelatedLocalisationsAutomaticRenamer(element: PsiEl
     class Factory : ParadoxScriptedVariableAutomaticRenamer.Factory() {
         override fun isApplicable(element: PsiElement): Boolean {
             if (element !is ParadoxScriptScriptedVariable) return false
-            val name = element.name?.orNull() ?: return false
-            val locale = ParadoxLocaleManager.getPreferredLocaleConfig()
-            return ParadoxScriptedVariableManager.getNameLocalisations(name, element, locale).isNotEmpty()
+            val relatedLocalisations = ParadoxScriptedVariableManager.getRelatedLocalisations(element)
+            return relatedLocalisations.isNotEmpty()
         }
 
         override fun getOptionName() = ChronicleBundle.message("rename.scriptedVariable.relatedLocalisations")

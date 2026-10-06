@@ -40,7 +40,7 @@ import icu.windea.pls.lang.isFullParameterized
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.lang.resolve.ParadoxParameterService
-import icu.windea.pls.lang.resolve.util.ParadoxParameterSupportFactory
+import icu.windea.pls.lang.resolve.util.ParadoxReadWriteAccessFactory
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.model.ParadoxParameterContextInfo
 import icu.windea.pls.model.ParadoxParameterContextReferenceInfo
@@ -253,8 +253,9 @@ object ParadoxParameterManager {
     }
 
     @Suppress("unused")
+    @Deprecated("", ReplaceWith("ParadoxReadWriteAccessFactory.from(element)", "icu.windea.pls.lang.resolve.util.ParadoxReadWriteAccessFactory"))
     fun getReadWriteAccess(element: PsiElement): ReadWriteAccess {
-        return ParadoxParameterSupportFactory.getReadWriteAccess(element)
+        return ParadoxReadWriteAccessFactory.from(element)
     }
 
     fun getParameterElement(element: PsiElement): ParadoxParameterLightElement? {

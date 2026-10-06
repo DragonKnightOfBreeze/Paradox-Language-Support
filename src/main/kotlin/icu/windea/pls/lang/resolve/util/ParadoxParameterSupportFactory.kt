@@ -63,12 +63,9 @@ import java.util.*
 
 @Optimized
 object ParadoxParameterSupportFactory {
+    @Deprecated("", ReplaceWith("ParadoxReadWriteAccessFactory.from(element)"))
     fun getReadWriteAccess(element: PsiElement): ReadWriteAccess {
-        return when {
-            element is ParadoxScriptParameter -> ReadWriteAccess.Read
-            element is ParadoxScriptConditionParameter -> ReadWriteAccess.Read
-            else -> ReadWriteAccess.Write
-        }
+        return ParadoxReadWriteAccessFactory.from(element)
     }
 
     fun resolveParameterForDefinition(element: PsiElement, name: String, context: ParadoxDefinitionElement): ParadoxParameterLightElement? {
@@ -79,7 +76,7 @@ object ParadoxParameterSupportFactory {
         val contextName = definitionName
         val contextIcon = ChronicleIcons.Nodes.Definition(definitionInfo.type)
         val contextKey = "${definitionTypes.joinToString(".")}@${definitionName}"
-        val readWriteAccess = getReadWriteAccess(element)
+        val readWriteAccess = ParadoxReadWriteAccessFactory.from(element)
         val gameType = definitionInfo.gameType
         val project = definitionInfo.project
         val result = ParadoxParameterLightElement(element, name, contextName, contextIcon, contextKey, readWriteAccess, gameType, project)
@@ -94,7 +91,7 @@ object ParadoxParameterSupportFactory {
         val contextName = expression
         val contextIcon = ChronicleIcons.Nodes.Macro
         val contextKey = "inline_script@$expression"
-        val readWriteAccess = getReadWriteAccess(element)
+        val readWriteAccess = ParadoxReadWriteAccessFactory.from(element)
         val gameType = selectGameType(context) ?: return null
         val project = context.project
         val result = ParadoxParameterLightElement(element, name, contextName, contextIcon, contextKey, readWriteAccess, gameType, project)
@@ -117,7 +114,7 @@ object ParadoxParameterSupportFactory {
         val contextName = definitionName
         val contextIcon = ChronicleIcons.Nodes.Definition(definitionTypes[0])
         val contextKey = "${definitionTypes.joinToString(".")}@${definitionName}"
-        val readWriteAccess = getReadWriteAccess(element)
+        val readWriteAccess = ParadoxReadWriteAccessFactory.from(element)
         val gameType = config.configGroup.gameType
         val project = config.configGroup.project
         val result = ParadoxParameterLightElement(element, name, contextName, contextIcon, contextKey, readWriteAccess, gameType, project)

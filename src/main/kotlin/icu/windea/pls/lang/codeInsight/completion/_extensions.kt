@@ -100,7 +100,7 @@ fun LookupElementBuilder.withModifierPresentableNames(modifierName: String, cont
     if (!ChronicleSettings.getInstance().state.completion.completeByPresentableName) return this
     ProgressManager.checkCanceled()
     // TODO 3.0.1+ [performance] may be relatively slow, consider optimize performance...
-    val presentableNames = ParadoxModifierManager.getPresentableNames(modifierName, context.contextElement, context.project)
+    val presentableNames = ParadoxModifierManager.getPresentableNames(modifierName, context.contextElement)
     if (presentableNames.isEmpty()) return this
     return withLookupStrings(presentableNames)
 }

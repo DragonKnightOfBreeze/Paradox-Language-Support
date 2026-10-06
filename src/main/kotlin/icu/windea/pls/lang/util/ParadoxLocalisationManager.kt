@@ -1,9 +1,11 @@
 package icu.windea.pls.lang.util
 
-import com.intellij.psi.SmartPsiElementPointer
+import com.intellij.psi.PsiElement
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValueProvider
+import com.intellij.psi.util.PsiModificationTracker
 import icu.windea.pls.ChronicleCapabilities
+import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.annotations.Inferred
 import icu.windea.pls.core.isEscapedCharAt
 import icu.windea.pls.core.util.KeyRegistry
@@ -11,6 +13,8 @@ import icu.windea.pls.core.util.getCachedValueOnDemand
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
+import icu.windea.pls.core.util.values.singletonListOrEmpty
+import icu.windea.pls.core.util.values.to
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.resolve.ParadoxLocalisationService
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
@@ -18,8 +22,8 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 object ParadoxLocalisationManager {
     object Keys : KeyRegistry() {
-        val cachedRelatedScriptedVariables by registerKey<CachedValue<SmartPsiElementPointer<ParadoxScriptScriptedVariable>>>(this)
-        val cachedRelatedDefinitions by registerKey<CachedValue<SmartPsiElementPointer<ParadoxDefinitionElement>>>(this)
+        val cachedRelatedScriptedVariables by registerKey<CachedValue<List<ParadoxScriptScriptedVariable>>>(this)
+        val cachedRelatedDefinitions by registerKey<CachedValue<List<ParadoxDefinitionElement>>>(this)
         val cachedPresentableText by registerKey<CachedValue<String?>>(this)
     }
 
@@ -66,7 +70,15 @@ object ParadoxLocalisationManager {
      * @see ParadoxLocalisationService.resolveRelatedScriptedVariables
      */
     fun getRelatedScriptedVariables(element: ParadoxLocalisationProperty): List<ParadoxScriptScriptedVariable> {
-        return ParadoxLocalisationService.resolveRelatedScriptedVariables(element)
+        return getRelatedScriptedVariablesInternal(element)
+    }
+
+    private fun getRelatedScriptedVariablesInternal(element: ParadoxLocalisationProperty): List<ParadoxScriptScriptedVariable> {
+        return getCachedValueOnDemand(element, Keys.cachedRelatedScriptedVariables, ChronicleCapabilities.Cache.relatedItems) {
+            // NOTE 3.0.4 since PSI is directly cached here, invalidated on any PSI change atm
+            val value = ParadoxLocalisationService.resolveRelatedScriptedVariables(element)
+            CachedValueProvider.Result.create(value, element, PsiModificationTracker.MODIFICATION_COUNT)
+        }
     }
 
     /**
@@ -75,7 +87,29 @@ object ParadoxLocalisationManager {
      * @see ParadoxLocalisationService.resolveRelatedDefinitions
      */
     fun getRelatedDefinitions(element: ParadoxLocalisationProperty): List<ParadoxDefinitionElement> {
-        return ParadoxLocalisationService.resolveRelatedDefinitions(element)
+        return getRelatedDefinitionsInternal(element)
+    }
+
+    private fun getRelatedDefinitionsInternal(element: ParadoxLocalisationProperty): List<ParadoxDefinitionElement> {
+        return getCachedValueOnDemand(element, Keys.cachedRelatedDefinitions, ChronicleCapabilities.Cache.relatedItems) {
+            // NOTE 3.0.4 since PSI is directly cached here, invalidated on any PSI change atm
+            val value = ParadoxLocalisationService.resolveRelatedDefinitions(element)
+            CachedValueProvider.Result.create(value, element, PsiModificationTracker.MODIFICATION_COUNT)
+        }
+    }
+
+    /**
+     * 得到 [name] 对应的所有相关本地化。
+     *
+     * @see ParadoxLocalisationService.resolveRelatedLocalisationsFrom
+     */
+    fun getRelatedLocalisationsFrom(
+        name: String?,
+        contextElement: PsiElement,
+        preferredLocale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig(),
+        preferred: Boolean = false,
+    ): List<ParadoxLocalisationProperty> {
+        return ParadoxLocalisationService.resolveRelatedLocalisationsFrom(name, contextElement, preferredLocale, preferred)
     }
 
     // endregion
@@ -87,13 +121,15 @@ object ParadoxLocalisationManager {
      *
      * @see ParadoxLocalisationService.resolvePresentableText
      */
-    fun getPresentableText(element: ParadoxLocalisationProperty): String? {
+    fun getPresentableText(element: ParadoxLocalisationProperty?): String? {
+        if (element == null) return null
         return getPresentableTextInternal(element)
     }
 
-    fun getPresentableText(elements: Collection<ParadoxLocalisationProperty>): Set<String> {
-        if(elements.isEmpty()) return emptySet()
-        return elements.mapNotNullTo(mutableSetOf()) { getPresentableTextInternal(it) }
+    fun getPresentableText(elements: Collection<ParadoxLocalisationProperty>): List<String> {
+        if (elements.isEmpty()) return emptyList()
+        if (elements.size == 1) return getPresentableTextInternal(elements.single()).to.singletonListOrEmpty()
+        return elements.mapNotNullTo(mutableSetOf()) { getPresentableTextInternal(it) }.toList()
     }
 
     private fun getPresentableTextInternal(element: ParadoxLocalisationProperty): String? {
