@@ -348,7 +348,7 @@ object CwtDataTypes {
         withPriority { configExpression, configGroup ->
             val enumName = configExpression.metadata.value ?: return@withPriority 0.0 // unexpected
             if (configGroup.enums.containsKey(enumName)) return@withPriority 80.0
-            if (configGroup.complexEnums.containsKey(enumName)) return@withPriority 50.0
+            if (configGroup.complexEnums.containsKey(enumName)) return@withPriority 45.0
             0.0 // unexpected
         }
     }
@@ -367,7 +367,7 @@ object CwtDataTypes {
      * @see ParadoxDynamicValueExpression
      */
     val Value = CwtDataType.builder("Value").reference().build {
-        withPriority(40.0)
+        withPriority(30.0)
     }
     /**
      * 动态值写入类型。
@@ -383,7 +383,7 @@ object CwtDataTypes {
      * @see ParadoxDynamicValueExpression
      */
     val ValueSet = CwtDataType.builder("ValueSet").reference().build {
-        withPriority(40.0)
+        withPriority(30.0)
     }
     /**
      * 动态值类型。
@@ -399,7 +399,7 @@ object CwtDataTypes {
      * @see ParadoxDynamicValueExpression
      */
     val DynamicValue = CwtDataType.builder("DynamicValue").reference().build {
-        withPriority(40.0)
+        withPriority(30.0)
     }
 
     /**
@@ -416,7 +416,7 @@ object CwtDataTypes {
      * @see CwtScopeConfig
      */
     val ScopeField = CwtDataType.builder("ScopeField").reference().build {
-        withPriority(50.0)
+        withPriority(40.0)
     }
     /**
      * 作用域类型。
@@ -433,7 +433,7 @@ object CwtDataTypes {
      * @see CwtScopeConfig
      */
     val Scope = CwtDataType.builder("Scope").reference().build {
-        withPriority(50.0)
+        withPriority(40.0)
     }
     /**
      * 作用域组类型。
@@ -449,7 +449,7 @@ object CwtDataTypes {
      * @see CwtScopeGroupConfig
      */
     val ScopeGroup = CwtDataType.builder("ScopeGroup").reference().build {
-        withPriority(50.0)
+        withPriority(40.0)
     }
 
     /**
@@ -470,7 +470,7 @@ object CwtDataTypes {
      * @see FloatRangeInfo
      */
     val ValueField = CwtDataType.builder("ValueField").reference().build {
-        withPriority(45.0)
+        withPriority(35.0)
     }
     /**
      * 整数值字段类型。
@@ -490,7 +490,7 @@ object CwtDataTypes {
      * @see IntRangeInfo
      */
     val IntValueField = CwtDataType.builder("IntValueField").reference().build {
-        withPriority(45.0)
+        withPriority(35.0)
     }
 
     /**
@@ -514,7 +514,7 @@ object CwtDataTypes {
      * @see FloatRangeInfo
      */
     val VariableField = CwtDataType.builder("VariableField").reference().build {
-        withPriority(45.0)
+        withPriority(35.0)
     }
     /**
      * 整数变量字段类型。
@@ -537,7 +537,7 @@ object CwtDataTypes {
      * @see IntRangeInfo
      */
     val IntVariableField = CwtDataType.builder("IntVariableField").reference().build {
-        withPriority(45.0)
+        withPriority(35.0)
     }
 
     /**
@@ -555,7 +555,7 @@ object CwtDataTypes {
      * @since 2.1.1
      */
     val Command = CwtDataType.builder("Command").reference().build {
-        withPriority(45.0)
+        withPriority(35.0)
     }
     /**
      * 脚本值引用表达式类型。
@@ -803,7 +803,7 @@ object CwtDataTypes {
      * > CWTools 兼容性：兼容。
      */
     val Icon = CwtDataType.builder("Icon").reference().build {
-        withPriority(70.0)
+        withPriority(50.0)
     }
     /**
      * 文件路径类型。
@@ -823,7 +823,7 @@ object CwtDataTypes {
      * > CWTools 兼容性：部分兼容。插件进行了额外的扩展和改进。
      */
     val FilePath = CwtDataType.builder("FilePath").reference().build {
-        withPriority(70.0)
+        withPriority(50.0)
     }
     /**
      * 文件名类型。
@@ -843,7 +843,7 @@ object CwtDataTypes {
      * > CWTools 兼容性：不兼容。插件作为扩展提供。
      */
     val FileName = CwtDataType.builder("FileName").reference().build {
-        withPriority(70.0)
+        withPriority(50.0)
     }
     /**
      * 绝对文件路径类型。
@@ -857,7 +857,7 @@ object CwtDataTypes {
      * > CWTools 兼容性：不兼容。插件作为扩展提供。
      */
     val AbsoluteFilePath = CwtDataType.builder("AbsoluteFilePath").reference().build {
-        withPriority(70.0)
+        withPriority(50.0)
     }
 
     // endregion
@@ -880,7 +880,7 @@ object CwtDataTypes {
      * @since 2.1.9
      */
     val ShaderEffect = CwtDataType.builder("ShaderEffect").reference().build {
-        withPriority(30.0)
+        withPriority(20.0)
     }
     /**
      * 网格定位器类型。
@@ -898,7 +898,7 @@ object CwtDataTypes {
      * @since 2.1.9
      */
     val MeshLocator = CwtDataType.builder("MeshLocator").reference().build {
-        withPriority(30.0)
+        withPriority(20.0)
     }
 
     // endregion
