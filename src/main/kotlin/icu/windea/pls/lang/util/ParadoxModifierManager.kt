@@ -147,6 +147,8 @@ object ParadoxModifierManager {
     /**
      * 得到修正关联的所有本地化（包括名字和描述）。
      *
+     * 备注：目前不经过缓存。
+     *
      * @see ParadoxModifierService.resolveRelatedLocalisations
      */
     fun getRelatedLocalisations(
@@ -161,6 +163,8 @@ object ParadoxModifierManager {
 
     /**
      * 得到修正关联的所有本地化（包括名字和描述）。
+     *
+     * 备注：目前不经过缓存。
      *
      * @see ParadoxModifierService.resolveRelatedLocalisations
      */
@@ -182,6 +186,9 @@ object ParadoxModifierManager {
 
     // region Presentable Items
 
+    /**
+     * 得到修正的展示名字。
+     */
     @Suppress("unused")
     fun getPresentableNames(
         element: ParadoxModifierLightElement,
@@ -192,6 +199,9 @@ object ParadoxModifierManager {
         return ParadoxLocalisationManager.getPresentableText(localisation)
     }
 
+    /**
+     * 得到修正的展示名字。
+     */
     fun getPresentableNames(
         name: String,
         contextElement: PsiElement,

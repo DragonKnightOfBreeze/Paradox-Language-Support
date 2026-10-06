@@ -126,6 +126,11 @@ object ParadoxLocalisationManager {
         return getPresentableTextInternal(element)
     }
 
+    /**
+     * 得到 [elements] 对应的一组本地化的展示文本。
+     *
+     * @see ParadoxLocalisationService.resolvePresentableText
+     */
     fun getPresentableText(elements: Collection<ParadoxLocalisationProperty>): List<String> {
         if (elements.isEmpty()) return emptyList()
         if (elements.size == 1) return getPresentableTextInternal(elements.single()).to.singletonListOrEmpty()
